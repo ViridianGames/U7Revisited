@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MainState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\model3d.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OptionsState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Terrain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Globals.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Unit.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\MainState.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\model3d.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OptionsState.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Terrain.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TitleState.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Globals.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Unit.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Redist\Data\GUIs\ingame.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Redist\Data\engine.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Planitia Design.txt" />
+    <Text Include="Planitia Tasks.txt" />
+    <Text Include="Redist\Data\GUIs\CreateDiety.txt" />
+    <Text Include="Redist\Data\GUIs\ESCMenu.txt" />
+    <Text Include="Redist\Data\GUIs\In-Game.txt" />
+    <Text Include="Redist\Data\GUIs\LoadDiety.txt" />
+    <Text Include="Redist\Data\GUIs\MainMenu.txt" />
+    <Text Include="Redist\Data\GUIs\Multiplayer.txt" />
+    <Text Include="Redist\Data\GUIs\Options.txt" />
+    <Text Include="Redist\Data\GUIs\SkirmishGame.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{280f9012-5671-4958-a316-543ba7ccf9b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,479 @@
+--------------------------------------------------------------------------------
+GOD POWERS
+--------------------------------------------------------------------------------
+
+GREEN
+
+Flatten Land  - TERRAIN ALTERER - raises the land under the cursor to a certain
+                height so that it can be settled.  Got icon.
+
+Bless Land    - TERRAIN ALTERER - Fixes ruined/lavad/swamped land and also
+                allows faster food gathering (and thus village growth) for a
+                short amount of time.  Got icon.
+
+Oakskin       - BUFFER - For 30 seconds, all units within range of the spell
+                take 25% less damage.  Need icon.
+
+Swamp         - TERRAIN ALTERER - Turns terrain into swamp.  Any unit on a swamp
+                gets a 1-tick debuff that slows it; thus, once the unit leaves
+                the swamp the debuff goes away.  Got icon.
+
+RED
+
+Flamering     - UNIT ADDER - Creates a ring of fire that burns any unit inside
+                it.  Need icon.
+
+Stone Rain    - TERRAIN ALTERER - Ruins terrain within a range around the click.
+                Doesn't unflatten  Got icon.
+
+Flamestrike   - UNIT ADDER - Adds a unit that wanders around for a few seconds,
+                doing damage to buildings and units nearby.  Got icon.
+
+Volcano       - UNIT ADDER - Volcanoes ruin the terrain, damage any units nearby
+                and destroy any village buildings in range.  Got icon.
+
+
+YELLOW
+
+Celerity      - BUFFER - For 15 seconds, all friendly units move and attack 25%
+                faster.  Icon.4_33.png
+
+Cleanse       - BUFFER - Removes debuffs from all friendly units in the circle
+                and buffs from any enemy units.  Can counter Celerity,
+                Hypnotize, Bloodrage, Plague and Oakskin.  Need icon.
+
+Bloodlust     - BUFFER - For 30 seconds, units do 25% more damage.  Need icon.
+
+
+Earthquake    - UNIT ADDER- The unit ruins and unflattens land, slowing down an
+                enemy village.  Throws units around for a few seconds but
+                doesn't do them much damage.  Got icon.
+
+
+BLUE
+
+Lightning     - UNIT ADDER - A single lightning strike that will hit any unit
+                close by.  A direct hit will kill a single unit.  Nearby units
+                take damage and are flung.  Got icon.
+Tornado       - UNIT ADDER - Tornadoes randomly wander around for about 30
+                seconds, wrecking buildings and throwing
+                nearby units into the air.  Need icon.
+
+Hypnotize     - BUFFER - About half the villagers or soldiers in range of the
+                spell turn to the Blue side for 10 - 30 seconds.  Can only work
+                if casting god has less than 100 units total.  Need icon.
+
+Meteor        - UNIT ADDER - A meteor drops from the sky, damaging units and
+                throwing them around.  Can slow down an army or a village.
+                Takes a moment to fall so you have to cast ahead of an incoming
+                army.  Got icon.
+
+
+
+
+
+
+
+
+Healing Light - BUFFER - Friendly units within range of the click get a HOT buff
+                for X ticks.  Got icon.
+
+
+
+
+
+
+
+
+
+
+
+Plague        - BUFFER - All enemy units within a circle take damage over time
+                and are greatly slowed.
+
+Hero          - UNIT ADDER - Creates a huge enemy creature with lots of
+                hitpoints.  Must be cast near one of your villagers. Acts on its
+                own to find and kill enemies.  It's basically the Knight from
+                Populous.  Hmmm...sacrificing your villagers to make it stronger
+                might be interesting.  Cannot be affected by Bloodlust or
+                Oakskin, but CAN be Healed or Hypnotized.  Got icon.
+
+Armageddon    - UNIT ADDER - Removes all walkers and adds an equal number of
+                random military units.  Got icon.
+
+
+
+
+
+
+
+
+
+
+Combos:
+
+Bloodlust + Oakskin - Cast these on your villagers just as an enemy army arrives
+to give them a nasty surprise.  Or on your army as the battle starts to make it
+a curb stomp.  Just watch out for Cleanse, which can remove both of these
+effects.
+
+Hypnotize + Bloodlust - Convert half an enemy army and then buff them so they
+can kill the other half.
+
+Plague + Flamering - Pin an enemy army or Shade of Ending inside a flamering
+long enough for it to kill them.
+
+Earthquake + Flamering - With Earthquake ruining the land and stunlocking
+villagers in place and Flamering setting them on fire, this is a real
+village-killer.
+
+Celerity + Bless Land- Gets villages going REALLY fast, even if you don't have
+Flatten.
+
+Plague + Meteor - Plague slows down an army making it easier to hit it with a
+meteor.
+
+Celerity + Bless Land- Gets villages going REALLY fast, even if you don't have
+Flatten.
+
+Hero + Celerity - By default the Shade moves fairly slowly. Cast Celerity on it
+to get it to its target faster and have it do more damage.
+
+Hypnotize + Hero - The Hero must be created near one of your villagers.
+Hypnotize enemy villagers and you can create the Hero right in their village!
+
+WHITE - Life, healing and restoration magic.
+RED - Fire, direct damage
+BLACK - Death and Undeath
+BLUE - Tricks, wind/water
+GREEN - Growth, big creatures
+
+
+--------------------------------------------------------------------------------
+SINGLE PLAYER
+--------------------------------------------------------------------------------
+
+VILLAGES
+--------
+
+*  Village growth.  A village will start with three walkers, one house and one
+   field (this is not a unit, it's a special terrain type).  Walkers will walk
+   to nearby fields and gather food.  Once the player has enough food in his
+   bank, a new walker is created.  This walker will be tagged to a house -
+   unless all houses already have five walkers.  If so, this walker will find
+   a square of flat land nearby (at least one square from any existing house)
+   and build a new house, which it will then attach itself to.  It will then
+   start gathering food from a nearby field - unless all are full, in which case
+   it will create a field nearby (adjacent to ether an existing field or house)
+   and start gathering from that.  Shacks can be randomly rotated, but houses
+   manors will line up.
+
+*  If walkers cannot find a nearby piece of flat land that is not farm/house
+   then they will create a piece of flat land by raising/lowering a nearby cell
+   of land.  This will take a while, but it does mean that you don't NEED
+   Flatten in order for your village to grow quickly; an ability like Celerity
+   will also make this go faster, possibly for less mana.  We might be able to
+   get away with using "attacking" as the means for flattening land; celerity
+   already improves attack speed which would mean that if we use the same speed
+   for flattening it'll affect both.
+
+*  Houses can grow into larger/more effective versions.  Houses hold 3 (small
+   shack), 4 (looking something like our current house) and 5 people (much
+   bigger house, maybe goes outside the bounds of the cell a little).  The more
+   people inside a house, the more mana it generates (that is, five people in
+   the same house will generate more mana than five people in five different
+   houses).
+
+*  Sprogging?  It gives the player more control over how their village grows, at
+   the expense of short-term mana gain.  Villagers do not generate mana while
+   flattening land or building houses.  They only generate mana while living in
+   houses or harvesting grain.
+
+
+NAMES/THEMES
+------------
+
+*  Better Days
+*  The End of All That Is
+*  All Your Powers Combined
+*  
+
+
+
+NETWORKING
+----------
+
+We need the following features:
+
+*  Direct connection specifying an IP and Port
+*  "Host and Find" connection for playing on a local LAN
+
+We need to keep track of:
+
+*  The number of players playing (we will put no arbitrary limit to the number of players at this time)
+*  The ID/socket of each player
+*  Which machine is the server and which are clients
+*  Which thread each client/server connection is on
+*  How many updates between each event swap
+
+Basically, I made the PlanitiaClient and PlanitiaServer objects (neither
+of which were derived from Object) because I felt actual Object-derived
+classes that updated on a per-frame basis were too bigh and heavy for
+something that was basically a few functions and variables.
+
+Okay.  So I didn't actually use the base Client and Server objects AT ALL.
+I rolled everything myself in DirectX Planitia.  I felt the same thing then
+that I do now and I resolved it by staying out of Object space altogether.
+
+I'm doing the same thing now.  Client and Server die.
+
+Actually, I take it back.  The original Client and Server handled the initial
+connection and throwing connections onto threads.  PlanitiaClient and
+PlanitiaServer handled actually sending and receiving events and checksums.
+
+Our new Client and Server will do both in as generic a manner as possible in
+the hopes that I will be able to move them to the framework.
+
+Wow, I had even more network code in SetupMultiplayerState.
+
+Let's try to flowchart this out.
+
+
+Game setup:
+
+Server starts in LAN mode.
+Server continually pulses out "I'm here!" messages once a second.
+Client hears "I'm here!" and asks the server for a connection.
+Server responds by accepting the connection and assigning the client an ID.
+Once everyone has connected, game can begin.
+
+Server starts in Internet mode.
+Client specifies an IP and port and tries to connect.
+Server responds by accepting the connection and assigning the client an ID.
+Once everyone has connected, game can begin.
+
+Game flow:
+
+Game updates - clients throw events at the server
+Game updates - clients throw events at the server
+Game updates - clients throw events at the server
+On this update, server determines if it has all events from the last game turn.
+If it does it sends them out to all clients and authorizes a game turn advance.
+
+
+Exact commands I used to broadcast for listen server:
+
+Client and Server, now that they are actually working, look like they could be
+framework objects just fine - it's just that they should be instantiated by the
+program instead of being things that are instantiated by Engine and are on all
+the time and now that I've said that, why not?  We can have functions that
+activate/deactivate stuff as needed.  So I guess client/server on the framework
+is the way to go.
+
+Using TCP/IP (which is effectively blocking) means that things are guaranteed to
+arrive on the turn they are sent, though the order may not be correct.  A game
+event can be sent in a single TCP/IP packet which I hope will mitigate the
+problems of using TCP/IP.  If absolutely necessary, we will find a RUDP library.
+We WILL NOT roll our own.  Seriously.
+
+
+GAME LOBBY
+----------
+
+Lobby screen lets people know they are connected and allows them to change
+settings and chat before the game starts.  They are superior to automated
+"LOOKING FOR GAME/GAME FOUND/GAME BEGINS" systems like Starcraft II uses.
+
+There will have to be a client and a server lobby, but both will use the same
+GUI.  The bottom half of the lobby will show the current chat.  The top-left
+box will show a list of players.
+
+On the server side, the server can click a
+player to highlight them and then click the "kick" button to kick them from the
+server.
+
+On the client side, the player can click his name to change his handle and click
+the color box to choose his color.  THere will also be a "ready" checkbox that
+all players must click before the game can begin.
+
+On the right side will be a list of the maps and gametypes.  Selecting a map
+will show the minimap for that map.  Selecting a gametype will show the options
+for this gametype.  The client will see this update in real time but won't be
+able to change anything about it.
+
+IMPORTANT INFO ABOUT NETWORKING
+-------------------------------
+
+My events not only need to be executed on all clients on the same update, but also in the same order.  I'm going to need to make sure (probably using a sequential ID on each) that even if they arrive out of order, they get executed in order.  So the system would look something like this:
+
+Client:
+IF we're not advancing the turn:
+Update the objects within the gamestate (players, units and terrain).  This may put events on the event stack.
+Process player input by updating the camera (which will not drop events) and the GUI (which probably will).
+Enqueue any player events generated by the GUI into a short-term stack called the client turn stack.
+
+NETWORK:  Send all events in the turn stack to the server.  Clear the client turn stack.
+
+Process the event stack.  This should only process those events that were sent by the simulation.
+Done.
+
+IF we are advancing the turn:
+Update the objects within the gamestate (players, units and terrain).  This may put events on the event stack.
+Process player input by updating the camera (which will not drop events) and the GUI (which probably will).
+Enqueue any player events generated by the GUI into the turn stack.
+
+NETWORK:  Wait for events from the server in a blocking fashion (sucks but this is how this is done).  Events that come in should be put on the event stack.  When an "advance turn" event arrives, unblock.
+NETWORK:  Send all events in the client turn stack to the server (these events will NOT be processed this turn).  Clear the client turn stack.
+
+Process the event stack.  This will process both the simulation events and player events.
+Done.
+
+Server:
+IF we're not advancing the turn:
+Listen for incoming events.  The only events we should be getting are game events.  Queue them up on the server turn stack.
+
+IF we are advancing the turn:
+Send all events, one by one, to all connected clients.  Finally, construct a "end turn" game event and send that.  Clear the server turn stack.
+Listen for incoming events.  The only events we should be getting are game events.  Queue them up on the server turn stack.
+
+With this setup, it's assumed that the CLIENT will run first, then the SERVER.  But the order we're doing stuff should prevent the client and server from blocking each other - if this isn't a "advance turn" udpate, the server just listens and thus doesn't block anything; if it IS an "advance turn" update, the client listens first while the server sends, then the server listens while the clients send in return.  I think this is the right way to do it.
+
+
+Now for a question.  Hmmm....I guess this gets into APM.  Excellent RTS players can have an APM over 300 but that doesn't mean that their actions are updated 300 times a second; I doubt if Starcraft has turns less than 1/10 of a second.  That means that Starcraft lets players use the GUI to queue up as many actions as they can.  I suppose I should do the same, so the gui can update OUTSIDE the 30-times-a-second loop and still add events to the player turn stack.  Otherwise players would be limited to 30 actions a second...uh...or 1800 actions a minute...uh.  Okay, we're still going to allow it because a) I don't see it hurting anything (nobody can be that fast) and b) limited the GUI to 30 updates a second really kills its responsiveness, oddly enough.  (That's sarcasm, future me.)
+
+If it DOES become a problem, we'll do it like this - the GUI will still update as fast as it can but it will only store the LAST action given to it, which it will then hand off to the client code when the client is authorized to update.  That way the GUI stays responsive but only actually updates as often as the main game.  Hmmm...maybe I should do that anyway.
+
+The game updates 30 times a second, but only swaps input every 3 updates, for 10 input turns a second.  This can be extended if it gets too laggy, but will cause input to have a more noticeable delay.
+
+
+
+
+
+
+
+Complete startup system:
+
+BEFORE MAINSTATE
+
+SERVER - Startup
+CLIENT - Startup
+SERVER - Determine game characteristics
+CLIENT - Connect
+
+CLIENT/SERVER - While the server player determines game characteristics, client players can change their colors, change alliances and chat.
+
+SERVER - Server starts game, fixing everything in stone.  Server sends game characteristics, including number of players, ID, position and color of each player, game type, and RNG seed
+CLIENT - Set up game according to setup packet
+
+(When mainstate starts, all players have already been set up and the RNG has been seeded.  Mainstate then proceeds to run updates in lockstep.)
+
+
+DURING MAINSTATE
+
+Update 1:
+CLIENT - Send events
+SERVER - Receive events
+
+Update 2:
+CLIENT - Send events
+SERVER - Receive events
+
+Update 3:
+CLIENT - Send events
+SERVER - Receive events
+SERVER - Send events
+SERVER - Send "advance turn" event which includes checksum for LAST successful update executed.
+CLIENT - Receive events
+CLIENT - Receive "advance turn" event, check to see if the checksum matches.
+CLIENT - Process events
+
+Update 4:
+CLIENT - Send events
+SERVER - Receive events
+
+
+
+
+
+   unsigned int m_NumberOfPlayers;
+   unsigned int m_PlayerID;
+   unsigned int m_GameType;
+   unsigned int m_RNGSeed;
+   
+   For each player:
+   
+   id
+   xyz starting pos
+   color
+   bot or human
+
+
+Okay, we've got functions that add events based on god power usage and unit
+creation.  Should those 
+
+-------------------------------------------------------------------------------
+GRAPHICS
+-------------------------------------------------------------------------------
+
+The key to fast graphics is reducing state changes.  State changes are:
+
+*  Changes in the currently applied texture
+
+A texture atlas is the way to prevent this problem.  It creates its own problems
+but solves more than it makes.
+
+*  Changes in the currently applied mesh
+
+Planitia presents unique problems because the mesh must change, constantly and
+in real-time.  But the mesh doesn't change completely - during any one update
+the mesh can only change a small amount for each player.  We already know how to
+write those changes directly to the mesh.  This is bad, but I do not know how
+to avoid it yet.
+
+Consider collating all events that change the mesh and seeing if those changes
+can be batched.
+
+*  Changes in lighting or other OpenGL settings
+
+We avoid a lot of these by using baked lighting but we also undo some of our
+hard work by having to switch to special modes for rendering billboards, for
+instance.  We need to work on figuring out a better way.
+
+Our target frame rate is 30 fps.  That frame rate is a MUST - the game does not
+ship until we have a solid 30 fps on the low-end platform.  Our other target is
+a consistent frame rate - we're not going to ship if we get 30 fps but our fps
+varies wildly from 15 to 120 and just averages out to 30.
+
+----------------------
+
+So let's talk about the basic mesh.  We have four aspects to our basic terrain:
+
+*  The basic mesh, which blends from sand to grass to rock based on elevation
+   and possibly slope angle.
+
+*  The water mesh, completely separate that represents the water.
+
+*  The decal mesh, which represents special terrain types that lay over the
+   basic type.  Each cell can only have one special terrain type so we don't
+   have to worry about drawing swamp over lava, etc.
+
+*  "Clutter" meshes - grass, flowers, trees, etc.  Small, not-animating meshes
+   that can be rotated but otherwise are identical in all respects.
+
+Right now we're doing the basic mesh as two meshes - one for the grass and sand
+and one for the beach.  Adding the stone would add another mesh.  Would it be
+possible to merge these three into a single mesh?  We would need three colors
+(for the alpha) and three sets of texture coordinates.   Maybe try it with just
+the grass, sand and beach and expand it if we can get that working?
+
+Yeah, I think that's a necessity because of the "scrubbing".  Scrubbing three
+meshes would take longer than scrubbing one.  That means we must figure this
+out.  The fact that we're using the same texture kind of works against us here.
+
+
+The Highest Five - High-Five one of your villagers.
+
+Gimmie Five
+I Got Five on It
+You Go, Villager
+Hand of God

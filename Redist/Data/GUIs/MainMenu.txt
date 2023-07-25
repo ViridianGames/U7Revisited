@@ -1,0 +1,78 @@
+640 0
+Data\\Fonts\\font.txt
+# We should now be able to have comment lines in this file.
+# So here is the layout of the data for the different GUI elements.
+#
+# 0 BUTTON
+# 1 SCROLLBAR
+# 2 TEXTAREA
+# 3 RADIO BUTTON
+# 4 BITMAP
+# 5 PANEL
+# 6 TEXTLABEL
+#
+# Now, the interfaces for each GUI element.  Each interface is followed by an example
+#
+#  BUTTON
+#
+#  Type|ID|Active|TileX|TileY|PosX|PosY|Width|Height|Bitmap
+#  0    1  1      0     32    0    0    32    32     images\\maininterface.png
+#
+#
+#  SCROLLBAR
+#
+#  Type|ID|Active|PosX|PosY|Width|Height|SpurLocation|R  |G  |B  |A
+#  1    2  1      0    0    10    256    0            255 255 255 255
+#
+#
+#  TEXTLABEL
+#
+#  Type|ID|Active|PosX|PosY|Width|Height|R  |G  |B  |A  |String
+#  2    3  1      0    0    200   16     255 255 255 255 Frog blast the vent core!
+#
+#
+#  RADIO BUTTON
+#
+#  Type|ID|Active|TileX|TileY|PosX|PosY|Width|Height|Group|Set|Bitmap
+#  3    4  1      0     32    0    0    32    32     1     1   images\\maininterface.png
+#
+#
+#  BITMAP
+#
+#  Type|ID|Active|PosX|PosY|Bitmap
+#  4    5  1      100  100  images\\walker.png
+#
+#
+#  PANEL
+#   
+#  Type|ID|Active|PosX|PosY|Width|Height|Filled|R|G|B|A
+#  5    6  1      0    0    200   600    1      0 0 0 255
+#
+#
+#  TEXTLABEL
+#
+#  Type|ID|Active|PosX|PosY|R  |G  |B  |A  |String
+#  6    6  1      0    0    255 255 255 255 It's a secret to everybody!
+#
+#
+#
+#
+# Bitmap
+#  Type|ID|Active|Group|PosX|PosY|Bitmap
+   4    1  1     0      72  20 images\\planitialogo.png
+   
+#  BUTTON
+#
+#Type|ID|Active|Group|TileX|TileY|PosX|PosY|Width|Height|Bitmap
+0     4  1      0     0     0     72   360  256   64 images\\GUI\\ButtonBackground.png
+0     5  1      0     0     0     72   440  256   64 images\\GUI\\ButtonBackground.png
+0     7  1      0     0     0     72   600  256   64 images\\GUI\\ButtonBackground.png
+0    14  1      0     0     0     72   280  256   64 images\\GUI\\ButtonBackground.png
+#  TEXTLABEL
+#  Type|ID|Active|Group|PosX|PosY|Width|Height|R  |G  |B  |A  |String
+2    15  1      0        134  296   400   32     255 255 255 255 Tutorial
+2    10  1      0        102  376   400   32     255 255 255 255 Single Player
+2    11  1      0        120  456   400   32     255 255 255 255 Multiplayer
+#2    12  1      0         70  536   400   32     255 255 255 255 Options
+2    13  1      0        170  616   400   32     255 255 255 255 Quit
+

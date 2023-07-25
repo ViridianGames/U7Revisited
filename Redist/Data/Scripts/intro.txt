@@ -1,0 +1,25 @@
+19 1  1 16 17 0 16 17 0 0        0 1 ''
+19 2  2 17 16 0 17 16 0 0        0 1 ''
+18 1  0  0 2000  0  1  0 0 0     2000 1 The food runs out today.
+18 2  0  0 2000  0  1  0 0 0     4000 1 I know.
+18 1  0  0 2000  0  1  0 0 0     6000 1 Tomorrow we'll have to start eating the seed grain.
+18 2  0  0 2000  0  1  0 0 0     8000 1 I know.
+18 1  0  0 2000  0  1  0 0 0    10000 1 If we eat the seed grain we are finished.
+23 2  250  6000    0  0  0  0 0 0    12000 1 ''
+23 2  250  6000    0  0  0  0 0 0    13000 1 ''
+18 2  0  0 2000  0  1  0 0 0    12000 1 I KNOW!
+18 2  0  0 2000  0  1  0 0 0    14000 1 Do you think I am unaware of the situation?
+18 2  0  0 2000  0  1  0 0 0    16000 1 I've sent scouts in all directions!
+18 2  0  0 2000  0  1  0 0 0    18000 1 They all report the same thing - ruined,
+18 2  0  0 2000  0  1  0 0 0    20000 1 broken, useless land as far as the eye can see!
+18 1  0  0 2000  0  1  0 0 0    22000 1 So what do we do?
+18 2  0  0 2000  0  1  0 0 0    24000 1 There is nothing left we can do.
+18 2  0  0 2000  0  1  0 0 0    26000 1 How are the villagers?
+18 1  0  0 2000  0  1  0 0 0    28000 1 Fine.
+18 1  0  0 2000  0  1  0 0 0    30000 1 They do not realize the situation we are in yet.
+18 1  0  0 2000  0  1  0 0 0    32000 1 They are still trying to work the farms...
+18 1  0  0 2000  0  1  0 0 0    34000 1 ...except for Marta.
+18 2  0  0 2000  0  1  0 0 0    36000 1 What's Marta doing?
+18 1  0  0 2000  0  1  0 0 0    38000 1 What Marta always does.  Shall I punish her?
+18 2  0  0 1950  0  1  0 0 0    40000 1 No...
+18 2  0  0 2000  0  1  0 0 0    42000 1 It doesn't matter any more.
