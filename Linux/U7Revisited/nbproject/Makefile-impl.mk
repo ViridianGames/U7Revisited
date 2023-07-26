@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Planitia
+PROJECTNAME=U7Revisited
 
 # Active Configuration
 DEFAULTCONF=Debug
