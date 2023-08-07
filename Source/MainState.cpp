@@ -326,14 +326,28 @@ void MainState::Draw()
    //m_SpellsPanel->Draw();
    
    //m_OptionsGui->Draw();
+   int ypos = -32;
+   string welcome = "Welcome to Ultima VII: Revisited!";
+   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+
+   welcome = "You can scroll anywhere on the map using WASD and rotate the map using Q and E.";
+   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+
+   welcome = "Press ESC to exit.";
+   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+
+   welcome = "";
+   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+
    string visibleCells = "Visible Cells: " + to_string(g_Terrain->m_VisibleCells.size());
 
-   g_SmallFont->DrawString(visibleCells, 0, 0);
+   g_SmallFont->DrawString(visibleCells, 0, ypos += 32);
 
    string xcoordstring = "CamLookAt  X: " + to_string(g_Display->GetCameraLookAtPoint().x) + " Y: " + to_string(g_Display->GetCameraLookAtPoint().y) + " Z: " + to_string(g_Display->GetCameraLookAtPoint().z);
-   g_SmallFont->DrawString(xcoordstring, 0, 32);
+   g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
+
    xcoordstring = "CamPos      X: " + to_string(g_Display->GetCameraPosition().x) + " Y: " + to_string(g_Display->GetCameraPosition().y) + " Z: " + to_string(g_Display->GetCameraPosition().z);
-   g_SmallFont->DrawString(xcoordstring, 0, 64);
+   g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
 
    DrawConsole();
    
@@ -354,57 +368,11 @@ void MainState::SetupGame()
         g_World[i].resize(3072);
     }
 
-    //  Load data for all chunks first
-    FILE* u7chunksfile = fopen("Data/U7/STATIC/U7CHUNKS", "rb");
+    LoadChunks();
+    LoadMap();
 
-    //  Each chunk should be an ID associated with 16 arrays, each 16 unsigned chars deep.
-    for (int i = 0; i < 3072; ++i)
-    {
-        for (int j = 0; j < 16; ++j)
-        {
-            vector<unsigned short> thisvector;
-            for (int k = 0; k < 16; ++k)
-            {
-                unsigned short thisdata;
-                unsigned char frontend;
-                unsigned char backend;
-                fread(&frontend, sizeof(char), 1, u7chunksfile);
-                fread(&backend, sizeof(char), 1, u7chunksfile);
-                thisdata = (frontend << 8) | backend;
-                thisvector.push_back(thisdata);
-            }
-            m_Chunkmap[i].push_back(thisvector);
-        }
-    }
-    fclose(u7chunksfile);
+    //LoadIFIX();
 
-
-    FILE* u7mapfile = fopen("Data/U7/STATIC/U7MAP", "rb");
-    //  Untangle the map and chunk files into a single array.
-    //  Create the map of chunk ids and chunk data
-    for (int k = 0; k < 12; ++k)
-    {
-        for (int l = 0; l < 12; ++l)
-        {
-            for (int j = 0; j < 16; ++j)
-            {
-                for (int i = 0; i < 16; ++i)
-                {
-                    unsigned short thisdata = 0;
-                    unsigned char frontend = 0;
-                    unsigned char backend = 0;
-                    fread(&frontend, sizeof(char), 1, u7mapfile);
-                    fread(&backend, sizeof(char), 1, u7mapfile);
-                    thisdata = (backend << 8) | frontend;
-
-                    //            unsigned short thisdata;
-                    //            fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
-                    m_u7map[k * 16 + j][l * 16 + i] = thisdata;
-                }
-            }
-        }
-    }
-    fclose(u7mapfile);
 
     //  Now, finally, we can create the world map.
     for (int i = 0; i < 192; ++i)
@@ -422,11 +390,9 @@ void MainState::SetupGame()
         }
     }
 
-
     m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false);
 
-
-      //  Set up map
+   //  Set up map
    int width = 3072;
    int height = 3072;
    g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
@@ -486,9 +452,130 @@ void MainState::SetupGame()
 
    //  Create the world map and load its data from U7MAP and U7CHUNKS
 
+}
+
+void MainState::LoadChunks()
+{
+    //  Load data for all chunks first
+    FILE* u7chunksfile = fopen("Data/U7/STATIC/U7CHUNKS", "rb");
+
+    //  Each chunk should be an ID associated with 16 arrays, each 16 unsigned chars deep.
+    for (int i = 0; i < 3072; ++i)
+    {
+        for (int j = 0; j < 16; ++j)
+        {
+            vector<unsigned short> thisvector;
+            for (int k = 0; k < 16; ++k)
+            {
+                unsigned short thisdata;
+                unsigned char frontend;
+                unsigned char backend;
+                fread(&frontend, sizeof(char), 1, u7chunksfile);
+                fread(&backend, sizeof(char), 1, u7chunksfile);
+                thisdata = (frontend << 8) | backend;
+                thisvector.push_back(thisdata);
+            }
+            m_Chunkmap[i].push_back(thisvector);
+        }
+    }
+    fclose(u7chunksfile);
+}
+
+void MainState::LoadMap()
+{
+    FILE* u7mapfile = fopen("Data/U7/STATIC/U7MAP", "rb");
+    //  Untangle the map and chunk files into a single array.
+    //  Create the map of chunk ids and chunk data
+    for (int k = 0; k < 12; ++k)
+    {
+        for (int l = 0; l < 12; ++l)
+        {
+            for (int j = 0; j < 16; ++j)
+            {
+                for (int i = 0; i < 16; ++i)
+                {
+                    unsigned short thisdata = 0;
+                    unsigned char frontend = 0;
+                    unsigned char backend = 0;
+                    fread(&frontend, sizeof(char), 1, u7mapfile);
+                    fread(&backend, sizeof(char), 1, u7mapfile);
+                    thisdata = (backend << 8) | frontend;
+
+                    //            unsigned short thisdata;
+                    //            fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
+                    m_u7map[k * 16 + j][l * 16 + i] = thisdata;
+                }
+            }
+        }
+    }
+    fclose(u7mapfile);
+}
+
+void MainState::LoadShapes()
+{
+    //  Eventually we need to load the shapes from the U7SHAPES file instead of using pre-generated PNGs.
+    //  For now, we'll just load the PNGs.
 
 
+}
 
-   
+//void MainState::LoadIFIX()
+//{
+//    for (int i = 0; i < 16; ++i)
+//    {
+//        for (int j = 0; j < 16; ++j)
+//        {
+//            std::stringstream ss;
+//            ss << "Data/U7/STATIC/U7IFIX" << std::hex << i << std::hex << j;
+//            const std::string s = ss.str();
+//
+//            FILE* u7thisifix = fopen(s.c_str(), "rb");
+//            //  The first byte is split.  4 bits for the x-offset, 4 bits for the y-offset.
+//            char firstByte = 0;
+//            fread(&firstByte, sizeof(char), 1, u7thisifix);
+//
+//
+//
+//		}
+//    }
+//}
+
+
+//void Game_map::get_ifix_objects(
+//    int schunk          // Superchunk # (0-143).
+//) {
+//    char fname[128];        // Set up name.
+//    if (!is_system_path_defined("<PATCH>") ||
+//        // First check for patch.
+//        !U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname))) {
+//        get_schunk_file_name(U7IFIX, schunk, fname);
+//    }
+//    IFileDataSource ifix(fname);
+//    if (!ifix.good()) {
+//        if (!Game::is_editing())    // Ok if map-editing.
+//            cerr << "Ifix file '" << fname << "' not found." << endl;
+//        return;
+//    }
+//    FlexFile flex(fname);
+//    int vers = static_cast<int>(flex.get_vers());
+//    int scy = 16 * (schunk / 12); // Get abs. chunk coords.
+//    int scx = 16 * (schunk % 12);
+//    // Go through chunks.
+//    for (int cy = 0; cy < 16; cy++) {
+//        for (int cx = 0; cx < 16; cx++) {
+//            // Get to index entry for chunk.
+//            int chunk_num = cy * 16 + cx;
+//            size_t len;
+//            uint32 offset = flex.get_entry_info(chunk_num, len);
+//            if (len)
+//                get_ifix_chunk_objects(&ifix, vers, offset,
+//                    len, scx + cx, scy + cy);
+//        }
+//    }
+//}
+
+
+void MainState::LoadIREG()
+{
 
 }

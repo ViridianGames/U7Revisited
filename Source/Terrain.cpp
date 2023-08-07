@@ -53,21 +53,21 @@ void Terrain::Init(int width, int height)
    m_Vertices = new float[m_VertexWidth * m_VertexHeight];
 
    //  These are the coordinates for the vertices of a non-flipped cell.
-   m_StraightCells.push_back(make_pair(0, 0));
-   m_StraightCells.push_back(make_pair(1, 0));
-   m_StraightCells.push_back(make_pair(1, 1));
-   m_StraightCells.push_back(make_pair(1, 1));
-   m_StraightCells.push_back(make_pair(0, 1));
-   m_StraightCells.push_back(make_pair(0, 0));
+   m_StraightCells.push_back(make_pair<float, float>(0, 0));
+   m_StraightCells.push_back(make_pair<float, float>(1, 0));
+   m_StraightCells.push_back(make_pair<float, float>(1, 1));
+   m_StraightCells.push_back(make_pair<float, float>(1, 1));
+   m_StraightCells.push_back(make_pair<float, float>(0, 1));
+   m_StraightCells.push_back(make_pair<float, float>(0, 0));
    
 
    //  These are the coordinates for the vertices of a flipped cell.
-   m_FlippedCells.push_back(make_pair(1, 0));
-   m_FlippedCells.push_back(make_pair(1, 1));
-   m_FlippedCells.push_back(make_pair(0, 1));
-   m_FlippedCells.push_back(make_pair(0, 1));
-   m_FlippedCells.push_back(make_pair(0, 0));
-   m_FlippedCells.push_back(make_pair(1, 0));
+   m_FlippedCells.push_back(make_pair<float, float>(1, 0));
+   m_FlippedCells.push_back(make_pair<float, float>(1, 1));
+   m_FlippedCells.push_back(make_pair<float, float>(0, 1));
+   m_FlippedCells.push_back(make_pair<float, float>(0, 1));
+   m_FlippedCells.push_back(make_pair<float, float>(0, 0));
+   m_FlippedCells.push_back(make_pair<float, float>(1, 0));
 
 
 
@@ -103,7 +103,6 @@ void Terrain::Init(int width, int height)
 
 void Terrain::Draw()
 {
-    g_Display->DrawImage(m_TerrainTexture, 0, 0);
 //   g_Display->m_Debugging = m_DebugTerrain;
    g_Display->DrawMesh(m_TerrainMesh, glm::vec3(0, 0, 0), m_TerrainTexture);
 //   g_Display->DrawMesh(m_BeachMesh, glm::vec3(0, 0, 0), m_TerrainTexture);

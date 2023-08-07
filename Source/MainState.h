@@ -23,6 +23,12 @@ public:
    virtual void OnExit();
    
    void SetupGame();
+
+   void LoadChunks();
+   void LoadMap();
+   void LoadShapes();
+   //void LoadIFIX();
+   void LoadIREG();
    
    Gui* m_Gui;
    Gui* m_SpellsPanel;

@@ -1,1 +1,1 @@
-The original Ultima VII files go here.  U7Revisited will not work without them.  Need them?  Buy the game for cheap from GOG.com!  https://www.gog.com/en/game/ultima_7_complete
+Copy the entire contents of the original Ultima7 folder into here.  U7Revisited will not work without them.  Need them?  Buy the game for cheap from GOG.com!  https://www.gog.com/en/game/ultima_7_complete
