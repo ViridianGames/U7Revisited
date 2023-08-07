@@ -123,7 +123,7 @@ bool ModelFrame3D::Build()
 	{
 		unsigned short thisindex = m_Indices[i];
 
-		indices.push_back(unsigned int(thisindex));
+		indices.push_back(static_cast<unsigned int>(thisindex));
 	}
 
 
