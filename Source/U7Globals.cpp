@@ -406,10 +406,10 @@ void AddUnit(int player, int unittype, int id, float x, float y, float z)
 void AddUnitActual(int player, int unittype, int id, float x, float y, float z )
 {
    shared_ptr<U7Unit> temp = U7UnitClassFactory(unittype);
+   temp->Init("Data/Units/Walker.cfg");
    temp->SetInitialPos(glm::vec3(x, y, z));
    temp->m_BaseTeam = player;
    temp->m_Team = player;
-   temp->Init("");
    g_UnitList[id] = temp;
 }
 

@@ -25,6 +25,9 @@
     <ClCompile Include="Source\U7Unit.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7Object.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\MainState.h">
@@ -46,6 +49,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7Unit.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Object.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

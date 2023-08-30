@@ -27,7 +27,7 @@ public:
    void LoadChunks();
    void LoadMap();
    void LoadShapes();
-   //void LoadIFIX();
+   void LoadIFIX();
    void LoadIREG();
    
    Gui* m_Gui;

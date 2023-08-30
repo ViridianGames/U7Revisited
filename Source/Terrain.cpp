@@ -168,16 +168,9 @@ vector<Vertex> Terrain::CreateTerrainCell(int i, int j)
 	// Beach tiles are drawn with one half as grass, if that half is above the water level.
 	// The tile is still considered beach, this is just to make it look better.
     unsigned short data = g_World[i][j];
-    unsigned short buffer = data << 8;
-    unsigned char l = buffer >> 8;
-    buffer = data >> 8;
-    unsigned char h = buffer;
-    unsigned short shapenum = l << 2;
-    buffer = h << 6;
-    buffer = buffer >> 6;
-    shapenum = h;
 
-    unsigned char framenum = l >> 2;
+    unsigned short shapenum = data & 0x3ff;
+    unsigned short framenum = (data >> 10) & 0x1f;
 
     float u1 = float(shapenum * 8) / 2048.0f;
     float v1 = float(framenum * 8) / 256.0f;

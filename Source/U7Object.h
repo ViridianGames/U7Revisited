@@ -1,7 +1,7 @@
 #pragma warning(disable:4786)
 
-#ifndef _U7Unit_H_
-#define _U7Unit_H_
+#ifndef _U7Object_H_
+#define _U7Object_H_
 
 #include "Globals.h"
 #include "BaseUnits.h"
@@ -10,13 +10,13 @@
 
 struct Buff;
 
-class U7Unit : public Unit3D
+class U7Object : public Unit3D
 {
 
 public:
 
-	U7Unit(){};
-	virtual ~U7Unit();
+	U7Object(){};
+	virtual ~U7Object();
 
 	virtual void Init(const std::string& configfile);
 	virtual void Shutdown();
@@ -35,8 +35,6 @@ public:
    virtual void SetPos(glm::vec3 pos) { m_Pos = pos; }
    virtual void SetDest(glm::vec3 pos);
    virtual void SetSpeed(float speed) { m_Speed = speed; }
-
-   void SetShapeAndFrame(unsigned int shape, unsigned int frame);
    
    glm::vec3 m_Pos;
    glm::vec3 m_Dest;
@@ -73,8 +71,6 @@ public:
    Texture* m_Texture;
    
    std::list<Buff> m_Buffs;
-
-   Config m_UnitConfig;
    
    void AddBuff(Buff buff);
 };

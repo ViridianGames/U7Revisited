@@ -1,16 +1,16 @@
 #include "Globals.h"
 #include "U7Globals.h"
-#include "U7Unit.h"
+#include "U7Object.h"
 #include "Config.h"
 
 using namespace std;
 
-U7Unit::~U7Unit()
+U7Object::~U7Object()
 {
 	Shutdown();
 }
 
-void U7Unit::Init(const string& configfile)
+void U7Object::Init(const string& configfile)
 {
    m_Pos = glm::vec3(0, 0, 0);
    m_Dest = glm::vec3(0, 0, 0);
@@ -25,13 +25,9 @@ void U7Unit::Init(const string& configfile)
    m_Mesh = NULL;
    SetIsDead(false);
 
-   m_UnitConfig.Load(configfile);
-
-   m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig.GetString("mesh"));
-   m_Texture = g_ResourceManager->GetTexture(m_UnitConfig.GetString("normaltexture"));
 }
 
-void U7Unit::Draw()
+void U7Object::Draw()
 {
    if( m_Visible && m_Mesh != NULL)
    {
@@ -40,12 +36,7 @@ void U7Unit::Draw()
    }
 }
 
-void U7Unit::SetShapeAndFrame(unsigned int shape, unsigned int frame)
-{
-
-}
-
-void U7Unit::Update()
+void U7Object::Update()
 {
    //  Handle buffs and debuffs
    
@@ -171,17 +162,17 @@ void U7Unit::Update()
    
 }
 
-void U7Unit::Attack(int _UnitID)
+void U7Object::Attack(int _UnitID)
 {
 
 }
 
-void U7Unit::Shutdown()
+void U7Object::Shutdown()
 {
 	
 }
 
-bool U7Unit::SelectCheck()
+bool U7Object::SelectCheck()
 {
    if( m_Mesh->SelectCheck( m_Pos, m_Angle, m_Scaling) ) 
       return true;
@@ -189,12 +180,12 @@ bool U7Unit::SelectCheck()
    return false;
 }
 
-void U7Unit::AddBuff(Buff buff)
+void U7Object::AddBuff(Buff buff)
 {
    m_Buffs.push_back(buff);
 }
 
-void U7Unit::SetDest(glm::vec3 dest)
+void U7Object::SetDest(glm::vec3 dest)
 {
    m_Dest = dest;
    m_Direction = m_Dest - m_Pos;

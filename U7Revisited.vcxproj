@@ -21,6 +21,7 @@
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
+    <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\U7Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,7 @@
     <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
+    <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\U7Unit.h" />
   </ItemGroup>
   <ItemGroup>

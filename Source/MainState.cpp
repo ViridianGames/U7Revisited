@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "U7Globals.h"
 #include "MainState.h"
+#include "Logging.h"
 
 #include <list>
 #include <string>
@@ -259,13 +260,13 @@ void MainState::Draw()
 
 
    g_Terrain->Draw();
-   
+
 //   g_Display->DrawMesh(g_Terrain->m_Highlight, glm::vec3(0, 0, 0));
    
-   //for(unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end(); ++node)
-   //{
-   //   (*node).second->Draw();
-   //}
+   for(unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end(); ++node)
+   {
+      (*node).second->Draw();
+   }
    
 //   m_Particles.Draw();
    
@@ -362,6 +363,7 @@ void MainState::Draw()
 
 void MainState::SetupGame()
 {
+    g_UnitList.clear();
     g_World.resize(3072);
     for (int i = 0; i < 3072; ++i)
     {
@@ -371,7 +373,7 @@ void MainState::SetupGame()
     LoadChunks();
     LoadMap();
 
-    //LoadIFIX();
+    LoadIFIX();
 
 
     //  Now, finally, we can create the world map.
@@ -392,11 +394,13 @@ void MainState::SetupGame()
 
     m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false);
 
+
+
    //  Set up map
    int width = 3072;
    int height = 3072;
+   //g_Display->SetCameraPosition(glm::vec3(216, 0, 195));
    g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
-   //g_Display->SetCameraLookAtPoint(glm::vec3(1068, 0, 2211));
    g_Terrain->Init(width, height);
    g_Terrain->InitializeMap(7777);   //  Check for a packet that tells us how to set up the game.
 
@@ -408,17 +412,15 @@ void MainState::SetupGame()
    //  fixup to assign the minimap texture to the main gui.
    m_Gui->AddSprite(1001, 5, 5, make_shared<Sprite>(g_Terrain->m_Minimap, 0, 0, g_Terrain->m_Minimap->GetWidth(), g_Terrain->m_Minimap->GetHeight()));
    
-   g_UnitList.clear();
-   
-   for(int i = 0; i < 3; ++i)
-   {
-      AddUnitActual(0, UNIT_WALKER, GetNextID(), 16, g_Terrain->GetHeight(16, 16), 16);
-   }
-   
-   for(int i = 0; i < 3; ++i)
-   {
-      AddUnitActual(1, UNIT_WALKER, GetNextID(), 48, g_Terrain->GetHeight(48, 48), 48);
-   }
+   //for(int i = 0; i < 3; ++i)
+   //{
+   //   AddUnitActual(0, UNIT_WALKER, GetNextID(), 16, g_Terrain->GetHeight(16, 16), 16);
+   //}
+   //
+   //for(int i = 0; i < 3; ++i)
+   //{
+   //   AddUnitActual(1, UNIT_WALKER, GetNextID(), 48, g_Terrain->GetHeight(48, 48), 48);
+   //}
 
    m_ArePlayersSetUp = true;
    
@@ -458,6 +460,11 @@ void MainState::LoadChunks()
 {
     //  Load data for all chunks first
     FILE* u7chunksfile = fopen("Data/U7/STATIC/U7CHUNKS", "rb");
+    if (u7chunksfile == nullptr)
+    {
+        Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+//        throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
+    }
 
     //  Each chunk should be an ID associated with 16 arrays, each 16 unsigned chars deep.
     for (int i = 0; i < 3072; ++i)
@@ -470,9 +477,7 @@ void MainState::LoadChunks()
                 unsigned short thisdata;
                 unsigned char frontend;
                 unsigned char backend;
-                fread(&frontend, sizeof(char), 1, u7chunksfile);
-                fread(&backend, sizeof(char), 1, u7chunksfile);
-                thisdata = (frontend << 8) | backend;
+                fread(&thisdata, sizeof(unsigned short), 1, u7chunksfile);
                 thisvector.push_back(thisdata);
             }
             m_Chunkmap[i].push_back(thisvector);
@@ -495,14 +500,7 @@ void MainState::LoadMap()
                 for (int i = 0; i < 16; ++i)
                 {
                     unsigned short thisdata = 0;
-                    unsigned char frontend = 0;
-                    unsigned char backend = 0;
-                    fread(&frontend, sizeof(char), 1, u7mapfile);
-                    fread(&backend, sizeof(char), 1, u7mapfile);
-                    thisdata = (backend << 8) | frontend;
-
-                    //            unsigned short thisdata;
-                    //            fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
+                    fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
                     m_u7map[k * 16 + j][l * 16 + i] = thisdata;
                 }
             }
@@ -519,26 +517,118 @@ void MainState::LoadShapes()
 
 }
 
-//void MainState::LoadIFIX()
-//{
-//    for (int i = 0; i < 16; ++i)
-//    {
-//        for (int j = 0; j < 16; ++j)
-//        {
-//            std::stringstream ss;
-//            ss << "Data/U7/STATIC/U7IFIX" << std::hex << i << std::hex << j;
-//            const std::string s = ss.str();
-//
-//            FILE* u7thisifix = fopen(s.c_str(), "rb");
-//            //  The first byte is split.  4 bits for the x-offset, 4 bits for the y-offset.
-//            char firstByte = 0;
-//            fread(&firstByte, sizeof(char), 1, u7thisifix);
-//
-//
-//
-//		}
-//    }
-//}
+void MainState::LoadIFIX()
+{
+    for (int superchunky = 0; superchunky < 12; ++superchunky)
+    {
+        for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
+        {
+            std::stringstream ss;
+            int thissuperchunk = superchunkx + (superchunky * 12);
+            if (thissuperchunk < 16)
+            {
+                ss << "Data/U7/STATIC/U7IFIX0" << std::hex << thissuperchunk;
+            }
+            else
+            {
+                ss << "Data/U7/STATIC/U7IFIX" << std::hex << thissuperchunk;
+            }
+            const std::string s = ss.str();
+
+            FILE* u7thisifix = fopen(s.c_str(), "rb");
+
+            //  Even though these files don't have an .flx description, 
+            //  these are flex files.  Flex files have a header of 80 bytes,
+            //  which is the same for every file: "Ultima VII Data File (C) 1992 Origin Inc."
+            char header[80];
+            fread(&header, sizeof(char), 80, u7thisifix);
+
+            //  This is followed two unsigned ints.  The first unsigned int is alwasy the same, so we can ignore it.
+            //  The second is the number of entries in the file.
+            unsigned int throwaway;
+            unsigned int entrycount;
+            fread(&throwaway, sizeof(unsigned int), 1, u7thisifix);
+            fread(&entrycount, sizeof(unsigned int), 1, u7thisifix);
+
+            //  Now we have ten unsigned ints worth of data that we can ignore.
+            for (int i = 0; i < 10; ++i)
+            {
+                fread(&throwaway, sizeof(unsigned int), 1, u7thisifix);
+            }
+
+            struct entrydata
+            {
+                unsigned int offest;
+                unsigned int length;
+            };
+
+            unordered_map<unsigned int, entrydata> entrymap;
+            //  Now we have the data we want.  Each entry is 8 bytes long.
+            for (int i = 0; i < entrycount; ++i)
+            {
+				entrydata thisentry;
+				fread(&thisentry.offest, sizeof(unsigned int), 1, u7thisifix);
+				fread(&thisentry.length, sizeof(unsigned int), 1, u7thisifix);
+				entrymap[i] = thisentry;
+			}
+
+            struct ShapeFrameIndex
+            {
+                unsigned int shape;
+                unsigned int frame;
+            };
+
+            struct objectdata
+            {
+                ShapeFrameIndex shapeframe;
+                char chunkx;
+                char chunky;
+            };
+
+            //  Now, having processed the header, we can process the, you know, data.
+            for (int chunky = 0; chunky < 16; ++chunky)
+            {
+                for (int chunkx = 0; chunkx < 16; ++chunkx)
+                {
+                    int thischunk = chunkx + (chunky * 16);
+
+                    entrydata thisentry = entrymap[thischunk];
+                    if (thisentry.offest == 0)
+                    {
+                        continue; // Offset of 0 means no object here.
+                    }
+                    else
+                    {
+                        unsigned short* locationdata;
+                        locationdata = (unsigned short*)malloc(sizeof(unsigned short) * (thisentry.length / 2));
+                        fseek(u7thisifix, thisentry.offest * sizeof(char), SEEK_SET);
+                        fread(locationdata, sizeof(unsigned char), thisentry.length, u7thisifix);
+
+                        for (int w = 0; w < (thisentry.length / 2); w += 2)
+                        {
+                            unsigned short shapeData = locationdata[w];
+                            unsigned short thisLocationData = locationdata[w + 1];
+
+                            int shape = shapeData & 0x3ff;
+                            int frame = (shapeData >> 10) & 0x1f;
+
+                            int y = thisLocationData & 0xf;
+                            int x = (thisLocationData >> 4) & 0xf;
+                            int z = (thisLocationData >> 8) & 0xf;
+
+                            AddUnitActual(0, UNIT_WALKER, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
+
+                            int stopper = 0;
+                        }
+                    }
+                }
+            }
+
+            int stopper = 0;
+            fclose(u7thisifix);
+		}
+    }
+}
 
 
 //void Game_map::get_ifix_objects(
