@@ -73,6 +73,7 @@ public:
    unsigned int m_currentChunk = 0;
 
    Texture* m_TerrainTexture;
+   Texture* m_Minimap;
 };
 
 #endif

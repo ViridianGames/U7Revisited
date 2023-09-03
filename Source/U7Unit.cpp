@@ -36,7 +36,7 @@ void U7Unit::Draw()
    if( m_Visible && m_Mesh != NULL)
    {
       //  Draw the unit, then the colored shirt on top of it.
-      g_Display->DrawMesh(m_Mesh, m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, g_Display->GetCameraAngle() + 45, 0), m_Scaling);
+      g_Display->DrawMesh(m_Mesh, m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
    }
 }
 

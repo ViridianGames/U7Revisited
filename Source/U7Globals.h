@@ -252,6 +252,8 @@ extern bool g_IsSinglePlayer;  //  not single payer
 extern bool g_IsServer;
 extern bool g_CameraMoved;
 
+extern unsigned int g_minimapSize;
+
 extern std::vector< std::vector<unsigned short> > g_World;
 
 float GetDistance(float startX, float startZ, float endX, float endZ);

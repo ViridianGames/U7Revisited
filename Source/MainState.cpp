@@ -28,6 +28,9 @@ void MainState::Init(const string& configfile)
    g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/standard.txt");
 
    g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
+
+   m_Minimap = g_ResourceManager->GetTexture("Images/u7minimap.png");
+   g_minimapSize = g_Display->GetWidth() / 6;
    
    g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
    g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
@@ -217,6 +220,8 @@ void MainState::Update()
       g_Display->SetVideoMode(g_Display->GetWidth(), g_Display->GetHeight(), g_Display->GetIsFullscreen());
       g_ResourceManager->ReloadTextures();
    }
+
+
 }
 
 
@@ -225,130 +230,47 @@ void MainState::Draw()
 {
    g_Display->ClearScreen();
 
-   //for (int k = xcoord; k < xcoord + 64; ++k)
-   //{
-   //    for (int l = ycoord; l < ycoord + 642; ++l)
-   //    {
-   //        //m_currentChunk = m_u7map[l][k];
-
-   //        //for (int i = 0; i < 16; ++i)
-   //        //{
-   //        //    for (int j = 0; j < 16; ++j)
-   //        //    {
-   //                unsigned short data = g_World[k][l];
-   //                unsigned short buffer = data << 8;
-   //                unsigned char front = buffer >> 8;
-   //                buffer = data >> 8;
-   //                unsigned char h = buffer;
-   //                unsigned short shapenum = front << 2;
-   //                buffer = h << 6;
-   //                buffer = buffer >> 6;
-   //                shapenum = h;
-
-   //                unsigned char framenum = front >> 2;
-
-   //                g_Display->DrawImage(m_TerrainTexture, 8 * shapenum, 8 * framenum, 8, 8, (k - xcoord) * 16, (l - ycoord) * 16, 16, 16);
-   //        //    }
-
-   //        //}
-	  // }
-   //}
-
-
-
-
-
-
    g_Terrain->Draw();
 
-//   g_Display->DrawMesh(g_Terrain->m_Highlight, glm::vec3(0, 0, 0));
-   
    for(unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end(); ++node)
    {
-      (*node).second->Draw();
+       if (fabs((*node).second->m_Pos.x - g_Display->GetCameraLookAtPoint().x) < (g_Display->GetCameraDistance() / 2.25)
+           && fabs((*node).second->m_Pos.z - g_Display->GetCameraLookAtPoint().z) < (g_Display->GetCameraDistance() / 2.25))
+       {
+		   (*node).second->Draw();
+	   }
    }
    
-//   m_Particles.Draw();
-   
-   //int vpos = g_Display->GetHeight() - 160;
-   //
-   //stringstream converter;
-   //converter << "X: " << g_Display->GetCameraLookAtPoint().x << " Z: " << g_Display->GetCameraLookAtPoint().z << " Angle: " << g_Display->GetCameraAngle();
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 210);
-   //
-   //converter.str("");
-   //
-   //converter << "Number of cells drawn: " << g_Terrain->m_VisibleCells.size();//g_Terrain->m_CellsDrawnThisFrame;
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 30);
-   //
-   //converter.str("");
-   //
-   //converter << "Terrain Hit: " << g_Terrain->m_HitX << ", " << g_Terrain->m_HitY <<  ", " << g_Terrain->GetHeight(g_Terrain->m_HitX, g_Terrain->m_HitY);
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 60, Color(1, 0, 0, 1));
+   g_Display->DrawImage(m_Minimap, g_Display->GetWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize, Color(1, 1, 1, 1));
 
-   //converter.str("");
-   //
-   //converter << "Number of units drawn: " << m_NumberOfVisibleUnits;
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 90);
-   //
-   //converter.str("");
-   //
-   //converter << "Current update: " << g_CurrentUpdate;
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 120);
-   //
-   //converter.str("");
-   //
-   //converter << "Duration of last visibility test: " << g_Terrain->m_DurationOfVisibleTest;
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 150);
-   //
-   //converter.str("");
-   //
-   //if(g_CameraMoved)
-   //   converter << "CAMERA MOVING";
-   //g_SmallFont->DrawString(converter.str(), 0, vpos - 180);
-   
-   //if (m_DrawMarker)
-   //{
-   //   for (int i = 0; i < 36; ++i)
-   //   {
-   //      Color color = Color(float(i) / 40.0f, float((i + 12) % 40) / 40.0f, float((i + 23) % 40) / 40.0f, 1.0f);
-   //      
-   //      int offset = (g_Engine->Time() & 500) / 3;
-   //      glm::vec3 sparklepos = glm::vec3(g_Terrain->m_FloatHitX, g_Terrain->GetHeight(g_Terrain->m_FloatHitX, g_Terrain->m_FloatHitY), g_Terrain->m_FloatHitY) + (GetRadialVector(200, (i * 5) + offset) * m_MarkerRadius);
-   //      sparklepos.y = g_Terrain->GetHeight(sparklepos.x, sparklepos.z);
-
-   //      g_Display->DrawMesh(g_AnimationFrames,
-   //              0, 2, sparklepos,
-   //              g_Sprites, color, glm::vec3(0, g_Display->GetCameraAngle() + 45, 0), glm::vec3(.5, .5, .5));
-   //   }
-   //}
-
-   //m_Gui->Draw();
-   //m_SpellsPanel->Draw();
-   
-   //m_OptionsGui->Draw();
-   int ypos = -32;
+   int ypos = -24;
    string welcome = "Welcome to Ultima VII: Revisited!";
-   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
 
-   welcome = "You can scroll anywhere on the map using WASD and rotate the map using Q and E.";
-   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+   welcome = "Move with WASD, rotate with Q and E.";
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
+
+   welcome = "Zoom in and out with mousewheel.";
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
+
+   welcome = "Left-click in the minimap to teleport.";
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
 
    welcome = "Press ESC to exit.";
-   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
 
    welcome = "";
-   g_SmallFont->DrawString(welcome, 0, ypos += 32);
+   g_SmallFont->DrawString(welcome, 0, ypos += 24);
 
-   string visibleCells = "Visible Cells: " + to_string(g_Terrain->m_VisibleCells.size());
+   //string visibleCells = "Visible Cells: " + to_string(g_Terrain->m_VisibleCells.size());
 
-   g_SmallFont->DrawString(visibleCells, 0, ypos += 32);
+   //g_SmallFont->DrawString(visibleCells, 0, ypos += 32);
 
-   string xcoordstring = "CamLookAt  X: " + to_string(g_Display->GetCameraLookAtPoint().x) + " Y: " + to_string(g_Display->GetCameraLookAtPoint().y) + " Z: " + to_string(g_Display->GetCameraLookAtPoint().z);
-   g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
+   //string xcoordstring = "CamLookAt  X: " + to_string(g_Display->GetCameraLookAtPoint().x) + " Y: " + to_string(g_Display->GetCameraLookAtPoint().y) + " Z: " + to_string(g_Display->GetCameraLookAtPoint().z);
+   //g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
 
-   xcoordstring = "CamPos      X: " + to_string(g_Display->GetCameraPosition().x) + " Y: " + to_string(g_Display->GetCameraPosition().y) + " Z: " + to_string(g_Display->GetCameraPosition().z);
-   g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
+   //xcoordstring = "CamPos      X: " + to_string(g_Display->GetCameraPosition().x) + " Y: " + to_string(g_Display->GetCameraPosition().y) + " Z: " + to_string(g_Display->GetCameraPosition().z);
+   //g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
 
    DrawConsole();
    
@@ -375,6 +297,8 @@ void MainState::SetupGame()
 
     LoadIFIX();
 
+    LoadIREG();
+
 
     //  Now, finally, we can create the world map.
     for (int i = 0; i < 192; ++i)
@@ -399,8 +323,8 @@ void MainState::SetupGame()
    //  Set up map
    int width = 3072;
    int height = 3072;
-   //g_Display->SetCameraPosition(glm::vec3(216, 0, 195));
-   g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
+   g_Display->SetCameraPosition(glm::vec3(216, 0, 195));
+   //g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
    g_Terrain->Init(width, height);
    g_Terrain->InitializeMap(7777);   //  Check for a packet that tells us how to set up the game.
 
@@ -606,8 +530,8 @@ void MainState::LoadIFIX()
 
                         for (int w = 0; w < (thisentry.length / 2); w += 2)
                         {
-                            unsigned short shapeData = locationdata[w];
-                            unsigned short thisLocationData = locationdata[w + 1];
+                            unsigned short thisLocationData = locationdata[w];
+                            unsigned short shapeData = locationdata[w + 1];
 
                             int shape = shapeData & 0x3ff;
                             int frame = (shapeData >> 10) & 0x1f;
@@ -667,5 +591,116 @@ void MainState::LoadIFIX()
 
 void MainState::LoadIREG()
 {
+    return;
+    for (int superchunky = 0; superchunky < 12; ++superchunky)
+    {
+        for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
+        {
+            std::stringstream ss;
+            int thissuperchunk = superchunkx + (superchunky * 12);
+            if (thissuperchunk < 16)
+            {
+                ss << "Data/U7/STATIC/U7IREG0" << std::hex << thissuperchunk;
+            }
+            else
+            {
+                ss << "Data/U7/STATIC/U7IREG" << std::hex << thissuperchunk;
+            }
+            const std::string s = ss.str();
 
+            FILE* u7thisireg = fopen(s.c_str(), "rb");
+
+            while (u7thisireg)
+            {
+
+            }
+
+            //char header[80];
+            //fread(&header, sizeof(char), 80, u7thisifix);
+
+            ////  This is followed two unsigned ints.  The first unsigned int is alwasy the same, so we can ignore it.
+            ////  The second is the number of entries in the file.
+            //unsigned int throwaway;
+            //unsigned int entrycount;
+            //fread(&throwaway, sizeof(unsigned int), 1, u7thisifix);
+            //fread(&entrycount, sizeof(unsigned int), 1, u7thisifix);
+
+            ////  Now we have ten unsigned ints worth of data that we can ignore.
+            //for (int i = 0; i < 10; ++i)
+            //{
+            //    fread(&throwaway, sizeof(unsigned int), 1, u7thisifix);
+            //}
+
+            //struct entrydata
+            //{
+            //    unsigned int offest;
+            //    unsigned int length;
+            //};
+
+            //unordered_map<unsigned int, entrydata> entrymap;
+            ////  Now we have the data we want.  Each entry is 8 bytes long.
+            //for (int i = 0; i < entrycount; ++i)
+            //{
+            //    entrydata thisentry;
+            //    fread(&thisentry.offest, sizeof(unsigned int), 1, u7thisifix);
+            //    fread(&thisentry.length, sizeof(unsigned int), 1, u7thisifix);
+            //    entrymap[i] = thisentry;
+            //}
+
+            //struct ShapeFrameIndex
+            //{
+            //    unsigned int shape;
+            //    unsigned int frame;
+            //};
+
+            //struct objectdata
+            //{
+            //    ShapeFrameIndex shapeframe;
+            //    char chunkx;
+            //    char chunky;
+            //};
+
+            ////  Now, having processed the header, we can process the, you know, data.
+            //for (int chunky = 0; chunky < 16; ++chunky)
+            //{
+            //    for (int chunkx = 0; chunkx < 16; ++chunkx)
+            //    {
+            //        int thischunk = chunkx + (chunky * 16);
+
+            //        entrydata thisentry = entrymap[thischunk];
+            //        if (thisentry.offest == 0)
+            //        {
+            //            continue; // Offset of 0 means no object here.
+            //        }
+            //        else
+            //        {
+            //            unsigned short* locationdata;
+            //            locationdata = (unsigned short*)malloc(sizeof(unsigned short) * (thisentry.length / 2));
+            //            fseek(u7thisifix, thisentry.offest * sizeof(char), SEEK_SET);
+            //            fread(locationdata, sizeof(unsigned char), thisentry.length, u7thisifix);
+
+            //            for (int w = 0; w < (thisentry.length / 2); w += 2)
+            //            {
+            //                unsigned short thisLocationData = locationdata[w];
+            //                unsigned short shapeData = locationdata[w + 1];
+
+            //                int shape = shapeData & 0x3ff;
+            //                int frame = (shapeData >> 10) & 0x1f;
+
+            //                int y = thisLocationData & 0xf;
+            //                int x = (thisLocationData >> 4) & 0xf;
+            //                int z = (thisLocationData >> 8) & 0xf;
+
+            //                AddUnitActual(0, UNIT_WALKER, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
+
+            //                int stopper = 0;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //int stopper = 0;
+            fclose(u7thisireg);
+        }
+    }
 }

@@ -717,7 +717,7 @@ void Terrain::FindVisibleCells()
 
     int x = g_Display->GetCameraLookAtPoint().x;
     int y = g_Display->GetCameraLookAtPoint().z;
-    int range = g_Display->GetFieldOfView() * 3.5;
+    int range = g_Display->GetCameraDistance() / 2.25;
 
     int x1 = x - range;
     if(x1 < 0 ) x1 = 0;
