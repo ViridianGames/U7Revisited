@@ -18,7 +18,7 @@ public:
 	U7Unit(){};
 	virtual ~U7Unit();
 
-	virtual void Init(const std::string& configfile);
+	virtual void Init(const std::string& configfile, int unitType);
 	virtual void Shutdown();
 	virtual void Update();
 	virtual void Draw();
@@ -74,9 +74,8 @@ public:
    
    std::list<Buff> m_Buffs;
 
-   Config m_UnitConfig;
-   
-   void AddBuff(Buff buff);
+   Config* m_UnitConfig;
+  
 };
 
 #endif

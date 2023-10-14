@@ -22,6 +22,18 @@ TitleState::~TitleState()
 
 void TitleState::Init(const string& configfile)
 {
+    g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/standard.txt");
+
+    g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
+
+    g_Cursor = g_ResourceManager->GetTexture("Images/cursor.png");
+
+    g_minimapSize = g_Display->GetWidth() / 6;
+
+    g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
+    g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
+    MakeAnimationFrameMeshes();
+
    CreateTitleGUI();
 }
 
@@ -70,8 +82,8 @@ void TitleState::CreateTitleGUI()
    m_TitleGui->AddPanel(GUI_TITLE_PANEL1, 0, 0, 138, 384, Color(0, 0, 0, .75));
    m_TitleGui->AddPanel(GUI_TITLE_PANEL2, 0, 0, 138, 384, Color(1, 1, 1, 1), false);
    m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_SmallFont.get(), "Ultima VII: Revisited", (g_Display->GetWidth() - (g_SmallFont->GetStringMetrics("Ultima VII: Revisited"))) / 2, 60, g_Display->GetWidth() / 2, 0, Color(1, 1, 1, 1), true);
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (138 - (g_SmallFont->GetStringMetrics("Begin") + 4)) / 2, 120, "Begin", g_SmallFont.get());
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (138 - (g_SmallFont->GetStringMetrics("Quit") + 4)) / 2, 210, "Quit", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (138 - (g_SmallFont->GetStringMetrics("Begin") + 4)) / 2, 240, "Begin", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (138 - (g_SmallFont->GetStringMetrics("Quit") + 4)) / 2, 280, "Quit", g_SmallFont.get());
    m_TitleGui->m_Active = true;
 }
 

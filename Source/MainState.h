@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include <list>
 #include <deque>
+#include <array>
 #include <math.h>
 
 class MainState : public State
@@ -24,11 +25,7 @@ public:
    
    void SetupGame();
 
-   void LoadChunks();
-   void LoadMap();
-   void LoadShapes();
-   void LoadIFIX();
-   void LoadIREG();
+
    
    Gui* m_Gui;
    Gui* m_SpellsPanel;
@@ -67,13 +64,16 @@ public:
    unsigned int m_ClientAuthorizedUpdate;
    unsigned int m_NextTurnUpdate;
 
-   std::unordered_map<int, std::vector< std::vector<unsigned short> > > m_Chunkmap;
-   unsigned short m_u7map[192][192];
 
-   unsigned int m_currentChunk = 0;
 
    Texture* m_TerrainTexture;
    Texture* m_Minimap;
+
+   
+
+   bool m_showObjects;
+
+
 };
 
 #endif

@@ -10,7 +10,7 @@ U7Unit::~U7Unit()
 	Shutdown();
 }
 
-void U7Unit::Init(const string& configfile)
+void U7Unit::Init(const string& configfile, int unitType)
 {
    m_Pos = glm::vec3(0, 0, 0);
    m_Dest = glm::vec3(0, 0, 0);
@@ -23,12 +23,17 @@ void U7Unit::Init(const string& configfile)
    m_Selected = false;
    m_Visible = false;
    m_Mesh = NULL;
+   m_UnitType = unitType;
    SetIsDead(false);
 
-   m_UnitConfig.Load(configfile);
+   m_UnitConfig = g_ResourceManager->GetConfig(configfile);
 
-   m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig.GetString("mesh"));
-   m_Texture = g_ResourceManager->GetTexture(m_UnitConfig.GetString("normaltexture"));
+   ObjectData *objectData = &g_objectTable[unitType];
+
+   m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
+
+   m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
+   m_Texture = g_ResourceManager->GetTexture(m_UnitConfig->GetString("normaltexture"));
 }
 
 void U7Unit::Draw()
@@ -66,49 +71,6 @@ void U7Unit::Update()
          ++node;
    }
    
-   float alterer;
-   //  Run through the buff/debuff list and alter the actual values acoordingly.
-   for( list<Buff>::iterator node = m_Buffs.begin(); node != m_Buffs.end(); ++node )
-   {
-      switch( (*node).m_ValueToMod )
-      {
-         case BUFF_SPEED:
-            alterer = m_BaseSpeed * (*node).m_ModValue;
-            m_Speed = m_BaseSpeed + alterer;
-            break;
-               
-         //  Health is special because it varies.
-         case BUFF_HEALTH:
-            alterer = m_BaseHP * (*node).m_ModValue;
-            m_HP = m_BaseHP + alterer;
-            break;
-                        
-         case BUFF_ATTACK:
-            alterer = m_BaseAttack * (*node).m_ModValue;
-            m_Attack = m_BaseAttack + alterer;            
-            break;
-                        
-         case BUFF_DEFENSE:
-            alterer = m_BaseDefense * (*node).m_ModValue;
-            m_Defense = m_BaseDefense + alterer;            
-            break;
-                        
-         case BUFF_TEAM:
-            m_Team = (*node).m_ModValue;
-            break;
-                        
-         case BUFF_DOT:
-            m_HP -= (*node).m_ModValue;
-            break;
-                        
-         case BUFF_HOT:
-            m_HP += (*node).m_ModValue;
-            break;
-      }
-      
-      --(*node).m_Ticks;
-   }
-
    //  If a unit has an external force (something is pushing it) then it cannot move under
    //  its own power.
    if( m_ExternalForce != glm::vec3(0, 0, 0) )// && m_ExternalForceFlag )
@@ -187,11 +149,6 @@ bool U7Unit::SelectCheck()
       return true;
    
    return false;
-}
-
-void U7Unit::AddBuff(Buff buff)
-{
-   m_Buffs.push_back(buff);
 }
 
 void U7Unit::SetDest(glm::vec3 dest)

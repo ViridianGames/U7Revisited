@@ -14,6 +14,7 @@
     <None Include="Redist\Data\engine.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\LoadingState.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
     <ClCompile Include="Source\model3d.cc" />
@@ -25,6 +26,7 @@
     <ClCompile Include="Source\U7Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\MainState.h" />
     <ClInclude Include="Source\model3d.h" />
     <ClInclude Include="Source\OptionsState.h" />

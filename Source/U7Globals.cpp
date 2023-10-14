@@ -5,10 +5,13 @@
 #include <sstream>
 #include <iterator>
 #include <utility>
+#include <iomanip>
 
 using namespace std;
 
 unordered_map<int, std::shared_ptr<U7Unit> > g_UnitList;
+
+unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
 Mesh* g_AnimationFrames;
 
@@ -26,6 +29,9 @@ std::unique_ptr<RNG> g_NonVitalRNG;
 
 std::unique_ptr<Terrain> g_Terrain;
 
+std::array<Texture*, 1024> g_shapeTable;
+std::array<ObjectData, 1024> g_objectTable;
+
 Mesh* g_TestMesh;
 
 bool g_IsSinglePlayer;  //  not single payer
@@ -37,90 +43,7 @@ unsigned int g_CurrentUpdate;
 
 unsigned int g_minimapSize;
 
-string GameEventStrings[LASTGAMEEVENT + 1] =
-{
-	//  Camera Events
-	"Add Player",
-	"Set Game Type",
-	"Server: Sent Eventss",
-	"Client: Acknowledge Events",
-	"Server: Advance Turn",
-	"Chat",
-	"Pause",
-
-	"Add Unit",
-	"Do God Power",
-	"Set Unit Target",
-	"Set Unit Physics Force",
-	"Bounce Unit",
-	"Turn Unit",
-	"Link Unit To Master"
-	"Damage Unit",
-	"Heal Unit",
-
-	"User Input On",
-	"User Input Off",
-
-	"LastGameString"
-};
-
-string UnitTypeStrings[UNIT_LASTUNITTYPE + 1] =
-{
-   "Unit", //  Default unit type; no specialized behavior.
-   "Archer",
-   "Arrow",
-   "Barbarian",
-   "General",
-   "Village",
-   "Walker",
-   "Warrior",
-   "Bird",
-   "Rock",
-   "Sheep",
-   "Tree",
-   "Earthquake",
-   "Flamestrike",
-   "Flamering",
-   "HealingLight",
-   "Knight",
-   "Lightning",
-   "Meteor",
-   "Tornado",
-   "Volcano",
-
-   "LastUnitType"
-};
-
-list<GameEvent> g_EventStack;
-list<GameEvent> g_ProcessedStack;
-list<GameEvent> g_ReplayStack;
-
-list<GameEvent> g_ClientTurnStack;
-list<GameEvent> g_ServerTurnStack;
-
 std::vector< std::vector<unsigned short> > g_World;
-
-const float g_ManaCosts[18] =
-{
-   .1f, // Flatten
-   .1f, // Raise
-   .1f, // Lower
-   5,  // Earthquake
-   25, // Golem
-   5,  // StoneRain
-   25, // Flamestrike
-   75, // Volcano
-   5,  // Lightning
-   25, // Lightning Storm
-   75, // Meteor
-   5,  // Bless
-   75,  // Swamp
-   25, // Healing Rain
-   100, // Armageddon
-   0,   // Create Archer
-   0,   // Create Barbarian
-   0   // Create Warrior
-};
 
 glm::vec3 g_Gravity = glm::vec3(0, .1f, 0);
 
@@ -336,12 +259,25 @@ shared_ptr<U7Unit> GetPointerFromID(int unitID)
 
 shared_ptr<U7Unit> U7UnitClassFactory(int type)
 {
+		shared_ptr<U7Unit> temp = make_shared<U7Unit>();
+		temp->m_UnitType = type;
+		return temp;
+}
+
+shared_ptr<U7Object> U7ObjectClassFactory(ObjectDrawTypes type)
+{
 	switch (type)
 	{
-	case UNIT_WALKER:
+	case ObjectDrawTypes::OBJECT_DRAW_BILLBOARD:
 	{
-		shared_ptr<U7Unit> temp = make_shared<U7Unit>();
-		temp->m_UnitType = UNIT_WALKER;
+		shared_ptr<U7Object> temp = make_shared<U7Object>();
+		return temp;
+	}
+	break;
+	case ObjectDrawTypes::OBJECT_DRAW_CUBOID:
+	{
+		shared_ptr<U7Object> temp = make_shared<U7Object>();
+		temp->Init("Data/Objects/Cuboid.cfg");
 		return temp;
 	}
 	break;
@@ -377,68 +313,56 @@ unsigned int g_CurrentUnitID = 0;
 
 unsigned int GetNextID() { return g_CurrentUnitID++; }
 
-//  This function creates a game event to add the unit and puts it on the event
-//  stack.
-
-//  Sends the event through the networking system
-void SendEvent(GameEvent event)
-{
-	//g_ClientTurnStack.push_back(event);
-	g_EventStack.push_back(event);
-}
-
-void ClearEvent(GameEvent& event)
-{
-	memset(&event, 0, sizeof(GameEvent));
-}
-
-//  Sends a unit creation event through the networking code
-void SendUnit(int player, int unittype, int id, float x, float y, float z)
-{
-	GameEvent temp;
-	ClearEvent(temp);
-	temp.m_Event = GE_ADDUNIT;
-	temp.m_Type = unittype;
-	temp.m_Team = player;
-	temp.m_PosX = x;
-	temp.m_PosY = y;
-	temp.m_PosZ = z;
-	temp.m_UpdateIndex = g_CurrentUpdate + 1;
-	temp.m_Handled = false;
-
-	SendEvent(temp);
-}
-
 void AddUnit(int player, int unittype, int id, float x, float y, float z)
 {
-	GameEvent temp;
-	ClearEvent(temp);
-	temp.m_Event = GE_ADDUNIT;
-	temp.m_Type = unittype;
-	temp.m_Team = player;
-	temp.m_PosX = x;
-	temp.m_PosY = y;
-	temp.m_PosZ = z;
-	temp.m_UpdateIndex = g_CurrentUpdate;
-	temp.m_Handled = false;
-
-	g_EventStack.push_back(temp);
-}
-
-
-//  Puts a god power activation event on the local event stack
-
-//  Puts a unit creation event on the local event stack
-
-//  This function actually creates a unit.  It should ONLY be called by the event stack.
-void AddUnitActual(int player, int unittype, int id, float x, float y, float z)
-{
 	shared_ptr<U7Unit> temp = U7UnitClassFactory(unittype);
-	temp->Init("Data/Units/Walker.cfg");
+	temp->Init("Data/Units/Walker.cfg", unittype);
 	temp->SetInitialPos(glm::vec3(x, y, z));
 	temp->m_BaseTeam = player;
 	temp->m_Team = player;
+	temp->m_Texture = g_shapeTable[unittype];
 	g_UnitList[id] = temp;
+}
+
+int AddObject(ObjectDrawTypes objecttype, int id, int shape, int frame, float x, float y, float z)
+{
+	shared_ptr<U7Object> temp = U7ObjectClassFactory(objecttype);
+	temp->Init("Data/Objects/Billboard.cfg");
+	temp->SetPos(glm::vec3(x, y, z));
+	std::stringstream filename;
+	filename << "Images/Objects/u7shape_" << std::setfill('0') << std::setw(4) << std::to_string(shape) << ".png";
+	temp->m_Texture = g_ResourceManager->GetTexture(filename.str(), false);
+
+	//  Set the UVs
+	float v1 = (frame + 1) * .03125;
+	float v2 = (frame + 2) * .03125;
+	Vertex tempVertex = temp->m_Mesh->GetVertex(0);
+	tempVertex.v = v1;
+	temp->m_Mesh->SetVertex(0, tempVertex);
+
+	tempVertex = temp->m_Mesh->GetVertex(1);
+	tempVertex.v = v2;
+	temp->m_Mesh->SetVertex(1, tempVertex);
+
+	tempVertex = temp->m_Mesh->GetVertex(2);
+	tempVertex.v = v1;
+	temp->m_Mesh->SetVertex(2, tempVertex);
+
+	tempVertex = temp->m_Mesh->GetVertex(3);
+	tempVertex.v = v2;
+	temp->m_Mesh->SetVertex(3, tempVertex);
+
+	tempVertex = temp->m_Mesh->GetVertex(4);
+	tempVertex.v = v1;
+	temp->m_Mesh->SetVertex(4, tempVertex);
+
+	tempVertex = temp->m_Mesh->GetVertex(5);
+	tempVertex.v = v2;
+	temp->m_Mesh->SetVertex(5, tempVertex);
+
+	g_ObjectList[id] = temp;
+
+	return id;
 }
 
 
@@ -476,8 +400,15 @@ void DrawConsole()
 	{
 		unsigned int elapsed = g_Engine->Time() - (*node).m_StartTime;
 		if (elapsed > 9000)
-			(*node).m_Color.a = float(10000 - elapsed) / 1000.0f;
-		g_SmallFont->DrawString((*node).m_String, 1, counter * (g_SmallFont->GetHeight() + 2) + 1, Color(0, 0, 0, (*node).m_Color.a));
+		{
+			float alpha = float(9999 - elapsed);
+			if (alpha == 1.0f)
+			{
+				alpha = 0;
+			}
+			(*node).m_Color.a = alpha / 1000.0f;
+		}
+		g_SmallFont->DrawString((*node).m_String, 3, counter * (g_SmallFont->GetHeight() + 2) + 3, Color(0, 0, 0, (*node).m_Color.a));
 		g_SmallFont->DrawString((*node).m_String, 0, counter * (g_SmallFont->GetHeight() + 2), (*node).m_Color);
 		++counter;
 	}
@@ -496,59 +427,6 @@ void DrawConsole()
 	}
 }
 
-void SaveReplay()
-{
-	stringstream filename;
-	filename << g_NonVitalRNG->Random(256);
-	filename << "replay.txt";
-	ofstream outstream;
-
-	outstream.open(filename.str().c_str());
-
-	//  Header for game
-	if (g_IsSinglePlayer)
-	{
-		outstream << "Single Player Game." << endl;
-	}
-	else if (g_IsServer)
-	{
-		outstream << "Multiplayer Game Server." << endl;
-	}
-	else
-	{
-		outstream << "Multiplayer Game Client." << endl;
-	}
-
-	outstream << " Random Seed: " << g_VitalRNG->GetOriginalSeed() << endl;
-
-	list<GameEvent>::iterator node = g_ReplayStack.begin();
-	for (node; node != g_ReplayStack.end(); ++node)
-	{
-		if ((*node).m_Event == GE_ADDUNIT)
-		{
-			outstream <<
-				"Update: " << (*node).m_UpdateIndex << "  " <<
-				"Team: " << (*node).m_Team << "  " <<
-				"Event: " << GameEventStrings[(*node).m_Event] << "  " <<
-				"Unit Type: " << UnitTypeStrings[(*node).m_Type] << "  " <<
-				"Unit Location: " << (*node).m_PosX << ", " << (*node).m_PosY << ", " << (*node).m_PosZ << "  " <<
-				"Unit ID: " << (*node).m_UnitID << "  " <<
-				"Integer Flags: " << (*node).m_Int1 << "  " << (*node).m_Int2 << "  " << (*node).m_Int3 << "  " << (*node).m_Int4 << "  " <<
-				"Float Flags: " << (*node).m_Float1 << "  " << (*node).m_Float2 << "  " << (*node).m_Float3 << "  " << (*node).m_Float4 << "  " << endl;
-		}
-		else
-		{
-			outstream <<
-				"Update: " << (*node).m_UpdateIndex << "  " <<
-				"Event: " << GameEventStrings[(*node).m_Event] << "  " <<
-				"Unit: " << (*node).m_UnitID << "  " <<
-				"Team: " << (*node).m_Team << "  " <<
-				"Unit Type: " << UnitTypeStrings[(*node).m_Type] << "  " <<
-				"Unit Location: " << (*node).m_PosX << ", " << (*node).m_PosY << ", " << (*node).m_PosZ << "  " <<
-				"Integer Flags: " << (*node).m_Int1 << "  " << (*node).m_Int2 << "  " << (*node).m_Int3 << "  " << (*node).m_Int4 << "  " <<
-				"Float Flags: " << (*node).m_Float1 << "  " << (*node).m_Float2 << "  " << (*node).m_Float3 << "  " << (*node).m_Float4 << "  " << endl;
-		}
-	}
-}
-
 float g_DrawScale;
+
+std::array<std::tuple<ObjectDrawTypes, ObjectTypes>, 1024 > g_ObjectTypes;

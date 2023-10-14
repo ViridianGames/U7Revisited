@@ -172,6 +172,11 @@ vector<Vertex> Terrain::CreateTerrainCell(int i, int j)
     unsigned short shapenum = data & 0x3ff;
     unsigned short framenum = (data >> 10) & 0x1f;
 
+    if (shapenum >= 150)
+    {
+        int stopper = 0;
+    }
+
     float u1 = float(shapenum * 8) / 2048.0f;
     float v1 = float(framenum * 8) / 256.0f;
 

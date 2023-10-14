@@ -4,19 +4,10 @@
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MainState.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\model3d.cc">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\OptionsState.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Terrain.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TitleState.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\U7Globals.cpp">
@@ -28,21 +19,24 @@
     <ClCompile Include="Source\U7Object.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MainState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OptionsState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadingState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\MainState.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\model3d.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OptionsState.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Terrain.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\TitleState.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7Globals.h">
@@ -53,6 +47,18 @@
     </ClInclude>
     <ClInclude Include="Source\U7Object.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MainState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TitleState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OptionsState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadingState.h">
+      <Filter>Source\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +82,9 @@
   <ItemGroup>
     <Filter Include="Source">
       <UniqueIdentifier>{280f9012-5671-4958-a316-543ba7ccf9b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\States">
+      <UniqueIdentifier>{5c543dd9-8bdb-4e13-aa19-a1fe47b83aac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
