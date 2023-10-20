@@ -32,7 +32,7 @@ void U7Object::SetObjectData(int objectType)
 	if(m_objectData->m_height == 0)
 			m_objectData->m_height = 1;
 
-	m_Scaling = glm::vec3(m_objectData->m_width, m_objectData->m_height, m_objectData->m_depth);
+	m_Scaling = glm::vec3(m_objectData->m_height, m_objectData->m_height * 1.5f, m_objectData->m_height);
 	
 }
 

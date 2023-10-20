@@ -838,6 +838,3 @@ void CreateObjectTypeDatabase()
    g_ObjectTypes[1021] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[1023] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_STATIC);
 }
-
-
-

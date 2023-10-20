@@ -9,6 +9,7 @@
 #include <list>
 
 struct Buff;
+enum class ObjectDrawTypes;
 
 class U7Unit : public Unit3D
 {
@@ -75,6 +76,8 @@ public:
    std::list<Buff> m_Buffs;
 
    Config* m_UnitConfig;
+
+   ObjectDrawTypes m_drawType;
   
 };
 

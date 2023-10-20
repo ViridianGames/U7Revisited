@@ -21,28 +21,59 @@ void U7Unit::Init(const string& configfile, int unitType)
    m_ExternalForceFlag = true;
    m_Angle = 0;
    m_Selected = false;
-   m_Visible = false;
+   m_Visible = true;
    m_Mesh = NULL;
    m_UnitType = unitType;
    SetIsDead(false);
-
    m_UnitConfig = g_ResourceManager->GetConfig(configfile);
+   m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
+   m_Texture = g_shapeTable[unitType];
 
    ObjectData *objectData = &g_objectTable[unitType];
+   m_drawType = std::get<0>(g_ObjectTypes.at(m_UnitType));
 
-   m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
+   if (m_drawType == ObjectDrawTypes::OBJECT_DRAW_BILLBOARD)
+   {
+      m_Scaling = glm::vec3(m_Texture->GetWidth() / 8.0f, m_Texture->GetHeight() / 8.0f, 1);
+   }
+   else
+   {
+      m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
+   }
 
-   m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
-   m_Texture = g_ResourceManager->GetTexture(m_UnitConfig->GetString("normaltexture"));
 }
 
 void U7Unit::Draw()
 {
-   if( m_Visible && m_Mesh != NULL)
+   static float zrotation = 0;
+   if( m_Visible)
    {
       //  Draw the unit, then the colored shirt on top of it.
-      g_Display->DrawMesh(m_Mesh, m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
+      ObjectDrawTypes type = std::get<0>(g_ObjectTypes.at(m_UnitType));
+      switch (type)
+      {
+      case ObjectDrawTypes::OBJECT_DRAW_CUBOID:
+         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/cuboid.txt"), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
+         break;
+
+      case ObjectDrawTypes::OBJECT_DRAW_BILLBOARD:
+         //if (m_UnitType == 181)
+         //{
+            float angle = g_Display->GetCameraAngle();
+            angle += 45;
+            //angle /= m_Scaling.y;
+            g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, angle, 0), m_Scaling);
+         //}
+         break;
+
+
+      }
+
+
+
+      
    }
+   zrotation += 0.01f;
 }
 
 void U7Unit::SetShapeAndFrame(unsigned int shape, unsigned int frame)
@@ -52,23 +83,10 @@ void U7Unit::SetShapeAndFrame(unsigned int shape, unsigned int frame)
 
 void U7Unit::Update()
 {
-   //  Handle buffs and debuffs
-   
-   //  First, set everything back to defaults
-   m_Speed = m_BaseSpeed;
-   m_Attack = m_BaseAttack;
-   m_Defense = m_BaseDefense;
-   m_Team = m_BaseTeam;
-   
-   // Throw away buffs/debuffs that have ticked down.
-   for( list<Buff>::iterator node = m_Buffs.begin(); node != m_Buffs.end(); )
+   ObjectTypes type = std::get<1>(g_ObjectTypes.at(m_UnitType));
+   if (type == ObjectTypes::OBJECT_STATIC)
    {
-      if( (*node).m_Ticks <= 0)
-      {
-         node = m_Buffs.erase(node);
-      }
-      else
-         ++node;
+      return;
    }
    
    //  If a unit has an external force (something is pushing it) then it cannot move under

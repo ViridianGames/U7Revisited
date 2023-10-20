@@ -144,13 +144,13 @@ void MainState::Update()
 		}
 
 		//  Kill units that are now dead because they updated.
-		for (unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end();)
-		{
-			if ((*node).second->GetIsDead())
-				node = g_UnitList.erase(node);
-			else
-				++node;
-		}
+		//for (unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end();)
+		//{
+		//	if ((*node).second->GetIsDead())
+		//		node = g_UnitList.erase(node);
+		//	else
+		//		++node;
+		//}
 
 		//  Do unit visibility.
 
