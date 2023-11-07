@@ -32,10 +32,27 @@ public:
    void LoadIFIX();
    void LoadIREG();
    void MakeMap();
-   
-   Gui* m_LoadingGui;
 
-   Texture* m_loadingBackground;
+   unsigned char ReadU8(FILE* buffer);
+   unsigned short ReadU16(FILE* buffer);
+   unsigned int  ReadU32(FILE* buffer);
+   char ReadS8(FILE* buffer);
+   short ReadS16(FILE* buffer);
+   int  ReadS32(FILE* buffer);
+
+   struct FLXEntryData
+   {
+      unsigned int offset;
+      unsigned int length;
+   };
+
+   std::vector<FLXEntryData> ParseFLXHeader(FILE* file);
+
+   std::array<Color, 256> m_palette;
+   
+   Gui* m_LoadingGui = nullptr;
+
+   Texture* m_loadingBackground = nullptr;
 
    float m_red;
 
@@ -51,6 +68,8 @@ public:
    bool m_loadingIFIX = false;
    bool m_loadingIREG = false;
    bool m_makingMap = false;
+
+
 
 };
 

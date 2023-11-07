@@ -207,7 +207,7 @@ extern bool g_IsSinglePlayer;  //  not single payer
 extern bool g_IsServer;
 extern bool g_CameraMoved;
 
-extern std::array<Texture*, 1024> g_shapeTable;
+extern std::array<std::array<Texture* , 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
 
 extern unsigned int g_minimapSize;

@@ -27,7 +27,7 @@ void U7Unit::Init(const string& configfile, int unitType)
    SetIsDead(false);
    m_UnitConfig = g_ResourceManager->GetConfig(configfile);
    m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
-   m_Texture = g_shapeTable[unitType];
+   m_Texture = g_shapeTable[unitType][0];
 
    ObjectData *objectData = &g_objectTable[unitType];
    m_drawType = std::get<0>(g_ObjectTypes.at(m_UnitType));

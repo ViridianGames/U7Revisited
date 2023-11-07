@@ -29,7 +29,7 @@ std::unique_ptr<RNG> g_NonVitalRNG;
 
 std::unique_ptr<Terrain> g_Terrain;
 
-std::array<Texture*, 1024> g_shapeTable;
+std::array<std::array<Texture*, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectTable;
 
 Mesh* g_TestMesh;
@@ -320,7 +320,7 @@ void AddUnit(int player, int unittype, int id, float x, float y, float z)
 	temp->SetInitialPos(glm::vec3(x, y, z));
 	temp->m_BaseTeam = player;
 	temp->m_Team = player;
-	temp->m_Texture = g_shapeTable[unittype];
+	temp->m_Texture = g_shapeTable[unittype][0];
 	g_UnitList[id] = temp;
 }
 

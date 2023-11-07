@@ -36,8 +36,6 @@ void LoadingState::Init(const string& configfile)
     g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
     MakeAnimationFrameMeshes();
 
-    m_loadingBackground = g_ResourceManager->GetTexture("Images/loading.png", false);
-
     m_red = 1.0;
 }
 
@@ -73,6 +71,9 @@ void LoadingState::Draw()
    //m_LoadingGui->Draw();
    
    DrawConsole();
+
+	if(g_shapeTable[150][0] != nullptr)
+		g_Display->DrawImage(g_shapeTable[150][0], 400, 400);
    
    g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
@@ -138,6 +139,48 @@ void LoadingState::UpdateLoading()
 	}
 
 	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
+}
+
+unsigned char LoadingState::ReadU8(FILE* buffer)
+{
+	unsigned char thisData;
+	fread(&thisData, sizeof(unsigned char), 1, buffer);
+	return thisData;
+}
+
+unsigned short LoadingState::ReadU16(FILE* buffer)
+{
+	unsigned short thisData;
+	fread(&thisData, sizeof(unsigned short), 1, buffer);
+	return thisData;
+}
+
+unsigned int LoadingState::ReadU32(FILE* buffer)
+{
+	unsigned int thisData;
+	fread(&thisData, sizeof(unsigned int), 1, buffer);
+	return thisData;
+}
+
+char LoadingState::ReadS8(FILE* buffer)
+{
+	char thisData;
+	fread(&thisData, sizeof(char), 1, buffer);
+	return thisData;
+}
+
+short LoadingState::ReadS16(FILE* buffer)
+{
+	short thisData;
+	fread(&thisData, sizeof(short), 1, buffer);
+	return thisData;
+}
+
+int LoadingState::ReadS32(FILE* buffer)
+{
+	int thisData;
+	fread(&thisData, sizeof(int), 1, buffer);
+	return thisData;
 }
 
 void LoadingState::LoadChunks()
@@ -399,8 +442,138 @@ void LoadingState::CreateShapeTable()
 	{
 		std::stringstream filename;
 		filename << "Images/Objects/u7shape_" << std::setfill('0') << std::setw(4) << std::to_string(i) << ".png";
-		g_shapeTable[i] = g_ResourceManager->GetTexture(filename.str(), false);
+		g_shapeTable[i][0] = g_ResourceManager->GetTexture(filename.str(), false);
 	}
+
+	//  Load palette data
+	FILE* palette = fopen("Data/U7/STATIC/PALETTES.FLX", "rb");
+	if (palette == nullptr)
+	{
+		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
+	}
+
+	vector<FLXEntryData> paletteEntryMap = ParseFLXHeader(palette);
+
+	//  We only want the first palette for now.
+	fseek(palette, paletteEntryMap[0].offset, SEEK_SET);
+	unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[0].length);
+	fread(paletteData, sizeof(unsigned char), paletteEntryMap[0].length, palette);
+
+	//  Currently only loading the base palette.  Other palettes are for lighting effects.
+	for (int j = 0; j < 256; ++j)
+	{
+		unsigned char r = paletteData[j * 3];
+		unsigned char g = paletteData[j * 3 + 1];
+		unsigned char b = paletteData[j * 3 + 2];
+		m_palette[j] = Color(r * 4, g * 4, b * 4, 1);
+	}
+
+	fclose(palette);
+
+	//  Load shape data
+	FILE* shapes = fopen("Data/U7/STATIC/SHAPES.VGA", "rb");
+
+	if (shapes == nullptr)
+	{
+		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
+	}
+
+	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
+
+	//  The first 150 entries (0-149) are terrain textures.
+
+
+
+	//  The next 874 entries (150-1023) are objects.
+		//  Read the shape data.
+		fseek(shapes, shapeEntryMap[150].offset, SEEK_SET);
+		//unsigned char* shapeData = (unsigned char*)malloc(shapeEntryMap[150].length);
+		//fread(shapeData, sizeof(unsigned char), shapeEntryMap[150].length, shapes);
+
+		unsigned int fileSize = ReadU32(shapes);
+		unsigned int firstOffset = ReadU32(shapes);
+
+		unsigned int count = ((firstOffset - 4) / 4);
+		std::vector<unsigned int> offsets;
+		offsets.resize(count);
+		offsets[0] = 0;
+		for (int i = 1; i < count; ++i)
+		{
+			offsets[i] = ReadU32(shapes);
+		}
+
+		unsigned short MaxX = ReadU16(shapes);
+		unsigned short OffsetX = ReadU16(shapes);
+		unsigned short OffsetY = ReadU16(shapes);
+		unsigned short MaxY = ReadU16(shapes);
+
+		int height = MaxY + OffsetY + 1;
+		int width = MaxX + OffsetX + 1;
+
+		g_shapeTable[150][0] = new Texture();
+
+		g_shapeTable[150][0]->Create(width, height, false);
+
+		for (int i = 0; i < width; ++i)
+		{
+			for (int j = 0; j < height; ++j)
+			{
+				g_shapeTable[150][0]->PutPixel(i, j, Color(234, 120, 5, 0));
+			}
+		}
+
+		// Span data
+		//while (1)
+		//{
+		//	unsigned short blockType = 0;
+		//	unsigned short blockLength = 0;
+		//	unsigned short blockData = ReadU16(shapes);
+		//	if (blockData == 0)
+		//	{
+		//		break;
+		//	}
+		//	else
+		//	{
+		//		blockType = blockData & 1;
+		//		blockLength = blockData >> 1;
+		//	}
+
+		//	short sStart = ReadS16(shapes);
+		//	short yStart = ReadS16(shapes);
+
+		//	if (blockType == 0) // Raw Pixel Data
+		//	{
+		//		for (int i = 0; i < blockLength; ++i)
+		//		{
+		//			unsigned short pixelData = ReadU16(shapes);
+		//			unsigned short pixelCount = pixelData >> 1;
+		//			unsigned short pixelColor = pixelData & 1;
+
+		//			for (int j = 0; j < pixelCount; ++j)
+		//			{
+		//				g_shapeTable[150][0]->PutPixel(sStart + j, yStart, m_palette[pixelColor]);
+		//			}
+		//			sStart += pixelCount;
+		//		}
+		//	}
+		//	else // RLE
+		//	{
+		//		for (int i = 0; i < blockLength; ++i)
+		//		{
+		//			unsigned short pixelData = ReadU16(shapes);
+		//			unsigned short pixelCount = pixelData >> 1;
+		//			unsigned short pixelColor = pixelData & 1;
+
+		//			for (int j = 0; j < pixelCount; ++j)
+		//			{
+		//				g_shapeTable[150][0]->PutPixel(sStart + j, yStart, m_palette[pixelColor]);
+		//			}
+		//			sStart += pixelCount;
+		//		}
+		//	}
+		//}
 }
 
 void LoadingState::CreateObjectTable()
@@ -444,18 +617,12 @@ void LoadingState::CreateObjectTable()
 		textfile.read((char*)&throwaway, sizeof(throwaway));
 	}
 
-	struct entrydata
-	{
-		unsigned int offset;
-		unsigned int length;
-	};
-
-	std::vector<entrydata> entrymap;
+	std::vector<FLXEntryData> entrymap;
 	entrymap.resize(entrycount);
 	//  Now we have the data we want.  Each entry is 8 bytes long.
 	for (int i = 0; i < entrycount; ++i)
 	{
-		entrydata thisentry;
+		FLXEntryData thisentry;
 		thisentry.length = 0;
 		thisentry.offset = 0;
 		textfile.read((char*)&thisentry.offset, sizeof(thisentry.offset));
@@ -511,4 +678,44 @@ void LoadingState::CreateObjectTable()
 	}
 	wgtvolfile.close();
 	tfafile.close();
+}
+
+
+//  Most Ultima VII files are flex files.  Thus, a general function that can
+//  parse flex file headers.  This function takes a FILE* and returns a vector
+//  of FLXEntryData, which is a struct containing the offset and length of
+//  each entry in the file.  It moves the file pointers to the point where
+//  the calling code can immediately start reading out data.
+std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(FILE* file)
+{
+	char header[80];
+	fread(&header, sizeof(char), 80, file);
+
+	//  This is followed two unsigned ints.  The first unsigned int is always the same, so we can ignore it.
+	//  The second is the number of g_objecTable in the file.
+	unsigned int throwaway;
+	unsigned int entrycount;
+	fread(&throwaway, sizeof(unsigned int), 1, file);
+	fread(&entrycount, sizeof(unsigned int), 1, file);
+
+	//  Now we have ten unsigned ints worth of data that we can ignore.
+	for (int i = 0; i < 10; ++i)
+	{
+		fread(&throwaway, sizeof(unsigned int), 1, file);
+	}
+
+	std::vector<FLXEntryData> entrymap;
+	entrymap.resize(entrycount);
+	//  Now we have the data we want.  Each entry is 8 bytes long.
+	for (int i = 0; i < entrycount; ++i)
+	{
+		FLXEntryData thisentry;
+		thisentry.length = 0;
+		thisentry.offset = 0;
+		fread(&thisentry.offset, sizeof(unsigned int), 1, file);
+		fread(&thisentry.length, sizeof(unsigned int), 1, file);
+		entrymap[i] = thisentry;
+	}
+
+	return entrymap;
 }
