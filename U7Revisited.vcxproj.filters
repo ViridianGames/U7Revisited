@@ -4,9 +4,6 @@
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\model3d.cc">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Terrain.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -30,9 +27,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\model3d.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Terrain.h">
       <Filter>Source</Filter>
     </ClInclude>

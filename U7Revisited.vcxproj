@@ -17,7 +17,6 @@
     <ClCompile Include="Source\LoadingState.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
-    <ClCompile Include="Source\model3d.cc" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\TitleState.cpp" />
@@ -27,7 +26,6 @@
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\MainState.h" />
-    <ClInclude Include="Source\model3d.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\TitleState.h" />

@@ -1,5 +1,4 @@
 #include "U7Globals.h"
-#include "U7Unit.h"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
