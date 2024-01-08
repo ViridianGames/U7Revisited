@@ -377,8 +377,12 @@ void DrawConsole()
 			}
 			(*node).m_Color.a = alpha / 1000.0f;
 		}
-		g_SmallFont->DrawString((*node).m_String, 3, counter * (g_SmallFont->GetHeight() + 2) + 3, Color(0, 0, 0, (*node).m_Color.a));
-		g_SmallFont->DrawString((*node).m_String, 0, counter * (g_SmallFont->GetHeight() + 2), (*node).m_Color);
+
+		if (elapsed < 9990)
+		{
+			g_SmallFont->DrawString((*node).m_String, 3, counter * (g_SmallFont->GetHeight() + 2) + 3, Color(0, 0, 0, (*node).m_Color.a));
+			g_SmallFont->DrawString((*node).m_String, 0, counter * (g_SmallFont->GetHeight() + 2), (*node).m_Color);
+		}
 		++counter;
 	}
 

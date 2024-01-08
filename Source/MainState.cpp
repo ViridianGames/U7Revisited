@@ -186,28 +186,10 @@ void MainState::Draw()
 
 
 
-	int ypos = -g_SmallFont->GetHeight();
-	int offset = g_SmallFont->GetHeight();
-	int xoffset = g_SmallFont->GetStringMetrics(" ") / 5;
-	string welcome = "Welcome to Ultima VII: Revisited!";
-	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
-	g_SmallFont->DrawString(welcome, 0, ypos);
-	
-	welcome = "Move with WASD, rotate with Q and E.";
-	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
-	g_SmallFont->DrawString(welcome, 0, ypos);
+	//int ypos = -g_SmallFont->GetHeight();
+	//int offset = g_SmallFont->GetHeight();
+	//int xoffset = g_SmallFont->GetStringMetrics(" ") / 5;
 
-	welcome = "Zoom in and out with mousewheel.";
-	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
-	g_SmallFont->DrawString(welcome, 0, ypos);
-
-	welcome = "Left-click in the minimap to teleport.";
-	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
-	g_SmallFont->DrawString(welcome, 0, ypos);
-
-	welcome = "Press ESC to exit.";
-	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
-	g_SmallFont->DrawString(welcome, 0, ypos);
 
 	//welcome = "";
 	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
@@ -219,7 +201,7 @@ void MainState::Draw()
 	//string numDrawnUnits = "Drawn Units: " + to_string(m_numberofDrawnUnits);
 	//g_SmallFont->DrawString(numDrawnUnits, 0, ypos += nextLine);
 
-	welcome = "X: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().x)) + " Y: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().z)) + " ";
+	string welcome = "X: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().x)) + " Y: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().z)) + " ";
 	float textwidth = g_SmallFont->GetStringMetrics(welcome);
 	g_SmallFont->DrawString(welcome, g_Display->GetWidth() - textwidth, g_Display->GetHeight() * .30, Color(1, 1, 1, 1));
 	//g_SmallFont->DrawString(welcome, 0, ypos);
@@ -241,7 +223,7 @@ void MainState::Draw()
 	//xcoordstring = "CamPos      X: " + to_string(g_Display->GetCameraPosition().x) + " Y: " + to_string(g_Display->GetCameraPosition().y) + " Z: " + to_string(g_Display->GetCameraPosition().z);
 	//g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
 
-//	DrawConsole();
+	DrawConsole();
 
 
 	//g_Display->DrawPerfCounter(g_SmallFont);
