@@ -1,5 +1,3 @@
-#pragma warning(disable:4786)
-
 #ifndef _Terrain_H_
 #define _Terrain_H_
 
@@ -134,6 +132,12 @@ public:
    unsigned int m_LimitedUpdate;
    
    unsigned int m_DurationOfVisibleTest;
+
+   float m_visibleCellTime;
+
+   std::vector<Vertex> m_updateVector;
+
+   std::array<std::unique_ptr<Mesh>, 3072> m_terrainMeshes;
 
    //ModelFrame3D* m_Model;
 };

@@ -37,13 +37,13 @@ int main(int argv, char** argc)
 
       //Texture* g_Ground = g_ResourceManager->GetTexture("Images/Terrain/U7Baseplates/u7map8-3.png");
 
-      g_DrawScale = float(g_Display->GetHeight()) / 768.0f;
+      g_DrawScale = float(g_Display->GetHeight()) / 360.0f;
 
       g_Font = make_shared<Font>();
-      g_Font->Init("Data/Fonts/softsquare.ttf", 9 * g_DrawScale);
+      g_Font->Init("Data/Fonts/babyblocks.ttf", 16 * g_DrawScale);
 
       g_SmallFont = make_shared<Font>();
-      g_SmallFont->Init("Data/Fonts/babyblocks.ttf", 24 * g_DrawScale);
+      g_SmallFont->Init("Data/Fonts/babyblocks.ttf", 16 * g_DrawScale);
 
 //      g_SmallFixedFont = new Font();
 //      g_SmallFixedFont->Init("Data/Fonts/font8x8.txt");
@@ -115,7 +115,7 @@ void CreateObjectTypeDatabase()
    g_ObjectTypes[154]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC); //  wall
    g_ObjectTypes[154]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_CREATURE); //  mage
    g_ObjectTypes[155]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_CREATURE); //  The Ferryman
-   g_ObjectTypes[057]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_STATIC); //  moongate
+   g_ObjectTypes[157]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_STATIC); //  moongate
    g_ObjectTypes[158]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_BILLBOARD, ObjectTypes::OBJECT_STATIC); //  stand
    g_ObjectTypes[159]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_FLAT, ObjectTypes::OBJECT_ITEM); //  pocketwatch
    g_ObjectTypes[163]  = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC); // rock outcropping 
@@ -274,6 +274,7 @@ void CreateObjectTypeDatabase()
    g_ObjectTypes[368] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[369] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[370] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
+   g_ObjectTypes[371] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[372] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[373] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);
    g_ObjectTypes[374] = make_tuple<ObjectDrawTypes, ObjectTypes>(ObjectDrawTypes::OBJECT_DRAW_CUBOID, ObjectTypes::OBJECT_STATIC);

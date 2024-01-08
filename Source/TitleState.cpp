@@ -39,7 +39,7 @@ void TitleState::Init(const string& configfile)
 
 void TitleState::OnEnter()
 {
-
+   ClearConsole();
 }
 
 void TitleState::OnExit()
@@ -81,9 +81,9 @@ void TitleState::CreateTitleGUI()
    m_TitleGui->SetLayout(0, 0, 138, 640, Gui::GUIP_CENTER);
    m_TitleGui->AddPanel(GUI_TITLE_PANEL1, 0, 0, 138, 384, Color(0, 0, 0, .75));
    m_TitleGui->AddPanel(GUI_TITLE_PANEL2, 0, 0, 138, 384, Color(1, 1, 1, 1), false);
-   m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_SmallFont.get(), "Ultima VII: Revisited", (g_Display->GetWidth() - (g_SmallFont->GetStringMetrics("Ultima VII: Revisited"))) / 2, 60, g_Display->GetWidth() / 2, 0, Color(1, 1, 1, 1), true);
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (138 - (g_SmallFont->GetStringMetrics("Begin") + 4)) / 2, 240, "Begin", g_SmallFont.get());
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (138 - (g_SmallFont->GetStringMetrics("Quit") + 4)) / 2, 280, "Quit", g_SmallFont.get());
+   m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (g_Display->GetWidth() - (g_Font->GetStringMetrics("Ultima VII: Revisited"))) / 2, 60, g_Display->GetWidth() / 2, 0, Color(1, 1, 1, 1), true);
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (138 - (g_Font->GetStringMetrics("Begin") + 4)) / 2, 240, "Begin", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (138 - (g_Font->GetStringMetrics("Quit") + 4)) / 2, 280, "Quit", g_SmallFont.get());
    m_TitleGui->m_Active = true;
 }
 

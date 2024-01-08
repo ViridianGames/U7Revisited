@@ -1,5 +1,3 @@
-#pragma warning(disable:4786)
-
 #ifndef _U7Unit_H_
 #define _U7Unit_H_
 
@@ -8,7 +6,6 @@
 #include <string>
 #include <list>
 
-struct Buff;
 enum class ObjectDrawTypes;
 
 class U7Unit : public Unit3D
@@ -72,12 +69,14 @@ public:
    
    Mesh* m_Mesh;
    Texture* m_Texture;
+   Texture* m_DropShadow;
+   std::unique_ptr<Mesh> m_customMesh = nullptr;
    
-   std::list<Buff> m_Buffs;
-
    Config* m_UnitConfig;
 
    ObjectDrawTypes m_drawType;
+   
+   float m_distanceFromCamera;
   
 };
 

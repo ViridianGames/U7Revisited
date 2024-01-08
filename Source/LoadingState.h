@@ -53,11 +53,18 @@ public:
    Gui* m_LoadingGui = nullptr;
 
    Texture* m_loadingBackground = nullptr;
+   Texture* m_tree = nullptr;
 
    float m_red;
 
+   float m_angle = 0;
+
+   float xSlant = 0;
+
+   bool m_startRotating = false;
+
    std::unordered_map<int, std::vector< std::vector<unsigned short> > > m_Chunkmap;
-   unsigned short m_u7map[192][192];
+   unsigned short m_u7chunkmap[192][192];
 
    unsigned int m_currentChunk = 0;
 

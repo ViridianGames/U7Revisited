@@ -37,6 +37,20 @@ void Terrain::Init(const string& configfile)
 
 void Terrain::Init(int width, int height)
 {
+
+   //  Ultima VII's map consistes of 12x12 "superchunks", each of which is 16x16 "chunks".
+   //
+   //  A chunk consists of 16x16 cells.
+   //
+   //  So the world consists of a 192x192 map of chunks, each of which has 16x16 tiles.
+   //  
+   //  Which means that there are 36,864 chunks in the map.  But there are only 3072 unique chunks,
+   //  which means some are repeated as necessary.
+   //
+   //  So the first thing we need to do is create a mesh for each of the 3072 chunks.
+
+
+
    m_CellWidth = width;
    m_CellHeight = height;
 
@@ -414,16 +428,18 @@ void Terrain::Update()
    {
       FindVisibleCells();
 
-      std::vector<Vertex> terrainVertices;
-
       //  Create the four outer points of the quads.
+      m_updateVector.clear();
       for (int i = 0; i < m_VisibleCells.size(); ++i)
       {
           vector<Vertex> thisCell = CreateTerrainCell(m_VisibleCells[i].first, m_VisibleCells[i].second);
-          terrainVertices.insert(terrainVertices.end(), thisCell.begin(), thisCell.end());
+          for (int j = 0; j < thisCell.size(); ++j)
+          {
+             m_updateVector.emplace_back(thisCell[j]);
+          }
       }
 
-      m_TerrainMesh->Init(terrainVertices);
+      m_TerrainMesh->Init(m_updateVector);
 
 
       UpdateIndexBuffers();
@@ -467,23 +483,23 @@ void Terrain::Update()
    //}
 
    //  Update highlight
-   vector<Vertex> highlight;
-   highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
-   highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
-   highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
-   highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
-   highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
-   highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
+   //vector<Vertex> highlight;
+   //highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
+   //highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
+   //highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
+   //highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
+   //highlight.push_back(CreateVertex(m_FloatHitX    , GetHeight(m_FloatHitX    , m_FloatHitY + 1) + .05, m_FloatHitY + 1, 1, 1, 1, 1, 0, 0 ));
+   //highlight.push_back(CreateVertex(m_FloatHitX + 1, GetHeight(m_FloatHitX + 1, m_FloatHitY    ) + .05, m_FloatHitY    , 1, 1, 1, 1, 0, 0 ));
 
-   m_Highlight->UpdateVertices(highlight);
+   //m_Highlight->UpdateVertices(highlight);
 
-   if (g_Engine->Time() - m_LimitedUpdate > 50)
-   {
-      //UpdateWater();
-      //UpdateMinimapTexture();
+   //if (g_Engine->Time() - m_LimitedUpdate > 50)
+   //{
+   //   //UpdateWater();
+   //   //UpdateMinimapTexture();
 
-      m_LimitedUpdate = g_Engine->Time();
-   }
+   //   m_LimitedUpdate = g_Engine->Time();
+   //}
 }
 
 float Terrain::GetHeight(int x, int y)

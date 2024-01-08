@@ -25,7 +25,7 @@ MainState::~MainState()
 
 void MainState::Init(const string& configfile)
 {
-	m_Minimap = g_ResourceManager->GetTexture("Images/u7minimap.png");
+	m_Minimap = g_ResourceManager->GetTexture("Images/minimap.png");
 
 	m_Gui = new Gui();
 
@@ -91,6 +91,7 @@ void MainState::Init(const string& configfile)
 
 void MainState::OnEnter()
 {
+	ClearConsole();
 	AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
 	AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
 	AddConsoleString(std::string("Zoom in and out with mousewheel."));
@@ -110,123 +111,44 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
-	//  Before the game begins proper, we must set up the players.  We can't start
-	//  running the main game loop until we do, which means that until
-	//  SetupPlayers() must return true;
 	if (!m_ArePlayersSetUp)
 	{
 		SetupGame();
 		return;
 	}
 
-	//  NETWORKING
-
-	//  Get events from server.
-	//  Since we cannot write these functions in a blocking fashion, we call
-	//  them over and over until the functions themselves tell us that they're
-	//  done.
-
 	bool canupdate = false;
 
-	//AddConsoleString(std::string("This is a console string!"));
-
-	//Only update 30 times a second.
 	if (g_Engine->Time() - m_LastUpdate > g_Engine->m_MSBetweenUpdates)
 	{
 		g_CurrentUpdate++;
 
 		m_NumberOfVisibleUnits = 0;
 
-		//  Update all units, this will result in more events on the stack.
-		for (unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end(); ++node)
+		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 		{
 			(*node).second->Update();
-		}
-
-		//  Kill units that are now dead because they updated.
-		//for (unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end();)
-		//{
-		//	if ((*node).second->GetIsDead())
-		//		node = g_UnitList.erase(node);
-		//	else
-		//		++node;
-		//}
-
-		//  Do unit visibility.
-
-		for (auto& unit : g_UnitList)
-		{
-			unit.second->m_Visible = true;
-		}
-
-		for (auto& object : g_ObjectList)
-		{
-			object.second->m_isVisible = true;
 		}
 
 		m_LastUpdate = g_Engine->Time();
 	}
 
-	DoCameraMovement();
+	m_cameraUpdateTime = DoCameraMovement();
+
+	m_terrainUpdateTime = g_Engine->Time();
 	g_Terrain->Update();
+	m_terrainUpdateTime = g_Engine->Time() - m_terrainUpdateTime;
 
-
-	//  Updating the main GUI
-	m_Gui->Update();
-
-
-	m_SpellsPanel->Update();
-
-	if (m_GuiMode != -1)
-	{
-		//  Flatten needs button down, everything else uses button press.
-	}
-
-	if (g_Input->WasRButtonClicked())
-	{
-		m_GuiMode = -1;
-		m_DrawMarker = false;
-	}
-
-	//  Updating the Options Gui
-	m_OptionsGui->Update();
-	stringstream temp;
-	//   temp << m_Resolutions[m_CurrentRes]->w << "x" << m_Resolutions[m_CurrentRes]->h; 
-	//   dynamic_cast<GuiTextArea*>(m_OptionsGui->GetElement(1001))->m_String = temp.str();
-
-		//  Handle special keyboard keys
+	//  Handle special keyboard keys
 	if (g_Input->WasKeyPressed(KEY_ESCAPE))
 	{
-
 		g_Engine->m_Done = true;
 	}
 
 	if (g_Input->WasKeyPressed(KEY_SPACE))
 	{
 		m_showObjects = !m_showObjects;
-		//g_ResourceManager->ReloadTextures();
 	}
-
-	if (g_Input->WasKeyPressed(KEY_F1))
-	{
-		/*      if( m_Resolutions[m_CurrentRes + 1] )
-				{
-					++m_CurrentRes;
-				}
-				else
-				{
-					m_CurrentRes = 0;
-				}
-
-				g_Display->m_HRes = m_Resolutions[m_CurrentRes]->w;
-				g_Display->GetHeight() = m_Resolutions[m_CurrentRes]->h;*/
-		g_Display->SetIsFullscreen(!g_Display->GetIsFullscreen());
-
-		g_Display->SetVideoMode(g_Display->GetWidth(), g_Display->GetHeight(), g_Display->GetIsFullscreen());
-		g_ResourceManager->ReloadTextures();
-	}
-
-
 }
 
 void MainState::Draw()
@@ -235,55 +157,83 @@ void MainState::Draw()
 
 	g_Terrain->Draw();
 
+	m_numberofDrawnUnits = 0;
+
 	if (m_showObjects)
 	{
+		std::vector<shared_ptr<U7Object>> sortedObjects;
+		float drawRange = g_Display->GetCameraDistance() / 2.5;
 		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 		{
-			if (fabs((*node).second->m_Pos.x - g_Display->GetCameraLookAtPoint().x) < (g_Display->GetCameraDistance() / 2.25)
-				&& fabs((*node).second->m_Pos.z - g_Display->GetCameraLookAtPoint().z) < (g_Display->GetCameraDistance() / 2.25))
+			float distance = glm::distance((*node).second->m_Pos, g_Display->GetCameraLookAtPoint());
+			if (distance < drawRange)
 			{
-				(*node).second->Draw();
+				(*node).second->m_distanceFromCamera = glm::distance((*node).second->m_Pos, g_Display->GetCameraPosition());
+				sortedObjects.push_back((*node).second);
+				m_numberofDrawnUnits++;
 			}
 		}
 
-		for (unordered_map<int, shared_ptr<U7Unit>>::iterator node = g_UnitList.begin(); node != g_UnitList.end(); ++node)
+		std::sort(sortedObjects.begin(), sortedObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+		for (auto& unit : sortedObjects)
 		{
-			if (fabs((*node).second->m_Pos.x - g_Display->GetCameraLookAtPoint().x) < (g_Display->GetCameraDistance() / 2.25)
-				&& fabs((*node).second->m_Pos.z - g_Display->GetCameraLookAtPoint().z) < (g_Display->GetCameraDistance() / 2.25))
-			{
-				(*node).second->Draw();
-			}
+			unit->Draw();
 		}
 	}
 
 
-
-	g_Display->DrawImage(m_Minimap, g_Display->GetWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize, Color(1, 1, 1, 1));
-
+	g_Display->DrawImage(m_Minimap, g_Display->GetWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize, Color(1, 1, 1, 1), false, 0, 0);
 
 
-	//int ypos = -24;
-	//string welcome = "Welcome to Ultima VII: Revisited!";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
 
-	//welcome = "Move with WASD, rotate with Q and E.";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
+	int ypos = -g_SmallFont->GetHeight();
+	int offset = g_SmallFont->GetHeight();
+	int xoffset = g_SmallFont->GetStringMetrics(" ") / 5;
+	string welcome = "Welcome to Ultima VII: Revisited!";
+	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
+	g_SmallFont->DrawString(welcome, 0, ypos);
+	
+	welcome = "Move with WASD, rotate with Q and E.";
+	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
+	g_SmallFont->DrawString(welcome, 0, ypos);
 
-	//welcome = "Zoom in and out with mousewheel.";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
+	welcome = "Zoom in and out with mousewheel.";
+	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
+	g_SmallFont->DrawString(welcome, 0, ypos);
 
-	//welcome = "Left-click in the minimap to teleport.";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
+	welcome = "Left-click in the minimap to teleport.";
+	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
+	g_SmallFont->DrawString(welcome, 0, ypos);
 
-	//welcome = "Press ESC to exit.";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
+	welcome = "Press ESC to exit.";
+	g_SmallFont->DrawString(welcome, xoffset, (ypos += offset) + xoffset, Color(0, 0, 0, 1));
+	g_SmallFont->DrawString(welcome, 0, ypos);
 
 	//welcome = "";
 	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
+	//int nextLine = g_SmallFont->GetHeight() * 1.5;
 
 	//string visibleCells = "Visible Cells: " + to_string(g_Terrain->m_VisibleCells.size());
+	//g_SmallFont->DrawString(visibleCells, 0, ypos += nextLine);
 
-	//g_SmallFont->DrawString(visibleCells, 0, ypos += 32);
+	//string numDrawnUnits = "Drawn Units: " + to_string(m_numberofDrawnUnits);
+	//g_SmallFont->DrawString(numDrawnUnits, 0, ypos += nextLine);
+
+	welcome = "X: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().x)) + " Y: " + to_string(static_cast<int>(g_Display->GetCameraLookAtPoint().z)) + " ";
+	float textwidth = g_SmallFont->GetStringMetrics(welcome);
+	g_SmallFont->DrawString(welcome, g_Display->GetWidth() - textwidth, g_Display->GetHeight() * .30, Color(1, 1, 1, 1));
+	//g_SmallFont->DrawString(welcome, 0, ypos);
+
+	//ypos += nextLine;
+
+	//string visibleTest = "Visible Cell Test Time: " + to_string(g_Terrain->m_DurationOfVisibleTest);
+	//g_SmallFont->DrawString(visibleTest, 0, ypos += nextLine);
+
+	//string cameraTest = "Camera Update Time: " + to_string(m_cameraUpdateTime);
+	//g_SmallFont->DrawString(cameraTest, 0, ypos += nextLine);
+
+	//string terrainTest = "Terrain Update Time: " + to_string(m_terrainUpdateTime);
+	//g_SmallFont->DrawString(terrainTest, 0, ypos += nextLine);
 
 	//string xcoordstring = "CamLookAt  X: " + to_string(g_Display->GetCameraLookAtPoint().x) + " Y: " + to_string(g_Display->GetCameraLookAtPoint().y) + " Z: " + to_string(g_Display->GetCameraLookAtPoint().z);
 	//g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
@@ -291,11 +241,14 @@ void MainState::Draw()
 	//xcoordstring = "CamPos      X: " + to_string(g_Display->GetCameraPosition().x) + " Y: " + to_string(g_Display->GetCameraPosition().y) + " Z: " + to_string(g_Display->GetCameraPosition().z);
 	//g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
 
-	DrawConsole();
+//	DrawConsole();
 
 
-	g_Display->DrawPerfCounter(g_SmallFont);
+	//g_Display->DrawPerfCounter(g_SmallFont);
 
+	int shape = 192;
+	int frame = 0;
+	//g_Display->DrawImage(g_shapeTable[shape][frame], 0, ypos, g_shapeTable[shape][frame]->GetWidth() * g_Display->GetWidth() / 320, g_shapeTable[shape][frame]->GetHeight() * g_Display->GetWidth() / 320);
 
 
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
@@ -311,7 +264,7 @@ void MainState::SetupGame()
 	//  Set up map
 	int width = 3072;
 	int height = 3072;
-	g_Display->SetCameraPosition(glm::vec3(216, 0, 195));
+	g_Display->SetCameraPosition(glm::vec3(951, 0, 2150));
 	//g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
 	g_Terrain->Init(width, height);
 	g_Terrain->InitializeMap(7777);   //  Check for a packet that tells us how to set up the game.

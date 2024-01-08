@@ -9,8 +9,6 @@
 
 using namespace std;
 
-unordered_map<int, std::shared_ptr<U7Unit> > g_UnitList;
-
 unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
 Mesh* g_AnimationFrames;
@@ -46,6 +44,10 @@ unsigned int g_minimapSize;
 std::vector< std::vector<unsigned short> > g_World;
 
 glm::vec3 g_Gravity = glm::vec3(0, .1f, 0);
+
+float g_CameraRotateSpeed = 0;
+
+glm::vec3 g_CameraMoveSpeed = glm::vec3(0, 0, 0);
 
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
@@ -102,8 +104,9 @@ void MakeAnimationFrameMeshes()
 	g_AnimationFrames->Init(vertices, indices);
 }
 
-void DoCameraMovement()
+unsigned int DoCameraMovement()
 {
+	unsigned int time = g_Engine->Time();
 	g_CameraMoved = false;
 
 	float speed = 50;
@@ -114,15 +117,42 @@ void DoCameraMovement()
 	}
 	if (g_Input->IsKeyDown(KEY_q))
 	{
-		g_Display->SetCameraAngle(g_Display->GetCameraAngle() + g_Engine->LastUpdateInMS() / 2);
+		g_CameraRotateSpeed += g_Engine->LastUpdateInSeconds() * 50;
+		if (g_CameraRotateSpeed > 8)
+		{
+			g_CameraRotateSpeed = 8;
+		}
 		g_CameraMoved = true;
 	}
 
 	if (g_Input->IsKeyDown(KEY_e))
 	{
-		g_Display->SetCameraAngle(g_Display->GetCameraAngle() - g_Engine->LastUpdateInMS() / 2);
+		g_CameraRotateSpeed -= g_Engine->LastUpdateInSeconds() * 50;
+		if (g_CameraRotateSpeed < -8)
+		{
+			g_CameraRotateSpeed = -8;
+		}
 		g_CameraMoved = true;
 	}
+
+	if (!g_CameraMoved)
+	{
+		g_CameraRotateSpeed *= .9;
+		if (g_CameraRotateSpeed < 1 && g_CameraRotateSpeed > -1)
+		{
+			g_CameraRotateSpeed = 0;
+		}
+	}
+
+
+	if (g_CameraRotateSpeed != 0)
+	{
+		g_Display->SetCameraAngle(g_Display->GetCameraAngle() + g_CameraRotateSpeed);
+		g_Display->SetHasCameraChanged(true);
+		g_Display->UpdateCamera();
+		g_CameraMoved = true;
+	}
+
 
 	if (g_Input->IsKeyDown(KEY_a))
 	{
@@ -245,53 +275,31 @@ void DoCameraMovement()
 		g_CameraMoved = true;
 	}
 
+	time = g_Engine->Time() - time;
+	return time;
 }
 
-shared_ptr<U7Unit> GetPointerFromID(int unitID)
+shared_ptr<U7Object> GetPointerFromID(int unitID)
 {
-	unordered_map<int, shared_ptr<U7Unit> >::iterator finder = g_UnitList.find(unitID);
+	unordered_map<int, shared_ptr<U7Object> >::iterator finder = g_ObjectList.find(unitID);
 
-	if (finder == g_UnitList.end())
+	if (finder == g_ObjectList.end())
 		return nullptr;
 	else
 		return (*finder).second;
 }
 
-shared_ptr<U7Unit> U7UnitClassFactory(int type)
+shared_ptr<U7Object> U7ObjectClassFactory(int type)
 {
-		shared_ptr<U7Unit> temp = make_shared<U7Unit>();
-		temp->m_UnitType = type;
+		shared_ptr<U7Object> temp = make_shared<U7Object>();
+		temp->m_ObjectType = type;
 		return temp;
 }
 
-shared_ptr<U7Object> U7ObjectClassFactory(ObjectDrawTypes type)
+vector<shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, int range)
 {
-	switch (type)
-	{
-	case ObjectDrawTypes::OBJECT_DRAW_BILLBOARD:
-	{
-		shared_ptr<U7Object> temp = make_shared<U7Object>();
-		return temp;
-	}
-	break;
-	case ObjectDrawTypes::OBJECT_DRAW_CUBOID:
-	{
-		shared_ptr<U7Object> temp = make_shared<U7Object>();
-		temp->Init("Data/Objects/Cuboid.cfg");
-		return temp;
-	}
-	break;
-
-	default:
-		throw("Bad identifier in unit factory!");
-		break;
-	}
-}
-
-vector<shared_ptr<U7Unit> > GetAllUnitsWithinRange(float x, float y, int range)
-{
-	vector<shared_ptr<U7Unit> > _Targets;
-	for (auto& unit : g_UnitList)
+	vector<shared_ptr<U7Object> > _Targets;
+	for (auto& unit : g_ObjectList)
 	{
 		if (IsDistanceLessThan(x, y, unit.second->m_Pos.x, unit.second->m_Pos.z, range))
 		{
@@ -313,64 +321,25 @@ unsigned int g_CurrentUnitID = 0;
 
 unsigned int GetNextID() { return g_CurrentUnitID++; }
 
-void AddUnit(int player, int unittype, int id, float x, float y, float z)
+void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
-	shared_ptr<U7Unit> temp = U7UnitClassFactory(unittype);
-	temp->Init("Data/Units/Walker.cfg", unittype);
+	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
+	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(glm::vec3(x, y, z));
-	temp->m_BaseTeam = player;
-	temp->m_Team = player;
-	temp->m_Texture = g_shapeTable[unittype][0];
-	g_UnitList[id] = temp;
-}
-
-int AddObject(ObjectDrawTypes objecttype, int id, int shape, int frame, float x, float y, float z)
-{
-	shared_ptr<U7Object> temp = U7ObjectClassFactory(objecttype);
-	temp->Init("Data/Objects/Billboard.cfg");
-	temp->SetPos(glm::vec3(x, y, z));
-	std::stringstream filename;
-	filename << "Images/Objects/u7shape_" << std::setfill('0') << std::setw(4) << std::to_string(shape) << ".png";
-	temp->m_Texture = g_ResourceManager->GetTexture(filename.str(), false);
-
-	//  Set the UVs
-	float v1 = (frame + 1) * .03125;
-	float v2 = (frame + 2) * .03125;
-	Vertex tempVertex = temp->m_Mesh->GetVertex(0);
-	tempVertex.v = v1;
-	temp->m_Mesh->SetVertex(0, tempVertex);
-
-	tempVertex = temp->m_Mesh->GetVertex(1);
-	tempVertex.v = v2;
-	temp->m_Mesh->SetVertex(1, tempVertex);
-
-	tempVertex = temp->m_Mesh->GetVertex(2);
-	tempVertex.v = v1;
-	temp->m_Mesh->SetVertex(2, tempVertex);
-
-	tempVertex = temp->m_Mesh->GetVertex(3);
-	tempVertex.v = v2;
-	temp->m_Mesh->SetVertex(3, tempVertex);
-
-	tempVertex = temp->m_Mesh->GetVertex(4);
-	tempVertex.v = v1;
-	temp->m_Mesh->SetVertex(4, tempVertex);
-
-	tempVertex = temp->m_Mesh->GetVertex(5);
-	tempVertex.v = v2;
-	temp->m_Mesh->SetVertex(5, tempVertex);
 
 	g_ObjectList[id] = temp;
-
-	return id;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE
 //////////////////////////////////////////////////////////////////////////////
 
 std::vector<ConsoleString> g_ConsoleStrings;
+
+void ClearConsole()
+{
+	g_ConsoleStrings.clear();
+}
 
 void AddConsoleString(std::string string, Color color, unsigned int starttime)
 {

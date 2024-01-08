@@ -73,6 +73,12 @@ public:
 
    bool m_showObjects;
 
+   int m_numberofDrawnUnits = 0;
+
+   int m_cameraUpdateTime = 0;
+
+   int m_terrainUpdateTime = 0;
+
 
 };
 

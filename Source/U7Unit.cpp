@@ -27,19 +27,99 @@ void U7Unit::Init(const string& configfile, int unitType)
    SetIsDead(false);
    m_UnitConfig = g_ResourceManager->GetConfig(configfile);
    m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
-   m_Texture = g_shapeTable[unitType][0];
+   for (int i = 0; i < 32; i++)
+   {
+      if (g_shapeTable[unitType][i] != nullptr)
+      {
+         m_Texture = g_shapeTable[unitType][i];
+         break;
+      }
+	}
+
+   
 
    ObjectData *objectData = &g_objectTable[unitType];
    m_drawType = std::get<0>(g_ObjectTypes.at(m_UnitType));
 
    if (m_drawType == ObjectDrawTypes::OBJECT_DRAW_BILLBOARD)
    {
+      //m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
       m_Scaling = glm::vec3(m_Texture->GetWidth() / 8.0f, m_Texture->GetHeight() / 8.0f, 1);
+   }
+   else if (m_drawType == ObjectDrawTypes::OBJECT_DRAW_FLAT)
+   {
+      m_Scaling = glm::vec3(m_Texture->GetWidth() / 8.0f, 1, m_Texture->GetHeight() / 8.0f);
    }
    else
    {
       m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
    }
+
+   m_DropShadow = g_ResourceManager->GetTexture("Images/dropshadow.png", false);
+
+   m_distanceFromCamera = 0;
+
+   //  If this is a static cuboid object, we need to set the UV coordinates based on the texture.
+   if (m_drawType == ObjectDrawTypes::OBJECT_DRAW_CUBOID)
+   {
+      if (unitType == 191)
+      {
+         int stopper = 0;
+      }
+
+
+      m_customMesh = std::make_unique<Mesh>();
+      m_customMesh->Load("Data/Meshes/cuboid.txt");
+
+      float topx = (objectData->m_width * 8) / m_Texture->GetWidth();
+      float topy = (objectData->m_height * 8) / m_Texture->GetHeight();
+
+      vector<Vertex> customVertices;
+
+      customVertices.push_back(CreateVertex(0.0f, 0.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // bottom face
+      customVertices.push_back(CreateVertex(0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, topy));
+      customVertices.push_back(CreateVertex(1.0f, 0.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+      customVertices.push_back(CreateVertex(1.0f, 0.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+      customVertices.push_back(CreateVertex(1.0f, 0.0f, 1.0f, 1, 1, 1, 1, topx, 0.0f));
+      customVertices.push_back(CreateVertex(0.0f, 0.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // back face
+		customVertices.push_back(CreateVertex(1.0f, 0.0f, 0.0f, 1, 1, 1, 1, topx, 0.0f));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(0.0f, 1.0f, 0.0f, 1, 1, 1, 1, 0.0f, topy));
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // front face
+		customVertices.push_back(CreateVertex(1.0f, 0.0f, 1.0f, 1, 1, 1, 1, topx, 0.0f));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(0.0f, 1.0f, 1.0f, 1, 1, 1, 1, 0.0f, topy));
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+		customVertices.push_back(CreateVertex(1.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // right face
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 0.0f, 1, 1, 1, 1, 0.0f, topy));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(1.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(1.0f, 0.0f, 1.0f, 1, 1, 1, 1, topx, 0.0f));
+		customVertices.push_back(CreateVertex(1.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // left face
+		customVertices.push_back(CreateVertex(0.0f, 1.0f, 0.0f, 1, 1, 1, 1, 0.0f, topy));
+		customVertices.push_back(CreateVertex(0.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(0.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, topy));
+		customVertices.push_back(CreateVertex(0.0f, 0.0f, 1.0f, 1, 1, 1, 1, topx, 0.0f));
+      customVertices.push_back(CreateVertex(0.0f, 0.0f, 0.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+      customVertices.push_back(CreateVertex(0.0f, 1.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f)); // top face
+      customVertices.push_back(CreateVertex(0.0f, 1.0f, 0.0f, 1, 1, 1, 1, 0.0f, topy));
+      customVertices.push_back(CreateVertex(1.0f, 1.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+      customVertices.push_back(CreateVertex(1.0f, 1.0f, 0.0f, 1, 1, 1, 1, topx, topy));
+      customVertices.push_back(CreateVertex(1.0f, 1.0f, 1.0f, 1, 1, 1, 1, topx, 0.0f));
+      customVertices.push_back(CreateVertex(0.0f, 1.0f, 1.0f, 1, 1, 1, 1, 0.0f, 0.0f));
+
+      m_customMesh->UpdateVertices(customVertices);
+	}
 
 }
 
@@ -53,18 +133,39 @@ void U7Unit::Draw()
       switch (type)
       {
       case ObjectDrawTypes::OBJECT_DRAW_CUBOID:
-         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/cuboid.txt"), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
+      {
+         //g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/dropshadow.txt"), m_Pos, m_DropShadow, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
+
+         g_Display->DrawMesh(m_customMesh.get(), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
          break;
+      }
 
       case ObjectDrawTypes::OBJECT_DRAW_BILLBOARD:
-         //if (m_UnitType == 181)
-         //{
-            float angle = g_Display->GetCameraAngle();
-            angle += 45;
-            //angle /= m_Scaling.y;
-            g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, angle, 0), m_Scaling);
-         //}
+      {
+         float angle = g_Display->GetCameraAngle();
+         angle += 45;
+         glm::vec3 thisPos = m_Pos;
+         thisPos.x += .5f;
+         thisPos.z += .5f;
+         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/dropshadow.txt"), thisPos, m_DropShadow, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(m_Scaling.x / 3, 1, m_Scaling.x / 3));
+         thisPos = m_Pos;
+         thisPos.x += 0.5f;
+         thisPos.z += 0.5f;
+         thisPos.y -= .5f;
+         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, angle, 0), m_Scaling);
          break;
+      }
+
+      case ObjectDrawTypes::OBJECT_DRAW_FLAT:
+      {
+         glm::vec3 thisPos = m_Pos;
+         //thisPos.x += m_Scaling.x / 2;
+         //thisPos.y += m_Scaling.y / 2;
+         //thisPos.y -= .5f;
+
+         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/dropshadow.txt"), m_Pos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
+         break;
+      }
 
 
       }
@@ -83,6 +184,7 @@ void U7Unit::SetShapeAndFrame(unsigned int shape, unsigned int frame)
 
 void U7Unit::Update()
 {
+   return;
    ObjectTypes type = std::get<1>(g_ObjectTypes.at(m_UnitType));
    if (type == ObjectTypes::OBJECT_STATIC)
    {

@@ -23,7 +23,6 @@
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
-    <ClCompile Include="Source\U7Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h" />
@@ -34,7 +33,6 @@
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
     <ClInclude Include="Source\U7Object.h" />
-    <ClInclude Include="Source\U7Unit.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Planitia Design.txt" />

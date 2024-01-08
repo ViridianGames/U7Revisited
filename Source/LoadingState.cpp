@@ -19,24 +19,30 @@ using namespace std;
 
 LoadingState::~LoadingState()
 {
-   Shutdown();
+	Shutdown();
 }
 
 void LoadingState::Init(const string& configfile)
 {
-    g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/standard.txt");
+	g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/billboard.txt");
 
-    g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
+	g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
 
-    g_Cursor = g_ResourceManager->GetTexture("Images/cursor.png");
+	g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
-    g_minimapSize = g_Display->GetWidth() / 6;
+	g_minimapSize = g_Display->GetWidth() / 6;
 
-    g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
-    g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
-    MakeAnimationFrameMeshes();
+	g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
+	g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
+	MakeAnimationFrameMeshes();
 
-    m_red = 1.0;
+	m_tree = g_ResourceManager->GetTexture("Images/Objects/453-0.png", false);
+
+	m_red = 1.0;
+	m_angle = 0.0;
+
+	xSlant = .01;
+
 }
 
 void LoadingState::OnEnter()
@@ -56,26 +62,65 @@ void LoadingState::Shutdown()
 
 void LoadingState::Update()
 {
-   m_red = (g_Engine->GameTimeInSeconds() * 0.5f) - int(g_Engine->GameTimeInSeconds());
+	if (g_Input->WasKeyPressed(KEY_SPACE))
+	{
+		m_startRotating = true;
+	}
 
-   UpdateLoading();
+	if (g_Input->IsKeyDown(KEY_LEFT))
+	{
+		m_angle -= .05f;
+	}
+
+
+	if (g_Input->IsKeyDown(KEY_RIGHT))
+	{
+		m_angle += .05f;
+	}
+
+
+	//static int y = m_tree->GetHeight() - 1;
+	//static int x = m_tree->GetWidth();
+
+	//static int numsteps = 0;
+	//static int maxnumsteps = m_tree->GetWidth() * .5 - 1;
+
+	if (m_startRotating)
+	{
+		
+		//Color c = m_tree->GetPixel(m_tree->GetWidth() - 1, y);
+		//for (int i = (m_tree->GetWidth() - 1); i >=0; --i)
+		//{
+		//	Color c = m_tree->GetPixel(i - 1, y);
+		//	m_tree->PutPixel(i, y, c);
+		//}
+		//m_tree->PutPixel(0, y, c);
+
+		//++numsteps;
+		//if(numsteps > maxnumsteps)
+		//{
+		//	//m_startRotating = false;
+		//	--y;
+		//	++maxnumsteps;
+		//	numsteps = 0;
+		//}
+		
+
+		//m_tree->UpdateData();
+	}
+
+	UpdateLoading();
 }
 
 
 void LoadingState::Draw()
 {
-   g_Display->ClearScreen();
+	g_Display->ClearScreen();
+	
 
- //  g_Display->DrawImage(m_loadingBackground, 0, 0, g_Display->GetWidth(), g_Display->GetHeight(), Color(1,  m_red, m_red, 1));
+	DrawConsole();
 
-   //m_LoadingGui->Draw();
-   
-   DrawConsole();
-
-	if(g_shapeTable[150][0] != nullptr)
-		g_Display->DrawImage(g_shapeTable[150][0], 400, 400);
-   
-   g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
+	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
 }
 
@@ -157,9 +202,11 @@ unsigned short LoadingState::ReadU16(FILE* buffer)
 
 unsigned int LoadingState::ReadU32(FILE* buffer)
 {
-	unsigned int thisData;
-	fread(&thisData, sizeof(unsigned int), 1, buffer);
-	return thisData;
+	unsigned int b0 = ReadU8(buffer);
+	unsigned int b1 = ReadU8(buffer);
+	unsigned int b2 = ReadU8(buffer);
+	unsigned int b3 = ReadU8(buffer);
+	return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
 }
 
 char LoadingState::ReadS8(FILE* buffer)
@@ -178,9 +225,7 @@ short LoadingState::ReadS16(FILE* buffer)
 
 int LoadingState::ReadS32(FILE* buffer)
 {
-	int thisData;
-	fread(&thisData, sizeof(int), 1, buffer);
-	return thisData;
+	return static_cast<signed int>(ReadU32(buffer));
 }
 
 void LoadingState::LoadChunks()
@@ -237,7 +282,7 @@ void LoadingState::LoadMap()
 					unsigned short thisdata = 0;
 					fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
 
-					m_u7map[k * 16 + j][l * 16 + i] = thisdata;
+					m_u7chunkmap[k * 16 + j][l * 16 + i] = thisdata;
 				}
 			}
 		}
@@ -371,7 +416,7 @@ void LoadingState::MakeMap()
 	{
 		for (int j = 0; j < 192; ++j)
 		{
-			int chunkid = m_u7map[i][j];
+			int chunkid = m_u7chunkmap[i][j];
 			for (int k = 0; k < 16; ++k)
 			{
 				for (int l = 0; l < 16; ++l)
@@ -385,17 +430,7 @@ void LoadingState::MakeMap()
 
 					if (shapenum >= 150)
 					{
-						if (shapenum == 257)
-						{
-							int stopper = 0;
-						}
-
-						AddUnit(0, shapenum, GetNextID(), (j * 16 + k), 0, (i * 16 + l));
-
-//						int id = AddObject(ObjectDrawTypes::OBJECT_DRAW_CUBOID, GetNextID(), shapenum, framenum, (j * 16 + k) + .5f, 0, (i * 16 + l) + .5f);
-//						g_ObjectList[id]->Init("Data/Objects/Cuboid.cfg");
-
-//						g_ObjectList[id]->SetObjectData(shapenum);
+						AddObject(shapenum, framenum, GetNextID(), (j * 16 + k), 0, (i * 16 + l));
 					}
 				}
 			}
@@ -440,9 +475,19 @@ void LoadingState::CreateShapeTable()
 {
 	for (int i = 150; i < 1024; ++i)
 	{
-		std::stringstream filename;
-		filename << "Images/Objects/u7shape_" << std::setfill('0') << std::setw(4) << std::to_string(i) << ".png";
-		g_shapeTable[i][0] = g_ResourceManager->GetTexture(filename.str(), false);
+		for (int j = 0; j < 32; ++j)
+		{
+			std::stringstream filename;
+			filename << "Images/Objects/" << std::to_string(i) << "-" << std::to_string(j) << ".png";
+			if (g_ResourceManager->DoesFileExist(filename.str()))
+			{
+				g_shapeTable[i][j] = g_ResourceManager->GetTexture(filename.str(), false);
+			}
+			else
+			{
+				g_shapeTable[i][j] = nullptr;
+			}
+		}
 	}
 
 	//  Load palette data
@@ -466,115 +511,140 @@ void LoadingState::CreateShapeTable()
 		unsigned char r = paletteData[j * 3];
 		unsigned char g = paletteData[j * 3 + 1];
 		unsigned char b = paletteData[j * 3 + 2];
-		m_palette[j] = Color(r * 4, g * 4, b * 4, 1);
+		m_palette[j] = Color(r * 4, g * 4, b * 4, 255);
 	}
 
 	fclose(palette);
 
 	//  Load shape data
-	FILE* shapes = fopen("Data/U7/STATIC/SHAPES.VGA", "rb");
-
-	if (shapes == nullptr)
-	{
-		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
-		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
-	}
-
-	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
-
-	//  The first 150 entries (0-149) are terrain textures.
-
-
-
-	//  The next 874 entries (150-1023) are objects.
-		//  Read the shape data.
-		fseek(shapes, shapeEntryMap[150].offset, SEEK_SET);
-		//unsigned char* shapeData = (unsigned char*)malloc(shapeEntryMap[150].length);
-		//fread(shapeData, sizeof(unsigned char), shapeEntryMap[150].length, shapes);
-
-		unsigned int fileSize = ReadU32(shapes);
-		unsigned int firstOffset = ReadU32(shapes);
-
-		unsigned int count = ((firstOffset - 4) / 4);
-		std::vector<unsigned int> offsets;
-		offsets.resize(count);
-		offsets[0] = 0;
-		for (int i = 1; i < count; ++i)
-		{
-			offsets[i] = ReadU32(shapes);
-		}
-
-		unsigned short MaxX = ReadU16(shapes);
-		unsigned short OffsetX = ReadU16(shapes);
-		unsigned short OffsetY = ReadU16(shapes);
-		unsigned short MaxY = ReadU16(shapes);
-
-		int height = MaxY + OffsetY + 1;
-		int width = MaxX + OffsetX + 1;
-
-		g_shapeTable[150][0] = new Texture();
-
-		g_shapeTable[150][0]->Create(width, height, false);
-
-		for (int i = 0; i < width; ++i)
-		{
-			for (int j = 0; j < height; ++j)
-			{
-				g_shapeTable[150][0]->PutPixel(i, j, Color(234, 120, 5, 0));
-			}
-		}
-
-		// Span data
-		//while (1)
-		//{
-		//	unsigned short blockType = 0;
-		//	unsigned short blockLength = 0;
-		//	unsigned short blockData = ReadU16(shapes);
-		//	if (blockData == 0)
-		//	{
-		//		break;
-		//	}
-		//	else
-		//	{
-		//		blockType = blockData & 1;
-		//		blockLength = blockData >> 1;
-		//	}
-
-		//	short sStart = ReadS16(shapes);
-		//	short yStart = ReadS16(shapes);
-
-		//	if (blockType == 0) // Raw Pixel Data
-		//	{
-		//		for (int i = 0; i < blockLength; ++i)
-		//		{
-		//			unsigned short pixelData = ReadU16(shapes);
-		//			unsigned short pixelCount = pixelData >> 1;
-		//			unsigned short pixelColor = pixelData & 1;
-
-		//			for (int j = 0; j < pixelCount; ++j)
-		//			{
-		//				g_shapeTable[150][0]->PutPixel(sStart + j, yStart, m_palette[pixelColor]);
-		//			}
-		//			sStart += pixelCount;
-		//		}
-		//	}
-		//	else // RLE
-		//	{
-		//		for (int i = 0; i < blockLength; ++i)
-		//		{
-		//			unsigned short pixelData = ReadU16(shapes);
-		//			unsigned short pixelCount = pixelData >> 1;
-		//			unsigned short pixelColor = pixelData & 1;
-
-		//			for (int j = 0; j < pixelCount; ++j)
-		//			{
-		//				g_shapeTable[150][0]->PutPixel(sStart + j, yStart, m_palette[pixelColor]);
-		//			}
-		//			sStart += pixelCount;
-		//		}
-		//	}
-		//}
+//	FILE* shapes = fopen("Data/U7/STATIC/SHAPES.VGA", "rb");
+//
+//	if (shapes == nullptr)
+//	{
+//		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+//		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
+//	}
+//
+//	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
+//
+//	//  The first 150 entries (0-149) are terrain textures.
+//
+//	for (int thisShape = 150; thisShape < 1024; ++thisShape)
+//	{
+//		//  The next 874 entries (150-1023) are objects.
+//
+//		//  Read the shape data.
+//		fseek(shapes, shapeEntryMap[thisShape].offset, SEEK_SET);
+//
+//		unsigned int fileSize = ReadU32(shapes);
+//		unsigned int firstOffset = ReadU32(shapes);
+//
+//		unsigned int frameCount = ((firstOffset - 4) / 4);
+//		std::vector<unsigned int> frameOffsets;
+//		frameOffsets.resize(frameCount);
+//		frameOffsets[0] = 0;
+//		for (int i = 1; i < frameCount; ++i)
+//		{
+//			frameOffsets[i] = ReadU32(shapes);
+//		}
+//
+//		//  Read the frame data.
+//		for (int thisFrame = 0; thisFrame < frameCount; ++thisFrame)
+//		{
+//			fseek(shapes, shapeEntryMap[thisShape].offset + frameOffsets[thisFrame], SEEK_SET);
+//
+//			unsigned short MaxX = ReadU16(shapes);
+//			unsigned short OffsetX = ReadU16(shapes);
+//			unsigned short OffsetY = ReadU16(shapes);
+//			unsigned short MaxY = ReadU16(shapes);
+//
+//			int height = MaxY + OffsetY + 1;
+//			int width = MaxX + OffsetX + 1;
+//
+//			g_shapeTable[thisShape][thisFrame] = new Texture();
+//
+//			g_shapeTable[thisShape][thisFrame]->Create(width, height, false);
+//
+//			// Read each span.  Spans can be either RLE or raw pixel data.
+//			// We do not know the number of spans in advance, so we read until we hit a span of length 0.
+//			int pixelCounter = 0;
+//			while (true)
+//			{
+//				unsigned short spanData = ReadU16(shapes);
+//				unsigned short spanLength = spanData >> 1;
+//				unsigned short spanType = spanData & 1;
+//
+//				if (spanData == 0)
+//				{
+//					g_shapeTable[thisShape][thisFrame]->UpdateData();
+//					break; //  There are no more spans; we're done with this frame.
+//				}
+//
+//				short xStart = ReadS16(shapes);
+//				short YStart = ReadS16(shapes);
+//
+//				if (spanType == 0) // Not RLE, raw pixel data.
+//				{
+//					for (int i = 0; i < spanLength; ++i)
+//					{
+//						unsigned char Value = ReadU8(shapes);
+///*						int x = pixelCounter % width;
+//						int y = pixelCounter / height;
+//						g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[Value]);
+//						++pixelCounter*/;
+//					}
+//				}
+//				else // RLE.
+//				{
+//					int endX = xStart + spanLength;
+//
+//					while (xStart < endX)
+//					{
+//						unsigned char RunData = ReadU8(shapes);
+//						int RunLength = RunData >> 1;
+//						int RunType = RunData & 1;
+//
+//						if (RunType == 0) // Once again, non-RLE
+//						{
+//							for (int i = 0; i < RunLength; ++i)
+//							{
+//								unsigned char Value = ReadU8(shapes);
+//								//int x = pixelCounter % width;
+//								//int y = pixelCounter / height;
+//								//g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[Value]);
+//								//++pixelCounter;
+//							}
+//						}
+//						else
+//						{
+//							unsigned char Value = ReadU8(shapes);
+//							//for (int i = 0; i < RunLength; ++i)
+//							//{
+//							//	int x = pixelCounter % width;
+//							//	int y = pixelCounter / height;
+//							//	g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[RunData]);
+//							//	++pixelCounter;
+//							//}
+//						}
+//
+//						xStart += RunLength;
+//					}
+//				}
+//			}
+//		}
+//	}
 }
+
+//void LoadingState::ReadImage(int OffsetX, int OffsetY, int BlockLength)
+//{
+//	for (int i = 0; i < BlockLength; ++i)
+//	{
+//		unsigned char Value = ReadU8(shapes);
+//		int x = OffsetX + i;
+//		int y = OffsetY;
+//		g_shapeTable[thisShape][0]->PutPixel(x, y, m_palette[Value]);
+//	}
+//}
 
 void LoadingState::CreateObjectTable()
 {
@@ -710,10 +780,13 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(FILE* file)
 	for (int i = 0; i < entrycount; ++i)
 	{
 		FLXEntryData thisentry;
-		thisentry.length = 0;
-		thisentry.offset = 0;
-		fread(&thisentry.offset, sizeof(unsigned int), 1, file);
-		fread(&thisentry.length, sizeof(unsigned int), 1, file);
+		thisentry.offset = ReadS32(file);
+		if (thisentry.offset == 0) //  Offset of 0 means no object here.
+		{
+			thisentry.length = 0;
+			continue;
+		}
+		thisentry.length = ReadS32(file);
 		entrymap[i] = thisentry;
 	}
 
