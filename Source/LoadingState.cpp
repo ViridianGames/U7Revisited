@@ -62,22 +62,10 @@ void LoadingState::Shutdown()
 
 void LoadingState::Update()
 {
-	if (g_Input->WasKeyPressed(KEY_SPACE))
+	if (g_Input->WasKeyPressed(KEY_ESCAPE))
 	{
-		m_startRotating = true;
+		g_Engine->m_Done = true;
 	}
-
-	if (g_Input->IsKeyDown(KEY_LEFT))
-	{
-		m_angle -= .05f;
-	}
-
-
-	if (g_Input->IsKeyDown(KEY_RIGHT))
-	{
-		m_angle += .05f;
-	}
-
 
 	//static int y = m_tree->GetHeight() - 1;
 	//static int x = m_tree->GetWidth();
@@ -116,9 +104,16 @@ void LoadingState::Update()
 void LoadingState::Draw()
 {
 	g_Display->ClearScreen();
-	
 
-	DrawConsole();
+	if (m_loadingFailed == true)
+	{
+		g_Font->DrawString("Ultima VII files not found.  They should go into the Data/U7 folder.", 0, 0);
+		g_Font->DrawString("Press ESC to exit.", 0, g_Font->GetStringMetrics(" ") * 3);
+	}
+	else
+	{
+		DrawConsole();
+	}
 
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
@@ -127,63 +122,70 @@ void LoadingState::Draw()
 
 void LoadingState::UpdateLoading()
 {
-	if (!m_loadingChunks)
+	if (!m_loadingFailed)
 	{
-		AddConsoleString(std::string("Loading chunks..."));
-		LoadChunks();
-		m_loadingChunks = true;
+		if (!m_loadingChunks)
+		{
+			AddConsoleString(std::string("Loading chunks..."));
+			LoadChunks();
+			m_loadingChunks = true;
+			return;
+		}
+
+		if (!m_loadingMap)
+		{
+			AddConsoleString(std::string("Loading mapfile..."));
+			LoadMap();
+			m_loadingMap = true;
+			return;
+		}
+
+		if (!m_loadingShapes)
+		{
+			AddConsoleString(std::string("Loading shapes..."));
+			CreateShapeTable();
+			m_loadingShapes = true;
+			return;
+		}
+
+		if (!m_loadingObjects)
+		{
+			AddConsoleString(std::string("Loading objects..."));
+			CreateObjectTable();
+			m_loadingObjects = true;
+			return;
+		}
+
+		if (!m_makingMap)
+		{
+			AddConsoleString(std::string("Making map..."));
+			MakeMap();
+			m_makingMap = true;
+			return;
+		}
+
+		if (!m_loadingIFIX)
+		{
+			AddConsoleString(std::string("Loading IFIX..."));
+			LoadIFIX();
+			m_loadingIFIX = true;
+			return;
+		}
+
+		if (!m_loadingIREG)
+		{
+			AddConsoleString(std::string("Loading IREG..."));
+			LoadIREG();
+			m_loadingIREG = true;
+			return;
+		}
+	}
+	else
+	{
 		return;
 	}
 
-	if (!m_loadingMap)
-	{
-		AddConsoleString(std::string("Loading mapfile..."));
-		LoadMap();
-		m_loadingMap = true;
-		return;
-	}
-
-	if (!m_loadingShapes)
-	{
-		AddConsoleString(std::string("Loading shapes..."));
-		CreateShapeTable();
-		m_loadingShapes = true;
-		return;
-	}
-
-	if (!m_loadingObjects)
-	{
-		AddConsoleString(std::string("Loading objects..."));
-		CreateObjectTable();
-		m_loadingObjects = true;
-		return;
-	}
-
-	if (!m_makingMap)
-	{
-		AddConsoleString(std::string("Making map..."));
-		MakeMap();
-		m_makingMap = true;
-		return;
-	}
-
-	if (!m_loadingIFIX)
-	{
-		AddConsoleString(std::string("Loading IFIX..."));
-		LoadIFIX();
-		m_loadingIFIX = true;
-		return;
-	}
-
-	if (!m_loadingIREG)
-	{
-		AddConsoleString(std::string("Loading IREG..."));
-		LoadIREG();
-		m_loadingIREG = true;
-		return;
-	}
-
-	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
+	g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 }
 
 unsigned char LoadingState::ReadU8(FILE* buffer)
@@ -235,6 +237,8 @@ void LoadingState::LoadChunks()
 	if (u7chunksfile == nullptr)
 	{
 		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		m_loadingFailed = true;
+		return;
 		//        throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
 	}
 

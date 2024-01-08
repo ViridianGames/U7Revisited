@@ -76,6 +76,8 @@ public:
    bool m_loadingIREG = false;
    bool m_makingMap = false;
 
+   bool m_loadingFailed = false;
+
 
 
 };
