@@ -393,7 +393,7 @@ void LoadingState::LoadIFIX()
 							int x = (thisLocationData >> 4) & 0xf;
 							int z = (thisLocationData >> 8) & 0xf;
 
-							//AddUnit(0, shape, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z + 4, (superchunky * 256) + (chunky * 16) + y);
+							AddObject(shape, frame, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
 
 							int stopper = 0;
 						}
@@ -445,7 +445,6 @@ void LoadingState::MakeMap()
 
 void LoadingState::LoadIREG()
 {
-	return;
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
 		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
@@ -454,20 +453,20 @@ void LoadingState::LoadIREG()
 			int thissuperchunk = superchunkx + (superchunky * 12);
 			if (thissuperchunk < 16)
 			{
-				ss << "Data/U7/STATIC/U7IREG0" << std::hex << thissuperchunk;
+				ss << "Data/U7/GAMEDAT/U7IREG0" << std::hex << thissuperchunk;
 			}
 			else
 			{
-				ss << "Data/U7/STATIC/U7IREG" << std::hex << thissuperchunk;
+				ss << "Data/U7/GAMEDAT/U7IREG" << std::hex << thissuperchunk;
 			}
 			const std::string s = ss.str();
 
 			FILE* u7thisireg = fopen(s.c_str(), "rb");
 
-			while (u7thisireg)
-			{
+			//while (u7thisireg)
+			//{
 
-			}
+			//}
 
 			//int stopper = 0;
 			fclose(u7thisireg);
