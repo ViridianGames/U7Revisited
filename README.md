@@ -1,8 +1,20 @@
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
-To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to /data/u7.  This will allow the replacement engine to read in the maps and graphics from the original files.
+## Running the Engine
 
-Controls:
+To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This will allow the replacement engine to read in the maps and graphics from the original files.
+
+## Developer Installation Notes
+
+- `git clone git@github.com:ViridianGames/U7Revisited.git`
+- `cd U7Revisited`
+- Open `./U7Revisited.sln` in Visual Studio
+- Rebuild the `Geist` and `U7Revisited` projects in the solution
+- To run the Debugger, in the Project Properties for `U7Revisited` make sure the `Working Directory` is set to `$(SolutionDir)/Redist`
+- Copy the entire contents of your original Ultima 7 game files to `$(SolutionDir)/Redist/Data/U7`
+- Profit
+
+## Controls:
 
 WASD:  Move around.
 Q/E:  Rotate left and right.
