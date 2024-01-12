@@ -86,6 +86,8 @@ struct ObjectData
 	std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
+extern std::string g_VERSION;
+
 extern glm::vec3 g_Gravity;
 
 extern Mesh* g_AnimationFrames;
