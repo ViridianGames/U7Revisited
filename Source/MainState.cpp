@@ -233,6 +233,8 @@ void MainState::Draw()
 	//g_Display->DrawImage(g_shapeTable[shape][frame], 0, ypos, g_shapeTable[shape][frame]->GetWidth() * g_Display->GetWidth() / 320, g_shapeTable[shape][frame]->GetHeight() * g_Display->GetWidth() / 320);
 
 
+	g_SmallFont->DrawString(g_VERSION, g_Display->GetWidth() - 100, g_Display->GetHeight() - 50, Color(1, 1, 0, 1));
+
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
 }
