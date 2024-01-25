@@ -232,6 +232,8 @@ void MainState::Draw()
 	int frame = 0;
 	//g_Display->DrawImage(g_shapeTable[shape][frame], 0, ypos, g_shapeTable[shape][frame]->GetWidth() * g_Display->GetWidth() / 320, g_shapeTable[shape][frame]->GetHeight() * g_Display->GetWidth() / 320);
 
+	//g_Display->DrawImage(&g_Terrain->m_TerrainTexture, 0, 0);
+	
 
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
@@ -241,7 +243,7 @@ void MainState::SetupGame()
 {
 	//g_UnitList.clear();
 
-	m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false);
+	//m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false);
 
 	//  Set up map
 	int width = 3072;

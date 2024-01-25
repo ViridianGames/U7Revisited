@@ -100,7 +100,7 @@ public:
 
    Texture* m_Minimap;
    Texture* m_MinimapTerrain;
-   Texture* m_TerrainTexture;
+   Texture m_TerrainTexture;
    Texture* m_WaterTexture;
 
    //  Terrain meshes

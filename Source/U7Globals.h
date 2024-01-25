@@ -88,10 +88,6 @@ struct ObjectData
 
 extern glm::vec3 g_Gravity;
 
-extern Mesh* g_AnimationFrames;
-extern Texture* g_WalkerTexture;
-extern Texture* g_WalkerMask;
-extern Texture* g_Sprites;
 extern Texture* g_Cursor;
 
 extern std::shared_ptr<Font> g_Font;
@@ -104,12 +100,8 @@ extern std::unique_ptr<Terrain> g_Terrain;
 
 extern std::unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
-extern Mesh* g_TestMesh;
-
 extern unsigned int g_CurrentUpdate;
 
-extern bool g_IsSinglePlayer;  //  not single payer
-extern bool g_IsServer;
 extern bool g_CameraMoved;
 
 extern std::array<std::array<Texture* , 32>, 1024> g_shapeTable;

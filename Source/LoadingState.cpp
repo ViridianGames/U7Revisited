@@ -24,16 +24,8 @@ LoadingState::~LoadingState()
 
 void LoadingState::Init(const string& configfile)
 {
-	g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/billboard.txt");
-
-	g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
-
-	g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
-
 	g_minimapSize = g_Display->GetWidth() / 6;
 
-	g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
-	g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
 	MakeAnimationFrameMeshes();
 
 	m_tree = g_ResourceManager->GetTexture("Images/Objects/453-0.png", false);
@@ -520,17 +512,33 @@ void LoadingState::CreateShapeTable()
 	fclose(palette);
 
 	//  Load shape data
-//	FILE* shapes = fopen("Data/U7/STATIC/SHAPES.VGA", "rb");
-//
-//	if (shapes == nullptr)
-//	{
-//		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
-//		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
-//	}
-//
-//	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
-//
-//	//  The first 150 entries (0-149) are terrain textures.
+	FILE* shapes = fopen("Data/U7/STATIC/SHAPES.VGA", "rb");
+
+	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
+
+	//  The first 150 entries (0-149) are terrain textures.  They are not
+	//  rle-encoded.  Splat them directly to the terrain texture.
+	g_Terrain->m_TerrainTexture.Create(2048, 256, false);
+	for (int thisShape = 0; thisShape < 150; ++thisShape)
+	{
+		fseek(shapes, shapeEntryMap[thisShape].offset, SEEK_SET);
+		int numFrames = shapeEntryMap[thisShape].length / 64;
+		for (int thisFrame = 0; thisFrame < numFrames; ++thisFrame)
+		{
+			for (int i = 0; i < 8; ++i)
+			{
+				for (int j = 0; j < 8; ++j)
+				{
+					unsigned char Value = ReadU8(shapes);
+					g_Terrain->m_TerrainTexture.PutPixel((thisShape * 8) + j, (thisFrame * 8) + i, m_palette[Value]);
+				}
+			}
+
+		}
+	}
+	g_Terrain->m_TerrainTexture.UpdateData();
+	
+	 
 //
 //	for (int thisShape = 150; thisShape < 1024; ++thisShape)
 //	{

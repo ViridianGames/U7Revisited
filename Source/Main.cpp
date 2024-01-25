@@ -33,7 +33,7 @@ int main(int argv, char** argc)
       g_Engine->Init("Data/engine.cfg");
       
       //  Initialize globals
-      g_Cursor = g_ResourceManager->GetTexture("Images/cursor.png");
+      g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
       //Texture* g_Ground = g_ResourceManager->GetTexture("Images/Terrain/U7Baseplates/u7map8-3.png");
 

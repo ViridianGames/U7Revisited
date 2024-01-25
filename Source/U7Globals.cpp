@@ -12,10 +12,7 @@ unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
 Mesh* g_AnimationFrames;
 
-Texture* g_WalkerTexture;
-Texture* g_WalkerMask;
 Texture* g_Cursor;
-Texture* g_Sprites;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
@@ -28,11 +25,6 @@ std::unique_ptr<Terrain> g_Terrain;
 
 std::array<std::array<Texture*, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectTable;
-
-Mesh* g_TestMesh;
-
-bool g_IsSinglePlayer;  //  not single payer
-bool g_IsServer;
 
 bool g_CameraMoved;
 

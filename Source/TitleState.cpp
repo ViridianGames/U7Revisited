@@ -22,16 +22,6 @@ TitleState::~TitleState()
 
 void TitleState::Init(const string& configfile)
 {
-    g_TestMesh = g_ResourceManager->GetMesh("Data/Meshes/standard.txt");
-
-    g_Sprites = g_ResourceManager->GetTexture("Images/sprites.png");
-
-    g_Cursor = g_ResourceManager->GetTexture("Images/cursor.png");
-
-    g_minimapSize = g_Display->GetWidth() / 6;
-
-    g_WalkerTexture = g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
-    g_WalkerMask = g_ResourceManager->GetTexture("Images/VillagerWalkMask.png", false);
     MakeAnimationFrameMeshes();
 
    CreateTitleGUI();
@@ -105,8 +95,6 @@ void TitleState::UpdateTitle()
    
    if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SINGLE_PLAYER)
    {
-      g_IsSinglePlayer = true;
-      g_IsServer = true;
 //      g_Server = new Server();
 //      g_Server->Init("");
 //      g_Client = new Client();
@@ -120,8 +108,6 @@ void TitleState::UpdateTitle()
    
    if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_MULTIPLAYER_SERVER)
    {
-      g_IsSinglePlayer = false;
-      g_IsServer = true;
 //      g_Server = new Server();
 //      g_Server->Init("");
 //      g_Client = new Client();
@@ -134,8 +120,6 @@ void TitleState::UpdateTitle()
 
    if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_MULTIPLAYER_CLIENT)
    {
-      g_IsSinglePlayer = false;
-      g_IsServer = false;
 //      g_Client = new Client();
 //      g_Client->Init("");
       

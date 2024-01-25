@@ -66,7 +66,7 @@ public:
 
 
 
-   Texture* m_TerrainTexture;
+   //Texture* m_TerrainTexture;
    Texture* m_Minimap;
 
    
@@ -78,6 +78,8 @@ public:
    int m_cameraUpdateTime = 0;
 
    int m_terrainUpdateTime = 0;
+
+   unsigned int m_terrainDrawHeight = 0;
 
 
 };

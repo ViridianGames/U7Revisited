@@ -91,9 +91,6 @@ void Terrain::Init(int width, int height)
    m_MinimapTerrain = new Texture();
    m_MinimapTerrain->Create(128, 128, false);
 
-   m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false); //g_ResourceManager->GetTexture("Images/Terrain/U7Baseplates/u7map8-4.png", false);
-   m_WaterTexture = g_ResourceManager->GetTexture("Images/Terrain/water_deep.png", false);
-
    m_TerrainMesh = new Mesh();
    
    m_Water = new Mesh();
@@ -118,7 +115,7 @@ void Terrain::Init(int width, int height)
 void Terrain::Draw()
 {
 //   g_Display->m_Debugging = m_DebugTerrain;
-   g_Display->DrawMesh(m_TerrainMesh, glm::vec3(0, 0, 0), m_TerrainTexture);
+   g_Display->DrawMesh(m_TerrainMesh, glm::vec3(0, 0, 0), &m_TerrainTexture);
 //   g_Display->DrawMesh(m_BeachMesh, glm::vec3(0, 0, 0), m_TerrainTexture);
 //   g_Display->DrawMesh(m_Highlight, glm::vec3(0, 0, 0), NULL);
 
