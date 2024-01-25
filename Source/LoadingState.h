@@ -31,6 +31,7 @@ public:
    void CreateObjectTable();
    void LoadIFIX();
    void LoadIREG();
+   void LoadVersion();
    void MakeMap();
 
    unsigned char ReadU8(FILE* buffer);
@@ -74,6 +75,7 @@ public:
    bool m_loadingObjects = false;
    bool m_loadingIFIX = false;
    bool m_loadingIREG = false;
+   bool m_loadingVersion = false;
    bool m_makingMap = false;
 
    bool m_loadingFailed = false;

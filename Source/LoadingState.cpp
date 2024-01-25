@@ -116,6 +116,14 @@ void LoadingState::UpdateLoading()
 {
 	if (!m_loadingFailed)
 	{
+		if (!m_loadingVersion)
+		{
+			AddConsoleString(std::string("Loading version..."));
+			LoadVersion();
+			m_loadingVersion = true;
+			return;
+		}
+
 		if (!m_loadingChunks)
 		{
 			AddConsoleString(std::string("Loading chunks..."));
@@ -220,6 +228,23 @@ short LoadingState::ReadS16(FILE* buffer)
 int LoadingState::ReadS32(FILE* buffer)
 {
 	return static_cast<signed int>(ReadU32(buffer));
+}
+
+void LoadingState::LoadVersion()
+{
+	FILE* u7versionfile = fopen("version.txt", "r");
+	if (u7versionfile == nullptr)
+	{
+		// choose a default?
+		g_VERSION = "v0.0.1";
+		return;
+	}
+
+	char buffer[20];
+	fgets(buffer, 20, u7versionfile);
+	g_VERSION = buffer;
+
+	fclose(u7versionfile);
 }
 
 void LoadingState::LoadChunks()

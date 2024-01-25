@@ -235,6 +235,8 @@ void MainState::Draw()
 	//g_Display->DrawImage(&g_Terrain->m_TerrainTexture, 0, 0);
 	
 
+	g_SmallFont->DrawString(g_VERSION, g_Display->GetWidth() - 100, g_Display->GetHeight() - 50, Color(1, 1, 0, 1));
+
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 
 }

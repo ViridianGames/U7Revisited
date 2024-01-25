@@ -8,6 +8,8 @@
 
 using namespace std;
 
+std::string g_VERSION;
+
 unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
 Mesh* g_AnimationFrames;
