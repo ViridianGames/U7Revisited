@@ -6,15 +6,14 @@ Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for U
 
 To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This will allow the replacement engine to read in the maps and graphics from the original files.
 
-## Developer Installation Notes
+## Developer Installation Notes (Windows)
 
-- `git clone git@github.com:ViridianGames/U7Revisited.git`
-- `cd U7Revisited`
-- Open `./U7Revisited.sln` in Visual Studio
-- Rebuild the `Geist` and `U7Revisited` projects in the solution
+- Clone the project into a local folder using whatever git interface you prefer
+- Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Redist/Data/U7`
+- Open `./U7Revisited.sln` in Visual Studio (I'm currently using VS 2022)
 - To run the Debugger, in the Project Properties for `U7Revisited` make sure the `Working Directory` is set to `$(SolutionDir)/Redist`
-- Copy the entire contents of your original DOS ULTIMA7 game files to `$(SolutionDir)/Redist/Data/U7`
-- Profit
+- Build the `U7Revisited` project in the solution
+- Run the program
 
 ## Controls:
 
