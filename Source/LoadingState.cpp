@@ -321,15 +321,24 @@ void LoadingState::LoadIFIX()
 			int thissuperchunk = superchunkx + (superchunky * 12);
 			if (thissuperchunk < 16)
 			{
-				ss << "Data/U7/STATIC/U7IFIX0" << std::hex << thissuperchunk;
+				ss << "U7IFIX0" << std::hex << thissuperchunk;
 			}
 			else
 			{
-				ss << "Data/U7/STATIC/U7IFIX" << std::hex << thissuperchunk;
+				ss << "U7IFIX" << std::hex << thissuperchunk;
 			}
-			const std::string s = ss.str();
+			std::string s = ss.str();
+            
+            std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+            
+            s.insert(0, "Data/U7/STATIC/");
 
 			FILE* u7thisifix = fopen(s.c_str(), "rb");
+            
+            if(u7thisifix == nullptr)
+            {
+                int stopper = 0;
+            }
 
 			//  Even though these files don't have an .flx description, 
 			//  these are flex files.  Flex files have a header of 80 bytes,
@@ -466,24 +475,28 @@ void LoadingState::LoadIREG()
 	{
 		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
 		{
-			std::stringstream ss;
+            std::stringstream ss;
 			int thissuperchunk = superchunkx + (superchunky * 12);
 			if (thissuperchunk < 16)
 			{
-				ss << "Data/U7/GAMEDAT/U7IREG0" << std::hex << thissuperchunk;
+				ss << "U7IREG0" << std::hex << thissuperchunk;
 			}
 			else
 			{
-				ss << "Data/U7/GAMEDAT/U7IREG" << std::hex << thissuperchunk;
+				ss << "U7IREG" << std::hex << thissuperchunk;
 			}
-			const std::string s = ss.str();
+			std::string s = ss.str();
+            
+            std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+            
+            s.insert(0, "Data/U7/GAMEDAT/");
 
 			FILE* u7thisireg = fopen(s.c_str(), "rb");
 
-			//while (u7thisireg)
-			//{
-
-			//}
+			if(u7thisireg == nullptr)
+			{
+                int stopper = 0;
+			}
 
 			//int stopper = 0;
 			fclose(u7thisireg);
@@ -687,19 +700,19 @@ void LoadingState::CreateObjectTable()
 	//  Open the two files that define the objects in the object table.
 	std::stringstream tfa;
 
-	tfa << "Data/U7/STATIC/tfa.dat";
+	tfa << "Data/U7/STATIC/TFA.DAT";
 
 	ifstream tfafile(tfa.str(), ios::binary);
 
 	std::stringstream wgtvol;
 
-	wgtvol << "Data/U7/STATIC/wgtvol.dat";
+	wgtvol << "Data/U7/STATIC/WGTVOL.DAT";
 
 	ifstream wgtvolfile(wgtvol.str(), ios::binary);
 
 	std::stringstream text;
 
-	text << "Data/U7/STATIC/text.flx";
+	text << "Data/U7/STATIC/TEXT.FLX";
 
 	ifstream textfile(text.str(), ios::binary);
 
@@ -742,7 +755,7 @@ void LoadingState::CreateObjectTable()
 		textfile.seekg(entrymap[i].offset);
 		char* thisname = new char[entrymap[i].length];
 		textfile.read(thisname, entrymap[i].length);
-		shapeNames.push_back(thisname);
+		shapeNames.push_back(std::string(thisname));
 		delete[] thisname;
 	}
 

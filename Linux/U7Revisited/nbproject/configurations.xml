@@ -14,24 +14,68 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="Geist" projectFiles="true">
+        <logicalFolder name="f1" displayName="Source" projectFiles="true">
+          <itemPath>../../Source/Geist/BaseUnits.cpp</itemPath>
+          <itemPath>../../Source/Geist/BaseUnits.h</itemPath>
+          <itemPath>../../Source/Geist/Config.cpp</itemPath>
+          <itemPath>../../Source/Geist/Config.h</itemPath>
+          <itemPath>../../Source/Geist/Display.cpp</itemPath>
+          <itemPath>../../Source/Geist/Display.h</itemPath>
+          <itemPath>../../Source/Geist/Engine.cpp</itemPath>
+          <itemPath>../../Source/Geist/Engine.h</itemPath>
+          <itemPath>../../Source/Geist/Font.cpp</itemPath>
+          <itemPath>../../Source/Geist/Font.h</itemPath>
+          <itemPath>../../Source/Geist/GUIElements.cpp</itemPath>
+          <itemPath>../../Source/Geist/GUIElements.h</itemPath>
+          <itemPath>../../Source/Geist/Globals.cpp</itemPath>
+          <itemPath>../../Source/Geist/Globals.h</itemPath>
+          <itemPath>../../Source/Geist/Gui.cpp</itemPath>
+          <itemPath>../../Source/Geist/Gui.h</itemPath>
+          <itemPath>../../Source/Geist/IO.cpp</itemPath>
+          <itemPath>../../Source/Geist/IO.h</itemPath>
+          <itemPath>../../Source/Geist/Input.cpp</itemPath>
+          <itemPath>../../Source/Geist/Input.h</itemPath>
+          <itemPath>../../Source/Geist/Logging.cpp</itemPath>
+          <itemPath>../../Source/Geist/Logging.h</itemPath>
+          <itemPath>../../Source/Geist/MemoryManager.cpp</itemPath>
+          <itemPath>../../Source/Geist/MemoryManager.h</itemPath>
+          <itemPath>../../Source/Geist/Object.h</itemPath>
+          <itemPath>../../Source/Geist/ParticleSystem.cpp</itemPath>
+          <itemPath>../../Source/Geist/ParticleSystem.h</itemPath>
+          <itemPath>../../Source/Geist/Primitives.cpp</itemPath>
+          <itemPath>../../Source/Geist/Primitives.h</itemPath>
+          <itemPath>../../Source/Geist/RNG.cpp</itemPath>
+          <itemPath>../../Source/Geist/RNG.h</itemPath>
+          <itemPath>../../Source/Geist/ResourceManager.cpp</itemPath>
+          <itemPath>../../Source/Geist/ResourceManager.h</itemPath>
+          <itemPath>../../Source/Geist/Sound.cpp</itemPath>
+          <itemPath>../../Source/Geist/Sound.h</itemPath>
+          <itemPath>../../Source/Geist/State.h</itemPath>
+          <itemPath>../../Source/Geist/StateMachine.cpp</itemPath>
+          <itemPath>../../Source/Geist/StateMachine.h</itemPath>
+          <itemPath>../../Source/Geist/TooltipSystem.cpp</itemPath>
+          <itemPath>../../Source/Geist/TooltipSystem.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
       <logicalFolder name="f2" displayName="Source" projectFiles="true">
+        <logicalFolder name="f1" displayName="States" projectFiles="true">
+          <itemPath>../../Source/LoadingState.cpp</itemPath>
+          <itemPath>../../Source/LoadingState.h</itemPath>
+          <itemPath>../../Source/MainState.cpp</itemPath>
+          <itemPath>../../Source/MainState.h</itemPath>
+          <itemPath>../../Source/OptionsState.cpp</itemPath>
+          <itemPath>../../Source/OptionsState.h</itemPath>
+          <itemPath>../../Source/TitleState.cpp</itemPath>
+          <itemPath>../../Source/TitleState.h</itemPath>
+        </logicalFolder>
         <itemPath>../../Source/Main.cpp</itemPath>
-        <itemPath>../../Source/MainState.cpp</itemPath>
-        <itemPath>../../Source/MainState.cpp.bak</itemPath>
-        <itemPath>../../Source/MainState.h</itemPath>
-        <itemPath>../../Source/MainState.h.bak</itemPath>
-        <itemPath>../../Source/OptionsState.cpp</itemPath>
-        <itemPath>../../Source/OptionsState.h</itemPath>
         <itemPath>../../Source/Terrain.cpp</itemPath>
         <itemPath>../../Source/Terrain.h</itemPath>
-        <itemPath>../../Source/TitleState.cpp</itemPath>
-        <itemPath>../../Source/TitleState.h</itemPath>
         <itemPath>../../Source/U7Globals.cpp</itemPath>
         <itemPath>../../Source/U7Globals.h</itemPath>
-        <itemPath>../../Source/U7Unit.cpp</itemPath>
-        <itemPath>../../Source/U7Unit.h</itemPath>
-        <itemPath>../../Source/model3d.cc</itemPath>
-        <itemPath>../../Source/model3d.h</itemPath>
+        <itemPath>../../Source/U7Object.cpp</itemPath>
+        <itemPath>../../Source/U7Object.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -48,6 +92,7 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>../../../../../Libraries/SoLoud/src</Elem>
+    <Elem>../../Source/Geist</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -110,15 +155,116 @@
       </item>
       <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/MainState.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/MainState.cpp.bak" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/MainState.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/MainState.h.bak" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -136,13 +282,9 @@
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.cc" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.h" ex="false" tool="3" flavor2="0">
+      <item path="../../Source/U7Object.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -210,15 +352,116 @@
       </item>
       <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/MainState.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/MainState.cpp.bak" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/MainState.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/MainState.h.bak" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -236,13 +479,9 @@
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.cc" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.h" ex="false" tool="3" flavor2="0">
+      <item path="../../Source/U7Object.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Debug-Steam" type="1">
@@ -297,15 +536,116 @@
       </item>
       <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Main.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="../../Source/MainState.cpp" ex="false" tool="1" flavor2="11">
       </item>
-      <item path="../../Source/MainState.cpp.bak" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/MainState.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/MainState.h.bak" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="11">
       </item>
@@ -323,13 +663,9 @@
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.cc" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.h" ex="false" tool="3" flavor2="0">
+      <item path="../../Source/U7Object.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release-Steam" type="1">
@@ -392,15 +728,116 @@
       </item>
       <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Display.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Font.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Input.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/MemoryManager.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/Sound.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/StateMachine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../Source/Geist/TooltipSystem.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Main.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="../../Source/MainState.cpp" ex="false" tool="1" flavor2="11">
       </item>
-      <item path="../../Source/MainState.cpp.bak" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/MainState.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/MainState.h.bak" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="11">
       </item>
@@ -418,13 +855,9 @@
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="../../Source/U7Unit.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.cc" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/model3d.h" ex="false" tool="3" flavor2="0">
+      <item path="../../Source/U7Object.h" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

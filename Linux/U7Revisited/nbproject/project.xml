@@ -5,7 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>U7Revisited</name>
             <c-extensions/>
-            <cpp-extensions>cc,cpp</cpp-extensions>
+            <cpp-extensions>cpp</cpp-extensions>
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects>
@@ -13,6 +13,7 @@
             </make-dep-projects>
             <sourceRootList>
                 <sourceRootElem>../../../../../Libraries/SoLoud/src</sourceRootElem>
+                <sourceRootElem>../../Source/Geist</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

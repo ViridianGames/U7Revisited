@@ -9,10 +9,11 @@ using namespace std;
 
 Terrain::Terrain()
 {
-   m_Vertices = NULL;
+   m_Vertices = nullptr;
+   m_Cells = nullptr;
 
-   m_Minimap = NULL;
-   m_MinimapTerrain = NULL;
+   m_Minimap = nullptr;
+   m_MinimapTerrain = nullptr;
    m_TerrainChanged = false;
 
    m_HitX = 0;
@@ -57,10 +58,10 @@ void Terrain::Init(int width, int height)
    m_VertexWidth = width + 1;
    m_VertexHeight = height + 1;
 
-   if (m_Cells != NULL)
+   if (m_Cells != nullptr)
       delete [] m_Cells;
 
-   if (m_Vertices != NULL)
+   if (m_Vertices != nullptr)
       delete [] m_Vertices;
 
    m_Cells = new Cell[m_CellWidth * m_CellHeight];
