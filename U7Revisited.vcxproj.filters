@@ -25,6 +25,183 @@
     <ClCompile Include="Source\LoadingState.cpp">
       <Filter>Source\States</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Geist\BaseUnits.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Config.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Display.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Engine.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Font.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Globals.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Gui.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\GUIElements.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Input.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\IO.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Logging.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\MemoryManager.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\ParticleSystem.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Primitives.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\ResourceManager.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\RNG.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\Sound.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\StateMachine.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\TooltipSystem.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\tinyxml2\tinyxml2.cpp">
+      <Filter>Source\ThirdParty\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\wav\dr_impl.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\darray.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\klatt.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\resonator.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\soloud_speech.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\tts.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_audiosource.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_bus.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_3d.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_basicops.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_faderops.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_filterops.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_getters.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_setters.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_voicegroup.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_core_voiceops.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_fader.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_fft.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_fft_lut.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_file.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_filter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_misc.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_queue.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\core\soloud_thread.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_bassboostfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_biquadresonantfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_dcremovalfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_echofilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_fftfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_flangerfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_freeverbfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_lofifilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_robotizefilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\filter\soloud_waveshaperfilter.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\backend\winmm\soloud_winmm.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\wav\soloud_wav.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\wav\soloud_wavstream.cpp">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\soloud\src\audiosource\wav\stb_vorbis.c">
+      <Filter>Source\ThirdParty\SoLoud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Terrain.h">
@@ -47,6 +224,69 @@
     </ClInclude>
     <ClInclude Include="Source\LoadingState.h">
       <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\BaseUnits.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Config.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Display.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Engine.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Font.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Globals.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Gui.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GUIElements.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Input.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\IO.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Logging.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\MemoryManager.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Object.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\ParticleSystem.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Primitives.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\ResourceManager.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\RNG.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\Sound.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\State.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\StateMachine.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\TooltipSystem.h">
+      <Filter>Source\Geist</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +313,18 @@
     </Filter>
     <Filter Include="Source\States">
       <UniqueIdentifier>{5c543dd9-8bdb-4e13-aa19-a1fe47b83aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Geist">
+      <UniqueIdentifier>{127af204-b7b6-496c-9904-6cf072e01d48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ThirdParty">
+      <UniqueIdentifier>{cfc0e4a9-d719-4edf-a5f6-8ff0b9bd6daa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ThirdParty\tinyxml2">
+      <UniqueIdentifier>{1115fa1a-df52-492c-a2ca-7f40ee82f1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\ThirdParty\SoLoud">
+      <UniqueIdentifier>{d2554fb5-31a1-4774-b6da-feb19fa65850}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
