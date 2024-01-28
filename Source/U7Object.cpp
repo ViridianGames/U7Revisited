@@ -199,7 +199,7 @@ void U7Object::Draw()
          glm::vec3 thisPos = m_Pos;
          thisPos.x += 1;
          thisPos.z += 1;
-//         thisPos.y -= .5f;
+         thisPos.y += thisPos.y * .01f;
          g_Display->DrawMesh(objectData->m_mesh.get(), thisPos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 00, 0), m_Scaling);
          break;
       }
@@ -209,7 +209,14 @@ void U7Object::Draw()
          glm::vec3 thisPos = m_Pos;
          thisPos.x += 1;
          thisPos.z += 1;
-         //thisPos.y += .01f;
+         if(thisPos.y > 0)
+         {
+             thisPos.y += thisPos.y * .01f;
+         }
+         else
+         {
+             thisPos.y = .01f;
+         }
 
          g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/dropshadow.txt"), thisPos, m_Texture, Color(1, 1, 1, 1), glm::vec3(0, 0, 0), m_Scaling);
          break;
