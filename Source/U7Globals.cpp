@@ -96,18 +96,36 @@ void MakeAnimationFrameMeshes()
 
 	g_AnimationFrames->Init(vertices, indices);
 }
-
-unsigned int DoCameraMovement()
+void DoCameraRotation()
 {
-	unsigned int time = g_Engine->Time();
-	g_CameraMoved = false;
-
-	float speed = 50;
-
-	if (g_Input->WasAnyKeyPressed())
+	static float s_deltaAngle; // used as lerp target to smooth camera rotation out.
+	if (g_Input->m_IsMiddleButtonDown)
 	{
-		int stopper = 0;
+
+		if (!g_Input->m_MouseLocked)
+		{
+			g_Input->LockMouse();
+			s_deltaAngle = 0.0f;
+			return;
+		}
+
+		s_deltaAngle = Lerp(s_deltaAngle, -g_Input->m_MouseDeltaX / 3.0f, 0.2f);
+		float newAngle = g_Display->GetCameraAngle() + s_deltaAngle;
+		g_Display->SetCameraAngle(newAngle);
+		g_Display->SetHasCameraChanged(true);
+		g_Display->UpdateCamera();
+		g_CameraMoved = true;
+		return;
+
 	}
+
+	if (g_Input->m_MouseLocked)
+	{
+		g_Input->UnlockMouse();
+		g_CameraRotateSpeed = s_deltaAngle;
+	}
+
+
 	if (g_Input->IsKeyDown(KEY_q))
 	{
 		g_CameraRotateSpeed += g_Engine->LastUpdateInSeconds() * 50;
@@ -145,7 +163,21 @@ unsigned int DoCameraMovement()
 		g_Display->UpdateCamera();
 		g_CameraMoved = true;
 	}
+}
 
+unsigned int DoCameraMovement()
+{
+	unsigned int time = g_Engine->Time();
+	g_CameraMoved = false;
+
+	float speed = 50;
+
+	if (g_Input->WasAnyKeyPressed())
+	{
+		int stopper = 0;
+	}
+
+	DoCameraRotation();
 
 	if (g_Input->IsKeyDown(KEY_a))
 	{
