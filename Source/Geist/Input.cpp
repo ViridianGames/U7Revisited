@@ -26,8 +26,11 @@ void Input::Init(const std::string& configfile)
 	m_MouseY = g_Display->GetHeight() / 2;
 	m_DownX = m_MouseX;
 	m_DownY = m_MouseY;
+	m_MouseDeltaX = 0;
+	m_MouseDeltaY = 0;
 
 	m_MouseZ = 0;
+	m_MouseLocked = false;
 	m_IsKeyDown = false;
 	m_IsLeftButtonDown = false;
 	m_IsRightButtonDown = false;
@@ -188,7 +191,12 @@ void Input::Update()
 	m_WasLeftButtonClicked = false;
 	m_WasRightButtonClicked = false;
 
-	unsigned char flags = SDL_GetMouseState(&m_MouseX, &m_MouseY);
+	if (m_MouseLocked)
+	{
+		SDL_GetRelativeMouseState(&m_MouseDeltaX, &m_MouseDeltaY);
+	}
+
+	unsigned char flags = m_MouseLocked ? SDL_GetMouseState(NULL, NULL) : SDL_GetMouseState(&m_MouseX, &m_MouseY);
 	m_MouseState = flags;
 
 	m_WasLeftButtonDown = m_IsLeftButtonDown;
@@ -348,6 +356,22 @@ void Input::Update()
 			}
 		}
 	}
+}
+
+void Input::LockMouse()
+{
+	m_MouseLocked = true;
+	SDL_SetRelativeMouseMode(SDL_bool::SDL_TRUE);
+	SDL_GetRelativeMouseState(NULL, NULL); // consume first deltas
+	m_MouseDeltaX = 0;
+	m_MouseDeltaY = 0;
+}
+
+void Input::UnlockMouse()
+{
+	SDL_SetRelativeMouseMode(SDL_bool::SDL_FALSE);
+	SDL_WarpMouseInWindow(NULL, m_MouseX, m_MouseY);
+	m_MouseLocked = false;
 }
 
 bool Input::WasAnyKeyPressed()

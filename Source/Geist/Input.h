@@ -241,6 +241,10 @@ public:
 	//  Get the current mouse ray, it's used for visibility testing.
 	void GetMouseRay(glm::vec3& origin, glm::vec3& pos);
 
+	// Lock the mouse in place. Pointer won't move until unlock.
+	void LockMouse();
+	void UnlockMouse();
+
 	//  Controller
 	bool  IsControllerConnected();
 	bool  WasControllerJustAdded() { return m_WasControllerJustAdded; }
@@ -269,7 +273,9 @@ public:
 
 	int m_DownX, m_DownY;
 	int m_MouseX, m_MouseY, m_MouseZ;
+	int m_MouseDeltaX, m_MouseDeltaY;
 	int m_LastMouseZ;
+	bool m_MouseLocked;
 
 	bool m_IsKeyDown,
 		m_IsLeftButtonDown,
