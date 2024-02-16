@@ -149,6 +149,12 @@ void MainState::Update()
 	{
 		m_showObjects = !m_showObjects;
 	}
+
+	if (g_Input->WasKeyPressed(KEY_F1))
+	{
+		g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
+
+	}
 }
 
 void MainState::Draw()

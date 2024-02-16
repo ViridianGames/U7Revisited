@@ -44,7 +44,7 @@ glm::vec3 g_CameraMoveSpeed = glm::vec3(0, 0, 0);
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
-std::string g_objectDrawTypeStrings[] = { "Billboard", "Crossbillboard", "Cuboid", "Flat", "Custom Mesh", "Table"};
+std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh", "Table", "HangingNS", "HangingEW"};
 
 std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
 

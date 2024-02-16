@@ -36,6 +36,11 @@ public:
    virtual void SetSpeed(float speed) { m_Speed = speed; }
 
    void SetShapeAndFrame(unsigned int shape, unsigned int frame);
+   void SetupDrawType(ObjectDrawTypes drawType, bool reloadTexture);
+   void FixupTextureCuboid();
+   void FixupTextureHangingNS() {};
+   void FixupTextureHangingEW() {};
+
 
    glm::vec3 m_Pos;
    glm::vec3 m_Dest;

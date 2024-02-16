@@ -208,6 +208,13 @@ void ObjectEditorState::Update()
 			m_currentFrame = newFrame;
 		}
 	}
+
+	if (g_Input->WasKeyPressed(KEY_SPACE))
+	{
+		ObjectDrawTypes newDrawType = static_cast<ObjectDrawTypes>((static_cast<int>(m_objectLibrary[m_currentShape][m_currentFrame]->m_drawType) + 1) % static_cast<int>(ObjectDrawTypes::OBJECT_DRAW_LAST));
+		m_objectLibrary[m_currentShape][m_currentFrame]->m_Texture->Reload();
+		m_objectLibrary[m_currentShape][m_currentFrame]->SetupDrawType(newDrawType, true);
+	}
 }
 
 

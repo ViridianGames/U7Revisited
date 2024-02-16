@@ -874,6 +874,8 @@ void Display::DrawMeshActual(Mesh* mesh, bool is3D, int tristart, int numtris, g
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_ALPHA_TEST);
 
+	glAlphaFunc(GL_GREATER, 0.1);
+
 	if (tex)
 	{
 		glEnable(GL_TEXTURE_2D);
