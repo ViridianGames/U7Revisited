@@ -29,7 +29,27 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
    m_Frame = frame;
 
-   m_Texture = g_shapeTable[m_ObjectType][m_Frame];
+   m_Texture = nullptr;
+
+   if (g_shapeTable[unitType][frame] != nullptr)
+   {
+      m_Texture = g_shapeTable[unitType][frame];
+	}
+   else
+   {
+      for (int i = 0; i < 32; ++i)
+      {
+         if(g_shapeTable[unitType][i] != nullptr)
+         m_Texture = g_shapeTable[unitType][i];
+      }
+   }
+
+   //  Still nullptr?  Default back to the dropshadow.
+   if (m_Texture == nullptr)
+   {
+      m_Texture = g_ResourceManager->GetTexture("Images/dropshadow.png", false);
+	}
+   
 
    ObjectData* objectData = &g_objectTable[unitType];
    m_drawType = std::get<0>(g_ObjectTypes.at(m_ObjectType));
@@ -48,6 +68,10 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
       m_Scaling = glm::vec3(objectData->m_width, objectData->m_height, objectData->m_depth);
    }
 
+   //m_Scaling.x *= 2;
+   //m_Scaling.y *= 2;
+   //m_Scaling.z *= 2;
+
    m_DropShadow = g_ResourceManager->GetTexture("Images/dropshadow.png", false);
 
    m_distanceFromCamera = 0;
@@ -62,7 +86,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 
 
-         float offset = .03f;
+         float offset = 0;// .003f;
 
          float squareX = (objectData->m_width * 8.0f) / float(m_Texture->GetWidth()) - offset;
          float squareY = (objectData->m_depth * 8.0f) / float(m_Texture->GetHeight()) - offset;
@@ -159,16 +183,16 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
             int counterx = objectData->m_width * 8 + 1;
             for (int i = counterx; i < workingTexture->GetWidth(); ++i)
             {
-               int countery = 0;
+               int countery = 1;
                for (int x = i; x < workingTexture->GetWidth(); ++x)
                {
-                  for (int y = countery; y < countery + objectData->m_height * 8; ++y)
+                  for (int y = countery; y < countery + objectData->m_depth * 8; ++y)
                   {
                      Color pixel = workingTexture->GetPixel(x, y + 1);
                      workingTexture->PutPixel(x, y, pixel);
                   }
 
-                  workingTexture->PutPixel(x, countery + objectData->m_height * 8, Color(0, 0, 0, 0));
+                  workingTexture->PutPixel(x, countery + objectData->m_depth * 8, Color(0, 0, 0, 0));
                   ++countery;
                }
             }
@@ -183,6 +207,11 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
+   if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
+   {
+      if (m_Pos.y > 4)
+         return;
+	}
    //if (m_ObjectType != 191)
    //   return;
    ObjectData* objectData = &g_objectTable[m_ObjectType];

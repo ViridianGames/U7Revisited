@@ -16,6 +16,8 @@
 #include "TitleState.h"
 #include "OptionsState.h"
 #include "LoadingState.h"
+#include "ObjectEditorState.h"
+#include "WorldEditorState.h"
 #include <string>
 #include <sstream>
 
@@ -78,6 +80,15 @@ int main(int argv, char** argc)
       State* loadingState = new LoadingState;
       loadingState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_LOADINGSTATE, loadingState);
+
+      State* objectEditorState = new ObjectEditorState;
+      objectEditorState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_OBJECTEDITORSTATE, objectEditorState);
+
+      State* worldEditorState = new WorldEditorState;
+      worldEditorState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
+
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

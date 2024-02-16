@@ -202,6 +202,12 @@
     <ClCompile Include="ThirdParty\soloud\src\audiosource\wav\stb_vorbis.c">
       <Filter>Source\ThirdParty\SoLoud</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ObjectEditorState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WorldEditorState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Terrain.h">
@@ -287,6 +293,12 @@
     </ClInclude>
     <ClInclude Include="Source\Geist\TooltipSystem.h">
       <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ObjectEditorState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WorldEditorState.h">
+      <Filter>Source\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -36,11 +36,13 @@
     <ClCompile Include="Source\LoadingState.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
+    <ClCompile Include="Source\ObjectEditorState.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
+    <ClCompile Include="Source\WorldEditorState.cpp" />
     <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\darray.cpp" />
     <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\klatt.cpp" />
     <ClCompile Include="ThirdParty\soloud\src\audiosource\speech\resonator.cpp" />
@@ -106,11 +108,13 @@
     <ClInclude Include="Source\Geist\TooltipSystem.h" />
     <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\MainState.h" />
+    <ClInclude Include="Source\ObjectEditorState.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
     <ClInclude Include="Source\U7Object.h" />
+    <ClInclude Include="Source\WorldEditorState.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Planitia Design.txt" />

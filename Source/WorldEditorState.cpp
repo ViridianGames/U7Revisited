@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "U7Globals.h"
-#include "LoadingState.h"
+#include "WorldEditorState.h"
 
 #include <list>
 #include <string>
@@ -14,15 +14,15 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-//  LoadingState
+//  WorldEditorState
 ////////////////////////////////////////////////////////////////////////////////
 
-LoadingState::~LoadingState()
+WorldEditorState::~WorldEditorState()
 {
 	Shutdown();
 }
 
-void LoadingState::Init(const string& configfile)
+void WorldEditorState::Init(const string& configfile)
 {
 	g_minimapSize = g_Display->GetWidth() / 6;
 
@@ -37,22 +37,22 @@ void LoadingState::Init(const string& configfile)
 
 }
 
-void LoadingState::OnEnter()
+void WorldEditorState::OnEnter()
 {
 
 }
 
-void LoadingState::OnExit()
+void WorldEditorState::OnExit()
 {
 
 }
 
-void LoadingState::Shutdown()
+void WorldEditorState::Shutdown()
 {
 
 }
 
-void LoadingState::Update()
+void WorldEditorState::Update()
 {
 	if (g_Input->WasKeyPressed(KEY_ESCAPE))
 	{
@@ -93,7 +93,7 @@ void LoadingState::Update()
 }
 
 
-void LoadingState::Draw()
+void WorldEditorState::Draw()
 {
 	g_Display->ClearScreen();
 
@@ -117,7 +117,7 @@ void LoadingState::Draw()
 }
 
 
-void LoadingState::UpdateLoading()
+void WorldEditorState::UpdateLoading()
 {
 	if (!m_loadingFailed)
 	{
@@ -193,21 +193,21 @@ void LoadingState::UpdateLoading()
 	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
 }
 
-unsigned char LoadingState::ReadU8(FILE* buffer)
+unsigned char WorldEditorState::ReadU8(FILE* buffer)
 {
 	unsigned char thisData;
 	fread(&thisData, sizeof(unsigned char), 1, buffer);
 	return thisData;
 }
 
-unsigned short LoadingState::ReadU16(FILE* buffer)
+unsigned short WorldEditorState::ReadU16(FILE* buffer)
 {
 	unsigned short thisData;
 	fread(&thisData, sizeof(unsigned short), 1, buffer);
 	return thisData;
 }
 
-unsigned int LoadingState::ReadU32(FILE* buffer)
+unsigned int WorldEditorState::ReadU32(FILE* buffer)
 {
 	unsigned int b0 = ReadU8(buffer);
 	unsigned int b1 = ReadU8(buffer);
@@ -216,26 +216,26 @@ unsigned int LoadingState::ReadU32(FILE* buffer)
 	return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
 }
 
-char LoadingState::ReadS8(FILE* buffer)
+char WorldEditorState::ReadS8(FILE* buffer)
 {
 	char thisData;
 	fread(&thisData, sizeof(char), 1, buffer);
 	return thisData;
 }
 
-short LoadingState::ReadS16(FILE* buffer)
+short WorldEditorState::ReadS16(FILE* buffer)
 {
 	short thisData;
 	fread(&thisData, sizeof(short), 1, buffer);
 	return thisData;
 }
 
-int LoadingState::ReadS32(FILE* buffer)
+int WorldEditorState::ReadS32(FILE* buffer)
 {
 	return static_cast<signed int>(ReadU32(buffer));
 }
 
-void LoadingState::LoadVersion()
+void WorldEditorState::LoadVersion()
 {
 	FILE* u7versionfile = fopen("version.txt", "r");
 	if (u7versionfile == nullptr)
@@ -252,7 +252,7 @@ void LoadingState::LoadVersion()
 	fclose(u7versionfile);
 }
 
-void LoadingState::LoadChunks()
+void WorldEditorState::LoadChunks()
 {
 	//  Load data for all chunks first
 	FILE* u7chunksfile = fopen("Data/U7/STATIC/U7CHUNKS", "rb");
@@ -288,7 +288,7 @@ void LoadingState::LoadChunks()
 	fclose(u7chunksfile);
 }
 
-void LoadingState::LoadMap()
+void WorldEditorState::LoadMap()
 {
 	FILE* u7mapfile = fopen("Data/U7/STATIC/U7MAP", "rb");
 	//  Untangle the map and chunk files into a single array.
@@ -316,7 +316,7 @@ void LoadingState::LoadMap()
 	fclose(u7mapfile);
 }
 
-void LoadingState::LoadIFIX()
+void WorldEditorState::LoadIFIX()
 {
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
@@ -438,7 +438,7 @@ void LoadingState::LoadIFIX()
 	}
 }
 
-void LoadingState::MakeMap()
+void WorldEditorState::MakeMap()
 {
 	g_World.resize(3072);
 	for (int i = 0; i < 3072; ++i)
@@ -474,7 +474,7 @@ void LoadingState::MakeMap()
 }
 
 
-void LoadingState::LoadIREG()
+void WorldEditorState::LoadIREG()
 {
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
@@ -547,7 +547,7 @@ void LoadingState::LoadIREG()
 	}
 }
 
-void LoadingState::CreateShapeTable()
+void WorldEditorState::CreateShapeTable()
 {
 	for (int i = 150; i < 1024; ++i)
 	{
@@ -727,7 +727,7 @@ void LoadingState::CreateShapeTable()
 //	}
 }
 
-//void LoadingState::ReadImage(int OffsetX, int OffsetY, int BlockLength)
+//void WorldEditorState::ReadImage(int OffsetX, int OffsetY, int BlockLength)
 //{
 //	for (int i = 0; i < BlockLength; ++i)
 //	{
@@ -738,7 +738,7 @@ void LoadingState::CreateShapeTable()
 //	}
 //}
 
-void LoadingState::CreateObjectTable()
+void WorldEditorState::CreateObjectTable()
 {
 	//  Open the two files that define the objects in the object table.
 	std::stringstream tfa;
@@ -848,7 +848,7 @@ void LoadingState::CreateObjectTable()
 //  of FLXEntryData, which is a struct containing the offset and length of
 //  each entry in the file.  It moves the file pointers to the point where
 //  the calling code can immediately start reading out data.
-std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(FILE* file)
+std::vector<WorldEditorState::FLXEntryData> WorldEditorState::ParseFLXHeader(FILE* file)
 {
 	char header[80];
 	fread(&header, sizeof(char), 80, file);

@@ -42,6 +42,12 @@ float g_CameraRotateSpeed = 0;
 
 glm::vec3 g_CameraMoveSpeed = glm::vec3(0, 0, 0);
 
+std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
+
+std::string g_objectDrawTypeStrings[] = { "Billboard", "Crossbillboard", "Cuboid", "Flat", "Custom Mesh", "Table"};
+
+std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {
@@ -289,7 +295,7 @@ shared_ptr<U7Object> U7ObjectClassFactory(int type)
 		return temp;
 }
 
-vector<shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, int range)
+vector<shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, float range)
 {
 	vector<shared_ptr<U7Object> > _Targets;
 	for (auto& unit : g_ObjectList)

@@ -1,5 +1,5 @@
-#ifndef _LOADINGSTATE_H_
-#define _LOADINGSTATE_H_
+#ifndef _WORLDEDITORSTATE_H_
+#define _WORLDEDITORSTATE_H_
 
 #include "State.h"
 #include "Gui.h"
@@ -7,11 +7,11 @@
 #include <deque>
 #include <math.h>
 
-class LoadingState : public State
+class WorldEditorState : public State
 {
 public:
-   LoadingState(){};
-   ~LoadingState();
+   WorldEditorState(){};
+   ~WorldEditorState();
 
 
    virtual void Init(const std::string& configfile);

@@ -33,8 +33,13 @@ enum GameStates
 	STATE_TITLESTATE,
 	STATE_MAINSTATE,
 	STATE_OPTIONSSTATE,
+	STATE_OBJECTEDITORSTATE,
+	STATE_WORLDEDITORSTATE,
 	STATE_LASTSTATE
 };
+
+extern std::string g_gameStateStrings[];
+//std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
 enum class ObjectDrawTypes
 {
@@ -42,8 +47,12 @@ enum class ObjectDrawTypes
 	OBJECT_DRAW_CROSSBILLBOARD,
 	OBJECT_DRAW_CUBOID,
 	OBJECT_DRAW_FLAT,
-	OBJECT_DRAW_CUSTOM_MESH
+	OBJECT_DRAW_CUSTOM_MESH,
+	OBJECT_DRAW_TABLE,
+	OBJECT_DRAW_LAST
 };
+
+extern std::string g_objectDrawTypeStrings[];
 
 enum class ObjectTypes
 {
@@ -56,6 +65,8 @@ enum class ObjectTypes
 	OBJECT_KEY,
 	OBJECT_ITEM
 };
+
+extern std::string g_objectTypeStrings[];
 
 struct ObjectData
 {
@@ -133,7 +144,7 @@ std::shared_ptr<U7Object> U7ObjectClassFactory(int type);
 
 void PopulateLocationMap();
 
-std::vector<std::shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, int range);
+std::vector<std::shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, float range);
 
 glm::vec3 GetRadialVector(float partitions, float thispartition);
 
