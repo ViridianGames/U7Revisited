@@ -27,6 +27,8 @@ void MainState::Init(const string& configfile)
 {
 	m_Minimap = g_ResourceManager->GetTexture("Images/minimap.png");
 
+	m_MinimapArrow = g_ResourceManager->GetTexture("Images/minimaparrow.png", false);
+
 	m_Gui = new Gui();
 
 	m_Gui->SetLayout(0, 0, 138, 384, Gui::GUIP_UPPERRIGHT);
@@ -96,6 +98,7 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
 	AddConsoleString(std::string("Zoom in and out with mousewheel."));
 	AddConsoleString(std::string("Left-click in the minimap to teleport."));
+	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
 	AddConsoleString(std::string("Press ESC to exit."));
 }
 
@@ -187,8 +190,16 @@ void MainState::Draw()
 		}
 	}
 
-
 	g_Display->DrawImage(m_Minimap, g_Display->GetWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize, Color(1, 1, 1, 1), false, 0, 0);
+
+	float _ScaleX = g_minimapSize / float(g_Terrain->m_VertexWidth);
+	float _ScaleZ = g_minimapSize / float(g_Terrain->m_VertexHeight);
+
+	float _X = g_Display->GetWidth() - g_minimapSize + (g_Display->GetCameraLookAtPoint().x * _ScaleX);
+	float _Y = g_Display->GetCameraLookAtPoint().z * _ScaleZ;
+
+
+	g_Display->DrawImage(m_MinimapArrow, _X - (m_MinimapArrow->GetWidth() * g_DrawScale * .25f), _Y - (m_MinimapArrow->GetHeight() * g_DrawScale * .25f), m_MinimapArrow->GetWidth() * g_DrawScale * .5f, m_MinimapArrow->GetHeight() * g_DrawScale * .5f, Color(1, 1, 1, 1), false, 0, 0);
 
 
 

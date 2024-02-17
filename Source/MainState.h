@@ -68,7 +68,7 @@ public:
 
    //Texture* m_TerrainTexture;
    Texture* m_Minimap;
-
+   Texture* m_MinimapArrow;
    
 
    bool m_showObjects;

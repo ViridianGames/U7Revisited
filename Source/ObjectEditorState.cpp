@@ -37,7 +37,7 @@ void ObjectEditorState::Init(const string& configfile)
 
 void ObjectEditorState::OnEnter()
 {
-
+	ClearConsole();
 }
 
 void ObjectEditorState::OnExit()
