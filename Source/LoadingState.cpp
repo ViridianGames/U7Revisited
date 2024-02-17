@@ -509,14 +509,14 @@ void LoadingState::LoadIREG()
 				while (!feof(u7thisireg))
 				{
 					//  Read the length of the object.
-					byte length;
-					fread(&length, sizeof(byte), 1, u7thisireg);
+					unsigned char length;
+					fread(&length, sizeof(unsigned char), 1, u7thisireg);
 					if (length == 6) //  Object.
 					{
-						byte x;
-						byte y;
-						fread(&x, sizeof(byte), 1, u7thisireg);
-						fread(&y, sizeof(byte), 1, u7thisireg);
+						unsigned char x;
+						unsigned char y;
+						fread(&x, sizeof(unsigned char), 1, u7thisireg);
+						fread(&y, sizeof(unsigned char), 1, u7thisireg);
 
 						int chunkx = x >> 4;
 						int chunky = y >> 4;
@@ -531,12 +531,12 @@ void LoadingState::LoadIREG()
 						int shape = shapeData & 0x3ff;
 						int frame = (shapeData >> 10) & 0x1f;
 
-						byte z;
-						fread(&z, sizeof(byte), 1, u7thisireg);
+						unsigned char z;
+						fread(&z, sizeof(unsigned char), 1, u7thisireg);
 
 						AddObject(shape, frame, GetNextID(), actualx, 0, actualy);
-						byte quality;
-						fread(&quality, sizeof(byte), 1, u7thisireg);
+						unsigned char quality;
+						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 					}
 				}
 			}
