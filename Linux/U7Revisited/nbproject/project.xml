@@ -4,7 +4,7 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>U7Revisited</name>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
@@ -12,8 +12,8 @@
                 <make-dep-project>../../../../../Libraries/Framework/Linux</make-dep-project>
             </make-dep-projects>
             <sourceRootList>
-                <sourceRootElem>../../../../../Libraries/SoLoud/src</sourceRootElem>
                 <sourceRootElem>../../Source/Geist</sourceRootElem>
+                <sourceRootElem>../../ThirdParty/soloud</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

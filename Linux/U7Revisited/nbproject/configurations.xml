@@ -58,6 +58,192 @@
           <itemPath>../../Source/Geist/TooltipSystem.h</itemPath>
         </logicalFolder>
       </logicalFolder>
+      <logicalFolder name="f3" displayName="SoLoud" projectFiles="true">
+        <logicalFolder name="include" displayName="include" projectFiles="true">
+          <itemPath>../../ThirdParty/soloud/include/soloud.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_audiosource.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_bassboostfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_biquadresonantfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_bus.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_c.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_dcremovalfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_echofilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_error.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_fader.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_fft.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_fftfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_file.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_file_hack_off.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_file_hack_on.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_filter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_flangerfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_freeverbfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_internal.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_lofifilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_misc.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_monotone.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_noise.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_openmpt.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_queue.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_robotizefilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_sfxr.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_speech.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_tedsid.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_thread.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_vic.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_vizsn.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_wav.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_waveshaperfilter.h</itemPath>
+          <itemPath>../../ThirdParty/soloud/include/soloud_wavstream.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <logicalFolder name="audiosource" displayName="audiosource" projectFiles="true">
+            <logicalFolder name="monotone" displayName="monotone" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/monotone/soloud_monotone.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="noise" displayName="noise" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/noise/soloud_noise.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="openmpt" displayName="openmpt" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sfxr" displayName="sfxr" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/sfxr/soloud_sfxr.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="speech" displayName="speech" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/Elements.def</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/darray.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/darray.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/klatt.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/klatt.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/legal_readme.txt</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/resonator.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/resonator.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/soloud_speech.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/tts.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/speech/tts.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="tedsid" displayName="tedsid" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/readme.txt</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/sid.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/sid.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/soloud_tedsid.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/ted.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/tedsid/ted.h</itemPath>
+            </logicalFolder>
+            <logicalFolder name="vic" displayName="vic" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/vic/soloud_vic.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="vizsn" displayName="vizsn" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/vizsn/soloud_vizsn.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="wav" displayName="wav" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/dr_flac.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/dr_impl.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/dr_mp3.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/dr_wav.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/soloud_wav.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/soloud_wavstream.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.c</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="backend" displayName="backend" projectFiles="true">
+            <logicalFolder name="alsa" displayName="alsa" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/alsa/soloud_alsa.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="coreaudio" displayName="coreaudio" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/coreaudio/soloud_coreaudio.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="jack" displayName="jack" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/jack/soloud_jack.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="miniaudio" displayName="miniaudio" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/miniaudio/miniaudio.h</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/miniaudio/soloud_miniaudio.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="nosound" displayName="nosound" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/nosound/soloud_nosound.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="null" displayName="null" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/null/soloud_null.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="openal" displayName="openal" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/openal/soloud_openal.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/openal/soloud_openal_dll.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="opensles" displayName="opensles" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/opensles/soloud_opensles.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="oss" displayName="oss" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/oss/soloud_oss.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="portaudio" displayName="portaudio" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio_dll.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sdl" displayName="sdl" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1_dll.c</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2.cpp</itemPath>
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2_dll.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sdl2_static" displayName="sdl2_static" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl2_static/soloud_sdl2_static.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="sdl_static" displayName="sdl_static" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/sdl_static/soloud_sdl_static.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="wasapi" displayName="wasapi" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/wasapi/soloud_wasapi.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="winmm" displayName="winmm" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/winmm/soloud_winmm.cpp</itemPath>
+            </logicalFolder>
+            <logicalFolder name="xaudio2" displayName="xaudio2" projectFiles="true">
+              <itemPath>../../ThirdParty/soloud/src/backend/xaudio2/soloud_xaudio2.cpp</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+          <logicalFolder name="c_api" displayName="c_api" projectFiles="true">
+            <itemPath>../../ThirdParty/soloud/src/c_api/soloud.def</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/c_api/soloud_c.cpp</itemPath>
+          </logicalFolder>
+          <logicalFolder name="core" displayName="core" projectFiles="true">
+            <itemPath>../../ThirdParty/soloud/src/core/soloud.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_audiosource.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_bus.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_3d.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_basicops.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_faderops.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_filterops.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_getters.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_setters.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_voicegroup.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_core_voiceops.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_fader.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_fft.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_fft_lut.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_file.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_filter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_misc.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_queue.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/core/soloud_thread.cpp</itemPath>
+          </logicalFolder>
+          <logicalFolder name="filter" displayName="filter" projectFiles="true">
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_bassboostfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_biquadresonantfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_dcremovalfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_echofilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_fftfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_flangerfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_freeverbfilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_lofifilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_robotizefilter.cpp</itemPath>
+            <itemPath>../../ThirdParty/soloud/src/filter/soloud_waveshaperfilter.cpp</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+      </logicalFolder>
       <logicalFolder name="f2" displayName="Source" projectFiles="true">
         <logicalFolder name="f1" displayName="States" projectFiles="true">
           <itemPath>../../Source/LoadingState.cpp</itemPath>
@@ -95,8 +281,8 @@
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../../../../../Libraries/SoLoud/src</Elem>
     <Elem>../../Source/Geist</Elem>
+    <Elem>../../ThirdParty/soloud</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -137,9 +323,6 @@
           </preprocessorList>
         </ccTool>
         <linkerTool>
-          <linkerLibItems>
-            <linkerLibFileItem>../../../Geist/Linux/dist/Debug/GNU-Linux/geist.a</linkerLibFileItem>
-          </linkerLibItems>
           <commandLine>-lX11 -lGL -lGLU -lSDL2 -lGLEW -ltinyxml2</commandLine>
         </linkerTool>
         <requiredProjects>
@@ -297,6 +480,606 @@
       <item path="../../Source/WorldEditorState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_audiosource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bassboostfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_biquadresonantfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bus.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_c.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_dcremovalfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_echofilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_error.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fft.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fftfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_off.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_on.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_filter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_flangerfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_freeverbfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_lofifilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_misc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_monotone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_noise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_openmpt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_robotizefilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_sfxr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_speech.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_tedsid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_thread.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vic.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vizsn.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_waveshaperfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wavstream.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/monotone/soloud_monotone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/noise/soloud_noise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/sfxr/soloud_sfxr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/Elements.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/legal_readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/soloud_speech.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/soloud_tedsid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vic/soloud_vic.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vizsn/soloud_vizsn.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_flac.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_impl.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_mp3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wav.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wavstream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/alsa/soloud_alsa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/coreaudio/soloud_coreaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/jack/soloud_jack.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/miniaudio.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/soloud_miniaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/nosound/soloud_nosound.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/null/soloud_null.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/opensles/soloud_opensles.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/oss/soloud_oss.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl2_static/soloud_sdl2_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl_static/soloud_sdl_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/wasapi/soloud_wasapi.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/winmm/soloud_winmm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/xaudio2/soloud_xaudio2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud_c.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_audiosource.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_bus.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_3d.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_basicops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_faderops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_filterops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_getters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_setters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voicegroup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voiceops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft_lut.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_file.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_filter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_misc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_thread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_bassboostfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_biquadresonantfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_dcremovalfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_echofilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_fftfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_flangerfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_freeverbfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_lofifilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_robotizefilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_waveshaperfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -342,9 +1125,6 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
-          <linkerLibItems>
-            <linkerLibFileItem>../../../Geist/Linux/dist/Release/GNU-Linux/geist.a</linkerLibFileItem>
-          </linkerLibItems>
           <commandLine>-lX11 -lGL -lGLU -lSDL2 -lGLEW -ltinyxml2</commandLine>
         </linkerTool>
         <requiredProjects>
@@ -502,6 +1282,606 @@
       <item path="../../Source/WorldEditorState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_audiosource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bassboostfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_biquadresonantfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bus.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_c.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_dcremovalfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_echofilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_error.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fft.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fftfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_off.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_on.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_filter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_flangerfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_freeverbfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_lofifilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_misc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_monotone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_noise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_openmpt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_robotizefilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_sfxr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_speech.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_tedsid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_thread.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vic.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vizsn.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_waveshaperfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wavstream.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/monotone/soloud_monotone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/noise/soloud_noise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/sfxr/soloud_sfxr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/Elements.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/legal_readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/soloud_speech.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/soloud_tedsid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vic/soloud_vic.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vizsn/soloud_vizsn.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_flac.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_impl.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_mp3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wav.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wavstream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/alsa/soloud_alsa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/coreaudio/soloud_coreaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/jack/soloud_jack.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/miniaudio.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/soloud_miniaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/nosound/soloud_nosound.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/null/soloud_null.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/opensles/soloud_opensles.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/oss/soloud_oss.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl2_static/soloud_sdl2_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl_static/soloud_sdl_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/wasapi/soloud_wasapi.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/winmm/soloud_winmm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/xaudio2/soloud_xaudio2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud_c.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_audiosource.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_bus.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_3d.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_basicops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_faderops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_filterops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_getters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_setters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voicegroup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voiceops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft_lut.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_file.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_filter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_misc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_thread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_bassboostfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_biquadresonantfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_dcremovalfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_echofilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_fftfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_flangerfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_freeverbfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_lofifilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_robotizefilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_waveshaperfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
     </conf>
     <conf name="Debug-Steam" type="1">
@@ -694,6 +2074,606 @@
       <item path="../../Source/WorldEditorState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_audiosource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bassboostfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_biquadresonantfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bus.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_c.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_dcremovalfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_echofilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_error.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fft.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fftfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_off.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_on.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_filter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_flangerfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_freeverbfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_lofifilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_misc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_monotone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_noise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_openmpt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_robotizefilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_sfxr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_speech.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_tedsid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_thread.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vic.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vizsn.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_waveshaperfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wavstream.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/monotone/soloud_monotone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/noise/soloud_noise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/sfxr/soloud_sfxr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/Elements.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/legal_readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/soloud_speech.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/soloud_tedsid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vic/soloud_vic.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vizsn/soloud_vizsn.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_flac.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_impl.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_mp3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wav.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wavstream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/alsa/soloud_alsa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/coreaudio/soloud_coreaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/jack/soloud_jack.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/miniaudio.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/soloud_miniaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/nosound/soloud_nosound.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/null/soloud_null.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/opensles/soloud_opensles.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/oss/soloud_oss.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl2_static/soloud_sdl2_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl_static/soloud_sdl_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/wasapi/soloud_wasapi.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/winmm/soloud_winmm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/xaudio2/soloud_xaudio2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud_c.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_audiosource.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_bus.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_3d.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_basicops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_faderops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_filterops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_getters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_setters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voicegroup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voiceops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft_lut.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_file.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_filter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_misc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_thread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_bassboostfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_biquadresonantfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_dcremovalfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_echofilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_fftfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_flangerfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_freeverbfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_lofifilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_robotizefilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_waveshaperfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
     </conf>
     <conf name="Release-Steam" type="1">
@@ -894,6 +2874,606 @@
       <item path="../../Source/WorldEditorState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_audiosource.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bassboostfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_biquadresonantfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_bus.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_c.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_dcremovalfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_echofilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_error.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fft.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_fftfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_off.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_file_hack_on.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_filter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_flangerfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_freeverbfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_internal.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_lofifilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_misc.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_monotone.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_noise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_openmpt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_queue.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_robotizefilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_sfxr.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_speech.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_tedsid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_thread.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vic.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_vizsn.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_waveshaperfilter.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/include/soloud_wavstream.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/monotone/soloud_monotone.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/noise/soloud_noise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/openmpt/soloud_openmpt_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/sfxr/soloud_sfxr.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/Elements.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/darray.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/klatt.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/legal_readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/resonator.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/soloud_speech.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/speech/tts.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/readme.txt"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/sid.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/soloud_tedsid.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/tedsid/ted.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vic/soloud_vic.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/vizsn/soloud_vizsn.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_flac.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_impl.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_mp3.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/dr_wav.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wav.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/soloud_wavstream.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/audiosource/wav/stb_vorbis.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/alsa/soloud_alsa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/coreaudio/soloud_coreaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/jack/soloud_jack.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/miniaudio.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/miniaudio/soloud_miniaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/nosound/soloud_nosound.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/null/soloud_null.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/openal/soloud_openal_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/opensles/soloud_opensles.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/oss/soloud_oss.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/portaudio/soloud_portaudio_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl1_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl/soloud_sdl2_dll.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl2_static/soloud_sdl2_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/sdl_static/soloud_sdl_static.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/wasapi/soloud_wasapi.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/winmm/soloud_winmm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/backend/xaudio2/soloud_xaudio2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud.def"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/c_api/soloud_c.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_audiosource.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_bus.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_3d.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_basicops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_faderops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_filterops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_getters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_setters.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voicegroup.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_core_voiceops.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fader.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_fft_lut.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_file.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_filter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_misc.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_queue.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/core/soloud_thread.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_bassboostfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_biquadresonantfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_dcremovalfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_echofilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_fftfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_flangerfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_freeverbfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_lofifilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_robotizefilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../ThirdParty/soloud/src/filter/soloud_waveshaperfilter.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
     </conf>
   </confs>
