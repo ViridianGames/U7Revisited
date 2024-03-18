@@ -8,8 +8,7 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
-      <itemPath>../../Redist/engine.cfg</itemPath>
-      <itemPath>../../Redist/runlog.txt</itemPath>
+      <itemPath>../../Redist/Data/engine.cfg</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -260,6 +259,8 @@
           <itemPath>../../Source/WorldEditorState.h</itemPath>
         </logicalFolder>
         <itemPath>../../Source/Main.cpp</itemPath>
+        <itemPath>../../Source/ShapeData.cpp</itemPath>
+        <itemPath>../../Source/ShapeData.h</itemPath>
         <itemPath>../../Source/Terrain.cpp</itemPath>
         <itemPath>../../Source/Terrain.h</itemPath>
         <itemPath>../../Source/U7Globals.cpp</itemPath>
@@ -338,9 +339,7 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
-      <item path="../../Redist/engine.cfg" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
+      <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -460,6 +459,10 @@
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Terrain.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -1140,9 +1143,7 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
-      <item path="../../Redist/engine.cfg" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
+      <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -1262,6 +1263,10 @@
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Terrain.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -1932,9 +1937,7 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
-      <item path="../../Redist/engine.cfg" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
+      <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -2054,6 +2057,10 @@
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="../../Source/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Terrain.cpp" ex="false" tool="1" flavor2="11">
       </item>
@@ -2732,9 +2739,7 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
-      <item path="../../Redist/engine.cfg" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="../../Redist/runlog.txt" ex="false" tool="3" flavor2="0">
+      <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -2854,6 +2859,10 @@
       <item path="../../Source/OptionsState.cpp" ex="false" tool="1" flavor2="11">
       </item>
       <item path="../../Source/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ShapeData.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Terrain.cpp" ex="false" tool="1" flavor2="11">
       </item>

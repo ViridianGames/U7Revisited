@@ -59,6 +59,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/957bd1db/MainState.o \
 	${OBJECTDIR}/_ext/957bd1db/ObjectEditorState.o \
 	${OBJECTDIR}/_ext/957bd1db/OptionsState.o \
+	${OBJECTDIR}/_ext/957bd1db/ShapeData.o \
 	${OBJECTDIR}/_ext/957bd1db/Terrain.o \
 	${OBJECTDIR}/_ext/957bd1db/TitleState.o \
 	${OBJECTDIR}/_ext/957bd1db/U7Globals.o \
@@ -279,6 +280,11 @@ ${OBJECTDIR}/_ext/957bd1db/OptionsState.o: ../../Source/OptionsState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I/usr/include/glm -I/usr/include/GL -I/usr/include/stb -I/usr/include/tinyxml2 -I../../Source/Geist -I../../ThirdParty/soloud/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/OptionsState.o ../../Source/OptionsState.cpp
+
+${OBJECTDIR}/_ext/957bd1db/ShapeData.o: ../../Source/ShapeData.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I/usr/include/glm -I/usr/include/GL -I/usr/include/stb -I/usr/include/tinyxml2 -I../../Source/Geist -I../../ThirdParty/soloud/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ShapeData.o ../../Source/ShapeData.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/Terrain.o: ../../Source/Terrain.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
