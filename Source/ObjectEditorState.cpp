@@ -52,28 +52,6 @@ void ObjectEditorState::Shutdown()
 
 void ObjectEditorState::Update()
 {
-	if (m_shapeTableMade == false)
-	{
-		for (int i = 0; i < 1024; ++i)
-		{
-			for (int j = 0; j < 32; ++j)
-			{
-				if (g_shapeTable[i][j] != nullptr)
-				{
-					m_objectLibrary[i][j] = U7ObjectClassFactory(0);
-					m_objectLibrary[i][j]->Init("Data/Units/Walker.cfg", i, j);
-					m_objectLibrary[i][j]->SetInitialPos(g_Display->GetCameraLookAtPoint());
-				}
-				else
-				{
-					m_objectLibrary[i][j] = nullptr;
-				}
-			}
-		}
-
-		m_shapeTableMade = true;
-	}
-
 	//  Handle input
 
 	if (g_Input->WasKeyPressed(KEY_ESCAPE))
@@ -143,7 +121,7 @@ void ObjectEditorState::Update()
 			newShape = 1023;
 		}
 
-		if (g_shapeTable[newShape][0] != nullptr)
+		if (g_shapeTable[newShape][0].IsValid())
 		{
 			m_currentShape = newShape;
 		}
@@ -169,7 +147,7 @@ void ObjectEditorState::Update()
 			newShape = 150;
 		}
 
-		if (g_shapeTable[newShape][0] != nullptr)
+		if (g_shapeTable[newShape][0].IsValid())
 		{
 			m_currentShape = newShape;
 		}
@@ -189,7 +167,7 @@ void ObjectEditorState::Update()
 			newFrame = 0;
 		}
 
-		if (g_shapeTable[m_currentShape][newFrame] != nullptr)
+		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
 		}
@@ -203,7 +181,7 @@ void ObjectEditorState::Update()
 			newFrame = 31;
 		}
 
-		if (g_shapeTable[m_currentShape][newFrame] != nullptr)
+		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
 		}
@@ -211,9 +189,13 @@ void ObjectEditorState::Update()
 
 	if (g_Input->WasKeyPressed(KEY_SPACE))
 	{
-		ObjectDrawTypes newDrawType = static_cast<ObjectDrawTypes>((static_cast<int>(m_objectLibrary[m_currentShape][m_currentFrame]->m_drawType) + 1) % static_cast<int>(ObjectDrawTypes::OBJECT_DRAW_LAST));
-		m_objectLibrary[m_currentShape][m_currentFrame]->m_Texture->Reload();
-		m_objectLibrary[m_currentShape][m_currentFrame]->SetupDrawType(newDrawType, true);
+		ShapeDrawType newDrawType = static_cast<ShapeDrawType>((static_cast<int>(g_shapeTable[m_currentShape][m_currentFrame].GetDrawType()) + 1) % static_cast<int>(ShapeDrawType::OBJECT_DRAW_LAST));
+		g_shapeTable[m_currentShape][m_currentFrame].SetDrawType(newDrawType);
+	}
+
+	if (g_Input->WasKeyPressed(KEY_F1))
+	{
+		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 	}
 }
 
@@ -223,22 +205,31 @@ void ObjectEditorState::Draw()
 	g_Display->ClearScreen();
 	g_Display->DrawBox(0, 0, g_Display->GetWidth(), g_Display->GetHeight(), Color(106, 90, 205, 255), true);
 
-	Texture* t = g_shapeTable[m_currentShape][m_currentFrame];
-	g_Display->DrawImage(t, 0, 0, t->GetWidth() * 4,t->GetHeight() * 4);
+	float scale = 4;
 
-	m_objectLibrary[m_currentShape][m_currentFrame]->Draw();
+	Texture* d = g_shapeTable[m_currentShape][m_currentFrame].GetTexture();
+	Texture* t = g_shapeTable[m_currentShape][m_currentFrame].GetTopTexture();
+	Texture* f = g_shapeTable[m_currentShape][m_currentFrame].GetFrontTexture();
+	Texture* r = g_shapeTable[m_currentShape][m_currentFrame].GetRightTexture();
+	g_Display->DrawImage(d,                           0,                                             0, d->GetWidth() * scale, d->GetHeight() * scale, Color(1, 1, 1, 1));	
+	g_Display->DrawImage(t,                           0,                  (d->GetHeight() + 2) * scale, t->GetWidth() * scale, t->GetHeight() * scale, Color(1, 1, 1, 1));
+	g_Display->DrawImage(r, (t->GetWidth() + 2) * scale,                  (d->GetHeight() + 2) * scale, r->GetWidth() * scale, r->GetHeight() * scale, Color(1, 1, 1, 1));
+	g_Display->DrawImage(f,                           0, (d->GetHeight() + d->GetHeight() + 2) * scale, f->GetWidth() * scale, f->GetHeight() * scale, Color(1, 1, 1, 1));
+
+	g_shapeTable[m_currentShape][m_currentFrame].Draw(g_Display->GetCameraLookAtPoint(), 0);
 
 	DrawConsole();
 
-	int y = -30;
+	int yOffset = g_SmallFont->GetHeight();
+	int y = -yOffset;
 
-	g_SmallFont->DrawStringRight("Shape: " + to_string(m_currentShape), g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("Frame: " + to_string(m_currentFrame), g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("DrawType: " + g_objectDrawTypeStrings[static_cast<int>(m_objectLibrary[m_currentShape][m_currentFrame]->m_drawType)], g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("Q/E: Rotate Left/Right", g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("A/D: Previous/Next Shape", g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("W/S: Previous/Next Frame", g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
-	g_SmallFont->DrawStringRight("LShift + A/D: Jump 10 shapes", g_Display->GetWidth(), y += 30, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("Shape: " + to_string(m_currentShape), g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("Frame: " + to_string(m_currentFrame), g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("DrawType: " + g_objectDrawTypeStrings[static_cast<int>(g_shapeTable[m_currentShape][m_currentFrame].GetDrawType())], g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("Q/E: Rotate Left/Right", g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("A/D: Previous/Next Shape", g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("W/S: Previous/Next Frame", g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
+	g_SmallFont->DrawStringRight("LShift + A/D: Jump 10 shapes", g_Display->GetWidth(), y += yOffset, Color(1, 1, 1, 1));
 
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 

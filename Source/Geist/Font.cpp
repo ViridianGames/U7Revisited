@@ -45,7 +45,7 @@ void Font::Init(const std::string& configfile, float height, bool log)
 	}
 
 	m_FontTexture->Create(size, size, false);
-	memcpy(m_FontTexture->GetPixelData(), temp_bitmap2, sizeof(unsigned int) * size * size);
+	memcpy(m_FontTexture->GetPixelDataAsCharPointer(), temp_bitmap2, sizeof(unsigned int) * size * size);
 	m_FontTexture->UpdateData();
 	m_FontHeight = height;
 

@@ -68,14 +68,14 @@ void TitleState::Draw()
 void TitleState::CreateTitleGUI()
 {
    m_TitleGui = new Gui();
-   m_TitleGui->SetLayout(0, 0, 320, 240, Gui::GUIP_CENTER);
-   m_TitleGui->AddPanel(GUI_TITLE_PANEL1, 0, 0, 138, 384, Color(0, 0, 0, .75));
-   m_TitleGui->AddPanel(GUI_TITLE_PANEL2, 0, 0, 138, 384, Color(1, 1, 1, 1), false);
-   m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (g_Display->GetWidth() - (g_Font->GetStringMetrics("Ultima VII: Revisited"))), 60, 240, 0, Color(1, 1, 1, 1), true);
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (138 - (g_Font->GetStringMetrics("Begin") + 4)) / 2, 150, "Begin", g_SmallFont.get());
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_OBJECT_EDITOR, (138 - (g_Font->GetStringMetrics("Object Editor") + 4)) / 2, 200, "Object Editor", g_SmallFont.get());
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_WORLD_EDITOR, (138 - (g_Font->GetStringMetrics("World Editor") + 4)) / 2, 240, "World Editor", g_SmallFont.get());
-   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (138 - (g_Font->GetStringMetrics("Quit") + 4)) / 2, 280, "Quit", g_SmallFont.get());
+   m_TitleGui->SetLayout(0, 0, 320, 180, Gui::GUIP_CENTER);
+   //m_TitleGui->AddPanel(GUI_TITLE_PANEL1, 0, 0, 138, 384, Color(0, 0, 0, .75));
+   //m_TitleGui->AddPanel(GUI_TITLE_PANEL2, 0, 0, 320, 180, Color(1, 1, 1, 1), false);
+   m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (g_Display->GetWidth() - (g_Font->GetStringMetrics("Ultima VII: Revisited"))) / 2, 20, (g_Font->GetStringMetrics("Ultima VII: Revisited")), 0, Color(1, 1, 1, 1), true);
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (320 - (g_SmallFont->GetStringMetrics("Begin") + 4)) / 2, 30, "Begin", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_OBJECT_EDITOR, (320 - (g_SmallFont->GetStringMetrics("Object Editor") + 4)) / 2, 80, "Object Editor", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_WORLD_EDITOR, (320 - (g_SmallFont->GetStringMetrics("World Editor") + 4)) / 2, 130, "World Editor", g_SmallFont.get());
+   m_TitleGui->AddTextButton(GUI_TITLE_BUTTON_QUIT, (320 - (g_SmallFont->GetStringMetrics("Quit") + 4)) / 2, 190, "Quit", g_SmallFont.get());
    m_TitleGui->m_Active = true;
 }
 

@@ -7,7 +7,8 @@
 #include <list>
 
 enum class ObjectTypes;
-enum class ObjectDrawTypes;
+enum class ShapeDrawType;
+class ShapeData;
 
 class U7Object : public Unit3D
 {
@@ -34,13 +35,6 @@ public:
    virtual void SetPos(glm::vec3 pos) { m_Pos = pos; }
    virtual void SetDest(glm::vec3 pos);
    virtual void SetSpeed(float speed) { m_Speed = speed; }
-
-   void SetShapeAndFrame(unsigned int shape, unsigned int frame);
-   void SetupDrawType(ObjectDrawTypes drawType, bool reloadTexture);
-   void FixupTextureCuboid();
-   void FixupTextureHangingNS() {};
-   void FixupTextureHangingEW() {};
-
 
    glm::vec3 m_Pos;
    glm::vec3 m_Dest;
@@ -81,9 +75,12 @@ public:
 
    Config* m_ObjectConfig;
 
-   ObjectDrawTypes m_drawType;
+   ShapeDrawType m_drawType;
+   ShapeData* m_shapeData;
 
    float m_distanceFromCamera;
+
+   Color m_color = Color(1, 1, 1, 1);
 
 };
 

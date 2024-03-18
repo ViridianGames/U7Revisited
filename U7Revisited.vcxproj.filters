@@ -208,6 +208,9 @@
     <ClCompile Include="Source\WorldEditorState.cpp">
       <Filter>Source\States</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ShapeData.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Terrain.h">
@@ -299,6 +302,9 @@
     </ClInclude>
     <ClInclude Include="Source\WorldEditorState.h">
       <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShapeData.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

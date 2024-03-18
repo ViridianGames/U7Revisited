@@ -592,7 +592,10 @@ void Texture::UpdateData()
 	if (m_PixelData)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_Texture);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_PixelData->data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_PixelData->data());
+		//glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_PixelData->data());
+		MakeVertexBuffer();
+		//glClearTexImage(m_Texture, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_PixelData->data());
 	}
 }
 
@@ -766,6 +769,117 @@ void Texture::Reload()
 	Load(m_Filename, m_IsMipMapped);
 }
 
+void Texture::MoveColumnUp(int column)
+{
+	if (column < 0 || column >= m_Width)
+		return;
+
+	for (int y = 0; y < m_Height - 1; ++y)
+	{
+		Color pixel = GetPixel(column, y + 1);
+		PutPixel(column, y, pixel);
+	}
+
+	for (int y = m_Height - 1; y < m_Height; ++y)
+	{
+		PutPixel(column, y, Color(0, 0, 0, 0));
+	}
+}
+
+void Texture::MoveColumnDown(int column)
+{
+	if (column < 0 || column >= m_Width)
+		return;
+
+	for (int y = m_Height - 1; y > 0; --y)
+	{
+		Color pixel = GetPixel(column, y - 1);
+		PutPixel(column, y, pixel);
+	}
+
+	for (int y = 0; y < 1; ++y)
+	{
+		PutPixel(column, y, Color(0, 0, 0, 0));
+	}
+}
+
+void Texture::MoveRowLeft(int row)
+{
+	if (row < 0 || row >= m_Height)
+		return;
+
+	for (int x = 0; x < m_Width - 1; ++x)
+	{
+		Color pixel = GetPixel(x + 1, row);
+		PutPixel(x, row, pixel);
+	}
+
+	for (int x = m_Width - 1; x < m_Width; ++x)
+	{
+		PutPixel(x, row, Color(0, 0, 0, 0));
+	}
+}
+
+void Texture::MoveRowRight(int row)
+{
+	if (row < 0 || row >= m_Height)
+		return;
+
+	for (int x = m_Width - 1; x > 0; --x)
+	{
+		Color pixel = GetPixel(x - 1, row);
+		PutPixel(x, row, pixel);
+	}
+
+	for (int x = 0; x < 1; ++x)
+	{
+		PutPixel(x, row, Color(0, 0, 0, 0));
+	}
+}
+
+void Texture::Resize(int w, int h)
+{
+	if (w == m_Width && h == m_Height)
+		return;
+
+	std::unique_ptr<std::vector<Uint8>> newPixelData = make_unique < std::vector<Uint8> >();
+	newPixelData->resize(w * h * 4, 0);
+
+	for (int y = 0; y < h; ++y)
+	{
+		for (int x = 0; x < w; ++x)
+		{
+			if (x < m_Width && y < m_Height)
+			{
+				Color pixel = GetPixel(x, y);
+				newPixelData->at(4 * (y * w + x)) = (unsigned char)(pixel.r * 255);
+				newPixelData->at(4 * (y * w + x) + 1) = (unsigned char)(pixel.g * 255);
+				newPixelData->at(4 * (y * w + x) + 2) = (unsigned char)(pixel.b * 255);
+				newPixelData->at(4 * (y * w + x) + 3) = (unsigned char)(pixel.a * 255);
+			}
+			else
+			{
+				newPixelData->at(4 * (y * w + x)) = 0;
+				newPixelData->at(4 * (y * w + x) + 1) = 0;
+				newPixelData->at(4 * (y * w + x) + 2) = 0;
+				newPixelData->at(4 * (y * w + x) + 3) = 0;
+			}
+		}
+	}
+
+	m_Width = w;
+	m_Height = h;
+	SetPixelData(newPixelData.get());
+}
+
+void Texture::SetPixelData(std::vector<Uint8>* pixelData)
+{
+	m_PixelData->clear();
+	m_PixelData->resize(pixelData->size());
+	m_PixelData->assign(pixelData->begin(), pixelData->end());
+
+	UpdateData();
+}
 
 Mesh::Mesh()
 {

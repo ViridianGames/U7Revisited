@@ -19,6 +19,7 @@
 #include "Font.h"
 #include "RNG.h"
 #include "Terrain.h"
+#include "ShapeData.h"
 #include "U7Object.h"
 
 
@@ -40,18 +41,6 @@ enum GameStates
 
 extern std::string g_gameStateStrings[];
 //std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
-
-enum class ObjectDrawTypes
-{
-	OBJECT_DRAW_BILLBOARD = 0,
-	OBJECT_DRAW_CUBOID,
-	OBJECT_DRAW_FLAT,
-	OBJECT_DRAW_CUSTOM_MESH,
-	OBJECT_DRAW_TABLE,
-	OBJECT_DRAW_HANGINGNS,
-	OBJECT_DRAW_HANGINGEW,
-	OBJECT_DRAW_LAST
-};
 
 extern std::string g_objectDrawTypeStrings[];
 
@@ -118,7 +107,7 @@ extern unsigned int g_CurrentUpdate;
 
 extern bool g_CameraMoved;
 
-extern std::array<std::array<Texture* , 32>, 1024> g_shapeTable;
+extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
 
 extern unsigned int g_minimapSize;
@@ -178,7 +167,7 @@ void DrawConsole();
 
 extern float g_DrawScale;
 
-extern std::array<std::tuple<ObjectDrawTypes, ObjectTypes>, 1024 > g_ObjectTypes;
+extern std::array<std::tuple<ShapeDrawType, ObjectTypes>, 1024 > g_ObjectTypes;
 
 extern float g_CameraRotateSpeed;
 extern glm::vec3 g_CameraMovementSpeed;

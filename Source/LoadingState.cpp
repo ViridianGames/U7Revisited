@@ -145,19 +145,19 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
-		if (!m_loadingShapes)
-		{
-			AddConsoleString(std::string("Loading shapes..."));
-			CreateShapeTable();
-			m_loadingShapes = true;
-			return;
-		}
-
 		if (!m_loadingObjects)
 		{
 			AddConsoleString(std::string("Loading objects..."));
 			CreateObjectTable();
 			m_loadingObjects = true;
+			return;
+		}
+
+		if (!m_loadingShapes)
+		{
+			AddConsoleString(std::string("Loading shapes..."));
+			CreateShapeTable();
+			m_loadingShapes = true;
 			return;
 		}
 
@@ -473,7 +473,6 @@ void LoadingState::MakeMap()
 	}
 }
 
-
 void LoadingState::LoadIREG()
 {
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
@@ -549,19 +548,15 @@ void LoadingState::LoadIREG()
 
 void LoadingState::CreateShapeTable()
 {
+	int counter = 0;
 	for (int i = 150; i < 1024; ++i)
 	{
 		for (int j = 0; j < 32; ++j)
 		{
-			std::stringstream filename;
-			filename << "Images/Objects/" << std::to_string(i) << "-" << std::to_string(j) << ".png";
-			if (g_ResourceManager->DoesFileExist(filename.str()))
+			g_shapeTable[i][j].Init(i, j);
+			if (g_shapeTable[i][j].IsValid())
 			{
-				g_shapeTable[i][j] = g_ResourceManager->GetTexture(filename.str(), false);
-			}
-			else
-			{
-				g_shapeTable[i][j] = nullptr;
+				++counter;
 			}
 		}
 	}

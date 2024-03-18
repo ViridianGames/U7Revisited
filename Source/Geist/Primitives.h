@@ -265,8 +265,18 @@ public:
 	bool AllowSmoothing() { return m_AllowSmoothing; }
 	bool IsMipMapped() { return m_IsMipMapped; }
 	unsigned int GetTextureID() { return m_Texture; }
-	unsigned char* GetPixelData() { return m_PixelData->data(); }
+	unsigned char* GetPixelDataAsCharPointer() { return m_PixelData->data(); }
+	std::vector<unsigned char>* GetPixelData() { return m_PixelData.get(); }
+	void SetPixelData(std::vector<unsigned char>* pixelData );
 	std::string GetFileName() { return m_Filename; }
+
+	void MoveColumnUp(int column); // Moves all pixels in this column up.  Top pixel is lost.
+	void MoveColumnDown(int column); // Moves all pixels in this column down.  Bottom pixel is lost.
+	void MoveRowLeft(int row); // Moves all pixels in this row left.  Rightmost pixel is lost.
+	void MoveRowRight(int row); // Moves all pixels in this row right.  Leftmost pixel is lost.
+
+	void Resize(int newwidth, int newheight);
+
 };
 
 class Sprite

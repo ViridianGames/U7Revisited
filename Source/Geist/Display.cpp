@@ -90,7 +90,7 @@ void Display::InitializeVideoMode(int w, int h, bool fullscreen)
 	{
 		m_fieldOfView = 90;
 	}
-	m_3DProj = glm::perspective(glm::radians(m_fieldOfView), ((float)m_HRes / (float)m_VRes), 1.0f, 1000.0f);
+	m_3DProj = glm::perspective(glm::radians(m_fieldOfView), ((float)m_HRes / (float)m_VRes), 25.0f, 1000.0f);
 
 	glMultMatrixf(glm::value_ptr(m_3DProj));
 

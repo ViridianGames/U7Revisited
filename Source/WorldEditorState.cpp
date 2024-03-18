@@ -56,8 +56,8 @@ void WorldEditorState::Draw()
 {
 	g_Display->ClearScreen();
 
-	g_Font->DrawString("Welcome to the World Editor!  It doesn't work yet. :(", 0, 0);
-	g_Font->DrawString("Press ESC to exit.", 0, g_Font->GetStringMetrics(" ") * 3);
+	g_SmallFont->DrawString("Welcome to the World Editor!  It doesn't work yet. Sorry.", 0, 0);
+	g_SmallFont->DrawString("Press ESC to exit.", 0, g_Font->GetStringMetrics(" ") * 3);
 
 	g_Display->DrawImage(g_Cursor, g_Input->m_MouseX, g_Input->m_MouseY);
 

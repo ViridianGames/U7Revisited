@@ -158,6 +158,38 @@ void MainState::Update()
 		g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
 
 	}
+
+	//  Get terrain hit for highlight mesh
+	if (g_Input->WasLButtonClicked())
+	{
+		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
+		{
+			glm::vec3 pos = (*node).get()->GetPos();
+			glm::vec3 pos2 = pos + glm::vec3(g_objectTable[(*node).get()->m_ObjectType].m_depth, g_objectTable[(*node).get()->m_ObjectType].m_height, g_objectTable[(*node).get()->m_ObjectType].m_width);
+
+			glm::vec3 tri1 = glm::vec3(pos.x, pos.y, pos.z);
+			glm::vec3 tri2 = glm::vec3(pos.x, pos2.y, pos.z);
+			glm::vec3 tri3 = glm::vec3(pos2.x, pos2.y, pos2.z);
+			glm::vec3 tri4 = glm::vec3(pos2.x, pos.y, pos2.z);
+
+			double distance;
+
+			double u, v;
+
+			if (PickWithUV(g_Input->m_RayOrigin, g_Input->m_RayDirection, tri1, tri2, tri3, distance, u, v) ||
+				PickWithUV(g_Input->m_RayOrigin, g_Input->m_RayDirection, tri4, tri3, tri2, distance, u, v))
+			{
+				m_selectedObject = (*node).get()->m_ObjectType;
+				(*node)->m_color = Color(1, 0, 0, 1);
+
+				AddConsoleString("Selected Object: " + to_string(m_selectedObject));
+
+				break;
+			}
+		}
+	}
 }
 
 void MainState::Draw()
@@ -170,21 +202,26 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
-		std::vector<shared_ptr<U7Object>> sortedObjects;
+		m_sortedVisibleObjects.clear();
 		float drawRange = g_Display->GetCameraDistance() / 2.5;
 		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 		{
+			if (!(*node).second->m_Visible)
+			{
+				continue;
+			}
+
 			float distance = glm::distance((*node).second->m_Pos, g_Display->GetCameraLookAtPoint());
 			if (distance < drawRange)
 			{
 				(*node).second->m_distanceFromCamera = glm::distance((*node).second->m_Pos, g_Display->GetCameraPosition());
-				sortedObjects.push_back((*node).second);
+				m_sortedVisibleObjects.push_back((*node).second);
 				m_numberofDrawnUnits++;
 			}
 		}
 
-		std::sort(sortedObjects.begin(), sortedObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
-		for (auto& unit : sortedObjects)
+		std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+		for (auto& unit : m_sortedVisibleObjects)
 		{
 			unit->Draw();
 		}
@@ -199,7 +236,7 @@ void MainState::Draw()
 	float _Y = g_Display->GetCameraLookAtPoint().z * _ScaleZ;
 
 
-	g_Display->DrawImage(m_MinimapArrow, _X - (m_MinimapArrow->GetWidth() * g_DrawScale * .25f), _Y - (m_MinimapArrow->GetHeight() * g_DrawScale * .25f), m_MinimapArrow->GetWidth() * g_DrawScale * .5f, m_MinimapArrow->GetHeight() * g_DrawScale * .5f, Color(1, 1, 1, 1), false, 0, 0);
+	g_Display->DrawImage(m_MinimapArrow, _X - (m_MinimapArrow->GetWidth() * g_DrawScale * .125f), _Y - (m_MinimapArrow->GetHeight() * g_DrawScale * .125f), m_MinimapArrow->GetWidth() * g_DrawScale * .25f, m_MinimapArrow->GetHeight() * g_DrawScale * .25f, Color(1, 1, 1, 1), false, 0, 0);
 
 
 

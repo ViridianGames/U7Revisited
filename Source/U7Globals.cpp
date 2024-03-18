@@ -25,7 +25,7 @@ std::unique_ptr<RNG> g_NonVitalRNG;
 
 std::unique_ptr<Terrain> g_Terrain;
 
-std::array<std::array<Texture*, 32>, 1024> g_shapeTable;
+std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectTable;
 
 bool g_CameraMoved;
@@ -433,4 +433,4 @@ void DrawConsole()
 
 float g_DrawScale;
 
-std::array<std::tuple<ObjectDrawTypes, ObjectTypes>, 1024 > g_ObjectTypes;
+std::array<std::tuple<ShapeDrawType, ObjectTypes>, 1024 > g_ObjectTypes;
