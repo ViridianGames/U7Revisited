@@ -1237,6 +1237,7 @@ void GuiStretchButton::Draw()
 	{
 		float xmiddle = float(m_ActiveLeft->m_Width);
 		float xright = float(m_Width - (m_ActiveLeft->m_Width + m_ActiveRight->m_Width));
+		float fullwidth = (xright + xright + xmiddle);
 
 		if (m_Shadowed)
 		{
@@ -1259,11 +1260,12 @@ void GuiStretchButton::Draw()
 
 		if (m_Clicked)
 		{
-			m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X + 3) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y + 3) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+			m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X + (fullwidth / 4) + 3) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y + 3) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 		}
 		else
 		{
-			m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X - m_Width) / 2 * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+			m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X + (fullwidth / 4)) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+			//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X + (fullwidth / 4)) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 			//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.Y) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 		}
 	}
@@ -1283,7 +1285,11 @@ void GuiStretchButton::Draw()
 		g_Display->DrawSpriteScaled(m_InactiveCenter, int(m_Parent->m_Pos.X + ((m_Pos.X + xmiddle) * m_Parent->m_Scale) - 1), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), ((xright + 3) / m_InactiveCenter->m_Width) * m_Parent->m_Scale, m_Parent->m_Scale);
 		g_Display->DrawSpriteScaled(m_InactiveRight, int(m_Parent->m_Pos.X + (m_Pos.X + xmiddle + xright) * m_Parent->m_Scale), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), m_Parent->m_Scale, m_Parent->m_Scale);
 
-		m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X - m_Width) / 2 * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+		float fullwidth = (xright + xright + xmiddle);
+
+		m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X  + (fullwidth / 4)) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+
+		//m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X - m_Width) / 2 * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 		//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 	}
 }

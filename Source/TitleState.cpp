@@ -80,9 +80,22 @@ void TitleState::CreateTitleGUI()
    //   g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
    //   g_InactiveButtonL, g_InactiveButtonR, g_InactiveButtonM, 37);
 
-   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (320 - (g_SmallFont->GetStringMetrics("Begin") / g_DrawScale * 1.5f)) / 2, 100, g_SmallFont->GetStringMetrics("Begin") / g_DrawScale * 1.5f, "Begin",
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_SINGLE_PLAYER, (320 - (g_SmallFont->GetStringMetrics("Begin") / g_DrawScale * 1.5f)) / 2, 95, g_SmallFont->GetStringMetrics("Begin") / g_DrawScale * 1.5f, "Begin",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_OBJECT_EDITOR, (320 - (g_SmallFont->GetStringMetrics("Object Editor") / g_DrawScale * 1.5f)) / 2, 115, g_SmallFont->GetStringMetrics("Object Editor") / g_DrawScale * 1.5f, "Object Editor",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_WORLD_EDITOR, (320 - (g_SmallFont->GetStringMetrics("World Editor") / g_DrawScale * 1.5f)) / 2, 135, g_SmallFont->GetStringMetrics("World Editor") / g_DrawScale * 1.5f, "World Editor",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_QUIT, (320 - (g_SmallFont->GetStringMetrics("Quit") / g_DrawScale * 1.5f)) / 2, 155, g_SmallFont->GetStringMetrics("Quit") / g_DrawScale * 1.5f, "Quit",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
 
    //m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_OBJECT_EDITOR, (320 - (g_SmallFont->GetStringMetrics("Object Editor"))) / 2, 115, "Object Editor", g_SmallFont.get());
    //m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_WORLD_EDITOR, (320 - (g_SmallFont->GetStringMetrics("World Editor"))) / 2, 130, "World Editor", g_SmallFont.get());
