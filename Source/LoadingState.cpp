@@ -548,17 +548,18 @@ void LoadingState::LoadIREG()
 
 void LoadingState::CreateShapeTable()
 {
-	int counter = 0;
-	for (int i = 150; i < 1024; ++i)
+	ifstream file("Data/shapetable.dat");
+	if (file.is_open())
 	{
-		for (int j = 0; j < 32; ++j)
+		for (int i = 150; i < 1024; ++i)
 		{
-			g_shapeTable[i][j].Init(i, j);
-			if (g_shapeTable[i][j].IsValid())
+			for (int j = 0; j < 32; ++j)
 			{
-				++counter;
+				ShapeData& shapeData = g_shapeTable[i][j];
+				shapeData.Deserialize(file);
 			}
 		}
+		file.close();
 	}
 
 	//  Load palette data

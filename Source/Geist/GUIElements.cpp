@@ -1230,8 +1230,8 @@ void GuiStretchButton::Draw()
 		g_Display->DrawSpriteScaled(m_InactiveCenter, int(m_Parent->m_Pos.X + ((m_Pos.X + xmiddle) * m_Parent->m_Scale) - 1), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), ((xright + 3) / m_InactiveCenter->m_Width) * m_Parent->m_Scale, m_Parent->m_Scale, Color(.5, .5, .5, 1));
 		g_Display->DrawSpriteScaled(m_InactiveRight, int(m_Parent->m_Pos.X + (m_Pos.X + xmiddle + xright) * m_Parent->m_Scale), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), m_Parent->m_Scale, m_Parent->m_Scale, Color(.5, .5, .5, 1));
 
-		m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 18) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 8) * m_Parent->m_Scale)), Color(0, 0, 0, 1));
-		m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 16) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 7) * m_Parent->m_Scale)), Color(.5, .5, .5, 1));
+		m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+		//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + 16) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + 7) * m_Parent->m_Scale, Color(.5, .5, .5, 1));
 	}
 	else if (m_Hovered || m_Hot || m_Clicked)
 	{
@@ -1257,15 +1257,14 @@ void GuiStretchButton::Draw()
 			g_Display->DrawSpriteScaled(m_ActiveRight, int(m_Parent->m_Pos.X + (m_Indent * m_Parent->m_Scale) + (m_Pos.X + xmiddle + xright) * m_Parent->m_Scale), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), m_Parent->m_Scale, m_Parent->m_Scale);
 		}
 
-		if (m_Hot || m_Clicked)
+		if (m_Clicked)
 		{
-			m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 18 + 3 + m_Indent) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 8 + 3) * m_Parent->m_Scale)), Color(0, 0, 0, 1));
-			m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 16 + 3 + m_Indent) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 7 + 3) * m_Parent->m_Scale)), Color(1, 1, 1, 1));
+			m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X + 3) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y + 3) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 		}
 		else
 		{
-			m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 18 + m_Indent) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 8) * m_Parent->m_Scale)), Color(0, 0, 0, 1));
-			m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 16 + m_Indent) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 7) * m_Parent->m_Scale)), Color(1, 1, 1, 1));
+			m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X - m_Width) / 2 * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+			//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.Y) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 		}
 	}
 	else
@@ -1284,8 +1283,8 @@ void GuiStretchButton::Draw()
 		g_Display->DrawSpriteScaled(m_InactiveCenter, int(m_Parent->m_Pos.X + ((m_Pos.X + xmiddle) * m_Parent->m_Scale) - 1), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), ((xright + 3) / m_InactiveCenter->m_Width) * m_Parent->m_Scale, m_Parent->m_Scale);
 		g_Display->DrawSpriteScaled(m_InactiveRight, int(m_Parent->m_Pos.X + (m_Pos.X + xmiddle + xright) * m_Parent->m_Scale), int(m_Parent->m_Pos.Y + (m_Pos.Y * m_Parent->m_Scale)), m_Parent->m_Scale, m_Parent->m_Scale);
 
-		m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 18) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 8) * m_Parent->m_Scale)), Color(0, 0, 0, 1));
-		m_Parent->m_Font->DrawString(m_String, int(m_Parent->m_Pos.X + ((m_Pos.X + 16) * m_Parent->m_Scale)), int(m_Parent->m_Pos.Y + ((m_Pos.Y + 7) * m_Parent->m_Scale)), Color(1, 1, 1, 1));
+		m_Parent->m_Font->DrawStringCenteredShadowed(m_String, int(m_Parent->m_Pos.X - m_Width) / 2 * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
+		//m_Parent->m_Font->DrawStringShadowed(m_String, int(m_Parent->m_Pos.X + m_Pos.X) * m_Parent->m_Scale, int(m_Parent->m_Pos.Y + m_Pos.Y) * m_Parent->m_Scale, Color(1, 1, 1, 1));
 	}
 }
 

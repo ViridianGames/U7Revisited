@@ -1144,7 +1144,7 @@ bool Mesh::SelectCheck(glm::vec3 position, float angle, glm::vec3 scaling)
 	glm::vec4 rayOrigin = glm::vec4(ori, 1);
 	glm::vec4 rayDirection = glm::vec4(pos, 0);
 
-	glm::mat4 translation = glm::translate(glm::mat4(), position);
+	glm::mat4 translation = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 rotation = glm::rotate(translation, angle, glm::vec3(0, 1, 0));
 	glm::mat4 model = glm::scale(rotation, scaling);
 

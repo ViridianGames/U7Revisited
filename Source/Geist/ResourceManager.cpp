@@ -31,8 +31,18 @@ void ResourceManager::Update()
 
 bool ResourceManager::DoesFileExist(const std::string& textureName)
 {
-	ifstream file(textureName.c_str());
-	return file.good();
+	map<std::string, unique_ptr<Texture> >::iterator node;
+	node = m_TextureList.find(textureName);
+
+	if (node == m_TextureList.end())
+	{
+		ifstream file(textureName.c_str());
+		return file.good();
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)

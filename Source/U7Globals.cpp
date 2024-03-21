@@ -44,9 +44,12 @@ glm::vec3 g_CameraMoveSpeed = glm::vec3(0, 0, 0);
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
-std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh", "Table", "HangingNS", "HangingEW"};
+std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh"};
 
 std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
+
+int g_selectedShape = 150;
+int g_selectedFrame = 0;
 
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
@@ -357,6 +360,7 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(glm::vec3(x, y, z));
+	temp->m_ID = id;
 
 	g_ObjectList[id] = temp;
 }
@@ -433,4 +437,36 @@ void DrawConsole()
 
 float g_DrawScale;
 
-std::array<std::tuple<ShapeDrawType, ObjectTypes>, 1024 > g_ObjectTypes;
+std::shared_ptr<Sprite> g_BoxTL;
+std::shared_ptr<Sprite> g_BoxT;
+std::shared_ptr<Sprite> g_BoxTR;
+std::shared_ptr<Sprite> g_BoxL;
+std::shared_ptr<Sprite> g_BoxC;
+std::shared_ptr<Sprite> g_BoxR;
+std::shared_ptr<Sprite> g_BoxBL;
+std::shared_ptr<Sprite> g_BoxB;
+std::shared_ptr<Sprite> g_BoxBR;
+
+std::vector<std::shared_ptr<Sprite> > g_Borders;
+
+shared_ptr<Sprite> g_InactiveButtonL;
+shared_ptr<Sprite> g_InactiveButtonM;
+shared_ptr<Sprite> g_InactiveButtonR;
+shared_ptr<Sprite> g_ActiveButtonL;
+shared_ptr<Sprite> g_ActiveButtonM;
+shared_ptr<Sprite> g_ActiveButtonR;
+
+shared_ptr<Sprite> g_LeftArrow;
+shared_ptr<Sprite> g_RightArrow;
+
+Color g_Red = Color(1, .25, .25, 1);
+Color g_Blue = Color(.25, .25, 1, 1);
+Color g_Pink = Color(1, .5, .5, 1);
+Color g_LightBlue = Color(.5, .5, 1, 1);
+Color g_Brown = Color(.7f, .25f, .1f, 1);
+Color g_Purple = Color(1, .1f, 1, 1);
+Color g_Green = Color(.5, 1, .5, 1);
+Color g_Gray = Color(.7f, .7f, .7f, 1);
+Color g_White = Color(1, 1, 1, 1);
+Color g_Black = Color(0, 0, 0, 1);
+Color g_DarkGray = Color(.25f, .25f, .25f, 1);

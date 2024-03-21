@@ -53,7 +53,9 @@ public:
 	virtual void Draw() {};
 
 	void DrawString(std::string texttodraw, int posX, int posY, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
+	void DrawStringShadowed(std::string texttodraw, int posX, int posY, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
 	void DrawStringCentered(std::string texttodraw, int posX, int posY, const Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
+	void DrawStringCenteredShadowed(std::string texttodraw, int posX, int posY, const Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
 	void DrawStringRight(std::string texttodraw, int posX, int posY, const Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
 	int  DrawParagraph(std::string texttodraw, int posX, int posY, int width, int height, const Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);
 	void DrawParagraphCentered(std::string texttodraw, int posX, int posY, int width, int height, const Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), float scale = 1.0f);

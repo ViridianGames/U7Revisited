@@ -159,6 +159,7 @@ void MainState::Update()
 
 	}
 
+
 	//  Get terrain hit for highlight mesh
 	if (g_Input->WasLButtonClicked())
 	{
@@ -166,25 +167,18 @@ void MainState::Update()
 
 		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
 		{
-			glm::vec3 pos = (*node).get()->GetPos();
-			glm::vec3 pos2 = pos + glm::vec3(g_objectTable[(*node).get()->m_ObjectType].m_depth, g_objectTable[(*node).get()->m_ObjectType].m_height, g_objectTable[(*node).get()->m_ObjectType].m_width);
+			bool picked = (*node)->m_shapeData->Pick((*node)->GetPos(), g_Display->GetCameraAngle());
 
-			glm::vec3 tri1 = glm::vec3(pos.x, pos.y, pos.z);
-			glm::vec3 tri2 = glm::vec3(pos.x, pos2.y, pos.z);
-			glm::vec3 tri3 = glm::vec3(pos2.x, pos2.y, pos2.z);
-			glm::vec3 tri4 = glm::vec3(pos2.x, pos.y, pos2.z);
-
-			double distance;
-
-			double u, v;
-
-			if (PickWithUV(g_Input->m_RayOrigin, g_Input->m_RayDirection, tri1, tri2, tri3, distance, u, v) ||
-				PickWithUV(g_Input->m_RayOrigin, g_Input->m_RayDirection, tri4, tri3, tri2, distance, u, v))
+			if (picked)
 			{
-				m_selectedObject = (*node).get()->m_ObjectType;
-				(*node)->m_color = Color(1, 0, 0, 1);
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				(*node)->m_color.g = 0;
+				(*node)->m_color.b = 0;
+				m_selectedObject = (*node)->m_ID;
 
-				AddConsoleString("Selected Object: " + to_string(m_selectedObject));
+
+				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame));
 
 				break;
 			}

@@ -288,6 +288,12 @@ void Font::DrawString(std::string texttodraw, int posX, int posY, Color color, f
 	}
 }
 
+void Font::DrawStringShadowed(std::string texttodraw, int posX, int posY, Color color, float scale)
+{
+	DrawString(texttodraw, posX + 2, posY + 2, Color(0, 0, 0, 1), scale);
+	DrawString(texttodraw, posX, posY, color, scale);
+}
+
 void Font::DrawParagraphRight(std::string texttodraw, int posX, int posY, int width, int height, Color color, float scale)
 {
 	vector<string> paragraphs = SplitStringsOnCarriageReturn(texttodraw);
@@ -356,6 +362,14 @@ void Font::DrawStringCentered(std::string texttodraw, int posX, int posY, Color 
 	posX -= (textlength / 2);
 
 	DrawString(texttodraw, posX, posY, color, scale);
+}
+
+void Font::DrawStringCenteredShadowed(std::string texttodraw, int posX, int posY, Color color, float scale)
+{
+	int textlength = GetStringMetrics(texttodraw);
+	posX -= (textlength / 2);
+
+	DrawStringShadowed(texttodraw, posX, posY, color, scale);
 }
 
 void Font::DrawStringRight(std::string texttodraw, int posX, int posY, Color color, float scale)

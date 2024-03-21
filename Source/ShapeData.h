@@ -22,7 +22,11 @@ enum class CuboidTexture
 	CUBOID_DRAW_TOP,
 	CUBOID_DRAW_FRONT,
 	CUBOID_DRAW_RIGHT,
-	CUBOID_DRAW_LAST
+	CUBOID_DRAW_TOP_INVERTED,
+	CUBOID_DRAW_FRONT_INVERTED,
+	CUBOID_DRAW_RIGHT_INVERTED,
+	CUBOID_DRAW_LAST,
+	CUBOID_INVALID,
 };
 
 enum class ShapeDrawType
@@ -31,9 +35,6 @@ enum class ShapeDrawType
 	OBJECT_DRAW_CUBOID,
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
-	OBJECT_DRAW_TABLE,
-	OBJECT_DRAW_HANGINGNS,
-	OBJECT_DRAW_HANGINGEW,
 	OBJECT_DRAW_LAST
 };
 
@@ -54,15 +55,17 @@ public:
 	ShapeData();
 	~ShapeData() {};
 
-	void Init(int shape, int frame);
+	void Init(int shape, int frame, bool shouldreset = true);
 
 	void SetupDrawTypes();
 	void FixupTextures();
 
-	void Serialize();
-	void Deserialize();
+	void Serialize(std::ofstream& outputStream );
+	void Deserialize(std::ifstream& inputStream);
 
 	void Draw(const glm::vec3& pos, float angle, Color color = Color(1, 1, 1, 1));
+
+	void DrawSide(CuboidSides side, glm::vec3 thisPos, Color color, glm::vec3 scaling);
 
 	bool IsValid() { return m_isValid; }
 
@@ -73,6 +76,35 @@ public:
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
+
+	void SafeAndSane();
+	void ResetTopTexture();
+	void ResetFrontTexture();
+	void ResetRightTexture();
+
+	int GetShape() { return m_shape; }
+	int GetFrame() { return m_frame; }
+
+	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTexture[static_cast<int>(side)]; }
+	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTexture[static_cast<int>(side)] = texture; }
+
+	bool Pick(glm::vec3 thisPos, float angle);
+
+	// In original pixels
+	int m_topTextureOffsetX;
+	int m_topTextureOffsetY;
+	int m_topTextureWidth;
+	int m_topTextureHeight;
+
+	int m_frontTextureOffsetX;
+	int m_frontTextureOffsetY;
+	int m_frontTextureWidth;
+	int m_frontTextureHeight;
+
+	int m_rightTextureOffsetX;
+	int m_rightTextureOffsetY;
+	int m_rightTextureWidth;
+	int m_rightTextureHeight;
 
 private:
 
@@ -91,19 +123,19 @@ private:
 
 	//  The custom shape data will also contain a list of which sides of the cuboid to draw and which to not draw,
 	//  and which of the three faces to apply to those cuboid sides.
-
-	CuboidTexture m_cuboidTextures[6];
-
-	bool m_sideVisibility[static_cast<int>(CuboidSides::CUBOID_LAST)];
+	CuboidTexture m_sideTexture[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
 	Texture* m_defaultTexture;
 	std::unique_ptr<Texture> m_topTexture;
 	std::unique_ptr<Texture> m_frontTexture;
 	std::unique_ptr<Texture> m_rightTexture;
 
+	glm::vec3 m_Scaling;
+
 	std::array<Mesh*, static_cast<int>(CuboidSides::CUBOID_LAST)> m_meshes;
 
-	glm::vec3 m_Scaling;
+
+
 };
 
 #endif

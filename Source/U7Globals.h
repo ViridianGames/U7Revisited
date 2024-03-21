@@ -167,9 +167,48 @@ void DrawConsole();
 
 extern float g_DrawScale;
 
-extern std::array<std::tuple<ShapeDrawType, ObjectTypes>, 1024 > g_ObjectTypes;
-
 extern float g_CameraRotateSpeed;
 extern glm::vec3 g_CameraMovementSpeed;
+
+//////////////////////////////////////////////////////////////////////////////
+//  GUI ELEMENTS
+//////////////////////////////////////////////////////////////////////////////
+
+extern std::shared_ptr<Sprite> g_BoxTL;
+extern std::shared_ptr<Sprite> g_BoxT;
+extern std::shared_ptr<Sprite> g_BoxTR;
+extern std::shared_ptr<Sprite> g_BoxL;
+extern std::shared_ptr<Sprite> g_BoxC;
+extern std::shared_ptr<Sprite> g_BoxR;
+extern std::shared_ptr<Sprite> g_BoxBL;
+extern std::shared_ptr<Sprite> g_BoxB;
+extern std::shared_ptr<Sprite> g_BoxBR;
+
+extern std::vector<std::shared_ptr<Sprite> > g_Borders;
+
+extern std::shared_ptr<Sprite> g_InactiveButtonL;
+extern std::shared_ptr<Sprite> g_InactiveButtonM;
+extern std::shared_ptr<Sprite> g_InactiveButtonR;
+extern std::shared_ptr<Sprite> g_ActiveButtonL;
+extern std::shared_ptr<Sprite> g_ActiveButtonM;
+extern std::shared_ptr<Sprite> g_ActiveButtonR;
+
+extern std::shared_ptr<Sprite> g_LeftArrow;
+extern std::shared_ptr<Sprite> g_RightArrow;
+
+extern Color g_Red;
+extern Color g_Blue;
+extern Color g_Pink;
+extern Color g_LightBlue;
+extern Color g_Brown;
+extern Color g_Purple;
+extern Color g_Green;
+extern Color g_Gray;
+extern Color g_DarkGray;
+extern Color g_Black;
+extern Color g_White;
+
+extern int g_selectedShape;
+extern int g_selectedFrame;
 
 #endif

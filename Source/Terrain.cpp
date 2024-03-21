@@ -622,8 +622,8 @@ void Terrain::UpdateWater()
       int i = (*node).first;
       int j = (*node).second;
       
-      float u = i % 4 * .25;
-      float v = j % 4 * .25;
+      float u = i % 4 * .25f;
+      float v = j % 4 * .25f;
       
       Color color = GetTriLighting(glm::vec3(i,     base + (GetWaterHeight(i, j) * 10), j),
          glm::vec3(i + span, base + (GetWaterHeight(i + span, j    ) * 10), j),

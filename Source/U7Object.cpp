@@ -56,71 +56,34 @@ void U7Object::Update()
 		m_Visible = true;
 	}
 
-   ObjectTypes type = std::get<1>(g_ObjectTypes.at(m_ObjectType));
-   if (type == ObjectTypes::OBJECT_STATIC)
-   {
-      return;
-   }
-
-   //  If a unit has an external force (something is pushing it) then it cannot move under
-   //  its own power.
-   if (m_ExternalForce != glm::vec3(0, 0, 0))// && m_ExternalForceFlag )
-   {
-      if (m_GravityFlag)
-      {
-         m_ExternalForce -= g_Gravity;
-      }
-
-      m_Pos += m_ExternalForce;
-
-      //  If we would bounce this frame, do the bounce.
-      if (m_Pos.y < g_Terrain->GetHeight(m_Pos.x, m_Pos.z))
-      {
-         m_Pos.y = g_Terrain->GetHeight(m_Pos.x, m_Pos.z);
-         if (abs(m_ExternalForce.y) < .1)
-         {
-            m_ExternalForce = glm::vec3(0, 0, 0);
-         }
-         else
-         {
-            m_ExternalForce.y = -m_ExternalForce.y;
-            m_ExternalForce *= .5f;
-         }
-      }
-   }
-   //  Handle normal movement
-   else
-   {
-      if (m_Pos.x != m_Dest.x || m_Pos.z != m_Dest.z)
-      {
-         if (m_Speed != 0.0f)
-         {
-            glm::vec3 distance = m_Direction * m_Speed;
-
-            //  If this step would take us past our destination, then stop at
-            //  our destination.
-            glm::vec3 target = m_Pos + distance;
-            if ((m_Pos.x < m_Dest.x && target.x >= m_Dest.x) || (m_Pos.x > m_Dest.x && target.x <= m_Dest.x))
-            {
-               m_Pos = m_Dest;
-               m_Direction = glm::vec3(0, 0, 0);
-            }
-            else
-            {
-               m_Pos += distance;
-            }
-         }
-      }
-
-      //  Pop to terrain.  If we're moving under our own power, we should always stay
-      //  at the height of the terrain.
-      m_Pos.y = g_Terrain->GetHeight(m_Pos.x, m_Pos.z);
-   }
-
    //  Visilibity is set by the terrain so it should always be set to false here.
-   m_Visible = false;
+   //m_Visible = false;
 
-   // Handle external force and gravity
+   if (m_color != Color(1, 1, 1, 1))
+   {
+      int stopper = 0;
+      m_color.r += 0.1;
+      m_color.g += 0.1;
+      m_color.b += 0.1;
+      m_color.a += 0.1;
+      if (m_color.r > 1)
+      {
+			m_color.r = 1;
+		}
+      if (m_color.g > 1)
+      {
+			m_color.g = 1;
+		}
+      if (m_color.b > 1)
+      {
+			m_color.b = 1;
+		}
+      if (m_color.a > 1)
+      {
+			m_color.a = 1;
+		}
+	}
+   
 
 }
 
