@@ -34,12 +34,12 @@ public:
    void LoadVersion();
    void MakeMap();
 
-   unsigned char ReadU8(FILE* buffer);
-   unsigned short ReadU16(FILE* buffer);
-   unsigned int  ReadU32(FILE* buffer);
-   char ReadS8(FILE* buffer);
-   short ReadS16(FILE* buffer);
-   int  ReadS32(FILE* buffer);
+   unsigned char ReadU8(std::ifstream &buffer);
+   unsigned short ReadU16(std::ifstream &buffer);
+   unsigned int  ReadU32(std::ifstream &buffer);
+   char ReadS8(std::ifstream &buffer);
+   short ReadS16(std::ifstream &buffer);
+   int  ReadS32(std::ifstream &buffer);
 
    struct FLXEntryData
    {
@@ -47,7 +47,7 @@ public:
       unsigned int length;
    };
 
-   std::vector<FLXEntryData> ParseFLXHeader(FILE* file);
+   std::vector<FLXEntryData> ParseFLXHeader(std::ifstream &file);
 
    std::array<Color, 256> m_palette;
    
@@ -86,6 +86,8 @@ public:
    bool m_objectViewing = true;
 
    std::unique_ptr<U7Object> m_currentObject = nullptr;
+
+   //std::unique_ptr<Texture> m_testTexture;
 
 };
 

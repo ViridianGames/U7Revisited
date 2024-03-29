@@ -69,7 +69,9 @@ public:
 
 	bool IsValid() { return m_isValid; }
 
-	Texture* GetTexture() { return m_defaultTexture; }
+	void CreateDefaultTexture();
+
+	Texture* GetTexture() { return m_defaultTexture.get(); }
 	Texture* GetTopTexture() { return m_topTexture.get(); }
 	Texture* GetFrontTexture() { return m_frontTexture.get(); }
 	Texture* GetRightTexture() { return m_rightTexture.get(); }
@@ -125,7 +127,7 @@ private:
 	//  and which of the three faces to apply to those cuboid sides.
 	CuboidTexture m_sideTexture[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
-	Texture* m_defaultTexture;
+	std::unique_ptr<Texture> m_defaultTexture;
 	std::unique_ptr<Texture> m_topTexture;
 	std::unique_ptr<Texture> m_frontTexture;
 	std::unique_ptr<Texture> m_rightTexture;

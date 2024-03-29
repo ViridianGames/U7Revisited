@@ -19,7 +19,6 @@ ShapeData::ShapeData()
    {
 		m_sideTexture[i] = CuboidTexture::CUBOID_INVALID;
 	}
-
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -27,12 +26,9 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	m_shape = shape;
 	m_frame = frame;
 
-	stringstream filename;
-	filename << "Images/Objects/" << std::to_string(shape) << "-" << std::to_string(frame) << ".png";
-	if (g_ResourceManager->DoesFileExist(filename.str()))
+   if(m_defaultTexture != nullptr)
 	{
 		m_isValid = true;
-		m_defaultTexture = g_ResourceManager->GetTexture(filename.str(), false);
 
       //  We need local copies of this texture for three sides of the cuboid.
       if (m_topTexture == nullptr)
@@ -98,6 +94,14 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
    {
       m_isValid = false;
    }
+}
+
+void ShapeData::CreateDefaultTexture()
+{
+   if (m_defaultTexture == nullptr)
+   {
+		m_defaultTexture = std::make_unique<Texture>();
+	}
 }
 
 void ShapeData::Serialize(ofstream& outStream)
@@ -424,7 +428,7 @@ void ShapeData::Draw(const glm::vec3& pos, float angle, Color color)
             thisPos.y = .01f;
          }
 
-         g_Display->DrawMesh(m_meshes[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], thisPos, m_defaultTexture, color, glm::vec3(0, 0, 0), m_Scaling);
+         g_Display->DrawMesh(m_meshes[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], thisPos, m_defaultTexture.get(), color, glm::vec3(0, 0, 0), m_Scaling);
          break;
       }
 
@@ -442,7 +446,7 @@ void ShapeData::Draw(const glm::vec3& pos, float angle, Color color)
          thisPos.x += 0.5f;
          thisPos.z += 0.5f;
          thisPos.y -= .5f;
-         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_defaultTexture, color, glm::vec3(0, angle, 0), m_Scaling);
+         g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_defaultTexture.get(), color, glm::vec3(0, angle, 0), m_Scaling);
          break;
       }
    }
