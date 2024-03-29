@@ -54,7 +54,6 @@ public:
    Gui* m_LoadingGui = nullptr;
 
    Texture* m_loadingBackground = nullptr;
-   Texture* m_tree = nullptr;
 
    float m_red;
 

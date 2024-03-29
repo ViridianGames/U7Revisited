@@ -28,8 +28,6 @@ void LoadingState::Init(const string& configfile)
 
 	MakeAnimationFrameMeshes();
 
-	m_tree = g_ResourceManager->GetTexture("Images/Objects/453-0.png", false);
-
 	m_red = 1.0;
 	m_angle = 0.0;
 
@@ -712,120 +710,7 @@ void LoadingState::CreateShapeTable()
 		}
 		file.close();
 	}
-
-
-		// 
-//		fseek(shapes, shapeEntryMap[thisShape].offset, SEEK_SET);
-//
-//		unsigned int fileSize = ReadU32(shapes);
-//		unsigned int firstOffset = ReadU32(shapes);
-//
-//		unsigned int frameCount = ((firstOffset - 4) / 4);
-//		std::vector<unsigned int> frameOffsets;
-//		frameOffsets.resize(frameCount);
-//		frameOffsets[0] = 0;
-//		for (int i = 1; i < frameCount; ++i)
-//		{
-//			frameOffsets[i] = ReadU32(shapes);
-//		}
-//
-//		//  Read the frame data.
-//		for (int thisFrame = 0; thisFrame < frameCount; ++thisFrame)
-//		{
-//			fseek(shapes, shapeEntryMap[thisShape].offset + frameOffsets[thisFrame], SEEK_SET);
-//
-//			unsigned short MaxX = ReadU16(shapes);
-//			unsigned short OffsetX = ReadU16(shapes);
-//			unsigned short OffsetY = ReadU16(shapes);
-//			unsigned short MaxY = ReadU16(shapes);
-//
-//			int height = MaxY + OffsetY + 1;
-//			int width = MaxX + OffsetX + 1;
-//
-//			g_shapeTable[thisShape][thisFrame] = new Texture();
-//
-//			g_shapeTable[thisShape][thisFrame]->Create(width, height, false);
-//
-//			// Read each span.  Spans can be either RLE or raw pixel data.
-//			// We do not know the number of spans in advance, so we read until we hit a span of length 0.
-//			int pixelCounter = 0;
-//			while (true)
-//			{
-//				unsigned short spanData = ReadU16(shapes);
-//				unsigned short spanLength = spanData >> 1;
-//				unsigned short spanType = spanData & 1;
-//
-//				if (spanData == 0)
-//				{
-//					g_shapeTable[thisShape][thisFrame]->UpdateData();
-//					break; //  There are no more spans; we're done with this frame.
-//				}
-//
-//				short xStart = ReadS16(shapes);
-//				short YStart = ReadS16(shapes);
-//
-//				if (spanType == 0) // Not RLE, raw pixel data.
-//				{
-//					for (int i = 0; i < spanLength; ++i)
-//					{
-//						unsigned char Value = ReadU8(shapes);
-///*						int x = pixelCounter % width;
-//						int y = pixelCounter / height;
-//						g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[Value]);
-//						++pixelCounter*/;
-//					}
-//				}
-//				else // RLE.
-//				{
-//					int endX = xStart + spanLength;
-//
-//					while (xStart < endX)
-//					{
-//						unsigned char RunData = ReadU8(shapes);
-//						int RunLength = RunData >> 1;
-//						int RunType = RunData & 1;
-//
-//						if (RunType == 0) // Once again, non-RLE
-//						{
-//							for (int i = 0; i < RunLength; ++i)
-//							{
-//								unsigned char Value = ReadU8(shapes);
-//								//int x = pixelCounter % width;
-//								//int y = pixelCounter / height;
-//								//g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[Value]);
-//								//++pixelCounter;
-//							}
-//						}
-//						else
-//						{
-//							unsigned char Value = ReadU8(shapes);
-//							//for (int i = 0; i < RunLength; ++i)
-//							//{
-//							//	int x = pixelCounter % width;
-//							//	int y = pixelCounter / height;
-//							//	g_shapeTable[thisShape][thisFrame]->PutPixel(x, y, m_palette[RunData]);
-//							//	++pixelCounter;
-//							//}
-//						}
-//
-//						xStart += RunLength;
-//					}
-//				}
-//			}
-//		}
-//	}
 }
-
-//void LoadingState::ReadImage(int OffsetX, int OffsetY, int BlockLength)
-//{
-//	for (int i = 0; i < BlockLength; ++i)
-//	{
-//		unsigned char Value = ReadU8(shapes);
-//		int x = OffsetX + i;
-//		int y = OffsetY;
-//		g_shapeTable[thisShape][0]->PutPixel(x, y, m_palette[Value]);
-//	}
-//}
 
 void LoadingState::CreateObjectTable()
 {
