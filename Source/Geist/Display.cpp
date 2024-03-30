@@ -39,6 +39,7 @@ void Display::Init(const string& configfile)
 	m_FullScreen = g_Engine->m_EngineConfig.GetNumber("full_screen");
 	m_HRes = (int)g_Engine->m_EngineConfig.GetNumber("h_res");
 	m_VRes = (int)g_Engine->m_EngineConfig.GetNumber("v_res");
+	m_orthoZoom = g_Engine->m_EngineConfig.GetNumber("ortho_zoom");
 
 	InitializeVideoMode(m_HRes, m_VRes, m_FullScreen);
 
@@ -90,10 +91,12 @@ void Display::InitializeVideoMode(int w, int h, bool fullscreen)
 	{
 		m_fieldOfView = 90;
 	}
-	m_3DProj = glm::perspective(glm::radians(m_fieldOfView), ((float)m_HRes / (float)m_VRes), 25.0f, 1000.0f);
+
+	m_3DProj = glm::perspective(glm::radians(m_fieldOfView), ((float)m_HRes / (float)m_VRes), 1.0f, 10000.0f);
+	//glm::ortho(0.0f, (float)m_HRes, (float)m_VRes, 0.0f, 1.0f, 10000.0f);
+	m_3DProj = glm::ortho(-(float(320 * m_orthoZoom)/2), (float(320 * m_orthoZoom) / 2), -(float(180 * m_orthoZoom)/2), (float(180 * m_orthoZoom) / 2), 1.0f, 1000.0f);
 
 	glMultMatrixf(glm::value_ptr(m_3DProj));
-
 
 	glMatrixMode(GL_MODELVIEW);
 	m_CamLookAt = glm::vec3(51, 13, 51);
@@ -350,12 +353,24 @@ void Display::Go2D()
 
 void Display::Go3D()
 {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_ALPHA_TEST);
 	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
+	glPushMatrix();
+	glLoadIdentity();
+	//glOrtho();
+	//glOrtho(0, m_HRes, m_VRes, 0, 1.0f, 10000.0f);
+	m_3DProj = glm::ortho(-(float(320 * m_orthoZoom) / 2), (float(320 * m_orthoZoom) / 2), -(float(180 * m_orthoZoom) / 2), (float(180 * m_orthoZoom) / 2), 1.0f, 1000.0f);
+
+	glMultMatrixf(glm::value_ptr(m_3DProj));
 	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+	glPushMatrix();
+	glLoadIdentity();
+
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_ALPHA_TEST);
+	//glMatrixMode(GL_PROJECTION);
+	//glPopMatrix();
+	//glMatrixMode(GL_MODELVIEW);
+	//glPopMatrix();
 	m_DrawMode = DM_3D;
 }
 
@@ -364,7 +379,8 @@ void Display::Go3DOrtho()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, m_HRes, m_VRes, 0, 1.0f, 10000.0f);
+	glOrtho(-(float(320 * m_orthoZoom) / 2), (float(320 * m_orthoZoom) / 2), -(float(180 * m_orthoZoom) / 2), (float(180 * m_orthoZoom) / 2), 1.0f, 200.0f);
+	//glOrtho(0, m_HRes, m_VRes, 0, 1.0f, 10000.0f);
 	m_3DProj = glm::ortho(0.0f, (float)m_HRes, (float)m_VRes, 0.0f, 1.0f, 10000.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -414,6 +430,8 @@ void Display::SetIsFullscreen(bool isFS)
 
 void Display::UpdateCamera()
 {
+	m_3DProj = glm::ortho(-(float(320 * m_orthoZoom) / 2), (float(320 * m_orthoZoom) / 2), -(float(180 * m_orthoZoom) / 2), (float(180 * m_orthoZoom) / 2), 1.0f, 1000.0f);
+
 	glm::vec3 newpos = m_UnitDiagonal;
 
 	newpos *= m_CamDistance;
@@ -430,6 +448,7 @@ void Display::UpdateCamera()
 	m_CamDirection = glm::normalize(glm::vec3(m_CamPos.x, 0, m_CamPos.z) - glm::vec3(m_CamLookAt.x, 0, m_CamLookAt.z));
 	m_CamRotation = glm::mat4(1.0f);
 	m_CamRotation = glm::rotate(m_CamRotation, glm::radians(m_CamAngle), m_CamUp);
+
 	m_CameraChanged = false;
 }
 

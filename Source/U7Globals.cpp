@@ -272,7 +272,7 @@ unsigned int DoCameraMovement()
 
 	if (g_Input->MouseWheelUp())
 	{
-		float newDistance = g_Display->GetCameraDistance() + 3;
+		float newDistance = g_Display->GetCameraDistance() + .01f;
 		if (newDistance > g_Engine->m_EngineConfig.GetNumber("camera_far_limit"))
 		{
 			newDistance = g_Engine->m_EngineConfig.GetNumber("camera_far_limit");
@@ -286,7 +286,7 @@ unsigned int DoCameraMovement()
 
 	if (g_Input->MouseWheelDown())
 	{
-		float newDistance = g_Display->GetCameraDistance() - 3;
+		float newDistance = g_Display->GetCameraDistance() - .01f;
 		if (newDistance < g_Engine->m_EngineConfig.GetNumber("camera_close_limit"))
 		{
 			newDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");

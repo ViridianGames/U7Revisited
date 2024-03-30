@@ -445,7 +445,7 @@ void ShapeData::Draw(const glm::vec3& pos, float angle, Color color)
          //thisPos = m_Pos;
          thisPos.x += 0.5f;
          thisPos.z += 0.5f;
-         thisPos.y -= .5f;
+         thisPos.y -= .15f;
          g_Display->DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_defaultTexture.get(), color, glm::vec3(0, angle, 0), m_Scaling);
          break;
       }

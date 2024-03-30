@@ -47,7 +47,7 @@ void U7Object::Draw()
 
 void U7Object::Update()
 {
-   if (m_Pos.y > 4)
+   if (m_Pos.y >= 5)
    {
       m_Visible = false;
    }

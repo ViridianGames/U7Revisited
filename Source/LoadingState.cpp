@@ -65,8 +65,6 @@ void LoadingState::Draw()
 {
 	g_Display->ClearScreen();
 
-	g_Display->DrawBox(0, 0, g_Display->GetWidth(), g_Display->GetHeight(), Color(0, .5f, .5f, 1), true);
-
 	if (m_loadingFailed == true)
 	{
 		g_SmallFont->DrawString("Ultima VII files not found.  They should go into the Data/U7 folder.", 0, 0);
@@ -496,8 +494,16 @@ void LoadingState::LoadIREG()
 
 						unsigned char z;
 						fread(&z, sizeof(unsigned char), 1, u7thisireg);
+						float lift1 = 0;
+						float lift2 = 0;
+						if (z != 0)
+						{
+							lift1 = z >> 4;
+							lift2 = z & 0x0f;
+							//z *= 8;
+						}
 
-						AddObject(shape, frame, GetNextID(), actualx, 0, actualy);
+						AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
 						unsigned char quality;
 						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 					}

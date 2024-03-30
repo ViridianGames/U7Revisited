@@ -153,6 +153,8 @@ private:
 
 	bool m_Debugging;
 
+	float m_orthoZoom = 0.1f;
+
 public:
 	Display() {};
 
@@ -257,6 +259,8 @@ public:
 	void SetHasCameraChanged(bool changed);
 
 	int IntersectTriangle(double orig[3], double dir[3], double vert0[3], double vert1[3], double vert2[3], double* t, double* u, double* v);
+
+	float GetOrthoZoom() { return m_orthoZoom; }
 
 	std::vector<Point> GetSupportedResolutions();
 };

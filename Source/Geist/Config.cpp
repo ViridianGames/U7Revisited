@@ -49,18 +49,13 @@ bool Config::Load(string fileName)
 
          bool isNumber = false;
 
-         istringstream numbertest(rightside);
-
-         unsigned int numtest;
-         numbertest >> numtest;
-
-         if (!numbertest)
+         if (rightside[0] == '.' || (rightside[0] >= '0' && rightside[0] <= '9'))
          {
-            isNumber = false;
-         }
+				isNumber = true;
+			}
          else
          {
-            isNumber = true;
+            isNumber = false;
          }
 
          if (isNumber)

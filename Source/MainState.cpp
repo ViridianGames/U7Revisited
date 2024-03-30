@@ -197,7 +197,7 @@ void MainState::Draw()
 	if (m_showObjects)
 	{
 		m_sortedVisibleObjects.clear();
-		float drawRange = g_Display->GetCameraDistance() / 2.5;
+		float drawRange = g_Display->GetOrthoZoom() * 250;
 		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 		{
 			if (!(*node).second->m_Visible)
@@ -298,7 +298,7 @@ void MainState::SetupGame()
 	//  Set up map
 	int width = 3072;
 	int height = 3072;
-	g_Display->SetCameraPosition(glm::vec3(1071, 0, 2209));
+	g_Display->SetCameraPosition(glm::vec3(980, 0, 2126));
 	//g_Display->SetCameraPosition(glm::vec3(1068, 0, 2211));
 	g_Terrain->Init(width, height);
 	g_Terrain->InitializeMap(7777);   //  Check for a packet that tells us how to set up the game.
