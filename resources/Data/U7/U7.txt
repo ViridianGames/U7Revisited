@@ -1,0 +1,1 @@
+Copy the contents of your Ultima7 folder into this folder.
