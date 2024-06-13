@@ -1,0 +1,5 @@
+// C library
+
+void LibFunction()
+{
+}

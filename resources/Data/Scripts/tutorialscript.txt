@@ -1,0 +1,432 @@
+Bark           75   12    12   0 255   0 128 128 0     3 1 Hello!  You must be the new god.
+Bark           75   12    12   0 255   0 128 128 0    75 1 You're probably wondering what you're doing here.
+Bark           100  12    12   0 255   0 128 128 0   150 1 Well, I'm going to take pity on you and show you the ropes.
+Bark           75   12    12   0 255   0 128 128 0   250 1 I'm the Green god.  This is my village.
+PopCameraMove   0    0    16   0  16   0   0   0 0   275 1 
+Bark           50   12    12   0 255   0 128 128 0   325 1 Say hi to the new god, everybody!
+BarkUnit 2     50 5000         0 255   0 128 128     0   350 1 Hi!
+BarkUnit 3     50 5000         0 255   0 128 128     0   370 1 Hello!
+BarkUnit 4     50 5000         0 255   0 128 128     0   390 1 Greetings!
+Bark           50   12    12   0 255   0 128 128 0   400 1 Aren't they adorable?  I love 'em so much.
+Bark           75   12    12   0 255   0 128 128 0   450 1 Now, you need to know that villagers give you mana.
+Bark           50   12    12   0 255   0 128 128 0   525 1 More villagers, more mana.
+Bark           70   12    12   0 255   0 128 128 0   575 1 But villagers need flat land to expand their villages.
+Bark          100   12    12   0 255   0 128 128 0   700 1 So I'm going to use the FLATTEN god power.
+Bark          150   12    12   0 255   0 128 128 0   800 1 It will flatten the land around my village...
+Bark           75   12    12   0 255   0 128 128 0  1100 1 ...which allows the village to grow!
+NetworkEvent 0 12 18.5 15.5 0 0 0 0 0 1155 1 
+Bark           75   12    12   0 255   0 128 128 0  1175 1 Uh - now look what's happened!
+Bark           50   12    12   0 255   0 128 128 0  1225 1 SOMEBODY turned part of my village into a swamp!
+Bark           50   12    12   0 255   0 128 128 0  1275 1 I've got an idea who, but we'll deal with that later.
+Bark          100   12    12   0 255   0 128 128 0  1325 1 Villagers can't farm from ruined land. We have to fix it.
+Bark           75   12    12   0 255   0 128 128 0  1425 1 We'll use the BLESS god power on our own land...
+NetworkEvent 0 11 18.5 15.5 0 0 0 0 0 1475 1 
+Bark           75   12    12   0 255   0 128 128 0  1500 1 ...and now the land can be used!
+Bark           50   12    12   0 255   0 128 128 0  1650 1 Now let's look around and see if...ahah!
+PopCameraMove   0    0    48   0  48   0   0   0 0  1635 1
+Bark           50   12    12   0 255   0 128 128 0  1700 1 Looks like Red is here too.  I should have known.
+Bark          100   12    12   0 255   0 128 128 0  1750 1 Let's use the LIGHTNING BOLT god power on his villagers!
+NetworkEvent 0 8 48.5 48.5 0 0 0 0 0 1825 1 
+Bark           75  512   348 255  64  64   0   0 0  1850 1 Hey!  What do you think you're doing?
+Bark           75   12    12   0 255   0 128 128 0  1925 1 Well...I'm attacking your villagers.
+Bark           75  512   348 255  64  64   0   0 0  2000 1 And WHY are you doing that?
+Bark           75   12    12   0 255   0 128 128 0  2075 1 Because you're evil.
+Bark           75  512   348 255  64  64   0   0 0  2125 1 What?!  How do you know I'm evil?
+Bark           75   12    12   0 255   0 128 128 0  2200 1 Two things, basically.  One, you're not me.
+Bark           75   12    12   0 255   0 128 128 0  2275 1 And two, your speech text is red on black.
+Bark           25  512   348 255  64  64   0   0 0  2350 1 Oh.
+Bark           25   12    12   0 255   0 128 128 0  2400 1 TOTAL giveaway.
+Bark           75  512   348 255  64  64   0   0 0  2425 1 It's a fair cop.  A battle to the end, then?
+Bark          100   12    12   0 255   0 128 128 0  2500 1 Yes!  An epic struggle for the fate of this world!
+Bark           50  512   348 255  64  64   0   0 0  2600 1 Oh, Green, you're SUCH a drama queen.
+PopCameraMove   0    0    16   0  16   0   0   0 0  2700 1 
+Bark           50   12    12   0 255   0 128 128 0  2700 1 Now, there's one more thing you need to know.
+Bark           50   12    12   0 255   0 128 128 0  2750 1 Villagers can be turned into soldiers using the Army panel.
+Bark           50   12    12   0 255   0 128 128 0  2850 1 Soldiers come in three types...
+Bark           25   12    12   0 255   0 128 128 0  2900 1 Warriors...
+NetworkEvent 0 17 48.5 48.5 0 0 0 0 0 3000 1 
+Bark           25   12    12   0 255   0 128 128 0  2925 1 Barbarians...
+NetworkEvent 0 16 48.5 48.5 0 0 0 0 0 3025 1 
+Bark           25   12    12   0 255   0 128 128 0  2950 1 and Archers.
+NetworkEvent 0 15 48.5 48.5 0 0 0 0 0 3050 1 
+Bark           50   12    12   0 255   0 128 128 0  2975 1 Each are good against different enemies.
+Bark           50   12    12   0 255   0 128 128 0  3075 1 When you create soldiers, you'll also get a General.
+NetworkEvent 0 18 16.5 13.5 0 0 0 0 0 3200 1 
+NetworkEvent 0 18 17.0 14.5 0 0 0 0 0 3250 1 
+Bark          100   12    12   0 255   0 128 128 0  3175 1 The General is how you control your army.
+Bark          100   12    12   0 255   0 128 128 0  3275 1 Click and move him and your army moves with him.
+NetworkEvent 0 18 9.5 14.5 0 0 0 0 0 3250 1 
+NetworkEvent 0 18 10.5 15.5 0 0 0 0 0 3350 1 
+Bark          100   12    12   0 255   0 128 128 0  3375 1 Soldiers will attack any enemy units they get near.
+Bark          100   12    12   0 255   0 128 128 0  3475 1 But be careful - soldiers do NOT give you mana.
+Bark          100   12    12   0 255   0 128 128 0  3575 1 So don't turn ALL your villagers into soldiers...
+Bark          100   12    12   0 255   0 128 128 0  3675 1 ...or you won't be able to use your god powers!
+Bark          100   12    12   0 255   0 128 128 0  3775 1 So remember three things: defend your villages...
+Bark          100   12    12   0 255   0 128 128 0  3875 1 ..and use god powers and your army to defeat the enemy god!
+Bark          100   12    12   0 255   0 128 128 0  3975 1 Now I'm going to give you my units.  Go and defeat Red!
+Bark          100   12    12   0 255   0 128 128 0  4075 1 And Red, take it easy on the new god, will ya?
+Bark          100  512   348 255  64  64   0   0 0  4175 1 Oh, FINE.  But you owe me one, Green.
+Bark           75   12    12   0 255   0 128 128 0  4275 1 Thanks, Red!  See ya!
+NetworkEvent 0 0 16 15 2 0 0 0 0 704 1 
+NetworkEvent 0 0 16 15 2 0 0 0 0 704 1 
+NetworkEvent 0 0 16 15 2 0 0 0 0 705 1 
+NetworkEvent 0 0 16 15 2 0 0 0 0 706 1 
+NetworkEvent 0 0 15 15 2 0 0 0 0 707 1 
+NetworkEvent 0 0 15 15 2 0 0 0 0 708 1 
+NetworkEvent 0 0 15 15 2 0 0 0 0 709 1 
+NetworkEvent 0 0 15 15 2 0 0 0 0 710 1 
+NetworkEvent 0 0 15 15 2 0 0 0 0 711 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 712 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 713 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 714 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 715 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 716 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 717 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 718 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 719 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 720 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 721 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 722 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 723 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 724 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 725 1 
+NetworkEvent 0 0 16 14 2 0 0 0 0 726 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 727 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 728 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 728 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 729 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 730 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 731 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 732 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 733 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 734 1 
+NetworkEvent 0 0 17 14 2 0 0 0 0 735 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 736 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 737 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 738 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 739 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 740 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 741 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 742 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 743 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 744 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 745 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 746 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 746 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 747 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 748 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 749 1 
+NetworkEvent 0 0 17 13 2 0 0 0 0 750 1 
+NetworkEvent 0 0 18 13 2 0 0 0 0 751 1 
+NetworkEvent 0 0 18 13 2 0 0 0 0 752 1 
+NetworkEvent 0 0 18 13 2 0 0 0 0 753 1 
+NetworkEvent 0 0 18 13 2 0 0 0 0 754 1 
+NetworkEvent 0 0 18 14 2 0 0 0 0 755 1 
+NetworkEvent 0 0 18 14 2 0 0 0 0 756 1 
+NetworkEvent 0 0 18 14 2 0 0 0 0 757 1 
+NetworkEvent 0 0 18 15 2 0 0 0 0 758 1 
+NetworkEvent 0 0 18 15 2 0 0 0 0 759 1 
+NetworkEvent 0 0 18 15 2 0 0 0 0 760 1 
+NetworkEvent 0 0 18 15 2 0 0 0 0 761 1 
+NetworkEvent 0 0 18 15 2 0 0 0 0 762 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 763 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 764 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 765 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 766 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 767 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 768 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 769 1 
+NetworkEvent 0 0 18 16 2 0 0 0 0 770 1 
+NetworkEvent 0 0 19 16 2 0 0 0 0 771 1 
+NetworkEvent 0 0 19 16 2 0 0 0 0 772 1 
+NetworkEvent 0 0 19 16 2 0 0 0 0 773 1 
+NetworkEvent 0 0 19 16 2 0 0 0 0 774 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 775 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 776 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 777 1 
+NetworkEvent 0 0 18 17 2 0 0 0 0 778 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 779 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 780 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 781 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 782 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 783 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 784 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 785 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 786 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 787 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 788 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 789 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 790 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 791 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 792 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 793 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 794 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 795 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 796 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 797 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 798 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 799 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 800 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 801 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 802 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 803 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 804 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 805 1 
+NetworkEvent 0 0 19 17 2 0 0 0 0 806 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 807 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 808 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 809 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 810 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 811 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 812 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 813 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 814 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 815 1 
+NetworkEvent 0 0 20 17 2 0 0 0 0 816 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 817 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 818 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 819 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 820 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 821 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 822 1 
+NetworkEvent 0 0 20 16 2 0 0 0 0 823 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 824 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 825 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 826 1 
+NetworkEvent 0 0 19 15 2 0 0 0 0 827 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 828 1 
+NetworkEvent 0 0 19 15 2 0 0 0 0 829 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 830 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 831 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 832 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 833 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 834 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 835 1 
+NetworkEvent 0 0 19 14 2 0 0 0 0 836 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 837 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 838 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 839 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 840 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 841 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 842 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 843 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 844 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 845 1 
+NetworkEvent 0 0 20 15 2 0 0 0 0 846 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 847 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 848 1 
+NetworkEvent 0 0 19 13 2 0 0 0 0 849 1 
+NetworkEvent 0 0 19 13 2 0 0 0 0 850 1 
+NetworkEvent 0 0 18 13 2 0 0 0 0 851 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 852 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 853 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 854 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 855 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 856 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 857 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 858 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 859 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 860 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 861 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 862 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 863 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 864 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 865 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 866 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 867 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 868 1 
+NetworkEvent 0 0 16 13 2 0 0 0 0 869 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 870 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 871 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 872 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 873 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 874 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 875 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 876 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 877 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 878 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 879 1 
+NetworkEvent 0 0 15 13 2 0 0 0 0 880 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 881 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 882 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 883 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 884 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 885 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 886 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 887 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 888 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 889 1 
+NetworkEvent 0 0 15 12 2 0 0 0 0 890 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 891 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 892 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 893 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 894 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 895 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 896 1 
+NetworkEvent 0 0 16 12 2 0 0 0 0 897 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 898 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 899 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 900 1 
+NetworkEvent 0 0 17 12 2 0 0 0 0 901 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 902 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 903 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 904 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 905 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 906 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 907 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 908 1 
+NetworkEvent 0 0 18 12 2 0 0 0 0 909 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 910 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 911 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 912 1 
+NetworkEvent 0 0 19 13 2 0 0 0 0 913 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 914 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 915 1 
+NetworkEvent 0 0 20 14 2 0 0 0 0 916 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 917 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 918 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 919 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 920 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 921 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 922 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 923 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 924 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 925 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 926 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 927 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 928 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 929 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 930 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 931 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 932 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 933 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 934 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 935 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 936 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 937 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 938 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 939 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 940 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 941 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 942 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 943 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 944 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 945 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 946 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 947 1 
+NetworkEvent 0 0 20 12 2 0 0 0 0 948 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 949 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 950 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 950 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 951 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 952 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 953 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 954 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 955 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 956 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 957 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 958 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 959 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 960 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 961 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 962 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 963 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 964 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 965 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 966 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 967 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 968 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 969 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 970 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 971 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 972 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 973 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 974 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 975 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 976 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 977 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 978 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 979 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 980 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 981 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 982 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 983 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 984 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 985 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 986 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 987 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 988 1 
+NetworkEvent 0 0 21 17 2 0 0 0 0 989 1 
+NetworkEvent 0 0 21 16 2 0 0 0 0 990 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 991 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 992 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 993 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 994 1 
+NetworkEvent 0 0 21 15 2 0 0 0 0 995 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 996 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 997 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 998 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 999 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1000 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1001 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1002 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1003 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1004 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1005 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1006 1 
+NetworkEvent 0 0 21 14 2 0 0 0 0 1007 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1008 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1009 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1010 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1011 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1012 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1013 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1014 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1015 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1016 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1017 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1018 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1019 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1020 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1021 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1022 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1023 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1024 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1025 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1026 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1027 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1028 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1029 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1030 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1031 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1032 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1033 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1034 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1035 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1036 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1037 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1038 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1039 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1040 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1041 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1042 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1043 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1044 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1045 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1046 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1047 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1048 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1049 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1050 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1051 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1052 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1053 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1054 1 
+NetworkEvent 0 0 21 12 2 0 0 0 0 1055 1 
+NetworkEvent 0 0 21 13 2 0 0 0 0 1056 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 1057 1 
+NetworkEvent 0 0 20 13 2 0 0 0 0 1058 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 1059 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 1060 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 1061 1 
+NetworkEvent 0 0 19 12 2 0 0 0 0 1062 1

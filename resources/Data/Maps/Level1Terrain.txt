@@ -1,0 +1,14 @@
+width = 64
+height = 64
+grasstexture = Images\\Terrain\\grass.png
+shallowwatertexture = Images\\Terrain\\water_shallow.png
+deepwatertexture = Images\\Terrain\\water_deep.png
+sandtexture = Images\\Terrain\\sand.png
+ruintexture = Images\\Terrain\\ruin.png
+lavatexture = Images\\Terrain\\lava.png
+blesstexture = Images\\Terrain\\bless.png
+masktexture = Images\\Terrain\\mask.png
+farmtexture = Images\\Terrain\\farm.png
+housetexture = Images\\Terrain\\villagesmall.png
+swamptexture = Images\\Terrain\\swampterrain.png
+seed = 2
