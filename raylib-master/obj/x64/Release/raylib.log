@@ -1,0 +1,15 @@
+﻿  raudio.c
+  rcore.c
+C:\Repos\u7revisited-raylib\raylib-master\src\external\rprand.h(205,27): warning C4018: '<': signed/unsigned mismatch
+C:\Repos\u7revisited-raylib\raylib-master\src\rcore.c(855,42): warning C4244: '+=': conversion from 'float' to 'unsigned int', possible loss of data
+  rglfw.c
+  rmodels.c
+C:\Repos\u7revisited-raylib\raylib-master\src\rmodels.c(5381,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  rshapes.c
+  rtext.c
+  rtextures.c
+C:\Repos\u7revisited-raylib\raylib-master\src\rtextures.c(687,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Repos\u7revisited-raylib\raylib-master\src\rtextures.c(688,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  utils.c
+  Generating Code...
+  raylib.vcxproj -> C:\Repos\u7revisited-raylib\bin\Release\raylib.lib
