@@ -6,3 +6,5 @@ _bin
 /build
 Makefile
 obj
+
+resources/Data/U7/*
