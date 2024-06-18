@@ -29,6 +29,8 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
+	void CaptureScreenshot();
+
 
 	Config        m_EngineConfig;
 	bool          m_Done;
