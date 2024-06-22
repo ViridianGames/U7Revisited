@@ -5,6 +5,7 @@
 #include "Logging.h"
 #include <sstream>
 #include <fstream>
+#include <time.h>
 using namespace std;
 
 void Engine::Init(const std::string& configfile)
@@ -45,6 +46,13 @@ void Engine::Update()
 		m_Done = true;
 	}
 
+	// F12 takes a screenshot
+	if (IsKeyPressed(KEY_F12))
+	{
+		CaptureScreenshot();
+	}
+
+	// F9 toggles the debug drawing
 	if (IsKeyPressed(KEY_F9))
 	{
 		m_debugDrawing = !m_debugDrawing;
@@ -66,4 +74,15 @@ void Engine::Draw()
 	}
 
 	EndDrawing();
+}
+
+void Engine::CaptureScreenshot() {
+	char filename[40];
+	struct tm* timenow;
+
+	time_t now = time(NULL);
+	timenow = gmtime(&now);
+
+	strftime(filename, sizeof(filename), "screenshot_%Y-%m-%d_%H_%M_%S.png", timenow);
+	TakeScreenshot(filename);
 }

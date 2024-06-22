@@ -10,3 +10,6 @@ obj
 =======
 # make sure we're not committing actual U7 stuff
 resources/Data/U7/*
+
+# ignore screenshots
+resources/*.png
