@@ -10,7 +10,6 @@ using namespace std;
 
 void Engine::Init(const std::string& configfile)
 {
-	ofstream logstream(GetLogFileName().c_str(), ofstream::trunc);
 	Log("Starting Engine::Init()");
 	m_Done = false;
 	m_ConfigFileName = configfile;
