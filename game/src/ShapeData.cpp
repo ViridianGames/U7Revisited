@@ -270,13 +270,23 @@ void ShapeData::SetupDrawTypes()
       m_Scaling = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
    }
 
+   for(int i = 0; i < 6; ++i)
+   {
+      m_models[i] = nullptr;
+	}  
+
+   //Mesh mesh = GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1);
+
    //  Create the six meshes that we can individually turn on and off (and texture).
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_BACK)] = &GenMeshPlane(1, 1, 1, 1);
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_FRONT)] = &GenMeshPlane(1, 1, 1, 1);
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_LEFT)] = &GenMeshPlane(1, 1, 1, 1);
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_RIGHT)] = &GenMeshPlane(1, 1, 1, 1);
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_TOP)] = &GenMeshPlane(1, 1, 1, 1);
-   m_meshes[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] = &GenMeshPlane(1, 1, 1, 1);
+   m_models[static_cast<int>(CuboidSides::CUBOID_BACK)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+   m_models[static_cast<int>(CuboidSides::CUBOID_FRONT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+   m_models[static_cast<int>(CuboidSides::CUBOID_LEFT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+   m_models[static_cast<int>(CuboidSides::CUBOID_RIGHT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+   m_models[static_cast<int>(CuboidSides::CUBOID_TOP)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+   m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
+
+   //m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)]->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_defaultTexture->m_Texture;
+
 
    FixupTextures();
 };
@@ -403,17 +413,19 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color)
    {
       case ShapeDrawType::OBJECT_DRAW_CUBOID:
       {
-         Vector3 thisPos = pos;
-         thisPos.x -= m_Scaling.x - 1;
-         thisPos.z -= m_Scaling.z - 1;
-         thisPos.y += thisPos.y * .01f;
+         //DrawCube(pos, m_Scaling.x, m_Scaling.y, m_Scaling.z, BLUE);     // Draw a blue wall
 
-         DrawSide(CuboidSides::CUBOID_TOP, thisPos, color, m_Scaling);
-         DrawSide(CuboidSides::CUBOID_BOTTOM, thisPos, color, m_Scaling);
-         DrawSide(CuboidSides::CUBOID_FRONT, thisPos, color, m_Scaling);
-         DrawSide(CuboidSides::CUBOID_BACK, thisPos, color, m_Scaling);
-         DrawSide(CuboidSides::CUBOID_RIGHT, thisPos, color, m_Scaling);
-         DrawSide(CuboidSides::CUBOID_LEFT, thisPos, color, m_Scaling);
+         //Vector3 thisPos = pos;
+         //thisPos.x -= m_Scaling.x - 1;
+         //thisPos.z -= m_Scaling.z - 1;
+         //thisPos.y += thisPos.y * .01f;
+
+         //DrawSide(CuboidSides::CUBOID_TOP, thisPos, color, m_Scaling);
+         //DrawSide(CuboidSides::CUBOID_BOTTOM, thisPos, color, m_Scaling);
+         //DrawSide(CuboidSides::CUBOID_FRONT, thisPos, color, m_Scaling);
+         //DrawSide(CuboidSides::CUBOID_BACK, thisPos, color, m_Scaling);
+         //DrawSide(CuboidSides::CUBOID_RIGHT, thisPos, color, m_Scaling);
+         //DrawSide(CuboidSides::CUBOID_LEFT, thisPos, color, m_Scaling);
 
          break;
       }
@@ -431,8 +443,10 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color)
          {
             thisPos.y = .01f;
          }
-         
-         //DrawMesh(*m_meshes[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], thisPos, m_defaultTexture.get(), color, Vector3(0, 0, 0), m_Scaling);
+
+         DrawPlane(thisPos, Vector2{ m_Scaling.x, m_Scaling.z }, BLUE);
+         //if(m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] != nullptr)
+         //   DrawModel(*m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], pos, 1, WHITE);
          break;
       }
 
@@ -441,13 +455,16 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color)
       {
          //float angle = GetCameraAngle();
          //angle += 45;
-         //Vector3 thisPos = pos;
-         //thisPos.x += 0.5f;
+         Vector3 thisPos = pos;
+         thisPos.x += (m_Scaling.x / 2.0f);
          //thisPos.z += 0.5f;
-         //thisPos.y -= .15f;
+         thisPos.y += (m_Scaling.y / 2.0f) * 1.3;
          //DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_defaultTexture.get(), color, Vector3(0, angle, 0), m_Scaling);
+         DrawBillboardPro(g_camera, m_defaultTexture->m_Texture, Rectangle{ 0, 0, float(m_defaultTexture->m_Texture.width), float(m_defaultTexture->m_Texture.height) }, thisPos, Vector3{ 0, 1, 0 }, Vector2{ m_Scaling.x, m_Scaling.y }, Vector2{ 0, 0 }, -45, color);
          break;
       }
+
+      
    }
 }
 

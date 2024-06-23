@@ -158,42 +158,42 @@ void LoadingState::UpdateLoading()
 	g_StateMachine->MakeStateTransition(STATE_TITLESTATE);
 }
 
-unsigned char LoadingState::ReadU8(ifstream &buffer)
+unsigned char LoadingState::ReadU8(istream &buffer)
 {
 	unsigned char thisData;
 	buffer.read((char*)&thisData, sizeof(unsigned char));
 	return thisData;
 }
 
-unsigned short LoadingState::ReadU16(ifstream &buffer)
+unsigned short LoadingState::ReadU16(istream &buffer)
 {
 	unsigned short thisData;
 	buffer.read((char*)&thisData, sizeof(unsigned short));
 	return thisData;
 }
 
-unsigned int LoadingState::ReadU32(ifstream &buffer)
+unsigned int LoadingState::ReadU32(istream &buffer)
 {
 	unsigned int thisData;
 	buffer.read((char*)&thisData, sizeof(unsigned int));
 	return thisData;
 }
 
-char LoadingState::ReadS8(ifstream &buffer)
+char LoadingState::ReadS8(istream &buffer)
 {
 	char thisData;
 	buffer.read((char*)&thisData, sizeof(char));
 	return thisData;
 }
 
-short LoadingState::ReadS16(ifstream &buffer)
+short LoadingState::ReadS16(istream &buffer)
 {
 	short thisData;
 	buffer.read((char*)&thisData, sizeof(short));
 	return thisData;
 }
 
-int LoadingState::ReadS32(ifstream &buffer)
+int LoadingState::ReadS32(istream &buffer)
 {
 	int thisData;
 	buffer.read((char*)&thisData, sizeof(int));
@@ -220,7 +220,7 @@ void LoadingState::LoadVersion()
 void LoadingState::LoadChunks()
 {
 	//  Load data for all chunks first
-	FILE* u7chunksfile = fopen("Data/U7/STATIC/U7CHUNKS", "rb");
+	FILE* u7chunksfile = fopen("Data/U7/blackgate/STATIC/U7CHUNKS", "rb");
 	if (u7chunksfile == nullptr)
 	{
 		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
@@ -233,7 +233,6 @@ void LoadingState::LoadChunks()
 	{
 		for (int j = 0; j < 16; ++j)
 		{
-			vector<unsigned short> thisvector;
 			for (int k = 0; k < 16; ++k)
 			{
 				unsigned short thisdata;
@@ -244,9 +243,9 @@ void LoadingState::LoadChunks()
 				unsigned int shapenum = thisdata & 0x3ff;
 				unsigned int framenum = thisdata >> 10;
 
-				thisvector.push_back(thisdata);
+				g_ChunkTypeList[i][j][k] = thisdata;
 			}
-			m_Chunkmap[i].push_back(thisvector);
+			
 		}
 	}
 	fclose(u7chunksfile);
@@ -254,7 +253,7 @@ void LoadingState::LoadChunks()
 
 void LoadingState::LoadMap()
 {
-	FILE* u7mapfile = fopen("Data/U7/STATIC/U7MAP", "rb");
+	FILE* u7mapfile = fopen("Data/U7/blackgate/STATIC/U7MAP", "rb");
 	//  Untangle the map and chunk files into a single array.
 	//  Create the map of chunk ids and chunk data
 	int k = 0;
@@ -272,7 +271,7 @@ void LoadingState::LoadMap()
 					unsigned short thisdata = 0;
 					fread(&thisdata, sizeof(unsigned short), 1, u7mapfile);
 
-					m_u7chunkmap[k * 16 + j][l * 16 + i] = thisdata;
+					g_chunkTypeMap[l * 16 + i][k * 16 + j] = thisdata;
 				}
 			}
 		}
@@ -300,7 +299,7 @@ void LoadingState::LoadIFIX()
             
             std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-            s.insert(0, "Data/U7/STATIC/");
+            s.insert(0, "Data/U7/blackgate/STATIC/");
 
 			FILE* u7thisifix = fopen(s.c_str(), "rb");
             
@@ -415,21 +414,21 @@ void LoadingState::MakeMap()
 	{
 		for (int j = 0; j < 192; ++j)
 		{
-			int chunkid = m_u7chunkmap[i][j];
+			int chunkid = g_chunkTypeMap[i][j];
 			for (int k = 0; k < 16; ++k)
 			{
 				for (int l = 0; l < 16; ++l)
 				{
-					unsigned int thisdata = m_Chunkmap[chunkid][l][k];
-					g_World[j * 16 + k][i * 16 + l] = m_Chunkmap[chunkid][l][k];
+					unsigned int thisdata = g_ChunkTypeList[chunkid][l][k];
+					g_World[j * 16 + k][i * 16 + l] = g_ChunkTypeList[chunkid][l][k];
 
 
-					unsigned int shapenum = thisdata & 0x3ff;
-					unsigned int framenum = thisdata >> 10;
+					unsigned short shapenum = thisdata & 0x3ff;
+					unsigned short framenum = (thisdata >> 10) & 0x1f;
 
 					if (shapenum >= 150)
 					{
-						AddObject(shapenum, framenum, GetNextID(), (j * 16 + k), 0, (i * 16 + l));
+						AddObject(shapenum, framenum, GetNextID(), (i * 16 + l), 0, (j * 16 + k));
 					}
 				}
 			}
@@ -455,9 +454,9 @@ void LoadingState::LoadIREG()
 			}
 			std::string s = ss.str();
             
-            std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+         std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-            s.insert(0, "Data/U7/GAMEDAT/");
+         s.insert(0, "Data/U7/blackgate/GAMEDAT/");
 
 			FILE* u7thisireg = fopen(s.c_str(), "rb");
 
@@ -522,7 +521,7 @@ void LoadingState::CreateShapeTable()
 {
 	//  Load palette data
 	ifstream palette;
-	palette.open("Data/U7/STATIC/PALETTES.FLX", ios::binary);
+	palette.open("Data/U7/blackgate/STATIC/PALETTES.FLX", ios::binary);
 	if (!palette.good())
 	{
 		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
@@ -553,8 +552,11 @@ void LoadingState::CreateShapeTable()
 	palette.close();
 
 	//  Load shape data
-	ifstream shapes;
-	shapes.open("Data/U7/STATIC/SHAPES.VGA", ios::binary);
+	ifstream shapesFile;
+	shapesFile.open("Data/U7/blackgate/STATIC/SHAPES.VGA", ios::binary);
+
+	stringstream shapes;
+	shapes << shapesFile.rdbuf();
 
 	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
 
@@ -580,8 +582,12 @@ void LoadingState::CreateShapeTable()
 
 		}
 	}
-	g_Terrain->m_terrainTexture = LoadTextureFromImage(tempImage);
-	SetTextureFilter(g_Terrain->m_terrainTexture, TEXTURE_FILTER_POINT);
+	
+	Log("Creating terrain.");
+	g_Terrain = make_unique<Terrain>();
+	g_Terrain->m_terrainTexture = ImageCopy(tempImage);
+	g_Terrain->Init();
+	Log("Done creating terrain.");
 
 	struct frameData
 	{
@@ -730,19 +736,19 @@ void LoadingState::CreateObjectTable()
 	//  Open the two files that define the objects in the object table.
 	std::stringstream tfa;
 
-	tfa << "Data/U7/STATIC/TFA.DAT";
+	tfa << "Data/U7/blackgate/STATIC/TFA.DAT";
 
 	ifstream tfafile(tfa.str(), ios::binary);
 
 	std::stringstream wgtvol;
 
-	wgtvol << "Data/U7/STATIC/WGTVOL.DAT";
+	wgtvol << "Data/U7/blackgate/STATIC/WGTVOL.DAT";
 
 	ifstream wgtvolfile(wgtvol.str(), ios::binary);
 
 	std::stringstream text;
 
-	text << "Data/U7/STATIC/TEXT.FLX";
+	text << "Data/U7/blackgate/STATIC/TEXT.FLX";
 
 	ifstream textfile(text.str(), ios::binary);
 
@@ -832,7 +838,7 @@ void LoadingState::CreateObjectTable()
 //  of FLXEntryData, which is a struct containing the offset and length of
 //  each entry in the file.  It moves the file pointers to the point where
 //  the calling code can immediately start reading out data.
-std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(ifstream &file)
+std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &file)
 {
 	char header[80];
 	file.read(header, sizeof(header));

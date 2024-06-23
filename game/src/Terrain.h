@@ -18,7 +18,7 @@ public:
 
    std::array<std::unique_ptr<Model>, 3072> m_chunkModels;
 
-   Texture m_terrainTexture;
+   Image m_terrainTexture;
    
 	Terrain();
 	virtual ~Terrain();

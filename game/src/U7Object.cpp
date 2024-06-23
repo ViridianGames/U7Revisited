@@ -51,14 +51,14 @@ void U7Object::Draw()
 
 void U7Object::Update()
 {
-   if (m_Pos.y >= 5)
-   {
-      m_Visible = false;
-   }
-   else
-   {
+   //if (m_Pos.y >= 5)
+   //{
+   //   m_Visible = false;
+   //}
+   //else
+   //{
 		m_Visible = true;
-	}
+	//}
 
    //  Visilibity is set by the terrain so it should always be set to false here.
    //m_Visible = false;

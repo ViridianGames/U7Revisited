@@ -21,8 +21,8 @@ using namespace std;
 
 Terrain::Terrain()
 { 
-   int m_height = 3072;
-   int m_width = 3072;
+   m_height = 3072;
+   m_width = 3072;
 }
 
 Terrain::~Terrain()
@@ -33,17 +33,63 @@ Terrain::~Terrain()
 void Terrain::Init()
 {
 	// Create the chunk database
+   Mesh mesh = GenMeshPlane(16, 16, 1, 1);
+   Texture texture = LoadTexture("Images/minimap.png");
+   unsigned short prevShape = 0;
+   unsigned short prevFrame = 0;
    for (int i = 0; i < 3072; ++i)
    {
-		m_chunkModels[i] = make_unique<Model>(LoadModelFromMesh(GenMeshPlane(16, 16, 1, 1)));
+		m_chunkModels[i] = make_unique<Model>(LoadModelFromMesh(mesh));
+
+      Image img = GenImageColor(128, 128, BLACK);
+      for (int j = 0; j < 16; ++j)
+      {
+         for (int k = 0; k < 16; ++k)
+         {
+            unsigned short thisdata = g_ChunkTypeList[i][j][k];
+            unsigned short shapenum = thisdata & 0x3ff;
+            unsigned short framenum = (thisdata >> 10) & 0x1f;
+
+            if (shapenum <= 150 && framenum < 32)
+            {
+               ImageDraw(&img, m_terrainTexture, Rectangle{ shapenum * 8.0f, framenum * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
+               prevShape = shapenum;
+               prevFrame = framenum;
+            }
+            else
+            {
+					ImageDraw(&img, m_terrainTexture, Rectangle{ prevShape * 8.0f, prevFrame * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
+				}
+			}
+      }
+
+      Texture thisTexture = LoadTextureFromImage(img);
+      SetTextureFilter(thisTexture, TEXTURE_FILTER_POINT);
+      m_chunkModels[i]->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = thisTexture;
+
+      UnloadImage(img);
 	}
-
-
 }
 
 void Terrain::Draw()
 {
-   DrawModel(*m_chunkModels[0], {0, 0, 0}, 1.0f, WHITE);
+   int range = g_camera.fovy / 16 + 1;
+
+   int chunkx = g_camera.target.x / 16;
+   int chunky = g_camera.target.z / 16;
+
+   for(int i = chunkx - range; i <= chunkx + range + 1; ++i)
+	{
+		for(int j = chunky - range; j <= chunky + range + 1; ++j)
+		{
+         if(i < 0 || i >= 192 || j < 0 || j >= 192)
+			{
+				continue;
+			}
+
+         DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { i * 16.0f - 8.0f, 0, j * 16.0f - 8 }, 1.0f, WHITE);
+		}
+	}
 }
 
 void Terrain::Shutdown()

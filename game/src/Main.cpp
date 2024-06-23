@@ -45,15 +45,16 @@ int main(int argv, char** argc)
       {
          ToggleFullscreen();
       }
-      SetTargetFPS(60);
+      SetTargetFPS(144);
       HideCursor(); // We'll use our own.
 
-      float camDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
+      g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
+      g_cameraRotation = 0.0f;
 
-      g_camera.position = Vector3 { camDistance, 0.0f, camDistance };
-      g_camera.target = Vector3 { 0.0f, 0.0f, 0.0f };
+      g_camera.target = Vector3 { 1071.0f, 0.0f, 2209.0f };
+      g_camera.position = Vector3Add(g_camera.target, Vector3{ g_cameraDistance, g_cameraDistance, g_cameraDistance });
       g_camera.up = Vector3 { 0.0f, 1.0f, 0.0f };
-      g_camera.fovy = 45.0f;
+      g_camera.fovy = g_cameraDistance;
       g_camera.projection = CAMERA_ORTHOGRAPHIC;
 
       //BeginDrawing();
@@ -113,11 +114,6 @@ int main(int argv, char** argc)
 
       g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
       g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
-
-      Log("Creating terrain.");
-      g_Terrain = make_unique<Terrain>();
-      g_Terrain->Init();
-      Log("Done creating terrain.");
 
       //  Initialize states
       Log("Initializing states.");

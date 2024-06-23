@@ -111,6 +111,10 @@ extern unsigned int g_CurrentUpdate;
 
 extern bool g_CameraMoved;
 
+extern std::unordered_map<int, int[16][16] > g_ChunkTypeList;  // The 16x16 tiles for each chunk type
+extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
+extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
+
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
 
@@ -218,5 +222,10 @@ extern int g_selectedFrame;
 //////////////////////////////////////////////////////////////////////////////
 
 extern Camera g_camera;
+
+extern float g_cameraDistance; // distance from target
+extern float g_cameraRotation; // angle around target
+
+void RecalculateCamera();
 
 #endif

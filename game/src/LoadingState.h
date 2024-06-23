@@ -34,12 +34,12 @@ public:
    void LoadVersion();
    void MakeMap();
 
-   unsigned char ReadU8(std::ifstream &buffer);
-   unsigned short ReadU16(std::ifstream &buffer);
-   unsigned int  ReadU32(std::ifstream &buffer);
-   char ReadS8(std::ifstream &buffer);
-   short ReadS16(std::ifstream &buffer);
-   int  ReadS32(std::ifstream &buffer);
+   unsigned char ReadU8(std::istream &buffer);
+   unsigned short ReadU16(std::istream &buffer);
+   unsigned int  ReadU32(std::istream &buffer);
+   char ReadS8(std::istream &buffer);
+   short ReadS16(std::istream &buffer);
+   int  ReadS32(std::istream &buffer);
 
    struct FLXEntryData
    {
@@ -47,7 +47,7 @@ public:
       unsigned int length;
    };
 
-   std::vector<FLXEntryData> ParseFLXHeader(std::ifstream &file);
+   std::vector<FLXEntryData> ParseFLXHeader(std::istream &file);
 
    std::array<Color, 256> m_palette;
    
@@ -62,9 +62,6 @@ public:
    float xSlant = 0;
 
    bool m_startRotating = false;
-
-   std::unordered_map<int, std::vector< std::vector<unsigned short> > > m_Chunkmap;
-   unsigned short m_u7chunkmap[192][192];
 
    unsigned int m_currentChunk = 0;
 
@@ -85,9 +82,6 @@ public:
    bool m_objectViewing = true;
 
    std::unique_ptr<U7Object> m_currentObject = nullptr;
-
-   //std::unique_ptr<Texture> m_testTexture;
-
 };
 
 #endif

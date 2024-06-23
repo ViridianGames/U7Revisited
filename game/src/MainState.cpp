@@ -7,6 +7,7 @@
 #include "Geist/Engine.h"
 #include "U7Globals.h"
 #include "MainState.h"
+#include "rlgl.h"
 
 #include <list>
 #include <string>
@@ -133,9 +134,28 @@ void MainState::Update()
 
 		m_NumberOfVisibleUnits = 0;
 
-		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+		if (m_showObjects)
 		{
-			(*node).second->Update();
+			m_sortedVisibleObjects.clear();
+			float drawRange = g_cameraDistance;
+			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+			{
+				if (!(*node).second->m_Visible)
+				{
+					continue;
+				}
+
+				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
+				if (distance < drawRange)
+				{
+					float distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position);
+					(*node).second->m_distanceFromCamera = distanceFromCamera;
+					m_sortedVisibleObjects.push_back((*node).second);
+					m_numberofDrawnUnits++;
+				}
+			}
+
+			std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 		}
 
 		m_LastUpdate = GetTime();
@@ -164,7 +184,6 @@ void MainState::Update()
 
 	}
 
-
 	//  Get terrain hit for highlight mesh
 	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
@@ -189,8 +208,6 @@ void MainState::Update()
 			//}
 		}
 	}
-
-	UpdateCamera(&g_camera, CAMERA_THIRD_PERSON);
 }
 
 void MainState::Draw()
@@ -198,99 +215,36 @@ void MainState::Draw()
 	ClearBackground(Color {0, 0, 0, 255});
 
 	BeginMode3D(g_camera);
-
+	rlEnableDepthTest();
+	//  Draw the terrain
 	g_Terrain->Draw();
 
+	//  Draw the objects
 	m_numberofDrawnUnits = 0;
 
 	if (m_showObjects)
 	{
-		m_sortedVisibleObjects.clear();
-		//float drawRange = GetCameraDistance() * 250;
-		//for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
-		//{
-		//	if (!(*node).second->m_Visible)
-		//	{
-		//		continue;
-		//	}
-
-		//	float distance = Vector3Distance((*node).second->m_Pos, GetCameraLookAtPoint());
-		//	if (distance < drawRange)
-		//	{
-		//		(*node).second->m_distanceFromCamera = Vector3Distance((*node).second->m_Pos, GetCameraPosition());
-		//		m_sortedVisibleObjects.push_back((*node).second);
-		//		m_numberofDrawnUnits++;
-		//	}
-		//}
-
-		std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 		for (auto& unit : m_sortedVisibleObjects)
 		{
 			unit->Draw();
+			++m_numberofDrawnUnits;
 		}
 	}
 
+	rlDisableDepthTest();
 	EndMode3D();
 
-	DrawTextureEx(*m_Minimap, Vector2{ float(GetRenderWidth() - g_minimapSize), 0 }, 0, g_DrawScale, WHITE);
+	//  Draw the minimap and marker
+	DrawTextureEx(*m_Minimap, Vector2{ float(GetRenderWidth() - g_minimapSize), 0 }, 0, float(g_minimapSize) / float(GetRenderHeight()), WHITE);
 
 	float _ScaleX = g_minimapSize / float(g_Terrain->m_width);
 	float _ScaleZ = g_minimapSize / float(g_Terrain->m_height);
 
-	//float _X = GetRenderWidth() - g_minimapSize + (GetCameraLookAtPoint().x * _ScaleX);
-	//float _Y = GetCameraLookAtPoint().z * _ScaleZ;
-
-	//DrawTexture(*m_MinimapArrow, _X - (m_MinimapArrow->width * g_DrawScale * .125f), _Y - (m_MinimapArrow->height * g_DrawScale * .125f), WHITE);
-
-	//int ypos = -g_SmallFont->height;
-	//int offset = g_SmallFont->height;
-	//int xoffset = g_SmallFont->GetStringMetrics(" ") / 5;
-
-
-	//welcome = "";
-	//g_SmallFont->DrawString(welcome, 0, ypos += 24);
-	//int nextLine = g_SmallFont->height * 1.5;
-
-	//string visibleCells = "Visible Cells: " + to_string(g_Terrain->m_VisibleCells.size());
-	//g_SmallFont->DrawString(visibleCells, 0, ypos += nextLine);
-
-	//string numDrawnUnits = "Drawn Units: " + to_string(m_numberofDrawnUnits);
-	//g_SmallFont->DrawString(numDrawnUnits, 0, ypos += nextLine);
-
-	//string welcome = "X: " + to_string(static_cast<int>(GetCameraLookAtPoint().x)) + " Y: " + to_string(static_cast<int>(GetCameraLookAtPoint().z)) + " ";
-	//float textwidth = MeasureTextEx(*g_SmallFont, welcome.c_str(), g_smallFontSize, 1).x;
-	//DrawText(welcome.c_str(), GetRenderWidth() - textwidth, GetRenderHeight() * .30, g_smallFontSize, WHITE);
-	//g_SmallFont->DrawString(welcome, 0, ypos);
-
-	//ypos += nextLine;
-
-	//string visibleTest = "Visible Cell Test Time: " + to_string(g_Terrain->m_DurationOfVisibleTest);
-	//g_SmallFont->DrawString(visibleTest, 0, ypos += nextLine);
-
-	//string cameraTest = "Camera Update Time: " + to_string(m_cameraUpdateTime);
-	//g_SmallFont->DrawString(cameraTest, 0, ypos += nextLine);
-
-	//string terrainTest = "Terrain Update Time: " + to_string(m_terrainUpdateTime);
-	//g_SmallFont->DrawString(terrainTest, 0, ypos += nextLine);
-
-	//string xcoordstring = "CamLookAt  X: " + to_string(GetCameraLookAtPoint().x) + " Y: " + to_string(GetCameraLookAtPoint().y) + " Z: " + to_string(GetCameraLookAtPoint().z);
-	//g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
-
-	//xcoordstring = "CamPos      X: " + to_string(GetCameraPosition().x) + " Y: " + to_string(GetCameraPosition().y) + " Z: " + to_string(GetCameraPosition().z);
-	//g_SmallFont->DrawString(xcoordstring, 0, ypos += 32);
+	DrawTextureEx(*m_MinimapArrow, Vector2{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x - 64) * _ScaleX), ((g_camera.target.z - 64) * _ScaleZ) }, 0, 1, WHITE);
 
 	DrawConsole();
 
-
-	//DrawPerfCounter(g_SmallFont);
-
-	int shape = 192;
-	int frame = 0;
-	//DrawImage(g_shapeTable[shape][frame], 0, ypos, g_shapeTable[shape][frame]->width * GetRenderWidth() / 320, g_shapeTable[shape][frame]->height * GetRenderWidth() / 320);
-
-	//DrawImage(&g_Terrain->m_TerrainTexture, 0, 0);
-	
-	DrawTextEx(*g_SmallFont, g_VERSION.c_str(), Vector2{GetRenderWidth() - 100.0f, GetRenderHeight() - 50.0f}, g_smallFontSize, 1, WHITE);
+	DrawTextEx(*g_SmallFont, g_VERSION.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_smallFontSize, 1, WHITE);
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 }
 

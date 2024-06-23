@@ -12,7 +12,7 @@
 
 #include <vector>
 
-class Texture;
+struct Texture;
 
 struct coords;
 
@@ -136,7 +136,7 @@ private:
 
 	Vector3 m_Scaling;
 
-	std::array<Mesh*, static_cast<int>(CuboidSides::CUBOID_LAST)> m_meshes;
+	std::array<Model*, static_cast<int>(CuboidSides::CUBOID_LAST)> m_models;
 
 };
 
