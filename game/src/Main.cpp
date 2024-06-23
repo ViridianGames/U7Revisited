@@ -33,12 +33,14 @@ using namespace std;
 
 int main(int argv, char** argc)
 {
+    SetTraceLogCallback(LoggingCallback);
 
    try
    {
       g_Engine = make_unique<Engine>();
       g_Engine->Init("Data/engine.cfg");
 
+      
       //  Initialize Raylib and the screen.
       InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
       if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
@@ -154,7 +156,7 @@ int main(int argv, char** argc)
 
    catch (string errorCode)
    {
-      Log(errorCode.c_str());
+      Log(errorCode, LOG_ERROR);
       exit(0);
    }
 
