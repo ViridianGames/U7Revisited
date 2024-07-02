@@ -219,11 +219,15 @@ void LoadingState::LoadVersion()
 
 void LoadingState::LoadChunks()
 {
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	
 	//  Load data for all chunks first
-	FILE* u7chunksfile = fopen("Data/U7/blackgate/STATIC/U7CHUNKS", "rb");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/STATIC/U7CHUNKS");
+	FILE* u7chunksfile = fopen(loadingPath.c_str(), "rb");
 	if (u7chunksfile == nullptr)
 	{
-		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		Log("Ultima VII files not found. They should go into the Data/U7 folder.");
 		m_loadingFailed = true;
 		return;
 	}
@@ -253,7 +257,10 @@ void LoadingState::LoadChunks()
 
 void LoadingState::LoadMap()
 {
-	FILE* u7mapfile = fopen("Data/U7/blackgate/STATIC/U7MAP", "rb");
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/STATIC/U7MAP");
+	FILE* u7mapfile = fopen(loadingPath.c_str(), "rb");
 	//  Untangle the map and chunk files into a single array.
 	//  Create the map of chunk ids and chunk data
 	int k = 0;
@@ -281,6 +288,10 @@ void LoadingState::LoadMap()
 
 void LoadingState::LoadIFIX()
 {
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/STATIC/");
+
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
 		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
@@ -299,7 +310,7 @@ void LoadingState::LoadIFIX()
             
             std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-            s.insert(0, "Data/U7/blackgate/STATIC/");
+            s.insert(0, loadingPath.c_str());
 
 			FILE* u7thisifix = fopen(s.c_str(), "rb");
             
@@ -438,6 +449,10 @@ void LoadingState::MakeMap()
 
 void LoadingState::LoadIREG()
 {
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/GAMEDAT/");
+
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
 		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
@@ -456,7 +471,7 @@ void LoadingState::LoadIREG()
             
          std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-         s.insert(0, "Data/U7/blackgate/GAMEDAT/");
+         s.insert(0, loadingPath.c_str());
 
 			FILE* u7thisireg = fopen(s.c_str(), "rb");
 
@@ -520,12 +535,16 @@ void LoadingState::LoadIREG()
 void LoadingState::CreateShapeTable()
 {
 	//  Load palette data
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/STATIC/PALETTES.FLX");
+
 	ifstream palette;
-	palette.open("Data/U7/blackgate/STATIC/PALETTES.FLX", ios::binary);
+	palette.open(loadingPath.c_str(), ios::binary);
 	if (!palette.good())
 	{
-		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
-		throw("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		Log("Ultima VII files not found. They should go into the Data/U7 folder.");
+		throw("Ultima VII files not found. They should go into the Data/U7 folder.");
 	}
 
 	vector<FLXEntryData> paletteEntryMap = ParseFLXHeader(palette);
@@ -551,9 +570,10 @@ void LoadingState::CreateShapeTable()
 
 	palette.close();
 
-	//  Load shape data
+	// Load shape data
+	std::string shapePath = dataPath.append("/STATIC/SHAPES.VGA");
 	ifstream shapesFile;
-	shapesFile.open("Data/U7/blackgate/STATIC/SHAPES.VGA", ios::binary);
+	shapesFile.open(shapePath.c_str(), ios::binary);
 
 	stringstream shapes;
 	shapes << shapesFile.rdbuf();
@@ -733,22 +753,23 @@ void LoadingState::CreateShapeTable()
 
 void LoadingState::CreateObjectTable()
 {
-	//  Open the two files that define the objects in the object table.
+	// Open the two files that define the objects in the object table.
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 	std::stringstream tfa;
 
-	tfa << "Data/U7/blackgate/STATIC/TFA.DAT";
+	tfa << dataPath.c_str() << "/STATIC/TFA.DAT";
 
 	ifstream tfafile(tfa.str(), ios::binary);
 
 	std::stringstream wgtvol;
 
-	wgtvol << "Data/U7/blackgate/STATIC/WGTVOL.DAT";
+	wgtvol << dataPath.c_str() << "/STATIC/WGTVOL.DAT";
 
 	ifstream wgtvolfile(wgtvol.str(), ios::binary);
 
 	std::stringstream text;
 
-	text << "Data/U7/blackgate/STATIC/TEXT.FLX";
+	text << dataPath.c_str() << "/STATIC/TEXT.FLX";
 
 	ifstream textfile(text.str(), ios::binary);
 
