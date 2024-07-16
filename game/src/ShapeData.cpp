@@ -2,6 +2,9 @@
 #include <fstream>
 #include <string>
 
+#include "raylib.h"
+#include "rlgl.h"
+
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Config.h"
@@ -27,22 +30,22 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	m_shape = shape;
 	m_frame = frame;
 
-   if(m_defaultTexture != nullptr)
+   if(m_originalTexture != nullptr)
 	{
 		m_isValid = true;
 
       //  We need local copies of this texture for three sides of the cuboid.
       if (m_topTexture == nullptr)
       {
-         m_topTexture = std::make_unique<ModTexture>(m_defaultTexture->m_Image);
+         m_topTexture = std::make_unique<ModTexture>(m_originalTexture->m_Image);
       }
       if (m_frontTexture == nullptr)
       {
-         m_frontTexture = std::make_unique<ModTexture>(m_defaultTexture->m_Image);
+         m_frontTexture = std::make_unique<ModTexture>(m_originalTexture->m_Image);
       }
       if (m_rightTexture == nullptr)
       {
-         m_rightTexture = std::make_unique<ModTexture>(m_defaultTexture->m_Image);
+         m_rightTexture = std::make_unique<ModTexture>(m_originalTexture->m_Image);
       }
 
       ObjectData* objectData = &g_objectTable[m_shape];
@@ -93,21 +96,22 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 
 void ShapeData::SetDefaultTexture(Image image)
 {
-   if (m_defaultTexture == nullptr)
+   if (m_originalTexture == nullptr)
    {
-		m_defaultTexture = std::make_unique<ModTexture>(image);
+		m_originalTexture = std::make_unique<ModTexture>(image);
 	}
    else
    {
-		m_defaultTexture->AssignImage(image);
+		m_originalTexture->AssignImage(image);
 	}
+
 }
 
 void ShapeData::CreateDefaultTexture()
 {
-   if (m_defaultTexture == nullptr)
+   if (m_originalTexture == nullptr)
    {
-		m_defaultTexture = std::make_unique<ModTexture>();
+		m_originalTexture = std::make_unique<ModTexture>();
 	}
 }
 
@@ -201,7 +205,7 @@ void ShapeData::ResetFrontTexture()
    m_frontTextureOffsetX = 0;
    m_frontTextureOffsetY = objectData->m_depth * 8;
    m_frontTextureWidth = objectData->m_width * 8;
-   m_frontTextureHeight = m_defaultTexture->height - objectData->m_depth * 8;
+   m_frontTextureHeight = m_originalTexture->height - objectData->m_depth * 8;
 
    SafeAndSane();
 }
@@ -213,7 +217,7 @@ void ShapeData::ResetRightTexture()
 
    m_rightTextureOffsetX = objectData->m_width * 8;
    m_rightTextureOffsetY = 0;
-   m_rightTextureWidth = m_defaultTexture->width - objectData->m_width * 8;
+   m_rightTextureWidth = m_originalTexture->width - objectData->m_width * 8;
    m_rightTextureHeight = objectData->m_depth * 8;
 
    SafeAndSane();
@@ -229,12 +233,12 @@ void ShapeData::SafeAndSane()
    if (m_rightTextureWidth < 0) { m_rightTextureWidth = 0; }
    if (m_rightTextureHeight < 0) { m_rightTextureHeight = 0; }
 
-   if (m_topTextureWidth > m_defaultTexture->width) { m_topTextureWidth = m_defaultTexture->width; }
-   if (m_topTextureHeight > m_defaultTexture->height) { m_topTextureHeight = m_defaultTexture->height; }
-   if (m_frontTextureWidth > m_defaultTexture->width) { m_frontTextureWidth = m_defaultTexture->width; }
-   if (m_frontTextureHeight > m_defaultTexture->height) { m_frontTextureHeight = m_defaultTexture->height; }
-   if (m_rightTextureWidth > m_defaultTexture->width) { m_rightTextureWidth = m_defaultTexture->width; }
-   if (m_rightTextureHeight > m_defaultTexture->height) { m_rightTextureHeight = m_defaultTexture->height; }
+   if (m_topTextureWidth > m_originalTexture->width) { m_topTextureWidth = m_originalTexture->width; }
+   if (m_topTextureHeight > m_originalTexture->height) { m_topTextureHeight = m_originalTexture->height; }
+   if (m_frontTextureWidth > m_originalTexture->width) { m_frontTextureWidth = m_originalTexture->width; }
+   if (m_frontTextureHeight > m_originalTexture->height) { m_frontTextureHeight = m_originalTexture->height; }
+   if (m_rightTextureWidth > m_originalTexture->width) { m_rightTextureWidth = m_originalTexture->width; }
+   if (m_rightTextureHeight > m_originalTexture->height) { m_rightTextureHeight = m_originalTexture->height; }
 
    if (m_topTextureOffsetX < 0) { m_topTextureOffsetX = 0; }
    if (m_topTextureOffsetY < 0) { m_topTextureOffsetY = 0; }
@@ -243,12 +247,12 @@ void ShapeData::SafeAndSane()
    if (m_rightTextureOffsetX < 0) { m_rightTextureOffsetX = 0; }
    if (m_rightTextureOffsetY < 0) { m_rightTextureOffsetY = 0; }
 
-   if (m_topTextureOffsetX > m_defaultTexture->width) { m_topTextureOffsetX = m_defaultTexture->width; }
-   if (m_topTextureOffsetY > m_defaultTexture->height) { m_topTextureOffsetY = m_defaultTexture->height; }
-   if (m_frontTextureOffsetX > m_defaultTexture->width) { m_frontTextureOffsetX = m_defaultTexture->width; }
-   if (m_frontTextureOffsetY > m_defaultTexture->height) { m_frontTextureOffsetY = m_defaultTexture->height; }
-   if (m_rightTextureOffsetX > m_defaultTexture->width) { m_rightTextureOffsetX = m_defaultTexture->width; }
-   if (m_rightTextureOffsetY > m_defaultTexture->height) { m_rightTextureOffsetY = m_defaultTexture->height; }
+   if (m_topTextureOffsetX > m_originalTexture->width) { m_topTextureOffsetX = m_originalTexture->width; }
+   if (m_topTextureOffsetY > m_originalTexture->height) { m_topTextureOffsetY = m_originalTexture->height; }
+   if (m_frontTextureOffsetX > m_originalTexture->width) { m_frontTextureOffsetX = m_originalTexture->width; }
+   if (m_frontTextureOffsetY > m_originalTexture->height) { m_frontTextureOffsetY = m_originalTexture->height; }
+   if (m_rightTextureOffsetX > m_originalTexture->width) { m_rightTextureOffsetX = m_originalTexture->width; }
+   if (m_rightTextureOffsetY > m_originalTexture->height) { m_rightTextureOffsetY = m_originalTexture->height; }
 
 
 }
@@ -259,36 +263,87 @@ void ShapeData::SetupDrawTypes()
 
    if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
    {
-      m_Scaling = Vector3{ m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1 };
+      m_Scaling = Vector3{ float(m_originalTexture->width) / 8.0f, float(m_originalTexture->height) / 8.0f, 1 };
    }
    else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
    {
-      m_Scaling = Vector3{ -m_defaultTexture->width / 8.0f, 0, -m_defaultTexture->height / 8.0f };
+      m_Scaling = Vector3{ float(m_originalTexture->width) / 8.0f, 0, float(m_originalTexture->height) / 8.0f };
    }
    else
    {
       m_Scaling = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
    }
 
-   for(int i = 0; i < 6; ++i)
-   {
-      m_models[i] = nullptr;
-	}  
-
-   //Mesh mesh = GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1);
-
-   //  Create the six meshes that we can individually turn on and off (and texture).
-   m_models[static_cast<int>(CuboidSides::CUBOID_BACK)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-   m_models[static_cast<int>(CuboidSides::CUBOID_FRONT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-   m_models[static_cast<int>(CuboidSides::CUBOID_LEFT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-   m_models[static_cast<int>(CuboidSides::CUBOID_RIGHT)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-   m_models[static_cast<int>(CuboidSides::CUBOID_TOP)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-   m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] = &LoadModelFromMesh(GenMeshPlane(m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1, 1));
-
-   //m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)]->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_defaultTexture->m_Texture;
-
-
    FixupTextures();
+
+   //  BILLBOARD DRAWING
+   Mesh billboardMesh = GenMeshPlane(m_Scaling.x, m_Scaling.y, 1, 1);
+
+   //  Move the mesh from the center to the corner
+   for (int i = 0; i < billboardMesh.vertexCount; ++i)
+   {
+		billboardMesh.vertices[i * 3];
+      float y = billboardMesh.vertices[i * 3 + 2];
+		billboardMesh.vertices[i * 3 + 1] = billboardMesh.vertices[i * 3 + 2];
+      billboardMesh.vertices[i * 3 + 2] = y;
+      float u = billboardMesh.texcoords[i * 2];
+      billboardMesh.texcoords[i * 2] = billboardMesh.texcoords[i * 2 + 1];
+      billboardMesh.texcoords[i * 2 + 1] = u;
+	}
+
+   UpdateMeshBuffer(billboardMesh, 0, billboardMesh.vertices, sizeof(float) * billboardMesh.vertexCount * 3, 0);
+   m_billboardModel = LoadModelFromMesh(billboardMesh);
+   SetMaterialTexture(&m_billboardModel.materials[0], MATERIAL_MAP_DIFFUSE, m_originalTexture->m_Texture);
+
+   //  FLAT DRAWING
+
+   Mesh flatMesh = GenMeshPlane(m_Scaling.x, m_Scaling.z, 1, 1);
+
+   //  Move the mesh from the center to the corner
+   for (int i = 0; i < flatMesh.vertexCount; ++i)
+   {
+      flatMesh.vertices[i * 3] -= ((m_Scaling.x / 2) - 1);
+      flatMesh.vertices[i * 3 + 2] -= ((m_Scaling.z / 2) - 1);
+   }
+
+   UpdateMeshBuffer(flatMesh, 0, flatMesh.vertices, sizeof(float) * flatMesh.vertexCount * 3, 0);
+
+   m_flatModel = LoadModelFromMesh(flatMesh);
+   SetMaterialTexture(&m_flatModel.materials[0], MATERIAL_MAP_DIFFUSE, m_originalTexture->m_Texture);
+
+   //  CUBOID DRAWING
+
+   //  Very similar to flat drawing, we need to build six custom meshes to represent the sides.
+   Mesh cuboidMesh = GenMeshCube(m_Scaling.x, m_Scaling.y, m_Scaling.z);
+
+   //  Move the mesh from the center to the corner
+   for (int i = 0; i < cuboidMesh.vertexCount; ++i)
+   {
+      cuboidMesh.vertices[i * 3] -= ((m_Scaling.x / 2) - 1);
+		cuboidMesh.vertices[i * 3 + 1] += (m_Scaling.y / 2);
+		cuboidMesh.vertices[i * 3 + 2] -= ((m_Scaling.z / 2) - 1);
+	}
+
+   UpdateMeshBuffer(cuboidMesh, 0, cuboidMesh.vertices, sizeof(float) * cuboidMesh.vertexCount * 3, 0);
+
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] = LoadModelFromMesh(cuboidMesh);
+
+   //m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] = LoadModelFromMesh(flatMesh);
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BACK)] = LoadModelFromMesh(flatMesh);
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_FRONT)] = LoadModelFromMesh(flatMesh);
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_LEFT)] = LoadModelFromMesh(flatMesh);
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_RIGHT)] = LoadModelFromMesh(flatMesh);
+   m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_TOP)] = LoadModelFromMesh(flatMesh);
+
+   //  Set the textures for each of the six sides.
+
+   SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BOTTOM)].materials[0], MATERIAL_MAP_DIFFUSE, m_topTexture->m_Texture);
+	SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_TOP)].materials[0], MATERIAL_MAP_DIFFUSE, m_topTexture->m_Texture);
+   SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_FRONT)].materials[0], MATERIAL_MAP_DIFFUSE, m_frontTexture->m_Texture);
+   SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BACK)].materials[0], MATERIAL_MAP_DIFFUSE, m_frontTexture->m_Texture);
+   SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_LEFT)].materials[0], MATERIAL_MAP_DIFFUSE, m_rightTexture->m_Texture);
+   SetMaterialTexture(&m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_RIGHT)].materials[0], MATERIAL_MAP_DIFFUSE, m_rightTexture->m_Texture);
+
 };
 
 void ShapeData::FixupTextures()
@@ -308,19 +363,20 @@ void ShapeData::FixupTextures()
    {
       for (int i = 0; i < m_topTexture->width; ++i)
       {
-         m_topTexture->MoveColumnUp(i);
+         m_topTexture->MoveImageColumnUp(i);
       }
    }
 
    for (int j = 0; j < m_topTextureOffsetX; ++j)
    {
-      for (int i = 0; i < m_topTexture->height; ++i)
+      for (int i = 0; i < m_topTexture->height; ++i) 
       {
-         m_topTexture->MoveRowLeft(i);
+         m_topTexture->MoveImageRowLeft(i);
       }
    }
 
-   m_topTexture->Resize(m_topTextureWidth, m_topTextureHeight);
+   m_topTexture->ResizeImage(m_topTextureWidth, m_topTextureHeight);
+   m_topTexture->UpdateTexture();
 
    //  Front face
    //  Move pixels not part of this face off the texture
@@ -328,7 +384,7 @@ void ShapeData::FixupTextures()
    {
       for (int i = 0; i < m_frontTexture->width; ++i)
       {
-        // m_frontTexture->MoveColumnUp(i);
+         m_frontTexture->MoveImageColumnUp(i);
       }
    }
 
@@ -336,7 +392,7 @@ void ShapeData::FixupTextures()
    {
       for (int i = 0; i < m_frontTexture->height; ++i)
       {
-         //m_frontTexture->MoveRowLeft(i);
+         m_frontTexture->MoveImageRowLeft(i);
       }
    }
 
@@ -346,12 +402,13 @@ void ShapeData::FixupTextures()
    {
       for (int k = 0; k < counter; ++k)
       {
-         //m_frontTexture->MoveRowLeft(i);
+         m_frontTexture->MoveImageRowLeft(i);
       }
       ++counter;
    }
 
-   //m_frontTexture->Resize(m_frontTextureWidth, m_frontTextureHeight);
+   m_frontTexture->ResizeImage(m_frontTextureWidth, m_frontTextureHeight);
+   m_frontTexture->UpdateTexture();
 
    //  Right face
    //  Move pixels not part of this face off the texture
@@ -359,7 +416,7 @@ void ShapeData::FixupTextures()
    {
       for (int i = 0; i < m_rightTexture->width; ++i)
       {
-         //m_rightTexture->MoveColumnUp(i);
+         m_rightTexture->MoveImageColumnUp(i);
       }
    }
 
@@ -367,7 +424,7 @@ void ShapeData::FixupTextures()
    {
       for (int i = 0; i < m_rightTexture->height; ++i)
       {
-         //m_rightTexture->MoveRowLeft(i);
+         m_rightTexture->MoveImageRowLeft(i);
       }
    }
 
@@ -377,12 +434,13 @@ void ShapeData::FixupTextures()
    {
       for(int k = 0; k < counter; ++k)
       {
-         //m_rightTexture->MoveColumnUp(i);
+         m_rightTexture->MoveImageColumnUp(i);
       }
       ++counter;
    }
 
-   //m_rightTexture->Resize(m_rightTextureWidth, m_rightTextureHeight);
+   m_rightTexture->ResizeImage(m_rightTextureWidth, m_rightTextureHeight);
+   m_rightTexture->UpdateTexture();
 
 }
 
@@ -395,37 +453,18 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color)
 
    ObjectData* objectData = &g_objectTable[m_shape];
 
-   if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
-   {
-      m_Scaling = Vector3{ m_defaultTexture->width / 8.0f, m_defaultTexture->height / 8.0f, 1 };
-   }
-   else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
-   {
-      m_Scaling = Vector3{ -m_defaultTexture->width / 8.0f, 0, -m_defaultTexture->height / 8.0f };
-   }
-   else
-   {
-      m_Scaling = Vector3{ float(m_topTexture->width) / 8.0f, objectData->m_height, objectData->m_depth };
-      //m_Scaling = Vector3(objectData->m_width, objectData->m_height, objectData->m_depth);
-   }
-
    switch (m_drawType)
    {
       case ShapeDrawType::OBJECT_DRAW_CUBOID:
       {
-         //DrawCube(pos, m_Scaling.x, m_Scaling.y, m_Scaling.z, BLUE);     // Draw a blue wall
+         Vector3 thisPos = pos;
 
-         //Vector3 thisPos = pos;
-         //thisPos.x -= m_Scaling.x - 1;
-         //thisPos.z -= m_Scaling.z - 1;
-         //thisPos.y += thisPos.y * .01f;
-
-         //DrawSide(CuboidSides::CUBOID_TOP, thisPos, color, m_Scaling);
-         //DrawSide(CuboidSides::CUBOID_BOTTOM, thisPos, color, m_Scaling);
-         //DrawSide(CuboidSides::CUBOID_FRONT, thisPos, color, m_Scaling);
-         //DrawSide(CuboidSides::CUBOID_BACK, thisPos, color, m_Scaling);
-         //DrawSide(CuboidSides::CUBOID_RIGHT, thisPos, color, m_Scaling);
-         //DrawSide(CuboidSides::CUBOID_LEFT, thisPos, color, m_Scaling);
+         DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], thisPos, 1, WHITE);
+         //DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_LEFT)], thisPos, 1, WHITE);
+         //DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_RIGHT)], thisPos, 1, WHITE);
+         //DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_FRONT)], thisPos, 1, WHITE);
+         //DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BACK)], thisPos, 1, WHITE);
+         //DrawModel(m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_TOP)], thisPos, 1, WHITE);
 
          break;
       }
@@ -433,91 +472,48 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color)
       case ShapeDrawType::OBJECT_DRAW_FLAT:
       {
          Vector3 thisPos = pos;
-         thisPos.x += 1;
-         thisPos.z += 1;
-         if (thisPos.y > 0)
+         if (pos.y == 0)
          {
-            thisPos.y += thisPos.y * .01f;
-         }
+				thisPos.y = .1f; //  Otherwise, z-fighting.
+			}
          else
          {
-            thisPos.y = .01f;
+            thisPos.y = pos.y * 1.1f;
          }
-
-         DrawPlane(thisPos, Vector2{ m_Scaling.x, m_Scaling.z }, BLUE);
-         //if(m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)] != nullptr)
-         //   DrawModel(*m_models[static_cast<int>(CuboidSides::CUBOID_BOTTOM)], pos, 1, WHITE);
+         DrawModel(m_flatModel, thisPos, 1, WHITE);
          break;
       }
 
       case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
       case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
       {
-         //float angle = GetCameraAngle();
-         //angle += 45;
          Vector3 thisPos = pos;
-         thisPos.x += (m_Scaling.x / 2.0f);
-         //thisPos.z += 0.5f;
-         thisPos.y += (m_Scaling.y / 2.0f) * 1.3;
-         //DrawMesh(g_ResourceManager->GetMesh("Data/Meshes/billboard.txt"), thisPos, m_defaultTexture.get(), color, Vector3(0, angle, 0), m_Scaling);
-         DrawBillboardPro(g_camera, m_defaultTexture->m_Texture, Rectangle{ 0, 0, float(m_defaultTexture->m_Texture.width), float(m_defaultTexture->m_Texture.height) }, thisPos, Vector3{ 0, 1, 0 }, Vector2{ m_Scaling.x, m_Scaling.y }, Vector2{ 0, 0 }, -45, color);
+         thisPos.x += .5f;
+         thisPos.z += .5f;
+         thisPos.y += m_Scaling.y * .60f;
+
+         //DrawModel(m_billboardModel, thisPos, 1, WHITE);
+         
+         DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, thisPos, Vector3{ 0, 1, 0 },
+            Vector2{ m_Scaling.x, m_Scaling.y }, Vector2{ 0, 0 }, -45, color);
          break;
       }
-
-      
    }
 }
 
-void ShapeData::DrawSide(CuboidSides side, Vector3 pos, Color color, Vector3 scaling)
-{
-   if (m_sideTexture[static_cast<int>(side)] != CuboidTexture::CUBOID_DONT_DRAW)
-   {
-      ModTexture* thisTexture;
-      Vector3 thisRotation = Vector3{ 0, 0, 0 };
-      switch (m_sideTexture[static_cast<int>(side)])
-      {
-      case CuboidTexture::CUBOID_DRAW_TOP:
-         thisTexture = m_topTexture.get();
-         break;
-      case CuboidTexture::CUBOID_DRAW_FRONT:
-         thisTexture = m_frontTexture.get();
-         break;
-      case CuboidTexture::CUBOID_DRAW_RIGHT:
-         thisTexture = m_rightTexture.get();
-         break;
-      case CuboidTexture::CUBOID_DRAW_FRONT_INVERTED:
-         thisTexture = m_frontTexture.get();
-         thisRotation = Vector3{ 0, 180, 0 };
-         break;
-      case CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED:
-         thisTexture = m_rightTexture.get();
-         thisRotation = Vector3{ 0, 180, 0 };
-         break;
-      case CuboidTexture::CUBOID_DRAW_TOP_INVERTED:
-         thisTexture = m_topTexture.get();
-         thisRotation = Vector3{ 0, 180, 0 };
-         break;
-      default:
-         thisTexture = m_topTexture.get();
-         break;
-      }
-      //DrawMesh(m_meshes[static_cast<int>(side)], pos, thisTexture, color, thisRotation, m_Scaling);
-   }
-}
-
-bool ShapeData::Pick(Vector3 thisPos, float angle)
+bool ShapeData::Pick(Vector3 thisPos)
 {
    bool picked = false;
 
- //  for (int i = 0; i < static_cast<int>(CuboidSides::CUBOID_LAST); ++i)
- //  {
- //     if (m_meshes[i] != nullptr && m_meshes[i]->SelectCheck(thisPos, angle, m_Scaling))
- //     {
-	//		picked = true;
- //        break;
-	//	}
-	//}
+   Ray ray = GetScreenToWorldRay(GetMousePosition(), g_camera);
 
-   return picked;
+   BoundingBox box = {
+		Vector3{ thisPos.x - m_Scaling.x / 2, thisPos.y - m_Scaling.y / 2, thisPos.z - m_Scaling.z / 2 },
+		Vector3{ thisPos.x + m_Scaling.x / 2, thisPos.y + m_Scaling.y / 2, thisPos.z + m_Scaling.z / 2 }
+	};
 
+   // Check collision between ray and box
+   RayCollision collision = GetRayCollisionBox(ray, box);
+
+   return collision.hit;
 }

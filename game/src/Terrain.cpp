@@ -23,6 +23,7 @@ Terrain::Terrain()
 { 
    m_height = 3072;
    m_width = 3072;
+   m_terrainTexture = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
 }
 
 Terrain::~Terrain()
@@ -32,12 +33,23 @@ Terrain::~Terrain()
 
 void Terrain::Init()
 {
-	// Create the chunk database
+   // Create the chunk database
+
+   //  Create a mesh for each chunk
    Mesh mesh = GenMeshPlane(16, 16, 1, 1);
-   Texture texture = LoadTexture("Images/minimap.png");
+
+   //  Move the mesh from the center to the corner
+   for (int i = 0; i < mesh.vertexCount; ++i)
+   {
+   	mesh.vertices[i * 3] += 8.0f;
+		mesh.vertices[i * 3 + 2] += 8.0f;
+	}
+
+   UpdateMeshBuffer(mesh, 0, mesh.vertices, sizeof(float) * mesh.vertexCount * 3, 0);
+
    unsigned short prevShape = 0;
    unsigned short prevFrame = 0;
-   for (int i = 0; i < 3072; ++i)
+   for (unsigned int i = 0; i < 3072; ++i)
    {
 		m_chunkModels[i] = make_unique<Model>(LoadModelFromMesh(mesh));
 
@@ -65,10 +77,16 @@ void Terrain::Init()
 
       Texture thisTexture = LoadTextureFromImage(img);
       SetTextureFilter(thisTexture, TEXTURE_FILTER_POINT);
-      m_chunkModels[i]->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = thisTexture;
+
+      SetMaterialTexture(&m_chunkModels[i]->materials[0], MATERIAL_MAP_DIFFUSE, thisTexture);
 
       UnloadImage(img);
 	}
+}
+
+void Terrain::UpdateTerrainTexture(Image img)
+{
+	m_terrainTexture = img;
 }
 
 void Terrain::Draw()
@@ -87,7 +105,7 @@ void Terrain::Draw()
 				continue;
 			}
 
-         DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { i * 16.0f - 8.0f, 0, j * 16.0f - 8 }, 1.0f, WHITE);
+         DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { i * 16.0f, 0, j * 16.0f }, 1.0f, WHITE);
 		}
 	}
 }

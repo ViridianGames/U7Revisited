@@ -39,13 +39,11 @@ public:
    
    void CreateTitleGUI();
    void UpdateTitle();
+
+   void TestUpdate();
+   void TestDraw();
    
-   Gui* m_TitleGui;
-
-   bool m_ClientConnected;
-
-   int m_shape = 150;
-   int m_frame = 0;
+   Gui* m_TitleGui = nullptr;
 };
 
 #endif

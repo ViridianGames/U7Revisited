@@ -9,7 +9,8 @@ obj
 
 =======
 # make sure we're not committing actual U7 stuff
-resources/Data/U7/*
+resources/Data/U7/blackgate*
+resources/Data/U7/serpentisle*
 
 # ignore screenshots
 resources/*.png

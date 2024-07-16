@@ -25,8 +25,6 @@ public:
 
    virtual void Attack(int unitid);
 
-   virtual bool SelectCheck();
-
    virtual Vector3 GetPos() { return m_Pos; }
    virtual Vector3 GetDest() { return m_Dest; }
    virtual float GetSpeed() { return m_Speed; }
@@ -78,7 +76,7 @@ public:
    ShapeDrawType m_drawType;
    ShapeData* m_shapeData;
 
-   float m_distanceFromCamera;
+   double m_distanceFromCamera;
 
    Color m_color = WHITE;
 

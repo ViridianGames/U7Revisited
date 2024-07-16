@@ -58,17 +58,6 @@ public:
    unsigned int m_GameType;
    unsigned int m_RNGSeed;
    
-   bool m_ArePlayersSetUp;
-
-   // Networking
-   bool m_SentServerEvents;
-   unsigned int m_RespondedClients;
-   unsigned int m_TurnLength;
-   unsigned int m_ClientAuthorizedUpdate;
-   unsigned int m_NextTurnUpdate;
-
-
-
    //Texture* m_TerrainTexture;
    Texture* m_Minimap;
    Texture* m_MinimapArrow;
@@ -87,6 +76,8 @@ public:
    std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
 
    unsigned int m_selectedObject = 0;
+
+   Shader m_alphaDiscard;
 
 };
 

@@ -26,11 +26,31 @@ void Engine::Init(const std::string& configfile)
 
 	m_debugDrawing = false;
 
+	m_RenderWidth = m_EngineConfig.GetNumber("h_renderres");
+	m_RenderHeight = m_EngineConfig.GetNumber("v_renderres");
+
+	m_ScreenWidth = m_EngineConfig.GetNumber("h_res");
+	m_ScreenHeight = m_EngineConfig.GetNumber("v_res");
+
+	m_pixelated = false;
+
+	//  Initialize Raylib and the screen.
+	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
+	if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
+	{
+		ToggleFullscreen();
+	}
+	SetTargetFPS(144);
+	HideCursor(); // We'll use our own.
+
+	m_renderTarget = LoadRenderTexture(m_RenderWidth, m_RenderHeight);
+
 	Log("Done with Engine::Init()");
 }
 
 void Engine::Shutdown()
 {
+	UnloadRenderTexture(m_renderTarget);
 	g_StateMachine->Shutdown();
 	g_ResourceManager->Shutdown();
 }
@@ -51,6 +71,11 @@ void Engine::Update()
 		CaptureScreenshot();
 	}
 
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		m_pixelated = !m_pixelated;
+	}
+
 	// F9 toggles the debug drawing
 	if (IsKeyPressed(KEY_F9))
 	{
@@ -62,7 +87,14 @@ void Engine::Update()
 
 void Engine::Draw()
 {
-	BeginDrawing();
+	if (m_pixelated)
+	{
+		BeginTextureMode(m_renderTarget);
+	}
+	else
+	{
+		BeginDrawing();
+	}
 
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
@@ -72,7 +104,15 @@ void Engine::Draw()
 		DrawFPS(0, 0);
 	}
 
+	if (m_pixelated)
+	{
+		EndTextureMode();
+		BeginDrawing();
+		DrawTexturePro(m_renderTarget.texture, { 0, 0, m_RenderWidth, -m_RenderHeight }, { 0, 0, m_ScreenWidth, m_ScreenHeight }, { 0, 0 }, 0, WHITE);
+	}
+	
 	EndDrawing();
+
 }
 
 void Engine::CaptureScreenshot() {

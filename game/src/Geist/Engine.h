@@ -49,6 +49,15 @@ public:
 	unsigned int  m_UpdateTime;
 
 	bool          m_debugDrawing;
+
+	bool					m_pixelated;
+	RenderTexture2D	m_renderTarget;
+
+	float         m_RenderWidth;
+	float         m_RenderHeight;
+
+	float			  m_ScreenWidth;
+	float 	     m_ScreenHeight;
 };
 
 #endif
