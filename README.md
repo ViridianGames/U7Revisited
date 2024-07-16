@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Ultima VII: Revisited
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
@@ -29,6 +28,3 @@ This is an open source project, which means that you can grab the source files f
 FEEDBACK IS WELCOME BOY HOWDY IS IT WELCOME!  The best way to give feedback is to send it to my email address at anthony.salter@gmail.com and put `Revisited` in the subject line.
 
 Have fun, and Rule Britannia.
-=======
-
->>>>>>> 78769aac815566a8e17644d58038dd2eac66502a
