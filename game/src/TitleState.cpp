@@ -24,8 +24,6 @@ TitleState::~TitleState()
 
 void TitleState::Init(const string& configfile)
 {
-    MakeAnimationFrameMeshes();
-
    CreateTitleGUI();
 }
 
@@ -47,7 +45,7 @@ void TitleState::Shutdown()
 void TitleState::Update()
 {
    UpdateTitle();
-   //g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+   TestUpdate();
 }
 
 
@@ -59,9 +57,7 @@ void TitleState::Draw()
    
    DrawConsole();
 
-   DrawTexture(*g_shapeTable[m_shape][m_frame].GetTexture(), 0, 0, WHITE);
-
-   //DrawTexture(g_Terrain->m_TerrainTexture, 0, 0, WHITE);
+   TestDraw();
 
    DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 }
@@ -134,48 +130,39 @@ void TitleState::UpdateTitle()
    {
 		g_Engine->m_Done = true;
 	}
+}
 
+void TitleState::TestUpdate()
+{
+   ModTexture& modTexture = *g_shapeTable[150][0].m_topTexture;
    if (IsKeyPressed(KEY_A))
    {
-		++m_shape;
-      m_frame = 0;
-      if(m_shape >= 1024)
-         m_shape = 150;
+      modTexture.ResizeImage(modTexture.m_Image.width - 1, modTexture.m_Image.height);
+      modTexture.UpdateTexture();
 	}
 
    if (IsKeyPressed(KEY_D))
    {
-		--m_shape;
-      m_frame = 0;
-		if(m_shape < 150)
-			m_shape = 1023;
+		modTexture.ResizeImage(modTexture.m_Image.width + 1, modTexture.m_Image.height);
+		modTexture.UpdateTexture();
 	}
 
    if (IsKeyPressed(KEY_W))
    {
-      int newFrame = m_frame + 1;
-      if (newFrame > 31)
-      {
-         newFrame = 0;
-      }
-
-      if (g_shapeTable[m_shape][newFrame].IsValid())
-      {
-         m_frame = newFrame;
-      }
+		modTexture.ResizeImage(modTexture.m_Image.width, modTexture.m_Image.height - 1);
+		modTexture.UpdateTexture();
 	}
 
    if (IsKeyPressed(KEY_S))
    {
-      int newFrame = m_frame - 1;
-      if (newFrame < 0)
-      {
-         newFrame = 31;
-      }
-
-      if (g_shapeTable[m_shape][newFrame].IsValid())
-      {
-         m_frame = newFrame;
-      }
+		modTexture.ResizeImage(modTexture.m_Image.width, modTexture.m_Image.height + 1);
+		modTexture.UpdateTexture();
 	}
+
+	
+}
+
+void TitleState::TestDraw()
+{
+   DrawTexture(g_shapeTable[150][0].m_topTexture->m_Texture, 0, 0, WHITE);
 }

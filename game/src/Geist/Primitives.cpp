@@ -408,56 +408,40 @@ void SpriteSheet::DrawSprite(int spritex, int spritey, int posx, int posy)
 	temp.Draw(float(posx), float(posy));
 }
 
-void ModTexture::MoveRowLeft(int row)
+void ModTexture::MoveImageRowLeft(int row)
 {
 	for (int x = 0; x < m_Image.width - 1; ++x)
 	{
-		for (int y = row * m_Image.height / 8; y < (row + 1) * m_Image.height / 8; ++y)
-		{
-			Color newPixel = GetImageColor(m_Image, x + 1, y);
-			ImageDrawPixel(&m_Image, x, y, newPixel);
-		}
+		Color newPixel = GetImageColor(m_Image, x + 1, row);
+		ImageDrawPixel(&m_Image, x, row, newPixel);
 	}
-	UpdateTexture();
 }
 
-void ModTexture::MoveRowRight(int row)
+void ModTexture::MoveImageRowRight(int row)
 {
 	for (int x = m_Image.width - 1; x > 0; --x)
 	{
-		for (int y = row * m_Image.height / 8; y < (row + 1) * m_Image.height / 8; ++y)
-		{
-			Color newPixel = GetImageColor(m_Image, x - 1, y);
-			ImageDrawPixel(&m_Image, x, y, newPixel);
-		}
+		Color newPixel = GetImageColor(m_Image, x - 1, row);
+		ImageDrawPixel(&m_Image, x, row, newPixel);
 	}
-	UpdateTexture();
 }
 
-void ModTexture::MoveColumnUp(int column)
+void ModTexture::MoveImageColumnUp(int column)
 {
 	for (int y = 0; y < m_Image.height - 1; ++y)
 	{
-		for (int x = column * m_Image.width / 8; x < (column + 1) * m_Image.width / 8; ++x)
-		{
-			Color newPixel = GetImageColor(m_Image, x, y +1);
-			ImageDrawPixel(&m_Image, x, y, newPixel);
-		}
+		Color newPixel = GetImageColor(m_Image, column, y + 1);
+		ImageDrawPixel(&m_Image, column, y, newPixel);
 	}
-	UpdateTexture();
 }
 
-void ModTexture::MoveColumnDown(int column)
+void ModTexture::MoveImageColumnDown(int column)
 {
 	for (int y = m_Image.height - 1; y > 0; --y)
 	{
-		for (int x = column * m_Image.width / 8; x < (column + 1) * m_Image.width / 8; ++x)
-		{
-			Color newPixel = GetImageColor(m_Image, x, y - 1);
-			ImageDrawPixel(&m_Image, x, y, newPixel);
-		}
+		Color newPixel = GetImageColor(m_Image, column, y - 1);
+		ImageDrawPixel(&m_Image, column, y, newPixel);
 	}
-	UpdateTexture();
 }
 
 void ModTexture::UpdateTexture()
@@ -472,6 +456,7 @@ void ModTexture::AssignImage(char* image)
 	m_Texture = LoadTextureFromImage(m_Image);
 	width = m_Image.width;
 	height = m_Image.height;
+	SetTextureFilter(m_Texture, TEXTURE_FILTER_POINT);
 }
 
 void ModTexture::AssignImage(Image img)
@@ -481,12 +466,17 @@ void ModTexture::AssignImage(Image img)
 	m_Texture = LoadTextureFromImage(m_Image);
 	width = m_Image.width;
 	height = m_Image.height;
+	SetTextureFilter(m_Texture, TEXTURE_FILTER_POINT);
 }
 
-void ModTexture::Resize(float newWidth, float newHeight)
+void ModTexture::ResizeImage(float newWidth, float newHeight)
 {
-	ImageCrop(&m_Image, Rectangle{ 0, 0, newWidth, newHeight });
-	UpdateTexture();
+	if (newWidth < 1 || newHeight < 1)
+	{
+		return;
+	}
+
+	m_Image = ImageFromImage(m_Image, Rectangle{ 0, 0, newWidth, newHeight });
 }
 
 void ModTexture::Reset()

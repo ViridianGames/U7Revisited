@@ -1,1 +1,2 @@
-Copy the contents of your Ultima7 folder into this folder.
+Copy the contents of your ULTIMA7 folder into the 'blackgate' folder.
+Copy the contents of your SERPENT folder into the 'serpenisle' subfolder.

@@ -79,6 +79,7 @@ void LoadingState::Draw()
 	}
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
 }
 
 
@@ -202,17 +203,17 @@ int LoadingState::ReadS32(istream &buffer)
 
 void LoadingState::LoadVersion()
 {
-	FILE* u7versionfile = fopen("version.txt", "r");
+	FILE* u7versionfile = fopen("Data/version.txt", "r");
 	if (u7versionfile == nullptr)
 	{
 		// choose a default?
-		g_VERSION = "v0.0.1";
+		g_version = "v0.0.1";
 		return;
 	}
 
 	char buffer[20];
 	fgets(buffer, 20, u7versionfile);
-	g_VERSION = buffer;
+	g_version = buffer;
 
 	fclose(u7versionfile);
 }
@@ -439,7 +440,7 @@ void LoadingState::MakeMap()
 
 					if (shapenum >= 150)
 					{
-						AddObject(shapenum, framenum, GetNextID(), (i * 16 + l), 0, (j * 16 + k));
+						AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
 					}
 				}
 			}
@@ -582,9 +583,9 @@ void LoadingState::CreateShapeTable()
 
 	bool test = true;
 
-	//  The first 150 entries (0-149) are terrain textures.  They are not
+		//  The first 150 entries (0-149) are terrain textures.  They are not
 	//  rle-encoded.  Splat them directly to the terrain texture.
-	Image tempImage = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
+	Image& tempImage = g_Terrain->GetTerrainTexture();
 	for (int thisShape = 0; thisShape < 150; ++thisShape)
 	{
 		shapes.seekg(shapeEntryMap[thisShape].offset);
@@ -602,10 +603,8 @@ void LoadingState::CreateShapeTable()
 
 		}
 	}
-	
-	Log("Creating terrain.");
-	g_Terrain = make_unique<Terrain>();
-	g_Terrain->m_terrainTexture = ImageCopy(tempImage);
+
+	g_Terrain->UpdateTerrainTexture(tempImage);
 	g_Terrain->Init();
 	Log("Done creating terrain.");
 

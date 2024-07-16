@@ -40,16 +40,6 @@ int main(int argv, char** argc)
       g_Engine = make_unique<Engine>();
       g_Engine->Init("Data/engine.cfg");
 
-      
-      //  Initialize Raylib and the screen.
-      InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
-      if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
-      {
-         ToggleFullscreen();
-      }
-      SetTargetFPS(144);
-      HideCursor(); // We'll use our own.
-
       g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
       g_cameraRotation = 0.0f;
 
@@ -58,6 +48,8 @@ int main(int argv, char** argc)
       g_camera.up = Vector3 { 0.0f, 1.0f, 0.0f };
       g_camera.fovy = g_cameraDistance;
       g_camera.projection = CAMERA_ORTHOGRAPHIC;
+
+      RenderTexture2D m_renderTarget = LoadRenderTexture(640, 360);
 
       //BeginDrawing();
 
@@ -85,6 +77,9 @@ int main(int argv, char** argc)
       g_VitalRNG->SeedRNG(7777);//GetTime());
       g_NonVitalRNG = make_unique<RNG>();
       g_NonVitalRNG->SeedRNG(GetTime());
+
+      Log("Creating terrain.");
+      g_Terrain = make_unique<Terrain>();
 
       //  Create GUI elements
       g_BoxTL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 0, 2, 2);

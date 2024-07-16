@@ -73,7 +73,7 @@ public:
 
 	void SetDefaultTexture(Image image);
 
-	Texture* GetTexture() { return &m_defaultTexture->m_Texture; }
+	Texture* GetTexture() { return &m_originalTexture->m_Texture; }
 	Texture* GetTopTexture() { return &m_topTexture->m_Texture; }
 	Texture* GetFrontTexture() { return &m_frontTexture->m_Texture; }
 	Texture* GetRightTexture() { return &m_rightTexture->m_Texture; }
@@ -92,7 +92,7 @@ public:
 	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTexture[static_cast<int>(side)]; }
 	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTexture[static_cast<int>(side)] = texture; }
 
-	bool Pick(Vector3 thisPos, float angle);
+	bool Pick(Vector3 thisPos);
 
 	// In original pixels
 	int m_topTextureOffsetX;
@@ -110,8 +110,6 @@ public:
 	int m_rightTextureWidth;
 	int m_rightTextureHeight;
 
-private:
-
 	bool m_isValid;
 
 	int m_shape;
@@ -119,25 +117,33 @@ private:
 
 	ShapeDrawType m_drawType;
 
-	//  The custom shape data will also contain a list of custom modifications to the shape.
+	Vector3 m_Scaling;
+
+	//  Texture for billboard/flat mode; base texture for cuboid mode
+
+	std::unique_ptr<ModTexture> m_originalTexture;
+
+	//  For drawing in billboard mode
+
+	Model m_billboardModel;
+
+	//  For drawing in flat mode
+
+	Model m_flatModel;
+
+	//  For drawing in cuboid mode
+
+	std::unique_ptr<ModTexture> m_topTexture;
+	std::unique_ptr<ModTexture> m_frontTexture;
+	std::unique_ptr<ModTexture> m_rightTexture;
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;
 	std::vector<coords> m_rightFaceMods;
 
-	//  The custom shape data will also contain a list of which sides of the cuboid to draw and which to not draw,
-	//  and which of the three faces to apply to those cuboid sides.
 	CuboidTexture m_sideTexture[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
-	std::unique_ptr<ModTexture> m_defaultTexture;
-	std::unique_ptr<ModTexture> m_topTexture;
-	std::unique_ptr<ModTexture> m_frontTexture;
-	std::unique_ptr<ModTexture> m_rightTexture;
-
-	Vector3 m_Scaling;
-
-	std::array<Model*, static_cast<int>(CuboidSides::CUBOID_LAST)> m_models;
-
+	std::array<Model, static_cast<int>(CuboidSides::CUBOID_LAST)> m_cuboidModels;
 };
 
 #endif

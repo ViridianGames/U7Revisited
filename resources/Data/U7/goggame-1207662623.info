@@ -1,0 +1,76 @@
+{
+    "buildId": "51402764892134586",
+    "clientId": "49552650753938435",
+    "gameId": "1207662623",
+    "language": "English",
+    "languages": [
+        "en-US"
+    ],
+    "name": "Ultima VII - The Black Gate",
+    "playTasks": [
+        {
+            "arguments": "-conf \"..\\dosboxULTIMA7.conf\" -conf \"..\\dosboxULTIMA7_single.conf\" -noconsole -c \"exit\"",
+            "category": "game",
+            "isPrimary": true,
+            "languages": [
+                "*"
+            ],
+            "name": "Ultima VII - The Black Gate",
+            "path": "DOSBOX\\dosbox.exe",
+            "type": "FileTask",
+            "workingDir": "DOSBOX"
+        },
+        {
+            "arguments": "1207662623",
+            "category": "tool",
+            "languages": [
+                "*"
+            ],
+            "name": "Graphic Mode Setup",
+            "path": "DOSBOX\\GOGDOSConfig.exe",
+            "type": "FileTask",
+            "workingDir": "DOSBOX"
+        },
+        {
+            "arguments": "-conf \"..\\dosboxULTIMA7.conf\" -conf \"..\\dosboxULTIMA7_settings.conf\" -noconsole -c \"exit\"",
+            "category": "tool",
+            "icon": "DOSBOX\\dosbox.exe",
+            "languages": [
+                "*"
+            ],
+            "name": "Settings",
+            "path": "DOSBOX\\dosbox.exe",
+            "type": "FileTask",
+            "workingDir": "DOSBOX"
+        },
+        {
+            "category": "document",
+            "languages": [
+                "*"
+            ],
+            "link": "http://www.gog.com/support/ultima_7_complete",
+            "name": "Support",
+            "type": "URLTask"
+        },
+        {
+            "category": "document",
+            "languages": [
+                "*"
+            ],
+            "name": "Manual",
+            "path": "Manual.pdf",
+            "type": "FileTask"
+        },
+        {
+            "category": "document",
+            "languages": [
+                "*"
+            ],
+            "name": "The Answers",
+            "path": "answers.pdf",
+            "type": "FileTask"
+        }
+    ],
+    "rootGameId": "1207662623",
+    "version": 1
+}

@@ -1,0 +1,37 @@
+{
+    "actions": [
+        {
+            "install": {
+                "action": "setRegistry",
+                "arguments": {
+                    "root": "HKEY_LOCAL_MACHINE",
+                    "subkey": "Software\\GOG.com\\Games\\{productID}",
+                    "valueData": "{app}\\DOSBox",
+                    "valueName": "DOSBOXFOLDER",
+                    "valueType": "String"
+                }
+            },
+            "languages": [
+                "*"
+            ],
+            "name": "DOSBoxConfigLegacy1"
+        },
+        {
+            "install": {
+                "action": "setRegistry",
+                "arguments": {
+                    "root": "HKEY_LOCAL_MACHINE",
+                    "subkey": "Software\\GOG.com\\Games\\{productID}",
+                    "valueData": "dosboxULTIMA7",
+                    "valueName": "DOSBOXCONF",
+                    "valueType": "String"
+                }
+            },
+            "languages": [
+                "*"
+            ],
+            "name": "DOSBoxConfigLegacy2"
+        }
+    ],
+    "productId": "1207662623"
+}

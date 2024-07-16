@@ -9,7 +9,7 @@
 
 using namespace std;
 
-std::string g_VERSION;
+std::string g_version;
 
 unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
 
@@ -372,3 +372,9 @@ shared_ptr<Sprite> g_RightArrow;
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;
+
+EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
+
+std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
+
+

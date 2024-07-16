@@ -34,6 +34,7 @@ void MainState::Init(const string& configfile)
 	m_Minimap = g_ResourceManager->GetTexture("Images/minimap.png");
 
 	m_MinimapArrow = g_ResourceManager->GetTexture("Images/minimaparrow.png", false);
+	GenTextureMipmaps(m_MinimapArrow);
 
 	m_Gui = new Gui();
 
@@ -79,22 +80,14 @@ void MainState::Init(const string& configfile)
 	m_DrawMarker = false;
 	m_MarkerRadius = 1.0f;
 
-	// Find all SDL resolutions.
-//   m_Resolutions = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_HWSURFACE);
-//   m_CurrentRes = 0;
-
 	m_GuiMode = 0;
 
-	//  Networking
-	m_ArePlayersSetUp = false;
-	m_TurnLength = g_Engine->m_EngineConfig.GetNumber("turn_length");
-	g_CurrentUpdate = 1;
-	m_NextTurnUpdate = g_CurrentUpdate + m_TurnLength;
-	m_ClientAuthorizedUpdate = g_CurrentUpdate + (2 * m_TurnLength);
-	m_SentServerEvents = false;
-
 	m_showObjects = true;
-	//   AddConsoleString("Welcome to Planitia!", Color(0, 1, 0, 1));
+
+	m_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+
+	SetupGame();
+
 }
 
 void MainState::OnEnter()
@@ -120,12 +113,6 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
-	if (!m_ArePlayersSetUp)
-	{
-		SetupGame();
-		return;
-	}
-
 	bool canupdate = false;
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
@@ -137,19 +124,15 @@ void MainState::Update()
 		if (m_showObjects)
 		{
 			m_sortedVisibleObjects.clear();
-			float drawRange = g_cameraDistance;
+			float drawRange = g_cameraDistance * 1.5f;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
-				if (!(*node).second->m_Visible)
-				{
-					continue;
-				}
-
+				(*node).second->Update();
 				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
 				if (distance < drawRange)
 				{
-					float distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position);
-					(*node).second->m_distanceFromCamera = distanceFromCamera;
+					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position);
+					(*node).second->m_distanceFromCamera = distanceFromCamera * 1.5f;
 					m_sortedVisibleObjects.push_back((*node).second);
 					m_numberofDrawnUnits++;
 				}
@@ -173,11 +156,6 @@ void MainState::Update()
 		g_Engine->m_Done = true;
 	}
 
-	if (IsKeyPressed(KEY_SPACE))
-	{
-		m_showObjects = !m_showObjects;
-	}
-
 	if (IsKeyPressed(KEY_F1))
 	{
 		g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
@@ -191,21 +169,26 @@ void MainState::Update()
 
 		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
 		{
-			//bool picked = (*node)->m_shapeData->Pick((*node)->GetPos(), GetCameraAngle());
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
 
-			//if (picked)
-			//{
-			//	g_selectedShape = (*node)->m_shapeData->GetShape();
-			//	g_selectedFrame = (*node)->m_shapeData->GetFrame();
-			//	(*node)->m_color.g = 0;
-			//	(*node)->m_color.b = 0;
-			//	m_selectedObject = (*node)->m_ID;
+			bool picked = (*node)->m_shapeData->Pick((*node)->m_Pos);
+
+			if (picked)
+			{
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				(*node)->m_color.g = 0;
+				(*node)->m_color.b = 0;
+				m_selectedObject = (*node)->m_ID;
 
 
-			//	AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame));
+				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame));
 
-			//	break;
-			//}
+				break;
+			}
 		}
 	}
 }
@@ -215,7 +198,8 @@ void MainState::Draw()
 	ClearBackground(Color {0, 0, 0, 255});
 
 	BeginMode3D(g_camera);
-	rlEnableDepthTest();
+	BeginShaderMode(m_alphaDiscard);
+
 	//  Draw the terrain
 	g_Terrain->Draw();
 
@@ -230,21 +214,31 @@ void MainState::Draw()
 			++m_numberofDrawnUnits;
 		}
 	}
-
-	rlDisableDepthTest();
+	
+	EndShaderMode();
 	EndMode3D();
 
 	//  Draw the minimap and marker
-	DrawTextureEx(*m_Minimap, Vector2{ float(GetRenderWidth() - g_minimapSize), 0 }, 0, float(g_minimapSize) / float(GetRenderHeight()), WHITE);
+	DrawTexturePro(*m_Minimap, Rectangle{ 0, 0, float(m_Minimap->width), float(m_Minimap->height) }, Rectangle{ float(GetRenderWidth() - g_minimapSize), 0, float(g_minimapSize), float(g_minimapSize) }, Vector2{ 0, 0 }, 0, WHITE);
 
 	float _ScaleX = g_minimapSize / float(g_Terrain->m_width);
 	float _ScaleZ = g_minimapSize / float(g_Terrain->m_height);
 
-	DrawTextureEx(*m_MinimapArrow, Vector2{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x - 64) * _ScaleX), ((g_camera.target.z - 64) * _ScaleZ) }, 0, 1, WHITE);
+	float pointer = float(g_minimapSize) / float(m_MinimapArrow->width);
+
+	DrawTexturePro(*m_MinimapArrow, Rectangle{ 0, 0, float(m_MinimapArrow->width), float(m_MinimapArrow->height) },
+		Rectangle{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x) * _ScaleX) - (pointer / 2), ((g_camera.target.z) * _ScaleZ) - (pointer / 2), pointer, pointer}, Vector2{0, 0}, 0, WHITE);
 
 	DrawConsole();
 
-	DrawTextEx(*g_SmallFont, g_VERSION.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_smallFontSize, 1, WHITE);
+	//  Draw XY coordinates below the minimap
+	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
+	float textWidth = MeasureText(minimapXY.c_str(), g_SmallFont->baseSize);
+	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ GetScreenWidth() - textWidth, GetScreenHeight() * .30f }, g_smallFontSize, 1, WHITE);
+
+	//  Draw version number in lower-right
+	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_smallFontSize, 1, WHITE);
+
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 }
 
@@ -275,8 +269,6 @@ void MainState::SetupGame()
 	//{
 	//   AddUnitActual(1, UNIT_WALKER, GetNextID(), 48, g_Terrain->GetHeight(48, 48), 48);
 	//}
-
-	m_ArePlayersSetUp = true;
 
 	//for( int j = 15; j < 18; ++j )
 	//{

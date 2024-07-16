@@ -356,6 +356,18 @@ void ObjectEditorState::Update()
 		}
 	}
 
+	if (IsKeyDown(KEY_Q))
+	{
+		g_cameraRotation += GetFrameTime() * 5;
+		g_CameraMoved = true;
+	}
+
+	if (IsKeyDown(KEY_E))
+	{
+		g_cameraRotation -= GetFrameTime() * 5;
+		g_CameraMoved = true;
+	}
+
 	if (IsKeyPressed(KEY_SPACE) || m_gui->GetActiveElementID() == GE_NEXTDRAWTYPEBUTTON)
 	{
 		ShapeDrawType newDrawType = static_cast<ShapeDrawType>((static_cast<int>(g_shapeTable[m_currentShape][m_currentFrame].GetDrawType()) + 1) % static_cast<int>(ShapeDrawType::OBJECT_DRAW_LAST));
@@ -417,31 +429,31 @@ void ObjectEditorState::Update()
 
 	bool somethingChanged = false;
 	if (m_gui->GetActiveElementID() == GE_TOPXMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetX--; }
-	if(m_gui->GetActiveElementID() == GE_TOPXPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetX++; }
-	if(m_gui->GetActiveElementID() == GE_TOPYMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetY--; }
-	if(m_gui->GetActiveElementID() == GE_TOPYPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetY++; }
-	if(m_gui->GetActiveElementID() == GE_TOPWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureWidth--; }
-	if(m_gui->GetActiveElementID() == GE_TOPWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureWidth++; }
-	if(m_gui->GetActiveElementID() == GE_TOPHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureHeight--; }
-	if(m_gui->GetActiveElementID() == GE_TOPHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureHeight++; }
+	if (m_gui->GetActiveElementID() == GE_TOPXPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetX++; }
+	if (m_gui->GetActiveElementID() == GE_TOPYMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetY--; }
+	if (m_gui->GetActiveElementID() == GE_TOPYPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureOffsetY++; }
+	if (m_gui->GetActiveElementID() == GE_TOPWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureWidth--; }
+	if (m_gui->GetActiveElementID() == GE_TOPWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureWidth++; }
+	if (m_gui->GetActiveElementID() == GE_TOPHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_topTextureHeight--; }
+	if (m_gui->GetActiveElementID() == GE_TOPHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_topTextureHeight++; }
 
-	if(m_gui->GetActiveElementID() == GE_FRONTXMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetX--; }
-	if(m_gui->GetActiveElementID() == GE_FRONTXPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetX++; }
-	if(m_gui->GetActiveElementID() == GE_FRONTYMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetY--; }
-	if(m_gui->GetActiveElementID() == GE_FRONTYPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetY++; }
-	if(m_gui->GetActiveElementID() == GE_FRONTWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureWidth--; }
-	if(m_gui->GetActiveElementID() == GE_FRONTWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureWidth++; }
-	if(m_gui->GetActiveElementID() == GE_FRONTHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureHeight--; }
-	if(m_gui->GetActiveElementID() == GE_FRONTHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureHeight++; }
+	if (m_gui->GetActiveElementID() == GE_FRONTXMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetX--; }
+	if (m_gui->GetActiveElementID() == GE_FRONTXPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetX++; }
+	if (m_gui->GetActiveElementID() == GE_FRONTYMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetY--; }
+	if (m_gui->GetActiveElementID() == GE_FRONTYPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureOffsetY++; }
+	if (m_gui->GetActiveElementID() == GE_FRONTWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureWidth--; }
+	if (m_gui->GetActiveElementID() == GE_FRONTWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureWidth++; }
+	if (m_gui->GetActiveElementID() == GE_FRONTHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureHeight--; }
+	if (m_gui->GetActiveElementID() == GE_FRONTHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_frontTextureHeight++; }
 
-	if(m_gui->GetActiveElementID() == GE_RIGHTXMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetX--; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTXPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetX++; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTYMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetY--; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTYPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetY++; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureWidth--; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureWidth++; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureHeight--; }
-	if(m_gui->GetActiveElementID() == GE_RIGHTHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureHeight++; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTXMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetX--; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTXPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetX++; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTYMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetY--; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTYPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureOffsetY++; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTWIDTHMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureWidth--; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTWIDTHPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureWidth++; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTHEIGHTMINUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureHeight--; }
+	if (m_gui->GetActiveElementID() == GE_RIGHTHEIGHTPLUSBUTTON) { somethingChanged = true; shapeData.m_rightTextureHeight++; }
 
 	if (m_gui->GetActiveElementID() == GE_TOPRESET) { somethingChanged = true; shapeData.ResetTopTexture(); }
 	if (m_gui->GetActiveElementID() == GE_FRONTRESET) { somethingChanged = true; shapeData.ResetFrontTexture(); }
@@ -597,6 +609,15 @@ void ObjectEditorState::Update()
 		shapeData.FixupTextures();
 	}
 
+	if (g_CameraMoved)
+	{
+		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
+
+		g_camera.position = Vector3Add(g_camera.target, camPos);
+		g_camera.fovy = g_cameraDistance;
+	}	
+
 	//  Update GUI Textareas
 	m_gui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape);
 	m_gui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame);
@@ -644,7 +665,12 @@ void ObjectEditorState::Draw()
 	DrawTextureEx(*r, Vector2{ (t->width + 2) * scale, (d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
 	DrawTextureEx(*f, Vector2{ 0, (d->height + d->height + 2) * scale },          0, scale, Color{ 255, 255, 255, 255 });
 
-	//g_shapeTable[m_currentShape][m_currentFrame].Draw(GetCameraLookAtPoint(), 0);
+	BeginMode3D(g_camera);
+
+	g_shapeTable[m_currentShape][m_currentFrame].Draw(g_camera.target, g_cameraRotation);
+
+	EndMode3D();
+
 
 	DrawConsole();
 

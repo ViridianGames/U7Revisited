@@ -41,7 +41,6 @@ enum GameStates
 };
 
 extern std::string g_gameStateStrings[];
-//std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
 extern std::string g_objectDrawTypeStrings[];
 
@@ -56,6 +55,15 @@ enum class ObjectTypes
 	OBJECT_KEY,
 	OBJECT_ITEM
 };
+
+enum class EngineModes
+{
+	ENGINE_MODE_BLACK_GATE = 0,
+	ENGINE_MODE_SERPENT_ISLE,
+	ENGINE_MODE_LAST_MODE
+};
+
+extern std::string g_engineModeStrings[];
 
 extern std::string g_objectTypeStrings[];
 
@@ -88,7 +96,7 @@ struct ObjectData
 	std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
-extern std::string g_VERSION;
+extern std::string g_version;
 
 extern Vector3 g_Gravity;
 
@@ -225,6 +233,8 @@ extern Camera g_camera;
 
 extern float g_cameraDistance; // distance from target
 extern float g_cameraRotation; // angle around target
+
+extern EngineModes g_engineMode;
 
 void RecalculateCamera();
 

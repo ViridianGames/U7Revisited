@@ -196,12 +196,12 @@ public:
 	int width;
 	int height;
 
-	void MoveRowLeft(int row);
-	void MoveRowRight(int row);
-	void MoveColumnUp(int column);
-	void MoveColumnDown(int column);
+	void MoveImageRowLeft(int row);
+	void MoveImageRowRight(int row);
+	void MoveImageColumnUp(int column);
+	void MoveImageColumnDown(int column);
 
-	void Resize(float newWidth, float newHeight);
+	void ResizeImage(float newWidth, float newHeight);
 
 	void Reset();
 

@@ -34,6 +34,11 @@ public:
  
    void FindVisibleChunks();
    int GetNumberOfVisibleChunks() { return m_visibleChunks.size(); }
+
+   void UpdateTerrainTexture(Image img);
+
+   Image& GetTerrainTexture() { return m_terrainTexture; }
+
 };
 
 #endif
