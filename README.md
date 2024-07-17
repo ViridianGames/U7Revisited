@@ -2,10 +2,17 @@
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
-## Running the Engine
+## Installation and Running the Engine
 
 To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This
 will allow the replacement engine to read in the maps and graphics from the original files.
+
+- Locate your Ultima 7 game files (eg. `C:\Program Files (x86)\GOG Galaxy\Games\Ultima 7`)
+![Typical GoG U7 folder](./screenshots/install-1.png)
+
+- Copy ALL of these files, folders and subfolders into `./resources/Data/U7` (*hint: look for the `U7.txt` file*)
+![Project U7 Data folder](./screenshots/install-2.png)
+
 
 ## Developer Installation Notes (Windows)
 
