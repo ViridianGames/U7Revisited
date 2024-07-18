@@ -471,7 +471,7 @@ void ModTexture::AssignImage(Image img)
 
 void ModTexture::ResizeImage(float newWidth, float newHeight)
 {
-	if (newWidth < 1 || newHeight < 1)
+	if (newWidth < 1 || newHeight < 1 || newWidth > width || newHeight > height)
 	{
 		return;
 	}
