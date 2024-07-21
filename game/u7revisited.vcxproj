@@ -27,11 +27,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3029FED0-1C0D-BF26-856D-B9797170A9A8}</ProjectGuid>
+    <ProjectGuid>{408FEE0F-AC44-6705-3539-61DCA1ED5D09}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>u7revisited-raylib</RootNamespace>
-    <ProjectName>u7revisited</ProjectName>
+    <RootNamespace>U7Revisited</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -98,42 +97,42 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug\</OutDir>
     <IntDir>obj\x64\Debug\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug\</OutDir>
     <IntDir>obj\x86\Debug\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug\</OutDir>
     <IntDir>obj\ARM64\Debug\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release\</OutDir>
     <IntDir>obj\x64\Release\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release\</OutDir>
     <IntDir>obj\x86\Release\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release\</OutDir>
     <IntDir>obj\ARM64\Release\</IntDir>
-    <TargetName>u7revisited-raylib</TargetName>
+    <TargetName>U7Revisited</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,7 +140,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -160,7 +159,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -179,7 +178,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>DEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
@@ -198,7 +197,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -222,7 +221,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -246,7 +245,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;src;include;..\raylib-master\src;..\raylib-master\src\external;..\raylib-master\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;src;include;..\raylib\src;..\raylib\src\external;..\raylib\src\external\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -269,16 +268,16 @@
     <ClInclude Include="src\Geist\BaseUnits.h" />
     <ClInclude Include="src\Geist\Config.h" />
     <ClInclude Include="src\Geist\Engine.h" />
+    <ClInclude Include="src\Geist\GUIElements.h" />
     <ClInclude Include="src\Geist\Globals.h" />
     <ClInclude Include="src\Geist\Gui.h" />
-    <ClInclude Include="src\Geist\GUIElements.h" />
     <ClInclude Include="src\Geist\IO.h" />
     <ClInclude Include="src\Geist\Logging.h" />
     <ClInclude Include="src\Geist\Object.h" />
     <ClInclude Include="src\Geist\ParticleSystem.h" />
     <ClInclude Include="src\Geist\Primitives.h" />
-    <ClInclude Include="src\Geist\ResourceManager.h" />
     <ClInclude Include="src\Geist\RNG.h" />
+    <ClInclude Include="src\Geist\ResourceManager.h" />
     <ClInclude Include="src\Geist\State.h" />
     <ClInclude Include="src\Geist\StateMachine.h" />
     <ClInclude Include="src\Geist\TooltipSystem.h" />
@@ -286,7 +285,6 @@
     <ClInclude Include="src\MainState.h" />
     <ClInclude Include="src\ObjectEditorState.h" />
     <ClInclude Include="src\OptionsState.h" />
-    <ClInclude Include="src\screens.h" />
     <ClInclude Include="src\ShapeData.h" />
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\TitleState.h" />
@@ -295,23 +293,18 @@
     <ClInclude Include="src\WorldEditorState.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\raylib-master\raylib.vcxproj">
-      <Project>{8898EA18-743A-15EF-5DF5-284349369C3F}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\Geist\BaseUnits.cpp" />
     <ClCompile Include="src\Geist\Config.cpp" />
     <ClCompile Include="src\Geist\Engine.cpp" />
+    <ClCompile Include="src\Geist\GUIElements.cpp" />
     <ClCompile Include="src\Geist\Globals.cpp" />
     <ClCompile Include="src\Geist\Gui.cpp" />
-    <ClCompile Include="src\Geist\GUIElements.cpp" />
     <ClCompile Include="src\Geist\IO.cpp" />
     <ClCompile Include="src\Geist\Logging.cpp" />
     <ClCompile Include="src\Geist\ParticleSystem.cpp" />
     <ClCompile Include="src\Geist\Primitives.cpp" />
-    <ClCompile Include="src\Geist\ResourceManager.cpp" />
     <ClCompile Include="src\Geist\RNG.cpp" />
+    <ClCompile Include="src\Geist\ResourceManager.cpp" />
     <ClCompile Include="src\Geist\StateMachine.cpp" />
     <ClCompile Include="src\Geist\TooltipSystem.cpp" />
     <ClCompile Include="src\LoadingState.cpp" />
@@ -327,7 +320,9 @@
     <ClCompile Include="src\WorldEditorState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\resources\Data\engine.cfg" />
+    <ProjectReference Include="..\raylib\raylib.vcxproj">
+      <Project>{8898EA18-743A-15EF-5DF5-284349369C3F}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
