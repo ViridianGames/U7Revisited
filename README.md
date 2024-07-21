@@ -2,7 +2,18 @@
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
-## Installation and Running the Engine
+## Installation and Building the Project Source Code (Windows)
+
+This project is making use of Github submodules, so the easiest way to make sure all the project dependencies are installed is to:
+
+- `git clone --recurse-submodules git@github.com:ViridianGames/U7Revisited.git`
+- Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Resources/Data/U7`
+- Open `./U7Revisited.sln` in Visual Studio (I'm currently using VS 2022)
+- To run the Debugger, in the Project Properties for `U7Revisited` make sure the `Working Directory` is set to `$(SolutionDir)/Resources`
+- Build the `U7Revisited` project in the solution
+- Run the program
+
+## Project Installation and Running the Engine
 
 To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This
 will allow the replacement engine to read in the maps and graphics from the original files.
@@ -13,15 +24,6 @@ will allow the replacement engine to read in the maps and graphics from the orig
 - Copy ALL of these files, folders and subfolders into `./resources/Data/U7` (*hint: look for the `U7.txt` file*)
 ![Project U7 Data folder](./screenshots/install-2.png)
 
-
-## Developer Installation Notes (Windows)
-
-- Clone the project into a local folder using whatever git interface you prefer
-- Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Resources/Data/U7`
-- Open `./U7Revisited.sln` in Visual Studio (I'm currently using VS 2022)
-- To run the Debugger, in the Project Properties for `U7Revisited` make sure the `Working Directory` is set to `$(SolutionDir)/Resources`
-- Build the `U7Revisited` project in the solution
-- Run the program
 
 ## Controls:
 
