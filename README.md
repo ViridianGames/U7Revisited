@@ -13,6 +13,14 @@ This project is making use of Github submodules, so the easiest way to make sure
 - Build the `U7Revisited` project in the solution
 - Run the program
 
+## Updating Submodule Dependencies
+
+From time to time, you may wish to update the project submodule(s) during your own local development.
+
+The `git submodule` command will help you with that
+
+- `git submodule update --remote raylib`
+
 ## Project Installation and Running the Engine
 
 To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This
