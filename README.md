@@ -13,7 +13,9 @@ This project is making use of Github submodules, so the easiest way to make sure
 - Build the `U7Revisited` project in the solution
 - Run the program
 
-## Updating Submodule Dependencies
+*More about Git Submodules here - https://git-scm.com/book/en/v2/Git-Tools-Submodules*
+
+### Updating Submodule Dependencies
 
 From time to time, you may wish to update the project submodule(s) during your own local development.
 
