@@ -13,6 +13,9 @@
     <Filter Include="Data">
       <UniqueIdentifier>{ec6de39e-44e3-4674-b1f2-ffef3b3ef501}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\shaders">
+      <UniqueIdentifier>{d284a6fa-6f8d-4b48-9a01-c885d8a5fa47}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\screens.h">

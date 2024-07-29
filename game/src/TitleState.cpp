@@ -51,6 +51,8 @@ void TitleState::Update()
 
 void TitleState::Draw()
 {
+   BeginDrawing();
+
    ClearBackground(Color {0, 0, 0, 255});
 
    m_TitleGui->Draw();
@@ -60,6 +62,8 @@ void TitleState::Draw()
    TestDraw();
 
    DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+   EndDrawing();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -66,6 +66,8 @@ void LoadingState::Update()
 
 void LoadingState::Draw()
 {
+	BeginDrawing();
+
 	ClearBackground(BLACK);
 
 	if (m_loadingFailed == true)
@@ -79,6 +81,8 @@ void LoadingState::Draw()
 	}
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+	EndDrawing();
 
 }
 

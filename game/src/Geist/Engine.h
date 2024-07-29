@@ -50,9 +50,6 @@ public:
 
 	bool          m_debugDrawing;
 
-	bool					m_pixelated;
-	RenderTexture2D	m_renderTarget;
-
 	float         m_RenderWidth;
 	float         m_RenderHeight;
 

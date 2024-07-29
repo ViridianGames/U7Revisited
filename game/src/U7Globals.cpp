@@ -62,6 +62,11 @@ std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
+Shader g_alphaDiscard;
+
+bool m_pixelated = false;
+RenderTexture2D m_renderTarget;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

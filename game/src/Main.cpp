@@ -29,6 +29,8 @@
 #include <sstream>
 #include <memory>
 
+#include "rlgl.h"
+
 using namespace std;
 
 int main(int argv, char** argc)
@@ -39,6 +41,12 @@ int main(int argv, char** argc)
    {
       g_Engine = make_unique<Engine>();
       g_Engine->Init("Data/engine.cfg");
+
+      g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+
+      rlDisableBackfaceCulling();
+      //rlEnableDepthTest();
+      BeginShaderMode(g_alphaDiscard);
 
       g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
       g_cameraRotation = 0.0f;

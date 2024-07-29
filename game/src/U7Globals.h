@@ -225,6 +225,12 @@ extern Color g_White;
 extern int g_selectedShape;
 extern int g_selectedFrame;
 
+extern Shader g_alphaDiscard;
+
+extern bool m_pixelated;
+extern RenderTexture2D	m_renderTarget;
+
+
 //////////////////////////////////////////////////////////////////////////////
 ///  CAMERA SETTINGS AND RELATED FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////

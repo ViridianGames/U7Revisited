@@ -55,10 +55,14 @@ void WorldEditorState::Update()
 
 void WorldEditorState::Draw()
 {
+	BeginDrawing();
+
 	ClearBackground(Color {0, 0, 0, 255});
 
 	DrawTextEx(*g_SmallFont, "Welcome to the World Editor!  It doesn't work yet. Sorry.", Vector2{ 0, 0 }, g_SmallFont->baseSize, 0, WHITE);
 	DrawTextEx(*g_SmallFont, "Press ESC to exit.", Vector2{ 0, g_smallFontSize }, g_SmallFont->baseSize, 0, WHITE);
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+	EndDrawing();
 }

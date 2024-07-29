@@ -84,7 +84,8 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
-	m_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+	m_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+	SetTextureFilter(m_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
 
 	SetupGame();
 
@@ -108,7 +109,7 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-
+	UnloadRenderTexture(m_renderTarget);
 }
 
 void MainState::Update()
@@ -162,6 +163,11 @@ void MainState::Update()
 
 	}
 
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		m_pixelated = !m_pixelated;
+	}
+
 	//  Get terrain hit for highlight mesh
 	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
@@ -191,14 +197,22 @@ void MainState::Update()
 			}
 		}
 	}
+
+	//UpdateCamera(&g_camera, CAMERA_THIRD_PERSON);
 }
 
 void MainState::Draw()
 {
-	ClearBackground(Color {0, 0, 0, 255});
+	if (m_pixelated)
+	{
+		BeginTextureMode(m_renderTarget);
+	}
+
+	ClearBackground(Color{ 0, 0, 0, 255 });
+
+	BeginDrawing();
 
 	BeginMode3D(g_camera);
-	BeginShaderMode(m_alphaDiscard);
 
 	//  Draw the terrain
 	g_Terrain->Draw();
@@ -214,9 +228,17 @@ void MainState::Draw()
 			++m_numberofDrawnUnits;
 		}
 	}
-	
-	EndShaderMode();
+
 	EndMode3D();
+
+	if (m_pixelated)
+	{
+		float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
+		//EndDrawing();
+		EndTextureMode();
+		//BeginDrawing();
+		DrawTexturePro(m_renderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2)}, {0, 0}, 0, WHITE);
+	}
 
 	//  Draw the minimap and marker
 	DrawTexturePro(*m_Minimap, Rectangle{ 0, 0, float(m_Minimap->width), float(m_Minimap->height) }, Rectangle{ float(GetRenderWidth() - g_minimapSize), 0, float(g_minimapSize), float(g_minimapSize) }, Vector2{ 0, 0 }, 0, WHITE);
@@ -240,6 +262,10 @@ void MainState::Draw()
 	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_smallFontSize, 1, WHITE);
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+	DrawFPS(10, 300);
+
+	EndDrawing();
 }
 
 void MainState::SetupGame()

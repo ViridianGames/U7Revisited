@@ -32,8 +32,6 @@ public:
 
    std::vector<std::vector<std::unique_ptr<U7Object>>> m_objectLibrary;
 
-
-
    std::unique_ptr<Gui> m_gui;
 
    std::string m_sideDrawStrings[7];

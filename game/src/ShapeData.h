@@ -89,8 +89,10 @@ public:
 	int GetShape() { return m_shape; }
 	int GetFrame() { return m_frame; }
 
-	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTexture[static_cast<int>(side)]; }
-	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTexture[static_cast<int>(side)] = texture; }
+	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTextures[static_cast<int>(side)]; }
+	void ShapeData::SetTextureForMeshFromSideData(CuboidSides side);
+	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTextures[static_cast<int>(side)] = texture; }
+	void UpdateAllCuboidTextures();
 
 	bool Pick(Vector3 thisPos);
 
@@ -141,7 +143,9 @@ public:
 	std::vector<coords> m_frontFaceMods;
 	std::vector<coords> m_rightFaceMods;
 
-	CuboidTexture m_sideTexture[static_cast<int>(CuboidSides::CUBOID_LAST)];
+	std::unordered_map<CuboidSides, Vector3> m_faceCenterPoints;
+
+	CuboidTexture m_sideTextures[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
 	std::array<Model, static_cast<int>(CuboidSides::CUBOID_LAST)> m_cuboidModels;
 };

@@ -76,9 +76,6 @@ public:
    std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
 
    unsigned int m_selectedObject = 0;
-
-   Shader m_alphaDiscard;
-
 };
 
 #endif

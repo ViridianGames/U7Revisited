@@ -3,6 +3,7 @@
 #include "Geist/StateMachine.h"
 #include "U7Globals.h"
 #include "ObjectEditorState.h"
+#include "rlgl.h"
 
 #include <list>
 #include <string>
@@ -195,7 +196,6 @@ void ObjectEditorState::Init(const string& configfile)
 	m_gui->AddIconButton(GE_PREVLEFTBUTTON, 30, y, g_LeftArrow);
 	m_gui->AddTextArea(GE_LEFTSIDETEXTURETEXTAREA, g_SmallFont.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))], 40, y);
 	m_gui->AddIconButton(GE_NEXTLEFTBUTTON, 70, y, g_RightArrow);
-	
 }
 
 void ObjectEditorState::OnEnter()
@@ -607,6 +607,7 @@ void ObjectEditorState::Update()
 	{
 		shapeData.SafeAndSane();
 		shapeData.FixupTextures();
+		shapeData.UpdateAllCuboidTextures();
 	}
 
 	if (g_CameraMoved)
@@ -651,6 +652,8 @@ void ObjectEditorState::Update()
 
 void ObjectEditorState::Draw()
 {
+	BeginDrawing();
+
 	ClearBackground(Color{ 106, 90, 205, 255 });
 
 	float scale = g_DrawScale;
@@ -664,14 +667,13 @@ void ObjectEditorState::Draw()
 	DrawTextureEx(*t, Vector2{ 0, (d->height + 2) * scale },                      0, scale, Color{ 255, 255, 255, 255 });
 	DrawTextureEx(*r, Vector2{ (t->width + 2) * scale, (d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
 	DrawTextureEx(*f, Vector2{ 0, (d->height + d->height + 2) * scale },          0, scale, Color{ 255, 255, 255, 255 });
-
+	
 	BeginMode3D(g_camera);
 
 	g_shapeTable[m_currentShape][m_currentFrame].Draw(g_camera.target, g_cameraRotation);
 
 	EndMode3D();
-
-
+	
 	DrawConsole();
 
 	int yOffset = g_smallFontSize;
@@ -680,4 +682,6 @@ void ObjectEditorState::Draw()
 	m_gui->Draw();
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+	EndDrawing();
 }
