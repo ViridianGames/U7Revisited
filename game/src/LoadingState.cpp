@@ -125,7 +125,7 @@ void LoadingState::UpdateLoading()
 
 		if (!m_loadingShapes)
 		{
-			AddConsoleString(std::string("Loading shapes..."));
+			//AddConsoleString(std::string("Loading shapes..."));
 			CreateShapeTable();
 			m_loadingShapes = true;
 			return;
@@ -630,6 +630,11 @@ void LoadingState::CreateShapeTable()
 		//  The next 874 entries (150-1023) are objects.
 
 		//  Read the shape data.
+
+		std::string shapeName = std::string("Loading Shape ") + std::to_string(thisShape) + std::string(" of 1023...");
+		DrawTextEx(*g_SmallFont, shapeName.c_str(), Vector2{ 0, g_Engine->m_ScreenHeight * .2f }, g_smallFontSize, 1, WHITE);
+		//AddConsoleString();
+		Draw();
 
 		shapes.seekg(shapeEntryMap[thisShape].offset);
 		unsigned int headerStart = shapes.tellg();

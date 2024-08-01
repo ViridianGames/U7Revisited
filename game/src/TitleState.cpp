@@ -59,7 +59,7 @@ void TitleState::Draw()
    
    DrawConsole();
 
-   TestDraw();
+   //TestDraw();
 
    DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 

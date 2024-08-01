@@ -253,12 +253,12 @@ void ShapeData::SafeAndSane()
    if (m_rightTextureOffsetX < 0) { m_rightTextureOffsetX = 0; }
    if (m_rightTextureOffsetY < 0) { m_rightTextureOffsetY = 0; }
 
-   if (m_topTextureOffsetX > m_originalTexture->width) { m_topTextureOffsetX = m_originalTexture->width; }
-   if (m_topTextureOffsetY > m_originalTexture->height) { m_topTextureOffsetY = m_originalTexture->height; }
-   if (m_frontTextureOffsetX > m_originalTexture->width) { m_frontTextureOffsetX = m_originalTexture->width; }
-   if (m_frontTextureOffsetY > m_originalTexture->height) { m_frontTextureOffsetY = m_originalTexture->height; }
-   if (m_rightTextureOffsetX > m_originalTexture->width) { m_rightTextureOffsetX = m_originalTexture->width; }
-   if (m_rightTextureOffsetY > m_originalTexture->height) { m_rightTextureOffsetY = m_originalTexture->height; }
+   if (m_topTextureOffsetX + m_topTextureWidth > m_originalTexture->width) { m_topTextureOffsetX = m_originalTexture->width; }
+   if (m_topTextureOffsetY + m_topTextureHeight > m_originalTexture->height) { m_topTextureOffsetY = m_originalTexture->height; }
+   if (m_frontTextureOffsetX + m_frontTextureWidth > m_originalTexture->width) { m_frontTextureOffsetX = m_originalTexture->width; }
+   if (m_frontTextureOffsetY + m_frontTextureHeight > m_originalTexture->height) { m_frontTextureOffsetY = m_originalTexture->height; }
+   if (m_rightTextureOffsetX + m_rightTextureWidth > m_originalTexture->width) { m_rightTextureOffsetX = m_originalTexture->width; }
+   if (m_rightTextureOffsetY + m_rightTextureHeight > m_originalTexture->height) { m_rightTextureOffsetY = m_originalTexture->height; }
 
 
 }

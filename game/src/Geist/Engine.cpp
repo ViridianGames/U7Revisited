@@ -79,11 +79,6 @@ void Engine::Draw()
 {
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
-
-	if (m_debugDrawing)
-	{
-		DrawFPS(0, 0);
-	}
 }
 
 void Engine::CaptureScreenshot() {

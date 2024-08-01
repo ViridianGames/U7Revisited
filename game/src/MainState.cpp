@@ -99,6 +99,7 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Zoom in and out with mousewheel."));
 	AddConsoleString(std::string("Left-click in the minimap to teleport."));
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
+	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
 }
 
@@ -263,7 +264,7 @@ void MainState::Draw()
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 
-	DrawFPS(10, 300);
+	//DrawFPS(10, 300);
 
 	EndDrawing();
 }
