@@ -1,2 +1,2 @@
-Copy the contents of your ULTIMA7 folder into the 'blackgate' folder.
-Copy the contents of your SERPENT folder into the 'serpenisle' subfolder.
+Copy the files from your original ULTIMA7 folder to here.
+Or, you can change the path in engine.cfg to point to your existing installation.
