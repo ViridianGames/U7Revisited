@@ -70,16 +70,15 @@ int main(int argv, char** argc)
 
       //Texture* g_Ground = g_ResourceManager->GetTexture("Images/Terrain/U7Baseplates/u7map8-3.png");
 
-      g_DrawScale = float(GetRenderHeight()) / 180.0f;
+      g_DrawScale = float(GetRenderHeight()) / 360.0f;
 
-      g_smallFontSize = static_cast<int>(8 * g_DrawScale) - (static_cast<int>(8 * g_DrawScale) % 8);
-      g_fontSize = g_smallFontSize * 2;
+      //g_smallFontSize = static_cast<int>(16 * g_DrawScale) - (static_cast<int>(16 * g_DrawScale) % 16);
+      //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
+      //g_SmallFont = make_shared<Font>(smallFont);
 
-      Font font = LoadFontEx("Data/Fonts/babyblocks.ttf", g_fontSize, NULL, 0);
+      g_fontSize = 9 * g_DrawScale;
+      Font font = LoadFontEx("Data/Fonts/ChevyRay - Softsquare.ttf", g_fontSize, NULL, 0);
       g_Font = make_shared<Font>(font);
-
-      Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
-      g_SmallFont = make_shared<Font>(smallFont);
 
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(7777);//GetTime());

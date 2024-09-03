@@ -161,7 +161,7 @@ void Gui::AddTextButton(int ID, int posx, int posy, std::string text, Font* font
 	Color textcolor, Color backgroundcolor,
 	Color bordercolor, int group, int active)
 {
-	Vector2 textDims = MeasureTextEx(*font, text.c_str(), m_fontSize, 1);
+	Vector2 textDims = MeasureTextEx(*font, text.c_str(), m_fontSize / 2, 1);
 
 	shared_ptr<GuiTextButton> textbutton = make_shared<GuiTextButton>(this);
 	textbutton->Init(ID, posx, posy, textDims.x, textDims.y, text, font, textcolor, backgroundcolor, bordercolor,

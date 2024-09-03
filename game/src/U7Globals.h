@@ -103,10 +103,10 @@ extern Vector3 g_Gravity;
 extern Texture* g_Cursor;
 
 extern std::shared_ptr<Font> g_Font;
-extern std::shared_ptr<Font> g_SmallFont;
+//extern std::shared_ptr<Font> g_SmallFont;
 
 extern float g_fontSize;
-extern float g_smallFontSize;
+//extern float g_smallFontSize;
 
 extern std::unique_ptr<RNG> g_VitalRNG;
 extern std::unique_ptr<RNG> g_NonVitalRNG;

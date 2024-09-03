@@ -65,9 +65,9 @@ void MainState::Init(const string& configfile)
 	m_OptionsGui->SetLayout(0, 0, 250, 320, g_DrawScale, Gui::GUIP_CENTER);
 	m_OptionsGui->AddPanel(1000, 0, 0, 250, 320, Color{ 0, 0, 0, 192 });
 	m_OptionsGui->AddPanel(9999, 0, 0, 250, 320, Color{255, 255, 255, 255}, false);
-	m_OptionsGui->AddTextArea(1001, g_SmallFont.get(), "", 125, 100, 0, 0, Color{255, 255, 255, 255}, GuiTextArea::CENTERED);
-	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	m_OptionsGui->AddTextArea(1001, g_Font.get(), "", 125, 100, 0, 0, Color{255, 255, 255, 255}, GuiTextArea::CENTERED);
+	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
 
 	m_LastUpdate = 0;
 
@@ -131,7 +131,7 @@ void MainState::Update()
 			{
 				(*node).second->Update();
 				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
-				if (distance < drawRange)
+				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
 				{
 					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position);
 					(*node).second->m_distanceFromCamera = distanceFromCamera * 1.5f;
@@ -162,6 +162,32 @@ void MainState::Update()
 	{
 		g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
 
+	}
+
+	if (IsKeyPressed(KEY_PAGE_UP))
+	{
+		m_heightCutoff += 1.0f;
+		if (m_heightCutoff > 15.0f)
+		{
+			m_heightCutoff = 15.0f;
+		}
+		else
+		{
+			AddConsoleString("Height Cutoff: " + to_string(m_heightCutoff));
+		}
+	}
+
+	if (IsKeyPressed(KEY_PAGE_DOWN))
+	{
+		m_heightCutoff -= 1.0f;
+		if (m_heightCutoff < 0.0f)
+		{
+			m_heightCutoff = 0.0f;
+		}
+		else
+		{
+			AddConsoleString("Height Cutoff: " + to_string(m_heightCutoff));
+		}
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
@@ -256,11 +282,11 @@ void MainState::Draw()
 
 	//  Draw XY coordinates below the minimap
 	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
-	float textWidth = MeasureText(minimapXY.c_str(), g_SmallFont->baseSize);
-	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ GetScreenWidth() - textWidth, GetScreenHeight() * .30f }, g_smallFontSize, 1, WHITE);
+	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
+	DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() - textWidth, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
 
 	//  Draw version number in lower-right
-	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_smallFontSize, 1, WHITE);
+	DrawTextEx(*g_Font, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_fontSize, 1, WHITE);
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 
@@ -271,61 +297,9 @@ void MainState::Draw()
 
 void MainState::SetupGame()
 {
-	//g_UnitList.clear();
-
-	//m_TerrainTexture = g_ResourceManager->GetTexture("Images/Terrain/terrain_texture.png", false);
-
 	//  Set up map
 	int width = 3072;
 	int height = 3072;
-	//SetCameraPosition(Vector3{ 980, 0, 2126 });
-	//SetCameraPosition(Vector3(1068, 0, 2211));
 	g_Terrain->Init();
-
-	//  Since the terrain cannot be initialized until the game data has been sent
-	//  but the main gui has already been created, we have to do a hacky bit of
-	//  fixup to assign the minimap texture to the main gui.
-	//m_Gui->AddSprite(1001, 5, 5, make_shared<Sprite>(g_Terrain->m_Minimap, 0, 0, g_Terrain->m_Minimap->width, g_Terrain->m_Minimap->height));
-
-	//for(int i = 0; i < 3; ++i)
-	//{
-	//   AddUnitActual(0, UNIT_WALKER, GetNextID(), 16, g_Terrain->GetHeight(16, 16), 16);
-	//}
-	//
-	//for(int i = 0; i < 3; ++i)
-	//{
-	//   AddUnitActual(1, UNIT_WALKER, GetNextID(), 48, g_Terrain->GetHeight(48, 48), 48);
-	//}
-
-	//for( int j = 15; j < 18; ++j )
-	//{
-	//   g_Terrain->SetTerrainType(j, 15, TT_FARMLAND);
-	//   g_Terrain->SetTerrainType(j, 16, TT_FARMLAND);
-	//   g_Terrain->SetTerrainType(j, 17, TT_FARMLAND);
-	//   
-	//   g_Terrain->SetTerrainType(j + 32, 47, TT_FARMLAND);
-	//   g_Terrain->SetTerrainType(j + 32, 48, TT_FARMLAND);
-	//   g_Terrain->SetTerrainType(j + 32, 49, TT_FARMLAND);
-	//}
-	//
-	//
-	//for( int j = 16; j < 17; ++j )
-	//{
-	//   g_Terrain->SetTerrainType(j, 16, TT_COBBLESTONE);
-	//   //g_Terrain->SetTerrainType(j, 17, TT_COBBLESTONE);
-	//   
-	//   g_Terrain->SetTerrainType(j + 32, 48, TT_COBBLESTONE);
-	//   //g_Terrain->SetTerrainType(j + 32, 49, TT_COBBLESTONE);
-	//}
-
-
-
-//   g_Terrain->UpdateMinimapTerrain();
-
-
-	//  Otherwise, return.
-
-	//  Create the world map and load its data from U7MAP and U7CHUNKS
-
 }
 

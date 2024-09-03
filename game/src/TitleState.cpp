@@ -73,7 +73,7 @@ void TitleState::Draw()
 void TitleState::CreateTitleGUI()
 {
    m_TitleGui = new Gui();
-   m_TitleGui->m_Font = g_SmallFont;
+   m_TitleGui->m_Font = g_Font;
    m_TitleGui->SetLayout(0, 0, 320, 180, g_DrawScale, Gui::GUIP_CENTER);
    m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 110, 90, 100, 80, g_Borders);
    m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,

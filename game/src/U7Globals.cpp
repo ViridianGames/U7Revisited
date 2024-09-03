@@ -19,10 +19,10 @@ Texture* g_Cursor;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
-std::shared_ptr<Font> g_SmallFont;
+//std::shared_ptr<Font> g_SmallFont;
 
-float g_smallFontSize = 8;
-float g_fontSize = g_smallFontSize * 2;
+//float g_smallFontSize = 8;
+float g_fontSize = 16;
 
 std::unique_ptr<RNG> g_VitalRNG;
 std::unique_ptr<RNG> g_NonVitalRNG;
@@ -329,8 +329,8 @@ void DrawConsole()
 
 		if (elapsed < 10)
 		{
-			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ 3, counter * (g_SmallFont->baseSize + 2) + 3.0f }, g_smallFontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
-			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_SmallFont->baseSize + 2)) }, g_smallFontSize, 1, (*node).m_Color);
+			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 3, counter * (g_Font->baseSize + 2) + 3.0f }, g_fontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
+			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_Font->baseSize + 2)) }, g_fontSize, 1, (*node).m_Color);
 
 		}
 		++counter;

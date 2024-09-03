@@ -63,7 +63,7 @@ public:
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
 
-	void Draw(const Vector3& pos, float angle, Color color = Color{255, 255, 255, 255});
+	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3& scaling =  Vector3{ 1, 1, 1 });
 
 	void DrawSide(CuboidSides side, Vector3 thisPos, Color color, Vector3 scaling);
 
@@ -118,6 +118,10 @@ public:
 	int m_frame;
 
 	ShapeDrawType m_drawType;
+
+	Vector3 m_Dims;
+
+	Vector3 m_TweakPos;
 
 	Vector3 m_Scaling;
 

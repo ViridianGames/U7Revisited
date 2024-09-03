@@ -9,6 +9,8 @@
 
 using namespace std;
 
+
+
 //  GUITEXTBUTTON
 
 void GuiTextButton::Init(int ID, int posx, int posy, int width, int height,
@@ -27,15 +29,15 @@ void GuiTextButton::Init(int ID, int posx, int posy, int width, int height,
 	m_Active = active;
 
 	//  Does the element currently have the mouse over it?
-	m_Hot = false;
+	m_Down = false;
 
 	//  Has the element actually been clicked on this frame?
 	m_Clicked = false;
 
 	m_Group = group;
 	m_Font = font;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 
 	m_TextColor = textcolor;
 	m_BackgroundColor = backgroundcolor;
@@ -45,8 +47,8 @@ void GuiTextButton::Init(int ID, int posx, int posy, int width, int height,
 
 	Vector2 textDims = MeasureTextEx(*font, text.c_str(), font->baseSize, 1);
 
-	m_Width = textDims.x / m_Parent->m_Scale * 1.25f; //  Add a little padding for the button left/right sides
-	m_Height = textDims.y / m_Parent->m_Scale;
+	m_Width = textDims.x * 1.25f; //  Add a little padding for the button left/right sides
+	m_Height = textDims.y;
 
 	m_TextWidth = textDims.x;
 }
@@ -56,39 +58,39 @@ void GuiTextButton::Update()
 	Tween::Update();
 	m_Hovered = false;
 	m_Clicked = false;
-	m_Hot = false;
+	m_Down = false;
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	if (m_Visible && m_Active)
 	{
-		if (IsMouseInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale))
+		if (IsMouseInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width,
+			m_Height))
 		{
 			m_Hovered = true;
 		}
 
-		if (IsLeftButtonDownInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale))
+		if (IsLeftButtonDownInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width,
+			m_Height))
 		{
 			m_Hovered = false;
-			m_Hot = true;
+			m_Down = true;
 		}
 
-		else if (WasLeftButtonClickedInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale))
+		else if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width,
+			m_Height))
 		{
-			m_Hot = false;
+			m_Down = false;
 			m_Hovered = false;
 			m_Clicked = true;
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
 	}
 }
@@ -100,47 +102,47 @@ void GuiTextButton::Draw()
 
 	if (!m_Active)
 	{
-		DrawRectangleRounded(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-		m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
+		DrawRectangleRounded(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+		m_Width, m_Height },
 			0.5f, 1, m_BackgroundColor);
 
-		DrawRectangleRoundedLines(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
-			0.5f, 1, m_Parent->m_Scale, m_BorderColor);
+		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width, m_Height },
+			0.5f, 1, m_Gui->m_Scale, m_BorderColor);
 
-		DrawStringCentered(m_Parent->m_Font.get(), m_Parent->m_Font.get()->baseSize, m_String,
-			Vector2 {m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + (m_Width / 2 * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale + (m_Height / 2 * m_Parent->m_Scale))},
+		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize, m_String,
+			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
 			Color{ 25, 25, 25, 255 });
 
 		return;
 	}
 
-	if (!m_Hot)
+	if (!m_Down)
 	{
-		DrawRectangleRounded(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
+		DrawRectangleRounded(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width, m_Height },
 			0.5f, 1, m_BackgroundColor);
 
-		DrawRectangleRoundedLines(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
-			0.5f, 1, m_Parent->m_Scale, m_BorderColor);
+		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width, m_Height },
+			0.5f, 1, m_Gui->m_Scale, m_BorderColor);
 
-		DrawStringCentered(m_Parent->m_Font.get(), m_Parent->m_Font.get()->baseSize, m_String,
-			Vector2 {m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + (m_Width / 2 * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale + (m_Height / 2 * m_Parent->m_Scale))},
+		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize , m_String,
+			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
 			m_TextColor);
 	}
 	else
 	{
-		DrawRectangleRounded(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
+		DrawRectangleRounded(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width, m_Height },
 			0.5f, 1, m_BorderColor);
 
-		DrawRectangleRoundedLines(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Width * m_Parent->m_Scale, m_Height * m_Parent->m_Scale },
-			0.5f, 1, m_Parent->m_Scale, m_BackgroundColor);
+		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_Width, m_Height },
+			0.5f, 1, m_Gui->m_Scale, m_BackgroundColor);
 
-		DrawStringCentered(m_Parent->m_Font.get(), m_Parent->m_Font.get()->baseSize, m_String,
-			Vector2 {m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + (m_Width / 2 * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale + (m_Height / 2 * m_Parent->m_Scale))},
+		DrawStringCentered(m_Font, m_Font->baseSize, m_String,
+			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
 			m_BackgroundColor);
 	}
 };
@@ -165,8 +167,8 @@ void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton
 	m_Active = active;
 	m_Group = group;
 
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 
 	m_UpTexture = upbutton;
 	m_DownTexture = downbutton;
@@ -176,8 +178,8 @@ void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton
 	m_Font = font;
 	m_FontColor = fontcolor;
 
-	m_Width = upbutton->m_sourceRect.width;
-	m_Height = upbutton->m_sourceRect.height;
+	m_Width = upbutton->m_sourceRect.width * m_Gui->m_Scale;
+	m_Height = upbutton->m_sourceRect.height * m_Gui->m_Scale;
 
 	m_Clicked = false;
 }
@@ -199,38 +201,38 @@ void GuiIconButton::Draw()
 		if (m_InactiveTexture)
 		{
 			m_InactiveTexture->DrawScaled(
-				Rectangle{ m_Parent->m_GuiX + (m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + (m_Pos.y * m_Parent->m_Scale), m_InactiveTexture->m_sourceRect.width * m_Parent->m_Scale, m_InactiveTexture->m_sourceRect.height * m_Parent->m_Scale },
+				Rectangle{ m_Gui->m_GuiX + (m_Pos.x), m_Gui->m_GuiY + (m_Pos.y), m_Width, m_Height },
 				Vector2{ 0, 0 }, 0, m_Color);
 		}
 		else
 		{
 			m_UpTexture->DrawScaled(
-				Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale), m_UpTexture->m_sourceRect.width * m_Parent->m_Scale, m_UpTexture->m_sourceRect.height * m_Parent->m_Scale },
+				Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y), m_Width, m_Height },
 				Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
 	else
 	{
-		if (m_Hot)
+		if (m_Down)
 		{
 			if (m_DownTexture)
 			{
 
 				m_DownTexture->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + yoffset, m_DownTexture->m_sourceRect.width * m_Parent->m_Scale, m_DownTexture->m_sourceRect.height * m_Parent->m_Scale },
+					Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y) + yoffset, m_Width, m_Height },
 					Vector2{ 0, 0 }, 0, m_Color);
 			}
 			else
 			{
 				m_UpTexture->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + yoffset, m_UpTexture->m_sourceRect.width * m_Parent->m_Scale, m_UpTexture->m_sourceRect.height * m_Parent->m_Scale },
+					Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y) + yoffset, m_Width, m_Height },
 					Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 		else
 		{
 			m_UpTexture->DrawScaled(
-				Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + yoffset, m_UpTexture->m_sourceRect.width * m_Parent->m_Scale, m_UpTexture->m_sourceRect.height * m_Parent->m_Scale },
+				Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y) + yoffset, m_Width, m_Height },
 				Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
@@ -241,39 +243,39 @@ void GuiIconButton::Update()
 	Tween::Update();
 	m_Hovered = false;
 	m_Clicked = false;
-	m_Hot = false;
+	m_Down = false;
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	if (m_Visible && m_Active)
 	{
-		if (IsMouseInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.width * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.height * m_Parent->m_Scale)))
+		if (IsMouseInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			int(m_Width),
+			int(m_Height)))
 		{
 			m_Hovered = true;
 		}
 
-		if (IsLeftButtonDownInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.width * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.height * m_Parent->m_Scale)))
+		if (IsLeftButtonDownInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			int(m_Width),
+			int(m_Height)))
 		{
 			m_Hovered = false;
-			m_Hot = true;
+			m_Down = true;
 		}
 
-		else if (WasLeftButtonClickedInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.width * m_Parent->m_Scale),
-			int(m_UpTexture->m_sourceRect.height * m_Parent->m_Scale)))
+		else if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			int(m_Width),
+			int(m_Height)))
 		{
-			m_Hot = false;
+			m_Down = false;
 			m_Hovered = false;
 			m_Clicked = true;
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
 	}
 };
@@ -340,11 +342,11 @@ void GuiScrollBar::Draw()
 	if (m_Visible == false)
 		return;
 
-	int adjustedx = m_Parent->m_GuiX + (m_Pos.x * m_Parent->m_Scale);
-	int adjustedy = m_Parent->m_GuiY + (m_Pos.y * m_Parent->m_Scale);
+	int adjustedx = m_Gui->m_GuiX + (m_Pos.x);
+	int adjustedy = m_Gui->m_GuiY + (m_Pos.y);
 
-	int adjustedw = m_Width * m_Parent->m_Scale;
-	int adjustedh = m_Height * m_Parent->m_Scale;
+	int adjustedw = m_Width;
+	int adjustedh = m_Height;
 
 	if (m_ActiveLeft == nullptr) // No sprites, so draw with colors
 	{
@@ -352,13 +354,13 @@ void GuiScrollBar::Draw()
 
 		if (m_Vertical)
 		{
-			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (m_Height - m_Width)) * m_Parent->m_Scale);
-			DrawRectangle(adjustedx, adjustedy + m_SpurLocation, int(m_Width * m_Parent->m_Scale), int(m_Width * m_Parent->m_Scale), m_SpurColor);
+			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (m_Height - m_Width)));
+			DrawRectangle(adjustedx, adjustedy + m_SpurLocation, int(m_Width), int(m_Width), m_SpurColor);
 		}
 		else
 		{
-			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (adjustedw - adjustedh)));// * m_Parent->m_Scale;
-			DrawRectangle(adjustedx + m_SpurLocation, adjustedy, int(m_Height * m_Parent->m_Scale), int(m_Height * m_Parent->m_Scale), m_SpurColor);
+			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (adjustedw - adjustedh)));//;
+			DrawRectangle(adjustedx + m_SpurLocation, adjustedy, int(m_Height), int(m_Height), m_SpurColor);
 		}
 	}
 	else
@@ -389,29 +391,29 @@ void GuiScrollBar::Draw()
 
 		if (m_Shadowed)
 		{
-			left->DrawScaled(Rectangle{m_Parent->m_Pos.x + ((m_Pos.x + 3) * m_Parent->m_Scale), m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale},
+			left->DrawScaled(Rectangle{m_Gui->m_Pos.x + ((m_Pos.x + 3)), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_Gui->m_Scale, m_Gui->m_Scale},
 				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			center->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + 3 + xmiddle) * m_Parent->m_Scale) - 1, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), ((xright + 3) / m_InactiveCenter->m_sourceRect.width) * m_Parent->m_Scale, m_Parent->m_Scale },
+			center->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3 + xmiddle)) - 1, m_Gui->m_Pos.y + ((m_Pos.y + 3)), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_Gui->m_Scale },
 				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			right->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright) * m_Parent->m_Scale, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale },
+			right->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_Gui->m_Scale, m_Gui->m_Scale },
 				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 		}
 
-		left->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale), m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale });
-		center->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + xmiddle) * m_Parent->m_Scale) - 1, m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), ((xright + 3) / m_InactiveCenter->m_sourceRect.width) * m_Parent->m_Scale, m_Parent->m_Scale });
-		right->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x + xmiddle + xright) * m_Parent->m_Scale, m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale });
+		left->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y), m_Gui->m_Scale, m_Gui->m_Scale });
+		center->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + xmiddle)) - 1, m_Gui->m_Pos.y + (m_Pos.y), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_Gui->m_Scale });
+		right->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), m_Gui->m_Scale, m_Gui->m_Scale });
 
-		//int debugadjustedx = m_Parent->m_GuiX + (m_Pos.x * m_Parent->m_Scale);
-		//int debugadjustedy = int(m_Parent->m_Pos.y + (float(m_Pos.y) * m_Parent->m_Scale) + (float(m_Height) / 2.0f * m_Parent->m_Scale) - (float(spur->m_sourceRect.height) / 2.0f * m_Parent->m_Scale));
+		//int debugadjustedx = m_Gui->m_GuiX + (m_Pos.x);
+		//int debugadjustedy = int(m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f));
 
-		//int debugadjustedw = m_Width * m_Parent->m_Scale;
-		//int debugadjustedh = m_SpurActive->m_sourceRect.height * m_Parent->m_Scale;
+		//int debugadjustedw = m_Width;
+		//int debugadjustedh = m_SpurActive->m_sourceRect.height;
 
 		//DrawRectangle(debugadjustedx, debugadjustedy, debugadjustedw, debugadjustedh, Color(1, 0, 0, .5), true);
 
-		spur->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x - (float(spur->m_sourceRect.width) / 2)) * m_Parent->m_Scale) + ((float(m_Value) / float(m_ValueRange)) * m_Width * m_Parent->m_Scale),
-			//int(m_Parent->m_Pos.y + ((m_Pos.y + (float(spur->m_sourceRect.height) / 2)) * m_Parent->m_Scale)),
-			m_Parent->m_Pos.y + (float(m_Pos.y) * m_Parent->m_Scale) + (float(m_Height) / 2.0f * m_Parent->m_Scale) - (float(spur->m_sourceRect.height) / 2.0f * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale });
+		spur->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x - (float(spur->m_sourceRect.width) / 2))) + ((float(m_Value) / float(m_ValueRange)) * m_Width),
+			//int(m_Gui->m_Pos.y + ((m_Pos.y + (float(spur->m_sourceRect.height) / 2)))),
+			m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f), m_Gui->m_Scale, m_Gui->m_Scale });
 	}
 }
 
@@ -419,24 +421,24 @@ void GuiScrollBar::Update()
 {
 	Tween::Update();
 
-	if (!m_Parent->m_AcceptingInput || !m_Active)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	m_Hovered = false;
 
 	//  Is the LMB down inside the spur?
-	int adjustedx = m_Parent->m_GuiX + (m_Pos.x * m_Parent->m_Scale);
-	int adjustedy = int(m_Parent->m_Pos.y + (float(m_Pos.y) * m_Parent->m_Scale) + (float(m_Height) / 2.0f * m_Parent->m_Scale) - (float(m_SpurActive->m_sourceRect.height) / 2.0f * m_Parent->m_Scale));
+	int adjustedx = m_Gui->m_GuiX + (m_Pos.x);
+	int adjustedy = int(m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(m_SpurActive->m_sourceRect.height) / 2.0f));
 
-	int adjustedw = m_Width * m_Parent->m_Scale;
-	int adjustedh = m_SpurActive->m_sourceRect.height * m_Parent->m_Scale;
+	int adjustedw = m_Width;
+	int adjustedh = m_SpurActive->m_sourceRect.height;
 
 	//  Previously clicked, try for hysterisis
-	if (m_Parent->m_LastElement == m_ID)
+	if (m_Gui->m_LastElement == m_ID)
 	{
 		if (IsLeftButtonDragging() || IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
 		{
-			m_Parent->m_ActiveElement = m_ID; //  This element is still active.
+			m_Gui->m_ActiveElement = m_ID; //  This element is still active.
 			if (m_Vertical)
 			{
 				m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
@@ -468,12 +470,12 @@ void GuiScrollBar::Update()
 		}
 		else //  No longer dragging, which means this element is no longer active.
 		{
-			m_Parent->m_ActiveElement = -1;
+			m_Gui->m_ActiveElement = -1;
 		}
 	}
-	else if (m_Parent->m_ActiveElement == -1 && m_Parent->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
+	else if (m_Gui->m_ActiveElement == -1 && m_Gui->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
 	{
-		m_Parent->m_ActiveElement = m_ID;
+		m_Gui->m_ActiveElement = m_ID;
 		if (m_Vertical)
 		{
 			m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
@@ -552,25 +554,25 @@ void GuiTextInput::Draw()
 	if (m_Visible == false)
 		return;
 
-	float adjustedx = m_Parent->m_GuiX + m_Pos.x;
-	float adjustedy = m_Parent->m_GuiY + m_Pos.y;
+	float adjustedx = m_Gui->m_GuiX + m_Pos.x;
+	float adjustedy = m_Gui->m_GuiY + m_Pos.y;
 
 	DrawRectangle(adjustedx, adjustedy, m_Width, m_Height, m_BackgroundColor);
 	DrawRectangleLines(adjustedx, adjustedy, m_Width, m_Height, m_BoxColor);
 
 	if (!m_HasFocus)
 	{
-		DrawTextEx(*m_Font, m_String.c_str(), Vector2{ adjustedx + 2, adjustedy + 2 }, m_Parent->m_fontSize, 1, m_TextColor);
+		DrawTextEx(*m_Font, m_String.c_str(), Vector2{ adjustedx + 2, adjustedy + 2 }, m_Gui->m_fontSize, 1, m_TextColor);
 	}
 	else
 	{
 		if (GetTime() > 500)
 		{
-			DrawTextEx(*m_Font, (m_String + "|").c_str(), Vector2{adjustedx + 2, adjustedy + 2}, m_Parent->m_fontSize, 1, m_TextColor);
+			DrawTextEx(*m_Font, (m_String + "|").c_str(), Vector2{adjustedx + 2, adjustedy + 2}, m_Gui->m_fontSize, 1, m_TextColor);
 		}
 		else
 		{
-			DrawTextEx(*m_Font, m_String.c_str(), Vector2{ adjustedx + 2, adjustedy + 2 }, m_Parent->m_fontSize, 1, m_TextColor);
+			DrawTextEx(*m_Font, m_String.c_str(), Vector2{ adjustedx + 2, adjustedy + 2 }, m_Gui->m_fontSize, 1, m_TextColor);
 		}
 	}
 
@@ -581,22 +583,22 @@ void GuiTextInput::Update()
 {
 	Tween::Update();
 
-	int adjustedx = int(m_Parent->m_GuiX + m_Pos.x);
-	int adjustedy = int(m_Parent->m_GuiY + m_Pos.y);
+	int adjustedx = int(m_Gui->m_GuiX + m_Pos.x);
+	int adjustedy = int(m_Gui->m_GuiY + m_Pos.y);
 
-	if (m_HasFocus && m_Parent->m_LastElement != m_ID)
+	if (m_HasFocus && m_Gui->m_LastElement != m_ID)
 	{
 		m_HasFocus = false;
 	}
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	//  If the left button is down, we are CLICKED
 	if (WasLeftButtonClickedInRect(adjustedx, adjustedy, adjustedx + m_Width, adjustedy + m_Height))
 	{
 		m_HasFocus = true;
-		m_Parent->m_ActiveElement = m_ID;
+		m_Gui->m_ActiveElement = m_ID;
 	}
 
 
@@ -667,11 +669,11 @@ void GuiCheckBox::Draw()
 	if (!m_Visible)
 		return;
 
-	int adjustedx = m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale);
-	int adjustedy = m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale);
+	int adjustedx = m_Gui->m_GuiX + int(m_Pos.x);
+	int adjustedy = m_Gui->m_GuiY + int(m_Pos.y);
 
-	int adjustedw = int(m_Width * m_Parent->m_Scale);
-	int adjustedh = int(m_Height * m_Parent->m_Scale);
+	int adjustedw = int(m_Width);
+	int adjustedh = int(m_Height);
 
 	if (m_SelectSprite == nullptr) // no sprites, just use draw commands to draw it
 	{
@@ -689,33 +691,33 @@ void GuiCheckBox::Draw()
 	{
 		if (m_Selected)
 		{
-			if (m_Hovered || m_Hot)
+			if (m_Hovered || m_Down)
 			{
 				m_HoveredSelectedSprite->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 			else
 			{
 				m_SelectSprite->DrawScaled(
-					Rectangle{m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX * m_Parent->m_Scale, m_ScaleY * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle{m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 		else
 		{
-			if (m_Hovered || m_Hot)
+			if (m_Hovered || m_Down)
 			{
 				m_HoveredSprite->DrawScaled(
-					Rectangle {m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX * m_Parent->m_Scale, m_ScaleY * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle {m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 
 			}
 			else
 			{
 				m_DeselectSprite->DrawScaled(
-					Rectangle { m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX * m_Parent->m_Scale, m_ScaleY * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle { m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX, m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 	}
@@ -725,28 +727,28 @@ void GuiCheckBox::Update()
 {
 	Tween::Update();
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	if (m_Visible)
 	{
-		m_Hovered = IsMouseInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + int(m_Width * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + int(m_Height * m_Parent->m_Scale));
+		m_Hovered = IsMouseInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
+			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height));
 
-		m_Hot = IsLeftButtonDownInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + int(m_Width * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + int(m_Height * m_Parent->m_Scale));
+		m_Down = IsLeftButtonDownInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
+			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height));
 
-		if (WasLeftButtonClickedInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + int(m_Width * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + int(m_Height * m_Parent->m_Scale)))
+		if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
+			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height)))
 		{
 			m_Selected = !m_Selected;
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
 	}
 }
@@ -801,11 +803,11 @@ void GuiRadioButton::Draw()
 	if (!m_Visible)
 		return;
 
-	int adjustedx = m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale);
-	int adjustedy = m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale);
+	int adjustedx = m_Gui->m_GuiX + int(m_Pos.x);
+	int adjustedy = m_Gui->m_GuiY + int(m_Pos.y);
 
-	int adjustedw = int(m_Width * m_Parent->m_Scale);
-	int adjustedh = int(m_Height * m_Parent->m_Scale);
+	int adjustedw = int(m_Width);
+	int adjustedh = int(m_Height);
 
 	if (m_SelectSprite == nullptr)
 	{
@@ -826,12 +828,12 @@ void GuiRadioButton::Draw()
 			if (m_Shadowed)
 			{
 				m_SelectSprite->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int((m_Pos.x + 3) * m_Parent->m_Scale), m_Parent->m_GuiY + int((m_Pos.y + 3) * m_Parent->m_Scale),
-					m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+					Rectangle{ m_Gui->m_GuiX + int((m_Pos.x + 3)), m_Gui->m_GuiY + int((m_Pos.y + 3)),
+					m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 			}
 			m_SelectSprite->DrawScaled(
-				Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-				m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+				Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+				m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
 		}
 		else
 		{
@@ -840,24 +842,24 @@ void GuiRadioButton::Draw()
 				if (m_Shadowed)
 				{
 					m_HoveredSprite->DrawScaled(
-						Rectangle{ m_Parent->m_GuiX + int((m_Pos.x + 3) * m_Parent->m_Scale), m_Parent->m_GuiY + int((m_Pos.y + 3) * m_Parent->m_Scale),
-						m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+						Rectangle{ m_Gui->m_GuiX + int((m_Pos.x + 3)), m_Gui->m_GuiY + int((m_Pos.y + 3)),
+						m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 				}
 				m_HoveredSprite->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 			else
 			{
 				if (m_Shadowed)
 				{
 					m_DeselectSprite->DrawScaled(
-						Rectangle{ m_Parent->m_GuiX + int((m_Pos.x + 3) * m_Parent->m_Scale), m_Parent->m_GuiY + int((m_Pos.y + 3) * m_Parent->m_Scale),
-						m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+						Rectangle{ m_Gui->m_GuiX + int((m_Pos.x + 3)), m_Gui->m_GuiY + int((m_Pos.y + 3)),
+						m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 				}
 				m_DeselectSprite->DrawScaled(
-					Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-					m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+					Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+					m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 	}
@@ -867,15 +869,15 @@ void GuiRadioButton::Update()
 {
 	Tween::Update();
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	if (m_Visible)
 	{
-		if (IsMouseInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + int(m_Width * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + int(m_Height * m_Parent->m_Scale)))
+		if (IsMouseInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
+			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height)))
 		{
 			m_Hovered = true;
 		}
@@ -884,17 +886,17 @@ void GuiRadioButton::Update()
 			m_Hovered = false;
 		}
 
-		if (WasLeftButtonClickedInRect(m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale) + int(m_Width * m_Parent->m_Scale),
-			m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale) + int(m_Height * m_Parent->m_Scale)))
+		if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
+			m_Gui->m_GuiY + int(m_Pos.y),
+			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
+			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height)))
 		{
 			if (!m_Selected)
 			{
 				m_Selected = !m_Selected;
 
 				//  Deselect all other buttons in this radio button group.
-				for (auto& node : m_Parent->m_GuiList)
+				for (auto& node : m_Gui->m_GuiList)
 				{
 					if (node.second->m_Group == m_Group && node.second.get() != this)// && node.second->m_Type == GUI_RADIOBUTTON)
 					{
@@ -902,7 +904,7 @@ void GuiRadioButton::Update()
 					}
 				}
 			}
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
 	}
 }
@@ -931,11 +933,11 @@ void GuiPanel::Draw()
 	if (!m_Visible)
 		return;
 
-	int adjustedx = m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale);
-	int adjustedy = m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale);
+	int adjustedx = m_Gui->m_GuiX + int(m_Pos.x);
+	int adjustedy = m_Gui->m_GuiY + int(m_Pos.y);
 
-	int adjustedw = int(m_Width * m_Parent->m_Scale);
-	int adjustedh = int(m_Height * m_Parent->m_Scale);
+	int adjustedw = int(m_Width);
+	int adjustedh = int(m_Height);
 
 	if (m_Filled)
 		DrawRectangle(adjustedx, adjustedy, adjustedw, adjustedh, m_Color);
@@ -963,16 +965,16 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 	m_ID = ID;
 	m_Active = active;
 	m_Group = group;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 	m_String = text;
 	m_Justified = justified;
 	m_Font = font;
 	m_Color = color;
-	m_Width = width;
+	m_Width = width * m_Gui->m_Scale;
 	m_Shadowed = shadowed;
 	if (m_Width == 0)
-		m_Height = int(m_Parent->m_fontSize);
+		m_Height = int(m_Gui->m_fontSize);
 	else
 		m_Height = height;
 }
@@ -985,49 +987,49 @@ void GuiTextArea::Draw()
 	if (m_Justified == GuiTextArea::RIGHT)
 	{
 		if (m_Shadowed)
-			DrawStringRight(m_Font, m_Parent->m_fontSize * m_Parent->m_Scale, m_String, m_Parent->m_Pos.x + ((m_Pos.x + m_Width + 2) * m_Parent->m_Scale), m_Parent->m_Pos.y + ((m_Pos.y + 2) * m_Parent->m_Scale), Color{0, 0, 0, 255});
+			DrawStringRight(m_Font, m_Font->baseSize, m_String, m_Gui->m_Pos.x + ((m_Pos.x + m_Width + 2)), m_Gui->m_Pos.y + ((m_Pos.y + 2)), Color{0, 0, 0, 255});
 
-		DrawStringRight(m_Font, m_Parent->m_fontSize * m_Parent->m_Scale, m_String, m_Parent->m_Pos.x + ((m_Pos.x + m_Width) * m_Parent->m_Scale), m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), m_Color);
+		DrawStringRight(m_Font, m_Font->baseSize, m_String, m_Gui->m_Pos.x + ((m_Pos.x + m_Width)), m_Gui->m_Pos.y + (m_Pos.y), m_Color);
 
 	}
 	else if (m_Justified == GuiTextArea::CENTERED)
 	{
-		if (MeasureTextEx(*m_Font, m_String.c_str(), m_Parent->m_fontSize, 1).x < m_Width)
+		if (MeasureTextEx(*m_Font, m_String.c_str(), m_Gui->m_fontSize, 1).x < m_Width)
 		{
-			int textlength = MeasureTextEx(*m_Parent->m_Font.get(), m_String.c_str(), m_Parent->m_fontSize, 1).x;
+			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Gui->m_fontSize, 1).x;
 
-			//DrawRectangle(int(m_Parent->m_Pos.x + ((m_Pos.x + (m_Width / 2)) * m_Parent->m_Scale)) - (m_Width / 2), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
+			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))) - (m_Width / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
 			if (m_Shadowed)
-				DrawStringCentered(m_Font, m_Parent->m_fontSize * m_Parent->m_Scale, m_String, int(m_Parent->m_Pos.x + ((m_Pos.x + 2 + (m_Width / 2)) * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + ((m_Pos.y + 2) * m_Parent->m_Scale)), Color{ 0, 0, 0, 255 });
-			DrawStringCentered(m_Font, m_Parent->m_fontSize * m_Parent->m_Scale, m_String, int(m_Parent->m_Pos.x + ((m_Pos.x + (m_Width / 2)) * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Color);
+				DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2 + (m_Width / 2)))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), Color{ 0, 0, 0, 255 });
+			DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Color);
 		}
 		else
 		{
-			int textlength = MeasureTextEx(*m_Parent->m_Font.get(), m_String.c_str(), m_Parent->m_fontSize * m_Parent->m_Scale, 1).x;
+			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Gui->m_fontSize, 1).x;
 
-			//DrawRectangle(int(m_Parent->m_Pos.x + ((m_Pos.x + (m_Width / 2)) * m_Parent->m_Scale) - textlength / 2), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width * m_Parent->m_Scale, m_Font->height, Color(.5, 0, 0, .75), true);
+			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) - textlength / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
 			//if (m_Shadowed)
-			//	m_Font->DrawParagraphCentered(m_String, int(m_Parent->m_Pos.x + ((m_Pos.x + (m_Width / 2)) * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width * m_Parent->m_Scale, m_Font->height, Color{ 0, 0, 0, 255 });
-			//m_Font->DrawParagraphCentered(m_String, int(m_Parent->m_Pos.x + ((m_Pos.x + (m_Width / 2)) * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width * m_Parent->m_Scale, m_Font->height, m_Color);
+			//	m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color{ 0, 0, 0, 255 });
+			//m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, m_Color);
 		}
 	}
 	else
 	{
 		if (m_Width == 0) // An unset width parameter means "draw as a single string"
 		{
-			int textlength = MeasureTextEx(*m_Parent->m_Font.get(), m_String.c_str(), m_Parent->m_fontSize * m_Parent->m_Scale, 1).x;
-			//DrawRectangle(int(m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), textWidth, m_Height, Color(.5, 0, 0, .75), true);
+			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Font->baseSize, 1).x;
+			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), textWidth, m_Height, Color(.5, 0, 0, .75), true);
 			if (m_Shadowed)
-				DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ m_Parent->m_Pos.x + ((m_Pos.x + 2) * m_Parent->m_Scale), m_Parent->m_Pos.y + ((m_Pos.y + 2) * m_Parent->m_Scale) }, m_Parent->m_fontSize * m_Parent->m_Scale, 1, Color{ 0, 0, 0, 255 });
-			DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale), m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale) }, m_Parent->m_fontSize * m_Parent->m_Scale, 1, m_Color);
+				DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ m_Gui->m_Pos.x + ((m_Pos.x + 2)), m_Gui->m_Pos.y + ((m_Pos.y + 2)) }, m_Font->baseSize, 1, Color{ 0, 0, 0, 255 });
+			DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y) }, m_Font->baseSize, 1, m_Color);
 		}
 		else
 		{
-			int height = m_Parent->m_fontSize * m_Parent->m_Scale;
-			//DrawRectangle(int(m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width * m_Parent->m_Scale, height, Color(.5, 0, 0, .75), true);
+			int height = m_Gui->m_fontSize;
+			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, height, Color(.5, 0, 0, .75), true);
 			//if (m_Shadowed)
-			//	m_Font->DrawParagraph(m_String, int(m_Parent->m_Pos.x + ((m_Pos.x + 2) * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + ((m_Pos.y + 2) * m_Parent->m_Scale)), m_Width, m_Height, Color{ 0, 0, 0, 255 }, m_Parent->m_Scale);
-			//m_Font->DrawParagraph(m_String, int(m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale)), int(m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale)), m_Width, m_Height, m_Color, m_Parent->m_Scale);
+			//	m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), m_Width, m_Height, Color{ 0, 0, 0, 255 }, m_Gui->m_Scale);
+			//m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Height, m_Color, m_Gui->m_Scale);
 		}
 	}
 };
@@ -1066,8 +1068,8 @@ void GuiSprite::Draw()
 {
 	if (m_Sprite && m_Active && m_Visible)
 	{
-		m_Sprite->DrawScaled(Rectangle{ m_Parent->m_GuiX + int(m_Pos.x * m_Parent->m_Scale), m_Parent->m_GuiY + int(m_Pos.y * m_Parent->m_Scale),
-			m_ScaleX* m_Parent->m_Scale, m_ScaleY* m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+		m_Sprite->DrawScaled(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
+			m_ScaleX* m_Gui->m_Scale, m_ScaleY* m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
 	}
 }
 
@@ -1084,11 +1086,11 @@ void GuiOctagonBox::Init(int ID, int posx, int posy, int width, int height, std:
 	m_ID = ID;
 	m_Active = active;
 	m_Group = group;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 	m_Color = color;
-	m_Width = width;
-	m_Height = height;
+	m_Width = width * m_Gui->m_Scale;
+	m_Height = height * m_Gui->m_Scale;
 	m_Sprites = borders;
 };
 
@@ -1111,15 +1113,15 @@ void GuiOctagonBox::Draw()
 	if (!m_Active || !m_Visible)
 		return;
 
-	float x = m_Parent->m_Pos.x + (m_Pos.x * m_Parent->m_Scale);
-	float y = m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale);
+	float x = m_Gui->m_Pos.x + (m_Pos.x);
+	float y = m_Gui->m_Pos.y + (m_Pos.y);
 
 	//  Find out, in pixels, how wide everything should be and where it should be positioned.
-	float cornerWidth = (m_Sprites[0]->m_sourceRect.width + (m_Parent->m_Scale < 1 ? 1 : 0)) * m_Parent->m_Scale;
-	float cornerHeight = (m_Sprites[0]->m_sourceRect.height + (m_Parent->m_Scale < 1 ? 1 : 0)) * m_Parent->m_Scale;
+	float cornerWidth = (m_Sprites[0]->m_sourceRect.width + (m_Gui->m_Scale < 1 ? 1 : 0));
+	float cornerHeight = (m_Sprites[0]->m_sourceRect.height + (m_Gui->m_Scale < 1 ? 1 : 0));
 
-	float finalWidth = m_Width * m_Parent->m_Scale;
-	float finalHeight = m_Height * m_Parent->m_Scale;
+	float finalWidth = m_Width;
+	float finalHeight = m_Height;
 
 	float runnerWidth = finalWidth - (cornerWidth * 2); // Since both components have been scaled, this does not have to be scaled.
 	float runnerHeight = finalHeight - (cornerHeight * 2); // Ditto.
@@ -1134,19 +1136,19 @@ void GuiOctagonBox::Draw()
 	m_Sprites[4].get()->DrawScaled( Rectangle{x + cornerWidth, y + cornerHeight, float(runnerWidth), float(runnerHeight)}, Vector2{0, 0}, 0, m_Color);
 
 	//  Top and bottom bars
-	m_Sprites[1].get()->DrawScaled( Rectangle{ x + cornerWidth, y, float(runnerWidth), m_Sprites[1].get()->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
-	m_Sprites[7].get()->DrawScaled( Rectangle{ x + cornerWidth, y + cornerHeight + runnerHeight, float(runnerWidth), m_Sprites[7].get()->m_sourceRect.height * m_Parent->m_Scale}, Vector2{0, 0}, 0, m_Color);
+	m_Sprites[1].get()->DrawScaled( Rectangle{ x + cornerWidth, y, float(runnerWidth), m_Sprites[1].get()->m_sourceRect.height }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[7].get()->DrawScaled( Rectangle{ x + cornerWidth, y + cornerHeight + runnerHeight, float(runnerWidth), m_Sprites[7].get()->m_sourceRect.height}, Vector2{0, 0}, 0, m_Color);
 	//  Left and right bars
-	m_Sprites[3].get()->DrawScaled( Rectangle{ x, y + cornerHeight, m_Sprites[3].get()->m_sourceRect.width * m_Parent->m_Scale, float(runnerHeight) }, Vector2{ 0, 0 }, 0, m_Color);
-	m_Sprites[5].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y + cornerHeight, m_Sprites[5].get()->m_sourceRect.height * m_Parent->m_Scale, float(runnerHeight) }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[3].get()->DrawScaled( Rectangle{ x, y + cornerHeight, m_Sprites[3].get()->m_sourceRect.width, float(runnerHeight) }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[5].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y + cornerHeight, m_Sprites[5].get()->m_sourceRect.height, float(runnerHeight) }, Vector2{ 0, 0 }, 0, m_Color);
 
 	//  Top corners
-	m_Sprites[0].get()->DrawScaled( Rectangle{ x, y, m_Sprites[0].get()->m_sourceRect.width * m_Parent->m_Scale, m_Sprites[0].get()->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
-	m_Sprites[2].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y, m_Sprites[2].get()->m_sourceRect.width * m_Parent->m_Scale, m_Sprites[2].get()->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[0].get()->DrawScaled( Rectangle{ x, y, m_Sprites[0].get()->m_sourceRect.width, m_Sprites[0].get()->m_sourceRect.height }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[2].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y, m_Sprites[2].get()->m_sourceRect.width, m_Sprites[2].get()->m_sourceRect.height }, Vector2{ 0, 0 }, 0, m_Color);
 
 	//  Bottom corners
-	m_Sprites[6].get()->DrawScaled( Rectangle{ x, y + cornerHeight + runnerHeight, m_Sprites[6].get()->m_sourceRect.width * m_Parent->m_Scale, m_Sprites[6].get()->m_sourceRect.width * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
-	m_Sprites[8].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y + cornerHeight + runnerHeight, m_Parent->m_Scale * m_Sprites[8].get()->m_sourceRect.width, m_Sprites[8].get()->m_sourceRect.width * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[6].get()->DrawScaled( Rectangle{ x, y + cornerHeight + runnerHeight, m_Sprites[6].get()->m_sourceRect.width, m_Sprites[6].get()->m_sourceRect.width }, Vector2{ 0, 0 }, 0, m_Color);
+	m_Sprites[8].get()->DrawScaled( Rectangle{ x + cornerWidth + runnerWidth, y + cornerHeight + runnerHeight, m_Gui->m_Scale * m_Sprites[8].get()->m_sourceRect.width, m_Sprites[8].get()->m_sourceRect.width }, Vector2{ 0, 0 }, 0, m_Color);
 }
 
 void GuiStretchButton::Init(int ID, int posx, int posy, int width, string label,
@@ -1185,87 +1187,87 @@ void GuiStretchButton::Draw()
 	if (!m_Visible)
 		return;
 
-	float offset = 1.0f * m_Parent->m_Scale;
+	float offset = 1.0f;
 
 	float xmiddle = float(m_InactiveLeft->m_sourceRect.width);
 	float xright = float(m_Width - (m_InactiveLeft->m_sourceRect.width + m_InactiveLeft->m_sourceRect.width));
 	float centerWidth = float(m_Width - (m_InactiveLeft->m_sourceRect.width + m_InactiveRight->m_sourceRect.width));
 
-	Vector2 textDims = MeasureTextEx(*m_Parent->m_Font.get(), m_String.c_str(), m_Parent->m_Font->baseSize, 1);
-	float textWidth = textDims.x / m_Parent->m_Scale;
-	float textHeight = textDims.y / m_Parent->m_Scale;
+	Vector2 textDims = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Gui->m_Font->baseSize, 1);
+	float textWidth = textDims.x / m_Gui->m_Scale;
+	float textHeight = textDims.y / m_Gui->m_Scale;
 
 	if (!m_Active)
 	{
 		if (m_Shadowed)
 		{
-			m_InactiveLeft->DrawScaled(Rectangle{ m_Parent->m_Pos.x + m_Pos.x + offset, m_Parent->m_Pos.y + offset, m_InactiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_InactiveLeft->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_InactiveCenter->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + 3 + xmiddle) * m_Parent->m_Scale) - 1, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), ((xright + 3) / m_InactiveCenter->m_sourceRect.width) * m_Parent->m_Scale, m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_InactiveRight->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright) * m_Parent->m_Scale, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_InactiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + m_Pos.x + offset, m_Gui->m_Pos.y + offset, m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3 + xmiddle)) - 1, m_Gui->m_Pos.y + ((m_Pos.y + 3)), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_Gui->m_Scale, m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 		}
 
-		m_InactiveLeft->DrawScaled(Rectangle{ m_Parent->m_Pos.x + m_Pos.x, m_Parent->m_Pos.y, m_InactiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_InactiveLeft->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
-		m_InactiveCenter->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + xmiddle) * m_Parent->m_Scale) - 1, m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), ((xright + 3) / m_InactiveCenter->m_sourceRect.width) * m_Parent->m_Scale, m_InactiveCenter->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
-		m_InactiveRight->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x + xmiddle + xright) * m_Parent->m_Scale, m_Parent->m_Pos.y + (m_Pos.y * m_Parent->m_Scale), m_Parent->m_Scale, m_InactiveRight->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + m_Pos.x, m_Gui->m_Pos.y, m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + xmiddle)) - 1, m_Gui->m_Pos.y + (m_Pos.y), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_InactiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), m_Gui->m_Scale, m_InactiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
 
-		DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ m_Parent->m_Pos.x + (m_Pos.x + m_Indent) * m_Parent->m_Scale, m_Parent->m_Pos.y + m_Pos.y * m_Parent->m_Scale }, m_Parent->m_fontSize * m_Parent->m_Scale, 1, WHITE);
+		DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ m_Gui->m_Pos.x + (m_Pos.x + m_Indent), m_Gui->m_Pos.y + m_Pos.y }, m_Gui->m_fontSize, 1, WHITE);
 	}
-	else if (m_Hovered || m_Hot || m_Clicked)
+	else if (m_Hovered || m_Down || m_Clicked)
 	{
 		if (m_Shadowed)
 		{
-			m_ActiveLeft->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + 3) * m_Parent->m_Scale), m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_ActiveCenter->DrawScaled(Rectangle{ m_Parent->m_Pos.x + ((m_Pos.x + 3 + xmiddle) * m_Parent->m_Scale) - 1, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), ((xright + 3) / m_InactiveCenter->m_sourceRect.width) * m_Parent->m_Scale, m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_ActiveRight->DrawScaled(Rectangle{ m_Parent->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright) * m_Parent->m_Scale, m_Parent->m_Pos.y + ((m_Pos.y + 3) * m_Parent->m_Scale), m_Parent->m_Scale, m_Parent->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_ActiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3)), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_Gui->m_Scale, m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_ActiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3 + xmiddle)) - 1, m_Gui->m_Pos.y + ((m_Pos.y + 3)), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_ActiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_Gui->m_Scale, m_Gui->m_Scale }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 		}
-		if (m_Hot)
+		if (m_Down)
 		{
-			m_ActiveLeft->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				m_ActiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_ActiveLeft->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
-			m_ActiveCenter->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				centerWidth * m_Parent->m_Scale, m_ActiveCenter->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
-			m_ActiveRight->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + xright + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				m_ActiveRight->m_sourceRect.width * m_Parent->m_Scale, m_ActiveRight->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			m_ActiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				m_ActiveLeft->m_sourceRect.width, m_ActiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			m_ActiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				centerWidth, m_ActiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			m_ActiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				m_ActiveRight->m_sourceRect.width, m_ActiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
 		}
 		else
 		{
-			m_ActiveLeft->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-				m_ActiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_ActiveLeft->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, WHITE);
-			m_ActiveCenter->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-				centerWidth * m_Parent->m_Scale, m_ActiveCenter->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, WHITE);
-			m_ActiveRight->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + xright) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-				m_ActiveRight->m_sourceRect.width * m_Parent->m_Scale, m_ActiveRight->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, WHITE);
+			m_ActiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x), (m_Gui->m_Pos.y + m_Pos.y),
+				m_ActiveLeft->m_sourceRect.width, m_ActiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, WHITE);
+			m_ActiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle), (m_Gui->m_Pos.y + m_Pos.y),
+				centerWidth, m_ActiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, WHITE);
+			m_ActiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright), (m_Gui->m_Pos.y + m_Pos.y),
+				m_ActiveRight->m_sourceRect.width, m_ActiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, WHITE);
 		}
 
-		if (m_Hot)
+		if (m_Down)
 		{
-			DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ ((m_Parent->m_Pos.x + m_Pos.x + offset) * m_Parent->m_Scale) + ((m_Width - textWidth) / 2) * m_Parent->m_Scale, ((m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2) * m_Parent->m_Scale }, m_Parent->m_fontSize * m_Parent->m_Scale, 1, WHITE);
+			DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ ((m_Gui->m_Pos.x + m_Pos.x + offset)) + ((m_Width - textWidth) / 2), ((m_Gui->m_Pos.y + m_Pos.y + offset)) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2) }, m_Gui->m_fontSize, 1, WHITE);
 		}
 		else
 		{
-			DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ ((m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale) + ((m_Width - textWidth) / 2) * m_Parent->m_Scale, ((m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2) * m_Parent->m_Scale }, m_Parent->m_fontSize * m_Parent->m_Scale, 1, WHITE);
+			DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ ((m_Gui->m_Pos.x + m_Pos.x)) + ((m_Width - textWidth) / 2), ((m_Gui->m_Pos.y + m_Pos.y)) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2) }, m_Gui->m_fontSize, 1, WHITE);
 		}
 	}
 	else
 	{
 		if (m_Shadowed)
 		{
-			m_InactiveLeft->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				m_InactiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_InactiveLeft->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{0, 0, 0, 255});
-			m_InactiveCenter->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				centerWidth * m_Parent->m_Scale, m_InactiveCenter->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{ 0, 0, 0, 255 });
-			m_InactiveRight->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + xright + offset) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y + offset) * m_Parent->m_Scale,
-				m_InactiveRight->m_sourceRect.width * m_Parent->m_Scale, m_InactiveRight->m_sourceRect.height * m_Parent->m_Scale }, Vector2{ 0, 0 }, 0.0f, Color{ 0, 0, 0, 255 });
+			m_InactiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{0, 0, 0, 255});
+			m_InactiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				centerWidth, m_InactiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 0, 0, 0, 255 });
+			m_InactiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
+				m_InactiveRight->m_sourceRect.width, m_InactiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 0, 0, 0, 255 });
 		}
 
-		m_InactiveLeft->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			m_InactiveLeft->m_sourceRect.width * m_Parent->m_Scale, m_InactiveLeft->m_sourceRect.height * m_Parent->m_Scale });
-		m_InactiveCenter->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			centerWidth * m_Parent->m_Scale, m_InactiveCenter->m_sourceRect.height *  m_Parent->m_Scale });
-		m_InactiveRight->DrawScaled(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x + xmiddle + xright) * m_Parent->m_Scale, (m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			m_InactiveRight->m_sourceRect.width * m_Parent->m_Scale, m_InactiveRight->m_sourceRect.height * m_Parent->m_Scale });
+		m_InactiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x), (m_Gui->m_Pos.y + m_Pos.y),
+			m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height });
+		m_InactiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle), (m_Gui->m_Pos.y + m_Pos.y),
+			centerWidth, m_InactiveCenter->m_sourceRect.height *  m_Gui->m_Scale });
+		m_InactiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright), (m_Gui->m_Pos.y + m_Pos.y),
+			m_InactiveRight->m_sourceRect.width, m_InactiveRight->m_sourceRect.height });
 
-		DrawTextEx(*m_Parent->m_Font.get(), m_String.c_str(), Vector2{ ((m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale) + ((m_Width - textWidth) / 2) * m_Parent->m_Scale, ((m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2) * m_Parent->m_Scale}, m_Parent->m_fontSize * m_Parent->m_Scale, 1, WHITE);
+		DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ ((m_Gui->m_Pos.x + m_Pos.x)) + ((m_Width - textWidth) / 2), ((m_Gui->m_Pos.y + m_Pos.y)) + ((m_ActiveLeft->m_sourceRect.height - textHeight) / 2)}, m_Gui->m_fontSize, 1, WHITE);
 	}
 }
 
@@ -1274,38 +1276,38 @@ void GuiStretchButton::Update()
 	Tween::Update();
 	m_Clicked = false;
 	m_Hovered = false;
-	m_Hot = false;
+	m_Down = false;
 
-	if (!m_Parent->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput)
 		return;
 
 	if (m_Visible && m_Active)
 	{
 		//  Stretch buttons activate on button down, so there is no "hot" state.
-		if (IsLeftButtonDownInRect(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale,
-			(m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale }))
+		if (IsLeftButtonDownInRect(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x),
+			(m_Gui->m_Pos.y + m_Pos.y),
+			m_Width,
+			m_Height }))
 		{
 			m_Hovered = false;
-			m_Hot = true;
+			m_Down = true;
 			m_Clicked = false; // Not clicked until the button is released.
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
-		else if (WasLeftButtonClickedInRect(Rectangle{ (m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale,
-			(m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale }))
+		else if (WasLeftButtonClickedInRect(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x),
+			(m_Gui->m_Pos.y + m_Pos.y),
+			m_Width,
+			m_Height }))
 		{
 			m_Hovered = false;
-			m_Hot = false;
+			m_Down = false;
 			m_Clicked = true;
-			m_Parent->m_ActiveElement = m_ID;
+			m_Gui->m_ActiveElement = m_ID;
 		}
-		else if (IsMouseInRect((m_Parent->m_Pos.x + m_Pos.x) * m_Parent->m_Scale,
-			(m_Parent->m_Pos.y + m_Pos.y) * m_Parent->m_Scale,
-			m_Width * m_Parent->m_Scale,
-			m_Height * m_Parent->m_Scale))
+		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x),
+			(m_Gui->m_Pos.y + m_Pos.y),
+			m_Width,
+			m_Height))
 		{
 			m_Hovered = true;
 			m_Clicked = false;

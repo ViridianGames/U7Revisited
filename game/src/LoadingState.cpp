@@ -72,8 +72,8 @@ void LoadingState::Draw()
 
 	if (m_loadingFailed == true)
 	{
-		DrawTextEx(*g_SmallFont, "Ultima VII files not found.  They should go into the Data/U7 folder.", Vector2{ 0, 0 }, g_smallFontSize, 1, WHITE);
-		DrawTextEx(*g_SmallFont, "Press ESC to exit.", Vector2{ 0, g_smallFontSize * 2 },g_smallFontSize, 1, WHITE);
+		DrawTextEx(*g_Font, "Ultima VII files not found.  They should go into the Data/U7 folder.", Vector2{ 0, 0 }, g_fontSize, 1, WHITE);
+		DrawTextEx(*g_Font, "Press ESC to exit.", Vector2{ 0, g_fontSize * 2 }, g_fontSize, 1, WHITE);
 	}
 	else
 	{
@@ -582,6 +582,7 @@ void LoadingState::CreateShapeTable()
 
 	stringstream shapes;
 	shapes << shapesFile.rdbuf();
+	shapesFile.close();
 
 	vector<FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
 
@@ -625,16 +626,13 @@ void LoadingState::CreateShapeTable()
 		int yDrawOffset;
 	};
 
+	float profilingTime = GetTime();
+
 	for (int thisShape = 150; thisShape < 1024; ++thisShape)
 	{
 		//  The next 874 entries (150-1023) are objects.
 
 		//  Read the shape data.
-
-		std::string shapeName = std::string("Loading Shape ") + std::to_string(thisShape) + std::string(" of 1023...");
-		DrawTextEx(*g_SmallFont, shapeName.c_str(), Vector2{ 0, g_Engine->m_ScreenHeight * .2f }, g_smallFontSize, 1, WHITE);
-		//AddConsoleString();
-		Draw();
 
 		shapes.seekg(shapeEntryMap[thisShape].offset);
 		unsigned int headerStart = shapes.tellg();
@@ -743,7 +741,6 @@ void LoadingState::CreateShapeTable()
 		}
 	}
 
-
 	ifstream file("Data/shapetable.dat");
 	if (file.is_open())
 	{
@@ -757,6 +754,9 @@ void LoadingState::CreateShapeTable()
 		}
 		file.close();
 	}
+
+	profilingTime = GetTime() - profilingTime;
+	Log("Time to load shapes: " + std::to_string(profilingTime));
 }
 
 void LoadingState::CreateObjectTable()

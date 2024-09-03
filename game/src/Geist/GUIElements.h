@@ -50,7 +50,7 @@
 
 class Gui;
 
-enum GuiElements
+enum GuiElementType
 {
 	//  Actual working elements
 	GUI_TEXTBUTTON = 0,
@@ -82,6 +82,9 @@ public:
 	virtual int         GetValue() = 0;
 	virtual std::string GetString() { return m_String; }
 
+	void SetPos(int x, int y) {m_Pos.x = x; m_Pos.y = y;}
+	void SetSize(int w, int h) {m_Width = w; m_Height = h;}
+
 	int m_Type;
 	int m_ID;
 	int m_Active;
@@ -92,14 +95,14 @@ public:
 	Color m_Color = Color{ 255, 255, 255, 255 };
 
 	bool m_Hovered = false;  //  The mouse is over this element but is not down.  Somne elements will draw differently in this state.
-	bool m_Hot = false;      //  The mouse is over this element and the left mouse button is down.  The element will draw "clicked".
+	bool m_Down = false;      //  The mouse is over this element and the left mouse button is down.  The element will draw "clicked".
 	bool m_Clicked = false;  //  The mouse is over this element and the left mouse button has JUST been released.  This is usually what you're looking for.  The element will draw normally since this is the end of the interaction.
 	bool m_Shadowed = false;
 	bool m_Selected = false;
 
 	std::string m_String;
 
-	Gui* m_Parent;
+	Gui* m_Gui; // The parent GUI object.
 };
 
 
@@ -109,7 +112,7 @@ class GuiTextButton : public GuiElement
 {
 public:
 
-	GuiTextButton(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiTextButton(Gui* parent) { m_Gui = parent; m_Visible = true; };
 
 	void Init(int ID, int posx, int posy, int width, int height, std::string text, Font* font,
 		Color textcolor = Color{ 255, 255, 255, 255 },
@@ -138,7 +141,7 @@ class GuiIconButton : public GuiElement
 {
 public:
 
-	GuiIconButton(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiIconButton(Gui* parent) { m_Gui = parent; m_Visible = true; };
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
@@ -159,12 +162,12 @@ public:
 	bool  m_Bobbing = false;
 };
 
-//  The CheckBox uses two sprites to define whether the object is set
+//  The CheckBox uses two sprites to define whether the object is
 //  set or not.  Otherwise it works like an IconButton.
 class GuiCheckBox : public GuiElement
 {
 public:
-	GuiCheckBox(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiCheckBox(Gui* parent) { m_Gui = parent; m_Visible = true; };
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> selectSprite, std::shared_ptr<Sprite> deselectSprite, std::shared_ptr<Sprite> hoveredSprite = nullptr, std::shared_ptr<Sprite> hoveredselected = nullptr,
 		float scalex = 1.0f, float scaley = 1.0f,
@@ -195,7 +198,7 @@ public:
 class GuiScrollBar : public GuiElement
 {
 public:
-	GuiScrollBar(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiScrollBar(Gui* parent) { m_Gui = parent; m_Visible = true; };
 
 	void Init(int ID, int valuerange, int posx, int posy, int width, int height, bool vertical,
 		Color spurcolor = Color{ 128, 128, 255, 255 }, Color backgroundcolor = Color{ 0, 0, 0, 0 }, int group = 0, int active = true, bool shadowed = false);
@@ -242,7 +245,7 @@ public:
 class GuiTextInput : public GuiElement
 {
 public:
-	GuiTextInput(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiTextInput(Gui* parent) { m_Gui = parent; m_Visible = true; };
 	void Init(int ID, int posx, int posy, int width, int height, Font* font,
 		std::string initialtext = "", Color textColor = Color{ 255, 255, 255, 255 },
 		Color boxcolor = Color{ 255, 255, 255, 255 }, Color backgroundcolor = Color{ 0, 0, 0, 0 },
@@ -269,7 +272,7 @@ public:
 class GuiRadioButton : public GuiElement
 {
 public:
-	GuiRadioButton(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiRadioButton(Gui* parent) { m_Gui = parent; m_Visible = true; };
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> selectSprite, std::shared_ptr<Sprite> deselectSprite, std::shared_ptr<Sprite> hoveredSprite = nullptr,
 		float scalex = 1.0f, float scaley = 1.0f,
@@ -300,7 +303,7 @@ public:
 class GuiPanel : public GuiElement
 {
 public:
-	GuiPanel(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiPanel(Gui* parent) { m_Gui = parent; m_Visible = true; };
 	void Init(int ID, int posx, int posy, int width, int height,
 		Color color = Color{ 255, 255, 255, 255 }, bool filled = false,
 		int group = 0, int active = true);
@@ -318,7 +321,7 @@ public:
 class GuiTextArea : public GuiElement
 {
 public:
-	GuiTextArea(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiTextArea(Gui* parent) { m_Gui = parent; m_Visible = true; };
 	void Init(int ID, Font* font, std::string text, int posx, int posy, int width = 0, int height = 0,
 		Color color = Color{ 255, 255, 255, 255 }, int justified = GuiTextArea::LEFT, int group = 0, int active = true, bool shadowed = false);
 
@@ -342,7 +345,7 @@ public:
 class GuiSprite : public GuiElement
 {
 public:
-	GuiSprite(Gui* parent) { m_Parent = parent; m_Visible = true; };
+	GuiSprite(Gui* parent) { m_Gui = parent; m_Visible = true; };
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> sprite, float scalex = 1.0f, float scaley = 1.0f,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
 
@@ -380,7 +383,7 @@ public:
 class GuiOctagonBox : public GuiElement
 {
 public:
-	GuiOctagonBox(Gui* parent) { m_Parent = parent; m_Visible = true; m_Width = 0; m_Height = 0; }
+	GuiOctagonBox(Gui* parent) { m_Gui = parent; m_Visible = true; m_Width = 0; m_Height = 0; }
 	void Init(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 		Color color = Color{ 255, 255, 255, 255 }, int group = 0, int active = true);
 
@@ -399,7 +402,7 @@ public:
 class GuiStretchButton : public GuiElement
 {
 public:
-	GuiStretchButton(Gui* parent) { m_Parent = parent; m_Visible = true; m_Width = 0; m_Height = 0; }
+	GuiStretchButton(Gui* parent) { m_Gui = parent; m_Visible = true; m_Width = 0; m_Height = 0; }
 	void Init(int ID, int posx, int posy, int width, std::string label,
 		std::shared_ptr<Sprite> activeLeft, std::shared_ptr<Sprite> activeRight, std::shared_ptr<Sprite> activeCenter,
 		std::shared_ptr<Sprite> inactiveLeft, std::shared_ptr<Sprite> inactiveRight, std::shared_ptr<Sprite> inactiveCenter, int indent = 0,
