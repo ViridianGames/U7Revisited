@@ -74,24 +74,26 @@ void TitleState::CreateTitleGUI()
 {
    m_TitleGui = new Gui();
    m_TitleGui->m_Font = g_Font;
-   m_TitleGui->SetLayout(0, 0, 320, 180, g_DrawScale, Gui::GUIP_CENTER);
-   m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 110, 90, 100, 80, g_Borders);
+
+
+   m_TitleGui->SetLayout(0, 0, 640, 360, g_DrawScale, Gui::GUIP_CENTER);
+   m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 220, 180, 200, 160, g_Borders);
    m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
       (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, 95, "Begin",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, 190, "Begin",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, 115, "Object Editor",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, 230, "Object Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, 135, "World Editor",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, 270, "World Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, 155, "Quit",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, 310, "Quit",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
