@@ -51,31 +51,6 @@ void U7Object::Draw()
 
 void U7Object::Update()
 {
-   if (m_color.r != 255 || m_color.g != 255 || m_color.b != 255 || m_color.a != 255)
-   {
-      int stopper = 0;
-      m_color.r += 0.1;
-      m_color.g += 0.1;
-      m_color.b += 0.1;
-      m_color.a += 0.1;
-      if (m_color.r > 1)
-      {
-			m_color.r = 1;
-		}
-      if (m_color.g > 1)
-      {
-			m_color.g = 1;
-		}
-      if (m_color.b > 1)
-      {
-			m_color.b = 1;
-		}
-      if (m_color.a > 1)
-      {
-			m_color.a = 1;
-		}
-	}
-   
 
 }
 

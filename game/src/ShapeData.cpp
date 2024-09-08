@@ -270,6 +270,9 @@ void ShapeData::SetupDrawTypes()
    ObjectData* objectData = &g_objectTable[m_shape];
 
    m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
+   m_boundingBox = m_Dims;
+
+   m_boundingBox = m_Dims;
 
    if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
    {
@@ -573,8 +576,8 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3& scal
 {
    if (m_isValid == false)
    {
-		return;
-	}
+      return;
+   }
 
    ObjectData* objectData = &g_objectTable[m_shape];
 
@@ -588,65 +591,70 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3& scal
 
    switch (m_drawType)
    {
-      case ShapeDrawType::OBJECT_DRAW_CUBOID:
+   case ShapeDrawType::OBJECT_DRAW_CUBOID:
+   {
+      Vector3 thisPos = pos;
+
+      float leftDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_LEFT], pos));
+      float rightDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_RIGHT], pos));
+      float topDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_TOP], pos));
+      float bottomDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BOTTOM], pos));
+      float frontDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_FRONT], pos));
+      float backDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BACK], pos));
+
+      vector<pair<CuboidSides, float>> distances = {
+      make_pair(CuboidSides::CUBOID_LEFT, leftDistance), make_pair(CuboidSides::CUBOID_RIGHT, rightDistance),
+         make_pair(CuboidSides::CUBOID_TOP, topDistance), make_pair(CuboidSides::CUBOID_BOTTOM, bottomDistance),
+         make_pair(CuboidSides::CUBOID_FRONT, frontDistance), make_pair(CuboidSides::CUBOID_BACK, backDistance) };
+
+      sort(distances.begin(), distances.end(), [](const pair<CuboidSides, float>& a, const pair<CuboidSides, float>& b) { return a.second > b.second; });
+
+      for (int i = 0; i < distances.size(); ++i)
       {
-         Vector3 thisPos = pos;
-
-         float leftDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_LEFT], pos));
-         float rightDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_RIGHT], pos));
-         float topDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_TOP], pos));
-         float bottomDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BOTTOM], pos));
-         float frontDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_FRONT], pos));
-         float backDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BACK], pos));
-      
-         vector<pair<CuboidSides, float>> distances = {
-         make_pair(CuboidSides::CUBOID_LEFT, leftDistance), make_pair (CuboidSides::CUBOID_RIGHT, rightDistance),
-            make_pair( CuboidSides::CUBOID_TOP, topDistance), make_pair ( CuboidSides::CUBOID_BOTTOM, bottomDistance),
-            make_pair ( CuboidSides::CUBOID_FRONT, frontDistance), make_pair( CuboidSides::CUBOID_BACK, backDistance) };
-
-         sort(distances.begin(), distances.end(), [](const pair<CuboidSides, float>& a, const pair<CuboidSides, float>& b) { return a.second > b.second; });
-
-         for (int i = 0; i < distances.size(); ++i)
+         if (m_sideTextures[static_cast<int>(distances[i].first)] != CuboidTexture::CUBOID_DONT_DRAW)
          {
-            if (m_sideTextures[static_cast<int>(distances[i].first)] != CuboidTexture::CUBOID_DONT_DRAW)
-            {
-               DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
-				}
+            DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
          }
-
-         break;
       }
 
-      case ShapeDrawType::OBJECT_DRAW_FLAT:
-      {
-         Vector3 thisPos = pos;
-         if (pos.y == 0)
-         {
-				thisPos.y = .01f; //  Otherwise, z-fighting.
-			}
-         else
-         {
-            thisPos.y = pos.y * 1.01f;
-         }
-         DrawModel(m_flatModel, thisPos, 1, WHITE);
-         break;
-      }
-
-      case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
-      case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
-      {
-         Vector3 thisPos = pos;
-         thisPos.x += .5f;
-         thisPos.z += .5f;
-         thisPos.y += m_Dims.y * .60f;
-
-         //DrawModel(m_billboardModel, thisPos, 1, WHITE);
-         
-         DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, thisPos, Vector3{ 0, 1, 0 },
-            Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
-         break;
-      }
+      break;
    }
+
+   case ShapeDrawType::OBJECT_DRAW_FLAT:
+   {
+      finalPos = pos;
+      if (pos.y == 0)
+      {
+         finalPos.y = .01f; //  Otherwise, z-fighting.
+      }
+      else
+      {
+         finalPos.y = pos.y * 1.01f;
+      }
+      DrawModel(m_flatModel, finalPos, 1, WHITE);
+      break;
+   }
+
+   case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
+   case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
+   {
+      finalPos = pos;
+      finalPos.x += .5f;
+      finalPos.z += .5f;
+      finalPos.y += m_Dims.y * .60f;
+
+      DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
+         Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+      break;
+   }
+   }
+
+
+   //Vector3 bbmin = Vector3Subtract(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
+   //DrawSphere(bbmin, .1, BLUE);
+   //Vector3 bbmax = Vector3Add(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
+   //DrawSphere(bbmax, .1, RED);
+   DrawCubeWiresV(finalPos, Vector3{objectData->m_width, objectData->m_height, objectData->m_depth}, MAGENTA);
 }
 
 bool ShapeData::Pick(Vector3 thisPos)
@@ -656,9 +664,9 @@ bool ShapeData::Pick(Vector3 thisPos)
    Ray ray = GetScreenToWorldRay(GetMousePosition(), g_camera);
 
    BoundingBox box = {
-		Vector3{ thisPos.x - m_Scaling.x / 2, thisPos.y - m_Scaling.y / 2, thisPos.z - m_Scaling.z / 2 },
-		Vector3{ thisPos.x + m_Scaling.x / 2, thisPos.y + m_Scaling.y / 2, thisPos.z + m_Scaling.z / 2 }
-	};
+		thisPos,
+		Vector3Add(thisPos, m_boundingBox) }
+	;
 
    // Check collision between ray and box
    RayCollision collision = GetRayCollisionBox(ray, box);

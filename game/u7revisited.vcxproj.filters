@@ -99,6 +99,9 @@
     <ClInclude Include="src\Geist\TooltipSystem.h">
       <Filter>Source Files\Geist</Filter>
     </ClInclude>
+    <ClInclude Include="src\ShapeEditorState.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LoadingState.cpp">
@@ -175,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="src\Geist\TooltipSystem.cpp">
       <Filter>Source Files\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShapeEditorState.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

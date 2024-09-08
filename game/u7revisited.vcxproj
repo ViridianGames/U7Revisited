@@ -288,6 +288,7 @@
     <ClInclude Include="src\OptionsState.h" />
     <ClInclude Include="src\screens.h" />
     <ClInclude Include="src\ShapeData.h" />
+    <ClInclude Include="src\ShapeEditorState.h" />
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\TitleState.h" />
     <ClInclude Include="src\U7Globals.h" />
@@ -320,6 +321,7 @@
     <ClCompile Include="src\ObjectEditorState.cpp" />
     <ClCompile Include="src\OptionsState.cpp" />
     <ClCompile Include="src\ShapeData.cpp" />
+    <ClCompile Include="src\ShapeEditorState.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\TitleState.cpp" />
     <ClCompile Include="src\U7Globals.cpp" />

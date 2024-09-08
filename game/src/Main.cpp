@@ -23,6 +23,7 @@
 #include "OptionsState.h"
 #include "LoadingState.h"
 #include "ObjectEditorState.h"
+#include "ShapeEditorState.h"
 #include "WorldEditorState.h"
 #include "ShapeData.h"
 #include <string>
@@ -109,12 +110,12 @@ int main(int argv, char** argc)
       g_Borders.push_back(g_BoxB);
       g_Borders.push_back(g_BoxBR);
 
-      g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 3, 11);
+      g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 11);
       g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 11);
-      g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 3, 11);
-      g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 3, 11);
+      g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 4, 11);
+      g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 4, 11);
       g_ActiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 10, 0, 1, 11);
-      g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 3, 11);
+      g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 4, 11);
 
       g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
       g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
@@ -140,6 +141,10 @@ int main(int argv, char** argc)
       State* objectEditorState = new ObjectEditorState;
       objectEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_OBJECTEDITORSTATE, objectEditorState);
+
+      State* shapeEditorState = new ShapeEditorState;
+      shapeEditorState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_SHAPEEDITORSTATE, shapeEditorState);
 
       State* worldEditorState = new WorldEditorState;
       worldEditorState->Init("engine.cfg");

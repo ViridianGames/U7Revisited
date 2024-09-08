@@ -160,7 +160,7 @@ void MainState::Update()
 
 	if (IsKeyPressed(KEY_F1))
 	{
-		g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
+		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 
 	}
 
@@ -213,10 +213,7 @@ void MainState::Update()
 			{
 				g_selectedShape = (*node)->m_shapeData->GetShape();
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				(*node)->m_color.g = 0;
-				(*node)->m_color.b = 0;
 				m_selectedObject = (*node)->m_ID;
-
 
 				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame));
 

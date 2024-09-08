@@ -85,11 +85,15 @@ void TitleState::CreateTitleGUI()
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, 230, "Object Editor",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, 220, "Shape Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, 270, "World Editor",
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, 250, "Object Editor",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, 280, "World Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
@@ -121,7 +125,12 @@ void TitleState::UpdateTitle()
       g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
    }
    
-   if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_OBJECT_EDITOR)
+   if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SHAPE_EDITOR)
+   {
+      g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_OBJECT_EDITOR)
    {
       g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
    }
