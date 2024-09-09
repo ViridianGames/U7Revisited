@@ -108,7 +108,10 @@ void GuiTextButton::Draw()
 
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
-			0.5f, 1, m_Gui->m_Scale, m_BorderColor);
+			0.5f,
+                        1,
+                        //m_Gui->m_Scale,
+                        m_BorderColor);
 
 		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
@@ -125,7 +128,9 @@ void GuiTextButton::Draw()
 
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
-			0.5f, 1, m_Gui->m_Scale, m_BorderColor);
+			0.5f, 1,
+                                //m_Gui->m_Scale,
+                                m_BorderColor);
 
 		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize , m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
@@ -139,7 +144,9 @@ void GuiTextButton::Draw()
 
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
-			0.5f, 1, m_Gui->m_Scale, m_BackgroundColor);
+			0.5f, 1,
+                                //m_Gui->m_Scale,
+                                m_BackgroundColor);
 
 		DrawStringCentered(m_Font, m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},

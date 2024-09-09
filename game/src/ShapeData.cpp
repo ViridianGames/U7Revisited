@@ -655,7 +655,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
    //DrawSphere(bbmin, .1, BLUE);
    //Vector3 bbmax = Vector3Add(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
    //DrawSphere(bbmax, .1, RED);
-   //DrawCubeWiresV(finalPos, Vector3{objectData->m_width, objectData->m_height, objectData->m_depth}, MAGENTA);
+   DrawCubeWiresV(finalPos, Vector3{objectData->m_width, objectData->m_height, objectData->m_depth}, MAGENTA);
 }
 
 bool ShapeData::Pick(Vector3 thisPos)

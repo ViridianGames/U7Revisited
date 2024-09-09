@@ -206,7 +206,7 @@ static const short linuxToRaylibMap[KEYMAP_SIZE] = {
     [BTN_TL] = GAMEPAD_BUTTON_LEFT_TRIGGER_1,
     [BTN_TL2] = GAMEPAD_BUTTON_LEFT_TRIGGER_2,
     [BTN_TR] = GAMEPAD_BUTTON_RIGHT_TRIGGER_1,
-    [BTN_TR2] GAMEPAD_BUTTON_RIGHT_TRIGGER_2,
+    [BTN_TR2] = GAMEPAD_BUTTON_RIGHT_TRIGGER_2,
     [BTN_SELECT] = GAMEPAD_BUTTON_MIDDLE_LEFT,
     [BTN_MODE] = GAMEPAD_BUTTON_MIDDLE,
     [BTN_START] = GAMEPAD_BUTTON_MIDDLE_RIGHT,
@@ -388,29 +388,69 @@ Vector2 GetMonitorPosition(int monitor)
 // Get selected monitor width (currently used by monitor)
 int GetMonitorWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorWidth() not implemented on target platform");
-    return 0;
+    int width = 0;
+
+    if (monitor != 0)
+    {
+        TRACELOG(LOG_WARNING, "GetMonitorWidth() implemented for first monitor only");
+    }
+    else if ((platform.connector) && (platform.modeIndex >= 0))
+    {
+        width = platform.connector->modes[platform.modeIndex].hdisplay;
+    }
+
+    return width;
 }
 
 // Get selected monitor height (currently used by monitor)
 int GetMonitorHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorHeight() not implemented on target platform");
-    return 0;
+    int height = 0;
+
+    if (monitor != 0)
+    {
+        TRACELOG(LOG_WARNING, "GetMonitorHeight() implemented for first monitor only");
+    }
+    else if ((platform.connector) && (platform.modeIndex >= 0))
+    {
+        height = platform.connector->modes[platform.modeIndex].vdisplay;
+    }
+
+    return height;
 }
 
 // Get selected monitor physical width in millimetres
 int GetMonitorPhysicalWidth(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth() not implemented on target platform");
-    return 0;
+    int physicalWidth = 0;
+
+    if (monitor != 0)
+    {
+        TRACELOG(LOG_WARNING, "GetMonitorPhysicalWidth() implemented for first monitor only");
+    }
+    else if ((platform.connector) && (platform.modeIndex >= 0))
+    {
+        physicalWidth = platform.connector->mmWidth;
+    }
+
+    return physicalWidth;
 }
 
 // Get selected monitor physical height in millimetres
 int GetMonitorPhysicalHeight(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight() not implemented on target platform");
-    return 0;
+    int physicalHeight = 0;
+
+    if (monitor != 0)
+    {
+        TRACELOG(LOG_WARNING, "GetMonitorPhysicalHeight() implemented for first monitor only");
+    }
+    else if ((platform.connector) && (platform.modeIndex >= 0))
+    {
+        physicalHeight = platform.connector->mmHeight;
+    }
+
+    return physicalHeight;
 }
 
 // Get selected monitor refresh rate
@@ -429,8 +469,18 @@ int GetMonitorRefreshRate(int monitor)
 // Get the human-readable, UTF-8 encoded name of the selected monitor
 const char *GetMonitorName(int monitor)
 {
-    TRACELOG(LOG_WARNING, "GetMonitorName() not implemented on target platform");
-    return "";
+    const char *name = "";
+
+    if (monitor != 0)
+    {
+        TRACELOG(LOG_WARNING, "GetMonitorName() implemented for first monitor only");
+    }
+    else if ((platform.connector) && (platform.modeIndex >= 0))
+    {
+        name = platform.connector->modes[platform.modeIndex].name;
+    }
+
+    return name;
 }
 
 // Get window position XY on monitor
@@ -578,6 +628,13 @@ void SetMouseCursor(int cursor)
     TRACELOG(LOG_WARNING, "SetMouseCursor() not implemented on target platform");
 }
 
+// Get physical key name.
+const char *GetKeyName(int key)
+{
+    TRACELOG(LOG_WARNING, "GetKeyName() not implemented on target platform");
+    return "";
+}
+
 // Register all input events
 void PollInputEvents(void)
 {
@@ -706,8 +763,10 @@ int InitPlatform(void)
 
         drmModeConnector *con = drmModeGetConnector(platform.fd, res->connectors[i]);
         TRACELOG(LOG_TRACE, "DISPLAY: Connector modes detected: %i", con->count_modes);
-
-        if ((con->connection == DRM_MODE_CONNECTED) && (con->encoder_id))
+        
+        // In certain cases the status of the conneciton is reported as UKNOWN, but it is still connected.
+        // This might be a hardware or software limitation like on Raspberry Pi Zero with composite output.
+        if (((con->connection == DRM_MODE_CONNECTED) || (con->connection == DRM_MODE_UNKNOWNCONNECTION)) && (con->encoder_id))
         {
             TRACELOG(LOG_TRACE, "DISPLAY: DRM mode connected");
             platform.connector = con;
@@ -978,7 +1037,7 @@ int InitPlatform(void)
 
     // If graphic device is no properly initialized, we end program
     if (!CORE.Window.ready) { TRACELOG(LOG_FATAL, "PLATFORM: Failed to initialize graphic device"); return -1; }
-    else SetWindowPosition(GetMonitorWidth(GetCurrentMonitor()) / 2 - CORE.Window.screen.width / 2, GetMonitorHeight(GetCurrentMonitor()) / 2 - CORE.Window.screen.height / 2);
+    else SetWindowPosition(GetMonitorWidth(GetCurrentMonitor())/2 - CORE.Window.screen.width/2, GetMonitorHeight(GetCurrentMonitor())/2 - CORE.Window.screen.height/2);
 
     // Set some default window flags
     CORE.Window.flags &= ~FLAG_WINDOW_HIDDEN;       // false
@@ -1086,7 +1145,8 @@ void ClosePlatform(void)
 
     // Close the evdev devices
 
-    if (platform.mouseFd != -1) {
+    if (platform.mouseFd != -1)
+    {
         close(platform.mouseFd);
         platform.mouseFd = -1;
     }
@@ -1563,7 +1623,7 @@ static void PollKeyboardEvents(void)
                     }
                 }
 
-                TRACELOG(LOG_DEBUG, "INPUT: KEY_%s Keycode(linux): %4i KeyCode(raylib): %4i", (event.value == 0) ? "UP  " : "DOWN", event.code, keycode);
+                TRACELOG(LOG_DEBUG, "INPUT: KEY_%s Keycode(linux): %4i KeyCode(raylib): %4i", (event.value == 0)? "UP  " : "DOWN", event.code, keycode);
             }
         }
     }
@@ -1590,7 +1650,7 @@ static void PollGamepadEvents(void)
                 {
                     short keycodeRaylib = linuxToRaylibMap[event.code];
 
-                    TRACELOG(LOG_DEBUG, "INPUT: Gamepad %2i: KEY_%s Keycode(linux): %4i Keycode(raylib): %4i", i, (event.value == 0) ? "UP  " : "DOWN", event.code, keycodeRaylib);
+                    TRACELOG(LOG_DEBUG, "INPUT: Gamepad %2i: KEY_%s Keycode(linux): %4i Keycode(raylib): %4i", i, (event.value == 0)? "UP" : "DOWN", event.code, keycodeRaylib);
 
                     if ((keycodeRaylib != 0) && (keycodeRaylib < MAX_GAMEPAD_BUTTONS))
                     {
@@ -1615,7 +1675,7 @@ static void PollGamepadEvents(void)
                         int range = platform.gamepadAbsAxisRange[i][event.code][1];
 
                         // NOTE: Scaling of event.value to get values between -1..1
-                        CORE.Input.Gamepad.axisState[i][axisRaylib] = (2 * (float)(event.value - min) / range) - 1;
+                        CORE.Input.Gamepad.axisState[i][axisRaylib] = (2*(float)(event.value - min)/range) - 1;
                     }
                 }
             }
@@ -1874,9 +1934,7 @@ static int FindNearestConnectorMode(const drmModeConnector *connector, uint widt
         const int nearestHeightDiff = abs(platform.connector->modes[nearestIndex].vdisplay - height);
         const int nearestFpsDiff = abs(platform.connector->modes[nearestIndex].vrefresh - fps);
 
-        if ((widthDiff < nearestWidthDiff) || (heightDiff < nearestHeightDiff) || (fpsDiff < nearestFpsDiff)) {
-            nearestIndex = i;
-        }
+        if ((widthDiff < nearestWidthDiff) || (heightDiff < nearestHeightDiff) || (fpsDiff < nearestFpsDiff)) nearestIndex = i;
     }
 
     return nearestIndex;

@@ -100,6 +100,8 @@ static const char cursorLUT[11][12] = {
     "not-allowed"  // 10 MOUSE_CURSOR_NOT_ALLOWED
 };
 
+Vector2 lockedMousePos = { 0 };
+
 //----------------------------------------------------------------------------------
 // Module Internal Functions Declaration
 //----------------------------------------------------------------------------------
@@ -127,10 +129,11 @@ static void CursorEnterCallback(GLFWwindow *window, int enter);                 
 
 // Emscripten window callback events
 static EM_BOOL EmscriptenFullscreenChangeCallback(int eventType, const EmscriptenFullscreenChangeEvent *event, void *userData);
-static EM_BOOL EmscriptenWindowResizedCallback(int eventType, const EmscriptenUiEvent *event, void *userData);
+// static EM_BOOL EmscriptenWindowResizedCallback(int eventType, const EmscriptenUiEvent *event, void *userData);
 static EM_BOOL EmscriptenResizeCallback(int eventType, const EmscriptenUiEvent *event, void *userData);
 
 // Emscripten input callback events
+static EM_BOOL EmscriptenMouseMoveCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
 static EM_BOOL EmscriptenMouseCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData);
 static EM_BOOL EmscriptenPointerlockCallback(int eventType, const EmscriptenPointerlockChangeEvent *pointerlockChangeEvent, void *userData);
 static EM_BOOL EmscriptenTouchCallback(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData);
@@ -187,7 +190,8 @@ void ToggleFullscreen(void)
     if (enterFullscreen)
     {
         // NOTE: The setTimeouts handle the browser mode change delay
-        EM_ASM(
+        EM_ASM
+        (
             setTimeout(function()
             {
                 Module.requestFullscreen(false, false);
@@ -295,7 +299,8 @@ void ToggleBorderlessWindowed(void)
     {
         // NOTE: 1. The setTimeouts handle the browser mode change delay
         //       2. The style unset handles the possibility of a width="value%" like on the default shell.html file
-        EM_ASM(
+        EM_ASM
+        (
             setTimeout(function()
             {
                 Module.requestFullscreen(false, true);
@@ -862,6 +867,8 @@ void SetMousePosition(int x, int y)
     CORE.Input.Mouse.currentPosition = (Vector2){ (float)x, (float)y };
     CORE.Input.Mouse.previousPosition = CORE.Input.Mouse.currentPosition;
 
+    if (CORE.Input.Mouse.cursorHidden) lockedMousePos = CORE.Input.Mouse.currentPosition;
+
     // NOTE: emscripten not implemented
     glfwSetCursorPos(platform.handle, CORE.Input.Mouse.currentPosition.x, CORE.Input.Mouse.currentPosition.y);
 }
@@ -875,6 +882,13 @@ void SetMouseCursor(int cursor)
 
         CORE.Input.Mouse.cursor = cursor;
     }
+}
+
+// Get physical key name.
+const char *GetKeyName(int key)
+{
+    TRACELOG(LOG_WARNING, "GetKeyName() not implemented on target platform");
+    return "";
 }
 
 // Register all input events
@@ -967,7 +981,7 @@ void PollInputEvents(void)
                     default: break;
                 }
 
-                if (button != -1)   // Check for valid button
+                if (button + 1 != 0)   // Check for valid button
                 {
                     if (gamepadState.digitalButton[j] == 1)
                     {
@@ -1270,6 +1284,9 @@ int InitPlatform(void)
     emscripten_set_click_callback("#canvas", NULL, 1, EmscriptenMouseCallback);
     emscripten_set_pointerlockchange_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, NULL, 1, EmscriptenPointerlockCallback);
 
+    // Following the mouse delta when the mouse is locked
+    emscripten_set_mousemove_callback("#canvas", NULL, 1, EmscriptenMouseMoveCallback);
+
     // Support touch events
     emscripten_set_touchstart_callback("#canvas", NULL, 1, EmscriptenTouchCallback);
     emscripten_set_touchend_callback("#canvas", NULL, 1, EmscriptenTouchCallback);
@@ -1477,9 +1494,13 @@ static void MouseButtonCallback(GLFWwindow *window, int button, int action, int 
 // GLFW3 Cursor Position Callback, runs on mouse move
 static void MouseCursorPosCallback(GLFWwindow *window, double x, double y)
 {
-    CORE.Input.Mouse.currentPosition.x = (float)x;
-    CORE.Input.Mouse.currentPosition.y = (float)y;
-    CORE.Input.Touch.position[0] = CORE.Input.Mouse.currentPosition;
+    // If the pointer is not locked, follow the position
+    if (!CORE.Input.Mouse.cursorHidden)
+    {
+        CORE.Input.Mouse.currentPosition.x = (float)x;
+        CORE.Input.Mouse.currentPosition.y = (float)y;
+        CORE.Input.Touch.position[0] = CORE.Input.Mouse.currentPosition;
+    }
 
 #if defined(SUPPORT_GESTURES_SYSTEM) && defined(SUPPORT_MOUSE_GESTURES)
     // Process mouse events as touches to be able to use mouse-gestures
@@ -1503,6 +1524,18 @@ static void MouseCursorPosCallback(GLFWwindow *window, double x, double y)
     // Gesture data is sent to gestures-system for processing
     ProcessGestureEvent(gestureEvent);
 #endif
+}
+
+static EM_BOOL EmscriptenMouseMoveCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
+{
+    // To emulate the GLFW_RAW_MOUSE_MOTION property.
+    if (CORE.Input.Mouse.cursorHidden)
+    {
+        CORE.Input.Mouse.previousPosition.x = lockedMousePos.x - mouseEvent->movementX;
+        CORE.Input.Mouse.previousPosition.y = lockedMousePos.y - mouseEvent->movementY;
+    }
+
+    return 1; // The event was consumed by the callback handler
 }
 
 // GLFW3 Scrolling Callback, runs on mouse wheel
@@ -1539,12 +1572,12 @@ static EM_BOOL EmscriptenFullscreenChangeCallback(int eventType, const Emscripte
 }
 
 // Register window resize event
-static EM_BOOL EmscriptenWindowResizedCallback(int eventType, const EmscriptenUiEvent *event, void *userData)
-{
-    // TODO: Implement EmscriptenWindowResizedCallback()?
+// static EM_BOOL EmscriptenWindowResizedCallback(int eventType, const EmscriptenUiEvent *event, void *userData)
+// {
+//     // TODO: Implement EmscriptenWindowResizedCallback()?
 
-    return 1; // The event was consumed by the callback handler
-}
+//     return 1; // The event was consumed by the callback handler
+// }
 
 EM_JS(int, GetWindowInnerWidth, (), { return window.innerWidth; });
 EM_JS(int, GetWindowInnerHeight, (), { return window.innerHeight; });
@@ -1560,11 +1593,11 @@ static EM_BOOL EmscriptenResizeCallback(int eventType, const EmscriptenUiEvent *
     int width = GetWindowInnerWidth();
     int height = GetWindowInnerHeight();
 
-    if (width < CORE.Window.screenMin.width) width = CORE.Window.screenMin.width;
-    else if (width > CORE.Window.screenMax.width && CORE.Window.screenMax.width > 0) width = CORE.Window.screenMax.width;
+    if (width < (int)CORE.Window.screenMin.width) width = CORE.Window.screenMin.width;
+    else if (width > (int)CORE.Window.screenMax.width && CORE.Window.screenMax.width > 0) width = CORE.Window.screenMax.width;
 
-    if (height < CORE.Window.screenMin.height) height = CORE.Window.screenMin.height;
-    else if (height > CORE.Window.screenMax.height && CORE.Window.screenMax.height > 0) height = CORE.Window.screenMax.height;
+    if (height < (int)CORE.Window.screenMin.height) height = CORE.Window.screenMin.height;
+    else if (height > (int)CORE.Window.screenMax.height && CORE.Window.screenMax.height > 0) height = CORE.Window.screenMax.height;
 
     emscripten_set_canvas_element_size("#canvas", width, height);
 
@@ -1597,6 +1630,12 @@ static EM_BOOL EmscriptenMouseCallback(int eventType, const EmscriptenMouseEvent
 static EM_BOOL EmscriptenPointerlockCallback(int eventType, const EmscriptenPointerlockChangeEvent *pointerlockChangeEvent, void *userData)
 {
     CORE.Input.Mouse.cursorHidden = EM_ASM_INT( { if (document.pointerLockElement) return 1; }, 0);
+
+    if (CORE.Input.Mouse.cursorHidden)
+    {
+        lockedMousePos = CORE.Input.Mouse.currentPosition;
+        CORE.Input.Mouse.previousPosition = lockedMousePos;
+    }
 
     return 1; // The event was consumed by the callback handler
 }

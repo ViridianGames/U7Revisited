@@ -171,6 +171,10 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 
             *width = header->width;
             *height = header->height;
+
+            if (*width % 4 != 0) LOG("WARNING: IMAGE: DDS file width must be multiple of 4. Image will not display correctly");
+            if (*height % 4 != 0) LOG("WARNING: IMAGE: DDS file height must be multiple of 4. Image will not display correctly");
+
             image_pixel_size = header->width*header->height;
 
             if (header->mipmap_count == 0) *mips = 1;   // Parameter not used
@@ -229,7 +233,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
                     }
                 }
             }
-            else if (header->ddspf.flags == 0x40 && header->ddspf.rgb_bit_count == 24)   // DDS_RGB, no compressed
+            else if ((header->ddspf.flags == 0x40) && (header->ddspf.rgb_bit_count == 24))   // DDS_RGB, no compressed
             {
                 int data_size = image_pixel_size*3*sizeof(unsigned char);
                 image_data = RL_MALLOC(data_size);
@@ -238,7 +242,7 @@ void *rl_load_dds_from_memory(const unsigned char *file_data, unsigned int file_
 
                 *format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
             }
-            else if (header->ddspf.flags == 0x41 && header->ddspf.rgb_bit_count == 32) // DDS_RGBA, no compressed
+            else if ((header->ddspf.flags == 0x41) && (header->ddspf.rgb_bit_count == 32)) // DDS_RGBA, no compressed
             {
                 int data_size = image_pixel_size*4*sizeof(unsigned char);
                 image_data = RL_MALLOC(data_size);

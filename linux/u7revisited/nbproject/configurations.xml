@@ -8,6 +8,7 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>../../resources/Data/engine.cfg</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -97,6 +98,9 @@
         <ccTool>
           <standard>11</standard>
         </ccTool>
+        <linkerTool>
+          <commandLine>-lraylib</commandLine>
+        </linkerTool>
       </compileType>
       <item path="../../game/src/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -242,6 +246,8 @@
             flavor2="0">
       </item>
       <item path="../../game/src/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../resources/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -264,6 +270,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-lraylib</commandLine>
+        </linkerTool>
       </compileType>
       <item path="../../game/src/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -409,6 +418,8 @@
             flavor2="0">
       </item>
       <item path="../../game/src/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../resources/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>
