@@ -1,8 +1,8 @@
 #ifndef _TitleState_H_
 #define _TitleState_H_
 
-#include "Geist\State.h"
-#include "Geist\Gui.h"
+#include "Geist/State.h"
+#include "Geist/Gui.h"
 #include <list>
 #include <deque>
 #include <math.h>

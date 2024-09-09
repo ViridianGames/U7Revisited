@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <logicalFolder name="src" displayName="src" projectFiles="true">
+        <logicalFolder name="Geist" displayName="Geist" projectFiles="true">
+          <itemPath>../../game/src/Geist/BaseUnits.cpp</itemPath>
+          <itemPath>../../game/src/Geist/BaseUnits.h</itemPath>
+          <itemPath>../../game/src/Geist/Config.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Config.h</itemPath>
+          <itemPath>../../game/src/Geist/Engine.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Engine.h</itemPath>
+          <itemPath>../../game/src/Geist/GUIElements.cpp</itemPath>
+          <itemPath>../../game/src/Geist/GUIElements.h</itemPath>
+          <itemPath>../../game/src/Geist/Globals.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Globals.h</itemPath>
+          <itemPath>../../game/src/Geist/Gui.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Gui.h</itemPath>
+          <itemPath>../../game/src/Geist/IO.cpp</itemPath>
+          <itemPath>../../game/src/Geist/IO.h</itemPath>
+          <itemPath>../../game/src/Geist/Logging.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Logging.h</itemPath>
+          <itemPath>../../game/src/Geist/Object.h</itemPath>
+          <itemPath>../../game/src/Geist/ParticleSystem.cpp</itemPath>
+          <itemPath>../../game/src/Geist/ParticleSystem.h</itemPath>
+          <itemPath>../../game/src/Geist/Primitives.cpp</itemPath>
+          <itemPath>../../game/src/Geist/Primitives.h</itemPath>
+          <itemPath>../../game/src/Geist/RNG.cpp</itemPath>
+          <itemPath>../../game/src/Geist/RNG.h</itemPath>
+          <itemPath>../../game/src/Geist/ResourceManager.cpp</itemPath>
+          <itemPath>../../game/src/Geist/ResourceManager.h</itemPath>
+          <itemPath>../../game/src/Geist/State.h</itemPath>
+          <itemPath>../../game/src/Geist/StateMachine.cpp</itemPath>
+          <itemPath>../../game/src/Geist/StateMachine.h</itemPath>
+          <itemPath>../../game/src/Geist/TooltipSystem.cpp</itemPath>
+          <itemPath>../../game/src/Geist/TooltipSystem.h</itemPath>
+        </logicalFolder>
+        <itemPath>../../game/src/LoadingState.cpp</itemPath>
+        <itemPath>../../game/src/LoadingState.h</itemPath>
+        <itemPath>../../game/src/Main.cpp</itemPath>
+        <itemPath>../../game/src/MainState.cpp</itemPath>
+        <itemPath>../../game/src/MainState.h</itemPath>
+        <itemPath>../../game/src/ObjectEditorState.cpp</itemPath>
+        <itemPath>../../game/src/ObjectEditorState.h</itemPath>
+        <itemPath>../../game/src/OptionsState.cpp</itemPath>
+        <itemPath>../../game/src/OptionsState.h</itemPath>
+        <itemPath>../../game/src/ShapeData.cpp</itemPath>
+        <itemPath>../../game/src/ShapeData.h</itemPath>
+        <itemPath>../../game/src/ShapeEditorState.cpp</itemPath>
+        <itemPath>../../game/src/ShapeEditorState.h</itemPath>
+        <itemPath>../../game/src/Terrain.cpp</itemPath>
+        <itemPath>../../game/src/Terrain.h</itemPath>
+        <itemPath>../../game/src/TitleState.cpp</itemPath>
+        <itemPath>../../game/src/TitleState.h</itemPath>
+        <itemPath>../../game/src/U7Globals.cpp</itemPath>
+        <itemPath>../../game/src/U7Globals.h</itemPath>
+        <itemPath>../../game/src/U7Object.cpp</itemPath>
+        <itemPath>../../game/src/U7Object.h</itemPath>
+        <itemPath>../../game/src/WorldEditorState.cpp</itemPath>
+        <itemPath>../../game/src/WorldEditorState.h</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../../game/src</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <standard>11</standard>
+        </ccTool>
+      </compileType>
+      <item path="../../game/src/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/GUIElements.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Primitives.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/StateMachine.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/TooltipSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/MainState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/MainState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ObjectEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/ObjectEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/OptionsState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Terrain.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Terrain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/TitleState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/TitleState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Object.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/WorldEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <standard>11</standard>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="../../game/src/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Config.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Config.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Engine.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/GUIElements.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/IO.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Logging.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Logging.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ParticleSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ParticleSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Primitives.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/Primitives.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ResourceManager.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/ResourceManager.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/State.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/StateMachine.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/StateMachine.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/TooltipSystem.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/Geist/TooltipSystem.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/LoadingState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/LoadingState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/MainState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/MainState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ObjectEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/ObjectEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/OptionsState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/OptionsState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeData.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/ShapeEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/Terrain.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/Terrain.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/TitleState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/TitleState.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Globals.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Object.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../game/src/U7Object.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../game/src/WorldEditorState.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../game/src/WorldEditorState.h" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

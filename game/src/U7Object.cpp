@@ -5,7 +5,6 @@
 #include "Geist/Config.h"
 #include "U7Globals.h"
 #include "U7Object.h"
-#include "Config.h"
 #include "ShapeData.h"
 
 using namespace std;

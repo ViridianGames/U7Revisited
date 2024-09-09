@@ -1,8 +1,8 @@
 #ifndef _U7OBJECT_H_
 #define _U7OBJECT_H_
 
-#include "Geist\Globals.h"
-#include "Geist\BaseUnits.h"
+#include "Geist/Globals.h"
+#include "Geist/BaseUnits.h"
 #include <string>
 #include <list>
 

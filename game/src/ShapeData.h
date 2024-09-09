@@ -63,7 +63,7 @@ public:
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
 
-	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3& scaling =  Vector3{ 1, 1, 1 });
+	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
 
 	void DrawSide(CuboidSides side, Vector3 thisPos, Color color, Vector3 scaling);
 
@@ -90,7 +90,7 @@ public:
 	int GetFrame() { return m_frame; }
 
 	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTextures[static_cast<int>(side)]; }
-	void ShapeData::SetTextureForMeshFromSideData(CuboidSides side);
+	void SetTextureForMeshFromSideData(CuboidSides side);
 	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTextures[static_cast<int>(side)] = texture; }
 	void UpdateAllCuboidTextures();
 

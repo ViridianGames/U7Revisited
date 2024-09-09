@@ -13,9 +13,9 @@
 
 #include "Geist/Globals.h"
 #include "Geist/RNG.h"
+#include "Geist/Config.h"
 #include "U7Globals.h"
 #include "Terrain.h"
-#include "Config.h"
 
 using namespace std;
 
