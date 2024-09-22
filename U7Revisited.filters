@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{3a45f231-aa12-4529-8840-752f0e81761a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Units">
+      <UniqueIdentifier>{6fff3c1c-d4bd-4583-a4d7-59ff41db3235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\States">
+      <UniqueIdentifier>{5b0ac78f-2548-42c5-a50e-3e4ef22e0232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{8366ee66-359a-49f2-bb80-e0c4f2589568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Objects">
+      <UniqueIdentifier>{7f28795d-8c2c-45f0-8108-693a58383234}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Redist\Data\engine.cfg">
+      <Filter>Resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Terrain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MainState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OptionsState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleState.cpp">
+      <Filter>Source\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\model3d.cc">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Globals.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\U7Unit.cpp">
+      <Filter>Source\Units</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Terrain.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MainState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OptionsState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TitleState.h">
+      <Filter>Source\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\model3d.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Globals.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Unit.h">
+      <Filter>Source\Units</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Redist\Data\GUIs\MainMenu.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Planitia Design.txt" />
+    <Text Include="Planitia Tasks.txt" />
+    <Text Include="Redist\Data\GUIs\CreateDiety.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\ESCMenu.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\In-Game.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\LoadDiety.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\Multiplayer.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\Options.txt">
+      <Filter>Resources</Filter>
+    </Text>
+    <Text Include="Redist\Data\GUIs\SkirmishGame.txt">
+      <Filter>Resources</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Redist\Data\GUIs\ingame.xml">
+      <Filter>Resources</Filter>
+    </Xml>
+  </ItemGroup>
+</Project>
