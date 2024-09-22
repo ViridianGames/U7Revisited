@@ -1,7 +1,0 @@
-Data\Maps\Level1Terrain.txt
-2
-16
-16
-42
-42
-GOAL_MOVE

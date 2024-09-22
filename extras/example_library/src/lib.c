@@ -1,5 +1,0 @@
-// C library
-
-void LibFunction()
-{
-}
