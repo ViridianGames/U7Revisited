@@ -59,15 +59,15 @@ int main(int argv, char** argc)
 
       switch (x)
       {
-         case 0:
+         case 0: //  Staring Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
 			   break;
 
-         case 1:
+         case 1: //  Museum
             g_camera.target = Vector3{ 896.0f, 0.0f, 1328.0f };
             break;
 
-         case 2:
+         case 2: //  Moongate
             g_camera.target = Vector3{ 1025.0f, 0.0f, 2433.0f };
             break;
          
