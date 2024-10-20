@@ -1,6 +1,7 @@
 #include "Geist/Globals.h"
 #include "Geist/Engine.h"
 #include "Geist/StateMachine.h"
+#include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "TitleState.h"
 
@@ -25,6 +26,7 @@ TitleState::~TitleState()
 void TitleState::Init(const string& configfile)
 {
    CreateTitleGUI();
+   m_title = g_ResourceManager->GetTexture("Images/title.png");
 }
 
 void TitleState::OnEnter()
@@ -118,9 +120,15 @@ void TitleState::Draw()
    //  Draw version number in lower-right
    DrawTextEx(*g_Font, g_version.c_str(), Vector2{ GetRenderWidth() * .92f, GetRenderHeight() * .94f }, g_fontSize, 1, WHITE);
 
-   m_TitleGui->Draw();
+   //DrawTexture(*m_title, 0, 0, WHITE);
 
-   DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+   DrawTexturePro(*m_title, Rectangle{ 0, 0, float(m_title->width), float(m_title->height) }, Rectangle{ 0, 0, float(m_title->width * g_DrawScale * .5f), float(m_title->height * g_DrawScale * .5f) }, { 0,0 }, 0, WHITE);
+
+   if (m_mouseMoved)
+   {
+      m_TitleGui->Draw();
+      DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+   }
 
    EndDrawing();
 }
@@ -137,8 +145,8 @@ void TitleState::CreateTitleGUI()
 
    m_TitleGui->SetLayout(0, 0, 640, 360, g_DrawScale, Gui::GUIP_CENTER);
    m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 220, 180, 200, 160, g_Borders);
-   m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
-      (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);
+   //m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
+   //   (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);
 
    m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, 190, "Begin",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
@@ -203,6 +211,11 @@ void TitleState::UpdateTitle()
    if (IsKeyPressed(KEY_ESCAPE))
    {
 		g_Engine->m_Done = true;
+	}
+
+   if (GetMouseDelta().x != 0 || GetMouseDelta().y != 0)
+   {
+		m_mouseMoved = true;
 	}
 }
 

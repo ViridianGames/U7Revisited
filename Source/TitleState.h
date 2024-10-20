@@ -49,6 +49,9 @@ public:
    std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
 
    float m_LastUpdate;
+
+   bool m_mouseMoved;
+   Texture* m_title;
 };
 
 #endif
