@@ -152,8 +152,6 @@ public:
 	CuboidTexture m_sideTextures[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
 	std::array<Model, static_cast<int>(CuboidSides::CUBOID_LAST)> m_cuboidModels;
-
-	Vector3 m_boundingBox;
 };
 
 #endif

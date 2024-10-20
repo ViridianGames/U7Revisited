@@ -29,10 +29,12 @@ public:
    virtual Vector3 GetDest() { return m_Dest; }
    virtual float GetSpeed() { return m_Speed; }
 
-   virtual void SetInitialPos(Vector3 pos) { m_Pos = pos; m_Dest = pos; }
-   virtual void SetPos(Vector3 pos) { m_Pos = pos; }
+   void SetInitialPos(Vector3 pos) { SetPos(pos); SetDest(pos); }
+   virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
    virtual void SetSpeed(float speed) { m_Speed = speed; }
+
+   bool Pick();
 
    Vector3 m_Pos;
    Vector3 m_Dest;
@@ -79,6 +81,8 @@ public:
    double m_distanceFromCamera;
 
    Color m_color = WHITE;
+
+   BoundingBox m_boundingBox;
 
 };
 

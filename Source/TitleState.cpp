@@ -30,6 +30,7 @@ void TitleState::Init(const string& configfile)
 void TitleState::OnEnter()
 {
    ClearConsole();
+   m_LastUpdate = 0;
 }
 
 void TitleState::OnExit()
@@ -44,6 +45,52 @@ void TitleState::Shutdown()
 
 void TitleState::Update()
 {
+   if (GetTime() - m_LastUpdate > GetFrameTime())
+   {
+      g_CurrentUpdate++;
+
+      m_sortedVisibleObjects.clear();
+      float drawRange = g_cameraDistance * 1.5f;
+      for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+      {
+         (*node).second->Update();
+         float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
+         distance -= (*node).second->m_Pos.y;
+         if (distance < drawRange && (*node).second->m_Pos.y <= 4.0f)
+         {
+            double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
+            (*node).second->m_distanceFromCamera = distanceFromCamera;
+            m_sortedVisibleObjects.push_back((*node).second);
+         }
+      }
+
+      std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+
+      m_LastUpdate = GetTime();
+   }
+
+   //  Slow rotate on the title screen
+   g_CameraRotateSpeed = 0.001f;
+   g_cameraRotation += g_CameraRotateSpeed;
+
+   Vector3 current = g_camera.target;
+
+   Vector3 finalmovement = Vector3RotateByAxisAngle(g_CameraMovementSpeed, Vector3{ 0, 1, 0 }, g_cameraRotation);
+
+   current = Vector3Add(current, finalmovement);
+
+   if (current.x < 0) current.x = 0;
+   if (current.x > 3072) current.x = 3072;
+   if (current.z < 0) current.z = 0;
+   if (current.z > 3072) current.z = 3072;
+
+   Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+   camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
+
+   g_camera.target = current;
+   g_camera.position = Vector3Add(current, camPos);
+   g_camera.fovy = g_cameraDistance;
+
    UpdateTitle();
    TestUpdate();
 }
@@ -55,11 +102,23 @@ void TitleState::Draw()
 
    ClearBackground(Color {0, 0, 0, 255});
 
-   m_TitleGui->Draw();
-   
-   DrawConsole();
+   BeginMode3D(g_camera);
 
-   //TestDraw();
+   //  Draw the terrain
+   g_Terrain->Draw();
+
+   //  Draw the objects
+   for (auto& unit : m_sortedVisibleObjects)
+   {
+      unit->Draw();
+   }
+
+   EndMode3D();
+
+   //  Draw version number in lower-right
+   DrawTextEx(*g_Font, g_version.c_str(), Vector2{ GetRenderWidth() * .92f, GetRenderHeight() * .94f }, g_fontSize, 1, WHITE);
+
+   m_TitleGui->Draw();
 
    DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 

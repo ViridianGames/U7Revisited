@@ -72,7 +72,8 @@ void LoadingState::Draw()
 
 	if (m_loadingFailed == true)
 	{
-		DrawTextEx(*g_Font, "Ultima VII files not found.  They should go into the Data/U7 folder.", Vector2{ 0, 0 }, g_fontSize, 1, WHITE);
+		std::string missingDataText = "Ultima VII files not found.  They should go into the " + g_Engine->m_EngineConfig.GetString("data_path") + " folder.";
+		DrawTextEx(*g_Font, missingDataText.c_str(), Vector2{0, 0}, g_fontSize, 1, WHITE);
 		DrawTextEx(*g_Font, "Press ESC to exit.", Vector2{ 0, g_fontSize * 2 }, g_fontSize, 1, WHITE);
 	}
 	else
@@ -463,7 +464,7 @@ void LoadingState::LoadIREG()
 	{
 		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
 		{
-            std::stringstream ss;
+         std::stringstream ss;
 			int thissuperchunk = superchunkx + (superchunky * 12);
 			if (thissuperchunk < 16)
 			{
@@ -477,7 +478,7 @@ void LoadingState::LoadIREG()
             
          std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-				 s.insert(0, loadingPath.c_str());
+			s.insert(0, loadingPath.c_str());
 
 			FILE* u7thisireg = fopen(s.c_str(), "rb");
 
@@ -525,9 +526,112 @@ void LoadingState::LoadIREG()
 							//z *= 8;
 						}
 
-						AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						
 						unsigned char quality;
 						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
+
+						if (shape != 275 && shape != 607  && shape != 0) //  Eggs
+						{
+							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						}
+					}
+					else if (length == 12) // Container or Egg
+					{
+						//continue;
+						unsigned char x;
+						unsigned char y;
+						fread(&x, sizeof(unsigned char), 1, u7thisireg); // 1
+						fread(&y, sizeof(unsigned char), 1, u7thisireg); // 2
+
+						int chunkx = x >> 4;
+						int chunky = y >> 4;
+						int intx = x & 0x0f;
+						int inty = y & 0x0f;
+
+						int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+						int actualy = (superchunky * 256) + (chunky * 16) + inty;
+
+						unsigned short shapeData;
+						fread(&shapeData, sizeof(unsigned short), 1, u7thisireg); // 3, 4
+						int shape = shapeData & 0x3ff;
+						int frame = (shapeData >> 10) & 0x1f;
+
+						unsigned char sink;
+						for (int i = 0; i < 5; ++i)
+						{
+							fread(&sink, sizeof(unsigned char), 1, u7thisireg); // 5-9
+						}
+
+						unsigned char z;
+						fread(&z, sizeof(unsigned char), 1, u7thisireg); // 10
+						float lift1 = 0;
+						float lift2 = 0;
+						float lift3 = 0;
+						if (z != 0)
+						{
+							lift1 = z >> 4;
+							lift2 = z & 0x0f;
+							lift3 = z / 8;
+							
+						}
+
+						//  Soak up the next 2 bytes.
+						unsigned char throwaway[1];
+						fread(&throwaway, sizeof(unsigned char), 1, u7thisireg);		// 11
+
+						if(shape != 275 && shape != 607 && shape != 0)
+							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						//  Egg or container?  01 Egg, 00 container.
+						unsigned char eggOrContainer;
+						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
+						if (eggOrContainer == 0)
+						{
+							//  Container.  Read in the container's objects.
+							
+							
+							unsigned char objectflag = 0;
+						//	fread(&length, sizeof(unsigned char), 1, u7thisireg);
+						//	while (objectflag != 01) //  No more contained objects
+						//	{
+						//		unsigned char x;
+						//		unsigned char y;
+						//		fread(&x, sizeof(unsigned char), 1, u7thisireg);
+						//		fread(&y, sizeof(unsigned char), 1, u7thisireg);
+
+						//		int chunkx = x >> 4;
+						//		int chunky = y >> 4;
+						//		int intx = x & 0x0f;
+						//		int inty = y & 0x0f;
+
+						//		int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+						//		int actualy = (superchunky * 256) + (chunky * 16) + inty;
+
+						//		unsigned short shapeData;
+						//		fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
+						//		int shape = shapeData & 0x3ff;
+						//		int frame = (shapeData >> 10) & 0x1f;
+
+						//		unsigned char z;
+						//		fread(&z, sizeof(unsigned char), 1, u7thisireg);
+						//		float lift1 = 0;
+						//		float lift2 = 0;
+						//		if (z != 0)
+						//		{
+						//			lift1 = z >> 4;
+						//			lift2 = z & 0x0f;
+						//			//z *= 8;
+						//		}
+
+						//		AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						//		unsigned char quality;
+						//		fread(&quality, sizeof(unsigned char), 1, u7thisireg);
+						//		fread(&objectflag, sizeof(unsigned char), 1, u7thisireg);
+						}
+						//}
+						//else
+						//{
+						//	//  Egg.  Do nothing.
+						//}
 					}
 				}
 			}

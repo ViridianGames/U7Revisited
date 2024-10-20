@@ -45,6 +45,10 @@ public:
    void TestDraw();
    
    Gui* m_TitleGui = nullptr;
+
+   std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
+
+   float m_LastUpdate;
 };
 
 #endif

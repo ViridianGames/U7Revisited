@@ -44,7 +44,7 @@ Vector3 g_Gravity = Vector3{ 0, .1f, 0 };
 
 float g_CameraRotateSpeed = 0;
 
-Vector3 g_CameraMoveSpeed = Vector3{ 0, 0, 0 };
+Vector3 g_CameraMovementSpeed = Vector3{ 0, 0, 0 };
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
@@ -124,40 +124,50 @@ unsigned int DoCameraMovement()
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
 
+	float frameTimeModifier = 30;
+
 	if (IsKeyDown(KEY_A))
 	{
-		direction = Vector3Add(direction, {-1, 0, 1});
+		direction = Vector3Add(direction, {-GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
 	if (IsKeyDown(KEY_D))
 	{
-		direction = Vector3Add(direction, { 1, 0, -1 });
+		direction = Vector3Add(direction, { GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
 	if (IsKeyDown(KEY_W))
 	{
-		direction = Vector3Add(direction, { -1, 0, -1 });
+		direction = Vector3Add(direction, { -GetFrameTime() * frameTimeModifier, 0, -GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
 	if (IsKeyDown(KEY_S))
 	{
-		direction = Vector3Add(direction,  {1, 0, 1 });
+		direction = Vector3Add(direction,  { GetFrameTime() * frameTimeModifier, 0, GetFrameTime() * frameTimeModifier });
 		g_CameraMoved = true;
 	}
 
+	if (g_CameraMoved)
+	{
+		g_CameraMovementSpeed = direction;
+	}
+
+	bool cameraRotated = false;
 	if (IsKeyDown(KEY_Q))
 	{
-		g_cameraRotation += GetFrameTime() * 5;
+		g_CameraRotateSpeed = GetFrameTime() * 5;
 		g_CameraMoved = true;
+		cameraRotated = true;
 	}
 
 if (IsKeyDown(KEY_E))
 	{
-		g_cameraRotation -= GetFrameTime() * 5;
+		g_CameraRotateSpeed = -GetFrameTime() * 5;
 		g_CameraMoved = true;
+		cameraRotated = true;
 	}
 
 	float newDistance = g_cameraDistance;
@@ -201,15 +211,50 @@ if (IsKeyDown(KEY_E))
 		g_CameraMoved = true;
 	}
 
+	bool moveDecay = false;
+	bool rotateDecay = false;
+	if (!g_CameraMoved && (g_CameraMovementSpeed.x != 0 || g_CameraMovementSpeed.z != 0))
+	{
+		g_CameraMovementSpeed = Vector3{ g_CameraMovementSpeed.x * .75f, g_CameraMovementSpeed.y, g_CameraMovementSpeed.z * .75f };
+
+		if (abs(g_CameraMovementSpeed.x) < .01f)
+		{
+			g_CameraMovementSpeed.x = 0;
+		}
+
+		if (abs(g_CameraMovementSpeed.z) < .01f)
+		{
+			g_CameraMovementSpeed.z = 0;
+		}
+
+		moveDecay = true;
+	}
+
+	if (!cameraRotated && g_CameraRotateSpeed != 0)
+	{
+		g_CameraRotateSpeed = g_CameraRotateSpeed * .75f;
+		if (abs(g_CameraRotateSpeed) < .01f)
+		{
+			g_CameraRotateSpeed = 0;
+		}
+
+		rotateDecay = true;
+	}
+
+	if (moveDecay || rotateDecay)
+	{
+		g_CameraMoved = true;
+	}
+
 	if (g_CameraMoved)
 	{
+		g_cameraRotation += g_CameraRotateSpeed;
+
 		Vector3 current = g_camera.target;
 
-		float delta = GetFrameTime() * g_camera.fovy;
-		direction = { direction.x * delta, direction.y * delta, direction.z * delta };
-		direction = Vector3RotateByAxisAngle(direction, Vector3{ 0, 1, 0 }, g_cameraRotation);
+		Vector3 finalmovement = Vector3RotateByAxisAngle(g_CameraMovementSpeed, Vector3{ 0, 1, 0 }, g_cameraRotation);
 
-		current = Vector3Add(current, direction);
+		current = Vector3Add(current, finalmovement);
 
 		if (current.x < 0) current.x = 0;
 		if (current.x > 3072) current.x = 3072;
@@ -314,6 +359,7 @@ void DrawConsole()
 {
 	int counter = 0;
 	vector<ConsoleString>::iterator node = g_ConsoleStrings.begin();
+	float shadowOffset = GetRenderWidth() / 850.0f;
 	for (node; node != g_ConsoleStrings.end(); ++node)
 	{
 		float elapsed = GetTime() - (*node).m_StartTime;
@@ -329,7 +375,7 @@ void DrawConsole()
 
 		if (elapsed < 10)
 		{
-			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 3, counter * (g_Font->baseSize + 2) + 3.0f }, g_fontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
+			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_Font->baseSize + 2) + shadowOffset }, g_fontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
 			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_Font->baseSize + 2)) }, g_fontSize, 1, (*node).m_Color);
 
 		}

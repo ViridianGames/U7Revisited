@@ -130,11 +130,14 @@ void MainState::Update()
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
 				(*node).second->Update();
+				//Vector3 centerPoint = Vector3Add((*node).second->m_Pos, (*node).second.get()->m_shapeData->m_boundingBoxCenterPoint);
+
 				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
+				distance -= (*node).second->m_Pos.y;
 				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
 				{
-					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position);
-					(*node).second->m_distanceFromCamera = distanceFromCamera * 1.5f;
+					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
+					(*node).second->m_distanceFromCamera = distanceFromCamera;
 					m_sortedVisibleObjects.push_back((*node).second);
 					m_numberofDrawnUnits++;
 				}
@@ -166,27 +169,29 @@ void MainState::Update()
 
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
-		m_heightCutoff += 1.0f;
-		if (m_heightCutoff > 15.0f)
+		if (m_heightCutoff == 4.0f)
+		{
+			m_heightCutoff = 9.0f;
+			AddConsoleString("Viewing Second Floor");
+		}
+		else if (m_heightCutoff == 9.0f)
 		{
 			m_heightCutoff = 15.0f;
-		}
-		else
-		{
-			AddConsoleString("Height Cutoff: " + to_string(m_heightCutoff));
+			AddConsoleString("Viewing Third Floor");
 		}
 	}
 
 	if (IsKeyPressed(KEY_PAGE_DOWN))
 	{
-		m_heightCutoff -= 1.0f;
-		if (m_heightCutoff < 0.0f)
+		if (m_heightCutoff == 15.0f)
 		{
-			m_heightCutoff = 0.0f;
+			m_heightCutoff = 9.0f;
+			AddConsoleString("Viewing Second Floor");
 		}
-		else
+		else if (m_heightCutoff == 9.0f)
 		{
-			AddConsoleString("Height Cutoff: " + to_string(m_heightCutoff));
+			m_heightCutoff = 4.0f;
+			AddConsoleString("Viewing First Floor");
 		}
 	}
 
@@ -207,7 +212,7 @@ void MainState::Update()
 				continue;
 			}
 
-			bool picked = (*node)->m_shapeData->Pick((*node)->m_Pos);
+			bool picked = (*node)->Pick();
 
 			if (picked)
 			{
@@ -280,7 +285,7 @@ void MainState::Draw()
 	//  Draw XY coordinates below the minimap
 	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
 	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
-	DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() - textWidth, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
+	DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() * .85f, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
 
 	//  Draw version number in lower-right
 	DrawTextEx(*g_Font, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_fontSize, 1, WHITE);

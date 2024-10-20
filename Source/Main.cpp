@@ -46,13 +46,40 @@ int main(int argv, char** argc)
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
 
       rlDisableBackfaceCulling();
-      //rlEnableDepthTest();
-      BeginShaderMode(g_alphaDiscard);
+      rlEnableDepthTest();
+      
 
       g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
       g_cameraRotation = 0.0f;
 
-      g_camera.target = Vector3 { 1071.0f, 0.0f, 2209.0f };
+      //  Pick a random initial location
+      g_VitalRNG = make_unique<RNG>();
+      g_VitalRNG->SeedRNG(GetTime() * 1000);
+      int x = g_VitalRNG->Random(4);
+
+      switch (x)
+      {
+         case 0:
+			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
+			   break;
+
+         case 1:
+            g_camera.target = Vector3{ 896.0f, 0.0f, 1328.0f };
+            break;
+
+         case 2:
+            g_camera.target = Vector3{ 1025.0f, 0.0f, 2433.0f };
+            break;
+         
+         case 3:
+            g_camera.target = Vector3{ 294.0f, 0.0f, 1675.0f };
+			   break;
+
+         default:
+            g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
+            break;
+      }
+
       g_camera.position = Vector3Add(g_camera.target, Vector3{ g_cameraDistance, g_cameraDistance, g_cameraDistance });
       g_camera.up = Vector3 { 0.0f, 1.0f, 0.0f };
       g_camera.fovy = g_cameraDistance;
@@ -77,7 +104,7 @@ int main(int argv, char** argc)
       //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
       //g_SmallFont = make_shared<Font>(smallFont);
 
-      g_fontSize = 9 * g_DrawScale;
+      g_fontSize = int(9 * g_DrawScale);
       Font font = LoadFontEx("Data/Fonts/softsquare.ttf", g_fontSize, NULL, 0);
       g_Font = make_shared<Font>(font);
 

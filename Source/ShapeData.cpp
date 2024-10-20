@@ -10,6 +10,7 @@
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Config.h"
+#include "Geist/Engine.h"
 #include "U7Globals.h"
 #include "ShapeData.h"
 
@@ -271,9 +272,6 @@ void ShapeData::SetupDrawTypes()
    ObjectData* objectData = &g_objectTable[m_shape];
 
    m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
-   m_boundingBox = m_Dims;
-
-   m_boundingBox = m_Dims;
 
    if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
    {
@@ -632,7 +630,11 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
       {
          finalPos.y = pos.y * 1.01f;
       }
+      finalPos = Vector3Add(finalPos, m_TweakPos);
+
+      //BeginShaderMode(g_alphaDiscard);
       DrawModel(m_flatModel, finalPos, 1, WHITE);
+      //EndShaderMode();
       break;
    }
 
@@ -644,8 +646,10 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
       finalPos.z += .5f;
       finalPos.y += m_Dims.y * .60f;
 
+      BeginShaderMode(g_alphaDiscard);
       DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
          Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+      EndShaderMode();
       break;
    }
    }
@@ -655,24 +659,10 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
    //DrawSphere(bbmin, .1, BLUE);
    //Vector3 bbmax = Vector3Add(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
    //DrawSphere(bbmax, .1, RED);
-   DrawCubeWiresV(finalPos, Vector3{objectData->m_width, objectData->m_height, objectData->m_depth}, MAGENTA);
-}
-
-bool ShapeData::Pick(Vector3 thisPos)
-{
-   bool picked = false;
-
-   Ray ray = GetMouseRay(GetMousePosition(), g_camera);
-
-   BoundingBox box = {
-		thisPos,
-		Vector3Add(thisPos, m_boundingBox) }
-	;
-
-   // Check collision between ray and box
-   RayCollision collision = GetRayCollisionBox(ray, box);
-
-   return collision.hit;
+   //if (g_Engine->m_debugDrawing)
+   //{
+   //   DrawCubeWiresV(Vector3Add(finalPos, m_boundingBoxAnchorPoint), m_boundingBox, MAGENTA);
+   //}
 }
 
 void ShapeData::SetTextureForMeshFromSideData(CuboidSides side)
