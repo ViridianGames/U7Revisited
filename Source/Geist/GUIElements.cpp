@@ -162,7 +162,7 @@ int GuiTextButton::GetValue()
 //  GUIICONBUTTON
 
 void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton, shared_ptr<Sprite> downbutton,
-	shared_ptr<Sprite> inactivebutton, std::string text, Font* font, Color fontcolor, int group, int active)
+	shared_ptr<Sprite> inactivebutton, std::string text, Font* font, Color fontcolor, int group, int active, bool canbeheld)
 {
 	if (upbutton == nullptr)
 	{
@@ -187,6 +187,8 @@ void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton
 
 	m_Width = upbutton->m_sourceRect.width * m_Gui->m_Scale;
 	m_Height = upbutton->m_sourceRect.height * m_Gui->m_Scale;
+
+	m_CanBeHeld = canbeheld;
 
 	m_Clicked = false;
 }
@@ -272,6 +274,10 @@ void GuiIconButton::Update()
 		{
 			m_Hovered = false;
 			m_Down = true;
+			if (m_CanBeHeld)
+			{
+				m_Gui->m_ActiveElement = m_ID;
+			}
 		}
 
 		else if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
@@ -282,7 +288,10 @@ void GuiIconButton::Update()
 			m_Down = false;
 			m_Hovered = false;
 			m_Clicked = true;
-			m_Gui->m_ActiveElement = m_ID;
+			if (!m_CanBeHeld)
+			{
+				m_Gui->m_ActiveElement = m_ID;
+			}
 		}
 	}
 };

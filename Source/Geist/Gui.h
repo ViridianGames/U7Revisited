@@ -69,6 +69,8 @@ public:
 	std::shared_ptr<GuiElement> GetActiveElement();
 	std::shared_ptr<GuiElement> GetElement(int ID); //  Use this to get the complete state of a specific element.
 
+	void SetActive(bool active) { m_Active = active; }	
+
 	//  Load a complete GUI from a file.
 	void LoadTXT(std::string fileName);
 
@@ -85,7 +87,7 @@ public:
 
 	void AddIconButton(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
-		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true);
+		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true, bool canbeheld = false);
 
 	void AddIconButton(int ID, Texture* tex, int posx, int posy, int tilex, int tiley,
 		int width, int height, std::string text = "", Font* font = NULL,
@@ -164,7 +166,7 @@ public:
 	float m_Width;
 	float m_Height;
 
-	int m_Active;
+	bool m_Active = true;
 
 	int m_ActiveElement;
 	int m_LastElement;

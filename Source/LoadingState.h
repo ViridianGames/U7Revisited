@@ -33,6 +33,7 @@ public:
    void LoadIREG();
    void LoadVersion();
    void MakeMap();
+   void LoadModels();
 
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
@@ -72,6 +73,7 @@ public:
    bool m_loadingIFIX = false;
    bool m_loadingIREG = false;
    bool m_loadingVersion = false;
+   bool m_loadingModels = false;
    bool m_makingMap = false;
 
    bool m_loadingFailed = false;

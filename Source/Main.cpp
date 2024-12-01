@@ -108,7 +108,7 @@ int main(int argv, char** argc)
       //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
       //g_SmallFont = make_shared<Font>(smallFont);
 
-      g_fontSize = int(9 * g_DrawScale);
+      g_fontSize = 9 * int(g_DrawScale);
       Font font = LoadFontEx("Data/Fonts/softsquare.ttf", g_fontSize, NULL, 0);
       g_Font = make_shared<Font>(font);
 

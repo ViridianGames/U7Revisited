@@ -125,6 +125,8 @@ public:
 
 	Vector3 m_Scaling;
 
+	float m_rotation;
+
 	//  Texture for billboard/flat mode; base texture for cuboid mode
 
 	std::unique_ptr<ModTexture> m_originalTexture;
@@ -152,6 +154,10 @@ public:
 	CuboidTexture m_sideTextures[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
 	std::array<Model, static_cast<int>(CuboidSides::CUBOID_LAST)> m_cuboidModels;
+
+	std::string m_customMeshName;
+
+	Model* m_customMesh = nullptr;
 };
 
 #endif

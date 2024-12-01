@@ -21,9 +21,17 @@ public:
 
    virtual void OnEnter();
    virtual void OnExit();
-   
+
+   void SetupBboardGui();
+   void SetupFlatGui();
+   void SetupCuboidGui();
+   void SetupMeshGui();
+
+   void ChangeGui(Gui* newGui);
+      
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
+   std::map<std::string, std::unique_ptr<Model>>::iterator m_modelIndex;
    bool m_rotating = false;
    bool m_tileX = false;
    bool m_tileZ = false;
@@ -32,7 +40,12 @@ public:
 
    std::vector<std::vector<std::unique_ptr<U7Object>>> m_objectLibrary;
 
-   std::unique_ptr<Gui> m_gui;
+   std::unique_ptr<Gui> m_bboardGui;
+   std::unique_ptr<Gui> m_flatGui;
+   std::unique_ptr<Gui> m_cuboidGui;
+   std::unique_ptr<Gui> m_meshGui;
+
+   Gui* m_currentGui = nullptr;
 
    std::string m_sideDrawStrings[7];
    std::string m_sideStrings[6];
@@ -54,9 +67,10 @@ public:
       GE_NEXTFRAMEBUTTON,
       GE_CURRENTFRAMEIDTEXTAREA,
 
-      GE_PREVDRAWTYPEBUTTON,
-      GE_NEXTDRAWTYPEBUTTON,
-      GE_CURRENTDRAWTYPETEXTAREA,
+      GE_DRAWTYPEBBOARD,
+      GE_DRAWTYPEFLAT,
+      GE_DRAWTYPECUBOID,
+      GE_DRAWTYPECUSTOMMESH,
 
       GE_TOPTEXTAREA,
       GE_TOPRESET,
@@ -163,6 +177,15 @@ public:
       GE_TWEAKDEPTHMINUSBUTTON,
 
       GE_TEXTUREASSIGNMENTTEXTAREA,
+
+      GE_NEXTMODELBUTTON,
+      GE_PREVMODELBUTTON,
+      GE_MODELNAMETEXTAREA,
+
+      GE_TWEAKROTATIONTITLEAREA,
+      GE_TWEAKROTATIONTEXTAREA,
+      GE_TWEAKROTATIONPLUSBUTTON,
+      GE_TWEAKROTATIONMINUSBUTTON,
 
       GE_LASTGUIELEMENT
    };

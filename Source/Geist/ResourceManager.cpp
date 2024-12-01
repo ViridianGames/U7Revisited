@@ -186,3 +186,9 @@ void ResourceManager::ClearTextures()
 {
 	m_TextureList.clear();
 }
+
+
+void ResourceManager::AddModel(const Model& model, const std::string& meshName)
+{
+	m_ModelList[meshName] = std::make_unique<Model>(model);
+}

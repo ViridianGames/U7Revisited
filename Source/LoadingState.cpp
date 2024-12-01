@@ -2,8 +2,11 @@
 #include "Geist/StateMachine.h"
 #include "Geist/Logging.h"
 #include "Geist/Engine.h"
+#include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
+
+
 
 #include <list>
 #include <string>
@@ -124,9 +127,17 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
+		if(!m_loadingModels)
+		{
+			AddConsoleString(std::string("Loading models..."));
+			LoadModels();
+			m_loadingModels = true;
+			return;
+		}
+
 		if (!m_loadingShapes)
 		{
-			//AddConsoleString(std::string("Loading shapes..."));
+			AddConsoleString(std::string("Loading shapes..."));
 			CreateShapeTable();
 			m_loadingShapes = true;
 			return;
@@ -861,6 +872,37 @@ void LoadingState::CreateShapeTable()
 
 	profilingTime = GetTime() - profilingTime;
 	Log("Time to load shapes: " + std::to_string(profilingTime));
+}
+
+void LoadingState::LoadModels()
+{
+	ifstream directory("Models/3dmodels/modelnames.txt");
+	if (!directory.is_open())
+	{
+		return;
+	}
+
+	//Read in file header
+	while (!directory.eof())
+	{
+
+		std::string m_Filename;
+		std::getline(directory, m_Filename);
+
+		if (m_Filename.length() == 0)
+			continue;
+
+		//Try to open model file
+		std::string objPath = "Models/3dmodels/" + m_Filename + std::string(".obj");
+		std::string mtlPath = "Models/3dmodels/" + m_Filename + std::string(".mtl");
+
+		Model model = LoadModel(objPath.c_str());
+		int materialCount = 0;
+		Material* material = LoadMaterials(mtlPath.c_str(), &materialCount); // Load material
+		model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = material[0].maps[0].texture;            // Set map diffuse texture
+
+		g_ResourceManager->AddModel(model, objPath);
+	}
 }
 
 void LoadingState::CreateObjectTable()

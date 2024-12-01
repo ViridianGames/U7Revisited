@@ -171,10 +171,10 @@ void Gui::AddTextButton(int ID, int posx, int posy, std::string text, Font* font
 
 void Gui::AddIconButton(int ID, int posx, int posy, shared_ptr<Sprite> upbutton, shared_ptr<Sprite> downbutton,
 	shared_ptr<Sprite> inactivebutton, std::string text, Font* font,
-	Color fontcolor, int group, int active)
+	Color fontcolor, int group, int active, bool canbeheld)
 {
 	shared_ptr<GuiIconButton> iconbutton = make_shared<GuiIconButton>(this);
-	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, group, active);
+	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, group, active, canbeheld);
 	m_GuiList[ID] = iconbutton;
 
 }

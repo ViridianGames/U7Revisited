@@ -1,0 +1,9 @@
+mountainquarter1
+mountainquarter2
+mountainside1
+mountainside2
+reversemountainquarter1
+chair
+chair2
+column
+zzwrongcube

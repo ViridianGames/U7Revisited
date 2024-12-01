@@ -145,7 +145,7 @@ public:
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
-		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true);
+		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true, bool canbeheld = false);
 
 	void Draw();
 	void Update();
@@ -160,6 +160,7 @@ public:
 	Color m_FontColor;
 
 	bool  m_Bobbing = false;
+	bool  m_CanBeHeld = false;
 };
 
 //  The CheckBox uses two sprites to define whether the object is

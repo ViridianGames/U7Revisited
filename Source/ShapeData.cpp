@@ -29,6 +29,8 @@ ShapeData::ShapeData()
 
    m_Scaling = Vector3{ 1, 1, 1 };
    m_TweakPos = Vector3{ 0, 0, 0 };
+   m_rotation = 0;
+   m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -91,6 +93,8 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
    {
       m_isValid = false;
    }
+
+   m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
 }
 
 void ShapeData::SetDefaultTexture(Image image)
@@ -137,12 +141,14 @@ void ShapeData::Serialize(ofstream& outStream)
    outStream << m_TweakPos.x << " ";
    outStream << m_TweakPos.y << " ";
    outStream << m_TweakPos.z << " ";
+   outStream << m_rotation << " ";
    outStream << static_cast<int>(m_sideTextures[0]) << " ";
    outStream << static_cast<int>(m_sideTextures[1]) << " ";
    outStream << static_cast<int>(m_sideTextures[2]) << " ";
    outStream << static_cast<int>(m_sideTextures[3]) << " ";
    outStream << static_cast<int>(m_sideTextures[4]) << " ";
    outStream << static_cast<int>(m_sideTextures[5]) << " ";
+   outStream << m_customMeshName << " ";
    outStream << endl;
 
    outStream.flush();
@@ -173,6 +179,7 @@ void ShapeData::Deserialize(ifstream& inStream)
    inStream >> m_TweakPos.x;
    inStream >> m_TweakPos.y;
    inStream >> m_TweakPos.z;
+   inStream >> m_rotation;
    int sideTexture;
 	inStream >> sideTexture;
 	m_sideTextures[0] = static_cast<CuboidTexture>(sideTexture);
@@ -191,6 +198,8 @@ void ShapeData::Deserialize(ifstream& inStream)
    {
       int stopper = 0;
    }
+
+   inStream >> m_customMeshName;
 
    Init(m_shape, m_frame, false);
 
@@ -517,6 +526,10 @@ void ShapeData::SetupDrawTypes()
    UpdateMeshBuffer(backMesh, 0, backMesh.vertices, sizeof(float)* backMesh.vertexCount * 3, 0);
    m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BACK)] = LoadModelFromMesh(backMesh);
    SetTextureForMeshFromSideData(CuboidSides::CUBOID_BACK);
+
+   //  CUSTOM MESH
+   m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+
 };
 
 void ShapeData::FixupTextures()
@@ -639,7 +652,6 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
    }
 
    case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
-   case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
    {
       finalPos = pos;
       finalPos.x += .5f;
@@ -652,6 +664,26 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
       EndShaderMode();
       break;
    }
+
+   case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
+   {
+      //finalPos = pos;
+      //finalPos.x += .5f;
+      //finalPos.z += .5f;
+      //finalPos.y += m_Dims.y * .60f;
+
+      //BeginShaderMode(g_alphaDiscard);
+      //m_customMesh->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_originalTexture->m_Texture;
+      BeginShaderMode(g_alphaDiscard);
+      DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+      EndShaderMode();
+
+      //DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
+         //Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+      //EndShaderMode();
+      break;
+   }
+
    }
 
 

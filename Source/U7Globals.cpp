@@ -1,5 +1,6 @@
 #include "U7Globals.h"
 #include "Geist/Engine.h"
+#include "Geist/Logging.h"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -316,6 +317,11 @@ unsigned int GetNextID() { return g_CurrentUnitID++; }
 
 void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
+	if (shapenum == 451)
+	{
+		Log("Stop here.");
+	}
+
 	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(Vector3{ x, y, z });
@@ -360,6 +366,10 @@ void DrawConsole()
 	int counter = 0;
 	vector<ConsoleString>::iterator node = g_ConsoleStrings.begin();
 	float shadowOffset = GetRenderWidth() / 850.0f;
+	if (shadowOffset < 1)
+	{
+		shadowOffset = 1;
+	}
 	for (node; node != g_ConsoleStrings.end(); ++node)
 	{
 		float elapsed = GetTime() - (*node).m_StartTime;

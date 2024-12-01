@@ -95,6 +95,12 @@ void TitleState::Update()
 
    UpdateTitle();
    TestUpdate();
+
+   if (IsKeyPressed(KEY_F1))
+   {
+      g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
+
+   }
 }
 
 
