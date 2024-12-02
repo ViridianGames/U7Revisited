@@ -7,6 +7,8 @@
 #include "raylib.h"
 #include "rlgl.h"
 
+#include "include/glad.h"
+
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/Config.h"
@@ -667,34 +669,32 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
    case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
    {
-      //finalPos = pos;
-      //finalPos.x += .5f;
-      //finalPos.z += .5f;
-      //finalPos.y += m_Dims.y * .60f;
+      glClearStencil(0);
+      glClear(GL_STENCIL_BUFFER_BIT);
+      glEnable(GL_STENCIL_TEST);
+      glStencilFunc(GL_ALWAYS, 1, -1);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-      //BeginShaderMode(g_alphaDiscard);
-      //m_customMesh->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = m_originalTexture->m_Texture;
-      BeginShaderMode(g_alphaDiscard);
       DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
-      EndShaderMode();
+      rlDrawRenderBatchActive();
 
-      //DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
-         //Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
-      //EndShaderMode();
+
+      glStencilFunc(GL_NOTEQUAL, 1, -1);
+      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      glLineWidth(3 * g_DrawScale);
+      glPolygonMode(GL_FRONT, GL_LINE);
+
+      DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
+      rlDrawRenderBatchActive();
+
+      glPolygonMode(GL_FRONT, GL_FILL);
+      glDisable(GL_STENCIL_TEST);
+
+
       break;
    }
 
    }
-
-
-   //Vector3 bbmin = Vector3Subtract(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
-   //DrawSphere(bbmin, .1, BLUE);
-   //Vector3 bbmax = Vector3Add(finalPos, Vector3Divide(m_boundingBox, Vector3{ 2, 2, 2 }));
-   //DrawSphere(bbmax, .1, RED);
-   //if (g_Engine->m_debugDrawing)
-   //{
-   //   DrawCubeWiresV(Vector3Add(finalPos, m_boundingBoxAnchorPoint), m_boundingBox, MAGENTA);
-   //}
 }
 
 void ShapeData::SetTextureForMeshFromSideData(CuboidSides side)

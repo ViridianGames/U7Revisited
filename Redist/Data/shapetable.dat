@@ -17184,7 +17184,7 @@
 686 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 
 687 0 0 0 16 16 0 16 16 21 16 0 21 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 
 687 1 0 0 16 16 0 16 16 22 16 0 22 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 
-687 2 0 0 16 16 0 16 16 18 16 0 18 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 
+687 2 0 0 16 16 0 16 16 18 16 0 18 16 3 0.8 1 0.8 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/column.obj 
 687 3 0 0 16 16 0 16 16 14 16 0 14 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 
 687 4 0 0 10 9 2 10 8 19 10 3 19 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 
 687 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 
