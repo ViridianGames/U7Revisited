@@ -33,6 +33,7 @@ ShapeData::ShapeData()
    m_TweakPos = Vector3{ 0, 0, 0 };
    m_rotation = 0;
    m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
+   m_meshOutline = true;
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -151,6 +152,7 @@ void ShapeData::Serialize(ofstream& outStream)
    outStream << static_cast<int>(m_sideTextures[4]) << " ";
    outStream << static_cast<int>(m_sideTextures[5]) << " ";
    outStream << m_customMeshName << " ";
+   outStream << m_meshOutline << " ";
    outStream << endl;
 
    outStream.flush();
@@ -202,6 +204,7 @@ void ShapeData::Deserialize(ifstream& inStream)
    }
 
    inStream >> m_customMeshName;
+   inStream >> m_meshOutline;
 
    Init(m_shape, m_frame, false);
 
@@ -669,26 +672,33 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
    case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
    {
-      glClearStencil(0);
-      glClear(GL_STENCIL_BUFFER_BIT);
-      glEnable(GL_STENCIL_TEST);
-      glStencilFunc(GL_ALWAYS, 1, -1);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      if (m_meshOutline)
+      {
+         glClearStencil(0);
+         glClear(GL_STENCIL_BUFFER_BIT);
+         glEnable(GL_STENCIL_TEST);
+         glStencilFunc(GL_ALWAYS, 1, -1);
+         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-      DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
-      rlDrawRenderBatchActive();
+         DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+         rlDrawRenderBatchActive();
 
 
-      glStencilFunc(GL_NOTEQUAL, 1, -1);
-      glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-      glLineWidth(3 * g_DrawScale);
-      glPolygonMode(GL_FRONT, GL_LINE);
+         glStencilFunc(GL_NOTEQUAL, 1, -1);
+         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+         glLineWidth(3 * g_DrawScale);
+         glPolygonMode(GL_FRONT, GL_LINE);
 
-      DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
-      rlDrawRenderBatchActive();
+         DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
+         rlDrawRenderBatchActive();
 
-      glPolygonMode(GL_FRONT, GL_FILL);
-      glDisable(GL_STENCIL_TEST);
+         glPolygonMode(GL_FRONT, GL_FILL);
+         glDisable(GL_STENCIL_TEST);
+      }
+      else
+      {
+         DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+      }
 
 
       break;

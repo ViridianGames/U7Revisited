@@ -158,6 +158,8 @@ public:
 	std::string m_customMeshName;
 
 	Model* m_customMesh = nullptr;
+
+	bool m_meshOutline = true;
 };
 
 #endif

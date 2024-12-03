@@ -182,7 +182,6 @@ public:
 	void Update();
 	int  GetValue() { if (m_Active) return m_Selected; else return m_Active; }
 
-	bool m_Selected;
 	Color m_Color = Color{ 255, 255, 255, 255 };
 	std::shared_ptr<Sprite> m_SelectSprite;
 	std::shared_ptr<Sprite> m_DeselectSprite;

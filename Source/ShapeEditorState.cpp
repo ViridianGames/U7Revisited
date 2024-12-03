@@ -487,75 +487,9 @@ void ShapeEditorState::SetupMeshGui()
 
 	y += yoffset;
 
-	m_meshGui->AddTextArea(GE_TOPTEXTAREA, g_Font.get(), "Top Face", 3, y);
-	m_meshGui->AddTextButton(GE_TOPRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_meshGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_TOPXPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_TOPXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_meshGui->AddIconButton(GE_TOPYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_TOPYPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_TOPYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_meshGui->AddIconButton(GE_TOPWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_TOPWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_TOPWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_meshGui->AddIconButton(GE_TOPHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_TOPHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_TOPHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
-
-	y += yoffset;
-
-	m_meshGui->AddTextArea(GE_FRONTTEXTAREA, g_Font.get(), "Front Face", 3, y);
-	m_meshGui->AddTextButton(GE_FRONTRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_meshGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_FRONTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_FRONTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_meshGui->AddIconButton(GE_FRONTYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_FRONTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_FRONTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_meshGui->AddIconButton(GE_FRONTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_FRONTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_FRONTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_meshGui->AddIconButton(GE_FRONTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_FRONTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_FRONTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
-
-	y += yoffset;
-
-	m_meshGui->AddTextArea(GE_RIGHTTEXTAREA, g_Font.get(), "Right Face", 3, y);
-	m_meshGui->AddTextButton(GE_RIGHTRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_meshGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_RIGHTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_RIGHTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_meshGui->AddIconButton(GE_RIGHTYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_RIGHTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_RIGHTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_meshGui->AddIconButton(GE_RIGHTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_RIGHTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_RIGHTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_meshGui->AddIconButton(GE_RIGHTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_RIGHTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+	m_meshGui->AddCheckBox(GE_MESHOUTLINECHECKBOX, 4, y, 16, 16);
+	m_meshGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
+	m_meshGui->AddTextArea(GE_MESHOUTLINETEXTAREA, g_Font.get(), "Use Mesh Outline", 22, y);
 
 	y += yoffset;
 	m_meshGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
@@ -1337,6 +1271,12 @@ void ShapeEditorState::Update()
 		if (shapeData.m_TweakPos.z < -9.9) shapeData.m_TweakPos.z = -9.9;
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_MESHOUTLINECHECKBOX)
+	{
+		somethingChanged = true;
+		shapeData.m_meshOutline = m_currentGui->GetActiveElement()->m_Selected;
+	}
+
 	// Tweak Rotation
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
 	{
@@ -1463,6 +1403,11 @@ void ShapeEditorState::Update()
 	out.precision(1);
 	out << std::fixed << shapeData.m_rotation;
 	m_currentGui->GetElement(GE_TWEAKROTATIONTEXTAREA)->m_String = out.str();
+
+	if (m_currentGui == m_meshGui.get())
+	{
+		m_currentGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
+	}
 
 	if (m_currentGui == m_meshGui.get())
 	{

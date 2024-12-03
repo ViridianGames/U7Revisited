@@ -646,8 +646,8 @@ void GuiCheckBox::Init(int ID, int posx, int posy, shared_ptr<Sprite> unselected
 	m_ID = ID;
 	m_Active = active;
 	m_Group = group;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 	m_SelectSprite = selected;
 	m_DeselectSprite = unselected;
 	m_HoveredSprite = hovered;
@@ -667,8 +667,8 @@ void GuiCheckBox::Init(int ID, int posx, int posy, int width, int height, float 
 	m_ID = ID;
 	m_Active = active;
 	m_Group = group;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
+	m_Pos.x = float(posx) * m_Gui->m_Scale;
+	m_Pos.y = float(posy) * m_Gui->m_Scale;
 	m_SelectSprite = nullptr;
 	m_DeselectSprite = nullptr;
 	m_Color = color;
