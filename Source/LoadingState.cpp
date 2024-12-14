@@ -163,6 +163,7 @@ void LoadingState::UpdateLoading()
 		{
 			AddConsoleString(std::string("Loading IREG..."));
 			LoadIREG();
+			MakeCSVFile();
 			m_loadingIREG = true;
 			return;
 		}
@@ -1048,4 +1049,49 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 	}
 
 	return entrymap;
+}
+
+void LoadingState::MakeCSVFile()
+{
+	return;
+	std::ofstream csvFile;
+	csvFile.open("Data/objects.csv");
+
+	csvFile << "Shape, Name, Artist, DrawStyle, Dims, Frame0, Frame1, Frame2, Frame3, Frame4, Frame5, Frame6, Frame7, Frame8, Frame9, Frame10, Frame11, Frame12, Frame13, Frame14, Frame15, Frame16, Frame17, Frame18, Frame19, Frame20, Frame21, Frame22, Frame23, Frame24, Frame25, Frame26, Frame27, Frame28, Frame29, Frame30, Frame31\n";
+	for (int i = 150; i < 1024; ++i)
+	{
+		csvFile << i << "," << g_objectTable[i].m_name << "," << ",";
+		switch (g_shapeTable[i][0].GetDrawType())
+		{
+			case ShapeDrawType::OBJECT_DRAW_CUBOID:
+			csvFile << "Cuboid,";
+			break;
+			case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
+			csvFile << "Billboard,";
+			break;
+			case ShapeDrawType::OBJECT_DRAW_FLAT:
+			csvFile << "Flat,";
+			break;
+			case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
+			csvFile << "Mesh,";
+			break;
+		}
+
+		csvFile << g_objectTable[i].m_width << "x" << g_objectTable[i].m_depth << "x" << g_objectTable[i].m_height << ",";
+			
+		for (int j = 0; j < 32; ++j)
+		{
+			if (!g_shapeTable[i][j].IsValid())
+			{
+				csvFile << "EMPTY,";
+			}
+			else
+			{
+				csvFile << ",";
+			}
+		}
+		csvFile << "\n";
+	}
+
+	csvFile.close();	
 }

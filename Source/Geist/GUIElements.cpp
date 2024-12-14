@@ -750,18 +750,18 @@ void GuiCheckBox::Update()
 	{
 		m_Hovered = IsMouseInRect(m_Gui->m_GuiX + int(m_Pos.x),
 			m_Gui->m_GuiY + int(m_Pos.y),
-			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
-			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height));
+			int(m_Width),
+			int(m_Height));
 
 		m_Down = IsLeftButtonDownInRect(m_Gui->m_GuiX + int(m_Pos.x),
 			m_Gui->m_GuiY + int(m_Pos.y),
-			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
-			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height));
+			int(m_Width),
+			int(m_Height));
 
 		if (WasLeftButtonClickedInRect(m_Gui->m_GuiX + int(m_Pos.x),
 			m_Gui->m_GuiY + int(m_Pos.y),
-			m_Gui->m_GuiX + int(m_Pos.x) + int(m_Width),
-			m_Gui->m_GuiY + int(m_Pos.y) + int(m_Height)))
+			int(m_Width),
+			int(m_Height)))
 		{
 			m_Selected = !m_Selected;
 			m_Gui->m_ActiveElement = m_ID;

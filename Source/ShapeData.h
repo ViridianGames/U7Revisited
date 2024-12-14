@@ -35,6 +35,7 @@ enum class ShapeDrawType
 	OBJECT_DRAW_CUBOID,
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
+	OBJECT_DRAW_CHARACTER,
 	OBJECT_DRAW_LAST
 };
 
@@ -77,6 +78,7 @@ public:
 	Texture* GetTopTexture() { return &m_topTexture->m_Texture; }
 	Texture* GetFrontTexture() { return &m_frontTexture->m_Texture; }
 	Texture* GetRightTexture() { return &m_rightTexture->m_Texture; }
+	Texture* GetBillboardTexture() { return &m_billboardTexture->m_Texture; }
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
@@ -134,6 +136,7 @@ public:
 	//  For drawing in billboard mode
 
 	Model m_billboardModel;
+	std::unique_ptr<ModTexture> m_billboardTexture;
 
 	//  For drawing in flat mode
 

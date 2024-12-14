@@ -1,3 +1,9 @@
+candle_tin
+green_bottle
+whiskey_bottle
+wood_long_table
+wood_round_table
+wood_stein
 mountainquarter1
 mountainquarter2
 mountainside1

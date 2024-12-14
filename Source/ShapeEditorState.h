@@ -26,8 +26,10 @@ public:
    void SetupFlatGui();
    void SetupCuboidGui();
    void SetupMeshGui();
+   void SetupCharacterGui();
 
    void ChangeGui(Gui* newGui);
+   void SwitchToGuiForDrawType(ShapeDrawType drawType);
       
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
@@ -44,6 +46,7 @@ public:
    std::unique_ptr<Gui> m_flatGui;
    std::unique_ptr<Gui> m_cuboidGui;
    std::unique_ptr<Gui> m_meshGui;
+   std::unique_ptr<Gui> m_characterGui;
 
    Gui* m_currentGui = nullptr;
 
@@ -67,10 +70,10 @@ public:
       GE_NEXTFRAMEBUTTON,
       GE_CURRENTFRAMEIDTEXTAREA,
 
-      GE_DRAWTYPEBBOARD,
-      GE_DRAWTYPEFLAT,
-      GE_DRAWTYPECUBOID,
-      GE_DRAWTYPECUSTOMMESH,
+      GE_DRAWTYPELABEL,
+      GE_PREVDRAWTYPE,
+      GE_NEXTDRAWTYPE,
+      GE_CURRENTDRAWTYPETEXTAREA,
 
       GE_TOPTEXTAREA,
       GE_TOPRESET,
