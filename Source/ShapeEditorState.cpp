@@ -97,582 +97,6 @@ void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
 	}
 }
 
-void ShapeEditorState::SetupBboardGui()
-{
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-
-	m_bboardGui = make_unique<Gui>();
-
-	m_bboardGui->m_Font = g_Font;
-	m_bboardGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
-	m_bboardGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_bboardGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
-
-	int yoffset = 15;
-	int y = 4;
-
-	m_bboardGui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
-	m_bboardGui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
-	y += yoffset;
-
-	m_bboardGui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
-	m_bboardGui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
-	m_bboardGui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "Shape: " + to_string(m_currentShape), 15, y);
-
-	m_bboardGui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
-	m_bboardGui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
-	m_bboardGui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "Frame: " + to_string(m_currentFrame), 65, y);
-
-	y += yoffset;
-
-	m_bboardGui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
-	m_bboardGui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
-	m_bboardGui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
-	m_bboardGui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "BBoard", 65, y);
-
-	y += yoffset;
-	m_bboardGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
-	m_bboardGui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
-
-	y += yoffset * .7f;
-
-	m_bboardGui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:" + to_string(shapeData.m_topTextureWidth), 11, y);
-	m_bboardGui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
-
-	std::ostringstream out;
-
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.x;
-	m_bboardGui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:" + out.str(), 71, y);
-	m_bboardGui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-	m_bboardGui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_bboardGui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.y;
-	m_bboardGui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:" + out.str(), 71, y);
-	m_bboardGui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-
-	m_bboardGui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_bboardGui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.z;
-	m_bboardGui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_bboardGui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:" + out.str(), 71, y);
-	m_bboardGui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_rotation;
-	m_bboardGui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
-	m_bboardGui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
-	m_bboardGui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), out.str(), 71, y);
-	m_bboardGui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
-
-}
-
-void ShapeEditorState::SetupFlatGui()
-{
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-
-	m_flatGui = make_unique<Gui>();
-
-	m_flatGui->m_Font = g_Font;
-	m_flatGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
-	m_flatGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_flatGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
-
-	int yoffset = 15;
-	int y = 4;
-
-	m_flatGui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
-	m_flatGui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
-	y += yoffset;
-
-	m_flatGui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
-	m_flatGui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
-	m_flatGui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "Shape: " + to_string(m_currentShape), 15, y);
-
-	m_flatGui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
-	m_flatGui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
-	m_flatGui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "Frame: " + to_string(m_currentFrame), 65, y);
-
-	y += yoffset;
-
-	m_flatGui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
-	m_flatGui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
-	m_flatGui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
-	m_flatGui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "Flat", 65, y);
-
-	y += yoffset;
-	m_flatGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
-	m_flatGui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
-
-	y += yoffset * .7f;
-
-	m_flatGui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:" + to_string(shapeData.m_topTextureWidth), 11, y);
-	m_flatGui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
-
-	std::ostringstream out;
-
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.x;
-	m_flatGui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:" + out.str(), 71, y);
-	m_flatGui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-	m_flatGui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_flatGui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.y;
-	m_flatGui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:" + out.str(), 71, y);
-	m_flatGui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-
-	m_flatGui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_flatGui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.z;
-	m_flatGui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_flatGui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:" + out.str(), 71, y);
-	m_flatGui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_rotation;
-	m_flatGui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
-	m_flatGui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
-	m_flatGui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), out.str(), 71, y);
-	m_flatGui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
-}
-
-void ShapeEditorState::SetupCuboidGui()
-{
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-
-	m_cuboidGui = make_unique<Gui>();
-
-	m_cuboidGui->m_Font = g_Font;
-	m_cuboidGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
-	m_cuboidGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_cuboidGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
-
-	int yoffset = 15;
-	int y = 4;
-
-	m_cuboidGui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
-	m_cuboidGui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
-	y += yoffset;
-
-	m_cuboidGui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "Shape: " + to_string(m_currentShape), 15, y);
-
-	m_cuboidGui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "Frame: " + to_string(m_currentFrame), 65, y);
-
-	y += yoffset;
-
-	m_cuboidGui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
-	m_cuboidGui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "Cuboid", 65, y);
-
-	y += yoffset;
-
-	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_Font.get(), "Top Face", 3, y);
-	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_TOPXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_TOPYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_TOPYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddIconButton(GE_TOPWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_TOPWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_TOPHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_TOPHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
-
-	y += yoffset;
-
-	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_Font.get(), "Front Face", 3, y);
-	m_cuboidGui->AddTextButton(GE_FRONTRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_FRONTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_FRONTYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_FRONTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddIconButton(GE_FRONTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_FRONTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
-
-	y += yoffset;
-
-	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_Font.get(), "Right Face", 3, y);
-	m_cuboidGui->AddTextButton(GE_RIGHTRESET, 60, y, "Reset", g_Font.get());
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_RIGHTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_RIGHTYMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_RIGHTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
-
-	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
-	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
-
-	y += yoffset;
-	m_cuboidGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
-	m_cuboidGui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:" + to_string(shapeData.m_topTextureWidth), 11, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
-
-	std::ostringstream out;
-
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.x;
-	m_cuboidGui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:" + out.str(), 71, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.y;
-	m_cuboidGui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:" + out.str(), 71, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-
-	m_cuboidGui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.z;
-	m_cuboidGui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:" + out.str(), 71, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_rotation;
-	m_cuboidGui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
-	m_cuboidGui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), out.str(), 71, y);
-	m_cuboidGui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	m_cuboidGui->AddTextArea(GE_TEXTUREASSIGNMENTTEXTAREA, g_Font.get(), "Texture Assignment:", 2, y);
-
-	y += yoffset * .7f;
-
-	m_cuboidGui->AddTextArea(GE_TOPSIDETEXTAREA, g_Font.get(), "Top", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVTOPBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_TOPSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTTOPBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTAREA, g_Font.get(), "Front", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVFRONTBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTFRONTBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTAREA, g_Font.get(), "Right", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVRIGHTBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTRIGHTBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTAREA, g_Font.get(), "Bottom", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVBOTTOMBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTBOTTOMBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTAREA, g_Font.get(), "Back", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVBACKBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTBACKBUTTON, 95, y, g_RightArrow);
-	y += yoffset * .8f;
-
-	m_cuboidGui->AddTextArea(GE_LEFTSIDETEXTAREA, g_Font.get(), "Left", 3, y);
-	m_cuboidGui->AddIconButton(GE_PREVLEFTBUTTON, 40, y, g_LeftArrow);
-	m_cuboidGui->AddTextArea(GE_LEFTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))], 50, y);
-	m_cuboidGui->AddIconButton(GE_NEXTLEFTBUTTON, 95, y, g_RightArrow);
-}
-
-void ShapeEditorState::SetupMeshGui()
-{
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-
-	m_meshGui = make_unique<Gui>();
-
-	m_meshGui->m_Font = g_Font;
-	m_meshGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
-	m_meshGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_meshGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
-
-	int yoffset = 15;
-	int y = 4;
-
-	m_meshGui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
-	m_meshGui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
-	y += yoffset;
-
-	m_meshGui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "Shape: " + to_string(m_currentShape), 15, y);
-
-	m_meshGui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "Frame: " + to_string(m_currentFrame), 65, y);
-
-	y += yoffset;
-
-	m_meshGui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
-	m_meshGui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
-	m_meshGui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
-	m_meshGui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "Mesh", 65, y);
-
-	y += yoffset;
-
-	m_meshGui->AddIconButton(GE_PREVMODELBUTTON, 4, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_MODELNAMETEXTAREA, g_Font.get(), "Model: " + shapeData.m_customMeshName, 12, y);
-	m_meshGui->AddIconButton(GE_NEXTMODELBUTTON, 88, y, g_RightArrow);
-
-	y += yoffset;
-
-	m_meshGui->AddCheckBox(GE_MESHOUTLINECHECKBOX, 4, y, 16, 16);
-	m_meshGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
-	m_meshGui->AddTextArea(GE_MESHOUTLINETEXTAREA, g_Font.get(), "Use Mesh Outline", 22, y);
-
-	y += yoffset;
-	m_meshGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
-	m_meshGui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
-
-	y += yoffset * .7f;
-
-	m_meshGui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:" + to_string(shapeData.m_topTextureWidth), 11, y);
-	m_meshGui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
-
-	std::ostringstream out;
-
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.x;
-	m_meshGui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:" + out.str(), 71, y);
-	m_meshGui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-	m_meshGui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_meshGui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.y;
-	m_meshGui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:" + out.str(), 71, y);
-	m_meshGui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-
-	m_meshGui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_meshGui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.z;
-	m_meshGui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_meshGui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:" + out.str(), 71, y);
-	m_meshGui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_rotation;
-	m_meshGui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
-	m_meshGui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
-	m_meshGui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), out.str(), 71, y);
-	m_meshGui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
-}
-
-void ShapeEditorState::SetupCharacterGui()
-{
-	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
-
-	m_characterGui = make_unique<Gui>();
-
-	m_characterGui->m_Font = g_Font;
-	m_characterGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
-	m_characterGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_characterGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
-
-	int yoffset = 15;
-	int y = 4;
-
-	m_characterGui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
-	m_characterGui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
-	y += yoffset;
-
-	m_characterGui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
-	m_characterGui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
-	m_characterGui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "Shape: " + to_string(m_currentShape), 15, y);
-
-	m_characterGui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
-	m_characterGui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
-	m_characterGui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "Frame: " + to_string(m_currentFrame), 65, y);
-
-	y += yoffset;
-
-	m_characterGui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
-	m_characterGui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
-	m_characterGui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
-	m_characterGui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "Character", 65, y);
-
-	y += yoffset;
-	m_characterGui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
-	m_characterGui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
-
-	y += yoffset * .7f;
-
-	m_characterGui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:" + to_string(shapeData.m_topTextureWidth), 11, y);
-	m_characterGui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
-
-	std::ostringstream out;
-
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.x;
-	m_characterGui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:" + out.str(), 71, y);
-	m_characterGui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-	m_characterGui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_characterGui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.y;
-	m_characterGui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:" + out.str(), 71, y);
-	m_characterGui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset * .7f;
-
-
-	m_characterGui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:" + to_string(shapeData.m_topTextureHeight), 11, y);
-	m_characterGui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_Scaling.z;
-	m_characterGui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
-	m_characterGui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:" + out.str(), 71, y);
-	m_characterGui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
-
-	y += yoffset;
-
-	out.str("");
-	out.precision(1);
-	out << std::fixed << shapeData.m_rotation;
-	m_characterGui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
-	m_characterGui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
-	m_characterGui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), out.str(), 71, y);
-	m_characterGui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
-}
-
 void ShapeEditorState::OnEnter()
 {
 	ClearConsole();
@@ -781,6 +205,7 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[newShape][0].IsValid())
 		{
 			m_currentShape = newShape;
+			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 		}
 		else
 		{
@@ -807,6 +232,7 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[newShape][0].IsValid())
 		{
 			m_currentShape = newShape;
+			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 		}
 		else
 		{
@@ -916,6 +342,38 @@ void ShapeEditorState::Update()
 			shapeData.m_drawType = ShapeDrawType::OBJECT_DRAW_BILLBOARD;
 		}
 		SwitchToGuiForDrawType(shapeData.m_drawType);
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_COPYPARAMSFROMFRAME0)
+	{
+		if (m_currentFrame != 0)
+		{
+			ShapeData& frame0Data = g_shapeTable[m_currentShape][0];
+			shapeData.m_rotation = frame0Data.m_rotation;
+			shapeData.m_Scaling = frame0Data.m_Scaling;
+			shapeData.m_TweakPos = frame0Data.m_TweakPos;
+			shapeData.m_topTextureOffsetX = frame0Data.m_topTextureOffsetX;
+			shapeData.m_topTextureOffsetY = frame0Data.m_topTextureOffsetY;
+			shapeData.m_topTextureWidth = frame0Data.m_topTextureWidth;
+			shapeData.m_topTextureHeight = frame0Data.m_topTextureHeight;
+			shapeData.m_frontTextureOffsetX = frame0Data.m_frontTextureOffsetX;
+			shapeData.m_frontTextureOffsetY = frame0Data.m_frontTextureOffsetY;
+			shapeData.m_frontTextureWidth = frame0Data.m_frontTextureWidth;
+			shapeData.m_frontTextureHeight = frame0Data.m_frontTextureHeight;
+			shapeData.m_rightTextureOffsetX = frame0Data.m_rightTextureOffsetX;
+			shapeData.m_rightTextureOffsetY = frame0Data.m_rightTextureOffsetY;
+			shapeData.m_rightTextureWidth = frame0Data.m_rightTextureWidth;
+			shapeData.m_rightTextureHeight = frame0Data.m_rightTextureHeight;
+
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_TOP)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_TOP)];
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_FRONT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_FRONT)];
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_RIGHT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_RIGHT)];
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_BOTTOM)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_BOTTOM)];
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_BACK)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_BACK)];
+			shapeData.m_sideTextures[int(CuboidSides::CUBOID_LEFT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_LEFT)];
+
+			somethingChanged = true;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TOPXMINUSBUTTON)
@@ -1331,6 +789,18 @@ void ShapeEditorState::Update()
 		shapeData.m_meshOutline = m_currentGui->GetActiveElement()->m_Selected;
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_USESHAPEPOINTERCHECKBOX)
+	{
+		somethingChanged = true;
+		shapeData.m_useShapePointer = m_currentGui->GetActiveElement()->m_Selected;
+
+		shapeData.FixupTextures();
+		shapeData.SafeAndSane();
+	}
+
+
+
+
 	// Tweak Rotation
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKROTATIONPLUSBUTTON)
 	{
@@ -1376,6 +846,104 @@ void ShapeEditorState::Update()
 		}
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
+	{
+		int pointerShape = shapeData.m_pointerShape;
+		int newShape = pointerShape - 1;
+
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			newShape -= 9;
+		}
+
+		if (newShape < 0)
+		{
+			newShape = 1023;
+		}
+
+		if (g_shapeTable[newShape][0].IsValid())
+		{
+			shapeData.m_pointerShape = newShape;
+			if (shapeData.m_useShapePointer)
+			{
+				somethingChanged = true;
+			}
+		}
+		else
+		{
+			shapeData.m_pointerShape = 0;
+		}
+
+		shapeData.m_pointerFrame = 0;
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_NEXTSHAPEPOINTERBUTTON)
+	{
+		int pointerShape = shapeData.m_pointerShape;
+		int newShape = pointerShape + 1;
+
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			newShape += 9;
+		}
+
+		if (newShape > 1023)
+		{
+			newShape = 150;
+		}
+
+		if (g_shapeTable[newShape][0].IsValid())
+		{
+			shapeData.m_pointerShape = newShape;
+			if (shapeData.m_useShapePointer)
+			{
+				somethingChanged = true;
+			}
+		}
+		else
+		{
+			shapeData.m_pointerShape = 0;
+		}
+
+		shapeData.m_pointerFrame = 0;
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_NEXTFRAMEPOINTERBUTTON)
+	{
+		int newFrame = shapeData.m_pointerFrame + 1;
+		if (newFrame > 31)
+		{
+			newFrame = 0;
+		}
+
+		if (g_shapeTable[shapeData.m_pointerShape][newFrame].IsValid())
+		{
+			shapeData.m_pointerFrame = newFrame;
+			if (shapeData.m_useShapePointer)
+			{
+				somethingChanged = true;
+			}
+		}
+	}
+
+	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEPOINTERBUTTON)
+	{
+		int newFrame = shapeData.m_pointerFrame - 1;
+		if (newFrame < 0)
+		{
+			newFrame = 31;
+		}
+
+		if (g_shapeTable[m_currentShape][newFrame].IsValid())
+		{
+			shapeData.m_pointerFrame = newFrame;
+			if (shapeData.m_useShapePointer)
+			{
+				somethingChanged = true;
+			}
+		}
+	}
+
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
@@ -1396,6 +964,10 @@ void ShapeEditorState::Update()
 	m_currentGui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape);
 	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame);
 	
+	m_currentGui->GetElement(GE_CURRENTSHAPEPOINTERIDTEXTAREA)->m_String = "PS:" + to_string(shapeData.m_pointerShape);
+	m_currentGui->GetElement(GE_CURRENTFRAMEPOINTERIDTEXTAREA)->m_String = "PF:" + to_string(shapeData.m_pointerFrame);
+
+
 	if (m_currentGui == m_cuboidGui.get())
 	{
 
@@ -1468,6 +1040,8 @@ void ShapeEditorState::Update()
 		std::string newStr = g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName.substr(16);
 		m_currentGui->GetElement(GE_MODELNAMETEXTAREA)->m_String = newStr;
 	}
+
+	m_currentGui->GetElement(GE_USESHAPEPOINTERCHECKBOX)->m_Selected = shapeData.m_useShapePointer;
 }
 
 
@@ -1482,31 +1056,54 @@ void ShapeEditorState::Draw()
 	if (g_shapeTable[m_currentShape][m_currentFrame].GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
 	{
 		Texture* d = g_shapeTable[m_currentShape][m_currentFrame].GetTexture();
+		if (g_shapeTable[m_currentShape][m_currentFrame].m_useShapePointer)
+		{
+			d = g_shapeTable[g_shapeTable[m_currentShape][m_currentFrame].m_pointerShape][g_shapeTable[m_currentShape][m_currentFrame].m_pointerFrame].GetTexture();
+		}
+		
 		Texture* t = g_shapeTable[m_currentShape][m_currentFrame].GetTopTexture();
 		Texture* f = g_shapeTable[m_currentShape][m_currentFrame].GetFrontTexture();
 		Texture* r = g_shapeTable[m_currentShape][m_currentFrame].GetRightTexture();
 
-		DrawTextureEx(*d, Vector2{ 0, 0 }, 0, scale, Color{ 255, 255, 255, 255 });
-		DrawTextureEx(*t, Vector2{ 0, (d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
-		DrawTextureEx(*r, Vector2{ (t->width + 2) * scale, (d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
-		DrawTextureEx(*f, Vector2{ 0, (d->height + d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
+		//  Draw original texture with label and border
+		DrawTextEx(*g_Font.get(), "Original Texture", {0, 0}, g_fontSize, 1, WHITE);
+		float yoffset = g_fontSize + 2;
+		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
+		yoffset += scale;
+		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 
-		//  Draw rectangles denoting texture offsets
+		//  Draw top texture with labels and borders
+		yoffset += float(d->height) * scale + scale + scale;
+		float rightoffset = yoffset;
+		DrawTextEx(*g_Font.get(), "Top Texture", { 0, yoffset }, g_fontSize, 1, WHITE);
+		yoffset += g_fontSize + 2 + scale;
+		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		yoffset -= scale;
+		DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
 
-		Rectangle topRect = { 0, 0, static_cast<float>(t->width) * scale, static_cast<float>(t->height) * scale };
-		//DrawRectangleLinesEx(topRect, scale, RED);
+		//  Draw front texture with labels and borders
+		yoffset += float(d->height) * scale + scale + scale;
+		DrawTextEx(*g_Font.get(), "Front Texture", { 0, yoffset }, g_fontSize, 1, WHITE);
+		yoffset += g_fontSize + 2 + scale;
+		DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		yoffset -= scale;
+		DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
 
-		Rectangle frontRect = { 0, 0, static_cast<float>(f->width), static_cast<float>(f->height) };
-		//DrawRectangleLinesEx(topRect, scale, RED);
-		Rectangle rightRect = { 0, 0, static_cast<float>(r->width), static_cast<float>(r->height) };
+		//  Draw right texture with labels and border
+		yoffset = rightoffset;
+		//yoffset += float(r->height) * scale + scale + scale;
+		float xoffset = d->width * scale + scale + scale + scale;
+		DrawTextEx(*g_Font.get(), "Right Texture", { xoffset, yoffset }, g_fontSize, 1, WHITE);
+		yoffset += g_fontSize + 2 + scale;
+		DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		yoffset -= scale;
+		DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);
 	}
 
 	if (g_shapeTable[m_currentShape][m_currentFrame].GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
 		Texture* d = g_shapeTable[m_currentShape][m_currentFrame].GetTexture();
-		Texture* b = g_shapeTable[m_currentShape][m_currentFrame].GetBillboardTexture();
 		DrawTextureEx(*d, Vector2{ 0, 0 }, 0, scale, Color{ 255, 255, 255, 255 });
-		DrawTextureEx(*b, Vector2{ 0, (d->height + 2) * scale }, 0, scale, Color{ 255, 255, 255, 255 });
 	}
 
 	BeginMode3D(g_camera);
@@ -1535,4 +1132,312 @@ void ShapeEditorState::Draw()
 	EndDrawing();
 }
 
+void ShapeEditorState::SetupBboardGui()
+{
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
 
+	m_bboardGui = make_unique<Gui>();
+
+	m_bboardGui->m_Font = g_Font;
+	m_bboardGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
+	m_bboardGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
+
+	m_bboardGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
+
+	SetupCommonGui(m_bboardGui.get());
+	m_bboardGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "BBoard";
+}
+
+void ShapeEditorState::SetupFlatGui()
+{
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+
+	m_flatGui = make_unique<Gui>();
+
+	m_flatGui->m_Font = g_Font;
+	m_flatGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
+	m_flatGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
+
+	m_flatGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
+
+	int yoffset = 15;
+	int y = 4;
+
+	SetupCommonGui(m_flatGui.get());
+	m_flatGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Flat";
+}
+
+void ShapeEditorState::SetupCuboidGui()
+{
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+
+	m_cuboidGui = make_unique<Gui>();
+
+	m_cuboidGui->m_Font = g_Font;
+	m_cuboidGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
+	m_cuboidGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
+
+	m_cuboidGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
+
+	SetupCommonGui(m_cuboidGui.get());
+	m_cuboidGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Cuboid";
+
+	int yoffset = 13;
+	int y = 134;
+
+	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_Font.get(), "Top Face", 3, y);
+	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y, "Reset", g_Font.get());
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_TOPXPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_TOPXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_TOPYMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_TOPYPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_TOPYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+
+	y += yoffset * .7f;
+
+	m_cuboidGui->AddIconButton(GE_TOPWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_TOPWIDTHPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_TOPWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_TOPHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_TOPHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_TOPHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+
+	y += yoffset;
+
+	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_Font.get(), "Front Face", 3, y);
+	m_cuboidGui->AddTextButton(GE_FRONTRESET, 60, y, "Reset", g_Font.get());
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_FRONTXPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_FRONTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_FRONTYMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_FRONTYPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_FRONTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+
+	y += yoffset * .7f;
+
+	m_cuboidGui->AddIconButton(GE_FRONTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_FRONTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_FRONTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_FRONTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+
+	y += yoffset;
+
+	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_Font.get(), "Right Face", 3, y);
+	m_cuboidGui->AddTextButton(GE_RIGHTRESET, 60, y, "Reset", g_Font.get());
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_RIGHTXPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_RIGHTXTEXTAREA, g_Font.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_RIGHTYMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_RIGHTYPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_RIGHTYTEXTAREA, g_Font.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+
+	y += yoffset * .7f;
+
+	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_RIGHTWIDTHTEXTAREA, g_Font.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+
+	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
+	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
+	m_cuboidGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_Font.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+
+	y += yoffset;
+
+	m_cuboidGui->AddTextArea(GE_TEXTUREASSIGNMENTTEXTAREA, g_Font.get(), "Texture Assignment:", 2, y);
+
+	y += yoffset * .7f;
+
+	m_cuboidGui->AddTextArea(GE_TOPSIDETEXTAREA, g_Font.get(), "Top", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVTOPBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_TOPSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTTOPBUTTON, 95, y, g_RightArrow);
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTAREA, g_Font.get(), "Front", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVFRONTBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_FRONTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTFRONTBUTTON, 95, y, g_RightArrow);
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTAREA, g_Font.get(), "Right", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVRIGHTBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_RIGHTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_RIGHT))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTRIGHTBUTTON, 95, y, g_RightArrow);
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTAREA, g_Font.get(), "Bottom", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVBOTTOMBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_BOTTOMSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BOTTOM))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTBOTTOMBUTTON, 95, y, g_RightArrow);
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTAREA, g_Font.get(), "Back", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVBACKBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_BACKSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_BACK))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTBACKBUTTON, 95, y, g_RightArrow);
+	y += yoffset * .8f;
+
+	m_cuboidGui->AddTextArea(GE_LEFTSIDETEXTAREA, g_Font.get(), "Left", 3, y);
+	m_cuboidGui->AddIconButton(GE_PREVLEFTBUTTON, 40, y, g_LeftArrow);
+	m_cuboidGui->AddTextArea(GE_LEFTSIDETEXTURETEXTAREA, g_Font.get(), m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_LEFT))], 50, y);
+	m_cuboidGui->AddIconButton(GE_NEXTLEFTBUTTON, 95, y, g_RightArrow);
+}
+
+void ShapeEditorState::SetupMeshGui()
+{
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+
+	m_meshGui = make_unique<Gui>();
+
+	m_meshGui->m_Font = g_Font;
+	m_meshGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
+	m_meshGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
+
+	m_meshGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
+
+	SetupCommonGui(m_meshGui.get());
+
+	m_meshGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Mesh";
+
+	int yoffset = 13;
+	int y = 134;
+
+	m_meshGui->AddTextArea(GE_MODELTEXTAREA, g_Font.get(), "Model:", 2, y);
+
+	y += yoffset;
+
+	m_meshGui->AddIconButton(GE_PREVMODELBUTTON, 4, y, g_LeftArrow);
+	m_meshGui->AddTextArea(GE_MODELNAMETEXTAREA, g_Font.get(), shapeData.m_customMeshName, 12, y);
+	m_meshGui->AddIconButton(GE_NEXTMODELBUTTON, 88, y, g_RightArrow);
+
+	y += yoffset;
+
+	m_meshGui->AddCheckBox(GE_MESHOUTLINECHECKBOX, 4, y, 16, 16);
+	m_meshGui->GetElement(GE_MESHOUTLINECHECKBOX)->m_Selected = shapeData.m_meshOutline;
+	m_meshGui->AddTextArea(GE_MESHOUTLINETEXTAREA, g_Font.get(), "Use Mesh Outline", 22, y);
+
+}
+
+void ShapeEditorState::SetupCharacterGui()
+{
+	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
+
+	m_characterGui = make_unique<Gui>();
+
+	m_characterGui->m_Font = g_Font;
+	m_characterGui->m_Pos = Vector2{ 480 * g_DrawScale, 0 };
+	m_characterGui->SetLayout(GetRenderWidth() - 120 * g_DrawScale, 0, 120, 360, g_DrawScale, Gui::GUIP_UPPERRIGHT);
+
+	m_characterGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
+
+	SetupCommonGui(m_characterGui.get());
+}
+
+void ShapeEditorState::SetupCommonGui(Gui* gui)
+{
+	int yoffset = 13;
+	int y = 4;
+
+	gui->AddTextButton(GE_SAVEBUTTON, 8, y, "Save", g_Font.get());
+	gui->AddTextButton(GE_LOADBUTTON, 60, y, "Load", g_Font.get());
+	y += yoffset;
+
+	gui->AddIconButton(GE_PREVSHAPEBUTTON, 4, y, g_LeftArrow);
+	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 45, y, g_RightArrow);
+	gui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_Font.get(), "S:" + to_string(m_currentShape), 12, y);
+
+	gui->AddIconButton(GE_PREVFRAMEBUTTON, 55, y, g_LeftArrow);
+	gui->AddIconButton(GE_NEXTFRAMEBUTTON, 90, y, g_RightArrow);
+	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_Font.get(), "F:" + to_string(m_currentFrame), 65, y);
+
+	y += yoffset;
+
+	gui->AddTextArea(GE_DRAWTYPELABEL, g_Font.get(), "DrawType: ", 2, y);
+	gui->AddIconButton(GE_PREVDRAWTYPE, 55, y, g_LeftArrow);
+	gui->AddIconButton(GE_NEXTDRAWTYPE, 90, y, g_RightArrow);
+
+	gui->AddTextArea(GE_CURRENTDRAWTYPETEXTAREA, g_Font.get(), "", 65, y);
+
+	y += yoffset;
+
+	gui->AddCheckBox(GE_USESHAPEPOINTERCHECKBOX, 4, y, 16, 16);
+	gui->AddTextArea(GE_USESHAPEPOINTERTEXTAREA, g_Font.get(), "Use Shape Pointer", 20, y);
+
+	y += yoffset;
+
+	gui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 4, y, g_LeftArrow);
+	gui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 45, y, g_RightArrow);
+	gui->AddTextArea(GE_CURRENTSHAPEPOINTERIDTEXTAREA, g_Font.get(), "PS: " + to_string(m_currentShape), 15, y);
+
+	gui->AddIconButton(GE_PREVFRAMEPOINTERBUTTON, 55, y, g_LeftArrow);
+	gui->AddIconButton(GE_NEXTFRAMEPOINTERBUTTON, 90, y, g_RightArrow);
+	gui->AddTextArea(GE_CURRENTFRAMEPOINTERIDTEXTAREA, g_Font.get(), "PF: " + to_string(m_currentFrame), 65, y);
+
+	y += yoffset;
+
+	gui->AddTextButton(GE_COPYPARAMSFROMFRAME0, 8, y, "Copy From Frame 0", g_Font.get());
+
+	y += yoffset;
+	gui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_Font.get(), "Tweak Pos: ", 2, y);
+	gui->AddTextArea(GE_TWEAKDIMENSIONSTEXTAREA, g_Font.get(), "Tweak Dims: ", 62, y);
+
+	y += yoffset * .7f;
+
+	gui->AddIconButton(GE_TWEAKXPLUSBUTTON, 2, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKXTEXTAREA, g_Font.get(), "X:", 11, y);
+	gui->AddIconButton(GE_TWEAKXMINUSBUTTON, 50, y, g_RightArrow);
+
+	std::ostringstream out;
+
+	out.precision(1);
+	gui->AddIconButton(GE_TWEAKWIDTHPLUSBUTTON, 62, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKWIDTHTEXTAREA, g_Font.get(), "W:", 71, y);
+	gui->AddIconButton(GE_TWEAKWIDTHMINUSBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset * .7f;
+
+	gui->AddIconButton(GE_TWEAKYPLUSBUTTON, 2, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKYTEXTAREA, g_Font.get(), "Y:", 11, y);
+	gui->AddIconButton(GE_TWEAKYMINUSBUTTON, 50, y, g_RightArrow);
+
+	out.str("");
+	out.precision(1);
+	gui->AddIconButton(GE_TWEAKHEIGHTPLUSBUTTON, 62, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKHEIGHTTEXTAREA, g_Font.get(), "H:", 71, y);
+	gui->AddIconButton(GE_TWEAKHEIGHTMINUSBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset * .7f;
+
+	gui->AddIconButton(GE_TWEAKZPLUSBUTTON, 2, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKZTEXTAREA, g_Font.get(), "Z:", 11, y);
+	gui->AddIconButton(GE_TWEAKZMINUSBUTTON, 50, y, g_RightArrow);
+
+	out.str("");
+	out.precision(1);
+	gui->AddIconButton(GE_TWEAKDEPTHPLUSBUTTON, 62, y, g_LeftArrow);
+	gui->AddTextArea(GE_TWEAKDEPTHTEXTAREA, g_Font.get(), "D:", 71, y);
+	gui->AddIconButton(GE_TWEAKDEPTHMINUSBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset;
+
+	out.str("");
+	out.precision(1);
+	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
+	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
+	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), " ", 71, y);
+	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
+}

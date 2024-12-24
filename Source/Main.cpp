@@ -55,9 +55,9 @@ int main(int argv, char** argc)
       //  Pick a random initial location
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(GetTime() * 1000);
-      int x = g_VitalRNG->Random(5);
+      int x = g_VitalRNG->Random(6);
 
-      switch (x)
+      switch (6)
       {
          case 0: //  Staring Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
@@ -79,6 +79,14 @@ int main(int argv, char** argc)
             g_camera.target = Vector3{ 2192.0f, 0.0f, 1487.0f };
             break;
 
+         case 5:
+            g_camera.target = Vector3{ 1549.0f, 0.0f, 1287.0f };
+            break;
+
+         case 6:
+            g_camera.target = Vector3{ 1064.0f, 0.0f, 2247.0f };
+            break;
+
          default:
             g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
             break;
@@ -91,18 +99,10 @@ int main(int argv, char** argc)
 
       RenderTexture2D m_renderTarget = LoadRenderTexture(640, 360);
 
-      //BeginDrawing();
-
-      //ClearBackground(BLACK);
-
-      //EndDrawing();
-
       //  Initialize globals
       g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
-      //Texture* g_Ground = g_ResourceManager->GetTexture("Images/Terrain/U7Baseplates/u7map8-3.png");
-
-      g_DrawScale = float(GetRenderHeight()) / 360.0f;
+      g_DrawScale = float(GetRenderHeight()) / g_Engine->m_EngineConfig.GetNumber("base_height");
 
       //g_smallFontSize = static_cast<int>(16 * g_DrawScale) - (static_cast<int>(16 * g_DrawScale) % 16);
       //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
@@ -113,7 +113,7 @@ int main(int argv, char** argc)
       g_Font = make_shared<Font>(font);
 
       g_VitalRNG = make_unique<RNG>();
-      g_VitalRNG->SeedRNG(7777);//GetTime());
+      g_VitalRNG->SeedRNG(7777);
       g_NonVitalRNG = make_unique<RNG>();
       g_NonVitalRNG->SeedRNG(GetTime());
 

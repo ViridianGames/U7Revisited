@@ -16,6 +16,8 @@ struct Texture;
 
 struct coords;
 
+constexpr char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
+
 enum class CuboidTexture
 {
 	CUBOID_DONT_DRAW = 0,
@@ -66,19 +68,18 @@ public:
 
 	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
 
-	void DrawSide(CuboidSides side, Vector3 thisPos, Color color, Vector3 scaling);
-
 	bool IsValid() { return m_isValid; }
 
 	void CreateDefaultTexture();
 
 	void SetDefaultTexture(Image image);
 
+	Image GetDefaultTextureImage() { return m_originalTexture->m_Image; }
+	void SetupTextures();
 	Texture* GetTexture() { return &m_originalTexture->m_Texture; }
 	Texture* GetTopTexture() { return &m_topTexture->m_Texture; }
 	Texture* GetFrontTexture() { return &m_frontTexture->m_Texture; }
 	Texture* GetRightTexture() { return &m_rightTexture->m_Texture; }
-	Texture* GetBillboardTexture() { return &m_billboardTexture->m_Texture; }
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
@@ -95,6 +96,7 @@ public:
 	void SetTextureForMeshFromSideData(CuboidSides side);
 	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTextures[static_cast<int>(side)] = texture; }
 	void UpdateAllCuboidTextures();
+	void UpdateShapePointerTexture();
 
 	bool Pick(Vector3 thisPos);
 
@@ -119,6 +121,10 @@ public:
 	int m_shape;
 	int m_frame;
 
+	int m_pointerShape;
+	int m_pointerFrame;
+	bool m_useShapePointer;
+
 	ShapeDrawType m_drawType;
 
 	Vector3 m_Dims;
@@ -135,8 +141,8 @@ public:
 
 	//  For drawing in billboard mode
 
-	Model m_billboardModel;
-	std::unique_ptr<ModTexture> m_billboardTexture;
+	//Model m_billboardModel;
+	//std::unique_ptr<ModTexture> m_billboardTexture;
 
 	//  For drawing in flat mode
 
@@ -147,6 +153,7 @@ public:
 	std::unique_ptr<ModTexture> m_topTexture;
 	std::unique_ptr<ModTexture> m_frontTexture;
 	std::unique_ptr<ModTexture> m_rightTexture;
+	std::unique_ptr<ModTexture> m_shapePointerTexture;
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;

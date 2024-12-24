@@ -12,4 +12,6 @@ reversemountainquarter1
 chair
 chair2
 column
+wooden_chair_001
 zzwrongcube
+anvil

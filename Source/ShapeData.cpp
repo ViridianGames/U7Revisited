@@ -34,6 +34,7 @@ ShapeData::ShapeData()
 	m_rotation = 0;
 	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
 	m_meshOutline = true;
+	m_useShapePointer = false;
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -43,6 +44,9 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 
 	if (m_originalTexture != nullptr)
 	{
+		m_shapePointerTexture = std::make_unique<ModTexture>();
+		m_shapePointerTexture->AssignImage(g_shapeTable[m_pointerShape][m_pointerFrame].GetDefaultTextureImage());
+
 		m_isValid = true;
 
 		//  We need local copies of this texture for three sides of the cuboid.
@@ -57,16 +61,6 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 		if (m_rightTexture == nullptr)
 		{
 			m_rightTexture = std::make_unique<ModTexture>(m_originalTexture->m_Image);
-		}
-
-		if (m_billboardTexture == nullptr)
-		{
-			Image tempImage = ImageFromImage(m_originalTexture->m_Image, Rectangle{ 0, 0, float(m_originalTexture->width), float(m_originalTexture->height) });
-			ImageResizeNN(&tempImage, m_originalTexture->width * 2, m_originalTexture->height * 2);
-			ImageRotate(&tempImage, 45);
-			//ImageResizeNN(&tempImage, m_originalTexture->width, m_originalTexture->height);
-			m_billboardTexture = std::make_unique<ModTexture>(tempImage);
-			m_Dims = Vector3{ float(m_originalTexture->width) / 8.0f * g_DrawScale, float(m_originalTexture->height) / 8.0f * g_DrawScale, 1 };
 		}
 
 		ObjectData* objectData = &g_objectTable[m_shape];
@@ -131,6 +125,11 @@ void ShapeData::CreateDefaultTexture()
 	}
 }
 
+void ShapeData::SetupTextures()
+{
+
+}
+
 void ShapeData::Serialize(ofstream& outStream)
 {
 	outStream << m_shape << " ";
@@ -163,6 +162,9 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << static_cast<int>(m_sideTextures[5]) << " ";
 	outStream << m_customMeshName << " ";
 	outStream << m_meshOutline << " ";
+	outStream << m_useShapePointer << " ";
+	outStream << m_pointerShape << " ";
+	outStream << m_pointerFrame << " ";
 	outStream << endl;
 
 	outStream.flush();
@@ -216,6 +218,10 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_customMeshName;
 	inStream >> m_meshOutline;
 
+	inStream >>  m_useShapePointer;
+	inStream >> m_pointerShape;
+	inStream >> m_pointerFrame;
+
 	Init(m_shape, m_frame, false);
 
 }
@@ -267,13 +273,6 @@ void ShapeData::SafeAndSane()
 	if (m_rightTextureWidth < 0) { m_rightTextureWidth = 0; }
 	if (m_rightTextureHeight < 0) { m_rightTextureHeight = 0; }
 
-	if (m_topTextureWidth > m_originalTexture->width) { m_topTextureWidth = m_originalTexture->width; }
-	if (m_topTextureHeight > m_originalTexture->height) { m_topTextureHeight = m_originalTexture->height; }
-	if (m_frontTextureWidth > m_originalTexture->width) { m_frontTextureWidth = m_originalTexture->width; }
-	if (m_frontTextureHeight > m_originalTexture->height) { m_frontTextureHeight = m_originalTexture->height; }
-	if (m_rightTextureWidth > m_originalTexture->width) { m_rightTextureWidth = m_originalTexture->width; }
-	if (m_rightTextureHeight > m_originalTexture->height) { m_rightTextureHeight = m_originalTexture->height; }
-
 	if (m_topTextureOffsetX < 0) { m_topTextureOffsetX = 0; }
 	if (m_topTextureOffsetY < 0) { m_topTextureOffsetY = 0; }
 	if (m_frontTextureOffsetX < 0) { m_frontTextureOffsetX = 0; }
@@ -281,12 +280,25 @@ void ShapeData::SafeAndSane()
 	if (m_rightTextureOffsetX < 0) { m_rightTextureOffsetX = 0; }
 	if (m_rightTextureOffsetY < 0) { m_rightTextureOffsetY = 0; }
 
-	if (m_topTextureOffsetX + m_topTextureWidth > m_originalTexture->width) { m_topTextureOffsetX = m_originalTexture->width; }
-	if (m_topTextureOffsetY + m_topTextureHeight > m_originalTexture->height) { m_topTextureOffsetY = m_originalTexture->height; }
-	if (m_frontTextureOffsetX + m_frontTextureWidth > m_originalTexture->width) { m_frontTextureOffsetX = m_originalTexture->width; }
-	if (m_frontTextureOffsetY + m_frontTextureHeight > m_originalTexture->height) { m_frontTextureOffsetY = m_originalTexture->height; }
-	if (m_rightTextureOffsetX + m_rightTextureWidth > m_originalTexture->width) { m_rightTextureOffsetX = m_originalTexture->width; }
-	if (m_rightTextureOffsetY + m_rightTextureHeight > m_originalTexture->height) { m_rightTextureOffsetY = m_originalTexture->height; }
+	ModTexture* textureToUse = m_originalTexture.get();
+	if (m_useShapePointer)
+	{
+		textureToUse = m_shapePointerTexture.get();
+	}
+
+	if (m_topTextureWidth > textureToUse->width) { m_topTextureWidth = textureToUse->width; }
+	if (m_topTextureHeight > textureToUse->height) { m_topTextureHeight = textureToUse->height; }
+	if (m_frontTextureWidth > textureToUse->width) { m_frontTextureWidth = textureToUse->width; }
+	if (m_frontTextureHeight > textureToUse->height) { m_frontTextureHeight = textureToUse->height; }
+	if (m_rightTextureWidth > textureToUse->width) { m_rightTextureWidth = textureToUse->width; }
+	if (m_rightTextureHeight > textureToUse->height) { m_rightTextureHeight = textureToUse->height; }
+
+	if (m_topTextureOffsetX + m_topTextureWidth > textureToUse->width) { m_topTextureOffsetX = textureToUse->width; }
+	if (m_topTextureOffsetY + m_topTextureHeight > textureToUse->height) { m_topTextureOffsetY = textureToUse->height; }
+	if (m_frontTextureOffsetX + m_frontTextureWidth > textureToUse->width) { m_frontTextureOffsetX = textureToUse->width; }
+	if (m_frontTextureOffsetY + m_frontTextureHeight > textureToUse->height) { m_frontTextureOffsetY = textureToUse->height; }
+	if (m_rightTextureOffsetX + m_rightTextureWidth > textureToUse->width) { m_rightTextureOffsetX = textureToUse->width; }
+	if (m_rightTextureOffsetY + m_rightTextureHeight > textureToUse->height) { m_rightTextureOffsetY = textureToUse->height; }
 
 
 }
@@ -311,25 +323,6 @@ void ShapeData::SetupDrawTypes()
 	}
 
 	FixupTextures();
-
-	//  BILLBOARD DRAWING
-	Mesh billboardMesh = GenMeshPlane(m_Dims.x, m_Dims.y, 1, 1);
-
-	//  Move the mesh from the center to the corner
-	for (int i = 0; i < billboardMesh.vertexCount; ++i)
-	{
-		billboardMesh.vertices[i * 3];
-		float y = billboardMesh.vertices[i * 3 + 2];
-		billboardMesh.vertices[i * 3 + 1] = billboardMesh.vertices[i * 3 + 2];
-		billboardMesh.vertices[i * 3 + 2] = y;
-		float u = billboardMesh.texcoords[i * 2];
-		billboardMesh.texcoords[i * 2] = billboardMesh.texcoords[i * 2 + 1];
-		billboardMesh.texcoords[i * 2 + 1] = u;
-	}
-
-	UpdateMeshBuffer(billboardMesh, 0, billboardMesh.vertices, sizeof(float) * billboardMesh.vertexCount * 3, 0);
-	m_billboardModel = LoadModelFromMesh(billboardMesh);
-	SetMaterialTexture(&m_billboardModel.materials[0], MATERIAL_MAP_DIFFUSE, m_billboardTexture->m_Texture);
 
 	//  FLAT DRAWING
 
@@ -553,18 +546,26 @@ void ShapeData::FixupTextures()
 
 	ObjectData* objectData = &g_objectTable[m_shape];
 
+	UpdateShapePointerTexture();
+
 	//  Reset all textures
 	m_topTexture->Reset();
 	m_frontTexture->Reset();
 	m_rightTexture->Reset();
 
+	ModTexture* textureToUse = m_originalTexture.get();
+	if (m_useShapePointer)
+	{
+		textureToUse = m_shapePointerTexture.get();
+	}
+
 	//  Top face
-	m_topTexture->m_Image = ImageFromImage(m_originalTexture->m_Image, Rectangle{ float(m_topTextureOffsetX), float(m_topTextureOffsetY), float(m_topTextureWidth), float(m_topTextureHeight) });
+	m_topTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_topTextureOffsetX), float(m_topTextureOffsetY), float(m_topTextureWidth), float(m_topTextureHeight) });
 	m_topTexture->UpdateTexture();
 
 	//  Front face
-	m_frontTexture->m_Image = ImageFromImage(m_originalTexture->m_Image, Rectangle{ float(m_frontTextureOffsetX), float(m_frontTextureOffsetY),
-		float(m_originalTexture->m_Image.width - m_frontTextureOffsetX), float(m_originalTexture->m_Image.height - m_frontTextureOffsetY) });
+	m_frontTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_frontTextureOffsetX), float(m_frontTextureOffsetY),
+		float(textureToUse->m_Image.width - m_frontTextureOffsetX), float(textureToUse->m_Image.height - m_frontTextureOffsetY) });
 
 	//  Shift slanted pixels to unslant
 	int counter = 1;
@@ -581,8 +582,8 @@ void ShapeData::FixupTextures()
 	m_frontTexture->UpdateTexture();
 
 	//  Right face
-	m_rightTexture->m_Image = ImageFromImage(m_originalTexture->m_Image, Rectangle{ float(m_rightTextureOffsetX), float(m_rightTextureOffsetY),
-		float(m_originalTexture->m_Image.width - m_rightTextureOffsetX), float(m_originalTexture->m_Image.height - m_rightTextureOffsetY) });
+	m_rightTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_rightTextureOffsetX), float(m_rightTextureOffsetY),
+		float(textureToUse->m_Image.width - m_rightTextureOffsetX), float(textureToUse->m_Image.height - m_rightTextureOffsetY) });
 
 	//  Shift slanted pixels to unslant
 	counter = 1;
@@ -773,4 +774,14 @@ void ShapeData::UpdateAllCuboidTextures()
 	{
 		SetTextureForMeshFromSideData(static_cast<CuboidSides>(i));
 	}
+}
+
+void ShapeData::UpdateShapePointerTexture()
+{
+	if (m_shapePointerTexture == nullptr)
+	{
+		m_shapePointerTexture = std::make_unique<ModTexture>();
+	}
+
+	m_shapePointerTexture->AssignImage(g_shapeTable[m_pointerShape][m_pointerFrame].GetDefaultTextureImage());
 }

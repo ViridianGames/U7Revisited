@@ -713,6 +713,8 @@ void LoadingState::CreateShapeTable()
 		int numFrames = shapeEntryMap[thisShape].length / 64;
 		for (int thisFrame = 0; thisFrame < numFrames; ++thisFrame)
 		{
+			if (thisShape == 12 && thisFrame == 0)
+				continue;
 			for (int i = 0; i < 8; ++i)
 			{
 				for (int j = 0; j < 8; ++j)
