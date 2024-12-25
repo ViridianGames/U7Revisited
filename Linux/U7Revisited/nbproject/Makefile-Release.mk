@@ -92,132 +92,132 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/u7revisited: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o: ../../Source/Geist/BaseUnits.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o ../../Source/Geist/BaseUnits.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o ../../Source/Geist/BaseUnits.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Config.o: ../../Source/Geist/Config.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Config.o ../../Source/Geist/Config.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Config.o ../../Source/Geist/Config.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Engine.o: ../../Source/Geist/Engine.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Engine.o ../../Source/Geist/Engine.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Engine.o ../../Source/Geist/Engine.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/GUIElements.o: ../../Source/Geist/GUIElements.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/GUIElements.o ../../Source/Geist/GUIElements.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/GUIElements.o ../../Source/Geist/GUIElements.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Globals.o: ../../Source/Geist/Globals.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Globals.o ../../Source/Geist/Globals.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Globals.o ../../Source/Geist/Globals.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Gui.o: ../../Source/Geist/Gui.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Gui.o ../../Source/Geist/Gui.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Gui.o ../../Source/Geist/Gui.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/IO.o: ../../Source/Geist/IO.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/IO.o ../../Source/Geist/IO.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/IO.o ../../Source/Geist/IO.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Logging.o: ../../Source/Geist/Logging.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Logging.o ../../Source/Geist/Logging.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Logging.o ../../Source/Geist/Logging.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o: ../../Source/Geist/ParticleSystem.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o ../../Source/Geist/ParticleSystem.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o ../../Source/Geist/ParticleSystem.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/Primitives.o: ../../Source/Geist/Primitives.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Primitives.o ../../Source/Geist/Primitives.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Primitives.o ../../Source/Geist/Primitives.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/RNG.o: ../../Source/Geist/RNG.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RNG.o ../../Source/Geist/RNG.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RNG.o ../../Source/Geist/RNG.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o: ../../Source/Geist/ResourceManager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o ../../Source/Geist/ResourceManager.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o ../../Source/Geist/ResourceManager.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/StateMachine.o: ../../Source/Geist/StateMachine.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/StateMachine.o ../../Source/Geist/StateMachine.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/StateMachine.o ../../Source/Geist/StateMachine.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/TooltipSystem.o: ../../Source/Geist/TooltipSystem.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/TooltipSystem.o ../../Source/Geist/TooltipSystem.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/TooltipSystem.o ../../Source/Geist/TooltipSystem.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/LoadingState.o: ../../Source/LoadingState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/LoadingState.o ../../Source/LoadingState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/LoadingState.o ../../Source/LoadingState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/Main.o: ../../Source/Main.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/Main.o ../../Source/Main.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/Main.o ../../Source/Main.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/MainState.o: ../../Source/MainState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/MainState.o ../../Source/MainState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/MainState.o ../../Source/MainState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/ObjectEditorState.o: ../../Source/ObjectEditorState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ObjectEditorState.o ../../Source/ObjectEditorState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ObjectEditorState.o ../../Source/ObjectEditorState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/OptionsState.o: ../../Source/OptionsState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/OptionsState.o ../../Source/OptionsState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/OptionsState.o ../../Source/OptionsState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/ShapeData.o: ../../Source/ShapeData.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ShapeData.o ../../Source/ShapeData.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ShapeData.o ../../Source/ShapeData.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/ShapeEditorState.o: ../../Source/ShapeEditorState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ShapeEditorState.o ../../Source/ShapeEditorState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ShapeEditorState.o ../../Source/ShapeEditorState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/Terrain.o: ../../Source/Terrain.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/Terrain.o ../../Source/Terrain.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/Terrain.o ../../Source/Terrain.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/TitleState.o: ../../Source/TitleState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/TitleState.o ../../Source/TitleState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/TitleState.o ../../Source/TitleState.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/U7Globals.o: ../../Source/U7Globals.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Globals.o ../../Source/U7Globals.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Globals.o ../../Source/U7Globals.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/U7Object.o: ../../Source/U7Object.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Object.o ../../Source/U7Object.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Object.o ../../Source/U7Object.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/WorldEditorState.o: ../../Source/WorldEditorState.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/WorldEditorState.o ../../Source/WorldEditorState.cpp
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/WorldEditorState.o ../../Source/WorldEditorState.cpp
 
 # Subprojects
 .build-subprojects:
