@@ -18206,10 +18206,10 @@
 718 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 718 29 
 718 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 718 30 
 718 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 718 31 
-719 0 0 0 16 32 0 32 16 10 16 0 10 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 719 0 
-719 1 0 0 16 32 0 32 16 10 16 0 10 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 719 1 
-719 2 0 0 18 32 0 32 15 10 16 0 10 31 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 719 2 
-719 3 0 0 16 32 0 32 16 10 16 0 10 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 719 3 
+719 0 0 0 16 32 0 32 16 10 16 0 10 32 3 2.2 2.2 2.2 1.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/trough_1.obj 1 0 719 0 
+719 1 0 0 16 32 0 32 16 10 16 0 10 32 3 2.2 2.2 2.2 1.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/trough_2.obj 1 0 719 1 
+719 2 0 0 16 32 0 32 16 10 16 0 10 32 3 2.2 2.2 2.2 1.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/trough_3.obj 1 0 719 2 
+719 3 0 0 16 32 0 32 16 10 16 0 10 32 3 2.2 2.2 2.2 1.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/trough_4.obj 1 0 719 3 
 719 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 719 4 
 719 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 719 5 
 719 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 719 6 
@@ -26910,7 +26910,7 @@
 990 29 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 29 
 990 30 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 30 
 990 31 0 0 16 16 0 16 16 9 16 0 9 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 990 31 
-991 0 0 0 24 8 0 8 24 5 24 0 2 8 3 3 3 3 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/anvil.obj 1 0 991 0 
+991 0 0 0 24 8 0 8 24 5 24 0 2 8 3 3 3 3 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/anvil.obj 1 0 991 0 
 991 1 0 0 24 8 0 8 24 6 24 0 2 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 991 1 
 991 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 991 2 
 991 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 991 3 

@@ -15,3 +15,7 @@ column
 wooden_chair_001
 zzwrongcube
 anvil
+trough_1
+trough_2
+trough_3
+trough_4
