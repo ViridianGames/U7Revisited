@@ -163,10 +163,18 @@ void LoadingState::UpdateLoading()
 		{
 			AddConsoleString(std::string("Loading IREG..."));
 			LoadIREG();
-			MakeCSVFile();
 			m_loadingIREG = true;
 			return;
 		}
+
+		if (!m_loadingInitialGameState)
+		{
+			AddConsoleString(std::string("Loading Initial Game State..."));
+			LoadInitialGameState();
+			m_loadingInitialGameState = true;
+			return;
+		}
+
 	}
 	else
 	{
@@ -1053,47 +1061,154 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 	return entrymap;
 }
 
-void LoadingState::MakeCSVFile()
+void LoadingState::LoadInitialGameState()
 {
-	return;
-	std::ofstream csvFile;
-	csvFile.open("Data/objects.csv");
+	//  Load shape data
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	ifstream initGameFile;
+	std::string initGamePath = dataPath.append("/STATIC/INITGAME.DAT");
+	initGameFile.open(initGamePath.c_str(), ios::binary);
 
-	csvFile << "Shape, Name, Artist, DrawStyle, Dims, Frame0, Frame1, Frame2, Frame3, Frame4, Frame5, Frame6, Frame7, Frame8, Frame9, Frame10, Frame11, Frame12, Frame13, Frame14, Frame15, Frame16, Frame17, Frame18, Frame19, Frame20, Frame21, Frame22, Frame23, Frame24, Frame25, Frame26, Frame27, Frame28, Frame29, Frame30, Frame31\n";
-	for (int i = 150; i < 1024; ++i)
+	stringstream subFiles;
+	subFiles << initGameFile.rdbuf();
+	initGameFile.close();
+
+	vector<FLXEntryData> subFileMap = ParseFLXHeader(subFiles);
+
+	for (auto& node = subFileMap.begin(); node != subFileMap.end(); ++node)
 	{
-		csvFile << i << "," << g_objectTable[i].m_name << "," << ",";
-		switch (g_shapeTable[i][0].GetDrawType())
+		subFiles.seekg(node->offset);
+		//  First thirteen characters are the filename.
+		char filename[13];
+		subFiles.read(filename, 13);
+
+		//  Based on the filename, do...something.
+		if (!strncmp(filename, "npc.dat", 6))
 		{
-			case ShapeDrawType::OBJECT_DRAW_CUBOID:
-			csvFile << "Cuboid,";
-			break;
-			case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
-			csvFile << "Billboard,";
-			break;
-			case ShapeDrawType::OBJECT_DRAW_FLAT:
-			csvFile << "Flat,";
-			break;
-			case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
-			csvFile << "Mesh,";
-			break;
+			short npcCount1 = ReadU16(subFiles);
+			short npcCount2 = ReadU16(subFiles);
+			int fullcount = npcCount1 + npcCount2;
+			int filepos = subFiles.tellg();
+			Log("File position: " + to_string(filepos));
+			for (int i = 0; i < fullcount; ++i)
+			{
+				if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
+				{
+					Log("Stopper");// subFiles.seekg(2761, ios::cur);
+				}
+
+				int size = sizeof(NPCblock);
+				Log("NPC block size: " + std::to_string(size));
+				NPCblock thisNPC;
+				
+				thisNPC.x = ReadU8(subFiles);
+				thisNPC.y = ReadU8(subFiles);
+				thisNPC.shapeId = ReadU16(subFiles);
+
+				unsigned int shapenum = thisNPC.shapeId & 0x3ff;
+				unsigned int framenum = thisNPC.shapeId >> 10;
+
+				thisNPC.type = ReadU16(subFiles);
+				thisNPC.proba = ReadU8(subFiles);
+				thisNPC.data1 = ReadU16(subFiles);
+				thisNPC.lift = ReadU8(subFiles);
+				thisNPC.data2 = ReadU16(subFiles);
+
+				int chunkx = thisNPC.proba % 12;
+				int chunky = thisNPC.proba / 12;
+
+				thisNPC.index = ReadU16(subFiles);
+				thisNPC.referent = ReadU16(subFiles);
+				thisNPC.status = ReadU16(subFiles);
+
+				AddObject(shapenum, 16, GetNextID(), chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
+
+				thisNPC.str = ReadU8(subFiles);
+				thisNPC.dex = ReadU8(subFiles);
+				thisNPC.iq = ReadU8(subFiles);
+				thisNPC.combat = ReadU8(subFiles);
+				thisNPC.activity = ReadU8(subFiles);
+				thisNPC.DAM = ReadU8(subFiles);
+
+				subFiles.read(thisNPC.soak1, 3);
+
+				thisNPC.status2 = ReadU16(subFiles);
+				thisNPC.index2 = ReadU8(subFiles);
+
+				subFiles.read(thisNPC.soak2, 2);
+
+				thisNPC.xp = ReadU32(subFiles);
+				thisNPC.training = ReadU8(subFiles);
+				thisNPC.primary = ReadU16(subFiles);
+				thisNPC.secondary = ReadU16(subFiles);
+				thisNPC.oppressor = ReadU16(subFiles);
+				thisNPC.ivrx = ReadU16(subFiles);
+				thisNPC.ivry = ReadU16(subFiles);
+				thisNPC.svrx = ReadU16(subFiles);
+			   thisNPC.svry = ReadU16(subFiles);
+				thisNPC.status3 = ReadU16(subFiles);
+
+				subFiles.read(thisNPC.soak3, 5);
+
+				thisNPC.acty = ReadU8(subFiles);
+
+				subFiles.read(thisNPC.soak4, 29);
+
+				thisNPC.SN = ReadU8(subFiles);
+				thisNPC.V1 = ReadU8(subFiles);
+				thisNPC.V2 = ReadU8(subFiles);
+				thisNPC.food = ReadU8(subFiles);
+
+				subFiles.read(thisNPC.soak5, 9);
+
+				subFiles.read(thisNPC.name, 16);
+
+				int newfilepos = subFiles.tellg();
+				Log("File position after avatar: " + to_string(newfilepos));
+				Log("Size difference: " + to_string(newfilepos - filepos));
+				Log("Iolo starts at 2761 so there are " + to_string(2761 - newfilepos) + " bytes left.");
+
+				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
+				{
+					unsigned char length = 99;
+					bool incontainer = false;
+					while (length != 0)
+					{
+						int pointerlocation = subFiles.tellg();
+						Log("File pointer is at " + to_string(pointerlocation));
+						length = ReadU8(subFiles);
+						if (length == 6) //  Object.
+						{
+							for (int i = 0; i < 6; ++i)
+							{
+								ReadU8(subFiles);
+							}
+						}
+						else if (length == 12) // container or egg
+						{
+							incontainer = true;
+							for (int i = 0; i < 12; ++i)
+							{
+								ReadU8(subFiles);
+							}
+						}
+						else if(length == 1)
+						{
+							if (incontainer)
+							{
+								incontainer = false;
+							}
+						}
+					}
+				}
+
+				Log("First block written: ");
+
+			}
+		
+			stringstream npcData;
 		}
 
-		csvFile << g_objectTable[i].m_width << "x" << g_objectTable[i].m_depth << "x" << g_objectTable[i].m_height << ",";
-			
-		for (int j = 0; j < 32; ++j)
-		{
-			if (!g_shapeTable[i][j].IsValid())
-			{
-				csvFile << "EMPTY,";
-			}
-			else
-			{
-				csvFile << ",";
-			}
-		}
-		csvFile << "\n";
 	}
 
-	csvFile.close();	
 }
