@@ -1,0 +1,5 @@
+/U7Revisited/x64
+/x64
+/.vs
+/Redist/Data/U7
+!Redist/Data/U7/U7.txt
