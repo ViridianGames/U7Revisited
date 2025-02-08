@@ -102,6 +102,15 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	}
 
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+
+	if (m_frameCount > 1)
+	{
+		m_isAnimated = true;
+	}
+	else
+	{
+		m_isAnimated = false;
+	}
 }
 
 void ShapeData::SetDefaultTexture(Image image)
@@ -218,7 +227,8 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_customMeshName;
 	inStream >> m_meshOutline;
 
-	inStream >>  m_useShapePointer;
+	inStream >> m_useShapePointer;
+	inStream >> m_frameCount;
 	inStream >> m_pointerShape;
 	inStream >> m_pointerFrame;
 
@@ -644,7 +654,6 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 				DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
 			}
 		}
-
 		break;
 	}
 
@@ -672,11 +681,20 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		finalPos = pos;
 		finalPos.x += .5f;
 		finalPos.z += .5f;
+		// affects if it lines up with base
 		finalPos.y += m_Dims.y * .60f;
 
+		
 		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
-			Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
+		DrawBillboardPro(g_camera,          //Camera camera
+			m_originalTexture->m_Texture,   //Texture2D texture,
+			Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, 
+			finalPos,                       //Vector3 position
+			Vector3{ 0, 1, 0 },             //Vector3 up
+			Vector2{ m_Dims.x, m_Dims.y },  //Vector2 size
+			Vector2{ 0, 0 },                //Vector2 origin
+			-45,                            //float rotation
+			color);                         //Color tint
 		EndShaderMode();
 		break;
 	}

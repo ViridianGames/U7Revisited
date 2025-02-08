@@ -83,6 +83,7 @@ public:
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
+	int GetFrameCount() { return m_frameCount; }
 
 	void SafeAndSane();
 	void ResetTopTexture();
@@ -120,6 +121,8 @@ public:
 
 	int m_shape;
 	int m_frame;
+	bool m_isAnimated;
+	int m_frameCount;
 
 	int m_pointerShape;
 	int m_pointerFrame;

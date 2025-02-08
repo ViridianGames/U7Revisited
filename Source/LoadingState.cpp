@@ -424,9 +424,8 @@ void LoadingState::LoadIFIX()
 							int y = thisLocationData & 0xf;
 							int x = (thisLocationData >> 4) & 0xf;
 							int z = (thisLocationData >> 8) & 0xf;
-
+							
 							AddObject(shape, frame, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
-
 							int stopper = 0;
 						}
 					}
@@ -466,7 +465,26 @@ void LoadingState::MakeMap()
 
 					if (shapenum >= 150)
 					{
-						AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+						bool addStatic = true;
+						bool addAnimated = false;
+						ShapeData& shapeData = g_shapeTable[shapenum][framenum];
+						int frameCount = shapeData.GetFrameCount();
+						if (frameCount > 1) {
+							addStatic = false;
+							addAnimated = true;
+						}
+						
+						if (addStatic == true)
+						{
+							AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+						}
+						else if (addAnimated == true)
+						{
+							for (int m = 0; m < frameCount; ++m)
+							{
+								AddObject(shapenum, m, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+							}
+						}
 					}
 				}
 			}
@@ -600,7 +618,9 @@ void LoadingState::LoadIREG()
 						fread(&throwaway, sizeof(unsigned char), 1, u7thisireg);		// 11
 
 						if(shape != 275 && shape != 607 && shape != 0)
+						{
 							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						}
 						//  Egg or container?  01 Egg, 00 container.
 						unsigned char eggOrContainer;
 						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
@@ -1074,7 +1094,7 @@ void LoadingState::LoadInitialGameState()
 	initGameFile.close();
 
 	vector<FLXEntryData> subFileMap = ParseFLXHeader(subFiles);
-
+	
 	for (auto& node = subFileMap.begin(); node != subFileMap.end(); ++node)
 	{
 		subFiles.seekg(node->offset);
@@ -1201,14 +1221,9 @@ void LoadingState::LoadInitialGameState()
 						}
 					}
 				}
-
 				Log("First block written: ");
-
 			}
-		
 			stringstream npcData;
 		}
-
 	}
-
 }
