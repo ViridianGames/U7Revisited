@@ -49,6 +49,13 @@ public:
 	int GetPreviousState();// { return m_PreviousState; }
 	State* GetState(int identifier);
 
+	int currentAnimFrame3 = 0;
+	int currentAnimFrame4 = 0;
+	int currentAnimFrame5 = 0;
+	int currentAnimFrame11 = 0;
+	int currentAnimFrame12 = 0;
+	int GetAnimFrame(int frameCount);
+
 private:
 	void MakeStateTransitionEX(int newstate);
 	void PushStateEX(int newstate);
@@ -62,6 +69,7 @@ private:
 	int  m_CurrentState = -1;
 	int  m_PreviousState = -1;
 	int  m_TargetState = -1;
+
 };
 
 #endif

@@ -34,6 +34,14 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_Frame = frame;
    m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
    m_drawType = m_shapeData->GetDrawType();
+   m_frameCount = m_shapeData->GetFrameCount();
+   if (m_frameCount > 1) {
+       m_isAnimated = true;
+   }
+   else
+   {
+       m_isAnimated = false;
+   }
 }
 
 void U7Object::Draw()
@@ -50,13 +58,22 @@ void U7Object::Draw()
 
    if (g_Engine->m_debugDrawing)
    {
-		DrawBoundingBox(m_boundingBox, MAGENTA);
-	}
+      DrawBoundingBox(m_boundingBox, MAGENTA);
+   }
 }
 
 void U7Object::Update()
 {
-
+   if (m_isAnimated)
+   {
+      if (m_Frame == g_StateMachine->GetAnimFrame(m_frameCount)) {
+         m_Visible = true;
+      }
+      else
+      {
+         m_Visible = false;
+      }
+   }
 }
 
 void U7Object::Attack(int _UnitID)
