@@ -463,223 +463,653 @@ void LoadingState::MakeMap()
 					unsigned short shapenum = thisdata & 0x3ff;
 					unsigned short framenum = (thisdata >> 10) & 0x1f;
 
-					if (shapenum >= 150)
-					{
-						bool addStatic = true;
-						bool addAnimated = false;
-						ShapeData& shapeData = g_shapeTable[shapenum][framenum];
-						int frameCount = shapeData.GetFrameCount();
-						if (frameCount > 1) {
-							addStatic = false;
-							addAnimated = true;
-						}
-						
-						if (addStatic == true)
-						{
-							AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
-						}
-						else if (addAnimated == true)
-						{
-							for (int m = 0; m < frameCount; ++m)
-							{
-								AddObject(shapenum, m, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+          if (shapenum >= 150)
+          {
+            bool addStatic = true;
+            bool addAnimated = false;
+            ShapeData& shapeData = g_shapeTable[shapenum][framenum];
+            int frameCount = shapeData.GetFrameCount();
+            if (frameCount > 1) {
+              addStatic = false;
+              addAnimated = true;
+            }
+            int interestedShape = 1008;
+            
+            if (addStatic == true)
+            {
+              /*if (shapenum == interestedShape)
+              {
+                printf("  LoadMakeMap chunk(%d %d) calling AddObject Static %d %d\n", l, k, shapenum, framenum);
+              }*/
+              AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+            }
+            else if (addAnimated == true)
+            {
+              /*if (shapenum == interestedShape)
+              {
+                printf("  LoadMakeMap chunk(%d %d) calling AddObject Animated %d %d\n", l, k, shapenum, framenum);
+              }*/
+              int frameStart = framenum - (framenum % frameCount);
+              int frameStop = frameStart + frameCount;
+              for (int m = frameStart; m < frameStop; m++)
+              {
+                /*if (shapenum == interestedShape)
+                {
+                  printf("    %d\n", m);
+                }*/
+                AddObject(shapenum, m, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+bool LoadingState::ShapeIsEgg(int shapeIdx) {
+  bool retVal = false;
+  if (shapeIdx == 0) { retVal = true; }
+  else if (shapeIdx == 275) { retVal = true; }
+  else if (shapeIdx == 607) { retVal = true; }
+  return retVal;
+}
+
+bool LoadingState::ShapeIsContainer(int shapeIdx) {
+    bool retVal = false;
+    if (shapeIdx == 283) { retVal = true; }
+    else if (shapeIdx == 400) { retVal = true; }
+    else if (shapeIdx == 405) { retVal = true; }
+    else if (shapeIdx == 406) { retVal = true; }
+    else if (shapeIdx == 407) { retVal = true; }
+    else if (shapeIdx == 414) { retVal = true; }
+    else if (shapeIdx == 416) { retVal = true; }
+    else if (shapeIdx == 507) { retVal = true; }
+    else if (shapeIdx == 522) { retVal = true; }
+    else if (shapeIdx == 679) { retVal = true; }
+    else if (shapeIdx == 762) { retVal = true; }
+    else if (shapeIdx == 798) { retVal = true; }
+    else if (shapeIdx == 799) { retVal = true; }
+    else if (shapeIdx == 800) { retVal = true; }
+    else if (shapeIdx == 801) { retVal = true; }
+    else if (shapeIdx == 802) { retVal = true; }
+    else if (shapeIdx == 803) { retVal = true; }
+    else if (shapeIdx == 804) { retVal = true; }
+    else if (shapeIdx == 819) { retVal = true; }
+    else if (shapeIdx == 892) { retVal = true; }
+    return retVal;
+}
+
+int LoadingState::IREGItem(bool printDebug, int scPos[2], int containerDepth, int dataLen, unsigned char* data)
+{
+  bool worldObject = false;
+  bool isEgg = false;
+  int shapeIdx = 0;
+  int frameIdx = 0;
+  int chunkx = 0;
+  int chunky = 0;
+  int intx = 0;
+  int inty = 0;
+  int actualx = 0;
+  int actualy = 0;
+  float lift1 = 0.0;
+  float lift2 = 0.0;
+  int thissuperchunk = scPos[0] + (scPos[1] * 12);
+
+  if (containerDepth == 0)
+  {
+    worldObject = true;
+  }
+  // now to the actual item load
+  if (dataLen == 6)
+  {
+    // start dataLen 6
+    unsigned char x = data[0];
+    unsigned char y = data[1];
+
+    chunkx = x >> 4;
+    chunky = y >> 4;
+    intx = x & 0x0f;
+    inty = y & 0x0f;
+
+    actualx = (scPos[0] * 256) + (chunkx * 16) + intx;
+    actualy = (scPos[1] * 256) + (chunky * 16) + inty;
+
+    unsigned int sf1 = data[2];
+    unsigned int sf2 = data[3];
+    if (printDebug == true)
+    {
+      printf("6 SF1 %d\n", sf1);
+      printf("6 SF2 %d\n", sf2);
+    }
+    shapeIdx = sf1 + ((sf2 & 3) << 8);
+    frameIdx = (sf2 >> 2);
+
+    unsigned char z = data[4];
+    lift1 = 0.0;
+    lift2 = 0.0;
+    if (z != 0)
+    {
+      lift1 = z >> 4;
+      lift2 = z & 0x0f;
+      //z *= 8;
+    }
+
+    unsigned char quality = data[5];
+
+    isEgg = ShapeIsEgg(shapeIdx);
+    bool isAnimated = false;
+    ShapeData& shapeData = g_shapeTable[shapeIdx][frameIdx];
+    int frameCount = shapeData.GetFrameCount();
+    if (frameCount > 1) {
+      isAnimated = true;
+    }
+
+    if (printDebug == true)
+    {
+      printf("  IREGItem 6 SC(%02x) chunk(%d %d) (%d %d) calling AddObject %d %d C(%d)\n", thissuperchunk, chunkx, chunky, actualx, actualy, shapeIdx, frameIdx, containerDepth);
+    }
+    if (isEgg == false  && worldObject == true) //  Eggs
+    {
+      if (isAnimated == false)
+      {
+        AddObject(shapeIdx, frameIdx, GetNextID(), actualx, lift1, actualy);
+      }
+      else
+      {
+        /*if (shapenum == interestedShape)
+        {
+          printf("  LoadMakeMap chunk(%d %d) calling AddObject Animated %d %d\n", l, k, shapenum, framenum);
+        }*/
+        int frameStart = frameIdx - (frameIdx % frameCount);
+        int frameStop = frameStart + frameCount;
+        for (int m = frameStart; m < frameStop; m++)
+        {
+          AddObject(shapeIdx, m, GetNextID(), actualx, lift1, actualy);
+        }
+      }
+    }
+    // end dataLen 6
+  }
+  else if (dataLen == 12)
+  {
+    // start dataLen 12
+    unsigned char x = data[0];
+    unsigned char y = data[1];
+
+    chunkx = x >> 4;
+    chunky = y >> 4;
+    intx = x & 0x0f;
+    inty = y & 0x0f;
+
+    actualx = (scPos[0] * 256) + (chunkx * 16) + intx;
+    actualy = (scPos[1] * 256) + (chunky * 16) + inty;
+
+    unsigned int sf1 = data[2];
+    unsigned int sf2 = data[3];
+    if (printDebug == true)
+    {
+      printf("12 SF1 %d %02x\n", sf1, sf1);
+      printf("12 SF2 %d %02x\n", sf2, sf2);
+    }
+    shapeIdx = sf1 + ((sf2 & 3) << 8);
+    //shapeIdx = sf1 + (256 * (sf2 & 3));
+    //shapenum = data[2] + 256 * (data[3] & 3)
+    frameIdx = (sf2 >> 2);
+
+    // skipping data[4 - 8]
+
+    unsigned char z = data[9];
+    float lift1 = 0;
+    float lift2 = 0;
+    float lift3 = 0;
+    if (z != 0)
+    {
+      lift1 = z >> 4;
+      lift2 = z & 0x0f;
+      lift3 = z / 8;
+
+    }
+
+    // skipping data[10 - 11]
+
+    isEgg = ShapeIsEgg(shapeIdx);
+
+    if (printDebug == true)
+    {
+      printf("  IREGItem 12 SC(%02x) chunk(%d %d) (%d %d) calling AddObject %d %d C(%d)\n", thissuperchunk, chunkx, chunky, actualx, actualy, shapeIdx, frameIdx, containerDepth);
+    }
+    if (isEgg == false && worldObject == true) //  Eggs
+    {
+      AddObject(shapeIdx, frameIdx, GetNextID(), actualx, lift1, actualy);
+    }
+    // end dataLen 12
+  }
+  else if (dataLen == 18)
+  {
+    // start dataLen 18
+    unsigned char x = data[0];
+    unsigned char y = data[1];
+
+    chunkx = x >> 4;
+    chunky = y >> 4;
+    intx = x & 0x0f;
+    inty = y & 0x0f;
+
+    actualx = (scPos[0] * 256) + (chunkx * 16) + intx;
+    actualy = (scPos[1] * 256) + (chunky * 16) + inty;
+
+    unsigned int sf1 = data[2];
+    unsigned int sf2 = data[3];
+    shapeIdx = sf1 + ((sf2 & 3) << 8);
+    frameIdx = (sf2 >> 2);
+
+    // skipping data[4 - 8]
+    
+    unsigned char z = data[9];
+    float lift1 = 0;
+    float lift2 = 0;
+    float lift3 = 0;
+    if (z != 0)
+    {
+      lift1 = z >> 4;
+      lift2 = z & 0x0f;
+      lift3 = z / 8;
+    }
+
+    // skipping data[10 - 17]
+
+    isEgg = ShapeIsEgg(shapeIdx);
+
+    if (printDebug == true)
+    {
+      printf("  IREGItem SC(%02x) chunk(%d %d) (%d %d) calling AddObject %d %d C(%d)\n", thissuperchunk, chunkx, chunky, actualx, actualy, shapeIdx, frameIdx, containerDepth);
+    }
+    if (isEgg == false && worldObject == true) //  Eggs
+    {
+      AddObject(shapeIdx, frameIdx, GetNextID(), actualx, lift1, actualy);
+    }
+    // end dataLen 18
+  }
+  return shapeIdx;
 }
 
 void LoadingState::LoadIREG()
 {
-	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	std::string loadingPath(dataPath);
-	loadingPath.append("/GAMEDAT/");
+  std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+  std::string loadingPath(dataPath);
+  loadingPath.append("/GAMEDAT/");
 
-	for (int superchunky = 0; superchunky < 12; ++superchunky)
-	{
-		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
-		{
-         std::stringstream ss;
-			int thissuperchunk = superchunkx + (superchunky * 12);
-			if (thissuperchunk < 16)
-			{
-				ss << "U7IREG0" << std::hex << thissuperchunk;
-			}
-			else
-			{
-				ss << "U7IREG" << std::hex << thissuperchunk;
-			}
-			std::string s = ss.str();
+  for (int superchunky = 0; superchunky < 12; ++superchunky)
+  {
+    for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
+    {
+      std::stringstream ss;
+      int scPos[2];
+      scPos[0] = superchunkx;
+      scPos[1] = superchunky;
+      int thissuperchunk = superchunkx + (superchunky * 12);
+      if (thissuperchunk < 16)
+      {
+        ss << "U7IREG0" << std::hex << thissuperchunk;
+      }
+      else
+      {
+        ss << "U7IREG" << std::hex << thissuperchunk;
+      }
+      std::string s = ss.str();
             
          std::transform(s.begin(), s.end(), s.begin(), ::toupper);
             
-			s.insert(0, loadingPath.c_str());
+      s.insert(0, loadingPath.c_str());
 
-			FILE* u7thisireg = fopen(s.c_str(), "rb");
+      FILE* u7thisireg = fopen(s.c_str(), "rb");
 
-			if (u7thisireg == nullptr)
-			{
-				Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
-				m_loadingFailed = true;
-				return;
-			}
-			else
-			{
-				while (!feof(u7thisireg))
-				{
-					//  Read the length of the object.
-					unsigned char length;
-					fread(&length, sizeof(unsigned char), 1, u7thisireg);
-					if (length == 6) //  Object.
-					{
-						unsigned char x;
-						unsigned char y;
-						fread(&x, sizeof(unsigned char), 1, u7thisireg);
-						fread(&y, sizeof(unsigned char), 1, u7thisireg);
+      if (u7thisireg == nullptr)
+      {
+        Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+        m_loadingFailed = true;
+        return;
+      }
+      else
+      {
+        while (!feof(u7thisireg))
+        {
+          //  Read the length of the object.
+          unsigned char length;
+          bool inContainer = false;
+          fread(&length, sizeof(unsigned char), 1, u7thisireg);
+          if (thissuperchunk == 108)
+          {
+            printf("CUR POS: %02X\n", ftell(u7thisireg));
+          }
+          if (length == 0)
+          {
+            if (thissuperchunk == 108)
+            {
+              printf("  hit a 0, end of chunk\n");
+            }
+          }
+          else if (length == 6) //  Object.
+          {
+            // start item length 6
+            int containerDepth = 0;
+            int cShape = 0;
+            unsigned char throwaway[6];
+            fread(&throwaway, sizeof(unsigned char), 6, u7thisireg);
+            if (thissuperchunk == 108)
+            {
+              cShape = IREGItem(true, scPos, containerDepth, 6, throwaway);
+            }
+            else
+            {
+              cShape = IREGItem(false, scPos, containerDepth, 6, throwaway);
+            }
+            /*
+            unsigned char x;
+            unsigned char y;
+            fread(&x, sizeof(unsigned char), 1, u7thisireg);
+            fread(&y, sizeof(unsigned char), 1, u7thisireg);
 
-						int chunkx = x >> 4;
-						int chunky = y >> 4;
-						int intx = x & 0x0f;
-						int inty = y & 0x0f;
+            int chunkx = x >> 4;
+            int chunky = y >> 4;
+            int intx = x & 0x0f;
+            int inty = y & 0x0f;
 
-						int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						int actualy = (superchunky * 256) + (chunky * 16) + inty;
+            int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+            int actualy = (superchunky * 256) + (chunky * 16) + inty;
 
-						unsigned short shapeData;
-						fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
-						int shape = shapeData & 0x3ff;
-						int frame = (shapeData >> 10) & 0x1f;
+            unsigned short shapeData;
+            fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
+            int shape = shapeData & 0x3ff;
+            int frame = (shapeData >> 10) & 0x1f;
 
-						unsigned char z;
-						fread(&z, sizeof(unsigned char), 1, u7thisireg);
-						float lift1 = 0;
-						float lift2 = 0;
-						if (z != 0)
-						{
-							lift1 = z >> 4;
-							lift2 = z & 0x0f;
-							//z *= 8;
-						}
+            unsigned char z;
+            fread(&z, sizeof(unsigned char), 1, u7thisireg);
+            float lift1 = 0;
+            float lift2 = 0;
+            if (z != 0)
+            {
+              lift1 = z >> 4;
+              lift2 = z & 0x0f;
+              //z *= 8;
+            }
 
-						
-						unsigned char quality;
-						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
+            
+            unsigned char quality;
+            fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 
-						if (shape != 275 && shape != 607  && shape != 0) //  Eggs
-						{
-							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
-						}
-					}
-					else if (length == 12) // Container or Egg
-					{
-						//continue;
-						unsigned char x;
-						unsigned char y;
-						fread(&x, sizeof(unsigned char), 1, u7thisireg); // 1
-						fread(&y, sizeof(unsigned char), 1, u7thisireg); // 2
+            if (thissuperchunk == 108) {
+              printf("  LoadIREG SC(%02x) chunk(%d %d) (%d %d) calling AddObject %d %d\n", thissuperchunk, chunkx, chunky, actualx, actualy, shape, frame);
+            }
+            if (shape != 275 && shape != 607 && shape != 0) //  Eggs
+            {
+              //if (chunkx == 0 && chunky == 5)
+              //{
+            //if (thissuperchunk == 108) {
+              AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+            //}
+              //}
+            
+            }
+            else
+            {
+              //AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+            }*/
+            // end item length 6
+          }
+          else if (length == 12) // Container or Egg
+          {
+            // start item length 12
+            //continue;
+            /*
+            unsigned char x;
+            unsigned char y;
+            fread(&x, sizeof(unsigned char), 1, u7thisireg); // 1
+            fread(&y, sizeof(unsigned char), 1, u7thisireg); // 2
 
-						int chunkx = x >> 4;
-						int chunky = y >> 4;
-						int intx = x & 0x0f;
-						int inty = y & 0x0f;
+            int chunkx = x >> 4;
+            int chunky = y >> 4;
+            int intx = x & 0x0f;
+            int inty = y & 0x0f;
 
-						int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						int actualy = (superchunky * 256) + (chunky * 16) + inty;
+            int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+            int actualy = (superchunky * 256) + (chunky * 16) + inty;
 
-						unsigned short shapeData;
-						fread(&shapeData, sizeof(unsigned short), 1, u7thisireg); // 3, 4
-						int shape = shapeData & 0x3ff;
-						int frame = (shapeData >> 10) & 0x1f;
+            unsigned short shapeData;
+            fread(&shapeData, sizeof(unsigned short), 1, u7thisireg); // 3, 4
+            int shape = shapeData & 0x3ff;
+            int frame = (shapeData >> 10) & 0x1f;
 
-						unsigned char sink;
-						for (int i = 0; i < 5; ++i)
-						{
-							fread(&sink, sizeof(unsigned char), 1, u7thisireg); // 5-9
-						}
+            unsigned char sink;
+            for (int i = 0; i < 5; ++i)
+            {
+              fread(&sink, sizeof(unsigned char), 1, u7thisireg); // 5-9
+            }
 
-						unsigned char z;
-						fread(&z, sizeof(unsigned char), 1, u7thisireg); // 10
-						float lift1 = 0;
-						float lift2 = 0;
-						float lift3 = 0;
-						if (z != 0)
-						{
-							lift1 = z >> 4;
-							lift2 = z & 0x0f;
-							lift3 = z / 8;
-							
-						}
+            unsigned char z;
+            fread(&z, sizeof(unsigned char), 1, u7thisireg); // 10
+            float lift1 = 0;
+            float lift2 = 0;
+            float lift3 = 0;
+            if (z != 0)
+            {
+              lift1 = z >> 4;
+              lift2 = z & 0x0f;
+              lift3 = z / 8;
+              
+            }
 
-						//  Soak up the next 2 bytes.
-						unsigned char throwaway[1];
-						fread(&throwaway, sizeof(unsigned char), 1, u7thisireg);		// 11
+            //  Soak up the next 2 bytes.
+            unsigned char throwaway[2];
+            fread(&throwaway, sizeof(unsigned char), 2, u7thisireg);    // 11
 
-						if(shape != 275 && shape != 607 && shape != 0)
-						{
-							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
-						}
-						//  Egg or container?  01 Egg, 00 container.
-						unsigned char eggOrContainer;
-						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
-						if (eggOrContainer == 0)
-						{
-							//  Container.  Read in the container's objects.
-							
-							
-							unsigned char objectflag = 0;
-						//	fread(&length, sizeof(unsigned char), 1, u7thisireg);
-						//	while (objectflag != 01) //  No more contained objects
-						//	{
-						//		unsigned char x;
-						//		unsigned char y;
-						//		fread(&x, sizeof(unsigned char), 1, u7thisireg);
-						//		fread(&y, sizeof(unsigned char), 1, u7thisireg);
+            if (thissuperchunk == 108) {
+              printf("  LoadIEGG SC(%02x) chunk(%d %d) (%d %d) calling AddObject %d %d\n", thissuperchunk, chunkx, chunky, actualx, actualy, shape, frame);
+            }
+            if (shape != 275 && shape != 607 && shape != 0)
+            {
+              AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+            }
+            //  Egg or container?  01 Egg, 00 container.
+            */
+            int containerDepth = 0;
+            int tShape = 0;
+            unsigned char throwaway[12];
+            fread(&throwaway, sizeof(unsigned char), 12, u7thisireg);
+            if (thissuperchunk == 108)
+            {
+              tShape = IREGItem(true, scPos, containerDepth, 12, throwaway);
+            }
+            else
+            {
+              tShape = IREGItem(false, scPos, containerDepth, 12, throwaway);
+            }
 
-						//		int chunkx = x >> 4;
-						//		int chunky = y >> 4;
-						//		int intx = x & 0x0f;
-						//		int inty = y & 0x0f;
+            bool isContainer = ShapeIsContainer(tShape);
+            if (isContainer == true) {
+                containerDepth += 1;
+                if (thissuperchunk == 108) {
+                  printf("  this is a container %d (%d)\n", tShape, containerDepth);
+                }
+            }
+            while (containerDepth > 0)
+            {
+              if (thissuperchunk == 108) {
+                printf("CUR POS: %02X\n", ftell(u7thisireg));
+                printf("  reading container %d\n", containerDepth);
+              }
+              unsigned char clength;
+              fread(&clength, sizeof(unsigned char), 1, u7thisireg);
+              if (clength == 0)
+              {
+                // 0 should mean end of chunk
+                if (thissuperchunk == 108) {
+                  printf("  hit %d, this container is finished\n", clength);
+                }
+                containerDepth = 0;
+              }
+              else if (clength == 1)
+              {
+                // 1 means end of container
+                if (thissuperchunk == 108) {
+                printf("  hit %d, this container is finished\n", clength);
+                }
+                containerDepth -= 1;
+              }
+              else if (clength == 6)
+              {
+                // data length 6
+                int cShape = 0;
+                unsigned char cthrowaway[6];
+                fread(&cthrowaway, sizeof(unsigned char), 6, u7thisireg);
+                if (thissuperchunk == 108)
+                {
+                  cShape = IREGItem(true, scPos, containerDepth, 6, cthrowaway);
+                }
+                else
+                {
+                  cShape = IREGItem(false, scPos, containerDepth, 6, cthrowaway);
+                }
+              }
+              else if (clength == 12)
+              {
+                // data length 12
+                int cShape = 0;
+                unsigned char cthrowaway[12];
+                fread(&cthrowaway, sizeof(unsigned char), 12, u7thisireg);
+                if (thissuperchunk == 108)
+                {
+                  cShape = IREGItem(true, scPos, containerDepth, 12, cthrowaway);
+                  bool cIsContainer = ShapeIsContainer(cShape);
+                  if (cIsContainer == true)
+                  {
+                    containerDepth += 1;
+                  }
+                }
+                else
+                {
+                  cShape = IREGItem(false, scPos, containerDepth, 12, cthrowaway);
+                  bool cIsContainer = ShapeIsContainer(cShape);
+                  if (cIsContainer == true)
+                  {
+                    containerDepth += 1;
+                  }
+                }
 
-						//		int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						//		int actualy = (superchunky * 256) + (chunky * 16) + inty;
+                /*
+                unsigned short cShapeData;
+                fread(&cShapeData, sizeof(unsigned short), 1, u7thisireg); // 3, 4
+                int cShape = shapeData & 0x3ff;
+                int cFrame = (shapeData >> 10) & 0x1f;
+                bool cIsContainer = ShapeIsContainer(cShape);
+                if (cIsContainer == true) {
+                  containerDepth += 1;
+                }
+                // now burn the other 10
+                unsigned char throwaway[10];
+                fread(&throwaway, sizeof(unsigned char), 10, u7thisireg);
+                */
+              }
+              else if (clength == 18)
+              {
+                // data length 18
+                //unsigned char throwaway[18];
+                //fread(&throwaway, sizeof(unsigned char), 18, u7thisireg);
+                int cShape = 0;
+                unsigned char cthrowaway[18];
+                fread(&cthrowaway, sizeof(unsigned char), 18, u7thisireg);
+                if (thissuperchunk == 108)
+                {
+                  cShape = IREGItem(true, scPos, containerDepth, 18, cthrowaway);
+                }
+                else
+                {
+                  cShape = IREGItem(false, scPos, containerDepth, 18, cthrowaway);
+                }
+                bool cIsContainer = ShapeIsContainer(cShape);
+                if (cIsContainer == true) {
+                  containerDepth += 1;
+                }
+              }
+              //  Container.  Read in the container's objects.
+              
+              
+            //unsigned char objectflag = 0;
+            //  fread(&length, sizeof(unsigned char), 1, u7thisireg);
+            //  while (objectflag != 01) //  No more contained objects
+            //  {
+            //    unsigned char x;
+            //    unsigned char y;
+            //    fread(&x, sizeof(unsigned char), 1, u7thisireg);
+            //    fread(&y, sizeof(unsigned char), 1, u7thisireg);
 
-						//		unsigned short shapeData;
-						//		fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
-						//		int shape = shapeData & 0x3ff;
-						//		int frame = (shapeData >> 10) & 0x1f;
+            //    int chunkx = x >> 4;
+            //    int chunky = y >> 4;
+            //    int intx = x & 0x0f;
+            //    int inty = y & 0x0f;
 
-						//		unsigned char z;
-						//		fread(&z, sizeof(unsigned char), 1, u7thisireg);
-						//		float lift1 = 0;
-						//		float lift2 = 0;
-						//		if (z != 0)
-						//		{
-						//			lift1 = z >> 4;
-						//			lift2 = z & 0x0f;
-						//			//z *= 8;
-						//		}
+            //    int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+            //    int actualy = (superchunky * 256) + (chunky * 16) + inty;
 
-						//		AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
-						//		unsigned char quality;
-						//		fread(&quality, sizeof(unsigned char), 1, u7thisireg);
-						//		fread(&objectflag, sizeof(unsigned char), 1, u7thisireg);
-						}
-						//}
-						//else
-						//{
-						//	//  Egg.  Do nothing.
-						//}
-					}
-				}
-			}
+            //    unsigned short shapeData;
+            //    fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
+            //    int shape = shapeData & 0x3ff;
+            //    int frame = (shapeData >> 10) & 0x1f;
 
-			//int stopper = 0;
-			fclose(u7thisireg);
-		}
-	}
+            //    unsigned char z;
+            //    fread(&z, sizeof(unsigned char), 1, u7thisireg);
+            //    float lift1 = 0;
+            //    float lift2 = 0;
+            //    if (z != 0)
+            //    {
+            //      lift1 = z >> 4;
+            //      lift2 = z & 0x0f;
+            //      //z *= 8;
+            //    }
+
+            //    AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+            //    unsigned char quality;
+            //    fread(&quality, sizeof(unsigned char), 1, u7thisireg);
+            //    fread(&objectflag, sizeof(unsigned char), 1, u7thisireg);
+            }
+            //}
+            //else
+            //{
+            //  //  Egg.  Do nothing.
+            //}
+            // end item length 12
+          }
+          else if (length == 18) // Spellbook
+          {
+            // start item length 18
+            int containerDepth = 0;
+            //unsigned char throwaway[18];
+            //fread(&throwaway, sizeof(unsigned char), 18, u7thisireg);
+            int cShape = 0;
+            unsigned char cthrowaway[18];
+            fread(&cthrowaway, sizeof(unsigned char), 18, u7thisireg);
+            if (thissuperchunk == 108)
+            {
+              cShape = IREGItem(true, scPos, containerDepth, 18, cthrowaway);
+            }
+            else
+            {
+              cShape = IREGItem(false, scPos, containerDepth, 18, cthrowaway);
+            }
+            bool cIsContainer = ShapeIsContainer(cShape);
+            if (cIsContainer == true) {
+              containerDepth += 1;
+            }
+            // end item length 18
+          }
+        }
+      }
+
+      //int stopper = 0;
+      fclose(u7thisireg);
+    }
+  }
 }
 
 void LoadingState::CreateShapeTable()
@@ -1007,7 +1437,7 @@ void LoadingState::CreateObjectTable()
 		// Weight and volume from wgtvol.dat
 		unsigned char weight;
 		wgtvolfile.read((char*)&weight, sizeof(char));
-		g_objectTable[i].m_weight = float(weight) / .10f;
+		g_objectTable[i].m_weight = float(weight) * .10f;
 		unsigned char volume;
 		wgtvolfile.read((char*)&volume, sizeof(char));
 		g_objectTable[i].m_volume = float(volume);

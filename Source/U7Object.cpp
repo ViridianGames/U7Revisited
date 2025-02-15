@@ -46,34 +46,41 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-   if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
-   {
-      if (!m_Visible)
+  if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
+  {
+    if (!m_Visible)
+    {
+      return;
+    }
+  }
+
+  if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE) {
+    m_shapeData->Draw(m_DrawPos, m_Angle, m_color);
+  }
+  else {
+    m_shapeData->Draw(m_Pos, m_Angle, m_color);
+  }
+
+   bool drawDebugBox = true;
+   if (drawDebugBox == true) {
+      if (g_Engine->m_debugDrawing)
       {
-         return;
+         DrawBoundingBox(m_boundingBox, MAGENTA);
       }
-	}
-
-   m_shapeData->Draw(m_Pos, m_Angle, m_color);
-
-   if (g_Engine->m_debugDrawing)
-   {
-      DrawBoundingBox(m_boundingBox, MAGENTA);
    }
 }
 
 void U7Object::Update()
 {
-   if (m_isAnimated)
-   {
-      if (m_Frame == g_StateMachine->GetAnimFrame(m_frameCount)) {
-         m_Visible = true;
-      }
-      else
-      {
-         m_Visible = false;
-      }
-   }
+  if (m_isAnimated) {
+    if ((m_Frame % m_frameCount) == g_StateMachine->GetAnimFrame(m_frameCount)) {
+      m_Visible = true;
+    }
+    else
+    {
+      m_Visible = false;
+    }
+  }
 }
 
 void U7Object::Attack(int _UnitID)
@@ -89,6 +96,9 @@ void U7Object::Shutdown()
 void U7Object::SetPos(Vector3 pos)
 {
    m_Pos = pos;
+   m_DrawPos = pos;
+   m_chunkOwn[0] = int(m_Pos.x / 16);
+   m_chunkOwn[1] = int(m_Pos.z / 16);
 
    Vector3 dims = Vector3{ 0, 0, 0 };
    Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
@@ -112,6 +122,11 @@ void U7Object::SetPos(Vector3 pos)
    }
 
    m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
+}
+
+void U7Object::SetDrawPos(Vector3 pos)
+{
+  m_DrawPos = pos;
 }
 
 bool U7Object::Pick()

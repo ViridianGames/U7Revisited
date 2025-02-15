@@ -28,92 +28,68 @@ void StateMachine::Shutdown()
 
 void StateMachine::Update()
 {
-	//  Run any transition commands to properly change states.
-	while (m_TransitionStack.size() > 0)
-	{
-		switch (get<0>(m_TransitionStack[0])) //  What kind of transition are we making?
-		{
-		case TT_STATE:
-			MakeStateTransitionEX(get<1>(m_TransitionStack[0]));
-			break;
+  //  Run any transition commands to properly change states.
+  while (m_TransitionStack.size() > 0)
+  {
+    switch (get<0>(m_TransitionStack[0])) //  What kind of transition are we making?
+    {
+    case TT_STATE:
+      MakeStateTransitionEX(get<1>(m_TransitionStack[0]));
+      break;
 
-		case TT_PUSH:
-			PushStateEX(get<1>(m_TransitionStack[0]));
-			break;
+    case TT_PUSH:
+      PushStateEX(get<1>(m_TransitionStack[0]));
+      break;
 
-		case TT_POP:
-			PopStateEX();
-			break;
+    case TT_POP:
+      PopStateEX();
+      break;
 
-		}
-		m_TransitionStack.pop_front();
-	}
+    }
+    m_TransitionStack.pop_front();
+  }
 
-	m_StateMap[get<0>(m_StateStack[0])]->Update();
+  m_StateMap[get<0>(m_StateStack[0])]->Update();
+  
+  float fTime = GetTime();
+  float iTime = float(int(fTime));
+  if (iTime > fTime) {
+    iTime -= 1.0;
+  }
+  float inSecond = fTime - iTime;
+  float frameTime = 1.0 / 3.0;
+  float sKeep = 0.0;
 
-	currentAnimFrame11 = 0;
-	float fTime = GetTime();
-	float iTime = float(int(fTime));
-	if (iTime > fTime) {
-		iTime -= 1.0;
-	}
-	float inSecond = fTime - iTime;
+  if (animFramesInitialized == false)
+  {
+    for (int i = 0; i < 32; i++)
+    {
+      currentAnimFrame[i] = 0;
+    }
+    animFramesInitialized = true;
+  }
 
-	float frameTime = 1.0 / 3.0;
-	float sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame3 += 1; }
-	}
-
-	frameTime = 1.0 / 4.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame4 += 1; }
-	}
-
-	frameTime = 1.0 / 5.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame5 += 1; }
-	}
-
-	frameTime = 1.0 / 11.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame11 += 1; }
-	}
-
-	frameTime = 1.0 / 12.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame12 += 1; }
-	}
-
-	if (currentAnimFrame3 >= 3) {
-		currentAnimFrame3 = 0;
-	}
-	if (currentAnimFrame4 >= 4) {
-		currentAnimFrame4 = 0;
-	}
-	if (currentAnimFrame5 >= 5) {
-		currentAnimFrame5 = 0;
-	}
-	if (currentAnimFrame11 >= 11) {
-		currentAnimFrame11 = 0;
-	}
-	if (currentAnimFrame12 >= 12) {
-		currentAnimFrame12 = 0;
-	}
+  for (int i = 2; i < 32; i++)
+  {
+    currentAnimFrame[i] = 0;
+    frameTime = 1.0 / float(i);
+    sKeep = inSecond;
+    while ((sKeep - frameTime) > 0.0)
+    {
+      currentAnimFrame[i] += 1;
+      sKeep -= frameTime;
+    }
+    /*
+    if (i == 4) {
+      printf("  inSecond %0.02f %d\n", inSecond, currentAnimFrame[i]);
+    }
+    */
+    //currentAnimFrame[i] = 3;
+    if (currentAnimFrame[i] >= i)
+    {
+      currentAnimFrame[i] = 0;
+    }
+  }
 }
 
 void StateMachine::Draw()
@@ -244,25 +220,12 @@ int StateMachine::GetPreviousState()
 
 int StateMachine::GetAnimFrame(int frameCount)
 {
-	if (frameCount == 3)
-	{
-		return currentAnimFrame3;
-	}
-	else if (frameCount == 4)
-	{
-		return currentAnimFrame4;
-	}
-	else if (frameCount == 5)
-	{
-		return currentAnimFrame5;
-	}
-	else if (frameCount == 11)
-	{
-		return currentAnimFrame11;
-	}
-	else if (frameCount == 12)
-	{
-		return currentAnimFrame12;
-	}
-	return 0;
+  if (frameCount > 2)
+  {
+    if (frameCount < 32)
+    {
+      return currentAnimFrame[frameCount];
+    }
+  }
+  return 0;
 }
