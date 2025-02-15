@@ -28,28 +28,68 @@ void StateMachine::Shutdown()
 
 void StateMachine::Update()
 {
-	//  Run any transition commands to properly change states.
-	while (m_TransitionStack.size() > 0)
-	{
-		switch (get<0>(m_TransitionStack[0])) //  What kind of transition are we making?
-		{
-		case TT_STATE:
-			MakeStateTransitionEX(get<1>(m_TransitionStack[0]));
-			break;
+  //  Run any transition commands to properly change states.
+  while (m_TransitionStack.size() > 0)
+  {
+    switch (get<0>(m_TransitionStack[0])) //  What kind of transition are we making?
+    {
+    case TT_STATE:
+      MakeStateTransitionEX(get<1>(m_TransitionStack[0]));
+      break;
 
-		case TT_PUSH:
-			PushStateEX(get<1>(m_TransitionStack[0]));
-			break;
+    case TT_PUSH:
+      PushStateEX(get<1>(m_TransitionStack[0]));
+      break;
 
-		case TT_POP:
-			PopStateEX();
-			break;
+    case TT_POP:
+      PopStateEX();
+      break;
 
-		}
-		m_TransitionStack.pop_front();
-	}
+    }
+    m_TransitionStack.pop_front();
+  }
 
-	m_StateMap[get<0>(m_StateStack[0])]->Update();
+  m_StateMap[get<0>(m_StateStack[0])]->Update();
+  
+  float fTime = GetTime();
+  float iTime = float(int(fTime));
+  if (iTime > fTime) {
+    iTime -= 1.0;
+  }
+  float inSecond = fTime - iTime;
+  float frameTime = 1.0 / 3.0;
+  float sKeep = 0.0;
+
+  if (animFramesInitialized == false)
+  {
+    for (int i = 0; i < 32; i++)
+    {
+      currentAnimFrame[i] = 0;
+    }
+    animFramesInitialized = true;
+  }
+
+  for (int i = 2; i < 32; i++)
+  {
+    currentAnimFrame[i] = 0;
+    frameTime = 1.0 / float(i);
+    sKeep = inSecond;
+    while ((sKeep - frameTime) > 0.0)
+    {
+      currentAnimFrame[i] += 1;
+      sKeep -= frameTime;
+    }
+    /*
+    if (i == 4) {
+      printf("  inSecond %0.02f %d\n", inSecond, currentAnimFrame[i]);
+    }
+    */
+    //currentAnimFrame[i] = 3;
+    if (currentAnimFrame[i] >= i)
+    {
+      currentAnimFrame[i] = 0;
+    }
+  }
 }
 
 void StateMachine::Draw()
@@ -176,4 +216,16 @@ State* StateMachine::GetState(int identifier)
 int StateMachine::GetPreviousState()
 {
 	return m_PreviousState;
+}
+
+int StateMachine::GetAnimFrame(int frameCount)
+{
+  if (frameCount > 2)
+  {
+    if (frameCount < 32)
+    {
+      return currentAnimFrame[frameCount];
+    }
+  }
+  return 0;
 }

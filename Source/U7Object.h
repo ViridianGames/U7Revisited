@@ -68,6 +68,9 @@ public:
    bool m_ExternalForceFlag;
    bool m_BounceFlag;
 
+   bool m_isAnimated;
+   int m_frameCount;
+
    Mesh* m_Mesh;
    Texture* m_Texture;
    Texture* m_DropShadow;
