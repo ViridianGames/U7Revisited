@@ -30,7 +30,7 @@ LoadingState::~LoadingState()
 
 void LoadingState::Init(const string& configfile)
 {
-	g_minimapSize = GetRenderWidth() / 6;
+	g_minimapSize = g_Engine->m_RenderWidth / 4.5f;
 
 	MakeAnimationFrameMeshes();
 
@@ -71,6 +71,8 @@ void LoadingState::Draw()
 {
 	BeginDrawing();
 
+	BeginTextureMode(g_guiRenderTarget);
+
 	ClearBackground(BLACK);
 
 	if (m_loadingFailed == true)
@@ -84,7 +86,17 @@ void LoadingState::Draw()
 		DrawConsole();
 	}
 
-	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+
+	DrawTexture(*g_Cursor, 0, 0, WHITE);
+
+	EndTextureMode();
+
+	DrawTexturePro(g_guiRenderTarget.texture,
+		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
+		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+		{ 0, 0 }, 0, WHITE);
+
+	//DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 
 	EndDrawing();
 
@@ -510,6 +522,10 @@ void LoadingState::LoadIREG()
 			}
 			else
 			{
+				//  Flags for putting objects in containers.
+				unsigned int containerId = 0;
+				bool containerOpen = false;
+
 				while (!feof(u7thisireg))
 				{
 					//  Read the length of the object.
@@ -550,9 +566,15 @@ void LoadingState::LoadIREG()
 						unsigned char quality;
 						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 
-						if (shape != 275 && shape != 607  && shape != 0) //  Eggs
+						if (shape != 275 && shape != 607 && shape != 0) //  Eggs
 						{
-							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+							int objectId = GetNextID();
+							AddObject(shape, frame, objectId, actualx, lift1, actualy);
+
+							if (containerOpen)
+							{
+								AddObjectToContainer(objectId, containerId);
+							}
 						}
 					}
 					else if (length == 12) // Container or Egg
@@ -592,66 +614,30 @@ void LoadingState::LoadIREG()
 							lift1 = z >> 4;
 							lift2 = z & 0x0f;
 							lift3 = z / 8;
-							
+
 						}
 
 						//  Soak up the next 2 bytes.
 						unsigned char throwaway[1];
 						fread(&throwaway, sizeof(unsigned char), 1, u7thisireg);		// 11
 
-						if(shape != 275 && shape != 607 && shape != 0)
-							AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
+						int id = GetNextID();
+						AddObject(shape, frame, id, actualx, lift1, actualy);
+						GetObjectFromID(id)->m_isContainer = true;
+
 						//  Egg or container?  01 Egg, 00 container.
 						unsigned char eggOrContainer;
 						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
 						if (eggOrContainer == 0)
 						{
-							//  Container.  Read in the container's objects.
-							
-							
-							unsigned char objectflag = 0;
-						//	fread(&length, sizeof(unsigned char), 1, u7thisireg);
-						//	while (objectflag != 01) //  No more contained objects
-						//	{
-						//		unsigned char x;
-						//		unsigned char y;
-						//		fread(&x, sizeof(unsigned char), 1, u7thisireg);
-						//		fread(&y, sizeof(unsigned char), 1, u7thisireg);
-
-						//		int chunkx = x >> 4;
-						//		int chunky = y >> 4;
-						//		int intx = x & 0x0f;
-						//		int inty = y & 0x0f;
-
-						//		int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						//		int actualy = (superchunky * 256) + (chunky * 16) + inty;
-
-						//		unsigned short shapeData;
-						//		fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
-						//		int shape = shapeData & 0x3ff;
-						//		int frame = (shapeData >> 10) & 0x1f;
-
-						//		unsigned char z;
-						//		fread(&z, sizeof(unsigned char), 1, u7thisireg);
-						//		float lift1 = 0;
-						//		float lift2 = 0;
-						//		if (z != 0)
-						//		{
-						//			lift1 = z >> 4;
-						//			lift2 = z & 0x0f;
-						//			//z *= 8;
-						//		}
-
-						//		AddObject(shape, frame, GetNextID(), actualx, lift1, actualy);
-						//		unsigned char quality;
-						//		fread(&quality, sizeof(unsigned char), 1, u7thisireg);
-						//		fread(&objectflag, sizeof(unsigned char), 1, u7thisireg);
+							containerOpen = true;
+							containerId = id;
+							//AddObject(shape, frame, containerId, actualx, lift1, actualy);
 						}
-						//}
-						//else
-						//{
-						//	//  Egg.  Do nothing.
-						//}
+					}
+					else if(length == 1) //  Close container
+					{
+						containerOpen = false;
 					}
 				}
 			}

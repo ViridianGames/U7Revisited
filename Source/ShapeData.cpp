@@ -695,7 +695,14 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 			glStencilFunc(GL_NOTEQUAL, 1, -1);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			glLineWidth(2.5f * g_DrawScale);
+			if (g_pixelated)
+			{
+				glLineWidth(.1f);
+			}
+			else
+			{
+				glLineWidth(2.5f * g_DrawScale);
+			}
 			glEnable(GL_LINE_SMOOTH);
 			glPolygonMode(GL_FRONT, GL_LINE);
 

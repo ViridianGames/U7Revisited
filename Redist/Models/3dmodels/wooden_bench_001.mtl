@@ -1,0 +1,6 @@
+# Blender 3.6.2 MTL File: 'Bench_final.blend'
+# www.blender.org
+
+newmtl Bench
+map_Kd Models/3dmodels/bench_texture_atlas.png
+newmtl none

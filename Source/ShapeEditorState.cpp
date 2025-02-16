@@ -1436,7 +1436,7 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	out.str("");
 	out.precision(1);
-	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rotation:", 2, y);
+	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_Font.get(), "Tweak Rot:", 2, y);
 	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_Font.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_Font.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);

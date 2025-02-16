@@ -30,17 +30,21 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_ObjectType = unitType;
    SetIsDead(false);
    m_UnitConfig = g_ResourceManager->GetConfig(configfile);
-   //m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
    m_Frame = frame;
    m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
    m_drawType = m_shapeData->GetDrawType();
+   m_isContainer = false;
+   m_isContained = false;
+   m_isEgg = false;
+   m_hasGump = false;
+   m_inventory.clear();
 }
 
 void U7Object::Draw()
 {
    if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
    {
-      if (!m_Visible)
+      if (!m_Visible || m_isContained || m_isEgg) 
       {
          return;
       }
@@ -113,4 +117,36 @@ void U7Object::SetDest(Vector3 dest)
    m_Dest = dest;
    m_Direction = Vector3Subtract(m_Dest, m_Pos);
    m_Direction = Vector3Normalize(m_Direction);
+}
+
+bool U7Object::AddObjectToInventory(int objectid)
+{
+   if (m_isContainer)
+   {
+      m_inventory.push_back(objectid);
+   }
+   else
+   {
+		return false;
+	}
+}
+
+bool U7Object::RemoveObjectFromInventory(int objectid)
+{
+   if (m_isContainer)
+	{
+		for (int i = 0; i < m_inventory.size(); i++)
+		{
+			if (m_inventory[i] == objectid)
+			{
+            GetObjectFromID(objectid)->m_isContained = true;
+				m_inventory.erase(m_inventory.begin() + i);
+				return true;
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
 }

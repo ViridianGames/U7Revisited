@@ -55,9 +55,9 @@ int main(int argv, char** argc)
       //  Pick a random initial location
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(GetTime() * 1000);
-      int x = g_VitalRNG->Random(6);
+      int x = g_VitalRNG->Random(7);
 
-      switch (6)
+      switch (x)
       {
          case 0: //  Staring Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
@@ -87,6 +87,10 @@ int main(int argv, char** argc)
             g_camera.target = Vector3{ 1064.0f, 0.0f, 2247.0f };
             break;
 
+         case 7:
+            g_camera.target = Vector3{ 965.0f, 0.0f, 2291.0f };
+            break;
+
          default:
             g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
             break;
@@ -97,20 +101,26 @@ int main(int argv, char** argc)
       g_camera.fovy = g_cameraDistance;
       g_camera.projection = CAMERA_ORTHOGRAPHIC;
 
-      RenderTexture2D m_renderTarget = LoadRenderTexture(640, 360);
-
       //  Initialize globals
       g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
-      g_DrawScale = float(GetRenderHeight()) / g_Engine->m_EngineConfig.GetNumber("base_height");
+      g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
-      //g_smallFontSize = static_cast<int>(16 * g_DrawScale) - (static_cast<int>(16 * g_DrawScale) % 16);
-      //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
-      //g_SmallFont = make_shared<Font>(smallFont);
+      float baseFontSize = 9;
+      char* fontPath = "Data/Fonts/softsquare.ttf";
+      //char* fontPath = "Data/Fonts/babyblocks.ttf";
 
-      g_fontSize = 9 * int(g_DrawScale);
-      Font font = LoadFontEx("Data/Fonts/softsquare.ttf", g_fontSize, NULL, 0);
+      g_fontSize = baseFontSize * int(g_DrawScale);
+      Font font = LoadFontEx(fontPath, g_fontSize, NULL, 0);
       g_Font = make_shared<Font>(font);
+
+      Font smallFont = LoadFontEx(fontPath, baseFontSize, NULL, 0);
+      g_SmallFont = make_shared<Font>(smallFont);
+
+      g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
+      g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
 
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(7777);

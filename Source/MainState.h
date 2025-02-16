@@ -35,6 +35,8 @@ public:
    Gui* m_ArmyPanel;
    
    Gui* m_OptionsGui;
+
+   Gui* m_toolTipGui;
    
    GuiElement* m_ManaBar;
 
