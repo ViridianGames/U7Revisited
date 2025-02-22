@@ -45,11 +45,13 @@ Vector3 g_Gravity = Vector3{ 0, .1f, 0 };
 
 float g_CameraRotateSpeed = 0;
 
+bool v_showMinimap = false;
+
 Vector3 g_CameraMovementSpeed = Vector3{ 0, 0, 0 };
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
-std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh"};
+std::string g_objectDrawTypeStrings[] = { "None", "Billboard", "Cuboid", "Flat", "Custom Mesh", "Character", "Terrain", "Ocean", "River"};
 
 std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
 
@@ -62,6 +64,10 @@ std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
+
+//animframes
+bool g_animFramesInitialized = false;
+int g_currentAnimFrame[32];
 
 Shader g_alphaDiscard;
 
@@ -125,7 +131,7 @@ unsigned int DoCameraMovement()
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
 
-	float frameTimeModifier = 30;
+	float frameTimeModifier = 32.0;
 
 	if (IsKeyDown(KEY_A))
 	{
@@ -203,13 +209,16 @@ if (IsKeyDown(KEY_E))
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(GetRenderWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize))
+	if (v_showMinimap)
 	{
-		float minimapx = float(GetMouseX() - (GetRenderWidth() - g_minimapSize)) / float(g_minimapSize) * 3072;
-		float minimapy = float(GetMouseY()) / float(g_minimapSize) * 3072;
+		if (IsLeftButtonDownInRect(GetRenderWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize))
+		{
+			float minimapx = float(GetMouseX() - (GetRenderWidth() - g_minimapSize)) / float(g_minimapSize) * 3072;
+			float minimapy = float(GetMouseY()) / float(g_minimapSize) * 3072;
 
-		g_camera.target = Vector3{ minimapx, 0, minimapy };
-		g_CameraMoved = true;
+			g_camera.target = Vector3{ minimapx, 0, minimapy };
+			g_CameraMoved = true;
+		}
 	}
 
 	bool moveDecay = false;
@@ -218,12 +227,12 @@ if (IsKeyDown(KEY_E))
 	{
 		g_CameraMovementSpeed = Vector3{ g_CameraMovementSpeed.x * .75f, g_CameraMovementSpeed.y, g_CameraMovementSpeed.z * .75f };
 
-		if (abs(g_CameraMovementSpeed.x) < .01f)
+		if (abs(g_CameraMovementSpeed.x) < .0001f)
 		{
 			g_CameraMovementSpeed.x = 0;
 		}
 
-		if (abs(g_CameraMovementSpeed.z) < .01f)
+		if (abs(g_CameraMovementSpeed.z) < .0001f)
 		{
 			g_CameraMovementSpeed.z = 0;
 		}
@@ -257,19 +266,90 @@ if (IsKeyDown(KEY_E))
 
 		current = Vector3Add(current, finalmovement);
 
+		float worldBoxSize = 3072.0;
+		while (current.x < 0.0)
+		{
+			current.x += worldBoxSize;
+		}
+		while (current.x >= worldBoxSize)
+		{
+				current.x -= worldBoxSize;
+		}
+
+		while (current.z < 0.0)
+		{
+			current.z += worldBoxSize;
+		}
+		while (current.z >= (worldBoxSize + 0.0))
+		{
+				current.z -= worldBoxSize;
+		}
+
+		/*
 		if (current.x < 0) current.x = 0;
 		if (current.x > 3072) current.x = 3072;
 		if (current.z < 0) current.z = 0;
 		if (current.z > 3072) current.z = 3072;
-
-		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
+		*/
+		float xOfs = g_cameraDistance * 0.5;
+		float yOfs = g_cameraDistance * 0.5;
+		Vector3 camPos = { xOfs, g_cameraDistance, yOfs };
 		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
 
 		g_camera.target = current;
 		g_camera.position = Vector3Add(current, camPos);
-		g_camera.fovy = g_cameraDistance;
+		g_camera.fovy = 60.0;
+	}
+	DoGlobalAnimationFramesUpdate();
+	return 0;
+}
+
+void DoGlobalAnimationFramesUpdate()
+{
+	float fTime = GetTime();
+	float iTime = float(int(fTime));
+	if (iTime > fTime) {
+		iTime -= 1.0;
+	}
+	float inSecond = fTime - iTime;
+	float frameTime = 1.0 / 3.0;
+	float sKeep = 0.0;
+
+	if (g_animFramesInitialized == false)
+	{
+		for (int i = 0; i < 32; i++)
+		{
+			g_currentAnimFrame[i] = 0;
+		}
+		g_animFramesInitialized = true;
 	}
 
+	for (int i = 2; i < 32; i++)
+	{
+		g_currentAnimFrame[i] = 0;
+		frameTime = 1.0 / float(i);
+		sKeep = inSecond;
+		while ((sKeep - frameTime) > 0.0)
+		{
+			g_currentAnimFrame[i] += 1;
+			sKeep -= frameTime;
+		}
+		if (g_currentAnimFrame[i] >= i)
+		{
+			g_currentAnimFrame[i] = 0;
+		}
+	}
+}
+
+int GetGlobalAnimationFrame(int frameCount)
+{
+	if (frameCount > 2)
+	{
+		if (frameCount < 32)
+		{
+			return g_currentAnimFrame[frameCount];
+		}
+	}
 	return 0;
 }
 
@@ -317,11 +397,13 @@ unsigned int GetNextID() { return g_CurrentUnitID++; }
 
 void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
+	/*
 	if (shapenum == 451)
 	{
 		Log("Stop here.");
 	}
-
+	*/
+	//printf("  adding object shape:%d frame:%d id:%d pos(%f %f %f)\n", shapenum, framenum, id, x, y, z);
 	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(Vector3{ x, y, z });

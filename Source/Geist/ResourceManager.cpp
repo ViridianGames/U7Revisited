@@ -181,7 +181,7 @@ Config* ResourceManager::GetConfig(const std::string& configName)
 	}
 }
 
-//  Dumps the current texture list so it can be recreated (on res change or whatever)
+//	Dumps the current texture list so it can be recreated (on res change or whatever)
 void ResourceManager::ClearTextures()
 {
 	m_TextureList.clear();

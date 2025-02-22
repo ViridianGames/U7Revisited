@@ -7,7 +7,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
-#include "include/glad.h"
+#include "glad.h"
 
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
@@ -41,12 +41,14 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 {
 	m_shape = shape;
 	m_frame = frame;
+	if (m_shape == 414 && m_frame == 4) { printf("			Init a\n"); }
 
 	if (m_originalTexture != nullptr)
 	{
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture a\n"); }
 		m_shapePointerTexture = std::make_unique<ModTexture>();
 		m_shapePointerTexture->AssignImage(g_shapeTable[m_pointerShape][m_pointerFrame].GetDefaultTextureImage());
-
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture b\n"); }
 		m_isValid = true;
 
 		//  We need local copies of this texture for three sides of the cuboid.
@@ -62,16 +64,16 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 		{
 			m_rightTexture = std::make_unique<ModTexture>(m_originalTexture->m_Image);
 		}
-
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture c\n"); }
 		ObjectData* objectData = &g_objectTable[m_shape];
-
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture d\n"); }
 		if (shouldreset)
 		{
 			ResetTopTexture();
 			ResetFrontTexture();
 			ResetRightTexture();
 		}
-
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture e\n"); }
 		for (int i = 0; i < 6; ++i)
 		{
 			if (m_sideTextures[i] == CuboidTexture::CUBOID_INVALID)
@@ -93,24 +95,28 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 				}
 			}
 		}
-
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture f\n"); }
 		SetupDrawTypes();
+		if (m_shape == 414 && m_frame == 4) { printf("			Init og texture g\n"); }
 	}
 	else
 	{
 		m_isValid = false;
 	}
+	if (m_shape == 414 && m_frame == 4) { printf("			Init post-tex\n"); }
 
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
 
 	if (m_frameCount > 1)
 	{
+		//printf("	-> isAnimated: True\n");
 		m_isAnimated = true;
 	}
-	else
-	{
+	else {
+		//printf("	-> isAnimated: False\n");
 		m_isAnimated = false;
 	}
+	if (m_shape == 414 && m_frame == 4) { printf("			Init finished\n"); }
 }
 
 void ShapeData::SetDefaultTexture(Image image)
@@ -172,6 +178,7 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << m_customMeshName << " ";
 	outStream << m_meshOutline << " ";
 	outStream << m_useShapePointer << " ";
+	outStream << m_frameCount;
 	outStream << m_pointerShape << " ";
 	outStream << m_pointerFrame << " ";
 	outStream << endl;
@@ -183,6 +190,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 {
 	inStream >> m_shape;
 	inStream >> m_frame;
+	if (m_shape == 414 && m_frame == 4) { printf("			ShapeData::Deserialize start\n"); }
 	inStream >> m_topTextureOffsetX;
 	inStream >> m_topTextureOffsetY;
 	inStream >> m_topTextureWidth;
@@ -195,6 +203,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_rightTextureOffsetY;
 	inStream >> m_rightTextureWidth;
 	inStream >> m_rightTextureHeight;
+	if (m_shape == 414 && m_frame == 4) { printf("			ShapeData::Deserialize a\n"); }
 	int drawType;
 	inStream >> drawType;
 	m_drawType = static_cast<ShapeDrawType>(drawType);
@@ -218,6 +227,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 	m_sideTextures[4] = static_cast<CuboidTexture>(sideTexture);
 	inStream >> sideTexture;
 	m_sideTextures[5] = static_cast<CuboidTexture>(sideTexture);
+	if (m_shape == 414 && m_frame == 4) { printf("			ShapeData::Deserialize b\n"); }
 
 	if (m_shape == 191)
 	{
@@ -231,9 +241,12 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_frameCount;
 	inStream >> m_pointerShape;
 	inStream >> m_pointerFrame;
+	if (m_shape == 414 && m_frame == 4) { printf("			ShapeData::Deserialize c\n"); }
 
+	//printf("Shape: %d Frame: %d DrawType: %d FrameCount: %d\n", m_shape, m_frame, m_drawType, m_frameCount);
 	Init(m_shape, m_frame, false);
 
+	if (m_shape == 414 && m_frame == 4) { printf("			ShapeData::Deserialize finished.\n"); }
 }
 
 void ShapeData::ResetTopTexture()
@@ -315,25 +328,49 @@ void ShapeData::SafeAndSane()
 
 void ShapeData::SetupDrawTypes()
 {
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes a\n"); }
 	ObjectData* objectData = &g_objectTable[m_shape];
+	float xShift = 0.0;
+	float zShift = 0.0;
 
 	m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
-
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes b\n"); }
 	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
 		m_Dims = Vector3{ float(m_originalTexture->width) / 8.0f, float(m_originalTexture->height) / 8.0f, 1 };
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
-		m_Dims = Vector3{ float(m_originalTexture->width) / 8.0f, 0, float(m_originalTexture->height) / 8.0f };
+		float texWide = float(m_originalTexture->width);
+		float texHigh = float(m_originalTexture->height);
+		if (m_shape == 911 && m_frame == 10)
+		{
+			//texWide -= 1.0;
+			xShift = -1.0 / 8.0;
+		}
+		if (m_shape == 613 && m_frame == 5)
+		{
+			xShift = -1.0 / 8.0;
+		}
+		if (m_shape == 699 && m_frame == 5)
+		{
+			//texWide -= 1.0;
+			zShift = -1.0 / 8.0;
+		}
+		if (m_shape == 737 && m_frame == 5)
+		{
+			//texWide -= 1.0;
+			zShift = -1.0 / 8.0;
+		}
+		m_Dims = Vector3{ texWide / 8.0f, 0, texHigh / 8.0f };
 	}
 	else
 	{
 		m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 	}
-
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes c\n"); }
 	FixupTextures();
-
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes d\n"); }
 	//  FLAT DRAWING
 
 	Mesh flatMesh = GenMeshPlane(m_Dims.x, m_Dims.z, 1, 1);
@@ -341,8 +378,8 @@ void ShapeData::SetupDrawTypes()
 	//  Move the mesh from the center to the corner
 	for (int i = 0; i < flatMesh.vertexCount; ++i)
 	{
-		flatMesh.vertices[i * 3] -= ((m_Dims.x / 2) - 1);
-		flatMesh.vertices[i * 3 + 2] -= ((m_Dims.z / 2) - 1);
+		flatMesh.vertices[i * 3] -= ((m_Dims.x / 2) - 1) + xShift;
+		flatMesh.vertices[i * 3 + 2] -= ((m_Dims.z / 2) - 1) + zShift;
 	}
 
 	UpdateMeshBuffer(flatMesh, 0, flatMesh.vertices, sizeof(float) * flatMesh.vertexCount * 3, 0);
@@ -544,17 +581,19 @@ void ShapeData::SetupDrawTypes()
 	UpdateMeshBuffer(backMesh, 0, backMesh.vertices, sizeof(float) * backMesh.vertexCount * 3, 0);
 	m_cuboidModels[static_cast<int>(CuboidSides::CUBOID_BACK)] = LoadModelFromMesh(backMesh);
 	SetTextureForMeshFromSideData(CuboidSides::CUBOID_BACK);
-
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes z\n"); }
 	//  CUSTOM MESH
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
-
+	if (m_shape == 414 && m_frame == 4) { printf("			SetupDrawTypes fin\n"); }
 };
 
 void ShapeData::FixupTextures()
 {
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures a\n"); }
 	//  Fixup the texture for this object.
 
 	ObjectData* objectData = &g_objectTable[m_shape];
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures b\n"); }
 
 	UpdateShapePointerTexture();
 
@@ -562,13 +601,14 @@ void ShapeData::FixupTextures()
 	m_topTexture->Reset();
 	m_frontTexture->Reset();
 	m_rightTexture->Reset();
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures c\n"); }
 
 	ModTexture* textureToUse = m_originalTexture.get();
 	if (m_useShapePointer)
 	{
 		textureToUse = m_shapePointerTexture.get();
 	}
-
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures d\n"); }
 	//  Top face
 	m_topTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_topTextureOffsetX), float(m_topTextureOffsetY), float(m_topTextureWidth), float(m_topTextureHeight) });
 	m_topTexture->UpdateTexture();
@@ -576,7 +616,7 @@ void ShapeData::FixupTextures()
 	//  Front face
 	m_frontTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_frontTextureOffsetX), float(m_frontTextureOffsetY),
 		float(textureToUse->m_Image.width - m_frontTextureOffsetX), float(textureToUse->m_Image.height - m_frontTextureOffsetY) });
-
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures e\n"); }
 	//  Shift slanted pixels to unslant
 	int counter = 1;
 	for (int i = 0; i < m_frontTexture->m_Image.height; ++i)
@@ -587,14 +627,17 @@ void ShapeData::FixupTextures()
 		}
 		++counter;
 	}
-
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures f\n"); }
 	m_frontTexture->ResizeImage(m_frontTextureWidth, m_frontTextureHeight);
 	m_frontTexture->UpdateTexture();
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures f-a\n"); }
 
 	//  Right face
+	if (m_shape == 414 && m_frame == 4) { } else {
 	m_rightTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{ float(m_rightTextureOffsetX), float(m_rightTextureOffsetY),
 		float(textureToUse->m_Image.width - m_rightTextureOffsetX), float(textureToUse->m_Image.height - m_rightTextureOffsetY) });
-
+	}
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures f-b\n"); }
 	//  Shift slanted pixels to unslant
 	counter = 1;
 	for (int i = 1; i < m_rightTextureWidth; ++i)
@@ -605,9 +648,11 @@ void ShapeData::FixupTextures()
 		}
 		++counter;
 	}
-
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures g\n"); }
 	m_rightTexture->ResizeImage(m_rightTextureWidth, m_rightTextureHeight);
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures h\n"); }
 	m_rightTexture->UpdateTexture();
+	if (m_shape == 414 && m_frame == 4) { printf("			FixupTextures finish\n"); }
 }
 
 void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling)
@@ -616,6 +661,11 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	{
 		return;
 	}
+
+	bool drawCuboid = true;
+	bool drawFlat = true;
+	bool drawBillboard = true;
+	bool drawCustomMesh = true;
 
 	ObjectData* objectData = &g_objectTable[m_shape];
 
@@ -631,27 +681,30 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	{
 	case ShapeDrawType::OBJECT_DRAW_CUBOID:
 	{
-		Vector3 thisPos = pos;
-
-		float leftDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_LEFT], pos));
-		float rightDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_RIGHT], pos));
-		float topDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_TOP], pos));
-		float bottomDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BOTTOM], pos));
-		float frontDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_FRONT], pos));
-		float backDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BACK], pos));
-
-		vector<pair<CuboidSides, float>> distances = {
-		make_pair(CuboidSides::CUBOID_LEFT, leftDistance), make_pair(CuboidSides::CUBOID_RIGHT, rightDistance),
-			make_pair(CuboidSides::CUBOID_TOP, topDistance), make_pair(CuboidSides::CUBOID_BOTTOM, bottomDistance),
-			make_pair(CuboidSides::CUBOID_FRONT, frontDistance), make_pair(CuboidSides::CUBOID_BACK, backDistance) };
-
-		sort(distances.begin(), distances.end(), [](const pair<CuboidSides, float>& a, const pair<CuboidSides, float>& b) { return a.second > b.second; });
-
-		for (int i = 0; i < distances.size(); ++i)
+		if (drawCuboid == true)
 		{
-			if (m_sideTextures[static_cast<int>(distances[i].first)] != CuboidTexture::CUBOID_DONT_DRAW)
+			Vector3 thisPos = pos;
+
+			float leftDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_LEFT], pos));
+			float rightDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_RIGHT], pos));
+			float topDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_TOP], pos));
+			float bottomDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BOTTOM], pos));
+			float frontDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_FRONT], pos));
+			float backDistance = Vector3Distance(g_camera.position, Vector3Add(m_faceCenterPoints[CuboidSides::CUBOID_BACK], pos));
+
+			vector<pair<CuboidSides, float>> distances = {
+			make_pair(CuboidSides::CUBOID_LEFT, leftDistance), make_pair(CuboidSides::CUBOID_RIGHT, rightDistance),
+				make_pair(CuboidSides::CUBOID_TOP, topDistance), make_pair(CuboidSides::CUBOID_BOTTOM, bottomDistance),
+				make_pair(CuboidSides::CUBOID_FRONT, frontDistance), make_pair(CuboidSides::CUBOID_BACK, backDistance) };
+
+			sort(distances.begin(), distances.end(), [](const pair<CuboidSides, float>& a, const pair<CuboidSides, float>& b) { return a.second > b.second; });
+
+			for (int i = 0; i < distances.size(); ++i)
 			{
-				DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
+				if (m_sideTextures[static_cast<int>(distances[i].first)] != CuboidTexture::CUBOID_DONT_DRAW)
+				{
+					DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
+				}
 			}
 		}
 		break;
@@ -659,72 +712,79 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_FLAT:
 	{
-		finalPos = pos;
-		if (pos.y == 0)
+		if (drawFlat == true)
 		{
-			finalPos.y = .01f; //  Otherwise, z-fighting.
-		}
-		else
-		{
-			finalPos.y = pos.y * 1.01f;
-		}
-		finalPos = Vector3Add(finalPos, m_TweakPos);
+			finalPos = pos;
+			if (pos.y == 0)
+			{
+				finalPos.y = 0.01f; //  Otherwise, z-fighting.
+			}
+			else
+			{
+				finalPos.y = pos.y + 0.01f;
+			}
+			finalPos = Vector3Add(finalPos, m_TweakPos);
 
-		//BeginShaderMode(g_alphaDiscard);
-		DrawModel(m_flatModel, finalPos, 1, WHITE);
-		//EndShaderMode();
+			//BeginShaderMode(g_alphaDiscard);
+			DrawModel(m_flatModel, finalPos, 1, WHITE);
+			//EndShaderMode();
+		}
 		break;
 	}
 
 	case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
 	{
-		finalPos = pos;
-		finalPos.x += .5f;
-		finalPos.z += .5f;
-		// affects if it lines up with base
-		finalPos.y += m_Dims.y * .60f;
+		if (drawBillboard == true) {
+			finalPos = pos;
+			finalPos.x += .5f;
+			finalPos.z += .5f;
+			// affects if it lines up with base
+			finalPos.y += m_Dims.y * .60f;
 
-		
-		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera,          //Camera camera
-			m_originalTexture->m_Texture,   //Texture2D texture,
-			Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, 
-			finalPos,                       //Vector3 position
-			Vector3{ 0, 1, 0 },             //Vector3 up
-			Vector2{ m_Dims.x, m_Dims.y },  //Vector2 size
-			Vector2{ 0, 0 },                //Vector2 origin
-			-45,                            //float rotation
-			color);                         //Color tint
-		EndShaderMode();
+			
+			BeginShaderMode(g_alphaDiscard);
+			DrawBillboardPro(g_camera,					//Camera camera
+				m_originalTexture->m_Texture,	 //Texture2D texture,
+				Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, 
+				finalPos,											 //Vector3 position
+				Vector3{ 0, 1, 0 },						 //Vector3 up
+				Vector2{ m_Dims.x, m_Dims.y },	//Vector2 size
+				Vector2{ 0, 0 },								//Vector2 origin
+				-45,														//float rotation
+				color);												 //Color tint
+			EndShaderMode();
+		}
 		break;
 	}
 
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	{
-		if (m_meshOutline)
-		{
-			glClearStencil(0);
-			glClear(GL_STENCIL_BUFFER_BIT);
-			glEnable(GL_STENCIL_TEST);
-			glStencilFunc(GL_ALWAYS, 1, -1);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		if (drawCustomMesh == true) {
+			if (m_meshOutline)
+			{
+				glClearStencil(0);
+				glClear(GL_STENCIL_BUFFER_BIT);
+				glEnable(GL_STENCIL_TEST);
+				glStencilFunc(GL_ALWAYS, 1, -1);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+				DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 
-			glStencilFunc(GL_NOTEQUAL, 1, -1);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			glLineWidth(2.5f * g_DrawScale);
-			glEnable(GL_LINE_SMOOTH);
-			glPolygonMode(GL_FRONT, GL_LINE);
+				glStencilFunc(GL_NOTEQUAL, 1, -1);
+				glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+				glLineWidth(2.5f * g_DrawScale);
+				glEnable(GL_LINE_SMOOTH);
+				glPolygonMode(GL_FRONT, GL_LINE);
 
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
+				DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glDisable(GL_STENCIL_TEST);
-		}
-		else
-		{
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glDisable(GL_STENCIL_TEST);
+			}
+			else
+			{
+				DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+			}
 		}
 		break;
 	}

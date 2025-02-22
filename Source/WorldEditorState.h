@@ -10,18 +10,18 @@
 class WorldEditorState : public State
 {
 public:
-   WorldEditorState(){};
-   ~WorldEditorState();
+	 WorldEditorState(){};
+	 ~WorldEditorState();
 
 
-   virtual void Init(const std::string& configfile);
-   virtual void Shutdown();
-   virtual void Update();
-   virtual void Draw();
+	 virtual void Init(const std::string& configfile);
+	 virtual void Shutdown();
+	 virtual void Update();
+	 virtual void Draw();
 
-   virtual void OnEnter();
-   virtual void OnExit();
-   
+	 virtual void OnEnter();
+	 virtual void OnExit();
+	 
 
 };
 

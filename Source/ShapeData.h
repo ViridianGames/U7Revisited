@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:     SHAPEDATA.H
-// Author:   Anthony Salter
-// Date:     3/2/2024
-// Purpose:  Defines the drawing data for each shape and can be modified
-//				 and serialized/deserialized.
+// Name:		 SHAPEDATA.H
+// Author:	 Anthony Salter
+// Date:		 3/2/2024
+// Purpose:	Defines the drawing data for each shape and can be modified
+//  			 and serialized/deserialized.
 ///////////////////////////////////////////////////////////////////////////
 
 #ifndef _SHAPEDATA_H_
@@ -16,7 +16,7 @@ struct Texture;
 
 struct coords;
 
-constexpr char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
+//constexpr char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
 
 enum class CuboidTexture
 {
@@ -33,11 +33,15 @@ enum class CuboidTexture
 
 enum class ShapeDrawType
 {
-	OBJECT_DRAW_BILLBOARD = 0,
+	OBJECT_DRAW_NONE = 0,
+	OBJECT_DRAW_BILLBOARD,
 	OBJECT_DRAW_CUBOID,
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
 	OBJECT_DRAW_CHARACTER,
+	OBJECT_DRAW_TERRAIN,
+	OBJECT_DRAW_OCEAN,
+	OBJECT_DRAW_RIVER,
 	OBJECT_DRAW_LAST
 };
 
@@ -66,7 +70,7 @@ public:
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
 
-	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling =  Vector3{ 1, 1, 1 });
+	void Draw(const Vector3& pos, float angle, Color color = Color{ 255, 255, 255, 255 }, Vector3 scaling = Vector3{ 1, 1, 1 });
 
 	bool IsValid() { return m_isValid; }
 

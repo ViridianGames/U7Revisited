@@ -59,7 +59,7 @@ void ObjectEditorState::Draw()
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
 
-	DrawTextEx(*g_Font, "Welcome to the Object Editor!  It will eventually allow you to create new objects for your game.  It doesn't work yet. Sorry.", Vector2{ 0, 0 }, g_Font->baseSize, 0, WHITE);
+	DrawTextEx(*g_Font, "Welcome to the Object Editor!	It will eventually allow you to create new objects for your game.	It doesn't work yet. Sorry.", Vector2{ 0, 0 }, g_Font->baseSize, 0, WHITE);
 	DrawTextEx(*g_Font, "Press ESC to exit.", Vector2{ 0, g_fontSize }, g_Font->baseSize, 0, WHITE);
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);

@@ -321,7 +321,7 @@ std::string Gui::GetString(int ID)
 }
 
 //  A file that defines a gui starts with the filename for the buttons for
-//  this GUI.  Then each line after that defines a single button.  Example:
+//  this GUI.	Then each line after that defines a single button.	Example:
 //
 //  images\\combat.tga
 //  ID Active TileX TileY PosX PosY Width Height;
@@ -329,7 +329,7 @@ std::string Gui::GetString(int ID)
 void Gui::LoadTXT(std::string fileName)
 {
 	ifstream instream(fileName.c_str(), ios::in | ios::binary);
-	if (!instream.fail())  //  Open successful!
+	if (!instream.fail())	//  Open successful!
 	{
 
 		string line;
@@ -354,7 +354,7 @@ void Gui::LoadTXT(std::string fileName)
 				line = line.substr(0, line.size() - 1);
 			}
 		}
-		//#endif  
+		//#endif	
 
 		m_Font = make_shared<Font>(LoadFont(line.c_str()));
 
@@ -371,7 +371,7 @@ void Gui::LoadTXT(std::string fileName)
 					line = line.substr(0, line.size() - 1);
 				}
 			}
-			//#endif  
+			//#endif	
 
 
 			if (line[0] != '#') //  If this line is not a comment
@@ -411,7 +411,7 @@ void Gui::LoadTXT(std::string fileName)
 				}
 				break;
 
-				/*            case GUI_SCROLLBAR:
+				/*						case GUI_SCROLLBAR:
 				{
 				int buttonid, active, group, posx, posy, width, height, spurlocation, r, g, b, a;
 				string Texture;
@@ -453,7 +453,7 @@ void Gui::LoadTXT(std::string fileName)
 				char _Buffer[256];
 				_LineData.get(_Buffer, 255, '\n');
 				initialtext = _Buffer;
-				initialtext.erase(0, 1);  //  Kill the leading space.
+				initialtext.erase(0, 1);	//  Kill the leading space.
 
 				GuiTextArea *temp = new GuiTextArea(id, active, group, x, y, width, height, r, g, b, a, initialtext);
 				m_GuiList.push_back(temp);
@@ -462,7 +462,7 @@ void Gui::LoadTXT(std::string fileName)
 
 
 
-				/*            case GUI_RADIOBUTTON:
+				/*						case GUI_RADIOBUTTON:
 				{
 				int buttonid, active, group, tilex, tiley, posx, posy, width, height, radiobuttongroup, set;
 				string Texture;
@@ -481,7 +481,7 @@ void Gui::LoadTXT(std::string fileName)
 				char _Buffer[256];
 				_LineData.get(_Buffer, 255, '\n');
 				Texture = _Buffer;
-				Texture.erase(0, 1);  //  Kill the leading space.
+				Texture.erase(0, 1);	//  Kill the leading space.
 
 				GuiRadioButton *temp = new GuiRadioButton(buttonid, active, group, tilex, tiley, posx, posy, width, height, radiobuttongroup, set, Texture);
 				m_GuiList.push_back(temp);
@@ -527,7 +527,7 @@ void Gui::LoadTXT(std::string fileName)
 					char _Buffer[256];
 					_LineData.get(_Buffer, 255, '\n');
 					initialtext = _Buffer;
-					initialtext.erase(0, 1);  //  Kill the leading space.
+					initialtext.erase(0, 1);	//  Kill the leading space.
 
 					shared_ptr<GuiTextArea> temp = make_shared<GuiTextArea>(this);
 					temp->Init(id, m_Font.get(), initialtext, x, y, 0, 0, Color{ static_cast<unsigned char>(r), static_cast<unsigned char>(g), static_cast<unsigned char>(b), static_cast<unsigned char>(a) });

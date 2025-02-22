@@ -109,9 +109,9 @@ void GuiTextButton::Draw()
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
 			0.5f,
-                        1,
-                        m_Gui->m_Scale,
-                        m_BorderColor);
+												1,
+												m_Gui->m_Scale,
+												m_BorderColor);
 
 		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
@@ -129,8 +129,8 @@ void GuiTextButton::Draw()
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
 			0.5f, 1,
-                                m_Gui->m_Scale,
-                                m_BorderColor);
+																m_Gui->m_Scale,
+																m_BorderColor);
 
 		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize , m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
@@ -145,8 +145,8 @@ void GuiTextButton::Draw()
 		DrawRectangleRoundedLines(Rectangle{ m_Gui->m_GuiX + int(m_Pos.x), m_Gui->m_GuiY + int(m_Pos.y),
 			m_Width, m_Height },
 			0.5f, 1,
-                                m_Gui->m_Scale,
-                                m_BackgroundColor);
+																m_Gui->m_Scale,
+																m_BackgroundColor);
 
 		DrawStringCentered(m_Font, m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_GuiX + int(m_Pos.x) + (m_Width / 2), m_Gui->m_GuiY + int(m_Pos.y + (m_Height * .6f))},
@@ -198,7 +198,7 @@ void GuiIconButton::Draw()
 	if (m_Visible == false)
 		return;
 
-	//  Bobbing doesn't actually move the element, it just causes it to be drawn slightly higher or lower on the y axis.  You have to manually set bobbing for the button.
+	//  Bobbing doesn't actually move the element, it just causes it to be drawn slightly higher or lower on the y axis.	You have to manually set bobbing for the button.
 	int yoffset = 0;
 	if (m_Bobbing)
 		yoffset = int(sin(GetTime() * 10) * m_Height * .025f);
@@ -927,7 +927,7 @@ void GuiRadioButton::Update()
 
 
 //  GUIPANEL
-//  Panels can use textures or they can just be filled boxes.  They can also have a border
+//  Panels can use textures or they can just be filled boxes.	They can also have a border
 
 void GuiPanel::Init(int ID, int posx, int posy, int width, int height,
 	Color color, bool filled, int group, int active)
@@ -1025,7 +1025,7 @@ void GuiTextArea::Draw()
 
 			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) - textlength / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
 			//if (m_Shadowed)
-			//	m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color{ 0, 0, 0, 255 });
+			//  m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color{ 0, 0, 0, 255 });
 			//m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, m_Color);
 		}
 	}
@@ -1044,7 +1044,7 @@ void GuiTextArea::Draw()
 			int height = m_Gui->m_fontSize;
 			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, height, Color(.5, 0, 0, .75), true);
 			//if (m_Shadowed)
-			//	m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), m_Width, m_Height, Color{ 0, 0, 0, 255 }, m_Gui->m_Scale);
+			//  m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), m_Width, m_Height, Color{ 0, 0, 0, 255 }, m_Gui->m_Scale);
 			//m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Height, m_Color, m_Gui->m_Scale);
 		}
 	}
@@ -1062,7 +1062,7 @@ int GuiTextArea::GetValue()
 
 
 
-//  Just puts an image at a certain location.  Non-interactive.
+//  Just puts an image at a certain location.	Non-interactive.
 void GuiSprite::Init(int ID, int posx, int posy, shared_ptr<Sprite> sprite, float scalex, float scaley,
 	Color color, int group, int active)
 {
@@ -1094,7 +1094,7 @@ void GuiSprite::Update()
 	Tween::Update();
 }
 
-//  Just puts an image at a certain location.  Non-interactive.
+//  Just puts an image at a certain location.	Non-interactive.
 void GuiOctagonBox::Init(int ID, int posx, int posy, int width, int height, std::vector<std::shared_ptr<Sprite> > borders,
 	Color color, int group, int active)
 {
@@ -1246,11 +1246,11 @@ void GuiStretchButton::Draw()
 				m_ActiveRight->m_sourceRect.width * m_Gui->m_Scale, m_ActiveRight->m_sourceRect.height * m_Gui->m_Scale });
 
 			//m_ActiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
-			//	m_ActiveLeft->m_sourceRect.width, m_ActiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			//  m_ActiveLeft->m_sourceRect.width, m_ActiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
 			//m_ActiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
-			//	centerWidth, m_ActiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			//  centerWidth, m_ActiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
 			//m_ActiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright + offset), (m_Gui->m_Pos.y + m_Pos.y + offset),
-			//	m_ActiveRight->m_sourceRect.width, m_ActiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
+			//  m_ActiveRight->m_sourceRect.width, m_ActiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0.0f, Color{ 128, 128, 128, 255 });
 		}
 		else
 		{
@@ -1288,7 +1288,7 @@ void GuiStretchButton::Draw()
 
 		m_InactiveLeft->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x), (m_Gui->m_Pos.y + m_Pos.y), m_InactiveLeft->m_sourceRect.width* m_Gui->m_Scale, m_InactiveLeft->m_sourceRect.height* m_Gui->m_Scale });
 		m_InactiveCenter->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle), (m_Gui->m_Pos.y + m_Pos.y),
-			centerWidth* m_Gui->m_Scale, m_InactiveCenter->m_sourceRect.height *  m_Gui->m_Scale });
+			centerWidth* m_Gui->m_Scale, m_InactiveCenter->m_sourceRect.height *	m_Gui->m_Scale });
 		m_InactiveRight->DrawScaled(Rectangle{ (m_Gui->m_Pos.x + m_Pos.x + xmiddle + xright), (m_Gui->m_Pos.y + m_Pos.y),
 			m_InactiveRight->m_sourceRect.width* m_Gui->m_Scale, m_InactiveRight->m_sourceRect.height * m_Gui->m_Scale });
 

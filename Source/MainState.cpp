@@ -74,6 +74,7 @@ void MainState::Init(const string& configfile)
 	int stopper = 0;
 
 	m_NumberOfVisibleUnits = 0;
+	m_NumberOfNotVisibleUnits = 0;
 
 	g_CameraMoved = true;
 
@@ -83,6 +84,7 @@ void MainState::Init(const string& configfile)
 	m_GuiMode = 0;
 
 	m_showObjects = true;
+	m_showMinimap = false;
 
 	m_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
 	SetTextureFilter(m_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
@@ -116,30 +118,73 @@ void MainState::Shutdown()
 void MainState::Update()
 {
 	bool canupdate = false;
+	
+	m_cameraUpdateTime = DoCameraMovement();
+	//g_Terrain->FindVisibleChunks();
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
 	{
 		g_CurrentUpdate++;
 
 		m_NumberOfVisibleUnits = 0;
+		m_NumberOfNotVisibleUnits = 0;
 
 		if (m_showObjects)
 		{
 			m_sortedVisibleObjects.clear();
 			float drawRange = g_cameraDistance * 1.5f;
+			bool chunkVisible = false;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
 				(*node).second->Update();
-				//Vector3 centerPoint = Vector3Add((*node).second->m_Pos, (*node).second.get()->m_shapeData->m_boundingBoxCenterPoint);
-
-				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
-				distance -= (*node).second->m_Pos.y;
-				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
+				chunkVisible = g_Terrain->IsChunkVisible((*node).second->m_chunkOwn);
+				if (chunkVisible == true)
 				{
-					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
-					(*node).second->m_distanceFromCamera = distanceFromCamera;
-					m_sortedVisibleObjects.push_back((*node).second);
-					m_numberofDrawnUnits++;
+					//Vector3 origin = { 0.0, 0.0, 0.0 };
+					Vector3 ScootPos = { g_Terrain->GetChunkScootX((*node).second->m_chunkOwn), 0.0, g_Terrain->GetChunkScootY((*node).second->m_chunkOwn) };
+					/*
+					float distanceScoot = Vector3Distance(origin, ScootPos);
+					if (distanceScoot > 0.01f) {
+							printf("Scoot Vector %0.1f %0.1f %0.1f\n", ScootPos.x, ScootPos.y, ScootPos.z);
+					}
+					*/
+					Vector3 drawPos = Vector3Add((*node).second->m_Pos, ScootPos);
+					(*node).second->SetDrawPos(drawPos);
+					/*
+					if (distanceScoot > 0.01f) {
+							printf("Draw Pos %0.1f %0.1f %0.1f\n", drawPos.x, drawPos.y, drawPos.z);
+					}
+					*/
+					float distance = Vector3Distance(drawPos, g_camera.target);
+					//float distance = Vector3Distance(drawPos, g_camera.position);
+					distance -= drawPos.y;
+					if (distance < drawRange && drawPos.y <= m_heightCutoff)
+					{
+							double distanceFromCamera = Vector3Distance(drawPos, g_camera.position) - drawPos.y;
+							(*node).second->m_distanceFromCamera = distanceFromCamera;
+							m_sortedVisibleObjects.push_back((*node).second);
+							m_numberofDrawnUnits++;
+							m_NumberOfNotVisibleUnits++;
+					}
+					else
+					{
+							m_NumberOfNotVisibleUnits++;
+					}
+
+					/*
+					float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
+					distance -= (*node).second->m_Pos.y;
+					if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
+					{
+						double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
+						(*node).second->m_distanceFromCamera = distanceFromCamera;
+						m_sortedVisibleObjects.push_back((*node).second);
+						m_numberofDrawnUnits++;
+					}*/
+				}
+				else
+				{
+					//m_NumberOfNotVisibleUnits++;
 				}
 			}
 
@@ -149,7 +194,6 @@ void MainState::Update()
 		m_LastUpdate = GetTime();
 	}
 
-	m_cameraUpdateTime = DoCameraMovement();
 
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->Update();
@@ -164,7 +208,6 @@ void MainState::Update()
 	if (IsKeyPressed(KEY_F1))
 	{
 		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
-
 	}
 
 	if (IsKeyPressed(KEY_PAGE_UP))
@@ -200,6 +243,12 @@ void MainState::Update()
 		m_pixelated = !m_pixelated;
 	}
 
+	if (IsKeyPressed(KEY_H))
+	{
+		m_showMinimap = !m_showMinimap;
+		v_showMinimap = m_showMinimap;
+	}
+
 	//  Get terrain hit for highlight mesh
 	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
@@ -226,7 +275,6 @@ void MainState::Update()
 			}
 		}
 	}
-
 	//UpdateCamera(&g_camera, CAMERA_THIRD_PERSON);
 }
 
@@ -244,7 +292,9 @@ void MainState::Draw()
 	BeginMode3D(g_camera);
 
 	//  Draw the terrain
+	m_numberofDrawnChunks = 0;
 	g_Terrain->Draw();
+	m_numberofDrawnChunks = g_Terrain->m_chunkDrawCount;
 
 	//  Draw the objects
 	m_numberofDrawnUnits = 0;
@@ -269,26 +319,35 @@ void MainState::Draw()
 		DrawTexturePro(m_renderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2)}, {0, 0}, 0, WHITE);
 	}
 
-	//  Draw the minimap and marker
-	DrawTexturePro(*m_Minimap, Rectangle{ 0, 0, float(m_Minimap->width), float(m_Minimap->height) }, Rectangle{ float(GetRenderWidth() - g_minimapSize), 0, float(g_minimapSize), float(g_minimapSize) }, Vector2{ 0, 0 }, 0, WHITE);
+	if (m_showMinimap == true)
+	{
+		//  Draw the minimap and marker
+		DrawTexturePro(*m_Minimap, Rectangle{ 0, 0, float(m_Minimap->width), float(m_Minimap->height) }, Rectangle{ float(GetRenderWidth() - g_minimapSize), 0, float(g_minimapSize), float(g_minimapSize) }, Vector2{ 0, 0 }, 0, WHITE);
 
-	float _ScaleX = g_minimapSize / float(g_Terrain->m_width);
-	float _ScaleZ = g_minimapSize / float(g_Terrain->m_height);
+		float _ScaleX = g_minimapSize / float(g_Terrain->m_width);
+		float _ScaleZ = g_minimapSize / float(g_Terrain->m_height);
 
-	float pointer = float(g_minimapSize) / float(m_MinimapArrow->width);
+		float pointer = float(g_minimapSize) / float(m_MinimapArrow->width);
 
-	DrawTexturePro(*m_MinimapArrow, Rectangle{ 0, 0, float(m_MinimapArrow->width), float(m_MinimapArrow->height) },
-		Rectangle{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x) * _ScaleX) - (pointer / 2), ((g_camera.target.z) * _ScaleZ) - (pointer / 2), pointer, pointer}, Vector2{0, 0}, 0, WHITE);
-
+		DrawTexturePro(*m_MinimapArrow, Rectangle{ 0, 0, float(m_MinimapArrow->width), float(m_MinimapArrow->height) },
+			Rectangle{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x) * _ScaleX) - (pointer / 2), ((g_camera.target.z) * _ScaleZ) - (pointer / 2), pointer, pointer}, Vector2{0, 0}, 0, WHITE);
+	}
 	DrawConsole();
 
-	//  Draw XY coordinates below the minimap
-	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
-	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
-	DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() * .85f, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
+	if (m_showMinimap == true)
+	{
+		//  Draw XY coordinates below the minimap
+		string minimapXY = "X: " + to_string(float(g_camera.target.x)) + " Y: " + to_string(float(g_camera.target.z)) + " ";
+		float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
+		DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() * .60f, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
+		string drawnUnitCount = "drawnUnits: " + to_string(int(m_numberofDrawnUnits)) + "/" + to_string(int(m_NumberOfNotVisibleUnits)) + " ";
+		DrawTextEx(*g_Font, drawnUnitCount.c_str(), Vector2{ GetScreenWidth() * .80f, GetScreenHeight() * .35f }, g_fontSize, 1, WHITE);
+		string drawnChunkCount = "drawnChunks: " + to_string(int(m_numberofDrawnChunks)) + " ";
+		DrawTextEx(*g_Font, drawnChunkCount.c_str(), Vector2{ GetScreenWidth() * .80f, GetScreenHeight() * .40f }, g_fontSize, 1, WHITE);
+	}
 
 	//  Draw version number in lower-right
-	DrawTextEx(*g_Font, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_fontSize, 1, WHITE);
+	//DrawTextEx(*g_Font, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_fontSize, 1, WHITE);
 
 	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
 
@@ -296,6 +355,7 @@ void MainState::Draw()
 
 	EndDrawing();
 }
+
 
 void MainState::SetupGame()
 {

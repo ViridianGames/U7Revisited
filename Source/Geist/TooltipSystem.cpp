@@ -31,7 +31,7 @@ void DrawToolTip(Font* font, float size, std::vector<ColoredString> strings, int
 
 	int yheight = size * int(strings.size()) * 1.3f;
 
-	//  Draw the background
+	//	Draw the background
 
 	switch (anchorcorner)
 	{
@@ -47,7 +47,7 @@ void DrawToolTip(Font* font, float size, std::vector<ColoredString> strings, int
 		{
 			DrawTextEx(*font, (*node).m_String.c_str(), Vector2{ (float)x + 3, (float)posy }, size, 1, (*node).m_Color);
 			posy += size;
-			//            posy += 12;
+			//						posy += 12;
 		}
 
 		float linex = x - 1;
@@ -62,7 +62,7 @@ void DrawToolTip(Font* font, float size, std::vector<ColoredString> strings, int
 	}
 	break;
 
-	case 1: //  Upper-right
+	case 1: //	Upper-right
 	{
 		int posy = y - 1;
 
@@ -111,7 +111,7 @@ void DrawToolTip(Font* font, float size, std::vector<ColoredString> strings, int
 
 	break;
 
-	case 3: //  Lower-left
+	case 3: //	Lower-left
 	{
 		int posy = y - yheight - 1;
 

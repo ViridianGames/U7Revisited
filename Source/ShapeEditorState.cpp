@@ -1070,7 +1070,7 @@ void ShapeEditorState::Draw()
 		float yoffset = g_fontSize + 2;
 		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
 		yoffset += scale;
-		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		DrawTextureEx(*d, Vector2{	scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 
 		//  Draw top texture with labels and borders
 		yoffset += float(d->height) * scale + scale + scale;

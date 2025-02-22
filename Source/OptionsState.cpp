@@ -18,7 +18,7 @@ using namespace std;
 
 OptionsState::~OptionsState()
 {
-   Shutdown();
+	 Shutdown();
 }
 
 void OptionsState::Init(const string& configfile)
@@ -43,10 +43,10 @@ void OptionsState::Shutdown()
 
 void OptionsState::Update()
 {
-   if( IsKeyPressed(KEY_ESCAPE) )
-   {
-      g_Engine->m_Done = true;
-   }
+	 if( IsKeyPressed(KEY_ESCAPE) )
+	 {
+			g_Engine->m_Done = true;
+	 }
 
 }
 

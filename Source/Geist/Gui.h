@@ -1,18 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:     Gui.H
-// Author:   Anthony Salter
-// Date:     10/22/05
-// Purpose:  Graphic User Interface Object.
+// Name:		 Gui.H
+// Author:	 Anthony Salter
+// Date:		 10/22/05
+// Purpose:	Graphic User Interface Object.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 //  This file defines an immediate-mode Gui that works with our
-//  Init/Update/Draw/Shutdown system.  The GUI has its own X/Y coords that
+//  Init/Update/Draw/Shutdown system.	The GUI has its own X/Y coords that
 //  every element inside the GUI offsets from. 
 //
 //  All GuiElements are derived from Tween (just like Gui itself) because
-//  we want that programmable movement embedded in the system.  You'd be
+//  we want that programmable movement embedded in the system.	You'd be
 //  amazed at how often Guis and their elements need to move around.
 //
 //  The entire gui can be scaled by setting m_Scale to something other
@@ -20,10 +20,10 @@
 //  resolutions.
 //
 //  Guis can be created two ways: programmatically, or by loading in an XML
-//  file.  To create a gui programmatically, first start by defining
-//  constants that represent the IDs of the gui elements.  Then create the
-//  gui object itself.  Then call the "AddXElement" functions on that object
-//  to add elements of that type to the gui.  You'll need to feed those
+//  file.	To create a gui programmatically, first start by defining
+//  constants that represent the IDs of the gui elements.	Then create the
+//  gui object itself.	Then call the "AddXElement" functions on that object
+//  to add elements of that type to the gui.	You'll need to feed those
 //  functions the constants you created so that you can then access the
 //  elements later during your update functions.
 //
@@ -32,7 +32,7 @@
 //  where the mouse is and the state of the mouse buttons. Then you can call
 //  Gui::GetActiveElement() to find the element in the gui that was most
 //  recently manipulated by the user. It's not possible for more than one
-//  element in a gui to be "active", so this is all you need.  You can then
+//  element in a gui to be "active", so this is all you need.	You can then
 //  access that element in the element list to find out exactly what its
 //  state is, then act accordingly.
 

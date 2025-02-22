@@ -50,70 +50,6 @@ void StateMachine::Update()
 	}
 
 	m_StateMap[get<0>(m_StateStack[0])]->Update();
-
-	currentAnimFrame11 = 0;
-	float fTime = GetTime();
-	float iTime = float(int(fTime));
-	if (iTime > fTime) {
-		iTime -= 1.0;
-	}
-	float inSecond = fTime - iTime;
-
-	float frameTime = 1.0 / 3.0;
-	float sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame3 += 1; }
-	}
-
-	frameTime = 1.0 / 4.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame4 += 1; }
-	}
-
-	frameTime = 1.0 / 5.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame5 += 1; }
-	}
-
-	frameTime = 1.0 / 11.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame11 += 1; }
-	}
-
-	frameTime = 1.0 / 12.0;
-	sKeep = 0.0;
-	while (sKeep < inSecond)
-	{
-		sKeep += frameTime;
-		if (sKeep < inSecond) { currentAnimFrame12 += 1; }
-	}
-
-	if (currentAnimFrame3 >= 3) {
-		currentAnimFrame3 = 0;
-	}
-	if (currentAnimFrame4 >= 4) {
-		currentAnimFrame4 = 0;
-	}
-	if (currentAnimFrame5 >= 5) {
-		currentAnimFrame5 = 0;
-	}
-	if (currentAnimFrame11 >= 11) {
-		currentAnimFrame11 = 0;
-	}
-	if (currentAnimFrame12 >= 12) {
-		currentAnimFrame12 = 0;
-	}
 }
 
 void StateMachine::Draw()
@@ -152,7 +88,7 @@ void StateMachine::MakeStateTransitionEX(int newstate)
 	if (m_StateStack.size() > 0 && get<1>(m_StateStack[0]) != ST_STATE)
 	{
 		//  The top state is a push state, we can't transition from it.
-		throw("StateMachine: Attempting to transition from a pushed state!  Current state ID: " + to_string(get<0>(m_StateStack[0])) + " Incoming state ID: " + to_string(newstate));
+		throw("StateMachine: Attempting to transition from a pushed state!	Current state ID: " + to_string(get<0>(m_StateStack[0])) + " Incoming state ID: " + to_string(newstate));
 	}
 
 	if (m_StateMap.find(newstate) == m_StateMap.end())
@@ -213,7 +149,7 @@ void StateMachine::PopStateEX()
 		}
 		else
 		{
-			throw("StateMachine: Attempting to pop a state that wasn't pushed!  State ID: " + to_string(get<0>(m_StateStack[0])));
+			throw("StateMachine: Attempting to pop a state that wasn't pushed!	State ID: " + to_string(get<0>(m_StateStack[0])));
 		}
 	}
 }
@@ -240,29 +176,4 @@ State* StateMachine::GetState(int identifier)
 int StateMachine::GetPreviousState()
 {
 	return m_PreviousState;
-}
-
-int StateMachine::GetAnimFrame(int frameCount)
-{
-	if (frameCount == 3)
-	{
-		return currentAnimFrame3;
-	}
-	else if (frameCount == 4)
-	{
-		return currentAnimFrame4;
-	}
-	else if (frameCount == 5)
-	{
-		return currentAnimFrame5;
-	}
-	else if (frameCount == 11)
-	{
-		return currentAnimFrame11;
-	}
-	else if (frameCount == 12)
-	{
-		return currentAnimFrame12;
-	}
-	return 0;
 }

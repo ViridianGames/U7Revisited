@@ -129,6 +129,7 @@ extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
 
 extern unsigned int g_minimapSize;
+extern bool v_showMinimap;
 
 extern std::vector< std::vector<unsigned short> > g_World;
 
@@ -244,6 +245,8 @@ extern float g_cameraRotation; // angle around target
 
 extern EngineModes g_engineMode;
 
-void RecalculateCamera();
+void DoGlobalAnimationFramesUpdate();
+int GetGlobalAnimationFrame(int frameCount);
+//void RecalculateCamera();
 
 #endif

@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:     STATE.H
-// Author:   Anthony Salter
-// Date:     2/03/05
-// Purpose:  A state for use with the state machine.
+// Name:		 STATE.H
+// Author:	 Anthony Salter
+// Date:		 2/03/05
+// Purpose:	A state for use with the state machine.
 //
 ///////////////////////////////////////////////////////////////////////////
 #ifndef _STATE_H_
