@@ -41,7 +41,7 @@ int main(int argv, char** argc)
    try
    {
       g_Engine = make_unique<Engine>();
-      g_Engine->Init("Data/engine.cfg");
+      g_Engine->Init("Redist/Data/engine.cfg");
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
 
@@ -107,7 +107,7 @@ int main(int argv, char** argc)
       g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
       float baseFontSize = 9;
-      char* fontPath = "Data/Fonts/softsquare.ttf";
+      const char* fontPath = "Data/Fonts/softsquare.ttf";
       //char* fontPath = "Data/Fonts/babyblocks.ttf";
 
       g_fontSize = baseFontSize * int(g_DrawScale);

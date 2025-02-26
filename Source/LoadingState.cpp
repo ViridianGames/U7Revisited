@@ -5,8 +5,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
-
-
+#include <unistd.h>
 
 #include <list>
 #include <string>
@@ -258,14 +257,16 @@ void LoadingState::LoadVersion()
 void LoadingState::LoadChunks()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	Log("Data path from config: " + dataPath);
 	
-	//  Load data for all chunks first
-	std::string loadingPath(dataPath);
-	loadingPath.append("/STATIC/U7CHUNKS");
+	std::string loadingPath = dataPath + "/STATIC/U7CHUNKS";  // Changed to use proper path concatenation
+	Log("Attempting to load chunks from: " + loadingPath);
+	Log("Current working directory: " + std::string(getcwd(nullptr, 0)));
 	FILE* u7chunksfile = fopen(loadingPath.c_str(), "rb");
 	if (u7chunksfile == nullptr)
 	{
-		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		Log("Failed to open U7CHUNKS file at: " + loadingPath, LOG_ERROR);
+		Log("Current working directory: " + std::string(getcwd(nullptr, 0)), LOG_ERROR);
 		m_loadingFailed = true;
 		return;
 	}
@@ -296,9 +297,18 @@ void LoadingState::LoadChunks()
 void LoadingState::LoadMap()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	std::string loadingPath(dataPath);
-	loadingPath.append("/STATIC/U7MAP");
+	Log("Data path from config: " + dataPath);
+	std::string loadingPath = dataPath + "/STATIC/U7MAP";  // Changed to use proper path concatenation
+	Log("Attempting to load map from: " + loadingPath);
+	Log("Current working directory: " + std::string(getcwd(nullptr, 0)));
 	FILE* u7mapfile = fopen(loadingPath.c_str(), "rb");
+	if (u7mapfile == nullptr)
+	{
+		Log("Failed to open U7MAP file at: " + loadingPath, LOG_ERROR);
+		Log("Current working directory: " + std::string(getcwd(nullptr, 0)), LOG_ERROR);
+		m_loadingFailed = true;
+		return;
+	}
 
 	//  Untangle the map and chunk files into a single array.
 	//  Create the map of chunk ids and chunk data
@@ -328,8 +338,10 @@ void LoadingState::LoadMap()
 void LoadingState::LoadIFIX()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	std::string loadingPath(dataPath);
-	loadingPath.append("/STATIC/");
+	Log("Data path from config: " + dataPath);
+	std::string loadingPath = dataPath + "/STATIC/";  // Changed to use proper path concatenation
+	Log("Attempting to load IFIX files from directory: " + loadingPath);
+	Log("Current working directory: " + std::string(getcwd(nullptr, 0)));
 
 	for (int superchunky = 0; superchunky < 12; ++superchunky)
 	{
@@ -1061,7 +1073,8 @@ void LoadingState::LoadInitialGameState()
 
 	vector<FLXEntryData> subFileMap = ParseFLXHeader(subFiles);
 
-	for (auto& node = subFileMap.begin(); node != subFileMap.end(); ++node)
+	auto node = subFileMap.begin();
+	for (; node != subFileMap.end(); ++node)
 	{
 		subFiles.seekg(node->offset);
 		//  First thirteen characters are the filename.
