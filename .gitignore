@@ -3,3 +3,11 @@
 /.vs
 /Redist/Data/U7
 !Redist/Data/U7/U7.txt
+**/raylib/
+.DS_Store
+Linux/U7Revisited/build/
+Linux/U7Revisited/raylib/
+Mac/U7Revisited/dist/
+Mac/U7Revisited/build/
+TEMP*
+Data/

@@ -21,7 +21,7 @@ void Emitter2D::Update()
 	{
 		vector<Particle2D>::iterator node = m_Particles.begin();
 
-		for (node; node != m_Particles.end(); )
+		for (; node != m_Particles.end(); )
 		{
 			Particle2D& temp = (*node);
 
@@ -55,7 +55,7 @@ void Emitter2D::Draw()
 	if (!m_Started)
 		return;
 	vector<Particle2D>::iterator node = m_Particles.begin();
-	for (node; node != m_Particles.end(); ++node)
+	for (; node != m_Particles.end(); ++node)
 	{
 		Particle2D& temp = (*node);
 
@@ -143,7 +143,7 @@ void ParticleSystem::Update()
 {
 	vector<shared_ptr<Emitter2D> >::iterator node = m_Emitters.begin();
 
-	for (node; node != m_Emitters.end(); )
+	for (; node != m_Emitters.end(); )
 	{
 		(*node)->m_DrawOffset = m_Pos;
 		(*node)->Update();
@@ -158,7 +158,7 @@ void ParticleSystem::Draw()
 {
 	vector<shared_ptr<Emitter2D> >::iterator node = m_Emitters.begin();
 
-	for (node; node != m_Emitters.end(); ++node)
+	for (; node != m_Emitters.end(); ++node)
 	{
 		(*node)->Draw();
 	}

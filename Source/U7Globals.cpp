@@ -378,13 +378,13 @@ void AddConsoleString(std::string string, Color color)
 void DrawConsole()
 {
 	int counter = 0;
-	vector<ConsoleString>::iterator node = g_ConsoleStrings.begin();
+	auto node = g_ConsoleStrings.begin();
 	float shadowOffset = 1;
 	if (shadowOffset < 1)
 	{
 		shadowOffset = 1;
 	}
-	for (node; node != g_ConsoleStrings.end(); ++node)
+	for (; node != g_ConsoleStrings.end(); ++node)
 	{
 		float elapsed = GetTime() - (*node).m_StartTime;
 		if (elapsed > 9)
@@ -407,7 +407,7 @@ void DrawConsole()
 	}
 
 	node = g_ConsoleStrings.begin();
-	for (node; node != g_ConsoleStrings.end();)
+	for (; node != g_ConsoleStrings.end();)
 	{
 		if (GetTime() - (*node).m_StartTime > 10)
 		{

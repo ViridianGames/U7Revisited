@@ -42,8 +42,15 @@ bool Config::Load(string fileName)
 
       if (idx != string::npos)
       {
-         leftside = line.substr(0, idx - 1);
-         rightside = line.substr(idx + 2);
+         // Trim whitespace from key and value
+         leftside = line.substr(0, idx);
+         rightside = line.substr(idx + 1);
+         
+         // Remove leading/trailing whitespace
+         leftside.erase(0, leftside.find_first_not_of(" \t"));
+         leftside.erase(leftside.find_last_not_of(" \t") + 1);
+         rightside.erase(0, rightside.find_first_not_of(" \t"));
+         rightside.erase(rightside.find_last_not_of(" \t") + 1);
 
          bool isNumber = false;
 
