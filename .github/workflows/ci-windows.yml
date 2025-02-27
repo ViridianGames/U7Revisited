@@ -1,0 +1,23 @@
+name: Windows Build Verification
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up MSVC
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build
+      run: |
+        msbuild U7Revisited.sln /p:Configuration=Release
