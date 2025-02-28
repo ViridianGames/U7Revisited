@@ -8,6 +8,7 @@
 
 
 
+#include <cstring>
 #include <list>
 #include <string>
 #include <sstream>
@@ -1061,7 +1062,7 @@ void LoadingState::LoadInitialGameState()
 
 	vector<FLXEntryData> subFileMap = ParseFLXHeader(subFiles);
 
-	for (auto& node = subFileMap.begin(); node != subFileMap.end(); ++node)
+	for (auto node = subFileMap.begin(); node != subFileMap.end(); ++node)
 	{
 		subFiles.seekg(node->offset);
 		//  First thirteen characters are the filename.
