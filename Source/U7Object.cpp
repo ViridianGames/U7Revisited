@@ -124,29 +124,26 @@ bool U7Object::AddObjectToInventory(int objectid)
    if (m_isContainer)
    {
       m_inventory.push_back(objectid);
+      return true;
    }
-   else
-   {
-		return false;
-	}
+
+   return false;
 }
 
 bool U7Object::RemoveObjectFromInventory(int objectid)
 {
    if (m_isContainer)
-	{
-		for (int i = 0; i < m_inventory.size(); i++)
-		{
-			if (m_inventory[i] == objectid)
-			{
+   {
+      for (int i = 0; i < m_inventory.size(); i++)
+      {
+         if (m_inventory[i] == objectid)
+         {
             GetObjectFromID(objectid)->m_isContained = true;
-				m_inventory.erase(m_inventory.begin() + i);
-				return true;
-			}
-		}
-	}
-	else
-	{
-		return false;
-	}
+            m_inventory.erase(m_inventory.begin() + i);
+            return true;
+         }
+      }
+   }
+
+   return false;
 }
