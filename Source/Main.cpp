@@ -3,10 +3,7 @@
 // Name:     MAIN.CPP
 // Author:   Anthony Salter
 // Date:     2/03/05
-// Purpose:  Contains the Windows-specific WinMain() function, which
-//           defines the entry point of the program, and the WndProc()
-//           function, which controls the handling of Windows-specific
-//           events.  The WinMain() contains the game's main loop.
+// Purpose:  Contains the entry point for the program.
 //
 /////////////////////////////////////////////////////////////////////////// 
 
@@ -15,6 +12,7 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
 #include "Geist/Primitives.h"
+#include "Geist/GuiManager.h"
 #include "Geist/Logging.h"
 #include "raylib.h"
 #include "U7Globals.h"
@@ -125,7 +123,7 @@ int main(int argv, char** argc)
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(7777);
       g_NonVitalRNG = make_unique<RNG>();
-      g_NonVitalRNG->SeedRNG(GetTime());
+      g_NonVitalRNG->SeedRNG(int(GetTime() * 1000));
 
       Log("Creating terrain.");
       g_Terrain = make_unique<Terrain>();
@@ -190,7 +188,6 @@ int main(int argv, char** argc)
       State* worldEditorState = new WorldEditorState;
       worldEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
-
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

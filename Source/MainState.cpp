@@ -4,6 +4,7 @@
 #include "Geist/ParticleSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
+#include "Geist/GuiManager.h"
 #include "Geist/Engine.h"
 #include "U7Globals.h"
 #include "MainState.h"
@@ -50,13 +51,7 @@ void MainState::Init(const string& configfile)
 
 	m_ManaBar = m_Gui->GetElement(1003).get();
 
-	m_Gui->m_Scale = float(GetRenderHeight()) / float(m_Gui->m_Height);
-
-	m_SpellsPanel = new Gui();
-
-	m_SpellsPanel->SetLayout(0, 0, 138, 384, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_SpellsPanel->m_Scale = float(GetRenderHeight()) / float(m_Gui->m_Height);
+	m_Gui->m_InputScale = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
 
 	m_OptionsGui = new Gui();
 
@@ -83,6 +78,8 @@ void MainState::Init(const string& configfile)
 	m_GuiMode = 0;
 
 	m_showObjects = true;
+
+	m_GuiManager = make_unique<GuiManager>();
 
 	SetupGame();
 
@@ -154,6 +151,7 @@ void MainState::Update()
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->Update();
 	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+	m_GuiManager->Update();
 
 	//  Handle special keyboard keys
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -200,8 +198,44 @@ void MainState::Update()
 		g_pixelated = !g_pixelated;
 	}
 
+
+	if (WasRMBDoubleClicked())
+	{
+		AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+	}
+
+	if (WasLMBDoubleClicked())
+	{
+		AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+
+		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
+		{
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
+
+			bool picked = (*node)->Pick();
+
+			if (picked)
+			{
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				m_selectedObject = (*node)->m_ID;
+
+				if ((*node)->m_isContainer)
+				{
+					OpenGump((*node)->m_ID);
+				}
+				break;
+			}
+		}
+	}
+
 	//  Get terrain hit for highlight mesh
-	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+	else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
@@ -220,24 +254,49 @@ void MainState::Update()
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				m_selectedObject = (*node)->m_ID;
 
-				if((*node)->m_isContainer)
-				{
-					AddConsoleString("Object is a container, with " + to_string((*node)->m_inventory.size()) + " objects inside.");
+				//if ((*node)->m_isContainer)
+				//{
+//					if (WasLMBDoubleClicked())
+//					{
+//						AddConsoleString("This should have opened a GUMP.");
+//					}
+//					else
+					//{
+					//	AddConsoleString("Object is a container, with " + to_string((*node)->m_inventory.size()) + " objects inside.");
 
-					for (auto& item : (*node)->m_inventory)
-					{
-						auto object = GetObjectFromID(item);
-						AddConsoleString("Item: " + g_objectTable[object->m_shapeData->m_shape].m_name + " ID: " + to_string(item));
-					}
-				}
+					//	for (auto& item : (*node)->m_inventory)
+					//	{
+					//		auto object = GetObjectFromID(item);
+					//		AddConsoleString("Item: " + g_objectTable[object->m_shapeData->m_shape].m_name + " ID: " + to_string(item));
+					//	}
+					//}
+				//}
 				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame) + " Name: " + g_objectTable[g_selectedShape].m_name);
 
 				break;
 			}
 		}
 	}
+}
 
-	//UpdateCamera(&g_camera, CAMERA_THIRD_PERSON);
+void MainState::OpenGump(int id)
+{
+	unique_ptr<Gui> gumpGui = make_unique<Gui>();
+
+	int posx = int(g_NonVitalRNG->Random(150));
+	int posy = int(g_NonVitalRNG->Random(150));
+
+	gumpGui->m_Font = g_SmallFont;
+	gumpGui->SetLayout(posx, posy, 220, 150, 1, Gui::GUIP_USE_XY);
+	gumpGui->AddPanel(1000, 0, 0, 220, 150, Color{ 0, 0, 0, 192 });
+	gumpGui->AddPanel(9999, 0, 0, 220, 150, Color{ 255, 255, 255, 255 }, false);
+	gumpGui->AddTextArea(1001, g_SmallFont.get(), "This is a GUMP", 0, 20, 100, g_SmallFont.get()->baseSize * 1.5f, Color{255, 255, 255, 255}, GuiTextArea::CENTERED);
+	//gumpGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	gumpGui->AddTextButton(1003, 10, 100, "CheckMark!", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+
+	gumpGui->m_Active = true;
+
+	m_GuiManager->AddGui(move(gumpGui));
 }
 
 void MainState::Draw()
@@ -279,13 +338,11 @@ void MainState::Draw()
 			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
 			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 			{ 0, 0 }, 0, WHITE);
-		//DrawTexturePro(g_renderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2)}, {0, 0}, 0, WHITE);
 	}
 
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({0, 0, 0, 0});
-	//m_Gui->Draw();
 
 	//  Draw the minimap and marker
 
@@ -299,7 +356,7 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
-	//DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+	m_GuiManager->Draw();
 
 	//  Draw any tooltips
 	EndTextureMode();
@@ -319,8 +376,6 @@ void MainState::Draw()
 	float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
 
 	DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
-
-
 
 	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale , WHITE);
 	

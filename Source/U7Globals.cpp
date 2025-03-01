@@ -465,4 +465,52 @@ EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
 
+bool WasLMBDoubleClicked()
+{
+	static bool lmblastState = false;
+	static float lmblastTime = 0;
 
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		if (lmblastState == false)
+		{
+			lmblastState = true;
+			lmblastTime = GetTime();
+		}
+		else
+		{
+			if (GetTime() - lmblastTime < .75f)
+			{
+				lmblastState = false;
+				return true;
+			}
+			lmblastState = false;
+		}
+	}
+	return false;
+}
+
+bool WasRMBDoubleClicked()
+{
+	static bool rmblastState = false;
+	static float rmblastTime = 0;
+
+	if (IsMouseButtonReleased(MOUSE_RIGHT_BUTTON))
+	{
+		if (rmblastState == false)
+		{
+			rmblastState = true;
+			rmblastTime = GetTime();
+		}
+		else
+		{
+			if (GetTime() - rmblastTime < .75f)
+			{
+				rmblastState = false;
+				return true;
+			}
+			rmblastState = false;
+		}
+	}
+	return false;
+}

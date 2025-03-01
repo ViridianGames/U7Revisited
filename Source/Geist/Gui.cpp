@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Globals.h"
+#include "Engine.h"
 #include "Gui.h"
 #include "ResourceManager.h"
 #include "Config.h"
@@ -14,17 +15,14 @@ using namespace std;
 Gui::Gui()
 {
 	m_PositionFlag = GUIP_USE_XY;
-	m_OriginalX = 0;
-	m_OriginalY = 0;
-	m_GuiX = 0;
-	m_GuiY = 0;
 	m_Width = 0;
 	m_Height = 0;
 	m_Active = 1;
 	m_Editing = false;
 	m_ActiveElement = -1;
 	m_LastElement = -2;
-	m_Scale = 1;
+	m_InputScale = 1;
+	m_Font = make_shared<Font>(GetFontDefault());
 }
 
 std::shared_ptr<GuiElement> Gui::GetActiveElement()
@@ -44,64 +42,6 @@ void Gui::Update()
 {
 	if (!m_Active)
 		return;
-	//  Relocate the GUI on an update basis so that if the window shrinks or
-	//  grows at any time the GUI is appropriately located.
-	m_Width = int(m_Scale * m_OriginalWidth);
-	m_Height = int(m_Scale * m_OriginalHeight);
-
-	switch (m_PositionFlag)
-	{
-	case GUIP_USE_XY:
-		m_GuiX = int(m_Pos.x);
-		m_GuiY = int(m_Pos.y);
-		break;
-
-	case GUIP_UPPERLEFT:
-		m_GuiX = 0;
-		m_GuiY = 0;
-		break;
-
-	case GUIP_UPPERRIGHT:
-		m_GuiX = GetScreenWidth() - m_Width;
-		m_GuiY = 0;
-		break;
-
-	case GUIP_LOWERLEFT:
-		m_GuiX = 0;
-		m_GuiY = GetScreenHeight() - m_Height;
-		break;
-
-	case GUIP_LOWERRIGHT:
-		m_GuiX = GetScreenWidth() - m_Width;
-		m_GuiY = GetScreenHeight() - m_Height;
-		break;
-
-	case GUIP_FLOATLEFT:
-		m_GuiX = 0;
-		m_GuiY = (GetScreenHeight() - m_Height) / 2;
-		break;
-
-	case GUIP_FLOATRIGHT:
-		m_GuiX = GetScreenWidth() - m_Width;
-		m_GuiY = (GetScreenHeight() - m_Height) / 2;
-		break;
-
-	case GUIP_FLOATTOP:
-		m_GuiX = (GetScreenWidth() - m_Width) / 2;
-		m_GuiY = 0;
-		break;
-
-	case GUIP_FLOATBOTTOM:
-		m_GuiX = (GetScreenWidth() - m_Width) / 2;
-		m_GuiY = GetScreenHeight() - m_Height;
-		break;
-
-	case GUIP_CENTER:
-		m_GuiX = (GetScreenWidth() - m_Width) / 2;
-		m_GuiY = (GetScreenHeight() - m_Height) / 2;
-		break;
-
-	}
 
 	m_LastElement = m_ActiveElement;
 	m_ActiveElement = -1;
@@ -124,18 +64,64 @@ void Gui::Draw()
 
 void Gui::SetLayout(int x, int y, int width, int height, float scale, int flag)
 {
-	m_OriginalX = x;
-	m_GuiX = x;
-	m_Pos.x = x;
-	m_OriginalY = y;
-	m_GuiY = y;
-	m_Pos.y = y;
-	m_OriginalWidth = width;
-	m_Width = width;
-	m_OriginalHeight = height;
-	m_Height = height;
+	m_Pos.x = float(x);
+	m_Pos.y = float(y);
+	m_Width = float(width);
+	m_Height = float(height);
 	m_PositionFlag = flag;
-	m_Scale = scale;
+	m_InputScale = scale;
+
+	switch (m_PositionFlag)
+	{
+	case GUIP_USE_XY:
+		break;
+
+	case GUIP_UPPERLEFT:
+		m_Pos.x = 0;
+		m_Pos.y = 0;
+		break;
+
+	case GUIP_UPPERRIGHT:
+		m_Pos.x = g_Engine.get()->m_RenderWidth - m_Width;
+		m_Pos.y = 0;
+		break;
+
+	case GUIP_LOWERLEFT:
+		m_Pos.x = 0;
+		m_Pos.y = g_Engine.get()->m_RenderHeight - m_Height;
+		break;
+
+	case GUIP_LOWERRIGHT:
+		m_Pos.x = g_Engine.get()->m_RenderWidth - m_Width;
+		m_Pos.y = g_Engine.get()->m_RenderHeight - m_Height;
+		break;
+
+	case GUIP_FLOATLEFT:
+		m_Pos.x = 0;
+		m_Pos.y = (g_Engine.get()->m_RenderHeight - m_Height) / 2;
+		break;
+
+	case GUIP_FLOATRIGHT:
+		m_Pos.x = g_Engine.get()->m_RenderWidth - m_Width;
+		m_Pos.y = (g_Engine.get()->m_RenderHeight - m_Height) / 2;
+		break;
+
+	case GUIP_FLOATTOP:
+		m_Pos.x = (g_Engine.get()->m_RenderWidth - m_Width) / 2;
+		m_Pos.y = 0;
+		break;
+
+	case GUIP_FLOATBOTTOM:
+		m_Pos.x = (g_Engine.get()->m_RenderWidth - m_Width) / 2;
+		m_Pos.y = g_Engine.get()->m_RenderHeight - m_Height;
+		break;
+
+	case GUIP_CENTER:
+		m_Pos.x = (g_Engine.get()->m_RenderWidth - m_Width) / 2;
+		m_Pos.y = (g_Engine.get()->m_RenderHeight - m_Height) / 2;
+		break;
+
+	}
 }
 
 shared_ptr<GuiElement> Gui::GetElement(int ID)
@@ -161,10 +147,15 @@ void Gui::AddTextButton(int ID, int posx, int posy, std::string text, Font* font
 	Color textcolor, Color backgroundcolor,
 	Color bordercolor, int group, int active)
 {
-	Vector2 textDims = MeasureTextEx(*font, text.c_str(), m_fontSize / 2, 1);
+	if (font == nullptr)
+	{
+		font = m_Font.get();
+	}
+
+	Vector2 textDims = MeasureTextEx(*font, text.c_str(), float(font->baseSize) / 2.0f, 1);
 
 	shared_ptr<GuiTextButton> textbutton = make_shared<GuiTextButton>(this);
-	textbutton->Init(ID, posx, posy, textDims.x, textDims.y, text, font, textcolor, backgroundcolor, bordercolor,
+	textbutton->Init(ID, posx, posy, int(textDims.x), int(textDims.y), text, font, textcolor, backgroundcolor, bordercolor,
 		group, active);
 	m_GuiList[ID] = textbutton;
 }
@@ -304,12 +295,12 @@ void Gui::AddStretchButtonCentered(int ID, int posy, string label,
 	std::shared_ptr<Sprite> inactiveLeft, std::shared_ptr<Sprite> inactiveRight, std::shared_ptr<Sprite> inactiveCenter, int indent,
 	Color color, int group, int active, bool shadowed)
 {
-	float textWidth = MeasureText(label.c_str(), m_Font->baseSize / m_Scale);
+	float textWidth = float(MeasureText(label.c_str(), m_Font->baseSize));
 	float width = activeLeft->m_sourceRect.width + textWidth + activeRight->m_sourceRect.width;
 
-	int x = (m_Width - width) / 2;
+	int x = int((m_Width - width) / 2.0f);
 
-	AddStretchButton(ID, x, posy, width, label, activeLeft, activeRight, activeCenter, inactiveLeft, inactiveRight, inactiveCenter, indent, color, group, active, shadowed);
+	AddStretchButton(ID, x, posy, int(width), label, activeLeft, activeRight, activeCenter, inactiveLeft, inactiveRight, inactiveCenter, indent, color, group, active, shadowed);
 }
 
 std::string Gui::GetString(int ID)
@@ -336,11 +327,8 @@ void Gui::LoadTXT(std::string fileName)
 
 
 		stringstream parser;
-		instream >> m_GuiX;
-		instream >> m_GuiY;
-
-		m_Pos.x = float(m_GuiX);
-		m_Pos.y = float(m_GuiY);
+		instream >> m_Pos.x;
+		instream >> m_Pos.y;
 
 		getline(instream, line);
 		getline(instream, line);
@@ -402,10 +390,10 @@ void Gui::LoadTXT(std::string fileName)
 
 					shared_ptr<Sprite> upbutton = make_shared<Sprite>();
 					upbutton->m_texture = g_ResourceManager->GetTexture(Texture);
-					upbutton->m_sourceRect.x = tilex;
-					upbutton->m_sourceRect.y = tiley;
-					upbutton->m_sourceRect.width = width;
-					upbutton->m_sourceRect.height = height;
+					upbutton->m_sourceRect.x = float(tilex);
+					upbutton->m_sourceRect.y = float(tiley);
+					upbutton->m_sourceRect.width = float(width);
+					upbutton->m_sourceRect.height = float(height);
 
 					AddIconButton(buttonid, posx, posy, upbutton);
 				}

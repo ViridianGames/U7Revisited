@@ -154,15 +154,6 @@ public:
 
 	int m_PositionFlag;
 
-	//  These do not change after initialization; they are for reference.
-	int m_OriginalX;
-	int m_OriginalY;
-	int m_OriginalWidth;
-	int m_OriginalHeight;
-
-	//  These can be affected by scaling and repositioning; they are for drawing.
-	float m_GuiX;
-	float m_GuiY;
 	float m_Width;
 	float m_Height;
 
@@ -176,9 +167,8 @@ public:
 	bool m_AcceptingInput = true;
 
 	std::shared_ptr<Font> m_Font;
-	float m_fontSize = 8.0f;
 
-	float m_Scale;
+	float m_InputScale; //  If the gui is scaled, this is the scale factor for the mouse x/y coordinates.
 
 	enum Positions
 	{

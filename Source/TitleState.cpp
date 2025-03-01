@@ -123,6 +123,26 @@ void TitleState::Draw()
 
    EndMode3D();
 
+   //  Draw GUI overlay
+   BeginTextureMode(g_guiRenderTarget);
+   ClearBackground({ 0, 0, 0, 0 });
+
+   //  Draw the minimap and marker
+
+   DrawConsole();
+
+   if (m_mouseMoved)
+   {
+      m_TitleGui->Draw();
+   }
+
+   //  Draw any tooltips
+   EndTextureMode();
+   DrawTexturePro(g_guiRenderTarget.texture,
+      { 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
+      { 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+      { 0, 0 }, 0, WHITE);
+
    //  Draw version number in lower-right
    DrawTextEx(*g_Font, g_version.c_str(), Vector2{ GetRenderWidth() * .92f, GetRenderHeight() * .94f }, g_fontSize, 1, WHITE);
 
@@ -132,8 +152,7 @@ void TitleState::Draw()
 
    if (m_mouseMoved)
    {
-      m_TitleGui->Draw();
-      DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+      DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
    }
 
    EndDrawing();
@@ -146,10 +165,9 @@ void TitleState::Draw()
 void TitleState::CreateTitleGUI()
 {
    m_TitleGui = new Gui();
-   m_TitleGui->m_Font = g_Font;
+   m_TitleGui->m_Font = g_SmallFont;
 
-
-   m_TitleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_CENTER);
+   m_TitleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
    m_TitleGui->AddOctagonBox(GUI_TITLE_PANEL2, 220, 180, 200, 160, g_Borders);
    //m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
    //   (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);

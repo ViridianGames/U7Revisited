@@ -63,9 +63,6 @@
     <ClCompile Include="Source\Geist\Gui.cpp">
       <Filter>Source\Geist</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Geist\GUIElements.cpp">
-      <Filter>Source\Geist</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Geist\IO.cpp">
       <Filter>Source\Geist</Filter>
     </ClCompile>
@@ -88,6 +85,12 @@
       <Filter>Source\Geist</Filter>
     </ClCompile>
     <ClCompile Include="Source\Geist\TooltipSystem.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\GuiManager.cpp">
+      <Filter>Source\Geist</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\GuiElements.cpp">
       <Filter>Source\Geist</Filter>
     </ClCompile>
   </ItemGroup>
@@ -140,9 +143,6 @@
     <ClInclude Include="Source\Geist\Gui.h">
       <Filter>Source\Geist</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Geist\GUIElements.h">
-      <Filter>Source\Geist</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Geist\IO.h">
       <Filter>Source\Geist</Filter>
     </ClInclude>
@@ -171,6 +171,12 @@
       <Filter>Source\Geist</Filter>
     </ClInclude>
     <ClInclude Include="Source\Geist\TooltipSystem.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GuiElements.h">
+      <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\GuiManager.h">
       <Filter>Source\Geist</Filter>
     </ClInclude>
   </ItemGroup>
