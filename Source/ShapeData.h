@@ -16,7 +16,7 @@ struct Texture;
 
 struct coords;
 
-constexpr char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
+constexpr const char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
 
 enum class CuboidTexture
 {

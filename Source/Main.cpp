@@ -107,8 +107,8 @@ int main(int argv, char** argc)
       g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
       float baseFontSize = 9;
-      char* fontPath = "Data/Fonts/softsquare.ttf";
-      //char* fontPath = "Data/Fonts/babyblocks.ttf";
+      const char* fontPath = "Data/Fonts/softsquare.ttf";
+      // const char* fontPath = "Data/Fonts/babyblocks.ttf";
 
       g_fontSize = baseFontSize * int(g_DrawScale);
       Font font = LoadFontEx(fontPath, g_fontSize, NULL, 0);
