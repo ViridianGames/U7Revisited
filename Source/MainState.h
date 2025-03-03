@@ -2,10 +2,14 @@
 #define _MainState_H_
 
 #include "Geist/State.h"
+#include "U7Object.h"
+#include "raylib.h"
 #include <list>
 #include <deque>
 #include <array>
 #include <math.h>
+#include <memory>
+#include <vector>
 
 class ParticleSystem;
 class Gui;

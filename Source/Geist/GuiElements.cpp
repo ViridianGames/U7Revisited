@@ -999,7 +999,7 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 	m_Width = width * m_Font->baseSize;
 	m_Shadowed = shadowed;
 	if (m_Width == 0)
-		m_Height = int(m_Gui);
+		m_Height = int(m_Gui->m_Height);
 	else
 		m_Height = height;
 }

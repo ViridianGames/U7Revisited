@@ -3,6 +3,7 @@
 
 #include "Geist/State.h"
 #include "Geist/Gui.h"
+#include "U7Object.h"
 #include <list>
 #include <deque>
 #include <math.h>

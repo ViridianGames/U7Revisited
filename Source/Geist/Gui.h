@@ -48,7 +48,7 @@
 
 #include "Object.h"
 #include "Primitives.h"
-#include "GUIElements.h"
+#include "GuiElements.h"
 
 class Gui : public Tween
 {
