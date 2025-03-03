@@ -5,6 +5,7 @@
 #include "Geist/BaseUnits.h"
 #include <string>
 #include <list>
+#include <vector>
 
 enum class ObjectTypes;
 enum class ShapeDrawType;

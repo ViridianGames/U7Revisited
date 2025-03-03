@@ -10,6 +10,9 @@
 #ifndef _SHAPEDATA_H_
 #define _SHAPEDATA_H_
 
+#include "Geist/Primitives.h"
+#include "U7Object.h"
+#include <array>
 #include <vector>
 
 struct Texture;

@@ -4,7 +4,9 @@
 //#include "Unit.h"
 #include "Geist/Globals.h"
 #include "Geist/Primitives.h"
+#include <array>
 #include <string>
+#include <vector>
 
 class Terrain : public Object
 {
