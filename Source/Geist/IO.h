@@ -5,7 +5,7 @@
 // Date:     5/08/18
 // Purpose:  This file contains functions, classes and structures for
 //           reading from and writing to files.  It covers:
-//           
+//
 //           Configuration files (Config class): A configuration is a
 //           series of key/value pairs (handled as an unordered_map) where
 //           the key is a string that denotes the name of the value and
@@ -23,7 +23,7 @@
 //           which is a bit dirty but a small price to pay for the Log()
 //           file always being available - even during Engine construction,
 //           when nothing has been made yet!
-//           
+//
 //           Serialization functions (in the IO namespace): these global
 //           functions allow serialization and deserialization of the four
 //           basic types: ints, floats, bools and strings.
@@ -48,24 +48,23 @@
 #ifndef _IO_H_
 #define _IO_H_
 
-#include <vector>
-#include <unordered_map>
 #include <string>
+#include <vector>
 #include <iostream>
+#include <unordered_map>
 
-namespace IO
-{
-	//  Serialization
-	void Serialize(std::istream& stream, int& data);
-	void Serialize(std::istream& stream, unsigned int& data);
-	void Serialize(std::istream& stream, float& data);
-	void Serialize(std::istream& stream, bool& data);
-	void Serialize(std::istream& stream, std::string& data);
+namespace IO {
+//  Serialization
+void Serialize(std::istream& stream, int& data);
+void Serialize(std::istream& stream, unsigned int& data);
+void Serialize(std::istream& stream, float& data);
+void Serialize(std::istream& stream, bool& data);
+void Serialize(std::istream& stream, std::string& data);
 
-	void Serialize(std::ostream& stream, const int data);
-	void Serialize(std::ostream& stream, const unsigned int data);
-	void Serialize(std::ostream& stream, const float data);
-	void Serialize(std::ostream& stream, const bool data);
-	void Serialize(std::ostream& stream, const std::string data);
-};
+void Serialize(std::ostream& stream, const int data);
+void Serialize(std::ostream& stream, const unsigned int data);
+void Serialize(std::ostream& stream, const float data);
+void Serialize(std::ostream& stream, const bool data);
+void Serialize(std::ostream& stream, const std::string data);
+};  // namespace IO
 #endif

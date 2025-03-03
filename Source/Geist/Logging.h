@@ -13,15 +13,14 @@
 #ifndef _LOGGING_H_
 #define _LOGGING_H_
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
 #include <string>
+#include <stdarg.h>
+#include <stdio.h>
+#include <time.h>
 
 #include "raylib.h"
 
 void LoggingCallback(int msgType, const char* text, va_list args);
 void Log(std::string text, int msgType = LOG_INFO);
-
 
 #endif

@@ -1,44 +1,41 @@
 #ifndef _Terrain_H_
 #define _Terrain_H_
 
-//#include "Unit.h"
+// #include "Unit.h"
+#include <string>
 #include "Geist/Globals.h"
 #include "Geist/Primitives.h"
-#include <string>
 
-class Terrain : public Object
-{
+class Terrain : public Object {
 
-public:
-   
-   int m_width;
-   int m_height;
+ public:
+    int m_width;
+    int m_height;
 
-   std::vector<std::pair <float, float> > m_visibleChunks;
+    std::vector<std::pair<float, float>> m_visibleChunks;
 
-   std::array<std::unique_ptr<Model>, 3072> m_chunkModels;
+    std::array<std::unique_ptr<Model>, 3072> m_chunkModels;
 
-   Image m_terrainTexture;
-   
-	Terrain();
-	virtual ~Terrain();
+    Image m_terrainTexture;
 
-   virtual void Init();
-   virtual void Init(const std::string& data) {};
+    Terrain();
+    virtual ~Terrain();
 
-	virtual void Shutdown();
-	virtual void Update();
-	virtual void Draw();
+    virtual void Init();
+    virtual void Init(const std::string& data) {};
 
-   bool IsChunkVisible(int x, int y);
- 
-   void FindVisibleChunks();
-   int GetNumberOfVisibleChunks() { return m_visibleChunks.size(); }
+    virtual void Shutdown();
+    virtual void Update();
+    virtual void Draw();
 
-   void UpdateTerrainTexture(Image img);
+    bool IsChunkVisible(int x, int y);
 
-   Image& GetTerrainTexture() { return m_terrainTexture; }
+    void FindVisibleChunks();
+    int GetNumberOfVisibleChunks() { return m_visibleChunks.size(); }
 
+    void UpdateTerrainTexture(Image img);
+
+    Image& GetTerrainTexture() { return m_terrainTexture; }
 };
 
 #endif

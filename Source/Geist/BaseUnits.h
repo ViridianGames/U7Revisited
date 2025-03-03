@@ -19,59 +19,55 @@
 #define _BASEUNITS_H_
 
 #include <string>
-#include "raylib.h"
 #include "Object.h"
+#include "raylib.h"
 
 class Config;
 
-class Unit2D : public Object
-{
-public:
-	Unit2D() {};
+class Unit2D : public Object {
+ public:
+    Unit2D() {};
 
-	virtual void Init() { Init(std::string("")); }
-	virtual void Init(char* data) { Init(std::string(data)); }
-	virtual void Init(const std::string& configfile);
-	virtual void Shutdown();
-	virtual void Update();
-	virtual void Draw();
+    virtual void Init() { Init(std::string("")); }
+    virtual void Init(char* data) { Init(std::string(data)); }
+    virtual void Init(const std::string& configfile);
+    virtual void Shutdown();
+    virtual void Update();
+    virtual void Draw();
 
-	bool GetIsDead() { return m_IsDead; }
-	void SetIsDead(bool dead) { m_IsDead = dead; }
-	void SetPos(Vector2 newPos) { m_Pos = newPos; }
-	Vector2 GetPos() { return m_Pos; }
+    bool GetIsDead() { return m_IsDead; }
+    void SetIsDead(bool dead) { m_IsDead = dead; }
+    void SetPos(Vector2 newPos) { m_Pos = newPos; }
+    Vector2 GetPos() { return m_Pos; }
 
-protected:
+ protected:
+    Vector2 m_Pos;
+    bool m_IsDead = false;
 
-	Vector2 m_Pos;
-	bool m_IsDead = false;
-
-	Config* m_UnitConfig;
+    Config* m_UnitConfig;
 };
 
-class Unit3D : public Object
-{
-public:
-	Unit3D() {};
+class Unit3D : public Object {
+ public:
+    Unit3D() {};
 
-	virtual void Init() { Init(std::string("")); }
-	virtual void Init(char* data) { Init(std::string(data)); }
-	virtual void Init(const std::string& configfile);
-	virtual void Shutdown();
-	virtual void Update();
-	virtual void Draw();
+    virtual void Init() { Init(std::string("")); }
+    virtual void Init(char* data) { Init(std::string(data)); }
+    virtual void Init(const std::string& configfile);
+    virtual void Shutdown();
+    virtual void Update();
+    virtual void Draw();
 
-	bool GetIsDead() { return m_IsDead; }
-	void SetIsDead(bool dead) { m_IsDead = dead; }
-	Vector3 GetPos() { return m_Pos; }
-	void SetPos(Vector3 newpos) { m_Pos = newpos; }
+    bool GetIsDead() { return m_IsDead; }
+    void SetIsDead(bool dead) { m_IsDead = dead; }
+    Vector3 GetPos() { return m_Pos; }
+    void SetPos(Vector3 newpos) { m_Pos = newpos; }
 
-protected:
+ protected:
+    Vector3 m_Pos;
+    bool m_IsDead = false;
 
-	Vector3 m_Pos;
-	bool m_IsDead = false;
-
-	Config* m_UnitConfig;
+    Config* m_UnitConfig;
 };
 
 #endif

@@ -1,14 +1,14 @@
-#include "Geist/Globals.h"
-#include "Geist/Engine.h"
-#include "raylib.h"
 #include "OptionsState.h"
+#include "Geist/Engine.h"
+#include "Geist/Globals.h"
+#include "raylib.h"
 
-#include <list>
-#include <string>
-#include <sstream>
-#include <math.h>
-#include <fstream>
 #include <algorithm>
+#include <string>
+#include <fstream>
+#include <list>
+#include <math.h>
+#include <sstream>
 
 using namespace std;
 
@@ -16,43 +16,20 @@ using namespace std;
 //  OptionsState
 ////////////////////////////////////////////////////////////////////////////////
 
-OptionsState::~OptionsState()
-{
-   Shutdown();
+OptionsState::~OptionsState() { Shutdown(); }
+
+void OptionsState::Init(const string& configfile) {}
+
+void OptionsState::OnEnter() {}
+
+void OptionsState::OnExit() {}
+
+void OptionsState::Shutdown() {}
+
+void OptionsState::Update() {
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        g_Engine->m_Done = true;
+    }
 }
 
-void OptionsState::Init(const string& configfile)
-{
-
-}
-
-void OptionsState::OnEnter()
-{
-
-}
-
-void OptionsState::OnExit()
-{
-
-}
-
-void OptionsState::Shutdown()
-{
-
-}
-
-void OptionsState::Update()
-{
-   if( IsKeyPressed(KEY_ESCAPE) )
-   {
-      g_Engine->m_Done = true;
-   }
-
-}
-
-
-void OptionsState::Draw()
-{
-
-}
-
+void OptionsState::Draw() {}
