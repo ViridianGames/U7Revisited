@@ -1,0 +1,28 @@
+TabWidth: 4
+IndentWidth: 4
+ColumnLimit: 80
+
+PointerAlignment: Left
+# Don't indent public:, private:
+AccessModifierOffset: -3
+
+InsertNewlineAtEOF: true
+SpacesBeforeTrailingComments: 2
+
+# Make sure FooBar.cpp will always have FooBar.h included first. This makes
+# sure the local includes are self-contained and don't depend on definitions
+# in other include files.
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+
+# Sort includes after the main one: C system, then C++ system, then others.
+# (Cpplint recommendation)
+IncludeCategories:
+  - Regex: '^<c.*>$'
+    Priority: 2
+    SortPriority: 1
+  - Regex: '^<(algorithm|vector|string|memory|...)>$'
+    Priority: 3
+    SortPriority: 2
+  - Regex: '^<.*>$'
+    Priority: 4
+    SortPriority: 3
