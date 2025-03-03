@@ -1,0 +1,32 @@
+name: Linux Build Verification
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Type of build to execute'
+        required: true
+        default: 'Release'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+        sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev
+        sudo apt-get install -y build-essential cmake meson just
+
+    - name: Build project
+      run: |
+        just build
