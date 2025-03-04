@@ -629,11 +629,17 @@ void LoadingState::LoadIREG()
 						//  Egg or container?  01 Egg, 00 container.
 						unsigned char eggOrContainer;
 						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
-						if (eggOrContainer == 0)
+						if (g_objectTable[shape].m_name == "Egg")
 						{
+							GetObjectFromID(id)->m_isEgg = true;
+							GetObjectFromID(id)->m_isContainer = false;
+						}
+						else
+						{
+							GetObjectFromID(id)->m_isContainer = true;
 							containerOpen = true;
 							containerId = id;
-							//AddObject(shape, frame, containerId, actualx, lift1, actualy);
+
 						}
 					}
 					else if(length == 1) //  Close container
