@@ -39,6 +39,7 @@
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
+    <ClCompile Include="Source\U7Gump.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\WorldEditorState.cpp" />
   </ItemGroup>
@@ -69,6 +70,7 @@
     <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
+    <ClInclude Include="Source\U7Gump.h" />
     <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\WorldEditorState.h" />
   </ItemGroup>

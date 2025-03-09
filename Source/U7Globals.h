@@ -217,6 +217,10 @@ extern std::shared_ptr<Sprite> g_ActiveButtonR;
 extern std::shared_ptr<Sprite> g_LeftArrow;
 extern std::shared_ptr<Sprite> g_RightArrow;
 
+extern std::shared_ptr<Sprite> g_gumpBackground;
+extern std::shared_ptr<Sprite> g_gumpCheckmarkUp;
+extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
+
 extern Color g_Red;
 extern Color g_Blue;
 extern Color g_Pink;

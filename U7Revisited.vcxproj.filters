@@ -93,6 +93,9 @@
     <ClCompile Include="Source\Geist\GuiElements.cpp">
       <Filter>Source\Geist</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7Gump.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="Source\Geist\GuiManager.h">
       <Filter>Source\Geist</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Gump.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

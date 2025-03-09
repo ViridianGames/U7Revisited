@@ -23,6 +23,12 @@ Gui::Gui()
 	m_LastElement = -2;
 	m_InputScale = 1;
 	m_Font = make_shared<Font>(GetFontDefault());
+	m_Draggable = false;  // Dragging is off by default
+	m_IsDragging = false;
+	m_DragOffset = { 0, 0 };
+	m_DragAreaHeight = 20;  // Default title bar height
+	m_isDone = false;
+	m_doneButtonId = -3;
 }
 
 std::shared_ptr<GuiElement> Gui::GetActiveElement()
@@ -40,7 +46,7 @@ void Gui::Init(const std::string& configfile)
 
 void Gui::Update()
 {
-	if (!m_Active)
+	if (!m_Active || m_isDone)
 		return;
 
 	m_LastElement = m_ActiveElement;
@@ -49,11 +55,46 @@ void Gui::Update()
 	{
 		node.second->Update();
 	}
+
+	if (m_ActiveElement == m_doneButtonId)
+	{
+		m_isDone = true;
+	}
+
+	// Handle dragging
+	if (m_Draggable)
+	{
+		Vector2 mousePos = GetMousePosition();
+		mousePos.x /= m_InputScale;  // Adjust for GUI scale
+		mousePos.y /= m_InputScale;
+
+		if (IsMouseInDragArea())
+		{
+			if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+			{
+				m_IsDragging = true;
+				m_DragOffset.x = mousePos.x - m_Pos.x;
+				m_DragOffset.y = mousePos.y - m_Pos.y;
+			}
+		}
+
+		if (m_IsDragging && IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+		{
+			m_IsDragging = false;
+		}
+
+		if (m_IsDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+		{
+			m_Pos.x = mousePos.x - m_DragOffset.x;
+			m_Pos.y = mousePos.y - m_DragOffset.y;
+			m_PositionFlag = GUIP_USE_XY;  // Override positioning flag while dragging
+		}
+	}
 }
 
 void Gui::Draw()
 {
-	if (!m_Active)
+	if (!m_Active || m_isDone)
 		return;
 
 	for (auto& node : m_GuiList)
@@ -544,5 +585,14 @@ void Gui::ShowGroup(int group)
 		if (entry.second->m_Group == group)
 			entry.second->m_Visible = true;
 	}
+}
+
+bool Gui::IsMouseInDragArea() const
+{
+	Vector2 mousePos = GetMousePosition();
+	float scaledX = mousePos.x / m_InputScale;
+	float scaledY = mousePos.y / m_InputScale;
+	return (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+		scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_DragAreaHeight);
 }
 

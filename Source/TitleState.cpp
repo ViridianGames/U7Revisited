@@ -133,7 +133,7 @@ void TitleState::Draw()
 
    if (m_mouseMoved)
    {
-      m_TitleGui->Draw();
+      m_guiManager.Draw();
    }
 
    //  Draw any tooltips
@@ -164,7 +164,7 @@ void TitleState::Draw()
 
 void TitleState::CreateTitleGUI()
 {
-   m_TitleGui = new Gui();
+   m_TitleGui = make_shared<Gui>();
    m_TitleGui->m_Font = g_SmallFont;
 
    m_TitleGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
@@ -193,6 +193,10 @@ void TitleState::CreateTitleGUI()
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
    m_TitleGui->m_Active = true;
+
+   m_TitleGui->m_Draggable = true;
+
+   m_guiManager.AddGui(m_TitleGui);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +205,8 @@ void TitleState::CreateTitleGUI()
 
 void TitleState::UpdateTitle()
 {
-   m_TitleGui->Update();
+   m_guiManager.Update();
+   //m_TitleGui->Update();
    
    if(!m_TitleGui->m_Active)
       return;

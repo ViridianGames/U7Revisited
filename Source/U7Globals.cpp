@@ -457,6 +457,10 @@ shared_ptr<Sprite> g_ActiveButtonR;
 shared_ptr<Sprite> g_LeftArrow;
 shared_ptr<Sprite> g_RightArrow;
 
+shared_ptr<Sprite> g_gumpBackground;
+shared_ptr<Sprite> g_gumpCheckmarkUp;
+shared_ptr<Sprite> g_gumpCheckmarkDown;
+
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;
@@ -477,16 +481,17 @@ bool WasLMBDoubleClicked()
 			lmblastState = true;
 			lmblastTime = GetTime();
 		}
-		else
-		{
-			if (GetTime() - lmblastTime < .75f)
-			{
-				lmblastState = false;
-				return true;
-			}
-			lmblastState = false;
-		}
 	}
+	else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))  // if (IsMouseButtonPressed
+	{
+		if (GetTime() - lmblastTime < .25f)
+		{
+			lmblastState = false;
+			return true;
+		}
+		lmblastState = false;
+	}
+
 	return false;
 }
 

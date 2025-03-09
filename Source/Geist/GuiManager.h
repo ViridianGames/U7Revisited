@@ -11,7 +11,6 @@
 #ifndef _GUIMANAGER_H_
 #define _GUIMANAGER_H_
 
-#include <list>
 #include <memory>
 
 #include "Object.h"
@@ -30,12 +29,11 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
-	void AddGui(std::unique_ptr<Gui> gui) { m_GuiList.push_back(std::move(gui)); }
-	//void RemoveGui(int ID) { m_GUIs.erase(std::remove_if(m_GUIs.begin(), m_GUIs.end(), [ID](const std::unique_ptr<Gui>& gui) { return gui-> ->GetID() == ID; }), m_GUIs.end()); }
+	void AddGui(std::shared_ptr<Gui>& gui);
 
-	Config                          m_GUIManagerConfig;
-	std::string                     m_ConfigFileName;
-	std::list<std::unique_ptr<Gui>> m_GuiList;
+	Config                               m_GUIManagerConfig;
+	std::string                          m_ConfigFileName;
+	std::vector<std::shared_ptr<Gui>>    m_GuiList;
 };
 
 #endif

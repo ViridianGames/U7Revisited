@@ -9,6 +9,7 @@
 #include "U7Globals.h"
 #include "MainState.h"
 #include "rlgl.h"
+#include "U7Gump.h"
 
 #include <list>
 #include <string>
@@ -95,7 +96,7 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
 	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
-	AddConsoleString(std::string("TOO HEAVY"));
+	//AddConsoleString(std::string("TOO HEAVY"));
 }
 
 void MainState::OnExit()
@@ -206,7 +207,7 @@ void MainState::Update()
 
 	if (WasLMBDoubleClicked())
 	{
-		AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+		//AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
 
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
@@ -271,7 +272,7 @@ void MainState::Update()
 					//	}
 					//}
 				//}
-				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame) + " Name: " + g_objectTable[g_selectedShape].m_name);
+				//AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame) + " Name: " + g_objectTable[g_selectedShape].m_name);
 
 				break;
 			}
@@ -281,22 +282,25 @@ void MainState::Update()
 
 void MainState::OpenGump(int id)
 {
-	unique_ptr<Gui> gumpGui = make_unique<Gui>();
+	shared_ptr<Gump> gumpGui = make_shared<Gump>();
 
 	int posx = int(g_NonVitalRNG->Random(150));
 	int posy = int(g_NonVitalRNG->Random(150));
 
 	gumpGui->m_Font = g_SmallFont;
-	gumpGui->SetLayout(posx, posy, 220, 150, 1, Gui::GUIP_USE_XY);
-	gumpGui->AddPanel(1000, 0, 0, 220, 150, Color{ 0, 0, 0, 192 });
-	gumpGui->AddPanel(9999, 0, 0, 220, 150, Color{ 255, 255, 255, 255 }, false);
-	gumpGui->AddTextArea(1001, g_SmallFont.get(), "This is a GUMP", 0, 20, 100, g_SmallFont.get()->baseSize * 1.5f, Color{255, 255, 255, 255}, GuiTextArea::CENTERED);
+	gumpGui->SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
+	//gumpGui->AddPanel(1000, 0, 0, 220, 150, Color{ 0, 0, 0, 192 });
+	//gumpGui->AddPanel(9999, 0, 0, 220, 150, Color{ 255, 255, 255, 255 }, false);
+	//gumpGui->AddTextArea(1001, g_SmallFont.get(), "This is a GUMP", 0, 20, 0, g_SmallFont.get()->baseSize * 1.5f, Color{255, 255, 255, 255}, GuiTextArea::LEFT);
 	//gumpGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-	gumpGui->AddTextButton(1003, 10, 100, "CheckMark!", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	//gumpGui->AddTextButton(1003, 10, 100, "CheckMark!", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	gumpGui->AddSprite(1004, 0, 0, g_gumpBackground, 1.0f, 1.0f, Color{ 255, 255, 255, 255 });
+	gumpGui->AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, false);
+	gumpGui->SetDoneButtonId(1005);
+	gumpGui->m_Draggable = true;
+	gumpGui->LinkContainer(id);
 
-	gumpGui->m_Active = true;
-
-	m_GuiManager->AddGui(move(gumpGui));
+	m_GuiManager->AddGui(std::dynamic_pointer_cast<Gui>(gumpGui));
 }
 
 void MainState::Draw()
