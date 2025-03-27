@@ -1,4 +1,4 @@
-# Blender 4.4.0 MTL File: 'None'
+# Blender 3.6.2 MTL File: 'table_0x279_000.blend'
 # www.blender.org
 
 newmtl Material.legs
@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd table0x279_00_texture_atlas.png
+map_Kd Models/3dmodels/table0x279_00_texture_atlas.png
 
 newmtl Top
 Ns 250.000000
@@ -19,4 +19,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd table0x279_00_texture_atlas.png
+map_Kd Models/3dmodels/table0x279_00_texture_atlas.png
+newmtl none
