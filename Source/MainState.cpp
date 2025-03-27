@@ -300,7 +300,9 @@ void MainState::OpenGump(int id)
 	gumpGui->m_Draggable = true;
 	gumpGui->LinkContainer(id);
 
-	m_GuiManager->AddGui(std::dynamic_pointer_cast<Gui>(gumpGui));
+        std::shared_ptr<Gui> guiPtr = std::dynamic_pointer_cast<Gui>(gumpGui);
+        
+	m_GuiManager->AddGui(guiPtr);
 }
 
 void MainState::Draw()

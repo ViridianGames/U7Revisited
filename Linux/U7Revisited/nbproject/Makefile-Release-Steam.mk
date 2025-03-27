@@ -38,9 +38,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o \
 	${OBJECTDIR}/_ext/d8db8d98/Config.o \
 	${OBJECTDIR}/_ext/d8db8d98/Engine.o \
-	${OBJECTDIR}/_ext/d8db8d98/GUIElements.o \
 	${OBJECTDIR}/_ext/d8db8d98/Globals.o \
 	${OBJECTDIR}/_ext/d8db8d98/Gui.o \
+	${OBJECTDIR}/_ext/d8db8d98/GuiElements.o \
+	${OBJECTDIR}/_ext/d8db8d98/GuiManager.o \
 	${OBJECTDIR}/_ext/d8db8d98/IO.o \
 	${OBJECTDIR}/_ext/d8db8d98/Logging.o \
 	${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o \
@@ -59,6 +60,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/957bd1db/Terrain.o \
 	${OBJECTDIR}/_ext/957bd1db/TitleState.o \
 	${OBJECTDIR}/_ext/957bd1db/U7Globals.o \
+	${OBJECTDIR}/_ext/957bd1db/U7Gump.o \
 	${OBJECTDIR}/_ext/957bd1db/U7Object.o \
 	${OBJECTDIR}/_ext/957bd1db/WorldEditorState.o
 
@@ -106,11 +108,6 @@ ${OBJECTDIR}/_ext/d8db8d98/Engine.o: ../../Source/Geist/Engine.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Engine.o ../../Source/Geist/Engine.cpp
 
-${OBJECTDIR}/_ext/d8db8d98/GUIElements.o: ../../Source/Geist/GUIElements.cpp
-	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
-	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/GUIElements.o ../../Source/Geist/GUIElements.cpp
-
 ${OBJECTDIR}/_ext/d8db8d98/Globals.o: ../../Source/Geist/Globals.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
@@ -120,6 +117,16 @@ ${OBJECTDIR}/_ext/d8db8d98/Gui.o: ../../Source/Geist/Gui.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/Gui.o ../../Source/Geist/Gui.cpp
+
+${OBJECTDIR}/_ext/d8db8d98/GuiElements.o: ../../Source/Geist/GuiElements.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/GuiElements.o ../../Source/Geist/GuiElements.cpp
+
+${OBJECTDIR}/_ext/d8db8d98/GuiManager.o: ../../Source/Geist/GuiManager.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/GuiManager.o ../../Source/Geist/GuiManager.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/IO.o: ../../Source/Geist/IO.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
@@ -210,6 +217,11 @@ ${OBJECTDIR}/_ext/957bd1db/U7Globals.o: ../../Source/U7Globals.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Globals.o ../../Source/U7Globals.cpp
+
+${OBJECTDIR}/_ext/957bd1db/U7Gump.o: ../../Source/U7Gump.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/U7Gump.o ../../Source/U7Gump.cpp
 
 ${OBJECTDIR}/_ext/957bd1db/U7Object.o: ../../Source/U7Object.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
