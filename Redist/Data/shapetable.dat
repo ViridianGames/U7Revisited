@@ -15454,7 +15454,7 @@
 632 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 632 29 
 632 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 632 30 
 632 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 632 31 
-633 0 0 0 23 23 1 22 19 9 22 0 9 21 3 2.4 2.4 2.5 1.2 0.1 -2.2 0 0 2 2 3 3 1 Models/3dmodels/table_0x279_000.obj 1 0 633 0 
+633 0 0 0 23 23 1 22 19 9 22 0 9 21 3 2.4 2.4 2.5 -0.4 0.1 -0.5 0 0 2 2 3 3 1 Models/3dmodels/table_0x279_000.obj 1 0 633 0 
 633 1 0 0 24 24 0 24 24 6 24 0 6 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 633 1 
 633 2 0 0 24 24 0 24 24 11 24 0 11 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 633 2 
 633 3 0 0 24 24 0 24 24 7 24 0 7 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 633 3 
@@ -17184,7 +17184,7 @@
 686 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 686 31 
 687 0 0 0 16 16 0 16 16 21 16 0 21 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 687 0 
 687 1 0 0 16 16 0 16 16 22 16 0 22 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 687 1 
-687 2 0 0 16 16 0 16 16 18 16 0 18 16 3 0.8 1 0.8 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/column.obj 1 0 687 2 
+687 2 0 0 16 16 0 16 16 18 16 0 18 16 3 0.8 1 0.8 0 0 1.49012e-08 0 1 2 2 3 3 1 Models/3dmodels/column.obj 1 0 687 2 
 687 3 0 0 16 16 0 16 16 14 16 0 14 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687_03.obj 1 0 687 3 
 687 4 0 0 10 9 2 10 8 19 10 3 19 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687_04.obj 1 0 687 4 
 687 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 687 5 
@@ -20703,7 +20703,7 @@
 796 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 796 30 
 796 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 796 31 
 797 0 0 0 16 12 0 12 16 0 16 0 3 12 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/scroll_797_00.obj 1 0 797 0 
-797 1 0 0 16 16 0 16 16 5 16 0 3 16 3 1 1 1 0 0 0.3 0 1 2 2 3 3 1 Models/3dmodels/scroll_797_01.obj 1 0 797 1 
+797 1 0 0 16 16 0 16 16 5 16 0 3 16 3 1 1 1 0 0.1 0.3 0 1 2 2 3 3 1 Models/3dmodels/scroll_797_01.obj 1 0 797 1 
 797 2 0 0 9 9 0 9 9 0 9 0 0 9 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/scroll_797_02.obj 1 0 797 2 
 797 3 0 0 10 14 0 14 10 0 10 0 0 14 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/scroll_797_03.obj 1 0 797 3 
 797 4 0 0 1 1 0 1 1 0 1 0 0 1 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 797 4 
@@ -23907,14 +23907,14 @@
 897 2 0 0 8 8 0 8 8 12 8 0 11 8 3 2.5 2.5 2 -2.1 0.1 1 90 1 2 2 3 3 1 Models/3dmodels/wooden_bench_001.obj 1 0 897 2 
 897 3 0 0 8 8 0 8 8 10 8 0 12 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 3 
 897 4 0 0 8 8 0 8 8 12 8 0 9 8 4 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 4 
-897 5 0 0 8 8 0 8 8 11 8 0 12 8 3 2.5 2.5 2.5 0 0.1 1.1 180 1 2 2 3 3 1 Models/3dmodels/wooden_bench_001.obj 1 0 897 5 
+897 5 0 0 8 8 0 8 8 11 8 0 12 8 3 2.5 2.5 2.5 0 0.1 -1 180 1 2 2 3 3 1 Models/3dmodels/wooden_bench_001.obj 1 0 897 5 
 897 6 0 0 8 8 0 8 8 5 8 0 9 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 6 
 897 7 0 0 8 8 0 8 8 10 8 0 12 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 7 
 897 8 0 0 8 8 0 8 8 12 8 0 10 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 8 
 897 9 0 0 8 8 0 8 8 9 8 0 5 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 9 
 897 10 0 0 8 8 0 8 8 12 8 0 11 8 4 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 10 
 897 11 0 0 8 8 0 8 8 13 8 0 12 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 11 
-897 12 0 0 8 8 0 8 8 12 8 0 13 8 3 2.5 2.5 2 2.9 0 0 270 1 2 2 3 3 1 Models/3dmodels/wooden_bench_001.obj 1 0 897 12 
+897 12 0 0 8 8 0 8 8 12 8 0 13 8 3 2.5 2.5 2 1.1 0.1 0.2 270 1 2 2 3 3 1 Models/3dmodels/wooden_bench_001.obj 1 0 897 12 
 897 13 0 0 8 8 0 8 8 11 8 0 12 8 4 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 897 13 
 897 14 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 897 14 
 897 15 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 897 15 
@@ -24416,7 +24416,7 @@
 912 31 0 0 6 3 0 3 6 0 6 0 0 3 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 912 31 
 913 0 0 4 8 9 0 11 7 18 8 10 15 9 1 1 1 0.8 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 913 0 
 913 1 0 0 8 16 0 16 8 18 8 0 19 16 3 1 1 1 1 0 1.49012e-08 0 1 2 2 3 3 1 Models/3dmodels/column.obj 1 0 913 1 
-913 2 0 0 5 10 0 10 5 20 3 0 23 7 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_913_02.obj 1 0 913 2 
+913 2 0 0 5 10 0 10 5 20 25 0 23 7 3 1 1 1 0.3 -1.49012e-08 0.5 0 1 2 2 3 3 1 Models/3dmodels/pillar_913_02.obj 1 0 913 2 
 913 3 0 0 8 16 0 16 8 14 8 0 17 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_913_03.obj 1 0 913 3 
 913 4 0 0 8 16 0 16 8 18 8 0 20 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 913 4 
 913 5 0 0 8 16 0 16 8 15 8 0 20 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 913 5 
@@ -24640,8 +24640,8 @@
 919 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 919 31 
 920 0 0 0 16 8 0 8 16 20 16 0 18 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/column.obj 1 0 920 0 
 920 1 0 0 16 8 0 8 16 19 16 0 18 8 3 1 1 1 0 0 1 0 1 2 2 3 3 1 Models/3dmodels/column.obj 1 0 920 1 
-920 2 0 0 11 7 3 5 7 20 9 0 20 5 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_920_02.obj 1 0 920 2 
-920 3 0 1 10 3 9 5 2 16 16 9 14 3 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_920_03.obj 1 1 920 3 
+920 2 0 0 11 7 3 5 7 20 9 0 20 5 3 1 1 1 0.5 0 0.4 0 1 2 2 3 3 1 Models/3dmodels/pillar_920_02.obj 1 0 920 2 
+920 3 0 1 10 3 9 5 2 16 16 9 14 3 3 1 1 1 0.5 0 0.7 0 1 2 2 3 3 1 Models/3dmodels/pillar_920_03.obj 1 1 920 3 
 920 4 0 0 16 8 0 8 16 20 16 0 18 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 920 4 
 920 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 920 5 
 920 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 920 6 
@@ -26270,7 +26270,7 @@
 970 29 0 0 16 16 0 16 16 2 16 0 14 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 970 29 
 970 30 0 0 16 16 0 16 16 8 16 0 4 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 970 30 
 970 31 0 0 16 16 0 16 16 9 16 0 1 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 970 31 
-971 0 1 1 22 42 1 44 20 8 23 1 8 41 3 2.5 2.4 2 1 0 1 180 0 2 2 3 3 1 Models/3dmodels/table_0x37A.obj 1 0 971 0 
+971 0 1 1 22 42 1 44 20 8 23 1 8 41 3 2.5 2.4 2 -0.5 0 -1.5 180 0 2 2 3 3 1 Models/3dmodels/table_0x37A.obj 1 0 971 0 
 971 1 0 0 24 40 0 40 24 11 24 0 6 40 3 1.5 1.5 1.5 -0.5 0 -1.5 0 0 2 2 3 3 1 Models/3dmodels/wood_long_table.obj 1 0 971 1 
 971 2 0 0 24 40 0 40 24 12 24 0 7 40 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 971 2 
 971 3 0 0 24 40 0 40 24 11 24 0 6 40 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 971 3 

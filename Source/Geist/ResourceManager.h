@@ -37,7 +37,7 @@ public:
 
 	void AddTexture(const std::string& textureName, bool mipmaps = true);
 	void AddModel(const std::string& meshName);
-	void AddModel(const Model& model, const std::string& meshName);
+	void AddModel(Model& model, const std::string& meshName);
 	void AddSound(const std::string& soundName);
 	void AddMusic(const std::string& musicName);
 	void AddConfig(const std::string& configName);

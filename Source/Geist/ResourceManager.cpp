@@ -2,6 +2,8 @@
 #include "Config.h"
 #include "Logging.h"
 #include "Globals.h"
+#include "raylib.h"
+#include "raymath.h"
 
 #include <fstream>
 #include <sstream>
@@ -71,7 +73,10 @@ void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 void ResourceManager::AddModel(const std::string& modelName)
 {
 	Log("Loading model " + modelName);
-	m_ModelList[modelName] = std::make_unique<Model>(LoadModel(modelName.c_str()));
+   
+   Model model = LoadModel(modelName.c_str());
+   AddModel(model, modelName);
+   
 	Log("Load successful.");
 }
 
@@ -188,7 +193,17 @@ void ResourceManager::ClearTextures()
 }
 
 
-void ResourceManager::AddModel(const Model& model, const std::string& meshName)
+void ResourceManager::AddModel(Model& model, const std::string& meshName)
 {
+   BoundingBox bounds = GetModelBoundingBox(model);
+   Vector3 center = Vector3 {
+    (bounds.min.x + bounds.max.x) / 2.0f,
+    (bounds.min.y + bounds.max.y) / 2.0f,
+    (bounds.min.z + bounds.max.z) / 2.0f
+   };
+   
+   Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
+   model.transform = MatrixMultiply(model.transform, translation);
+  
 	m_ModelList[meshName] = std::make_unique<Model>(model);
 }
