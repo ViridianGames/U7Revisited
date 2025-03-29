@@ -6,9 +6,9 @@
 
 using namespace std;
 
-unique_ptr<Engine>					 g_Engine;
-unique_ptr<ResourceManager>	g_ResourceManager;
-unique_ptr<StateMachine>		 g_StateMachine;
+unique_ptr<Engine>           g_Engine;
+unique_ptr<ResourceManager>  g_ResourceManager;
+unique_ptr<StateMachine>     g_StateMachine;
 
 //  These functions only return true if the mouse is in the rectangle and no mouse button is clicked or held.
 bool IsMouseInRect(int x, int y, int w, int h)

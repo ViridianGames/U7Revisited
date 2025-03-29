@@ -80,24 +80,24 @@ public:
 	virtual void Draw() {};
 	virtual void Shutdown() {};
 
-	void Reverse();			 // Swaps the pos and dest of an element, allowing it to move back and forth.
+	void Reverse();       // Swaps the pos and dest of an element, allowing it to move back and forth.
 	void PopToStart() { m_Pos = m_Start; }
 	void PopToDestination() { m_Pos = m_Dest; }
 	bool Done() { return m_Done; }
 
-	Vector2 m_Start;				//  Need to know where the sprite started for certain movement types
+	Vector2 m_Start;        //  Need to know where the sprite started for certain movement types
 	Vector2 m_Pos;
-	Vector2 m_Dest;				 //  Where the sprite wants to be.
-	float m_Speed = 0;				//  How fast it's going to try to get there.
+	Vector2 m_Dest;         //  Where the sprite wants to be.
+	float m_Speed = 0;        //  How fast it's going to try to get there.
 	float m_Acceleration = 0;
 	float m_AccelerationPerSecond = 0;
-	int	 m_MoveType = MOVE_NORMAL;
-	int	 m_OvershootCount = 0;
-	bool	m_Done = false;
+	int   m_MoveType = MOVE_NORMAL;
+	int   m_OvershootCount = 0;
+	bool  m_Done = false;
 
 	enum
 	{
-		MOVE_NORMAL = 0,	// Move to the target at specified speed.	Stop when we get there.
+		MOVE_NORMAL = 0,  // Move to the target at specified speed.  Stop when we get there.
 		MOVE_EASING, //  Move to the target at specified speed, slowing down to a stop as we arrive.
 		MOVE_BOUNCE, //  Move to the target at specified speed and acceleration, halving acceleration and reversing direction when we reach the target until speed = 0;
 		MOVE_PARABOLIC,

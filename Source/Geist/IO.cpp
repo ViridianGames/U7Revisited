@@ -1,5 +1,5 @@
-//	TODO - Write out config files in the same order they are read in, or as
-//	close as possible.
+//  TODO - Write out config files in the same order they are read in, or as
+//  close as possible.
 
 #include "IO.h"
 #include <fstream>
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-//	IN-ONLY
+//  IN-ONLY
 void IO::Serialize(istream& stream, int& data)
 {
 	if (stream.eof())
@@ -82,7 +82,7 @@ void IO::Serialize(istream& stream, string& data)
 	data.assign(input);
 }
 
-//	OUT-ONLY
+//  OUT-ONLY
 void IO::Serialize(ostream& stream, const int data)
 {
 	char* splitter = (char*)&data;
@@ -122,7 +122,7 @@ void IO::Serialize(ostream& stream, const float data)
 	stream.flush();
 }
 
-//	Bools don't serialize well, so instead we'll just stream out a 0 or 1 instead of true or false;
+//  Bools don't serialize well, so instead we'll just stream out a 0 or 1 instead of true or false;
 void IO::Serialize(ostream& stream, const bool data)
 {
 	if (data == false)

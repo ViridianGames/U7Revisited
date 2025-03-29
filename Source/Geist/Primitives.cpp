@@ -31,7 +31,7 @@ void Sprite::DrawScaled(Rectangle dest, Vector2 origin, float rotation, Color ti
 
 void Tween::Update()
 {
-	//	Already at target
+	//  Already at target
 	if (m_Pos.x == m_Dest.x && m_Pos.y == m_Dest.y)
 	{
 		m_Done = true;
@@ -52,7 +52,7 @@ void Tween::Update()
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 		Vector2 newDir = Vector2Subtract(m_Dest, newPos);
 
-		//	See if we've overshot; if a sign has changed we've overshot on that dimension. Just pop to the destination.
+		//  See if we've overshot; if a sign has changed we've overshot on that dimension. Just pop to the destination.
 		if (newDir.x * dir.x < 0)
 		{
 			m_Pos.x = m_Dest.x;
@@ -86,13 +86,13 @@ void Tween::Update()
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 
-		//	See if we've overshot on either x or y.
-		if (m_Pos.x < m_Dest.x && newPos.x > m_Dest.x || //	Overshot going right
-			m_Pos.x > m_Dest.x && newPos.x < m_Dest.x ||	//	Overshot going left
-			m_Pos.y < m_Dest.y && newPos.y > m_Dest.y ||	//	Overshot going down
-			m_Pos.y > m_Dest.y && newPos.y < m_Dest.y)		//	Overshot going up
+		//  See if we've overshot on either x or y.
+		if (m_Pos.x < m_Dest.x && newPos.x > m_Dest.x || //  Overshot going right
+			m_Pos.x > m_Dest.x && newPos.x < m_Dest.x ||  //  Overshot going left
+			m_Pos.y < m_Dest.y && newPos.y > m_Dest.y ||  //  Overshot going down
+			m_Pos.y > m_Dest.y && newPos.y < m_Dest.y)    //  Overshot going up
 		{
-			//	Half the speed and reverse it.
+			//  Half the speed and reverse it.
 			m_Speed = -0.1f * m_Speed;
 			m_Acceleration = m_AccelerationPerSecond;
 			++m_OvershootCount;
@@ -118,16 +118,16 @@ void Tween::Update()
 
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 
-		//	See if we've overshot on either x or y.
-		if (m_Pos.x < m_Dest.x && newPos.x > m_Dest.x || //	Overshot going right
-			m_Pos.x > m_Dest.x && newPos.x < m_Dest.x ||	//	Overshot going left
-			m_Pos.y < m_Dest.y && newPos.y > m_Dest.y ||	//	Overshot going down
-			m_Pos.y > m_Dest.y && newPos.y < m_Dest.y)		//	Overshot going up
+		//  See if we've overshot on either x or y.
+		if (m_Pos.x < m_Dest.x && newPos.x > m_Dest.x || //  Overshot going right
+			m_Pos.x > m_Dest.x && newPos.x < m_Dest.x ||  //  Overshot going left
+			m_Pos.y < m_Dest.y && newPos.y > m_Dest.y ||  //  Overshot going down
+			m_Pos.y > m_Dest.y && newPos.y < m_Dest.y)    //  Overshot going up
 		{
 			if (m_OvershootCount == 0)
 			{
 				m_Pos = newPos;
-				//	Greatly increase the acceleration to pull the item back where it needs to be.
+				//  Greatly increase the acceleration to pull the item back where it needs to be.
 				m_Acceleration = 0;
 				m_AccelerationPerSecond *= 12;
 				m_Speed = -m_Speed * 0.5f;
@@ -149,7 +149,7 @@ void Tween::Update()
 		Vector2 dir = Vector2Subtract(m_Dest, Vector2{ m_Pos.x, m_Pos.y });
 		dir = Vector2Normalize(dir);
 
-		//	Get distance ratio to target
+		//  Get distance ratio to target
 		float start = Vector2Distance(m_Start, m_Dest);
 		float current = Vector2Distance(m_Pos, m_Dest);
 
@@ -163,7 +163,7 @@ void Tween::Update()
 		Vector2 newPos = Vector2Add(m_Pos, dir);
 		Vector2 newDir = Vector2Subtract(m_Dest, newPos);
 
-		//	See if we've overshot; if a sign has changed we've overshot on that dimension. Just pop to the destination.
+		//  See if we've overshot; if a sign has changed we've overshot on that dimension. Just pop to the destination.
 		if (newDir.x * dir.x < 0)
 		{
 			m_Pos.x = m_Dest.x;
@@ -220,13 +220,13 @@ void Animation::Play(std::string anim, int starttime, int elapsedtime)
 {
 	if (anim == m_CurrentAnim && m_Anims[m_CurrentAnim].m_Looping == true && elapsedtime == 0)
 	{
-		return; //	Don't restart an already playing looping anim.
+		return; //  Don't restart an already playing looping anim.
 	}
 
 	if (m_Anims.find(anim) != m_Anims.end())
 		m_CurrentAnim = anim;
 	else
-		return; //	Fail safe if no requested anim.
+		return; //  Fail safe if no requested anim.
 	if (starttime == 0)
 		m_StartTime = int(GetTime() * 1000) + elapsedtime;
 	else
@@ -237,7 +237,7 @@ void Animation::Play(std::string anim, int starttime, int elapsedtime)
 	m_Done = false;
 }
 
-//	For this version to work, all the frames must be on the same horizontal line in the texture.
+//  For this version to work, all the frames must be on the same horizontal line in the texture.
 void Animation::AddFrames(Texture* texture, int posx, int posy, int width, int height, int numFrames)
 {
 	for (int i = 0; i < numFrames; ++i)

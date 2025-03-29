@@ -1,17 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:		 BASEUNITS.H
-// Author:	 Anthony Salter
-// Date:		 11/13/17
-// Purpose:	A Unit is an Object that can move and has a lifespan.	It's
-//  				 designed to be derived from to create the units in your game.
+// Name:     BASEUNITS.H
+// Author:   Anthony Salter
+// Date:     11/13/17
+// Purpose:  A Unit is an Object that can move and has a lifespan.  It's
+//           designed to be derived from to create the units in your game.
 //
-//  				 I debated long and hard about separating units out into 2D and
-//  				 3D units (2D and 3D simply represents the space the units move
-//  				 through, not whether the units are sprites or models).	In the
-//  				 end, the needs of 2D units vs those of 3D units were different
-//  				 enough that I didn't think it was a good idea to try to munge
-//  				 them together into one class.
+//           I debated long and hard about separating units out into 2D and
+//           3D units (2D and 3D simply represents the space the units move
+//           through, not whether the units are sprites or models).  In the
+//           end, the needs of 2D units vs those of 3D units were different
+//           enough that I didn't think it was a good idea to try to munge
+//           them together into one class.
 //
 ///////////////////////////////////////////////////////////////////////////
 

@@ -1,18 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:		 Gui.H
-// Author:	 Anthony Salter
-// Date:		 10/22/05
-// Purpose:	Graphic User Interface Object.
+// Name:     Gui.H
+// Author:   Anthony Salter
+// Date:     10/22/05
+// Purpose:  Graphic User Interface Object.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 //  This file defines an immediate-mode Gui that works with our
-//  Init/Update/Draw/Shutdown system.	The GUI has its own X/Y coords that
+//  Init/Update/Draw/Shutdown system.  The GUI has its own X/Y coords that
 //  every element inside the GUI offsets from. 
 //
 //  All GuiElements are derived from Tween (just like Gui itself) because
-//  we want that programmable movement embedded in the system.	You'd be
+//  we want that programmable movement embedded in the system.  You'd be
 //  amazed at how often Guis and their elements need to move around.
 //
 //  The entire gui can be scaled by setting m_Scale to something other
@@ -20,10 +20,10 @@
 //  resolutions.
 //
 //  Guis can be created two ways: programmatically, or by loading in an XML
-//  file.	To create a gui programmatically, first start by defining
-//  constants that represent the IDs of the gui elements.	Then create the
-//  gui object itself.	Then call the "AddXElement" functions on that object
-//  to add elements of that type to the gui.	You'll need to feed those
+//  file.  To create a gui programmatically, first start by defining
+//  constants that represent the IDs of the gui elements.  Then create the
+//  gui object itself.  Then call the "AddXElement" functions on that object
+//  to add elements of that type to the gui.  You'll need to feed those
 //  functions the constants you created so that you can then access the
 //  elements later during your update functions.
 //
@@ -32,7 +32,7 @@
 //  where the mouse is and the state of the mouse buttons. Then you can call
 //  Gui::GetActiveElement() to find the element in the gui that was most
 //  recently manipulated by the user. It's not possible for more than one
-//  element in a gui to be "active", so this is all you need.	You can then
+//  element in a gui to be "active", so this is all you need.  You can then
 //  access that element in the element list to find out exactly what its
 //  state is, then act accordingly.
 
@@ -48,16 +48,17 @@
 
 #include "Object.h"
 #include "Primitives.h"
-#include "GUIElements.h"
+#include "GuiElements.h"
 
-class Gui : public Tween
+class Gui
 {
 public:
 	Gui();
+	virtual ~Gui() {};
 
 	virtual void Init(const std::string& configfile);
-	void Update();
-	void Draw();
+	virtual void Update();
+	virtual void Draw();
 
 	void SetLayout(int x, int y, int width, int height, float scale, int flag);
 	void SetAcceptingInput(bool acceptingInput) { m_AcceptingInput = acceptingInput; }
@@ -70,6 +71,8 @@ public:
 	std::shared_ptr<GuiElement> GetElement(int ID); //  Use this to get the complete state of a specific element.
 
 	void SetActive(bool active) { m_Active = active; }	
+
+	void SetDoneButtonId(int id) { m_doneButtonId = id; }
 
 	//  Load a complete GUI from a file.
 	void LoadTXT(std::string fileName);
@@ -154,15 +157,10 @@ public:
 
 	int m_PositionFlag;
 
-	//  These do not change after initialization; they are for reference.
-	int m_OriginalX;
-	int m_OriginalY;
-	int m_OriginalWidth;
-	int m_OriginalHeight;
+	Vector2 m_Pos;
 
-	//  These can be affected by scaling and repositioning; they are for drawing.
-	float m_GuiX;
-	float m_GuiY;
+	unsigned int m_ID;
+
 	float m_Width;
 	float m_Height;
 
@@ -176,9 +174,8 @@ public:
 	bool m_AcceptingInput = true;
 
 	std::shared_ptr<Font> m_Font;
-	float m_fontSize = 8.0f;
 
-	float m_Scale;
+	float m_InputScale; //  If the gui is scaled, this is the scale factor for the mouse x/y coordinates.
 
 	enum Positions
 	{
@@ -195,6 +192,17 @@ public:
 
 		GUIP_LASTPOSITION
 	};
+
+	// New private members for dragging
+	bool m_Draggable = false;          // Is the GUI draggable?
+	bool m_IsDragging = false;         // Currently dragging?
+	Vector2 m_DragOffset;              // Offset from click to GUI origin
+	int m_DragAreaHeight = 20;         // Default height of draggable area (title bar)
+	bool IsMouseInDragArea() const;
+
+	bool m_isDone = false;
+	int m_doneButtonId = -3;
+
 };
 
 #endif

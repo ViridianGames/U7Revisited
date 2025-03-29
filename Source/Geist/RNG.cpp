@@ -19,11 +19,11 @@ void RNG::SeedRNG(unsigned int n)
 	m_NumberOfGeneratedNumbers = 0;
 }
 
-//	Returns a random number greater than or equal to zero and less than n.
+//  Returns a random number greater than or equal to zero and less than n.
 unsigned int RNG::Random(unsigned int n)
 {
 	unsigned long y;
-	static unsigned long mag01[2] = { 0x0,	0x9908b0df };
+	static unsigned long mag01[2] = { 0x0,  0x9908b0df };
 
 	if (n == 0)
 	{
@@ -68,20 +68,20 @@ unsigned int RNG::Random(unsigned int n)
 	return (y % n);
 }
 
-//	Returns a number between min and max, inclusive.
+//  Returns a number between min and max, inclusive.
 int RNG::RandomRange(unsigned int min, unsigned int max)
 {
 	return Random((max - min) + 1) + min;
 }
 
-//	Returns a random floating-point number greater than or
-//	equal to min and less than max.
-//	
-//	If you want min and max to be more common, you might want
-//	to call RandomRange() with a multiplied min and max and
-//	then divide back out.	IE, (RandomRange(0, 11) / 10.0f)
-//	for a floating point number between 0 and 1 where 0 and 1
-//	actually come up fairly often.
+//  Returns a random floating-point number greater than or
+//  equal to min and less than max.
+//  
+//  If you want min and max to be more common, you might want
+//  to call RandomRange() with a multiplied min and max and
+//  then divide back out.  IE, (RandomRange(0, 11) / 10.0f)
+//  for a floating point number between 0 and 1 where 0 and 1
+//  actually come up fairly often.
 float RNG::RandomRangeFloat(float min, float max)
 {
 	unsigned int r = Random(0xffffffff);
@@ -91,8 +91,8 @@ float RNG::RandomRangeFloat(float min, float max)
 	return((multiplicand * (max - min)) + min);
 }
 
-//	Returns a random floating-point number greater than or
-//	equal to zero and less than max.
+//  Returns a random floating-point number greater than or
+//  equal to zero and less than max.
 float RNG::RandomFloat(float max)
 {
 	return RandomRangeFloat(0, max);

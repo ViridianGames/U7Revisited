@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:		 STATEMACHINE.H
-// Author:	 Anthony Salter
-// Date:		 2/03/05
-// Purpose:	Get on the scene (get on up!) a-like a state machine!	The state
-//  				 machine is basically a state that creates and handles all the other
-//  				 states.	Engine->Update() calls StateMachine->Update(),
-//  				 which is turn calls the Update() of the current state through
-//  				 a pointer.
+// Name:     STATEMACHINE.H
+// Author:   Anthony Salter
+// Date:     2/03/05
+// Purpose:  Get on the scene (get on up!) a-like a state machine!  The state
+//           machine is basically a state that creates and handles all the other
+//           states.  Engine->Update() calls StateMachine->Update(),
+//           which is turn calls the Update() of the current state through
+//           a pointer.
 //
 ///////////////////////////////////////////////////////////////////////////
 #ifndef _STATEMACHINE_H_
@@ -23,8 +23,8 @@ class StateMachine : public Object
 	enum TransitionTypes
 	{
 		TT_STATE = 0, // A classic state transition
-		TT_PUSH,			// Pushing a state
-		TT_POP			 // Popping a state
+		TT_PUSH,      // Pushing a state
+		TT_POP       // Popping a state
 	};
 
 	enum StateTypes
@@ -56,12 +56,12 @@ private:
 
 	std::map<int, State*> m_StateMap;
 	std::map<int, std::string> m_StateNames;
-	std::deque<std::tuple<int, int>> m_StateStack;	//  State ID, state type, state name
+	std::deque<std::tuple<int, int>> m_StateStack;  //  State ID, state type, state name
 	std::deque<std::tuple<int, int>> m_TransitionStack; //  Transition type, new state
 
-	int	m_CurrentState = -1;
-	int	m_PreviousState = -1;
-	int	m_TargetState = -1;
+	int  m_CurrentState = -1;
+	int  m_PreviousState = -1;
+	int  m_TargetState = -1;
 };
 
 #endif

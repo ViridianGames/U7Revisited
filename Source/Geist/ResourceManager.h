@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
-// Name:		 RESOURCEMANAGER.H
-// Author:	 Anthony Salter
-// Date:		 2/03/05
-// Purpose:	The ResourceManager subsystem.
+// Name:     RESOURCEMANAGER.H
+// Author:   Anthony Salter
+// Date:     2/03/05
+// Purpose:  The ResourceManager subsystem.
 //
 ///////////////////////////////////////////////////////////////////////////
 
@@ -37,21 +37,21 @@ public:
 
 	void AddTexture(const std::string& textureName, bool mipmaps = true);
 	void AddModel(const std::string& meshName);
-	void AddModel(const Model& model, const std::string& meshName);
+	void AddModel(Model& model, const std::string& meshName);
 	void AddSound(const std::string& soundName);
 	void AddMusic(const std::string& musicName);
 	void AddConfig(const std::string& configName);
 
-	//	The pointers that these functions hand out are for access ONLY.	Do not
-	//	delete them.	You didn't make these resources, you have no business
-	//	deleting them.
+	//  The pointers that these functions hand out are for access ONLY.  Do not
+	//  delete them.  You didn't make these resources, you have no business
+	//  deleting them.
 	Texture* GetTexture(const std::string& textureName, bool mipmaps = true);
 	Model* GetModel(const std::string& meshname);
 	Wave* GetSound(const std::string& soundname);
 	Music* GetMusic(const std::string& musicname);
 	Config* GetConfig(const std::string& configname);
 
-	//	Utilities
+	//  Utilities
 	bool DoesFileExist(const std::string& filename);
 };
 

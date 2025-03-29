@@ -20,7 +20,7 @@ Texture* g_Cursor;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
-//std::shared_ptr<Font> g_SmallFont;
+std::shared_ptr<Font> g_SmallFont;
 
 //float g_smallFontSize = 8;
 float g_fontSize = 16;
@@ -45,13 +45,11 @@ Vector3 g_Gravity = Vector3{ 0, .1f, 0 };
 
 float g_CameraRotateSpeed = 0;
 
-bool v_showMinimap = false;
-
 Vector3 g_CameraMovementSpeed = Vector3{ 0, 0, 0 };
 
 std::string g_gameStateStrings[] = { "LoadingState", "TitleState", "MainState", "OptionsState", "ObjectEditorState", "WorldEditorState" };
 
-std::string g_objectDrawTypeStrings[] = { "None", "Billboard", "Cuboid", "Flat", "Custom Mesh", "Character", "Terrain", "Ocean", "River"};
+std::string g_objectDrawTypeStrings[] = { "Billboard", "Cuboid", "Flat", "Custom Mesh"};
 
 std::string g_objectTypeStrings[] = { "Static", "Creature", "Weapon", "Armor", "Container", "Quest Item", "Key", "Item" };
 
@@ -65,14 +63,11 @@ std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
-//animframes
-bool g_animFramesInitialized = false;
-int g_currentAnimFrame[32];
-
 Shader g_alphaDiscard;
 
-bool m_pixelated = false;
-RenderTexture2D m_renderTarget;
+bool g_pixelated = false;
+RenderTexture2D g_renderTarget;
+RenderTexture2D g_guiRenderTarget;
 
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
@@ -131,7 +126,7 @@ unsigned int DoCameraMovement()
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
 
-	float frameTimeModifier = 32.0;
+	float frameTimeModifier = 30;
 
 	if (IsKeyDown(KEY_A))
 	{
@@ -209,16 +204,13 @@ if (IsKeyDown(KEY_E))
 		g_CameraMoved = true;
 	}
 
-	if (v_showMinimap)
+	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale))
 	{
-		if (IsLeftButtonDownInRect(GetRenderWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize))
-		{
-			float minimapx = float(GetMouseX() - (GetRenderWidth() - g_minimapSize)) / float(g_minimapSize) * 3072;
-			float minimapy = float(GetMouseY()) / float(g_minimapSize) * 3072;
+		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
+		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
 
-			g_camera.target = Vector3{ minimapx, 0, minimapy };
-			g_CameraMoved = true;
-		}
+		g_camera.target = Vector3{ minimapx, 0, minimapy };
+		g_CameraMoved = true;
 	}
 
 	bool moveDecay = false;
@@ -227,12 +219,12 @@ if (IsKeyDown(KEY_E))
 	{
 		g_CameraMovementSpeed = Vector3{ g_CameraMovementSpeed.x * .75f, g_CameraMovementSpeed.y, g_CameraMovementSpeed.z * .75f };
 
-		if (abs(g_CameraMovementSpeed.x) < .0001f)
+		if (abs(g_CameraMovementSpeed.x) < .01f)
 		{
 			g_CameraMovementSpeed.x = 0;
 		}
 
-		if (abs(g_CameraMovementSpeed.z) < .0001f)
+		if (abs(g_CameraMovementSpeed.z) < .01f)
 		{
 			g_CameraMovementSpeed.z = 0;
 		}
@@ -266,94 +258,23 @@ if (IsKeyDown(KEY_E))
 
 		current = Vector3Add(current, finalmovement);
 
-		float worldBoxSize = 3072.0;
-		while (current.x < 0.0)
-		{
-			current.x += worldBoxSize;
-		}
-		while (current.x >= worldBoxSize)
-		{
-				current.x -= worldBoxSize;
-		}
-
-		while (current.z < 0.0)
-		{
-			current.z += worldBoxSize;
-		}
-		while (current.z >= (worldBoxSize + 0.0))
-		{
-				current.z -= worldBoxSize;
-		}
-
-		/*
 		if (current.x < 0) current.x = 0;
 		if (current.x > 3072) current.x = 3072;
 		if (current.z < 0) current.z = 0;
 		if (current.z > 3072) current.z = 3072;
-		*/
-		float xOfs = g_cameraDistance * 0.5;
-		float yOfs = g_cameraDistance * 0.5;
-		Vector3 camPos = { xOfs, g_cameraDistance, yOfs };
+
+		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
 
 		g_camera.target = current;
 		g_camera.position = Vector3Add(current, camPos);
-		g_camera.fovy = 60.0;
+		g_camera.fovy = g_cameraDistance;
 	}
-	DoGlobalAnimationFramesUpdate();
+
 	return 0;
 }
 
-void DoGlobalAnimationFramesUpdate()
-{
-	float fTime = GetTime();
-	float iTime = float(int(fTime));
-	if (iTime > fTime) {
-		iTime -= 1.0;
-	}
-	float inSecond = fTime - iTime;
-	float frameTime = 1.0 / 3.0;
-	float sKeep = 0.0;
-
-	if (g_animFramesInitialized == false)
-	{
-		for (int i = 0; i < 32; i++)
-		{
-			g_currentAnimFrame[i] = 0;
-		}
-		g_animFramesInitialized = true;
-	}
-
-	for (int i = 2; i < 32; i++)
-	{
-		g_currentAnimFrame[i] = 0;
-		frameTime = 1.0 / float(i);
-		sKeep = inSecond;
-		while ((sKeep - frameTime) > 0.0)
-		{
-			g_currentAnimFrame[i] += 1;
-			sKeep -= frameTime;
-		}
-		if (g_currentAnimFrame[i] >= i)
-		{
-			g_currentAnimFrame[i] = 0;
-		}
-	}
-}
-
-int GetGlobalAnimationFrame(int frameCount)
-{
-	if (frameCount > 2)
-	{
-		if (frameCount < 32)
-		{
-			return g_currentAnimFrame[frameCount];
-		}
-	}
-	return 0;
-}
-
-shared_ptr<U7Object> GetPointerFromID(int unitID)
+shared_ptr<U7Object> GetObjectFromID(int unitID)
 {
 	unordered_map<int, shared_ptr<U7Object> >::iterator finder = g_ObjectList.find(unitID);
 
@@ -397,19 +318,30 @@ unsigned int GetNextID() { return g_CurrentUnitID++; }
 
 void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
-	/*
 	if (shapenum == 451)
 	{
 		Log("Stop here.");
 	}
-	*/
-	//printf("  adding object shape:%d frame:%d id:%d pos(%f %f %f)\n", shapenum, framenum, id, x, y, z);
+
 	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(Vector3{ x, y, z });
 	temp->m_ID = id;
 
 	g_ObjectList[id] = temp;
+}
+
+void AddObjectToInventory(int objectId, int containerId)
+{
+	shared_ptr<U7Object> object = GetObjectFromID(objectId);
+	shared_ptr<U7Object> container = GetObjectFromID(containerId);
+
+	if (object == nullptr || container == nullptr)
+	{
+		return;
+	}
+
+	container->AddObjectToInventory(objectId);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -447,7 +379,7 @@ void DrawConsole()
 {
 	int counter = 0;
 	vector<ConsoleString>::iterator node = g_ConsoleStrings.begin();
-	float shadowOffset = GetRenderWidth() / 850.0f;
+	float shadowOffset = 1;
 	if (shadowOffset < 1)
 	{
 		shadowOffset = 1;
@@ -467,8 +399,8 @@ void DrawConsole()
 
 		if (elapsed < 10)
 		{
-			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_Font->baseSize + 2) + shadowOffset }, g_fontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
-			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_Font->baseSize + 2)) }, g_fontSize, 1, (*node).m_Color);
+			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_SmallFont->baseSize + 2) + shadowOffset }, g_SmallFont->baseSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
+			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_SmallFont->baseSize + 2)) }, g_SmallFont->baseSize, 1, (*node).m_Color);
 
 		}
 		++counter;
@@ -486,6 +418,19 @@ void DrawConsole()
 			++node;
 		}
 	}
+}
+
+void AddObjectToContainer(int objectID, int containerID)
+{
+	shared_ptr<U7Object> object = GetObjectFromID(objectID);
+	shared_ptr<U7Object> container = GetObjectFromID(containerID);
+
+	if (object == nullptr || container == nullptr)
+	{
+		return;
+	}
+
+	container->AddObjectToInventory(objectID);
 }
 
 float g_DrawScale;
@@ -512,6 +457,10 @@ shared_ptr<Sprite> g_ActiveButtonR;
 shared_ptr<Sprite> g_LeftArrow;
 shared_ptr<Sprite> g_RightArrow;
 
+shared_ptr<Sprite> g_gumpBackground;
+shared_ptr<Sprite> g_gumpCheckmarkUp;
+shared_ptr<Sprite> g_gumpCheckmarkDown;
+
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;
@@ -520,4 +469,53 @@ EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
 
+bool WasLMBDoubleClicked()
+{
+	static bool lmblastState = false;
+	static float lmblastTime = 0;
 
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		if (lmblastState == false)
+		{
+			lmblastState = true;
+			lmblastTime = GetTime();
+		}
+	}
+	else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))  // if (IsMouseButtonPressed
+	{
+		if (GetTime() - lmblastTime < .25f)
+		{
+			lmblastState = false;
+			return true;
+		}
+		lmblastState = false;
+	}
+
+	return false;
+}
+
+bool WasRMBDoubleClicked()
+{
+	static bool rmblastState = false;
+	static float rmblastTime = 0;
+
+	if (IsMouseButtonReleased(MOUSE_RIGHT_BUTTON))
+	{
+		if (rmblastState == false)
+		{
+			rmblastState = true;
+			rmblastTime = GetTime();
+		}
+		else
+		{
+			if (GetTime() - rmblastTime < .75f)
+			{
+				rmblastState = false;
+				return true;
+			}
+			rmblastState = false;
+		}
+	}
+	return false;
+}

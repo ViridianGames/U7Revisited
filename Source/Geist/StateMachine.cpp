@@ -88,7 +88,7 @@ void StateMachine::MakeStateTransitionEX(int newstate)
 	if (m_StateStack.size() > 0 && get<1>(m_StateStack[0]) != ST_STATE)
 	{
 		//  The top state is a push state, we can't transition from it.
-		throw("StateMachine: Attempting to transition from a pushed state!	Current state ID: " + to_string(get<0>(m_StateStack[0])) + " Incoming state ID: " + to_string(newstate));
+		throw("StateMachine: Attempting to transition from a pushed state!  Current state ID: " + to_string(get<0>(m_StateStack[0])) + " Incoming state ID: " + to_string(newstate));
 	}
 
 	if (m_StateMap.find(newstate) == m_StateMap.end())
@@ -149,7 +149,7 @@ void StateMachine::PopStateEX()
 		}
 		else
 		{
-			throw("StateMachine: Attempting to pop a state that wasn't pushed!	State ID: " + to_string(get<0>(m_StateStack[0])));
+			throw("StateMachine: Attempting to pop a state that wasn't pushed!  State ID: " + to_string(get<0>(m_StateStack[0])));
 		}
 	}
 }
