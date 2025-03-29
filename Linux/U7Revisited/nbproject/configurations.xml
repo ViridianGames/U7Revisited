@@ -21,12 +21,14 @@
           <itemPath>../../Source/Geist/Config.h</itemPath>
           <itemPath>../../Source/Geist/Engine.cpp</itemPath>
           <itemPath>../../Source/Geist/Engine.h</itemPath>
-          <itemPath>../../Source/Geist/GUIElements.cpp</itemPath>
-          <itemPath>../../Source/Geist/GUIElements.h</itemPath>
           <itemPath>../../Source/Geist/Globals.cpp</itemPath>
           <itemPath>../../Source/Geist/Globals.h</itemPath>
           <itemPath>../../Source/Geist/Gui.cpp</itemPath>
           <itemPath>../../Source/Geist/Gui.h</itemPath>
+          <itemPath>../../Source/Geist/GuiElements.cpp</itemPath>
+          <itemPath>../../Source/Geist/GuiElements.h</itemPath>
+          <itemPath>../../Source/Geist/GuiManager.cpp</itemPath>
+          <itemPath>../../Source/Geist/GuiManager.h</itemPath>
           <itemPath>../../Source/Geist/IO.cpp</itemPath>
           <itemPath>../../Source/Geist/IO.h</itemPath>
           <itemPath>../../Source/Geist/Logging.cpp</itemPath>
@@ -65,6 +67,8 @@
         <itemPath>../../Source/TitleState.h</itemPath>
         <itemPath>../../Source/U7Globals.cpp</itemPath>
         <itemPath>../../Source/U7Globals.h</itemPath>
+        <itemPath>../../Source/U7Gump.cpp</itemPath>
+        <itemPath>../../Source/U7Gump.h</itemPath>
         <itemPath>../../Source/U7Object.cpp</itemPath>
         <itemPath>../../Source/U7Object.h</itemPath>
         <itemPath>../../Source/WorldEditorState.cpp</itemPath>
@@ -148,10 +152,6 @@
       </item>
       <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
@@ -159,6 +159,14 @@
       <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -251,6 +259,10 @@
       <item path="../../Source/U7Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -328,10 +340,6 @@
       </item>
       <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
@@ -339,6 +347,14 @@
       <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -431,6 +447,10 @@
       <item path="../../Source/U7Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -503,10 +523,6 @@
       </item>
       <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
@@ -514,6 +530,14 @@
       <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -606,6 +630,10 @@
       <item path="../../Source/U7Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -686,10 +714,6 @@
       </item>
       <item path="../../Source/Geist/Engine.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="../../Source/Geist/GUIElements.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../../Source/Geist/GUIElements.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../../Source/Geist/Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Globals.h" ex="false" tool="3" flavor2="0">
@@ -697,6 +721,14 @@
       <item path="../../Source/Geist/Gui.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/Gui.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiElements.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/GuiManager.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/IO.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -789,6 +821,10 @@
       <item path="../../Source/U7Globals.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/U7Globals.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/U7Gump.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/U7Object.cpp" ex="false" tool="1" flavor2="0">
       </item>
