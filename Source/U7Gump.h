@@ -6,10 +6,10 @@
 #include <memory>
 #include <map>
 
-#include "Object.h"
-#include "Primitives.h"
-#include "Gui.h"
-#include "GuiElements.h"
+#include "Geist/Object.h"
+#include "Geist/Primitives.h"
+#include "Geist/Gui.h"
+#include "Geist/GuiElements.h"
 
 class Gump : public Gui
 {
