@@ -75,7 +75,10 @@ void U7Object::Shutdown()
 
 void U7Object::SetPos(Vector3 pos)
 {
-   m_Pos = pos;
+	m_Pos = pos;
+	m_DrawPos = pos;
+	m_chunkOwn[0] = int(m_Pos.x / 16);
+	m_chunkOwn[1] = int(m_Pos.z / 16);
 
    Vector3 dims = Vector3{ 0, 0, 0 };
    Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
@@ -99,6 +102,11 @@ void U7Object::SetPos(Vector3 pos)
    }
 
    m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
+}
+
+void U7Object::SetDrawPos(Vector3 pos)
+{
+	m_DrawPos = pos;
 }
 
 bool U7Object::Pick()

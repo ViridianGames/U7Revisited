@@ -41,8 +41,9 @@ public:
    GuiElement* m_ManaBar;
 
    float m_LastUpdate;
-   
+
    int m_NumberOfVisibleUnits;
+   int m_NumberOfNotVisibleUnits;
    
    int m_GuiMode;
    

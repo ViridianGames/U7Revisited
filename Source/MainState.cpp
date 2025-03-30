@@ -125,19 +125,32 @@ void MainState::Update()
 		{
 			m_sortedVisibleObjects.clear();
 			float drawRange = g_cameraDistance * 1.5f;
+			bool chunkVisible = false;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
 				(*node).second->Update();
-				//Vector3 centerPoint = Vector3Add((*node).second->m_Pos, (*node).second.get()->m_shapeData->m_boundingBoxCenterPoint);
-
-				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
-				distance -= (*node).second->m_Pos.y;
-				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
+				chunkVisible = g_Terrain->IsChunkVisible((*node).second->m_chunkOwn);
+				if (chunkVisible == true)
 				{
-					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
-					(*node).second->m_distanceFromCamera = distanceFromCamera;
-					m_sortedVisibleObjects.push_back((*node).second);
-					m_numberofDrawnUnits++;
+					//Vector3 centerPoint = Vector3Add((*node).second->m_Pos, (*node).second.get()->m_shapeData->m_boundingBoxCenterPoint);
+					Vector3 ScootPos = { g_Terrain->GetChunkScootX((*node).second->m_chunkOwn), 0.0, g_Terrain->GetChunkScootY((*node).second->m_chunkOwn) };
+					Vector3 drawPos = Vector3Add((*node).second->m_Pos, ScootPos);
+					(*node).second->SetDrawPos(drawPos);
+
+					float distance = Vector3Distance(drawPos, g_camera.target);
+					distance -= drawPos.y;
+					if (distance < drawRange && drawPos.y <= m_heightCutoff)
+					{
+						double distanceFromCamera = Vector3Distance(drawPos, g_camera.position) - drawPos.y;
+						(*node).second->m_distanceFromCamera = distanceFromCamera;
+						m_sortedVisibleObjects.push_back((*node).second);
+						m_numberofDrawnUnits++;
+						m_NumberOfNotVisibleUnits++;
+					}
+					else
+					{
+						m_NumberOfNotVisibleUnits++;
+					}
 				}
 			}
 
