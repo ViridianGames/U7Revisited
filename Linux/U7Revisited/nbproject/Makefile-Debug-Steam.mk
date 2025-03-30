@@ -48,6 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o \
 	${OBJECTDIR}/_ext/d8db8d98/Primitives.o \
 	${OBJECTDIR}/_ext/d8db8d98/RNG.o \
+	${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o \
 	${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o \
 	${OBJECTDIR}/_ext/d8db8d98/StateMachine.o \
 	${OBJECTDIR}/_ext/d8db8d98/TooltipSystem.o \
@@ -158,6 +159,11 @@ ${OBJECTDIR}/_ext/d8db8d98/RNG.o: ../../Source/Geist/RNG.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -DREQUIRES_STEAM -DWITH_SDL2_STATIC -D_DEBUG -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RNG.o ../../Source/Geist/RNG.cpp
+
+${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o: ../../Source/Geist/RaylibModel.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -DREQUIRES_STEAM -DWITH_SDL2_STATIC -D_DEBUG -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o ../../Source/Geist/RaylibModel.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o: ../../Source/Geist/ResourceManager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98

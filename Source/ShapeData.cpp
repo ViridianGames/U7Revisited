@@ -7,7 +7,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
-#include "external/glad.h"
+#include "include/glad.h"
 
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"

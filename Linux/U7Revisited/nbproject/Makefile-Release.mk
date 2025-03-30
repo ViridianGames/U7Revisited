@@ -48,6 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/d8db8d98/ParticleSystem.o \
 	${OBJECTDIR}/_ext/d8db8d98/Primitives.o \
 	${OBJECTDIR}/_ext/d8db8d98/RNG.o \
+	${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o \
 	${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o \
 	${OBJECTDIR}/_ext/d8db8d98/StateMachine.o \
 	${OBJECTDIR}/_ext/d8db8d98/TooltipSystem.o \
@@ -156,6 +157,11 @@ ${OBJECTDIR}/_ext/d8db8d98/RNG.o: ../../Source/Geist/RNG.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RNG.o ../../Source/Geist/RNG.cpp
+
+${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o: ../../Source/Geist/RaylibModel.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -I../../Source/Geist -Iraylib/include -I../../ThirdParty/raylib/external -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/d8db8d98/RaylibModel.o ../../Source/Geist/RaylibModel.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/ResourceManager.o: ../../Source/Geist/ResourceManager.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98

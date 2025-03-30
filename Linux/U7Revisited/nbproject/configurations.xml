@@ -40,6 +40,8 @@
           <itemPath>../../Source/Geist/Primitives.h</itemPath>
           <itemPath>../../Source/Geist/RNG.cpp</itemPath>
           <itemPath>../../Source/Geist/RNG.h</itemPath>
+          <itemPath>../../Source/Geist/RaylibModel.cpp</itemPath>
+          <itemPath>../../Source/Geist/RaylibModel.h</itemPath>
           <itemPath>../../Source/Geist/ResourceManager.cpp</itemPath>
           <itemPath>../../Source/Geist/ResourceManager.h</itemPath>
           <itemPath>../../Source/Geist/State.h</itemPath>
@@ -201,6 +203,10 @@
       <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/ResourceManager.cpp"
             ex="false"
@@ -394,6 +400,10 @@
       </item>
       <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/Geist/RaylibModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Geist/ResourceManager.cpp"
             ex="false"
             tool="1"
@@ -580,6 +590,10 @@
       <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/ResourceManager.cpp"
             ex="false"
@@ -775,6 +789,10 @@
       <item path="../../Source/Geist/RNG.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/RNG.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/Geist/RaylibModel.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/ResourceManager.cpp"
             ex="false"
