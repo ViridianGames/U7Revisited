@@ -258,10 +258,24 @@ if (IsKeyDown(KEY_E))
 
 		current = Vector3Add(current, finalmovement);
 
-		if (current.x < 0) current.x = 0;
-		if (current.x > 3072) current.x = 3072;
-		if (current.z < 0) current.z = 0;
-		if (current.z > 3072) current.z = 3072;
+		float worldBoxSize = 3072.0;
+		while (current.x < 0.0)
+		{
+			current.x += worldBoxSize;
+		}
+		while (current.x >= worldBoxSize)
+		{
+			current.x -= worldBoxSize;
+		}
+
+		while (current.z < 0.0)
+		{
+			current.z += worldBoxSize;
+		}
+		while (current.z >= (worldBoxSize + 0.0))
+		{
+			current.z -= worldBoxSize;
+		}
 
 		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);

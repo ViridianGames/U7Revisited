@@ -142,14 +142,17 @@ void Terrain::Draw()
 {
 	m_chunkDrawCount = 0;
 
-	for (int i = 0; i < 192; i++)
-	{
-		for (int j = 0; j < 192; j++)
-		{
-			if (m_chunkVisible[i][j])
-			{
-				DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, WHITE);
-				m_chunkDrawCount += 1;
+	for (int g = 0; g < 12; g++) {
+		for (int h = 0; h < 12; h++) {
+			if (m_schunkVisible[g][h] == true) {
+				for (int i = g * 16; i < (g * 16 + 16); i++) {
+					for (int j = (h * 16); j < (h * 16 + 16); j++) {
+						if (m_chunkVisible[i][j]) {
+							DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, WHITE);
+							m_chunkDrawCount += 1;
+						}
+					}
+				}
 			}
 		}
 	}
