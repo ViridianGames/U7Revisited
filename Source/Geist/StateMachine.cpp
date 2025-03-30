@@ -56,11 +56,13 @@ void StateMachine::Draw()
 {
 	//  We draw states in reverse order, so popups are drawn on top of the
 	//  states they are popped on top of.
+   
+   m_StateMap[get<0>(m_StateStack[0])]->Draw();
 
-	for (auto i = m_StateStack.rbegin(); i != m_StateStack.rend(); ++i)
-	{
-		m_StateMap[get<0>(*i)]->Draw();
-	}
+	//for (auto i = m_StateStack.rbegin(); i != m_StateStack.rend(); ++i)
+	//{
+//		m_StateMap[get<0>(*i)]->Draw();
+	//}
 }
 
 void StateMachine::RegisterState(int id, State* state, string name)

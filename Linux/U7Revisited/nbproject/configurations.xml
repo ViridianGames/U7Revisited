@@ -48,6 +48,8 @@
           <itemPath>../../Source/Geist/TooltipSystem.cpp</itemPath>
           <itemPath>../../Source/Geist/TooltipSystem.h</itemPath>
         </logicalFolder>
+        <itemPath>../../Source/ConversationState.cpp</itemPath>
+        <itemPath>../../Source/ConversationState.h</itemPath>
         <itemPath>../../Source/LoadingState.cpp</itemPath>
         <itemPath>../../Source/LoadingState.h</itemPath>
         <itemPath>../../Source/Main.cpp</itemPath>
@@ -139,6 +141,10 @@
         </requiredProjects>
       </compileType>
       <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -328,6 +334,10 @@
       </compileType>
       <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../../Source/ConversationState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.h" ex="false" tool="3" flavor2="0">
@@ -510,6 +520,10 @@
         </requiredProjects>
       </compileType>
       <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -701,6 +715,10 @@
         </requiredProjects>
       </compileType>
       <item path="../../Redist/Data/engine.cfg" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../../Source/ConversationState.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="../../Source/Geist/BaseUnits.cpp" ex="false" tool="1" flavor2="0">
       </item>

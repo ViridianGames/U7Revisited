@@ -1114,7 +1114,10 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.referent = ReadU16(subFiles);
 				thisNPC.status = ReadU16(subFiles);
 
-				AddObject(shapenum, 16, GetNextID(), chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
+            unsigned int nextID = GetNextID();
+				AddObject(shapenum, 16, nextID, chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
+            g_ObjectList[nextID].get()->m_isContainer = true;
+            g_ObjectList[nextID].get()->m_hasConversationTree = true;
 
 				thisNPC.str = ReadU8(subFiles);
 				thisNPC.dex = ReadU8(subFiles);
@@ -1172,10 +1175,37 @@ void LoadingState::LoadInitialGameState()
 						length = ReadU8(subFiles);
 						if (length == 6) //  Object.
 						{
-							for (int i = 0; i < 6; ++i)
-							{
-								ReadU8(subFiles);
-							}
+   						unsigned char x = ReadU8(subFiles);
+      					unsigned char y = ReadU8(subFiles);
+
+               		int chunkx = x >> 4;
+                  	int chunky = y >> 4;
+                     int intx = x & 0x0f;
+                     int inty = y & 0x0f;
+
+                     int actualx = (chunkx * 16) + intx;
+                     int actualy = (chunky * 16) + inty;
+
+                     unsigned short shapeData = ReadU16(subFiles);
+                     int shape = shapeData & 0x3ff;
+                     int frame = (shapeData >> 10) & 0x1f;
+
+                     unsigned char z = ReadU8(subFiles);
+                     float lift1 = 0;
+                     float lift2 = 0;
+                     if (z != 0)
+                     {
+                        lift1 = z >> 4;
+                        lift2 = z & 0x0f;
+							//z *= 8;
+                     }
+						
+                     unsigned char quality = ReadU8(subFiles);
+                     
+                     int objectId = GetNextID();
+							AddObject(shape, frame, objectId, actualx, lift1, actualy);
+                     
+							AddObjectToContainer(objectId, nextID);
 						}
 						else if (length == 12) // container or egg
 						{

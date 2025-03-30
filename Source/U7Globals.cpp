@@ -60,6 +60,8 @@ std::unordered_map<int, int[16][16]> g_ChunkTypeList;  // The 16x16 tiles for ea
 int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
+std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
+
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
@@ -507,15 +509,16 @@ bool WasRMBDoubleClicked()
 			rmblastState = true;
 			rmblastTime = GetTime();
 		}
-		else
-		{
-			if (GetTime() - rmblastTime < .75f)
-			{
-				rmblastState = false;
-				return true;
-			}
-			rmblastState = false;
-		}
 	}
+	else if(IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))  // if (IsMouseButtonPressed
+	{
+		if (GetTime() - rmblastTime < .25f)
+		{
+			rmblastState = false;
+			return true;
+		}
+		rmblastState = false;
+	}
+
 	return false;
 }

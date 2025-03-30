@@ -39,6 +39,7 @@ enum GameStates
 	STATE_OBJECTEDITORSTATE,
 	STATE_WORLDEDITORSTATE,
 	STATE_CREDITS,
+        STATE_CONVERSATIONSTATE,
 	STATE_LASTSTATE
 };
 
@@ -127,6 +128,8 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
+
+extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
 
 extern unsigned int g_minimapSize;
 

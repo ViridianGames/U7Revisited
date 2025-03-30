@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/957bd1db/ConversationState.o \
 	${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o \
 	${OBJECTDIR}/_ext/d8db8d98/Config.o \
 	${OBJECTDIR}/_ext/d8db8d98/Engine.o \
@@ -92,6 +93,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/u7revisited: ../../../../../Libraries
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/u7revisited: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/u7revisited ${OBJECTFILES} ${LDLIBSOPTIONS} -lX11 -lGL -lGLU -lGLEW -lSDL2 -lSDL2_image -ldl -lpthread
+
+${OBJECTDIR}/_ext/957bd1db/ConversationState.o: ../../Source/ConversationState.cpp
+	${MKDIR} -p ${OBJECTDIR}/_ext/957bd1db
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -DREQUIRES_STEAM -DWITH_SDL2_STATIC -I/usr/include/SDL2 -I../../../../../Libraries/glm -I../../../../../Libraries/Framework/Source -I../../../../../Libraries/glew/include -I../../../../../Libraries/stb_truetype -I../../../../../Libraries/tinyxml2 -I../../../../../Libraries/steamworks/sdk/public/steam -I../../../../../Libraries/SoLoud/include -I../../Source -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/957bd1db/ConversationState.o ../../Source/ConversationState.cpp
 
 ${OBJECTDIR}/_ext/d8db8d98/BaseUnits.o: ../../Source/Geist/BaseUnits.cpp
 	${MKDIR} -p ${OBJECTDIR}/_ext/d8db8d98

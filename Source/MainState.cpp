@@ -123,7 +123,7 @@ void MainState::Update()
 
 		if (m_showObjects)
 		{
-			m_sortedVisibleObjects.clear();
+			g_sortedVisibleObjects.clear();
 			float drawRange = g_cameraDistance * 1.5f;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
@@ -136,12 +136,12 @@ void MainState::Update()
 				{
 					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
 					(*node).second->m_distanceFromCamera = distanceFromCamera;
-					m_sortedVisibleObjects.push_back((*node).second);
+					g_sortedVisibleObjects.push_back((*node).second);
 					m_numberofDrawnUnits++;
 				}
 			}
 
-			std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 		}
 
 		m_LastUpdate = GetTime();
@@ -202,7 +202,32 @@ void MainState::Update()
 
 	if (WasRMBDoubleClicked())
 	{
-		AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+		//AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+      
+      std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		{
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
+
+			bool picked = (*node)->Pick();
+
+			if (picked)
+			{
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				m_selectedObject = (*node)->m_ID;
+
+				if ((*node)->m_hasConversationTree)
+				{
+					g_StateMachine->PushState(STATE_CONVERSATIONSTATE);//OpenGump((*node)->m_ID);
+				}
+				break;
+			}
+		}
 	}
 
 	if (WasLMBDoubleClicked())
@@ -211,7 +236,7 @@ void MainState::Update()
 
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
-		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
 			if (*node == nullptr || !(*node)->m_Visible)
 			{
@@ -240,7 +265,7 @@ void MainState::Update()
 	{
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
-		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
 			if (*node == nullptr || !(*node)->m_Visible)
 			{
@@ -254,25 +279,6 @@ void MainState::Update()
 				g_selectedShape = (*node)->m_shapeData->GetShape();
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				m_selectedObject = (*node)->m_ID;
-
-				//if ((*node)->m_isContainer)
-				//{
-//					if (WasLMBDoubleClicked())
-//					{
-//						AddConsoleString("This should have opened a GUMP.");
-//					}
-//					else
-					//{
-					//	AddConsoleString("Object is a container, with " + to_string((*node)->m_inventory.size()) + " objects inside.");
-
-					//	for (auto& item : (*node)->m_inventory)
-					//	{
-					//		auto object = GetObjectFromID(item);
-					//		AddConsoleString("Item: " + g_objectTable[object->m_shapeData->m_shape].m_name + " ID: " + to_string(item));
-					//	}
-					//}
-				//}
-				//AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame) + " Name: " + g_objectTable[g_selectedShape].m_name);
 
 				break;
 			}
@@ -289,11 +295,6 @@ void MainState::OpenGump(int id)
 
 	gumpGui->m_Font = g_SmallFont;
 	gumpGui->SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
-	//gumpGui->AddPanel(1000, 0, 0, 220, 150, Color{ 0, 0, 0, 192 });
-	//gumpGui->AddPanel(9999, 0, 0, 220, 150, Color{ 255, 255, 255, 255 }, false);
-	//gumpGui->AddTextArea(1001, g_SmallFont.get(), "This is a GUMP", 0, 20, 0, g_SmallFont.get()->baseSize * 1.5f, Color{255, 255, 255, 255}, GuiTextArea::LEFT);
-	//gumpGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
-	//gumpGui->AddTextButton(1003, 10, 100, "CheckMark!", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
 	gumpGui->AddSprite(1004, 0, 0, g_gumpBackground, 1.0f, 1.0f, Color{ 255, 255, 255, 255 });
 	gumpGui->AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, false);
 	gumpGui->SetDoneButtonId(1005);
@@ -326,7 +327,7 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
-		for (auto& unit : m_sortedVisibleObjects)
+		for (auto& unit : g_sortedVisibleObjects)
 		{
 			unit->Draw();
 			++m_numberofDrawnUnits;
@@ -386,7 +387,7 @@ void MainState::Draw()
 	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale , WHITE);
 	
 
-	//DrawFPS(10, 300);
+	DrawFPS(10, 300);
 
 	EndDrawing();
 }

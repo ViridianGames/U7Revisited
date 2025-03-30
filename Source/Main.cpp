@@ -23,6 +23,7 @@
 #include "ObjectEditorState.h"
 #include "ShapeEditorState.h"
 #include "WorldEditorState.h"
+#include "ConversationState.h"
 #include "ShapeData.h"
 #include <string>
 #include <sstream>
@@ -192,6 +193,11 @@ int main(int argv, char** argc)
       State* worldEditorState = new WorldEditorState;
       worldEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
+      
+      State* conversationState = new ConversationState;
+      conversationState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState);
+
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

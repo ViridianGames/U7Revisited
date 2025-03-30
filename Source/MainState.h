@@ -75,8 +75,6 @@ public:
 
    unsigned int m_terrainDrawHeight = 0;
 
-   std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
-
    unsigned int m_selectedObject = 0;
 
    float m_heightCutoff = 4.0f;
