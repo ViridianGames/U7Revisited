@@ -21,7 +21,7 @@ trough_3
 trough_4
 forge
 wooden_bench_001
-waterwheel
+water-wheel-ccw
 table_0x279_000
 table_0x279_005
 table_0x3CB_00
