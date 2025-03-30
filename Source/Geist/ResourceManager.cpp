@@ -23,12 +23,6 @@ void ResourceManager::Shutdown()
 		UnloadTexture(*(*node).second);
 	}
 
-	map<std::string, unique_ptr<Model> >::iterator node2;
-	for (node2 = m_ModelList.begin(); node2 != m_ModelList.end(); ++node2)
-	{
-		UnloadModel(*(*node2).second);
-	}
-
 	map<std::string, unique_ptr<Wave> >::iterator node3;
 	for (node3 = m_SoundList.begin(); node3 != m_SoundList.end(); ++node3)
 	{
@@ -73,10 +67,7 @@ void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 void ResourceManager::AddModel(const std::string& modelName)
 {
 	Log("Loading model " + modelName);
-   
-   Model model = LoadModel(modelName.c_str());
-   AddModel(model, modelName);
-   
+	m_ModelList[modelName] = std::make_unique<RaylibModel>(modelName);
 	Log("Load successful.");
 }
 
@@ -119,9 +110,9 @@ Texture* ResourceManager::GetTexture(const std::string& Texturename, bool mipmap
 	}
 }
 
-Model* ResourceManager::GetModel(const std::string& modelName)
+RaylibModel* ResourceManager::GetModel(const std::string& modelName)
 {
-	map<std::string, unique_ptr<Model> >::iterator node;
+	map<std::string, unique_ptr<RaylibModel> >::iterator node;
 	node = m_ModelList.find(modelName);
 
 	if (node != m_ModelList.end())
@@ -192,18 +183,7 @@ void ResourceManager::ClearTextures()
 	m_TextureList.clear();
 }
 
-
-void ResourceManager::AddModel(Model& model, const std::string& meshName)
+void ResourceManager::AddModel(RaylibModel&& model, const std::string& meshName)
 {
-   BoundingBox bounds = GetModelBoundingBox(model);
-   Vector3 center = Vector3 {
-    (bounds.min.x + bounds.max.x) / 2.0f,
-    (bounds.min.y + bounds.max.y) / 2.0f,
-    (bounds.min.z + bounds.max.z) / 2.0f
-   };
-   
-   Matrix translation = MatrixTranslate(-center.x, 0, -center.z);
-   model.transform = MatrixMultiply(model.transform, translation);
-  
-	m_ModelList[meshName] = std::make_unique<Model>(model);
+	m_ModelList[meshName] = std::make_unique<RaylibModel>(std::move(model));
 }
