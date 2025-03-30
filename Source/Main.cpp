@@ -107,7 +107,7 @@ int main(int argv, char** argc)
 
       float baseFontSize = 9;
       const char* fontPath = "Data/Fonts/softsquare.ttf";
-      // const char* fontPath = "Data/Fonts/babyblocks.ttf";
+      //const char* fontPath = "Data/Fonts/babyblocks.ttf";
 
       g_fontSize = baseFontSize * int(g_DrawScale);
       Font font = LoadFontEx(fontPath, g_fontSize, NULL, 0);

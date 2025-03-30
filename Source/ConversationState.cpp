@@ -94,10 +94,12 @@ void ConversationState::Draw()
 	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
 	EndTextureMode();
+   DrawTexturePro(g_guiRenderTarget.texture,
+		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
+		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+		{ 0, 0 }, 0, WHITE);
 
 	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale , WHITE);
-
-	DrawFPS(10, 300);
 
 	EndDrawing();
    
