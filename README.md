@@ -15,13 +15,14 @@ will allow the replacement engine to read in the maps and graphics from the orig
 ![Project U7 Data folder](./screenshots/install-2.png)
 
 
-## Developer Installation Notes (Windows)
+## Developer Installation Notes
 
 - Clone the project into a local folder using whatever git interface you prefer
 - Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Redist/Data/U7/`
-- Open `./U7Revisited.sln` in Visual Studio (I'm currently using VS 2022)
-- Build the `U7Revisited` project in the solution
-- Run the program
+- Make sure you have the [Meson Build system](https://mesonbuild.com/) installed
+- Run `meson setup build`, or if you want to generate a Visual Studio project, `meson setup --backend vs build`
+- Run `meson compile -C build` to build the project
+- Go to `build/` directory and run the `u7revisited` program
 
 ## Controls:
 

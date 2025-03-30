@@ -11,6 +11,7 @@
 #define _SHAPEDATA_H_
 
 #include <vector>
+#include "Geist/RaylibModel.h"
 
 struct Texture;
 
@@ -167,7 +168,7 @@ public:
 
 	std::string m_customMeshName;
 
-	Model* m_customMesh = nullptr;
+	RaylibModel* m_customMesh = nullptr;
 
 	bool m_meshOutline = true;
 };

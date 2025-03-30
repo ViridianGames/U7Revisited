@@ -3,6 +3,7 @@
 
 #include "Geist/State.h"
 #include "Geist/Gui.h"
+#include "Geist/RaylibModel.h"
 #include <list>
 #include <deque>
 #include <math.h>
@@ -34,7 +35,7 @@ public:
       
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
-   std::map<std::string, std::unique_ptr<Model>>::iterator m_modelIndex;
+   std::map<std::string, std::unique_ptr<RaylibModel>>::iterator m_modelIndex;
    bool m_rotating = false;
    bool m_tileX = false;
    bool m_tileZ = false;

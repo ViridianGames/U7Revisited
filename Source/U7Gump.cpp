@@ -2,12 +2,12 @@
 #include <string>
 #include <sstream>
 
-#include "Globals.h"
-#include "Engine.h"
 #include "U7Gump.h"
+#include "Geist/Config.h"
+#include "Geist/Engine.h"
+#include "Geist/Globals.h"
+#include "Geist/ResourceManager.h"
 #include "U7Globals.h"
-#include "ResourceManager.h"
-#include "Config.h"
 
 #include "raylib.h"
 

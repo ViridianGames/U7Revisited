@@ -7,7 +7,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
-#include "include/glad.h"
+#include "external/glad.h"
 
 #include "Geist/Globals.h"
 #include "Geist/ResourceManager.h"
@@ -683,6 +683,8 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	{
+      m_customMesh->UpdateAnim("idle");
+
       if (m_meshOutline)
       {
          glClearStencil(0);
@@ -692,14 +694,14 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
          // Step 1: Draw the original model, mark stencil with 1
          glStencilFunc(GL_ALWAYS, 1, 0xFF);
          glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-         DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+         DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 
          // Step 2: Draw the outline where stencil is not 1
          glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
          glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
          // Get the bounding box to find the model's center
-         BoundingBox boundingBox = GetModelBoundingBox(*m_customMesh);
+         BoundingBox boundingBox = GetModelBoundingBox(m_customMesh->GetModel());
          Vector3 size = Vector3 {
             fabs(boundingBox.max.x - boundingBox.min.x),
             fabs(boundingBox.max.y - boundingBox.min.y),
@@ -738,14 +740,14 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
          // Draw the outline with the adjusted position
          glDepthMask(GL_FALSE);
-         DrawModelEx(*m_customMesh, outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+         DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
          glDepthMask(GL_TRUE);
 
          glDisable(GL_STENCIL_TEST);
       }
 		else
 		{
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 		}
 		break;
 	}
