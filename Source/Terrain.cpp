@@ -81,7 +81,7 @@ void Terrain::Init()
 	mapSize[0] = 192.0f * float(meshSizeX);
 	mapSize[1] = 192.0f * float(meshSizeY);
 	m_schunkRadius = sqrt(calcSquare(double(meshSizeX) * 16.0f, 2) + calcSquare(double(meshSizeY) * 16.0f, 2)) * 0.5f;
-	m_chunkRadius = sqrt(calcSquare(double(meshSizeX), 2) + calcSquare(double(meshSizeY), 2)) * 0.5f;
+	m_chunkRadius = sqrt(calcSquare(double(meshSizeX), 2) + calcSquare(double(meshSizeY), 2)) * 0.75f;
    // Create the chunk database
 
    //  Create a mesh for each chunk
@@ -299,7 +299,7 @@ void Terrain::FindVisibleChunks()
 	Vector3 vecRGT = { viewMat.m0, viewMat.m4, viewMat.m8 };
 	Vector3 vecUP = { viewMat.m1, viewMat.m5, viewMat.m9 };
 	float foView = 1.7777777777777777777777777777778 * g_camera.fovy;
-	float halfFOVy = DEG2RAD((g_camera.fovy * 0.5f));
+	float halfFOVy = DEG2RAD((g_camera.fovy * 0.75f));
 	float cosHalfFOVy = cos(halfFOVy);
 	float tanHalfFOVy = tan(halfFOVy);
 	float chunkYD = m_chunkRadius / cosHalfFOVy;
