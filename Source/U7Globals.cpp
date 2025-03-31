@@ -66,6 +66,7 @@ float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
 Shader g_alphaDiscard;
+Shader g_lightingShader;
 
 bool g_pixelated = false;
 RenderTexture2D g_renderTarget;

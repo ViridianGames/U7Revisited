@@ -240,6 +240,7 @@ extern int g_selectedShape;
 extern int g_selectedFrame;
 
 extern Shader g_alphaDiscard;
+extern Shader g_lightingShader;
 
 extern bool g_pixelated;
 extern RenderTexture2D g_renderTarget;

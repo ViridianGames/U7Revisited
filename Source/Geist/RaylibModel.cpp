@@ -82,6 +82,14 @@ RaylibModel& RaylibModel::Decenter()
 	return *this;
 }
 
+RaylibModel& RaylibModel::SetShader(Shader shader)
+{
+	for (int i = 0; i < m_Model.materialCount; ++i) {
+		m_Model.materials[i].shader = shader;
+	}
+	return *this;
+}
+
 void RaylibModel::UpdateAnim(const std::string& animName) {
 	int animIdx = -1;
 	unsigned int currentFrame = 0;

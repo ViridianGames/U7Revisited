@@ -44,9 +44,21 @@ int main(int argv, char** argc)
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
 
+      g_lightingShader =
+          LoadShader("Data/Shaders/lighting.vs", "Data/Shaders/lighting.fs");
+      g_lightingShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(g_lightingShader, "viewPos");
+      // Set up directional light
+      int lightDirLoc = GetShaderLocation(g_lightingShader, "lightDir");
+      Vector3 lightDir = {-2.0f, -4.0f, -2.0f};
+      SetShaderValue(g_lightingShader, lightDirLoc, &lightDir, SHADER_UNIFORM_VEC3);
+
+      Vector3 ambientLight = {0.2f, 0.2f, 0.2f};
+      int ambientLoc = GetShaderLocation(g_lightingShader, "ambient");
+      SetShaderValue(g_lightingShader, ambientLoc, &ambientLight, SHADER_UNIFORM_VEC3);
+
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
-      
+
 
       g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
       g_cameraRotation = 0.0f;

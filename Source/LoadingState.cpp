@@ -896,15 +896,34 @@ void LoadingState::LoadModels()
 		if (m_Filename.length() == 0)
 			continue;
 
-		// Look for the file, try a glTF...
-		std::string modelPath = "Models/3dmodels/" + m_Filename + std::string(".gltf");
-		if (!FileExists(modelPath.c_str()))
-		{
-			// Then an OBJ.
-			modelPath = "Models/3dmodels/" + m_Filename + std::string(".obj");
-		}
+		std::string gltfPath = "Models/3dmodels/" + m_Filename + std::string(".gltf");
+		std::string objPath = "Models/3dmodels/" + m_Filename + std::string(".obj");
 
-		g_ResourceManager->AddModel(std::move(RaylibModel(modelPath.c_str()).Decenter()), modelPath);
+		if (FileExists(gltfPath.c_str()))
+		{
+			// Load a glTF model. These tend to be animated somehow so they
+			// won't have pre-baked lighting. Assign a lighting shader to
+			// them.
+			g_ResourceManager->AddModel(
+					std::move(RaylibModel(gltfPath.c_str())
+						.Decenter()
+						.SetShader(g_lightingShader)), gltfPath);
+		}
+		else if (FileExists(objPath.c_str()))
+		{
+			// Load a Wavefront model. These are assumed to have pre-baked
+			// shading so they don't get the shader applied.
+			//
+			// XXX: We might want to have some system for explicitly tagging
+			// baked vs unbaked models in the future instead of just going by
+			// file extension.
+			g_ResourceManager->AddModel(
+					std::move(RaylibModel(objPath.c_str()).Decenter()), objPath);
+		}
+		else
+		{
+			Log("Model not found: " + m_Filename);
+		}
 	}
 }
 
