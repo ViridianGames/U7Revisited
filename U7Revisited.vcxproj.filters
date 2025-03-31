@@ -96,6 +96,12 @@
     <ClCompile Include="Source\U7Gump.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ConversationState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Geist\RaylibModel.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
@@ -183,6 +189,12 @@
       <Filter>Source\Geist</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7Gump.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ConversationState.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Geist\RaylibModel.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

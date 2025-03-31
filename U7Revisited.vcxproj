@@ -14,6 +14,7 @@
     <None Include="Redist\Data\engine.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ConversationState.cpp" />
     <ClCompile Include="Source\Geist\BaseUnits.cpp" />
     <ClCompile Include="Source\Geist\Config.cpp" />
     <ClCompile Include="Source\Geist\Engine.cpp" />
@@ -25,6 +26,7 @@
     <ClCompile Include="Source\Geist\Logging.cpp" />
     <ClCompile Include="Source\Geist\ParticleSystem.cpp" />
     <ClCompile Include="Source\Geist\Primitives.cpp" />
+    <ClCompile Include="Source\Geist\RaylibModel.cpp" />
     <ClCompile Include="Source\Geist\ResourceManager.cpp" />
     <ClCompile Include="Source\Geist\RNG.cpp" />
     <ClCompile Include="Source\Geist\StateMachine.cpp" />
@@ -44,6 +46,7 @@
     <ClCompile Include="Source\WorldEditorState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ConversationState.h" />
     <ClInclude Include="Source\Geist\BaseUnits.h" />
     <ClInclude Include="Source\Geist\Config.h" />
     <ClInclude Include="Source\Geist\Engine.h" />
@@ -56,6 +59,7 @@
     <ClInclude Include="Source\Geist\Object.h" />
     <ClInclude Include="Source\Geist\ParticleSystem.h" />
     <ClInclude Include="Source\Geist\Primitives.h" />
+    <ClInclude Include="Source\Geist\RaylibModel.h" />
     <ClInclude Include="Source\Geist\ResourceManager.h" />
     <ClInclude Include="Source\Geist\RNG.h" />
     <ClInclude Include="Source\Geist\State.h" />
