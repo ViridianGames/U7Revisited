@@ -35,6 +35,7 @@ executable('U7Revisited',
   'Source/Geist/StateMachine.cpp',
   'Source/Geist/TooltipSystem.cpp',
 
+  'Source/ConversationState.cpp',
   'Source/LoadingState.cpp',
   'Source/Main.cpp',
   'Source/MainState.cpp',

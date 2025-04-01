@@ -20,6 +20,9 @@ public:
 	/// Displace model to northwest quadrant from origin.
 	RaylibModel& Decenter();
 
+	/// Assign a shader to the model.
+	RaylibModel& SetShader(Shader shader);
+
 	void UpdateAnim(const std::string& animName);
 private:
 	Model m_Model = {{ 0 }};
