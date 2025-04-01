@@ -321,6 +321,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/u7revisited</output>
           <linkerLibItems>
             <linkerLibFileItem>raylib/lib/libraylib.a</linkerLibFileItem>
           </linkerLibItems>

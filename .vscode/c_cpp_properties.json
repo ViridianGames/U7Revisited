@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/Source",
+                "${workspaceFolder}/Source/Geist",
+                "${workspaceFolder}/ThirdParty/raylib/include",
+                "${workspaceFolder}/ThirdParty/raylib/external"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",  // Updated from c++14 to c++17
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

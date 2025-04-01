@@ -98,3 +98,17 @@ Sign_361x7
 Sign_361x8
 Sign_361x9
 mill-stone
+Candle_336x0
+Candle_336x1
+Candle_336x2
+Candle_336x3
+Candle_336x4
+Candle_336x5
+Candle_336x7
+Candle_336x10
+Candle_336x11
+Candle_336x12
+Candle_336x13
+Candle_336x14
+Candle_336x15
+
