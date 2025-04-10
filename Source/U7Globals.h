@@ -39,6 +39,7 @@ enum GameStates
 	STATE_OBJECTEDITORSTATE,
 	STATE_WORLDEDITORSTATE,
 	STATE_CREDITS,
+        STATE_CONVERSATIONSTATE,
 	STATE_LASTSTATE
 };
 
@@ -105,7 +106,7 @@ extern Vector3 g_Gravity;
 extern Texture* g_Cursor;
 
 extern std::shared_ptr<Font> g_Font;
-//extern std::shared_ptr<Font> g_SmallFont;
+extern std::shared_ptr<Font> g_SmallFont;
 
 extern float g_fontSize;
 //extern float g_smallFontSize;
@@ -128,6 +129,8 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
 
+extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
+
 extern unsigned int g_minimapSize;
 
 extern std::vector< std::vector<unsigned short> > g_World;
@@ -144,7 +147,7 @@ void IsCellVisible(float x, float y);
 
 void IsPointVisible(float x, float y);
 
-std::shared_ptr<U7Object> GetPointerFromID(int unitID);
+std::shared_ptr<U7Object> GetObjectFromID(int unitID);
 
 std::shared_ptr<U7Object> U7ObjectClassFactory(int type);
 
@@ -156,7 +159,12 @@ Vector3 GetRadialVector(float partitions, float thispartition);
 
 void AddObject(int shapenum, int framenum, int id, float x, float y, float z);
 
+void AddObjectToContainer(int objectID, int containerID);
+
 unsigned int GetNextID();
+
+bool WasLMBDoubleClicked();
+bool WasRMBDoubleClicked();
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE
@@ -212,6 +220,10 @@ extern std::shared_ptr<Sprite> g_ActiveButtonR;
 extern std::shared_ptr<Sprite> g_LeftArrow;
 extern std::shared_ptr<Sprite> g_RightArrow;
 
+extern std::shared_ptr<Sprite> g_gumpBackground;
+extern std::shared_ptr<Sprite> g_gumpCheckmarkUp;
+extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
+
 extern Color g_Red;
 extern Color g_Blue;
 extern Color g_Pink;
@@ -229,8 +241,9 @@ extern int g_selectedFrame;
 
 extern Shader g_alphaDiscard;
 
-extern bool m_pixelated;
-extern RenderTexture2D	m_renderTarget;
+extern bool g_pixelated;
+extern RenderTexture2D g_renderTarget;
+extern RenderTexture2D g_guiRenderTarget;
 
 
 //////////////////////////////////////////////////////////////////////////////

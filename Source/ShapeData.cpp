@@ -102,15 +102,6 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	}
 
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
-
-	if (m_frameCount > 1)
-	{
-		m_isAnimated = true;
-	}
-	else
-	{
-		m_isAnimated = false;
-	}
 }
 
 void ShapeData::SetDefaultTexture(Image image)
@@ -227,8 +218,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_customMeshName;
 	inStream >> m_meshOutline;
 
-	inStream >> m_useShapePointer;
-	inStream >> m_frameCount;
+	inStream >>  m_useShapePointer;
 	inStream >> m_pointerShape;
 	inStream >> m_pointerFrame;
 
@@ -654,6 +644,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 				DrawModelEx(m_cuboidModels[static_cast<int>(distances[i].first)], finalPos, Vector3{ 0, 1, 0 }, angle, cuboidScaling, WHITE);
 			}
 		}
+
 		break;
 	}
 
@@ -681,50 +672,82 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		finalPos = pos;
 		finalPos.x += .5f;
 		finalPos.z += .5f;
-		// affects if it lines up with base
 		finalPos.y += m_Dims.y * .60f;
 
-		
 		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera,          //Camera camera
-			m_originalTexture->m_Texture,   //Texture2D texture,
-			Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, 
-			finalPos,                       //Vector3 position
-			Vector3{ 0, 1, 0 },             //Vector3 up
-			Vector2{ m_Dims.x, m_Dims.y },  //Vector2 size
-			Vector2{ 0, 0 },                //Vector2 origin
-			-45,                            //float rotation
-			color);                         //Color tint
+		DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{ 0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
+			Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
 		EndShaderMode();
 		break;
 	}
 
 	case ShapeDrawType::OBJECT_DRAW_CUSTOM_MESH:
 	{
-		if (m_meshOutline)
-		{
-			glClearStencil(0);
-			glClear(GL_STENCIL_BUFFER_BIT);
-			glEnable(GL_STENCIL_TEST);
-			glStencilFunc(GL_ALWAYS, 1, -1);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+      m_customMesh->UpdateAnim("idle");
 
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+      if (m_meshOutline)
+      {
+         glClearStencil(0);
+         glClear(GL_STENCIL_BUFFER_BIT);
+         glEnable(GL_STENCIL_TEST);
 
-			glStencilFunc(GL_NOTEQUAL, 1, -1);
-			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			glLineWidth(2.5f * g_DrawScale);
-			glEnable(GL_LINE_SMOOTH);
-			glPolygonMode(GL_FRONT, GL_LINE);
+         // Step 1: Draw the original model, mark stencil with 1
+         glStencilFunc(GL_ALWAYS, 1, 0xFF);
+         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+         DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, BLACK);
+         // Step 2: Draw the outline where stencil is not 1
+         glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glDisable(GL_STENCIL_TEST);
-		}
+         // Get the bounding box to find the model's center
+         BoundingBox boundingBox = GetModelBoundingBox(m_customMesh->GetModel());
+         Vector3 size = Vector3 {
+            fabs(boundingBox.max.x - boundingBox.min.x),
+            fabs(boundingBox.max.y - boundingBox.min.y),
+            fabs(boundingBox.max.z - boundingBox.min.z)
+         };
+         // Calculate the local center of the model (unscaled)
+         Vector3 localCenter = Vector3 {
+            (boundingBox.min.x + boundingBox.max.x) / 2.0f,
+            (boundingBox.min.y + boundingBox.max.y) / 2.0f,
+            (boundingBox.min.z + boundingBox.max.z) / 2.0f
+         };
+
+         // Fixed outline thickness in world space
+         float outlineThickness = 0.075f;
+
+         // Calculate the outline scale
+         Vector3 outlineScale = Vector3 {
+            m_Scaling.x + (outlineThickness / size.x) * 2.0f,
+            m_Scaling.y + (outlineThickness / size.y) * 2.0f,
+            m_Scaling.z + (outlineThickness / size.z) * 2.0f
+         };
+
+         // Adjust position to compensate for the pivot offset when scaling
+         Vector3 scaledCenter = Vector3 {
+            localCenter.x * m_Scaling.x,
+            localCenter.y * m_Scaling.y,
+            localCenter.z * m_Scaling.z
+         };
+         Vector3 outlineScaledCenter = Vector3 {
+            localCenter.x * outlineScale.x,
+            localCenter.y * outlineScale.y,
+            localCenter.z * outlineScale.z
+         };
+         Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
+         Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
+
+         // Draw the outline with the adjusted position
+         glDepthMask(GL_FALSE);
+         DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
+         glDepthMask(GL_TRUE);
+
+         glDisable(GL_STENCIL_TEST);
+      }
 		else
 		{
-			DrawModelEx(*m_customMesh, finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 		}
 		break;
 	}

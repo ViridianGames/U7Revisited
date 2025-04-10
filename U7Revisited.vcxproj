@@ -14,16 +14,19 @@
     <None Include="Redist\Data\engine.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ConversationState.cpp" />
     <ClCompile Include="Source\Geist\BaseUnits.cpp" />
     <ClCompile Include="Source\Geist\Config.cpp" />
     <ClCompile Include="Source\Geist\Engine.cpp" />
     <ClCompile Include="Source\Geist\Globals.cpp" />
     <ClCompile Include="Source\Geist\Gui.cpp" />
-    <ClCompile Include="Source\Geist\GUIElements.cpp" />
+    <ClCompile Include="Source\Geist\GuiElements.cpp" />
+    <ClCompile Include="Source\Geist\GuiManager.cpp" />
     <ClCompile Include="Source\Geist\IO.cpp" />
     <ClCompile Include="Source\Geist\Logging.cpp" />
     <ClCompile Include="Source\Geist\ParticleSystem.cpp" />
     <ClCompile Include="Source\Geist\Primitives.cpp" />
+    <ClCompile Include="Source\Geist\RaylibModel.cpp" />
     <ClCompile Include="Source\Geist\ResourceManager.cpp" />
     <ClCompile Include="Source\Geist\RNG.cpp" />
     <ClCompile Include="Source\Geist\StateMachine.cpp" />
@@ -38,21 +41,25 @@
     <ClCompile Include="Source\Terrain.cpp" />
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
+    <ClCompile Include="Source\U7Gump.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\WorldEditorState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ConversationState.h" />
     <ClInclude Include="Source\Geist\BaseUnits.h" />
     <ClInclude Include="Source\Geist\Config.h" />
     <ClInclude Include="Source\Geist\Engine.h" />
     <ClInclude Include="Source\Geist\Globals.h" />
     <ClInclude Include="Source\Geist\Gui.h" />
-    <ClInclude Include="Source\Geist\GUIElements.h" />
+    <ClInclude Include="Source\Geist\GuiElements.h" />
+    <ClInclude Include="Source\Geist\GuiManager.h" />
     <ClInclude Include="Source\Geist\IO.h" />
     <ClInclude Include="Source\Geist\Logging.h" />
     <ClInclude Include="Source\Geist\Object.h" />
     <ClInclude Include="Source\Geist\ParticleSystem.h" />
     <ClInclude Include="Source\Geist\Primitives.h" />
+    <ClInclude Include="Source\Geist\RaylibModel.h" />
     <ClInclude Include="Source\Geist\ResourceManager.h" />
     <ClInclude Include="Source\Geist\RNG.h" />
     <ClInclude Include="Source\Geist\State.h" />
@@ -67,6 +74,7 @@
     <ClInclude Include="Source\Terrain.h" />
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
+    <ClInclude Include="Source\U7Gump.h" />
     <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\WorldEditorState.h" />
   </ItemGroup>
@@ -118,7 +126,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;WITH_WINMM;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;ThirdParty\nlohmann;ThirdParty\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -140,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;PLATFORM_DESKTOP;GRAPHICS_API_OPENGL_33;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;ThirdParty\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>

@@ -11,18 +11,18 @@ will allow the replacement engine to read in the maps and graphics from the orig
 - Locate your Ultima 7 game files (eg. `C:\Program Files (x86)\GOG Galaxy\Games\Ultima 7`)
 ![Typical GoG U7 folder](./screenshots/install-1.png)
 
-- Copy ALL of these files, folders and subfolders into `./resources/Data/U7` (*hint: look for the `U7.txt` file*)
+- Copy ALL of these files, folders and subfolders into `./Data/U7` (*hint: look for the `U7.txt` file*)
 ![Project U7 Data folder](./screenshots/install-2.png)
 
 
-## Developer Installation Notes (Windows)
+## Developer Installation Notes
 
 - Clone the project into a local folder using whatever git interface you prefer
-- Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Resources/Data/U7`
-- Open `./U7Revisited.sln` in Visual Studio (I'm currently using VS 2022)
-- To run the Debugger, in the Project Properties for `U7Revisited` make sure the `Working Directory` is set to `$(SolutionDir)/Resources`
-- Build the `U7Revisited` project in the solution
-- Run the program
+- Copy the entire contents of your original DOS ULTIMA7 directory to `$(SolutionDir)/Redist/Data/U7/`
+- Make sure you have the [Meson Build system](https://mesonbuild.com/) installed
+- Run `meson setup build`, or if you want to generate a Visual Studio project, `meson setup --backend vs build`
+- Run `meson compile -C build` to build the project
+- Go to `build/` directory and run the `u7revisited` program
 
 ## Controls:
 

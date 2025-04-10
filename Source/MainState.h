@@ -10,13 +10,13 @@
 class ParticleSystem;
 class Gui;
 class GuiElement;
+class GuiManager;
 
 class MainState : public State
 {
 public:
    MainState(){};
    ~MainState();
-
 
    virtual void Init(const std::string& configfile);
    virtual void Shutdown();
@@ -28,13 +28,15 @@ public:
    
    void SetupGame();
 
+   void OpenGump(int id);
 
-   
    Gui* m_Gui;
    Gui* m_SpellsPanel;
    Gui* m_ArmyPanel;
    
    Gui* m_OptionsGui;
+
+   Gui* m_toolTipGui;
    
    GuiElement* m_ManaBar;
 
@@ -73,11 +75,13 @@ public:
 
    unsigned int m_terrainDrawHeight = 0;
 
-   std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
-
    unsigned int m_selectedObject = 0;
 
    float m_heightCutoff = 4.0f;
+
+   bool m_isPopupShowing = false;  //  If true, the game is paused and a popup is showing
+
+   std::unique_ptr<GuiManager> m_GuiManager;
 };
 
 #endif

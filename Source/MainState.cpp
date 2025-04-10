@@ -4,10 +4,12 @@
 #include "Geist/ParticleSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
+#include "Geist/GuiManager.h"
 #include "Geist/Engine.h"
 #include "U7Globals.h"
 #include "MainState.h"
 #include "rlgl.h"
+#include "U7Gump.h"
 
 #include <list>
 #include <string>
@@ -50,13 +52,7 @@ void MainState::Init(const string& configfile)
 
 	m_ManaBar = m_Gui->GetElement(1003).get();
 
-	m_Gui->m_Scale = float(GetRenderHeight()) / float(m_Gui->m_Height);
-
-	m_SpellsPanel = new Gui();
-
-	m_SpellsPanel->SetLayout(0, 0, 138, 384, g_DrawScale, Gui::GUIP_UPPERRIGHT);
-
-	m_SpellsPanel->m_Scale = float(GetRenderHeight()) / float(m_Gui->m_Height);
+	m_Gui->m_InputScale = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
 
 	m_OptionsGui = new Gui();
 
@@ -84,8 +80,7 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
-	m_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
-	SetTextureFilter(m_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
+	m_GuiManager = make_unique<GuiManager>();
 
 	SetupGame();
 
@@ -101,6 +96,7 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
 	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
+	//AddConsoleString(std::string("TOO HEAVY"));
 }
 
 void MainState::OnExit()
@@ -110,7 +106,9 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-	UnloadRenderTexture(m_renderTarget);
+	UnloadRenderTexture(g_guiRenderTarget);
+	UnloadRenderTexture(g_renderTarget);
+	
 }
 
 void MainState::Update()
@@ -125,7 +123,7 @@ void MainState::Update()
 
 		if (m_showObjects)
 		{
-			m_sortedVisibleObjects.clear();
+			g_sortedVisibleObjects.clear();
 			float drawRange = g_cameraDistance * 1.5f;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
@@ -138,12 +136,12 @@ void MainState::Update()
 				{
 					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
 					(*node).second->m_distanceFromCamera = distanceFromCamera;
-					m_sortedVisibleObjects.push_back((*node).second);
+					g_sortedVisibleObjects.push_back((*node).second);
 					m_numberofDrawnUnits++;
 				}
 			}
 
-			std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 		}
 
 		m_LastUpdate = GetTime();
@@ -154,6 +152,7 @@ void MainState::Update()
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->Update();
 	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+	m_GuiManager->Update();
 
 	//  Handle special keyboard keys
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -197,15 +196,17 @@ void MainState::Update()
 
 	if (IsKeyPressed(KEY_SPACE))
 	{
-		m_pixelated = !m_pixelated;
+		g_pixelated = !g_pixelated;
 	}
 
-	//  Get terrain hit for highlight mesh
-	if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-	{
-		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
-		for (node = m_sortedVisibleObjects.rbegin(); node != m_sortedVisibleObjects.rend(); ++node)
+	if (WasRMBDoubleClicked())
+	{
+		//AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+      
+      std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
 			if (*node == nullptr || !(*node)->m_Visible)
 			{
@@ -220,21 +221,96 @@ void MainState::Update()
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				m_selectedObject = (*node)->m_ID;
 
-				AddConsoleString("Selected Object: " + to_string(g_selectedShape) + " Frame: " + to_string(g_selectedFrame));
-
+				if ((*node)->m_hasConversationTree)
+				{
+					g_StateMachine->PushState(STATE_CONVERSATIONSTATE);//OpenGump((*node)->m_ID);
+				}
 				break;
 			}
 		}
 	}
 
-	//UpdateCamera(&g_camera, CAMERA_THIRD_PERSON);
+	if (WasLMBDoubleClicked())
+	{
+		//AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
+
+		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		{
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
+
+			bool picked = (*node)->Pick();
+
+			if (picked)
+			{
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				m_selectedObject = (*node)->m_ID;
+
+				if ((*node)->m_isContainer)
+				{
+					OpenGump((*node)->m_ID);
+				}
+				break;
+			}
+		}
+	}
+
+	//  Get terrain hit for highlight mesh
+	else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+	{
+		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		{
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
+
+			bool picked = (*node)->Pick();
+
+			if (picked)
+			{
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				m_selectedObject = (*node)->m_ID;
+
+				break;
+			}
+		}
+	}
+}
+
+void MainState::OpenGump(int id)
+{
+	shared_ptr<Gump> gumpGui = make_shared<Gump>();
+
+	int posx = int(g_NonVitalRNG->Random(150));
+	int posy = int(g_NonVitalRNG->Random(150));
+
+	gumpGui->m_Font = g_SmallFont;
+	gumpGui->SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
+	gumpGui->AddSprite(1004, 0, 0, g_gumpBackground, 1.0f, 1.0f, Color{ 255, 255, 255, 255 });
+	gumpGui->AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, false);
+	gumpGui->SetDoneButtonId(1005);
+	gumpGui->m_Draggable = true;
+	gumpGui->LinkContainer(id);
+
+        std::shared_ptr<Gui> guiPtr = std::dynamic_pointer_cast<Gui>(gumpGui);
+        
+	m_GuiManager->AddGui(guiPtr);
 }
 
 void MainState::Draw()
 {
-	if (m_pixelated)
+	if (g_pixelated)
 	{
-		BeginTextureMode(m_renderTarget);
+		BeginTextureMode(g_renderTarget);
 	}
 
 	ClearBackground(Color{ 0, 0, 0, 255 });
@@ -251,7 +327,7 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
-		for (auto& unit : m_sortedVisibleObjects)
+		for (auto& unit : g_sortedVisibleObjects)
 		{
 			unit->Draw();
 			++m_numberofDrawnUnits;
@@ -260,39 +336,58 @@ void MainState::Draw()
 
 	EndMode3D();
 
-	if (m_pixelated)
+	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
+	if (g_pixelated)
 	{
-		float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
-		//EndDrawing();
+		
 		EndTextureMode();
-		//BeginDrawing();
-		DrawTexturePro(m_renderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2)}, {0, 0}, 0, WHITE);
+		DrawTexturePro(g_renderTarget.texture,
+			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
+			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+			{ 0, 0 }, 0, WHITE);
 	}
 
+	//  Draw the GUI
+	BeginTextureMode(g_guiRenderTarget);
+	ClearBackground({0, 0, 0, 0});
+
 	//  Draw the minimap and marker
-	DrawTexturePro(*m_Minimap, Rectangle{ 0, 0, float(m_Minimap->width), float(m_Minimap->height) }, Rectangle{ float(GetRenderWidth() - g_minimapSize), 0, float(g_minimapSize), float(g_minimapSize) }, Vector2{ 0, 0 }, 0, WHITE);
-
-	float _ScaleX = g_minimapSize / float(g_Terrain->m_width);
-	float _ScaleZ = g_minimapSize / float(g_Terrain->m_height);
-
-	float pointer = float(g_minimapSize) / float(m_MinimapArrow->width);
-
-	DrawTexturePro(*m_MinimapArrow, Rectangle{ 0, 0, float(m_MinimapArrow->width), float(m_MinimapArrow->height) },
-		Rectangle{ float(GetRenderWidth() - g_minimapSize) + ((g_camera.target.x) * _ScaleX) - (pointer / 2), ((g_camera.target.z) * _ScaleZ) - (pointer / 2), pointer, pointer}, Vector2{0, 0}, 0, WHITE);
 
 	DrawConsole();
 
 	//  Draw XY coordinates below the minimap
 	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
 	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
-	DrawTextEx(*g_Font, minimapXY.c_str(), Vector2{ GetScreenWidth() * .85f, GetScreenHeight() * .30f }, g_fontSize, 1, WHITE);
+	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f }, g_SmallFont->baseSize, 1, WHITE);
 
 	//  Draw version number in lower-right
-	DrawTextEx(*g_Font, g_version.c_str(), Vector2{GetRenderWidth() * .92f, GetRenderHeight() * .94f}, g_fontSize, 1, WHITE);
+	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
-	DrawTexture(*g_Cursor, GetMouseX(), GetMouseY(), WHITE);
+	m_GuiManager->Draw();
 
-	//DrawFPS(10, 300);
+	//  Draw any tooltips
+	EndTextureMode();
+	DrawTexturePro(g_guiRenderTarget.texture,
+		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
+		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+		{ 0, 0 }, 0, WHITE);
+
+	//DrawTexturePro(g_guiRenderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2) }, { 0, 0 }, 0, WHITE);
+
+	DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
+	//DrawTexture(*m_Minimap, g_Engine->m_RenderWidth - float(m_Minimap->width), 0, WHITE);
+
+	float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
+	float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
+
+	float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
+
+	DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
+
+	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale , WHITE);
+	
+
+	DrawFPS(10, 300);
 
 	EndDrawing();
 }
@@ -304,4 +399,9 @@ void MainState::SetupGame()
 	int height = 3072;
 	g_Terrain->Init();
 }
+
+//void MainState::CreateTooltip()
+//{
+//
+//}
 

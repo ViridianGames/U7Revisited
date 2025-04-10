@@ -20,7 +20,7 @@ Texture* g_Cursor;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
-//std::shared_ptr<Font> g_SmallFont;
+std::shared_ptr<Font> g_SmallFont;
 
 //float g_smallFontSize = 8;
 float g_fontSize = 16;
@@ -60,13 +60,16 @@ std::unordered_map<int, int[16][16]> g_ChunkTypeList;  // The 16x16 tiles for ea
 int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
+std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
+
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
 Shader g_alphaDiscard;
 
-bool m_pixelated = false;
-RenderTexture2D m_renderTarget;
+bool g_pixelated = false;
+RenderTexture2D g_renderTarget;
+RenderTexture2D g_guiRenderTarget;
 
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
@@ -203,10 +206,10 @@ if (IsKeyDown(KEY_E))
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(GetRenderWidth() - g_minimapSize, 0, g_minimapSize, g_minimapSize))
+	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale))
 	{
-		float minimapx = float(GetMouseX() - (GetRenderWidth() - g_minimapSize)) / float(g_minimapSize) * 3072;
-		float minimapy = float(GetMouseY()) / float(g_minimapSize) * 3072;
+		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
+		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
 
 		g_camera.target = Vector3{ minimapx, 0, minimapy };
 		g_CameraMoved = true;
@@ -273,7 +276,7 @@ if (IsKeyDown(KEY_E))
 	return 0;
 }
 
-shared_ptr<U7Object> GetPointerFromID(int unitID)
+shared_ptr<U7Object> GetObjectFromID(int unitID)
 {
 	unordered_map<int, shared_ptr<U7Object> >::iterator finder = g_ObjectList.find(unitID);
 
@@ -330,6 +333,19 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 	g_ObjectList[id] = temp;
 }
 
+void AddObjectToInventory(int objectId, int containerId)
+{
+	shared_ptr<U7Object> object = GetObjectFromID(objectId);
+	shared_ptr<U7Object> container = GetObjectFromID(containerId);
+
+	if (object == nullptr || container == nullptr)
+	{
+		return;
+	}
+
+	container->AddObjectToInventory(objectId);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE
 //////////////////////////////////////////////////////////////////////////////
@@ -365,7 +381,7 @@ void DrawConsole()
 {
 	int counter = 0;
 	vector<ConsoleString>::iterator node = g_ConsoleStrings.begin();
-	float shadowOffset = GetRenderWidth() / 850.0f;
+	float shadowOffset = 1;
 	if (shadowOffset < 1)
 	{
 		shadowOffset = 1;
@@ -385,8 +401,8 @@ void DrawConsole()
 
 		if (elapsed < 10)
 		{
-			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_Font->baseSize + 2) + shadowOffset }, g_fontSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
-			DrawTextEx(*g_Font, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_Font->baseSize + 2)) }, g_fontSize, 1, (*node).m_Color);
+			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_SmallFont->baseSize + 2) + shadowOffset }, g_SmallFont->baseSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
+			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_SmallFont->baseSize + 2)) }, g_SmallFont->baseSize, 1, (*node).m_Color);
 
 		}
 		++counter;
@@ -404,6 +420,19 @@ void DrawConsole()
 			++node;
 		}
 	}
+}
+
+void AddObjectToContainer(int objectID, int containerID)
+{
+	shared_ptr<U7Object> object = GetObjectFromID(objectID);
+	shared_ptr<U7Object> container = GetObjectFromID(containerID);
+
+	if (object == nullptr || container == nullptr)
+	{
+		return;
+	}
+
+	container->AddObjectToInventory(objectID);
 }
 
 float g_DrawScale;
@@ -430,6 +459,10 @@ shared_ptr<Sprite> g_ActiveButtonR;
 shared_ptr<Sprite> g_LeftArrow;
 shared_ptr<Sprite> g_RightArrow;
 
+shared_ptr<Sprite> g_gumpBackground;
+shared_ptr<Sprite> g_gumpCheckmarkUp;
+shared_ptr<Sprite> g_gumpCheckmarkDown;
+
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;
@@ -438,4 +471,54 @@ EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
 
+bool WasLMBDoubleClicked()
+{
+	static bool lmblastState = false;
+	static float lmblastTime = 0;
 
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		if (lmblastState == false)
+		{
+			lmblastState = true;
+			lmblastTime = GetTime();
+		}
+	}
+	else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))  // if (IsMouseButtonPressed
+	{
+		if (GetTime() - lmblastTime < .25f)
+		{
+			lmblastState = false;
+			return true;
+		}
+		lmblastState = false;
+	}
+
+	return false;
+}
+
+bool WasRMBDoubleClicked()
+{
+	static bool rmblastState = false;
+	static float rmblastTime = 0;
+
+	if (IsMouseButtonReleased(MOUSE_RIGHT_BUTTON))
+	{
+		if (rmblastState == false)
+		{
+			rmblastState = true;
+			rmblastTime = GetTime();
+		}
+	}
+	else if(IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))  // if (IsMouseButtonPressed
+	{
+		if (GetTime() - rmblastTime < .25f)
+		{
+			rmblastState = false;
+			return true;
+		}
+		rmblastState = false;
+	}
+
+	return false;
+}

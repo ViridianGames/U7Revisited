@@ -3,10 +3,7 @@
 // Name:     MAIN.CPP
 // Author:   Anthony Salter
 // Date:     2/03/05
-// Purpose:  Contains the Windows-specific WinMain() function, which
-//           defines the entry point of the program, and the WndProc()
-//           function, which controls the handling of Windows-specific
-//           events.  The WinMain() contains the game's main loop.
+// Purpose:  Contains the entry point for the program.
 //
 /////////////////////////////////////////////////////////////////////////// 
 
@@ -15,6 +12,7 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
 #include "Geist/Primitives.h"
+#include "Geist/GuiManager.h"
 #include "Geist/Logging.h"
 #include "raylib.h"
 #include "U7Globals.h"
@@ -25,6 +23,7 @@
 #include "ObjectEditorState.h"
 #include "ShapeEditorState.h"
 #include "WorldEditorState.h"
+#include "ConversationState.h"
 #include "ShapeData.h"
 #include <string>
 #include <sstream>
@@ -55,9 +54,9 @@ int main(int argv, char** argc)
       //  Pick a random initial location
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(GetTime() * 1000);
-      int x = g_VitalRNG->Random(6);
+      int x = g_VitalRNG->Random(7);
 
-      switch (6)
+      switch (x)
       {
          case 0: //  Staring Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
@@ -87,6 +86,10 @@ int main(int argv, char** argc)
             g_camera.target = Vector3{ 1064.0f, 0.0f, 2247.0f };
             break;
 
+         case 7:
+            g_camera.target = Vector3{ 965.0f, 0.0f, 2291.0f };
+            break;
+
          default:
             g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
             break;
@@ -97,25 +100,31 @@ int main(int argv, char** argc)
       g_camera.fovy = g_cameraDistance;
       g_camera.projection = CAMERA_ORTHOGRAPHIC;
 
-      RenderTexture2D m_renderTarget = LoadRenderTexture(640, 360);
-
       //  Initialize globals
       g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
-      g_DrawScale = float(GetRenderHeight()) / g_Engine->m_EngineConfig.GetNumber("base_height");
+      g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
-      //g_smallFontSize = static_cast<int>(16 * g_DrawScale) - (static_cast<int>(16 * g_DrawScale) % 16);
-      //Font smallFont = LoadFontEx("Data/Fonts/babyblocks.ttf", g_smallFontSize, NULL, 0);
-      //g_SmallFont = make_shared<Font>(smallFont);
+      float baseFontSize = 9;
+      const char* fontPath = "Data/Fonts/softsquare.ttf";
+      //const char* fontPath = "Data/Fonts/babyblocks.ttf";
 
-      g_fontSize = 9 * int(g_DrawScale);
-      Font font = LoadFontEx("Data/Fonts/softsquare.ttf", g_fontSize, NULL, 0);
+      g_fontSize = baseFontSize * int(g_DrawScale);
+      Font font = LoadFontEx(fontPath, g_fontSize, NULL, 0);
       g_Font = make_shared<Font>(font);
+
+      Font smallFont = LoadFontEx(fontPath, baseFontSize, NULL, 0);
+      g_SmallFont = make_shared<Font>(smallFont);
+
+      g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
+      g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
+      SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
 
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(7777);
       g_NonVitalRNG = make_unique<RNG>();
-      g_NonVitalRNG->SeedRNG(GetTime());
+      g_NonVitalRNG->SeedRNG(int(GetTime() * 1000));
 
       Log("Creating terrain.");
       g_Terrain = make_unique<Terrain>();
@@ -151,6 +160,10 @@ int main(int argv, char** argc)
       g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
       g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
 
+      g_gumpBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 6, 176, 154, 98);
+      g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
+      g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
+
       //  Initialize states
       Log("Initializing states.");
       State* _titleState = new TitleState;
@@ -180,6 +193,10 @@ int main(int argv, char** argc)
       State* worldEditorState = new WorldEditorState;
       worldEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
+      
+      State* conversationState = new ConversationState;
+      conversationState->Init("engine.cfg");
+      g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState);
 
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);

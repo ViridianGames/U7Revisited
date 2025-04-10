@@ -11,12 +11,13 @@
 #define _SHAPEDATA_H_
 
 #include <vector>
+#include "Geist/RaylibModel.h"
 
 struct Texture;
 
 struct coords;
 
-constexpr char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
+constexpr const char* ShapeDrawTypeStrings[5] = {"Bboard", "Cuboid", "Flat", "Mesh", "Character"};
 
 enum class CuboidTexture
 {
@@ -83,7 +84,6 @@ public:
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
-	int GetFrameCount() { return m_frameCount; }
 
 	void SafeAndSane();
 	void ResetTopTexture();
@@ -121,8 +121,6 @@ public:
 
 	int m_shape;
 	int m_frame;
-	bool m_isAnimated;
-	int m_frameCount;
 
 	int m_pointerShape;
 	int m_pointerFrame;
@@ -170,7 +168,7 @@ public:
 
 	std::string m_customMeshName;
 
-	Model* m_customMesh = nullptr;
+	RaylibModel* m_customMesh = nullptr;
 
 	bool m_meshOutline = true;
 };

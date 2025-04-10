@@ -2,6 +2,8 @@
 #include "Config.h"
 #include "Logging.h"
 #include "Globals.h"
+#include "raylib.h"
+#include "raymath.h"
 
 #include <fstream>
 #include <sstream>
@@ -19,12 +21,6 @@ void ResourceManager::Shutdown()
 	for (node = m_TextureList.begin(); node != m_TextureList.end(); ++node)
 	{
 		UnloadTexture(*(*node).second);
-	}
-
-	map<std::string, unique_ptr<Model> >::iterator node2;
-	for (node2 = m_ModelList.begin(); node2 != m_ModelList.end(); ++node2)
-	{
-		UnloadModel(*(*node2).second);
 	}
 
 	map<std::string, unique_ptr<Wave> >::iterator node3;
@@ -71,7 +67,7 @@ void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 void ResourceManager::AddModel(const std::string& modelName)
 {
 	Log("Loading model " + modelName);
-	m_ModelList[modelName] = std::make_unique<Model>(LoadModel(modelName.c_str()));
+	m_ModelList[modelName] = std::make_unique<RaylibModel>(modelName);
 	Log("Load successful.");
 }
 
@@ -114,9 +110,9 @@ Texture* ResourceManager::GetTexture(const std::string& Texturename, bool mipmap
 	}
 }
 
-Model* ResourceManager::GetModel(const std::string& modelName)
+RaylibModel* ResourceManager::GetModel(const std::string& modelName)
 {
-	map<std::string, unique_ptr<Model> >::iterator node;
+	map<std::string, unique_ptr<RaylibModel> >::iterator node;
 	node = m_ModelList.find(modelName);
 
 	if (node != m_ModelList.end())
@@ -187,8 +183,7 @@ void ResourceManager::ClearTextures()
 	m_TextureList.clear();
 }
 
-
-void ResourceManager::AddModel(const Model& model, const std::string& meshName)
+void ResourceManager::AddModel(RaylibModel&& model, const std::string& meshName)
 {
-	m_ModelList[meshName] = std::make_unique<Model>(model);
+	m_ModelList[meshName] = std::make_unique<RaylibModel>(std::move(model));
 }

@@ -27,14 +27,17 @@ public:
 
    virtual Vector3 GetPos() { return m_Pos; }
    virtual Vector3 GetDest() { return m_Dest; }
-   virtual float GetSpeed() { return m_Speed; }
+   virtual float GetSpeed() { return m_speed; }
 
    void SetInitialPos(Vector3 pos) { SetPos(pos); SetDest(pos); }
    virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
-   virtual void SetSpeed(float speed) { m_Speed = speed; }
+   virtual void SetSpeed(float speed) { m_speed = speed; }
 
    bool Pick();
+
+   bool AddObjectToInventory(int objectid);
+   bool RemoveObjectFromInventory(int objectid);
 
    Vector3 m_Pos;
    Vector3 m_Dest;
@@ -58,18 +61,15 @@ public:
    float m_BaseDefense;
    float m_BaseTeam;
 
-   float m_Speed;
-   float m_HP;
-   float m_Attack;
-   float m_Defense;
+   float m_speed;
+   float m_hp;
+   float m_combat;
+   float m_magic;
    int m_Team;
 
    bool m_GravityFlag;
    bool m_ExternalForceFlag;
    bool m_BounceFlag;
-
-   bool m_isAnimated;
-   int m_frameCount;
 
    Mesh* m_Mesh;
    Texture* m_Texture;
@@ -86,6 +86,14 @@ public:
    Color m_color = WHITE;
 
    BoundingBox m_boundingBox;
+
+   bool m_isContainer;
+   bool m_isContained;
+   bool m_hasConversationTree;
+   bool m_hasGump;
+   bool m_isEgg;
+
+   std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 
 };
 
