@@ -14,7 +14,7 @@ U7Object::~U7Object()
    Shutdown();
 }
 
-void U7Object::Init(const string& configfile, int unitType, int frame)
+void U7Object::Init(const string& configfile, int unitType, int frame, int frameCount)
 {
    m_Pos = Vector3{ 0, 0, 0 };
    m_Dest = Vector3{ 0, 0, 0 };
@@ -38,6 +38,12 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_isEgg = false;
    m_hasGump = false;
    m_inventory.clear();
+   m_frameCount = 1;
+   ObjectData* objectData = &g_objectTable[m_shapeData->GetShape()];
+   m_isAnimated = objectData->m_isAnimated;
+   m_frameCount = frameCount;
+   //m_isAnimated = false;
+   //m_frameCount = m_shapeData->CalculateAnimFrames();
 }
 
 void U7Object::Draw()
@@ -60,7 +66,20 @@ void U7Object::Draw()
 
 void U7Object::Update()
 {
-
+	if (m_isAnimated) {
+		if (m_frameCount > 1) {
+			if ((m_Frame % m_frameCount) == GetGlobalAnimationFrame(m_frameCount)) {
+				m_Visible = true;
+			}
+			else
+			{
+				m_Visible = false;
+			}
+		}
+		else {
+			m_Visible = true;
+		}
+	}
 }
 
 void U7Object::Attack(int _UnitID)
@@ -75,7 +94,10 @@ void U7Object::Shutdown()
 
 void U7Object::SetPos(Vector3 pos)
 {
-   m_Pos = pos;
+	m_Pos = pos;
+	m_DrawPos = pos;
+	m_chunkOwn[0] = int(m_Pos.x / 16);
+	m_chunkOwn[1] = int(m_Pos.z / 16);
 
    Vector3 dims = Vector3{ 0, 0, 0 };
    Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
@@ -99,6 +121,11 @@ void U7Object::SetPos(Vector3 pos)
    }
 
    m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
+}
+
+void U7Object::SetDrawPos(Vector3 pos)
+{
+	m_DrawPos = pos;
 }
 
 bool U7Object::Pick()

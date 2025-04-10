@@ -92,7 +92,8 @@ void TitleState::Update()
    g_camera.target = current;
    g_camera.position = Vector3Add(current, camPos);
    g_camera.fovy = g_cameraDistance;
-
+	
+   g_Terrain->Update();
    UpdateTitle();
    TestUpdate();
 

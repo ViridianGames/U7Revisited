@@ -157,7 +157,7 @@ std::vector<std::shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y,
 
 Vector3 GetRadialVector(float partitions, float thispartition);
 
-void AddObject(int shapenum, int framenum, int id, float x, float y, float z);
+void AddObject(int shapenum, int framenum, int frameCount, int id, float x, float y, float z);
 
 void AddObjectToContainer(int objectID, int containerID);
 
@@ -256,6 +256,9 @@ extern float g_cameraDistance; // distance from target
 extern float g_cameraRotation; // angle around target
 
 extern EngineModes g_engineMode;
+
+void DoGlobalAnimationFramesUpdate();
+int GetGlobalAnimationFrame(int frameCount);
 
 void RecalculateCamera();
 
