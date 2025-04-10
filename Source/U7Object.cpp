@@ -14,7 +14,7 @@ U7Object::~U7Object()
    Shutdown();
 }
 
-void U7Object::Init(const string& configfile, int unitType, int frame)
+void U7Object::Init(const string& configfile, int unitType, int frame, int frameCount)
 {
    m_Pos = Vector3{ 0, 0, 0 };
    m_Dest = Vector3{ 0, 0, 0 };
@@ -30,57 +30,56 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_ObjectType = unitType;
    SetIsDead(false);
    m_UnitConfig = g_ResourceManager->GetConfig(configfile);
-   //m_Mesh = g_ResourceManager->GetMesh(m_UnitConfig->GetString("mesh"));
    m_Frame = frame;
    m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
    m_drawType = m_shapeData->GetDrawType();
-   m_frameCount = m_shapeData->GetFrameCount();
-   if (m_frameCount > 1) {
-       m_isAnimated = true;
-   }
-   else
-   {
-       m_isAnimated = false;
-   }
+   m_isContainer = false;
+   m_isContained = false;
+   m_isEgg = false;
+   m_hasGump = false;
+   m_inventory.clear();
+   m_frameCount = 1;
+   ObjectData* objectData = &g_objectTable[m_shapeData->GetShape()];
+   m_isAnimated = objectData->m_isAnimated;
+   m_frameCount = frameCount;
+   //m_isAnimated = false;
+   //m_frameCount = m_shapeData->CalculateAnimFrames();
 }
 
 void U7Object::Draw()
 {
-  if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
-  {
-    if (!m_Visible)
-    {
-      return;
-    }
-  }
-
-  if (g_StateMachine->GetCurrentState() == STATE_MAINSTATE) {
-    m_shapeData->Draw(m_DrawPos, m_Angle, m_color);
-  }
-  else {
-    m_shapeData->Draw(m_Pos, m_Angle, m_color);
-  }
-
-   bool drawDebugBox = true;
-   if (drawDebugBox == true) {
-      if (g_Engine->m_debugDrawing)
+   if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
+   {
+      if (!m_Visible || m_isContained || m_isEgg) 
       {
-         DrawBoundingBox(m_boundingBox, MAGENTA);
+         return;
       }
-   }
+	}
+
+   m_shapeData->Draw(m_Pos, m_Angle, m_color);
+
+   if (g_Engine->m_debugDrawing)
+   {
+		DrawBoundingBox(m_boundingBox, MAGENTA);
+	}
 }
 
 void U7Object::Update()
 {
-  if (m_isAnimated) {
-    if ((m_Frame % m_frameCount) == g_StateMachine->GetAnimFrame(m_frameCount)) {
-      m_Visible = true;
-    }
-    else
-    {
-      m_Visible = false;
-    }
-  }
+	if (m_isAnimated) {
+		if (m_frameCount > 1) {
+			if ((m_Frame % m_frameCount) == GetGlobalAnimationFrame(m_frameCount)) {
+				m_Visible = true;
+			}
+			else
+			{
+				m_Visible = false;
+			}
+		}
+		else {
+			m_Visible = true;
+		}
+	}
 }
 
 void U7Object::Attack(int _UnitID)
@@ -95,10 +94,10 @@ void U7Object::Shutdown()
 
 void U7Object::SetPos(Vector3 pos)
 {
-   m_Pos = pos;
-   m_DrawPos = pos;
-   m_chunkOwn[0] = int(m_Pos.x / 16);
-   m_chunkOwn[1] = int(m_Pos.z / 16);
+	m_Pos = pos;
+	m_DrawPos = pos;
+	m_chunkOwn[0] = int(m_Pos.x / 16);
+	m_chunkOwn[1] = int(m_Pos.z / 16);
 
    Vector3 dims = Vector3{ 0, 0, 0 };
    Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
@@ -126,7 +125,7 @@ void U7Object::SetPos(Vector3 pos)
 
 void U7Object::SetDrawPos(Vector3 pos)
 {
-  m_DrawPos = pos;
+	m_DrawPos = pos;
 }
 
 bool U7Object::Pick()
@@ -145,4 +144,33 @@ void U7Object::SetDest(Vector3 dest)
    m_Dest = dest;
    m_Direction = Vector3Subtract(m_Dest, m_Pos);
    m_Direction = Vector3Normalize(m_Direction);
+}
+
+bool U7Object::AddObjectToInventory(int objectid)
+{
+   if (m_isContainer)
+   {
+      m_inventory.push_back(objectid);
+      return true;
+   }
+
+   return false;
+}
+
+bool U7Object::RemoveObjectFromInventory(int objectid)
+{
+   if (m_isContainer)
+   {
+      for (int i = 0; i < m_inventory.size(); i++)
+      {
+         if (m_inventory[i] == objectid)
+         {
+            GetObjectFromID(objectid)->m_isContained = true;
+            m_inventory.erase(m_inventory.begin() + i);
+            return true;
+         }
+      }
+   }
+
+   return false;
 }

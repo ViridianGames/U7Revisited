@@ -18,7 +18,7 @@ public:
    U7Object() {};
    virtual ~U7Object();
 
-   virtual void Init(const std::string& configfile, int unitType, int frame);
+   virtual void Init(const std::string& configfile, int unitType, int frame, int frameCount);
    virtual void Shutdown();
    virtual void Update();
    virtual void Draw();
@@ -31,6 +31,7 @@ public:
 
    void SetInitialPos(Vector3 pos) { SetPos(pos); SetDest(pos); }
    virtual void SetPos(Vector3 pos);
+   virtual void SetDrawPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
    virtual void SetSpeed(float speed) { m_speed = speed; }
 
@@ -40,9 +41,11 @@ public:
    bool RemoveObjectFromInventory(int objectid);
 
    Vector3 m_Pos;
+   Vector3 m_DrawPos;
    Vector3 m_Dest;
    Vector3 m_Direction;
    Vector3 m_Scaling;
+   int m_chunkOwn[2];
 
    Vector3 m_ExternalForce;
 
@@ -70,6 +73,9 @@ public:
    bool m_GravityFlag;
    bool m_ExternalForceFlag;
    bool m_BounceFlag;
+
+   bool m_isAnimated;
+   int m_frameCount;
 
    Mesh* m_Mesh;
    Texture* m_Texture;

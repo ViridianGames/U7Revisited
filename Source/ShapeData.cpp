@@ -64,6 +64,8 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 		}
 
 		ObjectData* objectData = &g_objectTable[m_shape];
+		m_isAnimated = objectData->m_isAnimated;
+		m_frameCount = 1;
 
 		if (shouldreset)
 		{
@@ -102,6 +104,24 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	}
 
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+}
+
+int ShapeData::CalculateAnimFrames() {
+	if (m_isAnimated == true) {
+		if (m_frameCount == 1) {
+			for (int i = 0; i < 32; i++) {
+				// l for local?
+				ShapeData* l_shapeData = &g_shapeTable[m_shape][i];
+				if (l_shapeData->IsValid() == true) {
+					m_frameCount = i + 1;
+				}
+			}
+		}
+	}
+	else {
+		m_frameCount = 1;
+	}
+	return m_frameCount;
 }
 
 void ShapeData::SetDefaultTexture(Image image)

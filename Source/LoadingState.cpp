@@ -424,8 +424,9 @@ void LoadingState::LoadIFIX()
 							int y = thisLocationData & 0xf;
 							int x = (thisLocationData >> 4) & 0xf;
 							int z = (thisLocationData >> 8) & 0xf;
-							
-							AddObject(shape, frame, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
+
+							AddObject(shape, frame, 1, GetNextID(), (superchunkx * 256) + (chunkx * 16) + x, z, (superchunky * 256) + (chunky * 16) + y);
+
 							int stopper = 0;
 						}
 					}
@@ -463,48 +464,36 @@ void LoadingState::MakeMap()
 					unsigned short shapenum = thisdata & 0x3ff;
 					unsigned short framenum = (thisdata >> 10) & 0x1f;
 
-          if (shapenum >= 150)
-          {
-            bool addStatic = true;
-            bool addAnimated = false;
-            ShapeData& shapeData = g_shapeTable[shapenum][framenum];
-            int frameCount = shapeData.GetFrameCount();
-            if (frameCount > 1) {
-              addStatic = false;
-              addAnimated = true;
-            }
-            int interestedShape = 1008;
-            
-            if (addStatic == true)
-            {
-              /*if (shapenum == interestedShape)
-              {
-                printf("  LoadMakeMap chunk(%d %d) calling AddObject Static %d %d\n", l, k, shapenum, framenum);
-              }*/
-              AddObject(shapenum, framenum, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
-            }
-            else if (addAnimated == true)
-            {
-              /*if (shapenum == interestedShape)
-              {
-                printf("  LoadMakeMap chunk(%d %d) calling AddObject Animated %d %d\n", l, k, shapenum, framenum);
-              }*/
-              int frameStart = framenum - (framenum % frameCount);
-              int frameStop = frameStart + frameCount;
-              for (int m = frameStart; m < frameStop; m++)
-              {
-                /*if (shapenum == interestedShape)
-                {
-                  printf("    %d\n", m);
-                }*/
-                AddObject(shapenum, m, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+					if (shapenum >= 150)
+					{
+						bool addStatic = true;
+						bool addAnimated = false;
+						ShapeData& shapeData = g_shapeTable[shapenum][framenum];
+						int frameCount = shapeData.CalculateAnimFrames();
+						
+						if (frameCount > 1) {
+							addStatic = false;
+							addAnimated = true;
+						}
+						
+						if (addStatic == true)
+						{
+							AddObject(shapenum, framenum, frameCount, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+						}
+						else if (addAnimated == true)
+						{
+							int frameStart = framenum - (framenum % frameCount);
+							int frameStop = frameStart + frameCount;
+							for (int m = frameStart; m < frameStop; m++)
+							{
+								AddObject(shapenum, m, frameCount, GetNextID(), (i * 16 + k), 0, (j * 16 + l));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 bool LoadingState::ShapeIsEgg(int shapeIdx) {
@@ -1571,7 +1560,7 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.referent = ReadU16(subFiles);
 				thisNPC.status = ReadU16(subFiles);
 
-				AddObject(shapenum, 16, GetNextID(), chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
+				AddObject(shapenum, 16, GetNextID(), 1, chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
 
 				thisNPC.str = ReadU8(subFiles);
 				thisNPC.dex = ReadU8(subFiles);

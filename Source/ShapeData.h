@@ -64,6 +64,8 @@ public:
 	void SetupDrawTypes();
 	void FixupTextures();
 
+	int CalculateAnimFrames();
+
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
 
@@ -121,6 +123,8 @@ public:
 
 	int m_shape;
 	int m_frame;
+	bool m_isAnimated;
+	int m_frameCount;
 
 	int m_pointerShape;
 	int m_pointerFrame;

@@ -65,6 +65,10 @@ std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
 
+//animframes
+bool g_animFramesInitialized = false;
+int g_currentAnimFrame[32];
+
 Shader g_alphaDiscard;
 
 bool g_pixelated = false;
@@ -260,10 +264,24 @@ if (IsKeyDown(KEY_E))
 
 		current = Vector3Add(current, finalmovement);
 
-		if (current.x < 0) current.x = 0;
-		if (current.x > 3072) current.x = 3072;
-		if (current.z < 0) current.z = 0;
-		if (current.z > 3072) current.z = 3072;
+		float worldBoxSize = 3072.0;
+		while (current.x < 0.0)
+		{
+			current.x += worldBoxSize;
+		}
+		while (current.x >= worldBoxSize)
+		{
+			current.x -= worldBoxSize;
+		}
+
+		while (current.z < 0.0)
+		{
+			current.z += worldBoxSize;
+		}
+		while (current.z >= (worldBoxSize + 0.0))
+		{
+			current.z -= worldBoxSize;
+		}
 
 		Vector3 camPos = { g_cameraDistance, g_cameraDistance, g_cameraDistance };
 		camPos = Vector3RotateByAxisAngle(camPos, Vector3{ 0, 1, 0 }, g_cameraRotation);
@@ -273,6 +291,56 @@ if (IsKeyDown(KEY_E))
 		g_camera.fovy = g_cameraDistance;
 	}
 
+	DoGlobalAnimationFramesUpdate();
+	return 0;
+}
+
+void DoGlobalAnimationFramesUpdate()
+{
+	float fTime = GetTime();
+	float iTime = float(int(fTime));
+	if (iTime > fTime) {
+		iTime -= 1.0;
+	}
+	float inSecond = fTime - iTime;
+	float frameTime = 1.0 / 3.0;
+	float sKeep = 0.0;
+
+	if (g_animFramesInitialized == false)
+	{
+		for (int i = 0; i < 32; i++)
+		{
+			g_currentAnimFrame[i] = 0;
+		}
+		g_animFramesInitialized = true;
+	}
+
+	for (int i = 2; i < 32; i++)
+	{
+		g_currentAnimFrame[i] = 0;
+		frameTime = 1.0 / float(i);
+		sKeep = inSecond;
+		while ((sKeep - frameTime) > 0.0)
+		{
+			g_currentAnimFrame[i] += 1;
+			sKeep -= frameTime;
+		}
+		if (g_currentAnimFrame[i] >= i)
+		{
+			g_currentAnimFrame[i] = 0;
+		}
+	}
+}
+
+int GetGlobalAnimationFrame(int frameCount)
+{
+	if (frameCount > 2)
+	{
+		if (frameCount < 32)
+		{
+			return g_currentAnimFrame[frameCount];
+		}
+	}
 	return 0;
 }
 
@@ -318,7 +386,7 @@ unsigned int g_CurrentUnitID = 0;
 
 unsigned int GetNextID() { return g_CurrentUnitID++; }
 
-void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
+void AddObject(int shapenum, int framenum, int frameCount, int id, float x, float y, float z)
 {
 	if (shapenum == 451)
 	{
@@ -326,7 +394,7 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 	}
 
 	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
-	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
+	temp->Init("Data/Units/Walker.cfg", shapenum, framenum, frameCount);
 	temp->SetInitialPos(Vector3{ x, y, z });
 	temp->m_ID = id;
 
