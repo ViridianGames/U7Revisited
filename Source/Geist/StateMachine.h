@@ -36,22 +36,18 @@ class StateMachine : public Object
 public:
 	StateMachine() {};
 
-  virtual void Init(const std::string& configfile);
-  virtual void Shutdown();
-  virtual void Update();
-  virtual void Draw();
+	virtual void Init(const std::string& configfile);
+	virtual void Shutdown();
+	virtual void Update();
+	virtual void Draw();
 
-  void RegisterState(int id, State* state, std::string name = "NO NAME");
-  void MakeStateTransition(int newstate);
-  void PushState(int newstate);
-  void PopState();
-  int GetCurrentState() { return m_CurrentState; }
-  int GetPreviousState();// { return m_PreviousState; }
-  State* GetState(int identifier);
-
-  bool animFramesInitialized = false;
-  int currentAnimFrame[32];
-  int GetAnimFrame(int frameCount);
+	void RegisterState(int id, State* state, std::string name = "NO NAME");
+	void MakeStateTransition(int newstate);
+	void PushState(int newstate);
+	void PopState();
+	int GetCurrentState() { return m_CurrentState; }
+	int GetPreviousState();// { return m_PreviousState; }
+	State* GetState(int identifier);
 
 private:
 	void MakeStateTransitionEX(int newstate);
@@ -66,7 +62,6 @@ private:
 	int  m_CurrentState = -1;
 	int  m_PreviousState = -1;
 	int  m_TargetState = -1;
-
 };
 
 #endif
