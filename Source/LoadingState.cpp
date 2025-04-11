@@ -79,8 +79,8 @@ void LoadingState::Draw()
 	if (m_loadingFailed == true)
 	{
 		std::string missingDataText = "Ultima VII files not found.  They should go into the " + g_Engine->m_EngineConfig.GetString("data_path") + " folder.";
-		DrawTextEx(*g_Font, missingDataText.c_str(), Vector2{0, 0}, g_fontSize, 1, WHITE);
-		DrawTextEx(*g_Font, "Press ESC to exit.", Vector2{ 0, g_fontSize * 2 }, g_fontSize, 1, WHITE);
+		DrawTextEx(*g_SmallFont, missingDataText.c_str(), Vector2{0, 0}, g_fontSize, 1, WHITE);
+		DrawTextEx(*g_SmallFont, "Press ESC to exit.", Vector2{ 0, g_fontSize * 2 }, g_fontSize, 1, WHITE);
 	}
 	else
 	{
@@ -153,6 +153,14 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading shapes..."));
 			CreateShapeTable();
 			m_loadingShapes = true;
+			return;
+		}
+
+		if(!m_loadingFaces)
+		{
+			AddConsoleString(std::string("Loading faces..."));
+			LoadFaces();
+			m_loadingFaces = true;
 			return;
 		}
 
@@ -450,6 +458,158 @@ void LoadingState::LoadIFIX()
 			fclose(u7thisifix);
 		}
 	}
+}
+
+void LoadingState::LoadFaces()
+{
+	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
+	std::string loadingPath(dataPath);
+	loadingPath.append("/STATIC/FACES.VGA");
+	ifstream shapesFile(loadingPath.c_str(), ios::binary);
+
+	if(shapesFile.fail())
+	{
+		Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
+		m_loadingFailed = true;
+		return;
+	}
+
+	struct frameData
+	{
+		unsigned int fileOffset;
+		short W2;
+		short W1;
+		short H1;
+		short H2;
+		unsigned int width;
+		unsigned int height;
+		int xDrawOffset;
+		int yDrawOffset;
+	};
+	
+	stringstream shapes;
+	shapes << shapesFile.rdbuf();
+	shapesFile.close();
+
+	vector<LoadingState::FLXEntryData> shapeEntryMap = ParseFLXHeader(shapes);
+
+	for (int thisShape = 0; thisShape < shapeEntryMap.size(); ++thisShape)
+	{
+		//  The next 874 entries (150-1023) are objects.
+
+		//  Read the shape data.
+
+		shapes.seekg(shapeEntryMap[thisShape].offset);
+		unsigned int headerStart = shapes.tellg();
+		unsigned int firstData = ReadU32(shapes);
+
+		//  If the first data is the same as the length of the shape entry, then this entry is run-length encoded.
+		if (firstData == shapeEntryMap[thisShape].length)
+		{
+			//  Next four bytes tell length of the header.
+			unsigned int headerLength = ReadU32(shapes);
+			unsigned int frameCount = ((headerLength - 4) / 4);
+			std::vector<frameData> frameOffsets;
+			frameOffsets.resize(frameCount);
+			frameOffsets[0].fileOffset = 0;
+			for (int i = 1; i < frameCount; ++i)
+			{
+				frameOffsets[i].fileOffset = ReadU32(shapes);
+			}
+
+			//  Read the frame data.
+			for (int i = 0; i < frameCount; ++i)
+			{
+				ShapeData& shapeData = g_shapeTable[thisShape][i];
+				//  Seek to the start of this frame's data.
+				if (i > 0)
+				{
+					shapes.seekg(headerStart + frameOffsets[i].fileOffset);
+				}
+
+				frameOffsets[i].W2 = ReadS16(shapes);
+				frameOffsets[i].W1 = ReadS16(shapes);
+				frameOffsets[i].H1 = ReadS16(shapes);
+				frameOffsets[i].H2 = ReadS16(shapes);
+
+				frameOffsets[i].height = frameOffsets[i].H1 + frameOffsets[i].H2 + 1;
+				frameOffsets[i].width = frameOffsets[i].W2 + frameOffsets[i].W1 + 1;
+
+				frameOffsets[i].xDrawOffset = frameOffsets[i].W2;
+				frameOffsets[i].yDrawOffset = frameOffsets[i].H2;
+
+				shapeData.CreateDefaultTexture();
+				Image tempImage = GenImageColor(frameOffsets[i].width, frameOffsets[i].height, Color{ 0, 0, 0, 0 });
+				//  Read each span.  Spans can be either RLE or raw pixel data.
+				while (true)
+				{
+					unsigned short blockData = ReadU16(shapes);
+					unsigned short spanLength = blockData >> 1;
+					unsigned short spanType = blockData & 1;
+
+					if (blockData == 0)
+					{
+						break; //  There are no more spans; we're done with this frame.
+					}
+
+					short xStart = ReadS16(shapes);
+					short yStart = ReadS16(shapes);
+					xStart += frameOffsets[i].width - frameOffsets[i].xDrawOffset - 1;
+					yStart += frameOffsets[i].height - frameOffsets[i].yDrawOffset - 1;
+
+					if (spanType == 0) // Not RLE, raw pixel data.
+					{
+						for (int i = 0; i < spanLength; ++i)
+						{
+							unsigned char Value = ReadU8(shapes);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+						}
+					}
+					else // RLE.
+					{
+						int endX = xStart + spanLength;
+
+						while (xStart < endX)
+						{
+							unsigned char runData = ReadU8(shapes);
+							int runLength = runData >> 1;
+							int runType = runData & 1;
+
+							if (runType == 0) // Once again, non-RLE
+							{
+								for (int i = 0; i < runLength; ++i)
+								{
+									unsigned char Value = ReadU8(shapes);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+								}
+							}
+							else
+							{
+								unsigned char Value = ReadU8(shapes);
+								for (int i = 0; i < runLength; ++i)
+								{
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+								}
+							}
+							xStart += runLength;
+						}
+					}
+				}
+				g_ResourceManager->AddTexture(tempImage, "U7FACES" + std::to_string(thisShape));
+				//shapeData.SetDefaultTexture(tempImage);
+			}
+
+			continue;
+		}
+		else  //  This entry is not encoded.
+		{
+
+		}
+
+		
+	}
+
+	shapesFile.close();
 }
 
 void LoadingState::MakeMap()
@@ -1162,6 +1322,8 @@ void LoadingState::LoadInitialGameState()
 				Log("File position after avatar: " + to_string(newfilepos));
 				Log("Size difference: " + to_string(newfilepos - filepos));
 				Log("Iolo starts at 2761 so there are " + to_string(2761 - newfilepos) + " bytes left.");
+
+				g_ObjectList[nextID].get()->SetNPCBlock(thisNPC);
 
 				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
 				{

@@ -6,8 +6,8 @@
 #include "Geist/Primitives.h"
 #include <string>
 
-#define M_PI (3.1415926536f)
-#define DEG2RAD(x) (x*(M_PI/180.0))
+//#define M_PI (3.1415926536f)
+//#define DEG2RAD(x) (x*(M_PI/180.0))
 
 class Terrain : public Object
 {

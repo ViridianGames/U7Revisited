@@ -2,13 +2,14 @@
 #include "Engine.h"
 #include "ResourceManager.h"
 #include "StateMachine.h"
+#include "ScriptingSystem.h"
 #include "Logging.h"
 #include <sstream>
 #include <fstream>
 #include <time.h>
 using namespace std;
 
-void Engine::Init(const std::string& configfile)
+void Engine::Init(const std::string &configfile)
 {
 	Log("Starting Engine::Init()");
 	m_Done = false;
@@ -19,6 +20,8 @@ void Engine::Init(const std::string& configfile)
 	g_ResourceManager->Init(configfile);
 	g_StateMachine = make_unique<StateMachine>();
 	g_StateMachine->Init(configfile);
+	g_ScriptingSystem = make_unique<ScriptingSystem>();
+	g_ScriptingSystem->Init(configfile);
 
 	m_GameUpdates = 0;
 
@@ -81,9 +84,10 @@ void Engine::Draw()
 	g_StateMachine->Draw();
 }
 
-void Engine::CaptureScreenshot() {
+void Engine::CaptureScreenshot()
+{
 	char filename[40];
-	struct tm* timenow;
+	struct tm *timenow;
 
 	time_t now = time(NULL);
 	timenow = gmtime(&now);

@@ -8,6 +8,7 @@
 class Engine;
 class ResourceManager;
 class StateMachine;
+class ScriptingSystem;
 class Sprite;
 
 //  Global pointers
@@ -15,6 +16,7 @@ class Sprite;
 extern std::unique_ptr<Engine>           g_Engine;
 extern std::unique_ptr<ResourceManager>  g_ResourceManager;
 extern std::unique_ptr<StateMachine>     g_StateMachine;
+extern std::unique_ptr<ScriptingSystem>  g_ScriptingSystem;
 
 //  Global functions
 

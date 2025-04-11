@@ -10,6 +10,7 @@
 #include "MainState.h"
 #include "rlgl.h"
 #include "U7Gump.h"
+#include "ConversationState.h"
 
 #include <list>
 #include <string>
@@ -223,7 +224,9 @@ void MainState::Update()
 
 				if ((*node)->m_hasConversationTree)
 				{
-					g_StateMachine->PushState(STATE_CONVERSATIONSTATE);//OpenGump((*node)->m_ID);
+					g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
+					dynamic_cast<ConversationState*>(g_StateMachine->GetState(STATE_CONVERSATIONSTATE))->SetNPC((*node)->m_NPCData.index2);
+					//g_StateMachine->MakeStateTransition(STATE_CONVERSATIONSTATE);	
 				}
 				break;
 			}
@@ -247,14 +250,15 @@ void MainState::Update()
 
 			if (picked)
 			{
-				g_selectedShape = (*node)->m_shapeData->GetShape();
-				g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				m_selectedObject = (*node)->m_ID;
+				(*node)->Interact(1);
+				// g_selectedShape = (*node)->m_shapeData->GetShape();
+				// g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				// m_selectedObject = (*node)->m_ID;
 
-				if ((*node)->m_isContainer)
-				{
-					OpenGump((*node)->m_ID);
-				}
+				// if ((*node)->m_isContainer)
+				// {
+				// 	OpenGump((*node)->m_ID);
+				// }
 				break;
 			}
 		}

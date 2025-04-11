@@ -13,9 +13,11 @@
 #include "Geist/StateMachine.h"
 #include "Geist/Primitives.h"
 #include "Geist/GuiManager.h"
+#include "Geist/ScriptingSystem.h"
 #include "Geist/Logging.h"
 #include "raylib.h"
 #include "U7Globals.h"
+#include "U7LuaFuncs.h"
 #include "MainState.h"
 #include "TitleState.h"
 #include "OptionsState.h"
@@ -46,9 +48,8 @@ int main(int argv, char** argc)
 
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
-      
 
-      g_cameraDistance = g_Engine->m_EngineConfig.GetNumber("camera_close_limit");
+      g_cameraDistance = 26;
       g_cameraRotation = 0.0f;
 
       //  Pick a random initial location
@@ -116,6 +117,13 @@ int main(int argv, char** argc)
       Font smallFont = LoadFontEx(fontPath, baseFontSize, NULL, 0);
       g_SmallFont = make_shared<Font>(smallFont);
 
+      const char* conversationFontPath = "Data/Fonts/lantern.ttf"; float conversationFontSize = 18;
+      //const char* conversationFontPath = "Data/Fonts/magicbook.ttf"; float conversationFontSize = 24;
+      //const char* conversationFontPath = "Data/Fonts/curse.ttf"; float conversationFontSize = 28;
+      //const char* conversationFontPath = "Data/Fonts/softsquare.ttf"; float conversationFontSize = 18;
+      Font conversationFont = LoadFontEx(conversationFontPath, conversationFontSize, NULL, 0);
+      g_ConversationFont = make_shared<Font>(conversationFont);
+
       g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
       SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
       g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
@@ -130,25 +138,25 @@ int main(int argv, char** argc)
       g_Terrain = make_unique<Terrain>();
 
       //  Create GUI elements
-      g_BoxTL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 0, 2, 2);
-      g_BoxT = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 0, 2, 2);
-      g_BoxTR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 0, 2, 2);
-      g_BoxL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  0, 2, 2, 2);
-      g_BoxC = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 2, 2, 2);
-      g_BoxR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  4, 2, 2, 2);
-      g_BoxBL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 4, 2, 2);
-      g_BoxB = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 4, 2, 2);
-      g_BoxBR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 4, 2, 2);
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 0, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 0, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 0, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  0, 2, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 2, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  4, 2, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 4, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 4, 2, 2));
+      g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 4, 2, 2));
 
-      g_Borders.push_back(g_BoxTL);
-      g_Borders.push_back(g_BoxT);
-      g_Borders.push_back(g_BoxTR);
-      g_Borders.push_back(g_BoxL);
-      g_Borders.push_back(g_BoxC);
-      g_Borders.push_back(g_BoxR);
-      g_Borders.push_back(g_BoxBL);
-      g_Borders.push_back(g_BoxB);
-      g_Borders.push_back(g_BoxBR);
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 28, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 28, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 28, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 36, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 36, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 36, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 42, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 42, 8, 8));
+      g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 42, 8, 8));
 
       g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 11);
       g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 11);
@@ -163,6 +171,11 @@ int main(int argv, char** argc)
       g_gumpBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 6, 176, 154, 98);
       g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
       g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
+
+      //  Initialize scripts
+      g_ScriptingSystem->LoadScript("Data/Scripts/npc.lua");
+
+      RegisterAllLuaFunctions();
 
       //  Initialize states
       Log("Initializing states.");

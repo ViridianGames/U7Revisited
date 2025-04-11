@@ -61,6 +61,13 @@ void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 {
 	Log("Loading texture " + textureName);
 	m_TextureList[textureName] = std::make_unique<Texture>(LoadTexture(textureName.c_str()));
+	Log("Load successful.");	
+}
+
+void ResourceManager::AddTexture(Image& image, const std::string& textureName, bool mipmaps)
+{
+	Log("Loading texture " + textureName);
+	m_TextureList[textureName] = std::make_unique<Texture>(LoadTextureFromImage(image));
 	Log("Load successful.");
 }
 

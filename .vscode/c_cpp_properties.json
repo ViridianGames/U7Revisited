@@ -6,7 +6,8 @@
                 "${workspaceFolder}/Source",
                 "${workspaceFolder}/Source/Geist",
                 "${workspaceFolder}/ThirdParty/raylib/include",
-                "${workspaceFolder}/ThirdParty/raylib/external"
+                "${workspaceFolder}/ThirdParty/raylib/external",
+                "${workspaceFolder}/ThirdParty/lua/src"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/g++",

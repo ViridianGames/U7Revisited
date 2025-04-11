@@ -37,6 +37,7 @@ public:
 	std::map<std::string, std::unique_ptr<Config> > m_configList;
 
 	void AddTexture(const std::string& textureName, bool mipmaps = true);
+	void AddTexture(Image& image, const std::string& textureName, bool mipmaps = true);
 	void AddModel(const std::string& meshName);
 	void AddModel(RaylibModel&& model, const std::string& meshName);
 	void AddSound(const std::string& soundName);

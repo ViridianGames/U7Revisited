@@ -107,6 +107,7 @@ extern Texture* g_Cursor;
 
 extern std::shared_ptr<Font> g_Font;
 extern std::shared_ptr<Font> g_SmallFont;
+extern std::shared_ptr<Font> g_ConversationFont;
 
 extern float g_fontSize;
 //extern float g_smallFontSize;
@@ -134,6 +135,8 @@ extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
 extern unsigned int g_minimapSize;
 
 extern std::vector< std::vector<unsigned short> > g_World;
+
+void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color);
 
 float GetDistance(float startX, float startZ, float endX, float endZ);
 
@@ -187,6 +190,8 @@ void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 25
 
 void DrawConsole();
 
+//int l_say(lua_State* L);
+
 //////////////////////////////////////////////////////////////////////////////
 
 extern float g_DrawScale;
@@ -209,6 +214,7 @@ extern std::shared_ptr<Sprite> g_BoxB;
 extern std::shared_ptr<Sprite> g_BoxBR;
 
 extern std::vector<std::shared_ptr<Sprite> > g_Borders;
+extern std::vector<std::shared_ptr<Sprite> > g_ConversationBorders;
 
 extern std::shared_ptr<Sprite> g_InactiveButtonL;
 extern std::shared_ptr<Sprite> g_InactiveButtonM;

@@ -1,6 +1,7 @@
 #include "U7Globals.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
+#include "lua.hpp"
 #include <algorithm>
 #include <fstream>
 #include <sstream>
@@ -21,6 +22,7 @@ Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
 std::shared_ptr<Font> g_SmallFont;
+std::shared_ptr<Font> g_ConversationFont;
 
 //float g_smallFontSize = 8;
 float g_fontSize = 16;
@@ -401,8 +403,7 @@ void DrawConsole()
 
 		if (elapsed < 10)
 		{
-			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ shadowOffset, counter * (g_SmallFont->baseSize + 2) + shadowOffset }, g_SmallFont->baseSize, 1, Color{ 0, 0, 0, (*node).m_Color.a });
-			DrawTextEx(*g_SmallFont, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_SmallFont->baseSize + 2)) }, g_SmallFont->baseSize, 1, (*node).m_Color);
+			DrawOutlinedText(g_SmallFont, (*node).m_String.c_str(), Vector2{ 0, float(counter * (g_SmallFont->baseSize + 2)) }, g_SmallFont->baseSize, 1, (*node).m_Color);
 
 		}
 		++counter;
@@ -420,6 +421,19 @@ void DrawConsole()
 			++node;
 		}
 	}
+}
+
+void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color)
+{
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x + 1, position.y + 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x, position.y + 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x - 1, position.y - 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x, position.y - 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x + 1, position.y - 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x + 1, position.y }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x - 1, position.y + 1 }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), Vector2{ position.x - 1, position.y }, fontSize, spacing, Color{ 0, 0, 0, color.a });
+	DrawTextEx(*font, text.c_str(), position, fontSize, spacing, color);
 }
 
 void AddObjectToContainer(int objectID, int containerID)
@@ -448,6 +462,7 @@ std::shared_ptr<Sprite> g_BoxB;
 std::shared_ptr<Sprite> g_BoxBR;
 
 std::vector<std::shared_ptr<Sprite> > g_Borders;
+std::vector<std::shared_ptr<Sprite> > g_ConversationBorders;
 
 shared_ptr<Sprite> g_InactiveButtonL;
 shared_ptr<Sprite> g_InactiveButtonM;
@@ -522,3 +537,10 @@ bool WasRMBDoubleClicked()
 
 	return false;
 }
+
+// int l_say(lua_State* L)
+// {
+// 	const char* message = luaL_checkstring(L, 1);
+// 	printf("Lua says: %s\n", message);
+// 	return 0;
+// }

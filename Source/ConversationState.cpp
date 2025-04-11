@@ -33,13 +33,17 @@ ConversationState::~ConversationState()
 
 void ConversationState::Init(const string& configfile)
 {
-	
+	m_Gui = new Gui();
+	m_Gui->Init(configfile);
+	m_Gui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
+
+
 }
 
 void ConversationState::OnEnter()
 {
 	ClearConsole();
-	AddConsoleString(std::string("You have entered conversation state!"));
+	//AddConsoleString(std::string("You have entered conversation state!"));
 }
 
 void ConversationState::OnExit()
@@ -59,7 +63,7 @@ void ConversationState::Update()
    if (IsKeyReleased(KEY_SPACE))
 	{
       ClearConsole();
-      AddConsoleString(std::string("Leaving conversation state!"));
+      //AddConsoleString(std::string("Leaving conversation state!"));
 		g_StateMachine->PopState();
 	}
 }
@@ -77,7 +81,7 @@ void ConversationState::Draw()
 
 	for (auto& unit : g_sortedVisibleObjects)
 	{
-			unit->Draw();
+		unit->Draw();
 	}
 
 	EndMode3D();
@@ -87,6 +91,19 @@ void ConversationState::Draw()
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({0, 0, 0, 0});
+	//DrawTextureRec(* g_ResourceManager->GetTexture("Images/GUI/guielements.png"), {0, 28, 640, 388}, { 0, 0 }, WHITE);
+	DrawRectangleRounded({10, 10, 620, 110}, .25, 100, { 0, 0, 0, 224 });
+
+	m_Gui->Draw();
+
+	DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId)), { 10, 10 }, 0, 2, WHITE);	
+
+	DrawOutlinedText(g_ConversationFont, "\"Yes?  Who is that?\"  The person seems a bit puzzled", { 115, 20 }, 
+	g_ConversationFont.get()->baseSize, 1, YELLOW);
+	DrawOutlinedText(g_ConversationFont, "to hear a voice from the air.", { 115, 20.0f + g_ConversationFont.get()->baseSize }, 
+	g_ConversationFont.get()->baseSize, 1, YELLOW);
+	
+
 
 	DrawConsole();
 

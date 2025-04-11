@@ -26,7 +26,11 @@ public:
    virtual void OnEnter();
    virtual void OnExit();
 
+   void SetNPC(int npcId) { m_npcId = npcId; }
+
    Gui* m_Gui;
+
+   int m_npcId;
 };
 
 #endif

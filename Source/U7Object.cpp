@@ -3,9 +3,11 @@
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
 #include "Geist/Config.h"
+#include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "ShapeData.h"
+#include "LoadingState.h"
 
 using namespace std;
 
@@ -146,4 +148,14 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
    }
 
    return false;
+}
+
+void U7Object::SetNPCBlock(NPCblock block)
+{
+   m_NPCData = block;
+}
+
+void U7Object::Interact(int event)
+{
+   g_ScriptingSystem->CallScript("on_interact", event);  
 }

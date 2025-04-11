@@ -5,10 +5,58 @@
 #include "Geist/BaseUnits.h"
 #include <string>
 #include <list>
+#include "lua.h"
 
 enum class ObjectTypes;
 enum class ShapeDrawType;
 class ShapeData;
+
+struct NPCblock
+{
+   unsigned char x;
+   unsigned char y;
+   unsigned short shapeId;
+   unsigned short type;
+   unsigned char proba;
+   unsigned short data1;
+   unsigned char lift;
+   unsigned short data2;
+
+
+
+   unsigned short index;
+   unsigned short referent;
+   unsigned short status;
+   unsigned char str;
+   unsigned char dex;
+   unsigned char iq;
+   unsigned char combat;
+   unsigned char activity;
+   unsigned char DAM;
+   char soak1[3];
+   unsigned short status2;
+   unsigned char index2;
+   char soak2[2];
+   unsigned int xp;
+   unsigned char training;
+   unsigned short primary;
+   unsigned short secondary;
+   unsigned short oppressor;
+   unsigned short ivrx;
+   unsigned short ivry;
+   unsigned short svrx;
+   unsigned short svry;
+   unsigned short status3;
+   char soak3[5];
+   unsigned char acty;
+   char soak4[29];
+   unsigned char SN;
+   unsigned char V1;
+   unsigned char V2;
+   unsigned char food;
+   char soak5[7];
+   char name[16];
+};
 
 class U7Object : public Unit3D
 {
@@ -34,11 +82,16 @@ public:
    virtual void SetDest(Vector3 pos);
    virtual void SetSpeed(float speed) { m_speed = speed; }
 
+   void Interact(int event);
+
+
    bool Pick();
 
    bool AddObjectToInventory(int objectid);
    bool RemoveObjectFromInventory(int objectid);
 
+   void SetNPCBlock(NPCblock block);
+   
    Vector3 m_Pos;
    Vector3 m_Dest;
    Vector3 m_Direction;
@@ -92,6 +145,8 @@ public:
    bool m_hasConversationTree;
    bool m_hasGump;
    bool m_isEgg;
+
+   NPCblock m_NPCData;
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 

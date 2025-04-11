@@ -2,6 +2,7 @@
 #include "Engine.h"
 #include "ResourceManager.h"
 #include "StateMachine.h"
+#include "ScriptingSystem.h"
 #include "Primitives.h"
 
 using namespace std;
@@ -9,6 +10,7 @@ using namespace std;
 unique_ptr<Engine>           g_Engine;
 unique_ptr<ResourceManager>  g_ResourceManager;
 unique_ptr<StateMachine>     g_StateMachine;
+unique_ptr<ScriptingSystem>  g_ScriptingSystem;
 
 //  These functions only return true if the mouse is in the rectangle and no mouse button is clicked or held.
 bool IsMouseInRect(int x, int y, int w, int h)

@@ -33,6 +33,8 @@ void TitleState::OnEnter()
 {
    ClearConsole();
    m_LastUpdate = 0;
+   
+   
 }
 
 void TitleState::OnExit()
@@ -47,6 +49,7 @@ void TitleState::Shutdown()
 
 void TitleState::Update()
 {
+   g_Terrain->FindVisibleChunks();
    if (GetTime() - m_LastUpdate > GetFrameTime())
    {
       g_CurrentUpdate++;

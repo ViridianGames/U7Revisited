@@ -299,7 +299,7 @@ void Terrain::FindVisibleChunks()
 	Vector3 vecRGT = { viewMat.m0, viewMat.m4, viewMat.m8 };
 	Vector3 vecUP = { viewMat.m1, viewMat.m5, viewMat.m9 };
 	float foView = 1.7777777777777777777777777777778 * g_camera.fovy;
-	float halfFOVy = DEG2RAD((g_camera.fovy * 0.75f));
+	float halfFOVy = DEG2RAD * (g_camera.fovy * 0.75f);
 	float cosHalfFOVy = cos(halfFOVy);
 	float tanHalfFOVy = tan(halfFOVy);
 	float chunkYD = m_chunkRadius / cosHalfFOVy;
@@ -307,7 +307,7 @@ void Terrain::FindVisibleChunks()
 	float schunkYD = m_schunkRadius / cosHalfFOVy;
 	float schunkYH = 0.0f;
 
-	float halfFOVz = DEG2RAD((foView * 0.5f));
+	float halfFOVz = DEG2RAD * (foView * 0.5f);
 	float cosHalfFOVz = cos(halfFOVz);
 	float tanHalfFOVz = tan(halfFOVz);
 	float chunkZD = m_chunkRadius / cosHalfFOVz;

@@ -24,37 +24,36 @@ public:
 	Engine() {};
 
 	virtual void Init() { Init(std::string("")); }
-	virtual void Init(const std::string& configfile);
+	virtual void Init(const std::string &configfile);
 	virtual void Shutdown();
 	virtual void Update();
 	virtual void Draw();
 
 	void CaptureScreenshot();
 
+	Config m_EngineConfig;
+	bool m_Done;
+	std::string m_ConfigFileName;
 
-	Config        m_EngineConfig;
-	bool          m_Done;
-	std::string   m_ConfigFileName;
+	int m_GameUpdates = 0;
+	int m_Frames[50];
+	int m_CurrentFrame;
+	float m_FrameRate;
+	float m_MillisecondsThisFrame;
 
-	int			  m_GameUpdates = 0;
-	int           m_Frames[50];
-	int           m_CurrentFrame;
-	float         m_FrameRate;
-	float         m_MillisecondsThisFrame;
+	int m_DrawFrames[50];
+	int m_UpdateFrames[50];
 
-	int           m_DrawFrames[50];
-	int           m_UpdateFrames[50];
+	unsigned int m_DrawTime;
+	unsigned int m_UpdateTime;
 
-	unsigned int  m_DrawTime;
-	unsigned int  m_UpdateTime;
+	bool m_debugDrawing;
 
-	bool          m_debugDrawing;
+	float m_RenderWidth;
+	float m_RenderHeight;
 
-	float         m_RenderWidth;
-	float         m_RenderHeight;
-
-	float			  m_ScreenWidth;
-	float 	     m_ScreenHeight;
+	float m_ScreenWidth;
+	float m_ScreenHeight;
 };
 
 #endif
