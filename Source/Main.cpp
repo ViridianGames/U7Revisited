@@ -174,6 +174,7 @@ int main(int argv, char** argc)
 
       //  Initialize scripts
       g_ScriptingSystem->LoadScript("Data/Scripts/npc.lua");
+      g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua");
 
       RegisterAllLuaFunctions();
 

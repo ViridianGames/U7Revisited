@@ -250,7 +250,7 @@ void MainState::Update()
 
 			if (picked)
 			{
-				(*node)->Interact(1);
+				(*node)->Interact(2);
 				// g_selectedShape = (*node)->m_shapeData->GetShape();
 				// g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				// m_selectedObject = (*node)->m_ID;

@@ -518,7 +518,7 @@ void LoadingState::LoadFaces()
 			}
 
 			//  Read the frame data.
-			for (int i = 0; i < frameCount; ++i)
+			for (int i = 0; i < 1; ++i)
 			{
 				ShapeData& shapeData = g_shapeTable[thisShape][i];
 				//  Seek to the start of this frame's data.

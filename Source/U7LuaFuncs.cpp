@@ -1,6 +1,8 @@
 #include "U7LuaFuncs.h"
 #include "U7Globals.h"
 #include "Geist/ScriptingSystem.h"
+#include "Geist/StateMachine.h"
+#include "ConversationState.h"
 #include <iostream>
 
 using namespace std;
@@ -20,8 +22,16 @@ static int LuaMove(lua_State *L)
     return 0;
 }
 
+static int StartConversation(lua_State *L)
+{
+    g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
+    dynamic_cast<ConversationState*>(g_StateMachine->GetState(STATE_CONVERSATIONSTATE))->SetNPC(0);
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     g_ScriptingSystem->RegisterScriptFunction("say", LuaSay);
     g_ScriptingSystem->RegisterScriptFunction("move", LuaMove);
+    g_ScriptingSystem->RegisterScriptFunction("StartConversation", StartConversation);
 }

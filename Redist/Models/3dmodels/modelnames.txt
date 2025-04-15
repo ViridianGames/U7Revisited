@@ -111,4 +111,6 @@ Candle_336x12
 Candle_336x13
 Candle_336x14
 Candle_336x15
-
+crate
+MiningMachine1
+Loom1
