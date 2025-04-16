@@ -9,8 +9,13 @@ using namespace std;
 
 static int LuaSay(lua_State *L)
 {
-    const char *text = luaL_checkstring(L, 1);
-    std::cout << "Script says: " << text << "\n"; // Temporary—Raylib later
+    cout << "Lua says: " << luaL_checkstring(L, 2) << "\n";
+    const char *text = luaL_checkstring(L, 2);
+
+    g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
+    g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
+    g_ConversationState->AddDialogue(text);
+
     return 0;
 }
 
@@ -24,8 +29,11 @@ static int LuaMove(lua_State *L)
 
 static int StartConversation(lua_State *L)
 {
+    if(g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
+        return 0;
+
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-    dynamic_cast<ConversationState*>(g_StateMachine->GetState(STATE_CONVERSATIONSTATE))->SetNPC(0);
+    g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
     return 0;
 }
 

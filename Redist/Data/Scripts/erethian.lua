@@ -1,5 +1,5 @@
 local strings = {
-    [0x0000] = "\"Damn candles!\"",
+    [0x0000] = "@Damn candles!@",
     [0x0010] = "@An Ailem!@",
     [0x001B] = "@I'm famished!@",
     [0x002B] = "@My door, at last.@",
@@ -134,7 +134,7 @@ local strings = {
     [0x2B3A] = "\"Eventually, I shall turn my studies to that being. The gargoyles have placed it within a statue, in a shrine they dedicated to their principle of Diligence.",
     [0x2BD8] = "psyche",
     [0x2BDF] = "Dark Core",
-    [0x2BE9] = "\"Yes, here it is. It is the cylinder sitting upon yon pedestal.\" He motions in the direction of the Dark Core.",
+    [0x2BE9] = "\"Yes, it is here. It is the cylinder sitting upon yon pedestal.\" He motions in the direction of the Dark Core.",
     [0x2C58] = "\"I have found it to be quite a treasure trove of useful facts. Its sole purpose seems to be the storage of information.",
     [0x2CD0] = "Much of the information is trivial, such as the detailed description of the color of the sky on a particular day eons ago,",
     [0x2D4B] = "while other bits give instructions for the manipulation of the world.",
@@ -205,52 +205,71 @@ local strings = {
     [0x41DC] = "\"Goodbye and good luck...\" Erethian sounds truly sympathetic."
 }
 
--- Placeholder flags (replace with your engine's flag system)
-local flag_030E = false -- Conversation ended
-local flag_0310 = false -- First meeting
-local flag_0311 = false -- TBD
-local flag_0312 = false -- TBD
-local flag_0313 = false -- TBD
-local flag_0318 = false -- Psyche returns discussed
-local flag_0327 = false -- Great evil discussed
-local flag_032A = false -- TBD
-local flag_032B = false -- Blindness annoyed
-local flag_032F = false -- Daemon mirror discussed
-local flag_0330 = false -- Daemon gem discussed
-local flag_0337 = false -- TBD
-local flag_0338 = false -- Black sword discussed
-local flag_0339 = false -- Daemon blade discussed
-local flag_0341 = false -- Talisman discussed
+-- Helper function for table.remove
+function table.find(t, val)
+    for i, v in ipairs(t) do
+        if v == val then return i end
+    end
+    return nil
+end
 
--- Placeholder variables for locals
+-- Placeholder flags
+local flag_030E = false
+local flag_0310 = false
+local flag_0311 = false
+local flag_0312 = false
+local flag_0313 = false
+local flag_0318 = false
+local flag_0327 = false
+local flag_032A = false
+local flag_032B = false
+local flag_032F = false
+local flag_0330 = false
+local flag_0337 = false
+local flag_0338 = false
+local flag_0339 = false
+local flag_0341 = false
+
+-- Placeholder variables
 local v_0, v_1, v_2, v_3, v_4, v_5, v_6, v_7, v_8, v_9
 local v_10, v_11, v_12, v_13, v_14, v_15, v_16, v_17, v_18, v_19
 
+-- Placeholder answers table
+answers = {}
+
 function func_154(object_id, event)
+    -- Check answer first if set
+    if answer then
+        goto lbl_0389
+    end
+
+    -- Top-level labels
+    ::lbl_01CB::
+    if false then -- Placeholder: callis 002A(4, 240, 797, itemref)
+        -- Do nothing
+    end
+
     if event == 0 then
-        -- Check inventory items (callis 000E)
         v_0 = 0 -- Placeholder: callis 000E(1, 336, itemref)
         v_1 = 0 -- Placeholder: callis 000E(1, 338, itemref)
         v_2 = 0 -- Placeholder: callis 000E(1, 997, itemref)
         if v_0 or v_1 or v_2 then
-            -- Random check (callis 0000)
             v_3 = math.random(100) -- Placeholder: callis 0000(100)
             if v_3 >= 60 then
                 say(object_id, strings[0x0000]) -- Damn candles!
+                return
             elseif v_3 <= 40 then
                 v_4 = v_0 or v_1 or v_2
-                -- TODO: Array logic (arra, sloop)
-                -- Placeholder: say An Ailem! if conditions met
-                say(object_id, strings[0x0010])
+                say(object_id, strings[0x0010]) -- An Ailem!
+                return
             end
-            goto lbl_01CB
         end
-        -- Famished check
+
         if false then -- Placeholder: callis 000E(1, 873, itemref)
             say(object_id, strings[0x001B]) -- I'm famished!
-            goto lbl_01CB
+            return
         end
-        -- Door check
+
         v_10 = 0 -- Placeholder: callis 000E(2, 432, itemref)
         v_11 = 0 -- Placeholder: callis 000E(2, 433, itemref)
         if not (v_10 or v_11) then
@@ -261,16 +280,14 @@ function func_154(object_id, event)
             if v_11 then
                 say(object_id, strings[0x003F]) -- My door, at last.
             end
-            goto lbl_01CB
+            return
         end
-        -- Wall check
+
         v_12 = 0 -- Placeholder: callis 0035(16, 0, 607, itemref)
         if not v_12 then
-            -- Sloop for wall following
-            v_15 = 0 -- Placeholder: loop counter
+            v_15 = 0
             while true do
                 v_15 = v_15 + 1
-                -- Placeholder: callis GetItemFrame, compare
                 if false then -- Frame == 4 and >= 16
                     say(object_id, strings[0x0053]) -- Ah, a wall.
                     -- Placeholder: callis 0002(18, strings[0x0061], ...)
@@ -280,11 +297,7 @@ function func_154(object_id, event)
                 end
             end
         end
-    end
-
-    -- Check inventory (callis GetContainerItems)
-    if false then -- Placeholder: callis 002A(4, 240, 797, itemref)
-        -- Do nothing
+        return
     end
 
     if event == 1 then
@@ -299,8 +312,7 @@ function func_154(object_id, event)
     end
 
     if event == 2 then
-        -- Conversation logic
-        v_13 = "" -- Placeholder: call 0908H (player name)
+        v_13 = "Avatar" -- Placeholder: call 0908H (player name)
         if flag_030E then
             say(object_id, strings[0x0081]) -- I'll speak to thee no more
             return
@@ -310,7 +322,7 @@ function func_154(object_id, event)
             say(object_id, strings[0x015D])
             say(object_id, strings[0x022E])
             flag_0310 = true
-            -- Add answers
+            answers = {}
             table.insert(answers, strings[0x027B]) -- bye
             table.insert(answers, strings[0x027F]) -- Exodus
             table.insert(answers, strings[0x0286]) -- Minax
@@ -323,12 +335,12 @@ function func_154(object_id, event)
             else
                 say(object_id, strings[0x029D] .. v_13 .. strings[0x02B5])
             end
+            answers = {}
             table.insert(answers, strings[0x0375]) -- bye
             table.insert(answers, strings[0x0379]) -- job
             table.insert(answers, strings[0x037D]) -- name
         end
 
-        -- Conditional answers
         if not flag_0337 then
             if not flag_0338 then
                 if not flag_0330 then
@@ -370,43 +382,42 @@ function func_154(object_id, event)
         goto lbl_0929
     end
 
+    ::lbl_0220::
     -- Handle conversation choices
     ::lbl_0389::
     if answer == strings[0x0406] then
         say(object_id, strings[0x0419])
         say(object_id, strings[0x048F])
-        table.remove(answers, strings[0x0599]) -- the Psyche returns
+        table.remove(answers, table.find(answers, strings[0x0599])) -- the Psyche returns
     elseif answer == strings[0x05AC] then
         say(object_id, strings[0x05B7])
-        table.remove(answers, strings[0x06D1]) -- great evil
+        table.remove(answers, table.find(answers, strings[0x06D1])) -- great evil
     elseif answer == strings[0x06DC] then
         if not flag_030F then
             flag_030F = true
             say(object_id, strings[0x06F1])
-            -- Placeholder: call 090AH (get answer)
-            if false then -- No Scroll of Infinity
+            if false then -- Placeholder: call 090AH (get answer)
                 say(object_id, strings[0x07AC])
             else
                 say(object_id, strings[0x07F3])
-                -- Placeholder: HideNPC
                 say(object_id, strings[0x0B94])
                 flag_030E = true
+                answers = {}
                 return
             end
         else
             say(object_id, strings[0x0C57])
-            -- Placeholder: call 090AH
-            if false then -- No Scroll
+            if false then -- Placeholder: call 090AH
                 say(object_id, strings[0x0C98])
             else
                 say(object_id, strings[0x0D01])
-                -- Placeholder: HideNPC
                 say(object_id, strings[0x10A2])
                 flag_030E = true
+                answers = {}
                 return
             end
         end
-        table.remove(answers, strings[0x117C]) -- Talisman of Infinity
+        table.remove(answers, table.find(answers, strings[0x117C])) -- Talisman of Infinity
     elseif answer == strings[0x1191] then
         say(object_id, strings[0x11A3])
         v_15 = true
@@ -414,27 +425,26 @@ function func_154(object_id, event)
         say(object_id, strings[0x12DF])
         if false then -- Placeholder: GetContainerItems
             say(object_id, strings[0x140F])
-            -- Placeholder: HideNPC
             say(object_id, strings[0x154E])
             table.insert(answers, strings[0x1635]) -- problems
         else
             say(object_id, strings[0x163E])
         end
         flag_0338 = true
-        table.remove(answers, strings[0x174A]) -- daemon gem
-        table.remove(answers, strings[0x1755]) -- black sword
+        table.remove(answers, table.find(answers, strings[0x174A])) -- daemon gem
+        table.remove(answers, table.find(answers, strings[0x1755])) -- black sword
     elseif answer == strings[0x1761] then
         say(object_id, strings[0x176A])
-        table.remove(answers, strings[0x1869]) -- problems
+        table.remove(answers, table.find(answers, strings[0x1869])) -- problems
     elseif answer == strings[0x1872] then
         say(object_id, strings[0x1877] .. v_13 .. strings[0x18C8])
-        table.remove(answers, strings[0x18F0]) -- name
+        table.remove(answers, table.find(answers, strings[0x18F0])) -- name
     elseif answer == strings[0x18F5] then
         say(object_id, strings[0x18F9])
         say(object_id, strings[0x1998])
         say(object_id, strings[0x1A1E])
         say(object_id, strings[0x1A88])
-        table.remove(answers, strings[0x1B19]) -- job
+        table.remove(answers, table.find(answers, strings[0x1B19])) -- job
         table.insert(answers, strings[0x1B1D]) -- blindness
         table.insert(answers, strings[0x1B27]) -- subjects
         table.insert(answers, strings[0x1B30]) -- Exodus
@@ -442,12 +452,13 @@ function func_154(object_id, event)
         table.insert(answers, strings[0x1B3D]) -- Mondain
     elseif answer == strings[0x1B45] then
         say(object_id, strings[0x1B4E])
-        table.remove(answers, strings[0x1C36]) -- subjects
+        table.remove(answers, table.find(answers, strings[0x1C36])) -- subjects
     elseif answer == strings[0x1C3F] then
         if not flag_032B then
             v_14 = true
         else
             say(object_id, strings[0x1C49])
+            answers = {}
             return
         end
     elseif answer == strings[0x1C8E] then
@@ -456,7 +467,7 @@ function func_154(object_id, event)
         say(object_id, strings[0x1E2E])
         table.insert(answers, strings[0x1E9A]) -- skull
         table.insert(answers, strings[0x1EA0]) -- Gem of Immortality
-        table.remove(answers, strings[0x1EB3]) -- Mondain
+        table.remove(answers, table.find(answers, strings[0x1EB3])) -- Mondain
     elseif answer == strings[0x1EBB] then
         say(object_id, strings[0x1EC1])
         say(object_id, strings[0x1F8A])
@@ -467,16 +478,15 @@ function func_154(object_id, event)
             say(object_id, strings[0x21FC])
             say(object_id, strings[0x225B])
             say(object_id, strings[0x22ED])
-            -- Placeholder: HideNPC
         end
         table.insert(answers, strings[0x2367]) -- Enilno
-        table.remove(answers, strings[0x236E]) -- Minax
+        table.remove(answers, table.find(answers, strings[0x236E])) -- Minax
     elseif answer == strings[0x2374] then
         say(object_id, strings[0x237B])
         say(object_id, strings[0x245B])
         table.insert(answers, strings[0x24FA]) -- interface
         table.insert(answers, strings[0x2504]) -- two parts
-        table.remove(answers, strings[0x250E]) -- Exodus
+        table.remove(answers, table.find(answers, strings[0x250E])) -- Exodus
     elseif answer == strings[0x2515] then
         say(object_id, strings[0x251F])
         say(object_id, strings[0x2624])
@@ -488,7 +498,7 @@ function func_154(object_id, event)
         if not v_17 then
             table.insert(answers, strings[0x278C]) -- Dark Core
         end
-        table.remove(answers, strings[0x2796]) -- two parts
+        table.remove(answers, table.find(answers, strings[0x2796])) -- two parts
     elseif answer == strings[0x27A0] then
         say(object_id, strings[0x27AA])
         say(object_id, strings[0x282B])
@@ -500,16 +510,16 @@ function func_154(object_id, event)
         if not v_17 then
             table.insert(answers, strings[0x2960]) -- Dark Core
         end
-        table.remove(answers, strings[0x296A]) -- interface
+        table.remove(answers, table.find(answers, strings[0x296A])) -- interface
     elseif answer == strings[0x2974] then
         say(object_id, strings[0x297E])
         say(object_id, strings[0x29F2])
         say(object_id, strings[0x2A80])
-        table.remove(answers, strings[0x2B29]) -- gargoyles
+        table.remove(answers, table.find(answers, strings[0x2B29])) -- gargoyles
     elseif answer == strings[0x2B33] then
         say(object_id, strings[0x2B3A])
         v_16 = true
-        table.remove(answers, strings[0x2BD8]) -- psyche
+        table.remove(answers, table.find(answers, strings[0x2BD8])) -- psyche
     elseif answer == strings[0x2BDF] then
         if false then -- Placeholder: callis 000E(7, 990, ...)
             say(object_id, strings[0x2BE9])
@@ -520,7 +530,7 @@ function func_154(object_id, event)
         say(object_id, strings[0x2D91])
         say(object_id, strings[0x2E0A])
         v_17 = true
-        table.remove(answers, strings[0x2EB8]) -- Dark Core
+        table.remove(answers, table.find(answers, strings[0x2EB8])) -- Dark Core
     elseif answer == strings[0x2EC2] then
         say(object_id, strings[0x2EC9])
         say(object_id, strings[0x2F4B])
@@ -530,47 +540,47 @@ function func_154(object_id, event)
         else
             say(object_id, strings[0x305E])
         end
-        table.remove(answers, strings[0x311D]) -- Enilno
+        table.remove(answers, table.find(answers, strings[0x311D])) -- Enilno
     elseif answer == strings[0x3124] then
         say(object_id, strings[0x3137])
         say(object_id, strings[0x31A9])
         say(object_id, strings[0x3228])
-        table.remove(answers, strings[0x3323]) -- Gem of Immortality
+        table.remove(answers, table.find(answers, strings[0x3323])) -- Gem of Immortality
     elseif answer == strings[0x3336] then
         say(object_id, strings[0x333C])
-        table.remove(answers, strings[0x33BB]) -- skull
+        table.remove(answers, table.find(answers, strings[0x33BB])) -- skull
     elseif answer == strings[0x33C1] then
         say(object_id, strings[0x33CF])
         table.insert(answers, strings[0x34B4]) -- free
         table.insert(answers, strings[0x34B9]) -- whining
-        table.remove(answers, strings[0x34C1]) -- daemon mirror
+        table.remove(answers, table.find(answers, strings[0x34C1])) -- daemon mirror
     elseif answer == strings[0x34CF] then
         say(object_id, strings[0x34D7])
-        table.remove(answers, strings[0x359B]) -- whining
+        table.remove(answers, table.find(answers, strings[0x359B])) -- whining
     elseif answer == strings[0x35A3] then
         say(object_id, strings[0x35A8])
         table.insert(answers, strings[0x3696]) -- jail
-        table.remove(answers, strings[0x369B]) -- free
+        table.remove(answers, table.find(answers, strings[0x369B])) -- free
     elseif answer == strings[0x36A0] then
         say(object_id, strings[0x36A5])
         table.insert(answers, strings[0x379B]) -- Ether Gem
-        table.remove(answers, strings[0x37A5]) -- jail
+        table.remove(answers, table.find(answers, strings[0x37A5])) -- jail
     elseif answer == strings[0x36AA] then
         say(object_id, strings[0x37B4])
         table.insert(answers, strings[0x393F]) -- Test of Courage
         table.insert(answers, strings[0x394F]) -- Shrine of Principle
         table.insert(answers, strings[0x3963]) -- golems
-        table.remove(answers, strings[0x396A]) -- Ether Gem
+        table.remove(answers, table.find(answers, strings[0x396A])) -- Ether Gem
     elseif answer == strings[0x3974] then
         say(object_id, strings[0x397B])
         table.insert(answers, strings[0x3AA9]) -- Test of Love
-        table.remove(answers, strings[0x3AB6]) -- golems
+        table.remove(answers, table.find(answers, strings[0x3AB6])) -- golems
     elseif answer == strings[0x3ABD] then
         say(object_id, strings[0x3AD1])
-        table.remove(answers, strings[0x3BEA]) -- Shrine of Principle
+        table.remove(answers, table.find(answers, strings[0x3BEA])) -- Shrine of Principle
     elseif answer == strings[0x3BFE] then
         say(object_id, strings[0x3C0B])
-        table.remove(answers, strings[0x3CAF]) -- Test of Love
+        table.remove(answers, table.find(answers, strings[0x3CAF])) -- Test of Love
     elseif answer == strings[0x3CBC] then
         if false then -- Placeholder: callis IsPlayerFemale
             v_19 = strings[0x3CCC]
@@ -578,28 +588,28 @@ function func_154(object_id, event)
             v_19 = strings[0x3CD6]
         end
         say(object_id, strings[0x3CDD] .. v_19 .. strings[0x3D4D])
-        table.remove(answers, strings[0x3DDD]) -- Test of Courage
+        table.remove(answers, table.find(answers, strings[0x3DDD])) -- Test of Courage
     elseif answer == strings[0x3DED] then
         say(object_id, strings[0x3DF8])
         if false then -- Placeholder: GetContainerItems
             say(object_id, strings[0x3ECB])
-            -- Placeholder: HideNPC
             say(object_id, strings[0x3F88])
-            -- Placeholder: SwitchTalkTo
         end
-        table.remove(answers, strings[0x407F]) -- daemon gem
+        table.remove(answers, table.find(answers, strings[0x407F])) -- daemon gem
     elseif answer == strings[0x408A] then
         say(object_id, strings[0x4097])
         flag_0339 = true
-        table.remove(answers, strings[0x4137]) -- daemon blade
+        table.remove(answers, table.find(answers, strings[0x4137])) -- daemon blade
     elseif answer == strings[0x4144] then
         if not flag_0338 then
             say(object_id, strings[0x4148])
         else
             say(object_id, strings[0x41DC])
         end
+        answers = {}
         return
     end
+    answer = nil -- Clear after processing
 
     ::lbl_0929::
     if v_14 then

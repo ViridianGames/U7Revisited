@@ -208,10 +208,10 @@ int main(int argv, char** argc)
       worldEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
       
-      State* conversationState = new ConversationState;
+      ConversationState* conversationState = new ConversationState;
+      g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState);
-
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 

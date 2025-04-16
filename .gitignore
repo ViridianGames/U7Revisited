@@ -7,3 +7,5 @@
 !Redist/Data/U7/U7.txt
 
 /subprojects/raylib/
+*.o
+liblua.a

@@ -157,5 +157,5 @@ void U7Object::SetNPCBlock(NPCblock block)
 
 void U7Object::Interact(int event)
 {
-   g_ScriptingSystem->CallScript("on_interact", event);  
+   g_ScriptingSystem->CallScript("func_154", {286, event});  
 }

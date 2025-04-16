@@ -85,6 +85,7 @@ public:
 
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
+   unsigned int m_currentFace = 0;
 
    bool m_objectViewing = true;
 

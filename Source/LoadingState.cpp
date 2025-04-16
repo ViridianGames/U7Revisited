@@ -87,7 +87,6 @@ void LoadingState::Draw()
 		DrawConsole();
 	}
 
-
 	DrawTexture(*g_Cursor, 0, 0, WHITE);
 
 	EndTextureMode();
@@ -195,7 +194,6 @@ void LoadingState::UpdateLoading()
 			m_loadingInitialGameState = true;
 			return;
 		}
-
 	}
 	else
 	{
@@ -498,8 +496,14 @@ void LoadingState::LoadFaces()
 		//  The next 874 entries (150-1023) are objects.
 
 		//  Read the shape data.
+		int thisOffset = shapeEntryMap[thisShape].offset;
+		int thisLength = shapeEntryMap[thisShape].length;
+		if(thisOffset == 0 && thisLength == 0)
+		{
+			continue; //  No data for this shape.
+		}
 
-		shapes.seekg(shapeEntryMap[thisShape].offset);
+		shapes.seekg(thisOffset);
 		unsigned int headerStart = shapes.tellg();
 		unsigned int firstData = ReadU32(shapes);
 
@@ -1203,6 +1207,7 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 		thisentry.offset = ReadS32(file);
 		if (thisentry.offset == 0) //  Offset of 0 means no object here.
 		{
+			ReadS32(file); //  Soak this data or it will corrupt the next entry.
 			thisentry.length = 0;
 			continue;
 		}

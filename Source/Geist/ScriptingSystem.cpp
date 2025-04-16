@@ -57,20 +57,25 @@ void ScriptingSystem::LoadScript(const std::string& path)
     }
 }
 
-void ScriptingSystem::CallScript(const std::string& func_name, int event)
-{
+void ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
+ {
     lua_getglobal(m_luaState, func_name.c_str());
     if (lua_isfunction(m_luaState, -1))
-	{
-        lua_pushinteger(m_luaState, event);
-        if (lua_pcall(m_luaState, 1, 0, 0) != LUA_OK)
-		{
+    {
+        // Push all arguments
+        for (lua_Integer arg : args)
+        {
+            lua_pushinteger(m_luaState, arg);
+        }
+        // Call with number of args, 0 results, no error handler
+        if (lua_pcall(m_luaState, args.size(), 0, 0) != LUA_OK)
+        {
             std::cerr << "Error in " << func_name << ": " << lua_tostring(m_luaState, -1) << "\n";
             lua_pop(m_luaState, 1);
         }
     }
-	else
-	{
+    else
+    {
         lua_pop(m_luaState, 1);
     }
 }

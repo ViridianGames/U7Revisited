@@ -43,7 +43,7 @@ public:
 
 	void RegisterState(int id, State* state, std::string name = "NO NAME");
 	void MakeStateTransition(int newstate);
-	void PushState(int newstate);
+	void PushState(int newstate, bool allowmultiples = false);
 	void PopState();
 	int GetCurrentState() { return m_CurrentState; }
 	int GetPreviousState();// { return m_PreviousState; }

@@ -16,7 +16,7 @@
 #include "lua.hpp"
 #include <unordered_map>
 #include <string>
-
+#include <vector>
 #include <memory>
 #include <map>
 
@@ -36,7 +36,7 @@ public:
 	// Register a C++ function to be called from the Lua script "name"
 	void LoadScript(const std::string& path);
 	void RegisterScriptFunction(const std::string& name, lua_CFunction function);
-	void CallScript(const std::string& func_name, int event);
+	void CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
 
 	lua_State* m_luaState = nullptr;
 	std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;

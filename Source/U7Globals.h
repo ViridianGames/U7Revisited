@@ -17,12 +17,14 @@
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
+#include "ConversationState.h"
 #include "Terrain.h"
 #include "ShapeData.h"
 #include "U7Object.h"
 #include "raylib.h"
 #include "raymath.h"
 
+//class ConversationState;
 
 struct coords
 {
@@ -138,6 +140,9 @@ extern std::vector< std::vector<unsigned short> > g_World;
 
 void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color);
 
+void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color);
+
+
 float GetDistance(float startX, float startZ, float endX, float endZ);
 
 bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, float range);
@@ -191,6 +196,8 @@ void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 25
 void DrawConsole();
 
 //int l_say(lua_State* L);
+
+extern ConversationState* g_ConversationState;
 
 //////////////////////////////////////////////////////////////////////////////
 

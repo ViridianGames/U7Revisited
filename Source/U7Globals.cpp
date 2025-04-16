@@ -1,6 +1,7 @@
 #include "U7Globals.h"
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
+#include "ConversationState.h"
 #include "lua.hpp"
 #include <algorithm>
 #include <fstream>
@@ -34,6 +35,8 @@ std::unique_ptr<Terrain> g_Terrain;
 
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectTable;
+
+ConversationState* g_ConversationState;
 
 bool g_CameraMoved;
 
@@ -435,6 +438,51 @@ void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vecto
 	DrawTextEx(*font, text.c_str(), Vector2{ position.x - 1, position.y }, fontSize, spacing, Color{ 0, 0, 0, color.a });
 	DrawTextEx(*font, text.c_str(), position, fontSize, spacing, color);
 }
+
+void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color)
+{
+	std::istringstream iss(text);
+	std::string word;
+	std::vector<std::string> lines;
+	float lineWidth = 0;
+
+	// If the text is less than the width, just draw it.
+	if(MeasureTextEx(*font, text.c_str(), fontSize, spacing).x < maxwidth)
+	{
+		DrawOutlinedText(font, text.c_str(), position, fontSize, spacing, color);
+		return;
+	}
+
+	string line;
+	while (iss >> word)
+	{
+		if(MeasureTextEx(*font, line.c_str(), fontSize, spacing).x > maxwidth)
+		{
+			lines.push_back(line);
+			line.clear();
+			line += word + " ";
+		}
+		else
+		{
+			line += word + " ";
+		}
+	}
+
+	if (!line.empty())
+	{
+		lines.push_back(line);
+	}
+
+	auto it = lines.begin();
+	float y = position.y;
+	while (it != lines.end())
+	{
+		DrawOutlinedText(font, (*it).c_str(), Vector2{ position.x, y }, fontSize, spacing, color);
+		y += fontSize * 1.2f;
+		++it;
+	}
+}
+
 
 void AddObjectToContainer(int objectID, int containerID)
 {

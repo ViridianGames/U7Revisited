@@ -201,7 +201,7 @@ void MainState::Update()
 	}
 
 
-	if (WasRMBDoubleClicked())
+	if (WasLMBDoubleClicked())
 	{
 		//AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
       
@@ -224,16 +224,14 @@ void MainState::Update()
 
 				if ((*node)->m_hasConversationTree)
 				{
-					g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-					dynamic_cast<ConversationState*>(g_StateMachine->GetState(STATE_CONVERSATIONSTATE))->SetNPC((*node)->m_NPCData.index2);
-					//g_StateMachine->MakeStateTransition(STATE_CONVERSATIONSTATE);	
+					(*node)->Interact(2);
 				}
 				break;
 			}
 		}
 	}
 
-	if (WasLMBDoubleClicked())
+	if (WasRMBDoubleClicked())
 	{
 		//AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
 
@@ -250,15 +248,14 @@ void MainState::Update()
 
 			if (picked)
 			{
-				(*node)->Interact(2);
-				// g_selectedShape = (*node)->m_shapeData->GetShape();
-				// g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				// m_selectedObject = (*node)->m_ID;
+				g_selectedShape = (*node)->m_shapeData->GetShape();
+				g_selectedFrame = (*node)->m_shapeData->GetFrame();
+				m_selectedObject = (*node)->m_ID;
 
-				// if ((*node)->m_isContainer)
-				// {
-				// 	OpenGump((*node)->m_ID);
-				// }
+				if ((*node)->m_isContainer)
+				{
+					OpenGump((*node)->m_ID);
+				}
 				break;
 			}
 		}

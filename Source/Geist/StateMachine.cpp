@@ -113,8 +113,13 @@ void StateMachine::MakeStateTransitionEX(int newstate)
 	m_StateMap[get<0>(m_StateStack[0])]->OnEnter();
 }
 
-void StateMachine::PushState(int newstate)
+void StateMachine::PushState(int newstate, bool allowmultiples)
 {
+	if(!allowmultiples && (get<0>(m_StateStack[0]) == newstate || get<1>(m_TransitionStack[0]) == newstate))
+	{
+		return;
+	}
+
 	m_TransitionStack.push_back(make_tuple(TT_PUSH, newstate));
 }
 
