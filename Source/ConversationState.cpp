@@ -70,9 +70,9 @@ void ConversationState::Update()
 		{
 
 			if (IsLeftButtonDownInRect({ 115 * g_DrawScale,
-				 (140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale,
+				 float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
 				 400 * g_DrawScale,
-				 (g_SmallFont.get()->baseSize * 1.3) * g_DrawScale }))
+				 float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale) }))
 			{
 				SetAnswer("func_154", m_answers[i]);
 				
@@ -150,7 +150,7 @@ void ConversationState::Draw()
 	{
 		for(int i = 0; i < m_answers.size(); i++)
 		{
-			DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 115, 140 + (i * g_SmallFont.get()->baseSize * 1.3) }, g_SmallFont.get()->baseSize, 1, YELLOW);
+			DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 115, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
 		}
 	}
 
