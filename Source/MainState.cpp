@@ -226,6 +226,18 @@ void MainState::Update()
 				{
 					(*node)->Interact(2);
 				}
+				else
+				{
+					g_selectedShape = (*node)->m_shapeData->GetShape();
+					g_selectedFrame = (*node)->m_shapeData->GetFrame();
+					m_selectedObject = (*node)->m_ID;
+	
+					if ((*node)->m_isContainer)
+					{
+						OpenGump((*node)->m_ID);
+					}
+					break;
+				}
 				break;
 			}
 		}

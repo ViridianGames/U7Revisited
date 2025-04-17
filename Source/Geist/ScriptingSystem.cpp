@@ -11,13 +11,6 @@
 
 using namespace std;
 
-// static int l_say(lua_State* L)
-// {
-// 	const char* message = luaL_checkstring(L, 1);
-// 	printf("Lua says: %s\n", message);
-// 	return 0;
-// }
-
 ScriptingSystem::ScriptingSystem()
 {
 	m_luaState = luaL_newstate();
