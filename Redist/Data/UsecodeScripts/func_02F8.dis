@@ -1,0 +1,181 @@
+  .funcnumber 02F8H
+  .data
+L0000: db '@Those are beautiful. I am sure that they would fetch '
+L0036: db 00
+L0037: db 'a high price at the jewelers' in Britain.@'
+L0061: db 00
+L0062: db '@I believe the gem must be held in the weapon hand to break '
+ db 'the mirror.@'
+L00AA: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0005H
+  .extern 08FFH
+  .extern 08E7H
+  .extern 06F6H
+  .extern 0828H
+  .extern 092DH
+0000: 3E   push itemref
+0001: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0005: 12 00 00   pop [0000]
+0008: 48   push eventid
+0009: 1F 01 00   pushi 0001H   ; 1
+000C: 22   cmpeq
+000D: 05 BD 00   jne 00CD
+0010: 21 00 00   push [0000]
+0013: 1F 0B 00   pushi 000BH   ; 11
+0016: 19   cmple
+0017: 05 13 00   jne 002D
+001A: 1D 00 00   pushs L0000   ; @Those are beauti...
+001D: 1D 37 00   pushs L0037   ; a high price at t...
+0020: 09   add
+0021: 12 01 00   pop [0001]
+0024: 21 01 00   push [0001]
+0027: 24 00 00   call [0000]   ; 08FFH
+002A: 06 A0 00   jmp 00CD
+002D: 21 00 00   push [0000]
+0030: 1F 0E 00   pushi 000EH   ; 14
+0033: 22   cmpeq
+0034: 05 2D 00   jne 0064
+0037: 24 01 00   call [0001]   ; 08E7H
+003A: 10   not
+003B: 05 1A 00   jne 0058
+003E: 1F 06 00   pushi 0006H   ; 6
+0041: 1F 10 06   pushi 0610H   ; 1552
+0044: 1F 8F 08   pushi 088FH   ; 2191
+0047: 1E 03 00   arrc 0003H   ; 3
+004A: 12 02 00   pop [0002]
+004D: 21 02 00   push [0002]
+0050: 39 4F 00 01  calli 004F, 1
+0054: 2C   db 2c ???
+0055: 06 0C 00   jmp 0064
+0058: 3E   push itemref
+0059: 39 6F 00 01  calli 006F, 1
+005D: 1F 25 00   pushi 0025H   ; 37
+0060: 39 0F 00 01  calli 000F, 1
+0064: 42 2F 03   pushf flag:[032F]
+0067: 05 0E 00   jne 0078
+006A: 42 30 03   pushf flag:[0330]
+006D: 10   not
+006E: 05 07 00   jne 0078
+0071: 3E   push itemref
+0072: 47 F6 06   calle 06F6H   ; 1782
+0075: 06 38 01   jmp 01B0
+0078: 42 33 03   pushf flag:[0333]
+007B: 05 4F 00   jne 00CD
+007E: 21 00 00   push [0000]
+0081: 1F 0D 00   pushi 000DH   ; 13
+0084: 22   cmpeq
+0085: 05 07 00   jne 008F
+0088: 3E   push itemref
+0089: 47 F6 06   calle 06F6H   ; 1782
+008C: 06 21 01   jmp 01B0
+008F: 21 00 00   push [0000]
+0092: 1F 0C 00   pushi 000CH   ; 12
+0095: 22   cmpeq
+0096: 05 34 00   jne 00CD
+0099: 1F 0C 00   pushi 000CH   ; 12
+009C: 1F F8 02   pushi 02F8H   ; 760
+009F: 1F 01 00   pushi 0001H   ; 1
+00A2: 1F 9C FE   pushi FE9CH   ; -356
+00A5: 38 72 00 04  callis 0072, 4
+00A9: 10   not
+00AA: 05 07 00   jne 00B4
+00AD: 1D 62 00   pushs L0062   ; @I believe the ge...
+00B0: 24 00 00   call [0000]   ; 08FFH
+00B3: 2C   db 2c ???
+00B4: 39 7E 00 00  calli 007E, 0
+00B8: 1F F8 02   pushi 02F8H   ; 760
+00BB: 44 55   pushw 1F55H   ; 8021
+00BD: 1F 02 00   pushi 0002H   ; 2
+00C0: 44 27   pushw 1E27H   ; 7719
+00C2: 1E 04 00   arrc 0004H   ; 4
+00C5: 3E   push itemref
+00C6: 38 01 00 02  callis 0001, 2
+00CA: 12 03 00   pop [0003]
+00CD: 48   push eventid
+00CE: 1F 02 00   pushi 0002H   ; 2
+00D1: 22   cmpeq
+00D2: 05 47 00   jne 011C
+00D5: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+00D9: 12 04 00   pop [0004]
+00DC: 21 04 00   push [0004]
+00DF: 38 11 00 01  callis _GetItemType@1  ; 0011
+00E3: 12 05 00   pop [0005]
+00E6: 21 04 00   push [0004]
+00E9: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+00ED: 12 06 00   pop [0006]
+00F0: 21 05 00   push [0005]
+00F3: 1F 50 03   pushi 0350H   ; 848
+00F6: 22   cmpeq
+00F7: 05 22 00   jne 011C
+00FA: 21 06 00   push [0006]
+00FD: 1F 03 00   pushi 0003H   ; 3
+0100: 22   cmpeq
+0101: 05 18 00   jne 011C
+0104: 1F 07 00   pushi 0007H   ; 7
+0107: 21 04 00   push [0004]
+010A: 1F F8 02   pushi 02F8H   ; 760
+010D: 1F FE FF   pushi FFFEH   ; -2
+0110: 1F 02 00   pushi 0002H   ; 2
+0113: 1F 00 00   pushi 0000H   ; 0
+0116: 21 04 00   push [0004]
+0119: 24 03 00   call [0003]   ; 0828H
+011C: 48   push eventid
+011D: 1F 07 00   pushi 0007H   ; 7
+0120: 22   cmpeq
+0121: 05 8C 00   jne 01B0
+0124: 3E   push itemref
+0125: 24 04 00   call [0004]   ; 092DH
+0128: 12 07 00   pop [0007]
+012B: 1F 25 00   pushi 0025H   ; 37
+012E: 44 58   pushw 4458H   ; 17496
+0130: 44 67   pushw 1F67H   ; 8039
+0132: 1F 02 00   pushi 0002H   ; 2
+0135: 44 27   pushw 4427H   ; 17447
+0137: 44 66   pushw 1F66H   ; 8038
+0139: 1F 02 00   pushi 0002H   ; 2
+013C: 44 27   pushw 4427H   ; 17447
+013E: 44 65   pushw 1F65H   ; 8037
+0140: 1F 02 00   pushi 0002H   ; 2
+0143: 44 27   pushw 2127H   ; 8487
+0145: 21 07 00   push [0007]
+0148: 44 59   pushw 1E59H   ; 7769
+014A: 1E 0D 00   arrc 000DH   ; 13
+014D: 1F 9C FE   pushi FE9CH   ; -356
+0150: 38 1B 00 01  callis 001B, 1
+0154: 38 01 00 02  callis 0001, 2
+0158: 12 03 00   pop [0003]
+015B: 1F 09 00   pushi 0009H   ; 9
+015E: 44 46   pushw 1F46H   ; 8006
+0160: 1F 0A 00   pushi 000AH   ; 10
+0163: 44 27   pushw 1E27H   ; 7719
+0165: 1E 04 00   arrc 0004H   ; 4
+0168: 3E   push itemref
+0169: 38 01 00 02  callis 0001, 2
+016D: 12 03 00   pop [0003]
+0170: 1F 0C 00   pushi 000CH   ; 12
+0173: 1F 99 FE   pushi FE99H   ; -359
+0176: 1F F8 02   pushi 02F8H   ; 760
+0179: 1F 9C FE   pushi FE9CH   ; -356
+017C: 38 1B 00 01  callis 001B, 1
+0180: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0184: 12 08 00   pop [0008]
+0187: 1F 50 03   pushi 0350H   ; 848
+018A: 44 55   pushw 1F55H   ; 8021
+018C: 1F 02 00   pushi 0002H   ; 2
+018F: 44 27   pushw 1F27H   ; 7975
+0191: 1F 0D 00   pushi 000DH   ; 13
+0194: 44 46   pushw 1F46H   ; 8006
+0196: 1F 0A 00   pushi 000AH   ; 10
+0199: 44 27   pushw 1E27H   ; 7719
+019B: 1E 08 00   arrc 0008H   ; 8
+019E: 21 08 00   push [0008]
+01A1: 38 01 00 02  callis 0001, 2
+01A5: 12 03 00   pop [0003]
+01A8: 14   push false
+01A9: 43 13 03   popf flag:[0313]
+01AC: 14   push false
+01AD: 43 33 03   popf flag:[0333]
+01B0: 25   ret

@@ -1,0 +1,30 @@
+  .funcnumber 030DH
+  .data
+L0000: db '@The sails must be furled before the planks can be lowered.@'
+L003C: db 00
+L003D: db '@I think the gangplank is blocked.@'
+L0060: db 00
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0002H
+  .extern 08FFH
+  .extern 0829H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 22 00   jne 002A
+0008: 1F 0A 00   pushi 000AH   ; 10
+000B: 3E   push itemref
+000C: 38 88 00 02  callis 0088, 2
+0010: 05 09 00   jne 001C
+0013: 1D 00 00   pushs L0000   ; @The sails must b...
+0016: 24 00 00   call [0000]   ; 08FFH
+0019: 06 0E 00   jmp 002A
+001C: 3E   push itemref
+001D: 24 01 00   call [0001]   ; 0829H
+0020: 10   not
+0021: 05 06 00   jne 002A
+0024: 1D 3D 00   pushs L003D   ; @I think the gang...
+0027: 24 00 00   call [0000]   ; 08FFH
+002A: 25   ret

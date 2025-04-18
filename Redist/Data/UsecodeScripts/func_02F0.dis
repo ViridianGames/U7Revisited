@@ -1,0 +1,41 @@
+  .funcnumber 02F0H ;* Music box.
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 0490H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 4C 00   jne 0054
+0008: 3E   push itemref
+0009: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 1F 00 00   pushi 0000H   ; 0
+0016: 22   cmpeq
+0017: 05 2A 00   jne 0044
+001A: 1F 01 00   pushi 0001H   ; 1
+001D: 3E   push itemref
+001E: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0022: 3E   push itemref
+0023: 1F 29 00   pushi 0029H   ; 41
+0026: 39 2E 00 02  calli _PlayMusic@2  ; 002E
+002A: 1F 70 FF   pushi FF70H   ; -144
+002D: 24 00 00   call [0000]   ; 08F7H
+0030: 05 0E 00   jne 0041
+0033: 13   push true
+0034: 43 A7 01   popf flag:[01A7]
+0037: 1F 70 FF   pushi FF70H   ; -144
+003A: 38 1B 00 01  callis 001B, 1
+003E: 47 90 04   calle 0490H   ; 1168
+0041: 06 10 00   jmp 0054
+0044: 1F 00 00   pushi 0000H   ; 0
+0047: 3E   push itemref
+0048: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+004C: 3E   push itemref
+004D: 1F FF 00   pushi 00FFH   ; 255
+0050: 39 2E 00 02  calli _PlayMusic@2  ; 002E
+0054: 25   ret

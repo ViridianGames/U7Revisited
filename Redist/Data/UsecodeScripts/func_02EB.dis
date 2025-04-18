@@ -1,0 +1,73 @@
+  .funcnumber 02EBH ;* Soul cage.
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AE 00   jne 00B6
+0008: 3E   push itemref
+0009: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+000D: 12 00 00   pop [0000]
+0010: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0014: 12 01 00   pop [0001]
+0017: 21 00 00   push [0000]
+001A: 1F 00 00   pushi 0000H   ; 0
+001D: 22   cmpeq
+001E: 05 75 00   jne 0096
+0021: 21 01 00   push [0001]
+0024: 38 11 00 01  callis _GetItemType@1  ; 0011
+0028: 1F 07 02   pushi 0207H   ; 519 Liche.
+002B: 22   cmpeq
+002C: 05 67 00   jne 0096
+002F: 1F 01 00   pushi 0001H   ; 1
+0032: 1F F3 03   pushi 03F3H   ; 1011
+0035: 1F 73 FF   pushi FF73H   ; -141
+0038: 38 0E 00 03  callis 000E, 3
+003C: 12 02 00   pop [0002]  ;* Find bed.
+003F: 21 02 00   push [0002]
+0042: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0046: 1F 01 00   pushi 0001H   ; 1
+0049: 22   cmpeq
+004A: 1F 73 FF   pushi FF73H   ; -141
+004D: 38 1C 00 01  callis 001C, 1  ;* Get Liche's schedule.
+0051: 1F 0E 00   pushi 000EH   ; 14 *Sleep
+0054: 22   cmpeq
+0055: 1F 73 FF   pushi FF73H   ; -141
+0058: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+005C: 1F 0D 00   pushi 000DH   ; 13
+005F: 22   cmpeq
+0060: 0E   and
+0061: 0E   and
+0062: 05 31 00   jne 0096  ;* Jump if not sleeping.
+0065: 1F 73 FF   pushi FF73H   ; -141
+0068: 39 5C 00 01  calli 005C, 1
+006C: 3E   push itemref
+006D: 38 25 00 01  callis 0025, 1  ;* Set soulcage as lastcreated.
+0071: 12 03 00   pop [0003]
+0074: 21 03 00   push [0003]
+0077: 05 1C 00   jne 0096
+007A: 1F 73 FF   pushi FF73H   ; -141
+007D: 38 18 00 01  callis 0018, 1
+0081: 38 26 00 01  callis 0026, 1  ;* Set to Liche's pos.
+0085: 12 03 00   pop [0003]
+0088: 1F 0F 00   pushi 000FH   ; 15
+008B: 1F 73 FF   pushi FF73H   ; -141
+008E: 39 1D 00 02  calli 001D, 2  ;* Set schedule to 'wait'.
+0092: 13   push true
+0093: 43 AF 01   popf flag:[01AF]
+0096: 21 00 00   push [0000]  ;* Get soulcage frame.
+0099: 1F 01 00   pushi 0001H   ; 1
+009C: 22   cmpeq
+009D: 05 16 00   jne 00B6
+00A0: 21 01 00   push [0001]
+00A3: 38 11 00 01  callis _GetItemType@1  ; 0011
+00A7: 1F EC 02   pushi 02ECH   ; 748
+00AA: 22   cmpeq
+00AB: 05 08 00   jne 00B6
+00AE: 1F 00 00   pushi 0000H   ; 0
+00B1: 3E   push itemref
+00B2: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00B6: 25   ret

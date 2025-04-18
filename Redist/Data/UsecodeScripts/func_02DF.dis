@@ -1,0 +1,26 @@
+  .funcnumber 02DFH
+  .data
+L0000: db '@I believe those are for the trainers to use.*'
+L002E: db 00
+L002F: db 'If thou art in need of practice, why not '
+L0058: db 00
+L0059: db 'seek out a trainer?@'
+L006D: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0001H
+  .extern 08FFH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 14 00   jne 001C
+0008: 1D 00 00   pushs L0000   ; @I believe those ...
+000B: 1D 2F 00   pushs L002F   ; If thou art in ne...
+000E: 09   add
+000F: 1D 59 00   pushs L0059   ; seek out a trainer?@
+0012: 09   add
+0013: 12 00 00   pop [0000]
+0016: 21 00 00   push [0000]
+0019: 24 00 00   call [0000]   ; 08FFH
+001C: 25   ret

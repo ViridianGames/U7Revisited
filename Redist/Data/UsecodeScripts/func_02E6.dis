@@ -1,0 +1,23 @@
+  .funcnumber 02E6H
+  .data
+L0000: db '@Gee, is that neat.@'
+L0014: db 00
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0937H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 1B 00   jne 0023
+0008: 1F FE FF   pushi FFFEH   ; -2
+000B: 38 2F 00 01  callis _NPCInParty@1  ; 002F
+000F: 1F FE FF   pushi FFFEH   ; -2
+0012: 24 00 00   call [0000]   ; 0937H
+0015: 0E   and
+0016: 05 0A 00   jne 0023
+0019: 1D 00 00   pushs L0000   ; @Gee, is that neat.@
+001C: 1F FE FF   pushi FFFEH   ; -2
+001F: 39 40 00 02  calli _ItemSay@2  ; 0040
+0023: 25   ret

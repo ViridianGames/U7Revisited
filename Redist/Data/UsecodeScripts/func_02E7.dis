@@ -1,0 +1,213 @@
+  .funcnumber 02E7H
+  .data
+L0000: db '@Avatar wins a Dragon!@'
+L0017: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0828H
+  .extern 0827H
+  .extern 0937H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 3C 00   jne 0044
+0008: 39 7E 00 00  calli 007E, 0
+000C: 1F 01 00   pushi 0001H   ; 1
+000F: 1F FF FF   pushi FFFFH   ; -1
+0012: 1F 00 00   pushi 0000H   ; 0
+0015: 1E 03 00   arrc 0003H   ; 3
+0018: 12 00 00   pop [0000]
+001B: 1F 01 00   pushi 0001H   ; 1
+001E: 1F 01 00   pushi 0001H   ; 1
+0021: 1F 01 00   pushi 0001H   ; 1
+0024: 1E 03 00   arrc 0003H   ; 3
+0027: 12 01 00   pop [0001]
+002A: 1F FF FF   pushi FFFFH   ; -1
+002D: 12 02 00   pop [0002]
+0030: 1F 07 00   pushi 0007H   ; 7
+0033: 3E   push itemref
+0034: 1F E7 02   pushi 02E7H   ; 743
+0037: 21 02 00   push [0002]
+003A: 21 01 00   push [0001]
+003D: 21 00 00   push [0000]
+0040: 3E   push itemref
+0041: 24 00 00   call [0000]   ; 0828H
+0044: 48   push eventid
+0045: 1F 07 00   pushi 0007H   ; 7
+0048: 22   cmpeq
+0049: 05 B7 01   jne 0203
+004C: 3E   push itemref
+004D: 1F 9C FE   pushi FE9CH   ; -356
+0050: 24 01 00   call [0001]   ; 0827H
+0053: 12 03 00   pop [0003]
+0056: 44 61   pushw 4461H   ; 17505
+0058: 44 6C   pushw 446CH   ; 17516
+005A: 44 01   pushw 2101H   ; 8449
+005C: 21 03 00   push [0003]
+005F: 44 59   pushw 1E59H   ; 7769
+0061: 1E 05 00   arrc 0005H   ; 5
+0064: 1F 9C FE   pushi FE9CH   ; -356
+0067: 38 01 00 02  callis 0001, 2
+006B: 12 04 00   pop [0004]
+006E: 1F 00 00   pushi 0000H   ; 0
+0071: 1F 9C FE   pushi FE9CH   ; -356
+0074: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0078: 12 05 00   pop [0005]
+007B: 21 05 00   push [0005]
+007E: 1F 00 00   pushi 0000H   ; 0
+0081: 18   cmpge
+0082: 21 05 00   push [0005]
+0085: 1F 04 00   pushi 0004H   ; 4
+0088: 17   cmpl
+0089: 0E   and
+008A: 05 06 00   jne 0093
+008D: 1F 00 00   pushi 0000H   ; 0
+0090: 12 05 00   pop [0005]
+0093: 21 05 00   push [0005]
+0096: 1F 04 00   pushi 0004H   ; 4
+0099: 18   cmpge
+009A: 21 05 00   push [0005]
+009D: 1F 08 00   pushi 0008H   ; 8
+00A0: 17   cmpl
+00A1: 0E   and
+00A2: 05 06 00   jne 00AB
+00A5: 1F 01 00   pushi 0001H   ; 1
+00A8: 12 05 00   pop [0005]
+00AB: 21 05 00   push [0005]
+00AE: 1F 08 00   pushi 0008H   ; 8
+00B1: 18   cmpge
+00B2: 21 05 00   push [0005]
+00B5: 1F 0C 00   pushi 000CH   ; 12
+00B8: 17   cmpl
+00B9: 0E   and
+00BA: 05 06 00   jne 00C3
+00BD: 1F 02 00   pushi 0002H   ; 2
+00C0: 12 05 00   pop [0005]
+00C3: 21 05 00   push [0005]
+00C6: 1F 0C 00   pushi 000CH   ; 12
+00C9: 18   cmpge
+00CA: 21 05 00   push [0005]
+00CD: 1F 0F 00   pushi 000FH   ; 15
+00D0: 17   cmpl
+00D1: 0E   and
+00D2: 05 06 00   jne 00DB
+00D5: 1F 03 00   pushi 0003H   ; 3
+00D8: 12 05 00   pop [0005]
+00DB: 21 05 00   push [0005]
+00DE: 1F 0F 00   pushi 000FH   ; 15
+00E1: 18   cmpge
+00E2: 21 05 00   push [0005]
+00E5: 1F 12 00   pushi 0012H   ; 18
+00E8: 17   cmpl
+00E9: 0E   and
+00EA: 05 06 00   jne 00F3
+00ED: 1F 04 00   pushi 0004H   ; 4
+00F0: 12 05 00   pop [0005]
+00F3: 21 05 00   push [0005]
+00F6: 1F 12 00   pushi 0012H   ; 18
+00F9: 18   cmpge
+00FA: 21 05 00   push [0005]
+00FD: 1F 17 00   pushi 0017H   ; 23
+0100: 17   cmpl
+0101: 0E   and
+0102: 05 06 00   jne 010B
+0105: 1F 05 00   pushi 0005H   ; 5
+0108: 12 05 00   pop [0005]
+010B: 21 05 00   push [0005]
+010E: 1F 17 00   pushi 0017H   ; 23
+0111: 18   cmpge
+0112: 21 05 00   push [0005]
+0115: 1F 1B 00   pushi 001BH   ; 27
+0118: 17   cmpl
+0119: 0E   and
+011A: 05 06 00   jne 0123
+011D: 1F 06 00   pushi 0006H   ; 6
+0120: 12 05 00   pop [0005]
+0123: 21 05 00   push [0005]
+0126: 1F 1B 00   pushi 001BH   ; 27
+0129: 18   cmpge
+012A: 21 05 00   push [0005]
+012D: 1F 1E 00   pushi 001EH   ; 30
+0130: 17   cmpl
+0131: 0E   and
+0132: 05 06 00   jne 013B
+0135: 1F 07 00   pushi 0007H   ; 7
+0138: 12 05 00   pop [0005]
+013B: 21 05 00   push [0005]
+013E: 1F 1E 00   pushi 001EH   ; 30
+0141: 18   cmpge
+0142: 05 06 00   jne 014B
+0145: 1F 08 00   pushi 0008H   ; 8
+0148: 12 05 00   pop [0005]
+014B: 21 05 00   push [0005]
+014E: 1F 03 00   pushi 0003H   ; 3
+0151: 16   cmpgt
+0152: 05 11 00   jne 0166
+0155: 21 05 00   push [0005]
+0158: 1F 02 00   pushi 0002H   ; 2
+015B: 1F 00 00   pushi 0000H   ; 0
+015E: 38 10 00 02  callis _Random2@2  ; 0010
+0162: 0A   sub
+0163: 12 05 00   pop [0005]
+0166: 21 05 00   push [0005]
+0169: 1F 07 00   pushi 0007H   ; 7
+016C: 22   cmpeq
+016D: 05 06 00   jne 0176
+0170: 1F 06 00   pushi 0006H   ; 6
+0173: 12 05 00   pop [0005]
+0176: 21 05 00   push [0005]
+0179: 1F 07 00   pushi 0007H   ; 7
+017C: 16   cmpgt
+017D: 05 55 00   jne 01D5
+0180: 21 05 00   push [0005]
+0183: 1F 01 00   pushi 0001H   ; 1
+0186: 09   add
+0187: 1F 18 00   pushi 0018H   ; 24
+018A: 44 58   pushw 4458H   ; 17496
+018C: 44 23   pushw 1E23H   ; 7715
+018E: 1E 03 00   arrc 0003H   ; 3
+0191: 3E   push itemref
+0192: 38 02 00 03  callis 0002, 3
+0196: 12 04 00   pop [0004]
+0199: 1F D4 FF   pushi FFD4H   ; -44
+019C: 38 2F 00 01  callis _NPCInParty@1  ; 002F
+01A0: 1F D4 FF   pushi FFD4H   ; -44
+01A3: 24 02 00   call [0002]   ; 0937H
+01A6: 0E   and
+01A7: 05 2B 00   jne 01D5
+01AA: 1F 0F 00   pushi 000FH   ; 15
+01AD: 1D 00 00   pushs L0000   ; @Avatar wins a Dr...
+01B0: 44 52   pushw 4452H   ; 17490
+01B2: 44 23   pushw 1E23H   ; 7715
+01B4: 1E 03 00   arrc 0003H   ; 3
+01B7: 1F D4 FF   pushi FFD4H   ; -44
+01BA: 38 02 00 03  callis 0002, 3
+01BE: 12 04 00   pop [0004]
+01C1: 14   push false
+01C2: 1F 00 00   pushi 0000H   ; 0
+01C5: 1F 99 FE   pushi FE99H   ; -359
+01C8: 1F E6 02   pushi 02E6H   ; 742
+01CB: 1F 01 00   pushi 0001H   ; 1
+01CE: 38 2C 00 05  callis 002C, 5
+01D2: 12 04 00   pop [0004]
+01D5: 1F 00 00   pushi 0000H   ; 0
+01D8: 44 46   pushw 2146H   ; 8518
+01DA: 21 05 00   push [0005]
+01DD: 1F FF FF   pushi FFFFH   ; -1
+01E0: 44 0B   pushw 440BH   ; 17419
+01E2: 44 4F   pushw 214FH   ; 8527
+01E4: 21 05 00   push [0005]
+01E7: 1F FF FF   pushi FFFFH   ; -1
+01EA: 44 0B   pushw 440BH   ; 17419
+01EC: 44 4D   pushw 1F4DH   ; 8013
+01EE: 1F 04 00   pushi 0004H   ; 4
+01F1: 44 58   pushw 1F58H   ; 8024
+01F3: 1F 00 00   pushi 0000H   ; 0
+01F6: 44 46   pushw 1E46H   ; 7750
+01F8: 1E 0E 00   arrc 000EH   ; 14
+01FB: 3E   push itemref
+01FC: 38 01 00 02  callis 0001, 2
+0200: 12 04 00   pop [0004]
+0203: 25   ret
