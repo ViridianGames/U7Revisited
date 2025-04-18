@@ -1,0 +1,109 @@
+  .funcnumber 08C2H
+  .data
+L0000: db '"Well, hello, Mayor Forsythe. Thou has finally decided to as'
+ db 'sist in the salvation of our town." She gives him a pointed '
+ db 'look.*'
+L007E: db 00
+L007F: db '"Look here, I wasn't the one who gave that fool recipe to Ca'
+ db 'ine, now was I?"*'
+L00CC: db 00
+L00CD: db '"That fool recipe just got rid of Horance for us." Mistress '
+ db 'Mordra speaks through clenched teeth.*'
+L012F: db 00
+L0130: db '"Hmmph. Thou hast taken thy sweet time, madam. And now I am '
+ db 'off to jump in a well."*'
+L0184: db 00
+L0185: db '"Ignorant fool!"*'
+L0196: db 00
+L0197: db '"Old biddy!"*'
+L01A4: db 00
+L01A5: db '"Thou wilt regret that, Toad." Fire flares in the depths of '
+ db 'her eyes and electricity crackles in her hair. She lifts her'
+ db ' arms as if to cast some dreadful spell, but Forsythe whimpe'
+ db 'rs and hides behind you. She sees the look on your face and '
+ db 'slowly lowers her arms. The flames and lightning flicker, an'
+ db 'd die.~~"Forgive my behavior, '
+L02EF: db 00
+L02F0: db '. What was that about a well." You explain that Forsythe has'
+ db ' volunteered to sacrifice himself for the spirits of the oth'
+ db 'ers. She looks him in the eyes. He brushes himself off and s'
+ db 'tands up straight. "I didst not think that thou had it in th'
+ db 'ee, Mayor. I am in thy debt."*'
+L03FE: db 00
+L03FF: db '"Yes, well. Thou art welcome, I guess." He looks as if his d'
+ db 'ignity has been somewhat replenished.*'
+L0461: db 00
+L0462: db '"I suppose thou hadst better get thee hence, then. Fare thee'
+ db ' well, Forsythe. 'Tis not all that bad, roaming the ether. A'
+ db 't least not once thou becomest accustomed to it."~~She turns'
+ db ' to you. "Goodbye, '
+L0529: db 00
+L052A: db '. If thou art successful, I will not see thee again. May thy'
+ db ' fortunes be good.*"'
+L057A: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 0908H
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 00 00   pop [0000]
+0006: 24 01 00   call [0001]   ; 0908H
+0009: 12 01 00   pop [0001]
+000C: 1C 00 00   addsi L0000   ; "Well, hello, May...
+000F: 33   say
+0010: 1F 00 00   pushi 0000H   ; 0
+0013: 1F 6D FF   pushi FF6DH   ; -147
+0016: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+001A: 1C 7F 00   addsi L007F   ; "Look here, I was...
+001D: 33   say
+001E: 1F 6D FF   pushi FF6DH   ; -147
+0021: 39 04 00 01  calli _HideNPC@1  ; 0004
+0025: 1F 00 00   pushi 0000H   ; 0
+0028: 1F 71 FF   pushi FF71H   ; -143
+002B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+002F: 1C CD 00   addsi L00CD   ; "That fool recipe...
+0032: 33   say
+0033: 1F 00 00   pushi 0000H   ; 0
+0036: 1F 6D FF   pushi FF6DH   ; -147
+0039: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+003D: 1C 30 01   addsi L0130   ; "Hmmph. Thou hast...
+0040: 33   say
+0041: 1F 6D FF   pushi FF6DH   ; -147
+0044: 39 04 00 01  calli _HideNPC@1  ; 0004
+0048: 1F 00 00   pushi 0000H   ; 0
+004B: 1F 71 FF   pushi FF71H   ; -143
+004E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0052: 1C 85 01   addsi L0185   ; "Ignorant fool!"*
+0055: 33   say
+0056: 1F 00 00   pushi 0000H   ; 0
+0059: 1F 6D FF   pushi FF6DH   ; -147
+005C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0060: 1C 97 01   addsi L0197   ; "Old biddy!"*
+0063: 33   say
+0064: 1F 6D FF   pushi FF6DH   ; -147
+0067: 39 04 00 01  calli _HideNPC@1  ; 0004
+006B: 1F 00 00   pushi 0000H   ; 0
+006E: 1F 71 FF   pushi FF71H   ; -143
+0071: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0075: 1C A5 01   addsi L01A5   ; "Thou wilt regret...
+0078: 2F 00 00   addsv [0000]
+007B: 1C F0 02   addsi L02F0   ; . What was that a...
+007E: 33   say
+007F: 1F 00 00   pushi 0000H   ; 0
+0082: 1F 6D FF   pushi FF6DH   ; -147
+0085: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0089: 1C FF 03   addsi L03FF   ; "Yes, well. Thou ...
+008C: 33   say
+008D: 1F 6D FF   pushi FF6DH   ; -147
+0090: 39 04 00 01  calli _HideNPC@1  ; 0004
+0094: 1F 00 00   pushi 0000H   ; 0
+0097: 1F 71 FF   pushi FF71H   ; -143
+009A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+009E: 1C 62 04   addsi L0462   ; "I suppose thou h...
+00A1: 2F 01 00   addsv [0001]
+00A4: 1C 2A 05   addsi L052A   ; . If thou art suc...
+00A7: 33   say
+00A8: 3F   abrt
+00A9: 25   ret

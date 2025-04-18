@@ -1,0 +1,85 @@
+  .funcnumber 067FH
+  .data
+L0000: db '@Vas Mani@'
+L000A: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 B6 00   jne 00BE
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 1D 00 00   pushs L0000   ; @Vas Mani@
+0010: 3E   push itemref
+0011: 39 40 00 02  calli _ItemSay@2  ; 0040
+0015: 24 00 00   call [0000]   ; 0906H
+0018: 05 8D 00   jne 00A8
+001B: 1F 40 00   pushi 0040H   ; 64
+001E: 44 58   pushw 4458H   ; 17496
+0020: 44 6A   pushw 446AH   ; 17514
+0022: 44 70   pushw 4470H   ; 17520
+0024: 44 65   pushw 1E65H   ; 7781
+0026: 1E 05 00   arrc 0005H   ; 5
+0029: 3E   push itemref
+002A: 38 01 00 02  callis 0001, 2
+002E: 12 00 00   pop [0000]
+0031: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0035: 12 01 00   pop [0001]
+0038: 2E   sloop
+0039: 02 02 00 03 00 04 00 01 00 61 00  db 2 ???
+003A:   db 2
+003B:   db 0
+003C:   db 3
+003D:   db 0
+003E:   db 4
+003F:   db 0
+0040:   db 1
+0041:   db 0
+0042:   db 61
+0043:   db 0
+0044: 1F 07 00   pushi 0007H   ; 7
+0047: 21 04 00   push [0004]
+004A: 39 8A 00 02  calli 008A, 2
+004E: 1F 08 00   pushi 0008H   ; 8
+0051: 21 04 00   push [0004]
+0054: 39 8A 00 02  calli 008A, 2
+0058: 1F 00 00   pushi 0000H   ; 0
+005B: 21 04 00   push [0004]
+005E: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0062: 12 05 00   pop [0005]
+0065: 1F 03 00   pushi 0003H   ; 3
+0068: 21 04 00   push [0004]
+006B: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+006F: 12 06 00   pop [0006]
+0072: 21 05 00   push [0005]
+0075: 21 06 00   push [0006]
+0078: 0A   sub
+0079: 1F 03 00   pushi 0003H   ; 3
+007C: 21 04 00   push [0004]
+007F: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+0083: 12 00 00   pop [0000]
+0086: 1F FF FF   pushi FFFFH   ; -1
+0089: 1F 00 00   pushi 0000H   ; 0
+008C: 1F 00 00   pushi 0000H   ; 0
+008F: 1F 00 00   pushi 0000H   ; 0
+0092: 1F FF FF   pushi FFFFH   ; -1
+0095: 1F FF FF   pushi FFFFH   ; -1
+0098: 1F 0D 00   pushi 000DH   ; 13
+009B: 1F 9C FE   pushi FE9CH   ; -356
+009E: 39 7B 00 08  calli 007B, 8
+00A2: 06 94 FF   jmp 0039
+00A5: 06 16 00   jmp 00BE
+00A8: 1F 06 06   pushi 0606H   ; 1542
+00AB: 44 55   pushw 4455H   ; 17493
+00AD: 44 6A   pushw 446AH   ; 17514
+00AF: 44 70   pushw 4470H   ; 17520
+00B1: 44 65   pushw 1E65H   ; 7781
+00B3: 1E 05 00   arrc 0005H   ; 5
+00B6: 3E   push itemref
+00B7: 38 01 00 02  callis 0001, 2
+00BB: 12 00 00   pop [0000]
+00BE: 25   ret

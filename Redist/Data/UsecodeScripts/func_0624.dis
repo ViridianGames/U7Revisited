@@ -1,0 +1,84 @@
+  .funcnumber 0624H ;* Retrieve bedroll.
+  .data
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0001H
+  .extern 0828H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 6C 00   jne 0074
+0008: 39 7E 00 00  calli 007E, 0
+000C: 1F 01 00   pushi 0001H   ; 1
+000F: 1F 01 00   pushi 0001H   ; 1
+0012: 1F 01 00   pushi 0001H   ; 1
+0015: 1F 00 00   pushi 0000H   ; 0
+0018: 1F 00 00   pushi 0000H   ; 0
+001B: 1F 00 00   pushi 0000H   ; 0
+001E: 1F FF FF   pushi FFFFH   ; -1
+0021: 1F FF FF   pushi FFFFH   ; -1
+0024: 1F FF FF   pushi FFFFH   ; -1
+0027: 1E 09 00   arrc 0009H   ; 9
+002A: 12 00 00   pop [0000]
+002D: 1F FF FF   pushi FFFFH   ; -1
+0030: 1F 00 00   pushi 0000H   ; 0
+0033: 1F 01 00   pushi 0001H   ; 1
+0036: 1F FF FF   pushi FFFFH   ; -1
+0039: 1F 00 00   pushi 0000H   ; 0
+003C: 1F 01 00   pushi 0001H   ; 1
+003F: 1F FF FF   pushi FFFFH   ; -1
+0042: 1F 00 00   pushi 0000H   ; 0
+0045: 1F 01 00   pushi 0001H   ; 1
+0048: 1E 09 00   arrc 0009H   ; 9
+004B: 12 01 00   pop [0001]
+004E: 1F 9C FE   pushi FE9CH   ; -356
+0051: 39 5C 00 01  calli 005C, 1
+0055: 1F 07 00   pushi 0007H   ; 7
+0058: 3E   push itemref
+0059: 1F 24 06   pushi 0624H   ; 1572
+005C: 1F FF FF   pushi FFFFH   ; -1
+005F: 21 01 00   push [0001]
+0062: 21 00 00   push [0000]
+0065: 3E   push itemref
+0066: 24 00 00   call [0000]   ; 0828H
+0069: 1F 02 00   pushi 0002H   ; 2
+006C: 3E   push itemref
+006D: 1F 24 06   pushi 0624H   ; 1572
+0070: 39 8B 00 03  calli 008B, 3
+0074: 48   push eventid
+0075: 1F 02 00   pushi 0002H   ; 2
+0078: 22   cmpeq
+0079: 05 10 00   jne 008C
+007C: 1F 47 02   pushi 0247H   ; 583
+007F: 3E   push itemref
+0080: 39 0D 00 02  calli _SetItemType@2  ; 000D
+0084: 1F 00 00   pushi 0000H   ; 0
+0087: 3E   push itemref
+0088: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+008C: 48   push eventid
+008D: 1F 07 00   pushi 0007H   ; 7
+0090: 22   cmpeq
+0091: 05 39 00   jne 00CD
+0094: 39 7E 00 00  calli 007E, 0
+0098: 44 61   pushw 1F61H   ; 8033
+009A: 1F 01 00   pushi 0001H   ; 1
+009D: 44 27   pushw 4427H   ; 17447
+009F: 44 6C   pushw 446CH   ; 17516
+00A1: 44 30   pushw 4430H   ; 17456
+00A3: 44 59   pushw 1E59H   ; 7769
+00A5: 1E 06 00   arrc 0006H   ; 6
+00A8: 1F 9C FE   pushi FE9CH   ; -356
+00AB: 38 01 00 02  callis 0001, 2
+00AF: 12 02 00   pop [0002]
+00B2: 21 02 00   push [0002]
+00B5: 05 15 00   jne 00CD
+00B8: 1F 24 06   pushi 0624H   ; 1572
+00BB: 44 55   pushw 1F55H   ; 8021
+00BD: 1F 02 00   pushi 0002H   ; 2
+00C0: 44 27   pushw 1E27H   ; 7719
+00C2: 1E 04 00   arrc 0004H   ; 4
+00C5: 3E   push itemref
+00C6: 38 01 00 02  callis 0001, 2
+00CA: 12 02 00   pop [0002]
+00CD: 25   ret

@@ -1,0 +1,23 @@
+  .funcnumber 08B0H
+  .data
+L0000: db 'Before you is the vile form of a liche. It remains motionles'
+ db 's and its eyes stare straight ahead.*'
+L0061: db 00
+L0062: db 'The Liche remains motionless and seemingly unaware of your p'
+ db 'resence.*'
+L00A7: db 00
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0000H
+0000: 42 C5 01   pushf flag:[01C5]
+0003: 10   not
+0004: 05 08 00   jne 000F
+0007: 1C 00 00   addsi L0000   ; Before you is the...
+000A: 33   say
+000B: 3F   abrt
+000C: 06 05 00   jmp 0014
+000F: 1C 62 00   addsi L0062   ; The Liche remains...
+0012: 33   say
+0013: 3F   abrt
+0014: 25   ret

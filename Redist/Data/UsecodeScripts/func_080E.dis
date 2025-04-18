@@ -1,0 +1,168 @@
+  .funcnumber 080EH
+  .data
+L0000: db 'I believe the bridge is blocked.'
+L0020: db 00
+  .code
+  .argc 0001H
+  .localc 000EH
+  .externsize 0001H
+  .extern 08FFH
+0000: 2E   sloop
+0001: 02 01 00 02 00 03 00 00 00 AF 00  db 2 ???
+0002:   db 1
+0003:   db 0
+0004:   db 2
+0005:   db 0
+0006:   db 3
+0007:   db 0
+0008:   db 0
+0009:   db 0
+000A:   db af
+000B:   db 0
+000C: 21 03 00   push [0003]
+000F: 38 11 00 01  callis _GetItemType@1  ; 0011
+0013: 1F 66 03   pushi 0366H   ; 870
+0016: 22   cmpeq
+0017: 05 9E 00   jne 00B8
+001A: 21 03 00   push [0003]
+001D: 38 18 00 01  callis 0018, 1
+0021: 12 04 00   pop [0004]
+0024: 1F 01 00   pushi 0001H   ; 1
+0027: 26 04 00   aidx [0004]
+002A: 12 05 00   pop [0005]
+002D: 1F 02 00   pushi 0002H   ; 2
+0030: 26 04 00   aidx [0004]
+0033: 12 06 00   pop [0006]
+0036: 1F 03 00   pushi 0003H   ; 3
+0039: 26 04 00   aidx [0004]
+003C: 12 07 00   pop [0007]
+003F: 1F 00 00   pushi 0000H   ; 0
+0042: 1F 0A 00   pushi 000AH   ; 10
+0045: 1F 99 FE   pushi FE99H   ; -359
+0048: 21 03 00   push [0003]
+004B: 38 35 00 04  callis 0035, 4
+004F: 12 08 00   pop [0008]
+0052: 2E   sloop
+0053: 02 09 00 0A 00 0B 00 08 00 5A 00  db 2 ???
+0054:   db 9
+0055:   db 0
+0056:   db a
+0057:   db 0
+0058:   db b
+0059:   db 0
+005A:   db 8
+005B:   db 0
+005C:   db 5a
+005D:   db 0
+005E: 21 0B 00   push [000B]
+0061: 38 18 00 01  callis 0018, 1
+0065: 12 04 00   pop [0004]
+0068: 1F 03 00   pushi 0003H   ; 3
+006B: 26 04 00   aidx [0004]
+006E: 21 07 00   push [0007]
+0071: 16   cmpgt
+0072: 05 40 00   jne 00B5
+0075: 1F 01 00   pushi 0001H   ; 1
+0078: 26 04 00   aidx [0004]
+007B: 21 05 00   push [0005]
+007E: 19   cmple
+007F: 1F 01 00   pushi 0001H   ; 1
+0082: 26 04 00   aidx [0004]
+0085: 21 05 00   push [0005]
+0088: 1F 03 00   pushi 0003H   ; 3
+008B: 0A   sub
+008C: 18   cmpge
+008D: 0E   and
+008E: 05 24 00   jne 00B5
+0091: 1F 02 00   pushi 0002H   ; 2
+0094: 26 04 00   aidx [0004]
+0097: 21 06 00   push [0006]
+009A: 19   cmple
+009B: 1F 02 00   pushi 0002H   ; 2
+009E: 26 04 00   aidx [0004]
+00A1: 21 06 00   push [0006]
+00A4: 1F 06 00   pushi 0006H   ; 6
+00A7: 0A   sub
+00A8: 18   cmpge
+00A9: 0E   and
+00AA: 05 08 00   jne 00B5
+00AD: 1D 00 00   pushs L0000   ; I believe the bri...
+00B0: 24 00 00   call [0000]   ; 08FFH
+00B3: 14   push false
+00B4: 2D   setr
+00B5: 06 9B FF   jmp 0053
+00B8: 06 46 FF   jmp 0001
+00BB: 2E   sloop
+00BC: 02 0C 00 0D 00 03 00 00 00 84 00  db 2 ???
+00BD:   db c
+00BE:   db 0
+00BF:   db d
+00C0:   db 0
+00C1:   db 3
+00C2:   db 0
+00C3:   db 0
+00C4:   db 0
+00C5:   db 84
+00C6:   db 0
+00C7: 21 03 00   push [0003]
+00CA: 38 11 00 01  callis _GetItemType@1  ; 0011
+00CE: 1F 66 03   pushi 0366H   ; 870
+00D1: 22   cmpeq
+00D2: 05 3B 00   jne 0110
+00D5: 1F 22 00   pushi 0022H   ; 34
+00D8: 44 58   pushw 4458H   ; 17496
+00DA: 44 01   pushw 1F01H   ; 7937
+00DC: 1F 00 00   pushi 0000H   ; 0
+00DF: 44 46   pushw 4446H   ; 17478
+00E1: 44 01   pushw 1F01H   ; 7937
+00E3: 1F 11 06   pushi 0611H   ; 1553
+00E6: 44 55   pushw 1F55H   ; 8021
+00E8: 1F 22 00   pushi 0022H   ; 34
+00EB: 44 58   pushw 4458H   ; 17496
+00ED: 44 01   pushw 1F01H   ; 7937
+00EF: 1F 01 00   pushi 0001H   ; 1
+00F2: 44 46   pushw 1F46H   ; 8006
+00F4: 1F 22 00   pushi 0022H   ; 34
+00F7: 44 58   pushw 4458H   ; 17496
+00F9: 44 01   pushw 1F01H   ; 7937
+00FB: 1F 00 00   pushi 0000H   ; 0
+00FE: 44 46   pushw 1E46H   ; 7750
+0100: 1E 12 00   arrc 0012H   ; 18
+0103: 21 03 00   push [0003]
+0106: 38 01 00 02  callis 0001, 2
+010A: 12 0E 00   pop [000E]
+010D: 06 38 00   jmp 0148
+0110: 1F 22 00   pushi 0022H   ; 34
+0113: 44 58   pushw 4458H   ; 17496
+0115: 44 01   pushw 1F01H   ; 7937
+0117: 1F 00 00   pushi 0000H   ; 0
+011A: 44 46   pushw 1F46H   ; 8006
+011C: 1F 22 00   pushi 0022H   ; 34
+011F: 44 58   pushw 4458H   ; 17496
+0121: 44 01   pushw 1F01H   ; 7937
+0123: 1F 01 00   pushi 0001H   ; 1
+0126: 44 46   pushw 4446H   ; 17478
+0128: 44 01   pushw 1F01H   ; 7937
+012A: 1F 11 06   pushi 0611H   ; 1553
+012D: 44 55   pushw 1F55H   ; 8021
+012F: 1F 22 00   pushi 0022H   ; 34
+0132: 44 58   pushw 4458H   ; 17496
+0134: 44 01   pushw 1F01H   ; 7937
+0136: 1F 00 00   pushi 0000H   ; 0
+0139: 44 46   pushw 1E46H   ; 7750
+013B: 1E 12 00   arrc 0012H   ; 18
+013E: 21 03 00   push [0003]
+0141: 38 01 00 02  callis 0001, 2
+0145: 12 0E 00   pop [000E]
+0148: 06 71 FF   jmp 00BC
+014B: 21 00 00   push [0000]
+014E: 38 5E 00 01  callis _ArraySize@1  ; 005E
+0152: 1F 00 00   pushi 0000H   ; 0
+0155: 22   cmpeq
+0156: 05 05 00   jne 015E
+0159: 14   push false
+015A: 2D   setr
+015B: 06 02 00   jmp 0160
+015E: 13   push true
+015F: 2D   setr
+0160: 32   rts

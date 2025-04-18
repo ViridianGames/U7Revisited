@@ -1,0 +1,548 @@
+  .funcnumber 047BH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'winnings'
+L0015: db 00
+L0016: db 'You see a disgruntled, obviously overworked barmaid. She giv'
+ db 'es you a perfunctory grunt of a hello.'
+L0078: db 00
+L0079: db '"Art thou still here?" she asks Dupre.'
+L009F: db 00
+L00A0: db '"I have not finished making mine assessment of thy fine drin'
+ db 'king establishment!"*'
+L00F1: db 00
+L00F2: db '"What? Art thou working for Brommer's Britannia travel guide'
+ db 's?"*'
+L0132: db 00
+L0133: db '"No, my dear. This research is strictly for mine own digesti'
+ db 'on!"*'
+L0174: db 00
+L0175: db '"Good day to thee, '
+L0188: db 00
+L0189: db '. Rest and take a load off."'
+L01A5: db 00
+L01A6: db 'name'
+L01AA: db 00
+L01AB: db '"I am Daphne."'
+L01B9: db 00
+L01BA: db 'name'
+L01BE: db 00
+L01BF: db 'job'
+L01C2: db 00
+L01C3: db '"That is an easy one. I am the workhorse in residence of the'
+ db ' Bunk and Stool. While our resident princess flirts with the'
+ db ' customers I do all the cooking, cleaning and serving."'
+L0272: db 00
+L0273: db 'room'
+L0277: db 00
+L0278: db 'Bunk and Stool'
+L0286: db 00
+L0287: db 'buy'
+L028A: db 00
+L028B: db 'princess'
+L0293: db 00
+L0294: db 'workhorse'
+L029D: db 00
+L029E: db 'buy'
+L02A1: db 00
+L02A2: db '"Sorry, '
+L02AA: db 00
+L02AB: db ', I do not sell food and drink at this time."'
+L02D8: db 00
+L02D9: db 'buy'
+L02DC: db 00
+L02DD: db 'workhorse'
+L02E6: db 00
+L02E7: db '"Ever since the owner, Sprellic, got himself into trouble wi'
+ db 'th the Library of Scars, there hath been no one else to run '
+ db 'the place. Ohh, mine aching back!"'
+L0381: db 00
+L0382: db 'workhorse'
+L038B: db 00
+L038C: db 'Library of Scars'
+L039C: db 00
+L039D: db 'Sprellic'
+L03A5: db 00
+L03A6: db 'princess'
+L03AE: db 00
+L03AF: db '"Hmmph! That would be Ophelia."'
+L03CE: db 00
+L03CF: db 'princess'
+L03D7: db 00
+L03D8: db 'Ophelia'
+L03DF: db 00
+L03E0: db 'room'
+L03E4: db 00
+L03E5: db '"Thou shalt have to ask Ophelia about that. My domain is the'
+ db ' kitchen!"'
+L042B: db 00
+L042C: db 'room'
+L0430: db 00
+L0431: db 'Ophelia'
+L0438: db 00
+L0439: db '"Ophelia this! Ophelia that! That is all I ever hear all blo'
+ db 'ody day! If all thou dost want to talk about is her, talk to'
+ db ' someone else!"'
+L04C0: db 00
+L04C1: db '"Do not hate me just because I am beautiful, Daphne."*'
+L04F7: db 00
+L04F8: db '"That is not the reason I hate thee, Ophelia!"*'
+L0527: db 00
+L0528: db '"Oh, yes, I remember now. Thou dost hate me because I am bea'
+ db 'utiful, and thou art not!"*'
+L057F: db 00
+L0580: db '"Thank thee so much, '
+L0595: db 00
+L0596: db ', for bringing up my favorite subject."*'
+L05BE: db 00
+L05BF: db 'Ophelia'
+L05C6: db 00
+L05C7: db 'Bunk and Stool'
+L05D5: db 00
+L05D6: db '"The Bunk and Stool is where the fighters and ruffians come '
+ db 'to drink in Jhelom. 'Tis not an easy job keeping such a lot '
+ db 'happy with all their drinking and duelling and gambling."'
+L0687: db 00
+L0688: db 'Bunk and Stool'
+L0696: db 00
+L0697: db 'gambling'
+L069F: db 00
+L06A0: db 'Sprellic'
+L06A8: db 00
+L06A9: db '"The fool was caught stealing the honor flag from the wall o'
+ db 'f the Library of Scars! Now the three students who challenge'
+ db 'd him will kill him on the duelling field. 'Tis a tragedy."'
+L075C: db 00
+L075D: db 'Sprellic'
+L0765: db 00
+L0766: db 'Library of Scars'
+L0776: db 00
+L0777: db '"That is the fighting club in Jhelom which produces perhaps '
+ db 'the toughest fighters in all Britannia. Sprellic has never f'
+ db 'ought before in his entire life."'
+L0810: db 00
+L0811: db 'Library of Scars'
+L0821: db 00
+L0822: db 'gambling'
+L082A: db 00
+L082B: db '"I am sorry. All bets are off since the matter has been reso'
+ db 'lved."'
+L086D: db 00
+L086E: db '"In fact, I am taking bets on the upcoming duels. Dost thou '
+ db 'wish to bet that Sprellic will lose to any of the three othe'
+ db 'r duellists?"'
+L08F3: db 00
+L08F4: db '"How much wouldst thou like to bet?"'
+L0918: db 00
+L0919: db '"Perhaps thou art not truly serious about thy convictions. M'
+ db 'ayhaps the princess will take thy line of bets."'
+L0985: db 00
+L0986: db '"Thou wouldst bet '
+L0998: db 00
+L0999: db ' gold that Sprellic will lose?"'
+L09B8: db 00
+L09B9: db '"Very well. How much wouldst thou like to bet?"'
+L09E8: db 00
+L09E9: db '"Very well. Let me give thee markers for thy gold. Each one '
+ db 'is worth 10 gold coins. If Sprellic loses, thou mayest come '
+ db 'collect twice that amount of gold from me.~~"Should he win, '
+L0A9D: db 00
+L0A9E: db ', thy markers are, of course, worthless."'
+L0AC7: db 00
+L0AC8: db '"Thou mayest come see me after the duels and exchange this m'
+ db 'arker for thy winnings if thou hast won."'
+L0B2D: db 00
+L0B2E: db '"Oh! Thou must return later when thou hast enough room in th'
+ db 'y pack for these markers."'
+L0B84: db 00
+L0B85: db '"Thou hast not the amount of gold thou dost want to bet! Art'
+ db ' thou trying to swindle me?"'
+L0BDD: db 00
+L0BDE: db '"Then if thou wouldst like to bet in favor of Sprellic, thou'
+ db ' mayest see Ophelia, but I warn thee thou wilt be throwing t'
+ db 'hy money away!"'
+L0C65: db 00
+L0C66: db 'gambling'
+L0C6E: db 00
+L0C6F: db 'winnings'
+L0C77: db 00
+L0C78: db '"Here are thy winnings, '
+L0C90: db 00
+L0C91: db '. But I have reason to believe that thou wert the one who ki'
+ db 'lled poor Sprellic! If this is the way that thou makest thy '
+ db 'money, then thou shouldst be ashamed!"'
+L0D2F: db 00
+L0D30: db '"Thou cannot possibly carry all that gold. Thou must come ba'
+ db 'ck when I can give thee the proper amount of gold!"'
+L0D9F: db 00
+L0DA0: db 'winnings'
+L0DA8: db 00
+L0DA9: db 'bye'
+L0DAC: db 00
+L0DAD: db '"Enjoy thyself."*'
+L0DBE: db 00
+  .code
+  .argc 0001H
+  .localc 0015H
+  .externsize 0005H
+  .extern 0909H
+  .extern 08F7H
+  .extern 0871H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 D3 03   jne 03DB
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 85 FF   pushi FF85H   ; -123
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 85 FF   pushi FF85H   ; -123
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1F 86 FF   pushi FF86H   ; -122
+0030: 24 01 00   call [0001]   ; 08F7H
+0033: 12 03 00   pop [0003]
+0036: 14   push false
+0037: 12 04 00   pop [0004]
+003A: 1F 84 FF   pushi FF84H   ; -124
+003D: 38 1B 00 01  callis 001B, 1
+0041: 38 37 00 01  callis 0037, 1
+0045: 12 05 00   pop [0005]
+0048: 1F 83 FF   pushi FF83H   ; -125
+004B: 38 1B 00 01  callis 001B, 1
+004F: 38 37 00 01  callis 0037, 1
+0053: 12 06 00   pop [0006]
+0056: 1F 82 FF   pushi FF82H   ; -126
+0059: 38 1B 00 01  callis 001B, 1
+005D: 38 37 00 01  callis 0037, 1
+0061: 12 07 00   pop [0007]
+0064: 1F 81 FF   pushi FF81H   ; -127
+0067: 38 1B 00 01  callis 001B, 1
+006B: 38 37 00 01  callis 0037, 1
+006F: 12 08 00   pop [0008]
+0072: 21 05 00   push [0005]
+0075: 21 06 00   push [0006]
+0078: 21 07 00   push [0007]
+007B: 21 08 00   push [0008]
+007E: 0F   or
+007F: 0F   or
+0080: 0F   or
+0081: 05 04 00   jne 0088
+0084: 13   push true
+0085: 12 04 00   pop [0004]
+0088: 1D 00 00   pushs L0000   ; bye
+008B: 1D 04 00   pushs L0004   ; job
+008E: 1D 08 00   pushs L0008   ; name
+0091: 1E 03 00   arrc 0003H   ; 3
+0094: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0098: 21 05 00   push [0005]
+009B: 42 7A 01   pushf flag:[017A]
+009E: 10   not
+009F: 0E   and
+00A0: 05 07 00   jne 00AA
+00A3: 1D 0D 00   pushs L000D   ; winnings
+00A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AA: 42 75 01   pushf flag:[0175]
+00AD: 10   not
+00AE: 05 59 00   jne 010A
+00B1: 1C 16 00   addsi L0016   ; You see a disgrun...
+00B4: 33   say
+00B5: 13   push true
+00B6: 43 75 01   popf flag:[0175]
+00B9: 1F FC FF   pushi FFFCH   ; -4
+00BC: 24 01 00   call [0001]   ; 08F7H
+00BF: 12 09 00   pop [0009]
+00C2: 21 09 00   push [0009]
+00C5: 05 3F 00   jne 0107
+00C8: 1C 79 00   addsi L0079   ; "Art thou still h...
+00CB: 33   say
+00CC: 1F 00 00   pushi 0000H   ; 0
+00CF: 1F FC FF   pushi FFFCH   ; -4
+00D2: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D6: 1C A0 00   addsi L00A0   ; "I have not finis...
+00D9: 33   say
+00DA: 1F 00 00   pushi 0000H   ; 0
+00DD: 1F 85 FF   pushi FF85H   ; -123
+00E0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E4: 1C F2 00   addsi L00F2   ; "What? Art thou w...
+00E7: 33   say
+00E8: 1F 00 00   pushi 0000H   ; 0
+00EB: 1F FC FF   pushi FFFCH   ; -4
+00EE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F2: 1C 33 01   addsi L0133   ; "No, my dear. Thi...
+00F5: 33   say
+00F6: 1F FC FF   pushi FFFCH   ; -4
+00F9: 39 04 00 01  calli _HideNPC@1  ; 0004
+00FD: 1F 00 00   pushi 0000H   ; 0
+0100: 1F 85 FF   pushi FF85H   ; -123
+0103: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0107: 06 0A 00   jmp 0114
+010A: 1C 75 01   addsi L0175   ; "Good day to thee, 
+010D: 2F 00 00   addsv [0000]
+0110: 1C 89 01   addsi L0189   ; . Rest and take a...
+0113: 33   say
+0114: 04 BF 02   je 03D6
+0117: 1D A6 01   pushs L01A6   ; name
+011A: 07 01 00 0B 00  cmps 0001H, 012A
+011F: 1C AB 01   addsi L01AB   ; "I am Daphne."
+0122: 33   say
+0123: 1D BA 01   pushs L01BA   ; name
+0126: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012A: 1D BF 01   pushs L01BF   ; job
+012D: 07 01 00 1A 00  cmps 0001H, 014C
+0132: 1C C3 01   addsi L01C3   ; "That is an easy ...
+0135: 33   say
+0136: 1D 73 02   pushs L0273   ; room
+0139: 1D 78 02   pushs L0278   ; Bunk and Stool
+013C: 1D 87 02   pushs L0287   ; buy
+013F: 1D 8B 02   pushs L028B   ; princess
+0142: 1D 94 02   pushs L0294   ; workhorse
+0145: 1E 05 00   arrc 0005H   ; 5
+0148: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014C: 1D 9E 02   pushs L029E   ; buy
+014F: 07 01 00 21 00  cmps 0001H, 0175
+0154: 21 02 00   push [0002]
+0157: 1F 17 00   pushi 0017H   ; 23
+015A: 22   cmpeq
+015B: 05 06 00   jne 0164
+015E: 24 02 00   call [0002]   ; 0871H
+0161: 06 0A 00   jmp 016E
+0164: 1C A2 02   addsi L02A2   ; "Sorry, 
+0167: 2F 00 00   addsv [0000]
+016A: 1C AB 02   addsi L02AB   ; , I do not sell f...
+016D: 33   say
+016E: 1D D9 02   pushs L02D9   ; buy
+0171: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0175: 1D DD 02   pushs L02DD   ; workhorse
+0178: 07 01 00 18 00  cmps 0001H, 0195
+017D: 1C E7 02   addsi L02E7   ; "Ever since the o...
+0180: 33   say
+0181: 1D 82 03   pushs L0382   ; workhorse
+0184: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0188: 1D 8C 03   pushs L038C   ; Library of Scars
+018B: 1D 9D 03   pushs L039D   ; Sprellic
+018E: 1E 02 00   arrc 0002H   ; 2
+0191: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0195: 1D A6 03   pushs L03A6   ; princess
+0198: 07 01 00 12 00  cmps 0001H, 01AF
+019D: 1C AF 03   addsi L03AF   ; "Hmmph! That woul...
+01A0: 33   say
+01A1: 1D CF 03   pushs L03CF   ; princess
+01A4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A8: 1D D8 03   pushs L03D8   ; Ophelia
+01AB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01AF: 1D E0 03   pushs L03E0   ; room
+01B2: 07 01 00 0B 00  cmps 0001H, 01C2
+01B7: 1C E5 03   addsi L03E5   ; "Thou shalt have ...
+01BA: 33   say
+01BB: 1D 2C 04   pushs L042C   ; room
+01BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C2: 1D 31 04   pushs L0431   ; Ophelia
+01C5: 07 01 00 60 00  cmps 0001H, 022A
+01CA: 1C 39 04   addsi L0439   ; "Ophelia this! Op...
+01CD: 33   say
+01CE: 21 03 00   push [0003]
+01D1: 05 4F 00   jne 0223
+01D4: 1F 00 00   pushi 0000H   ; 0
+01D7: 1F 86 FF   pushi FF86H   ; -122
+01DA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01DE: 1C C1 04   addsi L04C1   ; "Do not hate me j...
+01E1: 33   say
+01E2: 1F 00 00   pushi 0000H   ; 0
+01E5: 1F 85 FF   pushi FF85H   ; -123
+01E8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01EC: 1C F8 04   addsi L04F8   ; "That is not the ...
+01EF: 33   say
+01F0: 1F 00 00   pushi 0000H   ; 0
+01F3: 1F 86 FF   pushi FF86H   ; -122
+01F6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01FA: 1C 28 05   addsi L0528   ; "Oh, yes, I remem...
+01FD: 33   say
+01FE: 1F 00 00   pushi 0000H   ; 0
+0201: 1F 85 FF   pushi FF85H   ; -123
+0204: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0208: 1C 80 05   addsi L0580   ; "Thank thee so mu...
+020B: 2F 00 00   addsv [0000]
+020E: 1C 96 05   addsi L0596   ; , for bringing up...
+0211: 33   say
+0212: 1F 86 FF   pushi FF86H   ; -122
+0215: 39 04 00 01  calli _HideNPC@1  ; 0004
+0219: 1F 00 00   pushi 0000H   ; 0
+021C: 1F 85 FF   pushi FF85H   ; -123
+021F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0223: 1D BF 05   pushs L05BF   ; Ophelia
+0226: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022A: 1D C7 05   pushs L05C7   ; Bunk and Stool
+022D: 07 01 00 12 00  cmps 0001H, 0244
+0232: 1C D6 05   addsi L05D6   ; "The Bunk and Sto...
+0235: 33   say
+0236: 1D 88 06   pushs L0688   ; Bunk and Stool
+0239: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023D: 1D 97 06   pushs L0697   ; gambling
+0240: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0244: 1D A0 06   pushs L06A0   ; Sprellic
+0247: 07 01 00 0F 00  cmps 0001H, 025B
+024C: 1C A9 06   addsi L06A9   ; "The fool was cau...
+024F: 33   say
+0250: 13   push true
+0251: 43 6E 01   popf flag:[016E]
+0254: 1D 5D 07   pushs L075D   ; Sprellic
+0257: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025B: 1D 66 07   pushs L0766   ; Library of Scars
+025E: 07 01 00 0B 00  cmps 0001H, 026E
+0263: 1C 77 07   addsi L0777   ; "That is the figh...
+0266: 33   say
+0267: 1D 11 08   pushs L0811   ; Library of Scars
+026A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026E: 1D 22 08   pushs L0822   ; gambling
+0271: 07 01 00 E3 00  cmps 0001H, 0359
+0276: 21 04 00   push [0004]
+0279: 05 07 00   jne 0283
+027C: 1C 2B 08   addsi L082B   ; "I am sorry. All ...
+027F: 33   say
+0280: 06 CF 00   jmp 0352
+0283: 1C 6E 08   addsi L086E   ; "In fact, I am ta...
+0286: 33   say
+0287: 24 03 00   call [0003]   ; 090AH
+028A: 12 0A 00   pop [000A]
+028D: 21 0A 00   push [000A]
+0290: 05 BB 00   jne 034E
+0293: 1C F4 08   addsi L08F4   ; "How much wouldst...
+0296: 33   say
+0297: 1F 00 00   pushi 0000H   ; 0
+029A: 1F 0A 00   pushi 000AH   ; 10
+029D: 1F C8 00   pushi 00C8H   ; 200
+02A0: 1F 00 00   pushi 0000H   ; 0
+02A3: 38 0C 00 04  callis _AskNumber@4  ; 000C
+02A7: 12 0B 00   pop [000B]
+02AA: 21 0B 00   push [000B]
+02AD: 1F 00 00   pushi 0000H   ; 0
+02B0: 22   cmpeq
+02B1: 05 07 00   jne 02BB
+02B4: 1C 19 09   addsi L0919   ; "Perhaps thou art...
+02B7: 33   say
+02B8: 06 90 00   jmp 034B
+02BB: 1C 86 09   addsi L0986   ; "Thou wouldst bet 
+02BE: 2F 0B 00   addsv [000B]
+02C1: 1C 99 09   addsi L0999   ;  gold that Sprell...
+02C4: 33   say
+02C5: 24 03 00   call [0003]   ; 090AH
+02C8: 12 0C 00   pop [000C]
+02CB: 21 0C 00   push [000C]
+02CE: 10   not
+02CF: 05 0A 00   jne 02DC
+02D2: 1C B9 09   addsi L09B9   ; "Very well. How m...
+02D5: 33   say
+02D6: 06 BE FF   jmp 0297
+02D9: 06 6F 00   jmp 034B
+02DC: 1F 99 FE   pushi FE99H   ; -359
+02DF: 1F 99 FE   pushi FE99H   ; -359
+02E2: 1F 84 02   pushi 0284H   ; 644
+02E5: 1F 9B FE   pushi FE9BH   ; -357
+02E8: 38 28 00 04  callis 0028, 4
+02EC: 12 0D 00   pop [000D]
+02EF: 21 0D 00   push [000D]
+02F2: 21 0B 00   push [000B]
+02F5: 18   cmpge
+02F6: 05 4E 00   jne 0347
+02F9: 14   push false
+02FA: 1F 01 00   pushi 0001H   ; 1
+02FD: 1F 99 FE   pushi FE99H   ; -359
+0300: 1F 99 03   pushi 0399H   ; 921
+0303: 21 0B 00   push [000B]
+0306: 1F 0A 00   pushi 000AH   ; 10
+0309: 0B   div
+030A: 38 2C 00 05  callis 002C, 5
+030E: 12 0E 00   pop [000E]
+0311: 21 0E 00   push [000E]
+0314: 05 29 00   jne 0340
+0317: 13   push true
+0318: 1F 99 FE   pushi FE99H   ; -359
+031B: 1F 99 FE   pushi FE99H   ; -359
+031E: 1F 84 02   pushi 0284H   ; 644
+0321: 21 0B 00   push [000B]
+0324: 38 2B 00 05  callis 002B, 5
+0328: 12 0F 00   pop [000F]
+032B: 13   push true
+032C: 12 10 00   pop [0010]
+032F: 1C E9 09   addsi L09E9   ; "Very well. Let m...
+0332: 2F 00 00   addsv [0000]
+0335: 1C 9E 0A   addsi L0A9E   ; , thy markers are...
+0338: 33   say
+0339: 1C C8 0A   addsi L0AC8   ; "Thou mayest come...
+033C: 33   say
+033D: 06 04 00   jmp 0344
+0340: 1C 2E 0B   addsi L0B2E   ; "Oh! Thou must re...
+0343: 33   say
+0344: 06 04 00   jmp 034B
+0347: 1C 85 0B   addsi L0B85   ; "Thou hast not th...
+034A: 33   say
+034B: 06 04 00   jmp 0352
+034E: 1C DE 0B   addsi L0BDE   ; "Then if thou wou...
+0351: 33   say
+0352: 1D 66 0C   pushs L0C66   ; gambling
+0355: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0359: 1D 6F 0C   pushs L0C6F   ; winnings
+035C: 07 01 00 67 00  cmps 0001H, 03C8
+0361: 1F 01 00   pushi 0001H   ; 1
+0364: 1F 99 FE   pushi FE99H   ; -359
+0367: 1F 99 03   pushi 0399H   ; 921
+036A: 1F 9B FE   pushi FE9BH   ; -357
+036D: 38 28 00 04  callis 0028, 4
+0371: 12 11 00   pop [0011]
+0374: 21 11 00   push [0011]
+0377: 1F 14 00   pushi 0014H   ; 20
+037A: 0C   mul
+037B: 12 12 00   pop [0012]
+037E: 13   push true
+037F: 1F 99 FE   pushi FE99H   ; -359
+0382: 1F 99 FE   pushi FE99H   ; -359
+0385: 1F 84 02   pushi 0284H   ; 644
+0388: 21 12 00   push [0012]
+038B: 38 2C 00 05  callis 002C, 5
+038F: 12 13 00   pop [0013]
+0392: 21 13 00   push [0013]
+0395: 05 25 00   jne 03BD
+0398: 1C 78 0C   addsi L0C78   ; "Here are thy win...
+039B: 2F 00 00   addsv [0000]
+039E: 1C 91 0C   addsi L0C91   ; . But I have reas...
+03A1: 33   say
+03A2: 14   push false
+03A3: 1F 01 00   pushi 0001H   ; 1
+03A6: 1F 99 FE   pushi FE99H   ; -359
+03A9: 1F 99 03   pushi 0399H   ; 921
+03AC: 21 11 00   push [0011]
+03AF: 38 2B 00 05  callis 002B, 5
+03B3: 12 14 00   pop [0014]
+03B6: 13   push true
+03B7: 43 7A 01   popf flag:[017A]
+03BA: 06 04 00   jmp 03C1
+03BD: 1C 30 0D   addsi L0D30   ; "Thou cannot poss...
+03C0: 33   say
+03C1: 1D A0 0D   pushs L0DA0   ; winnings
+03C4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03C8: 1D A9 0D   pushs L0DA9   ; bye
+03CB: 07 01 00 03 00  cmps 0001H, 03D3
+03D0: 06 03 00   jmp 03D6
+03D3: 06 3E FD   jmp 0114
+03D6: 40   db 40 ???
+03D7: 1C AD 0D   addsi L0DAD   ; "Enjoy thyself."*
+03DA: 33   say
+03DB: 48   push eventid
+03DC: 1F 00 00   pushi 0000H   ; 0
+03DF: 22   cmpeq
+03E0: 05 06 00   jne 03E9
+03E3: 1F 85 FF   pushi FF85H   ; -123
+03E6: 24 04 00   call [0004]   ; 092EH
+03E9: 25   ret

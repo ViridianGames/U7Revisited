@@ -1,0 +1,41 @@
+  .funcnumber 0881H
+  .data
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F 00 00   pushi 0000H   ; 0
+0006: 1F 56 03   pushi 0356H   ; 854
+0009: 1F 9C FE   pushi FE9CH   ; -356
+000C: 38 1B 00 01  callis 001B, 1
+0010: 38 35 00 04  callis 0035, 4
+0014: 12 00 00   pop [0000]
+0017: 2E   sloop
+0018: 02 01 00 02 00 03 00 00 00 21 00  db 2 ???
+0019:   db 1
+001A:   db 0
+001B:   db 2
+001C:   db 0
+001D:   db 3
+001E:   db 0
+001F:   db 0
+0020:   db 0
+0021:   db 21
+0022:   db 0
+0023: 21 03 00   push [0003]
+0026: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+002A: 1F 12 00   pushi 0012H   ; 18
+002D: 18   cmpge
+002E: 21 03 00   push [0003]
+0031: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0035: 1F 15 00   pushi 0015H   ; 21
+0038: 19   cmple
+0039: 0E   and
+003A: 05 04 00   jne 0041
+003D: 21 03 00   push [0003]
+0040: 2D   setr
+0041: 06 D4 FF   jmp 0018
+0044: 1F 00 00   pushi 0000H   ; 0
+0047: 2D   setr
+0048: 32   rts

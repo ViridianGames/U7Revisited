@@ -1,0 +1,271 @@
+  .funcnumber 04FFH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a lovely naked woman. She is not in the least concer'
+ db 'ned that she is wearing no clothes.*'
+L006D: db 00
+L006E: db 'Spark's eyes widen and his jaw drops.*'
+L0094: db 00
+L0095: db '"Close thy mouth, boy. An insect may fly in. And put thine e'
+ db 'yes back in thine head. They shall look strange dangling out'
+ db ' of their sockets."*'
+L0121: db 00
+L0122: db '"Me Mama!" the woman exclaims proudly.'
+L0148: db 00
+L0149: db '"Forget it, Myrtle. The jig is up. They know all about us."*'
+L0185: db 00
+L0186: db '"Murray! Didst thou give us away? How couldst thou do it? Th'
+ db 'is just isn't going to be much fun anymore knowing that some'
+ db 'one is aware of the truth!"*'
+L021A: db 00
+L021B: db '"Sorry, dear."*'
+L022A: db 00
+L022B: db 'You tell the woman what Papa said about their past lives.~~"'
+ db 'Well, blast it! Why did he tell our secret? I will never for'
+ db 'give him! What a knave!"'
+L02BB: db 00
+L02BC: db '"Hmm?" asks Mama.'
+L02CD: db 00
+L02CE: db 'name'
+L02D2: db 00
+L02D3: db '"Me Mama!" the woman exclaims again.'
+L02F7: db 00
+L02F8: db '"All right. My name is Myrtle. But I like to be called Mama.'
+ db '"'
+L0335: db 00
+L0336: db 'name'
+L033A: db 00
+L033B: db 'job'
+L033E: db 00
+L033F: db '"Me live with Papa here in cave!"'
+L0360: db 00
+L0361: db '"Well, I would not call it a job, but I just live here in Be'
+ db 'e Cave with Papa."'
+L03AF: db 00
+L03B0: db 'cave'
+L03B4: db 00
+L03B5: db 'Papa'
+L03B9: db 00
+L03BA: db 'live'
+L03BE: db 00
+L03BF: db 'live'
+L03C3: db 00
+L03C4: db 'Mama explains. "Eat. Sleep. Love."*'
+L03E7: db 00
+L03E8: db '"What else is there?"*'
+L03FE: db 00
+L03FF: db '"We do our best to eat, sleep, and love each other down here'
+ db ' isolated from the rest of society."'
+L045F: db 00
+L0460: db 'live'
+L0464: db 00
+L0465: db 'Papa'
+L0469: db 00
+L046A: db '"Mmmmmmm. Papa! Mama love Papa!"'
+L048A: db 00
+L048B: db '"He's mostly a lazy beggar, but I still love him."'
+L04BD: db 00
+L04BE: db 'Papa'
+L04C2: db 00
+L04C3: db 'cave'
+L04C7: db 00
+L04C8: db '"Cave good. Warm. Safe."'
+L04E0: db 00
+L04E1: db '"It's been good to us. It keeps us warm. We are able to find'
+ db ' food. I do not miss the old life."'
+L0540: db 00
+L0541: db 'cave'
+L0545: db 00
+L0546: db 'bye'
+L0549: db 00
+L054A: db '"'Bye!"*'
+L0552: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0001H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 01 FF   pushi FF01H   ; -255
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 1F 0F FF   pushi FF0FH   ; -241
+0016: 24 00 00   call [0000]   ; 08F7H
+0019: 12 00 00   pop [0000]
+001C: 1F FE FF   pushi FFFEH   ; -2
+001F: 24 00 00   call [0000]   ; 08F7H
+0022: 12 01 00   pop [0001]
+0025: 1F FF FF   pushi FFFFH   ; -1
+0028: 24 00 00   call [0000]   ; 08F7H
+002B: 12 02 00   pop [0002]
+002E: 1F FC FF   pushi FFFCH   ; -4
+0031: 24 00 00   call [0000]   ; 08F7H
+0034: 12 03 00   pop [0003]
+0037: 14   push false
+0038: 12 04 00   pop [0004]
+003B: 1D 00 00   pushs L0000   ; bye
+003E: 1D 04 00   pushs L0004   ; job
+0041: 1D 08 00   pushs L0008   ; name
+0044: 1E 03 00   arrc 0003H   ; 3
+0047: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004B: 42 C0 02   pushf flag:[02C0]
+004E: 10   not
+004F: 05 A3 00   jne 00F5
+0052: 1C 0D 00   addsi L000D   ; You see a lovely ...
+0055: 33   say
+0056: 21 01 00   push [0001]
+0059: 21 02 00   push [0002]
+005C: 0E   and
+005D: 05 34 00   jne 0094
+0060: 1F 00 00   pushi 0000H   ; 0
+0063: 1F FE FF   pushi FFFEH   ; -2
+0066: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+006A: 1C 6E 00   addsi L006E   ; Spark's eyes wide...
+006D: 33   say
+006E: 1F FE FF   pushi FFFEH   ; -2
+0071: 39 04 00 01  calli _HideNPC@1  ; 0004
+0075: 1F 00 00   pushi 0000H   ; 0
+0078: 1F FF FF   pushi FFFFH   ; -1
+007B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+007F: 1C 95 00   addsi L0095   ; "Close thy mouth,...
+0082: 33   say
+0083: 1F FF FF   pushi FFFFH   ; -1
+0086: 39 04 00 01  calli _HideNPC@1  ; 0004
+008A: 1F 00 00   pushi 0000H   ; 0
+008D: 1F 01 FF   pushi FF01H   ; -255
+0090: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0094: 1C 22 01   addsi L0122   ; "Me Mama!" the wo...
+0097: 33   say
+0098: 42 D4 02   pushf flag:[02D4]
+009B: 05 50 00   jne 00EE
+009E: 21 00 00   push [0000]
+00A1: 05 42 00   jne 00E6
+00A4: 1F 00 00   pushi 0000H   ; 0
+00A7: 1F 0F FF   pushi FF0FH   ; -241
+00AA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00AE: 1C 49 01   addsi L0149   ; "Forget it, Myrtl...
+00B1: 33   say
+00B2: 1F 00 00   pushi 0000H   ; 0
+00B5: 1F 01 FF   pushi FF01H   ; -255
+00B8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00BC: 1C 86 01   addsi L0186   ; "Murray! Didst th...
+00BF: 33   say
+00C0: 1F 00 00   pushi 0000H   ; 0
+00C3: 1F 0F FF   pushi FF0FH   ; -241
+00C6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00CA: 1C 1B 02   addsi L021B   ; "Sorry, dear."*
+00CD: 33   say
+00CE: 1F 0F FF   pushi FF0FH   ; -241
+00D1: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D5: 1F 00 00   pushi 0000H   ; 0
+00D8: 1F 01 FF   pushi FF01H   ; -255
+00DB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00DF: 13   push true
+00E0: 12 04 00   pop [0004]
+00E3: 06 08 00   jmp 00EE
+00E6: 1C 2B 02   addsi L022B   ; You tell the woma...
+00E9: 33   say
+00EA: 13   push true
+00EB: 12 04 00   pop [0004]
+00EE: 13   push true
+00EF: 43 C0 02   popf flag:[02C0]
+00F2: 06 0E 00   jmp 0103
+00F5: 1C BC 02   addsi L02BC   ; "Hmm?" asks Mama.
+00F8: 33   say
+00F9: 42 D4 02   pushf flag:[02D4]
+00FC: 05 04 00   jne 0103
+00FF: 13   push true
+0100: 12 04 00   pop [0004]
+0103: 04 E1 00   je 01E7
+0106: 1D CE 02   pushs L02CE   ; name
+0109: 07 01 00 19 00  cmps 0001H, 0127
+010E: 21 04 00   push [0004]
+0111: 10   not
+0112: 05 07 00   jne 011C
+0115: 1C D3 02   addsi L02D3   ; "Me Mama!" the wo...
+0118: 33   say
+0119: 06 04 00   jmp 0120
+011C: 1C F8 02   addsi L02F8   ; "All right. My na...
+011F: 33   say
+0120: 1D 36 03   pushs L0336   ; name
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 1D 3B 03   pushs L033B   ; job
+012A: 07 01 00 22 00  cmps 0001H, 0151
+012F: 21 04 00   push [0004]
+0132: 10   not
+0133: 05 07 00   jne 013D
+0136: 1C 3F 03   addsi L033F   ; "Me live with Pap...
+0139: 33   say
+013A: 06 04 00   jmp 0141
+013D: 1C 61 03   addsi L0361   ; "Well, I would no...
+0140: 33   say
+0141: 1D B0 03   pushs L03B0   ; cave
+0144: 1D B5 03   pushs L03B5   ; Papa
+0147: 1D BA 03   pushs L03BA   ; live
+014A: 1E 03 00   arrc 0003H   ; 3
+014D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0151: 1D BF 03   pushs L03BF   ; live
+0154: 07 01 00 3E 00  cmps 0001H, 0197
+0159: 21 04 00   push [0004]
+015C: 10   not
+015D: 05 2C 00   jne 018C
+0160: 1C C4 03   addsi L03C4   ; Mama explains. "E...
+0163: 33   say
+0164: 21 03 00   push [0003]
+0167: 05 1F 00   jne 0189
+016A: 1F 00 00   pushi 0000H   ; 0
+016D: 1F FC FF   pushi FFFCH   ; -4
+0170: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0174: 1C E8 03   addsi L03E8   ; "What else is the...
+0177: 33   say
+0178: 1F FC FF   pushi FFFCH   ; -4
+017B: 39 04 00 01  calli _HideNPC@1  ; 0004
+017F: 1F 00 00   pushi 0000H   ; 0
+0182: 1F 01 FF   pushi FF01H   ; -255
+0185: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0189: 06 04 00   jmp 0190
+018C: 1C FF 03   addsi L03FF   ; "We do our best t...
+018F: 33   say
+0190: 1D 60 04   pushs L0460   ; live
+0193: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0197: 1D 65 04   pushs L0465   ; Papa
+019A: 07 01 00 19 00  cmps 0001H, 01B8
+019F: 21 04 00   push [0004]
+01A2: 10   not
+01A3: 05 07 00   jne 01AD
+01A6: 1C 6A 04   addsi L046A   ; "Mmmmmmm. Papa! M...
+01A9: 33   say
+01AA: 06 04 00   jmp 01B1
+01AD: 1C 8B 04   addsi L048B   ; "He's mostly a la...
+01B0: 33   say
+01B1: 1D BE 04   pushs L04BE   ; Papa
+01B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B8: 1D C3 04   pushs L04C3   ; cave
+01BB: 07 01 00 19 00  cmps 0001H, 01D9
+01C0: 21 04 00   push [0004]
+01C3: 10   not
+01C4: 05 07 00   jne 01CE
+01C7: 1C C8 04   addsi L04C8   ; "Cave good. Warm....
+01CA: 33   say
+01CB: 06 04 00   jmp 01D2
+01CE: 1C E1 04   addsi L04E1   ; "It's been good t...
+01D1: 33   say
+01D2: 1D 41 05   pushs L0541   ; cave
+01D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D9: 1D 46 05   pushs L0546   ; bye
+01DC: 07 01 00 03 00  cmps 0001H, 01E4
+01E1: 06 03 00   jmp 01E7
+01E4: 06 1C FF   jmp 0103
+01E7: 40   db 40 ???
+01E8: 1C 4A 05   addsi L054A   ; "'Bye!"*
+01EB: 33   say
+01EC: 25   ret

@@ -1,0 +1,63 @@
+  .funcnumber 0641H
+  .data
+L0000: db '@Rel Hur@'
+L0009: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 8A 00   jne 0092
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 1D 00 00   pushs L0000   ; @Rel Hur@
+0010: 3E   push itemref
+0011: 39 40 00 02  calli _ItemSay@2  ; 0040
+0015: 24 00 00   call [0000]   ; 0906H
+0018: 05 63 00   jne 007E
+001B: 1F 44 00   pushi 0044H   ; 68
+001E: 44 58   pushw 4458H   ; 17496
+0020: 44 67   pushw 4467H   ; 17511
+0022: 44 65   pushw 1E65H   ; 7781
+0024: 1E 04 00   arrc 0004H   ; 4
+0027: 3E   push itemref
+0028: 38 01 00 02  callis 0001, 2
+002C: 12 00 00   pop [0000]
+002F: 1F 02 00   pushi 0002H   ; 2
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 1F 00 00   pushi 0000H   ; 0
+0038: 1E 03 00   arrc 0003H   ; 3
+003B: 12 01 00   pop [0001]
+003E: 38 44 00 00  callis 0044, 0
+0042: 1F 00 00   pushi 0000H   ; 0
+0045: 22   cmpeq
+0046: 05 20 00   jne 0069
+0049: 1F 03 00   pushi 0003H   ; 3
+004C: 1F 02 00   pushi 0002H   ; 2
+004F: 38 10 00 02  callis _Random2@2  ; 0010
+0053: 12 02 00   pop [0002]
+0056: 21 02 00   push [0002]
+0059: 26 01 00   aidx [0001]
+005C: 12 03 00   pop [0003]
+005F: 21 03 00   push [0003]
+0062: 39 45 00 01  calli 0045, 1
+0066: 06 12 00   jmp 007B
+0069: 38 44 00 00  callis 0044, 0
+006D: 1F 03 00   pushi 0003H   ; 3
+0070: 1A   cmpne
+0071: 05 07 00   jne 007B
+0074: 1F 00 00   pushi 0000H   ; 0
+0077: 39 45 00 01  calli 0045, 1
+007B: 06 14 00   jmp 0092
+007E: 1F 06 06   pushi 0606H   ; 1542
+0081: 44 55   pushw 4455H   ; 17493
+0083: 44 67   pushw 4467H   ; 17511
+0085: 44 65   pushw 1E65H   ; 7781
+0087: 1E 04 00   arrc 0004H   ; 4
+008A: 3E   push itemref
+008B: 38 01 00 02  callis 0001, 2
+008F: 12 00 00   pop [0000]
+0092: 25   ret

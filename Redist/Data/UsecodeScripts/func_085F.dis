@@ -1,0 +1,174 @@
+  .funcnumber 085FH
+  .data
+L0000: db 'the Avatar'
+L000A: db 00
+L000B: db '"It seems that thou dost need a little more time to hone thy'
+ db ' reflexes. If thou dost wish to return later, when thou hast'
+ db ' more experience, I would be most happy to train thee."'
+L00BA: db 00
+L00BB: db 'You gather your gold and count it, finding that you have '
+L00F4: db 00
+L00F5: db ' gold altogether.'
+L0106: db 00
+L0107: db '"Thou hast not enough gold to pay me. I am sorry but I canno'
+ db 't train thee now."'
+L0155: db 00
+L0156: db '"Zounds! Thou art quick. Too quick, in fact, for me to be ab'
+ db 'le to help thee become faster. I am sorry, '
+L01BD: db 00
+L01BE: db '."'
+L01C0: db 00
+L01C1: db 'You pay '
+L01C9: db 00
+L01CA: db ' gold, and the training session begins.'
+L01F1: db 00
+L01F2: db 'You'
+L01F5: db 00
+L01F6: db 'you'
+L01F9: db 00
+L01FA: db ' and Chad spar for a few minutes. He teaches '
+L0227: db 00
+L0228: db ' several expert maneuvers that better utilize speed and agil'
+ db 'ity in combat.'
+L0272: db 00
+  .code
+  .argc 0002H
+  .localc 000EH
+  .externsize 0007H
+  .extern 0908H
+  .extern 0909H
+  .extern 0920H
+  .extern 0922H
+  .extern 0910H
+  .extern 0917H
+  .extern 0915H
+0000: 24 00 00   call [0000]   ; 0908H
+0003: 12 02 00   pop [0002]
+0006: 24 01 00   call [0001]   ; 0909H
+0009: 12 03 00   pop [0003]
+000C: 1D 00 00   pushs L0000   ; the Avatar
+000F: 12 04 00   pop [0004]
+0012: 42 F1 01   pushf flag:[01F1]
+0015: 05 06 00   jne 001E
+0018: 21 02 00   push [0002]
+001B: 12 05 00   pop [0005]
+001E: 42 F3 01   pushf flag:[01F3]
+0021: 05 06 00   jne 002A
+0024: 21 04 00   push [0004]
+0027: 12 05 00   pop [0005]
+002A: 42 F2 01   pushf flag:[01F2]
+002D: 05 06 00   jne 0036
+0030: 21 03 00   push [0003]
+0033: 12 05 00   pop [0005]
+0036: 24 02 00   call [0002]   ; 0920H
+0039: 12 06 00   pop [0006]
+003C: 21 06 00   push [0006]
+003F: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+0043: 12 07 00   pop [0007]
+0046: 21 06 00   push [0006]
+0049: 1F 00 00   pushi 0000H   ; 0
+004C: 22   cmpeq
+004D: 05 03 00   jne 0053
+0050: 06 13 01   jmp 0166
+0053: 1F 03 00   pushi 0003H   ; 3
+0056: 12 08 00   pop [0008]
+0059: 21 08 00   push [0008]
+005C: 21 06 00   push [0006]
+005F: 21 00 00   push [0000]
+0062: 21 01 00   push [0001]
+0065: 24 03 00   call [0003]   ; 0922H
+0068: 12 09 00   pop [0009]
+006B: 21 09 00   push [0009]
+006E: 1F 00 00   pushi 0000H   ; 0
+0071: 22   cmpeq
+0072: 05 07 00   jne 007C
+0075: 1C 0B 00   addsi L000B   ; "It seems that th...
+0078: 33   say
+0079: 06 EA 00   jmp 0166
+007C: 21 09 00   push [0009]
+007F: 1F 01 00   pushi 0001H   ; 1
+0082: 22   cmpeq
+0083: 05 2E 00   jne 00B4
+0086: 1F 99 FE   pushi FE99H   ; -359
+0089: 1F 99 FE   pushi FE99H   ; -359
+008C: 1F 84 02   pushi 0284H   ; 644
+008F: 1F 9B FE   pushi FE9BH   ; -357
+0092: 38 28 00 04  callis 0028, 4
+0096: 12 0A 00   pop [000A]
+0099: 1C BB 00   addsi L00BB   ; You gather your g...
+009C: 2F 0A 00   addsv [000A]
+009F: 1C F5 00   addsi L00F5   ;  gold altogether.
+00A2: 33   say
+00A3: 21 0A 00   push [000A]
+00A6: 21 00 00   push [0000]
+00A9: 17   cmpl
+00AA: 05 07 00   jne 00B4
+00AD: 1C 07 01   addsi L0107   ; "Thou hast not en...
+00B0: 33   say
+00B1: 06 B2 00   jmp 0166
+00B4: 21 09 00   push [0009]
+00B7: 1F 02 00   pushi 0002H   ; 2
+00BA: 22   cmpeq
+00BB: 05 0D 00   jne 00CB
+00BE: 1C 56 01   addsi L0156   ; "Zounds! Thou art...
+00C1: 2F 05 00   addsv [0005]
+00C4: 1C BE 01   addsi L01BE   ; ."
+00C7: 33   say
+00C8: 06 9B 00   jmp 0166
+00CB: 13   push true
+00CC: 1F 99 FE   pushi FE99H   ; -359
+00CF: 1F 99 FE   pushi FE99H   ; -359
+00D2: 1F 84 02   pushi 0284H   ; 644
+00D5: 21 00 00   push [0000]
+00D8: 38 2B 00 05  callis 002B, 5
+00DC: 12 0B 00   pop [000B]
+00DF: 1C C1 01   addsi L01C1   ; You pay 
+00E2: 2F 00 00   addsv [0000]
+00E5: 1C CA 01   addsi L01CA   ;  gold, and the tr...
+00E8: 33   say
+00E9: 21 06 00   push [0006]
+00EC: 1F 9C FE   pushi FE9CH   ; -356
+00EF: 22   cmpeq
+00F0: 05 09 00   jne 00FC
+00F3: 1D F2 01   pushs L01F2   ; You
+00F6: 12 0C 00   pop [000C]
+00F9: 06 06 00   jmp 0102
+00FC: 21 07 00   push [0007]
+00FF: 12 0C 00   pop [000C]
+0102: 21 06 00   push [0006]
+0105: 1F 9C FE   pushi FE9CH   ; -356
+0108: 22   cmpeq
+0109: 05 09 00   jne 0115
+010C: 1D F6 01   pushs L01F6   ; you
+010F: 12 0D 00   pop [000D]
+0112: 06 06 00   jmp 011B
+0115: 21 07 00   push [0007]
+0118: 12 0D 00   pop [000D]
+011B: 2F 0C 00   addsv [000C]
+011E: 1C FA 01   addsi L01FA   ;  and Chad spar fo...
+0121: 2F 0D 00   addsv [000D]
+0124: 1C 28 02   addsi L0228   ;  several expert m...
+0127: 33   say
+0128: 1F 01 00   pushi 0001H   ; 1
+012B: 21 06 00   push [0006]
+012E: 24 04 00   call [0004]   ; 0910H
+0131: 12 0E 00   pop [000E]
+0134: 21 0E 00   push [000E]
+0137: 1F 1E 00   pushi 001EH   ; 30
+013A: 17   cmpl
+013B: 05 09 00   jne 0147
+013E: 1F 01 00   pushi 0001H   ; 1
+0141: 21 06 00   push [0006]
+0144: 24 05 00   call [0005]   ; 0917H
+0147: 1F 04 00   pushi 0004H   ; 4
+014A: 21 06 00   push [0006]
+014D: 24 04 00   call [0004]   ; 0910H
+0150: 12 0F 00   pop [000F]
+0153: 21 0F 00   push [000F]
+0156: 1F 1E 00   pushi 001EH   ; 30
+0159: 17   cmpl
+015A: 05 09 00   jne 0166
+015D: 1F 02 00   pushi 0002H   ; 2
+0160: 21 06 00   push [0006]
+0163: 24 06 00   call [0006]   ; 0915H
+0166: 25   ret

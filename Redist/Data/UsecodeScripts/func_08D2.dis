@@ -1,0 +1,216 @@
+  .funcnumber 08D2H
+  .data
+L0000: db '"Dost thou want mine aid?"'
+L001A: db 00
+L001B: db '"What is thy need?"'
+L002E: db 00
+L002F: db 'resurrection'
+L003B: db 00
+L003C: db 'curing'
+L0042: db 00
+L0043: db 'healing'
+L004A: db 00
+L004B: db 'healing'
+L0052: db 00
+L0053: db 'curing'
+L0059: db 00
+L005A: db 'healing'
+L0061: db 00
+L0062: db 'healed'
+L0068: db 00
+L0069: db 'curing'
+L006F: db 00
+L0070: db 'cured'
+L0075: db 00
+L0076: db '"Who needs to be '
+L0087: db 00
+L0088: db '?"'
+L008A: db 00
+L008B: db '"None of you seem to require mine aid."~~She appears pleased'
+ db '.'
+L00C8: db 00
+L00C9: db 'resurrection'
+L00D5: db 00
+L00D6: db '"I am sorry, but thou hast not presented anyone to me who re'
+ db 'quires mine assistance. If there is someone who truly needs '
+ db 'my skills, I must have a closer look."'
+L0174: db 00
+L0175: db '"I must charge thee '
+L0189: db 00
+L018A: db ' gold. Is this price agreeable?"'
+L01AA: db 00
+L01AB: db 'healing'
+L01B2: db 00
+L01B3: db 'curing'
+L01B9: db 00
+L01BA: db 'resurrection'
+L01C6: db 00
+L01C7: db '"I am sorry, '
+L01D4: db 00
+L01D5: db ', but thou dost not have enough gold. Perhaps, I will be abl'
+ db 'e to aid thee next time."'
+L022A: db 00
+L022B: db '"Then I cannot help thee, '
+L0245: db 00
+L0246: db '. I am truly sorry, but my fees are set."'
+L026F: db 00
+L0270: db '"I am glad of that, '
+L0284: db 00
+L0285: db '. I am happy to help those in need, but I would be far happi'
+ db 'er if there were never a need!"'
+L02E0: db 00
+  .code
+  .argc 0003H
+  .localc 000BH
+  .externsize 0007H
+  .extern 0909H
+  .extern 090AH
+  .extern 090BH
+  .extern 090EH
+  .extern 091DH
+  .extern 091EH
+  .extern 091FH
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 03 00   pop [0003]
+0006: 1C 00 00   addsi L0000   ; "Dost thou want m...
+0009: 33   say
+000A: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+000E: 24 01 00   call [0001]   ; 090AH
+0011: 12 04 00   pop [0004]
+0014: 21 04 00   push [0004]
+0017: 05 5F 01   jne 0179
+001A: 1C 1B 00   addsi L001B   ; "What is thy need?"
+001D: 33   say
+001E: 1D 2F 00   pushs L002F   ; resurrection
+0021: 1D 3C 00   pushs L003C   ; curing
+0024: 1D 43 00   pushs L0043   ; healing
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 12 05 00   pop [0005]
+002D: 21 05 00   push [0005]
+0030: 24 02 00   call [0002]   ; 090BH
+0033: 12 06 00   pop [0006]
+0036: 21 06 00   push [0006]
+0039: 1D 4B 00   pushs L004B   ; healing
+003C: 22   cmpeq
+003D: 21 06 00   push [0006]
+0040: 1D 53 00   pushs L0053   ; curing
+0043: 22   cmpeq
+0044: 0F   or
+0045: 05 4D 00   jne 0095
+0048: 21 06 00   push [0006]
+004B: 1D 5A 00   pushs L005A   ; healing
+004E: 22   cmpeq
+004F: 05 0C 00   jne 005E
+0052: 1D 62 00   pushs L0062   ; healed
+0055: 12 07 00   pop [0007]
+0058: 21 02 00   push [0002]
+005B: 12 08 00   pop [0008]
+005E: 21 06 00   push [0006]
+0061: 1D 69 00   pushs L0069   ; curing
+0064: 22   cmpeq
+0065: 05 0C 00   jne 0074
+0068: 1D 70 00   pushs L0070   ; cured
+006B: 12 07 00   pop [0007]
+006E: 21 01 00   push [0001]
+0071: 12 08 00   pop [0008]
+0074: 1C 76 00   addsi L0076   ; "Who needs to be 
+0077: 2F 07 00   addsv [0007]
+007A: 1C 88 00   addsi L0088   ; ?"
+007D: 33   say
+007E: 24 03 00   call [0003]   ; 090EH
+0081: 12 09 00   pop [0009]
+0084: 21 09 00   push [0009]
+0087: 1F 00 00   pushi 0000H   ; 0
+008A: 22   cmpeq
+008B: 05 07 00   jne 0095
+008E: 1C 8B 00   addsi L008B   ; "None of you seem...
+0091: 33   say
+0092: 06 EE 00   jmp 0183
+0095: 21 06 00   push [0006]
+0098: 1D C9 00   pushs L00C9   ; resurrection
+009B: 22   cmpeq
+009C: 05 48 00   jne 00E7
+009F: 38 22 00 00  callis 0022, 0
+00A3: 12 0A 00   pop [000A]
+00A6: 1F 19 00   pushi 0019H   ; 25
+00A9: 1F 90 01   pushi 0190H   ; 400
+00AC: 21 0A 00   push [000A]
+00AF: 38 0E 00 03  callis 000E, 3
+00B3: 12 0B 00   pop [000B]
+00B6: 21 00 00   push [0000]
+00B9: 12 08 00   pop [0008]
+00BC: 21 0B 00   push [000B]
+00BF: 1F 00 00   pushi 0000H   ; 0
+00C2: 22   cmpeq
+00C3: 05 21 00   jne 00E7
+00C6: 1F 19 00   pushi 0019H   ; 25
+00C9: 1F 9E 01   pushi 019EH   ; 414
+00CC: 21 0A 00   push [000A]
+00CF: 38 0E 00 03  callis 000E, 3
+00D3: 12 0B 00   pop [000B]
+00D6: 21 0B 00   push [000B]
+00D9: 1F 00 00   pushi 0000H   ; 0
+00DC: 22   cmpeq
+00DD: 05 07 00   jne 00E7
+00E0: 1C D6 00   addsi L00D6   ; "I am sorry, but ...
+00E3: 33   say
+00E4: 06 9C 00   jmp 0183
+00E7: 1C 75 01   addsi L0175   ; "I must charge thee 
+00EA: 2F 08 00   addsv [0008]
+00ED: 1C 8A 01   addsi L018A   ;  gold. Is this pr...
+00F0: 33   say
+00F1: 24 01 00   call [0001]   ; 090AH
+00F4: 12 0C 00   pop [000C]
+00F7: 21 0C 00   push [000C]
+00FA: 05 6F 00   jne 016C
+00FD: 1F 99 FE   pushi FE99H   ; -359
+0100: 1F 99 FE   pushi FE99H   ; -359
+0103: 1F 84 02   pushi 0284H   ; 644
+0106: 1F 9B FE   pushi FE9BH   ; -357
+0109: 38 28 00 04  callis 0028, 4
+010D: 12 0D 00   pop [000D]
+0110: 21 0D 00   push [000D]
+0113: 21 08 00   push [0008]
+0116: 18   cmpge
+0117: 05 45 00   jne 015F
+011A: 21 06 00   push [0006]
+011D: 1D AB 01   pushs L01AB   ; healing
+0120: 22   cmpeq
+0121: 05 0C 00   jne 0130
+0124: 21 08 00   push [0008]
+0127: 21 09 00   push [0009]
+012A: 24 04 00   call [0004]   ; 091DH
+012D: 06 2C 00   jmp 015C
+0130: 21 06 00   push [0006]
+0133: 1D B3 01   pushs L01B3   ; curing
+0136: 22   cmpeq
+0137: 05 0C 00   jne 0146
+013A: 21 08 00   push [0008]
+013D: 21 09 00   push [0009]
+0140: 24 05 00   call [0005]   ; 091EH
+0143: 06 16 00   jmp 015C
+0146: 21 06 00   push [0006]
+0149: 1D BA 01   pushs L01BA   ; resurrection
+014C: 22   cmpeq
+014D: 05 0C 00   jne 015C
+0150: 21 08 00   push [0008]
+0153: 21 0B 00   push [000B]
+0156: 24 06 00   call [0006]   ; 091FH
+0159: 06 00 00   jmp 015C
+015C: 06 0A 00   jmp 0169
+015F: 1C C7 01   addsi L01C7   ; "I am sorry, 
+0162: 2F 03 00   addsv [0003]
+0165: 1C D5 01   addsi L01D5   ; , but thou dost n...
+0168: 33   say
+0169: 06 0A 00   jmp 0176
+016C: 1C 2B 02   addsi L022B   ; "Then I cannot he...
+016F: 2F 03 00   addsv [0003]
+0172: 1C 46 02   addsi L0246   ; . I am truly sorr...
+0175: 33   say
+0176: 06 0A 00   jmp 0183
+0179: 1C 70 02   addsi L0270   ; "I am glad of that, 
+017C: 2F 03 00   addsv [0003]
+017F: 1C 85 02   addsi L0285   ; . I am happy to h...
+0182: 33   say
+0183: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0187: 25   ret

@@ -1,0 +1,66 @@
+  .funcnumber 0893H
+  .data
+L0000: db 'Adjhar appears to have resumed the stance of a more traditio'
+ db 'nal golem guardian -- staunch and distant. However, it is im'
+ db 'possible to miss the glimmer of intelligence in his eyes.'
+L00B1: db 00
+L00B2: db 'bye'
+L00B5: db 00
+L00B6: db 'job'
+L00B9: db 00
+L00BA: db 'name'
+L00BE: db 00
+L00BF: db 'name'
+L00C3: db 00
+L00C4: db '"I am and always will be the one called Adjhar."'
+L00F4: db 00
+L00F5: db 'name'
+L00F9: db 00
+L00FA: db 'job'
+L00FD: db 00
+L00FE: db '"Now that thou hast mastered the Principle of Love, I no lon'
+ db 'ger serve a function."'
+L0150: db 00
+L0151: db 'job'
+L0154: db 00
+L0155: db 'bye'
+L0158: db 00
+L0159: db '"Goodbye, Avatar. As always I thank thee for thy kindness in'
+ db ' assisting two brothers in need. Forget not the lessons taug'
+ db 'ht by the Shrines."*'
+L01E5: db 00
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F E0 FE   pushi FEE0H   ; -288
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 1C 00 00   addsi L0000   ; Adjhar appears to...
+000D: 33   say
+000E: 1D B2 00   pushs L00B2   ; bye
+0011: 1D B6 00   pushs L00B6   ; job
+0014: 1D BA 00   pushs L00BA   ; name
+0017: 1E 03 00   arrc 0003H   ; 3
+001A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+001E: 04 36 00   je 0057
+0021: 1D BF 00   pushs L00BF   ; name
+0024: 07 01 00 0B 00  cmps 0001H, 0034
+0029: 1C C4 00   addsi L00C4   ; "I am and always ...
+002C: 33   say
+002D: 1D F5 00   pushs L00F5   ; name
+0030: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0034: 1D FA 00   pushs L00FA   ; job
+0037: 07 01 00 0B 00  cmps 0001H, 0047
+003C: 1C FE 00   addsi L00FE   ; "Now that thou ha...
+003F: 33   say
+0040: 1D 51 01   pushs L0151   ; job
+0043: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0047: 1D 55 01   pushs L0155   ; bye
+004A: 07 01 00 05 00  cmps 0001H, 0054
+004F: 1C 59 01   addsi L0159   ; "Goodbye, Avatar....
+0052: 33   say
+0053: 3F   abrt
+0054: 06 C7 FF   jmp 001E
+0057: 40   db 40 ???
+0058: 25   ret

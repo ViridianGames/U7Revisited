@@ -1,0 +1,61 @@
+  .funcnumber 0923H
+  .data
+L0000: db '"Agreeable?"'
+L000C: db 00
+  .code
+  .argc 0002H
+  .localc 0004H
+  .externsize 0001H
+  .extern 090AH
+0000: 1F 99 FE   pushi FE99H   ; -359
+0003: 1F 99 FE   pushi FE99H   ; -359
+0006: 1F 84 02   pushi 0284H   ; 644
+0009: 1F 9B FE   pushi FE9BH   ; -357
+000C: 38 28 00 04  callis 0028, 4
+0010: 12 02 00   pop [0002]
+0013: 1C 00 00   addsi L0000   ; "Agreeable?"
+0016: 33   say
+0017: 24 00 00   call [0000]   ; 090AH
+001A: 10   not
+001B: 05 09 00   jne 0027
+001E: 1F 00 00   pushi 0000H   ; 0
+0021: 12 03 00   pop [0003]
+0024: 06 68 00   jmp 008F
+0027: 21 02 00   push [0002]
+002A: 21 00 00   push [0000]
+002D: 18   cmpge
+002E: 05 58 00   jne 0089
+0031: 1F 99 FE   pushi FE99H   ; -359
+0034: 1F 99 FE   pushi FE99H   ; -359
+0037: 1F F9 02   pushi 02F9H   ; 761
+003A: 1F 9B FE   pushi FE9BH   ; -357
+003D: 38 29 00 04  callis 0029, 4
+0041: 12 04 00   pop [0004]
+0044: 21 04 00   push [0004]  ;* Spellbook
+0047: 05 36 00   jne 0080
+004A: 21 04 00   push [0004]
+004D: 1F 00 00   pushi 0000H   ; 0
+0050: 21 01 00   push [0001]
+0053: 38 52 00 03  callis 0052, 3  ;* Add spell.
+0057: 05 1D 00   jne 0077
+005A: 1F 01 00   pushi 0001H   ; 1
+005D: 12 03 00   pop [0003]
+0060: 13   push true
+0061: 1F 99 FE   pushi FE99H   ; -359
+0064: 1F 99 FE   pushi FE99H   ; -359
+0067: 1F 84 02   pushi 0284H   ; 644
+006A: 21 00 00   push [0000]
+006D: 38 2B 00 05  callis 002B, 5
+0071: 12 05 00   pop [0005]
+0074: 06 06 00   jmp 007D
+0077: 1F 04 00   pushi 0004H   ; 4
+007A: 12 03 00   pop [0003]
+007D: 06 06 00   jmp 0086
+0080: 1F 02 00   pushi 0002H   ; 2
+0083: 12 03 00   pop [0003]
+0086: 06 06 00   jmp 008F
+0089: 1F 03 00   pushi 0003H   ; 3
+008C: 12 03 00   pop [0003]
+008F: 21 03 00   push [0003]
+0092: 2D   setr
+0093: 32   rts

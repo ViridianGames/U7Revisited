@@ -1,0 +1,42 @@
+  .funcnumber 06C0H
+  .data
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0001H
+  .extern 093FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 3E 00   jne 0046
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 63 00   pushi 0063H   ; 99
+000E: 1F EE 01   pushi 01EEH   ; 494
+0011: 3E   push itemref
+0012: 38 35 00 04  callis 0035, 4
+0016: 12 00 00   pop [0000]
+0019: 2E   sloop
+001A: 02 01 00 02 00 03 00 00 00 21 00  db 2 ???
+001B:   db 1
+001C:   db 0
+001D:   db 2
+001E:   db 0
+001F:   db 3
+0020:   db 0
+0021:   db 0
+0022:   db 0
+0023:   db 21
+0024:   db 0
+0025: 21 03 00   push [0003]
+0028: 38 1C 00 01  callis 001C, 1
+002C: 12 04 00   pop [0004]
+002F: 21 04 00   push [0004]
+0032: 1F 00 00   pushi 0000H   ; 0
+0035: 22   cmpeq
+0036: 10   not
+0037: 05 09 00   jne 0043
+003A: 1F 00 00   pushi 0000H   ; 0
+003D: 21 03 00   push [0003]
+0040: 24 00 00   call [0000]   ; 093FH
+0043: 06 D4 FF   jmp 001A
+0046: 25   ret

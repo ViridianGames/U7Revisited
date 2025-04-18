@@ -1,0 +1,269 @@
+  .funcnumber 04E9H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a young entertainer who beckons to you.'
+L003C: db 00
+L003D: db '"Yes?" Paul asks.'
+L004E: db 00
+L004F: db 'name'
+L0053: db 00
+L0054: db '"I am Paul. My colleagues' names are Meryl and Dustin."'
+L008B: db 00
+L008C: db 'name'
+L0090: db 00
+L0091: db 'job'
+L0094: db 00
+L0095: db '"We perform a Passion Play about The Fellowship. It costs on'
+ db 'ly 2 gold per person to see. If thou dost want us to perform'
+ db ' it, please say so."'
+L0121: db 00
+L0122: db 'perform'
+L0129: db 00
+L012A: db 'Fellowship'
+L0134: db 00
+L0135: db 'Passion Play'
+L0141: db 00
+L0142: db 'Passion Play'
+L014E: db 00
+L014F: db '"A Passion Play is a morality tale performed on stage."'
+L0186: db 00
+L0187: db 'Passion Play'
+L0193: db 00
+L0194: db 'Fellowship'
+L019E: db 00
+L019F: db '"It would be much simpler to view the play."'
+L01CB: db 00
+L01CC: db 'Fellowship'
+L01D6: db 00
+L01D7: db 'perform'
+L01DE: db 00
+L01DF: db '"I am sorry to say we are on our break. Please return to the'
+ db ' stage area during normal hours."'
+L023C: db 00
+L023D: db '"Wouldst thou like to see our Passion Play?"'
+L0269: db 00
+L026A: db 'Paul takes your gold. "We thank thee. If thou wouldst make t'
+ db 'hyself comfortable, we shall begin."'
+L02CA: db 00
+L02CB: db '"Oh dear. I am afraid thou dost not have enough gold to pay '
+ db 'for the performance. Some other time, I hope."*'
+L0336: db 00
+L0337: db '"I am sorry. It seems my fellow thespians are not available.'
+ db ' The Passion Play has temporarily closed."*'
+L039E: db 00
+L039F: db '"Some other time, then, I hope."*'
+L03C0: db 00
+L03C1: db 'bye'
+L03C4: db 00
+L03C5: db 'The actor bows to you.*'
+L03DC: db 00
+L03DD: db '@See the Passion Play!@'
+L03F4: db 00
+L03F5: db '@The Fellowship presents...@'
+L0411: db 00
+L0412: db '@Come view the Passion Play!@'
+L042F: db 00
+L0430: db '@We shall entertain thee!@'
+L044A: db 00
+  .code
+  .argc 0001H
+  .localc 000DH
+  .externsize 0004H
+  .extern 090AH
+  .extern 08F7H
+  .extern 08C7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 63 01   jne 016B
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 17 FF   pushi FF17H   ; -233
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1F 17 FF   pushi FF17H   ; -233
+0015: 38 1B 00 01  callis 001B, 1
+0019: 38 1C 00 01  callis 001C, 1
+001D: 12 00 00   pop [0000]
+0020: 1D 00 00   pushs L0000   ; bye
+0023: 1D 04 00   pushs L0004   ; job
+0026: 1D 08 00   pushs L0008   ; name
+0029: 1E 03 00   arrc 0003H   ; 3
+002C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0030: 42 B8 02   pushf flag:[02B8]
+0033: 10   not
+0034: 05 0B 00   jne 0042
+0037: 1C 0D 00   addsi L000D   ; You see a young e...
+003A: 33   say
+003B: 13   push true
+003C: 43 B8 02   popf flag:[02B8]
+003F: 06 04 00   jmp 0046
+0042: 1C 3D 00   addsi L003D   ; "Yes?" Paul asks.
+0045: 33   say
+0046: 04 1D 01   je 0166
+0049: 1D 4F 00   pushs L004F   ; name
+004C: 07 01 00 0B 00  cmps 0001H, 005C
+0051: 1C 54 00   addsi L0054   ; "I am Paul. My co...
+0054: 33   say
+0055: 1D 8C 00   pushs L008C   ; name
+0058: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005C: 1D 91 00   pushs L0091   ; job
+005F: 07 01 00 14 00  cmps 0001H, 0078
+0064: 1C 95 00   addsi L0095   ; "We perform a Pas...
+0067: 33   say
+0068: 1D 22 01   pushs L0122   ; perform
+006B: 1D 2A 01   pushs L012A   ; Fellowship
+006E: 1D 35 01   pushs L0135   ; Passion Play
+0071: 1E 03 00   arrc 0003H   ; 3
+0074: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0078: 1D 42 01   pushs L0142   ; Passion Play
+007B: 07 01 00 0B 00  cmps 0001H, 008B
+0080: 1C 4F 01   addsi L014F   ; "A Passion Play i...
+0083: 33   say
+0084: 1D 87 01   pushs L0187   ; Passion Play
+0087: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008B: 1D 94 01   pushs L0194   ; Fellowship
+008E: 07 01 00 0B 00  cmps 0001H, 009E
+0093: 1C 9F 01   addsi L019F   ; "It would be much...
+0096: 33   say
+0097: 1D CC 01   pushs L01CC   ; Fellowship
+009A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009E: 1D D7 01   pushs L01D7   ; perform
+00A1: 07 01 00 B2 00  cmps 0001H, 0158
+00A6: 21 00 00   push [0000]
+00A9: 1F 1D 00   pushi 001DH   ; 29
+00AC: 22   cmpeq
+00AD: 10   not
+00AE: 05 07 00   jne 00B8
+00B1: 1C DF 01   addsi L01DF   ; "I am sorry to sa...
+00B4: 33   say
+00B5: 06 A0 00   jmp 0158
+00B8: 1C 3D 02   addsi L023D   ; "Wouldst thou lik...
+00BB: 33   say
+00BC: 24 00 00   call [0000]   ; 090AH
+00BF: 05 91 00   jne 0153
+00C2: 1F 16 FF   pushi FF16H   ; -234
+00C5: 24 01 00   call [0001]   ; 08F7H
+00C8: 12 01 00   pop [0001]
+00CB: 1F 15 FF   pushi FF15H   ; -235
+00CE: 24 01 00   call [0001]   ; 08F7H
+00D1: 12 02 00   pop [0002]
+00D4: 21 01 00   push [0001]
+00D7: 21 02 00   push [0002]
+00DA: 0E   and
+00DB: 05 6D 00   jne 014B
+00DE: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+00E2: 12 03 00   pop [0003]
+00E5: 1F 00 00   pushi 0000H   ; 0
+00E8: 12 04 00   pop [0004]
+00EB: 1F 99 FE   pushi FE99H   ; -359
+00EE: 1F 99 FE   pushi FE99H   ; -359
+00F1: 1F 84 02   pushi 0284H   ; 644
+00F4: 1F 9B FE   pushi FE9BH   ; -357
+00F7: 38 28 00 04  callis 0028, 4
+00FB: 12 05 00   pop [0005]
+00FE: 2E   sloop
+00FF: 02 06 00 07 00 08 00 03 00 0D 00  db 2 ???
+0100:   db 6
+0101:   db 0
+0102:   db 7
+0103:   db 0
+0104:   db 8
+0105:   db 0
+0106:   db 3
+0107:   db 0
+0108:   db d
+0109:   db 0
+010A: 21 04 00   push [0004]
+010D: 1F 01 00   pushi 0001H   ; 1
+0110: 09   add
+0111: 12 04 00   pop [0004]
+0114: 06 E8 FF   jmp 00FF
+0117: 21 05 00   push [0005]
+011A: 21 04 00   push [0004]
+011D: 1F 02 00   pushi 0002H   ; 2
+0120: 0C   mul
+0121: 18   cmpge
+0122: 05 1E 00   jne 0143
+0125: 13   push true
+0126: 1F 99 FE   pushi FE99H   ; -359
+0129: 1F 99 FE   pushi FE99H   ; -359
+012C: 1F 84 02   pushi 0284H   ; 644
+012F: 21 04 00   push [0004]
+0132: 38 2B 00 05  callis 002B, 5
+0136: 12 09 00   pop [0009]
+0139: 1C 6A 02   addsi L026A   ; Paul takes your g...
+013C: 33   say
+013D: 24 02 00   call [0002]   ; 08C7H
+0140: 06 05 00   jmp 0148
+0143: 1C CB 02   addsi L02CB   ; "Oh dear. I am af...
+0146: 33   say
+0147: 3F   abrt
+0148: 06 05 00   jmp 0150
+014B: 1C 37 03   addsi L0337   ; "I am sorry. It s...
+014E: 33   say
+014F: 3F   abrt
+0150: 06 05 00   jmp 0158
+0153: 1C 9F 03   addsi L039F   ; "Some other time,...
+0156: 33   say
+0157: 3F   abrt
+0158: 1D C1 03   pushs L03C1   ; bye
+015B: 07 01 00 03 00  cmps 0001H, 0163
+0160: 06 03 00   jmp 0166
+0163: 06 E0 FE   jmp 0046
+0166: 40   db 40 ???
+0167: 1C C5 03   addsi L03C5   ; The actor bows to...
+016A: 33   say
+016B: 48   push eventid
+016C: 1F 00 00   pushi 0000H   ; 0
+016F: 22   cmpeq
+0170: 05 7F 00   jne 01F2
+0173: 38 3B 00 00  callis 003B, 0
+0177: 12 0A 00   pop [000A]
+017A: 1F 17 FF   pushi FF17H   ; -233
+017D: 38 1B 00 01  callis 001B, 1
+0181: 38 1C 00 01  callis 001C, 1
+0185: 12 00 00   pop [0000]
+0188: 1F 04 00   pushi 0004H   ; 4
+018B: 1F 01 00   pushi 0001H   ; 1
+018E: 38 10 00 02  callis _Random2@2  ; 0010
+0192: 12 0B 00   pop [000B]
+0195: 21 00 00   push [0000]
+0198: 1F 1D 00   pushi 001DH   ; 29
+019B: 22   cmpeq
+019C: 05 4D 00   jne 01EC
+019F: 21 0B 00   push [000B]
+01A2: 1F 01 00   pushi 0001H   ; 1
+01A5: 22   cmpeq
+01A6: 05 06 00   jne 01AF
+01A9: 1D DD 03   pushs L03DD   ; @See the Passion ...
+01AC: 12 0C 00   pop [000C]
+01AF: 21 0B 00   push [000B]
+01B2: 1F 02 00   pushi 0002H   ; 2
+01B5: 22   cmpeq
+01B6: 05 06 00   jne 01BF
+01B9: 1D F5 03   pushs L03F5   ; @The Fellowship p...
+01BC: 12 0C 00   pop [000C]
+01BF: 21 0B 00   push [000B]
+01C2: 1F 03 00   pushi 0003H   ; 3
+01C5: 22   cmpeq
+01C6: 05 06 00   jne 01CF
+01C9: 1D 12 04   pushs L0412   ; @Come view the Pa...
+01CC: 12 0C 00   pop [000C]
+01CF: 21 0B 00   push [000B]
+01D2: 1F 04 00   pushi 0004H   ; 4
+01D5: 22   cmpeq
+01D6: 05 06 00   jne 01DF
+01D9: 1D 30 04   pushs L0430   ; @We shall enterta...
+01DC: 12 0C 00   pop [000C]
+01DF: 21 0C 00   push [000C]
+01E2: 1F 17 FF   pushi FF17H   ; -233
+01E5: 39 40 00 02  calli _ItemSay@2  ; 0040
+01E9: 06 06 00   jmp 01F2
+01EC: 1F 17 FF   pushi FF17H   ; -233
+01EF: 24 03 00   call [0003]   ; 092EH
+01F2: 25   ret

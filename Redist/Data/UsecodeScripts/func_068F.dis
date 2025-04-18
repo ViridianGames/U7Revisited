@@ -1,0 +1,25 @@
+  .funcnumber 068FH
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0000H
+0000: 42 2E 03   pushf flag:[032E]
+0003: 05 09 00   jne 000F
+0006: 1F 0F 00   pushi 000FH   ; 15
+0009: 12 00 00   pop [0000]
+000C: 06 15 00   jmp 0024
+000F: 42 2D 03   pushf flag:[032D]
+0012: 05 09 00   jne 001E
+0015: 1F 0E 00   pushi 000EH   ; 14
+0018: 12 00 00   pop [0000]
+001B: 06 06 00   jmp 0024
+001E: 1F 0D 00   pushi 000DH   ; 13
+0021: 12 00 00   pop [0000]
+0024: 21 00 00   push [0000]
+0027: 44 46   pushw 1E46H   ; 7750
+0029: 1E 02 00   arrc 0002H   ; 2
+002C: 3E   push itemref
+002D: 38 01 00 02  callis 0001, 2
+0031: 12 01 00   pop [0001]
+0034: 25   ret

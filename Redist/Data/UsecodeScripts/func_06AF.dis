@@ -1,0 +1,53 @@
+  .funcnumber 06AFH ;* Poppy fields.
+  .data
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0001H
+  .extern 0620H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 65 00   jne 006D
+0008: 1F 1C 00   pushi 001CH   ; 28
+000B: 39 0F 00 01  calli 000F, 1
+000F: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0013: 12 00 00   pop [0000]
+0016: 2E   sloop
+0017: 02 01 00 02 00 03 00 00 00 4B 00  db 2 ???
+0018:   db 1
+0019:   db 0
+001A:   db 2
+001B:   db 0
+001C:   db 3
+001D:   db 0
+001E:   db 0
+001F:   db 0
+0020:   db 4b
+0021:   db 0
+0022: 3E   push itemref
+0023: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0027: 1F 00 00   pushi 0000H   ; 0 Strength
+002A: 21 03 00   push [0003]
+002D: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0031: 38 4A 00 02  callis 004A, 2
+0035: 10   not
+0036: 05 31 00   jne 006A
+0039: 21 03 00   push [0003]
+003C: 38 1B 00 01  callis 001B, 1
+0040: 12 04 00   pop [0004]
+0043: 21 04 00   push [0004]
+0046: 47 20 06   calle 0620H   ; 1568
+0049: 1F 01 00   pushi 0001H   ; 1
+004C: 21 04 00   push [0004]
+004F: 39 89 00 02  calli 0089, 2
+0053: 1F 64 00   pushi 0064H   ; 100
+0056: 1F 1F 06   pushi 061FH   ; 1567
+0059: 44 55   pushw 4455H   ; 17493
+005B: 44 23   pushw 1E23H   ; 7715
+005D: 1E 03 00   arrc 0003H   ; 3
+0060: 21 04 00   push [0004]
+0063: 38 02 00 03  callis 0002, 3
+0067: 12 05 00   pop [0005]
+006A: 06 AA FF   jmp 0017
+006D: 25   ret

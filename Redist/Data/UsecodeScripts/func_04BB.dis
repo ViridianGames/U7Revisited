@@ -1,0 +1,166 @@
+  .funcnumber 04BBH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a frowning gargoyle.'
+L0029: db 00
+L002A: db '"To ask what you need, human," says Silamo.'
+L0055: db 00
+L0056: db 'name'
+L005A: db 00
+L005B: db '"To be named `Silamo.'"'
+L0072: db 00
+L0073: db 'wingless status'
+L0082: db 00
+L0083: db 'name'
+L0087: db 00
+L0088: db 'Silamo'
+L008E: db 00
+L008F: db 'Silamo'
+L0095: db 00
+L0096: db '"To know my name if I were winged." He scowls at you.'
+L00CB: db 00
+L00CC: db 'Silamo'
+L00D2: db 00
+L00D3: db 'job'
+L00D6: db 00
+L00D7: db '"To be the gardener," he shrugs, "nothing more."~~ He does n'
+ db 'ot seem to be interested in speaking with you.'
+L0141: db 00
+L0142: db 'wingless status'
+L0151: db 00
+L0152: db 'He stares at you for a moment.~~"To be right, human.~~ "To f'
+ db 'eel I am treated less for an absence of wings. To see Quaeve'
+ db 'n treated better since joining The Fellowship. To be devoted'
+ db ' to the altar of singularity. But, perhaps to change if The '
+ db 'Fellowship cares not about wings."'
+L0264: db 00
+L0265: db 'Quaeven'
+L026C: db 00
+L026D: db 'treated'
+L0274: db 00
+L0275: db 'wingless status'
+L0284: db 00
+L0285: db 'Quaeven'
+L028C: db 00
+L028D: db '"To be also without wings, but to be respected as if he were'
+ db ' winged."'
+L02D2: db 00
+L02D3: db 'Quaeven'
+L02DA: db 00
+L02DB: db 'treated'
+L02E2: db 00
+L02E3: db '"To see many others include him in many events from which I '
+ db 'am excluded. To know others include him in many more decisio'
+ db 'n-making councils, too."'
+L0373: db 00
+L0374: db 'treated'
+L037B: db 00
+L037C: db 'others'
+L0382: db 00
+L0383: db 'others'
+L0389: db 00
+L038A: db '"Gargoyles in The Fellowship."'
+L03A8: db 00
+L03A9: db 'others'
+L03AF: db 00
+L03B0: db 'bye'
+L03B3: db 00
+L03B4: db '"To get back to work."*'
+L03CB: db 00
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 EC 00   jne 00F4
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 45 FF   pushi FF45H   ; -187
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 4C 02   pushf flag:[024C]
+0025: 10   not
+0026: 05 0B 00   jne 0034
+0029: 1C 0D 00   addsi L000D   ; You see a frownin...
+002C: 33   say
+002D: 13   push true
+002E: 43 4C 02   popf flag:[024C]
+0031: 06 04 00   jmp 0038
+0034: 1C 2A 00   addsi L002A   ; "To ask what you ...
+0037: 33   say
+0038: 04 B4 00   je 00EF
+003B: 1D 56 00   pushs L0056   ; name
+003E: 07 01 00 1F 00  cmps 0001H, 0062
+0043: 1C 5B 00   addsi L005B   ; "To be named `Sil...
+0046: 33   say
+0047: 42 3D 02   pushf flag:[023D]
+004A: 05 07 00   jne 0054
+004D: 1D 73 00   pushs L0073   ; wingless status
+0050: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0054: 1D 83 00   pushs L0083   ; name
+0057: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005B: 1D 88 00   pushs L0088   ; Silamo
+005E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0062: 1D 8F 00   pushs L008F   ; Silamo
+0065: 07 01 00 0B 00  cmps 0001H, 0075
+006A: 1C 96 00   addsi L0096   ; "To know my name ...
+006D: 33   say
+006E: 1D CC 00   pushs L00CC   ; Silamo
+0071: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0075: 1D D3 00   pushs L00D3   ; job
+0078: 07 01 00 04 00  cmps 0001H, 0081
+007D: 1C D7 00   addsi L00D7   ; "To be the garden...
+0080: 33   say
+0081: 1D 42 01   pushs L0142   ; wingless status
+0084: 07 01 00 18 00  cmps 0001H, 00A1
+0089: 1C 52 01   addsi L0152   ; He stares at you ...
+008C: 33   say
+008D: 1D 65 02   pushs L0265   ; Quaeven
+0090: 1D 6D 02   pushs L026D   ; treated
+0093: 1E 02 00   arrc 0002H   ; 2
+0096: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009A: 1D 75 02   pushs L0275   ; wingless status
+009D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A1: 1D 85 02   pushs L0285   ; Quaeven
+00A4: 07 01 00 0B 00  cmps 0001H, 00B4
+00A9: 1C 8D 02   addsi L028D   ; "To be also witho...
+00AC: 33   say
+00AD: 1D D3 02   pushs L02D3   ; Quaeven
+00B0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B4: 1D DB 02   pushs L02DB   ; treated
+00B7: 07 01 00 12 00  cmps 0001H, 00CE
+00BC: 1C E3 02   addsi L02E3   ; "To see many othe...
+00BF: 33   say
+00C0: 1D 74 03   pushs L0374   ; treated
+00C3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C7: 1D 7C 03   pushs L037C   ; others
+00CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CE: 1D 83 03   pushs L0383   ; others
+00D1: 07 01 00 0B 00  cmps 0001H, 00E1
+00D6: 1C 8A 03   addsi L038A   ; "Gargoyles in The...
+00D9: 33   say
+00DA: 1D A9 03   pushs L03A9   ; others
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D B0 03   pushs L03B0   ; bye
+00E4: 07 01 00 03 00  cmps 0001H, 00EC
+00E9: 06 03 00   jmp 00EF
+00EC: 06 49 FF   jmp 0038
+00EF: 40   db 40 ???
+00F0: 1C B4 03   addsi L03B4   ; "To get back to w...
+00F3: 33   say
+00F4: 48   push eventid
+00F5: 1F 00 00   pushi 0000H   ; 0
+00F8: 22   cmpeq
+00F9: 05 01 00   jne 00FD
+00FC: 3F   abrt
+00FD: 25   ret

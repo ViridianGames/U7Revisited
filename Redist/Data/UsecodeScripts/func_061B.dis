@@ -1,0 +1,29 @@
+  .funcnumber 061BH  ;* Generator in Despise.
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0001H
+  .extern 0806H
+0000: 48   push eventid
+0001: 1F 02 00   pushi 0002H   ; 2
+0004: 22   cmpeq
+0005: 05 32 00   jne 003A
+0008: 3E   push itemref
+0009: 1F EA 00   pushi 00EAH   ; 234
+000C: 24 00 00   call [0000]   ; 0806H
+000F: 1F 69 02   pushi 0269H   ; 617
+0012: 38 1B 00 01  callis 001B, 1
+0016: 12 00 00   pop [0000]
+0019: 1F 0F 00   pushi 000FH   ; 15
+001C: 1F 69 02   pushi 0269H   ; 617
+001F: 39 1D 00 02  calli 001D, 2
+0023: 1F 19 00   pushi 0019H   ; 25
+0026: 1F 69 02   pushi 0269H   ; 617
+0029: 44 55   pushw 4455H   ; 17493
+002B: 44 23   pushw 1E23H   ; 7715
+002D: 1E 03 00   arrc 0003H   ; 3
+0030: 1F 69 02   pushi 0269H   ; 617
+0033: 38 02 00 03  callis 0002, 3
+0037: 12 01 00   pop [0001]
+003A: 25   ret

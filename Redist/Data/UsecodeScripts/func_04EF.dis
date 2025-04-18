@@ -1,0 +1,484 @@
+  .funcnumber 04EFH
+  .data
+L0000: db 'Before you is a skinny man with a silly smile on his face. H'
+ db 'e is holding a lantern in one hand and a dirty spoon in the '
+ db 'other.'
+L007E: db 00
+L007F: db '"Hello, again," says Owings. He smiles and tips his mining h'
+ db 'at to you.'
+L00C5: db 00
+L00C6: db 'bye'
+L00C9: db 00
+L00CA: db 'job'
+L00CD: db 00
+L00CE: db 'name'
+L00D2: db 00
+L00D3: db 'name'
+L00D7: db 00
+L00D8: db '"My name is Owings," he says giving you a rapid up and down '
+ db 'handshake. "Pleased to meet thee."'
+L0136: db 00
+L0137: db '"My partner's name is Malloy."'
+L0155: db 00
+L0156: db '"Thou dost already know my partner, Malloy."'
+L0182: db 00
+L0183: db 'name'
+L0187: db 00
+L0188: db 'job'
+L018B: db 00
+L018C: db '"I do what he does." Owings jerks his thumb towards Malloy d'
+ db 'igging away next to him. The fat man is trying to chisel thr'
+ db 'ough the rock wall using only a spoon. Owings's thumb hits h'
+ db 'im in the back.'
+L024F: db 00
+L0250: db 'Malloy looks over at you and gives you a friendly wave as he'
+ db ' goes to stand up. As he does this, he bumps his head. There'
+ db ' is a loud knocking noise. He says, "Oooooooohh!" very loudl'
+ db 'y. His cry echoes through the length of the mineshaft. You c'
+ db 'an feel dust from the cracks in the ceiling settling on your'
+ db ' shoulder.*'
+L0387: db 00
+L0388: db 'Owings suddenly looks very nervous and throws both of his ar'
+ db 'ms over his head. There is a terrible rumble and you feel th'
+ db 'e ground beneath you start to shake. After a moment the trem'
+ db 'or subsides. Both of them look very relieved.*'
+L046A: db 00
+L046B: db 'Malloy puts one hand up to his bruised head and feels around'
+ db ' on the ground with the other. He eventually finds and picks'
+ db ' up a metal mining helmet. He gingerly places it over his he'
+ db 'ad which appears to still be causing him pain. You can see t'
+ db 'hat the top of Malloy's head barely fits into it.*'
+L058D: db 00
+L058E: db '"Allow me to rephrase that. I do what he does, except I alwa'
+ db 'ys wears me helmet." With that Owings gives a big nod, throw'
+ db 'ing his head up and down. This causes his helmet to fall dow'
+ db 'n over his eyes.*'
+L0653: db 00
+L0654: db 'Malloy looks over at you and at Owings, giving both of you a'
+ db 'n incredulous pouting grimace.*'
+L06AF: db 00
+L06B0: db 'eyes'
+L06B4: db 00
+L06B5: db 'helmet'
+L06BB: db 00
+L06BC: db 'tremor'
+L06C2: db 00
+L06C3: db '"Normally I am digging, but as of late I cannot seem to find'
+ db ' my partner Malloy. So I suppose my job is to look for him. '
+ db 'I wonder where he has gone to?"'
+L075A: db 00
+L075B: db 'tremor'
+L0761: db 00
+L0762: db 'Owings puts his hand on your shoulder and puts a finger up t'
+ db 'o his lips. "Shhhhh! Be very quiet! This is an old tunnel. M'
+ db 'ikos, the foreman, says that any sudden loud noise could tri'
+ db 'gger a cave-in!"*'
+L0827: db 00
+L0828: db 'Malloy goes back to digging. The exertion from his work caus'
+ db 'es his helmet to fall off. He sighs, picks it up, puts it ba'
+ db 'ck on and goes back to work. Almost immediately it falls off'
+ db ' again. He puts it back on. It falls off. He puts it back on'
+ db '. Malloy grunts and sighs. It falls off. Dejected, he puts i'
+ db 't back on. This happens again and again so many times that i'
+ db 't is almost painful to watch. Finally, Malloy just lets the '
+ db 'helmet lie there and throws a tantrum. He trembles and bites'
+ db ' into his hand to keep from crying out in frustration.*'
+L0A3F: db 00
+L0A40: db 'Owings steps up to Malloy and puts his finger to his lips. "'
+ db 'Shhhhhh!" Looking down, Owings sees Malloy's helmet on the g'
+ db 'round. "Dost thou not remember Mikos telling thee to always '
+ db 'wear thine helmet?" he says. Owings picks it up and dusts it'
+ db ' off. He pushes it down on top of Malloy's sore head, causin'
+ db 'g Malloy to wrinkle his face in pain. "No need to thank me!"'
+ db ' Owings says. With that, he nods his head up and down, causi'
+ db 'ng the front of his helmet to fall down over his eyes. He re'
+ db 'aches out with his arms blindly.*'
+L0C41: db 00
+L0C42: db 'Malloy looks over at Owings and at you, giving you both a po'
+ db 'uting grimace.*'
+L0C8D: db 00
+L0C8E: db 'tremor'
+L0C94: db 00
+L0C95: db 'eyes'
+L0C99: db 00
+L0C9A: db 'eyes'
+L0C9E: db 00
+L0C9F: db 'You reach up and tip Owings's helmet back so that it is no l'
+ db 'onger covering his eyes. He smiles at you thankfully. He tak'
+ db 'es off his helmet to scratch at the top of his head. He puts'
+ db ' it back on and it immediately tilts back down over his eyes'
+ db '.*'
+L0D91: db 00
+L0D92: db 'Malloy watches this, smirks and slowly shakes his head.*'
+L0DCA: db 00
+L0DCB: db 'eyes'
+L0DCF: db 00
+L0DD0: db 'Owings's helmet'
+L0DDF: db 00
+L0DE0: db 'helmet'
+L0DE6: db 00
+L0DE7: db '"Mikos, the foreman of this mine told us to always wear a he'
+ db 'lmet. It is very important. The two of us even sent a mining'
+ db ' helmet to Lord British. A funny man dressed just like the A'
+ db 'vatar told us of how Lord British had been hit in the head w'
+ db 'ith falling objects - twice! So we sent a helmet to him."*'
+L0F11: db 00
+L0F12: db 'It appears Malloy can no longer stand being left out of the '
+ db 'conversation. "It was -mine- idea to send Lord British the h'
+ db 'elmet," he says proudly. "While we have not yet heard back f'
+ db 'rom him about it I am sure he will find some way to thank us'
+ db '." Malloy's helmet falls off and he stands there a long time'
+ db ' before regaining the composure to pick it up again.*'
+L1073: db 00
+L1074: db 'helmet'
+L107A: db 00
+L107B: db 'Owings's helmet'
+L108A: db 00
+L108B: db '"Thou art a kind person to fix mine helmet for me," Owings s'
+ db 'ays, giving you a big grin.'
+L10E2: db 00
+L10E3: db 'You see Malloy look very suspiciously at Owings's helmet. "T'
+ db 'hou art wearing mine hat!" He lets out a growling "Hmmmf!" a'
+ db 'nd snatches Owings's helmet off of his head. Malloy removes '
+ db 'his helmet, casually tossing it to the ground. He then puts '
+ db 'Owings's helmet on. It fits him perfectly. Malloy flashes yo'
+ db 'u both a big condescending smile. With a curt nod he turns t'
+ db 'o go back to work.*'
+L125E: db 00
+L125F: db 'Owings looks at Malloy and then back to you. He is very conf'
+ db 'used. "That was not very nice, Malloy! Thou didst take mine '
+ db 'hat!" Owings's face is covered with a large frown. His lower'
+ db ' lip starts to tremble.'
+L132A: db 00
+L132B: db 'eyes'
+L132F: db 00
+L1330: db 'Owings's helmet'
+L133F: db 00
+L1340: db 'mine hat'
+L1348: db 00
+L1349: db 'mine hat'
+L1351: db 00
+L1352: db 'Owings reaches over and takes the mining helmet off Malloy's'
+ db ' head so carefully that he does not notice. Owings puts the '
+ db 'helmet back on with a little sneaky laugh of triumph. Pointi'
+ db 'ng to the hat he taps Malloy on the back to let him know wha'
+ db 't he's done.*'
+L144F: db 00
+L1450: db 'Malloy stops digging and goes to stand up. As he does this h'
+ db 'e hits his head on the ceiling. Once again it makes a loud k'
+ db 'nocking noise. Malloy says "Oooooh!" After shaking his head '
+ db 'clear, he slowly steps toward Owings. He is quite angry - so'
+ db ' angry that he does not notice that he has stepped into the '
+ db 'other helmet and it is stuck onto his foot. Taking his spoon'
+ db ' he whaps Owings in the nose with it.*'
+L15DE: db 00
+L15DF: db 'Upon getting hit in the nose, Owings jerks his head back, ca'
+ db 'using his helmet to fall off. "Ooh! Mine helmet!" he cries.*'
+L1657: db 00
+L1658: db 'Malloy is so angry that he can no longer contain himself. "T'
+ db 'hat is not thine helmet! It is mine helmet!" he shouts. This'
+ db ' sends a thunderous echo down the mineshaft. You can feel a '
+ db 'shower of falling dust and rocks. There is a low rumble and '
+ db 'an ominous vibration of the earth. Owings and Malloy are so '
+ db 'scared that in their panic they run right into each other. M'
+ db 'alloy's foot - the one with the helmet stuck on it - slides '
+ db 'out from under him and he lands on his posterior. Both cover'
+ db ' their heads in anticipation of a massive cave-in.*'
+L186B: db 00
+L186C: db 'mine hat'
+L1874: db 00
+L1875: db 'cave-in'
+L187C: db 00
+L187D: db 'cave-in'
+L1884: db 00
+L1885: db 'After a few moments of fearful anticipation, the tremor subs'
+ db 'ides. The tunnel is still standing, none the worse for wear.'
+ db ' "I thought I was done for!" says Owings. With that, a large'
+ db ' piece of rock falls from the ceiling and lands squarely on '
+ db 'Owings's head. It makes a loud knocking noise. Owings starts'
+ db ' to pout and cry very childishly.'
+L19D2: db 00
+L19D3: db 'Malloy points at Owings and laughs until tears run down his '
+ db 'face. Glancing up at the ceiling, Malloy starts feeling arou'
+ db 'nd for his helmet. Finally, feeling underneath himself, he p'
+ db 'ulls out his helmet, on top of which he had fallen! Looking '
+ db 'at the hat, Malloy discovers that his bulk has crumpled it. '
+ db 'It is ruined. He puts it on anyway, looking most ridiculous,'
+ db ' and his tears of laughter turn to tears of sorrow. Now, bot'
+ db 'h of them break down into fits of childish bawling. Malloy l'
+ db 'ooks at Owings and says "This is another fine mess thou hast'
+ db ' gotten us into!"*'
+L1C01: db 00
+L1C02: db 'cave-in'
+L1C09: db 00
+L1C0A: db 'bye'
+L1C0D: db 00
+L1C0E: db 'Owings and Malloy, both unable to stop their crying, wave go'
+ db 'odbye.*'
+L1C51: db 00
+L1C52: db '"Good day to thee, '
+L1C65: db 00
+L1C66: db '."*'
+L1C69: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 11 FF   pushi FF11H   ; -239
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 1F 0D FF   pushi FF0DH   ; -243
+001C: 24 01 00   call [0001]   ; 08F7H
+001F: 12 01 00   pop [0001]
+0022: 1F FF FF   pushi FFFFH   ; -1
+0025: 24 01 00   call [0001]   ; 08F7H
+0028: 12 02 00   pop [0002]
+002B: 1F FD FF   pushi FFFDH   ; -3
+002E: 24 01 00   call [0001]   ; 08F7H
+0031: 12 03 00   pop [0003]
+0034: 1F FC FF   pushi FFFCH   ; -4
+0037: 24 01 00   call [0001]   ; 08F7H
+003A: 12 04 00   pop [0004]
+003D: 42 BC 02   pushf flag:[02BC]
+0040: 10   not
+0041: 05 0B 00   jne 004F
+0044: 1C 00 00   addsi L0000   ; Before you is a s...
+0047: 33   say
+0048: 13   push true
+0049: 43 BC 02   popf flag:[02BC]
+004C: 06 04 00   jmp 0053
+004F: 1C 7F 00   addsi L007F   ; "Hello, again," s...
+0052: 33   say
+0053: 1D C6 00   pushs L00C6   ; bye
+0056: 1D CA 00   pushs L00CA   ; job
+0059: 1D CE 00   pushs L00CE   ; name
+005C: 1E 03 00   arrc 0003H   ; 3
+005F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0063: 04 6D 02   je 02D3
+0066: 1D D3 00   pushs L00D3   ; name
+0069: 07 01 00 23 00  cmps 0001H, 0091
+006E: 1C D8 00   addsi L00D8   ; "My name is Owing...
+0071: 33   say
+0072: 21 01 00   push [0001]
+0075: 05 12 00   jne 008A
+0078: 42 BD 02   pushf flag:[02BD]
+007B: 10   not
+007C: 05 07 00   jne 0086
+007F: 1C 37 01   addsi L0137   ; "My partner's nam...
+0082: 33   say
+0083: 06 04 00   jmp 008A
+0086: 1C 56 01   addsi L0156   ; "Thou dost alread...
+0089: 33   say
+008A: 1D 83 01   pushs L0183   ; name
+008D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0091: 1D 88 01   pushs L0188   ; job
+0094: 07 01 00 78 00  cmps 0001H, 0111
+0099: 21 01 00   push [0001]
+009C: 05 6E 00   jne 010D
+009F: 1C 8C 01   addsi L018C   ; "I do what he doe...
+00A2: 33   say
+00A3: 1F 00 00   pushi 0000H   ; 0
+00A6: 1F 0D FF   pushi FF0DH   ; -243
+00A9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00AD: 1C 50 02   addsi L0250   ; Malloy looks over...
+00B0: 33   say
+00B1: 1F 00 00   pushi 0000H   ; 0
+00B4: 1F 11 FF   pushi FF11H   ; -239
+00B7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00BB: 1C 88 03   addsi L0388   ; Owings suddenly l...
+00BE: 33   say
+00BF: 1F 00 00   pushi 0000H   ; 0
+00C2: 1F 0D FF   pushi FF0DH   ; -243
+00C5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00C9: 1C 6B 04   addsi L046B   ; Malloy puts one h...
+00CC: 33   say
+00CD: 1F 00 00   pushi 0000H   ; 0
+00D0: 1F 11 FF   pushi FF11H   ; -239
+00D3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D7: 1C 8E 05   addsi L058E   ; "Allow me to reph...
+00DA: 33   say
+00DB: 1F 00 00   pushi 0000H   ; 0
+00DE: 1F 0D FF   pushi FF0DH   ; -243
+00E1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E5: 1C 54 06   addsi L0654   ; Malloy looks over...
+00E8: 33   say
+00E9: 1F 0D FF   pushi FF0DH   ; -243
+00EC: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F0: 1F 00 00   pushi 0000H   ; 0
+00F3: 1F 11 FF   pushi FF11H   ; -239
+00F6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00FA: 1D B0 06   pushs L06B0   ; eyes
+00FD: 1D B5 06   pushs L06B5   ; helmet
+0100: 1D BC 06   pushs L06BC   ; tremor
+0103: 1E 03 00   arrc 0003H   ; 3
+0106: 39 05 00 01  calli _AddAnswer@1  ; 0005
+010A: 06 04 00   jmp 0111
+010D: 1C C3 06   addsi L06C3   ; "Normally I am di...
+0110: 33   say
+0111: 1D 5B 07   pushs L075B   ; tremor
+0114: 07 01 00 51 00  cmps 0001H, 016A
+0119: 1C 62 07   addsi L0762   ; Owings puts his h...
+011C: 33   say
+011D: 1F 00 00   pushi 0000H   ; 0
+0120: 1F 0D FF   pushi FF0DH   ; -243
+0123: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0127: 1C 28 08   addsi L0828   ; Malloy goes back ...
+012A: 33   say
+012B: 1F 00 00   pushi 0000H   ; 0
+012E: 1F 11 FF   pushi FF11H   ; -239
+0131: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0135: 1C 40 0A   addsi L0A40   ; Owings steps up t...
+0138: 33   say
+0139: 1F 00 00   pushi 0000H   ; 0
+013C: 1F 0D FF   pushi FF0DH   ; -243
+013F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0143: 1C 42 0C   addsi L0C42   ; Malloy looks over...
+0146: 33   say
+0147: 1F 0D FF   pushi FF0DH   ; -243
+014A: 39 04 00 01  calli _HideNPC@1  ; 0004
+014E: 1F 00 00   pushi 0000H   ; 0
+0151: 1F 11 FF   pushi FF11H   ; -239
+0154: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0158: 13   push true
+0159: 43 D8 02   popf flag:[02D8]
+015C: 1D 8E 0C   pushs L0C8E   ; tremor
+015F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0163: 1D 95 0C   pushs L0C95   ; eyes
+0166: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016A: 1D 9A 0C   pushs L0C9A   ; eyes
+016D: 07 01 00 37 00  cmps 0001H, 01A9
+0172: 1C 9F 0C   addsi L0C9F   ; You reach up and ...
+0175: 33   say
+0176: 1F 00 00   pushi 0000H   ; 0
+0179: 1F 0D FF   pushi FF0DH   ; -243
+017C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0180: 1C 92 0D   addsi L0D92   ; Malloy watches th...
+0183: 33   say
+0184: 1F 0D FF   pushi FF0DH   ; -243
+0187: 39 04 00 01  calli _HideNPC@1  ; 0004
+018B: 1F 00 00   pushi 0000H   ; 0
+018E: 1F 11 FF   pushi FF11H   ; -239
+0191: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0195: 1D CB 0D   pushs L0DCB   ; eyes
+0198: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019C: 42 D8 02   pushf flag:[02D8]
+019F: 05 07 00   jne 01A9
+01A2: 1D D0 0D   pushs L0DD0   ; Owings's helmet
+01A5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A9: 1D E0 0D   pushs L0DE0   ; helmet
+01AC: 07 01 00 2A 00  cmps 0001H, 01DB
+01B1: 1C E7 0D   addsi L0DE7   ; "Mikos, the forem...
+01B4: 33   say
+01B5: 1F 00 00   pushi 0000H   ; 0
+01B8: 1F 0D FF   pushi FF0DH   ; -243
+01BB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01BF: 1C 12 0F   addsi L0F12   ; It appears Malloy...
+01C2: 33   say
+01C3: 1F 0D FF   pushi FF0DH   ; -243
+01C6: 39 04 00 01  calli _HideNPC@1  ; 0004
+01CA: 1F 00 00   pushi 0000H   ; 0
+01CD: 1F 11 FF   pushi FF11H   ; -239
+01D0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D4: 1D 74 10   pushs L1074   ; helmet
+01D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DB: 1D 7B 10   pushs L107B   ; Owings's helmet
+01DE: 07 01 00 45 00  cmps 0001H, 0228
+01E3: 1C 8B 10   addsi L108B   ; "Thou art a kind ...
+01E6: 33   say
+01E7: 1F 00 00   pushi 0000H   ; 0
+01EA: 1F 0D FF   pushi FF0DH   ; -243
+01ED: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F1: 1C E3 10   addsi L10E3   ; You see Malloy lo...
+01F4: 33   say
+01F5: 1F 00 00   pushi 0000H   ; 0
+01F8: 1F 11 FF   pushi FF11H   ; -239
+01FB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01FF: 1C 5F 12   addsi L125F   ; Owings looks at M...
+0202: 33   say
+0203: 1F 0D FF   pushi FF0DH   ; -243
+0206: 39 04 00 01  calli _HideNPC@1  ; 0004
+020A: 1F 00 00   pushi 0000H   ; 0
+020D: 1F 11 FF   pushi FF11H   ; -239
+0210: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0214: 1D 2B 13   pushs L132B   ; eyes
+0217: 1D 30 13   pushs L1330   ; Owings's helmet
+021A: 1E 02 00   arrc 0002H   ; 2
+021D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0221: 1D 40 13   pushs L1340   ; mine hat
+0224: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0228: 1D 49 13   pushs L1349   ; mine hat
+022B: 07 01 00 58 00  cmps 0001H, 0288
+0230: 1C 52 13   addsi L1352   ; Owings reaches ov...
+0233: 33   say
+0234: 1F 00 00   pushi 0000H   ; 0
+0237: 1F 0D FF   pushi FF0DH   ; -243
+023A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+023E: 1C 50 14   addsi L1450   ; Malloy stops digg...
+0241: 33   say
+0242: 1F 53 00   pushi 0053H   ; 83
+0245: 39 0F 00 01  calli 000F, 1
+0249: 13   push true
+024A: 43 D9 02   popf flag:[02D9]
+024D: 1F 00 00   pushi 0000H   ; 0
+0250: 1F 11 FF   pushi FF11H   ; -239
+0253: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0257: 1C DF 15   addsi L15DF   ; Upon getting hit ...
+025A: 33   say
+025B: 1F 00 00   pushi 0000H   ; 0
+025E: 1F 0D FF   pushi FF0DH   ; -243
+0261: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0265: 1C 58 16   addsi L1658   ; Malloy is so angr...
+0268: 33   say
+0269: 1F 0D FF   pushi FF0DH   ; -243
+026C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0270: 1F 00 00   pushi 0000H   ; 0
+0273: 1F 11 FF   pushi FF11H   ; -239
+0276: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+027A: 1D 6C 18   pushs L186C   ; mine hat
+027D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0281: 1D 75 18   pushs L1875   ; cave-in
+0284: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0288: 1D 7D 18   pushs L187D   ; cave-in
+028B: 07 01 00 35 00  cmps 0001H, 02C5
+0290: 1C 85 18   addsi L1885   ; After a few momen...
+0293: 33   say
+0294: 1F 53 00   pushi 0053H   ; 83
+0297: 39 0F 00 01  calli 000F, 1
+029B: 1F 00 00   pushi 0000H   ; 0
+029E: 1F 0D FF   pushi FF0DH   ; -243
+02A1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02A5: 1C D3 19   addsi L19D3   ; Malloy points at ...
+02A8: 33   say
+02A9: 13   push true
+02AA: 43 DA 02   popf flag:[02DA]
+02AD: 1F 0D FF   pushi FF0DH   ; -243
+02B0: 39 04 00 01  calli _HideNPC@1  ; 0004
+02B4: 1F 00 00   pushi 0000H   ; 0
+02B7: 1F 11 FF   pushi FF11H   ; -239
+02BA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02BE: 1D 02 1C   pushs L1C02   ; cave-in
+02C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C5: 1D 0A 1C   pushs L1C0A   ; bye
+02C8: 07 01 00 03 00  cmps 0001H, 02D0
+02CD: 06 03 00   jmp 02D3
+02D0: 06 90 FD   jmp 0063
+02D3: 40   db 40 ???
+02D4: 21 01 00   push [0001]
+02D7: 05 07 00   jne 02E1
+02DA: 1C 0E 1C   addsi L1C0E   ; Owings and Malloy...
+02DD: 33   say
+02DE: 06 0A 00   jmp 02EB
+02E1: 1C 52 1C   addsi L1C52   ; "Good day to thee, 
+02E4: 2F 00 00   addsv [0000]
+02E7: 1C 66 1C   addsi L1C66   ; ."*
+02EA: 33   say
+02EB: 25   ret

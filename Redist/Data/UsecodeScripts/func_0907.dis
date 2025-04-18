@@ -1,0 +1,11 @@
+  .funcnumber 0907H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 21 00 00   push [0000]
+0003: 38 1B 00 01  callis 001B, 1
+0007: 38 36 00 01  callis 0036, 1
+000B: 2D   setr
+000C: 32   rts

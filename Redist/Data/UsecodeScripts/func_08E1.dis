@@ -1,0 +1,206 @@
+  .funcnumber 08E1H
+  .data
+L0000: db 'white potion'
+L000C: db 00
+L000D: db 'black potion'
+L0019: db 00
+L001A: db 'gold clawring'
+L0027: db 00
+L0028: db 'gold earring'
+L0034: db 00
+L0035: db 'gold chain'
+L003F: db 00
+L0040: db 'gold horncaps'
+L004D: db 00
+L004E: db 'nothing'
+L0055: db 00
+L0056: db 'a '
+L0058: db 00
+L0059: db 'a '
+L005B: db 00
+L005C: db 'a '
+L005E: db 00
+L005F: db 'a '
+L0061: db 00
+L0062: db 'a '
+L0064: db 00
+L0065: db 00
+L0066: db 00
+L0067: db 00
+L0068: db 00
+L0069: db 00
+L006A: db 00
+L006B: db 00
+L006C: db ' per pair'
+L0075: db 00
+L0076: db 00
+L0077: db '"To want to buy what item?"'
+L0092: db 00
+L0093: db '"To be acceptable."'
+L00A6: db 00
+L00A7: db '"^'
+L00A9: db 00
+L00AA: db '. To be an acceptable price?"'
+L00C7: db 00
+L00C8: db '"To be agreed!"'
+L00D7: db 00
+L00D8: db '"To be unable to carry that much!" He shakes his head.'
+L010E: db 00
+L010F: db '"To have not enough gold for that!"'
+L0132: db 00
+L0133: db '"To desire another item?"'
+L014C: db 00
+  .code
+  .argc 0000H
+  .localc 000DH
+  .externsize 0004H
+  .extern 090CH
+  .extern 091CH
+  .extern 090AH
+  .extern 08F8H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 13   push true
+0005: 12 00 00   pop [0000]
+0008: 1D 00 00   pushs L0000   ; white potion
+000B: 1D 0D 00   pushs L000D   ; black potion
+000E: 1D 1A 00   pushs L001A   ; gold clawring
+0011: 1D 28 00   pushs L0028   ; gold earring
+0014: 1D 35 00   pushs L0035   ; gold chain
+0017: 1D 40 00   pushs L0040   ; gold horncaps
+001A: 1D 4E 00   pushs L004E   ; nothing
+001D: 1E 07 00   arrc 0007H   ; 7
+0020: 12 01 00   pop [0001]
+0023: 1F 54 01   pushi 0154H   ; 340
+0026: 1F 54 01   pushi 0154H   ; 340
+0029: 1F A9 03   pushi 03A9H   ; 937
+002C: 1F A9 03   pushi 03A9H   ; 937
+002F: 1F A9 03   pushi 03A9H   ; 937
+0032: 1F A9 03   pushi 03A9H   ; 937
+0035: 1F 00 00   pushi 0000H   ; 0
+0038: 1E 07 00   arrc 0007H   ; 7
+003B: 12 02 00   pop [0002]
+003E: 1F 06 00   pushi 0006H   ; 6
+0041: 1F 07 00   pushi 0007H   ; 7
+0044: 1F 06 00   pushi 0006H   ; 6
+0047: 1F 05 00   pushi 0005H   ; 5
+004A: 1F 04 00   pushi 0004H   ; 4
+004D: 1F 02 00   pushi 0002H   ; 2
+0050: 1F 99 FE   pushi FE99H   ; -359
+0053: 1E 07 00   arrc 0007H   ; 7
+0056: 12 03 00   pop [0003]
+0059: 1F 6E 00   pushi 006EH   ; 110
+005C: 1F 3C 00   pushi 003CH   ; 60
+005F: 1F 0A 00   pushi 000AH   ; 10
+0062: 1F 05 00   pushi 0005H   ; 5
+0065: 1F 14 00   pushi 0014H   ; 20
+0068: 1F 1E 00   pushi 001EH   ; 30
+006B: 1F 00 00   pushi 0000H   ; 0
+006E: 1E 07 00   arrc 0007H   ; 7
+0071: 12 04 00   pop [0004]
+0074: 1D 56 00   pushs L0056   ; a 
+0077: 1D 59 00   pushs L0059   ; a 
+007A: 1D 5C 00   pushs L005C   ; a 
+007D: 1D 5F 00   pushs L005F   ; a 
+0080: 1D 62 00   pushs L0062   ; a 
+0083: 1D 65 00   pushs L0065   ; 
+0086: 1D 66 00   pushs L0066   ; 
+0089: 1E 07 00   arrc 0007H   ; 7
+008C: 12 05 00   pop [0005]
+008F: 1F 00 00   pushi 0000H   ; 0
+0092: 1F 00 00   pushi 0000H   ; 0
+0095: 1F 00 00   pushi 0000H   ; 0
+0098: 1F 00 00   pushi 0000H   ; 0
+009B: 1F 00 00   pushi 0000H   ; 0
+009E: 1F 01 00   pushi 0001H   ; 1
+00A1: 1F 00 00   pushi 0000H   ; 0
+00A4: 1E 07 00   arrc 0007H   ; 7
+00A7: 12 06 00   pop [0006]
+00AA: 1D 67 00   pushs L0067   ; 
+00AD: 1D 68 00   pushs L0068   ; 
+00B0: 1D 69 00   pushs L0069   ; 
+00B3: 1D 6A 00   pushs L006A   ; 
+00B6: 1D 6B 00   pushs L006B   ; 
+00B9: 1D 6C 00   pushs L006C   ;  per pair
+00BC: 1D 76 00   pushs L0076   ; 
+00BF: 1E 07 00   arrc 0007H   ; 7
+00C2: 12 07 00   pop [0007]
+00C5: 1F 01 00   pushi 0001H   ; 1
+00C8: 12 08 00   pop [0008]
+00CB: 1C 77 00   addsi L0077   ; "To want to buy w...
+00CE: 33   say
+00CF: 21 00 00   push [0000]
+00D2: 05 C0 00   jne 0195
+00D5: 21 01 00   push [0001]
+00D8: 24 00 00   call [0000]   ; 090CH
+00DB: 12 09 00   pop [0009]
+00DE: 21 09 00   push [0009]
+00E1: 1F 01 00   pushi 0001H   ; 1
+00E4: 22   cmpeq
+00E5: 05 0B 00   jne 00F3
+00E8: 1C 93 00   addsi L0093   ; "To be acceptable."
+00EB: 33   say
+00EC: 14   push false
+00ED: 12 00 00   pop [0000]
+00F0: 06 9F 00   jmp 0192
+00F3: 21 09 00   push [0009]
+00F6: 26 07 00   aidx [0007]
+00F9: 21 09 00   push [0009]
+00FC: 26 04 00   aidx [0004]
+00FF: 21 09 00   push [0009]
+0102: 26 06 00   aidx [0006]
+0105: 21 09 00   push [0009]
+0108: 26 01 00   aidx [0001]
+010B: 21 09 00   push [0009]
+010E: 26 05 00   aidx [0005]
+0111: 24 01 00   call [0001]   ; 091CH
+0114: 12 0A 00   pop [000A]
+0117: 1F 00 00   pushi 0000H   ; 0
+011A: 12 0B 00   pop [000B]
+011D: 1C A7 00   addsi L00A7   ; "^
+0120: 2F 0A 00   addsv [000A]
+0123: 1C AA 00   addsi L00AA   ; . To be an accept...
+0126: 33   say
+0127: 24 02 00   call [0002]   ; 090AH
+012A: 12 0C 00   pop [000C]
+012D: 21 0C 00   push [000C]
+0130: 05 22 00   jne 0155
+0133: 14   push false
+0134: 1F 01 00   pushi 0001H   ; 1
+0137: 1F 00 00   pushi 0000H   ; 0
+013A: 21 09 00   push [0009]
+013D: 26 04 00   aidx [0004]
+0140: 21 08 00   push [0008]
+0143: 21 09 00   push [0009]
+0146: 26 03 00   aidx [0003]
+0149: 21 09 00   push [0009]
+014C: 26 02 00   aidx [0002]
+014F: 24 03 00   call [0003]   ; 08F8H
+0152: 12 0B 00   pop [000B]
+0155: 21 0B 00   push [000B]
+0158: 1F 01 00   pushi 0001H   ; 1
+015B: 22   cmpeq
+015C: 05 07 00   jne 0166
+015F: 1C C8 00   addsi L00C8   ; "To be agreed!"
+0162: 33   say
+0163: 06 22 00   jmp 0188
+0166: 21 0B 00   push [000B]
+0169: 1F 02 00   pushi 0002H   ; 2
+016C: 22   cmpeq
+016D: 05 07 00   jne 0177
+0170: 1C D8 00   addsi L00D8   ; "To be unable to ...
+0173: 33   say
+0174: 06 11 00   jmp 0188
+0177: 21 0B 00   push [000B]
+017A: 1F 03 00   pushi 0003H   ; 3
+017D: 22   cmpeq
+017E: 05 07 00   jne 0188
+0181: 1C 0F 01   addsi L010F   ; "To have not enou...
+0184: 33   say
+0185: 06 00 00   jmp 0188
+0188: 1C 33 01   addsi L0133   ; "To desire anothe...
+018B: 33   say
+018C: 24 02 00   call [0002]   ; 090AH
+018F: 12 00 00   pop [0000]
+0192: 06 3A FF   jmp 00CF
+0195: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0199: 25   ret

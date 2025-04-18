@@ -1,0 +1,53 @@
+  .funcnumber 081FH
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0003H
+  .extern 081BH
+  .extern 081DH
+  .extern 0818H
+0000: 21 00 00   push [0000]
+0003: 24 00 00   call [0000]   ; 081BH
+0006: 12 01 00   pop [0001]
+0009: 21 01 00   push [0001]
+000C: 1F 01 00   pushi 0001H   ; 1
+000F: 22   cmpeq
+0010: 05 28 00   jne 003B
+0013: 1F 07 00   pushi 0007H   ; 7
+0016: 1F 00 00   pushi 0000H   ; 0
+0019: 1F 00 00   pushi 0000H   ; 0
+001C: 1F 00 00   pushi 0000H   ; 0
+001F: 1F 4D 03   pushi 034DH   ; 845
+0022: 21 00 00   push [0000]
+0025: 24 01 00   call [0001]   ; 081DH
+0028: 05 0B 00   jne 0036
+002B: 3E   push itemref
+002C: 1F 1F 00   pushi 001FH   ; 31
+002F: 39 86 00 02  calli 0086, 2
+0033: 06 05 00   jmp 003B
+0036: 24 02 00   call [0002]   ; 0818H
+0039: 14   push false
+003A: 2D   setr
+003B: 21 01 00   push [0001]
+003E: 1F 00 00   pushi 0000H   ; 0
+0041: 22   cmpeq
+0042: 05 28 00   jne 006D
+0045: 1F 07 00   pushi 0007H   ; 7
+0048: 1F 00 00   pushi 0000H   ; 0
+004B: 1F 00 00   pushi 0000H   ; 0
+004E: 1F 01 00   pushi 0001H   ; 1
+0051: 1F 4D 03   pushi 034DH   ; 845
+0054: 21 00 00   push [0000]
+0057: 24 01 00   call [0001]   ; 081DH
+005A: 05 0B 00   jne 0068
+005D: 3E   push itemref
+005E: 1F 1E 00   pushi 001EH   ; 30
+0061: 39 86 00 02  calli 0086, 2
+0065: 06 05 00   jmp 006D
+0068: 24 02 00   call [0002]   ; 0818H
+006B: 14   push false
+006C: 2D   setr
+006D: 13   push true
+006E: 2D   setr
+006F: 32   rts

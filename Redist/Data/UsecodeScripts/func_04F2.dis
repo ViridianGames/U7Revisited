@@ -1,0 +1,452 @@
+  .funcnumber 04F2H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see an attractive, studious-looking man.'
+L0039: db 00
+L003A: db '"Yes, '
+L0040: db 00
+L0041: db '," Taylor asks. "May I assist thee?"'
+L0065: db 00
+L0066: db 'Emps'
+L006A: db 00
+L006B: db 'wisps'
+L0070: db 00
+L0071: db 'name'
+L0075: db 00
+L0076: db '"My name is Taylor, '
+L008A: db 00
+L008B: db '."'
+L008D: db 00
+L008E: db 'name'
+L0092: db 00
+L0093: db 'Julius'
+L0099: db 00
+L009A: db 'job'
+L009D: db 00
+L009E: db '"I study the local flora, fauna, and geography here at the m'
+ db 'onastery."'
+L00E4: db 00
+L00E5: db 'monastery'
+L00EE: db 00
+L00EF: db 'geography'
+L00F8: db 00
+L00F9: db 'fauna'
+L00FE: db 00
+L00FF: db 'flora'
+L0104: db 00
+L0105: db 'flora'
+L010A: db 00
+L010B: db '"There are many beautiful plants in this area. I am working '
+ db 'on learning about all of them."'
+L0166: db 00
+L0167: db 'flora'
+L016C: db 00
+L016D: db 'fauna'
+L0172: db 00
+L0173: db '"Many different species of animals reside in the forest. I h'
+ db 'ave encountered some fascinating ones in my studies."'
+L01E4: db 00
+L01E5: db 'wisps'
+L01EA: db 00
+L01EB: db 'fauna'
+L01F0: db 00
+L01F1: db 'monastery'
+L01FA: db 00
+L01FB: db '"Our order is called the Brotherhood of the Rose."'
+L022D: db 00
+L022E: db 'order'
+L0233: db 00
+L0234: db 'monastery'
+L023D: db 00
+L023E: db 'order'
+L0243: db 00
+L0244: db '"Yes, '
+L024A: db 00
+L024B: db '. One other monk, Aimi, lives here in the Abbey. She is a pa'
+ db 'inter and a gardener."'
+L029D: db 00
+L029E: db 'gardener'
+L02A6: db 00
+L02A7: db 'painter'
+L02AE: db 00
+L02AF: db 'Kreg'
+L02B3: db 00
+L02B4: db 'order'
+L02B9: db 00
+L02BA: db 'painter'
+L02C1: db 00
+L02C2: db 'He smiles. "Between us, she is a far better gardener."'
+L02F8: db 00
+L02F9: db 'painter'
+L0300: db 00
+L0301: db 'gardener'
+L0309: db 00
+L030A: db '"She raises the most lovely flowers that I have ever seen! T'
+ db 'hou must see them to believe of their existence."'
+L0377: db 00
+L0378: db 'gardener'
+L0380: db 00
+L0381: db 'geography'
+L038A: db 00
+L038B: db '"I use my knowledge of the local landscape to aid in my stud'
+ db 'ies. The better I know the locale, the farther away I can tr'
+ db 'avel from the Brotherhood Abbey and still be sure I will abl'
+ db 'e to return -- unlike a fellow monk of mine."'
+L046C: db 00
+L046D: db 'geography'
+L0476: db 00
+L0477: db 'fellow'
+L047D: db 00
+L047E: db 'fellow'
+L0484: db 00
+L0485: db '"He became lost some time ago while surveying the area for b'
+ db 'irds -- the Golden-Cheeked Warbler, I believe it was. Sadly,'
+ db ' he travelled too far, and we have not heard from him since.'
+ db '~~"I do not wish to suffer the same fate."'
+L0563: db 00
+L0564: db 'fellow'
+L056A: db 00
+L056B: db 'Kreg'
+L056F: db 00
+L0570: db '"That name does not sound familiar, '
+L0594: db 00
+L0595: db '. Perhaps he is not from this area."'
+L05B9: db 00
+L05BA: db 'Kreg'
+L05BE: db 00
+L05BF: db 'Julius'
+L05C5: db 00
+L05C6: db '"Julius? I cannot be certain, but 'tis possible he may be so'
+ db 'meone who now resides in the... cemetery. I have heard that '
+ db 'name mentioned as someone who was brought to the Abbey to be'
+ db ' buried, though I know not who brought him and I do not reme'
+ db 'mber from whom I heard it. I do hope he was not a friend of '
+ db 'thine," he says, apologetically.'
+L0712: db 00
+L0713: db 'Julius'
+L0719: db 00
+L071A: db 'wisps'
+L071F: db 00
+L0720: db '"The wisps?" he laughs. "I doubt they exist. I realize many '
+ db 'people seem to believe in them, but I have never seen any.~~'
+ db ' "If thou must know, popular legend maintains that they inha'
+ db 'bit the forest area, near the Emps. Supposedly, the Emps are'
+ db ' able to speak with them." He shrugs. "Thou mayest look for '
+ db 'them if that is thy wish, but I would not waste precious tim'
+ db 'e, myself."'
+L0893: db 00
+L0894: db 'Emps'
+L0898: db 00
+L0899: db 'precious time'
+L08A6: db 00
+L08A7: db 'wisps'
+L08AC: db 00
+L08AD: db 'precious time'
+L08BA: db 00
+L08BB: db '"There are so many exciting things to investigate... tree fl'
+ db 'owers, for example, '
+L090B: db 00
+L090C: db '."'
+L090E: db 00
+L090F: db 'precious time'
+L091C: db 00
+L091D: db 'Emps'
+L0921: db 00
+L0922: db '"Ah, the Emps. I have not been able to glean much informatio'
+ db 'n about them.~~"They live on the eastern edge of the deep fo'
+ db 'rest, not too terribly far from here.~~"They resemble apes, '
+ db 'but only slightly. They are exceedingly shy, and will rarely'
+ db ' feel comfortable enough to approach a human.~~ "The only wa'
+ db 'y I was able to view an Emp closely occurred when I happened'
+ db ' to have honey in my pack which I had just picked up from Be'
+ db 'e Cave. The creature appeared, stared at me for a few minute'
+ db 's, and then asked -- asked, I say -- for mine honey. I belie'
+ db 've they are empathic, hence their name.~~ "Quite an interest'
+ db 'ing species, dost thou not agree?"'
+L0B9C: db 00
+L0B9D: db 'Bee Cave'
+L0BA5: db 00
+L0BA6: db 'honey'
+L0BAB: db 00
+L0BAC: db 'Emps'
+L0BB0: db 00
+L0BB1: db 'honey'
+L0BB6: db 00
+L0BB7: db '"The honey from the caves is quite tasty, but rarely can one'
+ db ' get it without a fight. The Bee Caves can be a rather dange'
+ db 'rous place."'
+L0C3B: db 00
+L0C3C: db 'honey'
+L0C41: db 00
+L0C42: db 'Bee Cave'
+L0C4A: db 00
+L0C4B: db '"Bee Cave is located to the southwest of the Abbey. But if t'
+ db 'hou art planning a trip there, beware the giant bees that li'
+ db 've in the caves. Their venom is very poisonous.~~'
+L0CF4: db 00
+L0CF5: db '"If thou wishest, I can give thee a smoke bomb that will rep'
+ db 'el the bees for a short time. Dost thou want it?"'
+L0D62: db 00
+L0D63: db '"Here it is."'
+L0D70: db 00
+L0D71: db '"Perhaps thou shouldst lighten thy load before taking the bo'
+ db 'mb."'
+L0DB1: db 00
+L0DB2: db '"Very well. But be careful if thou dost happen by the caves!'
+ db '"'
+L0DEF: db 00
+L0DF0: db 'Bee Cave'
+L0DF8: db 00
+L0DF9: db 'bye'
+L0DFC: db 00
+L0DFD: db '"May thy knowledge increase with thine encounters with natur'
+ db 'e, '
+L0E3C: db 00
+L0E3D: db '."*'
+L0E40: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0909H
+  .extern 0931H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 9D 02   jne 02A5
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 0E FF   pushi FF0EH   ; -242
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 14   push false
+0019: 12 01 00   pop [0001]
+001C: 1D 00 00   pushs L0000   ; bye
+001F: 1D 04 00   pushs L0004   ; job
+0022: 1D 08 00   pushs L0008   ; name
+0025: 1E 03 00   arrc 0003H   ; 3
+0028: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002C: 42 47 01   pushf flag:[0147]
+002F: 10   not
+0030: 05 0B 00   jne 003E
+0033: 1C 0D 00   addsi L000D   ; You see an attrac...
+0036: 33   say
+0037: 13   push true
+0038: 43 47 01   popf flag:[0147]
+003B: 06 0A 00   jmp 0048
+003E: 1C 3A 00   addsi L003A   ; "Yes, 
+0041: 2F 00 00   addsv [0000]
+0044: 1C 41 00   addsi L0041   ; ," Taylor asks. "...
+0047: 33   say
+0048: 42 38 01   pushf flag:[0138]
+004B: 05 11 00   jne 005F
+004E: 13   push true
+004F: 12 01 00   pop [0001]
+0052: 1D 66 00   pushs L0066   ; Emps
+0055: 1D 6B 00   pushs L006B   ; wisps
+0058: 1E 02 00   arrc 0002H   ; 2
+005B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005F: 04 38 02   je 029A
+0062: 1D 71 00   pushs L0071   ; name
+0065: 07 01 00 1E 00  cmps 0001H, 0088
+006A: 1C 76 00   addsi L0076   ; "My name is Taylor, 
+006D: 2F 00 00   addsv [0000]
+0070: 1C 8B 00   addsi L008B   ; ."
+0073: 33   say
+0074: 1D 8E 00   pushs L008E   ; name
+0077: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007B: 42 E2 00   pushf flag:[00E2]
+007E: 05 07 00   jne 0088
+0081: 1D 93 00   pushs L0093   ; Julius
+0084: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0088: 1D 9A 00   pushs L009A   ; job
+008B: 07 01 00 17 00  cmps 0001H, 00A7
+0090: 1C 9E 00   addsi L009E   ; "I study the loca...
+0093: 33   say
+0094: 1D E5 00   pushs L00E5   ; monastery
+0097: 1D EF 00   pushs L00EF   ; geography
+009A: 1D F9 00   pushs L00F9   ; fauna
+009D: 1D FF 00   pushs L00FF   ; flora
+00A0: 1E 04 00   arrc 0004H   ; 4
+00A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A7: 1D 05 01   pushs L0105   ; flora
+00AA: 07 01 00 0B 00  cmps 0001H, 00BA
+00AF: 1C 0B 01   addsi L010B   ; "There are many b...
+00B2: 33   say
+00B3: 1D 67 01   pushs L0167   ; flora
+00B6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BA: 1D 6D 01   pushs L016D   ; fauna
+00BD: 07 01 00 1F 00  cmps 0001H, 00E1
+00C2: 1C 73 01   addsi L0173   ; "Many different s...
+00C5: 33   say
+00C6: 42 00 01   pushf flag:[0100]
+00C9: 05 0E 00   jne 00DA
+00CC: 21 01 00   push [0001]
+00CF: 10   not
+00D0: 05 07 00   jne 00DA
+00D3: 1D E5 01   pushs L01E5   ; wisps
+00D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DA: 1D EB 01   pushs L01EB   ; fauna
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D F1 01   pushs L01F1   ; monastery
+00E4: 07 01 00 12 00  cmps 0001H, 00FB
+00E9: 1C FB 01   addsi L01FB   ; "Our order is cal...
+00EC: 33   say
+00ED: 1D 2E 02   pushs L022E   ; order
+00F0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F4: 1D 34 02   pushs L0234   ; monastery
+00F7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FB: 1D 3E 02   pushs L023E   ; order
+00FE: 07 01 00 2B 00  cmps 0001H, 012E
+0103: 1C 44 02   addsi L0244   ; "Yes, 
+0106: 2F 00 00   addsv [0000]
+0109: 1C 4B 02   addsi L024B   ; . One other monk,...
+010C: 33   say
+010D: 1D 9E 02   pushs L029E   ; gardener
+0110: 1D A7 02   pushs L02A7   ; painter
+0113: 1E 02 00   arrc 0002H   ; 2
+0116: 39 05 00 01  calli _AddAnswer@1  ; 0005
+011A: 42 48 01   pushf flag:[0148]
+011D: 05 07 00   jne 0127
+0120: 1D AF 02   pushs L02AF   ; Kreg
+0123: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0127: 1D B4 02   pushs L02B4   ; order
+012A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012E: 1D BA 02   pushs L02BA   ; painter
+0131: 07 01 00 0B 00  cmps 0001H, 0141
+0136: 1C C2 02   addsi L02C2   ; He smiles. "Betwe...
+0139: 33   say
+013A: 1D F9 02   pushs L02F9   ; painter
+013D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0141: 1D 01 03   pushs L0301   ; gardener
+0144: 07 01 00 0B 00  cmps 0001H, 0154
+0149: 1C 0A 03   addsi L030A   ; "She raises the m...
+014C: 33   say
+014D: 1D 78 03   pushs L0378   ; gardener
+0150: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0154: 1D 81 03   pushs L0381   ; geography
+0157: 07 01 00 12 00  cmps 0001H, 016E
+015C: 1C 8B 03   addsi L038B   ; "I use my knowled...
+015F: 33   say
+0160: 1D 6D 04   pushs L046D   ; geography
+0163: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0167: 1D 77 04   pushs L0477   ; fellow
+016A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016E: 1D 7E 04   pushs L047E   ; fellow
+0171: 07 01 00 0B 00  cmps 0001H, 0181
+0176: 1C 85 04   addsi L0485   ; "He became lost s...
+0179: 33   say
+017A: 1D 64 05   pushs L0564   ; fellow
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D 6B 05   pushs L056B   ; Kreg
+0184: 07 01 00 11 00  cmps 0001H, 019A
+0189: 1C 70 05   addsi L0570   ; "That name does n...
+018C: 2F 00 00   addsv [0000]
+018F: 1C 95 05   addsi L0595   ; . Perhaps he is n...
+0192: 33   say
+0193: 1D BA 05   pushs L05BA   ; Kreg
+0196: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019A: 1D BF 05   pushs L05BF   ; Julius
+019D: 07 01 00 0B 00  cmps 0001H, 01AD
+01A2: 1C C6 05   addsi L05C6   ; "Julius? I cannot...
+01A5: 33   say
+01A6: 1D 13 07   pushs L0713   ; Julius
+01A9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AD: 1D 1A 07   pushs L071A   ; wisps
+01B0: 07 01 00 1C 00  cmps 0001H, 01D1
+01B5: 1C 20 07   addsi L0720   ; "The wisps?" he l...
+01B8: 33   say
+01B9: 1D 94 08   pushs L0894   ; Emps
+01BC: 1D 99 08   pushs L0899   ; precious time
+01BF: 1E 02 00   arrc 0002H   ; 2
+01C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C6: 13   push true
+01C7: 43 38 01   popf flag:[0138]
+01CA: 1D A7 08   pushs L08A7   ; wisps
+01CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D1: 1D AD 08   pushs L08AD   ; precious time
+01D4: 07 01 00 11 00  cmps 0001H, 01EA
+01D9: 1C BB 08   addsi L08BB   ; "There are so man...
+01DC: 2F 00 00   addsv [0000]
+01DF: 1C 0C 09   addsi L090C   ; ."
+01E2: 33   say
+01E3: 1D 0F 09   pushs L090F   ; precious time
+01E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EA: 1D 1D 09   pushs L091D   ; Emps
+01ED: 07 01 00 1C 00  cmps 0001H, 020E
+01F2: 1C 22 09   addsi L0922   ; "Ah, the Emps. I ...
+01F5: 33   say
+01F6: 1D 9D 0B   pushs L0B9D   ; Bee Cave
+01F9: 1D A6 0B   pushs L0BA6   ; honey
+01FC: 1E 02 00   arrc 0002H   ; 2
+01FF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0203: 13   push true
+0204: 12 02 00   pop [0002]
+0207: 1D AC 0B   pushs L0BAC   ; Emps
+020A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020E: 1D B1 0B   pushs L0BB1   ; honey
+0211: 07 01 00 0B 00  cmps 0001H, 0221
+0216: 1C B7 0B   addsi L0BB7   ; "The honey from t...
+0219: 33   say
+021A: 1D 3C 0C   pushs L0C3C   ; honey
+021D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0221: 1D 42 0C   pushs L0C42   ; Bee Cave
+0224: 07 01 00 63 00  cmps 0001H, 028C
+0229: 1C 4B 0C   addsi L0C4B   ; "Bee Cave is loca...
+022C: 33   say
+022D: 1F 99 FE   pushi FE99H   ; -359
+0230: 1F 99 FE   pushi FE99H   ; -359
+0233: 1F 01 03   pushi 0301H   ; 769
+0236: 1F 01 00   pushi 0001H   ; 1
+0239: 1F 9B FE   pushi FE9BH   ; -357
+023C: 24 01 00   call [0001]   ; 0931H
+023F: 12 03 00   pop [0003]
+0242: 21 03 00   push [0003]
+0245: 10   not
+0246: 05 3C 00   jne 0285
+0249: 1C F5 0C   addsi L0CF5   ; "If thou wishest,...
+024C: 33   say
+024D: 24 02 00   call [0002]   ; 090AH
+0250: 12 04 00   pop [0004]
+0253: 21 04 00   push [0004]
+0256: 05 28 00   jne 0281
+0259: 13   push true
+025A: 1F 99 FE   pushi FE99H   ; -359
+025D: 1F 99 FE   pushi FE99H   ; -359
+0260: 1F 01 03   pushi 0301H   ; 769
+0263: 1F 01 00   pushi 0001H   ; 1
+0266: 38 2C 00 05  callis 002C, 5
+026A: 12 05 00   pop [0005]
+026D: 21 05 00   push [0005]
+0270: 05 07 00   jne 027A
+0273: 1C 63 0D   addsi L0D63   ; "Here it is."
+0276: 33   say
+0277: 06 04 00   jmp 027E
+027A: 1C 71 0D   addsi L0D71   ; "Perhaps thou sho...
+027D: 33   say
+027E: 06 04 00   jmp 0285
+0281: 1C B2 0D   addsi L0DB2   ; "Very well. But b...
+0284: 33   say
+0285: 1D F0 0D   pushs L0DF0   ; Bee Cave
+0288: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028C: 1D F9 0D   pushs L0DF9   ; bye
+028F: 07 01 00 03 00  cmps 0001H, 0297
+0294: 06 03 00   jmp 029A
+0297: 06 C5 FD   jmp 005F
+029A: 40   db 40 ???
+029B: 1C FD 0D   addsi L0DFD   ; "May thy knowledg...
+029E: 2F 00 00   addsv [0000]
+02A1: 1C 3D 0E   addsi L0E3D   ; ."*
+02A4: 33   say
+02A5: 48   push eventid
+02A6: 1F 00 00   pushi 0000H   ; 0
+02A9: 22   cmpeq
+02AA: 05 01 00   jne 02AE
+02AD: 3F   abrt
+02AE: 25   ret

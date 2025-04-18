@@ -1,0 +1,345 @@
+  .funcnumber 046DH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a monk wandering around apparently without direction'
+ db '.'
+L004A: db 00
+L004B: db '"Greetings, '
+L0057: db 00
+L0058: db '. May I help thee?" asks Wayne.'
+L0077: db 00
+L0078: db 'name'
+L007C: db 00
+L007D: db '"Thou mayest call me Brother Wayne, '
+L00A1: db 00
+L00A2: db '."'
+L00A4: db 00
+L00A5: db 'name'
+L00A9: db 00
+L00AA: db 'job'
+L00AD: db 00
+L00AE: db '"My job? Well, I, er, do not truly have one at the moment." '
+ db 'He looks down at his feet.'
+L0104: db 00
+L0105: db 'job'
+L0108: db 00
+L0109: db 'at the moment'
+L0116: db 00
+L0117: db 'at the moment'
+L0124: db 00
+L0125: db '"Yes, I am... Well, I am lost, '
+L0144: db 00
+L0145: db '. I am from the Abbey to the south of here... or to the nort'
+ db 'h.... Mayhaps the northwest." He cradles his chin and looks '
+ db 'up.~~"Southeast?"'
+L01CE: db 00
+L01CF: db 'at the moment'
+L01DC: db 00
+L01DD: db 'Abbey'
+L01E2: db 00
+L01E3: db 'lost'
+L01E7: db 00
+L01E8: db 'lost'
+L01EC: db 00
+L01ED: db '"Well... I am sure it is not permanent." He blushes. "I just'
+ db ' need to get my bearings, that's all," he says unconvincingl'
+ db 'y.'
+L0267: db 00
+L0268: db 'lost'
+L026C: db 00
+L026D: db 'Abbey'
+L0272: db 00
+L0273: db '"I am a monk of the Brotherhood of the Rose. I study geograp'
+ db 'hy and nature with a brother named Taylor."'
+L02DA: db 00
+L02DB: db 'Abbey'
+L02E0: db 00
+L02E1: db 'Taylor'
+L02E7: db 00
+L02E8: db 'nature'
+L02EE: db 00
+L02EF: db 'geography'
+L02F8: db 00
+L02F9: db 'geography'
+L0302: db 00
+L0303: db '"Well," he shrugs, "I suppose I should have studied a little'
+ db ' bit better." He smiles sheepishly.'
+L0362: db 00
+L0363: db 'geography'
+L036C: db 00
+L036D: db 'nature'
+L0373: db 00
+L0374: db '"There are so many beautiful things to see in Britannia. Bot'
+ db 'h animals and plants alike offer excitement to the observer.'
+ db '"'
+L03ED: db 00
+L03EE: db 'nature'
+L03F4: db 00
+L03F5: db 'plants'
+L03FB: db 00
+L03FC: db 'animals'
+L0403: db 00
+L0404: db 'Taylor'
+L040A: db 00
+L040B: db '"Well, I haven't actually seen him for some time. I assume h'
+ db 'e is still continuing his studies."'
+L046A: db 00
+L046B: db 'Taylor'
+L0471: db 00
+L0472: db 'plants'
+L0478: db 00
+L0479: db '"Ah, yes, '
+L0483: db 00
+L0484: db ', they are quite wondrous to see. I highly recommend to thee'
+ db ' to always observe thy surroundings. Otherwise, '
+L04F0: db 00
+L04F1: db ', thou wilt miss much in life: flowers, trees, birds... land'
+ db 'marks!"'
+L0534: db 00
+L0535: db 'plants'
+L053B: db 00
+L053C: db 'birds'
+L0541: db 00
+L0542: db 'trees'
+L0547: db 00
+L0548: db 'flowers'
+L054F: db 00
+L0550: db 'trees'
+L0555: db 00
+L0556: db '"Ah, my least favorite subject. I find the trees much less i'
+ db 'nteresting than the birds."'
+L05AD: db 00
+L05AE: db 'trees'
+L05B3: db 00
+L05B4: db 'birds'
+L05B9: db 00
+L05BA: db '"My favorite type of animal! The birds are so free, able to '
+ db 'fly vast distances. How I wish I could roam about the open s'
+ db 'kies... most especially considering my current situation. Th'
+ db 'ou canst see so much more from the air, I am certain of it!"'
+L06AA: db 00
+L06AB: db 'birds'
+L06B0: db 00
+L06B1: db 'flowers'
+L06B8: db 00
+L06B9: db '"Very, very lovely plants. All the colors of the rainbow, an'
+ db 'd then some. One of the monks at the Abbey had a lovely flow'
+ db 'er garden. She may still tend it for all that I know, '
+L0767: db 00
+L0768: db '."'
+L076A: db 00
+L076B: db 'flowers'
+L0772: db 00
+L0773: db 'She still does.'
+L0782: db 00
+L0783: db 'She still does.'
+L0792: db 00
+L0793: db '"Excellent, '
+L079F: db 00
+L07A0: db '. I am glad to hear it. 'Twould be a shame were Aimi to give'
+ db ' that up for her other... pastime."'
+L07FF: db 00
+L0800: db 'She still does.'
+L080F: db 00
+L0810: db 'other pastime'
+L081D: db 00
+L081E: db 'other pastime'
+L082B: db 00
+L082C: db '"Aimi also paints. Or rather, makes a bold attempt. I must, '
+ db 'of course, commend her for her efforts."'
+L0890: db 00
+L0891: db 'other pastime'
+L089E: db 00
+L089F: db 'animals'
+L08A6: db 00
+L08A7: db '"My favorite ones are the birds, especially the Golden-Cheek'
+ db 'ed Warbler. I love to follow and watch them. They do not see'
+ db 'm to have a very good sense of direction, however." He sighs'
+ db '. "But there is a great variety of species in this land."'
+L0994: db 00
+L0995: db 'animals'
+L099C: db 00
+L099D: db 'bye'
+L09A0: db 00
+L09A1: db '"May thy good fortune guide thee down the trail of life."*'
+L09DB: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0002H
+  .extern 0909H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E8 01   jne 01F0
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 93 FF   pushi FF93H   ; -109
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 CA 02   pushf flag:[02CA]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; You see a monk wa...
+0032: 33   say
+0033: 13   push true
+0034: 43 CA 02   popf flag:[02CA]
+0037: 06 0A 00   jmp 0044
+003A: 1C 4B 00   addsi L004B   ; "Greetings, 
+003D: 2F 00 00   addsv [0000]
+0040: 1C 58 00   addsi L0058   ; . May I help thee...
+0043: 33   say
+0044: 04 A4 01   je 01EB
+0047: 1D 78 00   pushs L0078   ; name
+004A: 07 01 00 11 00  cmps 0001H, 0060
+004F: 1C 7D 00   addsi L007D   ; "Thou mayest call...
+0052: 2F 00 00   addsv [0000]
+0055: 1C A2 00   addsi L00A2   ; ."
+0058: 33   say
+0059: 1D A5 00   pushs L00A5   ; name
+005C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0060: 1D AA 00   pushs L00AA   ; job
+0063: 07 01 00 12 00  cmps 0001H, 007A
+0068: 1C AE 00   addsi L00AE   ; "My job? Well, I,...
+006B: 33   say
+006C: 1D 05 01   pushs L0105   ; job
+006F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0073: 1D 09 01   pushs L0109   ; at the moment
+0076: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007A: 1D 17 01   pushs L0117   ; at the moment
+007D: 07 01 00 1E 00  cmps 0001H, 00A0
+0082: 1C 25 01   addsi L0125   ; "Yes, I am... Wel...
+0085: 2F 00 00   addsv [0000]
+0088: 1C 45 01   addsi L0145   ; . I am from the A...
+008B: 33   say
+008C: 1D CF 01   pushs L01CF   ; at the moment
+008F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0093: 1D DD 01   pushs L01DD   ; Abbey
+0096: 1D E3 01   pushs L01E3   ; lost
+0099: 1E 02 00   arrc 0002H   ; 2
+009C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A0: 1D E8 01   pushs L01E8   ; lost
+00A3: 07 01 00 0B 00  cmps 0001H, 00B3
+00A8: 1C ED 01   addsi L01ED   ; "Well... I am sur...
+00AB: 33   say
+00AC: 1D 68 02   pushs L0268   ; lost
+00AF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B3: 1D 6D 02   pushs L026D   ; Abbey
+00B6: 07 01 00 1B 00  cmps 0001H, 00D6
+00BB: 1C 73 02   addsi L0273   ; "I am a monk of t...
+00BE: 33   say
+00BF: 1D DB 02   pushs L02DB   ; Abbey
+00C2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C6: 1D E1 02   pushs L02E1   ; Taylor
+00C9: 1D E8 02   pushs L02E8   ; nature
+00CC: 1D EF 02   pushs L02EF   ; geography
+00CF: 1E 03 00   arrc 0003H   ; 3
+00D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D6: 1D F9 02   pushs L02F9   ; geography
+00D9: 07 01 00 0B 00  cmps 0001H, 00E9
+00DE: 1C 03 03   addsi L0303   ; "Well," he shrugs...
+00E1: 33   say
+00E2: 1D 63 03   pushs L0363   ; geography
+00E5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E9: 1D 6D 03   pushs L036D   ; nature
+00EC: 07 01 00 18 00  cmps 0001H, 0109
+00F1: 1C 74 03   addsi L0374   ; "There are so man...
+00F4: 33   say
+00F5: 1D EE 03   pushs L03EE   ; nature
+00F8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FC: 1D F5 03   pushs L03F5   ; plants
+00FF: 1D FC 03   pushs L03FC   ; animals
+0102: 1E 02 00   arrc 0002H   ; 2
+0105: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0109: 1D 04 04   pushs L0404   ; Taylor
+010C: 07 01 00 0B 00  cmps 0001H, 011C
+0111: 1C 0B 04   addsi L040B   ; "Well, I haven't ...
+0114: 33   say
+0115: 1D 6B 04   pushs L046B   ; Taylor
+0118: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011C: 1D 72 04   pushs L0472   ; plants
+011F: 07 01 00 27 00  cmps 0001H, 014B
+0124: 1C 79 04   addsi L0479   ; "Ah, yes, 
+0127: 2F 00 00   addsv [0000]
+012A: 1C 84 04   addsi L0484   ; , they are quite ...
+012D: 2F 00 00   addsv [0000]
+0130: 1C F1 04   addsi L04F1   ; , thou wilt miss ...
+0133: 33   say
+0134: 1D 35 05   pushs L0535   ; plants
+0137: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013B: 1D 3C 05   pushs L053C   ; birds
+013E: 1D 42 05   pushs L0542   ; trees
+0141: 1D 48 05   pushs L0548   ; flowers
+0144: 1E 03 00   arrc 0003H   ; 3
+0147: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014B: 1D 50 05   pushs L0550   ; trees
+014E: 07 01 00 0B 00  cmps 0001H, 015E
+0153: 1C 56 05   addsi L0556   ; "Ah, my least fav...
+0156: 33   say
+0157: 1D AE 05   pushs L05AE   ; trees
+015A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015E: 1D B4 05   pushs L05B4   ; birds
+0161: 07 01 00 0B 00  cmps 0001H, 0171
+0166: 1C BA 05   addsi L05BA   ; "My favorite type...
+0169: 33   say
+016A: 1D AB 06   pushs L06AB   ; birds
+016D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0171: 1D B1 06   pushs L06B1   ; flowers
+0174: 07 01 00 1E 00  cmps 0001H, 0197
+0179: 1C B9 06   addsi L06B9   ; "Very, very lovel...
+017C: 2F 00 00   addsv [0000]
+017F: 1C 68 07   addsi L0768   ; ."
+0182: 33   say
+0183: 1D 6B 07   pushs L076B   ; flowers
+0186: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018A: 42 4C 01   pushf flag:[014C]
+018D: 05 07 00   jne 0197
+0190: 1D 73 07   pushs L0773   ; She still does.
+0193: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0197: 1D 83 07   pushs L0783   ; She still does.
+019A: 07 01 00 18 00  cmps 0001H, 01B7
+019F: 1C 93 07   addsi L0793   ; "Excellent, 
+01A2: 2F 00 00   addsv [0000]
+01A5: 1C A0 07   addsi L07A0   ; . I am glad to he...
+01A8: 33   say
+01A9: 1D 00 08   pushs L0800   ; She still does.
+01AC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B0: 1D 10 08   pushs L0810   ; other pastime
+01B3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B7: 1D 1E 08   pushs L081E   ; other pastime
+01BA: 07 01 00 0B 00  cmps 0001H, 01CA
+01BF: 1C 2C 08   addsi L082C   ; "Aimi also paints...
+01C2: 33   say
+01C3: 1D 91 08   pushs L0891   ; other pastime
+01C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CA: 1D 9F 08   pushs L089F   ; animals
+01CD: 07 01 00 0B 00  cmps 0001H, 01DD
+01D2: 1C A7 08   addsi L08A7   ; "My favorite ones...
+01D5: 33   say
+01D6: 1D 95 09   pushs L0995   ; animals
+01D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DD: 1D 9D 09   pushs L099D   ; bye
+01E0: 07 01 00 03 00  cmps 0001H, 01E8
+01E5: 06 03 00   jmp 01EB
+01E8: 06 59 FE   jmp 0044
+01EB: 40   db 40 ???
+01EC: 1C A1 09   addsi L09A1   ; "May thy good for...
+01EF: 33   say
+01F0: 48   push eventid
+01F1: 1F 00 00   pushi 0000H   ; 0
+01F4: 22   cmpeq
+01F5: 05 06 00   jne 01FE
+01F8: 1F 93 FF   pushi FF93H   ; -109
+01FB: 24 01 00   call [0001]   ; 092EH
+01FE: 25   ret

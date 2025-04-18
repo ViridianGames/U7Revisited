@@ -1,0 +1,699 @@
+  .funcnumber 0482H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'strangers'
+L0016: db 00
+L0017: db 'locket'
+L001D: db 00
+L001E: db '"Art thou ready to pay thy bill?"'
+L003F: db 00
+L0040: db '"Goodbye, then!"*'
+L0051: db 00
+L0052: db 'You see a leering, ill-postured man who chortles to himself.'
+L008E: db 00
+L008F: db '"Well if it isn't Dupre! -Sir- Dupre now, is it?"'
+L00C0: db 00
+L00C1: db '"That it is, Boris."'
+L00D5: db 00
+L00D6: db '"Hmmm-- it seems to me thou dost have a tab still going here'
+ db '? Yes?"'
+L0119: db 00
+L011A: db '"Oh? Do I?"'
+L0125: db 00
+L0126: db '"Yes indeed! Let me see... I believe the total that thou dos'
+ db 't owe is 74 gold pieces. I am afraid that thou must pay up b'
+ db 'efore I can speak with thee or anyone else with thee."'
+L01D4: db 00
+L01D5: db 'Dupre looks embarrassed. He turns to you. "My friend, wilt t'
+ db 'hou help me out?"'
+L0222: db 00
+L0223: db '"I thank thee, Avatar."'
+L023A: db 00
+L023B: db 'You hand the gold over to Boris.'
+L025B: db 00
+L025C: db '"'Tis a pleasure to do business with thee, Sir Dupre! And we'
+ db 'lcome to my pub!"'
+L02A9: db 00
+L02AA: db '"Hmmm, where did our gold go?"*'
+L02C9: db 00
+L02CA: db '"I am afraid are pockets are too empty!"*'
+L02F3: db 00
+L02F4: db '"Well, I wilt not be serving thee or speaking to thee until '
+ db 'thy bill is paid!"*'
+L0343: db 00
+L0344: db '"Hello again," says Boris.'
+L035E: db 00
+L035F: db 'name'
+L0363: db 00
+L0364: db '"Call me Boris."'
+L0374: db 00
+L0375: db 'name'
+L0379: db 00
+L037A: db 'job'
+L037D: db 00
+L037E: db '"I run The Modest Damsel, here in New Magincia."'
+L03AE: db 00
+L03AF: db 'New Magincia'
+L03BB: db 00
+L03BC: db 'Modest Damsel'
+L03C9: db 00
+L03CA: db 'Modest Damsel'
+L03D7: db 00
+L03D8: db '"It is a little inn and tavern. I am the owner, along with m'
+ db 'y wife, Magenta. Wouldst thou like something to eat or drink'
+ db ', or perhaps a room?"'
+L0465: db 00
+L0466: db 'room'
+L046A: db 00
+L046B: db 'eat or drink'
+L0477: db 00
+L0478: db 'Magenta'
+L047F: db 00
+L0480: db '"The Modest Damsel is now closed for business. But do please'
+ db ' return during business hours."'
+L04DB: db 00
+L04DC: db 'Modest Damsel'
+L04E9: db 00
+L04EA: db 'Magenta'
+L04F1: db 00
+L04F2: db '"She became the mayor of New Magincia after the death of the'
+ db ' old mayor, her father, several years ago. She has done such'
+ db ' a good job that no one has opposed her for the position yet'
+ db '."'
+L05A8: db 00
+L05A9: db 'Magenta'
+L05B0: db 00
+L05B1: db 'eat or drink'
+L05BD: db 00
+L05BE: db '"I am certain thou wilt enjoy our food and drink."'
+L05F0: db 00
+L05F1: db 'room'
+L05F5: db 00
+L05F6: db '"Why dost thou not stay the night? For but 3 gold thou canst'
+ db ' let one of our rooms. Dost thou wish to stay the night?"'
+L066B: db 00
+L066C: db '"Here is thy room key. 'Twill only work in this inn."'
+L06A1: db 00
+L06A2: db '"Sorry, '
+L06AA: db 00
+L06AB: db ', thou must remove some of thy load before I can give thee t'
+ db 'he room key."'
+L06F4: db 00
+L06F5: db '"Thou hast not enough gold for my rooms."'
+L071E: db 00
+L071F: db '"Some other evening, perhaps."'
+L073D: db 00
+L073E: db 'room'
+L0742: db 00
+L0743: db 'New Magincia'
+L074F: db 00
+L0750: db '"In all of Britannia thou shalt not find a place that change'
+ db 's so little. Even the people always seem the same."'
+L07BF: db 00
+L07C0: db 'people'
+L07C6: db 00
+L07C7: db 'New Magincia'
+L07D3: db 00
+L07D4: db 'people'
+L07DA: db 00
+L07DB: db '"There are merchants and laborers, as well as a few new folk'
+ db 's."'
+L081A: db 00
+L081B: db 'new folks'
+L0824: db 00
+L0825: db 'laborers'
+L082D: db 00
+L082E: db 'merchants'
+L0837: db 00
+L0838: db 'people'
+L083E: db 00
+L083F: db 'merchants'
+L0848: db 00
+L0849: db '"They would be Russell, the shipwright; Henry, the peddler; '
+ db 'and Sam, the flower man."'
+L089E: db 00
+L089F: db 'Sam'
+L08A2: db 00
+L08A3: db 'Henry'
+L08A8: db 00
+L08A9: db 'Russell'
+L08B0: db 00
+L08B1: db 'merchants'
+L08BA: db 00
+L08BB: db 'laborers'
+L08C3: db 00
+L08C4: db '"They would be Katrina, the shepherd, and Constance, the wat'
+ db 'er carrier."'
+L090C: db 00
+L090D: db 'Constance'
+L0916: db 00
+L0917: db 'Katrina'
+L091E: db 00
+L091F: db 'laborers'
+L0927: db 00
+L0928: db 'new folks'
+L0931: db 00
+L0932: db '"Except for the three strangers, the only relatively new per'
+ db 'son on the island is Alagner, the sage."'
+L0996: db 00
+L0997: db 'strangers'
+L09A0: db 00
+L09A1: db 'Alagner'
+L09A8: db 00
+L09A9: db 'new folks'
+L09B2: db 00
+L09B3: db 'Alagner'
+L09BA: db 00
+L09BB: db '"Alagner is not from New Magincia, of course, but has settle'
+ db 'd here after studying the world, for he well knows the value'
+ db ' of our peace and solitude."'
+L0A4F: db 00
+L0A50: db 'Alagner'
+L0A57: db 00
+L0A58: db 'Russell'
+L0A5F: db 00
+L0A60: db '"A brilliant artist and craftsman, Russell cares little for '
+ db 'wealth or notoriety. He is content simply building his fine '
+ db 'ships and watching them sail."'
+L0AF6: db 00
+L0AF7: db 'Russell'
+L0AFE: db 00
+L0AFF: db 'Katrina'
+L0B06: db 00
+L0B07: db '"Katrina has come to the aid of the people of this town on m'
+ db 'ore than one occasion. She gets an interesting smile on her '
+ db 'face whenever thy name is mentioned."'
+L0BA4: db 00
+L0BA5: db '"That is because the Avatar is one my dearest friends."'
+L0BDC: db 00
+L0BDD: db '"Am I not one of thy dearest friends, Katrina?"'
+L0C0C: db 00
+L0C0D: db '"Thou art a flirt, Boris! Dost Magenta know how thou dost wa'
+ db 'nt to be dearest friends with the other women living on the '
+ db 'island?"'
+L0C8D: db 00
+L0C8E: db '"Thou dost torture me, Katrina!" He laughs.'
+L0CB9: db 00
+L0CBA: db 'Katrina'
+L0CC1: db 00
+L0CC2: db 'Henry'
+L0CC7: db 00
+L0CC8: db '"Henry's parents were so poor it is a wonder he did not star'
+ db 've to death. I think Constance kept him going. He has loved '
+ db 'her since they were children."'
+L0D5E: db 00
+L0D5F: db 'Henry'
+L0D64: db 00
+L0D65: db 'Constance'
+L0D6E: db 00
+L0D6F: db '"Constance is an orphan who was raised mostly by Katrina. He'
+ db 'r innocence is surpassed only by her beauty. She is loved by'
+ db ' all." Boris stares off into space for a few seconds before '
+ db 'coming to his senses.'
+L0E38: db 00
+L0E39: db 'Constance'
+L0E42: db 00
+L0E43: db 'Sam'
+L0E46: db 00
+L0E47: db 'Boris laughs. "Thou wouldst have to meet Sam for thyself. He'
+ db ' is an incredible person who is perfecting the art of enjoyi'
+ db 'ng life."'
+L0EC8: db 00
+L0EC9: db 'Sam'
+L0ECC: db 00
+L0ECD: db 'strangers'
+L0ED6: db 00
+L0ED7: db '"A shipwreck has brought three strangers to our island. Rumo'
+ db 'r has it one of them is a monied gentleman from Buccaneer's '
+ db 'Den, and the other two are his hired swords. They were in he'
+ db 're drinking one night. They are not the sort of crowd I woul'
+ db 'd wish to serve at mine establishment."'
+L0FEE: db 00
+L0FEF: db 'strangers'
+L0FF8: db 00
+L0FF9: db 'locket'
+L0FFF: db 00
+L1000: db '"I do not wish to hear of that locket ever again! Do not spe'
+ db 'ak to me of it!"'
+L104C: db 00
+L104D: db '"I am quite certain I have never seen such a locket. I shall'
+ db ' be happy to keep mine eyes open, though."'
+L10B3: db 00
+L10B4: db 'You tell Boris what you had heard from the pirate, Battles. '
+ db 'He breaks out into a cold sweat. "Thou hast seen through my '
+ db 'deception. I shall hand it over to thee." He opens a secret '
+ db 'panel from behind the bar and looks inside. When he looks ba'
+ db 'ck to you his face has lost all color. "The locket is gone! '
+ db 'I swear to thee, I know not where it is!"'
+L1209: db 00
+L120A: db '"I still have not been able to find the locket!" Boris looks'
+ db ' as if he is about to tear his hair out, "But I will keep lo'
+ db 'oking until I find it!"'
+L1299: db 00
+L129A: db 'locket'
+L12A0: db 00
+L12A1: db 'bye'
+L12A4: db 00
+L12A5: db '"Good journey!"*'
+L12B5: db 00
+  .code
+  .argc 0001H
+  .localc 0010H
+  .externsize 0005H
+  .extern 0909H
+  .extern 090AH
+  .extern 08F7H
+  .extern 0855H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 91 04   jne 0499
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 7E FF   pushi FF7EH   ; -130
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 7E FF   pushi FF7EH   ; -130
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1D 00 00   pushs L0000   ; bye
+0030: 1D 04 00   pushs L0004   ; job
+0033: 1D 08 00   pushs L0008   ; name
+0036: 1E 03 00   arrc 0003H   ; 3
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 42 80 01   pushf flag:[0180]
+0040: 05 07 00   jne 004A
+0043: 1D 0D 00   pushs L000D   ; strangers
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 42 7D 01   pushf flag:[017D]
+004D: 05 07 00   jne 0057
+0050: 1D 17 00   pushs L0017   ; locket
+0053: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0057: 42 95 01   pushf flag:[0195]
+005A: 05 15 00   jne 0072
+005D: 1C 1E 00   addsi L001E   ; "Art thou ready t...
+0060: 33   say
+0061: 24 01 00   call [0001]   ; 090AH
+0064: 05 06 00   jne 006D
+0067: 06 80 00   jmp 00EA
+006A: 06 05 00   jmp 0072
+006D: 1C 40 00   addsi L0040   ; "Goodbye, then!"*
+0070: 33   say
+0071: 3F   abrt
+0072: 42 8B 01   pushf flag:[018B]
+0075: 10   not
+0076: 05 0E 01   jne 0187
+0079: 1C 52 00   addsi L0052   ; You see a leering...
+007C: 33   say
+007D: 13   push true
+007E: 43 8B 01   popf flag:[018B]
+0081: 21 02 00   push [0002]
+0084: 1F 17 00   pushi 0017H   ; 23
+0087: 22   cmpeq
+0088: 05 F9 00   jne 0184
+008B: 1F FC FF   pushi FFFCH   ; -4
+008E: 24 02 00   call [0002]   ; 08F7H
+0091: 12 03 00   pop [0003]
+0094: 21 03 00   push [0003]
+0097: 05 EA 00   jne 0184
+009A: 1C 8F 00   addsi L008F   ; "Well if it isn't...
+009D: 33   say
+009E: 1F 00 00   pushi 0000H   ; 0
+00A1: 1F FC FF   pushi FFFCH   ; -4
+00A4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A8: 1C C1 00   addsi L00C1   ; "That it is, Boris."
+00AB: 33   say
+00AC: 1F 00 00   pushi 0000H   ; 0
+00AF: 1F 7E FF   pushi FF7EH   ; -130
+00B2: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B6: 1C D6 00   addsi L00D6   ; "Hmmm-- it seems ...
+00B9: 33   say
+00BA: 1F 00 00   pushi 0000H   ; 0
+00BD: 1F FC FF   pushi FFFCH   ; -4
+00C0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00C4: 1C 1A 01   addsi L011A   ; "Oh? Do I?"
+00C7: 33   say
+00C8: 1F 00 00   pushi 0000H   ; 0
+00CB: 1F 7E FF   pushi FF7EH   ; -130
+00CE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D2: 1C 26 01   addsi L0126   ; "Yes indeed! Let ...
+00D5: 33   say
+00D6: 1F 00 00   pushi 0000H   ; 0
+00D9: 1F FC FF   pushi FFFCH   ; -4
+00DC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E0: 1C D5 01   addsi L01D5   ; Dupre looks embar...
+00E3: 33   say
+00E4: 24 01 00   call [0001]   ; 090AH
+00E7: 05 87 00   jne 0171
+00EA: 1F 99 FE   pushi FE99H   ; -359
+00ED: 1F 99 FE   pushi FE99H   ; -359
+00F0: 1F 84 02   pushi 0284H   ; 644
+00F3: 1F 9B FE   pushi FE9BH   ; -357
+00F6: 38 28 00 04  callis 0028, 4
+00FA: 12 04 00   pop [0004]
+00FD: 21 04 00   push [0004]
+0100: 1F 4A 00   pushi 004AH   ; 74
+0103: 18   cmpge
+0104: 05 5E 00   jne 0165
+0107: 13   push true
+0108: 1F 99 FE   pushi FE99H   ; -359
+010B: 1F 99 FE   pushi FE99H   ; -359
+010E: 1F 84 02   pushi 0284H   ; 644
+0111: 1F 4A 00   pushi 004AH   ; 74
+0114: 38 2B 00 05  callis 002B, 5
+0118: 12 05 00   pop [0005]
+011B: 21 05 00   push [0005]
+011E: 05 38 00   jne 0159
+0121: 1F 00 00   pushi 0000H   ; 0
+0124: 1F FC FF   pushi FFFCH   ; -4
+0127: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+012B: 1C 23 02   addsi L0223   ; "I thank thee, Av...
+012E: 33   say
+012F: 1C 3B 02   addsi L023B   ; You hand the gold...
+0132: 33   say
+0133: 14   push false
+0134: 43 95 01   popf flag:[0195]
+0137: 1F 00 00   pushi 0000H   ; 0
+013A: 1F 7E FF   pushi FF7EH   ; -130
+013D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0141: 1C 5C 02   addsi L025C   ; "'Tis a pleasure ...
+0144: 33   say
+0145: 1F FC FF   pushi FFFCH   ; -4
+0148: 39 04 00 01  calli _HideNPC@1  ; 0004
+014C: 1F 00 00   pushi 0000H   ; 0
+014F: 1F 7E FF   pushi FF7EH   ; -130
+0152: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0156: 06 09 00   jmp 0162
+0159: 1C AA 02   addsi L02AA   ; "Hmmm, where did ...
+015C: 33   say
+015D: 13   push true
+015E: 43 95 01   popf flag:[0195]
+0161: 3F   abrt
+0162: 06 09 00   jmp 016E
+0165: 1C CA 02   addsi L02CA   ; "I am afraid are ...
+0168: 33   say
+0169: 13   push true
+016A: 43 95 01   popf flag:[0195]
+016D: 3F   abrt
+016E: 06 13 00   jmp 0184
+0171: 1F 00 00   pushi 0000H   ; 0
+0174: 1F 7E FF   pushi FF7EH   ; -130
+0177: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+017B: 1C F4 02   addsi L02F4   ; "Well, I wilt not...
+017E: 33   say
+017F: 13   push true
+0180: 43 95 01   popf flag:[0195]
+0183: 3F   abrt
+0184: 06 04 00   jmp 018B
+0187: 1C 44 03   addsi L0344   ; "Hello again," sa...
+018A: 33   say
+018B: 04 06 03   je 0494
+018E: 1D 5F 03   pushs L035F   ; name
+0191: 07 01 00 0B 00  cmps 0001H, 01A1
+0196: 1C 64 03   addsi L0364   ; "Call me Boris."
+0199: 33   say
+019A: 1D 75 03   pushs L0375   ; name
+019D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A1: 1D 7A 03   pushs L037A   ; job
+01A4: 07 01 00 11 00  cmps 0001H, 01BA
+01A9: 1C 7E 03   addsi L037E   ; "I run The Modest...
+01AC: 33   say
+01AD: 1D AF 03   pushs L03AF   ; New Magincia
+01B0: 1D BC 03   pushs L03BC   ; Modest Damsel
+01B3: 1E 02 00   arrc 0002H   ; 2
+01B6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BA: 1D CA 03   pushs L03CA   ; Modest Damsel
+01BD: 07 01 00 2C 00  cmps 0001H, 01EE
+01C2: 21 02 00   push [0002]
+01C5: 1F 17 00   pushi 0017H   ; 23
+01C8: 22   cmpeq
+01C9: 05 17 00   jne 01E3
+01CC: 1C D8 03   addsi L03D8   ; "It is a little i...
+01CF: 33   say
+01D0: 1D 66 04   pushs L0466   ; room
+01D3: 1D 6B 04   pushs L046B   ; eat or drink
+01D6: 1D 78 04   pushs L0478   ; Magenta
+01D9: 1E 03 00   arrc 0003H   ; 3
+01DC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E0: 06 04 00   jmp 01E7
+01E3: 1C 80 04   addsi L0480   ; "The Modest Damse...
+01E6: 33   say
+01E7: 1D DC 04   pushs L04DC   ; Modest Damsel
+01EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EE: 1D EA 04   pushs L04EA   ; Magenta
+01F1: 07 01 00 0B 00  cmps 0001H, 0201
+01F6: 1C F2 04   addsi L04F2   ; "She became the m...
+01F9: 33   say
+01FA: 1D A9 05   pushs L05A9   ; Magenta
+01FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0201: 1D B1 05   pushs L05B1   ; eat or drink
+0204: 07 01 00 07 00  cmps 0001H, 0210
+0209: 1C BE 05   addsi L05BE   ; "I am certain tho...
+020C: 33   say
+020D: 24 03 00   call [0003]   ; 0855H
+0210: 1D F1 05   pushs L05F1   ; room
+0213: 07 01 00 AB 00  cmps 0001H, 02C3
+0218: 1C F6 05   addsi L05F6   ; "Why dost thou no...
+021B: 33   say
+021C: 24 01 00   call [0001]   ; 090AH
+021F: 05 96 00   jne 02B8
+0222: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0226: 12 06 00   pop [0006]
+0229: 1F 00 00   pushi 0000H   ; 0
+022C: 12 07 00   pop [0007]
+022F: 2E   sloop
+0230: 02 08 00 09 00 0A 00 06 00 0D 00  db 2 ???
+0231:   db 8
+0232:   db 0
+0233:   db 9
+0234:   db 0
+0235:   db a
+0236:   db 0
+0237:   db 6
+0238:   db 0
+0239:   db d
+023A:   db 0
+023B: 21 07 00   push [0007]
+023E: 1F 01 00   pushi 0001H   ; 1
+0241: 09   add
+0242: 12 07 00   pop [0007]
+0245: 06 E8 FF   jmp 0230
+0248: 21 07 00   push [0007]
+024B: 1F 03 00   pushi 0003H   ; 3
+024E: 0C   mul
+024F: 12 0B 00   pop [000B]
+0252: 1F 99 FE   pushi FE99H   ; -359
+0255: 1F 99 FE   pushi FE99H   ; -359
+0258: 1F 84 02   pushi 0284H   ; 644
+025B: 1F 9B FE   pushi FE9BH   ; -357
+025E: 38 28 00 04  callis 0028, 4
+0262: 12 0C 00   pop [000C]
+0265: 21 0C 00   push [000C]
+0268: 21 0B 00   push [000B]
+026B: 18   cmpge
+026C: 05 42 00   jne 02B1
+026F: 13   push true
+0270: 1F 99 FE   pushi FE99H   ; -359
+0273: 1F FF 00   pushi 00FFH   ; 255
+0276: 1F 81 02   pushi 0281H   ; 641
+0279: 1F 01 00   pushi 0001H   ; 1
+027C: 38 2C 00 05  callis 002C, 5
+0280: 12 0D 00   pop [000D]
+0283: 21 0D 00   push [000D]
+0286: 05 1B 00   jne 02A4
+0289: 1C 6C 06   addsi L066C   ; "Here is thy room...
+028C: 33   say
+028D: 13   push true
+028E: 1F 99 FE   pushi FE99H   ; -359
+0291: 1F 99 FE   pushi FE99H   ; -359
+0294: 1F 84 02   pushi 0284H   ; 644
+0297: 21 0B 00   push [000B]
+029A: 38 2B 00 05  callis 002B, 5
+029E: 12 0E 00   pop [000E]
+02A1: 06 0A 00   jmp 02AE
+02A4: 1C A2 06   addsi L06A2   ; "Sorry, 
+02A7: 2F 00 00   addsv [0000]
+02AA: 1C AB 06   addsi L06AB   ; , thou must remov...
+02AD: 33   say
+02AE: 06 04 00   jmp 02B5
+02B1: 1C F5 06   addsi L06F5   ; "Thou hast not en...
+02B4: 33   say
+02B5: 06 04 00   jmp 02BC
+02B8: 1C 1F 07   addsi L071F   ; "Some other eveni...
+02BB: 33   say
+02BC: 1D 3E 07   pushs L073E   ; room
+02BF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C3: 1D 43 07   pushs L0743   ; New Magincia
+02C6: 07 01 00 12 00  cmps 0001H, 02DD
+02CB: 1C 50 07   addsi L0750   ; "In all of Britan...
+02CE: 33   say
+02CF: 1D C0 07   pushs L07C0   ; people
+02D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D6: 1D C7 07   pushs L07C7   ; New Magincia
+02D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02DD: 1D D4 07   pushs L07D4   ; people
+02E0: 07 01 00 1B 00  cmps 0001H, 0300
+02E5: 1C DB 07   addsi L07DB   ; "There are mercha...
+02E8: 33   say
+02E9: 1D 1B 08   pushs L081B   ; new folks
+02EC: 1D 25 08   pushs L0825   ; laborers
+02EF: 1D 2E 08   pushs L082E   ; merchants
+02F2: 1E 03 00   arrc 0003H   ; 3
+02F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02F9: 1D 38 08   pushs L0838   ; people
+02FC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0300: 1D 3F 08   pushs L083F   ; merchants
+0303: 07 01 00 1B 00  cmps 0001H, 0323
+0308: 1C 49 08   addsi L0849   ; "They would be Ru...
+030B: 33   say
+030C: 1D 9F 08   pushs L089F   ; Sam
+030F: 1D A3 08   pushs L08A3   ; Henry
+0312: 1D A9 08   pushs L08A9   ; Russell
+0315: 1E 03 00   arrc 0003H   ; 3
+0318: 39 05 00 01  calli _AddAnswer@1  ; 0005
+031C: 1D B1 08   pushs L08B1   ; merchants
+031F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0323: 1D BB 08   pushs L08BB   ; laborers
+0326: 07 01 00 18 00  cmps 0001H, 0343
+032B: 1C C4 08   addsi L08C4   ; "They would be Ka...
+032E: 33   say
+032F: 1D 0D 09   pushs L090D   ; Constance
+0332: 1D 17 09   pushs L0917   ; Katrina
+0335: 1E 02 00   arrc 0002H   ; 2
+0338: 39 05 00 01  calli _AddAnswer@1  ; 0005
+033C: 1D 1F 09   pushs L091F   ; laborers
+033F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0343: 1D 28 09   pushs L0928   ; new folks
+0346: 07 01 00 18 00  cmps 0001H, 0363
+034B: 1C 32 09   addsi L0932   ; "Except for the t...
+034E: 33   say
+034F: 1D 97 09   pushs L0997   ; strangers
+0352: 1D A1 09   pushs L09A1   ; Alagner
+0355: 1E 02 00   arrc 0002H   ; 2
+0358: 39 05 00 01  calli _AddAnswer@1  ; 0005
+035C: 1D A9 09   pushs L09A9   ; new folks
+035F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0363: 1D B3 09   pushs L09B3   ; Alagner
+0366: 07 01 00 0B 00  cmps 0001H, 0376
+036B: 1C BB 09   addsi L09BB   ; "Alagner is not f...
+036E: 33   say
+036F: 1D 50 0A   pushs L0A50   ; Alagner
+0372: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0376: 1D 58 0A   pushs L0A58   ; Russell
+0379: 07 01 00 0B 00  cmps 0001H, 0389
+037E: 1C 60 0A   addsi L0A60   ; "A brilliant arti...
+0381: 33   say
+0382: 1D F7 0A   pushs L0AF7   ; Russell
+0385: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0389: 1D FF 0A   pushs L0AFF   ; Katrina
+038C: 07 01 00 63 00  cmps 0001H, 03F4
+0391: 1C 07 0B   addsi L0B07   ; "Katrina has come...
+0394: 33   say
+0395: 1F F7 FF   pushi FFF7H   ; -9
+0398: 24 02 00   call [0002]   ; 08F7H
+039B: 12 0F 00   pop [000F]
+039E: 21 0F 00   push [000F]
+03A1: 05 49 00   jne 03ED
+03A4: 1F 00 00   pushi 0000H   ; 0
+03A7: 1F F7 FF   pushi FFF7H   ; -9
+03AA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03AE: 1C A5 0B   addsi L0BA5   ; "That is because ...
+03B1: 33   say
+03B2: 1F 00 00   pushi 0000H   ; 0
+03B5: 1F 7E FF   pushi FF7EH   ; -130
+03B8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03BC: 1C DD 0B   addsi L0BDD   ; "Am I not one of ...
+03BF: 33   say
+03C0: 1F 00 00   pushi 0000H   ; 0
+03C3: 1F F7 FF   pushi FFF7H   ; -9
+03C6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03CA: 1C 0D 0C   addsi L0C0D   ; "Thou art a flirt...
+03CD: 33   say
+03CE: 1F 00 00   pushi 0000H   ; 0
+03D1: 1F 7E FF   pushi FF7EH   ; -130
+03D4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03D8: 1C 8E 0C   addsi L0C8E   ; "Thou dost tortur...
+03DB: 33   say
+03DC: 1F F7 FF   pushi FFF7H   ; -9
+03DF: 39 04 00 01  calli _HideNPC@1  ; 0004
+03E3: 1F 00 00   pushi 0000H   ; 0
+03E6: 1F 7E FF   pushi FF7EH   ; -130
+03E9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03ED: 1D BA 0C   pushs L0CBA   ; Katrina
+03F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03F4: 1D C2 0C   pushs L0CC2   ; Henry
+03F7: 07 01 00 0B 00  cmps 0001H, 0407
+03FC: 1C C8 0C   addsi L0CC8   ; "Henry's parents ...
+03FF: 33   say
+0400: 1D 5F 0D   pushs L0D5F   ; Henry
+0403: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0407: 1D 65 0D   pushs L0D65   ; Constance
+040A: 07 01 00 0B 00  cmps 0001H, 041A
+040F: 1C 6F 0D   addsi L0D6F   ; "Constance is an ...
+0412: 33   say
+0413: 1D 39 0E   pushs L0E39   ; Constance
+0416: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+041A: 1D 43 0E   pushs L0E43   ; Sam
+041D: 07 01 00 0B 00  cmps 0001H, 042D
+0422: 1C 47 0E   addsi L0E47   ; Boris laughs. "Th...
+0425: 33   say
+0426: 1D C9 0E   pushs L0EC9   ; Sam
+0429: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+042D: 1D CD 0E   pushs L0ECD   ; strangers
+0430: 07 01 00 0F 00  cmps 0001H, 0444
+0435: 1C D7 0E   addsi L0ED7   ; "A shipwreck has ...
+0438: 33   say
+0439: 13   push true
+043A: 43 80 01   popf flag:[0180]
+043D: 1D EF 0F   pushs L0FEF   ; strangers
+0440: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0444: 1D F9 0F   pushs L0FF9   ; locket
+0447: 07 01 00 3A 00  cmps 0001H, 0486
+044C: 42 7F 01   pushf flag:[017F]
+044F: 05 05 00   jne 0457
+0452: 1C 00 10   addsi L1000   ; "I do not wish to...
+0455: 33   say
+0456: 3F   abrt
+0457: 42 85 01   pushf flag:[0185]
+045A: 10   not
+045B: 05 0B 00   jne 0469
+045E: 1C 4D 10   addsi L104D   ; "I am quite certa...
+0461: 33   say
+0462: 13   push true
+0463: 43 83 01   popf flag:[0183]
+0466: 06 16 00   jmp 047F
+0469: 42 7E 01   pushf flag:[017E]
+046C: 10   not
+046D: 05 0B 00   jne 047B
+0470: 1C B4 10   addsi L10B4   ; You tell Boris wh...
+0473: 33   say
+0474: 13   push true
+0475: 43 7E 01   popf flag:[017E]
+0478: 06 04 00   jmp 047F
+047B: 1C 0A 12   addsi L120A   ; "I still have not...
+047E: 33   say
+047F: 1D 9A 12   pushs L129A   ; locket
+0482: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0486: 1D A1 12   pushs L12A1   ; bye
+0489: 07 01 00 03 00  cmps 0001H, 0491
+048E: 06 03 00   jmp 0494
+0491: 06 F7 FC   jmp 018B
+0494: 40   db 40 ???
+0495: 1C A5 12   addsi L12A5   ; "Good journey!"*
+0498: 33   say
+0499: 48   push eventid
+049A: 1F 00 00   pushi 0000H   ; 0
+049D: 22   cmpeq
+049E: 05 06 00   jne 04A7
+04A1: 1F 7E FF   pushi FF7EH   ; -130
+04A4: 24 04 00   call [0004]   ; 092EH
+04A7: 25   ret

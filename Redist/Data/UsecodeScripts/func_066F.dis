@@ -1,0 +1,100 @@
+  .funcnumber 066FH
+  .data
+L0000: db '@Vas Zu@'
+L0008: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 7E 00   jne 0086
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 3E   push itemref
+000E: 38 18 00 01  callis 0018, 1
+0012: 12 00 00   pop [0000]
+0015: 1D 00 00   pushs L0000   ; @Vas Zu@
+0018: 3E   push itemref
+0019: 39 40 00 02  calli _ItemSay@2  ; 0040
+001D: 24 00 00   call [0000]   ; 0906H
+0020: 05 49 00   jne 006C
+0023: 1F FF FF   pushi FFFFH   ; -1
+0026: 1F 00 00   pushi 0000H   ; 0
+0029: 1F 00 00   pushi 0000H   ; 0
+002C: 1F 00 00   pushi 0000H   ; 0
+002F: 1F 02 00   pushi 0002H   ; 2
+0032: 26 00 00   aidx [0000]
+0035: 1F 02 00   pushi 0002H   ; 2
+0038: 0A   sub
+0039: 1F 01 00   pushi 0001H   ; 1
+003C: 26 00 00   aidx [0000]
+003F: 1F 02 00   pushi 0002H   ; 2
+0042: 0A   sub
+0043: 1F 07 00   pushi 0007H   ; 7
+0046: 39 53 00 07  calli 0053, 7
+004A: 1F 6F 06   pushi 066FH   ; 1647
+004D: 44 55   pushw 4455H   ; 17493
+004F: 44 6A   pushw 446AH   ; 17514
+0051: 44 67   pushw 4467H   ; 17511
+0053: 44 6F   pushw 446FH   ; 17519
+0055: 44 65   pushw 4465H   ; 17509
+0057: 44 61   pushw 1F61H   ; 8033
+0059: 1F 41 00   pushi 0041H   ; 65
+005C: 44 58   pushw 1E58H   ; 7768
+005E: 1E 09 00   arrc 0009H   ; 9
+0061: 3E   push itemref
+0062: 38 01 00 02  callis 0001, 2
+0066: 12 01 00   pop [0001]
+0069: 06 1A 00   jmp 0086
+006C: 1F 06 06   pushi 0606H   ; 1542
+006F: 44 55   pushw 4455H   ; 17493
+0071: 44 6A   pushw 446AH   ; 17514
+0073: 44 67   pushw 4467H   ; 17511
+0075: 44 6F   pushw 446FH   ; 17519
+0077: 44 65   pushw 4465H   ; 17509
+0079: 44 61   pushw 1E61H   ; 7777
+007B: 1E 07 00   arrc 0007H   ; 7
+007E: 3E   push itemref
+007F: 38 01 00 02  callis 0001, 2
+0083: 12 01 00   pop [0001]
+0086: 48   push eventid
+0087: 1F 02 00   pushi 0002H   ; 2
+008A: 22   cmpeq
+008B: 05 49 00   jne 00D7
+008E: 1F 19 00   pushi 0019H   ; 25
+0091: 12 02 00   pop [0002]
+0094: 1F 04 00   pushi 0004H   ; 4
+0097: 21 02 00   push [0002]
+009A: 1F FF FF   pushi FFFFH   ; -1
+009D: 3E   push itemref
+009E: 38 35 00 04  callis 0035, 4
+00A2: 12 03 00   pop [0003]
+00A5: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+00A9: 12 04 00   pop [0004]
+00AC: 2E   sloop
+00AD: 02 05 00 06 00 07 00 03 00 1F 00  db 2 ???
+00AE:   db 5
+00AF:   db 0
+00B0:   db 6
+00B1:   db 0
+00B2:   db 7
+00B3:   db 0
+00B4:   db 3
+00B5:   db 0
+00B6:   db 1f
+00B7:   db 0
+00B8: 21 07 00   push [0007]
+00BB: 21 04 00   push [0004]
+00BE: 30   in
+00BF: 10   not
+00C0: 05 11 00   jne 00D4
+00C3: 21 07 00   push [0007]
+00C6: 39 5C 00 01  calli 005C, 1
+00CA: 1F 01 00   pushi 0001H   ; 1
+00CD: 21 07 00   push [0007]
+00D0: 39 89 00 02  calli 0089, 2
+00D4: 06 D6 FF   jmp 00AD
+00D7: 25   ret

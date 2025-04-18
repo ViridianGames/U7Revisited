@@ -1,0 +1,120 @@
+  .funcnumber 08CFH
+  .data
+L0000: db '"Fellow members, each of thee has faced -- and doubtless sha'
+ db 'll face again -- a moment in which thou dost feel the heat o'
+ db 'f the fever. A moment when thy mind has been clouded with il'
+ db 'lusory thoughts and visions. A moment when thy recognition h'
+ db 'as simply vanished, without rhyme or reason. A moment when, '
+ db 'perhaps, thou hast even doubted the very words of The Fellow'
+ db 'ship itself!"*'
+L0176: db 00
+L0177: db 'You see the clerk gasp, her eyes widening in disbelief.*'
+L01AF: db 00
+L01B0: db '"The second principle of the Triad is `trust thy brother.' ''
+ db 'Tis a simple practice when thou dost know thy brother. But T'
+ db 'he Fellowship was not always known to thee. It may, at one t'
+ db 'ime, have been difficult to put thy trust in something as la'
+ db 'rge as The Fellowship.~~ "However, to gain full knowledge of'
+ db ' thine inner strength, one must have the courage to walk on '
+ db 'the fire of trust!"*'
+L032C: db 00
+L032D: db '"'Tis true! Trust was the key to my freedom!"*'
+L035B: db 00
+L035C: db '"Trust requires great courage, and that courage exists withi'
+ db 'n thyself."*'
+L03A4: db 00
+L03A5: db 'Iolo leans toward you.~~ "I believe we have heard enough of '
+ db 'this, no?"*'
+L03EC: db 00
+L03ED: db '"Good. Let us leave."*'
+L0403: db 00
+L0404: db 'Iolo sighs deeply.*'
+L0417: db 00
+L0418: db '"But as long as one remains aware, this problem will not pla'
+ db 'gue thee."*'
+L045F: db 00
+L0460: db '"Come, friend. That is enough of this. Drinks are on me."~~ '
+ db 'As you make your way out of the Hall, the leader's voice con'
+ db 'tinues to drone on and on.*'
+L04F3: db 00
+  .code
+  .argc 0000H
+  .localc 0005H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 090AH
+0000: 1F 64 FF   pushi FF64H   ; -156
+0003: 24 00 00   call [0000]   ; 08F7H
+0006: 12 00 00   pop [0000]
+0009: 1F 63 FF   pushi FF63H   ; -157
+000C: 24 00 00   call [0000]   ; 08F7H
+000F: 12 01 00   pop [0001]
+0012: 1F FF FF   pushi FFFFH   ; -1
+0015: 24 00 00   call [0000]   ; 08F7H
+0018: 12 02 00   pop [0002]
+001B: 1F FC FF   pushi FFFCH   ; -4
+001E: 24 00 00   call [0000]   ; 08F7H
+0021: 12 03 00   pop [0003]
+0024: 1C 00 00   addsi L0000   ; "Fellow members, ...
+0027: 33   say
+0028: 21 00 00   push [0000]
+002B: 05 1F 00   jne 004D
+002E: 1F 00 00   pushi 0000H   ; 0
+0031: 1F 64 FF   pushi FF64H   ; -156
+0034: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0038: 1C 77 01   addsi L0177   ; You see the clerk...
+003B: 33   say
+003C: 1F 64 FF   pushi FF64H   ; -156
+003F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0043: 1F 00 00   pushi 0000H   ; 0
+0046: 1F 06 FF   pushi FF06H   ; -250
+0049: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+004D: 1C B0 01   addsi L01B0   ; "The second princ...
+0050: 33   say
+0051: 21 01 00   push [0001]
+0054: 05 1F 00   jne 0076
+0057: 1F 00 00   pushi 0000H   ; 0
+005A: 1F 63 FF   pushi FF63H   ; -157
+005D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0061: 1C 2D 03   addsi L032D   ; "'Tis true! Trust...
+0064: 33   say
+0065: 1F 63 FF   pushi FF63H   ; -157
+0068: 39 04 00 01  calli _HideNPC@1  ; 0004
+006C: 1F 00 00   pushi 0000H   ; 0
+006F: 1F 06 FF   pushi FF06H   ; -250
+0072: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0076: 1C 5C 03   addsi L035C   ; "Trust requires g...
+0079: 33   say
+007A: 21 02 00   push [0002]
+007D: 05 37 00   jne 00B7
+0080: 1F 00 00   pushi 0000H   ; 0
+0083: 1F FF FF   pushi FFFFH   ; -1
+0086: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+008A: 1C A5 03   addsi L03A5   ; Iolo leans toward...
+008D: 33   say
+008E: 24 01 00   call [0001]   ; 090AH
+0091: 12 04 00   pop [0004]
+0094: 21 04 00   push [0004]
+0097: 05 08 00   jne 00A2
+009A: 1C ED 03   addsi L03ED   ; "Good. Let us lea...
+009D: 33   say
+009E: 3F   abrt
+009F: 06 15 00   jmp 00B7
+00A2: 1C 04 04   addsi L0404   ; Iolo sighs deeply.*
+00A5: 33   say
+00A6: 1F FF FF   pushi FFFFH   ; -1
+00A9: 39 04 00 01  calli _HideNPC@1  ; 0004
+00AD: 1F 00 00   pushi 0000H   ; 0
+00B0: 1F 06 FF   pushi FF06H   ; -250
+00B3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B7: 1C 18 04   addsi L0418   ; "But as long as o...
+00BA: 33   say
+00BB: 21 03 00   push [0003]
+00BE: 05 0F 00   jne 00D0
+00C1: 1F 00 00   pushi 0000H   ; 0
+00C4: 1F FC FF   pushi FFFCH   ; -4
+00C7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00CB: 1C 60 04   addsi L0460   ; "Come, friend. Th...
+00CE: 33   say
+00CF: 3F   abrt
+00D0: 25   ret

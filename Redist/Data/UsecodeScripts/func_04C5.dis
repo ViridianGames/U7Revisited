@@ -1,0 +1,306 @@
+  .funcnumber 04C5H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db ' standing at attention just behind Lord John-Paul.'
+L003F: db 00
+L0040: db ' standing at attention just behind another knight.'
+L0072: db 00
+L0073: db '.'
+L0074: db 00
+L0075: db 'You see a gargoyle with a very stern expression on his face'
+L00B0: db 00
+L00B1: db 00
+L00B2: db '"To ask how to be of assistance." His eyes narrow.'
+L00E4: db 00
+L00E5: db 'statue'
+L00EB: db 00
+L00EC: db 'Pendaran did it'
+L00FB: db 00
+L00FC: db 'name'
+L0100: db 00
+L0101: db '"To be named Horffe."'
+L0116: db 00
+L0117: db 'name'
+L011B: db 00
+L011C: db 'job'
+L011F: db 00
+L0120: db '"To be the Captain of the guard. To serve and protect the pe'
+ db 'ople of Serpent's Hold."'
+L0174: db 00
+L0175: db 'Serpent's Hold'
+L0183: db 00
+L0184: db 'Captain'
+L018B: db 00
+L018C: db 'Captain'
+L0193: db 00
+L0194: db '"To have been commanded to protect the people who live in Se'
+ db 'rpent's Hold and to maintain the general order of the knight'
+ db 's."'
+L020F: db 00
+L0210: db 'Captain'
+L0217: db 00
+L0218: db 'knights'
+L021F: db 00
+L0220: db 'people'
+L0226: db 00
+L0227: db 'people'
+L022D: db 00
+L022E: db 'Serpent's Hold'
+L023C: db 00
+L023D: db '"To direct you to Sir Denton, the tavernkeeper at the Hallow'
+ db 'ed Dock. To know more about the Hold and the people than I."'
+L02B5: db 00
+L02B6: db 'Serpent's Hold'
+L02C4: db 00
+L02C5: db 'people'
+L02CB: db 00
+L02CC: db 'Pendaran did it'
+L02DB: db 00
+L02DC: db '"To thank you for this information. To be pleased to know th'
+ db 'e identity of my assailant."'
+L0334: db 00
+L0335: db 'Pendaran did it'
+L0344: db 00
+L0345: db 'knights'
+L034C: db 00
+L034D: db '"To inform you that many fine warriors take up residence bet'
+ db 'ween the Hold's walls. To have little fear of an attack from'
+ db ' bandits or vicious animals."'
+L03E2: db 00
+L03E3: db 'knights'
+L03EA: db 00
+L03EB: db 'statue'
+L03F1: db 00
+L03F2: db '"To know nothing about that!"'
+L040F: db 00
+L0410: db 'blood on fragments'
+L0422: db 00
+L0423: db 'statue'
+L0429: db 00
+L042A: db 'blood on fragments'
+L043C: db 00
+L043D: db 'His rough demeanor softens.~~"To be my blood." He sighs. "Bu'
+ db 't to be not the one who defaced the statue! To have been wou'
+ db 'nded while trying to stop the vandal."'
+L04DB: db 00
+L04DC: db 'vandal'
+L04E2: db 00
+L04E3: db 'blood on fragments'
+L04F5: db 00
+L04F6: db 'vandal'
+L04FC: db 00
+L04FD: db 'He looks down at his feet.~~"To know not who he was. To have'
+ db ' been very dark. To ask you not to tell Sir Richter."'
+L056E: db 00
+L056F: db 'vandal'
+L0575: db 00
+L0576: db 'Sir Richter'
+L0581: db 00
+L0582: db 'dark'
+L0586: db 00
+L0587: db 'dark'
+L058B: db 00
+L058C: db '"To have been very poor visibility, but to be positive I was'
+ db ' scuffling with an armed knight."'
+L05E9: db 00
+L05EA: db 'dark'
+L05EE: db 00
+L05EF: db 'Sir Richter'
+L05FA: db 00
+L05FB: db '"To know he will not believe one who openly defies The Fello'
+ db 'wship."'
+L063E: db 00
+L063F: db 'Sir Richter'
+L064A: db 00
+L064B: db 'Fellowship'
+L0655: db 00
+L0656: db 'Fellowship'
+L0660: db 00
+L0661: db '"To know little about it. To like little about it."'
+L0694: db 00
+L0695: db 'Fellowship'
+L069F: db 00
+L06A0: db 'bye'
+L06A3: db 00
+L06A4: db '"To say goodbye."*'
+L06B6: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DA 01   jne 01E2
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 3B FF   pushi FF3BH   ; -197
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 6E 02   pushf flag:[026E]
+0025: 10   not
+0026: 05 4F 00   jne 0078
+0029: 1F 3D FF   pushi FF3DH   ; -195
+002C: 1F 3B FF   pushi FF3BH   ; -197
+002F: 38 19 00 02  callis 0019, 2
+0033: 12 00 00   pop [0000]
+0036: 21 00 00   push [0000]
+0039: 1F 0B 00   pushi 000BH   ; 11
+003C: 17   cmpl
+003D: 05 18 00   jne 0058
+0040: 42 6C 02   pushf flag:[026C]
+0043: 05 09 00   jne 004F
+0046: 1D 0D 00   pushs L000D   ;  standing at atte...
+0049: 12 01 00   pop [0001]
+004C: 06 06 00   jmp 0055
+004F: 1D 40 00   pushs L0040   ;  standing at atte...
+0052: 12 01 00   pop [0001]
+0055: 06 06 00   jmp 005E
+0058: 1D 73 00   pushs L0073   ; .
+005B: 12 01 00   pop [0001]
+005E: 1C 75 00   addsi L0075   ; You see a gargoyl...
+0061: 2F 01 00   addsv [0001]
+0064: 1C B1 00   addsi L00B1   ; 
+0067: 33   say
+0068: 1F 3D FF   pushi FF3DH   ; -195
+006B: 24 00 00   call [0000]   ; 08F7H
+006E: 12 02 00   pop [0002]
+0071: 13   push true
+0072: 43 6E 02   popf flag:[026E]
+0075: 06 04 00   jmp 007C
+0078: 1C B2 00   addsi L00B2   ; "To ask how to be...
+007B: 33   say
+007C: 42 5E 02   pushf flag:[025E]
+007F: 42 65 02   pushf flag:[0265]
+0082: 10   not
+0083: 0E   and
+0084: 05 07 00   jne 008E
+0087: 1D E5 00   pushs L00E5   ; statue
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 42 76 02   pushf flag:[0276]
+0091: 42 61 02   pushf flag:[0261]
+0094: 10   not
+0095: 0E   and
+0096: 05 07 00   jne 00A0
+0099: 1D EC 00   pushs L00EC   ; Pendaran did it
+009C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A0: 04 3A 01   je 01DD
+00A3: 1D FC 00   pushs L00FC   ; name
+00A6: 07 01 00 0B 00  cmps 0001H, 00B6
+00AB: 1C 01 01   addsi L0101   ; "To be named Horf...
+00AE: 33   say
+00AF: 1D 17 01   pushs L0117   ; name
+00B2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B6: 1D 1C 01   pushs L011C   ; job
+00B9: 07 01 00 11 00  cmps 0001H, 00CF
+00BE: 1C 20 01   addsi L0120   ; "To be the Captai...
+00C1: 33   say
+00C2: 1D 75 01   pushs L0175   ; Serpent's Hold
+00C5: 1D 84 01   pushs L0184   ; Captain
+00C8: 1E 02 00   arrc 0002H   ; 2
+00CB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CF: 1D 8C 01   pushs L018C   ; Captain
+00D2: 07 01 00 18 00  cmps 0001H, 00EF
+00D7: 1C 94 01   addsi L0194   ; "To have been com...
+00DA: 33   say
+00DB: 1D 10 02   pushs L0210   ; Captain
+00DE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E2: 1D 18 02   pushs L0218   ; knights
+00E5: 1D 20 02   pushs L0220   ; people
+00E8: 1E 02 00   arrc 0002H   ; 2
+00EB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EF: 1D 27 02   pushs L0227   ; people
+00F2: 1D 2E 02   pushs L022E   ; Serpent's Hold
+00F5: 07 02 00 11 00  cmps 0002H, 010B
+00FA: 1C 3D 02   addsi L023D   ; "To direct you to...
+00FD: 33   say
+00FE: 1D B6 02   pushs L02B6   ; Serpent's Hold
+0101: 1D C5 02   pushs L02C5   ; people
+0104: 1E 02 00   arrc 0002H   ; 2
+0107: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010B: 1D CC 02   pushs L02CC   ; Pendaran did it
+010E: 07 01 00 0B 00  cmps 0001H, 011E
+0113: 1C DC 02   addsi L02DC   ; "To thank you for...
+0116: 33   say
+0117: 1D 35 03   pushs L0335   ; Pendaran did it
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D 45 03   pushs L0345   ; knights
+0121: 07 01 00 0B 00  cmps 0001H, 0131
+0126: 1C 4D 03   addsi L034D   ; "To inform you th...
+0129: 33   say
+012A: 1D E3 03   pushs L03E3   ; knights
+012D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0131: 1D EB 03   pushs L03EB   ; statue
+0134: 07 01 00 18 00  cmps 0001H, 0151
+0139: 1C F2 03   addsi L03F2   ; "To know nothing ...
+013C: 33   say
+013D: 42 5F 02   pushf flag:[025F]
+0140: 05 07 00   jne 014A
+0143: 1D 10 04   pushs L0410   ; blood on fragments
+0146: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014A: 1D 23 04   pushs L0423   ; statue
+014D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0151: 1D 2A 04   pushs L042A   ; blood on fragments
+0154: 07 01 00 16 00  cmps 0001H, 016F
+0159: 1C 3D 04   addsi L043D   ; His rough demeano...
+015C: 33   say
+015D: 1D DC 04   pushs L04DC   ; vandal
+0160: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0164: 1D E3 04   pushs L04E3   ; blood on fragments
+0167: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016B: 13   push true
+016C: 43 65 02   popf flag:[0265]
+016F: 1D F6 04   pushs L04F6   ; vandal
+0172: 07 01 00 18 00  cmps 0001H, 018F
+0177: 1C FD 04   addsi L04FD   ; He looks down at ...
+017A: 33   say
+017B: 1D 6F 05   pushs L056F   ; vandal
+017E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0182: 1D 76 05   pushs L0576   ; Sir Richter
+0185: 1D 82 05   pushs L0582   ; dark
+0188: 1E 02 00   arrc 0002H   ; 2
+018B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018F: 1D 87 05   pushs L0587   ; dark
+0192: 07 01 00 0B 00  cmps 0001H, 01A2
+0197: 1C 8C 05   addsi L058C   ; "To have been ver...
+019A: 33   say
+019B: 1D EA 05   pushs L05EA   ; dark
+019E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A2: 1D EF 05   pushs L05EF   ; Sir Richter
+01A5: 07 01 00 12 00  cmps 0001H, 01BC
+01AA: 1C FB 05   addsi L05FB   ; "To know he will ...
+01AD: 33   say
+01AE: 1D 3F 06   pushs L063F   ; Sir Richter
+01B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B5: 1D 4B 06   pushs L064B   ; Fellowship
+01B8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BC: 1D 56 06   pushs L0656   ; Fellowship
+01BF: 07 01 00 0B 00  cmps 0001H, 01CF
+01C4: 1C 61 06   addsi L0661   ; "To know little a...
+01C7: 33   say
+01C8: 1D 95 06   pushs L0695   ; Fellowship
+01CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CF: 1D A0 06   pushs L06A0   ; bye
+01D2: 07 01 00 03 00  cmps 0001H, 01DA
+01D7: 06 03 00   jmp 01DD
+01DA: 06 C3 FE   jmp 00A0
+01DD: 40   db 40 ???
+01DE: 1C A4 06   addsi L06A4   ; "To say goodbye."*
+01E1: 33   say
+01E2: 48   push eventid
+01E3: 1F 00 00   pushi 0000H   ; 0
+01E6: 22   cmpeq
+01E7: 05 06 00   jne 01F0
+01EA: 1F 3B FF   pushi FF3BH   ; -197
+01ED: 24 01 00   call [0001]   ; 092FH
+01F0: 25   ret

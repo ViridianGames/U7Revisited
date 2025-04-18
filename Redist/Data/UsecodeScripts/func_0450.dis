@@ -1,0 +1,238 @@
+  .funcnumber 0450H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Nastassia'
+L0016: db 00
+L0017: db 'Zinaida'
+L001E: db 00
+L001F: db 'This flamboyant bard exudes a festive aura.'
+L004A: db 00
+L004B: db '"I have sung about thee in many a song! And here thou art in'
+ db ' the flesh! I recognized thee immediately." The man bows. "W'
+ db 'elcome, Avatar!"'
+L00D3: db 00
+L00D4: db '"Greetings again, Avatar!" De Maria bows.'
+L00FD: db 00
+L00FE: db 'name'
+L0102: db 00
+L0103: db '"I am De Maria, the Bard."'
+L011D: db 00
+L011E: db 'name'
+L0122: db 00
+L0123: db 'Zinaida'
+L012A: db 00
+L012B: db 'job'
+L012E: db 00
+L012F: db '"I spin tales and sing songs!"'
+L014D: db 00
+L014E: db '"I also know a good deal about the folks in Cove."'
+L0180: db 00
+L0181: db 'folks'
+L0186: db 00
+L0187: db 'song'
+L018B: db 00
+L018C: db 'tale'
+L0190: db 00
+L0191: db 'folks'
+L0196: db 00
+L0197: db 'song'
+L019B: db 00
+L019C: db 'tale'
+L01A0: db 00
+L01A1: db '"What if I combine all three? Shall I sing a song which is a'
+ db ' tale about the people of Cove?"'
+L01FD: db 00
+L01FE: db '"Very well, then!"'
+L0210: db 00
+L0211: db '"'Tis thy choice... and thy mistake!"'
+L0236: db 00
+L0237: db 'folks'
+L023C: db 00
+L023D: db 'song'
+L0241: db 00
+L0242: db 'tale'
+L0246: db 00
+L0247: db 'Nastassia'
+L0250: db 00
+L0251: db '"Ah, dear Nastassia. Wouldst thou like to hear her tale?"'
+L028A: db 00
+L028B: db '"Very well, then!"'
+L029D: db 00
+L029E: db 'Nastassia'
+L02A7: db 00
+L02A8: db '"Oh. I thought thou wert curious. Never mind then."'
+L02DB: db 00
+L02DC: db 'Nastassia'
+L02E5: db 00
+L02E6: db 'Zinaida'
+L02ED: db 00
+L02EE: db '"My love! My flower! Mine angel! The provider of the sweetes'
+ db 't nectar my mouth has ever known! She is the light of my day'
+ db '! The notes of my songs! The flesh of my..."~~'
+L0394: db 00
+L0395: db '"Enough, my love. I think the Avatar dost know thy meaning!"'
+ db '*'
+L03D2: db 00
+L03D3: db 'De Maria stops his reverie, sighs, and smiles at you. "Thou '
+ db 'dost apprehend my meaning..."'
+L042C: db 00
+L042D: db 'Zinaida'
+L0434: db 00
+L0435: db 'bye'
+L0438: db 00
+L0439: db '"Do take care of thyself!"*'
+L0454: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0004H
+  .extern 090AH
+  .extern 0877H
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 7A 01   jne 0182
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F B0 FF   pushi FFB0H   ; -80
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 E3 00   pushf flag:[00E3]
+0025: 05 07 00   jne 002F
+0028: 1D 0D 00   pushs L000D   ; Nastassia
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 E4 00   pushf flag:[00E4]
+0032: 05 0D 00   jne 0042
+0035: 42 F2 00   pushf flag:[00F2]
+0038: 05 07 00   jne 0042
+003B: 1D 17 00   pushs L0017   ; Zinaida
+003E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0042: 42 ED 00   pushf flag:[00ED]
+0045: 10   not
+0046: 05 0F 00   jne 0058
+0049: 1C 1F 00   addsi L001F   ; This flamboyant b...
+004C: 33   say
+004D: 1C 4B 00   addsi L004B   ; "I have sung abou...
+0050: 33   say
+0051: 13   push true
+0052: 43 ED 00   popf flag:[00ED]
+0055: 06 04 00   jmp 005C
+0058: 1C D4 00   addsi L00D4   ; "Greetings again,...
+005B: 33   say
+005C: 04 1E 01   je 017D
+005F: 1D FE 00   pushs L00FE   ; name
+0062: 07 01 00 1C 00  cmps 0001H, 0083
+0067: 1C 03 01   addsi L0103   ; "I am De Maria, t...
+006A: 33   say
+006B: 1D 1E 01   pushs L011E   ; name
+006E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0072: 42 E4 00   pushf flag:[00E4]
+0075: 05 07 00   jne 007F
+0078: 1D 23 01   pushs L0123   ; Zinaida
+007B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007F: 13   push true
+0080: 43 F2 00   popf flag:[00F2]
+0083: 1D 2B 01   pushs L012B   ; job
+0086: 07 01 00 1F 00  cmps 0001H, 00AA
+008B: 1C 2F 01   addsi L012F   ; "I spin tales and...
+008E: 33   say
+008F: 42 E3 00   pushf flag:[00E3]
+0092: 10   not
+0093: 05 14 00   jne 00AA
+0096: 1C 4E 01   addsi L014E   ; "I also know a go...
+0099: 33   say
+009A: 1D 81 01   pushs L0181   ; folks
+009D: 1D 87 01   pushs L0187   ; song
+00A0: 1D 8C 01   pushs L018C   ; tale
+00A3: 1E 03 00   arrc 0003H   ; 3
+00A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AA: 1D 91 01   pushs L0191   ; folks
+00AD: 1D 97 01   pushs L0197   ; song
+00B0: 1D 9C 01   pushs L019C   ; tale
+00B3: 07 03 00 36 00  cmps 0003H, 00EE
+00B8: 1C A1 01   addsi L01A1   ; "What if I combin...
+00BB: 33   say
+00BC: 24 00 00   call [0000]   ; 090AH
+00BF: 12 00 00   pop [0000]
+00C2: 21 00 00   push [0000]
+00C5: 05 12 00   jne 00DA
+00C8: 1C FE 01   addsi L01FE   ; "Very well, then!"
+00CB: 33   say
+00CC: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+00D0: 24 01 00   call [0001]   ; 0877H
+00D3: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+00D7: 06 04 00   jmp 00DE
+00DA: 1C 11 02   addsi L0211   ; "'Tis thy choice....
+00DD: 33   say
+00DE: 1D 37 02   pushs L0237   ; folks
+00E1: 1D 3D 02   pushs L023D   ; song
+00E4: 1D 42 02   pushs L0242   ; tale
+00E7: 1E 03 00   arrc 0003H   ; 3
+00EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EE: 1D 47 02   pushs L0247   ; Nastassia
+00F1: 07 01 00 34 00  cmps 0001H, 012A
+00F6: 1C 51 02   addsi L0251   ; "Ah, dear Nastass...
+00F9: 33   say
+00FA: 24 00 00   call [0000]   ; 090AH
+00FD: 12 01 00   pop [0001]
+0100: 21 01 00   push [0001]
+0103: 05 19 00   jne 011F
+0106: 1C 8B 02   addsi L028B   ; "Very well, then!"
+0109: 33   say
+010A: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+010E: 24 01 00   call [0001]   ; 0877H
+0111: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0115: 1D 9E 02   pushs L029E   ; Nastassia
+0118: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011C: 06 0B 00   jmp 012A
+011F: 1C A8 02   addsi L02A8   ; "Oh. I thought th...
+0122: 33   say
+0123: 1D DC 02   pushs L02DC   ; Nastassia
+0126: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012A: 1D E6 02   pushs L02E6   ; Zinaida
+012D: 07 01 00 3D 00  cmps 0001H, 016F
+0132: 1C EE 02   addsi L02EE   ; "My love! My flow...
+0135: 33   say
+0136: 1F B1 FF   pushi FFB1H   ; -79
+0139: 24 02 00   call [0002]   ; 08F7H
+013C: 12 02 00   pop [0002]
+013F: 21 02 00   push [0002]
+0142: 05 1F 00   jne 0164
+0145: 1F 00 00   pushi 0000H   ; 0
+0148: 1F B1 FF   pushi FFB1H   ; -79
+014B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+014F: 1C 95 03   addsi L0395   ; "Enough, my love....
+0152: 33   say
+0153: 1F B1 FF   pushi FFB1H   ; -79
+0156: 39 04 00 01  calli _HideNPC@1  ; 0004
+015A: 1F 00 00   pushi 0000H   ; 0
+015D: 1F B0 FF   pushi FFB0H   ; -80
+0160: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0164: 1C D3 03   addsi L03D3   ; De Maria stops hi...
+0167: 33   say
+0168: 1D 2D 04   pushs L042D   ; Zinaida
+016B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016F: 1D 35 04   pushs L0435   ; bye
+0172: 07 01 00 03 00  cmps 0001H, 017A
+0177: 06 03 00   jmp 017D
+017A: 06 DF FE   jmp 005C
+017D: 40   db 40 ???
+017E: 1C 39 04   addsi L0439   ; "Do take care of ...
+0181: 33   say
+0182: 48   push eventid
+0183: 1F 00 00   pushi 0000H   ; 0
+0186: 22   cmpeq
+0187: 05 06 00   jne 0190
+018A: 1F B0 FF   pushi FFB0H   ; -80
+018D: 24 03 00   call [0003]   ; 092EH
+0190: 25   ret

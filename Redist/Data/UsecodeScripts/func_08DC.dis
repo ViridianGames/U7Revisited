@@ -1,0 +1,162 @@
+  .funcnumber 08DCH
+  .data
+L0000: db 'Black Pearl'
+L000B: db 00
+L000C: db 'Mandrake Root'
+L0019: db 00
+L001A: db 'Sulfurous Ash'
+L0027: db 00
+L0028: db 'Blood Moss'
+L0032: db 00
+L0033: db 'Ginseng'
+L003A: db 00
+L003B: db 'nothing'
+L0042: db 00
+L0043: db 00
+L0044: db 00
+L0045: db '"What reagent wouldst thou like to buy?"'
+L006D: db 00
+L006E: db '"Fine."'
+L0075: db 00
+L0076: db '"^'
+L0078: db 00
+L0079: db ' Art thou willing to pay that much?"'
+L009D: db 00
+L009E: db '"How many wouldst thou like?"'
+L00BB: db 00
+L00BC: db '"Done!"'
+L00C3: db 00
+L00C4: db '"Thou cannot possibly carry that much!"'
+L00EB: db 00
+L00EC: db '"Thou dost not have enough gold for that!"'
+L0116: db 00
+L0117: db '"Wouldst thou like something else?"'
+L013A: db 00
+  .code
+  .argc 0000H
+  .localc 000DH
+  .externsize 0004H
+  .extern 090CH
+  .extern 091BH
+  .extern 090AH
+  .extern 08F8H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 13   push true
+0005: 12 00 00   pop [0000]
+0008: 1D 00 00   pushs L0000   ; Black Pearl
+000B: 1D 0C 00   pushs L000C   ; Mandrake Root
+000E: 1D 1A 00   pushs L001A   ; Sulfurous Ash
+0011: 1D 28 00   pushs L0028   ; Blood Moss
+0014: 1D 33 00   pushs L0033   ; Ginseng
+0017: 1D 3B 00   pushs L003B   ; nothing
+001A: 1E 06 00   arrc 0006H   ; 6
+001D: 12 01 00   pop [0001]
+0020: 1F 4A 03   pushi 034AH   ; 842
+0023: 1F 4A 03   pushi 034AH   ; 842
+0026: 1F 4A 03   pushi 034AH   ; 842
+0029: 1F 4A 03   pushi 034AH   ; 842
+002C: 1F 4A 03   pushi 034AH   ; 842
+002F: 1F 00 00   pushi 0000H   ; 0
+0032: 1E 06 00   arrc 0006H   ; 6
+0035: 12 02 00   pop [0002]
+0038: 1F 00 00   pushi 0000H   ; 0
+003B: 1F 03 00   pushi 0003H   ; 3
+003E: 1F 07 00   pushi 0007H   ; 7
+0041: 1F 01 00   pushi 0001H   ; 1
+0044: 1F 05 00   pushi 0005H   ; 5
+0047: 1F 99 FE   pushi FE99H   ; -359
+004A: 1E 06 00   arrc 0006H   ; 6
+004D: 12 03 00   pop [0003]
+0050: 1F 05 00   pushi 0005H   ; 5
+0053: 1F 05 00   pushi 0005H   ; 5
+0056: 1F 04 00   pushi 0004H   ; 4
+0059: 1F 03 00   pushi 0003H   ; 3
+005C: 1F 02 00   pushi 0002H   ; 2
+005F: 1F 00 00   pushi 0000H   ; 0
+0062: 1E 06 00   arrc 0006H   ; 6
+0065: 12 04 00   pop [0004]
+0068: 1D 43 00   pushs L0043   ; 
+006B: 12 05 00   pop [0005]
+006E: 1F 00 00   pushi 0000H   ; 0
+0071: 12 06 00   pop [0006]
+0074: 1D 44 00   pushs L0044   ; 
+0077: 12 07 00   pop [0007]
+007A: 1F 01 00   pushi 0001H   ; 1
+007D: 12 08 00   pop [0008]
+0080: 1C 45 00   addsi L0045   ; "What reagent wou...
+0083: 33   say
+0084: 21 00 00   push [0000]
+0087: 05 BB 00   jne 0145
+008A: 21 01 00   push [0001]
+008D: 24 00 00   call [0000]   ; 090CH
+0090: 12 09 00   pop [0009]
+0093: 21 09 00   push [0009]
+0096: 1F 01 00   pushi 0001H   ; 1
+0099: 22   cmpeq
+009A: 05 0B 00   jne 00A8
+009D: 1C 6E 00   addsi L006E   ; "Fine."
+00A0: 33   say
+00A1: 14   push false
+00A2: 12 00 00   pop [0000]
+00A5: 06 9A 00   jmp 0142
+00A8: 21 07 00   push [0007]
+00AB: 21 09 00   push [0009]
+00AE: 26 04 00   aidx [0004]
+00B1: 21 06 00   push [0006]
+00B4: 21 09 00   push [0009]
+00B7: 26 01 00   aidx [0001]
+00BA: 21 05 00   push [0005]
+00BD: 24 01 00   call [0001]   ; 091BH
+00C0: 12 0A 00   pop [000A]
+00C3: 1F 00 00   pushi 0000H   ; 0
+00C6: 12 0B 00   pop [000B]
+00C9: 1C 76 00   addsi L0076   ; "^
+00CC: 2F 0A 00   addsv [000A]
+00CF: 1C 79 00   addsi L0079   ;  Art thou willing...
+00D2: 33   say
+00D3: 24 02 00   call [0002]   ; 090AH
+00D6: 12 0C 00   pop [000C]
+00D9: 21 0C 00   push [000C]
+00DC: 05 26 00   jne 0105
+00DF: 1C 9E 00   addsi L009E   ; "How many wouldst...
+00E2: 33   say
+00E3: 14   push false
+00E4: 1F 01 00   pushi 0001H   ; 1
+00E7: 1F 14 00   pushi 0014H   ; 20
+00EA: 21 09 00   push [0009]
+00ED: 26 04 00   aidx [0004]
+00F0: 21 08 00   push [0008]
+00F3: 21 09 00   push [0009]
+00F6: 26 03 00   aidx [0003]
+00F9: 21 09 00   push [0009]
+00FC: 26 02 00   aidx [0002]
+00FF: 24 03 00   call [0003]   ; 08F8H
+0102: 12 0B 00   pop [000B]
+0105: 21 0B 00   push [000B]
+0108: 1F 01 00   pushi 0001H   ; 1
+010B: 22   cmpeq
+010C: 05 07 00   jne 0116
+010F: 1C BC 00   addsi L00BC   ; "Done!"
+0112: 33   say
+0113: 06 22 00   jmp 0138
+0116: 21 0B 00   push [000B]
+0119: 1F 02 00   pushi 0002H   ; 2
+011C: 22   cmpeq
+011D: 05 07 00   jne 0127
+0120: 1C C4 00   addsi L00C4   ; "Thou cannot poss...
+0123: 33   say
+0124: 06 11 00   jmp 0138
+0127: 21 0B 00   push [000B]
+012A: 1F 03 00   pushi 0003H   ; 3
+012D: 22   cmpeq
+012E: 05 07 00   jne 0138
+0131: 1C EC 00   addsi L00EC   ; "Thou dost not ha...
+0134: 33   say
+0135: 06 00 00   jmp 0138
+0138: 1C 17 01   addsi L0117   ; "Wouldst thou lik...
+013B: 33   say
+013C: 24 02 00   call [0002]   ; 090AH
+013F: 12 00 00   pop [0000]
+0142: 06 3F FF   jmp 0084
+0145: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0149: 25   ret

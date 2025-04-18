@@ -1,0 +1,13 @@
+  .funcnumber 0861H
+  .data
+L0000: db '"Thou didst just break the rule of The Game! Thou had best l'
+ db 'earn it!"*'
+L0046: db 00
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0000H
+0000: 1C 00 00   addsi L0000   ; "Thou didst just ...
+0003: 33   say
+0004: 3F   abrt
+0005: 25   ret

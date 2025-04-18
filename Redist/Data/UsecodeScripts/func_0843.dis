@@ -1,0 +1,25 @@
+  .funcnumber 0843H
+  .data
+  .code
+  .argc 0000H
+  .localc 0001H
+  .externsize 0000H
+0000: 1F DE FE   pushi FEDEH   ; -290
+0003: 39 04 00 01  calli _HideNPC@1  ; 0004
+0007: 1F 04 00   pushi 0004H   ; 4
+000A: 1F FD FF   pushi FFFDH   ; -3
+000D: 44 0B   pushw 1F0BH   ; 7947
+000F: 1F 04 00   pushi 0004H   ; 4
+0012: 44 27   pushw 4427H   ; 17447
+0014: 44 50   pushw 4450H   ; 17488
+0016: 44 01   pushw 1F01H   ; 7937
+0018: 1F 43 00   pushi 0043H   ; 67
+001B: 44 58   pushw 1F58H   ; 8024
+001D: 1F 08 00   pushi 0008H   ; 8
+0020: 44 46   pushw 1E46H   ; 7750
+0022: 1E 0B 00   arrc 000BH   ; 11
+0025: 3E   push itemref
+0026: 38 01 00 02  callis 0001, 2
+002A: 12 00 00   pop [0000]
+002D: 3F   abrt
+002E: 25   ret

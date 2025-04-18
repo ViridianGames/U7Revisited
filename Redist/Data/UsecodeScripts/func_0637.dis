@@ -1,0 +1,12 @@
+  .funcnumber 0637H
+  .data
+  .code   ;* Run ferry.
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 1F 1A 00   pushi 001AH   ; 26
+0003: 3E   push itemref
+0004: 39 8A 00 02  calli 008A, 2
+0008: 1F 9C FE   pushi FE9CH   ; -356
+000B: 39 92 00 01  calli 0092, 1
+000F: 25   ret

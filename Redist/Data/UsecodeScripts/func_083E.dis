@@ -1,0 +1,92 @@
+  .funcnumber 083EH ;* Winch.
+  .data
+  .code
+  .argc 0002H
+  .localc 0007H
+  .externsize 0003H
+  .extern 0828H
+  .extern 080EH
+  .extern 083FH
+0000: 21 00 00   push [0000]
+0003: 1F 01 00   pushi 0001H   ; 1
+0006: 22   cmpeq
+0007: 05 23 00   jne 002D
+000A: 21 01 00   push [0001]
+000D: 38 79 00 01  callis 0079, 1
+0011: 05 01 00   jne 0015
+0014: 2C   db 2c ???
+0015: 1F 07 00   pushi 0007H   ; 7
+0018: 21 01 00   push [0001]
+001B: 1F 31 06   pushi 0631H   ; 1585
+001E: 1F FF FF   pushi FFFFH   ; -1
+0021: 1F FE FF   pushi FFFEH   ; -2
+0024: 1F FE FF   pushi FFFEH   ; -2
+0027: 21 01 00   push [0001]
+002A: 24 00 00   call [0000]   ; 0828H
+002D: 21 00 00   push [0000]
+0030: 1F 02 00   pushi 0002H   ; 2
+0033: 22   cmpeq
+0034: 05 90 00   jne 00C7
+0037: 3E   push itemref
+0038: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+003C: 12 02 00   pop [0002]
+003F: 1F 00 00   pushi 0000H   ; 0
+0042: 1F 0F 00   pushi 000FH   ; 15
+0045: 1F 66 03   pushi 0366H   ; 870
+0048: 3E   push itemref
+0049: 38 35 00 04  callis 0035, 4
+004D: 12 03 00   pop [0003]
+0050: 1F 00 00   pushi 0000H   ; 0
+0053: 1F 0F 00   pushi 000FH   ; 15
+0056: 1F 03 02   pushi 0203H   ; 515
+0059: 3E   push itemref
+005A: 38 35 00 04  callis 0035, 4
+005E: 12 04 00   pop [0004]
+0061: 21 03 00   push [0003]
+0064: 21 04 00   push [0004]
+0067: 4A   arra
+0068: 12 03 00   pop [0003]
+006B: 1E 00 00   arrc 0000H   ; 0
+006E: 12 04 00   pop [0004]
+0071: 2E   sloop
+0072: 02 05 00 06 00 07 00 03 00 1B 00  db 2 ???
+0073:   db 5
+0074:   db 0
+0075:   db 6
+0076:   db 0
+0077:   db 7
+0078:   db 0
+0079:   db 3
+007A:   db 0
+007B:   db 1b
+007C:   db 0
+007D: 21 07 00   push [0007]
+0080: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0084: 21 02 00   push [0002]
+0087: 22   cmpeq
+0088: 05 0A 00   jne 0095
+008B: 21 04 00   push [0004]
+008E: 21 07 00   push [0007]
+0091: 4A   arra
+0092: 12 04 00   pop [0004]
+0095: 06 DA FF   jmp 0072
+0098: 21 04 00   push [0004]
+009B: 24 01 00   call [0001]   ; 080EH
+009E: 05 1B 00   jne 00BC
+00A1: 1F 04 00   pushi 0004H   ; 4
+00A4: 1F FF FF   pushi FFFFH   ; -1
+00A7: 44 0B   pushw 440BH   ; 17419
+00A9: 44 4E   pushw 1F4EH   ; 8014
+00AB: 1F 01 00   pushi 0001H   ; 1
+00AE: 44 46   pushw 1E46H   ; 7750
+00B0: 1E 06 00   arrc 0006H   ; 6
+00B3: 3E   push itemref
+00B4: 38 01 00 02  callis 0001, 2
+00B8: 12 08 00   pop [0008]
+00BB: 2C   db 2c ???
+00BC: 42 3D 00   pushf flag:[003D]
+00BF: 05 05 00   jne 00C7
+00C2: 14   push false
+00C3: 3E   push itemref
+00C4: 24 02 00   call [0002]   ; 083FH
+00C7: 25   ret

@@ -1,0 +1,15 @@
+  .funcnumber 06AEH
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0495H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 0A 00   jne 0012
+0008: 1F 6B FF   pushi FF6BH   ; -149
+000B: 38 1B 00 01  callis 001B, 1
+000F: 47 95 04   calle 0495H   ; 1173
+0012: 25   ret

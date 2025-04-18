@@ -1,0 +1,290 @@
+  .funcnumber 089DH
+  .data
+L0000: db '"To be able to heal, cure poison, and resurrect. To be inter'
+ db 'ested in one of these services?"'
+L005C: db 00
+L005D: db '"To need which of my services?"'
+L007C: db 00
+L007D: db 'resurrect'
+L0086: db 00
+L0087: db 'cure poison'
+L0092: db 00
+L0093: db 'heal'
+L0097: db 00
+L0098: db 'heal'
+L009C: db 00
+L009D: db 'cure poison'
+L00A8: db 00
+L00A9: db 'heal'
+L00AD: db 00
+L00AE: db 'healed'
+L00B4: db 00
+L00B5: db 'cure poison'
+L00C0: db 00
+L00C1: db 'cured of poison'
+L00D0: db 00
+L00D1: db '"To want to '
+L00DD: db 00
+L00DE: db ' whom?"'
+L00E5: db 00
+L00E6: db '"To have no need for my healing."'
+L0107: db 00
+L0108: db 'resurrect'
+L0111: db 00
+L0112: db '"To not see anyone who is in need of resurrection. To have t'
+ db 'o see the body to save the spirit. To lay your companion on '
+ db 'the ground so that I may return them to this world."*'
+L01BF: db 00
+L01C0: db '"To be sorely wounded. To attempt to restore them to this wo'
+ db 'rld."'
+L0201: db 00
+L0202: db '"To charge '
+L020D: db 00
+L020E: db ' gold. To still want my services?"'
+L0230: db 00
+L0231: db 'heal'
+L0235: db 00
+L0236: db '"To have healed the wounds."'
+L0252: db 00
+L0253: db '"To seem quite healthy!"'
+L026B: db 00
+L026C: db '"To be already healthy!"'
+L0284: db 00
+L0285: db 'cure poison'
+L0290: db 00
+L0291: db '"To have healed the wounds."'
+L02AD: db 00
+L02AE: db '"To not need curing!"'
+L02C3: db 00
+L02C4: db 'resurrect'
+L02CD: db 00
+L02CE: db '"To not be able to save them. To give them a proper burial  '
+ db '  for you."'
+L0315: db 00
+L0316: db '"To breathe again. To be alive!"'
+L0336: db 00
+L0337: db '"To have not that much gold! To perhaps return with more and'
+ db ' purchase the service then."'
+L038F: db 00
+L0390: db '"Sorry. To look elsewhere for that service then."'
+L03C1: db 00
+L03C2: db '"To be here later if you need me."'
+L03E4: db 00
+  .code
+  .argc 0003H
+  .localc 0010H
+  .externsize 0005H
+  .extern 090AH
+  .extern 090BH
+  .extern 090EH
+  .extern 0910H
+  .extern 0912H
+0000: 1C 00 00   addsi L0000   ; "To be able to he...
+0003: 33   say
+0004: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0008: 24 00 00   call [0000]   ; 090AH
+000B: 12 03 00   pop [0003]
+000E: 21 03 00   push [0003]
+0011: 05 17 02   jne 022B
+0014: 1C 5D 00   addsi L005D   ; "To need which of...
+0017: 33   say
+0018: 1D 7D 00   pushs L007D   ; resurrect
+001B: 1D 87 00   pushs L0087   ; cure poison
+001E: 1D 93 00   pushs L0093   ; heal
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 12 04 00   pop [0004]
+0027: 21 04 00   push [0004]
+002A: 24 01 00   call [0001]   ; 090BH
+002D: 12 05 00   pop [0005]
+0030: 21 05 00   push [0005]
+0033: 1D 98 00   pushs L0098   ; heal
+0036: 22   cmpeq
+0037: 21 05 00   push [0005]
+003A: 1D 9D 00   pushs L009D   ; cure poison
+003D: 22   cmpeq
+003E: 0F   or
+003F: 05 4D 00   jne 008F
+0042: 21 05 00   push [0005]
+0045: 1D A9 00   pushs L00A9   ; heal
+0048: 22   cmpeq
+0049: 05 0C 00   jne 0058
+004C: 1D AE 00   pushs L00AE   ; healed
+004F: 12 06 00   pop [0006]
+0052: 21 02 00   push [0002]
+0055: 12 07 00   pop [0007]
+0058: 21 05 00   push [0005]
+005B: 1D B5 00   pushs L00B5   ; cure poison
+005E: 22   cmpeq
+005F: 05 0C 00   jne 006E
+0062: 1D C1 00   pushs L00C1   ; cured of poison
+0065: 12 06 00   pop [0006]
+0068: 21 01 00   push [0001]
+006B: 12 07 00   pop [0007]
+006E: 1C D1 00   addsi L00D1   ; "To want to 
+0071: 2F 06 00   addsv [0006]
+0074: 1C DE 00   addsi L00DE   ;  whom?"
+0077: 33   say
+0078: 24 02 00   call [0002]   ; 090EH
+007B: 12 08 00   pop [0008]
+007E: 21 08 00   push [0008]
+0081: 1F 00 00   pushi 0000H   ; 0
+0084: 22   cmpeq
+0085: 05 07 00   jne 008F
+0088: 1C E6 00   addsi L00E6   ; "To have no need ...
+008B: 33   say
+008C: 06 A0 01   jmp 022F
+008F: 21 05 00   push [0005]
+0092: 1D 08 01   pushs L0108   ; resurrect
+0095: 22   cmpeq
+0096: 05 4C 00   jne 00E5
+0099: 38 22 00 00  callis 0022, 0
+009D: 12 09 00   pop [0009]
+00A0: 1F 19 00   pushi 0019H   ; 25
+00A3: 1F 90 01   pushi 0190H   ; 400
+00A6: 21 09 00   push [0009]
+00A9: 38 0E 00 03  callis 000E, 3
+00AD: 12 0A 00   pop [000A]
+00B0: 21 0A 00   push [000A]
+00B3: 1F 00 00   pushi 0000H   ; 0
+00B6: 22   cmpeq
+00B7: 05 21 00   jne 00DB
+00BA: 1F 19 00   pushi 0019H   ; 25
+00BD: 1F 9E 01   pushi 019EH   ; 414
+00C0: 21 09 00   push [0009]
+00C3: 38 0E 00 03  callis 000E, 3
+00C7: 12 0A 00   pop [000A]
+00CA: 21 0A 00   push [000A]
+00CD: 1F 00 00   pushi 0000H   ; 0
+00D0: 22   cmpeq
+00D1: 05 07 00   jne 00DB
+00D4: 1C 12 01   addsi L0112   ; "To not see anyon...
+00D7: 33   say
+00D8: 06 54 01   jmp 022F
+00DB: 1C C0 01   addsi L01C0   ; "To be sorely wou...
+00DE: 33   say
+00DF: 21 00 00   push [0000]
+00E2: 12 07 00   pop [0007]
+00E5: 1C 02 02   addsi L0202   ; "To charge 
+00E8: 2F 07 00   addsv [0007]
+00EB: 1C 0E 02   addsi L020E   ;  gold. To still w...
+00EE: 33   say
+00EF: 24 00 00   call [0000]   ; 090AH
+00F2: 12 0B 00   pop [000B]
+00F5: 21 0B 00   push [000B]
+00F8: 05 29 01   jne 0224
+00FB: 1F 99 FE   pushi FE99H   ; -359
+00FE: 1F 99 FE   pushi FE99H   ; -359
+0101: 1F 84 02   pushi 0284H   ; 644
+0104: 1F 9B FE   pushi FE9BH   ; -357
+0107: 38 28 00 04  callis 0028, 4
+010B: 12 0C 00   pop [000C]
+010E: 21 0C 00   push [000C]
+0111: 21 07 00   push [0007]
+0114: 18   cmpge
+0115: 05 05 01   jne 021D
+0118: 21 05 00   push [0005]
+011B: 1D 31 02   pushs L0231   ; heal
+011E: 22   cmpeq
+011F: 05 6B 00   jne 018D
+0122: 1F 00 00   pushi 0000H   ; 0
+0125: 21 08 00   push [0008]
+0128: 24 03 00   call [0003]   ; 0910H
+012B: 12 0D 00   pop [000D]
+012E: 1F 03 00   pushi 0003H   ; 3
+0131: 21 08 00   push [0008]
+0134: 24 03 00   call [0003]   ; 0910H
+0137: 12 0E 00   pop [000E]
+013A: 21 0D 00   push [000D]
+013D: 21 0E 00   push [000E]
+0140: 16   cmpgt
+0141: 05 31 00   jne 0175
+0144: 21 0D 00   push [000D]
+0147: 21 0E 00   push [000E]
+014A: 0A   sub
+014B: 12 0F 00   pop [000F]
+014E: 21 0F 00   push [000F]
+0151: 1F 03 00   pushi 0003H   ; 3
+0154: 21 08 00   push [0008]
+0157: 24 04 00   call [0004]   ; 0912H
+015A: 13   push true
+015B: 1F 99 FE   pushi FE99H   ; -359
+015E: 1F 99 FE   pushi FE99H   ; -359
+0161: 1F 84 02   pushi 0284H   ; 644
+0164: 21 07 00   push [0007]
+0167: 38 2B 00 05  callis 002B, 5
+016B: 12 10 00   pop [0010]
+016E: 1C 36 02   addsi L0236   ; "To have healed t...
+0171: 33   say
+0172: 06 15 00   jmp 018A
+0175: 21 08 00   push [0008]
+0178: 1F 9C FE   pushi FE9CH   ; -356
+017B: 22   cmpeq
+017C: 05 07 00   jne 0186
+017F: 1C 53 02   addsi L0253   ; "To seem quite he...
+0182: 33   say
+0183: 06 04 00   jmp 018A
+0186: 1C 6C 02   addsi L026C   ; "To be already he...
+0189: 33   say
+018A: 06 8D 00   jmp 021A
+018D: 21 05 00   push [0005]
+0190: 1D 85 02   pushs L0285   ; cure poison
+0193: 22   cmpeq
+0194: 05 43 00   jne 01DA
+0197: 21 08 00   push [0008]
+019A: 38 1B 00 01  callis 001B, 1
+019E: 12 11 00   pop [0011]
+01A1: 1F 08 00   pushi 0008H   ; 8
+01A4: 21 11 00   push [0011]
+01A7: 38 88 00 02  callis 0088, 2
+01AB: 05 25 00   jne 01D3
+01AE: 1F 08 00   pushi 0008H   ; 8
+01B1: 21 11 00   push [0011]
+01B4: 39 8A 00 02  calli 008A, 2
+01B8: 13   push true
+01B9: 1F 99 FE   pushi FE99H   ; -359
+01BC: 1F 99 FE   pushi FE99H   ; -359
+01BF: 1F 84 02   pushi 0284H   ; 644
+01C2: 21 07 00   push [0007]
+01C5: 38 2B 00 05  callis 002B, 5
+01C9: 12 10 00   pop [0010]
+01CC: 1C 91 02   addsi L0291   ; "To have healed t...
+01CF: 33   say
+01D0: 06 04 00   jmp 01D7
+01D3: 1C AE 02   addsi L02AE   ; "To not need curi...
+01D6: 33   say
+01D7: 06 40 00   jmp 021A
+01DA: 21 05 00   push [0005]
+01DD: 1D C4 02   pushs L02C4   ; resurrect
+01E0: 22   cmpeq
+01E1: 05 36 00   jne 021A
+01E4: 21 0A 00   push [000A]
+01E7: 38 51 00 01  callis 0051, 1
+01EB: 12 12 00   pop [0012]
+01EE: 21 12 00   push [0012]
+01F1: 1F 00 00   pushi 0000H   ; 0
+01F4: 22   cmpeq
+01F5: 05 07 00   jne 01FF
+01F8: 1C CE 02   addsi L02CE   ; "To not be able t...
+01FB: 33   say
+01FC: 06 18 00   jmp 0217
+01FF: 1C 16 03   addsi L0316   ; "To breathe again...
+0202: 33   say
+0203: 13   push true
+0204: 1F 99 FE   pushi FE99H   ; -359
+0207: 1F 99 FE   pushi FE99H   ; -359
+020A: 1F 84 02   pushi 0284H   ; 644
+020D: 21 07 00   push [0007]
+0210: 38 2B 00 05  callis 002B, 5
+0214: 12 10 00   pop [0010]
+0217: 06 00 00   jmp 021A
+021A: 06 04 00   jmp 0221
+021D: 1C 37 03   addsi L0337   ; "To have not that...
+0220: 33   say
+0221: 06 04 00   jmp 0228
+0224: 1C 90 03   addsi L0390   ; "Sorry. To look e...
+0227: 33   say
+0228: 06 04 00   jmp 022F
+022B: 1C C2 03   addsi L03C2   ; "To be here later...
+022E: 33   say
+022F: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0233: 25   ret

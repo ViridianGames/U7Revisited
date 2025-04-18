@@ -1,0 +1,47 @@
+  .funcnumber 08E7H
+  .data
+  .code
+  .argc 0000H
+  .localc 0003H
+  .externsize 0000H
+0000: 1F 9C FE   pushi FE9CH   ; -356
+0003: 38 1B 00 01  callis 001B, 1
+0007: 38 18 00 01  callis 0018, 1
+000B: 12 00 00   pop [0000]
+000E: 1F 70 05   pushi 0570H   ; 1392
+0011: 1F 90 07   pushi 0790H   ; 1936
+0014: 1E 02 00   arrc 0002H   ; 2
+0017: 12 01 00   pop [0001]
+001A: 1F CF 06   pushi 06CFH   ; 1743
+001D: 1F BF 09   pushi 09BFH   ; 2495
+0020: 1E 02 00   arrc 0002H   ; 2
+0023: 12 02 00   pop [0002]
+0026: 1F 01 00   pushi 0001H   ; 1
+0029: 26 00 00   aidx [0000]
+002C: 1F 01 00   pushi 0001H   ; 1
+002F: 26 01 00   aidx [0001]
+0032: 18   cmpge
+0033: 05 34 00   jne 006A
+0036: 1F 02 00   pushi 0002H   ; 2
+0039: 26 00 00   aidx [0000]
+003C: 1F 02 00   pushi 0002H   ; 2
+003F: 26 01 00   aidx [0001]
+0042: 18   cmpge
+0043: 05 24 00   jne 006A
+0046: 1F 01 00   pushi 0001H   ; 1
+0049: 26 00 00   aidx [0000]
+004C: 1F 01 00   pushi 0001H   ; 1
+004F: 26 02 00   aidx [0002]
+0052: 19   cmple
+0053: 05 14 00   jne 006A
+0056: 1F 02 00   pushi 0002H   ; 2
+0059: 26 00 00   aidx [0000]
+005C: 1F 02 00   pushi 0002H   ; 2
+005F: 26 02 00   aidx [0002]
+0062: 19   cmple
+0063: 05 04 00   jne 006A
+0066: 1F 01 00   pushi 0001H   ; 1
+0069: 2D   setr
+006A: 1F 00 00   pushi 0000H   ; 0
+006D: 2D   setr
+006E: 32   rts

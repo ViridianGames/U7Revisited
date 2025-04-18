@@ -1,0 +1,54 @@
+  .funcnumber 091AH
+  .data
+L0000: db '"The Fellowship advances the philosophy of 'sanguine cogniti'
+ db 'on', a way to apply a confident order of thought to one's li'
+ db 'fe, through what is called the Triad of Inner Strength. The '
+ db 'Triad is simply three basic principles that, when applied in'
+ db ' unison, enable one to be more creative, satisfied, and succ'
+ db 'essful in life. They are: Strive For Unity, Trust Thy Brothe'
+ db 'r, and Worthiness Precedes Reward. Strive For Unity basicall'
+ db 'y means that people should cooperate and work together. Trus'
+ db 't Thy Brother implies that we are all the same and that we s'
+ db 'hould not hate or fear each other. Worthiness Precedes Rewar'
+ db 'd suggests that we must each strive to be worthy of that whi'
+ db 'ch we want out of life."'
+L02AC: db 00
+L02AD: db '"Dost thou want to join?"'
+L02C6: db 00
+L02C7: db '"Then thou shouldst go immediately to see Batlin at the Fell'
+ db 'owship Hall headquarters in Britain."'
+L0328: db 00
+L0329: db '"Oh. Well, perhaps thou canst become enlightened another tim'
+ db 'e."'
+L0368: db 00
+L0369: db '"Oh! I just now noticed thy medallion! Thou dost already kno'
+ db 'w all of this! Thou art one of us! Excuse me for going on an'
+ db 'd on about it!"'
+L03F0: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0001H
+  .extern 090AH
+0000: 1C 00 00   addsi L0000   ; "The Fellowship a...
+0003: 33   say
+0004: 38 67 00 00  callis 0067, 0
+0008: 12 00 00   pop [0000]
+000B: 21 00 00   push [0000]
+000E: 10   not
+000F: 05 1E 00   jne 0030
+0012: 1C AD 02   addsi L02AD   ; "Dost thou want t...
+0015: 33   say
+0016: 24 00 00   call [0000]   ; 090AH
+0019: 12 01 00   pop [0001]
+001C: 21 01 00   push [0001]
+001F: 05 07 00   jne 0029
+0022: 1C C7 02   addsi L02C7   ; "Then thou should...
+0025: 33   say
+0026: 06 04 00   jmp 002D
+0029: 1C 29 03   addsi L0329   ; "Oh. Well, perhap...
+002C: 33   say
+002D: 06 04 00   jmp 0034
+0030: 1C 69 03   addsi L0369   ; "Oh! I just now n...
+0033: 33   say
+0034: 25   ret

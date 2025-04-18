@@ -1,0 +1,29 @@
+  .funcnumber 091FH
+  .data
+L0000: db '"Breath doth return to the body. Thy comrade is alive!"'
+L0037: db 00
+L0038: db '"Alas, I cannot save thy friend. I will provide a proper bur'
+ db 'ial. Thou must go on and continue with thine own life."'
+L00AB: db 00
+  .code
+  .argc 0002H
+  .localc 0002H
+  .externsize 0000H
+0000: 21 01 00   push [0001]
+0003: 38 51 00 01  callis 0051, 1
+0007: 12 02 00   pop [0002]
+000A: 21 02 00   push [0002]
+000D: 05 1B 00   jne 002B
+0010: 1C 00 00   addsi L0000   ; "Breath doth retu...
+0013: 33   say
+0014: 13   push true
+0015: 1F 99 FE   pushi FE99H   ; -359
+0018: 1F 99 FE   pushi FE99H   ; -359
+001B: 1F 84 02   pushi 0284H   ; 644
+001E: 21 00 00   push [0000]
+0021: 38 2B 00 05  callis 002B, 5
+0025: 12 03 00   pop [0003]
+0028: 06 04 00   jmp 002F
+002B: 1C 38 00   addsi L0038   ; "Alas, I cannot s...
+002E: 33   say
+002F: 25   ret

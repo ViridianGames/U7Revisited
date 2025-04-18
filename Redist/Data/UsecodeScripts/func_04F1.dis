@@ -1,0 +1,431 @@
+  .funcnumber 04F1H
+  .data
+L0000: db '"Go away, bee killers!"*'
+L0018: db 00
+L0019: db 'bye'
+L001C: db 00
+L001D: db 'job'
+L0020: db 00
+L0021: db 'name'
+L0025: db 00
+L0026: db 'You see a naked man who looks a bit wild. He is not in the l'
+ db 'east concerned that he has on no clothes.'
+L008B: db 00
+L008C: db '"Huh?" asks Papa.'
+L009D: db 00
+L009E: db 'name'
+L00A2: db 00
+L00A3: db '"I am Murray."'
+L00B1: db 00
+L00B2: db '"Me Papa!" The man grins, revealing several missing teeth. H'
+ db 'e nonchalantly scratches his behind.'
+L0112: db 00
+L0113: db 'name'
+L0117: db 00
+L0118: db 'Where are thy clothes?'
+L012E: db 00
+L012F: db 'job'
+L0132: db 00
+L0133: db '"Hey, what job? I am having a great time here. Leave me alon'
+ db 'e!"'
+L0172: db 00
+L0173: db 'The man looks confused. "Job? Me no job. Me live. Me live he'
+ db 're with Mama. No need job. Cave provides all."'
+L01DD: db 00
+L01DE: db 'cave'
+L01E2: db 00
+L01E3: db 'Mama'
+L01E7: db 00
+L01E8: db 'Where are thy clothes?'
+L01FE: db 00
+L01FF: db '"They make me itch so I do not wear any."'
+L0228: db 00
+L0229: db '"Clothes?!" The man laughs heartily and slaps his belly. "No'
+ db ' clothes, no clothes," he assures you, still chuckling.'
+L029C: db 00
+L029D: db 'Where are thy clothes?'
+L02B3: db 00
+L02B4: db 'Mama'
+L02B8: db 00
+L02B9: db '"Quite a lady, is she not?" He nudges you and winks.'
+L02ED: db 00
+L02EE: db '"Mmm. Mama! Me Papa. She Mama. We make zug-zug. Maybe someda'
+ db 'y make Boy or Girl!"'
+L033E: db 00
+L033F: db 'Mama'
+L0343: db 00
+L0344: db 'cave'
+L0348: db 00
+L0349: db '"We love the cave. The bees do not bother us. When they slee'
+ db 'p we get our honey. We cook mice on the campfire. They are r'
+ db 'eally not bad. Thou shouldst try them!"'
+L03E8: db 00
+L03E9: db '"Cave good to us. We stay away from bees. They no hurt us. W'
+ db 'e no hurt them. We take honey when they sleep. We eat the mi'
+ db 'ce in cave. Cook them up on campfire. Very good!"*'
+L0493: db 00
+L0494: db '"I may puke."*'
+L04A2: db 00
+L04A3: db 'cave'
+L04A7: db 00
+L04A8: db 'mice'
+L04AC: db 00
+L04AD: db 'honey'
+L04B2: db 00
+L04B3: db 'bees'
+L04B7: db 00
+L04B8: db 'bees'
+L04BC: db 00
+L04BD: db '"They won't bother thee if thou dost not bother them."'
+L04F3: db 00
+L04F4: db '"They friendly if we no hurt them."'
+L0517: db 00
+L0518: db 'The man sees Tseramed and frowns. He points at you accusingl'
+ db 'y. "Hunt bees?"'
+L0563: db 00
+L0564: db '"Go away!" The man spits at you and turns away.*'
+L0594: db 00
+L0595: db 'He points at Tseramed. "Him bee hunter! Go away!" The man sp'
+ db 'its at you and turns away.*'
+L05EC: db 00
+L05ED: db '"This is an act, I tell thee! These people are not savages! '
+ db 'They are Britannians!"*'
+L0640: db 00
+L0641: db '"He seems quite savage to me!"*'
+L0660: db 00
+L0661: db 'bees'
+L0665: db 00
+L0666: db 'friendly'
+L066E: db 00
+L066F: db 'honey'
+L0674: db 00
+L0675: db 'The man rubs his belly and smiles, licking his lips.~~ "Yumm'
+ db 'mmmmmmmmmmm!"'
+L06BE: db 00
+L06BF: db 'honey'
+L06C4: db 00
+L06C5: db 'mice'
+L06C9: db 00
+L06CA: db 'The man rubs his belly and makes smacking noises with his mo'
+ db 'uth.~~"Mmmmmmmmmmmmmmm!"'
+L071E: db 00
+L071F: db 'mice'
+L0723: db 00
+L0724: db 'friendly'
+L072C: db 00
+L072D: db '"Sure. They know Mama and me. We are their friends."'
+L0761: db 00
+L0762: db 'The man nods. "They know Mama and me. We are bees' friends. '
+ db 'Bees let us have honey when bees sleep. Bees no like giving '
+ db 'honey if bees awake."'
+L07EF: db 00
+L07F0: db 'friendly'
+L07F8: db 00
+L07F9: db 'Mama and thee'
+L0806: db 00
+L0807: db 'Mama and thee'
+L0814: db 00
+L0815: db '"I told thee. We have been here a long time."'
+L0842: db 00
+L0843: db '"Mama and me live in cave since babies."'
+L086B: db 00
+L086C: db '"Avatar! They must have been abandoned in here! Why, they mu'
+ db 'st be brother and sister!"'
+L08C2: db 00
+L08C3: db 'babies'
+L08C9: db 00
+L08CA: db 'Mama and thee'
+L08D7: db 00
+L08D8: db 'babies'
+L08DE: db 00
+L08DF: db 'The man nods. "We babies then."'
+L08FE: db 00
+L08FF: db 'babies'
+L0905: db 00
+L0906: db 'Art thou from Yew?'
+L0918: db 00
+L0919: db 'Art thou from Yew?'
+L092B: db 00
+L092C: db 'The man's eyes widen, realizes you are serious, then rolls h'
+ db 'is eyes to the floor.~~"Damn! All right. Thou didst catch me'
+ db '. Thou art right. Mama and I are from Yew," the man speaks i'
+ db 'n a perfect voice booming with intelligence. He then laughs '
+ db 'heartily. "We had thee going, though, did we not!"'
+L0A4E: db 00
+L0A4F: db 'Art thou from Yew?'
+L0A61: db 00
+L0A62: db 'Yew'
+L0A65: db 00
+L0A66: db 'Yew'
+L0A69: db 00
+L0A6A: db '"That's right. My real name is Murray. Mama is really Myrtle'
+ db '. I was a fully licensed apothecary in the town until the Br'
+ db 'itannian Tax Council came after me. They wanted the shirt of'
+ db 'f my back, so I gave it to them!'
+L0B3E: db 00
+L0B3F: db '"Since then, Myrtle and I prefer to live down here with the '
+ db 'bees. Life is so... carefree down here. We have chosen to li'
+ db 've with nature. Now, if thou dost not mind, I shall isolate '
+ db 'myself from thee and bid thee farewell."*'
+L0C1C: db 00
+L0C1D: db 'bye'
+L0C20: db 00
+L0C21: db 'Papa smiles and waves.*'
+L0C38: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 0F FF   pushi FF0FH   ; -241
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 42 D3 02   pushf flag:[02D3]
+0016: 05 05 00   jne 001E
+0019: 1C 00 00   addsi L0000   ; "Go away, bee kil...
+001C: 33   say
+001D: 3F   abrt
+001E: 14   push false
+001F: 12 00 00   pop [0000]
+0022: 1F F6 FF   pushi FFF6H   ; -10
+0025: 24 00 00   call [0000]   ; 08F7H
+0028: 12 01 00   pop [0001]
+002B: 1F FF FF   pushi FFFFH   ; -1
+002E: 24 00 00   call [0000]   ; 08F7H
+0031: 12 02 00   pop [0002]
+0034: 42 D4 02   pushf flag:[02D4]
+0037: 05 04 00   jne 003E
+003A: 13   push true
+003B: 12 00 00   pop [0000]
+003E: 1D 19 00   pushs L0019   ; bye
+0041: 1D 1D 00   pushs L001D   ; job
+0044: 1D 21 00   pushs L0021   ; name
+0047: 1E 03 00   arrc 0003H   ; 3
+004A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004E: 42 BF 02   pushf flag:[02BF]
+0051: 10   not
+0052: 05 0B 00   jne 0060
+0055: 1C 26 00   addsi L0026   ; You see a naked m...
+0058: 33   say
+0059: 13   push true
+005A: 43 BF 02   popf flag:[02BF]
+005D: 06 04 00   jmp 0064
+0060: 1C 8C 00   addsi L008C   ; "Huh?" asks Papa.
+0063: 33   say
+0064: 04 5D 02   je 02C4
+0067: 1D 9E 00   pushs L009E   ; name
+006A: 07 01 00 1F 00  cmps 0001H, 008E
+006F: 21 00 00   push [0000]
+0072: 05 07 00   jne 007C
+0075: 1C A3 00   addsi L00A3   ; "I am Murray."
+0078: 33   say
+0079: 06 04 00   jmp 0080
+007C: 1C B2 00   addsi L00B2   ; "Me Papa!" The ma...
+007F: 33   say
+0080: 1D 13 01   pushs L0113   ; name
+0083: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0087: 1D 18 01   pushs L0118   ; Where are thy clo...
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 1D 2F 01   pushs L012F   ; job
+0091: 07 01 00 1E 00  cmps 0001H, 00B4
+0096: 21 00 00   push [0000]
+0099: 05 07 00   jne 00A3
+009C: 1C 33 01   addsi L0133   ; "Hey, what job? I...
+009F: 33   say
+00A0: 06 04 00   jmp 00A7
+00A3: 1C 73 01   addsi L0173   ; The man looks con...
+00A6: 33   say
+00A7: 1D DE 01   pushs L01DE   ; cave
+00AA: 1D E3 01   pushs L01E3   ; Mama
+00AD: 1E 02 00   arrc 0002H   ; 2
+00B0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B4: 1D E8 01   pushs L01E8   ; Where are thy clo...
+00B7: 07 01 00 18 00  cmps 0001H, 00D4
+00BC: 21 00 00   push [0000]
+00BF: 05 07 00   jne 00C9
+00C2: 1C FF 01   addsi L01FF   ; "They make me itc...
+00C5: 33   say
+00C6: 06 04 00   jmp 00CD
+00C9: 1C 29 02   addsi L0229   ; "Clothes?!" The m...
+00CC: 33   say
+00CD: 1D 9D 02   pushs L029D   ; Where are thy clo...
+00D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D4: 1D B4 02   pushs L02B4   ; Mama
+00D7: 07 01 00 18 00  cmps 0001H, 00F4
+00DC: 21 00 00   push [0000]
+00DF: 05 07 00   jne 00E9
+00E2: 1C B9 02   addsi L02B9   ; "Quite a lady, is...
+00E5: 33   say
+00E6: 06 04 00   jmp 00ED
+00E9: 1C EE 02   addsi L02EE   ; "Mmm. Mama! Me Pa...
+00EC: 33   say
+00ED: 1D 3F 03   pushs L033F   ; Mama
+00F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F4: 1D 44 03   pushs L0344   ; cave
+00F7: 07 01 00 56 00  cmps 0001H, 0152
+00FC: 21 00 00   push [0000]
+00FF: 05 07 00   jne 0109
+0102: 1C 49 03   addsi L0349   ; "We love the cave...
+0105: 33   say
+0106: 06 04 00   jmp 010D
+0109: 1C E9 03   addsi L03E9   ; "Cave good to us....
+010C: 33   say
+010D: 1F FF FF   pushi FFFFH   ; -1
+0110: 24 00 00   call [0000]   ; 08F7H
+0113: 12 02 00   pop [0002]
+0116: 21 02 00   push [0002]
+0119: 05 1F 00   jne 013B
+011C: 1F 00 00   pushi 0000H   ; 0
+011F: 1F FF FF   pushi FFFFH   ; -1
+0122: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0126: 1C 94 04   addsi L0494   ; "I may puke."*
+0129: 33   say
+012A: 1F FF FF   pushi FFFFH   ; -1
+012D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0131: 1F 00 00   pushi 0000H   ; 0
+0134: 1F 0F FF   pushi FF0FH   ; -241
+0137: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+013B: 1D A3 04   pushs L04A3   ; cave
+013E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0142: 1D A8 04   pushs L04A8   ; mice
+0145: 1D AD 04   pushs L04AD   ; honey
+0148: 1D B3 04   pushs L04B3   ; bees
+014B: 1E 03 00   arrc 0003H   ; 3
+014E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0152: 1D B8 04   pushs L04B8   ; bees
+0155: 07 01 00 74 00  cmps 0001H, 01CE
+015A: 21 00 00   push [0000]
+015D: 05 07 00   jne 0167
+0160: 1C BD 04   addsi L04BD   ; "They won't bothe...
+0163: 33   say
+0164: 06 59 00   jmp 01C0
+0167: 1C F4 04   addsi L04F4   ; "They friendly if...
+016A: 33   say
+016B: 21 01 00   push [0001]
+016E: 05 4F 00   jne 01C0
+0171: 1C 18 05   addsi L0518   ; The man sees Tser...
+0174: 33   say
+0175: 24 01 00   call [0001]   ; 090AH
+0178: 05 0C 00   jne 0187
+017B: 1C 64 05   addsi L0564   ; "Go away!" The ma...
+017E: 33   say
+017F: 13   push true
+0180: 43 D3 02   popf flag:[02D3]
+0183: 3F   abrt
+0184: 06 34 00   jmp 01BB
+0187: 1C 95 05   addsi L0595   ; He points at Tser...
+018A: 33   say
+018B: 1F 00 00   pushi 0000H   ; 0
+018E: 1F F6 FF   pushi FFF6H   ; -10
+0191: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0195: 1C ED 05   addsi L05ED   ; "This is an act, ...
+0198: 33   say
+0199: 1F F6 FF   pushi FFF6H   ; -10
+019C: 39 04 00 01  calli _HideNPC@1  ; 0004
+01A0: 21 02 00   push [0002]
+01A3: 05 15 00   jne 01BB
+01A6: 1F 00 00   pushi 0000H   ; 0
+01A9: 1F FF FF   pushi FFFFH   ; -1
+01AC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01B0: 1C 41 06   addsi L0641   ; "He seems quite s...
+01B3: 33   say
+01B4: 1F FF FF   pushi FFFFH   ; -1
+01B7: 39 04 00 01  calli _HideNPC@1  ; 0004
+01BB: 13   push true
+01BC: 43 D3 02   popf flag:[02D3]
+01BF: 3F   abrt
+01C0: 1D 61 06   pushs L0661   ; bees
+01C3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C7: 1D 66 06   pushs L0666   ; friendly
+01CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CE: 1D 6F 06   pushs L066F   ; honey
+01D1: 07 01 00 0B 00  cmps 0001H, 01E1
+01D6: 1C 75 06   addsi L0675   ; The man rubs his ...
+01D9: 33   say
+01DA: 1D BF 06   pushs L06BF   ; honey
+01DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E1: 1D C5 06   pushs L06C5   ; mice
+01E4: 07 01 00 0B 00  cmps 0001H, 01F4
+01E9: 1C CA 06   addsi L06CA   ; The man rubs his ...
+01EC: 33   say
+01ED: 1D 1F 07   pushs L071F   ; mice
+01F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F4: 1D 24 07   pushs L0724   ; friendly
+01F7: 07 01 00 1F 00  cmps 0001H, 021B
+01FC: 21 00 00   push [0000]
+01FF: 05 07 00   jne 0209
+0202: 1C 2D 07   addsi L072D   ; "Sure. They know ...
+0205: 33   say
+0206: 06 04 00   jmp 020D
+0209: 1C 62 07   addsi L0762   ; The man nods. "Th...
+020C: 33   say
+020D: 1D F0 07   pushs L07F0   ; friendly
+0210: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0214: 1D F9 07   pushs L07F9   ; Mama and thee
+0217: 39 05 00 01  calli _AddAnswer@1  ; 0005
+021B: 1D 07 08   pushs L0807   ; Mama and thee
+021E: 07 01 00 44 00  cmps 0001H, 0267
+0223: 21 00 00   push [0000]
+0226: 05 07 00   jne 0230
+0229: 1C 15 08   addsi L0815   ; "I told thee. We ...
+022C: 33   say
+022D: 06 30 00   jmp 0260
+0230: 1C 43 08   addsi L0843   ; "Mama and me live...
+0233: 33   say
+0234: 21 02 00   push [0002]
+0237: 05 1F 00   jne 0259
+023A: 1F 00 00   pushi 0000H   ; 0
+023D: 1F FF FF   pushi FFFFH   ; -1
+0240: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0244: 1C 6C 08   addsi L086C   ; "Avatar! They mus...
+0247: 33   say
+0248: 1F FF FF   pushi FFFFH   ; -1
+024B: 39 04 00 01  calli _HideNPC@1  ; 0004
+024F: 1F 00 00   pushi 0000H   ; 0
+0252: 1F 0F FF   pushi FF0FH   ; -241
+0255: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0259: 1D C3 08   pushs L08C3   ; babies
+025C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0260: 1D CA 08   pushs L08CA   ; Mama and thee
+0263: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0267: 1D D8 08   pushs L08D8   ; babies
+026A: 07 01 00 18 00  cmps 0001H, 0287
+026F: 1C DF 08   addsi L08DF   ; The man nods. "We...
+0272: 33   say
+0273: 1D FF 08   pushs L08FF   ; babies
+0276: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027A: 42 52 01   pushf flag:[0152]
+027D: 05 07 00   jne 0287
+0280: 1D 06 09   pushs L0906   ; Art thou from Yew?
+0283: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0287: 1D 19 09   pushs L0919   ; Art thou from Yew?
+028A: 07 01 00 16 00  cmps 0001H, 02A5
+028F: 1C 2C 09   addsi L092C   ; The man's eyes wi...
+0292: 33   say
+0293: 13   push true
+0294: 43 D4 02   popf flag:[02D4]
+0297: 1D 4F 0A   pushs L0A4F   ; Art thou from Yew?
+029A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029E: 1D 62 0A   pushs L0A62   ; Yew
+02A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02A5: 1D 66 0A   pushs L0A66   ; Yew
+02A8: 07 01 00 09 00  cmps 0001H, 02B6
+02AD: 1C 6A 0A   addsi L0A6A   ; "That's right. My...
+02B0: 33   say
+02B1: 1C 3F 0B   addsi L0B3F   ; "Since then, Myrt...
+02B4: 33   say
+02B5: 3F   abrt
+02B6: 1D 1D 0C   pushs L0C1D   ; bye
+02B9: 07 01 00 03 00  cmps 0001H, 02C1
+02BE: 06 03 00   jmp 02C4
+02C1: 06 A0 FD   jmp 0064
+02C4: 40   db 40 ???
+02C5: 1C 21 0C   addsi L0C21   ; Papa smiles and w...
+02C8: 33   say
+02C9: 25   ret

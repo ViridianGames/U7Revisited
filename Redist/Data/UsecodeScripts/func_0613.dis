@@ -1,0 +1,29 @@
+  .funcnumber 0613H
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 14   push false
+0001: 43 39 00   popf flag:[0039]
+0004: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0008: 12 00 00   pop [0000]
+000B: 2E   sloop
+000C: 02 01 00 02 00 03 00 00 00 0D 00  db 2 ???
+000D:   db 1
+000E:   db 0
+000F:   db 2
+0010:   db 0
+0011:   db 3
+0012:   db 0
+0013:   db 0
+0014:   db 0
+0015:   db d
+0016:   db 0
+0017: 1F 1F 00   pushi 001FH   ; 31
+001A: 21 03 00   push [0003]
+001D: 39 1D 00 02  calli 001D, 2
+0021: 06 E8 FF   jmp 000C
+0024: 3E   push itemref
+0025: 39 60 00 01  calli 0060, 1
+0029: 25   ret

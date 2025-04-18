@@ -1,0 +1,211 @@
+  .funcnumber 087BH
+  .data
+L0000: db 'With Elynor standing before the gathered members of The Fell'
+ db 'owship, the ceremony begins. "My brothers in The Fellowship,'
+ db ' I greet you on this occasion and thank you for your attenda'
+ db 'nce. The events which have transpired in this town threaten '
+ db 'to drive us apart. I do not need to remind you that the firs'
+ db 't value of the Triad of Inner Strength states that we must S'
+ db 'trive For Unity. Now is the time when all those who hate and'
+ db ' fear us may be conspiring against us."'
+L01CB: db 00
+L01CC: db '"There are those who fear awareness for it illuminates their'
+ db ' own limitations. There are those who despise change for the'
+ db ' better because they have spent their whole lives teaching t'
+ db 'hemselves to love the mediocrity with which they have surrou'
+ db 'nded themselves. These are the people who perceive our Fello'
+ db 'wship as a threat."'
+L030B: db 00
+L030C: db '"And there are those who are very uncertain about the merits'
+ db ' of our Fellowship. Those who have heard the words of those '
+ db 'who are against us but who see with their own eyes the subst'
+ db 'antial good that The Fellowship does and the difference it m'
+ db 'akes in the lives of its members every single day. Those und'
+ db 'ecided may still be brought into our family. We must Trust O'
+ db 'ur Brothers-yet-to-be. But most importantly, we must keep ou'
+ db 'r enemies from spreading their prejudices against us. To do '
+ db 'that we must show their beliefs to be untrue."'
+L051A: db 00
+L051B: db '"We must prove ourselves worthy of the trust we would have o'
+ db 'ur fellow citizens place in us. Once we have sufficiently di'
+ db 'splayed this worthiness, it will only be a matter of time be'
+ db 'fore we receive our reward of trust. It is as inevitable as '
+ db 'night following day. As our enemies will one day receive the'
+ db 'ir own inevitable reward for which they have made themselves'
+ db ' worthy."'
+L068C: db 00
+L068D: db '"Now I would like to hear from our members who have gathered'
+ db ' here this evening. Share with us how The Fellowship has hel'
+ db 'ped thee!"'
+L070F: db 00
+L0710: db '"The Fellowship has improved mine ability to run my business'
+ db '," says Gregor.*'
+L075C: db 00
+L075D: db '"The Fellowship has taught me how to face mine own potential'
+ db ' for greatness unquestioningly," says Owen.*'
+L07C5: db 00
+L07C6: db '"Thank thee for sharing, brother!"*'
+L07E9: db 00
+L07EA: db 'You notice that Burnside has apparently nodded off. After a '
+ db 'nudge from the person next to him, his eyes pop open. "Umm..'
+ db '. what was that question again...?" he asks sheepishly.*'
+L089A: db 00
+L089B: db '"The Fellowship has helped me to have more courage to deal w'
+ db 'ith the unexpected terrors of life," says William.*'
+L090A: db 00
+L090B: db '"The Fellowship has helped me to have the firm hand that is '
+ db 'necessary as the supervisor of the mine," says Mikos.*'
+L097D: db 00
+L097E: db '"Everything about this Fellowship gives me the creeps!" says'
+ db ' Spark.*'
+L09C2: db 00
+L09C3: db '"Elynor is certainly going out of her way to make them feel '
+ db 'like they are persecuted," says Iolo.*'
+L0A25: db 00
+L0A26: db '"These Fellowship members seem fixated upon their own person'
+ db 'al gain and very little else," says Shamino.*'
+L0A8F: db 00
+L0A90: db '"Why are these people so fascinated by The Fellowship anyway'
+ db '? I do not understand it."*'
+L0AE7: db 00
+L0AE8: db 'With that Elynor is once again the center of attention of th'
+ db 'e meeting. "Let us now begin our evening's meditations." Aft'
+ db 'er a few minutes of silence you begin to realize that this m'
+ db 'editation is going to continue for quite some time and that '
+ db 'now might be a good time to leave inconspicuously.*'
+L0C0B: db 00
+  .code
+  .argc 0000H
+  .localc 0009H
+  .externsize 0001H
+  .extern 08F7H
+0000: 1C 00 00   addsi L0000   ; With Elynor stand...
+0003: 33   say
+0004: 1C CC 01   addsi L01CC   ; "There are those ...
+0007: 33   say
+0008: 1C 0C 03   addsi L030C   ; "And there are th...
+000B: 33   say
+000C: 1C 1B 05   addsi L051B   ; "We must prove ou...
+000F: 33   say
+0010: 1C 8D 06   addsi L068D   ; "Now I would like...
+0013: 33   say
+0014: 1F AE FF   pushi FFAEH   ; -82
+0017: 24 00 00   call [0000]   ; 08F7H
+001A: 12 00 00   pop [0000]
+001D: 21 00 00   push [0000]
+0020: 05 15 00   jne 0038
+0023: 1F 00 00   pushi 0000H   ; 0
+0026: 1F AE FF   pushi FFAEH   ; -82
+0029: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+002D: 1C 10 07   addsi L0710   ; "The Fellowship h...
+0030: 33   say
+0031: 1F AE FF   pushi FFAEH   ; -82
+0034: 39 04 00 01  calli _HideNPC@1  ; 0004
+0038: 1F A6 FF   pushi FFA6H   ; -90
+003B: 24 00 00   call [0000]   ; 08F7H
+003E: 12 01 00   pop [0001]
+0041: 21 01 00   push [0001]
+0044: 05 23 00   jne 006A
+0047: 1F 00 00   pushi 0000H   ; 0
+004A: 1F A6 FF   pushi FFA6H   ; -90
+004D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0051: 1C 5D 07   addsi L075D   ; "The Fellowship h...
+0054: 33   say
+0055: 1F 00 00   pushi 0000H   ; 0
+0058: 1F AF FF   pushi FFAFH   ; -81
+005B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+005F: 1C C6 07   addsi L07C6   ; "Thank thee for s...
+0062: 33   say
+0063: 1F A6 FF   pushi FFA6H   ; -90
+0066: 39 04 00 01  calli _HideNPC@1  ; 0004
+006A: 1F A5 FF   pushi FFA5H   ; -91
+006D: 24 00 00   call [0000]   ; 08F7H
+0070: 12 02 00   pop [0002]
+0073: 21 02 00   push [0002]
+0076: 05 15 00   jne 008E
+0079: 1F 00 00   pushi 0000H   ; 0
+007C: 1F A5 FF   pushi FFA5H   ; -91
+007F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0083: 1C EA 07   addsi L07EA   ; You notice that B...
+0086: 33   say
+0087: 1F A5 FF   pushi FFA5H   ; -91
+008A: 39 04 00 01  calli _HideNPC@1  ; 0004
+008E: 1F A3 FF   pushi FFA3H   ; -93
+0091: 24 00 00   call [0000]   ; 08F7H
+0094: 12 03 00   pop [0003]
+0097: 21 03 00   push [0003]
+009A: 05 15 00   jne 00B2
+009D: 1F 00 00   pushi 0000H   ; 0
+00A0: 1F A3 FF   pushi FFA3H   ; -93
+00A3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A7: 1C 9B 08   addsi L089B   ; "The Fellowship h...
+00AA: 33   say
+00AB: 1F A3 FF   pushi FFA3H   ; -93
+00AE: 39 04 00 01  calli _HideNPC@1  ; 0004
+00B2: 1F 9F FF   pushi FF9FH   ; -97
+00B5: 24 00 00   call [0000]   ; 08F7H
+00B8: 12 04 00   pop [0004]
+00BB: 21 04 00   push [0004]
+00BE: 05 15 00   jne 00D6
+00C1: 1F 00 00   pushi 0000H   ; 0
+00C4: 1F 9F FF   pushi FF9FH   ; -97
+00C7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00CB: 1C 0B 09   addsi L090B   ; "The Fellowship h...
+00CE: 33   say
+00CF: 1F 9F FF   pushi FF9FH   ; -97
+00D2: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D6: 1F FE FF   pushi FFFEH   ; -2
+00D9: 24 00 00   call [0000]   ; 08F7H
+00DC: 12 05 00   pop [0005]
+00DF: 21 05 00   push [0005]
+00E2: 05 15 00   jne 00FA
+00E5: 1F 00 00   pushi 0000H   ; 0
+00E8: 1F FE FF   pushi FFFEH   ; -2
+00EB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00EF: 1C 7E 09   addsi L097E   ; "Everything about...
+00F2: 33   say
+00F3: 1F FE FF   pushi FFFEH   ; -2
+00F6: 39 04 00 01  calli _HideNPC@1  ; 0004
+00FA: 1F FF FF   pushi FFFFH   ; -1
+00FD: 24 00 00   call [0000]   ; 08F7H
+0100: 12 06 00   pop [0006]
+0103: 21 06 00   push [0006]
+0106: 05 15 00   jne 011E
+0109: 1F 00 00   pushi 0000H   ; 0
+010C: 1F FF FF   pushi FFFFH   ; -1
+010F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0113: 1C C3 09   addsi L09C3   ; "Elynor is certai...
+0116: 33   say
+0117: 1F FF FF   pushi FFFFH   ; -1
+011A: 39 04 00 01  calli _HideNPC@1  ; 0004
+011E: 1F FD FF   pushi FFFDH   ; -3
+0121: 24 00 00   call [0000]   ; 08F7H
+0124: 12 07 00   pop [0007]
+0127: 21 07 00   push [0007]
+012A: 05 15 00   jne 0142
+012D: 1F 00 00   pushi 0000H   ; 0
+0130: 1F FD FF   pushi FFFDH   ; -3
+0133: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0137: 1C 26 0A   addsi L0A26   ; "These Fellowship...
+013A: 33   say
+013B: 1F FD FF   pushi FFFDH   ; -3
+013E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0142: 1F FC FF   pushi FFFCH   ; -4
+0145: 24 00 00   call [0000]   ; 08F7H
+0148: 12 08 00   pop [0008]
+014B: 21 08 00   push [0008]
+014E: 05 15 00   jne 0166
+0151: 1F 00 00   pushi 0000H   ; 0
+0154: 1F FC FF   pushi FFFCH   ; -4
+0157: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+015B: 1C 90 0A   addsi L0A90   ; "Why are these pe...
+015E: 33   say
+015F: 1F FC FF   pushi FFFCH   ; -4
+0162: 39 04 00 01  calli _HideNPC@1  ; 0004
+0166: 1F 00 00   pushi 0000H   ; 0
+0169: 1F AF FF   pushi FFAFH   ; -81
+016C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0170: 1C E8 0A   addsi L0AE8   ; With that Elynor ...
+0173: 33   say
+0174: 3F   abrt
+0175: 25   ret

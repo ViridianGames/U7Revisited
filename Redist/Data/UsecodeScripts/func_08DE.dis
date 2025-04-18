@@ -1,0 +1,243 @@
+  .funcnumber 08DEH
+  .data
+L0000: db 'wine'
+L0004: db 00
+L0005: db 'ale'
+L0008: db 00
+L0009: db 'bread'
+L000E: db 00
+L000F: db 'silverleaf'
+L0019: db 00
+L001A: db 'grapes'
+L0020: db 00
+L0021: db 'mead'
+L0025: db 00
+L0026: db 'cheese'
+L002C: db 00
+L002D: db 'nothing'
+L0034: db 00
+L0035: db 00
+L0036: db ' for a bottle'
+L0043: db 00
+L0044: db ' for a bottle'
+L0051: db 00
+L0052: db ' for a loaf'
+L005D: db 00
+L005E: db ' for one portion'
+L006E: db 00
+L006F: db ' for a bunch'
+L007B: db 00
+L007C: db ' for a bottle'
+L0089: db 00
+L008A: db ' for a wheel'
+L0096: db 00
+L0097: db 00
+L0098: db '"What wouldst thou like to buy?"'
+L00B8: db 00
+L00B9: db '"Fine."'
+L00C0: db 00
+L00C1: db '"I am all out of Silverleaf, '
+L00DE: db 00
+L00DF: db '. For some reason, there is a shortage, and I cannot get any'
+ db ' more."'
+L0122: db 00
+L0123: db '"^'
+L0125: db 00
+L0126: db ' Dost thou still want it?"'
+L0140: db 00
+L0141: db '"How many wouldst thou like?"'
+L015E: db 00
+L015F: db '"Done! Eat hearty!"'
+L0172: db 00
+L0173: db '"No one could possibly carry that much!"'
+L019B: db 00
+L019C: db '"Thou dost not have enough gold for that!"'
+L01C6: db 00
+L01C7: db '"Wouldst thou like to purchase anything else?"'
+L01F5: db 00
+  .code
+  .argc 0000H
+  .localc 000EH
+  .externsize 0005H
+  .extern 0909H
+  .extern 090CH
+  .extern 091BH
+  .extern 090AH
+  .extern 08F8H
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 00 00   pop [0000]
+0006: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+000A: 13   push true
+000B: 12 01 00   pop [0001]
+000E: 1D 00 00   pushs L0000   ; wine
+0011: 1D 05 00   pushs L0005   ; ale
+0014: 1D 09 00   pushs L0009   ; bread
+0017: 1D 0F 00   pushs L000F   ; silverleaf
+001A: 1D 1A 00   pushs L001A   ; grapes
+001D: 1D 21 00   pushs L0021   ; mead
+0020: 1D 26 00   pushs L0026   ; cheese
+0023: 1D 2D 00   pushs L002D   ; nothing
+0026: 1E 08 00   arrc 0008H   ; 8
+0029: 12 02 00   pop [0002]
+002C: 1F 68 02   pushi 0268H   ; 616
+002F: 1F 68 02   pushi 0268H   ; 616
+0032: 1F 79 01   pushi 0179H   ; 377
+0035: 1F 79 01   pushi 0179H   ; 377
+0038: 1F 79 01   pushi 0179H   ; 377
+003B: 1F 68 02   pushi 0268H   ; 616
+003E: 1F 79 01   pushi 0179H   ; 377
+0041: 1F 00 00   pushi 0000H   ; 0
+0044: 1E 08 00   arrc 0008H   ; 8
+0047: 12 03 00   pop [0003]
+004A: 1F 05 00   pushi 0005H   ; 5
+004D: 1F 03 00   pushi 0003H   ; 3
+0050: 1F 01 00   pushi 0001H   ; 1
+0053: 1F 1F 00   pushi 001FH   ; 31
+0056: 1F 13 00   pushi 0013H   ; 19
+0059: 1F 00 00   pushi 0000H   ; 0
+005C: 1F 1A 00   pushi 001AH   ; 26
+005F: 1F 99 FE   pushi FE99H   ; -359
+0062: 1E 08 00   arrc 0008H   ; 8
+0065: 12 04 00   pop [0004]
+0068: 1F 05 00   pushi 0005H   ; 5
+006B: 1F 03 00   pushi 0003H   ; 3
+006E: 1F 03 00   pushi 0003H   ; 3
+0071: 1F 23 00   pushi 0023H   ; 35
+0074: 1F 02 00   pushi 0002H   ; 2
+0077: 1F 0A 00   pushi 000AH   ; 10
+007A: 1F 07 00   pushi 0007H   ; 7
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1E 08 00   arrc 0008H   ; 8
+0083: 12 05 00   pop [0005]
+0086: 1D 35 00   pushs L0035   ; 
+0089: 12 06 00   pop [0006]
+008C: 1F 00 00   pushi 0000H   ; 0
+008F: 1F 00 00   pushi 0000H   ; 0
+0092: 1F 00 00   pushi 0000H   ; 0
+0095: 1F 00 00   pushi 0000H   ; 0
+0098: 1F 01 00   pushi 0001H   ; 1
+009B: 1F 00 00   pushi 0000H   ; 0
+009E: 1F 00 00   pushi 0000H   ; 0
+00A1: 1F 00 00   pushi 0000H   ; 0
+00A4: 1E 08 00   arrc 0008H   ; 8
+00A7: 12 07 00   pop [0007]
+00AA: 1D 36 00   pushs L0036   ;  for a bottle
+00AD: 1D 44 00   pushs L0044   ;  for a bottle
+00B0: 1D 52 00   pushs L0052   ;  for a loaf
+00B3: 1D 5E 00   pushs L005E   ;  for one portion
+00B6: 1D 6F 00   pushs L006F   ;  for a bunch
+00B9: 1D 7C 00   pushs L007C   ;  for a bottle
+00BC: 1D 8A 00   pushs L008A   ;  for a wheel
+00BF: 1D 97 00   pushs L0097   ; 
+00C2: 1E 08 00   arrc 0008H   ; 8
+00C5: 12 08 00   pop [0008]
+00C8: 1F 01 00   pushi 0001H   ; 1
+00CB: 12 09 00   pop [0009]
+00CE: 1C 98 00   addsi L0098   ; "What wouldst tho...
+00D1: 33   say
+00D2: 21 01 00   push [0001]
+00D5: 05 10 01   jne 01E8
+00D8: 21 02 00   push [0002]
+00DB: 24 01 00   call [0001]   ; 090CH
+00DE: 12 0A 00   pop [000A]
+00E1: 21 0A 00   push [000A]
+00E4: 1F 01 00   pushi 0001H   ; 1
+00E7: 22   cmpeq
+00E8: 05 0B 00   jne 00F6
+00EB: 1C B9 00   addsi L00B9   ; "Fine."
+00EE: 33   say
+00EF: 14   push false
+00F0: 12 01 00   pop [0001]
+00F3: 06 EF 00   jmp 01E5
+00F6: 21 0A 00   push [000A]
+00F9: 1F 05 00   pushi 0005H   ; 5
+00FC: 22   cmpeq
+00FD: 05 13 00   jne 0113
+0100: 42 2B 01   pushf flag:[012B]
+0103: 05 0D 00   jne 0113
+0106: 1C C1 00   addsi L00C1   ; "I am all out of ...
+0109: 2F 00 00   addsv [0000]
+010C: 1C DF 00   addsi L00DF   ; . For some reason...
+010F: 33   say
+0110: 06 C8 00   jmp 01DB
+0113: 21 0A 00   push [000A]
+0116: 26 08 00   aidx [0008]
+0119: 21 0A 00   push [000A]
+011C: 26 05 00   aidx [0005]
+011F: 21 0A 00   push [000A]
+0122: 26 07 00   aidx [0007]
+0125: 21 0A 00   push [000A]
+0128: 26 02 00   aidx [0002]
+012B: 21 06 00   push [0006]
+012E: 24 02 00   call [0002]   ; 091BH
+0131: 12 0B 00   pop [000B]
+0134: 1F 00 00   pushi 0000H   ; 0
+0137: 12 0C 00   pop [000C]
+013A: 1C 23 01   addsi L0123   ; "^
+013D: 2F 0B 00   addsv [000B]
+0140: 1C 26 01   addsi L0126   ;  Dost thou still ...
+0143: 33   say
+0144: 24 03 00   call [0003]   ; 090AH
+0147: 12 0D 00   pop [000D]
+014A: 21 0D 00   push [000D]
+014D: 05 58 00   jne 01A8
+0150: 21 0A 00   push [000A]
+0153: 26 03 00   aidx [0003]
+0156: 1F 79 01   pushi 0179H   ; 377
+0159: 22   cmpeq
+015A: 05 29 00   jne 0186
+015D: 1C 41 01   addsi L0141   ; "How many wouldst...
+0160: 33   say
+0161: 13   push true
+0162: 1F 01 00   pushi 0001H   ; 1
+0165: 1F 14 00   pushi 0014H   ; 20
+0168: 21 0A 00   push [000A]
+016B: 26 05 00   aidx [0005]
+016E: 21 09 00   push [0009]
+0171: 21 0A 00   push [000A]
+0174: 26 04 00   aidx [0004]
+0177: 21 0A 00   push [000A]
+017A: 26 03 00   aidx [0003]
+017D: 24 04 00   call [0004]   ; 08F8H
+0180: 12 0C 00   pop [000C]
+0183: 06 22 00   jmp 01A8
+0186: 13   push true
+0187: 1F 01 00   pushi 0001H   ; 1
+018A: 1F 00 00   pushi 0000H   ; 0
+018D: 21 0A 00   push [000A]
+0190: 26 05 00   aidx [0005]
+0193: 21 09 00   push [0009]
+0196: 21 0A 00   push [000A]
+0199: 26 04 00   aidx [0004]
+019C: 21 0A 00   push [000A]
+019F: 26 03 00   aidx [0003]
+01A2: 24 04 00   call [0004]   ; 08F8H
+01A5: 12 0C 00   pop [000C]
+01A8: 21 0C 00   push [000C]
+01AB: 1F 01 00   pushi 0001H   ; 1
+01AE: 22   cmpeq
+01AF: 05 07 00   jne 01B9
+01B2: 1C 5F 01   addsi L015F   ; "Done! Eat hearty!"
+01B5: 33   say
+01B6: 06 22 00   jmp 01DB
+01B9: 21 0C 00   push [000C]
+01BC: 1F 02 00   pushi 0002H   ; 2
+01BF: 22   cmpeq
+01C0: 05 07 00   jne 01CA
+01C3: 1C 73 01   addsi L0173   ; "No one could pos...
+01C6: 33   say
+01C7: 06 11 00   jmp 01DB
+01CA: 21 0C 00   push [000C]
+01CD: 1F 03 00   pushi 0003H   ; 3
+01D0: 22   cmpeq
+01D1: 05 07 00   jne 01DB
+01D4: 1C 9C 01   addsi L019C   ; "Thou dost not ha...
+01D7: 33   say
+01D8: 06 00 00   jmp 01DB
+01DB: 1C C7 01   addsi L01C7   ; "Wouldst thou lik...
+01DE: 33   say
+01DF: 24 03 00   call [0003]   ; 090AH
+01E2: 12 01 00   pop [0001]
+01E5: 06 EA FE   jmp 00D2
+01E8: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+01EC: 25   ret

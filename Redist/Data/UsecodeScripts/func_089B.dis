@@ -1,0 +1,169 @@
+  .funcnumber 089BH
+  .data
+L0000: db 'your'
+L0004: db 00
+L0005: db 'their'
+L000A: db 00
+L000B: db '"To be without the practical experience required to train at'
+ db ' this time."'
+L0053: db 00
+L0054: db 'You gather your gold and count it, finding that you have '
+L008D: db 00
+L008E: db ' gold altogether.'
+L009F: db 00
+L00A0: db '"To need more gold than you have. To need 50 gold."'
+L00D3: db 00
+L00D4: db 'After examining '
+L00E4: db 00
+L00E5: db ' muscles, he says, "To be stronger than I. To need no furthe'
+ db 'r training in combat."'
+L0137: db 00
+L0138: db 'You pay '
+L0140: db 00
+L0141: db ' gold, and the training session begins.'
+L0168: db 00
+L0169: db 'you begin'
+L0172: db 00
+L0173: db 'begins'
+L0179: db 00
+L017A: db 'The gargoyle begins with some intense weight-lifting which e'
+ db 'ventually leads to target practice with throwing axes. At th'
+ db 'e end, '
+L01F9: db 00
+L01FA: db ' to notice a change in physical prowess and hand-eye coordin'
+ db 'ation.'
+L023C: db 00
+  .code
+  .argc 0002H
+  .localc 000BH
+  .externsize 0006H
+  .extern 0920H
+  .extern 0922H
+  .extern 0910H
+  .extern 0914H
+  .extern 0915H
+  .extern 0917H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+000D: 12 03 00   pop [0003]
+0010: 21 02 00   push [0002]
+0013: 1F 9C FE   pushi FE9CH   ; -356
+0016: 22   cmpeq
+0017: 05 09 00   jne 0023
+001A: 1D 00 00   pushs L0000   ; your
+001D: 12 04 00   pop [0004]
+0020: 06 06 00   jmp 0029
+0023: 1D 05 00   pushs L0005   ; their
+0026: 12 04 00   pop [0004]
+0029: 21 02 00   push [0002]
+002C: 1F 00 00   pushi 0000H   ; 0
+002F: 22   cmpeq
+0030: 05 03 00   jne 0036
+0033: 06 1A 01   jmp 0150
+0036: 1F 03 00   pushi 0003H   ; 3
+0039: 12 05 00   pop [0005]
+003C: 21 05 00   push [0005]
+003F: 21 02 00   push [0002]
+0042: 21 00 00   push [0000]
+0045: 21 01 00   push [0001]
+0048: 24 01 00   call [0001]   ; 0922H
+004B: 12 06 00   pop [0006]
+004E: 21 06 00   push [0006]
+0051: 1F 00 00   pushi 0000H   ; 0
+0054: 22   cmpeq
+0055: 05 07 00   jne 005F
+0058: 1C 0B 00   addsi L000B   ; "To be without th...
+005B: 33   say
+005C: 06 F1 00   jmp 0150
+005F: 21 06 00   push [0006]
+0062: 1F 01 00   pushi 0001H   ; 1
+0065: 22   cmpeq
+0066: 05 2E 00   jne 0097
+0069: 1F 99 FE   pushi FE99H   ; -359
+006C: 1F 99 FE   pushi FE99H   ; -359
+006F: 1F 84 02   pushi 0284H   ; 644
+0072: 1F 9B FE   pushi FE9BH   ; -357
+0075: 38 28 00 04  callis 0028, 4
+0079: 12 07 00   pop [0007]
+007C: 1C 54 00   addsi L0054   ; You gather your g...
+007F: 2F 07 00   addsv [0007]
+0082: 1C 8E 00   addsi L008E   ;  gold altogether.
+0085: 33   say
+0086: 21 07 00   push [0007]
+0089: 21 00 00   push [0000]
+008C: 17   cmpl
+008D: 05 07 00   jne 0097
+0090: 1C A0 00   addsi L00A0   ; "To need more gol...
+0093: 33   say
+0094: 06 B9 00   jmp 0150
+0097: 21 06 00   push [0006]
+009A: 1F 02 00   pushi 0002H   ; 2
+009D: 22   cmpeq
+009E: 05 0D 00   jne 00AE
+00A1: 1C D4 00   addsi L00D4   ; After examining 
+00A4: 2F 04 00   addsv [0004]
+00A7: 1C E5 00   addsi L00E5   ;  muscles, he says...
+00AA: 33   say
+00AB: 06 A2 00   jmp 0150
+00AE: 13   push true
+00AF: 1F 99 FE   pushi FE99H   ; -359
+00B2: 1F 99 FE   pushi FE99H   ; -359
+00B5: 1F 84 02   pushi 0284H   ; 644
+00B8: 21 00 00   push [0000]
+00BB: 38 2B 00 05  callis 002B, 5
+00BF: 12 08 00   pop [0008]
+00C2: 1C 38 01   addsi L0138   ; You pay 
+00C5: 2F 00 00   addsv [0000]
+00C8: 1C 41 01   addsi L0141   ;  gold, and the tr...
+00CB: 33   say
+00CC: 21 02 00   push [0002]
+00CF: 1F 9C FE   pushi FE9CH   ; -356
+00D2: 22   cmpeq
+00D3: 05 09 00   jne 00DF
+00D6: 1D 69 01   pushs L0169   ; you begin
+00D9: 12 09 00   pop [0009]
+00DC: 06 0A 00   jmp 00E9
+00DF: 21 03 00   push [0003]
+00E2: 1D 73 01   pushs L0173   ; begins
+00E5: 09   add
+00E6: 12 09 00   pop [0009]
+00E9: 1C 7A 01   addsi L017A   ; The gargoyle begi...
+00EC: 2F 09 00   addsv [0009]
+00EF: 1C FA 01   addsi L01FA   ;  to notice a chan...
+00F2: 33   say
+00F3: 1F 00 00   pushi 0000H   ; 0
+00F6: 21 02 00   push [0002]
+00F9: 24 02 00   call [0002]   ; 0910H
+00FC: 12 0A 00   pop [000A]
+00FF: 21 0A 00   push [000A]
+0102: 1F 1E 00   pushi 001EH   ; 30
+0105: 17   cmpl
+0106: 05 09 00   jne 0112
+0109: 1F 01 00   pushi 0001H   ; 1
+010C: 21 02 00   push [0002]
+010F: 24 03 00   call [0003]   ; 0914H
+0112: 1F 01 00   pushi 0001H   ; 1
+0115: 21 02 00   push [0002]
+0118: 24 02 00   call [0002]   ; 0910H
+011B: 12 0B 00   pop [000B]
+011E: 21 0B 00   push [000B]
+0121: 1F 1E 00   pushi 001EH   ; 30
+0124: 17   cmpl
+0125: 05 09 00   jne 0131
+0128: 1F 01 00   pushi 0001H   ; 1
+012B: 21 02 00   push [0002]
+012E: 24 04 00   call [0004]   ; 0915H
+0131: 1F 04 00   pushi 0004H   ; 4
+0134: 21 02 00   push [0002]
+0137: 24 02 00   call [0002]   ; 0910H
+013A: 12 0C 00   pop [000C]
+013D: 21 0C 00   push [000C]
+0140: 1F 1E 00   pushi 001EH   ; 30
+0143: 17   cmpl
+0144: 05 09 00   jne 0150
+0147: 1F 01 00   pushi 0001H   ; 1
+014A: 21 02 00   push [0002]
+014D: 24 05 00   call [0005]   ; 0917H
+0150: 25   ret

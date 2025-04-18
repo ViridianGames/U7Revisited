@@ -1,0 +1,34 @@
+  .funcnumber 0901H
+  .data
+  .code
+  .argc 0000H
+  .localc 0003H
+  .externsize 0001H
+  .extern 093CH
+0000: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0004: 12 00 00   pop [0000]
+0007: 21 00 00   push [0000]
+000A: 1F 9C FE   pushi FE9CH   ; -356
+000D: 38 1B 00 01  callis 001B, 1
+0011: 24 00 00   call [0000]   ; 093CH
+0014: 12 00 00   pop [0000]
+0017: 21 00 00   push [0000]
+001A: 38 5E 00 01  callis _ArraySize@1  ; 005E
+001E: 12 01 00   pop [0001]
+0021: 21 01 00   push [0001]
+0024: 1F 00 00   pushi 0000H   ; 0
+0027: 1A   cmpne
+0028: 05 1F 00   jne 004A
+002B: 21 01 00   push [0001]
+002E: 38 00 00 01  callis 0000, 1
+0032: 26 00 00   aidx [0000]
+0035: 38 3A 00 01  callis 003A, 1
+0039: 12 02 00   pop [0002]
+003C: 21 02 00   push [0002]
+003F: 38 2F 00 01  callis _NPCInParty@1  ; 002F
+0043: 05 04 00   jne 004A
+0046: 21 02 00   push [0002]
+0049: 2D   setr
+004A: 1F 9C FE   pushi FE9CH   ; -356
+004D: 2D   setr
+004E: 32   rts

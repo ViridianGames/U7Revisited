@@ -1,0 +1,517 @@
+		.funcnumber	043BH
+		.data
+L0000:	db	'Sean is deep in concentration, listening to the Fellowship m'
+	db	'eeting.*'
+L0044:	db	00
+L0045:	db	'"I cannot imagine where Batlin is. He never misses Fellowshi'
+	db	'p meeting!"'
+L008C:	db	00
+L008D:	db	'"I must not stop to speak now! I am late for the Fellowship '
+	db	'meeting!"*'
+L00D3:	db	00
+L00D4:	db	'bye'
+L00D7:	db	00
+L00D8:	db	'job'
+L00DB:	db	00
+L00DC:	db	'name'
+L00E0:	db	00
+L00E1:	db	'You see a man whose boyish face is set with scrutinizing eye'
+	db	's that look as if they have seen much.'
+L0143:	db	00
+L0144:	db	'"And what may I do for thee, '
+L0161:	db	00
+L0162:	db	'?" asks Sean.'
+L016F:	db	00
+L0170:	db	'name'
+L0174:	db	00
+L0175:	db	'"My name is Sean."'
+L0187:	db	00
+L0188:	db	'name'
+L018C:	db	00
+L018D:	db	'job'
+L0190:	db	00
+L0191:	db	'"When not tending to Fellowship affairs, I am a jeweller her'
+	db	'e in Britain. If thou dost wish to buy something, say so!"'
+L0207:	db	00
+L0208:	db	'buy'
+L020B:	db	00
+L020C:	db	'Britain'
+L0213:	db	00
+L0214:	db	'jeweller'
+L021C:	db	00
+L021D:	db	'Fellowship'
+L0227:	db	00
+L0228:	db	'jeweller'
+L0230:	db	00
+L0231:	db	'"It is very delicate work. It requires a special touch that '
+	db	'only a few have. Thou must know precisely how to handle prec'
+	db	'ious materials. Only the finest of craftsmen become jeweller'
+	db	's and they receive the highest compensation."'
+L0312:	db	00
+L0313:	db	'jeweller'
+L031B:	db	00
+L031C:	db	'finest craftsmen'
+L032C:	db	00
+L032D:	db	'precious materials'
+L033F:	db	00
+L0340:	db	'precious materials'
+L0352:	db	00
+L0353:	db	'"I constantly require new materials with which to create my '
+	db	'very special jewelry. I am always in the market to buy gems.'
+	db	' If thou dost ever come across any, I am the man to come to '
+	db	'if thou shouldst want to sell them and make money."'
+L043A:	db	00
+L043B:	db	'precious materials'
+L044D:	db	00
+L044E:	db	'gems'
+L0452:	db	00
+L0453:	db	'finest craftsmen'
+L0463:	db	00
+L0464:	db	'"As I have told thee, only the finest of craftsmen become je'
+	db	'wellers, and I am the finest of jewellers. Does that not tel'
+	db	'l thee something?" Sean sniffs. "My business makes more mone'
+	db	'y than the mint!" He laughs forcibly.'
+L053D:	db	00
+L053E:	db	'finest craftsmen'
+L054E:	db	00
+L054F:	db	'gems'
+L0553:	db	00
+L0554:	db	'"The jeweller's shop is currently closed for business. Come '
+	db	'back later!"'
+L059C:	db	00
+L059D:	db	'"Dost thou have a gem for sale?"'
+L05BD:	db	00
+L05BE:	db	'"I will pay thee 30 gold coins per gem. Is that price agreea'
+	db	'ble?"'
+L05FF:	db	00
+L0600:	db	'"Dost thou think me a fool?! This little blue bauble is wort'
+	db	'hless!"'
+L0643:	db	00
+L0644:	db	'Sean's face tightens. "This gem is small and dark as the hea'
+	db	'rt of an unholy Liche. Away with it!"'
+L06A5:	db	00
+L06A6:	db	'"Thou dost have no gems! Thou art a liar! I will do no busin'
+	db	'ess with thee!"'
+L06F1:	db	00
+L06F2:	db	'"I see that thou has one gem."'
+L0710:	db	00
+L0711:	db	'"I see that thou hast '
+L0727:	db	00
+L0728:	db	' gems."'
+L072F:	db	00
+L0730:	db	'"Here is thy payment."'
+L0746:	db	00
+L0747:	db	'"Thou art carrying too much to take thy payment!"'
+L0778:	db	00
+L0779:	db	'"It seems we have little left to discuss then."'
+L07A8:	db	00
+L07A9:	db	'"If thou dost have no gems for sale then do not even waste m'
+	db	'y time by mentioning it!"'
+L07FE:	db	00
+L07FF:	db	'gems'
+L0803:	db	00
+L0804:	db	'Fellowship'
+L080E:	db	00
+L080F:	db	'"I see thou art a member!" Sean suddenly looks at you with a'
+	db	' bit more respect. "I am sure The Fellowship will do thee a '
+	db	'world of good in the future." He smiles condescendingly.'
+L08BF:	db	00
+L08C0:	db	'"Even thou mayest join The Fellowship and I can tell thee mo'
+	db	're about it."'
+L0909:	db	00
+L090A:	db	'"I can tell thee about The Fellowship's philosophy if thou d'
+	db	'ost wish."'
+L0950:	db	00
+L0951:	db	'Fellowship'
+L095B:	db	00
+L095C:	db	'philosophy'
+L0966:	db	00
+L0967:	db	'philosophy'
+L0971:	db	00
+L0972:	db	'"Thou art really interested in hearing more?"'
+L099F:	db	00
+L09A0:	db	'"I thought I was wasting my breath on thee."'
+L09CC:	db	00
+L09CD:	db	'philosophy'
+L09D7:	db	00
+L09D8:	db	'Britain'
+L09DF:	db	00
+L09E0:	db	'"I moved mine entire business here to Britain to be near the'
+	db	' main branch of The Fellowship. Thou hast no idea how much m'
+	db	'y business improved after I joined The Fellowship."'
+L0A8B:	db	00
+L0A8C:	db	'Britain'
+L0A93:	db	00
+L0A94:	db	'Fellowship'
+L0A9E:	db	00
+L0A9F:	db	'buy'
+L0AA2:	db	00
+L0AA3:	db	'"Wouldst thou like to buy something?"'
+L0AC8:	db	00
+L0AC9:	db	'"Then please browse if thou dost like."'
+L0AF0:	db	00
+L0AF1:	db	'"Please come to the shop during normal business hours."'
+L0B28:	db	00
+L0B29:	db	'buy'
+L0B2C:	db	00
+L0B2D:	db	'bye'
+L0B30:	db	00
+L0B31:	db	'"I am sure thou must be on thy way." Sean smiles.*'
+L0B63:	db	00
+L0B64:	db	'@Fine jewelry!@'
+L0B73:	db	00
+L0B74:	db	'@Need gold trinkets?@'
+L0B89:	db	00
+L0B8A:	db	'@Fine gems!@'
+L0B96:	db	00
+L0B97:	db	'@Fine crafted jewelry!@'
+L0BAE:	db	00
+		.code
+		.argc 0001H
+		.localc 0013H
+		.externsize 0007H
+		.extern 0909H
+		.extern 08FCH
+		.extern 090AH
+		.extern 0919H
+		.extern 091AH
+		.extern 08E3H
+		.extern 092EH
+0000: 48 		push	eventid
+0001: 1F 01 00 		pushi	0001H			; 1
+0004: 22 		cmpeq
+0005: 05 07 03 		jne	030F
+0008: 1F 00 00 		pushi	0000H			; 0
+000B: 1F C5 FF 		pushi	FFC5H			; -59
+000E: 39 03 00 02 	calli	_SwitchTalkTo@2		; 0003
+0012: 24 00 00 		call	[0000]			; 0909H
+0015: 12 00 00 		pop	[0000]
+0018: 38 3B 00 00 	callis	003B, 0
+001C: 12 01 00 		pop	[0001]
+001F: 1F C5 FF 		pushi	FFC5H			; -59
+0022: 38 1B 00 01 	callis	001B, 1
+0026: 38 1C 00 01 	callis	001C, 1
+002A: 12 02 00 		pop	[0002]
+002D: 38 67 00 00 	callis	0067, 0
+0031: 12 03 00 		pop	[0003]
+0034: 38 3B 00 00 	callis	003B, 0
+0038: 12 01 00 		pop	[0001]
+003B: 21 01 00 		push	[0001]
+003E: 1F 07 00 		pushi	0007H			; 7
+0041: 22 		cmpeq
+0042: 05 2F 00 		jne	0074
+0045: 1F E6 FF 		pushi	FFE6H			; -26
+0048: 1F C5 FF 		pushi	FFC5H			; -59
+004B: 24 01 00 		call	[0001]			; 08FCH
+004E: 12 04 00 		pop	[0004]
+0051: 21 04 00 		push	[0004]
+0054: 05 08 00 		jne	005F
+0057: 1C 00 00 		addsi	L0000			; Sean is deep in c...
+005A: 33 		say
+005B: 3F 		abrt
+005C: 06 15 00 		jmp	0074
+005F: 42 DA 00 		pushf	flag:[00DA]
+0062: 05 0A 00 		jne	006F
+0065: 1C 45 00 		addsi	L0045			; "I cannot imagine...
+0068: 33 		say
+0069: 06 08 00 		jmp	0074
+006C: 06 05 00 		jmp	0074
+006F: 1C 8D 00 		addsi	L008D			; "I must not stop ...
+0072: 33 		say
+0073: 3F 		abrt
+0074: 1D D4 00 		pushs	L00D4			; bye
+0077: 1D D8 00 		pushs	L00D8			; job
+007A: 1D DC 00 		pushs	L00DC			; name
+007D: 1E 03 00 		arrc	0003H			; 3
+0080: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+0084: 42 BC 00 		pushf	flag:[00BC]
+0087: 10 		not
+0088: 05 0B 00 		jne	0096
+008B: 1C E1 00 		addsi	L00E1			; You see a man who...
+008E: 33 		say
+008F: 13 		push	true
+0090: 43 BC 00 		popf	flag:[00BC]
+0093: 06 0A 00 		jmp	00A0
+0096: 1C 44 01 		addsi	L0144			; "And what may I d...
+0099: 2F 00 00 		addsv	[0000]
+009C: 1C 62 01 		addsi	L0162			; ?" asks Sean.
+009F: 33 		say
+00A0: 04 67 02 		je	030A
+00A3: 1D 70 01 		pushs	L0170			; name
+00A6: 07 01 00 0B 00 	cmps	0001H, 00B6
+00AB: 1C 75 01 		addsi	L0175			; "My name is Sean."
+00AE: 33 		say
+00AF: 1D 88 01 		pushs	L0188			; name
+00B2: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+00B6: 1D 8D 01 		pushs	L018D			; job
+00B9: 07 01 00 17 00 	cmps	0001H, 00D5
+00BE: 1C 91 01 		addsi	L0191			; "When not tending...
+00C1: 33 		say
+00C2: 1D 08 02 		pushs	L0208			; buy
+00C5: 1D 0C 02 		pushs	L020C			; Britain
+00C8: 1D 14 02 		pushs	L0214			; jeweller
+00CB: 1D 1D 02 		pushs	L021D			; Fellowship
+00CE: 1E 04 00 		arrc	0004H			; 4
+00D1: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+00D5: 1D 28 02 		pushs	L0228			; jeweller
+00D8: 07 01 00 18 00 	cmps	0001H, 00F5
+00DD: 1C 31 02 		addsi	L0231			; "It is very delic...
+00E0: 33 		say
+00E1: 1D 13 03 		pushs	L0313			; jeweller
+00E4: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+00E8: 1D 1C 03 		pushs	L031C			; finest craftsmen
+00EB: 1D 2D 03 		pushs	L032D			; precious materials
+00EE: 1E 02 00 		arrc	0002H			; 2
+00F1: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+00F5: 1D 40 03 		pushs	L0340			; precious materials
+00F8: 07 01 00 12 00 	cmps	0001H, 010F
+00FD: 1C 53 03 		addsi	L0353			; "I constantly req...
+0100: 33 		say
+0101: 1D 3B 04 		pushs	L043B			; precious materials
+0104: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+0108: 1D 4E 04 		pushs	L044E			; gems
+010B: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+010F: 1D 53 04 		pushs	L0453			; finest craftsmen
+0112: 07 01 00 0B 00 	cmps	0001H, 0122
+0117: 1C 64 04 		addsi	L0464			; "As I have told t...
+011A: 33 		say
+011B: 1D 3E 05 		pushs	L053E			; finest craftsmen
+011E: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+0122: 1D 4F 05 		pushs	L054F			; gems
+0125: 07 01 00 2D 01 	cmps	0001H, 0257
+012A: 21 02 00 		push	[0002]
+012D: 1F 07 00 		pushi	0007H			; 7
+0130: 22 		cmpeq
+0131: 10 		not
+0132: 05 07 00 		jne	013C
+0135: 1C 54 05 		addsi	L0554			; "The jeweller's s...
+0138: 33 		say
+0139: 06 14 01 		jmp	0250
+013C: 1C 9D 05 		addsi	L059D			; "Dost thou have a...
+013F: 33 		say
+0140: 24 02 00 		call	[0002]			; 090AH
+0143: 12 05 00 		pop	[0005]
+0146: 21 05 00 		push	[0005]
+0149: 05 00 01 		jne	024C
+014C: 1C BE 05 		addsi	L05BE			; "I will pay thee ...
+014F: 33 		say
+0150: 24 02 00 		call	[0002]			; 090AH
+0153: 12 06 00 		pop	[0006]
+0156: 21 06 00 		push	[0006]
+0159: 05 E9 00 		jne	0245
+015C: 1F 0D 00 		pushi	000DH			; 13
+015F: 1F 0C 00 		pushi	000CH			; 12
+0162: 1E 02 00 		arrc	0002H			; 2
+0165: 12 07 00 		pop	[0007]
+0168: 2E 		sloop
+0169: 02 08 00 09 00 0A 00 07 00 33 00 	db 2	???
+016A:			db 8
+016B:			db 0
+016C:			db 9
+016D:			db 0
+016E:			db a
+016F:			db 0
+0170:			db 7
+0171:			db 0
+0172:			db 33
+0173:			db 0
+0174: 21 0A 00 		push	[000A]
+0177: 1F 99 FE 		pushi	FE99H			; -359
+017A: 1F F8 02 		pushi	02F8H			; 760
+017D: 1F 9B FE 		pushi	FE9BH			; -357
+0180: 38 28 00 04 	callis	0028, 4
+0184: 05 1D 00 		jne	01A4
+0187: 21 0A 00 		push	[000A]
+018A: 1F 0C 00 		pushi	000CH			; 12
+018D: 22 		cmpeq
+018E: 05 04 00 		jne	0195
+0191: 1C 00 06 		addsi	L0600			; "Dost thou think ...
+0194: 33 		say
+0195: 21 0A 00 		push	[000A]
+0198: 1F 0D 00 		pushi	000DH			; 13
+019B: 22 		cmpeq
+019C: 05 04 00 		jne	01A3
+019F: 1C 44 06 		addsi	L0644			; Sean's face tight...
+01A2: 33 		say
+01A3: 3F 		abrt
+01A4: 06 C2 FF 		jmp	0169
+01A7: 1F 99 FE 		pushi	FE99H			; -359
+01AA: 1F 99 FE 		pushi	FE99H			; -359
+01AD: 1F F8 02 		pushi	02F8H			; 760
+01B0: 1F 9B FE 		pushi	FE9BH			; -357
+01B3: 38 28 00 04 	callis	0028, 4
+01B7: 12 0B 00 		pop	[000B]
+01BA: 21 0B 00 		push	[000B]
+01BD: 1F 1E 00 		pushi	001EH			; 30
+01C0: 0C 		mul
+01C1: 12 0C 00 		pop	[000C]
+01C4: 13 		push	true
+01C5: 1F 99 FE 		pushi	FE99H			; -359
+01C8: 1F 99 FE 		pushi	FE99H			; -359
+01CB: 1F F8 02 		pushi	02F8H			; 760
+01CE: 21 0B 00 		push	[000B]
+01D1: 38 2B 00 05 	callis	002B, 5
+01D5: 12 0D 00 		pop	[000D]
+01D8: 21 0B 00 		push	[000B]
+01DB: 1F 00 00 		pushi	0000H			; 0
+01DE: 22 		cmpeq
+01DF: 05 05 00 		jne	01E7
+01E2: 1C A6 06 		addsi	L06A6			; "Thou dost have n...
+01E5: 33 		say
+01E6: 3F 		abrt
+01E7: 21 0B 00 		push	[000B]
+01EA: 1F 01 00 		pushi	0001H			; 1
+01ED: 22 		cmpeq
+01EE: 05 04 00 		jne	01F5
+01F1: 1C F2 06 		addsi	L06F2			; "I see that thou ...
+01F4: 33 		say
+01F5: 21 0B 00 		push	[000B]
+01F8: 1F 01 00 		pushi	0001H			; 1
+01FB: 16 		cmpgt
+01FC: 05 0A 00 		jne	0209
+01FF: 1C 11 07 		addsi	L0711			; "I see that thou ...
+0202: 2F 0B 00 		addsv	[000B]
+0205: 1C 28 07 		addsi	L0728			;  gems."
+0208: 33 		say
+0209: 13 		push	true
+020A: 1F 99 FE 		pushi	FE99H			; -359
+020D: 1F 99 FE 		pushi	FE99H			; -359
+0210: 1F 84 02 		pushi	0284H			; 644
+0213: 21 0C 00 		push	[000C]
+0216: 38 2C 00 05 	callis	002C, 5
+021A: 12 0E 00 		pop	[000E]
+021D: 21 0E 00 		push	[000E]
+0220: 05 07 00 		jne	022A
+0223: 1C 30 07 		addsi	L0730			; "Here is thy paym...
+0226: 33 		say
+0227: 06 18 00 		jmp	0242
+022A: 1C 47 07 		addsi	L0747			; "Thou art carryin...
+022D: 33 		say
+022E: 13 		push	true
+022F: 1F 99 FE 		pushi	FE99H			; -359
+0232: 1F 99 FE 		pushi	FE99H			; -359
+0235: 1F F8 02 		pushi	02F8H			; 760
+0238: 21 0B 00 		push	[000B]
+023B: 38 2C 00 05 	callis	002C, 5
+023F: 12 0F 00 		pop	[000F]
+0242: 06 04 00 		jmp	0249
+0245: 1C 79 07 		addsi	L0779			; "It seems we have...
+0248: 33 		say
+0249: 06 04 00 		jmp	0250
+024C: 1C A9 07 		addsi	L07A9			; "If thou dost hav...
+024F: 33 		say
+0250: 1D FF 07 		pushs	L07FF			; gems
+0253: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+0257: 1D 04 08 		pushs	L0804			; Fellowship
+025A: 07 01 00 26 00 	cmps	0001H, 0285
+025F: 21 03 00 		push	[0003]
+0262: 05 07 00 		jne	026C
+0265: 1C 0F 08 		addsi	L080F			; "I see thou art a...
+0268: 33 		say
+0269: 06 0B 00 		jmp	0277
+026C: 1C C0 08 		addsi	L08C0			; "Even thou mayest...
+026F: 33 		say
+0270: 24 03 00 		call	[0003]			; 0919H
+0273: 1C 0A 09 		addsi	L090A			; "I can tell thee ...
+0276: 33 		say
+0277: 1D 51 09 		pushs	L0951			; Fellowship
+027A: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+027E: 1D 5C 09 		pushs	L095C			; philosophy
+0281: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+0285: 1D 67 09 		pushs	L0967			; philosophy
+0288: 07 01 00 21 00 	cmps	0001H, 02AE
+028D: 1C 72 09 		addsi	L0972			; "Thou art really ...
+0290: 33 		say
+0291: 24 02 00 		call	[0002]			; 090AH
+0294: 12 10 00 		pop	[0010]
+0297: 21 10 00 		push	[0010]
+029A: 05 06 00 		jne	02A3
+029D: 24 04 00 		call	[0004]			; 091AH
+02A0: 06 04 00 		jmp	02A7
+02A3: 1C A0 09 		addsi	L09A0			; "I thought I was ...
+02A6: 33 		say
+02A7: 1D CD 09 		pushs	L09CD			; philosophy
+02AA: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+02AE: 1D D8 09 		pushs	L09D8			; Britain
+02B1: 07 01 00 12 00 	cmps	0001H, 02C8
+02B6: 1C E0 09 		addsi	L09E0			; "I moved mine ent...
+02B9: 33 		say
+02BA: 1D 8C 0A 		pushs	L0A8C			; Britain
+02BD: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+02C1: 1D 94 0A 		pushs	L0A94			; Fellowship
+02C4: 39 05 00 01 	calli	_AddAnswer@1		; 0005
+02C8: 1D 9F 0A 		pushs	L0A9F			; buy
+02CB: 07 01 00 2C 00 	cmps	0001H, 02FC
+02D0: 21 02 00 		push	[0002]
+02D3: 1F 07 00 		pushi	0007H			; 7
+02D6: 22 		cmpeq
+02D7: 05 17 00 		jne	02F1
+02DA: 1C A3 0A 		addsi	L0AA3			; "Wouldst thou lik...
+02DD: 33 		say
+02DE: 24 02 00 		call	[0002]			; 090AH
+02E1: 05 06 00 		jne	02EA
+02E4: 24 05 00 		call	[0005]			; 08E3H
+02E7: 06 04 00 		jmp	02EE
+02EA: 1C C9 0A 		addsi	L0AC9			; "Then please brow...
+02ED: 33 		say
+02EE: 06 04 00 		jmp	02F5
+02F1: 1C F1 0A 		addsi	L0AF1			; "Please come to t...
+02F4: 33 		say
+02F5: 1D 29 0B 		pushs	L0B29			; buy
+02F8: 39 06 00 01 	calli	_RemoveAnswer@1		; 0006
+02FC: 1D 2D 0B 		pushs	L0B2D			; bye
+02FF: 07 01 00 03 00 	cmps	0001H, 0307
+0304: 06 03 00 		jmp	030A
+0307: 06 96 FD 		jmp	00A0
+030A: 40 		db 40	???
+030B: 1C 31 0B 		addsi	L0B31			; "I am sure thou m...
+030E: 33 		say
+030F: 48 		push	eventid
+0310: 1F 00 00 		pushi	0000H			; 0
+0313: 22 		cmpeq
+0314: 05 7F 00 		jne	0396
+0317: 38 3B 00 00 	callis	003B, 0
+031B: 12 01 00 		pop	[0001]
+031E: 1F C5 FF 		pushi	FFC5H			; -59
+0321: 38 1B 00 01 	callis	001B, 1
+0325: 38 1C 00 01 	callis	001C, 1
+0329: 12 02 00 		pop	[0002]
+032C: 1F 04 00 		pushi	0004H			; 4
+032F: 1F 01 00 		pushi	0001H			; 1
+0332: 38 10 00 02 	callis	_Random2@2		; 0010
+0336: 12 11 00 		pop	[0011]
+0339: 21 02 00 		push	[0002]
+033C: 1F 07 00 		pushi	0007H			; 7
+033F: 22 		cmpeq
+0340: 05 4D 00 		jne	0390
+0343: 21 11 00 		push	[0011]
+0346: 1F 01 00 		pushi	0001H			; 1
+0349: 22 		cmpeq
+034A: 05 06 00 		jne	0353
+034D: 1D 64 0B 		pushs	L0B64			; @Fine jewelry!@
+0350: 12 12 00 		pop	[0012]
+0353: 21 11 00 		push	[0011]
+0356: 1F 02 00 		pushi	0002H			; 2
+0359: 22 		cmpeq
+035A: 05 06 00 		jne	0363
+035D: 1D 74 0B 		pushs	L0B74			; @Need gold trinke...
+0360: 12 12 00 		pop	[0012]
+0363: 21 11 00 		push	[0011]
+0366: 1F 03 00 		pushi	0003H			; 3
+0369: 22 		cmpeq
+036A: 05 06 00 		jne	0373
+036D: 1D 8A 0B 		pushs	L0B8A			; @Fine gems!@
+0370: 12 12 00 		pop	[0012]
+0373: 21 11 00 		push	[0011]
+0376: 1F 04 00 		pushi	0004H			; 4
+0379: 22 		cmpeq
+037A: 05 06 00 		jne	0383
+037D: 1D 97 0B 		pushs	L0B97			; @Fine crafted jew...
+0380: 12 12 00 		pop	[0012]
+0383: 21 12 00 		push	[0012]
+0386: 1F C5 FF 		pushi	FFC5H			; -59
+0389: 39 40 00 02 	calli	_ItemSay@2		; 0040
+038D: 06 06 00 		jmp	0396
+0390: 1F C5 FF 		pushi	FFC5H			; -59
+0393: 24 06 00 		call	[0006]			; 092EH
+0396: 25 		ret

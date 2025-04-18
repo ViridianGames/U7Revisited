@@ -1,0 +1,257 @@
+  .funcnumber 08C7H
+  .data
+L0000: db 'As the actors take their places and don masks, you settle do'
+ db 'wn to watch the action.*'
+L0054: db 00
+L0055: db 'Spark whispers to you, "I wish there was a confectioner that'
+ db ' sold candied apples!"*'
+L00A8: db 00
+L00A9: db 'The music starts the play, as Paul takes center stage and ad'
+ db 'dresses the audience.'
+L00FA: db 00
+L00FB: db '"Welcome to Our Tale, ~A tale so true to life. ~'Tis a tale '
+ db 'of tragedy ~A man has lost his wife.'
+L015B: db 00
+L015C: db '"But the story need not be sad ~When The Fellowship is here.'
+ db ' ~The Triad of Inner Strength ~Gives one no cause to fear."*'
+L01D4: db 00
+L01D5: db 'Dustin takes the stage as Paul moves away. Meryl lies on the'
+ db ' ground in front of him and assumes a death-like pose.'
+L0247: db 00
+L0248: db '"'Tis doom! 'Tis despair! 'Tis death! ~My beloved wife is go'
+ db 'ne! ~Disease has taken her away ~And left me with but a song'
+ db '."'
+L02C2: db 00
+L02C3: db 'Dustin puts his head in his hands and mimes sobbing. As he s'
+ db 'obs, Meryl rises from her "death" in a ghost-like fashion, t'
+ db 'hen addresses Dustin.*'
+L0351: db 00
+L0352: db '"Mine husband, my love! ~Do not despair! 'Tis not doom! ~Tho'
+ db 'u shalt rise above ~All this melancholy and gloom!"*'
+L03C2: db 00
+L03C3: db '"Who doth speak to me? ~Could it be she? ~Or have I indeed g'
+ db 'one mad? ~But who else -could- it be?"*'
+L0426: db 00
+L0427: db '"Mine husband, thou must listen. ~Thou hast thy comfort with'
+ db 'in thy grip. ~Thou must only seek them out -- ~Those that ca'
+ db 'n help -- The Fellowship!"*'
+L04BA: db 00
+L04BB: db 'Meryl drifts off stage, leaving Dustin alone.'
+L04E8: db 00
+L04E9: db '"The Fellowship, she said? ~But what do I need with it? ~I h'
+ db 'ave mine eight virtues and mine healers ~With these nothing '
+ db 'else will fit!"*'
+L0571: db 00
+L0572: db 'Paul enters the stage with Meryl, who now wears a different '
+ db 'mask.'
+L05B3: db 00
+L05B4: db '"But that is where thou art wrong! ~The Fellowship exists to'
+ db ' help thee! ~The Triad of Inner Strength is here ~To give th'
+ db 'ee a sense of unity!"'
+L0641: db 00
+L0642: db '"Join us now and thou wilt see. ~Join thy brothers and our p'
+ db 'lan ~To promote the tenets of our group -- ~Thou wilt be a b'
+ db 'etter man."'
+L06C5: db 00
+L06C6: db 'At this point, an elaborate mimed sequence reveals how Dusti'
+ db 'n joins The Fellowship, receives his medallion from a "branc'
+ db 'h leader", portrayed by Paul, and receives congratulations f'
+ db 'rom Meryl.'
+L0784: db 00
+L0785: db '"Strive for Unity at all times, ~And Trust Thy Brother throu'
+ db 'gh all ill, ~For Worthiness Precedes thine own Reward ~Hark '
+ db 'to our words -- it surely will!"*'
+L081E: db 00
+L081F: db '"I shall give half my wealth to thee! ~I shall do thy biddin'
+ db 'g and then wait. ~My reward shall come one day ~And free me '
+ db 'from mine awful fate."'
+L08AD: db 00
+L08AE: db 'Dustin mimes giving Paul some money. Paul exits, then Dustin'
+ db ' lies down on the stage and mimes going to sleep. After a mo'
+ db 'ment, Meryl enters the stage, dances around Dustin's body, s'
+ db 'prinkling some kind of sparkling dust on him.*'
+L0990: db 00
+L0991: db 'Iolo whispers to you. "I am particularly enjoying the visual'
+ db ' effects. The script is a little weak, dost thou not think?"'
+ db '*'
+L0A0A: db 00
+L0A0B: db 'Meryl leaves the stage and Dustin 'wakes up'. Lo and behold,'
+ db ' he finds a bag near his place of sleep. Upon opening it, he'
+ db ' finds a bundle of gold!'
+L0A9B: db 00
+L0A9C: db '"By Lord British I declare! ~'Tis my reward! From the air! ~'
+ db 'The voice I heard at night was right ~About my wretched life'
+ db ' I will not care!'
+L0B25: db 00
+L0B26: db '"The voice came to me in a dream ~'Twas mine 'inner' voice, '
+ db 'so fair. ~I now have a companion and provider, ~And a master'
+ db ' about whom I care."'
+L0BB2: db 00
+L0BB3: db 'You are jarred by the actor's choice of words -- 'companion''
+ db ', 'provider', and 'master'. You realize you have heard them '
+ db 'before.*'
+L0C33: db 00
+L0C34: db '"This is really awful."*'
+L0C4C: db 00
+L0C4D: db 'Paul and Meryl join Dustin on stage and they all hold hands.'
+ db '*'
+L0C8A: db 00
+L0C8B: db '"The Fellowship can give thee purpose ~To join is thine only'
+ db ' choice ~Commit thyself to our just cause ~And find thine in'
+ db 'ner voice."'
+L0D0E: db 00
+L0D0F: db 'At that point, the actors bow, and you realize it is the end'
+ db '. You give them polite applause.*'
+L0D6C: db 00
+L0D6D: db '"What do they mean about the voice? I am not sure I understa'
+ db 'nd. 'Twas a confusing play. I did not like it at all. We hav'
+ db 'e wasted our time and money! That is the last time that I le'
+ db 't thee decide how best we entertain ourselves!"*'
+L0E51: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0001H
+  .extern 08F7H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F 17 FF   pushi FF17H   ; -233
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 1F FF FF   pushi FFFFH   ; -1
+000D: 24 00 00   call [0000]   ; 08F7H
+0010: 12 00 00   pop [0000]
+0013: 1F FE FF   pushi FFFEH   ; -2
+0016: 24 00 00   call [0000]   ; 08F7H
+0019: 12 01 00   pop [0001]
+001C: 1C 00 00   addsi L0000   ; As the actors tak...
+001F: 33   say
+0020: 21 01 00   push [0001]
+0023: 05 1F 00   jne 0045
+0026: 1F 00 00   pushi 0000H   ; 0
+0029: 1F FE FF   pushi FFFEH   ; -2
+002C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0030: 1C 55 00   addsi L0055   ; Spark whispers to...
+0033: 33   say
+0034: 1F FE FF   pushi FFFEH   ; -2
+0037: 39 04 00 01  calli _HideNPC@1  ; 0004
+003B: 1F 00 00   pushi 0000H   ; 0
+003E: 1F 17 FF   pushi FF17H   ; -233
+0041: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0045: 1C A9 00   addsi L00A9   ; The music starts ...
+0048: 33   say
+0049: 1C FB 00   addsi L00FB   ; "Welcome to Our T...
+004C: 33   say
+004D: 1C 5C 01   addsi L015C   ; "But the story ne...
+0050: 33   say
+0051: 1F 17 FF   pushi FF17H   ; -233
+0054: 39 04 00 01  calli _HideNPC@1  ; 0004
+0058: 1F 00 00   pushi 0000H   ; 0
+005B: 1F 15 FF   pushi FF15H   ; -235
+005E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0062: 1C D5 01   addsi L01D5   ; Dustin takes the ...
+0065: 33   say
+0066: 1C 48 02   addsi L0248   ; "'Tis doom! 'Tis ...
+0069: 33   say
+006A: 1C C3 02   addsi L02C3   ; Dustin puts his h...
+006D: 33   say
+006E: 1F 00 00   pushi 0000H   ; 0
+0071: 1F 16 FF   pushi FF16H   ; -234
+0074: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0078: 1C 52 03   addsi L0352   ; "Mine husband, my...
+007B: 33   say
+007C: 1F 00 00   pushi 0000H   ; 0
+007F: 1F 15 FF   pushi FF15H   ; -235
+0082: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0086: 1C C3 03   addsi L03C3   ; "Who doth speak t...
+0089: 33   say
+008A: 1F 00 00   pushi 0000H   ; 0
+008D: 1F 16 FF   pushi FF16H   ; -234
+0090: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0094: 1C 27 04   addsi L0427   ; "Mine husband, th...
+0097: 33   say
+0098: 1F 16 FF   pushi FF16H   ; -234
+009B: 39 04 00 01  calli _HideNPC@1  ; 0004
+009F: 1F 00 00   pushi 0000H   ; 0
+00A2: 1F 15 FF   pushi FF15H   ; -235
+00A5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A9: 1C BB 04   addsi L04BB   ; Meryl drifts off ...
+00AC: 33   say
+00AD: 1C E9 04   addsi L04E9   ; "The Fellowship, ...
+00B0: 33   say
+00B1: 1F 00 00   pushi 0000H   ; 0
+00B4: 1F 17 FF   pushi FF17H   ; -233
+00B7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00BB: 1C 72 05   addsi L0572   ; Paul enters the s...
+00BE: 33   say
+00BF: 1C B4 05   addsi L05B4   ; "But that is wher...
+00C2: 33   say
+00C3: 1C 42 06   addsi L0642   ; "Join us now and ...
+00C6: 33   say
+00C7: 1C C6 06   addsi L06C6   ; At this point, an...
+00CA: 33   say
+00CB: 1C 85 07   addsi L0785   ; "Strive for Unity...
+00CE: 33   say
+00CF: 1F 00 00   pushi 0000H   ; 0
+00D2: 1F 15 FF   pushi FF15H   ; -235
+00D5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D9: 1C 1F 08   addsi L081F   ; "I shall give hal...
+00DC: 33   say
+00DD: 1C AE 08   addsi L08AE   ; Dustin mimes givi...
+00E0: 33   say
+00E1: 21 00 00   push [0000]
+00E4: 05 26 00   jne 010D
+00E7: 1F 17 FF   pushi FF17H   ; -233
+00EA: 39 04 00 01  calli _HideNPC@1  ; 0004
+00EE: 1F 00 00   pushi 0000H   ; 0
+00F1: 1F FF FF   pushi FFFFH   ; -1
+00F4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F8: 1C 91 09   addsi L0991   ; Iolo whispers to ...
+00FB: 33   say
+00FC: 1F FF FF   pushi FFFFH   ; -1
+00FF: 39 04 00 01  calli _HideNPC@1  ; 0004
+0103: 1F 00 00   pushi 0000H   ; 0
+0106: 1F 15 FF   pushi FF15H   ; -235
+0109: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+010D: 1C 0B 0A   addsi L0A0B   ; Meryl leaves the ...
+0110: 33   say
+0111: 1C 9C 0A   addsi L0A9C   ; "By Lord British ...
+0114: 33   say
+0115: 1C 26 0B   addsi L0B26   ; "The voice came t...
+0118: 33   say
+0119: 1C B3 0B   addsi L0BB3   ; You are jarred by...
+011C: 33   say
+011D: 21 01 00   push [0001]
+0120: 05 1F 00   jne 0142
+0123: 1F 00 00   pushi 0000H   ; 0
+0126: 1F FE FF   pushi FFFEH   ; -2
+0129: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+012D: 1C 34 0C   addsi L0C34   ; "This is really a...
+0130: 33   say
+0131: 1F FE FF   pushi FFFEH   ; -2
+0134: 39 04 00 01  calli _HideNPC@1  ; 0004
+0138: 1F 00 00   pushi 0000H   ; 0
+013B: 1F 15 FF   pushi FF15H   ; -235
+013E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0142: 1C 4D 0C   addsi L0C4D   ; Paul and Meryl jo...
+0145: 33   say
+0146: 1F 00 00   pushi 0000H   ; 0
+0149: 1F 17 FF   pushi FF17H   ; -233
+014C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0150: 1C 8B 0C   addsi L0C8B   ; "The Fellowship c...
+0153: 33   say
+0154: 1C 0F 0D   addsi L0D0F   ; At that point, th...
+0157: 33   say
+0158: 13   push true
+0159: 43 0A 00   popf flag:[000A]
+015C: 21 00 00   push [0000]
+015F: 05 1C 00   jne 017E
+0162: 1F 17 FF   pushi FF17H   ; -233
+0165: 39 04 00 01  calli _HideNPC@1  ; 0004
+0169: 1F 00 00   pushi 0000H   ; 0
+016C: 1F FF FF   pushi FFFFH   ; -1
+016F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0173: 1C 6D 0D   addsi L0D6D   ; "What do they mea...
+0176: 33   say
+0177: 1F FF FF   pushi FFFFH   ; -1
+017A: 39 04 00 01  calli _HideNPC@1  ; 0004
+017E: 3F   abrt
+017F: 25   ret

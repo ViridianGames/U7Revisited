@@ -1,0 +1,124 @@
+  .funcnumber 0895H
+  .data
+L0000: db 'Bollux stares ahead, almost vacantly. Despite his features a'
+ db 'nd lack of motion, it is apparent by his expression that som'
+ db 'e of Castambre's magic still resides within.'
+L00A4: db 00
+L00A5: db '"Bollux turns to see Adjar standing nearby, quite alive. Ins'
+ db 'tantly, Bollux's expression changes detectably.'
+L0110: db 00
+L0111: db 'Adjhar simply smiles.~"Greetings, brother."'
+L013C: db 00
+L013D: db 'bye'
+L0140: db 00
+L0141: db 'job'
+L0144: db 00
+L0145: db 'name'
+L0149: db 00
+L014A: db 'name'
+L014E: db 00
+L014F: db 'name'
+L0153: db 00
+L0154: db 'name'
+L0158: db 00
+L0159: db 'He tilts his head and stares at you quizzicaly.~ "I apologiz'
+ db 'e. Did I not already tell thee my master called me Bollux?"'
+L01D0: db 00
+L01D1: db '"My master named me Bollux.'
+L01EC: db 00
+L01ED: db 'job'
+L01F0: db 00
+L01F1: db '"I am here... to guard the Shrine... of Love."'
+L021F: db 00
+L0220: db 'bye'
+L0223: db 00
+L0224: db '"Fare thee... well."*'
+L0239: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F DF FE   pushi FEDFH   ; -289
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 1C 00 00   addsi L0000   ; Bollux stares ahe...
+000D: 33   say
+000E: 1F 00 00   pushi 0000H   ; 0
+0011: 1F 28 00   pushi 0028H   ; 40
+0014: 1F F7 03   pushi 03F7H   ; 1015
+0017: 3E   push itemref
+0018: 38 35 00 04  callis 0035, 4
+001C: 12 00 00   pop [0000]
+001F: 2E   sloop
+0020: 02 01 00 02 00 03 00 00 00 4E 00  db 2 ???
+0021:   db 1
+0022:   db 0
+0023:   db 2
+0024:   db 0
+0025:   db 3
+0026:   db 0
+0027:   db 0
+0028:   db 0
+0029:   db 4e
+002A:   db 0
+002B: 1F 04 00   pushi 0004H   ; 4
+002E: 1F F3 00   pushi 00F3H   ; 243
+0031: 1F 1D 03   pushi 031DH   ; 797
+0034: 3E   push itemref
+0035: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0039: 1F B0 00   pushi 00B0H   ; 176
+003C: 1F 01 00   pushi 0001H   ; 1
+003F: 1F 1D 03   pushi 031DH   ; 797
+0042: 3E   push itemref
+0043: 38 35 00 04  callis 0035, 4
+0047: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+004B: 1F F3 00   pushi 00F3H   ; 243
+004E: 22   cmpeq
+004F: 0F   or
+0050: 05 23 00   jne 0076
+0053: 1C A5 00   addsi L00A5   ; "Bollux turns to ...
+0056: 33   say
+0057: 1F DF FE   pushi FEDFH   ; -289
+005A: 39 04 00 01  calli _HideNPC@1  ; 0004
+005E: 1F 01 00   pushi 0001H   ; 1
+0061: 1F DF FE   pushi FEDFH   ; -289
+0064: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0068: 1F 00 00   pushi 0000H   ; 0
+006B: 1F E0 FE   pushi FEE0H   ; -288
+006E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0072: 1C 11 01   addsi L0111   ; Adjhar simply smi...
+0075: 33   say
+0076: 06 A7 FF   jmp 0020
+0079: 1D 3D 01   pushs L013D   ; bye
+007C: 1D 41 01   pushs L0141   ; job
+007F: 1D 45 01   pushs L0145   ; name
+0082: 1E 03 00   arrc 0003H   ; 3
+0085: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0089: 04 47 00   je 00D3
+008C: 1D 4A 01   pushs L014A   ; name
+008F: 07 01 00 23 00  cmps 0001H, 00B7
+0094: 1D 4F 01   pushs L014F   ; name
+0097: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009B: 42 1D 03   pushf flag:[031D]
+009E: 05 0E 00   jne 00AF
+00A1: 1D 54 01   pushs L0154   ; name
+00A4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A8: 1C 59 01   addsi L0159   ; He tilts his head...
+00AB: 33   say
+00AC: 06 08 00   jmp 00B7
+00AF: 1C D1 01   addsi L01D1   ; "My master named ...
+00B2: 33   say
+00B3: 13   push true
+00B4: 43 1D 03   popf flag:[031D]
+00B7: 1D ED 01   pushs L01ED   ; job
+00BA: 07 01 00 04 00  cmps 0001H, 00C3
+00BF: 1C F1 01   addsi L01F1   ; "I am here... to ...
+00C2: 33   say
+00C3: 1D 20 02   pushs L0220   ; bye
+00C6: 07 01 00 05 00  cmps 0001H, 00D0
+00CB: 1C 24 02   addsi L0224   ; "Fare thee... wel...
+00CE: 33   say
+00CF: 3F   abrt
+00D0: 06 B6 FF   jmp 0089
+00D3: 40   db 40 ???
+00D4: 25   ret

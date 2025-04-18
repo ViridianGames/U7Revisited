@@ -1,0 +1,155 @@
+  .funcnumber 08A4H
+  .data
+L0000: db 'magic bow'
+L0009: db 00
+L000A: db 'triple crossbow'
+L0019: db 00
+L001A: db 'crossbow'
+L0022: db 00
+L0023: db 'bow'
+L0026: db 00
+L0027: db 'nothing'
+L002E: db 00
+L002F: db 'a '
+L0031: db 00
+L0032: db 00
+L0033: db '"What dost thou wish to buy?"'
+L0050: db 00
+L0051: db '"All right."'
+L005D: db 00
+L005E: db '"^'
+L0060: db 00
+L0061: db ' Is that agreeable?"'
+L0075: db 00
+L0076: db '"Very good, '
+L0082: db 00
+L0083: db '."'
+L0085: db 00
+L0086: db '"Thou cannot travel with that much!"'
+L00AA: db 00
+L00AB: db '"Thou dost not have the gold for that!"'
+L00D2: db 00
+L00D3: db '"Wouldst thou like to buy something else?"'
+L00FD: db 00
+  .code
+  .argc 0000H
+  .localc 000EH
+  .externsize 0005H
+  .extern 0909H
+  .extern 090CH
+  .extern 091BH
+  .extern 090AH
+  .extern 08F8H
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 00 00   pop [0000]
+0006: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+000A: 13   push true
+000B: 12 01 00   pop [0001]
+000E: 1D 00 00   pushs L0000   ; magic bow
+0011: 1D 0A 00   pushs L000A   ; triple crossbow
+0014: 1D 1A 00   pushs L001A   ; crossbow
+0017: 1D 23 00   pushs L0023   ; bow
+001A: 1D 27 00   pushs L0027   ; nothing
+001D: 1E 05 00   arrc 0005H   ; 5
+0020: 12 02 00   pop [0002]
+0023: 1F 5E 02   pushi 025EH   ; 606
+0026: 1F 87 02   pushi 0287H   ; 647
+0029: 1F 56 02   pushi 0256H   ; 598
+002C: 1F 55 02   pushi 0255H   ; 597
+002F: 1F 00 00   pushi 0000H   ; 0
+0032: 1E 05 00   arrc 0005H   ; 5
+0035: 12 03 00   pop [0003]
+0038: 1F 99 FE   pushi FE99H   ; -359
+003B: 12 04 00   pop [0004]
+003E: 1F 90 01   pushi 0190H   ; 400
+0041: 1F 5E 01   pushi 015EH   ; 350
+0044: 1F 6E 00   pushi 006EH   ; 110
+0047: 1F 23 00   pushi 0023H   ; 35
+004A: 1F 00 00   pushi 0000H   ; 0
+004D: 1E 05 00   arrc 0005H   ; 5
+0050: 12 05 00   pop [0005]
+0053: 1D 2F 00   pushs L002F   ; a 
+0056: 12 06 00   pop [0006]
+0059: 1F 00 00   pushi 0000H   ; 0
+005C: 12 07 00   pop [0007]
+005F: 1D 32 00   pushs L0032   ; 
+0062: 12 08 00   pop [0008]
+0065: 1F 01 00   pushi 0001H   ; 1
+0068: 12 09 00   pop [0009]
+006B: 1C 33 00   addsi L0033   ; "What dost thou w...
+006E: 33   say
+006F: 21 01 00   push [0001]
+0072: 05 BA 00   jne 012F
+0075: 21 02 00   push [0002]
+0078: 24 01 00   call [0001]   ; 090CH
+007B: 12 0A 00   pop [000A]
+007E: 21 0A 00   push [000A]
+0081: 1F 01 00   pushi 0001H   ; 1
+0084: 22   cmpeq
+0085: 05 0B 00   jne 0093
+0088: 1C 51 00   addsi L0051   ; "All right."
+008B: 33   say
+008C: 14   push false
+008D: 12 01 00   pop [0001]
+0090: 06 99 00   jmp 012C
+0093: 21 08 00   push [0008]
+0096: 21 0A 00   push [000A]
+0099: 26 05 00   aidx [0005]
+009C: 21 07 00   push [0007]
+009F: 21 0A 00   push [000A]
+00A2: 26 02 00   aidx [0002]
+00A5: 21 06 00   push [0006]
+00A8: 24 02 00   call [0002]   ; 091BH
+00AB: 12 0B 00   pop [000B]
+00AE: 1F 00 00   pushi 0000H   ; 0
+00B1: 12 0C 00   pop [000C]
+00B4: 1C 5E 00   addsi L005E   ; "^
+00B7: 2F 0B 00   addsv [000B]
+00BA: 1C 61 00   addsi L0061   ;  Is that agreeable?"
+00BD: 33   say
+00BE: 24 03 00   call [0003]   ; 090AH
+00C1: 12 0D 00   pop [000D]
+00C4: 21 0D 00   push [000D]
+00C7: 05 1F 00   jne 00E9
+00CA: 14   push false
+00CB: 1F 01 00   pushi 0001H   ; 1
+00CE: 1F 00 00   pushi 0000H   ; 0
+00D1: 21 0A 00   push [000A]
+00D4: 26 05 00   aidx [0005]
+00D7: 21 09 00   push [0009]
+00DA: 21 04 00   push [0004]
+00DD: 21 0A 00   push [000A]
+00E0: 26 03 00   aidx [0003]
+00E3: 24 04 00   call [0004]   ; 08F8H
+00E6: 12 0C 00   pop [000C]
+00E9: 21 0C 00   push [000C]
+00EC: 1F 01 00   pushi 0001H   ; 1
+00EF: 22   cmpeq
+00F0: 05 0D 00   jne 0100
+00F3: 1C 76 00   addsi L0076   ; "Very good, 
+00F6: 2F 00 00   addsv [0000]
+00F9: 1C 83 00   addsi L0083   ; ."
+00FC: 33   say
+00FD: 06 22 00   jmp 0122
+0100: 21 0C 00   push [000C]
+0103: 1F 02 00   pushi 0002H   ; 2
+0106: 22   cmpeq
+0107: 05 07 00   jne 0111
+010A: 1C 86 00   addsi L0086   ; "Thou cannot trav...
+010D: 33   say
+010E: 06 11 00   jmp 0122
+0111: 21 0C 00   push [000C]
+0114: 1F 03 00   pushi 0003H   ; 3
+0117: 22   cmpeq
+0118: 05 07 00   jne 0122
+011B: 1C AB 00   addsi L00AB   ; "Thou dost not ha...
+011E: 33   say
+011F: 06 00 00   jmp 0122
+0122: 1C D3 00   addsi L00D3   ; "Wouldst thou lik...
+0125: 33   say
+0126: 24 03 00   call [0003]   ; 090AH
+0129: 12 01 00   pop [0001]
+012C: 06 40 FF   jmp 006F
+012F: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0133: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0137: 25   ret

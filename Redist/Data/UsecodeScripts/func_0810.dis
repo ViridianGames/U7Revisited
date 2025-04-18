@@ -1,0 +1,100 @@
+  .funcnumber 0810H ;* Cube puzzle.
+  .data
+  .code
+  .argc 0002H
+  .localc 000AH
+  .externsize 0000H
+0000: 21 01 00   push [0001]
+0003: 1F 00 00   pushi 0000H   ; 0
+0006: 22   cmpeq
+0007: 05 0F 00   jne 0019
+000A: 1F 70 01   pushi 0170H   ; 368
+000D: 12 01 00   pop [0001]
+0010: 1F 08 00   pushi 0008H   ; 8
+0013: 12 02 00   pop [0002]
+0016: 06 0C 00   jmp 0025
+0019: 1F 71 01   pushi 0171H   ; 369
+001C: 12 01 00   pop [0001]
+001F: 1F 05 00   pushi 0005H   ; 5
+0022: 12 02 00   pop [0002]  ;* Frame for new floors.
+0025: 3E   push itemref
+0026: 38 18 00 01  callis 0018, 1
+002A: 12 03 00   pop [0003]
+002D: 21 03 00   push [0003]
+0030: 1F 06 00   pushi 0006H   ; 6
+0033: 3E   push itemref
+0034: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0038: 1E 02 00   arrc 0002H   ; 2
+003B: 4A   arra
+003C: 12 03 00   pop [0003]
+003F: 1F 10 00   pushi 0010H   ; 16
+0042: 1F 50 00   pushi 0050H   ; 80
+0045: 1F 13 01   pushi 0113H   ; 275
+0048: 21 03 00   push [0003]
+004B: 38 35 00 04  callis 0035, 4
+004F: 12 04 00   pop [0004]
+0052: 1F 00 00   pushi 0000H   ; 0
+0055: 12 05 00   pop [0005]
+0058: 2E   sloop
+0059: 02 06 00 07 00 08 00 04 00 9B 00  db 2 ???
+005A:   db 6
+005B:   db 0
+005C:   db 7
+005D:   db 0
+005E:   db 8
+005F:   db 0
+0060:   db 4
+0061:   db 0
+0062:   db 9b
+0063:   db 0
+0064: 21 05 00   push [0005]  ;* Counter.
+0067: 1F 01 00   pushi 0001H   ; 1
+006A: 09   add
+006B: 12 05 00   pop [0005]
+006E: 21 08 00   push [0008]  ;* Egg.
+0071: 38 18 00 01  callis 0018, 1
+0075: 12 03 00   pop [0003]  ;* Egg position.
+0078: 1F 00 00   pushi 0000H   ; 0
+007B: 1F 01 00   pushi 0001H   ; 1
+007E: 21 01 00   push [0001]
+0081: 21 03 00   push [0003]
+0084: 38 35 00 04  callis 0035, 4  ;* Find floor near egg.
+0088: 12 09 00   pop [0009]  ;* Floor near egg.
+008B: 21 00 00   push [0000] ;* (0 first time).
+008E: 1F 01 00   pushi 0001H   ; 1
+0091: 22   cmpeq
+0092: 05 24 00   jne 00B9
+0095: 21 09 00   push [0009]
+0098: 05 1B 00   jne 00B6
+009B: 21 09 00   push [0009]
+009E: 38 25 00 01  callis 0025, 1
+00A2: 12 0A 00   pop [000A]
+00A5: 1F 9A FE   pushi FE9AH   ; -358
+00A8: 38 26 00 01  callis 0026, 1
+00AC: 12 0A 00   pop [000A]
+00AF: 1F 0A 00   pushi 000AH   ; 10
+00B2: 39 0F 00 01  calli 000F, 1
+00B6: 06 43 00   jmp 00FC
+00B9: 21 09 00   push [0009]  ;* Floor near egg.
+00BC: 1F 00 00   pushi 0000H   ; 0
+00BF: 22   cmpeq
+00C0: 05 39 00   jne 00FC  ;* Jmp if already exists.
+00C3: 21 01 00   push [0001]
+00C6: 38 24 00 01  callis 0024, 1  ;* Create floor.
+00CA: 12 0B 00   pop [000B]
+00CD: 21 02 00   push [0002]
+00D0: 21 0B 00   push [000B]
+00D3: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00D7: 21 03 00   push [0003]
+00DA: 38 26 00 01  callis 0026, 1  ;* Set floor to egg's pos.
+00DE: 12 0A 00   pop [000A]
+00E1: 21 09 00   push [0009]
+00E4: 38 25 00 01  callis 0025, 1
+00E8: 12 0A 00   pop [000A]
+00EB: 1F 9A FE   pushi FE9AH   ; -358
+00EE: 38 26 00 01  callis 0026, 1
+00F2: 12 0A 00   pop [000A]
+00F5: 1F 53 00   pushi 0053H   ; 83
+00F8: 39 0F 00 01  calli 000F, 1
+00FC: 06 5A FF   jmp 0059
+00FF: 25   ret

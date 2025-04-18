@@ -1,0 +1,40 @@
+  .funcnumber 088DH
+  .data
+L0000: db '"Feeling all right, man?"*'
+L001A: db 00
+L001B: db 'Gargan coughs, wheezes, and then lights his pipe. On inhalin'
+ db 'g, he has a coughing spasm until he finally catches his brea'
+ db 'th.'
+L0096: db 00
+L0097: db '"Never felt better."*'
+L00AC: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0001H
+  .extern 08F7H
+0000: 1F FF FF   pushi FFFFH   ; -1
+0003: 24 00 00   call [0000]   ; 08F7H
+0006: 12 00 00   pop [0000]
+0009: 21 00 00   push [0000]
+000C: 05 37 00   jne 0046
+000F: 1F 00 00   pushi 0000H   ; 0
+0012: 1F FF FF   pushi FFFFH   ; -1
+0015: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0019: 1C 00 00   addsi L0000   ; "Feeling all righ...
+001C: 33   say
+001D: 1F 00 00   pushi 0000H   ; 0
+0020: 1F EB FF   pushi FFEBH   ; -21
+0023: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0027: 1C 1B 00   addsi L001B   ; Gargan coughs, wh...
+002A: 33   say
+002B: 1C 97 00   addsi L0097   ; "Never felt bette...
+002E: 33   say
+002F: 1F FF FF   pushi FFFFH   ; -1
+0032: 39 04 00 01  calli _HideNPC@1  ; 0004
+0036: 1F 00 00   pushi 0000H   ; 0
+0039: 1F EB FF   pushi FFEBH   ; -21
+003C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0040: 1F 00 00   pushi 0000H   ; 0
+0043: 12 01 00   pop [0001]
+0046: 25   ret

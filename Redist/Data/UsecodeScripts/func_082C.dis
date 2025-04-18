@@ -1,0 +1,83 @@
+  .funcnumber 082CH ;* Rets. true if ganplank blocked.
+  .data
+  .code
+  .argc 0004H
+  .localc 0005H
+  .externsize 0001H
+  .extern 0932H
+0000: 1F 20 00   pushi 0020H   ; 32
+0003: 21 01 00   push [0001]
+0006: 24 00 00   call [0000]   ; 0932H
+0009: 1F 99 FE   pushi FE99H   ; -359
+000C: 21 03 00   push [0003]
+000F: 38 35 00 04  callis 0035, 4
+0013: 12 04 00   pop [0004]
+0016: 2E   sloop
+0017: 02 05 00 06 00 07 00 04 00 7D 00  db 2 ???
+0018:   db 5
+0019:   db 0
+001A:   db 6
+001B:   db 0
+001C:   db 7
+001D:   db 0
+001E:   db 4
+001F:   db 0
+0020:   db 7d
+0021:   db 0
+0022: 21 07 00   push [0007]
+0025: 38 18 00 01  callis 0018, 1
+0029: 12 08 00   pop [0008]
+002C: 1F 01 00   pushi 0001H   ; 1
+002F: 26 08 00   aidx [0008]
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 26 02 00   aidx [0002]
+0038: 19   cmple
+0039: 1F 01 00   pushi 0001H   ; 1
+003C: 26 08 00   aidx [0008]
+003F: 1F 01 00   pushi 0001H   ; 1
+0042: 26 02 00   aidx [0002]
+0045: 21 01 00   push [0001]
+0048: 09   add
+0049: 18   cmpge
+004A: 1F 02 00   pushi 0002H   ; 2
+004D: 26 08 00   aidx [0008]
+0050: 1F 02 00   pushi 0002H   ; 2
+0053: 26 02 00   aidx [0002]
+0056: 19   cmple
+0057: 1F 02 00   pushi 0002H   ; 2
+005A: 26 08 00   aidx [0008]
+005D: 1F 02 00   pushi 0002H   ; 2
+0060: 26 02 00   aidx [0002]
+0063: 21 01 00   push [0001]
+0066: 09   add
+0067: 18   cmpge
+0068: 1F 03 00   pushi 0003H   ; 3
+006B: 26 08 00   aidx [0008]
+006E: 1F 02 00   pushi 0002H   ; 2
+0071: 19   cmple
+0072: 21 07 00   push [0007]
+0075: 21 03 00   push [0003]
+0078: 22   cmpeq
+0079: 10   not
+007A: 21 07 00   push [0007]
+007D: 38 11 00 01  callis _GetItemType@1  ; 0011
+0081: 21 00 00   push [0000]
+0084: 30   in
+0085: 10   not
+0086: 1F 18 00   pushi 0018H   ; 24
+0089: 21 03 00   push [0003]
+008C: 38 88 00 02  callis 0088, 2
+0090: 0E   and
+0091: 0E   and
+0092: 0E   and
+0093: 0E   and
+0094: 0E   and
+0095: 0E   and
+0096: 0E   and
+0097: 05 02 00   jne 009C
+009A: 13   push true
+009B: 2D   setr
+009C: 06 78 FF   jmp 0017
+009F: 14   push false
+00A0: 2D   setr
+00A1: 32   rts

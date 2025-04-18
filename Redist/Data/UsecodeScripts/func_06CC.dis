@@ -1,0 +1,55 @@
+  .funcnumber 06CCH
+  .data
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 69 00   jne 0071
+0008: 42 05 00   pushf flag:[0005]
+000B: 1F 00 00   pushi 0000H   ; 0
+000E: 22   cmpeq
+000F: 05 5F 00   jne 0071
+0012: 3E   push itemref
+0013: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0017: 12 00 00   pop [0000]
+001A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+001E: 12 01 00   pop [0001]
+0021: 2E   sloop
+0022: 02 02 00 03 00 04 00 01 00 44 00  db 2 ???
+0023:   db 2
+0024:   db 0
+0025:   db 3
+0026:   db 0
+0027:   db 4
+0028:   db 0
+0029:   db 1
+002A:   db 0
+002B:   db 44
+002C:   db 0
+002D: 1F 99 FE   pushi FE99H   ; -359
+0030: 1F 7E 02   pushi 027EH   ; 638
+0033: 1F 09 00   pushi 0009H   ; 9
+0036: 21 04 00   push [0004]
+0039: 38 72 00 04  callis 0072, 4
+003D: 10   not
+003E: 05 2D 00   jne 006E
+0041: 21 00 00   push [0000]
+0044: 1F 1E 00   pushi 001EH   ; 30
+0047: 22   cmpeq
+0048: 05 09 00   jne 0054
+004B: 1F 1E 00   pushi 001EH   ; 30
+004E: 12 05 00   pop [0005]
+0051: 06 0D 00   jmp 0061
+0054: 21 00 00   push [0000]
+0057: 1F 01 00   pushi 0001H   ; 1
+005A: 38 10 00 02  callis _Random2@2  ; 0010
+005E: 12 05 00   pop [0005]
+0061: 1F 05 00   pushi 0005H   ; 5
+0064: 21 05 00   push [0005]
+0067: 21 04 00   push [0004]
+006A: 39 71 00 03  calli 0071, 3
+006E: 06 B1 FF   jmp 0022
+0071: 25   ret

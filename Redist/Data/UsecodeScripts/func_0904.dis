@@ -1,0 +1,44 @@
+  .funcnumber 0904H
+  .data
+L0000: db '@Oink@'
+L0006: db 00
+  .code
+  .argc 0002H
+  .localc 0004H
+  .externsize 0001H
+  .extern 0933H
+0000: 21 01 00   push [0001]
+0003: 38 2F 00 01  callis _NPCInParty@1  ; 002F
+0007: 05 41 00   jne 004B
+000A: 1F 19 00   pushi 0019H   ; 25
+000D: 3E   push itemref
+000E: 38 88 00 02  callis 0088, 2
+0012: 05 0B 00   jne 0020
+0015: 1D 00 00   pushs L0000   ; @Oink@
+0018: 3E   push itemref
+0019: 39 40 00 02  calli _ItemSay@2  ; 0040
+001D: 06 2B 00   jmp 004B
+0020: 1F 00 00   pushi 0000H   ; 0
+0023: 12 02 00   pop [0002]
+0026: 2E   sloop
+0027: 02 03 00 04 00 05 00 00 00 19 00  db 2 ???
+0028:   db 3
+0029:   db 0
+002A:   db 4
+002B:   db 0
+002C:   db 5
+002D:   db 0
+002E:   db 0
+002F:   db 0
+0030:   db 19
+0031:   db 0
+0032: 21 02 00   push [0002]
+0035: 21 05 00   push [0005]
+0038: 21 01 00   push [0001]
+003B: 24 00 00   call [0000]   ; 0933H
+003E: 21 02 00   push [0002]
+0041: 1F 11 00   pushi 0011H   ; 17
+0044: 09   add
+0045: 12 02 00   pop [0002]
+0048: 06 DC FF   jmp 0027
+004B: 25   ret

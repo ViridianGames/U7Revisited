@@ -1,0 +1,136 @@
+  .funcnumber 0629H
+  .data
+L0000: db '@Turn it off!@'
+L000E: db 00
+L000F: db '@Thou art wasting it!@'
+L0025: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0001H
+  .extern 08FEH
+0000: 1F 90 03   pushi 0390H   ; 912
+0003: 38 24 00 01  callis 0024, 1
+0007: 12 00 00   pop [0000]
+000A: 21 00 00   push [0000]
+000D: 05 2F 01   jne 013F
+0010: 1F 12 00   pushi 0012H   ; 18
+0013: 21 00 00   push [0000]
+0016: 39 89 00 02  calli 0089, 2
+001A: 1F 17 00   pushi 0017H   ; 23
+001D: 1F 14 00   pushi 0014H   ; 20
+0020: 38 10 00 02  callis _Random2@2  ; 0010
+0024: 21 00 00   push [0000]
+0027: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+002B: 3E   push itemref
+002C: 38 18 00 01  callis 0018, 1
+0030: 12 01 00   pop [0001]
+0033: 1F 00 00   pushi 0000H   ; 0
+0036: 1F 02 00   pushi 0002H   ; 2
+0039: 1F 2A 03   pushi 032AH   ; 810
+003C: 3E   push itemref
+003D: 38 35 00 04  callis 0035, 4
+0041: 12 02 00   pop [0002]
+0044: 2E   sloop
+0045: 02 03 00 04 00 05 00 02 00 72 00  db 2 ???
+0046:   db 3
+0047:   db 0
+0048:   db 4
+0049:   db 0
+004A:   db 5
+004B:   db 0
+004C:   db 2
+004D:   db 0
+004E:   db 72
+004F:   db 0
+0050: 21 05 00   push [0005]
+0053: 38 18 00 01  callis 0018, 1
+0057: 12 06 00   pop [0006]
+005A: 1F 01 00   pushi 0001H   ; 1
+005D: 26 06 00   aidx [0006]
+0060: 1F 01 00   pushi 0001H   ; 1
+0063: 26 01 00   aidx [0001]
+0066: 1F 01 00   pushi 0001H   ; 1
+0069: 09   add
+006A: 22   cmpeq
+006B: 1F 02 00   pushi 0002H   ; 2
+006E: 26 06 00   aidx [0006]
+0071: 1F 02 00   pushi 0002H   ; 2
+0074: 26 01 00   aidx [0001]
+0077: 1F 01 00   pushi 0001H   ; 1
+007A: 0A   sub
+007B: 22   cmpeq
+007C: 1F 03 00   pushi 0003H   ; 3
+007F: 26 06 00   aidx [0006]
+0082: 1F 03 00   pushi 0003H   ; 3
+0085: 26 01 00   aidx [0001]
+0088: 22   cmpeq
+0089: 0E   and
+008A: 0E   and
+008B: 05 31 00   jne 00BF
+008E: 21 05 00   push [0005]
+0091: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0095: 1F 00 00   pushi 0000H   ; 0
+0098: 22   cmpeq
+0099: 05 23 00   jne 00BF
+009C: 1F 03 00   pushi 0003H   ; 3
+009F: 21 05 00   push [0005]
+00A2: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00A6: 3E   push itemref
+00A7: 39 5C 00 01  calli 005C, 1
+00AB: 1F 10 00   pushi 0010H   ; 16
+00AE: 1F 29 06   pushi 0629H   ; 1577
+00B1: 44 55   pushw 1E55H   ; 7765
+00B3: 1E 02 00   arrc 0002H   ; 2
+00B6: 3E   push itemref
+00B7: 38 02 00 03  callis 0002, 3
+00BB: 12 07 00   pop [0007]
+00BE: 2C   db 2c ???
+00BF: 06 83 FF   jmp 0045
+00C2: 1F 01 00   pushi 0001H   ; 1
+00C5: 26 01 00   aidx [0001]
+00C8: 1F 02 00   pushi 0002H   ; 2
+00CB: 1F 01 00   pushi 0001H   ; 1
+00CE: 38 10 00 02  callis _Random2@2  ; 0010
+00D2: 09   add
+00D3: 1F 01 00   pushi 0001H   ; 1
+00D6: 46 01 00   db 46 ???
+   dw 0001H   ; 1
+00D9: 1F 02 00   pushi 0002H   ; 2
+00DC: 26 01 00   aidx [0001]
+00DF: 1F 02 00   pushi 0002H   ; 2
+00E2: 1F 00 00   pushi 0000H   ; 0
+00E5: 38 10 00 02  callis _Random2@2  ; 0010
+00E9: 0A   sub
+00EA: 1F 02 00   pushi 0002H   ; 2
+00ED: 46 01 00   db 46 ???
+   dw 0001H   ; 1
+00F0: 21 01 00   push [0001]
+00F3: 38 26 00 01  callis 0026, 1
+00F7: 12 07 00   pop [0007]
+00FA: 1F 02 00   pushi 0002H   ; 2
+00FD: 1F 01 00   pushi 0001H   ; 1
+0100: 38 10 00 02  callis _Random2@2  ; 0010
+0104: 12 08 00   pop [0008]
+0107: 21 08 00   push [0008]
+010A: 1F 01 00   pushi 0001H   ; 1
+010D: 22   cmpeq
+010E: 05 06 00   jne 0117
+0111: 1D 00 00   pushs L0000   ; @Turn it off!@
+0114: 24 00 00   call [0000]   ; 08FEH
+0117: 21 08 00   push [0008]
+011A: 1F 02 00   pushi 0002H   ; 2
+011D: 22   cmpeq
+011E: 05 06 00   jne 0127
+0121: 1D 0F 00   pushs L000F   ; @Thou art wasting...
+0124: 24 00 00   call [0000]   ; 08FEH
+0127: 3E   push itemref
+0128: 39 5C 00 01  calli 005C, 1
+012C: 1F 10 00   pushi 0010H   ; 16
+012F: 1F 29 06   pushi 0629H   ; 1577
+0132: 44 55   pushw 1E55H   ; 7765
+0134: 1E 02 00   arrc 0002H   ; 2
+0137: 3E   push itemref
+0138: 38 02 00 03  callis 0002, 3
+013C: 12 07 00   pop [0007]
+013F: 25   ret

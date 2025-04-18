@@ -1,0 +1,483 @@
+  .funcnumber 04B0H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'thief'
+L0012: db 00
+L0013: db 'thief'
+L0018: db 00
+L0019: db 'theft solved'
+L0025: db 00
+L0026: db 'You see a cheerful, handsome young man who gives you a frien'
+ db 'dly wave as you approach.'
+L007B: db 00
+L007C: db '"Greetings, '
+L0088: db 00
+L0089: db '," says Andrew.'
+L0098: db 00
+L0099: db 'name'
+L009D: db 00
+L009E: db '"My name is Andrew. How art thou, '
+L00C0: db 00
+L00C1: db '?"'
+L00C3: db 00
+L00C4: db 'name'
+L00C8: db 00
+L00C9: db 'job'
+L00CC: db 00
+L00CD: db '"I am the owner and proprietor of the dairy here in Paws."'
+L0107: db 00
+L0108: db 'Paws'
+L010C: db 00
+L010D: db 'dairy'
+L0112: db 00
+L0113: db 'dairy'
+L0118: db 00
+L0119: db '"Yes, I sell milk and cheese. Thou mayest find the dairy bet'
+ db 'ween Camille's farm and the slaughterhouse."'
+L0181: db 00
+L0182: db 'dairy'
+L0187: db 00
+L0188: db 'cheese'
+L018E: db 00
+L018F: db 'milk'
+L0193: db 00
+L0194: db 'slaughterhouse'
+L01A2: db 00
+L01A3: db 'Camille'
+L01AA: db 00
+L01AB: db 'milk'
+L01AF: db 00
+L01B0: db '"A gallon will cost thee 3 gold. Art thou interested in buyi'
+ db 'ng some?"'
+L01F5: db 00
+L01F6: db '"Here it is," he says, handing you the jug. "Wouldst thou li'
+ db 'ke another?"*'
+L023F: db 00
+L0240: db '"Thou hast not the room for the jug."'
+L0265: db 00
+L0266: db '"Thou hast not the gold for this, '
+L0288: db 00
+L0289: db '. Perhaps some other time."'
+L02A4: db 00
+L02A5: db '"Perhaps next time, '
+L02B9: db 00
+L02BA: db '."'
+L02BC: db 00
+L02BD: db '"I would be more than happy to sell thee a jug of milk, but '
+ db 'for now the dairy is closed."'
+L0316: db 00
+L0317: db 'milk'
+L031B: db 00
+L031C: db 'cheese'
+L0322: db 00
+L0323: db '"I sell wedges for 2 gold each. Still interested?"'
+L0355: db 00
+L0356: db '"How many dost thou want?"'
+L0370: db 00
+L0371: db '"Here it is."'
+L037E: db 00
+L037F: db '"Thou hast not the room for this cheese."'
+L03A8: db 00
+L03A9: db '"Thou hast not the gold for this, '
+L03CB: db 00
+L03CC: db '. Perhaps something else."'
+L03E6: db 00
+L03E7: db '"I understand, '
+L03F6: db 00
+L03F7: db '. Perhaps when thou dost become more hungry."'
+L0424: db 00
+L0425: db '"I would be more than happy to sell thee some cheese, but fo'
+ db 'r now the dairy is closed."'
+L047C: db 00
+L047D: db 'cheese'
+L0483: db 00
+L0484: db 'Camille'
+L048B: db 00
+L048C: db '"Camille is a good woman. She is still an advocate of the ol'
+ db 'd virtues. She runs the farm by herself. Well, with the help'
+ db ' of her son, Tobias."'
+L0519: db 00
+L051A: db 'Camille'
+L0521: db 00
+L0522: db 'Tobias'
+L0528: db 00
+L0529: db 'Tobias'
+L052F: db 00
+L0530: db '"A rather defensive young lad, I cannot say that I know that'
+ db ' much about him."'
+L057D: db 00
+L057E: db 'Tobias'
+L0584: db 00
+L0585: db 'Paws'
+L0589: db 00
+L058A: db '"Of course everyone is up in arms about this business concer'
+ db 'ning the missing venom."'
+L05DE: db 00
+L05DF: db 'Paws'
+L05E3: db 00
+L05E4: db 'venom'
+L05E9: db 00
+L05EA: db '"It could be hidden anywhere. With all the trade that occurs'
+ db ' in this town, it would be easy to hide. I do not know much '
+ db 'else about the substance. Perhaps Morfin himself would know '
+ db 'what kinds of effects it might produce."'
+L06C6: db 00
+L06C7: db 'venom'
+L06CC: db 00
+L06CD: db 'thief'
+L06D2: db 00
+L06D3: db '"Be wary, for there is a thief in this town! Some silver ser'
+ db 'pent venom was stolen from Morfin."'
+L0732: db 00
+L0733: db 'thief'
+L0738: db 00
+L0739: db 'venom'
+L073E: db 00
+L073F: db 'Morfin'
+L0745: db 00
+L0746: db 'theft solved'
+L0752: db 00
+L0753: db '"Thou hast put the people in our town at ease by finding the'
+ db ' culprit!"'
+L0799: db 00
+L079A: db 'theft solved'
+L07A6: db 00
+L07A7: db 'slaughterhouse'
+L07B5: db 00
+L07B6: db '"The slaughterhouse is run by Morfin, the merchant. He is al'
+ db 'ways busy, coming and going at all hours, sometimes carrying'
+ db ' things."'
+L0837: db 00
+L0838: db 'slaughterhouse'
+L0846: db 00
+L0847: db 'Morfin'
+L084D: db 00
+L084E: db 'Morfin'
+L0854: db 00
+L0855: db '"He bought the slaughterhouse a few years ago, soon after he'
+ db ' joined The Fellowship. I knew the previous owner."'
+L08C4: db 00
+L08C5: db 'Morfin'
+L08CB: db 00
+L08CC: db 'previous owner'
+L08DA: db 00
+L08DB: db 'previous owner'
+L08E9: db 00
+L08EA: db '"I was just a lad when I first saw the old slaughterhouse. T'
+ db 'he old man who owned it even showed me the storeroom in ther'
+ db 'e once. The door to it is locked. I think Morfin has the key'
+ db ' somewhere in his house."'
+L09B7: db 00
+L09B8: db 'previous owner'
+L09C6: db 00
+L09C7: db 'bye'
+L09CA: db 00
+L09CB: db '"I hope I was of some assistance to thee, '
+L09F5: db 00
+L09F6: db '."*'
+L09F9: db 00
+  .code
+  .argc 0001H
+  .localc 000DH
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 35 03   jne 033D
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 50 FF   pushi FF50H   ; -176
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 50 FF   pushi FF50H   ; -176
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 14   push false
+002E: 12 03 00   pop [0003]
+0031: 1D 00 00   pushs L0000   ; bye
+0034: 1D 04 00   pushs L0004   ; job
+0037: 1D 08 00   pushs L0008   ; name
+003A: 1E 03 00   arrc 0003H   ; 3
+003D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0041: 42 12 02   pushf flag:[0212]
+0044: 05 07 00   jne 004E
+0047: 1D 0D 00   pushs L000D   ; thief
+004A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004E: 42 18 02   pushf flag:[0218]
+0051: 05 0E 00   jne 0062
+0054: 1D 13 00   pushs L0013   ; thief
+0057: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005B: 1D 19 00   pushs L0019   ; theft solved
+005E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0062: 42 29 02   pushf flag:[0229]
+0065: 10   not
+0066: 05 0B 00   jne 0074
+0069: 1C 26 00   addsi L0026   ; You see a cheerfu...
+006C: 33   say
+006D: 13   push true
+006E: 43 29 02   popf flag:[0229]
+0071: 06 0A 00   jmp 007E
+0074: 1C 7C 00   addsi L007C   ; "Greetings, 
+0077: 2F 00 00   addsv [0000]
+007A: 1C 89 00   addsi L0089   ; ," says Andrew.
+007D: 33   say
+007E: 04 B1 02   je 0332
+0081: 1D 99 00   pushs L0099   ; name
+0084: 07 01 00 11 00  cmps 0001H, 009A
+0089: 1C 9E 00   addsi L009E   ; "My name is Andre...
+008C: 2F 00 00   addsv [0000]
+008F: 1C C1 00   addsi L00C1   ; ?"
+0092: 33   say
+0093: 1D C4 00   pushs L00C4   ; name
+0096: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009A: 1D C9 00   pushs L00C9   ; job
+009D: 07 01 00 11 00  cmps 0001H, 00B3
+00A2: 1C CD 00   addsi L00CD   ; "I am the owner a...
+00A5: 33   say
+00A6: 1D 08 01   pushs L0108   ; Paws
+00A9: 1D 0D 01   pushs L010D   ; dairy
+00AC: 1E 02 00   arrc 0002H   ; 2
+00AF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B3: 1D 13 01   pushs L0113   ; dairy
+00B6: 07 01 00 1E 00  cmps 0001H, 00D9
+00BB: 1C 19 01   addsi L0119   ; "Yes, I sell milk...
+00BE: 33   say
+00BF: 1D 82 01   pushs L0182   ; dairy
+00C2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C6: 1D 88 01   pushs L0188   ; cheese
+00C9: 1D 8F 01   pushs L018F   ; milk
+00CC: 1D 94 01   pushs L0194   ; slaughterhouse
+00CF: 1D A3 01   pushs L01A3   ; Camille
+00D2: 1E 04 00   arrc 0004H   ; 4
+00D5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D9: 1D AB 01   pushs L01AB   ; milk
+00DC: 07 01 00 A4 00  cmps 0001H, 0185
+00E1: 21 02 00   push [0002]
+00E4: 1F 07 00   pushi 0007H   ; 7
+00E7: 22   cmpeq
+00E8: 05 8F 00   jne 017A
+00EB: 1C B0 01   addsi L01B0   ; "A gallon will co...
+00EE: 33   say
+00EF: 24 01 00   call [0001]   ; 090AH
+00F2: 05 78 00   jne 016D
+00F5: 13   push true
+00F6: 1F 99 FE   pushi FE99H   ; -359
+00F9: 1F 99 FE   pushi FE99H   ; -359
+00FC: 1F 84 02   pushi 0284H   ; 644
+00FF: 1F 03 00   pushi 0003H   ; 3
+0102: 38 2B 00 05  callis 002B, 5
+0106: 12 04 00   pop [0004]
+0109: 21 04 00   push [0004]
+010C: 05 51 00   jne 0160
+010F: 13   push true
+0110: 1F 07 00   pushi 0007H   ; 7
+0113: 1F 99 FE   pushi FE99H   ; -359
+0116: 1F 68 02   pushi 0268H   ; 616
+0119: 1F 01 00   pushi 0001H   ; 1
+011C: 38 2C 00 05  callis 002C, 5
+0120: 12 05 00   pop [0005]
+0123: 21 05 00   push [0005]
+0126: 05 1C 00   jne 0145
+0129: 1C F6 01   addsi L01F6   ; "Here it is," he ...
+012C: 33   say
+012D: 24 01 00   call [0001]   ; 090AH
+0130: 12 06 00   pop [0006]
+0133: 21 06 00   push [0006]
+0136: 05 06 00   jne 013F
+0139: 06 B9 FF   jmp 00F5
+013C: 06 03 00   jmp 0142
+013F: 06 F0 01   jmp 0332
+0142: 06 18 00   jmp 015D
+0145: 1C 40 02   addsi L0240   ; "Thou hast not th...
+0148: 33   say
+0149: 13   push true
+014A: 1F 99 FE   pushi FE99H   ; -359
+014D: 1F 99 FE   pushi FE99H   ; -359
+0150: 1F 84 02   pushi 0284H   ; 644
+0153: 1F 03 00   pushi 0003H   ; 3
+0156: 38 2C 00 05  callis 002C, 5
+015A: 12 07 00   pop [0007]
+015D: 06 0A 00   jmp 016A
+0160: 1C 66 02   addsi L0266   ; "Thou hast not th...
+0163: 2F 00 00   addsv [0000]
+0166: 1C 89 02   addsi L0289   ; . Perhaps some ot...
+0169: 33   say
+016A: 06 0A 00   jmp 0177
+016D: 1C A5 02   addsi L02A5   ; "Perhaps next time, 
+0170: 2F 00 00   addsv [0000]
+0173: 1C BA 02   addsi L02BA   ; ."
+0176: 33   say
+0177: 06 04 00   jmp 017E
+017A: 1C BD 02   addsi L02BD   ; "I would be more ...
+017D: 33   say
+017E: 1D 17 03   pushs L0317   ; milk
+0181: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0185: 1D 1C 03   pushs L031C   ; cheese
+0188: 07 01 00 B3 00  cmps 0001H, 0240
+018D: 21 02 00   push [0002]
+0190: 1F 07 00   pushi 0007H   ; 7
+0193: 22   cmpeq
+0194: 05 9E 00   jne 0235
+0197: 1C 23 03   addsi L0323   ; "I sell wedges fo...
+019A: 33   say
+019B: 24 01 00   call [0001]   ; 090AH
+019E: 05 87 00   jne 0228
+01A1: 1C 56 03   addsi L0356   ; "How many dost th...
+01A4: 33   say
+01A5: 1F 01 00   pushi 0001H   ; 1
+01A8: 1F 01 00   pushi 0001H   ; 1
+01AB: 1F 14 00   pushi 0014H   ; 20
+01AE: 1F 01 00   pushi 0001H   ; 1
+01B1: 38 0C 00 04  callis _AskNumber@4  ; 000C
+01B5: 12 08 00   pop [0008]
+01B8: 21 08 00   push [0008]
+01BB: 1F 02 00   pushi 0002H   ; 2
+01BE: 0C   mul
+01BF: 12 09 00   pop [0009]
+01C2: 1F 99 FE   pushi FE99H   ; -359
+01C5: 1F 99 FE   pushi FE99H   ; -359
+01C8: 1F 84 02   pushi 0284H   ; 644
+01CB: 1F 9B FE   pushi FE9BH   ; -357
+01CE: 38 28 00 04  callis 0028, 4
+01D2: 12 0A 00   pop [000A]
+01D5: 21 0A 00   push [000A]
+01D8: 21 09 00   push [0009]
+01DB: 18   cmpge
+01DC: 05 3C 00   jne 021B
+01DF: 13   push true
+01E0: 1F 1B 00   pushi 001BH   ; 27
+01E3: 1F 99 FE   pushi FE99H   ; -359
+01E6: 1F 79 01   pushi 0179H   ; 377
+01E9: 21 08 00   push [0008]
+01EC: 38 2C 00 05  callis 002C, 5
+01F0: 12 0B 00   pop [000B]
+01F3: 21 0B 00   push [000B]
+01F6: 05 1B 00   jne 0214
+01F9: 1C 71 03   addsi L0371   ; "Here it is."
+01FC: 33   say
+01FD: 13   push true
+01FE: 1F 99 FE   pushi FE99H   ; -359
+0201: 1F 99 FE   pushi FE99H   ; -359
+0204: 1F 84 02   pushi 0284H   ; 644
+0207: 21 09 00   push [0009]
+020A: 38 2B 00 05  callis 002B, 5
+020E: 12 0C 00   pop [000C]
+0211: 06 04 00   jmp 0218
+0214: 1C 7F 03   addsi L037F   ; "Thou hast not th...
+0217: 33   say
+0218: 06 0A 00   jmp 0225
+021B: 1C A9 03   addsi L03A9   ; "Thou hast not th...
+021E: 2F 00 00   addsv [0000]
+0221: 1C CC 03   addsi L03CC   ; . Perhaps somethi...
+0224: 33   say
+0225: 06 0A 00   jmp 0232
+0228: 1C E7 03   addsi L03E7   ; "I understand, 
+022B: 2F 00 00   addsv [0000]
+022E: 1C F7 03   addsi L03F7   ; . Perhaps when th...
+0231: 33   say
+0232: 06 04 00   jmp 0239
+0235: 1C 25 04   addsi L0425   ; "I would be more ...
+0238: 33   say
+0239: 1D 7D 04   pushs L047D   ; cheese
+023C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0240: 1D 84 04   pushs L0484   ; Camille
+0243: 07 01 00 12 00  cmps 0001H, 025A
+0248: 1C 8C 04   addsi L048C   ; "Camille is a goo...
+024B: 33   say
+024C: 1D 1A 05   pushs L051A   ; Camille
+024F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0253: 1D 22 05   pushs L0522   ; Tobias
+0256: 39 05 00 01  calli _AddAnswer@1  ; 0005
+025A: 1D 29 05   pushs L0529   ; Tobias
+025D: 07 01 00 0B 00  cmps 0001H, 026D
+0262: 1C 30 05   addsi L0530   ; "A rather defensi...
+0265: 33   say
+0266: 1D 7E 05   pushs L057E   ; Tobias
+0269: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026D: 1D 85 05   pushs L0585   ; Paws
+0270: 07 01 00 0B 00  cmps 0001H, 0280
+0275: 1C 8A 05   addsi L058A   ; "Of course everyo...
+0278: 33   say
+0279: 1D DF 05   pushs L05DF   ; Paws
+027C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0280: 1D E4 05   pushs L05E4   ; venom
+0283: 07 01 00 0B 00  cmps 0001H, 0293
+0288: 1C EA 05   addsi L05EA   ; "It could be hidd...
+028B: 33   say
+028C: 1D C7 06   pushs L06C7   ; venom
+028F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0293: 1D CD 06   pushs L06CD   ; thief
+0296: 07 01 00 24 00  cmps 0001H, 02BF
+029B: 1C D3 06   addsi L06D3   ; "Be wary, for the...
+029E: 33   say
+029F: 13   push true
+02A0: 43 12 02   popf flag:[0212]
+02A3: 1D 33 07   pushs L0733   ; thief
+02A6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AA: 1D 39 07   pushs L0739   ; venom
+02AD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02B1: 21 03 00   push [0003]
+02B4: 10   not
+02B5: 05 07 00   jne 02BF
+02B8: 1D 3F 07   pushs L073F   ; Morfin
+02BB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02BF: 1D 46 07   pushs L0746   ; theft solved
+02C2: 07 01 00 0B 00  cmps 0001H, 02D2
+02C7: 1C 53 07   addsi L0753   ; "Thou hast put th...
+02CA: 33   say
+02CB: 1D 9A 07   pushs L079A   ; theft solved
+02CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D2: 1D A7 07   pushs L07A7   ; slaughterhouse
+02D5: 07 01 00 19 00  cmps 0001H, 02F3
+02DA: 1C B6 07   addsi L07B6   ; "The slaughterhou...
+02DD: 33   say
+02DE: 1D 38 08   pushs L0838   ; slaughterhouse
+02E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E5: 21 03 00   push [0003]
+02E8: 10   not
+02E9: 05 07 00   jne 02F3
+02EC: 1D 47 08   pushs L0847   ; Morfin
+02EF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02F3: 1D 4E 08   pushs L084E   ; Morfin
+02F6: 07 01 00 16 00  cmps 0001H, 0311
+02FB: 1C 55 08   addsi L0855   ; "He bought the sl...
+02FE: 33   say
+02FF: 1D C5 08   pushs L08C5   ; Morfin
+0302: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0306: 1D CC 08   pushs L08CC   ; previous owner
+0309: 39 05 00 01  calli _AddAnswer@1  ; 0005
+030D: 13   push true
+030E: 12 03 00   pop [0003]
+0311: 1D DB 08   pushs L08DB   ; previous owner
+0314: 07 01 00 0B 00  cmps 0001H, 0324
+0319: 1C EA 08   addsi L08EA   ; "I was just a lad...
+031C: 33   say
+031D: 1D B8 09   pushs L09B8   ; previous owner
+0320: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0324: 1D C7 09   pushs L09C7   ; bye
+0327: 07 01 00 03 00  cmps 0001H, 032F
+032C: 06 03 00   jmp 0332
+032F: 06 4C FD   jmp 007E
+0332: 40   db 40 ???
+0333: 1C CB 09   addsi L09CB   ; "I hope I was of ...
+0336: 2F 00 00   addsv [0000]
+0339: 1C F6 09   addsi L09F6   ; ."*
+033C: 33   say
+033D: 48   push eventid
+033E: 1F 00 00   pushi 0000H   ; 0
+0341: 22   cmpeq
+0342: 05 06 00   jne 034B
+0345: 1F 50 FF   pushi FF50H   ; -176
+0348: 24 02 00   call [0002]   ; 092EH
+034B: 25   ret

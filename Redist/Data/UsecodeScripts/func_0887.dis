@@ -1,0 +1,305 @@
+  .funcnumber 0887H
+  .data
+  .code
+  .argc 0003H
+  .localc 000DH
+  .externsize 0001H
+  .extern 0888H
+0000: 14   push false
+0001: 12 03 00   pop [0003]
+0004: 14   push false
+0005: 12 04 00   pop [0004]
+0008: 14   push false
+0009: 12 05 00   pop [0005]
+000C: 14   push false
+000D: 12 06 00   pop [0006]
+0010: 14   push false
+0011: 12 07 00   pop [0007]
+0014: 14   push false
+0015: 12 08 00   pop [0008]
+0018: 14   push false
+0019: 12 09 00   pop [0009]
+001C: 14   push false
+001D: 12 0A 00   pop [000A]
+0020: 14   push false
+0021: 12 0B 00   pop [000B]
+0024: 1F 01 00   pushi 0001H   ; 1
+0027: 26 01 00   aidx [0001]
+002A: 1F 01 00   pushi 0001H   ; 1
+002D: 26 02 00   aidx [0002]
+0030: 22   cmpeq
+0031: 10   not
+0032: 05 3E 00   jne 0073
+0035: 1F 01 00   pushi 0001H   ; 1
+0038: 26 01 00   aidx [0001]
+003B: 1F 01 00   pushi 0001H   ; 1
+003E: 26 02 00   aidx [0002]
+0041: 17   cmpl
+0042: 05 17 00   jne 005C
+0045: 1F 01 00   pushi 0001H   ; 1
+0048: 26 02 00   aidx [0002]
+004B: 1F 01 00   pushi 0001H   ; 1
+004E: 0A   sub
+004F: 1F 01 00   pushi 0001H   ; 1
+0052: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0055: 13   push true
+0056: 12 04 00   pop [0004]
+0059: 06 14 00   jmp 0070
+005C: 1F 01 00   pushi 0001H   ; 1
+005F: 26 02 00   aidx [0002]
+0062: 1F 01 00   pushi 0001H   ; 1
+0065: 09   add
+0066: 1F 01 00   pushi 0001H   ; 1
+0069: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+006C: 13   push true
+006D: 12 05 00   pop [0005]
+0070: 06 04 00   jmp 0077
+0073: 13   push true
+0074: 12 03 00   pop [0003]
+0077: 1F 02 00   pushi 0002H   ; 2
+007A: 26 01 00   aidx [0001]
+007D: 1F 02 00   pushi 0002H   ; 2
+0080: 26 02 00   aidx [0002]
+0083: 22   cmpeq
+0084: 10   not
+0085: 05 82 00   jne 010A
+0088: 1F 02 00   pushi 0002H   ; 2
+008B: 26 01 00   aidx [0001]
+008E: 1F 02 00   pushi 0002H   ; 2
+0091: 26 02 00   aidx [0002]
+0094: 17   cmpl
+0095: 05 39 00   jne 00D1
+0098: 1F 02 00   pushi 0002H   ; 2
+009B: 26 02 00   aidx [0002]
+009E: 1F 01 00   pushi 0001H   ; 1
+00A1: 0A   sub
+00A2: 1F 02 00   pushi 0002H   ; 2
+00A5: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+00A8: 21 04 00   push [0004]
+00AB: 05 0B 00   jne 00B9
+00AE: 13   push true
+00AF: 12 08 00   pop [0008]
+00B2: 14   push false
+00B3: 12 04 00   pop [0004]
+00B6: 06 15 00   jmp 00CE
+00B9: 21 05 00   push [0005]
+00BC: 05 0B 00   jne 00CA
+00BF: 13   push true
+00C0: 12 0A 00   pop [000A]
+00C3: 14   push false
+00C4: 12 05 00   pop [0005]
+00C7: 06 04 00   jmp 00CE
+00CA: 13   push true
+00CB: 12 06 00   pop [0006]
+00CE: 06 36 00   jmp 0107
+00D1: 1F 02 00   pushi 0002H   ; 2
+00D4: 26 02 00   aidx [0002]
+00D7: 1F 01 00   pushi 0001H   ; 1
+00DA: 09   add
+00DB: 1F 02 00   pushi 0002H   ; 2
+00DE: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+00E1: 21 04 00   push [0004]
+00E4: 05 0B 00   jne 00F2
+00E7: 13   push true
+00E8: 12 09 00   pop [0009]
+00EB: 14   push false
+00EC: 12 04 00   pop [0004]
+00EF: 06 15 00   jmp 0107
+00F2: 21 05 00   push [0005]
+00F5: 05 0B 00   jne 0103
+00F8: 13   push true
+00F9: 12 0B 00   pop [000B]
+00FC: 14   push false
+00FD: 12 05 00   pop [0005]
+0100: 06 04 00   jmp 0107
+0103: 13   push true
+0104: 12 07 00   pop [0007]
+0107: 06 98 00   jmp 01A2
+010A: 21 03 00   push [0003]
+010D: 05 92 00   jne 01A2
+0110: 1F FF FF   pushi FFFFH   ; -1
+0113: 1F 00 00   pushi 0000H   ; 0
+0116: 1F 00 00   pushi 0000H   ; 0
+0119: 1F 00 00   pushi 0000H   ; 0
+011C: 1F 02 00   pushi 0002H   ; 2
+011F: 26 02 00   aidx [0002]
+0122: 1F 01 00   pushi 0001H   ; 1
+0125: 0A   sub
+0126: 1F 01 00   pushi 0001H   ; 1
+0129: 26 02 00   aidx [0002]
+012C: 1F 01 00   pushi 0001H   ; 1
+012F: 0A   sub
+0130: 1F 04 00   pushi 0004H   ; 4
+0133: 39 53 00 07  calli 0053, 7
+0137: 1F 09 00   pushi 0009H   ; 9
+013A: 39 0F 00 01  calli 000F, 1
+013E: 1F 13 01   pushi 0113H   ; 275
+0141: 38 24 00 01  callis 0024, 1
+0145: 12 0C 00   pop [000C]
+0148: 1F 06 00   pushi 0006H   ; 6
+014B: 21 0C 00   push [000C]
+014E: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0152: 1F 12 00   pushi 0012H   ; 18
+0155: 21 0C 00   push [000C]
+0158: 39 89 00 02  calli 0089, 2
+015C: 1F 97 00   pushi 0097H   ; 151
+015F: 21 0C 00   push [000C]
+0162: 38 15 00 02  callis 0015, 2
+0166: 12 0D 00   pop [000D]
+0169: 21 02 00   push [0002]
+016C: 38 26 00 01  callis 0026, 1
+0170: 12 0D 00   pop [000D]
+0173: 21 0C 00   push [000C]
+0176: 24 00 00   call [0000]   ; 0888H
+0179: 21 0C 00   push [000C]
+017C: 39 6F 00 01  calli 006F, 1
+0180: 21 00 00   push [0000]
+0183: 39 6F 00 01  calli 006F, 1
+0187: 3E   push itemref
+0188: 39 5C 00 01  calli 005C, 1
+018C: 1F 08 07   pushi 0708H   ; 1800
+018F: 44 55   pushw 4455H   ; 17493
+0191: 44 23   pushw 1E23H   ; 7715
+0193: 1E 03 00   arrc 0003H   ; 3
+0196: 3E   push itemref
+0197: 38 01 00 02  callis 0001, 2
+019B: 12 0E 00   pop [000E]
+019E: 1F 00 00   pushi 0000H   ; 0
+01A1: 2D   setr
+01A2: 21 04 00   push [0004]
+01A5: 21 05 00   push [0005]
+01A8: 0F   or
+01A9: 05 1D 00   jne 01C9
+01AC: 1F 01 00   pushi 0001H   ; 1
+01AF: 1F FF FF   pushi FFFFH   ; -1
+01B2: 38 10 00 02  callis _Random2@2  ; 0010
+01B6: 12 0F 00   pop [000F]
+01B9: 1F 02 00   pushi 0002H   ; 2
+01BC: 26 02 00   aidx [0002]
+01BF: 21 0F 00   push [000F]
+01C2: 09   add
+01C3: 1F 02 00   pushi 0002H   ; 2
+01C6: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+01C9: 21 06 00   push [0006]
+01CC: 21 07 00   push [0007]
+01CF: 0F   or
+01D0: 05 1D 00   jne 01F0
+01D3: 1F 01 00   pushi 0001H   ; 1
+01D6: 1F FF FF   pushi FFFFH   ; -1
+01D9: 38 10 00 02  callis _Random2@2  ; 0010
+01DD: 12 0F 00   pop [000F]
+01E0: 1F 01 00   pushi 0001H   ; 1
+01E3: 26 02 00   aidx [0002]
+01E6: 21 0F 00   push [000F]
+01E9: 09   add
+01EA: 1F 01 00   pushi 0001H   ; 1
+01ED: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+01F0: 1F 03 00   pushi 0003H   ; 3
+01F3: 1F 01 00   pushi 0001H   ; 1
+01F6: 38 10 00 02  callis _Random2@2  ; 0010
+01FA: 12 0F 00   pop [000F]
+01FD: 21 0A 00   push [000A]
+0200: 05 34 00   jne 0237
+0203: 21 0F 00   push [000F]
+0206: 1F 01 00   pushi 0001H   ; 1
+0209: 22   cmpeq
+020A: 05 10 00   jne 021D
+020D: 1F 02 00   pushi 0002H   ; 2
+0210: 26 02 00   aidx [0002]
+0213: 1F 01 00   pushi 0001H   ; 1
+0216: 09   add
+0217: 1F 02 00   pushi 0002H   ; 2
+021A: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+021D: 21 0F 00   push [000F]
+0220: 1F 02 00   pushi 0002H   ; 2
+0223: 22   cmpeq
+0224: 05 10 00   jne 0237
+0227: 1F 01 00   pushi 0001H   ; 1
+022A: 26 02 00   aidx [0002]
+022D: 1F 01 00   pushi 0001H   ; 1
+0230: 0A   sub
+0231: 1F 01 00   pushi 0001H   ; 1
+0234: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0237: 21 08 00   push [0008]
+023A: 05 34 00   jne 0271
+023D: 21 0F 00   push [000F]
+0240: 1F 01 00   pushi 0001H   ; 1
+0243: 22   cmpeq
+0244: 05 10 00   jne 0257
+0247: 1F 02 00   pushi 0002H   ; 2
+024A: 26 02 00   aidx [0002]
+024D: 1F 01 00   pushi 0001H   ; 1
+0250: 09   add
+0251: 1F 02 00   pushi 0002H   ; 2
+0254: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0257: 21 0F 00   push [000F]
+025A: 1F 02 00   pushi 0002H   ; 2
+025D: 22   cmpeq
+025E: 05 10 00   jne 0271
+0261: 1F 01 00   pushi 0001H   ; 1
+0264: 26 02 00   aidx [0002]
+0267: 1F 01 00   pushi 0001H   ; 1
+026A: 09   add
+026B: 1F 01 00   pushi 0001H   ; 1
+026E: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0271: 21 0B 00   push [000B]
+0274: 05 34 00   jne 02AB
+0277: 21 0F 00   push [000F]
+027A: 1F 01 00   pushi 0001H   ; 1
+027D: 22   cmpeq
+027E: 05 10 00   jne 0291
+0281: 1F 02 00   pushi 0002H   ; 2
+0284: 26 02 00   aidx [0002]
+0287: 1F 01 00   pushi 0001H   ; 1
+028A: 0A   sub
+028B: 1F 02 00   pushi 0002H   ; 2
+028E: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0291: 21 0F 00   push [000F]
+0294: 1F 02 00   pushi 0002H   ; 2
+0297: 22   cmpeq
+0298: 05 10 00   jne 02AB
+029B: 1F 01 00   pushi 0001H   ; 1
+029E: 26 02 00   aidx [0002]
+02A1: 1F 01 00   pushi 0001H   ; 1
+02A4: 0A   sub
+02A5: 1F 01 00   pushi 0001H   ; 1
+02A8: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+02AB: 21 09 00   push [0009]
+02AE: 05 34 00   jne 02E5
+02B1: 21 0F 00   push [000F]
+02B4: 1F 01 00   pushi 0001H   ; 1
+02B7: 22   cmpeq
+02B8: 05 10 00   jne 02CB
+02BB: 1F 02 00   pushi 0002H   ; 2
+02BE: 26 02 00   aidx [0002]
+02C1: 1F 01 00   pushi 0001H   ; 1
+02C4: 0A   sub
+02C5: 1F 02 00   pushi 0002H   ; 2
+02C8: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+02CB: 21 0F 00   push [000F]
+02CE: 1F 02 00   pushi 0002H   ; 2
+02D1: 22   cmpeq
+02D2: 05 10 00   jne 02E5
+02D5: 1F 01 00   pushi 0001H   ; 1
+02D8: 26 02 00   aidx [0002]
+02DB: 1F 01 00   pushi 0001H   ; 1
+02DE: 09   add
+02DF: 1F 01 00   pushi 0001H   ; 1
+02E2: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+02E5: 21 02 00   push [0002]
+02E8: 2D   setr
+02E9: 32   rts

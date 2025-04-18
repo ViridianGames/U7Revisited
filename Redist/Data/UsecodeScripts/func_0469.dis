@@ -1,0 +1,211 @@
+  .funcnumber 0469H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The man greets you with stern, suspicious eyes.'
+L003C: db 00
+L003D: db '"What is thy business, '
+L0054: db 00
+L0055: db '?"'
+L0057: db 00
+L0058: db 'name'
+L005C: db 00
+L005D: db '"I am Sir Jeff, '
+L006D: db 00
+L006E: db '."'
+L0070: db 00
+L0071: db 'name'
+L0075: db 00
+L0076: db 'job'
+L0079: db 00
+L007A: db '"I am the High Court official at the prison here in the Abbe'
+ db 'y."'
+L00B9: db 00
+L00BA: db 'Abbey'
+L00BF: db 00
+L00C0: db 'official'
+L00C8: db 00
+L00C9: db 'official'
+L00D1: db 00
+L00D2: db '"I am the judiciary part of Britannia's government. It is my'
+ db ' job to see that criminals are brought to justice."'
+L0141: db 00
+L0142: db 'criminals'
+L014B: db 00
+L014C: db 'official'
+L0154: db 00
+L0155: db 'criminals'
+L015E: db 00
+L015F: db '"We have two prisoners already, but there are many scoundrel'
+ db 's who still roam free."'
+L01B2: db 00
+L01B3: db 'scoundrels'
+L01BD: db 00
+L01BE: db 'prisoners'
+L01C7: db 00
+L01C8: db 'criminals'
+L01D1: db 00
+L01D2: db 'prisoners'
+L01DB: db 00
+L01DC: db '"Thou, of course, hast never met them," he says, his brow na'
+ db 'rrowing, "but we have a pirate, and," he pauses, "a troll. I'
+ db 'f thou dost wish to see them, speak with Goth, the jailer."'
+L028F: db 00
+L0290: db 'Goth'
+L0294: db 00
+L0295: db 'prisoners'
+L029E: db 00
+L029F: db 'scoundrels'
+L02A9: db 00
+L02AA: db '"See for thyself, the posted bills for known villains are in'
+ db ' the log book in the courtroom."'
+L0306: db 00
+L0307: db 'scoundrels'
+L0311: db 00
+L0312: db 'Goth'
+L0316: db 00
+L0317: db '"He has only been working here for a few weeks, but I alread'
+ db 'y know he is not trustworthy. There is something obviously u'
+ db 'nscrupulous about him. He is not a friend of thine, is he?"'
+L03CA: db 00
+L03CB: db '"I suspected as much." He turns away from you.*'
+L03FA: db 00
+L03FB: db '"No," he says, watching you closely, "of course he is not."'
+L0436: db 00
+L0437: db 'Goth'
+L043B: db 00
+L043C: db 'Abbey'
+L0441: db 00
+L0442: db '"The monks live and study there, but they do little more tha'
+ db 'n winemaking. Well, I know one of them tends the garden."'
+L04B7: db 00
+L04B8: db 'Abbey'
+L04BD: db 00
+L04BE: db 'bye'
+L04C1: db 00
+L04C2: db '"Keep thine heart and mind on the straight path, '
+L04F3: db 00
+L04F4: db '."'
+L04F6: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 2F 01   jne 0137
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 97 FF   pushi FF97H   ; -105
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 43 01   pushf flag:[0143]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; The man greets yo...
+0032: 33   say
+0033: 13   push true
+0034: 43 43 01   popf flag:[0143]
+0037: 06 0A 00   jmp 0044
+003A: 1C 3D 00   addsi L003D   ; "What is thy busi...
+003D: 2F 00 00   addsv [0000]
+0040: 1C 55 00   addsi L0055   ; ?"
+0043: 33   say
+0044: 04 E5 00   je 012C
+0047: 1D 58 00   pushs L0058   ; name
+004A: 07 01 00 11 00  cmps 0001H, 0060
+004F: 1C 5D 00   addsi L005D   ; "I am Sir Jeff, 
+0052: 2F 00 00   addsv [0000]
+0055: 1C 6E 00   addsi L006E   ; ."
+0058: 33   say
+0059: 1D 71 00   pushs L0071   ; name
+005C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0060: 1D 76 00   pushs L0076   ; job
+0063: 07 01 00 11 00  cmps 0001H, 0079
+0068: 1C 7A 00   addsi L007A   ; "I am the High Co...
+006B: 33   say
+006C: 1D BA 00   pushs L00BA   ; Abbey
+006F: 1D C0 00   pushs L00C0   ; official
+0072: 1E 02 00   arrc 0002H   ; 2
+0075: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0079: 1D C9 00   pushs L00C9   ; official
+007C: 07 01 00 12 00  cmps 0001H, 0093
+0081: 1C D2 00   addsi L00D2   ; "I am the judicia...
+0084: 33   say
+0085: 1D 42 01   pushs L0142   ; criminals
+0088: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008C: 1D 4C 01   pushs L014C   ; official
+008F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0093: 1D 55 01   pushs L0155   ; criminals
+0096: 07 01 00 18 00  cmps 0001H, 00B3
+009B: 1C 5F 01   addsi L015F   ; "We have two pris...
+009E: 33   say
+009F: 1D B3 01   pushs L01B3   ; scoundrels
+00A2: 1D BE 01   pushs L01BE   ; prisoners
+00A5: 1E 02 00   arrc 0002H   ; 2
+00A8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AC: 1D C8 01   pushs L01C8   ; criminals
+00AF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B3: 1D D2 01   pushs L01D2   ; prisoners
+00B6: 07 01 00 12 00  cmps 0001H, 00CD
+00BB: 1C DC 01   addsi L01DC   ; "Thou, of course,...
+00BE: 33   say
+00BF: 1D 90 02   pushs L0290   ; Goth
+00C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C6: 1D 95 02   pushs L0295   ; prisoners
+00C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CD: 1D 9F 02   pushs L029F   ; scoundrels
+00D0: 07 01 00 0B 00  cmps 0001H, 00E0
+00D5: 1C AA 02   addsi L02AA   ; "See for thyself,...
+00D8: 33   say
+00D9: 1D 07 03   pushs L0307   ; scoundrels
+00DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E0: 1D 12 03   pushs L0312   ; Goth
+00E3: 07 01 00 23 00  cmps 0001H, 010B
+00E8: 1C 17 03   addsi L0317   ; "He has only been...
+00EB: 33   say
+00EC: 24 01 00   call [0001]   ; 090AH
+00EF: 12 01 00   pop [0001]
+00F2: 21 01 00   push [0001]
+00F5: 05 08 00   jne 0100
+00F8: 1C CB 03   addsi L03CB   ; "I suspected as m...
+00FB: 33   say
+00FC: 3F   abrt
+00FD: 06 04 00   jmp 0104
+0100: 1C FB 03   addsi L03FB   ; "No," he says, wa...
+0103: 33   say
+0104: 1D 37 04   pushs L0437   ; Goth
+0107: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010B: 1D 3C 04   pushs L043C   ; Abbey
+010E: 07 01 00 0B 00  cmps 0001H, 011E
+0113: 1C 42 04   addsi L0442   ; "The monks live a...
+0116: 33   say
+0117: 1D B8 04   pushs L04B8   ; Abbey
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D BE 04   pushs L04BE   ; bye
+0121: 07 01 00 03 00  cmps 0001H, 0129
+0126: 06 03 00   jmp 012C
+0129: 06 18 FF   jmp 0044
+012C: 40   db 40 ???
+012D: 1C C2 04   addsi L04C2   ; "Keep thine heart...
+0130: 2F 00 00   addsv [0000]
+0133: 1C F4 04   addsi L04F4   ; ."
+0136: 33   say
+0137: 48   push eventid
+0138: 1F 00 00   pushi 0000H   ; 0
+013B: 22   cmpeq
+013C: 05 01 00   jne 0140
+013F: 3F   abrt
+0140: 25   ret

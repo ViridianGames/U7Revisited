@@ -1,0 +1,898 @@
+  .funcnumber 045AH
+  .data
+L0000: db 'Owen will not interrupt his participation in The Fellowship '
+ db 'meeting to talk with you.*'
+L0056: db 00
+L0057: db '"I am late for The Fellowship Meeting! I cannot speak with t'
+ db 'hee now!"*'
+L009D: db 00
+L009E: db 'bye'
+L00A1: db 00
+L00A2: db 'job'
+L00A5: db 00
+L00A6: db 'name'
+L00AA: db 00
+L00AB: db 'Hook'
+L00AF: db 00
+L00B0: db 'Crown Jewel'
+L00BB: db 00
+L00BC: db 'ship'
+L00C0: db 00
+L00C1: db 'statue is cancelled'
+L00D4: db 00
+L00D5: db 'You see a young man dressed in an expensive tunic. He is ver'
+ db 'y serious.'
+L011B: db 00
+L011C: db 'Owen looks at you and sniffs. "It would appear thou dost wis'
+ db 'h to speak with me again."'
+L0172: db 00
+L0173: db 'name'
+L0177: db 00
+L0178: db '"My name, '
+L0182: db 00
+L0183: db ', is Owen. It is a name I suspect thou shalt be hearing more'
+ db ' of in the future."'
+L01D2: db 00
+L01D3: db 'name'
+L01D7: db 00
+L01D8: db 'statue is cancelled'
+L01EB: db 00
+L01EC: db 'job'
+L01EF: db 00
+L01F0: db 'He looks you in the eye and speaks without the slightest tra'
+ db 'ce of modesty. "I am," he says, "the greatest shipwright in '
+ db 'the history of Minoc. I am the greatest shipwright who has e'
+ db 'ver lived!"'
+L02AF: db 00
+L02B0: db 'buy'
+L02B3: db 00
+L02B4: db 'Minoc'
+L02B9: db 00
+L02BA: db 'greatest'
+L02C2: db 00
+L02C3: db 'Hook'
+L02C7: db 00
+L02C8: db 'Crown Jewel'
+L02D3: db 00
+L02D4: db '"After years of breaking my back trying to make something of'
+ db ' this ungrateful little town, I'm giving up. I swear I will '
+ db 'never build another ship as long as I live. That will teach '
+ db 'them! No matter how they may beg or plead, I will not do it.'
+ db '"'
+L03C5: db 00
+L03C6: db 'ungrateful'
+L03D0: db 00
+L03D1: db 'statue is cancelled'
+L03E4: db 00
+L03E5: db '"Well, I shall certainly forgive thy poor manners for I know'
+ db ' how privileged thou must feel for meeting me, but thou must'
+ db ' know that two people have just been discovered in the sawmi'
+ db 'll, having been murdered!"'
+L04B3: db 00
+L04B4: db 'murders'
+L04BB: db 00
+L04BC: db 'greatest'
+L04C4: db 00
+L04C5: db '"And dost thou know how I became that way? I shall tell thee'
+ db '! I started to hear a voice in mine head! Oh, I know that th'
+ db 'ou shalt think me mad..."'
+L0556: db 00
+L0557: db 'greatest'
+L055F: db 00
+L0560: db 'voices'
+L0566: db 00
+L0567: db 'mad'
+L056A: db 00
+L056B: db 'voices'
+L0571: db 00
+L0572: db '"These were not the voices of anyone I have ever known. But '
+ db 'still these voices had a profound effect on me..."'
+L05E0: db 00
+L05E1: db 'voices'
+L05E7: db 00
+L05E8: db 'mad'
+L05EB: db 00
+L05EC: db '"After searching for a meaning to this voice - which proved '
+ db 'difficult, for how dost thou tell someone, especially a stra'
+ db 'nger, that thou art hearing a voice in thine head - I came a'
+ db 'cross The Fellowship. They taught me what the voice was."'
+L06D9: db 00
+L06DA: db 'mad'
+L06DD: db 00
+L06DE: db 'Fellowship'
+L06E8: db 00
+L06E9: db 'voice'
+L06EE: db 00
+L06EF: db 'voice'
+L06F4: db 00
+L06F5: db '"This was the voice of reason within mine own mind which sou'
+ db 'ght to guide my life in its proper direction. The Fellowship'
+ db ' taught me how to trust this voice and heed what it says. An'
+ db 'd thou canst see the results in mine own life! I have master'
+ db 'ed my craft and advanced the techniques of ship-building thr'
+ db 'ough the methods I have devised."'
+L0842: db 00
+L0843: db 'voice'
+L0848: db 00
+L0849: db 'methods'
+L0850: db 00
+L0851: db 'buy'
+L0854: db 00
+L0855: db 'Owen looks at you and suddenly seems flustered. "Uh, I have '
+ db 'no ships for sale presently. I have been working on a few im'
+ db 'provements. But if thou wouldst, thou couldst commission me '
+ db 'to build one for thee. A deed to one of the ships I build co'
+ db 'sts 1000 gold coins. Dost thou wish to buy one?"'
+L0975: db 00
+L0976: db '"'Tis money well spent, thou shalt see! I shall begin work i'
+ db 'mmediately. I will be building based upon some of my more re'
+ db 'cent designs. I shall give thee thy ship's deed in advance"'
+L0A29: db 00
+L0A2A: db '"It will be called the Excellencia."'
+L0A4E: db 00
+L0A4F: db '"I would give thee thy deed but thou art carrying too much."'
+L0A8B: db 00
+L0A8C: db '"Take thy gold back! I cannot in good conscious keep it!"'
+L0AC5: db 00
+L0AC6: db '"I would give thee thy gold back but I seem to have misplace'
+ db 'd it."'
+L0B08: db 00
+L0B09: db '"I am dreadfully sorry," he sniffs, "but thou dost not have '
+ db 'enough gold."'
+L0B52: db 00
+L0B53: db '"Art thou certain? Thou shalt find no better ships in all of'
+ db ' Britannia! Very well, then!"'
+L0BAC: db 00
+L0BAD: db '"Wouldst thou perhaps be interested in purchasing a fine sex'
+ db 'tant? I have one which I would be willing to part with for a'
+ db ' fine bargain. The price is 150 gold. Art thou interested?"'
+L0C60: db 00
+L0C61: db '"Excellent! I knew that thou wouldst appreciate owning the s'
+ db 'extant of Owen the shipwright. Thou art a fine person, able '
+ db 'to discern those quality items which are worth a bit of extr'
+ db 'a coin."'
+L0D1D: db 00
+L0D1E: db '"Thou knave! To get mine hopes up so, only to cruelly dash t'
+ db 'hem. Thou dost not possess enough gold to buy my treasure. I'
+ db 'f thou dost return with more coinage, PERHAPS I will allow t'
+ db 'hee to bid on it again."'
+L0DEA: db 00
+L0DEB: db '"Thou dost not have enough strength to add my treasure to th'
+ db 'y pack. Thou must dispose of some of thy worthless dross to '
+ db 'make room for this beauty. I will await thy return to purcha'
+ db 'se the sextant at this fine, low price."'
+L0EC7: db 00
+L0EC8: db '"Hmph. Well, let it be known that thou didst pass up the cha'
+ db 'nce to buy the sextant of the famous Owen the shipwright, an'
+ db 'd thou shalt be known for the knave and simpleton that thou '
+ db 'art."'
+L0F81: db 00
+L0F82: db '"Mine establishment is presently closed. I do not wish to di'
+ db 'scuss business at this time."'
+L0FDB: db 00
+L0FDC: db 'buy'
+L0FDF: db 00
+L0FE0: db 'methods'
+L0FE7: db 00
+L0FE8: db '"I have even written a book describing the advances I have m'
+ db 'ade in the methods of ship-building. It is very advanced but'
+ db ' I have tried to write it so that it is accessible to the la'
+ db 'yman. Wouldst thou be interested in purchasing a copy?"'
+L10D3: db 00
+L10D4: db '"Yes, of course thou wouldst."'
+L10F2: db 00
+L10F3: db '"Here it is."'
+L1100: db 00
+L1101: db '"Thou art carrying too much to take thy book."'
+L112F: db 00
+L1130: db '"I shall return thy money."'
+L114B: db 00
+L114C: db '"I wouldst give thee back thy gold but thou cannot take it."'
+L1188: db 00
+L1189: db '"Thou dost not have enough money!"'
+L11AB: db 00
+L11AC: db '"Hmph! I suppose that it would be beyond thy comprehension, '
+ db 'anyway."'
+L11F0: db 00
+L11F1: db 'methods'
+L11F8: db 00
+L11F9: db 'ship'
+L11FD: db 00
+L11FE: db '"I can well understand thine impatience but I have just begu'
+ db 'n work on it. It shall be ready when I am finished with it. '
+ db 'Now, until such time, I would appreciate it if thou wouldst '
+ db 'not waste my valuable time."*'
+L12CF: db 00
+L12D0: db '"I cannot build thee a ship as I suspect we both know."'
+L1307: db 00
+L1308: db '"Nor can I take thy money for one. Here, I shall return it t'
+ db 'o thee."'
+L134C: db 00
+L134D: db '"Oh, my, thou art too encumbered to take back thy 1000 gold '
+ db 'coins! Come back when thine hands are less full!"'
+L13BA: db 00
+L13BB: db '"I cannot help thee with that."'
+L13DA: db 00
+L13DB: db 'ship'
+L13DF: db 00
+L13E0: db 'Minoc'
+L13E5: db 00
+L13E6: db '"Despite all this business with murders, I must confess that'
+ db ' I love it here. This is the place where I was born. They lo'
+ db 've me. They are going to be building a monument here in mine'
+ db ' honor. I suppose I have been worthy of it, but still I can''
+ db 't help but be flattered."'
+L14EF: db 00
+L14F0: db 'monument'
+L14F8: db 00
+L14F9: db 'murders'
+L1500: db 00
+L1501: db 'Minoc'
+L1506: db 00
+L1507: db 'ungrateful'
+L1511: db 00
+L1512: db '"Apparently, building the greatest ships to ever set sail in'
+ db ' history and all that that has done for Minoc are no longer '
+ db 'enough! No! Thanks to that pompous idiot of a mayor I am den'
+ db 'ied the rightful tribute of which I have proven myself more '
+ db 'than worthy. Design flaws, bah! How many ships has Mayor Bur'
+ db 'nside built in his miserable little life?!"'
+L1669: db 00
+L166A: db 'there were deaths'
+L167B: db 00
+L167C: db 'ungrateful'
+L1686: db 00
+L1687: db 'murders'
+L168E: db 00
+L168F: db '"That is right. The sawmill is located southeast of town. Al'
+ db 'most everyone in town is down there. Thou shouldst probably '
+ db 'go down there if thou dost want to find out more. I abhor vi'
+ db 'olence."'
+L174B: db 00
+L174C: db 'He shakes his head slowly. "They are going to be unveiling m'
+ db 'y monument sometime in the near future. Dost thou think that'
+ db ' talk of these events will keep people away from the ceremon'
+ db 'y? That would be a tragedy!"'
+L181C: db 00
+L181D: db 'murders'
+L1824: db 00
+L1825: db 'there were deaths'
+L1836: db 00
+L1837: db 'You tell him about the many innocent civilians who lost thei'
+ db 'r lives on the ship he built. Owen shakes his head slowly. "'
+ db 'I do not know. I have no idea how it could have happened. It'
+ db ' is difficult to conceive of the pain such great loss of lif'
+ db 'e brings into this world. But I did my best when I built tho'
+ db 'se ships. I did not want those men to die. Thou must believe'
+ db ' me."'
+L19A4: db 00
+L19A5: db 'Owen appears distressed. "The tribute to me is now no more t'
+ db 'han a tombstone."'
+L19F2: db 00
+L19F3: db 'there were deaths'
+L1A04: db 00
+L1A05: db 'tribute'
+L1A0C: db 00
+L1A0D: db 'Fellowship'
+L1A17: db 00
+L1A18: db '"The changes it has made in my personal life have helped me '
+ db 'tremendously."'
+L1A62: db 00
+L1A63: db 'personal life'
+L1A70: db 00
+L1A71: db '"Thou canst ask Elynor all about it unless she is not speaki'
+ db 'ng to thee either. Perhaps the details of thy personal life '
+ db 'will amuse her more than do mine."'
+L1B0B: db 00
+L1B0C: db 'personal life'
+L1B19: db 00
+L1B1A: db 'Fellowship'
+L1B24: db 00
+L1B25: db 'philosophy'
+L1B2F: db 00
+L1B30: db 'philosophy'
+L1B3A: db 00
+L1B3B: db 'personal life'
+L1B48: db 00
+L1B49: db '"My friend, there was a time when I thought that my life was'
+ db ' at its end. I felt as though I had been swallowed into a co'
+ db 'ld, deep hole of darkness."'
+L1BDC: db 00
+L1BDD: db 'darkness'
+L1BE5: db 00
+L1BE6: db 'personal life'
+L1BF3: db 00
+L1BF4: db 'darkness'
+L1BFC: db 00
+L1BFD: db '"My very soul felt as though it had sunk into a place into w'
+ db 'hich no light could enter... Soon after I discovered The Fel'
+ db 'lowship. The difference that it made in my life was miraculo'
+ db 'us."'
+L1CB5: db 00
+L1CB6: db '"I have been having a difficult time lately trying to speak '
+ db 'to Elynor. It seems that she has no time for me. Back when I'
+ db ' was making preparations for the monument she was always sto'
+ db 'pping by and willing to have words with me."'
+L1D96: db 00
+L1D97: db 'darkness'
+L1D9F: db 00
+L1DA0: db 'monument'
+L1DA8: db 00
+L1DA9: db '"Oh, thou canst ask anyone in town about it. They all know."'
+L1DE5: db 00
+L1DE6: db 'monument'
+L1DEE: db 00
+L1DEF: db 'tribute'
+L1DF6: db 00
+L1DF7: db '"I know! My work will stand as my monument! My name will end'
+ db 'ure long after any statue has worn away to dust! People will'
+ db ' remember -me-, I promise thee that!"'
+L1E94: db 00
+L1E95: db 'And, with a dramatic flourish, Owen produces a dagger. Befor'
+ db 'e you can stop him, he plunges it into his chest. He coughs '
+ db 'loudly as blood spurts from his mouth, soaking his fine line'
+ db 'n tunic in wine-red guilt. After a moment, it is all over. O'
+ db 'wen, the greatest shipwright who ever lived, is dead.*'
+L1FBB: db 00
+L1FBC: db 'Crown Jewel'
+L1FC7: db 00
+L1FC8: db '"The Crown Jewel was in town and left early this morning. It'
+ db ' was scheduled to sail for Paws."'
+L2025: db 00
+L2026: db '"I have heard nothing more of the Crown Jewel since we last '
+ db 'spoke of it, '
+L206F: db 00
+L2070: db '."'
+L2072: db 00
+L2073: db 'Crown Jewel'
+L207E: db 00
+L207F: db 'Hook'
+L2083: db 00
+L2084: db '"I saw a man with a hook for a hand wandering around town la'
+ db 'st night."'
+L20CA: db 00
+L20CB: db '"I have heard nothing more of this man Hook since we last sp'
+ db 'oke of him, '
+L2113: db 00
+L2114: db '."'
+L2116: db 00
+L2117: db 'Hook'
+L211B: db 00
+L211C: db 'bye'
+L211F: db 00
+L2120: db '"Tired of benefitting from my presence? Very well. I shall s'
+ db 'ee thee again, I hope!"*'
+L2174: db 00
+L2175: db '"Be on thy way, then. Time is fleeting, as is fame."*'
+L21AA: db 00
+  .code
+  .argc 0001H
+  .localc 0012H
+  .externsize 0007H
+  .extern 0909H
+  .extern 08FCH
+  .extern 090AH
+  .extern 0919H
+  .extern 091AH
+  .extern 0911H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 90 05   jne 0598
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F A6 FF   pushi FFA6H   ; -90
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F A6 FF   pushi FFA6H   ; -90
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 24 00 00   call [0000]   ; 0909H
+002A: 12 02 00   pop [0002]
+002D: 14   push false
+002E: 12 03 00   pop [0003]
+0031: 38 67 00 00  callis 0067, 0
+0035: 12 04 00   pop [0004]
+0038: 38 3B 00 00  callis 003B, 0
+003C: 12 00 00   pop [0000]
+003F: 21 00 00   push [0000]
+0042: 1F 07 00   pushi 0007H   ; 7
+0045: 22   cmpeq
+0046: 05 2A 00   jne 0073
+0049: 21 01 00   push [0001]
+004C: 1F 0F 00   pushi 000FH   ; 15
+004F: 22   cmpeq
+0050: 10   not
+0051: 05 1F 00   jne 0073
+0054: 1F AF FF   pushi FFAFH   ; -81
+0057: 1F A6 FF   pushi FFA6H   ; -90
+005A: 24 01 00   call [0001]   ; 08FCH
+005D: 12 05 00   pop [0005]
+0060: 21 05 00   push [0005]
+0063: 05 08 00   jne 006E
+0066: 1C 00 00   addsi L0000   ; Owen will not int...
+0069: 33   say
+006A: 3F   abrt
+006B: 06 05 00   jmp 0073
+006E: 1C 57 00   addsi L0057   ; "I am late for Th...
+0071: 33   say
+0072: 3F   abrt
+0073: 24 00 00   call [0000]   ; 0909H
+0076: 12 02 00   pop [0002]
+0079: 1D 9E 00   pushs L009E   ; bye
+007C: 1D A2 00   pushs L00A2   ; job
+007F: 1D A6 00   pushs L00A6   ; name
+0082: 1E 03 00   arrc 0003H   ; 3
+0085: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0089: 42 40 00   pushf flag:[0040]
+008C: 05 17 00   jne 00A6
+008F: 42 23 01   pushf flag:[0123]
+0092: 05 11 00   jne 00A6
+0095: 1D AB 00   pushs L00AB   ; Hook
+0098: 1D B0 00   pushs L00B0   ; Crown Jewel
+009B: 1E 02 00   arrc 0002H   ; 2
+009E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A2: 13   push true
+00A3: 12 03 00   pop [0003]
+00A6: 42 FB 00   pushf flag:[00FB]
+00A9: 05 07 00   jne 00B3
+00AC: 1D BC 00   pushs L00BC   ; ship
+00AF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B3: 42 F7 00   pushf flag:[00F7]
+00B6: 05 07 00   jne 00C0
+00B9: 1D C1 00   pushs L00C1   ; statue is cancelled
+00BC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C0: 42 15 01   pushf flag:[0115]
+00C3: 10   not
+00C4: 05 19 00   jne 00E0
+00C7: 1C D5 00   addsi L00D5   ; You see a young m...
+00CA: 33   say
+00CB: 13   push true
+00CC: 43 15 01   popf flag:[0115]
+00CF: 1F 0B 00   pushi 000BH   ; 11
+00D2: 1F A6 FF   pushi FFA6H   ; -90
+00D5: 38 1B 00 01  callis 001B, 1
+00D9: 39 1D 00 02  calli 001D, 2
+00DD: 06 04 00   jmp 00E4
+00E0: 1C 1C 01   addsi L011C   ; Owen looks at you...
+00E3: 33   say
+00E4: 04 9E 04   je 0585
+00E7: 1D 73 01   pushs L0173   ; name
+00EA: 07 01 00 15 00  cmps 0001H, 0104
+00EF: 1C 78 01   addsi L0178   ; "My name, 
+00F2: 2F 02 00   addsv [0002]
+00F5: 1C 83 01   addsi L0183   ; , is Owen. It is ...
+00F8: 33   say
+00F9: 13   push true
+00FA: 43 23 01   popf flag:[0123]
+00FD: 1D D3 01   pushs L01D3   ; name
+0100: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0104: 1D D8 01   pushs L01D8   ; statue is cancelled
+0107: 1D EC 01   pushs L01EC   ; job
+010A: 07 02 00 62 00  cmps 0002H, 0171
+010F: 42 1F 01   pushf flag:[011F]
+0112: 05 4D 00   jne 0162
+0115: 42 F7 00   pushf flag:[00F7]
+0118: 10   not
+0119: 05 31 00   jne 014D
+011C: 1C F0 01   addsi L01F0   ; He looks you in t...
+011F: 33   say
+0120: 1D B0 02   pushs L02B0   ; buy
+0123: 1D B4 02   pushs L02B4   ; Minoc
+0126: 1D BA 02   pushs L02BA   ; greatest
+0129: 1E 03 00   arrc 0003H   ; 3
+012C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0130: 42 40 00   pushf flag:[0040]
+0133: 05 14 00   jne 014A
+0136: 21 03 00   push [0003]
+0139: 10   not
+013A: 05 0D 00   jne 014A
+013D: 1D C3 02   pushs L02C3   ; Hook
+0140: 1D C8 02   pushs L02C8   ; Crown Jewel
+0143: 1E 02 00   arrc 0002H   ; 2
+0146: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014A: 06 0B 00   jmp 0158
+014D: 1C D4 02   addsi L02D4   ; "After years of b...
+0150: 33   say
+0151: 1D C6 03   pushs L03C6   ; ungrateful
+0154: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0158: 1D D1 03   pushs L03D1   ; statue is cancelled
+015B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015F: 06 0F 00   jmp 0171
+0162: 1C E5 03   addsi L03E5   ; "Well, I shall ce...
+0165: 33   say
+0166: 13   push true
+0167: 43 1F 01   popf flag:[011F]
+016A: 1D B4 04   pushs L04B4   ; murders
+016D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0171: 1D BC 04   pushs L04BC   ; greatest
+0174: 07 01 00 18 00  cmps 0001H, 0191
+0179: 1C C5 04   addsi L04C5   ; "And dost thou kn...
+017C: 33   say
+017D: 1D 57 05   pushs L0557   ; greatest
+0180: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0184: 1D 60 05   pushs L0560   ; voices
+0187: 1D 67 05   pushs L0567   ; mad
+018A: 1E 02 00   arrc 0002H   ; 2
+018D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0191: 1D 6B 05   pushs L056B   ; voices
+0194: 07 01 00 0B 00  cmps 0001H, 01A4
+0199: 1C 72 05   addsi L0572   ; "These were not t...
+019C: 33   say
+019D: 1D E1 05   pushs L05E1   ; voices
+01A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A4: 1D E8 05   pushs L05E8   ; mad
+01A7: 07 01 00 18 00  cmps 0001H, 01C4
+01AC: 1C EC 05   addsi L05EC   ; "After searching ...
+01AF: 33   say
+01B0: 1D DA 06   pushs L06DA   ; mad
+01B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B7: 1D DE 06   pushs L06DE   ; Fellowship
+01BA: 1D E9 06   pushs L06E9   ; voice
+01BD: 1E 02 00   arrc 0002H   ; 2
+01C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C4: 1D EF 06   pushs L06EF   ; voice
+01C7: 07 01 00 12 00  cmps 0001H, 01DE
+01CC: 1C F5 06   addsi L06F5   ; "This was the voi...
+01CF: 33   say
+01D0: 1D 43 08   pushs L0843   ; voice
+01D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D7: 1D 49 08   pushs L0849   ; methods
+01DA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01DE: 1D 51 08   pushs L0851   ; buy
+01E1: 07 01 00 13 01  cmps 0001H, 02F9
+01E6: 21 01 00   push [0001]
+01E9: 1F 07 00   pushi 0007H   ; 7
+01EC: 22   cmpeq
+01ED: 05 FE 00   jne 02EE
+01F0: 42 F7 00   pushf flag:[00F7]
+01F3: 10   not
+01F4: 05 8A 00   jne 0281
+01F7: 1C 55 08   addsi L0855   ; Owen looks at you...
+01FA: 33   say
+01FB: 24 02 00   call [0002]   ; 090AH
+01FE: 12 06 00   pop [0006]
+0201: 21 06 00   push [0006]
+0204: 05 76 00   jne 027D
+0207: 13   push true
+0208: 1F 99 FE   pushi FE99H   ; -359
+020B: 1F 99 FE   pushi FE99H   ; -359
+020E: 1F 84 02   pushi 0284H   ; 644
+0211: 1F E8 03   pushi 03E8H   ; 1000
+0214: 38 2B 00 05  callis 002B, 5
+0218: 12 07 00   pop [0007]
+021B: 21 07 00   push [0007]
+021E: 05 55 00   jne 0276
+0221: 13   push true
+0222: 43 FB 00   popf flag:[00FB]
+0225: 1C 76 09   addsi L0976   ; "'Tis money well ...
+0228: 33   say
+0229: 14   push false
+022A: 1F 02 00   pushi 0002H   ; 2
+022D: 1F 10 00   pushi 0010H   ; 16
+0230: 1F 1D 03   pushi 031DH   ; 797
+0233: 1F 01 00   pushi 0001H   ; 1
+0236: 38 2C 00 05  callis 002C, 5
+023A: 12 08 00   pop [0008]
+023D: 21 08 00   push [0008]
+0240: 05 07 00   jne 024A
+0243: 1C 2A 0A   addsi L0A2A   ; "It will be calle...
+0246: 33   say
+0247: 06 29 00   jmp 0273
+024A: 1C 4F 0A   addsi L0A4F   ; "I would give the...
+024D: 33   say
+024E: 13   push true
+024F: 1F 99 FE   pushi FE99H   ; -359
+0252: 1F 99 FE   pushi FE99H   ; -359
+0255: 1F 84 02   pushi 0284H   ; 644
+0258: 1F E8 03   pushi 03E8H   ; 1000
+025B: 38 2C 00 05  callis 002C, 5
+025F: 12 09 00   pop [0009]
+0262: 21 09 00   push [0009]
+0265: 05 07 00   jne 026F
+0268: 1C 8C 0A   addsi L0A8C   ; "Take thy gold ba...
+026B: 33   say
+026C: 06 04 00   jmp 0273
+026F: 1C C6 0A   addsi L0AC6   ; "I would give the...
+0272: 33   say
+0273: 06 04 00   jmp 027A
+0276: 1C 09 0B   addsi L0B09   ; "I am dreadfully ...
+0279: 33   say
+027A: 06 04 00   jmp 0281
+027D: 1C 53 0B   addsi L0B53   ; "Art thou certain...
+0280: 33   say
+0281: 1C AD 0B   addsi L0BAD   ; "Wouldst thou per...
+0284: 33   say
+0285: 24 02 00   call [0002]   ; 090AH
+0288: 05 5C 00   jne 02E7
+028B: 1C 61 0C   addsi L0C61   ; "Excellent! I kne...
+028E: 33   say
+028F: 13   push true
+0290: 1F 99 FE   pushi FE99H   ; -359
+0293: 1F 99 FE   pushi FE99H   ; -359
+0296: 1F 84 02   pushi 0284H   ; 644
+0299: 1F 96 00   pushi 0096H   ; 150
+029C: 38 2B 00 05  callis 002B, 5
+02A0: 12 0A 00   pop [000A]
+02A3: 21 0A 00   push [000A]
+02A6: 10   not
+02A7: 05 07 00   jne 02B1
+02AA: 1C 1E 0D   addsi L0D1E   ; "Thou knave! To g...
+02AD: 33   say
+02AE: 06 33 00   jmp 02E4
+02B1: 13   push true
+02B2: 1F 99 FE   pushi FE99H   ; -359
+02B5: 1F 99 FE   pushi FE99H   ; -359
+02B8: 1F 8A 02   pushi 028AH   ; 650
+02BB: 1F 01 00   pushi 0001H   ; 1
+02BE: 38 2C 00 05  callis 002C, 5
+02C2: 12 0B 00   pop [000B]
+02C5: 21 0B 00   push [000B]
+02C8: 10   not
+02C9: 05 18 00   jne 02E4
+02CC: 1C EB 0D   addsi L0DEB   ; "Thou dost not ha...
+02CF: 33   say
+02D0: 13   push true
+02D1: 1F 99 FE   pushi FE99H   ; -359
+02D4: 1F 99 FE   pushi FE99H   ; -359
+02D7: 1F 84 02   pushi 0284H   ; 644
+02DA: 1F 96 00   pushi 0096H   ; 150
+02DD: 38 2C 00 05  callis 002C, 5
+02E1: 12 0C 00   pop [000C]
+02E4: 06 04 00   jmp 02EB
+02E7: 1C C8 0E   addsi L0EC8   ; "Hmph. Well, let ...
+02EA: 33   say
+02EB: 06 04 00   jmp 02F2
+02EE: 1C 82 0F   addsi L0F82   ; "Mine establishme...
+02F1: 33   say
+02F2: 1D DC 0F   pushs L0FDC   ; buy
+02F5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02F9: 1D E0 0F   pushs L0FE0   ; methods
+02FC: 07 01 00 8D 00  cmps 0001H, 038E
+0301: 1C E8 0F   addsi L0FE8   ; "I have even writ...
+0304: 33   say
+0305: 24 02 00   call [0002]   ; 090AH
+0308: 12 0D 00   pop [000D]
+030B: 21 0D 00   push [000D]
+030E: 05 72 00   jne 0383
+0311: 1C D4 10   addsi L10D4   ; "Yes, of course t...
+0314: 33   say
+0315: 13   push true
+0316: 1F 99 FE   pushi FE99H   ; -359
+0319: 1F 99 FE   pushi FE99H   ; -359
+031C: 1F 84 02   pushi 0284H   ; 644
+031F: 1F 1E 00   pushi 001EH   ; 30
+0322: 38 2B 00 05  callis 002B, 5
+0326: 12 0E 00   pop [000E]
+0329: 21 0E 00   push [000E]
+032C: 05 4D 00   jne 037C
+032F: 14   push false
+0330: 1F 99 FE   pushi FE99H   ; -359
+0333: 1F 3B 00   pushi 003BH   ; 59
+0336: 1F 82 02   pushi 0282H   ; 642
+0339: 1F 01 00   pushi 0001H   ; 1
+033C: 38 2C 00 05  callis 002C, 5
+0340: 12 0F 00   pop [000F]
+0343: 21 0F 00   push [000F]
+0346: 05 07 00   jne 0350
+0349: 1C F3 10   addsi L10F3   ; "Here it is."
+034C: 33   say
+034D: 06 29 00   jmp 0379
+0350: 1C 01 11   addsi L1101   ; "Thou art carryin...
+0353: 33   say
+0354: 13   push true
+0355: 1F 99 FE   pushi FE99H   ; -359
+0358: 1F 99 FE   pushi FE99H   ; -359
+035B: 1F 84 02   pushi 0284H   ; 644
+035E: 1F 1E 00   pushi 001EH   ; 30
+0361: 38 2C 00 05  callis 002C, 5
+0365: 12 10 00   pop [0010]
+0368: 21 10 00   push [0010]
+036B: 05 07 00   jne 0375
+036E: 1C 30 11   addsi L1130   ; "I shall return t...
+0371: 33   say
+0372: 06 04 00   jmp 0379
+0375: 1C 4C 11   addsi L114C   ; "I wouldst give t...
+0378: 33   say
+0379: 06 04 00   jmp 0380
+037C: 1C 89 11   addsi L1189   ; "Thou dost not ha...
+037F: 33   say
+0380: 06 04 00   jmp 0387
+0383: 1C AC 11   addsi L11AC   ; "Hmph! I suppose ...
+0386: 33   say
+0387: 1D F1 11   pushs L11F1   ; methods
+038A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+038E: 1D F9 11   pushs L11F9   ; ship
+0391: 07 01 00 57 00  cmps 0001H, 03ED
+0396: 42 F7 00   pushf flag:[00F7]
+0399: 10   not
+039A: 05 08 00   jne 03A5
+039D: 1C FE 11   addsi L11FE   ; "I can well under...
+03A0: 33   say
+03A1: 3F   abrt
+03A2: 06 41 00   jmp 03E6
+03A5: 42 FC 00   pushf flag:[00FC]
+03A8: 10   not
+03A9: 05 36 00   jne 03E2
+03AC: 1C D0 12   addsi L12D0   ; "I cannot build t...
+03AF: 33   say
+03B0: 42 FB 00   pushf flag:[00FB]
+03B3: 05 29 00   jne 03DF
+03B6: 1C 08 13   addsi L1308   ; "Nor can I take t...
+03B9: 33   say
+03BA: 13   push true
+03BB: 1F 99 FE   pushi FE99H   ; -359
+03BE: 1F 99 FE   pushi FE99H   ; -359
+03C1: 1F 84 02   pushi 0284H   ; 644
+03C4: 1F E8 03   pushi 03E8H   ; 1000
+03C7: 38 2C 00 05  callis 002C, 5
+03CB: 12 11 00   pop [0011]
+03CE: 21 11 00   push [0011]
+03D1: 05 07 00   jne 03DB
+03D4: 13   push true
+03D5: 43 FC 00   popf flag:[00FC]
+03D8: 06 04 00   jmp 03DF
+03DB: 1C 4D 13   addsi L134D   ; "Oh, my, thou art...
+03DE: 33   say
+03DF: 06 04 00   jmp 03E6
+03E2: 1C BB 13   addsi L13BB   ; "I cannot help th...
+03E5: 33   say
+03E6: 1D DB 13   pushs L13DB   ; ship
+03E9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03ED: 1D E0 13   pushs L13E0   ; Minoc
+03F0: 07 01 00 18 00  cmps 0001H, 040D
+03F5: 1C E6 13   addsi L13E6   ; "Despite all this...
+03F8: 33   say
+03F9: 1D F0 14   pushs L14F0   ; monument
+03FC: 1D F9 14   pushs L14F9   ; murders
+03FF: 1E 02 00   arrc 0002H   ; 2
+0402: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0406: 1D 01 15   pushs L1501   ; Minoc
+0409: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+040D: 1D 07 15   pushs L1507   ; ungrateful
+0410: 07 01 00 12 00  cmps 0001H, 0427
+0415: 1C 12 15   addsi L1512   ; "Apparently, buil...
+0418: 33   say
+0419: 1D 6A 16   pushs L166A   ; there were deaths
+041C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0420: 1D 7C 16   pushs L167C   ; ungrateful
+0423: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0427: 1D 87 16   pushs L1687   ; murders
+042A: 07 01 00 19 00  cmps 0001H, 0448
+042F: 42 22 01   pushf flag:[0122]
+0432: 10   not
+0433: 05 07 00   jne 043D
+0436: 1C 8F 16   addsi L168F   ; "That is right. T...
+0439: 33   say
+043A: 06 04 00   jmp 0441
+043D: 1C 4C 17   addsi L174C   ; He shakes his hea...
+0440: 33   say
+0441: 1D 1D 18   pushs L181D   ; murders
+0444: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0448: 1D 25 18   pushs L1825   ; there were deaths
+044B: 07 01 00 16 00  cmps 0001H, 0466
+0450: 1C 37 18   addsi L1837   ; You tell him abou...
+0453: 33   say
+0454: 1C A5 19   addsi L19A5   ; Owen appears dist...
+0457: 33   say
+0458: 1D F3 19   pushs L19F3   ; there were deaths
+045B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+045F: 1D 05 1A   pushs L1A05   ; tribute
+0462: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0466: 1D 0D 1A   pushs L1A0D   ; Fellowship
+0469: 07 01 00 2A 00  cmps 0001H, 0498
+046E: 42 F7 00   pushf flag:[00F7]
+0471: 10   not
+0472: 05 11 00   jne 0486
+0475: 24 03 00   call [0003]   ; 0919H
+0478: 1C 18 1A   addsi L1A18   ; "The changes it h...
+047B: 33   say
+047C: 1D 63 1A   pushs L1A63   ; personal life
+047F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0483: 06 0B 00   jmp 0491
+0486: 1C 71 1A   addsi L1A71   ; "Thou canst ask E...
+0489: 33   say
+048A: 1D 0C 1B   pushs L1B0C   ; personal life
+048D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0491: 1D 1A 1B   pushs L1B1A   ; Fellowship
+0494: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0498: 1D 25 1B   pushs L1B25   ; philosophy
+049B: 07 01 00 0A 00  cmps 0001H, 04AA
+04A0: 24 04 00   call [0004]   ; 091AH
+04A3: 1D 30 1B   pushs L1B30   ; philosophy
+04A6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04AA: 1D 3B 1B   pushs L1B3B   ; personal life
+04AD: 07 01 00 19 00  cmps 0001H, 04CB
+04B2: 42 F7 00   pushf flag:[00F7]
+04B5: 10   not
+04B6: 05 0B 00   jne 04C4
+04B9: 1C 49 1B   addsi L1B49   ; "My friend, there...
+04BC: 33   say
+04BD: 1D DD 1B   pushs L1BDD   ; darkness
+04C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+04C4: 1D E6 1B   pushs L1BE6   ; personal life
+04C7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04CB: 1D F4 1B   pushs L1BF4   ; darkness
+04CE: 07 01 00 19 00  cmps 0001H, 04EC
+04D3: 42 F7 00   pushf flag:[00F7]
+04D6: 10   not
+04D7: 05 07 00   jne 04E1
+04DA: 1C FD 1B   addsi L1BFD   ; "My very soul fel...
+04DD: 33   say
+04DE: 06 04 00   jmp 04E5
+04E1: 1C B6 1C   addsi L1CB6   ; "I have been havi...
+04E4: 33   say
+04E5: 1D 97 1D   pushs L1D97   ; darkness
+04E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04EC: 1D A0 1D   pushs L1DA0   ; monument
+04EF: 07 01 00 0B 00  cmps 0001H, 04FF
+04F4: 1C A9 1D   addsi L1DA9   ; "Oh, thou canst a...
+04F7: 33   say
+04F8: 1D E6 1D   pushs L1DE6   ; monument
+04FB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04FF: 1D EF 1D   pushs L1DEF   ; tribute
+0502: 07 01 00 1A 00  cmps 0001H, 0521
+0507: 1C F7 1D   addsi L1DF7   ; "I know! My work ...
+050A: 33   say
+050B: 1C 95 1E   addsi L1E95   ; And, with a drama...
+050E: 33   say
+050F: 1F A6 FF   pushi FFA6H   ; -90
+0512: 38 1B 00 01  callis 001B, 1
+0516: 39 49 00 01  calli 0049, 1
+051A: 1F 64 00   pushi 0064H   ; 100
+051D: 24 05 00   call [0005]   ; 0911H
+0520: 3F   abrt
+0521: 1D BC 1F   pushs L1FBC   ; Crown Jewel
+0524: 07 01 00 23 00  cmps 0001H, 054C
+0529: 42 F9 00   pushf flag:[00F9]
+052C: 10   not
+052D: 05 0B 00   jne 053B
+0530: 1C C8 1F   addsi L1FC8   ; "The Crown Jewel ...
+0533: 33   say
+0534: 13   push true
+0535: 43 F9 00   popf flag:[00F9]
+0538: 06 0A 00   jmp 0545
+053B: 1C 26 20   addsi L2026   ; "I have heard not...
+053E: 2F 02 00   addsv [0002]
+0541: 1C 70 20   addsi L2070   ; ."
+0544: 33   say
+0545: 1D 73 20   pushs L2073   ; Crown Jewel
+0548: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+054C: 1D 7F 20   pushs L207F   ; Hook
+054F: 07 01 00 23 00  cmps 0001H, 0577
+0554: 42 FA 00   pushf flag:[00FA]
+0557: 10   not
+0558: 05 0B 00   jne 0566
+055B: 1C 84 20   addsi L2084   ; "I saw a man with...
+055E: 33   say
+055F: 13   push true
+0560: 43 FA 00   popf flag:[00FA]
+0563: 06 0A 00   jmp 0570
+0566: 1C CB 20   addsi L20CB   ; "I have heard not...
+0569: 2F 02 00   addsv [0002]
+056C: 1C 14 21   addsi L2114   ; ."
+056F: 33   say
+0570: 1D 17 21   pushs L2117   ; Hook
+0573: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0577: 1D 1C 21   pushs L211C   ; bye
+057A: 07 01 00 03 00  cmps 0001H, 0582
+057F: 06 03 00   jmp 0585
+0582: 06 5F FB   jmp 00E4
+0585: 40   db 40 ???
+0586: 42 F7 00   pushf flag:[00F7]
+0589: 10   not
+058A: 05 07 00   jne 0594
+058D: 1C 20 21   addsi L2120   ; "Tired of benefit...
+0590: 33   say
+0591: 06 04 00   jmp 0598
+0594: 1C 75 21   addsi L2175   ; "Be on thy way, t...
+0597: 33   say
+0598: 48   push eventid
+0599: 1F 00 00   pushi 0000H   ; 0
+059C: 22   cmpeq
+059D: 05 06 00   jne 05A6
+05A0: 1F A6 FF   pushi FFA6H   ; -90
+05A3: 24 06 00   call [0006]   ; 092EH
+05A6: 25   ret

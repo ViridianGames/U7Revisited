@@ -1,0 +1,582 @@
+  .funcnumber 0495H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a three-headed hydra. The head on the left speaks.~~'
+ db ' "Wake up, there is something here."'
+L006D: db 00
+L006E: db 'The head on the right looks up and at you.~~"I wonder if it '
+ db 'is good to eat."*'
+L00BB: db 00
+L00BC: db 'The middle head wakes with a start, sees you, becomes alarme'
+ db 'd, and begins to snort excitedly.*'
+L011A: db 00
+L011B: db '"Fear not, brother; we know it's there."*'
+L0144: db 00
+L0145: db '"I wonder if it talks?"*'
+L015D: db 00
+L015E: db '"We are not talking to thee! We are trying to eat thee!"*'
+L0197: db 00
+L0198: db 'name'
+L019C: db 00
+L019D: db '"My name is Shandu. My brother next to me is Shanda. My brot'
+ db 'her next to him is Shando."*'
+L01F5: db 00
+L01F6: db '"It does not matter what our names are!"*'
+L021F: db 00
+L0220: db 'Shanda shakes his head and glares at you.*'
+L024A: db 00
+L024B: db 'name'
+L024F: db 00
+L0250: db 'Shando'
+L0256: db 00
+L0257: db 'Shanda'
+L025D: db 00
+L025E: db 'Shandu'
+L0264: db 00
+L0265: db 'Shandu'
+L026B: db 00
+L026C: db '"That is me."~~Shandu smiles and licks his lips.~~ "I like i'
+ db 't when my food says my name!"'
+L02C5: db 00
+L02C6: db 'Shandu'
+L02CC: db 00
+L02CD: db 'Shanda'
+L02D3: db 00
+L02D4: db 'Shanda rolls his eyes and exhales a puff of smoke from his n'
+ db 'ostrils.*'
+L0319: db 00
+L031A: db '"Shanda says that thou shouldst refrain from saying his name'
+ db '. He does not like it when his food says his name."*'
+L038A: db 00
+L038B: db 'Shanda'
+L0391: db 00
+L0392: db 'Shando'
+L0398: db 00
+L0399: db '"That is me. I am the oldest brother."*'
+L03C0: db 00
+L03C1: db '"We are all connected, Shando! Thou cannot be older!"*'
+L03F7: db 00
+L03F8: db '"Mine head was the first to breathe the air."*'
+L0426: db 00
+L0427: db 'Shandu spits.~~"What does it matter? Our food does not care '
+ db 'which of us is the eldest!"*'
+L047F: db 00
+L0480: db 'Shando'
+L0486: db 00
+L0487: db 'job'
+L048A: db 00
+L048B: db '"Job?"'
+L0491: db 00
+L0492: db 'Shanda opens his mouth wide and emits a burst of flame.*'
+L04CA: db 00
+L04CB: db '"He thinks that is a joke. Job! Ha! I think it is amusing, t'
+ db 'oo. I have never heard my food tell jokes."*'
+L0533: db 00
+L0534: db '"Ah, but brothers, we -do- have a job."*'
+L055C: db 00
+L055D: db '"We do?"*'
+L0566: db 00
+L0567: db '"We guard the Caddellite, do we not? Our purpose in life is '
+ db 'to guard the Caddellite!"'
+L05BC: db 00
+L05BD: db 'Caddellite'
+L05C7: db 00
+L05C8: db 'Caddellite'
+L05D2: db 00
+L05D3: db 'Shanda becomes excited and snorts as if he were saying sever'
+ db 'al sentences.'
+L061C: db 00
+L061D: db 'Caddellite'
+L0627: db 00
+L0628: db 'What did he say?'
+L0638: db 00
+L0639: db '"Thou dost want to know about Caddellite? Very well, I shall'
+ db ' tell thee about Caddellite."~~The hydra shifts its weight a'
+ db ' moment, then grins wickedly.~~"We are guarding it."'
+L06E5: db 00
+L06E6: db 'Caddellite'
+L06F0: db 00
+L06F1: db 'guarding'
+L06F9: db 00
+L06FA: db 'What did he say?'
+L070A: db 00
+L070B: db '"He wasn't talking to thee!"'
+L0727: db 00
+L0728: db 'What did he say?'
+L0738: db 00
+L0739: db 'Caddellite'
+L0743: db 00
+L0744: db 'guarding'
+L074C: db 00
+L074D: db '"The creature seems to echo everything we say, Shandu."*'
+L0785: db 00
+L0786: db 'Shanda makes a horrid growling noise.*'
+L07AC: db 00
+L07AD: db '"Shanda says he is hungry!"*'
+L07C9: db 00
+L07CA: db '"So am I!"*'
+L07D5: db 00
+L07D6: db '"Now that thou dost mention it, I am feeling a few hunger pa'
+ db 'ngs myself. If we did not have to protect the Caddellite, I '
+ db 'would eat this creature in a single gulp!"'
+L0878: db 00
+L0879: db 'guarding'
+L0881: db 00
+L0882: db 'protect'
+L0889: db 00
+L088A: db 'echo'
+L088E: db 00
+L088F: db 'echo'
+L0893: db 00
+L0894: db '"Hearing this creature repeat whatever we say is making me h'
+ db 'ungry!"*'
+L08D8: db 00
+L08D9: db '"It amuses me! Obviously it is a creature of severely limite'
+ db 'd intelligence!"*'
+L0926: db 00
+L0927: db 'Shanda lets out a low growl.*'
+L0944: db 00
+L0945: db '"Shanda says he wants something to eat!"'
+L096D: db 00
+L096E: db 'echo'
+L0972: db 00
+L0973: db 'protect'
+L097A: db 00
+L097B: db '"I suppose we must protect the Caddellite from creatures lik'
+ db 'e thee who come around once every 1000 years or so wanting t'
+ db 'o take it."*'
+L09FF: db 00
+L0A00: db 'Shanda growls louder than before, then breathes a bit of fir'
+ db 'e.*'
+L0A3F: db 00
+L0A40: db '"Creature! Thou art making Shanda angry! He thinks that thou'
+ db ' art attempting to steal the Caddellite! Beware!"*'
+L0AAE: db 00
+L0AAF: db 'protect'
+L0AB6: db 00
+L0AB7: db 'steal'
+L0ABC: db 00
+L0ABD: db 'steal'
+L0AC2: db 00
+L0AC3: db 'Shandu becomes enraged.~~"I knew it! It is trying to steal o'
+ db 'ur Caddellite!"~~Shandu addresses his brothers.~~"We must no'
+ db 't delay any longer."*'
+L0B50: db 00
+L0B51: db 'Shanda roars angrily!*'
+L0B67: db 00
+L0B68: db '"That is a good idea, my brother!"~~Shandu turns to you.~~ ['
+ db '"This creature vaguely resembles a troll, only it smells a l'
+ db 'ittle more pleasant. Dost thou think it might taste better t'
+ db 'han a troll, Shando?"*'
+L0C32: db 00
+L0C33: db '"We shall not know until we try!"*'
+L0C55: db 00
+L0C56: db 'Shanda nods his head furiously, licking his lips.*'
+L0C88: db 00
+L0C89: db '"Very well! Let's eat it!"*'
+L0CA4: db 00
+L0CA5: db 'bye'
+L0CA8: db 00
+L0CA9: db '"Thou cannot say 'bye' to us! How rude!"'
+L0CD1: db 00
+L0CD2: db 'bye'
+L0CD5: db 00
+L0CD6: db '"Leaving so soon?"*'
+L0CE9: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F E8 FE   pushi FEE8H   ; -280
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 1F 00 00   pushi 0000H   ; 0
+0016: 12 00 00   pop [0000]
+0019: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+001D: 12 01 00   pop [0001]
+0020: 1F 00 00   pushi 0000H   ; 0
+0023: 12 02 00   pop [0002]
+0026: 2E   sloop
+0027: 02 03 00 04 00 05 00 01 00 0D 00  db 2 ???
+0028:   db 3
+0029:   db 0
+002A:   db 4
+002B:   db 0
+002C:   db 5
+002D:   db 0
+002E:   db 1
+002F:   db 0
+0030:   db d
+0031:   db 0
+0032: 21 02 00   push [0002]
+0035: 1F 01 00   pushi 0001H   ; 1
+0038: 09   add
+0039: 12 02 00   pop [0002]
+003C: 06 E8 FF   jmp 0027
+003F: 1D 00 00   pushs L0000   ; bye
+0042: 1D 04 00   pushs L0004   ; job
+0045: 1D 08 00   pushs L0008   ; name
+0048: 1E 03 00   arrc 0003H   ; 3
+004B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004F: 42 C7 02   pushf flag:[02C7]
+0052: 10   not
+0053: 05 62 00   jne 00B8
+0056: 1C 0D 00   addsi L000D   ; You see a three-h...
+0059: 33   say
+005A: 1F 00 00   pushi 0000H   ; 0
+005D: 1F E6 FE   pushi FEE6H   ; -282
+0060: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0064: 1C 6E 00   addsi L006E   ; The head on the r...
+0067: 33   say
+0068: 1F E6 FE   pushi FEE6H   ; -282
+006B: 39 04 00 01  calli _HideNPC@1  ; 0004
+006F: 1F 00 00   pushi 0000H   ; 0
+0072: 1F E7 FE   pushi FEE7H   ; -281
+0075: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0079: 1C BC 00   addsi L00BC   ; The middle head w...
+007C: 33   say
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1F E8 FE   pushi FEE8H   ; -280
+0083: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0087: 1C 1B 01   addsi L011B   ; "Fear not, brothe...
+008A: 33   say
+008B: 1F E7 FE   pushi FEE7H   ; -281
+008E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0092: 1F 00 00   pushi 0000H   ; 0
+0095: 1F E6 FE   pushi FEE6H   ; -282
+0098: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+009C: 1C 45 01   addsi L0145   ; "I wonder if it t...
+009F: 33   say
+00A0: 1F E6 FE   pushi FEE6H   ; -282
+00A3: 39 04 00 01  calli _HideNPC@1  ; 0004
+00A7: 1F 00 00   pushi 0000H   ; 0
+00AA: 1F E8 FE   pushi FEE8H   ; -280
+00AD: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B1: 13   push true
+00B2: 43 C7 02   popf flag:[02C7]
+00B5: 06 21 00   jmp 00D9
+00B8: 1C 5E 01   addsi L015E   ; "We are not talki...
+00BB: 33   say
+00BC: 1F 02 00   pushi 0002H   ; 2
+00BF: 1F 6B FF   pushi FF6BH   ; -149
+00C2: 38 1B 00 01  callis 001B, 1
+00C6: 39 3D 00 02  calli 003D, 2
+00CA: 1F 00 00   pushi 0000H   ; 0
+00CD: 1F 6B FF   pushi FF6BH   ; -149
+00D0: 38 1B 00 01  callis 001B, 1
+00D4: 39 1D 00 02  calli 001D, 2
+00D8: 3F   abrt
+00D9: 04 94 03   je 0470
+00DC: 1D 98 01   pushs L0198   ; name
+00DF: 07 01 00 4F 00  cmps 0001H, 0133
+00E4: 1C 9D 01   addsi L019D   ; "My name is Shand...
+00E7: 33   say
+00E8: 1F 00 00   pushi 0000H   ; 0
+00EB: 1F E6 FE   pushi FEE6H   ; -282
+00EE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F2: 1C F6 01   addsi L01F6   ; "It does not matt...
+00F5: 33   say
+00F6: 1F E6 FE   pushi FEE6H   ; -282
+00F9: 39 04 00 01  calli _HideNPC@1  ; 0004
+00FD: 1F 00 00   pushi 0000H   ; 0
+0100: 1F E7 FE   pushi FEE7H   ; -281
+0103: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0107: 1C 20 02   addsi L0220   ; Shanda shakes his...
+010A: 33   say
+010B: 1F E7 FE   pushi FEE7H   ; -281
+010E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0112: 1F 00 00   pushi 0000H   ; 0
+0115: 1F E8 FE   pushi FEE8H   ; -280
+0118: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011C: 1D 4B 02   pushs L024B   ; name
+011F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0123: 1D 50 02   pushs L0250   ; Shando
+0126: 1D 57 02   pushs L0257   ; Shanda
+0129: 1D 5E 02   pushs L025E   ; Shandu
+012C: 1E 03 00   arrc 0003H   ; 3
+012F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0133: 1D 65 02   pushs L0265   ; Shandu
+0136: 07 01 00 0B 00  cmps 0001H, 0146
+013B: 1C 6C 02   addsi L026C   ; "That is me."~~Sh...
+013E: 33   say
+013F: 1D C6 02   pushs L02C6   ; Shandu
+0142: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0146: 1D CD 02   pushs L02CD   ; Shanda
+0149: 07 01 00 3B 00  cmps 0001H, 0189
+014E: 1F 00 00   pushi 0000H   ; 0
+0151: 1F E7 FE   pushi FEE7H   ; -281
+0154: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0158: 1C D4 02   addsi L02D4   ; Shanda rolls his ...
+015B: 33   say
+015C: 1F E7 FE   pushi FEE7H   ; -281
+015F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0163: 1F 00 00   pushi 0000H   ; 0
+0166: 1F E6 FE   pushi FEE6H   ; -282
+0169: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016D: 1C 1A 03   addsi L031A   ; "Shanda says that...
+0170: 33   say
+0171: 1F E6 FE   pushi FEE6H   ; -282
+0174: 39 04 00 01  calli _HideNPC@1  ; 0004
+0178: 1F 00 00   pushi 0000H   ; 0
+017B: 1F E8 FE   pushi FEE8H   ; -280
+017E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0182: 1D 8B 03   pushs L038B   ; Shanda
+0185: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0189: 1D 92 03   pushs L0392   ; Shando
+018C: 07 01 00 50 00  cmps 0001H, 01E1
+0191: 1F 00 00   pushi 0000H   ; 0
+0194: 1F E6 FE   pushi FEE6H   ; -282
+0197: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+019B: 1C 99 03   addsi L0399   ; "That is me. I am...
+019E: 33   say
+019F: 1F 00 00   pushi 0000H   ; 0
+01A2: 1F E8 FE   pushi FEE8H   ; -280
+01A5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01A9: 1C C1 03   addsi L03C1   ; "We are all conne...
+01AC: 33   say
+01AD: 1F 00 00   pushi 0000H   ; 0
+01B0: 1F E6 FE   pushi FEE6H   ; -282
+01B3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01B7: 1C F8 03   addsi L03F8   ; "Mine head was th...
+01BA: 33   say
+01BB: 1F 00 00   pushi 0000H   ; 0
+01BE: 1F E8 FE   pushi FEE8H   ; -280
+01C1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01C5: 1C 27 04   addsi L0427   ; Shandu spits.~~"W...
+01C8: 33   say
+01C9: 1F E6 FE   pushi FEE6H   ; -282
+01CC: 39 04 00 01  calli _HideNPC@1  ; 0004
+01D0: 1F 00 00   pushi 0000H   ; 0
+01D3: 1F E8 FE   pushi FEE8H   ; -280
+01D6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01DA: 1D 80 04   pushs L0480   ; Shando
+01DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E1: 1D 87 04   pushs L0487   ; job
+01E4: 07 01 00 69 00  cmps 0001H, 0252
+01E9: 1C 8B 04   addsi L048B   ; "Job?"
+01EC: 33   say
+01ED: 1F 00 00   pushi 0000H   ; 0
+01F0: 1F E7 FE   pushi FEE7H   ; -281
+01F3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F7: 1C 92 04   addsi L0492   ; Shanda opens his ...
+01FA: 33   say
+01FB: 1F E7 FE   pushi FEE7H   ; -281
+01FE: 39 04 00 01  calli _HideNPC@1  ; 0004
+0202: 1F 00 00   pushi 0000H   ; 0
+0205: 1F E6 FE   pushi FEE6H   ; -282
+0208: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+020C: 1C CB 04   addsi L04CB   ; "He thinks that i...
+020F: 33   say
+0210: 1F 00 00   pushi 0000H   ; 0
+0213: 1F E8 FE   pushi FEE8H   ; -280
+0216: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+021A: 1C 34 05   addsi L0534   ; "Ah, but brothers...
+021D: 33   say
+021E: 1F 00 00   pushi 0000H   ; 0
+0221: 1F E6 FE   pushi FEE6H   ; -282
+0224: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0228: 1C 5D 05   addsi L055D   ; "We do?"*
+022B: 33   say
+022C: 1F 00 00   pushi 0000H   ; 0
+022F: 1F E8 FE   pushi FEE8H   ; -280
+0232: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0236: 1C 67 05   addsi L0567   ; "We guard the Cad...
+0239: 33   say
+023A: 1F E6 FE   pushi FEE6H   ; -282
+023D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0241: 1F 00 00   pushi 0000H   ; 0
+0244: 1F E8 FE   pushi FEE8H   ; -280
+0247: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+024B: 1D BD 05   pushs L05BD   ; Caddellite
+024E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0252: 1D C8 05   pushs L05C8   ; Caddellite
+0255: 07 01 00 52 00  cmps 0001H, 02AC
+025A: 21 00 00   push [0000]
+025D: 1F 00 00   pushi 0000H   ; 0
+0260: 22   cmpeq
+0261: 05 36 00   jne 029A
+0264: 1F 00 00   pushi 0000H   ; 0
+0267: 1F E7 FE   pushi FEE7H   ; -281
+026A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+026E: 1C D3 05   addsi L05D3   ; Shanda becomes ex...
+0271: 33   say
+0272: 1F E7 FE   pushi FEE7H   ; -281
+0275: 39 04 00 01  calli _HideNPC@1  ; 0004
+0279: 1F 00 00   pushi 0000H   ; 0
+027C: 1F E8 FE   pushi FEE8H   ; -280
+027F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0283: 1D 1D 06   pushs L061D   ; Caddellite
+0286: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028A: 1D 28 06   pushs L0628   ; What did he say?
+028D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0291: 1F 01 00   pushi 0001H   ; 1
+0294: 12 00 00   pop [0000]
+0297: 06 12 00   jmp 02AC
+029A: 1C 39 06   addsi L0639   ; "Thou dost want t...
+029D: 33   say
+029E: 1D E6 06   pushs L06E6   ; Caddellite
+02A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A5: 1D F1 06   pushs L06F1   ; guarding
+02A8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02AC: 1D FA 06   pushs L06FA   ; What did he say?
+02AF: 07 01 00 12 00  cmps 0001H, 02C6
+02B4: 1C 0B 07   addsi L070B   ; "He wasn't talkin...
+02B7: 33   say
+02B8: 1D 28 07   pushs L0728   ; What did he say?
+02BB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02BF: 1D 39 07   pushs L0739   ; Caddellite
+02C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02C6: 1D 44 07   pushs L0744   ; guarding
+02C9: 07 01 00 6F 00  cmps 0001H, 033D
+02CE: 1F 00 00   pushi 0000H   ; 0
+02D1: 1F E6 FE   pushi FEE6H   ; -282
+02D4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02D8: 1C 4D 07   addsi L074D   ; "The creature see...
+02DB: 33   say
+02DC: 1F E6 FE   pushi FEE6H   ; -282
+02DF: 39 04 00 01  calli _HideNPC@1  ; 0004
+02E3: 1F 00 00   pushi 0000H   ; 0
+02E6: 1F E7 FE   pushi FEE7H   ; -281
+02E9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02ED: 1C 86 07   addsi L0786   ; Shanda makes a ho...
+02F0: 33   say
+02F1: 1F E7 FE   pushi FEE7H   ; -281
+02F4: 39 04 00 01  calli _HideNPC@1  ; 0004
+02F8: 1F 00 00   pushi 0000H   ; 0
+02FB: 1F E8 FE   pushi FEE8H   ; -280
+02FE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0302: 1C AD 07   addsi L07AD   ; "Shanda says he i...
+0305: 33   say
+0306: 1F 00 00   pushi 0000H   ; 0
+0309: 1F E6 FE   pushi FEE6H   ; -282
+030C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0310: 1C CA 07   addsi L07CA   ; "So am I!"*
+0313: 33   say
+0314: 1F E6 FE   pushi FEE6H   ; -282
+0317: 39 04 00 01  calli _HideNPC@1  ; 0004
+031B: 1F 00 00   pushi 0000H   ; 0
+031E: 1F E8 FE   pushi FEE8H   ; -280
+0321: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0325: 1C D6 07   addsi L07D6   ; "Now that thou do...
+0328: 33   say
+0329: 1D 79 08   pushs L0879   ; guarding
+032C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0330: 1D 82 08   pushs L0882   ; protect
+0333: 1D 8A 08   pushs L088A   ; echo
+0336: 1E 02 00   arrc 0002H   ; 2
+0339: 39 05 00 01  calli _AddAnswer@1  ; 0005
+033D: 1D 8F 08   pushs L088F   ; echo
+0340: 07 01 00 43 00  cmps 0001H, 0388
+0345: 1C 94 08   addsi L0894   ; "Hearing this cre...
+0348: 33   say
+0349: 1F 00 00   pushi 0000H   ; 0
+034C: 1F E6 FE   pushi FEE6H   ; -282
+034F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0353: 1C D9 08   addsi L08D9   ; "It amuses me! Ob...
+0356: 33   say
+0357: 1F E6 FE   pushi FEE6H   ; -282
+035A: 39 04 00 01  calli _HideNPC@1  ; 0004
+035E: 1F 00 00   pushi 0000H   ; 0
+0361: 1F E7 FE   pushi FEE7H   ; -281
+0364: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0368: 1C 27 09   addsi L0927   ; Shanda lets out a...
+036B: 33   say
+036C: 1F E7 FE   pushi FEE7H   ; -281
+036F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0373: 1F 00 00   pushi 0000H   ; 0
+0376: 1F E8 FE   pushi FEE8H   ; -280
+0379: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+037D: 1C 45 09   addsi L0945   ; "Shanda says he w...
+0380: 33   say
+0381: 1D 6E 09   pushs L096E   ; echo
+0384: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0388: 1D 73 09   pushs L0973   ; protect
+038B: 07 01 00 46 00  cmps 0001H, 03D6
+0390: 1C 7B 09   addsi L097B   ; "I suppose we mus...
+0393: 33   say
+0394: 1F 00 00   pushi 0000H   ; 0
+0397: 1F E7 FE   pushi FEE7H   ; -281
+039A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+039E: 1C 00 0A   addsi L0A00   ; Shanda growls lou...
+03A1: 33   say
+03A2: 1F E7 FE   pushi FEE7H   ; -281
+03A5: 39 04 00 01  calli _HideNPC@1  ; 0004
+03A9: 1F 00 00   pushi 0000H   ; 0
+03AC: 1F E6 FE   pushi FEE6H   ; -282
+03AF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03B3: 1C 40 0A   addsi L0A40   ; "Creature! Thou a...
+03B6: 33   say
+03B7: 1F E6 FE   pushi FEE6H   ; -282
+03BA: 39 04 00 01  calli _HideNPC@1  ; 0004
+03BE: 1F 00 00   pushi 0000H   ; 0
+03C1: 1F E8 FE   pushi FEE8H   ; -280
+03C4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03C8: 1D AF 0A   pushs L0AAF   ; protect
+03CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03CF: 1D B7 0A   pushs L0AB7   ; steal
+03D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03D6: 1D BD 0A   pushs L0ABD   ; steal
+03D9: 07 01 00 7C 00  cmps 0001H, 045A
+03DE: 1C C3 0A   addsi L0AC3   ; Shandu becomes en...
+03E1: 33   say
+03E2: 1F 00 00   pushi 0000H   ; 0
+03E5: 1F E7 FE   pushi FEE7H   ; -281
+03E8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03EC: 1C 51 0B   addsi L0B51   ; Shanda roars angr...
+03EF: 33   say
+03F0: 1F E7 FE   pushi FEE7H   ; -281
+03F3: 39 04 00 01  calli _HideNPC@1  ; 0004
+03F7: 1F 00 00   pushi 0000H   ; 0
+03FA: 1F E8 FE   pushi FEE8H   ; -280
+03FD: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0401: 1C 68 0B   addsi L0B68   ; "That is a good i...
+0404: 33   say
+0405: 1F 00 00   pushi 0000H   ; 0
+0408: 1F E6 FE   pushi FEE6H   ; -282
+040B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+040F: 1C 33 0C   addsi L0C33   ; "We shall not kno...
+0412: 33   say
+0413: 1F E6 FE   pushi FEE6H   ; -282
+0416: 39 04 00 01  calli _HideNPC@1  ; 0004
+041A: 1F 00 00   pushi 0000H   ; 0
+041D: 1F E7 FE   pushi FEE7H   ; -281
+0420: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0424: 1C 56 0C   addsi L0C56   ; Shanda nods his h...
+0427: 33   say
+0428: 1F E7 FE   pushi FEE7H   ; -281
+042B: 39 04 00 01  calli _HideNPC@1  ; 0004
+042F: 1F 00 00   pushi 0000H   ; 0
+0432: 1F E8 FE   pushi FEE8H   ; -280
+0435: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0439: 1C 89 0C   addsi L0C89   ; "Very well! Let's...
+043C: 33   say
+043D: 1F 02 00   pushi 0002H   ; 2
+0440: 1F 6B FF   pushi FF6BH   ; -149
+0443: 38 1B 00 01  callis 001B, 1
+0447: 39 3D 00 02  calli 003D, 2
+044B: 1F 00 00   pushi 0000H   ; 0
+044E: 1F 6B FF   pushi FF6BH   ; -149
+0451: 38 1B 00 01  callis 001B, 1
+0455: 39 1D 00 02  calli 001D, 2
+0459: 3F   abrt
+045A: 1D A5 0C   pushs L0CA5   ; bye
+045D: 07 01 00 0B 00  cmps 0001H, 046D
+0462: 1C A9 0C   addsi L0CA9   ; "Thou cannot say ...
+0465: 33   say
+0466: 1D D2 0C   pushs L0CD2   ; bye
+0469: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+046D: 06 69 FC   jmp 00D9
+0470: 40   db 40 ???
+0471: 1C D6 0C   addsi L0CD6   ; "Leaving so soon?"*
+0474: 33   say
+0475: 25   ret

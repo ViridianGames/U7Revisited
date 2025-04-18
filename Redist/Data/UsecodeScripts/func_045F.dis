@@ -1,0 +1,389 @@
+  .funcnumber 045FH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'cute'
+L0011: db 00
+L0012: db 'You see a stern but friendly-looking man, dressed in a milit'
+ db 'ary fashion. As you watch him, you get the feeling he is siz'
+ db 'ing you up as well.'
+L009D: db 00
+L009E: db '"How may I be of service to thee?" says Jakher.'
+L00CD: db 00
+L00CE: db 'name'
+L00D2: db 00
+L00D3: db '"I am Jakher, named after a great general from the ancient t'
+ db 'imes of Sosaria. Welcome to Minoc."'
+L0132: db 00
+L0133: db 'name'
+L0137: db 00
+L0138: db 'Minoc'
+L013D: db 00
+L013E: db 'job'
+L0141: db 00
+L0142: db '"Along with Karenna, I am a trainer in the fighting arts. My'
+ db ' specialty is strength and strategy. On the field of battle,'
+ db ' if one does not use his head while using one's muscles, he '
+ db 'is in danger of losing it."'
+L0211: db 00
+L0212: db 'trainer'
+L0219: db 00
+L021A: db 'Karenna'
+L0221: db 00
+L0222: db '"Perhaps that is something of which we should speak in a mor'
+ db 'e appropriate time. Right now our concern should be to disco'
+ db 'ver who could have been responsible for the two murders that'
+ db ' have just been discovered in William's sawmill."'
+L0307: db 00
+L0308: db 'murders'
+L030F: db 00
+L0310: db 'trainer'
+L0317: db 00
+L0318: db '"My price is 20 gold for each training session. Art thou sti'
+ db 'll interested?"'
+L0363: db 00
+L0364: db '"The true value of what I teach is beyond measure. My time i'
+ db 's precious to me and therefore valuable. If thou didst pay m'
+ db 'e a paltry sum and I trained thee anyway, it would be an ins'
+ db 'ult to us both.'
+L0427: db 00
+L0428: db '"'Tis a pity few truly comprehend the value of strategy and '
+ db 'tactics. Thou mayest hack and slash with thy sword all that '
+ db 'thou wilt, but it cannot do thy thinking for thee."'
+L04D3: db 00
+L04D4: db '"I am not in the habit of running training sessions at this '
+ db 'particular time."'
+L0521: db 00
+L0522: db 'trainer'
+L0529: db 00
+L052A: db 'Minoc'
+L052F: db 00
+L0530: db '"Ours is a city of commerce, although lately its primary tra'
+ db 'de seems to be gossip and envy. Before these murders, the la'
+ db 'test local scandal had been the statue to be built of Owen, '
+ db 'the shipwright."'
+L05F4: db 00
+L05F5: db 'Minoc'
+L05FA: db 00
+L05FB: db 'Owen'
+L05FF: db 00
+L0600: db 'murders'
+L0607: db 00
+L0608: db 'murders'
+L060F: db 00
+L0610: db '"I suspect the killer -- or killers -- are from out of town,'
+ db ' and probably long gone by now. There has not been a local m'
+ db 'urder for some time before today. Our fair measure of prospe'
+ db 'rity has made the people here mostly tolerant of each other.'
+ db ' That is why the gypsies settled here. The apparent lack of '
+ db 'motive is puzzling."'
+L0750: db 00
+L0751: db 'murders'
+L0758: db 00
+L0759: db 'gypsies'
+L0760: db 00
+L0761: db 'gone'
+L0765: db 00
+L0766: db 'gone'
+L076A: db 00
+L076B: db '"I doubt that anyone in our community is the killer. If the '
+ db 'stranger, or strangers, involved were to remain for long aft'
+ db 'er the crime, they would soon be revealed. Therefore,the kil'
+ db 'lers are no longer in town."'
+L083B: db 00
+L083C: db 'gone'
+L0840: db 00
+L0841: db 'Karenna'
+L0848: db 00
+L0849: db '"A skillful and fierce battler, but a bit short-sighted when'
+ db ' it comes to tactics, I'm afraid. Still, a woman as attracti'
+ db 've as she is diverting enough when encountered. But do not m'
+ db 'ention to her that I said that. It would just encourage her.'
+ db ' It is uncomfortable enough sharing the same roof with her a'
+ db 's it is."'
+L097E: db 00
+L097F: db '"What art thou whispering about over there?"*'
+L09AC: db 00
+L09AD: db '"Nothing! Nothing at all!" Jakher winks at you.*'
+L09DD: db 00
+L09DE: db 'Karenna'
+L09E5: db 00
+L09E6: db 'roof'
+L09EA: db 00
+L09EB: db 'short-sighted'
+L09F8: db 00
+L09F9: db 'short-sighted'
+L0A06: db 00
+L0A07: db '"She is the sort of person who labors under the belief that '
+ db 'all problems can be solved in one of three ways. Hit them ha'
+ db 'rder. Hit them faster. Or, hit them some more."'
+L0AAE: db 00
+L0AAF: db '"Art thou talking about me? I feel mine ears burning!"*'
+L0AE6: db 00
+L0AE7: db '"Thou art dreaming, Karenna. Why would I talk about thee?" H'
+ db 'e giggles conspiratorially at you.*'
+L0B46: db 00
+L0B47: db 'short-sighted'
+L0B54: db 00
+L0B55: db 'roof'
+L0B59: db 00
+L0B5A: db '"There used to be two training halls in Minoc but one of the'
+ db 'm burned down after being struck by lightning. Now we are bo'
+ db 'th forced to share this one."'
+L0BEF: db 00
+L0BF0: db 'roof'
+L0BF4: db 00
+L0BF5: db 'cute'
+L0BF9: db 00
+L0BFA: db '"Ah, so Karenna said I was cute, did she? Yes, I have known '
+ db 'she has had her sights set on me for years."'
+L0C62: db 00
+L0C63: db 'cute'
+L0C67: db 00
+L0C68: db 'Owen'
+L0C6C: db 00
+L0C6D: db '"I have known Owen as long as anyone in this town. Several y'
+ db 'ears ago, three ships that he built sank. The brother of Kar'
+ db 'l, one of our more colorful local residents, was killed. No '
+ db 'investigation was ever made into the cause of the sinkings, '
+ db 'but Owen once confided to me that he secretly blamed himself'
+ db '. He started drinking heavily, and eventually took up with T'
+ db 'he Fellowship."'
+L0DE4: db 00
+L0DE5: db 'Owen'
+L0DE9: db 00
+L0DEA: db 'gypsies'
+L0DF1: db 00
+L0DF2: db '"Thou wouldst do better to ask Karenna. She is a good friend'
+ db ' of the gypsies and would know more about them than I."'
+L0E65: db 00
+L0E66: db 'gypsies'
+L0E6D: db 00
+L0E6E: db 'bye'
+L0E71: db 00
+L0E72: db '"It has been a pleasure speaking with thee."*'
+L0E9F: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0005H
+  .extern 0909H
+  .extern 090AH
+  .extern 089FH
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 53 02   jne 025B
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F A1 FF   pushi FFA1H   ; -95
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F A1 FF   pushi FFA1H   ; -95
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1D 00 00   pushs L0000   ; bye
+0030: 1D 04 00   pushs L0004   ; job
+0033: 1D 08 00   pushs L0008   ; name
+0036: 1E 03 00   arrc 0003H   ; 3
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 42 F6 00   pushf flag:[00F6]
+0040: 05 07 00   jne 004A
+0043: 1D 0D 00   pushs L000D   ; cute
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 42 1A 01   pushf flag:[011A]
+004D: 10   not
+004E: 05 0B 00   jne 005C
+0051: 1C 12 00   addsi L0012   ; You see a stern b...
+0054: 33   say
+0055: 13   push true
+0056: 43 1A 01   popf flag:[011A]
+0059: 06 04 00   jmp 0060
+005C: 1C 9E 00   addsi L009E   ; "How may I be of ...
+005F: 33   say
+0060: 04 F3 01   je 0256
+0063: 1D CE 00   pushs L00CE   ; name
+0066: 07 01 00 12 00  cmps 0001H, 007D
+006B: 1C D3 00   addsi L00D3   ; "I am Jakher, nam...
+006E: 33   say
+006F: 1D 33 01   pushs L0133   ; name
+0072: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0076: 1D 38 01   pushs L0138   ; Minoc
+0079: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007D: 1D 3E 01   pushs L013E   ; job
+0080: 07 01 00 29 00  cmps 0001H, 00AE
+0085: 42 1F 01   pushf flag:[011F]
+0088: 05 14 00   jne 009F
+008B: 1C 42 01   addsi L0142   ; "Along with Karen...
+008E: 33   say
+008F: 1D 12 02   pushs L0212   ; trainer
+0092: 1D 1A 02   pushs L021A   ; Karenna
+0095: 1E 02 00   arrc 0002H   ; 2
+0098: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009C: 06 0F 00   jmp 00AE
+009F: 1C 22 02   addsi L0222   ; "Perhaps that is ...
+00A2: 33   say
+00A3: 13   push true
+00A4: 43 1F 01   popf flag:[011F]
+00A7: 1D 08 03   pushs L0308   ; murders
+00AA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AE: 1D 10 03   pushs L0310   ; trainer
+00B1: 07 01 00 3C 00  cmps 0001H, 00F2
+00B6: 21 02 00   push [0002]
+00B9: 1F 1B 00   pushi 001BH   ; 27
+00BC: 22   cmpeq
+00BD: 05 27 00   jne 00E7
+00C0: 1C 18 03   addsi L0318   ; "My price is 20 g...
+00C3: 33   say
+00C4: 24 01 00   call [0001]   ; 090AH
+00C7: 05 12 00   jne 00DC
+00CA: 1F 14 00   pushi 0014H   ; 20
+00CD: 1F 00 00   pushi 0000H   ; 0
+00D0: 1F 02 00   pushi 0002H   ; 2
+00D3: 1E 02 00   arrc 0002H   ; 2
+00D6: 24 02 00   call [0002]   ; 089FH
+00D9: 06 08 00   jmp 00E4
+00DC: 1C 64 03   addsi L0364   ; "The true value o...
+00DF: 33   say
+00E0: 1C 28 04   addsi L0428   ; "'Tis a pity few ...
+00E3: 33   say
+00E4: 06 0B 00   jmp 00F2
+00E7: 1C D4 04   addsi L04D4   ; "I am not in the ...
+00EA: 33   say
+00EB: 1D 22 05   pushs L0522   ; trainer
+00EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F2: 1D 2A 05   pushs L052A   ; Minoc
+00F5: 07 01 00 18 00  cmps 0001H, 0112
+00FA: 1C 30 05   addsi L0530   ; "Ours is a city o...
+00FD: 33   say
+00FE: 1D F5 05   pushs L05F5   ; Minoc
+0101: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0105: 1D FB 05   pushs L05FB   ; Owen
+0108: 1D 00 06   pushs L0600   ; murders
+010B: 1E 02 00   arrc 0002H   ; 2
+010E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0112: 1D 08 06   pushs L0608   ; murders
+0115: 07 01 00 18 00  cmps 0001H, 0132
+011A: 1C 10 06   addsi L0610   ; "I suspect the ki...
+011D: 33   say
+011E: 1D 51 07   pushs L0751   ; murders
+0121: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0125: 1D 59 07   pushs L0759   ; gypsies
+0128: 1D 61 07   pushs L0761   ; gone
+012B: 1E 02 00   arrc 0002H   ; 2
+012E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0132: 1D 66 07   pushs L0766   ; gone
+0135: 07 01 00 0B 00  cmps 0001H, 0145
+013A: 1C 6B 07   addsi L076B   ; "I doubt that any...
+013D: 33   say
+013E: 1D 3C 08   pushs L083C   ; gone
+0141: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0145: 1D 41 08   pushs L0841   ; Karenna
+0148: 07 01 00 58 00  cmps 0001H, 01A5
+014D: 1C 49 08   addsi L0849   ; "A skillful and f...
+0150: 33   say
+0151: 1F A2 FF   pushi FFA2H   ; -94
+0154: 24 03 00   call [0003]   ; 08F7H
+0157: 12 03 00   pop [0003]
+015A: 21 03 00   push [0003]
+015D: 05 2D 00   jne 018D
+0160: 1F 00 00   pushi 0000H   ; 0
+0163: 1F A2 FF   pushi FFA2H   ; -94
+0166: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016A: 1C 7F 09   addsi L097F   ; "What art thou wh...
+016D: 33   say
+016E: 1F 00 00   pushi 0000H   ; 0
+0171: 1F A1 FF   pushi FFA1H   ; -95
+0174: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0178: 1C AD 09   addsi L09AD   ; "Nothing! Nothing...
+017B: 33   say
+017C: 1F A2 FF   pushi FFA2H   ; -94
+017F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0183: 1F 00 00   pushi 0000H   ; 0
+0186: 1F A1 FF   pushi FFA1H   ; -95
+0189: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+018D: 1D DE 09   pushs L09DE   ; Karenna
+0190: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0194: 13   push true
+0195: 12 04 00   pop [0004]
+0198: 1D E6 09   pushs L09E6   ; roof
+019B: 1D EB 09   pushs L09EB   ; short-sighted
+019E: 1E 02 00   arrc 0002H   ; 2
+01A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A5: 1D F9 09   pushs L09F9   ; short-sighted
+01A8: 07 01 00 47 00  cmps 0001H, 01F4
+01AD: 1C 07 0A   addsi L0A07   ; "She is the sort ...
+01B0: 33   say
+01B1: 1F A2 FF   pushi FFA2H   ; -94
+01B4: 24 03 00   call [0003]   ; 08F7H
+01B7: 12 03 00   pop [0003]
+01BA: 21 03 00   push [0003]
+01BD: 05 2D 00   jne 01ED
+01C0: 1F 00 00   pushi 0000H   ; 0
+01C3: 1F A2 FF   pushi FFA2H   ; -94
+01C6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01CA: 1C AF 0A   addsi L0AAF   ; "Art thou talking...
+01CD: 33   say
+01CE: 1F 00 00   pushi 0000H   ; 0
+01D1: 1F A1 FF   pushi FFA1H   ; -95
+01D4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D8: 1C E7 0A   addsi L0AE7   ; "Thou art dreamin...
+01DB: 33   say
+01DC: 1F A2 FF   pushi FFA2H   ; -94
+01DF: 39 04 00 01  calli _HideNPC@1  ; 0004
+01E3: 1F 00 00   pushi 0000H   ; 0
+01E6: 1F A1 FF   pushi FFA1H   ; -95
+01E9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01ED: 1D 47 0B   pushs L0B47   ; short-sighted
+01F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F4: 1D 55 0B   pushs L0B55   ; roof
+01F7: 07 01 00 0B 00  cmps 0001H, 0207
+01FC: 1C 5A 0B   addsi L0B5A   ; "There used to be...
+01FF: 33   say
+0200: 1D F0 0B   pushs L0BF0   ; roof
+0203: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0207: 1D F5 0B   pushs L0BF5   ; cute
+020A: 07 01 00 0B 00  cmps 0001H, 021A
+020F: 1C FA 0B   addsi L0BFA   ; "Ah, so Karenna s...
+0212: 33   say
+0213: 1D 63 0C   pushs L0C63   ; cute
+0216: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021A: 1D 68 0C   pushs L0C68   ; Owen
+021D: 07 01 00 0F 00  cmps 0001H, 0231
+0222: 1C 6D 0C   addsi L0C6D   ; "I have known Owe...
+0225: 33   say
+0226: 1D E5 0D   pushs L0DE5   ; Owen
+0229: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022D: 13   push true
+022E: 43 F8 00   popf flag:[00F8]
+0231: 1D EA 0D   pushs L0DEA   ; gypsies
+0234: 07 01 00 0F 00  cmps 0001H, 0248
+0239: 1C F2 0D   addsi L0DF2   ; "Thou wouldst do ...
+023C: 33   say
+023D: 1D 66 0E   pushs L0E66   ; gypsies
+0240: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0244: 13   push true
+0245: 43 F4 00   popf flag:[00F4]
+0248: 1D 6E 0E   pushs L0E6E   ; bye
+024B: 07 01 00 03 00  cmps 0001H, 0253
+0250: 06 03 00   jmp 0256
+0253: 06 0A FE   jmp 0060
+0256: 40   db 40 ???
+0257: 1C 72 0E   addsi L0E72   ; "It has been a pl...
+025A: 33   say
+025B: 48   push eventid
+025C: 1F 00 00   pushi 0000H   ; 0
+025F: 22   cmpeq
+0260: 05 06 00   jne 0269
+0263: 1F A1 FF   pushi FFA1H   ; -95
+0266: 24 04 00   call [0004]   ; 092EH
+0269: 25   ret

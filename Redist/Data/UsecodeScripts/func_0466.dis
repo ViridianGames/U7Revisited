@@ -1,0 +1,501 @@
+  .funcnumber 0466H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Time Lord'
+L0016: db 00
+L0017: db 'hourglass'
+L0020: db 00
+L0021: db 'enchant'
+L0028: db 00
+L0029: db 'Your old friend Nicodemus has a far away look in his eyes.'
+L0063: db 00
+L0064: db '"Who art thou?" Nicodemus asks. "Oh, I remember. Remember de'
+ db 'member! Ha ha ha!"'
+L00B2: db 00
+L00B3: db '"Hello again, '
+L00C1: db 00
+L00C2: db '," says Nicodemus.'
+L00D4: db 00
+L00D5: db 'name'
+L00D9: db 00
+L00DA: db '"That is a very good question. Some days I can actually reme'
+ db 'mber. Let's see... today... Yes! I am Nicodemus! Nicodomus! '
+ db 'Nicodimus! Nico-nico-kukodamus! Ha ha ha!"'
+L017C: db 00
+L017D: db '"Thou art addressing Nicodemus."'
+L019D: db 00
+L019E: db 'name'
+L01A2: db 00
+L01A3: db 'job'
+L01A6: db 00
+L01A7: db '"To go absolutely mad! For that is indeed what is happening!'
+ db ' My magic no longer works! Every time I attempt to change so'
+ db 'mething into a drake, it only becomes a newt! Oh, newty-wewt'
+ db 'y scooty-booty!" He speaks to an imaginary creature beside h'
+ db 'im. "Who asked thee? Away with thee!" He turns to you. "Sorr'
+ db 'y. That bloody newt keeps trying to undermine my conversatio'
+ db 'n. Anyway... I suppose I can sell thee some reagents, potion'
+ db 's, or spells. I must make a living somecow. I mean somehow! '
+ db 'That was Some Cow! Ha ha ha!"'
+L03A4: db 00
+L03A5: db 'potions'
+L03AC: db 00
+L03AD: db 'magic'
+L03B2: db 00
+L03B3: db '"Why, to perform magic! It seems that the disturbance in the'
+ db ' ether has been repaired! I can also sell thee some reagents'
+ db ' or spells."'
+L0437: db 00
+L0438: db 'reagents'
+L0440: db 00
+L0441: db 'spells'
+L0447: db 00
+L0448: db 'magic'
+L044D: db 00
+L044E: db '"Magic? What magic!? All the magic in the world has gone com'
+ db 'pletely topsy-turvy! Oh, blurpsy-flurpsy! Ha ha ha! Those ar'
+ db 'e silly words, are they not? 'Tis a pity they are not magica'
+ db 'l! Ha ha ha!"'
+L050F: db 00
+L0510: db '"The ether is repaired. The mages of the world are indebted '
+ db 'to thee."'
+L0555: db 00
+L0556: db 'magic'
+L055B: db 00
+L055C: db 'spells'
+L0562: db 00
+L0563: db '"Dost thou wish to buy some spells?"'
+L0587: db 00
+L0588: db '"Never mind, then!"'
+L059B: db 00
+L059C: db 'reagents'
+L05A4: db 00
+L05A5: db '"Dost thou wish to buy some reagents?"'
+L05CB: db 00
+L05CC: db '"Never mind, then!"'
+L05DF: db 00
+L05E0: db 'potions'
+L05E7: db 00
+L05E8: db '"Potions? What makes thee think I have potions? Art thou sur'
+ db 'e thou dost not want Lotions? I certainly have lotions! Otio'
+ db 'ns, slotions, motions, votions! Ha ha ha! Wait! Oh, yes! I d'
+ db 'o have potions! I told thee so, didn't I! Let us see... I ha'
+ db 've this black potion here. I am not sure what it does exactl'
+ db 'y, but I am quite sure it turns one invisible.'
+L0742: db 00
+L0743: db '"Yes, I have potions. Well, I have this black one. It is an '
+ db 'invisibility potion.'
+L0793: db 00
+L0794: db '"Dost thou want it for, say, 75 gold?"'
+L07BA: db 00
+L07BB: db '"Here is the potion."'
+L07D0: db 00
+L07D1: db '"Thou dost not have enough room to carry the potion!"'
+L0806: db 00
+L0807: db '"Art thou trying to cheat me? Thou dost not have enough gold'
+ db '!"'
+L0845: db 00
+L0846: db '"Then why didst thou mention it? Leave me alone!"'
+L0877: db 00
+L0878: db 'potions'
+L087F: db 00
+L0880: db 'Time Lord'
+L0889: db 00
+L088A: db '"Timey Limey Lord? Hmmm. I don't know him. Wait! Yes I do. D'
+ db 'oes he have a big black mustache and three pairs of pants? N'
+ db 'o! I know who he is. He's the fellow who came to fix my sund'
+ db 'ial the other day, right?"'
+L0958: db 00
+L0959: db '"I thought so! Tell him that bloody thing still doesn't work'
+ db '! It gives me three shadows! Dadows badows whoopeee! Ha ha h'
+ db 'a!"'
+L09D4: db 00
+L09D5: db '"He's not? Hmmm. Then he must be the man I am not thinking o'
+ db 'f!"'
+L0A14: db 00
+L0A15: db '"Wait! I remember! He is my Knight's Bridge opponent! We pla'
+ db 'y on my Knight's Bridge court just north of mine house."'
+L0A89: db 00
+L0A8A: db '"I have not spoken to the Time Lord in months! How is the ol'
+ db 'd codger? Give him my regards. Tell him I miss our Knight's '
+ db 'Bridge games!"'
+L0B10: db 00
+L0B11: db 'Time Lord'
+L0B1A: db 00
+L0B1B: db 'Knight's Bridge'
+L0B2A: db 00
+L0B2B: db 'Knight's Bridge'
+L0B3A: db 00
+L0B3B: db '"'Tis a life-size board game. I have a book around here some'
+ db 'where which contains the rules."'
+L0B97: db 00
+L0B98: db 'Knight's Bridge'
+L0BA7: db 00
+L0BA8: db 'hourglass'
+L0BB1: db 00
+L0BB2: db '"Yes, I just enchanted it."'
+L0BCD: db 00
+L0BCE: db '"This Time Lord told thee what? An hourglass! I have no blin'
+ db 'king hourglass! Glassy wassy hoursplassy! Ha ha ha! Wait! An'
+ db ' enchanted hourglass? That does ring a bell. Clang Clang Cla'
+ db 'ng! Ha ha ha! Wait! I remember. I had an hourglass. I sold i'
+ db 't. To a gypsy. Or was it an antique dealer? I think I might '
+ db 'have sold it to a gypsy antique dealer in Britain. Or Paws. '
+ db 'Somewhere on that side of the land. But if my memory serves '
+ db 'me correctly, that hourglass used up its enchantment, which '
+ db 'is why I sold it. I suppose if the ether is repaired, I coul'
+ db 'd possibly re-enchant it. Bring it to me and we'll see what '
+ db 'we can do. I know! We can play a rousing game of chess! But '
+ db 'only if I can deal at all times. I do not trust thee."'
+L0E98: db 00
+L0E99: db '"Mine old hourglass! Of course I remember it! I believe I so'
+ db 'ld it to an antique dealer in Paws. I might be able to re-en'
+ db 'chant it if thou wouldst bring it to me."'
+L0F3A: db 00
+L0F3B: db '"What's this? An hourglass of some kind? Wait! It looks vagu'
+ db 'ely familiar! Thief!! This is mine hourglass! I have been lo'
+ db 'oking for it for years! Where didst thou get it, scoundrel? '
+ db 'I shall turn thee into a duck!"~~Nicodemus intones some spel'
+ db 'l and points at you, but nothing happens.~~"Zounds! Thou art'
+ db ' no more a quacker than I am. Nothing works anymore. Quacker'
+ db ' slacker wacker flacker! Ha ha ha!"'
+L10C6: db 00
+L10C7: db '"Mine old hourglass! I suppose I could revitalize the enchan'
+ db 'tment upon it."'
+L1112: db 00
+L1113: db 'hourglass'
+L111C: db 00
+L111D: db 'enchant'
+L1124: db 00
+L1125: db '"Enchant? Thou dost want me to enchant this wretched thing? '
+ db 'Thou must have the brain of a toad! Toady woady bloady coady'
+ db '! Ha ha ha!~~"Do me a favor, Mister Avatar. Repair the blink'
+ db 'ing ether, wilt thou? Do that and I can enchant thy glourbla'
+ db 'ss. I mean floursass. I mean hourglass. Tell that to thy 'Ti'
+ db 'me Lord'. Thou canst also tell him he needs a bath."'
+L1285: db 00
+L1286: db '"I would be most happy to enchant the hourglass. After freei'
+ db 'ng the ether, I am most indebted to thee. Let me see it..."'
+L12FD: db 00
+L12FE: db 'Nicodemus takes the hourglass and studies it a moment. He se'
+ db 'ts it on a table and closes his eyes, concentrating. He into'
+ db 'nes a few words, throws some reagents into the air, and pass'
+ db 'es his hand over the artifact.~~"That should do it." He hand'
+ db 's the hourglass back to you.'
+L140A: db 00
+L140B: db '"Where is it? Thou dost not have the hourglass!"'
+L143B: db 00
+L143C: db 'enchant'
+L1443: db 00
+L1444: db 'bye'
+L1447: db 00
+L1448: db '"Bye bye booby booby bye bye! Ha ha ha!"*'
+L1471: db 00
+L1472: db '"Goodbye, '
+L147C: db 00
+L147D: db '."*'
+L1480: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0005H
+  .extern 0908H
+  .extern 090AH
+  .extern 08C3H
+  .extern 08C4H
+  .extern 0911H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 9A FF   pushi FF9AH   ; -102
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0908H
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+002D: 12 01 00   pop [0001]
+0030: 1F 00 00   pushi 0000H   ; 0
+0033: 1F 99 FE   pushi FE99H   ; -359
+0036: 1F 47 03   pushi 0347H   ; 839
+0039: 1F 9B FE   pushi FE9BH   ; -357
+003C: 38 28 00 04  callis 0028, 4
+0040: 12 02 00   pop [0002]
+0043: 42 D2 01   pushf flag:[01D2]
+0046: 05 0D 00   jne 0056
+0049: 1D 0D 00   pushs L000D   ; Time Lord
+004C: 1D 17 00   pushs L0017   ; hourglass
+004F: 1E 02 00   arrc 0002H   ; 2
+0052: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0056: 21 02 00   push [0002]
+0059: 42 11 02   pushf flag:[0211]
+005C: 0F   or
+005D: 05 07 00   jne 0067
+0060: 1D 21 00   pushs L0021   ; enchant
+0063: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0067: 42 40 01   pushf flag:[0140]
+006A: 10   not
+006B: 05 0B 00   jne 0079
+006E: 1C 29 00   addsi L0029   ; Your old friend N...
+0071: 33   say
+0072: 13   push true
+0073: 43 40 01   popf flag:[0140]
+0076: 06 18 00   jmp 0091
+0079: 42 03 00   pushf flag:[0003]
+007C: 10   not
+007D: 05 07 00   jne 0087
+0080: 1C 64 00   addsi L0064   ; "Who art thou?" N...
+0083: 33   say
+0084: 06 0A 00   jmp 0091
+0087: 1C B3 00   addsi L00B3   ; "Hello again, 
+008A: 2F 00 00   addsv [0000]
+008D: 1C C2 00   addsi L00C2   ; ," says Nicodemus.
+0090: 33   say
+0091: 04 65 02   je 02F9
+0094: 1D D5 00   pushs L00D5   ; name
+0097: 07 01 00 19 00  cmps 0001H, 00B5
+009C: 42 03 00   pushf flag:[0003]
+009F: 10   not
+00A0: 05 07 00   jne 00AA
+00A3: 1C DA 00   addsi L00DA   ; "That is a very g...
+00A6: 33   say
+00A7: 06 04 00   jmp 00AE
+00AA: 1C 7D 01   addsi L017D   ; "Thou art address...
+00AD: 33   say
+00AE: 1D 9E 01   pushs L019E   ; name
+00B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B5: 1D A3 01   pushs L01A3   ; job
+00B8: 07 01 00 2C 00  cmps 0001H, 00E9
+00BD: 42 03 00   pushf flag:[0003]
+00C0: 10   not
+00C1: 05 14 00   jne 00D8
+00C4: 1C A7 01   addsi L01A7   ; "To go absolutely...
+00C7: 33   say
+00C8: 1D A5 03   pushs L03A5   ; potions
+00CB: 1D AD 03   pushs L03AD   ; magic
+00CE: 1E 02 00   arrc 0002H   ; 2
+00D1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D5: 06 04 00   jmp 00DC
+00D8: 1C B3 03   addsi L03B3   ; "Why, to perform ...
+00DB: 33   say
+00DC: 1D 38 04   pushs L0438   ; reagents
+00DF: 1D 41 04   pushs L0441   ; spells
+00E2: 1E 02 00   arrc 0002H   ; 2
+00E5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E9: 1D 48 04   pushs L0448   ; magic
+00EC: 07 01 00 19 00  cmps 0001H, 010A
+00F1: 42 03 00   pushf flag:[0003]
+00F4: 10   not
+00F5: 05 07 00   jne 00FF
+00F8: 1C 4E 04   addsi L044E   ; "Magic? What magi...
+00FB: 33   say
+00FC: 06 04 00   jmp 0103
+00FF: 1C 10 05   addsi L0510   ; "The ether is rep...
+0102: 33   say
+0103: 1D 56 05   pushs L0556   ; magic
+0106: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010A: 1D 5C 05   pushs L055C   ; spells
+010D: 07 01 00 1A 00  cmps 0001H, 012C
+0112: 1C 63 05   addsi L0563   ; "Dost thou wish t...
+0115: 33   say
+0116: 24 01 00   call [0001]   ; 090AH
+0119: 12 03 00   pop [0003]
+011C: 21 03 00   push [0003]
+011F: 05 06 00   jne 0128
+0122: 24 02 00   call [0002]   ; 08C3H
+0125: 06 04 00   jmp 012C
+0128: 1C 88 05   addsi L0588   ; "Never mind, then!"
+012B: 33   say
+012C: 1D 9C 05   pushs L059C   ; reagents
+012F: 07 01 00 1A 00  cmps 0001H, 014E
+0134: 1C A5 05   addsi L05A5   ; "Dost thou wish t...
+0137: 33   say
+0138: 24 01 00   call [0001]   ; 090AH
+013B: 12 04 00   pop [0004]
+013E: 21 04 00   push [0004]
+0141: 05 06 00   jne 014A
+0144: 24 03 00   call [0003]   ; 08C4H
+0147: 06 04 00   jmp 014E
+014A: 1C CC 05   addsi L05CC   ; "Never mind, then!"
+014D: 33   say
+014E: 1D E0 05   pushs L05E0   ; potions
+0151: 07 01 00 8D 00  cmps 0001H, 01E3
+0156: 42 03 00   pushf flag:[0003]
+0159: 10   not
+015A: 05 07 00   jne 0164
+015D: 1C E8 05   addsi L05E8   ; "Potions? What ma...
+0160: 33   say
+0161: 06 04 00   jmp 0168
+0164: 1C 43 07   addsi L0743   ; "Yes, I have poti...
+0167: 33   say
+0168: 1C 94 07   addsi L0794   ; "Dost thou want i...
+016B: 33   say
+016C: 24 01 00   call [0001]   ; 090AH
+016F: 12 05 00   pop [0005]
+0172: 21 05 00   push [0005]
+0175: 05 60 00   jne 01D8
+0178: 1F 99 FE   pushi FE99H   ; -359
+017B: 1F 99 FE   pushi FE99H   ; -359
+017E: 1F 84 02   pushi 0284H   ; 644
+0181: 1F 9B FE   pushi FE9BH   ; -357
+0184: 38 28 00 04  callis 0028, 4
+0188: 12 06 00   pop [0006]
+018B: 21 06 00   push [0006]
+018E: 1F 4B 00   pushi 004BH   ; 75
+0191: 18   cmpge
+0192: 05 3C 00   jne 01D1
+0195: 13   push true
+0196: 1F 07 00   pushi 0007H   ; 7
+0199: 1F 99 FE   pushi FE99H   ; -359
+019C: 1F 54 01   pushi 0154H   ; 340
+019F: 1F 01 00   pushi 0001H   ; 1
+01A2: 38 2C 00 05  callis 002C, 5
+01A6: 12 07 00   pop [0007]
+01A9: 21 07 00   push [0007]
+01AC: 05 1B 00   jne 01CA
+01AF: 1C BB 07   addsi L07BB   ; "Here is the poti...
+01B2: 33   say
+01B3: 13   push true
+01B4: 1F 99 FE   pushi FE99H   ; -359
+01B7: 1F 99 FE   pushi FE99H   ; -359
+01BA: 1F 84 02   pushi 0284H   ; 644
+01BD: 1F 4B 00   pushi 004BH   ; 75
+01C0: 38 2B 00 05  callis 002B, 5
+01C4: 12 08 00   pop [0008]
+01C7: 06 04 00   jmp 01CE
+01CA: 1C D1 07   addsi L07D1   ; "Thou dost not ha...
+01CD: 33   say
+01CE: 06 04 00   jmp 01D5
+01D1: 1C 07 08   addsi L0807   ; "Art thou trying ...
+01D4: 33   say
+01D5: 06 04 00   jmp 01DC
+01D8: 1C 46 08   addsi L0846   ; "Then why didst t...
+01DB: 33   say
+01DC: 1D 78 08   pushs L0878   ; potions
+01DF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E3: 1D 80 08   pushs L0880   ; Time Lord
+01E6: 07 01 00 3B 00  cmps 0001H, 0226
+01EB: 42 03 00   pushf flag:[0003]
+01EE: 10   not
+01EF: 05 22 00   jne 0214
+01F2: 1C 8A 08   addsi L088A   ; "Timey Limey Lord...
+01F5: 33   say
+01F6: 24 01 00   call [0001]   ; 090AH
+01F9: 12 09 00   pop [0009]
+01FC: 21 09 00   push [0009]
+01FF: 05 07 00   jne 0209
+0202: 1C 59 09   addsi L0959   ; "I thought so! Te...
+0205: 33   say
+0206: 06 04 00   jmp 020D
+0209: 1C D5 09   addsi L09D5   ; "He's not? Hmmm. ...
+020C: 33   say
+020D: 1C 15 0A   addsi L0A15   ; "Wait! I remember...
+0210: 33   say
+0211: 06 04 00   jmp 0218
+0214: 1C 8A 0A   addsi L0A8A   ; "I have not spoke...
+0217: 33   say
+0218: 1D 11 0B   pushs L0B11   ; Time Lord
+021B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021F: 1D 1B 0B   pushs L0B1B   ; Knight's Bridge
+0222: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0226: 1D 2B 0B   pushs L0B2B   ; Knight's Bridge
+0229: 07 01 00 0B 00  cmps 0001H, 0239
+022E: 1C 3B 0B   addsi L0B3B   ; "'Tis a life-size...
+0231: 33   say
+0232: 1D 98 0B   pushs L0B98   ; Knight's Bridge
+0235: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0239: 1D A8 0B   pushs L0BA8   ; hourglass
+023C: 07 01 00 46 00  cmps 0001H, 0287
+0241: 42 2D 01   pushf flag:[012D]
+0244: 05 07 00   jne 024E
+0247: 1C B2 0B   addsi L0BB2   ; "Yes, I just ench...
+024A: 33   say
+024B: 06 32 00   jmp 0280
+024E: 42 11 02   pushf flag:[0211]
+0251: 21 02 00   push [0002]
+0254: 0F   or
+0255: 10   not
+0256: 05 15 00   jne 026E
+0259: 42 03 00   pushf flag:[0003]
+025C: 10   not
+025D: 05 07 00   jne 0267
+0260: 1C CE 0B   addsi L0BCE   ; "This Time Lord t...
+0263: 33   say
+0264: 06 04 00   jmp 026B
+0267: 1C 99 0E   addsi L0E99   ; "Mine old hourgla...
+026A: 33   say
+026B: 06 12 00   jmp 0280
+026E: 42 03 00   pushf flag:[0003]
+0271: 10   not
+0272: 05 07 00   jne 027C
+0275: 1C 3B 0F   addsi L0F3B   ; "What's this? An ...
+0278: 33   say
+0279: 06 04 00   jmp 0280
+027C: 1C C7 10   addsi L10C7   ; "Mine old hourgla...
+027F: 33   say
+0280: 1D 13 11   pushs L1113   ; hourglass
+0283: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0287: 1D 1D 11   pushs L111D   ; enchant
+028A: 07 01 00 5C 00  cmps 0001H, 02EB
+028F: 42 03 00   pushf flag:[0003]
+0292: 10   not
+0293: 05 07 00   jne 029D
+0296: 1C 25 11   addsi L1125   ; "Enchant? Thou do...
+0299: 33   say
+029A: 06 47 00   jmp 02E4
+029D: 1C 86 12   addsi L1286   ; "I would be most ...
+02A0: 33   say
+02A1: 21 02 00   push [0002]
+02A4: 05 39 00   jne 02E0
+02A7: 1C FE 12   addsi L12FE   ; Nicodemus takes t...
+02AA: 33   say
+02AB: 14   push false
+02AC: 1F 00 00   pushi 0000H   ; 0
+02AF: 1F 99 FE   pushi FE99H   ; -359
+02B2: 1F 47 03   pushi 0347H   ; 839
+02B5: 1F 01 00   pushi 0001H   ; 1
+02B8: 38 2B 00 05  callis 002B, 5
+02BC: 12 0A 00   pop [000A]
+02BF: 14   push false
+02C0: 1F 01 00   pushi 0001H   ; 1
+02C3: 1F 99 FE   pushi FE99H   ; -359
+02C6: 1F 47 03   pushi 0347H   ; 839
+02C9: 1F 01 00   pushi 0001H   ; 1
+02CC: 38 2C 00 05  callis 002C, 5
+02D0: 12 0B 00   pop [000B]
+02D3: 13   push true
+02D4: 43 2D 01   popf flag:[012D]
+02D7: 1F 64 00   pushi 0064H   ; 100
+02DA: 24 04 00   call [0004]   ; 0911H
+02DD: 06 04 00   jmp 02E4
+02E0: 1C 0B 14   addsi L140B   ; "Where is it? Tho...
+02E3: 33   say
+02E4: 1D 3C 14   pushs L143C   ; enchant
+02E7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02EB: 1D 44 14   pushs L1444   ; bye
+02EE: 07 01 00 03 00  cmps 0001H, 02F6
+02F3: 06 03 00   jmp 02F9
+02F6: 06 98 FD   jmp 0091
+02F9: 40   db 40 ???
+02FA: 42 03 00   pushf flag:[0003]
+02FD: 10   not
+02FE: 05 07 00   jne 0308
+0301: 1C 48 14   addsi L1448   ; "Bye bye booby bo...
+0304: 33   say
+0305: 06 0A 00   jmp 0312
+0308: 1C 72 14   addsi L1472   ; "Goodbye, 
+030B: 2F 00 00   addsv [0000]
+030E: 1C 7D 14   addsi L147D   ; ."*
+0311: 33   say
+0312: 25   ret

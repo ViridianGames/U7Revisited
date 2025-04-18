@@ -1,0 +1,213 @@
+  .funcnumber 0480H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Gorn'
+L0011: db 00
+L0012: db 'You see a striking woman in fighter's gear. She looks at you'
+ db ' fiercely.'
+L0058: db 00
+L0059: db '"Halt!"'
+L0060: db 00
+L0061: db '"What dost thou want?" Iriale demands.'
+L0087: db 00
+L0088: db 'name'
+L008C: db 00
+L008D: db '"I am called Iriale Silvermist. Who art thou?"'
+L00BB: db 00
+L00BC: db 'The Avatar'
+L00C6: db 00
+L00C7: db '"I do not know thee!"'
+L00DC: db 00
+L00DD: db 'The Avatar'
+L00E7: db 00
+L00E8: db '"I do not approve of jokes."'
+L0104: db 00
+L0105: db 'name'
+L0109: db 00
+L010A: db 'job'
+L010D: db 00
+L010E: db 'Iriale smiles devilishly.~~"I bar people from entering. Thou'
+ db ' hast disobeyed the rule of the Meditation Retreat. Ian will'
+ db ' be most displeased. Thou had best leave now."'
+L01B4: db 00
+L01B5: db 'Meditation Retreat'
+L01C7: db 00
+L01C8: db 'rule'
+L01CC: db 00
+L01CD: db 'rule'
+L01D1: db 00
+L01D2: db '"Thou dost know it. Attendees of the Retreat must stay out o'
+ db 'f this cave."'
+L021B: db 00
+L021C: db 'rule'
+L0220: db 00
+L0221: db '"Come, '
+L0228: db 00
+L0229: db ', we had better leave. I believe this woman is serious."'
+L0261: db 00
+L0262: db 'Gorn'
+L0266: db 00
+L0267: db '"Is that the name of that smelly barbarian who was here? If '
+ db 'thou dost see him on the -way out-, tell him that if he appr'
+ db 'oaches me again, I shall cut off his head!"'
+L030A: db 00
+L030B: db 'Gorn'
+L030F: db 00
+L0310: db 'Meditation Retreat'
+L0322: db 00
+L0323: db '"Yes, I work for the Meditation Retreat.~~"And I work for -h'
+ db 'im-. -He- does not want thee here. I give thee only one chan'
+ db 'ce to turn around and leave.'
+L03B7: db 00
+L03B8: db '"Wilt thou leave?"'
+L03CA: db 00
+L03CB: db '"Do so and I shall spare thee!" She watches as you turn away'
+ db '.*'
+L0409: db 00
+L040A: db 'She sees your jaw set with determination and nods her head. '
+ db '"Then die, foolish one!"*'
+L045F: db 00
+L0460: db 'bye'
+L0463: db 00
+L0464: db '"Away with thee!"*'
+L0476: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0004H
+  .extern 0908H
+  .extern 090BH
+  .extern 08F7H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 80 FF   pushi FF80H   ; -128
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0908H
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 42 BB 02   pushf flag:[02BB]
+002C: 05 07 00   jne 0036
+002F: 1D 0D 00   pushs L000D   ; Gorn
+0032: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0036: 42 CC 02   pushf flag:[02CC]
+0039: 10   not
+003A: 05 0F 00   jne 004C
+003D: 1C 12 00   addsi L0012   ; You see a strikin...
+0040: 33   say
+0041: 1C 59 00   addsi L0059   ; "Halt!"
+0044: 33   say
+0045: 13   push true
+0046: 43 CC 02   popf flag:[02CC]
+0049: 06 04 00   jmp 0050
+004C: 1C 61 00   addsi L0061   ; "What dost thou w...
+004F: 33   say
+0050: 04 FE 00   je 0151
+0053: 1D 88 00   pushs L0088   ; name
+0056: 07 01 00 36 00  cmps 0001H, 0091
+005B: 1C 8D 00   addsi L008D   ; "I am called Iria...
+005E: 33   say
+005F: 1D BC 00   pushs L00BC   ; The Avatar
+0062: 21 00 00   push [0000]
+0065: 1E 02 00   arrc 0002H   ; 2
+0068: 24 01 00   call [0001]   ; 090BH
+006B: 12 01 00   pop [0001]
+006E: 21 01 00   push [0001]
+0071: 21 00 00   push [0000]
+0074: 22   cmpeq
+0075: 05 04 00   jne 007C
+0078: 1C C7 00   addsi L00C7   ; "I do not know th...
+007B: 33   say
+007C: 21 01 00   push [0001]
+007F: 1D DD 00   pushs L00DD   ; The Avatar
+0082: 22   cmpeq
+0083: 05 04 00   jne 008A
+0086: 1C E8 00   addsi L00E8   ; "I do not approve...
+0089: 33   say
+008A: 1D 05 01   pushs L0105   ; name
+008D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0091: 1D 0A 01   pushs L010A   ; job
+0094: 07 01 00 11 00  cmps 0001H, 00AA
+0099: 1C 0E 01   addsi L010E   ; Iriale smiles dev...
+009C: 33   say
+009D: 1D B5 01   pushs L01B5   ; Meditation Retreat
+00A0: 1D C8 01   pushs L01C8   ; rule
+00A3: 1E 02 00   arrc 0002H   ; 2
+00A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AA: 1D CD 01   pushs L01CD   ; rule
+00AD: 07 01 00 3F 00  cmps 0001H, 00F1
+00B2: 1C D2 01   addsi L01D2   ; "Thou dost know i...
+00B5: 33   say
+00B6: 1D 1C 02   pushs L021C   ; rule
+00B9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BD: 1F FF FF   pushi FFFFH   ; -1
+00C0: 24 02 00   call [0002]   ; 08F7H
+00C3: 12 02 00   pop [0002]
+00C6: 21 02 00   push [0002]
+00C9: 05 25 00   jne 00F1
+00CC: 1F 00 00   pushi 0000H   ; 0
+00CF: 1F FF FF   pushi FFFFH   ; -1
+00D2: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D6: 1C 21 02   addsi L0221   ; "Come, 
+00D9: 2F 00 00   addsv [0000]
+00DC: 1C 29 02   addsi L0229   ; , we had better l...
+00DF: 33   say
+00E0: 1F FF FF   pushi FFFFH   ; -1
+00E3: 39 04 00 01  calli _HideNPC@1  ; 0004
+00E7: 1F 00 00   pushi 0000H   ; 0
+00EA: 1F 80 FF   pushi FF80H   ; -128
+00ED: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F1: 1D 62 02   pushs L0262   ; Gorn
+00F4: 07 01 00 0B 00  cmps 0001H, 0104
+00F9: 1C 67 02   addsi L0267   ; "Is that the name...
+00FC: 33   say
+00FD: 1D 0B 03   pushs L030B   ; Gorn
+0100: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0104: 1D 10 03   pushs L0310   ; Meditation Retreat
+0107: 07 01 00 37 00  cmps 0001H, 0143
+010C: 1C 23 03   addsi L0323   ; "Yes, I work for ...
+010F: 33   say
+0110: 1C B8 03   addsi L03B8   ; "Wilt thou leave?"
+0113: 33   say
+0114: 24 03 00   call [0003]   ; 090AH
+0117: 05 16 00   jne 0130
+011A: 1C CB 03   addsi L03CB   ; "Do so and I shal...
+011D: 33   say
+011E: 1F 07 00   pushi 0007H   ; 7
+0121: 1F 80 FF   pushi FF80H   ; -128
+0124: 38 1B 00 01  callis 001B, 1
+0128: 39 1D 00 02  calli 001D, 2
+012C: 3F   abrt
+012D: 06 13 00   jmp 0143
+0130: 1C 0A 04   addsi L040A   ; She sees your jaw...
+0133: 33   say
+0134: 1F 00 00   pushi 0000H   ; 0
+0137: 1F 80 FF   pushi FF80H   ; -128
+013A: 38 1B 00 01  callis 001B, 1
+013E: 39 1D 00 02  calli 001D, 2
+0142: 3F   abrt
+0143: 1D 60 04   pushs L0460   ; bye
+0146: 07 01 00 03 00  cmps 0001H, 014E
+014B: 06 03 00   jmp 0151
+014E: 06 FF FE   jmp 0050
+0151: 40   db 40 ???
+0152: 1C 64 04   addsi L0464   ; "Away with thee!"*
+0155: 33   say
+0156: 1F 07 00   pushi 0007H   ; 7
+0159: 1F 80 FF   pushi FF80H   ; -128
+015C: 38 1B 00 01  callis 001B, 1
+0160: 39 1D 00 02  calli 001D, 2
+0164: 25   ret

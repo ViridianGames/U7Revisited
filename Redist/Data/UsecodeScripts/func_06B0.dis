@@ -1,0 +1,40 @@
+  .funcnumber 06B0H
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 42 00   jne 004A
+0008: 1F 1C 00   pushi 001CH   ; 28
+000B: 39 0F 00 01  calli 000F, 1
+000F: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0013: 12 00 00   pop [0000]
+0016: 2E   sloop
+0017: 02 01 00 02 00 03 00 00 00 28 00  db 2 ???
+0018:   db 1
+0019:   db 0
+001A:   db 2
+001B:   db 0
+001C:   db 3
+001D:   db 0
+001E:   db 0
+001F:   db 0
+0020:   db 28
+0021:   db 0
+0022: 3E   push itemref
+0023: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0027: 1F 00 00   pushi 0000H   ; 0 Strength.
+002A: 21 03 00   push [0003]
+002D: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0031: 38 4A 00 02  callis 004A, 2
+0035: 10   not
+0036: 05 0E 00   jne 0047
+0039: 1F 08 00   pushi 0008H   ; 8
+003C: 21 03 00   push [0003]
+003F: 38 1B 00 01  callis 001B, 1
+0043: 39 89 00 02  calli 0089, 2  ;* Set poisoned.
+0047: 06 CD FF   jmp 0017
+004A: 25   ret

@@ -1,0 +1,287 @@
+  .funcnumber 04A9H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a simple peasant woman. Her face is etched with sorr'
+ db 'ow.'
+L004C: db 00
+L004D: db '"Good day, '
+L0058: db 00
+L0059: db '," says Alina.'
+L0067: db 00
+L0068: db 'name'
+L006C: db 00
+L006D: db '"I am Alina."'
+L007A: db 00
+L007B: db 'name'
+L007F: db 00
+L0080: db 'job'
+L0083: db 00
+L0084: db '"I have none, '
+L0092: db 00
+L0093: db ', save for being the mother of my child. I am waiting for mi'
+ db 'ne husband, Weston, to return from Britain."'
+L00FB: db 00
+L00FC: db 'Weston'
+L0102: db 00
+L0103: db 'child'
+L0108: db 00
+L0109: db 'child'
+L010E: db 00
+L010F: db '"Cassie is my daughter. Just a wee babe, she is mine only jo'
+ db 'y."'
+L014E: db 00
+L014F: db 'child'
+L0154: db 00
+L0155: db 'Weston'
+L015B: db 00
+L015C: db '"Good news, '
+L0168: db 00
+L0169: db '! Mine husband was pardoned by Lord British. He even provide'
+ db 'd Weston with short-term employment so that he may return to'
+ db ' me with money enough in his pockets to feed us for some tim'
+ db 'e!~~"Excellent news, no?"'
+L0236: db 00
+L0237: db '"Mine husband is imprisoned in Britain for stealing fruit fr'
+ db 'om the Royal Orchards."'
+L028A: db 00
+L028B: db 'stealing'
+L0293: db 00
+L0294: db 'Weston'
+L029A: db 00
+L029B: db 'stealing'
+L02A3: db 00
+L02A4: db '"Mine husband is no thief, '
+L02BF: db 00
+L02C0: db '. He went there to buy fruit for the child and me so that we'
+ db ' would have enough to eat. He has been wrongfully accused, I'
+ db ' am certain of it!"'
+L034B: db 00
+L034C: db 'eat'
+L034F: db 00
+L0350: db 'stealing'
+L0358: db 00
+L0359: db 'eat'
+L035C: db 00
+L035D: db '"We are very poor. My baby and I are presently living in the'
+ db ' Fellowship shelter because we have nowhere else to go."'
+L03D1: db 00
+L03D2: db 'shelter'
+L03D9: db 00
+L03DA: db 'Fellowship'
+L03E4: db 00
+L03E5: db 'eat'
+L03E8: db 00
+L03E9: db 'Fellowship'
+L03F3: db 00
+L03F4: db '"It was a member of The Fellowship that has accused mine hus'
+ db 'band. Now they wish for me to join them."'
+L0459: db 00
+L045A: db 'accused'
+L0461: db 00
+L0462: db 'join them'
+L046B: db 00
+L046C: db '"Mine husband is innocent, I know it!. He intended to buy th'
+ db 'e fruit. Why must I join thy society in order for me to be t'
+ db 'aken at my word?"'
+L04F5: db 00
+L04F6: db 'Fellowship'
+L0500: db 00
+L0501: db 'shelter'
+L0508: db 00
+L0509: db '"We are fortunate that we are able to live by The Fellowship'
+ db ''s good graces, but I do not know how long we will be allowe'
+ db 'd to stay."'
+L058C: db 00
+L058D: db 'allowed'
+L0594: db 00
+L0595: db 'shelter'
+L059C: db 00
+L059D: db 'join them'
+L05A6: db 00
+L05A7: db '"I cannot join The Fellowship without feeling that I am betr'
+ db 'aying mine husband. How could I become one of those who have'
+ db ' falsely accused him? Yet, if I do not, they will not allow '
+ db 'my child and me to live here."~~She sobs and covers her face'
+ db ' with her hands. "It is so unfair. I must choose between sta'
+ db 'rvation and betrayal. If only Weston were here. I do not kno'
+ db 'w what to do!"'
+L071D: db 00
+L071E: db 'join them'
+L0727: db 00
+L0728: db 'accused'
+L072F: db 00
+L0730: db '"They say if I join they will attempt to free mine husband. '
+ db 'But it was they who unjustly accused him. I cannot trust the'
+ db 'm, but I fear I may have no choice."'
+L07CC: db 00
+L07CD: db 'accused'
+L07D4: db 00
+L07D5: db 'allowed'
+L07DC: db 00
+L07DD: db '"They tell me the shelter is only for members of The Fellows'
+ db 'hip. Unless I join soon, I shall be asked to leave. And I ha'
+ db 've nowhere else to go."'
+L086C: db 00
+L086D: db 'allowed'
+L0874: db 00
+L0875: db 'bye'
+L0878: db 00
+L0879: db '"Pleasant day to thee, '
+L0890: db 00
+L0891: db '."*'
+L0894: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 92 01   jne 019A
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 57 FF   pushi FF57H   ; -169
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; job
+0025: 1D 08 00   pushs L0008   ; name
+0028: 1E 03 00   arrc 0003H   ; 3
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 22 02   pushf flag:[0222]
+0032: 10   not
+0033: 05 0B 00   jne 0041
+0036: 1C 0D 00   addsi L000D   ; You see a simple ...
+0039: 33   say
+003A: 13   push true
+003B: 43 22 02   popf flag:[0222]
+003E: 06 0A 00   jmp 004B
+0041: 1C 4D 00   addsi L004D   ; "Good day, 
+0044: 2F 00 00   addsv [0000]
+0047: 1C 59 00   addsi L0059   ; ," says Alina.
+004A: 33   say
+004B: 04 41 01   je 018F
+004E: 1D 68 00   pushs L0068   ; name
+0051: 07 01 00 0B 00  cmps 0001H, 0061
+0056: 1C 6D 00   addsi L006D   ; "I am Alina."
+0059: 33   say
+005A: 1D 7B 00   pushs L007B   ; name
+005D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0061: 1D 80 00   pushs L0080   ; job
+0064: 07 01 00 17 00  cmps 0001H, 0080
+0069: 1C 84 00   addsi L0084   ; "I have none, 
+006C: 2F 00 00   addsv [0000]
+006F: 1C 93 00   addsi L0093   ; , save for being ...
+0072: 33   say
+0073: 1D FC 00   pushs L00FC   ; Weston
+0076: 1D 03 01   pushs L0103   ; child
+0079: 1E 02 00   arrc 0002H   ; 2
+007C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0080: 1D 09 01   pushs L0109   ; child
+0083: 07 01 00 0B 00  cmps 0001H, 0093
+0088: 1C 0F 01   addsi L010F   ; "Cassie is my dau...
+008B: 33   say
+008C: 1D 4F 01   pushs L014F   ; child
+008F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0093: 1D 55 01   pushs L0155   ; Weston
+0096: 07 01 00 25 00  cmps 0001H, 00C0
+009B: 42 CC 00   pushf flag:[00CC]
+009E: 05 0D 00   jne 00AE
+00A1: 1C 5C 01   addsi L015C   ; "Good news, 
+00A4: 2F 00 00   addsv [0000]
+00A7: 1C 69 01   addsi L0169   ; ! Mine husband wa...
+00AA: 33   say
+00AB: 06 0B 00   jmp 00B9
+00AE: 1C 37 02   addsi L0237   ; "Mine husband is ...
+00B1: 33   say
+00B2: 1D 8B 02   pushs L028B   ; stealing
+00B5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B9: 1D 94 02   pushs L0294   ; Weston
+00BC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C0: 1D 9B 02   pushs L029B   ; stealing
+00C3: 07 01 00 18 00  cmps 0001H, 00E0
+00C8: 1C A4 02   addsi L02A4   ; "Mine husband is ...
+00CB: 2F 00 00   addsv [0000]
+00CE: 1C C0 02   addsi L02C0   ; . He went there t...
+00D1: 33   say
+00D2: 1D 4C 03   pushs L034C   ; eat
+00D5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D9: 1D 50 03   pushs L0350   ; stealing
+00DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E0: 1D 59 03   pushs L0359   ; eat
+00E3: 07 01 00 18 00  cmps 0001H, 0100
+00E8: 1C 5D 03   addsi L035D   ; "We are very poor...
+00EB: 33   say
+00EC: 1D D2 03   pushs L03D2   ; shelter
+00EF: 1D DA 03   pushs L03DA   ; Fellowship
+00F2: 1E 02 00   arrc 0002H   ; 2
+00F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F9: 1D E5 03   pushs L03E5   ; eat
+00FC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0100: 1D E9 03   pushs L03E9   ; Fellowship
+0103: 07 01 00 26 00  cmps 0001H, 012E
+0108: 21 01 00   push [0001]
+010B: 10   not
+010C: 05 14 00   jne 0123
+010F: 1C F4 03   addsi L03F4   ; "It was a member ...
+0112: 33   say
+0113: 1D 5A 04   pushs L045A   ; accused
+0116: 1D 62 04   pushs L0462   ; join them
+0119: 1E 02 00   arrc 0002H   ; 2
+011C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0120: 06 04 00   jmp 0127
+0123: 1C 6C 04   addsi L046C   ; "Mine husband is ...
+0126: 33   say
+0127: 1D F6 04   pushs L04F6   ; Fellowship
+012A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012E: 1D 01 05   pushs L0501   ; shelter
+0131: 07 01 00 12 00  cmps 0001H, 0148
+0136: 1C 09 05   addsi L0509   ; "We are fortunate...
+0139: 33   say
+013A: 1D 8D 05   pushs L058D   ; allowed
+013D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0141: 1D 95 05   pushs L0595   ; shelter
+0144: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0148: 1D 9D 05   pushs L059D   ; join them
+014B: 07 01 00 0B 00  cmps 0001H, 015B
+0150: 1C A7 05   addsi L05A7   ; "I cannot join Th...
+0153: 33   say
+0154: 1D 1E 07   pushs L071E   ; join them
+0157: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015B: 1D 28 07   pushs L0728   ; accused
+015E: 07 01 00 0B 00  cmps 0001H, 016E
+0163: 1C 30 07   addsi L0730   ; "They say if I jo...
+0166: 33   say
+0167: 1D CD 07   pushs L07CD   ; accused
+016A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016E: 1D D5 07   pushs L07D5   ; allowed
+0171: 07 01 00 0B 00  cmps 0001H, 0181
+0176: 1C DD 07   addsi L07DD   ; "They tell me the...
+0179: 33   say
+017A: 1D 6D 08   pushs L086D   ; allowed
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D 75 08   pushs L0875   ; bye
+0184: 07 01 00 03 00  cmps 0001H, 018C
+0189: 06 03 00   jmp 018F
+018C: 06 BC FE   jmp 004B
+018F: 40   db 40 ???
+0190: 1C 79 08   addsi L0879   ; "Pleasant day to ...
+0193: 2F 00 00   addsv [0000]
+0196: 1C 91 08   addsi L0891   ; ."*
+0199: 33   say
+019A: 48   push eventid
+019B: 1F 00 00   pushi 0000H   ; 0
+019E: 22   cmpeq
+019F: 05 06 00   jne 01A8
+01A2: 1F 57 FF   pushi FF57H   ; -169
+01A5: 24 01 00   call [0001]   ; 092EH
+01A8: 25   ret

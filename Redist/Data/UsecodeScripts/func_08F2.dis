@@ -1,0 +1,277 @@
+  .funcnumber 08F2H
+  .data
+L0000: db 00
+L0001: db '"'
+L0002: db 00
+L0003: db '! Thou '
+L000A: db 00
+L000B: db '!"'
+L000D: db 00
+L000E: db 'life'
+L0012: db 00
+L0013: db 'head'
+L0017: db 00
+L0018: db 'blood'
+L001D: db 00
+L001E: db '"Shall I have my apology, or thy '
+L003F: db 00
+L0040: db '?"'
+L0042: db 00
+L0043: db 'Forgive me'
+L004D: db 00
+L004E: db 'Suffer my wrath'
+L005D: db 00
+L005E: db 00
+L005F: db '"Forgive thee! What might I forgive in one such as thee, '
+L0098: db 00
+L0099: db '?"'
+L009B: db 00
+L009C: db 'My crime'
+L00A4: db 00
+L00A5: db 'My deed'
+L00AC: db 00
+L00AD: db 'My lie'
+L00B3: db 00
+L00B4: db 'My lie'
+L00BA: db 00
+L00BB: db 'My crime'
+L00C3: db 00
+L00C4: db 'My deed'
+L00CB: db 00
+L00CC: db 'My lie'
+L00D2: db 00
+L00D3: db '"Of what lie speakest thou? Art thou not '
+L00FC: db 00
+L00FD: db '?"'
+L00FF: db 00
+L0100: db 00
+L0101: db '"Perhaps thou art not '
+L0117: db 00
+L0118: db ', for I have never seen the '
+L0134: db 00
+L0135: db '. Confess now thy true identity!"'
+L0156: db 00
+L0157: db 'Avatar'
+L015D: db 00
+L015E: db 'My deed'
+L0165: db 00
+L0166: db '"Speak not of thy deed! Such deeds must deeds receive to equ'
+ db 'al their merit."'
+L01B2: db 00
+L01B3: db 'My crime'
+L01BB: db 00
+L01BC: db '"Crime most foul, most horrible!"'
+L01DD: db 00
+L01DE: db 'Avatar'
+L01E4: db 00
+L01E5: db 'Avatar'
+L01EB: db 00
+L01EC: db '"I doubt but thou deceivest me further. If true, thou dost s'
+ db 'hame the title. Admit now thy true name!"'
+L0251: db 00
+L0252: db 00
+L0253: db '"'
+L0254: db 00
+L0255: db '! Perhaps honesty shall lift thee above the '
+L0281: db 00
+L0282: db ' '
+L0283: db 00
+L0284: db '..."'
+L0288: db 00
+L0289: db 00
+L028A: db '"^'
+L028C: db 00
+L028D: db '! ^'
+L0290: db 00
+L0291: db '! Thy soul shall wail in the catacombs of the netherworld!"'
+L02CC: db 00
+L02CD: db '"^'
+L02CF: db 00
+L02D0: db '! Fly from this place at once! I shall provide escort for th'
+ db 'ee with my bow. Return at thy peril, '
+L0331: db 00
+L0332: db '."'
+L0334: db 00
+L0335: db '"I shall not take this deception lightly."'
+L035F: db 00
+  .code
+  .argc 0002H
+  .localc 0008H
+  .externsize 0002H
+  .extern 08F1H
+  .extern 090AH
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 14   push false
+0005: 12 02 00   pop [0002]
+0008: 13   push true
+0009: 12 03 00   pop [0003]
+000C: 1D 00 00   pushs L0000   ; 
+000F: 24 00 00   call [0000]   ; 08F1H
+0012: 12 04 00   pop [0004]
+0015: 1C 01 00   addsi L0001   ; "
+0018: 2F 00 00   addsv [0000]
+001B: 1C 03 00   addsi L0003   ; ! Thou 
+001E: 2F 04 00   addsv [0004]
+0021: 1C 0B 00   addsi L000B   ; !"
+0024: 33   say
+0025: 1D 0E 00   pushs L000E   ; life
+0028: 1D 13 00   pushs L0013   ; head
+002B: 1D 18 00   pushs L0018   ; blood
+002E: 1E 03 00   arrc 0003H   ; 3
+0031: 12 05 00   pop [0005]
+0034: 21 05 00   push [0005]
+0037: 38 5E 00 01  callis _ArraySize@1  ; 005E
+003B: 1F 01 00   pushi 0001H   ; 1
+003E: 38 10 00 02  callis _Random2@2  ; 0010
+0042: 26 05 00   aidx [0005]
+0045: 12 06 00   pop [0006]
+0048: 1C 1E 00   addsi L001E   ; "Shall I have my ...
+004B: 2F 06 00   addsv [0006]
+004E: 1C 40 00   addsi L0040   ; ?"
+0051: 33   say
+0052: 1D 43 00   pushs L0043   ; Forgive me
+0055: 12 07 00   pop [0007]
+0058: 1D 4E 00   pushs L004E   ; Suffer my wrath
+005B: 12 08 00   pop [0008]
+005E: 21 08 00   push [0008]
+0061: 21 07 00   push [0007]
+0064: 1E 02 00   arrc 0002H   ; 2
+0067: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006B: 04 0B 01   je 0179
+006E: 21 07 00   push [0007]
+0071: 07 01 00 31 00  cmps 0001H, 00A7
+0076: 1D 5E 00   pushs L005E   ; 
+0079: 24 00 00   call [0000]   ; 08F1H
+007C: 12 04 00   pop [0004]
+007F: 1C 5F 00   addsi L005F   ; "Forgive thee! Wh...
+0082: 2F 04 00   addsv [0004]
+0085: 1C 99 00   addsi L0099   ; ?"
+0088: 33   say
+0089: 21 08 00   push [0008]
+008C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0090: 21 07 00   push [0007]
+0093: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0097: 1D 9C 00   pushs L009C   ; My crime
+009A: 1D A5 00   pushs L00A5   ; My deed
+009D: 1D AD 00   pushs L00AD   ; My lie
+00A0: 1E 03 00   arrc 0003H   ; 3
+00A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A7: 21 08 00   push [0008]
+00AA: 07 01 00 03 00  cmps 0001H, 00B2
+00AF: 06 C7 00   jmp 0179
+00B2: 1D B4 00   pushs L00B4   ; My lie
+00B5: 07 01 00 51 00  cmps 0001H, 010B
+00BA: 1D BB 00   pushs L00BB   ; My crime
+00BD: 1D C4 00   pushs L00C4   ; My deed
+00C0: 1D CC 00   pushs L00CC   ; My lie
+00C3: 1E 03 00   arrc 0003H   ; 3
+00C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CA: 1C D3 00   addsi L00D3   ; "Of what lie spea...
+00CD: 2F 00 00   addsv [0000]
+00D0: 1C FD 00   addsi L00FD   ; ?"
+00D3: 33   say
+00D4: 24 01 00   call [0001]   ; 090AH
+00D7: 05 03 00   jne 00DD
+00DA: 06 9C 00   jmp 0179
+00DD: 1D 00 01   pushs L0100   ; 
+00E0: 24 00 00   call [0000]   ; 08F1H
+00E3: 12 04 00   pop [0004]
+00E6: 1C 01 01   addsi L0101   ; "Perhaps thou art...
+00E9: 2F 00 00   addsv [0000]
+00EC: 1C 18 01   addsi L0118   ; , for I have neve...
+00EF: 2F 04 00   addsv [0004]
+00F2: 1C 35 01   addsi L0135   ; . Confess now thy...
+00F5: 33   say
+00F6: 21 01 00   push [0001]
+00F9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FD: 42 61 01   pushf flag:[0161]
+0100: 10   not
+0101: 05 07 00   jne 010B
+0104: 1D 57 01   pushs L0157   ; Avatar
+0107: 39 05 00 01  calli _AddAnswer@1  ; 0005
+010B: 1D 5E 01   pushs L015E   ; My deed
+010E: 07 01 00 07 00  cmps 0001H, 011A
+0113: 1C 66 01   addsi L0166   ; "Speak not of thy...
+0116: 33   say
+0117: 06 5F 00   jmp 0179
+011A: 1D B3 01   pushs L01B3   ; My crime
+011D: 07 01 00 0B 00  cmps 0001H, 012D
+0122: 1C BC 01   addsi L01BC   ; "Crime most foul,...
+0125: 33   say
+0126: 14   push false
+0127: 12 03 00   pop [0003]
+012A: 06 4C 00   jmp 0179
+012D: 1D DE 01   pushs L01DE   ; Avatar
+0130: 07 01 00 13 00  cmps 0001H, 0148
+0135: 1D E5 01   pushs L01E5   ; Avatar
+0138: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013C: 1C EC 01   addsi L01EC   ; "I doubt but thou...
+013F: 33   say
+0140: 13   push true
+0141: 12 02 00   pop [0002]
+0144: 13   push true
+0145: 43 61 01   popf flag:[0161]
+0148: 21 01 00   push [0001]
+014B: 07 01 00 26 00  cmps 0001H, 0176
+0150: 1D 52 02   pushs L0252   ; 
+0153: 24 00 00   call [0000]   ; 08F1H
+0156: 12 04 00   pop [0004]
+0159: 1C 53 02   addsi L0253   ; "
+015C: 2F 01 00   addsv [0001]
+015F: 1C 55 02   addsi L0255   ; ! Perhaps honesty...
+0162: 2F 04 00   addsv [0004]
+0165: 1C 82 02   addsi L0282   ;  
+0168: 2F 00 00   addsv [0000]
+016B: 1C 84 02   addsi L0284   ; ..."
+016E: 33   say
+016F: 13   push true
+0170: 12 02 00   pop [0002]
+0173: 06 03 00   jmp 0179
+0176: 06 F2 FE   jmp 006B
+0179: 40   db 40 ???
+017A: 21 02 00   push [0002]
+017D: 10   not
+017E: 05 66 00   jne 01E7
+0181: 1D 89 02   pushs L0289   ; 
+0184: 24 00 00   call [0000]   ; 08F1H
+0187: 12 04 00   pop [0004]
+018A: 21 04 00   push [0004]
+018D: 24 00 00   call [0000]   ; 08F1H
+0190: 12 09 00   pop [0009]
+0193: 21 03 00   push [0003]
+0196: 05 27 00   jne 01C0
+0199: 1C 8A 02   addsi L028A   ; "^
+019C: 2F 04 00   addsv [0004]
+019F: 1C 8D 02   addsi L028D   ; ! ^
+01A2: 2F 09 00   addsv [0009]
+01A5: 1C 91 02   addsi L0291   ; ! Thy soul shall ...
+01A8: 33   say
+01A9: 1F 00 00   pushi 0000H   ; 0
+01AC: 1F F6 FF   pushi FFF6H   ; -10
+01AF: 39 1D 00 02  calli 001D, 2
+01B3: 1F 02 00   pushi 0002H   ; 2
+01B6: 1F F6 FF   pushi FFF6H   ; -10
+01B9: 39 3D 00 02  calli 003D, 2
+01BD: 06 24 00   jmp 01E4
+01C0: 1C CD 02   addsi L02CD   ; "^
+01C3: 2F 04 00   addsv [0004]
+01C6: 1C D0 02   addsi L02D0   ; ! Fly from this p...
+01C9: 2F 09 00   addsv [0009]
+01CC: 1C 32 03   addsi L0332   ; ."
+01CF: 33   say
+01D0: 1F 09 00   pushi 0009H   ; 9
+01D3: 1F F6 FF   pushi FFF6H   ; -10
+01D6: 39 1D 00 02  calli 001D, 2
+01DA: 1F 00 00   pushi 0000H   ; 0
+01DD: 1F F6 FF   pushi FFF6H   ; -10
+01E0: 39 3D 00 02  calli 003D, 2
+01E4: 06 12 00   jmp 01F9
+01E7: 1C 35 03   addsi L0335   ; "I shall not take...
+01EA: 33   say
+01EB: 13   push true
+01EC: 43 1D 00   popf flag:[001D]
+01EF: 1F 00 00   pushi 0000H   ; 0
+01F2: 1F F6 FF   pushi FFF6H   ; -10
+01F5: 39 3D 00 02  calli 003D, 2
+01F9: 3F   abrt
+01FA: 25   ret

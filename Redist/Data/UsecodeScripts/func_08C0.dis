@@ -1,0 +1,579 @@
+  .funcnumber 08C0H
+  .data
+L0000: db 'Forsythe'
+L0008: db 00
+L0009: db 'Ferryman'
+L0011: db 00
+L0012: db 'Markham'
+L0019: db 00
+L001A: db 'Quenton'
+L0021: db 00
+L0022: db 'Trent'
+L0027: db 00
+L0028: db 'Caine'
+L002D: db 00
+L002E: db 'no one'
+L0034: db 00
+L0035: db '"Very well, then. Of whom wouldst thou speak?"'
+L0063: db 00
+L0064: db 'Forsythe'
+L006C: db 00
+L006D: db 'She glowers at you for a moment. "I have nothing to say abou'
+ db 't -that- bumbling clod!"'
+L00C1: db 00
+L00C2: db 'Forsythe'
+L00CA: db 00
+L00CB: db 'Ferryman'
+L00D3: db 00
+L00D4: db '"I know very little about that one. He's been here since the'
+ db ' Liche called up the angry dead from their graves. I know on'
+ db 'e thing though: even shouldst thou defeat Horance, he will r'
+ db 'emain here under the geas he serves." She looks a little sad'
+ db ' as she tells you this.'
+L01DB: db 00
+L01DC: db 'Ferryman'
+L01E4: db 00
+L01E5: db 'angry dead'
+L01EF: db 00
+L01F0: db 'angry dead'
+L01FA: db 00
+L01FB: db '"The graves of our ancestors have spilled forth the dead of '
+ db 'Skara Brae. Their minds and hearts are rotted and they care '
+ db 'not for the living. Hence the name `Angry Dead.'"'
+L02A4: db 00
+L02A5: db 'angry dead'
+L02AF: db 00
+L02B0: db 'Markham'
+L02B7: db 00
+L02B8: db 'She gives you a cocked smile. "That rascal opened one of the'
+ db ' best pubs this side of Buccaneer's Den, or so he'd have the'
+ db 'e believe. He's a bit rough around the edges, but he knows h'
+ db 'ow to buy good wine, that is for sure. And his taste in bar '
+ db 'maids isn't half bad, either," she wink. "If thou hast met P'
+ db 'aulette, thou dost know of what I speak."'
+L040D: db 00
+L040E: db 'Markham'
+L0415: db 00
+L0416: db 'Paulette'
+L041E: db 00
+L041F: db 'Quenton'
+L0426: db 00
+L0427: db '"That poor man has had a life fraught with grief, the one ai'
+ db 'lment none of my magics seems to be able to do much about.~~'
+ db '"His wife, Gwen, was taken by a rather nasty group of men se'
+ db 'veral years after the birth of their daughter, Marney. I kno'
+ db 'w what happened to her, but I have spared Quenton this knowl'
+ db 'edge out of pity.~~"The men thought she was a noble lady due'
+ db ' to her unsurpassed beauty. When they found out she was the '
+ db 'wife of a lowly fisherman, they raped her brutally and sold '
+ db 'her to a disreputable brothel. Fortunately she died not long'
+ db ' after her arrival there." Mordra looks profoundly saddened.'
+L067F: db 00
+L0680: db 'Quenton'
+L0687: db 00
+L0688: db 'Marney'
+L068E: db 00
+L068F: db 'Marney'
+L0695: db 00
+L0696: db '"Yes, yes, a half-told tale is no tale at all." She continue'
+ db 's with her account of Quenton's sad life.~~"Marney took ill '
+ db 'after her mother's abduction and lived with one foot in the '
+ db 'grave for several years more. Finally, Quenton could take it'
+ db ' no longer. He borrowed money from a violent man named Micha'
+ db 'el, who went by the moniker, Blade. When he could not repay '
+ db 'the loan, Blade slew him.~~"However, this is not the end of '
+ db 'my piteous tale, for even after his death, Quenton's shade w'
+ db 'as forced to remain in the town of Spirituality, where he ha'
+ db 'd to watch his beloved Marney grow more ill and eventually d'
+ db 'ie.~~"Yorl, the man who cared for Marney after her father's '
+ db 'death, built a shrine for her earthly body." She grows silen'
+ db 't for a while, eyes downcast. ~~"It is my sincere hope that '
+ db 'thou shalt rid us of Horance so that Quenton may join his lo'
+ db 'ved ones, wherever they may be."'
+L09FE: db 00
+L09FF: db 'Marney'
+L0A05: db 00
+L0A06: db 'Blade'
+L0A0B: db 00
+L0A0C: db 'Blade'
+L0A11: db 00
+L0A12: db 'Her face becomes passionless for the first time since you me'
+ db 't her.~~"The reason I know of this story is because my late '
+ db 'brother, Rinaldo, sat on the bench at the High Court in Yew.'
+ db ' He wrote to me about the capture of not only Blade, but als'
+ db 'o of the pirates who abducted Quenton's wife. The pirates sp'
+ db 'ent the rest of their days in the lowest cells of a dungeon,'
+ db ' and Blade met his fate upon the edge of a guillotine.~~"A f'
+ db 'itting death, dost thou not think?"'
+L0BD9: db 00
+L0BDA: db 'Blade'
+L0BDF: db 00
+L0BE0: db 'Paulette'
+L0BE8: db 00
+L0BE9: db '"She is quite a lovely girl, although a bit childlike in out'
+ db 'look. Her father was not of this world, I believe. He spoke '
+ db 'with an odd inflection and his appearance was very unlike mo'
+ db 'st other people of Britannia.~~"But then thou well knowest t'
+ db 'hat many people of other worlds come to this land. I've even'
+ db ' heard it rumored that Lord British himself is an outworlder'
+ db '. Imagine that." A sly expression crosses her face.'
+L0D84: db 00
+L0D85: db 'Paulette'
+L0D8D: db 00
+L0D8E: db 'Trent'
+L0D93: db 00
+L0D94: db '"It is wonderful that those two have been brought back toget'
+ db 'her. I only hope that Quenton will share that same fate." He'
+ db 'r voice is full of hope.'
+L0E24: db 00
+L0E25: db 'Quenton'
+L0E2C: db 00
+L0E2D: db '"Now that Trent has been brought out of himself, I believe i'
+ db 't is time to have him construct the Soul Cage that will beco'
+ db 'me the Liche's coffin." She smiles without humor.~~"Go to hi'
+ db 'm and assist him if thou wishest to free this town from Hora'
+ db 'nce's grasp."'
+L0F2A: db 00
+L0F2B: db 'Horance the Liche'
+L0F3C: db 00
+L0F3D: db '"I feel as if a great weight has been lifted from me. I cann'
+ db 'ot thank thee enough for what thou hast done. However, we wi'
+ db 'll not be free of the Liche's power until the Well of Souls '
+ db 'has been destroyed."'
+L1005: db 00
+L1006: db 'Well of Souls'
+L1013: db 00
+L1014: db '"Thou must use his cage well to stop the liche."'
+L1044: db 00
+L1045: db '"Alas, I fear that his mind was broken by the loss of his wi'
+ db 'fe, Rowena. He cannot break out of the hatred which consumes'
+ db ' him. One day, he will be spent and his spirit will be lost '
+ db 'forever. Perhaps, Rowena would know of something that could '
+ db 'help... but no, she herself is in need of assistance." Mordr'
+ db 'a shakes her head.'
+L1183: db 00
+L1184: db 'Rowena'
+L118A: db 00
+L118B: db 'Trent'
+L1190: db 00
+L1191: db 'Rowena'
+L1197: db 00
+L1198: db 'Rowena'
+L119E: db 00
+L119F: db '"It is wonderful that those two have been brought back toget'
+ db 'her. I only hope that Quenton will share that same fate." He'
+ db 'r voice is full of hope.'
+L122F: db 00
+L1230: db 'Quenton'
+L1237: db 00
+L1238: db '"Thou must find a way to bring her out of the Liche's ensorc'
+ db 'elment, even if only for a brief moment. I am positive she h'
+ db 'olds the key to restoring Trent to his former self. Perhaps,'
+ db ' if thou couldst find a personal article of hers -- somethin'
+ db 'g from Trent, perhaps -- and bring it to her. That might bre'
+ db 'ak the enchantment she is under."'
+L1385: db 00
+L1386: db 'Mistress Mordra frowns a little. "I hope that poor girl can '
+ db 'hold out a little longer, until she can be taken away from t'
+ db 'hat horrible place."'
+L1412: db 00
+L1413: db 'Rowena'
+L1419: db 00
+L141A: db 'Caine'
+L141F: db 00
+L1420: db '"He is a tortured spirit. He blames himself for the destruct'
+ db 'ion of the town. In his delusion, he feels the flames of his'
+ db ' death constantly. However, I believe his state gives him a '
+ db 'certain purification and wisdom. It is said that he even kno'
+ db 'ws the answers to life and death."~~She looks bemused. "Rega'
+ db 'rdless of that fact, it is from him that thou must get the m'
+ db 'agical concoction to destroy the Liche. However, I can give '
+ db 'thee the list of ingredients."'
+L15E2: db 00
+L15E3: db 'ingredients'
+L15EE: db 00
+L15EF: db 'Horance the Liche'
+L1600: db 00
+L1601: db '"It is good that thou hast managed to create the magical for'
+ db 'mula; now must thou use it with the Soul Cage, to destroy Ho'
+ db 'rance."'
+L1680: db 00
+L1681: db 'Horance the Liche'
+L1692: db 00
+L1693: db 'Her smile widens. "Thou hast made excellent use of the formu'
+ db 'la. Now, we must find a way to destroy the Well of Souls, to'
+ db ' free Skara Brae."'
+L171D: db 00
+L171E: db 'Well of Souls'
+L172B: db 00
+L172C: db 'Caine'
+L1731: db 00
+L1732: db 'ingredients'
+L173D: db 00
+L173E: db '"If I tell thee, thou must be sure to get them right. Otherw'
+ db 'ise, what happened when I told that blasted mayor will happe'
+ db 'n again. And, while we here in Skara Brae have no more lives'
+ db ' to lose, thou hast quite a valuable one! ~~"The ingredients'
+ db ' necessary to dissolve the liche are: a potion of invisibili'
+ db 'ty, a potion of curing, and one vial of the essence of mandr'
+ db 'ake -- I have one somewhere in mine house. Remember, only -o'
+ db 'ne-  vial!"'
+L18ED: db 00
+L18EE: db 'ingredients'
+L18F9: db 00
+L18FA: db 'Horance the Liche'
+L190B: db 00
+L190C: db '"He is the blasted liche I was trying to destroy when the fi'
+ db 're happened. Horance the mage apparently decided one day tha'
+ db 't mortality was not something for him. So, he began to resea'
+ db 'rch ways to avoid death. Finally, he came upon the formula r'
+ db 'equired to make himself an undead -- an immortal undead -- l'
+ db 'iche. Unfortunately, this transformation, compounded with hi'
+ db 's already obsessive behavior, changed him into the evil thin'
+ db 'g he is today!~~"And 'tis his evil, Black Service that comma'
+ db 'nds us all!"'
+L1AF8: db 00
+L1AF9: db 'Horance the Liche'
+L1B0A: db 00
+L1B0B: db 'Black Service'
+L1B18: db 00
+L1B19: db 'Dark Tower'
+L1B23: db 00
+L1B24: db '"The Dark Tower lies on the northwestern point of Skara Brae'
+ db '. There is something odd about its construction, for I find '
+ db 'it very hard to penetrate with my magical senses.~Within it,'
+ db '" she says, "thou wilt find the Well of Souls."'
+L1C07: db 00
+L1C08: db 'Dark Tower'
+L1C12: db 00
+L1C13: db 'Well of Souls'
+L1C20: db 00
+L1C21: db 'Well of Souls'
+L1C2E: db 00
+L1C2F: db '"The Well of Souls is a powerful artifact, located at the ba'
+ db 'ck of the Dark Tower, from which the Liche draws his power. '
+ db 'The souls of the dead are incarcerated there, doomed to the '
+ db 'torment of Horance's all-consuming appetite." An expression '
+ db 'of pain shows in her features.'
+L1D3D: db 00
+L1D3E: db 'Horance the Liche'
+L1D4F: db 00
+L1D50: db 'Well of Souls'
+L1D5D: db 00
+L1D5E: db 'Black Service'
+L1D6B: db 00
+L1D6C: db 'Angrily, Mordra says, "Each night, at the stroke of midnight'
+ db ', the spirits of Skara Brae travel to the Dark Tower and are'
+ db ' used to infuse Horance with power to continue his dark exis'
+ db 'tence. None of the others are aware when this happens, but I'
+ db ' feel it without being able to stop myself."'
+L1E88: db 00
+L1E89: db 'Dark Tower'
+L1E93: db 00
+L1E94: db '"Even though the Liche is gone, we are still drawn to the pl'
+ db 'ace of his Black Service. He must have bound us with a geas '
+ db 'and tied it to the power of the Well of Souls. Oh, what a cr'
+ db 'afty villain he was." Grudging respect for a skilled mage is'
+ db ' mixed with disgust in Mordra's expression.'
+L1FAF: db 00
+L1FB0: db 'Well of Souls'
+L1FBD: db 00
+L1FBE: db 'Black Service'
+L1FCB: db 00
+L1FCC: db 'no one'
+L1FD2: db 00
+L1FD3: db '"I see. Of what wouldst thou speak, then?"*'
+L1FFE: db 00
+  .code
+  .argc 0000H
+  .localc 0007H
+  .externsize 0000H
+0000: 14   push false
+0001: 12 00 00   pop [0000]
+0004: 14   push false
+0005: 12 01 00   pop [0001]
+0008: 14   push false
+0009: 12 02 00   pop [0002]
+000C: 14   push false
+000D: 12 03 00   pop [0003]
+0010: 14   push false
+0011: 12 04 00   pop [0004]
+0014: 14   push false
+0015: 12 05 00   pop [0005]
+0018: 14   push false
+0019: 12 06 00   pop [0006]
+001C: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0020: 42 CC 01   pushf flag:[01CC]
+0023: 05 07 00   jne 002D
+0026: 1D 00 00   pushs L0000   ; Forsythe
+0029: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002D: 42 C3 01   pushf flag:[01C3]
+0030: 05 07 00   jne 003A
+0033: 1D 09 00   pushs L0009   ; Ferryman
+0036: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003A: 42 C4 01   pushf flag:[01C4]
+003D: 05 07 00   jne 0047
+0040: 1D 12 00   pushs L0012   ; Markham
+0043: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0047: 42 CB 01   pushf flag:[01CB]
+004A: 05 07 00   jne 0054
+004D: 1D 1A 00   pushs L001A   ; Quenton
+0050: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0054: 42 C7 01   pushf flag:[01C7]
+0057: 05 07 00   jne 0061
+005A: 1D 22 00   pushs L0022   ; Trent
+005D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0061: 42 C2 01   pushf flag:[01C2]
+0064: 05 07 00   jne 006E
+0067: 1D 28 00   pushs L0028   ; Caine
+006A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006E: 1D 2E 00   pushs L002E   ; no one
+0071: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0075: 1C 35 00   addsi L0035   ; "Very well, then....
+0078: 33   say
+0079: 04 BA 02   je 0336
+007C: 1D 64 00   pushs L0064   ; Forsythe
+007F: 07 01 00 0B 00  cmps 0001H, 008F
+0084: 1C 6D 00   addsi L006D   ; She glowers at yo...
+0087: 33   say
+0088: 1D C2 00   pushs L00C2   ; Forsythe
+008B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008F: 1D CB 00   pushs L00CB   ; Ferryman
+0092: 07 01 00 12 00  cmps 0001H, 00A9
+0097: 1C D4 00   addsi L00D4   ; "I know very litt...
+009A: 33   say
+009B: 1D DC 01   pushs L01DC   ; Ferryman
+009E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A2: 1D E5 01   pushs L01E5   ; angry dead
+00A5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A9: 1D F0 01   pushs L01F0   ; angry dead
+00AC: 07 01 00 0B 00  cmps 0001H, 00BC
+00B1: 1C FB 01   addsi L01FB   ; "The graves of ou...
+00B4: 33   say
+00B5: 1D A5 02   pushs L02A5   ; angry dead
+00B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BC: 1D B0 02   pushs L02B0   ; Markham
+00BF: 07 01 00 12 00  cmps 0001H, 00D6
+00C4: 1C B8 02   addsi L02B8   ; She gives you a c...
+00C7: 33   say
+00C8: 1D 0E 04   pushs L040E   ; Markham
+00CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CF: 1D 16 04   pushs L0416   ; Paulette
+00D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D6: 1D 1F 04   pushs L041F   ; Quenton
+00D9: 07 01 00 16 00  cmps 0001H, 00F4
+00DE: 1C 27 04   addsi L0427   ; "That poor man ha...
+00E1: 33   say
+00E2: 1D 80 06   pushs L0680   ; Quenton
+00E5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E9: 1D 88 06   pushs L0688   ; Marney
+00EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F0: 13   push true
+00F1: 12 00 00   pop [0000]
+00F4: 1D 8F 06   pushs L068F   ; Marney
+00F7: 07 01 00 12 00  cmps 0001H, 010E
+00FC: 1C 96 06   addsi L0696   ; "Yes, yes, a half...
+00FF: 33   say
+0100: 1D FF 09   pushs L09FF   ; Marney
+0103: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0107: 1D 06 0A   pushs L0A06   ; Blade
+010A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+010E: 1D 0C 0A   pushs L0A0C   ; Blade
+0111: 07 01 00 0B 00  cmps 0001H, 0121
+0116: 1C 12 0A   addsi L0A12   ; Her face becomes ...
+0119: 33   say
+011A: 1D DA 0B   pushs L0BDA   ; Blade
+011D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0121: 1D E0 0B   pushs L0BE0   ; Paulette
+0124: 07 01 00 0B 00  cmps 0001H, 0134
+0129: 1C E9 0B   addsi L0BE9   ; "She is quite a l...
+012C: 33   say
+012D: 1D 85 0D   pushs L0D85   ; Paulette
+0130: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0134: 1D 8E 0D   pushs L0D8E   ; Trent
+0137: 07 01 00 75 00  cmps 0001H, 01B1
+013C: 42 A6 01   pushf flag:[01A6]
+013F: 05 15 00   jne 0157
+0142: 1C 94 0D   addsi L0D94   ; "It is wonderful ...
+0145: 33   say
+0146: 21 00 00   push [0000]
+0149: 10   not
+014A: 05 07 00   jne 0154
+014D: 1D 25 0E   pushs L0E25   ; Quenton
+0150: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0154: 06 4F 00   jmp 01A6
+0157: 42 A5 01   pushf flag:[01A5]
+015A: 05 37 00   jne 0194
+015D: 42 A8 01   pushf flag:[01A8]
+0160: 10   not
+0161: 05 15 00   jne 0179
+0164: 1C 2D 0E   addsi L0E2D   ; "Now that Trent h...
+0167: 33   say
+0168: 21 04 00   push [0004]
+016B: 10   not
+016C: 05 07 00   jne 0176
+016F: 1D 2B 0F   pushs L0F2B   ; Horance the Liche
+0172: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0176: 06 18 00   jmp 0191
+0179: 42 AA 01   pushf flag:[01AA]
+017C: 05 0E 00   jne 018D
+017F: 1C 3D 0F   addsi L0F3D   ; "I feel as if a g...
+0182: 33   say
+0183: 1D 06 10   pushs L1006   ; Well of Souls
+0186: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018A: 06 04 00   jmp 0191
+018D: 1C 14 10   addsi L1014   ; "Thou must use hi...
+0190: 33   say
+0191: 06 12 00   jmp 01A6
+0194: 1C 45 10   addsi L1045   ; "Alas, I fear tha...
+0197: 33   say
+0198: 21 02 00   push [0002]
+019B: 10   not
+019C: 05 07 00   jne 01A6
+019F: 1D 84 11   pushs L1184   ; Rowena
+01A2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A6: 1D 8B 11   pushs L118B   ; Trent
+01A9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AD: 13   push true
+01AE: 12 01 00   pop [0001]
+01B1: 1D 91 11   pushs L1191   ; Rowena
+01B4: 07 01 00 3F 00  cmps 0001H, 01F8
+01B9: 1D 98 11   pushs L1198   ; Rowena
+01BC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C0: 42 A6 01   pushf flag:[01A6]
+01C3: 05 15 00   jne 01DB
+01C6: 1C 9F 11   addsi L119F   ; "It is wonderful ...
+01C9: 33   say
+01CA: 21 00 00   push [0000]
+01CD: 10   not
+01CE: 05 07 00   jne 01D8
+01D1: 1D 30 12   pushs L1230   ; Quenton
+01D4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D8: 06 12 00   jmp 01ED
+01DB: 42 A9 01   pushf flag:[01A9]
+01DE: 10   not
+01DF: 05 07 00   jne 01E9
+01E2: 1C 38 12   addsi L1238   ; "Thou must find a...
+01E5: 33   say
+01E6: 06 04 00   jmp 01ED
+01E9: 1C 86 13   addsi L1386   ; Mistress Mordra f...
+01EC: 33   say
+01ED: 1D 13 14   pushs L1413   ; Rowena
+01F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F4: 13   push true
+01F5: 12 02 00   pop [0002]
+01F8: 1D 1A 14   pushs L141A   ; Caine
+01FB: 07 01 00 60 00  cmps 0001H, 0260
+0200: 42 C0 01   pushf flag:[01C0]
+0203: 10   not
+0204: 05 24 00   jne 022B
+0207: 1C 20 14   addsi L1420   ; "He is a tortured...
+020A: 33   say
+020B: 1D E3 15   pushs L15E3   ; ingredients
+020E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0212: 13   push true
+0213: 43 C0 01   popf flag:[01C0]
+0216: 21 04 00   push [0004]
+0219: 10   not
+021A: 05 07 00   jne 0224
+021D: 1D EF 15   pushs L15EF   ; Horance the Liche
+0220: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0224: 13   push true
+0225: 12 03 00   pop [0003]
+0228: 06 2E 00   jmp 0259
+022B: 42 AA 01   pushf flag:[01AA]
+022E: 10   not
+022F: 05 15 00   jne 0247
+0232: 1C 01 16   addsi L1601   ; "It is good that ...
+0235: 33   say
+0236: 21 04 00   push [0004]
+0239: 10   not
+023A: 05 07 00   jne 0244
+023D: 1D 81 16   pushs L1681   ; Horance the Liche
+0240: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0244: 06 12 00   jmp 0259
+0247: 1C 93 16   addsi L1693   ; Her smile widens....
+024A: 33   say
+024B: 21 05 00   push [0005]
+024E: 10   not
+024F: 05 07 00   jne 0259
+0252: 1D 1E 17   pushs L171E   ; Well of Souls
+0255: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0259: 1D 2C 17   pushs L172C   ; Caine
+025C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0260: 1D 32 17   pushs L1732   ; ingredients
+0263: 07 01 00 0B 00  cmps 0001H, 0273
+0268: 1C 3E 17   addsi L173E   ; "If I tell thee, ...
+026B: 33   say
+026C: 1D EE 18   pushs L18EE   ; ingredients
+026F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0273: 1D FA 18   pushs L18FA   ; Horance the Liche
+0276: 07 01 00 16 00  cmps 0001H, 0291
+027B: 1C 0C 19   addsi L190C   ; "He is the blaste...
+027E: 33   say
+027F: 1D F9 1A   pushs L1AF9   ; Horance the Liche
+0282: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0286: 1D 0B 1B   pushs L1B0B   ; Black Service
+0289: 39 05 00 01  calli _AddAnswer@1  ; 0005
+028D: 13   push true
+028E: 12 04 00   pop [0004]
+0291: 1D 19 1B   pushs L1B19   ; Dark Tower
+0294: 07 01 00 1D 00  cmps 0001H, 02B6
+0299: 1C 24 1B   addsi L1B24   ; "The Dark Tower l...
+029C: 33   say
+029D: 1D 08 1C   pushs L1C08   ; Dark Tower
+02A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A4: 21 05 00   push [0005]
+02A7: 10   not
+02A8: 05 07 00   jne 02B2
+02AB: 1D 13 1C   pushs L1C13   ; Well of Souls
+02AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02B2: 13   push true
+02B3: 12 06 00   pop [0006]
+02B6: 1D 21 1C   pushs L1C21   ; Well of Souls
+02B9: 07 01 00 21 00  cmps 0001H, 02DF
+02BE: 13   push true
+02BF: 12 05 00   pop [0005]
+02C2: 1C 2F 1C   addsi L1C2F   ; "The Well of Soul...
+02C5: 33   say
+02C6: 21 04 00   push [0004]
+02C9: 10   not
+02CA: 05 07 00   jne 02D4
+02CD: 1D 3E 1D   pushs L1D3E   ; Horance the Liche
+02D0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D4: 1D 50 1D   pushs L1D50   ; Well of Souls
+02D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02DB: 13   push true
+02DC: 12 05 00   pop [0005]
+02DF: 1D 5E 1D   pushs L1D5E   ; Black Service
+02E2: 07 01 00 35 00  cmps 0001H, 031C
+02E7: 42 AA 01   pushf flag:[01AA]
+02EA: 10   not
+02EB: 05 15 00   jne 0303
+02EE: 1C 6C 1D   addsi L1D6C   ; Angrily, Mordra s...
+02F1: 33   say
+02F2: 21 06 00   push [0006]
+02F5: 10   not
+02F6: 05 07 00   jne 0300
+02F9: 1D 89 1E   pushs L1E89   ; Dark Tower
+02FC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0300: 06 12 00   jmp 0315
+0303: 1C 94 1E   addsi L1E94   ; "Even though the ...
+0306: 33   say
+0307: 21 05 00   push [0005]
+030A: 10   not
+030B: 05 07 00   jne 0315
+030E: 1D B0 1F   pushs L1FB0   ; Well of Souls
+0311: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0315: 1D BE 1F   pushs L1FBE   ; Black Service
+0318: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+031C: 1D CC 1F   pushs L1FCC   ; no one
+031F: 07 01 00 0F 00  cmps 0001H, 0333
+0324: 1C D3 1F   addsi L1FD3   ; "I see. Of what w...
+0327: 33   say
+0328: 39 09 00 00  calli 0009, 0
+032C: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0330: 06 03 00   jmp 0336
+0333: 06 43 FD   jmp 0079
+0336: 40   db 40 ???
+0337: 25   ret

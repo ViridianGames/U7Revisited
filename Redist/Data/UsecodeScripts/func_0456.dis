@@ -1,0 +1,297 @@
+  .funcnumber 0456H
+  .data
+L0000: db 'You see a cheerful woman with bright eyes and blonde hair.'
+L003A: db 00
+L003B: db '"Hello again, '
+L0049: db 00
+L004A: db '." says Xanthia.'
+L005A: db 00
+L005B: db 'bye'
+L005E: db 00
+L005F: db 'job'
+L0062: db 00
+L0063: db 'name'
+L0067: db 00
+L0068: db 'name'
+L006C: db 00
+L006D: db '"Hello, my name is Xanthia."'
+L0089: db 00
+L008A: db 'name'
+L008E: db 00
+L008F: db 'job'
+L0092: db 00
+L0093: db '"I am a member of the Artist's Guild in Minoc. I make and se'
+ db 'll candelabras."'
+L00DF: db 00
+L00E0: db 'candelabras'
+L00EB: db 00
+L00EC: db 'Minoc'
+L00F1: db 00
+L00F2: db 'Artist's Guild'
+L0100: db 00
+L0101: db '"If thou wouldst not mind, we can perhaps get to know each o'
+ db 'ther during a more sociable occasion! Two people have been r'
+ db 'ecently murdered over at William's sawmill! This is hardly t'
+ db 'he time to get to know someone!"'
+L01D5: db 00
+L01D6: db 'murders'
+L01DD: db 00
+L01DE: db 'Artist's Guild'
+L01EC: db 00
+L01ED: db '"We are a guild of artists and craftspeople united for the c'
+ db 'ommon good and dedicated to the advancement of the arts, as '
+ db 'well as showing other artists that it is possible to exist s'
+ db 'olely by thine own efforts without sacrificing thy creativit'
+ db 'y."'
+L02E0: db 00
+L02E1: db 'Artist's Guild'
+L02EF: db 00
+L02F0: db 'candelabras'
+L02FB: db 00
+L02FC: db '"I make simple candelabras, but sometimes I will do commissi'
+ db 'oned work, making more specific ones. I was hired by The Fel'
+ db 'lowship to make the candelabras for all of their Fellowship '
+ db 'halls."'
+L03B7: db 00
+L03B8: db 'candelabras'
+L03C3: db 00
+L03C4: db 'Fellowship'
+L03CE: db 00
+L03CF: db 'Fellowship'
+L03D9: db 00
+L03DA: db '"Elynor, the head of the local Fellowship branch, showed me '
+ db 'a picture of the Fellowship symbol and I based the design fo'
+ db 'r my candelabra on that."'
+L046B: db 00
+L046C: db 'Fellowship'
+L0476: db 00
+L0477: db 'Elynor'
+L047D: db 00
+L047E: db 'candelabra at murder site'
+L0497: db 00
+L0498: db 'Elynor'
+L049E: db 00
+L049F: db '"Yes, she's quite a recruiter. Why, she got Burnside, our Ma'
+ db 'yor, to join, as well as Gregor, the local head of the Brita'
+ db 'nnian Mining Company, and Owen, our shipwright. He is soon t'
+ db 'o be famous, I am sorry to say. She has never asked me to jo'
+ db 'in, thank goodness."'
+L05A3: db 00
+L05A4: db 'Elynor'
+L05AA: db 00
+L05AB: db 'Owen'
+L05AF: db 00
+L05B0: db 'candelabra at murder site'
+L05C9: db 00
+L05CA: db 'You describe the candelabra found at the murder scene to Xan'
+ db 'thia. Her eyes widen with recognition. "Yes, that is one of '
+ db 'the candelabras I made. 'Twas in the sawmill at the murder s'
+ db 'ite?"'
+L0683: db 00
+L0684: db 'Xanthia looks shocked. "How horrible! I swear I do not know '
+ db 'how it could have gotten there! Thou shouldst certainly ask '
+ db 'Elynor about it!"'
+L070D: db 00
+L070E: db 'She gives you a slightly cross look. "Well, I hope that thou'
+ db ' didst not steal it from Elynor."'
+L076B: db 00
+L076C: db 'candelabra at murder site'
+L0785: db 00
+L0786: db 'Minoc'
+L078B: db 00
+L078C: db '"With the success of the mine, Minoc is a prosperous city. N'
+ db 'ot a place where one is used to having murders happen. A goo'
+ db 'd place for our Artist's Guild to do well. But things have a'
+ db 'lways been hard for us here. Now I fear they may get worse."'
+L087C: db 00
+L087D: db 'Minoc'
+L0882: db 00
+L0883: db 'murders'
+L088A: db 00
+L088B: db 'worse'
+L0890: db 00
+L0891: db 'worse'
+L0896: db 00
+L0897: db '"That is what Gladstone says. Thou hadst better ask him abou'
+ db 't it."'
+L08D9: db 00
+L08DA: db 'worse'
+L08DF: db 00
+L08E0: db 'murders'
+L08E7: db 00
+L08E8: db '"It is so terrible! I never knew Frederico or Tania personal'
+ db 'ly, but I did meet their son, Sasha, once. He was a nice boy'
+ db ', if somewhat misguided. He spent the night with us once at '
+ db 'the Artist's Guild, as a guest of Seara."'
+L09C5: db 00
+L09C6: db 'murders'
+L09CD: db 00
+L09CE: db 'Owen'
+L09D2: db 00
+L09D3: db '"They are to build a monument to Owen for some reason or ano'
+ db 'ther. Owen and Elynor refuse to use anyone from the Guild to'
+ db ' help build it! Rather rude of them, dost thou not think?"'
+L0A85: db 00
+L0A86: db 'Owen'
+L0A8A: db 00
+L0A8B: db 'bye'
+L0A8E: db 00
+L0A8F: db '"Farewell, '
+L0A9A: db 00
+L0A9B: db '. I hope I was of some assistance to thee."*'
+L0AC7: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 98 01   jne 01A0
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F AA FF   pushi FFAAH   ; -86
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 42 11 01   pushf flag:[0111]
+001B: 10   not
+001C: 05 0B 00   jne 002A
+001F: 1C 00 00   addsi L0000   ; You see a cheerfu...
+0022: 33   say
+0023: 13   push true
+0024: 43 11 01   popf flag:[0111]
+0027: 06 0A 00   jmp 0034
+002A: 1C 3B 00   addsi L003B   ; "Hello again, 
+002D: 2F 00 00   addsv [0000]
+0030: 1C 4A 00   addsi L004A   ; ." says Xanthia.
+0033: 33   say
+0034: 1D 5B 00   pushs L005B   ; bye
+0037: 1D 5F 00   pushs L005F   ; job
+003A: 1D 63 00   pushs L0063   ; name
+003D: 1E 03 00   arrc 0003H   ; 3
+0040: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0044: 04 4E 01   je 0195
+0047: 1D 68 00   pushs L0068   ; name
+004A: 07 01 00 0B 00  cmps 0001H, 005A
+004F: 1C 6D 00   addsi L006D   ; "Hello, my name i...
+0052: 33   say
+0053: 1D 8A 00   pushs L008A   ; name
+0056: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005A: 1D 8F 00   pushs L008F   ; job
+005D: 07 01 00 2C 00  cmps 0001H, 008E
+0062: 42 1F 01   pushf flag:[011F]
+0065: 05 17 00   jne 007F
+0068: 1C 93 00   addsi L0093   ; "I am a member of...
+006B: 33   say
+006C: 1D E0 00   pushs L00E0   ; candelabras
+006F: 1D EC 00   pushs L00EC   ; Minoc
+0072: 1D F2 00   pushs L00F2   ; Artist's Guild
+0075: 1E 03 00   arrc 0003H   ; 3
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 06 0F 00   jmp 008E
+007F: 1C 01 01   addsi L0101   ; "If thou wouldst ...
+0082: 33   say
+0083: 13   push true
+0084: 43 1F 01   popf flag:[011F]
+0087: 1D D6 01   pushs L01D6   ; murders
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 1D DE 01   pushs L01DE   ; Artist's Guild
+0091: 07 01 00 0B 00  cmps 0001H, 00A1
+0096: 1C ED 01   addsi L01ED   ; "We are a guild o...
+0099: 33   say
+009A: 1D E1 02   pushs L02E1   ; Artist's Guild
+009D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A1: 1D F0 02   pushs L02F0   ; candelabras
+00A4: 07 01 00 12 00  cmps 0001H, 00BB
+00A9: 1C FC 02   addsi L02FC   ; "I make simple ca...
+00AC: 33   say
+00AD: 1D B8 03   pushs L03B8   ; candelabras
+00B0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B4: 1D C4 03   pushs L03C4   ; Fellowship
+00B7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BB: 1D CF 03   pushs L03CF   ; Fellowship
+00BE: 07 01 00 1F 00  cmps 0001H, 00E2
+00C3: 1C DA 03   addsi L03DA   ; "Elynor, the head...
+00C6: 33   say
+00C7: 1D 6C 04   pushs L046C   ; Fellowship
+00CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CE: 1D 77 04   pushs L0477   ; Elynor
+00D1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D5: 42 22 01   pushf flag:[0122]
+00D8: 05 07 00   jne 00E2
+00DB: 1D 7E 04   pushs L047E   ; candelabra at mur...
+00DE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E2: 1D 98 04   pushs L0498   ; Elynor
+00E5: 07 01 00 12 00  cmps 0001H, 00FC
+00EA: 1C 9F 04   addsi L049F   ; "Yes, she's quite...
+00ED: 33   say
+00EE: 1D A4 05   pushs L05A4   ; Elynor
+00F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F5: 1D AB 05   pushs L05AB   ; Owen
+00F8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FC: 1D B0 05   pushs L05B0   ; candelabra at mur...
+00FF: 07 01 00 26 00  cmps 0001H, 012A
+0104: 1C CA 05   addsi L05CA   ; You describe the ...
+0107: 33   say
+0108: 24 01 00   call [0001]   ; 090AH
+010B: 12 01 00   pop [0001]
+010E: 21 01 00   push [0001]
+0111: 05 07 00   jne 011B
+0114: 1C 84 06   addsi L0684   ; Xanthia looks sho...
+0117: 33   say
+0118: 06 04 00   jmp 011F
+011B: 1C 0E 07   addsi L070E   ; She gives you a s...
+011E: 33   say
+011F: 13   push true
+0120: 43 25 01   popf flag:[0125]
+0123: 1D 6C 07   pushs L076C   ; candelabra at mur...
+0126: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012A: 1D 86 07   pushs L0786   ; Minoc
+012D: 07 01 00 18 00  cmps 0001H, 014A
+0132: 1C 8C 07   addsi L078C   ; "With the success...
+0135: 33   say
+0136: 1D 7D 08   pushs L087D   ; Minoc
+0139: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013D: 1D 83 08   pushs L0883   ; murders
+0140: 1D 8B 08   pushs L088B   ; worse
+0143: 1E 02 00   arrc 0002H   ; 2
+0146: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014A: 1D 91 08   pushs L0891   ; worse
+014D: 07 01 00 0B 00  cmps 0001H, 015D
+0152: 1C 97 08   addsi L0897   ; "That is what Gla...
+0155: 33   say
+0156: 1D DA 08   pushs L08DA   ; worse
+0159: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015D: 1D E0 08   pushs L08E0   ; murders
+0160: 07 01 00 0F 00  cmps 0001H, 0174
+0165: 1C E8 08   addsi L08E8   ; "It is so terribl...
+0168: 33   say
+0169: 13   push true
+016A: 43 FE 00   popf flag:[00FE]
+016D: 1D C6 09   pushs L09C6   ; murders
+0170: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0174: 1D CE 09   pushs L09CE   ; Owen
+0177: 07 01 00 0B 00  cmps 0001H, 0187
+017C: 1C D3 09   addsi L09D3   ; "They are to buil...
+017F: 33   say
+0180: 1D 86 0A   pushs L0A86   ; Owen
+0183: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0187: 1D 8B 0A   pushs L0A8B   ; bye
+018A: 07 01 00 03 00  cmps 0001H, 0192
+018F: 06 03 00   jmp 0195
+0192: 06 AF FE   jmp 0044
+0195: 40   db 40 ???
+0196: 1C 8F 0A   addsi L0A8F   ; "Farewell, 
+0199: 2F 00 00   addsv [0000]
+019C: 1C 9B 0A   addsi L0A9B   ; . I hope I was of...
+019F: 33   say
+01A0: 48   push eventid
+01A1: 1F 00 00   pushi 0000H   ; 0
+01A4: 22   cmpeq
+01A5: 05 06 00   jne 01AE
+01A8: 1F AA FF   pushi FFAAH   ; -86
+01AB: 24 02 00   call [0002]   ; 092EH
+01AE: 25   ret

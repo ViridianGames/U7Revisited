@@ -1,0 +1,106 @@
+  .funcnumber 0674H
+  .data
+L0000: db '@Vas Oort Hur@'
+L000E: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0002H
+  .extern 0906H
+  .extern 0934H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 83 00   jne 008B
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 1D 00 00   pushs L0000   ; @Vas Oort Hur@
+0010: 3E   push itemref
+0011: 39 40 00 02  calli _ItemSay@2  ; 0040
+0015: 24 00 00   call [0000]   ; 0906H
+0018: 05 58 00   jne 0073
+001B: 1F 46 00   pushi 0046H   ; 70
+001E: 12 00 00   pop [0000]
+0021: 13   push true
+0022: 43 ED 02   popf flag:[02ED]
+0025: 1F 02 00   pushi 0002H   ; 2
+0028: 39 45 00 01  calli 0045, 1
+002C: 44 61   pushw 4461H   ; 17505
+002E: 44 6A   pushw 446AH   ; 17514
+0030: 44 6F   pushw 446FH   ; 17519
+0032: 44 70   pushw 4470H   ; 17520
+0034: 44 6F   pushw 1F6FH   ; 8047
+0036: 1F 41 00   pushi 0041H   ; 65
+0039: 44 58   pushw 1E58H   ; 7768
+003B: 1E 07 00   arrc 0007H   ; 7
+003E: 3E   push itemref
+003F: 38 01 00 02  callis 0001, 2
+0043: 12 01 00   pop [0001]
+0046: 1F 08 00   pushi 0008H   ; 8
+0049: 1F 74 06   pushi 0674H   ; 1652
+004C: 44 55   pushw 4455H   ; 17493
+004E: 44 23   pushw 1E23H   ; 7715
+0050: 1E 03 00   arrc 0003H   ; 3
+0053: 3E   push itemref
+0054: 38 02 00 03  callis 0002, 3
+0058: 12 01 00   pop [0001]
+005B: 21 00 00   push [0000]
+005E: 1F 8A 06   pushi 068AH   ; 1674
+0061: 44 55   pushw 4455H   ; 17493
+0063: 44 23   pushw 1E23H   ; 7715
+0065: 1E 03 00   arrc 0003H   ; 3
+0068: 3E   push itemref
+0069: 38 02 00 03  callis 0002, 3
+006D: 12 01 00   pop [0001]
+0070: 06 18 00   jmp 008B
+0073: 1F 06 06   pushi 0606H   ; 1542
+0076: 44 55   pushw 4455H   ; 17493
+0078: 44 6A   pushw 446AH   ; 17514
+007A: 44 6F   pushw 446FH   ; 17519
+007C: 44 70   pushw 4470H   ; 17520
+007E: 44 6F   pushw 1E6FH   ; 7791
+0080: 1E 06 00   arrc 0006H   ; 6
+0083: 3E   push itemref
+0084: 38 01 00 02  callis 0001, 2
+0088: 12 01 00   pop [0001]
+008B: 48   push eventid
+008C: 1F 02 00   pushi 0002H   ; 2
+008F: 22   cmpeq
+0090: 05 67 00   jne 00FA
+0093: 42 ED 02   pushf flag:[02ED]
+0096: 13   push true
+0097: 22   cmpeq
+0098: 05 5F 00   jne 00FA
+009B: 1F 2D 00   pushi 002DH   ; 45
+009E: 12 02 00   pop [0002]
+00A1: 21 02 00   push [0002]
+00A4: 24 01 00   call [0001]   ; 0934H
+00A7: 12 03 00   pop [0003]
+00AA: 21 03 00   push [0003]
+00AD: 38 5E 00 01  callis _ArraySize@1  ; 005E
+00B1: 1F 01 00   pushi 0001H   ; 1
+00B4: 38 10 00 02  callis _Random2@2  ; 0010
+00B8: 26 03 00   aidx [0003]
+00BB: 12 04 00   pop [0004]
+00BE: 21 04 00   push [0004]
+00C1: 05 14 00   jne 00D8
+00C4: 1F 0F 06   pushi 060FH   ; 1551
+00C7: 44 55   pushw 4455H   ; 17493
+00C9: 44 23   pushw 1E23H   ; 7715
+00CB: 1E 03 00   arrc 0003H   ; 3
+00CE: 21 04 00   push [0004]
+00D1: 38 01 00 02  callis 0001, 2
+00D5: 12 01 00   pop [0001]
+00D8: 1F 08 00   pushi 0008H   ; 8
+00DB: 1F 03 00   pushi 0003H   ; 3
+00DE: 38 10 00 02  callis _Random2@2  ; 0010
+00E2: 12 05 00   pop [0005]
+00E5: 21 05 00   push [0005]
+00E8: 1F 74 06   pushi 0674H   ; 1652
+00EB: 44 55   pushw 4455H   ; 17493
+00ED: 44 23   pushw 1E23H   ; 7715
+00EF: 1E 03 00   arrc 0003H   ; 3
+00F2: 3E   push itemref
+00F3: 38 02 00 03  callis 0002, 3
+00F7: 12 01 00   pop [0001]
+00FA: 25   ret

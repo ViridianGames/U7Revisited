@@ -1,0 +1,466 @@
+  .funcnumber 0465H
+  .data
+L0000: db 'The creature ignores you.*'
+L001A: db 00
+L001B: db 'You see a wizened female ape-like creature.'
+L0046: db 00
+L0047: db 'You see a wizened female Emp.'
+L0064: db 00
+L0065: db '"You are hailed, human."'
+L007D: db 00
+L007E: db 'Trellek'
+L0085: db 00
+L0086: db 'bye'
+L0089: db 00
+L008A: db 'job'
+L008D: db 00
+L008E: db 'name'
+L0092: db 00
+L0093: db 'name'
+L0097: db 00
+L0098: db '"I am Salamon," she says.'
+L00B1: db 00
+L00B2: db 'name'
+L00B6: db 00
+L00B7: db 'job'
+L00BA: db 00
+L00BB: db '"I am without job. All Emps are without jobs. Food gathering'
+ db ' and shelter-building are Emp jobs."'
+L011B: db 00
+L011C: db 'She gives you a hard look.~~"There is a job for Trellek."'
+L0155: db 00
+L0156: db 'Trellek'
+L015D: db 00
+L015E: db 'shelter-building'
+L016E: db 00
+L016F: db 'food-gathering'
+L017D: db 00
+L017E: db 'shelter-building'
+L018E: db 00
+L018F: db '"Silverleaf trees are where Emp's homes can be found."'
+L01C5: db 00
+L01C6: db 'shelter-building'
+L01D6: db 00
+L01D7: db 'food-gathering'
+L01E5: db 00
+L01E6: db '"Only fruits, vegetables, and milk-stuffs are eaten by Emps.'
+ db ' Bread is also eaten."'
+L0238: db 00
+L0239: db 'food-gathering'
+L0247: db 00
+L0248: db '-only-?'
+L024F: db 00
+L0250: db 'bread'
+L0255: db 00
+L0256: db 'milk-stuffs'
+L0261: db 00
+L0262: db 'fruits and vegetables'
+L0277: db 00
+L0278: db 'milk-stuffs'
+L0283: db 00
+L0284: db '"Milk and cheese and butter are milk-stuffs."'
+L02B1: db 00
+L02B2: db 'milk-stuffs'
+L02BD: db 00
+L02BE: db 'bread'
+L02C3: db 00
+L02C4: db '"Bread is hard to make for Emps. No stoves or ovens are owne'
+ db 'd by Emps. But bread is well liked."'
+L0324: db 00
+L0325: db 'bread'
+L032A: db 00
+L032B: db 'fruits and vegetables'
+L0340: db 00
+L0341: db '"Fruits and vegetables are our favorites. Many are sweet."'
+L037B: db 00
+L037C: db 'fruits and vegetables'
+L0391: db 00
+L0392: db 'sweet'
+L0397: db 00
+L0398: db 'sweet'
+L039D: db 00
+L039E: db '"Sweet things are desired by Emps. Honey is sweetest! More h'
+ db 'oney is had by you?"'
+L03EE: db 00
+L03EF: db 'Her eyes widen and her lips part around a very large and hop'
+ db 'eful smile.~~"More honey will be given by you?"'
+L045A: db 00
+L045B: db '"You are thanked," she says, taking the honey.'
+L0489: db 00
+L048A: db '"A mean trick was played by you," she says, frowning.'
+L04BF: db 00
+L04C0: db 'She seems surprised, but quickly recovers.~~"Your feelings a'
+ db 're understood by me," she sighs.'
+L051C: db 00
+L051D: db 'She sighs, obviously disappointed.'
+L053F: db 00
+L0540: db 'sweet'
+L0545: db 00
+L0546: db '-only-?'
+L054D: db 00
+L054E: db '"No dead animal flesh -- what is called `meat' by humans -- '
+ db 'is eaten by an Emp."'
+L059E: db 00
+L059F: db 'meat'
+L05A3: db 00
+L05A4: db 'dead animal flesh'
+L05B5: db 00
+L05B6: db '-only-?'
+L05BD: db 00
+L05BE: db 'meat'
+L05C2: db 00
+L05C3: db '"Meat is without a good taste," she shudders. "It is not pre'
+ db 'ferred!"'
+L0607: db 00
+L0608: db 'meat'
+L060C: db 00
+L060D: db 'dead animal flesh'
+L061E: db 00
+L061F: db '"All violence is abhorred by Emps. No killing is desired, ev'
+ db 'en for what you humans call food."'
+L067D: db 00
+L067E: db 'dead animal flesh'
+L068F: db 00
+L0690: db 'Trellek'
+L0697: db 00
+L0698: db 'She takes the document from you, smiling when she sees Ben's'
+ db ' signature. "Trellek is permitted to join you. You are wishe'
+ db 'd luck and speed."'
+L0722: db 00
+L0723: db '"The signed contract must be seen by me."'
+L074C: db 00
+L074D: db '"Permission will be given to you later. There is a task that'
+ db ' must be performed first.~~"There is a woodcutter who lives '
+ db 'in the western part of the forest. Silverleaf trees are bein'
+ db 'g cut down by him. Emp houses are in Silverleaf trees. Contr'
+ db 'act must be signed by woodcutter to stop."'
+L0867: db 00
+L0868: db '"My condition is understood by you?" Not waiting for your re'
+ db 'sponse, she hands you a document.'
+L08C5: db 00
+L08C6: db '"You are now in possession of the contract."'
+L08F2: db 00
+L08F3: db '"There is not enough room in your equipment for the contract'
+ db '."'
+L0931: db 00
+L0932: db '"Trellek is another Emp. He should be spoken to by you.~~"Th'
+ db 'ere is much damage to the forest and the Silverleaf trees. T'
+ db 'he damage is caused by your people, human. The responsibilit'
+ db 'y to reverse the damage is also yours, human.~~"Trellek shou'
+ db 'ld be sought by you," she says emphatically. "He should be a'
+ db 'sked to join you."'
+L0A70: db 00
+L0A71: db 'Trellek'
+L0A78: db 00
+L0A79: db 'bye'
+L0A7C: db 00
+L0A7D: db '"My hope is for your welfare, human."*'
+L0AA3: db 00
+L0AA4: db '@You are greeted.@'
+L0AB6: db 00
+L0AB7: db '@Nature is home to many.@'
+L0AD0: db 00
+L0AD1: db '@A good day is hoped for you.@'
+L0AEF: db 00
+L0AF0: db '@Nature is wise.@'
+L0B01: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0003H
+  .extern 0931H
+  .extern 08DFH
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 97 02   jne 029F
+0008: 1F 99 FE   pushi FE99H   ; -359
+000B: 1F 99 FE   pushi FE99H   ; -359
+000E: 1F 04 03   pushi 0304H   ; 772
+0011: 1F 01 00   pushi 0001H   ; 1
+0014: 1F 9B FE   pushi FE9BH   ; -357
+0017: 24 00 00   call [0000]   ; 0931H
+001A: 12 00 00   pop [0000]
+001D: 1F 00 00   pushi 0000H   ; 0
+0020: 1F 9B FF   pushi FF9BH   ; -101
+0023: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0027: 42 54 01   pushf flag:[0154]
+002A: 10   not
+002B: 05 12 00   jne 0040
+002E: 21 00 00   push [0000]
+0031: 10   not
+0032: 05 08 00   jne 003D
+0035: 1C 00 00   addsi L0000   ; The creature igno...
+0038: 33   say
+0039: 3F   abrt
+003A: 06 03 00   jmp 0040
+003D: 24 01 00   call [0001]   ; 08DFH
+0040: 42 3F 01   pushf flag:[013F]
+0043: 10   not
+0044: 05 21 00   jne 0068
+0047: 42 3C 01   pushf flag:[013C]
+004A: 10   not
+004B: 05 0F 00   jne 005D
+004E: 1C 1B 00   addsi L001B   ; You see a wizened...
+0051: 33   say
+0052: 13   push true
+0053: 43 3C 01   popf flag:[013C]
+0056: 13   push true
+0057: 43 3F 01   popf flag:[013F]
+005A: 06 08 00   jmp 0065
+005D: 1C 47 00   addsi L0047   ; You see a wizened...
+0060: 33   say
+0061: 13   push true
+0062: 43 3F 01   popf flag:[013F]
+0065: 06 04 00   jmp 006C
+0068: 1C 65 00   addsi L0065   ; "You are hailed, ...
+006B: 33   say
+006C: 42 2B 01   pushf flag:[012B]
+006F: 05 07 00   jne 0079
+0072: 1D 7E 00   pushs L007E   ; Trellek
+0075: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0079: 1D 86 00   pushs L0086   ; bye
+007C: 1D 8A 00   pushs L008A   ; job
+007F: 1D 8E 00   pushs L008E   ; name
+0082: 1E 03 00   arrc 0003H   ; 3
+0085: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0089: 04 0E 02   je 029A
+008C: 1D 93 00   pushs L0093   ; name
+008F: 07 01 00 0B 00  cmps 0001H, 009F
+0094: 1C 98 00   addsi L0098   ; "I am Salamon," s...
+0097: 33   say
+0098: 1D B2 00   pushs L00B2   ; name
+009B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009F: 1D B7 00   pushs L00B7   ; job
+00A2: 07 01 00 27 00  cmps 0001H, 00CE
+00A7: 1C BB 00   addsi L00BB   ; "I am without job...
+00AA: 33   say
+00AB: 42 31 01   pushf flag:[0131]
+00AE: 10   not
+00AF: 05 0F 00   jne 00C1
+00B2: 1C 1C 01   addsi L011C   ; She gives you a h...
+00B5: 33   say
+00B6: 13   push true
+00B7: 43 51 01   popf flag:[0151]
+00BA: 1D 56 01   pushs L0156   ; Trellek
+00BD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C1: 1D 5E 01   pushs L015E   ; shelter-building
+00C4: 1D 6F 01   pushs L016F   ; food-gathering
+00C7: 1E 02 00   arrc 0002H   ; 2
+00CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CE: 1D 7E 01   pushs L017E   ; shelter-building
+00D1: 07 01 00 0B 00  cmps 0001H, 00E1
+00D6: 1C 8F 01   addsi L018F   ; "Silverleaf trees...
+00D9: 33   say
+00DA: 1D C6 01   pushs L01C6   ; shelter-building
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D D7 01   pushs L01D7   ; food-gathering
+00E4: 07 01 00 1E 00  cmps 0001H, 0107
+00E9: 1C E6 01   addsi L01E6   ; "Only fruits, veg...
+00EC: 33   say
+00ED: 1D 39 02   pushs L0239   ; food-gathering
+00F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F4: 1D 48 02   pushs L0248   ; -only-?
+00F7: 1D 50 02   pushs L0250   ; bread
+00FA: 1D 56 02   pushs L0256   ; milk-stuffs
+00FD: 1D 62 02   pushs L0262   ; fruits and vegeta...
+0100: 1E 04 00   arrc 0004H   ; 4
+0103: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0107: 1D 78 02   pushs L0278   ; milk-stuffs
+010A: 07 01 00 0B 00  cmps 0001H, 011A
+010F: 1C 84 02   addsi L0284   ; "Milk and cheese ...
+0112: 33   say
+0113: 1D B2 02   pushs L02B2   ; milk-stuffs
+0116: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011A: 1D BE 02   pushs L02BE   ; bread
+011D: 07 01 00 0B 00  cmps 0001H, 012D
+0122: 1C C4 02   addsi L02C4   ; "Bread is hard to...
+0125: 33   say
+0126: 1D 25 03   pushs L0325   ; bread
+0129: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012D: 1D 2B 03   pushs L032B   ; fruits and vegeta...
+0130: 07 01 00 12 00  cmps 0001H, 0147
+0135: 1C 41 03   addsi L0341   ; "Fruits and veget...
+0138: 33   say
+0139: 1D 7C 03   pushs L037C   ; fruits and vegeta...
+013C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0140: 1D 92 03   pushs L0392   ; sweet
+0143: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0147: 1D 98 03   pushs L0398   ; sweet
+014A: 07 01 00 5C 00  cmps 0001H, 01AB
+014F: 1C 9E 03   addsi L039E   ; "Sweet things are...
+0152: 33   say
+0153: 24 02 00   call [0002]   ; 090AH
+0156: 12 01 00   pop [0001]
+0159: 21 01 00   push [0001]
+015C: 05 41 00   jne 01A0
+015F: 1C EF 03   addsi L03EF   ; Her eyes widen an...
+0162: 33   say
+0163: 24 02 00   call [0002]   ; 090AH
+0166: 12 02 00   pop [0002]
+0169: 21 02 00   push [0002]
+016C: 05 2A 00   jne 0199
+016F: 1F 99 FE   pushi FE99H   ; -359
+0172: 1F 99 FE   pushi FE99H   ; -359
+0175: 1F 04 03   pushi 0304H   ; 772
+0178: 1F 01 00   pushi 0001H   ; 1
+017B: 1F 9B FE   pushi FE9BH   ; -357
+017E: 24 00 00   call [0000]   ; 0931H
+0181: 12 03 00   pop [0003]
+0184: 21 03 00   push [0003]
+0187: 05 07 00   jne 0191
+018A: 1C 5B 04   addsi L045B   ; "You are thanked,...
+018D: 33   say
+018E: 06 05 00   jmp 0196
+0191: 1C 8A 04   addsi L048A   ; "A mean trick was...
+0194: 33   say
+0195: 3F   abrt
+0196: 06 04 00   jmp 019D
+0199: 1C C0 04   addsi L04C0   ; She seems surpris...
+019C: 33   say
+019D: 06 04 00   jmp 01A4
+01A0: 1C 1D 05   addsi L051D   ; She sighs, obviou...
+01A3: 33   say
+01A4: 1D 40 05   pushs L0540   ; sweet
+01A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AB: 1D 46 05   pushs L0546   ; -only-?
+01AE: 07 01 00 18 00  cmps 0001H, 01CB
+01B3: 1C 4E 05   addsi L054E   ; "No dead animal f...
+01B6: 33   say
+01B7: 1D 9F 05   pushs L059F   ; meat
+01BA: 1D A4 05   pushs L05A4   ; dead animal flesh
+01BD: 1E 02 00   arrc 0002H   ; 2
+01C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C4: 1D B6 05   pushs L05B6   ; -only-?
+01C7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CB: 1D BE 05   pushs L05BE   ; meat
+01CE: 07 01 00 0B 00  cmps 0001H, 01DE
+01D3: 1C C3 05   addsi L05C3   ; "Meat is without ...
+01D6: 33   say
+01D7: 1D 08 06   pushs L0608   ; meat
+01DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DE: 1D 0D 06   pushs L060D   ; dead animal flesh
+01E1: 07 01 00 0B 00  cmps 0001H, 01F1
+01E6: 1C 1F 06   addsi L061F   ; "All violence is ...
+01E9: 33   say
+01EA: 1D 7E 06   pushs L067E   ; dead animal flesh
+01ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F1: 1D 90 06   pushs L0690   ; Trellek
+01F4: 07 01 00 93 00  cmps 0001H, 028C
+01F9: 42 30 01   pushf flag:[0130]
+01FC: 05 82 00   jne 0281
+01FF: 42 2B 01   pushf flag:[012B]
+0202: 05 41 00   jne 0246
+0205: 1F 99 FE   pushi FE99H   ; -359
+0208: 1F 03 00   pushi 0003H   ; 3
+020B: 1F 1D 03   pushi 031DH   ; 797
+020E: 1F 01 00   pushi 0001H   ; 1
+0211: 1F 9B FE   pushi FE9BH   ; -357
+0214: 24 00 00   call [0000]   ; 0931H
+0217: 12 04 00   pop [0004]
+021A: 21 04 00   push [0004]
+021D: 05 1F 00   jne 023F
+0220: 1C 98 06   addsi L0698   ; She takes the doc...
+0223: 33   say
+0224: 14   push false
+0225: 1F 99 FE   pushi FE99H   ; -359
+0228: 1F 03 00   pushi 0003H   ; 3
+022B: 1F 1D 03   pushi 031DH   ; 797
+022E: 1F 01 00   pushi 0001H   ; 1
+0231: 38 2B 00 05  callis 002B, 5
+0235: 12 05 00   pop [0005]
+0238: 13   push true
+0239: 43 31 01   popf flag:[0131]
+023C: 06 04 00   jmp 0243
+023F: 1C 23 07   addsi L0723   ; "The signed contr...
+0242: 33   say
+0243: 06 38 00   jmp 027E
+0246: 1C 4D 07   addsi L074D   ; "Permission will ...
+0249: 33   say
+024A: 42 2A 01   pushf flag:[012A]
+024D: 10   not
+024E: 05 2D 00   jne 027E
+0251: 1C 68 08   addsi L0868   ; "My condition is ...
+0254: 33   say
+0255: 14   push false
+0256: 1F 99 FE   pushi FE99H   ; -359
+0259: 1F 03 00   pushi 0003H   ; 3
+025C: 1F 1D 03   pushi 031DH   ; 797
+025F: 1F 01 00   pushi 0001H   ; 1
+0262: 38 2C 00 05  callis 002C, 5
+0266: 12 06 00   pop [0006]
+0269: 21 06 00   push [0006]
+026C: 05 0B 00   jne 027A
+026F: 1C C6 08   addsi L08C6   ; "You are now in p...
+0272: 33   say
+0273: 13   push true
+0274: 43 2A 01   popf flag:[012A]
+0277: 06 04 00   jmp 027E
+027A: 1C F3 08   addsi L08F3   ; "There is not eno...
+027D: 33   say
+027E: 06 04 00   jmp 0285
+0281: 1C 32 09   addsi L0932   ; "Trellek is anoth...
+0284: 33   say
+0285: 1D 71 0A   pushs L0A71   ; Trellek
+0288: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028C: 1D 79 0A   pushs L0A79   ; bye
+028F: 07 01 00 03 00  cmps 0001H, 0297
+0294: 06 03 00   jmp 029A
+0297: 06 EF FD   jmp 0089
+029A: 40   db 40 ???
+029B: 1C 7D 0A   addsi L0A7D   ; "My hope is for y...
+029E: 33   say
+029F: 48   push eventid
+02A0: 1F 00 00   pushi 0000H   ; 0
+02A3: 22   cmpeq
+02A4: 05 8A 00   jne 0331
+02A7: 1F 9B FF   pushi FF9BH   ; -101
+02AA: 38 1B 00 01  callis 001B, 1
+02AE: 38 1C 00 01  callis 001C, 1
+02B2: 12 07 00   pop [0007]
+02B5: 1F 04 00   pushi 0004H   ; 4
+02B8: 1F 01 00   pushi 0001H   ; 1
+02BB: 38 10 00 02  callis _Random2@2  ; 0010
+02BF: 12 08 00   pop [0008]
+02C2: 1F 99 FE   pushi FE99H   ; -359
+02C5: 1F 99 FE   pushi FE99H   ; -359
+02C8: 1F 04 03   pushi 0304H   ; 772
+02CB: 1F 01 00   pushi 0001H   ; 1
+02CE: 1F 9B FE   pushi FE9BH   ; -357
+02D1: 24 00 00   call [0000]   ; 0931H
+02D4: 12 00 00   pop [0000]
+02D7: 21 07 00   push [0007]
+02DA: 1F 0B 00   pushi 000BH   ; 11
+02DD: 22   cmpeq
+02DE: 05 46 00   jne 0327
+02E1: 21 00 00   push [0000]
+02E4: 05 40 00   jne 0327
+02E7: 21 08 00   push [0008]
+02EA: 1F 01 00   pushi 0001H   ; 1
+02ED: 22   cmpeq
+02EE: 05 06 00   jne 02F7
+02F1: 1D A4 0A   pushs L0AA4   ; @You are greeted.@
+02F4: 12 09 00   pop [0009]
+02F7: 21 08 00   push [0008]
+02FA: 1F 02 00   pushi 0002H   ; 2
+02FD: 22   cmpeq
+02FE: 05 06 00   jne 0307
+0301: 1D B7 0A   pushs L0AB7   ; @Nature is home t...
+0304: 12 09 00   pop [0009]
+0307: 21 08 00   push [0008]
+030A: 1F 03 00   pushi 0003H   ; 3
+030D: 22   cmpeq
+030E: 05 06 00   jne 0317
+0311: 1D D1 0A   pushs L0AD1   ; @A good day is ho...
+0314: 12 09 00   pop [0009]
+0317: 21 08 00   push [0008]
+031A: 1F 04 00   pushi 0004H   ; 4
+031D: 22   cmpeq
+031E: 05 06 00   jne 0327
+0321: 1D F0 0A   pushs L0AF0   ; @Nature is wise.@
+0324: 12 09 00   pop [0009]
+0327: 21 09 00   push [0009]
+032A: 1F 9B FF   pushi FF9BH   ; -101
+032D: 39 40 00 02  calli _ItemSay@2  ; 0040
+0331: 25   ret

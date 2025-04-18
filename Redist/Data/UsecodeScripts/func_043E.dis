@@ -1,0 +1,645 @@
+  .funcnumber 043EH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a filthy beggar who flashes you a grin as though you'
+ db ' were his best friend in the whole world.'
+L0072: db 00
+L0073: db '"Hello again, '
+L0081: db 00
+L0082: db '," says Snaz.'
+L008F: db 00
+L0090: db 'name'
+L0094: db 00
+L0095: db '"I am called Snaz."'
+L00A8: db 00
+L00A9: db 'name'
+L00AD: db 00
+L00AE: db 'job'
+L00B1: db 00
+L00B2: db '"I have no job for I am a beggar. For a gold coin I shall te'
+ db 'll thee a joke."'
+L00FE: db 00
+L00FF: db 'tell a joke'
+L010A: db 00
+L010B: db 'beggar'
+L0111: db 00
+L0112: db 'beggar'
+L0118: db 00
+L0119: db '"When I was just a little boy I was made an orphan and left '
+ db 'homeless and penniless. That was a joke life played on me. ''
+ db 'Tis a funny joke, eh?~~"But I would not charge thee a gold p'
+ db 'iece for that one."'
+L01E0: db 00
+L01E1: db 'beggar'
+L01E7: db 00
+L01E8: db 'tell a joke'
+L01F3: db 00
+L01F4: db '"Dost thou wish to hear one?"'
+L0211: db 00
+L0212: db '"All right, here is one..."'
+L022D: db 00
+L022E: db 'Fellowship joke'
+L023D: db 00
+L023E: db '"If thou dost want to hear a joke, thou must pay me, '
+L0273: db 00
+L0274: db '. Come back when thy pockets are full. The richer thou art, '
+ db 'the funnier I get!"'
+L02C3: db 00
+L02C4: db '"Have a heart, I pray thee! I have a wife and six hungry chi'
+ db 'ldren to feed." He feels your stare upon him. "Oh, very well'
+ db '. Wouldst thou believe I have a cat and it just had kittens?'
+ db '"'
+L0379: db 00
+L037A: db 'tell a joke'
+L0385: db 00
+L0386: db 'Fellowship joke'
+L0395: db 00
+L0396: db '"I was discussing philosophy with a Fellowship member the ot'
+ db 'her day and he asked me, 'What, in thine opinion, is the hei'
+ db 'ght of stupidity?'~~"So I said, 'I do not know. How tall art'
+ db ' thou?'~~"No, really, I make sport of The Fellowship, but I '
+ db 'mean it sincerely..."'
+L049B: db 00
+L049C: db 'Fellowship joke'
+L04AB: db 00
+L04AC: db 'Lord British joke'
+L04BD: db 00
+L04BE: db 'Fellowship'
+L04C8: db 00
+L04C9: db 'Fellowship'
+L04D3: db 00
+L04D4: db '"That is what I dearly love about The Fellowship. They could'
+ db ' always take a joke!~~"And from what I hear they play funny '
+ db 'jokes themselves! Like the joke they played in Trinsic!"'
+L0584: db 00
+L0585: db 'Fellowship'
+L058F: db 00
+L0590: db 'Lord British joke'
+L05A1: db 00
+L05A2: db '"For a gold coin I will tell thee another. Dost thou wish to'
+ db ' hear it?"'
+L05E8: db 00
+L05E9: db '"I see I have reached the limits of thy sense of humor."'
+L0621: db 00
+L0622: db 'Lord British joke'
+L0633: db 00
+L0634: db '"I was at the castle of Lord British the other day and I not'
+ db 'iced he has three large pools. So I asked why he doth have t'
+ db 'hree of them.~~"He pointed to the first one and said the fir'
+ db 'st was to swim in cool water. ~~"The second was for friends '
+ db 'to swim in warm water.~~"I noticed that the third pool was e'
+ db 'mpty and I asked him why.~~"He said that it was for people w'
+ db 'ho could not swim!"'
+L07AF: db 00
+L07B0: db 'Lord British joke'
+L07C1: db 00
+L07C2: db 'Weston joke'
+L07CD: db 00
+L07CE: db 'Lord British'
+L07DA: db 00
+L07DB: db '"Thou art more destitute than I! If I tell thee any more jok'
+ db 'es now thou mayest steal mine act!"'
+L083A: db 00
+L083B: db 'Lord British joke'
+L084C: db 00
+L084D: db 'Lord British'
+L0859: db 00
+L085A: db '"Poor Lord British! When faced with a gigantic menace that t'
+ db 'hreatens his entire kingdom he is an extremely capable ruler'
+ db '.~~"But what happens when there are a myriad of smaller thin'
+ db 'gs that all threaten the welfare of his people indirectly?~~'
+ db '"There is a riddle for thee to solve!"'
+L0970: db 00
+L0971: db 'Lord British'
+L097D: db 00
+L097E: db 'Weston joke'
+L0989: db 00
+L098A: db '"For a gold coin I will tell thee another. Dost thou wish to'
+ db ' hear it?"'
+L09D0: db 00
+L09D1: db '"Very well. If thou didst not get the first two there is no '
+ db 'good reason for me to continue now."'
+L0A31: db 00
+L0A32: db 'Weston joke'
+L0A3D: db 00
+L0A3E: db '"A man named Weston came to me deep in perplexity.~~"He told'
+ db ' me he wanted to steal some apples from the Royal Orchards b'
+ db 'ut if he did he would feel bad about it in the morning.~~"So'
+ db ' I gave him this advice -- sleep until noon!"'
+L0B1F: db 00
+L0B20: db 'Weston joke'
+L0B2B: db 00
+L0B2C: db 'mage joke'
+L0B35: db 00
+L0B36: db 'Weston'
+L0B3C: db 00
+L0B3D: db '"Thy pockets are empty, '
+L0B55: db 00
+L0B56: db '. Perhaps it is time to stop laughing and start worrying!"'
+L0B90: db 00
+L0B91: db 'Weston joke'
+L0B9C: db 00
+L0B9D: db 'Weston'
+L0BA3: db 00
+L0BA4: db '"Weston now sits in the castle prison, where he shall most c'
+ db 'ertainly rot for the rest of his life. Heh-heh-heh! ~~"Try a'
+ db 's I might, I cannot best that little jest!"'
+L0C47: db 00
+L0C48: db 'Weston'
+L0C4E: db 00
+L0C4F: db 'mage joke'
+L0C58: db 00
+L0C59: db '"For a gold coin I will tell thee another. Dost thou wish to'
+ db ' hear it?"'
+L0C9F: db 00
+L0CA0: db '"Thou art wise. Thou shouldst save thy gold to pay a healer '
+ db 'to cure that ache in thy side."'
+L0CFB: db 00
+L0CFC: db 'mage joke'
+L0D05: db 00
+L0D06: db '"Whilst travelling on the road I came across a mage.~~"He lo'
+ db 'oked as if he had not eaten for days and complained of a ter'
+ db 'rible pain in his stomach.~~"So I told him his stomach was e'
+ db 'mpty. If he put something in it he would feel better.~~"Late'
+ db 'r he complained to me of a headache. I said his headache was'
+ db ' caused by a similar problem as his stomach.~~"No doubt it d'
+ db 'id hurt him so because, being a mage, there was nothing left'
+ db ' in it!"'
+L0EB2: db 00
+L0EB3: db 'mage joke'
+L0EBC: db 00
+L0EBD: db 'Sullivan joke'
+L0ECA: db 00
+L0ECB: db 'mages'
+L0ED0: db 00
+L0ED1: db '"Now thou art playing a joke on me. Thou art broke!"'
+L0F05: db 00
+L0F06: db 'mage joke'
+L0F0F: db 00
+L0F10: db 'mages'
+L0F15: db 00
+L0F16: db '"All of the mages have gone daft or mad! What other proper r'
+ db 'esponse is there in a world that is so terrifically funny?!"'
+L0F8E: db 00
+L0F8F: db 'mages'
+L0F94: db 00
+L0F95: db 'Sullivan joke'
+L0FA2: db 00
+L0FA3: db '"Thou art a brave Avatar! Dost thou wish to hear another?"'
+L0FDD: db 00
+L0FDE: db '"Aha! Not as brave as I thought!"'
+L0FFF: db 00
+L1000: db 'joke five'
+L1009: db 00
+L100A: db '"Didst thou knowest that the notorious Sullivan the Trickste'
+ db 'r recently became a father?~~"It is true! They say the baby '
+ db 'has his father's eyes and his mother's nose, but they made t'
+ db 'he baby give them back."'
+L10D6: db 00
+L10D7: db 'Sullivan joke'
+L10E4: db 00
+L10E5: db 'gold joke'
+L10EE: db 00
+L10EF: db 'Sullivan'
+L10F7: db 00
+L10F8: db '"Thou mayest be laughing but surely thy purse is not, for it'
+ db ' is empty."'
+L113F: db 00
+L1140: db 'Sullivan'
+L1148: db 00
+L1149: db '"Yes, I know the man they call Sullivan the Trickster! In fa'
+ db 'ct thou dost remind me of him!~~"Or does he remind me of the'
+ db 'e?~~"He is so tricky that just talking about him has caused '
+ db 'me to trick myself! Heh-Hee-Haa!"'
+L121E: db 00
+L121F: db 'Sullivan'
+L1227: db 00
+L1228: db 'gold joke'
+L1231: db 00
+L1232: db '"I have amused thee so far! Wouldst thou like to hear anothe'
+ db 'r? It is a joke about gold!"'
+L128A: db 00
+L128B: db '"Thank thee very much! Now, goodbye!"'
+L12B0: db 00
+L12B1: db '"Dost thou get it? Ha! Ha! Ha! Ha! If not, it would be my pl'
+ db 'easure to repeat it."'
+L1302: db 00
+L1303: db '"Wouldst thou like to hear the gold joke again?"'
+L1333: db 00
+L1334: db '"Now listen carefully..."'
+L134D: db 00
+L134E: db '"Oh, I am so sorry. I cannot tell thee the joke again for th'
+ db 'ou art out of money."'
+L139F: db 00
+L13A0: db '"I see thou art becoming wise to the ways of show business, '
+L13DC: db 00
+L13DD: db '. Good day to thee!"'
+L13F1: db 00
+L13F2: db '"I can see thou art so poor that thou cannot even afford a s'
+ db 'ense of humor!"'
+L143D: db 00
+L143E: db '"Oh, it is a pity that thou dost not wish to hear it! It is '
+ db 'the funniest one yet and my personal favorite!"'
+L14A9: db 00
+L14AA: db 'gold joke'
+L14B3: db 00
+L14B4: db 'bye'
+L14B7: db 00
+L14B8: db '"I do hope I did amuse thee."*'
+L14D6: db 00
+L14D7: db '@Spare change?@'
+L14E6: db 00
+L14E7: db '@Got a coin for me?@'
+L14FB: db 00
+L14FC: db '@Jokes for sale!@'
+L150D: db 00
+L150E: db '@Handouts accepted!@'
+L1522: db 00
+  .code
+  .argc 0001H
+  .localc 0013H
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 9F 03   jne 03A7
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F C2 FF   pushi FFC2H   ; -62
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 BF 00   pushf flag:[00BF]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; You see a filthy ...
+0032: 33   say
+0033: 13   push true
+0034: 43 BF 00   popf flag:[00BF]
+0037: 06 0A 00   jmp 0044
+003A: 1C 73 00   addsi L0073   ; "Hello again, 
+003D: 2F 00 00   addsv [0000]
+0040: 1C 82 00   addsi L0082   ; ," says Snaz.
+0043: 33   say
+0044: 04 5B 03   je 03A2
+0047: 1D 90 00   pushs L0090   ; name
+004A: 07 01 00 0B 00  cmps 0001H, 005A
+004F: 1C 95 00   addsi L0095   ; "I am called Snaz."
+0052: 33   say
+0053: 1D A9 00   pushs L00A9   ; name
+0056: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005A: 1D AE 00   pushs L00AE   ; job
+005D: 07 01 00 11 00  cmps 0001H, 0073
+0062: 1C B2 00   addsi L00B2   ; "I have no job fo...
+0065: 33   say
+0066: 1D FF 00   pushs L00FF   ; tell a joke
+0069: 1D 0B 01   pushs L010B   ; beggar
+006C: 1E 02 00   arrc 0002H   ; 2
+006F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0073: 1D 12 01   pushs L0112   ; beggar
+0076: 07 01 00 0B 00  cmps 0001H, 0086
+007B: 1C 19 01   addsi L0119   ; "When I was just ...
+007E: 33   say
+007F: 1D E1 01   pushs L01E1   ; beggar
+0082: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0086: 1D E8 01   pushs L01E8   ; tell a joke
+0089: 07 01 00 50 00  cmps 0001H, 00DE
+008E: 1C F4 01   addsi L01F4   ; "Dost thou wish t...
+0091: 33   say
+0092: 24 01 00   call [0001]   ; 090AH
+0095: 12 01 00   pop [0001]
+0098: 21 01 00   push [0001]
+009B: 05 35 00   jne 00D3
+009E: 13   push true
+009F: 1F 99 FE   pushi FE99H   ; -359
+00A2: 1F 99 FE   pushi FE99H   ; -359
+00A5: 1F 84 02   pushi 0284H   ; 644
+00A8: 1F 01 00   pushi 0001H   ; 1
+00AB: 38 2B 00 05  callis 002B, 5
+00AF: 12 02 00   pop [0002]
+00B2: 21 02 00   push [0002]
+00B5: 05 0E 00   jne 00C6
+00B8: 1C 12 02   addsi L0212   ; "All right, here ...
+00BB: 33   say
+00BC: 1D 2E 02   pushs L022E   ; Fellowship joke
+00BF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C3: 06 0A 00   jmp 00D0
+00C6: 1C 3E 02   addsi L023E   ; "If thou dost wan...
+00C9: 2F 00 00   addsv [0000]
+00CC: 1C 74 02   addsi L0274   ; . Come back when ...
+00CF: 33   say
+00D0: 06 04 00   jmp 00D7
+00D3: 1C C4 02   addsi L02C4   ; "Have a heart, I ...
+00D6: 33   say
+00D7: 1D 7A 03   pushs L037A   ; tell a joke
+00DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DE: 1D 86 03   pushs L0386   ; Fellowship joke
+00E1: 07 01 00 18 00  cmps 0001H, 00FE
+00E6: 1C 96 03   addsi L0396   ; "I was discussing...
+00E9: 33   say
+00EA: 1D 9C 04   pushs L049C   ; Fellowship joke
+00ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F1: 1D AC 04   pushs L04AC   ; Lord British joke
+00F4: 1D BE 04   pushs L04BE   ; Fellowship
+00F7: 1E 02 00   arrc 0002H   ; 2
+00FA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FE: 1D C9 04   pushs L04C9   ; Fellowship
+0101: 07 01 00 0B 00  cmps 0001H, 0111
+0106: 1C D4 04   addsi L04D4   ; "That is what I d...
+0109: 33   say
+010A: 1D 85 05   pushs L0585   ; Fellowship
+010D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0111: 1D 90 05   pushs L0590   ; Lord British joke
+0114: 07 01 00 5F 00  cmps 0001H, 0178
+0119: 1C A2 05   addsi L05A2   ; "For a gold coin ...
+011C: 33   say
+011D: 24 01 00   call [0001]   ; 090AH
+0120: 12 03 00   pop [0003]
+0123: 21 03 00   push [0003]
+0126: 10   not
+0127: 05 0E 00   jne 0138
+012A: 1C E9 05   addsi L05E9   ; "I see I have rea...
+012D: 33   say
+012E: 1D 22 06   pushs L0622   ; Lord British joke
+0131: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0135: 06 40 00   jmp 0178
+0138: 13   push true
+0139: 1F 99 FE   pushi FE99H   ; -359
+013C: 1F 99 FE   pushi FE99H   ; -359
+013F: 1F 84 02   pushi 0284H   ; 644
+0142: 1F 01 00   pushi 0001H   ; 1
+0145: 38 2B 00 05  callis 002B, 5
+0149: 12 04 00   pop [0004]
+014C: 21 04 00   push [0004]
+014F: 05 1B 00   jne 016D
+0152: 1C 34 06   addsi L0634   ; "I was at the cas...
+0155: 33   say
+0156: 1D B0 07   pushs L07B0   ; Lord British joke
+0159: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015D: 1D C2 07   pushs L07C2   ; Weston joke
+0160: 1D CE 07   pushs L07CE   ; Lord British
+0163: 1E 02 00   arrc 0002H   ; 2
+0166: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016A: 06 0B 00   jmp 0178
+016D: 1C DB 07   addsi L07DB   ; "Thou art more de...
+0170: 33   say
+0171: 1D 3B 08   pushs L083B   ; Lord British joke
+0174: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0178: 1D 4D 08   pushs L084D   ; Lord British
+017B: 07 01 00 0B 00  cmps 0001H, 018B
+0180: 1C 5A 08   addsi L085A   ; "Poor Lord Britis...
+0183: 33   say
+0184: 1D 71 09   pushs L0971   ; Lord British
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D 7E 09   pushs L097E   ; Weston joke
+018E: 07 01 00 65 00  cmps 0001H, 01F8
+0193: 1C 8A 09   addsi L098A   ; "For a gold coin ...
+0196: 33   say
+0197: 24 01 00   call [0001]   ; 090AH
+019A: 12 05 00   pop [0005]
+019D: 21 05 00   push [0005]
+01A0: 10   not
+01A1: 05 0E 00   jne 01B2
+01A4: 1C D1 09   addsi L09D1   ; "Very well. If th...
+01A7: 33   say
+01A8: 1D 32 0A   pushs L0A32   ; Weston joke
+01AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AF: 06 46 00   jmp 01F8
+01B2: 13   push true
+01B3: 1F 99 FE   pushi FE99H   ; -359
+01B6: 1F 99 FE   pushi FE99H   ; -359
+01B9: 1F 84 02   pushi 0284H   ; 644
+01BC: 1F 01 00   pushi 0001H   ; 1
+01BF: 38 2B 00 05  callis 002B, 5
+01C3: 12 06 00   pop [0006]
+01C6: 21 06 00   push [0006]
+01C9: 05 1B 00   jne 01E7
+01CC: 1C 3E 0A   addsi L0A3E   ; "A man named West...
+01CF: 33   say
+01D0: 1D 20 0B   pushs L0B20   ; Weston joke
+01D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D7: 1D 2C 0B   pushs L0B2C   ; mage joke
+01DA: 1D 36 0B   pushs L0B36   ; Weston
+01DD: 1E 02 00   arrc 0002H   ; 2
+01E0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E4: 06 11 00   jmp 01F8
+01E7: 1C 3D 0B   addsi L0B3D   ; "Thy pockets are ...
+01EA: 2F 00 00   addsv [0000]
+01ED: 1C 56 0B   addsi L0B56   ; . Perhaps it is t...
+01F0: 33   say
+01F1: 1D 91 0B   pushs L0B91   ; Weston joke
+01F4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F8: 1D 9D 0B   pushs L0B9D   ; Weston
+01FB: 07 01 00 0B 00  cmps 0001H, 020B
+0200: 1C A4 0B   addsi L0BA4   ; "Weston now sits ...
+0203: 33   say
+0204: 1D 48 0C   pushs L0C48   ; Weston
+0207: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020B: 1D 4F 0C   pushs L0C4F   ; mage joke
+020E: 07 01 00 5F 00  cmps 0001H, 0272
+0213: 1C 59 0C   addsi L0C59   ; "For a gold coin ...
+0216: 33   say
+0217: 24 01 00   call [0001]   ; 090AH
+021A: 12 07 00   pop [0007]
+021D: 21 07 00   push [0007]
+0220: 10   not
+0221: 05 0E 00   jne 0232
+0224: 1C A0 0C   addsi L0CA0   ; "Thou art wise. T...
+0227: 33   say
+0228: 1D FC 0C   pushs L0CFC   ; mage joke
+022B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022F: 06 40 00   jmp 0272
+0232: 13   push true
+0233: 1F 99 FE   pushi FE99H   ; -359
+0236: 1F 99 FE   pushi FE99H   ; -359
+0239: 1F 84 02   pushi 0284H   ; 644
+023C: 1F 01 00   pushi 0001H   ; 1
+023F: 38 2B 00 05  callis 002B, 5
+0243: 12 08 00   pop [0008]
+0246: 21 08 00   push [0008]
+0249: 05 1B 00   jne 0267
+024C: 1C 06 0D   addsi L0D06   ; "Whilst travellin...
+024F: 33   say
+0250: 1D B3 0E   pushs L0EB3   ; mage joke
+0253: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0257: 1D BD 0E   pushs L0EBD   ; Sullivan joke
+025A: 1D CB 0E   pushs L0ECB   ; mages
+025D: 1E 02 00   arrc 0002H   ; 2
+0260: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0264: 06 0B 00   jmp 0272
+0267: 1C D1 0E   addsi L0ED1   ; "Now thou art pla...
+026A: 33   say
+026B: 1D 06 0F   pushs L0F06   ; mage joke
+026E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0272: 1D 10 0F   pushs L0F10   ; mages
+0275: 07 01 00 0B 00  cmps 0001H, 0285
+027A: 1C 16 0F   addsi L0F16   ; "All of the mages...
+027D: 33   say
+027E: 1D 8F 0F   pushs L0F8F   ; mages
+0281: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0285: 1D 95 0F   pushs L0F95   ; Sullivan joke
+0288: 07 01 00 58 00  cmps 0001H, 02E5
+028D: 1C A3 0F   addsi L0FA3   ; "Thou art a brave...
+0290: 33   say
+0291: 24 01 00   call [0001]   ; 090AH
+0294: 12 09 00   pop [0009]
+0297: 21 09 00   push [0009]
+029A: 10   not
+029B: 05 0E 00   jne 02AC
+029E: 1C DE 0F   addsi L0FDE   ; "Aha! Not as brav...
+02A1: 33   say
+02A2: 1D 00 10   pushs L1000   ; joke five
+02A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A9: 06 39 00   jmp 02E5
+02AC: 13   push true
+02AD: 1F 99 FE   pushi FE99H   ; -359
+02B0: 1F 99 FE   pushi FE99H   ; -359
+02B3: 1F 84 02   pushi 0284H   ; 644
+02B6: 1F 01 00   pushi 0001H   ; 1
+02B9: 38 2B 00 05  callis 002B, 5
+02BD: 12 0A 00   pop [000A]
+02C0: 21 0A 00   push [000A]
+02C3: 05 1B 00   jne 02E1
+02C6: 1C 0A 10   addsi L100A   ; "Didst thou knowe...
+02C9: 33   say
+02CA: 1D D7 10   pushs L10D7   ; Sullivan joke
+02CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D1: 1D E5 10   pushs L10E5   ; gold joke
+02D4: 1D EF 10   pushs L10EF   ; Sullivan
+02D7: 1E 02 00   arrc 0002H   ; 2
+02DA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02DE: 06 04 00   jmp 02E5
+02E1: 1C F8 10   addsi L10F8   ; "Thou mayest be l...
+02E4: 33   say
+02E5: 1D 40 11   pushs L1140   ; Sullivan
+02E8: 07 01 00 0B 00  cmps 0001H, 02F8
+02ED: 1C 49 11   addsi L1149   ; "Yes, I know the ...
+02F0: 33   say
+02F1: 1D 1F 12   pushs L121F   ; Sullivan
+02F4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02F8: 1D 28 12   pushs L1228   ; gold joke
+02FB: 07 01 00 94 00  cmps 0001H, 0394
+0300: 1C 32 12   addsi L1232   ; "I have amused th...
+0303: 33   say
+0304: 24 01 00   call [0001]   ; 090AH
+0307: 12 0B 00   pop [000B]
+030A: 21 0B 00   push [000B]
+030D: 05 79 00   jne 0389
+0310: 13   push true
+0311: 1F 99 FE   pushi FE99H   ; -359
+0314: 1F 99 FE   pushi FE99H   ; -359
+0317: 1F 84 02   pushi 0284H   ; 644
+031A: 1F 01 00   pushi 0001H   ; 1
+031D: 38 2B 00 05  callis 002B, 5
+0321: 12 0C 00   pop [000C]
+0324: 21 0C 00   push [000C]
+0327: 05 58 00   jne 0382
+032A: 1F 17 00   pushi 0017H   ; 23
+032D: 39 0F 00 01  calli 000F, 1
+0331: 1C 8B 12   addsi L128B   ; "Thank thee very ...
+0334: 33   say
+0335: 1C B1 12   addsi L12B1   ; "Dost thou get it...
+0338: 33   say
+0339: 1C 03 13   addsi L1303   ; "Wouldst thou lik...
+033C: 33   say
+033D: 24 01 00   call [0001]   ; 090AH
+0340: 12 0D 00   pop [000D]
+0343: 21 0D 00   push [000D]
+0346: 05 2B 00   jne 0374
+0349: 1C 34 13   addsi L1334   ; "Now listen caref...
+034C: 33   say
+034D: 13   push true
+034E: 1F 99 FE   pushi FE99H   ; -359
+0351: 1F 99 FE   pushi FE99H   ; -359
+0354: 1F 84 02   pushi 0284H   ; 644
+0357: 1F 01 00   pushi 0001H   ; 1
+035A: 38 2B 00 05  callis 002B, 5
+035E: 12 0E 00   pop [000E]
+0361: 21 0E 00   push [000E]
+0364: 05 06 00   jne 036D
+0367: 06 C0 FF   jmp 032A
+036A: 06 04 00   jmp 0371
+036D: 1C 4E 13   addsi L134E   ; "Oh, I am so sorr...
+0370: 33   say
+0371: 06 0B 00   jmp 037F
+0374: 1C A0 13   addsi L13A0   ; "I see thou art b...
+0377: 2F 00 00   addsv [0000]
+037A: 1C DD 13   addsi L13DD   ; . Good day to thee!"
+037D: 33   say
+037E: 3F   abrt
+037F: 06 04 00   jmp 0386
+0382: 1C F2 13   addsi L13F2   ; "I can see thou a...
+0385: 33   say
+0386: 06 04 00   jmp 038D
+0389: 1C 3E 14   addsi L143E   ; "Oh, it is a pity...
+038C: 33   say
+038D: 1D AA 14   pushs L14AA   ; gold joke
+0390: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0394: 1D B4 14   pushs L14B4   ; bye
+0397: 07 01 00 03 00  cmps 0001H, 039F
+039C: 06 03 00   jmp 03A2
+039F: 06 A2 FC   jmp 0044
+03A2: 40   db 40 ???
+03A3: 1C B8 14   addsi L14B8   ; "I do hope I did ...
+03A6: 33   say
+03A7: 48   push eventid
+03A8: 1F 00 00   pushi 0000H   ; 0
+03AB: 22   cmpeq
+03AC: 05 7F 00   jne 042E
+03AF: 38 3B 00 00  callis 003B, 0
+03B3: 12 0F 00   pop [000F]
+03B6: 1F C2 FF   pushi FFC2H   ; -62
+03B9: 38 1B 00 01  callis 001B, 1
+03BD: 38 1C 00 01  callis 001C, 1
+03C1: 12 10 00   pop [0010]
+03C4: 1F 04 00   pushi 0004H   ; 4
+03C7: 1F 01 00   pushi 0001H   ; 1
+03CA: 38 10 00 02  callis _Random2@2  ; 0010
+03CE: 12 11 00   pop [0011]
+03D1: 21 10 00   push [0010]
+03D4: 1F 0C 00   pushi 000CH   ; 12
+03D7: 22   cmpeq
+03D8: 05 4D 00   jne 0428
+03DB: 21 11 00   push [0011]
+03DE: 1F 01 00   pushi 0001H   ; 1
+03E1: 22   cmpeq
+03E2: 05 06 00   jne 03EB
+03E5: 1D D7 14   pushs L14D7   ; @Spare change?@
+03E8: 12 12 00   pop [0012]
+03EB: 21 11 00   push [0011]
+03EE: 1F 02 00   pushi 0002H   ; 2
+03F1: 22   cmpeq
+03F2: 05 06 00   jne 03FB
+03F5: 1D E7 14   pushs L14E7   ; @Got a coin for me?@
+03F8: 12 12 00   pop [0012]
+03FB: 21 11 00   push [0011]
+03FE: 1F 03 00   pushi 0003H   ; 3
+0401: 22   cmpeq
+0402: 05 06 00   jne 040B
+0405: 1D FC 14   pushs L14FC   ; @Jokes for sale!@
+0408: 12 12 00   pop [0012]
+040B: 21 11 00   push [0011]
+040E: 1F 04 00   pushi 0004H   ; 4
+0411: 22   cmpeq
+0412: 05 06 00   jne 041B
+0415: 1D 0E 15   pushs L150E   ; @Handouts accepted!@
+0418: 12 12 00   pop [0012]
+041B: 21 12 00   push [0012]
+041E: 1F C2 FF   pushi FFC2H   ; -62
+0421: 39 40 00 02  calli _ItemSay@2  ; 0040
+0425: 06 06 00   jmp 042E
+0428: 1F C2 FF   pushi FFC2H   ; -62
+042B: 24 02 00   call [0002]   ; 092EH
+042E: 25   ret

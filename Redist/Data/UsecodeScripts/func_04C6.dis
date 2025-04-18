@@ -1,0 +1,419 @@
+  .funcnumber 04C6H
+  .data
+L0000: db 'Avatar'
+L0006: db 00
+L0007: db 'bye'
+L000A: db 00
+L000B: db 'job'
+L000E: db 00
+L000F: db 'name'
+L0013: db 00
+L0014: db 'You see a man who, despite being blind, quickly acknowledges'
+ db ' you.~~"I am Jordan. Sir Jordan. And thou art?"'
+L007F: db 00
+L0080: db '"My pleasure, '
+L008E: db 00
+L008F: db '." He shakes your hand.'
+L00A6: db 00
+L00A7: db 'He laughs. "Yes, but of course thou art."'
+L00D0: db 00
+L00D1: db '"'Tis true, Sir Jordan. He is the Avatar."*'
+L00FC: db 00
+L00FD: db 'Jordan smiles. "I see. And who wouldst thou be? Shamino?"*'
+L0137: db 00
+L0138: db '"No." He points to Shamino. "He is. I am Iolo!"*'
+L0168: db 00
+L0169: db '"No. I am Iolo, not Shamino!"*'
+L0187: db 00
+L0188: db '"Of course!" He says, patronizingly. "How could I not recogn'
+ db 'ize the great Iolo."'
+L01D8: db 00
+L01D9: db '"Greetings, '
+L01E5: db 00
+L01E6: db '."'
+L01E8: db 00
+L01E9: db 'statue'
+L01EF: db 00
+L01F0: db 'bye'
+L01F3: db 00
+L01F4: db 'job'
+L01F7: db 00
+L01F8: db 'name'
+L01FC: db 00
+L01FD: db 'name'
+L0201: db 00
+L0202: db '"As I told thee, my name is Sir Jordan."'
+L022A: db 00
+L022B: db 'name'
+L022F: db 00
+L0230: db 'job'
+L0233: db 00
+L0234: db '"I sell bows and crossbows here at Iolo's South."'
+L0265: db 00
+L0266: db 'sell'
+L026A: db 00
+L026B: db 'Iolo's South'
+L0277: db 00
+L0278: db 'Iolo's South'
+L0284: db 00
+L0285: db '"The original branch is in Britain. But I do fine business h'
+ db 'ere in the Hold."'
+L02D2: db 00
+L02D3: db 'Iolo's South'
+L02DF: db 00
+L02E0: db 'Hold'
+L02E4: db 00
+L02E5: db 'original branch'
+L02F4: db 00
+L02F5: db 'Hold'
+L02F9: db 00
+L02FA: db '"Serpent's Hold, '
+L030B: db 00
+L030C: db '. I have sold many quality bows to the knights here."'
+L0341: db 00
+L0342: db 'Hold'
+L0346: db 00
+L0347: db 'knights'
+L034E: db 00
+L034F: db 'original branch'
+L035E: db 00
+L035F: db '"The great archer himself, Iolo, started that branch more th'
+ db 'an two hundred years ago."'
+L03B5: db 00
+L03B6: db '*'
+L03B7: db 00
+L03B8: db '"I, er, thank thee for thy compliment."*'
+L03E0: db 00
+L03E1: db '"'Twould mean more wert thou Iolo!"*'
+L0405: db 00
+L0406: db '"Listen, here, rogue, I truly -am-..."*'
+L042D: db 00
+L042E: db '"Yes, yes, I know. Thou really -art- Iolo... And I am Lord B'
+ db 'ritish!"*'
+L0473: db 00
+L0474: db 'original branch'
+L0483: db 00
+L0484: db 'knights'
+L048B: db 00
+L048C: db '"There are many who live within the walls of the Hold. Sir D'
+ db 'enton, the bartender at the Hallowed Dock, knows them all."'
+L0503: db 00
+L0504: db 'knights'
+L050B: db 00
+L050C: db 'sell'
+L0510: db 00
+L0511: db '"Weapons or missiles?"'
+L0527: db 00
+L0528: db 'missiles'
+L0530: db 00
+L0531: db 'weapons'
+L0538: db 00
+L0539: db '"I am sorry, '
+L0546: db 00
+L0547: db ', but I can only sell things during my shop hours -- from 6 '
+ db 'in the morning 'til 6 at night."'
+L05A3: db 00
+L05A4: db 'sell'
+L05A8: db 00
+L05A9: db 'weapons'
+L05B0: db 00
+L05B1: db 'missiles'
+L05B9: db 00
+L05BA: db 'statue'
+L05C0: db 00
+L05C1: db 'He looks defensive. "I had nothing to do with that.~~ "But, '
+ db 'I will tell thee that, on the night of the incident, I heard'
+ db ' the sounds of scuffling in the commons. And, later on in th'
+ db 'e evening, I heard a woman cry out, as if in surprise!"'
+L06AC: db 00
+L06AD: db 'woman'
+L06B2: db 00
+L06B3: db 'statue'
+L06B9: db 00
+L06BA: db 'woman'
+L06BF: db 00
+L06C0: db '"I am not positive, '
+L06D4: db 00
+L06D5: db ', but I believe the voice was that of Lady Jehanne." He nods'
+ db ' his head knowingly. "Someone has lost their sense of unity.'
+ db '"'
+L074E: db 00
+L074F: db 'woman'
+L0754: db 00
+L0755: db 'bye'
+L0758: db 00
+L0759: db '"I hope to see thee again, '
+L0774: db 00
+L0775: db '."*'
+L0778: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0007H
+  .extern 0909H
+  .extern 0908H
+  .extern 08F7H
+  .extern 090BH
+  .extern 08A4H
+  .extern 08A3H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DF 02   jne 02E7
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 3A FF   pushi FF3AH   ; -198
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0908H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; Avatar
+0021: 12 02 00   pop [0002]
+0024: 1F FF FF   pushi FFFFH   ; -1
+0027: 24 02 00   call [0002]   ; 08F7H
+002A: 12 03 00   pop [0003]
+002D: 1F FD FF   pushi FFFDH   ; -3
+0030: 24 02 00   call [0002]   ; 08F7H
+0033: 12 04 00   pop [0004]
+0036: 1D 07 00   pushs L0007   ; bye
+0039: 1D 0B 00   pushs L000B   ; job
+003C: 1D 0F 00   pushs L000F   ; name
+003F: 1E 03 00   arrc 0003H   ; 3
+0042: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0046: 42 5A 02   pushf flag:[025A]
+0049: 05 06 00   jne 0052
+004C: 21 01 00   push [0001]
+004F: 12 05 00   pop [0005]
+0052: 42 5B 02   pushf flag:[025B]
+0055: 05 06 00   jne 005E
+0058: 21 02 00   push [0002]
+005B: 12 05 00   pop [0005]
+005E: 42 6F 02   pushf flag:[026F]
+0061: 10   not
+0062: 05 B1 00   jne 0116
+0065: 1C 14 00   addsi L0014   ; You see a man who...
+0068: 33   say
+0069: 21 02 00   push [0002]
+006C: 21 01 00   push [0001]
+006F: 1E 02 00   arrc 0002H   ; 2
+0072: 24 03 00   call [0003]   ; 090BH
+0075: 12 06 00   pop [0006]
+0078: 21 06 00   push [0006]
+007B: 21 01 00   push [0001]
+007E: 22   cmpeq
+007F: 05 11 00   jne 0093
+0082: 1C 80 00   addsi L0080   ; "My pleasure, 
+0085: 2F 01 00   addsv [0001]
+0088: 1C 8F 00   addsi L008F   ; ." He shakes your...
+008B: 33   say
+008C: 13   push true
+008D: 43 5A 02   popf flag:[025A]
+0090: 06 7C 00   jmp 010F
+0093: 1C A7 00   addsi L00A7   ; He laughs. "Yes, ...
+0096: 33   say
+0097: 13   push true
+0098: 43 5B 02   popf flag:[025B]
+009B: 21 03 00   push [0003]
+009E: 05 6E 00   jne 010F
+00A1: 1F 00 00   pushi 0000H   ; 0
+00A4: 1F FF FF   pushi FFFFH   ; -1
+00A7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00AB: 1C D1 00   addsi L00D1   ; "'Tis true, Sir J...
+00AE: 33   say
+00AF: 1F FF FF   pushi FFFFH   ; -1
+00B2: 39 04 00 01  calli _HideNPC@1  ; 0004
+00B6: 1F 00 00   pushi 0000H   ; 0
+00B9: 1F 3A FF   pushi FF3AH   ; -198
+00BC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00C0: 1C FD 00   addsi L00FD   ; Jordan smiles. "I...
+00C3: 33   say
+00C4: 21 04 00   push [0004]
+00C7: 05 22 00   jne 00EC
+00CA: 1F 00 00   pushi 0000H   ; 0
+00CD: 1F FF FF   pushi FFFFH   ; -1
+00D0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D4: 1C 38 01   addsi L0138   ; "No." He points t...
+00D7: 33   say
+00D8: 1F FF FF   pushi FFFFH   ; -1
+00DB: 39 04 00 01  calli _HideNPC@1  ; 0004
+00DF: 1F 00 00   pushi 0000H   ; 0
+00E2: 1F 3A FF   pushi FF3AH   ; -198
+00E5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E9: 06 1F 00   jmp 010B
+00EC: 1F 00 00   pushi 0000H   ; 0
+00EF: 1F FF FF   pushi FFFFH   ; -1
+00F2: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F6: 1C 69 01   addsi L0169   ; "No. I am Iolo, n...
+00F9: 33   say
+00FA: 1F FF FF   pushi FFFFH   ; -1
+00FD: 39 04 00 01  calli _HideNPC@1  ; 0004
+0101: 1F 00 00   pushi 0000H   ; 0
+0104: 1F 3A FF   pushi FF3AH   ; -198
+0107: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+010B: 1C 88 01   addsi L0188   ; "Of course!" He s...
+010E: 33   say
+010F: 13   push true
+0110: 43 6F 02   popf flag:[026F]
+0113: 06 0A 00   jmp 0120
+0116: 1C D9 01   addsi L01D9   ; "Greetings, 
+0119: 2F 05 00   addsv [0005]
+011C: 1C E6 01   addsi L01E6   ; ."
+011F: 33   say
+0120: 42 5E 02   pushf flag:[025E]
+0123: 42 61 02   pushf flag:[0261]
+0126: 10   not
+0127: 0E   and
+0128: 05 07 00   jne 0132
+012B: 1D E9 01   pushs L01E9   ; statue
+012E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0132: 1D F0 01   pushs L01F0   ; bye
+0135: 1D F4 01   pushs L01F4   ; job
+0138: 1D F8 01   pushs L01F8   ; name
+013B: 1E 03 00   arrc 0003H   ; 3
+013E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0142: 42 5A 02   pushf flag:[025A]
+0145: 05 06 00   jne 014E
+0148: 21 01 00   push [0001]
+014B: 12 05 00   pop [0005]
+014E: 42 5B 02   pushf flag:[025B]
+0151: 05 06 00   jne 015A
+0154: 21 02 00   push [0002]
+0157: 12 05 00   pop [0005]
+015A: 04 7F 01   je 02DC
+015D: 1D FD 01   pushs L01FD   ; name
+0160: 07 01 00 0B 00  cmps 0001H, 0170
+0165: 1C 02 02   addsi L0202   ; "As I told thee, ...
+0168: 33   say
+0169: 1D 2B 02   pushs L022B   ; name
+016C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0170: 1D 30 02   pushs L0230   ; job
+0173: 07 01 00 11 00  cmps 0001H, 0189
+0178: 1C 34 02   addsi L0234   ; "I sell bows and ...
+017B: 33   say
+017C: 1D 66 02   pushs L0266   ; sell
+017F: 1D 6B 02   pushs L026B   ; Iolo's South
+0182: 1E 02 00   arrc 0002H   ; 2
+0185: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0189: 1D 78 02   pushs L0278   ; Iolo's South
+018C: 07 01 00 18 00  cmps 0001H, 01A9
+0191: 1C 85 02   addsi L0285   ; "The original bra...
+0194: 33   say
+0195: 1D D3 02   pushs L02D3   ; Iolo's South
+0198: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019C: 1D E0 02   pushs L02E0   ; Hold
+019F: 1D E5 02   pushs L02E5   ; original branch
+01A2: 1E 02 00   arrc 0002H   ; 2
+01A5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A9: 1D F5 02   pushs L02F5   ; Hold
+01AC: 07 01 00 18 00  cmps 0001H, 01C9
+01B1: 1C FA 02   addsi L02FA   ; "Serpent's Hold, 
+01B4: 2F 00 00   addsv [0000]
+01B7: 1C 0C 03   addsi L030C   ; . I have sold man...
+01BA: 33   say
+01BB: 1D 42 03   pushs L0342   ; Hold
+01BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C2: 1D 47 03   pushs L0347   ; knights
+01C5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C9: 1D 4F 03   pushs L034F   ; original branch
+01CC: 07 01 00 54 00  cmps 0001H, 0225
+01D1: 1C 5F 03   addsi L035F   ; "The great archer...
+01D4: 33   say
+01D5: 21 03 00   push [0003]
+01D8: 05 43 00   jne 021E
+01DB: 1C B6 03   addsi L03B6   ; *
+01DE: 33   say
+01DF: 1F 00 00   pushi 0000H   ; 0
+01E2: 1F FF FF   pushi FFFFH   ; -1
+01E5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01E9: 1C B8 03   addsi L03B8   ; "I, er, thank the...
+01EC: 33   say
+01ED: 1F 00 00   pushi 0000H   ; 0
+01F0: 1F 3A FF   pushi FF3AH   ; -198
+01F3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F7: 1C E1 03   addsi L03E1   ; "'Twould mean mor...
+01FA: 33   say
+01FB: 1F 00 00   pushi 0000H   ; 0
+01FE: 1F FF FF   pushi FFFFH   ; -1
+0201: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0205: 1C 06 04   addsi L0406   ; "Listen, here, ro...
+0208: 33   say
+0209: 1F 00 00   pushi 0000H   ; 0
+020C: 1F 3A FF   pushi FF3AH   ; -198
+020F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0213: 1C 2E 04   addsi L042E   ; "Yes, yes, I know...
+0216: 33   say
+0217: 1F FF FF   pushi FFFFH   ; -1
+021A: 39 04 00 01  calli _HideNPC@1  ; 0004
+021E: 1D 74 04   pushs L0474   ; original branch
+0221: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0225: 1D 84 04   pushs L0484   ; knights
+0228: 07 01 00 0B 00  cmps 0001H, 0238
+022D: 1C 8C 04   addsi L048C   ; "There are many w...
+0230: 33   say
+0231: 1D 04 05   pushs L0504   ; knights
+0234: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0238: 1D 0C 05   pushs L050C   ; sell
+023B: 07 01 00 41 00  cmps 0001H, 0281
+0240: 1F 3A FF   pushi FF3AH   ; -198
+0243: 38 1B 00 01  callis 001B, 1
+0247: 38 1C 00 01  callis 001C, 1
+024B: 12 07 00   pop [0007]
+024E: 21 07 00   push [0007]
+0251: 1F 07 00   pushi 0007H   ; 7
+0254: 22   cmpeq
+0255: 05 18 00   jne 0270
+0258: 1C 11 05   addsi L0511   ; "Weapons or missi...
+025B: 33   say
+025C: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0260: 1D 28 05   pushs L0528   ; missiles
+0263: 1D 31 05   pushs L0531   ; weapons
+0266: 1E 02 00   arrc 0002H   ; 2
+0269: 39 05 00 01  calli _AddAnswer@1  ; 0005
+026D: 06 0A 00   jmp 027A
+0270: 1C 39 05   addsi L0539   ; "I am sorry, 
+0273: 2F 00 00   addsv [0000]
+0276: 1C 47 05   addsi L0547   ; , but I can only ...
+0279: 33   say
+027A: 1D A4 05   pushs L05A4   ; sell
+027D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0281: 1D A9 05   pushs L05A9   ; weapons
+0284: 07 01 00 03 00  cmps 0001H, 028C
+0289: 24 04 00   call [0004]   ; 08A4H
+028C: 1D B1 05   pushs L05B1   ; missiles
+028F: 07 01 00 03 00  cmps 0001H, 0297
+0294: 24 05 00   call [0005]   ; 08A3H
+0297: 1D BA 05   pushs L05BA   ; statue
+029A: 07 01 00 12 00  cmps 0001H, 02B1
+029F: 1C C1 05   addsi L05C1   ; He looks defensiv...
+02A2: 33   say
+02A3: 1D AD 06   pushs L06AD   ; woman
+02A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02AA: 1D B3 06   pushs L06B3   ; statue
+02AD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B1: 1D BA 06   pushs L06BA   ; woman
+02B4: 07 01 00 15 00  cmps 0001H, 02CE
+02B9: 1C C0 06   addsi L06C0   ; "I am not positive, 
+02BC: 2F 05 00   addsv [0005]
+02BF: 1C D5 06   addsi L06D5   ; , but I believe t...
+02C2: 33   say
+02C3: 1D 4F 07   pushs L074F   ; woman
+02C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CA: 13   push true
+02CB: 43 5C 02   popf flag:[025C]
+02CE: 1D 55 07   pushs L0755   ; bye
+02D1: 07 01 00 03 00  cmps 0001H, 02D9
+02D6: 06 03 00   jmp 02DC
+02D9: 06 7E FE   jmp 015A
+02DC: 40   db 40 ???
+02DD: 1C 59 07   addsi L0759   ; "I hope to see th...
+02E0: 2F 05 00   addsv [0005]
+02E3: 1C 75 07   addsi L0775   ; ."*
+02E6: 33   say
+02E7: 48   push eventid
+02E8: 1F 00 00   pushi 0000H   ; 0
+02EB: 22   cmpeq
+02EC: 05 06 00   jne 02F5
+02EF: 1F 3A FF   pushi FF3AH   ; -198
+02F2: 24 06 00   call [0006]   ; 092EH
+02F5: 25   ret

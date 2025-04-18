@@ -1,0 +1,190 @@
+  .funcnumber 086CH
+  .data
+L0000: db 'armadillo'
+L0009: db 00
+L000A: db '*'
+L000B: db 00
+L000C: db 'octopus'
+L0013: db 00
+L0014: db 'octopi'
+L001A: db 00
+L001B: db 'ungulate'
+L0023: db 00
+L0024: db '*'
+L0025: db 00
+L0026: db 'cockatoo'
+L002E: db 00
+L002F: db '*'
+L0030: db 00
+L0031: db 'ferret'
+L0037: db 00
+L0038: db '*'
+L0039: db 00
+L003A: db 'weasel'
+L0040: db 00
+L0041: db '*'
+L0042: db 00
+L0043: db 'bassalope'
+L004C: db 00
+L004D: db '*'
+L004E: db 00
+L004F: db 'platypus'
+L0057: db 00
+L0058: db 'platypuses'
+L0062: db 00
+L0063: db 'no-see-um'
+L006C: db 00
+L006D: db '*'
+L006E: db 00
+L006F: db 'alpaca'
+L0075: db 00
+L0076: db '*'
+L0077: db 00
+L0078: db 'mooncow'
+L007F: db 00
+L0080: db '*'
+L0081: db 00
+L0082: db 'thundermoose'
+L008E: db 00
+L008F: db '*'
+L0090: db 00
+L0091: db 'llama'
+L0096: db 00
+L0097: db '*'
+L0098: db 00
+L0099: db 'iguana'
+L009F: db 00
+L00A0: db '*'
+L00A1: db 00
+L00A2: db 'reptile'
+L00A9: db 00
+L00AA: db '*'
+L00AB: db 00
+L00AC: db 'amphibian'
+L00B5: db 00
+L00B6: db '*'
+L00B7: db 00
+L00B8: db 'mammal'
+L00BE: db 00
+L00BF: db '*'
+L00C0: db 00
+L00C1: db 'invertebrate'
+L00CD: db 00
+L00CE: db '*'
+L00CF: db 00
+L00D0: db '*'
+L00D1: db 00
+L00D2: db 's'
+L00D3: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0000H
+0000: 1D 00 00   pushs L0000   ; armadillo
+0003: 1D 0A 00   pushs L000A   ; *
+0006: 1D 0C 00   pushs L000C   ; octopus
+0009: 1D 14 00   pushs L0014   ; octopi
+000C: 1D 1B 00   pushs L001B   ; ungulate
+000F: 1D 24 00   pushs L0024   ; *
+0012: 1D 26 00   pushs L0026   ; cockatoo
+0015: 1D 2F 00   pushs L002F   ; *
+0018: 1D 31 00   pushs L0031   ; ferret
+001B: 1D 38 00   pushs L0038   ; *
+001E: 1D 3A 00   pushs L003A   ; weasel
+0021: 1D 41 00   pushs L0041   ; *
+0024: 1D 43 00   pushs L0043   ; bassalope
+0027: 1D 4D 00   pushs L004D   ; *
+002A: 4A   arra
+002B: 4A   arra
+002C: 4A   arra
+002D: 4A   arra
+002E: 4A   arra
+002F: 4A   arra
+0030: 4A   arra
+0031: 4A   arra
+0032: 4A   arra
+0033: 4A   arra
+0034: 4A   arra
+0035: 4A   arra
+0036: 4A   arra
+0037: 12 00 00   pop [0000]
+003A: 21 00 00   push [0000]
+003D: 1D 4F 00   pushs L004F   ; platypus
+0040: 1D 58 00   pushs L0058   ; platypuses
+0043: 1D 63 00   pushs L0063   ; no-see-um
+0046: 1D 6D 00   pushs L006D   ; *
+0049: 1D 6F 00   pushs L006F   ; alpaca
+004C: 1D 76 00   pushs L0076   ; *
+004F: 1D 78 00   pushs L0078   ; mooncow
+0052: 1D 80 00   pushs L0080   ; *
+0055: 1D 82 00   pushs L0082   ; thundermoose
+0058: 1D 8F 00   pushs L008F   ; *
+005B: 1D 91 00   pushs L0091   ; llama
+005E: 1D 97 00   pushs L0097   ; *
+0061: 4A   arra
+0062: 4A   arra
+0063: 4A   arra
+0064: 4A   arra
+0065: 4A   arra
+0066: 4A   arra
+0067: 4A   arra
+0068: 4A   arra
+0069: 4A   arra
+006A: 4A   arra
+006B: 4A   arra
+006C: 4A   arra
+006D: 12 00 00   pop [0000]
+0070: 21 00 00   push [0000]
+0073: 1D 99 00   pushs L0099   ; iguana
+0076: 1D A0 00   pushs L00A0   ; *
+0079: 1D A2 00   pushs L00A2   ; reptile
+007C: 1D AA 00   pushs L00AA   ; *
+007F: 1D AC 00   pushs L00AC   ; amphibian
+0082: 1D B6 00   pushs L00B6   ; *
+0085: 1D B8 00   pushs L00B8   ; mammal
+0088: 1D BF 00   pushs L00BF   ; *
+008B: 1D C1 00   pushs L00C1   ; invertebrate
+008E: 1D CE 00   pushs L00CE   ; *
+0091: 4A   arra
+0092: 4A   arra
+0093: 4A   arra
+0094: 4A   arra
+0095: 4A   arra
+0096: 4A   arra
+0097: 4A   arra
+0098: 4A   arra
+0099: 4A   arra
+009A: 4A   arra
+009B: 12 00 00   pop [0000]
+009E: 21 00 00   push [0000]
+00A1: 38 5E 00 01  callis _ArraySize@1  ; 005E
+00A5: 1F 02 00   pushi 0002H   ; 2
+00A8: 0B   div
+00A9: 1F 01 00   pushi 0001H   ; 1
+00AC: 38 10 00 02  callis _Random2@2  ; 0010
+00B0: 12 01 00   pop [0001]
+00B3: 21 01 00   push [0001]
+00B6: 1F 02 00   pushi 0002H   ; 2
+00B9: 0C   mul
+00BA: 1F 01 00   pushi 0001H   ; 1
+00BD: 0A   sub
+00BE: 26 00 00   aidx [0000]
+00C1: 12 02 00   pop [0002]
+00C4: 21 01 00   push [0001]
+00C7: 1F 02 00   pushi 0002H   ; 2
+00CA: 0C   mul
+00CB: 26 00 00   aidx [0000]
+00CE: 12 03 00   pop [0003]
+00D1: 21 03 00   push [0003]
+00D4: 1D D0 00   pushs L00D0   ; *
+00D7: 22   cmpeq
+00D8: 05 0A 00   jne 00E5
+00DB: 21 02 00   push [0002]
+00DE: 1D D2 00   pushs L00D2   ; s
+00E1: 09   add
+00E2: 12 03 00   pop [0003]
+00E5: 21 03 00   push [0003]
+00E8: 21 02 00   push [0002]
+00EB: 1E 02 00   arrc 0002H   ; 2
+00EE: 2D   setr
+00EF: 32   rts

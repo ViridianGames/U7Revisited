@@ -1,0 +1,307 @@
+  .funcnumber 0460H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Margareta'
+L0016: db 00
+L0017: db 'hourglass'
+L0020: db 00
+L0021: db 'You see a swarthy gypsy with soulful eyes, dressed in colorf'
+ db 'ul clothes. He looks as if he has the weight of the world on'
+ db ' his shoulders.'
+L00A8: db 00
+L00A9: db '"Greetings vonce again," Jergi says as he bows, making a swi'
+ db 'rling gesture with his hand.'
+L0101: db 00
+L0102: db 'name'
+L0106: db 00
+L0107: db '"I am Jergi. Pleased to make thine acqvaintance."'
+L0138: db 00
+L0139: db 'name'
+L013D: db 00
+L013E: db 'job'
+L0141: db 00
+L0142: db '"I am the King ov the Gypsies."'
+L0161: db 00
+L0162: db 'gypsies'
+L0169: db 00
+L016A: db 'gypsies'
+L0171: db 00
+L0172: db '"My people have almost completely died out in this vorld. No'
+ db 'w that I am their leader I am making their velfare my sole r'
+ db 'esponsibility. Soon I vill decide if ve vill leave Minoc."'
+L0224: db 00
+L0225: db 'gypsies'
+L022C: db 00
+L022D: db 'Minoc'
+L0232: db 00
+L0233: db 'died out'
+L023B: db 00
+L023C: db 'died out'
+L0244: db 00
+L0245: db '"Ve gypsies are a people who live to vander. But there are f'
+ db 'ewer and fewer places vhere ve are velcome. Ve are victimize'
+ db 'd by the ancient hatreds that have plagued our kind since th'
+ db 'e days ov ancient Sosaria."'
+L0314: db 00
+L0315: db 'died out'
+L031D: db 00
+L031E: db 'Minoc'
+L0323: db 00
+L0324: db '"Our people came here because ve thought ve vould be accepte'
+ db 'd. It seemed for a very long time that ve vere. But after th'
+ db 'ese savage murders it looks like it is time for us to roam v'
+ db 'once again."'
+L03E4: db 00
+L03E5: db 'Minoc'
+L03EA: db 00
+L03EB: db 'murders'
+L03F2: db 00
+L03F3: db 'accepted'
+L03FB: db 00
+L03FC: db 'accepted'
+L0404: db 00
+L0405: db '"Ve have alvays been subject to the prejudices ov others! Ve'
+ db ' are called thieves and vorse! But ve are a people that only'
+ db ' vish to play our music, and dance, and live in peace. I tho'
+ db 'ught the people here understood this."'
+L04DF: db 00
+L04E0: db 'accepted'
+L04E8: db 00
+L04E9: db 'murders'
+L04F0: db 00
+L04F1: db '"Frederico vas mine only brother, and no vone loved Tania mo'
+ db 're than I did, save for Frederico himself. Vhat happened to '
+ db 'them vas unspeakable. I vish I could tell thee more. If thou'
+ db ' vishest thou may speak to Sasha, but only briefly. Now is t'
+ db 'he time for him to mourn."'
+L05FB: db 00
+L05FC: db 'murders'
+L0603: db 00
+L0604: db 'Sasha'
+L0609: db 00
+L060A: db 'Tania'
+L060F: db 00
+L0610: db 'Frederico'
+L0619: db 00
+L061A: db 'Frederico'
+L0623: db 00
+L0624: db '"Some thought ov my brother Frederico as a harsh man, but th'
+ db 'ose ov us who knew him could see that he vas simply governed'
+ db ' by the same prides and passions that rule all gypsies."'
+L06D4: db 00
+L06D5: db 'Frederico'
+L06DE: db 00
+L06DF: db 'Tania'
+L06E4: db 00
+L06E5: db '"She vas the most beautiful voman I had ever seen. Both my b'
+ db 'rother and I vere in love vith her. Ve both tried to vin her'
+ db ' heart. I failed and thought that I vould spend the rest ov '
+ db 'my life vith no vone. It vas not until last year that my vif'
+ db 'e Margareta and I vere married and my secretly broken heart '
+ db 'vas mended."'
+L081D: db 00
+L081E: db 'Tania'
+L0823: db 00
+L0824: db 'Sasha'
+L0829: db 00
+L082A: db '"He is the son ov Frederico and Tania. He left us to learn m'
+ db 'ore about The Fellowship. Ov course, he feels responsible fo'
+ db 'r vhat happened..."'
+L08B5: db 00
+L08B6: db 'Sasha'
+L08BB: db 00
+L08BC: db 'Fellowship'
+L08C6: db 00
+L08C7: db 'responsible'
+L08D2: db 00
+L08D3: db 'responsible'
+L08DE: db 00
+L08DF: db '"Ve do not blame Sasha for vhat happened. Ve vill not punish'
+ db ' him."'
+L0921: db 00
+L0922: db 'responsible'
+L092D: db 00
+L092E: db 'Fellowship'
+L0938: db 00
+L0939: db '"Sasha vill have to decide if he vants to stay vith his peop'
+ db 'le or return to The Fellowship. I believe he vill make the r'
+ db 'ight choice."'
+L09BE: db 00
+L09BF: db 'Fellowship'
+L09C9: db 00
+L09CA: db 'Margareta'
+L09D3: db 00
+L09D4: db '"My vife is a vise voman who has some ov the necessary talen'
+ db 'ts to see the future. Thou shouldst speak vith her."'
+L0A44: db 00
+L0A45: db 'Margareta'
+L0A4E: db 00
+L0A4F: db 'hourglass'
+L0A58: db 00
+L0A59: db '"I do not know vhat thou art talking about. I know nothing o'
+ db 'f a mage named Nicodemus, nor of his hourglass. Be vary -- m'
+ db 'ages are quite mad these days!"'
+L0AF0: db 00
+L0AF1: db 'hourglass'
+L0AFA: db 00
+L0AFB: db 'bye'
+L0AFE: db 00
+L0AFF: db '"Mayest thou have much fortune in thine endeavors."*'
+L0B33: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F A0 FF   pushi FFA0H   ; -96
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 1F AD FF   pushi FFADH   ; -83
+002C: 24 01 00   call [0001]   ; 08F7H
+002F: 12 01 00   pop [0001]
+0032: 21 01 00   push [0001]
+0035: 05 07 00   jne 003F
+0038: 1D 0D 00   pushs L000D   ; Margareta
+003B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003F: 42 D2 01   pushf flag:[01D2]
+0042: 05 07 00   jne 004C
+0045: 1D 17 00   pushs L0017   ; hourglass
+0048: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004C: 42 1B 01   pushf flag:[011B]
+004F: 10   not
+0050: 05 0B 00   jne 005E
+0053: 1C 21 00   addsi L0021   ; You see a swarthy...
+0056: 33   say
+0057: 13   push true
+0058: 43 1B 01   popf flag:[011B]
+005B: 06 04 00   jmp 0062
+005E: 1C A9 00   addsi L00A9   ; "Greetings vonce ...
+0061: 33   say
+0062: 04 4F 01   je 01B4
+0065: 1D 02 01   pushs L0102   ; name
+0068: 07 01 00 0B 00  cmps 0001H, 0078
+006D: 1C 07 01   addsi L0107   ; "I am Jergi. Plea...
+0070: 33   say
+0071: 1D 39 01   pushs L0139   ; name
+0074: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0078: 1D 3E 01   pushs L013E   ; job
+007B: 07 01 00 0B 00  cmps 0001H, 008B
+0080: 1C 42 01   addsi L0142   ; "I am the King ov...
+0083: 33   say
+0084: 1D 62 01   pushs L0162   ; gypsies
+0087: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008B: 1D 6A 01   pushs L016A   ; gypsies
+008E: 07 01 00 18 00  cmps 0001H, 00AB
+0093: 1C 72 01   addsi L0172   ; "My people have a...
+0096: 33   say
+0097: 1D 25 02   pushs L0225   ; gypsies
+009A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009E: 1D 2D 02   pushs L022D   ; Minoc
+00A1: 1D 33 02   pushs L0233   ; died out
+00A4: 1E 02 00   arrc 0002H   ; 2
+00A7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AB: 1D 3C 02   pushs L023C   ; died out
+00AE: 07 01 00 0B 00  cmps 0001H, 00BE
+00B3: 1C 45 02   addsi L0245   ; "Ve gypsies are a...
+00B6: 33   say
+00B7: 1D 15 03   pushs L0315   ; died out
+00BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BE: 1D 1E 03   pushs L031E   ; Minoc
+00C1: 07 01 00 18 00  cmps 0001H, 00DE
+00C6: 1C 24 03   addsi L0324   ; "Our people came ...
+00C9: 33   say
+00CA: 1D E5 03   pushs L03E5   ; Minoc
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D EB 03   pushs L03EB   ; murders
+00D4: 1D F3 03   pushs L03F3   ; accepted
+00D7: 1E 02 00   arrc 0002H   ; 2
+00DA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DE: 1D FC 03   pushs L03FC   ; accepted
+00E1: 07 01 00 0B 00  cmps 0001H, 00F1
+00E6: 1C 05 04   addsi L0405   ; "Ve have alvays b...
+00E9: 33   say
+00EA: 1D E0 04   pushs L04E0   ; accepted
+00ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F1: 1D E9 04   pushs L04E9   ; murders
+00F4: 07 01 00 1B 00  cmps 0001H, 0114
+00F9: 1C F1 04   addsi L04F1   ; "Frederico vas mi...
+00FC: 33   say
+00FD: 1D FC 05   pushs L05FC   ; murders
+0100: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0104: 1D 04 06   pushs L0604   ; Sasha
+0107: 1D 0A 06   pushs L060A   ; Tania
+010A: 1D 10 06   pushs L0610   ; Frederico
+010D: 1E 03 00   arrc 0003H   ; 3
+0110: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0114: 1D 1A 06   pushs L061A   ; Frederico
+0117: 07 01 00 0B 00  cmps 0001H, 0127
+011C: 1C 24 06   addsi L0624   ; "Some thought ov ...
+011F: 33   say
+0120: 1D D5 06   pushs L06D5   ; Frederico
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 1D DF 06   pushs L06DF   ; Tania
+012A: 07 01 00 0B 00  cmps 0001H, 013A
+012F: 1C E5 06   addsi L06E5   ; "She vas the most...
+0132: 33   say
+0133: 1D 1E 08   pushs L081E   ; Tania
+0136: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013A: 1D 24 08   pushs L0824   ; Sasha
+013D: 07 01 00 18 00  cmps 0001H, 015A
+0142: 1C 2A 08   addsi L082A   ; "He is the son ov...
+0145: 33   say
+0146: 1D B6 08   pushs L08B6   ; Sasha
+0149: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014D: 1D BC 08   pushs L08BC   ; Fellowship
+0150: 1D C7 08   pushs L08C7   ; responsible
+0153: 1E 02 00   arrc 0002H   ; 2
+0156: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015A: 1D D3 08   pushs L08D3   ; responsible
+015D: 07 01 00 0B 00  cmps 0001H, 016D
+0162: 1C DF 08   addsi L08DF   ; "Ve do not blame ...
+0165: 33   say
+0166: 1D 22 09   pushs L0922   ; responsible
+0169: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016D: 1D 2E 09   pushs L092E   ; Fellowship
+0170: 07 01 00 0B 00  cmps 0001H, 0180
+0175: 1C 39 09   addsi L0939   ; "Sasha vill have ...
+0178: 33   say
+0179: 1D BF 09   pushs L09BF   ; Fellowship
+017C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0180: 1D CA 09   pushs L09CA   ; Margareta
+0183: 07 01 00 0B 00  cmps 0001H, 0193
+0188: 1C D4 09   addsi L09D4   ; "My vife is a vis...
+018B: 33   say
+018C: 1D 45 0A   pushs L0A45   ; Margareta
+018F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0193: 1D 4F 0A   pushs L0A4F   ; hourglass
+0196: 07 01 00 0B 00  cmps 0001H, 01A6
+019B: 1C 59 0A   addsi L0A59   ; "I do not know vh...
+019E: 33   say
+019F: 1D F1 0A   pushs L0AF1   ; hourglass
+01A2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A6: 1D FB 0A   pushs L0AFB   ; bye
+01A9: 07 01 00 03 00  cmps 0001H, 01B1
+01AE: 06 03 00   jmp 01B4
+01B1: 06 AE FE   jmp 0062
+01B4: 40   db 40 ???
+01B5: 1C FF 0A   addsi L0AFF   ; "Mayest thou have...
+01B8: 33   say
+01B9: 25   ret

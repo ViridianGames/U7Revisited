@@ -1,0 +1,20 @@
+  .funcnumber 0900H
+  .data
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0002H
+  .extern 0902H
+  .extern 0901H
+0000: 1F 0A 00   pushi 000AH   ; 10
+0003: 1F 01 00   pushi 0001H   ; 1
+0006: 38 10 00 02  callis _Random2@2  ; 0010
+000A: 1F 04 00   pushi 0004H   ; 4
+000D: 17   cmpl
+000E: 05 07 00   jne 0018
+0011: 24 00 00   call [0000]   ; 0902H
+0014: 2D   setr
+0015: 06 04 00   jmp 001C
+0018: 24 01 00   call [0001]   ; 0901H
+001B: 2D   setr
+001C: 32   rts

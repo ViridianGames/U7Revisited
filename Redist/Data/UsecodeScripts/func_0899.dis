@@ -1,0 +1,284 @@
+  .funcnumber 0899H
+  .data
+L0000: db 'bucket'
+L0006: db 00
+L0007: db 'hoe'
+L000A: db 00
+L000B: db 'lockpick'
+L0013: db 00
+L0014: db 'powder keg'
+L001E: db 00
+L001F: db 'shovel'
+L0025: db 00
+L0026: db 'bag'
+L0029: db 00
+L002A: db 'backpack'
+L0032: db 00
+L0033: db 'oil flasks'
+L003D: db 00
+L003E: db 'torch'
+L0043: db 00
+L0044: db 'nothing'
+L004B: db 00
+L004C: db 'a '
+L004E: db 00
+L004F: db 'a '
+L0051: db 00
+L0052: db 'a '
+L0054: db 00
+L0055: db 'a '
+L0057: db 00
+L0058: db 'a '
+L005A: db 00
+L005B: db 'a '
+L005D: db 00
+L005E: db 'a '
+L0060: db 00
+L0061: db 00
+L0062: db 'a '
+L0064: db 00
+L0065: db 00
+L0066: db 00
+L0067: db 00
+L0068: db 00
+L0069: db 00
+L006A: db 00
+L006B: db 00
+L006C: db 00
+L006D: db ' for a dozen'
+L0079: db 00
+L007A: db 00
+L007B: db 00
+L007C: db '"What wouldst thou like to buy?"'
+L009C: db 00
+L009D: db '"Fine."'
+L00A4: db 00
+L00A5: db '"^'
+L00A7: db 00
+L00A8: db ' That is a fair price, is it not?"'
+L00CA: db 00
+L00CB: db '"How many sets of twelve wouldst thou like?"'
+L00F7: db 00
+L00F8: db '"How many wouldst thou like?"'
+L0115: db 00
+L0116: db '"Done!"'
+L011D: db 00
+L011E: db '"Thou cannot possibly carry that much!"'
+L0145: db 00
+L0146: db '"Thou dost not have enough gold for that!"'
+L0170: db 00
+L0171: db '"Wouldst thou like something else?"'
+L0194: db 00
+  .code
+  .argc 0000H
+  .localc 000DH
+  .externsize 0004H
+  .extern 090CH
+  .extern 091BH
+  .extern 090AH
+  .extern 08F8H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 13   push true
+0005: 12 00 00   pop [0000]
+0008: 1D 00 00   pushs L0000   ; bucket
+000B: 1D 07 00   pushs L0007   ; hoe
+000E: 1D 0B 00   pushs L000B   ; lockpick
+0011: 1D 14 00   pushs L0014   ; powder keg
+0014: 1D 1F 00   pushs L001F   ; shovel
+0017: 1D 26 00   pushs L0026   ; bag
+001A: 1D 2A 00   pushs L002A   ; backpack
+001D: 1D 33 00   pushs L0033   ; oil flasks
+0020: 1D 3E 00   pushs L003E   ; torch
+0023: 1D 44 00   pushs L0044   ; nothing
+0026: 1E 0A 00   arrc 000AH   ; 10
+0029: 12 01 00   pop [0001]
+002C: 1F 2A 03   pushi 032AH   ; 810
+002F: 1F 72 02   pushi 0272H   ; 626
+0032: 1F 73 02   pushi 0273H   ; 627
+0035: 1F C0 02   pushi 02C0H   ; 704
+0038: 1F 71 02   pushi 0271H   ; 625
+003B: 1F 22 03   pushi 0322H   ; 802
+003E: 1F 21 03   pushi 0321H   ; 801
+0041: 1F 0E 03   pushi 030EH   ; 782
+0044: 1F 53 02   pushi 0253H   ; 595
+0047: 1F 00 00   pushi 0000H   ; 0
+004A: 1E 0A 00   arrc 000AH   ; 10
+004D: 12 02 00   pop [0002]
+0050: 1F 99 FE   pushi FE99H   ; -359
+0053: 12 03 00   pop [0003]
+0056: 1F 08 00   pushi 0008H   ; 8
+0059: 1F 14 00   pushi 0014H   ; 20
+005C: 1F 0A 00   pushi 000AH   ; 10
+005F: 1F 23 00   pushi 0023H   ; 35
+0062: 1F 14 00   pushi 0014H   ; 20
+0065: 1F 08 00   pushi 0008H   ; 8
+0068: 1F 0F 00   pushi 000FH   ; 15
+006B: 1F 48 00   pushi 0048H   ; 72
+006E: 1F 05 00   pushi 0005H   ; 5
+0071: 1F 00 00   pushi 0000H   ; 0
+0074: 1E 0A 00   arrc 000AH   ; 10
+0077: 12 04 00   pop [0004]
+007A: 1D 4C 00   pushs L004C   ; a 
+007D: 1D 4F 00   pushs L004F   ; a 
+0080: 1D 52 00   pushs L0052   ; a 
+0083: 1D 55 00   pushs L0055   ; a 
+0086: 1D 58 00   pushs L0058   ; a 
+0089: 1D 5B 00   pushs L005B   ; a 
+008C: 1D 5E 00   pushs L005E   ; a 
+008F: 1D 61 00   pushs L0061   ; 
+0092: 1D 62 00   pushs L0062   ; a 
+0095: 1D 65 00   pushs L0065   ; 
+0098: 1E 0A 00   arrc 000AH   ; 10
+009B: 12 05 00   pop [0005]
+009E: 1F 00 00   pushi 0000H   ; 0
+00A1: 1F 00 00   pushi 0000H   ; 0
+00A4: 1F 00 00   pushi 0000H   ; 0
+00A7: 1F 00 00   pushi 0000H   ; 0
+00AA: 1F 00 00   pushi 0000H   ; 0
+00AD: 1F 00 00   pushi 0000H   ; 0
+00B0: 1F 00 00   pushi 0000H   ; 0
+00B3: 1F 01 00   pushi 0001H   ; 1
+00B6: 1F 00 00   pushi 0000H   ; 0
+00B9: 1F 00 00   pushi 0000H   ; 0
+00BC: 1E 0A 00   arrc 000AH   ; 10
+00BF: 12 06 00   pop [0006]
+00C2: 1D 66 00   pushs L0066   ; 
+00C5: 1D 67 00   pushs L0067   ; 
+00C8: 1D 68 00   pushs L0068   ; 
+00CB: 1D 69 00   pushs L0069   ; 
+00CE: 1D 6A 00   pushs L006A   ; 
+00D1: 1D 6B 00   pushs L006B   ; 
+00D4: 1D 6C 00   pushs L006C   ; 
+00D7: 1D 6D 00   pushs L006D   ;  for a dozen
+00DA: 1D 7A 00   pushs L007A   ; 
+00DD: 1D 7B 00   pushs L007B   ; 
+00E0: 1E 0A 00   arrc 000AH   ; 10
+00E3: 12 07 00   pop [0007]
+00E6: 1F 01 00   pushi 0001H   ; 1
+00E9: 1F 01 00   pushi 0001H   ; 1
+00EC: 1F 01 00   pushi 0001H   ; 1
+00EF: 1F 01 00   pushi 0001H   ; 1
+00F2: 1F 01 00   pushi 0001H   ; 1
+00F5: 1F 01 00   pushi 0001H   ; 1
+00F8: 1F 01 00   pushi 0001H   ; 1
+00FB: 1F 0C 00   pushi 000CH   ; 12
+00FE: 1F 01 00   pushi 0001H   ; 1
+0101: 1F 00 00   pushi 0000H   ; 0
+0104: 1E 0A 00   arrc 000AH   ; 10
+0107: 12 08 00   pop [0008]
+010A: 1C 7C 00   addsi L007C   ; "What wouldst tho...
+010D: 33   say
+010E: 21 00 00   push [0000]
+0111: 05 20 01   jne 0234
+0114: 21 01 00   push [0001]
+0117: 24 00 00   call [0000]   ; 090CH
+011A: 12 09 00   pop [0009]
+011D: 21 09 00   push [0009]
+0120: 1F 01 00   pushi 0001H   ; 1
+0123: 22   cmpeq
+0124: 05 0B 00   jne 0132
+0127: 1C 9D 00   addsi L009D   ; "Fine."
+012A: 33   say
+012B: 14   push false
+012C: 12 00 00   pop [0000]
+012F: 06 FF 00   jmp 0231
+0132: 21 09 00   push [0009]
+0135: 26 07 00   aidx [0007]
+0138: 21 09 00   push [0009]
+013B: 26 04 00   aidx [0004]
+013E: 21 09 00   push [0009]
+0141: 26 06 00   aidx [0006]
+0144: 21 09 00   push [0009]
+0147: 26 01 00   aidx [0001]
+014A: 21 09 00   push [0009]
+014D: 26 05 00   aidx [0005]
+0150: 24 01 00   call [0001]   ; 091BH
+0153: 12 0A 00   pop [000A]
+0156: 1F 00 00   pushi 0000H   ; 0
+0159: 12 0B 00   pop [000B]
+015C: 1C A5 00   addsi L00A5   ; "^
+015F: 2F 0A 00   addsv [000A]
+0162: 1C A8 00   addsi L00A8   ;  That is a fair p...
+0165: 33   say
+0166: 24 02 00   call [0002]   ; 090AH
+0169: 12 0C 00   pop [000C]
+016C: 21 0C 00   push [000C]
+016F: 05 82 00   jne 01F4
+0172: 21 09 00   push [0009]
+0175: 26 02 00   aidx [0002]
+0178: 1F 0E 03   pushi 030EH   ; 782
+017B: 22   cmpeq
+017C: 21 09 00   push [0009]
+017F: 26 02 00   aidx [0002]
+0182: 1F 53 02   pushi 0253H   ; 595
+0185: 22   cmpeq
+0186: 21 09 00   push [0009]
+0189: 26 02 00   aidx [0002]
+018C: 1F 73 02   pushi 0273H   ; 627
+018F: 22   cmpeq
+0190: 0F   or
+0191: 0F   or
+0192: 05 3D 00   jne 01D2
+0195: 21 09 00   push [0009]
+0198: 26 02 00   aidx [0002]
+019B: 1F 0E 03   pushi 030EH   ; 782
+019E: 22   cmpeq
+019F: 05 07 00   jne 01A9
+01A2: 1C CB 00   addsi L00CB   ; "How many sets of...
+01A5: 33   say
+01A6: 06 04 00   jmp 01AD
+01A9: 1C F8 00   addsi L00F8   ; "How many wouldst...
+01AC: 33   say
+01AD: 13   push true
+01AE: 1F 01 00   pushi 0001H   ; 1
+01B1: 1F 14 00   pushi 0014H   ; 20
+01B4: 21 09 00   push [0009]
+01B7: 26 04 00   aidx [0004]
+01BA: 21 09 00   push [0009]
+01BD: 26 08 00   aidx [0008]
+01C0: 21 03 00   push [0003]
+01C3: 21 09 00   push [0009]
+01C6: 26 02 00   aidx [0002]
+01C9: 24 03 00   call [0003]   ; 08F8H
+01CC: 12 0B 00   pop [000B]
+01CF: 06 22 00   jmp 01F4
+01D2: 14   push false
+01D3: 1F 01 00   pushi 0001H   ; 1
+01D6: 1F 00 00   pushi 0000H   ; 0
+01D9: 21 09 00   push [0009]
+01DC: 26 04 00   aidx [0004]
+01DF: 21 09 00   push [0009]
+01E2: 26 08 00   aidx [0008]
+01E5: 21 03 00   push [0003]
+01E8: 21 09 00   push [0009]
+01EB: 26 02 00   aidx [0002]
+01EE: 24 03 00   call [0003]   ; 08F8H
+01F1: 12 0B 00   pop [000B]
+01F4: 21 0B 00   push [000B]
+01F7: 1F 01 00   pushi 0001H   ; 1
+01FA: 22   cmpeq
+01FB: 05 07 00   jne 0205
+01FE: 1C 16 01   addsi L0116   ; "Done!"
+0201: 33   say
+0202: 06 22 00   jmp 0227
+0205: 21 0B 00   push [000B]
+0208: 1F 02 00   pushi 0002H   ; 2
+020B: 22   cmpeq
+020C: 05 07 00   jne 0216
+020F: 1C 1E 01   addsi L011E   ; "Thou cannot poss...
+0212: 33   say
+0213: 06 11 00   jmp 0227
+0216: 21 0B 00   push [000B]
+0219: 1F 03 00   pushi 0003H   ; 3
+021C: 22   cmpeq
+021D: 05 07 00   jne 0227
+0220: 1C 46 01   addsi L0146   ; "Thou dost not ha...
+0223: 33   say
+0224: 06 00 00   jmp 0227
+0227: 1C 71 01   addsi L0171   ; "Wouldst thou lik...
+022A: 33   say
+022B: 24 02 00   call [0002]   ; 090AH
+022E: 12 00 00   pop [0000]
+0231: 06 DA FE   jmp 010E
+0234: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0238: 25   ret

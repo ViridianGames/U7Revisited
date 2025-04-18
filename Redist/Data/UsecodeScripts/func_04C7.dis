@@ -1,0 +1,668 @@
+  .funcnumber 04C7H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'help'
+L0011: db 00
+L0012: db 'got fragments'
+L001F: db 00
+L0020: db 'help'
+L0024: db 00
+L0025: db '"Greetings to thee, Sir Dupre. Art thou back again for thy s'
+ db 'tudy of wines for Brommer?"'
+L007C: db 00
+L007D: db '"Why, ah, yes, my good friend, Denton. I am, uh, still condu'
+ db 'cting that study." He turns to you and shrugs, grinning shee'
+ db 'pishly.'
+L00FC: db 00
+L00FD: db 'The man before you seems to stare at you blankly.'
+L012E: db 00
+L012F: db '"Hello, '
+L0137: db 00
+L0138: db '," says Denton.'
+L0147: db 00
+L0148: db 'name'
+L014C: db 00
+L014D: db '"I am Sir Denton, '
+L015F: db 00
+L0160: db '."'
+L0162: db 00
+L0163: db 'name'
+L0167: db 00
+L0168: db 'help'
+L016C: db 00
+L016D: db 'job'
+L0170: db 00
+L0171: db '"I am the tavernkeeper, '
+L0189: db 00
+L018A: db '. I sell refreshment to the citizens of Britannia, most nota'
+ db 'bly, the knights in Serpent's Hold."'
+L01EA: db 00
+L01EB: db 'knights'
+L01F2: db 00
+L01F3: db 'Serpent's Hold'
+L0201: db 00
+L0202: db 'sell'
+L0206: db 00
+L0207: db 'knights'
+L020E: db 00
+L020F: db '"Almost every resident here is a noble warrior. The exceptio'
+ db 'ns would be Lady Jehanne, the provisioner; Lady Tory; Lady L'
+ db 'eigh, the healer; and Menion, the trainer. I can also tell t'
+ db 'hee about all the other residents."'
+L02E6: db 00
+L02E7: db 'residents'
+L02F0: db 00
+L02F1: db 'Menion'
+L02F7: db 00
+L02F8: db 'Lady Leigh'
+L0302: db 00
+L0303: db 'Lady Tory'
+L030C: db 00
+L030D: db 'Lady Jehanne'
+L0319: db 00
+L031A: db 'knights'
+L0321: db 00
+L0322: db 'sell'
+L0326: db 00
+L0327: db 'Serpent's Hold'
+L0335: db 00
+L0336: db '"Serpent's Hold is located at precisely 53 degrees east and '
+ db '165 degrees south."'
+L0385: db 00
+L0386: db 'Serpent's Hold'
+L0394: db 00
+L0395: db 'residents'
+L039E: db 00
+L039F: db '"Yes, '
+L03A5: db 00
+L03A6: db ', I can tell thee about the following people: '
+L03D4: db 00
+L03D5: db 'Sir Pendaran'
+L03E1: db 00
+L03E2: db 'Sir Jordan'
+L03EC: db 00
+L03ED: db 'Sir Horffe'
+L03F7: db 00
+L03F8: db 'Sir Richter'
+L0403: db 00
+L0404: db 'Lord John-Paul'
+L0412: db 00
+L0413: db 'no one'
+L0419: db 00
+L041A: db 'no one'
+L0420: db 00
+L0421: db 'residents'
+L042A: db 00
+L042B: db 'Lord John-Paul'
+L0439: db 00
+L043A: db '"He is the Lord of Serpent's Hold. He is a capable leader an'
+ db 'd a fair man."'
+L0484: db 00
+L0485: db 'Lord John-Paul'
+L0493: db 00
+L0494: db 'Lady Leigh'
+L049E: db 00
+L049F: db '"Her healing skills are said to be unparalleled."'
+L04D0: db 00
+L04D1: db 'Lady Leigh'
+L04DB: db 00
+L04DC: db 'Sir Richter'
+L04E7: db 00
+L04E8: db '"He is second in command to Lord John-Paul. He is teaching m'
+ db 'e how to gamble well. In fact, he began increasing the lesso'
+ db 'ns after joining The Fellowship."'
+L0581: db 00
+L0582: db 'Fellowship'
+L058C: db 00
+L058D: db 'Sir Richter'
+L0598: db 00
+L0599: db 'Sir Horffe'
+L05A3: db 00
+L05A4: db '"Sir Horffe is an excellent warrior. He is a gargoyle that w'
+ db 'as found by two knights when he was very young. They chose t'
+ db 'o raise him as their own child. He is very honorable."'
+L0652: db 00
+L0653: db 'Sir Horffe'
+L065D: db 00
+L065E: db 'Gargish accent'
+L066C: db 00
+L066D: db 'Gargish accent'
+L067B: db 00
+L067C: db '"Sir Horffe has chosen to use the Gargish syntax of our lang'
+ db 'uage so he may better maintain his cultural ties."'
+L06EA: db 00
+L06EB: db 'Gargish accent'
+L06F9: db 00
+L06FA: db 'Sir Jordan'
+L0704: db 00
+L0705: db '"Despite his blindness, Sir Jordan perceives objects around '
+ db 'him very well. He is an excellent tinkerer, and can repair m'
+ db 'any items."'
+L0788: db 00
+L0789: db 'Sir Jordan'
+L0793: db 00
+L0794: db 'Lady Tory'
+L079D: db 00
+L079E: db '"I believe she is a druid. She was showing me how to be more'
+ db ' compassionate than I was before. She is very good at knowin'
+ db 'g what others are feeling and why they are experiencing such'
+ db ' emotions."'
+L085D: db 00
+L085E: db 'Lady Tory'
+L0867: db 00
+L0868: db 'Menion'
+L086E: db 00
+L086F: db '"He is the fighting instructor. In his spare time, he likes '
+ db 'to make swords. Menion has been kind enough to give me one o'
+ db 'f his creations."'
+L08F8: db 00
+L08F9: db 'Menion'
+L08FF: db 00
+L0900: db 'Sir Pendaran'
+L090C: db 00
+L090D: db '"Sir Pendaran is a knight of the Hold. He is very friendly, '
+ db 'but I have been told he can be overbearing at times."'
+L097E: db 00
+L097F: db 'Sir Pendaran'
+L098B: db 00
+L098C: db 'Lady Jehanne'
+L0998: db 00
+L0999: db '"She is the lady of Sir Pendaran. She has been helping me be'
+ db 'tter my sense of humor."'
+L09ED: db 00
+L09EE: db 'humor'
+L09F3: db 00
+L09F4: db 'Lady Jehanne'
+L0A00: db 00
+L0A01: db 'humor'
+L0A06: db 00
+L0A07: db '"My jokes are very bad. If thou wouldst like, I will tell th'
+ db 'ee one."'
+L0A4B: db 00
+L0A4C: db '"Why did the chicken cross the road?"'
+L0A71: db 00
+L0A72: db '"To get to the other side! Oh, that joke is new," he says sa'
+ db 'rcastically."*'
+L0ABC: db 00
+L0ABD: db 'Iolo whispers in your ear.~~"'
+L0ADA: db 00
+L0ADB: db ', we have heard that one before. 'Tis best we leave him befo'
+ db 're he indulges in another joke."'
+L0B37: db 00
+L0B38: db 'I don't know'
+L0B44: db 00
+L0B45: db 'to get to the other side'
+L0B5D: db 00
+L0B5E: db 'He almost appears disappointed, but it seems more likely tha'
+ db 't it's your imagination.'
+L0BB2: db 00
+L0BB3: db 'humor'
+L0BB8: db 00
+L0BB9: db 'I don't know'
+L0BC5: db 00
+L0BC6: db 'humor'
+L0BCB: db 00
+L0BCC: db 'He gives a partial smile.~~"To get to the other side. Didst '
+ db 'thou think that was funny?"'
+L0C23: db 00
+L0C24: db 'He appears confused. "That is odd, no one else thinks that j'
+ db 'oke is humorous.~~"Perhaps I am more funny than I thought...'
+ db '"'
+L0C9D: db 00
+L0C9E: db '"No one else finds it humorous either. I will continue pract'
+ db 'icing to be funny."'
+L0CED: db 00
+L0CEE: db 'I don't know'
+L0CFA: db 00
+L0CFB: db 'to get to the other side'
+L0D13: db 00
+L0D14: db 'to get to the other side'
+L0D2C: db 00
+L0D2D: db 'humor'
+L0D32: db 00
+L0D33: db '"Oh. Thou hast heard it before."'
+L0D53: db 00
+L0D54: db 'to get to the other side'
+L0D6C: db 00
+L0D6D: db 'I don't know'
+L0D79: db 00
+L0D7A: db 'Fellowship'
+L0D84: db 00
+L0D85: db '"The Fellowship is a twenty-year-old organization that holds'
+ db ' many festivals, parades, and celebrations. In addition, the'
+ db 'y maintain a shelter in the town of Paws. They have an under'
+ db 'lying philosophy called the Triad of Inner Strength. This tr'
+ db 'iad is broken into the three principles known as `strive for'
+ db ' unity,' `trust thy brother,' and `worthiness precedes rewar'
+ db 'd.'I will now explain the meaning of each principple."'
+L0F23: db 00
+L0F24: db '"This Denton fellow is really long-winded."*'
+L0F50: db 00
+L0F51: db '"Strive for unity seems to mean that The Fellowship wants ot'
+ db 'hers to work together for the weal of society. Trust thy bro'
+ db 'ther implies that each person should not question the action'
+ db 's of others. Worthiness precedes reward indicates that The F'
+ db 'ellowship's attitude towards reward is that one must do well'
+ db ' to be rewarded."'
+L108E: db 00
+L108F: db 'He looks at your medallion.~~"Is mine information correct?"'
+L10CA: db 00
+L10CB: db '"I thank thee. I always endeavor to be correct."'
+L10FB: db 00
+L10FC: db '"I shall attempt to become better informed."'
+L1128: db 00
+L1129: db 'Fellowship'
+L1133: db 00
+L1134: db 'help'
+L1138: db 00
+L1139: db '"Yes, '
+L113F: db 00
+L1140: db ', I can help thee investigate the crime. I believe the best '
+ db 'way to begin would be by speaking with Sir Richter, since he'
+ db ' is the one who searched the statue after the incident."'
+L11F0: db 00
+L11F1: db 'help'
+L11F5: db 00
+L11F6: db 'got fragments'
+L1203: db 00
+L1204: db '"Perhaps thou shouldst have these stone chips examined by th'
+ db 'e healer, Lady Leigh."'
+L1256: db 00
+L1257: db 'gargoyle blood'
+L1265: db 00
+L1266: db 'got fragments'
+L1273: db 00
+L1274: db 'gargoyle blood'
+L1282: db 00
+L1283: db '"That behavior does not seem typical of Sir Horffe. Thou may'
+ db 'est wish to report to Lord John-Paul, but I expect there is '
+ db 'more to this. It would be a good idea to visit Lady Tory. Sh'
+ db 'e is very good at sensing the feelings of others, and may ha'
+ db 've learned something by observing the residents after the ev'
+ db 'ent."'
+L13B4: db 00
+L13B5: db 'gargoyle blood'
+L13C3: db 00
+L13C4: db 'bye'
+L13C7: db 00
+L13C8: db '"Good day, '
+L13D3: db 00
+L13D4: db '."*'
+L13D7: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0006H
+  .extern 0908H
+  .extern 0909H
+  .extern 08F7H
+  .extern 0876H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 29 04   jne 0431
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 39 FF   pushi FF39H   ; -199
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1F FC FF   pushi FFFCH   ; -4
+0021: 24 02 00   call [0002]   ; 08F7H
+0024: 12 02 00   pop [0002]
+0027: 1D 00 00   pushs L0000   ; bye
+002A: 1D 04 00   pushs L0004   ; job
+002D: 1D 08 00   pushs L0008   ; name
+0030: 1E 03 00   arrc 0003H   ; 3
+0033: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0037: 42 5E 02   pushf flag:[025E]
+003A: 42 61 02   pushf flag:[0261]
+003D: 10   not
+003E: 0E   and
+003F: 05 27 00   jne 0069
+0042: 42 75 02   pushf flag:[0275]
+0045: 05 07 00   jne 004F
+0048: 1D 0D 00   pushs L000D   ; help
+004B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004F: 42 75 02   pushf flag:[0275]
+0052: 05 14 00   jne 0069
+0055: 42 59 02   pushf flag:[0259]
+0058: 05 0E 00   jne 0069
+005B: 1D 12 00   pushs L0012   ; got fragments
+005E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0062: 1D 20 00   pushs L0020   ; help
+0065: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0069: 21 02 00   push [0002]
+006C: 05 23 00   jne 0092
+006F: 1C 25 00   addsi L0025   ; "Greetings to the...
+0072: 33   say
+0073: 1F 00 00   pushi 0000H   ; 0
+0076: 1F FC FF   pushi FFFCH   ; -4
+0079: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+007D: 1C 7D 00   addsi L007D   ; "Why, ah, yes, my...
+0080: 33   say
+0081: 1F FC FF   pushi FFFCH   ; -4
+0084: 39 04 00 01  calli _HideNPC@1  ; 0004
+0088: 1F 00 00   pushi 0000H   ; 0
+008B: 1F 39 FF   pushi FF39H   ; -199
+008E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0092: 42 70 02   pushf flag:[0270]
+0095: 10   not
+0096: 05 0B 00   jne 00A4
+0099: 1C FD 00   addsi L00FD   ; The man before yo...
+009C: 33   say
+009D: 13   push true
+009E: 43 70 02   popf flag:[0270]
+00A1: 06 0A 00   jmp 00AE
+00A4: 1C 2F 01   addsi L012F   ; "Hello, 
+00A7: 2F 01 00   addsv [0001]
+00AA: 1C 38 01   addsi L0138   ; ," says Denton.
+00AD: 33   say
+00AE: 04 75 03   je 0426
+00B1: 1D 48 01   pushs L0148   ; name
+00B4: 07 01 00 2E 00  cmps 0001H, 00E7
+00B9: 1C 4D 01   addsi L014D   ; "I am Sir Denton, 
+00BC: 2F 01 00   addsv [0001]
+00BF: 1C 60 01   addsi L0160   ; ."
+00C2: 33   say
+00C3: 13   push true
+00C4: 43 75 02   popf flag:[0275]
+00C7: 1D 63 01   pushs L0163   ; name
+00CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CE: 42 5E 02   pushf flag:[025E]
+00D1: 05 13 00   jne 00E7
+00D4: 42 59 02   pushf flag:[0259]
+00D7: 42 61 02   pushf flag:[0261]
+00DA: 10   not
+00DB: 0E   and
+00DC: 10   not
+00DD: 05 07 00   jne 00E7
+00E0: 1D 68 01   pushs L0168   ; help
+00E3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E7: 1D 6D 01   pushs L016D   ; job
+00EA: 07 01 00 1A 00  cmps 0001H, 0109
+00EF: 1C 71 01   addsi L0171   ; "I am the tavernk...
+00F2: 2F 01 00   addsv [0001]
+00F5: 1C 8A 01   addsi L018A   ; . I sell refreshm...
+00F8: 33   say
+00F9: 1D EB 01   pushs L01EB   ; knights
+00FC: 1D F3 01   pushs L01F3   ; Serpent's Hold
+00FF: 1D 02 02   pushs L0202   ; sell
+0102: 1E 03 00   arrc 0003H   ; 3
+0105: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0109: 1D 07 02   pushs L0207   ; knights
+010C: 07 01 00 21 00  cmps 0001H, 0132
+0111: 1C 0F 02   addsi L020F   ; "Almost every res...
+0114: 33   say
+0115: 1D E7 02   pushs L02E7   ; residents
+0118: 1D F1 02   pushs L02F1   ; Menion
+011B: 1D F8 02   pushs L02F8   ; Lady Leigh
+011E: 1D 03 03   pushs L0303   ; Lady Tory
+0121: 1D 0D 03   pushs L030D   ; Lady Jehanne
+0124: 1E 05 00   arrc 0005H   ; 5
+0127: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012B: 1D 1A 03   pushs L031A   ; knights
+012E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0132: 1D 22 03   pushs L0322   ; sell
+0135: 07 01 00 03 00  cmps 0001H, 013D
+013A: 24 03 00   call [0003]   ; 0876H
+013D: 1D 27 03   pushs L0327   ; Serpent's Hold
+0140: 07 01 00 0B 00  cmps 0001H, 0150
+0145: 1C 36 03   addsi L0336   ; "Serpent's Hold i...
+0148: 33   say
+0149: 1D 86 03   pushs L0386   ; Serpent's Hold
+014C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0150: 1D 95 03   pushs L0395   ; residents
+0153: 07 01 00 27 00  cmps 0001H, 017F
+0158: 1C 9F 03   addsi L039F   ; "Yes, 
+015B: 2F 01 00   addsv [0001]
+015E: 1C A6 03   addsi L03A6   ; , I can tell thee...
+0161: 33   say
+0162: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0166: 1D D5 03   pushs L03D5   ; Sir Pendaran
+0169: 1D E2 03   pushs L03E2   ; Sir Jordan
+016C: 1D ED 03   pushs L03ED   ; Sir Horffe
+016F: 1D F8 03   pushs L03F8   ; Sir Richter
+0172: 1D 04 04   pushs L0404   ; Lord John-Paul
+0175: 1D 13 04   pushs L0413   ; no one
+0178: 1E 06 00   arrc 0006H   ; 6
+017B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017F: 1D 1A 04   pushs L041A   ; no one
+0182: 07 01 00 0B 00  cmps 0001H, 0192
+0187: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+018B: 1D 21 04   pushs L0421   ; residents
+018E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0192: 1D 2B 04   pushs L042B   ; Lord John-Paul
+0195: 07 01 00 0B 00  cmps 0001H, 01A5
+019A: 1C 3A 04   addsi L043A   ; "He is the Lord o...
+019D: 33   say
+019E: 1D 85 04   pushs L0485   ; Lord John-Paul
+01A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A5: 1D 94 04   pushs L0494   ; Lady Leigh
+01A8: 07 01 00 0B 00  cmps 0001H, 01B8
+01AD: 1C 9F 04   addsi L049F   ; "Her healing skil...
+01B0: 33   say
+01B1: 1D D1 04   pushs L04D1   ; Lady Leigh
+01B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B8: 1D DC 04   pushs L04DC   ; Sir Richter
+01BB: 07 01 00 12 00  cmps 0001H, 01D2
+01C0: 1C E8 04   addsi L04E8   ; "He is second in ...
+01C3: 33   say
+01C4: 1D 82 05   pushs L0582   ; Fellowship
+01C7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CB: 1D 8D 05   pushs L058D   ; Sir Richter
+01CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D2: 1D 99 05   pushs L0599   ; Sir Horffe
+01D5: 07 01 00 18 00  cmps 0001H, 01F2
+01DA: 1C A4 05   addsi L05A4   ; "Sir Horffe is an...
+01DD: 33   say
+01DE: 1D 53 06   pushs L0653   ; Sir Horffe
+01E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E5: 42 6E 02   pushf flag:[026E]
+01E8: 05 07 00   jne 01F2
+01EB: 1D 5E 06   pushs L065E   ; Gargish accent
+01EE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F2: 1D 6D 06   pushs L066D   ; Gargish accent
+01F5: 07 01 00 0B 00  cmps 0001H, 0205
+01FA: 1C 7C 06   addsi L067C   ; "Sir Horffe has c...
+01FD: 33   say
+01FE: 1D EB 06   pushs L06EB   ; Gargish accent
+0201: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0205: 1D FA 06   pushs L06FA   ; Sir Jordan
+0208: 07 01 00 0B 00  cmps 0001H, 0218
+020D: 1C 05 07   addsi L0705   ; "Despite his blin...
+0210: 33   say
+0211: 1D 89 07   pushs L0789   ; Sir Jordan
+0214: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0218: 1D 94 07   pushs L0794   ; Lady Tory
+021B: 07 01 00 0B 00  cmps 0001H, 022B
+0220: 1C 9E 07   addsi L079E   ; "I believe she is...
+0223: 33   say
+0224: 1D 5E 08   pushs L085E   ; Lady Tory
+0227: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022B: 1D 68 08   pushs L0868   ; Menion
+022E: 07 01 00 0B 00  cmps 0001H, 023E
+0233: 1C 6F 08   addsi L086F   ; "He is the fighti...
+0236: 33   say
+0237: 1D F9 08   pushs L08F9   ; Menion
+023A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023E: 1D 00 09   pushs L0900   ; Sir Pendaran
+0241: 07 01 00 0B 00  cmps 0001H, 0251
+0246: 1C 0D 09   addsi L090D   ; "Sir Pendaran is ...
+0249: 33   say
+024A: 1D 7F 09   pushs L097F   ; Sir Pendaran
+024D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0251: 1D 8C 09   pushs L098C   ; Lady Jehanne
+0254: 07 01 00 12 00  cmps 0001H, 026B
+0259: 1C 99 09   addsi L0999   ; "She is the lady ...
+025C: 33   say
+025D: 1D EE 09   pushs L09EE   ; humor
+0260: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0264: 1D F4 09   pushs L09F4   ; Lady Jehanne
+0267: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026B: 1D 01 0A   pushs L0A01   ; humor
+026E: 07 01 00 8B 00  cmps 0001H, 02FE
+0273: 1C 07 0A   addsi L0A07   ; "My jokes are ver...
+0276: 33   say
+0277: 24 04 00   call [0004]   ; 090AH
+027A: 12 03 00   pop [0003]
+027D: 21 03 00   push [0003]
+0280: 05 70 00   jne 02F3
+0283: 1C 4C 0A   addsi L0A4C   ; "Why did the chic...
+0286: 33   say
+0287: 1F FF FF   pushi FFFFH   ; -1
+028A: 24 02 00   call [0002]   ; 08F7H
+028D: 12 04 00   pop [0004]
+0290: 1F FE FF   pushi FFFEH   ; -2
+0293: 24 02 00   call [0002]   ; 08F7H
+0296: 12 05 00   pop [0005]
+0299: 21 05 00   push [0005]
+029C: 05 15 00   jne 02B4
+029F: 1F 00 00   pushi 0000H   ; 0
+02A2: 1F FE FF   pushi FFFEH   ; -2
+02A5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02A9: 1C 72 0A   addsi L0A72   ; "To get to the ot...
+02AC: 33   say
+02AD: 1F FE FF   pushi FFFEH   ; -2
+02B0: 39 04 00 01  calli _HideNPC@1  ; 0004
+02B4: 21 04 00   push [0004]
+02B7: 05 1B 00   jne 02D5
+02BA: 1F 00 00   pushi 0000H   ; 0
+02BD: 1F FF FF   pushi FFFFH   ; -1
+02C0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02C4: 1C BD 0A   addsi L0ABD   ; Iolo whispers in ...
+02C7: 2F 00 00   addsv [0000]
+02CA: 1C DB 0A   addsi L0ADB   ; , we have heard t...
+02CD: 33   say
+02CE: 1F FF FF   pushi FFFFH   ; -1
+02D1: 39 04 00 01  calli _HideNPC@1  ; 0004
+02D5: 1F 00 00   pushi 0000H   ; 0
+02D8: 1F 39 FF   pushi FF39H   ; -199
+02DB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02DF: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+02E3: 1D 38 0B   pushs L0B38   ; I don't know
+02E6: 1D 45 0B   pushs L0B45   ; to get to the oth...
+02E9: 1E 02 00   arrc 0002H   ; 2
+02EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02F0: 06 04 00   jmp 02F7
+02F3: 1C 5E 0B   addsi L0B5E   ; He almost appears...
+02F6: 33   say
+02F7: 1D B3 0B   pushs L0BB3   ; humor
+02FA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02FE: 1D B9 0B   pushs L0BB9   ; I don't know
+0301: 07 01 00 34 00  cmps 0001H, 033A
+0306: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+030A: 1D C6 0B   pushs L0BC6   ; humor
+030D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0311: 1C CC 0B   addsi L0BCC   ; He gives a partia...
+0314: 33   say
+0315: 24 04 00   call [0004]   ; 090AH
+0318: 12 06 00   pop [0006]
+031B: 21 06 00   push [0006]
+031E: 05 07 00   jne 0328
+0321: 1C 24 0C   addsi L0C24   ; He appears confus...
+0324: 33   say
+0325: 06 04 00   jmp 032C
+0328: 1C 9E 0C   addsi L0C9E   ; "No one else find...
+032B: 33   say
+032C: 1D EE 0C   pushs L0CEE   ; I don't know
+032F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0333: 1D FB 0C   pushs L0CFB   ; to get to the oth...
+0336: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+033A: 1D 14 0D   pushs L0D14   ; to get to the oth...
+033D: 07 01 00 1D 00  cmps 0001H, 035F
+0342: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0346: 1D 2D 0D   pushs L0D2D   ; humor
+0349: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+034D: 1C 33 0D   addsi L0D33   ; "Oh. Thou hast he...
+0350: 33   say
+0351: 1D 54 0D   pushs L0D54   ; to get to the oth...
+0354: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0358: 1D 6D 0D   pushs L0D6D   ; I don't know
+035B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+035F: 1D 7A 0D   pushs L0D7A   ; Fellowship
+0362: 07 01 00 65 00  cmps 0001H, 03CC
+0367: 1C 85 0D   addsi L0D85   ; "The Fellowship i...
+036A: 33   say
+036B: 1F FE FF   pushi FFFEH   ; -2
+036E: 24 02 00   call [0002]   ; 08F7H
+0371: 12 05 00   pop [0005]
+0374: 21 05 00   push [0005]
+0377: 05 1F 00   jne 0399
+037A: 1F 00 00   pushi 0000H   ; 0
+037D: 1F FE FF   pushi FFFEH   ; -2
+0380: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0384: 1C 24 0F   addsi L0F24   ; "This Denton fell...
+0387: 33   say
+0388: 1F FE FF   pushi FFFEH   ; -2
+038B: 39 04 00 01  calli _HideNPC@1  ; 0004
+038F: 1F 00 00   pushi 0000H   ; 0
+0392: 1F 39 FF   pushi FF39H   ; -199
+0395: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0399: 1C 51 0F   addsi L0F51   ; "Strive for unity...
+039C: 33   say
+039D: 38 67 00 00  callis 0067, 0
+03A1: 12 07 00   pop [0007]
+03A4: 21 07 00   push [0007]
+03A7: 05 1B 00   jne 03C5
+03AA: 1C 8F 10   addsi L108F   ; He looks at your ...
+03AD: 33   say
+03AE: 24 04 00   call [0004]   ; 090AH
+03B1: 12 08 00   pop [0008]
+03B4: 21 08 00   push [0008]
+03B7: 05 07 00   jne 03C1
+03BA: 1C CB 10   addsi L10CB   ; "I thank thee. I ...
+03BD: 33   say
+03BE: 06 04 00   jmp 03C5
+03C1: 1C FC 10   addsi L10FC   ; "I shall attempt ...
+03C4: 33   say
+03C5: 1D 29 11   pushs L1129   ; Fellowship
+03C8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03CC: 1D 34 11   pushs L1134   ; help
+03CF: 07 01 00 11 00  cmps 0001H, 03E5
+03D4: 1C 39 11   addsi L1139   ; "Yes, 
+03D7: 2F 01 00   addsv [0001]
+03DA: 1C 40 11   addsi L1140   ; , I can help thee...
+03DD: 33   say
+03DE: 1D F1 11   pushs L11F1   ; help
+03E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03E5: 1D F6 11   pushs L11F6   ; got fragments
+03E8: 07 01 00 18 00  cmps 0001H, 0405
+03ED: 1C 04 12   addsi L1204   ; "Perhaps thou sho...
+03F0: 33   say
+03F1: 42 5F 02   pushf flag:[025F]
+03F4: 05 07 00   jne 03FE
+03F7: 1D 57 12   pushs L1257   ; gargoyle blood
+03FA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03FE: 1D 66 12   pushs L1266   ; got fragments
+0401: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0405: 1D 74 12   pushs L1274   ; gargoyle blood
+0408: 07 01 00 0B 00  cmps 0001H, 0418
+040D: 1C 83 12   addsi L1283   ; "That behavior do...
+0410: 33   say
+0411: 1D B5 13   pushs L13B5   ; gargoyle blood
+0414: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0418: 1D C4 13   pushs L13C4   ; bye
+041B: 07 01 00 03 00  cmps 0001H, 0423
+0420: 06 03 00   jmp 0426
+0423: 06 88 FC   jmp 00AE
+0426: 40   db 40 ???
+0427: 1C C8 13   addsi L13C8   ; "Good day, 
+042A: 2F 01 00   addsv [0001]
+042D: 1C D4 13   addsi L13D4   ; ."*
+0430: 33   say
+0431: 48   push eventid
+0432: 1F 00 00   pushi 0000H   ; 0
+0435: 22   cmpeq
+0436: 05 06 00   jne 043F
+0439: 1F 39 FF   pushi FF39H   ; -199
+043C: 24 05 00   call [0005]   ; 092EH
+043F: 25   ret

@@ -1,0 +1,48 @@
+  .funcnumber 0632H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 53 00   jne 005B
+0008: 1F 92 FF   pushi FF92H   ; -110
+000B: 38 18 00 01  callis 0018, 1
+000F: 12 00 00   pop [0000]
+0012: 1F FF FF   pushi FFFFH   ; -1
+0015: 1F 00 00   pushi 0000H   ; 0
+0018: 1F 00 00   pushi 0000H   ; 0
+001B: 1F 00 00   pushi 0000H   ; 0
+001E: 1F 02 00   pushi 0002H   ; 2
+0021: 26 00 00   aidx [0000]
+0024: 1F 01 00   pushi 0001H   ; 1
+0027: 26 00 00   aidx [0000]
+002A: 1F 07 00   pushi 0007H   ; 7
+002D: 39 53 00 07  calli 0053, 7
+0031: 44 6A   pushw 446AH   ; 17514
+0033: 44 70   pushw 4470H   ; 17520
+0035: 44 6F   pushw 446FH   ; 17519
+0037: 44 01   pushw 4401H   ; 17409
+0039: 44 23   pushw 1E23H   ; 7715
+003B: 1E 05 00   arrc 0005H   ; 5
+003E: 3E   push itemref
+003F: 38 01 00 02  callis 0001, 2
+0043: 12 01 00   pop [0001]
+0046: 1F 04 00   pushi 0004H   ; 4
+0049: 1F 32 06   pushi 0632H   ; 1586
+004C: 44 55   pushw 4455H   ; 17493
+004E: 44 23   pushw 1E23H   ; 7715
+0050: 1E 03 00   arrc 0003H   ; 3
+0053: 3E   push itemref
+0054: 38 02 00 03  callis 0002, 3
+0058: 12 01 00   pop [0001]
+005B: 48   push eventid
+005C: 1F 02 00   pushi 0002H   ; 2
+005F: 22   cmpeq
+0060: 05 0B 00   jne 006E
+0063: 1F 92 FF   pushi FF92H   ; -110
+0066: 38 1B 00 01  callis 001B, 1
+006A: 39 3F 00 01  calli 003F, 1
+006E: 25   ret

@@ -1,0 +1,155 @@
+  .funcnumber 0610H
+  .data
+L0000: db '"I am gladdened to see thee still alive, my good friend. I w'
+ db 'as sorely grieved at thine apparent demise.~~"In the midst o'
+ db 'f our battle I did lose track of thee. It is good to find th'
+ db 'ee safe.~~"If thou art feeling up to it, let us then continu'
+ db 'e our quest."*'
+L00FE: db 00
+L00FF: db '"Thy recovery is a miracle! 'Twould have been a severe blow '
+ db 'for this world to lose its Avatar.~~"When at last thou wert '
+ db 'found, thy body was being taken to this place in a wagon dri'
+ db 'ven by two hooded Fellowship members.~~"Thou hast suffered t'
+ db 'hrough a terrible ordeal and travelled far. Perhaps thou sho'
+ db 'uldst rest..."*'
+L023A: db 00
+L023B: db '"The Fellowship members who brought thee to this place did n'
+ db 'ot speak once during the entire journey.~~"But it seems they'
+ db ' did the right thing in bringing thee here for thou hast bee'
+ db 'n revived!~~"Let us all have a drink in celebration! We will'
+ db ' be ready to leave whenever thou dost wish it."*'
+L035B: db 00
+  .code
+  .argc 0001H
+  .localc 000BH
+  .externsize 0004H
+  .extern 0909H
+  .extern 0908H
+  .extern 08F7H
+  .extern 08D5H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 1F 01 00   pushi 0001H   ; 1
+0006: 1F 24 00   pushi 0024H   ; 36
+0009: 39 8C 00 03  calli 008C, 3
+000D: 1F 04 00   pushi 0004H   ; 4
+0010: 1F 23 00   pushi 0023H   ; 35
+0013: 1F 99 FE   pushi FE99H   ; -359
+0016: 3E   push itemref
+0017: 38 35 00 04  callis 0035, 4
+001B: 12 00 00   pop [0000]
+001E: 2E   sloop
+001F: 02 01 00 02 00 03 00 00 00 1E 00  db 2 ???
+0020:   db 1
+0021:   db 0
+0022:   db 2
+0023:   db 0
+0024:   db 3
+0025:   db 0
+0026:   db 0
+0027:   db 0
+0028:   db 1e
+0029:   db 0
+002A: 21 03 00   push [0003]
+002D: 38 3C 00 01  callis 003C, 1
+0031: 1F 00 00   pushi 0000H   ; 0
+0034: 22   cmpeq
+0035: 21 03 00   push [0003]
+0038: 38 1C 00 01  callis 001C, 1
+003C: 1F 00 00   pushi 0000H   ; 0
+003F: 22   cmpeq
+0040: 0E   and
+0041: 05 01 00   jne 0045
+0044: 2C   db 2c ???
+0045: 06 D7 FF   jmp 001F
+0048: 24 00 00   call [0000]   ; 0909H
+004B: 12 04 00   pop [0004]
+004E: 24 01 00   call [0001]   ; 0908H
+0051: 12 05 00   pop [0005]
+0054: 1F 59 FF   pushi FF59H   ; -167
+0057: 24 02 00   call [0002]   ; 08F7H
+005A: 12 06 00   pop [0006]
+005D: 1F 58 FF   pushi FF58H   ; -168
+0060: 24 02 00   call [0002]   ; 08F7H
+0063: 12 07 00   pop [0007]
+0066: 1F FF FF   pushi FFFFH   ; -1
+0069: 24 02 00   call [0002]   ; 08F7H
+006C: 12 08 00   pop [0008]
+006F: 1F 01 00   pushi 0001H   ; 1
+0072: 1F FF FF   pushi FFFFH   ; -1
+0075: 38 88 00 02  callis 0088, 2
+0079: 05 06 00   jne 0082
+007C: 1F 00 00   pushi 0000H   ; 0
+007F: 12 08 00   pop [0008]
+0082: 1F FD FF   pushi FFFDH   ; -3
+0085: 24 02 00   call [0002]   ; 08F7H
+0088: 12 09 00   pop [0009]
+008B: 1F 01 00   pushi 0001H   ; 1
+008E: 1F FD FF   pushi FFFDH   ; -3
+0091: 38 88 00 02  callis 0088, 2
+0095: 05 06 00   jne 009E
+0098: 1F 00 00   pushi 0000H   ; 0
+009B: 12 09 00   pop [0009]
+009E: 1F FC FF   pushi FFFCH   ; -4
+00A1: 24 02 00   call [0002]   ; 08F7H
+00A4: 12 0A 00   pop [000A]
+00A7: 1F 01 00   pushi 0001H   ; 1
+00AA: 1F FC FF   pushi FFFCH   ; -4
+00AD: 38 88 00 02  callis 0088, 2
+00B1: 05 06 00   jne 00BA
+00B4: 1F 00 00   pushi 0000H   ; 0
+00B7: 12 0A 00   pop [000A]
+00BA: 21 06 00   push [0006]
+00BD: 05 17 00   jne 00D7
+00C0: 1F 00 00   pushi 0000H   ; 0
+00C3: 1F 59 FF   pushi FF59H   ; -167
+00C6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00CA: 24 03 00   call [0003]   ; 08D5H
+00CD: 1F 59 FF   pushi FF59H   ; -167
+00D0: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D4: 06 1A 00   jmp 00F1
+00D7: 21 07 00   push [0007]
+00DA: 05 14 00   jne 00F1
+00DD: 1F 00 00   pushi 0000H   ; 0
+00E0: 1F 58 FF   pushi FF58H   ; -168
+00E3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E7: 24 03 00   call [0003]   ; 08D5H
+00EA: 1F 58 FF   pushi FF58H   ; -168
+00ED: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F1: 21 08 00   push [0008]
+00F4: 05 15 00   jne 010C
+00F7: 1F 00 00   pushi 0000H   ; 0
+00FA: 1F FF FF   pushi FFFFH   ; -1
+00FD: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0101: 1C 00 00   addsi L0000   ; "I am gladdened t...
+0104: 33   say
+0105: 1F FF FF   pushi FFFFH   ; -1
+0108: 39 04 00 01  calli _HideNPC@1  ; 0004
+010C: 21 09 00   push [0009]
+010F: 05 15 00   jne 0127
+0112: 1F 00 00   pushi 0000H   ; 0
+0115: 1F FD FF   pushi FFFDH   ; -3
+0118: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011C: 1C FF 00   addsi L00FF   ; "Thy recovery is ...
+011F: 33   say
+0120: 1F FD FF   pushi FFFDH   ; -3
+0123: 39 04 00 01  calli _HideNPC@1  ; 0004
+0127: 21 0A 00   push [000A]
+012A: 05 15 00   jne 0142
+012D: 1F 00 00   pushi 0000H   ; 0
+0130: 1F FC FF   pushi FFFCH   ; -4
+0133: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0137: 1C 3B 02   addsi L023B   ; "The Fellowship m...
+013A: 33   say
+013B: 1F FC FF   pushi FFFCH   ; -4
+013E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0142: 13   push true
+0143: 43 26 00   popf flag:[0026]
+0146: 14   push false
+0147: 43 3A 00   popf flag:[003A]
+014A: 1F 01 00   pushi 0001H   ; 1
+014D: 1F 9C FE   pushi FE9CH   ; -356
+0150: 39 8A 00 02  calli 008A, 2
+0154: 1F 1F 00   pushi 001FH   ; 31
+0157: 1F 9C FE   pushi FE9CH   ; -356
+015A: 39 1D 00 02  calli 001D, 2
+015E: 25   ret

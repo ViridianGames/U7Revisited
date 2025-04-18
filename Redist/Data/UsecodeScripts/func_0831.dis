@@ -1,0 +1,70 @@
+  .funcnumber 0831H
+  .data
+L0000: db '@One of the gangplanks seems to be blocked. It must be lower'
+ db 'ed to sail.@'
+L0048: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0829H
+  .extern 08FFH
+  .extern 0830H
+0000: 21 00 00   push [0000]
+0003: 38 18 00 01  callis 0018, 1
+0007: 12 01 00   pop [0001]
+000A: 21 01 00   push [0001]
+000D: 21 00 00   push [0000]
+0010: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0014: 4A   arra
+0015: 12 01 00   pop [0001]
+0018: 21 01 00   push [0001]
+001B: 1F 99 FE   pushi FE99H   ; -359
+001E: 4A   arra
+001F: 12 01 00   pop [0001]
+0022: 1F 00 00   pushi 0000H   ; 0
+0025: 1F 0C 00   pushi 000CH   ; 12
+0028: 1F 96 00   pushi 0096H   ; 150
+002B: 21 01 00   push [0001]
+002E: 38 35 00 04  callis 0035, 4
+0032: 12 02 00   pop [0002]
+0035: 2E   sloop
+0036: 02 03 00 04 00 05 00 02 00 14 00  db 2 ???
+0037:   db 3
+0038:   db 0
+0039:   db 4
+003A:   db 0
+003B:   db 5
+003C:   db 0
+003D:   db 2
+003E:   db 0
+003F:   db 14
+0040:   db 0
+0041: 21 05 00   push [0005]
+0044: 24 00 00   call [0000]   ; 0829H
+0047: 10   not
+0048: 05 07 00   jne 0052
+004B: 1D 00 00   pushs L0000   ; @One of the gangp...
+004E: 24 01 00   call [0001]   ; 08FFH
+0051: 2C   db 2c ???
+0052: 06 E1 FF   jmp 0036
+0055: 1F 00 00   pushi 0000H   ; 0
+0058: 1F 12 00   pushi 0012H   ; 18
+005B: 1F FB 00   pushi 00FBH   ; 251
+005E: 21 01 00   push [0001]
+0061: 38 35 00 04  callis 0035, 4  ;* Find sails.
+0065: 12 06 00   pop [0006]
+0068: 1F 01 00   pushi 0001H   ; 1
+006B: 21 06 00   push [0006]
+006E: 24 02 00   call [0002]   ; 0830H
+0071: 1F 14 00   pushi 0014H   ; 20
+0074: 1F 9C FE   pushi FE9CH   ; -356
+0077: 39 8A 00 02  calli 008A, 2
+007B: 1F 0A 00   pushi 000AH   ; 10
+007E: 21 00 00   push [0000]
+0081: 39 89 00 02  calli 0089, 2
+0085: 1F 1A 00   pushi 001AH   ; 26
+0088: 1F 9C FE   pushi FE9CH   ; -356
+008B: 38 58 00 01  callis 0058, 1
+008F: 39 89 00 02  calli 0089, 2
+0093: 25   ret

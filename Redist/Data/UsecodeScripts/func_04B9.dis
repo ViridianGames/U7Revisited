@@ -1,0 +1,476 @@
+  .funcnumber 04B9H
+  .data
+L0000: db 'The gargoyle seems to be too busy conducting the Fellowship '
+ db 'meeting to speak with you now.'
+L005A: db 00
+L005B: db 'bye'
+L005E: db 00
+L005F: db 'Fellowship'
+L0069: db 00
+L006A: db 'job'
+L006D: db 00
+L006E: db 'name'
+L0072: db 00
+L0073: db 'Elizabeth and Abraham'
+L0088: db 00
+L0089: db 'You see a winged gargoyle. Noticing you, he turns and says, '
+ db '"To be welcome, human. To need assistance?"'
+L00F0: db 00
+L00F1: db '"To ask how I may assist, human."'
+L0112: db 00
+L0113: db 'name'
+L0117: db 00
+L0118: db '"To be the one named Quan."'
+L0133: db 00
+L0134: db 'name'
+L0138: db 00
+L0139: db 'Quan'
+L013D: db 00
+L013E: db 'Quan'
+L0142: db 00
+L0143: db '"To have no meaning in Gargish. To be a special name, specif'
+ db 'ic to me," he smiles.'
+L0194: db 00
+L0195: db 'Quan'
+L0199: db 00
+L019A: db 'job'
+L019D: db 00
+L019E: db '"To head The Fellowship in Terfin."'
+L01C1: db 00
+L01C2: db 'Terfin'
+L01C8: db 00
+L01C9: db 'voice'
+L01CE: db 00
+L01CF: db 'voice'
+L01D4: db 00
+L01D5: db '"To be the inner voice of guidance that lives in all creatur'
+ db 'es. To become more distinct and frequent with stronger Fello'
+ db 'wship ties."'
+L0259: db 00
+L025A: db 'voice'
+L025F: db 00
+L0260: db 'Terfin'
+L0266: db 00
+L0267: db '"To be the only gargoyle city in Britannia. To have fewer ga'
+ db 'rgoyles in the land than during your last visit to Britannia'
+ db ', human." He shakes his head.'
+L02FC: db 00
+L02FD: db 'gargoyles'
+L0306: db 00
+L0307: db 'fewer'
+L030C: db 00
+L030D: db 'Terfin'
+L0313: db 00
+L0314: db 'fewer'
+L0319: db 00
+L031A: db '"To have succumbed to the effects of disease and famine that'
+ db ' have recently struck Britannia. To tell you that gargoyles '
+ db 'breed less frequently, and we have not had the time to make '
+ db 'up for losses in our population.~~"To have new hope, however'
+ db '," he grins, "with The Fellowship."'
+L042D: db 00
+L042E: db 'fewer'
+L0433: db 00
+L0434: db 'gargoyles'
+L043D: db 00
+L043E: db '"To suggest talking to Runeb, the Fellowship clerk, or Quaev'
+ db 'en. To have jobs needing knowledge of others in Terfin." He '
+ db 'grins apologetically.~~ "To be too busy to know all in Terfi'
+ db 'n."'
+L04F5: db 00
+L04F6: db 'gargoyles'
+L04FF: db 00
+L0500: db 'Fellowship'
+L050A: db 00
+L050B: db '"To hold meetings at 9 p.m., in unity with other branches, h'
+ db 'uman. To be welcome at our meetings."'
+L056C: db 00
+L056D: db '"To be a boon to gargoyles and humans alike. To have a philo'
+ db 'sophy to help all creatures of all races reach their highest'
+ db ' level of potential."'
+L05FA: db 00
+L05FB: db 'philosophy'
+L0605: db 00
+L0606: db '"To be a boon to gargoyles and humans alike. To have a philo'
+ db 'sophy to help all creatures of all races reach their highest'
+ db ' level of potential."'
+L0693: db 00
+L0694: db 'philosophy'
+L069E: db 00
+L069F: db 'altar conflicts'
+L06AE: db 00
+L06AF: db 'Fellowship'
+L06B9: db 00
+L06BA: db 'Elizabeth and Abraham'
+L06CF: db 00
+L06D0: db '"To have just missed the human Fellowship officials who were'
+ db ' here collecting funds. To have left for the Meditation Retr'
+ db 'eat near Serpent's Hold. To be sorry."'
+L076E: db 00
+L076F: db '"To have not seen human Fellowship officials in many days."'
+L07AA: db 00
+L07AB: db 'Elizabeth and Abraham'
+L07C0: db 00
+L07C1: db 'philosophy'
+L07CB: db 00
+L07CC: db 'An almost gleeful expression fills his visage.~~ "To be very'
+ db ' similar to the altar of singularity. To have three principl'
+ db 'es called the Triad of Inner Strength. To apply three princi'
+ db 'ples in unison to be more creative and happy.~~ "To see the '
+ db 'similarity? To have control, passion, and diligence mesh int'
+ db 'o one -- singularity. To have Triad -- Strive for Unity, Tru'
+ db 'st your Brother, and Worthiness Precedes Reward -- applied i'
+ db 'n unison!"'
+L097A: db 00
+L097B: db 'philosophy'
+L0985: db 00
+L0986: db 'altar conflicts'
+L0995: db 00
+L0996: db '"To understand not," he says, puzzled.'
+L09BC: db 00
+L09BD: db 'altar destruction'
+L09CE: db 00
+L09CF: db 'altar conflicts'
+L09DE: db 00
+L09DF: db 'altar destruction'
+L09F0: db 00
+L09F1: db '"To know nothing of this! To believe it not! To be not possi'
+ db 'ble.~~ "To know that all members are content with their live'
+ db 's, and incapable of such acts, even if the altars be outdate'
+ db 'd.~~ "To tell you to speak with members themselves to see an'
+ db 'd believe."'
+L0AEC: db 00
+L0AED: db 'members'
+L0AF4: db 00
+L0AF5: db 'outdated'
+L0AFD: db 00
+L0AFE: db 'altar destruction'
+L0B0F: db 00
+L0B10: db 'Sarpling's note'
+L0B1F: db 00
+L0B20: db 'Runeb assassinate'
+L0B31: db 00
+L0B32: db 'outdated'
+L0B3A: db 00
+L0B3B: db '"To need the Triad for proper application to the individual '
+ db 'gargoyle -- or person!"'
+L0B8E: db 00
+L0B8F: db 'outdated'
+L0B97: db 00
+L0B98: db 'members'
+L0B9F: db 00
+L0BA0: db '"To talk to Runeb, Sarpling, and Quaeven."'
+L0BCA: db 00
+L0BCB: db 'Quaeven'
+L0BD2: db 00
+L0BD3: db 'Sarpling'
+L0BDB: db 00
+L0BDC: db 'Runeb'
+L0BE1: db 00
+L0BE2: db 'members'
+L0BE9: db 00
+L0BEA: db 'Runeb'
+L0BEF: db 00
+L0BF0: db '"To have been the clerk of The Fellowship here."'
+L0C20: db 00
+L0C21: db '"To be the clerk of The Fellowship here."'
+L0C4A: db 00
+L0C4B: db 'Runeb'
+L0C50: db 00
+L0C51: db 'Sarpling'
+L0C59: db 00
+L0C5A: db '"To sell magics and such at his shop."'
+L0C80: db 00
+L0C81: db 'Sarpling'
+L0C89: db 00
+L0C8A: db 'Quaeven'
+L0C91: db 00
+L0C92: db '"To be in charge of the learning center."'
+L0CBB: db 00
+L0CBC: db 'Quaeven'
+L0CC3: db 00
+L0CC4: db 'Sarpling's note'
+L0CD3: db 00
+L0CD4: db '"To be impossible for Runeb to be responsible." He smiles ki'
+ db 'ndly. "To be a practical joke."'
+L0D2F: db 00
+L0D30: db 'Sarpling's note'
+L0D3F: db 00
+L0D40: db 'Runeb assassinate'
+L0D51: db 00
+L0D52: db '"To be too heinous a plot for Runeb." He frowns. "To be some'
+ db ' kind of bad joke."'
+L0DA1: db 00
+L0DA2: db 'Runeb assassinate'
+L0DB3: db 00
+L0DB4: db 'bye'
+L0DB7: db 00
+L0DB8: db '"To hope you find unity."*'
+L0DD2: db 00
+L0DD3: db 'The Cube did not vibrate once while speaking with Quan. You '
+ db 'realize he is totally innocent of the dangerous powers above'
+ db ' him.*'
+L0E51: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0004H
+  .extern 0908H
+  .extern 0931H
+  .extern 08CEH
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DB 02   jne 02E3
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 47 FF   pushi FF47H   ; -185
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 01 00   pushi 0001H   ; 1
+0022: 1F 99 FE   pushi FE99H   ; -359
+0025: 1F D5 03   pushi 03D5H   ; 981
+0028: 1F 01 00   pushi 0001H   ; 1
+002B: 1F 9B FE   pushi FE9BH   ; -357
+002E: 24 01 00   call [0001]   ; 0931H
+0031: 12 02 00   pop [0002]
+0034: 21 01 00   push [0001]
+0037: 1F 07 00   pushi 0007H   ; 7
+003A: 22   cmpeq
+003B: 05 07 00   jne 0045
+003E: 1C 00 00   addsi L0000   ; The gargoyle seem...
+0041: 33   say
+0042: 24 02 00   call [0002]   ; 08CEH
+0045: 1D 5B 00   pushs L005B   ; bye
+0048: 1D 5F 00   pushs L005F   ; Fellowship
+004B: 1D 6A 00   pushs L006A   ; job
+004E: 1D 6E 00   pushs L006E   ; name
+0051: 1E 04 00   arrc 0004H   ; 4
+0054: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0058: 42 EF 01   pushf flag:[01EF]
+005B: 05 07 00   jne 0065
+005E: 1D 73 00   pushs L0073   ; Elizabeth and Abr...
+0061: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0065: 42 4A 02   pushf flag:[024A]
+0068: 10   not
+0069: 05 0B 00   jne 0077
+006C: 1C 89 00   addsi L0089   ; You see a winged ...
+006F: 33   say
+0070: 13   push true
+0071: 43 4A 02   popf flag:[024A]
+0074: 06 04 00   jmp 007B
+0077: 1C F1 00   addsi L00F1   ; "To ask how I may...
+007A: 33   say
+007B: 04 56 02   je 02D4
+007E: 1D 13 01   pushs L0113   ; name
+0081: 07 01 00 12 00  cmps 0001H, 0098
+0086: 1C 18 01   addsi L0118   ; "To be the one na...
+0089: 33   say
+008A: 1D 34 01   pushs L0134   ; name
+008D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0091: 1D 39 01   pushs L0139   ; Quan
+0094: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0098: 1D 3E 01   pushs L013E   ; Quan
+009B: 07 01 00 0B 00  cmps 0001H, 00AB
+00A0: 1C 43 01   addsi L0143   ; "To have no meani...
+00A3: 33   say
+00A4: 1D 95 01   pushs L0195   ; Quan
+00A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AB: 1D 9A 01   pushs L019A   ; job
+00AE: 07 01 00 18 00  cmps 0001H, 00CB
+00B3: 1C 9E 01   addsi L019E   ; "To head The Fell...
+00B6: 33   say
+00B7: 1D C2 01   pushs L01C2   ; Terfin
+00BA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BE: 42 F5 01   pushf flag:[01F5]
+00C1: 05 07 00   jne 00CB
+00C4: 1D C9 01   pushs L01C9   ; voice
+00C7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CB: 1D CF 01   pushs L01CF   ; voice
+00CE: 07 01 00 0B 00  cmps 0001H, 00DE
+00D3: 1C D5 01   addsi L01D5   ; "To be the inner ...
+00D6: 33   say
+00D7: 1D 5A 02   pushs L025A   ; voice
+00DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DE: 1D 60 02   pushs L0260   ; Terfin
+00E1: 07 01 00 18 00  cmps 0001H, 00FE
+00E6: 1C 67 02   addsi L0267   ; "To be the only g...
+00E9: 33   say
+00EA: 1D FD 02   pushs L02FD   ; gargoyles
+00ED: 1D 07 03   pushs L0307   ; fewer
+00F0: 1E 02 00   arrc 0002H   ; 2
+00F3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F7: 1D 0D 03   pushs L030D   ; Terfin
+00FA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FE: 1D 14 03   pushs L0314   ; fewer
+0101: 07 01 00 0B 00  cmps 0001H, 0111
+0106: 1C 1A 03   addsi L031A   ; "To have succumbe...
+0109: 33   say
+010A: 1D 2E 04   pushs L042E   ; fewer
+010D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0111: 1D 34 04   pushs L0434   ; gargoyles
+0114: 07 01 00 0B 00  cmps 0001H, 0124
+0119: 1C 3E 04   addsi L043E   ; "To suggest talki...
+011C: 33   say
+011D: 1D F6 04   pushs L04F6   ; gargoyles
+0120: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0124: 1D 00 05   pushs L0500   ; Fellowship
+0127: 07 01 00 4C 00  cmps 0001H, 0178
+012C: 38 67 00 00  callis 0067, 0
+0130: 12 03 00   pop [0003]
+0133: 21 03 00   push [0003]
+0136: 05 1B 00   jne 0154
+0139: 42 06 00   pushf flag:[0006]
+013C: 05 07 00   jne 0146
+013F: 1C 0B 05   addsi L050B   ; "To hold meetings...
+0142: 33   say
+0143: 06 0B 00   jmp 0151
+0146: 1C 6D 05   addsi L056D   ; "To be a boon to ...
+0149: 33   say
+014A: 1D FB 05   pushs L05FB   ; philosophy
+014D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0151: 06 0B 00   jmp 015F
+0154: 1C 06 06   addsi L0606   ; "To be a boon to ...
+0157: 33   say
+0158: 1D 94 06   pushs L0694   ; philosophy
+015B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015F: 42 3C 02   pushf flag:[023C]
+0162: 42 42 02   pushf flag:[0242]
+0165: 10   not
+0166: 0E   and
+0167: 05 07 00   jne 0171
+016A: 1D 9F 06   pushs L069F   ; altar conflicts
+016D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0171: 1D AF 06   pushs L06AF   ; Fellowship
+0174: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0178: 1D BA 06   pushs L06BA   ; Elizabeth and Abr...
+017B: 07 01 00 1D 00  cmps 0001H, 019D
+0180: 42 64 02   pushf flag:[0264]
+0183: 10   not
+0184: 05 0B 00   jne 0192
+0187: 1C D0 06   addsi L06D0   ; "To have just mis...
+018A: 33   say
+018B: 13   push true
+018C: 43 43 02   popf flag:[0243]
+018F: 06 04 00   jmp 0196
+0192: 1C 6F 07   addsi L076F   ; "To have not seen...
+0195: 33   say
+0196: 1D AB 07   pushs L07AB   ; Elizabeth and Abr...
+0199: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019D: 1D C1 07   pushs L07C1   ; philosophy
+01A0: 07 01 00 0B 00  cmps 0001H, 01B0
+01A5: 1C CC 07   addsi L07CC   ; An almost gleeful...
+01A8: 33   say
+01A9: 1D 7B 09   pushs L097B   ; philosophy
+01AC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B0: 1D 86 09   pushs L0986   ; altar conflicts
+01B3: 07 01 00 18 00  cmps 0001H, 01D0
+01B8: 1C 96 09   addsi L0996   ; "To understand no...
+01BB: 33   say
+01BC: 42 53 02   pushf flag:[0253]
+01BF: 05 07 00   jne 01C9
+01C2: 1D BD 09   pushs L09BD   ; altar destruction
+01C5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C9: 1D CF 09   pushs L09CF   ; altar conflicts
+01CC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D0: 1D DF 09   pushs L09DF   ; altar destruction
+01D3: 07 01 00 32 00  cmps 0001H, 020A
+01D8: 1C F1 09   addsi L09F1   ; "To know nothing ...
+01DB: 33   say
+01DC: 1D ED 0A   pushs L0AED   ; members
+01DF: 1D F5 0A   pushs L0AF5   ; outdated
+01E2: 1E 02 00   arrc 0002H   ; 2
+01E5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E9: 1D FE 0A   pushs L0AFE   ; altar destruction
+01EC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F0: 42 3F 02   pushf flag:[023F]
+01F3: 05 07 00   jne 01FD
+01F6: 1D 10 0B   pushs L0B10   ; Sarpling's note
+01F9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01FD: 42 40 02   pushf flag:[0240]
+0200: 05 07 00   jne 020A
+0203: 1D 20 0B   pushs L0B20   ; Runeb assassinate
+0206: 39 05 00 01  calli _AddAnswer@1  ; 0005
+020A: 1D 32 0B   pushs L0B32   ; outdated
+020D: 07 01 00 0B 00  cmps 0001H, 021D
+0212: 1C 3B 0B   addsi L0B3B   ; "To need the Tria...
+0215: 33   say
+0216: 1D 8F 0B   pushs L0B8F   ; outdated
+0219: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021D: 1D 98 0B   pushs L0B98   ; members
+0220: 07 01 00 1B 00  cmps 0001H, 0240
+0225: 1C A0 0B   addsi L0BA0   ; "To talk to Runeb...
+0228: 33   say
+0229: 1D CB 0B   pushs L0BCB   ; Quaeven
+022C: 1D D3 0B   pushs L0BD3   ; Sarpling
+022F: 1D DC 0B   pushs L0BDC   ; Runeb
+0232: 1E 03 00   arrc 0003H   ; 3
+0235: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0239: 1D E2 0B   pushs L0BE2   ; members
+023C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0240: 1D EA 0B   pushs L0BEA   ; Runeb
+0243: 07 01 00 26 00  cmps 0001H, 026E
+0248: 1F 48 FF   pushi FF48H   ; -184
+024B: 38 1B 00 01  callis 001B, 1
+024F: 38 37 00 01  callis 0037, 1
+0253: 12 04 00   pop [0004]
+0256: 21 04 00   push [0004]
+0259: 05 07 00   jne 0263
+025C: 1C F0 0B   addsi L0BF0   ; "To have been the...
+025F: 33   say
+0260: 06 04 00   jmp 0267
+0263: 1C 21 0C   addsi L0C21   ; "To be the clerk ...
+0266: 33   say
+0267: 1D 4B 0C   pushs L0C4B   ; Runeb
+026A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026E: 1D 51 0C   pushs L0C51   ; Sarpling
+0271: 07 01 00 0F 00  cmps 0001H, 0285
+0276: 1C 5A 0C   addsi L0C5A   ; "To sell magics a...
+0279: 33   say
+027A: 1D 81 0C   pushs L0C81   ; Sarpling
+027D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0281: 13   push true
+0282: 43 41 02   popf flag:[0241]
+0285: 1D 8A 0C   pushs L0C8A   ; Quaeven
+0288: 07 01 00 0B 00  cmps 0001H, 0298
+028D: 1C 92 0C   addsi L0C92   ; "To be in charge ...
+0290: 33   say
+0291: 1D BC 0C   pushs L0CBC   ; Quaeven
+0294: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0298: 1D C4 0C   pushs L0CC4   ; Sarpling's note
+029B: 07 01 00 0F 00  cmps 0001H, 02AF
+02A0: 1C D4 0C   addsi L0CD4   ; "To be impossible...
+02A3: 33   say
+02A4: 1D 30 0D   pushs L0D30   ; Sarpling's note
+02A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AB: 13   push true
+02AC: 43 42 02   popf flag:[0242]
+02AF: 1D 40 0D   pushs L0D40   ; Runeb assassinate
+02B2: 07 01 00 0F 00  cmps 0001H, 02C6
+02B7: 1C 52 0D   addsi L0D52   ; "To be too heinou...
+02BA: 33   say
+02BB: 1D A2 0D   pushs L0DA2   ; Runeb assassinate
+02BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C2: 13   push true
+02C3: 43 42 02   popf flag:[0242]
+02C6: 1D B4 0D   pushs L0DB4   ; bye
+02C9: 07 01 00 03 00  cmps 0001H, 02D1
+02CE: 06 03 00   jmp 02D4
+02D1: 06 A7 FD   jmp 007B
+02D4: 40   db 40 ???
+02D5: 1C B8 0D   addsi L0DB8   ; "To hope you find...
+02D8: 33   say
+02D9: 21 02 00   push [0002]
+02DC: 05 04 00   jne 02E3
+02DF: 1C D3 0D   addsi L0DD3   ; The Cube did not ...
+02E2: 33   say
+02E3: 48   push eventid
+02E4: 1F 00 00   pushi 0000H   ; 0
+02E7: 22   cmpeq
+02E8: 05 06 00   jne 02F1
+02EB: 1F 47 FF   pushi FF47H   ; -185
+02EE: 24 03 00   call [0003]   ; 092FH
+02F1: 25   ret

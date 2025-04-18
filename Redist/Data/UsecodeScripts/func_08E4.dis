@@ -1,0 +1,9 @@
+  .funcnumber 08E4H
+  .data
+  .code
+  .argc 0000H
+  .localc 0001H
+  .externsize 0000H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 12 00 00   pop [0000]
+0006: 25   ret

@@ -1,0 +1,186 @@
+  .funcnumber 0441H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see an impressive winged gargoyle with a stately demeano'
+ db 'r.'
+L004B: db 00
+L004C: db '"To greet thee again," Wislem says.'
+L006F: db 00
+L0070: db 'name'
+L0074: db 00
+L0075: db '"To be known as Wislem."'
+L008D: db 00
+L008E: db 'name'
+L0092: db 00
+L0093: db 'Wislem'
+L0099: db 00
+L009A: db 'Wislem'
+L00A0: db 00
+L00A1: db 'To be the word for `wise man.'"'
+L00C0: db 00
+L00C1: db 'Wislem'
+L00C7: db 00
+L00C8: db 'job'
+L00CB: db 00
+L00CC: db '"To be advisor to Lord British, and act as representative fo'
+ db 'r my race here in Britain. To be honored to be in long line '
+ db 'of advisors to the king."'
+L015D: db 00
+L015E: db 'advisor'
+L0165: db 00
+L0166: db 'advisor'
+L016D: db 00
+L016E: db '"To make sure the gargoyle race is heard in the castle. To h'
+ db 'ave been a long road to acceptance and integration into Brit'
+ db 'annian society."'
+L01F6: db 00
+L01F7: db 'society'
+L01FE: db 00
+L01FF: db 'integration'
+L020A: db 00
+L020B: db 'advisor'
+L0212: db 00
+L0213: db 'integration'
+L021E: db 00
+L021F: db '"To tell you that, not long after your last visit, the gargo'
+ db 'yles settled upon Terfin, an island to the southeast. To hav'
+ db 'e moved, little by little, onto the mainland."'
+L02C5: db 00
+L02C6: db 'integration'
+L02D1: db 00
+L02D2: db 'society'
+L02D9: db 00
+L02DA: db '"To be accepted in most places. To feel sad, however, that t'
+ db 'here are still towns that do not accept us. But our Lord and'
+ db ' King, Draxinusom, is still alive and is doing a magnificent'
+ db ' job. To know and help all gargoyles who are alive."'
+L03C2: db 00
+L03C3: db 'Inamo'
+L03C8: db 00
+L03C9: db 'society'
+L03D0: db 00
+L03D1: db 'Inamo'
+L03D6: db 00
+L03D7: db 'Wislem listens to your story about the murders in Trinsic. "'
+ db 'To be sad to hear this. To suggest that you visit Lord Draxi'
+ db 'nusom in Terfin and tell him about Inamo. He will know who I'
+ db 'namo's parent gargoyle is. To recommend you relay this news '
+ db 'as soon as possible.~~"To go soon and tell Draxinusom about '
+ db 'Inamo?"'
+L050A: db 00
+L050B: db '"To know you are reliable."'
+L0526: db 00
+L0527: db '"To be concerned that Inamo's parent shall never know what h'
+ db 'appened." He appears saddened.'
+L0581: db 00
+L0582: db 'Inamo'
+L0587: db 00
+L0588: db 'bye'
+L058B: db 00
+L058C: db '"To bid farewell."*'
+L059F: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0001H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 48   push eventid
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 22   cmpeq
+000E: 05 FD 00   jne 010E
+0011: 1F 00 00   pushi 0000H   ; 0
+0014: 1F BF FF   pushi FFBFH   ; -65
+0017: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+001B: 1D 00 00   pushs L0000   ; bye
+001E: 1D 04 00   pushs L0004   ; job
+0021: 1D 08 00   pushs L0008   ; name
+0024: 1E 03 00   arrc 0003H   ; 3
+0027: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002B: 42 C2 00   pushf flag:[00C2]
+002E: 10   not
+002F: 05 0B 00   jne 003D
+0032: 1C 0D 00   addsi L000D   ; You see an impres...
+0035: 33   say
+0036: 13   push true
+0037: 43 C2 00   popf flag:[00C2]
+003A: 06 04 00   jmp 0041
+003D: 1C 4C 00   addsi L004C   ; "To greet thee ag...
+0040: 33   say
+0041: 04 C5 00   je 0109
+0044: 1D 70 00   pushs L0070   ; name
+0047: 07 01 00 12 00  cmps 0001H, 005E
+004C: 1C 75 00   addsi L0075   ; "To be known as W...
+004F: 33   say
+0050: 1D 8E 00   pushs L008E   ; name
+0053: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0057: 1D 93 00   pushs L0093   ; Wislem
+005A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005E: 1D 9A 00   pushs L009A   ; Wislem
+0061: 07 01 00 0B 00  cmps 0001H, 0071
+0066: 1C A1 00   addsi L00A1   ; To be the word fo...
+0069: 33   say
+006A: 1D C1 00   pushs L00C1   ; Wislem
+006D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0071: 1D C8 00   pushs L00C8   ; job
+0074: 07 01 00 0B 00  cmps 0001H, 0084
+0079: 1C CC 00   addsi L00CC   ; "To be advisor to...
+007C: 33   say
+007D: 1D 5E 01   pushs L015E   ; advisor
+0080: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0084: 1D 66 01   pushs L0166   ; advisor
+0087: 07 01 00 18 00  cmps 0001H, 00A4
+008C: 1C 6E 01   addsi L016E   ; "To make sure the...
+008F: 33   say
+0090: 1D F7 01   pushs L01F7   ; society
+0093: 1D FF 01   pushs L01FF   ; integration
+0096: 1E 02 00   arrc 0002H   ; 2
+0099: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009D: 1D 0B 02   pushs L020B   ; advisor
+00A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A4: 1D 13 02   pushs L0213   ; integration
+00A7: 07 01 00 0B 00  cmps 0001H, 00B7
+00AC: 1C 1F 02   addsi L021F   ; "To tell you that...
+00AF: 33   say
+00B0: 1D C6 02   pushs L02C6   ; integration
+00B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B7: 1D D2 02   pushs L02D2   ; society
+00BA: 07 01 00 12 00  cmps 0001H, 00D1
+00BF: 1C DA 02   addsi L02DA   ; "To be accepted i...
+00C2: 33   say
+00C3: 1D C3 03   pushs L03C3   ; Inamo
+00C6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CA: 1D C9 03   pushs L03C9   ; society
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D D1 03   pushs L03D1   ; Inamo
+00D4: 07 01 00 22 00  cmps 0001H, 00FB
+00D9: 1C D7 03   addsi L03D7   ; Wislem listens to...
+00DC: 33   say
+00DD: 24 00 00   call [0000]   ; 090AH
+00E0: 12 00 00   pop [0000]
+00E3: 21 00 00   push [0000]
+00E6: 05 07 00   jne 00F0
+00E9: 1C 0B 05   addsi L050B   ; "To know you are ...
+00EC: 33   say
+00ED: 06 04 00   jmp 00F4
+00F0: 1C 27 05   addsi L0527   ; "To be concerned ...
+00F3: 33   say
+00F4: 1D 82 05   pushs L0582   ; Inamo
+00F7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FB: 1D 88 05   pushs L0588   ; bye
+00FE: 07 01 00 03 00  cmps 0001H, 0106
+0103: 06 03 00   jmp 0109
+0106: 06 38 FF   jmp 0041
+0109: 40   db 40 ???
+010A: 1C 8C 05   addsi L058C   ; "To bid farewell."*
+010D: 33   say
+010E: 25   ret

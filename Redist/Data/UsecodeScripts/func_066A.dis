@@ -1,0 +1,84 @@
+  .funcnumber 066AH
+  .data
+L0000: db '@An Grav@'
+L0009: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0002H
+  .extern 092DH
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AC 00   jne 00B4
+0008: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+000C: 12 00 00   pop [0000]
+000F: 21 00 00   push [0000]
+0012: 24 00 00   call [0000]   ; 092DH
+0015: 12 01 00   pop [0001]
+0018: 3E   push itemref
+0019: 39 5C 00 01  calli 005C, 1
+001D: 1F 86 03   pushi 0386H   ; 902
+0020: 1F 84 03   pushi 0384H   ; 900
+0023: 1F 7F 03   pushi 037FH   ; 895
+0026: 1F 00 03   pushi 0300H   ; 768
+0029: 1E 04 00   arrc 0004H   ; 4
+002C: 12 02 00   pop [0002]
+002F: 1D 00 00   pushs L0000   ; @An Grav@
+0032: 3E   push itemref
+0033: 39 40 00 02  calli _ItemSay@2  ; 0040
+0037: 24 01 00   call [0001]   ; 0906H
+003A: 05 5C 00   jne 0099
+003D: 44 6A   pushw 446AH   ; 17514
+003F: 44 70   pushw 4470H   ; 17520
+0041: 44 6F   pushw 216FH   ; 8559
+0043: 21 01 00   push [0001]
+0046: 44 59   pushw 1F59H   ; 8025
+0048: 1F 41 00   pushi 0041H   ; 65
+004B: 44 58   pushw 1E58H   ; 7768
+004D: 1E 07 00   arrc 0007H   ; 7
+0050: 3E   push itemref
+0051: 38 01 00 02  callis 0001, 2
+0055: 12 03 00   pop [0003]
+0058: 2E   sloop
+0059: 02 04 00 05 00 06 00 02 00 32 00  db 2 ???
+005A:   db 4
+005B:   db 0
+005C:   db 5
+005D:   db 0
+005E:   db 6
+005F:   db 0
+0060:   db 2
+0061:   db 0
+0062:   db 32
+0063:   db 0
+0064: 21 06 00   push [0006]
+0067: 21 00 00   push [0000]
+006A: 38 11 00 01  callis _GetItemType@1  ; 0011
+006E: 22   cmpeq
+006F: 05 21 00   jne 0093
+0072: 21 00 00   push [0000]
+0075: 38 25 00 01  callis 0025, 1
+0079: 12 03 00   pop [0003]
+007C: 21 03 00   push [0003]
+007F: 05 11 00   jne 0093
+0082: 1F 9A FE   pushi FE9AH   ; -358
+0085: 38 26 00 01  callis 0026, 1
+0089: 12 03 00   pop [0003]
+008C: 21 00 00   push [0000]
+008F: 39 5C 00 01  calli 005C, 1
+0093: 06 C3 FF   jmp 0059
+0096: 06 1B 00   jmp 00B4
+0099: 1F 06 06   pushi 0606H   ; 1542
+009C: 44 55   pushw 4455H   ; 17493
+009E: 44 6A   pushw 446AH   ; 17514
+00A0: 44 70   pushw 4470H   ; 17520
+00A2: 44 6F   pushw 216FH   ; 8559
+00A4: 21 01 00   push [0001]
+00A7: 44 59   pushw 1E59H   ; 7769
+00A9: 1E 07 00   arrc 0007H   ; 7
+00AC: 3E   push itemref
+00AD: 38 01 00 02  callis 0001, 2
+00B1: 12 03 00   pop [0003]
+00B4: 25   ret

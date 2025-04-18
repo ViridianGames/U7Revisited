@@ -1,0 +1,21 @@
+  .funcnumber 0905H
+  .data
+  .code
+  .argc 0001H  ;* Newly lit torch.
+  .localc 0001H
+  .externsize 0000H
+0000: 21 00 00   push [0000]
+0003: 39 5C 00 01  calli 005C, 1
+0007: 13   push true
+0008: 3E   push itemref
+0009: 39 82 00 02  calli 0082, 2 ;* ????
+000D: 39 84 00 00  calli 0084, 0
+0011: 1F 32 00   pushi 0032H   ; 50
+0014: 1F 00 06   pushi 0600H   ; 1536
+0017: 44 55   pushw 4455H   ; 17493
+0019: 44 23   pushw 1E23H   ; 7715
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 21 00 00   push [0000]
+0021: 38 02 00 03  callis 0002, 3
+0025: 12 01 00   pop [0001]
+0028: 25   ret

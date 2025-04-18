@@ -1,0 +1,233 @@
+  .funcnumber 0443H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'mutton'
+L0013: db 00
+L0014: db 'This is an elderly woman who epitomizes 'grandmotherly'.'
+L004C: db 00
+L004D: db '"Hello, again!" Boots says.'
+L0068: db 00
+L0069: db 'name'
+L006D: db 00
+L006E: db '"All my brothers and sisters called me 'Boots' when I was a '
+ db 'baby, and it hath remained my name ever since."'
+L00D9: db 00
+L00DA: db 'name'
+L00DE: db 00
+L00DF: db 'job'
+L00E2: db 00
+L00E3: db '"Why, I am Lord British's personal cook! I prepare meals for'
+ db ' the entire castle."'
+L0133: db 00
+L0134: db 'meals'
+L0139: db 00
+L013A: db 'meals'
+L013F: db 00
+L0140: db '"Just go to the dining room at breakfast or supper time and '
+ db 'mine husband Bennie will serve thee!"'
+L01A1: db 00
+L01A2: db 'Bennie'
+L01A8: db 00
+L01A9: db 'supper'
+L01AF: db 00
+L01B0: db 'breakfast'
+L01B9: db 00
+L01BA: db 'meals'
+L01BF: db 00
+L01C0: db 'breakfast'
+L01C9: db 00
+L01CA: db '"For breakfast I usually prepare a dish that my Liege brough'
+ db 't with him from his homeland. Here we call it Eggs British. '
+ db 'It is served with assorted fruits and tea, of course. It is '
+ db 'the King's favorite."'
+L0293: db 00
+L0294: db 'breakfast'
+L029D: db 00
+L029E: db 'supper'
+L02A4: db 00
+L02A5: db '"This meal is usually whatever meat or game or fish Lord Bri'
+ db 'tish requests, accompanied by several additional courses and'
+ db ' a fine dessert."'
+L032E: db 00
+L032F: db 'supper'
+L0335: db 00
+L0336: db 'Bennie'
+L033C: db 00
+L033D: db '"He's a dear, but he has become a little absent-minded in hi'
+ db 's later years. He never remembers to bring enough meat from '
+ db 'the slaughterhouse in Paws. In fact, we are short this week!'
+ db '"'
+L03F2: db 00
+L03F3: db 'short'
+L03F8: db 00
+L03F9: db 'absent-minded'
+L0406: db 00
+L0407: db 'Bennie'
+L040D: db 00
+L040E: db 'absent-minded'
+L041B: db 00
+L041C: db '"Last week I asked him to put a little garlic into some soup'
+ db '. He put in the garlic and then forgot about it. So he went '
+ db 'and put some more in. Then he forgot he did that. So he put '
+ db 'in more. Well, thou canst imagine the look on Lord British's'
+ db ' face when he finally did taste that soup! It is a good thin'
+ db 'g we live and work in the castle of such a just ruler."'
+L057F: db 00
+L0580: db 'absent-minded'
+L058D: db 00
+L058E: db 'short'
+L0593: db 00
+L0594: db '"That is right, we do not have enough. If thou couldst bring'
+ db ' me mutton from the slaughterhouse, I will pay thee 5 gold f'
+ db 'or every portion thou canst bring. All right?"'
+L063A: db 00
+L063B: db '"Good, I will be awaiting thy return!"'
+L0661: db 00
+L0662: db '"Oh dear. Well, I know thou art busy. Some other time, then.'
+ db '"'
+L069F: db 00
+L06A0: db 'short'
+L06A5: db 00
+L06A6: db 'mutton'
+L06AC: db 00
+L06AD: db '"Splendid! Let's see, we agreed on 5 gold per portion, if I '
+ db 'remember correctly."'
+L06FD: db 00
+L06FE: db 'mutton'
+L0704: db 00
+L0705: db 'bye'
+L0708: db 00
+L0709: db '"Bye now!"*'
+L0714: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0003H
+  .extern 090AH
+  .extern 0854H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 3F 01   jne 0147
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F BD FF   pushi FFBDH   ; -67
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 72 00   pushf flag:[0072]
+0025: 13   push true
+0026: 22   cmpeq
+0027: 05 07 00   jne 0031
+002A: 1D 0D 00   pushs L000D   ; mutton
+002D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0031: 42 C4 00   pushf flag:[00C4]
+0034: 10   not
+0035: 05 0B 00   jne 0043
+0038: 1C 14 00   addsi L0014   ; This is an elderl...
+003B: 33   say
+003C: 13   push true
+003D: 43 C4 00   popf flag:[00C4]
+0040: 06 04 00   jmp 0047
+0043: 1C 4D 00   addsi L004D   ; "Hello, again!" B...
+0046: 33   say
+0047: 04 F8 00   je 0142
+004A: 1D 69 00   pushs L0069   ; name
+004D: 07 01 00 0B 00  cmps 0001H, 005D
+0052: 1C 6E 00   addsi L006E   ; "All my brothers ...
+0055: 33   say
+0056: 1D DA 00   pushs L00DA   ; name
+0059: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005D: 1D DF 00   pushs L00DF   ; job
+0060: 07 01 00 0B 00  cmps 0001H, 0070
+0065: 1C E3 00   addsi L00E3   ; "Why, I am Lord B...
+0068: 33   say
+0069: 1D 34 01   pushs L0134   ; meals
+006C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0070: 1D 3A 01   pushs L013A   ; meals
+0073: 07 01 00 1B 00  cmps 0001H, 0093
+0078: 1C 40 01   addsi L0140   ; "Just go to the d...
+007B: 33   say
+007C: 1D A2 01   pushs L01A2   ; Bennie
+007F: 1D A9 01   pushs L01A9   ; supper
+0082: 1D B0 01   pushs L01B0   ; breakfast
+0085: 1E 03 00   arrc 0003H   ; 3
+0088: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008C: 1D BA 01   pushs L01BA   ; meals
+008F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0093: 1D C0 01   pushs L01C0   ; breakfast
+0096: 07 01 00 0B 00  cmps 0001H, 00A6
+009B: 1C CA 01   addsi L01CA   ; "For breakfast I ...
+009E: 33   say
+009F: 1D 94 02   pushs L0294   ; breakfast
+00A2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A6: 1D 9E 02   pushs L029E   ; supper
+00A9: 07 01 00 0B 00  cmps 0001H, 00B9
+00AE: 1C A5 02   addsi L02A5   ; "This meal is usu...
+00B1: 33   say
+00B2: 1D 2F 03   pushs L032F   ; supper
+00B5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B9: 1D 36 03   pushs L0336   ; Bennie
+00BC: 07 01 00 1C 00  cmps 0001H, 00DD
+00C1: 1C 3D 03   addsi L033D   ; "He's a dear, but...
+00C4: 33   say
+00C5: 1D F3 03   pushs L03F3   ; short
+00C8: 1D F9 03   pushs L03F9   ; absent-minded
+00CB: 1E 02 00   arrc 0002H   ; 2
+00CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D2: 1D 07 04   pushs L0407   ; Bennie
+00D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D9: 13   push true
+00DA: 43 71 00   popf flag:[0071]
+00DD: 1D 0E 04   pushs L040E   ; absent-minded
+00E0: 07 01 00 0B 00  cmps 0001H, 00F0
+00E5: 1C 1C 04   addsi L041C   ; "Last week I aske...
+00E8: 33   say
+00E9: 1D 80 05   pushs L0580   ; absent-minded
+00EC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F0: 1D 8E 05   pushs L058E   ; short
+00F3: 07 01 00 26 00  cmps 0001H, 011E
+00F8: 1C 94 05   addsi L0594   ; "That is right, w...
+00FB: 33   say
+00FC: 24 00 00   call [0000]   ; 090AH
+00FF: 12 00 00   pop [0000]
+0102: 21 00 00   push [0000]
+0105: 05 0B 00   jne 0113
+0108: 1C 3B 06   addsi L063B   ; "Good, I will be ...
+010B: 33   say
+010C: 13   push true
+010D: 43 72 00   popf flag:[0072]
+0110: 06 04 00   jmp 0117
+0113: 1C 62 06   addsi L0662   ; "Oh dear. Well, I...
+0116: 33   say
+0117: 1D A0 06   pushs L06A0   ; short
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D A6 06   pushs L06A6   ; mutton
+0121: 07 01 00 0E 00  cmps 0001H, 0134
+0126: 1C AD 06   addsi L06AD   ; "Splendid! Let's ...
+0129: 33   say
+012A: 24 01 00   call [0001]   ; 0854H
+012D: 1D FE 06   pushs L06FE   ; mutton
+0130: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0134: 1D 05 07   pushs L0705   ; bye
+0137: 07 01 00 03 00  cmps 0001H, 013F
+013C: 06 03 00   jmp 0142
+013F: 06 05 FF   jmp 0047
+0142: 40   db 40 ???
+0143: 1C 09 07   addsi L0709   ; "Bye now!"*
+0146: 33   say
+0147: 48   push eventid
+0148: 1F 00 00   pushi 0000H   ; 0
+014B: 22   cmpeq
+014C: 05 06 00   jne 0155
+014F: 1F BD FF   pushi FFBDH   ; -67
+0152: 24 02 00   call [0002]   ; 092EH
+0155: 25   ret

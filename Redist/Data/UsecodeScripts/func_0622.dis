@@ -1,0 +1,176 @@
+  .funcnumber 0622H
+  .data   ;* Bed.
+L0000: db 'we'
+L0002: db 00
+L0003: db 'I'
+L0004: db 00
+L0005: db '"In how many hours shall '
+L001E: db 00
+L001F: db ' wake thee up, '
+L002E: db 00
+L002F: db '?"'
+L0031: db 00
+L0032: db ' gives you an exasperated look.* "Never mind, then."'
+L0066: db 00
+L0067: db '"Pleasant dreams."'
+L0079: db 00
+  .code
+  .argc 0001H
+  .localc 000DH
+  .externsize 0007H
+  .extern 0900H
+  .extern 0801H
+  .extern 0624H
+  .extern 093FH
+  .extern 0940H
+  .extern 093AH
+  .extern 093CH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 71 01   jne 0179
+0008: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000C: 12 00 00   pop [0000]
+000F: 24 00 00   call [0000]   ; 0900H
+0012: 12 01 00   pop [0001]
+0015: 21 01 00   push [0001]
+0018: 1F 9C FE   pushi FE9CH   ; -356
+001B: 22   cmpeq
+001C: 05 14 00   jne 0033
+001F: 1F 06 00   pushi 0006H   ; 6
+0022: 1F 09 00   pushi 0009H   ; 9
+0025: 1F 00 00   pushi 0000H   ; 0
+0028: 38 10 00 02  callis _Random2@2  ; 0010
+002C: 09   add
+002D: 12 02 00   pop [0002]
+0030: 06 B6 00   jmp 00E9
+0033: 1F 00 00   pushi 0000H   ; 0
+0036: 21 01 00   push [0001]
+0039: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+003D: 1F 9C FE   pushi FE9CH   ; -356
+0040: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+0044: 12 03 00   pop [0003]
+0047: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+004B: 38 5E 00 01  callis _ArraySize@1  ; 005E
+004F: 12 04 00   pop [0004]
+0052: 21 04 00   push [0004]
+0055: 1F 02 00   pushi 0002H   ; 2
+0058: 16   cmpgt
+0059: 05 09 00   jne 0065
+005C: 1D 00 00   pushs L0000   ; we
+005F: 12 05 00   pop [0005]
+0062: 06 06 00   jmp 006B
+0065: 1D 03 00   pushs L0003   ; I
+0068: 12 05 00   pop [0005]
+006B: 1C 05 00   addsi L0005   ; "In how many hour...
+006E: 2F 05 00   addsv [0005]
+0071: 1C 1F 00   addsi L001F   ;  wake thee up, 
+0074: 2F 03 00   addsv [0003]
+0077: 1C 2F 00   addsi L002F   ; ?"
+007A: 33   say
+007B: 1F 08 00   pushi 0008H   ; 8
+007E: 1F 01 00   pushi 0001H   ; 1
+0081: 1F 0C 00   pushi 000CH   ; 12
+0084: 1F 00 00   pushi 0000H   ; 0
+0087: 38 0C 00 04  callis _AskNumber@4  ; 000C
+008B: 12 02 00   pop [0002]
+008E: 21 02 00   push [0002]
+0091: 1F 00 00   pushi 0000H   ; 0
+0094: 22   cmpeq
+0095: 05 46 00   jne 00DE
+0098: 21 01 00   push [0001]
+009B: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+009F: 12 03 00   pop [0003]
+00A2: 2F 03 00   addsv [0003]
+00A5: 1C 32 00   addsi L0032   ;  gives you an exa...
+00A8: 33   say
+00A9: 3E   push itemref
+00AA: 24 01 00   call [0001]   ; 0801H
+00AD: 05 04 00   jne 00B4
+00B0: 3E   push itemref
+00B1: 47 24 06   calle 0624H   ; 1572
+00B4: 2E   sloop
+00B5: 02 06 00 07 00 08 00 00 00 0C 00  db 2 ???
+00B6:   db 6
+00B7:   db 0
+00B8:   db 7
+00B9:   db 0
+00BA:   db 8
+00BB:   db 0
+00BC:   db 0
+00BD:   db 0
+00BE:   db c
+00BF:   db 0
+00C0: 1F 1F 00   pushi 001FH   ; 31
+00C3: 21 08 00   push [0008]
+00C6: 24 03 00   call [0003]   ; 093FH
+00C9: 06 E9 FF   jmp 00B5
+00CC: 21 01 00   push [0001]
+00CF: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D3: 1F 01 00   pushi 0001H   ; 1
+00D6: 1F 9C FE   pushi FE9CH   ; -356
+00D9: 39 8A 00 02  calli 008A, 2
+00DD: 2C   db 2c ???
+00DE: 1C 67 00   addsi L0067   ; "Pleasant dreams."
+00E1: 33   say
+00E2: 21 01 00   push [0001]
+00E5: 39 04 00 01  calli _HideNPC@1  ; 0004
+00E9: 1F 04 00   pushi 0004H   ; 4
+00EC: 1F 01 00   pushi 0001H   ; 1
+00EF: 38 10 00 02  callis _Random2@2  ; 0010
+00F3: 1F 01 00   pushi 0001H   ; 1
+00F6: 22   cmpeq
+00F7: 05 06 00   jne 0100
+00FA: 1F 01 00   pushi 0001H   ; 1
+00FD: 24 04 00   call [0004]   ; 0940H
+0100: 1F 00 00   pushi 0000H   ; 0
+0103: 1F 01 00   pushi 0001H   ; 1
+0106: 1F 0C 00   pushi 000CH   ; 12
+0109: 39 8C 00 03  calli 008C, 3
+010D: 21 02 00   push [0002]
+0110: 1F DC 05   pushi 05DCH   ; 1500
+0113: 0C   mul
+0114: 12 09 00   pop [0009]
+0117: 3E   push itemref
+0118: 21 02 00   push [0002]
+011B: 24 05 00   call [0005]   ; 093AH
+011E: 21 00 00   push [0000]
+0121: 1F 9C FE   pushi FE9CH   ; -356
+0124: 38 1B 00 01  callis 001B, 1
+0128: 24 06 00   call [0006]   ; 093CH
+012B: 12 00 00   pop [0000]
+012E: 2E   sloop
+012F: 02 0A 00 0B 00 08 00 00 00 0C 00  db 2 ???
+0130:   db a
+0131:   db 0
+0132:   db b
+0133:   db 0
+0134:   db 8
+0135:   db 0
+0136:   db 0
+0137:   db 0
+0138:   db c
+0139:   db 0
+013A: 1F 0B 00   pushi 000BH   ; 11
+013D: 21 08 00   push [0008]
+0140: 24 03 00   call [0003]   ; 093FH
+0143: 06 E9 FF   jmp 012F
+0146: 1F 23 00   pushi 0023H   ; 35
+0149: 44 27   pushw 1E27H   ; 7719
+014B: 1E 02 00   arrc 0002H   ; 2
+014E: 1F 9C FE   pushi FE9CH   ; -356
+0151: 38 01 00 02  callis 0001, 2
+0155: 12 0C 00   pop [000C]
+0158: 1F 21 00   pushi 0021H   ; 33
+015B: 1F 23 06   pushi 0623H   ; 1571
+015E: 44 55   pushw 1F55H   ; 8021
+0160: 1F 36 06   pushi 0636H   ; 1590 * Sprite.
+0163: 44 55   pushw 4455H   ; 17493
+0165: 44 23   pushw 1E23H   ; 7715
+0167: 1E 05 00   arrc 0005H   ; 5
+016A: 3E   push itemref
+016B: 38 02 00 03  callis 0002, 3
+016F: 12 0C 00   pop [000C]
+0172: 21 09 00   push [0009]
+0175: 39 78 00 01  calli 0078, 1  ;* Advance time.
+0179: 25   ret

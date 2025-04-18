@@ -1,0 +1,333 @@
+  .funcnumber 089EH
+  .data
+L0000: db '"I am able to heal, cure poison, and resurrect. Art thou int'
+ db 'erested in one of these services?"'
+L005E: db 00
+L005F: db '"Which of my services dost thou have need of?"'
+L008D: db 00
+L008E: db 'resurrect'
+L0097: db 00
+L0098: db 'cure poison'
+L00A3: db 00
+L00A4: db 'heal'
+L00A8: db 00
+L00A9: db 'heal'
+L00AD: db 00
+L00AE: db 'cure poison'
+L00B9: db 00
+L00BA: db 'heal'
+L00BE: db 00
+L00BF: db 'healed'
+L00C5: db 00
+L00C6: db 'cure poison'
+L00D1: db 00
+L00D2: db 'cured of poison'
+L00E1: db 00
+L00E2: db '"Who dost thou wish to be '
+L00FC: db 00
+L00FD: db '?"'
+L00FF: db 00
+L0100: db 'Nobody'
+L0106: db 00
+L0107: db '"Avatar! Thou dost tell me to prepare to heal and then thou '
+ db 'dost tell me 'Nobody'! Is this thine idea of a joke? Healing'
+ db ' is a serious business!"'
+L0197: db 00
+L0198: db 'resurrect'
+L01A1: db 00
+L01A2: db '"I do believe I am going blind. I do not see anyone who is i'
+ db 'n need of resurrection. Art thou fooling me again, or art th'
+ db 'ou hiding the injured one? I must be able to see the person '
+ db 'to help them. If thou art carrying thy friend in thy pack, p'
+ db 'ray lay them on the ground so that I may perform my duties a'
+ db 's thou hast requested."'
+L02E5: db 00
+L02E6: db '"Indeed, thy friend is grievously wounded. Make room here, a'
+ db 'nd I will heal them to the best of mine abilities."'
+L0355: db 00
+L0356: db '"Since I am travelling in thy group, I shall waive my fee."'
+L0391: db 00
+L0392: db 'heal'
+L0396: db 00
+L0397: db 'cure poison'
+L03A2: db 00
+L03A3: db 'resurrect'
+L03AC: db 00
+L03AD: db '"My price is '
+L03BA: db 00
+L03BB: db ' gold. Is this price agreeable?"'
+L03DB: db 00
+L03DC: db 'heal'
+L03E0: db 00
+L03E1: db 'cure poison'
+L03EC: db 00
+L03ED: db 'resurrect'
+L03F6: db 00
+L03F7: db '"Thou dost not have that much gold! Mayhaps thou couldst ret'
+ db 'urn with more and purchase the service then."'
+L0460: db 00
+L0461: db '"Then thou must look elsewhere for that service."'
+L0492: db 00
+L0493: db '"If thou hast need of my services later, I will be here."'
+L04CC: db 00
+  .code
+  .argc 0003H
+  .localc 0015H
+  .externsize 0006H
+  .extern 090AH
+  .extern 090BH
+  .extern 090CH
+  .extern 091DH
+  .extern 091EH
+  .extern 091FH
+0000: 1F FB FF   pushi FFFBH   ; -5
+0003: 38 1B 00 01  callis 001B, 1
+0007: 12 03 00   pop [0003]
+000A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000E: 12 04 00   pop [0004]
+0011: 1C 00 00   addsi L0000   ; "I am able to hea...
+0014: 33   say
+0015: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0019: 24 00 00   call [0000]   ; 090AH
+001C: 12 05 00   pop [0005]
+001F: 21 05 00   push [0005]
+0022: 05 70 02   jne 0295
+0025: 1C 5F 00   addsi L005F   ; "Which of my serv...
+0028: 33   say
+0029: 1D 8E 00   pushs L008E   ; resurrect
+002C: 1D 98 00   pushs L0098   ; cure poison
+002F: 1D A4 00   pushs L00A4   ; heal
+0032: 1E 03 00   arrc 0003H   ; 3
+0035: 12 06 00   pop [0006]
+0038: 21 06 00   push [0006]
+003B: 24 01 00   call [0001]   ; 090BH
+003E: 12 07 00   pop [0007]
+0041: 21 07 00   push [0007]
+0044: 1D A9 00   pushs L00A9   ; heal
+0047: 22   cmpeq
+0048: 21 07 00   push [0007]
+004B: 1D AE 00   pushs L00AE   ; cure poison
+004E: 22   cmpeq
+004F: 0F   or
+0050: 05 DB 00   jne 012E
+0053: 21 07 00   push [0007]
+0056: 1D BA 00   pushs L00BA   ; heal
+0059: 22   cmpeq
+005A: 05 0C 00   jne 0069
+005D: 1D BF 00   pushs L00BF   ; healed
+0060: 12 08 00   pop [0008]
+0063: 21 02 00   push [0002]
+0066: 12 09 00   pop [0009]
+0069: 21 07 00   push [0007]
+006C: 1D C6 00   pushs L00C6   ; cure poison
+006F: 22   cmpeq
+0070: 05 0C 00   jne 007F
+0073: 1D D2 00   pushs L00D2   ; cured of poison
+0076: 12 08 00   pop [0008]
+0079: 21 01 00   push [0001]
+007C: 12 09 00   pop [0009]
+007F: 1C E2 00   addsi L00E2   ; "Who dost thou wi...
+0082: 2F 08 00   addsv [0008]
+0085: 1C FD 00   addsi L00FD   ; ?"
+0088: 33   say
+0089: 38 8D 00 00  callis 008D, 0
+008D: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+0091: 12 0A 00   pop [000A]
+0094: 38 8D 00 00  callis 008D, 0
+0098: 12 0B 00   pop [000B]
+009B: 1E 00 00   arrc 0000H   ; 0
+009E: 12 0C 00   pop [000C]
+00A1: 1E 00 00   arrc 0000H   ; 0
+00A4: 12 0D 00   pop [000D]
+00A7: 2E   sloop
+00A8: 02 0E 00 0F 00 10 00 0B 00 29 00  db 2 ???
+00A9:   db e
+00AA:   db 0
+00AB:   db f
+00AC:   db 0
+00AD:   db 10
+00AE:   db 0
+00AF:   db b
+00B0:   db 0
+00B1:   db 29
+00B2:   db 0
+00B3: 21 10 00   push [0010]
+00B6: 1F FB FF   pushi FFFBH   ; -5
+00B9: 38 1B 00 01  callis 001B, 1
+00BD: 1A   cmpne
+00BE: 05 18 00   jne 00D9
+00C1: 21 0C 00   push [000C]
+00C4: 21 10 00   push [0010]
+00C7: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+00CB: 4A   arra
+00CC: 12 0C 00   pop [000C]
+00CF: 21 0D 00   push [000D]
+00D2: 21 10 00   push [0010]
+00D5: 4A   arra
+00D6: 12 0D 00   pop [000D]
+00D9: 06 CC FF   jmp 00A8
+00DC: 21 0D 00   push [000D]
+00DF: 1F 00 00   pushi 0000H   ; 0
+00E2: 1E 02 00   arrc 0002H   ; 2
+00E5: 12 11 00   pop [0011]
+00E8: 21 0C 00   push [000C]
+00EB: 1D 00 01   pushs L0100   ; Nobody
+00EE: 1E 02 00   arrc 0002H   ; 2
+00F1: 24 02 00   call [0002]   ; 090CH
+00F4: 12 12 00   pop [0012]
+00F7: 21 12 00   push [0012]
+00FA: 26 11 00   aidx [0011]
+00FD: 12 13 00   pop [0013]
+0100: 21 13 00   push [0013]
+0103: 1F 00 00   pushi 0000H   ; 0
+0106: 22   cmpeq
+0107: 05 09 00   jne 0113
+010A: 1F 00 00   pushi 0000H   ; 0
+010D: 12 14 00   pop [0014]
+0110: 06 0A 00   jmp 011D
+0113: 21 13 00   push [0013]
+0116: 38 3A 00 01  callis 003A, 1
+011A: 12 14 00   pop [0014]
+011D: 21 14 00   push [0014]
+0120: 1F 00 00   pushi 0000H   ; 0
+0123: 22   cmpeq
+0124: 05 07 00   jne 012E
+0127: 1C 07 01   addsi L0107   ; "Avatar! Thou dos...
+012A: 33   say
+012B: 06 6B 01   jmp 0299
+012E: 21 07 00   push [0007]
+0131: 1D 98 01   pushs L0198   ; resurrect
+0134: 22   cmpeq
+0135: 05 63 00   jne 019B
+0138: 38 22 00 00  callis 0022, 0
+013C: 12 15 00   pop [0015]
+013F: 1F 19 00   pushi 0019H   ; 25
+0142: 1F 90 01   pushi 0190H   ; 400
+0145: 21 15 00   push [0015]
+0148: 38 0E 00 03  callis 000E, 3
+014C: 12 16 00   pop [0016]
+014F: 21 16 00   push [0016]
+0152: 1F 00 00   pushi 0000H   ; 0
+0155: 22   cmpeq
+0156: 05 1F 00   jne 0178
+0159: 1F 19 00   pushi 0019H   ; 25
+015C: 1F 9E 01   pushi 019EH   ; 414
+015F: 21 15 00   push [0015]
+0162: 38 0E 00 03  callis 000E, 3
+0166: 12 16 00   pop [0016]
+0169: 21 16 00   push [0016]
+016C: 1F 00 00   pushi 0000H   ; 0
+016F: 22   cmpeq
+0170: 05 05 00   jne 0178
+0173: 1C A2 01   addsi L01A2   ; "I do believe I a...
+0176: 33   say
+0177: 3F   abrt
+0178: 1C E6 02   addsi L02E6   ; "Indeed, thy frie...
+017B: 33   say
+017C: 21 03 00   push [0003]
+017F: 21 04 00   push [0004]
+0182: 30   in
+0183: 05 09 00   jne 018F
+0186: 1F 00 00   pushi 0000H   ; 0
+0189: 12 00 00   pop [0000]
+018C: 06 06 00   jmp 0195
+018F: 1F 90 01   pushi 0190H   ; 400
+0192: 12 00 00   pop [0000]
+0195: 21 00 00   push [0000]
+0198: 12 09 00   pop [0009]
+019B: 21 03 00   push [0003]
+019E: 21 04 00   push [0004]
+01A1: 30   in
+01A2: 05 6A 00   jne 020F
+01A5: 1C 56 03   addsi L0356   ; "Since I am trave...
+01A8: 33   say
+01A9: 21 07 00   push [0007]
+01AC: 1D 92 03   pushs L0392   ; heal
+01AF: 22   cmpeq
+01B0: 05 17 00   jne 01CA
+01B3: 21 09 00   push [0009]
+01B6: 21 14 00   push [0014]
+01B9: 24 03 00   call [0003]   ; 091DH
+01BC: 13   push true
+01BD: 43 29 00   popf flag:[0029]
+01C0: 1F 0A 00   pushi 000AH   ; 10
+01C3: 39 66 00 01  calli 0066, 1
+01C7: 06 C8 00   jmp 0292
+01CA: 21 07 00   push [0007]
+01CD: 1D 97 03   pushs L0397   ; cure poison
+01D0: 22   cmpeq
+01D1: 05 17 00   jne 01EB
+01D4: 21 09 00   push [0009]
+01D7: 21 14 00   push [0014]
+01DA: 24 04 00   call [0004]   ; 091EH
+01DD: 13   push true
+01DE: 43 29 00   popf flag:[0029]
+01E1: 1F 0A 00   pushi 000AH   ; 10
+01E4: 39 66 00 01  calli 0066, 1
+01E8: 06 A7 00   jmp 0292
+01EB: 21 07 00   push [0007]
+01EE: 1D A3 03   pushs L03A3   ; resurrect
+01F1: 22   cmpeq
+01F2: 05 17 00   jne 020C
+01F5: 21 09 00   push [0009]
+01F8: 21 16 00   push [0016]
+01FB: 24 05 00   call [0005]   ; 091FH
+01FE: 13   push true
+01FF: 43 29 00   popf flag:[0029]
+0202: 1F 0A 00   pushi 000AH   ; 10
+0205: 39 66 00 01  calli 0066, 1
+0209: 06 86 00   jmp 0292
+020C: 06 83 00   jmp 0292
+020F: 1C AD 03   addsi L03AD   ; "My price is 
+0212: 2F 09 00   addsv [0009]
+0215: 1C BB 03   addsi L03BB   ;  gold. Is this pr...
+0218: 33   say
+0219: 24 00 00   call [0000]   ; 090AH
+021C: 12 05 00   pop [0005]
+021F: 21 05 00   push [0005]
+0222: 05 69 00   jne 028E
+0225: 1F 99 FE   pushi FE99H   ; -359
+0228: 1F 99 FE   pushi FE99H   ; -359
+022B: 1F 84 02   pushi 0284H   ; 644
+022E: 1F 9B FE   pushi FE9BH   ; -357
+0231: 38 28 00 04  callis 0028, 4
+0235: 12 17 00   pop [0017]
+0238: 21 17 00   push [0017]
+023B: 21 09 00   push [0009]
+023E: 18   cmpge
+023F: 05 45 00   jne 0287
+0242: 21 07 00   push [0007]
+0245: 1D DC 03   pushs L03DC   ; heal
+0248: 22   cmpeq
+0249: 05 0C 00   jne 0258
+024C: 21 09 00   push [0009]
+024F: 21 14 00   push [0014]
+0252: 24 03 00   call [0003]   ; 091DH
+0255: 06 3A 00   jmp 0292
+0258: 21 07 00   push [0007]
+025B: 1D E1 03   pushs L03E1   ; cure poison
+025E: 22   cmpeq
+025F: 05 0C 00   jne 026E
+0262: 21 09 00   push [0009]
+0265: 21 14 00   push [0014]
+0268: 24 04 00   call [0004]   ; 091EH
+026B: 06 24 00   jmp 0292
+026E: 21 07 00   push [0007]
+0271: 1D ED 03   pushs L03ED   ; resurrect
+0274: 22   cmpeq
+0275: 05 0C 00   jne 0284
+0278: 21 09 00   push [0009]
+027B: 21 16 00   push [0016]
+027E: 24 05 00   call [0005]   ; 091FH
+0281: 06 0E 00   jmp 0292
+0284: 06 04 00   jmp 028B
+0287: 1C F7 03   addsi L03F7   ; "Thou dost not ha...
+028A: 33   say
+028B: 06 04 00   jmp 0292
+028E: 1C 61 04   addsi L0461   ; "Then thou must l...
+0291: 33   say
+0292: 06 04 00   jmp 0299
+0295: 1C 93 04   addsi L0493   ; "If thou hast nee...
+0298: 33   say
+0299: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+029D: 25   ret

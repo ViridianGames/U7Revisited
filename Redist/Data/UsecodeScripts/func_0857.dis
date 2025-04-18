@@ -1,0 +1,112 @@
+  .funcnumber 0857H
+  .data
+L0000: db '"Excellent! Hast thou brought some pumpkins for me?"'
+L0034: db 00
+L0035: db '"Very good! Let me see how many thou dost have..."'
+L0067: db 00
+L0068: db '"But thou dost not have a single one in thy possession! Thou'
+ db ' art as looney as Mack!"*'
+L00BD: db 00
+L00BE: db '"Lovely! '
+L00C7: db 00
+L00C8: db '! That means I owe thee '
+L00E0: db 00
+L00E1: db ' gold. Here thou art! I shall take the pumpkins from thee no'
+ db 'w!"'
+L0120: db 00
+L0121: db '"Come back and work for me at any time!"*'
+L014A: db 00
+L014B: db '"If thou wouldst travel in a lighter fashion, thou wouldst h'
+ db 'ave hands to take my gold!"'
+L01A2: db 00
+L01A3: db '"No? What hast thou been doing in my field? Thou art as wort'
+ db 'hless as most of the workers one finds!"'
+L0207: db 00
+  .code
+  .argc 0000H
+  .localc 0009H
+  .externsize 0001H
+  .extern 090AH
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 1F 01 00   pushi 0001H   ; 1
+0007: 12 00 00   pop [0000]
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 12 01 00   pop [0001]
+0010: 1C 00 00   addsi L0000   ; "Excellent! Hast ...
+0013: 33   say
+0014: 24 00 00   call [0000]   ; 090AH
+0017: 12 02 00   pop [0002]
+001A: 21 02 00   push [0002]
+001D: 05 B5 00   jne 00D5
+0020: 1C 35 00   addsi L0035   ; "Very good! Let m...
+0023: 33   say
+0024: 1F 14 00   pushi 0014H   ; 20
+0027: 1F 99 FE   pushi FE99H   ; -359
+002A: 1F 79 01   pushi 0179H   ; 377
+002D: 1F 9B FE   pushi FE9BH   ; -357
+0030: 38 28 00 04  callis 0028, 4
+0034: 12 03 00   pop [0003]
+0037: 1F 15 00   pushi 0015H   ; 21
+003A: 1F 99 FE   pushi FE99H   ; -359
+003D: 1F 79 01   pushi 0179H   ; 377
+0040: 1F 9B FE   pushi FE9BH   ; -357
+0043: 38 28 00 04  callis 0028, 4
+0047: 12 04 00   pop [0004]
+004A: 21 03 00   push [0003]
+004D: 21 04 00   push [0004]
+0050: 09   add
+0051: 12 05 00   pop [0005]
+0054: 21 05 00   push [0005]
+0057: 1F 00 00   pushi 0000H   ; 0
+005A: 22   cmpeq
+005B: 05 08 00   jne 0066
+005E: 1C 68 00   addsi L0068   ; "But thou dost no...
+0061: 33   say
+0062: 3F   abrt
+0063: 06 6C 00   jmp 00D2
+0066: 21 05 00   push [0005]
+0069: 21 01 00   push [0001]
+006C: 0B   div
+006D: 21 00 00   push [0000]
+0070: 0C   mul
+0071: 12 06 00   pop [0006]
+0074: 1C BE 00   addsi L00BE   ; "Lovely! 
+0077: 2F 05 00   addsv [0005]
+007A: 1C C8 00   addsi L00C8   ; ! That means I ow...
+007D: 2F 06 00   addsv [0006]
+0080: 1C E1 00   addsi L00E1   ;  gold. Here thou ...
+0083: 33   say
+0084: 13   push true
+0085: 1F 99 FE   pushi FE99H   ; -359
+0088: 1F 99 FE   pushi FE99H   ; -359
+008B: 1F 84 02   pushi 0284H   ; 644
+008E: 21 06 00   push [0006]
+0091: 38 2C 00 05  callis 002C, 5
+0095: 12 07 00   pop [0007]
+0098: 21 07 00   push [0007]
+009B: 05 30 00   jne 00CE
+009E: 13   push true
+009F: 1F 14 00   pushi 0014H   ; 20
+00A2: 1F 99 FE   pushi FE99H   ; -359
+00A5: 1F 79 01   pushi 0179H   ; 377
+00A8: 21 03 00   push [0003]
+00AB: 38 2B 00 05  callis 002B, 5
+00AF: 12 08 00   pop [0008]
+00B2: 13   push true
+00B3: 1F 15 00   pushi 0015H   ; 21
+00B6: 1F 99 FE   pushi FE99H   ; -359
+00B9: 1F 79 01   pushi 0179H   ; 377
+00BC: 21 04 00   push [0004]
+00BF: 38 2B 00 05  callis 002B, 5
+00C3: 12 08 00   pop [0008]
+00C6: 1C 21 01   addsi L0121   ; "Come back and wo...
+00C9: 33   say
+00CA: 3F   abrt
+00CB: 06 04 00   jmp 00D2
+00CE: 1C 4B 01   addsi L014B   ; "If thou wouldst ...
+00D1: 33   say
+00D2: 06 04 00   jmp 00D9
+00D5: 1C A3 01   addsi L01A3   ; "No? What hast th...
+00D8: 33   say
+00D9: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+00DD: 25   ret

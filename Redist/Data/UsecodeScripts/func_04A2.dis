@@ -1,0 +1,347 @@
+  .funcnumber 04A2H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The man looks at you through smiling eyes.'
+L0037: db 00
+L0038: db 'Elad bows in your direction.~"My pleasure to see thee again.'
+ db '"'
+L0075: db 00
+L0076: db 'name'
+L007A: db 00
+L007B: db '"Elad is my name, '
+L008D: db 00
+L008E: db '."'
+L0090: db 00
+L0091: db 'name'
+L0095: db 00
+L0096: db 'job'
+L0099: db 00
+L009A: db '"I am the healer of the residents of this community."'
+L00CF: db 00
+L00D0: db 'community'
+L00D9: db 00
+L00DA: db 'heal'
+L00DE: db 00
+L00DF: db 'residents'
+L00E8: db 00
+L00E9: db 'community'
+L00F2: db 00
+L00F3: db '"Moonglow is mine home. I have lived in this town for mine e'
+ db 'ntire life. But I am weary of my life here. 'Tis time, I thi'
+ db 'nk, to move on. If only I did not have such strong ties here'
+ db '."~He sighs sadly.'
+L01B9: db 00
+L01BA: db '"There is a traveller visiting from Yew. He has seen many ex'
+ db 'citing things in Britannia. I enjoy listening to his many ta'
+ db 'les of adventure."'
+L0244: db 00
+L0245: db 'traveller'
+L024E: db 00
+L024F: db 'ties'
+L0253: db 00
+L0254: db 'community'
+L025D: db 00
+L025E: db 'traveller'
+L0267: db 00
+L0268: db '"His name is Addom. While he is in town, I am letting him st'
+ db 'ay in one of my beds."'
+L02BA: db 00
+L02BB: db 'traveller'
+L02C4: db 00
+L02C5: db 'heal'
+L02C9: db 00
+L02CA: db '"Yes, I sell mine healing services to those who need them."'
+L0305: db 00
+L0306: db 'services'
+L030E: db 00
+L030F: db 'heal'
+L0313: db 00
+L0314: db 'services'
+L031C: db 00
+L031D: db '"Perhaps thou couldst come for healing when I am working in '
+ db 'my shop."'
+L0362: db 00
+L0363: db 'services'
+L036B: db 00
+L036C: db 'ties'
+L0370: db 00
+L0371: db '"My patients here in Moonglow. Who will help them if not I?"'
+L03AD: db 00
+L03AE: db 'ties'
+L03B2: db 00
+L03B3: db 'residents'
+L03BC: db 00
+L03BD: db '"There are many people in Moonglow. My father once told me t'
+ db 'hat the town was much smaller during his time. In fact, he s'
+ db 'aid that Moonglow used to be separate from the Lycaeum!~~"Bu'
+ db 't, I digress. Thou didst ask about the people. I know most o'
+ db 'f the residents here. Dost thou want to know about the Lycae'
+ db 'um, the observatory, The Fellowship, the farmers, the traine'
+ db 'r, or the tavern?"'
+L0537: db 00
+L0538: db 'tavern'
+L053E: db 00
+L053F: db 'trainer'
+L0546: db 00
+L0547: db 'farmers'
+L054E: db 00
+L054F: db 'Fellowship'
+L0559: db 00
+L055A: db 'observatory'
+L0565: db 00
+L0566: db 'Lycaeum'
+L056D: db 00
+L056E: db 'residents'
+L0577: db 00
+L0578: db 'Lycaeum'
+L057F: db 00
+L0580: db '"The Lycaeum is run by a kind man named Nelson. His advisor '
+ db 'is Zelda. Do not break any rules in her presence or thou wil'
+ db 't receive a sharp reprimand!~"Jillian also studies there. Sh'
+ db 'e can teach thee many things. And do not worry about Mariah.'
+ db ' She is harmless if thou wilt but leave her be."'
+L06A0: db 00
+L06A1: db 'Lycaeum'
+L06A8: db 00
+L06A9: db 'observatory'
+L06B4: db 00
+L06B5: db '"The head there is Brion. He is the twin of the head of the '
+ db 'Lycaeum. I like him, although he and his brother are both a '
+ db 'little eccentric."'
+L073F: db 00
+L0740: db 'observatory'
+L074B: db 00
+L074C: db 'Fellowship'
+L0756: db 00
+L0757: db '"I know these people least of all. The branch opened here ab'
+ db 'out five years ago under the direction of a man named Rankin'
+ db '. A few months ago, a clerk joined him. Her name is Balayna.'
+ db '"'
+L080C: db 00
+L080D: db 'Fellowship'
+L0817: db 00
+L0818: db 'farmers'
+L081F: db 00
+L0820: db '"Cubolt owns the farm. He manages it with his younger brothe'
+ db 'r Tolemac and their friend Morz. I am not positive, but I be'
+ db 'lieve Tolemac recently joined The Fellowship."'
+L08C6: db 00
+L08C7: db 'farmers'
+L08CE: db 00
+L08CF: db 'tavern'
+L08D5: db 00
+L08D6: db '"Phearcy tends the bar there. He is another good person with'
+ db ' whom thou shouldst speak about the townspeople. However, he'
+ db ' enjoys gossip, and may be a bit single-minded."'
+L097E: db 00
+L097F: db 'tavern'
+L0985: db 00
+L0986: db 'trainer'
+L098D: db 00
+L098E: db '"The trainer is named Chad. I believe he specializes in swif'
+ db 't, skillful fighting, with knives and swords and such. See h'
+ db 'im if thou wishest to improve thy skills."'
+L0A30: db 00
+L0A31: db 'trainer'
+L0A38: db 00
+L0A39: db 'bye'
+L0A3C: db 00
+L0A3D: db '"Leaving so soon, '
+L0A4F: db 00
+L0A50: db '? Very well, may thy journeys be filled with prosperity."~He'
+ db ' sighs. Suddenly, his face brightens.~ "Wait! Perhaps I coul'
+ db 'd join thee?"~He quickly stands up, smiling. Then, just as s'
+ db 'uddenly, his smile fades.~"No. I cannot. I have far too many'
+ db ' things to do, too many people to care for. Perhaps in the f'
+ db 'uture?"~He forces a smile.~"I hope when we meet next time, '
+L0BB7: db 00
+L0BB8: db ', I will have the opportunity to join thee. Pleasant journey'
+ db ', my friend."*'
+L0C02: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0004H
+  .extern 0908H
+  .extern 0909H
+  .extern 0879H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E4 01   jne 01EC
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 5E FF   pushi FF5EH   ; -162
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 04 02   pushf flag:[0204]
+0031: 10   not
+0032: 05 07 00   jne 003C
+0035: 1C 0D 00   addsi L000D   ; The man looks at ...
+0038: 33   say
+0039: 06 04 00   jmp 0040
+003C: 1C 38 00   addsi L0038   ; Elad bows in your...
+003F: 33   say
+0040: 04 98 01   je 01DB
+0043: 1D 76 00   pushs L0076   ; name
+0046: 07 01 00 11 00  cmps 0001H, 005C
+004B: 1C 7B 00   addsi L007B   ; "Elad is my name, 
+004E: 2F 01 00   addsv [0001]
+0051: 1C 8E 00   addsi L008E   ; ."
+0054: 33   say
+0055: 1D 91 00   pushs L0091   ; name
+0058: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005C: 1D 96 00   pushs L0096   ; job
+005F: 07 01 00 14 00  cmps 0001H, 0078
+0064: 1C 9A 00   addsi L009A   ; "I am the healer ...
+0067: 33   say
+0068: 1D D0 00   pushs L00D0   ; community
+006B: 1D DA 00   pushs L00DA   ; heal
+006E: 1D DF 00   pushs L00DF   ; residents
+0071: 1E 03 00   arrc 0003H   ; 3
+0074: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0078: 1D E9 00   pushs L00E9   ; community
+007B: 07 01 00 24 00  cmps 0001H, 00A4
+0080: 1C F3 00   addsi L00F3   ; "Moonglow is mine...
+0083: 33   say
+0084: 42 ED 01   pushf flag:[01ED]
+0087: 10   not
+0088: 05 0B 00   jne 0096
+008B: 1C BA 01   addsi L01BA   ; "There is a trave...
+008E: 33   say
+008F: 1D 45 02   pushs L0245   ; traveller
+0092: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0096: 1D 4F 02   pushs L024F   ; ties
+0099: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009D: 1D 54 02   pushs L0254   ; community
+00A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A4: 1D 5E 02   pushs L025E   ; traveller
+00A7: 07 01 00 0B 00  cmps 0001H, 00B7
+00AC: 1C 68 02   addsi L0268   ; "His name is Addo...
+00AF: 33   say
+00B0: 1D BB 02   pushs L02BB   ; traveller
+00B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B7: 1D C5 02   pushs L02C5   ; heal
+00BA: 07 01 00 12 00  cmps 0001H, 00D1
+00BF: 1C CA 02   addsi L02CA   ; "Yes, I sell mine...
+00C2: 33   say
+00C3: 1D 06 03   pushs L0306   ; services
+00C6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CA: 1D 0F 03   pushs L030F   ; heal
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D 14 03   pushs L0314   ; services
+00D4: 07 01 00 43 00  cmps 0001H, 011C
+00D9: 38 3B 00 00  callis 003B, 0
+00DD: 12 02 00   pop [0002]
+00E0: 21 02 00   push [0002]
+00E3: 1F 02 00   pushi 0002H   ; 2
+00E6: 22   cmpeq
+00E7: 21 02 00   push [0002]
+00EA: 1F 03 00   pushi 0003H   ; 3
+00ED: 22   cmpeq
+00EE: 21 02 00   push [0002]
+00F1: 1F 04 00   pushi 0004H   ; 4
+00F4: 22   cmpeq
+00F5: 21 02 00   push [0002]
+00F8: 1F 06 00   pushi 0006H   ; 6
+00FB: 22   cmpeq
+00FC: 0F   or
+00FD: 0F   or
+00FE: 0F   or
+00FF: 05 0F 00   jne 0111
+0102: 1F A9 01   pushi 01A9H   ; 425
+0105: 1F 0A 00   pushi 000AH   ; 10
+0108: 1F 19 00   pushi 0019H   ; 25
+010B: 24 02 00   call [0002]   ; 0879H
+010E: 06 04 00   jmp 0115
+0111: 1C 1D 03   addsi L031D   ; "Perhaps thou cou...
+0114: 33   say
+0115: 1D 63 03   pushs L0363   ; services
+0118: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011C: 1D 6C 03   pushs L036C   ; ties
+011F: 07 01 00 0B 00  cmps 0001H, 012F
+0124: 1C 71 03   addsi L0371   ; "My patients here...
+0127: 33   say
+0128: 1D AE 03   pushs L03AE   ; ties
+012B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012F: 1D B3 03   pushs L03B3   ; residents
+0132: 07 01 00 24 00  cmps 0001H, 015B
+0137: 1C BD 03   addsi L03BD   ; "There are many p...
+013A: 33   say
+013B: 1D 38 05   pushs L0538   ; tavern
+013E: 1D 3F 05   pushs L053F   ; trainer
+0141: 1D 47 05   pushs L0547   ; farmers
+0144: 1D 4F 05   pushs L054F   ; Fellowship
+0147: 1D 5A 05   pushs L055A   ; observatory
+014A: 1D 66 05   pushs L0566   ; Lycaeum
+014D: 1E 06 00   arrc 0006H   ; 6
+0150: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0154: 1D 6E 05   pushs L056E   ; residents
+0157: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015B: 1D 78 05   pushs L0578   ; Lycaeum
+015E: 07 01 00 0B 00  cmps 0001H, 016E
+0163: 1C 80 05   addsi L0580   ; "The Lycaeum is r...
+0166: 33   say
+0167: 1D A1 06   pushs L06A1   ; Lycaeum
+016A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016E: 1D A9 06   pushs L06A9   ; observatory
+0171: 07 01 00 0B 00  cmps 0001H, 0181
+0176: 1C B5 06   addsi L06B5   ; "The head there i...
+0179: 33   say
+017A: 1D 40 07   pushs L0740   ; observatory
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D 4C 07   pushs L074C   ; Fellowship
+0184: 07 01 00 0B 00  cmps 0001H, 0194
+0189: 1C 57 07   addsi L0757   ; "I know these peo...
+018C: 33   say
+018D: 1D 0D 08   pushs L080D   ; Fellowship
+0190: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0194: 1D 18 08   pushs L0818   ; farmers
+0197: 07 01 00 0B 00  cmps 0001H, 01A7
+019C: 1C 20 08   addsi L0820   ; "Cubolt owns the ...
+019F: 33   say
+01A0: 1D C7 08   pushs L08C7   ; farmers
+01A3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A7: 1D CF 08   pushs L08CF   ; tavern
+01AA: 07 01 00 0B 00  cmps 0001H, 01BA
+01AF: 1C D6 08   addsi L08D6   ; "Phearcy tends th...
+01B2: 33   say
+01B3: 1D 7F 09   pushs L097F   ; tavern
+01B6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BA: 1D 86 09   pushs L0986   ; trainer
+01BD: 07 01 00 0B 00  cmps 0001H, 01CD
+01C2: 1C 8E 09   addsi L098E   ; "The trainer is n...
+01C5: 33   say
+01C6: 1D 31 0A   pushs L0A31   ; trainer
+01C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CD: 1D 39 0A   pushs L0A39   ; bye
+01D0: 07 01 00 03 00  cmps 0001H, 01D8
+01D5: 06 03 00   jmp 01DB
+01D8: 06 65 FE   jmp 0040
+01DB: 40   db 40 ???
+01DC: 1C 3D 0A   addsi L0A3D   ; "Leaving so soon, 
+01DF: 2F 01 00   addsv [0001]
+01E2: 1C 50 0A   addsi L0A50   ; ? Very well, may ...
+01E5: 2F 01 00   addsv [0001]
+01E8: 1C B8 0B   addsi L0BB8   ; , I will have the...
+01EB: 33   say
+01EC: 48   push eventid
+01ED: 1F 00 00   pushi 0000H   ; 0
+01F0: 22   cmpeq
+01F1: 05 06 00   jne 01FA
+01F4: 1F 5E FF   pushi FF5EH   ; -162
+01F7: 24 03 00   call [0003]   ; 092EH
+01FA: 25   ret

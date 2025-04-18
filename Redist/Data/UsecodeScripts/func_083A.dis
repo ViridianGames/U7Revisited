@@ -1,0 +1,21 @@
+  .funcnumber 083AH
+  .data
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0000H
+0000: 1F 2E 03   pushi 032EH   ; 814 * Triples game
+0003: 38 30 00 01  callis 0030, 1  ;* Find near Avatar.
+0007: 12 00 00   pop [0000]
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 26 00 00   aidx [0000]
+0010: 38 18 00 01  callis 0018, 1  ;* Get location.
+0014: 12 01 00   pop [0001]
+0017: 21 01 00   push [0001]
+001A: 1F 01 00   pushi 0001H   ; 1
+001D: 26 00 00   aidx [0000]
+0020: 4A   arra
+0021: 12 01 00   pop [0001]
+0024: 21 01 00   push [0001]
+0027: 2D   setr
+0028: 32   rts

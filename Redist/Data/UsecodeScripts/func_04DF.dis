@@ -1,0 +1,410 @@
+  .funcnumber 04DFH
+  .data
+L0000: db 'Avatar'
+L0006: db 00
+L0007: db 'The woman looks up in surprise and says, "I am not working a'
+ db 't the moment and I ask thee to respect my privacy. If thou d'
+ db 'ost wish to speak with me, come to The Baths in the late eve'
+ db 'ning hours."*'
+L00C8: db 00
+L00C9: db 'bye'
+L00CC: db 00
+L00CD: db 'job'
+L00D0: db 00
+L00D1: db 'name'
+L00D5: db 00
+L00D6: db 'This attractive woman looks at you with surprise and says, "'
+ db 'Honey, thou just enjoyed thyself, didst thou not? Please com'
+ db 'e back when thou art rested."*'
+L016C: db 00
+L016D: db 'You see a beautiful young woman with a tropical air.'
+L01A1: db 00
+L01A2: db '"Hello, handsome!'
+L01B3: db 00
+L01B4: db '"Hello, dear. Art thou sure thou dost not want to speak with'
+ db ' Roberto?"'
+L01FA: db 00
+L01FB: db '"All right, honey. Whatever heats thy blood..."'
+L022A: db 00
+L022B: db '"Then thou had best speak with him! He is probably more to t'
+ db 'hy liking."*'
+L0273: db 00
+L0274: db '"What is thy name?"'
+L0287: db 00
+L0288: db '"How art thou, '
+L0297: db 00
+L0298: db '? I am so happy to meet thee!"'
+L02B6: db 00
+L02B7: db '"Hello, '
+L02BF: db 00
+L02C0: db '."'
+L02C2: db 00
+L02C3: db '"Oh please! Not another Avatar!"'
+L02E3: db 00
+L02E4: db 'Martine takes a deep breath, then smiles.'
+L030D: db 00
+L030E: db '"Well, honey, it does not matter who thou art. We shalt have'
+ db ' a good time anyway."'
+L035F: db 00
+L0360: db '"Hello again, '
+L036E: db 00
+L036F: db '," Martine says.'
+L037F: db 00
+L0380: db 'name'
+L0384: db 00
+L0385: db '"The name I use here is Martine. Thou dost understand..." Sh'
+ db 'e winks at you.'
+L03D0: db 00
+L03D1: db 'name'
+L03D5: db 00
+L03D6: db 'job'
+L03D9: db 00
+L03DA: db '"Honey, my job is to make thee happy.'
+L03FF: db 00
+L0400: db '"My dear, my job is to serve thee.'
+L0422: db 00
+L0423: db '"'Tis important that thou art comfortable whilst visiting Th'
+ db 'e Baths."'
+L0468: db 00
+L0469: db 'comfortable'
+L0474: db 00
+L0475: db 'The Baths'
+L047E: db 00
+L047F: db 'The Baths'
+L0488: db 00
+L0489: db '"'Tis a fabulous place to work. I absolutely love it. I woul'
+ db 'd not work anywhere else. I have more gold than I could poss'
+ db 'ibly spend."'
+L050D: db 00
+L050E: db 'Martine blows a kiss at you. "I meet many kinds of interesti'
+ db 'ng people, too!"'
+L055A: db 00
+L055B: db 'The Baths'
+L0564: db 00
+L0565: db 'comfortable'
+L0570: db 00
+L0571: db '"Thou dost have many choices. We could take a swim in our sp'
+ db 'ring pools. Or I could perform a massage on thee. Or we coul'
+ db 'd simply talk.~~"But if thou dost want to really get to know'
+ db ' me better, we should visit the Community Room..."'
+L0657: db 00
+L0658: db 'comfortable'
+L0663: db 00
+L0664: db 'Community Room'
+L0672: db 00
+L0673: db 'talk'
+L0677: db 00
+L0678: db 'massage'
+L067F: db 00
+L0680: db 'swim'
+L0684: db 00
+L0685: db 'Community Room'
+L0693: db 00
+L0694: db '"Thou dost want to join me in the Community Room?"'
+L06C6: db 00
+L06C7: db 'Martine leads you into a private room.~~"It really is not a '
+ db 'Community Room at all. We shall be all alone!"~~ A while lat'
+ db 'er, after the woman has shown you more tricks than a crooked'
+ db ' street mage, you emerge from the Community Room a much happ'
+ db 'ier Avatar.'
+L07C2: db 00
+L07C3: db '"That's all right, honey."'
+L07DD: db 00
+L07DE: db 'Community Room'
+L07EC: db 00
+L07ED: db 'swim'
+L07F1: db 00
+L07F2: db 'Martine helps you with your clothing and leads you into the '
+ db 'warm spring water. It feels fabulous, and you would love to '
+ db 'go to sleep; but you know you have a quest to finish. After '
+ db 'a while, Martine helps you out of the water and you dress.'
+L08E0: db 00
+L08E1: db 'swim'
+L08E5: db 00
+L08E6: db 'massage'
+L08ED: db 00
+L08EE: db 'Martine helps you with your clothing and leads you to a comf'
+ db 'ortable table. You lie on your stomach and the woman expertl'
+ db 'y kneads and rubs your aching muscles, slowly sending you in'
+ db 'to a state of oblivion. After a while, Martine helps you up '
+ db 'and you dress.'
+L09EC: db 00
+L09ED: db 'massage'
+L09F4: db 00
+L09F5: db 'talk'
+L09F9: db 00
+L09FA: db 'Martine smiles. "That is just fine with me, honey. I would w'
+ db 'ager thou hast many stories to tell about adventuring, yes? '
+ db 'Say! Hast thou been in the secret passages in the mountains?'
+ db ' Didst thou know they are all connected? I know that there i'
+ db 's a secret door that leads right into the back of this build'
+ db 'ing!" She whispers, "I believe the entrance is through the H'
+ db 'ouse of Games."~~You and Martine speak of a number of other '
+ db 'subjects until you realize you have spent too much time in t'
+ db 'he spa. There is a quest to finish!'
+L0BFD: db 00
+L0BFE: db 'talk'
+L0C02: db 00
+L0C03: db 'bye'
+L0C06: db 00
+L0C07: db '"I hope to see thee again soon, honey!"'
+L0C2E: db 00
+L0C2F: db 'Martine blows you a kiss.*'
+L0C49: db 00
+L0C4A: db 'Martine waves goodbye.*'
+L0C61: db 00
+  .code
+  .argc 0001H
+  .localc 000BH
+  .externsize 0003H
+  .extern 0908H
+  .extern 090AH
+  .extern 090BH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 21 FF   pushi FF21H   ; -223
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 38 3B 00 00  callis 003B, 0
+0017: 12 00 00   pop [0000]
+001A: 1F 21 FF   pushi FF21H   ; -223
+001D: 38 1B 00 01  callis 001B, 1
+0021: 38 1C 00 01  callis 001C, 1
+0025: 12 01 00   pop [0001]
+0028: 24 00 00   call [0000]   ; 0908H
+002B: 12 02 00   pop [0002]
+002E: 1D 00 00   pushs L0000   ; Avatar
+0031: 12 03 00   pop [0003]
+0034: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0038: 12 04 00   pop [0004]
+003B: 42 9A 02   pushf flag:[029A]
+003E: 05 06 00   jne 0047
+0041: 21 02 00   push [0002]
+0044: 12 05 00   pop [0005]
+0047: 42 9B 02   pushf flag:[029B]
+004A: 05 06 00   jne 0053
+004D: 21 03 00   push [0003]
+0050: 12 05 00   pop [0005]
+0053: 21 01 00   push [0001]
+0056: 1F 07 00   pushi 0007H   ; 7
+0059: 22   cmpeq
+005A: 10   not
+005B: 05 05 00   jne 0063
+005E: 1C 07 00   addsi L0007   ; The woman looks u...
+0061: 33   say
+0062: 3F   abrt
+0063: 1D C9 00   pushs L00C9   ; bye
+0066: 1D CD 00   pushs L00CD   ; job
+0069: 1D D1 00   pushs L00D1   ; name
+006C: 1E 03 00   arrc 0003H   ; 3
+006F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0073: 1F 04 00   pushi 0004H   ; 4
+0076: 38 65 00 01  callis 0065, 1
+007A: 12 06 00   pop [0006]
+007D: 1F 03 00   pushi 0003H   ; 3
+0080: 38 65 00 01  callis 0065, 1
+0084: 12 07 00   pop [0007]
+0087: 1F 02 00   pushi 0002H   ; 2
+008A: 38 65 00 01  callis 0065, 1
+008E: 12 08 00   pop [0008]
+0091: 42 9D 02   pushf flag:[029D]
+0094: 21 06 00   push [0006]
+0097: 1F 02 00   pushi 0002H   ; 2
+009A: 17   cmpl
+009B: 0E   and
+009C: 42 9E 02   pushf flag:[029E]
+009F: 21 07 00   push [0007]
+00A2: 1F 02 00   pushi 0002H   ; 2
+00A5: 17   cmpl
+00A6: 0E   and
+00A7: 42 9C 02   pushf flag:[029C]
+00AA: 21 08 00   push [0008]
+00AD: 1F 02 00   pushi 0002H   ; 2
+00B0: 17   cmpl
+00B1: 0E   and
+00B2: 0F   or
+00B3: 0F   or
+00B4: 05 08 00   jne 00BF
+00B7: 1C D6 00   addsi L00D6   ; This attractive w...
+00BA: 33   say
+00BB: 3F   abrt
+00BC: 06 AC 00   jmp 016B
+00BF: 42 AC 02   pushf flag:[02AC]
+00C2: 10   not
+00C3: 05 9B 00   jne 0161
+00C6: 1C 6D 01   addsi L016D   ; You see a beautif...
+00C9: 33   say
+00CA: 21 04 00   push [0004]
+00CD: 10   not
+00CE: 05 07 00   jne 00D8
+00D1: 1C A2 01   addsi L01A2   ; "Hello, handsome!
+00D4: 33   say
+00D5: 06 16 00   jmp 00EE
+00D8: 1C B4 01   addsi L01B4   ; "Hello, dear. Art...
+00DB: 33   say
+00DC: 24 01 00   call [0001]   ; 090AH
+00DF: 05 07 00   jne 00E9
+00E2: 1C FB 01   addsi L01FB   ; "All right, honey...
+00E5: 33   say
+00E6: 06 05 00   jmp 00EE
+00E9: 1C 2B 02   addsi L022B   ; "Then thou had be...
+00EC: 33   say
+00ED: 3F   abrt
+00EE: 1C 74 02   addsi L0274   ; "What is thy name?"
+00F1: 33   say
+00F2: 21 03 00   push [0003]
+00F5: 21 02 00   push [0002]
+00F8: 1E 02 00   arrc 0002H   ; 2
+00FB: 24 02 00   call [0002]   ; 090BH
+00FE: 12 09 00   pop [0009]
+0101: 21 09 00   push [0009]
+0104: 21 02 00   push [0002]
+0107: 22   cmpeq
+0108: 05 28 00   jne 0133
+010B: 21 04 00   push [0004]
+010E: 10   not
+010F: 05 0D 00   jne 011F
+0112: 1C 88 02   addsi L0288   ; "How art thou, 
+0115: 2F 02 00   addsv [0002]
+0118: 1C 98 02   addsi L0298   ; ? I am so happy t...
+011B: 33   say
+011C: 06 0A 00   jmp 0129
+011F: 1C B7 02   addsi L02B7   ; "Hello, 
+0122: 2F 02 00   addsv [0002]
+0125: 1C C0 02   addsi L02C0   ; ."
+0128: 33   say
+0129: 21 02 00   push [0002]
+012C: 12 05 00   pop [0005]
+012F: 13   push true
+0130: 43 9A 02   popf flag:[029A]
+0133: 21 09 00   push [0009]
+0136: 21 03 00   push [0003]
+0139: 22   cmpeq
+013A: 05 1D 00   jne 015A
+013D: 1C C3 02   addsi L02C3   ; "Oh please! Not a...
+0140: 33   say
+0141: 21 04 00   push [0004]
+0144: 10   not
+0145: 05 08 00   jne 0150
+0148: 1C E4 02   addsi L02E4   ; Martine takes a d...
+014B: 33   say
+014C: 1C 0E 03   addsi L030E   ; "Well, honey, it ...
+014F: 33   say
+0150: 13   push true
+0151: 43 9B 02   popf flag:[029B]
+0154: 21 03 00   push [0003]
+0157: 12 05 00   pop [0005]
+015A: 13   push true
+015B: 43 AC 02   popf flag:[02AC]
+015E: 06 0A 00   jmp 016B
+0161: 1C 60 03   addsi L0360   ; "Hello again, 
+0164: 2F 05 00   addsv [0005]
+0167: 1C 6F 03   addsi L036F   ; ," Martine says.
+016A: 33   say
+016B: 04 0C 01   je 027A
+016E: 1D 80 03   pushs L0380   ; name
+0171: 07 01 00 0B 00  cmps 0001H, 0181
+0176: 1C 85 03   addsi L0385   ; "The name I use h...
+0179: 33   say
+017A: 1D D1 03   pushs L03D1   ; name
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D D6 03   pushs L03D6   ; job
+0184: 07 01 00 23 00  cmps 0001H, 01AC
+0189: 21 04 00   push [0004]
+018C: 10   not
+018D: 05 07 00   jne 0197
+0190: 1C DA 03   addsi L03DA   ; "Honey, my job is...
+0193: 33   say
+0194: 06 04 00   jmp 019B
+0197: 1C 00 04   addsi L0400   ; "My dear, my job ...
+019A: 33   say
+019B: 1C 23 04   addsi L0423   ; "'Tis important t...
+019E: 33   say
+019F: 1D 69 04   pushs L0469   ; comfortable
+01A2: 1D 75 04   pushs L0475   ; The Baths
+01A5: 1E 02 00   arrc 0002H   ; 2
+01A8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01AC: 1D 7F 04   pushs L047F   ; The Baths
+01AF: 07 01 00 16 00  cmps 0001H, 01CA
+01B4: 1C 89 04   addsi L0489   ; "'Tis a fabulous ...
+01B7: 33   say
+01B8: 21 04 00   push [0004]
+01BB: 10   not
+01BC: 05 04 00   jne 01C3
+01BF: 1C 0E 05   addsi L050E   ; Martine blows a k...
+01C2: 33   say
+01C3: 1D 5B 05   pushs L055B   ; The Baths
+01C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CA: 1D 65 05   pushs L0565   ; comfortable
+01CD: 07 01 00 1E 00  cmps 0001H, 01F0
+01D2: 1C 71 05   addsi L0571   ; "Thou dost have m...
+01D5: 33   say
+01D6: 1D 58 06   pushs L0658   ; comfortable
+01D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DD: 1D 64 06   pushs L0664   ; Community Room
+01E0: 1D 73 06   pushs L0673   ; talk
+01E3: 1D 78 06   pushs L0678   ; massage
+01E6: 1D 80 06   pushs L0680   ; swim
+01E9: 1E 04 00   arrc 0004H   ; 4
+01EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F0: 1D 85 06   pushs L0685   ; Community Room
+01F3: 07 01 00 3B 00  cmps 0001H, 0233
+01F8: 1C 94 06   addsi L0694   ; "Thou dost want t...
+01FB: 33   say
+01FC: 24 01 00   call [0001]   ; 090AH
+01FF: 05 26 00   jne 0228
+0202: 1C C7 06   addsi L06C7   ; Martine leads you...
+0205: 33   say
+0206: 13   push true
+0207: 43 9C 02   popf flag:[029C]
+020A: 1F 02 00   pushi 0002H   ; 2
+020D: 39 66 00 01  calli 0066, 1
+0211: 13   push true
+0212: 1F 99 FE   pushi FE99H   ; -359
+0215: 1F 99 FE   pushi FE99H   ; -359
+0218: 1F 84 02   pushi 0284H   ; 644
+021B: 1F 32 00   pushi 0032H   ; 50
+021E: 38 2B 00 05  callis 002B, 5
+0222: 12 0A 00   pop [000A]
+0225: 06 04 00   jmp 022C
+0228: 1C C3 07   addsi L07C3   ; "That's all right...
+022B: 33   say
+022C: 1D DE 07   pushs L07DE   ; Community Room
+022F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0233: 1D ED 07   pushs L07ED   ; swim
+0236: 07 01 00 0B 00  cmps 0001H, 0246
+023B: 1C F2 07   addsi L07F2   ; Martine helps you...
+023E: 33   say
+023F: 1D E1 08   pushs L08E1   ; swim
+0242: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0246: 1D E6 08   pushs L08E6   ; massage
+0249: 07 01 00 0B 00  cmps 0001H, 0259
+024E: 1C EE 08   addsi L08EE   ; Martine helps you...
+0251: 33   say
+0252: 1D ED 09   pushs L09ED   ; massage
+0255: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0259: 1D F5 09   pushs L09F5   ; talk
+025C: 07 01 00 0B 00  cmps 0001H, 026C
+0261: 1C FA 09   addsi L09FA   ; Martine smiles. "...
+0264: 33   say
+0265: 1D FE 0B   pushs L0BFE   ; talk
+0268: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026C: 1D 03 0C   pushs L0C03   ; bye
+026F: 07 01 00 03 00  cmps 0001H, 0277
+0274: 06 03 00   jmp 027A
+0277: 06 F1 FE   jmp 016B
+027A: 40   db 40 ???
+027B: 1C 07 0C   addsi L0C07   ; "I hope to see th...
+027E: 33   say
+027F: 21 04 00   push [0004]
+0282: 10   not
+0283: 05 07 00   jne 028D
+0286: 1C 2F 0C   addsi L0C2F   ; Martine blows you...
+0289: 33   say
+028A: 06 04 00   jmp 0291
+028D: 1C 4A 0C   addsi L0C4A   ; Martine waves goo...
+0290: 33   say
+0291: 25   ret

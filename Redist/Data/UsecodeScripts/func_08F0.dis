@@ -1,0 +1,87 @@
+  .funcnumber 08F0H
+  .data
+L0000: db 'The couple haven't released their embrace since they were fi'
+ db 'rst reunited as far as you can tell, and they show no sign o'
+ db 'f doing so any time in the near future.'
+L009F: db 00
+L00A0: db 'bye'
+L00A3: db 00
+L00A4: db 'sacrifice'
+L00AD: db 00
+L00AE: db '"No, '
+L00B3: db 00
+L00B4: db '. Wouldst thou take my beloved from me so shortly after our '
+ db 'reunion? Another will have to perform this terrible task." R'
+ db 'owena holds on tightly to her husband.'
+L0152: db 00
+L0153: db '"I cannot leave my lady like this. Surely thou dost understa'
+ db 'nd, '
+L0193: db 00
+L0194: db '."'
+L0196: db 00
+L0197: db 'sacrifice'
+L01A0: db 00
+L01A1: db 'bye'
+L01A4: db 00
+L01A5: db 'The couple continue staring into one another's eyes as if to'
+ db ' make up for all of the years they lost.*'
+L020A: db 00
+L020B: db '"Why, I must again find my darling Rowena! Where could she h'
+ db 'ave gone to?*'
+L0254: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 00 00   pop [0000]
+0006: 1F 70 FF   pushi FF70H   ; -144
+0009: 24 01 00   call [0001]   ; 08F7H
+000C: 12 01 00   pop [0001]
+000F: 21 01 00   push [0001]
+0012: 05 6E 00   jne 0083
+0015: 1C 00 00   addsi L0000   ; The couple haven'...
+0018: 33   say
+0019: 1D A0 00   pushs L00A0   ; bye
+001C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0020: 04 5C 00   je 007F
+0023: 1D A4 00   pushs L00A4   ; sacrifice
+0026: 07 01 00 44 00  cmps 0001H, 006F
+002B: 42 9E 01   pushf flag:[019E]
+002E: 10   not
+002F: 05 2C 00   jne 005E
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 1F 70 FF   pushi FF70H   ; -144
+0038: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+003C: 1C AE 00   addsi L00AE   ; "No, 
+003F: 2F 00 00   addsv [0000]
+0042: 1C B4 00   addsi L00B4   ; . Wouldst thou ta...
+0045: 33   say
+0046: 13   push true
+0047: 43 9E 01   popf flag:[019E]
+004A: 1F 70 FF   pushi FF70H   ; -144
+004D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0051: 1F 01 00   pushi 0001H   ; 1
+0054: 1F 72 FF   pushi FF72H   ; -142
+0057: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+005B: 06 0A 00   jmp 0068
+005E: 1C 53 01   addsi L0153   ; "I cannot leave m...
+0061: 2F 00 00   addsv [0000]
+0064: 1C 94 01   addsi L0194   ; ."
+0067: 33   say
+0068: 1D 97 01   pushs L0197   ; sacrifice
+006B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006F: 1D A1 01   pushs L01A1   ; bye
+0072: 07 01 00 05 00  cmps 0001H, 007C
+0077: 1C A5 01   addsi L01A5   ; The couple contin...
+007A: 33   say
+007B: 3F   abrt
+007C: 06 A1 FF   jmp 0020
+007F: 40   db 40 ???
+0080: 06 05 00   jmp 0088
+0083: 1C 0B 02   addsi L020B   ; "Why, I must agai...
+0086: 33   say
+0087: 3F   abrt
+0088: 25   ret

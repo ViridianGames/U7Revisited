@@ -1,0 +1,372 @@
+  .funcnumber 044DH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Nastassia'
+L0016: db 00
+L0017: db 'Lock Lake'
+L0020: db 00
+L0021: db 'bill'
+L0025: db 00
+L0026: db 'This regal gentleman epitomizes a well-liked politician.'
+L005E: db 00
+L005F: db '"Hello! Lord British sent word that thou might come to visit'
+ db ' us. Welcome to Cove, Avatar!"'
+L00B9: db 00
+L00BA: db '"Hello again, Avatar!" Lord Heather proclaims.'
+L00E8: db 00
+L00E9: db 'name'
+L00ED: db 00
+L00EE: db '"I am Lord Heather. And I recognize thee, Avatar!"'
+L0120: db 00
+L0121: db 'name'
+L0125: db 00
+L0126: db 'job'
+L0129: db 00
+L012A: db '"I am the Town Mayor of Cove, home of the Shrine of Compassi'
+ db 'on."'
+L016A: db 00
+L016B: db 'Shrine'
+L0171: db 00
+L0172: db 'Cove'
+L0176: db 00
+L0177: db 'Cove'
+L017B: db 00
+L017C: db '"It's a small place, I know. Many of our residents have move'
+ db 'd away to the larger towns, especially Britain. But we have '
+ db 'maintained a small core of loyal Covites."'
+L021E: db 00
+L021F: db 'Cove'
+L0223: db 00
+L0224: db 'Shrine'
+L022A: db 00
+L022B: db '"We are proud of our Shrine. One of our residents takes good'
+ db ' care of it. Thou must try and visit the Shrine if thou hast'
+ db ' not already. It is a monument to all the lovers in town."'
+L02DD: db 00
+L02DE: db 'lovers'
+L02E4: db 00
+L02E5: db 'Shrine'
+L02EB: db 00
+L02EC: db 'lovers'
+L02F2: db 00
+L02F3: db '"Britain may be the city of Compassion, but Cove has become '
+ db 'the city of Passion. Everyone here seems to fall in love rat'
+ db 'her easily. Thou wilt find that everyone loves someone. Almo'
+ db 'st everyone, that is."'
+L03BD: db 00
+L03BE: db 'lovers'
+L03C4: db 00
+L03C5: db 'almost everyone'
+L03D4: db 00
+L03D5: db 'everyone'
+L03DD: db 00
+L03DE: db 'everyone'
+L03E6: db 00
+L03E7: db '"Well, let's see... I am in love with Jaana, our healer. And'
+ db ' she is in love with me, of course. Then there is Zinaida, w'
+ db 'ho runs the Emerald. She has an interest in De Maria, our lo'
+ db 'cal bard. And vice versa. Rayburt, our trainer, is courting '
+ db 'Pamela, the innkeeper."'
+L04EE: db 00
+L04EF: db '"Sounds like bad theatre to me!"'
+L050F: db 00
+L0510: db '"Any wenches mine own age around here?"*'
+L0538: db 00
+L0539: db 'everyone'
+L0541: db 00
+L0542: db '"I see that thou art leaving Cove for a while, my dear?"*'
+L057B: db 00
+L057C: db '"Yes, milord. But I shall return. I promise thee."*'
+L05AF: db 00
+L05B0: db '"I shall try not to worry about thee, but it will be difficu'
+ db 'lt."*'
+L05F1: db 00
+L05F2: db '"Do not worry. I shall be safe with the Avatar."*'
+L0623: db 00
+L0624: db '"I do hope so." The Mayor embraces Jaana.*'
+L064E: db 00
+L064F: db 'almost everyone'
+L065E: db 00
+L065F: db '"Except for Nastassia."'
+L0676: db 00
+L0677: db 'almost everyone'
+L0686: db 00
+L0687: db 'Nastassia'
+L0690: db 00
+L0691: db 'Nastassia'
+L069A: db 00
+L069B: db '"She is a lovely young woman who is always melancholy. De Ma'
+ db 'ria can tell thee more about her. I suggest thou seekest him'
+ db ' at the Emerald. 'Tis a sad but compelling tale."'
+L0744: db 00
+L0745: db 'someone'
+L074C: db 00
+L074D: db 'a man like thee'
+L075C: db 00
+L075D: db '"I do hope thou canst help her. She needs '
+L0787: db 00
+L0788: db ' to bring her out of her depression."'
+L07AD: db 00
+L07AE: db 'Nastassia'
+L07B7: db 00
+L07B8: db 'bill'
+L07BC: db 00
+L07BD: db '"'Tis about time that the government did something about the'
+ db ' awful stench coming from that lake! I shall be happy to sig'
+ db 'n thy bill of law! Take it back to the Great Council post ha'
+ db 'ste!" Lord Heather signs the bill and hands it back to you.'
+L08AC: db 00
+L08AD: db '"But thou dost not have a bill of law!"'
+L08D4: db 00
+L08D5: db '"I thought I already signed that bill!"'
+L08FC: db 00
+L08FD: db 'bill'
+L0901: db 00
+L0902: db 'Lock Lake'
+L090B: db 00
+L090C: db '"It has gotten so putrid that on hot summer days the stink i'
+ db 's suffocating. I believe that the Britannian Mining Company '
+ db 'in Minoc is the source of the problem. Mining waste is being'
+ db ' deposited in the Lake. Thou shouldst be glad it is nearly w'
+ db 'inter!"'
+L0A03: db 00
+L0A04: db 'Lock Lake'
+L0A0D: db 00
+L0A0E: db 'bye'
+L0A11: db 00
+L0A12: db '"Do come and visit again, Avatar!"*'
+L0A35: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 08F7H
+  .extern 0931H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 6D 02   jne 0275
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F B3 FF   pushi FFB3H   ; -77
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 42 E0 00   pushf flag:[00E0]
+002C: 05 07 00   jne 0036
+002F: 1D 0D 00   pushs L000D   ; Nastassia
+0032: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0036: 42 6A 00   pushf flag:[006A]
+0039: 05 0D 00   jne 0049
+003C: 1D 17 00   pushs L0017   ; Lock Lake
+003F: 1D 21 00   pushs L0021   ; bill
+0042: 1E 02 00   arrc 0002H   ; 2
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 EA 00   pushf flag:[00EA]
+004C: 10   not
+004D: 05 0F 00   jne 005F
+0050: 1C 26 00   addsi L0026   ; This regal gentle...
+0053: 33   say
+0054: 1C 5F 00   addsi L005F   ; "Hello! Lord Brit...
+0057: 33   say
+0058: 13   push true
+0059: 43 EA 00   popf flag:[00EA]
+005C: 06 04 00   jmp 0063
+005F: 1C BA 00   addsi L00BA   ; "Hello again, Ava...
+0062: 33   say
+0063: 04 0A 02   je 0270
+0066: 1D E9 00   pushs L00E9   ; name
+0069: 07 01 00 0B 00  cmps 0001H, 0079
+006E: 1C EE 00   addsi L00EE   ; "I am Lord Heathe...
+0071: 33   say
+0072: 1D 21 01   pushs L0121   ; name
+0075: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0079: 1D 26 01   pushs L0126   ; job
+007C: 07 01 00 11 00  cmps 0001H, 0092
+0081: 1C 2A 01   addsi L012A   ; "I am the Town Ma...
+0084: 33   say
+0085: 1D 6B 01   pushs L016B   ; Shrine
+0088: 1D 72 01   pushs L0172   ; Cove
+008B: 1E 02 00   arrc 0002H   ; 2
+008E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0092: 1D 77 01   pushs L0177   ; Cove
+0095: 07 01 00 0B 00  cmps 0001H, 00A5
+009A: 1C 7C 01   addsi L017C   ; "It's a small pla...
+009D: 33   say
+009E: 1D 1F 02   pushs L021F   ; Cove
+00A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A5: 1D 24 02   pushs L0224   ; Shrine
+00A8: 07 01 00 12 00  cmps 0001H, 00BF
+00AD: 1C 2B 02   addsi L022B   ; "We are proud of ...
+00B0: 33   say
+00B1: 1D DE 02   pushs L02DE   ; lovers
+00B4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B8: 1D E5 02   pushs L02E5   ; Shrine
+00BB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BF: 1D EC 02   pushs L02EC   ; lovers
+00C2: 07 01 00 18 00  cmps 0001H, 00DF
+00C7: 1C F3 02   addsi L02F3   ; "Britain may be t...
+00CA: 33   say
+00CB: 1D BE 03   pushs L03BE   ; lovers
+00CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D2: 1D C5 03   pushs L03C5   ; almost everyone
+00D5: 1D D5 03   pushs L03D5   ; everyone
+00D8: 1E 02 00   arrc 0002H   ; 2
+00DB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DF: 1D DE 03   pushs L03DE   ; everyone
+00E2: 07 01 00 C7 00  cmps 0001H, 01AE
+00E7: 1C E7 03   addsi L03E7   ; "Well, let's see....
+00EA: 33   say
+00EB: 1F FF FF   pushi FFFFH   ; -1
+00EE: 24 00 00   call [0000]   ; 08F7H
+00F1: 12 01 00   pop [0001]
+00F4: 21 01 00   push [0001]
+00F7: 05 1F 00   jne 0119
+00FA: 1F 00 00   pushi 0000H   ; 0
+00FD: 1F FF FF   pushi FFFFH   ; -1
+0100: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0104: 1C EF 04   addsi L04EF   ; "Sounds like bad ...
+0107: 33   say
+0108: 1F FF FF   pushi FFFFH   ; -1
+010B: 39 04 00 01  calli _HideNPC@1  ; 0004
+010F: 1F 00 00   pushi 0000H   ; 0
+0112: 1F B3 FF   pushi FFB3H   ; -77
+0115: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0119: 1F FE FF   pushi FFFEH   ; -2
+011C: 24 00 00   call [0000]   ; 08F7H
+011F: 12 02 00   pop [0002]
+0122: 21 02 00   push [0002]
+0125: 05 1F 00   jne 0147
+0128: 1F 00 00   pushi 0000H   ; 0
+012B: 1F FE FF   pushi FFFEH   ; -2
+012E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0132: 1C 10 05   addsi L0510   ; "Any wenches mine...
+0135: 33   say
+0136: 1F FE FF   pushi FFFEH   ; -2
+0139: 39 04 00 01  calli _HideNPC@1  ; 0004
+013D: 1F 00 00   pushi 0000H   ; 0
+0140: 1F B3 FF   pushi FFB3H   ; -77
+0143: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0147: 13   push true
+0148: 43 E4 00   popf flag:[00E4]
+014B: 1D 39 05   pushs L0539   ; everyone
+014E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0152: 1F FB FF   pushi FFFBH   ; -5
+0155: 24 00 00   call [0000]   ; 08F7H
+0158: 12 03 00   pop [0003]
+015B: 21 03 00   push [0003]
+015E: 05 4D 00   jne 01AE
+0161: 1C 42 05   addsi L0542   ; "I see that thou ...
+0164: 33   say
+0165: 1F 00 00   pushi 0000H   ; 0
+0168: 1F FB FF   pushi FFFBH   ; -5
+016B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016F: 1C 7C 05   addsi L057C   ; "Yes, milord. But...
+0172: 33   say
+0173: 1F 00 00   pushi 0000H   ; 0
+0176: 1F B3 FF   pushi FFB3H   ; -77
+0179: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+017D: 1C B0 05   addsi L05B0   ; "I shall try not ...
+0180: 33   say
+0181: 1F 00 00   pushi 0000H   ; 0
+0184: 1F FB FF   pushi FFFBH   ; -5
+0187: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+018B: 1C F2 05   addsi L05F2   ; "Do not worry. I ...
+018E: 33   say
+018F: 1F 00 00   pushi 0000H   ; 0
+0192: 1F B3 FF   pushi FFB3H   ; -77
+0195: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0199: 1C 24 06   addsi L0624   ; "I do hope so." T...
+019C: 33   say
+019D: 1F FB FF   pushi FFFBH   ; -5
+01A0: 39 04 00 01  calli _HideNPC@1  ; 0004
+01A4: 1F 00 00   pushi 0000H   ; 0
+01A7: 1F B3 FF   pushi FFB3H   ; -77
+01AA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01AE: 1D 4F 06   pushs L064F   ; almost everyone
+01B1: 07 01 00 12 00  cmps 0001H, 01C8
+01B6: 1C 5F 06   addsi L065F   ; "Except for Nasta...
+01B9: 33   say
+01BA: 1D 77 06   pushs L0677   ; almost everyone
+01BD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C1: 1D 87 06   pushs L0687   ; Nastassia
+01C4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C8: 1D 91 06   pushs L0691   ; Nastassia
+01CB: 07 01 00 38 00  cmps 0001H, 0208
+01D0: 42 E0 00   pushf flag:[00E0]
+01D3: 10   not
+01D4: 05 0B 00   jne 01E2
+01D7: 1C 9B 06   addsi L069B   ; "She is a lovely ...
+01DA: 33   say
+01DB: 13   push true
+01DC: 43 E3 00   popf flag:[00E3]
+01DF: 06 1F 00   jmp 0201
+01E2: 21 00 00   push [0000]
+01E5: 05 09 00   jne 01F1
+01E8: 1D 45 07   pushs L0745   ; someone
+01EB: 12 04 00   pop [0004]
+01EE: 06 06 00   jmp 01F7
+01F1: 1D 4D 07   pushs L074D   ; a man like thee
+01F4: 12 04 00   pop [0004]
+01F7: 1C 5D 07   addsi L075D   ; "I do hope thou c...
+01FA: 2F 04 00   addsv [0004]
+01FD: 1C 88 07   addsi L0788   ;  to bring her out...
+0200: 33   say
+0201: 1D AE 07   pushs L07AE   ; Nastassia
+0204: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0208: 1D B8 07   pushs L07B8   ; bill
+020B: 07 01 00 3F 00  cmps 0001H, 024F
+0210: 42 DE 00   pushf flag:[00DE]
+0213: 10   not
+0214: 05 2D 00   jne 0244
+0217: 1F 99 FE   pushi FE99H   ; -359
+021A: 1F 04 00   pushi 0004H   ; 4
+021D: 1F 1D 03   pushi 031DH   ; 797
+0220: 1F 01 00   pushi 0001H   ; 1
+0223: 1F 9B FE   pushi FE9BH   ; -357
+0226: 24 01 00   call [0001]   ; 0931H
+0229: 12 05 00   pop [0005]
+022C: 21 05 00   push [0005]
+022F: 05 0B 00   jne 023D
+0232: 1C BD 07   addsi L07BD   ; "'Tis about time ...
+0235: 33   say
+0236: 13   push true
+0237: 43 DE 00   popf flag:[00DE]
+023A: 06 04 00   jmp 0241
+023D: 1C AD 08   addsi L08AD   ; "But thou dost no...
+0240: 33   say
+0241: 06 04 00   jmp 0248
+0244: 1C D5 08   addsi L08D5   ; "I thought I alre...
+0247: 33   say
+0248: 1D FD 08   pushs L08FD   ; bill
+024B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024F: 1D 02 09   pushs L0902   ; Lock Lake
+0252: 07 01 00 0B 00  cmps 0001H, 0262
+0257: 1C 0C 09   addsi L090C   ; "It has gotten so...
+025A: 33   say
+025B: 1D 04 0A   pushs L0A04   ; Lock Lake
+025E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0262: 1D 0E 0A   pushs L0A0E   ; bye
+0265: 07 01 00 03 00  cmps 0001H, 026D
+026A: 06 03 00   jmp 0270
+026D: 06 F3 FD   jmp 0063
+0270: 40   db 40 ???
+0271: 1C 12 0A   addsi L0A12   ; "Do come and visi...
+0274: 33   say
+0275: 48   push eventid
+0276: 1F 00 00   pushi 0000H   ; 0
+0279: 22   cmpeq
+027A: 05 06 00   jne 0283
+027D: 1F B3 FF   pushi FFB3H   ; -77
+0280: 24 02 00   call [0002]   ; 092EH
+0283: 25   ret

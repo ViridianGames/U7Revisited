@@ -1,0 +1,81 @@
+  .funcnumber 0642H
+  .data
+L0000: db '@An Flam@'
+L0009: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0003H
+  .extern 092DH
+  .extern 0906H
+  .extern 08FDH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 63 00   jne 006B
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0011: 12 00 00   pop [0000]
+0014: 21 00 00   push [0000]
+0017: 24 00 00   call [0000]   ; 092DH
+001A: 12 01 00   pop [0001]
+001D: 1D 00 00   pushs L0000   ; @An Flam@
+0020: 3E   push itemref
+0021: 39 40 00 02  calli _ItemSay@2  ; 0040
+0025: 24 01 00   call [0001]   ; 0906H
+0028: 05 27 00   jne 0052
+002B: 1F 1C 02   pushi 021CH   ; 540
+002E: 21 00 00   push [0000]
+0031: 3E   push itemref
+0032: 38 41 00 03  callis 0041, 3
+0036: 12 02 00   pop [0002]
+0039: 44 7A   pushw 447AH   ; 17530
+003B: 44 67   pushw 4467H   ; 17511
+003D: 44 65   pushw 2165H   ; 8549
+003F: 21 01 00   push [0001]
+0042: 44 59   pushw 1E59H   ; 7769
+0044: 1E 05 00   arrc 0005H   ; 5
+0047: 3E   push itemref
+0048: 38 01 00 02  callis 0001, 2
+004C: 12 02 00   pop [0002]
+004F: 06 19 00   jmp 006B
+0052: 1F 06 06   pushi 0606H   ; 1542
+0055: 44 55   pushw 4455H   ; 17493
+0057: 44 67   pushw 4467H   ; 17511
+0059: 44 65   pushw 2165H   ; 8549
+005B: 21 01 00   push [0001]
+005E: 44 59   pushw 1E59H   ; 7769
+0060: 1E 06 00   arrc 0006H   ; 6
+0063: 3E   push itemref
+0064: 38 01 00 02  callis 0001, 2
+0068: 12 02 00   pop [0002]
+006B: 48   push eventid
+006C: 1F 04 00   pushi 0004H   ; 4
+006F: 22   cmpeq
+0070: 05 45 00   jne 00B8
+0073: 3E   push itemref
+0074: 38 11 00 01  callis _GetItemType@1  ; 0011
+0078: 12 03 00   pop [0003]
+007B: 21 03 00   push [0003]
+007E: 1F B3 01   pushi 01B3H   ; 435
+0081: 1F 52 01   pushi 0152H   ; 338
+0084: 1F 0E 02   pushi 020EH   ; 526
+0087: 1F BD 02   pushi 02BDH   ; 701
+008A: 1E 04 00   arrc 0004H   ; 4
+008D: 30   in
+008E: 05 21 00   jne 00B2
+0091: 21 03 00   push [0003]
+0094: 39 95 00 01  calli 0095, 1
+0098: 21 03 00   push [0003]
+009B: 44 55   pushw 1E55H   ; 7765
+009D: 1E 02 00   arrc 0002H   ; 2
+00A0: 3E   push itemref
+00A1: 38 01 00 02  callis 0001, 2
+00A5: 12 02 00   pop [0002]
+00A8: 1F 2E 00   pushi 002EH   ; 46
+00AB: 39 0F 00 01  calli 000F, 1
+00AF: 06 06 00   jmp 00B8
+00B2: 1F 3C 00   pushi 003CH   ; 60
+00B5: 24 02 00   call [0002]   ; 08FDH
+00B8: 25   ret

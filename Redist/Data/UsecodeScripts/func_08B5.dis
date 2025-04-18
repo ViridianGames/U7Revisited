@@ -1,0 +1,95 @@
+  .funcnumber 08B5H
+  .data
+L0000: db '"If thou wishest to seek out this isle, thou mayest use my s'
+ db 'hip. It now sits upon the southern shore of Vesper and is ca'
+ db 'lled the Golden Ankh. Please, feel free to use it for as lon'
+ db 'g as thou hast need of it."'
+L00CF: db 00
+L00D0: db 'Lord British hands you the deed to the ship.'
+L00FC: db 00
+L00FD: db 'Lord British hands you the deed to the ship, but it slips fr'
+ db 'om your hands and falls to the floor.'
+L015E: db 00
+L015F: db '"I have also focused a magical crystal to the entrance of th'
+ db 'e Castle of Fire which I refurbished after thy battle with E'
+ db 'xodus. Here, take it. Perhaps it will give thee some insight'
+ db '. Although, be warned, it is not at all stable and might be '
+ db 'prone to shatter the nearer thou findest thyself to the loca'
+ db 'tion to which it is tuned."'
+L02A6: db 00
+L02A7: db 'Lord British gives you the crystal.'
+L02CA: db 00
+L02CB: db 'Lord British gives you the crystal, but it slips from your h'
+ db 'ands and falls to the floor. Luckily, it remains intact.'
+L033F: db 00
+L0340: db 'Lord British gives you the crystal, and once again your over'
+ db 'loaded condition makes you clumsy. Luckily, it remains intac'
+ db 't after its little fall.'
+L03D0: db 00
+  .code
+  .argc 0000H
+  .localc 0006H
+  .externsize 0000H
+0000: 1C 00 00   addsi L0000   ; "If thou wishest ...
+0003: 33   say
+0004: 1F 1D 03   pushi 031DH   ; 797
+0007: 38 24 00 01  callis 0024, 1
+000B: 12 00 00   pop [0000]
+000E: 1F 01 00   pushi 0001H   ; 1
+0011: 21 00 00   push [0000]
+0014: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0018: 1F 2C 00   pushi 002CH   ; 44
+001B: 21 00 00   push [0000]
+001E: 38 15 00 02  callis 0015, 2
+0022: 12 01 00   pop [0001]
+0025: 1F 9C FE   pushi FE9CH   ; -356
+0028: 38 1B 00 01  callis 001B, 1
+002C: 38 36 00 01  callis 0036, 1
+0030: 12 02 00   pop [0002]
+0033: 14   push false
+0034: 12 03 00   pop [0003]
+0037: 21 02 00   push [0002]
+003A: 05 07 00   jne 0044
+003D: 1C D0 00   addsi L00D0   ; Lord British hand...
+0040: 33   say
+0041: 06 16 00   jmp 005A
+0044: 1F 9C FE   pushi FE9CH   ; -356
+0047: 38 18 00 01  callis 0018, 1
+004B: 38 26 00 01  callis 0026, 1
+004F: 12 02 00   pop [0002]
+0052: 1C FD 00   addsi L00FD   ; Lord British hand...
+0055: 33   say
+0056: 13   push true
+0057: 12 03 00   pop [0003]
+005A: 1C 5F 01   addsi L015F   ; "I have also focu...
+005D: 33   say
+005E: 1F F8 02   pushi 02F8H   ; 760
+0061: 38 24 00 01  callis 0024, 1
+0065: 12 04 00   pop [0004]
+0068: 1F 0E 00   pushi 000EH   ; 14
+006B: 21 04 00   push [0004]
+006E: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0072: 1F 9C FE   pushi FE9CH   ; -356
+0075: 38 1B 00 01  callis 001B, 1
+0079: 38 36 00 01  callis 0036, 1
+007D: 12 05 00   pop [0005]
+0080: 21 05 00   push [0005]
+0083: 05 07 00   jne 008D
+0086: 1C A7 02   addsi L02A7   ; Lord British give...
+0089: 33   say
+008A: 06 20 00   jmp 00AD
+008D: 1F 9C FE   pushi FE9CH   ; -356
+0090: 38 18 00 01  callis 0018, 1
+0094: 38 26 00 01  callis 0026, 1
+0098: 12 05 00   pop [0005]
+009B: 21 03 00   push [0003]
+009E: 10   not
+009F: 05 07 00   jne 00A9
+00A2: 1C CB 02   addsi L02CB   ; Lord British give...
+00A5: 33   say
+00A6: 06 04 00   jmp 00AD
+00A9: 1C 40 03   addsi L0340   ; Lord British give...
+00AC: 33   say
+00AD: 13   push true
+00AE: 43 FE 02   popf flag:[02FE]
+00B1: 25   ret

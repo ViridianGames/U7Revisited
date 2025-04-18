@@ -1,0 +1,663 @@
+  .funcnumber 04A3H
+  .data
+L0000: db '"Sorry, '
+L0008: db 00
+L0009: db ', I may talk to thee later. But now I wish to pay attention '
+ db 'to the meeting."'
+L0055: db 00
+L0056: db '"Sorry, '
+L005E: db 00
+L005F: db ', I must get to the Fellowship meeting!"'
+L0087: db 00
+L0088: db 'bye'
+L008B: db 00
+L008C: db 'Fellowship'
+L0096: db 00
+L0097: db 'job'
+L009A: db 00
+L009B: db 'name'
+L009F: db 00
+L00A0: db '"Why, Hello, Sir Dupre. Things fare well I trust?"'
+L00D2: db 00
+L00D3: db '"Greetings, fair Phearcy. Yes, thank thee, things are well."'
+L010F: db 00
+L0110: db 'You see a man who gives you a friendly smile.'
+L013D: db 00
+L013E: db '"How may I help thee, '
+L0154: db 00
+L0155: db '?" asks Phearcy.'
+L0165: db 00
+L0166: db '"Hast thou discovered the reason for Zelda's moods?"'
+L019A: db 00
+L019B: db '"Excellent. Thou canst tell me while I get thy refreshment."'
+ db ' As he prepares your meal, you tell him what you know about '
+ db 'Zelda and Brion.'
+L0223: db 00
+L0224: db '"Too bad, '
+L022E: db 00
+L022F: db '. When thou art carrying less weighty things I shall give th'
+ db 'ee thy jerky."'
+L0279: db 00
+L027A: db '"And when thy load is lighter, then I can give thee thy beve'
+ db 'rages."'
+L02BD: db 00
+L02BE: db '"'Tis a shame, '
+L02CD: db 00
+L02CE: db '. Perhaps thou wilt know next time."'
+L02F2: db 00
+L02F3: db 'name'
+L02F7: db 00
+L02F8: db '"I am Phearcy, at thy service." He gives a short bow.'
+L032D: db 00
+L032E: db 'name'
+L0332: db 00
+L0333: db 'job'
+L0336: db 00
+L0337: db '"I am the bartender here in Moonglow."'
+L035D: db 00
+L035E: db 'buy'
+L0361: db 00
+L0362: db 'Moonglow'
+L036A: db 00
+L036B: db 'Fellowship'
+L0375: db 00
+L0376: db '"Oh, thou referest to this?" he asks, pointing to his medall'
+ db 'ion. "Thou hast not heard of The Fellowship? I strongly reco'
+ db 'mmend that thou speakest with Rankin or Balayna at the branc'
+ db 'h office. The Fellowship has done many things for our town, '
+ db 'if not for all of Britannia. I am a firm believer in neo-rea'
+ db 'lism."'
+L04A8: db 00
+L04A9: db 'neo-realism'
+L04B4: db 00
+L04B5: db 'Fellowship'
+L04BF: db 00
+L04C0: db 'neo-realism'
+L04CB: db 00
+L04CC: db '"That is the fundamental principle of The Fellowship. It is '
+ db 'composed of the triad of inner strength, which is strive for'
+ db ' unity, trust thy brother, and... one other one.... Oh, yes,'
+ db ' thou dost get what thou deservest, or some such."'
+L05B2: db 00
+L05B3: db 'neo-realism'
+L05BE: db 00
+L05BF: db 'Moonglow'
+L05C7: db 00
+L05C8: db '"Thou wants to know about someone in the town? Thou hast ask'
+ db 'ed the right person. I know all about the residents here in '
+ db 'Moonglow. I would be happy to tell thee about any of the sho'
+ db 'p keepers, scholars, or farmers who live here. Or art thou i'
+ db 'nterested in the trainer, healer, mage, or Fellowship leader'
+ db 's?'
+L06F6: db 00
+L06F7: db 'Moonglow'
+L06FF: db 00
+L0700: db 'leaders'
+L0707: db 00
+L0708: db 'mage'
+L070C: db 00
+L070D: db 'healer'
+L0713: db 00
+L0714: db 'trainer'
+L071B: db 00
+L071C: db 'farmers'
+L0723: db 00
+L0724: db 'scholars'
+L072C: db 00
+L072D: db 'shop keeper'
+L0738: db 00
+L0739: db 'no one'
+L073F: db 00
+L0740: db 'scholars'
+L0748: db 00
+L0749: db '"Ah, the learned scholars. I can tell thee about Brion, Nels'
+ db 'on, Zelda, and Jillian."'
+L079D: db 00
+L079E: db 'Jillian'
+L07A5: db 00
+L07A6: db 'Zelda'
+L07AB: db 00
+L07AC: db 'Nelson'
+L07B2: db 00
+L07B3: db 'Brion'
+L07B8: db 00
+L07B9: db 'no one'
+L07BF: db 00
+L07C0: db 'leaders'
+L07C7: db 00
+L07C8: db '"Dost thou want to know about the one in charge or his clerk'
+ db '?"'
+L0806: db 00
+L0807: db 'clerk'
+L080C: db 00
+L080D: db 'charge'
+L0813: db 00
+L0814: db 'no one'
+L081A: db 00
+L081B: db 'mage'
+L081F: db 00
+L0820: db '"Ah, yes, Mariah is very nice."'
+L083F: db 00
+L0840: db '"She can sell thee many spells."'
+L0860: db 00
+L0861: db '"But I am more interested in discussing Zelda."'
+L0890: db 00
+L0891: db 'mage'
+L0895: db 00
+L0896: db 'shop keeper'
+L08A1: db 00
+L08A2: db '"She is a tailor. Lovely woman, that Carlyn. She minds the b'
+ db 'ar when I go to the Fellowship meetings at night."'
+L0910: db 00
+L0911: db '"But I would rather discuss Zelda."'
+L0934: db 00
+L0935: db 'shop keeper'
+L0940: db 00
+L0941: db 'Jillian'
+L0948: db 00
+L0949: db '"Wonderful scholar. Very nice woman. Married to Effrem."'
+L0981: db 00
+L0982: db 'Effrem'
+L0988: db 00
+L0989: db '"But I am more interested in discussing Zelda."'
+L09B8: db 00
+L09B9: db 'Jillian'
+L09C0: db 00
+L09C1: db 'Effrem'
+L09C7: db 00
+L09C8: db '"Friendly fellow -- I like him."'
+L09E8: db 00
+L09E9: db '"He stays home to care for their son."'
+L0A0F: db 00
+L0A10: db '"But I am more interested in discussing Brion."'
+L0A3F: db 00
+L0A40: db 'Effrem'
+L0A46: db 00
+L0A47: db 'trainer'
+L0A4E: db 00
+L0A4F: db '"Chad is a friendly fellow -- I like him."'
+L0A79: db 00
+L0A7A: db '"But I would rather discuss Brion."'
+L0A9D: db 00
+L0A9E: db 'trainer'
+L0AA5: db 00
+L0AA6: db 'farmers'
+L0AAD: db 00
+L0AAE: db '"Tolemac and Cubolt are brothers. With Morz's help, they run'
+ db ' a farm."'
+L0AF3: db 00
+L0AF4: db '"But I would prefer to talk about Brion."'
+L0B1D: db 00
+L0B1E: db 'farmers'
+L0B25: db 00
+L0B26: db 'healer'
+L0B2C: db 00
+L0B2D: db '"Friendly fellow -- I like him. His name is Elad."'
+L0B5F: db 00
+L0B60: db '"Sadly, his true desire is to leave Moonglow in search of ad'
+ db 'venture. But he will not leave, for he feels too much obliga'
+ db 'tion for his patients." Phearcy shrugs.~"Perhaps not without'
+ db ' reason."'
+L0C1D: db 00
+L0C1E: db '"But Brion is more interesting to me."'
+L0C44: db 00
+L0C45: db 'healer'
+L0C4B: db 00
+L0C4C: db 'Nelson'
+L0C52: db 00
+L0C53: db '"He is Brion's twin brother."'
+L0C70: db 00
+L0C71: db '"Speaking of that, I would like to discuss Brion."'
+L0CA3: db 00
+L0CA4: db 'Nelson'
+L0CAA: db 00
+L0CAB: db 'charge'
+L0CB1: db 00
+L0CB2: db '"Rankin is in charge of the entire local branch. If thou has'
+ db 't any questions about The Fellowship, he can answer them."'
+L0D28: db 00
+L0D29: db 'charge'
+L0D2F: db 00
+L0D30: db 'clerk'
+L0D35: db 00
+L0D36: db '"If thou hast any questions about The Fellowship, Balayna ca'
+ db 'n answer them."'
+L0D81: db 00
+L0D82: db 'clerk'
+L0D87: db 00
+L0D88: db 'Zelda'
+L0D8D: db 00
+L0D8E: db 'Brion'
+L0D93: db 00
+L0D94: db '"Well, as thou dost know, Brion is the head of Observatory, '
+ db 'and Zelda, the advisor at the Lyceaum, is in love with him."'
+L0E0C: db 00
+L0E0D: db '"Ah, so thou dost wonder, too. All I know is that every time'
+ db ' someone mentions Brion's name to Zelda, her serious express'
+ db 'ion changes to a smile.~~"I have a deal for thee. Find out w'
+ db 'hat their story is, and I will give thee and thy friends a f'
+ db 'ree meal and drink. Thou canst find Brion at the observatory'
+ db ' and Zelda at the Lyceaum."'
+L0F54: db 00
+L0F55: db 'Zelda'
+L0F5A: db 00
+L0F5B: db 'Brion'
+L0F60: db 00
+L0F61: db 'no one'
+L0F67: db 00
+L0F68: db 'bye'
+L0F6B: db 00
+L0F6C: db 'buy'
+L0F6F: db 00
+L0F70: db '"Food or drink, '
+L0F80: db 00
+L0F81: db '?"'
+L0F83: db 00
+L0F84: db 'drink'
+L0F89: db 00
+L0F8A: db 'food'
+L0F8E: db 00
+L0F8F: db 'buy'
+L0F92: db 00
+L0F93: db 'food'
+L0F97: db 00
+L0F98: db 'food'
+L0F9C: db 00
+L0F9D: db 'drink'
+L0FA2: db 00
+L0FA3: db 'drink'
+L0FA8: db 00
+L0FA9: db 'bye'
+L0FAC: db 00
+L0FAD: db '"Remember! Tell them thou didst eat at the Friendly Knave!"*'
+L0FE9: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0008H
+  .extern 0908H
+  .extern 0909H
+  .extern 08F7H
+  .extern 08FCH
+  .extern 090AH
+  .extern 08CBH
+  .extern 08CCH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 18 04   jne 0420
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 5D FF   pushi FF5DH   ; -163
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1F FC FF   pushi FFFCH   ; -4
+0021: 24 02 00   call [0002]   ; 08F7H
+0024: 12 02 00   pop [0002]
+0027: 38 3B 00 00  callis 003B, 0
+002B: 12 03 00   pop [0003]
+002E: 14   push false
+002F: 12 04 00   pop [0004]
+0032: 21 03 00   push [0003]
+0035: 1F 07 00   pushi 0007H   ; 7
+0038: 22   cmpeq
+0039: 05 2B 00   jne 0067
+003C: 1F 06 FF   pushi FF06H   ; -250
+003F: 1F 5D FF   pushi FF5DH   ; -163
+0042: 24 03 00   call [0003]   ; 08FCH
+0045: 12 05 00   pop [0005]
+0048: 21 05 00   push [0005]
+004B: 05 0E 00   jne 005C
+004E: 1C 00 00   addsi L0000   ; "Sorry, 
+0051: 2F 01 00   addsv [0001]
+0054: 1C 09 00   addsi L0009   ; , I may talk to t...
+0057: 33   say
+0058: 3F   abrt
+0059: 06 0B 00   jmp 0067
+005C: 1C 56 00   addsi L0056   ; "Sorry, 
+005F: 2F 01 00   addsv [0001]
+0062: 1C 5F 00   addsi L005F   ; , I must get to t...
+0065: 33   say
+0066: 3F   abrt
+0067: 1D 88 00   pushs L0088   ; bye
+006A: 1D 8C 00   pushs L008C   ; Fellowship
+006D: 1D 97 00   pushs L0097   ; job
+0070: 1D 9B 00   pushs L009B   ; name
+0073: 1E 04 00   arrc 0004H   ; 4
+0076: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007A: 21 02 00   push [0002]
+007D: 05 23 00   jne 00A3
+0080: 1C A0 00   addsi L00A0   ; "Why, Hello, Sir ...
+0083: 33   say
+0084: 1F 00 00   pushi 0000H   ; 0
+0087: 1F FC FF   pushi FFFCH   ; -4
+008A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+008E: 1C D3 00   addsi L00D3   ; "Greetings, fair ...
+0091: 33   say
+0092: 1F FC FF   pushi FFFCH   ; -4
+0095: 39 04 00 01  calli _HideNPC@1  ; 0004
+0099: 1F 00 00   pushi 0000H   ; 0
+009C: 1F 5D FF   pushi FF5DH   ; -163
+009F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A3: 42 05 02   pushf flag:[0205]
+00A6: 10   not
+00A7: 05 0B 00   jne 00B5
+00AA: 1C 10 01   addsi L0110   ; You see a man who...
+00AD: 33   say
+00AE: 13   push true
+00AF: 43 05 02   popf flag:[0205]
+00B2: 06 0A 00   jmp 00BF
+00B5: 1C 3E 01   addsi L013E   ; "How may I help t...
+00B8: 2F 01 00   addsv [0001]
+00BB: 1C 55 01   addsi L0155   ; ?" asks Phearcy.
+00BE: 33   say
+00BF: 42 DA 01   pushf flag:[01DA]
+00C2: 05 73 00   jne 0138
+00C5: 42 D9 01   pushf flag:[01D9]
+00C8: 10   not
+00C9: 05 6C 00   jne 0138
+00CC: 1C 66 01   addsi L0166   ; "Hast thou discov...
+00CF: 33   say
+00D0: 24 04 00   call [0004]   ; 090AH
+00D3: 12 06 00   pop [0006]
+00D6: 21 06 00   push [0006]
+00D9: 05 52 00   jne 012E
+00DC: 1C 9B 01   addsi L019B   ; "Excellent. Thou ...
+00DF: 33   say
+00E0: 13   push true
+00E1: 1F 0F 00   pushi 000FH   ; 15
+00E4: 1F 99 FE   pushi FE99H   ; -359
+00E7: 1F 79 01   pushi 0179H   ; 377
+00EA: 1F 05 00   pushi 0005H   ; 5
+00ED: 38 2C 00 05  callis 002C, 5
+00F1: 12 07 00   pop [0007]
+00F4: 21 07 00   push [0007]
+00F7: 10   not
+00F8: 05 0D 00   jne 0108
+00FB: 1C 24 02   addsi L0224   ; "Too bad, 
+00FE: 2F 01 00   addsv [0001]
+0101: 1C 2F 02   addsi L022F   ; . When thou art c...
+0104: 33   say
+0105: 06 04 00   jmp 010C
+0108: 13   push true
+0109: 43 D9 01   popf flag:[01D9]
+010C: 13   push true
+010D: 1F 00 00   pushi 0000H   ; 0
+0110: 1F 99 FE   pushi FE99H   ; -359
+0113: 1F 68 02   pushi 0268H   ; 616
+0116: 1F 05 00   pushi 0005H   ; 5
+0119: 38 2C 00 05  callis 002C, 5
+011D: 12 08 00   pop [0008]
+0120: 21 08 00   push [0008]
+0123: 10   not
+0124: 05 04 00   jne 012B
+0127: 1C 7A 02   addsi L027A   ; "And when thy loa...
+012A: 33   say
+012B: 06 0A 00   jmp 0138
+012E: 1C BE 02   addsi L02BE   ; "'Tis a shame, 
+0131: 2F 01 00   addsv [0001]
+0134: 1C CE 02   addsi L02CE   ; . Perhaps thou wi...
+0137: 33   say
+0138: 04 E0 02   je 041B
+013B: 1D F3 02   pushs L02F3   ; name
+013E: 07 01 00 0B 00  cmps 0001H, 014E
+0143: 1C F8 02   addsi L02F8   ; "I am Phearcy, at...
+0146: 33   say
+0147: 1D 2E 03   pushs L032E   ; name
+014A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014E: 1D 33 03   pushs L0333   ; job
+0151: 07 01 00 11 00  cmps 0001H, 0167
+0156: 1C 37 03   addsi L0337   ; "I am the bartend...
+0159: 33   say
+015A: 1D 5E 03   pushs L035E   ; buy
+015D: 1D 62 03   pushs L0362   ; Moonglow
+0160: 1E 02 00   arrc 0002H   ; 2
+0163: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0167: 1D 6B 03   pushs L036B   ; Fellowship
+016A: 07 01 00 12 00  cmps 0001H, 0181
+016F: 1C 76 03   addsi L0376   ; "Oh, thou referes...
+0172: 33   say
+0173: 1D A9 04   pushs L04A9   ; neo-realism
+0176: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017A: 1D B5 04   pushs L04B5   ; Fellowship
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D C0 04   pushs L04C0   ; neo-realism
+0184: 07 01 00 0B 00  cmps 0001H, 0194
+0189: 1C CC 04   addsi L04CC   ; "That is the fund...
+018C: 33   say
+018D: 1D B3 05   pushs L05B3   ; neo-realism
+0190: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0194: 1D BF 05   pushs L05BF   ; Moonglow
+0197: 07 01 00 2E 00  cmps 0001H, 01CA
+019C: 1C C8 05   addsi L05C8   ; "Thou wants to kn...
+019F: 33   say
+01A0: 1D F7 06   pushs L06F7   ; Moonglow
+01A3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A7: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+01AB: 1D 00 07   pushs L0700   ; leaders
+01AE: 1D 08 07   pushs L0708   ; mage
+01B1: 1D 0D 07   pushs L070D   ; healer
+01B4: 1D 14 07   pushs L0714   ; trainer
+01B7: 1D 1C 07   pushs L071C   ; farmers
+01BA: 1D 24 07   pushs L0724   ; scholars
+01BD: 1D 2D 07   pushs L072D   ; shop keeper
+01C0: 1D 39 07   pushs L0739   ; no one
+01C3: 1E 08 00   arrc 0008H   ; 8
+01C6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CA: 1D 40 07   pushs L0740   ; scholars
+01CD: 07 01 00 1E 00  cmps 0001H, 01F0
+01D2: 1C 49 07   addsi L0749   ; "Ah, the learned ...
+01D5: 33   say
+01D6: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+01DA: 1D 9E 07   pushs L079E   ; Jillian
+01DD: 1D A6 07   pushs L07A6   ; Zelda
+01E0: 1D AC 07   pushs L07AC   ; Nelson
+01E3: 1D B3 07   pushs L07B3   ; Brion
+01E6: 1D B9 07   pushs L07B9   ; no one
+01E9: 1E 05 00   arrc 0005H   ; 5
+01EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F0: 1D C0 07   pushs L07C0   ; leaders
+01F3: 07 01 00 18 00  cmps 0001H, 0210
+01F8: 1C C8 07   addsi L07C8   ; "Dost thou want t...
+01FB: 33   say
+01FC: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0200: 1D 07 08   pushs L0807   ; clerk
+0203: 1D 0D 08   pushs L080D   ; charge
+0206: 1D 14 08   pushs L0814   ; no one
+0209: 1E 03 00   arrc 0003H   ; 3
+020C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0210: 1D 1B 08   pushs L081B   ; mage
+0213: 07 01 00 23 00  cmps 0001H, 023B
+0218: 1C 20 08   addsi L0820   ; "Ah, yes, Mariah ...
+021B: 33   say
+021C: 42 D9 01   pushf flag:[01D9]
+021F: 05 07 00   jne 0229
+0222: 1C 40 08   addsi L0840   ; "She can sell the...
+0225: 33   say
+0226: 06 0B 00   jmp 0234
+0229: 21 04 00   push [0004]
+022C: 10   not
+022D: 05 04 00   jne 0234
+0230: 1C 61 08   addsi L0861   ; "But I am more in...
+0233: 33   say
+0234: 1D 91 08   pushs L0891   ; mage
+0237: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023B: 1D 96 08   pushs L0896   ; shop keeper
+023E: 07 01 00 1D 00  cmps 0001H, 0260
+0243: 1C A2 08   addsi L08A2   ; "She is a tailor....
+0246: 33   say
+0247: 42 D9 01   pushf flag:[01D9]
+024A: 10   not
+024B: 05 0B 00   jne 0259
+024E: 21 04 00   push [0004]
+0251: 10   not
+0252: 05 04 00   jne 0259
+0255: 1C 11 09   addsi L0911   ; "But I would rath...
+0258: 33   say
+0259: 1D 35 09   pushs L0935   ; shop keeper
+025C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0260: 1D 41 09   pushs L0941   ; Jillian
+0263: 07 01 00 24 00  cmps 0001H, 028C
+0268: 1C 49 09   addsi L0949   ; "Wonderful schola...
+026B: 33   say
+026C: 1D 82 09   pushs L0982   ; Effrem
+026F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0273: 42 D9 01   pushf flag:[01D9]
+0276: 10   not
+0277: 05 0B 00   jne 0285
+027A: 21 04 00   push [0004]
+027D: 10   not
+027E: 05 04 00   jne 0285
+0281: 1C 89 09   addsi L0989   ; "But I am more in...
+0284: 33   say
+0285: 1D B9 09   pushs L09B9   ; Jillian
+0288: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028C: 1D C1 09   pushs L09C1   ; Effrem
+028F: 07 01 00 23 00  cmps 0001H, 02B7
+0294: 1C C8 09   addsi L09C8   ; "Friendly fellow ...
+0297: 33   say
+0298: 42 D9 01   pushf flag:[01D9]
+029B: 05 07 00   jne 02A5
+029E: 1C E9 09   addsi L09E9   ; "He stays home to...
+02A1: 33   say
+02A2: 06 0B 00   jmp 02B0
+02A5: 21 04 00   push [0004]
+02A8: 10   not
+02A9: 05 04 00   jne 02B0
+02AC: 1C 10 0A   addsi L0A10   ; "But I am more in...
+02AF: 33   say
+02B0: 1D 40 0A   pushs L0A40   ; Effrem
+02B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B7: 1D 47 0A   pushs L0A47   ; trainer
+02BA: 07 01 00 1D 00  cmps 0001H, 02DC
+02BF: 1C 4F 0A   addsi L0A4F   ; "Chad is a friend...
+02C2: 33   say
+02C3: 42 D9 01   pushf flag:[01D9]
+02C6: 10   not
+02C7: 05 0B 00   jne 02D5
+02CA: 21 04 00   push [0004]
+02CD: 10   not
+02CE: 05 04 00   jne 02D5
+02D1: 1C 7A 0A   addsi L0A7A   ; "But I would rath...
+02D4: 33   say
+02D5: 1D 9E 0A   pushs L0A9E   ; trainer
+02D8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02DC: 1D A6 0A   pushs L0AA6   ; farmers
+02DF: 07 01 00 1D 00  cmps 0001H, 0301
+02E4: 1C AE 0A   addsi L0AAE   ; "Tolemac and Cubo...
+02E7: 33   say
+02E8: 42 D9 01   pushf flag:[01D9]
+02EB: 10   not
+02EC: 05 0B 00   jne 02FA
+02EF: 21 04 00   push [0004]
+02F2: 10   not
+02F3: 05 04 00   jne 02FA
+02F6: 1C F4 0A   addsi L0AF4   ; "But I would pref...
+02F9: 33   say
+02FA: 1D 1E 0B   pushs L0B1E   ; farmers
+02FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0301: 1D 26 0B   pushs L0B26   ; healer
+0304: 07 01 00 23 00  cmps 0001H, 032C
+0309: 1C 2D 0B   addsi L0B2D   ; "Friendly fellow ...
+030C: 33   say
+030D: 42 D9 01   pushf flag:[01D9]
+0310: 05 07 00   jne 031A
+0313: 1C 60 0B   addsi L0B60   ; "Sadly, his true ...
+0316: 33   say
+0317: 06 0B 00   jmp 0325
+031A: 21 04 00   push [0004]
+031D: 10   not
+031E: 05 04 00   jne 0325
+0321: 1C 1E 0C   addsi L0C1E   ; "But Brion is mor...
+0324: 33   say
+0325: 1D 45 0C   pushs L0C45   ; healer
+0328: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+032C: 1D 4C 0C   pushs L0C4C   ; Nelson
+032F: 07 01 00 1D 00  cmps 0001H, 0351
+0334: 1C 53 0C   addsi L0C53   ; "He is Brion's tw...
+0337: 33   say
+0338: 42 D9 01   pushf flag:[01D9]
+033B: 10   not
+033C: 05 0B 00   jne 034A
+033F: 21 04 00   push [0004]
+0342: 10   not
+0343: 05 04 00   jne 034A
+0346: 1C 71 0C   addsi L0C71   ; "Speaking of that...
+0349: 33   say
+034A: 1D A4 0C   pushs L0CA4   ; Nelson
+034D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0351: 1D AB 0C   pushs L0CAB   ; charge
+0354: 07 01 00 0B 00  cmps 0001H, 0364
+0359: 1C B2 0C   addsi L0CB2   ; "Rankin is in cha...
+035C: 33   say
+035D: 1D 29 0D   pushs L0D29   ; charge
+0360: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0364: 1D 30 0D   pushs L0D30   ; clerk
+0367: 07 01 00 0B 00  cmps 0001H, 0377
+036C: 1C 36 0D   addsi L0D36   ; "If thou hast any...
+036F: 33   say
+0370: 1D 82 0D   pushs L0D82   ; clerk
+0373: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0377: 1D 88 0D   pushs L0D88   ; Zelda
+037A: 1D 8E 0D   pushs L0D8E   ; Brion
+037D: 07 02 00 22 00  cmps 0002H, 03A4
+0382: 42 D9 01   pushf flag:[01D9]
+0385: 05 07 00   jne 038F
+0388: 1C 94 0D   addsi L0D94   ; "Well, as thou do...
+038B: 33   say
+038C: 06 15 00   jmp 03A4
+038F: 1C 0D 0E   addsi L0E0D   ; "Ah, so thou dost...
+0392: 33   say
+0393: 13   push true
+0394: 12 04 00   pop [0004]
+0397: 1D 55 0F   pushs L0F55   ; Zelda
+039A: 1D 5B 0F   pushs L0F5B   ; Brion
+039D: 1E 02 00   arrc 0002H   ; 2
+03A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03A4: 1D 61 0F   pushs L0F61   ; no one
+03A7: 07 01 00 0B 00  cmps 0001H, 03B7
+03AC: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+03B0: 1D 68 0F   pushs L0F68   ; bye
+03B3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03B7: 1D 6C 0F   pushs L0F6C   ; buy
+03BA: 07 01 00 22 00  cmps 0001H, 03E1
+03BF: 1C 70 0F   addsi L0F70   ; "Food or drink, 
+03C2: 2F 01 00   addsv [0001]
+03C5: 1C 81 0F   addsi L0F81   ; ?"
+03C8: 33   say
+03C9: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+03CD: 1D 84 0F   pushs L0F84   ; drink
+03D0: 1D 8A 0F   pushs L0F8A   ; food
+03D3: 1E 02 00   arrc 0002H   ; 2
+03D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03DA: 1D 8F 0F   pushs L0F8F   ; buy
+03DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03E1: 1D 93 0F   pushs L0F93   ; food
+03E4: 07 01 00 0E 00  cmps 0001H, 03F7
+03E9: 24 05 00   call [0005]   ; 08CBH
+03EC: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+03F0: 1D 98 0F   pushs L0F98   ; food
+03F3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03F7: 1D 9D 0F   pushs L0F9D   ; drink
+03FA: 07 01 00 0E 00  cmps 0001H, 040D
+03FF: 24 06 00   call [0006]   ; 08CCH
+0402: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0406: 1D A3 0F   pushs L0FA3   ; drink
+0409: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+040D: 1D A9 0F   pushs L0FA9   ; bye
+0410: 07 01 00 03 00  cmps 0001H, 0418
+0415: 06 03 00   jmp 041B
+0418: 06 1D FD   jmp 0138
+041B: 40   db 40 ???
+041C: 1C AD 0F   addsi L0FAD   ; "Remember! Tell t...
+041F: 33   say
+0420: 48   push eventid
+0421: 1F 00 00   pushi 0000H   ; 0
+0424: 22   cmpeq
+0425: 05 06 00   jne 042E
+0428: 1F 5D FF   pushi FF5DH   ; -163
+042B: 24 07 00   call [0007]   ; 092EH
+042E: 25   ret

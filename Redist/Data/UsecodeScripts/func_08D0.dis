@@ -1,0 +1,199 @@
+  .funcnumber 08D0H
+  .data
+L0000: db 'feels'
+L0005: db 00
+L0006: db 'you'
+L0009: db 00
+L000A: db 'you'
+L000D: db 00
+L000E: db 'feel'
+L0012: db 00
+L0013: db 'her'
+L0016: db 00
+L0017: db 'him'
+L001A: db 00
+L001B: db '"I am sorry, but thou dost not have enough experience to tra'
+ db 'in at this time. Return at a later date and I would be most '
+ db 'happy to lead a session."'
+L00AC: db 00
+L00AD: db '"It seems that thou hast not enough gold. Do return when tho'
+ db 'u art a bit wealthier."'
+L0100: db 00
+L0101: db '"I am amazed! Thou art already as experienced as I! Thou can'
+ db 'not be trained further by me."'
+L015B: db 00
+L015C: db 'Rayburt takes your money. "The session shall begin."'
+L0190: db 00
+L0191: db 'Rayburt first instructs '
+L01A9: db 00
+L01AA: db ' to lie on the floor and relax. He teaches '
+L01D5: db 00
+L01D6: db ' breathing exercises and techniques with which to cleanse th'
+ db 'e mind of all thoughts.'
+L0229: db 00
+L022A: db 'After a while, he asks '
+L0241: db 00
+L0242: db ' to stand up and illustrates balance and control, relating i'
+ db 't to meditation and concentration.'
+L02A0: db 00
+L02A1: db 'Finally, he demonstrates several good moves involving hand-t'
+ db 'o-hand combat, and combat using a sword. By the end of the h'
+ db 'our, '
+L031E: db 00
+L031F: db ' '
+L0320: db 00
+L0321: db ' much more knowledgeable and proficient in this unusual form'
+ db ' of fighting.*'
+L036B: db 00
+  .code
+  .argc 0002H
+  .localc 000CH
+  .externsize 0008H
+  .extern 0920H
+  .extern 090FH
+  .extern 0908H
+  .extern 0922H
+  .extern 0910H
+  .extern 0915H
+  .extern 0916H
+  .extern 0917H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 24 01 00   call [0001]   ; 090FH
+000C: 12 03 00   pop [0003]
+000F: 1D 00 00   pushs L0000   ; feels
+0012: 12 04 00   pop [0004]
+0015: 24 02 00   call [0002]   ; 0908H
+0018: 12 05 00   pop [0005]
+001B: 21 03 00   push [0003]
+001E: 21 05 00   push [0005]
+0021: 22   cmpeq
+0022: 05 15 00   jne 003A
+0025: 1D 06 00   pushs L0006   ; you
+0028: 12 03 00   pop [0003]
+002B: 1D 0A 00   pushs L000A   ; you
+002E: 12 06 00   pop [0006]
+0031: 1D 0E 00   pushs L000E   ; feel
+0034: 12 04 00   pop [0004]
+0037: 06 29 00   jmp 0063
+003A: 21 02 00   push [0002]
+003D: 1F F8 FF   pushi FFF8H   ; -8
+0040: 22   cmpeq
+0041: 21 02 00   push [0002]
+0044: 1F FB FF   pushi FFFBH   ; -5
+0047: 22   cmpeq
+0048: 21 02 00   push [0002]
+004B: 1F F7 FF   pushi FFF7H   ; -9
+004E: 22   cmpeq
+004F: 0F   or
+0050: 0F   or
+0051: 05 09 00   jne 005D
+0054: 1D 13 00   pushs L0013   ; her
+0057: 12 06 00   pop [0006]
+005A: 06 06 00   jmp 0063
+005D: 1D 17 00   pushs L0017   ; him
+0060: 12 06 00   pop [0006]
+0063: 21 02 00   push [0002]
+0066: 1F 00 00   pushi 0000H   ; 0
+0069: 22   cmpeq
+006A: 05 03 00   jne 0070
+006D: 06 07 01   jmp 0177
+0070: 1F 03 00   pushi 0003H   ; 3
+0073: 12 07 00   pop [0007]
+0076: 21 07 00   push [0007]
+0079: 21 02 00   push [0002]
+007C: 21 00 00   push [0000]
+007F: 21 01 00   push [0001]
+0082: 24 03 00   call [0003]   ; 0922H
+0085: 12 08 00   pop [0008]
+0088: 21 08 00   push [0008]
+008B: 1F 00 00   pushi 0000H   ; 0
+008E: 22   cmpeq
+008F: 05 07 00   jne 0099
+0092: 1C 1B 00   addsi L001B   ; "I am sorry, but ...
+0095: 33   say
+0096: 06 DE 00   jmp 0177
+0099: 21 08 00   push [0008]
+009C: 1F 01 00   pushi 0001H   ; 1
+009F: 22   cmpeq
+00A0: 05 24 00   jne 00C7
+00A3: 1F 99 FE   pushi FE99H   ; -359
+00A6: 1F 99 FE   pushi FE99H   ; -359
+00A9: 1F 84 02   pushi 0284H   ; 644
+00AC: 1F 9B FE   pushi FE9BH   ; -357
+00AF: 38 28 00 04  callis 0028, 4
+00B3: 12 09 00   pop [0009]
+00B6: 21 09 00   push [0009]
+00B9: 21 00 00   push [0000]
+00BC: 17   cmpl
+00BD: 05 07 00   jne 00C7
+00C0: 1C AD 00   addsi L00AD   ; "It seems that th...
+00C3: 33   say
+00C4: 06 B0 00   jmp 0177
+00C7: 21 08 00   push [0008]
+00CA: 1F 02 00   pushi 0002H   ; 2
+00CD: 22   cmpeq
+00CE: 05 07 00   jne 00D8
+00D1: 1C 01 01   addsi L0101   ; "I am amazed! Tho...
+00D4: 33   say
+00D5: 06 9F 00   jmp 0177
+00D8: 13   push true
+00D9: 1F 99 FE   pushi FE99H   ; -359
+00DC: 1F 99 FE   pushi FE99H   ; -359
+00DF: 1F 84 02   pushi 0284H   ; 644
+00E2: 21 00 00   push [0000]
+00E5: 38 2B 00 05  callis 002B, 5
+00E9: 12 0A 00   pop [000A]
+00EC: 1C 5C 01   addsi L015C   ; Rayburt takes you...
+00EF: 33   say
+00F0: 1C 91 01   addsi L0191   ; Rayburt first ins...
+00F3: 2F 03 00   addsv [0003]
+00F6: 1C AA 01   addsi L01AA   ;  to lie on the fl...
+00F9: 2F 06 00   addsv [0006]
+00FC: 1C D6 01   addsi L01D6   ;  breathing exerci...
+00FF: 33   say
+0100: 1C 2A 02   addsi L022A   ; After a while, he...
+0103: 2F 06 00   addsv [0006]
+0106: 1C 42 02   addsi L0242   ;  to stand up and ...
+0109: 33   say
+010A: 1C A1 02   addsi L02A1   ; Finally, he demon...
+010D: 2F 03 00   addsv [0003]
+0110: 1C 1F 03   addsi L031F   ;  
+0113: 2F 04 00   addsv [0004]
+0116: 1C 21 03   addsi L0321   ;  much more knowle...
+0119: 33   say
+011A: 1F 01 00   pushi 0001H   ; 1
+011D: 21 02 00   push [0002]
+0120: 24 04 00   call [0004]   ; 0910H
+0123: 12 0B 00   pop [000B]
+0126: 1F 02 00   pushi 0002H   ; 2
+0129: 21 02 00   push [0002]
+012C: 24 04 00   call [0004]   ; 0910H
+012F: 12 0C 00   pop [000C]
+0132: 1F 04 00   pushi 0004H   ; 4
+0135: 21 02 00   push [0002]
+0138: 24 04 00   call [0004]   ; 0910H
+013B: 12 0D 00   pop [000D]
+013E: 21 0B 00   push [000B]
+0141: 1F 1E 00   pushi 001EH   ; 30
+0144: 17   cmpl
+0145: 05 09 00   jne 0151
+0148: 1F 01 00   pushi 0001H   ; 1
+014B: 21 02 00   push [0002]
+014E: 24 05 00   call [0005]   ; 0915H
+0151: 21 0C 00   push [000C]
+0154: 1F 1E 00   pushi 001EH   ; 30
+0157: 17   cmpl
+0158: 05 09 00   jne 0164
+015B: 1F 01 00   pushi 0001H   ; 1
+015E: 21 02 00   push [0002]
+0161: 24 06 00   call [0006]   ; 0916H
+0164: 21 0D 00   push [000D]
+0167: 1F 1E 00   pushi 001EH   ; 30
+016A: 17   cmpl
+016B: 05 09 00   jne 0177
+016E: 1F 01 00   pushi 0001H   ; 1
+0171: 21 02 00   push [0002]
+0174: 24 07 00   call [0007]   ; 0917H
+0177: 25   ret

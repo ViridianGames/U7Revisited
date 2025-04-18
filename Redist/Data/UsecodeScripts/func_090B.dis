@@ -1,0 +1,15 @@
+  .funcnumber 090BH
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 21 00 00   push [0000]
+0007: 39 05 00 01  calli _AddAnswer@1  ; 0005
+000B: 38 0A 00 00  callis _GetAnswer@0  ; 000A
+000F: 12 01 00   pop [0001]
+0012: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0016: 21 01 00   push [0001]
+0019: 2D   setr
+001A: 32   rts

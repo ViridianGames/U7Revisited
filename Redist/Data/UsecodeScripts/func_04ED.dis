@@ -1,0 +1,501 @@
+  .funcnumber 04EDH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'venom'
+L0012: db 00
+L0013: db 'You see a very authoritative-looking older man who looks at '
+ db 'you with thoughtful concern.'
+L006B: db 00
+L006C: db '"I am very glad thou hast come to see me again," says Kessle'
+ db 'r.'
+L00AA: db 00
+L00AB: db 'name'
+L00AF: db 00
+L00B0: db '"My name is Kessler."'
+L00C5: db 00
+L00C6: db 'name'
+L00CA: db 00
+L00CB: db 'job'
+L00CE: db 00
+L00CF: db '"I run the apothecary shop here in Britain."'
+L00FB: db 00
+L00FC: db 'apothecary'
+L0106: db 00
+L0107: db 'apothecary'
+L0111: db 00
+L0112: db '"While the normal function of an apothecary is to administer'
+ db ' potions and magical reagents, I am nowadays working almost '
+ db 'exclusively for Lord British trying to study a specific prob'
+ db 'lem."'
+L01CB: db 00
+L01CC: db 'apothecary'
+L01D6: db 00
+L01D7: db 'problem'
+L01DE: db 00
+L01DF: db 'study'
+L01E4: db 00
+L01E5: db 'potions'
+L01EC: db 00
+L01ED: db 'potions'
+L01F4: db 00
+L01F5: db '"They are certainly not a recent invention here in Britannia'
+ db '! Potions are liquids that possess certain magical qualities'
+ db ' which are used for all sorts of purposes, such as the treat'
+ db 'ment of injury and disease. I have a quantity of them for sa'
+ db 'le if thou art interested."'
+L0300: db 00
+L0301: db 'potions'
+L0308: db 00
+L0309: db 'buy potions'
+L0314: db 00
+L0315: db 'magical qualities'
+L0326: db 00
+L0327: db 'magical qualities'
+L0338: db 00
+L0339: db '"Since the mages have become so ineffective, we have been fo'
+ db 'rced to develop other ways to accomplish all the things we u'
+ db 'sed to be able to depend on mages to do. Unfortunately, many'
+ db ' of these new methods are as yet untested."'
+L0418: db 00
+L0419: db 'magical qualities'
+L042A: db 00
+L042B: db 'untested'
+L0433: db 00
+L0434: db 'untested'
+L043C: db 00
+L043D: db '"We still know very little about the effects of most of the '
+ db 'substances we use. Many cause more problems than they solve,'
+ db ' or react differently if taken in unison with other elements'
+ db '. Some might cause thee to become dependent on them for thin'
+ db 'e health and some may simply be poisonous."'
+L0558: db 00
+L0559: db 'untested'
+L0561: db 00
+L0562: db 'study'
+L0567: db 00
+L0568: db '"I am studying the effects of a particular substance known a'
+ db 's silver snake venom. But I am encountering a number of diff'
+ db 'iculties."'
+L05EA: db 00
+L05EB: db 'study'
+L05F0: db 00
+L05F1: db 'difficulties'
+L05FD: db 00
+L05FE: db 'silver snake'
+L060A: db 00
+L060B: db 'silver snake'
+L0617: db 00
+L0618: db '"As one may surmise from the name it is the venom taken from'
+ db ' the dangerous silver snake. The fascination that many peopl'
+ db 'e possess for these creatures has created a great deal of cu'
+ db 'riosity about the venom itself."'
+L06EC: db 00
+L06ED: db 'silver snake'
+L06F9: db 00
+L06FA: db 'curiosity'
+L0703: db 00
+L0704: db 'curiosity'
+L070D: db 00
+L070E: db '"There are those who claim that gargoyles take the venom whi'
+ db 'ch results in their becoming enhanced in combat and such. No'
+ db 'w this may be just a myth, but the curiosity people feel is '
+ db 'real enough."'
+L07CF: db 00
+L07D0: db 'curiosity'
+L07D9: db 00
+L07DA: db 'difficulties'
+L07E6: db 00
+L07E7: db '"My greatest difficulty is in finding any significant quanti'
+ db 'ty of silver snake venom. But it is by no means mine only di'
+ db 'fficulty."'
+L0869: db 00
+L086A: db 'difficulties'
+L0876: db 00
+L0877: db 'other difficulties'
+L0889: db 00
+L088A: db 'finding'
+L0891: db 00
+L0892: db 'finding'
+L0899: db 00
+L089A: db '"If by any chance thou wouldst come across any silver snake '
+ db 'venom bring it back to me here. I shall pay thee fifty gold '
+ db 'coins for every vial of it thou canst supply."'
+L0940: db 00
+L0941: db 'finding'
+L0948: db 00
+L0949: db 'other difficulties'
+L095B: db 00
+L095C: db '"People need to be alerted to how dangerous silver snake ven'
+ db 'om is. To this end I wish to announce my findings before Lor'
+ db 'd British and a consortium of lords and mayors, but to do th'
+ db 'at I must first finish my study."'
+L0A31: db 00
+L0A32: db 'other difficulties'
+L0A44: db 00
+L0A45: db 'problem'
+L0A4C: db 00
+L0A4D: db '"Recently there has been a dramatic rise in the use of a ver'
+ db 'y strange substance. People have begun to purposefully inges'
+ db 't the venom of the silver snake."'
+L0AE6: db 00
+L0AE7: db 'problem'
+L0AEE: db 00
+L0AEF: db 'ingest'
+L0AF5: db 00
+L0AF6: db 'ingest'
+L0AFC: db 00
+L0AFD: db '"The silver snake produces a venom that is extremely poisono'
+ db 'us, but when taken in less than lethal amounts, it causes a '
+ db 'variety of strange effects."'
+L0B91: db 00
+L0B92: db 'ingest'
+L0B98: db 00
+L0B99: db 'effects'
+L0BA0: db 00
+L0BA1: db 'effects'
+L0BA8: db 00
+L0BA9: db '"For a time the venom will heighten one's physical and menta'
+ db 'l performance, such as allowing one to work harder, for exam'
+ db 'ple. But after the effects have worn off, it will impair the'
+ db ' user permanently."'
+L0C70: db 00
+L0C71: db 'effects'
+L0C78: db 00
+L0C79: db 'impair'
+L0C7F: db 00
+L0C80: db 'impair'
+L0C86: db 00
+L0C87: db '"It first makes the user feel extremely tired and eventually'
+ db ' causes a sloughing of the skin. The venom is a dangerous su'
+ db 'bstance and thou shouldst not partake of it under any circum'
+ db 'stances."'
+L0D44: db 00
+L0D45: db 'impair'
+L0D4B: db 00
+L0D4C: db 'venom'
+L0D51: db 00
+L0D52: db '"Thou dost not have any vials of venom!"'
+L0D7A: db 00
+L0D7B: db 'Kessler examines the vial carefully. '
+L0DA0: db 00
+L0DA1: db 'Kessler examines the vials carefully. '
+L0DC7: db 00
+L0DC8: db 'He looks up at you and nods. "This is indeed silver snake ve'
+ db 'nom. I shall pay thee 50 gold coins per vial. All right?"'
+L0E3D: db 00
+L0E3E: db 'Kessler opens his coinpurse and pays you '
+L0E67: db 00
+L0E68: db ' gold coins.'
+L0E74: db 00
+L0E75: db '"Thou art too burdened to carry any more money."'
+L0EA5: db 00
+L0EA6: db '"I see thou dost have a quantity of silver snake venom in th'
+ db 'y possession. Perhaps we should talk further."'
+L0F10: db 00
+L0F11: db '"Very well."'
+L0F1D: db 00
+L0F1E: db 'venom'
+L0F23: db 00
+L0F24: db 'buy potions'
+L0F2F: db 00
+L0F30: db '"The Apothecary is closed. It is open from noon until midnig'
+ db 'ht. Thou mayest return then."'
+L0F89: db 00
+L0F8A: db '"I always keep a fresh stock of ingredients and an inventory'
+ db ' of prepared potions in case anyone should be in need of the'
+ db 'm. Wouldst thou like to buy one?"'
+L1023: db 00
+L1024: db '"Be sure to come back if thou dost ever need any potions."'
+L105E: db 00
+L105F: db 'buy potions'
+L106A: db 00
+L106B: db 'bye'
+L106E: db 00
+L106F: db '"It was good speaking with thee, '
+L1090: db 00
+L1091: db '."*'
+L1094: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0005H
+  .extern 0909H
+  .extern 0931H
+  .extern 090AH
+  .extern 08A8H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 01 03   jne 0309
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 13 FF   pushi FF13H   ; -237
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F 13 FF   pushi FF13H   ; -237
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 24 00 00   call [0000]   ; 0909H
+002A: 12 02 00   pop [0002]
+002D: 1D 00 00   pushs L0000   ; bye
+0030: 1D 04 00   pushs L0004   ; job
+0033: 1D 08 00   pushs L0008   ; name
+0036: 1E 03 00   arrc 0003H   ; 3
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 1F 99 FE   pushi FE99H   ; -359
+0040: 1F 99 FE   pushi FE99H   ; -359
+0043: 1F 89 02   pushi 0289H   ; 649
+0046: 1F 01 00   pushi 0001H   ; 1
+0049: 1F 9B FE   pushi FE9BH   ; -357
+004C: 24 01 00   call [0001]   ; 0931H
+004F: 12 03 00   pop [0003]
+0052: 21 03 00   push [0003]
+0055: 05 07 00   jne 005F
+0058: 1D 0D 00   pushs L000D   ; venom
+005B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005F: 42 B1 00   pushf flag:[00B1]
+0062: 10   not
+0063: 05 0B 00   jne 0071
+0066: 1C 13 00   addsi L0013   ; You see a very au...
+0069: 33   say
+006A: 13   push true
+006B: 43 B1 00   popf flag:[00B1]
+006E: 06 04 00   jmp 0075
+0071: 1C 6C 00   addsi L006C   ; "I am very glad t...
+0074: 33   say
+0075: 04 86 02   je 02FE
+0078: 1D AB 00   pushs L00AB   ; name
+007B: 07 01 00 0B 00  cmps 0001H, 008B
+0080: 1C B0 00   addsi L00B0   ; "My name is Kessl...
+0083: 33   say
+0084: 1D C6 00   pushs L00C6   ; name
+0087: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008B: 1D CB 00   pushs L00CB   ; job
+008E: 07 01 00 0B 00  cmps 0001H, 009E
+0093: 1C CF 00   addsi L00CF   ; "I run the apothe...
+0096: 33   say
+0097: 1D FC 00   pushs L00FC   ; apothecary
+009A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009E: 1D 07 01   pushs L0107   ; apothecary
+00A1: 07 01 00 1B 00  cmps 0001H, 00C1
+00A6: 1C 12 01   addsi L0112   ; "While the normal...
+00A9: 33   say
+00AA: 1D CC 01   pushs L01CC   ; apothecary
+00AD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B1: 1D D7 01   pushs L01D7   ; problem
+00B4: 1D DF 01   pushs L01DF   ; study
+00B7: 1D E5 01   pushs L01E5   ; potions
+00BA: 1E 03 00   arrc 0003H   ; 3
+00BD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C1: 1D ED 01   pushs L01ED   ; potions
+00C4: 07 01 00 18 00  cmps 0001H, 00E1
+00C9: 1C F5 01   addsi L01F5   ; "They are certain...
+00CC: 33   say
+00CD: 1D 01 03   pushs L0301   ; potions
+00D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D4: 1D 09 03   pushs L0309   ; buy potions
+00D7: 1D 15 03   pushs L0315   ; magical qualities
+00DA: 1E 02 00   arrc 0002H   ; 2
+00DD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E1: 1D 27 03   pushs L0327   ; magical qualities
+00E4: 07 01 00 12 00  cmps 0001H, 00FB
+00E9: 1C 39 03   addsi L0339   ; "Since the mages ...
+00EC: 33   say
+00ED: 1D 19 04   pushs L0419   ; magical qualities
+00F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F4: 1D 2B 04   pushs L042B   ; untested
+00F7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FB: 1D 34 04   pushs L0434   ; untested
+00FE: 07 01 00 0B 00  cmps 0001H, 010E
+0103: 1C 3D 04   addsi L043D   ; "We still know ve...
+0106: 33   say
+0107: 1D 59 05   pushs L0559   ; untested
+010A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010E: 1D 62 05   pushs L0562   ; study
+0111: 07 01 00 18 00  cmps 0001H, 012E
+0116: 1C 68 05   addsi L0568   ; "I am studying th...
+0119: 33   say
+011A: 1D EB 05   pushs L05EB   ; study
+011D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0121: 1D F1 05   pushs L05F1   ; difficulties
+0124: 1D FE 05   pushs L05FE   ; silver snake
+0127: 1E 02 00   arrc 0002H   ; 2
+012A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012E: 1D 0B 06   pushs L060B   ; silver snake
+0131: 07 01 00 12 00  cmps 0001H, 0148
+0136: 1C 18 06   addsi L0618   ; "As one may surmi...
+0139: 33   say
+013A: 1D ED 06   pushs L06ED   ; silver snake
+013D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0141: 1D FA 06   pushs L06FA   ; curiosity
+0144: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0148: 1D 04 07   pushs L0704   ; curiosity
+014B: 07 01 00 0B 00  cmps 0001H, 015B
+0150: 1C 0E 07   addsi L070E   ; "There are those ...
+0153: 33   say
+0154: 1D D0 07   pushs L07D0   ; curiosity
+0157: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015B: 1D DA 07   pushs L07DA   ; difficulties
+015E: 07 01 00 18 00  cmps 0001H, 017B
+0163: 1C E7 07   addsi L07E7   ; "My greatest diff...
+0166: 33   say
+0167: 1D 6A 08   pushs L086A   ; difficulties
+016A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016E: 1D 77 08   pushs L0877   ; other difficulties
+0171: 1D 8A 08   pushs L088A   ; finding
+0174: 1E 02 00   arrc 0002H   ; 2
+0177: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017B: 1D 92 08   pushs L0892   ; finding
+017E: 07 01 00 0F 00  cmps 0001H, 0192
+0183: 1C 9A 08   addsi L089A   ; "If by any chance...
+0186: 33   say
+0187: 13   push true
+0188: 12 04 00   pop [0004]
+018B: 1D 41 09   pushs L0941   ; finding
+018E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0192: 1D 49 09   pushs L0949   ; other difficulties
+0195: 07 01 00 0B 00  cmps 0001H, 01A5
+019A: 1C 5C 09   addsi L095C   ; "People need to b...
+019D: 33   say
+019E: 1D 32 0A   pushs L0A32   ; other difficulties
+01A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A5: 1D 45 0A   pushs L0A45   ; problem
+01A8: 07 01 00 12 00  cmps 0001H, 01BF
+01AD: 1C 4D 0A   addsi L0A4D   ; "Recently there h...
+01B0: 33   say
+01B1: 1D E7 0A   pushs L0AE7   ; problem
+01B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B8: 1D EF 0A   pushs L0AEF   ; ingest
+01BB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BF: 1D F6 0A   pushs L0AF6   ; ingest
+01C2: 07 01 00 12 00  cmps 0001H, 01D9
+01C7: 1C FD 0A   addsi L0AFD   ; "The silver snake...
+01CA: 33   say
+01CB: 1D 92 0B   pushs L0B92   ; ingest
+01CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D2: 1D 99 0B   pushs L0B99   ; effects
+01D5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D9: 1D A1 0B   pushs L0BA1   ; effects
+01DC: 07 01 00 12 00  cmps 0001H, 01F3
+01E1: 1C A9 0B   addsi L0BA9   ; "For a time the v...
+01E4: 33   say
+01E5: 1D 71 0C   pushs L0C71   ; effects
+01E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EC: 1D 79 0C   pushs L0C79   ; impair
+01EF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F3: 1D 80 0C   pushs L0C80   ; impair
+01F6: 07 01 00 0B 00  cmps 0001H, 0206
+01FB: 1C 87 0C   addsi L0C87   ; "It first makes t...
+01FE: 33   say
+01FF: 1D 45 0D   pushs L0D45   ; impair
+0202: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0206: 1D 4C 0D   pushs L0D4C   ; venom
+0209: 07 01 00 A7 00  cmps 0001H, 02B5
+020E: 1F 99 FE   pushi FE99H   ; -359
+0211: 1F 99 FE   pushi FE99H   ; -359
+0214: 1F 89 02   pushi 0289H   ; 649
+0217: 1F 9B FE   pushi FE9BH   ; -357
+021A: 38 28 00 04  callis 0028, 4
+021E: 12 05 00   pop [0005]
+0221: 1F 32 00   pushi 0032H   ; 50
+0224: 21 05 00   push [0005]
+0227: 0C   mul
+0228: 12 06 00   pop [0006]
+022B: 21 05 00   push [0005]
+022E: 1F 00 00   pushi 0000H   ; 0
+0231: 22   cmpeq
+0232: 05 07 00   jne 023C
+0235: 1C 52 0D   addsi L0D52   ; "Thou dost not ha...
+0238: 33   say
+0239: 06 72 00   jmp 02AE
+023C: 21 05 00   push [0005]
+023F: 1F 01 00   pushi 0001H   ; 1
+0242: 22   cmpeq
+0243: 05 07 00   jne 024D
+0246: 1C 7B 0D   addsi L0D7B   ; Kessler examines ...
+0249: 33   say
+024A: 06 04 00   jmp 0251
+024D: 1C A1 0D   addsi L0DA1   ; Kessler examines ...
+0250: 33   say
+0251: 1C C8 0D   addsi L0DC8   ; He looks up at yo...
+0254: 33   say
+0255: 24 02 00   call [0002]   ; 090AH
+0258: 05 4F 00   jne 02AA
+025B: 13   push true
+025C: 1F 99 FE   pushi FE99H   ; -359
+025F: 1F 99 FE   pushi FE99H   ; -359
+0262: 1F 89 02   pushi 0289H   ; 649
+0265: 21 05 00   push [0005]
+0268: 38 2B 00 05  callis 002B, 5
+026C: 12 07 00   pop [0007]
+026F: 21 07 00   push [0007]
+0272: 05 2E 00   jne 02A3
+0275: 13   push true
+0276: 1F 99 FE   pushi FE99H   ; -359
+0279: 1F 99 FE   pushi FE99H   ; -359
+027C: 1F 84 02   pushi 0284H   ; 644
+027F: 21 06 00   push [0006]
+0282: 38 2C 00 05  callis 002C, 5
+0286: 12 08 00   pop [0008]
+0289: 21 08 00   push [0008]
+028C: 05 0D 00   jne 029C
+028F: 1C 3E 0E   addsi L0E3E   ; Kessler opens his...
+0292: 2F 06 00   addsv [0006]
+0295: 1C 68 0E   addsi L0E68   ;  gold coins.
+0298: 33   say
+0299: 06 04 00   jmp 02A0
+029C: 1C 75 0E   addsi L0E75   ; "Thou art too bur...
+029F: 33   say
+02A0: 06 04 00   jmp 02A7
+02A3: 1C A6 0E   addsi L0EA6   ; "I see thou dost ...
+02A6: 33   say
+02A7: 06 04 00   jmp 02AE
+02AA: 1C 11 0F   addsi L0F11   ; "Very well."
+02AD: 33   say
+02AE: 1D 1E 0F   pushs L0F1E   ; venom
+02B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B5: 1D 24 0F   pushs L0F24   ; buy potions
+02B8: 07 01 00 33 00  cmps 0001H, 02F0
+02BD: 21 01 00   push [0001]
+02C0: 1F 07 00   pushi 0007H   ; 7
+02C3: 22   cmpeq
+02C4: 10   not
+02C5: 05 07 00   jne 02CF
+02C8: 1C 30 0F   addsi L0F30   ; "The Apothecary i...
+02CB: 33   say
+02CC: 06 1A 00   jmp 02E9
+02CF: 1C 8A 0F   addsi L0F8A   ; "I always keep a ...
+02D2: 33   say
+02D3: 24 02 00   call [0002]   ; 090AH
+02D6: 12 09 00   pop [0009]
+02D9: 21 09 00   push [0009]
+02DC: 05 06 00   jne 02E5
+02DF: 24 03 00   call [0003]   ; 08A8H
+02E2: 06 04 00   jmp 02E9
+02E5: 1C 24 10   addsi L1024   ; "Be sure to come ...
+02E8: 33   say
+02E9: 1D 5F 10   pushs L105F   ; buy potions
+02EC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02F0: 1D 6B 10   pushs L106B   ; bye
+02F3: 07 01 00 03 00  cmps 0001H, 02FB
+02F8: 06 03 00   jmp 02FE
+02FB: 06 77 FD   jmp 0075
+02FE: 40   db 40 ???
+02FF: 1C 6F 10   addsi L106F   ; "It was good spea...
+0302: 2F 02 00   addsv [0002]
+0305: 1C 91 10   addsi L1091   ; ."*
+0308: 33   say
+0309: 48   push eventid
+030A: 1F 00 00   pushi 0000H   ; 0
+030D: 22   cmpeq
+030E: 05 06 00   jne 0317
+0311: 1F 13 FF   pushi FF13H   ; -237
+0314: 24 04 00   call [0004]   ; 092EH
+0317: 25   ret

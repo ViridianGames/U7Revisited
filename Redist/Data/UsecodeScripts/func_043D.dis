@@ -1,0 +1,521 @@
+  .funcnumber 043DH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'proof'
+L0012: db 00
+L0013: db 'picked eggs'
+L001E: db 00
+L001F: db 'You see a farmer with wild eyes widened in excitement.'
+L0055: db 00
+L0056: db '"Avatar! Thou hast returned!" exclaims Mack.'
+L0082: db 00
+L0083: db 'name'
+L0087: db 00
+L0088: db '"I am Mack."'
+L0094: db 00
+L0095: db 'name'
+L0099: db 00
+L009A: db 'job'
+L009D: db 00
+L009E: db '"I am a farmer, though most folks just call me a lunatic."'
+L00D8: db 00
+L00D9: db 'lunatic'
+L00E0: db 00
+L00E1: db 'farmer'
+L00E7: db 00
+L00E8: db 'farmer'
+L00EE: db 00
+L00EF: db '"On my farm I raise chickens and grow vegetables. If thou do'
+ db 'st need work, talk to me!"'
+L0145: db 00
+L0146: db 'farmer'
+L014C: db 00
+L014D: db 'work'
+L0151: db 00
+L0152: db 'lunatic'
+L0159: db 00
+L015A: db '"Thou dost also think so, eh? But I tell thee what I say is '
+ db 'true! There are creatures visiting us from another place in '
+ db 'the stars! I have seen them!"'
+L01EF: db 00
+L01F0: db 'lunatic'
+L01F7: db 00
+L01F8: db 'seen them'
+L0201: db 00
+L0202: db 'another place'
+L020F: db 00
+L0210: db 'creatures'
+L0219: db 00
+L021A: db 'creatures'
+L0223: db 00
+L0224: db '"They are big mean ugly liontigers! Or is that tigerlions? T'
+ db 'hey are ferocious and they want to eat us!"'
+L028B: db 00
+L028C: db 'creatures'
+L0295: db 00
+L0296: db 'another place'
+L02A3: db 00
+L02A4: db '"All I can say is that there are certainly no such creatures'
+ db ' in this world! Nor is their ship like any that has ever bee'
+ db 'n seen anywhere in Britannia."'
+L033A: db 00
+L033B: db 'another place'
+L0348: db 00
+L0349: db 'seen them'
+L0352: db 00
+L0353: db '"With mine own eyes I have seen a star creature and the inex'
+ db 'plicable conveyance which enabled it to travel to Britannia!'
+ db ' I swear to thee! I am completely sane! I have proof!"'
+L0401: db 00
+L0402: db 'seen them'
+L040B: db 00
+L040C: db 'proof'
+L0411: db 00
+L0412: db 'proof'
+L0417: db 00
+L0418: db '"Go and look behind my farm in the middle of the field. Take'
+ db ' a look for thyself and thou shalt see my proof."'
+L0485: db 00
+L0486: db '"I told thee I was not a looney! Didst thou see the proof?"'
+L04C1: db 00
+L04C2: db '"Thou must go and look at what is in my field! Then come bac'
+ db 'k here, for I must talk about this with someone who knows th'
+ db 'at I am not a looney!"'
+L0550: db 00
+L0551: db 'proof'
+L0556: db 00
+L0557: db '"Did I not tell thee that I am no loonie? Still, my story of'
+ db ' how I did come across this thing is beyond belief."'
+L05C7: db 00
+L05C8: db 'proof'
+L05CD: db 00
+L05CE: db 'story'
+L05D3: db 00
+L05D4: db 'story'
+L05D9: db 00
+L05DA: db '"I like to stay up late. Sometimes I see bright lights flash'
+ db ' across the sky. No one else ever pays them any mind. But on'
+ db 'e night I see this bright light come crashing down and it la'
+ db 'nds in my field."'
+L069F: db 00
+L06A0: db 'story'
+L06A5: db 00
+L06A6: db 'lands'
+L06AB: db 00
+L06AC: db 'bright lights'
+L06B9: db 00
+L06BA: db '"I have been looking every night for another sign of those t'
+ db 'hings but I have not seen any since that last time I told th'
+ db 'ee about it."'
+L073F: db 00
+L0740: db 'story'
+L0745: db 00
+L0746: db 'bright lights'
+L0753: db 00
+L0754: db '"I always watch for moving bright lights in the night sky. T'
+ db 'hat is part of why people in the town say I am a loonie. But'
+ db ' is what I do so different from what they do in the orrery?"'
+L0808: db 00
+L0809: db 'bright lights'
+L0816: db 00
+L0817: db 'lands'
+L081C: db 00
+L081D: db '"After the explosion and crash I ran out to my field. There '
+ db 'I saw the strange machine that thou hast seen, only it was g'
+ db 'lowing hot. I was terrified. But then the top of the machine'
+ db ' started to open."'
+L08E3: db 00
+L08E4: db 'lands'
+L08E9: db 00
+L08EA: db 'open'
+L08EE: db 00
+L08EF: db 'machine'
+L08F6: db 00
+L08F7: db 'machine'
+L08FE: db 00
+L08FF: db '"It resembled a bird, but it was not a bird!"'
+L092C: db 00
+L092D: db 'machine'
+L0934: db 00
+L0935: db 'open'
+L0939: db 00
+L093A: db '"I could not move from the spot as I saw the strange ship op'
+ db 'en. From out of the top came the vicious tigerlion. There wa'
+ db 's a savage hunger in its eyes."'
+L09D1: db 00
+L09D2: db 'open'
+L09D6: db 00
+L09D7: db 'hunger'
+L09DD: db 00
+L09DE: db 'tigerlion'
+L09E7: db 00
+L09E8: db 'hunger'
+L09EE: db 00
+L09EF: db '"In other words, it looked like it might eat me!"'
+L0A20: db 00
+L0A21: db 'hunger'
+L0A27: db 00
+L0A28: db 'tigerlion'
+L0A31: db 00
+L0A32: db '"It came at me like a predator comes after prey. It was so f'
+ db 'ast that I could not even move. I thought I was going to be '
+ db 'killed for certain. It reached me in a second. It looked int'
+ db 'o mine eyes, and then it died."'
+L0B05: db 00
+L0B06: db 'tigerlion'
+L0B0F: db 00
+L0B10: db 'died'
+L0B14: db 00
+L0B15: db 'died'
+L0B19: db 00
+L0B1A: db '"What it and I had failed to notice was that I was holding m'
+ db 'ine hoe. It had once been accidentally enchanted by a passin'
+ db 'g mage, and it works wondrously in the fields. I use it for '
+ db 'everything! The tigerlion had run itself through upon it. As'
+ db ' it died, the thing spoke."'
+L0C25: db 00
+L0C26: db 'died'
+L0C2A: db 00
+L0C2B: db 'hoe'
+L0C2E: db 00
+L0C2F: db 'spoke'
+L0C34: db 00
+L0C35: db 'spoke'
+L0C3A: db 00
+L0C3B: db '"It said two words. "Kill Wrathy." I do not know who this Wr'
+ db 'athy person is, or why the tigerlion wanted me to kill him. '
+ db 'But I do know I sure get worried now whenever I see moving l'
+ db 'ights in the night sky."'
+L0D07: db 00
+L0D08: db 'spoke'
+L0D0D: db 00
+L0D0E: db 'Kill Wrathy'
+L0D19: db 00
+L0D1A: db 'hoe'
+L0D1D: db 00
+L0D1E: db '"I am sure thou dost know about the plague of looniness that'
+ db ' has come to afflict all of the mages in the world. It was s'
+ db 'everal years ago that I brought my broken hoe to a mage call'
+ db 'ed Mumb. Fixing things was all he was good for anymore. Ther'
+ db 'e was also some fighter who wanted Mumb to enchant his sword'
+ db ', turning it into "The Sword of Death". It appears poor Mumb'
+ db ' got confused and that fighter came back and killed him beca'
+ db 'use the man wound up with a sword that was only good for cut'
+ db 'ting weeds. I could never figure out exactly what happened. '
+ db 'It appears that old Mumb made mine hoe into the Hoe of Destr'
+ db 'uction! Unfortunately, the hoe is lost."'
+L0F9E: db 00
+L0F9F: db 'hoe'
+L0FA2: db 00
+L0FA3: db 'lost'
+L0FA7: db 00
+L0FA8: db 'lost'
+L0FAC: db 00
+L0FAD: db '"Well, 'tis not really lost. It is locked up in my shed. It '
+ db 'is the key to the shed that is lost! I think I might have ac'
+ db 'cidentally used it as a fishhook when I was fishing on the b'
+ db 'anks of Lock Lake. So now I cannot get into my shed. One wou'
+ db 'ld think I -am- a looney!"'
+L10B7: db 00
+L10B8: db 'lost'
+L10BC: db 00
+L10BD: db 'Kill Wrathy'
+L10C8: db 00
+L10C9: db '"I am quite certain that was it, or something like that. Any'
+ db 'way the tigerlion itself proved to be quite delicious."'
+L113C: db 00
+L113D: db 'Kill Wrathy'
+L1148: db 00
+L1149: db 'work'
+L114D: db 00
+L114E: db '"I need someone to work for me and help gather all the eggs '
+ db 'being laid by the chickens! When that big thing came crashin'
+ db 'g down it scared them all so much that they cannot stop layi'
+ db 'ng eggs! Wilt thou work for me? I will pay thee 1 gold per e'
+ db 'gg."'
+L1242: db 00
+L1243: db '"Fine! Thou wilt find the chickens out back. Thou must feel '
+ db 'around in the nest to find the eggs that are there. But ther'
+ db 'e is a limit to how many they will produce in one day, of co'
+ db 'urse."'
+L12FD: db 00
+L12FE: db '"Ask me again if thou dost change thy mind."'
+L132A: db 00
+L132B: db 'work'
+L132F: db 00
+L1330: db 'picked eggs'
+L133B: db 00
+L133C: db 'picked eggs'
+L1347: db 00
+L1348: db 'bye'
+L134B: db 00
+L134C: db '"I thank thee for thy decency and consideration."'
+L137D: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0004H
+  .extern 0909H
+  .extern 090AH
+  .extern 08B8H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E1 02   jne 02E9
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F C3 FF   pushi FFC3H   ; -61
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 93 00   pushf flag:[0093]
+002B: 05 07 00   jne 0035
+002E: 1D 0D 00   pushs L000D   ; proof
+0031: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0035: 42 CF 00   pushf flag:[00CF]
+0038: 05 07 00   jne 0042
+003B: 1D 13 00   pushs L0013   ; picked eggs
+003E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0042: 42 BE 00   pushf flag:[00BE]
+0045: 10   not
+0046: 05 0B 00   jne 0054
+0049: 1C 1F 00   addsi L001F   ; You see a farmer ...
+004C: 33   say
+004D: 13   push true
+004E: 43 BE 00   popf flag:[00BE]
+0051: 06 04 00   jmp 0058
+0054: 1C 56 00   addsi L0056   ; "Avatar! Thou has...
+0057: 33   say
+0058: 04 89 02   je 02E4
+005B: 1D 83 00   pushs L0083   ; name
+005E: 07 01 00 0B 00  cmps 0001H, 006E
+0063: 1C 88 00   addsi L0088   ; "I am Mack."
+0066: 33   say
+0067: 1D 95 00   pushs L0095   ; name
+006A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006E: 1D 9A 00   pushs L009A   ; job
+0071: 07 01 00 11 00  cmps 0001H, 0087
+0076: 1C 9E 00   addsi L009E   ; "I am a farmer, t...
+0079: 33   say
+007A: 1D D9 00   pushs L00D9   ; lunatic
+007D: 1D E1 00   pushs L00E1   ; farmer
+0080: 1E 02 00   arrc 0002H   ; 2
+0083: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0087: 1D E8 00   pushs L00E8   ; farmer
+008A: 07 01 00 12 00  cmps 0001H, 00A1
+008F: 1C EF 00   addsi L00EF   ; "On my farm I rai...
+0092: 33   say
+0093: 1D 46 01   pushs L0146   ; farmer
+0096: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009A: 1D 4D 01   pushs L014D   ; work
+009D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A1: 1D 52 01   pushs L0152   ; lunatic
+00A4: 07 01 00 1B 00  cmps 0001H, 00C4
+00A9: 1C 5A 01   addsi L015A   ; "Thou dost also t...
+00AC: 33   say
+00AD: 1D F0 01   pushs L01F0   ; lunatic
+00B0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B4: 1D F8 01   pushs L01F8   ; seen them
+00B7: 1D 02 02   pushs L0202   ; another place
+00BA: 1D 10 02   pushs L0210   ; creatures
+00BD: 1E 03 00   arrc 0003H   ; 3
+00C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C4: 1D 1A 02   pushs L021A   ; creatures
+00C7: 07 01 00 0B 00  cmps 0001H, 00D7
+00CC: 1C 24 02   addsi L0224   ; "They are big mea...
+00CF: 33   say
+00D0: 1D 8C 02   pushs L028C   ; creatures
+00D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D7: 1D 96 02   pushs L0296   ; another place
+00DA: 07 01 00 0B 00  cmps 0001H, 00EA
+00DF: 1C A4 02   addsi L02A4   ; "All I can say is...
+00E2: 33   say
+00E3: 1D 3B 03   pushs L033B   ; another place
+00E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EA: 1D 49 03   pushs L0349   ; seen them
+00ED: 07 01 00 12 00  cmps 0001H, 0104
+00F2: 1C 53 03   addsi L0353   ; "With mine own ey...
+00F5: 33   say
+00F6: 1D 02 04   pushs L0402   ; seen them
+00F9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FD: 1D 0C 04   pushs L040C   ; proof
+0100: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0104: 1D 12 04   pushs L0412   ; proof
+0107: 07 01 00 44 00  cmps 0001H, 0150
+010C: 42 93 00   pushf flag:[0093]
+010F: 10   not
+0110: 05 0C 00   jne 011F
+0113: 1C 18 04   addsi L0418   ; "Go and look behi...
+0116: 33   say
+0117: 13   push true
+0118: 43 93 00   popf flag:[0093]
+011B: 3F   abrt
+011C: 06 31 00   jmp 0150
+011F: 1C 86 04   addsi L0486   ; "I told thee I wa...
+0122: 33   say
+0123: 24 01 00   call [0001]   ; 090AH
+0126: 12 01 00   pop [0001]
+0129: 21 01 00   push [0001]
+012C: 10   not
+012D: 05 0E 00   jne 013E
+0130: 1C C2 04   addsi L04C2   ; "Thou must go and...
+0133: 33   say
+0134: 1D 51 05   pushs L0551   ; proof
+0137: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013B: 06 12 00   jmp 0150
+013E: 1C 57 05   addsi L0557   ; "Did I not tell t...
+0141: 33   say
+0142: 1D C8 05   pushs L05C8   ; proof
+0145: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0149: 1D CE 05   pushs L05CE   ; story
+014C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0150: 1D D4 05   pushs L05D4   ; story
+0153: 07 01 00 2D 00  cmps 0001H, 0185
+0158: 42 95 00   pushf flag:[0095]
+015B: 10   not
+015C: 05 1B 00   jne 017A
+015F: 1C DA 05   addsi L05DA   ; "I like to stay u...
+0162: 33   say
+0163: 1D A0 06   pushs L06A0   ; story
+0166: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016A: 1D A6 06   pushs L06A6   ; lands
+016D: 1D AC 06   pushs L06AC   ; bright lights
+0170: 1E 02 00   arrc 0002H   ; 2
+0173: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0177: 06 0B 00   jmp 0185
+017A: 1C BA 06   addsi L06BA   ; "I have been look...
+017D: 33   say
+017E: 1D 40 07   pushs L0740   ; story
+0181: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0185: 1D 46 07   pushs L0746   ; bright lights
+0188: 07 01 00 0B 00  cmps 0001H, 0198
+018D: 1C 54 07   addsi L0754   ; "I always watch f...
+0190: 33   say
+0191: 1D 09 08   pushs L0809   ; bright lights
+0194: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0198: 1D 17 08   pushs L0817   ; lands
+019B: 07 01 00 18 00  cmps 0001H, 01B8
+01A0: 1C 1D 08   addsi L081D   ; "After the explos...
+01A3: 33   say
+01A4: 1D E4 08   pushs L08E4   ; lands
+01A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AB: 1D EA 08   pushs L08EA   ; open
+01AE: 1D EF 08   pushs L08EF   ; machine
+01B1: 1E 02 00   arrc 0002H   ; 2
+01B4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B8: 1D F7 08   pushs L08F7   ; machine
+01BB: 07 01 00 0B 00  cmps 0001H, 01CB
+01C0: 1C FF 08   addsi L08FF   ; "It resembled a b...
+01C3: 33   say
+01C4: 1D 2D 09   pushs L092D   ; machine
+01C7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CB: 1D 35 09   pushs L0935   ; open
+01CE: 07 01 00 18 00  cmps 0001H, 01EB
+01D3: 1C 3A 09   addsi L093A   ; "I could not move...
+01D6: 33   say
+01D7: 1D D2 09   pushs L09D2   ; open
+01DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DE: 1D D7 09   pushs L09D7   ; hunger
+01E1: 1D DE 09   pushs L09DE   ; tigerlion
+01E4: 1E 02 00   arrc 0002H   ; 2
+01E7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01EB: 1D E8 09   pushs L09E8   ; hunger
+01EE: 07 01 00 0B 00  cmps 0001H, 01FE
+01F3: 1C EF 09   addsi L09EF   ; "In other words, ...
+01F6: 33   say
+01F7: 1D 21 0A   pushs L0A21   ; hunger
+01FA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FE: 1D 28 0A   pushs L0A28   ; tigerlion
+0201: 07 01 00 12 00  cmps 0001H, 0218
+0206: 1C 32 0A   addsi L0A32   ; "It came at me li...
+0209: 33   say
+020A: 1D 06 0B   pushs L0B06   ; tigerlion
+020D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0211: 1D 10 0B   pushs L0B10   ; died
+0214: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0218: 1D 15 0B   pushs L0B15   ; died
+021B: 07 01 00 18 00  cmps 0001H, 0238
+0220: 1C 1A 0B   addsi L0B1A   ; "What it and I ha...
+0223: 33   say
+0224: 1D 26 0C   pushs L0C26   ; died
+0227: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022B: 1D 2B 0C   pushs L0C2B   ; hoe
+022E: 1D 2F 0C   pushs L0C2F   ; spoke
+0231: 1E 02 00   arrc 0002H   ; 2
+0234: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0238: 1D 35 0C   pushs L0C35   ; spoke
+023B: 07 01 00 12 00  cmps 0001H, 0252
+0240: 1C 3B 0C   addsi L0C3B   ; "It said two word...
+0243: 33   say
+0244: 1D 08 0D   pushs L0D08   ; spoke
+0247: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024B: 1D 0E 0D   pushs L0D0E   ; Kill Wrathy
+024E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0252: 1D 1A 0D   pushs L0D1A   ; hoe
+0255: 07 01 00 12 00  cmps 0001H, 026C
+025A: 1C 1E 0D   addsi L0D1E   ; "I am sure thou d...
+025D: 33   say
+025E: 1D 9F 0F   pushs L0F9F   ; hoe
+0261: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0265: 1D A3 0F   pushs L0FA3   ; lost
+0268: 39 05 00 01  calli _AddAnswer@1  ; 0005
+026C: 1D A8 0F   pushs L0FA8   ; lost
+026F: 07 01 00 0B 00  cmps 0001H, 027F
+0274: 1C AD 0F   addsi L0FAD   ; "Well, 'tis not r...
+0277: 33   say
+0278: 1D B8 10   pushs L10B8   ; lost
+027B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027F: 1D BD 10   pushs L10BD   ; Kill Wrathy
+0282: 07 01 00 0F 00  cmps 0001H, 0296
+0287: 1C C9 10   addsi L10C9   ; "I am quite certa...
+028A: 33   say
+028B: 13   push true
+028C: 43 95 00   popf flag:[0095]
+028F: 1D 3D 11   pushs L113D   ; Kill Wrathy
+0292: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0296: 1D 49 11   pushs L1149   ; work
+0299: 07 01 00 26 00  cmps 0001H, 02C4
+029E: 1C 4E 11   addsi L114E   ; "I need someone t...
+02A1: 33   say
+02A2: 24 01 00   call [0001]   ; 090AH
+02A5: 12 02 00   pop [0002]
+02A8: 21 02 00   push [0002]
+02AB: 05 0B 00   jne 02B9
+02AE: 1C 43 12   addsi L1243   ; "Fine! Thou wilt ...
+02B1: 33   say
+02B2: 13   push true
+02B3: 43 CF 00   popf flag:[00CF]
+02B6: 06 04 00   jmp 02BD
+02B9: 1C FE 12   addsi L12FE   ; "Ask me again if ...
+02BC: 33   say
+02BD: 1D 2B 13   pushs L132B   ; work
+02C0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C4: 1D 30 13   pushs L1330   ; picked eggs
+02C7: 07 01 00 0A 00  cmps 0001H, 02D6
+02CC: 24 02 00   call [0002]   ; 08B8H
+02CF: 1D 3C 13   pushs L133C   ; picked eggs
+02D2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D6: 1D 48 13   pushs L1348   ; bye
+02D9: 07 01 00 03 00  cmps 0001H, 02E1
+02DE: 06 03 00   jmp 02E4
+02E1: 06 74 FD   jmp 0058
+02E4: 40   db 40 ???
+02E5: 1C 4C 13   addsi L134C   ; "I thank thee for...
+02E8: 33   say
+02E9: 48   push eventid
+02EA: 1F 00 00   pushi 0000H   ; 0
+02ED: 22   cmpeq
+02EE: 05 06 00   jne 02F7
+02F1: 1F C3 FF   pushi FFC3H   ; -61
+02F4: 24 03 00   call [0003]   ; 092EH
+02F7: 25   ret

@@ -1,0 +1,624 @@
+  .funcnumber 04F7H
+  .data
+L0000: db 'The non-corporeal man stares past you, seemingly past the co'
+ db 'nfines of the building, and, perhaps, of the world. Then, he'
+ db ' suddenly shudders, as if he is filled with pain.*'
+L00AA: db 00
+L00AB: db 'bye'
+L00AE: db 00
+L00AF: db 'job'
+L00B2: db 00
+L00B3: db 'name'
+L00B7: db 00
+L00B8: db 'The ghostly man displays a face filled with pain.'
+L00E9: db 00
+L00EA: db '"Greetings, '
+L00F6: db 00
+L00F7: db '." Caine breathes deeply, apparently forcing back his tormen'
+ db 't.'
+L0135: db 00
+L0136: db 'questions'
+L013F: db 00
+L0140: db 'need formula'
+L014C: db 00
+L014D: db 'instructions'
+L0159: db 00
+L015A: db 'sacrifice'
+L0163: db 00
+L0164: db 'name'
+L0168: db 00
+L0169: db '"I," he gasps, "am called Caine. But I have also been given '
+ db 'an alias by my... fellow townspeople. To them, I am known as'
+ db ' `the Tortured One.'" He moves his hands in a sweeping gestu'
+ db 're, but seems to indicate nothing. "And thou canst see why."'
+L0259: db 00
+L025A: db 'questions'
+L0263: db 00
+L0264: db 'name'
+L0268: db 00
+L0269: db 'why?'
+L026D: db 00
+L026E: db 'need formula'
+L027A: db 00
+L027B: db 'why?'
+L027F: db 00
+L0280: db '"The flames, fool! The flames!" Again he gasps.'
+L02AF: db 00
+L02B0: db 'why?'
+L02B4: db 00
+L02B5: db 'job'
+L02B8: db 00
+L02B9: db 'He smirks at your comment.~~"Thou wishest to know my job? I '
+ db 'will tell thee my job!" he shouts.~"To burn here in eternal '
+ db 'flames for my crime against the fair city of Skara Brae! Tha'
+ db 't," he pauses for emphasis, "is my job!"~After a moment, he '
+ db 'calms down.~"I apologize, '
+L03C3: db 00
+L03C4: db '. I realize thy question was not intended to further torment'
+ db ' me," he sighs, and turns his face away from you. "At one ti'
+ db 'me, I was the alchemist here."'
+L045A: db 00
+L045B: db 'Skara Brae'
+L0465: db 00
+L0466: db 'flames'
+L046C: db 00
+L046D: db 'need formula'
+L0479: db 00
+L047A: db 'flames'
+L0480: db 00
+L0481: db 'He looks down at the ground, a remorseful expression on his '
+ db 'face.~~"The flames are my punishment. Years ago, when the ev'
+ db 'il Liche first exerted his reign of death over Skara Brae, t'
+ db 'he healer, Mordra, conceived of a plan to remove the creatur'
+ db 'e most foul.~~"She designed a concoction that would destroy '
+ db 'the magical bonds that form the Liche. The formula was prese'
+ db 'nted to our mayor, who passed it on to me.~~"But," he scowls'
+ db ', "something went wrong when I was preparing the potion. The'
+ db ' proportions were mixed improperly, or... I don't know!" he '
+ db 'shouts, fists clenched.~~"All I remember is the shop explodi'
+ db 'ng, and the fire! The fire! All those people dead... because'
+ db ' of me... because of my mistake...."'
+L0739: db 00
+L073A: db 'flames'
+L0740: db 00
+L0741: db 'mayor'
+L0746: db 00
+L0747: db 'Skara Brae'
+L0751: db 00
+L0752: db '"'Twas a thriving town -- before I destroyed it!" His jaw ti'
+ db 'ghtens and his face clenches. "Why? Why, why, why!" He again'
+ db ' gasps in agony, but quickly regains control.~~"There were s'
+ db 'o many innocent people," he says, staring directly at you. "'
+ db 'I cannot believe I am responsible for all their deaths."'
+L087A: db 00
+L087B: db 'people'
+L0881: db 00
+L0882: db 'Skara Brae'
+L088C: db 00
+L088D: db 'sacrifice'
+L0896: db 00
+L0897: db '"I am sorry, '
+L08A4: db 00
+L08A5: db ', but I must spend my eternity here in constant memory of th'
+ db 'ose whom I have destroyed."'
+L08FC: db 00
+L08FD: db 'sacrifice'
+L0906: db 00
+L0907: db 'Forsythe'
+L090F: db 00
+L0910: db 'mayor'
+L0915: db 00
+L0916: db '"Forsythe is the mayor. Perhaps thou canst find him in the T'
+ db 'own Hall, shouldst thou wish to speak with him."'
+L0982: db 00
+L0983: db 'mayor'
+L0988: db 00
+L0989: db 'Forsythe'
+L0991: db 00
+L0992: db 'need formula'
+L099E: db 00
+L099F: db '"Thou trusts me to tell thee the formula! After what I have '
+ db 'done to this town? Art thou mad? I hope at least, that thou '
+ db 'hast checked with Mordra for the correct proportions, yes?"'
+L0A52: db 00
+L0A53: db 'He shakes his head in disbelief.~~"Thou art truly insane. Bu'
+ db 't," he shrugs, "thou hast nothing to lose but thine own life'
+ db '...."'
+L0AD0: db 00
+L0AD1: db 'instructions'
+L0ADD: db 00
+L0ADE: db '"That is better. Thou hadst me wondering." His tone is a mix'
+ db 'ture of both relief and disappointment.'
+L0B41: db 00
+L0B42: db 'need formula'
+L0B4E: db 00
+L0B4F: db 'instructions'
+L0B5B: db 00
+L0B5C: db '"First thou wilt need the three potions. Then, thou must pla'
+ db 'ce each one just below a connecting tube -- the order matter'
+ db 's not. Take an empty vial -- I should have one here in my la'
+ db 'b -- and set it below the nozzle. Then, turn on the burner. '
+ db 'After but a few minutes, the mixture will form, and the fill'
+ db 'ed vial will be ready for thee."'
+L0CA8: db 00
+L0CA9: db 'instructions'
+L0CB5: db 00
+L0CB6: db 'people'
+L0CBC: db 00
+L0CBD: db '"Thou wishest to know whom I killed? I can only assume that '
+ db 'all perished in the blaze: Markham and his Barmaid, Paulette'
+ db '; Trent and Forsythe; and, of course, Mordra the healer."'
+L0D6E: db 00
+L0D6F: db 'Trent'
+L0D74: db 00
+L0D75: db 'Forsythe'
+L0D7D: db 00
+L0D7E: db 'people'
+L0D84: db 00
+L0D85: db 'Trent'
+L0D8A: db 00
+L0D8B: db '"He is -- was -- the blacksmith. Mine one consolation lay wi'
+ db 'th him, for I thought there would be at least one advantage '
+ db 'to his death. Sadly," he inhales quickly, "even that did not'
+ db ' occur."'
+L0E47: db 00
+L0E48: db 'advantage'
+L0E51: db 00
+L0E52: db 'blacksmith'
+L0E5C: db 00
+L0E5D: db 'Trent'
+L0E62: db 00
+L0E63: db 'blacksmith'
+L0E6D: db 00
+L0E6E: db '"He was once a master of all things metal. Now all he does, '
+ db 'so I am told, is work endlessly on that blasted cage!"'
+L0EE0: db 00
+L0EE1: db 'blacksmith'
+L0EEB: db 00
+L0EEC: db 'cage'
+L0EF0: db 00
+L0EF1: db 'cage'
+L0EF5: db 00
+L0EF6: db '"I know nothing about it other than that it was necessary to'
+ db ' put the liche in it before my... potion could work on him."'
+L0F6E: db 00
+L0F6F: db 'cage'
+L0F73: db 00
+L0F74: db 'advantage'
+L0F7D: db 00
+L0F7E: db '"The liche took from Trent the one most valuable thing in th'
+ db 'e blacksmith's life -- his wife, Rowena. I had hoped his dea'
+ db 'th would at least extinguish his pain." He smiles sardonical'
+ db 'ly.~~"Well, it did end his pain, in a manner of speaking."'
+L106C: db 00
+L106D: db 'advantage'
+L1076: db 00
+L1077: db 'end'
+L107A: db 00
+L107B: db 'Rowena'
+L1081: db 00
+L1082: db 'end'
+L1085: db 00
+L1086: db '"The pain is gone, but only to be replaced by his obsessive '
+ db 'anger. The poor fool does not even realize he is dead! He th'
+ db 'rives on his anger."'
+L1112: db 00
+L1113: db 'end'
+L1116: db 00
+L1117: db 'Rowena'
+L111D: db 00
+L111E: db '"She was all he lived for. When the liche tried to take her '
+ db 'from him, he was consumed by the emptiness of her death. But'
+ db ', after his own demise," he stares directly at you, "his bit'
+ db 'ter feelings soured even further.~~"I suspect there is no re'
+ db 'asoning with him now."'
+L1224: db 00
+L1225: db 'Rowena'
+L122B: db 00
+L122C: db 'reasoning'
+L1235: db 00
+L1236: db 'reasoning'
+L123F: db 00
+L1240: db '"I doubt he would believe even his own death, let alone care'
+ db '."'
+L127E: db 00
+L127F: db 'reasoning'
+L1288: db 00
+L1289: db 'questions'
+L1292: db 00
+L1293: db 'The ghost looks at you with a hint of amusement. "Thou art l'
+ db 'ooking for the answers to the questions of life and death?"'
+L130A: db 00
+L130B: db 'The Tortured One looks hard at you. After a pause, he speaks'
+ db '. "I will tell thee what I know if thou dost agree to help m'
+ db 'e. Free me. Free all of us. Free us from the evil Liche."'
+L13BC: db 00
+L13BD: db 'Liche'
+L13C2: db 00
+L13C3: db 'questions'
+L13CC: db 00
+L13CD: db '"Then I have no answers for thee."*'
+L13F0: db 00
+L13F1: db '"Thou hast freed us from the Liche. Thou art entitled to min'
+ db 'e half of the bargain.~~"So thou dost want to know the answe'
+ db 'rs to the questions of life and death?"'
+L1490: db 00
+L1491: db 'The Tortured One looks hard at you. Then, smiling, he shakes'
+ db ' his head. "I have no secrets, my foolish friend. Thou art a'
+ db ' fool. There are -no- answers. Only questions."~~He looks as'
+ db ' if he might cry out in pain. And then Caine turns away from'
+ db ' you. "Go away now. Leave me to mine eternity."*'
+L15B1: db 00
+L15B2: db '"Then why hast thou wasted thy time? Go away, fool!"*'
+L15E7: db 00
+L15E8: db '"Thou hast not rid us of the evil Liche yet. Fulfill this qu'
+ db 'est as thou hast agreed and I shall give thee the answers th'
+ db 'ou dost seek."'
+L166E: db 00
+L166F: db 'questions'
+L1678: db 00
+L1679: db 'Liche'
+L167E: db 00
+L167F: db '"He is an evil spirit who inhabits poor dead Horance's body.'
+ db ' He has a hold on every being in this town -- even me. He su'
+ db 'cks the life forces -- the little that remain -- from our so'
+ db 'uls. Please, thou must free us from his power. Wilt thou try'
+ db '?"'
+L1771: db 00
+L1772: db 'The Tortured One's eyes brighten somewhat, as he sees the li'
+ db 'ght at the end of a long, dark tunnel. "Then thou hast given'
+ db ' me hope. To begin, speak with Mistress Mordra. She can tell'
+ db ' thee how to accomplish this feat."'
+L1849: db 00
+L184A: db 'Liche'
+L184F: db 00
+L1850: db '"Then thou shalt never know the answers to the questions of '
+ db 'life and death. An eye for an eye, my friend."*'
+L18BB: db 00
+L18BC: db 'Liche'
+L18C1: db 00
+L18C2: db 'bye'
+L18C5: db 00
+L18C6: db '"Goodbye, '
+L18D0: db 00
+L18D1: db '." He suppresses a pained scream as you depart.*'
+L1901: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 0911H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 91 03   jne 0399
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 09 FF   pushi FF09H   ; -247
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 42 B2 01   pushf flag:[01B2]
+0015: 10   not
+0016: 05 05 00   jne 001E
+0019: 1C 00 00   addsi L0000   ; The non-corporeal...
+001C: 33   say
+001D: 3F   abrt
+001E: 14   push false
+001F: 12 00 00   pop [0000]
+0022: 14   push false
+0023: 12 01 00   pop [0001]
+0026: 14   push false
+0027: 12 02 00   pop [0002]
+002A: 24 00 00   call [0000]   ; 0909H
+002D: 12 03 00   pop [0003]
+0030: 1D AB 00   pushs L00AB   ; bye
+0033: 1D AF 00   pushs L00AF   ; job
+0036: 1D B3 00   pushs L00B3   ; name
+0039: 1E 03 00   arrc 0003H   ; 3
+003C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0040: 42 C2 01   pushf flag:[01C2]
+0043: 10   not
+0044: 05 0B 00   jne 0052
+0047: 1C B8 00   addsi L00B8   ; The ghostly man d...
+004A: 33   say
+004B: 13   push true
+004C: 43 C2 01   popf flag:[01C2]
+004F: 06 38 00   jmp 008A
+0052: 1C EA 00   addsi L00EA   ; "Greetings, 
+0055: 2F 03 00   addsv [0003]
+0058: 1C F7 00   addsi L00F7   ; ." Caine breathes...
+005B: 33   say
+005C: 42 7C 01   pushf flag:[017C]
+005F: 42 96 01   pushf flag:[0196]
+0062: 10   not
+0063: 0E   and
+0064: 05 0B 00   jne 0072
+0067: 1D 36 01   pushs L0136   ; questions
+006A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006E: 13   push true
+006F: 12 02 00   pop [0002]
+0072: 42 BF 01   pushf flag:[01BF]
+0075: 10   not
+0076: 05 11 00   jne 008A
+0079: 42 C0 01   pushf flag:[01C0]
+007C: 05 0B 00   jne 008A
+007F: 1D 40 01   pushs L0140   ; need formula
+0082: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0086: 13   push true
+0087: 12 01 00   pop [0001]
+008A: 42 BF 01   pushf flag:[01BF]
+008D: 05 0E 00   jne 009E
+0090: 42 D0 01   pushf flag:[01D0]
+0093: 10   not
+0094: 05 07 00   jne 009E
+0097: 1D 4D 01   pushs L014D   ; instructions
+009A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009E: 42 98 01   pushf flag:[0198]
+00A1: 05 0E 00   jne 00B2
+00A4: 42 A1 01   pushf flag:[01A1]
+00A7: 10   not
+00A8: 05 07 00   jne 00B2
+00AB: 1D 5A 01   pushs L015A   ; sacrifice
+00AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B2: 04 D9 02   je 038E
+00B5: 1D 64 01   pushs L0164   ; name
+00B8: 07 01 00 46 00  cmps 0001H, 0103
+00BD: 1C 69 01   addsi L0169   ; "I," he gasps, "a...
+00C0: 33   say
+00C1: 42 7C 01   pushf flag:[017C]
+00C4: 42 96 01   pushf flag:[0196]
+00C7: 10   not
+00C8: 0E   and
+00C9: 05 0E 00   jne 00DA
+00CC: 21 02 00   push [0002]
+00CF: 10   not
+00D0: 05 07 00   jne 00DA
+00D3: 1D 5A 02   pushs L025A   ; questions
+00D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DA: 1D 64 02   pushs L0264   ; name
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D 69 02   pushs L0269   ; why?
+00E4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E8: 21 01 00   push [0001]
+00EB: 10   not
+00EC: 05 14 00   jne 0103
+00EF: 42 BF 01   pushf flag:[01BF]
+00F2: 10   not
+00F3: 05 0D 00   jne 0103
+00F6: 42 C0 01   pushf flag:[01C0]
+00F9: 05 07 00   jne 0103
+00FC: 1D 6E 02   pushs L026E   ; need formula
+00FF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0103: 1D 7B 02   pushs L027B   ; why?
+0106: 07 01 00 0B 00  cmps 0001H, 0116
+010B: 1C 80 02   addsi L0280   ; "The flames, fool...
+010E: 33   say
+010F: 1D B0 02   pushs L02B0   ; why?
+0112: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0116: 1D B5 02   pushs L02B5   ; job
+0119: 07 01 00 32 00  cmps 0001H, 0150
+011E: 1C B9 02   addsi L02B9   ; He smirks at your...
+0121: 2F 03 00   addsv [0003]
+0124: 1C C4 03   addsi L03C4   ; . I realize thy q...
+0127: 33   say
+0128: 1D 5B 04   pushs L045B   ; Skara Brae
+012B: 1D 66 04   pushs L0466   ; flames
+012E: 1E 02 00   arrc 0002H   ; 2
+0131: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0135: 21 01 00   push [0001]
+0138: 10   not
+0139: 05 14 00   jne 0150
+013C: 42 BF 01   pushf flag:[01BF]
+013F: 10   not
+0140: 05 0D 00   jne 0150
+0143: 42 C0 01   pushf flag:[01C0]
+0146: 05 07 00   jne 0150
+0149: 1D 6D 04   pushs L046D   ; need formula
+014C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0150: 1D 7A 04   pushs L047A   ; flames
+0153: 07 01 00 19 00  cmps 0001H, 0171
+0158: 1C 81 04   addsi L0481   ; He looks down at ...
+015B: 33   say
+015C: 1D 3A 07   pushs L073A   ; flames
+015F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0163: 21 00 00   push [0000]
+0166: 10   not
+0167: 05 07 00   jne 0171
+016A: 1D 41 07   pushs L0741   ; mayor
+016D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0171: 1D 47 07   pushs L0747   ; Skara Brae
+0174: 07 01 00 12 00  cmps 0001H, 018B
+0179: 1C 52 07   addsi L0752   ; "'Twas a thriving...
+017C: 33   say
+017D: 1D 7B 08   pushs L087B   ; people
+0180: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0184: 1D 82 08   pushs L0882   ; Skara Brae
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D 8D 08   pushs L088D   ; sacrifice
+018E: 07 01 00 15 00  cmps 0001H, 01A8
+0193: 1C 97 08   addsi L0897   ; "I am sorry, 
+0196: 2F 03 00   addsv [0003]
+0199: 1C A5 08   addsi L08A5   ; , but I must spen...
+019C: 33   say
+019D: 13   push true
+019E: 43 A1 01   popf flag:[01A1]
+01A1: 1D FD 08   pushs L08FD   ; sacrifice
+01A4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A8: 1D 07 09   pushs L0907   ; Forsythe
+01AB: 1D 10 09   pushs L0910   ; mayor
+01AE: 07 02 00 15 00  cmps 0002H, 01C8
+01B3: 1C 16 09   addsi L0916   ; "Forsythe is the ...
+01B6: 33   say
+01B7: 13   push true
+01B8: 12 00 00   pop [0000]
+01BB: 1D 83 09   pushs L0983   ; mayor
+01BE: 1D 89 09   pushs L0989   ; Forsythe
+01C1: 1E 02 00   arrc 0002H   ; 2
+01C4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C8: 1D 92 09   pushs L0992   ; need formula
+01CB: 07 01 00 2D 00  cmps 0001H, 01FD
+01D0: 1C 9F 09   addsi L099F   ; "Thou trusts me t...
+01D3: 33   say
+01D4: 24 01 00   call [0001]   ; 090AH
+01D7: 12 04 00   pop [0004]
+01DA: 21 04 00   push [0004]
+01DD: 05 12 00   jne 01F2
+01E0: 1C 53 0A   addsi L0A53   ; He shakes his hea...
+01E3: 33   say
+01E4: 1D D1 0A   pushs L0AD1   ; instructions
+01E7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01EB: 13   push true
+01EC: 43 BF 01   popf flag:[01BF]
+01EF: 06 04 00   jmp 01F6
+01F2: 1C DE 0A   addsi L0ADE   ; "That is better. ...
+01F5: 33   say
+01F6: 1D 42 0B   pushs L0B42   ; need formula
+01F9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FD: 1D 4F 0B   pushs L0B4F   ; instructions
+0200: 07 01 00 0B 00  cmps 0001H, 0210
+0205: 1C 5C 0B   addsi L0B5C   ; "First thou wilt ...
+0208: 33   say
+0209: 1D A9 0C   pushs L0CA9   ; instructions
+020C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0210: 1D B6 0C   pushs L0CB6   ; people
+0213: 07 01 00 20 00  cmps 0001H, 0238
+0218: 1C BD 0C   addsi L0CBD   ; "Thou wishest to ...
+021B: 33   say
+021C: 1D 6F 0D   pushs L0D6F   ; Trent
+021F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0223: 21 00 00   push [0000]
+0226: 10   not
+0227: 05 07 00   jne 0231
+022A: 1D 75 0D   pushs L0D75   ; Forsythe
+022D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0231: 1D 7E 0D   pushs L0D7E   ; people
+0234: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0238: 1D 85 0D   pushs L0D85   ; Trent
+023B: 07 01 00 18 00  cmps 0001H, 0258
+0240: 1C 8B 0D   addsi L0D8B   ; "He is -- was -- ...
+0243: 33   say
+0244: 1D 48 0E   pushs L0E48   ; advantage
+0247: 1D 52 0E   pushs L0E52   ; blacksmith
+024A: 1E 02 00   arrc 0002H   ; 2
+024D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0251: 1D 5D 0E   pushs L0E5D   ; Trent
+0254: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0258: 1D 63 0E   pushs L0E63   ; blacksmith
+025B: 07 01 00 12 00  cmps 0001H, 0272
+0260: 1C 6E 0E   addsi L0E6E   ; "He was once a ma...
+0263: 33   say
+0264: 1D E1 0E   pushs L0EE1   ; blacksmith
+0267: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026B: 1D EC 0E   pushs L0EEC   ; cage
+026E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0272: 1D F1 0E   pushs L0EF1   ; cage
+0275: 07 01 00 0B 00  cmps 0001H, 0285
+027A: 1C F6 0E   addsi L0EF6   ; "I know nothing a...
+027D: 33   say
+027E: 1D 6F 0F   pushs L0F6F   ; cage
+0281: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0285: 1D 74 0F   pushs L0F74   ; advantage
+0288: 07 01 00 18 00  cmps 0001H, 02A5
+028D: 1C 7E 0F   addsi L0F7E   ; "The liche took f...
+0290: 33   say
+0291: 1D 6D 10   pushs L106D   ; advantage
+0294: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0298: 1D 77 10   pushs L1077   ; end
+029B: 1D 7B 10   pushs L107B   ; Rowena
+029E: 1E 02 00   arrc 0002H   ; 2
+02A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02A5: 1D 82 10   pushs L1082   ; end
+02A8: 07 01 00 0B 00  cmps 0001H, 02B8
+02AD: 1C 86 10   addsi L1086   ; "The pain is gone...
+02B0: 33   say
+02B1: 1D 13 11   pushs L1113   ; end
+02B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B8: 1D 17 11   pushs L1117   ; Rowena
+02BB: 07 01 00 12 00  cmps 0001H, 02D2
+02C0: 1C 1E 11   addsi L111E   ; "She was all he l...
+02C3: 33   say
+02C4: 1D 25 12   pushs L1225   ; Rowena
+02C7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CB: 1D 2C 12   pushs L122C   ; reasoning
+02CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D2: 1D 36 12   pushs L1236   ; reasoning
+02D5: 07 01 00 0B 00  cmps 0001H, 02E5
+02DA: 1C 40 12   addsi L1240   ; "I doubt he would...
+02DD: 33   say
+02DE: 1D 7F 12   pushs L127F   ; reasoning
+02E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E5: 1D 89 12   pushs L1289   ; questions
+02E8: 07 01 00 63 00  cmps 0001H, 0350
+02ED: 42 BC 01   pushf flag:[01BC]
+02F0: 10   not
+02F1: 05 27 00   jne 031B
+02F4: 1C 93 12   addsi L1293   ; The ghost looks a...
+02F7: 33   say
+02F8: 24 01 00   call [0001]   ; 090AH
+02FB: 05 15 00   jne 0313
+02FE: 1C 0B 13   addsi L130B   ; The Tortured One ...
+0301: 33   say
+0302: 1D BD 13   pushs L13BD   ; Liche
+0305: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0309: 1D C3 13   pushs L13C3   ; questions
+030C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0310: 06 05 00   jmp 0318
+0313: 1C CD 13   addsi L13CD   ; "Then I have no a...
+0316: 33   say
+0317: 3F   abrt
+0318: 06 2E 00   jmp 0349
+031B: 42 AA 01   pushf flag:[01AA]
+031E: 05 24 00   jne 0345
+0321: 1C F1 13   addsi L13F1   ; "Thou hast freed ...
+0324: 33   say
+0325: 24 01 00   call [0001]   ; 090AH
+0328: 05 12 00   jne 033D
+032B: 1C 91 14   addsi L1491   ; The Tortured One ...
+032E: 33   say
+032F: 13   push true
+0330: 43 96 01   popf flag:[0196]
+0333: 1F BC 02   pushi 02BCH   ; 700
+0336: 24 02 00   call [0002]   ; 0911H
+0339: 3F   abrt
+033A: 06 05 00   jmp 0342
+033D: 1C B2 15   addsi L15B2   ; "Then why hast th...
+0340: 33   say
+0341: 3F   abrt
+0342: 06 04 00   jmp 0349
+0345: 1C E8 15   addsi L15E8   ; "Thou hast not ri...
+0348: 33   say
+0349: 1D 6F 16   pushs L166F   ; questions
+034C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0350: 1D 79 16   pushs L1679   ; Liche
+0353: 07 01 00 28 00  cmps 0001H, 0380
+0358: 1C 7F 16   addsi L167F   ; "He is an evil sp...
+035B: 33   say
+035C: 24 01 00   call [0001]   ; 090AH
+035F: 05 12 00   jne 0374
+0362: 1C 72 17   addsi L1772   ; The Tortured One'...
+0365: 33   say
+0366: 1D 4A 18   pushs L184A   ; Liche
+0369: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+036D: 13   push true
+036E: 43 BC 01   popf flag:[01BC]
+0371: 06 05 00   jmp 0379
+0374: 1C 50 18   addsi L1850   ; "Then thou shalt ...
+0377: 33   say
+0378: 3F   abrt
+0379: 1D BC 18   pushs L18BC   ; Liche
+037C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0380: 1D C2 18   pushs L18C2   ; bye
+0383: 07 01 00 03 00  cmps 0001H, 038B
+0388: 06 03 00   jmp 038E
+038B: 06 24 FD   jmp 00B2
+038E: 40   db 40 ???
+038F: 1C C6 18   addsi L18C6   ; "Goodbye, 
+0392: 2F 03 00   addsv [0003]
+0395: 1C D1 18   addsi L18D1   ; ." He suppresses ...
+0398: 33   say
+0399: 48   push eventid
+039A: 1F 00 00   pushi 0000H   ; 0
+039D: 22   cmpeq
+039E: 05 01 00   jne 03A2
+03A1: 3F   abrt
+03A2: 25   ret

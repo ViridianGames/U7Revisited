@@ -1,0 +1,217 @@
+  .funcnumber 08F3H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'valor in arms'
+L0011: db 00
+L0012: db 'enchantment'
+L001D: db 00
+L001E: db '"Tell me something, if thou please. Many years have passed s'
+ db 'ince I first learned my woodcraft. Such craft includes skill'
+ db ' in arms, and I must know... Does the Avatar prefer mystical'
+ db ' enchantment to overcome enemies, or physical strength and v'
+ db 'alor in arms?"'
+L011C: db 00
+L011D: db 'enchantment'
+L0128: db 00
+L0129: db '"I have suspected it! No skill have I in such deep matters, '
+ db 'but perchance our speech might turn to enchantment when our '
+ db 'quest is complete."'
+L01B4: db 00
+L01B5: db 'valor in arms'
+L01C2: db 00
+L01C3: db '"I have often suspected it! I am honored to travel with thee'
+ db '. I shall watch thee diligently, for surely thou art the gre'
+ db 'atest fighter who ever lived."'
+L0259: db 00
+L025A: db '"When our quest is complete we shall regale each other with '
+ db 'our exploits. Tell me, dost thou prefer hand to hand combat '
+ db 'or ranged weaponry?"'
+L02E6: db 00
+L02E7: db 'valor in arms'
+L02F4: db 00
+L02F5: db 'enchantment'
+L0300: db 00
+L0301: db 'ranged weaponry'
+L0310: db 00
+L0311: db 'hand to hand'
+L031D: db 00
+L031E: db 'hand to hand'
+L032A: db 00
+L032B: db 'hand to hand'
+L0337: db 00
+L0338: db 'and thou seemest man enough for such close work'
+L0367: db 00
+L0368: db 'especially in women. The women of Britannia seldom have them'
+L03A4: db 00
+L03A5: db '"Such weapons require strength and daring! I admire such qua'
+ db 'lities, '
+L03E9: db 00
+L03EA: db '."'
+L03EC: db 00
+L03ED: db '"But my preferences run to the bow. An ancient weapon, and e'
+ db 'legant, a fine bow of Yew may bring down game sooner than a '
+ db 'sword."'
+L046C: db 00
+L046D: db 'ranged weaponry'
+L047C: db 00
+L047D: db 'ranged weaponry'
+L048C: db 00
+L048D: db '"Such is also my choice. Few are my peers in the art of arch'
+ db 'ery. A keen eye and steady hand are required, and that is ra'
+ db 're in the men of this day. Even rarer in women. Sad, that th'
+ db 'e women of Britannia should be innocent of such art!"'
+L0576: db 00
+L0577: db '"Take care with thy words, master woodsman."'
+L05A3: db 00
+L05A4: db '"I do not mean this gracious company! Surely thou art among '
+ db 'the elite of Britannia and a rare figure of a woman."'
+L0615: db 00
+L0616: db '"Thy speech does me service. Alas! Too few are the women who'
+ db ' learn skill in arms."'
+L0668: db 00
+L0669: db 'bye'
+L066C: db 00
+L066D: db '"Please, Avatar, I simply must know."'
+L0692: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0000H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 14   push false
+0005: 12 01 00   pop [0001]
+0008: 14   push false
+0009: 12 02 00   pop [0002]
+000C: 1D 00 00   pushs L0000   ; bye
+000F: 1D 04 00   pushs L0004   ; valor in arms
+0012: 1D 12 00   pushs L0012   ; enchantment
+0015: 1E 03 00   arrc 0003H   ; 3
+0018: 39 05 00 01  calli _AddAnswer@1  ; 0005
+001C: 1C 1E 00   addsi L001E   ; "Tell me somethin...
+001F: 33   say
+0020: 14   push false
+0021: 12 03 00   pop [0003]
+0024: 04 2F 01   je 0156
+0027: 1D 1D 01   pushs L011D   ; enchantment
+002A: 07 01 00 0B 00  cmps 0001H, 003A
+002F: 1C 29 01   addsi L0129   ; "I have suspected...
+0032: 33   say
+0033: 13   push true
+0034: 43 5E 01   popf flag:[015E]
+0037: 06 1D 01   jmp 0157
+003A: 1D B5 01   pushs L01B5   ; valor in arms
+003D: 07 01 00 2A 00  cmps 0001H, 006C
+0042: 1C C3 01   addsi L01C3   ; "I have often sus...
+0045: 33   say
+0046: 1C 5A 02   addsi L025A   ; "When our quest i...
+0049: 33   say
+004A: 1D E7 02   pushs L02E7   ; valor in arms
+004D: 1D F5 02   pushs L02F5   ; enchantment
+0050: 1E 02 00   arrc 0002H   ; 2
+0053: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0057: 1D 01 03   pushs L0301   ; ranged weaponry
+005A: 1D 11 03   pushs L0311   ; hand to hand
+005D: 1E 02 00   arrc 0002H   ; 2
+0060: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0064: 14   push false
+0065: 43 5E 01   popf flag:[015E]
+0068: 14   push false
+0069: 12 01 00   pop [0001]
+006C: 1D 1E 03   pushs L031E   ; hand to hand
+006F: 07 01 00 34 00  cmps 0001H, 00A8
+0074: 1D 2B 03   pushs L032B   ; hand to hand
+0077: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007B: 1D 38 03   pushs L0338   ; and thou seemest ...
+007E: 12 04 00   pop [0004]
+0081: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0085: 1F 01 00   pushi 0001H   ; 1
+0088: 22   cmpeq
+0089: 05 0A 00   jne 0096
+008C: 1D 68 03   pushs L0368   ; especially in wom...
+008F: 12 04 00   pop [0004]
+0092: 13   push true
+0093: 12 02 00   pop [0002]
+0096: 1C A5 03   addsi L03A5   ; "Such weapons req...
+0099: 2F 04 00   addsv [0004]
+009C: 1C EA 03   addsi L03EA   ; ."
+009F: 33   say
+00A0: 1C ED 03   addsi L03ED   ; "But my preferenc...
+00A3: 33   say
+00A4: 13   push true
+00A5: 12 03 00   pop [0003]
+00A8: 1D 6D 04   pushs L046D   ; ranged weaponry
+00AB: 07 01 00 13 00  cmps 0001H, 00C3
+00B0: 1D 7D 04   pushs L047D   ; ranged weaponry
+00B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B7: 1C 8D 04   addsi L048D   ; "Such is also my ...
+00BA: 33   say
+00BB: 13   push true
+00BC: 12 02 00   pop [0002]
+00BF: 13   push true
+00C0: 12 03 00   pop [0003]
+00C3: 21 02 00   push [0002]
+00C6: 05 66 00   jne 012F
+00C9: 14   push false
+00CA: 12 02 00   pop [0002]
+00CD: 14   push false
+00CE: 12 05 00   pop [0005]
+00D1: 2E   sloop
+00D2: 02 06 00 07 00 08 00 00 00 1B 00  db 2 ???
+00D3:   db 6
+00D4:   db 0
+00D5:   db 7
+00D6:   db 0
+00D7:   db 8
+00D8:   db 0
+00D9:   db 0
+00DA:   db 0
+00DB:   db 1b
+00DC:   db 0
+00DD: 1F 0A 00   pushi 000AH   ; 10
+00E0: 21 08 00   push [0008]
+00E3: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+00E7: 1F 01 00   pushi 0001H   ; 1
+00EA: 22   cmpeq
+00EB: 05 07 00   jne 00F5
+00EE: 13   push true
+00EF: 12 05 00   pop [0005]
+00F2: 06 61 00   jmp 0156
+00F5: 06 DA FF   jmp 00D2
+00F8: 21 05 00   push [0005]
+00FB: 05 31 00   jne 012F
+00FE: 1F 00 00   pushi 0000H   ; 0
+0101: 21 08 00   push [0008]
+0104: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0108: 1C 77 05   addsi L0577   ; "Take care with t...
+010B: 33   say
+010C: 1F 00 00   pushi 0000H   ; 0
+010F: 1F F6 FF   pushi FFF6H   ; -10
+0112: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0116: 1C A4 05   addsi L05A4   ; "I do not mean th...
+0119: 33   say
+011A: 1F 00 00   pushi 0000H   ; 0
+011D: 21 08 00   push [0008]
+0120: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0124: 1C 16 06   addsi L0616   ; "Thy speech does ...
+0127: 33   say
+0128: 21 08 00   push [0008]
+012B: 39 04 00 01  calli _HideNPC@1  ; 0004
+012F: 21 03 00   push [0003]
+0132: 05 03 00   jne 0138
+0135: 06 1F 00   jmp 0157
+0138: 1D 69 06   pushs L0669   ; bye
+013B: 07 01 00 13 00  cmps 0001H, 0153
+0140: 21 01 00   push [0001]
+0143: 10   not
+0144: 05 07 00   jne 014E
+0147: 1C 6D 06   addsi L066D   ; "Please, Avatar, ...
+014A: 33   say
+014B: 06 01 00   jmp 014F
+014E: 3F   abrt
+014F: 13   push true
+0150: 12 01 00   pop [0001]
+0153: 06 CE FE   jmp 0024
+0156: 40   db 40 ???
+0157: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+015B: 25   ret

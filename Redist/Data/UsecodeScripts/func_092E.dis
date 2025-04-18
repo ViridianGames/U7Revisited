@@ -1,0 +1,253 @@
+  .funcnumber 092EH
+  .data
+L0000: db 00
+L0001: db '@Looks like rain...@'
+L0015: db 00
+L0016: db '@Greetings.@'
+L0022: db 00
+L0023: db '@Oh, my aching back...@'
+L003A: db 00
+L003B: db '@Ho hum...@'
+L0046: db 00
+L0047: db '@Z-z-z-z...@'
+L0053: db 00
+L0054: db '@Try the wine.@'
+L0063: db 00
+L0064: db '@The bread is fresh.@'
+L0079: db 00
+L007A: db '@Try the mutton.@'
+L008B: db 00
+L008C: db '@I recommend the ale.@'
+L00A2: db 00
+L00A3: db '@Strive For Unity.@'
+L00B6: db 00
+L00B7: db '@Trust Thy Brother.@'
+L00CB: db 00
+L00CC: db '@Worthiness Precedes Reward.@'
+L00E9: db 00
+L00EA: db '@Join The Fellowship!@'
+L0100: db 00
+L0101: db '@Mmmm! Good!@'
+L010E: db 00
+L010F: db '@Tasty!@'
+L0117: db 00
+L0118: db '@This is good!@'
+L0127: db 00
+L0128: db '@Waiter! Waiter!@'
+L0139: db 00
+L013A: db '@Whew! 'Tis hot!@'
+L014B: db 00
+L014C: db '@Ouch! Cut myself!@'
+L015F: db 00
+L0160: db '@Work...work...work...@'
+L0177: db 00
+L0178: db '@We need rain...@'
+L0189: db 00
+L018A: db '@Tag! Thou art it!@'
+L019D: db 00
+L019E: db '@Cannot catch me!@'
+L01B0: db 00
+L01B1: db '@Nyah nyah! Thou art it!@'
+L01CA: db 00
+L01CB: db '@Catch me if thou can!@'
+L01E2: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0001H
+  .extern 0937H
+0000: 21 00 00   push [0000]
+0003: 38 1B 00 01  callis 001B, 1
+0007: 12 01 00   pop [0001]
+000A: 21 01 00   push [0001]
+000D: 24 00 00   call [0000]   ; 0937H
+0010: 10   not
+0011: 05 01 00   jne 0015
+0014: 2C   db 2c ???
+0015: 21 01 00   push [0001]
+0018: 38 1C 00 01  callis 001C, 1
+001C: 12 02 00   pop [0002]
+001F: 1D 00 00   pushs L0000   ; 
+0022: 12 03 00   pop [0003]
+0025: 1F 04 00   pushi 0004H   ; 4
+0028: 1F 01 00   pushi 0001H   ; 1
+002B: 38 10 00 02  callis _Random2@2  ; 0010
+002F: 12 04 00   pop [0004]
+0032: 21 02 00   push [0002]
+0035: 1F 0B 00   pushi 000BH   ; 11
+0038: 22   cmpeq
+0039: 05 40 00   jne 007C
+003C: 21 04 00   push [0004]
+003F: 1F 01 00   pushi 0001H   ; 1
+0042: 22   cmpeq
+0043: 05 06 00   jne 004C
+0046: 1D 01 00   pushs L0001   ; @Looks like rain...@
+0049: 12 03 00   pop [0003]
+004C: 21 04 00   push [0004]
+004F: 1F 02 00   pushi 0002H   ; 2
+0052: 22   cmpeq
+0053: 05 06 00   jne 005C
+0056: 1D 16 00   pushs L0016   ; @Greetings.@
+0059: 12 03 00   pop [0003]
+005C: 21 04 00   push [0004]
+005F: 1F 03 00   pushi 0003H   ; 3
+0062: 22   cmpeq
+0063: 05 06 00   jne 006C
+0066: 1D 23 00   pushs L0023   ; @Oh, my aching ba...
+0069: 12 03 00   pop [0003]
+006C: 21 04 00   push [0004]
+006F: 1F 04 00   pushi 0004H   ; 4
+0072: 22   cmpeq
+0073: 05 06 00   jne 007C
+0076: 1D 3B 00   pushs L003B   ; @Ho hum...@
+0079: 12 03 00   pop [0003]
+007C: 21 02 00   push [0002]
+007F: 1F 0E 00   pushi 000EH   ; 14
+0082: 22   cmpeq
+0083: 05 06 00   jne 008C
+0086: 1D 47 00   pushs L0047   ; @Z-z-z-z...@
+0089: 12 03 00   pop [0003]
+008C: 21 02 00   push [0002]
+008F: 1F 17 00   pushi 0017H   ; 23
+0092: 22   cmpeq
+0093: 05 40 00   jne 00D6
+0096: 21 04 00   push [0004]
+0099: 1F 01 00   pushi 0001H   ; 1
+009C: 22   cmpeq
+009D: 05 06 00   jne 00A6
+00A0: 1D 54 00   pushs L0054   ; @Try the wine.@
+00A3: 12 03 00   pop [0003]
+00A6: 21 04 00   push [0004]
+00A9: 1F 02 00   pushi 0002H   ; 2
+00AC: 22   cmpeq
+00AD: 05 06 00   jne 00B6
+00B0: 1D 64 00   pushs L0064   ; @The bread is fre...
+00B3: 12 03 00   pop [0003]
+00B6: 21 04 00   push [0004]
+00B9: 1F 03 00   pushi 0003H   ; 3
+00BC: 22   cmpeq
+00BD: 05 06 00   jne 00C6
+00C0: 1D 7A 00   pushs L007A   ; @Try the mutton.@
+00C3: 12 03 00   pop [0003]
+00C6: 21 04 00   push [0004]
+00C9: 1F 04 00   pushi 0004H   ; 4
+00CC: 22   cmpeq
+00CD: 05 06 00   jne 00D6
+00D0: 1D 8C 00   pushs L008C   ; @I recommend the ...
+00D3: 12 03 00   pop [0003]
+00D6: 21 02 00   push [0002]
+00D9: 1F 1C 00   pushi 001CH   ; 28
+00DC: 22   cmpeq
+00DD: 05 40 00   jne 0120
+00E0: 21 04 00   push [0004]
+00E3: 1F 01 00   pushi 0001H   ; 1
+00E6: 22   cmpeq
+00E7: 05 06 00   jne 00F0
+00EA: 1D A3 00   pushs L00A3   ; @Strive For Unity.@
+00ED: 12 03 00   pop [0003]
+00F0: 21 04 00   push [0004]
+00F3: 1F 02 00   pushi 0002H   ; 2
+00F6: 22   cmpeq
+00F7: 05 06 00   jne 0100
+00FA: 1D B7 00   pushs L00B7   ; @Trust Thy Brother.@
+00FD: 12 03 00   pop [0003]
+0100: 21 04 00   push [0004]
+0103: 1F 03 00   pushi 0003H   ; 3
+0106: 22   cmpeq
+0107: 05 06 00   jne 0110
+010A: 1D CC 00   pushs L00CC   ; @Worthiness Prece...
+010D: 12 03 00   pop [0003]
+0110: 21 04 00   push [0004]
+0113: 1F 04 00   pushi 0004H   ; 4
+0116: 22   cmpeq
+0117: 05 06 00   jne 0120
+011A: 1D EA 00   pushs L00EA   ; @Join The Fellows...
+011D: 12 03 00   pop [0003]
+0120: 21 02 00   push [0002]
+0123: 1F 1A 00   pushi 001AH   ; 26
+0126: 22   cmpeq
+0127: 05 40 00   jne 016A
+012A: 21 04 00   push [0004]
+012D: 1F 01 00   pushi 0001H   ; 1
+0130: 22   cmpeq
+0131: 05 06 00   jne 013A
+0134: 1D 01 01   pushs L0101   ; @Mmmm! Good!@
+0137: 12 03 00   pop [0003]
+013A: 21 04 00   push [0004]
+013D: 1F 02 00   pushi 0002H   ; 2
+0140: 22   cmpeq
+0141: 05 06 00   jne 014A
+0144: 1D 0F 01   pushs L010F   ; @Tasty!@
+0147: 12 03 00   pop [0003]
+014A: 21 04 00   push [0004]
+014D: 1F 03 00   pushi 0003H   ; 3
+0150: 22   cmpeq
+0151: 05 06 00   jne 015A
+0154: 1D 18 01   pushs L0118   ; @This is good!@
+0157: 12 03 00   pop [0003]
+015A: 21 04 00   push [0004]
+015D: 1F 04 00   pushi 0004H   ; 4
+0160: 22   cmpeq
+0161: 05 06 00   jne 016A
+0164: 1D 28 01   pushs L0128   ; @Waiter! Waiter!@
+0167: 12 03 00   pop [0003]
+016A: 21 02 00   push [0002]
+016D: 1F 06 00   pushi 0006H   ; 6
+0170: 22   cmpeq
+0171: 05 40 00   jne 01B4
+0174: 21 04 00   push [0004]
+0177: 1F 01 00   pushi 0001H   ; 1
+017A: 22   cmpeq
+017B: 05 06 00   jne 0184
+017E: 1D 3A 01   pushs L013A   ; @Whew! 'Tis hot!@
+0181: 12 03 00   pop [0003]
+0184: 21 04 00   push [0004]
+0187: 1F 02 00   pushi 0002H   ; 2
+018A: 22   cmpeq
+018B: 05 06 00   jne 0194
+018E: 1D 4C 01   pushs L014C   ; @Ouch! Cut myself!@
+0191: 12 03 00   pop [0003]
+0194: 21 04 00   push [0004]
+0197: 1F 03 00   pushi 0003H   ; 3
+019A: 22   cmpeq
+019B: 05 06 00   jne 01A4
+019E: 1D 60 01   pushs L0160   ; @Work...work...wo...
+01A1: 12 03 00   pop [0003]
+01A4: 21 04 00   push [0004]
+01A7: 1F 04 00   pushi 0004H   ; 4
+01AA: 22   cmpeq
+01AB: 05 06 00   jne 01B4
+01AE: 1D 78 01   pushs L0178   ; @We need rain...@
+01B1: 12 03 00   pop [0003]
+01B4: 21 02 00   push [0002]
+01B7: 1F 19 00   pushi 0019H   ; 25
+01BA: 22   cmpeq
+01BB: 05 40 00   jne 01FE
+01BE: 21 04 00   push [0004]
+01C1: 1F 01 00   pushi 0001H   ; 1
+01C4: 22   cmpeq
+01C5: 05 06 00   jne 01CE
+01C8: 1D 8A 01   pushs L018A   ; @Tag! Thou art it!@
+01CB: 12 03 00   pop [0003]
+01CE: 21 04 00   push [0004]
+01D1: 1F 02 00   pushi 0002H   ; 2
+01D4: 22   cmpeq
+01D5: 05 06 00   jne 01DE
+01D8: 1D 9E 01   pushs L019E   ; @Cannot catch me!@
+01DB: 12 03 00   pop [0003]
+01DE: 21 04 00   push [0004]
+01E1: 1F 03 00   pushi 0003H   ; 3
+01E4: 22   cmpeq
+01E5: 05 06 00   jne 01EE
+01E8: 1D B1 01   pushs L01B1   ; @Nyah nyah! Thou ...
+01EB: 12 03 00   pop [0003]
+01EE: 21 04 00   push [0004]
+01F1: 1F 04 00   pushi 0004H   ; 4
+01F4: 22   cmpeq
+01F5: 05 06 00   jne 01FE
+01F8: 1D CB 01   pushs L01CB   ; @Catch me if thou...
+01FB: 12 03 00   pop [0003]
+01FE: 21 03 00   push [0003]
+0201: 21 01 00   push [0001]
+0204: 39 40 00 02  calli _ItemSay@2  ; 0040
+0208: 25   ret

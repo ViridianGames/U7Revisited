@@ -1,0 +1,154 @@
+  .funcnumber 08BAH
+  .data
+L0000: db '"The fortune vill cost thee 20 gold. All right?"'
+L0030: db 00
+L0031: db 'Margareta takes your money.'
+L004C: db 00
+L004D: db '"Thou dost not have enough gold."'
+L006E: db 00
+L006F: db 'Margareta turns away from you.*'
+L008E: db 00
+L008F: db '"Never mind, then."'
+L00A2: db 00
+L00A3: db 'Margareta turns away from you.*'
+L00C2: db 00
+L00C3: db 'The gypsy woman peers into her crystal ball.'
+L00EF: db 00
+L00F0: db '"I see a voman standing by a shrine. She is in love vith the'
+ db 'e. I do not see more on this subject.'
+L0151: db 00
+L0152: db '"I see a voman standing by a shrine. She vill play an import'
+ db 'ant role in thy life.'
+L01A3: db 00
+L01A4: db '"Hmmm... The crystal ball is very murky...'
+L01CE: db 00
+L01CF: db '"I see that thou must join The Fellowship if thou vantest to'
+ db ' learn more about them and discover their true nature.'
+L0241: db 00
+L0242: db '"Now that thou art a Fellowship member, thou vilt learn more'
+ db ' about them and discover their true nature in due time.'
+L02B5: db 00
+L02B6: db '"It is not very clear... ah, yes... there is a new evil that'
+ db ' threatens Britannia. I see that thou shalt have to reckon v'
+ db 'ith it in the future.'
+L0343: db 00
+L0344: db '"The crystal ball tells me that the ether ov the vorld -- th'
+ db 'e substance that controls magic -- has been affected by this'
+ db ' new evil presence.'
+L03CF: db 00
+L03D0: db '"I see further that this evil presence vill gain greater pow'
+ db 'er during an event in the near future. This event has someth'
+ db 'ing to do vith the planets. Seek out a man at the observator'
+ db 'y in Moonglow to learn more about this. I see that he has a '
+ db 'device which will be very useful to thee. See him soon, for '
+ db 'this event is drawing near."'
+L0518: db 00
+L0519: db '"Vhat is this? I see... I see... thou dost seek a Man vith a'
+ db ' Hook. He is not thy true adversary, but finding him vill be'
+ db ' necessary to complete thine ultimate quest.'
+L05BD: db 00
+L05BE: db '"Vait! I see that thou must seek audience vith the Time Lord'
+ db '. He is in trouble, although I cannot see vhat that trouble '
+ db 'is. The Time Lord knows much about this new evil, so do not '
+ db 'fail to seek him out.'
+L0687: db 00
+L0688: db '"To find the Time Lord, thou must first meet the Visps who l'
+ db 'ive in the forest ov Yew. They are thy best link to him. The'
+ db ' monks ov Empath Abbey may know how to contact the Visps.'
+L0739: db 00
+L073A: db '"The ball has grown dark. I see no more."'
+L0763: db 00
+L0764: db 'Margareta looks up at you and says, "Thou dost face many dan'
+ db 'gers ahead. Take care."'
+L07B7: db 00
+L07B8: db 'With those words, Margareta slumps and closes her eyes to re'
+ db 'st. She is obviously exhausted.*'
+L0814: db 00
+  .code
+  .argc 0000H
+  .localc 0003H
+  .externsize 0002H
+  .extern 090AH
+  .extern 0911H
+0000: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0004: 12 00 00   pop [0000]
+0007: 1C 00 00   addsi L0000   ; "The fortune vill...
+000A: 33   say
+000B: 24 00 00   call [0000]   ; 090AH
+000E: 12 01 00   pop [0001]
+0011: 21 01 00   push [0001]
+0014: 05 2D 00   jne 0044
+0017: 13   push true
+0018: 1F 99 FE   pushi FE99H   ; -359
+001B: 1F 99 FE   pushi FE99H   ; -359
+001E: 1F 84 02   pushi 0284H   ; 644
+0021: 1F 14 00   pushi 0014H   ; 20
+0024: 38 2B 00 05  callis 002B, 5
+0028: 12 02 00   pop [0002]
+002B: 21 02 00   push [0002]
+002E: 05 07 00   jne 0038
+0031: 1C 31 00   addsi L0031   ; Margareta takes y...
+0034: 33   say
+0035: 06 09 00   jmp 0041
+0038: 1C 4D 00   addsi L004D   ; "Thou dost not ha...
+003B: 33   say
+003C: 1C 6F 00   addsi L006F   ; Margareta turns a...
+003F: 33   say
+0040: 3F   abrt
+0041: 06 09 00   jmp 004D
+0044: 1C 8F 00   addsi L008F   ; "Never mind, then."
+0047: 33   say
+0048: 1C A3 00   addsi L00A3   ; Margareta turns a...
+004B: 33   say
+004C: 3F   abrt
+004D: 1F 00 00   pushi 0000H   ; 0
+0050: 1F 1F 00   pushi 001FH   ; 31
+0053: 39 2E 00 02  calli _PlayMusic@2  ; 002E
+0057: 1C C3 00   addsi L00C3   ; The gypsy woman p...
+005A: 33   say
+005B: 21 00 00   push [0000]
+005E: 10   not
+005F: 05 11 00   jne 0073
+0062: 42 E2 00   pushf flag:[00E2]
+0065: 05 07 00   jne 006F
+0068: 1C F0 00   addsi L00F0   ; "I see a voman st...
+006B: 33   say
+006C: 06 04 00   jmp 0073
+006F: 1C 52 01   addsi L0152   ; "I see a voman st...
+0072: 33   say
+0073: 1C A4 01   addsi L01A4   ; "Hmmm... The crys...
+0076: 33   say
+0077: 42 06 00   pushf flag:[0006]
+007A: 10   not
+007B: 05 07 00   jne 0085
+007E: 1C CF 01   addsi L01CF   ; "I see that thou ...
+0081: 33   say
+0082: 06 04 00   jmp 0089
+0085: 1C 42 02   addsi L0242   ; "Now that thou ar...
+0088: 33   say
+0089: 1C B6 02   addsi L02B6   ; "It is not very c...
+008C: 33   say
+008D: 1C 44 03   addsi L0344   ; "The crystal ball...
+0090: 33   say
+0091: 1C D0 03   addsi L03D0   ; "I see further th...
+0094: 33   say
+0095: 1C 19 05   addsi L0519   ; "Vhat is this? I ...
+0098: 33   say
+0099: 1C BE 05   addsi L05BE   ; "Vait! I see that...
+009C: 33   say
+009D: 1C 88 06   addsi L0688   ; "To find the Time...
+00A0: 33   say
+00A1: 1C 3A 07   addsi L073A   ; "The ball has gro...
+00A4: 33   say
+00A5: 1C 64 07   addsi L0764   ; Margareta looks u...
+00A8: 33   say
+00A9: 1C B8 07   addsi L07B8   ; With those words,...
+00AC: 33   say
+00AD: 42 00 01   pushf flag:[0100]
+00B0: 10   not
+00B1: 05 06 00   jne 00BA
+00B4: 1F 32 00   pushi 0032H   ; 50
+00B7: 24 01 00   call [0001]   ; 0911H
+00BA: 13   push true
+00BB: 43 00 01   popf flag:[0100]
+00BE: 25   ret

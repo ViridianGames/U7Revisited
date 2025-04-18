@@ -1,0 +1,109 @@
+  .funcnumber 0679H
+  .data
+L0000: db '@Corp Por@'
+L000A: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 092DH
+  .extern 0906H
+  .extern 0936H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 04 00   pushi 0004H   ; 4
+0009: 22   cmpeq
+000A: 3E   push itemref
+000B: 38 3A 00 01  callis 003A, 1
+000F: 1F 9C FE   pushi FE9CH   ; -356
+0012: 22   cmpeq
+0013: 0E   and
+0014: 0F   or
+0015: 05 70 00   jne 0088
+0018: 3E   push itemref
+0019: 39 5C 00 01  calli 005C, 1
+001D: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0021: 12 00 00   pop [0000]
+0024: 21 00 00   push [0000]
+0027: 24 00 00   call [0000]   ; 092DH
+002A: 12 01 00   pop [0001]
+002D: 1D 00 00   pushs L0000   ; @Corp Por@
+0030: 3E   push itemref
+0031: 39 40 00 02  calli _ItemSay@2  ; 0040
+0035: 24 01 00   call [0001]   ; 0906H
+0038: 05 30 00   jne 006B
+003B: 1F 0F 02   pushi 020FH   ; 527
+003E: 21 00 00   push [0000]
+0041: 3E   push itemref
+0042: 38 41 00 03  callis 0041, 3
+0046: 12 02 00   pop [0002]
+0049: 44 7A   pushw 447AH   ; 17530
+004B: 44 6A   pushw 446AH   ; 17514
+004D: 44 6F   pushw 446FH   ; 17519
+004F: 44 70   pushw 1F70H   ; 8048
+0051: 1F 41 00   pushi 0041H   ; 65
+0054: 44 58   pushw 4458H   ; 17496
+0056: 44 6F   pushw 216FH   ; 8559
+0058: 21 01 00   push [0001]
+005B: 44 59   pushw 1E59H   ; 7769
+005D: 1E 09 00   arrc 0009H   ; 9
+0060: 3E   push itemref
+0061: 38 01 00 02  callis 0001, 2
+0065: 12 02 00   pop [0002]
+0068: 06 1D 00   jmp 0088
+006B: 1F 06 06   pushi 0606H   ; 1542
+006E: 44 55   pushw 4455H   ; 17493
+0070: 44 6A   pushw 446AH   ; 17514
+0072: 44 6F   pushw 446FH   ; 17519
+0074: 44 70   pushw 4470H   ; 17520
+0076: 44 6F   pushw 216FH   ; 8559
+0078: 21 01 00   push [0001]
+007B: 44 59   pushw 1E59H   ; 7769
+007D: 1E 08 00   arrc 0008H   ; 8
+0080: 3E   push itemref
+0081: 38 01 00 02  callis 0001, 2
+0085: 12 02 00   pop [0002]
+0088: 48   push eventid
+0089: 1F 04 00   pushi 0004H   ; 4
+008C: 22   cmpeq
+008D: 3E   push itemref
+008E: 1F 9C FE   pushi FE9CH   ; -356
+0091: 1A   cmpne
+0092: 0E   and
+0093: 05 56 00   jne 00EC
+0096: 3E   push itemref
+0097: 38 31 00 01  callis 0031, 1
+009B: 05 1B 00   jne 00B9
+009E: 1F 02 00   pushi 0002H   ; 2
+00A1: 1F 9C FE   pushi FE9CH   ; -356
+00A4: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+00A8: 12 03 00   pop [0003]
+00AB: 1F 02 00   pushi 0002H   ; 2
+00AE: 3E   push itemref
+00AF: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+00B3: 12 04 00   pop [0004]
+00B6: 06 0C 00   jmp 00C5
+00B9: 1F 00 00   pushi 0000H   ; 0
+00BC: 12 03 00   pop [0003]
+00BF: 1F 01 00   pushi 0001H   ; 1
+00C2: 12 04 00   pop [0004]
+00C5: 1F 0E 00   pushi 000EH   ; 14
+00C8: 3E   push itemref
+00C9: 38 88 00 02  callis 0088, 2
+00CD: 12 05 00   pop [0005]
+00D0: 21 03 00   push [0003]
+00D3: 21 04 00   push [0004]
+00D6: 16   cmpgt
+00D7: 21 05 00   push [0005]
+00DA: 14   push false
+00DB: 22   cmpeq
+00DC: 0E   and
+00DD: 05 0C 00   jne 00EC
+00E0: 1F 7F 00   pushi 007FH   ; 127
+00E3: 3E   push itemref
+00E4: 24 02 00   call [0002]   ; 0936H
+00E7: 3E   push itemref
+00E8: 39 49 00 01  calli 0049, 1
+00EC: 25   ret

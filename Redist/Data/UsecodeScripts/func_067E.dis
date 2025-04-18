@@ -1,0 +1,101 @@
+  .funcnumber 067EH
+  .data
+L0000: db '@In Vas Por@'
+L000C: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 C0 00   jne 00C8
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 1D 00 00   pushs L0000   ; @In Vas Por@
+0010: 3E   push itemref
+0011: 39 40 00 02  calli _ItemSay@2  ; 0040
+0015: 24 00 00   call [0000]   ; 0906H
+0018: 05 95 00   jne 00B0
+001B: 1F 7E 06   pushi 067EH   ; 1662
+001E: 44 55   pushw 4455H   ; 17493
+0020: 44 6A   pushw 446AH   ; 17514
+0022: 44 6F   pushw 446FH   ; 17519
+0024: 44 70   pushw 1F70H   ; 8048
+0026: 1F 40 00   pushi 0040H   ; 64
+0029: 44 58   pushw 4458H   ; 17496
+002B: 44 6F   pushw 1E6FH   ; 7791
+002D: 1E 08 00   arrc 0008H   ; 8
+0030: 3E   push itemref
+0031: 38 01 00 02  callis 0001, 2
+0035: 12 00 00   pop [0000]
+0038: 3E   push itemref
+0039: 38 18 00 01  callis 0018, 1
+003D: 12 01 00   pop [0001]
+0040: 1F FF FF   pushi FFFFH   ; -1
+0043: 1F 00 00   pushi 0000H   ; 0
+0046: 1F 00 00   pushi 0000H   ; 0
+0049: 1F 00 00   pushi 0000H   ; 0
+004C: 1F 02 00   pushi 0002H   ; 2
+004F: 26 01 00   aidx [0001]
+0052: 1F 02 00   pushi 0002H   ; 2
+0055: 0A   sub
+0056: 1F 01 00   pushi 0001H   ; 1
+0059: 26 01 00   aidx [0001]
+005C: 1F 02 00   pushi 0002H   ; 2
+005F: 0A   sub
+0060: 1F 07 00   pushi 0007H   ; 7
+0063: 39 53 00 07  calli 0053, 7
+0067: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+006B: 12 02 00   pop [0002]
+006E: 2E   sloop
+006F: 02 03 00 04 00 05 00 02 00 33 00  db 2 ???
+0070:   db 3
+0071:   db 0
+0072:   db 4
+0073:   db 0
+0074:   db 5
+0075:   db 0
+0076:   db 2
+0077:   db 0
+0078:   db 33
+0079:   db 0
+007A: 21 05 00   push [0005]
+007D: 3E   push itemref
+007E: 38 19 00 02  callis 0019, 2
+0082: 12 06 00   pop [0006]
+0085: 21 06 00   push [0006]
+0088: 1F 03 00   pushi 0003H   ; 3
+008B: 0B   div
+008C: 1F 05 00   pushi 0005H   ; 5
+008F: 09   add
+0090: 12 06 00   pop [0006]
+0093: 21 06 00   push [0006]
+0096: 1F 7E 06   pushi 067EH   ; 1662
+0099: 44 55   pushw 4455H   ; 17493
+009B: 44 23   pushw 1E23H   ; 7715
+009D: 1E 03 00   arrc 0003H   ; 3
+00A0: 21 05 00   push [0005]
+00A3: 38 02 00 03  callis 0002, 3
+00A7: 12 00 00   pop [0000]
+00AA: 06 C2 FF   jmp 006F
+00AD: 06 18 00   jmp 00C8
+00B0: 1F 06 06   pushi 0606H   ; 1542
+00B3: 44 55   pushw 4455H   ; 17493
+00B5: 44 6A   pushw 446AH   ; 17514
+00B7: 44 6F   pushw 446FH   ; 17519
+00B9: 44 70   pushw 4470H   ; 17520
+00BB: 44 6F   pushw 1E6FH   ; 7791
+00BD: 1E 06 00   arrc 0006H   ; 6
+00C0: 3E   push itemref
+00C1: 38 01 00 02  callis 0001, 2
+00C5: 12 00 00   pop [0000]
+00C8: 48   push eventid
+00C9: 1F 02 00   pushi 0002H   ; 2
+00CC: 22   cmpeq
+00CD: 05 08 00   jne 00D8
+00D0: 1F 0C 00   pushi 000CH   ; 12
+00D3: 3E   push itemref
+00D4: 39 89 00 02  calli 0089, 2
+00D8: 25   ret

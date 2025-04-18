@@ -1,0 +1,382 @@
+  .funcnumber 08BBH
+  .data
+L0000: db '"Which circle art thou interested in?"'
+L0026: db 00
+L0027: db 'Eighth'
+L002D: db 00
+L002E: db 'Seventh'
+L0035: db 00
+L0036: db 'Sixth'
+L003B: db 00
+L003C: db 'Fifth'
+L0041: db 00
+L0042: db 'Fourth'
+L0048: db 00
+L0049: db 'Third'
+L004E: db 00
+L004F: db 'Second'
+L0055: db 00
+L0056: db 'First'
+L005B: db 00
+L005C: db 'nothing'
+L0063: db 00
+L0064: db 'Detect Trap'
+L006F: db 00
+L0070: db 'Cure'
+L0074: db 00
+L0075: db 'Create Food'
+L0080: db 00
+L0081: db 'Light'
+L0086: db 00
+L0087: db 'nothing'
+L008E: db 00
+L008F: db 'Destroy Trap'
+L009B: db 00
+L009C: db 'Protection'
+L00A6: db 00
+L00A7: db 'Telekinesis'
+L00B2: db 00
+L00B3: db 'Wizard Eye'
+L00BD: db 00
+L00BE: db 'nothing'
+L00C5: db 00
+L00C6: db 'Protect All'
+L00D1: db 00
+L00D2: db 'Sleep'
+L00D7: db 00
+L00D8: db 'Peer'
+L00DC: db 00
+L00DD: db 'Heal'
+L00E1: db 00
+L00E2: db 'nothing'
+L00E9: db 00
+L00EA: db 'Unlock Magic'
+L00F6: db 00
+L00F7: db 'Seance'
+L00FD: db 00
+L00FE: db 'Recall'
+L0104: db 00
+L0105: db 'Mark'
+L0109: db 00
+L010A: db 'nothing'
+L0111: db 00
+L0112: db 'Dance'
+L0117: db 00
+L0118: db 'Fire Field'
+L0122: db 00
+L0123: db 'Charm'
+L0128: db 00
+L0129: db 'Invisibility'
+L0135: db 00
+L0136: db 'nothing'
+L013D: db 00
+L013E: db 'Magic Storm'
+L0149: db 00
+L014A: db 'Cause Fear'
+L0154: db 00
+L0155: db 'Sleep Field'
+L0160: db 00
+L0161: db 'Clone'
+L0166: db 00
+L0167: db 'nothing'
+L016E: db 00
+L016F: db 'Energy Field'
+L017B: db 00
+L017C: db 'Restoration'
+L0187: db 00
+L0188: db 'Energy Mist'
+L0193: db 00
+L0194: db 'Mass Might'
+L019E: db 00
+L019F: db 'nothing'
+L01A6: db 00
+L01A7: db 'Invisible All'
+L01B4: db 00
+L01B5: db 'Sword Strike'
+L01C1: db 00
+L01C2: db 'Time Stop'
+L01CB: db 00
+L01CC: db 'Resurrect'
+L01D5: db 00
+L01D6: db 'nothing'
+L01DD: db 00
+L01DE: db '"What spell wouldst thou like to buy?"'
+L0204: db 00
+L0205: db '"Fine."'
+L020C: db 00
+L020D: db '"The '
+L0212: db 00
+L0213: db ' spell will cost '
+L0224: db 00
+L0225: db ' gold."'
+L022C: db 00
+L022D: db '"Done!"'
+L0234: db 00
+L0235: db '"Thou dost not have a spellbook."'
+L0256: db 00
+L0257: db '"Thou dost not have enough gold for that!"'
+L0281: db 00
+L0282: db '"Thou dost already have that spell!"'
+L02A6: db 00
+L02A7: db '"Wouldst thou like another spell?"'
+L02C9: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0003H
+  .extern 090CH
+  .extern 0923H
+  .extern 090AH
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 13   push true
+0005: 12 01 00   pop [0001]
+0008: 1F B4 00   pushi 00B4H   ; 180
+000B: 1F 96 00   pushi 0096H   ; 150
+000E: 1F 82 00   pushi 0082H   ; 130
+0011: 1F 64 00   pushi 0064H   ; 100
+0014: 1F 50 00   pushi 0050H   ; 80
+0017: 1F 3C 00   pushi 003CH   ; 60
+001A: 1F 28 00   pushi 0028H   ; 40
+001D: 1F 14 00   pushi 0014H   ; 20
+0020: 1E 08 00   arrc 0008H   ; 8
+0023: 12 02 00   pop [0002]
+0026: 21 01 00   push [0001]
+0029: 05 94 02   jne 02C0
+002C: 1C 00 00   addsi L0000   ; "Which circle art...
+002F: 33   say
+0030: 1D 27 00   pushs L0027   ; Eighth
+0033: 1D 2E 00   pushs L002E   ; Seventh
+0036: 1D 36 00   pushs L0036   ; Sixth
+0039: 1D 3C 00   pushs L003C   ; Fifth
+003C: 1D 42 00   pushs L0042   ; Fourth
+003F: 1D 49 00   pushs L0049   ; Third
+0042: 1D 4F 00   pushs L004F   ; Second
+0045: 1D 56 00   pushs L0056   ; First
+0048: 1D 5C 00   pushs L005C   ; nothing
+004B: 1E 09 00   arrc 0009H   ; 9
+004E: 24 00 00   call [0000]   ; 090CH
+0051: 12 03 00   pop [0003]
+0054: 21 03 00   push [0003]
+0057: 1F 01 00   pushi 0001H   ; 1
+005A: 0A   sub
+005B: 12 03 00   pop [0003]
+005E: 21 03 00   push [0003]
+0061: 1F 00 00   pushi 0000H   ; 0
+0064: 22   cmpeq
+0065: 05 03 00   jne 006B
+0068: 06 55 02   jmp 02C0
+006B: 21 03 00   push [0003]
+006E: 1F 01 00   pushi 0001H   ; 1
+0071: 22   cmpeq
+0072: 05 2D 00   jne 00A2
+0075: 1D 64 00   pushs L0064   ; Detect Trap
+0078: 1D 70 00   pushs L0070   ; Cure
+007B: 1D 75 00   pushs L0075   ; Create Food
+007E: 1D 81 00   pushs L0081   ; Light
+0081: 1D 87 00   pushs L0087   ; nothing
+0084: 1E 05 00   arrc 0005H   ; 5
+0087: 12 04 00   pop [0004]
+008A: 1F 0A 00   pushi 000AH   ; 10
+008D: 1F 09 00   pushi 0009H   ; 9
+0090: 1F 08 00   pushi 0008H   ; 8
+0093: 1F 0D 00   pushi 000DH   ; 13
+0096: 1F 00 00   pushi 0000H   ; 0
+0099: 1E 05 00   arrc 0005H   ; 5
+009C: 12 05 00   pop [0005]
+009F: 06 74 01   jmp 0216
+00A2: 21 03 00   push [0003]
+00A5: 1F 02 00   pushi 0002H   ; 2
+00A8: 22   cmpeq
+00A9: 05 2D 00   jne 00D9
+00AC: 1D 8F 00   pushs L008F   ; Destroy Trap
+00AF: 1D 9C 00   pushs L009C   ; Protection
+00B2: 1D A7 00   pushs L00A7   ; Telekinesis
+00B5: 1D B3 00   pushs L00B3   ; Wizard Eye
+00B8: 1D BE 00   pushs L00BE   ; nothing
+00BB: 1E 05 00   arrc 0005H   ; 5
+00BE: 12 04 00   pop [0004]
+00C1: 1F 10 00   pushi 0010H   ; 16
+00C4: 1F 15 00   pushi 0015H   ; 21
+00C7: 1F 16 00   pushi 0016H   ; 22
+00CA: 1F 17 00   pushi 0017H   ; 23
+00CD: 1F 00 00   pushi 0000H   ; 0
+00D0: 1E 05 00   arrc 0005H   ; 5
+00D3: 12 05 00   pop [0005]
+00D6: 06 3D 01   jmp 0216
+00D9: 21 03 00   push [0003]
+00DC: 1F 03 00   pushi 0003H   ; 3
+00DF: 22   cmpeq
+00E0: 05 2D 00   jne 0110
+00E3: 1D C6 00   pushs L00C6   ; Protect All
+00E6: 1D D2 00   pushs L00D2   ; Sleep
+00E9: 1D D8 00   pushs L00D8   ; Peer
+00EC: 1D DD 00   pushs L00DD   ; Heal
+00EF: 1D E2 00   pushs L00E2   ; nothing
+00F2: 1E 05 00   arrc 0005H   ; 5
+00F5: 12 04 00   pop [0004]
+00F8: 1F 1B 00   pushi 001BH   ; 27
+00FB: 1F 1F 00   pushi 001FH   ; 31
+00FE: 1F 1D 00   pushi 001DH   ; 29
+0101: 1F 19 00   pushi 0019H   ; 25
+0104: 1F 00 00   pushi 0000H   ; 0
+0107: 1E 05 00   arrc 0005H   ; 5
+010A: 12 05 00   pop [0005]
+010D: 06 06 01   jmp 0216
+0110: 21 03 00   push [0003]
+0113: 1F 04 00   pushi 0004H   ; 4
+0116: 22   cmpeq
+0117: 05 2D 00   jne 0147
+011A: 1D EA 00   pushs L00EA   ; Unlock Magic
+011D: 1D F7 00   pushs L00F7   ; Seance
+0120: 1D FE 00   pushs L00FE   ; Recall
+0123: 1D 05 01   pushs L0105   ; Mark
+0126: 1D 0A 01   pushs L010A   ; nothing
+0129: 1E 05 00   arrc 0005H   ; 5
+012C: 12 04 00   pop [0004]
+012F: 1F 27 00   pushi 0027H   ; 39
+0132: 1F 26 00   pushi 0026H   ; 38
+0135: 1F 24 00   pushi 0024H   ; 36
+0138: 1F 22 00   pushi 0022H   ; 34
+013B: 1F 00 00   pushi 0000H   ; 0
+013E: 1E 05 00   arrc 0005H   ; 5
+0141: 12 05 00   pop [0005]
+0144: 06 CF 00   jmp 0216
+0147: 21 03 00   push [0003]
+014A: 1F 05 00   pushi 0005H   ; 5
+014D: 22   cmpeq
+014E: 05 2D 00   jne 017E
+0151: 1D 12 01   pushs L0112   ; Dance
+0154: 1D 18 01   pushs L0118   ; Fire Field
+0157: 1D 23 01   pushs L0123   ; Charm
+015A: 1D 29 01   pushs L0129   ; Invisibility
+015D: 1D 36 01   pushs L0136   ; nothing
+0160: 1E 05 00   arrc 0005H   ; 5
+0163: 12 04 00   pop [0004]
+0166: 1F 29 00   pushi 0029H   ; 41
+0169: 1F 2E 00   pushi 002EH   ; 46
+016C: 1F 28 00   pushi 0028H   ; 40
+016F: 1F 2D 00   pushi 002DH   ; 45
+0172: 1F 00 00   pushi 0000H   ; 0
+0175: 1E 05 00   arrc 0005H   ; 5
+0178: 12 05 00   pop [0005]
+017B: 06 98 00   jmp 0216
+017E: 21 03 00   push [0003]
+0181: 1F 06 00   pushi 0006H   ; 6
+0184: 22   cmpeq
+0185: 05 2D 00   jne 01B5
+0188: 1D 3E 01   pushs L013E   ; Magic Storm
+018B: 1D 4A 01   pushs L014A   ; Cause Fear
+018E: 1D 55 01   pushs L0155   ; Sleep Field
+0191: 1D 61 01   pushs L0161   ; Clone
+0194: 1D 67 01   pushs L0167   ; nothing
+0197: 1E 05 00   arrc 0005H   ; 5
+019A: 12 04 00   pop [0004]
+019D: 1F 34 00   pushi 0034H   ; 52
+01A0: 1F 30 00   pushi 0030H   ; 48
+01A3: 1F 36 00   pushi 0036H   ; 54
+01A6: 1F 31 00   pushi 0031H   ; 49
+01A9: 1F 00 00   pushi 0000H   ; 0
+01AC: 1E 05 00   arrc 0005H   ; 5
+01AF: 12 05 00   pop [0005]
+01B2: 06 61 00   jmp 0216
+01B5: 21 03 00   push [0003]
+01B8: 1F 07 00   pushi 0007H   ; 7
+01BB: 22   cmpeq
+01BC: 05 2D 00   jne 01EC
+01BF: 1D 6F 01   pushs L016F   ; Energy Field
+01C2: 1D 7C 01   pushs L017C   ; Restoration
+01C5: 1D 88 01   pushs L0188   ; Energy Mist
+01C8: 1D 94 01   pushs L0194   ; Mass Might
+01CB: 1D 9F 01   pushs L019F   ; nothing
+01CE: 1E 05 00   arrc 0005H   ; 5
+01D1: 12 04 00   pop [0004]
+01D4: 1F 3B 00   pushi 003BH   ; 59
+01D7: 1F 3F 00   pushi 003FH   ; 63
+01DA: 1F 3C 00   pushi 003CH   ; 60
+01DD: 1F 3E 00   pushi 003EH   ; 62
+01E0: 1F 00 00   pushi 0000H   ; 0
+01E3: 1E 05 00   arrc 0005H   ; 5
+01E6: 12 05 00   pop [0005]
+01E9: 06 2A 00   jmp 0216
+01EC: 1D A7 01   pushs L01A7   ; Invisible All
+01EF: 1D B5 01   pushs L01B5   ; Sword Strike
+01F2: 1D C2 01   pushs L01C2   ; Time Stop
+01F5: 1D CC 01   pushs L01CC   ; Resurrect
+01F8: 1D D6 01   pushs L01D6   ; nothing
+01FB: 1E 05 00   arrc 0005H   ; 5
+01FE: 12 04 00   pop [0004]
+0201: 1F 43 00   pushi 0043H   ; 67
+0204: 1F 46 00   pushi 0046H   ; 70
+0207: 1F 47 00   pushi 0047H   ; 71
+020A: 1F 44 00   pushi 0044H   ; 68
+020D: 1F 00 00   pushi 0000H   ; 0
+0210: 1E 05 00   arrc 0005H   ; 5
+0213: 12 05 00   pop [0005]
+0216: 1C DE 01   addsi L01DE   ; "What spell would...
+0219: 33   say
+021A: 21 04 00   push [0004]
+021D: 24 00 00   call [0000]   ; 090CH
+0220: 12 06 00   pop [0006]
+0223: 21 06 00   push [0006]
+0226: 1F 01 00   pushi 0001H   ; 1
+0229: 22   cmpeq
+022A: 05 07 00   jne 0234
+022D: 1C 05 02   addsi L0205   ; "Fine."
+0230: 33   say
+0231: 06 8C 00   jmp 02C0
+0234: 21 06 00   push [0006]
+0237: 26 05 00   aidx [0005]
+023A: 12 07 00   pop [0007]
+023D: 21 06 00   push [0006]
+0240: 26 02 00   aidx [0002]
+0243: 12 08 00   pop [0008]
+0246: 21 06 00   push [0006]
+0249: 26 04 00   aidx [0004]
+024C: 12 09 00   pop [0009]
+024F: 1C 0D 02   addsi L020D   ; "The 
+0252: 2F 09 00   addsv [0009]
+0255: 1C 13 02   addsi L0213   ;  spell will cost 
+0258: 2F 08 00   addsv [0008]
+025B: 1C 25 02   addsi L0225   ;  gold."
+025E: 33   say
+025F: 21 08 00   push [0008]
+0262: 21 07 00   push [0007]
+0265: 24 01 00   call [0001]   ; 0923H
+0268: 12 0A 00   pop [000A]
+026B: 21 0A 00   push [000A]
+026E: 1F 01 00   pushi 0001H   ; 1
+0271: 22   cmpeq
+0272: 05 07 00   jne 027C
+0275: 1C 2D 02   addsi L022D   ; "Done!"
+0278: 33   say
+0279: 06 37 00   jmp 02B3
+027C: 21 0A 00   push [000A]
+027F: 1F 02 00   pushi 0002H   ; 2
+0282: 22   cmpeq
+0283: 05 0B 00   jne 0291
+0286: 1C 35 02   addsi L0235   ; "Thou dost not ha...
+0289: 33   say
+028A: 14   push false
+028B: 12 01 00   pop [0001]
+028E: 06 2F 00   jmp 02C0
+0291: 21 0A 00   push [000A]
+0294: 1F 03 00   pushi 0003H   ; 3
+0297: 22   cmpeq
+0298: 05 07 00   jne 02A2
+029B: 1C 57 02   addsi L0257   ; "Thou dost not ha...
+029E: 33   say
+029F: 06 11 00   jmp 02B3
+02A2: 21 0A 00   push [000A]
+02A5: 1F 04 00   pushi 0004H   ; 4
+02A8: 22   cmpeq
+02A9: 05 07 00   jne 02B3
+02AC: 1C 82 02   addsi L0282   ; "Thou dost alread...
+02AF: 33   say
+02B0: 06 00 00   jmp 02B3
+02B3: 1C A7 02   addsi L02A7   ; "Wouldst thou lik...
+02B6: 33   say
+02B7: 24 02 00   call [0002]   ; 090AH
+02BA: 12 01 00   pop [0001]
+02BD: 06 66 FD   jmp 0026
+02C0: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+02C4: 25   ret

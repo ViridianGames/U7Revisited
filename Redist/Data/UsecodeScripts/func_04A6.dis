@@ -1,0 +1,466 @@
+  .funcnumber 04A6H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'thief'
+L0012: db 00
+L0013: db 'delivery'
+L001B: db 00
+L001C: db 'Polly'
+L0021: db 00
+L0022: db 'You see a man covered in the sweat of a hard day's work.'
+L005A: db 00
+L005B: db '"Greetings, '
+L0067: db 00
+L0068: db '," says Thurston.'
+L0079: db 00
+L007A: db 'name'
+L007E: db 00
+L007F: db '"I am Thurston."'
+L008F: db 00
+L0090: db 'name'
+L0094: db 00
+L0095: db 'job'
+L0098: db 00
+L0099: db '"I operate the mill here in Paws."'
+L00BB: db 00
+L00BC: db 'Paws'
+L00C0: db 00
+L00C1: db 'mill'
+L00C5: db 00
+L00C6: db 'mill'
+L00CA: db 00
+L00CB: db '"The local economy depends upon the mill for flour. So I ens'
+ db 'ure that the mill runs. Sometimes, I feel that keeping the w'
+ db 'heels turning is the only reason to live."'
+L016D: db 00
+L016E: db 'reason to live'
+L017C: db 00
+L017D: db 'flour'
+L0182: db 00
+L0183: db 'mill'
+L0187: db 00
+L0188: db 'flour'
+L018D: db 00
+L018E: db '"A sack will cost thee 12 gold. Art thou interested in purch'
+ db 'asing some?"'
+L01D6: db 00
+L01D7: db '"Here it is," he says, handing you the sack. "Wouldst thou w'
+ db 'ish another?"*'
+L0221: db 00
+L0222: db '"Thou hast not the room for this sack."'
+L0249: db 00
+L024A: db '"Thou hast not the gold for this, '
+L026C: db 00
+L026D: db '. Perhaps some other time."'
+L0288: db 00
+L0289: db '"Perhaps next time, '
+L029D: db 00
+L029E: db '."'
+L02A0: db 00
+L02A1: db '"The mill is closed at present. If thou wouldst please retur'
+ db 'n when it is open again I would gladly sell thee all the flo'
+ db 'ur thou canst carry."'
+L032E: db 00
+L032F: db 'flour'
+L0334: db 00
+L0335: db 'Paws'
+L0339: db 00
+L033A: db '"In case thou hadst not noticed, the people who live here ar'
+ db 'e not so well off as their cousins who live in Britain. In f'
+ db 'act, we have even had a theft recently."'
+L03DA: db 00
+L03DB: db 'Paws'
+L03DF: db 00
+L03E0: db 'theft'
+L03E5: db 00
+L03E6: db 'theft'
+L03EB: db 00
+L03EC: db 'thief'
+L03F1: db 00
+L03F2: db '"Indeed, thou shouldst be wary, '
+L0412: db 00
+L0413: db '. There is a thief in this town! Morfin, a merchant, had sev'
+ db 'eral vials of valuable silver snake venom stolen."'
+L0481: db 00
+L0482: db 'thief'
+L0487: db 00
+L0488: db 'theft'
+L048D: db 00
+L048E: db 'snake venom'
+L0499: db 00
+L049A: db 'snake venom'
+L04A5: db 00
+L04A6: db '"It is procured from the Silver Serpent. I believe Gargoyles'
+ db ' used it habitually in the old days. I am not so sure what i'
+ db 't might do to a human. Perhaps Morfin can tell thee more."'
+L0558: db 00
+L0559: db 'snake venom'
+L0564: db 00
+L0565: db 'delivery'
+L056D: db 00
+L056E: db '"I have paid thee once for thy delivery. I shall not do so a'
+ db 'gain."'
+L05B0: db 00
+L05B1: db 'You give the sack over to Thurston. He opens it and reaches '
+ db 'inside. His hand comes back out filled with wheat. He sifts '
+ db 'through it with his fingers. "I know Camille is oft quite bu'
+ db 'sy running her farm. Thanks to thee for making the delivery.'
+ db '"'
+L06A2: db 00
+L06A3: db '"This should compensate thee for thy trouble." He hands you '
+ db 'ten gold pieces.'
+L06EF: db 00
+L06F0: db '"'Tis a puzzlement! Camille promised to make a delivery of w'
+ db 'heat to me sometime today and it is late. I wonder where it '
+ db 'could be."'
+L0772: db 00
+L0773: db 'delivery'
+L077B: db 00
+L077C: db 'reason to live'
+L078A: db 00
+L078B: db '"I have no wife or family. I have thought about joining The '
+ db 'Fellowship, but I refuse. I have nothing but my work, and a '
+ db 'drink at the Salty Dog now and then."'
+L0828: db 00
+L0829: db 'reason to live'
+L0837: db 00
+L0838: db 'Salty Dog'
+L0841: db 00
+L0842: db 'Fellowship'
+L084C: db 00
+L084D: db 'Fellowship'
+L0857: db 00
+L0858: db '"I know they do good work here in town, but there is just so'
+ db 'mething about them that makes me uncomfortable."'
+L08C4: db 00
+L08C5: db 'He notices your Fellowship medallion and hurriedly clears hi'
+ db 's throat. "No offense intended, '
+L0921: db 00
+L0922: db '."'
+L0924: db 00
+L0925: db 'Fellowship'
+L092F: db 00
+L0930: db 'Salty Dog'
+L0939: db 00
+L093A: db '"In truth, I go there more to be near Polly, the innkeeper, '
+ db 'than for the wine. But she is always busy tending bar and ha'
+ db 's no time for me, I am sure."'
+L09CF: db 00
+L09D0: db '"I should go to the Salty Dog and see Polly." Thurston stare'
+ db 's off into space for a few moments, his eyes are big and he '
+ db 'has a moony expression on his face. Suddenly, he snaps back '
+ db 'to reality. "Excuse me, thou wert saying something?"'
+L0AB8: db 00
+L0AB9: db 'Salty Dog'
+L0AC2: db 00
+L0AC3: db 'Polly'
+L0AC8: db 00
+L0AC9: db 'You relate to Thurston what Polly had said about him. He loo'
+ db 'ks at you with joyous surprise. "Did Polly really say these '
+ db 'things?! It is ridiculous that she believes I am too good fo'
+ db 'r her!" Suddenly he forgets his work and starts hurrying aro'
+ db 'und in excitement. "For years I have loved this woman from a'
+ db 'far. I will begin courting her immediately!"'
+L0C21: db 00
+L0C22: db '"I want to thank thee for telling me the truth about Polly's'
+ db ' feelings about me. I can be such a stick in the mud running'
+ db ' this bloody mill all of the time that I would never have no'
+ db 'ticed it if she were wearing a sign on her back! This is jus'
+ db 't what I needed to help me start enjoying my life!"'
+L0D45: db 00
+L0D46: db 'Polly'
+L0D4B: db 00
+L0D4C: db 'bye'
+L0D4F: db 00
+L0D50: db '"Good day to thee, '
+L0D63: db 00
+L0D64: db '."*'
+L0D67: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 F9 02   jne 0301
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 5A FF   pushi FF5AH   ; -166
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 5A FF   pushi FF5AH   ; -166
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 38 67 00 00  callis 0067, 0
+0031: 12 03 00   pop [0003]
+0034: 1D 00 00   pushs L0000   ; bye
+0037: 1D 04 00   pushs L0004   ; job
+003A: 1D 08 00   pushs L0008   ; name
+003D: 1E 03 00   arrc 0003H   ; 3
+0040: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0044: 42 12 02   pushf flag:[0212]
+0047: 42 18 02   pushf flag:[0218]
+004A: 10   not
+004B: 0E   and
+004C: 05 07 00   jne 0056
+004F: 1D 0D 00   pushs L000D   ; thief
+0052: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0056: 42 1A 02   pushf flag:[021A]
+0059: 05 0E 00   jne 006A
+005C: 42 1D 02   pushf flag:[021D]
+005F: 10   not
+0060: 05 07 00   jne 006A
+0063: 1D 13 00   pushs L0013   ; delivery
+0066: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006A: 42 1B 02   pushf flag:[021B]
+006D: 05 07 00   jne 0077
+0070: 1D 1C 00   pushs L001C   ; Polly
+0073: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0077: 42 1F 02   pushf flag:[021F]
+007A: 10   not
+007B: 05 0B 00   jne 0089
+007E: 1C 22 00   addsi L0022   ; You see a man cov...
+0081: 33   say
+0082: 13   push true
+0083: 43 1F 02   popf flag:[021F]
+0086: 06 0A 00   jmp 0093
+0089: 1C 5B 00   addsi L005B   ; "Greetings, 
+008C: 2F 00 00   addsv [0000]
+008F: 1C 68 00   addsi L0068   ; ," says Thurston.
+0092: 33   say
+0093: 04 60 02   je 02F6
+0096: 1D 7A 00   pushs L007A   ; name
+0099: 07 01 00 0B 00  cmps 0001H, 00A9
+009E: 1C 7F 00   addsi L007F   ; "I am Thurston."
+00A1: 33   say
+00A2: 1D 90 00   pushs L0090   ; name
+00A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A9: 1D 95 00   pushs L0095   ; job
+00AC: 07 01 00 11 00  cmps 0001H, 00C2
+00B1: 1C 99 00   addsi L0099   ; "I operate the mi...
+00B4: 33   say
+00B5: 1D BC 00   pushs L00BC   ; Paws
+00B8: 1D C1 00   pushs L00C1   ; mill
+00BB: 1E 02 00   arrc 0002H   ; 2
+00BE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C2: 1D C6 00   pushs L00C6   ; mill
+00C5: 07 01 00 18 00  cmps 0001H, 00E2
+00CA: 1C CB 00   addsi L00CB   ; "The local econom...
+00CD: 33   say
+00CE: 1D 6E 01   pushs L016E   ; reason to live
+00D1: 1D 7D 01   pushs L017D   ; flour
+00D4: 1E 02 00   arrc 0002H   ; 2
+00D7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DB: 1D 83 01   pushs L0183   ; mill
+00DE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E2: 1D 88 01   pushs L0188   ; flour
+00E5: 07 01 00 AD 00  cmps 0001H, 0197
+00EA: 21 02 00   push [0002]
+00ED: 1F 07 00   pushi 0007H   ; 7
+00F0: 22   cmpeq
+00F1: 05 98 00   jne 018C
+00F4: 1C 8E 01   addsi L018E   ; "A sack will cost...
+00F7: 33   say
+00F8: 24 01 00   call [0001]   ; 090AH
+00FB: 05 81 00   jne 017F
+00FE: 1F 99 FE   pushi FE99H   ; -359
+0101: 1F 99 FE   pushi FE99H   ; -359
+0104: 1F 84 02   pushi 0284H   ; 644
+0107: 1F 9B FE   pushi FE9BH   ; -357
+010A: 38 28 00 04  callis 0028, 4
+010E: 12 04 00   pop [0004]
+0111: 21 04 00   push [0004]
+0114: 1F 0C 00   pushi 000CH   ; 12
+0117: 18   cmpge
+0118: 05 57 00   jne 0172
+011B: 13   push true
+011C: 1F 0E 00   pushi 000EH   ; 14
+011F: 1F 99 FE   pushi FE99H   ; -359
+0122: 1F 5F 03   pushi 035FH   ; 863
+0125: 1F 01 00   pushi 0001H   ; 1
+0128: 38 2C 00 05  callis 002C, 5
+012C: 12 05 00   pop [0005]
+012F: 21 05 00   push [0005]
+0132: 05 36 00   jne 016B
+0135: 13   push true
+0136: 1F 99 FE   pushi FE99H   ; -359
+0139: 1F 99 FE   pushi FE99H   ; -359
+013C: 1F 84 02   pushi 0284H   ; 644
+013F: 1F 0C 00   pushi 000CH   ; 12
+0142: 38 2B 00 05  callis 002B, 5
+0146: 12 06 00   pop [0006]
+0149: 21 06 00   push [0006]
+014C: 05 19 00   jne 0168
+014F: 1C D7 01   addsi L01D7   ; "Here it is," he ...
+0152: 33   say
+0153: 24 01 00   call [0001]   ; 090AH
+0156: 12 07 00   pop [0007]
+0159: 21 07 00   push [0007]
+015C: 05 06 00   jne 0165
+015F: 06 9C FF   jmp 00FE
+0162: 06 03 00   jmp 0168
+0165: 06 8E 01   jmp 02F6
+0168: 06 04 00   jmp 016F
+016B: 1C 22 02   addsi L0222   ; "Thou hast not th...
+016E: 33   say
+016F: 06 0A 00   jmp 017C
+0172: 1C 4A 02   addsi L024A   ; "Thou hast not th...
+0175: 2F 00 00   addsv [0000]
+0178: 1C 6D 02   addsi L026D   ; . Perhaps some ot...
+017B: 33   say
+017C: 06 0A 00   jmp 0189
+017F: 1C 89 02   addsi L0289   ; "Perhaps next time, 
+0182: 2F 00 00   addsv [0000]
+0185: 1C 9E 02   addsi L029E   ; ."
+0188: 33   say
+0189: 06 04 00   jmp 0190
+018C: 1C A1 02   addsi L02A1   ; "The mill is clos...
+018F: 33   say
+0190: 1D 2F 03   pushs L032F   ; flour
+0193: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0197: 1D 35 03   pushs L0335   ; Paws
+019A: 07 01 00 19 00  cmps 0001H, 01B8
+019F: 1C 3A 03   addsi L033A   ; "In case thou had...
+01A2: 33   say
+01A3: 1D DB 03   pushs L03DB   ; Paws
+01A6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AA: 42 18 02   pushf flag:[0218]
+01AD: 10   not
+01AE: 05 07 00   jne 01B8
+01B1: 1D E0 03   pushs L03E0   ; theft
+01B4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B8: 1D E6 03   pushs L03E6   ; theft
+01BB: 1D EC 03   pushs L03EC   ; thief
+01BE: 07 02 00 22 00  cmps 0002H, 01E5
+01C3: 1C F2 03   addsi L03F2   ; "Indeed, thou sho...
+01C6: 2F 00 00   addsv [0000]
+01C9: 1C 13 04   addsi L0413   ; . There is a thie...
+01CC: 33   say
+01CD: 13   push true
+01CE: 43 12 02   popf flag:[0212]
+01D1: 1D 82 04   pushs L0482   ; thief
+01D4: 1D 88 04   pushs L0488   ; theft
+01D7: 1E 02 00   arrc 0002H   ; 2
+01DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DE: 1D 8E 04   pushs L048E   ; snake venom
+01E1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E5: 1D 9A 04   pushs L049A   ; snake venom
+01E8: 07 01 00 0B 00  cmps 0001H, 01F8
+01ED: 1C A6 04   addsi L04A6   ; "It is procured f...
+01F0: 33   say
+01F1: 1D 59 05   pushs L0559   ; snake venom
+01F4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F8: 1D 65 05   pushs L0565   ; delivery
+01FB: 07 01 00 5B 00  cmps 0001H, 025B
+0200: 42 1D 02   pushf flag:[021D]
+0203: 05 07 00   jne 020D
+0206: 1C 6E 05   addsi L056E   ; "I have paid thee...
+0209: 33   say
+020A: 06 47 00   jmp 0254
+020D: 13   push true
+020E: 1F 99 FE   pushi FE99H   ; -359
+0211: 1F 99 FE   pushi FE99H   ; -359
+0214: 1F A5 02   pushi 02A5H   ; 677
+0217: 1F 01 00   pushi 0001H   ; 1
+021A: 38 2B 00 05  callis 002B, 5
+021E: 12 08 00   pop [0008]
+0221: 21 08 00   push [0008]
+0224: 05 29 00   jne 0250
+0227: 1C B1 05   addsi L05B1   ; You give the sack...
+022A: 33   say
+022B: 13   push true
+022C: 1F 99 FE   pushi FE99H   ; -359
+022F: 1F 99 FE   pushi FE99H   ; -359
+0232: 1F 84 02   pushi 0284H   ; 644
+0235: 1F 0A 00   pushi 000AH   ; 10
+0238: 38 2C 00 05  callis 002C, 5
+023C: 12 09 00   pop [0009]
+023F: 21 09 00   push [0009]
+0242: 05 08 00   jne 024D
+0245: 1C A3 06   addsi L06A3   ; "This should comp...
+0248: 33   say
+0249: 13   push true
+024A: 43 1D 02   popf flag:[021D]
+024D: 06 04 00   jmp 0254
+0250: 1C F0 06   addsi L06F0   ; "'Tis a puzzlemen...
+0253: 33   say
+0254: 1D 73 07   pushs L0773   ; delivery
+0257: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025B: 1D 7C 07   pushs L077C   ; reason to live
+025E: 07 01 00 18 00  cmps 0001H, 027B
+0263: 1C 8B 07   addsi L078B   ; "I have no wife o...
+0266: 33   say
+0267: 1D 29 08   pushs L0829   ; reason to live
+026A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026E: 1D 38 08   pushs L0838   ; Salty Dog
+0271: 1D 42 08   pushs L0842   ; Fellowship
+0274: 1E 02 00   arrc 0002H   ; 2
+0277: 39 05 00 01  calli _AddAnswer@1  ; 0005
+027B: 1D 4D 08   pushs L084D   ; Fellowship
+027E: 07 01 00 1B 00  cmps 0001H, 029E
+0283: 1C 58 08   addsi L0858   ; "I know they do g...
+0286: 33   say
+0287: 21 03 00   push [0003]
+028A: 05 0A 00   jne 0297
+028D: 1C C5 08   addsi L08C5   ; He notices your F...
+0290: 2F 00 00   addsv [0000]
+0293: 1C 22 09   addsi L0922   ; ."
+0296: 33   say
+0297: 1D 25 09   pushs L0925   ; Fellowship
+029A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029E: 1D 30 09   pushs L0930   ; Salty Dog
+02A1: 07 01 00 1D 00  cmps 0001H, 02C3
+02A6: 42 16 02   pushf flag:[0216]
+02A9: 10   not
+02AA: 05 0B 00   jne 02B8
+02AD: 1C 3A 09   addsi L093A   ; "In truth, I go t...
+02B0: 33   say
+02B1: 13   push true
+02B2: 43 16 02   popf flag:[0216]
+02B5: 06 04 00   jmp 02BC
+02B8: 1C D0 09   addsi L09D0   ; "I should go to t...
+02BB: 33   say
+02BC: 1D B9 0A   pushs L0AB9   ; Salty Dog
+02BF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C3: 1D C3 0A   pushs L0AC3   ; Polly
+02C6: 07 01 00 1D 00  cmps 0001H, 02E8
+02CB: 42 31 02   pushf flag:[0231]
+02CE: 10   not
+02CF: 05 0B 00   jne 02DD
+02D2: 1C C9 0A   addsi L0AC9   ; You relate to Thu...
+02D5: 33   say
+02D6: 13   push true
+02D7: 43 31 02   popf flag:[0231]
+02DA: 06 04 00   jmp 02E1
+02DD: 1C 22 0C   addsi L0C22   ; "I want to thank ...
+02E0: 33   say
+02E1: 1D 46 0D   pushs L0D46   ; Polly
+02E4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E8: 1D 4C 0D   pushs L0D4C   ; bye
+02EB: 07 01 00 03 00  cmps 0001H, 02F3
+02F0: 06 03 00   jmp 02F6
+02F3: 06 9D FD   jmp 0093
+02F6: 40   db 40 ???
+02F7: 1C 50 0D   addsi L0D50   ; "Good day to thee, 
+02FA: 2F 00 00   addsv [0000]
+02FD: 1C 64 0D   addsi L0D64   ; ."*
+0300: 33   say
+0301: 48   push eventid
+0302: 1F 00 00   pushi 0000H   ; 0
+0305: 22   cmpeq
+0306: 05 06 00   jne 030F
+0309: 1F 5A FF   pushi FF5AH   ; -166
+030C: 24 02 00   call [0002]   ; 092EH
+030F: 25   ret

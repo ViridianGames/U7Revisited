@@ -1,0 +1,459 @@
+  .funcnumber 0477H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Though he does not seem hostile, the man greets you in a fig'
+ db 'hting stance.'
+L0056: db 00
+L0057: db '"What dost thou need?" asks De Snel.'
+L007B: db 00
+L007C: db 'Sprellic'
+L0084: db 00
+L0085: db 'duellists'
+L008E: db 00
+L008F: db 'honor flag'
+L0099: db 00
+L009A: db 'name'
+L009E: db 00
+L009F: db '"I am called Master De Snel."'
+L00BC: db 00
+L00BD: db 'name'
+L00C1: db 00
+L00C2: db 'job'
+L00C5: db 00
+L00C6: db '"I operate the famous fighting school here in Jhelom, the Li'
+ db 'brary of Scars. I also train fighters personally from time t'
+ db 'o time, if they show potential."'
+L015E: db 00
+L015F: db 'potential'
+L0168: db 00
+L0169: db 'Library of Scars'
+L0179: db 00
+L017A: db 'Jhelom'
+L0180: db 00
+L0181: db 'potential'
+L018A: db 00
+L018B: db '"I teach a fighting style of mine own invention. It enables '
+ db 'one to gain complete mastery over his opponent. I could arra'
+ db 'nge a little demonstration for thee..."'
+L022A: db 00
+L022B: db 'demonstration'
+L0238: db 00
+L0239: db 'potential'
+L0242: db 00
+L0243: db 'Jhelom'
+L0249: db 00
+L024A: db '"This city is devoted to the art of combat. Not mere slavish'
+ db ' military discipline, but pure violent confrontation. It is '
+ db 'a place after mine own heart."'
+L02E0: db 00
+L02E1: db 'Jhelom'
+L02E7: db 00
+L02E8: db 'Library of Scars'
+L02F8: db 00
+L02F9: db '"An elite school of fighters with a long, proud history. Man'
+ db 'y great fighters have trained within its walls. The group ev'
+ db 'en has its own special weaponry."'
+L0392: db 00
+L0393: db 'weaponry'
+L039B: db 00
+L039C: db 'fighters'
+L03A4: db 00
+L03A5: db '"I do not feel like discussing business at the moment. Some '
+ db 'other time perhaps."'
+L03F5: db 00
+L03F6: db 'Library of Scars'
+L0406: db 00
+L0407: db 'fighters'
+L040F: db 00
+L0410: db '"I train my students to be fierce and ruthless fighters!"'
+L0449: db 00
+L044A: db 'fighters'
+L0452: db 00
+L0453: db 'weaponry'
+L045B: db 00
+L045C: db 'He unsheathes his own sword and shows it to you. The sword h'
+ db 'as an elaborate serpentine pattern engraved in it. "Thou may'
+ db 'est recognize a weapon of the Library of Scars by its engrav'
+ db 'ing. It is the sign of the snake. Striking quick, silent, de'
+ db 'adly, as are we!"'
+L055D: db 00
+L055E: db 'weaponry'
+L0566: db 00
+L0567: db 'dagger'
+L056D: db 00
+L056E: db 'dagger'
+L0574: db 00
+L0575: db 'You produce the dagger found at the scene of the murders in '
+ db 'Minoc. The serpentine engraving matches the markings of the '
+ db 'Library of Scars exactly. De Snel looks at it and then back '
+ db 'at you. He cannot conceal his surprise.~"From where didst th'
+ db 'ou get that dagger?"'
+L0679: db 00
+L067A: db 'murder site'
+L0685: db 00
+L0686: db 'found it'
+L068E: db 00
+L068F: db 'found it'
+L0697: db 00
+L0698: db 'De Snel peers at you, obviously aware you are lying.'
+L06CC: db 00
+L06CD: db 'murder site'
+L06D8: db 00
+L06D9: db 'You look De Snel in the eye and tell him that you found it a'
+ db 't the scene of the murders in Minoc. He gives you a curious '
+ db 'look.'
+L0756: db 00
+L0757: db '"That dagger was stolen from the Library of Scars weeks ago.'
+ db ' I have no further knowledge of it."'
+L07B7: db 00
+L07B8: db '"By the way, hast thou had a demonstration of my training te'
+ db 'chnique?"'
+L07FD: db 00
+L07FE: db '"Then perhaps thou shouldst have another."'
+L0828: db 00
+L0829: db '"Then perhaps thou shouldst try one."'
+L084E: db 00
+L084F: db 'dagger'
+L0855: db 00
+L0856: db 'demonstration'
+L0863: db 00
+L0864: db 'demonstration'
+L0871: db 00
+L0872: db '"Very well. Let us begin!"*'
+L088D: db 00
+L088E: db '"I must apologize for the discourtesy, but mine unequaled ta'
+ db 'lents demand that I charge thee 40 gold for a training demon'
+ db 'stration. Wilt thou accept?"'
+L0922: db 00
+L0923: db '"Very well, then!" His scowl indicates his displeasure. "If '
+ db 'thou dost not like it, perhaps the Library of Scars is not t'
+ db 'he place for thee."'
+L09AE: db 00
+L09AF: db 'demonstration'
+L09BC: db 00
+L09BD: db 'Sprellic'
+L09C5: db 00
+L09C6: db '"As thou hast probably seen, a few of our members had a disp'
+ db 'ute with a local troublemaker over our honor flag. We of the'
+ db ' Library of Scars have a fierce dedication to our institutio'
+ db 'n. I do not know what exactly happened to this upstart, but '
+ db 'I understand that he is now dead. I am not trying to suggest'
+ db ' the Library of Scars had anything to do with it, of course.'
+ db ' Only that it would be wise not to cross us."'
+L0B5B: db 00
+L0B5C: db 'Sprellic'
+L0B64: db 00
+L0B65: db 'duellists'
+L0B6E: db 00
+L0B6F: db '"I have heard that thou didst kill several of our members wh'
+ db 'ile champion of a duel defending the thief of our honor flag'
+ db '." His eyes narrow as he stares at you intensely. "Outstandi'
+ db 'ng! I am a man who values nothing higher than the applicatio'
+ db 'n of skill. I salute thee on thy victory. Perhaps thou would'
+ db 'st like to join our group?"'
+L0CB6: db 00
+L0CB7: db '"Thy companions and thee look fit enough for an informal pra'
+ db 'ctice session. Consider it a demonstration of my fighting st'
+ db 'yle."'
+L0D34: db 00
+L0D35: db 'demonstration'
+L0D42: db 00
+L0D43: db '"As my style of fighting is the superior style, I am only in'
+ db 'terested in training the best. Perhaps thy companions and th'
+ db 'ee qualify. We might find out, that is, if thou art courageo'
+ db 'us enough."'
+L0E02: db 00
+L0E03: db 'demonstration'
+L0E10: db 00
+L0E11: db 'duellists'
+L0E1A: db 00
+L0E1B: db 'honor flag'
+L0E25: db 00
+L0E26: db '"Fortunately for Sprellic our honor flag was returned. If it'
+ db ' had not been we would have had no choice but to regain our '
+ db 'honor with his blood."'
+L0EB4: db 00
+L0EB5: db 'honor flag'
+L0EBF: db 00
+L0EC0: db 'bye'
+L0EC3: db 00
+L0EC4: db '"Thou canst walk away so easy without a demonstration! Thou '
+ db 'shalt have one anyway!"*'
+L0F18: db 00
+L0F19: db '"May thy stay in Jhelom be a memorable one," De Snel laughs '
+ db 'as he turns and walks away.*'
+L0F71: db 00
+  .code
+  .argc 0001H
+  .localc 000BH
+  .externsize 0007H
+  .extern 0909H
+  .extern 0931H
+  .extern 090BH
+  .extern 090AH
+  .extern 0911H
+  .extern 0878H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 D8 02   jne 02E0
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 89 FF   pushi FF89H   ; -119
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F 89 FF   pushi FF89H   ; -119
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1F 89 FF   pushi FF89H   ; -119
+0030: 38 1B 00 01  callis 001B, 1
+0034: 12 03 00   pop [0003]
+0037: 1D 00 00   pushs L0000   ; bye
+003A: 1D 04 00   pushs L0004   ; job
+003D: 1D 08 00   pushs L0008   ; name
+0040: 1E 03 00   arrc 0003H   ; 3
+0043: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0047: 42 71 01   pushf flag:[0171]
+004A: 10   not
+004B: 05 0B 00   jne 0059
+004E: 1C 0D 00   addsi L000D   ; Though he does no...
+0051: 33   say
+0052: 13   push true
+0053: 43 71 01   popf flag:[0171]
+0056: 06 04 00   jmp 005D
+0059: 1C 57 00   addsi L0057   ; "What dost thou n...
+005C: 33   say
+005D: 1F 84 FF   pushi FF84H   ; -124
+0060: 38 37 00 01  callis 0037, 1
+0064: 12 04 00   pop [0004]
+0067: 21 04 00   push [0004]
+006A: 05 07 00   jne 0074
+006D: 1D 7C 00   pushs L007C   ; Sprellic
+0070: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0074: 1F 83 FF   pushi FF83H   ; -125
+0077: 38 37 00 01  callis 0037, 1
+007B: 12 05 00   pop [0005]
+007E: 1F 82 FF   pushi FF82H   ; -126
+0081: 38 37 00 01  callis 0037, 1
+0085: 12 06 00   pop [0006]
+0088: 1F 81 FF   pushi FF81H   ; -127
+008B: 38 37 00 01  callis 0037, 1
+008F: 12 07 00   pop [0007]
+0092: 21 05 00   push [0005]
+0095: 21 06 00   push [0006]
+0098: 21 07 00   push [0007]
+009B: 0E   and
+009C: 0E   and
+009D: 05 07 00   jne 00A7
+00A0: 1D 85 00   pushs L0085   ; duellists
+00A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A7: 42 6A 01   pushf flag:[016A]
+00AA: 05 07 00   jne 00B4
+00AD: 1D 8F 00   pushs L008F   ; honor flag
+00B0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B4: 04 03 02   je 02BA
+00B7: 1D 9A 00   pushs L009A   ; name
+00BA: 07 01 00 0B 00  cmps 0001H, 00CA
+00BF: 1C 9F 00   addsi L009F   ; "I am called Mast...
+00C2: 33   say
+00C3: 1D BD 00   pushs L00BD   ; name
+00C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CA: 1D C2 00   pushs L00C2   ; job
+00CD: 07 01 00 14 00  cmps 0001H, 00E6
+00D2: 1C C6 00   addsi L00C6   ; "I operate the fa...
+00D5: 33   say
+00D6: 1D 5F 01   pushs L015F   ; potential
+00D9: 1D 69 01   pushs L0169   ; Library of Scars
+00DC: 1D 7A 01   pushs L017A   ; Jhelom
+00DF: 1E 03 00   arrc 0003H   ; 3
+00E2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E6: 1D 81 01   pushs L0181   ; potential
+00E9: 07 01 00 12 00  cmps 0001H, 0100
+00EE: 1C 8B 01   addsi L018B   ; "I teach a fighti...
+00F1: 33   say
+00F2: 1D 2B 02   pushs L022B   ; demonstration
+00F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F9: 1D 39 02   pushs L0239   ; potential
+00FC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0100: 1D 43 02   pushs L0243   ; Jhelom
+0103: 07 01 00 0B 00  cmps 0001H, 0113
+0108: 1C 4A 02   addsi L024A   ; "This city is dev...
+010B: 33   say
+010C: 1D E1 02   pushs L02E1   ; Jhelom
+010F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0113: 1D E8 02   pushs L02E8   ; Library of Scars
+0116: 07 01 00 2A 00  cmps 0001H, 0145
+011B: 21 02 00   push [0002]
+011E: 1F 07 00   pushi 0007H   ; 7
+0121: 22   cmpeq
+0122: 05 14 00   jne 0139
+0125: 1C F9 02   addsi L02F9   ; "An elite school ...
+0128: 33   say
+0129: 1D 93 03   pushs L0393   ; weaponry
+012C: 1D 9C 03   pushs L039C   ; fighters
+012F: 1E 02 00   arrc 0002H   ; 2
+0132: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0136: 06 05 00   jmp 013E
+0139: 1C A5 03   addsi L03A5   ; "I do not feel li...
+013C: 33   say
+013D: 3F   abrt
+013E: 1D F6 03   pushs L03F6   ; Library of Scars
+0141: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0145: 1D 07 04   pushs L0407   ; fighters
+0148: 07 01 00 0B 00  cmps 0001H, 0158
+014D: 1C 10 04   addsi L0410   ; "I train my stude...
+0150: 33   say
+0151: 1D 4A 04   pushs L044A   ; fighters
+0154: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0158: 1D 53 04   pushs L0453   ; weaponry
+015B: 07 01 00 2D 00  cmps 0001H, 018D
+0160: 1C 5C 04   addsi L045C   ; He unsheathes his...
+0163: 33   say
+0164: 1D 5E 05   pushs L055E   ; weaponry
+0167: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016B: 1F 99 FE   pushi FE99H   ; -359
+016E: 1F 99 FE   pushi FE99H   ; -359
+0171: 1F 7C 02   pushi 027CH   ; 636
+0174: 1F 01 00   pushi 0001H   ; 1
+0177: 1F 9B FE   pushi FE9BH   ; -357
+017A: 24 01 00   call [0001]   ; 0931H
+017D: 12 08 00   pop [0008]
+0180: 21 08 00   push [0008]
+0183: 05 07 00   jne 018D
+0186: 1D 67 05   pushs L0567   ; dagger
+0189: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018D: 1D 6E 05   pushs L056E   ; dagger
+0190: 07 01 00 68 00  cmps 0001H, 01FD
+0195: 1C 75 05   addsi L0575   ; You produce the d...
+0198: 33   say
+0199: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+019D: 1D 7A 06   pushs L067A   ; murder site
+01A0: 1D 86 06   pushs L0686   ; found it
+01A3: 1E 02 00   arrc 0002H   ; 2
+01A6: 24 02 00   call [0002]   ; 090BH
+01A9: 12 09 00   pop [0009]
+01AC: 21 09 00   push [0009]
+01AF: 1D 8F 06   pushs L068F   ; found it
+01B2: 22   cmpeq
+01B3: 05 04 00   jne 01BA
+01B6: 1C 98 06   addsi L0698   ; De Snel peers at ...
+01B9: 33   say
+01BA: 21 09 00   push [0009]
+01BD: 1D CD 06   pushs L06CD   ; murder site
+01C0: 22   cmpeq
+01C1: 05 04 00   jne 01C8
+01C4: 1C D9 06   addsi L06D9   ; You look De Snel ...
+01C7: 33   say
+01C8: 1C 57 07   addsi L0757   ; "That dagger was ...
+01CB: 33   say
+01CC: 1C B8 07   addsi L07B8   ; "By the way, hast...
+01CF: 33   say
+01D0: 24 03 00   call [0003]   ; 090AH
+01D3: 05 07 00   jne 01DD
+01D6: 1C FE 07   addsi L07FE   ; "Then perhaps tho...
+01D9: 33   say
+01DA: 06 04 00   jmp 01E1
+01DD: 1C 29 08   addsi L0829   ; "Then perhaps tho...
+01E0: 33   say
+01E1: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+01E5: 1D 4F 08   pushs L084F   ; dagger
+01E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EC: 1D 56 08   pushs L0856   ; demonstration
+01EF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F3: 13   push true
+01F4: 43 6C 01   popf flag:[016C]
+01F7: 1F 32 00   pushi 0032H   ; 50
+01FA: 24 04 00   call [0004]   ; 0911H
+01FD: 1D 64 08   pushs L0864   ; demonstration
+0200: 07 01 00 43 00  cmps 0001H, 0248
+0205: 42 6C 01   pushf flag:[016C]
+0208: 05 1C 00   jne 0227
+020B: 1C 72 08   addsi L0872   ; "Very well. Let u...
+020E: 33   say
+020F: 1F 02 00   pushi 0002H   ; 2
+0212: 21 03 00   push [0003]
+0215: 39 3D 00 02  calli 003D, 2
+0219: 1F 00 00   pushi 0000H   ; 0
+021C: 21 03 00   push [0003]
+021F: 39 1D 00 02  calli 001D, 2
+0223: 3F   abrt
+0224: 06 21 00   jmp 0248
+0227: 1C 8E 08   addsi L088E   ; "I must apologize...
+022A: 33   say
+022B: 24 03 00   call [0003]   ; 090AH
+022E: 05 0C 00   jne 023D
+0231: 1F 28 00   pushi 0028H   ; 40
+0234: 1F 04 00   pushi 0004H   ; 4
+0237: 24 05 00   call [0005]   ; 0878H
+023A: 06 0B 00   jmp 0248
+023D: 1C 23 09   addsi L0923   ; "Very well, then!...
+0240: 33   say
+0241: 1D AF 09   pushs L09AF   ; demonstration
+0244: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0248: 1D BD 09   pushs L09BD   ; Sprellic
+024B: 07 01 00 0B 00  cmps 0001H, 025B
+0250: 1C C6 09   addsi L09C6   ; "As thou hast pro...
+0253: 33   say
+0254: 1D 5C 0B   pushs L0B5C   ; Sprellic
+0257: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025B: 1D 65 0B   pushs L0B65   ; duellists
+025E: 07 01 00 36 00  cmps 0001H, 0299
+0263: 1C 6F 0B   addsi L0B6F   ; "I have heard tha...
+0266: 33   say
+0267: 24 03 00   call [0003]   ; 090AH
+026A: 12 0A 00   pop [000A]
+026D: 21 0A 00   push [000A]
+0270: 05 1F 00   jne 0292
+0273: 42 6C 01   pushf flag:[016C]
+0276: 05 0E 00   jne 0287
+0279: 1C B7 0C   addsi L0CB7   ; "Thy companions a...
+027C: 33   say
+027D: 1D 35 0D   pushs L0D35   ; demonstration
+0280: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0284: 06 0B 00   jmp 0292
+0287: 1C 43 0D   addsi L0D43   ; "As my style of f...
+028A: 33   say
+028B: 1D 03 0E   pushs L0E03   ; demonstration
+028E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0292: 1D 11 0E   pushs L0E11   ; duellists
+0295: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0299: 1D 1B 0E   pushs L0E1B   ; honor flag
+029C: 07 01 00 0B 00  cmps 0001H, 02AC
+02A1: 1C 26 0E   addsi L0E26   ; "Fortunately for ...
+02A4: 33   say
+02A5: 1D B5 0E   pushs L0EB5   ; honor flag
+02A8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AC: 1D C0 0E   pushs L0EC0   ; bye
+02AF: 07 01 00 03 00  cmps 0001H, 02B7
+02B4: 06 03 00   jmp 02BA
+02B7: 06 FA FD   jmp 00B4
+02BA: 40   db 40 ???
+02BB: 42 6C 01   pushf flag:[016C]
+02BE: 05 1B 00   jne 02DC
+02C1: 1C C4 0E   addsi L0EC4   ; "Thou canst walk ...
+02C4: 33   say
+02C5: 1F 02 00   pushi 0002H   ; 2
+02C8: 21 03 00   push [0003]
+02CB: 39 3D 00 02  calli 003D, 2
+02CF: 1F 00 00   pushi 0000H   ; 0
+02D2: 21 03 00   push [0003]
+02D5: 39 1D 00 02  calli 001D, 2
+02D9: 06 04 00   jmp 02E0
+02DC: 1C 19 0F   addsi L0F19   ; "May thy stay in ...
+02DF: 33   say
+02E0: 48   push eventid
+02E1: 1F 00 00   pushi 0000H   ; 0
+02E4: 22   cmpeq
+02E5: 05 06 00   jne 02EE
+02E8: 1F 89 FF   pushi FF89H   ; -119
+02EB: 24 06 00   call [0006]   ; 092EH
+02EE: 25   ret

@@ -1,0 +1,20 @@
+  .funcnumber 0909H
+  .data
+L0000: db 'milord'
+L0006: db 00
+L0007: db 'milady'
+L000D: db 00
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0000H
+0000: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0004: 1F 00 00   pushi 0000H   ; 0
+0007: 22   cmpeq
+0008: 05 07 00   jne 0012
+000B: 1D 00 00   pushs L0000   ; milord
+000E: 2D   setr
+000F: 06 04 00   jmp 0016
+0012: 1D 07 00   pushs L0007   ; milady
+0015: 2D   setr
+0016: 32   rts

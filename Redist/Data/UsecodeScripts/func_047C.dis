@@ -1,0 +1,755 @@
+  .funcnumber 047CH
+  .data
+L0000: db 'I have false flag'
+L0011: db 00
+L0012: db 'thou art safe now'
+L0023: db 00
+L0024: db 'I have false flag'
+L0035: db 00
+L0036: db 'bye'
+L0039: db 00
+L003A: db 'job'
+L003D: db 00
+L003E: db 'name'
+L0042: db 00
+L0043: db 'You see a scrawny and timid-looking man who eyes you fearful'
+ db 'ly.'
+L0082: db 00
+L0083: db '"Oh, my!" he cries. "'Tis really the Avatar this time! Pleas'
+ db 'e do not hurt me, Avatar!"'
+L00D9: db 00
+L00DA: db 'this time'
+L00E3: db 00
+L00E4: db '"Greetings again, '
+L00F6: db 00
+L00F7: db '," says Sprellic.'
+L0108: db 00
+L0109: db 'champion'
+L0111: db 00
+L0112: db 'name'
+L0116: db 00
+L0117: db '"My name is Sprellic."'
+L012D: db 00
+L012E: db 'name'
+L0132: db 00
+L0133: db 'job'
+L0136: db 00
+L0137: db '"I am the proprietor of the Bunk and Stool here in Jhelom."'
+L0172: db 00
+L0173: db 'Jhelom'
+L0179: db 00
+L017A: db 'Bunk and Stool'
+L0188: db 00
+L0189: db 'Bunk and Stool'
+L0197: db 00
+L0198: db '"It is the local inn where all the fighters from the Library'
+ db ' of Scars come to drink. They would wreck the place every ni'
+ db 'ght if not for Ophelia and Daphne."'
+L0233: db 00
+L0234: db '"But that does not matter for soon I will be dead."'
+L0267: db 00
+L0268: db 'dead?'
+L026D: db 00
+L026E: db 'Bunk and Stool'
+L027C: db 00
+L027D: db 'Daphne'
+L0283: db 00
+L0284: db 'Ophelia'
+L028B: db 00
+L028C: db 'Library of Scars'
+L029C: db 00
+L029D: db 'Jhelom'
+L02A3: db 00
+L02A4: db '"This is a town of fighters who pass their time fighting eac'
+ db 'h other in bloody duels. It is no place for me. I should nev'
+ db 'er have left Minoc!"'
+L0330: db 00
+L0331: db 'Jhelom'
+L0337: db 00
+L0338: db 'Library of Scars'
+L0348: db 00
+L0349: db '"It is the club of fighters run by Master De Snel! Second ho'
+ db 'me to the fiercest and most ruthless fighters in all of Brit'
+ db 'annia."'
+L03C8: db 00
+L03C9: db 'Library of Scars'
+L03D9: db 00
+L03DA: db 'Ophelia'
+L03E1: db 00
+L03E2: db '"Ophelia is one of my barmaids. She is gorgeous. If Daphne c'
+ db 'annot handle our patrons when they become unruly, Ophelia wi'
+ db 'll simply charm them."'
+L0470: db 00
+L0471: db 'Ophelia'
+L0478: db 00
+L0479: db 'Daphne'
+L047F: db 00
+L0480: db '"Daphne is one of my barmaids. She is, ahem, rather large. I'
+ db 'f Ophelia cannot charm our patrons when they become unruly, '
+ db 'Daphne wrestles them to the ground."'
+L051C: db 00
+L051D: db 'Daphne'
+L0523: db 00
+L0524: db 'dead?'
+L0529: db 00
+L052A: db 'this time'
+L0533: db 00
+L0534: db '"'Tis a long story. I shall probably be dead before I can fi'
+ db 'nish it."'
+L0579: db 00
+L057A: db 'dead?'
+L057F: db 00
+L0580: db 'this time'
+L0589: db 00
+L058A: db 'story'
+L058F: db 00
+L0590: db 'story'
+L0595: db 00
+L0596: db '"My tale is a strange one. It may disturb and puzzle thee. A'
+ db 'rt thou certain thou wouldst like to hear it?"'
+L0600: db 00
+L0601: db '"Well, then I hope I was of some assistance to thee. Farewel'
+ db 'l forever, '
+L0648: db 00
+L0649: db '."*'
+L064C: db 00
+L064D: db '"It all started the previous evening. I had given Ophelia an'
+ db 'd Daphne the evening off. A stranger had come to mine inn...'
+ db ' A very odd stranger.'
+L06DA: db 00
+L06DB: db '"He... he claimed he was the -Avatar-!'
+L0701: db 00
+L0702: db '"...And I believed him, which shows thee how gullible I am!"'
+L073E: db 00
+L073F: db 'stranger'
+L0747: db 00
+L0748: db 'story'
+L074D: db 00
+L074E: db 'stranger'
+L0756: db 00
+L0757: db '"His eccentricity seemed to be surpassed only by his wealth.'
+ db ' He booked both rooms in the inn so that he could try each b'
+ db 'ed and decide for himself which one was the most comfortable'
+ db '. As for food, he was voracious.'
+L082B: db 00
+L082C: db '"No offense, but he was also a member of The Fellowship!"'
+L0865: db 00
+L0866: db '"He was a member of The Fellowship, too!"'
+L088F: db 00
+L0890: db 'stranger'
+L0898: db 00
+L0899: db 'food'
+L089D: db 00
+L089E: db 'eccentricity'
+L08AA: db 00
+L08AB: db 'eccentricity'
+L08B7: db 00
+L08B8: db '"I fear that this stranger was not who he claimed to be at a'
+ db 'll. I was a victim of a great and terrible deception that wa'
+ db 's perpetrated upon me."'
+L0947: db 00
+L0948: db 'eccentricity'
+L0954: db 00
+L0955: db 'food'
+L0959: db 00
+L095A: db '"This stranger ordered one of every kind of food and drink o'
+ db 'n the menu. So if he ever wanted anything, it would be right'
+ db ' there to eat. I was cooking for hours. But then it got wors'
+ db 'e. He went to bed."'
+L0A21: db 00
+L0A22: db 'food'
+L0A26: db 00
+L0A27: db 'bed'
+L0A2A: db 00
+L0A2B: db 'cooking'
+L0A32: db 00
+L0A33: db 'cooking'
+L0A3A: db 00
+L0A3B: db '"Of course most of the food he left was uneaten! I had to gi'
+ db 've it away once it started to spoil!"'
+L0A9C: db 00
+L0A9D: db 'cooking'
+L0AA4: db 00
+L0AA5: db 'bed'
+L0AA8: db 00
+L0AA9: db '"After he went to bed, he complained that he was too cold. I'
+ db ' brought him more and more blankets, but it was not enough. '
+ db 'Finally, he had every blanket in the inn. And he was still c'
+ db 'old!"'
+L0B62: db 00
+L0B63: db 'bed'
+L0B66: db 00
+L0B67: db 'cold'
+L0B6B: db 00
+L0B6C: db 'cold'
+L0B70: db 00
+L0B71: db '"In desperation I ran down the street. It was the middle of '
+ db 'the night. All of the shops were closed. The only thing I co'
+ db 'uld find was some sort of old tapestry hanging on a wall. So'
+ db ' I took it down."'
+L0C36: db 00
+L0C37: db 'cold'
+L0C3B: db 00
+L0C3C: db 'tapestry'
+L0C44: db 00
+L0C45: db 'night'
+L0C4A: db 00
+L0C4B: db 'night'
+L0C50: db 00
+L0C51: db '"Actually, now as I recall being out in the night air, it wa'
+ db 's a quite tolerable evening. Alas, I was oblivious to little'
+ db ' else but the prospect of earning a goodly sum in the servic'
+ db 'e of the stranger. Woe is me!"'
+L0D23: db 00
+L0D24: db 'night'
+L0D29: db 00
+L0D2A: db 'tapestry'
+L0D32: db 00
+L0D33: db '"The next thing I remember there was an angry woman chasing '
+ db 'after me. For some reason she wanted to kill me! I managed t'
+ db 'o get away from her and get back to the inn and cover the st'
+ db 'ranger with the tapestry. Finally he fell asleep."'
+L0E19: db 00
+L0E1A: db 'tapestry'
+L0E22: db 00
+L0E23: db 'asleep'
+L0E29: db 00
+L0E2A: db 'angry woman'
+L0E35: db 00
+L0E36: db 'angry woman'
+L0E41: db 00
+L0E42: db '"Actually, I had seen this angry woman before. She would ent'
+ db 'er mine establishment upon occasion. Unfortunately, this was'
+ db ' our first formal acquaintance."'
+L0EDA: db 00
+L0EDB: db 'angry woman'
+L0EE6: db 00
+L0EE7: db 'asleep'
+L0EED: db 00
+L0EEE: db '"I also fell asleep, only I slept late. When I awoke the gue'
+ db 'st was gone. He had not paid his bill and had taken all the '
+ db 'blankets, even the tapestry. Before I could go look for him '
+ db 'I had a visitor."'
+L0FB3: db 00
+L0FB4: db 'asleep'
+L0FBA: db 00
+L0FBB: db 'visitor'
+L0FC2: db 00
+L0FC3: db 'gone'
+L0FC7: db 00
+L0FC8: db 'gone'
+L0FCC: db 00
+L0FCD: db '"As I have said, I was rooked by a professional. A Master Cr'
+ db 'iminal, no doubt -- and one who is still at large!"'
+L103C: db 00
+L103D: db 'gone'
+L1041: db 00
+L1042: db 'visitor'
+L1049: db 00
+L104A: db '"It was the woman who had chased me the night before. Her na'
+ db 'me was Syria. She said I had stolen the honor flag from the '
+ db 'wall of the Library of Scars. She also challenged me to a du'
+ db 'el to the death unless I gave it back. And she is much bigge'
+ db 'r than I! When I tried to explain that I could not give it b'
+ db 'ack, she hit me. It hurt. A lot!"'
+L1197: db 00
+L1198: db 'visitor'
+L119F: db 00
+L11A0: db 'duel'
+L11A4: db 00
+L11A5: db 'hit'
+L11A8: db 00
+L11A9: db 'hit'
+L11AC: db 00
+L11AD: db '"I will say this of the Lady Syria. She is quite beautiful w'
+ db 'hen she is angry... At least, the visions of her that swam t'
+ db 'hrough mine head after she had hit me were quite beautiful. '
+ db 'Tragically, I awoke."'
+L1276: db 00
+L1277: db 'hit'
+L127A: db 00
+L127B: db 'duel'
+L127F: db 00
+L1280: db '"Later that day I ran into a man named Vokes. He is a fighte'
+ db 'r at the Library of Scars. He asked me to return the honor f'
+ db 'lag and when I tried to tell him I could not, he hit me. The'
+ db 'n he challenged me to a duel to the death to be fought right'
+ db ' after my duel with Syria.'
+L138A: db 00
+L138B: db '"After Vokes left, I encountered a man named Timmons. He ask'
+ db 'ed me to return the honor flag to the Library of Scars. I to'
+ db 'ld him I could not and he also challenged me to a duel to th'
+ db 'e death. I told him I was busy, but he scheduled the challen'
+ db 'ge for right after my duel with Vokes.'
+L14A1: db 00
+L14A2: db '"Timmons, Vokes and Syria are the three toughest fighters in'
+ db ' Jhelom. I could not hope to survive against one of them, le'
+ db 't alone all three. The mysterious guest and the honor flag a'
+ db 're nowhere to be found. Even now my barmaids are taking bets'
+ db ' on the manner of my demise!"'
+L15AF: db 00
+L15B0: db 'duel'
+L15B4: db 00
+L15B5: db 'demise'
+L15BB: db 00
+L15BC: db 'Syria'
+L15C1: db 00
+L15C2: db 'Vokes'
+L15C7: db 00
+L15C8: db 'Timmons'
+L15CF: db 00
+L15D0: db 'Timmons'
+L15D7: db 00
+L15D8: db '"Timmons has come to Jhelom only recently. I can tell thee n'
+ db 'othing more of him."'
+L1628: db 00
+L1629: db 'Timmons'
+L1630: db 00
+L1631: db 'Vokes'
+L1636: db 00
+L1637: db '"He is a fearless warrior, who cherishes any opportunity for'
+ db ' combat. Beware of him."'
+L168B: db 00
+L168C: db 'Vokes'
+L1691: db 00
+L1692: db 'Syria'
+L1697: db 00
+L1698: db '"She is not as bad as she may appear to be. No doubt that wo'
+ db 'man has a temper. But I am sure she is quite nice once thou '
+ db 'hast gotten the chance to know her. If not for these sad cir'
+ db 'cumstances, we might have gotten the chance to get to know e'
+ db 'ach other better."'
+L179A: db 00
+L179B: db 'Syria'
+L17A0: db 00
+L17A1: db 'demise'
+L17A7: db 00
+L17A8: db '"Mine only hope for survival is to find a champion who could'
+ db ' stand up to the fiercest fighters in Jhelom."'
+L1812: db 00
+L1813: db 'demise'
+L1819: db 00
+L181A: db 'champion'
+L1822: db 00
+L1823: db 'champion'
+L182B: db 00
+L182C: db '"Wouldst thou be my champion, Avatar?"'
+L1852: db 00
+L1853: db 'Sprellic falls to his knees before you in gratitude. "Avatar'
+ db ', thou hast saved my life! I cannot thank thee enough!"'
+L18C6: db 00
+L18C7: db '"Oh, well. I had no choice but to ask."'
+L18EE: db 00
+L18EF: db 'champion'
+L18F7: db 00
+L18F8: db 'thou art safe now'
+L1909: db 00
+L190A: db 'You tell Sprellic that the situation has been resolved and h'
+ db 'ow it was done.'
+L1955: db 00
+L1956: db 'Sprellic practically kisses your feet.'
+L197C: db 00
+L197D: db '"How can I ever thank thee? Thou art the most noble person I'
+ db ' have ever met! I shalt be forever in thy debt! I thank thee'
+ db '!"'
+L19F7: db 00
+L19F8: db 'thou art safe now'
+L1A09: db 00
+L1A0A: db 'I have false flag'
+L1A1B: db 00
+L1A1C: db 'You tell Sprellic that Kliftin made you a false flag.'
+L1A51: db 00
+L1A52: db '"How ingenious! Please! Deliver it to Syria as soon as thou '
+ db 'art able! And I thank thee for thy trouble in helping me!"'
+L1AC8: db 00
+L1AC9: db 'I have false flag'
+L1ADA: db 00
+L1ADB: db 'bye'
+L1ADE: db 00
+L1ADF: db '"Good day to thee, Avatar."'
+L1AFA: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 40 04   jne 0448
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 84 FF   pushi FF84H   ; -124
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 14   push false
+0020: 12 02 00   pop [0002]
+0023: 1F 83 FF   pushi FF83H   ; -125
+0026: 38 1B 00 01  callis 001B, 1
+002A: 38 37 00 01  callis 0037, 1
+002E: 12 03 00   pop [0003]
+0031: 1F 82 FF   pushi FF82H   ; -126
+0034: 38 1B 00 01  callis 001B, 1
+0038: 38 37 00 01  callis 0037, 1
+003C: 12 04 00   pop [0004]
+003F: 1F 81 FF   pushi FF81H   ; -127
+0042: 38 1B 00 01  callis 001B, 1
+0046: 38 37 00 01  callis 0037, 1
+004A: 12 05 00   pop [0005]
+004D: 21 03 00   push [0003]
+0050: 21 04 00   push [0004]
+0053: 21 05 00   push [0005]
+0056: 0E   and
+0057: 0E   and
+0058: 05 04 00   jne 005F
+005B: 13   push true
+005C: 12 02 00   pop [0002]
+005F: 42 68 01   pushf flag:[0168]
+0062: 42 6A 01   pushf flag:[016A]
+0065: 10   not
+0066: 0E   and
+0067: 05 07 00   jne 0071
+006A: 1D 00 00   pushs L0000   ; I have false flag
+006D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0071: 21 02 00   push [0002]
+0074: 42 6A 01   pushf flag:[016A]
+0077: 0F   or
+0078: 05 0E 00   jne 0089
+007B: 1D 12 00   pushs L0012   ; thou art safe now
+007E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0082: 1D 24 00   pushs L0024   ; I have false flag
+0085: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0089: 1D 36 00   pushs L0036   ; bye
+008C: 1D 3A 00   pushs L003A   ; job
+008F: 1D 3E 00   pushs L003E   ; name
+0092: 1E 03 00   arrc 0003H   ; 3
+0095: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0099: 42 76 01   pushf flag:[0176]
+009C: 10   not
+009D: 05 16 00   jne 00B6
+00A0: 1C 43 00   addsi L0043   ; You see a scrawny...
+00A3: 33   say
+00A4: 1C 83 00   addsi L0083   ; "Oh, my!" he crie...
+00A7: 33   say
+00A8: 13   push true
+00A9: 43 76 01   popf flag:[0176]
+00AC: 1D DA 00   pushs L00DA   ; this time
+00AF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B3: 06 0A 00   jmp 00C0
+00B6: 1C E4 00   addsi L00E4   ; "Greetings again, 
+00B9: 2F 00 00   addsv [0000]
+00BC: 1C F7 00   addsi L00F7   ; ," says Sprellic.
+00BF: 33   say
+00C0: 42 86 01   pushf flag:[0186]
+00C3: 05 15 00   jne 00DB
+00C6: 42 70 01   pushf flag:[0170]
+00C9: 10   not
+00CA: 05 0E 00   jne 00DB
+00CD: 42 6A 01   pushf flag:[016A]
+00D0: 10   not
+00D1: 05 07 00   jne 00DB
+00D4: 1D 09 01   pushs L0109   ; champion
+00D7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DB: 04 65 03   je 0443
+00DE: 1D 12 01   pushs L0112   ; name
+00E1: 07 01 00 0B 00  cmps 0001H, 00F1
+00E6: 1C 17 01   addsi L0117   ; "My name is Sprel...
+00E9: 33   say
+00EA: 1D 2E 01   pushs L012E   ; name
+00ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F1: 1D 33 01   pushs L0133   ; job
+00F4: 07 01 00 11 00  cmps 0001H, 010A
+00F9: 1C 37 01   addsi L0137   ; "I am the proprie...
+00FC: 33   say
+00FD: 1D 73 01   pushs L0173   ; Jhelom
+0100: 1D 7A 01   pushs L017A   ; Bunk and Stool
+0103: 1E 02 00   arrc 0002H   ; 2
+0106: 39 05 00 01  calli _AddAnswer@1  ; 0005
+010A: 1D 89 01   pushs L0189   ; Bunk and Stool
+010D: 07 01 00 31 00  cmps 0001H, 0143
+0112: 1C 98 01   addsi L0198   ; "It is the local ...
+0115: 33   say
+0116: 42 6A 01   pushf flag:[016A]
+0119: 21 02 00   push [0002]
+011C: 0F   or
+011D: 10   not
+011E: 05 0B 00   jne 012C
+0121: 1C 34 02   addsi L0234   ; "But that does no...
+0124: 33   say
+0125: 1D 68 02   pushs L0268   ; dead?
+0128: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012C: 1D 6E 02   pushs L026E   ; Bunk and Stool
+012F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0133: 1D 7D 02   pushs L027D   ; Daphne
+0136: 1D 84 02   pushs L0284   ; Ophelia
+0139: 1D 8C 02   pushs L028C   ; Library of Scars
+013C: 1E 03 00   arrc 0003H   ; 3
+013F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0143: 1D 9D 02   pushs L029D   ; Jhelom
+0146: 07 01 00 0B 00  cmps 0001H, 0156
+014B: 1C A4 02   addsi L02A4   ; "This is a town o...
+014E: 33   say
+014F: 1D 31 03   pushs L0331   ; Jhelom
+0152: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0156: 1D 38 03   pushs L0338   ; Library of Scars
+0159: 07 01 00 0B 00  cmps 0001H, 0169
+015E: 1C 49 03   addsi L0349   ; "It is the club o...
+0161: 33   say
+0162: 1D C9 03   pushs L03C9   ; Library of Scars
+0165: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0169: 1D DA 03   pushs L03DA   ; Ophelia
+016C: 07 01 00 0B 00  cmps 0001H, 017C
+0171: 1C E2 03   addsi L03E2   ; "Ophelia is one o...
+0174: 33   say
+0175: 1D 71 04   pushs L0471   ; Ophelia
+0178: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017C: 1D 79 04   pushs L0479   ; Daphne
+017F: 07 01 00 0B 00  cmps 0001H, 018F
+0184: 1C 80 04   addsi L0480   ; "Daphne is one of...
+0187: 33   say
+0188: 1D 1D 05   pushs L051D   ; Daphne
+018B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018F: 1D 24 05   pushs L0524   ; dead?
+0192: 1D 2A 05   pushs L052A   ; this time
+0195: 07 02 00 18 00  cmps 0002H, 01B2
+019A: 1C 34 05   addsi L0534   ; "'Tis a long stor...
+019D: 33   say
+019E: 1D 7A 05   pushs L057A   ; dead?
+01A1: 1D 80 05   pushs L0580   ; this time
+01A4: 1E 02 00   arrc 0002H   ; 2
+01A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AB: 1D 8A 05   pushs L058A   ; story
+01AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B2: 1D 90 05   pushs L0590   ; story
+01B5: 07 01 00 39 00  cmps 0001H, 01F3
+01BA: 1C 96 05   addsi L0596   ; "My tale is a str...
+01BD: 33   say
+01BE: 24 01 00   call [0001]   ; 090AH
+01C1: 12 06 00   pop [0006]
+01C4: 21 06 00   push [0006]
+01C7: 10   not
+01C8: 05 0E 00   jne 01D9
+01CB: 1C 01 06   addsi L0601   ; "Well, then I hop...
+01CE: 2F 00 00   addsv [0000]
+01D1: 1C 49 06   addsi L0649   ; ."*
+01D4: 33   say
+01D5: 3F   abrt
+01D6: 06 13 00   jmp 01EC
+01D9: 1C 4D 06   addsi L064D   ; "It all started t...
+01DC: 33   say
+01DD: 1C DB 06   addsi L06DB   ; "He... he claimed...
+01E0: 33   say
+01E1: 1C 02 07   addsi L0702   ; "...And I believe...
+01E4: 33   say
+01E5: 1D 3F 07   pushs L073F   ; stranger
+01E8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01EC: 1D 48 07   pushs L0748   ; story
+01EF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F3: 1D 4E 07   pushs L074E   ; stranger
+01F6: 07 01 00 29 00  cmps 0001H, 0224
+01FB: 1C 57 07   addsi L0757   ; "His eccentricity...
+01FE: 33   say
+01FF: 21 01 00   push [0001]
+0202: 05 07 00   jne 020C
+0205: 1C 2C 08   addsi L082C   ; "No offense, but ...
+0208: 33   say
+0209: 06 04 00   jmp 0210
+020C: 1C 66 08   addsi L0866   ; "He was a member ...
+020F: 33   say
+0210: 1D 90 08   pushs L0890   ; stranger
+0213: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0217: 1D 99 08   pushs L0899   ; food
+021A: 1D 9E 08   pushs L089E   ; eccentricity
+021D: 1E 02 00   arrc 0002H   ; 2
+0220: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0224: 1D AB 08   pushs L08AB   ; eccentricity
+0227: 07 01 00 0B 00  cmps 0001H, 0237
+022C: 1C B8 08   addsi L08B8   ; "I fear that this...
+022F: 33   say
+0230: 1D 48 09   pushs L0948   ; eccentricity
+0233: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0237: 1D 55 09   pushs L0955   ; food
+023A: 07 01 00 18 00  cmps 0001H, 0257
+023F: 1C 5A 09   addsi L095A   ; "This stranger or...
+0242: 33   say
+0243: 1D 22 0A   pushs L0A22   ; food
+0246: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024A: 1D 27 0A   pushs L0A27   ; bed
+024D: 1D 2B 0A   pushs L0A2B   ; cooking
+0250: 1E 02 00   arrc 0002H   ; 2
+0253: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0257: 1D 33 0A   pushs L0A33   ; cooking
+025A: 07 01 00 0B 00  cmps 0001H, 026A
+025F: 1C 3B 0A   addsi L0A3B   ; "Of course most o...
+0262: 33   say
+0263: 1D 9D 0A   pushs L0A9D   ; cooking
+0266: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026A: 1D A5 0A   pushs L0AA5   ; bed
+026D: 07 01 00 12 00  cmps 0001H, 0284
+0272: 1C A9 0A   addsi L0AA9   ; "After he went to...
+0275: 33   say
+0276: 1D 63 0B   pushs L0B63   ; bed
+0279: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027D: 1D 67 0B   pushs L0B67   ; cold
+0280: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0284: 1D 6C 0B   pushs L0B6C   ; cold
+0287: 07 01 00 18 00  cmps 0001H, 02A4
+028C: 1C 71 0B   addsi L0B71   ; "In desperation I...
+028F: 33   say
+0290: 1D 37 0C   pushs L0C37   ; cold
+0293: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0297: 1D 3C 0C   pushs L0C3C   ; tapestry
+029A: 1D 45 0C   pushs L0C45   ; night
+029D: 1E 02 00   arrc 0002H   ; 2
+02A0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02A4: 1D 4B 0C   pushs L0C4B   ; night
+02A7: 07 01 00 0B 00  cmps 0001H, 02B7
+02AC: 1C 51 0C   addsi L0C51   ; "Actually, now as...
+02AF: 33   say
+02B0: 1D 24 0D   pushs L0D24   ; night
+02B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B7: 1D 2A 0D   pushs L0D2A   ; tapestry
+02BA: 07 01 00 18 00  cmps 0001H, 02D7
+02BF: 1C 33 0D   addsi L0D33   ; "The next thing I...
+02C2: 33   say
+02C3: 1D 1A 0E   pushs L0E1A   ; tapestry
+02C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CA: 1D 23 0E   pushs L0E23   ; asleep
+02CD: 1D 2A 0E   pushs L0E2A   ; angry woman
+02D0: 1E 02 00   arrc 0002H   ; 2
+02D3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D7: 1D 36 0E   pushs L0E36   ; angry woman
+02DA: 07 01 00 0B 00  cmps 0001H, 02EA
+02DF: 1C 42 0E   addsi L0E42   ; "Actually, I had ...
+02E2: 33   say
+02E3: 1D DB 0E   pushs L0EDB   ; angry woman
+02E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02EA: 1D E7 0E   pushs L0EE7   ; asleep
+02ED: 07 01 00 18 00  cmps 0001H, 030A
+02F2: 1C EE 0E   addsi L0EEE   ; "I also fell asle...
+02F5: 33   say
+02F6: 1D B4 0F   pushs L0FB4   ; asleep
+02F9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02FD: 1D BB 0F   pushs L0FBB   ; visitor
+0300: 1D C3 0F   pushs L0FC3   ; gone
+0303: 1E 02 00   arrc 0002H   ; 2
+0306: 39 05 00 01  calli _AddAnswer@1  ; 0005
+030A: 1D C8 0F   pushs L0FC8   ; gone
+030D: 07 01 00 0B 00  cmps 0001H, 031D
+0312: 1C CD 0F   addsi L0FCD   ; "As I have said, ...
+0315: 33   say
+0316: 1D 3D 10   pushs L103D   ; gone
+0319: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+031D: 1D 42 10   pushs L1042   ; visitor
+0320: 07 01 00 18 00  cmps 0001H, 033D
+0325: 1C 4A 10   addsi L104A   ; "It was the woman...
+0328: 33   say
+0329: 1D 98 11   pushs L1198   ; visitor
+032C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0330: 1D A0 11   pushs L11A0   ; duel
+0333: 1D A5 11   pushs L11A5   ; hit
+0336: 1E 02 00   arrc 0002H   ; 2
+0339: 39 05 00 01  calli _AddAnswer@1  ; 0005
+033D: 1D A9 11   pushs L11A9   ; hit
+0340: 07 01 00 0B 00  cmps 0001H, 0350
+0345: 1C AD 11   addsi L11AD   ; "I will say this ...
+0348: 33   say
+0349: 1D 77 12   pushs L1277   ; hit
+034C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0350: 1D 7B 12   pushs L127B   ; duel
+0353: 07 01 00 26 00  cmps 0001H, 037E
+0358: 1C 80 12   addsi L1280   ; "Later that day I...
+035B: 33   say
+035C: 1C 8B 13   addsi L138B   ; "After Vokes left...
+035F: 33   say
+0360: 1C A2 14   addsi L14A2   ; "Timmons, Vokes a...
+0363: 33   say
+0364: 1D B0 15   pushs L15B0   ; duel
+0367: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+036B: 1D B5 15   pushs L15B5   ; demise
+036E: 1D BC 15   pushs L15BC   ; Syria
+0371: 1D C2 15   pushs L15C2   ; Vokes
+0374: 1D C8 15   pushs L15C8   ; Timmons
+0377: 1E 04 00   arrc 0004H   ; 4
+037A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+037E: 1D D0 15   pushs L15D0   ; Timmons
+0381: 07 01 00 0B 00  cmps 0001H, 0391
+0386: 1C D8 15   addsi L15D8   ; "Timmons has come...
+0389: 33   say
+038A: 1D 29 16   pushs L1629   ; Timmons
+038D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0391: 1D 31 16   pushs L1631   ; Vokes
+0394: 07 01 00 0B 00  cmps 0001H, 03A4
+0399: 1C 37 16   addsi L1637   ; "He is a fearless...
+039C: 33   say
+039D: 1D 8C 16   pushs L168C   ; Vokes
+03A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03A4: 1D 92 16   pushs L1692   ; Syria
+03A7: 07 01 00 0B 00  cmps 0001H, 03B7
+03AC: 1C 98 16   addsi L1698   ; "She is not as ba...
+03AF: 33   say
+03B0: 1D 9B 17   pushs L179B   ; Syria
+03B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03B7: 1D A1 17   pushs L17A1   ; demise
+03BA: 07 01 00 16 00  cmps 0001H, 03D5
+03BF: 1C A8 17   addsi L17A8   ; "Mine only hope f...
+03C2: 33   say
+03C3: 13   push true
+03C4: 43 86 01   popf flag:[0186]
+03C7: 1D 13 18   pushs L1813   ; demise
+03CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03CE: 1D 1A 18   pushs L181A   ; champion
+03D1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03D5: 1D 23 18   pushs L1823   ; champion
+03D8: 07 01 00 26 00  cmps 0001H, 0403
+03DD: 1C 2C 18   addsi L182C   ; "Wouldst thou be ...
+03E0: 33   say
+03E1: 24 01 00   call [0001]   ; 090AH
+03E4: 12 07 00   pop [0007]
+03E7: 21 07 00   push [0007]
+03EA: 05 0B 00   jne 03F8
+03ED: 1C 53 18   addsi L1853   ; Sprellic falls to...
+03F0: 33   say
+03F1: 13   push true
+03F2: 43 70 01   popf flag:[0170]
+03F5: 06 04 00   jmp 03FC
+03F8: 1C C7 18   addsi L18C7   ; "Oh, well. I had ...
+03FB: 33   say
+03FC: 1D EF 18   pushs L18EF   ; champion
+03FF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0403: 1D F8 18   pushs L18F8   ; thou art safe now
+0406: 07 01 00 13 00  cmps 0001H, 041E
+040B: 1C 0A 19   addsi L190A   ; You tell Sprellic...
+040E: 33   say
+040F: 1C 56 19   addsi L1956   ; Sprellic practica...
+0412: 33   say
+0413: 1C 7D 19   addsi L197D   ; "How can I ever t...
+0416: 33   say
+0417: 1D F8 19   pushs L19F8   ; thou art safe now
+041A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+041E: 1D 0A 1A   pushs L1A0A   ; I have false flag
+0421: 07 01 00 0F 00  cmps 0001H, 0435
+0426: 1C 1C 1A   addsi L1A1C   ; You tell Sprellic...
+0429: 33   say
+042A: 1C 52 1A   addsi L1A52   ; "How ingenious! P...
+042D: 33   say
+042E: 1D C9 1A   pushs L1AC9   ; I have false flag
+0431: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0435: 1D DB 1A   pushs L1ADB   ; bye
+0438: 07 01 00 03 00  cmps 0001H, 0440
+043D: 06 03 00   jmp 0443
+0440: 06 98 FC   jmp 00DB
+0443: 40   db 40 ???
+0444: 1C DF 1A   addsi L1ADF   ; "Good day to thee...
+0447: 33   say
+0448: 48   push eventid
+0449: 1F 00 00   pushi 0000H   ; 0
+044C: 22   cmpeq
+044D: 05 06 00   jne 0456
+0450: 1F 84 FF   pushi FF84H   ; -124
+0453: 24 02 00   call [0002]   ; 092EH
+0456: 25   ret

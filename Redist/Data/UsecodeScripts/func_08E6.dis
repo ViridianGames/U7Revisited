@@ -1,0 +1,33 @@
+  .funcnumber 08E6H ;* Remove Golem body.
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 1F 99 FE   pushi FE99H   ; -359
+0003: 1F 99 FE   pushi FE99H   ; -359
+0006: 1F 99 FE   pushi FE99H   ; -359
+0009: 21 00 00   push [0000]
+000C: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0010: 12 01 00   pop [0001]
+0013: 21 01 00   push [0001]
+0016: 05 19 00   jne 0032
+0019: 2E   sloop
+001A: 02 02 00 03 00 04 00 01 00 0A 00  db 2 ???
+001B:   db 2
+001C:   db 0
+001D:   db 3
+001E:   db 0
+001F:   db 4
+0020:   db 0
+0021:   db 1
+0022:   db 0
+0023:   db a
+0024:   db 0
+0025: 21 04 00   push [0004]
+0028: 39 6F 00 01  calli 006F, 1
+002C: 06 EB FF   jmp 001A
+002F: 06 CE FF   jmp 0000
+0032: 21 00 00   push [0000]
+0035: 39 6F 00 01  calli 006F, 1
+0039: 25   ret

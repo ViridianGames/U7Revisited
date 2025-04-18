@@ -1,0 +1,234 @@
+  .funcnumber 0869H
+  .data
+L0000: db 'collate'
+L0007: db 00
+L0008: db 'collated'
+L0010: db 00
+L0011: db 'collating'
+L001A: db 00
+L001B: db 'sear'
+L001F: db 00
+L0020: db '*'
+L0021: db 00
+L0022: db '*'
+L0023: db 00
+L0024: db 'croak'
+L0029: db 00
+L002A: db '*'
+L002B: db 00
+L002C: db '*'
+L002D: db 00
+L002E: db 'power-nap'
+L0037: db 00
+L0038: db 'power-napped'
+L0044: db 00
+L0045: db 'power-napping'
+L0052: db 00
+L0053: db 'network'
+L005A: db 00
+L005B: db '*'
+L005C: db 00
+L005D: db '*'
+L005E: db 00
+L005F: db 'conjure'
+L0066: db 00
+L0067: db 'conjured'
+L006F: db 00
+L0070: db 'conjuring'
+L0079: db 00
+L007A: db 'campaign'
+L0082: db 00
+L0083: db '*'
+L0084: db 00
+L0085: db '*'
+L0086: db 00
+L0087: db 'protest'
+L008E: db 00
+L008F: db '*'
+L0090: db 00
+L0091: db '*'
+L0092: db 00
+L0093: db 'spew'
+L0097: db 00
+L0098: db '*'
+L0099: db 00
+L009A: db '*'
+L009B: db 00
+L009C: db 'inhabit'
+L00A3: db 00
+L00A4: db '*'
+L00A5: db 00
+L00A6: db '*'
+L00A7: db 00
+L00A8: db 'censor'
+L00AE: db 00
+L00AF: db '*'
+L00B0: db 00
+L00B1: db '*'
+L00B2: db 00
+L00B3: db 'lay off'
+L00BA: db 00
+L00BB: db 'laid off'
+L00C3: db 00
+L00C4: db 'laying off'
+L00CE: db 00
+L00CF: db 'irradiate'
+L00D8: db 00
+L00D9: db 'irradiated'
+L00E3: db 00
+L00E4: db 'irradiating'
+L00EF: db 00
+L00F0: db 'martinize'
+L00F9: db 00
+L00FA: db 'martinized'
+L0104: db 00
+L0105: db 'martinizing'
+L0110: db 00
+L0111: db '*'
+L0112: db 00
+L0113: db 'ed'
+L0115: db 00
+L0116: db '*'
+L0117: db 00
+L0118: db 'ing'
+L011B: db 00
+  .code
+  .argc 0000H
+  .localc 0005H
+  .externsize 0000H
+0000: 1D 00 00   pushs L0000   ; collate
+0003: 1D 08 00   pushs L0008   ; collated
+0006: 1D 11 00   pushs L0011   ; collating
+0009: 1D 1B 00   pushs L001B   ; sear
+000C: 1D 20 00   pushs L0020   ; *
+000F: 1D 22 00   pushs L0022   ; *
+0012: 1D 24 00   pushs L0024   ; croak
+0015: 1D 2A 00   pushs L002A   ; *
+0018: 1D 2C 00   pushs L002C   ; *
+001B: 1D 2E 00   pushs L002E   ; power-nap
+001E: 1D 38 00   pushs L0038   ; power-napped
+0021: 1D 45 00   pushs L0045   ; power-napping
+0024: 1D 53 00   pushs L0053   ; network
+0027: 1D 5B 00   pushs L005B   ; *
+002A: 1D 5D 00   pushs L005D   ; *
+002D: 1D 5F 00   pushs L005F   ; conjure
+0030: 1D 67 00   pushs L0067   ; conjured
+0033: 1D 70 00   pushs L0070   ; conjuring
+0036: 4A   arra
+0037: 4A   arra
+0038: 4A   arra
+0039: 4A   arra
+003A: 4A   arra
+003B: 4A   arra
+003C: 4A   arra
+003D: 4A   arra
+003E: 4A   arra
+003F: 4A   arra
+0040: 4A   arra
+0041: 4A   arra
+0042: 4A   arra
+0043: 4A   arra
+0044: 4A   arra
+0045: 4A   arra
+0046: 4A   arra
+0047: 12 00 00   pop [0000]
+004A: 21 00 00   push [0000]
+004D: 1D 7A 00   pushs L007A   ; campaign
+0050: 1D 83 00   pushs L0083   ; *
+0053: 1D 85 00   pushs L0085   ; *
+0056: 1D 87 00   pushs L0087   ; protest
+0059: 1D 8F 00   pushs L008F   ; *
+005C: 1D 91 00   pushs L0091   ; *
+005F: 1D 93 00   pushs L0093   ; spew
+0062: 1D 98 00   pushs L0098   ; *
+0065: 1D 9A 00   pushs L009A   ; *
+0068: 1D 9C 00   pushs L009C   ; inhabit
+006B: 1D A4 00   pushs L00A4   ; *
+006E: 1D A6 00   pushs L00A6   ; *
+0071: 1D A8 00   pushs L00A8   ; censor
+0074: 1D AF 00   pushs L00AF   ; *
+0077: 1D B1 00   pushs L00B1   ; *
+007A: 4A   arra
+007B: 4A   arra
+007C: 4A   arra
+007D: 4A   arra
+007E: 4A   arra
+007F: 4A   arra
+0080: 4A   arra
+0081: 4A   arra
+0082: 4A   arra
+0083: 4A   arra
+0084: 4A   arra
+0085: 4A   arra
+0086: 4A   arra
+0087: 4A   arra
+0088: 4A   arra
+0089: 12 00 00   pop [0000]
+008C: 21 00 00   push [0000]
+008F: 1D B3 00   pushs L00B3   ; lay off
+0092: 1D BB 00   pushs L00BB   ; laid off
+0095: 1D C4 00   pushs L00C4   ; laying off
+0098: 1D CF 00   pushs L00CF   ; irradiate
+009B: 1D D9 00   pushs L00D9   ; irradiated
+009E: 1D E4 00   pushs L00E4   ; irradiating
+00A1: 1D F0 00   pushs L00F0   ; martinize
+00A4: 1D FA 00   pushs L00FA   ; martinized
+00A7: 1D 05 01   pushs L0105   ; martinizing
+00AA: 4A   arra
+00AB: 4A   arra
+00AC: 4A   arra
+00AD: 4A   arra
+00AE: 4A   arra
+00AF: 4A   arra
+00B0: 4A   arra
+00B1: 4A   arra
+00B2: 4A   arra
+00B3: 12 00 00   pop [0000]
+00B6: 21 00 00   push [0000]
+00B9: 38 5E 00 01  callis _ArraySize@1  ; 005E
+00BD: 1F 03 00   pushi 0003H   ; 3
+00C0: 0B   div
+00C1: 1F 01 00   pushi 0001H   ; 1
+00C4: 38 10 00 02  callis _Random2@2  ; 0010
+00C8: 12 01 00   pop [0001]
+00CB: 21 01 00   push [0001]
+00CE: 1F 03 00   pushi 0003H   ; 3
+00D1: 0C   mul
+00D2: 1F 02 00   pushi 0002H   ; 2
+00D5: 0A   sub
+00D6: 26 00 00   aidx [0000]
+00D9: 12 02 00   pop [0002]
+00DC: 21 01 00   push [0001]
+00DF: 1F 03 00   pushi 0003H   ; 3
+00E2: 0C   mul
+00E3: 1F 01 00   pushi 0001H   ; 1
+00E6: 0A   sub
+00E7: 26 00 00   aidx [0000]
+00EA: 12 03 00   pop [0003]
+00ED: 21 01 00   push [0001]
+00F0: 1F 03 00   pushi 0003H   ; 3
+00F3: 0C   mul
+00F4: 26 00 00   aidx [0000]
+00F7: 12 04 00   pop [0004]
+00FA: 21 03 00   push [0003]
+00FD: 1D 11 01   pushs L0111   ; *
+0100: 22   cmpeq
+0101: 05 0A 00   jne 010E
+0104: 21 02 00   push [0002]
+0107: 1D 13 01   pushs L0113   ; ed
+010A: 09   add
+010B: 12 03 00   pop [0003]
+010E: 21 04 00   push [0004]
+0111: 1D 16 01   pushs L0116   ; *
+0114: 22   cmpeq
+0115: 05 0A 00   jne 0122
+0118: 21 02 00   push [0002]
+011B: 1D 18 01   pushs L0118   ; ing
+011E: 09   add
+011F: 12 04 00   pop [0004]
+0122: 21 04 00   push [0004]
+0125: 21 03 00   push [0003]
+0128: 21 02 00   push [0002]
+012B: 1E 03 00   arrc 0003H   ; 3
+012E: 2D   setr
+012F: 32   rts

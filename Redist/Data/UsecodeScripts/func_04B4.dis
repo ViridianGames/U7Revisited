@@ -1,0 +1,446 @@
+  .funcnumber 04B4H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Inamo'
+L0012: db 00
+L0013: db 'Moongates'
+L001C: db 00
+L001D: db 'You see an aged gargoyle, bent and withered, with a regal be'
+ db 'aring. He smiles gently.'
+L0071: db 00
+L0072: db '"To be good to see you again, old friend. To be needing Drax'
+ db 'inusom again so soon?"'
+L00C4: db 00
+L00C5: db 'name'
+L00C9: db 00
+L00CA: db '"To have been many years. To be your old acquaintance, '
+L0101: db 00
+L0102: db ', Draxinusom."'
+L0110: db 00
+L0111: db 'name'
+L0115: db 00
+L0116: db 'job'
+L0119: db 00
+L011A: db '"To ask about Job? To be unable to say that I truly have one'
+ db ' at this time. To notice how the young ones no longer look t'
+ db 'o me for guidance any more. To look more to Teregus, or, mor'
+ db 'e often, to those in The Fellowship."'
+L01F3: db 00
+L01F4: db 'Fellowship'
+L01FE: db 00
+L01FF: db 'Teregus'
+L0206: db 00
+L0207: db 'Terfin'
+L020D: db 00
+L020E: db '"To be quite comfortable for our needs. To be, however, unfo'
+ db 'rtunate that it was thought necessary to isolate us from the'
+ db ' humans. To have engendered resentment and tension in our yo'
+ db 'unger generations. To remember not the old days, my friend -'
+ db '- the days when we had to work together to survive." He smil'
+ db 'es, reliving old memories, then shakes his head.~~"To have h'
+ db 'ad to give up many much when we moved."'
+L039D: db 00
+L039E: db 'give up'
+L03A5: db 00
+L03A6: db 'Terfin'
+L03AC: db 00
+L03AD: db 'give up'
+L03B4: db 00
+L03B5: db '"To have been many favorite possessions. To be too much trou'
+ db 'ble to move so much." He sighs.'
+L0410: db 00
+L0411: db '~"To especially regret selling my Ethereal Ring."'
+L0442: db 00
+L0443: db 'Ethereal Ring'
+L0450: db 00
+L0451: db 'selling'
+L0458: db 00
+L0459: db 'give up'
+L0460: db 00
+L0461: db 'Ethereal Ring'
+L046E: db 00
+L046F: db '"Ah. To be, indeed, a lovely treasure. To have been quite us'
+ db 'eful. A shame to have been, really, to have had to sell it. '
+ db 'To have been one of my favorites."'
+L0509: db 00
+L050A: db 'Ethereal Ring'
+L0517: db 00
+L0518: db 'selling'
+L051F: db 00
+L0520: db '"To have sold most of my treasures when we were... uh... ask'
+ db 'ed, shall to say, to move to the island. To have all happene'
+ db 'd rather quickly, you see. To have sold most to the Sultan o'
+ db 'f Spektran."'
+L05E0: db 00
+L05E1: db 'Sultan'
+L05E7: db 00
+L05E8: db 'selling'
+L05EF: db 00
+L05F0: db 'Sultan'
+L05F6: db 00
+L05F7: db '"To have seemed nice enough, for a human. To be a bit mad, h'
+ db 'e is, even for a human. To tell you he lives on an island ju'
+ db 'st to the west of us. To know, at least, that my prized poss'
+ db 'essions would be safe in his hands."'
+L06CF: db 00
+L06D0: db 'safe'
+L06D4: db 00
+L06D5: db 'Sultan'
+L06DB: db 00
+L06DC: db 'safe'
+L06E0: db 00
+L06E1: db 'He nods his head. "To be rumored to have one of the best-gua'
+ db 'rded vaults in all of Britannia. To be supposedly enchanted.'
+ db ' To know not details."'
+L076F: db 00
+L0770: db 'safe'
+L0774: db 00
+L0775: db 'Inamo'
+L077A: db 00
+L077B: db 'Inamo'
+L0780: db 00
+L0781: db '"To be a fine young gargoyle. To have been raised by Teregus'
+ db ', keeper of the altars. To have left town because of the ten'
+ db 'sion between the altar worshippers and The Fellowship. To ha'
+ db 've been angry and distrustful of The Fellowship. To have new'
+ db 's of him?"'
+L087B: db 00
+L087C: db '"To be excellent! To have seen him? To know how he is faring'
+ db '? To be well?"'
+L08C6: db 00
+L08C7: db 'well'
+L08CB: db 00
+L08CC: db 'not well'
+L08D4: db 00
+L08D5: db 'murdered'
+L08DD: db 00
+L08DE: db '"Ah. To be too bad. To tell you Teregus wanted to know how h'
+ db 'e was doing."'
+L0927: db 00
+L0928: db 'well'
+L092C: db 00
+L092D: db '"To be very good. To know Teregus will be pleased to learn t'
+ db 'hat, as well!"'
+L0977: db 00
+L0978: db 'murdered'
+L0980: db 00
+L0981: db '"To be terrible news! To have been such a fine gargoyle. To '
+ db 'know Teregus will be heartbroken. To be wishing not for him '
+ db 'to grieve, but to take to him the news immediately. To be be'
+ db 'tter to hear it from you."'
+L0A4F: db 00
+L0A50: db 'Moongates'
+L0A59: db 00
+L0A5A: db '"Mine own Orb of the Moons exploded recently! To no longer b'
+ db 'e able to travel via Moongates. To be strange!"'
+L0AC5: db 00
+L0AC6: db 'Moongates'
+L0ACF: db 00
+L0AD0: db 'not well'
+L0AD8: db 00
+L0AD9: db '"To be a shame. To be taking the news to Teregus of his youn'
+ db 'gling. To be wondering why we had not heard from Inamo recen'
+ db 'tly."'
+L0B56: db 00
+L0B57: db 'Teregus'
+L0B5E: db 00
+L0B5F: db '"To be truly a fine young gargoyle. To be one of the most se'
+ db 'nsible, too. To have seen fit to adhere to the old ways, the'
+ db ' ways of the altars. To see that some of the youngest still '
+ db 'look up to him, but the majority seem to have been wooed awa'
+ db 'y by the glamor of The Fellowship."'
+L0C72: db 00
+L0C73: db '"To tell you that his weanling, Inamo, is in Trinsic at this'
+ db ' time."'
+L0CB6: db 00
+L0CB7: db 'Inamo'
+L0CBC: db 00
+L0CBD: db 'Teregus'
+L0CC4: db 00
+L0CC5: db 'Fellowship'
+L0CCF: db 00
+L0CD0: db '"To know not what to think of them and their tenets. To seem'
+ db ' not dangerous, but not to be following the old ways, the wa'
+ db 'ys of Passion, Diligence, and Control. To feign worship to t'
+ db 'he shrines here in Terfin, of course, especially to Control,'
+ db ' but not yet to trust them. To wait and see. To have forcefu'
+ db 'l leaders who espouse doctrines of submission." He shrugs.~~'
+ db '"To be genuinely inspired, perhaps, and perhaps not."'
+L0E6D: db 00
+L0E6E: db 'leaders'
+L0E75: db 00
+L0E76: db 'Terfin'
+L0E7C: db 00
+L0E7D: db 'Fellowship'
+L0E87: db 00
+L0E88: db 'leaders'
+L0E8F: db 00
+L0E90: db '"To inform you that The Fellowship is directed by two winged'
+ db ' brethren. To be called Runeb and Quan."'
+L0EF4: db 00
+L0EF5: db 'Quan'
+L0EF9: db 00
+L0EFA: db 'Runeb'
+L0EFF: db 00
+L0F00: db 'leaders'
+L0F07: db 00
+L0F08: db 'Runeb'
+L0F0D: db 00
+L0F0E: db '"To mean, in your language, `Red Mist'. To have been given t'
+ db 'hat name because that is all he leaves behind of an adversar'
+ db 'y in battle. Before his conversion by The Fellowship, to hav'
+ db 'e been known as a particularly cruel and dangerous gargoyle.'
+ db '"'
+L0FFF: db 00
+L1000: db '"To be gone -- dead -- now."'
+L101C: db 00
+L101D: db 'Runeb'
+L1022: db 00
+L1023: db 'Quan'
+L1027: db 00
+L1028: db '"Ah, to be an interesting one. To be a strong, powerful pers'
+ db 'onality, to be from one of the families most able to claim n'
+ db 'oble lineage in our society. To have been always most self-s'
+ db 'erving, striving only to gain status and wealth for himself.'
+ db ' To have certainly changed his tune since joining The Fellow'
+ db 'ship. To have my doubts, however, that his goals have change'
+ db 'd as well."'
+L119B: db 00
+L119C: db 'Quan'
+L11A0: db 00
+L11A1: db 'bye'
+L11A4: db 00
+L11A5: db '"To bid farewell, old friend. To not be hesitating to return'
+ db ' if there is aught else I can do for you. To be lonely here '
+ db 'now for an old gargoyle dedicated to the ancient ways..."*'
+L1257: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0003H
+  .extern 0908H
+  .extern 0911H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 73 02   jne 027B
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 4C FF   pushi FF4CH   ; -180
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 39 02   pushf flag:[0239]
+002B: 05 0E 00   jne 003C
+002E: 42 38 02   pushf flag:[0238]
+0031: 10   not
+0032: 05 07 00   jne 003C
+0035: 1D 0D 00   pushs L000D   ; Inamo
+0038: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003C: 42 04 00   pushf flag:[0004]
+003F: 05 07 00   jne 0049
+0042: 1D 13 00   pushs L0013   ; Moongates
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 45 02   pushf flag:[0245]
+004C: 10   not
+004D: 05 0B 00   jne 005B
+0050: 1C 1D 00   addsi L001D   ; You see an aged g...
+0053: 33   say
+0054: 13   push true
+0055: 43 45 02   popf flag:[0245]
+0058: 06 04 00   jmp 005F
+005B: 1C 72 00   addsi L0072   ; "To be good to se...
+005E: 33   say
+005F: 04 14 02   je 0276
+0062: 1D C5 00   pushs L00C5   ; name
+0065: 07 01 00 11 00  cmps 0001H, 007B
+006A: 1C CA 00   addsi L00CA   ; "To have been man...
+006D: 2F 00 00   addsv [0000]
+0070: 1C 02 01   addsi L0102   ; , Draxinusom."
+0073: 33   say
+0074: 1D 11 01   pushs L0111   ; name
+0077: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007B: 1D 16 01   pushs L0116   ; job
+007E: 07 01 00 11 00  cmps 0001H, 0094
+0083: 1C 1A 01   addsi L011A   ; "To ask about Job...
+0086: 33   say
+0087: 1D F4 01   pushs L01F4   ; Fellowship
+008A: 1D FF 01   pushs L01FF   ; Teregus
+008D: 1E 02 00   arrc 0002H   ; 2
+0090: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0094: 1D 07 02   pushs L0207   ; Terfin
+0097: 07 01 00 12 00  cmps 0001H, 00AE
+009C: 1C 0E 02   addsi L020E   ; "To be quite comf...
+009F: 33   say
+00A0: 1D 9E 03   pushs L039E   ; give up
+00A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A7: 1D A6 03   pushs L03A6   ; Terfin
+00AA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AE: 1D AD 03   pushs L03AD   ; give up
+00B1: 07 01 00 22 00  cmps 0001H, 00D8
+00B6: 1C B5 03   addsi L03B5   ; "To have been man...
+00B9: 33   say
+00BA: 42 E0 01   pushf flag:[01E0]
+00BD: 05 11 00   jne 00D1
+00C0: 1C 11 04   addsi L0411   ; ~"To especially r...
+00C3: 33   say
+00C4: 1D 43 04   pushs L0443   ; Ethereal Ring
+00C7: 1D 51 04   pushs L0451   ; selling
+00CA: 1E 02 00   arrc 0002H   ; 2
+00CD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D1: 1D 59 04   pushs L0459   ; give up
+00D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D8: 1D 61 04   pushs L0461   ; Ethereal Ring
+00DB: 07 01 00 0B 00  cmps 0001H, 00EB
+00E0: 1C 6F 04   addsi L046F   ; "Ah. To be, indee...
+00E3: 33   say
+00E4: 1D 0A 05   pushs L050A   ; Ethereal Ring
+00E7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EB: 1D 18 05   pushs L0518   ; selling
+00EE: 07 01 00 12 00  cmps 0001H, 0105
+00F3: 1C 20 05   addsi L0520   ; "To have sold mos...
+00F6: 33   say
+00F7: 1D E1 05   pushs L05E1   ; Sultan
+00FA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FE: 1D E8 05   pushs L05E8   ; selling
+0101: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0105: 1D F0 05   pushs L05F0   ; Sultan
+0108: 07 01 00 1C 00  cmps 0001H, 0129
+010D: 1C F7 05   addsi L05F7   ; "To have seemed n...
+0110: 33   say
+0111: 1D D0 06   pushs L06D0   ; safe
+0114: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0118: 13   push true
+0119: 43 3B 02   popf flag:[023B]
+011C: 1F 32 00   pushi 0032H   ; 50
+011F: 24 01 00   call [0001]   ; 0911H
+0122: 1D D5 06   pushs L06D5   ; Sultan
+0125: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0129: 1D DC 06   pushs L06DC   ; safe
+012C: 07 01 00 0B 00  cmps 0001H, 013C
+0131: 1C E1 06   addsi L06E1   ; He nods his head....
+0134: 33   say
+0135: 1D 70 07   pushs L0770   ; safe
+0138: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013C: 1D 75 07   pushs L0775   ; Inamo
+013F: 07 01 00 3A 00  cmps 0001H, 017E
+0144: 1D 7B 07   pushs L077B   ; Inamo
+0147: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014B: 1C 81 07   addsi L0781   ; "To be a fine you...
+014E: 33   say
+014F: 24 02 00   call [0002]   ; 090AH
+0152: 12 01 00   pop [0001]
+0155: 21 01 00   push [0001]
+0158: 05 1F 00   jne 017A
+015B: 1C 7C 08   addsi L087C   ; "To be excellent!...
+015E: 33   say
+015F: 13   push true
+0160: 43 38 02   popf flag:[0238]
+0163: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0167: 1D C7 08   pushs L08C7   ; well
+016A: 1D CC 08   pushs L08CC   ; not well
+016D: 1D D5 08   pushs L08D5   ; murdered
+0170: 1E 03 00   arrc 0003H   ; 3
+0173: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0177: 06 04 00   jmp 017E
+017A: 1C DE 08   addsi L08DE   ; "Ah. To be too ba...
+017D: 33   say
+017E: 1D 28 09   pushs L0928   ; well
+0181: 07 01 00 08 00  cmps 0001H, 018E
+0186: 1C 2D 09   addsi L092D   ; "To be very good....
+0189: 33   say
+018A: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+018E: 1D 78 09   pushs L0978   ; murdered
+0191: 07 01 00 08 00  cmps 0001H, 019E
+0196: 1C 81 09   addsi L0981   ; "To be terrible n...
+0199: 33   say
+019A: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+019E: 1D 50 0A   pushs L0A50   ; Moongates
+01A1: 07 01 00 0B 00  cmps 0001H, 01B1
+01A6: 1C 5A 0A   addsi L0A5A   ; "Mine own Orb of ...
+01A9: 33   say
+01AA: 1D C6 0A   pushs L0AC6   ; Moongates
+01AD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B1: 1D D0 0A   pushs L0AD0   ; not well
+01B4: 07 01 00 08 00  cmps 0001H, 01C1
+01B9: 1C D9 0A   addsi L0AD9   ; "To be a shame. T...
+01BC: 33   say
+01BD: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+01C1: 1D 57 0B   pushs L0B57   ; Teregus
+01C4: 07 01 00 21 00  cmps 0001H, 01EA
+01C9: 1C 5F 0B   addsi L0B5F   ; "To be truly a fi...
+01CC: 33   say
+01CD: 42 38 02   pushf flag:[0238]
+01D0: 10   not
+01D1: 05 0F 00   jne 01E3
+01D4: 1C 73 0C   addsi L0C73   ; "To tell you that...
+01D7: 33   say
+01D8: 13   push true
+01D9: 43 39 02   popf flag:[0239]
+01DC: 1D B7 0C   pushs L0CB7   ; Inamo
+01DF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E3: 1D BD 0C   pushs L0CBD   ; Teregus
+01E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EA: 1D C5 0C   pushs L0CC5   ; Fellowship
+01ED: 07 01 00 18 00  cmps 0001H, 020A
+01F2: 1C D0 0C   addsi L0CD0   ; "To know not what...
+01F5: 33   say
+01F6: 1D 6E 0E   pushs L0E6E   ; leaders
+01F9: 1D 76 0E   pushs L0E76   ; Terfin
+01FC: 1E 02 00   arrc 0002H   ; 2
+01FF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0203: 1D 7D 0E   pushs L0E7D   ; Fellowship
+0206: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020A: 1D 88 0E   pushs L0E88   ; leaders
+020D: 07 01 00 18 00  cmps 0001H, 022A
+0212: 1C 90 0E   addsi L0E90   ; "To inform you th...
+0215: 33   say
+0216: 1D F5 0E   pushs L0EF5   ; Quan
+0219: 1D FA 0E   pushs L0EFA   ; Runeb
+021C: 1E 02 00   arrc 0002H   ; 2
+021F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0223: 1D 00 0F   pushs L0F00   ; leaders
+0226: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022A: 1D 08 0F   pushs L0F08   ; Runeb
+022D: 07 01 00 23 00  cmps 0001H, 0255
+0232: 1C 0E 0F   addsi L0F0E   ; "To mean, in your...
+0235: 33   say
+0236: 1F 48 FF   pushi FF48H   ; -184
+0239: 38 1B 00 01  callis 001B, 1
+023D: 38 37 00 01  callis 0037, 1
+0241: 12 02 00   pop [0002]
+0244: 21 02 00   push [0002]
+0247: 05 04 00   jne 024E
+024A: 1C 00 10   addsi L1000   ; "To be gone -- de...
+024D: 33   say
+024E: 1D 1D 10   pushs L101D   ; Runeb
+0251: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0255: 1D 23 10   pushs L1023   ; Quan
+0258: 07 01 00 0B 00  cmps 0001H, 0268
+025D: 1C 28 10   addsi L1028   ; "Ah, to be an int...
+0260: 33   say
+0261: 1D 9C 11   pushs L119C   ; Quan
+0264: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0268: 1D A1 11   pushs L11A1   ; bye
+026B: 07 01 00 03 00  cmps 0001H, 0273
+0270: 06 03 00   jmp 0276
+0273: 06 E9 FD   jmp 005F
+0276: 40   db 40 ???
+0277: 1C A5 11   addsi L11A5   ; "To bid farewell,...
+027A: 33   say
+027B: 48   push eventid
+027C: 1F 00 00   pushi 0000H   ; 0
+027F: 22   cmpeq
+0280: 05 01 00   jne 0284
+0283: 3F   abrt
+0284: 25   ret

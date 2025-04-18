@@ -1,0 +1,369 @@
+  .funcnumber 04D1H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Elizabeth and Abraham'
+L0022: db 00
+L0023: db 'You see a middle-aged man with a furrowed brow, as if he is '
+ db 'constantly worried.'
+L0072: db 00
+L0073: db '"How may I help thee, '
+L0089: db 00
+L008A: db '?"'
+L008C: db 00
+L008D: db 'name'
+L0091: db 00
+L0092: db '"Please call me Auston."'
+L00AA: db 00
+L00AB: db 'name'
+L00AF: db 00
+L00B0: db 'job'
+L00B3: db 00
+L00B4: db 'He sighs before responding. "I am the Mayor of Vesper."'
+L00EB: db 00
+L00EC: db 'Vesper'
+L00F2: db 00
+L00F3: db 'Vesper'
+L00F9: db 00
+L00FA: db '"It was a pleasant place in days past. But now, '
+L012A: db 00
+L012B: db ', the turmoil between our people and those gargoyles has cau'
+ db 'sed many problems."'
+L017A: db 00
+L017B: db 'people'
+L0181: db 00
+L0182: db 'problems'
+L018A: db 00
+L018B: db 'Vesper'
+L0191: db 00
+L0192: db 'problems'
+L019A: db 00
+L019B: db '"I am worried that the gargoyles may get restless and attack'
+ db ' us. Blorn has not helped things." He points to his chest. "'
+ db 'I am the one charged with maintaining order here. If there i'
+ db 's not any, it will be my responsibility. I have asked Eldrot'
+ db 'h what to do in case of an uprising and I am trying to plan '
+ db 'accordingly."'
+L02D4: db 00
+L02D5: db 'gargoyles'
+L02DE: db 00
+L02DF: db 'Eldroth'
+L02E6: db 00
+L02E7: db 'Blorn'
+L02EC: db 00
+L02ED: db 'problems'
+L02F5: db 00
+L02F6: db 'gargoyles'
+L02FF: db 00
+L0300: db '"I don't trust them any more than thou dost, '
+L032D: db 00
+L032E: db ', but, officially, they are citizens, too. I am afraid they '
+ db 'may try to forcefully gain control of the town someday."'
+L03A2: db 00
+L03A3: db 'gargoyles'
+L03AC: db 00
+L03AD: db 'Liana'
+L03B2: db 00
+L03B3: db '"She is my clerk. She is very efficient. I couldn't govern V'
+ db 'esper without her."'
+L0402: db 00
+L0403: db 'Liana'
+L0408: db 00
+L0409: db 'people'
+L040F: db 00
+L0410: db 'shame'
+L0415: db 00
+L0416: db ' -- 'tis a shame about him -- '
+L0434: db 00
+L0435: db ' '
+L0436: db 00
+L0437: db '"I try to stay in touch with as many of the citizens as I ca'
+ db 'n, but I do not know all of them that well. I know Cador'
+L04AB: db 00
+L04AC: db 'has been in charge of the local branch of the Britannian Min'
+ db 'ing Company ever since it opened. He is married to Yvella. I'
+ db ' believe they are members of that Fellowship organization.~~'
+ db '"Of course, there's Eldroth, and a trainer, and also, Yongi.'
+ db ' And," he scowls as he adds the last one, "Blorn. Also, thou'
+ db ' shouldst speak with Liana. She knows a few of the people th'
+ db 'at I do not. I am afraid that I do not know everyone as well'
+ db ' as I should."'
+L065E: db 00
+L065F: db 'Liana'
+L0664: db 00
+L0665: db 'Yongi'
+L066A: db 00
+L066B: db 'trainer'
+L0672: db 00
+L0673: db 'Eldroth'
+L067A: db 00
+L067B: db 'Blorn'
+L0680: db 00
+L0681: db 'people'
+L0687: db 00
+L0688: db 'shame'
+L068D: db 00
+L068E: db '"I would have thought thou wouldst know." He strokes his bea'
+ db 'rd.~~"Cador was slain in a fight at the Gilded Lizard. 'Twas'
+ db ' the first act of this kind ever in Vesper. Quite odd."'
+L073D: db 00
+L073E: db 'shame'
+L0743: db 00
+L0744: db 'Eldroth'
+L074B: db 00
+L074C: db '"Eldroth acts as our counselor. He has been giving advice to'
+ db ' the people of our town for... well, longer than I can remem'
+ db 'ber. He owns the provisions shop."'
+L07E6: db 00
+L07E7: db 'Eldroth'
+L07EE: db 00
+L07EF: db 'trainer'
+L07F6: db 00
+L07F7: db '"Zaksam is our trainer. He can teach thee how to better defe'
+ db 'nd thyself. Should the gargoyles cause trouble, I am comfort'
+ db 'ed that he would defend our side."'
+L0891: db 00
+L0892: db 'trainer'
+L0899: db 00
+L089A: db 'Yongi'
+L089F: db 00
+L08A0: db '"He serves drinks at the tavern. Many have claimed him to be'
+ db ' the best bartender on this side of the desert. People come '
+ db 'from all around Britannia to speak with him," he says proudl'
+ db 'y.'
+L0956: db 00
+L0957: db 'Yongi'
+L095C: db 00
+L095D: db 'Blorn'
+L0962: db 00
+L0963: db '"I am not sure what to think about him. I do not know what h'
+ db 'e does for a living, but I know the gargoyles hate him more '
+ db 'than they do the rest of us. I am frightened of what will ha'
+ db 'ppen, since it is obvious that he holds mutual feelings towa'
+ db 'rds them."'
+L0A5D: db 00
+L0A5E: db 'Blorn'
+L0A63: db 00
+L0A64: db 'Elizabeth and Abraham'
+L0A79: db 00
+L0A7A: db '"They are Fellowship members. They were just here to see abo'
+ db 'ut starting a branch in Vesper. I imagine we will allow it. '
+ db 'I believe the couple have gone to Moonglow. They said they w'
+ db 'ere on their way there to conduct a training session for the'
+ db ' branch leader there. But I do know that they were going to '
+ db 'stop at the Britannian Mining Company branch on the way out '
+ db 'of town. I do not know why."'
+L0BFE: db 00
+L0BFF: db '"I have not seen that Fellowship couple for many, many days.'
+ db ' I have no idea where they could be now."'
+L0C64: db 00
+L0C65: db 'Elizabeth and Abraham'
+L0C7A: db 00
+L0C7B: db 'bye'
+L0C7E: db 00
+L0C7F: db '"Goodbye, '
+L0C89: db 00
+L0C8A: db '."*'
+L0C8D: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0002H
+  .extern 0908H
+  .extern 0909H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 1C 02   jne 0224
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 2F FF   pushi FF2FH   ; -209
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 14   push false
+001F: 12 02 00   pop [0002]
+0022: 14   push false
+0023: 12 03 00   pop [0003]
+0026: 1D 00 00   pushs L0000   ; bye
+0029: 1D 04 00   pushs L0004   ; job
+002C: 1D 08 00   pushs L0008   ; name
+002F: 1E 03 00   arrc 0003H   ; 3
+0032: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0036: 42 88 00   pushf flag:[0088]
+0039: 05 07 00   jne 0043
+003C: 1D 0D 00   pushs L000D   ; Elizabeth and Abr...
+003F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0043: 42 8E 02   pushf flag:[028E]
+0046: 10   not
+0047: 05 0B 00   jne 0055
+004A: 1C 23 00   addsi L0023   ; You see a middle-...
+004D: 33   say
+004E: 13   push true
+004F: 43 8E 02   popf flag:[028E]
+0052: 06 0A 00   jmp 005F
+0055: 1C 73 00   addsi L0073   ; "How may I help t...
+0058: 2F 01 00   addsv [0001]
+005B: 1C 8A 00   addsi L008A   ; ?"
+005E: 33   say
+005F: 04 B7 01   je 0219
+0062: 1D 8D 00   pushs L008D   ; name
+0065: 07 01 00 0B 00  cmps 0001H, 0075
+006A: 1C 92 00   addsi L0092   ; "Please call me A...
+006D: 33   say
+006E: 1D AB 00   pushs L00AB   ; name
+0071: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0075: 1D B0 00   pushs L00B0   ; job
+0078: 07 01 00 0B 00  cmps 0001H, 0088
+007D: 1C B4 00   addsi L00B4   ; He sighs before r...
+0080: 33   say
+0081: 1D EC 00   pushs L00EC   ; Vesper
+0084: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0088: 1D F3 00   pushs L00F3   ; Vesper
+008B: 07 01 00 1E 00  cmps 0001H, 00AE
+0090: 1C FA 00   addsi L00FA   ; "It was a pleasan...
+0093: 2F 01 00   addsv [0001]
+0096: 1C 2B 01   addsi L012B   ; , the turmoil bet...
+0099: 33   say
+009A: 1D 7B 01   pushs L017B   ; people
+009D: 1D 82 01   pushs L0182   ; problems
+00A0: 1E 02 00   arrc 0002H   ; 2
+00A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A7: 1D 8B 01   pushs L018B   ; Vesper
+00AA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AE: 1D 92 01   pushs L0192   ; problems
+00B1: 07 01 00 2E 00  cmps 0001H, 00E4
+00B6: 1C 9B 01   addsi L019B   ; "I am worried tha...
+00B9: 33   say
+00BA: 1D D5 02   pushs L02D5   ; gargoyles
+00BD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C1: 21 03 00   push [0003]
+00C4: 10   not
+00C5: 05 07 00   jne 00CF
+00C8: 1D DF 02   pushs L02DF   ; Eldroth
+00CB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CF: 21 02 00   push [0002]
+00D2: 10   not
+00D3: 05 07 00   jne 00DD
+00D6: 1D E7 02   pushs L02E7   ; Blorn
+00D9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DD: 1D ED 02   pushs L02ED   ; problems
+00E0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E4: 1D F6 02   pushs L02F6   ; gargoyles
+00E7: 07 01 00 11 00  cmps 0001H, 00FD
+00EC: 1C 00 03   addsi L0300   ; "I don't trust th...
+00EF: 2F 00 00   addsv [0000]
+00F2: 1C 2E 03   addsi L032E   ; , but, officially...
+00F5: 33   say
+00F6: 1D A3 03   pushs L03A3   ; gargoyles
+00F9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FD: 1D AD 03   pushs L03AD   ; Liana
+0100: 07 01 00 0B 00  cmps 0001H, 0110
+0105: 1C B3 03   addsi L03B3   ; "She is my clerk....
+0108: 33   say
+0109: 1D 03 04   pushs L0403   ; Liana
+010C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0110: 1D 09 04   pushs L0409   ; people
+0113: 07 01 00 67 00  cmps 0001H, 017F
+0118: 1F 35 FF   pushi FF35H   ; -203
+011B: 38 1B 00 01  callis 001B, 1
+011F: 38 37 00 01  callis 0037, 1
+0123: 12 04 00   pop [0004]
+0126: 21 04 00   push [0004]
+0129: 05 10 00   jne 013C
+012C: 1D 10 04   pushs L0410   ; shame
+012F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0133: 1D 16 04   pushs L0416   ;  -- 'tis a shame ...
+0136: 12 05 00   pop [0005]
+0139: 06 06 00   jmp 0142
+013C: 1D 35 04   pushs L0435   ;  
+013F: 12 05 00   pop [0005]
+0142: 1C 37 04   addsi L0437   ; "I try to stay in...
+0145: 2F 05 00   addsv [0005]
+0148: 1C AC 04   addsi L04AC   ; has been in charg...
+014B: 33   say
+014C: 1D 5F 06   pushs L065F   ; Liana
+014F: 1D 65 06   pushs L0665   ; Yongi
+0152: 1D 6B 06   pushs L066B   ; trainer
+0155: 1E 03 00   arrc 0003H   ; 3
+0158: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015C: 21 03 00   push [0003]
+015F: 10   not
+0160: 05 07 00   jne 016A
+0163: 1D 73 06   pushs L0673   ; Eldroth
+0166: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016A: 21 02 00   push [0002]
+016D: 10   not
+016E: 05 07 00   jne 0178
+0171: 1D 7B 06   pushs L067B   ; Blorn
+0174: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0178: 1D 81 06   pushs L0681   ; people
+017B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017F: 1D 88 06   pushs L0688   ; shame
+0182: 07 01 00 0B 00  cmps 0001H, 0192
+0187: 1C 8E 06   addsi L068E   ; "I would have tho...
+018A: 33   say
+018B: 1D 3E 07   pushs L073E   ; shame
+018E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0192: 1D 44 07   pushs L0744   ; Eldroth
+0195: 07 01 00 0F 00  cmps 0001H, 01A9
+019A: 1C 4C 07   addsi L074C   ; "Eldroth acts as ...
+019D: 33   say
+019E: 13   push true
+019F: 12 03 00   pop [0003]
+01A2: 1D E7 07   pushs L07E7   ; Eldroth
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1D EF 07   pushs L07EF   ; trainer
+01AC: 07 01 00 0B 00  cmps 0001H, 01BC
+01B1: 1C F7 07   addsi L07F7   ; "Zaksam is our tr...
+01B4: 33   say
+01B5: 1D 92 08   pushs L0892   ; trainer
+01B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BC: 1D 9A 08   pushs L089A   ; Yongi
+01BF: 07 01 00 0B 00  cmps 0001H, 01CF
+01C4: 1C A0 08   addsi L08A0   ; "He serves drinks...
+01C7: 33   say
+01C8: 1D 57 09   pushs L0957   ; Yongi
+01CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CF: 1D 5D 09   pushs L095D   ; Blorn
+01D2: 07 01 00 0F 00  cmps 0001H, 01E6
+01D7: 1C 63 09   addsi L0963   ; "I am not sure wh...
+01DA: 33   say
+01DB: 13   push true
+01DC: 12 02 00   pop [0002]
+01DF: 1D 5E 0A   pushs L0A5E   ; Blorn
+01E2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E6: 1D 64 0A   pushs L0A64   ; Elizabeth and Abr...
+01E9: 07 01 00 1D 00  cmps 0001H, 020B
+01EE: 42 EF 01   pushf flag:[01EF]
+01F1: 10   not
+01F2: 05 0B 00   jne 0200
+01F5: 1C 7A 0A   addsi L0A7A   ; "They are Fellows...
+01F8: 33   say
+01F9: 13   push true
+01FA: 43 84 02   popf flag:[0284]
+01FD: 06 04 00   jmp 0204
+0200: 1C FF 0B   addsi L0BFF   ; "I have not seen ...
+0203: 33   say
+0204: 1D 65 0C   pushs L0C65   ; Elizabeth and Abr...
+0207: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020B: 1D 7B 0C   pushs L0C7B   ; bye
+020E: 07 01 00 03 00  cmps 0001H, 0216
+0213: 06 03 00   jmp 0219
+0216: 06 46 FE   jmp 005F
+0219: 40   db 40 ???
+021A: 1C 7F 0C   addsi L0C7F   ; "Goodbye, 
+021D: 2F 01 00   addsv [0001]
+0220: 1C 8A 0C   addsi L0C8A   ; ."*
+0223: 33   say
+0224: 48   push eventid
+0225: 1F 00 00   pushi 0000H   ; 0
+0228: 22   cmpeq
+0229: 05 01 00   jne 022D
+022C: 3F   abrt
+022D: 25   ret

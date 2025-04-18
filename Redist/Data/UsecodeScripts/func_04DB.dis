@@ -1,0 +1,210 @@
+  .funcnumber 04DBH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The gargoyle standing before you has a sour expression on hi'
+ db 's face.'
+L0050: db 00
+L0051: db '"To offer you greetings, human," says Aurvidlem.'
+L0081: db 00
+L0082: db 'name'
+L0086: db 00
+L0087: db '"To be called Aurvidlem. To recognize you to be the Avatar."'
+L00C3: db 00
+L00C4: db 'name'
+L00C8: db 00
+L00C9: db 'job'
+L00CC: db 00
+L00CD: db '"To provide provisions for others in Vesper."'
+L00FA: db 00
+L00FB: db 'Vesper'
+L0101: db 00
+L0102: db 'others'
+L0108: db 00
+L0109: db 'buy provisions'
+L0117: db 00
+L0118: db 'Vesper'
+L011E: db 00
+L011F: db '"To be a town filled with prejudice and hatred. To know the '
+ db 'humans expect us to begin a violent confrontation.~~"To beli'
+ db 'eve the humans deserve it," he shrugs, "but to hope my breth'
+ db 'ren display more control than that."'
+L01F7: db 00
+L01F8: db 'Vesper'
+L01FE: db 00
+L01FF: db 'buy provisions'
+L020D: db 00
+L020E: db '"To be not selling at this time. To come back tomorrow to bu'
+ db 'y provisions."'
+L0258: db 00
+L0259: db 'buy provisions'
+L0267: db 00
+L0268: db 'others'
+L026E: db 00
+L026F: db '"To have only a few gargoyles living in town. To know mainly'
+ db ' Wis-Sur, and," he gives a slight grunt, "Ansikart. Also to '
+ db 'know of some wingless ones."'
+L0303: db 00
+L0304: db 'Ansikart'
+L030C: db 00
+L030D: db '"To have only a few gargoyles living in town. To know mainly'
+ db ' Wis-Sur and Ansikart, and to know of some wingless ones."'
+L0383: db 00
+L0384: db 'others'
+L038A: db 00
+L038B: db 'Ansikart'
+L0393: db 00
+L0394: db 'His eyes shift quickly from left to right before finally set'
+ db 'tling on you.~~"To know since change in Wis-Sur, Ansikart ga'
+ db 'ined too much respect. To be sure that I have studied more a'
+ db 'nd would be a wiser and better leader here. To be dissatisfi'
+ db 'ed with Ansikart as choice."'
+L04A0: db 00
+L04A1: db 'change'
+L04A7: db 00
+L04A8: db 'Ansikart'
+L04B0: db 00
+L04B1: db 'change'
+L04B7: db 00
+L04B8: db '"To be unsure when change happened, but has affected Wis-Sur'
+ db ' greatly. To now see him avoid others and shut himself away.'
+ db ' To be concerned for Wis-Sur."'
+L054E: db 00
+L054F: db 'change'
+L0555: db 00
+L0556: db 'bye'
+L0559: db 00
+L055A: db '"To bid you goodbye."*'
+L0570: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0002H
+  .extern 084CH
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 46 01   jne 014E
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 25 FF   pushi FF25H   ; -219
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 98 02   pushf flag:[0298]
+0025: 10   not
+0026: 05 0B 00   jne 0034
+0029: 1C 0D 00   addsi L000D   ; The gargoyle stan...
+002C: 33   say
+002D: 13   push true
+002E: 43 98 02   popf flag:[0298]
+0031: 06 04 00   jmp 0038
+0034: 1C 51 00   addsi L0051   ; "To offer you gre...
+0037: 33   say
+0038: 04 0E 01   je 0149
+003B: 1D 82 00   pushs L0082   ; name
+003E: 07 01 00 0B 00  cmps 0001H, 004E
+0043: 1C 87 00   addsi L0087   ; "To be called Aur...
+0046: 33   say
+0047: 1D C4 00   pushs L00C4   ; name
+004A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+004E: 1D C9 00   pushs L00C9   ; job
+0051: 07 01 00 14 00  cmps 0001H, 006A
+0056: 1C CD 00   addsi L00CD   ; "To provide provi...
+0059: 33   say
+005A: 1D FB 00   pushs L00FB   ; Vesper
+005D: 1D 02 01   pushs L0102   ; others
+0060: 1D 09 01   pushs L0109   ; buy provisions
+0063: 1E 03 00   arrc 0003H   ; 3
+0066: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006A: 1D 18 01   pushs L0118   ; Vesper
+006D: 07 01 00 0B 00  cmps 0001H, 007D
+0072: 1C 1F 01   addsi L011F   ; "To be a town fil...
+0075: 33   say
+0076: 1D F8 01   pushs L01F8   ; Vesper
+0079: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007D: 1D FF 01   pushs L01FF   ; buy provisions
+0080: 07 01 00 62 00  cmps 0001H, 00E7
+0085: 1F 25 FF   pushi FF25H   ; -219
+0088: 38 1B 00 01  callis 001B, 1
+008C: 38 1C 00 01  callis 001C, 1
+0090: 12 00 00   pop [0000]
+0093: 21 00 00   push [0000]
+0096: 1F 07 00   pushi 0007H   ; 7
+0099: 22   cmpeq
+009A: 10   not
+009B: 05 07 00   jne 00A5
+009E: 1C 0E 02   addsi L020E   ; "To be not sellin...
+00A1: 33   say
+00A2: 06 3B 00   jmp 00E0
+00A5: 1F 99 FE   pushi FE99H   ; -359
+00A8: 1F 99 FE   pushi FE99H   ; -359
+00AB: 1F 84 02   pushi 0284H   ; 644
+00AE: 1F 9B FE   pushi FE9BH   ; -357
+00B1: 38 28 00 04  callis 0028, 4
+00B5: 12 01 00   pop [0001]
+00B8: 24 00 00   call [0000]   ; 084CH
+00BB: 1F 99 FE   pushi FE99H   ; -359
+00BE: 1F 99 FE   pushi FE99H   ; -359
+00C1: 1F 84 02   pushi 0284H   ; 644
+00C4: 1F 9B FE   pushi FE9BH   ; -357
+00C7: 38 28 00 04  callis 0028, 4
+00CB: 12 02 00   pop [0002]
+00CE: 21 01 00   push [0001]
+00D1: 21 02 00   push [0002]
+00D4: 0A   sub
+00D5: 1F 1D 00   pushi 001DH   ; 29
+00D8: 16   cmpgt
+00D9: 05 04 00   jne 00E0
+00DC: 13   push true
+00DD: 43 7F 02   popf flag:[027F]
+00E0: 1D 59 02   pushs L0259   ; buy provisions
+00E3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E7: 1D 68 02   pushs L0268   ; others
+00EA: 07 01 00 1F 00  cmps 0001H, 010E
+00EF: 42 7F 02   pushf flag:[027F]
+00F2: 05 0E 00   jne 0103
+00F5: 1C 6F 02   addsi L026F   ; "To have only a f...
+00F8: 33   say
+00F9: 1D 04 03   pushs L0304   ; Ansikart
+00FC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0100: 06 04 00   jmp 0107
+0103: 1C 0D 03   addsi L030D   ; "To have only a f...
+0106: 33   say
+0107: 1D 84 03   pushs L0384   ; others
+010A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010E: 1D 8B 03   pushs L038B   ; Ansikart
+0111: 07 01 00 12 00  cmps 0001H, 0128
+0116: 1C 94 03   addsi L0394   ; His eyes shift qu...
+0119: 33   say
+011A: 1D A1 04   pushs L04A1   ; change
+011D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0121: 1D A8 04   pushs L04A8   ; Ansikart
+0124: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0128: 1D B1 04   pushs L04B1   ; change
+012B: 07 01 00 0B 00  cmps 0001H, 013B
+0130: 1C B8 04   addsi L04B8   ; "To be unsure whe...
+0133: 33   say
+0134: 1D 4F 05   pushs L054F   ; change
+0137: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013B: 1D 56 05   pushs L0556   ; bye
+013E: 07 01 00 03 00  cmps 0001H, 0146
+0143: 06 03 00   jmp 0149
+0146: 06 EF FE   jmp 0038
+0149: 40   db 40 ???
+014A: 1C 5A 05   addsi L055A   ; "To bid you goodb...
+014D: 33   say
+014E: 48   push eventid
+014F: 1F 00 00   pushi 0000H   ; 0
+0152: 22   cmpeq
+0153: 05 06 00   jne 015C
+0156: 1F 25 FF   pushi FF25H   ; -219
+0159: 24 01 00   call [0001]   ; 092FH
+015C: 25   ret

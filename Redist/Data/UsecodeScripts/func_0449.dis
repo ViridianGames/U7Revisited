@@ -1,0 +1,322 @@
+  .funcnumber 0449H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Nell'
+L0011: db 00
+L0012: db 'Jeanette'
+L001A: db 00
+L001B: db 'Thou art in luck'
+L002B: db 00
+L002C: db 'You see a young peasant with a tray of wine glasses.'
+L0060: db 00
+L0061: db '"Hello, Avatar."'
+L0071: db 00
+L0072: db 'name'
+L0076: db 00
+L0077: db '"I am Charles."'
+L0086: db 00
+L0087: db 'name'
+L008B: db 00
+L008C: db 'job'
+L008F: db 00
+L0090: db '"I am a servant in Lord British's castle. I serve as a gentl'
+ db 'eman's gentleman, among other things. Right now I am serving'
+ db ' wine."'
+L010F: db 00
+L0110: db 'wine'
+L0114: db 00
+L0115: db 'servant'
+L011C: db 00
+L011D: db 'servant'
+L0124: db 00
+L0125: db '"My family has been employed by Lord British for many years.'
+ db ' My father, Bennie, once held the position I now hold. He is'
+ db ' the head servant. I shall be head servant one day, I suppos'
+ db 'e. Then perhaps my sweetheart will love me."'
+L0205: db 00
+L0206: db 'servant'
+L020D: db 00
+L020E: db 'sweetheart'
+L0218: db 00
+L0219: db 'family'
+L021F: db 00
+L0220: db 'family'
+L0226: db 00
+L0227: db '"Thou wilt encounter them. My mother cooks in the kitchen. M'
+ db 'y prudish sister is the chambermaid."'
+L0288: db 00
+L0289: db 'family'
+L028F: db 00
+L0290: db 'sweetheart'
+L029A: db 00
+L029B: db 'Charles sighs. He is clearly smitten. "She is Jeanette. She '
+ db 'works in the Blue Boar. But I am afraid I am not 'up to her '
+ db 'standards'. I believe she has her eye set on someone else. I'
+ db ' do not know what to do about it."'
+L0371: db 00
+L0372: db 'sweetheart'
+L037C: db 00
+L037D: db 'Jeanette'
+L0385: db 00
+L0386: db 'Jeanette'
+L038E: db 00
+L038F: db '"She does not love me, I know. She would rather marry a rich'
+ db ' man. I have not a chance."'
+L03E6: db 00
+L03E7: db 'Jeanette'
+L03EF: db 00
+L03F0: db 'Thou art in luck'
+L0400: db 00
+L0401: db 'You tell Charles what Jeanette said.'
+L0425: db 00
+L0426: db '"Really? Thou dost mean I have a chance?" Charles becomes so'
+ db ' excited he nearly drops his tray. "Oh, I thank thee, Avatar'
+ db ', for giving me this hopeful news! I must run and send her f'
+ db 'lowers or some gift! I must declare my love!" He turns away '
+ db 'from you, obviously walking on clouds.*'
+L053D: db 00
+L053E: db 'Nell'
+L0542: db 00
+L0543: db '"She is engaged to the carousel manager. It is hard to get u'
+ db 'sed to. I have always been overly protective of my little si'
+ db 'ster. I would wager she has never even been kissed! Not even'
+ db ' by Carrocio! That is mainly because I have looked after her'
+ db ' all this time. I would smite anyone who laid a hand on her!'
+ db ' Besides, Nell has always been chaste and prudish. She would'
+ db ' never think to allow a man to kiss her."'
+L06D4: db 00
+L06D5: db 'Nell'
+L06D9: db 00
+L06DA: db 'child'
+L06DF: db 00
+L06E0: db 'child'
+L06E5: db 00
+L06E6: db 'You remember what Nell told you about her 'condition'. Do yo'
+ db 'u mention it to Charles?'
+L073A: db 00
+L073B: db 'You tell Charles what Nell revealed in confidence.'
+L076D: db 00
+L076E: db 'Charles is wide-eyed and shocked. "Why, that hussy! My siste'
+ db 'r! She is nothing more than a tramp! And wait until I get mi'
+ db 'ne hands on Carrocio!"'
+L07FC: db 00
+L07FD: db 'Charles turns away. There is murder in his eyes.*'
+L082E: db 00
+L082F: db 'Your conscience rests easy, knowing that you resisted the te'
+ db 'mptation to carry tales.'
+L0883: db 00
+L0884: db 'child'
+L0889: db 00
+L088A: db 'wine'
+L088E: db 00
+L088F: db '"Wouldst thou like some wine?"'
+L08AD: db 00
+L08AE: db '"'Tis on the house." Charles hands you and your friends glas'
+ db 'ses of wine.'
+L08F6: db 00
+L08F7: db '"Oops. Thou art carrying too much. Ask me again when thou do'
+ db 'st not have thine hands full!"'
+L0951: db 00
+L0952: db '"Some other time, then."'
+L096A: db 00
+L096B: db 'wine'
+L096F: db 00
+L0970: db 'bye'
+L0973: db 00
+L0974: db 'Charles nods his head at you, then goes about his business.*'
+L09B0: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0002H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DA 01   jne 01E2
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F B7 FF   pushi FFB7H   ; -73
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 76 00   pushf flag:[0076]
+0025: 05 07 00   jne 002F
+0028: 1D 0D 00   pushs L000D   ; Nell
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 7D 00   pushf flag:[007D]
+0032: 05 07 00   jne 003C
+0035: 1D 12 00   pushs L0012   ; Jeanette
+0038: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003C: 42 7E 00   pushf flag:[007E]
+003F: 05 07 00   jne 0049
+0042: 1D 1B 00   pushs L001B   ; Thou art in luck
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 CA 00   pushf flag:[00CA]
+004C: 10   not
+004D: 05 0B 00   jne 005B
+0050: 1C 2C 00   addsi L002C   ; You see a young p...
+0053: 33   say
+0054: 13   push true
+0055: 43 CA 00   popf flag:[00CA]
+0058: 06 04 00   jmp 005F
+005B: 1C 61 00   addsi L0061   ; "Hello, Avatar."
+005E: 33   say
+005F: 04 7B 01   je 01DD
+0062: 1D 72 00   pushs L0072   ; name
+0065: 07 01 00 0B 00  cmps 0001H, 0075
+006A: 1C 77 00   addsi L0077   ; "I am Charles."
+006D: 33   say
+006E: 1D 87 00   pushs L0087   ; name
+0071: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0075: 1D 8C 00   pushs L008C   ; job
+0078: 07 01 00 11 00  cmps 0001H, 008E
+007D: 1C 90 00   addsi L0090   ; "I am a servant i...
+0080: 33   say
+0081: 1D 10 01   pushs L0110   ; wine
+0084: 1D 15 01   pushs L0115   ; servant
+0087: 1E 02 00   arrc 0002H   ; 2
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 1D 1D 01   pushs L011D   ; servant
+0091: 07 01 00 18 00  cmps 0001H, 00AE
+0096: 1C 25 01   addsi L0125   ; "My family has be...
+0099: 33   say
+009A: 1D 06 02   pushs L0206   ; servant
+009D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A1: 1D 0E 02   pushs L020E   ; sweetheart
+00A4: 1D 19 02   pushs L0219   ; family
+00A7: 1E 02 00   arrc 0002H   ; 2
+00AA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AE: 1D 20 02   pushs L0220   ; family
+00B1: 07 01 00 0B 00  cmps 0001H, 00C1
+00B6: 1C 27 02   addsi L0227   ; "Thou wilt encoun...
+00B9: 33   say
+00BA: 1D 89 02   pushs L0289   ; family
+00BD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C1: 1D 90 02   pushs L0290   ; sweetheart
+00C4: 07 01 00 16 00  cmps 0001H, 00DF
+00C9: 1C 9B 02   addsi L029B   ; Charles sighs. He...
+00CC: 33   say
+00CD: 13   push true
+00CE: 43 7B 00   popf flag:[007B]
+00D1: 1D 72 03   pushs L0372   ; sweetheart
+00D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D8: 1D 7D 03   pushs L037D   ; Jeanette
+00DB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DF: 1D 86 03   pushs L0386   ; Jeanette
+00E2: 07 01 00 0B 00  cmps 0001H, 00F2
+00E7: 1C 8F 03   addsi L038F   ; "She does not lov...
+00EA: 33   say
+00EB: 1D E7 03   pushs L03E7   ; Jeanette
+00EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F2: 1D F0 03   pushs L03F0   ; Thou art in luck
+00F5: 07 01 00 09 00  cmps 0001H, 0103
+00FA: 1C 01 04   addsi L0401   ; You tell Charles ...
+00FD: 33   say
+00FE: 1C 26 04   addsi L0426   ; "Really? Thou dos...
+0101: 33   say
+0102: 3F   abrt
+0103: 1D 3E 05   pushs L053E   ; Nell
+0106: 07 01 00 1C 00  cmps 0001H, 0127
+010B: 1C 43 05   addsi L0543   ; "She is engaged t...
+010E: 33   say
+010F: 1D D5 06   pushs L06D5   ; Nell
+0112: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0116: 13   push true
+0117: 43 7C 00   popf flag:[007C]
+011A: 42 7A 00   pushf flag:[007A]
+011D: 05 07 00   jne 0127
+0120: 1D DA 06   pushs L06DA   ; child
+0123: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0127: 1D E0 06   pushs L06E0   ; child
+012A: 07 01 00 2F 00  cmps 0001H, 015E
+012F: 1C E6 06   addsi L06E6   ; You remember what...
+0132: 33   say
+0133: 24 00 00   call [0000]   ; 090AH
+0136: 12 00 00   pop [0000]
+0139: 21 00 00   push [0000]
+013C: 05 14 00   jne 0153
+013F: 1C 3B 07   addsi L073B   ; You tell Charles ...
+0142: 33   say
+0143: 1C 6E 07   addsi L076E   ; Charles is wide-e...
+0146: 33   say
+0147: 1C FD 07   addsi L07FD   ; Charles turns awa...
+014A: 33   say
+014B: 13   push true
+014C: 43 89 00   popf flag:[0089]
+014F: 3F   abrt
+0150: 06 0B 00   jmp 015E
+0153: 1C 2F 08   addsi L082F   ; Your conscience r...
+0156: 33   say
+0157: 1D 84 08   pushs L0884   ; child
+015A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015E: 1D 8A 08   pushs L088A   ; wine
+0161: 07 01 00 69 00  cmps 0001H, 01CF
+0166: 1C 8F 08   addsi L088F   ; "Wouldst thou lik...
+0169: 33   say
+016A: 24 00 00   call [0000]   ; 090AH
+016D: 12 01 00   pop [0001]
+0170: 21 01 00   push [0001]
+0173: 05 4E 00   jne 01C4
+0176: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+017A: 12 02 00   pop [0002]
+017D: 1F 00 00   pushi 0000H   ; 0
+0180: 12 03 00   pop [0003]
+0183: 2E   sloop
+0184: 02 04 00 05 00 06 00 02 00 0D 00  db 2 ???
+0185:   db 4
+0186:   db 0
+0187:   db 5
+0188:   db 0
+0189:   db 6
+018A:   db 0
+018B:   db 2
+018C:   db 0
+018D:   db d
+018E:   db 0
+018F: 21 03 00   push [0003]
+0192: 1F 01 00   pushi 0001H   ; 1
+0195: 09   add
+0196: 12 03 00   pop [0003]
+0199: 06 E8 FF   jmp 0184
+019C: 13   push true
+019D: 1F 00 00   pushi 0000H   ; 0
+01A0: 1F 99 FE   pushi FE99H   ; -359
+01A3: 1F 74 02   pushi 0274H   ; 628
+01A6: 21 03 00   push [0003]
+01A9: 38 2C 00 05  callis 002C, 5
+01AD: 12 07 00   pop [0007]
+01B0: 21 07 00   push [0007]
+01B3: 05 07 00   jne 01BD
+01B6: 1C AE 08   addsi L08AE   ; "'Tis on the hous...
+01B9: 33   say
+01BA: 06 04 00   jmp 01C1
+01BD: 1C F7 08   addsi L08F7   ; "Oops. Thou art c...
+01C0: 33   say
+01C1: 06 04 00   jmp 01C8
+01C4: 1C 52 09   addsi L0952   ; "Some other time,...
+01C7: 33   say
+01C8: 1D 6B 09   pushs L096B   ; wine
+01CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CF: 1D 70 09   pushs L0970   ; bye
+01D2: 07 01 00 03 00  cmps 0001H, 01DA
+01D7: 06 03 00   jmp 01DD
+01DA: 06 82 FE   jmp 005F
+01DD: 40   db 40 ???
+01DE: 1C 74 09   addsi L0974   ; Charles nods his ...
+01E1: 33   say
+01E2: 48   push eventid
+01E3: 1F 00 00   pushi 0000H   ; 0
+01E6: 22   cmpeq
+01E7: 05 06 00   jne 01F0
+01EA: 1F B7 FF   pushi FFB7H   ; -73
+01ED: 24 01 00   call [0001]   ; 092EH
+01F0: 25   ret

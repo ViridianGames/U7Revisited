@@ -1,0 +1,310 @@
+  .funcnumber 0850H
+  .data
+L0000: db 'The ceremony begins as Batlin stands before the gathered Fel'
+ db 'lowship members. The hall fills with thunderous cheers. They'
+ db ' look at him with a mixture of awe and sheer adoration. Batl'
+ db 'in stands and basks in the warm reception for a moment, a tr'
+ db 'iumphant smile on his face. With a slight gesture of his han'
+ db 'd the crowd becomes quiet.'
+L0146: db 00
+L0147: db '"It is good to see you here this evening!" Batlin says. "Sur'
+ db 'ely you make me feel proud to be part of what we lovingly ca'
+ db 'll The Fellowship." There is another eruption of applause.'
+L01F9: db 00
+L01FA: db '"In thine heart be glad for thou dost walk with The Fellowsh'
+ db 'ip! The people of Britannia live in a fevered state of illus'
+ db 'ory thoughts and emotions. But those whom I look upon here t'
+ db 'onight are seekers of what is good and true in the world! Th'
+ db 'ey walk the path which leads to becoming truly cognizant. Bu'
+ db 't how dost thou find thy way? Ask any Fellowship member and '
+ db 'they will tell thee! The path to complete awareness is easy '
+ db 'to find. One must apply to one's life the Triad of Inner Str'
+ db 'ength.'
+L03E0: db 00
+L03E1: db '"The Triad of Inner Strength is a series of three values tha'
+ db 't can bring the mind to a perfect state of sanguine cognitio'
+ db 'n. The first value is Strive For Unity. When the totality of'
+ db ' the people of the world want to accomplish something, then '
+ db 'it becomes done. Thus once the people of the world all striv'
+ db 'e towards the same ends there is nothing that is impossible.'
+ db ' Just think of it! A world where any dream can be fulfilled,'
+ db ' any good can be achieved. But as thou canst see plainly by '
+ db 'looking at our own sad society, when the people of the world'
+ db ' are disunited, it is a miracle that anything gets accomplis'
+ db 'hed!'
+L063D: db 00
+L063E: db '"The second value is Trust Thy Brother. Thou must surrender '
+ db 'thy fear, prejudice and suspicion. Look to thine own self! B'
+ db 'efore thou dost question anything, question thyself! The wor'
+ db 'ld is a place where the balances of nature are at work to pr'
+ db 'otect thee every second without thee even realizing it! What'
+ db ' canst thou accomplish in this world if thou dost spend all '
+ db 'thy time questioning thy brother?! Is he working as hard as '
+ db 'I? What are his true motivations? As thou dost waste thine e'
+ db 'nergies wondering, he sees thee and starts wondering these s'
+ db 'ame things about thee. Thus is the world diminished!'
+L088E: db 00
+L088F: db '"The third value is Worthiness Precedes Reward. There is not'
+ db ' one among us who is without desire. Much of the misery in t'
+ db 'he world can be traced to unfulfilled desires. But one momen'
+ db 't! Why dost thou deserve what thou dost desire? Most people '
+ db 'get what they are worthy of in this life. If thou art not wo'
+ db 'rthy of thy desire then thou shouldst not be surprised if th'
+ db 'y desires are unfulfilled. If thou dost become worthy only t'
+ db 'hen hast thou become open to fulfilling thy desires. Desire '
+ db 'is a strange thing. Many long for things they do not really '
+ db 'want. What they really desire is worthiness itself!'
+L0ADE: db 00
+L0ADF: db '"I have just told thee all that thou dost need to follow the'
+ db ' Triad Of Inner Strength. The lessons are simple. The true m'
+ db 'easure of thine understanding comes in how absolutely thou w'
+ db 'ilt apply them to thy life. Thou now knowest all thou wilt e'
+ db 'ver need. Thou dost not need the arcane knowledge of the dyi'
+ db 'ng art of magic. Thou dost not need the unsure hand of the h'
+ db 'ealer and his limited knowledge. All that thou wilt ever nee'
+ db 'd is to continuously seek out the best in thyself and to liv'
+ db 'e amongst those that would do the same. Only then art thou t'
+ db 'ruly walking with The Fellowship.'
+L0D1C: db 00
+L0D1D: db '"Now I think would be a good time to hear the words of our f'
+ db 'ellow members. To hear them share with us how The Fellowship'
+ db ' has been bringing positive change to their lives."'
+L0DC8: db 00
+L0DC9: db '"The Fellowship has shown me that I was afraid of myself and'
+ db ' that I had to open myself up to life's experiences," says C'
+ db 'andice.*'
+L0E49: db 00
+L0E4A: db '"The Fellowship helps me be more honest with people," says P'
+ db 'atterson.*'
+L0E90: db 00
+L0E91: db '"Thank thee for sharing, Patterson."*'
+L0EB6: db 00
+L0EB7: db '"The Fellowship has taught me how to better perform my dutie'
+ db 's as the Caretaker of the Royal Orchards," says Figg.*'
+L0F29: db 00
+L0F2A: db '"The Fellowship has taught me to, first and foremost, treat '
+ db 'people with respect," says Gaye.*'
+L0F87: db 00
+L0F88: db '"After joining The Fellowship I learned how to be a man's ma'
+ db 'n," says Grayson.*'
+L0FD6: db 00
+L0FD7: db '"The Fellowship is helping me back from the brink of persona'
+ db 'l and financial oblivion," says Gordon.*'
+L103B: db 00
+L103C: db '"Right thou art, brother!"*'
+L1057: db 00
+L1058: db '"The Fellowship has freed me from the illusory appeals of me'
+ db 'diocrity," says Sean.*'
+L10AA: db 00
+L10AB: db '"In The Fellowship I am learning that I need to devote my li'
+ db 'fe to a special purpose," says Millie.*'
+L110E: db 00
+L110F: db '"This whole ceremony and everyone in it doth give me the wil'
+ db 'lies!"*'
+L1152: db 00
+L1153: db '"'Tis a sad thing to see so many people who have nothing els'
+ db 'e better in their lives than blindly following this dubious '
+ db 'spiritual leader."*'
+L11DE: db 00
+L11DF: db '"'Tis a sad thing that Britannia has fallen so far as to lea'
+ db 've itself open to a group like this Fellowship."*'
+L124C: db 00
+L124D: db '"'Tis a sad thing when I cannot even keep my eyes open from '
+ db 'the boredom of this Fellowship ceremony!"*'
+L12B3: db 00
+L12B4: db 'From watching Batlin and the others you get the feeling that'
+ db ' the Fellowship ceremony is going to last long into the nigh'
+ db 't. Now would be a good moment to slip away without drawing m'
+ db 'uch attention to yourself...*'
+L1385: db 00
+  .code
+  .argc 0000H
+  .localc 000EH
+  .externsize 0003H
+  .extern 0908H
+  .extern 0909H
+  .extern 08F7H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F E6 FF   pushi FFE6H   ; -26
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 24 00 00   call [0000]   ; 0908H
+000D: 12 00 00   pop [0000]
+0010: 24 01 00   call [0001]   ; 0909H
+0013: 12 01 00   pop [0001]
+0016: 1C 00 00   addsi L0000   ; The ceremony begi...
+0019: 33   say
+001A: 1C 47 01   addsi L0147   ; "It is good to se...
+001D: 33   say
+001E: 1C FA 01   addsi L01FA   ; "In thine heart b...
+0021: 33   say
+0022: 1C E1 03   addsi L03E1   ; "The Triad of Inn...
+0025: 33   say
+0026: 1C 3E 06   addsi L063E   ; "The second value...
+0029: 33   say
+002A: 1C 8F 08   addsi L088F   ; "The third value ...
+002D: 33   say
+002E: 1C DF 0A   addsi L0ADF   ; "I have just told...
+0031: 33   say
+0032: 1C 1D 0D   addsi L0D1D   ; "Now I think woul...
+0035: 33   say
+0036: 1F D7 FF   pushi FFD7H   ; -41
+0039: 24 02 00   call [0002]   ; 08F7H
+003C: 12 02 00   pop [0002]
+003F: 21 02 00   push [0002]
+0042: 05 15 00   jne 005A
+0045: 1F 00 00   pushi 0000H   ; 0
+0048: 1F D7 FF   pushi FFD7H   ; -41
+004B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+004F: 1C C9 0D   addsi L0DC9   ; "The Fellowship h...
+0052: 33   say
+0053: 1F D7 FF   pushi FFD7H   ; -41
+0056: 39 04 00 01  calli _HideNPC@1  ; 0004
+005A: 1F D5 FF   pushi FFD5H   ; -43
+005D: 24 02 00   call [0002]   ; 08F7H
+0060: 12 03 00   pop [0003]
+0063: 21 03 00   push [0003]
+0066: 05 23 00   jne 008C
+0069: 1F 00 00   pushi 0000H   ; 0
+006C: 1F D5 FF   pushi FFD5H   ; -43
+006F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0073: 1C 4A 0E   addsi L0E4A   ; "The Fellowship h...
+0076: 33   say
+0077: 1F 00 00   pushi 0000H   ; 0
+007A: 1F E6 FF   pushi FFE6H   ; -26
+007D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0081: 1C 91 0E   addsi L0E91   ; "Thank thee for s...
+0084: 33   say
+0085: 1F D5 FF   pushi FFD5H   ; -43
+0088: 39 04 00 01  calli _HideNPC@1  ; 0004
+008C: 1F D3 FF   pushi FFD3H   ; -45
+008F: 24 02 00   call [0002]   ; 08F7H
+0092: 12 04 00   pop [0004]
+0095: 21 04 00   push [0004]
+0098: 05 15 00   jne 00B0
+009B: 1F 00 00   pushi 0000H   ; 0
+009E: 1F D3 FF   pushi FFD3H   ; -45
+00A1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A5: 1C B7 0E   addsi L0EB7   ; "The Fellowship h...
+00A8: 33   say
+00A9: 1F D3 FF   pushi FFD3H   ; -45
+00AC: 39 04 00 01  calli _HideNPC@1  ; 0004
+00B0: 1F CB FF   pushi FFCBH   ; -53
+00B3: 24 02 00   call [0002]   ; 08F7H
+00B6: 12 05 00   pop [0005]
+00B9: 21 05 00   push [0005]
+00BC: 05 15 00   jne 00D4
+00BF: 1F 00 00   pushi 0000H   ; 0
+00C2: 1F CB FF   pushi FFCBH   ; -53
+00C5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00C9: 1C 2A 0F   addsi L0F2A   ; "The Fellowship h...
+00CC: 33   say
+00CD: 1F CB FF   pushi FFCBH   ; -53
+00D0: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D4: 1F C9 FF   pushi FFC9H   ; -55
+00D7: 24 02 00   call [0002]   ; 08F7H
+00DA: 12 06 00   pop [0006]
+00DD: 21 06 00   push [0006]
+00E0: 05 15 00   jne 00F8
+00E3: 1F 00 00   pushi 0000H   ; 0
+00E6: 1F C9 FF   pushi FFC9H   ; -55
+00E9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00ED: 1C 88 0F   addsi L0F88   ; "After joining Th...
+00F0: 33   say
+00F1: 1F C9 FF   pushi FFC9H   ; -55
+00F4: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F8: 1F C6 FF   pushi FFC6H   ; -58
+00FB: 24 02 00   call [0002]   ; 08F7H
+00FE: 12 07 00   pop [0007]
+0101: 21 07 00   push [0007]
+0104: 05 23 00   jne 012A
+0107: 1F 00 00   pushi 0000H   ; 0
+010A: 1F C6 FF   pushi FFC6H   ; -58
+010D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0111: 1C D7 0F   addsi L0FD7   ; "The Fellowship i...
+0114: 33   say
+0115: 1F 00 00   pushi 0000H   ; 0
+0118: 1F E6 FF   pushi FFE6H   ; -26
+011B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011F: 1C 3C 10   addsi L103C   ; "Right thou art, ...
+0122: 33   say
+0123: 1F C6 FF   pushi FFC6H   ; -58
+0126: 39 04 00 01  calli _HideNPC@1  ; 0004
+012A: 1F C5 FF   pushi FFC5H   ; -59
+012D: 24 02 00   call [0002]   ; 08F7H
+0130: 12 08 00   pop [0008]
+0133: 21 08 00   push [0008]
+0136: 05 15 00   jne 014E
+0139: 1F 00 00   pushi 0000H   ; 0
+013C: 1F C5 FF   pushi FFC5H   ; -59
+013F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0143: 1C 58 10   addsi L1058   ; "The Fellowship h...
+0146: 33   say
+0147: 1F C5 FF   pushi FFC5H   ; -59
+014A: 39 04 00 01  calli _HideNPC@1  ; 0004
+014E: 1F C1 FF   pushi FFC1H   ; -63
+0151: 24 02 00   call [0002]   ; 08F7H
+0154: 12 09 00   pop [0009]
+0157: 21 09 00   push [0009]
+015A: 05 15 00   jne 0172
+015D: 1F 00 00   pushi 0000H   ; 0
+0160: 1F C1 FF   pushi FFC1H   ; -63
+0163: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0167: 1C AB 10   addsi L10AB   ; "In The Fellowshi...
+016A: 33   say
+016B: 1F C1 FF   pushi FFC1H   ; -63
+016E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0172: 1F FE FF   pushi FFFEH   ; -2
+0175: 24 02 00   call [0002]   ; 08F7H
+0178: 12 0A 00   pop [000A]
+017B: 21 0A 00   push [000A]
+017E: 05 15 00   jne 0196
+0181: 1F 00 00   pushi 0000H   ; 0
+0184: 1F FE FF   pushi FFFEH   ; -2
+0187: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+018B: 1C 0F 11   addsi L110F   ; "This whole cerem...
+018E: 33   say
+018F: 1F FE FF   pushi FFFEH   ; -2
+0192: 39 04 00 01  calli _HideNPC@1  ; 0004
+0196: 1F FF FF   pushi FFFFH   ; -1
+0199: 24 02 00   call [0002]   ; 08F7H
+019C: 12 0B 00   pop [000B]
+019F: 21 0B 00   push [000B]
+01A2: 05 15 00   jne 01BA
+01A5: 1F 00 00   pushi 0000H   ; 0
+01A8: 1F FF FF   pushi FFFFH   ; -1
+01AB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01AF: 1C 53 11   addsi L1153   ; "'Tis a sad thing...
+01B2: 33   say
+01B3: 1F FF FF   pushi FFFFH   ; -1
+01B6: 39 04 00 01  calli _HideNPC@1  ; 0004
+01BA: 1F FD FF   pushi FFFDH   ; -3
+01BD: 24 02 00   call [0002]   ; 08F7H
+01C0: 12 0C 00   pop [000C]
+01C3: 21 0C 00   push [000C]
+01C6: 05 15 00   jne 01DE
+01C9: 1F 00 00   pushi 0000H   ; 0
+01CC: 1F FD FF   pushi FFFDH   ; -3
+01CF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D3: 1C DF 11   addsi L11DF   ; "'Tis a sad thing...
+01D6: 33   say
+01D7: 1F FD FF   pushi FFFDH   ; -3
+01DA: 39 04 00 01  calli _HideNPC@1  ; 0004
+01DE: 1F FC FF   pushi FFFCH   ; -4
+01E1: 24 02 00   call [0002]   ; 08F7H
+01E4: 12 0D 00   pop [000D]
+01E7: 21 0D 00   push [000D]
+01EA: 05 15 00   jne 0202
+01ED: 1F 00 00   pushi 0000H   ; 0
+01F0: 1F FC FF   pushi FFFCH   ; -4
+01F3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F7: 1C 4D 12   addsi L124D   ; "'Tis a sad thing...
+01FA: 33   say
+01FB: 1F FC FF   pushi FFFCH   ; -4
+01FE: 39 04 00 01  calli _HideNPC@1  ; 0004
+0202: 1F 00 00   pushi 0000H   ; 0
+0205: 1F E6 FF   pushi FFE6H   ; -26
+0208: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+020C: 1C B4 12   addsi L12B4   ; From watching Bat...
+020F: 33   say
+0210: 3F   abrt
+0211: 25   ret

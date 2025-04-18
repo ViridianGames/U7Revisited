@@ -1,0 +1,65 @@
+  .funcnumber 0922H
+  .data
+  .code
+  .argc 0004H
+  .localc 0007H
+  .externsize 0001H
+  .extern 0910H
+0000: 14   push false
+0001: 12 04 00   pop [0004]
+0004: 1F 07 00   pushi 0007H   ; 7
+0007: 21 01 00   push [0001]
+000A: 24 00 00   call [0000]   ; 0910H
+000D: 12 05 00   pop [0005]
+0010: 1F 99 FE   pushi FE99H   ; -359
+0013: 1F 99 FE   pushi FE99H   ; -359
+0016: 1F 84 02   pushi 0284H   ; 644
+0019: 1F 9B FE   pushi FE9BH   ; -357
+001C: 38 28 00 04  callis 0028, 4
+0020: 12 06 00   pop [0006]
+0023: 21 06 00   push [0006]
+0026: 21 02 00   push [0002]
+0029: 16   cmpgt
+002A: 10   not
+002B: 05 04 00   jne 0032
+002E: 1F 01 00   pushi 0001H   ; 1
+0031: 2D   setr
+0032: 21 05 00   push [0005]
+0035: 21 00 00   push [0000]
+0038: 18   cmpge
+0039: 10   not
+003A: 05 04 00   jne 0041
+003D: 1F 00 00   pushi 0000H   ; 0
+0040: 2D   setr
+0041: 2E   sloop
+0042: 02 07 00 08 00 09 00 03 00 1D 00  db 2 ???
+0043:   db 7
+0044:   db 0
+0045:   db 8
+0046:   db 0
+0047:   db 9
+0048:   db 0
+0049:   db 3
+004A:   db 0
+004B:   db 1d
+004C:   db 0
+004D: 21 09 00   push [0009]
+0050: 21 01 00   push [0001]
+0053: 24 00 00   call [0000]   ; 0910H
+0056: 12 0A 00   pop [000A]
+0059: 21 0A 00   push [000A]
+005C: 1F 1E 00   pushi 001EH   ; 30
+005F: 17   cmpl
+0060: 05 04 00   jne 0067
+0063: 13   push true
+0064: 12 04 00   pop [0004]
+0067: 06 D8 FF   jmp 0042
+006A: 21 04 00   push [0004]
+006D: 14   push false
+006E: 22   cmpeq
+006F: 05 04 00   jne 0076
+0072: 1F 02 00   pushi 0002H   ; 2
+0075: 2D   setr
+0076: 1F 03 00   pushi 0003H   ; 3
+0079: 2D   setr
+007A: 32   rts

@@ -1,0 +1,113 @@
+  .funcnumber 0691H
+  .data
+L0000: db 'After a short while you notice that the edge has definitely '
+ db 'improved.'
+L0045: db 00
+L0046: db 'You feel that you've done the best job that you can, but the'
+ db ' sword doesn't feel quite right. It's much too heavy and cum'
+ db 'bersome to wield as a weapon.'
+L00DB: db 00
+L00DC: db 'That last blow was perhaps a bit too hard, It'll take a whil'
+ db 'e to hammer out the flaws.'
+L0132: db 00
+L0133: db 'The blade has been worked as well as it can be. It will take'
+ db ' some form of magic to make this sword blank into a usable w'
+ db 'eapon.'
+L01B1: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 02 00   pushi 0002H   ; 2
+0004: 22   cmpeq
+0005: 05 45 00   jne 004D
+0008: 1F 02 00   pushi 0002H   ; 2
+000B: 1F 9C 02   pushi 029CH   ; 668
+000E: 1F 9C FE   pushi FE9CH   ; -356
+0011: 38 1B 00 01  callis 001B, 1
+0015: 38 0E 00 03  callis 000E, 3
+0019: 12 00 00   pop [0000]
+001C: 21 00 00   push [0000]
+001F: 38 18 00 01  callis 0018, 1
+0023: 12 01 00   pop [0001]
+0026: 1F 2D 00   pushi 002DH   ; 45
+0029: 44 58   pushw 1E58H   ; 7768
+002B: 1E 02 00   arrc 0002H   ; 2
+002E: 3E   push itemref
+002F: 38 01 00 02  callis 0001, 2
+0033: 12 02 00   pop [0002]
+0036: 1F 90 06   pushi 0690H   ; 1680
+0039: 44 55   pushw 1F55H   ; 8021
+003B: 1F 01 00   pushi 0001H   ; 1
+003E: 44 27   pushw 4427H   ; 17447
+0040: 44 23   pushw 1E23H   ; 7715
+0042: 1E 05 00   arrc 0005H   ; 5
+0045: 3E   push itemref
+0046: 38 01 00 02  callis 0001, 2
+004A: 12 02 00   pop [0002]
+004D: 48   push eventid
+004E: 1F 01 00   pushi 0001H   ; 1
+0051: 22   cmpeq
+0052: 05 A7 00   jne 00FC
+0055: 1F 64 00   pushi 0064H   ; 100
+0058: 38 00 00 01  callis 0000, 1
+005C: 12 03 00   pop [0003]
+005F: 42 2D 03   pushf flag:[032D]
+0062: 10   not
+0063: 05 27 00   jne 008D
+0066: 21 03 00   push [0003]
+0069: 1F 42 00   pushi 0042H   ; 66
+006C: 16   cmpgt
+006D: 05 1A 00   jne 008A
+0070: 13   push true
+0071: 43 2D 03   popf flag:[032D]
+0074: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0078: 1F 9C FE   pushi FE9CH   ; -356
+007B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+007F: 1C 00 00   addsi L0000   ; After a short whi...
+0082: 33   say
+0083: 1F 9C FE   pushi FE9CH   ; -356
+0086: 39 04 00 01  calli _HideNPC@1  ; 0004
+008A: 06 6F 00   jmp 00FC
+008D: 42 2E 03   pushf flag:[032E]
+0090: 10   not
+0091: 05 52 00   jne 00E6
+0094: 21 03 00   push [0003]
+0097: 1F 42 00   pushi 0042H   ; 66
+009A: 16   cmpgt
+009B: 05 21 00   jne 00BF
+009E: 13   push true
+009F: 43 2E 03   popf flag:[032E]
+00A2: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+00A6: 1F 9C FE   pushi FE9CH   ; -356
+00A9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00AD: 1C 46 00   addsi L0046   ; You feel that you...
+00B0: 33   say
+00B1: 13   push true
+00B2: 43 37 03   popf flag:[0337]
+00B5: 1F 9C FE   pushi FE9CH   ; -356
+00B8: 39 04 00 01  calli _HideNPC@1  ; 0004
+00BC: 06 24 00   jmp 00E3
+00BF: 21 03 00   push [0003]
+00C2: 1F 14 00   pushi 0014H   ; 20
+00C5: 17   cmpl
+00C6: 05 1A 00   jne 00E3
+00C9: 14   push false
+00CA: 43 2D 03   popf flag:[032D]
+00CD: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+00D1: 1F 9C FE   pushi FE9CH   ; -356
+00D4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D8: 1C DC 00   addsi L00DC   ; That last blow wa...
+00DB: 33   say
+00DC: 1F 9C FE   pushi FE9CH   ; -356
+00DF: 39 04 00 01  calli _HideNPC@1  ; 0004
+00E3: 06 16 00   jmp 00FC
+00E6: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+00EA: 1F 9C FE   pushi FE9CH   ; -356
+00ED: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F1: 1C 33 01   addsi L0133   ; The blade has bee...
+00F4: 33   say
+00F5: 1F 9C FE   pushi FE9CH   ; -356
+00F8: 39 04 00 01  calli _HideNPC@1  ; 0004
+00FC: 25   ret

@@ -1,0 +1,398 @@
+  .funcnumber 04E0H
+  .data
+L0000: db 'Avatar'
+L0006: db 00
+L0007: db 'The man looks up in surprise and says, "I am not working at '
+ db 'the moment and I ask thee to respect my privacy. If thou dos'
+ db 't wish to speak with me, come to The Baths in the late eveni'
+ db 'ng hours."*'
+L00C6: db 00
+L00C7: db 'bye'
+L00CA: db 00
+L00CB: db 'job'
+L00CE: db 00
+L00CF: db 'name'
+L00D3: db 00
+L00D4: db 'The man looks at you with surprise and says, "Hold, '
+L0108: db 00
+L0109: db '! Thou didst just enjoy thyself, didst thou not? Please come'
+ db ' back when thou art rested!"*'
+L0162: db 00
+L0163: db 'You see a strikingly handsome man with eyes that pierce your'
+ db ' soul.'
+L01A5: db 00
+L01A6: db '"Hello, gorgeous!'
+L01B7: db 00
+L01B8: db '"Hello. Uhm, art thou sure thou dost not really want to spea'
+ db 'k with Wench or Martine?"'
+L020D: db 00
+L020E: db '"Fine, sailor, whatever makes thy blood boil...'
+L023D: db 00
+L023E: db '"Then thou hadst best speak with one of them. They are proba'
+ db 'bly more to thy liking!"*'
+L0293: db 00
+L0294: db '"What is thy name?"'
+L02A7: db 00
+L02A8: db '"Well, I am very pleased to meet thee, '
+L02CF: db 00
+L02D0: db '."'
+L02D2: db 00
+L02D3: db '"Hello, '
+L02DB: db 00
+L02DC: db '."'
+L02DE: db 00
+L02DF: db 'Roberto does a double-take. "The Avatar, eh? And I thought I'
+ db ' had heard it all..."'
+L0330: db 00
+L0331: db '"Hello again, '
+L033F: db 00
+L0340: db '," Roberto says.'
+L0350: db 00
+L0351: db 'name'
+L0355: db 00
+L0356: db '"I am known in these parts as Roberto."'
+L037D: db 00
+L037E: db 'Roberto takes your hand and says, "And thou art the most bea'
+ db 'utiful woman I have ever laid eyes upon!"'
+L03E3: db 00
+L03E4: db 'name'
+L03E8: db 00
+L03E9: db 'job'
+L03EC: db 00
+L03ED: db 'Roberto smiles broadly. "Thou dost not really want to know t'
+ db 'hat, dost thou?" He shakes his head, suppressing a laugh. "V'
+ db 'ery well -- it is my task to see that thou art truly comfort'
+ db 'able whilst at The Baths."'
+L04BB: db 00
+L04BC: db 'comfortable'
+L04C7: db 00
+L04C8: db 'The Baths'
+L04D1: db 00
+L04D2: db 'The Baths'
+L04DB: db 00
+L04DC: db 'beautiful women '
+L04EC: db 00
+L04ED: db 'handsome men '
+L04FA: db 00
+L04FB: db '"Nice place, is it not? I certainly enjoy working here! It b'
+ db 'rings me much wealth, and I have many opportunities to meet '
+L0573: db 00
+L0574: db 'such as thyself!"'
+L0585: db 00
+L0586: db 'The Baths'
+L058F: db 00
+L0590: db 'comfortable'
+L059B: db 00
+L059C: db '"What would suit thee? We could swim in the spring pools, or'
+ db ' I could give thee a massage. If thou dost prefer to convers'
+ db 'e, we could simply talk. Or if thou wouldst like, we could w'
+ db 'ander into the Community Room and... communicate!"'
+L0682: db 00
+L0683: db 'comfortable'
+L068E: db 00
+L068F: db 'Community Room'
+L069D: db 00
+L069E: db 'talk'
+L06A2: db 00
+L06A3: db 'massage'
+L06AA: db 00
+L06AB: db 'swim'
+L06AF: db 00
+L06B0: db 'Community Room'
+L06BE: db 00
+L06BF: db '"Thou dost want to join me in the Community Room?"'
+L06F1: db 00
+L06F2: db 'Roberto leads you into a private room.~~"It really isn't a C'
+ db 'ommunity Room at all. We shall be all alone!" ~~A while late'
+ db 'r, after you have received the man's full attention, you eme'
+ db 'rge from the Community Room a much happier Avatar.'
+L07D8: db 00
+L07D9: db '"Do not worry about it, '
+L07F1: db 00
+L07F2: db '. We can do something else."'
+L080E: db 00
+L080F: db 'Community Room'
+L081D: db 00
+L081E: db 'swim'
+L0822: db 00
+L0823: db 'Roberto helps you with your clothing and leads you into the '
+ db 'warm spring water. It feels terrific, and you feel like goin'
+ db 'g to sleep, but you know you have a quest to complete. After'
+ db ' a while, Roberto helps you out of the water and you dress.'
+L0912: db 00
+L0913: db 'swim'
+L0917: db 00
+L0918: db 'massage'
+L091F: db 00
+L0920: db 'Roberto helps you with your clothing and leads you to a comf'
+ db 'ortable table. You lie face down and the man expertly kneads'
+ db ' and rubs your aching muscles, slowly sending you over the e'
+ db 'dge into a state of total relaxation. After a while, Roberto'
+ db ' helps you up and you dress.'
+L0A2C: db 00
+L0A2D: db 'massage'
+L0A34: db 00
+L0A35: db 'talk'
+L0A39: db 00
+L0A3A: db 'Roberto smiles. "That is all right. What shall we talk about'
+ db '? Adventuring? Secret passages and dungeons?"~~ Roberto lean'
+ db 's closer and whispers, "Didst thou know that there are secre'
+ db 't passages connecting the buildings on Buccaneer's Den? 'Tis'
+ db ' true! I am fairly sure the entrance is through the House of'
+ db ' Games, and I am quite sure there is a way into The Baths."~'
+ db '~You and Roberto speak of a number of other subjects until y'
+ db 'ou realize that you are spending far too much time in the sp'
+ db 'a. There is a quest to fulfill!'
+L0C39: db 00
+L0C3A: db 'talk'
+L0C3E: db 00
+L0C3F: db 'bye'
+L0C42: db 00
+L0C43: db '"I hope to see thee again, '
+L0C5E: db 00
+L0C5F: db '."*'
+L0C62: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0003H
+  .extern 0908H
+  .extern 090AH
+  .extern 090BH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 20 FF   pushi FF20H   ; -224
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 38 3B 00 00  callis 003B, 0
+0017: 12 00 00   pop [0000]
+001A: 1F 20 FF   pushi FF20H   ; -224
+001D: 38 1B 00 01  callis 001B, 1
+0021: 38 1C 00 01  callis 001C, 1
+0025: 12 01 00   pop [0001]
+0028: 24 00 00   call [0000]   ; 0908H
+002B: 12 02 00   pop [0002]
+002E: 1D 00 00   pushs L0000   ; Avatar
+0031: 12 03 00   pop [0003]
+0034: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0038: 12 04 00   pop [0004]
+003B: 42 A1 02   pushf flag:[02A1]
+003E: 05 06 00   jne 0047
+0041: 21 02 00   push [0002]
+0044: 12 05 00   pop [0005]
+0047: 42 A2 02   pushf flag:[02A2]
+004A: 05 06 00   jne 0053
+004D: 21 03 00   push [0003]
+0050: 12 05 00   pop [0005]
+0053: 21 01 00   push [0001]
+0056: 1F 07 00   pushi 0007H   ; 7
+0059: 22   cmpeq
+005A: 10   not
+005B: 05 05 00   jne 0063
+005E: 1C 07 00   addsi L0007   ; The man looks up ...
+0061: 33   say
+0062: 3F   abrt
+0063: 1D C7 00   pushs L00C7   ; bye
+0066: 1D CB 00   pushs L00CB   ; job
+0069: 1D CF 00   pushs L00CF   ; name
+006C: 1E 03 00   arrc 0003H   ; 3
+006F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0073: 1F 04 00   pushi 0004H   ; 4
+0076: 38 65 00 01  callis 0065, 1
+007A: 12 06 00   pop [0006]
+007D: 1F 02 00   pushi 0002H   ; 2
+0080: 38 65 00 01  callis 0065, 1
+0084: 12 07 00   pop [0007]
+0087: 1F 03 00   pushi 0003H   ; 3
+008A: 38 65 00 01  callis 0065, 1
+008E: 12 08 00   pop [0008]
+0091: 42 9C 02   pushf flag:[029C]
+0094: 21 07 00   push [0007]
+0097: 1F 02 00   pushi 0002H   ; 2
+009A: 17   cmpl
+009B: 0E   and
+009C: 42 9D 02   pushf flag:[029D]
+009F: 21 06 00   push [0006]
+00A2: 1F 02 00   pushi 0002H   ; 2
+00A5: 17   cmpl
+00A6: 0E   and
+00A7: 42 9E 02   pushf flag:[029E]
+00AA: 21 08 00   push [0008]
+00AD: 1F 02 00   pushi 0002H   ; 2
+00B0: 17   cmpl
+00B1: 0E   and
+00B2: 0F   or
+00B3: 0F   or
+00B4: 05 0E 00   jne 00C5
+00B7: 1C D4 00   addsi L00D4   ; The man looks at ...
+00BA: 2F 04 00   addsv [0004]
+00BD: 1C 09 01   addsi L0109   ; ! Thou didst just...
+00C0: 33   say
+00C1: 3F   abrt
+00C2: 06 9B 00   jmp 0160
+00C5: 42 AD 02   pushf flag:[02AD]
+00C8: 10   not
+00C9: 05 8A 00   jne 0156
+00CC: 1C 63 01   addsi L0163   ; You see a strikin...
+00CF: 33   say
+00D0: 21 04 00   push [0004]
+00D3: 05 07 00   jne 00DD
+00D6: 1C A6 01   addsi L01A6   ; "Hello, gorgeous!
+00D9: 33   say
+00DA: 06 16 00   jmp 00F3
+00DD: 1C B8 01   addsi L01B8   ; "Hello. Uhm, art ...
+00E0: 33   say
+00E1: 24 01 00   call [0001]   ; 090AH
+00E4: 05 07 00   jne 00EE
+00E7: 1C 0E 02   addsi L020E   ; "Fine, sailor, wh...
+00EA: 33   say
+00EB: 06 05 00   jmp 00F3
+00EE: 1C 3E 02   addsi L023E   ; "Then thou hadst ...
+00F1: 33   say
+00F2: 3F   abrt
+00F3: 1C 94 02   addsi L0294   ; "What is thy name?"
+00F6: 33   say
+00F7: 21 03 00   push [0003]
+00FA: 21 02 00   push [0002]
+00FD: 1E 02 00   arrc 0002H   ; 2
+0100: 24 02 00   call [0002]   ; 090BH
+0103: 12 09 00   pop [0009]
+0106: 21 09 00   push [0009]
+0109: 21 02 00   push [0002]
+010C: 22   cmpeq
+010D: 05 27 00   jne 0137
+0110: 21 04 00   push [0004]
+0113: 05 0D 00   jne 0123
+0116: 1C A8 02   addsi L02A8   ; "Well, I am very ...
+0119: 2F 02 00   addsv [0002]
+011C: 1C D0 02   addsi L02D0   ; ."
+011F: 33   say
+0120: 06 0A 00   jmp 012D
+0123: 1C D3 02   addsi L02D3   ; "Hello, 
+0126: 2F 02 00   addsv [0002]
+0129: 1C DC 02   addsi L02DC   ; ."
+012C: 33   say
+012D: 21 02 00   push [0002]
+0130: 12 05 00   pop [0005]
+0133: 13   push true
+0134: 43 A1 02   popf flag:[02A1]
+0137: 21 09 00   push [0009]
+013A: 21 03 00   push [0003]
+013D: 22   cmpeq
+013E: 05 0E 00   jne 014F
+0141: 1C DF 02   addsi L02DF   ; Roberto does a do...
+0144: 33   say
+0145: 13   push true
+0146: 43 A2 02   popf flag:[02A2]
+0149: 21 03 00   push [0003]
+014C: 12 05 00   pop [0005]
+014F: 13   push true
+0150: 43 AD 02   popf flag:[02AD]
+0153: 06 0A 00   jmp 0160
+0156: 1C 31 03   addsi L0331   ; "Hello again, 
+0159: 2F 05 00   addsv [0005]
+015C: 1C 40 03   addsi L0340   ; ," Roberto says.
+015F: 33   say
+0160: 04 1A 01   je 027D
+0163: 1D 51 03   pushs L0351   ; name
+0166: 07 01 00 15 00  cmps 0001H, 0180
+016B: 1C 56 03   addsi L0356   ; "I am known in th...
+016E: 33   say
+016F: 21 04 00   push [0004]
+0172: 05 04 00   jne 0179
+0175: 1C 7E 03   addsi L037E   ; Roberto takes you...
+0178: 33   say
+0179: 1D E4 03   pushs L03E4   ; name
+017C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0180: 1D E9 03   pushs L03E9   ; job
+0183: 07 01 00 11 00  cmps 0001H, 0199
+0188: 1C ED 03   addsi L03ED   ; Roberto smiles br...
+018B: 33   say
+018C: 1D BC 04   pushs L04BC   ; comfortable
+018F: 1D C8 04   pushs L04C8   ; The Baths
+0192: 1E 02 00   arrc 0002H   ; 2
+0195: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0199: 1D D2 04   pushs L04D2   ; The Baths
+019C: 07 01 00 26 00  cmps 0001H, 01C7
+01A1: 21 04 00   push [0004]
+01A4: 05 09 00   jne 01B0
+01A7: 1D DC 04   pushs L04DC   ; beautiful women 
+01AA: 12 0A 00   pop [000A]
+01AD: 06 06 00   jmp 01B6
+01B0: 1D ED 04   pushs L04ED   ; handsome men 
+01B3: 12 0A 00   pop [000A]
+01B6: 1C FB 04   addsi L04FB   ; "Nice place, is i...
+01B9: 2F 0A 00   addsv [000A]
+01BC: 1C 74 05   addsi L0574   ; such as thyself!"
+01BF: 33   say
+01C0: 1D 86 05   pushs L0586   ; The Baths
+01C3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C7: 1D 90 05   pushs L0590   ; comfortable
+01CA: 07 01 00 1E 00  cmps 0001H, 01ED
+01CF: 1C 9C 05   addsi L059C   ; "What would suit ...
+01D2: 33   say
+01D3: 1D 83 06   pushs L0683   ; comfortable
+01D6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DA: 1D 8F 06   pushs L068F   ; Community Room
+01DD: 1D 9E 06   pushs L069E   ; talk
+01E0: 1D A3 06   pushs L06A3   ; massage
+01E3: 1D AB 06   pushs L06AB   ; swim
+01E6: 1E 04 00   arrc 0004H   ; 4
+01E9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01ED: 1D B0 06   pushs L06B0   ; Community Room
+01F0: 07 01 00 41 00  cmps 0001H, 0236
+01F5: 1C BF 06   addsi L06BF   ; "Thou dost want t...
+01F8: 33   say
+01F9: 24 01 00   call [0001]   ; 090AH
+01FC: 05 26 00   jne 0225
+01FF: 1C F2 06   addsi L06F2   ; Roberto leads you...
+0202: 33   say
+0203: 13   push true
+0204: 43 9E 02   popf flag:[029E]
+0207: 1F 03 00   pushi 0003H   ; 3
+020A: 39 66 00 01  calli 0066, 1
+020E: 13   push true
+020F: 1F 99 FE   pushi FE99H   ; -359
+0212: 1F 99 FE   pushi FE99H   ; -359
+0215: 1F 84 02   pushi 0284H   ; 644
+0218: 1F 32 00   pushi 0032H   ; 50
+021B: 38 2B 00 05  callis 002B, 5
+021F: 12 0B 00   pop [000B]
+0222: 06 0A 00   jmp 022F
+0225: 1C D9 07   addsi L07D9   ; "Do not worry abo...
+0228: 2F 05 00   addsv [0005]
+022B: 1C F2 07   addsi L07F2   ; . We can do somet...
+022E: 33   say
+022F: 1D 0F 08   pushs L080F   ; Community Room
+0232: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0236: 1D 1E 08   pushs L081E   ; swim
+0239: 07 01 00 0B 00  cmps 0001H, 0249
+023E: 1C 23 08   addsi L0823   ; Roberto helps you...
+0241: 33   say
+0242: 1D 13 09   pushs L0913   ; swim
+0245: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0249: 1D 18 09   pushs L0918   ; massage
+024C: 07 01 00 0B 00  cmps 0001H, 025C
+0251: 1C 20 09   addsi L0920   ; Roberto helps you...
+0254: 33   say
+0255: 1D 2D 0A   pushs L0A2D   ; massage
+0258: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025C: 1D 35 0A   pushs L0A35   ; talk
+025F: 07 01 00 0B 00  cmps 0001H, 026F
+0264: 1C 3A 0A   addsi L0A3A   ; Roberto smiles. "...
+0267: 33   say
+0268: 1D 3A 0C   pushs L0C3A   ; talk
+026B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026F: 1D 3F 0C   pushs L0C3F   ; bye
+0272: 07 01 00 03 00  cmps 0001H, 027A
+0277: 06 03 00   jmp 027D
+027A: 06 E3 FE   jmp 0160
+027D: 40   db 40 ???
+027E: 1C 43 0C   addsi L0C43   ; "I hope to see th...
+0281: 2F 05 00   addsv [0005]
+0284: 1C 5F 0C   addsi L0C5F   ; ."*
+0287: 33   say
+0288: 25   ret

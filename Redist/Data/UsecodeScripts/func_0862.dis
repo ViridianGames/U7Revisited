@@ -1,0 +1,303 @@
+  .funcnumber 0862H
+  .data
+L0000: db '"Then prove it. Talk to me."'
+L001C: db 00
+L001D: db 'Hi, Chuck'
+L0026: db 00
+L0027: db 'Hi, Chuckles'
+L0033: db 00
+L0034: db 'Hello, Fool'
+L003F: db 00
+L0040: db 'Hello, Chuckles'
+L004F: db 00
+L0050: db 'Hi, Chuck'
+L0059: db 00
+L005A: db '"Hi there! What is on thy mind?"'
+L007A: db 00
+L007B: db 'I need answers'
+L0089: db 00
+L008A: db 'many problems'
+L0097: db 00
+L0098: db 'too much'
+L00A0: db 00
+L00A1: db 'trouble'
+L00A8: db 00
+L00A9: db 'too much'
+L00B1: db 00
+L00B2: db '"Ah, I do know what thou dost mean! Thou dost need help, yes'
+ db '?"'
+L00F0: db 00
+L00F1: db 'Most assuredly'
+L00FF: db 00
+L0100: db 'Canst thou help?'
+L0110: db 00
+L0111: db 'Absolutely'
+L011B: db 00
+L011C: db 'Yes, I do'
+L0125: db 00
+L0126: db 'Yes, I do'
+L012F: db 00
+L0130: db 'Canst thou help?'
+L0140: db 00
+L0141: db '"Hmmm. I might could give thee a clue."'
+L0168: db 00
+L0169: db '"I would like to give Chuckles a black eye!"'
+L0195: db 00
+L0196: db 'I wish thou wouldst'
+L01A9: db 00
+L01AA: db 'That would be worthwhile'
+L01C2: db 00
+L01C3: db 'I need it immediately'
+L01D8: db 00
+L01D9: db 'That would be big of thee'
+L01F2: db 00
+L01F3: db 'That would be big of thee'
+L020C: db 00
+L020D: db 'I wish thou wouldst'
+L0220: db 00
+L0221: db '"What wilt thou give me for a clue?"'
+L0245: db 00
+L0246: db 'nothing'
+L024D: db 00
+L024E: db 'a smile'
+L0255: db 00
+L0256: db 'my friendship'
+L0263: db 00
+L0264: db 'gold'
+L0268: db 00
+L0269: db 'I shan't murder thee'
+L027D: db 00
+L027E: db 'gold'
+L0282: db 00
+L0283: db 'Chuckles holds his hand up. "'Tis not right. I give thee a c'
+ db 'lue for free. 'Tis here in this scroll."'
+L02E7: db 00
+L02E8: db '"So long, my friend! Do not forg... I mean, do not lose how '
+ db 'to play The Game!"*'
+L0337: db 00
+L0338: db '"Oh! Thou dost not have room for the scroll! Put down thy th'
+ db 'ings and I shall give it to thee!"*'
+L0397: db 00
+L0398: db 'a smile'
+L039F: db 00
+L03A0: db '"How nice! All right! I shall give thee a clue. 'Tis here in'
+ db ' this scroll."'
+L03EA: db 00
+L03EB: db '"So long, my friend! Do not forg... I mean, do not lose how '
+ db 'to play The Game!"*'
+L043A: db 00
+L043B: db '"Oh! Thou dost not have room for the scroll! Put down some o'
+ db 'f thy things and I can give it to thee!"*'
+L04A0: db 00
+L04A1: db 'I shan't murder thee'
+L04B5: db 00
+L04B6: db 'my friendship'
+L04C3: db 00
+L04C4: db 'nothing'
+L04CB: db 00
+  .code
+  .argc 0000H
+  .localc 0007H
+  .externsize 0004H
+  .extern 08F7H
+  .extern 090BH
+  .extern 0861H
+  .extern 0911H
+0000: 1F FF FF   pushi FFFFH   ; -1
+0003: 24 00 00   call [0000]   ; 08F7H
+0006: 12 00 00   pop [0000]
+0009: 14   push false
+000A: 12 01 00   pop [0001]
+000D: 14   push false
+000E: 12 02 00   pop [0002]
+0011: 14   push false
+0012: 12 03 00   pop [0003]
+0015: 14   push false
+0016: 12 04 00   pop [0004]
+0019: 1C 00 00   addsi L0000   ; "Then prove it. T...
+001C: 33   say
+001D: 39 09 00 00  calli 0009, 0
+0021: 1D 1D 00   pushs L001D   ; Hi, Chuck
+0024: 1D 27 00   pushs L0027   ; Hi, Chuckles
+0027: 1D 34 00   pushs L0034   ; Hello, Fool
+002A: 1D 40 00   pushs L0040   ; Hello, Chuckles
+002D: 1E 04 00   arrc 0004H   ; 4
+0030: 24 01 00   call [0001]   ; 090BH
+0033: 12 05 00   pop [0005]
+0036: 21 05 00   push [0005]
+0039: 1D 50 00   pushs L0050   ; Hi, Chuck
+003C: 22   cmpeq
+003D: 05 0F 00   jne 004F
+0040: 1C 5A 00   addsi L005A   ; "Hi there! What i...
+0043: 33   say
+0044: 13   push true
+0045: 12 01 00   pop [0001]
+0048: 39 09 00 00  calli 0009, 0
+004C: 06 03 00   jmp 0052
+004F: 24 02 00   call [0002]   ; 0861H
+0052: 21 01 00   push [0001]
+0055: 13   push true
+0056: 22   cmpeq
+0057: 05 31 00   jne 008B
+005A: 1D 7B 00   pushs L007B   ; I need answers
+005D: 1D 8A 00   pushs L008A   ; many problems
+0060: 1D 98 00   pushs L0098   ; too much
+0063: 1D A1 00   pushs L00A1   ; trouble
+0066: 1E 04 00   arrc 0004H   ; 4
+0069: 24 01 00   call [0001]   ; 090BH
+006C: 12 05 00   pop [0005]
+006F: 21 05 00   push [0005]
+0072: 1D A9 00   pushs L00A9   ; too much
+0075: 22   cmpeq
+0076: 05 0F 00   jne 0088
+0079: 1C B2 00   addsi L00B2   ; "Ah, I do know wh...
+007C: 33   say
+007D: 13   push true
+007E: 12 02 00   pop [0002]
+0081: 39 09 00 00  calli 0009, 0
+0085: 06 03 00   jmp 008B
+0088: 24 02 00   call [0002]   ; 0861H
+008B: 21 02 00   push [0002]
+008E: 13   push true
+008F: 22   cmpeq
+0090: 05 5E 00   jne 00F1
+0093: 1D F1 00   pushs L00F1   ; Most assuredly
+0096: 1D 00 01   pushs L0100   ; Canst thou help?
+0099: 1D 11 01   pushs L0111   ; Absolutely
+009C: 1D 1C 01   pushs L011C   ; Yes, I do
+009F: 1E 04 00   arrc 0004H   ; 4
+00A2: 24 01 00   call [0001]   ; 090BH
+00A5: 12 05 00   pop [0005]
+00A8: 21 05 00   push [0005]
+00AB: 1D 26 01   pushs L0126   ; Yes, I do
+00AE: 22   cmpeq
+00AF: 21 05 00   push [0005]
+00B2: 1D 30 01   pushs L0130   ; Canst thou help?
+00B5: 22   cmpeq
+00B6: 0F   or
+00B7: 05 34 00   jne 00EE
+00BA: 1C 41 01   addsi L0141   ; "Hmmm. I might co...
+00BD: 33   say
+00BE: 21 00 00   push [0000]
+00C1: 05 1F 00   jne 00E3
+00C4: 1F 00 00   pushi 0000H   ; 0
+00C7: 1F FF FF   pushi FFFFH   ; -1
+00CA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00CE: 1C 69 01   addsi L0169   ; "I would like to ...
+00D1: 33   say
+00D2: 1F FF FF   pushi FFFFH   ; -1
+00D5: 39 04 00 01  calli _HideNPC@1  ; 0004
+00D9: 1F 00 00   pushi 0000H   ; 0
+00DC: 1F E7 FF   pushi FFE7H   ; -25
+00DF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E3: 13   push true
+00E4: 12 03 00   pop [0003]
+00E7: 39 09 00 00  calli 0009, 0
+00EB: 06 03 00   jmp 00F1
+00EE: 24 02 00   call [0002]   ; 0861H
+00F1: 21 03 00   push [0003]
+00F4: 13   push true
+00F5: 22   cmpeq
+00F6: 05 39 00   jne 0132
+00F9: 1D 96 01   pushs L0196   ; I wish thou wouldst
+00FC: 1D AA 01   pushs L01AA   ; That would be wor...
+00FF: 1D C3 01   pushs L01C3   ; I need it immedia...
+0102: 1D D9 01   pushs L01D9   ; That would be big...
+0105: 1E 04 00   arrc 0004H   ; 4
+0108: 24 01 00   call [0001]   ; 090BH
+010B: 12 05 00   pop [0005]
+010E: 21 05 00   push [0005]
+0111: 1D F3 01   pushs L01F3   ; That would be big...
+0114: 22   cmpeq
+0115: 21 05 00   push [0005]
+0118: 1D 0D 02   pushs L020D   ; I wish thou wouldst
+011B: 22   cmpeq
+011C: 0F   or
+011D: 05 0F 00   jne 012F
+0120: 1C 21 02   addsi L0221   ; "What wilt thou g...
+0123: 33   say
+0124: 13   push true
+0125: 12 04 00   pop [0004]
+0128: 39 09 00 00  calli 0009, 0
+012C: 06 03 00   jmp 0132
+012F: 24 02 00   call [0002]   ; 0861H
+0132: 21 04 00   push [0004]
+0135: 13   push true
+0136: 22   cmpeq
+0137: 05 BB 00   jne 01F5
+013A: 1D 46 02   pushs L0246   ; nothing
+013D: 1D 4E 02   pushs L024E   ; a smile
+0140: 1D 56 02   pushs L0256   ; my friendship
+0143: 1D 64 02   pushs L0264   ; gold
+0146: 1D 69 02   pushs L0269   ; I shan't murder thee
+0149: 1E 05 00   arrc 0005H   ; 5
+014C: 24 01 00   call [0001]   ; 090BH
+014F: 12 05 00   pop [0005]
+0152: 21 05 00   push [0005]
+0155: 1D 7E 02   pushs L027E   ; gold
+0158: 22   cmpeq
+0159: 05 39 00   jne 0195
+015C: 1C 83 02   addsi L0283   ; Chuckles holds hi...
+015F: 33   say
+0160: 14   push false
+0161: 1F 99 FE   pushi FE99H   ; -359
+0164: 1F 01 00   pushi 0001H   ; 1
+0167: 1F 1D 03   pushi 031DH   ; 797
+016A: 1F 01 00   pushi 0001H   ; 1
+016D: 38 2C 00 05  callis 002C, 5
+0171: 12 06 00   pop [0006]
+0174: 21 06 00   push [0006]
+0177: 05 16 00   jne 0190
+017A: 13   push true
+017B: 43 6F 00   popf flag:[006F]
+017E: 1F 32 00   pushi 0032H   ; 50
+0181: 24 03 00   call [0003]   ; 0911H
+0184: 39 09 00 00  calli 0009, 0
+0188: 1C E8 02   addsi L02E8   ; "So long, my frie...
+018B: 33   say
+018C: 3F   abrt
+018D: 06 05 00   jmp 0195
+0190: 1C 38 03   addsi L0338   ; "Oh! Thou dost no...
+0193: 33   say
+0194: 3F   abrt
+0195: 21 05 00   push [0005]
+0198: 1D 98 03   pushs L0398   ; a smile
+019B: 22   cmpeq
+019C: 05 39 00   jne 01D8
+019F: 1C A0 03   addsi L03A0   ; "How nice! All ri...
+01A2: 33   say
+01A3: 14   push false
+01A4: 1F 99 FE   pushi FE99H   ; -359
+01A7: 1F 01 00   pushi 0001H   ; 1
+01AA: 1F 1D 03   pushi 031DH   ; 797
+01AD: 1F 01 00   pushi 0001H   ; 1
+01B0: 38 2C 00 05  callis 002C, 5
+01B4: 12 06 00   pop [0006]
+01B7: 21 06 00   push [0006]
+01BA: 05 16 00   jne 01D3
+01BD: 13   push true
+01BE: 43 6F 00   popf flag:[006F]
+01C1: 1F 32 00   pushi 0032H   ; 50
+01C4: 24 03 00   call [0003]   ; 0911H
+01C7: 39 09 00 00  calli 0009, 0
+01CB: 1C EB 03   addsi L03EB   ; "So long, my frie...
+01CE: 33   say
+01CF: 3F   abrt
+01D0: 06 05 00   jmp 01D8
+01D3: 1C 3B 04   addsi L043B   ; "Oh! Thou dost no...
+01D6: 33   say
+01D7: 3F   abrt
+01D8: 21 05 00   push [0005]
+01DB: 1D A1 04   pushs L04A1   ; I shan't murder thee
+01DE: 22   cmpeq
+01DF: 21 05 00   push [0005]
+01E2: 1D B6 04   pushs L04B6   ; my friendship
+01E5: 22   cmpeq
+01E6: 21 05 00   push [0005]
+01E9: 1D C4 04   pushs L04C4   ; nothing
+01EC: 22   cmpeq
+01ED: 0F   or
+01EE: 0F   or
+01EF: 05 03 00   jne 01F5
+01F2: 24 02 00   call [0002]   ; 0861H
+01F5: 25   ret

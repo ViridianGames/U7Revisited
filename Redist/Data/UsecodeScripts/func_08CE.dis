@@ -1,0 +1,121 @@
+  .funcnumber 08CEH
+  .data
+L0000: db 'The winged gargoyle begins his sermon.'
+L0026: db 00
+L0027: db 'You see the gargoyle clerk taking notes in the corner.'
+L005D: db 00
+L005E: db '"To talk tonight about why The Fellowship is important to yo'
+ db 'ur lives. To know that each of us sought The Fellowship to f'
+ db 'eel complete. To have had dreams and longings."*'
+L0106: db 00
+L0107: db '"To be very true."*'
+L011A: db 00
+L011B: db '"To know that others who are not members have given up their'
+ db ' dreams. To see that they succumb to the mediocrity of their'
+ db ' lives to find stability."*'
+L01AE: db 00
+L01AF: db '"This is truly boring. Let us get some food -- I am hungry!"'
+ db '*'
+L01EC: db 00
+L01ED: db '"To see them begin to produce unreal ideas and become misali'
+ db 'gned. To stray from the true path to what they seek. To lose'
+ db ' contact with reality." He sighs. "To find failure, not succ'
+ db 'ess in what they do."*'
+L02B7: db 00
+L02B8: db '"To be very sad."*'
+L02CA: db 00
+L02CB: db '"To know," he smiles, "that each of the members present has '
+ db 'faced such an awakening into the real world. To find in the '
+ db 'order a clear path to reach what we seek!"~~ The members pre'
+ db 'sent all stand and shout.*'
+L0399: db 00
+L039A: db '"'Tis time for us to depart, '
+L03B7: db 00
+L03B8: db '."*'
+L03BB: db 00
+  .code
+  .argc 0000H
+  .localc 0006H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 0908H
+0000: 1F 48 FF   pushi FF48H   ; -184
+0003: 24 00 00   call [0000]   ; 08F7H
+0006: 12 00 00   pop [0000]
+0009: 1F 44 FF   pushi FF44H   ; -188
+000C: 24 00 00   call [0000]   ; 08F7H
+000F: 12 01 00   pop [0001]
+0012: 1F 46 FF   pushi FF46H   ; -186
+0015: 24 00 00   call [0000]   ; 08F7H
+0018: 12 02 00   pop [0002]
+001B: 1F FE FF   pushi FFFEH   ; -2
+001E: 24 00 00   call [0000]   ; 08F7H
+0021: 12 03 00   pop [0003]
+0024: 24 01 00   call [0001]   ; 0908H
+0027: 12 04 00   pop [0004]
+002A: 1C 00 00   addsi L0000   ; The winged gargoy...
+002D: 33   say
+002E: 21 00 00   push [0000]
+0031: 05 04 00   jne 0038
+0034: 1C 27 00   addsi L0027   ; You see the gargo...
+0037: 33   say
+0038: 1C 5E 00   addsi L005E   ; "To talk tonight ...
+003B: 33   say
+003C: 21 02 00   push [0002]
+003F: 05 1F 00   jne 0061
+0042: 1F 00 00   pushi 0000H   ; 0
+0045: 1F 46 FF   pushi FF46H   ; -186
+0048: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+004C: 1C 07 01   addsi L0107   ; "To be very true."*
+004F: 33   say
+0050: 1F 46 FF   pushi FF46H   ; -186
+0053: 39 04 00 01  calli _HideNPC@1  ; 0004
+0057: 1F 00 00   pushi 0000H   ; 0
+005A: 1F 47 FF   pushi FF47H   ; -185
+005D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0061: 1C 1B 01   addsi L011B   ; "To know that oth...
+0064: 33   say
+0065: 21 03 00   push [0003]
+0068: 05 1F 00   jne 008A
+006B: 1F 00 00   pushi 0000H   ; 0
+006E: 1F FE FF   pushi FFFEH   ; -2
+0071: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0075: 1C AF 01   addsi L01AF   ; "This is truly bo...
+0078: 33   say
+0079: 1F FE FF   pushi FFFEH   ; -2
+007C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0080: 1F 00 00   pushi 0000H   ; 0
+0083: 1F 47 FF   pushi FF47H   ; -185
+0086: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+008A: 1C ED 01   addsi L01ED   ; "To see them begi...
+008D: 33   say
+008E: 21 01 00   push [0001]
+0091: 05 1F 00   jne 00B3
+0094: 1F 00 00   pushi 0000H   ; 0
+0097: 1F 44 FF   pushi FF44H   ; -188
+009A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+009E: 1C B8 02   addsi L02B8   ; "To be very sad."*
+00A1: 33   say
+00A2: 1F 44 FF   pushi FF44H   ; -188
+00A5: 39 04 00 01  calli _HideNPC@1  ; 0004
+00A9: 1F 00 00   pushi 0000H   ; 0
+00AC: 1F 47 FF   pushi FF47H   ; -185
+00AF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B3: 1C CB 02   addsi L02CB   ; "To know," he smi...
+00B6: 33   say
+00B7: 1F FF FF   pushi FFFFH   ; -1
+00BA: 24 00 00   call [0000]   ; 08F7H
+00BD: 12 05 00   pop [0005]
+00C0: 21 05 00   push [0005]
+00C3: 05 1C 00   jne 00E2
+00C6: 1F 00 00   pushi 0000H   ; 0
+00C9: 1F FF FF   pushi FFFFH   ; -1
+00CC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D0: 1C 9A 03   addsi L039A   ; "'Tis time for us...
+00D3: 2F 04 00   addsv [0004]
+00D6: 1C B8 03   addsi L03B8   ; ."*
+00D9: 33   say
+00DA: 1F FF FF   pushi FFFFH   ; -1
+00DD: 39 04 00 01  calli _HideNPC@1  ; 0004
+00E1: 3F   abrt
+00E2: 25   ret

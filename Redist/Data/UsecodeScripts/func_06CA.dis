@@ -1,0 +1,33 @@
+  .funcnumber 06CAH
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0001H
+  .extern 093FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 27 00   jne 002F
+0008: 1F A4 FF   pushi FFA4H   ; -92
+000B: 1F AA FF   pushi FFAAH   ; -86
+000E: 1F A9 FF   pushi FFA9H   ; -87
+0011: 1E 03 00   arrc 0003H   ; 3
+0014: 12 00 00   pop [0000]
+0017: 2E   sloop
+0018: 02 01 00 02 00 03 00 00 00 0C 00  db 2 ???
+0019:   db 1
+001A:   db 0
+001B:   db 2
+001C:   db 0
+001D:   db 3
+001E:   db 0
+001F:   db 0
+0020:   db 0
+0021:   db c
+0022:   db 0
+0023: 1F 0B 00   pushi 000BH   ; 11
+0026: 21 03 00   push [0003]
+0029: 24 00 00   call [0000]   ; 093FH
+002C: 06 E9 FF   jmp 0018
+002F: 25   ret

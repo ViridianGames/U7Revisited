@@ -1,0 +1,92 @@
+  .funcnumber 08AFH
+  .data
+L0000: db '"Is there a problem? Art thou confounded by thy task?"'
+L0036: db 00
+L0037: db '"Well then, I suggest that thou hasten to finish thy task, l'
+ db 'est the souls of the well perish before thou art done.*"'
+L00AB: db 00
+L00AC: db '"Canst thou not find the spirits of the town?"'
+L00DA: db 00
+L00DB: db '"Well then, I suggest that thou make haste, lest the souls o'
+ db 'f the well perish."*'
+L012B: db 00
+L012C: db '"Ah, then it is good that thou hast returned. The Mayor know'
+ db 's most of the townsfolk and can tell thee of them."*'
+L019C: db 00
+L019D: db '"Very good, now thou shalt take the Mayor to the well and he'
+ db ' must enter it of his own free will. When he does that, the '
+ db 'souls of the island and the well will be free to go on to th'
+ db 'eir destiny. Unfortunately, Mayor Forsythe will be lost for '
+ db 'all time."'
+L0297: db 00
+L0298: db ' He looks sadly at the ghostly gentleman.'
+L02C1: db 00
+L02C2: db '*'
+L02C3: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0004H
+  .extern 090AH
+  .extern 08F7H
+  .extern 08B1H
+  .extern 08B2H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 1F 73 FF   pushi FF73H   ; -141
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000E: 12 00 00   pop [0000]
+0011: 1F 6D FF   pushi FF6DH   ; -147
+0014: 38 1B 00 01  callis 001B, 1
+0018: 21 00 00   push [0000]
+001B: 30   in
+001C: 10   not
+001D: 05 39 00   jne 0059
+0020: 1C 00 00   addsi L0000   ; "Is there a probl...
+0023: 33   say
+0024: 24 00 00   call [0000]   ; 090AH
+0027: 12 01 00   pop [0001]
+002A: 21 01 00   push [0001]
+002D: 10   not
+002E: 05 08 00   jne 0039
+0031: 1C 37 00   addsi L0037   ; "Well then, I sug...
+0034: 33   say
+0035: 3F   abrt
+0036: 06 1D 00   jmp 0056
+0039: 1C AC 00   addsi L00AC   ; "Canst thou not f...
+003C: 33   say
+003D: 24 00 00   call [0000]   ; 090AH
+0040: 12 02 00   pop [0002]
+0043: 21 02 00   push [0002]
+0046: 05 08 00   jne 0051
+0049: 1C DB 00   addsi L00DB   ; "Well then, I sug...
+004C: 33   say
+004D: 3F   abrt
+004E: 06 05 00   jmp 0056
+0051: 1C 2C 01   addsi L012C   ; "Ah, then it is g...
+0054: 33   say
+0055: 3F   abrt
+0056: 06 36 00   jmp 008F
+0059: 42 A3 01   pushf flag:[01A3]
+005C: 10   not
+005D: 05 1F 00   jne 007F
+0060: 1C 9D 01   addsi L019D   ; "Very good, now t...
+0063: 33   say
+0064: 1F 6D FF   pushi FF6DH   ; -147
+0067: 24 01 00   call [0001]   ; 08F7H
+006A: 12 03 00   pop [0003]
+006D: 21 03 00   push [0003]
+0070: 05 04 00   jne 0077
+0073: 1C 98 02   addsi L0298   ;  He looks sadly a...
+0076: 33   say
+0077: 1C C2 02   addsi L02C2   ; *
+007A: 33   say
+007B: 3F   abrt
+007C: 06 10 00   jmp 008F
+007F: 42 AB 01   pushf flag:[01AB]
+0082: 10   not
+0083: 05 06 00   jne 008C
+0086: 24 02 00   call [0002]   ; 08B1H
+0089: 06 03 00   jmp 008F
+008C: 24 03 00   call [0003]   ; 08B2H
+008F: 25   ret

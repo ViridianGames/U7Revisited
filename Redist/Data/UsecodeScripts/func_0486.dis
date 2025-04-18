@@ -1,0 +1,597 @@
+  .funcnumber 0486H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'locket'
+L0013: db 00
+L0014: db 'show locket'
+L001F: db 00
+L0020: db 'Fellowship'
+L002A: db 00
+L002B: db 'You see a roguish man dressed in what appears to be some nob'
+ db 'leman's ratty hand-me-downs.'
+L0083: db 00
+L0084: db 'strangers'
+L008D: db 00
+L008E: db '"Greetings, and how may I be of service to thee?" asks Robin'
+ db '.'
+L00CB: db 00
+L00CC: db 'name'
+L00D0: db 00
+L00D1: db '"My name, '
+L00DB: db 00
+L00DC: db ', is Robin. A pleasure to meet thee. I have come to New Magi'
+ db 'ncia only recently."'
+L012C: db 00
+L012D: db 'name'
+L0131: db 00
+L0132: db 'New Magincia'
+L013E: db 00
+L013F: db 'job'
+L0142: db 00
+L0143: db '"My father, a well-respected nobleman whose name I will not '
+ db 'defame by mentioning, bastardized and disowned me. But he di'
+ db 'd teach me mine occupation."'
+L01D7: db 00
+L01D8: db 'occupation'
+L01E2: db 00
+L01E3: db 'occupation'
+L01ED: db 00
+L01EE: db '"Why, that most glamorous and respected of occupations, '
+L0226: db 00
+L0227: db '. Winning at games of chance."'
+L0245: db 00
+L0246: db 'occupation'
+L0250: db 00
+L0251: db 'New Magincia'
+L025D: db 00
+L025E: db '"I am not from here. My colleagues and I had to quickly leav'
+ db 'e Buccaneer's Den after a dispute with the casino owner. And'
+ db ' a rough voyage it was, too."'
+L02F3: db 00
+L02F4: db 'voyage'
+L02FA: db 00
+L02FB: db 'dispute'
+L0302: db 00
+L0303: db 'Buccaneer's Den'
+L0312: db 00
+L0313: db 'colleagues'
+L031D: db 00
+L031E: db 'New Magincia'
+L032A: db 00
+L032B: db 'colleagues'
+L0335: db 00
+L0336: db '"My friends are Battles and Leavell. Their job is to protect'
+ db ' me and my winnings. In exchange they share in my profits."'
+L03AD: db 00
+L03AE: db 'Leavell'
+L03B5: db 00
+L03B6: db 'Battles'
+L03BD: db 00
+L03BE: db 'colleagues'
+L03C8: db 00
+L03C9: db 'Battles'
+L03D0: db 00
+L03D1: db '"I rescued him from his captain who was about to make him wa'
+ db 'lk the plank. I diced with that Captain for the lad's life. '
+ db 'Later, Battles led a mutiny that took the ship, and... well,'
+ db ' that is another story."'
+L049D: db 00
+L049E: db 'Battles'
+L04A5: db 00
+L04A6: db 'Leavell'
+L04AD: db 00
+L04AE: db '"I rescued him from a gaggle of angry noblemen's daughters w'
+ db 'ho had just discovered he was courting all of them simultane'
+ db 'ously. If not for me he would have certainly perished! But I'
+ db ' am ahead of myself."'
+L0577: db 00
+L0578: db 'Leavell'
+L057F: db 00
+L0580: db 'Buccaneer's Den'
+L058F: db 00
+L0590: db '"It is where we live most of the year. There are a lot of ro'
+ db 'ugh characters there and it is not a place to be seen carryi'
+ db 'ng large amounts of money."'
+L0623: db 00
+L0624: db 'rough characters'
+L0634: db 00
+L0635: db 'Buccaneer's Den'
+L0644: db 00
+L0645: db 'dispute'
+L064C: db 00
+L064D: db '"I won a vulgar amount of the casino's gold and 'The Mister''
+ db ' of the place, Gordy, accused me of cheating. He sent his le'
+ db 'gbreaker, Sintag, after us. Pirates do not like to lose!"'
+L06FE: db 00
+L06FF: db 'dispute'
+L0706: db 00
+L0707: db 'The Mister'
+L0711: db 00
+L0712: db 'The Mister'
+L071C: db 00
+L071D: db '"Do not ask me why he is called that! Everyone there calls h'
+ db 'im that, though!"'
+L076A: db 00
+L076B: db 'The Mister'
+L0775: db 00
+L0776: db 'voyage'
+L077C: db 00
+L077D: db '"We took the first ship out, but before we got back to the m'
+ db 'ainland it had sunk. The three of us barely managed to make '
+ db 'it to New Magincia with our lives. Now we are marooned here.'
+ db '"'
+L0832: db 00
+L0833: db 'voyage'
+L0839: db 00
+L083A: db 'marooned'
+L0842: db 00
+L0843: db 'strangers'
+L084C: db 00
+L084D: db '"I do not know of any. I only just arrived here myself."'
+L0885: db 00
+L0886: db 'strangers'
+L088F: db 00
+L0890: db 'rough characters'
+L08A0: db 00
+L08A1: db '"One rough character in particular to stay away from is a ma'
+ db 'n called Hook. He would kill thee for a trifle. Thou canst t'
+ db 'ell him by the hook he has for a hand."'
+L0940: db 00
+L0941: db 'Hook'
+L0945: db 00
+L0946: db 'rough characters'
+L0956: db 00
+L0957: db 'Hook'
+L095B: db 00
+L095C: db '"I know nothing more. If thou thinkest that I would willingl'
+ db 'y cross paths with the likes of him thou must have me mistak'
+ db 'en for someone else!"'
+L09E9: db 00
+L09EA: db 'Hook'
+L09EE: db 00
+L09EF: db 'locket'
+L09F5: db 00
+L09F6: db '"We are trying to return to Buccaneer's Den. I was hoping to'
+ db ' sell a gold locket which came into my possession to buy our'
+ db ' passage back, but I fear it is lost. If thou dost come acro'
+ db 'ss it be sure to let me know."'
+L0AC8: db 00
+L0AC9: db 'locket'
+L0ACF: db 00
+L0AD0: db 'Fellowship'
+L0ADA: db 00
+L0ADB: db '"Thou art a member of The Fellowship! For years I have been '
+ db 'seeing Fellowship members winning heavy stakes at the House '
+ db 'of Games. Canst thou tell me their secret?"'
+L0B7E: db 00
+L0B7F: db '"Of course thou canst. But I do not suspect that thou wilt."'
+ db ' Robin shrugs his shoulders.'
+L0BD7: db 00
+L0BD8: db '"Forgive me if I do not believe thee."'
+L0BFE: db 00
+L0BFF: db 'Fellowship'
+L0C09: db 00
+L0C0A: db 'marooned'
+L0C12: db 00
+L0C13: db '"That is right. We cannot afford the stinking ship sold by t'
+ db 'he shipwright.'
+L0C5D: db 00
+L0C5E: db '"But say, thou must have gotten here in some manner! Dost th'
+ db 'ou have some manner of ship on which we could leave the isla'
+ db 'nd?"'
+L0CDA: db 00
+L0CDB: db '"I could pay thee well if thou wouldst take us back to Bucca'
+ db 'neer's Den."'
+L0D23: db 00
+L0D24: db 'pay'
+L0D27: db 00
+L0D28: db '"If thou shouldst come across a way off this island please p'
+ db 'ermit us to leave with thee."'
+L0D81: db 00
+L0D82: db 'marooned'
+L0D8A: db 00
+L0D8B: db 'pay'
+L0D8E: db 00
+L0D8F: db '"Of course, I cannot pay thee right now at this moment. But '
+ db 'when we reach Buccaneer's Den, I promise thee, I shall be ab'
+ db 'le to get mine hands on a lot of money."'
+L0E2F: db 00
+L0E30: db 'pay'
+L0E33: db 00
+L0E34: db 'money'
+L0E39: db 00
+L0E3A: db 'money'
+L0E3F: db 00
+L0E40: db '"Yes, money! For I have found something here in New Magincia'
+ db ' that will be worth more than gold in Buccaneer's Den."'
+L0EB3: db 00
+L0EB4: db 'money'
+L0EB9: db 00
+L0EBA: db 'something'
+L0EC3: db 00
+L0EC4: db 'something'
+L0ECD: db 00
+L0ECE: db '"Before I tell thee what it is, wilt thou promise to take me'
+ db ' and my mates back to Buccaneer's Den?"'
+L0F31: db 00
+L0F32: db 'Robin looks you in the eye. "Thou art truly a kind friend. I'
+ db ' suppose then I should tell thee what it is we are planning '
+ db 'on bringing back from New Magincia."'
+L0FCE: db 00
+L0FCF: db 'bringing back'
+L0FDC: db 00
+L0FDD: db '"Then I cannot trust thee enough to tell thee of my plans. G'
+ db 'o away."'
+L1021: db 00
+L1022: db 'something'
+L102B: db 00
+L102C: db 'bringing back'
+L1039: db 00
+L103A: db '"Since thou art truly a friend then I know that I can ask a '
+ db 'favor of thee. Why dost thou not bring back that lost locket'
+ db ' to me and we shall speak of these things some more." He fla'
+ db 'shes you a wicked grin.'
+L1105: db 00
+L1106: db '"Since thou hast brought my locket back here, I suppose that'
+ db ' I can trust thee. I intend to take Constance back with us a'
+ db 'nd sell her to the operator of the baths."'
+L11A8: db 00
+L11A9: db 'bringing back'
+L11B6: db 00
+L11B7: db 'show locket'
+L11C2: db 00
+L11C3: db '"Now that I know I can trust thee, I can let thee in on our '
+ db 'plan. I intend to take another passenger in thy boat back wi'
+ db 'th us to Buccaneer's Den. Her name is Constance and she shou'
+ db 'ld fetch a goodly price from Glenno, operator of the baths. '
+ db 'Enough to pay my debts, pay thee for passage and still have '
+ db 'plenty left over for another go at the House of Games!"'
+L1326: db 00
+L1327: db 'boat'
+L132B: db 00
+L132C: db 'show locket'
+L1337: db 00
+L1338: db 'boat'
+L133C: db 00
+L133D: db '"Thou must get thy boat ready to leave this place immediatel'
+ db 'y. My lads and I shall get Constance and then we shall join '
+ db 'thee. But wilt thou tell me where thy boat is located?"'
+L13EC: db 00
+L13ED: db 'You give Robin the location of your boat. He slowly breaks i'
+ db 'nto an evil laugh. "I thank thee, friend. All that is left f'
+ db 'or us is to eliminate one remaining loose end. Now that we k'
+ db 'now where thy boat is we will collect more on our investment'
+ db ' by simply killing thee and taking it."*'
+L1505: db 00
+L1506: db '"Thou hast lost thy stomach for our game, eh? If that is the'
+ db ' case then my lads and I have no choice but to kill thee dea'
+ db 'd to protect our secret!"*'
+L1598: db 00
+L1599: db 'bye'
+L159C: db 00
+L159D: db '"It has been a pleasure speaking with thee, '
+L15C9: db 00
+L15CA: db '."*'
+L15CD: db 00
+  .code
+  .argc 0001H
+  .localc 000BH
+  .externsize 0005H
+  .extern 0909H
+  .extern 0931H
+  .extern 090AH
+  .extern 0911H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 80 03   jne 0388
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 7A FF   pushi FF7AH   ; -134
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1F 7A FF   pushi FF7AH   ; -134
+001B: 38 1B 00 01  callis 001B, 1
+001F: 12 01 00   pop [0001]
+0022: 1F 78 FF   pushi FF78H   ; -136
+0025: 38 1B 00 01  callis 001B, 1
+0029: 12 02 00   pop [0002]
+002C: 1F 79 FF   pushi FF79H   ; -135
+002F: 38 1B 00 01  callis 001B, 1
+0033: 12 03 00   pop [0003]
+0036: 1F 02 00   pushi 0002H   ; 2
+0039: 1F 99 FE   pushi FE99H   ; -359
+003C: 1F BB 03   pushi 03BBH   ; 955
+003F: 1F 01 00   pushi 0001H   ; 1
+0042: 1F 9C FE   pushi FE9CH   ; -356
+0045: 24 01 00   call [0001]   ; 0931H
+0048: 12 04 00   pop [0004]
+004B: 38 67 00 00  callis 0067, 0
+004F: 12 05 00   pop [0005]
+0052: 1D 00 00   pushs L0000   ; bye
+0055: 1D 04 00   pushs L0004   ; job
+0058: 1D 08 00   pushs L0008   ; name
+005B: 1E 03 00   arrc 0003H   ; 3
+005E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0062: 42 7D 01   pushf flag:[017D]
+0065: 05 07 00   jne 006F
+0068: 1D 0D 00   pushs L000D   ; locket
+006B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006F: 21 04 00   push [0004]
+0072: 05 07 00   jne 007C
+0075: 1D 14 00   pushs L0014   ; show locket
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 21 05 00   push [0005]
+007F: 05 07 00   jne 0089
+0082: 1D 20 00   pushs L0020   ; Fellowship
+0085: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0089: 42 8F 01   pushf flag:[018F]
+008C: 10   not
+008D: 05 18 00   jne 00A8
+0090: 1C 2B 00   addsi L002B   ; You see a roguish...
+0093: 33   say
+0094: 13   push true
+0095: 43 8F 01   popf flag:[018F]
+0098: 42 80 01   pushf flag:[0180]
+009B: 05 07 00   jne 00A5
+009E: 1D 84 00   pushs L0084   ; strangers
+00A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A5: 06 04 00   jmp 00AC
+00A8: 1C 8E 00   addsi L008E   ; "Greetings, and h...
+00AB: 33   say
+00AC: 04 CE 02   je 037D
+00AF: 1D CC 00   pushs L00CC   ; name
+00B2: 07 01 00 1C 00  cmps 0001H, 00D3
+00B7: 1C D1 00   addsi L00D1   ; "My name, 
+00BA: 2F 00 00   addsv [0000]
+00BD: 1C DC 00   addsi L00DC   ; , is Robin. A ple...
+00C0: 33   say
+00C1: 13   push true
+00C2: 43 8F 01   popf flag:[018F]
+00C5: 1D 2D 01   pushs L012D   ; name
+00C8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CC: 1D 32 01   pushs L0132   ; New Magincia
+00CF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D3: 1D 3F 01   pushs L013F   ; job
+00D6: 07 01 00 0B 00  cmps 0001H, 00E6
+00DB: 1C 43 01   addsi L0143   ; "My father, a wel...
+00DE: 33   say
+00DF: 1D D8 01   pushs L01D8   ; occupation
+00E2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E6: 1D E3 01   pushs L01E3   ; occupation
+00E9: 07 01 00 11 00  cmps 0001H, 00FF
+00EE: 1C EE 01   addsi L01EE   ; "Why, that most g...
+00F1: 2F 00 00   addsv [0000]
+00F4: 1C 27 02   addsi L0227   ; . Winning at game...
+00F7: 33   say
+00F8: 1D 46 02   pushs L0246   ; occupation
+00FB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FF: 1D 51 02   pushs L0251   ; New Magincia
+0102: 07 01 00 1E 00  cmps 0001H, 0125
+0107: 1C 5E 02   addsi L025E   ; "I am not from he...
+010A: 33   say
+010B: 1D F4 02   pushs L02F4   ; voyage
+010E: 1D FB 02   pushs L02FB   ; dispute
+0111: 1D 03 03   pushs L0303   ; Buccaneer's Den
+0114: 1D 13 03   pushs L0313   ; colleagues
+0117: 1E 04 00   arrc 0004H   ; 4
+011A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+011E: 1D 1E 03   pushs L031E   ; New Magincia
+0121: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0125: 1D 2B 03   pushs L032B   ; colleagues
+0128: 07 01 00 18 00  cmps 0001H, 0145
+012D: 1C 36 03   addsi L0336   ; "My friends are B...
+0130: 33   say
+0131: 1D AE 03   pushs L03AE   ; Leavell
+0134: 1D B6 03   pushs L03B6   ; Battles
+0137: 1E 02 00   arrc 0002H   ; 2
+013A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+013E: 1D BE 03   pushs L03BE   ; colleagues
+0141: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0145: 1D C9 03   pushs L03C9   ; Battles
+0148: 07 01 00 0B 00  cmps 0001H, 0158
+014D: 1C D1 03   addsi L03D1   ; "I rescued him fr...
+0150: 33   say
+0151: 1D 9E 04   pushs L049E   ; Battles
+0154: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0158: 1D A6 04   pushs L04A6   ; Leavell
+015B: 07 01 00 0B 00  cmps 0001H, 016B
+0160: 1C AE 04   addsi L04AE   ; "I rescued him fr...
+0163: 33   say
+0164: 1D 78 05   pushs L0578   ; Leavell
+0167: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016B: 1D 80 05   pushs L0580   ; Buccaneer's Den
+016E: 07 01 00 12 00  cmps 0001H, 0185
+0173: 1C 90 05   addsi L0590   ; "It is where we l...
+0176: 33   say
+0177: 1D 24 06   pushs L0624   ; rough characters
+017A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017E: 1D 35 06   pushs L0635   ; Buccaneer's Den
+0181: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0185: 1D 45 06   pushs L0645   ; dispute
+0188: 07 01 00 12 00  cmps 0001H, 019F
+018D: 1C 4D 06   addsi L064D   ; "I won a vulgar a...
+0190: 33   say
+0191: 1D FF 06   pushs L06FF   ; dispute
+0194: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0198: 1D 07 07   pushs L0707   ; The Mister
+019B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+019F: 1D 12 07   pushs L0712   ; The Mister
+01A2: 07 01 00 0B 00  cmps 0001H, 01B2
+01A7: 1C 1D 07   addsi L071D   ; "Do not ask me wh...
+01AA: 33   say
+01AB: 1D 6B 07   pushs L076B   ; The Mister
+01AE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B2: 1D 76 07   pushs L0776   ; voyage
+01B5: 07 01 00 12 00  cmps 0001H, 01CC
+01BA: 1C 7D 07   addsi L077D   ; "We took the firs...
+01BD: 33   say
+01BE: 1D 33 08   pushs L0833   ; voyage
+01C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C5: 1D 3A 08   pushs L083A   ; marooned
+01C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CC: 1D 43 08   pushs L0843   ; strangers
+01CF: 07 01 00 0B 00  cmps 0001H, 01DF
+01D4: 1C 4D 08   addsi L084D   ; "I do not know of...
+01D7: 33   say
+01D8: 1D 86 08   pushs L0886   ; strangers
+01DB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DF: 1D 90 08   pushs L0890   ; rough characters
+01E2: 07 01 00 12 00  cmps 0001H, 01F9
+01E7: 1C A1 08   addsi L08A1   ; "One rough charac...
+01EA: 33   say
+01EB: 1D 41 09   pushs L0941   ; Hook
+01EE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F2: 1D 46 09   pushs L0946   ; rough characters
+01F5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F9: 1D 57 09   pushs L0957   ; Hook
+01FC: 07 01 00 0B 00  cmps 0001H, 020C
+0201: 1C 5C 09   addsi L095C   ; "I know nothing m...
+0204: 33   say
+0205: 1D EA 09   pushs L09EA   ; Hook
+0208: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020C: 1D EF 09   pushs L09EF   ; locket
+020F: 07 01 00 0B 00  cmps 0001H, 021F
+0214: 1C F6 09   addsi L09F6   ; "We are trying to...
+0217: 33   say
+0218: 1D C9 0A   pushs L0AC9   ; locket
+021B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021F: 1D D0 0A   pushs L0AD0   ; Fellowship
+0222: 07 01 00 22 00  cmps 0001H, 0249
+0227: 1C DB 0A   addsi L0ADB   ; "Thou art a membe...
+022A: 33   say
+022B: 24 02 00   call [0002]   ; 090AH
+022E: 12 06 00   pop [0006]
+0231: 21 06 00   push [0006]
+0234: 05 07 00   jne 023E
+0237: 1C 7F 0B   addsi L0B7F   ; "Of course thou c...
+023A: 33   say
+023B: 06 04 00   jmp 0242
+023E: 1C D8 0B   addsi L0BD8   ; "Forgive me if I ...
+0241: 33   say
+0242: 1D FF 0B   pushs L0BFF   ; Fellowship
+0245: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0249: 1D 0A 0C   pushs L0C0A   ; marooned
+024C: 07 01 00 2D 00  cmps 0001H, 027E
+0251: 1C 13 0C   addsi L0C13   ; "That is right. W...
+0254: 33   say
+0255: 1C 5E 0C   addsi L0C5E   ; "But say, thou mu...
+0258: 33   say
+0259: 24 02 00   call [0002]   ; 090AH
+025C: 12 07 00   pop [0007]
+025F: 21 07 00   push [0007]
+0262: 05 0E 00   jne 0273
+0265: 1C DB 0C   addsi L0CDB   ; "I could pay thee...
+0268: 33   say
+0269: 1D 24 0D   pushs L0D24   ; pay
+026C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0270: 06 04 00   jmp 0277
+0273: 1C 28 0D   addsi L0D28   ; "If thou shouldst...
+0276: 33   say
+0277: 1D 82 0D   pushs L0D82   ; marooned
+027A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027E: 1D 8B 0D   pushs L0D8B   ; pay
+0281: 07 01 00 12 00  cmps 0001H, 0298
+0286: 1C 8F 0D   addsi L0D8F   ; "Of course, I can...
+0289: 33   say
+028A: 1D 30 0E   pushs L0E30   ; pay
+028D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0291: 1D 34 0E   pushs L0E34   ; money
+0294: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0298: 1D 3A 0E   pushs L0E3A   ; money
+029B: 07 01 00 12 00  cmps 0001H, 02B2
+02A0: 1C 40 0E   addsi L0E40   ; "Yes, money! For ...
+02A3: 33   say
+02A4: 1D B4 0E   pushs L0EB4   ; money
+02A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AB: 1D BA 0E   pushs L0EBA   ; something
+02AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02B2: 1D C4 0E   pushs L0EC4   ; something
+02B5: 07 01 00 2E 00  cmps 0001H, 02E8
+02BA: 1C CE 0E   addsi L0ECE   ; "Before I tell th...
+02BD: 33   say
+02BE: 24 02 00   call [0002]   ; 090AH
+02C1: 12 08 00   pop [0008]
+02C4: 21 08 00   push [0008]
+02C7: 05 12 00   jne 02DC
+02CA: 13   push true
+02CB: 12 09 00   pop [0009]
+02CE: 1C 32 0F   addsi L0F32   ; Robin looks you i...
+02D1: 33   say
+02D2: 1D CF 0F   pushs L0FCF   ; bringing back
+02D5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D9: 06 05 00   jmp 02E1
+02DC: 1C DD 0F   addsi L0FDD   ; "Then I cannot tr...
+02DF: 33   say
+02E0: 3F   abrt
+02E1: 1D 22 10   pushs L1022   ; something
+02E4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E8: 1D 2C 10   pushs L102C   ; bringing back
+02EB: 07 01 00 19 00  cmps 0001H, 0309
+02F0: 21 04 00   push [0004]
+02F3: 10   not
+02F4: 05 07 00   jne 02FE
+02F7: 1C 3A 10   addsi L103A   ; "Since thou art t...
+02FA: 33   say
+02FB: 06 04 00   jmp 0302
+02FE: 1C 06 11   addsi L1106   ; "Since thou hast ...
+0301: 33   say
+0302: 1D A9 11   pushs L11A9   ; bringing back
+0305: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0309: 1D B7 11   pushs L11B7   ; show locket
+030C: 07 01 00 1C 00  cmps 0001H, 032D
+0311: 1C C3 11   addsi L11C3   ; "Now that I know ...
+0314: 33   say
+0315: 1F 64 00   pushi 0064H   ; 100
+0318: 24 03 00   call [0003]   ; 0911H
+031B: 13   push true
+031C: 43 84 01   popf flag:[0184]
+031F: 1D 27 13   pushs L1327   ; boat
+0322: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0326: 1D 2C 13   pushs L132C   ; show locket
+0329: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+032D: 1D 38 13   pushs L1338   ; boat
+0330: 07 01 00 3A 00  cmps 0001H, 036F
+0335: 1C 3D 13   addsi L133D   ; "Thou must get th...
+0338: 33   say
+0339: 24 02 00   call [0002]   ; 090AH
+033C: 12 0A 00   pop [000A]
+033F: 21 0A 00   push [000A]
+0342: 05 07 00   jne 034C
+0345: 1C ED 13   addsi L13ED   ; You give Robin th...
+0348: 33   say
+0349: 06 04 00   jmp 0350
+034C: 1C 06 15   addsi L1506   ; "Thou hast lost t...
+034F: 33   say
+0350: 1F 00 00   pushi 0000H   ; 0
+0353: 21 01 00   push [0001]
+0356: 39 1D 00 02  calli 001D, 2
+035A: 1F 00 00   pushi 0000H   ; 0
+035D: 21 02 00   push [0002]
+0360: 39 1D 00 02  calli 001D, 2
+0364: 1F 00 00   pushi 0000H   ; 0
+0367: 21 03 00   push [0003]
+036A: 39 1D 00 02  calli 001D, 2
+036E: 3F   abrt
+036F: 1D 99 15   pushs L1599   ; bye
+0372: 07 01 00 03 00  cmps 0001H, 037A
+0377: 06 03 00   jmp 037D
+037A: 06 2F FD   jmp 00AC
+037D: 40   db 40 ???
+037E: 1C 9D 15   addsi L159D   ; "It has been a pl...
+0381: 2F 00 00   addsv [0000]
+0384: 1C CA 15   addsi L15CA   ; ."*
+0387: 33   say
+0388: 48   push eventid
+0389: 1F 00 00   pushi 0000H   ; 0
+038C: 22   cmpeq
+038D: 05 06 00   jne 0396
+0390: 1F 7A FF   pushi FF7AH   ; -134
+0393: 24 04 00   call [0004]   ; 092EH
+0396: 25   ret

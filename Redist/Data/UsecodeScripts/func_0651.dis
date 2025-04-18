@@ -1,0 +1,105 @@
+  .funcnumber 0651H
+  .data
+L0000: db '@Ort Ylem@'
+L000A: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0002H
+  .extern 092DH
+  .extern 0906H
+0000: 1F D3 02   pushi 02D3H   ; 723
+0003: 1F D2 02   pushi 02D2H   ; 722
+0006: 1E 02 00   arrc 0002H   ; 2
+0009: 12 00 00   pop [0000]
+000C: 1F A1 01   pushi 01A1H   ; 417
+000F: 1F 2C 02   pushi 022CH   ; 556
+0012: 1E 02 00   arrc 0002H   ; 2
+0015: 12 01 00   pop [0001]
+0018: 48   push eventid
+0019: 1F 01 00   pushi 0001H   ; 1
+001C: 22   cmpeq
+001D: 05 85 00   jne 00A5
+0020: 3E   push itemref
+0021: 39 5C 00 01  calli 005C, 1
+0025: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0029: 12 02 00   pop [0002]
+002C: 21 02 00   push [0002]
+002F: 38 11 00 01  callis _GetItemType@1  ; 0011
+0033: 12 03 00   pop [0003]
+0036: 21 02 00   push [0002]
+0039: 24 00 00   call [0000]   ; 092DH
+003C: 12 04 00   pop [0004]
+003F: 1D 00 00   pushs L0000   ; @Ort Ylem@
+0042: 3E   push itemref
+0043: 39 40 00 02  calli _ItemSay@2  ; 0040
+0047: 24 01 00   call [0001]   ; 0906H
+004A: 21 03 00   push [0003]
+004D: 21 00 00   push [0000]
+0050: 30   in
+0051: 0E   and
+0052: 05 35 00   jne 008A
+0055: 44 67   pushw 4467H   ; 17511
+0057: 44 65   pushw 4465H   ; 17509
+0059: 44 66   pushw 1F66H   ; 8038
+005B: 1F 43 00   pushi 0043H   ; 67
+005E: 44 58   pushw 2158H   ; 8536
+0060: 21 04 00   push [0004]
+0063: 44 59   pushw 1E59H   ; 7769
+0065: 1E 07 00   arrc 0007H   ; 7
+0068: 3E   push itemref
+0069: 38 01 00 02  callis 0001, 2
+006D: 12 05 00   pop [0005]
+0070: 1F 04 00   pushi 0004H   ; 4
+0073: 1F 51 06   pushi 0651H   ; 1617
+0076: 44 55   pushw 4455H   ; 17493
+0078: 44 23   pushw 1E23H   ; 7715
+007A: 1E 03 00   arrc 0003H   ; 3
+007D: 21 02 00   push [0002]
+0080: 38 02 00 03  callis 0002, 3
+0084: 12 05 00   pop [0005]
+0087: 06 1B 00   jmp 00A5
+008A: 1F 06 06   pushi 0606H   ; 1542
+008D: 44 55   pushw 4455H   ; 17493
+008F: 44 67   pushw 4467H   ; 17511
+0091: 44 65   pushw 4465H   ; 17509
+0093: 44 66   pushw 2166H   ; 8550
+0095: 21 04 00   push [0004]
+0098: 44 59   pushw 1E59H   ; 7769
+009A: 1E 07 00   arrc 0007H   ; 7
+009D: 3E   push itemref
+009E: 38 01 00 02  callis 0001, 2
+00A2: 12 05 00   pop [0005]
+00A5: 48   push eventid
+00A6: 1F 02 00   pushi 0002H   ; 2
+00A9: 22   cmpeq
+00AA: 05 36 00   jne 00E3
+00AD: 1F 00 00   pushi 0000H   ; 0
+00B0: 12 06 00   pop [0006]
+00B3: 2E   sloop
+00B4: 02 07 00 08 00 09 00 00 00 24 00  db 2 ???
+00B5:   db 7
+00B6:   db 0
+00B7:   db 8
+00B8:   db 0
+00B9:   db 9
+00BA:   db 0
+00BB:   db 0
+00BC:   db 0
+00BD:   db 24
+00BE:   db 0
+00BF: 21 06 00   push [0006]
+00C2: 1F 01 00   pushi 0001H   ; 1
+00C5: 09   add
+00C6: 12 06 00   pop [0006]
+00C9: 21 09 00   push [0009]
+00CC: 3E   push itemref
+00CD: 38 11 00 01  callis _GetItemType@1  ; 0011
+00D1: 22   cmpeq
+00D2: 05 0B 00   jne 00E0
+00D5: 21 06 00   push [0006]
+00D8: 26 01 00   aidx [0001]
+00DB: 3E   push itemref
+00DC: 39 0D 00 02  calli _SetItemType@2  ; 000D
+00E0: 06 D1 FF   jmp 00B4
+00E3: 25   ret

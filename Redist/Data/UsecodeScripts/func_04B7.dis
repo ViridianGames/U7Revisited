@@ -1,0 +1,478 @@
+  .funcnumber 04B7H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a winged gargoyle in his physical prime.~~"Hail, hum'
+ db 'an! To be welcome to the house of the altars. To be helpful '
+ db 'to you in any way?"'
+L0098: db 00
+L0099: db '"To have returned! To be glad to see you again, human," says'
+ db ' Teregus. "To be welcome to the house of the altars. To be h'
+ db 'elpful to you?"'
+L0120: db 00
+L0121: db 'evidence'
+L0129: db 00
+L012A: db 'Inamo'
+L012F: db 00
+L0130: db 'name'
+L0134: db 00
+L0135: db '"To be called Teregus."'
+L014C: db 00
+L014D: db 'Inamo'
+L0152: db 00
+L0153: db 'name'
+L0157: db 00
+L0158: db 'job'
+L015B: db 00
+L015C: db '"To be caring for the altars of Control, Passion, and Dilige'
+ db 'nce. To be a position of great responsibility. To be especia'
+ db 'lly important in these times of trouble."'
+L01FD: db 00
+L01FE: db 'altars'
+L0204: db 00
+L0205: db 'trouble'
+L020C: db 00
+L020D: db 'trouble'
+L0214: db 00
+L0215: db '"To have been many disagreements in town lately. To be much '
+ db 'tension between the followers of the principles of the altar'
+ db 's and the followers of The Fellowship. To have heard rumors '
+ db 'of threats to the altars."'
+L02E3: db 00
+L02E4: db 'rumors'
+L02EA: db 00
+L02EB: db 'Fellowship'
+L02F5: db 00
+L02F6: db 'trouble'
+L02FD: db 00
+L02FE: db 'Fellowship'
+L0308: db 00
+L0309: db '"To be glad that Quan is now running our branch. To believe '
+ db 'that he is misguided, but to be a much more reasonable gargo'
+ db 'yle to deal with now that Runeb is gone."'
+L03AA: db 00
+L03AB: db '"To be wary of Fellowship ideals. To be ignoring the altars '
+ db 'in their search for unity, and to be losing respect for the '
+ db 'old ways. To be not bad. To tell you our branch is run by Qu'
+ db 'an and Runeb."'
+L046D: db 00
+L046E: db 'Runeb'
+L0473: db 00
+L0474: db 'Quan'
+L0478: db 00
+L0479: db 'Fellowship'
+L0483: db 00
+L0484: db 'rumors'
+L048A: db 00
+L048B: db '"To be sorry that we have lost Runeb. Perhaps to be for the '
+ db 'best. To be certainly overjoyed to have avoided damage to th'
+ db 'e altars."'
+L050D: db 00
+L050E: db '"To have heard that someone in town is planning to destroy t'
+ db 'he physical representations of the altars. To be not the sam'
+ db 'e, of course, as actually destroying the basic principles of'
+ db ' Control, Passion, and Diligence, but to be bad for us nonet'
+ db 'heless. To be finding out for us who is planning this, if th'
+ db 'ere is time, perhaps. To return to me with evidence when you'
+ db ' determine course of action. To be very grateful for your as'
+ db 'sistance."'
+L06BC: db 00
+L06BD: db 'rumors'
+L06C3: db 00
+L06C4: db 'evidence'
+L06CC: db 00
+L06CD: db '"To have brought me something, some evidence about the rumor'
+ db 's?"'
+L070C: db 00
+L070D: db '"To be wonderful! To see it, please."~~You hand him the note'
+ db ' from Runeb that you found in Sarpling's shop.~~"Ah. Runeb. '
+ db 'To have suspected as much. To be always reaching for more by'
+ db ' the most violent means."~~He sighs.~~"To ask that you confr'
+ db 'ont him with this evidence. To suggest that anything less wi'
+ db 'll not reveal truth. To be prepared for anything, please, hu'
+ db 'man, for to know not how he will react."~~He shakes his head'
+ db '.~~"To be not hopeful for a peaceful solution. To thank you '
+ db 'for your assistance."'
+L0902: db 00
+L0903: db '"To have found nothing yet? Ah, well. To return, please, whe'
+ db 'n anything unusual is found. To suggest that you confront th'
+ db 'e suspect as soon as you have a clue. To wish to stop him be'
+ db 'fore any damage is done to the altars."'
+L09DE: db 00
+L09DF: db 'evidence'
+L09E7: db 00
+L09E8: db 'Quan'
+L09EC: db 00
+L09ED: db '"To be sad to have lost Quan to The Fellowship, human. To ha'
+ db 've been a good gargoyle when young, but to have fallen into '
+ db 'bad company later. To have concentrated mostly on self-aggra'
+ db 'ndizement and hedonism in the last few years. To be a shame.'
+ db '"'
+L0ADE: db 00
+L0ADF: db 'Quan'
+L0AE3: db 00
+L0AE4: db 'Runeb'
+L0AE9: db 00
+L0AEA: db '"To have been a sad case. To have wished to have been able t'
+ db 'o save him. To always have been uncontrollable, but to have '
+ db 'gotten worse in the last few years. To have seemed to want t'
+ db 'o start as many fights as possible. To have found a reason f'
+ db 'or using his strength against all those weaker when to have '
+ db 'joined The Fellowship."'
+L0C2D: db 00
+L0C2E: db 'Runeb'
+L0C33: db 00
+L0C34: db 'Inamo'
+L0C39: db 00
+L0C3A: db 'He smiles sadly, but with obvious pride.~'
+L0C63: db 00
+L0C64: db '"To have been a fine young gargoyle. The pride of us all. To'
+ db ' wish to know who was responsible for his dishonorable end."'
+L0CDC: db 00
+L0CDD: db '"To miss him greatly. To have raised him from an egg. To hav'
+ db 'e been rather vocal in his disagreements with The Fellowship'
+ db '. To have felt it safer for him to leave."~~He sighs, then l'
+ db 'ooks up hopefully.~~"To have news of him?"'
+L0DBB: db 00
+L0DBC: db '"To be well?"'
+L0DC9: db 00
+L0DCA: db '"To be good. To be hoping to hear from him soon."'
+L0DFB: db 00
+L0DFC: db '"To be not well? To be terrible! To think there is anything '
+ db 'to do to help?"'
+L0E47: db 00
+L0E48: db 'too late'
+L0E50: db 00
+L0E51: db '"Ah. Too bad. To be waiting long for news from him."'
+L0E85: db 00
+L0E86: db 'Inamo'
+L0E8B: db 00
+L0E8C: db 'too late'
+L0E94: db 00
+L0E95: db '"To be too late? To mean what by too late? To tell me what h'
+ db 'as happened!"~~He seems very distraught.'
+L0EF9: db 00
+L0EFA: db 'murdered'
+L0F02: db 00
+L0F03: db 'too late'
+L0F0B: db 00
+L0F0C: db 'murdered'
+L0F14: db 00
+L0F15: db '"To be murdered?"~~He takes a step back, stunned by the news'
+ db '.~~"To be murdered? To be unbelievable. To have no real enem'
+ db 'ies!"~~He sighs heavily.~~"To tell me, please, exactly what '
+ db 'happened."~~You relate to him the particulars of Inamo's dea'
+ db 'th. He sighs again.~~"To be such a waste of gargoyle life. T'
+ db 'o be grateful if you would send news if you discover who was'
+ db ' responsible for wanting him dead."~~ He is quiet for a few '
+ db 'moments, getting accustomed to the situation.~~"To apologize'
+ db '. To need some time to grieve. Please to come back later."~~'
+ db 'He turns away.'
+L113F: db 00
+L1140: db 'murdered'
+L1148: db 00
+L1149: db 'altars'
+L114F: db 00
+L1150: db 'altars'
+L1156: db 00
+L1157: db '"To be caretaker and group leader for the altars of the thre'
+ db 'e principles. To wish to make a donation?"'
+L11BD: db 00
+L11BE: db '"Excellent. To which altar do you wish to donate?"'
+L11F0: db 00
+L11F1: db 'Diligence'
+L11FA: db 00
+L11FB: db 'Passion'
+L1202: db 00
+L1203: db 'Control'
+L120A: db 00
+L120B: db '"Ah. To donate next time, perhaps."'
+L122E: db 00
+L122F: db 'Diligence'
+L1238: db 00
+L1239: db 'Passion'
+L1240: db 00
+L1241: db 'Control'
+L1248: db 00
+L1249: db '"To be an excellent choice. To meditate at the shrine for yo'
+ db 'u for a donation of 5 gold. To be willing to donate 5 gold?"'
+L12C1: db 00
+L12C2: db '"To meditate for you this evening, human. To wish you well i'
+ db 'n your journeys."'
+L130F: db 00
+L1310: db '"To not have 5 gold? To return later when you have the gold.'
+ db ' To meditate for your success on your journeys."~~He smiles '
+ db 'kindly.'
+L138F: db 00
+L1390: db '"Ah. To have misunderstood. To apologize. To let me know if '
+ db 'you change your mind."~~He looks disappointed.'
+L13FA: db 00
+L13FB: db 'Diligence'
+L1404: db 00
+L1405: db 'Passion'
+L140C: db 00
+L140D: db 'Control'
+L1414: db 00
+L1415: db 'bye'
+L1418: db 00
+L1419: db '"To tell you goodbye for now, human. To return and be welcom'
+ db 'e."*'
+L1459: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0908H
+  .extern 090AH
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AD 02   jne 02B5
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 49 FF   pushi FF49H   ; -183
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 48 02   pushf flag:[0248]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; You see a winged ...
+0032: 33   say
+0033: 13   push true
+0034: 43 48 02   popf flag:[0248]
+0037: 06 04 00   jmp 003E
+003A: 1C 99 00   addsi L0099   ; "To have returned...
+003D: 33   say
+003E: 42 3F 02   pushf flag:[023F]
+0041: 05 07 00   jne 004B
+0044: 1D 21 01   pushs L0121   ; evidence
+0047: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004B: 42 54 02   pushf flag:[0254]
+004E: 05 0D 00   jne 005E
+0051: 42 39 02   pushf flag:[0239]
+0054: 05 07 00   jne 005E
+0057: 1D 2A 01   pushs L012A   ; Inamo
+005A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005E: 04 4F 02   je 02B0
+0061: 1D 30 01   pushs L0130   ; name
+0064: 07 01 00 1C 00  cmps 0001H, 0085
+0069: 1C 35 01   addsi L0135   ; "To be called Ter...
+006C: 33   say
+006D: 13   push true
+006E: 43 54 02   popf flag:[0254]
+0071: 42 39 02   pushf flag:[0239]
+0074: 05 07 00   jne 007E
+0077: 1D 4D 01   pushs L014D   ; Inamo
+007A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007E: 1D 53 01   pushs L0153   ; name
+0081: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0085: 1D 58 01   pushs L0158   ; job
+0088: 07 01 00 11 00  cmps 0001H, 009E
+008D: 1C 5C 01   addsi L015C   ; "To be caring for...
+0090: 33   say
+0091: 1D FE 01   pushs L01FE   ; altars
+0094: 1D 05 02   pushs L0205   ; trouble
+0097: 1E 02 00   arrc 0002H   ; 2
+009A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009E: 1D 0D 02   pushs L020D   ; trouble
+00A1: 07 01 00 18 00  cmps 0001H, 00BE
+00A6: 1C 15 02   addsi L0215   ; "To have been man...
+00A9: 33   say
+00AA: 1D E4 02   pushs L02E4   ; rumors
+00AD: 1D EB 02   pushs L02EB   ; Fellowship
+00B0: 1E 02 00   arrc 0002H   ; 2
+00B3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B7: 1D F6 02   pushs L02F6   ; trouble
+00BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BE: 1D FE 02   pushs L02FE   ; Fellowship
+00C1: 07 01 00 2F 00  cmps 0001H, 00F5
+00C6: 1F 48 FF   pushi FF48H   ; -184
+00C9: 38 37 00 01  callis 0037, 1
+00CD: 12 01 00   pop [0001]
+00D0: 21 01 00   push [0001]
+00D3: 05 07 00   jne 00DD
+00D6: 1C 09 03   addsi L0309   ; "To be glad that ...
+00D9: 33   say
+00DA: 06 04 00   jmp 00E1
+00DD: 1C AB 03   addsi L03AB   ; "To be wary of Fe...
+00E0: 33   say
+00E1: 1D 6E 04   pushs L046E   ; Runeb
+00E4: 1D 74 04   pushs L0474   ; Quan
+00E7: 1E 02 00   arrc 0002H   ; 2
+00EA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EE: 1D 79 04   pushs L0479   ; Fellowship
+00F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F5: 1D 84 04   pushs L0484   ; rumors
+00F8: 07 01 00 2A 00  cmps 0001H, 0127
+00FD: 1F 48 FF   pushi FF48H   ; -184
+0100: 38 1B 00 01  callis 001B, 1
+0104: 38 37 00 01  callis 0037, 1
+0108: 12 01 00   pop [0001]
+010B: 21 01 00   push [0001]
+010E: 05 07 00   jne 0118
+0111: 1C 8B 04   addsi L048B   ; "To be sorry that...
+0114: 33   say
+0115: 06 08 00   jmp 0120
+0118: 1C 0E 05   addsi L050E   ; "To have heard th...
+011B: 33   say
+011C: 13   push true
+011D: 43 53 02   popf flag:[0253]
+0120: 1D BD 06   pushs L06BD   ; rumors
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 1D C4 06   pushs L06C4   ; evidence
+012A: 07 01 00 26 00  cmps 0001H, 0155
+012F: 1C CD 06   addsi L06CD   ; "To have brought ...
+0132: 33   say
+0133: 24 01 00   call [0001]   ; 090AH
+0136: 12 02 00   pop [0002]
+0139: 21 02 00   push [0002]
+013C: 05 0B 00   jne 014A
+013F: 1C 0D 07   addsi L070D   ; "To be wonderful!...
+0142: 33   say
+0143: 14   push false
+0144: 12 03 00   pop [0003]
+0147: 06 04 00   jmp 014E
+014A: 1C 03 09   addsi L0903   ; "To have found no...
+014D: 33   say
+014E: 1D DF 09   pushs L09DF   ; evidence
+0151: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0155: 1D E8 09   pushs L09E8   ; Quan
+0158: 07 01 00 0B 00  cmps 0001H, 0168
+015D: 1C ED 09   addsi L09ED   ; "To be sad to hav...
+0160: 33   say
+0161: 1D DF 0A   pushs L0ADF   ; Quan
+0164: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0168: 1D E4 0A   pushs L0AE4   ; Runeb
+016B: 07 01 00 0B 00  cmps 0001H, 017B
+0170: 1C EA 0A   addsi L0AEA   ; "To have been a s...
+0173: 33   say
+0174: 1D 2E 0C   pushs L0C2E   ; Runeb
+0177: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017B: 1D 34 0C   pushs L0C34   ; Inamo
+017E: 07 01 00 51 00  cmps 0001H, 01D4
+0183: 1C 3A 0C   addsi L0C3A   ; He smiles sadly, ...
+0186: 33   say
+0187: 42 3A 02   pushf flag:[023A]
+018A: 05 07 00   jne 0194
+018D: 1C 64 0C   addsi L0C64   ; "To have been a f...
+0190: 33   say
+0191: 06 39 00   jmp 01CD
+0194: 1C DD 0C   addsi L0CDD   ; "To miss him grea...
+0197: 33   say
+0198: 24 01 00   call [0001]   ; 090AH
+019B: 12 02 00   pop [0002]
+019E: 21 02 00   push [0002]
+01A1: 05 25 00   jne 01C9
+01A4: 1C BC 0D   addsi L0DBC   ; "To be well?"
+01A7: 33   say
+01A8: 24 01 00   call [0001]   ; 090AH
+01AB: 12 04 00   pop [0004]
+01AE: 21 04 00   push [0004]
+01B1: 05 07 00   jne 01BB
+01B4: 1C CA 0D   addsi L0DCA   ; "To be good. To b...
+01B7: 33   say
+01B8: 06 0B 00   jmp 01C6
+01BB: 1C FC 0D   addsi L0DFC   ; "To be not well? ...
+01BE: 33   say
+01BF: 1D 48 0E   pushs L0E48   ; too late
+01C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C6: 06 04 00   jmp 01CD
+01C9: 1C 51 0E   addsi L0E51   ; "Ah. Too bad. To ...
+01CC: 33   say
+01CD: 1D 86 0E   pushs L0E86   ; Inamo
+01D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D4: 1D 8C 0E   pushs L0E8C   ; too late
+01D7: 07 01 00 12 00  cmps 0001H, 01EE
+01DC: 1C 95 0E   addsi L0E95   ; "To be too late? ...
+01DF: 33   say
+01E0: 1D FA 0E   pushs L0EFA   ; murdered
+01E3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E7: 1D 03 0F   pushs L0F03   ; too late
+01EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EE: 1D 0C 0F   pushs L0F0C   ; murdered
+01F1: 07 01 00 10 00  cmps 0001H, 0206
+01F6: 1C 15 0F   addsi L0F15   ; "To be murdered?"...
+01F9: 33   say
+01FA: 1D 40 11   pushs L1140   ; murdered
+01FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0201: 13   push true
+0202: 43 3A 02   popf flag:[023A]
+0205: 3F   abrt
+0206: 1D 49 11   pushs L1149   ; altars
+0209: 07 01 00 36 00  cmps 0001H, 0244
+020E: 1D 50 11   pushs L1150   ; altars
+0211: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0215: 1C 57 11   addsi L1157   ; "To be caretaker ...
+0218: 33   say
+0219: 24 01 00   call [0001]   ; 090AH
+021C: 12 02 00   pop [0002]
+021F: 21 02 00   push [0002]
+0222: 05 1B 00   jne 0240
+0225: 1C BE 11   addsi L11BE   ; "Excellent. To wh...
+0228: 33   say
+0229: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+022D: 1D F1 11   pushs L11F1   ; Diligence
+0230: 1D FB 11   pushs L11FB   ; Passion
+0233: 1D 03 12   pushs L1203   ; Control
+0236: 1E 03 00   arrc 0003H   ; 3
+0239: 39 05 00 01  calli _AddAnswer@1  ; 0005
+023D: 06 04 00   jmp 0244
+0240: 1C 0B 12   addsi L120B   ; "Ah. To donate ne...
+0243: 33   say
+0244: 1D 2F 12   pushs L122F   ; Diligence
+0247: 1D 39 12   pushs L1239   ; Passion
+024A: 1D 41 12   pushs L1241   ; Control
+024D: 07 03 00 50 00  cmps 0003H, 02A2
+0252: 1C 49 12   addsi L1249   ; "To be an excelle...
+0255: 33   say
+0256: 24 01 00   call [0001]   ; 090AH
+0259: 12 02 00   pop [0002]
+025C: 21 02 00   push [0002]
+025F: 05 28 00   jne 028A
+0262: 13   push true
+0263: 1F 99 FE   pushi FE99H   ; -359
+0266: 1F 99 FE   pushi FE99H   ; -359
+0269: 1F 84 02   pushi 0284H   ; 644
+026C: 1F 05 00   pushi 0005H   ; 5
+026F: 38 2B 00 05  callis 002B, 5
+0273: 12 05 00   pop [0005]
+0276: 21 05 00   push [0005]
+0279: 05 07 00   jne 0283
+027C: 1C C2 12   addsi L12C2   ; "To meditate for ...
+027F: 33   say
+0280: 06 04 00   jmp 0287
+0283: 1C 10 13   addsi L1310   ; "To not have 5 go...
+0286: 33   say
+0287: 06 04 00   jmp 028E
+028A: 1C 90 13   addsi L1390   ; "Ah. To have misu...
+028D: 33   say
+028E: 1D FB 13   pushs L13FB   ; Diligence
+0291: 1D 05 14   pushs L1405   ; Passion
+0294: 1D 0D 14   pushs L140D   ; Control
+0297: 1E 03 00   arrc 0003H   ; 3
+029A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029E: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+02A2: 1D 15 14   pushs L1415   ; bye
+02A5: 07 01 00 03 00  cmps 0001H, 02AD
+02AA: 06 03 00   jmp 02B0
+02AD: 06 AE FD   jmp 005E
+02B0: 40   db 40 ???
+02B1: 1C 19 14   addsi L1419   ; "To tell you good...
+02B4: 33   say
+02B5: 48   push eventid
+02B6: 1F 00 00   pushi 0000H   ; 0
+02B9: 22   cmpeq
+02BA: 05 06 00   jne 02C3
+02BD: 1F 49 FF   pushi FF49H   ; -183
+02C0: 24 02 00   call [0002]   ; 092FH
+02C3: 25   ret

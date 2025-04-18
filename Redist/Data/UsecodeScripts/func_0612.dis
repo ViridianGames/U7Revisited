@@ -1,0 +1,9 @@
+  .funcnumber 0612H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 3E   push itemref
+0001: 39 5F 00 01  calli 005F, 1
+0005: 25   ret

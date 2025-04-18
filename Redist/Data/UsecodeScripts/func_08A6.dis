@@ -1,0 +1,210 @@
+  .funcnumber 08A6H
+  .data
+L0000: db 'you'
+L0003: db 00
+L0004: db 'you'
+L0007: db 00
+L0008: db 'your'
+L000C: db 00
+L000D: db 'find'
+L0011: db 00
+L0012: db 'finds'
+L0017: db 00
+L0018: db 'she'
+L001B: db 00
+L001C: db 'her'
+L001F: db 00
+L0020: db 'he'
+L0022: db 00
+L0023: db 'his'
+L0026: db 00
+L0027: db 'Karenna looks at '
+L0038: db 00
+L0039: db ' and gives a small laugh. "Thou art not without skill, but t'
+ db 'hou art not ready yet."'
+L008C: db 00
+L008D: db 'You gather your gold and count it, finding that you have '
+L00C6: db 00
+L00C7: db ' gold altogether.'
+L00D8: db 00
+L00D9: db 'Karenna gives you a cross look. "I am not running a charity.'
+ db ' Come back when thou dost have more money!"'
+L0140: db 00
+L0141: db 'Karenna glares at '
+L0153: db 00
+L0154: db '. "Thou dost but waste my time. Thou art as swift and cunnin'
+ db 'g as I, and I would wager that thou didst know it. I have no'
+ db 't the time for such as thee."'
+L01E9: db 00
+L01EA: db 'You pay '
+L01F2: db 00
+L01F3: db ' gold, and the training session begins.'
+L021A: db 00
+L021B: db 'Karenna leaps like a panther around the padded mat of the tr'
+ db 'aining ring. Her movements are so fast, they are a blur. She'
+ db ' attacks. At first she lands her blows at will, causing stin'
+ db 'gs of pain that send '
+L02E4: db 00
+L02E5: db ' reeling, but as the session progresses, '
+L030E: db 00
+L030F: db ' '
+L0310: db 00
+L0311: db ' '
+L0312: db 00
+L0313: db ' reflexes have been sharpened noticeably.'
+L033C: db 00
+L033D: db '"I thank thee for a fine practice session. Thou wilt be back'
+ db '." She grins confidently.'
+L0392: db 00
+  .code
+  .argc 0002H
+  .localc 000CH
+  .externsize 0007H
+  .extern 0920H
+  .extern 0908H
+  .extern 090FH
+  .extern 0922H
+  .extern 0910H
+  .extern 0915H
+  .extern 0917H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 24 01 00   call [0001]   ; 0908H
+0009: 12 03 00   pop [0003]
+000C: 21 02 00   push [0002]
+000F: 1F 00 00   pushi 0000H   ; 0
+0012: 22   cmpeq
+0013: 05 03 00   jne 0019
+0016: 06 63 01   jmp 017C
+0019: 21 02 00   push [0002]
+001C: 24 02 00   call [0002]   ; 090FH
+001F: 12 04 00   pop [0004]
+0022: 21 04 00   push [0004]
+0025: 21 03 00   push [0003]
+0028: 22   cmpeq
+0029: 05 1B 00   jne 0047
+002C: 1D 00 00   pushs L0000   ; you
+002F: 12 04 00   pop [0004]
+0032: 1D 04 00   pushs L0004   ; you
+0035: 12 05 00   pop [0005]
+0038: 1D 08 00   pushs L0008   ; your
+003B: 12 06 00   pop [0006]
+003E: 1D 0D 00   pushs L000D   ; find
+0041: 12 07 00   pop [0007]
+0044: 06 3B 00   jmp 0082
+0047: 1D 12 00   pushs L0012   ; finds
+004A: 12 07 00   pop [0007]
+004D: 21 02 00   push [0002]
+0050: 1F FB FF   pushi FFFBH   ; -5
+0053: 22   cmpeq
+0054: 21 02 00   push [0002]
+0057: 1F F8 FF   pushi FFF8H   ; -8
+005A: 22   cmpeq
+005B: 21 02 00   push [0002]
+005E: 1F F7 FF   pushi FFF7H   ; -9
+0061: 22   cmpeq
+0062: 0F   or
+0063: 0F   or
+0064: 05 0F 00   jne 0076
+0067: 1D 18 00   pushs L0018   ; she
+006A: 12 05 00   pop [0005]
+006D: 1D 1C 00   pushs L001C   ; her
+0070: 12 06 00   pop [0006]
+0073: 06 0C 00   jmp 0082
+0076: 1D 20 00   pushs L0020   ; he
+0079: 12 05 00   pop [0005]
+007C: 1D 23 00   pushs L0023   ; his
+007F: 12 06 00   pop [0006]
+0082: 1F 03 00   pushi 0003H   ; 3
+0085: 12 08 00   pop [0008]
+0088: 21 08 00   push [0008]
+008B: 21 02 00   push [0002]
+008E: 21 00 00   push [0000]
+0091: 21 01 00   push [0001]
+0094: 24 03 00   call [0003]   ; 0922H
+0097: 12 09 00   pop [0009]
+009A: 21 09 00   push [0009]
+009D: 1F 00 00   pushi 0000H   ; 0
+00A0: 22   cmpeq
+00A1: 05 0D 00   jne 00B1
+00A4: 1C 27 00   addsi L0027   ; Karenna looks at 
+00A7: 2F 04 00   addsv [0004]
+00AA: 1C 39 00   addsi L0039   ;  and gives a smal...
+00AD: 33   say
+00AE: 06 CB 00   jmp 017C
+00B1: 21 09 00   push [0009]
+00B4: 1F 01 00   pushi 0001H   ; 1
+00B7: 22   cmpeq
+00B8: 05 2E 00   jne 00E9
+00BB: 1F 99 FE   pushi FE99H   ; -359
+00BE: 1F 99 FE   pushi FE99H   ; -359
+00C1: 1F 84 02   pushi 0284H   ; 644
+00C4: 1F 9B FE   pushi FE9BH   ; -357
+00C7: 38 28 00 04  callis 0028, 4
+00CB: 12 0A 00   pop [000A]
+00CE: 1C 8D 00   addsi L008D   ; You gather your g...
+00D1: 2F 0A 00   addsv [000A]
+00D4: 1C C7 00   addsi L00C7   ;  gold altogether.
+00D7: 33   say
+00D8: 21 0A 00   push [000A]
+00DB: 21 00 00   push [0000]
+00DE: 17   cmpl
+00DF: 05 07 00   jne 00E9
+00E2: 1C D9 00   addsi L00D9   ; Karenna gives you...
+00E5: 33   say
+00E6: 06 93 00   jmp 017C
+00E9: 21 09 00   push [0009]
+00EC: 1F 02 00   pushi 0002H   ; 2
+00EF: 22   cmpeq
+00F0: 05 0D 00   jne 0100
+00F3: 1C 41 01   addsi L0141   ; Karenna glares at 
+00F6: 2F 04 00   addsv [0004]
+00F9: 1C 54 01   addsi L0154   ; . "Thou dost but ...
+00FC: 33   say
+00FD: 06 7C 00   jmp 017C
+0100: 13   push true
+0101: 1F 99 FE   pushi FE99H   ; -359
+0104: 1F 99 FE   pushi FE99H   ; -359
+0107: 1F 84 02   pushi 0284H   ; 644
+010A: 21 00 00   push [0000]
+010D: 38 2B 00 05  callis 002B, 5
+0111: 12 0B 00   pop [000B]
+0114: 1C EA 01   addsi L01EA   ; You pay 
+0117: 2F 00 00   addsv [0000]
+011A: 1C F3 01   addsi L01F3   ;  gold, and the tr...
+011D: 33   say
+011E: 1C 1B 02   addsi L021B   ; Karenna leaps lik...
+0121: 2F 04 00   addsv [0004]
+0124: 1C E5 02   addsi L02E5   ;  reeling, but as ...
+0127: 2F 05 00   addsv [0005]
+012A: 1C 0F 03   addsi L030F   ;  
+012D: 2F 07 00   addsv [0007]
+0130: 1C 11 03   addsi L0311   ;  
+0133: 2F 06 00   addsv [0006]
+0136: 1C 13 03   addsi L0313   ;  reflexes have be...
+0139: 33   say
+013A: 1C 3D 03   addsi L033D   ; "I thank thee for...
+013D: 33   say
+013E: 1F 01 00   pushi 0001H   ; 1
+0141: 21 02 00   push [0002]
+0144: 24 04 00   call [0004]   ; 0910H
+0147: 12 0C 00   pop [000C]
+014A: 1F 04 00   pushi 0004H   ; 4
+014D: 21 02 00   push [0002]
+0150: 24 04 00   call [0004]   ; 0910H
+0153: 12 0D 00   pop [000D]
+0156: 21 0C 00   push [000C]
+0159: 1F 1E 00   pushi 001EH   ; 30
+015C: 17   cmpl
+015D: 05 09 00   jne 0169
+0160: 1F 02 00   pushi 0002H   ; 2
+0163: 21 02 00   push [0002]
+0166: 24 05 00   call [0005]   ; 0915H
+0169: 21 0D 00   push [000D]
+016C: 1F 1E 00   pushi 001EH   ; 30
+016F: 17   cmpl
+0170: 05 09 00   jne 017C
+0173: 1F 01 00   pushi 0001H   ; 1
+0176: 21 02 00   push [0002]
+0179: 24 06 00   call [0006]   ; 0917H
+017C: 25   ret

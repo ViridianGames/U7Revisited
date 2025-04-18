@@ -1,0 +1,51 @@
+  .funcnumber 087DH
+  .data
+  .code
+  .argc 0000H
+  .localc 0003H
+  .externsize 0000H
+0000: 1F 10 00   pushi 0010H   ; 16
+0003: 1F 9C FE   pushi FE9CH   ; -356
+0006: 38 1B 00 01  callis 001B, 1
+000A: 39 89 00 02  calli 0089, 2
+000E: 1F 56 03   pushi 0356H   ; 854
+0011: 38 24 00 01  callis 0024, 1
+0015: 12 00 00   pop [0000]
+0018: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+001C: 10   not
+001D: 05 2C 00   jne 004C
+0020: 1F 9C FE   pushi FE9CH   ; -356
+0023: 38 1B 00 01  callis 001B, 1
+0027: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+002B: 1F 10 00   pushi 0010H   ; 16
+002E: 17   cmpl
+002F: 05 0D 00   jne 003F
+0032: 1F 12 00   pushi 0012H   ; 18
+0035: 21 00 00   push [0000]
+0038: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+003C: 06 0A 00   jmp 0049
+003F: 1F 13 00   pushi 0013H   ; 19
+0042: 21 00 00   push [0000]
+0045: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0049: 06 29 00   jmp 0075
+004C: 1F 9C FE   pushi FE9CH   ; -356
+004F: 38 1B 00 01  callis 001B, 1
+0053: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0057: 1F 10 00   pushi 0010H   ; 16
+005A: 17   cmpl
+005B: 05 0D 00   jne 006B
+005E: 1F 14 00   pushi 0014H   ; 20
+0061: 21 00 00   push [0000]
+0064: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0068: 06 0A 00   jmp 0075
+006B: 1F 15 00   pushi 0015H   ; 21
+006E: 21 00 00   push [0000]
+0071: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0075: 1F 9C FE   pushi FE9CH   ; -356
+0078: 38 1B 00 01  callis 001B, 1
+007C: 38 18 00 01  callis 0018, 1
+0080: 12 01 00   pop [0001]
+0083: 21 01 00   push [0001]
+0086: 38 26 00 01  callis 0026, 1
+008A: 12 02 00   pop [0002]
+008D: 25   ret

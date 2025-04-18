@@ -1,0 +1,274 @@
+  .funcnumber 04F4H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The warrior carries himself with confidence.'
+L0039: db 00
+L003A: db '"Hail, '
+L0041: db 00
+L0042: db '," says Cairbre.'
+L0052: db 00
+L0053: db 'name'
+L0057: db 00
+L0058: db '"Thou mayest call me Cairbre, '
+L0076: db 00
+L0077: db '."'
+L0079: db 00
+L007A: db 'name'
+L007E: db 00
+L007F: db 'job'
+L0082: db 00
+L0083: db '"I am a sell-sword. But at the moment, I am trying to help m'
+ db 'y friend regain his senses."'
+L00DB: db 00
+L00DC: db 'job'
+L00DF: db 00
+L00E0: db 'senses'
+L00E6: db 00
+L00E7: db 'friend'
+L00ED: db 00
+L00EE: db 'friend'
+L00F4: db 00
+L00F5: db '"I was not about to let Cosmo venture down here by himself. '
+ db 'So, I offered to accompany him, as did Kallibrus."'
+L0163: db 00
+L0164: db 'He points to the gargoyle.'
+L017E: db 00
+L017F: db 'Kallibrus'
+L0188: db 00
+L0189: db 'friend'
+L018F: db 00
+L0190: db 'Kallibrus'
+L0199: db 00
+L019A: db '"He is a comrade in arms of mine, and also a friend of Cosmo'
+ db ''s. I have yet to meet a more trustworthy companion, for he '
+ db 'more than disproves all the rumors about gargoyles."'
+L0246: db 00
+L0247: db 'Kallibrus'
+L0250: db 00
+L0251: db 'senses'
+L0257: db 00
+L0258: db '"'Tis a long story. Cosmo is looking for the unicorn that su'
+ db 'pposedly inhabits this cavern." He looks you in the eye and '
+ db 'shrugs.~~"He is a fool."'
+L02E8: db 00
+L02E9: db '*'
+L02EA: db 00
+L02EB: db '"I heard that, Cairbre!"*'
+L0304: db 00
+L0305: db 'senses'
+L030B: db 00
+L030C: db 'fool'
+L0310: db 00
+L0311: db 'unicorn'
+L0318: db 00
+L0319: db 'unicorn'
+L0320: db 00
+L0321: db '"The unicorn is traditionally a way to prove the purity of a'
+ db ' young maiden. However, less commonly known is that it will '
+ db 'also reveal a young man's, uh, lack of, um, wild oats."'
+L03D0: db 00
+L03D1: db 'unicorn'
+L03D8: db 00
+L03D9: db 'fool'
+L03DD: db 00
+L03DE: db '"Ophelia does not love him! She simply sent him on this ques'
+ db 't to be rid of him. I doubt she expects him to find the unic'
+ db 'orn, let alone return to her."'
+L0474: db 00
+L0475: db 'fool'
+L0479: db 00
+L047A: db 'rid'
+L047D: db 00
+L047E: db 'Ophelia'
+L0485: db 00
+L0486: db 'Ophelia'
+L048D: db 00
+L048E: db '"He met her in Jhelom. She was serving in the Bunk and Stool'
+ db '. Apparently it was `love at first sight,' as he calls it."'
+L0505: db 00
+L0506: db 'Ophelia'
+L050D: db 00
+L050E: db 'rid'
+L0511: db 00
+L0512: db '"The nature of her request is quite ironic, for I would expe'
+ db 'ct that the unicorn would have shunned her quite some time a'
+ db 'go. He is not to her tastes, I would imagine, and, were he t'
+ db 'o truly know her, she would not be to his. But, alas, love i'
+ db 's blind, as they say."'
+L0618: db 00
+L0619: db 'they'
+L061D: db 00
+L061E: db 'rid'
+L0621: db 00
+L0622: db 'they'
+L0626: db 00
+L0627: db '"I do not know who `they' are, but that is what they say, is'
+ db ' it not?"'
+L066C: db 00
+L066D: db 'they'
+L0671: db 00
+L0672: db 'bye'
+L0675: db 00
+L0676: db '"'Til next time, '
+L0687: db 00
+L0688: db '."*'
+L068B: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0003H
+  .extern 08F7H
+  .extern 0909H
+  .extern 085BH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 9D 01   jne 01A5
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 0C FF   pushi FF0CH   ; -244
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1F 03 FF   pushi FF03H   ; -253
+0015: 24 00 00   call [0000]   ; 08F7H
+0018: 12 00 00   pop [0000]
+001B: 1F 04 FF   pushi FF04H   ; -252
+001E: 24 00 00   call [0000]   ; 08F7H
+0021: 12 01 00   pop [0001]
+0024: 24 01 00   call [0001]   ; 0909H
+0027: 12 02 00   pop [0002]
+002A: 1D 00 00   pushs L0000   ; bye
+002D: 1D 04 00   pushs L0004   ; job
+0030: 1D 08 00   pushs L0008   ; name
+0033: 1E 03 00   arrc 0003H   ; 3
+0036: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003A: 42 C8 02   pushf flag:[02C8]
+003D: 10   not
+003E: 05 0B 00   jne 004C
+0041: 1C 0D 00   addsi L000D   ; The warrior carri...
+0044: 33   say
+0045: 13   push true
+0046: 43 C8 02   popf flag:[02C8]
+0049: 06 0A 00   jmp 0056
+004C: 1C 3A 00   addsi L003A   ; "Hail, 
+004F: 2F 02 00   addsv [0002]
+0052: 1C 42 00   addsi L0042   ; ," says Cairbre.
+0055: 33   say
+0056: 04 41 01   je 019A
+0059: 1D 53 00   pushs L0053   ; name
+005C: 07 01 00 11 00  cmps 0001H, 0072
+0061: 1C 58 00   addsi L0058   ; "Thou mayest call...
+0064: 2F 02 00   addsv [0002]
+0067: 1C 77 00   addsi L0077   ; ."
+006A: 33   say
+006B: 1D 7A 00   pushs L007A   ; name
+006E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0072: 1D 7F 00   pushs L007F   ; job
+0075: 07 01 00 18 00  cmps 0001H, 0092
+007A: 1C 83 00   addsi L0083   ; "I am a sell-swor...
+007D: 33   say
+007E: 1D DC 00   pushs L00DC   ; job
+0081: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0085: 1D E0 00   pushs L00E0   ; senses
+0088: 1D E7 00   pushs L00E7   ; friend
+008B: 1E 02 00   arrc 0002H   ; 2
+008E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0092: 1D EE 00   pushs L00EE   ; friend
+0095: 07 01 00 1F 00  cmps 0001H, 00B9
+009A: 1C F5 00   addsi L00F5   ; "I was not about ...
+009D: 33   say
+009E: 21 01 00   push [0001]
+00A1: 05 07 00   jne 00AB
+00A4: 1C 64 01   addsi L0164   ; He points to the ...
+00A7: 33   say
+00A8: 06 07 00   jmp 00B2
+00AB: 1D 7F 01   pushs L017F   ; Kallibrus
+00AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B2: 1D 89 01   pushs L0189   ; friend
+00B5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B9: 1D 90 01   pushs L0190   ; Kallibrus
+00BC: 07 01 00 0B 00  cmps 0001H, 00CC
+00C1: 1C 9A 01   addsi L019A   ; "He is a comrade ...
+00C4: 33   say
+00C5: 1D 47 02   pushs L0247   ; Kallibrus
+00C8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CC: 1D 51 02   pushs L0251   ; senses
+00CF: 07 01 00 45 00  cmps 0001H, 0119
+00D4: 1C 58 02   addsi L0258   ; "'Tis a long stor...
+00D7: 33   say
+00D8: 21 00 00   push [0000]
+00DB: 05 23 00   jne 0101
+00DE: 1C E9 02   addsi L02E9   ; *
+00E1: 33   say
+00E2: 1F 00 00   pushi 0000H   ; 0
+00E5: 1F 03 FF   pushi FF03H   ; -253
+00E8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00EC: 1C EB 02   addsi L02EB   ; "I heard that, Ca...
+00EF: 33   say
+00F0: 1F 03 FF   pushi FF03H   ; -253
+00F3: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F7: 1F 00 00   pushi 0000H   ; 0
+00FA: 1F 0C FF   pushi FF0CH   ; -244
+00FD: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0101: 13   push true
+0102: 43 E0 02   popf flag:[02E0]
+0105: 1D 05 03   pushs L0305   ; senses
+0108: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010C: 1D 0C 03   pushs L030C   ; fool
+010F: 1D 11 03   pushs L0311   ; unicorn
+0112: 1E 02 00   arrc 0002H   ; 2
+0115: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0119: 1D 19 03   pushs L0319   ; unicorn
+011C: 07 01 00 0B 00  cmps 0001H, 012C
+0121: 1C 21 03   addsi L0321   ; "The unicorn is t...
+0124: 33   say
+0125: 1D D1 03   pushs L03D1   ; unicorn
+0128: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012C: 1D D9 03   pushs L03D9   ; fool
+012F: 07 01 00 18 00  cmps 0001H, 014C
+0134: 1C DE 03   addsi L03DE   ; "Ophelia does not...
+0137: 33   say
+0138: 1D 75 04   pushs L0475   ; fool
+013B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013F: 1D 7A 04   pushs L047A   ; rid
+0142: 1D 7E 04   pushs L047E   ; Ophelia
+0145: 1E 02 00   arrc 0002H   ; 2
+0148: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014C: 1D 86 04   pushs L0486   ; Ophelia
+014F: 07 01 00 0B 00  cmps 0001H, 015F
+0154: 1C 8E 04   addsi L048E   ; "He met her in Jh...
+0157: 33   say
+0158: 1D 06 05   pushs L0506   ; Ophelia
+015B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015F: 1D 0E 05   pushs L050E   ; rid
+0162: 07 01 00 12 00  cmps 0001H, 0179
+0167: 1C 12 05   addsi L0512   ; "The nature of he...
+016A: 33   say
+016B: 1D 19 06   pushs L0619   ; they
+016E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0172: 1D 1E 06   pushs L061E   ; rid
+0175: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0179: 1D 22 06   pushs L0622   ; they
+017C: 07 01 00 0B 00  cmps 0001H, 018C
+0181: 1C 27 06   addsi L0627   ; "I do not know wh...
+0184: 33   say
+0185: 1D 6D 06   pushs L066D   ; they
+0188: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018C: 1D 72 06   pushs L0672   ; bye
+018F: 07 01 00 03 00  cmps 0001H, 0197
+0194: 06 03 00   jmp 019A
+0197: 06 BC FE   jmp 0056
+019A: 40   db 40 ???
+019B: 1C 76 06   addsi L0676   ; "'Til next time, 
+019E: 2F 02 00   addsv [0002]
+01A1: 1C 88 06   addsi L0688   ; ."*
+01A4: 33   say
+01A5: 48   push eventid
+01A6: 1F 00 00   pushi 0000H   ; 0
+01A9: 22   cmpeq
+01AA: 05 03 00   jne 01B0
+01AD: 24 02 00   call [0002]   ; 085BH
+01B0: 25   ret

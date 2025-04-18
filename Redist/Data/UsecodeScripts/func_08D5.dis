@@ -1,0 +1,139 @@
+  .funcnumber 08D5H
+  .data
+L0000: db 'It is most fortunate that thou fell so near our shelter. Tho'
+ db 'u must have a protector watching over thee.@'
+L0068: db 00
+L0069: db 'It was Elizabeth and Abraham who found thee and delivered th'
+ db 'ee to us.'
+L00AE: db 00
+L00AF: db '"Thank goodness thou art with us again! We were all very wor'
+ db 'ried over thy condition.~~"Thou hast been unconscious for so'
+ db ' long that we thought thou hadst lost thy life!~~'
+L0158: db 00
+L0159: db '*'
+L015A: db 00
+L015B: db '"They brought thee here along their way to Britain."'
+L018F: db 00
+L0190: db '"They brought thee here along their way to Minoc."'
+L01C2: db 00
+L01C3: db '"They brought thee to us as they were on their way here to P'
+ db 'aws, but they have since left for Jhelom."'
+L0229: db 00
+L022A: db '"They brought thee here along their way to Jhelom."'
+L025D: db 00
+L025E: db '"They brought thee here along their way to Britain."'
+L0292: db 00
+L0293: db '"They brought thee here along their way to Vesper."'
+L02C6: db 00
+L02C7: db '"They brought thee here along their way to Moonglow."'
+L02FC: db 00
+L02FD: db '"They brought thee here along their way to Terfin."'
+L0330: db 00
+L0331: db '"They brought thee here along their way to the Fellowship me'
+ db 'ditation retreat near Serpent's Hold."'
+L0393: db 00
+L0394: db '"They brought thee here along their way to Buccaneer's Den."'
+L03D0: db 00
+L03D1: db '"They brought thee here and then returned to Buccaneer's Den'
+ db '."'
+L040F: db 00
+L0410: db '"It is truly mysterious how this continues to happen to thee'
+ db '!"'
+L044E: db 00
+  .code
+  .argc 0000H
+  .localc 0001H
+  .externsize 0000H
+0000: 42 3A 00   pushf flag:[003A]
+0003: 05 09 00   jne 000F
+0006: 1D 00 00   pushs L0000   ; It is most fortun...
+0009: 12 00 00   pop [0000]
+000C: 06 06 00   jmp 0015
+000F: 1D 69 00   pushs L0069   ; It was Elizabeth ...
+0012: 12 00 00   pop [0000]
+0015: 1C AF 00   addsi L00AF   ; "Thank goodness t...
+0018: 2F 00 00   addsv [0000]
+001B: 1C 59 01   addsi L0159   ; *
+001E: 33   say
+001F: 42 3A 00   pushf flag:[003A]
+0022: 10   not
+0023: 05 A0 00   jne 00C6
+0026: 42 87 00   pushf flag:[0087]
+0029: 10   not
+002A: 05 04 00   jne 0031
+002D: 1C 5B 01   addsi L015B   ; "They brought the...
+0030: 33   say
+0031: 42 87 00   pushf flag:[0087]
+0034: 42 05 01   pushf flag:[0105]
+0037: 10   not
+0038: 0E   and
+0039: 05 04 00   jne 0040
+003C: 1C 90 01   addsi L0190   ; "They brought the...
+003F: 33   say
+0040: 42 05 01   pushf flag:[0105]
+0043: 42 17 02   pushf flag:[0217]
+0046: 10   not
+0047: 0E   and
+0048: 05 08 00   jne 0053
+004B: 1C C3 01   addsi L01C3   ; "They brought the...
+004E: 33   say
+004F: 13   push true
+0050: 43 17 02   popf flag:[0217]
+0053: 42 17 02   pushf flag:[0217]
+0056: 42 6B 01   pushf flag:[016B]
+0059: 10   not
+005A: 0E   and
+005B: 05 04 00   jne 0062
+005E: 1C 2A 02   addsi L022A   ; "They brought the...
+0061: 33   say
+0062: 42 6B 01   pushf flag:[016B]
+0065: 42 88 00   pushf flag:[0088]
+0068: 10   not
+0069: 0E   and
+006A: 05 04 00   jne 0071
+006D: 1C 5E 02   addsi L025E   ; "They brought the...
+0070: 33   say
+0071: 42 88 00   pushf flag:[0088]
+0074: 42 84 02   pushf flag:[0284]
+0077: 10   not
+0078: 0E   and
+0079: 05 04 00   jne 0080
+007C: 1C 93 02   addsi L0293   ; "They brought the...
+007F: 33   say
+0080: 42 84 02   pushf flag:[0284]
+0083: 42 EF 01   pushf flag:[01EF]
+0086: 10   not
+0087: 0E   and
+0088: 05 04 00   jne 008F
+008B: 1C C7 02   addsi L02C7   ; "They brought the...
+008E: 33   say
+008F: 42 EF 01   pushf flag:[01EF]
+0092: 42 43 02   pushf flag:[0243]
+0095: 10   not
+0096: 0E   and
+0097: 05 04 00   jne 009E
+009A: 1C FD 02   addsi L02FD   ; "They brought the...
+009D: 33   say
+009E: 42 43 02   pushf flag:[0243]
+00A1: 42 64 02   pushf flag:[0264]
+00A4: 10   not
+00A5: 0E   and
+00A6: 05 04 00   jne 00AD
+00A9: 1C 31 03   addsi L0331   ; "They brought the...
+00AC: 33   say
+00AD: 42 64 02   pushf flag:[0264]
+00B0: 42 A8 02   pushf flag:[02A8]
+00B3: 10   not
+00B4: 0E   and
+00B5: 05 04 00   jne 00BC
+00B8: 1C 94 03   addsi L0394   ; "They brought the...
+00BB: 33   say
+00BC: 42 A8 02   pushf flag:[02A8]
+00BF: 05 04 00   jne 00C6
+00C2: 1C D1 03   addsi L03D1   ; "They brought the...
+00C5: 33   say
+00C6: 42 26 00   pushf flag:[0026]
+00C9: 05 04 00   jne 00D0
+00CC: 1C 10 04   addsi L0410   ; "It is truly myst...
+00CF: 33   say
+00D0: 25   ret

@@ -1,0 +1,148 @@
+  .funcnumber 0892H
+  .data
+L0000: db 'Adjhar appears to have resumed the stance of a more traditio'
+ db 'nal golem guardian -- staunch and unmoving. However, it is i'
+ db 'mpossible to miss the glimmer of intelligence in his eyes.'
+L00B2: db 00
+L00B3: db 'bye'
+L00B6: db 00
+L00B7: db 'job'
+L00BA: db 00
+L00BB: db 'name'
+L00BF: db 00
+L00C0: db 'name'
+L00C4: db 00
+L00C5: db '"As thou must know by now, my creator chose to call me Adjha'
+ db 'r."'
+L0104: db 00
+L0105: db 'name'
+L0109: db 00
+L010A: db 'job'
+L010D: db 00
+L010E: db '"I was created to be one of many protectors to the Shrines o'
+ db 'f the Three Principles. However," he pauses, "my duty also i'
+ db 'ncluded being the keeper of the Talisman of Love."'
+L01B8: db 00
+L01B9: db 'job'
+L01BC: db 00
+L01BD: db 'Talisman'
+L01C5: db 00
+L01C6: db 'Talisman'
+L01CE: db 00
+L01CF: db '"Dost thou want the Talisman of Love?"'
+L01F5: db 00
+L01F6: db 'Talisman'
+L01FE: db 00
+L01FF: db '"I was put here to protect the Shrines and prevent any from '
+ db 'acquiring the Talisman. Any except the Avatar who demonstrat'
+ db 'ed knowledge and understanding of Love. The Talisman is thin'
+ db 'e, Avatar."~He brings his stone hand to his heart and opens '
+ db 'a panel on the front of his chest. Reaching inside with his '
+ db 'other hand, he brings forth a beautiful yellow talisman.'
+L0363: db 00
+L0364: db 'He places the Talisman in your palm. ~"Thou hast earned this'
+ db ' and the honors and powers associated with it. Thou art trul'
+ db 'y an Avatar."'
+L03E9: db 00
+L03EA: db '"I am sorry, but thou must be less burdened to receive this '
+ db 'one of three greatest of all blessings."'
+L044E: db 00
+L044F: db '"Thou art truly deserving of such an artifact. But if thou d'
+ db 'ost not wish to utilize the Shrines, I must respect thy wish'
+ db 'es."'
+L04CB: db 00
+L04CC: db 'bye'
+L04CF: db 00
+L04D0: db '"I bid thee farewell."*'
+L04E7: db 00
+L04E8: db '"Mark the wisdom of the Shrine of Love well, Avatar."*'
+L051E: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0003H
+  .extern 090AH
+  .extern 0907H
+  .extern 06F9H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F E0 FE   pushi FEE0H   ; -288
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 1C 00 00   addsi L0000   ; Adjhar appears to...
+000D: 33   say
+000E: 1D B3 00   pushs L00B3   ; bye
+0011: 1D B7 00   pushs L00B7   ; job
+0014: 1D BB 00   pushs L00BB   ; name
+0017: 1E 03 00   arrc 0003H   ; 3
+001A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+001E: 14   push false
+001F: 12 00 00   pop [0000]
+0022: 04 A4 00   je 00C9
+0025: 1D C0 00   pushs L00C0   ; name
+0028: 07 01 00 0B 00  cmps 0001H, 0038
+002D: 1C C5 00   addsi L00C5   ; "As thou must kno...
+0030: 33   say
+0031: 1D 05 01   pushs L0105   ; name
+0034: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0038: 1D 0A 01   pushs L010A   ; job
+003B: 07 01 00 12 00  cmps 0001H, 0052
+0040: 1C 0E 01   addsi L010E   ; "I was created to...
+0043: 33   say
+0044: 1D B9 01   pushs L01B9   ; job
+0047: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+004B: 1D BD 01   pushs L01BD   ; Talisman
+004E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0052: 1D C6 01   pushs L01C6   ; Talisman
+0055: 07 01 00 55 00  cmps 0001H, 00AF
+005A: 1C CF 01   addsi L01CF   ; "Dost thou want t...
+005D: 33   say
+005E: 1D F6 01   pushs L01F6   ; Talisman
+0061: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0065: 24 00 00   call [0000]   ; 090AH
+0068: 05 40 00   jne 00AB
+006B: 1C FF 01   addsi L01FF   ; "I was put here t...
+006E: 33   say
+006F: 1F BB 03   pushi 03BBH   ; 955
+0072: 38 24 00 01  callis 0024, 1
+0076: 12 00 00   pop [0000]
+0079: 1F 0A 00   pushi 000AH   ; 10
+007C: 21 00 00   push [0000]
+007F: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0083: 1F 9C FE   pushi FE9CH   ; -356
+0086: 38 1B 00 01  callis 001B, 1
+008A: 24 01 00   call [0001]   ; 0907H
+008D: 12 01 00   pop [0001]
+0090: 21 01 00   push [0001]
+0093: 05 0E 00   jne 00A4
+0096: 1C 64 03   addsi L0364   ; He places the Tal...
+0099: 33   say
+009A: 13   push true
+009B: 43 28 03   popf flag:[0328]
+009E: 06 29 00   jmp 00CA
+00A1: 06 04 00   jmp 00A8
+00A4: 1C EA 03   addsi L03EA   ; "I am sorry, but ...
+00A7: 33   say
+00A8: 06 04 00   jmp 00AF
+00AB: 1C 4F 04   addsi L044F   ; "Thou art truly d...
+00AE: 33   say
+00AF: 1D CC 04   pushs L04CC   ; bye
+00B2: 07 01 00 0F 00  cmps 0001H, 00C6
+00B7: 1C D0 04   addsi L04D0   ; "I bid thee farew...
+00BA: 33   say
+00BB: 42 28 03   pushf flag:[0328]
+00BE: 05 04 00   jne 00C5
+00C1: 1C E8 04   addsi L04E8   ; "Mark the wisdom ...
+00C4: 33   say
+00C5: 3F   abrt
+00C6: 06 59 FF   jmp 0022
+00C9: 40   db 40 ???
+00CA: 42 28 03   pushf flag:[0328]
+00CD: 42 27 03   pushf flag:[0327]
+00D0: 10   not
+00D1: 0E   and
+00D2: 05 0B 00   jne 00E0
+00D5: 1F 07 00   pushi 0007H   ; 7
+00D8: 4B   db 4b ???
+00D9: 21 00 00   push [0000]
+00DC: 47 F9 06   calle 06F9H   ; 1785
+00DF: 3F   abrt
+00E0: 25   ret

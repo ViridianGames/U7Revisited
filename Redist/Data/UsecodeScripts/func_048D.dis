@@ -1,0 +1,482 @@
+  .funcnumber 048DH
+  .data
+L0000: db 'You attempt to speak to the undead creature, but it does not'
+ db ', or cannot, respond.*'
+L0052: db 00
+L0053: db 'The Liche practically glows, power coursing visibly through '
+ db 'its undead veins.'
+L00A0: db 00
+L00A1: db 'You step forward to confront this vile-looking creature and '
+ db 'he slowly turns to face you. As his intense gaze locks onto '
+ db 'your form, you almost wish you hadn't been so bold.~~ "'
+L0150: db 00
+L0151: db '." A sardonic expression comes to his undead features. "How '
+ db 'may I help thee?" You get the distinct impression that help '
+ db 'is the last thing you'll get from the Liche.'
+L01F5: db 00
+L01F6: db 'Shamino steps near you and speaks in a whispered tone.~~"Do '
+ db 'not trust this one, '
+L0246: db 00
+L0247: db '. Methinks he'll cause naught but evil."'
+L026F: db 00
+L0270: db 'Iolo steps near you and speaks in a whispered tone.~~"Do not'
+ db ' trust this one, '
+L02BD: db 00
+L02BE: db '. Methinks he'll cause naught but evil."'
+L02E6: db 00
+L02E7: db '"Uh, '
+L02EC: db 00
+L02ED: db '? I am ready to go now," he says to you, cowering from the u'
+ db 'ndead creature.*'
+L0339: db 00
+L033A: db 'The Liche performs something akin to a smile and speaks with'
+ db ' a sarcastic flair.~~"Ah, the wondrous Avatar has returned. '
+ db 'What have I done to deserve such an honor?" The word "honor"'
+ db ' sours on this creature's tongue.'
+L040F: db 00
+L0410: db 'bye'
+L0413: db 00
+L0414: db 'job'
+L0417: db 00
+L0418: db 'name'
+L041C: db 00
+L041D: db 'name'
+L0421: db 00
+L0422: db 'The Liche's dry features take on a haughty appearance. "Thou'
+ db ' mayest call me Lord Horance. It would only be prudent, as I'
+ db ' shall one day rule all of Britannia.~~ "Surprised, Avatar? '
+ db 'Come now. Surely thou dost not think that Lord British will '
+ db 'stand in my way. I know how to deal with his ilk."'
+L0544: db 00
+L0545: db 'name'
+L0549: db 00
+L054A: db 'Lord British'
+L0556: db 00
+L0557: db 'Lord Horance'
+L0563: db 00
+L0564: db 'Lord Horance'
+L0570: db 00
+L0571: db '"Ah, it is good to hear such an obeisance from the Avatar. P'
+ db 'erhaps thou wilt have a place in my New Order." The Liche lo'
+ db 'oks at you with an expression somewhere between malice and h'
+ db 'umor.'
+L062A: db 00
+L062B: db 'Lord Horance'
+L0637: db 00
+L0638: db 'New Order'
+L0641: db 00
+L0642: db 'obeisance'
+L064B: db 00
+L064C: db 'obeisance'
+L0655: db 00
+L0656: db '"Why, what else wouldst thou call it? Surely thou art truly '
+ db 'humbled by my `majestic' presence."'
+L06B5: db 00
+L06B6: db 'obeisance'
+L06BF: db 00
+L06C0: db 'New Order'
+L06C9: db 00
+L06CA: db 'An expression of zeal lights the dead face of the Liche.~~"Y'
+ db 'es, '
+L070A: db 00
+L070B: db '. The dead will rule! I will be their leader and thou canst '
+ db 'become an Avatar... to ME!"'
+L0762: db 00
+L0763: db 'New Order'
+L076C: db 00
+L076D: db 'Fine!'
+L0772: db 00
+L0773: db 'Over my dead body!'
+L0785: db 00
+L0786: db 'Over my dead body!'
+L0798: db 00
+L0799: db '"Why, '
+L079F: db 00
+L07A0: db '. I thought that was understood. It will be my pleasure to h'
+ db 'elp thee enter the realm of the dead."'
+L0802: db 00
+L0803: db 'Fine!'
+L0808: db 00
+L0809: db '"Yes, I thought thou wouldst see the wisdom of my vision." H'
+ db 'e looks at you like a cat toying with a mouse.'
+L0873: db 00
+L0874: db 'Lord British'
+L0880: db 00
+L0881: db '`Evil' is a mild word for the sneer that appears on the Lich'
+ db 'e's cracked lips. "It has recently come to my attention that'
+ db ' a certain ore found in the Britannian surface can, if fashi'
+ db 'oned properly, become the bane of the vaunted Lord British.~'
+ db '~"I know this ore and have used it before for other purposes'
+ db '. I will use it once again to destroy that so-called Lord."'
+L09E8: db 00
+L09E9: db 'other purposes'
+L09F7: db 00
+L09F8: db 'ore'
+L09FB: db 00
+L09FC: db 'Lord British'
+L0A08: db 00
+L0A09: db 'other purposes'
+L0A17: db 00
+L0A18: db 'He gestures at the walls of the tower. "How else didst thou '
+ db 'expect my tower to withstand the ravaging effect the ether i'
+ db 's having on my magic?"'
+L0AA6: db 00
+L0AA7: db 'He gestures at the walls of the tower. "It served as an effe'
+ db 'ctive barrier against the ravaging effects of the disrupted '
+ db 'ether."'
+L0B26: db 00
+L0B27: db 'other purposes'
+L0B35: db 00
+L0B36: db 'job'
+L0B39: db 00
+L0B3A: db 'A harsh cackle escapes his dry throat. "I am the illustrious'
+ db ' Lord of the Dead, soon to be Lord of all Britannia. Dost th'
+ db 'ou have any idea of the number of dead people and creatures '
+ db 'there are? I thought not.~~"The dead of the ages are mine to'
+ db ' summon and control. The graves of beloved ancestors will sp'
+ db 'ew forth their contents into an army. A special treat for th'
+ db 'e living, mine undead monsters will be. Imagine a skeletal d'
+ db 'ragon that cannot be killed. Consider a cabal of everliving '
+ db 'mages eternally enthralled to me.~~"And the most beautiful p'
+ db 'art of my plot is that, as the living die in these battles, '
+ db 'and they will die, they will swell the ranks of the undead h'
+ db 'ost. I will rule supreme -- a world of the dead!" A terrifyi'
+ db 'ng glimpse of his sick and twisted future causes you to shiv'
+ db 'er ever so slightly.~~"And I will have a queen, the lovely R'
+ db 'owena."'
+L0E89: db 00
+L0E8A: db 'Rowena'
+L0E90: db 00
+L0E91: db '"Yes, my Lord. I must be the happiest Lady in all the land."'
+ db ' Her gaze never wanders from the horrid face of the Liche.'
+L0F07: db 00
+L0F08: db 'Rowena'
+L0F0E: db 00
+L0F0F: db '"Is she not the most beautiful lady thou hast seen? ~~"She s'
+ db 'hall have eternal beauty at my side, and we shall rule toget'
+ db 'her."'
+L0F8C: db 00
+L0F8D: db '"She is the most beautiful lady I have been witness to. She '
+ db 'shall have eternal beauty at my side, and we shall rule toge'
+ db 'ther." After hearing him speak of his plans for the future, '
+ db 'you find this a very unlikely statement.'
+L1069: db 00
+L106A: db 'Rowena'
+L1070: db 00
+L1071: db 'ore'
+L1074: db 00
+L1075: db '"Now, now, Avatar, that would be revealing. Then I would hav'
+ db 'e no secret from thee, would I?"'
+L10D1: db 00
+L10D2: db 'ore'
+L10D5: db 00
+L10D6: db 'bye'
+L10D9: db 00
+L10DA: db '"It is truly sad to see thee go." He says with a sardonic sm'
+ db 'ile.*'
+L111B: db 00
+L111C: db '"Yeah, right."*'
+L112B: db 00
+L112C: db '"Yeah, right."*'
+L113B: db 00
+L113C: db '"Feel free to explore mine humble abode. Though, have a care'
+ db '. My guardians are none too intelligent and will most likely'
+ db ' assault anything living." He smiles with his death's head g'
+ db 'rin.*'
+L11F5: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0008H
+  .extern 0908H
+  .extern 0909H
+  .extern 08F7H
+  .extern 08B1H
+  .extern 08B2H
+  .extern 08AFH
+  .extern 08ADH
+  .extern 08B0H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 36 03   jne 033E
+0008: 42 B5 01   pushf flag:[01B5]
+000B: 10   not
+000C: 05 0F 00   jne 001E
+000F: 1F 00 00   pushi 0000H   ; 0
+0012: 1F 73 FF   pushi FF73H   ; -141
+0015: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0019: 1C 00 00   addsi L0000   ; You attempt to sp...
+001C: 33   say
+001D: 3F   abrt
+001E: 24 00 00   call [0000]   ; 0908H
+0021: 12 00 00   pop [0000]
+0024: 24 01 00   call [0001]   ; 0909H
+0027: 12 01 00   pop [0001]
+002A: 1F 70 FF   pushi FF70H   ; -144
+002D: 24 02 00   call [0002]   ; 08F7H
+0030: 12 02 00   pop [0002]
+0033: 14   push false
+0034: 12 03 00   pop [0003]
+0037: 42 A3 01   pushf flag:[01A3]
+003A: 05 10 00   jne 004D
+003D: 42 AB 01   pushf flag:[01AB]
+0040: 10   not
+0041: 05 06 00   jne 004A
+0044: 24 03 00   call [0003]   ; 08B1H
+0047: 06 03 00   jmp 004D
+004A: 24 04 00   call [0004]   ; 08B2H
+004D: 42 98 01   pushf flag:[0198]
+0050: 05 03 00   jne 0056
+0053: 24 05 00   call [0005]   ; 08AFH
+0056: 42 AA 01   pushf flag:[01AA]
+0059: 05 06 00   jne 0062
+005C: 24 06 00   call [0006]   ; 08ADH
+005F: 06 0A 00   jmp 006C
+0062: 1F 00 00   pushi 0000H   ; 0
+0065: 1F 73 FF   pushi FF73H   ; -141
+0068: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+006C: 38 3B 00 00  callis 003B, 0
+0070: 12 04 00   pop [0004]
+0073: 1F 73 FF   pushi FF73H   ; -141
+0076: 38 1C 00 01  callis 001C, 1
+007A: 12 05 00   pop [0005]
+007D: 21 04 00   push [0004]
+0080: 1F 00 00   pushi 0000H   ; 0
+0083: 22   cmpeq
+0084: 21 04 00   push [0004]
+0087: 1F 01 00   pushi 0001H   ; 1
+008A: 22   cmpeq
+008B: 0F   or
+008C: 05 14 00   jne 00A3
+008F: 21 05 00   push [0005]
+0092: 1F 0E 00   pushi 000EH   ; 14
+0095: 22   cmpeq
+0096: 05 06 00   jne 009F
+0099: 24 07 00   call [0007]   ; 08B0H
+009C: 06 04 00   jmp 00A3
+009F: 13   push true
+00A0: 12 03 00   pop [0003]
+00A3: 42 C5 01   pushf flag:[01C5]
+00A6: 10   not
+00A7: 05 BA 00   jne 0164
+00AA: 21 03 00   push [0003]
+00AD: 05 04 00   jne 00B4
+00B0: 1C 53 00   addsi L0053   ; The Liche practic...
+00B3: 33   say
+00B4: 1C A1 00   addsi L00A1   ; You step forward ...
+00B7: 2F 00 00   addsv [0000]
+00BA: 1C 51 01   addsi L0151   ; ." A sardonic exp...
+00BD: 33   say
+00BE: 1F FD FF   pushi FFFDH   ; -3
+00C1: 24 02 00   call [0002]   ; 08F7H
+00C4: 12 06 00   pop [0006]
+00C7: 1F FF FF   pushi FFFFH   ; -1
+00CA: 24 02 00   call [0002]   ; 08F7H
+00CD: 12 07 00   pop [0007]
+00D0: 21 06 00   push [0006]
+00D3: 05 28 00   jne 00FE
+00D6: 1F 00 00   pushi 0000H   ; 0
+00D9: 1F FD FF   pushi FFFDH   ; -3
+00DC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E0: 1C F6 01   addsi L01F6   ; Shamino steps nea...
+00E3: 2F 01 00   addsv [0001]
+00E6: 1C 47 02   addsi L0247   ; . Methinks he'll ...
+00E9: 33   say
+00EA: 1F FD FF   pushi FFFDH   ; -3
+00ED: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F1: 1F 00 00   pushi 0000H   ; 0
+00F4: 1F 73 FF   pushi FF73H   ; -141
+00F7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00FB: 06 2B 00   jmp 0129
+00FE: 21 07 00   push [0007]
+0101: 05 25 00   jne 0129
+0104: 1F 00 00   pushi 0000H   ; 0
+0107: 1F FF FF   pushi FFFFH   ; -1
+010A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+010E: 1C 70 02   addsi L0270   ; Iolo steps near y...
+0111: 2F 01 00   addsv [0001]
+0114: 1C BE 02   addsi L02BE   ; . Methinks he'll ...
+0117: 33   say
+0118: 1F FF FF   pushi FFFFH   ; -1
+011B: 39 04 00 01  calli _HideNPC@1  ; 0004
+011F: 1F 00 00   pushi 0000H   ; 0
+0122: 1F 73 FF   pushi FF73H   ; -141
+0125: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0129: 1F FE FF   pushi FFFEH   ; -2
+012C: 24 02 00   call [0002]   ; 08F7H
+012F: 12 08 00   pop [0008]
+0132: 21 08 00   push [0008]
+0135: 05 25 00   jne 015D
+0138: 1F 00 00   pushi 0000H   ; 0
+013B: 1F FE FF   pushi FFFEH   ; -2
+013E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0142: 1C E7 02   addsi L02E7   ; "Uh, 
+0145: 2F 01 00   addsv [0001]
+0148: 1C ED 02   addsi L02ED   ; ? I am ready to g...
+014B: 33   say
+014C: 1F FE FF   pushi FFFEH   ; -2
+014F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0153: 1F 00 00   pushi 0000H   ; 0
+0156: 1F 73 FF   pushi FF73H   ; -141
+0159: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+015D: 13   push true
+015E: 43 C5 01   popf flag:[01C5]
+0161: 06 04 00   jmp 0168
+0164: 1C 3A 03   addsi L033A   ; The Liche perform...
+0167: 33   say
+0168: 1D 10 04   pushs L0410   ; bye
+016B: 1D 14 04   pushs L0414   ; job
+016E: 1D 18 04   pushs L0418   ; name
+0171: 1E 03 00   arrc 0003H   ; 3
+0174: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0178: 04 C2 01   je 033D
+017B: 1D 1D 04   pushs L041D   ; name
+017E: 07 01 00 18 00  cmps 0001H, 019B
+0183: 1C 22 04   addsi L0422   ; The Liche's dry f...
+0186: 33   say
+0187: 1D 45 05   pushs L0545   ; name
+018A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018E: 1D 4A 05   pushs L054A   ; Lord British
+0191: 1D 57 05   pushs L0557   ; Lord Horance
+0194: 1E 02 00   arrc 0002H   ; 2
+0197: 39 05 00 01  calli _AddAnswer@1  ; 0005
+019B: 1D 64 05   pushs L0564   ; Lord Horance
+019E: 07 01 00 18 00  cmps 0001H, 01BB
+01A3: 1C 71 05   addsi L0571   ; "Ah, it is good t...
+01A6: 33   say
+01A7: 1D 2B 06   pushs L062B   ; Lord Horance
+01AA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AE: 1D 38 06   pushs L0638   ; New Order
+01B1: 1D 42 06   pushs L0642   ; obeisance
+01B4: 1E 02 00   arrc 0002H   ; 2
+01B7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BB: 1D 4C 06   pushs L064C   ; obeisance
+01BE: 07 01 00 0B 00  cmps 0001H, 01CE
+01C3: 1C 56 06   addsi L0656   ; "Why, what else w...
+01C6: 33   say
+01C7: 1D B6 06   pushs L06B6   ; obeisance
+01CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CE: 1D C0 06   pushs L06C0   ; New Order
+01D1: 07 01 00 22 00  cmps 0001H, 01F8
+01D6: 1C CA 06   addsi L06CA   ; An expression of ...
+01D9: 2F 00 00   addsv [0000]
+01DC: 1C 0B 07   addsi L070B   ; . The dead will r...
+01DF: 33   say
+01E0: 1D 63 07   pushs L0763   ; New Order
+01E3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E7: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+01EB: 1D 6D 07   pushs L076D   ; Fine!
+01EE: 1D 73 07   pushs L0773   ; Over my dead body!
+01F1: 1E 02 00   arrc 0002H   ; 2
+01F4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F8: 1D 86 07   pushs L0786   ; Over my dead body!
+01FB: 07 01 00 0E 00  cmps 0001H, 020E
+0200: 1C 99 07   addsi L0799   ; "Why, 
+0203: 2F 00 00   addsv [0000]
+0206: 1C A0 07   addsi L07A0   ; . I thought that ...
+0209: 33   say
+020A: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+020E: 1D 03 08   pushs L0803   ; Fine!
+0211: 07 01 00 08 00  cmps 0001H, 021E
+0216: 1C 09 08   addsi L0809   ; "Yes, I thought t...
+0219: 33   say
+021A: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+021E: 1D 74 08   pushs L0874   ; Lord British
+0221: 07 01 00 18 00  cmps 0001H, 023E
+0226: 1C 81 08   addsi L0881   ; `Evil' is a mild ...
+0229: 33   say
+022A: 1D E9 09   pushs L09E9   ; other purposes
+022D: 1D F8 09   pushs L09F8   ; ore
+0230: 1E 02 00   arrc 0002H   ; 2
+0233: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0237: 1D FC 09   pushs L09FC   ; Lord British
+023A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023E: 1D 09 0A   pushs L0A09   ; other purposes
+0241: 07 01 00 19 00  cmps 0001H, 025F
+0246: 42 03 00   pushf flag:[0003]
+0249: 10   not
+024A: 05 07 00   jne 0254
+024D: 1C 18 0A   addsi L0A18   ; He gestures at th...
+0250: 33   say
+0251: 06 04 00   jmp 0258
+0254: 1C A7 0A   addsi L0AA7   ; He gestures at th...
+0257: 33   say
+0258: 1D 27 0B   pushs L0B27   ; other purposes
+025B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025F: 1D 36 0B   pushs L0B36   ; job
+0262: 07 01 00 30 00  cmps 0001H, 0297
+0267: 1C 3A 0B   addsi L0B3A   ; A harsh cackle es...
+026A: 33   say
+026B: 1D 8A 0E   pushs L0E8A   ; Rowena
+026E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0272: 21 02 00   push [0002]
+0275: 05 1F 00   jne 0297
+0278: 1F 00 00   pushi 0000H   ; 0
+027B: 1F 70 FF   pushi FF70H   ; -144
+027E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0282: 1C 91 0E   addsi L0E91   ; "Yes, my Lord. I ...
+0285: 33   say
+0286: 1F 70 FF   pushi FF70H   ; -144
+0289: 39 04 00 01  calli _HideNPC@1  ; 0004
+028D: 1F 00 00   pushi 0000H   ; 0
+0290: 1F 73 FF   pushi FF73H   ; -141
+0293: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0297: 1D 08 0F   pushs L0F08   ; Rowena
+029A: 07 01 00 18 00  cmps 0001H, 02B7
+029F: 21 02 00   push [0002]
+02A2: 05 07 00   jne 02AC
+02A5: 1C 0F 0F   addsi L0F0F   ; "Is she not the m...
+02A8: 33   say
+02A9: 06 04 00   jmp 02B0
+02AC: 1C 8D 0F   addsi L0F8D   ; "She is the most ...
+02AF: 33   say
+02B0: 1D 6A 10   pushs L106A   ; Rowena
+02B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B7: 1D 71 10   pushs L1071   ; ore
+02BA: 07 01 00 0B 00  cmps 0001H, 02CA
+02BF: 1C 75 10   addsi L1075   ; "Now, now, Avatar...
+02C2: 33   say
+02C3: 1D D2 10   pushs L10D2   ; ore
+02C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CA: 1D D6 10   pushs L10D6   ; bye
+02CD: 07 01 00 68 00  cmps 0001H, 033A
+02D2: 1C DA 10   addsi L10DA   ; "It is truly sad ...
+02D5: 33   say
+02D6: 1F FC FF   pushi FFFCH   ; -4
+02D9: 24 02 00   call [0002]   ; 08F7H
+02DC: 12 09 00   pop [0009]
+02DF: 1F FF FF   pushi FFFFH   ; -1
+02E2: 24 02 00   call [0002]   ; 08F7H
+02E5: 12 07 00   pop [0007]
+02E8: 21 09 00   push [0009]
+02EB: 05 22 00   jne 0310
+02EE: 1F 00 00   pushi 0000H   ; 0
+02F1: 1F FC FF   pushi FFFCH   ; -4
+02F4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02F8: 1C 1C 11   addsi L111C   ; "Yeah, right."*
+02FB: 33   say
+02FC: 1F FC FF   pushi FFFCH   ; -4
+02FF: 39 04 00 01  calli _HideNPC@1  ; 0004
+0303: 1F 00 00   pushi 0000H   ; 0
+0306: 1F 73 FF   pushi FF73H   ; -141
+0309: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+030D: 06 25 00   jmp 0335
+0310: 21 07 00   push [0007]
+0313: 05 1F 00   jne 0335
+0316: 1F 00 00   pushi 0000H   ; 0
+0319: 1F FF FF   pushi FFFFH   ; -1
+031C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0320: 1C 2C 11   addsi L112C   ; "Yeah, right."*
+0323: 33   say
+0324: 1F FF FF   pushi FFFFH   ; -1
+0327: 39 04 00 01  calli _HideNPC@1  ; 0004
+032B: 1F 00 00   pushi 0000H   ; 0
+032E: 1F 73 FF   pushi FF73H   ; -141
+0331: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0335: 1C 3C 11   addsi L113C   ; "Feel free to exp...
+0338: 33   say
+0339: 3F   abrt
+033A: 06 3B FE   jmp 0178
+033D: 40   db 40 ???
+033E: 25   ret

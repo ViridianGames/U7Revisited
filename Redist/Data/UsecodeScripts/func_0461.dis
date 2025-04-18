@@ -1,0 +1,221 @@
+  .funcnumber 0461H
+  .data
+L0000: db 'Mikos is lost in meditation at the Fellowship meeting and do'
+ db 'es not hear you.*'
+L004D: db 00
+L004E: db '"I must run to the Fellowship meeting! I shall speak with th'
+ db 'ee another time!"*'
+L009C: db 00
+L009D: db 'bye'
+L00A0: db 00
+L00A1: db 'job'
+L00A4: db 00
+L00A5: db 'name'
+L00A9: db 00
+L00AA: db 'silver fluid'
+L00B6: db 00
+L00B7: db 'A sneering man watches as you approach. His eyes shift back '
+ db 'and forth suspiciously.'
+L010A: db 00
+L010B: db 'Mikos heaves his shoulders and sighs. "What dost thou want t'
+ db 'his time?"'
+L0151: db 00
+L0152: db 'name'
+L0156: db 00
+L0157: db '"I am Mikos."'
+L0164: db 00
+L0165: db 'name'
+L0169: db 00
+L016A: db 'job'
+L016D: db 00
+L016E: db '"I am the foreman of the Minoc mine."'
+L0193: db 00
+L0194: db 'mine'
+L0198: db 00
+L0199: db 'Minoc'
+L019E: db 00
+L019F: db 'Minoc'
+L01A4: db 00
+L01A5: db 'He spits on the ground. "A pox on them! Down here I am safe '
+ db 'from all of their arguing. Next, they will be killing each o'
+ db 'ther."'
+L0223: db 00
+L0224: db 'Minoc'
+L0229: db 00
+L022A: db 'mine'
+L022E: db 00
+L022F: db '"This mine is run by the Britannian Mining Company. It is in'
+ db 'side what was once the dungeon Covetous. They mine for iron '
+ db 'ore, lead and other minerals with highly trained miners and '
+ db 'special mining machinery."'
+L02FD: db 00
+L02FE: db 'mine'
+L0302: db 00
+L0303: db 'machinery'
+L030C: db 00
+L030D: db 'miners'
+L0313: db 00
+L0314: db 'miners'
+L031A: db 00
+L031B: db '"Currently most of the miners are away as the machines are b'
+ db 'eing repaired. Right now we have two engineers, Owings and M'
+ db 'alloy, down in a branch of the main tunnel. Do not disturb t'
+ db 'hem, for they are involved in a special project. We also hav'
+ db 'e a gargoyle, Fodus, who is helping to maintain a semblance '
+ db 'of the mine's usual operations."'
+L0467: db 00
+L0468: db 'miners'
+L046E: db 00
+L046F: db 'Owings and Malloy'
+L0480: db 00
+L0481: db 'machinery'
+L048A: db 00
+L048B: db '"This place is full of machinery that is very dangerous if t'
+ db 'hou dost not know what thou art doing. Thou dost not wish to'
+ db ' see what one of those digging contraptions can do to a man '
+ db 'if he gets too close!"'
+L0555: db 00
+L0556: db 'machinery'
+L055F: db 00
+L0560: db 'Owings and Malloy'
+L0571: db 00
+L0572: db 'Mikos shakes his head slowly. "I am not sure where the Brita'
+ db 'nnian Mining Company found them."'
+L05CF: db 00
+L05D0: db 'Owings and Malloy'
+L05E1: db 00
+L05E2: db 'silver fluid'
+L05EE: db 00
+L05EF: db 'You repeat the words to Mikos that you heard Fodus say. Miko'
+ db 's gives you a shocked look. "I have no idea what he is talki'
+ db 'ng about, but I would say it is typical for a gargoyle. Just'
+ db ' trying to shirk of his duty. Say, thou hadst better leave t'
+ db 'his place if thou ist spending all thy time disrupting the w'
+ db 'ork of the mine!"*'
+L072D: db 00
+L072E: db 'bye'
+L0731: db 00
+L0732: db '"Do not wander around down here, '
+L0753: db 00
+L0754: db '. Thou shouldst leave right away."*'
+L0777: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0002H
+  .extern 08FCH
+  .extern 0909H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 9F FF   pushi FF9FH   ; -97
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 38 3B 00 00  callis 003B, 0
+0017: 12 00 00   pop [0000]
+001A: 21 00 00   push [0000]
+001D: 1F 07 00   pushi 0007H   ; 7
+0020: 22   cmpeq
+0021: 05 1F 00   jne 0043
+0024: 1F AF FF   pushi FFAFH   ; -81
+0027: 1F 9F FF   pushi FF9FH   ; -97
+002A: 24 00 00   call [0000]   ; 08FCH
+002D: 12 01 00   pop [0001]
+0030: 21 01 00   push [0001]
+0033: 05 08 00   jne 003E
+0036: 1C 00 00   addsi L0000   ; Mikos is lost in ...
+0039: 33   say
+003A: 3F   abrt
+003B: 06 05 00   jmp 0043
+003E: 1C 4E 00   addsi L004E   ; "I must run to th...
+0041: 33   say
+0042: 3F   abrt
+0043: 24 01 00   call [0001]   ; 0909H
+0046: 12 02 00   pop [0002]
+0049: 1D 9D 00   pushs L009D   ; bye
+004C: 1D A1 00   pushs L00A1   ; job
+004F: 1D A5 00   pushs L00A5   ; name
+0052: 1E 03 00   arrc 0003H   ; 3
+0055: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0059: 42 07 01   pushf flag:[0107]
+005C: 05 07 00   jne 0066
+005F: 1D AA 00   pushs L00AA   ; silver fluid
+0062: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0066: 42 1C 01   pushf flag:[011C]
+0069: 10   not
+006A: 05 0B 00   jne 0078
+006D: 1C B7 00   addsi L00B7   ; A sneering man wa...
+0070: 33   say
+0071: 13   push true
+0072: 43 1C 01   popf flag:[011C]
+0075: 06 04 00   jmp 007C
+0078: 1C 0B 01   addsi L010B   ; Mikos heaves his ...
+007B: 33   say
+007C: 04 BA 00   je 0139
+007F: 1D 52 01   pushs L0152   ; name
+0082: 07 01 00 0B 00  cmps 0001H, 0092
+0087: 1C 57 01   addsi L0157   ; "I am Mikos."
+008A: 33   say
+008B: 1D 65 01   pushs L0165   ; name
+008E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0092: 1D 6A 01   pushs L016A   ; job
+0095: 07 01 00 11 00  cmps 0001H, 00AB
+009A: 1C 6E 01   addsi L016E   ; "I am the foreman...
+009D: 33   say
+009E: 1D 94 01   pushs L0194   ; mine
+00A1: 1D 99 01   pushs L0199   ; Minoc
+00A4: 1E 02 00   arrc 0002H   ; 2
+00A7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AB: 1D 9F 01   pushs L019F   ; Minoc
+00AE: 07 01 00 0B 00  cmps 0001H, 00BE
+00B3: 1C A5 01   addsi L01A5   ; He spits on the g...
+00B6: 33   say
+00B7: 1D 24 02   pushs L0224   ; Minoc
+00BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BE: 1D 2A 02   pushs L022A   ; mine
+00C1: 07 01 00 18 00  cmps 0001H, 00DE
+00C6: 1C 2F 02   addsi L022F   ; "This mine is run...
+00C9: 33   say
+00CA: 1D FE 02   pushs L02FE   ; mine
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D 03 03   pushs L0303   ; machinery
+00D4: 1D 0D 03   pushs L030D   ; miners
+00D7: 1E 02 00   arrc 0002H   ; 2
+00DA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DE: 1D 14 03   pushs L0314   ; miners
+00E1: 07 01 00 12 00  cmps 0001H, 00F8
+00E6: 1C 1B 03   addsi L031B   ; "Currently most o...
+00E9: 33   say
+00EA: 1D 68 04   pushs L0468   ; miners
+00ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F1: 1D 6F 04   pushs L046F   ; Owings and Malloy
+00F4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F8: 1D 81 04   pushs L0481   ; machinery
+00FB: 07 01 00 0B 00  cmps 0001H, 010B
+0100: 1C 8B 04   addsi L048B   ; "This place is fu...
+0103: 33   say
+0104: 1D 56 05   pushs L0556   ; machinery
+0107: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010B: 1D 60 05   pushs L0560   ; Owings and Malloy
+010E: 07 01 00 0B 00  cmps 0001H, 011E
+0113: 1C 72 05   addsi L0572   ; Mikos shakes his ...
+0116: 33   say
+0117: 1D D0 05   pushs L05D0   ; Owings and Malloy
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D E2 05   pushs L05E2   ; silver fluid
+0121: 07 01 00 05 00  cmps 0001H, 012B
+0126: 1C EF 05   addsi L05EF   ; You repeat the wo...
+0129: 33   say
+012A: 3F   abrt
+012B: 1D 2E 07   pushs L072E   ; bye
+012E: 07 01 00 03 00  cmps 0001H, 0136
+0133: 06 03 00   jmp 0139
+0136: 06 43 FF   jmp 007C
+0139: 40   db 40 ???
+013A: 1C 32 07   addsi L0732   ; "Do not wander ar...
+013D: 2F 02 00   addsv [0002]
+0140: 1C 54 07   addsi L0754   ; . Thou shouldst l...
+0143: 33   say
+0144: 25   ret

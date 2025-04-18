@@ -1,0 +1,78 @@
+  .funcnumber 06C2H
+  .data
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0001H
+  .extern 080FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 96 00   jne 009E
+0008: 42 57 00   pushf flag:[0057]
+000B: 05 90 00   jne 009E
+000E: 24 00 00   call [0000]   ; 080FH
+0011: 1F B0 00   pushi 00B0H   ; 176
+0014: 1F 3C 00   pushi 003CH   ; 60
+0017: 1F 90 03   pushi 0390H   ; 912
+001A: 3E   push itemref
+001B: 38 35 00 04  callis 0035, 4
+001F: 12 00 00   pop [0000]
+0022: 2E   sloop
+0023: 02 01 00 02 00 03 00 00 00 1D 00  db 2 ???
+0024:   db 1
+0025:   db 0
+0026:   db 2
+0027:   db 0
+0028:   db 3
+0029:   db 0
+002A:   db 0
+002B:   db 0
+002C:   db 1d
+002D:   db 0
+002E: 21 03 00   push [0003]
+0031: 38 25 00 01  callis 0025, 1
+0035: 12 04 00   pop [0004]
+0038: 21 04 00   push [0004]
+003B: 05 0A 00   jne 0048
+003E: 1F 9A FE   pushi FE9AH   ; -358
+0041: 38 26 00 01  callis 0026, 1
+0045: 12 04 00   pop [0004]
+0048: 06 D8 FF   jmp 0023
+004B: 1F 00 00   pushi 0000H   ; 0
+004E: 1F 50 00   pushi 0050H   ; 80
+0051: 1F 9E 01   pushi 019EH   ; 414
+0054: 3E   push itemref
+0055: 38 35 00 04  callis 0035, 4
+0059: 12 05 00   pop [0005]
+005C: 2E   sloop
+005D: 02 06 00 07 00 08 00 05 00 31 00  db 2 ???
+005E:   db 6
+005F:   db 0
+0060:   db 7
+0061:   db 0
+0062:   db 8
+0063:   db 0
+0064:   db 5
+0065:   db 0
+0066:   db 31
+0067:   db 0
+0068: 21 08 00   push [0008]
+006B: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+006F: 12 09 00   pop [0009]
+0072: 21 09 00   push [0009]
+0075: 1F 14 00   pushi 0014H   ; 20
+0078: 16   cmpgt
+0079: 05 1A 00   jne 0096
+007C: 21 08 00   push [0008]
+007F: 38 25 00 01  callis 0025, 1
+0083: 12 04 00   pop [0004]
+0086: 21 04 00   push [0004]
+0089: 05 0A 00   jne 0096
+008C: 1F 9A FE   pushi FE9AH   ; -358
+008F: 38 26 00 01  callis 0026, 1
+0093: 12 04 00   pop [0004]
+0096: 06 C4 FF   jmp 005D
+0099: 3E   push itemref
+009A: 39 6F 00 01  calli 006F, 1
+009E: 25   ret

@@ -1,0 +1,303 @@
+  .funcnumber 04C9H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'examine chips'
+L001A: db 00
+L001B: db 'This attractive woman gives you an approving look.'
+L004D: db 00
+L004E: db '"Greetings, '
+L005A: db 00
+L005B: db '." Leigh smiles at you.'
+L0072: db 00
+L0073: db 'name'
+L0077: db 00
+L0078: db 'She blushes. "I am Lady Leigh."'
+L0097: db 00
+L0098: db 'name'
+L009C: db 00
+L009D: db 'job'
+L00A0: db 00
+L00A1: db '"I am the Healer of Serpent's Hold."'
+L00C5: db 00
+L00C6: db 'heal'
+L00CA: db 00
+L00CB: db 'Serpent's Hold'
+L00D9: db 00
+L00DA: db 'examine chips'
+L00E7: db 00
+L00E8: db 'heal'
+L00EC: db 00
+L00ED: db '"I am sorry, but I have too many other patients to help thee'
+ db ' now. Perhaps when I next open my shop."'
+L0151: db 00
+L0152: db 'heal'
+L0156: db 00
+L0157: db 'Serpent's Hold'
+L0165: db 00
+L0166: db '"Lord Jean-Paul is in charge of keeping the order here, but '
+ db 'Sir Denton would be an even better source of information abo'
+ db 'ut Serpent's Hold."'
+L01F1: db 00
+L01F2: db 'Denton'
+L01F8: db 00
+L01F9: db 'John-Paul'
+L0202: db 00
+L0203: db 'Serpent's Hold'
+L0211: db 00
+L0212: db 'John-Paul'
+L021B: db 00
+L021C: db '"He is an easy man to find, for Sir Horffe hardly ever leave'
+ db 's his side. Watch for the tall, muscular gargoyle."'
+L028B: db 00
+L028C: db '"In fact," she says, looking off in the distance, "I believe'
+ db ' he may have a desire to speak with thee. Perhaps thou shoul'
+ db 'dst truly seek him out."'
+L031C: db 00
+L031D: db '"If thou hast business about the town, and are not able to l'
+ db 'ocate John-Paul, thou mightest wish to speak with Sir Richte'
+ db 'r."'
+L0398: db 00
+L0399: db 'John-Paul'
+L03A2: db 00
+L03A3: db 'Richter'
+L03AA: db 00
+L03AB: db 'Horffe'
+L03B1: db 00
+L03B2: db 'Horffe'
+L03B8: db 00
+L03B9: db '"He was found at a very young age, apparently abandoned by h'
+ db 'is father. Two people took and raised him as their own. As t'
+ db 'hou couldst see simply by meeting him, he is a very noble pe'
+ db 'rson and a stout warrior."'
+L0487: db 00
+L0488: db 'Horffe'
+L048E: db 00
+L048F: db 'Richter'
+L0496: db 00
+L0497: db '"He is the armourer. His shop is in the back of the Hold."'
+L04D1: db 00
+L04D2: db 'Richter'
+L04D9: db 00
+L04DA: db 'Denton'
+L04E0: db 00
+L04E1: db '"He is the tavern keeper at the Hallowed Dock, just inside t'
+ db 'he Hold's doors. He is wonderful at remembering and discussi'
+ db 'ng important facts."'
+L056D: db 00
+L056E: db 'Denton'
+L0574: db 00
+L0575: db 'examine chips'
+L0582: db 00
+L0583: db 'She looks at you, puzzled. "Did I not do that already?"'
+L05BA: db 00
+L05BB: db 'She takes the stone chips from you and examines them. Using '
+ db 'several vials of strange and unusual mixtures, she analyzes '
+ db 'the blood. Finally, after a few silent minutes, she looks up'
+ db ', grinning.~~"I have determined the nature of the blood. It '
+ db 'is definitely not human. In fact," she looks back down at th'
+ db 'e sample and raises one eyebrow, "it is gargoyle blood."'
+L071F: db 00
+L0720: db 'gargoyle blood'
+L072E: db 00
+L072F: db '"I am afraid that I must be able to see them to examine them'
+ db '."'
+L076D: db 00
+L076E: db 'examine chips'
+L077B: db 00
+L077C: db 'gargoyle blood'
+L078A: db 00
+L078B: db 'She appears thoughtful.~~"What is odd, '
+L07B2: db 00
+L07B3: db ', is that there is only one gargoyle in Serpent's Hold. But '
+ db 'I cannot imagine Sir Horffe would have had anything to do wi'
+ db 'th this wanton destruction."'
+L0847: db 00
+L0848: db 'gargoyle blood'
+L0856: db 00
+L0857: db 'bye'
+L085A: db 00
+L085B: db '"Farewell, '
+L0866: db 00
+L0867: db '."*'
+L086A: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0004H
+  .extern 0909H
+  .extern 08ACH
+  .extern 0931H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 D0 01   jne 01D8
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 37 FF   pushi FF37H   ; -201
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1F 37 FF   pushi FF37H   ; -201
+001B: 38 1B 00 01  callis 001B, 1
+001F: 38 1C 00 01  callis 001C, 1
+0023: 12 01 00   pop [0001]
+0026: 1D 00 00   pushs L0000   ; bye
+0029: 1D 04 00   pushs L0004   ; job
+002C: 1D 08 00   pushs L0008   ; name
+002F: 1E 03 00   arrc 0003H   ; 3
+0032: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0036: 42 59 02   pushf flag:[0259]
+0039: 05 0D 00   jne 0049
+003C: 42 7A 02   pushf flag:[027A]
+003F: 05 07 00   jne 0049
+0042: 1D 0D 00   pushs L000D   ; examine chips
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 72 02   pushf flag:[0272]
+004C: 10   not
+004D: 05 0B 00   jne 005B
+0050: 1C 1B 00   addsi L001B   ; This attractive w...
+0053: 33   say
+0054: 13   push true
+0055: 43 72 02   popf flag:[0272]
+0058: 06 0A 00   jmp 0065
+005B: 1C 4E 00   addsi L004E   ; "Greetings, 
+005E: 2F 00 00   addsv [0000]
+0061: 1C 5B 00   addsi L005B   ; ." Leigh smiles a...
+0064: 33   say
+0065: 04 65 01   je 01CD
+0068: 1D 73 00   pushs L0073   ; name
+006B: 07 01 00 0B 00  cmps 0001H, 007B
+0070: 1C 78 00   addsi L0078   ; She blushes. "I a...
+0073: 33   say
+0074: 1D 98 00   pushs L0098   ; name
+0077: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007B: 1D 9D 00   pushs L009D   ; job
+007E: 07 01 00 22 00  cmps 0001H, 00A5
+0083: 1C A1 00   addsi L00A1   ; "I am the Healer ...
+0086: 33   say
+0087: 1D C6 00   pushs L00C6   ; heal
+008A: 1D CB 00   pushs L00CB   ; Serpent's Hold
+008D: 1E 02 00   arrc 0002H   ; 2
+0090: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0094: 13   push true
+0095: 43 7A 02   popf flag:[027A]
+0098: 42 59 02   pushf flag:[0259]
+009B: 05 07 00   jne 00A5
+009E: 1D DA 00   pushs L00DA   ; examine chips
+00A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A5: 1D E8 00   pushs L00E8   ; heal
+00A8: 07 01 00 24 00  cmps 0001H, 00D1
+00AD: 21 01 00   push [0001]
+00B0: 1F 07 00   pushi 0007H   ; 7
+00B3: 22   cmpeq
+00B4: 05 0F 00   jne 00C6
+00B7: 1F 81 01   pushi 0181H   ; 385
+00BA: 1F 08 00   pushi 0008H   ; 8
+00BD: 1F 19 00   pushi 0019H   ; 25
+00C0: 24 01 00   call [0001]   ; 08ACH
+00C3: 06 04 00   jmp 00CA
+00C6: 1C ED 00   addsi L00ED   ; "I am sorry, but ...
+00C9: 33   say
+00CA: 1D 52 01   pushs L0152   ; heal
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D 57 01   pushs L0157   ; Serpent's Hold
+00D4: 07 01 00 18 00  cmps 0001H, 00F1
+00D9: 1C 66 01   addsi L0166   ; "Lord Jean-Paul i...
+00DC: 33   say
+00DD: 1D F2 01   pushs L01F2   ; Denton
+00E0: 1D F9 01   pushs L01F9   ; John-Paul
+00E3: 1E 02 00   arrc 0002H   ; 2
+00E6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EA: 1D 03 02   pushs L0203   ; Serpent's Hold
+00ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F1: 1D 12 02   pushs L0212   ; John-Paul
+00F4: 07 01 00 27 00  cmps 0001H, 0120
+00F9: 1C 1C 02   addsi L021C   ; "He is an easy ma...
+00FC: 33   say
+00FD: 42 5E 02   pushf flag:[025E]
+0100: 10   not
+0101: 05 04 00   jne 0108
+0104: 1C 8C 02   addsi L028C   ; "In fact," she sa...
+0107: 33   say
+0108: 1C 1D 03   addsi L031D   ; "If thou hast bus...
+010B: 33   say
+010C: 1D 99 03   pushs L0399   ; John-Paul
+010F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0113: 1D A3 03   pushs L03A3   ; Richter
+0116: 1D AB 03   pushs L03AB   ; Horffe
+0119: 1E 02 00   arrc 0002H   ; 2
+011C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0120: 1D B2 03   pushs L03B2   ; Horffe
+0123: 07 01 00 0B 00  cmps 0001H, 0133
+0128: 1C B9 03   addsi L03B9   ; "He was found at ...
+012B: 33   say
+012C: 1D 88 04   pushs L0488   ; Horffe
+012F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0133: 1D 8F 04   pushs L048F   ; Richter
+0136: 07 01 00 0B 00  cmps 0001H, 0146
+013B: 1C 97 04   addsi L0497   ; "He is the armour...
+013E: 33   say
+013F: 1D D2 04   pushs L04D2   ; Richter
+0142: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0146: 1D DA 04   pushs L04DA   ; Denton
+0149: 07 01 00 0B 00  cmps 0001H, 0159
+014E: 1C E1 04   addsi L04E1   ; "He is the tavern...
+0151: 33   say
+0152: 1D 6E 05   pushs L056E   ; Denton
+0155: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0159: 1D 75 05   pushs L0575   ; examine chips
+015C: 07 01 00 45 00  cmps 0001H, 01A6
+0161: 1F 04 00   pushi 0004H   ; 4
+0164: 1F 99 FE   pushi FE99H   ; -359
+0167: 1F 2F 03   pushi 032FH   ; 815
+016A: 1F 01 00   pushi 0001H   ; 1
+016D: 1F 9B FE   pushi FE9BH   ; -357
+0170: 24 02 00   call [0002]   ; 0931H
+0173: 12 02 00   pop [0002]
+0176: 21 02 00   push [0002]
+0179: 05 1F 00   jne 019B
+017C: 42 68 02   pushf flag:[0268]
+017F: 05 07 00   jne 0189
+0182: 1C 83 05   addsi L0583   ; She looks at you,...
+0185: 33   say
+0186: 06 0F 00   jmp 0198
+0189: 1C BB 05   addsi L05BB   ; She takes the sto...
+018C: 33   say
+018D: 1D 20 07   pushs L0720   ; gargoyle blood
+0190: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0194: 13   push true
+0195: 43 5F 02   popf flag:[025F]
+0198: 06 04 00   jmp 019F
+019B: 1C 2F 07   addsi L072F   ; "I am afraid that...
+019E: 33   say
+019F: 1D 6E 07   pushs L076E   ; examine chips
+01A2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A6: 1D 7C 07   pushs L077C   ; gargoyle blood
+01A9: 07 01 00 11 00  cmps 0001H, 01BF
+01AE: 1C 8B 07   addsi L078B   ; She appears thoug...
+01B1: 2F 00 00   addsv [0000]
+01B4: 1C B3 07   addsi L07B3   ; , is that there i...
+01B7: 33   say
+01B8: 1D 48 08   pushs L0848   ; gargoyle blood
+01BB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BF: 1D 57 08   pushs L0857   ; bye
+01C2: 07 01 00 03 00  cmps 0001H, 01CA
+01C7: 06 03 00   jmp 01CD
+01CA: 06 98 FE   jmp 0065
+01CD: 40   db 40 ???
+01CE: 1C 5B 08   addsi L085B   ; "Farewell, 
+01D1: 2F 00 00   addsv [0000]
+01D4: 1C 67 08   addsi L0867   ; ."*
+01D7: 33   say
+01D8: 48   push eventid
+01D9: 1F 00 00   pushi 0000H   ; 0
+01DC: 22   cmpeq
+01DD: 05 06 00   jne 01E6
+01E0: 1F 37 FF   pushi FF37H   ; -201
+01E3: 24 03 00   call [0003]   ; 092EH
+01E6: 25   ret

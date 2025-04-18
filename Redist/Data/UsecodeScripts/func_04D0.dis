@@ -1,0 +1,245 @@
+  .funcnumber 04D0H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The man before you narrows his eyes to slits as he sees you.'
+L0049: db 00
+L004A: db 'Blorn sighs heavily. "Why dost thou bother me now?"'
+L007D: db 00
+L007E: db 'gargoyles'
+L0087: db 00
+L0088: db 'return amulet'
+L0095: db 00
+L0096: db 'Lap-Lem'
+L009D: db 00
+L009E: db 'name'
+L00A2: db 00
+L00A3: db '"Blorn, if thou must know."'
+L00BE: db 00
+L00BF: db 'name'
+L00C3: db 00
+L00C4: db 'gargoyles'
+L00CD: db 00
+L00CE: db 'job'
+L00D1: db 00
+L00D2: db '"I don't believe I wish to tell thee."'
+L00F8: db 00
+L00F9: db 'gargoyles'
+L0102: db 00
+L0103: db 'A growl escapes his throat.~~"What about the bloody gargoyle'
+ db 's? Don't tell me thou art a gargoyle lover."'
+L016B: db 00
+L016C: db '"Thou art disgusting, swine!" He spits on your boot.*'
+L01A1: db 00
+L01A2: db '"That is good, my friend."~~A sudden inspiration seems to fl'
+ db 'ash across his face.~~"Perhaps thou canst help me. As thou u'
+ db 'ndoubtedly knowest, I was set upon by a cruel gargoyle not t'
+ db 'oo long ago. He nearly took my life!~~"'Twould be a great ho'
+ db 'nor, '
+L0297: db 00
+L0298: db ', if thou wouldst agree to avenge me! Art thou willing?"'
+L02D0: db 00
+L02D1: db '"I thank thee, '
+L02E0: db 00
+L02E1: db ', thank thee. But I must warn thee, he is a very violent gar'
+ db 'goyle. His name is Lap-Lem, which means `man slayer.' And, d'
+ db 'o not mention my name, for he hates me more than any other h'
+ db 'uman and would surely attack thee without provocation if my '
+ db 'name were to be mentioned."'
+L03EC: db 00
+L03ED: db '"Fine, '
+L03F4: db 00
+L03F5: db '. Thou art nothing more than a coward." He shakes his head.'
+L0430: db 00
+L0431: db 'gargoyles'
+L043A: db 00
+L043B: db 'return amulet'
+L0448: db 00
+L0449: db 'He glares at you for a moment, then shrugs, muttering, "It's'
+ db ' not like he earned it honestly or anything..."'
+L04B4: db 00
+L04B5: db '"Here! I hope it strangles him!" He thrusts the amulet into '
+ db 'your palm. "And I hope he bloody strangles thee, too!"'
+L0527: db 00
+L0528: db '"Thou dost not even have room for it! Get thee away, thou so'
+ db 'n of a jackal!"*'
+L0574: db 00
+L0575: db 'return amulet'
+L0582: db 00
+L0583: db 'Lap-Lem'
+L058A: db 00
+L058B: db '"Thou hast killed the jackal?"'
+L05A9: db 00
+L05AA: db '"Wonderful! Thou art truly a trusted friend. I thank thee fo'
+ db 'r thine assistance!" He grins at you.'
+L060B: db 00
+L060C: db '"Well, I am sure thou wilt have time soon enough, for he wil'
+ db 'l surely head this way to attack me again."'
+L0673: db 00
+L0674: db 'Lap-Lem'
+L067B: db 00
+L067C: db 'bye'
+L067F: db 00
+L0680: db 'He gives a slight nod and a quiet grunt, and returns to his '
+ db 'business.*'
+L06C6: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0002H
+  .extern 0909H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 7D 01   jne 0185
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 30 FF   pushi FF30H   ; -208
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 8D 02   pushf flag:[028D]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; The man before yo...
+0032: 33   say
+0033: 13   push true
+0034: 43 8D 02   popf flag:[028D]
+0037: 06 16 00   jmp 0050
+003A: 1C 4A 00   addsi L004A   ; Blorn sighs heavi...
+003D: 33   say
+003E: 42 83 02   pushf flag:[0283]
+0041: 42 80 02   pushf flag:[0280]
+0044: 10   not
+0045: 0E   and
+0046: 05 07 00   jne 0050
+0049: 1D 7E 00   pushs L007E   ; gargoyles
+004C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0050: 42 81 02   pushf flag:[0281]
+0053: 05 08 00   jne 005E
+0056: 14   push false
+0057: 43 82 02   popf flag:[0282]
+005A: 14   push false
+005B: 43 99 02   popf flag:[0299]
+005E: 42 82 02   pushf flag:[0282]
+0061: 05 0A 00   jne 006E
+0064: 1D 88 00   pushs L0088   ; return amulet
+0067: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006B: 06 0D 00   jmp 007B
+006E: 42 99 02   pushf flag:[0299]
+0071: 05 07 00   jne 007B
+0074: 1D 96 00   pushs L0096   ; Lap-Lem
+0077: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007B: 04 02 01   je 0180
+007E: 1D 9E 00   pushs L009E   ; name
+0081: 07 01 00 1D 00  cmps 0001H, 00A3
+0086: 1C A3 00   addsi L00A3   ; "Blorn, if thou m...
+0089: 33   say
+008A: 1D BF 00   pushs L00BF   ; name
+008D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0091: 42 83 02   pushf flag:[0283]
+0094: 42 80 02   pushf flag:[0280]
+0097: 10   not
+0098: 0E   and
+0099: 05 07 00   jne 00A3
+009C: 1D C4 00   pushs L00C4   ; gargoyles
+009F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A3: 1D CE 00   pushs L00CE   ; job
+00A6: 07 01 00 04 00  cmps 0001H, 00AF
+00AB: 1C D2 00   addsi L00D2   ; "I don't believe ...
+00AE: 33   say
+00AF: 1D F9 00   pushs L00F9   ; gargoyles
+00B2: 07 01 00 54 00  cmps 0001H, 010B
+00B7: 1C 03 01   addsi L0103   ; A growl escapes h...
+00BA: 33   say
+00BB: 24 01 00   call [0001]   ; 090AH
+00BE: 12 01 00   pop [0001]
+00C1: 21 01 00   push [0001]
+00C4: 05 08 00   jne 00CF
+00C7: 1C 6C 01   addsi L016C   ; "Thou art disgust...
+00CA: 33   say
+00CB: 3F   abrt
+00CC: 06 35 00   jmp 0104
+00CF: 1C A2 01   addsi L01A2   ; "That is good, my...
+00D2: 2F 00 00   addsv [0000]
+00D5: 1C 98 02   addsi L0298   ; , if thou wouldst...
+00D8: 33   say
+00D9: 24 01 00   call [0001]   ; 090AH
+00DC: 12 02 00   pop [0002]
+00DF: 21 02 00   push [0002]
+00E2: 05 11 00   jne 00F6
+00E5: 1C D1 02   addsi L02D1   ; "I thank thee, 
+00E8: 2F 00 00   addsv [0000]
+00EB: 1C E1 02   addsi L02E1   ; , thank thee. But...
+00EE: 33   say
+00EF: 13   push true
+00F0: 43 99 02   popf flag:[0299]
+00F3: 06 0A 00   jmp 0100
+00F6: 1C ED 03   addsi L03ED   ; "Fine, 
+00F9: 2F 00 00   addsv [0000]
+00FC: 1C F5 03   addsi L03F5   ; . Thou art nothin...
+00FF: 33   say
+0100: 13   push true
+0101: 43 80 02   popf flag:[0280]
+0104: 1D 31 04   pushs L0431   ; gargoyles
+0107: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010B: 1D 3B 04   pushs L043B   ; return amulet
+010E: 07 01 00 35 00  cmps 0001H, 0148
+0113: 1C 49 04   addsi L0449   ; He glares at you ...
+0116: 33   say
+0117: 13   push true
+0118: 1F 03 00   pushi 0003H   ; 3
+011B: 1F 99 FE   pushi FE99H   ; -359
+011E: 1F BB 03   pushi 03BBH   ; 955
+0121: 1F 01 00   pushi 0001H   ; 1
+0124: 38 2C 00 05  callis 002C, 5
+0128: 12 03 00   pop [0003]
+012B: 21 03 00   push [0003]
+012E: 05 0B 00   jne 013C
+0131: 1C B5 04   addsi L04B5   ; "Here! I hope it ...
+0134: 33   say
+0135: 13   push true
+0136: 43 81 02   popf flag:[0281]
+0139: 06 05 00   jmp 0141
+013C: 1C 28 05   addsi L0528   ; "Thou dost not ev...
+013F: 33   say
+0140: 3F   abrt
+0141: 1D 75 05   pushs L0575   ; return amulet
+0144: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0148: 1D 83 05   pushs L0583   ; Lap-Lem
+014B: 07 01 00 22 00  cmps 0001H, 0172
+0150: 1C 8B 05   addsi L058B   ; "Thou hast killed...
+0153: 33   say
+0154: 24 01 00   call [0001]   ; 090AH
+0157: 12 04 00   pop [0004]
+015A: 21 04 00   push [0004]
+015D: 05 07 00   jne 0167
+0160: 1C AA 05   addsi L05AA   ; "Wonderful! Thou ...
+0163: 33   say
+0164: 06 04 00   jmp 016B
+0167: 1C 0C 06   addsi L060C   ; "Well, I am sure ...
+016A: 33   say
+016B: 1D 74 06   pushs L0674   ; Lap-Lem
+016E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0172: 1D 7C 06   pushs L067C   ; bye
+0175: 07 01 00 03 00  cmps 0001H, 017D
+017A: 06 03 00   jmp 0180
+017D: 06 FB FE   jmp 007B
+0180: 40   db 40 ???
+0181: 1C 80 06   addsi L0680   ; He gives a slight...
+0184: 33   say
+0185: 48   push eventid
+0186: 1F 00 00   pushi 0000H   ; 0
+0189: 22   cmpeq
+018A: 05 01 00   jne 018E
+018D: 3F   abrt
+018E: 25   ret

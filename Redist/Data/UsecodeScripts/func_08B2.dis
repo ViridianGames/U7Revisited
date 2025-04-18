@@ -1,0 +1,97 @@
+  .funcnumber 08B2H
+  .data
+L0000: db 'Horance looks at you curiously, "Thy task is done here in Sk'
+ db 'ara Brae. Thou hast my respect and lifelong gratitude."'
+L0073: db 00
+L0074: db 'But...," he hesitates here as if unsure how to proceed, "...'
+ db 'shouldst thou not return to the quest which brought thee her'
+ db 'e?"'
+L00EF: db 00
+L00F0: db 'quest'
+L00F5: db 00
+L00F6: db 'bye'
+L00F9: db 00
+L00FA: db 'Skara Brae'
+L0104: db 00
+L0105: db 'quest'
+L010A: db 00
+L010B: db '"Why, yes. I sense that the spirit of Caine has not left the'
+ db ' island yet. Is he not waiting for thy return?"'
+L0176: db 00
+L0177: db '"Thou wert brought to Britannia for a reason, I surmise. If '
+ db 'thou dost not know what it is, shouldst thou not seek it out'
+ db '?"'
+L01F1: db 00
+L01F2: db 'quest'
+L01F7: db 00
+L01F8: db 'Skara Brae'
+L0202: db 00
+L0203: db '"I intend to restore this town and furthermore, make it a pl'
+ db 'ace of beauty and renown. I enjoin thee to return in future '
+ db 'times to see if my boast doth come to pass."'
+L02A7: db 00
+L02A8: db 'Skara Brae'
+L02B2: db 00
+L02B3: db 'bye'
+L02B6: db 00
+L02B7: db '"Goodbye, '
+L02C1: db 00
+L02C2: db '. I hope that thou farest well in thy quest." He turns away.'
+ db '*'
+L02FF: db 00
+  .code
+  .argc 0000H
+  .localc 0001H
+  .externsize 0001H
+  .extern 0908H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 1F 73 FF   pushi FF73H   ; -141
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 24 00 00   call [0000]   ; 0908H
+000D: 12 00 00   pop [0000]
+0010: 1C 00 00   addsi L0000   ; Horance looks at ...
+0013: 33   say
+0014: 42 7C 01   pushf flag:[017C]
+0017: 05 0B 00   jne 0025
+001A: 1C 74 00   addsi L0074   ; But...," he hesit...
+001D: 33   say
+001E: 1D F0 00   pushs L00F0   ; quest
+0021: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0025: 1D F6 00   pushs L00F6   ; bye
+0028: 1D FA 00   pushs L00FA   ; Skara Brae
+002B: 1E 02 00   arrc 0002H   ; 2
+002E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0032: 04 4A 00   je 007F
+0035: 1D 05 01   pushs L0105   ; quest
+0038: 07 01 00 19 00  cmps 0001H, 0056
+003D: 42 B0 01   pushf flag:[01B0]
+0040: 10   not
+0041: 05 07 00   jne 004B
+0044: 1C 0B 01   addsi L010B   ; "Why, yes. I sens...
+0047: 33   say
+0048: 06 04 00   jmp 004F
+004B: 1C 77 01   addsi L0177   ; "Thou wert brough...
+004E: 33   say
+004F: 1D F2 01   pushs L01F2   ; quest
+0052: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0056: 1D F8 01   pushs L01F8   ; Skara Brae
+0059: 07 01 00 0B 00  cmps 0001H, 0069
+005E: 1C 03 02   addsi L0203   ; "I intend to rest...
+0061: 33   say
+0062: 1D A8 02   pushs L02A8   ; Skara Brae
+0065: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0069: 1D B3 02   pushs L02B3   ; bye
+006C: 07 01 00 0B 00  cmps 0001H, 007C
+0071: 1C B7 02   addsi L02B7   ; "Goodbye, 
+0074: 2F 00 00   addsv [0000]
+0077: 1C C2 02   addsi L02C2   ; . I hope that tho...
+007A: 33   say
+007B: 3F   abrt
+007C: 06 B3 FF   jmp 0032
+007F: 40   db 40 ???
+0080: 48   push eventid
+0081: 1F 00 00   pushi 0000H   ; 0
+0084: 22   cmpeq
+0085: 05 01 00   jne 0089
+0088: 3F   abrt
+0089: 25   ret

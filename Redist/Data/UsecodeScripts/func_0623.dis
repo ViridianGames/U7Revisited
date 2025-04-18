@@ -1,0 +1,75 @@
+  .funcnumber 0623H
+  .data
+L0000: db '"Arise, '
+L0008: db 00
+L0009: db '. Time to continue the quest."'
+L0027: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0900H
+  .extern 093FH
+  .extern 0624H
+0000: 48   push eventid
+0001: 1F 02 00   pushi 0002H   ; 2
+0004: 22   cmpeq
+0005: 05 87 00   jne 008F
+0008: 24 00 00   call [0000]   ; 0900H
+000B: 12 00 00   pop [0000]
+000E: 21 00 00   push [0000]
+0011: 1F 9C FE   pushi FE9CH   ; -356
+0014: 22   cmpeq
+0015: 10   not
+0016: 05 25 00   jne 003E
+0019: 1F 00 00   pushi 0000H   ; 0
+001C: 21 00 00   push [0000]
+001F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0023: 1F 9C FE   pushi FE9CH   ; -356
+0026: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+002A: 12 01 00   pop [0001]
+002D: 1C 00 00   addsi L0000   ; "Arise, 
+0030: 2F 01 00   addsv [0001]
+0033: 1C 09 00   addsi L0009   ; . Time to continu...
+0036: 33   say
+0037: 21 00 00   push [0000]
+003A: 39 04 00 01  calli _HideNPC@1  ; 0004
+003E: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0042: 12 02 00   pop [0002]
+0045: 2E   sloop
+0046: 02 03 00 04 00 05 00 02 00 0C 00  db 2 ???
+0047:   db 3
+0048:   db 0
+0049:   db 4
+004A:   db 0
+004B:   db 5
+004C:   db 0
+004D:   db 2
+004E:   db 0
+004F:   db c
+0050:   db 0
+0051: 1F 1F 00   pushi 001FH   ; 31
+0054: 21 05 00   push [0005]
+0057: 24 01 00   call [0001]   ; 093FH
+005A: 06 E9 FF   jmp 0046
+005D: 1F 01 00   pushi 0001H   ; 1
+0060: 1F 9C FE   pushi FE9CH   ; -356
+0063: 39 89 00 02  calli 0089, 2
+0067: 1F 01 00   pushi 0001H   ; 1
+006A: 1F 9C FE   pushi FE9CH   ; -356
+006D: 39 8A 00 02  calli 008A, 2
+0071: 3E   push itemref
+0072: 38 11 00 01  callis _GetItemType@1  ; 0011
+0076: 1F F3 03   pushi 03F3H   ; 1011
+0079: 22   cmpeq
+007A: 3E   push itemref
+007B: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+007F: 1F 11 00   pushi 0011H   ; 17   * Bedroll?
+0082: 22   cmpeq
+0083: 0E   and
+0084: 05 08 00   jne 008F  ;* Jmp if not bedroll.
+0087: 1F 01 00   pushi 0001H   ; 1
+008A: 4B   db 4b ???  ;* Pop eventid.
+008B: 3E   push itemref
+008C: 47 24 06   calle 0624H   ; 1572
+008F: 25   ret

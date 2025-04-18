@@ -1,0 +1,153 @@
+  .funcnumber 062CH ;* Forge routine.
+  .data
+  .code
+  .argc 0001H
+  .localc 0014H
+  .externsize 0002H
+  .extern 0945H
+  .extern 08E6H
+0000: 3E   push itemref
+0001: 12 00 00   pop [0000]
+0004: 21 00 00   push [0000]
+0007: 24 00 00   call [0000]   ; 0945H
+000A: 12 01 00   pop [0001]
+000D: 1F 00 00   pushi 0000H   ; 0
+0010: 1F 12 00   pushi 0012H   ; 18
+0013: 1F 4B 01   pushi 014BH   ; 331 Rock
+0016: 1F 00 00   pushi 0000H   ; 0
+0019: 1F C8 06   pushi 06C8H   ; 1736
+001C: 1F B7 09   pushi 09B7H   ; 2487
+001F: 1E 03 00   arrc 0003H   ; 3
+0022: 38 35 00 04  callis 0035, 4
+0026: 12 02 00   pop [0002]
+0029: 2E   sloop
+002A: 02 03 00 04 00 05 00 02 00 5E 00  db 2 ???
+002B:   db 3
+002C:   db 0
+002D:   db 4
+002E:   db 0
+002F:   db 5
+0030:   db 0
+0031:   db 2
+0032:   db 0
+0033:   db 5e
+0034:   db 0
+0035: 1F B0 00   pushi 00B0H   ; 176
+0038: 1F 03 00   pushi 0003H   ; 3
+003B: 1F 90 03   pushi 0390H   ; 912 Blood.
+003E: 21 05 00   push [0005]   ;* Rock.
+0041: 38 35 00 04  callis 0035, 4
+0045: 12 06 00   pop [0006]
+0048: 2E   sloop
+0049: 02 07 00 08 00 09 00 06 00 3C 00  db 2 ???
+004A:   db 7
+004B:   db 0
+004C:   db 8
+004D:   db 0
+004E:   db 9
+004F:   db 0
+0050:   db 6
+0051:   db 0
+0052:   db 3c
+0053:   db 0
+0054: 21 09 00   push [0009]
+0057: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+005B: 12 0A 00   pop [000A]
+005E: 21 09 00   push [0009]
+0061: 38 18 00 01  callis 0018, 1 ;* Blood position.
+0065: 12 0B 00   pop [000B]
+0068: 21 09 00   push [0009]
+006B: 39 6F 00 01  calli 006F, 1
+006F: 1F 90 03   pushi 0390H   ; 912
+0072: 38 24 00 01  callis 0024, 1
+0076: 12 0C 00   pop [000C]
+0079: 21 0A 00   push [000A]
+007C: 21 0C 00   push [000C]
+007F: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0083: 21 0B 00   push [000B]
+0086: 38 26 00 01  callis 0026, 1
+008A: 12 0D 00   pop [000D]
+008D: 06 B9 FF   jmp 0049
+0090: 06 97 FF   jmp 002A
+0093: 1F 04 00   pushi 0004H   ; 4
+0096: 1F 99 FE   pushi FE99H   ; -359
+0099: 1F 1D 03   pushi 031DH   ; 797
+009C: 21 01 00   push [0001]
+009F: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+00A3: 12 0E 00   pop [000E]
+00A6: 44 2D   pushw 442DH   ; 17453
+00A8: 44 2C   pushw 442CH   ; 17452
+00AA: 44 23   pushw 1E23H   ; 7715
+00AC: 1E 03 00   arrc 0003H   ; 3
+00AF: 21 00 00   push [0000]
+00B2: 38 01 00 02  callis 0001, 2
+00B6: 12 0F 00   pop [000F]
+00B9: 21 0E 00   push [000E]
+00BC: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+00C0: 1F F3 00   pushi 00F3H   ; 243
+00C3: 22   cmpeq
+00C4: 05 0E 00   jne 00D5
+00C7: 21 01 00   push [0001]
+00CA: 24 01 00   call [0001]   ; 08E6H *Remove golem body.
+00CD: 14   push false
+00CE: 43 F1 02   popf flag:[02F1]
+00D1: 13   push true
+00D2: 43 1B 03   popf flag:[031B]
+00D5: 21 0E 00   push [000E]
+00D8: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+00DC: 1F F4 00   pushi 00F4H   ; 244
+00DF: 22   cmpeq
+00E0: 05 0E 00   jne 00F1
+00E3: 21 01 00   push [0001]
+00E6: 24 01 00   call [0001]   ; 08E6H
+00E9: 14   push false
+00EA: 43 1C 03   popf flag:[031C]
+00ED: 14   push false
+00EE: 43 F2 02   popf flag:[02F2]
+00F1: 1F A4 03   pushi 03A4H   ; 932 * Tree
+00F4: 38 30 00 01  callis 0030, 1
+00F8: 12 02 00   pop [0002]
+00FB: 2E   sloop
+00FC: 02 10 00 11 00 12 00 02 00 55 00  db 2 ???
+00FD:   db 10
+00FE:   db 0
+00FF:   db 11
+0100:   db 0
+0101:   db 12
+0102:   db 0
+0103:   db 2
+0104:   db 0
+0105:   db 55
+0106:   db 0
+0107: 21 12 00   push [0012]
+010A: 38 12 00 01  callis _GetItemFrame@1  ; 0012 * THE tree?
+010E: 1F 02 00   pushi 0002H   ; 2
+0111: 22   cmpeq
+0112: 21 12 00   push [0012]
+0115: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0119: 1F 03 00   pushi 0003H   ; 3
+011C: 22   cmpeq
+011D: 0F   or
+011E: 05 38 00   jne 0159
+0121: 21 12 00   push [0012]
+0124: 39 92 00 01  calli 0092, 1  ;* ????Show it???
+0128: 1F 00 00   pushi 0000H   ; 0
+012B: 1F 01 00   pushi 0001H   ; 1
+012E: 1F 0C 00   pushi 000CH   ; 12
+0131: 39 8C 00 03  calli 008C, 3  ;* Fade palette.
+0135: 1F 3F 06   pushi 063FH   ; 1599
+0138: 44 55   pushw 1F55H   ; 8021
+013A: 1F 1E 00   pushi 001EH   ; 30
+013D: 44 27   pushw 1F27H   ; 7975
+013F: 1F 13 07   pushi 0713H   ; 1811
+0142: 44 55   pushw 1F55H   ; 8021
+0144: 1F 36 06   pushi 0636H   ; 1590
+0147: 44 55   pushw 4455H   ; 17493
+0149: 44 23   pushw 1E23H   ; 7715
+014B: 1E 09 00   arrc 0009H   ; 9
+014E: 21 12 00   push [0012]
+0151: 38 01 00 02  callis 0001, 2
+0155: 12 13 00   pop [0013]
+0158: 2C   db 2c ???
+0159: 06 A0 FF   jmp 00FC
+015C: 25   ret

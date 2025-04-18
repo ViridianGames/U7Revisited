@@ -1,0 +1,63 @@
+  .funcnumber 065CH
+  .data
+L0000: db '@An Por@'
+L0008: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0002H
+  .extern 092DH
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 04 00   pushi 0004H   ; 4
+0009: 22   cmpeq
+000A: 0F   or
+000B: 05 72 00   jne 0080
+000E: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0012: 12 00 00   pop [0000]
+0015: 21 00 00   push [0000]
+0018: 24 00 00   call [0000]   ; 092DH
+001B: 12 01 00   pop [0001]
+001E: 3E   push itemref
+001F: 39 5C 00 01  calli 005C, 1
+0023: 1D 00 00   pushs L0000   ; @An Por@
+0026: 3E   push itemref
+0027: 39 40 00 02  calli _ItemSay@2  ; 0040
+002B: 24 01 00   call [0001]   ; 0906H
+002E: 1F 01 00   pushi 0001H   ; 1
+0031: 26 00 00   aidx [0000]
+0034: 1F 00 00   pushi 0000H   ; 0
+0037: 1A   cmpne
+0038: 0E   and
+0039: 05 2B 00   jne 0067
+003C: 1F 98 01   pushi 0198H   ; 408
+003F: 21 00 00   push [0000]
+0042: 3E   push itemref
+0043: 38 41 00 03  callis 0041, 3
+0047: 12 02 00   pop [0002]
+004A: 44 61   pushw 4461H   ; 17505
+004C: 44 7A   pushw 447AH   ; 17530
+004E: 44 67   pushw 4467H   ; 17511
+0050: 44 67   pushw 4467H   ; 17511
+0052: 44 65   pushw 2165H   ; 8549
+0054: 21 01 00   push [0001]
+0057: 44 59   pushw 1E59H   ; 7769
+0059: 1E 07 00   arrc 0007H   ; 7
+005C: 3E   push itemref
+005D: 38 01 00 02  callis 0001, 2
+0061: 12 03 00   pop [0003]
+0064: 06 19 00   jmp 0080
+0067: 1F 06 06   pushi 0606H   ; 1542
+006A: 44 55   pushw 4455H   ; 17493
+006C: 44 67   pushw 4467H   ; 17511
+006E: 44 65   pushw 2165H   ; 8549
+0070: 21 01 00   push [0001]
+0073: 44 59   pushw 1E59H   ; 7769
+0075: 1E 06 00   arrc 0006H   ; 6
+0078: 3E   push itemref
+0079: 38 01 00 02  callis 0001, 2
+007D: 12 03 00   pop [0003]
+0080: 25   ret

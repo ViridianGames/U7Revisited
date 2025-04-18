@@ -1,0 +1,19 @@
+  .funcnumber 06A7H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0911H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 42 01 00   pushf flag:[0001]
+0008: 10   not
+0009: 0E   and
+000A: 05 0A 00   jne 0017
+000D: 1F E8 03   pushi 03E8H   ; 1000
+0010: 24 00 00   call [0000]   ; 0911H
+0013: 13   push true
+0014: 43 01 00   popf flag:[0001]
+0017: 25   ret

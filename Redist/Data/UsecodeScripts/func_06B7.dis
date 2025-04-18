@@ -1,0 +1,25 @@
+  .funcnumber 06B7H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 092BH
+  .extern 060FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 27 00   jne 002F
+0008: 1F 1C 00   pushi 001CH   ; 28
+000B: 39 0F 00 01  calli 000F, 1
+000F: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0013: 12 00 00   pop [0000]
+0016: 21 00 00   push [0000]
+0019: 24 00 00   call [0000]   ; 092BH
+001C: 1F 01 00   pushi 0001H   ; 1
+001F: 38 10 00 02  callis _Random2@2  ; 0010
+0023: 12 01 00   pop [0001]
+0026: 21 01 00   push [0001]
+0029: 26 00 00   aidx [0000]
+002C: 47 0F 06   calle 060FH   ; 1551
+002F: 25   ret

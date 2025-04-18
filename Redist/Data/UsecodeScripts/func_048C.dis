@@ -1,0 +1,464 @@
+  .funcnumber 048CH
+  .data
+L0000: db 'This undead fellow looks through you. Though he is obviously'
+ db ' aware of his surroundings, you are quite sure that he doesn'
+ db ''t even see you.*'
+L0089: db 00
+L008A: db 'Paulette'
+L0092: db 00
+L0093: db 'barmaid'
+L009A: db 00
+L009B: db 'it's not all his fault'
+L00B1: db 00
+L00B2: db 'sacrifice'
+L00BB: db 00
+L00BC: db 'You attempt to start a conversation with the portly ghost, b'
+ db 'ut he seems distanced from you and everything else.*'
+L012C: db 00
+L012D: db 'The heavy-set ghost looks a bit shaken and his speech is a l'
+ db 'ittle slurred as he says, "Excuse me, yer honor. But I got m'
+ db 'e a splittin' headache. Do ya mind if we continue this littl'
+ db 'e chat later?"~~He begins to rub his temples with both hands'
+ db '.*'
+L021F: db 00
+L0220: db '"Oh, hello there, lady Rowena. 'Tis good to see ye again. It'
+ db ' brings a ray o' sunshine into this old man's heart ta see y'
+ db 'er beauteous face," he says, smiling.*'
+L02BE: db 00
+L02BF: db 'She curtsies delicately and smiles back.~~"Hello, Markham. I'
+ db 't is good, indeed, to see that none of this horrible busines'
+ db 's can keep thee from giving a lady a compliment."*'
+L0369: db 00
+L036A: db '"Oh, uh, hello there Mayor. I thought ye were sequestered in'
+ db ' the Town Hall. Well, uh, it's good ta see ya again."*'
+L03DC: db 00
+L03DD: db '"Yes, well, it is good to see thee again, too."*'
+L040D: db 00
+L040E: db 'The corpulent, undead barkeep greets you with a wide, grueso'
+ db 'me smile. "Come, stranger. Have a seat near old Markham and '
+ db 'tell me o' yer travels. I don't often get visitors in here a'
+ db 'nymore."'
+L04CA: db 00
+L04CB: db 'Markham hails you and drinks down a tankard of the house spi'
+ db 'rits. "Welcome, my friend. Sit with me a while and enliven m'
+ db 'y eternity with yer wondrous wit." He smiles in that charmin'
+ db 'g way that only the half-rotted can.'
+L05A3: db 00
+L05A4: db 'bye'
+L05A7: db 00
+L05A8: db 'job'
+L05AB: db 00
+L05AC: db 'name'
+L05B0: db 00
+L05B1: db 'name'
+L05B5: db 00
+L05B6: db 'The heavy-set zombie wipes his mouth off on the back of his '
+ db 'hand. "I be Markham. Markham o' the Keg." He pats the large '
+ db 'keg of wine he carries.'
+L0645: db 00
+L0646: db 'The lovely '
+L0651: db 00
+L0652: db ' strolls over and pats Markham's rather large belly. "Yes, h'
+ db 'e's Markham of the Keg, all right." She smiles sweetly down '
+ db 'at the older man.*'
+L06DC: db 00
+L06DD: db '"That's enough of that!" Markham smacks the pretty young wom'
+ db 'an on her ghostly posterior.~~ "Make yerself useful and fetc'
+ db 'h me a haunch o' venison." She turns away, giggling. He look'
+ db 's at you with a mirthful expression, "I just don't know what'
+ db ' I'm goin' ta do with that girl."'
+L07EE: db 00
+L07EF: db 'name'
+L07F3: db 00
+L07F4: db 'job'
+L07F7: db 00
+L07F8: db '"Why, I run this fine establishment, the Keg O' Spirits." Fo'
+ db 'r a moment he becomes serious. "This place once drew folk fr'
+ db 'om all across Britannia, gargoyle and human alike. Until the'
+ db ' fire, that is."'
+L08BC: db 00
+L08BD: db 'fire'
+L08C1: db 00
+L08C2: db 'Keg O' Spirits'
+L08D0: db 00
+L08D1: db 'fire'
+L08D5: db 00
+L08D6: db 'He looks uncomfortable, "Caine blew the town to the four win'
+ db 'ds, and now we're all trapped here, slaves of that bastard H'
+ db 'orance." Tiny blue flames appear in the pupils of his glazed'
+ db ' eyes, then go out as he regains his composure.'
+L09B9: db 00
+L09BA: db 'Horance'
+L09C1: db 00
+L09C2: db 'Caine'
+L09C7: db 00
+L09C8: db '"Please, Markham. Have a little pity for Caine. He was tryin'
+ db 'g to create something to save the town when he made his fata'
+ db 'l mistake." The pale ghost looks deeply troubled.'
+L0A71: db 00
+L0A72: db 'yer right Quen,'
+L0A81: db 00
+L0A82: db '"Oh, I suppose '
+L0A91: db 00
+L0A92: db ' he was tryin' ta help us when he called the proverbial fire'
+ db 's o' Hell down on us. It just rankles me to have died in my '
+ db 'prime." His roguish smile once again lightens his ghostly vi'
+ db 'sage.'
+L0B4B: db 00
+L0B4C: db 'fire'
+L0B50: db 00
+L0B51: db 'Caine'
+L0B56: db 00
+L0B57: db 'A look of disgust comes to his disfigured features. "That to'
+ db 'rtured soul haunts the crater made by his foolish mistake. I'
+ db ' wouldn't go near him though, he's a bit daft, ya know." He '
+ db 'refills his mug from the cask at his side and swigs down mos'
+ db 't of the wine in one swallow.'
+L0C64: db 00
+L0C65: db 'tortured soul'
+L0C72: db 00
+L0C73: db 'Caine'
+L0C78: db 00
+L0C79: db 'tortured soul'
+L0C86: db 00
+L0C87: db '"That's just the name the rest of us in Skara Brae call him '
+ db '-- the Tortured One," he grins, embarrassed.'
+L0CEF: db 00
+L0CF0: db 'tortured soul'
+L0CFD: db 00
+L0CFE: db 'Skara Brae'
+L0D08: db 00
+L0D09: db 'Skara Brae'
+L0D13: db 00
+L0D14: db '"That's the name o' the island yer on." He shakes his head.'
+L0D4F: db 00
+L0D50: db 'Skara Brae'
+L0D5A: db 00
+L0D5B: db 'Horance'
+L0D62: db 00
+L0D63: db '"For all the years I've been in Skara Brae, he's been a ravi'
+ db 'ng lunatic. What with all o' them silly rhymes and his crazy'
+ db ' laughter.~~"Then one night, we all hears thunder when there'
+ db ' isn't a cloud in the starry sky, and I seem to recall a ful'
+ db 'l moon..." He gets a thoughtful look on his face. "But as I '
+ db 'was sayin', there was this thunder, then this deep, dark lau'
+ db 'ghter coming from the tower on the northern point -- Horance'
+ db ''s Dark Tower." After this he falls silent for a moment.'
+L0F3F: db 00
+L0F40: db 'The pale ghost moves forward and whispers, "I was already li'
+ db 'ving in the half world of the dead when these events took pl'
+ db 'ace, and ever since, I've felt a strange pull coming from th'
+ db 'e tower."*'
+L0FFE: db 00
+L0FFF: db 'After a brief swig, he continues, "Then, even worse... I'm o'
+ db 'ut checkin' on the cows when I hears a sound like moanin'. I'
+ db 't's off to the east, so I look that way, into the graveyard '
+ db 'y'know, and what do I see?~~"I'll tell ya what I seen. The g'
+ db 'raves, rippin' open like the people in 'em got a place to go'
+ db '." Eyes wide, he tips back another sip.'
+L1152: db 00
+L1153: db 'Horance'
+L115A: db 00
+L115B: db 'Keg O' Spirits'
+L1169: db 00
+L116A: db 'He truly looks sad as he says, "This place was once my pride'
+ db ' and joy. The Keg was known all 'round Britannia, and a few '
+ db 'other places, too. Well, now it don't look like too much, bu'
+ db 't in it's heyday, it saw the likes of nobles, knights, minst'
+ db 'rels, and merchants. And o' course, a bit o' riff raff to be'
+ db ' sure." He winks at you. His spirit seems indomitable.'
+L12CC: db 00
+L12CD: db 'Keg O' Spirits'
+L12DB: db 00
+L12DC: db 'sacrifice'
+L12E5: db 00
+L12E6: db 'You relate the need for a sacrifice to enter the Well of Sou'
+ db 'ls. Afterwards, Markham seems to think long and hard.~~"So, '
+ db 'yer wantin' me to go mad as a March hare, an' jump right int'
+ db 'o this... Well O' Souls?" He looks at you incredulously.~~"L'
+ db 'isten now. I haven't had courage like that since I were a yo'
+ db 'ung lad. Since then I got some sense, too. You'll have to lo'
+ db 'ok elsewhere fer yer sacrifice."'
+L146E: db 00
+L146F: db '"All right, now. I already told ya. I ain't interested." He '
+ db 'looks a little put out by your persistence.*'
+L14D7: db 00
+L14D8: db 'sacrifice'
+L14E1: db 00
+L14E2: db 'bye'
+L14E5: db 00
+L14E6: db '"Oh, are ya leavin' then? Well, ya take care now. And watch '
+ db 'out for those walkin' dead. Some o' them aren't too happy ab'
+ db 'out their state, and none too picky about who they complain '
+ db 'to, neither."*'
+L15A8: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0001H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 CE 02   jne 02D6
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 74 FF   pushi FF74H   ; -140
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 42 B4 01   pushf flag:[01B4]
+0015: 10   not
+0016: 05 05 00   jne 001E
+0019: 1C 00 00   addsi L0000   ; This undead fello...
+001C: 33   say
+001D: 3F   abrt
+001E: 42 CA 01   pushf flag:[01CA]
+0021: 05 09 00   jne 002D
+0024: 1D 8A 00   pushs L008A   ; Paulette
+0027: 12 00 00   pop [0000]
+002A: 06 06 00   jmp 0033
+002D: 1D 93 00   pushs L0093   ; barmaid
+0030: 12 00 00   pop [0000]
+0033: 1D 9B 00   pushs L009B   ; it's not all his ...
+0036: 12 01 00   pop [0001]
+0039: 14   push false
+003A: 12 02 00   pop [0002]
+003D: 42 98 01   pushf flag:[0198]
+0040: 05 07 00   jne 004A
+0043: 1D B2 00   pushs L00B2   ; sacrifice
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 38 3B 00 00  callis 003B, 0
+004E: 12 03 00   pop [0003]
+0051: 1F 74 FF   pushi FF74H   ; -140
+0054: 38 1C 00 01  callis 001C, 1
+0058: 12 04 00   pop [0004]
+005B: 42 AA 01   pushf flag:[01AA]
+005E: 10   not
+005F: 05 34 00   jne 0096
+0062: 21 03 00   push [0003]
+0065: 1F 00 00   pushi 0000H   ; 0
+0068: 22   cmpeq
+0069: 21 03 00   push [0003]
+006C: 1F 01 00   pushi 0001H   ; 1
+006F: 22   cmpeq
+0070: 0F   or
+0071: 05 22 00   jne 0096
+0074: 21 04 00   push [0004]
+0077: 1F 0E 00   pushi 000EH   ; 14
+007A: 22   cmpeq
+007B: 05 08 00   jne 0086
+007E: 1C BC 00   addsi L00BC   ; You attempt to st...
+0081: 33   say
+0082: 3F   abrt
+0083: 06 10 00   jmp 0096
+0086: 21 04 00   push [0004]
+0089: 1F 10 00   pushi 0010H   ; 16
+008C: 22   cmpeq
+008D: 10   not
+008E: 05 05 00   jne 0096
+0091: 1C 2D 01   addsi L012D   ; The heavy-set gho...
+0094: 33   say
+0095: 3F   abrt
+0096: 1F 70 FF   pushi FF70H   ; -144
+0099: 24 00 00   call [0000]   ; 08F7H
+009C: 12 05 00   pop [0005]
+009F: 21 05 00   push [0005]
+00A2: 05 23 00   jne 00C8
+00A5: 1C 20 02   addsi L0220   ; "Oh, hello there,...
+00A8: 33   say
+00A9: 1F 00 00   pushi 0000H   ; 0
+00AC: 1F 70 FF   pushi FF70H   ; -144
+00AF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B3: 1C BF 02   addsi L02BF   ; She curtsies deli...
+00B6: 33   say
+00B7: 1F 70 FF   pushi FF70H   ; -144
+00BA: 39 04 00 01  calli _HideNPC@1  ; 0004
+00BE: 1F 00 00   pushi 0000H   ; 0
+00C1: 1F 74 FF   pushi FF74H   ; -140
+00C4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00C8: 1F 6D FF   pushi FF6DH   ; -147
+00CB: 24 00 00   call [0000]   ; 08F7H
+00CE: 12 06 00   pop [0006]
+00D1: 21 06 00   push [0006]
+00D4: 05 27 00   jne 00FE
+00D7: 1C 6A 03   addsi L036A   ; "Oh, uh, hello th...
+00DA: 33   say
+00DB: 1F 00 00   pushi 0000H   ; 0
+00DE: 1F 6D FF   pushi FF6DH   ; -147
+00E1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E5: 1C DD 03   addsi L03DD   ; "Yes, well, it is...
+00E8: 33   say
+00E9: 1F 6D FF   pushi FF6DH   ; -147
+00EC: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F0: 1F 00 00   pushi 0000H   ; 0
+00F3: 1F 74 FF   pushi FF74H   ; -140
+00F6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00FA: 13   push true
+00FB: 43 BD 01   popf flag:[01BD]
+00FE: 42 C4 01   pushf flag:[01C4]
+0101: 10   not
+0102: 05 0B 00   jne 0110
+0105: 1C 0E 04   addsi L040E   ; The corpulent, un...
+0108: 33   say
+0109: 13   push true
+010A: 43 C4 01   popf flag:[01C4]
+010D: 06 04 00   jmp 0114
+0110: 1C CB 04   addsi L04CB   ; Markham hails you...
+0113: 33   say
+0114: 1D A4 05   pushs L05A4   ; bye
+0117: 1D A8 05   pushs L05A8   ; job
+011A: 1D AC 05   pushs L05AC   ; name
+011D: 1E 03 00   arrc 0003H   ; 3
+0120: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0124: 04 AE 01   je 02D5
+0127: 1D B1 05   pushs L05B1   ; name
+012A: 07 01 00 5B 00  cmps 0001H, 018A
+012F: 1C B6 05   addsi L05B6   ; The heavy-set zom...
+0132: 33   say
+0133: 1F 6F FF   pushi FF6FH   ; -145
+0136: 24 00 00   call [0000]   ; 08F7H
+0139: 12 07 00   pop [0007]
+013C: 21 07 00   push [0007]
+013F: 42 B9 01   pushf flag:[01B9]
+0142: 0E   and
+0143: 05 3D 00   jne 0183
+0146: 21 02 00   push [0002]
+0149: 05 07 00   jne 0153
+014C: 1F 6E FF   pushi FF6EH   ; -146
+014F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0153: 42 A4 01   pushf flag:[01A4]
+0156: 10   not
+0157: 05 29 00   jne 0183
+015A: 1F 00 00   pushi 0000H   ; 0
+015D: 1F 6F FF   pushi FF6FH   ; -145
+0160: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0164: 1C 46 06   addsi L0646   ; The lovely 
+0167: 2F 00 00   addsv [0000]
+016A: 1C 52 06   addsi L0652   ;  strolls over and...
+016D: 33   say
+016E: 1F 6F FF   pushi FF6FH   ; -145
+0171: 39 04 00 01  calli _HideNPC@1  ; 0004
+0175: 1F 00 00   pushi 0000H   ; 0
+0178: 1F 74 FF   pushi FF74H   ; -140
+017B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+017F: 1C DD 06   addsi L06DD   ; "That's enough of...
+0182: 33   say
+0183: 1D EF 07   pushs L07EF   ; name
+0186: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018A: 1D F4 07   pushs L07F4   ; job
+018D: 07 01 00 11 00  cmps 0001H, 01A3
+0192: 1C F8 07   addsi L07F8   ; "Why, I run this ...
+0195: 33   say
+0196: 1D BD 08   pushs L08BD   ; fire
+0199: 1D C2 08   pushs L08C2   ; Keg O' Spirits
+019C: 1E 02 00   arrc 0002H   ; 2
+019F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A3: 1D D1 08   pushs L08D1   ; fire
+01A6: 07 01 00 5E 00  cmps 0001H, 0209
+01AB: 1C D6 08   addsi L08D6   ; He looks uncomfor...
+01AE: 33   say
+01AF: 1D BA 09   pushs L09BA   ; Horance
+01B2: 1D C2 09   pushs L09C2   ; Caine
+01B5: 1E 02 00   arrc 0002H   ; 2
+01B8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BC: 1F 6E FF   pushi FF6EH   ; -146
+01BF: 24 00 00   call [0000]   ; 08F7H
+01C2: 12 08 00   pop [0008]
+01C5: 21 08 00   push [0008]
+01C8: 42 BA 01   pushf flag:[01BA]
+01CB: 0E   and
+01CC: 05 29 00   jne 01F8
+01CF: 1F 00 00   pushi 0000H   ; 0
+01D2: 1F 6E FF   pushi FF6EH   ; -146
+01D5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D9: 1C C8 09   addsi L09C8   ; "Please, Markham....
+01DC: 33   say
+01DD: 1F 6E FF   pushi FF6EH   ; -146
+01E0: 39 04 00 01  calli _HideNPC@1  ; 0004
+01E4: 1F 00 00   pushi 0000H   ; 0
+01E7: 1F 74 FF   pushi FF74H   ; -140
+01EA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01EE: 13   push true
+01EF: 12 02 00   pop [0002]
+01F2: 1D 72 0A   pushs L0A72   ; yer right Quen,
+01F5: 12 01 00   pop [0001]
+01F8: 1C 82 0A   addsi L0A82   ; "Oh, I suppose 
+01FB: 2F 01 00   addsv [0001]
+01FE: 1C 92 0A   addsi L0A92   ;  he was tryin' ta...
+0201: 33   say
+0202: 1D 4C 0B   pushs L0B4C   ; fire
+0205: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0209: 1D 51 0B   pushs L0B51   ; Caine
+020C: 07 01 00 12 00  cmps 0001H, 0223
+0211: 1C 57 0B   addsi L0B57   ; A look of disgust...
+0214: 33   say
+0215: 1D 65 0C   pushs L0C65   ; tortured soul
+0218: 39 05 00 01  calli _AddAnswer@1  ; 0005
+021C: 1D 73 0C   pushs L0C73   ; Caine
+021F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0223: 1D 79 0C   pushs L0C79   ; tortured soul
+0226: 07 01 00 12 00  cmps 0001H, 023D
+022B: 1C 87 0C   addsi L0C87   ; "That's just the ...
+022E: 33   say
+022F: 1D F0 0C   pushs L0CF0   ; tortured soul
+0232: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0236: 1D FE 0C   pushs L0CFE   ; Skara Brae
+0239: 39 05 00 01  calli _AddAnswer@1  ; 0005
+023D: 1D 09 0D   pushs L0D09   ; Skara Brae
+0240: 07 01 00 0B 00  cmps 0001H, 0250
+0245: 1C 14 0D   addsi L0D14   ; "That's the name ...
+0248: 33   say
+0249: 1D 50 0D   pushs L0D50   ; Skara Brae
+024C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0250: 1D 5B 0D   pushs L0D5B   ; Horance
+0253: 07 01 00 34 00  cmps 0001H, 028C
+0258: 1C 63 0D   addsi L0D63   ; "For all the year...
+025B: 33   say
+025C: 21 02 00   push [0002]
+025F: 05 1F 00   jne 0281
+0262: 1F 00 00   pushi 0000H   ; 0
+0265: 1F 6E FF   pushi FF6EH   ; -146
+0268: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+026C: 1C 40 0F   addsi L0F40   ; The pale ghost mo...
+026F: 33   say
+0270: 1F 6E FF   pushi FF6EH   ; -146
+0273: 39 04 00 01  calli _HideNPC@1  ; 0004
+0277: 1F 00 00   pushi 0000H   ; 0
+027A: 1F 74 FF   pushi FF74H   ; -140
+027D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0281: 1C FF 0F   addsi L0FFF   ; After a brief swi...
+0284: 33   say
+0285: 1D 53 11   pushs L1153   ; Horance
+0288: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028C: 1D 5B 11   pushs L115B   ; Keg O' Spirits
+028F: 07 01 00 0B 00  cmps 0001H, 029F
+0294: 1C 6A 11   addsi L116A   ; He truly looks sa...
+0297: 33   say
+0298: 1D CD 12   pushs L12CD   ; Keg O' Spirits
+029B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029F: 1D DC 12   pushs L12DC   ; sacrifice
+02A2: 07 01 00 1E 00  cmps 0001H, 02C5
+02A7: 42 9A 01   pushf flag:[019A]
+02AA: 10   not
+02AB: 05 0B 00   jne 02B9
+02AE: 1C E6 12   addsi L12E6   ; You relate the ne...
+02B1: 33   say
+02B2: 13   push true
+02B3: 43 9A 01   popf flag:[019A]
+02B6: 06 05 00   jmp 02BE
+02B9: 1C 6F 14   addsi L146F   ; "All right, now. ...
+02BC: 33   say
+02BD: 3F   abrt
+02BE: 1D D8 14   pushs L14D8   ; sacrifice
+02C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C5: 1D E2 14   pushs L14E2   ; bye
+02C8: 07 01 00 05 00  cmps 0001H, 02D2
+02CD: 1C E6 14   addsi L14E6   ; "Oh, are ya leavi...
+02D0: 33   say
+02D1: 3F   abrt
+02D2: 06 4F FE   jmp 0124
+02D5: 40   db 40 ???
+02D6: 48   push eventid
+02D7: 1F 00 00   pushi 0000H   ; 0
+02DA: 22   cmpeq
+02DB: 05 01 00   jne 02DF
+02DE: 3F   abrt
+02DF: 25   ret

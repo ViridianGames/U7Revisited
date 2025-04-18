@@ -1,0 +1,114 @@
+  .funcnumber 08B3H
+  .data
+  .code
+  .argc 0001H
+  .localc 000EH
+  .externsize 0002H
+  .extern 093CH
+  .extern 093DH
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 12 01 00   pop [0001]
+0006: 1F 00 00   pushi 0000H   ; 0
+0009: 12 02 00   pop [0002]
+000C: 14   push false
+000D: 12 03 00   pop [0003]
+0010: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0014: 12 04 00   pop [0004]
+0017: 21 00 00   push [0000]
+001A: 38 58 00 01  callis 0058, 1
+001E: 12 05 00   pop [0005]
+0021: 1F 00 00   pushi 0000H   ; 0
+0024: 1F 1E 00   pushi 001EH   ; 30
+0027: 1F 24 01   pushi 0124H   ; 292
+002A: 21 00 00   push [0000]
+002D: 38 35 00 04  callis 0035, 4
+0031: 12 06 00   pop [0006]
+0034: 1E 00 00   arrc 0000H   ; 0
+0037: 12 07 00   pop [0007]
+003A: 1E 00 00   arrc 0000H   ; 0
+003D: 12 08 00   pop [0008]
+0040: 2E   sloop
+0041: 02 09 00 0A 00 0B 00 06 00 60 00  db 2 ???
+0042:   db 9
+0043:   db 0
+0044:   db a
+0045:   db 0
+0046:   db b
+0047:   db 0
+0048:   db 6
+0049:   db 0
+004A:   db 60
+004B:   db 0
+004C: 21 0B 00   push [000B]
+004F: 38 58 00 01  callis 0058, 1
+0053: 21 05 00   push [0005]
+0056: 22   cmpeq
+0057: 05 4F 00   jne 00A9
+005A: 21 03 00   push [0003]
+005D: 10   not
+005E: 21 0B 00   push [000B]
+0061: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0065: 1F FF 00   pushi 00FFH   ; 255
+0068: 22   cmpeq
+0069: 0E   and
+006A: 05 21 00   jne 008E
+006D: 21 0B 00   push [000B]
+0070: 1F 9C FE   pushi FE9CH   ; -356
+0073: 39 46 00 02  calli 0046, 2
+0077: 21 04 00   push [0004]
+007A: 1F 9C FE   pushi FE9CH   ; -356
+007D: 38 1B 00 01  callis 001B, 1
+0081: 24 00 00   call [0000]   ; 093CH
+0084: 12 04 00   pop [0004]  ;* Party - avatar.
+0087: 13   push true
+0088: 12 03 00   pop [0003]
+008B: 06 1B 00   jmp 00A9
+008E: 21 08 00   push [0008]
+0091: 1F 9C FE   pushi FE9CH   ; -356
+0094: 21 0B 00   push [000B]
+0097: 38 19 00 02  callis 0019, 2
+009B: 4A   arra
+009C: 12 08 00   pop [0008]
+009F: 21 07 00   push [0007]
+00A2: 21 0B 00   push [000B]
+00A5: 4A   arra
+00A6: 12 07 00   pop [0007]
+00A9: 06 95 FF   jmp 0041
+00AC: 21 04 00   push [0004]
+00AF: 38 5E 00 01  callis _ArraySize@1  ; 005E
+00B3: 12 0C 00   pop [000C]
+00B6: 21 08 00   push [0008]
+00B9: 21 07 00   push [0007]
+00BC: 24 01 00   call [0001]   ; 093DH
+00BF: 12 07 00   pop [0007]
+00C2: 2E   sloop
+00C3: 02 0D 00 0E 00 0B 00 07 00 29 00  db 2 ???
+00C4:   db d
+00C5:   db 0
+00C6:   db e
+00C7:   db 0
+00C8:   db b
+00C9:   db 0
+00CA:   db 7
+00CB:   db 0
+00CC:   db 29
+00CD:   db 0
+00CE: 21 0C 00   push [000C]
+00D1: 21 01 00   push [0001]
+00D4: 18   cmpge
+00D5: 05 1A 00   jne 00F2
+00D8: 21 0B 00   push [000B]
+00DB: 21 01 00   push [0001]  ;* Cnt, starting with 1.
+00DE: 26 04 00   aidx [0004]  ;* [0004] = party - avatar.
+00E1: 39 46 00 02  calli 0046, 2
+00E5: 21 01 00   push [0001]
+00E8: 1F 01 00   pushi 0001H   ; 1
+00EB: 09   add
+00EC: 12 01 00   pop [0001]
+00EF: 06 02 00   jmp 00F4
+00F2: 13   push true
+00F3: 2D   setr
+00F4: 06 CC FF   jmp 00C3
+00F7: 14   push false
+00F8: 2D   setr
+00F9: 32   rts

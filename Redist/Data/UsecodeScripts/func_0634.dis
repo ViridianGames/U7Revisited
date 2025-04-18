@@ -1,0 +1,69 @@
+  .funcnumber 0634H ;* Move barge.
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0005H
+  .extern 080CH
+  .extern 0812H
+  .extern 028CH
+  .extern 061CH
+  .extern 0831H
+0000: 3E   push itemref
+0001: 38 58 00 01  callis 0058, 1
+0005: 12 00 00   pop [0000]
+0008: 21 00 00   push [0000]
+000B: 05 93 00   jne 00A1
+000E: 3E   push itemref
+000F: 24 00 00   call [0000]   ; 080CH * Get type.
+0012: 12 01 00   pop [0001]
+0015: 21 01 00   push [0001]
+0018: 1F 48 03   pushi 0348H   ; 840
+001B: 22   cmpeq
+001C: 05 06 00   jne 0025
+001F: 21 00 00   push [0000]
+0022: 24 01 00   call [0001]   ; 0812H
+0025: 21 01 00   push [0001]
+0028: 1F 8C 02   pushi 028CH   ; 652
+002B: 22   cmpeq
+002C: 05 04 00   jne 0033
+002F: 3E   push itemref
+0030: 47 8C 02   calle 028CH   ; 652
+0033: 21 01 00   push [0001]
+0036: 1F C7 00   pushi 00C7H   ; 199
+0039: 22   cmpeq
+003A: 05 64 00   jne 00A1
+003D: 1F 00 00   pushi 0000H   ; 0
+0040: 1F 19 00   pushi 0019H   ; 25
+0043: 1F 9B 00   pushi 009BH   ; 155 * Ferryman.
+0046: 1F 9C FE   pushi FE9CH   ; -356
+0049: 38 35 00 04  callis 0035, 4
+004D: 12 02 00   pop [0002]
+0050: 21 02 00   push [0002]
+0053: 05 32 00   jne 0088
+0056: 21 02 00   push [0002]
+0059: 38 58 00 01  callis 0058, 1
+005D: 21 00 00   push [0000]
+0060: 22   cmpeq
+0061: 05 21 00   jne 0085
+0064: 1F 14 00   pushi 0014H   ; 20
+0067: 1F 9C FE   pushi FE9CH   ; -356
+006A: 38 88 00 02  callis 0088, 2
+006E: 21 02 00   push [0002]
+0071: 22   cmpeq
+0072: 05 10 00   jne 0085
+0075: 21 00 00   push [0000]
+0078: 47 1C 06   calle 061CH   ; 1564
+007B: 1F 14 00   pushi 0014H   ; 20
+007E: 1F 9C FE   pushi FE9CH   ; -356
+0081: 39 8A 00 02  calli 008A, 2
+0085: 06 19 00   jmp 00A1
+0088: 1F 14 00   pushi 0014H   ; 20
+008B: 1F 9C FE   pushi FE9CH   ; -356
+008E: 38 88 00 02  callis 0088, 2
+0092: 12 03 00   pop [0003]
+0095: 21 03 00   push [0003]
+0098: 05 06 00   jne 00A1
+009B: 21 03 00   push [0003]
+009E: 24 04 00   call [0004]   ; 0831H
+00A1: 25   ret

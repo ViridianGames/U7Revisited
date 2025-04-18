@@ -1,0 +1,140 @@
+  .funcnumber 089AH
+  .data
+L0000: db '"To see you need more experience to train at this time."'
+L0038: db 00
+L0039: db 'You gather your gold and count it, finding that you have '
+L0072: db 00
+L0073: db ' gold altogether.'
+L0084: db 00
+L0085: db '"To have not enough gold to train here."'
+L00AD: db 00
+L00AE: db 'After asking a few questions, he exclaims, "To be already as'
+ db ' well-educated as I. To apologize for my inability to increa'
+ db 'se your knowledge, but there is nothing I can do."'
+L0158: db 00
+L0159: db 'You pay '
+L0161: db 00
+L0162: db ' gold, and the training session begins.'
+L0189: db 00
+L018A: db 'you begin'
+L0193: db 00
+L0194: db 'begins'
+L019A: db 00
+L019B: db 'The gargoyle begins with some intense memorization exercises'
+ db ' which eventually lead to concepts of spell theory. At the e'
+ db 'nd, '
+L0217: db 00
+L0218: db ' to notice a change in mental capabilities and thought react'
+ db 'ion speed.'
+L025E: db 00
+  .code
+  .argc 0002H
+  .localc 0009H
+  .externsize 0005H
+  .extern 0920H
+  .extern 0922H
+  .extern 0910H
+  .extern 0916H
+  .extern 0918H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+000D: 12 03 00   pop [0003]
+0010: 21 02 00   push [0002]
+0013: 1F 00 00   pushi 0000H   ; 0
+0016: 22   cmpeq
+0017: 05 03 00   jne 001D
+001A: 06 F5 00   jmp 0112
+001D: 1F 03 00   pushi 0003H   ; 3
+0020: 12 04 00   pop [0004]
+0023: 21 04 00   push [0004]
+0026: 21 02 00   push [0002]
+0029: 21 00 00   push [0000]
+002C: 21 01 00   push [0001]
+002F: 24 01 00   call [0001]   ; 0922H
+0032: 12 05 00   pop [0005]
+0035: 21 05 00   push [0005]
+0038: 1F 00 00   pushi 0000H   ; 0
+003B: 22   cmpeq
+003C: 05 07 00   jne 0046
+003F: 1C 00 00   addsi L0000   ; "To see you need ...
+0042: 33   say
+0043: 06 CC 00   jmp 0112
+0046: 21 05 00   push [0005]
+0049: 1F 01 00   pushi 0001H   ; 1
+004C: 22   cmpeq
+004D: 05 2E 00   jne 007E
+0050: 1F 99 FE   pushi FE99H   ; -359
+0053: 1F 99 FE   pushi FE99H   ; -359
+0056: 1F 84 02   pushi 0284H   ; 644
+0059: 1F 9B FE   pushi FE9BH   ; -357
+005C: 38 28 00 04  callis 0028, 4
+0060: 12 06 00   pop [0006]
+0063: 1C 39 00   addsi L0039   ; You gather your g...
+0066: 2F 06 00   addsv [0006]
+0069: 1C 73 00   addsi L0073   ;  gold altogether.
+006C: 33   say
+006D: 21 06 00   push [0006]
+0070: 21 00 00   push [0000]
+0073: 17   cmpl
+0074: 05 07 00   jne 007E
+0077: 1C 85 00   addsi L0085   ; "To have not enou...
+007A: 33   say
+007B: 06 94 00   jmp 0112
+007E: 21 05 00   push [0005]
+0081: 1F 02 00   pushi 0002H   ; 2
+0084: 22   cmpeq
+0085: 05 07 00   jne 008F
+0088: 1C AE 00   addsi L00AE   ; After asking a fe...
+008B: 33   say
+008C: 06 83 00   jmp 0112
+008F: 13   push true
+0090: 1F 99 FE   pushi FE99H   ; -359
+0093: 1F 99 FE   pushi FE99H   ; -359
+0096: 1F 84 02   pushi 0284H   ; 644
+0099: 21 00 00   push [0000]
+009C: 38 2B 00 05  callis 002B, 5
+00A0: 12 07 00   pop [0007]
+00A3: 1C 59 01   addsi L0159   ; You pay 
+00A6: 2F 00 00   addsv [0000]
+00A9: 1C 62 01   addsi L0162   ;  gold, and the tr...
+00AC: 33   say
+00AD: 21 02 00   push [0002]
+00B0: 1F 9C FE   pushi FE9CH   ; -356
+00B3: 22   cmpeq
+00B4: 05 09 00   jne 00C0
+00B7: 1D 8A 01   pushs L018A   ; you begin
+00BA: 12 08 00   pop [0008]
+00BD: 06 0A 00   jmp 00CA
+00C0: 21 03 00   push [0003]
+00C3: 1D 94 01   pushs L0194   ; begins
+00C6: 09   add
+00C7: 12 08 00   pop [0008]
+00CA: 1C 9B 01   addsi L019B   ; The gargoyle begi...
+00CD: 2F 08 00   addsv [0008]
+00D0: 1C 18 02   addsi L0218   ;  to notice a chan...
+00D3: 33   say
+00D4: 1F 02 00   pushi 0002H   ; 2
+00D7: 21 02 00   push [0002]
+00DA: 24 02 00   call [0002]   ; 0910H
+00DD: 12 09 00   pop [0009]
+00E0: 21 09 00   push [0009]
+00E3: 1F 1E 00   pushi 001EH   ; 30
+00E6: 17   cmpl
+00E7: 05 09 00   jne 00F3
+00EA: 1F 02 00   pushi 0002H   ; 2
+00ED: 21 02 00   push [0002]
+00F0: 24 03 00   call [0003]   ; 0916H
+00F3: 1F 06 00   pushi 0006H   ; 6
+00F6: 21 02 00   push [0002]
+00F9: 24 02 00   call [0002]   ; 0910H
+00FC: 12 0A 00   pop [000A]
+00FF: 21 0A 00   push [000A]
+0102: 1F 1E 00   pushi 001EH   ; 30
+0105: 17   cmpl
+0106: 05 09 00   jne 0112
+0109: 1F 01 00   pushi 0001H   ; 1
+010C: 21 02 00   push [0002]
+010F: 24 04 00   call [0004]   ; 0918H
+0112: 25   ret

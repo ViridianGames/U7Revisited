@@ -1,0 +1,463 @@
+  .funcnumber 04BFH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Ethereal Ring'
+L001A: db 00
+L001B: db 'You see a nobleman, all alone, with a demented gleam in his '
+ db 'eye.~~"Who in blazes art thou?" the man asks. His attitude i'
+ db 's that of someone who was just interrupted from something te'
+ db 'rribly important.'
+L00E0: db 00
+L00E1: db 'I am the Avatar'
+L00F0: db 00
+L00F1: db 'Martingo shakes your hand but acts thoroughly disinterested.'
+ db ' "I'm thrilled."'
+L013D: db 00
+L013E: db 'He turns to his right and speaks to no one.'
+L0169: db 00
+L016A: db '"What? Oh, really! I do not think '
+L018C: db 00
+L018D: db ' looks particularly brainless. We shall have to see, shall w'
+ db 'e not?"'
+L01D0: db 00
+L01D1: db 'He turns back to you and grins.'
+L01F0: db 00
+L01F1: db '"Of course thou art! And I am the evil spirit of Mondain, co'
+ db 'me back to wreak havoc over all Britannia. Funny, thou dost '
+ db 'not look like an Avatar -- thou dost look like a fool.'
+L029F: db 00
+L02A0: db '"What can I do for thee, Miss Fool?"'
+L02C4: db 00
+L02C5: db '"What can I do for thee, Mr. Fool?"'
+L02E8: db 00
+L02E9: db 'He turns to his right and speaks to no one.'
+L0314: db 00
+L0315: db '"What? Oh, really! Thou dost think this Avatar looks like th'
+ db 'e real thing? I doubt it, Lucinda. I doubt it very much."'
+L038A: db 00
+L038B: db 'He turns back to you and grins.'
+L03AA: db 00
+L03AB: db '"What'chu want?" Martingo asks, belligerently.'
+L03D9: db 00
+L03DA: db 'name'
+L03DE: db 00
+L03DF: db 'The nobleman looks at you with impatience. "I am Martingo, t'
+ db 'he Sultan of Spektran. Is that all right with thee?" He roll'
+ db 's his eyes. He turns to his right side and whispers again to'
+ db ' an imaginary person, "I believe we have an ignoramus on our'
+ db ' hands."'
+L04D7: db 00
+L04D8: db 'name'
+L04DC: db 00
+L04DD: db 'job'
+L04E0: db 00
+L04E1: db '"I am the Sultan of Spektran! What, is thy brain the size of'
+ db ' a pea? Do not answer, 'twas a rhetorical question."'
+L0551: db 00
+L0552: db 'He turns to his left side and whispers to no one, "Dost thou'
+ db ' not think her brain is the size of a pea? I do!" He giggles'
+ db ' conspiratorially with his invisible friend.'
+L05F6: db 00
+L05F7: db 'He turns to his left side and whispers again to an imaginary'
+ db ' person, "Dost thou not think his brain is the size of a pea'
+ db '? I do!" He giggles conspiratorially with his invisible frie'
+ db 'nd.'
+L06AE: db 00
+L06AF: db 'Martingo then pulls out a banana and begins to peel it.'
+L06E6: db 00
+L06E7: db 'banana'
+L06ED: db 00
+L06EE: db 'Spektran'
+L06F6: db 00
+L06F7: db 'Sultan'
+L06FD: db 00
+L06FE: db 'Sultan'
+L0704: db 00
+L0705: db '"Come on, do not insult mine intelligence. Surely thou dost '
+ db 'know what a Sultan is! Canst not thou see mine harem?"'
+L0777: db 00
+L0778: db '"Lovely, are they not?'
+L078E: db 00
+L078F: db 'Martingo looks bewildered. "Then thou must have thine eyes e'
+ db 'xamined! I am surrounded by ten..." He looks around quickly.'
+ db ' "No, -eleven- beautiful women!'
+L0826: db 00
+L0827: db '"Each day I enjoy a different one. Thou canst not imagine ho'
+ db 'w much fun being a Sultan really is!" He leans over and kiss'
+ db 'es an invisible cheek. "Today, I am enjoying Lucinda." He gr'
+ db 'ins broadly.'
+L08E7: db 00
+L08E8: db 'Lucinda'
+L08EF: db 00
+L08F0: db 'Martingo looks you up and down lecherously. "Hmmm. Wouldst t'
+ db 'hou like to join mine harem?"'
+L0949: db 00
+L094A: db 'Your answer takes Martingo by surprise. "Thou wouldst?" He l'
+ db 'ooks around nervously. "Oh, uhm, I had better consult mine a'
+ db 'strologer about this matter. I shall get back to thee, all r'
+ db 'ight?"'
+L0A04: db 00
+L0A05: db '"Pity."'
+L0A0C: db 00
+L0A0D: db 'Sultan'
+L0A13: db 00
+L0A14: db 'Spektran'
+L0A1C: db 00
+L0A1D: db '"'Tis the island thou dost stand upon!" He turns to the invi'
+ db 'sible person on his left and whispers, "Thou art correct -- '
+ db 'this person really is a fool!" ~~Martingo turns back to you.'
+ db ' "As I said, I am the Sultan here. I am the master of all of'
+ db ' these subjects." He gestures around the room.'
+L0B3B: db 00
+L0B3C: db 'Iolo whispers to you. "This fellow is quite daft. Be careful'
+ db '."'
+L0B7A: db 00
+L0B7B: db 'Spektran'
+L0B83: db 00
+L0B84: db 'Lucinda'
+L0B8B: db 00
+L0B8C: db '"She is beautiful, is she not?" Martingo leans over and stic'
+ db 'ks his tongue in an ear that isn't there.'
+L0BF1: db 00
+L0BF2: db 'Lucinda'
+L0BF9: db 00
+L0BFA: db 'banana'
+L0C00: db 00
+L0C01: db '"Oh, forgive my manners! Wouldst thou like a banana?"'
+L0C36: db 00
+L0C37: db '"Well, it shall cost thee 3 gold coins. Still want one?"'
+L0C6F: db 00
+L0C70: db '"Here thou art." Martingo hands you a banana and takes your '
+ db 'gold. He turns to 'Lucinda' and whispers, "That rotter took '
+ db 'my last banana!"'
+L0CF8: db 00
+L0CF9: db '"Thou dost have wheat for brains! Thou hast not room for a s'
+ db 'ingle banana!"'
+L0D43: db 00
+L0D44: db '"Broke, art thou? Too bad." Martingo sniffs. "Well, I am ver'
+ db 'y rich, I must say."'
+L0D94: db 00
+L0D95: db '"That's a relief. I only had one left."'
+L0DBC: db 00
+L0DBD: db '"That's a relief. I only had one left."'
+L0DE4: db 00
+L0DE5: db '"I already sold thee my last banana!"'
+L0E0A: db 00
+L0E0B: db 'banana'
+L0E11: db 00
+L0E12: db 'Ethereal Ring'
+L0E1F: db 00
+L0E20: db 'Martingo looks suspicious. "Art thou wanting to steal mine E'
+ db 'thereal Ring?" He turns to his imaginary friend and whispers'
+ db ', "Thou wert right. Our guest looks like a thief." He turns '
+ db 'back to you and smiles. "Yes, I do have an Ethereal Ring. I '
+ db 'purchased it from the King of the Gargoyles. What was his na'
+ db 'me?" He leans toward the invisible companion on his right. "'
+ db 'What? Oh yes, Draxinusom. I knew it all the time." He turns '
+ db 'back to you. "It is in my vault."'
+L0FE5: db 00
+L0FE6: db 'Ethereal Ring'
+L0FF3: db 00
+L0FF4: db 'vault'
+L0FF9: db 00
+L0FFA: db 'vault'
+L0FFF: db 00
+L1000: db 'Martingo's eyes light up. "My vault is the most protected va'
+ db 'ult in all Britannia. No one, and I repeat, -no one- can ste'
+ db 'al anything from my vault. I have many fine treasures there.'
+ db '" He turns to 'Lucinda' and bites an nonexistent ear lobe.'
+L10EE: db 00
+L10EF: db 'vault'
+L10F4: db 00
+L10F5: db 'protected'
+L10FE: db 00
+L10FF: db 'treasures'
+L1108: db 00
+L1109: db 'treasures'
+L1112: db 00
+L1113: db '"I collect magical items. The vault is full of them. Includi'
+ db 'ng this ring thou dost mention."'
+L116F: db 00
+L1170: db 'treasures'
+L1179: db 00
+L117A: db 'protected'
+L1183: db 00
+L1184: db '"The vault's security is my secret. Feel free to try and ent'
+ db 'er it. In fact, I dare thee! If thou canst succeed in gettin'
+ db 'g inside, thou art welcome to take anything!" Martingo laugh'
+ db 's. "All thou dost need is the key!" He laughs with his imagi'
+ db 'nary harem, as if they were all laughing with him. "I'm sure'
+ db ' thou wilt find it!" He breaks up, laughing so hard that tea'
+ db 'rs begin to fall down his cheeks.'
+L130D: db 00
+L130E: db 'protected'
+L1317: db 00
+L1318: db 'bye'
+L131B: db 00
+L131C: db '"Fine. Go away. It shall do thee good!"*'
+L1344: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0005H
+  .extern 0908H
+  .extern 090BH
+  .extern 090AH
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 9C 02   jne 02A4
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 41 FF   pushi FF41H   ; -191
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0016: 12 00 00   pop [0000]
+0019: 24 00 00   call [0000]   ; 0908H
+001C: 12 01 00   pop [0001]
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; job
+0025: 1D 08 00   pushs L0008   ; name
+0028: 1E 03 00   arrc 0003H   ; 3
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 3B 02   pushf flag:[023B]
+0032: 05 0A 00   jne 003F
+0035: 1D 0D 00   pushs L000D   ; Ethereal Ring
+0038: 1E 01 00   arrc 0001H   ; 1
+003B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003F: 42 56 02   pushf flag:[0256]
+0042: 10   not
+0043: 05 5E 00   jne 00A4
+0046: 1C 1B 00   addsi L001B   ; You see a noblema...
+0049: 33   say
+004A: 1D E1 00   pushs L00E1   ; I am the Avatar
+004D: 21 01 00   push [0001]
+0050: 1E 02 00   arrc 0002H   ; 2
+0053: 24 01 00   call [0001]   ; 090BH
+0056: 12 02 00   pop [0002]
+0059: 21 02 00   push [0002]
+005C: 21 01 00   push [0001]
+005F: 22   cmpeq
+0060: 05 19 00   jne 007C
+0063: 1C F1 00   addsi L00F1   ; Martingo shakes y...
+0066: 33   say
+0067: 1C 3E 01   addsi L013E   ; He turns to his r...
+006A: 33   say
+006B: 1C 6A 01   addsi L016A   ; "What? Oh, really...
+006E: 2F 01 00   addsv [0001]
+0071: 1C 8D 01   addsi L018D   ;  looks particular...
+0074: 33   say
+0075: 1C D1 01   addsi L01D1   ; He turns back to ...
+0078: 33   say
+0079: 06 21 00   jmp 009D
+007C: 1C F1 01   addsi L01F1   ; "Of course thou a...
+007F: 33   say
+0080: 21 00 00   push [0000]
+0083: 05 07 00   jne 008D
+0086: 1C A0 02   addsi L02A0   ; "What can I do fo...
+0089: 33   say
+008A: 06 04 00   jmp 0091
+008D: 1C C5 02   addsi L02C5   ; "What can I do fo...
+0090: 33   say
+0091: 1C E9 02   addsi L02E9   ; He turns to his r...
+0094: 33   say
+0095: 1C 15 03   addsi L0315   ; "What? Oh, really...
+0098: 33   say
+0099: 1C 8B 03   addsi L038B   ; He turns back to ...
+009C: 33   say
+009D: 13   push true
+009E: 43 56 02   popf flag:[0256]
+00A1: 06 04 00   jmp 00A8
+00A4: 1C AB 03   addsi L03AB   ; "What'chu want?" ...
+00A7: 33   say
+00A8: 04 F4 01   je 029F
+00AB: 1D DA 03   pushs L03DA   ; name
+00AE: 07 01 00 0B 00  cmps 0001H, 00BE
+00B3: 1C DF 03   addsi L03DF   ; The nobleman look...
+00B6: 33   say
+00B7: 1D D8 04   pushs L04D8   ; name
+00BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BE: 1D DD 04   pushs L04DD   ; job
+00C1: 07 01 00 29 00  cmps 0001H, 00EF
+00C6: 1C E1 04   addsi L04E1   ; "I am the Sultan ...
+00C9: 33   say
+00CA: 21 00 00   push [0000]
+00CD: 05 07 00   jne 00D7
+00D0: 1C 52 05   addsi L0552   ; He turns to his l...
+00D3: 33   say
+00D4: 06 04 00   jmp 00DB
+00D7: 1C F7 05   addsi L05F7   ; He turns to his l...
+00DA: 33   say
+00DB: 1C AF 06   addsi L06AF   ; Martingo then pul...
+00DE: 33   say
+00DF: 1D E7 06   pushs L06E7   ; banana
+00E2: 1D EE 06   pushs L06EE   ; Spektran
+00E5: 1D F7 06   pushs L06F7   ; Sultan
+00E8: 1E 03 00   arrc 0003H   ; 3
+00EB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EF: 1D FE 06   pushs L06FE   ; Sultan
+00F2: 07 01 00 4E 00  cmps 0001H, 0145
+00F7: 1C 05 07   addsi L0705   ; "Come on, do not ...
+00FA: 33   say
+00FB: 24 02 00   call [0002]   ; 090AH
+00FE: 12 03 00   pop [0003]
+0101: 21 03 00   push [0003]
+0104: 05 07 00   jne 010E
+0107: 1C 78 07   addsi L0778   ; "Lovely, are they...
+010A: 33   say
+010B: 06 04 00   jmp 0112
+010E: 1C 8F 07   addsi L078F   ; Martingo looks be...
+0111: 33   say
+0112: 1C 27 08   addsi L0827   ; "Each day I enjoy...
+0115: 33   say
+0116: 1D E8 08   pushs L08E8   ; Lucinda
+0119: 39 05 00 01  calli _AddAnswer@1  ; 0005
+011D: 21 00 00   push [0000]
+0120: 05 1B 00   jne 013E
+0123: 1C F0 08   addsi L08F0   ; Martingo looks yo...
+0126: 33   say
+0127: 24 02 00   call [0002]   ; 090AH
+012A: 12 04 00   pop [0004]
+012D: 21 04 00   push [0004]
+0130: 05 07 00   jne 013A
+0133: 1C 4A 09   addsi L094A   ; Your answer takes...
+0136: 33   say
+0137: 06 04 00   jmp 013E
+013A: 1C 05 0A   addsi L0A05   ; "Pity."
+013D: 33   say
+013E: 1D 0D 0A   pushs L0A0D   ; Sultan
+0141: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0145: 1D 14 0A   pushs L0A14   ; Spektran
+0148: 07 01 00 39 00  cmps 0001H, 0186
+014D: 1C 1D 0A   addsi L0A1D   ; "'Tis the island ...
+0150: 33   say
+0151: 1F FF FF   pushi FFFFH   ; -1
+0154: 24 03 00   call [0003]   ; 08F7H
+0157: 12 05 00   pop [0005]
+015A: 21 05 00   push [0005]
+015D: 05 1F 00   jne 017F
+0160: 1F 00 00   pushi 0000H   ; 0
+0163: 1F FF FF   pushi FFFFH   ; -1
+0166: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016A: 1C 3C 0B   addsi L0B3C   ; Iolo whispers to ...
+016D: 33   say
+016E: 1F FF FF   pushi FFFFH   ; -1
+0171: 39 04 00 01  calli _HideNPC@1  ; 0004
+0175: 1F 00 00   pushi 0000H   ; 0
+0178: 1F 41 FF   pushi FF41H   ; -191
+017B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+017F: 1D 7B 0B   pushs L0B7B   ; Spektran
+0182: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0186: 1D 84 0B   pushs L0B84   ; Lucinda
+0189: 07 01 00 0B 00  cmps 0001H, 0199
+018E: 1C 8C 0B   addsi L0B8C   ; "She is beautiful...
+0191: 33   say
+0192: 1D F2 0B   pushs L0BF2   ; Lucinda
+0195: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0199: 1D FA 0B   pushs L0BFA   ; banana
+019C: 07 01 00 90 00  cmps 0001H, 0231
+01A1: 42 58 02   pushf flag:[0258]
+01A4: 10   not
+01A5: 05 7E 00   jne 0226
+01A8: 1C 01 0C   addsi L0C01   ; "Oh, forgive my m...
+01AB: 33   say
+01AC: 24 02 00   call [0002]   ; 090AH
+01AF: 12 06 00   pop [0006]
+01B2: 21 06 00   push [0006]
+01B5: 05 67 00   jne 021F
+01B8: 1C 37 0C   addsi L0C37   ; "Well, it shall c...
+01BB: 33   say
+01BC: 24 02 00   call [0002]   ; 090AH
+01BF: 12 07 00   pop [0007]
+01C2: 21 07 00   push [0007]
+01C5: 05 50 00   jne 0218
+01C8: 1F 99 FE   pushi FE99H   ; -359
+01CB: 1F 99 FE   pushi FE99H   ; -359
+01CE: 1F 84 02   pushi 0284H   ; 644
+01D1: 1F 9B FE   pushi FE9BH   ; -357
+01D4: 38 28 00 04  callis 0028, 4
+01D8: 12 08 00   pop [0008]
+01DB: 21 08 00   push [0008]
+01DE: 1F 03 00   pushi 0003H   ; 3
+01E1: 18   cmpge
+01E2: 05 2C 00   jne 0211
+01E5: 13   push true
+01E6: 1F 11 00   pushi 0011H   ; 17
+01E9: 1F 99 FE   pushi FE99H   ; -359
+01EC: 1F 79 01   pushi 0179H   ; 377
+01EF: 1F 01 00   pushi 0001H   ; 1
+01F2: 38 2C 00 05  callis 002C, 5
+01F6: 12 09 00   pop [0009]
+01F9: 21 09 00   push [0009]
+01FC: 05 0B 00   jne 020A
+01FF: 1C 70 0C   addsi L0C70   ; "Here thou art." ...
+0202: 33   say
+0203: 13   push true
+0204: 43 58 02   popf flag:[0258]
+0207: 06 04 00   jmp 020E
+020A: 1C F9 0C   addsi L0CF9   ; "Thou dost have w...
+020D: 33   say
+020E: 06 04 00   jmp 0215
+0211: 1C 44 0D   addsi L0D44   ; "Broke, art thou?...
+0214: 33   say
+0215: 06 04 00   jmp 021C
+0218: 1C 95 0D   addsi L0D95   ; "That's a relief....
+021B: 33   say
+021C: 06 04 00   jmp 0223
+021F: 1C BD 0D   addsi L0DBD   ; "That's a relief....
+0222: 33   say
+0223: 06 04 00   jmp 022A
+0226: 1C E5 0D   addsi L0DE5   ; "I already sold t...
+0229: 33   say
+022A: 1D 0B 0E   pushs L0E0B   ; banana
+022D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0231: 1D 12 0E   pushs L0E12   ; Ethereal Ring
+0234: 07 01 00 12 00  cmps 0001H, 024B
+0239: 1C 20 0E   addsi L0E20   ; Martingo looks su...
+023C: 33   say
+023D: 1D E6 0F   pushs L0FE6   ; Ethereal Ring
+0240: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0244: 1D F4 0F   pushs L0FF4   ; vault
+0247: 39 05 00 01  calli _AddAnswer@1  ; 0005
+024B: 1D FA 0F   pushs L0FFA   ; vault
+024E: 07 01 00 18 00  cmps 0001H, 026B
+0253: 1C 00 10   addsi L1000   ; Martingo's eyes l...
+0256: 33   say
+0257: 1D EF 10   pushs L10EF   ; vault
+025A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025E: 1D F5 10   pushs L10F5   ; protected
+0261: 1D FF 10   pushs L10FF   ; treasures
+0264: 1E 02 00   arrc 0002H   ; 2
+0267: 39 05 00 01  calli _AddAnswer@1  ; 0005
+026B: 1D 09 11   pushs L1109   ; treasures
+026E: 07 01 00 0B 00  cmps 0001H, 027E
+0273: 1C 13 11   addsi L1113   ; "I collect magica...
+0276: 33   say
+0277: 1D 70 11   pushs L1170   ; treasures
+027A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027E: 1D 7A 11   pushs L117A   ; protected
+0281: 07 01 00 0B 00  cmps 0001H, 0291
+0286: 1C 84 11   addsi L1184   ; "The vault's secu...
+0289: 33   say
+028A: 1D 0E 13   pushs L130E   ; protected
+028D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0291: 1D 18 13   pushs L1318   ; bye
+0294: 07 01 00 03 00  cmps 0001H, 029C
+0299: 06 03 00   jmp 029F
+029C: 06 09 FE   jmp 00A8
+029F: 40   db 40 ???
+02A0: 1C 1C 13   addsi L131C   ; "Fine. Go away. I...
+02A3: 33   say
+02A4: 48   push eventid
+02A5: 1F 00 00   pushi 0000H   ; 0
+02A8: 22   cmpeq
+02A9: 05 06 00   jne 02B2
+02AC: 1F 41 FF   pushi FF41H   ; -191
+02AF: 24 04 00   call [0004]   ; 092EH
+02B2: 25   ret

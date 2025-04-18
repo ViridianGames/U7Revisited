@@ -1,0 +1,507 @@
+  .funcnumber 046BH
+  .data
+L0000: db 'Avatar'
+L0006: db 00
+L0007: db 'You see a large cyclops. It looks at you and blinks its eye '
+ db 'in irritation.'
+L0051: db 00
+L0052: db '"What dost thou want?" says Iskander.'
+L0077: db 00
+L0078: db 'bye'
+L007B: db 00
+L007C: db 'job'
+L007F: db 00
+L0080: db 'name'
+L0084: db 00
+L0085: db 'Eiko and Amanda'
+L0094: db 00
+L0095: db 'name'
+L0099: db 00
+L009A: db '"I am of the clan Ironheart, the eleventh son of Valador. Th'
+ db 'ey call me Iskander."'
+L00EB: db 00
+L00EC: db 'name'
+L00F0: db 00
+L00F1: db 'job'
+L00F4: db 00
+L00F5: db '"My cyclopean people say I am a hero. Many of you humans say'
+ db ' I am a monster. No doubt, the truth is somewhere in between'
+ db '."'
+L016F: db 00
+L0170: db 'monster'
+L0177: db 00
+L0178: db 'hero'
+L017C: db 00
+L017D: db 'hero'
+L0181: db 00
+L0182: db '"One hundred and eighty-nine years ago I slew the seven Gaze'
+ db 'r Princes when they used their magic to steal the eye from t'
+ db 'he leader of our tribe, but such things are now ancient hist'
+ db 'ory and are no longer of any consequence."'
+L0260: db 00
+L0261: db 'hero'
+L0265: db 00
+L0266: db 'ancient history'
+L0275: db 00
+L0276: db 'eye'
+L0279: db 00
+L027A: db 'tribe'
+L027F: db 00
+L0280: db 'monster'
+L0287: db 00
+L0288: db '"On numerous occasions I have caused the unpleasant end of h'
+ db 'uman interlopers who mistakenly believed our race was fit fo'
+ db 'r nothing save to be plundered. But I have no quarrel with t'
+ db 'hee." He pauses to scrutinize you. "For the moment."'
+L0370: db 00
+L0371: db 'monster'
+L0378: db 00
+L0379: db 'thee'
+L037D: db 00
+L037E: db 'thee'
+L0382: db 00
+L0383: db '"Thou dost know my name, but I still do not know the name of'
+ db ' thee. I like to know to whom I am speaking. What is thy nam'
+ db 'e?"'
+L03FE: db 00
+L03FF: db '"I have heard of thee, Avatar. Thou hast come into conflict '
+ db 'against our kind before, I know. But I have also heard the t'
+ db 'ales of thine heroic and spiritual quests and I believe thee'
+ db ' to be a just and noble man. Thou mayest call me friend."'
+L04EC: db 00
+L04ED: db '"A pleasure to meet thee, '
+L0507: db 00
+L0508: db '."'
+L050A: db 00
+L050B: db 'thee'
+L050F: db 00
+L0510: db 'tribe'
+L0515: db 00
+L0516: db '"Those of my tribe are a quiet people. They farm the rocky s'
+ db 'oil, but are also very good tool makers. I was sent to find '
+ db 'them a new homeland."'
+L05A3: db 00
+L05A4: db 'tribe'
+L05A9: db 00
+L05AA: db 'homeland'
+L05B2: db 00
+L05B3: db 'eye'
+L05B6: db 00
+L05B7: db '"The eye of a cyclops is considered quite a delicacy to some'
+ db ' of the less genteel races of Britannia. Twice have foul cre'
+ db 'atures tried to take mine, and twice have I dined on their h'
+ db 'earts."'
+L0672: db 00
+L0673: db 'eye'
+L0676: db 00
+L0677: db 'ancient history'
+L0686: db 00
+L0687: db '"Then they called me 'Wonder Boy'. For nearly a hundred year'
+ db 's that was the nickname by which I was known. I was most gra'
+ db 'teful when they stopped doing that!"'
+L0723: db 00
+L0724: db 'ancient history'
+L0733: db 00
+L0734: db 'Wonder Boy'
+L073E: db 00
+L073F: db 'Wonder Boy'
+L0749: db 00
+L074A: db 'Iskander squints his eye at you. "Do not start that again!"'
+L0785: db 00
+L0786: db 'Wonder Boy'
+L0790: db 00
+L0791: db 'homeland'
+L0799: db 00
+L079A: db '"My village lies a great many days' journey away. The people'
+ db ' there desire a place where they can live in peace with thei'
+ db 'r surroundings. I have not found such a place yet, but I wil'
+ db 'l search everywhere until I do."'
+L086E: db 00
+L086F: db 'homeland'
+L0877: db 00
+L0878: db 'everywhere'
+L0882: db 00
+L0883: db 'peace'
+L0888: db 00
+L0889: db 'peace'
+L088E: db 00
+L088F: db '"While I am two hundred and six, not long in years for one o'
+ db 'f my race, I already have the heart of an old man. A hero's '
+ db 'adventures have no more attraction for me. I long to settle '
+ db 'down with my people and spend my days tending the fields or '
+ db 'in my workshop building things."'
+L099F: db 00
+L09A0: db 'peace'
+L09A5: db 00
+L09A6: db 'everywhere'
+L09B0: db 00
+L09B1: db '"My searches have brought me to this dreadful place. I incor'
+ db 'rectly surmised that since magic does not work it would be r'
+ db 'elatively safe. It is here that I have been perplexed by a t'
+ db 'errible riddle."'
+L0A75: db 00
+L0A76: db 'everywhere'
+L0A80: db 00
+L0A81: db 'riddle'
+L0A87: db 00
+L0A88: db 'magic'
+L0A8D: db 00
+L0A8E: db 'riddle'
+L0A94: db 00
+L0A95: db '"Standing at the doorway of one room in this place, I saw an'
+ db ' enormous image of a tetrahedron. As I tried to near it a wa'
+ db 've of amnesia passed over me. Once more I was standing in th'
+ db 'e doorway. I could remember nothing more."'
+L0B73: db 00
+L0B74: db 'riddle'
+L0B7A: db 00
+L0B7B: db 'amnesia'
+L0B82: db 00
+L0B83: db 'tetrahedron'
+L0B8E: db 00
+L0B8F: db 'tetrahedron'
+L0B9A: db 00
+L0B9B: db '"I believe that is word you humans use to describe a polyhed'
+ db 'ron with four faces."'
+L0BEC: db 00
+L0BED: db 'tetrahedron'
+L0BF8: db 00
+L0BF9: db 'amnesia'
+L0C00: db 00
+L0C01: db '"This same wave of amnesia struck me every time I tried to a'
+ db 'pproach the tetrahedron. I do not know what sort of foul mag'
+ db 'ic this is."'
+L0C85: db 00
+L0C86: db 'amnesia'
+L0C8D: db 00
+L0C8E: db 'foul magic'
+L0C98: db 00
+L0C99: db 'foul magic'
+L0CA3: db 00
+L0CA4: db '"Now that thou hast destroyed the mysterious tetrahedron I w'
+ db 'ill complete mine exploration of this place. I have a feelin'
+ db 'g that the homeland I seek is very far away but one never kn'
+ db 'ows where the next clue will be that shall lead me to it."'
+L0D92: db 00
+L0D93: db '"Perhaps thou shalt be able to solve this mystery. I have be'
+ db 'en unable to as of yet. But I shall remain here until its se'
+ db 'cret is revealed."'
+L0E1D: db 00
+L0E1E: db '"I warn thee that this place is not safe. It holds unknown p'
+ db 'erils. Perhaps thou wouldst do better to leave this place."'
+L0E95: db 00
+L0E96: db 'foul magic'
+L0EA0: db 00
+L0EA1: db 'magic'
+L0EA6: db 00
+L0EA7: db '"Surely, thou dost know that magic no longer functions as it'
+ db ' once did. There are those who say that the age of magic is '
+ db 'over. If that is so, then I fear that there may be no place '
+ db 'left in this world for my people."'
+L0F7D: db 00
+L0F7E: db '"Of course, now that thou hast destroyed the tetrahedron all'
+ db ' magic has been restored. I congratulate thee for thine hero'
+ db 'ic deed!"'
+L0FFF: db 00
+L1000: db 'magic'
+L1005: db 00
+L1006: db 'Eiko and Amanda'
+L1015: db 00
+L1016: db '"Yes, I have heard those names before. Those are the names o'
+ db 'f two warriors who have been after me for revenge. They say '
+ db 'I killed their father and I must admit to thee that it is tr'
+ db 'ue. I did kill their father."'
+L10E7: db 00
+L10E8: db 'Eiko and Amanda'
+L10F7: db 00
+L10F8: db 'killed their father'
+L110B: db 00
+L110C: db 'revenge'
+L1113: db 00
+L1114: db 'revenge'
+L111B: db 00
+L111C: db '"I know that Eiko and Amanda have been after me for some tim'
+ db 'e looking for vengeance. I say let them come. I will not sta'
+ db 'nd still for them nor shall I run from them. When they find '
+ db 'me they are welcome to try and take their justice from me. I'
+ db 'f they win then it was meant to be. If they do not I will ha'
+ db 've no regrets."'
+L1257: db 00
+L1258: db 'revenge'
+L125F: db 00
+L1260: db 'killed their father'
+L1273: db 00
+L1274: db '"Their father's name was Kalideth. He suffered from the mage'
+ db ' madness. His attack on me was unprovoked. For some reason h'
+ db 'e blamed the failure of magic upon my people. His own magics'
+ db ' were still quite potent and I barely survived the encounter'
+ db '. I killed Kalideth in self-defense, but I did not want to k'
+ db 'ill him. I wish there to still be some magic left in this wo'
+ db 'rld and I mourned his passing as much as anyone."'
+L140D: db 00
+L140E: db 'killed their father'
+L1421: db 00
+L1422: db 'bye'
+L1425: db 00
+L1426: db '"Farewell, Avatar."*'
+L143A: db 00
+L143B: db '"Farewell, '
+L1446: db 00
+L1447: db '."*'
+L144A: db 00
+L144B: db '"Farewell."*'
+L1457: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0003H
+  .extern 0908H
+  .extern 0909H
+  .extern 090BH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 95 FF   pushi FF95H   ; -107
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0908H
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; Avatar
+001C: 12 01 00   pop [0001]
+001F: 24 01 00   call [0001]   ; 0909H
+0022: 12 02 00   pop [0002]
+0025: 42 CF 02   pushf flag:[02CF]
+0028: 10   not
+0029: 05 0B 00   jne 0037
+002C: 1C 07 00   addsi L0007   ; You see a large c...
+002F: 33   say
+0030: 13   push true
+0031: 43 CF 02   popf flag:[02CF]
+0034: 06 04 00   jmp 003B
+0037: 1C 52 00   addsi L0052   ; "What dost thou w...
+003A: 33   say
+003B: 1D 78 00   pushs L0078   ; bye
+003E: 1D 7C 00   pushs L007C   ; job
+0041: 1D 80 00   pushs L0080   ; name
+0044: 1E 03 00   arrc 0003H   ; 3
+0047: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004B: 42 DB 02   pushf flag:[02DB]
+004E: 05 07 00   jne 0058
+0051: 1D 85 00   pushs L0085   ; Eiko and Amanda
+0054: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0058: 04 58 02   je 02B3
+005B: 1D 95 00   pushs L0095   ; name
+005E: 07 01 00 0B 00  cmps 0001H, 006E
+0063: 1C 9A 00   addsi L009A   ; "I am of the clan...
+0066: 33   say
+0067: 1D EC 00   pushs L00EC   ; name
+006A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006E: 1D F1 00   pushs L00F1   ; job
+0071: 07 01 00 11 00  cmps 0001H, 0087
+0076: 1C F5 00   addsi L00F5   ; "My cyclopean peo...
+0079: 33   say
+007A: 1D 70 01   pushs L0170   ; monster
+007D: 1D 78 01   pushs L0178   ; hero
+0080: 1E 02 00   arrc 0002H   ; 2
+0083: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0087: 1D 7D 01   pushs L017D   ; hero
+008A: 07 01 00 1B 00  cmps 0001H, 00AA
+008F: 1C 82 01   addsi L0182   ; "One hundred and ...
+0092: 33   say
+0093: 1D 61 02   pushs L0261   ; hero
+0096: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009A: 1D 66 02   pushs L0266   ; ancient history
+009D: 1D 76 02   pushs L0276   ; eye
+00A0: 1D 7A 02   pushs L027A   ; tribe
+00A3: 1E 03 00   arrc 0003H   ; 3
+00A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AA: 1D 80 02   pushs L0280   ; monster
+00AD: 07 01 00 12 00  cmps 0001H, 00C4
+00B2: 1C 88 02   addsi L0288   ; "On numerous occa...
+00B5: 33   say
+00B6: 1D 71 03   pushs L0371   ; monster
+00B9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BD: 1D 79 03   pushs L0379   ; thee
+00C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C4: 1D 7E 03   pushs L037E   ; thee
+00C7: 07 01 00 44 00  cmps 0001H, 0110
+00CC: 1C 83 03   addsi L0383   ; "Thou dost know m...
+00CF: 33   say
+00D0: 21 00 00   push [0000]
+00D3: 21 01 00   push [0001]
+00D6: 1E 02 00   arrc 0002H   ; 2
+00D9: 24 02 00   call [0002]   ; 090BH
+00DC: 12 03 00   pop [0003]
+00DF: 21 03 00   push [0003]
+00E2: 21 01 00   push [0001]
+00E5: 22   cmpeq
+00E6: 05 08 00   jne 00F1
+00E9: 1C FF 03   addsi L03FF   ; "I have heard of ...
+00EC: 33   say
+00ED: 13   push true
+00EE: 43 D6 02   popf flag:[02D6]
+00F1: 21 03 00   push [0003]
+00F4: 21 00 00   push [0000]
+00F7: 22   cmpeq
+00F8: 05 0E 00   jne 0109
+00FB: 1C ED 04   addsi L04ED   ; "A pleasure to me...
+00FE: 2F 00 00   addsv [0000]
+0101: 1C 08 05   addsi L0508   ; ."
+0104: 33   say
+0105: 13   push true
+0106: 43 D5 02   popf flag:[02D5]
+0109: 1D 0B 05   pushs L050B   ; thee
+010C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0110: 1D 10 05   pushs L0510   ; tribe
+0113: 07 01 00 12 00  cmps 0001H, 012A
+0118: 1C 16 05   addsi L0516   ; "Those of my trib...
+011B: 33   say
+011C: 1D A4 05   pushs L05A4   ; tribe
+011F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0123: 1D AA 05   pushs L05AA   ; homeland
+0126: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012A: 1D B3 05   pushs L05B3   ; eye
+012D: 07 01 00 0B 00  cmps 0001H, 013D
+0132: 1C B7 05   addsi L05B7   ; "The eye of a cyc...
+0135: 33   say
+0136: 1D 73 06   pushs L0673   ; eye
+0139: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013D: 1D 77 06   pushs L0677   ; ancient history
+0140: 07 01 00 12 00  cmps 0001H, 0157
+0145: 1C 87 06   addsi L0687   ; "Then they called...
+0148: 33   say
+0149: 1D 24 07   pushs L0724   ; ancient history
+014C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0150: 1D 34 07   pushs L0734   ; Wonder Boy
+0153: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0157: 1D 3F 07   pushs L073F   ; Wonder Boy
+015A: 07 01 00 0B 00  cmps 0001H, 016A
+015F: 1C 4A 07   addsi L074A   ; Iskander squints ...
+0162: 33   say
+0163: 1D 86 07   pushs L0786   ; Wonder Boy
+0166: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016A: 1D 91 07   pushs L0791   ; homeland
+016D: 07 01 00 18 00  cmps 0001H, 018A
+0172: 1C 9A 07   addsi L079A   ; "My village lies ...
+0175: 33   say
+0176: 1D 6F 08   pushs L086F   ; homeland
+0179: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017D: 1D 78 08   pushs L0878   ; everywhere
+0180: 1D 83 08   pushs L0883   ; peace
+0183: 1E 02 00   arrc 0002H   ; 2
+0186: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018A: 1D 89 08   pushs L0889   ; peace
+018D: 07 01 00 0B 00  cmps 0001H, 019D
+0192: 1C 8F 08   addsi L088F   ; "While I am two h...
+0195: 33   say
+0196: 1D A0 09   pushs L09A0   ; peace
+0199: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019D: 1D A6 09   pushs L09A6   ; everywhere
+01A0: 07 01 00 18 00  cmps 0001H, 01BD
+01A5: 1C B1 09   addsi L09B1   ; "My searches have...
+01A8: 33   say
+01A9: 1D 76 0A   pushs L0A76   ; everywhere
+01AC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B0: 1D 81 0A   pushs L0A81   ; riddle
+01B3: 1D 88 0A   pushs L0A88   ; magic
+01B6: 1E 02 00   arrc 0002H   ; 2
+01B9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BD: 1D 8E 0A   pushs L0A8E   ; riddle
+01C0: 07 01 00 18 00  cmps 0001H, 01DD
+01C5: 1C 95 0A   addsi L0A95   ; "Standing at the ...
+01C8: 33   say
+01C9: 1D 74 0B   pushs L0B74   ; riddle
+01CC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D0: 1D 7B 0B   pushs L0B7B   ; amnesia
+01D3: 1D 83 0B   pushs L0B83   ; tetrahedron
+01D6: 1E 02 00   arrc 0002H   ; 2
+01D9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01DD: 1D 8F 0B   pushs L0B8F   ; tetrahedron
+01E0: 07 01 00 0B 00  cmps 0001H, 01F0
+01E5: 1C 9B 0B   addsi L0B9B   ; "I believe that i...
+01E8: 33   say
+01E9: 1D ED 0B   pushs L0BED   ; tetrahedron
+01EC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F0: 1D F9 0B   pushs L0BF9   ; amnesia
+01F3: 07 01 00 12 00  cmps 0001H, 020A
+01F8: 1C 01 0C   addsi L0C01   ; "This same wave o...
+01FB: 33   say
+01FC: 1D 86 0C   pushs L0C86   ; amnesia
+01FF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0203: 1D 8E 0C   pushs L0C8E   ; foul magic
+0206: 39 05 00 01  calli _AddAnswer@1  ; 0005
+020A: 1D 99 0C   pushs L0C99   ; foul magic
+020D: 07 01 00 28 00  cmps 0001H, 023A
+0212: 42 03 00   pushf flag:[0003]
+0215: 05 07 00   jne 021F
+0218: 1C A4 0C   addsi L0CA4   ; "Now that thou ha...
+021B: 33   say
+021C: 06 14 00   jmp 0233
+021F: 42 D6 02   pushf flag:[02D6]
+0222: 05 04 00   jne 0229
+0225: 1C 93 0D   addsi L0D93   ; "Perhaps thou sha...
+0228: 33   say
+0229: 42 D5 02   pushf flag:[02D5]
+022C: 05 04 00   jne 0233
+022F: 1C 1E 0E   addsi L0E1E   ; "I warn thee that...
+0232: 33   say
+0233: 1D 96 0E   pushs L0E96   ; foul magic
+0236: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023A: 1D A1 0E   pushs L0EA1   ; magic
+023D: 07 01 00 19 00  cmps 0001H, 025B
+0242: 42 03 00   pushf flag:[0003]
+0245: 10   not
+0246: 05 07 00   jne 0250
+0249: 1C A7 0E   addsi L0EA7   ; "Surely, thou dos...
+024C: 33   say
+024D: 06 04 00   jmp 0254
+0250: 1C 7E 0F   addsi L0F7E   ; "Of course, now t...
+0253: 33   say
+0254: 1D 00 10   pushs L1000   ; magic
+0257: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025B: 1D 06 10   pushs L1006   ; Eiko and Amanda
+025E: 07 01 00 18 00  cmps 0001H, 027B
+0263: 1C 16 10   addsi L1016   ; "Yes, I have hear...
+0266: 33   say
+0267: 1D E8 10   pushs L10E8   ; Eiko and Amanda
+026A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+026E: 1D F8 10   pushs L10F8   ; killed their father
+0271: 1D 0C 11   pushs L110C   ; revenge
+0274: 1E 02 00   arrc 0002H   ; 2
+0277: 39 05 00 01  calli _AddAnswer@1  ; 0005
+027B: 1D 14 11   pushs L1114   ; revenge
+027E: 07 01 00 0B 00  cmps 0001H, 028E
+0283: 1C 1C 11   addsi L111C   ; "I know that Eiko...
+0286: 33   say
+0287: 1D 58 12   pushs L1258   ; revenge
+028A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028E: 1D 60 12   pushs L1260   ; killed their father
+0291: 07 01 00 0F 00  cmps 0001H, 02A5
+0296: 1C 74 12   addsi L1274   ; "Their father's n...
+0299: 33   say
+029A: 13   push true
+029B: 12 04 00   pop [0004]
+029E: 1D 0E 14   pushs L140E   ; killed their father
+02A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A5: 1D 22 14   pushs L1422   ; bye
+02A8: 07 01 00 03 00  cmps 0001H, 02B0
+02AD: 06 03 00   jmp 02B3
+02B0: 06 A5 FD   jmp 0058
+02B3: 40   db 40 ???
+02B4: 42 D6 02   pushf flag:[02D6]
+02B7: 05 05 00   jne 02BF
+02BA: 1C 26 14   addsi L1426   ; "Farewell, Avatar."*
+02BD: 33   say
+02BE: 3F   abrt
+02BF: 42 D5 02   pushf flag:[02D5]
+02C2: 05 0D 00   jne 02D2
+02C5: 1C 3B 14   addsi L143B   ; "Farewell, 
+02C8: 2F 00 00   addsv [0000]
+02CB: 1C 47 14   addsi L1447   ; ."*
+02CE: 33   say
+02CF: 06 04 00   jmp 02D6
+02D2: 1C 4B 14   addsi L144B   ; "Farewell."*
+02D5: 33   say
+02D6: 25   ret

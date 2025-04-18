@@ -1,0 +1,110 @@
+  .funcnumber 0840H
+  .data
+L0000: db 'I don't know'
+L000C: db 00
+L000D: db 'Have Faith'
+L0017: db 00
+L0018: db 'Strive for Unity'
+L0028: db 00
+L0029: db 'No Answers'
+L0033: db 00
+L0034: db 'Be Good'
+L003B: db 00
+L003C: db 'No Answers'
+L0046: db 00
+L0047: db 'The sage smiles. "Thou hast begun thy journey on the road to'
+ db ' enlightenment. As thou hast heard, all is not what one has '
+ db 'been taught by one's teachers. 'Tis a pity. Now I suppose th'
+ db 'ou dost want to borrow the notebook?"'
+L0120: db 00
+L0121: db '"Very well. Dost thou promise to return my notebook?"'
+L0156: db 00
+L0157: db '"Then go find it! Thou hast the key!"'
+L017C: db 00
+L017D: db '"Very well. I am counting on thee to return it to me persona'
+ db 'lly. No telling what misfortune may befall thee if thou dost'
+ db ' fail to do so. And as further incentive, I just might give '
+ db 'thee something else which will help thee in thy quest if tho'
+ db 'u dost return it to me safely.~~"Here is the key to my store'
+ db 'room, the first building to the south of here." He grins sly'
+ db 'ly. "Thou must determine how to find the notebook thyself!"'
+L0320: db 00
+L0321: db '"Thou hast not enough room to take my key! Unload thy belong'
+ db 'ings and we shall try all of this again!"*'
+L0387: db 00
+L0388: db '"Then I cannot let thee borrow the notebook!"'
+L03B5: db 00
+L03B6: db '"Oh. Very well, then."*'
+L03CD: db 00
+L03CE: db 'The sage frowns. "That is not correct. Go and seek the true '
+ db 'answer."*'
+L0413: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0002H
+  .extern 090BH
+  .extern 090AH
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 1D 00 00   pushs L0000   ; I don't know
+0007: 1D 0D 00   pushs L000D   ; Have Faith
+000A: 1D 18 00   pushs L0018   ; Strive for Unity
+000D: 1D 29 00   pushs L0029   ; No Answers
+0010: 1D 34 00   pushs L0034   ; Be Good
+0013: 1E 05 00   arrc 0005H   ; 5
+0016: 24 00 00   call [0000]   ; 090BH
+0019: 12 00 00   pop [0000]
+001C: 21 00 00   push [0000]
+001F: 1D 3C 00   pushs L003C   ; No Answers
+0022: 22   cmpeq
+0023: 05 73 00   jne 0099
+0026: 1C 47 00   addsi L0047   ; The sage smiles. ...
+0029: 33   say
+002A: 24 01 00   call [0001]   ; 090AH
+002D: 12 01 00   pop [0001]
+0030: 21 01 00   push [0001]
+0033: 05 5B 00   jne 0091
+0036: 1C 21 01   addsi L0121   ; "Very well. Dost ...
+0039: 33   say
+003A: 24 01 00   call [0001]   ; 090AH
+003D: 12 02 00   pop [0002]
+0040: 21 02 00   push [0002]
+0043: 05 43 00   jne 0089
+0046: 1F 99 FE   pushi FE99H   ; -359
+0049: 1F FE 00   pushi 00FEH   ; 254
+004C: 1F 81 02   pushi 0281H   ; 641
+004F: 1F 9B FE   pushi FE9BH   ; -357
+0052: 38 28 00 04  callis 0028, 4
+0056: 05 07 00   jne 0060
+0059: 1C 57 01   addsi L0157   ; "Then go find it!...
+005C: 33   say
+005D: 06 25 00   jmp 0085
+0060: 14   push false
+0061: 1F 99 FE   pushi FE99H   ; -359
+0064: 1F FE 00   pushi 00FEH   ; 254
+0067: 1F 81 02   pushi 0281H   ; 641
+006A: 1F 01 00   pushi 0001H   ; 1
+006D: 38 2C 00 05  callis 002C, 5
+0071: 12 03 00   pop [0003]
+0074: 21 03 00   push [0003]
+0077: 05 07 00   jne 0081
+007A: 1C 7D 01   addsi L017D   ; "Very well. I am ...
+007D: 33   say
+007E: 06 04 00   jmp 0085
+0081: 1C 21 03   addsi L0321   ; "Thou hast not en...
+0084: 33   say
+0085: 3F   abrt
+0086: 06 05 00   jmp 008E
+0089: 1C 88 03   addsi L0388   ; "Then I cannot le...
+008C: 33   say
+008D: 3F   abrt
+008E: 06 05 00   jmp 0096
+0091: 1C B6 03   addsi L03B6   ; "Oh. Very well, t...
+0094: 33   say
+0095: 3F   abrt
+0096: 06 05 00   jmp 009E
+0099: 1C CE 03   addsi L03CE   ; The sage frowns. ...
+009C: 33   say
+009D: 3F   abrt
+009E: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+00A2: 25   ret

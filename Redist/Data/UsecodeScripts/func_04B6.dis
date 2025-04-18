@@ -1,0 +1,312 @@
+  .funcnumber 04B6H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You are greeted by a friendly gargoyle.'
+L0034: db 00
+L0035: db '"To see you are doing well, human," says Inmanilem.'
+L0068: db 00
+L0069: db 'name'
+L006D: db 00
+L006E: db '"To be called Inmanilem, human. To wish information about Te'
+ db 'rfin?"'
+L00B0: db 00
+L00B1: db 'name'
+L00B5: db 00
+L00B6: db 'Inmanilem'
+L00BF: db 00
+L00C0: db 'information'
+L00CB: db 00
+L00CC: db 'Inmanilem'
+L00D5: db 00
+L00D6: db '"To be Gargoyle for `make healed one.'"'
+L00FD: db 00
+L00FE: db 'Inmanilem'
+L0107: db 00
+L0108: db 'job'
+L010B: db 00
+L010C: db '"To be the healer."'
+L011F: db 00
+L0120: db 'heal'
+L0124: db 00
+L0125: db 'conflicts'
+L012E: db 00
+L012F: db 'heal'
+L0133: db 00
+L0134: db '"To feel sorry, but to be busy with other things now. To ask'
+ db ' you to come back when I have the time to heal you."'
+L01A4: db 00
+L01A5: db 'Heal'
+L01A9: db 00
+L01AA: db 'information'
+L01B5: db 00
+L01B6: db '"To tell you to seek out Draxinusom, human, or Forbrak. To h'
+ db 'ave much information about Terfin."'
+L0215: db 00
+L0216: db 'information'
+L0221: db 00
+L0222: db 'Terfin'
+L0228: db 00
+L0229: db 'Forbrak'
+L0230: db 00
+L0231: db 'Draxinusom'
+L023B: db 00
+L023C: db 'Forbrak'
+L0243: db 00
+L0244: db '"To be the tavernkeeper. To be very strong of body, and of m'
+ db 'ind."'
+L0285: db 00
+L0286: db 'Forbrak'
+L028D: db 00
+L028E: db 'Terfin'
+L0294: db 00
+L0295: db '"To be the city of gargoyles. To be the one of two towns whe'
+ db 're many gargoyles live. To like it here," he adds, smiling.'
+L030C: db 00
+L030D: db 'Terfin'
+L0313: db 00
+L0314: db 'one?'
+L0318: db 00
+L0319: db 'one?'
+L031D: db 00
+L031E: db '"To tell you the other is called Vesper. To be in the desert'
+ db ' in northeastern Britannia. To have also humans living there'
+ db ', unlike here."'
+L03A5: db 00
+L03A6: db 'one?'
+L03AA: db 00
+L03AB: db 'Draxinusom'
+L03B5: db 00
+L03B6: db '"To be our leader. To live near the Hall of Knowledge."'
+L03ED: db 00
+L03EE: db 'Draxinusom'
+L03F8: db 00
+L03F9: db 'Hall'
+L03FD: db 00
+L03FE: db 'Hall'
+L0402: db 00
+L0403: db '"To be where the three altars of singularity are kept."'
+L043A: db 00
+L043B: db 'Hall'
+L043F: db 00
+L0440: db 'altars'
+L0446: db 00
+L0447: db 'altars'
+L044D: db 00
+L044E: db '"To be Passion, Control, and Diligence. To be the values tha'
+ db 't most gargoyles hold as the key of our existence."'
+L04BD: db 00
+L04BE: db 'altars'
+L04C4: db 00
+L04C5: db 'key'
+L04C8: db 00
+L04C9: db 'most gargoyles'
+L04D7: db 00
+L04D8: db 'key'
+L04DB: db 00
+L04DC: db 'He nods his head emphatically. "To be quite similar to the h'
+ db 'uman concept of virtues."'
+L0531: db 00
+L0532: db 'key'
+L0535: db 00
+L0536: db 'most gargoyles'
+L0544: db 00
+L0545: db '"There is a rival now -- The Fellowship. To know not if it i'
+ db 's good or bad, but to know I do not follow it!"'
+L05B0: db 00
+L05B1: db 'most gargoyles'
+L05BF: db 00
+L05C0: db 'conflicts'
+L05C9: db 00
+L05CA: db '"To know only of one dissatisfied gargoyle. To have always b'
+ db 'een problem, but now acting hostile and aggressive. To be na'
+ db 'med Silamo, the gardener.~~"To recommend you talk to Silamo.'
+ db '"'
+L067F: db 00
+L0680: db 'conflicts'
+L0689: db 00
+L068A: db 'bye'
+L068D: db 00
+L068E: db '"To wish you good health, human."*'
+L06B0: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 089DH
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DE 01   jne 01E6
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 4A FF   pushi FF4AH   ; -182
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1F 4A FF   pushi FF4AH   ; -182
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 42 47 02   pushf flag:[0247]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; You are greeted b...
+0032: 33   say
+0033: 13   push true
+0034: 43 47 02   popf flag:[0247]
+0037: 06 04 00   jmp 003E
+003A: 1C 35 00   addsi L0035   ; "To see you are d...
+003D: 33   say
+003E: 04 A0 01   je 01E1
+0041: 1D 69 00   pushs L0069   ; name
+0044: 07 01 00 18 00  cmps 0001H, 0061
+0049: 1C 6E 00   addsi L006E   ; "To be called Inm...
+004C: 33   say
+004D: 1D B1 00   pushs L00B1   ; name
+0050: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0054: 1D B6 00   pushs L00B6   ; Inmanilem
+0057: 1D C0 00   pushs L00C0   ; information
+005A: 1E 02 00   arrc 0002H   ; 2
+005D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0061: 1D CC 00   pushs L00CC   ; Inmanilem
+0064: 07 01 00 0B 00  cmps 0001H, 0074
+0069: 1C D6 00   addsi L00D6   ; "To be Gargoyle f...
+006C: 33   say
+006D: 1D FE 00   pushs L00FE   ; Inmanilem
+0070: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0074: 1D 08 01   pushs L0108   ; job
+0077: 07 01 00 18 00  cmps 0001H, 0094
+007C: 1C 0C 01   addsi L010C   ; "To be the healer."
+007F: 33   say
+0080: 1D 20 01   pushs L0120   ; heal
+0083: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0087: 42 44 02   pushf flag:[0244]
+008A: 05 07 00   jne 0094
+008D: 1D 25 01   pushs L0125   ; conflicts
+0090: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0094: 1D 2F 01   pushs L012F   ; heal
+0097: 07 01 00 43 00  cmps 0001H, 00DF
+009C: 38 3B 00 00  callis 003B, 0
+00A0: 12 01 00   pop [0001]
+00A3: 21 01 00   push [0001]
+00A6: 1F 02 00   pushi 0002H   ; 2
+00A9: 22   cmpeq
+00AA: 21 01 00   push [0001]
+00AD: 1F 03 00   pushi 0003H   ; 3
+00B0: 22   cmpeq
+00B1: 21 01 00   push [0001]
+00B4: 1F 04 00   pushi 0004H   ; 4
+00B7: 22   cmpeq
+00B8: 21 01 00   push [0001]
+00BB: 1F 05 00   pushi 0005H   ; 5
+00BE: 22   cmpeq
+00BF: 0F   or
+00C0: 0F   or
+00C1: 0F   or
+00C2: 05 0F 00   jne 00D4
+00C5: 1F AE 01   pushi 01AEH   ; 430
+00C8: 1F 0A 00   pushi 000AH   ; 10
+00CB: 1F 19 00   pushi 0019H   ; 25
+00CE: 24 00 00   call [0000]   ; 089DH
+00D1: 06 04 00   jmp 00D8
+00D4: 1C 34 01   addsi L0134   ; "To feel sorry, b...
+00D7: 33   say
+00D8: 1D A5 01   pushs L01A5   ; Heal
+00DB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DF: 1D AA 01   pushs L01AA   ; information
+00E2: 07 01 00 1B 00  cmps 0001H, 0102
+00E7: 1C B6 01   addsi L01B6   ; "To tell you to s...
+00EA: 33   say
+00EB: 1D 16 02   pushs L0216   ; information
+00EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F2: 1D 22 02   pushs L0222   ; Terfin
+00F5: 1D 29 02   pushs L0229   ; Forbrak
+00F8: 1D 31 02   pushs L0231   ; Draxinusom
+00FB: 1E 03 00   arrc 0003H   ; 3
+00FE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0102: 1D 3C 02   pushs L023C   ; Forbrak
+0105: 07 01 00 0B 00  cmps 0001H, 0115
+010A: 1C 44 02   addsi L0244   ; "To be the tavern...
+010D: 33   say
+010E: 1D 86 02   pushs L0286   ; Forbrak
+0111: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0115: 1D 8E 02   pushs L028E   ; Terfin
+0118: 07 01 00 12 00  cmps 0001H, 012F
+011D: 1C 95 02   addsi L0295   ; "To be the city o...
+0120: 33   say
+0121: 1D 0D 03   pushs L030D   ; Terfin
+0124: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0128: 1D 14 03   pushs L0314   ; one?
+012B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012F: 1D 19 03   pushs L0319   ; one?
+0132: 07 01 00 0B 00  cmps 0001H, 0142
+0137: 1C 1E 03   addsi L031E   ; "To tell you the ...
+013A: 33   say
+013B: 1D A6 03   pushs L03A6   ; one?
+013E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0142: 1D AB 03   pushs L03AB   ; Draxinusom
+0145: 07 01 00 12 00  cmps 0001H, 015C
+014A: 1C B6 03   addsi L03B6   ; "To be our leader...
+014D: 33   say
+014E: 1D EE 03   pushs L03EE   ; Draxinusom
+0151: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0155: 1D F9 03   pushs L03F9   ; Hall
+0158: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015C: 1D FE 03   pushs L03FE   ; Hall
+015F: 07 01 00 12 00  cmps 0001H, 0176
+0164: 1C 03 04   addsi L0403   ; "To be where the ...
+0167: 33   say
+0168: 1D 3B 04   pushs L043B   ; Hall
+016B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016F: 1D 40 04   pushs L0440   ; altars
+0172: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0176: 1D 47 04   pushs L0447   ; altars
+0179: 07 01 00 18 00  cmps 0001H, 0196
+017E: 1C 4E 04   addsi L044E   ; "To be Passion, C...
+0181: 33   say
+0182: 1D BE 04   pushs L04BE   ; altars
+0185: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0189: 1D C5 04   pushs L04C5   ; key
+018C: 1D C9 04   pushs L04C9   ; most gargoyles
+018F: 1E 02 00   arrc 0002H   ; 2
+0192: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0196: 1D D8 04   pushs L04D8   ; key
+0199: 07 01 00 0B 00  cmps 0001H, 01A9
+019E: 1C DC 04   addsi L04DC   ; He nods his head ...
+01A1: 33   say
+01A2: 1D 32 05   pushs L0532   ; key
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1D 36 05   pushs L0536   ; most gargoyles
+01AC: 07 01 00 0B 00  cmps 0001H, 01BC
+01B1: 1C 45 05   addsi L0545   ; "There is a rival...
+01B4: 33   say
+01B5: 1D B1 05   pushs L05B1   ; most gargoyles
+01B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BC: 1D C0 05   pushs L05C0   ; conflicts
+01BF: 07 01 00 0F 00  cmps 0001H, 01D3
+01C4: 1C CA 05   addsi L05CA   ; "To know only of ...
+01C7: 33   say
+01C8: 1D 80 06   pushs L0680   ; conflicts
+01CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CF: 13   push true
+01D0: 43 3D 02   popf flag:[023D]
+01D3: 1D 8A 06   pushs L068A   ; bye
+01D6: 07 01 00 03 00  cmps 0001H, 01DE
+01DB: 06 03 00   jmp 01E1
+01DE: 06 5D FE   jmp 003E
+01E1: 40   db 40 ???
+01E2: 1C 8E 06   addsi L068E   ; "To wish you good...
+01E5: 33   say
+01E6: 48   push eventid
+01E7: 1F 00 00   pushi 0000H   ; 0
+01EA: 22   cmpeq
+01EB: 05 06 00   jne 01F4
+01EE: 1F 4A FF   pushi FF4AH   ; -182
+01F1: 24 01 00   call [0001]   ; 092FH
+01F4: 25   ret

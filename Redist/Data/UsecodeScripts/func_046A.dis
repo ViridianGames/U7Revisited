@@ -1,0 +1,277 @@
+  .funcnumber 046AH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see an unkempt, yet dapper man talking to himself.'
+L0043: db 00
+L0044: db '"Eh, wot's that? Oh, it's you, '
+L0063: db 00
+L0064: db '."'
+L0066: db 00
+L0067: db 'name'
+L006B: db 00
+L006C: db '"M'name's Tiery, '
+L007D: db 00
+L007E: db '."'
+L0080: db 00
+L0081: db 'name'
+L0085: db 00
+L0086: db 'job'
+L0089: db 00
+L008A: db '"Eh, 'ow's that? Oh, m'job. Why, Oi take good care o' me bud'
+ db 'dies in the graveyard 'ere in Empath Abbey, Oi do."'
+L00F9: db 00
+L00FA: db 'buddies'
+L0101: db 00
+L0102: db 'Empath Abbey'
+L010E: db 00
+L010F: db 'Empath Abbey'
+L011B: db 00
+L011C: db '"What do ye mean did Oi 'umpeth Abby. 'Course Oi didn't. Oi '
+ db 'never went anywhere near Abby. 'Oo told ye that?"'
+L0189: db 00
+L018A: db ''Umpeth Abby'
+L0196: db 00
+L0197: db 'Empath Abbey'
+L01A3: db 00
+L01A4: db ''Umpeth Abby'
+L01B0: db 00
+L01B1: db '"Empath Abbey? Why, this 'ere's Empath Abbey, '
+L01DF: db 00
+L01E0: db '. Oi don't mean to pry, but if ye knowest not where ye be, w'
+ db 'hy 'ave ye come 'ere?" He shakes his head. "It's just as Oi '
+ db 'was tellin' Darek the other day, `If ye never want to be los'
+ db 't,' Oi said, `don't ever go nowheres.'"'
+L02BB: db 00
+L02BC: db ''Umpeth Abby'
+L02C8: db 00
+L02C9: db 'buddies'
+L02D0: db 00
+L02D1: db '"What wrong with the bodies? Oi don' do nothing more than bu'
+ db 'ry 'em! A fellow could get in lots o' trouble spreading rumo'
+ db 'rs like that."'
+L0357: db 00
+L0358: db 'bodies'
+L035E: db 00
+L035F: db 'bury'
+L0363: db 00
+L0364: db 'buddies'
+L036B: db 00
+L036C: db 'bury'
+L0370: db 00
+L0371: db '"Barry? Oh, 'im. Oi don't know what ye's talkin' about. Oi n'
+ db 'ever met Barry's woife! 'Twas just a lie they's spreadin' ab'
+ db 'out me."'
+L03F1: db 00
+L03F2: db 'bury'
+L03F6: db 00
+L03F7: db 'Barry'
+L03FC: db 00
+L03FD: db 'Barry'
+L0402: db 00
+L0403: db '"Oi already told ye that's m'job."'
+L0425: db 00
+L0426: db 'Barry'
+L042B: db 00
+L042C: db 'bodies'
+L0432: db 00
+L0433: db '"That's right. M'buddies! Oi bury 'em. It's m'job." He squin'
+ db 'ts at you. "Unless, '
+L0483: db 00
+L0484: db ', yer askin' about the people 'ere?"'
+L04A8: db 00
+L04A9: db 'people'
+L04AF: db 00
+L04B0: db 'bodies'
+L04B6: db 00
+L04B7: db 'people'
+L04BD: db 00
+L04BE: db '"No! Of course Oi don't use peep holes. What sort o' questio'
+ db 'n is that to ask a fellow, '
+L0515: db 00
+L0516: db '?"'
+L0518: db 00
+L0519: db 'peep hole'
+L0522: db 00
+L0523: db 'people'
+L0529: db 00
+L052A: db 'peep hole'
+L0533: db 00
+L0534: db '"Well, Oi only know a few people 'ere, but Oi'll try an' 'el'
+ db 'p as best as Oi am able. 'Oo do ye want to know about? My tw'
+ db 'o best friends are Garth an' Darek, but Oi often talk to Nin'
+ db 'a an' Bart when Oi get the chance.~~'
+L060C: db 00
+L060D: db '"Recently, that Perrin fellow from across the way 'as been s'
+ db 'pendin' some toime with me. 'E's a real nice chap. A l'ttle '
+ db 'brainy, perhaps, '
+L0696: db 00
+L0697: db ', but Oi like 'im just the same. Anyone else ye'd like to kn'
+ db 'ow about?"'
+L06DD: db 00
+L06DE: db '"Well, that Perrin fellow'd be a better one to ask than Oi'd'
+ db ' be, '
+L071F: db 00
+L0720: db '. 'E knows a lot, that one does."'
+L0741: db 00
+L0742: db '"All right then, glad Oi could introduce ye to a few o' my f'
+ db 'riends."'
+L0786: db 00
+L0787: db 'peep hole'
+L0790: db 00
+L0791: db 'bye'
+L0794: db 00
+L0795: db '"G'day, '
+L079D: db 00
+L079E: db '. 'Ave a pleasant journey. Oi'll tell Malc 'allo for ye."*'
+L07D8: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0003H
+  .extern 0908H
+  .extern 0909H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 84 01   jne 018C
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 96 FF   pushi FF96H   ; -106
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 44 01   pushf flag:[0144]
+0031: 10   not
+0032: 05 0B 00   jne 0040
+0035: 1C 0D 00   addsi L000D   ; You see an unkemp...
+0038: 33   say
+0039: 13   push true
+003A: 43 44 01   popf flag:[0144]
+003D: 06 0A 00   jmp 004A
+0040: 1C 44 00   addsi L0044   ; "Eh, wot's that? ...
+0043: 2F 01 00   addsv [0001]
+0046: 1C 64 00   addsi L0064   ; ."
+0049: 33   say
+004A: 04 34 01   je 0181
+004D: 1D 67 00   pushs L0067   ; name
+0050: 07 01 00 11 00  cmps 0001H, 0066
+0055: 1C 6C 00   addsi L006C   ; "M'name's Tiery, 
+0058: 2F 01 00   addsv [0001]
+005B: 1C 7E 00   addsi L007E   ; ."
+005E: 33   say
+005F: 1D 81 00   pushs L0081   ; name
+0062: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0066: 1D 86 00   pushs L0086   ; job
+0069: 07 01 00 11 00  cmps 0001H, 007F
+006E: 1C 8A 00   addsi L008A   ; "Eh, 'ow's that? ...
+0071: 33   say
+0072: 1D FA 00   pushs L00FA   ; buddies
+0075: 1D 02 01   pushs L0102   ; Empath Abbey
+0078: 1E 02 00   arrc 0002H   ; 2
+007B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007F: 1D 0F 01   pushs L010F   ; Empath Abbey
+0082: 07 01 00 12 00  cmps 0001H, 0099
+0087: 1C 1C 01   addsi L011C   ; "What do ye mean ...
+008A: 33   say
+008B: 1D 8A 01   pushs L018A   ; 'Umpeth Abby
+008E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0092: 1D 97 01   pushs L0197   ; Empath Abbey
+0095: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0099: 1D A4 01   pushs L01A4   ; 'Umpeth Abby
+009C: 07 01 00 11 00  cmps 0001H, 00B2
+00A1: 1C B1 01   addsi L01B1   ; "Empath Abbey? Wh...
+00A4: 2F 01 00   addsv [0001]
+00A7: 1C E0 01   addsi L01E0   ; . Oi don't mean t...
+00AA: 33   say
+00AB: 1D BC 02   pushs L02BC   ; 'Umpeth Abby
+00AE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B2: 1D C9 02   pushs L02C9   ; buddies
+00B5: 07 01 00 18 00  cmps 0001H, 00D2
+00BA: 1C D1 02   addsi L02D1   ; "What wrong with ...
+00BD: 33   say
+00BE: 1D 58 03   pushs L0358   ; bodies
+00C1: 1D 5F 03   pushs L035F   ; bury
+00C4: 1E 02 00   arrc 0002H   ; 2
+00C7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CB: 1D 64 03   pushs L0364   ; buddies
+00CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D2: 1D 6C 03   pushs L036C   ; bury
+00D5: 07 01 00 12 00  cmps 0001H, 00EC
+00DA: 1C 71 03   addsi L0371   ; "Barry? Oh, 'im. ...
+00DD: 33   say
+00DE: 1D F2 03   pushs L03F2   ; bury
+00E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E5: 1D F7 03   pushs L03F7   ; Barry
+00E8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EC: 1D FD 03   pushs L03FD   ; Barry
+00EF: 07 01 00 0B 00  cmps 0001H, 00FF
+00F4: 1C 03 04   addsi L0403   ; "Oi already told ...
+00F7: 33   say
+00F8: 1D 26 04   pushs L0426   ; Barry
+00FB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FF: 1D 2C 04   pushs L042C   ; bodies
+0102: 07 01 00 18 00  cmps 0001H, 011F
+0107: 1C 33 04   addsi L0433   ; "That's right. M'...
+010A: 2F 01 00   addsv [0001]
+010D: 1C 84 04   addsi L0484   ; , yer askin' abou...
+0110: 33   say
+0111: 1D A9 04   pushs L04A9   ; people
+0114: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0118: 1D B0 04   pushs L04B0   ; bodies
+011B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011F: 1D B7 04   pushs L04B7   ; people
+0122: 07 01 00 18 00  cmps 0001H, 013F
+0127: 1C BE 04   addsi L04BE   ; "No! Of course Oi...
+012A: 2F 01 00   addsv [0001]
+012D: 1C 16 05   addsi L0516   ; ?"
+0130: 33   say
+0131: 1D 19 05   pushs L0519   ; peep hole
+0134: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0138: 1D 23 05   pushs L0523   ; people
+013B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013F: 1D 2A 05   pushs L052A   ; peep hole
+0142: 07 01 00 2C 00  cmps 0001H, 0173
+0147: 1C 34 05   addsi L0534   ; "Well, Oi only kn...
+014A: 33   say
+014B: 1C 0D 06   addsi L060D   ; "Recently, that P...
+014E: 2F 01 00   addsv [0001]
+0151: 1C 97 06   addsi L0697   ; , but Oi like 'im...
+0154: 33   say
+0155: 24 02 00   call [0002]   ; 090AH
+0158: 05 0D 00   jne 0168
+015B: 1C DE 06   addsi L06DE   ; "Well, that Perri...
+015E: 2F 01 00   addsv [0001]
+0161: 1C 20 07   addsi L0720   ; . 'E knows a lot,...
+0164: 33   say
+0165: 06 04 00   jmp 016C
+0168: 1C 42 07   addsi L0742   ; "All right then, ...
+016B: 33   say
+016C: 1D 87 07   pushs L0787   ; peep hole
+016F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0173: 1D 91 07   pushs L0791   ; bye
+0176: 07 01 00 03 00  cmps 0001H, 017E
+017B: 06 03 00   jmp 0181
+017E: 06 C9 FE   jmp 004A
+0181: 40   db 40 ???
+0182: 1C 95 07   addsi L0795   ; "G'day, 
+0185: 2F 01 00   addsv [0001]
+0188: 1C 9E 07   addsi L079E   ; . 'Ave a pleasant...
+018B: 33   say
+018C: 48   push eventid
+018D: 1F 00 00   pushi 0000H   ; 0
+0190: 22   cmpeq
+0191: 05 01 00   jne 0195
+0194: 3F   abrt
+0195: 25   ret

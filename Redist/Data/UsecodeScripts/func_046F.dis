@@ -1,0 +1,212 @@
+  .funcnumber 046FH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a troll, sulking in his cell. As he breathes, you ca'
+ db 'n see his ribs protrude out from under his hide.'
+L0079: db 00
+L007A: db '"What you want?" growls Gharl.'
+L0098: db 00
+L0099: db 'name'
+L009D: db 00
+L009E: db '"I Gharl."'
+L00A8: db 00
+L00A9: db 'name'
+L00AD: db 00
+L00AE: db 'job'
+L00B1: db 00
+L00B2: db 'He shakes his head. "No job. Hunt. Eat. Sleep. Now," he gest'
+ db 'ures around the cell, "no hunt, no eat, just sleep."'
+L0122: db 00
+L0123: db 'sleep'
+L0128: db 00
+L0129: db 'eat'
+L012C: db 00
+L012D: db 'hunt'
+L0131: db 00
+L0132: db 'hunt'
+L0136: db 00
+L0137: db '"I good hunter. Catch many things."'
+L015A: db 00
+L015B: db 'hunt'
+L015F: db 00
+L0160: db 'sleep'
+L0165: db 00
+L0166: db '"I still do that," he says, shrugging. "But not as good as w'
+ db 'hen home."'
+L01AC: db 00
+L01AD: db 'sleep'
+L01B2: db 00
+L01B3: db 'home'
+L01B7: db 00
+L01B8: db 'home'
+L01BC: db 00
+L01BD: db 'He stares at you oddly and says, "With other trolls, fleshfa'
+ db 'ce! Under bridges."'
+L020C: db 00
+L020D: db 'home'
+L0211: db 00
+L0212: db 'eat'
+L0215: db 00
+L0216: db '"No eat." He shakes his head. "Not feed. Hate jailer!" he gr'
+ db 'owls.'
+L0257: db 00
+L0258: db 'eat'
+L025B: db 00
+L025C: db 'offer food'
+L0266: db 00
+L0267: db 'offer food'
+L0271: db 00
+L0272: db '"You give me food?" His face displays a mixture of surprise '
+ db 'and hope. "You give me food, I tell you secret. Yes?"'
+L02E3: db 00
+L02E4: db 'He quickly devours the food.~~"I thank. You want secret?"'
+L031D: db 00
+L031E: db 'secret'
+L0324: db 00
+L0325: db '"You taunt me. I not like you."*'
+L0345: db 00
+L0346: db '"Go away."*'
+L0351: db 00
+L0352: db 'offer food'
+L035C: db 00
+L035D: db 'secret'
+L0363: db 00
+L0364: db '"Trolls have powerful ally. He warn us in head when trouble '
+ db 'around corner."'
+L03AF: db 00
+L03B0: db 'secret'
+L03B6: db 00
+L03B7: db 'bye'
+L03BA: db 00
+L03BB: db 'He grunts and turns away.*'
+L03D5: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0003H
+  .extern 0908H
+  .extern 0909H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 40 01   jne 0148
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 91 FF   pushi FF91H   ; -111
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 49 01   pushf flag:[0149]
+0031: 10   not
+0032: 05 07 00   jne 003C
+0035: 1C 0D 00   addsi L000D   ; You see a troll, ...
+0038: 33   say
+0039: 06 04 00   jmp 0040
+003C: 1C 7A 00   addsi L007A   ; "What you want?" ...
+003F: 33   say
+0040: 04 00 01   je 0143
+0043: 1D 99 00   pushs L0099   ; name
+0046: 07 01 00 0B 00  cmps 0001H, 0056
+004B: 1C 9E 00   addsi L009E   ; "I Gharl."
+004E: 33   say
+004F: 1D A9 00   pushs L00A9   ; name
+0052: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0056: 1D AE 00   pushs L00AE   ; job
+0059: 07 01 00 14 00  cmps 0001H, 0072
+005E: 1C B2 00   addsi L00B2   ; He shakes his hea...
+0061: 33   say
+0062: 1D 23 01   pushs L0123   ; sleep
+0065: 1D 29 01   pushs L0129   ; eat
+0068: 1D 2D 01   pushs L012D   ; hunt
+006B: 1E 03 00   arrc 0003H   ; 3
+006E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0072: 1D 32 01   pushs L0132   ; hunt
+0075: 07 01 00 0B 00  cmps 0001H, 0085
+007A: 1C 37 01   addsi L0137   ; "I good hunter. C...
+007D: 33   say
+007E: 1D 5B 01   pushs L015B   ; hunt
+0081: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0085: 1D 60 01   pushs L0160   ; sleep
+0088: 07 01 00 12 00  cmps 0001H, 009F
+008D: 1C 66 01   addsi L0166   ; "I still do that,...
+0090: 33   say
+0091: 1D AD 01   pushs L01AD   ; sleep
+0094: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0098: 1D B3 01   pushs L01B3   ; home
+009B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009F: 1D B8 01   pushs L01B8   ; home
+00A2: 07 01 00 0B 00  cmps 0001H, 00B2
+00A7: 1C BD 01   addsi L01BD   ; He stares at you ...
+00AA: 33   say
+00AB: 1D 0D 02   pushs L020D   ; home
+00AE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B2: 1D 12 02   pushs L0212   ; eat
+00B5: 07 01 00 12 00  cmps 0001H, 00CC
+00BA: 1C 16 02   addsi L0216   ; "No eat." He shak...
+00BD: 33   say
+00BE: 1D 58 02   pushs L0258   ; eat
+00C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C5: 1D 5C 02   pushs L025C   ; offer food
+00C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CC: 1D 67 02   pushs L0267   ; offer food
+00CF: 07 01 00 4E 00  cmps 0001H, 0122
+00D4: 1C 72 02   addsi L0272   ; "You give me food...
+00D7: 33   say
+00D8: 24 02 00   call [0002]   ; 090AH
+00DB: 12 02 00   pop [0002]
+00DE: 21 02 00   push [0002]
+00E1: 05 32 00   jne 0116
+00E4: 1F 00 00   pushi 0000H   ; 0
+00E7: 1F 99 FE   pushi FE99H   ; -359
+00EA: 1F 99 FE   pushi FE99H   ; -359
+00ED: 1F 79 01   pushi 0179H   ; 377
+00F0: 1F 01 00   pushi 0001H   ; 1
+00F3: 38 2B 00 05  callis 002B, 5
+00F7: 12 03 00   pop [0003]
+00FA: 21 03 00   push [0003]
+00FD: 05 0E 00   jne 010E
+0100: 1C E4 02   addsi L02E4   ; He quickly devour...
+0103: 33   say
+0104: 1D 1E 03   pushs L031E   ; secret
+0107: 39 05 00 01  calli _AddAnswer@1  ; 0005
+010B: 06 05 00   jmp 0113
+010E: 1C 25 03   addsi L0325   ; "You taunt me. I ...
+0111: 33   say
+0112: 3F   abrt
+0113: 06 05 00   jmp 011B
+0116: 1C 46 03   addsi L0346   ; "Go away."*
+0119: 33   say
+011A: 3F   abrt
+011B: 1D 52 03   pushs L0352   ; offer food
+011E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0122: 1D 5D 03   pushs L035D   ; secret
+0125: 07 01 00 0B 00  cmps 0001H, 0135
+012A: 1C 64 03   addsi L0364   ; "Trolls have powe...
+012D: 33   say
+012E: 1D B0 03   pushs L03B0   ; secret
+0131: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0135: 1D B7 03   pushs L03B7   ; bye
+0138: 07 01 00 03 00  cmps 0001H, 0140
+013D: 06 03 00   jmp 0143
+0140: 06 FD FE   jmp 0040
+0143: 40   db 40 ???
+0144: 1C BB 03   addsi L03BB   ; He grunts and tur...
+0147: 33   say
+0148: 48   push eventid
+0149: 1F 00 00   pushi 0000H   ; 0
+014C: 22   cmpeq
+014D: 05 01 00   jne 0151
+0150: 3F   abrt
+0151: 25   ret

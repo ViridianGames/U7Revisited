@@ -1,0 +1,52 @@
+  .funcnumber 091BH
+  .data
+L0000: db ' '
+L0001: db 00
+L0002: db 'sell '
+L0007: db 00
+L0008: db 'sells '
+L000E: db 00
+L000F: db 'for '
+L0013: db 00
+L0014: db ' gold'
+L0019: db 00
+L001A: db '.'
+L001B: db 00
+  .code
+  .argc 0005H
+  .localc 0001H
+  .externsize 0000H
+0000: 21 04 00   push [0004]
+0003: 21 03 00   push [0003]
+0006: 09   add
+0007: 1D 00 00   pushs L0000   ;  
+000A: 09   add
+000B: 12 05 00   pop [0005]
+000E: 21 02 00   push [0002]
+0011: 1F 01 00   pushi 0001H   ; 1
+0014: 22   cmpeq
+0015: 05 0D 00   jne 0025
+0018: 21 05 00   push [0005]
+001B: 1D 02 00   pushs L0002   ; sell 
+001E: 09   add
+001F: 12 05 00   pop [0005]
+0022: 06 0A 00   jmp 002F
+0025: 21 05 00   push [0005]
+0028: 1D 08 00   pushs L0008   ; sells 
+002B: 09   add
+002C: 12 05 00   pop [0005]
+002F: 21 05 00   push [0005]
+0032: 1D 0F 00   pushs L000F   ; for 
+0035: 09   add
+0036: 21 01 00   push [0001]
+0039: 09   add
+003A: 1D 14 00   pushs L0014   ;  gold
+003D: 09   add
+003E: 21 00 00   push [0000]
+0041: 09   add
+0042: 1D 1A 00   pushs L001A   ; .
+0045: 09   add
+0046: 12 05 00   pop [0005]
+0049: 21 05 00   push [0005]
+004C: 2D   setr
+004D: 32   rts

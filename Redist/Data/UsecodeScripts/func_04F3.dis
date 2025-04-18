@@ -1,0 +1,463 @@
+  .funcnumber 04F3H
+  .data
+L0000: db 'You see before you a short, roly-poly man with a pompous smi'
+ db 'rk on his face. He is holding a lantern in one hand and a di'
+ db 'rty spoon in the other.'
+L008F: db 00
+L0090: db '"Hello, good friend," says Malloy. "A pleasure to see thee a'
+ db 'gain."'
+L00D2: db 00
+L00D3: db 'bye'
+L00D6: db 00
+L00D7: db 'job'
+L00DA: db 00
+L00DB: db 'name'
+L00DF: db 00
+L00E0: db 'helmet on foot'
+L00EE: db 00
+L00EF: db 'name'
+L00F3: db 00
+L00F4: db '"My name is Malloy. Pleased to make thine acquaintance." Mal'
+ db 'loy bows politely.'
+L0142: db 00
+L0143: db 'Malloy's face carries an exasperated smirk. "My partner over'
+ db ' there is Owings," he says, pointing to Owings, the skinny m'
+ db 'an digging away next to him. "Where are thy manners?! Say he'
+ db 'llo to our visitor!"'
+L020B: db 00
+L020C: db '"Thou dost already know my partner over there," he says, poi'
+ db 'nting to Owings.'
+L0258: db 00
+L0259: db '"Hello there!" says Owings, giving you a big smile. The fron'
+ db 't of his mining helmet falls down over his eyes. Blinded, he'
+ db ' gropes the air around him.*'
+L02ED: db 00
+L02EE: db 'Malloy shakes his head sadly.*'
+L030C: db 00
+L030D: db 'Malloy regains his composure. "Hello there, I am Malloy. I d'
+ db 'o apologize for my partner's childish antics."'
+L0377: db 00
+L0378: db 'name'
+L037C: db 00
+L037D: db 'job'
+L0380: db 00
+L0381: db '"Normally my job is to dig, but as my partner Owings seems t'
+ db 'o be missing I suppose my job is to look for him. I hope not'
+ db 'hing has happened to the little fellow."'
+L0421: db 00
+L0422: db '"Owings and myself are working as mining engineers, a positi'
+ db 'on we were fortunate enough to have acquired quite recently.'
+ db ' We are working on a special project for the Britannian Mini'
+ db 'ng Company."*'
+L04E3: db 00
+L04E4: db 'Owings gives a big nod, throwing his head back and snapping '
+ db 'it straight down. "That is absolutely right, Malloy."*'
+L0556: db 00
+L0557: db '"That is absolutely right, Malloy," says Owings. He gives a '
+ db 'big nod which causes his helmet to fall down over his eyes.*'
+L05CF: db 00
+L05D0: db 'special project'
+L05DF: db 00
+L05E0: db 'mining engineers'
+L05F0: db 00
+L05F1: db 'mining engineers'
+L0601: db 00
+L0602: db '"My partner and I are not exactly mining engineers, although'
+ db ' we did travel to Minoc to become miners. We came here with '
+ db 'a map..."*'
+L0684: db 00
+L0685: db '"It was the map that the funny man dressed like the Avatar s'
+ db 'old us!"*'
+L06CA: db 00
+L06CB: db '"That is correct. But when we got here we discovered that th'
+ db 'e Britannian Mining Company owned the rights to this area of'
+ db ' land already!"*'
+L0753: db 00
+L0754: db '"That funny man dressed like the Avatar lied to us." Owings '
+ db 'scratches his head thoughtfully. "The Britannian Mining Comp'
+ db 'any wanted to throw us in the prisons of Yew for claim jumpi'
+ db 'ng!"*'
+L080D: db 00
+L080E: db '"I was able to convince them that we would be more valuable '
+ db 'to the Britannian Mining Company if we could come to work fo'
+ db 'r them." Malloy beams proudly.*'
+L08A5: db 00
+L08A6: db 'mining engineers'
+L08B6: db 00
+L08B7: db 'funny man'
+L08C0: db 00
+L08C1: db 'map'
+L08C4: db 00
+L08C5: db 'map'
+L08C8: db 00
+L08C9: db '"We paid nearly a hundred gold pieces for that map. It was s'
+ db 'upposed to lead to a spot of valuable minerals found over a '
+ db 'hundred years ago. It was a terrific investment. The map was'
+ db ' an antique, but it looked like it could not have been more '
+ db 'than a few years old! Thou dost not see preservation like th'
+ db 'at every day!"'
+L0A03: db 00
+L0A04: db 'map'
+L0A07: db 00
+L0A08: db 'funny man'
+L0A11: db 00
+L0A12: db '"Someone told us his name. Let me see if I can remember it..'
+ db '. Sullivan, I think it was. Funny name for an Avatar, but th'
+ db 'ere thou art!"'
+L0A98: db 00
+L0A99: db 'funny man'
+L0AA2: db 00
+L0AA3: db 'special project'
+L0AB2: db 00
+L0AB3: db '"Owings and myself are now involved in a very important spec'
+ db 'ial project, but it is a secret. Can we trust thee?"'
+L0B23: db 00
+L0B24: db '"In that case I thank thee for thine honesty. I do not reall'
+ db 'y mind if a person is untrustworthy. But someone who is untr'
+ db 'ustworthy and dishonest about it, that is something that I c'
+ db 'annot abide."*'
+L0BE6: db 00
+L0BE7: db 'You see Owings nod his head most enthusiastically. A second '
+ db 'later he has a very confused expression on his face.*'
+L0C58: db 00
+L0C59: db '"The Britannian Mining Company has asked us to dig a tunnel '
+ db 'to New Magincia! It will revolutionize the mining industry."'
+L0CD1: db 00
+L0CD2: db '"They do not want anybody to find out about it. They said th'
+ db 'at bringing more mining equipment over here would just make '
+ db 'people suspicious, so they told us to start by using these s'
+ db 'poons!" Owings proudly holds up his spoon to show it to you.'
+ db ' He smiles.'
+L0DCD: db 00
+L0DCE: db '"Yes, it was such a special project they told us we were the'
+ db ' only ones they could think of who would even attempt to do '
+ db 'such a thing!" Malloy beams proudly. "Well come on, Owings, '
+ db 'we had best get back to work. We have a schedule to meet."'
+L0EBC: db 00
+L0EBD: db 'special project'
+L0ECC: db 00
+L0ECD: db 'schedule'
+L0ED5: db 00
+L0ED6: db 'tunnel'
+L0EDC: db 00
+L0EDD: db 'tunnel'
+L0EE3: db 00
+L0EE4: db 'Malloy looks at you and puts a finger to his lips. "Shhhhhhh'
+ db 'h!!! I asked thee not to speak of this to anyone!"'
+L0F52: db 00
+L0F53: db 'tunnel'
+L0F59: db 00
+L0F5A: db 'schedule'
+L0F62: db 00
+L0F63: db '"Owings, have a look at that schedule and find out how we ar'
+ db 'e doing."'
+L0FA8: db 00
+L0FA9: db 'Owings bends over and goes to pick up a very large scroll. A'
+ db 's he touches the tip of it he sends it rolling away down the'
+ db ' mineshaft. As it rolls away it is unravelling leaving a len'
+ db 'gthy trail of paper behind it. Owings chases after it but su'
+ db 'cceeds in doing little else but tangling up his legs in the '
+ db 'long roll of the paper. When at last he has the other end, i'
+ db 't is an unreadable mess.'
+L1129: db 00
+L112A: db '"Give me that!" says Malloy as he snatches a piece of the sc'
+ db 'roll away. He examines it for a moment. "According to this w'
+ db 'e shall be finished in... one hundred and seventy three year'
+ db 's! Owings, we have got to start working faster!" The two of '
+ db 'them go back to digging with their spoons. As they dig Mallo'
+ db 'y turns to Owings and says, "This is another fine mess thou '
+ db 'hast gotten me into!"'
+L12A7: db 00
+L12A8: db 'schedule'
+L12B0: db 00
+L12B1: db 'helmet on foot'
+L12BF: db 00
+L12C0: db 'Malloy kicks out with his foot, trying to dislodge the helme'
+ db 't which is stuck there. He looks at Owings and pouts, "Why d'
+ db 'ost thou not do something to help me?!"'
+L135F: db 00
+L1360: db 'Owings grabs the helmet on Malloy's foot and attempts to dis'
+ db 'lodge it. After several fierce tugs it comes off with a loud'
+ db ' popping noise. Owings pulls the helmet right into his own f'
+ db 'ace and this makes a loud knocking noise.'
+L143D: db 00
+L143E: db 'Malloy goes hurling backwards, crying out in panic. He smack'
+ db 's the back of his head on the rock wall behind him. He takes'
+ db ' off his crumpled helmet and points to it. "A good thing I w'
+ db 'as wearing this or I might have been hurt!" With that a loos'
+ db 'e rock tumbles down from the ceiling landing squarely on his'
+ db ' head. Malloy says "Ooooooh!" Owings breaks into a giggling '
+ db 'fit. Malloy flashes you an incredulous pouting grimace.'
+L15DD: db 00
+L15DE: db 'helmet on foot'
+L15EC: db 00
+L15ED: db 'bye'
+L15F0: db 00
+L15F1: db 'Both Malloy and Owings stop what they are doing and give you'
+ db ' a friendly goodbye wave.*'
+L1647: db 00
+L1648: db '"Good day to thee, '
+L165B: db 00
+L165C: db '."*'
+L165F: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0909H
+  .extern 08F7H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 0D FF   pushi FF0DH   ; -243
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 1F 11 FF   pushi FF11H   ; -239
+001C: 24 01 00   call [0001]   ; 08F7H
+001F: 12 01 00   pop [0001]
+0022: 1F FF FF   pushi FFFFH   ; -1
+0025: 24 01 00   call [0001]   ; 08F7H
+0028: 12 02 00   pop [0002]
+002B: 1F FD FF   pushi FFFDH   ; -3
+002E: 24 01 00   call [0001]   ; 08F7H
+0031: 12 03 00   pop [0003]
+0034: 1F FC FF   pushi FFFCH   ; -4
+0037: 24 01 00   call [0001]   ; 08F7H
+003A: 12 04 00   pop [0004]
+003D: 42 BD 02   pushf flag:[02BD]
+0040: 10   not
+0041: 05 0B 00   jne 004F
+0044: 1C 00 00   addsi L0000   ; You see before yo...
+0047: 33   say
+0048: 13   push true
+0049: 43 BD 02   popf flag:[02BD]
+004C: 06 04 00   jmp 0053
+004F: 1C 90 00   addsi L0090   ; "Hello, good frie...
+0052: 33   say
+0053: 1D D3 00   pushs L00D3   ; bye
+0056: 1D D7 00   pushs L00D7   ; job
+0059: 1D DB 00   pushs L00DB   ; name
+005C: 1E 03 00   arrc 0003H   ; 3
+005F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0063: 42 D9 02   pushf flag:[02D9]
+0066: 05 07 00   jne 0070
+0069: 1D E0 00   pushs L00E0   ; helmet on foot
+006C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0070: 04 50 02   je 02C3
+0073: 1D EF 00   pushs L00EF   ; name
+0076: 07 01 00 54 00  cmps 0001H, 00CF
+007B: 42 DA 02   pushf flag:[02DA]
+007E: 10   not
+007F: 05 42 00   jne 00C4
+0082: 1C F4 00   addsi L00F4   ; "My name is Mallo...
+0085: 33   say
+0086: 21 01 00   push [0001]
+0089: 05 35 00   jne 00C1
+008C: 42 BC 02   pushf flag:[02BC]
+008F: 10   not
+0090: 05 07 00   jne 009A
+0093: 1C 43 01   addsi L0143   ; Malloy's face car...
+0096: 33   say
+0097: 06 04 00   jmp 009E
+009A: 1C 0C 02   addsi L020C   ; "Thou dost alread...
+009D: 33   say
+009E: 1F 00 00   pushi 0000H   ; 0
+00A1: 1F 11 FF   pushi FF11H   ; -239
+00A4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00A8: 1C 59 02   addsi L0259   ; "Hello there!" sa...
+00AB: 33   say
+00AC: 1F 11 FF   pushi FF11H   ; -239
+00AF: 39 04 00 01  calli _HideNPC@1  ; 0004
+00B3: 1F 00 00   pushi 0000H   ; 0
+00B6: 1F 0D FF   pushi FF0DH   ; -243
+00B9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00BD: 1C EE 02   addsi L02EE   ; Malloy shakes his...
+00C0: 33   say
+00C1: 06 04 00   jmp 00C8
+00C4: 1C 0D 03   addsi L030D   ; Malloy regains hi...
+00C7: 33   say
+00C8: 1D 78 03   pushs L0378   ; name
+00CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CF: 1D 7D 03   pushs L037D   ; job
+00D2: 07 01 00 4B 00  cmps 0001H, 0122
+00D7: 21 01 00   push [0001]
+00DA: 10   not
+00DB: 05 07 00   jne 00E5
+00DE: 1C 81 03   addsi L0381   ; "Normally my job ...
+00E1: 33   say
+00E2: 06 30 00   jmp 0115
+00E5: 1C 22 04   addsi L0422   ; "Owings and mysel...
+00E8: 33   say
+00E9: 1F 00 00   pushi 0000H   ; 0
+00EC: 1F 11 FF   pushi FF11H   ; -239
+00EF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F3: 42 DA 02   pushf flag:[02DA]
+00F6: 05 07 00   jne 0100
+00F9: 1C E4 04   addsi L04E4   ; Owings gives a bi...
+00FC: 33   say
+00FD: 06 04 00   jmp 0104
+0100: 1C 57 05   addsi L0557   ; "That is absolute...
+0103: 33   say
+0104: 1F 11 FF   pushi FF11H   ; -239
+0107: 39 04 00 01  calli _HideNPC@1  ; 0004
+010B: 1F 00 00   pushi 0000H   ; 0
+010E: 1F 0D FF   pushi FF0DH   ; -243
+0111: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0115: 1D D0 05   pushs L05D0   ; special project
+0118: 1D E0 05   pushs L05E0   ; mining engineers
+011B: 1E 02 00   arrc 0002H   ; 2
+011E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0122: 1D F1 05   pushs L05F1   ; mining engineers
+0125: 07 01 00 5E 00  cmps 0001H, 0188
+012A: 1C 02 06   addsi L0602   ; "My partner and I...
+012D: 33   say
+012E: 1F 00 00   pushi 0000H   ; 0
+0131: 1F 11 FF   pushi FF11H   ; -239
+0134: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0138: 1C 85 06   addsi L0685   ; "It was the map t...
+013B: 33   say
+013C: 1F 11 FF   pushi FF11H   ; -239
+013F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0143: 1F 00 00   pushi 0000H   ; 0
+0146: 1F 0D FF   pushi FF0DH   ; -243
+0149: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+014D: 1C CB 06   addsi L06CB   ; "That is correct....
+0150: 33   say
+0151: 1F 00 00   pushi 0000H   ; 0
+0154: 1F 11 FF   pushi FF11H   ; -239
+0157: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+015B: 1C 54 07   addsi L0754   ; "That funny man d...
+015E: 33   say
+015F: 1F 11 FF   pushi FF11H   ; -239
+0162: 39 04 00 01  calli _HideNPC@1  ; 0004
+0166: 1F 00 00   pushi 0000H   ; 0
+0169: 1F 0D FF   pushi FF0DH   ; -243
+016C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0170: 1C 0E 08   addsi L080E   ; "I was able to co...
+0173: 33   say
+0174: 1D A6 08   pushs L08A6   ; mining engineers
+0177: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017B: 1D B7 08   pushs L08B7   ; funny man
+017E: 1D C1 08   pushs L08C1   ; map
+0181: 1E 02 00   arrc 0002H   ; 2
+0184: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0188: 1D C5 08   pushs L08C5   ; map
+018B: 07 01 00 0B 00  cmps 0001H, 019B
+0190: 1C C9 08   addsi L08C9   ; "We paid nearly a...
+0193: 33   say
+0194: 1D 04 0A   pushs L0A04   ; map
+0197: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019B: 1D 08 0A   pushs L0A08   ; funny man
+019E: 07 01 00 0B 00  cmps 0001H, 01AE
+01A3: 1C 12 0A   addsi L0A12   ; "Someone told us ...
+01A6: 33   say
+01A7: 1D 99 0A   pushs L0A99   ; funny man
+01AA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AE: 1D A3 0A   pushs L0AA3   ; special project
+01B1: 07 01 00 72 00  cmps 0001H, 0228
+01B6: 1C B3 0A   addsi L0AB3   ; "Owings and mysel...
+01B9: 33   say
+01BA: 24 02 00   call [0002]   ; 090AH
+01BD: 12 05 00   pop [0005]
+01C0: 21 05 00   push [0005]
+01C3: 10   not
+01C4: 05 26 00   jne 01ED
+01C7: 1C 24 0B   addsi L0B24   ; "In that case I t...
+01CA: 33   say
+01CB: 1F 00 00   pushi 0000H   ; 0
+01CE: 1F 11 FF   pushi FF11H   ; -239
+01D1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D5: 1C E7 0B   addsi L0BE7   ; You see Owings no...
+01D8: 33   say
+01D9: 1F 11 FF   pushi FF11H   ; -239
+01DC: 39 04 00 01  calli _HideNPC@1  ; 0004
+01E0: 1F 00 00   pushi 0000H   ; 0
+01E3: 1F 0D FF   pushi FF0DH   ; -243
+01E6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01EA: 06 3B 00   jmp 0228
+01ED: 1C 59 0C   addsi L0C59   ; "The Britannian M...
+01F0: 33   say
+01F1: 1F 00 00   pushi 0000H   ; 0
+01F4: 1F 11 FF   pushi FF11H   ; -239
+01F7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01FB: 1C D2 0C   addsi L0CD2   ; "They do not want...
+01FE: 33   say
+01FF: 1F 11 FF   pushi FF11H   ; -239
+0202: 39 04 00 01  calli _HideNPC@1  ; 0004
+0206: 1F 00 00   pushi 0000H   ; 0
+0209: 1F 0D FF   pushi FF0DH   ; -243
+020C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0210: 1C CE 0D   addsi L0DCE   ; "Yes, it was such...
+0213: 33   say
+0214: 1D BD 0E   pushs L0EBD   ; special project
+0217: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021B: 1D CD 0E   pushs L0ECD   ; schedule
+021E: 1D D6 0E   pushs L0ED6   ; tunnel
+0221: 1E 02 00   arrc 0002H   ; 2
+0224: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0228: 1D DD 0E   pushs L0EDD   ; tunnel
+022B: 07 01 00 0B 00  cmps 0001H, 023B
+0230: 1C E4 0E   addsi L0EE4   ; Malloy looks at y...
+0233: 33   say
+0234: 1D 53 0F   pushs L0F53   ; tunnel
+0237: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023B: 1D 5A 0F   pushs L0F5A   ; schedule
+023E: 07 01 00 2E 00  cmps 0001H, 0271
+0243: 1C 63 0F   addsi L0F63   ; "Owings, have a l...
+0246: 33   say
+0247: 1F 00 00   pushi 0000H   ; 0
+024A: 1F 11 FF   pushi FF11H   ; -239
+024D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0251: 1C A9 0F   addsi L0FA9   ; Owings bends over...
+0254: 33   say
+0255: 1F 11 FF   pushi FF11H   ; -239
+0258: 39 04 00 01  calli _HideNPC@1  ; 0004
+025C: 1F 00 00   pushi 0000H   ; 0
+025F: 1F 0D FF   pushi FF0DH   ; -243
+0262: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0266: 1C 2A 11   addsi L112A   ; "Give me that!" s...
+0269: 33   say
+026A: 1D A8 12   pushs L12A8   ; schedule
+026D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0271: 1D B1 12   pushs L12B1   ; helmet on foot
+0274: 07 01 00 3C 00  cmps 0001H, 02B5
+0279: 1C C0 12   addsi L12C0   ; Malloy kicks out ...
+027C: 33   say
+027D: 1F 00 00   pushi 0000H   ; 0
+0280: 1F 11 FF   pushi FF11H   ; -239
+0283: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0287: 1C 60 13   addsi L1360   ; Owings grabs the ...
+028A: 33   say
+028B: 1F 53 00   pushi 0053H   ; 83
+028E: 39 0F 00 01  calli 000F, 1
+0292: 1F 11 FF   pushi FF11H   ; -239
+0295: 39 04 00 01  calli _HideNPC@1  ; 0004
+0299: 1F 00 00   pushi 0000H   ; 0
+029C: 1F 0D FF   pushi FF0DH   ; -243
+029F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02A3: 1C 3E 14   addsi L143E   ; Malloy goes hurli...
+02A6: 33   say
+02A7: 1F 0F 00   pushi 000FH   ; 15
+02AA: 39 0F 00 01  calli 000F, 1
+02AE: 1D DE 15   pushs L15DE   ; helmet on foot
+02B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B5: 1D ED 15   pushs L15ED   ; bye
+02B8: 07 01 00 03 00  cmps 0001H, 02C0
+02BD: 06 03 00   jmp 02C3
+02C0: 06 AD FD   jmp 0070
+02C3: 40   db 40 ???
+02C4: 21 01 00   push [0001]
+02C7: 05 07 00   jne 02D1
+02CA: 1C F1 15   addsi L15F1   ; Both Malloy and O...
+02CD: 33   say
+02CE: 06 0A 00   jmp 02DB
+02D1: 1C 48 16   addsi L1648   ; "Good day to thee, 
+02D4: 2F 00 00   addsv [0000]
+02D7: 1C 5C 16   addsi L165C   ; ."*
+02DA: 33   say
+02DB: 25   ret

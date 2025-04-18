@@ -1,0 +1,14 @@
+  .funcnumber 0930H
+  .data
+  .code
+  .argc 0002H
+  .localc 0001H
+  .externsize 0000H
+0000: 1F FF FF   pushi FFFFH   ; -1
+0003: 21 00 00   push [0000]
+0006: 21 01 00   push [0001]
+0009: 38 02 00 03  callis 0002, 3
+000D: 12 02 00   pop [0002]
+0010: 21 02 00   push [0002]
+0013: 2D   setr
+0014: 32   rts

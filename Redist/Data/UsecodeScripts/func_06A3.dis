@@ -1,0 +1,802 @@
+  .funcnumber 06A3H ;* Forge egg.
+  .data
+  .code
+  .argc 0001H
+  .localc 001EH
+  .externsize 0002H
+  .extern 08EBH
+  .extern 01F8H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 17 08   jne 081F
+0008: 3E   push itemref
+0009: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 1F 01 00   pushi 0001H   ; 1
+0016: 22   cmpeq
+0017: 05 60 01   jne 017A
+001A: 42 EE 02   pushf flag:[02EE]
+001D: 10   not
+001E: 05 59 01   jne 017A
+0021: 14   push false
+0022: 12 01 00   pop [0001]
+0025: 1F 08 00   pushi 0008H   ; 8
+0028: 1F 50 00   pushi 0050H   ; 80
+002B: 1F 9A 00   pushi 009AH   ; 154 * Find mage.
+002E: 3E   push itemref
+002F: 38 35 00 04  callis 0035, 4
+0033: 12 02 00   pop [0002]
+0036: 2E   sloop
+0037: 02 03 00 04 00 05 00 02 00 1C 00  db 2 ???
+0038:   db 3
+0039:   db 0
+003A:   db 4
+003B:   db 0
+003C:   db 5
+003D:   db 0
+003E:   db 2
+003F:   db 0
+0040:   db 1c
+0041:   db 0
+0042: 1F 04 00   pushi 0004H   ; 4
+0045: 1F F0 00   pushi 00F0H   ; 240
+0048: 1F 1D 03   pushi 031DH   ; 797
+004B: 21 05 00   push [0005]
+004E: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0052: 05 06 00   jne 005B
+0055: 21 05 00   push [0005]
+0058: 12 01 00   pop [0001]
+005B: 06 D9 FF   jmp 0037
+005E: 21 01 00   push [0001]
+0061: 10   not
+0062: 05 15 01   jne 017A
+0065: 1F 01 00   pushi 0001H   ; 1
+0068: 1F 9A 00   pushi 009AH   ; 154  * Mage.
+006B: 3E   push itemref
+006C: 38 0E 00 03  callis 000E, 3
+0070: 12 06 00   pop [0006]
+0073: 21 06 00   push [0006]
+0076: 10   not
+0077: 05 61 00   jne 00DB
+007A: 1F 10 00   pushi 0010H   ; 16
+007D: 1F 9A 00   pushi 009AH   ; 154
+0080: 3E   push itemref
+0081: 38 18 00 01  callis 0018, 1
+0085: 38 85 00 03  callis 0085, 3  ;* Not blocked?
+0089: 10   not
+008A: 05 0A 00   jne 0097
+008D: 1F 10 00   pushi 0010H   ; 16
+0090: 1F 9A 00   pushi 009AH   ; 154
+0093: 3E   push itemref
+0094: 24 00 00   call [0000]   ; 08EBH * Problem!
+0097: 3E   push itemref
+0098: 38 18 00 01  callis 0018, 1
+009C: 1F 99 FE   pushi FE99H   ; -359
+009F: 1F 00 00   pushi 0000H   ; 0
+00A2: 4A   arra
+00A3: 4A   arra
+00A4: 12 07 00   pop [0007]
+00A7: 1F 10 00   pushi 0010H   ; 16
+00AA: 1F 00 00   pushi 0000H   ; 0
+00AD: 1F 13 01   pushi 0113H   ; 275
+00B0: 21 07 00   push [0007]
+00B3: 38 35 00 04  callis 0035, 4
+00B7: 12 08 00   pop [0008]
+00BA: 44 48   pushw 2148H   ; 8520
+00BC: 21 08 00   push [0008]
+00BF: 38 01 00 02  callis 0001, 2
+00C3: 12 09 00   pop [0009]
+00C6: 1F A3 06   pushi 06A3H   ; 1699
+00C9: 44 55   pushw 4455H   ; 17493
+00CB: 44 2C   pushw 1E2CH   ; 7724
+00CD: 1E 03 00   arrc 0003H   ; 3
+00D0: 3E   push itemref
+00D1: 38 01 00 02  callis 0001, 2
+00D5: 12 09 00   pop [0009]
+00D8: 06 9F 00   jmp 017A
+00DB: 1F 06 00   pushi 0006H   ; 6
+00DE: 1F 01 00   pushi 0001H   ; 1
+00E1: 38 10 00 02  callis _Random2@2  ; 0010
+00E5: 12 0A 00   pop [000A]
+00E8: 21 0A 00   push [000A]
+00EB: 1F 01 00   pushi 0001H   ; 1
+00EE: 22   cmpeq
+00EF: 05 0A 00   jne 00FC
+00F2: 1F 0E 00   pushi 000EH   ; 14
+00F5: 21 06 00   push [0006]
+00F8: 39 1D 00 02  calli 001D, 2
+00FC: 21 0A 00   push [000A]
+00FF: 1F 02 00   pushi 0002H   ; 2
+0102: 18   cmpge
+0103: 21 0A 00   push [000A]
+0106: 1F 04 00   pushi 0004H   ; 4
+0109: 19   cmple
+010A: 0E   and
+010B: 05 0A 00   jne 0118
+010E: 1F 0B 00   pushi 000BH   ; 11
+0111: 21 06 00   push [0006]
+0114: 39 1D 00 02  calli 001D, 2
+0118: 21 0A 00   push [000A]
+011B: 1F 05 00   pushi 0005H   ; 5
+011E: 18   cmpge
+011F: 05 0A 00   jne 012C
+0122: 1F 10 00   pushi 0010H   ; 16
+0125: 21 06 00   push [0006]
+0128: 39 1D 00 02  calli 001D, 2
+012C: 1F 1D 03   pushi 031DH   ; 797
+012F: 38 24 00 01  callis 0024, 1
+0133: 12 0B 00   pop [000B]
+0136: 1F 12 00   pushi 0012H   ; 18
+0139: 21 0B 00   push [000B]
+013C: 39 89 00 02  calli 0089, 2
+0140: 1F F0 00   pushi 00F0H   ; 240
+0143: 21 0B 00   push [000B]
+0146: 38 15 00 02  callis 0015, 2
+014A: 12 09 00   pop [0009]
+014D: 1F 04 00   pushi 0004H   ; 4
+0150: 21 0B 00   push [000B]
+0153: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0157: 21 06 00   push [0006]
+015A: 38 36 00 01  callis 0036, 1
+015E: 12 09 00   pop [0009]
+0161: 1F 03 00   pushi 0003H   ; 3
+0164: 1F F7 06   pushi 06F7H   ; 1783
+0167: 44 55   pushw 4455H   ; 17493
+0169: 44 23   pushw 4423H   ; 17443
+016B: 44 2C   pushw 1E2CH   ; 7724
+016D: 1E 04 00   arrc 0004H   ; 4
+0170: 21 0B 00   push [000B]
+0173: 38 02 00 03  callis 0002, 3
+0177: 12 0C 00   pop [000C]
+017A: 21 00 00   push [0000]
+017D: 1F 02 00   pushi 0002H   ; 2
+0180: 22   cmpeq
+0181: 05 2D 01   jne 02B1
+0184: 42 EF 02   pushf flag:[02EF] ;* Draco.
+0187: 10   not
+0188: 05 26 01   jne 02B1
+018B: 14   push false
+018C: 12 01 00   pop [0001]
+018F: 1F 08 00   pushi 0008H   ; 8
+0192: 1F 50 00   pushi 0050H   ; 80
+0195: 1F F8 01   pushi 01F8H   ; 504 * Dragon.
+0198: 3E   push itemref
+0199: 38 35 00 04  callis 0035, 4
+019D: 12 02 00   pop [0002]
+01A0: 2E   sloop
+01A1: 02 0D 00 0E 00 05 00 02 00 1C 00  db 2 ???
+01A2:   db d
+01A3:   db 0
+01A4:   db e
+01A5:   db 0
+01A6:   db 5
+01A7:   db 0
+01A8:   db 2
+01A9:   db 0
+01AA:   db 1c
+01AB:   db 0
+01AC: 1F 04 00   pushi 0004H   ; 4
+01AF: 1F F1 00   pushi 00F1H   ; 241
+01B2: 1F 1D 03   pushi 031DH   ; 797
+01B5: 21 05 00   push [0005]
+01B8: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+01BC: 05 06 00   jne 01C5
+01BF: 21 05 00   push [0005]
+01C2: 12 01 00   pop [0001]
+01C5: 06 D9 FF   jmp 01A1
+01C8: 21 01 00   push [0001]
+01CB: 10   not
+01CC: 05 E2 00   jne 02B1 ;* Jmp if dragon found.
+01CF: 1F 01 00   pushi 0001H   ; 1
+01D2: 1F F8 01   pushi 01F8H   ; 504
+01D5: 3E   push itemref
+01D6: 38 0E 00 03  callis 000E, 3
+01DA: 12 06 00   pop [0006]
+01DD: 21 06 00   push [0006]
+01E0: 10   not
+01E1: 05 61 00   jne 0245 ;* Jmp if found.
+01E4: 1F 13 00   pushi 0013H   ; 19
+01E7: 1F F8 01   pushi 01F8H   ; 504
+01EA: 3E   push itemref
+01EB: 38 18 00 01  callis 0018, 1
+01EF: 38 85 00 03  callis 0085, 3
+01F3: 10   not
+01F4: 05 0A 00   jne 0201 ;* Jmp if not blocked.
+01F7: 1F 13 00   pushi 0013H   ; 19
+01FA: 1F F8 01   pushi 01F8H   ; 504
+01FD: 3E   push itemref
+01FE: 24 00 00   call [0000]   ; 08EBH
+0201: 3E   push itemref
+0202: 38 18 00 01  callis 0018, 1 ;* Egg pos.
+0206: 1F 99 FE   pushi FE99H   ; -359
+0209: 1F 00 00   pushi 0000H   ; 0
+020C: 4A   arra
+020D: 4A   arra
+020E: 12 07 00   pop [0007]
+0211: 1F 10 00   pushi 0010H   ; 16
+0214: 1F 00 00   pushi 0000H   ; 0
+0217: 1F 13 01   pushi 0113H   ; 275
+021A: 21 07 00   push [0007]
+021D: 38 35 00 04  callis 0035, 4 ;* Find nearby eggs.
+0221: 12 08 00   pop [0008]
+0224: 44 48   pushw 2148H   ; 8520 ;* Exec eggs.
+0226: 21 08 00   push [0008]
+0229: 38 01 00 02  callis 0001, 2
+022D: 12 09 00   pop [0009]
+0230: 1F A3 06   pushi 06A3H   ; 1699
+0233: 44 55   pushw 4455H   ; 17493
+0235: 44 2C   pushw 1E2CH   ; 7724
+0237: 1E 03 00   arrc 0003H   ; 3
+023A: 3E   push itemref
+023B: 38 01 00 02  callis 0001, 2
+023F: 12 09 00   pop [0009]
+0242: 06 6C 00   jmp 02B1
+0245: 1F 0F 00   pushi 000FH   ; 15
+0248: 21 06 00   push [0006]
+024B: 39 1D 00 02  calli 001D, 2
+024F: 1F 13 00   pushi 0013H   ; 19
+0252: 21 06 00   push [0006]
+0255: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0259: 1F 12 00   pushi 0012H   ; 18
+025C: 21 06 00   push [0006]
+025F: 39 89 00 02  calli 0089, 2
+0263: 1F 1D 03   pushi 031DH   ; 797
+0266: 38 24 00 01  callis 0024, 1
+026A: 12 0F 00   pop [000F]
+026D: 1F 12 00   pushi 0012H   ; 18
+0270: 21 0F 00   push [000F]
+0273: 39 89 00 02  calli 0089, 2
+0277: 1F F1 00   pushi 00F1H   ; 241
+027A: 21 0F 00   push [000F]
+027D: 38 15 00 02  callis 0015, 2
+0281: 12 09 00   pop [0009]
+0284: 1F 04 00   pushi 0004H   ; 4
+0287: 21 0F 00   push [000F]
+028A: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+028E: 21 06 00   push [0006]
+0291: 38 36 00 01  callis 0036, 1
+0295: 12 09 00   pop [0009]
+0298: 1F 03 00   pushi 0003H   ; 3
+029B: 1F F7 06   pushi 06F7H   ; 1783
+029E: 44 55   pushw 4455H   ; 17493
+02A0: 44 23   pushw 4423H   ; 17443
+02A2: 44 2C   pushw 1E2CH   ; 7724
+02A4: 1E 04 00   arrc 0004H   ; 4
+02A7: 21 0F 00   push [000F]
+02AA: 38 02 00 03  callis 0002, 3
+02AE: 12 0C 00   pop [000C]
+02B1: 21 00 00   push [0000]
+02B4: 1F 04 00   pushi 0004H   ; 4
+02B7: 22   cmpeq
+02B8: 05 6A 01   jne 0425
+02BB: 42 F1 02   pushf flag:[02F1] * Love test (rtmost).
+02BE: 10   not
+02BF: 42 1B 03   pushf flag:[031B]
+02C2: 0E   and
+02C3: 05 5F 01   jne 0425
+02C6: 14   push false
+02C7: 12 01 00   pop [0001]
+02CA: 1F 08 00   pushi 0008H   ; 8
+02CD: 1F 50 00   pushi 0050H   ; 80
+02D0: 1F F7 03   pushi 03F7H   ; 1015  * Golem
+02D3: 3E   push itemref
+02D4: 38 35 00 04  callis 0035, 4
+02D8: 12 02 00   pop [0002]
+02DB: 2E   sloop
+02DC: 02 10 00 11 00 05 00 02 00 1C 00  db 2 ???
+02DD:   db 10
+02DE:   db 0
+02DF:   db 11
+02E0:   db 0
+02E1:   db 5
+02E2:   db 0
+02E3:   db 2
+02E4:   db 0
+02E5:   db 1c
+02E6:   db 0
+02E7: 1F 04 00   pushi 0004H   ; 4
+02EA: 1F F3 00   pushi 00F3H   ; 243
+02ED: 1F 1D 03   pushi 031DH   ; 797
+02F0: 21 05 00   push [0005]
+02F3: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+02F7: 05 06 00   jne 0300
+02FA: 21 05 00   push [0005]
+02FD: 12 01 00   pop [0001]
+0300: 06 D9 FF   jmp 02DC
+0303: 21 01 00   push [0001]
+0306: 10   not
+0307: 05 1B 01   jne 0425  ;* Jmp if found right one.
+030A: 1F 01 00   pushi 0001H   ; 1
+030D: 1F F7 03   pushi 03F7H   ; 1015
+0310: 3E   push itemref
+0311: 38 0E 00 03  callis 000E, 3  ;* Find nearest
+0315: 12 06 00   pop [0006]
+0318: 21 06 00   push [0006]
+031B: 10   not
+031C: 05 61 00   jne 0380  ;* Jmp if found.
+031F: 1F 10 00   pushi 0010H   ; 16
+0322: 1F F7 03   pushi 03F7H   ; 1015
+0325: 3E   push itemref
+0326: 38 18 00 01  callis 0018, 1  ;* Egg loc.
+032A: 38 85 00 03  callis 0085, 3  ;* Not blocked.
+032E: 10   not
+032F: 05 0A 00   jne 033C  ;* Jmp if room.
+0332: 1F 10 00   pushi 0010H   ; 16
+0335: 1F F7 03   pushi 03F7H   ; 1015
+0338: 3E   push itemref
+0339: 24 00 00   call [0000]   ; 08EBH
+033C: 3E   push itemref
+033D: 38 18 00 01  callis 0018, 1
+0341: 1F 99 FE   pushi FE99H   ; -359
+0344: 1F 00 00   pushi 0000H   ; 0
+0347: 4A   arra
+0348: 4A   arra
+0349: 12 07 00   pop [0007]
+034C: 1F 10 00   pushi 0010H   ; 16
+034F: 1F 00 00   pushi 0000H   ; 0
+0352: 1F 13 01   pushi 0113H   ; 275
+0355: 21 07 00   push [0007]
+0358: 38 35 00 04  callis 0035, 4  ;* Find nearby monster eggs.
+035C: 12 08 00   pop [0008]
+035F: 44 48   pushw 2148H   ; 8520
+0361: 21 08 00   push [0008]
+0364: 38 01 00 02  callis 0001, 2  ;* Should create 2nd gollem!!
+0368: 12 09 00   pop [0009]
+036B: 1F A3 06   pushi 06A3H   ; 1699
+036E: 44 55   pushw 4455H   ; 17493
+0370: 44 2C   pushw 1E2CH   ; 7724
+0372: 1E 03 00   arrc 0003H   ; 3
+0375: 3E   push itemref
+0376: 38 01 00 02  callis 0001, 2  ;* Should run this again.
+037A: 12 09 00   pop [0009]
+037D: 06 A5 00   jmp 0425
+0380: 1F 10 00   pushi 0010H   ; 16
+0383: 21 06 00   push [0006]
+0386: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+038A: 1F 12 00   pushi 0012H   ; 18
+038D: 21 06 00   push [0006]
+0390: 39 89 00 02  calli 0089, 2
+0394: 42 1B 03   pushf flag:[031B]
+0397: 42 1C 03   pushf flag:[031C]
+039A: 10   not
+039B: 42 26 03   pushf flag:[0326]
+039E: 10   not
+039F: 0E   and
+03A0: 0E   and
+03A1: 05 0D 00   jne 03B1
+03A4: 1F 0B 00   pushi 000BH   ; 11
+03A7: 21 06 00   push [0006]
+03AA: 39 1D 00 02  calli 001D, 2
+03AE: 06 0A 00   jmp 03BB
+03B1: 1F 0F 00   pushi 000FH   ; 15
+03B4: 21 06 00   push [0006]
+03B7: 39 1D 00 02  calli 001D, 2
+03BB: 1F 00 00   pushi 0000H   ; 0
+03BE: 21 06 00   push [0006]
+03C1: 39 3D 00 02  calli 003D, 2
+03C5: 1F 1D 03   pushi 031DH   ; 797
+03C8: 38 24 00 01  callis 0024, 1
+03CC: 12 12 00   pop [0012]
+03CF: 1F 12 00   pushi 0012H   ; 18
+03D2: 21 12 00   push [0012]
+03D5: 39 89 00 02  calli 0089, 2
+03D9: 1F F3 00   pushi 00F3H   ; 243
+03DC: 21 12 00   push [0012]
+03DF: 38 15 00 02  callis 0015, 2
+03E3: 12 09 00   pop [0009]
+03E6: 1F 04 00   pushi 0004H   ; 4
+03E9: 21 12 00   push [0012]
+03EC: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+03F0: 21 06 00   push [0006]
+03F3: 38 36 00 01  callis 0036, 1
+03F7: 12 09 00   pop [0009]
+03FA: 1F 03 00   pushi 0003H   ; 3
+03FD: 1F F7 06   pushi 06F7H   ; 1783
+0400: 44 55   pushw 4455H   ; 17493
+0402: 44 23   pushw 4423H   ; 17443
+0404: 44 2C   pushw 1E2CH   ; 7724
+0406: 1E 04 00   arrc 0004H   ; 4
+0409: 21 12 00   push [0012]
+040C: 38 02 00 03  callis 0002, 3
+0410: 12 0C 00   pop [000C]
+0413: 1F 06 00   pushi 0006H   ; 6
+0416: 44 59   pushw 1E59H   ; 7769
+0418: 1E 02 00   arrc 0002H   ; 2
+041B: 21 06 00   push [0006]
+041E: 38 01 00 02  callis 0001, 2
+0422: 12 09 00   pop [0009]
+0425: 21 00 00   push [0000]
+0428: 1F 05 00   pushi 0005H   ; 5
+042B: 22   cmpeq
+042C: 05 61 01   jne 0590
+042F: 42 F2 02   pushf flag:[02F2]
+0432: 10   not
+0433: 42 1C 03   pushf flag:[031C]
+0436: 10   not
+0437: 0E   and
+0438: 05 55 01   jne 0590
+043B: 14   push false
+043C: 12 01 00   pop [0001]
+043F: 1F 08 00   pushi 0008H   ; 8
+0442: 1F 50 00   pushi 0050H   ; 80
+0445: 1F F7 03   pushi 03F7H   ; 1015
+0448: 3E   push itemref
+0449: 38 35 00 04  callis 0035, 4
+044D: 12 02 00   pop [0002]
+0450: 2E   sloop
+0451: 02 13 00 14 00 05 00 02 00 1C 00  db 2 ???
+0452:   db 13
+0453:   db 0
+0454:   db 14
+0455:   db 0
+0456:   db 5
+0457:   db 0
+0458:   db 2
+0459:   db 0
+045A:   db 1c
+045B:   db 0
+045C: 1F 04 00   pushi 0004H   ; 4
+045F: 1F F4 00   pushi 00F4H   ; 244
+0462: 1F 1D 03   pushi 031DH   ; 797
+0465: 21 05 00   push [0005]
+0468: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+046C: 05 06 00   jne 0475
+046F: 21 05 00   push [0005]
+0472: 12 01 00   pop [0001]
+0475: 06 D9 FF   jmp 0451
+0478: 21 01 00   push [0001]
+047B: 10   not
+047C: 05 11 01   jne 0590
+047F: 1F 01 00   pushi 0001H   ; 1
+0482: 1F F7 03   pushi 03F7H   ; 1015
+0485: 3E   push itemref
+0486: 38 0E 00 03  callis 000E, 3
+048A: 12 06 00   pop [0006]
+048D: 21 06 00   push [0006]
+0490: 10   not
+0491: 05 61 00   jne 04F5
+0494: 1F 10 00   pushi 0010H   ; 16
+0497: 1F F7 03   pushi 03F7H   ; 1015
+049A: 3E   push itemref
+049B: 38 18 00 01  callis 0018, 1
+049F: 38 85 00 03  callis 0085, 3
+04A3: 10   not
+04A4: 05 0A 00   jne 04B1
+04A7: 1F 10 00   pushi 0010H   ; 16
+04AA: 1F F7 03   pushi 03F7H   ; 1015
+04AD: 3E   push itemref
+04AE: 24 00 00   call [0000]   ; 08EBH
+04B1: 3E   push itemref
+04B2: 38 18 00 01  callis 0018, 1
+04B6: 1F 99 FE   pushi FE99H   ; -359
+04B9: 1F 00 00   pushi 0000H   ; 0
+04BC: 4A   arra
+04BD: 4A   arra
+04BE: 12 07 00   pop [0007]
+04C1: 1F 10 00   pushi 0010H   ; 16
+04C4: 1F 00 00   pushi 0000H   ; 0
+04C7: 1F 13 01   pushi 0113H   ; 275
+04CA: 21 07 00   push [0007]
+04CD: 38 35 00 04  callis 0035, 4
+04D1: 12 08 00   pop [0008]
+04D4: 44 48   pushw 2148H   ; 8520
+04D6: 21 08 00   push [0008]
+04D9: 38 01 00 02  callis 0001, 2
+04DD: 12 09 00   pop [0009]
+04E0: 1F A3 06   pushi 06A3H   ; 1699
+04E3: 44 55   pushw 4455H   ; 17493
+04E5: 44 2C   pushw 1E2CH   ; 7724
+04E7: 1E 03 00   arrc 0003H   ; 3
+04EA: 3E   push itemref
+04EB: 38 01 00 02  callis 0001, 2
+04EF: 12 09 00   pop [0009]
+04F2: 06 9B 00   jmp 0590
+04F5: 1F 10 00   pushi 0010H   ; 16
+04F8: 21 06 00   push [0006]
+04FB: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+04FF: 42 1B 03   pushf flag:[031B]
+0502: 42 1C 03   pushf flag:[031C]
+0505: 10   not
+0506: 42 26 03   pushf flag:[0326]
+0509: 10   not
+050A: 0E   and
+050B: 0E   and
+050C: 05 0D 00   jne 051C
+050F: 1F 0B 00   pushi 000BH   ; 11
+0512: 21 06 00   push [0006]
+0515: 39 1D 00 02  calli 001D, 2
+0519: 06 0A 00   jmp 0526
+051C: 1F 0F 00   pushi 000FH   ; 15
+051F: 21 06 00   push [0006]
+0522: 39 1D 00 02  calli 001D, 2
+0526: 1F 00 00   pushi 0000H   ; 0
+0529: 21 06 00   push [0006]
+052C: 39 3D 00 02  calli 003D, 2
+0530: 1F 1D 03   pushi 031DH   ; 797
+0533: 38 24 00 01  callis 0024, 1
+0537: 12 12 00   pop [0012]
+053A: 1F 12 00   pushi 0012H   ; 18
+053D: 21 12 00   push [0012]
+0540: 39 89 00 02  calli 0089, 2
+0544: 1F F4 00   pushi 00F4H   ; 244
+0547: 21 12 00   push [0012]
+054A: 38 15 00 02  callis 0015, 2
+054E: 12 09 00   pop [0009]
+0551: 1F 04 00   pushi 0004H   ; 4
+0554: 21 12 00   push [0012]
+0557: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+055B: 21 06 00   push [0006]
+055E: 38 36 00 01  callis 0036, 1
+0562: 12 09 00   pop [0009]
+0565: 1F 03 00   pushi 0003H   ; 3
+0568: 1F F7 06   pushi 06F7H   ; 1783
+056B: 44 55   pushw 4455H   ; 17493
+056D: 44 23   pushw 4423H   ; 17443
+056F: 44 2C   pushw 1E2CH   ; 7724
+0571: 1E 04 00   arrc 0004H   ; 4
+0574: 21 12 00   push [0012]
+0577: 38 02 00 03  callis 0002, 3
+057B: 12 0C 00   pop [000C]
+057E: 1F 02 00   pushi 0002H   ; 2
+0581: 44 59   pushw 1E59H   ; 7769
+0583: 1E 02 00   arrc 0002H   ; 2
+0586: 21 06 00   push [0006]
+0589: 38 01 00 02  callis 0001, 2
+058D: 12 09 00   pop [0009]
+0590: 21 00 00   push [0000]
+0593: 1F 06 00   pushi 0006H   ; 6 * Draco.
+0596: 22   cmpeq
+0597: 05 45 00   jne 05DF
+059A: 1F 08 00   pushi 0008H   ; 8
+059D: 1F 0A 00   pushi 000AH   ; 10
+05A0: 1F FF FF   pushi FFFFH   ; -1
+05A3: 3E   push itemref
+05A4: 38 35 00 04  callis 0035, 4
+05A8: 12 15 00   pop [0015]
+05AB: 2E   sloop
+05AC: 02 16 00 17 00 18 00 15 00 28 00  db 2 ???
+05AD:   db 16
+05AE:   db 0
+05AF:   db 17
+05B0:   db 0
+05B1:   db 18
+05B2:   db 0
+05B3:   db 15
+05B4:   db 0
+05B5:   db 28
+05B6:   db 0
+05B7: 21 18 00   push [0018]
+05BA: 38 11 00 01  callis _GetItemType@1  ; 0011
+05BE: 1F F8 01   pushi 01F8H   ; 504 *dragon.
+05C1: 22   cmpeq
+05C2: 05 17 00   jne 05DC
+05C5: 1F 04 00   pushi 0004H   ; 4
+05C8: 1F F1 00   pushi 00F1H   ; 241
+05CB: 1F 1D 03   pushi 031DH   ; 797 * Scroll.
+05CE: 21 18 00   push [0018]
+05D1: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+05D5: 05 04 00   jne 05DC
+05D8: 3E   push itemref
+05D9: 47 F8 01   calle 01F8H   ; 504
+05DC: 06 CD FF   jmp 05AC
+05DF: 14   push false
+05E0: 12 19 00   pop [0019]
+05E3: 14   push false
+05E4: 12 1A 00   pop [001A]
+05E7: 21 00 00   push [0000]
+05EA: 1F 07 00   pushi 0007H   ; 7
+05ED: 22   cmpeq
+05EE: 05 0D 00   jne 05FE
+05F1: 42 F3 02   pushf flag:[02F3]
+05F4: 10   not
+05F5: 05 06 00   jne 05FE
+05F8: 1F F5 00   pushi 00F5H   ; 245
+05FB: 12 19 00   pop [0019]
+05FE: 21 00 00   push [0000]
+0601: 1F 08 00   pushi 0008H   ; 8
+0604: 22   cmpeq
+0605: 05 13 00   jne 061B
+0608: 42 F4 02   pushf flag:[02F4]
+060B: 10   not
+060C: 05 0C 00   jne 061B
+060F: 1F F6 00   pushi 00F6H   ; 246
+0612: 12 19 00   pop [0019]
+0615: 1F 04 00   pushi 0004H   ; 4
+0618: 12 1A 00   pop [001A]
+061B: 21 00 00   push [0000]
+061E: 1F 09 00   pushi 0009H   ; 9
+0621: 22   cmpeq
+0622: 05 13 00   jne 0638
+0625: 42 F5 02   pushf flag:[02F5]
+0628: 10   not
+0629: 05 0C 00   jne 0638
+062C: 1F F7 00   pushi 00F7H   ; 247
+062F: 12 19 00   pop [0019]
+0632: 1F 04 00   pushi 0004H   ; 4
+0635: 12 1A 00   pop [001A]
+0638: 21 00 00   push [0000]
+063B: 1F 0A 00   pushi 000AH   ; 10
+063E: 22   cmpeq
+063F: 05 0D 00   jne 064F
+0642: 42 F6 02   pushf flag:[02F6]
+0645: 10   not
+0646: 05 06 00   jne 064F
+0649: 1F F8 00   pushi 00F8H   ; 248
+064C: 12 19 00   pop [0019]
+064F: 21 00 00   push [0000]
+0652: 1F 0B 00   pushi 000BH   ; 11
+0655: 22   cmpeq
+0656: 05 13 00   jne 066C
+0659: 42 F7 02   pushf flag:[02F7]
+065C: 10   not
+065D: 05 0C 00   jne 066C
+0660: 1F F9 00   pushi 00F9H   ; 249
+0663: 12 19 00   pop [0019]
+0666: 1F 04 00   pushi 0004H   ; 4
+0669: 12 1A 00   pop [001A]
+066C: 21 00 00   push [0000]
+066F: 1F 0C 00   pushi 000CH   ; 12
+0672: 22   cmpeq
+0673: 05 0D 00   jne 0683
+0676: 42 F8 02   pushf flag:[02F8]
+0679: 10   not
+067A: 05 06 00   jne 0683
+067D: 1F FA 00   pushi 00FAH   ; 250
+0680: 12 19 00   pop [0019]
+0683: 21 00 00   push [0000]
+0686: 1F 0D 00   pushi 000DH   ; 13
+0689: 22   cmpeq
+068A: 05 0D 00   jne 069A
+068D: 42 F9 02   pushf flag:[02F9]
+0690: 10   not
+0691: 05 06 00   jne 069A
+0694: 1F FB 00   pushi 00FBH   ; 251
+0697: 12 19 00   pop [0019]
+069A: 21 00 00   push [0000]
+069D: 1F 0E 00   pushi 000EH   ; 14
+06A0: 22   cmpeq
+06A1: 05 0D 00   jne 06B1
+06A4: 42 FA 02   pushf flag:[02FA]
+06A7: 10   not
+06A8: 05 06 00   jne 06B1
+06AB: 1F FC 00   pushi 00FCH   ; 252
+06AE: 12 19 00   pop [0019]
+06B1: 21 00 00   push [0000]
+06B4: 1F 0F 00   pushi 000FH   ; 15
+06B7: 22   cmpeq
+06B8: 05 0D 00   jne 06C8
+06BB: 42 FB 02   pushf flag:[02FB]
+06BE: 10   not
+06BF: 05 06 00   jne 06C8
+06C2: 1F FD 00   pushi 00FDH   ; 253
+06C5: 12 19 00   pop [0019]
+06C8: 21 00 00   push [0000]
+06CB: 1F 10 00   pushi 0010H   ; 16
+06CE: 22   cmpeq
+06CF: 05 0D 00   jne 06DF
+06D2: 42 FC 02   pushf flag:[02FC]
+06D5: 10   not
+06D6: 05 06 00   jne 06DF
+06D9: 1F FE 00   pushi 00FEH   ; 254
+06DC: 12 19 00   pop [0019]
+06DF: 21 19 00   push [0019]
+06E2: 05 3A 01   jne 081F
+06E5: 1F 04 00   pushi 0004H   ; 4
+06E8: 1F 50 00   pushi 0050H   ; 80
+06EB: 1F F7 03   pushi 03F7H   ; 1015 * Golem.
+06EE: 3E   push itemref
+06EF: 38 35 00 04  callis 0035, 4
+06F3: 12 02 00   pop [0002]
+06F6: 2E   sloop
+06F7: 02 1B 00 1C 00 05 00 02 00 1C 00  db 2 ???
+06F8:   db 1b
+06F9:   db 0
+06FA:   db 1c
+06FB:   db 0
+06FC:   db 5
+06FD:   db 0
+06FE:   db 2
+06FF:   db 0
+0700:   db 1c
+0701:   db 0
+0702: 1F 04 00   pushi 0004H   ; 4
+0705: 21 19 00   push [0019]
+0708: 1F 1D 03   pushi 031DH   ; 797
+070B: 21 05 00   push [0005]
+070E: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0712: 05 06 00   jne 071B
+0715: 21 05 00   push [0005]
+0718: 12 01 00   pop [0001]
+071B: 06 D9 FF   jmp 06F7
+071E: 21 01 00   push [0001]
+0721: 10   not
+0722: 05 FA 00   jne 081F
+0725: 1F 01 00   pushi 0001H   ; 1
+0728: 1F F7 03   pushi 03F7H   ; 1015
+072B: 3E   push itemref
+072C: 38 0E 00 03  callis 000E, 3
+0730: 12 06 00   pop [0006]
+0733: 21 06 00   push [0006]
+0736: 10   not
+0737: 05 61 00   jne 079B
+073A: 1F 10 00   pushi 0010H   ; 16
+073D: 1F F7 03   pushi 03F7H   ; 1015
+0740: 3E   push itemref
+0741: 38 18 00 01  callis 0018, 1
+0745: 38 85 00 03  callis 0085, 3
+0749: 10   not
+074A: 05 0A 00   jne 0757
+074D: 1F 10 00   pushi 0010H   ; 16
+0750: 1F F7 03   pushi 03F7H   ; 1015
+0753: 3E   push itemref
+0754: 24 00 00   call [0000]   ; 08EBH
+0757: 3E   push itemref
+0758: 38 18 00 01  callis 0018, 1
+075C: 1F 99 FE   pushi FE99H   ; -359
+075F: 1F 00 00   pushi 0000H   ; 0
+0762: 4A   arra
+0763: 4A   arra
+0764: 12 07 00   pop [0007]
+0767: 1F 10 00   pushi 0010H   ; 16
+076A: 1F 00 00   pushi 0000H   ; 0
+076D: 1F 13 01   pushi 0113H   ; 275
+0770: 21 07 00   push [0007]
+0773: 38 35 00 04  callis 0035, 4
+0777: 12 08 00   pop [0008]
+077A: 44 48   pushw 2148H   ; 8520
+077C: 21 08 00   push [0008]
+077F: 38 01 00 02  callis 0001, 2
+0783: 12 09 00   pop [0009]
+0786: 1F A3 06   pushi 06A3H   ; 1699
+0789: 44 55   pushw 4455H   ; 17493
+078B: 44 2C   pushw 1E2CH   ; 7724
+078D: 1E 03 00   arrc 0003H   ; 3
+0790: 3E   push itemref
+0791: 38 01 00 02  callis 0001, 2
+0795: 12 09 00   pop [0009]
+0798: 06 84 00   jmp 081F
+079B: 1F 00 00   pushi 0000H   ; 0
+079E: 21 06 00   push [0006]
+07A1: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+07A5: 1F 12 00   pushi 0012H   ; 18
+07A8: 21 06 00   push [0006]
+07AB: 39 89 00 02  calli 0089, 2
+07AF: 21 1A 00   push [001A]
+07B2: 05 12 00   jne 07C7
+07B5: 21 1A 00   push [001A]
+07B8: 44 59   pushw 1E59H   ; 7769
+07BA: 1E 02 00   arrc 0002H   ; 2
+07BD: 21 06 00   push [0006]
+07C0: 38 01 00 02  callis 0001, 2
+07C4: 12 1D 00   pop [001D]
+07C7: 1F 02 00   pushi 0002H   ; 2
+07CA: 21 06 00   push [0006]
+07CD: 39 3D 00 02  calli 003D, 2
+07D1: 1F 1D 03   pushi 031DH   ; 797
+07D4: 38 24 00 01  callis 0024, 1
+07D8: 12 12 00   pop [0012]
+07DB: 1F 12 00   pushi 0012H   ; 18
+07DE: 21 12 00   push [0012]
+07E1: 39 89 00 02  calli 0089, 2
+07E5: 21 19 00   push [0019]
+07E8: 21 12 00   push [0012]
+07EB: 38 15 00 02  callis 0015, 2
+07EF: 12 09 00   pop [0009]
+07F2: 1F 04 00   pushi 0004H   ; 4
+07F5: 21 12 00   push [0012]
+07F8: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+07FC: 21 06 00   push [0006]
+07FF: 38 36 00 01  callis 0036, 1
+0803: 12 09 00   pop [0009]
+0806: 1F 03 00   pushi 0003H   ; 3
+0809: 1F F7 06   pushi 06F7H   ; 1783
+080C: 44 55   pushw 4455H   ; 17493
+080E: 44 23   pushw 4423H   ; 17443
+0810: 44 2C   pushw 1E2CH   ; 7724
+0812: 1E 04 00   arrc 0004H   ; 4
+0815: 21 12 00   push [0012]
+0818: 38 02 00 03  callis 0002, 3
+081C: 12 0C 00   pop [000C]
+081F: 25   ret

@@ -1,0 +1,490 @@
+  .funcnumber 04F6H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'notebook'
+L0015: db 00
+L0016: db 'Wisps'
+L001B: db 00
+L001C: db 'answers'
+L0023: db 00
+L0024: db 'You see a large man with an almost cunning, erudite aura abo'
+ db 'ut him.'
+L0067: db 00
+L0068: db '"Hello, again," Alagner says.'
+L0085: db 00
+L0086: db 'name'
+L008A: db 00
+L008B: db 'The sage smiles and nods his head. "My name is Alagner. And '
+ db 'who art thou?"'
+L00D5: db 00
+L00D6: db 'Avatar'
+L00DC: db 00
+L00DD: db '"I see. Nice to meet thee. Go away. I am busy."*'
+L010D: db 00
+L010E: db 'Avatar'
+L0114: db 00
+L0115: db 'Alagner's eyes widen.~~"By the skies above! I do recognize t'
+ db 'hee! This is quite an honor! What may I do for thee?"'
+L0186: db 00
+L0187: db 'name'
+L018B: db 00
+L018C: db 'job'
+L018F: db 00
+L0190: db '"My profession -- rather, my destiny -- is to learn and know'
+ db ' all things. I came to New Magincia to build my workshop and'
+ db ' do so."'
+L0210: db 00
+L0211: db 'workshop'
+L0219: db 00
+L021A: db 'New Magincia'
+L0226: db 00
+L0227: db 'New Magincia'
+L0233: db 00
+L0234: db 'The sage sighs. "I left the Britannian mainland to come to t'
+ db 'he relative peace and quiet of New Magincia. I am content he'
+ db 're because it is isolated and free from... the filth and cor'
+ db 'ruption going on in Britannia. Not many see it."'
+L0318: db 00
+L0319: db 'New Magincia'
+L0325: db 00
+L0326: db 'corruption'
+L0330: db 00
+L0331: db 'workshop'
+L0339: db 00
+L033A: db '"This is my workshop. I peruse my books and papers here. Occ'
+ db 'asionally, I invent things, such as this crystal ball."'
+L03AD: db 00
+L03AE: db 'workshop'
+L03B6: db 00
+L03B7: db 'crystal ball'
+L03C3: db 00
+L03C4: db 'crystal ball'
+L03D0: db 00
+L03D1: db '"It is a device for recording. If I forget a procedure or a '
+ db 'step in an experiment, I may look into the crystal ball and '
+ db 'see yesterday's events. Please, feel free to use it. Thou wi'
+ db 'lt see what I was doing yesterday."'
+L04A8: db 00
+L04A9: db 'crystal ball'
+L04B5: db 00
+L04B6: db 'Wisps'
+L04BB: db 00
+L04BC: db '"They are unusually aloof creatures of another dimension. Th'
+ db 'ou wilt think they are thy friends, but they could very well'
+ db ' be spying on -thee- for someone else! They have no loyaltie'
+ db 's to good or evil -- all they care about is the acquisition '
+ db 'of information -- how they acquire it is sometimes honorable'
+ db ', sometimes not."'
+L05F9: db 00
+L05FA: db 'Wisps'
+L05FF: db 00
+L0600: db 'corruption'
+L060A: db 00
+L060B: db '"The Britannian people are becoming careless and lazy. They '
+ db 'do not seek true knowledge. They do not respect their land. '
+ db 'They do not respect each other. The resources of our land ar'
+ db 'e being wasted. Miners are experimenting with dangerous reag'
+ db 'ents. There is an evil in the land, and I am not so sure tha'
+ db 't it is in the people themselves."'
+L0759: db 00
+L075A: db 'corruption'
+L0764: db 00
+L0765: db 'evil'
+L0769: db 00
+L076A: db 'true knowledge'
+L0778: db 00
+L0779: db 'true knowledge'
+L0787: db 00
+L0788: db '"True knowledge is the only way to complete fulfillment."'
+L07C1: db 00
+L07C2: db 'true knowledge'
+L07D0: db 00
+L07D1: db 'evil'
+L07D5: db 00
+L07D6: db '"Thou art a member of The Fellowship, I see. Thou must not k'
+ db 'now everything about them. If thou didst, thou wouldst not b'
+ db 'e a member!'
+L0859: db 00
+L085A: db 'under cover'
+L0865: db 00
+L0866: db '"Thou hast heard of The Fellowship by now, I am sure.'
+L089B: db 00
+L089C: db 'suspect'
+L08A3: db 00
+L08A4: db '"They are cunning and two-faced. I am working on obtaining p'
+ db 'roof of this."'
+L08EE: db 00
+L08EF: db 'evil'
+L08F3: db 00
+L08F4: db 'proof'
+L08F9: db 00
+L08FA: db 'proof'
+L08FF: db 00
+L0900: db '"I am documenting this information in my notebook."'
+L0933: db 00
+L0934: db 'proof'
+L0939: db 00
+L093A: db 'notebook'
+L0942: db 00
+L0943: db 'information'
+L094E: db 00
+L094F: db 'information'
+L095A: db 00
+L095B: db '"It is all contained within the notebook."'
+L0985: db 00
+L0986: db 'information'
+L0991: db 00
+L0992: db 'under cover'
+L099D: db 00
+L099E: db '"Thou didst join The Fellowship to study their ways? Thou do'
+ db 'st suspect them as well? Perhaps thou hast more substance to'
+ db ' thee than I thought. We are working towards the same goal."'
+L0A52: db 00
+L0A53: db 'under cover'
+L0A5E: db 00
+L0A5F: db 'suspect'
+L0A66: db 00
+L0A67: db '"Thou dost suspect The Fellowship of foul deeds? Well then! '
+ db 'Thou art perceptive indeed! Perhaps we are working toward th'
+ db 'e same goal!"'
+L0AEC: db 00
+L0AED: db 'suspect'
+L0AF4: db 00
+L0AF5: db 'notebook'
+L0AFD: db 00
+L0AFE: db '"It is hidden in a safe place, along with mine other treasur'
+ db 'ed sources of knowledge."'
+L0B53: db 00
+L0B54: db 'Alagner listens as you tell him you would like to borrow the'
+ db ' notebook.'
+L0B9A: db 00
+L0B9B: db '"Since thou art on an honorable quest, I suppose I might all'
+ db 'ow thee to borrow it if thou dost give me thy word that thou'
+ db ' wilt return it, and if thou dost offer proof of thine eager'
+ db 'ness to learn the true knowledge of the world."'
+L0C7E: db 00
+L0C7F: db 'learn'
+L0C84: db 00
+L0C85: db 'notebook'
+L0C8D: db 00
+L0C8E: db 'learn'
+L0C93: db 00
+L0C94: db '"Very well. Dost thou know the answers to the questions of L'
+ db 'ife and Death?"'
+L0CDF: db 00
+L0CE0: db '"I do not believe thou dost.'
+L0CFC: db 00
+L0CFD: db '"No, of course thou dost not.'
+L0D1A: db 00
+L0D1B: db '"Only those souls who have passed on from this life know the'
+ db 'se things. Seek out the spirit of The Tortured One. Ask him '
+ db 'what the answers are to the questions of life and death. Whe'
+ db 'n thou dost return with the correct answer, I will believe t'
+ db 'hat thou art sincere in thy quest for knowledge. Only then w'
+ db 'ill I allow thee to borrow the notebook."'
+L0E70: db 00
+L0E71: db 'Tortured One'
+L0E7D: db 00
+L0E7E: db 'learn'
+L0E83: db 00
+L0E84: db 'Tortured One'
+L0E90: db 00
+L0E91: db '"Alas, he is a poor soul who is doomed to haunt his abode th'
+ db 'roughout eternity."'
+L0EE0: db 00
+L0EE1: db 'Tortured One'
+L0EED: db 00
+L0EEE: db 'abode'
+L0EF3: db 00
+L0EF4: db 'abode'
+L0EF9: db 00
+L0EFA: db '"Seek him out in Skara Brae. But be careful. It is a dangero'
+ db 'us place. I should also advise thee that thou must use Seanc'
+ db 'e Spells to speak with anyone on that island. They are all u'
+ db 'ndead."'
+L0FB5: db 00
+L0FB6: db 'abode'
+L0FBB: db 00
+L0FBC: db 'answers'
+L0FC3: db 00
+L0FC4: db '"Thou hast spoken to the Tortured One and learned the answer'
+ db 's to the questions of Life and Death?"'
+L1026: db 00
+L1027: db '"Then what are the answers?"'
+L1043: db 00
+L1044: db '"Do not return until thou hast done so."'
+L106C: db 00
+L106D: db 'answers'
+L1074: db 00
+L1075: db 'bye'
+L1078: db 00
+L1079: db '"Farewell. May thy journeys be profitable."*'
+L10A5: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0005H
+  .extern 0908H
+  .extern 090BH
+  .extern 090AH
+  .extern 0840H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 CA 02   jne 02D2
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 0A FF   pushi FF0AH   ; -246
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; job
+0025: 1D 08 00   pushs L0008   ; name
+0028: 1E 03 00   arrc 0003H   ; 3
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 33 01   pushf flag:[0133]
+0032: 42 96 01   pushf flag:[0196]
+0035: 10   not
+0036: 0E   and
+0037: 05 0D 00   jne 0047
+003A: 1D 0D 00   pushs L000D   ; notebook
+003D: 1D 16 00   pushs L0016   ; Wisps
+0040: 1E 02 00   arrc 0002H   ; 2
+0043: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0047: 42 96 01   pushf flag:[0196]
+004A: 05 07 00   jne 0054
+004D: 1D 1C 00   pushs L001C   ; answers
+0050: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0054: 42 89 01   pushf flag:[0189]
+0057: 10   not
+0058: 05 0B 00   jne 0066
+005B: 1C 24 00   addsi L0024   ; You see a large m...
+005E: 33   say
+005F: 13   push true
+0060: 43 89 01   popf flag:[0189]
+0063: 06 04 00   jmp 006A
+0066: 1C 68 00   addsi L0068   ; "Hello, again," A...
+0069: 33   say
+006A: 04 60 02   je 02CD
+006D: 1D 86 00   pushs L0086   ; name
+0070: 07 01 00 3F 00  cmps 0001H, 00B4
+0075: 1C 8B 00   addsi L008B   ; The sage smiles a...
+0078: 33   say
+0079: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+007D: 1D D6 00   pushs L00D6   ; Avatar
+0080: 21 00 00   push [0000]
+0083: 1E 02 00   arrc 0002H   ; 2
+0086: 24 01 00   call [0001]   ; 090BH
+0089: 12 02 00   pop [0002]
+008C: 21 02 00   push [0002]
+008F: 21 00 00   push [0000]
+0092: 22   cmpeq
+0093: 05 05 00   jne 009B
+0096: 1C DD 00   addsi L00DD   ; "I see. Nice to m...
+0099: 33   say
+009A: 3F   abrt
+009B: 21 02 00   push [0002]
+009E: 1D 0E 01   pushs L010E   ; Avatar
+00A1: 22   cmpeq
+00A2: 05 0F 00   jne 00B4
+00A5: 1C 15 01   addsi L0115   ; Alagner's eyes wi...
+00A8: 33   say
+00A9: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+00AD: 1D 87 01   pushs L0187   ; name
+00B0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B4: 1D 8C 01   pushs L018C   ; job
+00B7: 07 01 00 11 00  cmps 0001H, 00CD
+00BC: 1C 90 01   addsi L0190   ; "My profession --...
+00BF: 33   say
+00C0: 1D 11 02   pushs L0211   ; workshop
+00C3: 1D 1A 02   pushs L021A   ; New Magincia
+00C6: 1E 02 00   arrc 0002H   ; 2
+00C9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CD: 1D 27 02   pushs L0227   ; New Magincia
+00D0: 07 01 00 12 00  cmps 0001H, 00E7
+00D5: 1C 34 02   addsi L0234   ; The sage sighs. "...
+00D8: 33   say
+00D9: 1D 19 03   pushs L0319   ; New Magincia
+00DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E0: 1D 26 03   pushs L0326   ; corruption
+00E3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E7: 1D 31 03   pushs L0331   ; workshop
+00EA: 07 01 00 12 00  cmps 0001H, 0101
+00EF: 1C 3A 03   addsi L033A   ; "This is my works...
+00F2: 33   say
+00F3: 1D AE 03   pushs L03AE   ; workshop
+00F6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FA: 1D B7 03   pushs L03B7   ; crystal ball
+00FD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0101: 1D C4 03   pushs L03C4   ; crystal ball
+0104: 07 01 00 0B 00  cmps 0001H, 0114
+0109: 1C D1 03   addsi L03D1   ; "It is a device f...
+010C: 33   say
+010D: 1D A9 04   pushs L04A9   ; crystal ball
+0110: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0114: 1D B6 04   pushs L04B6   ; Wisps
+0117: 07 01 00 0B 00  cmps 0001H, 0127
+011C: 1C BC 04   addsi L04BC   ; "They are unusual...
+011F: 33   say
+0120: 1D FA 05   pushs L05FA   ; Wisps
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 1D 00 06   pushs L0600   ; corruption
+012A: 07 01 00 18 00  cmps 0001H, 0147
+012F: 1C 0B 06   addsi L060B   ; "The Britannian p...
+0132: 33   say
+0133: 1D 5A 07   pushs L075A   ; corruption
+0136: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013A: 1D 65 07   pushs L0765   ; evil
+013D: 1D 6A 07   pushs L076A   ; true knowledge
+0140: 1E 02 00   arrc 0002H   ; 2
+0143: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0147: 1D 79 07   pushs L0779   ; true knowledge
+014A: 07 01 00 0B 00  cmps 0001H, 015A
+014F: 1C 88 07   addsi L0788   ; "True knowledge i...
+0152: 33   say
+0153: 1D C2 07   pushs L07C2   ; true knowledge
+0156: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015A: 1D D1 07   pushs L07D1   ; evil
+015D: 07 01 00 31 00  cmps 0001H, 0193
+0162: 21 01 00   push [0001]
+0165: 05 0E 00   jne 0176
+0168: 1C D6 07   addsi L07D6   ; "Thou art a membe...
+016B: 33   say
+016C: 1D 5A 08   pushs L085A   ; under cover
+016F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0173: 06 0B 00   jmp 0181
+0176: 1C 66 08   addsi L0866   ; "Thou hast heard ...
+0179: 33   say
+017A: 1D 9C 08   pushs L089C   ; suspect
+017D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0181: 1C A4 08   addsi L08A4   ; "They are cunning...
+0184: 33   say
+0185: 1D EF 08   pushs L08EF   ; evil
+0188: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018C: 1D F4 08   pushs L08F4   ; proof
+018F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0193: 1D FA 08   pushs L08FA   ; proof
+0196: 07 01 00 18 00  cmps 0001H, 01B3
+019B: 1C 00 09   addsi L0900   ; "I am documenting...
+019E: 33   say
+019F: 1D 34 09   pushs L0934   ; proof
+01A2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A6: 1D 3A 09   pushs L093A   ; notebook
+01A9: 1D 43 09   pushs L0943   ; information
+01AC: 1E 02 00   arrc 0002H   ; 2
+01AF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B3: 1D 4F 09   pushs L094F   ; information
+01B6: 07 01 00 0B 00  cmps 0001H, 01C6
+01BB: 1C 5B 09   addsi L095B   ; "It is all contai...
+01BE: 33   say
+01BF: 1D 86 09   pushs L0986   ; information
+01C2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C6: 1D 92 09   pushs L0992   ; under cover
+01C9: 07 01 00 0B 00  cmps 0001H, 01D9
+01CE: 1C 9E 09   addsi L099E   ; "Thou didst join ...
+01D1: 33   say
+01D2: 1D 53 0A   pushs L0A53   ; under cover
+01D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D9: 1D 5F 0A   pushs L0A5F   ; suspect
+01DC: 07 01 00 0B 00  cmps 0001H, 01EC
+01E1: 1C 67 0A   addsi L0A67   ; "Thou dost suspec...
+01E4: 33   say
+01E5: 1D ED 0A   pushs L0AED   ; suspect
+01E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EC: 1D F5 0A   pushs L0AF5   ; notebook
+01EF: 07 01 00 25 00  cmps 0001H, 0219
+01F4: 1C FE 0A   addsi L0AFE   ; "It is hidden in ...
+01F7: 33   say
+01F8: 42 33 01   pushf flag:[0133]
+01FB: 42 96 01   pushf flag:[0196]
+01FE: 10   not
+01FF: 0E   and
+0200: 05 0F 00   jne 0212
+0203: 1C 54 0B   addsi L0B54   ; Alagner listens a...
+0206: 33   say
+0207: 1C 9B 0B   addsi L0B9B   ; "Since thou art o...
+020A: 33   say
+020B: 1D 7F 0C   pushs L0C7F   ; learn
+020E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0212: 1D 85 0C   pushs L0C85   ; notebook
+0215: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0219: 1D 8E 0C   pushs L0C8E   ; learn
+021C: 07 01 00 44 00  cmps 0001H, 0265
+0221: 1C 94 0C   addsi L0C94   ; "Very well. Dost ...
+0224: 33   say
+0225: 24 02 00   call [0002]   ; 090AH
+0228: 12 03 00   pop [0003]
+022B: 21 03 00   push [0003]
+022E: 05 13 00   jne 0244
+0231: 42 96 01   pushf flag:[0196]
+0234: 05 06 00   jne 023D
+0237: 24 03 00   call [0003]   ; 0840H
+023A: 06 04 00   jmp 0241
+023D: 1C E0 0C   addsi L0CE0   ; "I do not believe...
+0240: 33   say
+0241: 06 04 00   jmp 0248
+0244: 1C FD 0C   addsi L0CFD   ; "No, of course th...
+0247: 33   say
+0248: 42 7C 01   pushf flag:[017C]
+024B: 10   not
+024C: 05 0F 00   jne 025E
+024F: 1C 1B 0D   addsi L0D1B   ; "Only those souls...
+0252: 33   say
+0253: 1D 71 0E   pushs L0E71   ; Tortured One
+0256: 39 05 00 01  calli _AddAnswer@1  ; 0005
+025A: 13   push true
+025B: 43 7C 01   popf flag:[017C]
+025E: 1D 7E 0E   pushs L0E7E   ; learn
+0261: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0265: 1D 84 0E   pushs L0E84   ; Tortured One
+0268: 07 01 00 12 00  cmps 0001H, 027F
+026D: 1C 91 0E   addsi L0E91   ; "Alas, he is a po...
+0270: 33   say
+0271: 1D E1 0E   pushs L0EE1   ; Tortured One
+0274: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0278: 1D EE 0E   pushs L0EEE   ; abode
+027B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+027F: 1D F4 0E   pushs L0EF4   ; abode
+0282: 07 01 00 0B 00  cmps 0001H, 0292
+0287: 1C FA 0E   addsi L0EFA   ; "Seek him out in ...
+028A: 33   say
+028B: 1D B6 0F   pushs L0FB6   ; abode
+028E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0292: 1D BC 0F   pushs L0FBC   ; answers
+0295: 07 01 00 25 00  cmps 0001H, 02BF
+029A: 1C C4 0F   addsi L0FC4   ; "Thou hast spoken...
+029D: 33   say
+029E: 24 02 00   call [0002]   ; 090AH
+02A1: 12 04 00   pop [0004]
+02A4: 21 04 00   push [0004]
+02A7: 05 0A 00   jne 02B4
+02AA: 1C 27 10   addsi L1027   ; "Then what are th...
+02AD: 33   say
+02AE: 24 03 00   call [0003]   ; 0840H
+02B1: 06 04 00   jmp 02B8
+02B4: 1C 44 10   addsi L1044   ; "Do not return un...
+02B7: 33   say
+02B8: 1D 6D 10   pushs L106D   ; answers
+02BB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02BF: 1D 75 10   pushs L1075   ; bye
+02C2: 07 01 00 03 00  cmps 0001H, 02CA
+02C7: 06 03 00   jmp 02CD
+02CA: 06 9D FD   jmp 006A
+02CD: 40   db 40 ???
+02CE: 1C 79 10   addsi L1079   ; "Farewell. May th...
+02D1: 33   say
+02D2: 48   push eventid
+02D3: 1F 00 00   pushi 0000H   ; 0
+02D6: 22   cmpeq
+02D7: 05 06 00   jne 02E0
+02DA: 1F 0A FF   pushi FF0AH   ; -246
+02DD: 24 04 00   call [0004]   ; 092EH
+02E0: 25   ret

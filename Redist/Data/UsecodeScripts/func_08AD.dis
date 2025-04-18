@@ -1,0 +1,156 @@
+  .funcnumber 08ADH
+  .data
+L0000: db '"I thank thee, '
+L000F: db 00
+L0010: db '. That dark spirit had suppressed my will for so long that I'
+ db ' was not sure I had one left. Thou hast done a great deed fo'
+ db 'r Skara Brae, for myself and, indeed, all of Britannia, but '
+ db 'then I suppose this is merely a matter of course for one suc'
+ db 'h as thee. My gratitude is thine." He bows deeply to you.'
+L0139: db 00
+L013A: db '"But now, I fear that all is still not right with the world.'
+ db ' The ether stirs chaotically outside of this Dark Tower. Wer'
+ db 'e it not for some property within the walls, I fear my mind '
+ db 'would suffer the ravages of its force."'
+L0215: db 00
+L0216: db 'Hast thou reconsidered my request?'
+L0238: db 00
+L0239: db 00
+L023A: db '"It is good to see thee again, '
+L0259: db 00
+L025A: db '.'
+L025B: db 00
+L025C: db '"'
+L025D: db 00
+L025E: db 'Ah, I see. No matter'
+L0272: db 00
+L0273: db '"Now, '
+L0279: db 00
+L027A: db '. I must ask this favor of thee. The Well of Souls, at the b'
+ db 'ottom of this tower, holds many tormented souls within it an'
+ db 'd binds the spirits of Skara Brae to this island. It must be'
+ db ' destroyed." Horance looks at you intently.~ "I can only hop'
+ db 'e that thou wilt try to free them."'
+L038D: db 00
+L038E: db '"Well, wilt thou?" He looks at you expectantly.'
+L03BD: db 00
+L03BE: db 'I understand. Fear not'
+L03D4: db 00
+L03D5: db 'Horance thinks for a moment then, "When the well is destroye'
+ db 'd, the souls within will be released to float aimlessly upon'
+ db ' the ether for a time. I have badly wronged the Lady Rowena '
+ db 'and her husband, I would see this wrong mended. Please, lead'
+ db ' her out of this dark place and see that she is reunited wit'
+ db 'h Trent. That way they will remain together when they are re'
+ db 'leased. I will know when you've accomplished this task, and '
+ db 'then we can continue with the destruction of the well."'
+L05B0: db 00
+L05B1: db '"But please, '
+L05BE: db 00
+L05BF: db ', I beg thee make haste. Take Rowena to Trent! Time is short'
+ db '! Talk to her and take her to her husband! The souls in the '
+ db 'well are constantly in pain, and some become so drained that'
+ db ' they are snuffed out of existence like the flame of a candl'
+ db 'e." He looks as if he feels the pain himself.'
+L06DC: db 00
+L06DD: db '"Good, now we can get on with freeing the rest of Skara Brae'
+ db '. The destruction of the Well of Souls can only be brought a'
+ db 'bout by the selfless sacrifice of a spirit. A living being w'
+ db 'ill not do, because the soul is tied to the body.~~"Go out i'
+ db 'nto the town and find a spirit willing to make the sacrifice'
+ db ' for the sake of all Skara Brae. I suggest that thou shoulds'
+ db 't ask Mayor Forsythe first, as it is his right to be conside'
+ db 'red before the others." He strokes his chin thoughtfully as '
+ db 'you leave.'
+L08C7: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0004H
+  .extern 0909H
+  .extern 0908H
+  .extern 08AEH
+  .extern 08AFH
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 1F 73 FF   pushi FF73H   ; -141
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 24 00 00   call [0000]   ; 0909H
+000D: 12 00 00   pop [0000]
+0010: 24 01 00   call [0001]   ; 0908H
+0013: 12 01 00   pop [0001]
+0016: 42 AD 01   pushf flag:[01AD]
+0019: 10   not
+001A: 05 1C 00   jne 0039
+001D: 13   push true
+001E: 43 AD 01   popf flag:[01AD]
+0021: 1C 00 00   addsi L0000   ; "I thank thee, 
+0024: 2F 00 00   addsv [0000]
+0027: 1C 10 00   addsi L0010   ; . That dark spiri...
+002A: 33   say
+002B: 42 03 00   pushf flag:[0003]
+002E: 10   not
+002F: 05 04 00   jne 0036
+0032: 1C 3A 01   addsi L013A   ; "But now, I fear ...
+0035: 33   say
+0036: 06 25 00   jmp 005E
+0039: 42 D1 01   pushf flag:[01D1]
+003C: 05 09 00   jne 0048
+003F: 1D 16 02   pushs L0216   ; Hast thou reconsi...
+0042: 12 02 00   pop [0002]
+0045: 06 06 00   jmp 004E
+0048: 1D 39 02   pushs L0239   ; 
+004B: 12 02 00   pop [0002]
+004E: 1C 3A 02   addsi L023A   ; "It is good to se...
+0051: 2F 01 00   addsv [0001]
+0054: 1C 5A 02   addsi L025A   ; .
+0057: 2F 02 00   addsv [0002]
+005A: 1C 5C 02   addsi L025C   ; "
+005D: 33   say
+005E: 42 D1 01   pushf flag:[01D1]
+0061: 05 0C 00   jne 0070
+0064: 1D 5E 02   pushs L025E   ; Ah, I see. No matter
+0067: 12 03 00   pop [0003]
+006A: 21 03 00   push [0003]
+006D: 24 02 00   call [0002]   ; 08AEH
+0070: 42 AC 01   pushf flag:[01AC]
+0073: 10   not
+0074: 05 21 00   jne 0098
+0077: 42 D1 01   pushf flag:[01D1]
+007A: 10   not
+007B: 05 1A 00   jne 0098
+007E: 1C 73 02   addsi L0273   ; "Now, 
+0081: 2F 00 00   addsv [0000]
+0084: 1C 7A 02   addsi L027A   ; . I must ask this...
+0087: 33   say
+0088: 1C 8E 03   addsi L038E   ; "Well, wilt thou?...
+008B: 33   say
+008C: 1D BE 03   pushs L03BE   ; I understand. Fea...
+008F: 12 03 00   pop [0003]
+0092: 21 03 00   push [0003]
+0095: 24 02 00   call [0002]   ; 08AEH
+0098: 42 AE 01   pushf flag:[01AE]
+009B: 10   not
+009C: 05 0B 00   jne 00AA
+009F: 1C D5 03   addsi L03D5   ; Horance thinks fo...
+00A2: 33   say
+00A3: 13   push true
+00A4: 43 AE 01   popf flag:[01AE]
+00A7: 06 28 00   jmp 00D2
+00AA: 42 A6 01   pushf flag:[01A6]
+00AD: 10   not
+00AE: 05 0D 00   jne 00BE
+00B1: 1C B1 05   addsi L05B1   ; "But please, 
+00B4: 2F 00 00   addsv [0000]
+00B7: 1C BF 05   addsi L05BF   ; , I beg thee make...
+00BA: 33   say
+00BB: 06 14 00   jmp 00D2
+00BE: 42 98 01   pushf flag:[0198]
+00C1: 05 06 00   jne 00CA
+00C4: 24 03 00   call [0003]   ; 08AFH
+00C7: 06 08 00   jmp 00D2
+00CA: 1C DD 06   addsi L06DD   ; "Good, now we can...
+00CD: 33   say
+00CE: 13   push true
+00CF: 43 98 01   popf flag:[0198]
+00D2: 3F   abrt
+00D3: 25   ret

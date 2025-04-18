@@ -1,0 +1,92 @@
+  .funcnumber 087CH
+  .data
+L0000: db 'The ape-like creature slowly and cautiously walks up to you.'
+ db ' He, or she, sniffs for a moment, and then points to the hon'
+ db 'ey you are carrying.'
+L008C: db 00
+L008D: db 'Go away!'
+L0095: db 00
+L0096: db 'Want honey?'
+L00A1: db 00
+L00A2: db 'Want honey?'
+L00AD: db 00
+L00AE: db '"Honey will be given by you to me?"'
+L00D1: db 00
+L00D2: db '"You are thanked."'
+L00E4: db 00
+L00E5: db 'The Emp appears very disappointed."'
+L0108: db 00
+L0109: db '"`Goodbye' is said to you."*'
+L0125: db 00
+L0126: db 'Go away!'
+L012E: db 00
+L012F: db 'It does.*'
+L0138: db 00
+L0139: db 'Go away!'
+L0141: db 00
+L0142: db 'Want honey?'
+L014D: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0002H
+  .extern 090AH
+  .extern 0911H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F E5 FE   pushi FEE5H   ; -283
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 42 54 01   pushf flag:[0154]
+000D: 10   not
+000E: 05 04 00   jne 0015
+0011: 1C 00 00   addsi L0000   ; The ape-like crea...
+0014: 33   say
+0015: 1D 8D 00   pushs L008D   ; Go away!
+0018: 1D 96 00   pushs L0096   ; Want honey?
+001B: 1E 02 00   arrc 0002H   ; 2
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 04 73 00   je 0098
+0025: 1D A2 00   pushs L00A2   ; Want honey?
+0028: 07 01 00 4E 00  cmps 0001H, 007B
+002D: 1C AE 00   addsi L00AE   ; "Honey will be gi...
+0030: 33   say
+0031: 24 00 00   call [0000]   ; 090AH
+0034: 12 00 00   pop [0000]
+0037: 21 00 00   push [0000]
+003A: 05 2C 00   jne 0069
+003D: 13   push true
+003E: 1F 99 FE   pushi FE99H   ; -359
+0041: 1F 99 FE   pushi FE99H   ; -359
+0044: 1F 04 03   pushi 0304H   ; 772
+0047: 1F 01 00   pushi 0001H   ; 1
+004A: 38 2B 00 05  callis 002B, 5
+004E: 12 01 00   pop [0001]
+0051: 1C D2 00   addsi L00D2   ; "You are thanked."
+0054: 33   say
+0055: 42 54 01   pushf flag:[0154]
+0058: 10   not
+0059: 05 0A 00   jne 0066
+005C: 1F 0A 00   pushi 000AH   ; 10
+005F: 24 01 00   call [0001]   ; 0911H
+0062: 13   push true
+0063: 43 54 01   popf flag:[0154]
+0066: 06 12 00   jmp 007B
+0069: 42 54 01   pushf flag:[0154]
+006C: 05 07 00   jne 0076
+006F: 1C E5 00   addsi L00E5   ; The Emp appears v...
+0072: 33   say
+0073: 06 05 00   jmp 007B
+0076: 1C 09 01   addsi L0109   ; "`Goodbye' is sai...
+0079: 33   say
+007A: 3F   abrt
+007B: 1D 26 01   pushs L0126   ; Go away!
+007E: 07 01 00 05 00  cmps 0001H, 0088
+0083: 1C 2F 01   addsi L012F   ; It does.*
+0086: 33   say
+0087: 3F   abrt
+0088: 1D 39 01   pushs L0139   ; Go away!
+008B: 1D 42 01   pushs L0142   ; Want honey?
+008E: 1E 02 00   arrc 0002H   ; 2
+0091: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0095: 06 8A FF   jmp 0022
+0098: 40   db 40 ???
+0099: 25   ret

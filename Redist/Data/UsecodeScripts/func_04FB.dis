@@ -1,0 +1,538 @@
+  .funcnumber 04FBH
+  .data
+L0000: db 'Danag nods his head at you. "I do not mean to be impolite, b'
+ db 'ut I am concentrating on the games. I wish to win a bundle t'
+ db 'onight!"'
+L0080: db 00
+L0081: db 'He rubs his hand with glee.*'
+L009D: db 00
+L009E: db 'bye'
+L00A1: db 00
+L00A2: db 'job'
+L00A5: db 00
+L00A6: db 'name'
+L00AA: db 00
+L00AB: db 'Hook'
+L00AF: db 00
+L00B0: db 'Elizabeth and Abraham'
+L00C5: db 00
+L00C6: db 'You see a jovial man with a wide smile. It is obvious he is '
+ db 'enjoying his life.'
+L0114: db 00
+L0115: db 'He notices your medallion.'
+L012F: db 00
+L0130: db '"Fellow member! How art thee! I hope thy journey to Buccanee'
+ db 'r's Den was not too troublesome! Welcome to our island!"'
+L01A4: db 00
+L01A5: db 'The Cube vibrates.'
+L01B7: db 00
+L01B8: db '"And I recognize thee as the Avatar! I know that thou art co'
+ db 'ndemned to die!"'
+L0204: db 00
+L0205: db 'Danag smiles as if he had just said that you had been invite'
+ db 'd to dine with the king.'
+L0259: db 00
+L025A: db '"Hello, there!" Danag says.'
+L0275: db 00
+L0276: db 'name'
+L027A: db 00
+L027B: db '"I am Danag, my friend." The man overdoes a majestic bow.'
+L02B4: db 00
+L02B5: db 'name'
+L02B9: db 00
+L02BA: db 'job'
+L02BD: db 00
+L02BE: db '"I am interim Fellowship Branch leader here on Buccaneer's D'
+ db 'en. Our regular leader, Abraham, is away on Fellowship busin'
+ db 'ess at the moment."'
+L0349: db 00
+L034A: db 'Abraham'
+L0351: db 00
+L0352: db 'Fellowship'
+L035C: db 00
+L035D: db 'Fellowship'
+L0367: db 00
+L0368: db '"The Fellowship has been present on Buccaneer's Den for a lo'
+ db 'ng time. This is one of the oldest branches in Britannia, se'
+ db 'cond only to the headquarters in Britain. Thou mayest wonder'
+ db ' why an island of such ill-repute would attract The Fellowsh'
+ db 'ip."'
+L045C: db 00
+L045D: db 'Fellowship'
+L0467: db 00
+L0468: db 'wonder'
+L046E: db 00
+L046F: db 'wonder'
+L0475: db 00
+L0476: db '"The founders of The Fellowship felt that the people who inh'
+ db 'abit this island would benefit the most from our organizatio'
+ db 'n.'
+L04F0: db 00
+L04F1: db '"Especially since we would help them build an empire of sin '
+ db 'and gluttony out of Buccaneer's Den."'
+L0552: db 00
+L0553: db 'You notice the Cube has been vibrating while Danag was speak'
+ db 'ing.'
+L0593: db 00
+L0594: db '"Amidst all of the sin, the debauchery, the piracy, the gamb'
+ db 'ling, the drunkenness -- The Fellowship has made its stand a'
+ db 'nd recruited members to follow our principles. Buccaneer's D'
+ db 'en has changed as a result."'
+L0664: db 00
+L0665: db 'wonder'
+L066B: db 00
+L066C: db 'Buccaneer's Den'
+L067B: db 00
+L067C: db 'Buccaneer's Den'
+L068B: db 00
+L068C: db '"Long ago it was merely a hideout for pirates, scavengers, a'
+ db 'nd rogues. Look around.'
+L06DF: db 00
+L06E0: db '"Now it is the center of corruption in all of Britannia. The'
+ db ' pirates are all controlled by The Fellowship."'
+L074B: db 00
+L074C: db 'The Cube continues to vibrate.'
+L076A: db 00
+L076B: db '"Now Buccaneer's Den is an island paradise. It has its own c'
+ db 'ommerce. It pays taxes to Lord British. The pirates here are'
+ db ' now businessmen. They have made something of their lives.'
+L081D: db 00
+L081E: db '"As a result, The Baths and The House of Games are two of th'
+ db 'e most profitable establishments in the country."'
+L088B: db 00
+L088C: db 'Buccaneer's Den'
+L089B: db 00
+L089C: db 'House of Games'
+L08AA: db 00
+L08AB: db 'The Baths'
+L08B4: db 00
+L08B5: db 'The Baths'
+L08BE: db 00
+L08BF: db '"It is, of course, a place where one may experience the plea'
+ db 'sures of the flesh. All of the profits go to The Fellowship.'
+L0937: db 00
+L0938: db '"It is a purely innocent business which caters to the weary '
+ db 'who are in need of relaxation. One may receive physical and '
+ db 'mental cleansing there.'
+L09C7: db 00
+L09C8: db '"It is truly a jewel in the crown that is Britannia."'
+L09FD: db 00
+L09FE: db 'The Baths'
+L0A07: db 00
+L0A08: db 'House of Games'
+L0A16: db 00
+L0A17: db '"Why, it is a gambling parlor! The Fellowship certainly take'
+ db 's in a bundle from that place!"'
+L0A72: db 00
+L0A73: db '"It is an outfit which challenges the mind and its ability f'
+ db 'or assessing strategy in life. Exercising this aspect of one'
+ db ''s brain is important for one's self-esteem and well-being."'
+L0B27: db 00
+L0B28: db 'House of Games'
+L0B36: db 00
+L0B37: db 'Abraham'
+L0B3E: db 00
+L0B3F: db '"Abraham is one of the members of the inner circle of The Fe'
+ db 'llowship. He and his colleague Elizabeth travel the country '
+ db 'periodically, usually distributing or collecting the organiz'
+ db 'ation's funds and doing business at the other branches."'
+L0C2B: db 00
+L0C2C: db 'The Cube vibrates.'
+L0C3E: db 00
+L0C3F: db '"Uhm... er... he is also a coordinator for executions and he'
+ db ' cheats at cards."'
+L0C8D: db 00
+L0C8E: db 'Abraham'
+L0C95: db 00
+L0C96: db 'Elizabeth'
+L0C9F: db 00
+L0CA0: db 'Elizabeth'
+L0CA9: db 00
+L0CAA: db '"Elizabeth is an extremely intelligent woman who acts as Dir'
+ db 'ector of Special Projects. She usually works with Batlin in '
+ db 'Britain, but she spends most of her time travelling from bra'
+ db 'nch to branch."'
+L0D6D: db 00
+L0D6E: db 'As the Cube vibrates, Danag adds, "She is, uhm... also a roy'
+ db 'al she-bitch and will murder thee at a moment's notice."'
+L0DE2: db 00
+L0DE3: db 'Elizabeth'
+L0DEC: db 00
+L0DED: db 'Special Projects'
+L0DFD: db 00
+L0DFE: db 'Special Projects'
+L0E0E: db 00
+L0E0F: db '"They might be anything from building a shelter for poor pea'
+ db 'sants to creating a new branch in a town without the benefit'
+ db ' of a Fellowship Hall."'
+L0E9E: db 00
+L0E9F: db 'As the Cube vibrates, Danag proudly adds, "Our current Speci'
+ db 'al Project is building the Black Gate for The Guardian. It i'
+ db 's located at the Isle of the Avatar in our secret undergroun'
+ db 'd complex!"'
+L0F5E: db 00
+L0F5F: db 'complex'
+L0F66: db 00
+L0F67: db 'Black Gate'
+L0F71: db 00
+L0F72: db 'Special Projects'
+L0F82: db 00
+L0F83: db 'Black Gate'
+L0F8D: db 00
+L0F8E: db 'Danag's eyes widen with excitement. "It is the gateway for o'
+ db 'ur coming Lord and Master! He will be coming through in virt'
+ db 'ually a few hours!"'
+L1019: db 00
+L101A: db 'Black Gate'
+L1024: db 00
+L1025: db 'complex'
+L102C: db 00
+L102D: db '"It is inside a dungeon within the Shrine of the Codex. A ba'
+ db 'rrier keeps out unwanted visitors. A special key opens the b'
+ db 'arrier, and only a few select people have one."'
+L10D4: db 00
+L10D5: db 'complex'
+L10DC: db 00
+L10DD: db 'key'
+L10E0: db 00
+L10E1: db 'key'
+L10E4: db 00
+L10E5: db '"I do not own one. The only people that do are Elizabeth and'
+ db ' Abraham, Batlin, and Hook himself. Hook probably keeps his '
+ db 'key in his abode."'
+L116F: db 00
+L1170: db 'key'
+L1173: db 00
+L1174: db 'Hook'
+L1178: db 00
+L1179: db 'The Cube vibrates.'
+L118B: db 00
+L118C: db '"Man with a Hook? That's his name! 'Hook'! He lives here on '
+ db 'the island! In fact, his quarters are in the secret catacomb'
+ db 's behind the House of Games! Thou canst reach it by asking S'
+ db 'intag the guard about Hook. Of course, thou dost know that H'
+ db 'ook is The Fellowship's chief executioner... along with his '
+ db 'assistant, the gargoyle Forskis."'
+L12D9: db 00
+L12DA: db 'Forskis'
+L12E1: db 00
+L12E2: db 'executioner'
+L12ED: db 00
+L12EE: db '"A pirate with a hook for a hand? No... I do not believe I k'
+ db 'now him. There are many pirates on this island. Many of them'
+ db ' are missing appendages, too!"'
+L1384: db 00
+L1385: db 'Hook'
+L1389: db 00
+L138A: db 'Elizabeth and Abraham'
+L139F: db 00
+L13A0: db '"They usually travel together. They just arrived from our Me'
+ db 'ditation Retreat near Serpent's Hold and I believe they are '
+ db 'somewhere on the island. Abraham told me I must keep working'
+ db ' as interim branch leader until his return."'
+L1480: db 00
+L1481: db 'The Cube vibrates.'
+L1493: db 00
+L1494: db '"Actually, I believe they are on their way to the Isle of th'
+ db 'e Avatar to take care of our new Special Project."'
+L1502: db 00
+L1503: db 'Elizabeth and Abraham'
+L1518: db 00
+L1519: db 'executioner'
+L1524: db 00
+L1525: db '"That's right. Hook does all the dirty work for The Fellowsh'
+ db 'ip. He was trained by Master De Snel in Jhelom. De Snel trai'
+ db 'ned all the previous executioners as well. In fact, De Snel '
+ db 'himself was The Fellowship's first executioner!"'
+L1609: db 00
+L160A: db 'executioner'
+L1615: db 00
+L1616: db 'Forskis'
+L161D: db 00
+L161E: db '"I understand the gargoyle's name means 'henchman' in Gargis'
+ db 'h. He's a tough wingless gargoyle who helps Hook out. I beli'
+ db 'eve he resides in the catacombs with Hook."'
+L16C1: db 00
+L16C2: db 'Forskis'
+L16C9: db 00
+L16CA: db 'bye'
+L16CD: db 00
+L16CE: db '"Farewell!"*'
+L16DA: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0003H
+  .extern 0931H
+  .extern 0911H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E4 02   jne 02EC
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 05 FF   pushi FF05H   ; -251
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 38 67 00 00  callis 0067, 0
+001D: 12 01 00   pop [0001]
+0020: 1F 01 00   pushi 0001H   ; 1
+0023: 1F 99 FE   pushi FE99H   ; -359
+0026: 1F D5 03   pushi 03D5H   ; 981
+0029: 1F 01 00   pushi 0001H   ; 1
+002C: 1F 9B FE   pushi FE9BH   ; -357
+002F: 24 00 00   call [0000]   ; 0931H
+0032: 12 02 00   pop [0002]
+0035: 21 00 00   push [0000]
+0038: 1F 07 00   pushi 0007H   ; 7
+003B: 22   cmpeq
+003C: 05 09 00   jne 0048
+003F: 1C 00 00   addsi L0000   ; Danag nods his he...
+0042: 33   say
+0043: 1C 81 00   addsi L0081   ; He rubs his hand ...
+0046: 33   say
+0047: 3F   abrt
+0048: 1D 9E 00   pushs L009E   ; bye
+004B: 1D A2 00   pushs L00A2   ; job
+004E: 1D A6 00   pushs L00A6   ; name
+0051: 1E 03 00   arrc 0003H   ; 3
+0054: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0058: 42 04 01   pushf flag:[0104]
+005B: 42 35 01   pushf flag:[0135]
+005E: 0F   or
+005F: 05 07 00   jne 0069
+0062: 1D AB 00   pushs L00AB   ; Hook
+0065: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0069: 42 64 02   pushf flag:[0264]
+006C: 05 07 00   jne 0076
+006F: 1D B0 00   pushs L00B0   ; Elizabeth and Abr...
+0072: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0076: 42 A9 02   pushf flag:[02A9]
+0079: 10   not
+007A: 05 2B 00   jne 00A8
+007D: 1C C6 00   addsi L00C6   ; You see a jovial ...
+0080: 33   say
+0081: 21 01 00   push [0001]
+0084: 05 08 00   jne 008F
+0087: 1C 15 01   addsi L0115   ; He notices your m...
+008A: 33   say
+008B: 1C 30 01   addsi L0130   ; "Fellow member! H...
+008E: 33   say
+008F: 21 02 00   push [0002]
+0092: 05 0C 00   jne 00A1
+0095: 1C A5 01   addsi L01A5   ; The Cube vibrates.
+0098: 33   say
+0099: 1C B8 01   addsi L01B8   ; "And I recognize ...
+009C: 33   say
+009D: 1C 05 02   addsi L0205   ; Danag smiles as i...
+00A0: 33   say
+00A1: 13   push true
+00A2: 43 A9 02   popf flag:[02A9]
+00A5: 06 04 00   jmp 00AC
+00A8: 1C 5A 02   addsi L025A   ; "Hello, there!" D...
+00AB: 33   say
+00AC: 04 38 02   je 02E7
+00AF: 1D 76 02   pushs L0276   ; name
+00B2: 07 01 00 0B 00  cmps 0001H, 00C2
+00B7: 1C 7B 02   addsi L027B   ; "I am Danag, my f...
+00BA: 33   say
+00BB: 1D B5 02   pushs L02B5   ; name
+00BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C2: 1D BA 02   pushs L02BA   ; job
+00C5: 07 01 00 11 00  cmps 0001H, 00DB
+00CA: 1C BE 02   addsi L02BE   ; "I am interim Fel...
+00CD: 33   say
+00CE: 1D 4A 03   pushs L034A   ; Abraham
+00D1: 1D 52 03   pushs L0352   ; Fellowship
+00D4: 1E 02 00   arrc 0002H   ; 2
+00D7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DB: 1D 5D 03   pushs L035D   ; Fellowship
+00DE: 07 01 00 12 00  cmps 0001H, 00F5
+00E3: 1C 68 03   addsi L0368   ; "The Fellowship h...
+00E6: 33   say
+00E7: 1D 5D 04   pushs L045D   ; Fellowship
+00EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EE: 1D 68 04   pushs L0468   ; wonder
+00F1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F5: 1D 6F 04   pushs L046F   ; wonder
+00F8: 07 01 00 27 00  cmps 0001H, 0124
+00FD: 1C 76 04   addsi L0476   ; "The founders of ...
+0100: 33   say
+0101: 21 02 00   push [0002]
+0104: 05 0B 00   jne 0112
+0107: 1C F1 04   addsi L04F1   ; "Especially since...
+010A: 33   say
+010B: 1C 53 05   addsi L0553   ; You notice the Cu...
+010E: 33   say
+010F: 06 04 00   jmp 0116
+0112: 1C 94 05   addsi L0594   ; "Amidst all of th...
+0115: 33   say
+0116: 1D 65 06   pushs L0665   ; wonder
+0119: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011D: 1D 6C 06   pushs L066C   ; Buccaneer's Den
+0120: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0124: 1D 7C 06   pushs L067C   ; Buccaneer's Den
+0127: 07 01 00 31 00  cmps 0001H, 015D
+012C: 1C 8C 06   addsi L068C   ; "Long ago it was ...
+012F: 33   say
+0130: 21 02 00   push [0002]
+0133: 05 0B 00   jne 0141
+0136: 1C E0 06   addsi L06E0   ; "Now it is the ce...
+0139: 33   say
+013A: 1C 4C 07   addsi L074C   ; The Cube continue...
+013D: 33   say
+013E: 06 04 00   jmp 0145
+0141: 1C 6B 07   addsi L076B   ; "Now Buccaneer's ...
+0144: 33   say
+0145: 1C 1E 08   addsi L081E   ; "As a result, The...
+0148: 33   say
+0149: 1D 8C 08   pushs L088C   ; Buccaneer's Den
+014C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0150: 1D 9C 08   pushs L089C   ; House of Games
+0153: 1D AB 08   pushs L08AB   ; The Baths
+0156: 1E 02 00   arrc 0002H   ; 2
+0159: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015D: 1D B5 08   pushs L08B5   ; The Baths
+0160: 07 01 00 1C 00  cmps 0001H, 0181
+0165: 21 02 00   push [0002]
+0168: 05 07 00   jne 0172
+016B: 1C BF 08   addsi L08BF   ; "It is, of course...
+016E: 33   say
+016F: 06 04 00   jmp 0176
+0172: 1C 38 09   addsi L0938   ; "It is a purely i...
+0175: 33   say
+0176: 1C C8 09   addsi L09C8   ; "It is truly a je...
+0179: 33   say
+017A: 1D FE 09   pushs L09FE   ; The Baths
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D 08 0A   pushs L0A08   ; House of Games
+0184: 07 01 00 18 00  cmps 0001H, 01A1
+0189: 21 02 00   push [0002]
+018C: 05 07 00   jne 0196
+018F: 1C 17 0A   addsi L0A17   ; "Why, it is a gam...
+0192: 33   say
+0193: 06 04 00   jmp 019A
+0196: 1C 73 0A   addsi L0A73   ; "It is an outfit ...
+0199: 33   say
+019A: 1D 28 0B   pushs L0B28   ; House of Games
+019D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A1: 1D 37 0B   pushs L0B37   ; Abraham
+01A4: 07 01 00 20 00  cmps 0001H, 01C9
+01A9: 1C 3F 0B   addsi L0B3F   ; "Abraham is one o...
+01AC: 33   say
+01AD: 21 02 00   push [0002]
+01B0: 05 08 00   jne 01BB
+01B3: 1C 2C 0C   addsi L0C2C   ; The Cube vibrates.
+01B6: 33   say
+01B7: 1C 3F 0C   addsi L0C3F   ; "Uhm... er... he ...
+01BA: 33   say
+01BB: 1D 8E 0C   pushs L0C8E   ; Abraham
+01BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C2: 1D 96 0C   pushs L0C96   ; Elizabeth
+01C5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C9: 1D A0 0C   pushs L0CA0   ; Elizabeth
+01CC: 07 01 00 1C 00  cmps 0001H, 01ED
+01D1: 1C AA 0C   addsi L0CAA   ; "Elizabeth is an ...
+01D4: 33   say
+01D5: 21 02 00   push [0002]
+01D8: 05 04 00   jne 01DF
+01DB: 1C 6E 0D   addsi L0D6E   ; As the Cube vibra...
+01DE: 33   say
+01DF: 1D E3 0D   pushs L0DE3   ; Elizabeth
+01E2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E6: 1D ED 0D   pushs L0DED   ; Special Projects
+01E9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01ED: 1D FE 0D   pushs L0DFE   ; Special Projects
+01F0: 07 01 00 22 00  cmps 0001H, 0217
+01F5: 1C 0F 0E   addsi L0E0F   ; "They might be an...
+01F8: 33   say
+01F9: 21 02 00   push [0002]
+01FC: 05 11 00   jne 0210
+01FF: 1C 9F 0E   addsi L0E9F   ; As the Cube vibra...
+0202: 33   say
+0203: 1D 5F 0F   pushs L0F5F   ; complex
+0206: 1D 67 0F   pushs L0F67   ; Black Gate
+0209: 1E 02 00   arrc 0002H   ; 2
+020C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0210: 1D 72 0F   pushs L0F72   ; Special Projects
+0213: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0217: 1D 83 0F   pushs L0F83   ; Black Gate
+021A: 07 01 00 0B 00  cmps 0001H, 022A
+021F: 1C 8E 0F   addsi L0F8E   ; Danag's eyes wide...
+0222: 33   say
+0223: 1D 1A 10   pushs L101A   ; Black Gate
+0226: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022A: 1D 25 10   pushs L1025   ; complex
+022D: 07 01 00 12 00  cmps 0001H, 0244
+0232: 1C 2D 10   addsi L102D   ; "It is inside a d...
+0235: 33   say
+0236: 1D D5 10   pushs L10D5   ; complex
+0239: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023D: 1D DD 10   pushs L10DD   ; key
+0240: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0244: 1D E1 10   pushs L10E1   ; key
+0247: 07 01 00 0B 00  cmps 0001H, 0257
+024C: 1C E5 10   addsi L10E5   ; "I do not own one...
+024F: 33   say
+0250: 1D 70 11   pushs L1170   ; key
+0253: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0257: 1D 74 11   pushs L1174   ; Hook
+025A: 07 01 00 2F 00  cmps 0001H, 028E
+025F: 21 02 00   push [0002]
+0262: 05 1E 00   jne 0283
+0265: 1C 79 11   addsi L1179   ; The Cube vibrates.
+0268: 33   say
+0269: 1C 8C 11   addsi L118C   ; "Man with a Hook?...
+026C: 33   say
+026D: 1D DA 12   pushs L12DA   ; Forskis
+0270: 1D E2 12   pushs L12E2   ; executioner
+0273: 1E 02 00   arrc 0002H   ; 2
+0276: 39 05 00 01  calli _AddAnswer@1  ; 0005
+027A: 1F 64 00   pushi 0064H   ; 100
+027D: 24 01 00   call [0001]   ; 0911H
+0280: 06 04 00   jmp 0287
+0283: 1C EE 12   addsi L12EE   ; "A pirate with a ...
+0286: 33   say
+0287: 1D 85 13   pushs L1385   ; Hook
+028A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028E: 1D 8A 13   pushs L138A   ; Elizabeth and Abr...
+0291: 07 01 00 1D 00  cmps 0001H, 02B3
+0296: 1C A0 13   addsi L13A0   ; "They usually tra...
+0299: 33   say
+029A: 13   push true
+029B: 43 A8 02   popf flag:[02A8]
+029E: 21 02 00   push [0002]
+02A1: 05 08 00   jne 02AC
+02A4: 1C 81 14   addsi L1481   ; The Cube vibrates.
+02A7: 33   say
+02A8: 1C 94 14   addsi L1494   ; "Actually, I beli...
+02AB: 33   say
+02AC: 1D 03 15   pushs L1503   ; Elizabeth and Abr...
+02AF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B3: 1D 19 15   pushs L1519   ; executioner
+02B6: 07 01 00 0B 00  cmps 0001H, 02C6
+02BB: 1C 25 15   addsi L1525   ; "That's right. Ho...
+02BE: 33   say
+02BF: 1D 0A 16   pushs L160A   ; executioner
+02C2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C6: 1D 16 16   pushs L1616   ; Forskis
+02C9: 07 01 00 0B 00  cmps 0001H, 02D9
+02CE: 1C 1E 16   addsi L161E   ; "I understand the...
+02D1: 33   say
+02D2: 1D C2 16   pushs L16C2   ; Forskis
+02D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D9: 1D CA 16   pushs L16CA   ; bye
+02DC: 07 01 00 03 00  cmps 0001H, 02E4
+02E1: 06 03 00   jmp 02E7
+02E4: 06 C5 FD   jmp 00AC
+02E7: 40   db 40 ???
+02E8: 1C CE 16   addsi L16CE   ; "Farewell!"*
+02EB: 33   say
+02EC: 48   push eventid
+02ED: 1F 00 00   pushi 0000H   ; 0
+02F0: 22   cmpeq
+02F1: 05 06 00   jne 02FA
+02F4: 1F 05 FF   pushi FF05H   ; -251
+02F7: 24 02 00   call [0002]   ; 092EH
+02FA: 25   ret

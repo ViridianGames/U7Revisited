@@ -1,0 +1,321 @@
+  .funcnumber 04BCH
+  .data
+L0000: db 'The gargoyle is too involved with the Fellowship meeting to '
+ db 'talk to you at this moment.*'
+L0058: db 00
+L0059: db '"To be unable to talk now. To see me after the Fellowship me'
+ db 'eting." He continues on his way.*'
+L00B6: db 00
+L00B7: db 'bye'
+L00BA: db 00
+L00BB: db 'Fellowship'
+L00C5: db 00
+L00C6: db 'job'
+L00C9: db 00
+L00CA: db 'name'
+L00CE: db 00
+L00CF: db 'You see a very distraught gargoyle.'
+L00F2: db 00
+L00F3: db '"To give you greetings, human."'
+L0112: db 00
+L0113: db 'altar conflicts'
+L0122: db 00
+L0123: db 'found note'
+L012D: db 00
+L012E: db 'altar conflicts'
+L013D: db 00
+L013E: db 'name'
+L0142: db 00
+L0143: db '"To be able to call me Sarpling."'
+L0164: db 00
+L0165: db 'name'
+L0169: db 00
+L016A: db 'altar conflicts'
+L0179: db 00
+L017A: db 'found note'
+L0184: db 00
+L0185: db 'altar conflicts'
+L0194: db 00
+L0195: db 'job'
+L0198: db 00
+L0199: db '"To provide various magics and items in Terfin."'
+L01C9: db 00
+L01CA: db 'Terfin'
+L01D0: db 00
+L01D1: db 'buy'
+L01D4: db 00
+L01D5: db 'Terfin'
+L01DB: db 00
+L01DC: db '"To be the city in which you are located. To be the city of '
+ db 'gargoyles."'
+L0223: db 00
+L0224: db 'gargoyles'
+L022D: db 00
+L022E: db 'Terfin'
+L0234: db 00
+L0235: db 'gargoyles'
+L023E: db 00
+L023F: db '"To know Quan is the Fellowship leader. To believe he gives '
+ db 'good guidance." He appears thoughtful.~~ "To have spoken to '
+ db 'Draxinusom?"'
+L02C3: db 00
+L02C4: db '"To see Forbrak or Quaeven, then. To know they see all the c'
+ db 'itizens regularly."'
+L0313: db 00
+L0314: db '"To see first, Draxinusom. To be leader of the city. To know'
+ db ' many of the residents."'
+L0368: db 00
+L0369: db 'gargoyles'
+L0372: db 00
+L0373: db 'Fellowship'
+L037D: db 00
+L037E: db '"To be an important part of my life. To support The Fellowsh'
+ db 'ip fully."'
+L03C4: db 00
+L03C5: db 'Fellowship'
+L03CF: db 00
+L03D0: db 'altar conflicts'
+L03DF: db 00
+L03E0: db '"To know nothing about the altars. To wonder what you mean?"'
+L041C: db 00
+L041D: db 'altar conflicts'
+L042C: db 00
+L042D: db 'found note'
+L0437: db 00
+L0438: db 'A surprised expression, mixed with fear, covers his face.~~ '
+ db '"To be all Runeb's decisions! To be all Runeb's doing! To wa'
+ db 'nt nothing to do with the destruction of the altars, or with'
+ db ' the assassination plot!"'
+L0505: db 00
+L0506: db 'found note'
+L0510: db 00
+L0511: db 'Assassination plot!'
+L0524: db 00
+L0525: db 'Assassination plot!'
+L0538: db 00
+L0539: db '"To not already know about the plot?" he wails.~~ "To have c'
+ db 'aused problems this time, Sarpling," he says to himself. "To'
+ db ' have brought much trouble!~~ "To tell you Runeb wanted to f'
+ db 'rame Quan for the altars. To kill Quan if plan failed, and t'
+ db 'o be in control of The Fellowship in Terfin. To be Runeb's g'
+ db 'oal.~~ "To be in much danger you and me!"*'
+L068F: db 00
+L0690: db 'buy'
+L0693: db 00
+L0694: db 'buy'
+L0697: db 00
+L0698: db '"To want reagents or jewelry and potions?"'
+L06C2: db 00
+L06C3: db 'jewelry and potions'
+L06D6: db 00
+L06D7: db 'reagents'
+L06DF: db 00
+L06E0: db '"To sell you things when my shop is open."'
+L070A: db 00
+L070B: db 'reagents'
+L0713: db 00
+L0714: db 'reagents'
+L071C: db 00
+L071D: db 'jewelry and potions'
+L0730: db 00
+L0731: db 'jewelry and potions'
+L0744: db 00
+L0745: db 'bye'
+L0748: db 00
+L0749: db '"To give you farewell, human."*'
+L0768: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0005H
+  .extern 08FCH
+  .extern 090AH
+  .extern 08E2H
+  .extern 08E1H
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 FD 01   jne 0205
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 44 FF   pushi FF44H   ; -188
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F 44 FF   pushi FF44H   ; -188
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 21 00 00   push [0000]
+002A: 1F 07 00   pushi 0007H   ; 7
+002D: 22   cmpeq
+002E: 05 1E 00   jne 004F
+0031: 1F 47 FF   pushi FF47H   ; -185
+0034: 1F 44 FF   pushi FF44H   ; -188
+0037: 24 00 00   call [0000]   ; 08FCH
+003A: 12 02 00   pop [0002]
+003D: 21 02 00   push [0002]
+0040: 05 07 00   jne 004A
+0043: 1C 00 00   addsi L0000   ; The gargoyle is t...
+0046: 33   say
+0047: 06 04 00   jmp 004E
+004A: 1C 59 00   addsi L0059   ; "To be unable to ...
+004D: 33   say
+004E: 3F   abrt
+004F: 1D B7 00   pushs L00B7   ; bye
+0052: 1D BB 00   pushs L00BB   ; Fellowship
+0055: 1D C6 00   pushs L00C6   ; job
+0058: 1D CA 00   pushs L00CA   ; name
+005B: 1E 04 00   arrc 0004H   ; 4
+005E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0062: 42 4D 02   pushf flag:[024D]
+0065: 10   not
+0066: 05 0B 00   jne 0074
+0069: 1C CF 00   addsi L00CF   ; You see a very di...
+006C: 33   say
+006D: 13   push true
+006E: 43 4D 02   popf flag:[024D]
+0071: 06 04 00   jmp 0078
+0074: 1C F3 00   addsi L00F3   ; "To give you gree...
+0077: 33   say
+0078: 42 50 02   pushf flag:[0250]
+007B: 05 2A 00   jne 00A8
+007E: 13   push true
+007F: 12 03 00   pop [0003]
+0082: 42 41 02   pushf flag:[0241]
+0085: 42 40 02   pushf flag:[0240]
+0088: 10   not
+0089: 0E   and
+008A: 05 07 00   jne 0094
+008D: 1D 13 01   pushs L0113   ; altar conflicts
+0090: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0094: 42 3F 02   pushf flag:[023F]
+0097: 05 0E 00   jne 00A8
+009A: 1D 23 01   pushs L0123   ; found note
+009D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A1: 1D 2E 01   pushs L012E   ; altar conflicts
+00A4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A8: 04 55 01   je 0200
+00AB: 1D 3E 01   pushs L013E   ; name
+00AE: 07 01 00 3C 00  cmps 0001H, 00EF
+00B3: 1C 43 01   addsi L0143   ; "To be able to ca...
+00B6: 33   say
+00B7: 13   push true
+00B8: 43 50 02   popf flag:[0250]
+00BB: 1D 65 01   pushs L0165   ; name
+00BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C2: 21 03 00   push [0003]
+00C5: 10   not
+00C6: 05 26 00   jne 00EF
+00C9: 42 41 02   pushf flag:[0241]
+00CC: 42 40 02   pushf flag:[0240]
+00CF: 10   not
+00D0: 0E   and
+00D1: 05 07 00   jne 00DB
+00D4: 1D 6A 01   pushs L016A   ; altar conflicts
+00D7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DB: 42 3F 02   pushf flag:[023F]
+00DE: 05 0E 00   jne 00EF
+00E1: 1D 7A 01   pushs L017A   ; found note
+00E4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E8: 1D 85 01   pushs L0185   ; altar conflicts
+00EB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EF: 1D 95 01   pushs L0195   ; job
+00F2: 07 01 00 11 00  cmps 0001H, 0108
+00F7: 1C 99 01   addsi L0199   ; "To provide vario...
+00FA: 33   say
+00FB: 1D CA 01   pushs L01CA   ; Terfin
+00FE: 1D D1 01   pushs L01D1   ; buy
+0101: 1E 02 00   arrc 0002H   ; 2
+0104: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0108: 1D D5 01   pushs L01D5   ; Terfin
+010B: 07 01 00 12 00  cmps 0001H, 0122
+0110: 1C DC 01   addsi L01DC   ; "To be the city i...
+0113: 33   say
+0114: 1D 24 02   pushs L0224   ; gargoyles
+0117: 39 05 00 01  calli _AddAnswer@1  ; 0005
+011B: 1D 2E 02   pushs L022E   ; Terfin
+011E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0122: 1D 35 02   pushs L0235   ; gargoyles
+0125: 07 01 00 22 00  cmps 0001H, 014C
+012A: 1C 3F 02   addsi L023F   ; "To know Quan is ...
+012D: 33   say
+012E: 24 01 00   call [0001]   ; 090AH
+0131: 12 04 00   pop [0004]
+0134: 21 04 00   push [0004]
+0137: 05 07 00   jne 0141
+013A: 1C C4 02   addsi L02C4   ; "To see Forbrak o...
+013D: 33   say
+013E: 06 04 00   jmp 0145
+0141: 1C 14 03   addsi L0314   ; "To see first, Dr...
+0144: 33   say
+0145: 1D 69 03   pushs L0369   ; gargoyles
+0148: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014C: 1D 73 03   pushs L0373   ; Fellowship
+014F: 07 01 00 0B 00  cmps 0001H, 015F
+0154: 1C 7E 03   addsi L037E   ; "To be an importa...
+0157: 33   say
+0158: 1D C5 03   pushs L03C5   ; Fellowship
+015B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015F: 1D D0 03   pushs L03D0   ; altar conflicts
+0162: 07 01 00 0B 00  cmps 0001H, 0172
+0167: 1C E0 03   addsi L03E0   ; "To know nothing ...
+016A: 33   say
+016B: 1D 1D 04   pushs L041D   ; altar conflicts
+016E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0172: 1D 2D 04   pushs L042D   ; found note
+0175: 07 01 00 12 00  cmps 0001H, 018C
+017A: 1C 38 04   addsi L0438   ; A surprised expre...
+017D: 33   say
+017E: 1D 06 05   pushs L0506   ; found note
+0181: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0185: 1D 11 05   pushs L0511   ; Assassination plot!
+0188: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018C: 1D 25 05   pushs L0525   ; Assassination plot!
+018F: 07 01 00 09 00  cmps 0001H, 019D
+0194: 1C 39 05   addsi L0539   ; "To not already k...
+0197: 33   say
+0198: 13   push true
+0199: 43 40 02   popf flag:[0240]
+019C: 3F   abrt
+019D: 1D 90 06   pushs L0690   ; buy
+01A0: 07 01 00 29 00  cmps 0001H, 01CE
+01A5: 1D 94 06   pushs L0694   ; buy
+01A8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AC: 21 01 00   push [0001]
+01AF: 1F 07 00   pushi 0007H   ; 7
+01B2: 22   cmpeq
+01B3: 05 14 00   jne 01CA
+01B6: 1C 98 06   addsi L0698   ; "To want reagents...
+01B9: 33   say
+01BA: 1D C3 06   pushs L06C3   ; jewelry and potions
+01BD: 1D D7 06   pushs L06D7   ; reagents
+01C0: 1E 02 00   arrc 0002H   ; 2
+01C3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C7: 06 04 00   jmp 01CE
+01CA: 1C E0 06   addsi L06E0   ; "To sell you thin...
+01CD: 33   say
+01CE: 1D 0B 07   pushs L070B   ; reagents
+01D1: 07 01 00 0A 00  cmps 0001H, 01E0
+01D6: 24 02 00   call [0002]   ; 08E2H
+01D9: 1D 14 07   pushs L0714   ; reagents
+01DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E0: 1D 1D 07   pushs L071D   ; jewelry and potions
+01E3: 07 01 00 0A 00  cmps 0001H, 01F2
+01E8: 24 03 00   call [0003]   ; 08E1H
+01EB: 1D 31 07   pushs L0731   ; jewelry and potions
+01EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F2: 1D 45 07   pushs L0745   ; bye
+01F5: 07 01 00 03 00  cmps 0001H, 01FD
+01FA: 06 03 00   jmp 0200
+01FD: 06 A8 FE   jmp 00A8
+0200: 40   db 40 ???
+0201: 1C 49 07   addsi L0749   ; "To give you fare...
+0204: 33   say
+0205: 48   push eventid
+0206: 1F 00 00   pushi 0000H   ; 0
+0209: 22   cmpeq
+020A: 05 06 00   jne 0213
+020D: 1F 44 FF   pushi FF44H   ; -188
+0210: 24 04 00   call [0004]   ; 092FH
+0213: 25   ret

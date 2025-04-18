@@ -1,0 +1,516 @@
+  .funcnumber 04C2H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The woman greets you with a curtsey.'
+L0031: db 00
+L0032: db '"Good day, '
+L003D: db 00
+L003E: db '," says Lady Jehanne.'
+L0053: db 00
+L0054: db 'commons'
+L005B: db 00
+L005C: db 'name'
+L0060: db 00
+L0061: db '"I am the Lady Jehanne, '
+L0079: db 00
+L007A: db '."'
+L007C: db 00
+L007D: db 'name'
+L0081: db 00
+L0082: db 'commons'
+L0089: db 00
+L008A: db 'job'
+L008D: db 00
+L008E: db '"I am the provisioner of Serpent's Hold."'
+L00B7: db 00
+L00B8: db '"And," she adds, "I also have a ship for sale shouldst thou '
+ db 'be interested in that."'
+L010B: db 00
+L010C: db 'ship'
+L0110: db 00
+L0111: db 'provisions'
+L011B: db 00
+L011C: db 'Serpent's Hold'
+L012A: db 00
+L012B: db 'ship'
+L012F: db 00
+L0130: db '"Well, it was once the magnificent `Constellation.' However,'
+ db ' 'twas destroyed by the ship's captain, himself, to prevent '
+ db 'it from falling into the hands of attacking pirates. What li'
+ db 'ttle remained was rebuilt into an even finer ship, `The Drag'
+ db 'on's Breath?' Art thou interested in purchasing it for 600 g'
+ db 'old?"'
+L0261: db 00
+L0262: db '"Here is thy deed."'
+L0275: db 00
+L0276: db '"Sadly, '
+L027E: db 00
+L027F: db ', thou hast not the room for this deed."'
+L02A7: db 00
+L02A8: db '"I understand, '
+L02B7: db 00
+L02B8: db ', thou hast not the funds at this time."'
+L02E0: db 00
+L02E1: db '"Perhaps sometime in the future, '
+L0302: db 00
+L0303: db '."'
+L0305: db 00
+L0306: db 'ship'
+L030A: db 00
+L030B: db 'Serpent's Hold'
+L0319: db 00
+L031A: db '"Most of us here are knights, noble warriors sworn to protec'
+ db 't Britannia and Lord British. Mine own lord," she beams with'
+ db ' pride, "is such a knight -- Sir Pendaran."'
+L03BD: db 00
+L03BE: db 'Serpent's Hold'
+L03CC: db 00
+L03CD: db 'knights'
+L03D4: db 00
+L03D5: db 'Sir Pendaran'
+L03E1: db 00
+L03E2: db 'Sir Pendaran'
+L03EE: db 00
+L03EF: db '"We met three years ago. He's quite brave and strong. I just'
+ db ' love to watch him fight." She smiles.~~"I am not really sur'
+ db 'e he will mix well with the rest of The Fellowship, though."'
+L04A3: db 00
+L04A4: db 'Sir Pendaran'
+L04B0: db 00
+L04B1: db 'Fellowship'
+L04BB: db 00
+L04BC: db 'fight'
+L04C1: db 00
+L04C2: db 'fight'
+L04C7: db 00
+L04C8: db '"He and Menion used to spar together, after their exercises.'
+ db ' 'Twas a beautiful... sight, '
+L0521: db 00
+L0522: db '," she says, blushing.'
+L0538: db 00
+L0539: db 'fight'
+L053E: db 00
+L053F: db 'used to'
+L0546: db 00
+L0547: db 'used to'
+L054E: db 00
+L054F: db '"At the time, Pendaran was the only man who could keep up wi'
+ db 'th Menion. Now that Menion has begun instructing others, he '
+ db 'no longer has the time to practice with my Lord."'
+L05F8: db 00
+L05F9: db 'used to'
+L0600: db 00
+L0601: db 'Fellowship'
+L060B: db 00
+L060C: db '"Well, er, I mean, he would not have mixed well -before- he '
+ db 'joined, that is," she stammers.'
+L0667: db 00
+L0668: db '"It's nothing really. He was just a little bit more... indiv'
+ db 'idualistic before he joined. I do not think there's anything'
+ db ' wrong with The Fellowship, necessarily; but I did not expec'
+ db 't it to be something that would capture Pendaran's interest.'
+ db '"'
+L0759: db 00
+L075A: db 'Fellowship'
+L0764: db 00
+L0765: db 'knights'
+L076C: db 00
+L076D: db 'With but a few exceptions, myself included, all of the warri'
+ db 'ors here in the Hold are knights. Thou mayest wish to speak '
+ db 'with Lord John-Paul. He is in charge of Serpent's Hold and m'
+ db 'ight be better able to show thee around.'
+L0849: db 00
+L084A: db 'knights'
+L0851: db 00
+L0852: db 'provisions'
+L085C: db 00
+L085D: db '"Thou wishest to buy something?"'
+L087D: db 00
+L087E: db '"Well, perhaps next time, '
+L0898: db 00
+L0899: db '."'
+L089B: db 00
+L089C: db '"A better time to buy would be when my shop is open."'
+L08D1: db 00
+L08D2: db 'provisions'
+L08DC: db 00
+L08DD: db 'commons'
+L08E4: db 00
+L08E5: db 'For an instant, you see indecisiveness in her expression, th'
+ db 'en she suddenly gives in, her words coming out in a torrent '
+ db 'of information.~~"I am afraid to speak, but knowing thou wou'
+ db 'ldst see through any facade, I can no longer silence the tru'
+ db 'th. My Lord, Sir Pendaran, has not been the same gentle soul'
+ db ' since he joined the Fellowship.~~"'Twas not too long ago th'
+ db 'at my Pendaran was a noble knight, one a lady could be proud'
+ db ' of. But now," she shakes her head, "in protest of a wrong h'
+ db 'e perceives in Britannia's government, he has defaced the st'
+ db 'atue of our beloved Lord British." She begins to sob.~~"And,'
+ db ' he has battled and wounded a fellow knight who chanced upon'
+ db ' him during his hour of misdeed. He came to me," she tries t'
+ db 'o choke back her tears, "with another's blood on his sword!"'
+ db '~~After a few moments of your comforting, she regains her co'
+ db 'mposure.~~"Please do not be too harsh with him," she begs.'
+L0C67: db 00
+L0C68: db 'commons'
+L0C6F: db 00
+L0C70: db 'another'
+L0C77: db 00
+L0C78: db 'another'
+L0C7F: db 00
+L0C80: db '"I know not who, '
+L0C91: db 00
+L0C92: db ', and Pendaran would not say!"'
+L0CB0: db 00
+L0CB1: db 'another'
+L0CB8: db 00
+L0CB9: db 'bye'
+L0CBC: db 00
+L0CBD: db '"May fortune follow thee, '
+L0CD7: db 00
+L0CD8: db '."*'
+L0CDB: db 00
+L0CDC: db '@Provisions!@'
+L0CE9: db 00
+L0CEA: db '@Buy in advance!@'
+L0CFB: db 00
+L0CFC: db '@Best provisions in town!@'
+L0D16: db 00
+L0D17: db '@Be equipped!@'
+L0D25: db 00
+L0D26: db '@Wondrous fine food!@'
+L0D3B: db 00
+L0D3C: db '@Fine drink!@'
+L0D49: db 00
+L0D4A: db '@Mmmmm...@'
+L0D54: db 00
+L0D55: db '@I am full.@'
+L0D61: db 00
+  .code
+  .argc 0001H
+  .localc 000DH
+  .externsize 0004H
+  .extern 0908H
+  .extern 0909H
+  .extern 090AH
+  .extern 08A1H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 A8 02   jne 02B0
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 3E FF   pushi FF3EH   ; -194
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 14   push false
+001F: 12 02 00   pop [0002]
+0022: 1D 00 00   pushs L0000   ; bye
+0025: 1D 04 00   pushs L0004   ; job
+0028: 1D 08 00   pushs L0008   ; name
+002B: 1E 03 00   arrc 0003H   ; 3
+002E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0032: 42 6B 02   pushf flag:[026B]
+0035: 10   not
+0036: 05 0B 00   jne 0044
+0039: 1C 0D 00   addsi L000D   ; The woman greets ...
+003C: 33   say
+003D: 13   push true
+003E: 43 6B 02   popf flag:[026B]
+0041: 06 0A 00   jmp 004E
+0044: 1C 32 00   addsi L0032   ; "Good day, 
+0047: 2F 01 00   addsv [0001]
+004A: 1C 3E 00   addsi L003E   ; ," says Lady Jeha...
+004D: 33   say
+004E: 42 7C 02   pushf flag:[027C]
+0051: 05 16 00   jne 006A
+0054: 42 5C 02   pushf flag:[025C]
+0057: 42 5D 02   pushf flag:[025D]
+005A: 10   not
+005B: 0E   and
+005C: 05 0B 00   jne 006A
+005F: 1D 54 00   pushs L0054   ; commons
+0062: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0066: 13   push true
+0067: 12 02 00   pop [0002]
+006A: 04 42 02   je 02AF
+006D: 1D 5C 00   pushs L005C   ; name
+0070: 07 01 00 2E 00  cmps 0001H, 00A3
+0075: 1C 61 00   addsi L0061   ; "I am the Lady Je...
+0078: 2F 01 00   addsv [0001]
+007B: 1C 7A 00   addsi L007A   ; ."
+007E: 33   say
+007F: 13   push true
+0080: 43 7C 02   popf flag:[027C]
+0083: 1D 7D 00   pushs L007D   ; name
+0086: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008A: 42 5C 02   pushf flag:[025C]
+008D: 42 5D 02   pushf flag:[025D]
+0090: 10   not
+0091: 0E   and
+0092: 05 0E 00   jne 00A3
+0095: 21 02 00   push [0002]
+0098: 10   not
+0099: 05 07 00   jne 00A3
+009C: 1D 82 00   pushs L0082   ; commons
+009F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A3: 1D 8A 00   pushs L008A   ; job
+00A6: 07 01 00 23 00  cmps 0001H, 00CE
+00AB: 1C 8E 00   addsi L008E   ; "I am the provisi...
+00AE: 33   say
+00AF: 42 74 02   pushf flag:[0274]
+00B2: 10   not
+00B3: 05 0B 00   jne 00C1
+00B6: 1C B8 00   addsi L00B8   ; "And," she adds, ...
+00B9: 33   say
+00BA: 1D 0C 01   pushs L010C   ; ship
+00BD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C1: 1D 11 01   pushs L0111   ; provisions
+00C4: 1D 1C 01   pushs L011C   ; Serpent's Hold
+00C7: 1E 02 00   arrc 0002H   ; 2
+00CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CE: 1D 2B 01   pushs L012B   ; ship
+00D1: 07 01 00 91 00  cmps 0001H, 0167
+00D6: 1C 30 01   addsi L0130   ; "Well, it was onc...
+00D9: 33   say
+00DA: 24 02 00   call [0002]   ; 090AH
+00DD: 12 03 00   pop [0003]
+00E0: 21 03 00   push [0003]
+00E3: 05 70 00   jne 0156
+00E6: 1F 99 FE   pushi FE99H   ; -359
+00E9: 1F 99 FE   pushi FE99H   ; -359
+00EC: 1F 84 02   pushi 0284H   ; 644
+00EF: 1F 9B FE   pushi FE9BH   ; -357
+00F2: 38 28 00 04  callis 0028, 4
+00F6: 12 04 00   pop [0004]
+00F9: 21 04 00   push [0004]
+00FC: 1F 58 02   pushi 0258H   ; 600
+00FF: 18   cmpge
+0100: 05 46 00   jne 0149
+0103: 14   push false
+0104: 1F 99 FE   pushi FE99H   ; -359
+0107: 1F 13 00   pushi 0013H   ; 19
+010A: 1F 1D 03   pushi 031DH   ; 797
+010D: 1F 01 00   pushi 0001H   ; 1
+0110: 38 2C 00 05  callis 002C, 5
+0114: 12 05 00   pop [0005]
+0117: 21 05 00   push [0005]
+011A: 05 1F 00   jne 013C
+011D: 1C 62 02   addsi L0262   ; "Here is thy deed."
+0120: 33   say
+0121: 13   push true
+0122: 1F 99 FE   pushi FE99H   ; -359
+0125: 1F 99 FE   pushi FE99H   ; -359
+0128: 1F 84 02   pushi 0284H   ; 644
+012B: 1F 58 02   pushi 0258H   ; 600
+012E: 38 2B 00 05  callis 002B, 5
+0132: 12 06 00   pop [0006]
+0135: 13   push true
+0136: 43 74 02   popf flag:[0274]
+0139: 06 0A 00   jmp 0146
+013C: 1C 76 02   addsi L0276   ; "Sadly, 
+013F: 2F 01 00   addsv [0001]
+0142: 1C 7F 02   addsi L027F   ; , thou hast not t...
+0145: 33   say
+0146: 06 0A 00   jmp 0153
+0149: 1C A8 02   addsi L02A8   ; "I understand, 
+014C: 2F 01 00   addsv [0001]
+014F: 1C B8 02   addsi L02B8   ; , thou hast not t...
+0152: 33   say
+0153: 06 0A 00   jmp 0160
+0156: 1C E1 02   addsi L02E1   ; "Perhaps sometime...
+0159: 2F 01 00   addsv [0001]
+015C: 1C 03 03   addsi L0303   ; ."
+015F: 33   say
+0160: 1D 06 03   pushs L0306   ; ship
+0163: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0167: 1D 0B 03   pushs L030B   ; Serpent's Hold
+016A: 07 01 00 18 00  cmps 0001H, 0187
+016F: 1C 1A 03   addsi L031A   ; "Most of us here ...
+0172: 33   say
+0173: 1D BE 03   pushs L03BE   ; Serpent's Hold
+0176: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017A: 1D CD 03   pushs L03CD   ; knights
+017D: 1D D5 03   pushs L03D5   ; Sir Pendaran
+0180: 1E 02 00   arrc 0002H   ; 2
+0183: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0187: 1D E2 03   pushs L03E2   ; Sir Pendaran
+018A: 07 01 00 18 00  cmps 0001H, 01A7
+018F: 1C EF 03   addsi L03EF   ; "We met three yea...
+0192: 33   say
+0193: 1D A4 04   pushs L04A4   ; Sir Pendaran
+0196: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019A: 1D B1 04   pushs L04B1   ; Fellowship
+019D: 1D BC 04   pushs L04BC   ; fight
+01A0: 1E 02 00   arrc 0002H   ; 2
+01A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A7: 1D C2 04   pushs L04C2   ; fight
+01AA: 07 01 00 18 00  cmps 0001H, 01C7
+01AF: 1C C8 04   addsi L04C8   ; "He and Menion us...
+01B2: 2F 01 00   addsv [0001]
+01B5: 1C 22 05   addsi L0522   ; ," she says, blus...
+01B8: 33   say
+01B9: 1D 39 05   pushs L0539   ; fight
+01BC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C0: 1D 3F 05   pushs L053F   ; used to
+01C3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C7: 1D 47 05   pushs L0547   ; used to
+01CA: 07 01 00 0B 00  cmps 0001H, 01DA
+01CF: 1C 4F 05   addsi L054F   ; "At the time, Pen...
+01D2: 33   say
+01D3: 1D F9 05   pushs L05F9   ; used to
+01D6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DA: 1D 01 06   pushs L0601   ; Fellowship
+01DD: 07 01 00 1F 00  cmps 0001H, 0201
+01E2: 38 67 00 00  callis 0067, 0
+01E6: 12 07 00   pop [0007]
+01E9: 21 07 00   push [0007]
+01EC: 05 07 00   jne 01F6
+01EF: 1C 0C 06   addsi L060C   ; "Well, er, I mean...
+01F2: 33   say
+01F3: 06 04 00   jmp 01FA
+01F6: 1C 68 06   addsi L0668   ; "It's nothing rea...
+01F9: 33   say
+01FA: 1D 5A 07   pushs L075A   ; Fellowship
+01FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0201: 1D 65 07   pushs L0765   ; knights
+0204: 07 01 00 0B 00  cmps 0001H, 0214
+0209: 1C 6D 07   addsi L076D   ; With but a few ex...
+020C: 33   say
+020D: 1D 4A 08   pushs L084A   ; knights
+0210: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0214: 1D 52 08   pushs L0852   ; provisions
+0217: 07 01 00 46 00  cmps 0001H, 0262
+021C: 1F 3E FF   pushi FF3EH   ; -194
+021F: 38 1B 00 01  callis 001B, 1
+0223: 38 1C 00 01  callis 001C, 1
+0227: 12 08 00   pop [0008]
+022A: 21 08 00   push [0008]
+022D: 1F 07 00   pushi 0007H   ; 7
+0230: 22   cmpeq
+0231: 05 23 00   jne 0257
+0234: 1C 5D 08   addsi L085D   ; "Thou wishest to ...
+0237: 33   say
+0238: 24 02 00   call [0002]   ; 090AH
+023B: 12 09 00   pop [0009]
+023E: 21 09 00   push [0009]
+0241: 05 06 00   jne 024A
+0244: 24 03 00   call [0003]   ; 08A1H
+0247: 06 0A 00   jmp 0254
+024A: 1C 7E 08   addsi L087E   ; "Well, perhaps ne...
+024D: 2F 01 00   addsv [0001]
+0250: 1C 99 08   addsi L0899   ; ."
+0253: 33   say
+0254: 06 04 00   jmp 025B
+0257: 1C 9C 08   addsi L089C   ; "A better time to...
+025A: 33   say
+025B: 1D D2 08   pushs L08D2   ; provisions
+025E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0262: 1D DD 08   pushs L08DD   ; commons
+0265: 07 01 00 16 00  cmps 0001H, 0280
+026A: 1C E5 08   addsi L08E5   ; For an instant, y...
+026D: 33   say
+026E: 13   push true
+026F: 43 5D 02   popf flag:[025D]
+0272: 1D 68 0C   pushs L0C68   ; commons
+0275: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0279: 1D 70 0C   pushs L0C70   ; another
+027C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0280: 1D 78 0C   pushs L0C78   ; another
+0283: 07 01 00 11 00  cmps 0001H, 0299
+0288: 1C 80 0C   addsi L0C80   ; "I know not who, 
+028B: 2F 01 00   addsv [0001]
+028E: 1C 92 0C   addsi L0C92   ; , and Pendaran wo...
+0291: 33   say
+0292: 1D B1 0C   pushs L0CB1   ; another
+0295: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0299: 1D B9 0C   pushs L0CB9   ; bye
+029C: 07 01 00 0B 00  cmps 0001H, 02AC
+02A1: 1C BD 0C   addsi L0CBD   ; "May fortune foll...
+02A4: 2F 01 00   addsv [0001]
+02A7: 1C D8 0C   addsi L0CD8   ; ."*
+02AA: 33   say
+02AB: 3F   abrt
+02AC: 06 BB FD   jmp 006A
+02AF: 40   db 40 ???
+02B0: 48   push eventid
+02B1: 1F 00 00   pushi 0000H   ; 0
+02B4: 22   cmpeq
+02B5: 05 C0 00   jne 0378
+02B8: 38 3B 00 00  callis 003B, 0
+02BC: 12 0A 00   pop [000A]
+02BF: 1F 3E FF   pushi FF3EH   ; -194
+02C2: 38 1B 00 01  callis 001B, 1
+02C6: 38 1C 00 01  callis 001C, 1
+02CA: 12 08 00   pop [0008]
+02CD: 1F 04 00   pushi 0004H   ; 4
+02D0: 1F 01 00   pushi 0001H   ; 1
+02D3: 38 10 00 02  callis _Random2@2  ; 0010
+02D7: 12 0B 00   pop [000B]
+02DA: 21 08 00   push [0008]
+02DD: 1F 07 00   pushi 0007H   ; 7
+02E0: 22   cmpeq
+02E1: 05 40 00   jne 0324
+02E4: 21 0B 00   push [000B]
+02E7: 1F 01 00   pushi 0001H   ; 1
+02EA: 22   cmpeq
+02EB: 05 06 00   jne 02F4
+02EE: 1D DC 0C   pushs L0CDC   ; @Provisions!@
+02F1: 12 0C 00   pop [000C]
+02F4: 21 0B 00   push [000B]
+02F7: 1F 02 00   pushi 0002H   ; 2
+02FA: 22   cmpeq
+02FB: 05 06 00   jne 0304
+02FE: 1D EA 0C   pushs L0CEA   ; @Buy in advance!@
+0301: 12 0C 00   pop [000C]
+0304: 21 0B 00   push [000B]
+0307: 1F 03 00   pushi 0003H   ; 3
+030A: 22   cmpeq
+030B: 05 06 00   jne 0314
+030E: 1D FC 0C   pushs L0CFC   ; @Best provisions ...
+0311: 12 0C 00   pop [000C]
+0314: 21 0B 00   push [000B]
+0317: 1F 04 00   pushi 0004H   ; 4
+031A: 22   cmpeq
+031B: 05 06 00   jne 0324
+031E: 1D 17 0D   pushs L0D17   ; @Be equipped!@
+0321: 12 0C 00   pop [000C]
+0324: 21 08 00   push [0008]
+0327: 1F 1A 00   pushi 001AH   ; 26
+032A: 22   cmpeq
+032B: 05 40 00   jne 036E
+032E: 21 0B 00   push [000B]
+0331: 1F 01 00   pushi 0001H   ; 1
+0334: 22   cmpeq
+0335: 05 06 00   jne 033E
+0338: 1D 26 0D   pushs L0D26   ; @Wondrous fine fo...
+033B: 12 0C 00   pop [000C]
+033E: 21 0B 00   push [000B]
+0341: 1F 02 00   pushi 0002H   ; 2
+0344: 22   cmpeq
+0345: 05 06 00   jne 034E
+0348: 1D 3C 0D   pushs L0D3C   ; @Fine drink!@
+034B: 12 0C 00   pop [000C]
+034E: 21 0B 00   push [000B]
+0351: 1F 03 00   pushi 0003H   ; 3
+0354: 22   cmpeq
+0355: 05 06 00   jne 035E
+0358: 1D 4A 0D   pushs L0D4A   ; @Mmmmm...@
+035B: 12 0C 00   pop [000C]
+035E: 21 0B 00   push [000B]
+0361: 1F 04 00   pushi 0004H   ; 4
+0364: 22   cmpeq
+0365: 05 06 00   jne 036E
+0368: 1D 55 0D   pushs L0D55   ; @I am full.@
+036B: 12 0C 00   pop [000C]
+036E: 21 0C 00   push [000C]
+0371: 1F 3E FF   pushi FF3EH   ; -194
+0374: 39 40 00 02  calli _ItemSay@2  ; 0040
+0378: 25   ret

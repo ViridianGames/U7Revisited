@@ -1,0 +1,451 @@
+  .funcnumber 04DEH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a handsome, muscular man with an air of mischief abo'
+ db 'ut him.'
+L0050: db 00
+L0051: db '"Yes, may I help thee?" Glenno asks.'
+L0075: db 00
+L0076: db 'name'
+L007A: db 00
+L007B: db '"Glenno at thy service!"'
+L0093: db 00
+L0094: db 'name'
+L0098: db 00
+L0099: db 'job'
+L009C: db 00
+L009D: db '"I am the manager of The Baths.'
+L00BC: db 00
+L00BD: db '"The entrance fee is 300 gold. Everything is included in thi'
+ db 's fixed price. No tips are necessary. Dost thou want to ente'
+ db 'r?"'
+L0138: db 00
+L0139: db '"Excellent! Here is thy key!'
+L0155: db 00
+L0156: db '"Thine hands are too full to carry the key!"*'
+L0183: db 00
+L0184: db '"What art thou trying to pull? Thou hast not 300 gold!"*'
+L01BC: db 00
+L01BD: db '"Well, some other time, then! Thou wilt not be sorry if thou'
+ db ' dost! It is well worth the price."*'
+L021D: db 00
+L021E: db '"Enter! Please relax! Enjoy thyself! Allow one of our hosts '
+ db 'or hostesses to make thy stay more comfortable. '
+L028A: db 00
+L028B: db 'He notices your medallion. "Fellowship members are especiall'
+ db 'y welcome!"'
+L02D2: db 00
+L02D3: db 'Fellowship'
+L02DD: db 00
+L02DE: db '"Please! Make thyself at home. If thou dost want a drink, le'
+ db 't me know."'
+L0325: db 00
+L0326: db '"Uhm, wait a minute. How old art thou, boy?"*'
+L0353: db 00
+L0354: db '"Uhm, eighteen."*'
+L0365: db 00
+L0366: db '"Thou dost not look eighteen."*'
+L0385: db 00
+L0386: db '"All right, I am sixteen."*'
+L03A1: db 00
+L03A2: db '"Thou dost not look sixteen either. Well, never mind. Thou c'
+ db 'anst enter. But make sure the management doth not see thee."'
+ db ' Glenno scratches his head. "Yes, but... no! I am the manage'
+ db 'ment! All right, come on. Just don't cause any trouble."*'
+L048F: db 00
+L0490: db '"All right! Wenches!"*'
+L04A6: db 00
+L04A7: db 'Iolo whispers to you, "Methinks young Spark hath learned a l'
+ db 'ot whilst adventuring with thee!"*'
+L0505: db 00
+L0506: db 'drink'
+L050B: db 00
+L050C: db 'The Baths'
+L0515: db 00
+L0516: db '"Please come visit in the late evening hours when our hosts '
+ db 'and hostesses are here!"'
+L056A: db 00
+L056B: db 'The Baths'
+L0574: db 00
+L0575: db '"The Baths exist for the pleasure of visitors to Buccaneer's'
+ db ' Den. Thou canst bathe in our spring pools. Thou canst loung'
+ db 'e in our Community Room and socialize with our attractive ho'
+ db 'sts or hostesses. Thou canst drink fine wine and ale. Thou c'
+ db 'anst view our collection of fine artwork. Thou canst... esca'
+ db 'pe into a dream-world!"'
+L06B8: db 00
+L06B9: db 'The Baths'
+L06C2: db 00
+L06C3: db 'fine artwork'
+L06CF: db 00
+L06D0: db 'Community Room'
+L06DE: db 00
+L06DF: db 'hosts or hostesses'
+L06F1: db 00
+L06F2: db 'spring pools'
+L06FE: db 00
+L06FF: db 'drink'
+L0704: db 00
+L0705: db 'hosts or hostesses'
+L0717: db 00
+L0718: db '"They have come from all over Britannia to serve thine every'
+ db ' wish! I, Glenno, have assured them that The Baths is the mo'
+ db 'st prestigious establishment of its kind anywhere in the kno'
+ db 'wn world. It is probably the only establishment of its kind '
+ db 'in the known world!"'
+L081C: db 00
+L081D: db 'hosts or hostesses'
+L082F: db 00
+L0830: db 'spring pools'
+L083C: db 00
+L083D: db '"The water is guaranteed to be pure, warm and cleansing."'
+L0876: db 00
+L0877: db 'spring pools'
+L0883: db 00
+L0884: db 'Community Room'
+L0892: db 00
+L0893: db '"Thou canst lie in comfort among the many soft cushions and '
+ db 'pillows. Get to know thy neighbor. Get to know thy neighbor '
+ db ''very well'!"'
+L0918: db 00
+L0919: db 'Community Room'
+L0927: db 00
+L0928: db 'fine artwork'
+L0934: db 00
+L0935: db '"Ah, yes, those are erotic masterpieces from the brush of Br'
+ db 'itannian artist Glen Johnson. Notice how the curves on that '
+ db 'one are extremely naturalistic, dost thou not agree?"'
+L09E2: db 00
+L09E3: db 'fine artwork'
+L09EF: db 00
+L09F0: db 'Fellowship'
+L09FA: db 00
+L09FB: db '"Yes, I am a member. If it were not for The Fellowship, I wo'
+ db 'uld not be manager of The Baths! I served the group well, tr'
+ db 'usted my many brothers, strived for unity, and... well, my w'
+ db 'orthiness preceded my reward! And all of this... was my rewa'
+ db 'rd!" Glenno smiles as if he were a tomcat who had just swall'
+ db 'owed a mouse.'
+L0B34: db 00
+L0B35: db 'Fellowship'
+L0B3F: db 00
+L0B40: db 'reward'
+L0B46: db 00
+L0B47: db 'reward'
+L0B4D: db 00
+L0B4E: db '"Yes, The Fellowship gave me this place. They own it, thou k'
+ db 'nowest." Suddenly Glenno holds his hand to his mouth, as if '
+ db 'he has said something he shouldn't have. "I mean, The Fellow'
+ db 'ship only owns the -land- on which it was built. I -built- T'
+ db 'he Baths with money with which I was rewarded by The Fellows'
+ db 'hip. So, enough of that -- enjoy thyself. I must tend to bus'
+ db 'iness!" With that, Glenno turns away from you.*'
+L0CE5: db 00
+L0CE6: db 'reward'
+L0CEC: db 00
+L0CED: db 'bye'
+L0CF0: db 00
+L0CF1: db '"Leaving so soon?"*'
+L0D04: db 00
+L0D05: db '@Wine and women!@'
+L0D16: db 00
+L0D17: db '@Need a girl, sailor?@'
+L0D2D: db 00
+L0D2E: db '@How about a stud, lady?@'
+L0D47: db 00
+L0D48: db '@Relax here in The Baths!@'
+L0D62: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0004H
+  .extern 090AH
+  .extern 08F7H
+  .extern 088FH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 64 02   jne 026C
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 22 FF   pushi FF22H   ; -222
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 38 67 00 00  callis 0067, 0
+001D: 12 01 00   pop [0001]
+0020: 1D 00 00   pushs L0000   ; bye
+0023: 1D 04 00   pushs L0004   ; job
+0026: 1D 08 00   pushs L0008   ; name
+0029: 1E 03 00   arrc 0003H   ; 3
+002C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0030: 42 AB 02   pushf flag:[02AB]
+0033: 10   not
+0034: 05 0B 00   jne 0042
+0037: 1C 0D 00   addsi L000D   ; You see a handsom...
+003A: 33   say
+003B: 13   push true
+003C: 43 AB 02   popf flag:[02AB]
+003F: 06 04 00   jmp 0046
+0042: 1C 51 00   addsi L0051   ; "Yes, may I help ...
+0045: 33   say
+0046: 04 1E 02   je 0267
+0049: 1D 76 00   pushs L0076   ; name
+004C: 07 01 00 0B 00  cmps 0001H, 005C
+0051: 1C 7B 00   addsi L007B   ; "Glenno at thy se...
+0054: 33   say
+0055: 1D 94 00   pushs L0094   ; name
+0058: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005C: 1D 99 00   pushs L0099   ; job
+005F: 07 01 00 4A 01  cmps 0001H, 01AE
+0064: 1C 9D 00   addsi L009D   ; "I am the manager...
+0067: 33   say
+0068: 21 00 00   push [0000]
+006B: 1F 06 00   pushi 0006H   ; 6
+006E: 22   cmpeq
+006F: 21 00 00   push [0000]
+0072: 1F 07 00   pushi 0007H   ; 7
+0075: 22   cmpeq
+0076: 21 00 00   push [0000]
+0079: 1F 00 00   pushi 0000H   ; 0
+007C: 22   cmpeq
+007D: 0F   or
+007E: 0F   or
+007F: 05 28 01   jne 01AA
+0082: 1C BD 00   addsi L00BD   ; "The entrance fee...
+0085: 33   say
+0086: 24 00 00   call [0000]   ; 090AH
+0089: 05 62 00   jne 00EE
+008C: 1F 99 FE   pushi FE99H   ; -359
+008F: 1F 99 FE   pushi FE99H   ; -359
+0092: 1F 84 02   pushi 0284H   ; 644
+0095: 1F 9B FE   pushi FE9BH   ; -357
+0098: 38 28 00 04  callis 0028, 4
+009C: 12 02 00   pop [0002]
+009F: 21 02 00   push [0002]
+00A2: 1F 2C 01   pushi 012CH   ; 300
+00A5: 18   cmpge
+00A6: 05 3D 00   jne 00E6
+00A9: 14   push false
+00AA: 1F 04 00   pushi 0004H   ; 4
+00AD: 1F FB 00   pushi 00FBH   ; 251
+00B0: 1F 81 02   pushi 0281H   ; 641
+00B3: 1F 01 00   pushi 0001H   ; 1
+00B6: 38 2C 00 05  callis 002C, 5
+00BA: 12 03 00   pop [0003]
+00BD: 21 03 00   push [0003]
+00C0: 05 1B 00   jne 00DE
+00C3: 1C 39 01   addsi L0139   ; "Excellent! Here ...
+00C6: 33   say
+00C7: 13   push true
+00C8: 1F 99 FE   pushi FE99H   ; -359
+00CB: 1F 99 FE   pushi FE99H   ; -359
+00CE: 1F 84 02   pushi 0284H   ; 644
+00D1: 1F 2C 01   pushi 012CH   ; 300
+00D4: 38 2B 00 05  callis 002B, 5
+00D8: 12 04 00   pop [0004]
+00DB: 06 05 00   jmp 00E3
+00DE: 1C 56 01   addsi L0156   ; "Thine hands are ...
+00E1: 33   say
+00E2: 3F   abrt
+00E3: 06 05 00   jmp 00EB
+00E6: 1C 84 01   addsi L0184   ; "What art thou tr...
+00E9: 33   say
+00EA: 3F   abrt
+00EB: 06 05 00   jmp 00F3
+00EE: 1C BD 01   addsi L01BD   ; "Well, some other...
+00F1: 33   say
+00F2: 3F   abrt
+00F3: 1C 1E 02   addsi L021E   ; "Enter! Please re...
+00F6: 33   say
+00F7: 21 01 00   push [0001]
+00FA: 05 0B 00   jne 0108
+00FD: 1C 8B 02   addsi L028B   ; He notices your m...
+0100: 33   say
+0101: 1D D3 02   pushs L02D3   ; Fellowship
+0104: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0108: 1C DE 02   addsi L02DE   ; "Please! Make thy...
+010B: 33   say
+010C: 1F FE FF   pushi FFFEH   ; -2
+010F: 24 01 00   call [0001]   ; 08F7H
+0112: 12 05 00   pop [0005]
+0115: 21 05 00   push [0005]
+0118: 05 7F 00   jne 019A
+011B: 1C 26 03   addsi L0326   ; "Uhm, wait a minu...
+011E: 33   say
+011F: 1F 00 00   pushi 0000H   ; 0
+0122: 1F FE FF   pushi FFFEH   ; -2
+0125: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0129: 1C 54 03   addsi L0354   ; "Uhm, eighteen."*
+012C: 33   say
+012D: 1F 00 00   pushi 0000H   ; 0
+0130: 1F 22 FF   pushi FF22H   ; -222
+0133: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0137: 1C 66 03   addsi L0366   ; "Thou dost not lo...
+013A: 33   say
+013B: 1F 00 00   pushi 0000H   ; 0
+013E: 1F FE FF   pushi FFFEH   ; -2
+0141: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0145: 1C 86 03   addsi L0386   ; "All right, I am ...
+0148: 33   say
+0149: 1F 00 00   pushi 0000H   ; 0
+014C: 1F 22 FF   pushi FF22H   ; -222
+014F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0153: 1C A2 03   addsi L03A2   ; "Thou dost not lo...
+0156: 33   say
+0157: 1F 00 00   pushi 0000H   ; 0
+015A: 1F FE FF   pushi FFFEH   ; -2
+015D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0161: 1C 90 04   addsi L0490   ; "All right! Wench...
+0164: 33   say
+0165: 1F FE FF   pushi FFFEH   ; -2
+0168: 39 04 00 01  calli _HideNPC@1  ; 0004
+016C: 1F FF FF   pushi FFFFH   ; -1
+016F: 24 01 00   call [0001]   ; 08F7H
+0172: 12 06 00   pop [0006]
+0175: 21 06 00   push [0006]
+0178: 05 15 00   jne 0190
+017B: 1F 00 00   pushi 0000H   ; 0
+017E: 1F FF FF   pushi FFFFH   ; -1
+0181: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0185: 1C A7 04   addsi L04A7   ; Iolo whispers to ...
+0188: 33   say
+0189: 1F FF FF   pushi FFFFH   ; -1
+018C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0190: 1F 00 00   pushi 0000H   ; 0
+0193: 1F 22 FF   pushi FF22H   ; -222
+0196: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+019A: 1D 06 05   pushs L0506   ; drink
+019D: 1D 0C 05   pushs L050C   ; The Baths
+01A0: 1E 02 00   arrc 0002H   ; 2
+01A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A7: 06 04 00   jmp 01AE
+01AA: 1C 16 05   addsi L0516   ; "Please come visi...
+01AD: 33   say
+01AE: 1D 6B 05   pushs L056B   ; The Baths
+01B1: 07 01 00 1E 00  cmps 0001H, 01D4
+01B6: 1C 75 05   addsi L0575   ; "The Baths exist ...
+01B9: 33   say
+01BA: 1D B9 06   pushs L06B9   ; The Baths
+01BD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C1: 1D C3 06   pushs L06C3   ; fine artwork
+01C4: 1D D0 06   pushs L06D0   ; Community Room
+01C7: 1D DF 06   pushs L06DF   ; hosts or hostesses
+01CA: 1D F2 06   pushs L06F2   ; spring pools
+01CD: 1E 04 00   arrc 0004H   ; 4
+01D0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D4: 1D FF 06   pushs L06FF   ; drink
+01D7: 07 01 00 03 00  cmps 0001H, 01DF
+01DC: 24 02 00   call [0002]   ; 088FH
+01DF: 1D 05 07   pushs L0705   ; hosts or hostesses
+01E2: 07 01 00 0B 00  cmps 0001H, 01F2
+01E7: 1C 18 07   addsi L0718   ; "They have come f...
+01EA: 33   say
+01EB: 1D 1D 08   pushs L081D   ; hosts or hostesses
+01EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F2: 1D 30 08   pushs L0830   ; spring pools
+01F5: 07 01 00 0B 00  cmps 0001H, 0205
+01FA: 1C 3D 08   addsi L083D   ; "The water is gua...
+01FD: 33   say
+01FE: 1D 77 08   pushs L0877   ; spring pools
+0201: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0205: 1D 84 08   pushs L0884   ; Community Room
+0208: 07 01 00 0B 00  cmps 0001H, 0218
+020D: 1C 93 08   addsi L0893   ; "Thou canst lie i...
+0210: 33   say
+0211: 1D 19 09   pushs L0919   ; Community Room
+0214: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0218: 1D 28 09   pushs L0928   ; fine artwork
+021B: 07 01 00 0B 00  cmps 0001H, 022B
+0220: 1C 35 09   addsi L0935   ; "Ah, yes, those a...
+0223: 33   say
+0224: 1D E3 09   pushs L09E3   ; fine artwork
+0227: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022B: 1D F0 09   pushs L09F0   ; Fellowship
+022E: 07 01 00 12 00  cmps 0001H, 0245
+0233: 1C FB 09   addsi L09FB   ; "Yes, I am a memb...
+0236: 33   say
+0237: 1D 35 0B   pushs L0B35   ; Fellowship
+023A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023E: 1D 40 0B   pushs L0B40   ; reward
+0241: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0245: 1D 47 0B   pushs L0B47   ; reward
+0248: 07 01 00 0C 00  cmps 0001H, 0259
+024D: 1C 4E 0B   addsi L0B4E   ; "Yes, The Fellows...
+0250: 33   say
+0251: 1D E6 0C   pushs L0CE6   ; reward
+0254: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0258: 3F   abrt
+0259: 1D ED 0C   pushs L0CED   ; bye
+025C: 07 01 00 03 00  cmps 0001H, 0264
+0261: 06 03 00   jmp 0267
+0264: 06 DF FD   jmp 0046
+0267: 40   db 40 ???
+0268: 1C F1 0C   addsi L0CF1   ; "Leaving so soon?"*
+026B: 33   say
+026C: 48   push eventid
+026D: 1F 00 00   pushi 0000H   ; 0
+0270: 22   cmpeq
+0271: 05 99 00   jne 030D
+0274: 38 3B 00 00  callis 003B, 0
+0278: 12 00 00   pop [0000]
+027B: 1F 22 FF   pushi FF22H   ; -222
+027E: 38 1B 00 01  callis 001B, 1
+0282: 38 1C 00 01  callis 001C, 1
+0286: 12 07 00   pop [0007]
+0289: 1F 04 00   pushi 0004H   ; 4
+028C: 1F 01 00   pushi 0001H   ; 1
+028F: 38 10 00 02  callis _Random2@2  ; 0010
+0293: 12 08 00   pop [0008]
+0296: 21 07 00   push [0007]
+0299: 1F 0B 00   pushi 000BH   ; 11
+029C: 22   cmpeq
+029D: 05 67 00   jne 0307
+02A0: 21 00 00   push [0000]
+02A3: 1F 05 00   pushi 0005H   ; 5
+02A6: 22   cmpeq
+02A7: 21 00 00   push [0000]
+02AA: 1F 07 00   pushi 0007H   ; 7
+02AD: 22   cmpeq
+02AE: 21 00 00   push [0000]
+02B1: 1F 00 00   pushi 0000H   ; 0
+02B4: 22   cmpeq
+02B5: 0F   or
+02B6: 0F   or
+02B7: 05 4A 00   jne 0304
+02BA: 21 08 00   push [0008]
+02BD: 1F 01 00   pushi 0001H   ; 1
+02C0: 22   cmpeq
+02C1: 05 06 00   jne 02CA
+02C4: 1D 05 0D   pushs L0D05   ; @Wine and women!@
+02C7: 12 09 00   pop [0009]
+02CA: 21 08 00   push [0008]
+02CD: 1F 02 00   pushi 0002H   ; 2
+02D0: 22   cmpeq
+02D1: 05 06 00   jne 02DA
+02D4: 1D 17 0D   pushs L0D17   ; @Need a girl, sai...
+02D7: 12 09 00   pop [0009]
+02DA: 21 08 00   push [0008]
+02DD: 1F 03 00   pushi 0003H   ; 3
+02E0: 22   cmpeq
+02E1: 05 06 00   jne 02EA
+02E4: 1D 2E 0D   pushs L0D2E   ; @How about a stud...
+02E7: 12 09 00   pop [0009]
+02EA: 21 08 00   push [0008]
+02ED: 1F 04 00   pushi 0004H   ; 4
+02F0: 22   cmpeq
+02F1: 05 06 00   jne 02FA
+02F4: 1D 48 0D   pushs L0D48   ; @Relax here in Th...
+02F7: 12 09 00   pop [0009]
+02FA: 21 09 00   push [0009]
+02FD: 1F 22 FF   pushi FF22H   ; -222
+0300: 39 40 00 02  calli _ItemSay@2  ; 0040
+0304: 06 06 00   jmp 030D
+0307: 1F 22 FF   pushi FF22H   ; -222
+030A: 24 03 00   call [0003]   ; 092EH
+030D: 25   ret

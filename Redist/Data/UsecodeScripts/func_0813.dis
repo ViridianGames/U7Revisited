@@ -1,0 +1,204 @@
+  .funcnumber 0813H
+  .data
+L0000: db '@No, thank thee.@'
+L0011: db 00
+L0012: db '@More!@'
+L0019: db 00
+L001A: db '@I must have more!@'
+L002D: db 00
+L002E: db '@I am still hungry.@'
+L0042: db 00
+L0043: db '@May I have some more?@'
+L005A: db 00
+L005B: db '@Yum, garlic!@'
+L0069: db 00
+L006A: db '@Ah yes, much better.@'
+L0080: db 00
+L0081: db '@That hit the spot!@'
+L0095: db 00
+L0096: db '@Burp@'
+L009C: db 00
+L009D: db '@Yum, garlic!@'
+L00AB: db 00
+L00AC: db '@Ahh, very tasty.@'
+L00BE: db 00
+L00BF: db '@Belch@'
+L00C6: db 00
+L00C7: db '@I'll soon be plump.@'
+L00DC: db 00
+L00DD: db '@I'll soon be plump.@'
+L00F2: db 00
+L00F3: db 00
+  .code
+  .argc 0003H
+  .localc 0007H
+  .externsize 0003H
+  .extern 08FAH
+  .extern 0925H
+  .extern 0937H
+0000: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0004: 12 03 00   pop [0003]
+0007: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000B: 12 04 00   pop [0004]
+000E: 21 03 00   push [0003]
+0011: 21 04 00   push [0004]
+0014: 30   in
+0015: 1F 01 00   pushi 0001H   ; 1
+0018: 21 03 00   push [0003]
+001B: 38 88 00 02  callis 0088, 2
+001F: 10   not
+0020: 1F 07 00   pushi 0007H   ; 7
+0023: 21 03 00   push [0003]
+0026: 38 88 00 02  callis 0088, 2
+002A: 10   not
+002B: 1F 04 00   pushi 0004H   ; 4
+002E: 21 03 00   push [0003]
+0031: 38 88 00 02  callis 0088, 2
+0035: 10   not
+0036: 0E   and
+0037: 0E   and
+0038: 0E   and
+0039: 05 84 01   jne 01C0
+003C: 1F 09 00   pushi 0009H   ; 9
+003F: 21 03 00   push [0003]
+0042: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0046: 12 05 00   pop [0005]
+0049: 21 05 00   push [0005]
+004C: 21 01 00   push [0001]
+004F: 09   add
+0050: 12 06 00   pop [0006]
+0053: 21 05 00   push [0005]
+0056: 1F 18 00   pushi 0018H   ; 24
+0059: 16   cmpgt
+005A: 05 09 00   jne 0066
+005D: 1D 00 00   pushs L0000   ; @No, thank thee.@
+0060: 12 07 00   pop [0007]
+0063: 06 2C 01   jmp 0192
+0066: 21 02 00   push [0002]
+0069: 24 00 00   call [0000]   ; 08FAH
+006C: 3E   push itemref
+006D: 21 00 00   push [0000]
+0070: 39 86 00 02  calli 0086, 2
+0074: 21 02 00   push [0002]
+0077: 24 01 00   call [0001]   ; 0925H
+007A: 1F 0A 00   pushi 000AH   ; 10
+007D: 1F 01 00   pushi 0001H   ; 1
+0080: 38 10 00 02  callis _Random2@2  ; 0010
+0084: 12 08 00   pop [0008]
+0087: 21 05 00   push [0005]
+008A: 1F 04 00   pushi 0004H   ; 4
+008D: 19   cmple
+008E: 05 98 00   jne 0129
+0091: 21 06 00   push [0006]
+0094: 1F 04 00   pushi 0004H   ; 4
+0097: 19   cmple
+0098: 05 19 00   jne 00B4
+009B: 1D 12 00   pushs L0012   ; @More!@
+009E: 12 07 00   pop [0007]
+00A1: 21 08 00   push [0008]
+00A4: 1F 06 00   pushi 0006H   ; 6
+00A7: 17   cmpl
+00A8: 05 06 00   jne 00B1
+00AB: 1D 1A 00   pushs L001A   ; @I must have more!@
+00AE: 12 07 00   pop [0007]
+00B1: 06 DE 00   jmp 0192
+00B4: 21 06 00   push [0006]
+00B7: 1F 0A 00   pushi 000AH   ; 10
+00BA: 17   cmpl
+00BB: 05 28 00   jne 00E6
+00BE: 1D 2E 00   pushs L002E   ; @I am still hungry.@
+00C1: 12 07 00   pop [0007]
+00C4: 21 08 00   push [0008]
+00C7: 1F 06 00   pushi 0006H   ; 6
+00CA: 17   cmpl
+00CB: 05 15 00   jne 00E3
+00CE: 21 03 00   push [0003]
+00D1: 1F 9C FE   pushi FE9CH   ; -356
+00D4: 38 1B 00 01  callis 001B, 1
+00D8: 22   cmpeq
+00D9: 10   not
+00DA: 05 06 00   jne 00E3
+00DD: 1D 43 00   pushs L0043   ; @May I have some ...
+00E0: 12 07 00   pop [0007]
+00E3: 06 AC 00   jmp 0192
+00E6: 21 06 00   push [0006]
+00E9: 1F 14 00   pushi 0014H   ; 20
+00EC: 17   cmpl
+00ED: 05 20 00   jne 0110
+00F0: 21 02 00   push [0002]
+00F3: 38 11 00 01  callis _GetItemType@1  ; 0011
+00F7: 1F 4A 03   pushi 034AH   ; 842
+00FA: 22   cmpeq
+00FB: 05 09 00   jne 0107
+00FE: 1D 5B 00   pushs L005B   ; @Yum, garlic!@
+0101: 12 07 00   pop [0007]
+0104: 06 06 00   jmp 010D
+0107: 1D 6A 00   pushs L006A   ; @Ah yes, much bet...
+010A: 12 07 00   pop [0007]
+010D: 06 82 00   jmp 0192
+0110: 1D 81 00   pushs L0081   ; @That hit the spot!@
+0113: 12 07 00   pop [0007]
+0116: 21 08 00   push [0008]
+0119: 1F 06 00   pushi 0006H   ; 6
+011C: 17   cmpl
+011D: 05 06 00   jne 0126
+0120: 1D 96 00   pushs L0096   ; @Burp@
+0123: 12 07 00   pop [0007]
+0126: 06 69 00   jmp 0192
+0129: 21 05 00   push [0005]
+012C: 1F 14 00   pushi 0014H   ; 20
+012F: 17   cmpl
+0130: 05 35 00   jne 0168
+0133: 21 02 00   push [0002]
+0136: 38 11 00 01  callis _GetItemType@1  ; 0011
+013A: 1F 4A 03   pushi 034AH   ; 842
+013D: 22   cmpeq
+013E: 05 06 00   jne 0147
+0141: 1D 9D 00   pushs L009D   ; @Yum, garlic!@
+0144: 12 07 00   pop [0007]
+0147: 1D AC 00   pushs L00AC   ; @Ahh, very tasty.@
+014A: 12 07 00   pop [0007]
+014D: 21 06 00   push [0006]
+0150: 1F 18 00   pushi 0018H   ; 24
+0153: 16   cmpgt
+0154: 21 08 00   push [0008]
+0157: 1F 03 00   pushi 0003H   ; 3
+015A: 17   cmpl
+015B: 0E   and
+015C: 05 06 00   jne 0165
+015F: 1D BF 00   pushs L00BF   ; @Belch@
+0162: 12 07 00   pop [0007]
+0165: 06 2A 00   jmp 0192
+0168: 42 9B 00   pushf flag:[009B]
+016B: 21 08 00   push [0008]
+016E: 1F 02 00   pushi 0002H   ; 2
+0171: 17   cmpl
+0172: 0E   and
+0173: 05 09 00   jne 017F
+0176: 1D C7 00   pushs L00C7   ; @I'll soon be plu...
+0179: 12 07 00   pop [0007]
+017C: 06 13 00   jmp 0192
+017F: 21 08 00   push [0008]
+0182: 1F 05 00   pushi 0005H   ; 5
+0185: 17   cmpl
+0186: 05 09 00   jne 0192
+0189: 1D DD 00   pushs L00DD   ; @I'll soon be plu...
+018C: 12 07 00   pop [0007]
+018F: 06 00 00   jmp 0192
+0192: 21 07 00   push [0007]
+0195: 1D F3 00   pushs L00F3   ; 
+0198: 22   cmpeq
+0199: 10   not
+019A: 05 13 00   jne 01B0
+019D: 21 03 00   push [0003]
+01A0: 24 02 00   call [0002]   ; 0937H
+01A3: 05 0A 00   jne 01B0
+01A6: 21 07 00   push [0007]
+01A9: 21 03 00   push [0003]
+01AC: 39 40 00 02  calli _ItemSay@2  ; 0040
+01B0: 21 01 00   push [0001]
+01B3: 1F 09 00   pushi 0009H   ; 9
+01B6: 21 03 00   push [0003]
+01B9: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+01BD: 12 09 00   pop [0009]
+01C0: 25   ret

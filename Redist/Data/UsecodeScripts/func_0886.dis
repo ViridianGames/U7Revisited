@@ -1,0 +1,431 @@
+  .funcnumber 0886H
+  .data
+L0000: db 'What longitude runs through the center of Skara Brae?'
+L0035: db 00
+L0036: db 'What latitude runs through the center of Buccaneer's Den?'
+L006F: db 00
+L0070: db 'What latitude runs through the center of the Deep Forest?'
+L00A9: db 00
+L00AA: db 'What latitude runs through the center of Skara Brae?'
+L00DE: db 00
+L00DF: db 'What latitude runs through the center of Dagger Isle?'
+L0114: db 00
+L0115: db 'What longitude runs through the center of the island Terfin?'
+L0151: db 00
+L0152: db 'What longitude runs through the center of the island Buccane'
+ db 'er's Den?'
+L0197: db 00
+L0198: db 'What is the latitude of the northern-most point of the islan'
+ db 'd Spektran?'
+L01DF: db 00
+L01E0: db '"Before I give thee the password, I must admit I have had my'
+ db ' doubts about thou truly being the Avatar. I must ask thee t'
+ db 'o indulge me in order to satisfy my somewhat suspicious natu'
+ db 're. I shall ask thee a few questions regarding the geography'
+ db ' of Britannia. Please answer with the number of the longitud'
+ db 'e or latitude from thy cloth map. Remember-- longitude refer'
+ db 's to the lines that run north-south. They are determined by '
+ db 'the numbers at the bottom of the map. Latitude refers to the'
+ db ' lines that run east-west. They are determined by the number'
+ db 's on the left side of thy map. If these questions are answer'
+ db 'ed correctly, then I will cast aside all my doubts."'
+L046C: db 00
+L046D: db '"'
+L046E: db 00
+L046F: db '"'
+L0470: db 00
+  .code
+  .argc 0000H
+  .localc 001FH
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F 00 00   pushi 0000H   ; 0
+0006: 1F 00 00   pushi 0000H   ; 0
+0009: 1E 03 00   arrc 0003H   ; 3
+000C: 12 00 00   pop [0000]
+000F: 1F 03 00   pushi 0003H   ; 3
+0012: 1F 02 00   pushi 0002H   ; 2
+0015: 1F 01 00   pushi 0001H   ; 1
+0018: 1E 03 00   arrc 0003H   ; 3
+001B: 12 01 00   pop [0001]
+001E: 14   push false
+001F: 12 02 00   pop [0002]
+0022: 42 2A 00   pushf flag:[002A]
+0025: 10   not
+0026: 42 2B 00   pushf flag:[002B]
+0029: 10   not
+002A: 42 2C 00   pushf flag:[002C]
+002D: 10   not
+002E: 42 2D 00   pushf flag:[002D]
+0031: 10   not
+0032: 42 2E 00   pushf flag:[002E]
+0035: 10   not
+0036: 42 2F 00   pushf flag:[002F]
+0039: 10   not
+003A: 42 30 00   pushf flag:[0030]
+003D: 10   not
+003E: 42 31 00   pushf flag:[0031]
+0041: 10   not
+0042: 0E   and
+0043: 0E   and
+0044: 0E   and
+0045: 0E   and
+0046: 0E   and
+0047: 0E   and
+0048: 0E   and
+0049: 05 38 01   jne 0184
+004C: 2E   sloop
+004D: 02 03 00 04 00 05 00 01 00 29 00  db 2 ???
+004E:   db 3
+004F:   db 0
+0050:   db 4
+0051:   db 0
+0052:   db 5
+0053:   db 0
+0054:   db 1
+0055:   db 0
+0056:   db 29
+0057:   db 0
+0058: 1F 08 00   pushi 0008H   ; 8
+005B: 1F 01 00   pushi 0001H   ; 1
+005E: 38 10 00 02  callis _Random2@2  ; 0010
+0062: 12 06 00   pop [0006]
+0065: 21 06 00   push [0006]
+0068: 21 00 00   push [0000]
+006B: 30   in
+006C: 05 06 00   jne 0075
+006F: 06 E6 FF   jmp 0058
+0072: 06 09 00   jmp 007E
+0075: 21 06 00   push [0006]
+0078: 21 05 00   push [0005]
+007B: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+007E: 06 CC FF   jmp 004D
+0081: 2E   sloop
+0082: 02 07 00 08 00 05 00 01 00 14 00  db 2 ???
+0083:   db 7
+0084:   db 0
+0085:   db 8
+0086:   db 0
+0087:   db 5
+0088:   db 0
+0089:   db 1
+008A:   db 0
+008B:   db 14
+008C:   db 0
+008D: 21 05 00   push [0005]
+0090: 26 00 00   aidx [0000]
+0093: 1F 01 00   pushi 0001H   ; 1
+0096: 22   cmpeq
+0097: 05 04 00   jne 009E
+009A: 13   push true
+009B: 43 2A 00   popf flag:[002A]
+009E: 06 E1 FF   jmp 0082
+00A1: 2E   sloop
+00A2: 02 09 00 0A 00 05 00 01 00 14 00  db 2 ???
+00A3:   db 9
+00A4:   db 0
+00A5:   db a
+00A6:   db 0
+00A7:   db 5
+00A8:   db 0
+00A9:   db 1
+00AA:   db 0
+00AB:   db 14
+00AC:   db 0
+00AD: 21 05 00   push [0005]
+00B0: 26 00 00   aidx [0000]
+00B3: 1F 02 00   pushi 0002H   ; 2
+00B6: 22   cmpeq
+00B7: 05 04 00   jne 00BE
+00BA: 13   push true
+00BB: 43 2B 00   popf flag:[002B]
+00BE: 06 E1 FF   jmp 00A2
+00C1: 2E   sloop
+00C2: 02 0B 00 0C 00 05 00 01 00 14 00  db 2 ???
+00C3:   db b
+00C4:   db 0
+00C5:   db c
+00C6:   db 0
+00C7:   db 5
+00C8:   db 0
+00C9:   db 1
+00CA:   db 0
+00CB:   db 14
+00CC:   db 0
+00CD: 21 05 00   push [0005]
+00D0: 26 00 00   aidx [0000]
+00D3: 1F 03 00   pushi 0003H   ; 3
+00D6: 22   cmpeq
+00D7: 05 04 00   jne 00DE
+00DA: 13   push true
+00DB: 43 2C 00   popf flag:[002C]
+00DE: 06 E1 FF   jmp 00C2
+00E1: 2E   sloop
+00E2: 02 0D 00 0E 00 05 00 01 00 14 00  db 2 ???
+00E3:   db d
+00E4:   db 0
+00E5:   db e
+00E6:   db 0
+00E7:   db 5
+00E8:   db 0
+00E9:   db 1
+00EA:   db 0
+00EB:   db 14
+00EC:   db 0
+00ED: 21 05 00   push [0005]
+00F0: 26 00 00   aidx [0000]
+00F3: 1F 04 00   pushi 0004H   ; 4
+00F6: 22   cmpeq
+00F7: 05 04 00   jne 00FE
+00FA: 13   push true
+00FB: 43 2D 00   popf flag:[002D]
+00FE: 06 E1 FF   jmp 00E2
+0101: 2E   sloop
+0102: 02 0F 00 10 00 05 00 01 00 14 00  db 2 ???
+0103:   db f
+0104:   db 0
+0105:   db 10
+0106:   db 0
+0107:   db 5
+0108:   db 0
+0109:   db 1
+010A:   db 0
+010B:   db 14
+010C:   db 0
+010D: 21 05 00   push [0005]
+0110: 26 00 00   aidx [0000]
+0113: 1F 05 00   pushi 0005H   ; 5
+0116: 22   cmpeq
+0117: 05 04 00   jne 011E
+011A: 13   push true
+011B: 43 2E 00   popf flag:[002E]
+011E: 06 E1 FF   jmp 0102
+0121: 2E   sloop
+0122: 02 11 00 12 00 05 00 01 00 14 00  db 2 ???
+0123:   db 11
+0124:   db 0
+0125:   db 12
+0126:   db 0
+0127:   db 5
+0128:   db 0
+0129:   db 1
+012A:   db 0
+012B:   db 14
+012C:   db 0
+012D: 21 05 00   push [0005]
+0130: 26 00 00   aidx [0000]
+0133: 1F 06 00   pushi 0006H   ; 6
+0136: 22   cmpeq
+0137: 05 04 00   jne 013E
+013A: 13   push true
+013B: 43 2F 00   popf flag:[002F]
+013E: 06 E1 FF   jmp 0122
+0141: 2E   sloop
+0142: 02 13 00 14 00 05 00 01 00 14 00  db 2 ???
+0143:   db 13
+0144:   db 0
+0145:   db 14
+0146:   db 0
+0147:   db 5
+0148:   db 0
+0149:   db 1
+014A:   db 0
+014B:   db 14
+014C:   db 0
+014D: 21 05 00   push [0005]
+0150: 26 00 00   aidx [0000]
+0153: 1F 07 00   pushi 0007H   ; 7
+0156: 22   cmpeq
+0157: 05 04 00   jne 015E
+015A: 13   push true
+015B: 43 30 00   popf flag:[0030]
+015E: 06 E1 FF   jmp 0142
+0161: 2E   sloop
+0162: 02 15 00 16 00 05 00 01 00 14 00  db 2 ???
+0163:   db 15
+0164:   db 0
+0165:   db 16
+0166:   db 0
+0167:   db 5
+0168:   db 0
+0169:   db 1
+016A:   db 0
+016B:   db 14
+016C:   db 0
+016D: 21 05 00   push [0005]
+0170: 26 00 00   aidx [0000]
+0173: 1F 08 00   pushi 0008H   ; 8
+0176: 22   cmpeq
+0177: 05 04 00   jne 017E
+017A: 13   push true
+017B: 43 31 00   popf flag:[0031]
+017E: 06 E1 FF   jmp 0162
+0181: 06 CF 00   jmp 0253
+0184: 2E   sloop
+0185: 02 17 00 18 00 05 00 01 00 C3 00  db 2 ???
+0186:   db 17
+0187:   db 0
+0188:   db 18
+0189:   db 0
+018A:   db 5
+018B:   db 0
+018C:   db 1
+018D:   db 0
+018E:   db c3
+018F:   db 0
+0190: 42 2A 00   pushf flag:[002A]
+0193: 1F 01 00   pushi 0001H   ; 1
+0196: 21 00 00   push [0000]
+0199: 30   in
+019A: 10   not
+019B: 0E   and
+019C: 05 09 00   jne 01A8
+019F: 1F 01 00   pushi 0001H   ; 1
+01A2: 21 05 00   push [0005]
+01A5: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+01A8: 42 2B 00   pushf flag:[002B]
+01AB: 1F 02 00   pushi 0002H   ; 2
+01AE: 21 00 00   push [0000]
+01B1: 30   in
+01B2: 10   not
+01B3: 0E   and
+01B4: 05 09 00   jne 01C0
+01B7: 1F 02 00   pushi 0002H   ; 2
+01BA: 21 05 00   push [0005]
+01BD: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+01C0: 42 2C 00   pushf flag:[002C]
+01C3: 1F 03 00   pushi 0003H   ; 3
+01C6: 21 00 00   push [0000]
+01C9: 30   in
+01CA: 10   not
+01CB: 0E   and
+01CC: 05 09 00   jne 01D8
+01CF: 1F 03 00   pushi 0003H   ; 3
+01D2: 21 05 00   push [0005]
+01D5: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+01D8: 42 2D 00   pushf flag:[002D]
+01DB: 1F 04 00   pushi 0004H   ; 4
+01DE: 21 00 00   push [0000]
+01E1: 30   in
+01E2: 10   not
+01E3: 0E   and
+01E4: 05 09 00   jne 01F0
+01E7: 1F 04 00   pushi 0004H   ; 4
+01EA: 21 05 00   push [0005]
+01ED: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+01F0: 42 2E 00   pushf flag:[002E]
+01F3: 1F 05 00   pushi 0005H   ; 5
+01F6: 21 00 00   push [0000]
+01F9: 30   in
+01FA: 10   not
+01FB: 0E   and
+01FC: 05 09 00   jne 0208
+01FF: 1F 05 00   pushi 0005H   ; 5
+0202: 21 05 00   push [0005]
+0205: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+0208: 42 2F 00   pushf flag:[002F]
+020B: 1F 06 00   pushi 0006H   ; 6
+020E: 21 00 00   push [0000]
+0211: 30   in
+0212: 10   not
+0213: 0E   and
+0214: 05 09 00   jne 0220
+0217: 1F 06 00   pushi 0006H   ; 6
+021A: 21 05 00   push [0005]
+021D: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+0220: 42 30 00   pushf flag:[0030]
+0223: 1F 07 00   pushi 0007H   ; 7
+0226: 21 00 00   push [0000]
+0229: 30   in
+022A: 10   not
+022B: 0E   and
+022C: 05 09 00   jne 0238
+022F: 1F 07 00   pushi 0007H   ; 7
+0232: 21 05 00   push [0005]
+0235: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+0238: 42 31 00   pushf flag:[0031]
+023B: 1F 08 00   pushi 0008H   ; 8
+023E: 21 00 00   push [0000]
+0241: 30   in
+0242: 10   not
+0243: 0E   and
+0244: 05 09 00   jne 0250
+0247: 1F 08 00   pushi 0008H   ; 8
+024A: 21 05 00   push [0005]
+024D: 46 00 00   db 46 ???
+   dw 0000H   ; 0
+0250: 06 32 FF   jmp 0185
+0253: 1D 00 00   pushs L0000   ; What longitude ru...
+0256: 1D 36 00   pushs L0036   ; What latitude run...
+0259: 1D 70 00   pushs L0070   ; What latitude run...
+025C: 1D AA 00   pushs L00AA   ; What latitude run...
+025F: 1D DF 00   pushs L00DF   ; What latitude run...
+0262: 1D 15 01   pushs L0115   ; What longitude ru...
+0265: 1D 52 01   pushs L0152   ; What longitude ru...
+0268: 1D 98 01   pushs L0198   ; What is the latit...
+026B: 1E 08 00   arrc 0008H   ; 8
+026E: 12 19 00   pop [0019]
+0271: 1F 3C 00   pushi 003CH   ; 60
+0274: 1F 3C 00   pushi 003CH   ; 60
+0277: 1F 3C 00   pushi 003CH   ; 60
+027A: 1F 1E 00   pushi 001EH   ; 30
+027D: 1F 00 00   pushi 0000H   ; 0
+0280: 1F 78 00   pushi 0078H   ; 120
+0283: 1F 3C 00   pushi 003CH   ; 60
+0286: 1F 78 00   pushi 0078H   ; 120
+0289: 1E 08 00   arrc 0008H   ; 8
+028C: 12 1A 00   pop [001A]
+028F: 1C E0 01   addsi L01E0   ; "Before I give th...
+0292: 33   say
+0293: 2E   sloop
+0294: 02 1B 00 1C 00 05 00 01 00 41 00  db 2 ???
+0295:   db 1b
+0296:   db 0
+0297:   db 1c
+0298:   db 0
+0299:   db 5
+029A:   db 0
+029B:   db 1
+029C:   db 0
+029D:   db 41
+029E:   db 0
+029F: 21 05 00   push [0005]
+02A2: 26 00 00   aidx [0000]
+02A5: 26 19 00   aidx [0019]
+02A8: 12 1D 00   pop [001D]
+02AB: 1C 6D 04   addsi L046D   ; "
+02AE: 2F 1D 00   addsv [001D]
+02B1: 1C 6F 04   addsi L046F   ; "
+02B4: 33   say
+02B5: 1F 00 00   pushi 0000H   ; 0
+02B8: 1F 05 00   pushi 0005H   ; 5
+02BB: 1F D2 00   pushi 00D2H   ; 210
+02BE: 1F 00 00   pushi 0000H   ; 0
+02C1: 38 0C 00 04  callis _AskNumber@4  ; 000C
+02C5: 12 1E 00   pop [001E]
+02C8: 21 1E 00   push [001E]
+02CB: 21 05 00   push [0005]
+02CE: 26 00 00   aidx [0000]
+02D1: 26 1A 00   aidx [001A]
+02D4: 22   cmpeq
+02D5: 10   not
+02D6: 05 04 00   jne 02DD
+02D9: 13   push true
+02DA: 12 02 00   pop [0002]
+02DD: 06 B4 FF   jmp 0294
+02E0: 21 02 00   push [0002]
+02E3: 05 05 00   jne 02EB
+02E6: 14   push false
+02E7: 2D   setr
+02E8: 06 02 00   jmp 02ED
+02EB: 13   push true
+02EC: 2D   setr
+02ED: 32   rts

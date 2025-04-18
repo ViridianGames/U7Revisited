@@ -1,0 +1,351 @@
+  .funcnumber 070FH
+  .data
+  .code
+  .argc 0001H
+  .localc 0019H
+  .externsize 0001H
+  .extern 08E6H
+0000: 3E   push itemref
+0001: 38 11 00 01  callis _GetItemType@1  ; 0011
+0005: 12 00 00   pop [0000]
+0008: 21 00 00   push [0000]
+000B: 1F D2 01   pushi 01D2H   ; 466
+000E: 22   cmpeq
+000F: 05 21 01   jne 0133
+0012: 1F 9C FE   pushi FE9CH   ; -356
+0015: 38 1B 00 01  callis 001B, 1
+0019: 38 18 00 01  callis 0018, 1
+001D: 12 01 00   pop [0001]
+0020: 1F FF FF   pushi FFFFH   ; -1
+0023: 1F 00 00   pushi 0000H   ; 0
+0026: 1F 00 00   pushi 0000H   ; 0
+0029: 1F 00 00   pushi 0000H   ; 0
+002C: 1F 02 00   pushi 0002H   ; 2
+002F: 26 01 00   aidx [0001]
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 26 01 00   aidx [0001]
+0038: 1F 11 00   pushi 0011H   ; 17
+003B: 39 53 00 07  calli 0053, 7
+003F: 1F 3E 00   pushi 003EH   ; 62
+0042: 39 0F 00 01  calli 000F, 1
+0046: 1F 08 00   pushi 0008H   ; 8
+0049: 1F 50 00   pushi 0050H   ; 80
+004C: 1F FF FF   pushi FFFFH   ; -1
+004F: 1F 9C FE   pushi FE9CH   ; -356
+0052: 38 1B 00 01  callis 001B, 1
+0056: 38 35 00 04  callis 0035, 4
+005A: 12 02 00   pop [0002]
+005D: 2E   sloop
+005E: 02 03 00 04 00 05 00 02 00 42 00  db 2 ???
+005F:   db 3
+0060:   db 0
+0061:   db 4
+0062:   db 0
+0063:   db 5
+0064:   db 0
+0065:   db 2
+0066:   db 0
+0067:   db 42
+0068:   db 0
+0069: 21 05 00   push [0005]
+006C: 38 11 00 01  callis _GetItemType@1  ; 0011
+0070: 12 06 00   pop [0006]
+0073: 21 06 00   push [0006]
+0076: 1F D1 02   pushi 02D1H   ; 721
+0079: 22   cmpeq
+007A: 21 06 00   push [0006]
+007D: 1F DD 03   pushi 03DDH   ; 989
+0080: 22   cmpeq
+0081: 0F   or
+0082: 10   not
+0083: 05 22 00   jne 00A8
+0086: 21 05 00   push [0005]
+0089: 38 3C 00 01  callis 003C, 1
+008D: 1F 00 00   pushi 0000H   ; 0
+0090: 22   cmpeq
+0091: 05 14 00   jne 00A8
+0094: 1F 02 00   pushi 0002H   ; 2
+0097: 21 05 00   push [0005]
+009A: 39 3D 00 02  calli 003D, 2
+009E: 1F 00 00   pushi 0000H   ; 0
+00A1: 21 05 00   push [0005]
+00A4: 39 1D 00 02  calli 001D, 2
+00A8: 06 B3 FF   jmp 005E
+00AB: 3E   push itemref
+00AC: 38 18 00 01  callis 0018, 1
+00B0: 12 07 00   pop [0007]
+00B3: 1F 9E 01   pushi 019EH   ; 414
+00B6: 38 24 00 01  callis 0024, 1  ;* Create body.
+00BA: 12 08 00   pop [0008]
+00BD: 3E   push itemref
+00BE: 38 6B 00 01  callis 006B, 1
+00C2: 21 08 00   push [0008]
+00C5: 39 6C 00 02  calli 006C, 2
+00C9: 1F 1E 00   pushi 001EH   ; 30
+00CC: 21 08 00   push [0008]
+00CF: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00D3: 1F E9 FF   pushi FFE9H   ; -23
+00D6: 39 3F 00 01  calli 003F, 1
+00DA: 21 07 00   push [0007]
+00DD: 38 26 00 01  callis 0026, 1
+00E1: 12 09 00   pop [0009]
+00E4: 1F 1D 03   pushi 031DH   ; 797
+00E7: 38 24 00 01  callis 0024, 1
+00EB: 12 0A 00   pop [000A]
+00EE: 1F 00 00   pushi 0000H   ; 0
+00F1: 21 0A 00   push [000A]
+00F4: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00F8: 1F 2B 00   pushi 002BH   ; 43
+00FB: 21 0A 00   push [000A]
+00FE: 38 15 00 02  callis 0015, 2
+0102: 12 09 00   pop [0009]
+0105: 21 08 00   push [0008]
+0108: 38 36 00 01  callis 0036, 1
+010C: 12 09 00   pop [0009]
+010F: 1F 0C 00   pushi 000CH   ; 12
+0112: 44 46   pushw 1F46H   ; 8006
+0114: 1F 02 00   pushi 0002H   ; 2
+0117: 44 27   pushw 1F27H   ; 7975
+0119: 1F 1F 00   pushi 001FH   ; 31
+011C: 44 46   pushw 1F46H   ; 8006
+011E: 1F 05 00   pushi 0005H   ; 5
+0121: 44 27   pushw 1E27H   ; 7719
+0123: 1E 08 00   arrc 0008H   ; 8
+0126: 21 08 00   push [0008]
+0129: 38 01 00 02  callis 0001, 2
+012D: 12 0B 00   pop [000B]
+0130: 06 5A 02   jmp 038D
+0133: 3E   push itemref
+0134: 38 3C 00 01  callis 003C, 1
+0138: 12 0C 00   pop [000C]
+013B: 1F 04 00   pushi 0004H   ; 4
+013E: 39 0F 00 01  calli 000F, 1
+0142: 1F 12 00   pushi 0012H   ; 18
+0145: 3E   push itemref
+0146: 38 88 00 02  callis 0088, 2
+014A: 10   not
+014B: 05 72 00   jne 01C0
+014E: 3E   push itemref
+014F: 39 49 00 01  calli 0049, 1
+0153: 3E   push itemref
+0154: 39 3F 00 01  calli 003F, 1
+0158: 1F 08 00   pushi 0008H   ; 8
+015B: 1F 50 00   pushi 0050H   ; 80
+015E: 1F FF FF   pushi FFFFH   ; -1
+0161: 1F 9C FE   pushi FE9CH   ; -356
+0164: 38 1B 00 01  callis 001B, 1
+0168: 38 35 00 04  callis 0035, 4
+016C: 12 02 00   pop [0002]
+016F: 2E   sloop
+0170: 02 0D 00 0E 00 05 00 02 00 42 00  db 2 ???
+0171:   db d
+0172:   db 0
+0173:   db e
+0174:   db 0
+0175:   db 5
+0176:   db 0
+0177:   db 2
+0178:   db 0
+0179:   db 42
+017A:   db 0
+017B: 21 05 00   push [0005]
+017E: 38 11 00 01  callis _GetItemType@1  ; 0011
+0182: 12 06 00   pop [0006]
+0185: 21 06 00   push [0006]
+0188: 1F D1 02   pushi 02D1H   ; 721
+018B: 22   cmpeq
+018C: 21 06 00   push [0006]
+018F: 1F DD 03   pushi 03DDH   ; 989
+0192: 22   cmpeq
+0193: 0F   or
+0194: 10   not
+0195: 05 22 00   jne 01BA
+0198: 21 05 00   push [0005]
+019B: 38 3C 00 01  callis 003C, 1
+019F: 21 0C 00   push [000C]
+01A2: 22   cmpeq
+01A3: 05 14 00   jne 01BA
+01A6: 1F 02 00   pushi 0002H   ; 2
+01A9: 21 05 00   push [0005]
+01AC: 39 3D 00 02  calli 003D, 2
+01B0: 1F 00 00   pushi 0000H   ; 0
+01B3: 21 05 00   push [0005]
+01B6: 39 1D 00 02  calli 001D, 2
+01BA: 06 B3 FF   jmp 0170
+01BD: 06 CD 01   jmp 038D
+01C0: 1F 04 00   pushi 0004H   ; 4
+01C3: 1F 99 FE   pushi FE99H   ; -359
+01C6: 1F 1D 03   pushi 031DH   ; 797
+01C9: 3E   push itemref
+01CA: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+01CE: 12 0F 00   pop [000F]
+01D1: 21 0F 00   push [000F]
+01D4: 05 4C 01   jne 0323
+01D7: 21 0F 00   push [000F]
+01DA: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+01DE: 12 10 00   pop [0010]
+01E1: 14   push false
+01E2: 12 11 00   pop [0011]
+01E5: 21 10 00   push [0010]
+01E8: 1F F0 00   pushi 00F0H   ; 240
+01EB: 22   cmpeq
+01EC: 05 3A 00   jne 0229
+01EF: 13   push true
+01F0: 43 EE 02   popf flag:[02EE]
+01F3: 3E   push itemref
+01F4: 38 18 00 01  callis 0018, 1
+01F8: 12 12 00   pop [0012]
+01FB: 1F FA 02   pushi 02FAH   ; 762
+01FE: 38 24 00 01  callis 0024, 1
+0202: 12 11 00   pop [0011]
+0205: 3E   push itemref
+0206: 38 6B 00 01  callis 006B, 1
+020A: 21 11 00   push [0011]
+020D: 39 6C 00 02  calli 006C, 2
+0211: 1F 16 00   pushi 0016H   ; 22
+0214: 21 11 00   push [0011]
+0217: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+021B: 3E   push itemref
+021C: 24 00 00   call [0000]   ; 08E6H
+021F: 21 12 00   push [0012]
+0222: 38 26 00 01  callis 0026, 1
+0226: 12 09 00   pop [0009]
+0229: 21 10 00   push [0010]
+022C: 1F F1 00   pushi 00F1H   ; 241
+022F: 22   cmpeq
+0230: 05 3A 00   jne 026D
+0233: 13   push true
+0234: 43 EF 02   popf flag:[02EF]
+0237: 3E   push itemref
+0238: 38 18 00 01  callis 0018, 1
+023C: 12 12 00   pop [0012]
+023F: 1F 0A 03   pushi 030AH   ; 778
+0242: 38 24 00 01  callis 0024, 1
+0246: 12 11 00   pop [0011]
+0249: 3E   push itemref
+024A: 38 6B 00 01  callis 006B, 1
+024E: 21 11 00   push [0011]
+0251: 39 6C 00 02  calli 006C, 2
+0255: 1F 07 00   pushi 0007H   ; 7
+0258: 21 11 00   push [0011]
+025B: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+025F: 3E   push itemref
+0260: 24 00 00   call [0000]   ; 08E6H
+0263: 21 12 00   push [0012]
+0266: 38 26 00 01  callis 0026, 1
+026A: 12 09 00   pop [0009]
+026D: 1F 1D 03   pushi 031DH   ; 797
+0270: 38 24 00 01  callis 0024, 1
+0274: 12 13 00   pop [0013]
+0277: 1F 12 00   pushi 0012H   ; 18
+027A: 21 13 00   push [0013]
+027D: 39 89 00 02  calli 0089, 2
+0281: 21 10 00   push [0010]
+0284: 21 13 00   push [0013]
+0287: 38 15 00 02  callis 0015, 2
+028B: 12 09 00   pop [0009]
+028E: 1F 04 00   pushi 0004H   ; 4
+0291: 21 13 00   push [0013]
+0294: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0298: 21 11 00   push [0011]
+029B: 38 36 00 01  callis 0036, 1
+029F: 12 09 00   pop [0009]
+02A2: 1F 01 00   pushi 0001H   ; 1
+02A5: 1F F7 06   pushi 06F7H   ; 1783
+02A8: 44 55   pushw 4455H   ; 17493
+02AA: 44 23   pushw 4423H   ; 17443
+02AC: 44 2C   pushw 1E2CH   ; 7724
+02AE: 1E 04 00   arrc 0004H   ; 4
+02B1: 21 13 00   push [0013]
+02B4: 38 02 00 03  callis 0002, 3
+02B8: 12 14 00   pop [0014]
+02BB: 1F 08 00   pushi 0008H   ; 8
+02BE: 1F 50 00   pushi 0050H   ; 80
+02C1: 1F FF FF   pushi FFFFH   ; -1
+02C4: 1F 9C FE   pushi FE9CH   ; -356
+02C7: 38 1B 00 01  callis 001B, 1
+02CB: 38 35 00 04  callis 0035, 4
+02CF: 12 02 00   pop [0002]
+02D2: 2E   sloop
+02D3: 02 15 00 16 00 05 00 02 00 42 00  db 2 ???
+02D4:   db 15
+02D5:   db 0
+02D6:   db 16
+02D7:   db 0
+02D8:   db 5
+02D9:   db 0
+02DA:   db 2
+02DB:   db 0
+02DC:   db 42
+02DD:   db 0
+02DE: 21 05 00   push [0005]
+02E1: 38 11 00 01  callis _GetItemType@1  ; 0011
+02E5: 12 06 00   pop [0006]
+02E8: 21 06 00   push [0006]
+02EB: 1F D1 02   pushi 02D1H   ; 721
+02EE: 22   cmpeq
+02EF: 21 06 00   push [0006]
+02F2: 1F DD 03   pushi 03DDH   ; 989
+02F5: 22   cmpeq
+02F6: 0F   or
+02F7: 10   not
+02F8: 05 22 00   jne 031D
+02FB: 21 05 00   push [0005]
+02FE: 38 3C 00 01  callis 003C, 1
+0302: 21 0C 00   push [000C]
+0305: 22   cmpeq
+0306: 05 14 00   jne 031D
+0309: 1F 02 00   pushi 0002H   ; 2
+030C: 21 05 00   push [0005]
+030F: 39 3D 00 02  calli 003D, 2
+0313: 1F 00 00   pushi 0000H   ; 0
+0316: 21 05 00   push [0005]
+0319: 39 1D 00 02  calli 001D, 2
+031D: 06 B3 FF   jmp 02D3
+0320: 06 6A 00   jmp 038D
+0323: 3E   push itemref
+0324: 39 49 00 01  calli 0049, 1
+0328: 1F 08 00   pushi 0008H   ; 8
+032B: 1F 50 00   pushi 0050H   ; 80
+032E: 1F FF FF   pushi FFFFH   ; -1
+0331: 1F 9C FE   pushi FE9CH   ; -356
+0334: 38 1B 00 01  callis 001B, 1
+0338: 38 35 00 04  callis 0035, 4
+033C: 12 02 00   pop [0002]
+033F: 2E   sloop
+0340: 02 17 00 18 00 05 00 02 00 42 00  db 2 ???
+0341:   db 17
+0342:   db 0
+0343:   db 18
+0344:   db 0
+0345:   db 5
+0346:   db 0
+0347:   db 2
+0348:   db 0
+0349:   db 42
+034A:   db 0
+034B: 21 05 00   push [0005]
+034E: 38 11 00 01  callis _GetItemType@1  ; 0011
+0352: 12 06 00   pop [0006]
+0355: 21 06 00   push [0006]
+0358: 1F D1 02   pushi 02D1H   ; 721
+035B: 22   cmpeq
+035C: 21 06 00   push [0006]
+035F: 1F DD 03   pushi 03DDH   ; 989
+0362: 22   cmpeq
+0363: 0F   or
+0364: 10   not
+0365: 05 22 00   jne 038A
+0368: 21 05 00   push [0005]
+036B: 38 3C 00 01  callis 003C, 1
+036F: 21 0C 00   push [000C]
+0372: 22   cmpeq
+0373: 05 14 00   jne 038A
+0376: 1F 02 00   pushi 0002H   ; 2
+0379: 21 05 00   push [0005]
+037C: 39 3D 00 02  calli 003D, 2
+0380: 1F 00 00   pushi 0000H   ; 0
+0383: 21 05 00   push [0005]
+0386: 39 1D 00 02  calli 001D, 2
+038A: 06 B3 FF   jmp 0340
+038D: 25   ret

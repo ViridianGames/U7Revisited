@@ -1,0 +1,10 @@
+  .funcnumber 08FBH
+  .data
+  .code
+  .argc 0000H
+  .localc 0000H
+  .externsize 0000H
+0000: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0004: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+0008: 2D   setr
+0009: 32   rts

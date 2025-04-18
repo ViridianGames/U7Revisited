@@ -1,0 +1,261 @@
+  .funcnumber 04EEH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The man before you stretches and inhales deeply.'
+L003D: db 00
+L003E: db '"Glorious day, '
+L004D: db 00
+L004E: db '." Perrin grins.'
+L005E: db 00
+L005F: db 'name'
+L0063: db 00
+L0064: db '"Please, '
+L006D: db 00
+L006E: db ', call me Perrin. I reside here in Empath Abbey."'
+L009F: db 00
+L00A0: db 'name'
+L00A4: db 00
+L00A5: db 'Empath Abbey'
+L00B1: db 00
+L00B2: db 'job'
+L00B5: db 00
+L00B6: db '"I am a scholar, '
+L00C7: db 00
+L00C8: db '. Dost thou want training in the realm of books?"'
+L00F9: db 00
+L00FA: db '"My price is 45 gold for each training session, but I will a'
+ db 'lso teach thee what little I know about magic. Is this accep'
+ db 'table?"'
+L0179: db 00
+L017A: db '"Very well, '
+L0186: db 00
+L0187: db '."'
+L0189: db 00
+L018A: db '"Forgive me, I am a bit overzealous in my search for student'
+ db 's. I hope thou wilt return in the future."'
+L01F0: db 00
+L01F1: db 'Empath Abbey'
+L01FD: db 00
+L01FE: db '"This is a pleasant location. I like the privacy, which give'
+ db 's me a chance to study when I need to. The Brotherhood is ac'
+ db 'ross the road, and I am near a healer. Also, I have begun a '
+ db 'study on the effects of dealing with death for undertakers. '
+ db 'I am using Tiery as a case study."'
+L0310: db 00
+L0311: db 'Tiery'
+L0316: db 00
+L0317: db 'healer'
+L031D: db 00
+L031E: db 'Brotherhood'
+L0329: db 00
+L032A: db 'Empath Abbey'
+L0336: db 00
+L0337: db 'Brotherhood'
+L0342: db 00
+L0343: db '"That is the abbey. The monks who reside there are famous fo'
+ db 'r their ability to produce exquisite wine. Nearby is the Hig'
+ db 'hcourt and a prison."'
+L03D0: db 00
+L03D1: db 'Brotherhood'
+L03DC: db 00
+L03DD: db 'prison'
+L03E3: db 00
+L03E4: db 'highcourt'
+L03ED: db 00
+L03EE: db 'wine'
+L03F2: db 00
+L03F3: db 'wine'
+L03F7: db 00
+L03F8: db '"Thou shouldst try some. The monks have been making it for m'
+ db 'ore than three hundred years!"'
+L0452: db 00
+L0453: db 'wine'
+L0457: db 00
+L0458: db 'highcourt'
+L0461: db 00
+L0462: db '"The official there is named Sir Jeff. From what I hear, he '
+ db 'runs his ship very tight. I do not envy the jailer that work'
+ db 's with him. It must be extremely difficult to be near such a'
+ db ' strict disciplinarian all day long."'
+L053B: db 00
+L053C: db 'highcourt'
+L0545: db 00
+L0546: db 'prison'
+L054C: db 00
+L054D: db '"It is located just behind the court. And," he grins, "I am '
+ db 'proud to say that is at least one thing about which I know n'
+ db 'othing."'
+L05CD: db 00
+L05CE: db 'prison'
+L05D4: db 00
+L05D5: db 'Tiery'
+L05DA: db 00
+L05DB: db '"He is the undertaker who lives just north of the Brotherhoo'
+ db 'd."'
+L061A: db 00
+L061B: db 'Tiery'
+L0620: db 00
+L0621: db 'healer'
+L0627: db 00
+L0628: db '"I have yet to meet her, but I know she loves animals. I hav'
+ db 'e seen her playing with the deer and squirrels that inhabit '
+ db 'this region."'
+L06AD: db 00
+L06AE: db 'healer'
+L06B4: db 00
+L06B5: db 'bye'
+L06B8: db 00
+L06B9: db '"Goodbye, '
+L06C3: db 00
+L06C4: db '. Best of luck in thy journeys."*'
+L06E5: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0005H
+  .extern 0908H
+  .extern 0909H
+  .extern 090AH
+  .extern 08CAH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 74 01   jne 017C
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 12 FF   pushi FF12H   ; -238
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 45 01   pushf flag:[0145]
+0031: 10   not
+0032: 05 07 00   jne 003C
+0035: 1C 0D 00   addsi L000D   ; The man before yo...
+0038: 33   say
+0039: 06 0A 00   jmp 0046
+003C: 1C 3E 00   addsi L003E   ; "Glorious day, 
+003F: 2F 00 00   addsv [0000]
+0042: 1C 4E 00   addsi L004E   ; ." Perrin grins.
+0045: 33   say
+0046: 04 28 01   je 0171
+0049: 1D 5F 00   pushs L005F   ; name
+004C: 07 01 00 18 00  cmps 0001H, 0069
+0051: 1C 64 00   addsi L0064   ; "Please, 
+0054: 2F 01 00   addsv [0001]
+0057: 1C 6E 00   addsi L006E   ; , call me Perrin....
+005A: 33   say
+005B: 1D A0 00   pushs L00A0   ; name
+005E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0062: 1D A5 00   pushs L00A5   ; Empath Abbey
+0065: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0069: 1D B2 00   pushs L00B2   ; job
+006C: 07 01 00 49 00  cmps 0001H, 00BA
+0071: 1C B6 00   addsi L00B6   ; "I am a scholar, 
+0074: 2F 01 00   addsv [0001]
+0077: 1C C8 00   addsi L00C8   ; . Dost thou want ...
+007A: 33   say
+007B: 24 02 00   call [0002]   ; 090AH
+007E: 12 02 00   pop [0002]
+0081: 21 02 00   push [0002]
+0084: 05 2F 00   jne 00B6
+0087: 1C FA 00   addsi L00FA   ; "My price is 45 g...
+008A: 33   say
+008B: 24 02 00   call [0002]   ; 090AH
+008E: 12 03 00   pop [0003]
+0091: 21 03 00   push [0003]
+0094: 05 12 00   jne 00A9
+0097: 1F 2D 00   pushi 002DH   ; 45
+009A: 1F 06 00   pushi 0006H   ; 6
+009D: 1F 02 00   pushi 0002H   ; 2
+00A0: 1E 02 00   arrc 0002H   ; 2
+00A3: 24 03 00   call [0003]   ; 08CAH
+00A6: 06 0A 00   jmp 00B3
+00A9: 1C 7A 01   addsi L017A   ; "Very well, 
+00AC: 2F 01 00   addsv [0001]
+00AF: 1C 87 01   addsi L0187   ; ."
+00B2: 33   say
+00B3: 06 04 00   jmp 00BA
+00B6: 1C 8A 01   addsi L018A   ; "Forgive me, I am...
+00B9: 33   say
+00BA: 1D F1 01   pushs L01F1   ; Empath Abbey
+00BD: 07 01 00 1B 00  cmps 0001H, 00DD
+00C2: 1C FE 01   addsi L01FE   ; "This is a pleasa...
+00C5: 33   say
+00C6: 1D 11 03   pushs L0311   ; Tiery
+00C9: 1D 17 03   pushs L0317   ; healer
+00CC: 1D 1E 03   pushs L031E   ; Brotherhood
+00CF: 1E 03 00   arrc 0003H   ; 3
+00D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D6: 1D 2A 03   pushs L032A   ; Empath Abbey
+00D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DD: 1D 37 03   pushs L0337   ; Brotherhood
+00E0: 07 01 00 1B 00  cmps 0001H, 0100
+00E5: 1C 43 03   addsi L0343   ; "That is the abbe...
+00E8: 33   say
+00E9: 1D D1 03   pushs L03D1   ; Brotherhood
+00EC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F0: 1D DD 03   pushs L03DD   ; prison
+00F3: 1D E4 03   pushs L03E4   ; highcourt
+00F6: 1D EE 03   pushs L03EE   ; wine
+00F9: 1E 03 00   arrc 0003H   ; 3
+00FC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0100: 1D F3 03   pushs L03F3   ; wine
+0103: 07 01 00 0B 00  cmps 0001H, 0113
+0108: 1C F8 03   addsi L03F8   ; "Thou shouldst tr...
+010B: 33   say
+010C: 1D 53 04   pushs L0453   ; wine
+010F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0113: 1D 58 04   pushs L0458   ; highcourt
+0116: 07 01 00 0B 00  cmps 0001H, 0126
+011B: 1C 62 04   addsi L0462   ; "The official the...
+011E: 33   say
+011F: 1D 3C 05   pushs L053C   ; highcourt
+0122: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0126: 1D 46 05   pushs L0546   ; prison
+0129: 07 01 00 0B 00  cmps 0001H, 0139
+012E: 1C 4D 05   addsi L054D   ; "It is located ju...
+0131: 33   say
+0132: 1D CE 05   pushs L05CE   ; prison
+0135: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0139: 1D D5 05   pushs L05D5   ; Tiery
+013C: 07 01 00 0B 00  cmps 0001H, 014C
+0141: 1C DB 05   addsi L05DB   ; "He is the undert...
+0144: 33   say
+0145: 1D 1B 06   pushs L061B   ; Tiery
+0148: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014C: 1D 21 06   pushs L0621   ; healer
+014F: 07 01 00 0F 00  cmps 0001H, 0163
+0154: 1C 28 06   addsi L0628   ; "I have yet to me...
+0157: 33   say
+0158: 1D AE 06   pushs L06AE   ; healer
+015B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015F: 13   push true
+0160: 43 3B 01   popf flag:[013B]
+0163: 1D B5 06   pushs L06B5   ; bye
+0166: 07 01 00 03 00  cmps 0001H, 016E
+016B: 06 03 00   jmp 0171
+016E: 06 D5 FE   jmp 0046
+0171: 40   db 40 ???
+0172: 1C B9 06   addsi L06B9   ; "Goodbye, 
+0175: 2F 00 00   addsv [0000]
+0178: 1C C4 06   addsi L06C4   ; . Best of luck in...
+017B: 33   say
+017C: 48   push eventid
+017D: 1F 00 00   pushi 0000H   ; 0
+0180: 22   cmpeq
+0181: 05 06 00   jne 018A
+0184: 1F 12 FF   pushi FF12H   ; -238
+0187: 24 04 00   call [0004]   ; 092EH
+018A: 25   ret

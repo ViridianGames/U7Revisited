@@ -1,0 +1,353 @@
+  .funcnumber 04F5H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Thief!'
+L0013: db 00
+L0014: db 'The friendly-looking monk signals you over to him.'
+L0046: db 00
+L0047: db '"Hello, '
+L004F: db 00
+L0050: db '."'
+L0052: db 00
+L0053: db 'give potion'
+L005E: db 00
+L005F: db 'name'
+L0063: db 00
+L0064: db 'He smiles. "My name is Kreg, '
+L0081: db 00
+L0082: db '."'
+L0084: db 00
+L0085: db 'Thief!'
+L008B: db 00
+L008C: db 'name'
+L0090: db 00
+L0091: db 'job'
+L0094: db 00
+L0095: db '"I am a monk here at the Abbey. I am working on an alchemica'
+ db 'l mixture."'
+L00DC: db 00
+L00DD: db 'Abbey'
+L00E2: db 00
+L00E3: db 'mixture'
+L00EA: db 00
+L00EB: db 'Thief!'
+L00F1: db 00
+L00F2: db '"Ah! Found me out, didst thou? 'Tis too bad... for thee!"*'
+L012C: db 00
+L012D: db 'Abbey'
+L0132: db 00
+L0133: db '"Sadly, I am so involved with my studies that I have no time'
+ db ' to visit the surrounding area or learn any new faces."'
+L01A6: db 00
+L01A7: db 'Abbey'
+L01AC: db 00
+L01AD: db 'mixture'
+L01B4: db 00
+L01B5: db '"Well, '
+L01BC: db 00
+L01BD: db ', we here at the Abbey will soon be taking a vow of silence.'
+ db ' However, it will take some time for all of us to become acc'
+ db 'ustomed to the sound of silence. Therefore, I am creating a '
+ db 'potion that enables the imbiber to become temporarily silent'
+ db '. The concept is very similar to a potion of invisibility."'
+L02E8: db 00
+L02E9: db 'invisibility'
+L02F5: db 00
+L02F6: db 'vow'
+L02F9: db 00
+L02FA: db 'mixture'
+L0301: db 00
+L0302: db 'vow'
+L0305: db 00
+L0306: db '"Well," he looks embarrassed, "after reading a book on how w'
+ db 'e compare to our predecessors, we learned that most people e'
+ db 'xpect us to take a vow of silence.~~ "So," he shrugs, "we ha'
+ db 've chosen to do so, once I can make that potion. I realize t'
+ db 'hat it sounds foolish, but I truly believe it will help us p'
+ db 'roduce more wine."'
+L0444: db 00
+L0445: db 'vow'
+L0448: db 00
+L0449: db 'wine'
+L044D: db 00
+L044E: db 'predecessors'
+L045A: db 00
+L045B: db 'predecessors'
+L0467: db 00
+L0468: db '"Surely thou knowest of what I speak? Meditation, silence, a'
+ db 'esthetics, ascetics, and so forth."'
+L04C7: db 00
+L04C8: db 'predecessors'
+L04D4: db 00
+L04D5: db 'wine'
+L04D9: db 00
+L04DA: db '"The monks' wine is renowned throughout all of Britannia, or'
+ db ' so I thought." A puzzled look fills his face.~~"Ah, well, t'
+ db 'hat is no matter. Regardless, I sincerely recommend to thee '
+ db 'to try some of our exquisite drink."'
+L05B2: db 00
+L05B3: db 'wine'
+L05B7: db 00
+L05B8: db 'invisibility'
+L05C4: db 00
+L05C5: db '"As a matter of fact, my research has reached an impasse, fo'
+ db 'r I cannot determine the nature of some critical reagents. W'
+ db 'hat I need is a potion of invisibility to analyze. Then I co'
+ db 'uld progress from there." He looks at you, hopefully. "Would'
+ db 'st thou be willing to obtain a potion for my studies? It is '
+ db 'likely that thou couldst find one easily at the mage, Nicode'
+ db 'mus'."'
+L0733: db 00
+L0734: db 'He sighs, obviously relieved. "Thank thee, '
+L075F: db 00
+L0760: db '."'
+L0762: db 00
+L0763: db '"Art thou sure? I will give thee information in return."'
+L079B: db 00
+L079C: db 'information'
+L07A7: db 00
+L07A8: db 'invisibility'
+L07B4: db 00
+L07B5: db 'information'
+L07C0: db 00
+L07C1: db '"I will tell thee about Lord British, The Fellowship, or Buc'
+ db 'caneer's Den if thou bringest me the potion of invisibility.'
+ db '"'
+L083A: db 00
+L083B: db 'information'
+L0846: db 00
+L0847: db 'give potion'
+L0852: db 00
+L0853: db 'He takes the potion from you and quickly drinks it. "Thank t'
+ db 'hee, '
+L0894: db 00
+L0895: db ', for helping in mine escape!" As he fades from view, his la'
+ db 'ughter fills your ears.*'
+L08E9: db 00
+L08EA: db '"Thou dost not have a potion to give," he says sadly. "My re'
+ db 'search will again have to wait."'
+L0946: db 00
+L0947: db 'give potion'
+L0952: db 00
+L0953: db 'bye'
+L0956: db 00
+L0957: db 'He nods farewell to you.*'
+L0970: db 00
+  .code
+  .argc 0001H
+  .localc 0008H
+  .externsize 0004H
+  .extern 0909H
+  .extern 0911H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 42 02   jne 024A
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 0B FF   pushi FF0BH   ; -245
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1F 0B FF   pushi FF0BH   ; -245
+001B: 38 1B 00 01  callis 001B, 1
+001F: 12 01 00   pop [0001]
+0022: 1D 00 00   pushs L0000   ; bye
+0025: 1D 04 00   pushs L0004   ; job
+0028: 1D 08 00   pushs L0008   ; name
+002B: 1E 03 00   arrc 0003H   ; 3
+002E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0032: 21 01 00   push [0001]
+0035: 38 3C 00 01  callis 003C, 1
+0039: 12 02 00   pop [0002]
+003C: 21 02 00   push [0002]
+003F: 1F 02 00   pushi 0002H   ; 2
+0042: 22   cmpeq
+0043: 05 0A 00   jne 0050
+0046: 1F 00 00   pushi 0000H   ; 0
+0049: 21 01 00   push [0001]
+004C: 39 1D 00 02  calli 001D, 2
+0050: 42 59 01   pushf flag:[0159]
+0053: 42 48 01   pushf flag:[0148]
+0056: 0E   and
+0057: 05 07 00   jne 0061
+005A: 1D 0D 00   pushs L000D   ; Thief!
+005D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0061: 42 48 01   pushf flag:[0148]
+0064: 10   not
+0065: 05 0B 00   jne 0073
+0068: 1C 14 00   addsi L0014   ; The friendly-look...
+006B: 33   say
+006C: 13   push true
+006D: 43 48 01   popf flag:[0148]
+0070: 06 17 00   jmp 008A
+0073: 1C 47 00   addsi L0047   ; "Hello, 
+0076: 2F 00 00   addsv [0000]
+0079: 1C 50 00   addsi L0050   ; ."
+007C: 33   say
+007D: 42 2F 01   pushf flag:[012F]
+0080: 05 07 00   jne 008A
+0083: 1D 53 00   pushs L0053   ; give potion
+0086: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008A: 04 B8 01   je 0245
+008D: 1D 5F 00   pushs L005F   ; name
+0090: 07 01 00 1E 00  cmps 0001H, 00B3
+0095: 1C 64 00   addsi L0064   ; He smiles. "My na...
+0098: 2F 00 00   addsv [0000]
+009B: 1C 82 00   addsi L0082   ; ."
+009E: 33   say
+009F: 42 59 01   pushf flag:[0159]
+00A2: 05 07 00   jne 00AC
+00A5: 1D 85 00   pushs L0085   ; Thief!
+00A8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AC: 1D 8C 00   pushs L008C   ; name
+00AF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B3: 1D 91 00   pushs L0091   ; job
+00B6: 07 01 00 11 00  cmps 0001H, 00CC
+00BB: 1C 95 00   addsi L0095   ; "I am a monk here...
+00BE: 33   say
+00BF: 1D DD 00   pushs L00DD   ; Abbey
+00C2: 1D E3 00   pushs L00E3   ; mixture
+00C5: 1E 02 00   arrc 0002H   ; 2
+00C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CC: 1D EB 00   pushs L00EB   ; Thief!
+00CF: 07 01 00 50 00  cmps 0001H, 0124
+00D4: 1C F2 00   addsi L00F2   ; "Ah! Found me out...
+00D7: 33   say
+00D8: 1F 64 00   pushi 0064H   ; 100
+00DB: 24 01 00   call [0001]   ; 0911H
+00DE: 1F 99 FE   pushi FE99H   ; -359
+00E1: 1F 99 FE   pushi FE99H   ; -359
+00E4: 1F 31 02   pushi 0231H   ; 561
+00E7: 1F 0B FF   pushi FF0BH   ; -245
+00EA: 38 28 00 04  callis 0028, 4
+00EE: 12 03 00   pop [0003]
+00F1: 21 03 00   push [0003]
+00F4: 1F 01 00   pushi 0001H   ; 1
+00F7: 17   cmpl
+00F8: 05 14 00   jne 010F
+00FB: 1F 31 02   pushi 0231H   ; 561
+00FE: 38 24 00 01  callis 0024, 1
+0102: 12 04 00   pop [0004]
+0105: 1F 0B FF   pushi FF0BH   ; -245
+0108: 38 36 00 01  callis 0036, 1
+010C: 12 05 00   pop [0005]
+010F: 1F 02 00   pushi 0002H   ; 2
+0112: 21 01 00   push [0001]
+0115: 39 3D 00 02  calli 003D, 2
+0119: 1F 00 00   pushi 0000H   ; 0
+011C: 21 01 00   push [0001]
+011F: 39 1D 00 02  calli 001D, 2
+0123: 3F   abrt
+0124: 1D 2D 01   pushs L012D   ; Abbey
+0127: 07 01 00 0B 00  cmps 0001H, 0137
+012C: 1C 33 01   addsi L0133   ; "Sadly, I am so i...
+012F: 33   say
+0130: 1D A7 01   pushs L01A7   ; Abbey
+0133: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0137: 1D AD 01   pushs L01AD   ; mixture
+013A: 07 01 00 1E 00  cmps 0001H, 015D
+013F: 1C B5 01   addsi L01B5   ; "Well, 
+0142: 2F 00 00   addsv [0000]
+0145: 1C BD 01   addsi L01BD   ; , we here at the ...
+0148: 33   say
+0149: 1D E9 02   pushs L02E9   ; invisibility
+014C: 1D F6 02   pushs L02F6   ; vow
+014F: 1E 02 00   arrc 0002H   ; 2
+0152: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0156: 1D FA 02   pushs L02FA   ; mixture
+0159: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015D: 1D 02 03   pushs L0302   ; vow
+0160: 07 01 00 18 00  cmps 0001H, 017D
+0165: 1C 06 03   addsi L0306   ; "Well," he looks ...
+0168: 33   say
+0169: 1D 45 04   pushs L0445   ; vow
+016C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0170: 1D 49 04   pushs L0449   ; wine
+0173: 1D 4E 04   pushs L044E   ; predecessors
+0176: 1E 02 00   arrc 0002H   ; 2
+0179: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017D: 1D 5B 04   pushs L045B   ; predecessors
+0180: 07 01 00 0B 00  cmps 0001H, 0190
+0185: 1C 68 04   addsi L0468   ; "Surely thou know...
+0188: 33   say
+0189: 1D C8 04   pushs L04C8   ; predecessors
+018C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0190: 1D D5 04   pushs L04D5   ; wine
+0193: 07 01 00 0B 00  cmps 0001H, 01A3
+0198: 1C DA 04   addsi L04DA   ; "The monks' wine ...
+019B: 33   say
+019C: 1D B3 05   pushs L05B3   ; wine
+019F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A3: 1D B8 05   pushs L05B8   ; invisibility
+01A6: 07 01 00 33 00  cmps 0001H, 01DE
+01AB: 1C C5 05   addsi L05C5   ; "As a matter of f...
+01AE: 33   say
+01AF: 24 02 00   call [0002]   ; 090AH
+01B2: 12 06 00   pop [0006]
+01B5: 21 06 00   push [0006]
+01B8: 05 11 00   jne 01CC
+01BB: 1C 34 07   addsi L0734   ; He sighs, obvious...
+01BE: 2F 00 00   addsv [0000]
+01C1: 1C 60 07   addsi L0760   ; ."
+01C4: 33   say
+01C5: 13   push true
+01C6: 43 2F 01   popf flag:[012F]
+01C9: 06 0B 00   jmp 01D7
+01CC: 1C 63 07   addsi L0763   ; "Art thou sure? I...
+01CF: 33   say
+01D0: 1D 9C 07   pushs L079C   ; information
+01D3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D7: 1D A8 07   pushs L07A8   ; invisibility
+01DA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DE: 1D B5 07   pushs L07B5   ; information
+01E1: 07 01 00 0F 00  cmps 0001H, 01F5
+01E6: 1C C1 07   addsi L07C1   ; "I will tell thee...
+01E9: 33   say
+01EA: 13   push true
+01EB: 43 2F 01   popf flag:[012F]
+01EE: 1D 3B 08   pushs L083B   ; information
+01F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F5: 1D 47 08   pushs L0847   ; give potion
+01F8: 07 01 00 3A 00  cmps 0001H, 0237
+01FD: 13   push true
+01FE: 1F 07 00   pushi 0007H   ; 7
+0201: 1F 99 FE   pushi FE99H   ; -359
+0204: 1F 54 01   pushi 0154H   ; 340
+0207: 1F 01 00   pushi 0001H   ; 1
+020A: 38 2B 00 05  callis 002B, 5
+020E: 12 07 00   pop [0007]
+0211: 21 07 00   push [0007]
+0214: 05 15 00   jne 022C
+0217: 1C 53 08   addsi L0853   ; He takes the poti...
+021A: 2F 00 00   addsv [0000]
+021D: 1C 95 08   addsi L0895   ; , for helping in ...
+0220: 33   say
+0221: 1F 0B FF   pushi FF0BH   ; -245
+0224: 39 3F 00 01  calli 003F, 1
+0228: 3F   abrt
+0229: 06 04 00   jmp 0230
+022C: 1C EA 08   addsi L08EA   ; "Thou dost not ha...
+022F: 33   say
+0230: 1D 47 09   pushs L0947   ; give potion
+0233: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0237: 1D 53 09   pushs L0953   ; bye
+023A: 07 01 00 03 00  cmps 0001H, 0242
+023F: 06 03 00   jmp 0245
+0242: 06 45 FE   jmp 008A
+0245: 40   db 40 ???
+0246: 1C 57 09   addsi L0957   ; He nods farewell ...
+0249: 33   say
+024A: 48   push eventid
+024B: 1F 00 00   pushi 0000H   ; 0
+024E: 22   cmpeq
+024F: 05 06 00   jne 0258
+0252: 1F 0B FF   pushi FF0BH   ; -245
+0255: 24 03 00   call [0003]   ; 092EH
+0258: 25   ret

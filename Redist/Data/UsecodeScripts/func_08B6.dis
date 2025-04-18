@@ -1,0 +1,165 @@
+  .funcnumber 08B6H
+  .data
+L0000: db '"Ah! But thou hast not the practical experience to train wit'
+ db 'h me at this time! Go and experience life and return later."'
+L0078: db 00
+L0079: db 'You gather your gold and count it, finding that you have '
+L00B2: db 00
+L00B3: db ' gold altogether.'
+L00C4: db 00
+L00C5: db '"Hmm. Thou art a little short on gold. Perhaps thou couldst '
+ db 'visit the House of Games, win some booty, then return!"'
+L0138: db 00
+L0139: db '"Thou art already as talented as I! Thou hast no need of my '
+ db 'services!"'
+L017F: db 00
+L0180: db 'You pay '
+L0188: db 00
+L0189: db ' gold, and the training session begins.'
+L01B0: db 00
+L01B1: db 'Lucky produces a deck of cards, three sea shells and a rock,'
+ db ' and a pair of dice. In turn, the pirate takes each item and'
+ db ' begins to show various methods of utilizing them. He shows '
+ db 'how to deal cards from the bottom of the deck, and how to do'
+ db ' a false shuffle. With the shells and rock, he shows lightni'
+ db 'ng-fast maneuvers which hide the rock under one of the shell'
+ db 's, the one it couldn't possibly be under. Finally, he shows '
+ db 'how to use saliva to weight the dice so that they always tur'
+ db 'n up lucky.'
+L039C: db 00
+L039D: db 'happily hands you back your Ankh, which had '
+L03C9: db 00
+L03CA: db 'managed to slip from around your neck during '
+L03F7: db 00
+L03F8: db 'the session.'
+L0404: db 00
+L0405: db 'happily holds out his hand to shake yours, '
+L0430: db 00
+L0431: db 'but pulls it away quickly when you proceed '
+L045C: db 00
+L045D: db 'to do so.'
+L0466: db 00
+L0467: db 'When the training session is over, Lucky '
+L0490: db 00
+L0491: db 00
+L0492: db ' '
+L0493: db 00
+L0494: db 00
+  .code
+  .argc 0002H
+  .localc 000AH
+  .externsize 0005H
+  .extern 0920H
+  .extern 0922H
+  .extern 0931H
+  .extern 0910H
+  .extern 0916H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 22   cmpeq
+000D: 05 03 00   jne 0013
+0010: 06 15 01   jmp 0128
+0013: 1F 01 00   pushi 0001H   ; 1
+0016: 12 03 00   pop [0003]
+0019: 21 03 00   push [0003]
+001C: 21 02 00   push [0002]
+001F: 21 00 00   push [0000]
+0022: 21 01 00   push [0001]
+0025: 24 01 00   call [0001]   ; 0922H
+0028: 12 04 00   pop [0004]
+002B: 21 04 00   push [0004]
+002E: 1F 00 00   pushi 0000H   ; 0
+0031: 22   cmpeq
+0032: 05 07 00   jne 003C
+0035: 1C 00 00   addsi L0000   ; "Ah! But thou has...
+0038: 33   say
+0039: 06 EC 00   jmp 0128
+003C: 21 04 00   push [0004]
+003F: 1F 01 00   pushi 0001H   ; 1
+0042: 22   cmpeq
+0043: 05 2E 00   jne 0074
+0046: 1F 99 FE   pushi FE99H   ; -359
+0049: 1F 99 FE   pushi FE99H   ; -359
+004C: 1F 84 02   pushi 0284H   ; 644
+004F: 1F 9B FE   pushi FE9BH   ; -357
+0052: 38 28 00 04  callis 0028, 4
+0056: 12 05 00   pop [0005]
+0059: 1C 79 00   addsi L0079   ; You gather your g...
+005C: 2F 05 00   addsv [0005]
+005F: 1C B3 00   addsi L00B3   ;  gold altogether.
+0062: 33   say
+0063: 21 05 00   push [0005]
+0066: 21 00 00   push [0000]
+0069: 17   cmpl
+006A: 05 07 00   jne 0074
+006D: 1C C5 00   addsi L00C5   ; "Hmm. Thou art a ...
+0070: 33   say
+0071: 06 B4 00   jmp 0128
+0074: 21 04 00   push [0004]
+0077: 1F 02 00   pushi 0002H   ; 2
+007A: 22   cmpeq
+007B: 05 07 00   jne 0085
+007E: 1C 39 01   addsi L0139   ; "Thou art already...
+0081: 33   say
+0082: 06 A3 00   jmp 0128
+0085: 13   push true
+0086: 1F 99 FE   pushi FE99H   ; -359
+0089: 1F 99 FE   pushi FE99H   ; -359
+008C: 1F 84 02   pushi 0284H   ; 644
+008F: 21 00 00   push [0000]
+0092: 38 2B 00 05  callis 002B, 5
+0096: 12 06 00   pop [0006]
+0099: 1C 80 01   addsi L0180   ; You pay 
+009C: 2F 00 00   addsv [0000]
+009F: 1C 89 01   addsi L0189   ;  gold, and the tr...
+00A2: 33   say
+00A3: 1C B1 01   addsi L01B1   ; Lucky produces a ...
+00A6: 33   say
+00A7: 21 02 00   push [0002]
+00AA: 1F 9C FE   pushi FE9CH   ; -356
+00AD: 22   cmpeq
+00AE: 05 58 00   jne 0109
+00B1: 1F 00 00   pushi 0000H   ; 0
+00B4: 1F 99 FE   pushi FE99H   ; -359
+00B7: 1F BB 03   pushi 03BBH   ; 955
+00BA: 1F 01 00   pushi 0001H   ; 1
+00BD: 1F 9B FE   pushi FE9BH   ; -357
+00C0: 24 02 00   call [0002]   ; 0931H
+00C3: 12 07 00   pop [0007]
+00C6: 21 07 00   push [0007]
+00C9: 05 15 00   jne 00E1
+00CC: 1D 9D 03   pushs L039D   ; happily hands you...
+00CF: 12 08 00   pop [0008]
+00D2: 1D CA 03   pushs L03CA   ; managed to slip f...
+00D5: 12 09 00   pop [0009]
+00D8: 1D F8 03   pushs L03F8   ; the session.
+00DB: 12 0A 00   pop [000A]
+00DE: 06 12 00   jmp 00F3
+00E1: 1D 05 04   pushs L0405   ; happily holds out...
+00E4: 12 08 00   pop [0008]
+00E7: 1D 31 04   pushs L0431   ; but pulls it away...
+00EA: 12 09 00   pop [0009]
+00ED: 1D 5D 04   pushs L045D   ; to do so.
+00F0: 12 0A 00   pop [000A]
+00F3: 1C 67 04   addsi L0467   ; When the training...
+00F6: 2F 08 00   addsv [0008]
+00F9: 1C 91 04   addsi L0491   ; 
+00FC: 2F 09 00   addsv [0009]
+00FF: 1C 92 04   addsi L0492   ;  
+0102: 2F 0A 00   addsv [000A]
+0105: 1C 94 04   addsi L0494   ; 
+0108: 33   say
+0109: 1F 02 00   pushi 0002H   ; 2
+010C: 21 02 00   push [0002]
+010F: 24 03 00   call [0003]   ; 0910H
+0112: 12 0B 00   pop [000B]
+0115: 21 0B 00   push [000B]
+0118: 1F 1E 00   pushi 001EH   ; 30
+011B: 17   cmpl
+011C: 05 09 00   jne 0128
+011F: 1F 01 00   pushi 0001H   ; 1
+0122: 21 02 00   push [0002]
+0125: 24 04 00   call [0004]   ; 0916H
+0128: 25   ret

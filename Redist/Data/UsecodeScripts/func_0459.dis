@@ -1,0 +1,361 @@
+  .funcnumber 0459H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'brother'
+L0014: db 00
+L0015: db 'You see a mountain man who appears to have been in the wilde'
+ db 'rness a long time. He gives you a long look, then he snorts '
+ db 'and looks away.'
+L009C: db 00
+L009D: db '"What dost thou want? Leave me alone!"'
+L00C3: db 00
+L00C4: db 'name'
+L00C8: db 00
+L00C9: db '"I am not in the habit of speakin' to strangers but seein' a'
+ db 's how thou dost not appear to be very intelligent, I shall h'
+ db 'umor thee for now. My name is Karl, formerly of Minoc."'
+L0178: db 00
+L0179: db 'brother'
+L0180: db 00
+L0181: db 'name'
+L0185: db 00
+L0186: db 'Minoc'
+L018B: db 00
+L018C: db 'job'
+L018F: db 00
+L0190: db '"Job?! Art thou mad, '
+L01A5: db 00
+L01A6: db '?! Firstly, if thou dost wish to offer me employment I have '
+ db 'no interest in it. Secondly, if thou dost wish to hire my se'
+ db 'rvices for anything for any reason, then I reject thine offe'
+ db 'r most enthusiastically. Thirdly, if thou dost wonder what m'
+ db 'y job is, then wonder no more for I have not one. Fourth and'
+ db ' lastly, if thou dost wonder why I have no job then stop it '
+ db 'right now because it is none of thy business!"*'
+L033D: db 00
+L033E: db 'Minoc'
+L0343: db 00
+L0344: db '"Do not ask me of Minoc, the filthy little town of Fellowshi'
+ db 'p fools, casual murders and monuments to incompetence. I do '
+ db 'not even live here and I would not if thou didst pay me!"'
+L03F5: db 00
+L03F6: db 'Minoc'
+L03FB: db 00
+L03FC: db 'Fellowship'
+L0406: db 00
+L0407: db 'monument'
+L040F: db 00
+L0410: db 'murders'
+L0417: db 00
+L0418: db 'murders'
+L041F: db 00
+L0420: db '"Hmmph. Why should that be any concern of mine? People kill '
+ db 'each other every day. Oh, thou art investigating the crime! '
+ db 'Well, do not let me keep thee from it. After thou dost catch'
+ db ' the murderer thou canst build a statue of him."'
+L0504: db 00
+L0505: db 'murders'
+L050C: db 00
+L050D: db 'Fellowship'
+L0517: db 00
+L0518: db '"Gads! Thou dost want me to join! Away from me, thou dolt!"*'
+L0554: db 00
+L0555: db '"Do I look like a member of The Fellowship to thee? I do not'
+ db ' even know what The Fellowship is! And I do not care!"*'
+L05C8: db 00
+L05C9: db 'monument'
+L05D1: db 00
+L05D2: db '"Owen, the shipwright, dost deserve to have a monument built'
+ db ' to him. It should be in the shape of a gallows and it shoul'
+ db 'd have him hanging from it."*'
+L0667: db 00
+L0668: db 'brother'
+L066F: db 00
+L0670: db '"My brother - mine only family in the world - served aboard '
+ db 'a ship built by Owen. The ship was one of several that sank '
+ db 'three years ago during the first storm it ever encountered. '
+ db 'My brother went down with it and was never seen again."'
+L075B: db 00
+L075C: db 'brother'
+L0763: db 00
+L0764: db 'several ships'
+L0771: db 00
+L0772: db 'Owen'
+L0776: db 00
+L0777: db 'Owen'
+L077B: db 00
+L077C: db '"I confronted Owen with this and he denied that it had anyth'
+ db 'ing to do with his workmanship. I returned that night and st'
+ db 'ole the plans he had drafted, so at least no other ships wou'
+ db 'ld ever be built like them again. But it left me so angry at'
+ db ' the world that I knew I could not live among people ever ag'
+ db 'ain. I went away to live up in the mountains. The only times'
+ db ' I ever come back are to fetch a few supplies and maybe have'
+ db ' a drink of Rutherford's fine ale once in a while."'
+L0953: db 00
+L0954: db 'Owen'
+L0958: db 00
+L0959: db 'fine ale'
+L0961: db 00
+L0962: db 'plans'
+L0967: db 00
+L0968: db 'several ships'
+L0975: db 00
+L0976: db '"Three other ships that were built from Owen's basic designs'
+ db ' all sunk within the first year of their launch. Over a doze'
+ db 'n lives were lost due to that vainglorious bastard!"'
+L0A22: db 00
+L0A23: db 'several ships'
+L0A30: db 00
+L0A31: db 'fine ale'
+L0A39: db 00
+L0A3A: db '"If not for Rutherford's fine ale, there would no purpose to'
+ db ' the existence of civilization."'
+L0A96: db 00
+L0A97: db 'fine ale'
+L0A9F: db 00
+L0AA0: db 'plans'
+L0AA5: db 00
+L0AA6: db '"I still have those plans up in my cabin. Every once in a wh'
+ db 'ile I try to figure them out. I suspect no one in town, save'
+ db ' for Owen himself, could understand them. Maybe Julia, the t'
+ db 'inker, would be able to shed some light on them. But she wou'
+ db 'ld never listen to an old mountain man like me."'
+L0BC6: db 00
+L0BC7: db '"Yes I would, Karl! Thou dost have too low opinion of thysel'
+ db 'f! Raise thy spirits, please!"'
+L0C21: db 00
+L0C22: db 'plans'
+L0C27: db 00
+L0C28: db 'mountain man'
+L0C34: db 00
+L0C35: db 'Julia'
+L0C3A: db 00
+L0C3B: db 'mountain man'
+L0C47: db 00
+L0C48: db '"Far away from the mire of present day society is where I be'
+ db 'long. In the wilderness thou canst know what is what."'
+L0CBA: db 00
+L0CBB: db 'mountain man'
+L0CC7: db 00
+L0CC8: db 'Julia'
+L0CCD: db 00
+L0CCE: db '"If thou dost want to show Julia the plans, I will give them'
+ db ' to thee. They are in my cabin southeast of the BMC office."'
+L0D46: db 00
+L0D47: db 'Julia'
+L0D4C: db 00
+L0D4D: db 'follow'
+L0D53: db 00
+L0D54: db '"Make up thy mind! Art thou following me or not?! If thou ar'
+ db 't following me then close thy mouth, move thy feet and let u'
+ db 's get on."'
+L0DD6: db 00
+L0DD7: db 'bye'
+L0DDA: db 00
+L0DDB: db '"I know I can be a bear to get along with sometimes. I recko'
+ db 'n it is just my nature to be an ornery bastard. But I do app'
+ db 'reciate what few friends I have and I know that thou hast be'
+ db 'en one to me. Take good care of thyself, Avatar."*'
+L0EC1: db 00
+L0EC2: db '"Cease thy racket then before I lose my temper!"*'
+L0EF3: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F A7 FF   pushi FFA7H   ; -89
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 14   push false
+001A: 12 01 00   pop [0001]
+001D: 38 67 00 00  callis 0067, 0
+0021: 12 02 00   pop [0002]
+0024: 1D 00 00   pushs L0000   ; bye
+0027: 1D 04 00   pushs L0004   ; job
+002A: 1D 08 00   pushs L0008   ; name
+002D: 1E 03 00   arrc 0003H   ; 3
+0030: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0034: 42 24 01   pushf flag:[0124]
+0037: 05 14 00   jne 004E
+003A: 42 F8 00   pushf flag:[00F8]
+003D: 05 0E 00   jne 004E
+0040: 1D 0D 00   pushs L000D   ; brother
+0043: 1E 01 00   arrc 0001H   ; 1
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 13   push true
+004B: 12 01 00   pop [0001]
+004E: 42 14 01   pushf flag:[0114]
+0051: 10   not
+0052: 05 0B 00   jne 0060
+0055: 1C 15 00   addsi L0015   ; You see a mountai...
+0058: 33   say
+0059: 13   push true
+005A: 43 14 01   popf flag:[0114]
+005D: 06 04 00   jmp 0064
+0060: 1C 9D 00   addsi L009D   ; "What dost thou w...
+0063: 33   say
+0064: 04 A3 01   je 020A
+0067: 1D C4 00   pushs L00C4   ; name
+006A: 07 01 00 2D 00  cmps 0001H, 009C
+006F: 1C C9 00   addsi L00C9   ; "I am not in the ...
+0072: 33   say
+0073: 13   push true
+0074: 43 24 01   popf flag:[0124]
+0077: 42 F8 00   pushf flag:[00F8]
+007A: 05 11 00   jne 008E
+007D: 21 01 00   push [0001]
+0080: 10   not
+0081: 05 0A 00   jne 008E
+0084: 1D 79 01   pushs L0179   ; brother
+0087: 1E 01 00   arrc 0001H   ; 1
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 1D 81 01   pushs L0181   ; name
+0091: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0095: 1D 86 01   pushs L0186   ; Minoc
+0098: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009C: 1D 8C 01   pushs L018C   ; job
+009F: 07 01 00 0B 00  cmps 0001H, 00AF
+00A4: 1C 90 01   addsi L0190   ; "Job?! Art thou m...
+00A7: 2F 00 00   addsv [0000]
+00AA: 1C A6 01   addsi L01A6   ; ?! Firstly, if th...
+00AD: 33   say
+00AE: 3F   abrt
+00AF: 1D 3E 03   pushs L033E   ; Minoc
+00B2: 07 01 00 1B 00  cmps 0001H, 00D2
+00B7: 1C 44 03   addsi L0344   ; "Do not ask me of...
+00BA: 33   say
+00BB: 1D F6 03   pushs L03F6   ; Minoc
+00BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C2: 1D FC 03   pushs L03FC   ; Fellowship
+00C5: 1D 07 04   pushs L0407   ; monument
+00C8: 1D 10 04   pushs L0410   ; murders
+00CB: 1E 03 00   arrc 0003H   ; 3
+00CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D2: 1D 18 04   pushs L0418   ; murders
+00D5: 07 01 00 0B 00  cmps 0001H, 00E5
+00DA: 1C 20 04   addsi L0420   ; "Hmmph. Why shoul...
+00DD: 33   say
+00DE: 1D 05 05   pushs L0505   ; murders
+00E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E5: 1D 0D 05   pushs L050D   ; Fellowship
+00E8: 07 01 00 13 00  cmps 0001H, 0100
+00ED: 21 02 00   push [0002]
+00F0: 05 08 00   jne 00FB
+00F3: 1C 18 05   addsi L0518   ; "Gads! Thou dost ...
+00F6: 33   say
+00F7: 3F   abrt
+00F8: 06 05 00   jmp 0100
+00FB: 1C 55 05   addsi L0555   ; "Do I look like a...
+00FE: 33   say
+00FF: 3F   abrt
+0100: 1D C9 05   pushs L05C9   ; monument
+0103: 07 01 00 05 00  cmps 0001H, 010D
+0108: 1C D2 05   addsi L05D2   ; "Owen, the shipwr...
+010B: 33   say
+010C: 3F   abrt
+010D: 1D 68 06   pushs L0668   ; brother
+0110: 07 01 00 18 00  cmps 0001H, 012D
+0115: 1C 70 06   addsi L0670   ; "My brother - min...
+0118: 33   say
+0119: 1D 5C 07   pushs L075C   ; brother
+011C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0120: 1D 64 07   pushs L0764   ; several ships
+0123: 1D 72 07   pushs L0772   ; Owen
+0126: 1E 02 00   arrc 0002H   ; 2
+0129: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012D: 1D 77 07   pushs L0777   ; Owen
+0130: 07 01 00 18 00  cmps 0001H, 014D
+0135: 1C 7C 07   addsi L077C   ; "I confronted Owe...
+0138: 33   say
+0139: 1D 54 09   pushs L0954   ; Owen
+013C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0140: 1D 59 09   pushs L0959   ; fine ale
+0143: 1D 62 09   pushs L0962   ; plans
+0146: 1E 02 00   arrc 0002H   ; 2
+0149: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014D: 1D 68 09   pushs L0968   ; several ships
+0150: 07 01 00 0B 00  cmps 0001H, 0160
+0155: 1C 76 09   addsi L0976   ; "Three other ship...
+0158: 33   say
+0159: 1D 23 0A   pushs L0A23   ; several ships
+015C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0160: 1D 31 0A   pushs L0A31   ; fine ale
+0163: 07 01 00 0B 00  cmps 0001H, 0173
+0168: 1C 3A 0A   addsi L0A3A   ; "If not for Ruthe...
+016B: 33   say
+016C: 1D 97 0A   pushs L0A97   ; fine ale
+016F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0173: 1D A0 0A   pushs L0AA0   ; plans
+0176: 07 01 00 4A 00  cmps 0001H, 01C5
+017B: 1C A6 0A   addsi L0AA6   ; "I still have tho...
+017E: 33   say
+017F: 1F F8 FF   pushi FFF8H   ; -8
+0182: 24 01 00   call [0001]   ; 08F7H
+0185: 12 03 00   pop [0003]
+0188: 21 03 00   push [0003]
+018B: 05 1F 00   jne 01AD
+018E: 1F 00 00   pushi 0000H   ; 0
+0191: 1F F8 FF   pushi FFF8H   ; -8
+0194: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0198: 1C C7 0B   addsi L0BC7   ; "Yes I would, Kar...
+019B: 33   say
+019C: 1F F8 FF   pushi FFF8H   ; -8
+019F: 39 04 00 01  calli _HideNPC@1  ; 0004
+01A3: 1F 00 00   pushi 0000H   ; 0
+01A6: 1F A7 FF   pushi FFA7H   ; -89
+01A9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01AD: 13   push true
+01AE: 43 0B 01   popf flag:[010B]
+01B1: 1D 22 0C   pushs L0C22   ; plans
+01B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B8: 1D 28 0C   pushs L0C28   ; mountain man
+01BB: 1D 35 0C   pushs L0C35   ; Julia
+01BE: 1E 02 00   arrc 0002H   ; 2
+01C1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C5: 1D 3B 0C   pushs L0C3B   ; mountain man
+01C8: 07 01 00 0B 00  cmps 0001H, 01D8
+01CD: 1C 48 0C   addsi L0C48   ; "Far away from th...
+01D0: 33   say
+01D1: 1D BB 0C   pushs L0CBB   ; mountain man
+01D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D8: 1D C8 0C   pushs L0CC8   ; Julia
+01DB: 07 01 00 0F 00  cmps 0001H, 01EF
+01E0: 1C CE 0C   addsi L0CCE   ; "If thou dost wan...
+01E3: 33   say
+01E4: 13   push true
+01E5: 43 20 01   popf flag:[0120]
+01E8: 1D 47 0D   pushs L0D47   ; Julia
+01EB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EF: 1D 4D 0D   pushs L0D4D   ; follow
+01F2: 07 01 00 05 00  cmps 0001H, 01FC
+01F7: 1C 54 0D   addsi L0D54   ; "Make up thy mind...
+01FA: 33   say
+01FB: 3F   abrt
+01FC: 1D D7 0D   pushs L0DD7   ; bye
+01FF: 07 01 00 03 00  cmps 0001H, 0207
+0204: 06 03 00   jmp 020A
+0207: 06 5A FE   jmp 0064
+020A: 40   db 40 ???
+020B: 42 F7 00   pushf flag:[00F7]
+020E: 05 07 00   jne 0218
+0211: 1C DB 0D   addsi L0DDB   ; "I know I can be ...
+0214: 33   say
+0215: 06 04 00   jmp 021C
+0218: 1C C2 0E   addsi L0EC2   ; "Cease thy racket...
+021B: 33   say
+021C: 25   ret

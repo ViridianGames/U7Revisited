@@ -1,0 +1,87 @@
+  .funcnumber 08D6H
+  .data
+L0000: db '"Where, oh where has my dear husband gone. I cannot stand to'
+ db ' be away from him!"*'
+L0050: db 00
+L0051: db 'As far as you can tell, the couple haven't released their em'
+ db 'brace since they were first reunited, and they show no sign '
+ db 'of doing so at any time in the near future.'
+L00F4: db 00
+L00F5: db 'bye'
+L00F8: db 00
+L00F9: db 'sacrifice'
+L0102: db 00
+L0103: db 'sacrifice'
+L010C: db 00
+L010D: db '"No, '
+L0112: db 00
+L0113: db '. She is my life. If thou takest her, thou takest mine heart'
+ db '." Trent holds on tightly to his wife.'
+L0175: db 00
+L0176: db '"I cannot leave my lord like this. Surely thou canst underst'
+ db 'and, '
+L01B7: db 00
+L01B8: db '."'
+L01BA: db 00
+L01BB: db 'bye'
+L01BE: db 00
+L01BF: db 'The couple continue staring into one another's eyes as if to'
+ db ' make up for all of the years they lost.*'
+L0224: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 24 00 00   call [0000]   ; 0909H
+0003: 12 00 00   pop [0000]
+0006: 1F 72 FF   pushi FF72H   ; -142
+0009: 24 01 00   call [0001]   ; 08F7H
+000C: 12 01 00   pop [0001]
+000F: 21 01 00   push [0001]
+0012: 10   not
+0013: 05 08 00   jne 001E
+0016: 1C 00 00   addsi L0000   ; "Where, oh where ...
+0019: 33   say
+001A: 3F   abrt
+001B: 06 6B 00   jmp 0089
+001E: 1C 51 00   addsi L0051   ; As far as you can...
+0021: 33   say
+0022: 1D F5 00   pushs L00F5   ; bye
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 04 5C 00   je 0088
+002C: 1D F9 00   pushs L00F9   ; sacrifice
+002F: 07 01 00 44 00  cmps 0001H, 0078
+0034: 1D 03 01   pushs L0103   ; sacrifice
+0037: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+003B: 42 9D 01   pushf flag:[019D]
+003E: 10   not
+003F: 05 2C 00   jne 006E
+0042: 1F 01 00   pushi 0001H   ; 1
+0045: 1F 72 FF   pushi FF72H   ; -142
+0048: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+004C: 1C 0D 01   addsi L010D   ; "No, 
+004F: 2F 00 00   addsv [0000]
+0052: 1C 13 01   addsi L0113   ; . She is my life....
+0055: 33   say
+0056: 13   push true
+0057: 43 9D 01   popf flag:[019D]
+005A: 1F 72 FF   pushi FF72H   ; -142
+005D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0061: 1F 01 00   pushi 0001H   ; 1
+0064: 1F 70 FF   pushi FF70H   ; -144
+0067: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+006B: 06 0A 00   jmp 0078
+006E: 1C 76 01   addsi L0176   ; "I cannot leave m...
+0071: 2F 00 00   addsv [0000]
+0074: 1C B8 01   addsi L01B8   ; ."
+0077: 33   say
+0078: 1D BB 01   pushs L01BB   ; bye
+007B: 07 01 00 05 00  cmps 0001H, 0085
+0080: 1C BF 01   addsi L01BF   ; The couple contin...
+0083: 33   say
+0084: 3F   abrt
+0085: 06 A1 FF   jmp 0029
+0088: 40   db 40 ???
+0089: 25   ret

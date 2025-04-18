@@ -1,0 +1,550 @@
+  .funcnumber 044BH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Yew'
+L0010: db 00
+L0011: db 'Nadia'
+L0016: db 00
+L0017: db 'Julius'
+L001D: db 00
+L001E: db 'Ariana'
+L0024: db 00
+L0025: db 'News of your father'
+L0038: db 00
+L0039: db 'kiss'
+L003D: db 00
+L003E: db 'This is an attractive young woman who seems sad.'
+L006E: db 00
+L006F: db 'Emotion immediately grips your heart to see such a beautiful'
+ db ' young woman seem so sad.'
+L00C4: db 00
+L00C5: db 'She looks up as you introduce yourself.'
+L00EC: db 00
+L00ED: db '"Hello again, '
+L00FB: db 00
+L00FC: db '!" Nastassia says.'
+L010E: db 00
+L010F: db 'name'
+L0113: db 00
+L0114: db '"I am Nastassia."'
+L0125: db 00
+L0126: db 'name'
+L012A: db 00
+L012B: db 'job'
+L012E: db 00
+L012F: db 'She thinks a moment. "I suppose my job is to keep the Shrine'
+ db ' of Compassion pristine, though it is not an official positi'
+ db 'on."'
+L01AB: db 00
+L01AC: db 'Shrine'
+L01B2: db 00
+L01B3: db 'Shrine'
+L01B9: db 00
+L01BA: db '"The Shrine of Compassion has been here for many generations'
+ db ', as have all the shrines in Britannia. My great-great-grand'
+ db 'mother Ariana made a request in her will that her family lin'
+ db 'e take care of this particular shrine."'
+L0295: db 00
+L0296: db 'take care'
+L029F: db 00
+L02A0: db 'all shrines'
+L02AB: db 00
+L02AC: db 'Shrine'
+L02B2: db 00
+L02B3: db 'all shrines'
+L02BE: db 00
+L02BF: db '"Many of the shrines have fallen into disuse or have been ov'
+ db 'ergrown to the point of being lost. It is sad."'
+L032A: db 00
+L032B: db 'all shrines'
+L0336: db 00
+L0337: db 'take care'
+L0340: db 00
+L0341: db '"I am afraid that thou mightest find the other shrines in po'
+ db 'or condition. I keep this one... well, nice. And I do it not'
+ db ' only to keep alive my great-great-grandmother's tradition, '
+ db 'but... for other reasons, too."'
+L0414: db 00
+L0415: db 'take care'
+L041E: db 00
+L041F: db 'reasons'
+L0426: db 00
+L0427: db 'tradition'
+L0430: db 00
+L0431: db 'tradition'
+L043A: db 00
+L043B: db '"Some people may think it odd that a young person would clin'
+ db 'g to the old ways so. But it is something that gives me grea'
+ db 't comfort. It gives me the feeling that there is something i'
+ db 'n this world that I belong to."'
+L050E: db 00
+L050F: db 'tradition'
+L0518: db 00
+L0519: db 'reasons'
+L0520: db 00
+L0521: db '"I... I'd rather not say. Please do not ask."'
+L054E: db 00
+L054F: db '"Thou dost know the reasons."'
+L056C: db 00
+L056D: db 'reasons'
+L0574: db 00
+L0575: db 'Ariana'
+L057B: db 00
+L057C: db 'she'
+L057F: db 00
+L0580: db 'he'
+L0582: db 00
+L0583: db '"Yes, she was my great-great-grandmother. I understand that '
+ db 'she actually met the Avatar and '
+L05DF: db 00
+L05E0: db ' made a profound impact on her life.~~"It is odd, but thou d'
+ db 'ost resemble the portraits I have seen of the Avatar."'
+L0652: db 00
+L0653: db 'Ariana'
+L0659: db 00
+L065A: db 'I am the Avatar'
+L0669: db 00
+L066A: db 'Julius'
+L0670: db 00
+L0671: db '"Thou dost know of my father? I suppose the townsfolk have b'
+ db 'een talking again. I wish I had known him. There is somethin'
+ db 'g within me that yearns for some news of him. Anything at al'
+ db 'l."'
+L0728: db 00
+L0729: db 'Julius'
+L072F: db 00
+L0730: db 'Nadia'
+L0735: db 00
+L0736: db '"My mother. She died horribly, and by her own hand. That is '
+ db 'the true reason I pay homage to this Shrine. I hope someday '
+ db 'to provide her with the means to rest in peace."'
+L07DE: db 00
+L07DF: db 'Nadia'
+L07E4: db 00
+L07E5: db 'Yew'
+L07E8: db 00
+L07E9: db '"My father died in the Great Forest there. Some wild animal '
+ db 'or something killed him. Art thou perhaps travelling to Yew?'
+ db '"'
+L0862: db 00
+L0863: db '"Oh, '
+L0868: db 00
+L0869: db ', I do wish thou wouldst try to find out something about my '
+ db 'father. How did he die? What happened? Please! Wilt thou sea'
+ db 'rch for the truth and come back and tell me?"'
+L090E: db 00
+L090F: db '"Bless thee! I shall be waiting here for thee."'
+L093E: db 00
+L093F: db '"I know we have a strong kinship now. We shall be like siste'
+ db 'rs."'
+L097F: db 00
+L0980: db 'Unexpectedly, Nastassia pulls your head down to hers and kis'
+ db 'ses you on the mouth.'
+L09D1: db 00
+L09D2: db 'kiss'
+L09D6: db 00
+L09D7: db 'Nastassia turns away and looks as if she might cry. "Very we'
+ db 'll. Please leave me alone."*'
+L0A2F: db 00
+L0A30: db '"No? Well, let me know if thou art in the future. Perhaps th'
+ db 'ou couldst help me."'
+L0A80: db 00
+L0A81: db 'Yew'
+L0A84: db 00
+L0A85: db 'kiss'
+L0A89: db 00
+L0A8A: db 'You kiss Nastassia and she moans.'
+L0AAB: db 00
+L0AAC: db 'The two of you rush into each other's arms and your mouths m'
+ db 'eet. You had forgotten how good her lips felt against yours.'
+L0B24: db 00
+L0B25: db 'You kiss Nastassia's lovely mouth again. She responds.~~"No '
+ db 'man hath done that as well as thee."~~ She looks at you with'
+ db ' wide eyes.~~"Do it again, milord."'
+L0BC0: db 00
+L0BC1: db 'kiss'
+L0BC5: db 00
+L0BC6: db 'kiss again'
+L0BD0: db 00
+L0BD1: db 'kiss again'
+L0BDB: db 00
+L0BDC: db 'You kiss Nastassia yet again. This time your bodies press to'
+ db 'gether tightly, and you know this promises to be more than a'
+ db ' fleeting fling with some tavern wench.'
+L0C7B: db 00
+L0C7C: db 'You kiss Nastassia and she moans.'
+L0C9D: db 00
+L0C9E: db 'I am the Avatar'
+L0CAD: db 00
+L0CAE: db 'Nastassia studies your features.~~"Somehow I knew it. It hat'
+ db 'h been said that thou wouldst return."'
+L0D10: db 00
+L0D11: db 'I am the Avatar'
+L0D20: db 00
+L0D21: db 'News of your father'
+L0D34: db 00
+L0D35: db 'You tell Nastassia what you learned from Trellek. She closes'
+ db ' her eyes and it seems a great weight has lifted from her sh'
+ db 'oulders.~~The woman raises her arms to the sky and cries out'
+ db ', "Didst thou hear that, mother? Thine husband was only tryi'
+ db 'ng to provide for his family! And he died... a hero! He was '
+ db 'not a vagabond! Dost thou hear? Thou canst rest thy tortured'
+ db ' soul now. Please, mother, forgive him. Do so, so that I can'
+ db ' now forgive thee."~~She wipes the tears from her face and l'
+ db 'ooks at you.'
+L0F21: db 00
+L0F22: db '"I thank thee, '
+L0F31: db 00
+L0F32: db '. Thou hast made me very happy. I shall always remember thee'
+ db '."'
+L0F70: db 00
+L0F71: db 'She kisses you once lightly. "Thank thee, '
+L0F9B: db 00
+L0F9C: db '. Thou hast made me very happy. Shouldst thou become weary o'
+ db 'f adventuring, I shall be waiting here for thee. Thou art we'
+ db 'lcome to live and share thy life with me. Go now. Finish the'
+ db ' job thou must needs do. But keep me in thy thoughts."'
+L1086: db 00
+L1087: db 'News of your father'
+L109A: db 00
+L109B: db 'bye'
+L109E: db 00
+L109F: db '"Goodbye." She kisses you again, and then turns so that she '
+ db 'will not see you leave.*'
+L10F3: db 00
+L10F4: db '"Goodbye, '
+L10FE: db 00
+L10FF: db '."*'
+L1102: db 00
+L1103: db '"Goodbye, '
+L110D: db 00
+L110E: db '."*'
+L1111: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0003H
+  .extern 0908H
+  .extern 090AH
+  .extern 0911H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 48   push eventid
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 22   cmpeq
+000E: 05 1F 00   jne 0030
+0011: 44 21   pushw 1F21H   ; 7969
+0013: 1F 4B 04   pushi 044BH   ; 1099
+0016: 44 55   pushw 4455H   ; 17493
+0018: 44 01   pushw 1F01H   ; 7937
+001A: 1F 01 00   pushi 0001H   ; 1
+001D: 1F 1A 00   pushi 001AH   ; 26
+0020: 44 54   pushw 4454H   ; 17492
+0022: 44 23   pushw 1E23H   ; 7715
+0024: 1E 08 00   arrc 0008H   ; 8
+0027: 3E   push itemref
+0028: 38 01 00 02  callis 0001, 2
+002C: 12 00 00   pop [0000]
+002F: 2C   db 2c ???
+0030: 1F 00 00   pushi 0000H   ; 0
+0033: 1F B5 FF   pushi FFB5H   ; -75
+0036: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+003A: 14   push false
+003B: 12 01 00   pop [0001]
+003E: 14   push false
+003F: 12 02 00   pop [0002]
+0042: 14   push false
+0043: 12 03 00   pop [0003]
+0046: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+004A: 12 04 00   pop [0004]
+004D: 24 00 00   call [0000]   ; 0908H
+0050: 12 05 00   pop [0005]
+0053: 1D 00 00   pushs L0000   ; bye
+0056: 1D 04 00   pushs L0004   ; job
+0059: 1D 08 00   pushs L0008   ; name
+005C: 1E 03 00   arrc 0003H   ; 3
+005F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0063: 42 E0 00   pushf flag:[00E0]
+0066: 05 1A 00   jne 0083
+0069: 42 E2 00   pushf flag:[00E2]
+006C: 10   not
+006D: 05 13 00   jne 0083
+0070: 1D 0D 00   pushs L000D   ; Yew
+0073: 1D 11 00   pushs L0011   ; Nadia
+0076: 1D 17 00   pushs L0017   ; Julius
+0079: 1D 1E 00   pushs L001E   ; Ariana
+007C: 1E 04 00   arrc 0004H   ; 4
+007F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0083: 42 29 01   pushf flag:[0129]
+0086: 05 07 00   jne 0090
+0089: 1D 25 00   pushs L0025   ; News of your father
+008C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0090: 21 04 00   push [0004]
+0093: 10   not
+0094: 05 0D 00   jne 00A4
+0097: 42 E6 00   pushf flag:[00E6]
+009A: 05 07 00   jne 00A4
+009D: 1D 39 00   pushs L0039   ; kiss
+00A0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A4: 42 E8 00   pushf flag:[00E8]
+00A7: 10   not
+00A8: 05 1C 00   jne 00C7
+00AB: 21 04 00   push [0004]
+00AE: 05 07 00   jne 00B8
+00B1: 1C 3E 00   addsi L003E   ; This is an attrac...
+00B4: 33   say
+00B5: 06 08 00   jmp 00C0
+00B8: 1C 6F 00   addsi L006F   ; Emotion immediate...
+00BB: 33   say
+00BC: 1C C5 00   addsi L00C5   ; She looks up as y...
+00BF: 33   say
+00C0: 13   push true
+00C1: 43 E8 00   popf flag:[00E8]
+00C4: 06 0A 00   jmp 00D1
+00C7: 1C ED 00   addsi L00ED   ; "Hello again, 
+00CA: 2F 05 00   addsv [0005]
+00CD: 1C FC 00   addsi L00FC   ; !" Nastassia says.
+00D0: 33   say
+00D1: 04 5E 02   je 0332
+00D4: 1D 0F 01   pushs L010F   ; name
+00D7: 07 01 00 0B 00  cmps 0001H, 00E7
+00DC: 1C 14 01   addsi L0114   ; "I am Nastassia."
+00DF: 33   say
+00E0: 1D 26 01   pushs L0126   ; name
+00E3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E7: 1D 2B 01   pushs L012B   ; job
+00EA: 07 01 00 0B 00  cmps 0001H, 00FA
+00EF: 1C 2F 01   addsi L012F   ; She thinks a mome...
+00F2: 33   say
+00F3: 1D AC 01   pushs L01AC   ; Shrine
+00F6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FA: 1D B3 01   pushs L01B3   ; Shrine
+00FD: 07 01 00 18 00  cmps 0001H, 011A
+0102: 1C BA 01   addsi L01BA   ; "The Shrine of Co...
+0105: 33   say
+0106: 1D 96 02   pushs L0296   ; take care
+0109: 1D A0 02   pushs L02A0   ; all shrines
+010C: 1E 02 00   arrc 0002H   ; 2
+010F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0113: 1D AC 02   pushs L02AC   ; Shrine
+0116: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011A: 1D B3 02   pushs L02B3   ; all shrines
+011D: 07 01 00 0B 00  cmps 0001H, 012D
+0122: 1C BF 02   addsi L02BF   ; "Many of the shri...
+0125: 33   say
+0126: 1D 2B 03   pushs L032B   ; all shrines
+0129: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012D: 1D 37 03   pushs L0337   ; take care
+0130: 07 01 00 18 00  cmps 0001H, 014D
+0135: 1C 41 03   addsi L0341   ; "I am afraid that...
+0138: 33   say
+0139: 1D 15 04   pushs L0415   ; take care
+013C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0140: 1D 1F 04   pushs L041F   ; reasons
+0143: 1D 27 04   pushs L0427   ; tradition
+0146: 1E 02 00   arrc 0002H   ; 2
+0149: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014D: 1D 31 04   pushs L0431   ; tradition
+0150: 07 01 00 0B 00  cmps 0001H, 0160
+0155: 1C 3B 04   addsi L043B   ; "Some people may ...
+0158: 33   say
+0159: 1D 0F 05   pushs L050F   ; tradition
+015C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0160: 1D 19 05   pushs L0519   ; reasons
+0163: 07 01 00 19 00  cmps 0001H, 0181
+0168: 42 E0 00   pushf flag:[00E0]
+016B: 10   not
+016C: 05 07 00   jne 0176
+016F: 1C 21 05   addsi L0521   ; "I... I'd rather ...
+0172: 33   say
+0173: 06 04 00   jmp 017A
+0176: 1C 4F 05   addsi L054F   ; "Thou dost know t...
+0179: 33   say
+017A: 1D 6D 05   pushs L056D   ; reasons
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D 75 05   pushs L0575   ; Ariana
+0184: 07 01 00 2D 00  cmps 0001H, 01B6
+0189: 21 04 00   push [0004]
+018C: 05 09 00   jne 0198
+018F: 1D 7C 05   pushs L057C   ; she
+0192: 12 06 00   pop [0006]
+0195: 06 06 00   jmp 019E
+0198: 1D 80 05   pushs L0580   ; he
+019B: 12 06 00   pop [0006]
+019E: 1C 83 05   addsi L0583   ; "Yes, she was my ...
+01A1: 2F 06 00   addsv [0006]
+01A4: 1C E0 05   addsi L05E0   ;  made a profound ...
+01A7: 33   say
+01A8: 1D 53 06   pushs L0653   ; Ariana
+01AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AF: 1D 5A 06   pushs L065A   ; I am the Avatar
+01B2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B6: 1D 6A 06   pushs L066A   ; Julius
+01B9: 07 01 00 0F 00  cmps 0001H, 01CD
+01BE: 1C 71 06   addsi L0671   ; "Thou dost know o...
+01C1: 33   say
+01C2: 1D 29 07   pushs L0729   ; Julius
+01C5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C9: 13   push true
+01CA: 43 E1 00   popf flag:[00E1]
+01CD: 1D 30 07   pushs L0730   ; Nadia
+01D0: 07 01 00 0B 00  cmps 0001H, 01E0
+01D5: 1C 36 07   addsi L0736   ; "My mother. She d...
+01D8: 33   say
+01D9: 1D DF 07   pushs L07DF   ; Nadia
+01DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E0: 1D E5 07   pushs L07E5   ; Yew
+01E3: 07 01 00 71 00  cmps 0001H, 0259
+01E8: 1C E9 07   addsi L07E9   ; "My father died i...
+01EB: 33   say
+01EC: 24 01 00   call [0001]   ; 090AH
+01EF: 12 07 00   pop [0007]
+01F2: 21 07 00   push [0007]
+01F5: 05 56 00   jne 024E
+01F8: 1C 63 08   addsi L0863   ; "Oh, 
+01FB: 2F 05 00   addsv [0005]
+01FE: 1C 69 08   addsi L0869   ; , I do wish thou ...
+0201: 33   say
+0202: 24 01 00   call [0001]   ; 090AH
+0205: 12 08 00   pop [0008]
+0208: 21 08 00   push [0008]
+020B: 05 23 00   jne 0231
+020E: 1C 0F 09   addsi L090F   ; "Bless thee! I sh...
+0211: 33   say
+0212: 21 04 00   push [0004]
+0215: 05 07 00   jne 021F
+0218: 1C 3F 09   addsi L093F   ; "I know we have a...
+021B: 33   say
+021C: 06 0B 00   jmp 022A
+021F: 1C 80 09   addsi L0980   ; Unexpectedly, Nas...
+0222: 33   say
+0223: 1D D2 09   pushs L09D2   ; kiss
+0226: 39 05 00 01  calli _AddAnswer@1  ; 0005
+022A: 13   push true
+022B: 43 E2 00   popf flag:[00E2]
+022E: 06 1A 00   jmp 024B
+0231: 1C D7 09   addsi L09D7   ; Nastassia turns a...
+0234: 33   say
+0235: 1F 00 00   pushi 0000H   ; 0
+0238: 1F 1A 00   pushi 001AH   ; 26
+023B: 44 54   pushw 4454H   ; 17492
+023D: 44 23   pushw 1E23H   ; 7715
+023F: 1E 04 00   arrc 0004H   ; 4
+0242: 3E   push itemref
+0243: 38 01 00 02  callis 0001, 2
+0247: 12 00 00   pop [0000]
+024A: 3F   abrt
+024B: 06 04 00   jmp 0252
+024E: 1C 30 0A   addsi L0A30   ; "No? Well, let me...
+0251: 33   say
+0252: 1D 81 0A   pushs L0A81   ; Yew
+0255: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0259: 1D 85 0A   pushs L0A85   ; kiss
+025C: 07 01 00 43 00  cmps 0001H, 02A4
+0261: 42 E6 00   pushf flag:[00E6]
+0264: 21 03 00   push [0003]
+0267: 0E   and
+0268: 05 04 00   jne 026F
+026B: 1C 8A 0A   addsi L0A8A   ; You kiss Nastassi...
+026E: 33   say
+026F: 42 E6 00   pushf flag:[00E6]
+0272: 21 03 00   push [0003]
+0275: 10   not
+0276: 0E   and
+0277: 05 08 00   jne 0282
+027A: 1C AC 0A   addsi L0AAC   ; The two of you ru...
+027D: 33   say
+027E: 13   push true
+027F: 12 03 00   pop [0003]
+0282: 42 E6 00   pushf flag:[00E6]
+0285: 21 01 00   push [0001]
+0288: 10   not
+0289: 0E   and
+028A: 10   not
+028B: 05 16 00   jne 02A4
+028E: 1C 25 0B   addsi L0B25   ; You kiss Nastassi...
+0291: 33   say
+0292: 13   push true
+0293: 12 01 00   pop [0001]
+0296: 1D C1 0B   pushs L0BC1   ; kiss
+0299: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029D: 1D C6 0B   pushs L0BC6   ; kiss again
+02A0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02A4: 1D D1 0B   pushs L0BD1   ; kiss again
+02A7: 07 01 00 1A 00  cmps 0001H, 02C6
+02AC: 21 02 00   push [0002]
+02AF: 10   not
+02B0: 05 0F 00   jne 02C2
+02B3: 1C DC 0B   addsi L0BDC   ; You kiss Nastassi...
+02B6: 33   say
+02B7: 13   push true
+02B8: 12 02 00   pop [0002]
+02BB: 13   push true
+02BC: 43 E6 00   popf flag:[00E6]
+02BF: 06 04 00   jmp 02C6
+02C2: 1C 7C 0C   addsi L0C7C   ; You kiss Nastassi...
+02C5: 33   say
+02C6: 1D 9E 0C   pushs L0C9E   ; I am the Avatar
+02C9: 07 01 00 0B 00  cmps 0001H, 02D9
+02CE: 1C AE 0C   addsi L0CAE   ; Nastassia studies...
+02D1: 33   say
+02D2: 1D 11 0D   pushs L0D11   ; I am the Avatar
+02D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D9: 1D 21 0D   pushs L0D21   ; News of your father
+02DC: 07 01 00 2E 00  cmps 0001H, 030F
+02E1: 1C 35 0D   addsi L0D35   ; You tell Nastassi...
+02E4: 33   say
+02E5: 21 04 00   push [0004]
+02E8: 05 0D 00   jne 02F8
+02EB: 1C 22 0F   addsi L0F22   ; "I thank thee, 
+02EE: 2F 05 00   addsv [0005]
+02F1: 1C 32 0F   addsi L0F32   ; . Thou hast made ...
+02F4: 33   say
+02F5: 06 0A 00   jmp 0302
+02F8: 1C 71 0F   addsi L0F71   ; She kisses you on...
+02FB: 2F 05 00   addsv [0005]
+02FE: 1C 9C 0F   addsi L0F9C   ; . Thou hast made ...
+0301: 33   say
+0302: 1F 32 00   pushi 0032H   ; 50
+0305: 24 02 00   call [0002]   ; 0911H
+0308: 1D 87 10   pushs L1087   ; News of your father
+030B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+030F: 1D 9B 10   pushs L109B   ; bye
+0312: 07 01 00 18 00  cmps 0001H, 032F
+0317: 1F 00 00   pushi 0000H   ; 0
+031A: 1F 1A 00   pushi 001AH   ; 26
+031D: 44 54   pushw 4454H   ; 17492
+031F: 44 23   pushw 1E23H   ; 7715
+0321: 1E 04 00   arrc 0004H   ; 4
+0324: 3E   push itemref
+0325: 38 01 00 02  callis 0001, 2
+0329: 12 00 00   pop [0000]
+032C: 06 03 00   jmp 0332
+032F: 06 9F FD   jmp 00D1
+0332: 40   db 40 ???
+0333: 21 04 00   push [0004]
+0336: 10   not
+0337: 05 1A 00   jne 0354
+033A: 21 02 00   push [0002]
+033D: 05 07 00   jne 0347
+0340: 1C 9F 10   addsi L109F   ; "Goodbye." She ki...
+0343: 33   say
+0344: 06 0A 00   jmp 0351
+0347: 1C F4 10   addsi L10F4   ; "Goodbye, 
+034A: 2F 05 00   addsv [0005]
+034D: 1C FF 10   addsi L10FF   ; ."*
+0350: 33   say
+0351: 06 0A 00   jmp 035E
+0354: 1C 03 11   addsi L1103   ; "Goodbye, 
+0357: 2F 05 00   addsv [0005]
+035A: 1C 0E 11   addsi L110E   ; ."*
+035D: 33   say
+035E: 25   ret

@@ -1,0 +1,485 @@
+  .funcnumber 0445H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a thoroughly disheartened young man who is miserably'
+ db ' languishing behind bars.'
+L0062: db 00
+L0063: db '"Hello again, '
+L0071: db 00
+L0072: db '," says Weston.'
+L0081: db 00
+L0082: db 'name'
+L0086: db 00
+L0087: db '"I am Weston."'
+L0095: db 00
+L0096: db 'name'
+L009A: db 00
+L009B: db 'job'
+L009E: db 00
+L009F: db '"I have none so long as I am left to rot here in this prison'
+ db '."'
+L00DD: db 00
+L00DE: db '"Thy job is to pay for the crime thou hast committed."*'
+L0115: db 00
+L0116: db 'prison'
+L011C: db 00
+L011D: db 'prison'
+L0123: db 00
+L0124: db '"My crime was stealing apples from the Royal Orchards. This '
+ db 'I did and I admit it freely. If given the same set of circum'
+ db 'stances I would do it again."'
+L01B9: db 00
+L01BA: db '"A-ha! Not only an unrepentant criminal but also a potential'
+ db ' professional thief! Looks like this one has ended in the ri'
+ db 'ght place and just in the nick o' time."*'
+L025B: db 00
+L025C: db 'prison'
+L0262: db 00
+L0263: db 'circumstances'
+L0270: db 00
+L0271: db 'stealing apples'
+L0280: db 00
+L0281: db 'stealing apples'
+L0290: db 00
+L0291: db '"I had offered to buy them first, but Figg, the caretaker of'
+ db ' the orchard, set an exorbitant price which I am certain he '
+ db 'would have pocketed for himself. So, yes, I admit to stealin'
+ db 'g them."'
+L034D: db 00
+L034E: db '"See how the common criminal blames his type of immoral beha'
+ db 'vior on others, all the while denying it in himself! This on'
+ db 'e is irredeemable, he is."*'
+L03E1: db 00
+L03E2: db 'stealing apples'
+L03F1: db 00
+L03F2: db 'admit'
+L03F7: db 00
+L03F8: db 'Figg'
+L03FC: db 00
+L03FD: db 'Figg'
+L0401: db 00
+L0402: db '"He gives baskets of fruit free to The Fellowship without Lo'
+ db 'rd British's consent, I am quite certain."'
+L0468: db 00
+L0469: db '"Thou shouldst not listen to this obvious slander, '
+L049C: db 00
+L049D: db '! It is hearsay!"*'
+L04AF: db 00
+L04B0: db 'Figg'
+L04B4: db 00
+L04B5: db 'admit'
+L04BA: db 00
+L04BB: db '"Mine only regrets are that I did not try to steal something'
+ db ' bigger and that I did not get away with it."'
+L0524: db 00
+L0525: db 'admit'
+L052A: db 00
+L052B: db 'circumstances'
+L0538: db 00
+L0539: db '"I am not from Britain, '
+L0551: db 00
+L0552: db '. I am from Paws and it is another reason why they believe I'
+ db ' can be trifled with."'
+L05A4: db 00
+L05A5: db '"This prisoner is from Paws! I bloody knew it! To his credit'
+ db ' he was in town nearly an entire day before he stole somethi'
+ db 'ng. For a citizen of Paws that is as honest as they come!"*'
+L0658: db 00
+L0659: db 'circumstances'
+L0666: db 00
+L0667: db 'Paws'
+L066B: db 00
+L066C: db 'Paws'
+L0670: db 00
+L0671: db '"Paws is a town where thou mayest feel the icy grip of pover'
+ db 'ty about thine heart."'
+L06C3: db 00
+L06C4: db 'Paws'
+L06C8: db 00
+L06C9: db 'poverty'
+L06D0: db 00
+L06D1: db 'town'
+L06D5: db 00
+L06D6: db '"Oh bloody 'ell! Now I suppose he is going to go and tell us'
+ db ' his whole pathetic life's story! Couldst thou wait until I '
+ db 'get out mine handkerchief so I do not interrupt thee with al'
+ db 'l my wailing!"*'
+L0799: db 00
+L079A: db 'town'
+L079E: db 00
+L079F: db '"Not so long ago Paws was a thriving rustic coastal village.'
+ db ' But as Britain grew larger most of our local businesses mov'
+ db 'ed there. We became a farming town and the seven year drough'
+ db 't gave us a lashing that we have yet to recover from."'
+L0889: db 00
+L088A: db 'town'
+L088E: db 00
+L088F: db 'poverty'
+L0896: db 00
+L0897: db '"I do not wish to bemoan my fate, but my family lives in Paw'
+ db 's -- my wife Alina and my child Cassie. They were starving a'
+ db 'nd I came to Britain to get food for them."'
+L093A: db 00
+L093B: db '"Oh, now! Do not go and bring up poverty as an excuse as to '
+ db 'why thou hast turned to crime! My father was so poor he and '
+ db 'his family had to eat dirt. But he still raised me proper. B'
+ db 'eat the stuffings out of me if he ever so much as imagined I'
+ db ' did anything wrong, I can tell thee that!"*'
+L0A57: db 00
+L0A58: db 'poverty'
+L0A5F: db 00
+L0A60: db 'starving'
+L0A68: db 00
+L0A69: db 'family'
+L0A6F: db 00
+L0A70: db 'family'
+L0A76: db 00
+L0A77: db '"I do not want any mercy for myself. I have admitted my guil'
+ db 't. But my life does not only belong to myself. It belongs to'
+ db ' my wife and family as well. Without me they will suffer unb'
+ db 'earable hardships, such as they might not survive."'
+L0B5E: db 00
+L0B5F: db 'family'
+L0B65: db 00
+L0B66: db 'starving'
+L0B6E: db 00
+L0B6F: db '"Although there are fools who will speak otherwise, the peop'
+ db 'le of Britannia are being crushed by the vicious tyranny of '
+ db 'the class system. While a few have more than they could ever'
+ db ' enjoy, there are many who go to sleep hungry every night. M'
+ db 'y wife and daughter to name two of them."'
+L0C88: db 00
+L0C89: db '"Oh, that reminds me it is nearly time for my meal break! Th'
+ db 'e trout is supposed to be delicious today at the Farmer's Ma'
+ db 'rket."'
+L0D07: db 00
+L0D08: db 'starving'
+L0D10: db 00
+L0D11: db 'class system'
+L0D1D: db 00
+L0D1E: db 'fools'
+L0D23: db 00
+L0D24: db 'fools'
+L0D29: db 00
+L0D2A: db '"Fools like our good friend the guard would have us believe '
+ db 'that nothing has changed in Britannia for over two hundred y'
+ db 'ears. That we can live our lives as if all of our problems d'
+ db 'o not exist. I say to thee that it is people like that who c'
+ db 'ause our problems in the first place."'
+L0E40: db 00
+L0E41: db 'fools'
+L0E46: db 00
+L0E47: db 'class system'
+L0E53: db 00
+L0E54: db '"While I am certain Lord British is a just and fair ruler, h'
+ db 'e must be quite unaware of all that goes on in his kingdom. '
+ db 'Surely he would not tolerate such inequity."'
+L0EF8: db 00
+L0EF9: db '"All right! That is enough noise out of thee! All day long y'
+ db 'akkata-yakkata about the awful terrible class system! Why, t'
+ db 'he next thing thou knowest thou shalt be sayin' society is t'
+ db 'o blame for thy crimes. Not a word from anybody about any ap'
+ db 'preciation for keeping the laws and order. No, of course not'
+ db '! But all the pity in the world for the dangerous lawbreaker'
+ db 's who are the real threat to society."*'
+L1088: db 00
+L1089: db '"Wouldst thou speak with Lord British about me? I would bet '
+ db 'that he is completely unaware of my case! Please! Wilt thou '
+ db 'speak with him?"'
+L1111: db 00
+L1112: db '"Oh, I thank thee, Avatar! My fate and the fates of my wife '
+ db 'and daughter are in thine hands!"'
+L116F: db 00
+L1170: db 'Weston lowers his head. "Then why art thou speaking with me?'
+ db ' Go away and leave me to my misery."*'
+L11D1: db 00
+L11D2: db 'class system'
+L11DE: db 00
+L11DF: db 'bye'
+L11E2: db 00
+L11E3: db '"I thank thee for visiting me." *'
+L1204: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F BB FF   pushi FFBBH   ; -69
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 1F FF FF   pushi FFFFH   ; -1
+002C: 1F 8A 01   pushi 018AH   ; 394
+002F: 1F 9C FE   pushi FE9CH   ; -356
+0032: 38 0E 00 03  callis 000E, 3
+0036: 12 01 00   pop [0001]
+0039: 42 C6 00   pushf flag:[00C6]
+003C: 10   not
+003D: 05 0B 00   jne 004B
+0040: 1C 0D 00   addsi L000D   ; You see a thoroug...
+0043: 33   say
+0044: 13   push true
+0045: 43 C6 00   popf flag:[00C6]
+0048: 06 0A 00   jmp 0055
+004B: 1C 63 00   addsi L0063   ; "Hello again, 
+004E: 2F 00 00   addsv [0000]
+0051: 1C 72 00   addsi L0072   ; ," says Weston.
+0054: 33   say
+0055: 04 D7 02   je 032F
+0058: 1D 82 00   pushs L0082   ; name
+005B: 07 01 00 0B 00  cmps 0001H, 006B
+0060: 1C 87 00   addsi L0087   ; "I am Weston."
+0063: 33   say
+0064: 1D 96 00   pushs L0096   ; name
+0067: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006B: 1D 9B 00   pushs L009B   ; job
+006E: 07 01 00 30 00  cmps 0001H, 00A3
+0073: 1C 9F 00   addsi L009F   ; "I have none so l...
+0076: 33   say
+0077: 21 01 00   push [0001]
+007A: 05 1F 00   jne 009C
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1F FE FE   pushi FEFEH   ; -258
+0083: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0087: 1C DE 00   addsi L00DE   ; "Thy job is to pa...
+008A: 33   say
+008B: 1F FE FE   pushi FEFEH   ; -258
+008E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0092: 1F 00 00   pushi 0000H   ; 0
+0095: 1F BB FF   pushi FFBBH   ; -69
+0098: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+009C: 1D 16 01   pushs L0116   ; prison
+009F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A3: 1D 1D 01   pushs L011D   ; prison
+00A6: 07 01 00 3D 00  cmps 0001H, 00E8
+00AB: 1C 24 01   addsi L0124   ; "My crime was ste...
+00AE: 33   say
+00AF: 21 01 00   push [0001]
+00B2: 05 1F 00   jne 00D4
+00B5: 1F 00 00   pushi 0000H   ; 0
+00B8: 1F FE FE   pushi FEFEH   ; -258
+00BB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00BF: 1C BA 01   addsi L01BA   ; "A-ha! Not only a...
+00C2: 33   say
+00C3: 1F FE FE   pushi FEFEH   ; -258
+00C6: 39 04 00 01  calli _HideNPC@1  ; 0004
+00CA: 1F 00 00   pushi 0000H   ; 0
+00CD: 1F BB FF   pushi FFBBH   ; -69
+00D0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D4: 1D 5C 02   pushs L025C   ; prison
+00D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DB: 1D 63 02   pushs L0263   ; circumstances
+00DE: 1D 71 02   pushs L0271   ; stealing apples
+00E1: 1E 02 00   arrc 0002H   ; 2
+00E4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E8: 1D 81 02   pushs L0281   ; stealing apples
+00EB: 07 01 00 3D 00  cmps 0001H, 012D
+00F0: 1C 91 02   addsi L0291   ; "I had offered to...
+00F3: 33   say
+00F4: 21 01 00   push [0001]
+00F7: 05 1F 00   jne 0119
+00FA: 1F 00 00   pushi 0000H   ; 0
+00FD: 1F FE FE   pushi FEFEH   ; -258
+0100: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0104: 1C 4E 03   addsi L034E   ; "See how the comm...
+0107: 33   say
+0108: 1F FE FE   pushi FEFEH   ; -258
+010B: 39 04 00 01  calli _HideNPC@1  ; 0004
+010F: 1F 00 00   pushi 0000H   ; 0
+0112: 1F BB FF   pushi FFBBH   ; -69
+0115: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0119: 1D E2 03   pushs L03E2   ; stealing apples
+011C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0120: 1D F2 03   pushs L03F2   ; admit
+0123: 1D F8 03   pushs L03F8   ; Figg
+0126: 1E 02 00   arrc 0002H   ; 2
+0129: 39 05 00 01  calli _AddAnswer@1  ; 0005
+012D: 1D FD 03   pushs L03FD   ; Figg
+0130: 07 01 00 3A 00  cmps 0001H, 016F
+0135: 1C 02 04   addsi L0402   ; "He gives baskets...
+0138: 33   say
+0139: 13   push true
+013A: 43 94 00   popf flag:[0094]
+013D: 21 01 00   push [0001]
+0140: 05 25 00   jne 0168
+0143: 1F 00 00   pushi 0000H   ; 0
+0146: 1F FE FE   pushi FEFEH   ; -258
+0149: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+014D: 1C 69 04   addsi L0469   ; "Thou shouldst no...
+0150: 2F 00 00   addsv [0000]
+0153: 1C 9D 04   addsi L049D   ; ! It is hearsay!"*
+0156: 33   say
+0157: 1F FE FE   pushi FEFEH   ; -258
+015A: 39 04 00 01  calli _HideNPC@1  ; 0004
+015E: 1F 00 00   pushi 0000H   ; 0
+0161: 1F BB FF   pushi FFBBH   ; -69
+0164: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0168: 1D B0 04   pushs L04B0   ; Figg
+016B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016F: 1D B5 04   pushs L04B5   ; admit
+0172: 07 01 00 0B 00  cmps 0001H, 0182
+0177: 1C BB 04   addsi L04BB   ; "Mine only regret...
+017A: 33   say
+017B: 1D 25 05   pushs L0525   ; admit
+017E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0182: 1D 2B 05   pushs L052B   ; circumstances
+0185: 07 01 00 3D 00  cmps 0001H, 01C7
+018A: 1C 39 05   addsi L0539   ; "I am not from Br...
+018D: 2F 00 00   addsv [0000]
+0190: 1C 52 05   addsi L0552   ; . I am from Paws ...
+0193: 33   say
+0194: 21 01 00   push [0001]
+0197: 05 1F 00   jne 01B9
+019A: 1F 00 00   pushi 0000H   ; 0
+019D: 1F FE FE   pushi FEFEH   ; -258
+01A0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01A4: 1C A5 05   addsi L05A5   ; "This prisoner is...
+01A7: 33   say
+01A8: 1F FE FE   pushi FEFEH   ; -258
+01AB: 39 04 00 01  calli _HideNPC@1  ; 0004
+01AF: 1F 00 00   pushi 0000H   ; 0
+01B2: 1F BB FF   pushi FFBBH   ; -69
+01B5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01B9: 1D 59 06   pushs L0659   ; circumstances
+01BC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C0: 1D 67 06   pushs L0667   ; Paws
+01C3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C7: 1D 6C 06   pushs L066C   ; Paws
+01CA: 07 01 00 3D 00  cmps 0001H, 020C
+01CF: 1C 71 06   addsi L0671   ; "Paws is a town w...
+01D2: 33   say
+01D3: 1D C4 06   pushs L06C4   ; Paws
+01D6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DA: 1D C9 06   pushs L06C9   ; poverty
+01DD: 1D D1 06   pushs L06D1   ; town
+01E0: 1E 02 00   arrc 0002H   ; 2
+01E3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E7: 21 01 00   push [0001]
+01EA: 05 1F 00   jne 020C
+01ED: 1F 00 00   pushi 0000H   ; 0
+01F0: 1F FE FE   pushi FEFEH   ; -258
+01F3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F7: 1C D6 06   addsi L06D6   ; "Oh bloody 'ell! ...
+01FA: 33   say
+01FB: 1F FE FE   pushi FEFEH   ; -258
+01FE: 39 04 00 01  calli _HideNPC@1  ; 0004
+0202: 1F 00 00   pushi 0000H   ; 0
+0205: 1F BB FF   pushi FFBBH   ; -69
+0208: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+020C: 1D 9A 07   pushs L079A   ; town
+020F: 07 01 00 0B 00  cmps 0001H, 021F
+0214: 1C 9F 07   addsi L079F   ; "Not so long ago ...
+0217: 33   say
+0218: 1D 8A 08   pushs L088A   ; town
+021B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021F: 1D 8F 08   pushs L088F   ; poverty
+0222: 07 01 00 3D 00  cmps 0001H, 0264
+0227: 1C 97 08   addsi L0897   ; "I do not wish to...
+022A: 33   say
+022B: 21 01 00   push [0001]
+022E: 05 1F 00   jne 0250
+0231: 1F 00 00   pushi 0000H   ; 0
+0234: 1F FE FE   pushi FEFEH   ; -258
+0237: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+023B: 1C 3B 09   addsi L093B   ; "Oh, now! Do not ...
+023E: 33   say
+023F: 1F FE FE   pushi FEFEH   ; -258
+0242: 39 04 00 01  calli _HideNPC@1  ; 0004
+0246: 1F 00 00   pushi 0000H   ; 0
+0249: 1F BB FF   pushi FFBBH   ; -69
+024C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0250: 1D 58 0A   pushs L0A58   ; poverty
+0253: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0257: 1D 60 0A   pushs L0A60   ; starving
+025A: 1D 69 0A   pushs L0A69   ; family
+025D: 1E 02 00   arrc 0002H   ; 2
+0260: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0264: 1D 70 0A   pushs L0A70   ; family
+0267: 07 01 00 0B 00  cmps 0001H, 0277
+026C: 1C 77 0A   addsi L0A77   ; "I do not want an...
+026F: 33   say
+0270: 1D 5F 0B   pushs L0B5F   ; family
+0273: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0277: 1D 66 0B   pushs L0B66   ; starving
+027A: 07 01 00 3D 00  cmps 0001H, 02BC
+027F: 1C 6F 0B   addsi L0B6F   ; "Although there a...
+0282: 33   say
+0283: 21 01 00   push [0001]
+0286: 05 1F 00   jne 02A8
+0289: 1F 00 00   pushi 0000H   ; 0
+028C: 1F FE FE   pushi FEFEH   ; -258
+028F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0293: 1C 89 0C   addsi L0C89   ; "Oh, that reminds...
+0296: 33   say
+0297: 1F FE FE   pushi FEFEH   ; -258
+029A: 39 04 00 01  calli _HideNPC@1  ; 0004
+029E: 1F 00 00   pushi 0000H   ; 0
+02A1: 1F BB FF   pushi FFBBH   ; -69
+02A4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02A8: 1D 08 0D   pushs L0D08   ; starving
+02AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AF: 1D 11 0D   pushs L0D11   ; class system
+02B2: 1D 1E 0D   pushs L0D1E   ; fools
+02B5: 1E 02 00   arrc 0002H   ; 2
+02B8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02BC: 1D 24 0D   pushs L0D24   ; fools
+02BF: 07 01 00 0B 00  cmps 0001H, 02CF
+02C4: 1C 2A 0D   addsi L0D2A   ; "Fools like our g...
+02C7: 33   say
+02C8: 1D 41 0E   pushs L0E41   ; fools
+02CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CF: 1D 47 0E   pushs L0E47   ; class system
+02D2: 07 01 00 4A 00  cmps 0001H, 0321
+02D7: 1C 54 0E   addsi L0E54   ; "While I am certa...
+02DA: 33   say
+02DB: 21 01 00   push [0001]
+02DE: 05 1F 00   jne 0300
+02E1: 1F 00 00   pushi 0000H   ; 0
+02E4: 1F FE FE   pushi FEFEH   ; -258
+02E7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02EB: 1C F9 0E   addsi L0EF9   ; "All right! That ...
+02EE: 33   say
+02EF: 1F FE FE   pushi FEFEH   ; -258
+02F2: 39 04 00 01  calli _HideNPC@1  ; 0004
+02F6: 1F 00 00   pushi 0000H   ; 0
+02F9: 1F BB FF   pushi FFBBH   ; -69
+02FC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0300: 1C 89 10   addsi L1089   ; "Wouldst thou spe...
+0303: 33   say
+0304: 24 01 00   call [0001]   ; 090AH
+0307: 05 0B 00   jne 0315
+030A: 1C 12 11   addsi L1112   ; "Oh, I thank thee...
+030D: 33   say
+030E: 13   push true
+030F: 43 CD 00   popf flag:[00CD]
+0312: 06 05 00   jmp 031A
+0315: 1C 70 11   addsi L1170   ; Weston lowers his...
+0318: 33   say
+0319: 3F   abrt
+031A: 1D D2 11   pushs L11D2   ; class system
+031D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0321: 1D DF 11   pushs L11DF   ; bye
+0324: 07 01 00 03 00  cmps 0001H, 032C
+0329: 06 03 00   jmp 032F
+032C: 06 26 FD   jmp 0055
+032F: 40   db 40 ???
+0330: 1C E3 11   addsi L11E3   ; "I thank thee for...
+0333: 33   say
+0334: 25   ret

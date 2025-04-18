@@ -1,0 +1,476 @@
+  .funcnumber 04D4H
+  .data
+L0000: db 'the Avatar'
+L000A: db 00
+L000B: db 'bye'
+L000E: db 00
+L000F: db 'Fellowship'
+L0019: db 00
+L001A: db 'job'
+L001D: db 00
+L001E: db 'name'
+L0022: db 00
+L0023: db 'Catherine at noon'
+L0034: db 00
+L0035: db 'The matronly woman you see has a look of concern on her face'
+ db '.~~"Good day, '
+L007F: db 00
+L0080: db '. I am Yvella." She curtseys. "Might I know thy name?"'
+L00B6: db 00
+L00B7: db '"Pleased to meet thee, '
+L00CE: db 00
+L00CF: db '."'
+L00D1: db 00
+L00D2: db '"Now, now, '
+L00DD: db 00
+L00DE: db ', thou shouldst not lie like that."'
+L0101: db 00
+L0102: db '"Good day, '
+L010D: db 00
+L010E: db '."'
+L0110: db 00
+L0111: db 'name'
+L0115: db 00
+L0116: db '"I am Yvella, '
+L0124: db 00
+L0125: db '."'
+L0127: db 00
+L0128: db 'name'
+L012C: db 00
+L012D: db 'job'
+L0130: db 00
+L0131: db '"I take care of my daughter, Catherine, while Cador is at wo'
+ db 'rk."'
+L0171: db 00
+L0172: db 'Cador'
+L0177: db 00
+L0178: db 'Catherine'
+L0181: db 00
+L0182: db 'Fellowship'
+L018C: db 00
+L018D: db '"Thou hast not heard of The Fellowship? It is a wonderful or'
+ db 'ganization. They hold parades and festivals and have even bu'
+ db 'ilt shelters for homeless folk throughout Britannia. Mine hu'
+ db 'sband learned of them some time ago, and we have been happy '
+ db 'members ever since."'
+L0291: db 00
+L0292: db 'husband'
+L0299: db 00
+L029A: db 'Fellowship'
+L02A4: db 00
+L02A5: db 'husband'
+L02AC: db 00
+L02AD: db 'Cador'
+L02B2: db 00
+L02B3: db '"Cador was mine husband. He was the overseer at the Britanni'
+ db 'an Mining Company here in Vesper. I cannot believe he is gon'
+ db 'e," she sobs.~~ "I told him again and again that tavern was '
+ db 'a bad place to spend the evening. And now, he is dead, leavi'
+ db 'ng me and Catherine without a husband and a father!"'
+L03D7: db 00
+L03D8: db '"Cador is mine husband. He is the overseer at the Britannian'
+ db ' Mining Company here in Vesper."'
+L0434: db 00
+L0435: db '"He is often at the tavern at this time. I do wish he would '
+ db 'not go there every night with that... that... woman!"'
+L04A6: db 00
+L04A7: db 'woman'
+L04AC: db 00
+L04AD: db 'husband'
+L04B4: db 00
+L04B5: db 'Cador'
+L04BA: db 00
+L04BB: db 'Vesper'
+L04C1: db 00
+L04C2: db 'woman'
+L04C7: db 00
+L04C8: db '"Her name is Mara. She is a fellow miner. She is very nice, '
+ db 'but also very beautiful. I do not like mine husband spending'
+ db ' all that time with her."'
+L0559: db 00
+L055A: db 'woman'
+L055F: db 00
+L0560: db 'Vesper'
+L0566: db 00
+L0567: db '"Well, it would be a lovely town if it were not for those...'
+ db ' those... gargoyles.  They are disgusting beings. I think Au'
+ db 'ston should have them run out of town."'
+L0606: db 00
+L0607: db 'gargoyles'
+L0610: db 00
+L0611: db 'Auston'
+L0617: db 00
+L0618: db 'Vesper'
+L061E: db 00
+L061F: db 'Auston'
+L0625: db 00
+L0626: db '"He is our mayor. Eldroth recommended that we elect him, so,'
+ db ' of course, we did. However, between the two of us, I think '
+ db 'we ought to have someone new if Auston does not do something'
+ db ' quickly. As a matter of fact, thou shouldst run for mayor, '
+L0716: db 00
+L0717: db '. What dost thou think? Wouldst thou like to run for mayor?"'
+L0753: db 00
+L0754: db '"I agree, thou ought to consider it."'
+L0779: db 00
+L077A: db '"That is too bad. I believe thou wouldst be perfect for the '
+ db 'office."'
+L07BE: db 00
+L07BF: db 'Eldroth'
+L07C6: db 00
+L07C7: db 'Auston'
+L07CD: db 00
+L07CE: db 'Eldroth'
+L07D5: db 00
+L07D6: db '"He is our town advisor. Very wise man that Eldroth. He also'
+ db ' sells provisions."'
+L0825: db 00
+L0826: db 'Eldroth'
+L082D: db 00
+L082E: db 'gargoyles'
+L0837: db 00
+L0838: db '"Perfectly wretched beasts. Thank goodness most of them stay'
+ db ' on their side of the oasis. I do not know how Cador stands '
+ db 'working with them. Well, for him, that is. There is only one'
+ db ' who still works there."'
+L0904: db 00
+L0905: db '"Here," she says fumbling through her robes. Finally, she fi'
+ db 'nds a piece of parchment and hands it to you.'
+L096E: db 00
+L096F: db 'gargoyles'
+L0978: db 00
+L0979: db 'Catherine'
+L0982: db 00
+L0983: db '"I worry about her. Every day at noon, she seems to disappea'
+ db 'r for a few hours. She has these foolish notions that gargoy'
+ db 'les are friendly and honorable. I am afraid she may be visit'
+ db 'ing the other side of the oasis. Oh, I do hope not."'
+L0A6B: db 00
+L0A6C: db 'Catherine'
+L0A75: db 00
+L0A76: db 'Catherine at noon'
+L0A87: db 00
+L0A88: db '"Thou knowest where my daughter doth go at noon?"'
+L0AB9: db 00
+L0ABA: db '"Wilt thou tell me?"'
+L0ACE: db 00
+L0ACF: db 'After you tell her, she responds, "I knew it! That girl must'
+ db ' be taught some sense. Associating with those vile creatures'
+ db '. Imagine!" She shakes her head.'
+L0B67: db 00
+L0B68: db '"If only her father were here today, he would show that loat'
+ db 'hsome creature his place!"'
+L0BBE: db 00
+L0BBF: db '"Just wait until I tell her father about this! He and Mara w'
+ db 'ill certainly take care of the situation.!"'
+L0C26: db 00
+L0C27: db '"I thank thee, '
+L0C36: db 00
+L0C37: db '. I will put a stop to this right away!"*'
+L0C60: db 00
+L0C61: db 'After you tell her, she responds, "I doubt that is true, '
+L0C9A: db 00
+L0C9B: db ', but I will look into the matter. I thank thee for thy conc'
+ db 'ern."'
+L0CDC: db 00
+L0CDD: db '"Get thee away and cease taunting me! Thou art cruel, '
+L0D13: db 00
+L0D14: db '!"*'
+L0D17: db 00
+L0D18: db 'Catherine at noon'
+L0D29: db 00
+L0D2A: db '"Oh, well. I thank thee for thy concern."'
+L0D53: db 00
+L0D54: db 'bye'
+L0D57: db 00
+L0D58: db '"Pleasant journey, '
+L0D6B: db 00
+L0D6C: db '."*'
+L0D6F: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0005H
+  .extern 0908H
+  .extern 0909H
+  .extern 090BH
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 EE 02   jne 02F6
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 2C FF   pushi FF2CH   ; -212
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 14   push false
+001F: 12 02 00   pop [0002]
+0022: 1F 35 FF   pushi FF35H   ; -203
+0025: 38 1B 00 01  callis 001B, 1
+0029: 38 37 00 01  callis 0037, 1
+002D: 12 03 00   pop [0003]
+0030: 1D 00 00   pushs L0000   ; the Avatar
+0033: 12 04 00   pop [0004]
+0036: 1D 0B 00   pushs L000B   ; bye
+0039: 1D 0F 00   pushs L000F   ; Fellowship
+003C: 1D 1A 00   pushs L001A   ; job
+003F: 1D 1E 00   pushs L001E   ; name
+0042: 1E 04 00   arrc 0004H   ; 4
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 7E 02   pushf flag:[027E]
+004C: 42 85 02   pushf flag:[0285]
+004F: 10   not
+0050: 0E   and
+0051: 05 07 00   jne 005B
+0054: 1D 23 00   pushs L0023   ; Catherine at noon
+0057: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005B: 42 86 02   pushf flag:[0286]
+005E: 05 06 00   jne 0067
+0061: 21 00 00   push [0000]
+0064: 12 05 00   pop [0005]
+0067: 42 87 02   pushf flag:[0287]
+006A: 05 06 00   jne 0073
+006D: 21 01 00   push [0001]
+0070: 12 05 00   pop [0005]
+0073: 42 91 02   pushf flag:[0291]
+0076: 10   not
+0077: 05 5C 00   jne 00D6
+007A: 1C 35 00   addsi L0035   ; The matronly woma...
+007D: 2F 01 00   addsv [0001]
+0080: 1C 80 00   addsi L0080   ; . I am Yvella." S...
+0083: 33   say
+0084: 21 04 00   push [0004]
+0087: 21 00 00   push [0000]
+008A: 1E 02 00   arrc 0002H   ; 2
+008D: 24 02 00   call [0002]   ; 090BH
+0090: 12 06 00   pop [0006]
+0093: 21 06 00   push [0006]
+0096: 21 00 00   push [0000]
+0099: 22   cmpeq
+009A: 05 14 00   jne 00B1
+009D: 1C B7 00   addsi L00B7   ; "Pleased to meet ...
+00A0: 2F 00 00   addsv [0000]
+00A3: 1C CF 00   addsi L00CF   ; ."
+00A6: 33   say
+00A7: 13   push true
+00A8: 43 86 02   popf flag:[0286]
+00AB: 21 00 00   push [0000]
+00AE: 12 05 00   pop [0005]
+00B1: 21 06 00   push [0006]
+00B4: 21 04 00   push [0004]
+00B7: 22   cmpeq
+00B8: 05 14 00   jne 00CF
+00BB: 1C D2 00   addsi L00D2   ; "Now, now, 
+00BE: 2F 01 00   addsv [0001]
+00C1: 1C DE 00   addsi L00DE   ; , thou shouldst n...
+00C4: 33   say
+00C5: 13   push true
+00C6: 43 87 02   popf flag:[0287]
+00C9: 21 01 00   push [0001]
+00CC: 12 05 00   pop [0005]
+00CF: 13   push true
+00D0: 43 91 02   popf flag:[0291]
+00D3: 06 0A 00   jmp 00E0
+00D6: 1C 02 01   addsi L0102   ; "Good day, 
+00D9: 2F 05 00   addsv [0005]
+00DC: 1C 0E 01   addsi L010E   ; ."
+00DF: 33   say
+00E0: 04 08 02   je 02EB
+00E3: 1D 11 01   pushs L0111   ; name
+00E6: 07 01 00 11 00  cmps 0001H, 00FC
+00EB: 1C 16 01   addsi L0116   ; "I am Yvella, 
+00EE: 2F 01 00   addsv [0001]
+00F1: 1C 25 01   addsi L0125   ; ."
+00F4: 33   say
+00F5: 1D 28 01   pushs L0128   ; name
+00F8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FC: 1D 2D 01   pushs L012D   ; job
+00FF: 07 01 00 19 00  cmps 0001H, 011D
+0104: 1C 31 01   addsi L0131   ; "I take care of m...
+0107: 33   say
+0108: 21 02 00   push [0002]
+010B: 10   not
+010C: 05 07 00   jne 0116
+010F: 1D 72 01   pushs L0172   ; Cador
+0112: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0116: 1D 78 01   pushs L0178   ; Catherine
+0119: 39 05 00 01  calli _AddAnswer@1  ; 0005
+011D: 1D 82 01   pushs L0182   ; Fellowship
+0120: 07 01 00 19 00  cmps 0001H, 013E
+0125: 1C 8D 01   addsi L018D   ; "Thou hast not he...
+0128: 33   say
+0129: 21 02 00   push [0002]
+012C: 10   not
+012D: 05 07 00   jne 0137
+0130: 1D 92 02   pushs L0292   ; husband
+0133: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0137: 1D 9A 02   pushs L029A   ; Fellowship
+013A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013E: 1D A5 02   pushs L02A5   ; husband
+0141: 1D AD 02   pushs L02AD   ; Cador
+0144: 07 02 00 4D 00  cmps 0002H, 0196
+0149: 21 03 00   push [0003]
+014C: 05 07 00   jne 0156
+014F: 1C B3 02   addsi L02B3   ; "Cador was mine h...
+0152: 33   say
+0153: 06 28 00   jmp 017E
+0156: 1C D8 03   addsi L03D8   ; "Cador is mine hu...
+0159: 33   say
+015A: 38 3B 00 00  callis 003B, 0
+015E: 12 07 00   pop [0007]
+0161: 21 07 00   push [0007]
+0164: 1F 06 00   pushi 0006H   ; 6
+0167: 22   cmpeq
+0168: 21 07 00   push [0007]
+016B: 1F 07 00   pushi 0007H   ; 7
+016E: 22   cmpeq
+016F: 0F   or
+0170: 05 0B 00   jne 017E
+0173: 1C 35 04   addsi L0435   ; "He is often at t...
+0176: 33   say
+0177: 1D A7 04   pushs L04A7   ; woman
+017A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017E: 1D AD 04   pushs L04AD   ; husband
+0181: 1D B5 04   pushs L04B5   ; Cador
+0184: 1E 02 00   arrc 0002H   ; 2
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D BB 04   pushs L04BB   ; Vesper
+018E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0192: 13   push true
+0193: 12 02 00   pop [0002]
+0196: 1D C2 04   pushs L04C2   ; woman
+0199: 07 01 00 0B 00  cmps 0001H, 01A9
+019E: 1C C8 04   addsi L04C8   ; "Her name is Mara...
+01A1: 33   say
+01A2: 1D 5A 05   pushs L055A   ; woman
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1D 60 05   pushs L0560   ; Vesper
+01AC: 07 01 00 18 00  cmps 0001H, 01C9
+01B1: 1C 67 05   addsi L0567   ; "Well, it would b...
+01B4: 33   say
+01B5: 1D 07 06   pushs L0607   ; gargoyles
+01B8: 1D 11 06   pushs L0611   ; Auston
+01BB: 1E 02 00   arrc 0002H   ; 2
+01BE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C2: 1D 18 06   pushs L0618   ; Vesper
+01C5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C9: 1D 1F 06   pushs L061F   ; Auston
+01CC: 07 01 00 2F 00  cmps 0001H, 0200
+01D1: 1C 26 06   addsi L0626   ; "He is our mayor....
+01D4: 2F 01 00   addsv [0001]
+01D7: 1C 17 07   addsi L0717   ; . What dost thou ...
+01DA: 33   say
+01DB: 24 03 00   call [0003]   ; 090AH
+01DE: 12 08 00   pop [0008]
+01E1: 21 08 00   push [0008]
+01E4: 05 07 00   jne 01EE
+01E7: 1C 54 07   addsi L0754   ; "I agree, thou ou...
+01EA: 33   say
+01EB: 06 04 00   jmp 01F2
+01EE: 1C 7A 07   addsi L077A   ; "That is too bad....
+01F1: 33   say
+01F2: 1D BF 07   pushs L07BF   ; Eldroth
+01F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F9: 1D C7 07   pushs L07C7   ; Auston
+01FC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0200: 1D CE 07   pushs L07CE   ; Eldroth
+0203: 07 01 00 0B 00  cmps 0001H, 0213
+0208: 1C D6 07   addsi L07D6   ; "He is our town a...
+020B: 33   say
+020C: 1D 26 08   pushs L0826   ; Eldroth
+020F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0213: 1D 2E 08   pushs L082E   ; gargoyles
+0216: 07 01 00 29 00  cmps 0001H, 0244
+021B: 1C 38 08   addsi L0838   ; "Perfectly wretch...
+021E: 33   say
+021F: 13   push true
+0220: 1F 99 FE   pushi FE99H   ; -359
+0223: 1F 02 00   pushi 0002H   ; 2
+0226: 1F 1D 03   pushi 031DH   ; 797
+0229: 1F 01 00   pushi 0001H   ; 1
+022C: 38 2C 00 05  callis 002C, 5
+0230: 12 09 00   pop [0009]
+0233: 21 09 00   push [0009]
+0236: 05 04 00   jne 023D
+0239: 1C 05 09   addsi L0905   ; "Here," she says ...
+023C: 33   say
+023D: 1D 6F 09   pushs L096F   ; gargoyles
+0240: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0244: 1D 79 09   pushs L0979   ; Catherine
+0247: 07 01 00 0F 00  cmps 0001H, 025B
+024C: 1C 83 09   addsi L0983   ; "I worry about he...
+024F: 33   say
+0250: 13   push true
+0251: 43 7E 02   popf flag:[027E]
+0254: 1D 6C 0A   pushs L0A6C   ; Catherine
+0257: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025B: 1D 76 0A   pushs L0A76   ; Catherine at noon
+025E: 07 01 00 7A 00  cmps 0001H, 02DD
+0263: 1C 88 0A   addsi L0A88   ; "Thou knowest whe...
+0266: 33   say
+0267: 24 03 00   call [0003]   ; 090AH
+026A: 12 0A 00   pop [000A]
+026D: 21 0A 00   push [000A]
+0270: 05 66 00   jne 02D9
+0273: 1C BA 0A   addsi L0ABA   ; "Wilt thou tell me?"
+0276: 33   say
+0277: 24 03 00   call [0003]   ; 090AH
+027A: 12 0B 00   pop [000B]
+027D: 21 0B 00   push [000B]
+0280: 05 41 00   jne 02C4
+0283: 42 7D 02   pushf flag:[027D]
+0286: 05 2E 00   jne 02B7
+0289: 1C CF 0A   addsi L0ACF   ; After you tell he...
+028C: 33   say
+028D: 21 03 00   push [0003]
+0290: 05 07 00   jne 029A
+0293: 1C 68 0B   addsi L0B68   ; "If only her fath...
+0296: 33   say
+0297: 06 0B 00   jmp 02A5
+029A: 1C BF 0B   addsi L0BBF   ; "Just wait until ...
+029D: 33   say
+029E: 1F 2A FF   pushi FF2AH   ; -214
+02A1: 39 3F 00 01  calli 003F, 1
+02A5: 1C 27 0C   addsi L0C27   ; "I thank thee, 
+02A8: 2F 05 00   addsv [0005]
+02AB: 1C 37 0C   addsi L0C37   ; . I will put a st...
+02AE: 33   say
+02AF: 13   push true
+02B0: 43 85 02   popf flag:[0285]
+02B3: 3F   abrt
+02B4: 06 0A 00   jmp 02C1
+02B7: 1C 61 0C   addsi L0C61   ; After you tell he...
+02BA: 2F 01 00   addsv [0001]
+02BD: 1C 9B 0C   addsi L0C9B   ; , but I will look...
+02C0: 33   say
+02C1: 06 0B 00   jmp 02CF
+02C4: 1C DD 0C   addsi L0CDD   ; "Get thee away an...
+02C7: 2F 05 00   addsv [0005]
+02CA: 1C 14 0D   addsi L0D14   ; !"*
+02CD: 33   say
+02CE: 3F   abrt
+02CF: 1D 18 0D   pushs L0D18   ; Catherine at noon
+02D2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D6: 06 04 00   jmp 02DD
+02D9: 1C 2A 0D   addsi L0D2A   ; "Oh, well. I than...
+02DC: 33   say
+02DD: 1D 54 0D   pushs L0D54   ; bye
+02E0: 07 01 00 03 00  cmps 0001H, 02E8
+02E5: 06 03 00   jmp 02EB
+02E8: 06 F5 FD   jmp 00E0
+02EB: 40   db 40 ???
+02EC: 1C 58 0D   addsi L0D58   ; "Pleasant journey, 
+02EF: 2F 01 00   addsv [0001]
+02F2: 1C 6C 0D   addsi L0D6C   ; ."*
+02F5: 33   say
+02F6: 48   push eventid
+02F7: 1F 00 00   pushi 0000H   ; 0
+02FA: 22   cmpeq
+02FB: 05 06 00   jne 0304
+02FE: 1F 2C FF   pushi FF2CH   ; -212
+0301: 24 04 00   call [0004]   ; 092EH
+0304: 25   ret

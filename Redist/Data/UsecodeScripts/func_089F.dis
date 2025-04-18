@@ -1,0 +1,151 @@
+  .funcnumber 089FH
+  .data
+L0000: db 'you'
+L0003: db 00
+L0004: db 'Jakher looks into your eyes, sizing you up intellectually. "'
+ db 'Thou dost need to learn more on the field of battle. If we s'
+ db 'poke now I would be wasting my breath. Thou wouldst not unde'
+ db 'rstand a word I said."'
+L00CE: db 00
+L00CF: db 'You gather your gold and count it, finding that you have '
+L0108: db 00
+L0109: db ' gold altogether.'
+L011A: db 00
+L011B: db '"Thou dost not seem to have as much gold as I require to tra'
+ db 'in here. Mayhaps at another time, when thy fortunes are more'
+ db ' prosperous..."'
+L01A2: db 00
+L01A3: db '"Thou art already well-versed in the tactics of the battlefi'
+ db 'eld. I am afraid that I am unable to train thee further in t'
+ db 'his."'
+L0220: db 00
+L0221: db 'You pay '
+L0229: db 00
+L022A: db ' gold, and the training session begins.'
+L0251: db 00
+L0252: db 'Jakher's eyes glow bright as he begins to explain some of th'
+ db 'e strategies used by great military leaders in awesome battl'
+ db 'es fought in ages past. He whispers to '
+L02F1: db 00
+L02F2: db ' conspiratorially as he draws maps in the dirt. After some t'
+ db 'ime, '
+L0333: db 00
+L0334: db ' can practically feel some of his shrewdness starting to be '
+ db 'absorbed.'
+L0379: db 00
+L037A: db '"I look forward to thy return."'
+L0399: db 00
+  .code
+  .argc 0002H
+  .localc 0009H
+  .externsize 0007H
+  .extern 0920H
+  .extern 090FH
+  .extern 0908H
+  .extern 0922H
+  .extern 0910H
+  .extern 0916H
+  .extern 0914H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 24 01 00   call [0001]   ; 090FH
+000C: 12 03 00   pop [0003]
+000F: 24 02 00   call [0002]   ; 0908H
+0012: 12 04 00   pop [0004]
+0015: 21 03 00   push [0003]
+0018: 21 04 00   push [0004]
+001B: 22   cmpeq
+001C: 05 06 00   jne 0025
+001F: 1D 00 00   pushs L0000   ; you
+0022: 12 03 00   pop [0003]
+0025: 21 02 00   push [0002]
+0028: 1F 00 00   pushi 0000H   ; 0
+002B: 22   cmpeq
+002C: 05 03 00   jne 0032
+002F: 06 DE 00   jmp 0110
+0032: 1F 02 00   pushi 0002H   ; 2
+0035: 12 05 00   pop [0005]
+0038: 21 05 00   push [0005]
+003B: 21 02 00   push [0002]
+003E: 21 00 00   push [0000]
+0041: 21 01 00   push [0001]
+0044: 24 03 00   call [0003]   ; 0922H
+0047: 12 06 00   pop [0006]
+004A: 21 06 00   push [0006]
+004D: 1F 00 00   pushi 0000H   ; 0
+0050: 22   cmpeq
+0051: 05 07 00   jne 005B
+0054: 1C 04 00   addsi L0004   ; Jakher looks into...
+0057: 33   say
+0058: 06 B5 00   jmp 0110
+005B: 21 06 00   push [0006]
+005E: 1F 01 00   pushi 0001H   ; 1
+0061: 22   cmpeq
+0062: 05 2E 00   jne 0093
+0065: 1F 99 FE   pushi FE99H   ; -359
+0068: 1F 99 FE   pushi FE99H   ; -359
+006B: 1F 84 02   pushi 0284H   ; 644
+006E: 1F 9B FE   pushi FE9BH   ; -357
+0071: 38 28 00 04  callis 0028, 4
+0075: 12 07 00   pop [0007]
+0078: 1C CF 00   addsi L00CF   ; You gather your g...
+007B: 2F 07 00   addsv [0007]
+007E: 1C 09 01   addsi L0109   ;  gold altogether.
+0081: 33   say
+0082: 21 07 00   push [0007]
+0085: 21 00 00   push [0000]
+0088: 17   cmpl
+0089: 05 07 00   jne 0093
+008C: 1C 1B 01   addsi L011B   ; "Thou dost not se...
+008F: 33   say
+0090: 06 7D 00   jmp 0110
+0093: 21 06 00   push [0006]
+0096: 1F 02 00   pushi 0002H   ; 2
+0099: 22   cmpeq
+009A: 05 07 00   jne 00A4
+009D: 1C A3 01   addsi L01A3   ; "Thou art already...
+00A0: 33   say
+00A1: 06 6C 00   jmp 0110
+00A4: 13   push true
+00A5: 1F 99 FE   pushi FE99H   ; -359
+00A8: 1F 99 FE   pushi FE99H   ; -359
+00AB: 1F 84 02   pushi 0284H   ; 644
+00AE: 21 00 00   push [0000]
+00B1: 38 2B 00 05  callis 002B, 5
+00B5: 12 08 00   pop [0008]
+00B8: 1C 21 02   addsi L0221   ; You pay 
+00BB: 2F 00 00   addsv [0000]
+00BE: 1C 2A 02   addsi L022A   ;  gold, and the tr...
+00C1: 33   say
+00C2: 1C 52 02   addsi L0252   ; Jakher's eyes glo...
+00C5: 2F 03 00   addsv [0003]
+00C8: 1C F2 02   addsi L02F2   ;  conspiratorially...
+00CB: 2F 03 00   addsv [0003]
+00CE: 1C 34 03   addsi L0334   ;  can practically ...
+00D1: 33   say
+00D2: 1F 02 00   pushi 0002H   ; 2
+00D5: 21 02 00   push [0002]
+00D8: 24 04 00   call [0004]   ; 0910H
+00DB: 12 09 00   pop [0009]
+00DE: 1F 00 00   pushi 0000H   ; 0
+00E1: 21 02 00   push [0002]
+00E4: 24 04 00   call [0004]   ; 0910H
+00E7: 12 0A 00   pop [000A]
+00EA: 21 09 00   push [0009]
+00ED: 1F 1E 00   pushi 001EH   ; 30
+00F0: 17   cmpl
+00F1: 05 09 00   jne 00FD
+00F4: 1F 01 00   pushi 0001H   ; 1
+00F7: 21 02 00   push [0002]
+00FA: 24 05 00   call [0005]   ; 0916H
+00FD: 21 0A 00   push [000A]
+0100: 1F 1E 00   pushi 001EH   ; 30
+0103: 17   cmpl
+0104: 05 09 00   jne 0110
+0107: 1F 01 00   pushi 0001H   ; 1
+010A: 21 02 00   push [0002]
+010D: 24 06 00   call [0006]   ; 0914H
+0110: 1C 7A 03   addsi L037A   ; "I look forward t...
+0113: 33   say
+0114: 25   ret

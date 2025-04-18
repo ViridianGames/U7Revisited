@@ -1,0 +1,369 @@
+  .funcnumber 0472H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'garden'
+L0013: db 00
+L0014: db 'The monk pulls back her cowl far enough for you to see her f'
+ db 'ace.'
+L0054: db 00
+L0055: db '"Greetings, '
+L0061: db 00
+L0062: db '. I hope thy days are full of beauty."'
+L0088: db 00
+L0089: db 'name'
+L008D: db 00
+L008E: db '"Thou mayest call me Aimi, '
+L00A9: db 00
+L00AA: db '."'
+L00AC: db 00
+L00AD: db 'garden'
+L00B3: db 00
+L00B4: db 'name'
+L00B8: db 00
+L00B9: db 'job'
+L00BC: db 00
+L00BD: db '"As a monk, I am not sure how to answer thy question. I ofte'
+ db 'n help to make wine. However, '
+L0117: db 00
+L0118: db ', in my spare time I paint or tend my garden here at the Abb'
+ db 'ey."'
+L0158: db 00
+L0159: db 'Abbey'
+L015E: db 00
+L015F: db 'garden'
+L0165: db 00
+L0166: db 'paint'
+L016B: db 00
+L016C: db 'Kreg'
+L0170: db 00
+L0171: db 'Abbey'
+L0176: db 00
+L0177: db '"I have spent little time with others in the area. Thou maye'
+ db 'st wish to speak with Taylor, for he knows much more about t'
+ db 'he people, animals, and sights in this area than I do."'
+L0226: db 00
+L0227: db 'Taylor'
+L022D: db 00
+L022E: db 'Abbey'
+L0233: db 00
+L0234: db 'Taylor'
+L023A: db 00
+L023B: db '"He is a fellow monk. He spends his time studying the plants'
+ db ', animals, and geography of Britannia."'
+L029E: db 00
+L029F: db 'Taylor'
+L02A5: db 00
+L02A6: db 'paint'
+L02AB: db 00
+L02AC: db '"Yes," she blushes, "I have long admired those who are able '
+ db 'to express themselves visually. Sadly," she says, laughing, '
+ db '"I am not very good. However, I also collect art. In fact, I'
+ db ' have an original Sterling hanging in my room. Perhaps thou '
+ db 'couldst see it sometime."'
+L03B5: db 00
+L03B6: db 'paint'
+L03BB: db 00
+L03BC: db 'garden'
+L03C2: db 00
+L03C3: db '"My garden? I have been tending it for years now. I am a fir'
+ db 'm believer in the value of aesthetics, so I plant only flowe'
+ db 'rs. Sometimes I sell them in bouquets when people want them,'
+ db ' but I do that very rarely."'
+L0493: db 00
+L0494: db 'buy'
+L0497: db 00
+L0498: db 'aesthetics'
+L04A2: db 00
+L04A3: db 'garden'
+L04A9: db 00
+L04AA: db 'aesthetics'
+L04B4: db 00
+L04B5: db '"It refers to the practice or study of all things beautiful.'
+ db '"'
+L04F2: db 00
+L04F3: db 'aesthetics'
+L04FD: db 00
+L04FE: db 'buy'
+L0501: db 00
+L0502: db '"Thou wishest to buy a bouquet?"'
+L0522: db 00
+L0523: db '"Dost thou have anyone to give these flowers to?"'
+L0554: db 00
+L0555: db 'You tell her about the passing away of Reyna's mother.~"Ah, '
+ db 'yes. I had heard of Reyna's loss. That is a noble reason. Pl'
+ db 'ease take these flowers and give them to her."'
+L05FB: db 00
+L05FC: db '"Good. 'Tis always best to have someone to receive flowers. '
+ db 'The flowers will cost 10 gold. Dost thou still want them?"'
+L0672: db 00
+L0673: db '"I think thou wilt find these to be exceptionally beautiful.'
+ db '"'
+L06B0: db 00
+L06B1: db '"It appears thou dost not have room for my flowers. A pity."'
+L06ED: db 00
+L06EE: db '"I am sorry, '
+L06FB: db 00
+L06FC: db '. Thou dost not have the gold."'
+L071B: db 00
+L071C: db '"I understand, '
+L072B: db 00
+L072C: db '. Free flowers are indeed the best. And wild flowers are qui'
+ db 'te free. For now, '
+L077A: db 00
+L077B: db ', do no more than promise me thou wilt take the time to enjo'
+ db 'y my garden."'
+L07C4: db 00
+L07C5: db '"That is indeed unfortunate, '
+L07E2: db 00
+L07E3: db '. 'Tis always best to have someone to receive flowers."'
+L081A: db 00
+L081B: db '"Perhaps next time, thou mightest be interested. For now, '
+L0855: db 00
+L0856: db ', do no more than promise me thou wilt take the time to enjo'
+ db 'y my garden."'
+L089F: db 00
+L08A0: db 'buy'
+L08A3: db 00
+L08A4: db 'Kreg'
+L08A8: db 00
+L08A9: db '"I am afraid I do not know of such a person."'
+L08D6: db 00
+L08D7: db 'Kreg'
+L08DB: db 00
+L08DC: db 'bye'
+L08DF: db 00
+L08E0: db '"Fare thee well, '
+L08F1: db 00
+L08F2: db '. May the sweet scent of beauty never pass thee by."*'
+L0927: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0004H
+  .extern 0909H
+  .extern 090AH
+  .extern 0931H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 4A 02   jne 0252
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 8E FF   pushi FF8EH   ; -114
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 14   push false
+0019: 12 01 00   pop [0001]
+001C: 1D 00 00   pushs L0000   ; bye
+001F: 1D 04 00   pushs L0004   ; job
+0022: 1D 08 00   pushs L0008   ; name
+0025: 1E 03 00   arrc 0003H   ; 3
+0028: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002C: 42 5A 01   pushf flag:[015A]
+002F: 42 5B 01   pushf flag:[015B]
+0032: 0E   and
+0033: 05 07 00   jne 003D
+0036: 1D 0D 00   pushs L000D   ; garden
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 42 4C 01   pushf flag:[014C]
+0040: 10   not
+0041: 05 0B 00   jne 004F
+0044: 1C 14 00   addsi L0014   ; The monk pulls ba...
+0047: 33   say
+0048: 13   push true
+0049: 43 4C 01   popf flag:[014C]
+004C: 06 0A 00   jmp 0059
+004F: 1C 55 00   addsi L0055   ; "Greetings, 
+0052: 2F 00 00   addsv [0000]
+0055: 1C 62 00   addsi L0062   ; . I hope thy days...
+0058: 33   say
+0059: 04 F5 01   je 0251
+005C: 1D 89 00   pushs L0089   ; name
+005F: 07 01 00 27 00  cmps 0001H, 008B
+0064: 1C 8E 00   addsi L008E   ; "Thou mayest call...
+0067: 2F 00 00   addsv [0000]
+006A: 1C AA 00   addsi L00AA   ; ."
+006D: 33   say
+006E: 13   push true
+006F: 43 5B 01   popf flag:[015B]
+0072: 42 5A 01   pushf flag:[015A]
+0075: 21 01 00   push [0001]
+0078: 10   not
+0079: 0E   and
+007A: 05 07 00   jne 0084
+007D: 1D AD 00   pushs L00AD   ; garden
+0080: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0084: 1D B4 00   pushs L00B4   ; name
+0087: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008B: 1D B9 00   pushs L00B9   ; job
+008E: 07 01 00 27 00  cmps 0001H, 00BA
+0093: 1C BD 00   addsi L00BD   ; "As a monk, I am ...
+0096: 2F 00 00   addsv [0000]
+0099: 1C 18 01   addsi L0118   ; , in my spare tim...
+009C: 33   say
+009D: 1D 59 01   pushs L0159   ; Abbey
+00A0: 1D 5F 01   pushs L015F   ; garden
+00A3: 1D 66 01   pushs L0166   ; paint
+00A6: 1E 03 00   arrc 0003H   ; 3
+00A9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AD: 42 48 01   pushf flag:[0148]
+00B0: 05 07 00   jne 00BA
+00B3: 1D 6C 01   pushs L016C   ; Kreg
+00B6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BA: 1D 71 01   pushs L0171   ; Abbey
+00BD: 07 01 00 12 00  cmps 0001H, 00D4
+00C2: 1C 77 01   addsi L0177   ; "I have spent lit...
+00C5: 33   say
+00C6: 1D 27 02   pushs L0227   ; Taylor
+00C9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CD: 1D 2E 02   pushs L022E   ; Abbey
+00D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D4: 1D 34 02   pushs L0234   ; Taylor
+00D7: 07 01 00 0B 00  cmps 0001H, 00E7
+00DC: 1C 3B 02   addsi L023B   ; "He is a fellow m...
+00DF: 33   say
+00E0: 1D 9F 02   pushs L029F   ; Taylor
+00E3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E7: 1D A6 02   pushs L02A6   ; paint
+00EA: 07 01 00 0B 00  cmps 0001H, 00FA
+00EF: 1C AC 02   addsi L02AC   ; "Yes," she blushe...
+00F2: 33   say
+00F3: 1D B6 03   pushs L03B6   ; paint
+00F6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FA: 1D BC 03   pushs L03BC   ; garden
+00FD: 07 01 00 1C 00  cmps 0001H, 011E
+0102: 13   push true
+0103: 12 01 00   pop [0001]
+0106: 1C C3 03   addsi L03C3   ; "My garden? I hav...
+0109: 33   say
+010A: 1D 94 04   pushs L0494   ; buy
+010D: 1D 98 04   pushs L0498   ; aesthetics
+0110: 1E 02 00   arrc 0002H   ; 2
+0113: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0117: 1D A3 04   pushs L04A3   ; garden
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D AA 04   pushs L04AA   ; aesthetics
+0121: 07 01 00 0B 00  cmps 0001H, 0131
+0126: 1C B5 04   addsi L04B5   ; "It refers to the...
+0129: 33   say
+012A: 1D F3 04   pushs L04F3   ; aesthetics
+012D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0131: 1D FE 04   pushs L04FE   ; buy
+0134: 07 01 00 EF 00  cmps 0001H, 0228
+0139: 1C 02 05   addsi L0502   ; "Thou wishest to ...
+013C: 33   say
+013D: 24 01 00   call [0001]   ; 090AH
+0140: 12 02 00   pop [0002]
+0143: 21 02 00   push [0002]
+0146: 05 CE 00   jne 0217
+0149: 1C 23 05   addsi L0523   ; "Dost thou have a...
+014C: 33   say
+014D: 24 01 00   call [0001]   ; 090AH
+0150: 12 03 00   pop [0003]
+0153: 21 03 00   push [0003]
+0156: 05 B1 00   jne 020A
+0159: 42 28 01   pushf flag:[0128]
+015C: 42 5C 01   pushf flag:[015C]
+015F: 10   not
+0160: 0E   and
+0161: 05 1F 00   jne 0183
+0164: 1C 55 05   addsi L0555   ; You tell her abou...
+0167: 33   say
+0168: 13   push true
+0169: 1F 04 00   pushi 0004H   ; 4
+016C: 1F 99 FE   pushi FE99H   ; -359
+016F: 1F E7 03   pushi 03E7H   ; 999
+0172: 1F 01 00   pushi 0001H   ; 1
+0175: 38 2C 00 05  callis 002C, 5
+0179: 12 04 00   pop [0004]
+017C: 13   push true
+017D: 43 5C 01   popf flag:[015C]
+0180: 06 84 00   jmp 0207
+0183: 1C FC 05   addsi L05FC   ; "Good. 'Tis alway...
+0186: 33   say
+0187: 24 01 00   call [0001]   ; 090AH
+018A: 12 05 00   pop [0005]
+018D: 21 05 00   push [0005]
+0190: 05 64 00   jne 01F7
+0193: 1F 99 FE   pushi FE99H   ; -359
+0196: 1F 99 FE   pushi FE99H   ; -359
+0199: 1F 84 02   pushi 0284H   ; 644
+019C: 1F 0A 00   pushi 000AH   ; 10
+019F: 1F 9B FE   pushi FE9BH   ; -357
+01A2: 24 02 00   call [0002]   ; 0931H
+01A5: 12 06 00   pop [0006]
+01A8: 13   push true
+01A9: 1F 04 00   pushi 0004H   ; 4
+01AC: 1F 99 FE   pushi FE99H   ; -359
+01AF: 1F E7 03   pushi 03E7H   ; 999
+01B2: 1F 01 00   pushi 0001H   ; 1
+01B5: 38 2C 00 05  callis 002C, 5
+01B9: 12 07 00   pop [0007]
+01BC: 21 06 00   push [0006]
+01BF: 05 28 00   jne 01EA
+01C2: 21 07 00   push [0007]
+01C5: 05 1B 00   jne 01E3
+01C8: 13   push true
+01C9: 1F 99 FE   pushi FE99H   ; -359
+01CC: 1F 99 FE   pushi FE99H   ; -359
+01CF: 1F 84 02   pushi 0284H   ; 644
+01D2: 1F 0A 00   pushi 000AH   ; 10
+01D5: 38 2B 00 05  callis 002B, 5
+01D9: 12 08 00   pop [0008]
+01DC: 1C 73 06   addsi L0673   ; "I think thou wil...
+01DF: 33   say
+01E0: 06 04 00   jmp 01E7
+01E3: 1C B1 06   addsi L06B1   ; "It appears thou ...
+01E6: 33   say
+01E7: 06 0A 00   jmp 01F4
+01EA: 1C EE 06   addsi L06EE   ; "I am sorry, 
+01ED: 2F 00 00   addsv [0000]
+01F0: 1C FC 06   addsi L06FC   ; . Thou dost not h...
+01F3: 33   say
+01F4: 06 10 00   jmp 0207
+01F7: 1C 1C 07   addsi L071C   ; "I understand, 
+01FA: 2F 00 00   addsv [0000]
+01FD: 1C 2C 07   addsi L072C   ; . Free flowers ar...
+0200: 2F 00 00   addsv [0000]
+0203: 1C 7B 07   addsi L077B   ; , do no more than...
+0206: 33   say
+0207: 06 0A 00   jmp 0214
+020A: 1C C5 07   addsi L07C5   ; "That is indeed u...
+020D: 2F 00 00   addsv [0000]
+0210: 1C E3 07   addsi L07E3   ; . 'Tis always bes...
+0213: 33   say
+0214: 06 0A 00   jmp 0221
+0217: 1C 1B 08   addsi L081B   ; "Perhaps next tim...
+021A: 2F 00 00   addsv [0000]
+021D: 1C 56 08   addsi L0856   ; , do no more than...
+0220: 33   say
+0221: 1D A0 08   pushs L08A0   ; buy
+0224: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0228: 1D A4 08   pushs L08A4   ; Kreg
+022B: 07 01 00 0B 00  cmps 0001H, 023B
+0230: 1C A9 08   addsi L08A9   ; "I am afraid I do...
+0233: 33   say
+0234: 1D D7 08   pushs L08D7   ; Kreg
+0237: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023B: 1D DC 08   pushs L08DC   ; bye
+023E: 07 01 00 0B 00  cmps 0001H, 024E
+0243: 1C E0 08   addsi L08E0   ; "Fare thee well, 
+0246: 2F 00 00   addsv [0000]
+0249: 1C F2 08   addsi L08F2   ; . May the sweet s...
+024C: 33   say
+024D: 3F   abrt
+024E: 06 08 FE   jmp 0059
+0251: 40   db 40 ???
+0252: 48   push eventid
+0253: 1F 00 00   pushi 0000H   ; 0
+0256: 22   cmpeq
+0257: 05 06 00   jne 0260
+025A: 1F 8E FF   pushi FF8EH   ; -114
+025D: 24 03 00   call [0003]   ; 092EH
+0260: 25   ret

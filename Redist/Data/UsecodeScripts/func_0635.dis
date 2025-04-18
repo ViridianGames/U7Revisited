@@ -1,0 +1,94 @@
+  .funcnumber 0635H
+  .data
+L0000: db '@Do not over cook it!@'
+L0016: db 00
+L0017: db '@I believe the bread is ready.@'
+L0036: db 00
+L0037: db '@Mmm... Smells good.@'
+L004C: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0001H
+  .extern 08FEH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 45 00   jne 004D
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 00 00   pushi 0000H   ; 0
+000E: 1F 92 02   pushi 0292H   ; 658
+0011: 3E   push itemref
+0012: 38 35 00 04  callis 0035, 4
+0016: 12 00 00   pop [0000]
+0019: 21 00 00   push [0000]
+001C: 05 2E 00   jne 004D
+001F: 1F 3C 00   pushi 003CH   ; 60
+0022: 1F 35 06   pushi 0635H   ; 1589
+0025: 44 55   pushw 4455H   ; 17493
+0027: 44 23   pushw 1E23H   ; 7715
+0029: 1E 03 00   arrc 0003H   ; 3
+002C: 21 00 00   push [0000]
+002F: 38 02 00 03  callis 0002, 3
+0033: 12 01 00   pop [0001]
+0036: 1F 02 00   pushi 0002H   ; 2
+0039: 1F 01 00   pushi 0001H   ; 1
+003C: 38 10 00 02  callis _Random2@2  ; 0010
+0040: 1F 01 00   pushi 0001H   ; 1
+0043: 22   cmpeq
+0044: 05 06 00   jne 004D
+0047: 1D 00 00   pushs L0000   ; @Do not over cook...
+004A: 24 00 00   call [0000]   ; 08FEH
+004D: 48   push eventid
+004E: 1F 02 00   pushi 0002H   ; 2
+0051: 22   cmpeq
+0052: 05 8B 00   jne 00E0
+0055: 3E   push itemref
+0056: 38 18 00 01  callis 0018, 1
+005A: 12 02 00   pop [0002]
+005D: 1F 00 00   pushi 0000H   ; 0
+0060: 1F 02 00   pushi 0002H   ; 2
+0063: 1F 3F 03   pushi 033FH   ; 831
+0066: 3E   push itemref
+0067: 38 35 00 04  callis 0035, 4
+006B: 12 03 00   pop [0003]
+006E: 21 03 00   push [0003]
+0071: 38 5E 00 01  callis _ArraySize@1  ; 005E
+0075: 1F 00 00   pushi 0000H   ; 0
+0078: 16   cmpgt
+0079: 05 64 00   jne 00E0
+007C: 3E   push itemref
+007D: 39 6F 00 01  calli 006F, 1
+0081: 1F 79 01   pushi 0179H   ; 377
+0084: 38 24 00 01  callis 0024, 1
+0088: 12 04 00   pop [0004]
+008B: 21 04 00   push [0004]
+008E: 05 4F 00   jne 00E0
+0091: 1F 12 00   pushi 0012H   ; 18
+0094: 21 04 00   push [0004]
+0097: 39 89 00 02  calli 0089, 2
+009B: 1F 00 00   pushi 0000H   ; 0
+009E: 3E   push itemref
+009F: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00A3: 21 02 00   push [0002]
+00A6: 38 26 00 01  callis 0026, 1
+00AA: 12 01 00   pop [0001]
+00AD: 21 01 00   push [0001]
+00B0: 05 2D 00   jne 00E0
+00B3: 1F 03 00   pushi 0003H   ; 3
+00B6: 1F 01 00   pushi 0001H   ; 1
+00B9: 38 10 00 02  callis _Random2@2  ; 0010
+00BD: 12 05 00   pop [0005]
+00C0: 21 05 00   push [0005]
+00C3: 1F 01 00   pushi 0001H   ; 1
+00C6: 22   cmpeq
+00C7: 05 06 00   jne 00D0
+00CA: 1D 17 00   pushs L0017   ; @I believe the br...
+00CD: 24 00 00   call [0000]   ; 08FEH
+00D0: 21 05 00   push [0005]
+00D3: 1F 02 00   pushi 0002H   ; 2
+00D6: 22   cmpeq
+00D7: 05 06 00   jne 00E0
+00DA: 1D 37 00   pushs L0037   ; @Mmm... Smells go...
+00DD: 24 00 00   call [0000]   ; 08FEH
+00E0: 25   ret

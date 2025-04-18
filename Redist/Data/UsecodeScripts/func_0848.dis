@@ -1,0 +1,117 @@
+  .funcnumber 0848H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 21 00 00   push [0000]
+0003: 1F F8 01   pushi 01F8H   ; 504
+0006: 22   cmpeq
+0007: 05 04 00   jne 000E
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 2D   setr
+000E: 21 00 00   push [0000]
+0011: 1F F9 01   pushi 01F9H   ; 505
+0014: 22   cmpeq
+0015: 05 04 00   jne 001C
+0018: 1F 01 00   pushi 0001H   ; 1
+001B: 2D   setr
+001C: 21 00 00   push [0000]
+001F: 1F E6 00   pushi 00E6H   ; 230
+0022: 22   cmpeq
+0023: 05 04 00   jne 002A
+0026: 1F 01 00   pushi 0001H   ; 1
+0029: 2D   setr
+002A: 21 00 00   push [0000]
+002D: 1F 7D 01   pushi 017DH   ; 381
+0030: 22   cmpeq
+0031: 05 04 00   jne 0038
+0034: 1F 01 00   pushi 0001H   ; 1
+0037: 2D   setr
+0038: 21 00 00   push [0000]
+003B: 1F 77 01   pushi 0177H   ; 375
+003E: 22   cmpeq
+003F: 05 04 00   jne 0046
+0042: 1F 01 00   pushi 0001H   ; 1
+0045: 2D   setr
+0046: 21 00 00   push [0000]
+0049: 1F 7E 01   pushi 017EH   ; 382
+004C: 22   cmpeq
+004D: 05 04 00   jne 0054
+0050: 1F 01 00   pushi 0001H   ; 1
+0053: 2D   setr
+0054: 21 00 00   push [0000]
+0057: 1F 16 02   pushi 0216H   ; 534
+005A: 22   cmpeq
+005B: 05 04 00   jne 0062
+005E: 1F 01 00   pushi 0001H   ; 1
+0061: 2D   setr
+0062: 21 00 00   push [0000]
+0065: 1F F5 01   pushi 01F5H   ; 501
+0068: 22   cmpeq
+0069: 05 04 00   jne 0070
+006C: 1F 01 00   pushi 0001H   ; 1
+006F: 2D   setr
+0070: 21 00 00   push [0000]
+0073: 1F 7C 01   pushi 017CH   ; 380
+0076: 22   cmpeq
+0077: 05 04 00   jne 007E
+007A: 1F 01 00   pushi 0001H   ; 1
+007D: 2D   setr
+007E: 21 00 00   push [0000]
+0081: 1F E0 01   pushi 01E0H   ; 480
+0084: 22   cmpeq
+0085: 05 04 00   jne 008C
+0088: 1F 01 00   pushi 0001H   ; 1
+008B: 2D   setr
+008C: 21 00 00   push [0000]
+008F: 1F D1 01   pushi 01D1H   ; 465
+0092: 22   cmpeq
+0093: 05 04 00   jne 009A
+0096: 1F 01 00   pushi 0001H   ; 1
+0099: 2D   setr
+009A: 21 00 00   push [0000]
+009D: 1F E7 01   pushi 01E7H   ; 487
+00A0: 22   cmpeq
+00A1: 05 04 00   jne 00A8
+00A4: 1F 01 00   pushi 0001H   ; 1
+00A7: 2D   setr
+00A8: 21 00 00   push [0000]
+00AB: 1F E8 01   pushi 01E8H   ; 488
+00AE: 22   cmpeq
+00AF: 05 04 00   jne 00B6
+00B2: 1F 01 00   pushi 0001H   ; 1
+00B5: 2D   setr
+00B6: 21 00 00   push [0000]
+00B9: 1F E9 01   pushi 01E9H   ; 489
+00BC: 22   cmpeq
+00BD: 05 04 00   jne 00C4
+00C0: 1F 01 00   pushi 0001H   ; 1
+00C3: 2D   setr
+00C4: 21 00 00   push [0000]
+00C7: 1F FA 01   pushi 01FAH   ; 506
+00CA: 22   cmpeq
+00CB: 05 04 00   jne 00D2
+00CE: 1F 01 00   pushi 0001H   ; 1
+00D1: 2D   setr
+00D2: 21 00 00   push [0000]
+00D5: 1F BD 01   pushi 01BDH   ; 445
+00D8: 22   cmpeq
+00D9: 05 04 00   jne 00E0
+00DC: 1F 01 00   pushi 0001H   ; 1
+00DF: 2D   setr
+00E0: 21 00 00   push [0000]
+00E3: 1F BE 01   pushi 01BEH   ; 446
+00E6: 22   cmpeq
+00E7: 05 04 00   jne 00EE
+00EA: 1F 01 00   pushi 0001H   ; 1
+00ED: 2D   setr
+00EE: 21 00 00   push [0000]
+00F1: 1F 9A 00   pushi 009AH   ; 154
+00F4: 22   cmpeq
+00F5: 05 04 00   jne 00FC
+00F8: 1F 01 00   pushi 0001H   ; 1
+00FB: 2D   setr
+00FC: 1F 00 00   pushi 0000H   ; 0
+00FF: 2D   setr
+0100: 32   rts

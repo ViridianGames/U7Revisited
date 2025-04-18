@@ -1,0 +1,67 @@
+  .funcnumber 0919H
+  .data
+L0000: db '"The Fellowship is a society of spiritual seekers who strive'
+ db ' to reach the highest levels of human potential and to share'
+ db ' this philosophy freely with all people. The Fellowship was '
+ db 'formed twenty years ago by Batlin with the full approval and'
+ db ' support of Lord British."'
+L010A: db 00
+L010B: db '"The Fellowship is a wonderful organization that is open to '
+ db 'all the people of Britannia. I have learned so much through '
+ db 'studying its philosophy and it has helped me to live my life'
+ db ' to the fullest. Through The Fellowship I am able to achieve'
+ db ' what I have set out to do in life and I am a better person '
+ db 'for having joined."'
+L024A: db 00
+L024B: db '"The Fellowship is the philosophical group devoted to the te'
+ db 'achings of a truly great man named Batlin. In the absence of'
+ db ' the Avatar, Batlin has become a sort of spiritual father fo'
+ db 'r the people of Britannia. Through his speeches and writings'
+ db ' he has changed the lives of many people, including my own."'
+L0377: db 00
+L0378: db '"The Fellowship is a group that has been gaining much popula'
+ db 'rity in recent years with the people of Britannia. While on '
+ db 'the surface it may simply appear to be a scholarly society s'
+ db 'tudying its particular philosophy, its teachings have the po'
+ db 'wer to forever alter the shape of Britannian society. Its ce'
+ db 'remonies are deeply moving experiences."'
+L04CC: db 00
+L04CD: db 'philosophy'
+L04D7: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0000H
+0000: 38 67 00 00  callis 0067, 0
+0004: 12 00 00   pop [0000]
+0007: 1F 04 00   pushi 0004H   ; 4
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 38 10 00 02  callis _Random2@2  ; 0010
+0011: 12 01 00   pop [0001]
+0014: 21 01 00   push [0001]
+0017: 1F 01 00   pushi 0001H   ; 1
+001A: 22   cmpeq
+001B: 05 04 00   jne 0022
+001E: 1C 00 00   addsi L0000   ; "The Fellowship i...
+0021: 33   say
+0022: 21 01 00   push [0001]
+0025: 1F 02 00   pushi 0002H   ; 2
+0028: 22   cmpeq
+0029: 05 04 00   jne 0030
+002C: 1C 0B 01   addsi L010B   ; "The Fellowship i...
+002F: 33   say
+0030: 21 01 00   push [0001]
+0033: 1F 03 00   pushi 0003H   ; 3
+0036: 22   cmpeq
+0037: 05 04 00   jne 003E
+003A: 1C 4B 02   addsi L024B   ; "The Fellowship i...
+003D: 33   say
+003E: 21 01 00   push [0001]
+0041: 1F 04 00   pushi 0004H   ; 4
+0044: 22   cmpeq
+0045: 05 04 00   jne 004C
+0048: 1C 78 03   addsi L0378   ; "The Fellowship i...
+004B: 33   say
+004C: 1D CD 04   pushs L04CD   ; philosophy
+004F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0053: 25   ret

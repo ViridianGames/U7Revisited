@@ -1,0 +1,55 @@
+  .funcnumber 06BCH
+  .data
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0001H
+  .extern 093FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 64 00   jne 006C
+0008: 3E   push itemref
+0009: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 10   not
+0014: 05 14 00   jne 002B
+0017: 1F 08 00   pushi 0008H   ; 8
+001A: 1F 28 00   pushi 0028H   ; 40
+001D: 1F 99 FE   pushi FE99H   ; -359
+0020: 3E   push itemref
+0021: 38 35 00 04  callis 0035, 4
+0025: 12 01 00   pop [0001]
+0028: 06 11 00   jmp 003C
+002B: 1F 08 00   pushi 0008H   ; 8
+002E: 21 00 00   push [0000]
+0031: 1F 99 FE   pushi FE99H   ; -359
+0034: 3E   push itemref
+0035: 38 35 00 04  callis 0035, 4
+0039: 12 01 00   pop [0001]
+003C: 2E   sloop
+003D: 02 02 00 03 00 04 00 01 00 24 00  db 2 ???
+003E:   db 2
+003F:   db 0
+0040:   db 3
+0041:   db 0
+0042:   db 4
+0043:   db 0
+0044:   db 1
+0045:   db 0
+0046:   db 24
+0047:   db 0
+0048: 1F 06 00   pushi 0006H   ; 6
+004B: 21 04 00   push [0004]
+004E: 38 88 00 02  callis 0088, 2
+0052: 10   not
+0053: 05 13 00   jne 0069
+0056: 1F 00 00   pushi 0000H   ; 0
+0059: 21 04 00   push [0004]
+005C: 24 00 00   call [0000]   ; 093FH
+005F: 1F 01 00   pushi 0001H   ; 1
+0062: 21 04 00   push [0004]
+0065: 39 8A 00 02  calli 008A, 2
+0069: 06 D1 FF   jmp 003D
+006C: 25   ret

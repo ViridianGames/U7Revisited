@@ -1,0 +1,32 @@
+  .funcnumber 06C9H ;* Approaching Minoc mill.
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0001H
+  .extern 093FH
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 24 00   jne 002C
+0008: 1F A2 FF   pushi FFA2H   ; -94
+000B: 1F A1 FF   pushi FFA1H   ; -95
+000E: 1E 02 00   arrc 0002H   ; 2
+0011: 12 00 00   pop [0000]
+0014: 2E   sloop
+0015: 02 01 00 02 00 03 00 00 00 0C 00  db 2 ???
+0016:   db 1
+0017:   db 0
+0018:   db 2
+0019:   db 0
+001A:   db 3
+001B:   db 0
+001C:   db 0
+001D:   db 0
+001E:   db c
+001F:   db 0
+0020: 1F 0B 00   pushi 000BH   ; 11
+0023: 21 03 00   push [0003]
+0026: 24 00 00   call [0000]   ; 093FH
+0029: 06 E9 FF   jmp 0015
+002C: 25   ret

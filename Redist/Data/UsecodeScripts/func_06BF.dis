@@ -1,0 +1,37 @@
+  .funcnumber 06BFH
+  .data
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0001H
+  .extern 0936H
+0000: 48   push eventid
+0001: 1F 03 00   pushi 0003H   ; 3
+0004: 22   cmpeq
+0005: 05 34 00   jne 003C
+0008: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000C: 12 00 00   pop [0000]
+000F: 3E   push itemref
+0010: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0014: 12 01 00   pop [0001]
+0017: 2E   sloop
+0018: 02 02 00 03 00 04 00 00 00 19 00  db 2 ???
+0019:   db 2
+001A:   db 0
+001B:   db 3
+001C:   db 0
+001D:   db 4
+001E:   db 0
+001F:   db 0
+0020:   db 0
+0021:   db 19
+0022:   db 0
+0023: 21 01 00   push [0001]
+0026: 1F 01 00   pushi 0001H   ; 1
+0029: 38 10 00 02  callis _Random2@2  ; 0010
+002D: 12 05 00   pop [0005]
+0030: 21 05 00   push [0005]
+0033: 21 04 00   push [0004]
+0036: 24 00 00   call [0000]   ; 0936H
+0039: 06 DC FF   jmp 0018
+003C: 25   ret

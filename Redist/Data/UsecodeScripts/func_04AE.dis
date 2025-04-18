@@ -1,0 +1,467 @@
+  .funcnumber 04AEH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a beggar leaning on a crutch. His eyes shine like di'
+ db 'amonds with sheer bitterness.'
+L0066: db 00
+L0067: db '"Happy days, '
+L0074: db 00
+L0075: db '?" Komor asks.'
+L0083: db 00
+L0084: db 'name'
+L0088: db 00
+L0089: db '"My name is Komor."'
+L009C: db 00
+L009D: db 'name'
+L00A1: db 00
+L00A2: db 'job'
+L00A5: db 00
+L00A6: db '"I am a dancer, '
+L00B6: db 00
+L00B7: db '." He cannot keep a straight face and almost falls off his c'
+ db 'rutches.*'
+L00FC: db 00
+L00FD: db 'beggar'
+L0103: db 00
+L0104: db '"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!"*'
+L0136: db 00
+L0137: db 'beggar'
+L013D: db 00
+L013E: db '"I was not always a beggar. Like Fenn and Merrick, I used to'
+ db ' be a farmer, too. But times got worse, and times are always'
+ db ' bad in Paws."'
+L01C4: db 00
+L01C5: db 'give'
+L01C9: db 00
+L01CA: db 'Paws'
+L01CE: db 00
+L01CF: db 'Merrick'
+L01D6: db 00
+L01D7: db 'Fenn'
+L01DB: db 00
+L01DC: db 'beggar'
+L01E2: db 00
+L01E3: db 'Fenn'
+L01E7: db 00
+L01E8: db '"Fenn and me are chums and will be to the day we die. We sha'
+ db 're in each other's vast expanses of wealth."*'
+L0251: db 00
+L0252: db 'Fenn'
+L0256: db 00
+L0257: db 'wealth'
+L025D: db 00
+L025E: db 'chums'
+L0263: db 00
+L0264: db '"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!"*'
+L029E: db 00
+L029F: db 'chums'
+L02A4: db 00
+L02A5: db '"Fenn and me have been friends since we were little tiny bab'
+ db 'es."'
+L02E5: db 00
+L02E6: db '"I would bet thee that thou didst not think we would end up '
+ db 'like this. Eh, Fenn?"*'
+L0338: db 00
+L0339: db '"Not in me wildest dreams, Komor.*"'
+L035C: db 00
+L035D: db 'chums'
+L0362: db 00
+L0363: db 'wealth'
+L0369: db 00
+L036A: db '"Yea verily, Fenn and I share all that we own. Which, in its'
+ db ' totality, is the clothes on our backs and the snot in our t'
+ db 'hroats!"'
+L03EA: db 00
+L03EB: db 'wealth'
+L03F1: db 00
+L03F2: db 'Merrick'
+L03F9: db 00
+L03FA: db '"A royal rotten egg, he is. Merrick turned his back on us an'
+ db 'd now spends each night in a warm, cozy bed. Which is more t'
+ db 'han either one of us have had for some time."'
+L049F: db 00
+L04A0: db 'bed'
+L04A3: db 00
+L04A4: db 'turned his back'
+L04B3: db 00
+L04B4: db 'Merrick'
+L04BB: db 00
+L04BC: db 'Paws'
+L04C0: db 00
+L04C1: db '"A veritable wonderland, is it not?"'
+L04E5: db 00
+L04E6: db 'Paws'
+L04EA: db 00
+L04EB: db 'turned his back'
+L04FA: db 00
+L04FB: db '"The only thing worse than this miserable existence is havin'
+ db 'g Merrick sniff around and try to recruit us! The bloody par'
+ db 'asite!"'
+L057A: db 00
+L057B: db 'turned his back'
+L058A: db 00
+L058B: db 'bed'
+L058E: db 00
+L058F: db '"Merrick sleeps in the shelter run by The Fellowship. They f'
+ db 'eed him, too. He had to join before they would help him."'
+L0604: db 00
+L0605: db 'Fellowship'
+L060F: db 00
+L0610: db 'shelter'
+L0617: db 00
+L0618: db 'bed'
+L061B: db 00
+L061C: db 'shelter'
+L0623: db 00
+L0624: db '"The shelter? 'Tis the large building filled with fawning hy'
+ db 'pocrites. Thou shouldst have little trouble finding it!"'
+L0698: db 00
+L0699: db 'shelter'
+L06A0: db 00
+L06A1: db 'Fellowship'
+L06AB: db 00
+L06AC: db '"We could have joined, but they are a foul lot. Anybody acti'
+ db 'ng so bloody nice must be up to no good. There are some comp'
+ db 'romises we will not make, even to survive."'
+L074F: db 00
+L0750: db 'Fellowship'
+L075A: db 00
+L075B: db 'give'
+L075F: db 00
+L0760: db '"Wilt thou give me a bit of money?"'
+L0783: db 00
+L0784: db 'How much?'
+L078D: db 00
+L078E: db '5'
+L078F: db 00
+L0790: db '4'
+L0791: db 00
+L0792: db '3'
+L0793: db 00
+L0794: db '2'
+L0795: db 00
+L0796: db '1'
+L0797: db 00
+L0798: db '0'
+L0799: db 00
+L079A: db '"Thank thee, '
+L07A7: db 00
+L07A8: db '."'
+L07AA: db 00
+L07AB: db '"I am unable to take thy money, for some strange reason."'
+L07E4: db 00
+L07E5: db '"Hmpf! Thou dost not have that much gold! Thou art almost as'
+ db ' poor as I!"'
+L082D: db 00
+L082E: db '"Fine. Go on and live thy life in peace and happiness."'
+L0865: db 00
+L0866: db 'give'
+L086A: db 00
+L086B: db 'bye'
+L086E: db 00
+L086F: db '"Hold thine head high, '
+L0886: db 00
+L0887: db '."*'
+L088A: db 00
+L088B: db '@Spare coin for the wretched?@'
+L08A9: db 00
+L08AA: db '@A modest handout, good person?@'
+L08CA: db 00
+L08CB: db '@Mercy may change thy luck!@'
+L08E7: db 00
+L08E8: db '@Any money for me, friend?@'
+L0903: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0005H
+  .extern 0909H
+  .extern 08F7H
+  .extern 090AH
+  .extern 090BH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 A9 02   jne 02B1
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 52 FF   pushi FF52H   ; -174
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1F 51 FF   pushi FF51H   ; -175
+001B: 24 01 00   call [0001]   ; 08F7H
+001E: 12 01 00   pop [0001]
+0021: 1D 00 00   pushs L0000   ; bye
+0024: 1D 04 00   pushs L0004   ; job
+0027: 1D 08 00   pushs L0008   ; name
+002A: 1E 03 00   arrc 0003H   ; 3
+002D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0031: 42 27 02   pushf flag:[0227]
+0034: 10   not
+0035: 05 0B 00   jne 0043
+0038: 1C 0D 00   addsi L000D   ; You see a beggar ...
+003B: 33   say
+003C: 13   push true
+003D: 43 27 02   popf flag:[0227]
+0040: 06 0A 00   jmp 004D
+0043: 1C 67 00   addsi L0067   ; "Happy days, 
+0046: 2F 00 00   addsv [0000]
+0049: 1C 75 00   addsi L0075   ; ?" Komor asks.
+004C: 33   say
+004D: 04 56 02   je 02A6
+0050: 1D 84 00   pushs L0084   ; name
+0053: 07 01 00 0B 00  cmps 0001H, 0063
+0058: 1C 89 00   addsi L0089   ; "My name is Komor."
+005B: 33   say
+005C: 1D 9D 00   pushs L009D   ; name
+005F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0063: 1D A2 00   pushs L00A2   ; job
+0066: 07 01 00 3F 00  cmps 0001H, 00AA
+006B: 1C A6 00   addsi L00A6   ; "I am a dancer, 
+006E: 2F 00 00   addsv [0000]
+0071: 1C B7 00   addsi L00B7   ; ." He cannot keep...
+0074: 33   say
+0075: 1D FD 00   pushs L00FD   ; beggar
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 1F 51 FF   pushi FF51H   ; -175
+007F: 24 01 00   call [0001]   ; 08F7H
+0082: 12 01 00   pop [0001]
+0085: 21 01 00   push [0001]
+0088: 05 1F 00   jne 00AA
+008B: 1F 00 00   pushi 0000H   ; 0
+008E: 1F 51 FF   pushi FF51H   ; -175
+0091: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0095: 1C 04 01   addsi L0104   ; "Ha! Ha! Ha! Ha! ...
+0098: 33   say
+0099: 1F 51 FF   pushi FF51H   ; -175
+009C: 39 04 00 01  calli _HideNPC@1  ; 0004
+00A0: 1F 00 00   pushi 0000H   ; 0
+00A3: 1F 52 FF   pushi FF52H   ; -174
+00A6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00AA: 1D 37 01   pushs L0137   ; beggar
+00AD: 07 01 00 1E 00  cmps 0001H, 00D0
+00B2: 1C 3E 01   addsi L013E   ; "I was not always...
+00B5: 33   say
+00B6: 1D C5 01   pushs L01C5   ; give
+00B9: 1D CA 01   pushs L01CA   ; Paws
+00BC: 1D CF 01   pushs L01CF   ; Merrick
+00BF: 1D D7 01   pushs L01D7   ; Fenn
+00C2: 1E 04 00   arrc 0004H   ; 4
+00C5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C9: 1D DC 01   pushs L01DC   ; beggar
+00CC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D0: 1D E3 01   pushs L01E3   ; Fenn
+00D3: 07 01 00 46 00  cmps 0001H, 011E
+00D8: 1C E8 01   addsi L01E8   ; "Fenn and me are ...
+00DB: 33   say
+00DC: 1D 52 02   pushs L0252   ; Fenn
+00DF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E3: 1D 57 02   pushs L0257   ; wealth
+00E6: 1D 5E 02   pushs L025E   ; chums
+00E9: 1E 02 00   arrc 0002H   ; 2
+00EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F0: 1F 51 FF   pushi FF51H   ; -175
+00F3: 24 01 00   call [0001]   ; 08F7H
+00F6: 12 01 00   pop [0001]
+00F9: 21 01 00   push [0001]
+00FC: 05 1F 00   jne 011E
+00FF: 1F 00 00   pushi 0000H   ; 0
+0102: 1F 51 FF   pushi FF51H   ; -175
+0105: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0109: 1C 64 02   addsi L0264   ; "Ha! Ha! Ha! Ha! ...
+010C: 33   say
+010D: 1F 51 FF   pushi FF51H   ; -175
+0110: 39 04 00 01  calli _HideNPC@1  ; 0004
+0114: 1F 00 00   pushi 0000H   ; 0
+0117: 1F 52 FF   pushi FF52H   ; -174
+011A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011E: 1D 9F 02   pushs L029F   ; chums
+0121: 07 01 00 3D 00  cmps 0001H, 0163
+0126: 1C A5 02   addsi L02A5   ; "Fenn and me have...
+0129: 33   say
+012A: 1F 51 FF   pushi FF51H   ; -175
+012D: 24 01 00   call [0001]   ; 08F7H
+0130: 12 01 00   pop [0001]
+0133: 21 01 00   push [0001]
+0136: 05 23 00   jne 015C
+0139: 1C E6 02   addsi L02E6   ; "I would bet thee...
+013C: 33   say
+013D: 1F 00 00   pushi 0000H   ; 0
+0140: 1F 51 FF   pushi FF51H   ; -175
+0143: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0147: 1C 39 03   addsi L0339   ; "Not in me wildes...
+014A: 33   say
+014B: 1F 51 FF   pushi FF51H   ; -175
+014E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0152: 1F 00 00   pushi 0000H   ; 0
+0155: 1F 52 FF   pushi FF52H   ; -174
+0158: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+015C: 1D 5D 03   pushs L035D   ; chums
+015F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0163: 1D 63 03   pushs L0363   ; wealth
+0166: 07 01 00 0B 00  cmps 0001H, 0176
+016B: 1C 6A 03   addsi L036A   ; "Yea verily, Fenn...
+016E: 33   say
+016F: 1D EB 03   pushs L03EB   ; wealth
+0172: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0176: 1D F2 03   pushs L03F2   ; Merrick
+0179: 07 01 00 18 00  cmps 0001H, 0196
+017E: 1C FA 03   addsi L03FA   ; "A royal rotten e...
+0181: 33   say
+0182: 1D A0 04   pushs L04A0   ; bed
+0185: 1D A4 04   pushs L04A4   ; turned his back
+0188: 1E 02 00   arrc 0002H   ; 2
+018B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+018F: 1D B4 04   pushs L04B4   ; Merrick
+0192: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0196: 1D BC 04   pushs L04BC   ; Paws
+0199: 07 01 00 0B 00  cmps 0001H, 01A9
+019E: 1C C1 04   addsi L04C1   ; "A veritable wond...
+01A1: 33   say
+01A2: 1D E6 04   pushs L04E6   ; Paws
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1D EB 04   pushs L04EB   ; turned his back
+01AC: 07 01 00 0B 00  cmps 0001H, 01BC
+01B1: 1C FB 04   addsi L04FB   ; "The only thing w...
+01B4: 33   say
+01B5: 1D 7B 05   pushs L057B   ; turned his back
+01B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BC: 1D 8B 05   pushs L058B   ; bed
+01BF: 07 01 00 18 00  cmps 0001H, 01DC
+01C4: 1C 8F 05   addsi L058F   ; "Merrick sleeps i...
+01C7: 33   say
+01C8: 1D 05 06   pushs L0605   ; Fellowship
+01CB: 1D 10 06   pushs L0610   ; shelter
+01CE: 1E 02 00   arrc 0002H   ; 2
+01D1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D5: 1D 18 06   pushs L0618   ; bed
+01D8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DC: 1D 1C 06   pushs L061C   ; shelter
+01DF: 07 01 00 0B 00  cmps 0001H, 01EF
+01E4: 1C 24 06   addsi L0624   ; "The shelter? 'Ti...
+01E7: 33   say
+01E8: 1D 99 06   pushs L0699   ; shelter
+01EB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EF: 1D A1 06   pushs L06A1   ; Fellowship
+01F2: 07 01 00 0B 00  cmps 0001H, 0202
+01F7: 1C AC 06   addsi L06AC   ; "We could have jo...
+01FA: 33   say
+01FB: 1D 50 07   pushs L0750   ; Fellowship
+01FE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0202: 1D 5B 07   pushs L075B   ; give
+0205: 07 01 00 8E 00  cmps 0001H, 0298
+020A: 1C 60 07   addsi L0760   ; "Wilt thou give m...
+020D: 33   say
+020E: 24 02 00   call [0002]   ; 090AH
+0211: 05 79 00   jne 028D
+0214: 1C 84 07   addsi L0784   ; How much?
+0217: 33   say
+0218: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+021C: 1D 8E 07   pushs L078E   ; 5
+021F: 1D 90 07   pushs L0790   ; 4
+0222: 1D 92 07   pushs L0792   ; 3
+0225: 1D 94 07   pushs L0794   ; 2
+0228: 1D 96 07   pushs L0796   ; 1
+022B: 1D 98 07   pushs L0798   ; 0
+022E: 1E 06 00   arrc 0006H   ; 6
+0231: 24 03 00   call [0003]   ; 090BH
+0234: 12 02 00   pop [0002]
+0237: 1F 99 FE   pushi FE99H   ; -359
+023A: 1F 99 FE   pushi FE99H   ; -359
+023D: 1F 84 02   pushi 0284H   ; 644
+0240: 1F 9B FE   pushi FE9BH   ; -357
+0243: 38 28 00 04  callis 0028, 4
+0247: 12 03 00   pop [0003]
+024A: 21 03 00   push [0003]
+024D: 21 02 00   push [0002]
+0250: 18   cmpge
+0251: 05 2E 00   jne 0282
+0254: 13   push true
+0255: 1F 99 FE   pushi FE99H   ; -359
+0258: 1F 99 FE   pushi FE99H   ; -359
+025B: 1F 84 02   pushi 0284H   ; 644
+025E: 21 02 00   push [0002]
+0261: 38 2B 00 05  callis 002B, 5
+0265: 12 04 00   pop [0004]
+0268: 21 04 00   push [0004]
+026B: 05 0D 00   jne 027B
+026E: 1C 9A 07   addsi L079A   ; "Thank thee, 
+0271: 2F 00 00   addsv [0000]
+0274: 1C A8 07   addsi L07A8   ; ."
+0277: 33   say
+0278: 06 04 00   jmp 027F
+027B: 1C AB 07   addsi L07AB   ; "I am unable to t...
+027E: 33   say
+027F: 06 04 00   jmp 0286
+0282: 1C E5 07   addsi L07E5   ; "Hmpf! Thou dost ...
+0285: 33   say
+0286: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+028A: 06 04 00   jmp 0291
+028D: 1C 2E 08   addsi L082E   ; "Fine. Go on and ...
+0290: 33   say
+0291: 1D 66 08   pushs L0866   ; give
+0294: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0298: 1D 6B 08   pushs L086B   ; bye
+029B: 07 01 00 03 00  cmps 0001H, 02A3
+02A0: 06 03 00   jmp 02A6
+02A3: 06 A7 FD   jmp 004D
+02A6: 40   db 40 ???
+02A7: 1C 6F 08   addsi L086F   ; "Hold thine head ...
+02AA: 2F 00 00   addsv [0000]
+02AD: 1C 87 08   addsi L0887   ; ."*
+02B0: 33   say
+02B1: 48   push eventid
+02B2: 1F 00 00   pushi 0000H   ; 0
+02B5: 22   cmpeq
+02B6: 05 7F 00   jne 0338
+02B9: 38 3B 00 00  callis 003B, 0
+02BD: 12 05 00   pop [0005]
+02C0: 1F 52 FF   pushi FF52H   ; -174
+02C3: 38 1B 00 01  callis 001B, 1
+02C7: 38 1C 00 01  callis 001C, 1
+02CB: 12 06 00   pop [0006]
+02CE: 1F 04 00   pushi 0004H   ; 4
+02D1: 1F 01 00   pushi 0001H   ; 1
+02D4: 38 10 00 02  callis _Random2@2  ; 0010
+02D8: 12 07 00   pop [0007]
+02DB: 21 06 00   push [0006]
+02DE: 1F 0B 00   pushi 000BH   ; 11
+02E1: 22   cmpeq
+02E2: 05 4D 00   jne 0332
+02E5: 21 07 00   push [0007]
+02E8: 1F 01 00   pushi 0001H   ; 1
+02EB: 22   cmpeq
+02EC: 05 06 00   jne 02F5
+02EF: 1D 8B 08   pushs L088B   ; @Spare coin for t...
+02F2: 12 08 00   pop [0008]
+02F5: 21 07 00   push [0007]
+02F8: 1F 02 00   pushi 0002H   ; 2
+02FB: 22   cmpeq
+02FC: 05 06 00   jne 0305
+02FF: 1D AA 08   pushs L08AA   ; @A modest handout...
+0302: 12 08 00   pop [0008]
+0305: 21 07 00   push [0007]
+0308: 1F 03 00   pushi 0003H   ; 3
+030B: 22   cmpeq
+030C: 05 06 00   jne 0315
+030F: 1D CB 08   pushs L08CB   ; @Mercy may change...
+0312: 12 08 00   pop [0008]
+0315: 21 07 00   push [0007]
+0318: 1F 04 00   pushi 0004H   ; 4
+031B: 22   cmpeq
+031C: 05 06 00   jne 0325
+031F: 1D E8 08   pushs L08E8   ; @Any money for me...
+0322: 12 08 00   pop [0008]
+0325: 21 08 00   push [0008]
+0328: 1F 52 FF   pushi FF52H   ; -174
+032B: 39 40 00 02  calli _ItemSay@2  ; 0040
+032F: 06 06 00   jmp 0338
+0332: 1F 52 FF   pushi FF52H   ; -174
+0335: 24 04 00   call [0004]   ; 092EH
+0338: 25   ret

@@ -1,0 +1,69 @@
+  .funcnumber 08B1H
+  .data
+L0000: db '"Once again, Avatar, thou hast proven that thou art ever the'
+ db ' defender of Britannia and the innocent. I cannot adequately'
+ db ' express my gratitude; however, please take this small token'
+ db ' of my thanks. I hope it will help thee in thy quest."'
+L00EA: db 00
+L00EB: db 'He hands you his personal staff. It appears to be magical.'
+L0125: db 00
+L0126: db 'He places his personal staff on the ground. It appears to be'
+ db ' magical.~"I have something for thee, Avatar, but I see that'
+ db ' thou canst not carry it now. I will set it here upon the fl'
+ db 'oor for thee."'
+L01E8: db 00
+L01E9: db 'For a moment Horance looks downcast. "I feel that some of th'
+ db 'e responsibility for what happened in this town is upon my s'
+ db 'houlders. For, in my search to uncover the truths of the uni'
+ db 'verse, I unwittingly released that foul spirit which destroy'
+ db 'ed this town. I will spend the rest of my days in the attemp'
+ db 't to restore this once lovely town.~~"I will make it into a '
+ db 'shining example of Spirituality, a shrine where people of go'
+ db 'od heart may live in peace and harmony. And again, I thank t'
+ db 'hee for giving me this chance. Goodbye, '
+L03F1: db 00
+L03F2: db '."*'
+L03F5: db 00
+  .code
+  .argc 0000H
+  .localc 0004H
+  .externsize 0002H
+  .extern 0908H
+  .extern 0907H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 1F 73 FF   pushi FF73H   ; -141
+0006: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+000A: 24 00 00   call [0000]   ; 0908H
+000D: 12 00 00   pop [0000]
+0010: 1C 00 00   addsi L0000   ; "Once again, Avat...
+0013: 33   say
+0014: 1F 29 02   pushi 0229H   ; 553
+0017: 38 24 00 01  callis 0024, 1
+001B: 12 01 00   pop [0001]
+001E: 21 01 00   push [0001]
+0021: 05 37 00   jne 005B
+0024: 1F 64 00   pushi 0064H   ; 100
+0027: 21 01 00   push [0001]
+002A: 38 15 00 02  callis 0015, 2
+002E: 12 02 00   pop [0002]
+0031: 1F 9C FE   pushi FE9CH   ; -356
+0034: 38 1B 00 01  callis 001B, 1
+0038: 24 01 00   call [0001]   ; 0907H
+003B: 05 07 00   jne 0045
+003E: 1C EB 00   addsi L00EB   ; He hands you his ...
+0041: 33   say
+0042: 06 12 00   jmp 0057
+0045: 1F 9C FE   pushi FE9CH   ; -356
+0048: 38 18 00 01  callis 0018, 1
+004C: 38 26 00 01  callis 0026, 1
+0050: 12 03 00   pop [0003]
+0053: 1C 26 01   addsi L0126   ; He places his per...
+0056: 33   say
+0057: 13   push true
+0058: 43 AB 01   popf flag:[01AB]
+005B: 1C E9 01   addsi L01E9   ; For a moment Hora...
+005E: 2F 00 00   addsv [0000]
+0061: 1C F2 03   addsi L03F2   ; ."*
+0064: 33   say
+0065: 3F   abrt
+0066: 25   ret

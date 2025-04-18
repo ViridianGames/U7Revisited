@@ -1,0 +1,32 @@
+  .funcnumber 06FAH
+  .data
+L0000: db '@It would seem the nearby island is not at all stable.@'
+L0037: db 00
+L0038: db '@All is not right in Britannia. Perhaps Lord British will kn'
+ db 'ow the reason behind this tremor.@'
+L0096: db 00
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 08FFH
+0000: 3E   push itemref
+0001: 38 11 00 01  callis _GetItemType@1  ; 0011
+0005: 1F 13 01   pushi 0113H   ; 275
+0008: 22   cmpeq
+0009: 05 06 00   jne 0012
+000C: 1D 00 00   pushs L0000   ; @It would seem th...
+000F: 24 00 00   call [0000]   ; 08FFH
+0012: 3E   push itemref
+0013: 38 11 00 01  callis _GetItemType@1  ; 0011
+0017: 1F D1 02   pushi 02D1H   ; 721
+001A: 22   cmpeq
+001B: 3E   push itemref
+001C: 38 11 00 01  callis _GetItemType@1  ; 0011
+0020: 1F DD 03   pushi 03DDH   ; 989
+0023: 22   cmpeq
+0024: 0F   or
+0025: 05 06 00   jne 002E
+0028: 1D 38 00   pushs L0038   ; @All is not right...
+002B: 24 00 00   call [0000]   ; 08FFH
+002E: 25   ret

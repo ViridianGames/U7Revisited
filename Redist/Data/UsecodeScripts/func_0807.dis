@@ -1,0 +1,43 @@
+  .funcnumber 0807H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0001H
+  .extern 0808H
+0000: 42 05 00   pushf flag:[0005]
+0003: 10   not
+0004: 05 5B 00   jne 0062
+0007: 1F D5 03   pushi 03D5H   ; 981
+000A: 21 00 00   push [0000]
+000D: 39 0D 00 02  calli _SetItemType@2  ; 000D
+0011: 1F 00 00   pushi 0000H   ; 0
+0014: 1F E0 0A   pushi 0AE0H   ; 2784
+0017: 1F E7 06   pushi 06E7H   ; 1767
+001A: 1E 03 00   arrc 0003H   ; 3
+001D: 12 01 00   pop [0001]
+0020: 21 01 00   push [0001]
+0023: 21 00 00   push [0000]
+0026: 39 3E 00 02  calli 003E, 2
+002A: 1F 02 00   pushi 0002H   ; 2
+002D: 26 01 00   aidx [0001]
+0030: 1F 02 00   pushi 0002H   ; 2
+0033: 09   add
+0034: 1F 02 00   pushi 0002H   ; 2
+0037: 46 01 00   db 46 ???
+   dw 0001H   ; 1
+003A: 21 01 00   push [0001]
+003D: 1F 9C FE   pushi FE9CH   ; -356
+0040: 39 3E 00 02  calli 003E, 2
+0044: 24 00 00   call [0000]   ; 0808H
+0047: 1F 08 00   pushi 0008H   ; 8
+004A: 1F 1D 06   pushi 061DH   ; 1565
+004D: 44 55   pushw 4455H   ; 17493
+004F: 44 23   pushw 1E23H   ; 7715
+0051: 1E 03 00   arrc 0003H   ; 3
+0054: 1F 9C FE   pushi FE9CH   ; -356
+0057: 38 02 00 03  callis 0002, 3
+005B: 12 02 00   pop [0002]
+005E: 13   push true
+005F: 43 05 00   popf flag:[0005]
+0062: 25   ret

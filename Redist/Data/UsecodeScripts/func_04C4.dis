@@ -1,0 +1,541 @@
+  .funcnumber 04C4H
+  .data
+L0000: db 'the Avatar'
+L000A: db 00
+L000B: db 'bye'
+L000E: db 00
+L000F: db 'Fellowship'
+L0019: db 00
+L001A: db 'job'
+L001D: db 00
+L001E: db 'name'
+L0022: db 00
+L0023: db 'You see a dashing young man, who turns to greet you.~~"I am '
+ db 'Richter, a knight of the Hold. Who wouldst thou be?"'
+L0093: db 00
+L0094: db '"I am happy to meet thee, '
+L00AE: db 00
+L00AF: db '."'
+L00B1: db 00
+L00B2: db '"I see," he eyes you suspiciously. "Thou art back for more, '
+ db 'then? Thou'lt not trick me again, I warn thee."'
+L011D: db 00
+L011E: db 'more'
+L0122: db 00
+L0123: db '"Hello, '
+L012B: db 00
+L012C: db '," says Richter.'
+L013C: db 00
+L013D: db 'statue'
+L0143: db 00
+L0144: db 'gargoyle blood'
+L0152: db 00
+L0153: db 'name'
+L0157: db 00
+L0158: db '"As I have told thee, I am called Richter."'
+L0183: db 00
+L0184: db 'name'
+L0188: db 00
+L0189: db 'gargoyle blood'
+L0197: db 00
+L0198: db 'more'
+L019C: db 00
+L019D: db 'He clears his throat and examines you more closely.~~"Ah, th'
+ db 'ou shouldst not mind my mumblings, '
+L01FC: db 00
+L01FD: db '."'
+L01FF: db 00
+L0200: db 'I mind'
+L0206: db 00
+L0207: db 'more'
+L020B: db 00
+L020C: db 'job'
+L020F: db 00
+L0210: db '"I am the armourer of the Hold."'
+L0230: db 00
+L0231: db 'Hold'
+L0235: db 00
+L0236: db 'weapons'
+L023D: db 00
+L023E: db 'armour'
+L0244: db 00
+L0245: db 'Hold'
+L0249: db 00
+L024A: db '"Yes, thou art in Serpent's Hold, home to many noble and val'
+ db 'iant knights."'
+L0294: db 00
+L0295: db 'Hold'
+L0299: db 00
+L029A: db 'knights'
+L02A1: db 00
+L02A2: db 'knights'
+L02A9: db 00
+L02AA: db '"Lord John-Paul is charged with overseeing the Hold, though '
+ db 'Sir Horffe is actually the captain of the guard. The rest of'
+ db ' us, of course, are here to serve Lord British and the needs'
+ db ' of Britannia."'
+L036D: db 00
+L036E: db 'knights'
+L0375: db 00
+L0376: db 'needs'
+L037B: db 00
+L037C: db 'Horffe'
+L0382: db 00
+L0383: db 'John-Paul'
+L038C: db 00
+L038D: db 'gargoyle blood'
+L039B: db 00
+L039C: db '"I should have known 'twould be Horffe." His eyes narrow. "H'
+ db 'e has continually demonstrated an overall lack of morals and'
+ db ' sense of unity. I will speak with John-Paul about this."'
+L044D: db 00
+L044E: db 'gargoyle blood'
+L045C: db 00
+L045D: db 'John-Paul'
+L0466: db 00
+L0467: db '"I trust his ability as I trust no other. I cannot tell thee'
+ db ' how proud I was when he chose me to be his second in comman'
+ db 'd!"'
+L04E2: db 00
+L04E3: db 'John-Paul'
+L04EC: db 00
+L04ED: db 'Horffe'
+L04F3: db 00
+L04F4: db 'He appears thoughtful. "I know the others trust him, and I, '
+ db 'myself, do not doubt his fighting skills. But I cannot escap'
+ db 'e this feeling that he needs more moral discipline. I feel o'
+ db 'bligated to watch him at times."'
+L05C8: db 00
+L05C9: db 'Horffe'
+L05CF: db 00
+L05D0: db 'watch'
+L05D5: db 00
+L05D6: db 'others'
+L05DC: db 00
+L05DD: db 'watch'
+L05E2: db 00
+L05E3: db '"I am not certain what it is that I am watching for. However'
+ db ', I expect him to fall into ways either aggressive or thievi'
+ db 'ng. He simply does not seem to truly believe in the unity of'
+ db ' the Hold."'
+L06A2: db 00
+L06A3: db 'watch'
+L06A8: db 00
+L06A9: db 'others'
+L06AF: db 00
+L06B0: db '"Well, it is obvious that John-Paul respects his abilities. '
+ db 'Lady Tory has told me that she can sense his honesty, but I '
+ db 'am not without skepticism."'
+L0743: db 00
+L0744: db 'others'
+L074A: db 00
+L074B: db 'sense'
+L0750: db 00
+L0751: db 'Tory'
+L0755: db 00
+L0756: db 'sense'
+L075B: db 00
+L075C: db '"Lady Tory has the uncanny ability to empathize with others.'
+ db ' She can determine another's intentions and emotions by doin'
+ db 'g nothing more than passing a simple greeting."'
+L0803: db 00
+L0804: db 'sense'
+L0809: db 00
+L080A: db 'Tory'
+L080E: db 00
+L080F: db '"She is the Hold advisor, often giving guidance to the knigh'
+ db 'ts." His expression becomes wistful. "She is also quite, qui'
+ db 'te beautiful."'
+L0895: db 00
+L0896: db 'Tory'
+L089A: db 00
+L089B: db 'needs'
+L08A0: db 00
+L08A1: db '"Well, obviously there is many a vile beast looking to terro'
+ db 'rize the countryside on the mainland. 'Tis our duty to prote'
+ db 'ct the common man. In addition, we are here to provide examp'
+ db 'les of proper behavior to the general populace."'
+L0985: db 00
+L0986: db 'needs'
+L098B: db 00
+L098C: db 'I mind'
+L0992: db 00
+L0993: db 'Looking down, he shifts his weight from foot to foot for a m'
+ db 'oment. Glancing back up, eyes narrowed, he says, ~~"Not long'
+ db ' ago a man entered mine armoury who claimed to be the Avatar'
+ db ', just as thou dost claim. When I turned to reach for a weap'
+ db 'on he had requested, he purloined several items and ran away'
+ db '.~~"I assume," he says carefully, "thou art not that rogue."'
+L0AFB: db 00
+L0AFC: db 'I mind'
+L0B02: db 00
+L0B03: db 'armour'
+L0B09: db 00
+L0B0A: db '"I am sorry. A better time to discuss this would be when my '
+ db 'shop is open."'
+L0B54: db 00
+L0B55: db 'armour'
+L0B5B: db 00
+L0B5C: db 'Fellowship'
+L0B66: db 00
+L0B67: db '"Why, yes, I see thou art a member too."'
+L0B8F: db 00
+L0B90: db 'Fellowship'
+L0B9A: db 00
+L0B9B: db 'philosophy'
+L0BA5: db 00
+L0BA6: db 'philosophy'
+L0BB0: db 00
+L0BB1: db 'philosophy'
+L0BBB: db 00
+L0BBC: db 'weapons'
+L0BC3: db 00
+L0BC4: db '"I am sorry. A better time to discuss this would be when my '
+ db 'shop is open."'
+L0C0E: db 00
+L0C0F: db 'weapons'
+L0C16: db 00
+L0C17: db 'statue'
+L0C1D: db 00
+L0C1E: db 'A look of disgust appears on his face.~~"Obviously, someone '
+ db 'who doth not seek unity did this! He is not worthy of reward'
+ db '!"~~After a moment, he calms down.'
+L0CB8: db 00
+L0CB9: db '"Art thou investigating this crime against mankind?"'
+L0CED: db 00
+L0CEE: db '"Then let me give thee these." He holds up some stone chips.'
+ db ' "They were found at the base of the statue. Thou wilt notic'
+ db 'e that they are stained red in some places. I believe it to '
+ db 'be blood."'
+L0DAC: db 00
+L0DAD: db '"Mayhap when thou hast more room I can give them to thee."'
+L0DE7: db 00
+L0DE8: db '"I see."'
+L0DF0: db 00
+L0DF1: db 'statue'
+L0DF7: db 00
+L0DF8: db 'bye'
+L0DFB: db 00
+L0DFC: db '"Pleasant journeys. Remember, trust thy brother."*'
+L0E2E: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0009H
+  .extern 0909H
+  .extern 0908H
+  .extern 090BH
+  .extern 08D4H
+  .extern 0919H
+  .extern 091AH
+  .extern 08D3H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 5E 03   jne 0366
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 3C FF   pushi FF3CH   ; -196
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0908H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; the Avatar
+0021: 12 02 00   pop [0002]
+0024: 1F 3C FF   pushi FF3CH   ; -196
+0027: 38 1B 00 01  callis 001B, 1
+002B: 38 1C 00 01  callis 001C, 1
+002F: 12 03 00   pop [0003]
+0032: 1D 0B 00   pushs L000B   ; bye
+0035: 1D 0F 00   pushs L000F   ; Fellowship
+0038: 1D 1A 00   pushs L001A   ; job
+003B: 1D 1E 00   pushs L001E   ; name
+003E: 1E 04 00   arrc 0004H   ; 4
+0041: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0045: 42 66 02   pushf flag:[0266]
+0048: 05 06 00   jne 0051
+004B: 21 01 00   push [0001]
+004E: 12 04 00   pop [0004]
+0051: 42 67 02   pushf flag:[0267]
+0054: 05 06 00   jne 005D
+0057: 21 00 00   push [0000]
+005A: 12 04 00   pop [0004]
+005D: 42 6D 02   pushf flag:[026D]
+0060: 10   not
+0061: 05 50 00   jne 00B4
+0064: 1C 23 00   addsi L0023   ; You see a dashing...
+0067: 33   say
+0068: 21 02 00   push [0002]
+006B: 21 01 00   push [0001]
+006E: 1E 02 00   arrc 0002H   ; 2
+0071: 24 02 00   call [0002]   ; 090BH
+0074: 12 05 00   pop [0005]
+0077: 21 05 00   push [0005]
+007A: 21 01 00   push [0001]
+007D: 22   cmpeq
+007E: 05 17 00   jne 0098
+0081: 1C 94 00   addsi L0094   ; "I am happy to me...
+0084: 2F 01 00   addsv [0001]
+0087: 1C AF 00   addsi L00AF   ; ."
+008A: 33   say
+008B: 21 01 00   push [0001]
+008E: 12 04 00   pop [0004]
+0091: 13   push true
+0092: 43 66 02   popf flag:[0266]
+0095: 06 15 00   jmp 00AD
+0098: 1C B2 00   addsi L00B2   ; "I see," he eyes ...
+009B: 33   say
+009C: 21 00 00   push [0000]
+009F: 12 04 00   pop [0004]
+00A2: 13   push true
+00A3: 43 67 02   popf flag:[0267]
+00A6: 1D 1E 01   pushs L011E   ; more
+00A9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AD: 13   push true
+00AE: 43 6D 02   popf flag:[026D]
+00B1: 06 0A 00   jmp 00BE
+00B4: 1C 23 01   addsi L0123   ; "Hello, 
+00B7: 2F 04 00   addsv [0004]
+00BA: 1C 2C 01   addsi L012C   ; ," says Richter.
+00BD: 33   say
+00BE: 42 5E 02   pushf flag:[025E]
+00C1: 42 61 02   pushf flag:[0261]
+00C4: 10   not
+00C5: 0E   and
+00C6: 05 07 00   jne 00D0
+00C9: 1D 3D 01   pushs L013D   ; statue
+00CC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D0: 42 5F 02   pushf flag:[025F]
+00D3: 42 65 02   pushf flag:[0265]
+00D6: 10   not
+00D7: 0E   and
+00D8: 05 14 00   jne 00EF
+00DB: 42 7B 02   pushf flag:[027B]
+00DE: 05 0E 00   jne 00EF
+00E1: 42 79 02   pushf flag:[0279]
+00E4: 10   not
+00E5: 05 07 00   jne 00EF
+00E8: 1D 44 01   pushs L0144   ; gargoyle blood
+00EB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EF: 04 6F 02   je 0361
+00F2: 1D 53 01   pushs L0153   ; name
+00F5: 07 01 00 28 00  cmps 0001H, 0122
+00FA: 1C 58 01   addsi L0158   ; "As I have told t...
+00FD: 33   say
+00FE: 13   push true
+00FF: 43 7B 02   popf flag:[027B]
+0102: 1D 84 01   pushs L0184   ; name
+0105: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0109: 42 5F 02   pushf flag:[025F]
+010C: 42 65 02   pushf flag:[0265]
+010F: 10   not
+0110: 0E   and
+0111: 05 0E 00   jne 0122
+0114: 42 79 02   pushf flag:[0279]
+0117: 10   not
+0118: 05 07 00   jne 0122
+011B: 1D 89 01   pushs L0189   ; gargoyle blood
+011E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0122: 1D 98 01   pushs L0198   ; more
+0125: 07 01 00 18 00  cmps 0001H, 0142
+012A: 1C 9D 01   addsi L019D   ; He clears his thr...
+012D: 2F 04 00   addsv [0004]
+0130: 1C FD 01   addsi L01FD   ; ."
+0133: 33   say
+0134: 1D 00 02   pushs L0200   ; I mind
+0137: 39 05 00 01  calli _AddAnswer@1  ; 0005
+013B: 1D 07 02   pushs L0207   ; more
+013E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0142: 1D 0C 02   pushs L020C   ; job
+0145: 07 01 00 14 00  cmps 0001H, 015E
+014A: 1C 10 02   addsi L0210   ; "I am the armoure...
+014D: 33   say
+014E: 1D 31 02   pushs L0231   ; Hold
+0151: 1D 36 02   pushs L0236   ; weapons
+0154: 1D 3E 02   pushs L023E   ; armour
+0157: 1E 03 00   arrc 0003H   ; 3
+015A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015E: 1D 45 02   pushs L0245   ; Hold
+0161: 07 01 00 12 00  cmps 0001H, 0178
+0166: 1C 4A 02   addsi L024A   ; "Yes, thou art in...
+0169: 33   say
+016A: 1D 95 02   pushs L0295   ; Hold
+016D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0171: 1D 9A 02   pushs L029A   ; knights
+0174: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0178: 1D A2 02   pushs L02A2   ; knights
+017B: 07 01 00 1B 00  cmps 0001H, 019B
+0180: 1C AA 02   addsi L02AA   ; "Lord John-Paul i...
+0183: 33   say
+0184: 1D 6E 03   pushs L036E   ; knights
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D 76 03   pushs L0376   ; needs
+018E: 1D 7C 03   pushs L037C   ; Horffe
+0191: 1D 83 03   pushs L0383   ; John-Paul
+0194: 1E 03 00   arrc 0003H   ; 3
+0197: 39 05 00 01  calli _AddAnswer@1  ; 0005
+019B: 1D 8D 03   pushs L038D   ; gargoyle blood
+019E: 07 01 00 0F 00  cmps 0001H, 01B2
+01A3: 1C 9C 03   addsi L039C   ; "I should have kn...
+01A6: 33   say
+01A7: 13   push true
+01A8: 12 06 00   pop [0006]
+01AB: 1D 4E 04   pushs L044E   ; gargoyle blood
+01AE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B2: 1D 5D 04   pushs L045D   ; John-Paul
+01B5: 07 01 00 0B 00  cmps 0001H, 01C5
+01BA: 1C 67 04   addsi L0467   ; "I trust his abil...
+01BD: 33   say
+01BE: 1D E3 04   pushs L04E3   ; John-Paul
+01C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C5: 1D ED 04   pushs L04ED   ; Horffe
+01C8: 07 01 00 18 00  cmps 0001H, 01E5
+01CD: 1C F4 04   addsi L04F4   ; He appears though...
+01D0: 33   say
+01D1: 1D C9 05   pushs L05C9   ; Horffe
+01D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D8: 1D D0 05   pushs L05D0   ; watch
+01DB: 1D D6 05   pushs L05D6   ; others
+01DE: 1E 02 00   arrc 0002H   ; 2
+01E1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E5: 1D DD 05   pushs L05DD   ; watch
+01E8: 07 01 00 0B 00  cmps 0001H, 01F8
+01ED: 1C E3 05   addsi L05E3   ; "I am not certain...
+01F0: 33   say
+01F1: 1D A3 06   pushs L06A3   ; watch
+01F4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F8: 1D A9 06   pushs L06A9   ; others
+01FB: 07 01 00 18 00  cmps 0001H, 0218
+0200: 1C B0 06   addsi L06B0   ; "Well, it is obvi...
+0203: 33   say
+0204: 1D 44 07   pushs L0744   ; others
+0207: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020B: 1D 4B 07   pushs L074B   ; sense
+020E: 1D 51 07   pushs L0751   ; Tory
+0211: 1E 02 00   arrc 0002H   ; 2
+0214: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0218: 1D 56 07   pushs L0756   ; sense
+021B: 07 01 00 0B 00  cmps 0001H, 022B
+0220: 1C 5C 07   addsi L075C   ; "Lady Tory has th...
+0223: 33   say
+0224: 1D 04 08   pushs L0804   ; sense
+0227: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022B: 1D 0A 08   pushs L080A   ; Tory
+022E: 07 01 00 0B 00  cmps 0001H, 023E
+0233: 1C 0F 08   addsi L080F   ; "She is the Hold ...
+0236: 33   say
+0237: 1D 96 08   pushs L0896   ; Tory
+023A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023E: 1D 9B 08   pushs L089B   ; needs
+0241: 07 01 00 0B 00  cmps 0001H, 0251
+0246: 1C A1 08   addsi L08A1   ; "Well, obviously ...
+0249: 33   say
+024A: 1D 86 09   pushs L0986   ; needs
+024D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0251: 1D 8C 09   pushs L098C   ; I mind
+0254: 07 01 00 0B 00  cmps 0001H, 0264
+0259: 1C 93 09   addsi L0993   ; Looking down, he ...
+025C: 33   say
+025D: 1D FC 0A   pushs L0AFC   ; I mind
+0260: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0264: 1D 03 0B   pushs L0B03   ; armour
+0267: 07 01 00 23 00  cmps 0001H, 028F
+026C: 21 03 00   push [0003]
+026F: 1F 07 00   pushi 0007H   ; 7
+0272: 22   cmpeq
+0273: 21 03 00   push [0003]
+0276: 1F 0D 00   pushi 000DH   ; 13
+0279: 22   cmpeq
+027A: 0F   or
+027B: 05 06 00   jne 0284
+027E: 24 03 00   call [0003]   ; 08D4H
+0281: 06 04 00   jmp 0288
+0284: 1C 0A 0B   addsi L0B0A   ; "I am sorry. A be...
+0287: 33   say
+0288: 1D 55 0B   pushs L0B55   ; armour
+028B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028F: 1D 5C 0B   pushs L0B5C   ; Fellowship
+0292: 07 01 00 25 00  cmps 0001H, 02BC
+0297: 38 67 00 00  callis 0067, 0
+029B: 12 07 00   pop [0007]
+029E: 21 07 00   push [0007]
+02A1: 05 07 00   jne 02AB
+02A4: 1C 67 0B   addsi L0B67   ; "Why, yes, I see ...
+02A7: 33   say
+02A8: 06 03 00   jmp 02AE
+02AB: 24 04 00   call [0004]   ; 0919H
+02AE: 1D 90 0B   pushs L0B90   ; Fellowship
+02B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B5: 1D 9B 0B   pushs L0B9B   ; philosophy
+02B8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02BC: 1D A6 0B   pushs L0BA6   ; philosophy
+02BF: 07 01 00 0A 00  cmps 0001H, 02CE
+02C4: 24 05 00   call [0005]   ; 091AH
+02C7: 1D B1 0B   pushs L0BB1   ; philosophy
+02CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02CE: 1D BC 0B   pushs L0BBC   ; weapons
+02D1: 07 01 00 23 00  cmps 0001H, 02F9
+02D6: 21 03 00   push [0003]
+02D9: 1F 07 00   pushi 0007H   ; 7
+02DC: 22   cmpeq
+02DD: 21 03 00   push [0003]
+02E0: 1F 0D 00   pushi 000DH   ; 13
+02E3: 22   cmpeq
+02E4: 0F   or
+02E5: 05 06 00   jne 02EE
+02E8: 24 06 00   call [0006]   ; 08D3H
+02EB: 06 04 00   jmp 02F2
+02EE: 1C C4 0B   addsi L0BC4   ; "I am sorry. A be...
+02F1: 33   say
+02F2: 1D 0F 0C   pushs L0C0F   ; weapons
+02F5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02F9: 1D 17 0C   pushs L0C17   ; statue
+02FC: 07 01 00 52 00  cmps 0001H, 0353
+0301: 1C 1E 0C   addsi L0C1E   ; A look of disgust...
+0304: 33   say
+0305: 42 59 02   pushf flag:[0259]
+0308: 10   not
+0309: 05 40 00   jne 034C
+030C: 1C B9 0C   addsi L0CB9   ; "Art thou investi...
+030F: 33   say
+0310: 24 07 00   call [0007]   ; 090AH
+0313: 12 08 00   pop [0008]
+0316: 21 08 00   push [0008]
+0319: 05 2C 00   jne 0348
+031C: 1C EE 0C   addsi L0CEE   ; "Then let me give...
+031F: 33   say
+0320: 14   push false
+0321: 1F 04 00   pushi 0004H   ; 4
+0324: 1F 99 FE   pushi FE99H   ; -359
+0327: 1F 2F 03   pushi 032FH   ; 815
+032A: 1F 01 00   pushi 0001H   ; 1
+032D: 38 2C 00 05  callis 002C, 5
+0331: 12 09 00   pop [0009]
+0334: 21 09 00   push [0009]
+0337: 05 07 00   jne 0341
+033A: 13   push true
+033B: 43 59 02   popf flag:[0259]
+033E: 06 04 00   jmp 0345
+0341: 1C AD 0D   addsi L0DAD   ; "Mayhap when thou...
+0344: 33   say
+0345: 06 04 00   jmp 034C
+0348: 1C E8 0D   addsi L0DE8   ; "I see."
+034B: 33   say
+034C: 1D F1 0D   pushs L0DF1   ; statue
+034F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0353: 1D F8 0D   pushs L0DF8   ; bye
+0356: 07 01 00 03 00  cmps 0001H, 035E
+035B: 06 03 00   jmp 0361
+035E: 06 8E FD   jmp 00EF
+0361: 40   db 40 ???
+0362: 1C FC 0D   addsi L0DFC   ; "Pleasant journey...
+0365: 33   say
+0366: 48   push eventid
+0367: 1F 00 00   pushi 0000H   ; 0
+036A: 22   cmpeq
+036B: 05 06 00   jne 0374
+036E: 1F 3C FF   pushi FF3CH   ; -196
+0371: 24 08 00   call [0008]   ; 092EH
+0374: 25   ret

@@ -1,0 +1,84 @@
+  .funcnumber 0654H
+  .data
+L0000: db '@Vas An Nox@'
+L000C: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 6E 00   jne 0076
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 3E   push itemref
+000E: 38 18 00 01  callis 0018, 1
+0012: 12 00 00   pop [0000]
+0015: 1F FF FF   pushi FFFFH   ; -1
+0018: 1F 00 00   pushi 0000H   ; 0
+001B: 1F 00 00   pushi 0000H   ; 0
+001E: 1F 00 00   pushi 0000H   ; 0
+0021: 1F 02 00   pushi 0002H   ; 2
+0024: 26 00 00   aidx [0000]
+0027: 1F 01 00   pushi 0001H   ; 1
+002A: 26 00 00   aidx [0000]
+002D: 1F 07 00   pushi 0007H   ; 7
+0030: 39 53 00 07  calli 0053, 7
+0034: 1D 00 00   pushs L0000   ; @Vas An Nox@
+0037: 3E   push itemref
+0038: 39 40 00 02  calli _ItemSay@2  ; 0040
+003C: 24 00 00   call [0000]   ; 0906H
+003F: 05 1E 00   jne 0060
+0042: 1F 54 06   pushi 0654H   ; 1620
+0045: 44 55   pushw 1F55H   ; 8021
+0047: 1F 40 00   pushi 0040H   ; 64
+004A: 44 58   pushw 4458H   ; 17496
+004C: 44 67   pushw 4467H   ; 17511
+004E: 44 65   pushw 4465H   ; 17509
+0050: 44 66   pushw 1E66H   ; 7782
+0052: 1E 07 00   arrc 0007H   ; 7
+0055: 3E   push itemref
+0056: 38 01 00 02  callis 0001, 2
+005A: 12 01 00   pop [0001]
+005D: 06 16 00   jmp 0076
+0060: 1F 06 06   pushi 0606H   ; 1542
+0063: 44 55   pushw 4455H   ; 17493
+0065: 44 67   pushw 4467H   ; 17511
+0067: 44 65   pushw 4465H   ; 17509
+0069: 44 66   pushw 1E66H   ; 7782
+006B: 1E 05 00   arrc 0005H   ; 5
+006E: 3E   push itemref
+006F: 38 01 00 02  callis 0001, 2
+0073: 12 01 00   pop [0001]
+0076: 48   push eventid
+0077: 1F 02 00   pushi 0002H   ; 2
+007A: 22   cmpeq
+007B: 05 34 00   jne 00B2
+007E: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0082: 12 02 00   pop [0002]
+0085: 21 02 00   push [0002]
+0088: 1F 9C FE   pushi FE9CH   ; -356
+008B: 4A   arra
+008C: 12 02 00   pop [0002]
+008F: 2E   sloop
+0090: 02 03 00 04 00 05 00 02 00 17 00  db 2 ???
+0091:   db 3
+0092:   db 0
+0093:   db 4
+0094:   db 0
+0095:   db 5
+0096:   db 0
+0097:   db 2
+0098:   db 0
+0099:   db 17
+009A:   db 0
+009B: 1F 08 00   pushi 0008H   ; 8
+009E: 21 05 00   push [0005]
+00A1: 39 8A 00 02  calli 008A, 2
+00A5: 1F 07 00   pushi 0007H   ; 7
+00A8: 21 05 00   push [0005]
+00AB: 39 8A 00 02  calli 008A, 2
+00AF: 06 DE FF   jmp 0090
+00B2: 25   ret

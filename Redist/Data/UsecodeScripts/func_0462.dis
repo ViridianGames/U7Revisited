@@ -1,0 +1,365 @@
+  .funcnumber 0462H
+  .data
+L0000: db 'The creature ignores you.*'
+L001A: db 00
+L001B: db 'The ape-like female appears nervous.'
+L003F: db 00
+L0040: db 'The female Emp appears nervous.'
+L005F: db 00
+L0060: db 'Saralek greets you. "Hello is said to you, human."'
+L0092: db 00
+L0093: db 'Trellek'
+L009A: db 00
+L009B: db 'Salamon's permission'
+L00AF: db 00
+L00B0: db 'bye'
+L00B3: db 00
+L00B4: db 'job'
+L00B7: db 00
+L00B8: db 'name'
+L00BC: db 00
+L00BD: db 'name'
+L00C1: db 00
+L00C2: db 'She shies away for a moment, and then cautiously steps forwa'
+ db 'rd. "I am called Saralek."'
+L0118: db 00
+L0119: db 'name'
+L011D: db 00
+L011E: db 'Trellek'
+L0125: db 00
+L0126: db 'job'
+L0129: db 00
+L012A: db '"`Job' is not understood. Family is what you mean?"'
+L015D: db 00
+L015E: db 'family'
+L0164: db 00
+L0165: db 'family'
+L016B: db 00
+L016C: db '"Yes, I am part of a family. The Silverleaf tree is my home.'
+ db ' I am bonded with Trellek."'
+L01C3: db 00
+L01C4: db 'family'
+L01CA: db 00
+L01CB: db 'Trellek'
+L01D2: db 00
+L01D3: db 'Silverleaf tree'
+L01E2: db 00
+L01E3: db 'Trellek'
+L01EA: db 00
+L01EB: db '"Trellek is my husband."'
+L0203: db 00
+L0204: db '"Trellek has been met by you?" She smiles proudly, and takes'
+ db ' another step forward. "What was said by him?"'
+L026E: db 00
+L026F: db 'join party'
+L0279: db 00
+L027A: db 'Trellek'
+L0281: db 00
+L0282: db 'Silverleaf tree'
+L0291: db 00
+L0292: db '"There are fewer and fewer Silverleaf trees. Many are cut do'
+ db 'wn often. Soon, no Silverleaf trees will be around for our h'
+ db 'omes."'
+L0310: db 00
+L0311: db 'cut down'
+L0319: db 00
+L031A: db 'Silverleaf tree'
+L0329: db 00
+L032A: db 'cut down'
+L0332: db 00
+L0333: db '"The trees are cut by a human with a shiny, sharp item."'
+L036B: db 00
+L036C: db 'cut down'
+L0374: db 00
+L0375: db 'join party'
+L037F: db 00
+L0380: db '"To join you is his desire?"'
+L039C: db 00
+L039D: db 'She thinks for a moment. "His going away is not desired by m'
+ db 'e." She turns to look directly at you. "But, joining you may'
+ db ' be wise action." She sighs.'
+L0431: db 00
+L0432: db '"Permission from Salamon must be gained first. Then permissi'
+ db 'on from me will be granted. Your return to me is necessary f'
+ db 'or that."'
+L04B3: db 00
+L04B4: db 'Salamon'
+L04BB: db 00
+L04BC: db '"That is good!" She seems very happy and relieved.'
+L04EE: db 00
+L04EF: db 'join party'
+L04F9: db 00
+L04FA: db 'Salamon'
+L0501: db 00
+L0502: db '"She is a very wise Emp. Many humans have been met by her. K'
+ db 'nowledge and experience are her talents."'
+L0567: db 00
+L0568: db 'Salamon'
+L056F: db 00
+L0570: db 'Salamon's permission'
+L0584: db 00
+L0585: db 'Her eyes begin to mist over.~~ "I am sorry. A lie was told b'
+ db 'y me. Trellek's leaving is not desired by me. Permission wil'
+ db 'l not be given."~~ Her expression changes.~~ "What is the re'
+ db 'ason you asked him?"'
+L064D: db 00
+L064E: db 'never mind'
+L0658: db 00
+L0659: db 'adventure'
+L0662: db 00
+L0663: db 'wisps'
+L0668: db 00
+L0669: db 'Salamon's permission'
+L067D: db 00
+L067E: db 'adventure'
+L0687: db 00
+L0688: db '"Adventure is not Trellek's desire."'
+L06AC: db 00
+L06AD: db 'adventure'
+L06B6: db 00
+L06B7: db 'never mind'
+L06C1: db 00
+L06C2: db 'She shrugs.'
+L06CD: db 00
+L06CE: db 'never mind'
+L06D8: db 00
+L06D9: db 'wisps'
+L06DE: db 00
+L06DF: db 'She smiles excitedly.~~"Your wish is to meet wisps?"'
+L0713: db 00
+L0714: db '"An idea how you can be helped by Trellek is had by me. Wisp'
+ db 's are contacted by Trellek's whistling. A whistle for you ca'
+ db 'n be made by him, perhaps. Talking with him again should be '
+ db 'your next action."'
+L07DA: db 00
+L07DB: db '"Oh." She appears depressed again.'
+L07FD: db 00
+L07FE: db 'wisps'
+L0803: db 00
+L0804: db 'never mind'
+L080E: db 00
+L080F: db 'adventure'
+L0818: db 00
+L0819: db 'bye'
+L081C: db 00
+L081D: db '"Goodbye is said to you, human."*'
+L083E: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0003H
+  .extern 0931H
+  .extern 08E0H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 3B 02   jne 0243
+0008: 1F 99 FE   pushi FE99H   ; -359
+000B: 1F 99 FE   pushi FE99H   ; -359
+000E: 1F 04 03   pushi 0304H   ; 772
+0011: 1F 01 00   pushi 0001H   ; 1
+0014: 1F 9B FE   pushi FE9BH   ; -357
+0017: 24 00 00   call [0000]   ; 0931H
+001A: 12 00 00   pop [0000]
+001D: 1F 00 00   pushi 0000H   ; 0
+0020: 1F 9E FF   pushi FF9EH   ; -98
+0023: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0027: 42 54 01   pushf flag:[0154]
+002A: 10   not
+002B: 05 12 00   jne 0040
+002E: 21 00 00   push [0000]
+0031: 10   not
+0032: 05 08 00   jne 003D
+0035: 1C 00 00   addsi L0000   ; The creature igno...
+0038: 33   say
+0039: 3F   abrt
+003A: 06 03 00   jmp 0040
+003D: 24 01 00   call [0001]   ; 08E0H
+0040: 42 3D 01   pushf flag:[013D]
+0043: 10   not
+0044: 05 21 00   jne 0068
+0047: 42 3C 01   pushf flag:[013C]
+004A: 10   not
+004B: 05 0F 00   jne 005D
+004E: 1C 1B 00   addsi L001B   ; The ape-like fema...
+0051: 33   say
+0052: 13   push true
+0053: 43 3C 01   popf flag:[013C]
+0056: 13   push true
+0057: 43 3D 01   popf flag:[013D]
+005A: 06 08 00   jmp 0065
+005D: 1C 40 00   addsi L0040   ; The female Emp ap...
+0060: 33   say
+0061: 13   push true
+0062: 43 3D 01   popf flag:[013D]
+0065: 06 15 00   jmp 007D
+0068: 14   push false
+0069: 12 01 00   pop [0001]
+006C: 1C 60 00   addsi L0060   ; Saralek greets yo...
+006F: 33   say
+0070: 42 32 01   pushf flag:[0132]
+0073: 05 07 00   jne 007D
+0076: 1D 93 00   pushs L0093   ; Trellek
+0079: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007D: 42 31 01   pushf flag:[0131]
+0080: 42 58 01   pushf flag:[0158]
+0083: 10   not
+0084: 0E   and
+0085: 05 07 00   jne 008F
+0088: 1D 9B 00   pushs L009B   ; Salamon's permission
+008B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008F: 1D B0 00   pushs L00B0   ; bye
+0092: 1D B4 00   pushs L00B4   ; job
+0095: 1D B8 00   pushs L00B8   ; name
+0098: 1E 03 00   arrc 0003H   ; 3
+009B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009F: 04 9C 01   je 023E
+00A2: 1D BD 00   pushs L00BD   ; name
+00A5: 07 01 00 1D 00  cmps 0001H, 00C7
+00AA: 1C C2 00   addsi L00C2   ; She shies away fo...
+00AD: 33   say
+00AE: 1D 19 01   pushs L0119   ; name
+00B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B5: 42 32 01   pushf flag:[0132]
+00B8: 21 01 00   push [0001]
+00BB: 10   not
+00BC: 0E   and
+00BD: 05 07 00   jne 00C7
+00C0: 1D 1E 01   pushs L011E   ; Trellek
+00C3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C7: 1D 26 01   pushs L0126   ; job
+00CA: 07 01 00 0B 00  cmps 0001H, 00DA
+00CF: 1C 2A 01   addsi L012A   ; "`Job' is not und...
+00D2: 33   say
+00D3: 1D 5E 01   pushs L015E   ; family
+00D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DA: 1D 65 01   pushs L0165   ; family
+00DD: 07 01 00 18 00  cmps 0001H, 00FA
+00E2: 1C 6C 01   addsi L016C   ; "Yes, I am part o...
+00E5: 33   say
+00E6: 1D C4 01   pushs L01C4   ; family
+00E9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00ED: 1D CB 01   pushs L01CB   ; Trellek
+00F0: 1D D3 01   pushs L01D3   ; Silverleaf tree
+00F3: 1E 02 00   arrc 0002H   ; 2
+00F6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00FA: 1D E3 01   pushs L01E3   ; Trellek
+00FD: 07 01 00 27 00  cmps 0001H, 0129
+0102: 1C EB 01   addsi L01EB   ; "Trellek is my hu...
+0105: 33   say
+0106: 13   push true
+0107: 12 01 00   pop [0001]
+010A: 42 32 01   pushf flag:[0132]
+010D: 05 12 00   jne 0122
+0110: 42 30 01   pushf flag:[0130]
+0113: 10   not
+0114: 05 0B 00   jne 0122
+0117: 1C 04 02   addsi L0204   ; "Trellek has been...
+011A: 33   say
+011B: 1D 6F 02   pushs L026F   ; join party
+011E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0122: 1D 7A 02   pushs L027A   ; Trellek
+0125: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0129: 1D 82 02   pushs L0282   ; Silverleaf tree
+012C: 07 01 00 12 00  cmps 0001H, 0143
+0131: 1C 92 02   addsi L0292   ; "There are fewer ...
+0134: 33   say
+0135: 1D 11 03   pushs L0311   ; cut down
+0138: 39 05 00 01  calli _AddAnswer@1  ; 0005
+013C: 1D 1A 03   pushs L031A   ; Silverleaf tree
+013F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0143: 1D 2A 03   pushs L032A   ; cut down
+0146: 07 01 00 0B 00  cmps 0001H, 0156
+014B: 1C 33 03   addsi L0333   ; "The trees are cu...
+014E: 33   say
+014F: 1D 6C 03   pushs L036C   ; cut down
+0152: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0156: 1D 75 03   pushs L0375   ; join party
+0159: 07 01 00 31 00  cmps 0001H, 018F
+015E: 1C 80 03   addsi L0380   ; "To join you is h...
+0161: 33   say
+0162: 24 02 00   call [0002]   ; 090AH
+0165: 12 02 00   pop [0002]
+0168: 21 02 00   push [0002]
+016B: 05 16 00   jne 0184
+016E: 1C 9D 03   addsi L039D   ; She thinks for a ...
+0171: 33   say
+0172: 1C 32 04   addsi L0432   ; "Permission from ...
+0175: 33   say
+0176: 13   push true
+0177: 43 30 01   popf flag:[0130]
+017A: 1D B4 04   pushs L04B4   ; Salamon
+017D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0181: 06 04 00   jmp 0188
+0184: 1C BC 04   addsi L04BC   ; "That is good!" S...
+0187: 33   say
+0188: 1D EF 04   pushs L04EF   ; join party
+018B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018F: 1D FA 04   pushs L04FA   ; Salamon
+0192: 07 01 00 0B 00  cmps 0001H, 01A2
+0197: 1C 02 05   addsi L0502   ; "She is a very wi...
+019A: 33   say
+019B: 1D 68 05   pushs L0568   ; Salamon
+019E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A2: 1D 70 05   pushs L0570   ; Salamon's permission
+01A5: 07 01 00 29 00  cmps 0001H, 01D3
+01AA: 1C 85 05   addsi L0585   ; Her eyes begin to...
+01AD: 33   say
+01AE: 1D 4E 06   pushs L064E   ; never mind
+01B1: 1D 59 06   pushs L0659   ; adventure
+01B4: 1E 02 00   arrc 0002H   ; 2
+01B7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BB: 42 38 01   pushf flag:[0138]
+01BE: 05 07 00   jne 01C8
+01C1: 1D 63 06   pushs L0663   ; wisps
+01C4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C8: 13   push true
+01C9: 43 58 01   popf flag:[0158]
+01CC: 1D 69 06   pushs L0669   ; Salamon's permission
+01CF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D3: 1D 7E 06   pushs L067E   ; adventure
+01D6: 07 01 00 0B 00  cmps 0001H, 01E6
+01DB: 1C 88 06   addsi L0688   ; "Adventure is not...
+01DE: 33   say
+01DF: 1D AD 06   pushs L06AD   ; adventure
+01E2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E6: 1D B7 06   pushs L06B7   ; never mind
+01E9: 07 01 00 0B 00  cmps 0001H, 01F9
+01EE: 1C C2 06   addsi L06C2   ; She shrugs.
+01F1: 33   say
+01F2: 1D CE 06   pushs L06CE   ; never mind
+01F5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01F9: 1D D9 06   pushs L06D9   ; wisps
+01FC: 07 01 00 2F 00  cmps 0001H, 0230
+0201: 1C DF 06   addsi L06DF   ; She smiles excite...
+0204: 33   say
+0205: 24 02 00   call [0002]   ; 090AH
+0208: 12 03 00   pop [0003]
+020B: 21 03 00   push [0003]
+020E: 05 0B 00   jne 021C
+0211: 1C 14 07   addsi L0714   ; "An idea how you ...
+0214: 33   say
+0215: 13   push true
+0216: 43 55 01   popf flag:[0155]
+0219: 06 04 00   jmp 0220
+021C: 1C DB 07   addsi L07DB   ; "Oh." She appears...
+021F: 33   say
+0220: 1D FE 07   pushs L07FE   ; wisps
+0223: 1D 04 08   pushs L0804   ; never mind
+0226: 1D 0F 08   pushs L080F   ; adventure
+0229: 1E 03 00   arrc 0003H   ; 3
+022C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0230: 1D 19 08   pushs L0819   ; bye
+0233: 07 01 00 03 00  cmps 0001H, 023B
+0238: 06 03 00   jmp 023E
+023B: 06 61 FE   jmp 009F
+023E: 40   db 40 ???
+023F: 1C 1D 08   addsi L081D   ; "Goodbye is said ...
+0242: 33   say
+0243: 48   push eventid
+0244: 1F 00 00   pushi 0000H   ; 0
+0247: 22   cmpeq
+0248: 05 01 00   jne 024C
+024B: 3F   abrt
+024C: 25   ret

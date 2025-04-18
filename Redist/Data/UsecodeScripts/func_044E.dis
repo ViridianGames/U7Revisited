@@ -1,0 +1,257 @@
+  .funcnumber 044EH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Rayburt'
+L0014: db 00
+L0015: db 'You see a friendly woman in her thirties.'
+L003E: db 00
+L003F: db '"Greetings, again!" Pamela says.'
+L005F: db 00
+L0060: db 'name'
+L0064: db 00
+L0065: db '"I am Pamela!"'
+L0073: db 00
+L0074: db 'name'
+L0078: db 00
+L0079: db 'Rayburt'
+L0080: db 00
+L0081: db 'job'
+L0084: db 00
+L0085: db '"I am the Innkeeper at the Out'n'Inn."'
+L00AB: db 00
+L00AC: db '"If thou wouldst like a room, just say so!"'
+L00D7: db 00
+L00D8: db 'room'
+L00DC: db 00
+L00DD: db '"Please come by if thou wouldst like to rest thy weary feet '
+ db 'for the night!"'
+L0128: db 00
+L0129: db 'Out'n Inn'
+L0132: db 00
+L0133: db 'room'
+L0137: db 00
+L0138: db '"The room is quite inexpensive. Only 8 gold per person. Want'
+ db ' one?"'
+L017A: db 00
+L017B: db '"Thou art carrying too much to take the room key!"'
+L01AD: db 00
+L01AE: db '"Here is thy room key. It is good only until thou leavest."'
+L01E9: db 00
+L01EA: db '"Thou dost not have enough gold, eh? Too bad."'
+L0218: db 00
+L0219: db '"Another night, then."'
+L022F: db 00
+L0230: db 'room'
+L0234: db 00
+L0235: db 'Out'n Inn'
+L023E: db 00
+L023F: db '"Well... Cove is the city of Love and Passion, didst thou no'
+ db 't know? Thou must be careful. If thou dost stay too long in '
+ db 'Cove, thou wilt fall in love with someone! Mark my words!"'
+L02F1: db 00
+L02F2: db 'Out'n Inn'
+L02FB: db 00
+L02FC: db 'Rayburt'
+L0303: db 00
+L0304: db '"Oooh, he is such a wonderful man, dost thou not think? He i'
+ db 's so intense and serious. Handsome, too! Oh, and I like Rega'
+ db 'l as well."'
+L0387: db 00
+L0388: db 'Rayburt'
+L038F: db 00
+L0390: db 'Regal'
+L0395: db 00
+L0396: db 'Regal'
+L039B: db 00
+L039C: db '"As far as dogs go, he is handsome, too!"'
+L03C5: db 00
+L03C6: db 'Regal'
+L03CB: db 00
+L03CC: db 'bye'
+L03CF: db 00
+L03D0: db '"See thee soon!"*'
+L03E1: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0002H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 B6 01   jne 01BE
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F B2 FF   pushi FFB2H   ; -78
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 1F B2 FF   pushi FFB2H   ; -78
+0025: 38 1B 00 01  callis 001B, 1
+0029: 38 1C 00 01  callis 001C, 1
+002D: 12 00 00   pop [0000]
+0030: 42 E4 00   pushf flag:[00E4]
+0033: 05 0D 00   jne 0043
+0036: 42 F0 00   pushf flag:[00F0]
+0039: 05 07 00   jne 0043
+003C: 1D 0D 00   pushs L000D   ; Rayburt
+003F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0043: 42 EB 00   pushf flag:[00EB]
+0046: 10   not
+0047: 05 0B 00   jne 0055
+004A: 1C 15 00   addsi L0015   ; You see a friendl...
+004D: 33   say
+004E: 13   push true
+004F: 43 EB 00   popf flag:[00EB]
+0052: 06 04 00   jmp 0059
+0055: 1C 3F 00   addsi L003F   ; "Greetings, again...
+0058: 33   say
+0059: 04 5D 01   je 01B9
+005C: 1D 60 00   pushs L0060   ; name
+005F: 07 01 00 1C 00  cmps 0001H, 0080
+0064: 1C 65 00   addsi L0065   ; "I am Pamela!"
+0067: 33   say
+0068: 1D 74 00   pushs L0074   ; name
+006B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006F: 42 E4 00   pushf flag:[00E4]
+0072: 05 07 00   jne 007C
+0075: 1D 79 00   pushs L0079   ; Rayburt
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 13   push true
+007D: 43 F0 00   popf flag:[00F0]
+0080: 1D 81 00   pushs L0081   ; job
+0083: 07 01 00 35 00  cmps 0001H, 00BD
+0088: 1C 85 00   addsi L0085   ; "I am the Innkeep...
+008B: 33   say
+008C: 21 00 00   push [0000]
+008F: 1F 10 00   pushi 0010H   ; 16
+0092: 22   cmpeq
+0093: 21 00 00   push [0000]
+0096: 1F 0B 00   pushi 000BH   ; 11
+0099: 22   cmpeq
+009A: 0F   or
+009B: 05 0E 00   jne 00AC
+009E: 1C AC 00   addsi L00AC   ; "If thou wouldst ...
+00A1: 33   say
+00A2: 1D D8 00   pushs L00D8   ; room
+00A5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A9: 06 0A 00   jmp 00B6
+00AC: 1F 1A 00   pushi 001AH   ; 26
+00AF: 05 04 00   jne 00B6
+00B2: 1C DD 00   addsi L00DD   ; "Please come by i...
+00B5: 33   say
+00B6: 1D 29 01   pushs L0129   ; Out'n Inn
+00B9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BD: 1D 33 01   pushs L0133   ; room
+00C0: 07 01 00 A6 00  cmps 0001H, 016B
+00C5: 1C 38 01   addsi L0138   ; "The room is quit...
+00C8: 33   say
+00C9: 24 00 00   call [0000]   ; 090AH
+00CC: 05 91 00   jne 0160
+00CF: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+00D3: 12 01 00   pop [0001]
+00D6: 1F 00 00   pushi 0000H   ; 0
+00D9: 12 02 00   pop [0002]
+00DC: 2E   sloop
+00DD: 02 03 00 04 00 05 00 01 00 0D 00  db 2 ???
+00DE:   db 3
+00DF:   db 0
+00E0:   db 4
+00E1:   db 0
+00E2:   db 5
+00E3:   db 0
+00E4:   db 1
+00E5:   db 0
+00E6:   db d
+00E7:   db 0
+00E8: 21 02 00   push [0002]
+00EB: 1F 01 00   pushi 0001H   ; 1
+00EE: 09   add
+00EF: 12 02 00   pop [0002]
+00F2: 06 E8 FF   jmp 00DD
+00F5: 21 02 00   push [0002]
+00F8: 1F 08 00   pushi 0008H   ; 8
+00FB: 0C   mul
+00FC: 12 06 00   pop [0006]
+00FF: 1F 99 FE   pushi FE99H   ; -359
+0102: 1F 99 FE   pushi FE99H   ; -359
+0105: 1F 84 02   pushi 0284H   ; 644
+0108: 1F 9B FE   pushi FE9BH   ; -357
+010B: 38 28 00 04  callis 0028, 4
+010F: 12 07 00   pop [0007]
+0112: 21 07 00   push [0007]
+0115: 21 06 00   push [0006]
+0118: 18   cmpge
+0119: 05 3D 00   jne 0159
+011C: 13   push true
+011D: 1F 99 FE   pushi FE99H   ; -359
+0120: 1F FF 00   pushi 00FFH   ; 255
+0123: 1F 81 02   pushi 0281H   ; 641
+0126: 1F 01 00   pushi 0001H   ; 1
+0129: 38 2C 00 05  callis 002C, 5
+012D: 12 08 00   pop [0008]
+0130: 21 08 00   push [0008]
+0133: 10   not
+0134: 05 07 00   jne 013E
+0137: 1C 7B 01   addsi L017B   ; "Thou art carryin...
+013A: 33   say
+013B: 06 18 00   jmp 0156
+013E: 1C AE 01   addsi L01AE   ; "Here is thy room...
+0141: 33   say
+0142: 13   push true
+0143: 1F 99 FE   pushi FE99H   ; -359
+0146: 1F 99 FE   pushi FE99H   ; -359
+0149: 1F 84 02   pushi 0284H   ; 644
+014C: 21 06 00   push [0006]
+014F: 38 2B 00 05  callis 002B, 5
+0153: 12 09 00   pop [0009]
+0156: 06 04 00   jmp 015D
+0159: 1C EA 01   addsi L01EA   ; "Thou dost not ha...
+015C: 33   say
+015D: 06 04 00   jmp 0164
+0160: 1C 19 02   addsi L0219   ; "Another night, t...
+0163: 33   say
+0164: 1D 30 02   pushs L0230   ; room
+0167: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016B: 1D 35 02   pushs L0235   ; Out'n Inn
+016E: 07 01 00 0B 00  cmps 0001H, 017E
+0173: 1C 3F 02   addsi L023F   ; "Well... Cove is ...
+0176: 33   say
+0177: 1D F2 02   pushs L02F2   ; Out'n Inn
+017A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017E: 1D FC 02   pushs L02FC   ; Rayburt
+0181: 07 01 00 12 00  cmps 0001H, 0198
+0186: 1C 04 03   addsi L0304   ; "Oooh, he is such...
+0189: 33   say
+018A: 1D 88 03   pushs L0388   ; Rayburt
+018D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0191: 1D 90 03   pushs L0390   ; Regal
+0194: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0198: 1D 96 03   pushs L0396   ; Regal
+019B: 07 01 00 0B 00  cmps 0001H, 01AB
+01A0: 1C 9C 03   addsi L039C   ; "As far as dogs g...
+01A3: 33   say
+01A4: 1D C6 03   pushs L03C6   ; Regal
+01A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AB: 1D CC 03   pushs L03CC   ; bye
+01AE: 07 01 00 03 00  cmps 0001H, 01B6
+01B3: 06 03 00   jmp 01B9
+01B6: 06 A0 FE   jmp 0059
+01B9: 40   db 40 ???
+01BA: 1C D0 03   addsi L03D0   ; "See thee soon!"*
+01BD: 33   say
+01BE: 48   push eventid
+01BF: 1F 00 00   pushi 0000H   ; 0
+01C2: 22   cmpeq
+01C3: 05 06 00   jne 01CC
+01C6: 1F B2 FF   pushi FFB2H   ; -78
+01C9: 24 01 00   call [0001]   ; 092EH
+01CC: 25   ret

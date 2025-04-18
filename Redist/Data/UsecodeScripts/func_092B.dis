@@ -1,0 +1,28 @@
+  .funcnumber 092BH
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 12 01 00   pop [0001]
+0006: 2E   sloop
+0007: 02 02 00 03 00 04 00 00 00 0D 00  db 2 ???
+0008:   db 2
+0009:   db 0
+000A:   db 3
+000B:   db 0
+000C:   db 4
+000D:   db 0
+000E:   db 0
+000F:   db 0
+0010:   db d
+0011:   db 0
+0012: 21 01 00   push [0001]
+0015: 1F 01 00   pushi 0001H   ; 1
+0018: 09   add
+0019: 12 01 00   pop [0001]
+001C: 06 E8 FF   jmp 0007
+001F: 21 01 00   push [0001]
+0022: 2D   setr
+0023: 32   rts

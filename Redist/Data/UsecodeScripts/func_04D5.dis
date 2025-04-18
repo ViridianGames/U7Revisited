@@ -1,0 +1,214 @@
+  .funcnumber 04D5H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'gargoyle'
+L0015: db 00
+L0016: db 'gargoyle'
+L001E: db 00
+L001F: db 'For-Lem'
+L0026: db 00
+L0027: db 'You see before you a young girl with a carefree expression. '
+ db 'As she notices you, her eyes grow wide as she exclaims, "Tho'
+ db 'u art the person in one of For... one of -my- story books! T'
+ db 'hou art the Avatar!"'
+L00EF: db 00
+L00F0: db '"How dost thou do, '
+L0103: db 00
+L0104: db ' Avatar?" She curtseys.'
+L011B: db 00
+L011C: db 'name'
+L0120: db 00
+L0121: db '"My name is Catherine, '
+L0138: db 00
+L0139: db ' Avatar."'
+L0142: db 00
+L0143: db 'name'
+L0147: db 00
+L0148: db 'job'
+L014B: db 00
+L014C: db '"I have no job, '
+L015C: db 00
+L015D: db ' Avatar. I live with my father and mother here in Vesper."'
+L0197: db 00
+L0198: db 'Vesper'
+L019E: db 00
+L019F: db 'mother'
+L01A5: db 00
+L01A6: db 'father'
+L01AC: db 00
+L01AD: db 'father'
+L01B3: db 00
+L01B4: db '"He is the overseer at the mines, '
+L01D6: db 00
+L01D7: db ' Avatar."'
+L01E0: db 00
+L01E1: db '"Of course, he's gone now..." She looks down at her feet.'
+L021A: db 00
+L021B: db 'father'
+L0221: db 00
+L0222: db 'mother'
+L0228: db 00
+L0229: db '"Yes, '
+L022F: db 00
+L0230: db ' Avatar. She is there right now." She points, apparently ind'
+ db 'icating her house.'
+L027E: db 00
+L027F: db 'mother'
+L0285: db 00
+L0286: db 'Vesper'
+L028C: db 00
+L028D: db '"That is the name of our city, '
+L02AC: db 00
+L02AD: db ' Avatar. If thou art lost, thou mayest wish to speak with th'
+ db 'e town clerk."'
+L02F7: db 00
+L02F8: db 'Vesper'
+L02FE: db 00
+L02FF: db 'gargoyle'
+L0307: db 00
+L0308: db '"I'm sorry, '
+L0314: db 00
+L0315: db ' Avatar, my mother told me never to speak with strangers." S'
+ db 'he quickly turns away.*'
+L0368: db 00
+L0369: db 'For-Lem'
+L0370: db 00
+L0371: db 'A tear glistens as it rolls gently down her cheek. "He is no'
+ db ' more. My -- my father killed him for talking to me, and -- '
+ db 'and 'tis all thy fault!" She turns away, sobbing.*'
+L041B: db 00
+L041C: db 'bye'
+L041F: db 00
+L0420: db '"Goodbye, '
+L042A: db 00
+L042B: db ' Avatar."*'
+L0435: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 40 01   jne 0148
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 2B FF   pushi FF2BH   ; -213
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1D 00 00   pushs L0000   ; bye
+001B: 1D 04 00   pushs L0004   ; job
+001E: 1D 08 00   pushs L0008   ; name
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0028: 1F 2A FF   pushi FF2AH   ; -214
+002B: 24 01 00   call [0001]   ; 08F7H
+002E: 12 01 00   pop [0001]
+0031: 21 01 00   push [0001]
+0034: 05 07 00   jne 003E
+0037: 1D 0D 00   pushs L000D   ; gargoyle
+003A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003E: 42 85 02   pushf flag:[0285]
+0041: 05 0E 00   jne 0052
+0044: 1D 16 00   pushs L0016   ; gargoyle
+0047: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+004B: 1D 1F 00   pushs L001F   ; For-Lem
+004E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0052: 42 92 02   pushf flag:[0292]
+0055: 10   not
+0056: 05 0B 00   jne 0064
+0059: 1C 27 00   addsi L0027   ; You see before yo...
+005C: 33   say
+005D: 13   push true
+005E: 43 92 02   popf flag:[0292]
+0061: 06 0A 00   jmp 006E
+0064: 1C F0 00   addsi L00F0   ; "How dost thou do, 
+0067: 2F 00 00   addsv [0000]
+006A: 1C 04 01   addsi L0104   ;  Avatar?" She cur...
+006D: 33   say
+006E: 04 CC 00   je 013D
+0071: 1D 1C 01   pushs L011C   ; name
+0074: 07 01 00 11 00  cmps 0001H, 008A
+0079: 1C 21 01   addsi L0121   ; "My name is Cathe...
+007C: 2F 00 00   addsv [0000]
+007F: 1C 39 01   addsi L0139   ;  Avatar."
+0082: 33   say
+0083: 1D 43 01   pushs L0143   ; name
+0086: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008A: 1D 48 01   pushs L0148   ; job
+008D: 07 01 00 1A 00  cmps 0001H, 00AC
+0092: 1C 4C 01   addsi L014C   ; "I have no job, 
+0095: 2F 00 00   addsv [0000]
+0098: 1C 5D 01   addsi L015D   ;  Avatar. I live w...
+009B: 33   say
+009C: 1D 98 01   pushs L0198   ; Vesper
+009F: 1D 9F 01   pushs L019F   ; mother
+00A2: 1D A6 01   pushs L01A6   ; father
+00A5: 1E 03 00   arrc 0003H   ; 3
+00A8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AC: 1D AD 01   pushs L01AD   ; father
+00AF: 07 01 00 29 00  cmps 0001H, 00DD
+00B4: 1C B4 01   addsi L01B4   ; "He is the overse...
+00B7: 2F 00 00   addsv [0000]
+00BA: 1C D7 01   addsi L01D7   ;  Avatar."
+00BD: 33   say
+00BE: 1F 35 FF   pushi FF35H   ; -203
+00C1: 38 1B 00 01  callis 001B, 1
+00C5: 38 37 00 01  callis 0037, 1
+00C9: 12 02 00   pop [0002]
+00CC: 21 02 00   push [0002]
+00CF: 05 04 00   jne 00D6
+00D2: 1C E1 01   addsi L01E1   ; "Of course, he's ...
+00D5: 33   say
+00D6: 1D 1B 02   pushs L021B   ; father
+00D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DD: 1D 22 02   pushs L0222   ; mother
+00E0: 07 01 00 11 00  cmps 0001H, 00F6
+00E5: 1C 29 02   addsi L0229   ; "Yes, 
+00E8: 2F 00 00   addsv [0000]
+00EB: 1C 30 02   addsi L0230   ;  Avatar. She is t...
+00EE: 33   say
+00EF: 1D 7F 02   pushs L027F   ; mother
+00F2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F6: 1D 86 02   pushs L0286   ; Vesper
+00F9: 07 01 00 11 00  cmps 0001H, 010F
+00FE: 1C 8D 02   addsi L028D   ; "That is the name...
+0101: 2F 00 00   addsv [0000]
+0104: 1C AD 02   addsi L02AD   ;  Avatar. If thou ...
+0107: 33   say
+0108: 1D F8 02   pushs L02F8   ; Vesper
+010B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010F: 1D FF 02   pushs L02FF   ; gargoyle
+0112: 07 01 00 0B 00  cmps 0001H, 0122
+0117: 1C 08 03   addsi L0308   ; "I'm sorry, 
+011A: 2F 00 00   addsv [0000]
+011D: 1C 15 03   addsi L0315   ;  Avatar, my mothe...
+0120: 33   say
+0121: 3F   abrt
+0122: 1D 69 03   pushs L0369   ; For-Lem
+0125: 07 01 00 05 00  cmps 0001H, 012F
+012A: 1C 71 03   addsi L0371   ; A tear glistens a...
+012D: 33   say
+012E: 3F   abrt
+012F: 1D 1C 04   pushs L041C   ; bye
+0132: 07 01 00 03 00  cmps 0001H, 013A
+0137: 06 03 00   jmp 013D
+013A: 06 31 FF   jmp 006E
+013D: 40   db 40 ???
+013E: 1C 20 04   addsi L0420   ; "Goodbye, 
+0141: 2F 00 00   addsv [0000]
+0144: 1C 2B 04   addsi L042B   ;  Avatar."*
+0147: 33   say
+0148: 48   push eventid
+0149: 1F 00 00   pushi 0000H   ; 0
+014C: 22   cmpeq
+014D: 05 01 00   jne 0151
+0150: 3F   abrt
+0151: 25   ret

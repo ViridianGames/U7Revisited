@@ -1,0 +1,155 @@
+  .funcnumber 0463H
+  .data
+L0000: db 'You see a wingless gargoyle with a terrible skin disease. It'
+ db ' looks as if his face is falling off in patches.'
+L006C: db 00
+L006D: db '"To want something else?" Fodus asks.'
+L0092: db 00
+L0093: db 'bye'
+L0096: db 00
+L0097: db 'job'
+L009A: db 00
+L009B: db 'name'
+L009F: db 00
+L00A0: db 'name'
+L00A4: db 00
+L00A5: db '"To be named Fodus."'
+L00B9: db 00
+L00BA: db 'name'
+L00BE: db 00
+L00BF: db 'job'
+L00C2: db 00
+L00C3: db '"To be a digger in the mines. To be looking for iron ore and'
+ db ' lead and..."'
+L010C: db 00
+L010D: db 'and...'
+L0113: db 00
+L0114: db 'and...'
+L011A: db 00
+L011B: db '"The secret ore..."'
+L012E: db 00
+L012F: db 'A wave of delirium passes over the gargoyle. "To... to be go'
+ db 'ing back to work now, Mikos!... To be working hard!... To ha'
+ db 've no need to give me any more of the the silver fluid..."'
+L01E1: db 00
+L01E2: db 'and...'
+L01E8: db 00
+L01E9: db 'silver fluid'
+L01F5: db 00
+L01F6: db 'secret ore'
+L0200: db 00
+L0201: db 'secret ore'
+L020B: db 00
+L020C: db '"To be called... blackrock."'
+L0228: db 00
+L0229: db 'secret ore'
+L0233: db 00
+L0234: db 'blackrock'
+L023D: db 00
+L023E: db 'blackrock'
+L0247: db 00
+L0248: db '"To be the lode located in a hidden area of the mine..." The'
+ db ' gargoyle's eyes roll up into his head. He is obviously sick'
+ db '.'
+L02C1: db 00
+L02C2: db 'blackrock'
+L02CB: db 00
+L02CC: db 'silver fluid'
+L02D8: db 00
+L02D9: db '"To need the venom... to have more venom..."'
+L0305: db 00
+L0306: db 'silver fluid'
+L0312: db 00
+L0313: db 'bye'
+L0316: db 00
+L0317: db '"To be going back to work now, Mikos..."*'
+L0340: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0001H
+  .extern 0909H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 48   push eventid
+000A: 1F 01 00   pushi 0001H   ; 1
+000D: 22   cmpeq
+000E: 05 DA 00   jne 00EB
+0011: 1F 00 00   pushi 0000H   ; 0
+0014: 1F 9D FF   pushi FF9DH   ; -99
+0017: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+001B: 24 00 00   call [0000]   ; 0909H
+001E: 12 00 00   pop [0000]
+0021: 42 1D 01   pushf flag:[011D]
+0024: 10   not
+0025: 05 0B 00   jne 0033
+0028: 1C 00 00   addsi L0000   ; You see a wingles...
+002B: 33   say
+002C: 13   push true
+002D: 43 1D 01   popf flag:[011D]
+0030: 06 04 00   jmp 0037
+0033: 1C 6D 00   addsi L006D   ; "To want somethin...
+0036: 33   say
+0037: 1D 93 00   pushs L0093   ; bye
+003A: 1D 97 00   pushs L0097   ; job
+003D: 1D 9B 00   pushs L009B   ; name
+0040: 1E 03 00   arrc 0003H   ; 3
+0043: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0047: 04 9C 00   je 00E6
+004A: 1D A0 00   pushs L00A0   ; name
+004D: 07 01 00 0B 00  cmps 0001H, 005D
+0052: 1C A5 00   addsi L00A5   ; "To be named Fodus."
+0055: 33   say
+0056: 1D BA 00   pushs L00BA   ; name
+0059: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005D: 1D BF 00   pushs L00BF   ; job
+0060: 07 01 00 0B 00  cmps 0001H, 0070
+0065: 1C C3 00   addsi L00C3   ; "To be a digger i...
+0068: 33   say
+0069: 1D 0D 01   pushs L010D   ; and...
+006C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0070: 1D 14 01   pushs L0114   ; and...
+0073: 07 01 00 20 00  cmps 0001H, 0098
+0078: 1C 1B 01   addsi L011B   ; "The secret ore..."
+007B: 33   say
+007C: 1C 2F 01   addsi L012F   ; A wave of deliriu...
+007F: 33   say
+0080: 13   push true
+0081: 43 07 01   popf flag:[0107]
+0084: 1D E2 01   pushs L01E2   ; and...
+0087: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008B: 1D E9 01   pushs L01E9   ; silver fluid
+008E: 1D F6 01   pushs L01F6   ; secret ore
+0091: 1E 02 00   arrc 0002H   ; 2
+0094: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0098: 1D 01 02   pushs L0201   ; secret ore
+009B: 07 01 00 12 00  cmps 0001H, 00B2
+00A0: 1C 0C 02   addsi L020C   ; "To be called... ...
+00A3: 33   say
+00A4: 1D 29 02   pushs L0229   ; secret ore
+00A7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AB: 1D 34 02   pushs L0234   ; blackrock
+00AE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B2: 1D 3E 02   pushs L023E   ; blackrock
+00B5: 07 01 00 0B 00  cmps 0001H, 00C5
+00BA: 1C 48 02   addsi L0248   ; "To be the lode l...
+00BD: 33   say
+00BE: 1D C2 02   pushs L02C2   ; blackrock
+00C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C5: 1D CC 02   pushs L02CC   ; silver fluid
+00C8: 07 01 00 0B 00  cmps 0001H, 00D8
+00CD: 1C D9 02   addsi L02D9   ; "To need the veno...
+00D0: 33   say
+00D1: 1D 06 03   pushs L0306   ; silver fluid
+00D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D8: 1D 13 03   pushs L0313   ; bye
+00DB: 07 01 00 03 00  cmps 0001H, 00E3
+00E0: 06 03 00   jmp 00E6
+00E3: 06 61 FF   jmp 0047
+00E6: 40   db 40 ???
+00E7: 1C 17 03   addsi L0317   ; "To be going back...
+00EA: 33   say
+00EB: 25   ret

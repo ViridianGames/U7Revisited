@@ -1,0 +1,133 @@
+  .funcnumber 08D1H
+  .data
+L0000: db 'Raymundo hands you a script and you take center stage. The l'
+ db 'ights feel hot on your face. Although you are a little nervo'
+ db 'us, you clear your throat and begin to read the lines on the'
+ db ' page.'
+L00BA: db 00
+L00BB: db 'I am the -Avatar-!'
+L00CD: db 00
+L00CE: db 'I am -the- Avatar!'
+L00E0: db 00
+L00E1: db 'I -am- the Avatar!'
+L00F3: db 00
+L00F4: db '-I- am the Avatar!'
+L0106: db 00
+L0107: db '"No, no, no! That is all wrong! Thou art the 'Avatar'! Thou '
+ db 'must feel like the Avatar! Thou must sound like the Avatar! '
+ db 'Thou must -be- the Avatar! Try it again."'
+L01A8: db 00
+L01A9: db 'I am the -Avatar-!'
+L01BB: db 00
+L01BC: db 'I am -the- Avatar!'
+L01CE: db 00
+L01CF: db 'I -am- the Avatar!'
+L01E1: db 00
+L01E2: db '-I- am the Avatar!'
+L01F4: db 00
+L01F5: db '"Better... better... but I think perhaps thou dost need a pr'
+ db 'op."'
+L0235: db 00
+L0236: db '"Jesse, hand our friend thy staff."*'
+L025A: db 00
+L025B: db '"Here it is, milady."*'
+L0271: db 00
+L0272: db '"Here it is, milord."*'
+L0288: db 00
+L0289: db 'Raymundo hands you a staff.'
+L02A4: db 00
+L02A5: db 'With the staff in hand, you try the lines once more. This ti'
+ db 'me you feel like a true actor. The lines flow from your lips'
+ db ' as if the Avatar were really saying them. You feel an excit'
+ db 'ement you have never before felt. You like this 'acting' thi'
+ db 'ng. You crave more! You anxiously await Raymundo's critique.'
+ db '..'
+L03D3: db 00
+L03D4: db 'Raymundo takes the staff and says, "Hmmmm. Yes, that's fine.'
+ db ' I thank thee. Fine. We shall be in touch, yes? Thank thee f'
+ db 'or coming in. If thou hast a resume, just leave it by the do'
+ db 'or, yes? Thank thee."*'
+L049E: db 00
+  .code
+  .argc 0000H
+  .localc 0002H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 0911H
+0000: 39 09 00 00  calli 0009, 0
+0004: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0008: 12 00 00   pop [0000]
+000B: 1F 00 00   pushi 0000H   ; 0
+000E: 1F E5 FF   pushi FFE5H   ; -27
+0011: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0015: 1C 00 00   addsi L0000   ; Raymundo hands yo...
+0018: 33   say
+0019: 1D BB 00   pushs L00BB   ; I am the -Avatar-!
+001C: 1D CE 00   pushs L00CE   ; I am -the- Avatar!
+001F: 1D E1 00   pushs L00E1   ; I -am- the Avatar!
+0022: 1D F4 00   pushs L00F4   ; -I- am the Avatar!
+0025: 1E 04 00   arrc 0004H   ; 4
+0028: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002C: 04 96 00   je 00C5
+002F: 31 01 00 04 00  db 31 ???
+0030:   db 1
+0031:   db 0
+0032:   db 4
+0033:   db 0
+0034: 1C 07 01   addsi L0107   ; "No, no, no! That...
+0037: 33   say
+0038: 39 09 00 00  calli 0009, 0
+003C: 1D A9 01   pushs L01A9   ; I am the -Avatar-!
+003F: 1D BC 01   pushs L01BC   ; I am -the- Avatar!
+0042: 1D CF 01   pushs L01CF   ; I -am- the Avatar!
+0045: 1D E2 01   pushs L01E2   ; -I- am the Avatar!
+0048: 1E 04 00   arrc 0004H   ; 4
+004B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004F: 31 01 00 04 00  db 31 ???
+0050:   db 1
+0051:   db 0
+0052:   db 4
+0053:   db 0
+0054: 1C F5 01   addsi L01F5   ; "Better... better...
+0057: 33   say
+0058: 39 09 00 00  calli 0009, 0
+005C: 1F E4 FF   pushi FFE4H   ; -28
+005F: 24 00 00   call [0000]   ; 08F7H
+0062: 12 01 00   pop [0001]
+0065: 21 01 00   push [0001]
+0068: 05 3A 00   jne 00A5
+006B: 1C 36 02   addsi L0236   ; "Jesse, hand our ...
+006E: 33   say
+006F: 21 00 00   push [0000]
+0072: 05 18 00   jne 008D
+0075: 1F 01 00   pushi 0001H   ; 1
+0078: 1F E4 FF   pushi FFE4H   ; -28
+007B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+007F: 1C 5B 02   addsi L025B   ; "Here it is, mila...
+0082: 33   say
+0083: 1F E4 FF   pushi FFE4H   ; -28
+0086: 39 04 00 01  calli _HideNPC@1  ; 0004
+008A: 06 15 00   jmp 00A2
+008D: 1F 00 00   pushi 0000H   ; 0
+0090: 1F E4 FF   pushi FFE4H   ; -28
+0093: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0097: 1C 72 02   addsi L0272   ; "Here it is, milo...
+009A: 33   say
+009B: 1F E4 FF   pushi FFE4H   ; -28
+009E: 39 04 00 01  calli _HideNPC@1  ; 0004
+00A2: 06 04 00   jmp 00A9
+00A5: 1C 89 02   addsi L0289   ; Raymundo hands yo...
+00A8: 33   say
+00A9: 1F 00 00   pushi 0000H   ; 0
+00AC: 1F E5 FF   pushi FFE5H   ; -27
+00AF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00B3: 1C A5 02   addsi L02A5   ; With the staff in...
+00B6: 33   say
+00B7: 1C D4 03   addsi L03D4   ; Raymundo takes th...
+00BA: 33   say
+00BB: 1F 14 00   pushi 0014H   ; 20
+00BE: 24 01 00   call [0001]   ; 0911H
+00C1: 3F   abrt
+00C2: 06 67 FF   jmp 002C
+00C5: 40   db 40 ???
+00C6: 25   ret

@@ -1,0 +1,55 @@
+  .funcnumber 080CH
+  .data
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0000H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 1F 02 00   pushi 0002H   ; 2
+0006: 1F 99 FE   pushi FE99H   ; -359
+0009: 3E   push itemref
+000A: 38 35 00 04  callis 0035, 4
+000E: 12 01 00   pop [0001]
+0011: 1F 48 03   pushi 0348H   ; 840
+0014: 1E 01 00   arrc 0001H   ; 1
+0017: 12 02 00   pop [0002]
+001A: 1F 2D 01   pushi 012DH   ; 301
+001D: 1F F5 02   pushi 02F5H   ; 757
+0020: 1F 06 03   pushi 0306H   ; 774
+0023: 1F 05 03   pushi 0305H   ; 773
+0026: 1F 94 02   pushi 0294H   ; 660
+0029: 1F 8C 02   pushi 028CH   ; 652
+002C: 1F 1C 03   pushi 031CH   ; 796
+002F: 1E 07 00   arrc 0007H   ; 7
+0032: 12 03 00   pop [0003]
+0035: 2E   sloop
+0036: 02 04 00 05 00 06 00 01 00 29 00  db 2 ???
+0037:   db 4
+0038:   db 0
+0039:   db 5
+003A:   db 0
+003B:   db 6
+003C:   db 0
+003D:   db 1
+003E:   db 0
+003F:   db 29
+0040:   db 0
+0041: 21 06 00   push [0006]
+0044: 38 11 00 01  callis _GetItemType@1  ; 0011
+0048: 12 07 00   pop [0007]
+004B: 21 07 00   push [0007]
+004E: 21 02 00   push [0002]
+0051: 30   in
+0052: 05 04 00   jne 0059
+0055: 1F 48 03   pushi 0348H   ; 840
+0058: 2D   setr
+0059: 21 07 00   push [0007]
+005C: 21 03 00   push [0003]
+005F: 30   in
+0060: 05 04 00   jne 0067
+0063: 1F 8C 02   pushi 028CH   ; 652
+0066: 2D   setr
+0067: 06 CC FF   jmp 0036
+006A: 1F C7 00   pushi 00C7H   ; 199
+006D: 2D   setr
+006E: 32   rts

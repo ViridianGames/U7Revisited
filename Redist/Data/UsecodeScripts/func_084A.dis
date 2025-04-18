@@ -1,0 +1,98 @@
+  .funcnumber 084AH
+  .data
+  .code
+  .argc 0000H
+  .localc 000EH
+  .externsize 0000H
+0000: 1F 01 00   pushi 0001H   ; 1
+0003: 12 00 00   pop [0000]
+0006: 1F 9B 01   pushi 019BH   ; 411
+0009: 1F 9B 01   pushi 019BH   ; 411
+000C: 1F 9B 01   pushi 019BH   ; 411
+000F: 1F 9B 01   pushi 019BH   ; 411
+0012: 1F 93 01   pushi 0193H   ; 403
+0015: 1F 93 01   pushi 0193H   ; 403
+0018: 1F 93 01   pushi 0193H   ; 403
+001B: 1F 93 01   pushi 0193H   ; 403
+001E: 1E 08 00   arrc 0008H   ; 8
+0021: 12 01 00   pop [0001]
+0024: 1F 3E 01   pushi 013EH   ; 318
+0027: 1F 3B 01   pushi 013BH   ; 315
+002A: 1F 35 01   pushi 0135H   ; 309
+002D: 1F 32 01   pushi 0132H   ; 306
+0030: 1F 3E 01   pushi 013EH   ; 318
+0033: 1F 3B 01   pushi 013BH   ; 315
+0036: 1F 35 01   pushi 0135H   ; 309
+0039: 1F 32 01   pushi 0132H   ; 306
+003C: 1E 08 00   arrc 0008H   ; 8
+003F: 12 02 00   pop [0002]
+0042: 1F 00 00   pushi 0000H   ; 0
+0045: 1F 00 00   pushi 0000H   ; 0
+0048: 1F 00 00   pushi 0000H   ; 0
+004B: 1F 00 00   pushi 0000H   ; 0
+004E: 1F 02 00   pushi 0002H   ; 2
+0051: 1F 02 00   pushi 0002H   ; 2
+0054: 1F 02 00   pushi 0002H   ; 2
+0057: 1F 02 00   pushi 0002H   ; 2
+005A: 1E 08 00   arrc 0008H   ; 8
+005D: 12 03 00   pop [0003]
+0060: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0064: 12 04 00   pop [0004]
+0067: 2E   sloop
+0068: 02 05 00 06 00 07 00 04 00 6C 00  db 2 ???
+0069:   db 5
+006A:   db 0
+006B:   db 6
+006C:   db 0
+006D:   db 7
+006E:   db 0
+006F:   db 4
+0070:   db 0
+0071:   db 6c
+0072:   db 0
+0073: 21 00 00   push [0000]
+0076: 26 01 00   aidx [0001]
+0079: 12 08 00   pop [0008]
+007C: 21 08 00   push [0008]
+007F: 21 00 00   push [0000]
+0082: 26 02 00   aidx [0002]
+0085: 4A   arra
+0086: 12 08 00   pop [0008]
+0089: 21 08 00   push [0008]
+008C: 21 00 00   push [0000]
+008F: 26 03 00   aidx [0003]
+0092: 4A   arra
+0093: 12 08 00   pop [0008]
+0096: 21 00 00   push [0000]
+0099: 1F 01 00   pushi 0001H   ; 1
+009C: 09   add
+009D: 12 00 00   pop [0000]
+00A0: 1F 99 FE   pushi FE99H   ; -359
+00A3: 1F 99 FE   pushi FE99H   ; -359
+00A6: 1F 99 FE   pushi FE99H   ; -359
+00A9: 21 07 00   push [0007]
+00AC: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+00B0: 12 09 00   pop [0009]
+00B3: 2E   sloop
+00B4: 02 0A 00 0B 00 0C 00 09 00 1D 00  db 2 ???
+00B5:   db a
+00B6:   db 0
+00B7:   db b
+00B8:   db 0
+00B9:   db c
+00BA:   db 0
+00BB:   db 9
+00BC:   db 0
+00BD:   db 1d
+00BE:   db 0
+00BF: 21 0C 00   push [000C]
+00C2: 38 25 00 01  callis 0025, 1
+00C6: 12 0D 00   pop [000D]
+00C9: 21 0D 00   push [000D]
+00CC: 05 0A 00   jne 00D9
+00CF: 21 08 00   push [0008]
+00D2: 38 26 00 01  callis 0026, 1
+00D6: 12 0D 00   pop [000D]
+00D9: 06 D8 FF   jmp 00B4
+00DC: 06 89 FF   jmp 0068
+00DF: 25   ret

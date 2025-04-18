@@ -1,0 +1,93 @@
+  .funcnumber 0921H
+  .data
+L0000: db '"One of you wishes to train?"'
+L001D: db 00
+L001E: db '"Which of you wishes to train?"'
+L003D: db 00
+L003E: db 'Nobody'
+L0044: db 00
+L0045: db '"Perhaps at a later time."'
+L005F: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0003H
+  .extern 090AH
+  .extern 08FBH
+  .extern 090CH
+0000: 1C 00 00   addsi L0000   ; "One of you wishe...
+0003: 33   say
+0004: 24 00 00   call [0000]   ; 090AH
+0007: 12 01 00   pop [0001]
+000A: 21 01 00   push [0001]
+000D: 05 9E 00   jne 00AE
+0010: 1C 1E 00   addsi L001E   ; "Which of you wis...
+0013: 33   say
+0014: 24 01 00   call [0001]   ; 08FBH
+0017: 12 02 00   pop [0002]
+001A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+001E: 12 03 00   pop [0003]
+0021: 1E 00 00   arrc 0000H   ; 0
+0024: 12 04 00   pop [0004]
+0027: 1E 00 00   arrc 0000H   ; 0
+002A: 12 05 00   pop [0005]
+002D: 2E   sloop
+002E: 02 06 00 07 00 08 00 03 00 25 00  db 2 ???
+002F:   db 6
+0030:   db 0
+0031:   db 7
+0032:   db 0
+0033:   db 8
+0034:   db 0
+0035:   db 3
+0036:   db 0
+0037:   db 25
+0038:   db 0
+0039: 21 08 00   push [0008]
+003C: 21 00 00   push [0000]
+003F: 1A   cmpne
+0040: 05 18 00   jne 005B
+0043: 21 04 00   push [0004]
+0046: 21 08 00   push [0008]
+0049: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+004D: 4A   arra
+004E: 12 04 00   pop [0004]
+0051: 21 05 00   push [0005]
+0054: 21 08 00   push [0008]
+0057: 4A   arra
+0058: 12 05 00   pop [0005]
+005B: 06 D0 FF   jmp 002E
+005E: 21 04 00   push [0004]
+0061: 12 02 00   pop [0002]
+0064: 21 05 00   push [0005]
+0067: 12 03 00   pop [0003]
+006A: 21 03 00   push [0003]
+006D: 1F 00 00   pushi 0000H   ; 0
+0070: 1E 02 00   arrc 0002H   ; 2
+0073: 12 09 00   pop [0009]
+0076: 21 02 00   push [0002]
+0079: 1D 3E 00   pushs L003E   ; Nobody
+007C: 1E 02 00   arrc 0002H   ; 2
+007F: 24 02 00   call [0002]   ; 090CH
+0082: 12 0A 00   pop [000A]
+0085: 21 0A 00   push [000A]
+0088: 26 09 00   aidx [0009]
+008B: 12 0B 00   pop [000B]
+008E: 21 0B 00   push [000B]
+0091: 1F 00 00   pushi 0000H   ; 0
+0094: 22   cmpeq
+0095: 05 09 00   jne 00A1
+0098: 1F 00 00   pushi 0000H   ; 0
+009B: 12 0C 00   pop [000C]
+009E: 06 0A 00   jmp 00AB
+00A1: 21 0B 00   push [000B]
+00A4: 38 3A 00 01  callis 003A, 1
+00A8: 12 0C 00   pop [000C]
+00AB: 06 0A 00   jmp 00B8
+00AE: 1C 45 00   addsi L0045   ; "Perhaps at a lat...
+00B1: 33   say
+00B2: 1F 00 00   pushi 0000H   ; 0
+00B5: 12 0C 00   pop [000C]
+00B8: 21 0C 00   push [000C]
+00BB: 2D   setr
+00BC: 32   rts

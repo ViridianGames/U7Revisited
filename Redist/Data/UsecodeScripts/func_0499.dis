@@ -1,0 +1,447 @@
+  .funcnumber 0499H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see your old friend Mariah.'
+L002C: db 00
+L002D: db '"Yes, '
+L0033: db 00
+L0034: db '? How may I help thee?" Mariah greets you.'
+L005E: db 00
+L005F: db '"Yes, '
+L0065: db 00
+L0066: db '?" Mariah smiles, a trifle too sweetly.'
+L008D: db 00
+L008E: db 'name'
+L0092: db 00
+L0093: db '"Surely thou dost recognize thine old companion, Mariah?"*'
+L00CD: db 00
+L00CE: db '"Hast thou already forgotten me, '
+L00EF: db 00
+L00F0: db '? I am Mariah."'
+L00FF: db 00
+L0100: db 'name'
+L0104: db 00
+L0105: db 'job'
+L0108: db 00
+L0109: db '"I sell spells, reagents, and sometimes a few potions here a'
+ db 't the Lycaeum. Dost thou wish to buy any of these, '
+L0178: db 00
+L0179: db '?"'
+L017B: db 00
+L017C: db 'Lycaeum'
+L0183: db 00
+L0184: db 'potions'
+L018B: db 00
+L018C: db 'reagents'
+L0194: db 00
+L0195: db 'spells'
+L019B: db 00
+L019C: db 'spells'
+L01A2: db 00
+L01A3: db 'reagents'
+L01AB: db 00
+L01AC: db 'Reagents'
+L01B4: db 00
+L01B5: db 'potions'
+L01BC: db 00
+L01BD: db '"I am afraid, '
+L01CB: db 00
+L01CC: db ', that I have a very meager selection."'
+L01F3: db 00
+L01F4: db 'Potions'
+L01FB: db 00
+L01FC: db 'Lycaeum'
+L0203: db 00
+L0204: db 'She shakes her head sadly. "I have not been `myself' for so '
+ db 'long that I no longer recognize this town." Her eyes widen.~'
+ db '~ "There are so many buildings around the Lycaeum now, hast '
+ db 'thou seen them?"~~She pauses, looking at you.~~"By the way, '
+ db 'old friend. I assume thou art responsible for returning the '
+ db 'ether to its normal state. I thank thee."'
+L0359: db 00
+L035A: db 'Lycaeum'
+L0361: db 00
+L0362: db 'bye'
+L0365: db 00
+L0366: db '"Fair days ahead, friend '
+L037F: db 00
+L0380: db '."*'
+L0383: db 00
+L0384: db 'name'
+L0388: db 00
+L0389: db '"Surely thou dost recognize thine old companion, Mariah?"*'
+L03C3: db 00
+L03C4: db '"Yes, dost thou not recognize me?" She pauses, glaring at yo'
+ db 'u. "But who art thou, and where are my pastries?"'
+L0431: db 00
+L0432: db '"Yes, thou mayest tell me thy name," she says, glancing arou'
+ db 'nd the building. "Are not the many books beautiful?"'
+L04A2: db 00
+L04A3: db 'name'
+L04A7: db 00
+L04A8: db 'job'
+L04AB: db 00
+L04AC: db 'She smiles. "I have a very important job, I do. My, are not '
+ db 'those shelves lovely? So neat and orderly." She looks back a'
+ db 't you.~~"Be careful! The ink wells are full, and the quills '
+ db 'so sharp." She giggles.'
+L0577: db 00
+L0578: db 'quills'
+L057E: db 00
+L057F: db 'ink wells'
+L0588: db 00
+L0589: db 'shelves'
+L0590: db 00
+L0591: db 'shelves'
+L0598: db 00
+L0599: db '"Are not they the neatest, most orderly, and well-kept shelv'
+ db 'es thou hast seen? They do an excellent job of maintaining t'
+ db 'hem!"'
+L0616: db 00
+L0617: db 'they'
+L061B: db 00
+L061C: db 'shelves'
+L0623: db 00
+L0624: db 'ink wells'
+L062D: db 00
+L062E: db '"They are always so full and ready for use. They are so good'
+ db ' about keeping them filled and clean!"'
+L0690: db 00
+L0691: db 'they'
+L0695: db 00
+L0696: db 'ink wells'
+L069F: db 00
+L06A0: db 'quills'
+L06A6: db 00
+L06A7: db '"Oh, yes, they are quite sharp! Always there when one needs '
+ db 'to scribe a missive. They do an excellent job of having many'
+ db ' ready at a moment's notice!"'
+L073C: db 00
+L073D: db 'they'
+L0741: db 00
+L0742: db 'quills'
+L0748: db 00
+L0749: db 'they'
+L074D: db 00
+L074E: db '"Yes, they do!" Her face turns sad. "But I only sell."'
+L0784: db 00
+L0785: db 'sell'
+L0789: db 00
+L078A: db 'they'
+L078E: db 00
+L078F: db 'sell'
+L0793: db 00
+L0794: db '"Yes," she agrees, "I do indeed sell. I even spell. In fact,'
+ db ' I even sell spells! But, if thou desirest reagents, thou ar'
+ db 't out of luck, for I only sell those during one of the seven'
+ db ' weekdays. Wouldst thou like to know which day?~~"What a lov'
+ db 'ely set of books thou must have! I have just the item for th'
+ db 'ee to match thy shelves -- a potion. If thou wilt buy a spel'
+ db 'l or reagent from me, I will sell thee a potion for only its'
+ db ' normal price!"'
+L0947: db 00
+L0948: db 'potions'
+L094F: db 00
+L0950: db 'reagents'
+L0958: db 00
+L0959: db 'which day'
+L0962: db 00
+L0963: db 'sell'
+L0967: db 00
+L0968: db 'which day'
+L0971: db 00
+L0972: db '"Why, today. Thou art in luck. Buy a spell."'
+L099E: db 00
+L099F: db 'which day'
+L09A8: db 00
+L09A9: db 'reagents'
+L09B1: db 00
+L09B2: db 'Reagents'
+L09BA: db 00
+L09BB: db 'potions'
+L09C2: db 00
+L09C3: db 'Potions'
+L09CA: db 00
+L09CB: db 'bye'
+L09CE: db 00
+L09CF: db '"Certainly, come back anytime and buy."*'
+L09F7: db 00
+L09F8: db '@Where -are- those pastries!@'
+L0A15: db 00
+L0A16: db '@Lovely, lovely shelves!@'
+L0A2F: db 00
+L0A30: db '@Lovely, lovely ink wells!@'
+L0A4B: db 00
+L0A4C: db '@Magic is in the air...@'
+L0A64: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0006H
+  .extern 0909H
+  .extern 0908H
+  .extern 08F7H
+  .extern 08BBH
+  .extern 08BCH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 66 02   jne 026E
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 67 FF   pushi FF67H   ; -153
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0908H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 FB 01   pushf flag:[01FB]
+0031: 10   not
+0032: 05 0B 00   jne 0040
+0035: 1C 0D 00   addsi L000D   ; You see your old ...
+0038: 33   say
+0039: 13   push true
+003A: 43 FB 01   popf flag:[01FB]
+003D: 06 1D 00   jmp 005D
+0040: 42 03 00   pushf flag:[0003]
+0043: 05 0D 00   jne 0053
+0046: 1C 2D 00   addsi L002D   ; "Yes, 
+0049: 2F 01 00   addsv [0001]
+004C: 1C 34 00   addsi L0034   ; ? How may I help ...
+004F: 33   say
+0050: 06 0A 00   jmp 005D
+0053: 1C 5F 00   addsi L005F   ; "Yes, 
+0056: 2F 00 00   addsv [0000]
+0059: 1C 66 00   addsi L0066   ; ?" Mariah smiles,...
+005C: 33   say
+005D: 42 03 00   pushf flag:[0003]
+0060: 05 D3 00   jne 0136
+0063: 04 CC 00   je 0132
+0066: 1D 8E 00   pushs L008E   ; name
+0069: 07 01 00 42 00  cmps 0001H, 00B0
+006E: 1F FF FF   pushi FFFFH   ; -1
+0071: 24 02 00   call [0002]   ; 08F7H
+0074: 12 02 00   pop [0002]
+0077: 21 02 00   push [0002]
+007A: 05 22 00   jne 009F
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1F FF FF   pushi FFFFH   ; -1
+0083: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0087: 1C 93 00   addsi L0093   ; "Surely thou dost...
+008A: 33   say
+008B: 1F FF FF   pushi FFFFH   ; -1
+008E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0092: 1F 00 00   pushi 0000H   ; 0
+0095: 1F 67 FF   pushi FF67H   ; -153
+0098: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+009C: 06 0A 00   jmp 00A9
+009F: 1C CE 00   addsi L00CE   ; "Hast thou alread...
+00A2: 2F 01 00   addsv [0001]
+00A5: 1C F0 00   addsi L00F0   ; ? I am Mariah."
+00A8: 33   say
+00A9: 1D 00 01   pushs L0100   ; name
+00AC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B0: 1D 05 01   pushs L0105   ; job
+00B3: 07 01 00 1D 00  cmps 0001H, 00D5
+00B8: 1C 09 01   addsi L0109   ; "I sell spells, r...
+00BB: 2F 01 00   addsv [0001]
+00BE: 1C 79 01   addsi L0179   ; ?"
+00C1: 33   say
+00C2: 1D 7C 01   pushs L017C   ; Lycaeum
+00C5: 1D 84 01   pushs L0184   ; potions
+00C8: 1D 8C 01   pushs L018C   ; reagents
+00CB: 1D 95 01   pushs L0195   ; spells
+00CE: 1E 04 00   arrc 0004H   ; 4
+00D1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D5: 1D 9C 01   pushs L019C   ; spells
+00D8: 07 01 00 06 00  cmps 0001H, 00E3
+00DD: 1F 67 FF   pushi FF67H   ; -153
+00E0: 24 03 00   call [0003]   ; 08BBH
+00E3: 1D A3 01   pushs L01A3   ; reagents
+00E6: 07 01 00 06 00  cmps 0001H, 00F1
+00EB: 1D AC 01   pushs L01AC   ; Reagents
+00EE: 24 04 00   call [0004]   ; 08BCH
+00F1: 1D B5 01   pushs L01B5   ; potions
+00F4: 07 01 00 10 00  cmps 0001H, 0109
+00F9: 1C BD 01   addsi L01BD   ; "I am afraid, 
+00FC: 2F 01 00   addsv [0001]
+00FF: 1C CC 01   addsi L01CC   ; , that I have a v...
+0102: 33   say
+0103: 1D F4 01   pushs L01F4   ; Potions
+0106: 24 04 00   call [0004]   ; 08BCH
+0109: 1D FC 01   pushs L01FC   ; Lycaeum
+010C: 07 01 00 0B 00  cmps 0001H, 011C
+0111: 1C 04 02   addsi L0204   ; She shakes her he...
+0114: 33   say
+0115: 1D 5A 03   pushs L035A   ; Lycaeum
+0118: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011C: 1D 62 03   pushs L0362   ; bye
+011F: 07 01 00 0B 00  cmps 0001H, 012F
+0124: 1C 66 03   addsi L0366   ; "Fair days ahead,...
+0127: 2F 01 00   addsv [0001]
+012A: 1C 80 03   addsi L0380   ; ."*
+012D: 33   say
+012E: 3F   abrt
+012F: 06 31 FF   jmp 0063
+0132: 40   db 40 ???
+0133: 06 38 01   jmp 026E
+0136: 04 34 01   je 026D
+0139: 1D 84 03   pushs L0384   ; name
+013C: 07 01 00 40 00  cmps 0001H, 0181
+0141: 1F FF FF   pushi FFFFH   ; -1
+0144: 24 02 00   call [0002]   ; 08F7H
+0147: 12 02 00   pop [0002]
+014A: 21 02 00   push [0002]
+014D: 05 26 00   jne 0176
+0150: 1F 00 00   pushi 0000H   ; 0
+0153: 1F FF FF   pushi FFFFH   ; -1
+0156: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+015A: 1C 89 03   addsi L0389   ; "Surely thou dost...
+015D: 33   say
+015E: 1F FF FF   pushi FFFFH   ; -1
+0161: 39 04 00 01  calli _HideNPC@1  ; 0004
+0165: 1F 00 00   pushi 0000H   ; 0
+0168: 1F 67 FF   pushi FF67H   ; -153
+016B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016F: 1C C4 03   addsi L03C4   ; "Yes, dost thou n...
+0172: 33   say
+0173: 06 04 00   jmp 017A
+0176: 1C 32 04   addsi L0432   ; "Yes, thou mayest...
+0179: 33   say
+017A: 1D A3 04   pushs L04A3   ; name
+017D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0181: 1D A8 04   pushs L04A8   ; job
+0184: 07 01 00 14 00  cmps 0001H, 019D
+0189: 1C AC 04   addsi L04AC   ; She smiles. "I ha...
+018C: 33   say
+018D: 1D 78 05   pushs L0578   ; quills
+0190: 1D 7F 05   pushs L057F   ; ink wells
+0193: 1D 89 05   pushs L0589   ; shelves
+0196: 1E 03 00   arrc 0003H   ; 3
+0199: 39 05 00 01  calli _AddAnswer@1  ; 0005
+019D: 1D 91 05   pushs L0591   ; shelves
+01A0: 07 01 00 12 00  cmps 0001H, 01B7
+01A5: 1C 99 05   addsi L0599   ; "Are not they the...
+01A8: 33   say
+01A9: 1D 17 06   pushs L0617   ; they
+01AC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B0: 1D 1C 06   pushs L061C   ; shelves
+01B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B7: 1D 24 06   pushs L0624   ; ink wells
+01BA: 07 01 00 12 00  cmps 0001H, 01D1
+01BF: 1C 2E 06   addsi L062E   ; "They are always ...
+01C2: 33   say
+01C3: 1D 91 06   pushs L0691   ; they
+01C6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CA: 1D 96 06   pushs L0696   ; ink wells
+01CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D1: 1D A0 06   pushs L06A0   ; quills
+01D4: 07 01 00 12 00  cmps 0001H, 01EB
+01D9: 1C A7 06   addsi L06A7   ; "Oh, yes, they ar...
+01DC: 33   say
+01DD: 1D 3D 07   pushs L073D   ; they
+01E0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E4: 1D 42 07   pushs L0742   ; quills
+01E7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EB: 1D 49 07   pushs L0749   ; they
+01EE: 07 01 00 12 00  cmps 0001H, 0205
+01F3: 1C 4E 07   addsi L074E   ; "Yes, they do!" H...
+01F6: 33   say
+01F7: 1D 85 07   pushs L0785   ; sell
+01FA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01FE: 1D 8A 07   pushs L078A   ; they
+0201: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0205: 1D 8F 07   pushs L078F   ; sell
+0208: 07 01 00 1B 00  cmps 0001H, 0228
+020D: 1C 94 07   addsi L0794   ; "Yes," she agrees...
+0210: 33   say
+0211: 1D 48 09   pushs L0948   ; potions
+0214: 1D 50 09   pushs L0950   ; reagents
+0217: 1D 59 09   pushs L0959   ; which day
+021A: 1E 03 00   arrc 0003H   ; 3
+021D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0221: 1D 63 09   pushs L0963   ; sell
+0224: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0228: 1D 68 09   pushs L0968   ; which day
+022B: 07 01 00 11 00  cmps 0001H, 0241
+0230: 1C 72 09   addsi L0972   ; "Why, today. Thou...
+0233: 33   say
+0234: 1F 67 FF   pushi FF67H   ; -153
+0237: 24 03 00   call [0003]   ; 08BBH
+023A: 1D 9F 09   pushs L099F   ; which day
+023D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0241: 1D A9 09   pushs L09A9   ; reagents
+0244: 07 01 00 06 00  cmps 0001H, 024F
+0249: 1D B2 09   pushs L09B2   ; Reagents
+024C: 24 04 00   call [0004]   ; 08BCH
+024F: 1D BB 09   pushs L09BB   ; potions
+0252: 07 01 00 06 00  cmps 0001H, 025D
+0257: 1D C3 09   pushs L09C3   ; Potions
+025A: 24 04 00   call [0004]   ; 08BCH
+025D: 1D CB 09   pushs L09CB   ; bye
+0260: 07 01 00 05 00  cmps 0001H, 026A
+0265: 1C CF 09   addsi L09CF   ; "Certainly, come ...
+0268: 33   say
+0269: 3F   abrt
+026A: 06 C9 FE   jmp 0136
+026D: 40   db 40 ???
+026E: 48   push eventid
+026F: 1F 00 00   pushi 0000H   ; 0
+0272: 22   cmpeq
+0273: 05 7F 00   jne 02F5
+0276: 1F 67 FF   pushi FF67H   ; -153
+0279: 38 1B 00 01  callis 001B, 1
+027D: 38 1C 00 01  callis 001C, 1
+0281: 12 03 00   pop [0003]
+0284: 1F 04 00   pushi 0004H   ; 4
+0287: 1F 01 00   pushi 0001H   ; 1
+028A: 38 10 00 02  callis _Random2@2  ; 0010
+028E: 12 04 00   pop [0004]
+0291: 21 03 00   push [0003]
+0294: 1F 0B 00   pushi 000BH   ; 11
+0297: 22   cmpeq
+0298: 05 54 00   jne 02EF
+029B: 42 03 00   pushf flag:[0003]
+029E: 10   not
+029F: 05 4A 00   jne 02EC
+02A2: 21 04 00   push [0004]
+02A5: 1F 01 00   pushi 0001H   ; 1
+02A8: 22   cmpeq
+02A9: 05 06 00   jne 02B2
+02AC: 1D F8 09   pushs L09F8   ; @Where -are- thos...
+02AF: 12 05 00   pop [0005]
+02B2: 21 04 00   push [0004]
+02B5: 1F 02 00   pushi 0002H   ; 2
+02B8: 22   cmpeq
+02B9: 05 06 00   jne 02C2
+02BC: 1D 16 0A   pushs L0A16   ; @Lovely, lovely s...
+02BF: 12 05 00   pop [0005]
+02C2: 21 04 00   push [0004]
+02C5: 1F 03 00   pushi 0003H   ; 3
+02C8: 22   cmpeq
+02C9: 05 06 00   jne 02D2
+02CC: 1D 30 0A   pushs L0A30   ; @Lovely, lovely i...
+02CF: 12 05 00   pop [0005]
+02D2: 21 04 00   push [0004]
+02D5: 1F 04 00   pushi 0004H   ; 4
+02D8: 22   cmpeq
+02D9: 05 06 00   jne 02E2
+02DC: 1D 4C 0A   pushs L0A4C   ; @Magic is in the ...
+02DF: 12 05 00   pop [0005]
+02E2: 21 05 00   push [0005]
+02E5: 1F 67 FF   pushi FF67H   ; -153
+02E8: 39 40 00 02  calli _ItemSay@2  ; 0040
+02EC: 06 06 00   jmp 02F5
+02EF: 1F 67 FF   pushi FF67H   ; -153
+02F2: 24 05 00   call [0005]   ; 092EH
+02F5: 25   ret

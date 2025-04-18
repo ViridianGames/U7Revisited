@@ -1,0 +1,27 @@
+  .funcnumber 0911H
+  .data
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0000H
+0000: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0004: 12 01 00   pop [0001]
+0007: 2E   sloop
+0008: 02 02 00 03 00 04 00 01 00 13 00  db 2 ???
+0009:   db 2
+000A:   db 0
+000B:   db 3
+000C:   db 0
+000D:   db 4
+000E:   db 0
+000F:   db 1
+0010:   db 0
+0011:   db 13
+0012:   db 0
+0013: 21 00 00   push [0000]
+0016: 1F 08 00   pushi 0008H   ; 8
+0019: 21 04 00   push [0004]
+001C: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+0020: 12 05 00   pop [0005]
+0023: 06 E2 FF   jmp 0008
+0026: 25   ret

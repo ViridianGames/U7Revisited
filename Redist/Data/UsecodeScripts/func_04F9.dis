@@ -1,0 +1,621 @@
+  .funcnumber 04F9H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a scholarly-looking man with a friendly expression.'
+L0048: db 00
+L0049: db '"Salutations, '
+L0057: db 00
+L0058: db '."'
+L005A: db 00
+L005B: db 'North East sea'
+L0069: db 00
+L006A: db 'Zelda's response'
+L007A: db 00
+L007B: db 'name'
+L007F: db 00
+L0080: db '"Thou mayest call me Nelson."'
+L009D: db 00
+L009E: db 'name'
+L00A2: db 00
+L00A3: db 'North East sea'
+L00B1: db 00
+L00B2: db 'job'
+L00B5: db 00
+L00B6: db '"I am the Lycaeum head here in Moonglow, but," he leans clos'
+ db 'e to you, "mine assistant, Zelda, does most of the work."'
+L012B: db 00
+L012C: db 'Zelda'
+L0131: db 00
+L0132: db 'Moonglow'
+L013A: db 00
+L013B: db 'Zelda'
+L0140: db 00
+L0141: db '"She is an excellent assistant. The Lycaeum has never perfor'
+ db 'med better. However, she is a little too stern, I believe, a'
+ db 'nd," he leans in again, "I think she is quite beautiful."'
+L01F2: db 00
+L01F3: db 'beautiful'
+L01FC: db 00
+L01FD: db 'stern'
+L0202: db 00
+L0203: db 'Zelda'
+L0208: db 00
+L0209: db 'North East sea'
+L0217: db 00
+L0218: db '"I have heard the rumors of an island, but I know nothing el'
+ db 'se about it, I am afraid. Thou mightest wish to speak with J'
+ db 'illian -- she should know a little about the area."'
+L02C3: db 00
+L02C4: db 'North East sea'
+L02D2: db 00
+L02D3: db 'stern'
+L02D8: db 00
+L02D9: db '"She has put an extraordinary amount of time and effort into'
+ db ' ensuring the activities in this edifice happen smoothly. An'
+ db 'd," he adds, "she takes it personally when they do not!"'
+L0389: db 00
+L038A: db 'stern'
+L038F: db 00
+L0390: db 'beautiful'
+L0399: db 00
+L039A: db '"Dost thou not agree? I am flushed whenever her fair presenc'
+ db 'e passes by. But!" he holds up his index finger, "I fear she'
+ db ' does not share a mutual attraction. And she is far too seri'
+ db 'ous for me to feel comfortable with a proposal."'
+L047E: db 00
+L047F: db 'Zelda's feelings'
+L048F: db 00
+L0490: db 'beautiful'
+L0499: db 00
+L049A: db 'Moonglow'
+L04A2: db 00
+L04A3: db '"I love the island and the people. Mostly the people."'
+L04D9: db 00
+L04DA: db 'people'
+L04E0: db 00
+L04E1: db 'Moonglow'
+L04E9: db 00
+L04EA: db 'people'
+L04F0: db 00
+L04F1: db '"Hast thou met my twin brother? He heads the Observatory her'
+ db 'e. And somewhere in the Lycaeum thou canst find Mariah. Sadl'
+ db 'y, she is not well up here." He touches his head.~~"Jillian,'
+ db ' the sage, also studies here in the Lycaeum. A good person t'
+ db 'o see about other residents of Moonglow would be the bartend'
+ db 'er at the Friendly Knave. Phearcy knows almost all of us her'
+ db 'e on the island.~~"Oh, and thou must not forget the legend o'
+ db 'f Penumbra. 'Twas two hundred years ago she cast herself int'
+ db 'o a deep slumber. Now that I think about it, '
+L06FE: db 00
+L06FF: db ', thou art the one she predicted would awaken her.~~"Better '
+ db 'hasten, '
+L0743: db 00
+L0744: db '," he chuckles.'
+L0753: db 00
+L0754: db 'people'
+L075A: db 00
+L075B: db 'Penumbra'
+L0763: db 00
+L0764: db 'Phearcy'
+L076B: db 00
+L076C: db 'Jillian'
+L0773: db 00
+L0774: db 'Mariah'
+L077A: db 00
+L077B: db 'twin'
+L077F: db 00
+L0780: db 'twin'
+L0784: db 00
+L0785: db '"His name is Brion. People often mistake us for each other, '
+ db 'but I think we are nothing alike -- he got all the looks -an'
+ db 'd- the brains!"'
+L080C: db 00
+L080D: db 'twin'
+L0811: db 00
+L0812: db 'Mariah'
+L0818: db 00
+L0819: db '"She was once an adept mage, but ever since the wizards bega'
+ db 'n losing their, er, faculties, she followed suit."'
+L0887: db 00
+L0888: db 'Mariah'
+L088E: db 00
+L088F: db 'Jillian'
+L0896: db 00
+L0897: db '"She rarely has time for visitors, but I know she takes on s'
+ db 'tudents every now and then."'
+L08EF: db 00
+L08F0: db 'Jillian'
+L08F7: db 00
+L08F8: db 'Phearcy'
+L08FF: db 00
+L0900: db '"That one keeps up on his politics, or rather, his gossip," '
+ db 'he says, grinning. "If thou dost want to learn about a resid'
+ db 'ent of Moonglow, visit him."'
+L0994: db 00
+L0995: db 'Phearcy'
+L099C: db 00
+L099D: db 'Penumbra'
+L09A5: db 00
+L09A6: db '"Interestingly enough, no one has ever discovered how to ent'
+ db 'er her house. I believe those mysterious signs on the door r'
+ db 'equire one to have specific items to place next to the plaqu'
+ db 'es."'
+L0A5E: db 00
+L0A5F: db 'Penumbra'
+L0A67: db 00
+L0A68: db 'Zelda's response'
+L0A78: db 00
+L0A79: db 'He smiles broadly. "Truly that was her response? I am please'
+ db 'd to no end! I thank thee, '
+L0AD0: db 00
+L0AD1: db ', for bringing this joyful message."'
+L0AF5: db 00
+L0AF6: db 'Zelda's response'
+L0B06: db 00
+L0B07: db 'Zelda's feelings'
+L0B17: db 00
+L0B18: db '"Oh. Oh well," he shrugs in an attempt at indifference. "She'
+ db ' was not truly important anyway."'
+L0B75: db 00
+L0B76: db 'Zelda's feelings'
+L0B86: db 00
+L0B87: db 'bye'
+L0B8A: db 00
+L0B8B: db '"Good day, '
+L0B96: db 00
+L0B97: db '. Thou of course dost have free reign of the Lycaeum."*'
+L0BCE: db 00
+L0BCF: db '"Of course thou mayest have free reign of the building. But '
+ db 'first," he grins, "let me show thee my..."'
+L0C35: db 00
+L0C36: db 'nothing'
+L0C3D: db 00
+L0C3E: db 'book'
+L0C42: db 00
+L0C43: db 'quill holder'
+L0C4F: db 00
+L0C50: db 'bookmark'
+L0C58: db 00
+L0C59: db 'bookstand'
+L0C62: db 00
+L0C63: db 'bookstand'
+L0C6C: db 00
+L0C6D: db '"This solid brass bookstand has matching, overhanging candle'
+ db 'holder for late-night exploration in literature. I invented '
+ db 'it myself."'
+L0CF0: db 00
+L0CF1: db '"'Twas just here..." he scratches his chin. "Oh well, never '
+ db 'mind."'
+L0D33: db 00
+L0D34: db 'bookstand'
+L0D3D: db 00
+L0D3E: db 'bookmark'
+L0D46: db 00
+L0D47: db '"This," he says, holding a solid-gold sheet shaped like a ma'
+ db 'ple leaf, "I purchased at an auction for only half of its va'
+ db 'lue."'
+L0DC4: db 00
+L0DC5: db 'He appears upset. "I knew someday that would be stolen," he '
+ db 'says angrily.~~"I should have known better than to show it t'
+ db 'o every person who comes to visit."'
+L0E60: db 00
+L0E61: db 'bookmark'
+L0E69: db 00
+L0E6A: db 'quill holder'
+L0E76: db 00
+L0E77: db 'He shows you a serpent-shaped, oaken quill holder and its ma'
+ db 'tching scroll opener. "This I picked up while travelling thr'
+ db 'ough -- thou canst guess it -- Serpent's Hold."'
+L0F1E: db 00
+L0F1F: db 'He shows you a serpent-shaped, oaken quill holder. "This I p'
+ db 'icked up while travelling through -- thou canst guess it -- '
+ db 'Serpent's Hold. But," he appears puzzled, "I could have swor'
+ db 'n the matching letter opener was here as well. How odd."'
+L100B: db 00
+L100C: db '"The quill holder is gone?" he exclaims. "And what about the'
+ db '..." he seems to be searching for something.~~"The matching '
+ db 'scroll opener is also missing!"'
+L10A3: db 00
+L10A4: db 'quill holder'
+L10B0: db 00
+L10B1: db 'book'
+L10B5: db 00
+L10B6: db 'He gingerly pulls out a leatherbound tome. From his robe, he'
+ db ' removes a handkerchief and meticulously wipes away the dust'
+ db '.~~"This was given to me by Lord British himself. See, 'tis '
+ db 'the first edition."~~The book he carefully places in your pa'
+ db 'lms is very old, and the gold leaf plating of the title has '
+ db 'been almost entirely rubbed off. Turning the book right side'
+ db ' up, you can read the title: "Stranger in a Strange Land."'
+L1258: db 00
+L1259: db '"'Tis not here... Oh well, Zelda must have put it back on th'
+ db 'e shelf." He sighs.'
+L12A8: db 00
+L12A9: db 'book'
+L12AD: db 00
+L12AE: db 'nothing'
+L12B5: db 00
+  .code
+  .argc 0001H
+  .localc 0014H
+  .externsize 0003H
+  .extern 0908H
+  .extern 0909H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 BB 03   jne 03C3
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 07 FF   pushi FF07H   ; -249
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 1D 00 00   pushs L0000   ; bye
+0021: 1D 04 00   pushs L0004   ; job
+0024: 1D 08 00   pushs L0008   ; name
+0027: 1E 03 00   arrc 0003H   ; 3
+002A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002E: 42 F9 01   pushf flag:[01F9]
+0031: 10   not
+0032: 05 0F 00   jne 0044
+0035: 1C 0D 00   addsi L000D   ; You see a scholar...
+0038: 33   say
+0039: 13   push true
+003A: 43 F9 01   popf flag:[01F9]
+003D: 13   push true
+003E: 43 F7 01   popf flag:[01F7]
+0041: 06 17 00   jmp 005B
+0044: 1C 49 00   addsi L0049   ; "Salutations, 
+0047: 2F 00 00   addsv [0000]
+004A: 1C 58 00   addsi L0058   ; ."
+004D: 33   say
+004E: 42 F6 01   pushf flag:[01F6]
+0051: 05 07 00   jne 005B
+0054: 1D 5B 00   pushs L005B   ; North East sea
+0057: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005B: 42 E3 01   pushf flag:[01E3]
+005E: 05 07 00   jne 0068
+0061: 1D 6A 00   pushs L006A   ; Zelda's response
+0064: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0068: 04 57 03   je 03C2
+006B: 1D 7B 00   pushs L007B   ; name
+006E: 07 01 00 18 00  cmps 0001H, 008B
+0073: 1C 80 00   addsi L0080   ; "Thou mayest call...
+0076: 33   say
+0077: 1D 9E 00   pushs L009E   ; name
+007A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+007E: 42 F6 01   pushf flag:[01F6]
+0081: 05 07 00   jne 008B
+0084: 1D A3 00   pushs L00A3   ; North East sea
+0087: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008B: 1D B2 00   pushs L00B2   ; job
+008E: 07 01 00 11 00  cmps 0001H, 00A4
+0093: 1C B6 00   addsi L00B6   ; "I am the Lycaeum...
+0096: 33   say
+0097: 1D 2C 01   pushs L012C   ; Zelda
+009A: 1D 32 01   pushs L0132   ; Moonglow
+009D: 1E 02 00   arrc 0002H   ; 2
+00A0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A4: 1D 3B 01   pushs L013B   ; Zelda
+00A7: 07 01 00 18 00  cmps 0001H, 00C4
+00AC: 1C 41 01   addsi L0141   ; "She is an excell...
+00AF: 33   say
+00B0: 1D F3 01   pushs L01F3   ; beautiful
+00B3: 1D FD 01   pushs L01FD   ; stern
+00B6: 1E 02 00   arrc 0002H   ; 2
+00B9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BD: 1D 03 02   pushs L0203   ; Zelda
+00C0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C4: 1D 09 02   pushs L0209   ; North East sea
+00C7: 07 01 00 0B 00  cmps 0001H, 00D7
+00CC: 1C 18 02   addsi L0218   ; "I have heard the...
+00CF: 33   say
+00D0: 1D C4 02   pushs L02C4   ; North East sea
+00D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D7: 1D D3 02   pushs L02D3   ; stern
+00DA: 07 01 00 0B 00  cmps 0001H, 00EA
+00DF: 1C D9 02   addsi L02D9   ; "She has put an e...
+00E2: 33   say
+00E3: 1D 8A 03   pushs L038A   ; stern
+00E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EA: 1D 90 03   pushs L0390   ; beautiful
+00ED: 07 01 00 1C 00  cmps 0001H, 010E
+00F2: 1C 9A 03   addsi L039A   ; "Dost thou not ag...
+00F5: 33   say
+00F6: 13   push true
+00F7: 43 DC 01   popf flag:[01DC]
+00FA: 42 DA 01   pushf flag:[01DA]
+00FD: 05 07 00   jne 0107
+0100: 1D 7F 04   pushs L047F   ; Zelda's feelings
+0103: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0107: 1D 90 04   pushs L0490   ; beautiful
+010A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010E: 1D 9A 04   pushs L049A   ; Moonglow
+0111: 07 01 00 12 00  cmps 0001H, 0128
+0116: 1C A3 04   addsi L04A3   ; "I love the islan...
+0119: 33   say
+011A: 1D DA 04   pushs L04DA   ; people
+011D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0121: 1D E1 04   pushs L04E1   ; Moonglow
+0124: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0128: 1D EA 04   pushs L04EA   ; people
+012B: 07 01 00 2D 00  cmps 0001H, 015D
+0130: 1C F1 04   addsi L04F1   ; "Hast thou met my...
+0133: 2F 00 00   addsv [0000]
+0136: 1C FF 06   addsi L06FF   ; , thou art the on...
+0139: 2F 01 00   addsv [0001]
+013C: 1C 44 07   addsi L0744   ; ," he chuckles.
+013F: 33   say
+0140: 1D 54 07   pushs L0754   ; people
+0143: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0147: 1D 5B 07   pushs L075B   ; Penumbra
+014A: 1D 64 07   pushs L0764   ; Phearcy
+014D: 1D 6C 07   pushs L076C   ; Jillian
+0150: 1D 74 07   pushs L0774   ; Mariah
+0153: 1D 7B 07   pushs L077B   ; twin
+0156: 1E 05 00   arrc 0005H   ; 5
+0159: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015D: 1D 80 07   pushs L0780   ; twin
+0160: 07 01 00 0B 00  cmps 0001H, 0170
+0165: 1C 85 07   addsi L0785   ; "His name is Brio...
+0168: 33   say
+0169: 1D 0D 08   pushs L080D   ; twin
+016C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0170: 1D 12 08   pushs L0812   ; Mariah
+0173: 07 01 00 0B 00  cmps 0001H, 0183
+0178: 1C 19 08   addsi L0819   ; "She was once an ...
+017B: 33   say
+017C: 1D 88 08   pushs L0888   ; Mariah
+017F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0183: 1D 8F 08   pushs L088F   ; Jillian
+0186: 07 01 00 0B 00  cmps 0001H, 0196
+018B: 1C 97 08   addsi L0897   ; "She rarely has t...
+018E: 33   say
+018F: 1D F0 08   pushs L08F0   ; Jillian
+0192: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0196: 1D F8 08   pushs L08F8   ; Phearcy
+0199: 07 01 00 0B 00  cmps 0001H, 01A9
+019E: 1C 00 09   addsi L0900   ; "That one keeps u...
+01A1: 33   say
+01A2: 1D 95 09   pushs L0995   ; Phearcy
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1D 9D 09   pushs L099D   ; Penumbra
+01AC: 07 01 00 0B 00  cmps 0001H, 01BC
+01B1: 1C A6 09   addsi L09A6   ; "Interestingly en...
+01B4: 33   say
+01B5: 1D 5F 0A   pushs L0A5F   ; Penumbra
+01B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BC: 1D 68 0A   pushs L0A68   ; Zelda's response
+01BF: 07 01 00 11 00  cmps 0001H, 01D5
+01C4: 1C 79 0A   addsi L0A79   ; He smiles broadly...
+01C7: 2F 00 00   addsv [0000]
+01CA: 1C D1 0A   addsi L0AD1   ; , for bringing th...
+01CD: 33   say
+01CE: 1D F6 0A   pushs L0AF6   ; Zelda's response
+01D1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D5: 1D 07 0B   pushs L0B07   ; Zelda's feelings
+01D8: 07 01 00 0B 00  cmps 0001H, 01E8
+01DD: 1C 18 0B   addsi L0B18   ; "Oh. Oh well," he...
+01E0: 33   say
+01E1: 1D 76 0B   pushs L0B76   ; Zelda's feelings
+01E4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E8: 1D 87 0B   pushs L0B87   ; bye
+01EB: 07 01 00 3E 00  cmps 0001H, 022E
+01F0: 42 E4 01   pushf flag:[01E4]
+01F3: 42 E5 01   pushf flag:[01E5]
+01F6: 42 E6 01   pushf flag:[01E6]
+01F9: 42 E7 01   pushf flag:[01E7]
+01FC: 0E   and
+01FD: 0E   and
+01FE: 0E   and
+01FF: 05 0E 00   jne 0210
+0202: 1C 8B 0B   addsi L0B8B   ; "Good day, 
+0205: 2F 01 00   addsv [0001]
+0208: 1C 97 0B   addsi L0B97   ; . Thou of course ...
+020B: 33   say
+020C: 3F   abrt
+020D: 06 1E 00   jmp 022E
+0210: 1C CF 0B   addsi L0BCF   ; "Of course thou m...
+0213: 33   say
+0214: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0218: 1D 36 0C   pushs L0C36   ; nothing
+021B: 1D 3E 0C   pushs L0C3E   ; book
+021E: 1D 43 0C   pushs L0C43   ; quill holder
+0221: 1D 50 0C   pushs L0C50   ; bookmark
+0224: 1D 59 0C   pushs L0C59   ; bookstand
+0227: 1E 05 00   arrc 0005H   ; 5
+022A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+022E: 1D 63 0C   pushs L0C63   ; bookstand
+0231: 07 01 00 2C 00  cmps 0001H, 0262
+0236: 1F FF FF   pushi FFFFH   ; -1
+0239: 1F B9 02   pushi 02B9H   ; 697
+023C: 1F 9C FE   pushi FE9CH   ; -356
+023F: 38 0E 00 03  callis 000E, 3
+0243: 12 02 00   pop [0002]
+0246: 21 02 00   push [0002]
+0249: 05 07 00   jne 0253
+024C: 1C 6D 0C   addsi L0C6D   ; "This solid brass...
+024F: 33   say
+0250: 06 04 00   jmp 0257
+0253: 1C F1 0C   addsi L0CF1   ; "'Twas just here....
+0256: 33   say
+0257: 1D 34 0D   pushs L0D34   ; bookstand
+025A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025E: 13   push true
+025F: 43 E4 01   popf flag:[01E4]
+0262: 1D 3E 0D   pushs L0D3E   ; bookmark
+0265: 07 01 00 52 00  cmps 0001H, 02BC
+026A: 14   push false
+026B: 12 03 00   pop [0003]
+026E: 1F 00 00   pushi 0000H   ; 0
+0271: 1F 14 00   pushi 0014H   ; 20
+0274: 1F A3 02   pushi 02A3H   ; 675
+0277: 3E   push itemref
+0278: 38 35 00 04  callis 0035, 4
+027C: 12 04 00   pop [0004]
+027F: 2E   sloop
+0280: 02 05 00 06 00 07 00 04 00 15 00  db 2 ???
+0281:   db 5
+0282:   db 0
+0283:   db 6
+0284:   db 0
+0285:   db 7
+0286:   db 0
+0287:   db 4
+0288:   db 0
+0289:   db 15
+028A:   db 0
+028B: 21 07 00   push [0007]
+028E: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0292: 1F 04 00   pushi 0004H   ; 4
+0295: 22   cmpeq
+0296: 05 04 00   jne 029D
+0299: 13   push true
+029A: 12 03 00   pop [0003]
+029D: 06 E0 FF   jmp 0280
+02A0: 21 03 00   push [0003]
+02A3: 05 07 00   jne 02AD
+02A6: 1C 47 0D   addsi L0D47   ; "This," he says, ...
+02A9: 33   say
+02AA: 06 04 00   jmp 02B1
+02AD: 1C C5 0D   addsi L0DC5   ; He appears upset....
+02B0: 33   say
+02B1: 1D 61 0E   pushs L0E61   ; bookmark
+02B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B8: 13   push true
+02B9: 43 E5 01   popf flag:[01E5]
+02BC: 1D 6A 0E   pushs L0E6A   ; quill holder
+02BF: 07 01 00 95 00  cmps 0001H, 0359
+02C4: 14   push false
+02C5: 12 08 00   pop [0008]
+02C8: 1F 00 00   pushi 0000H   ; 0
+02CB: 1F 14 00   pushi 0014H   ; 20
+02CE: 1F A3 02   pushi 02A3H   ; 675
+02D1: 3E   push itemref
+02D2: 38 35 00 04  callis 0035, 4
+02D6: 12 09 00   pop [0009]
+02D9: 2E   sloop
+02DA: 02 0A 00 0B 00 07 00 09 00 15 00  db 2 ???
+02DB:   db a
+02DC:   db 0
+02DD:   db b
+02DE:   db 0
+02DF:   db 7
+02E0:   db 0
+02E1:   db 9
+02E2:   db 0
+02E3:   db 15
+02E4:   db 0
+02E5: 21 07 00   push [0007]
+02E8: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+02EC: 1F 03 00   pushi 0003H   ; 3
+02EF: 22   cmpeq
+02F0: 05 04 00   jne 02F7
+02F3: 13   push true
+02F4: 12 08 00   pop [0008]
+02F7: 06 E0 FF   jmp 02DA
+02FA: 14   push false
+02FB: 12 0C 00   pop [000C]
+02FE: 1F 00 00   pushi 0000H   ; 0
+0301: 1F 14 00   pushi 0014H   ; 20
+0304: 1F A3 02   pushi 02A3H   ; 675
+0307: 3E   push itemref
+0308: 38 35 00 04  callis 0035, 4
+030C: 12 0D 00   pop [000D]
+030F: 2E   sloop
+0310: 02 0E 00 0F 00 07 00 0D 00 15 00  db 2 ???
+0311:   db e
+0312:   db 0
+0313:   db f
+0314:   db 0
+0315:   db 7
+0316:   db 0
+0317:   db d
+0318:   db 0
+0319:   db 15
+031A:   db 0
+031B: 21 07 00   push [0007]
+031E: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0322: 1F 05 00   pushi 0005H   ; 5
+0325: 22   cmpeq
+0326: 05 04 00   jne 032D
+0329: 13   push true
+032A: 12 0C 00   pop [000C]
+032D: 06 E0 FF   jmp 0310
+0330: 21 08 00   push [0008]
+0333: 05 14 00   jne 034A
+0336: 21 0C 00   push [000C]
+0339: 05 07 00   jne 0343
+033C: 1C 77 0E   addsi L0E77   ; He shows you a se...
+033F: 33   say
+0340: 06 04 00   jmp 0347
+0343: 1C 1F 0F   addsi L0F1F   ; He shows you a se...
+0346: 33   say
+0347: 06 04 00   jmp 034E
+034A: 1C 0C 10   addsi L100C   ; "The quill holder...
+034D: 33   say
+034E: 1D A4 10   pushs L10A4   ; quill holder
+0351: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0355: 13   push true
+0356: 43 E6 01   popf flag:[01E6]
+0359: 1D B1 10   pushs L10B1   ; book
+035C: 07 01 00 52 00  cmps 0001H, 03B3
+0361: 14   push false
+0362: 12 10 00   pop [0010]
+0365: 1F 00 00   pushi 0000H   ; 0
+0368: 1F 14 00   pushi 0014H   ; 20
+036B: 1F A3 02   pushi 02A3H   ; 675
+036E: 3E   push itemref
+036F: 38 35 00 04  callis 0035, 4
+0373: 12 11 00   pop [0011]
+0376: 2E   sloop
+0377: 02 12 00 13 00 10 00 09 00 15 00  db 2 ???
+0378:   db 12
+0379:   db 0
+037A:   db 13
+037B:   db 0
+037C:   db 10
+037D:   db 0
+037E:   db 9
+037F:   db 0
+0380:   db 15
+0381:   db 0
+0382: 21 10 00   push [0010]
+0385: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0389: 1F 04 00   pushi 0004H   ; 4
+038C: 22   cmpeq
+038D: 05 04 00   jne 0394
+0390: 13   push true
+0391: 12 10 00   pop [0010]
+0394: 06 E0 FF   jmp 0377
+0397: 21 10 00   push [0010]
+039A: 05 07 00   jne 03A4
+039D: 1C B6 10   addsi L10B6   ; He gingerly pulls...
+03A0: 33   say
+03A1: 06 04 00   jmp 03A8
+03A4: 1C 59 12   addsi L1259   ; "'Tis not here......
+03A7: 33   say
+03A8: 1D A9 12   pushs L12A9   ; book
+03AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03AF: 13   push true
+03B0: 43 E7 01   popf flag:[01E7]
+03B3: 1D AE 12   pushs L12AE   ; nothing
+03B6: 07 01 00 04 00  cmps 0001H, 03BF
+03BB: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+03BF: 06 A6 FC   jmp 0068
+03C2: 40   db 40 ???
+03C3: 48   push eventid
+03C4: 1F 00 00   pushi 0000H   ; 0
+03C7: 22   cmpeq
+03C8: 05 06 00   jne 03D1
+03CB: 1F 07 FF   pushi FF07H   ; -249
+03CE: 24 02 00   call [0002]   ; 092EH
+03D1: 25   ret

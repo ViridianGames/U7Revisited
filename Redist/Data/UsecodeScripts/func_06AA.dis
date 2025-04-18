@@ -1,0 +1,66 @@
+  .funcnumber 06AAH ;* Initial appearance of Avatar.
+  .data
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 02 00   pushi 0002H   ; 2
+0004: 22   cmpeq
+0005: 05 95 00   jne 009D
+0008: 1F 9D 00   pushi 009DH   ; 157
+000B: 38 24 00 01  callis 0024, 1  ;* Create moongate.
+000F: 12 00 00   pop [0000]
+0012: 21 00 00   push [0000]
+0015: 05 85 00   jne 009D
+0018: 1F 20 00   pushi 0020H   ; 32
+001B: 1F 9C FE   pushi FE9CH   ; -356
+001E: 39 6C 00 02  calli 006C, 2  ;* Unknown.
+0022: 1F 9C FE   pushi FE9CH   ; -356
+0025: 38 18 00 01  callis 0018, 1  ;* Get Av. position.
+0029: 12 01 00   pop [0001]
+002C: 1F 01 00   pushi 0001H   ; 1
+002F: 26 01 00   aidx [0001]
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 09   add
+0036: 1F 01 00   pushi 0001H   ; 1
+0039: 46 01 00   db 46 ???  ;* Incr. X.
+   dw 0001H   ; 1
+003C: 1F 02 00   pushi 0002H   ; 2
+003F: 26 01 00   aidx [0001]
+0042: 1F 01 00   pushi 0001H   ; 1
+0045: 09   add
+0046: 1F 02 00   pushi 0002H   ; 2
+0049: 46 01 00   db 46 ???  ;* Incr. Y.
+   dw 0001H   ; 1
+004C: 21 01 00   push [0001]
+004F: 38 26 00 01  callis 0026, 1  ;* Move moongate.
+0053: 12 02 00   pop [0002]
+0056: 21 02 00   push [0002]
+0059: 05 41 00   jne 009D
+005C: 44 2D   pushw 1F2DH   ; 7981
+005E: 1F 03 00   pushi 0003H   ; 3
+0061: 1F FF FF   pushi FFFFH   ; -1
+0064: 44 0B   pushw 440BH   ; 17419
+0066: 44 50   pushw 1F50H   ; 8016
+0068: 1F 04 00   pushi 0004H   ; 4
+006B: 44 46   pushw 1F46H   ; 8006
+006D: 1F 05 00   pushi 0005H   ; 5
+0070: 1F FF FF   pushi FFFFH   ; -1
+0073: 44 0B   pushw 440BH   ; 17419
+0075: 44 4E   pushw 1F4EH   ; 8014
+0077: 1F 04 00   pushi 0004H   ; 4
+007A: 44 46   pushw 1F46H   ; 8006
+007C: 1F 18 06   pushi 0618H   ; 1560
+007F: 44 55   pushw 1F55H   ; 8021
+0081: 1F 0A 00   pushi 000AH   ; 10
+0084: 1F FF FF   pushi FFFFH   ; -1
+0087: 44 0B   pushw 440BH   ; 17419
+0089: 44 4E   pushw 1F4EH   ; 8014
+008B: 1F 00 00   pushi 0000H   ; 0
+008E: 44 46   pushw 1E46H   ; 7750
+0090: 1E 15 00   arrc 0015H   ; 21
+0093: 21 00 00   push [0000]
+0096: 38 01 00 02  callis 0001, 2
+009A: 12 02 00   pop [0002]
+009D: 25   ret

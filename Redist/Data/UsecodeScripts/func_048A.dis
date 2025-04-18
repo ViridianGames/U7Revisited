@@ -1,0 +1,559 @@
+  .funcnumber 048AH
+  .data
+L0000: db 'Iriale'
+L0006: db 00
+L0007: db 'You see a familiar face, a stern-looking bearded warrior who'
+ db 'm you have met on one of your previous journeys to Britannia'
+ db '.'
+L0080: db 00
+L0081: db '"Ho, Avatar!" says Gorn. "Thou dost vish to speak mit me?"'
+L00BB: db 00
+L00BC: db '"De voice ov Brom has told me not to trust thee, Avatar," sa'
+ db 'ys Gorn. "I tought dat ve vere friends and I do not vish to '
+ db 'cause thee harm. But I varn thee, do not speak mit me anymor'
+ db 'e!"*'
+L0174: db 00
+L0175: db 'bye'
+L0178: db 00
+L0179: db 'job'
+L017C: db 00
+L017D: db 'name'
+L0181: db 00
+L0182: db 'name'
+L0186: db 00
+L0187: db 'The warrior's eyes narrow. "I am Gorn, as if thou didst not '
+ db 'remember! It is good to see thee again." He laughs and slaps'
+ db ' you on the shoulder.'
+L0214: db 00
+L0215: db 'name'
+L0219: db 00
+L021A: db 'job'
+L021D: db 00
+L021E: db '"My job is a never-ending qvest of high adventure. Ever sinc'
+ db 'e I vas a child und vas taken from mine homeland of Balema, '
+ db 'I haf spent my life in search of heroic deeds to perform."'
+L02D0: db 00
+L02D1: db 'heroic deeds'
+L02DD: db 00
+L02DE: db 'Balema'
+L02E4: db 00
+L02E5: db 'Balema'
+L02EB: db 00
+L02EC: db '"Yah, Balema is vere I vas born. I vas a child dere. It is a'
+ db ' vonderland ov snow-covered mountains und dark forests. It v'
+ db 'as not an easy life, but it vas a place dat made young boys '
+ db 'into strong heroic men. Dat vas long before I came to Britan'
+ db 'nia."'
+L03E1: db 00
+L03E2: db 'Balema'
+L03E8: db 00
+L03E9: db 'Britannia'
+L03F2: db 00
+L03F3: db 'Britannia'
+L03FC: db 00
+L03FD: db '"Yah! I came to Britannia t'rough vone ov de Moongates, de s'
+ db 'ame as thee. Dat vas many, many years ago."'
+L0464: db 00
+L0465: db 'Britannia'
+L046E: db 00
+L046F: db 'heroic deeds'
+L047B: db 00
+L047C: db '"I perform heroic deeds in honor ov Brom. Everyting I do is '
+ db 'in service to him."'
+L04CB: db 00
+L04CC: db 'heroic deeds'
+L04D8: db 00
+L04D9: db 'Brom'
+L04DD: db 00
+L04DE: db 'Brom'
+L04E2: db 00
+L04E3: db '"He is my master, und de master ov all ov de people ov Balem'
+ db 'a. Brom is all powerful und if I am strong he vill aid me. S'
+ db 'ometimes I hear de voice ov Brom inside ov mine head."'
+L0591: db 00
+L0592: db 'Brom'
+L0596: db 00
+L0597: db 'voice'
+L059C: db 00
+L059D: db 'master'
+L05A3: db 00
+L05A4: db 'master'
+L05AA: db 00
+L05AB: db '"Ya! Brom he is my master. If he vishes me to do someting, I'
+ db ' must do it! If he does not vant me to do someting, I must n'
+ db 'ot do it!"'
+L062D: db 00
+L062E: db 'master'
+L0634: db 00
+L0635: db 'voice'
+L063A: db 00
+L063B: db '"Ya! Only recently I haf begun to hear his voice in mine hea'
+ db 'd. His voice tells me vat to do! As I came tovard dis cave d'
+ db 'e voice ov Brom became clearer."'
+L06D3: db 00
+L06D4: db 'voice'
+L06D9: db 00
+L06DA: db 'clearer'
+L06E1: db 00
+L06E2: db 'cave'
+L06E6: db 00
+L06E7: db 'what to do'
+L06F1: db 00
+L06F2: db 'what to do'
+L06FC: db 00
+L06FD: db '"Vhen I first heard de voice ov Brom, he told me dat I shoul'
+ db 'd follow him. But how does one follow de voice ov someone da'
+ db 't thou cannot see vhen de voice is coming from inside ov thi'
+ db 'ne head?"'
+L07BA: db 00
+L07BB: db 'what to do'
+L07C5: db 00
+L07C6: db 'follow'
+L07CC: db 00
+L07CD: db 'follow'
+L07D3: db 00
+L07D4: db '"Dis vas very, very difficult for me but after a vhile I vas'
+ db ' able to figure out how to do it. Vhen I came nearer to da c'
+ db 'amp surrounding dis cave da voice vould get louder. Vhen I v'
+ db 'ould move avay de voice vould be qvieter."'
+L08B2: db 00
+L08B3: db 'follow'
+L08B9: db 00
+L08BA: db 'camp'
+L08BE: db 00
+L08BF: db 'camp'
+L08C3: db 00
+L08C4: db '"It vas very simple for a trained varrior like myself to sli'
+ db 'p into de camp ov dose who are holding Brom prisoner. Dey po'
+ db 'sed no threat vatsoever. So dat means dat de danger must be '
+ db 'vaiting down here. But I cannot find it!"'
+L09A1: db 00
+L09A2: db '"I can see by dat medallion thou dost vear dat thou hast snu'
+ db 'ck into dis place by disguising thyself as vone of dem. Very'
+ db ' clever, Avatar!"'
+L0A2B: db 00
+L0A2C: db 'Iolo whispers to you, "This fellow is quite sharp, is he not'
+ db '?"*'
+L0A6B: db 00
+L0A6C: db 'camp'
+L0A70: db 00
+L0A71: db 'danger'
+L0A77: db 00
+L0A78: db 'danger'
+L0A7E: db 00
+L0A7F: db '"Zo far de only danger I haf found down here has been a fema'
+ db 'le fighter. She vas beautiful. Vhen I vent to talk to her sh'
+ db 'e hit me over de head mit her svord. Vhen I voke up she vas '
+ db 'gone. I bet she tought she had killed me but mine head is ha'
+ db 'rder dan dat. I vas not even vounded."'
+L0B95: db 00
+L0B96: db 'Shamino whispers to you. "Luckily, Gorn was hit in the one s'
+ db 'pot where he has no feeling whatsoever -- his head!"*'
+L0C07: db 00
+L0C08: db '"Hey, vhat are you vhispering about over dere?"*'
+L0C38: db 00
+L0C39: db '"Oh, nothing. Nothing at all."*'
+L0C58: db 00
+L0C59: db 'danger'
+L0C5F: db 00
+L0C60: db 'cave'
+L0C64: db 00
+L0C65: db '"I know dat Brom is somevhere down in dis cave, und I vill n'
+ db 'ot leave dis place until I find him!"'
+L0CC6: db 00
+L0CC7: db 'cave'
+L0CCB: db 00
+L0CCC: db 'find Brom'
+L0CD5: db 00
+L0CD6: db 'clearer'
+L0CDD: db 00
+L0CDE: db '"The nearer I haf come to dis cave, the more times I haf bee'
+ db 'n hearing de voice ov Brom. But lately he has been saying ti'
+ db 'ngs to me dat are very, very strange!"'
+L0D7C: db 00
+L0D7D: db 'clearer'
+L0D84: db 00
+L0D85: db 'strange'
+L0D8C: db 00
+L0D8D: db 'strange'
+L0D94: db 00
+L0D95: db '"De first strange ting dat he says to me is "Strive For Unit'
+ db 'y". I say, yah, dat is vhy I am performing mine heroic deeds'
+ db '. Den Brom says someting else dat is strange."'
+L0E3B: db 00
+L0E3C: db 'strange'
+L0E43: db 00
+L0E44: db 'something else strange'
+L0E5A: db 00
+L0E5B: db 'something else strange'
+L0E71: db 00
+L0E72: db '"Next de voice ov Brom says to me "Trust My Brothers". Dis i'
+ db 's strange because all ov my brothers are back in Balema, und'
+ db ' I vould never trust dem anyvays. Dey vere all bigger den me'
+ db ' and vere alvays beating me. But even dat vas not as strange'
+ db ' as da next strange ting."'
+L0F7C: db 00
+L0F7D: db 'something else strange'
+L0F93: db 00
+L0F94: db 'next strange thing'
+L0FA6: db 00
+L0FA7: db 'next strange thing'
+L0FB9: db 00
+L0FBA: db '"De voice ov Brom tells me dat "Worldliness Receives Avard".'
+ db ' I haf been tinking about dat von for a long time und I stil'
+ db 'l haf not figured it out. But I vill not give up until I fin'
+ db 'd Brom."'
+L1076: db 00
+L1077: db '"A mysterious voice speaking inside someone's head, suggesti'
+ db 'ng the philosophy of The Fellowship. Does this sound familia'
+ db 'r, '
+L10F2: db 00
+L10F3: db '?"*'
+L10F6: db 00
+L10F7: db 'next strange thing'
+L1109: db 00
+L110A: db 'find Brom'
+L1113: db 00
+L1114: db 'find Brom'
+L111D: db 00
+L111E: db '"Wouldst thou help me find Brom?"'
+L113F: db 00
+L1140: db 'Gorn seems distracted for a moment. He places his hand to hi'
+ db 's ear as if he is listening to something. He looks back at y'
+ db 'ou and there is a shocked look on his face. "I haf just hear'
+ db 'd de voice ov Brom and he has told me not to trust thee! Go '
+ db 'avay from me, Avatar! I tought dat thou vert my friend! I do'
+ db ' not vish to speak vith thee anymore!"*'
+L1293: db 00
+L1294: db 'Gorn has a confused look on his face. "Vhy vill thou not hel'
+ db 'p me find Brom? Dost thou tink dat dis is all some kind ov t'
+ db 'rick, or should I go on looking for Brom by myself?"'
+L1340: db 00
+L1341: db 'it's a trick'
+L134D: db 00
+L134E: db 'look for Brom'
+L135B: db 00
+L135C: db 'find Brom'
+L1365: db 00
+L1366: db 'look for Brom'
+L1373: db 00
+L1374: db '"If dat is how thou vants it. Den I shall go on searching fo'
+ db 'r Brom mit no vone else but myself. Good luck in vhatever qv'
+ db 'est thou art on, Avatar. Farewell to thee!"*'
+L1418: db 00
+L1419: db 'it's a trick'
+L1425: db 00
+L1426: db 'Gorn seems distracted for a moment. He puts his hand to his '
+ db 'ear as if he is listening to something. He looks back at you'
+ db ' with a shocked expression on his face. "I haf just heard de'
+ db ' voice ov Brom and he says dat I should not trust thee! I to'
+ db 'ught dat thou vert my friend, Avatar! Go avay! I do not vish'
+ db ' to speak vith thee again!"*'
+L156E: db 00
+L156F: db 'Iriale'
+L1575: db 00
+L1576: db '"Dat is de name ov de female fighter who has been guarding d'
+ db 'is place. I haf fought her vonce already. She is a strong fi'
+ db 'ghter! I haf to find her so I can make her to tell me vhere '
+ db 'is Brom!"'
+L1633: db 00
+L1634: db 'Iriale'
+L163A: db 00
+L163B: db 'bye'
+L163E: db 00
+L163F: db '"Until ve meet again, Avatar."*'
+L165E: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0004H
+  .extern 0908H
+  .extern 0909H
+  .extern 08F7H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F 76 FF   pushi FF76H   ; -138
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0908H
+0016: 12 00 00   pop [0000]
+0019: 24 01 00   call [0001]   ; 0909H
+001C: 12 01 00   pop [0001]
+001F: 1F FF FF   pushi FFFFH   ; -1
+0022: 24 02 00   call [0002]   ; 08F7H
+0025: 12 02 00   pop [0002]
+0028: 1F FD FF   pushi FFFDH   ; -3
+002B: 24 02 00   call [0002]   ; 08F7H
+002E: 12 03 00   pop [0003]
+0031: 1F FC FF   pushi FFFCH   ; -4
+0034: 24 02 00   call [0002]   ; 08F7H
+0037: 12 04 00   pop [0004]
+003A: 38 67 00 00  callis 0067, 0
+003E: 12 05 00   pop [0005]
+0041: 42 CC 02   pushf flag:[02CC]
+0044: 05 07 00   jne 004E
+0047: 1D 00 00   pushs L0000   ; Iriale
+004A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004E: 42 BB 02   pushf flag:[02BB]
+0051: 10   not
+0052: 05 0B 00   jne 0060
+0055: 1C 07 00   addsi L0007   ; You see a familia...
+0058: 33   say
+0059: 13   push true
+005A: 43 BB 02   popf flag:[02BB]
+005D: 06 04 00   jmp 0064
+0060: 1C 81 00   addsi L0081   ; "Ho, Avatar!" say...
+0063: 33   say
+0064: 42 D2 02   pushf flag:[02D2]
+0067: 05 05 00   jne 006F
+006A: 1C BC 00   addsi L00BC   ; "De voice ov Brom...
+006D: 33   say
+006E: 3F   abrt
+006F: 1D 75 01   pushs L0175   ; bye
+0072: 1D 79 01   pushs L0179   ; job
+0075: 1D 7D 01   pushs L017D   ; name
+0078: 1E 03 00   arrc 0003H   ; 3
+007B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007F: 04 D3 02   je 0355
+0082: 1D 82 01   pushs L0182   ; name
+0085: 07 01 00 0B 00  cmps 0001H, 0095
+008A: 1C 87 01   addsi L0187   ; The warrior's eye...
+008D: 33   say
+008E: 1D 15 02   pushs L0215   ; name
+0091: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0095: 1D 1A 02   pushs L021A   ; job
+0098: 07 01 00 11 00  cmps 0001H, 00AE
+009D: 1C 1E 02   addsi L021E   ; "My job is a neve...
+00A0: 33   say
+00A1: 1D D1 02   pushs L02D1   ; heroic deeds
+00A4: 1D DE 02   pushs L02DE   ; Balema
+00A7: 1E 02 00   arrc 0002H   ; 2
+00AA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AE: 1D E5 02   pushs L02E5   ; Balema
+00B1: 07 01 00 12 00  cmps 0001H, 00C8
+00B6: 1C EC 02   addsi L02EC   ; "Yah, Balema is v...
+00B9: 33   say
+00BA: 1D E2 03   pushs L03E2   ; Balema
+00BD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C1: 1D E9 03   pushs L03E9   ; Britannia
+00C4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C8: 1D F3 03   pushs L03F3   ; Britannia
+00CB: 07 01 00 0B 00  cmps 0001H, 00DB
+00D0: 1C FD 03   addsi L03FD   ; "Yah! I came to B...
+00D3: 33   say
+00D4: 1D 65 04   pushs L0465   ; Britannia
+00D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DB: 1D 6F 04   pushs L046F   ; heroic deeds
+00DE: 07 01 00 12 00  cmps 0001H, 00F5
+00E3: 1C 7C 04   addsi L047C   ; "I perform heroic...
+00E6: 33   say
+00E7: 1D CC 04   pushs L04CC   ; heroic deeds
+00EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EE: 1D D9 04   pushs L04D9   ; Brom
+00F1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F5: 1D DE 04   pushs L04DE   ; Brom
+00F8: 07 01 00 18 00  cmps 0001H, 0115
+00FD: 1C E3 04   addsi L04E3   ; "He is my master,...
+0100: 33   say
+0101: 1D 92 05   pushs L0592   ; Brom
+0104: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0108: 1D 97 05   pushs L0597   ; voice
+010B: 1D 9D 05   pushs L059D   ; master
+010E: 1E 02 00   arrc 0002H   ; 2
+0111: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0115: 1D A4 05   pushs L05A4   ; master
+0118: 07 01 00 0B 00  cmps 0001H, 0128
+011D: 1C AB 05   addsi L05AB   ; "Ya! Brom he is m...
+0120: 33   say
+0121: 1D 2E 06   pushs L062E   ; master
+0124: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0128: 1D 35 06   pushs L0635   ; voice
+012B: 07 01 00 1B 00  cmps 0001H, 014B
+0130: 1C 3B 06   addsi L063B   ; "Ya! Only recentl...
+0133: 33   say
+0134: 1D D4 06   pushs L06D4   ; voice
+0137: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013B: 1D DA 06   pushs L06DA   ; clearer
+013E: 1D E2 06   pushs L06E2   ; cave
+0141: 1D E7 06   pushs L06E7   ; what to do
+0144: 1E 03 00   arrc 0003H   ; 3
+0147: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014B: 1D F2 06   pushs L06F2   ; what to do
+014E: 07 01 00 12 00  cmps 0001H, 0165
+0153: 1C FD 06   addsi L06FD   ; "Vhen I first hea...
+0156: 33   say
+0157: 1D BB 07   pushs L07BB   ; what to do
+015A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015E: 1D C6 07   pushs L07C6   ; follow
+0161: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0165: 1D CD 07   pushs L07CD   ; follow
+0168: 07 01 00 15 00  cmps 0001H, 0182
+016D: 1C D4 07   addsi L07D4   ; "Dis vas very, ve...
+0170: 33   say
+0171: 1D B3 08   pushs L08B3   ; follow
+0174: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0178: 1D BA 08   pushs L08BA   ; camp
+017B: 1E 01 00   arrc 0001H   ; 1
+017E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0182: 1D BF 08   pushs L08BF   ; camp
+0185: 07 01 00 41 00  cmps 0001H, 01CB
+018A: 1C C4 08   addsi L08C4   ; "It vas very simp...
+018D: 33   say
+018E: 21 05 00   push [0005]
+0191: 05 04 00   jne 0198
+0194: 1C A2 09   addsi L09A2   ; "I can see by dat...
+0197: 33   say
+0198: 21 02 00   push [0002]
+019B: 05 1F 00   jne 01BD
+019E: 1F 00 00   pushi 0000H   ; 0
+01A1: 1F FF FF   pushi FFFFH   ; -1
+01A4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01A8: 1C 2C 0A   addsi L0A2C   ; Iolo whispers to ...
+01AB: 33   say
+01AC: 1F FF FF   pushi FFFFH   ; -1
+01AF: 39 04 00 01  calli _HideNPC@1  ; 0004
+01B3: 1F 00 00   pushi 0000H   ; 0
+01B6: 1F 76 FF   pushi FF76H   ; -138
+01B9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01BD: 1D 6C 0A   pushs L0A6C   ; camp
+01C0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C4: 1D 71 0A   pushs L0A71   ; danger
+01C7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01CB: 1D 78 0A   pushs L0A78   ; danger
+01CE: 07 01 00 4C 00  cmps 0001H, 021F
+01D3: 1C 7F 0A   addsi L0A7F   ; "Zo far de only d...
+01D6: 33   say
+01D7: 21 03 00   push [0003]
+01DA: 05 3B 00   jne 0218
+01DD: 1F 00 00   pushi 0000H   ; 0
+01E0: 1F FD FF   pushi FFFDH   ; -3
+01E3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01E7: 1C 96 0B   addsi L0B96   ; Shamino whispers ...
+01EA: 33   say
+01EB: 1F 00 00   pushi 0000H   ; 0
+01EE: 1F 76 FF   pushi FF76H   ; -138
+01F1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01F5: 1C 08 0C   addsi L0C08   ; "Hey, vhat are yo...
+01F8: 33   say
+01F9: 1F 00 00   pushi 0000H   ; 0
+01FC: 1F FD FF   pushi FFFDH   ; -3
+01FF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0203: 1C 39 0C   addsi L0C39   ; "Oh, nothing. Not...
+0206: 33   say
+0207: 1F FD FF   pushi FFFDH   ; -3
+020A: 39 04 00 01  calli _HideNPC@1  ; 0004
+020E: 1F 00 00   pushi 0000H   ; 0
+0211: 1F 76 FF   pushi FF76H   ; -138
+0214: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0218: 1D 59 0C   pushs L0C59   ; danger
+021B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021F: 1D 60 0C   pushs L0C60   ; cave
+0222: 07 01 00 12 00  cmps 0001H, 0239
+0227: 1C 65 0C   addsi L0C65   ; "I know dat Brom ...
+022A: 33   say
+022B: 1D C7 0C   pushs L0CC7   ; cave
+022E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0232: 1D CC 0C   pushs L0CCC   ; find Brom
+0235: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0239: 1D D6 0C   pushs L0CD6   ; clearer
+023C: 07 01 00 12 00  cmps 0001H, 0253
+0241: 1C DE 0C   addsi L0CDE   ; "The nearer I haf...
+0244: 33   say
+0245: 1D 7D 0D   pushs L0D7D   ; clearer
+0248: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024C: 1D 85 0D   pushs L0D85   ; strange
+024F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0253: 1D 8D 0D   pushs L0D8D   ; strange
+0256: 07 01 00 12 00  cmps 0001H, 026D
+025B: 1C 95 0D   addsi L0D95   ; "De first strange...
+025E: 33   say
+025F: 1D 3C 0E   pushs L0E3C   ; strange
+0262: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0266: 1D 44 0E   pushs L0E44   ; something else st...
+0269: 39 05 00 01  calli _AddAnswer@1  ; 0005
+026D: 1D 5B 0E   pushs L0E5B   ; something else st...
+0270: 07 01 00 12 00  cmps 0001H, 0287
+0275: 1C 72 0E   addsi L0E72   ; "Next de voice ov...
+0278: 33   say
+0279: 1D 7D 0F   pushs L0F7D   ; something else st...
+027C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0280: 1D 94 0F   pushs L0F94   ; next strange thing
+0283: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0287: 1D A7 0F   pushs L0FA7   ; next strange thing
+028A: 07 01 00 3D 00  cmps 0001H, 02CC
+028F: 1C BA 0F   addsi L0FBA   ; "De voice ov Brom...
+0292: 33   say
+0293: 21 04 00   push [0004]
+0296: 05 25 00   jne 02BE
+0299: 1F 00 00   pushi 0000H   ; 0
+029C: 1F FC FF   pushi FFFCH   ; -4
+029F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02A3: 1C 77 10   addsi L1077   ; "A mysterious voi...
+02A6: 2F 00 00   addsv [0000]
+02A9: 1C F3 10   addsi L10F3   ; ?"*
+02AC: 33   say
+02AD: 1F FC FF   pushi FFFCH   ; -4
+02B0: 39 04 00 01  calli _HideNPC@1  ; 0004
+02B4: 1F 00 00   pushi 0000H   ; 0
+02B7: 1F 76 FF   pushi FF76H   ; -138
+02BA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02BE: 1D F7 10   pushs L10F7   ; next strange thing
+02C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02C5: 1D 0A 11   pushs L110A   ; find Brom
+02C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02CC: 1D 14 11   pushs L1114   ; find Brom
+02CF: 07 01 00 34 00  cmps 0001H, 0308
+02D4: 1C 1E 11   addsi L111E   ; "Wouldst thou hel...
+02D7: 33   say
+02D8: 24 03 00   call [0003]   ; 090AH
+02DB: 12 06 00   pop [0006]
+02DE: 21 06 00   push [0006]
+02E1: 05 0C 00   jne 02F0
+02E4: 1C 40 11   addsi L1140   ; Gorn seems distra...
+02E7: 33   say
+02E8: 13   push true
+02E9: 43 D2 02   popf flag:[02D2]
+02EC: 3F   abrt
+02ED: 06 11 00   jmp 0301
+02F0: 1C 94 12   addsi L1294   ; Gorn has a confus...
+02F3: 33   say
+02F4: 1D 41 13   pushs L1341   ; it's a trick
+02F7: 1D 4E 13   pushs L134E   ; look for Brom
+02FA: 1E 02 00   arrc 0002H   ; 2
+02FD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0301: 1D 5C 13   pushs L135C   ; find Brom
+0304: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0308: 1D 66 13   pushs L1366   ; look for Brom
+030B: 07 01 00 13 00  cmps 0001H, 0323
+0310: 1C 74 13   addsi L1374   ; "If dat is how th...
+0313: 33   say
+0314: 1F 0C 00   pushi 000CH   ; 12
+0317: 1F 76 FF   pushi FF76H   ; -138
+031A: 38 1B 00 01  callis 001B, 1
+031E: 39 1D 00 02  calli 001D, 2
+0322: 3F   abrt
+0323: 1D 19 14   pushs L1419   ; it's a trick
+0326: 07 01 00 09 00  cmps 0001H, 0334
+032B: 1C 26 14   addsi L1426   ; Gorn seems distra...
+032E: 33   say
+032F: 13   push true
+0330: 43 D2 02   popf flag:[02D2]
+0333: 3F   abrt
+0334: 1D 6F 15   pushs L156F   ; Iriale
+0337: 07 01 00 0B 00  cmps 0001H, 0347
+033C: 1C 76 15   addsi L1576   ; "Dat is de name o...
+033F: 33   say
+0340: 1D 34 16   pushs L1634   ; Iriale
+0343: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0347: 1D 3B 16   pushs L163B   ; bye
+034A: 07 01 00 03 00  cmps 0001H, 0352
+034F: 06 03 00   jmp 0355
+0352: 06 2A FD   jmp 007F
+0355: 40   db 40 ???
+0356: 1C 3F 16   addsi L163F   ; "Until ve meet ag...
+0359: 33   say
+035A: 25   ret

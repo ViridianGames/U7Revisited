@@ -1,0 +1,317 @@
+  .funcnumber 04D8H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a winged gargoyle with an authoritative disposition.'
+L0049: db 00
+L004A: db '"To offer welcome for you, human," says Wis-Sur.'
+L007A: db 00
+L007B: db 'The winged gargoyle in front of you has a wild look about hi'
+ db 'm.'
+L00B9: db 00
+L00BA: db '"To go away, human! To have nothing you want!" screams Wis-S'
+ db 'ur.'
+L00F9: db 00
+L00FA: db 'name'
+L00FE: db 00
+L00FF: db '"To be named Wis-Sur, which means `wise sun.'"'
+L012D: db 00
+L012E: db 'name'
+L0132: db 00
+L0133: db 'job'
+L0136: db 00
+L0137: db '"To sell magic to others."'
+L0151: db 00
+L0152: db 'magic'
+L0157: db 00
+L0158: db 'others'
+L015E: db 00
+L015F: db 'magic'
+L0164: db 00
+L0165: db '"To be interested in spells, reagents, or potions?"'
+L0198: db 00
+L0199: db 'potions'
+L01A0: db 00
+L01A1: db 'reagents'
+L01A9: db 00
+L01AA: db 'spells'
+L01B0: db 00
+L01B1: db 'magic'
+L01B6: db 00
+L01B7: db 'spells'
+L01BD: db 00
+L01BE: db 'reagents'
+L01C6: db 00
+L01C7: db 'potions'
+L01CE: db 00
+L01CF: db 'others'
+L01D5: db 00
+L01D6: db '"To be familiar with only the other gargoyles in Vesper. To '
+ db 'tell you to ask Ansikart, who knows all other gargoyles here'
+ db '. To tell you about one of the following?"'
+L0278: db 00
+L0279: db 'others'
+L027F: db 00
+L0280: db 'Anmanivas'
+L0289: db 00
+L028A: db 'For-Lem'
+L0291: db 00
+L0292: db 'Lap-Lem'
+L0299: db 00
+L029A: db 'Aurvidlem'
+L02A3: db 00
+L02A4: db 'Aurvidlem'
+L02AD: db 00
+L02AE: db '"To be a provisioner in Vesper."'
+L02CE: db 00
+L02CF: db 'Aurvidlem'
+L02D8: db 00
+L02D9: db 'For-Lem'
+L02E0: db 00
+L02E1: db '"To perform assorted duties for town. To be a good, strong w'
+ db 'orker."'
+L0324: db 00
+L0325: db 'For-Lem'
+L032C: db 00
+L032D: db 'Lap-Lem'
+L0334: db 00
+L0335: db '"To be a miner for the Britannian Mining Company."'
+L0367: db 00
+L0368: db 'Lap-Lem'
+L036F: db 00
+L0370: db 'Anmanivas'
+L0379: db 00
+L037A: db '"To be a miner for the Britannian Mining Company."'
+L03AC: db 00
+L03AD: db 'Anmanivas'
+L03B6: db 00
+L03B7: db 'bye'
+L03BA: db 00
+L03BB: db '"To say farewell, human."*'
+L03D5: db 00
+L03D6: db 'name'
+L03DA: db 00
+L03DB: db '"To wonder why you want to know."*'
+L03FD: db 00
+L03FE: db 'job'
+L0401: db 00
+L0402: db '"To sell the few items I possess."'
+L0424: db 00
+L0425: db 'sell'
+L0429: db 00
+L042A: db 'sell'
+L042E: db 00
+L042F: db '"To want to buy something?" He looks at you carefully, as if'
+ db ' he is unsure whether to sell to you.~~"To be possible," he '
+ db 'says, nodding. "To ask what you need?"'
+L04CD: db 00
+L04CE: db 'potions'
+L04D5: db 00
+L04D6: db 'reagents'
+L04DE: db 00
+L04DF: db 'spells'
+L04E5: db 00
+L04E6: db 'nothing'
+L04ED: db 00
+L04EE: db 'nothing'
+L04F5: db 00
+L04F6: db '"To suspect you are wasting my time!"'
+L051B: db 00
+L051C: db 'spells'
+L0522: db 00
+L0523: db 'reagents'
+L052B: db 00
+L052C: db 'potions'
+L0533: db 00
+L0534: db 'bye'
+L0537: db 00
+L0538: db '"To be good that you leave."*'
+L0555: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0005H
+  .extern 094CH
+  .extern 094AH
+  .extern 0949H
+  .extern 090BH
+  .extern 094CH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E0 01   jne 01E8
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 28 FF   pushi FF28H   ; -216
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 03 00   pushf flag:[0003]
+0025: 05 19 00   jne 0041
+0028: 42 95 02   pushf flag:[0295]
+002B: 10   not
+002C: 05 0B 00   jne 003A
+002F: 1C 0D 00   addsi L000D   ; You see a winged ...
+0032: 33   say
+0033: 13   push true
+0034: 43 95 02   popf flag:[0295]
+0037: 06 04 00   jmp 003E
+003A: 1C 4A 00   addsi L004A   ; "To offer welcome...
+003D: 33   say
+003E: 06 16 00   jmp 0057
+0041: 42 95 02   pushf flag:[0295]
+0044: 10   not
+0045: 05 0B 00   jne 0053
+0048: 1C 7B 00   addsi L007B   ; The winged gargoy...
+004B: 33   say
+004C: 13   push true
+004D: 43 95 02   popf flag:[0295]
+0050: 06 04 00   jmp 0057
+0053: 1C BA 00   addsi L00BA   ; "To go away, huma...
+0056: 33   say
+0057: 42 03 00   pushf flag:[0003]
+005A: 05 FB 00   jne 0158
+005D: 04 F0 00   je 0150
+0060: 1D FA 00   pushs L00FA   ; name
+0063: 07 01 00 0B 00  cmps 0001H, 0073
+0068: 1C FF 00   addsi L00FF   ; "To be named Wis-...
+006B: 33   say
+006C: 1D 2E 01   pushs L012E   ; name
+006F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0073: 1D 33 01   pushs L0133   ; job
+0076: 07 01 00 11 00  cmps 0001H, 008C
+007B: 1C 37 01   addsi L0137   ; "To sell magic to...
+007E: 33   say
+007F: 1D 52 01   pushs L0152   ; magic
+0082: 1D 58 01   pushs L0158   ; others
+0085: 1E 02 00   arrc 0002H   ; 2
+0088: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008C: 1D 5F 01   pushs L015F   ; magic
+008F: 07 01 00 1B 00  cmps 0001H, 00AF
+0094: 1C 65 01   addsi L0165   ; "To be interested...
+0097: 33   say
+0098: 1D 99 01   pushs L0199   ; potions
+009B: 1D A1 01   pushs L01A1   ; reagents
+009E: 1D AA 01   pushs L01AA   ; spells
+00A1: 1E 03 00   arrc 0003H   ; 3
+00A4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A8: 1D B1 01   pushs L01B1   ; magic
+00AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AF: 1D B7 01   pushs L01B7   ; spells
+00B2: 07 01 00 03 00  cmps 0001H, 00BA
+00B7: 24 00 00   call [0000]   ; 094CH
+00BA: 1D BE 01   pushs L01BE   ; reagents
+00BD: 07 01 00 03 00  cmps 0001H, 00C5
+00C2: 24 01 00   call [0001]   ; 094AH
+00C5: 1D C7 01   pushs L01C7   ; potions
+00C8: 07 01 00 03 00  cmps 0001H, 00D0
+00CD: 24 02 00   call [0002]   ; 0949H
+00D0: 1D CF 01   pushs L01CF   ; others
+00D3: 07 01 00 1E 00  cmps 0001H, 00F6
+00D8: 1C D6 01   addsi L01D6   ; "To be familiar w...
+00DB: 33   say
+00DC: 1D 79 02   pushs L0279   ; others
+00DF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E3: 1D 80 02   pushs L0280   ; Anmanivas
+00E6: 1D 8A 02   pushs L028A   ; For-Lem
+00E9: 1D 92 02   pushs L0292   ; Lap-Lem
+00EC: 1D 9A 02   pushs L029A   ; Aurvidlem
+00EF: 1E 04 00   arrc 0004H   ; 4
+00F2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F6: 1D A4 02   pushs L02A4   ; Aurvidlem
+00F9: 07 01 00 0B 00  cmps 0001H, 0109
+00FE: 1C AE 02   addsi L02AE   ; "To be a provisio...
+0101: 33   say
+0102: 1D CF 02   pushs L02CF   ; Aurvidlem
+0105: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0109: 1D D9 02   pushs L02D9   ; For-Lem
+010C: 07 01 00 0B 00  cmps 0001H, 011C
+0111: 1C E1 02   addsi L02E1   ; "To perform assor...
+0114: 33   say
+0115: 1D 25 03   pushs L0325   ; For-Lem
+0118: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011C: 1D 2D 03   pushs L032D   ; Lap-Lem
+011F: 07 01 00 0B 00  cmps 0001H, 012F
+0124: 1C 35 03   addsi L0335   ; "To be a miner fo...
+0127: 33   say
+0128: 1D 68 03   pushs L0368   ; Lap-Lem
+012B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012F: 1D 70 03   pushs L0370   ; Anmanivas
+0132: 07 01 00 0B 00  cmps 0001H, 0142
+0137: 1C 7A 03   addsi L037A   ; "To be a miner fo...
+013A: 33   say
+013B: 1D AD 03   pushs L03AD   ; Anmanivas
+013E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0142: 1D B7 03   pushs L03B7   ; bye
+0145: 07 01 00 03 00  cmps 0001H, 014D
+014A: 06 03 00   jmp 0150
+014D: 06 0D FF   jmp 005D
+0150: 40   db 40 ???
+0151: 1C BB 03   addsi L03BB   ; "To say farewell,...
+0154: 33   say
+0155: 06 90 00   jmp 01E8
+0158: 04 8C 00   je 01E7
+015B: 1D D6 03   pushs L03D6   ; name
+015E: 07 01 00 05 00  cmps 0001H, 0168
+0163: 1C DB 03   addsi L03DB   ; "To wonder why yo...
+0166: 33   say
+0167: 3F   abrt
+0168: 1D FE 03   pushs L03FE   ; job
+016B: 07 01 00 0B 00  cmps 0001H, 017B
+0170: 1C 02 04   addsi L0402   ; "To sell the few ...
+0173: 33   say
+0174: 1D 25 04   pushs L0425   ; sell
+0177: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017B: 1D 2A 04   pushs L042A   ; sell
+017E: 07 01 00 54 00  cmps 0001H, 01D7
+0183: 1C 2F 04   addsi L042F   ; "To want to buy s...
+0186: 33   say
+0187: 1D CE 04   pushs L04CE   ; potions
+018A: 1D D6 04   pushs L04D6   ; reagents
+018D: 1D DF 04   pushs L04DF   ; spells
+0190: 1D E6 04   pushs L04E6   ; nothing
+0193: 1E 04 00   arrc 0004H   ; 4
+0196: 12 00 00   pop [0000]
+0199: 21 00 00   push [0000]
+019C: 24 03 00   call [0003]   ; 090BH
+019F: 12 01 00   pop [0001]
+01A2: 21 01 00   push [0001]
+01A5: 1D EE 04   pushs L04EE   ; nothing
+01A8: 22   cmpeq
+01A9: 05 04 00   jne 01B0
+01AC: 1C F6 04   addsi L04F6   ; "To suspect you a...
+01AF: 33   say
+01B0: 21 01 00   push [0001]
+01B3: 1D 1C 05   pushs L051C   ; spells
+01B6: 22   cmpeq
+01B7: 05 03 00   jne 01BD
+01BA: 24 04 00   call [0004]   ; 094CH
+01BD: 21 01 00   push [0001]
+01C0: 1D 23 05   pushs L0523   ; reagents
+01C3: 22   cmpeq
+01C4: 05 03 00   jne 01CA
+01C7: 24 01 00   call [0001]   ; 094AH
+01CA: 21 01 00   push [0001]
+01CD: 1D 2C 05   pushs L052C   ; potions
+01D0: 22   cmpeq
+01D1: 05 03 00   jne 01D7
+01D4: 24 02 00   call [0002]   ; 0949H
+01D7: 1D 34 05   pushs L0534   ; bye
+01DA: 07 01 00 05 00  cmps 0001H, 01E4
+01DF: 1C 38 05   addsi L0538   ; "To be good that ...
+01E2: 33   say
+01E3: 3F   abrt
+01E4: 06 71 FF   jmp 0158
+01E7: 40   db 40 ???
+01E8: 48   push eventid
+01E9: 1F 00 00   pushi 0000H   ; 0
+01EC: 22   cmpeq
+01ED: 05 01 00   jne 01F1
+01F0: 3F   abrt
+01F1: 25   ret

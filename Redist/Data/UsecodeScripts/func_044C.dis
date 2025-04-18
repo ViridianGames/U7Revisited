@@ -1,0 +1,214 @@
+  .funcnumber 044CH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Pamela'
+L0013: db 00
+L0014: db 'You startle a fighter who seems lost in thought.'
+L0044: db 00
+L0045: db 'His dog seemed to be meditating as well.'
+L006D: db 00
+L006E: db '"Hello again," Rayburt says.'
+L008A: db 00
+L008B: db 'name'
+L008F: db 00
+L0090: db '"I am Rayburt."'
+L009F: db 00
+L00A0: db 'He turns to the dog. "And this is Regal."'
+L00C9: db 00
+L00CA: db 'Regal'
+L00CF: db 00
+L00D0: db 'name'
+L00D4: db 00
+L00D5: db 'Pamela'
+L00DB: db 00
+L00DC: db 'job'
+L00DF: db 00
+L00E0: db '"I am a trainer. I specialize in a style of combat that reli'
+ db 'es on concentration and meditation. It shall boost thy dexte'
+ db 'rity and intelligence, as well as thy combat skill."'
+L018C: db 00
+L018D: db 'train'
+L0192: db 00
+L0193: db 'meditation'
+L019D: db 00
+L019E: db 'Regal'
+L01A3: db 00
+L01A4: db '"He is an exceptionally smart animal. He understands the med'
+ db 'itative way of life."~~Rayburt throws the dog a cookie, whic'
+ db 'h is snarfed up in the blink of an eye. "He is cute, too," R'
+ db 'ayburt says with complete seriousness.'
+L027E: db 00
+L027F: db 'Regal'
+L0284: db 00
+L0285: db 'Pamela'
+L028B: db 00
+L028C: db 'You see a hint of a smile on Rayburt's face. "She and I are '
+ db 'one person."'
+L02D4: db 00
+L02D5: db 'Pamela'
+L02DB: db 00
+L02DC: db 'meditation'
+L02E6: db 00
+L02E7: db '"Most of all combat occurs in the mind before the first blow'
+ db ' is ever struck. The key to victory is to first win the inne'
+ db 'r battle in the mind. Winning that inner battle is what I he'
+ db 'lp my students to learn."'
+L03B4: db 00
+L03B5: db 'meditation'
+L03BF: db 00
+L03C0: db 'train'
+L03C5: db 00
+L03C6: db '"I charge 60 gold for a session, but thou wilt benefit great'
+ db 'ly. Is this agreeable?"'
+L0419: db 00
+L041A: db '"It is not the first time I have been accused of being too e'
+ db 'xpensive."'
+L0460: db 00
+L0461: db '"Please come to my studio during business hours if thou wish'
+ db 'est to train."'
+L04AB: db 00
+L04AC: db 'train'
+L04B1: db 00
+L04B2: db 'bye'
+L04B5: db 00
+L04B6: db 'Rayburt bows.*'
+L04C4: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0003H
+  .extern 090AH
+  .extern 08D0H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 4E 01   jne 0156
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F B4 FF   pushi FFB4H   ; -76
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F B4 FF   pushi FFB4H   ; -76
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 1D 00 00   pushs L0000   ; bye
+002A: 1D 04 00   pushs L0004   ; job
+002D: 1D 08 00   pushs L0008   ; name
+0030: 1E 03 00   arrc 0003H   ; 3
+0033: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0037: 42 E4 00   pushf flag:[00E4]
+003A: 05 0D 00   jne 004A
+003D: 42 EE 00   pushf flag:[00EE]
+0040: 05 07 00   jne 004A
+0043: 1D 0D 00   pushs L000D   ; Pamela
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 42 E9 00   pushf flag:[00E9]
+004D: 10   not
+004E: 05 19 00   jne 006A
+0051: 1C 14 00   addsi L0014   ; You startle a fig...
+0054: 33   say
+0055: 21 01 00   push [0001]
+0058: 1F 1B 00   pushi 001BH   ; 27
+005B: 22   cmpeq
+005C: 05 04 00   jne 0063
+005F: 1C 45 00   addsi L0045   ; His dog seemed to...
+0062: 33   say
+0063: 13   push true
+0064: 43 E9 00   popf flag:[00E9]
+0067: 06 04 00   jmp 006E
+006A: 1C 6E 00   addsi L006E   ; "Hello again," Ra...
+006D: 33   say
+006E: 04 DC 00   je 014D
+0071: 1D 8B 00   pushs L008B   ; name
+0074: 07 01 00 31 00  cmps 0001H, 00AA
+0079: 1C 90 00   addsi L0090   ; "I am Rayburt."
+007C: 33   say
+007D: 21 01 00   push [0001]
+0080: 1F 1B 00   pushi 001BH   ; 27
+0083: 22   cmpeq
+0084: 05 0B 00   jne 0092
+0087: 1C A0 00   addsi L00A0   ; He turns to the d...
+008A: 33   say
+008B: 1D CA 00   pushs L00CA   ; Regal
+008E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0092: 1D D0 00   pushs L00D0   ; name
+0095: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0099: 42 E4 00   pushf flag:[00E4]
+009C: 05 07 00   jne 00A6
+009F: 1D D5 00   pushs L00D5   ; Pamela
+00A2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A6: 13   push true
+00A7: 43 EE 00   popf flag:[00EE]
+00AA: 1D DC 00   pushs L00DC   ; job
+00AD: 07 01 00 11 00  cmps 0001H, 00C3
+00B2: 1C E0 00   addsi L00E0   ; "I am a trainer. ...
+00B5: 33   say
+00B6: 1D 8D 01   pushs L018D   ; train
+00B9: 1D 93 01   pushs L0193   ; meditation
+00BC: 1E 02 00   arrc 0002H   ; 2
+00BF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C3: 1D 9E 01   pushs L019E   ; Regal
+00C6: 07 01 00 0B 00  cmps 0001H, 00D6
+00CB: 1C A4 01   addsi L01A4   ; "He is an excepti...
+00CE: 33   say
+00CF: 1D 7F 02   pushs L027F   ; Regal
+00D2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D6: 1D 85 02   pushs L0285   ; Pamela
+00D9: 07 01 00 0B 00  cmps 0001H, 00E9
+00DE: 1C 8C 02   addsi L028C   ; You see a hint of...
+00E1: 33   say
+00E2: 1D D5 02   pushs L02D5   ; Pamela
+00E5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E9: 1D DC 02   pushs L02DC   ; meditation
+00EC: 07 01 00 0B 00  cmps 0001H, 00FC
+00F1: 1C E7 02   addsi L02E7   ; "Most of all comb...
+00F4: 33   say
+00F5: 1D B5 03   pushs L03B5   ; meditation
+00F8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FC: 1D C0 03   pushs L03C0   ; train
+00FF: 07 01 00 3B 00  cmps 0001H, 013F
+0104: 21 01 00   push [0001]
+0107: 1F 1B 00   pushi 001BH   ; 27
+010A: 22   cmpeq
+010B: 05 26 00   jne 0134
+010E: 1C C6 03   addsi L03C6   ; "I charge 60 gold...
+0111: 33   say
+0112: 24 00 00   call [0000]   ; 090AH
+0115: 05 15 00   jne 012D
+0118: 1F 3C 00   pushi 003CH   ; 60
+011B: 1F 04 00   pushi 0004H   ; 4
+011E: 1F 02 00   pushi 0002H   ; 2
+0121: 1F 01 00   pushi 0001H   ; 1
+0124: 1E 03 00   arrc 0003H   ; 3
+0127: 24 01 00   call [0001]   ; 08D0H
+012A: 06 04 00   jmp 0131
+012D: 1C 1A 04   addsi L041A   ; "It is not the fi...
+0130: 33   say
+0131: 06 0B 00   jmp 013F
+0134: 1C 61 04   addsi L0461   ; "Please come to m...
+0137: 33   say
+0138: 1D AC 04   pushs L04AC   ; train
+013B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013F: 1D B2 04   pushs L04B2   ; bye
+0142: 07 01 00 03 00  cmps 0001H, 014A
+0147: 06 03 00   jmp 014D
+014A: 06 21 FF   jmp 006E
+014D: 40   db 40 ???
+014E: 1C B6 04   addsi L04B6   ; Rayburt bows.*
+0151: 33   say
+0152: 13   push true
+0153: 43 EE 00   popf flag:[00EE]
+0156: 48   push eventid
+0157: 1F 00 00   pushi 0000H   ; 0
+015A: 22   cmpeq
+015B: 05 06 00   jne 0164
+015E: 1F B4 FF   pushi FFB4H   ; -76
+0161: 24 02 00   call [0002]   ; 092EH
+0164: 25   ret

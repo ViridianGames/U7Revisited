@@ -1,0 +1,36 @@
+  .funcnumber 0693H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0000H
+0000: 3E   push itemref
+0001: 38 18 00 01  callis 0018, 1
+0005: 12 00 00   pop [0000]
+0008: 1F 01 00   pushi 0001H   ; 1
+000B: 26 00 00   aidx [0000]
+000E: 1F 03 00   pushi 0003H   ; 3
+0011: 0A   sub
+0012: 1F 01 00   pushi 0001H   ; 1
+0015: 46 01 00   db 46 ???
+   dw 0001H   ; 1
+0018: 1F 02 00   pushi 0002H   ; 2
+001B: 26 00 00   aidx [0000]
+001E: 1F 04 00   pushi 0004H   ; 4
+0021: 0A   sub
+0022: 1F 02 00   pushi 0002H   ; 2
+0025: 46 01 00   db 46 ???
+   dw 0001H   ; 1
+0028: 1F FF FF   pushi FFFFH   ; -1
+002B: 1F 00 00   pushi 0000H   ; 0
+002E: 1F 00 00   pushi 0000H   ; 0
+0031: 1F 00 00   pushi 0000H   ; 0
+0034: 1F 02 00   pushi 0002H   ; 2
+0037: 26 01 00   aidx [0001]
+003A: 1F 01 00   pushi 0001H   ; 1
+003D: 26 01 00   aidx [0001]
+0040: 1F 09 00   pushi 0009H   ; 9
+0043: 39 53 00 07  calli 0053, 7
+0047: 1F 2E 00   pushi 002EH   ; 46
+004A: 39 0F 00 01  calli 000F, 1
+004E: 25   ret

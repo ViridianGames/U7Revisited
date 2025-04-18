@@ -1,0 +1,349 @@
+  .funcnumber 04D7H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'The winged gargoyle has a very calm air about him. As he fir'
+ db 'st sees you, a smile of recognition appears on his face. "To'
+ db ' present greetings, Avatar."'
+L00A1: db 00
+L00A2: db '"To ask how to help you?"'
+L00BB: db 00
+L00BC: db 'name'
+L00C0: db 00
+L00C1: db '"To be called Ansikart."'
+L00D9: db 00
+L00DA: db 'Ansikart'
+L00E2: db 00
+L00E3: db 'name'
+L00E7: db 00
+L00E8: db 'Ansikart'
+L00F0: db 00
+L00F1: db '"To mean `anti-dry-master.'"'
+L010D: db 00
+L010E: db 'Ansikart'
+L0116: db 00
+L0117: db 'job'
+L011A: db 00
+L011B: db '"To serve food and drink to others."'
+L013F: db 00
+L0140: db 'others'
+L0146: db 00
+L0147: db 'buy'
+L014A: db 00
+L014B: db 'buy'
+L014E: db 00
+L014F: db '"To apologize, but to ask you to return when I am open."'
+L0187: db 00
+L0188: db 'others'
+L018E: db 00
+L018F: db '"To know all the gargoyles in Vesper. To want to know about '
+ db 'specific ones?"'
+L01DA: db 00
+L01DB: db '"To want information, perhaps, about the provisioner or the '
+ db 'sage?'
+L021C: db 00
+L021D: db 'provisioner'
+L0228: db 00
+L0229: db 'sage'
+L022D: db 00
+L022E: db '"To warn you that many hold resentment for their poor treatm'
+ db 'ent. To be careful, please."'
+L0286: db 00
+L0287: db 'Vesper'
+L028D: db 00
+L028E: db 'others'
+L0294: db 00
+L0295: db 'Vesper'
+L029B: db 00
+L029C: db '"To be a town full of hate -- to have the humans hate us and'
+ db ' to know many hate them, especially Anmanivas and Foranamo. '
+ db 'To be not a good thing." He appears saddened.'
+L0341: db 00
+L0342: db 'Foranamo'
+L034A: db 00
+L034B: db 'Anmanivas'
+L0354: db 00
+L0355: db 'Vesper'
+L035B: db 00
+L035C: db 'sage'
+L0360: db 00
+L0361: db '"To be named Wis-Sur."'
+L0377: db 00
+L0378: db '"To be a great mind, knowledgeable in many things."'
+L03AB: db 00
+L03AC: db '"To have once been a great mind. To be now paranoid and recl'
+ db 'usive. To feel pity for Wis-Sur."'
+L0409: db 00
+L040A: db 'sage'
+L040E: db 00
+L040F: db 'provisioner'
+L041A: db 00
+L041B: db '"To be Aurvidlem. To have become sullen lately, but to know '
+ db 'not why."'
+L0460: db 00
+L0461: db 'provisioner'
+L046C: db 00
+L046D: db 'For-Lem'
+L0474: db 00
+L0475: db '"To be a laborer for the town."'
+L0494: db 00
+L0495: db 'For-Lem'
+L049C: db 00
+L049D: db 'Lap-Lem'
+L04A4: db 00
+L04A5: db '"To mine for the Mining company here. To be the only gargoyl'
+ db 'e still mining here." He nods his head.~~ "To be very tolera'
+ db 'nt, like For-Lem."'
+L052F: db 00
+L0530: db 'For-Lem'
+L0537: db 00
+L0538: db 'tolerant'
+L0540: db 00
+L0541: db 'Lap-Lem'
+L0548: db 00
+L0549: db 'tolerant'
+L0551: db 00
+L0552: db '"To work now with only humans, who hate and degrade him. To '
+ db 'continue working, however, despite this. To be quite toleran'
+ db 't of human intolerance." He nods, as if to emphasize his poi'
+ db 'nt.'
+L0609: db 00
+L060A: db 'tolerant'
+L0612: db 00
+L0613: db 'Anmanivas'
+L061C: db 00
+L061D: db 'have been'
+L0626: db 00
+L0627: db '"To have been killed by you in this very tavern. To remember'
+ db ' not?~~"To have been his fault, but still, to tell you I fee'
+ db 'l remorse for him and his brother."'
+L06C2: db 00
+L06C3: db 'be'
+L06C5: db 00
+L06C6: db '"To have worked the mines with Lap-Lem, but to have left jus'
+ db 't recently." He shakes his head.~~"To hate the humans who wo'
+ db 'rk there, and who live on the other side of the oasis. To be'
+ db ' too violent. To '
+L078B: db 00
+L078C: db ' no longer permitted on the other side."'
+L07B4: db 00
+L07B5: db 'Lap-Lem'
+L07BC: db 00
+L07BD: db 'Anmanivas'
+L07C6: db 00
+L07C7: db 'Foranamo'
+L07CF: db 00
+L07D0: db 'have been'
+L07D9: db 00
+L07DA: db 'be'
+L07DC: db 00
+L07DD: db '"To be brother to Anmanivas and to have been raised by the s'
+ db 'ame parent. To hate humans as much as Anmanivas, and," he si'
+ db 'ghs, "to '
+L085E: db 00
+L085F: db ' allowed no longer to visit the human side."'
+L088B: db 00
+L088C: db 'Foranamo'
+L0894: db 00
+L0895: db 'bye'
+L0898: db 00
+L0899: db '"To hope you will bring peace again to our people, Avatar."*'
+L08D5: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 0841H
+  .extern 090AH
+  .extern 092FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 14 02   jne 021C
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 29 FF   pushi FF29H   ; -215
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 42 94 02   pushf flag:[0294]
+0025: 10   not
+0026: 05 0B 00   jne 0034
+0029: 1C 0D 00   addsi L000D   ; The winged gargoy...
+002C: 33   say
+002D: 13   push true
+002E: 43 94 02   popf flag:[0294]
+0031: 06 04 00   jmp 0038
+0034: 1C A2 00   addsi L00A2   ; "To ask how to he...
+0037: 33   say
+0038: 04 DC 01   je 0217
+003B: 1D BC 00   pushs L00BC   ; name
+003E: 07 01 00 12 00  cmps 0001H, 0055
+0043: 1C C1 00   addsi L00C1   ; "To be called Ans...
+0046: 33   say
+0047: 1D DA 00   pushs L00DA   ; Ansikart
+004A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004E: 1D E3 00   pushs L00E3   ; name
+0051: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0055: 1D E8 00   pushs L00E8   ; Ansikart
+0058: 07 01 00 0B 00  cmps 0001H, 0068
+005D: 1C F1 00   addsi L00F1   ; "To mean `anti-dr...
+0060: 33   say
+0061: 1D 0E 01   pushs L010E   ; Ansikart
+0064: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0068: 1D 17 01   pushs L0117   ; job
+006B: 07 01 00 11 00  cmps 0001H, 0081
+0070: 1C 1B 01   addsi L011B   ; "To serve food an...
+0073: 33   say
+0074: 1D 40 01   pushs L0140   ; others
+0077: 1D 47 01   pushs L0147   ; buy
+007A: 1E 02 00   arrc 0002H   ; 2
+007D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0081: 1D 4B 01   pushs L014B   ; buy
+0084: 07 01 00 22 00  cmps 0001H, 00AB
+0089: 1F 29 FF   pushi FF29H   ; -215
+008C: 38 1B 00 01  callis 001B, 1
+0090: 38 1C 00 01  callis 001C, 1
+0094: 12 00 00   pop [0000]
+0097: 21 00 00   push [0000]
+009A: 1F 07 00   pushi 0007H   ; 7
+009D: 22   cmpeq
+009E: 05 06 00   jne 00A7
+00A1: 24 00 00   call [0000]   ; 0841H
+00A4: 06 04 00   jmp 00AB
+00A7: 1C 4F 01   addsi L014F   ; "To apologize, bu...
+00AA: 33   say
+00AB: 1D 88 01   pushs L0188   ; others
+00AE: 07 01 00 36 00  cmps 0001H, 00E9
+00B3: 1C 8F 01   addsi L018F   ; "To know all the ...
+00B6: 33   say
+00B7: 24 01 00   call [0001]   ; 090AH
+00BA: 12 01 00   pop [0001]
+00BD: 21 01 00   push [0001]
+00C0: 05 14 00   jne 00D7
+00C3: 1C DB 01   addsi L01DB   ; "To want informat...
+00C6: 33   say
+00C7: 1D 1D 02   pushs L021D   ; provisioner
+00CA: 1D 29 02   pushs L0229   ; sage
+00CD: 1E 02 00   arrc 0002H   ; 2
+00D0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D4: 06 04 00   jmp 00DB
+00D7: 1C 2E 02   addsi L022E   ; "To warn you that...
+00DA: 33   say
+00DB: 1D 87 02   pushs L0287   ; Vesper
+00DE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E2: 1D 8E 02   pushs L028E   ; others
+00E5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E9: 1D 95 02   pushs L0295   ; Vesper
+00EC: 07 01 00 18 00  cmps 0001H, 0109
+00F1: 1C 9C 02   addsi L029C   ; "To be a town ful...
+00F4: 33   say
+00F5: 1D 42 03   pushs L0342   ; Foranamo
+00F8: 1D 4B 03   pushs L034B   ; Anmanivas
+00FB: 1E 02 00   arrc 0002H   ; 2
+00FE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0102: 1D 55 03   pushs L0355   ; Vesper
+0105: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0109: 1D 5C 03   pushs L035C   ; sage
+010C: 07 01 00 1C 00  cmps 0001H, 012D
+0111: 1C 61 03   addsi L0361   ; "To be named Wis-...
+0114: 33   say
+0115: 42 03 00   pushf flag:[0003]
+0118: 05 07 00   jne 0122
+011B: 1C 78 03   addsi L0378   ; "To be a great mi...
+011E: 33   say
+011F: 06 04 00   jmp 0126
+0122: 1C AC 03   addsi L03AC   ; "To have once bee...
+0125: 33   say
+0126: 1D 0A 04   pushs L040A   ; sage
+0129: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012D: 1D 0F 04   pushs L040F   ; provisioner
+0130: 07 01 00 0B 00  cmps 0001H, 0140
+0135: 1C 1B 04   addsi L041B   ; "To be Aurvidlem....
+0138: 33   say
+0139: 1D 61 04   pushs L0461   ; provisioner
+013C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0140: 1D 6D 04   pushs L046D   ; For-Lem
+0143: 07 01 00 0B 00  cmps 0001H, 0153
+0148: 1C 75 04   addsi L0475   ; "To be a laborer ...
+014B: 33   say
+014C: 1D 95 04   pushs L0495   ; For-Lem
+014F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0153: 1D 9D 04   pushs L049D   ; Lap-Lem
+0156: 07 01 00 18 00  cmps 0001H, 0173
+015B: 1C A5 04   addsi L04A5   ; "To mine for the ...
+015E: 33   say
+015F: 1D 30 05   pushs L0530   ; For-Lem
+0162: 1D 38 05   pushs L0538   ; tolerant
+0165: 1E 02 00   arrc 0002H   ; 2
+0168: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016C: 1D 41 05   pushs L0541   ; Lap-Lem
+016F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0173: 1D 49 05   pushs L0549   ; tolerant
+0176: 07 01 00 0B 00  cmps 0001H, 0186
+017B: 1C 52 05   addsi L0552   ; "To work now with...
+017E: 33   say
+017F: 1D 0A 06   pushs L060A   ; tolerant
+0182: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0186: 1D 13 06   pushs L0613   ; Anmanivas
+0189: 07 01 00 3F 00  cmps 0001H, 01CD
+018E: 1F 27 FF   pushi FF27H   ; -217
+0191: 38 1B 00 01  callis 001B, 1
+0195: 38 37 00 01  callis 0037, 1
+0199: 12 02 00   pop [0002]
+019C: 21 02 00   push [0002]
+019F: 05 0D 00   jne 01AF
+01A2: 1D 1D 06   pushs L061D   ; have been
+01A5: 12 03 00   pop [0003]
+01A8: 1C 27 06   addsi L0627   ; "To have been kil...
+01AB: 33   say
+01AC: 06 06 00   jmp 01B5
+01AF: 1D C3 06   pushs L06C3   ; be
+01B2: 12 03 00   pop [0003]
+01B5: 1C C6 06   addsi L06C6   ; "To have worked t...
+01B8: 2F 03 00   addsv [0003]
+01BB: 1C 8C 07   addsi L078C   ;  no longer permit...
+01BE: 33   say
+01BF: 1D B5 07   pushs L07B5   ; Lap-Lem
+01C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C6: 1D BD 07   pushs L07BD   ; Anmanivas
+01C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CD: 1D C7 07   pushs L07C7   ; Foranamo
+01D0: 07 01 00 34 00  cmps 0001H, 0209
+01D5: 1F 26 FF   pushi FF26H   ; -218
+01D8: 38 1B 00 01  callis 001B, 1
+01DC: 38 37 00 01  callis 0037, 1
+01E0: 12 04 00   pop [0004]
+01E3: 21 04 00   push [0004]
+01E6: 05 09 00   jne 01F2
+01E9: 1D D0 07   pushs L07D0   ; have been
+01EC: 12 05 00   pop [0005]
+01EF: 06 06 00   jmp 01F8
+01F2: 1D DA 07   pushs L07DA   ; be
+01F5: 12 05 00   pop [0005]
+01F8: 1C DD 07   addsi L07DD   ; "To be brother to...
+01FB: 2F 05 00   addsv [0005]
+01FE: 1C 5F 08   addsi L085F   ;  allowed no longe...
+0201: 33   say
+0202: 1D 8C 08   pushs L088C   ; Foranamo
+0205: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0209: 1D 95 08   pushs L0895   ; bye
+020C: 07 01 00 03 00  cmps 0001H, 0214
+0211: 06 03 00   jmp 0217
+0214: 06 21 FE   jmp 0038
+0217: 40   db 40 ???
+0218: 1C 99 08   addsi L0899   ; "To hope you will...
+021B: 33   say
+021C: 48   push eventid
+021D: 1F 00 00   pushi 0000H   ; 0
+0220: 22   cmpeq
+0221: 05 06 00   jne 022A
+0224: 1F 29 FF   pushi FF29H   ; -215
+0227: 24 02 00   call [0002]   ; 092FH
+022A: 25   ret

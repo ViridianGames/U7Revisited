@@ -1,0 +1,61 @@
+  .funcnumber 0643H
+  .data
+L0000: db '@Bet Ort@'
+L0009: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0001H
+  .extern 0906H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 43 00   jne 004B
+0008: 3E   push itemref
+0009: 39 5C 00 01  calli 005C, 1
+000D: 1D 00 00   pushs L0000   ; @Bet Ort@
+0010: 3E   push itemref
+0011: 39 40 00 02  calli _ItemSay@2  ; 0040
+0015: 24 00 00   call [0000]   ; 0906H
+0018: 05 1C 00   jne 0037
+001B: 1F 43 06   pushi 0643H   ; 1603
+001E: 44 55   pushw 1F55H   ; 8021
+0020: 1F 24 00   pushi 0024H   ; 36
+0023: 44 58   pushw 4458H   ; 17496
+0025: 44 6F   pushw 446FH   ; 17519
+0027: 44 70   pushw 1E70H   ; 7792
+0029: 1E 06 00   arrc 0006H   ; 6
+002C: 3E   push itemref
+002D: 38 01 00 02  callis 0001, 2
+0031: 12 00 00   pop [0000]
+0034: 06 14 00   jmp 004B
+0037: 1F 06 06   pushi 0606H   ; 1542
+003A: 44 55   pushw 4455H   ; 17493
+003C: 44 6F   pushw 446FH   ; 17519
+003E: 44 70   pushw 1E70H   ; 7792
+0040: 1E 04 00   arrc 0004H   ; 4
+0043: 3E   push itemref
+0044: 38 01 00 02  callis 0001, 2
+0048: 12 00 00   pop [0000]
+004B: 48   push eventid
+004C: 1F 02 00   pushi 0002H   ; 2
+004F: 22   cmpeq
+0050: 05 2F 00   jne 0082
+0053: 3E   push itemref
+0054: 38 18 00 01  callis 0018, 1
+0058: 12 01 00   pop [0001]
+005B: 1F FF FF   pushi FFFFH   ; -1
+005E: 1F 00 00   pushi 0000H   ; 0
+0061: 1F 00 00   pushi 0000H   ; 0
+0064: 1F 00 00   pushi 0000H   ; 0
+0067: 1F 02 00   pushi 0002H   ; 2
+006A: 26 01 00   aidx [0001]
+006D: 1F 02 00   pushi 0002H   ; 2
+0070: 0A   sub
+0071: 1F 01 00   pushi 0001H   ; 1
+0074: 26 01 00   aidx [0001]
+0077: 1F 02 00   pushi 0002H   ; 2
+007A: 0A   sub
+007B: 1F 0C 00   pushi 000CH   ; 12
+007E: 39 53 00 07  calli 0053, 7
+0082: 25   ret

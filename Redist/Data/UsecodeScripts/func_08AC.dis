@@ -1,0 +1,204 @@
+  .funcnumber 08ACH
+  .data
+L0000: db '"I am qualified to heal, cure poison, and resurrect. Art tho'
+ db 'u interested in one of these services?"'
+L0063: db 00
+L0064: db '"Which of my services dost thou have need of?"'
+L0092: db 00
+L0093: db 'resurrect'
+L009C: db 00
+L009D: db 'cure poison'
+L00A8: db 00
+L00A9: db 'heal'
+L00AD: db 00
+L00AE: db 'heal'
+L00B2: db 00
+L00B3: db 'cure poison'
+L00BE: db 00
+L00BF: db 'heal'
+L00C3: db 00
+L00C4: db 'healed'
+L00CA: db 00
+L00CB: db 'cure poison'
+L00D6: db 00
+L00D7: db 'cured of poison'
+L00E6: db 00
+L00E7: db '"Who dost thou wish to have '
+L0103: db 00
+L0104: db '?"'
+L0106: db 00
+L0107: db '"Excellent, thou art uninjured!"'
+L0127: db 00
+L0128: db 'resurrect'
+L0131: db 00
+L0132: db '"There seems to be no one who needs such assistance. Perhaps'
+ db ', if I have overlooked anyone, thou couldst set him or her b'
+ db 'efore me."*'
+L01B5: db 00
+L01B6: db '"Indeed, this individual needs restoration!"'
+L01E2: db 00
+L01E3: db '"My price is '
+L01F0: db 00
+L01F1: db ' gold. Art thou interested?"'
+L020D: db 00
+L020E: db 'heal'
+L0212: db 00
+L0213: db 'cure poison'
+L021E: db 00
+L021F: db 'resurrect'
+L0228: db 00
+L0229: db '"Thou dost not have enough gold! Mayhaps thou couldst return'
+ db ' when thou hast more."'
+L027B: db 00
+L027C: db '"Then thou must go elsewhere."'
+L029A: db 00
+L029B: db '"If thou needest my services later, I will be here."'
+L02CF: db 00
+  .code
+  .argc 0003H
+  .localc 000AH
+  .externsize 0006H
+  .extern 090AH
+  .extern 090BH
+  .extern 090EH
+  .extern 091DH
+  .extern 091EH
+  .extern 091FH
+0000: 1C 00 00   addsi L0000   ; "I am qualified t...
+0003: 33   say
+0004: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0008: 24 00 00   call [0000]   ; 090AH
+000B: 12 03 00   pop [0003]
+000E: 21 03 00   push [0003]
+0011: 05 57 01   jne 016B
+0014: 1C 64 00   addsi L0064   ; "Which of my serv...
+0017: 33   say
+0018: 1D 93 00   pushs L0093   ; resurrect
+001B: 1D 9D 00   pushs L009D   ; cure poison
+001E: 1D A9 00   pushs L00A9   ; heal
+0021: 1E 03 00   arrc 0003H   ; 3
+0024: 12 04 00   pop [0004]
+0027: 21 04 00   push [0004]
+002A: 24 01 00   call [0001]   ; 090BH
+002D: 12 05 00   pop [0005]
+0030: 21 05 00   push [0005]
+0033: 1D AE 00   pushs L00AE   ; heal
+0036: 22   cmpeq
+0037: 21 05 00   push [0005]
+003A: 1D B3 00   pushs L00B3   ; cure poison
+003D: 22   cmpeq
+003E: 0F   or
+003F: 05 4D 00   jne 008F
+0042: 21 05 00   push [0005]
+0045: 1D BF 00   pushs L00BF   ; heal
+0048: 22   cmpeq
+0049: 05 0C 00   jne 0058
+004C: 1D C4 00   pushs L00C4   ; healed
+004F: 12 06 00   pop [0006]
+0052: 21 02 00   push [0002]
+0055: 12 07 00   pop [0007]
+0058: 21 05 00   push [0005]
+005B: 1D CB 00   pushs L00CB   ; cure poison
+005E: 22   cmpeq
+005F: 05 0C 00   jne 006E
+0062: 1D D7 00   pushs L00D7   ; cured of poison
+0065: 12 06 00   pop [0006]
+0068: 21 01 00   push [0001]
+006B: 12 07 00   pop [0007]
+006E: 1C E7 00   addsi L00E7   ; "Who dost thou wi...
+0071: 2F 06 00   addsv [0006]
+0074: 1C 04 01   addsi L0104   ; ?"
+0077: 33   say
+0078: 24 02 00   call [0002]   ; 090EH
+007B: 12 08 00   pop [0008]
+007E: 21 08 00   push [0008]
+0081: 1F 00 00   pushi 0000H   ; 0
+0084: 22   cmpeq
+0085: 05 07 00   jne 008F
+0088: 1C 07 01   addsi L0107   ; "Excellent, thou ...
+008B: 33   say
+008C: 06 E0 00   jmp 016F
+008F: 21 05 00   push [0005]
+0092: 1D 28 01   pushs L0128   ; resurrect
+0095: 22   cmpeq
+0096: 05 4C 00   jne 00E5
+0099: 38 22 00 00  callis 0022, 0
+009D: 12 09 00   pop [0009]
+00A0: 1F 19 00   pushi 0019H   ; 25
+00A3: 1F 90 01   pushi 0190H   ; 400
+00A6: 21 09 00   push [0009]
+00A9: 38 0E 00 03  callis 000E, 3
+00AD: 12 0A 00   pop [000A]
+00B0: 21 0A 00   push [000A]
+00B3: 1F 00 00   pushi 0000H   ; 0
+00B6: 22   cmpeq
+00B7: 05 21 00   jne 00DB
+00BA: 1F 19 00   pushi 0019H   ; 25
+00BD: 1F 9E 01   pushi 019EH   ; 414
+00C0: 21 09 00   push [0009]
+00C3: 38 0E 00 03  callis 000E, 3
+00C7: 12 0A 00   pop [000A]
+00CA: 21 0A 00   push [000A]
+00CD: 1F 00 00   pushi 0000H   ; 0
+00D0: 22   cmpeq
+00D1: 05 07 00   jne 00DB
+00D4: 1C 32 01   addsi L0132   ; "There seems to b...
+00D7: 33   say
+00D8: 06 94 00   jmp 016F
+00DB: 21 00 00   push [0000]
+00DE: 12 07 00   pop [0007]
+00E1: 1C B6 01   addsi L01B6   ; "Indeed, this ind...
+00E4: 33   say
+00E5: 1C E3 01   addsi L01E3   ; "My price is 
+00E8: 2F 07 00   addsv [0007]
+00EB: 1C F1 01   addsi L01F1   ;  gold. Art thou i...
+00EE: 33   say
+00EF: 24 00 00   call [0000]   ; 090AH
+00F2: 12 0B 00   pop [000B]
+00F5: 21 0B 00   push [000B]
+00F8: 05 69 00   jne 0164
+00FB: 1F 99 FE   pushi FE99H   ; -359
+00FE: 1F 99 FE   pushi FE99H   ; -359
+0101: 1F 84 02   pushi 0284H   ; 644
+0104: 1F 9B FE   pushi FE9BH   ; -357
+0107: 38 28 00 04  callis 0028, 4
+010B: 12 0C 00   pop [000C]
+010E: 21 0C 00   push [000C]
+0111: 21 07 00   push [0007]
+0114: 18   cmpge
+0115: 05 45 00   jne 015D
+0118: 21 05 00   push [0005]
+011B: 1D 0E 02   pushs L020E   ; heal
+011E: 22   cmpeq
+011F: 05 0C 00   jne 012E
+0122: 21 07 00   push [0007]
+0125: 21 08 00   push [0008]
+0128: 24 03 00   call [0003]   ; 091DH
+012B: 06 2C 00   jmp 015A
+012E: 21 05 00   push [0005]
+0131: 1D 13 02   pushs L0213   ; cure poison
+0134: 22   cmpeq
+0135: 05 0C 00   jne 0144
+0138: 21 07 00   push [0007]
+013B: 21 08 00   push [0008]
+013E: 24 04 00   call [0004]   ; 091EH
+0141: 06 16 00   jmp 015A
+0144: 21 05 00   push [0005]
+0147: 1D 1F 02   pushs L021F   ; resurrect
+014A: 22   cmpeq
+014B: 05 0C 00   jne 015A
+014E: 21 07 00   push [0007]
+0151: 21 0A 00   push [000A]
+0154: 24 05 00   call [0005]   ; 091FH
+0157: 06 00 00   jmp 015A
+015A: 06 04 00   jmp 0161
+015D: 1C 29 02   addsi L0229   ; "Thou dost not ha...
+0160: 33   say
+0161: 06 04 00   jmp 0168
+0164: 1C 7C 02   addsi L027C   ; "Then thou must g...
+0167: 33   say
+0168: 06 04 00   jmp 016F
+016B: 1C 9B 02   addsi L029B   ; "If thou needest ...
+016E: 33   say
+016F: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0173: 25   ret

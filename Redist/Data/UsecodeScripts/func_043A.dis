@@ -1,0 +1,432 @@
+  .funcnumber 043AH
+  .data
+L0000: db 'Gordon is too involved in listening to the Fellowship meetin'
+ db 'g to hear you.*'
+L004B: db 00
+L004C: db '"Where oh where is Batlin? He is late for the meeting!"'
+L0083: db 00
+L0084: db '"Oh, my! I must leave immediately! I am late for the Fellows'
+ db 'hip meeting!"*'
+L00CE: db 00
+L00CF: db 'bye'
+L00D2: db 00
+L00D3: db 'job'
+L00D6: db 00
+L00D7: db 'name'
+L00DB: db 00
+L00DC: db 'You see a friendly face looking back at you.'
+L0108: db 00
+L0109: db '"How art thou this fine day, '
+L0126: db 00
+L0127: db '?" asks Gordon.'
+L0136: db 00
+L0137: db 'name'
+L013B: db 00
+L013C: db '"My name is Gordon."'
+L0150: db 00
+L0151: db 'name'
+L0155: db 00
+L0156: db 'job'
+L0159: db 00
+L015A: db '"I sell fish and chips from my wagon."'
+L0180: db 00
+L0181: db 'wagon'
+L0186: db 00
+L0187: db 'fish and chips'
+L0195: db 00
+L0196: db 'fish and chips'
+L01A4: db 00
+L01A5: db '"Come back later when I am open for business."*'
+L01D4: db 00
+L01D5: db '"I have the best fish and chips thou shalt taste in all of B'
+ db 'ritannia. My price is only 8 gold coins per serving. Wouldst'
+ db ' thou like to have some?"'
+L0266: db 00
+L0267: db 'He hands you a plate.'
+L027C: db 00
+L027D: db '"They are indeed the best fish and chips in all of Britannia'
+ db '."'
+L02BB: db 00
+L02BC: db '"Thou art carrying too many things to take thy fish and chip'
+ db 's from me!"'
+L0303: db 00
+L0304: db '"Thou dost not have enough gold to get any fish and chips. S'
+ db 'orry!"'
+L0346: db 00
+L0347: db '"Come back again when thou art hungry and I am sure thou sha'
+ db 'lt change thy mind."'
+L0397: db 00
+L0398: db 'fish and chips'
+L03A6: db 00
+L03A7: db 'wagon'
+L03AC: db 00
+L03AD: db '"I just painted my wagon recently. It receives more attentio'
+ db 'n. Business is much better now. I am saving my money to trav'
+ db 'el to Buccaneer's Den."'
+L043C: db 00
+L043D: db 'wagon'
+L0442: db 00
+L0443: db 'Buccaneer's Den'
+L0452: db 00
+L0453: db 'business'
+L045B: db 00
+L045C: db 'business'
+L0464: db 00
+L0465: db '"Ever since I became a member of The Fellowship, business ha'
+ db 's been increasing steadily. I have refined and improved the '
+ db 'recipe for my fish batter and it has since become a favorite'
+ db ' meal of nearly everyone in Britain. I have even served my f'
+ db 'ish and chips to Lord British himself."'
+L057C: db 00
+L057D: db 'Lord British'
+L0589: db 00
+L058A: db 'Fellowship'
+L0594: db 00
+L0595: db 'business'
+L059D: db 00
+L059E: db 'Lord British'
+L05AA: db 00
+L05AB: db '"Thou dost know-- the bloke who wears a crown and acts like '
+ db 'a king."'
+L05EF: db 00
+L05F0: db 'Lord British'
+L05FC: db 00
+L05FD: db 'Fellowship'
+L0607: db 00
+L0608: db '"I am glad to see that thou art a member. Will I see thee at'
+ db ' the next meeting?"'
+L0657: db 00
+L0658: db '"Then I shall see thee at nine o'clock sharp!"'
+L0686: db 00
+L0687: db '"Thou shouldst apply thyself more stringently to the ways of'
+ db ' The Fellowship! Our meeting is at nine o'clock. I can see t'
+ db 'hou dost certainly need to attend."'
+L0722: db 00
+L0723: db 'Fellowship'
+L072D: db 00
+L072E: db 'philosophy'
+L0738: db 00
+L0739: db 'philosophy'
+L0743: db 00
+L0744: db 'Buccaneer's Den'
+L0753: db 00
+L0754: db '"I wish to win some money at Buccaneer's Den. It is a pirate'
+ db ' resort and they have a fabulous House of Games there."'
+L07C7: db 00
+L07C8: db 'House of Games'
+L07D6: db 00
+L07D7: db 'pirate resort'
+L07E4: db 00
+L07E5: db 'Buccaneer's Den'
+L07F4: db 00
+L07F5: db 'pirate resort'
+L0802: db 00
+L0803: db '"As I am certain thou knowest, Buccaneer's Den was once a de'
+ db 'n of thieves and villains. As such, it held a romantic appea'
+ db 'l for those who longed for a taste of such an adventurous ex'
+ db 'istence. I confess, I am one of those people. When thou dost'
+ db ' spend thy life selling fish from a wagon, thou art in need '
+ db 'of excitement. The pirates eventually realized just how much'
+ db ' they are secretly envied, and so they have turned their isl'
+ db 'and into a place of thrilling amusements."'
+L09D1: db 00
+L09D2: db 'pirate resort'
+L09DF: db 00
+L09E0: db 'House of Games'
+L09EE: db 00
+L09EF: db '"It is said they have several games of chance there! Gold ca'
+ db 'n be won wagering on the outcome of a race of fine stallions'
+ db '."'
+L0A69: db 00
+L0A6A: db 'House of Games'
+L0A78: db 00
+L0A79: db 'Fellowship'
+L0A83: db 00
+L0A84: db '"I saw thee receive thy medallion. I can certainly say the F'
+ db 'ellowship has done wonders for my life and I know it will be'
+ db ' the same for thee as well." He gives thee a knowing grin.'
+L0B36: db 00
+L0B37: db 'Fellowship'
+L0B41: db 00
+L0B42: db 'bye'
+L0B45: db 00
+L0B46: db '"Have a pleasant day, '
+L0B5C: db 00
+L0B5D: db '." *'
+L0B61: db 00
+L0B62: db '@Fish 'n' chips!@'
+L0B73: db 00
+L0B74: db '@Hot fish 'n' chips!@'
+L0B89: db 00
+L0B8A: db '@Fish 'n' chippies!@'
+L0B9E: db 00
+L0B9F: db '@Fish 'n' chips here!@'
+L0BB5: db 00
+  .code
+  .argc 0001H
+  .localc 000BH
+  .externsize 0006H
+  .extern 0909H
+  .extern 08FCH
+  .extern 090AH
+  .extern 0919H
+  .extern 091AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 50 02   jne 0258
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F C6 FF   pushi FFC6H   ; -58
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 38 3B 00 00  callis 003B, 0
+0023: 12 02 00   pop [0002]
+0026: 1F C6 FF   pushi FFC6H   ; -58
+0029: 38 1B 00 01  callis 001B, 1
+002D: 38 1C 00 01  callis 001C, 1
+0031: 12 03 00   pop [0003]
+0034: 21 02 00   push [0002]
+0037: 1F 07 00   pushi 0007H   ; 7
+003A: 22   cmpeq
+003B: 05 2F 00   jne 006D
+003E: 1F E6 FF   pushi FFE6H   ; -26
+0041: 1F C6 FF   pushi FFC6H   ; -58
+0044: 24 01 00   call [0001]   ; 08FCH
+0047: 12 04 00   pop [0004]
+004A: 21 04 00   push [0004]
+004D: 05 08 00   jne 0058
+0050: 1C 00 00   addsi L0000   ; Gordon is too inv...
+0053: 33   say
+0054: 3F   abrt
+0055: 06 15 00   jmp 006D
+0058: 42 DA 00   pushf flag:[00DA]
+005B: 05 0A 00   jne 0068
+005E: 1C 4C 00   addsi L004C   ; "Where oh where i...
+0061: 33   say
+0062: 06 08 00   jmp 006D
+0065: 06 05 00   jmp 006D
+0068: 1C 84 00   addsi L0084   ; "Oh, my! I must l...
+006B: 33   say
+006C: 3F   abrt
+006D: 1D CF 00   pushs L00CF   ; bye
+0070: 1D D3 00   pushs L00D3   ; job
+0073: 1D D7 00   pushs L00D7   ; name
+0076: 1E 03 00   arrc 0003H   ; 3
+0079: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007D: 42 BB 00   pushf flag:[00BB]
+0080: 10   not
+0081: 05 0B 00   jne 008F
+0084: 1C DC 00   addsi L00DC   ; You see a friendl...
+0087: 33   say
+0088: 13   push true
+0089: 43 BB 00   popf flag:[00BB]
+008C: 06 0A 00   jmp 0099
+008F: 1C 09 01   addsi L0109   ; "How art thou thi...
+0092: 2F 00 00   addsv [0000]
+0095: 1C 27 01   addsi L0127   ; ?" asks Gordon.
+0098: 33   say
+0099: 04 B1 01   je 024D
+009C: 1D 37 01   pushs L0137   ; name
+009F: 07 01 00 0B 00  cmps 0001H, 00AF
+00A4: 1C 3C 01   addsi L013C   ; "My name is Gordon."
+00A7: 33   say
+00A8: 1D 51 01   pushs L0151   ; name
+00AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AF: 1D 56 01   pushs L0156   ; job
+00B2: 07 01 00 11 00  cmps 0001H, 00C8
+00B7: 1C 5A 01   addsi L015A   ; "I sell fish and ...
+00BA: 33   say
+00BB: 1D 81 01   pushs L0181   ; wagon
+00BE: 1D 87 01   pushs L0187   ; fish and chips
+00C1: 1E 02 00   arrc 0002H   ; 2
+00C4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C8: 1D 96 01   pushs L0196   ; fish and chips
+00CB: 07 01 00 7B 00  cmps 0001H, 014B
+00D0: 21 03 00   push [0003]
+00D3: 1F 07 00   pushi 0007H   ; 7
+00D6: 22   cmpeq
+00D7: 10   not
+00D8: 05 08 00   jne 00E3
+00DB: 1C A5 01   addsi L01A5   ; "Come back later ...
+00DE: 33   say
+00DF: 3F   abrt
+00E0: 06 61 00   jmp 0144
+00E3: 1C D5 01   addsi L01D5   ; "I have the best ...
+00E6: 33   say
+00E7: 24 02 00   call [0002]   ; 090AH
+00EA: 12 05 00   pop [0005]
+00ED: 21 05 00   push [0005]
+00F0: 05 4D 00   jne 0140
+00F3: 13   push true
+00F4: 1F 99 FE   pushi FE99H   ; -359
+00F7: 1F 99 FE   pushi FE99H   ; -359
+00FA: 1F 84 02   pushi 0284H   ; 644
+00FD: 1F 08 00   pushi 0008H   ; 8
+0100: 38 2B 00 05  callis 002B, 5
+0104: 12 06 00   pop [0006]
+0107: 21 06 00   push [0006]
+010A: 05 2C 00   jne 0139
+010D: 13   push true
+010E: 1F 1E 00   pushi 001EH   ; 30
+0111: 1F 99 FE   pushi FE99H   ; -359
+0114: 1F 79 01   pushi 0179H   ; 377
+0117: 1F 01 00   pushi 0001H   ; 1
+011A: 38 2C 00 05  callis 002C, 5
+011E: 12 07 00   pop [0007]
+0121: 21 07 00   push [0007]
+0124: 05 0B 00   jne 0132
+0127: 1C 67 02   addsi L0267   ; He hands you a pl...
+012A: 33   say
+012B: 1C 7D 02   addsi L027D   ; "They are indeed ...
+012E: 33   say
+012F: 06 04 00   jmp 0136
+0132: 1C BC 02   addsi L02BC   ; "Thou art carryin...
+0135: 33   say
+0136: 06 04 00   jmp 013D
+0139: 1C 04 03   addsi L0304   ; "Thou dost not ha...
+013C: 33   say
+013D: 06 04 00   jmp 0144
+0140: 1C 47 03   addsi L0347   ; "Come back again ...
+0143: 33   say
+0144: 1D 98 03   pushs L0398   ; fish and chips
+0147: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014B: 1D A7 03   pushs L03A7   ; wagon
+014E: 07 01 00 18 00  cmps 0001H, 016B
+0153: 1C AD 03   addsi L03AD   ; "I just painted m...
+0156: 33   say
+0157: 1D 3D 04   pushs L043D   ; wagon
+015A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015E: 1D 43 04   pushs L0443   ; Buccaneer's Den
+0161: 1D 53 04   pushs L0453   ; business
+0164: 1E 02 00   arrc 0002H   ; 2
+0167: 39 05 00 01  calli _AddAnswer@1  ; 0005
+016B: 1D 5C 04   pushs L045C   ; business
+016E: 07 01 00 18 00  cmps 0001H, 018B
+0173: 1C 65 04   addsi L0465   ; "Ever since I bec...
+0176: 33   say
+0177: 1D 7D 05   pushs L057D   ; Lord British
+017A: 1D 8A 05   pushs L058A   ; Fellowship
+017D: 1E 02 00   arrc 0002H   ; 2
+0180: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0184: 1D 95 05   pushs L0595   ; business
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D 9E 05   pushs L059E   ; Lord British
+018E: 07 01 00 0B 00  cmps 0001H, 019E
+0193: 1C AB 05   addsi L05AB   ; "Thou dost know--...
+0196: 33   say
+0197: 1D F0 05   pushs L05F0   ; Lord British
+019A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019E: 1D FD 05   pushs L05FD   ; Fellowship
+01A1: 07 01 00 2E 00  cmps 0001H, 01D4
+01A6: 21 01 00   push [0001]
+01A9: 05 1E 00   jne 01CA
+01AC: 1C 08 06   addsi L0608   ; "I am glad to see...
+01AF: 33   say
+01B0: 24 02 00   call [0002]   ; 090AH
+01B3: 12 08 00   pop [0008]
+01B6: 21 08 00   push [0008]
+01B9: 05 07 00   jne 01C3
+01BC: 1C 58 06   addsi L0658   ; "Then I shall see...
+01BF: 33   say
+01C0: 06 04 00   jmp 01C7
+01C3: 1C 87 06   addsi L0687   ; "Thou shouldst ap...
+01C6: 33   say
+01C7: 06 03 00   jmp 01CD
+01CA: 24 03 00   call [0003]   ; 0919H
+01CD: 1D 23 07   pushs L0723   ; Fellowship
+01D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D4: 1D 2E 07   pushs L072E   ; philosophy
+01D7: 07 01 00 0A 00  cmps 0001H, 01E6
+01DC: 24 04 00   call [0004]   ; 091AH
+01DF: 1D 39 07   pushs L0739   ; philosophy
+01E2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E6: 1D 44 07   pushs L0744   ; Buccaneer's Den
+01E9: 07 01 00 18 00  cmps 0001H, 0206
+01EE: 1C 54 07   addsi L0754   ; "I wish to win so...
+01F1: 33   say
+01F2: 1D C8 07   pushs L07C8   ; House of Games
+01F5: 1D D7 07   pushs L07D7   ; pirate resort
+01F8: 1E 02 00   arrc 0002H   ; 2
+01FB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01FF: 1D E5 07   pushs L07E5   ; Buccaneer's Den
+0202: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0206: 1D F5 07   pushs L07F5   ; pirate resort
+0209: 07 01 00 0B 00  cmps 0001H, 0219
+020E: 1C 03 08   addsi L0803   ; "As I am certain ...
+0211: 33   say
+0212: 1D D2 09   pushs L09D2   ; pirate resort
+0215: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0219: 1D E0 09   pushs L09E0   ; House of Games
+021C: 07 01 00 0B 00  cmps 0001H, 022C
+0221: 1C EF 09   addsi L09EF   ; "It is said they ...
+0224: 33   say
+0225: 1D 6A 0A   pushs L0A6A   ; House of Games
+0228: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+022C: 1D 79 0A   pushs L0A79   ; Fellowship
+022F: 07 01 00 0B 00  cmps 0001H, 023F
+0234: 1C 84 0A   addsi L0A84   ; "I saw thee recei...
+0237: 33   say
+0238: 1D 37 0B   pushs L0B37   ; Fellowship
+023B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023F: 1D 42 0B   pushs L0B42   ; bye
+0242: 07 01 00 03 00  cmps 0001H, 024A
+0247: 06 03 00   jmp 024D
+024A: 06 4C FE   jmp 0099
+024D: 40   db 40 ???
+024E: 1C 46 0B   addsi L0B46   ; "Have a pleasant ...
+0251: 2F 00 00   addsv [0000]
+0254: 1C 5D 0B   addsi L0B5D   ; ." *
+0257: 33   say
+0258: 48   push eventid
+0259: 1F 00 00   pushi 0000H   ; 0
+025C: 22   cmpeq
+025D: 05 7F 00   jne 02DF
+0260: 38 3B 00 00  callis 003B, 0
+0264: 12 02 00   pop [0002]
+0267: 1F C6 FF   pushi FFC6H   ; -58
+026A: 38 1B 00 01  callis 001B, 1
+026E: 38 1C 00 01  callis 001C, 1
+0272: 12 03 00   pop [0003]
+0275: 1F 04 00   pushi 0004H   ; 4
+0278: 1F 01 00   pushi 0001H   ; 1
+027B: 38 10 00 02  callis _Random2@2  ; 0010
+027F: 12 09 00   pop [0009]
+0282: 21 03 00   push [0003]
+0285: 1F 07 00   pushi 0007H   ; 7
+0288: 22   cmpeq
+0289: 05 4D 00   jne 02D9
+028C: 21 09 00   push [0009]
+028F: 1F 01 00   pushi 0001H   ; 1
+0292: 22   cmpeq
+0293: 05 06 00   jne 029C
+0296: 1D 62 0B   pushs L0B62   ; @Fish 'n' chips!@
+0299: 12 0A 00   pop [000A]
+029C: 21 09 00   push [0009]
+029F: 1F 02 00   pushi 0002H   ; 2
+02A2: 22   cmpeq
+02A3: 05 06 00   jne 02AC
+02A6: 1D 74 0B   pushs L0B74   ; @Hot fish 'n' chi...
+02A9: 12 0A 00   pop [000A]
+02AC: 21 09 00   push [0009]
+02AF: 1F 03 00   pushi 0003H   ; 3
+02B2: 22   cmpeq
+02B3: 05 06 00   jne 02BC
+02B6: 1D 8A 0B   pushs L0B8A   ; @Fish 'n' chippies!@
+02B9: 12 0A 00   pop [000A]
+02BC: 21 09 00   push [0009]
+02BF: 1F 04 00   pushi 0004H   ; 4
+02C2: 22   cmpeq
+02C3: 05 06 00   jne 02CC
+02C6: 1D 9F 0B   pushs L0B9F   ; @Fish 'n' chips h...
+02C9: 12 0A 00   pop [000A]
+02CC: 21 0A 00   push [000A]
+02CF: 1F C6 FF   pushi FFC6H   ; -58
+02D2: 39 40 00 02  calli _ItemSay@2  ; 0040
+02D6: 06 06 00   jmp 02DF
+02D9: 1F C6 FF   pushi FFC6H   ; -58
+02DC: 24 05 00   call [0005]   ; 092EH
+02DF: 25   ret

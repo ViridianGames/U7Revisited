@@ -1,0 +1,643 @@
+  .funcnumber 0492H
+  .data
+L0000: db 'The pale ghost seems to see you but cannot speak to you for '
+ db 'some reason. In frustration the ghost turns away.*'
+L006E: db 00
+L006F: db 'Markham'
+L0076: db 00
+L0077: db 'The barkeep'
+L0082: db 00
+L0083: db 'sacrifice'
+L008C: db 00
+L008D: db 'As you start to speak to the pale ghost, you notice that he '
+ db 'seems to be looking through you, as if you don't exist at al'
+ db 'l. You wave your hand in front of his face, but there is no '
+ db 'response.*'
+L014B: db 00
+L014C: db '"Please, please. I... cannot speak with thee right now. I am'
+ db ' not sure what has come over me. Please forgive me, '
+L01BC: db 00
+L01BD: db '." The wan ghost looks more pale than usual.*'
+L01EA: db 00
+L01EB: db '"Hello, Quenton. I hope thou art doing well." Rowena gives t'
+ db 'he pale ghost a winning smile.*'
+L0246: db 00
+L0247: db '"Yes, milady. I am doing as well as can be expected. It glad'
+ db 'dens mine heart to see that thou art once again free. Hast t'
+ db 'hou been to see Trent yet?"*'
+L02DB: db 00
+L02DC: db '"Alas, no. This kind person is taking me to him." She indica'
+ db 'tes you.*'
+L0321: db 00
+L0322: db '"These are glad tidings, for he misses thee so."*'
+L0353: db 00
+L0354: db '"Well met, Quenton." The Mayor's mustache spreads as he smil'
+ db 'es.*'
+L0394: db 00
+L0395: db '"Hello, Mayor. How dost thou fare, milord?"*'
+L03C1: db 00
+L03C2: db 'Forsythe seems taken aback by Quenton's sincere sounding que'
+ db 'ry. "Why, I fare well, Quenton. I thank thee for thy concern'
+ db '."*'
+L043D: db 00
+L043E: db 'He smiles in acknowledgement of the Mayor's thanks.*'
+L0472: db 00
+L0473: db 'The pale-looking ghost turns in your direction and gives you'
+ db ' a wan smile. "Hello, could it be that we have met somewhere'
+ db ' before, '
+L04F4: db 00
+L04F5: db '?" You see recognition in his eyes, then it fades.~~"Forgive'
+ db ' me." He shakes his head, then smiles. "I am the shade of Qu'
+ db 'enton."'
+L0574: db 00
+L0575: db 'Quenton turns in your direction. "Greetings, '
+L05A2: db 00
+L05A3: db '. Come, take rest from thy travels and sit a while with me. '
+ db 'I am but a simple shade, but I may have information useful t'
+ db 'o thee."'
+L0623: db 00
+L0624: db 'information'
+L062F: db 00
+L0630: db 'bye'
+L0633: db 00
+L0634: db 'shade'
+L0639: db 00
+L063A: db 'job'
+L063D: db 00
+L063E: db 'name'
+L0642: db 00
+L0643: db 'Tortured One'
+L064F: db 00
+L0650: db 'name'
+L0654: db 00
+L0655: db '"I am called Quenton, '
+L066B: db 00
+L066C: db '."'
+L066E: db 00
+L066F: db 'name'
+L0673: db 00
+L0674: db 'job'
+L0677: db 00
+L0678: db 'He smiles at your question, "I once roamed the sea, for days'
+ db ' at a time, gathering mine harvest of fish."'
+L06E0: db 00
+L06E1: db 'information'
+L06EC: db 00
+L06ED: db '"I have been around for many, many years. And," he smiles, "'
+ db 'I have seen many, many things in that time."'
+L0755: db 00
+L0756: db 'information'
+L0761: db 00
+L0762: db 'Tortured One'
+L076E: db 00
+L076F: db '"Caine? He was an alchemist here on Skara Brae. Now he spend'
+ db 's his days in eternal pain caused by his guilt from causing '
+ db 'the fire that destroyed this town."'
+L080A: db 00
+L080B: db 'Tortured One'
+L0817: db 00
+L0818: db 'shade'
+L081D: db 00
+L081E: db '"My story is a long and a sad one. I hope thou hast some tim'
+ db 'e." He appears thoughtful for a moment, and then begins.~~ ['
+ db '"When I was a young man, I met a lovely woman by the name of'
+ db ' Gwen. I made her my wife, and we lived for a time, happy an'
+ db 'd carefree. She brought a light into the world and we called'
+ db ' her Marney, which means the cool breeze after a storm." He '
+ db 'smiles to himself at some memory, then continues with a furr'
+ db 'owed brow.'
+L09CC: db 00
+L09CD: db '"Then, one day, my wife was taken from me. I know not where,'
+ db ' or by whom, save that they were evil men. Soon after, my sw'
+ db 'eet Marney became sick at heart and I feared for her health.'
+ db ' I could not take time from my fishing to care for her, but '
+ db 'I needed gold. So I made a deal with a man who was not to be'
+ db ' trifled with. This was mine undoing, for when I failed to r'
+ db 'epay his loan, he came to me one night and slew me. I had no'
+ db 't a chance to fight back or call for help." He falls silent.'
+ db '~~"But that was long before the fire that turned this whole '
+ db 'island into the land of the dead."'
+L0C0B: db 00
+L0C0C: db 'shade'
+L0C11: db 00
+L0C12: db 'fire'
+L0C16: db 00
+L0C17: db 'Marney'
+L0C1D: db 00
+L0C1E: db 'Marney'
+L0C24: db 00
+L0C25: db '"After I was murdered, my good friend, Yorl, cared for her a'
+ db 's his own. He tried his best, but her sickness only worsened'
+ db '. After several months she weakened, and died." He stops her'
+ db 'e, tears filling his ghostly eyes, then, angrily, he says, "'
+ db 'And now her spirit is held by Horance the Liche. Thou must r'
+ db 'escue her from that foul beast!" He attempts to grab you, bu'
+ db 't his hands pass through without resistance.*'
+L0DBA: db 00
+L0DBB: db '"Now, now, Quen. Settle down." '
+L0DDA: db 00
+L0DDB: db ' moves closer to you and whispers, "Fergive him, '
+L0E0C: db 00
+L0E0D: db '.~~"He sometimes loses control like that when he talks about'
+ db ' his daughter. Sure'n ya can understand, tho'."*'
+L0E79: db 00
+L0E7A: db 'Quenton regains control of himself. "Forgive me, '
+L0EAB: db 00
+L0EAC: db '. I've no right to inflict my woes upon thee. It hurts to th'
+ db 'ink of my sweet Marney in the power of that... creature."'
+L0F21: db 00
+L0F22: db 'Marney'
+L0F28: db 00
+L0F29: db 'fire'
+L0F2D: db 00
+L0F2E: db '"It seems that Mistress Mordra, the town healer, thought she'
+ db ' had a plan to stop the Liche, Horance, which she told to th'
+ db 'e Mayor. I am not sure exactly what she planned, but it invo'
+ db 'lved Trent, the town smith, and Caine, the alchemist. Not lo'
+ db 'ng after Caine began his work, a maelstrom of fire tore over'
+ db ' the island, destroying everything. Skara Brae burned for da'
+ db 'ys."'
+L109A: db 00
+L109B: db 'fire'
+L109F: db 00
+L10A0: db 'Caine'
+L10A5: db 00
+L10A6: db 'Trent'
+L10AB: db 00
+L10AC: db 'Mayor'
+L10B1: db 00
+L10B2: db 'Liche'
+L10B7: db 00
+L10B8: db 'Mistress Mordra'
+L10C7: db 00
+L10C8: db 'Liche'
+L10CD: db 00
+L10CE: db '"Once, over two centuries ago, I knew a gifted mage named Ho'
+ db 'rance. His two loves in life were the study of magic, and wr'
+ db 'iting lovely poetry. The people of Skara Brae felt safe in t'
+ db 'he knowledge that this sort of mage protected the town. Then'
+ db ' he began to change.~~"First his beautiful sonnets became a '
+ db 'rhyming doggerel. It became the only way in which he would s'
+ db 'peak. His spells, which he displayed before the townsfolk, b'
+ db 'ecame destructive and violent. People began to fear him. My '
+ db 'death occurred at about this time. Not long after that, he b'
+ db 'ecame reclusive. He had a tower built on the northern point '
+ db 'and never removed himself from it.~~ "Then, one night, the g'
+ db 'raves in the graveyard opened and the dead began to walk."*'
+L139D: db 00
+L139E: db ' nods his head emphatically, "'At's right, I seen it, I did.'
+ db '"*'
+L13DC: db 00
+L13DD: db '"They marched to his tower, and now they roam all over the i'
+ db 'sland, performing his bidding."*'
+L1439: db 00
+L143A: db '"It be gettin' so's a ghost cannot make an honest livin' no '
+ db 'more. Hmph." '
+L1483: db 00
+L1484: db ' looks a bit disgruntled.*'
+L149E: db 00
+L149F: db 'Liche'
+L14A4: db 00
+L14A5: db 'Mistress Mordra'
+L14B4: db 00
+L14B5: db 'Quenton looks hopeful, "If thou wouldst like to assist us, s'
+ db 'he is the best one to speak to. She seems to know the way to'
+ db ' rid us of the Liche, at the least."'
+L1551: db 00
+L1552: db 'Mistress Mordra'
+L1561: db 00
+L1562: db 'Mayor'
+L1567: db 00
+L1568: db '"The mayor...," Quenton selects his words carefully. "...wel'
+ db 'l, he believes that discretion is the better part of Valor. '
+ db 'So, he may be able to offer thee some aid, but thou art like'
+ db 'ly first to need convince him that thou'rt not here to hurt '
+ db 'him."'
+L165D: db 00
+L165E: db 'Mayor'
+L1663: db 00
+L1664: db 'Trent'
+L1669: db 00
+L166A: db '"Ah, the poor man knows the spirit-wrenching feeling of loss'
+ db ' almost as well as I. His wife, Rowena, was killed by the wa'
+ db 'lking dead. And Mistress Mordra claims that she saw her sitt'
+ db 'ing on a throne next to the Liche's own. I believe this has '
+ db 'driven Trent somewhat mad. He works night and day upon some '
+ db 'oddly formed cage. Strange, though, he never seems to finish'
+ db ' it. He doth not seem to recall that he died in the fire, ei'
+ db 'ther, but a great hatred for Horance still burns in his hear'
+ db 't."'
+L184D: db 00
+L184E: db 'Trent'
+L1853: db 00
+L1854: db 'Caine'
+L1859: db 00
+L185A: db 'He looks as if he expected your question. "Alas, Caine, in h'
+ db 'is attempt to free us of the Liche, instead damned us to bec'
+ db 'ome slaves of the selfsame Liche."'
+L18F4: db 00
+L18F5: db 'Caine'
+L18FA: db 00
+L18FB: db 'slaves'
+L1901: db 00
+L1902: db 'slaves'
+L1908: db 00
+L1909: db '"Yes, we are his slaves. Every night at midnight, we must go'
+ db ' to the Dark Tower and become servants of his Black Mass. I '
+ db 'only know this because Mordra tells us it is so. I have no r'
+ db 'ecollection of ever having been to the Dark Tower at all." H'
+ db 'is expression betrays his fear.'
+L1A18: db 00
+L1A19: db 'slaves'
+L1A1F: db 00
+L1A20: db 'sacrifice'
+L1A29: db 00
+L1A2A: db 'You explain that you need a spirit to volunteer to freely en'
+ db 'ter the Well of Souls in order to bring about its destructio'
+ db 'n. Quenton considers for a while, and then responds, "Please'
+ db ' understand, '
+L1AEB: db 00
+L1AEC: db '. I truly wish that I had that kind of Courage. But I cannot'
+ db ' risk doing anything that might destroy Marney. Remember, he'
+ db 'r spirit is kept in that well, along with all of the dead of'
+ db ' the graveyard."'
+L1BB0: db 00
+L1BB1: db '"No, I am sorry. I cannot risk it." He looks very weary.'
+L1BE9: db 00
+L1BEA: db 'sacrifice'
+L1BF3: db 00
+L1BF4: db 'bye'
+L1BF7: db 00
+L1BF8: db '"Goodbye, '
+L1C02: db 00
+L1C03: db '."*'
+L1C06: db 00
+L1C07: db 'He turns back to his conversation with '
+L1C2E: db 00
+L1C2F: db '.*'
+L1C31: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 ED 03   jne 03F5
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 6E FF   pushi FF6EH   ; -146
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 42 BA 01   pushf flag:[01BA]
+0015: 10   not
+0016: 05 05 00   jne 001E
+0019: 1C 00 00   addsi L0000   ; The pale ghost se...
+001C: 33   say
+001D: 3F   abrt
+001E: 14   push false
+001F: 12 00 00   pop [0000]
+0022: 24 00 00   call [0000]   ; 0909H
+0025: 12 01 00   pop [0001]
+0028: 1F 74 FF   pushi FF74H   ; -140
+002B: 24 01 00   call [0001]   ; 08F7H
+002E: 12 02 00   pop [0002]
+0031: 42 C4 01   pushf flag:[01C4]
+0034: 05 09 00   jne 0040
+0037: 1D 6F 00   pushs L006F   ; Markham
+003A: 12 03 00   pop [0003]
+003D: 06 06 00   jmp 0046
+0040: 1D 77 00   pushs L0077   ; The barkeep
+0043: 12 03 00   pop [0003]
+0046: 42 98 01   pushf flag:[0198]
+0049: 05 07 00   jne 0053
+004C: 1D 83 00   pushs L0083   ; sacrifice
+004F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0053: 38 3B 00 00  callis 003B, 0
+0057: 12 04 00   pop [0004]
+005A: 1F 6E FF   pushi FF6EH   ; -146
+005D: 38 1C 00 01  callis 001C, 1
+0061: 12 05 00   pop [0005]
+0064: 42 AA 01   pushf flag:[01AA]
+0067: 10   not
+0068: 05 3A 00   jne 00A5
+006B: 21 04 00   push [0004]
+006E: 1F 00 00   pushi 0000H   ; 0
+0071: 22   cmpeq
+0072: 21 04 00   push [0004]
+0075: 1F 01 00   pushi 0001H   ; 1
+0078: 22   cmpeq
+0079: 0F   or
+007A: 05 28 00   jne 00A5
+007D: 21 05 00   push [0005]
+0080: 1F 0E 00   pushi 000EH   ; 14
+0083: 22   cmpeq
+0084: 05 08 00   jne 008F
+0087: 1C 8D 00   addsi L008D   ; As you start to s...
+008A: 33   say
+008B: 3F   abrt
+008C: 06 16 00   jmp 00A5
+008F: 21 05 00   push [0005]
+0092: 1F 10 00   pushi 0010H   ; 16
+0095: 22   cmpeq
+0096: 10   not
+0097: 05 0B 00   jne 00A5
+009A: 1C 4C 01   addsi L014C   ; "Please, please. ...
+009D: 2F 01 00   addsv [0001]
+00A0: 1C BD 01   addsi L01BD   ; ." The wan ghost ...
+00A3: 33   say
+00A4: 3F   abrt
+00A5: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+00A9: 12 06 00   pop [0006]
+00AC: 1F 70 FF   pushi FF70H   ; -144
+00AF: 38 1B 00 01  callis 001B, 1
+00B3: 12 07 00   pop [0007]
+00B6: 1F 6D FF   pushi FF6DH   ; -147
+00B9: 38 1B 00 01  callis 001B, 1
+00BD: 12 08 00   pop [0008]
+00C0: 21 07 00   push [0007]
+00C3: 21 06 00   push [0006]
+00C6: 30   in
+00C7: 21 08 00   push [0008]
+00CA: 21 06 00   push [0006]
+00CD: 30   in
+00CE: 0F   or
+00CF: 05 A4 00   jne 0176
+00D2: 21 07 00   push [0007]
+00D5: 21 06 00   push [0006]
+00D8: 30   in
+00D9: 05 46 00   jne 0122
+00DC: 1F 00 00   pushi 0000H   ; 0
+00DF: 1F 70 FF   pushi FF70H   ; -144
+00E2: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00E6: 1C EB 01   addsi L01EB   ; "Hello, Quenton. ...
+00E9: 33   say
+00EA: 1F 70 FF   pushi FF70H   ; -144
+00ED: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F1: 1F 00 00   pushi 0000H   ; 0
+00F4: 1F 6E FF   pushi FF6EH   ; -146
+00F7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00FB: 1C 47 02   addsi L0247   ; "Yes, milady. I a...
+00FE: 33   say
+00FF: 1F 00 00   pushi 0000H   ; 0
+0102: 1F 70 FF   pushi FF70H   ; -144
+0105: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0109: 1C DC 02   addsi L02DC   ; "Alas, no. This k...
+010C: 33   say
+010D: 1F 70 FF   pushi FF70H   ; -144
+0110: 39 04 00 01  calli _HideNPC@1  ; 0004
+0114: 1F 00 00   pushi 0000H   ; 0
+0117: 1F 6E FF   pushi FF6EH   ; -146
+011A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011E: 1C 22 03   addsi L0322   ; "These are glad t...
+0121: 33   say
+0122: 21 08 00   push [0008]
+0125: 21 06 00   push [0006]
+0128: 30   in
+0129: 05 46 00   jne 0172
+012C: 1F 00 00   pushi 0000H   ; 0
+012F: 1F 6D FF   pushi FF6DH   ; -147
+0132: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0136: 1C 54 03   addsi L0354   ; "Well met, Quento...
+0139: 33   say
+013A: 1F 6D FF   pushi FF6DH   ; -147
+013D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0141: 1F 00 00   pushi 0000H   ; 0
+0144: 1F 6E FF   pushi FF6EH   ; -146
+0147: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+014B: 1C 95 03   addsi L0395   ; "Hello, Mayor. Ho...
+014E: 33   say
+014F: 1F 00 00   pushi 0000H   ; 0
+0152: 1F 6D FF   pushi FF6DH   ; -147
+0155: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0159: 1C C2 03   addsi L03C2   ; Forsythe seems ta...
+015C: 33   say
+015D: 1F 6D FF   pushi FF6DH   ; -147
+0160: 39 04 00 01  calli _HideNPC@1  ; 0004
+0164: 1F 00 00   pushi 0000H   ; 0
+0167: 1F 6E FF   pushi FF6EH   ; -146
+016A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016E: 1C 3E 04   addsi L043E   ; He smiles in ackn...
+0171: 33   say
+0172: 13   push true
+0173: 12 09 00   pop [0009]
+0176: 21 09 00   push [0009]
+0179: 10   not
+017A: 05 0A 00   jne 0187
+017D: 1F 00 00   pushi 0000H   ; 0
+0180: 1F 6E FF   pushi FF6EH   ; -146
+0183: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0187: 42 CB 01   pushf flag:[01CB]
+018A: 10   not
+018B: 05 11 00   jne 019F
+018E: 1C 73 04   addsi L0473   ; The pale-looking ...
+0191: 2F 01 00   addsv [0001]
+0194: 1C F5 04   addsi L04F5   ; ?" You see recogn...
+0197: 33   say
+0198: 13   push true
+0199: 43 CB 01   popf flag:[01CB]
+019C: 06 11 00   jmp 01B0
+019F: 1C 75 05   addsi L0575   ; Quenton turns in ...
+01A2: 2F 01 00   addsv [0001]
+01A5: 1C A3 05   addsi L05A3   ; . Come, take rest...
+01A8: 33   say
+01A9: 1D 24 06   pushs L0624   ; information
+01AC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B0: 1D 30 06   pushs L0630   ; bye
+01B3: 1D 34 06   pushs L0634   ; shade
+01B6: 1D 3A 06   pushs L063A   ; job
+01B9: 1D 3E 06   pushs L063E   ; name
+01BC: 1E 04 00   arrc 0004H   ; 4
+01BF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C3: 42 7C 01   pushf flag:[017C]
+01C6: 05 07 00   jne 01D0
+01C9: 1D 43 06   pushs L0643   ; Tortured One
+01CC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D0: 04 04 02   je 03D7
+01D3: 1D 50 06   pushs L0650   ; name
+01D6: 07 01 00 11 00  cmps 0001H, 01EC
+01DB: 1C 55 06   addsi L0655   ; "I am called Quen...
+01DE: 2F 01 00   addsv [0001]
+01E1: 1C 6C 06   addsi L066C   ; ."
+01E4: 33   say
+01E5: 1D 6F 06   pushs L066F   ; name
+01E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EC: 1D 74 06   pushs L0674   ; job
+01EF: 07 01 00 04 00  cmps 0001H, 01F8
+01F4: 1C 78 06   addsi L0678   ; He smiles at your...
+01F7: 33   say
+01F8: 1D E1 06   pushs L06E1   ; information
+01FB: 07 01 00 0B 00  cmps 0001H, 020B
+0200: 1C ED 06   addsi L06ED   ; "I have been arou...
+0203: 33   say
+0204: 1D 56 07   pushs L0756   ; information
+0207: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020B: 1D 62 07   pushs L0762   ; Tortured One
+020E: 07 01 00 0B 00  cmps 0001H, 021E
+0213: 1C 6F 07   addsi L076F   ; "Caine? He was an...
+0216: 33   say
+0217: 1D 0B 08   pushs L080B   ; Tortured One
+021A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021E: 1D 18 08   pushs L0818   ; shade
+0221: 07 01 00 1C 00  cmps 0001H, 0242
+0226: 1C 1E 08   addsi L081E   ; "My story is a lo...
+0229: 33   say
+022A: 1C CD 09   addsi L09CD   ; "Then, one day, m...
+022D: 33   say
+022E: 1D 0C 0C   pushs L0C0C   ; shade
+0231: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0235: 1D 12 0C   pushs L0C12   ; fire
+0238: 1D 17 0C   pushs L0C17   ; Marney
+023B: 1E 02 00   arrc 0002H   ; 2
+023E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0242: 1D 1E 0C   pushs L0C1E   ; Marney
+0245: 07 01 00 4F 00  cmps 0001H, 0299
+024A: 1C 25 0C   addsi L0C25   ; "After I was murd...
+024D: 33   say
+024E: 21 02 00   push [0002]
+0251: 05 34 00   jne 0288
+0254: 42 B4 01   pushf flag:[01B4]
+0257: 05 2B 00   jne 0285
+025A: 1F 00 00   pushi 0000H   ; 0
+025D: 1F 74 FF   pushi FF74H   ; -140
+0260: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0264: 1C BB 0D   addsi L0DBB   ; "Now, now, Quen. ...
+0267: 2F 03 00   addsv [0003]
+026A: 1C DB 0D   addsi L0DDB   ;  moves closer to ...
+026D: 2F 01 00   addsv [0001]
+0270: 1C 0D 0E   addsi L0E0D   ; .~~"He sometimes ...
+0273: 33   say
+0274: 1F 74 FF   pushi FF74H   ; -140
+0277: 39 04 00 01  calli _HideNPC@1  ; 0004
+027B: 1F 00 00   pushi 0000H   ; 0
+027E: 1F 6E FF   pushi FF6EH   ; -146
+0281: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0285: 06 0A 00   jmp 0292
+0288: 1C 7A 0E   addsi L0E7A   ; Quenton regains c...
+028B: 2F 01 00   addsv [0001]
+028E: 1C AC 0E   addsi L0EAC   ; . I've no right t...
+0291: 33   say
+0292: 1D 22 0F   pushs L0F22   ; Marney
+0295: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0299: 1D 29 0F   pushs L0F29   ; fire
+029C: 07 01 00 21 00  cmps 0001H, 02C2
+02A1: 1C 2E 0F   addsi L0F2E   ; "It seems that Mi...
+02A4: 33   say
+02A5: 1D 9B 10   pushs L109B   ; fire
+02A8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02AC: 1D A0 10   pushs L10A0   ; Caine
+02AF: 1D A6 10   pushs L10A6   ; Trent
+02B2: 1D AC 10   pushs L10AC   ; Mayor
+02B5: 1D B2 10   pushs L10B2   ; Liche
+02B8: 1D B8 10   pushs L10B8   ; Mistress Mordra
+02BB: 1E 05 00   arrc 0005H   ; 5
+02BE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02C2: 1D C8 10   pushs L10C8   ; Liche
+02C5: 07 01 00 6E 00  cmps 0001H, 0338
+02CA: 1C CE 10   addsi L10CE   ; "Once, over two c...
+02CD: 33   say
+02CE: 21 02 00   push [0002]
+02D1: 05 28 00   jne 02FC
+02D4: 42 B4 01   pushf flag:[01B4]
+02D7: 05 22 00   jne 02FC
+02DA: 1F 00 00   pushi 0000H   ; 0
+02DD: 1F 74 FF   pushi FF74H   ; -140
+02E0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02E4: 2F 03 00   addsv [0003]
+02E7: 1C 9E 13   addsi L139E   ;  nods his head em...
+02EA: 33   say
+02EB: 1F 74 FF   pushi FF74H   ; -140
+02EE: 39 04 00 01  calli _HideNPC@1  ; 0004
+02F2: 1F 00 00   pushi 0000H   ; 0
+02F5: 1F 6E FF   pushi FF6EH   ; -146
+02F8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02FC: 1C DD 13   addsi L13DD   ; "They marched to ...
+02FF: 33   say
+0300: 21 02 00   push [0002]
+0303: 05 2B 00   jne 0331
+0306: 42 B4 01   pushf flag:[01B4]
+0309: 05 25 00   jne 0331
+030C: 1F 00 00   pushi 0000H   ; 0
+030F: 1F 74 FF   pushi FF74H   ; -140
+0312: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0316: 1C 3A 14   addsi L143A   ; "It be gettin' so...
+0319: 2F 03 00   addsv [0003]
+031C: 1C 84 14   addsi L1484   ;  looks a bit disg...
+031F: 33   say
+0320: 1F 74 FF   pushi FF74H   ; -140
+0323: 39 04 00 01  calli _HideNPC@1  ; 0004
+0327: 1F 00 00   pushi 0000H   ; 0
+032A: 1F 6E FF   pushi FF6EH   ; -146
+032D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0331: 1D 9F 14   pushs L149F   ; Liche
+0334: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0338: 1D A5 14   pushs L14A5   ; Mistress Mordra
+033B: 07 01 00 0B 00  cmps 0001H, 034B
+0340: 1C B5 14   addsi L14B5   ; Quenton looks hop...
+0343: 33   say
+0344: 1D 52 15   pushs L1552   ; Mistress Mordra
+0347: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+034B: 1D 62 15   pushs L1562   ; Mayor
+034E: 07 01 00 0B 00  cmps 0001H, 035E
+0353: 1C 68 15   addsi L1568   ; "The mayor...," Q...
+0356: 33   say
+0357: 1D 5E 16   pushs L165E   ; Mayor
+035A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+035E: 1D 64 16   pushs L1664   ; Trent
+0361: 07 01 00 0B 00  cmps 0001H, 0371
+0366: 1C 6A 16   addsi L166A   ; "Ah, the poor man...
+0369: 33   say
+036A: 1D 4E 18   pushs L184E   ; Trent
+036D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0371: 1D 54 18   pushs L1854   ; Caine
+0374: 07 01 00 12 00  cmps 0001H, 038B
+0379: 1C 5A 18   addsi L185A   ; He looks as if he...
+037C: 33   say
+037D: 1D F5 18   pushs L18F5   ; Caine
+0380: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0384: 1D FB 18   pushs L18FB   ; slaves
+0387: 39 05 00 01  calli _AddAnswer@1  ; 0005
+038B: 1D 02 19   pushs L1902   ; slaves
+038E: 07 01 00 0B 00  cmps 0001H, 039E
+0393: 1C 09 19   addsi L1909   ; "Yes, we are his ...
+0396: 33   say
+0397: 1D 19 1A   pushs L1A19   ; slaves
+039A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+039E: 1D 20 1A   pushs L1A20   ; sacrifice
+03A1: 07 01 00 23 00  cmps 0001H, 03C9
+03A6: 42 9C 01   pushf flag:[019C]
+03A9: 10   not
+03AA: 05 11 00   jne 03BE
+03AD: 1C 2A 1A   addsi L1A2A   ; You explain that ...
+03B0: 2F 01 00   addsv [0001]
+03B3: 1C EC 1A   addsi L1AEC   ; . I truly wish th...
+03B6: 33   say
+03B7: 13   push true
+03B8: 43 9C 01   popf flag:[019C]
+03BB: 06 04 00   jmp 03C2
+03BE: 1C B1 1B   addsi L1BB1   ; "No, I am sorry. ...
+03C1: 33   say
+03C2: 1D EA 1B   pushs L1BEA   ; sacrifice
+03C5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03C9: 1D F4 1B   pushs L1BF4   ; bye
+03CC: 07 01 00 03 00  cmps 0001H, 03D4
+03D1: 06 03 00   jmp 03D7
+03D4: 06 F9 FD   jmp 01D0
+03D7: 40   db 40 ???
+03D8: 1C F8 1B   addsi L1BF8   ; "Goodbye, 
+03DB: 2F 01 00   addsv [0001]
+03DE: 1C 03 1C   addsi L1C03   ; ."*
+03E1: 33   say
+03E2: 1F 74 FF   pushi FF74H   ; -140
+03E5: 24 01 00   call [0001]   ; 08F7H
+03E8: 05 0A 00   jne 03F5
+03EB: 1C 07 1C   addsi L1C07   ; He turns back to ...
+03EE: 2F 03 00   addsv [0003]
+03F1: 1C 2F 1C   addsi L1C2F   ; .*
+03F4: 33   say
+03F5: 48   push eventid
+03F6: 1F 00 00   pushi 0000H   ; 0
+03F9: 22   cmpeq
+03FA: 05 01 00   jne 03FE
+03FD: 3F   abrt
+03FE: 25   ret

@@ -1,0 +1,248 @@
+  .funcnumber 0875H
+  .data
+L0000: db 'you'
+L0003: db 00
+L0004: db '"I am sorry, but thou dost not have enough practical experie'
+ db 'nce to train at this time. If thou couldst return at a later'
+ db ' date, I would be most happy to train thee."'
+L00A8: db 00
+L00A9: db 'You gather your gold and count it, finding that you have '
+L00E2: db 00
+L00E3: db ' gold altogether.'
+L00F4: db 00
+L00F5: db '"I regret that thou dost not seem to have enough gold to tra'
+ db 'in here. Mayhaps at another time, when thy fortunes are more'
+ db ' prosperous..."'
+L017C: db 00
+L017D: db '"Thou art already as proficient as I! I am afraid that thou '
+ db 'cannot be trained further in this."'
+L01DC: db 00
+L01DD: db 'You pay '
+L01E5: db 00
+L01E6: db ' gold, and the training session begins.'
+L020D: db 00
+L020E: db 'you'
+L0211: db 00
+L0212: db 'complete'
+L021A: db 00
+L021B: db 'feel'
+L021F: db 00
+L0220: db 'your'
+L0224: db 00
+L0225: db 'spend'
+L022A: db 00
+L022B: db 'you'
+L022E: db 00
+L022F: db 'completes'
+L0238: db 00
+L0239: db 'feels'
+L023E: db 00
+L023F: db 'their'
+L0244: db 00
+L0245: db 'spends'
+L024B: db 00
+L024C: db 'them'
+L0250: db 00
+L0251: db 'Denby hands '
+L025D: db 00
+L025E: db ' a chart with runes printed on it. "Study these runes and me'
+ db 'morize them," he says. After '
+L02B7: db 00
+L02B8: db ' '
+L02B9: db 00
+L02BA: db ' this task, '
+L02C6: db 00
+L02C7: db ' '
+L02C8: db 00
+L02C9: db ' that there is a bit of knowledge in '
+L02EE: db 00
+L02EF: db ' mind that was not there earlier.~~"Now we shall exercise. P'
+ db 'ractice what I teach thee at least twice a day. Then thou sh'
+ db 'alt become more agile and limber." ^'
+L038B: db 00
+L038C: db ' '
+L038D: db 00
+L038E: db ' a while mimicking the movements which Denby shows '
+L03C1: db 00
+L03C2: db '. Finally, Denby teaches '
+L03DB: db 00
+L03DC: db ' a few magic words to intone for meditational purposes. When'
+ db ' the training session is complete, '
+L043B: db 00
+L043C: db ' '
+L043D: db 00
+L043E: db ' much more energized and ready for anything that might come '
+L047A: db 00
+L047B: db ' way...*'
+L0483: db 00
+  .code
+  .argc 0002H
+  .localc 000FH
+  .externsize 0008H
+  .extern 0920H
+  .extern 090FH
+  .extern 0908H
+  .extern 0922H
+  .extern 0910H
+  .extern 0915H
+  .extern 0916H
+  .extern 0918H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 24 01 00   call [0001]   ; 090FH
+000C: 12 03 00   pop [0003]
+000F: 24 02 00   call [0002]   ; 0908H
+0012: 12 04 00   pop [0004]
+0015: 21 03 00   push [0003]
+0018: 21 04 00   push [0004]
+001B: 22   cmpeq
+001C: 05 06 00   jne 0025
+001F: 1D 00 00   pushs L0000   ; you
+0022: 12 03 00   pop [0003]
+0025: 21 02 00   push [0002]
+0028: 1F 00 00   pushi 0000H   ; 0
+002B: 22   cmpeq
+002C: 05 03 00   jne 0032
+002F: 06 88 01   jmp 01BA
+0032: 1F 03 00   pushi 0003H   ; 3
+0035: 12 05 00   pop [0005]
+0038: 21 05 00   push [0005]
+003B: 21 02 00   push [0002]
+003E: 21 00 00   push [0000]
+0041: 21 01 00   push [0001]
+0044: 24 03 00   call [0003]   ; 0922H
+0047: 12 06 00   pop [0006]
+004A: 21 06 00   push [0006]
+004D: 1F 00 00   pushi 0000H   ; 0
+0050: 22   cmpeq
+0051: 05 07 00   jne 005B
+0054: 1C 04 00   addsi L0004   ; "I am sorry, but ...
+0057: 33   say
+0058: 06 5F 01   jmp 01BA
+005B: 21 06 00   push [0006]
+005E: 1F 01 00   pushi 0001H   ; 1
+0061: 22   cmpeq
+0062: 05 2E 00   jne 0093
+0065: 1F 99 FE   pushi FE99H   ; -359
+0068: 1F 99 FE   pushi FE99H   ; -359
+006B: 1F 84 02   pushi 0284H   ; 644
+006E: 1F 9B FE   pushi FE9BH   ; -357
+0071: 38 28 00 04  callis 0028, 4
+0075: 12 07 00   pop [0007]
+0078: 1C A9 00   addsi L00A9   ; You gather your g...
+007B: 2F 07 00   addsv [0007]
+007E: 1C E3 00   addsi L00E3   ;  gold altogether.
+0081: 33   say
+0082: 21 07 00   push [0007]
+0085: 21 00 00   push [0000]
+0088: 17   cmpl
+0089: 05 07 00   jne 0093
+008C: 1C F5 00   addsi L00F5   ; "I regret that th...
+008F: 33   say
+0090: 06 27 01   jmp 01BA
+0093: 21 06 00   push [0006]
+0096: 1F 02 00   pushi 0002H   ; 2
+0099: 22   cmpeq
+009A: 05 07 00   jne 00A4
+009D: 1C 7D 01   addsi L017D   ; "Thou art already...
+00A0: 33   say
+00A1: 06 16 01   jmp 01BA
+00A4: 13   push true
+00A5: 1F 99 FE   pushi FE99H   ; -359
+00A8: 1F 99 FE   pushi FE99H   ; -359
+00AB: 1F 84 02   pushi 0284H   ; 644
+00AE: 21 00 00   push [0000]
+00B1: 38 2B 00 05  callis 002B, 5
+00B5: 12 08 00   pop [0008]
+00B8: 1C DD 01   addsi L01DD   ; You pay 
+00BB: 2F 00 00   addsv [0000]
+00BE: 1C E6 01   addsi L01E6   ;  gold, and the tr...
+00C1: 33   say
+00C2: 21 03 00   push [0003]
+00C5: 1D 0E 02   pushs L020E   ; you
+00C8: 22   cmpeq
+00C9: 05 21 00   jne 00ED
+00CC: 1D 12 02   pushs L0212   ; complete
+00CF: 12 09 00   pop [0009]
+00D2: 1D 1B 02   pushs L021B   ; feel
+00D5: 12 0A 00   pop [000A]
+00D8: 1D 20 02   pushs L0220   ; your
+00DB: 12 0B 00   pop [000B]
+00DE: 1D 25 02   pushs L0225   ; spend
+00E1: 12 0C 00   pop [000C]
+00E4: 1D 2B 02   pushs L022B   ; you
+00E7: 12 0D 00   pop [000D]
+00EA: 06 1E 00   jmp 010B
+00ED: 1D 2F 02   pushs L022F   ; completes
+00F0: 12 09 00   pop [0009]
+00F3: 1D 39 02   pushs L0239   ; feels
+00F6: 12 0A 00   pop [000A]
+00F9: 1D 3F 02   pushs L023F   ; their
+00FC: 12 0B 00   pop [000B]
+00FF: 1D 45 02   pushs L0245   ; spends
+0102: 12 0C 00   pop [000C]
+0105: 1D 4C 02   pushs L024C   ; them
+0108: 12 0D 00   pop [000D]
+010B: 1C 51 02   addsi L0251   ; Denby hands 
+010E: 2F 03 00   addsv [0003]
+0111: 1C 5E 02   addsi L025E   ;  a chart with run...
+0114: 2F 03 00   addsv [0003]
+0117: 1C B8 02   addsi L02B8   ;  
+011A: 2F 09 00   addsv [0009]
+011D: 1C BA 02   addsi L02BA   ;  this task, 
+0120: 2F 03 00   addsv [0003]
+0123: 1C C7 02   addsi L02C7   ;  
+0126: 2F 0A 00   addsv [000A]
+0129: 1C C9 02   addsi L02C9   ;  that there is a ...
+012C: 2F 0B 00   addsv [000B]
+012F: 1C EF 02   addsi L02EF   ;  mind that was no...
+0132: 2F 03 00   addsv [0003]
+0135: 1C 8C 03   addsi L038C   ;  
+0138: 2F 0C 00   addsv [000C]
+013B: 1C 8E 03   addsi L038E   ;  a while mimickin...
+013E: 2F 0D 00   addsv [000D]
+0141: 1C C2 03   addsi L03C2   ; . Finally, Denby ...
+0144: 2F 0D 00   addsv [000D]
+0147: 1C DC 03   addsi L03DC   ;  a few magic word...
+014A: 2F 03 00   addsv [0003]
+014D: 1C 3C 04   addsi L043C   ;  
+0150: 2F 0A 00   addsv [000A]
+0153: 1C 3E 04   addsi L043E   ;  much more energi...
+0156: 2F 0B 00   addsv [000B]
+0159: 1C 7B 04   addsi L047B   ;  way...*
+015C: 33   say
+015D: 1F 01 00   pushi 0001H   ; 1
+0160: 21 02 00   push [0002]
+0163: 24 04 00   call [0004]   ; 0910H
+0166: 12 0E 00   pop [000E]
+0169: 1F 02 00   pushi 0002H   ; 2
+016C: 21 02 00   push [0002]
+016F: 24 04 00   call [0004]   ; 0910H
+0172: 12 0F 00   pop [000F]
+0175: 1F 06 00   pushi 0006H   ; 6
+0178: 21 02 00   push [0002]
+017B: 24 04 00   call [0004]   ; 0910H
+017E: 12 10 00   pop [0010]
+0181: 21 0E 00   push [000E]
+0184: 1F 1E 00   pushi 001EH   ; 30
+0187: 17   cmpl
+0188: 05 09 00   jne 0194
+018B: 1F 01 00   pushi 0001H   ; 1
+018E: 21 02 00   push [0002]
+0191: 24 05 00   call [0005]   ; 0915H
+0194: 21 0F 00   push [000F]
+0197: 1F 1E 00   pushi 001EH   ; 30
+019A: 17   cmpl
+019B: 05 09 00   jne 01A7
+019E: 1F 01 00   pushi 0001H   ; 1
+01A1: 21 02 00   push [0002]
+01A4: 24 06 00   call [0006]   ; 0916H
+01A7: 21 10 00   push [0010]
+01AA: 1F 1E 00   pushi 001EH   ; 30
+01AD: 17   cmpl
+01AE: 05 09 00   jne 01BA
+01B1: 1F 01 00   pushi 0001H   ; 1
+01B4: 21 02 00   push [0002]
+01B7: 24 07 00   call [0007]   ; 0918H
+01BA: 25   ret

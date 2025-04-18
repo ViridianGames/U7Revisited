@@ -1,0 +1,357 @@
+  .funcnumber 04D2H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a short woman with a distracted look on her face.'
+L0046: db 00
+L0047: db '"What is thy concern?"'
+L005D: db 00
+L005E: db 'name'
+L0062: db 00
+L0063: db 'Breaking from her work, the woman turns to look at you long '
+ db 'enough to respond, "My name is Liana."'
+L00C5: db 00
+L00C6: db 'name'
+L00CA: db 00
+L00CB: db 'job'
+L00CE: db 00
+L00CF: db '"I am the Mayor's clerk. I am responsible for keeping track '
+ db 'of official records and documents in Vesper."'
+L0138: db 00
+L0139: db 'mayor'
+L013E: db 00
+L013F: db 'Vesper'
+L0145: db 00
+L0146: db 'Vesper'
+L014C: db 00
+L014D: db '"I like the town, but 'tis so far from Britain that it attra'
+ db 'cts some truly... unusual people."'
+L01AB: db 00
+L01AC: db 'unusual'
+L01B3: db 00
+L01B4: db 'people'
+L01BA: db 00
+L01BB: db 'Vesper'
+L01C1: db 00
+L01C2: db 'mayor'
+L01C7: db 00
+L01C8: db '"I respect Auston in an unofficial capacity. But," she adds,'
+ db ' raising her eyebrows, "as a mayor, he is far too spineless.'
+ db ' He is afraid of taking sides on any issue. I do not think h'
+ db 'e should have volunteered for the election."'
+L02A8: db 00
+L02A9: db 'mayor'
+L02AE: db 00
+L02AF: db 'unusual'
+L02B6: db 00
+L02B7: db '"Well, there are a couple of strange ones: Mara and Yongi. A'
+ db 'nd there is Blorn -- he is a mean one, and... well... of cou'
+ db 'rse, there is Eldroth. And," she says with a shudder, "the g'
+ db 'argoyles."'
+L0375: db 00
+L0376: db 'gargoyles'
+L037F: db 00
+L0380: db 'Eldroth'
+L0387: db 00
+L0388: db 'Blorn'
+L038D: db 00
+L038E: db 'Yongi'
+L0393: db 00
+L0394: db 'Mara'
+L0398: db 00
+L0399: db 'unusual'
+L03A0: db 00
+L03A1: db 'Mara'
+L03A5: db 00
+L03A6: db '"I feel bad about the things I said now that she is gone. To'
+ db 'o bad she was killed in that bar fight."'
+L040A: db 00
+L040B: db '"Mara? She needs to learn how to act like a woman. Her manly'
+ db ' attitude doth not fool anyone."'
+L0467: db 00
+L0468: db 'Mara'
+L046C: db 00
+L046D: db 'Yongi'
+L0472: db 00
+L0473: db '"Yongi is nothing more than a drunk. The only reason he open'
+ db 'ed a tavern was to have an excuse to purchase large amounts '
+ db 'of alcohol at wholesale prices. And do not ask him about the'
+ db ' gargoyles unless thou dost want him to talk thine ear off. '
+ db 'He hates them almost as much as Blorn does!"'
+L058F: db 00
+L0590: db 'Yongi'
+L0595: db 00
+L0596: db 'Eldroth'
+L059D: db 00
+L059E: db '"He is nice, I suppose, but he is also a doddering old fool.'
+ db ' I do not think he hath had a brain for more than a decade."'
+L0616: db 00
+L0617: db 'Eldroth'
+L061E: db 00
+L061F: db 'Blorn'
+L0624: db 00
+L0625: db '"There is a troublemaker and thief if I have ever seen one. '
+ db 'He needs to think about leaving town -- quickly, if he knows'
+ db ' what is best for him. There is one thing I like about him, '
+ db 'though -- he hates the gargoyles more than anyone!"'
+L070C: db 00
+L070D: db 'gargoyles'
+L0716: db 00
+L0717: db 'Blorn'
+L071C: db 00
+L071D: db 'gargoyles'
+L0726: db 00
+L0727: db '"Now there is a disgusting creature for thee. I think they w'
+ db 'ere better named back when we called them daemons!"'
+L0796: db 00
+L0797: db '"In fact..." She hands you a piece of paper.'
+L07C3: db 00
+L07C4: db 'gargoyles'
+L07CD: db 00
+L07CE: db 'people'
+L07D4: db 00
+L07D5: db '"Well, there are Cador, Yvella, and Zaksam -- those are the '
+ db 'normal ones."'
+L081E: db 00
+L081F: db 'Zaksam'
+L0825: db 00
+L0826: db 'Yvella'
+L082C: db 00
+L082D: db 'Cador'
+L0832: db 00
+L0833: db 'people'
+L0839: db 00
+L083A: db 'Zaksam'
+L0840: db 00
+L0841: db '"He is the trainer. Quite a good fighter from what I hear."'
+L087C: db 00
+L087D: db 'Zaksam'
+L0883: db 00
+L0884: db 'Cador'
+L0889: db 00
+L088A: db '"'Tis too bad he is dead. I have heard many compliment his a'
+ db 'bilities as a leader at the mines."'
+L08E9: db 00
+L08EA: db 'dead'
+L08EE: db 00
+L08EF: db '"Cador is the head of the Britannian Mining Company branch h'
+ db 'ere in Vesper."'
+L093A: db 00
+L093B: db 'Cador'
+L0940: db 00
+L0941: db 'dead'
+L0945: db 00
+L0946: db '"He was killed in a brutal slaughter in Yongi's tavern. No o'
+ db 'ne really knows what happened, but I suppose that is how man'
+ db 'y people meet their death when drinking." She shrugs.'
+L09F3: db 00
+L09F4: db 'dead'
+L09F8: db 00
+L09F9: db 'Yvella'
+L09FF: db 00
+L0A00: db '"She is Cador's wife."'
+L0A16: db 00
+L0A17: db 'Yvella'
+L0A1D: db 00
+L0A1E: db 'bye'
+L0A21: db 00
+L0A22: db 'She nods at you as she returns to her business.*'
+L0A52: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0002H
+  .extern 0908H
+  .extern 0909H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 19 02   jne 0221
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 2E FF   pushi FF2EH   ; -210
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0908H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0909H
+001B: 12 01 00   pop [0001]
+001E: 14   push false
+001F: 12 02 00   pop [0002]
+0022: 1D 00 00   pushs L0000   ; bye
+0025: 1D 04 00   pushs L0004   ; job
+0028: 1D 08 00   pushs L0008   ; name
+002B: 1E 03 00   arrc 0003H   ; 3
+002E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0032: 42 8F 02   pushf flag:[028F]
+0035: 10   not
+0036: 05 0B 00   jne 0044
+0039: 1C 0D 00   addsi L000D   ; You see a short w...
+003C: 33   say
+003D: 13   push true
+003E: 43 8F 02   popf flag:[028F]
+0041: 06 04 00   jmp 0048
+0044: 1C 47 00   addsi L0047   ; "What is thy conc...
+0047: 33   say
+0048: 04 D1 01   je 021C
+004B: 1D 5E 00   pushs L005E   ; name
+004E: 07 01 00 0B 00  cmps 0001H, 005E
+0053: 1C 63 00   addsi L0063   ; Breaking from her...
+0056: 33   say
+0057: 1D C6 00   pushs L00C6   ; name
+005A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005E: 1D CB 00   pushs L00CB   ; job
+0061: 07 01 00 11 00  cmps 0001H, 0077
+0066: 1C CF 00   addsi L00CF   ; "I am the Mayor's...
+0069: 33   say
+006A: 1D 39 01   pushs L0139   ; mayor
+006D: 1D 3F 01   pushs L013F   ; Vesper
+0070: 1E 02 00   arrc 0002H   ; 2
+0073: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0077: 1D 46 01   pushs L0146   ; Vesper
+007A: 07 01 00 18 00  cmps 0001H, 0097
+007F: 1C 4D 01   addsi L014D   ; "I like the town,...
+0082: 33   say
+0083: 1D AC 01   pushs L01AC   ; unusual
+0086: 1D B4 01   pushs L01B4   ; people
+0089: 1E 02 00   arrc 0002H   ; 2
+008C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0090: 1D BB 01   pushs L01BB   ; Vesper
+0093: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0097: 1D C2 01   pushs L01C2   ; mayor
+009A: 07 01 00 0B 00  cmps 0001H, 00AA
+009F: 1C C8 01   addsi L01C8   ; "I respect Auston...
+00A2: 33   say
+00A3: 1D A9 02   pushs L02A9   ; mayor
+00A6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AA: 1D AF 02   pushs L02AF   ; unusual
+00AD: 07 01 00 21 00  cmps 0001H, 00D3
+00B2: 1C B7 02   addsi L02B7   ; "Well, there are ...
+00B5: 33   say
+00B6: 1D 76 03   pushs L0376   ; gargoyles
+00B9: 1D 80 03   pushs L0380   ; Eldroth
+00BC: 1D 88 03   pushs L0388   ; Blorn
+00BF: 1D 8E 03   pushs L038E   ; Yongi
+00C2: 1D 94 03   pushs L0394   ; Mara
+00C5: 1E 05 00   arrc 0005H   ; 5
+00C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CC: 1D 99 03   pushs L0399   ; unusual
+00CF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D3: 1D A1 03   pushs L03A1   ; Mara
+00D6: 07 01 00 26 00  cmps 0001H, 0101
+00DB: 1F 34 FF   pushi FF34H   ; -204
+00DE: 38 1B 00 01  callis 001B, 1
+00E2: 38 37 00 01  callis 0037, 1
+00E6: 12 03 00   pop [0003]
+00E9: 21 03 00   push [0003]
+00EC: 05 07 00   jne 00F6
+00EF: 1C A6 03   addsi L03A6   ; "I feel bad about...
+00F2: 33   say
+00F3: 06 04 00   jmp 00FA
+00F6: 1C 0B 04   addsi L040B   ; "Mara? She needs ...
+00F9: 33   say
+00FA: 1D 68 04   pushs L0468   ; Mara
+00FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0101: 1D 6D 04   pushs L046D   ; Yongi
+0104: 07 01 00 0B 00  cmps 0001H, 0114
+0109: 1C 73 04   addsi L0473   ; "Yongi is nothing...
+010C: 33   say
+010D: 1D 90 05   pushs L0590   ; Yongi
+0110: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0114: 1D 96 05   pushs L0596   ; Eldroth
+0117: 07 01 00 0B 00  cmps 0001H, 0127
+011C: 1C 9E 05   addsi L059E   ; "He is nice, I su...
+011F: 33   say
+0120: 1D 17 06   pushs L0617   ; Eldroth
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 1D 1F 06   pushs L061F   ; Blorn
+012A: 07 01 00 12 00  cmps 0001H, 0141
+012F: 1C 25 06   addsi L0625   ; "There is a troub...
+0132: 33   say
+0133: 1D 0D 07   pushs L070D   ; gargoyles
+0136: 39 05 00 01  calli _AddAnswer@1  ; 0005
+013A: 1D 17 07   pushs L0717   ; Blorn
+013D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0141: 1D 1D 07   pushs L071D   ; gargoyles
+0144: 07 01 00 34 00  cmps 0001H, 017D
+0149: 1C 27 07   addsi L0727   ; "Now there is a d...
+014C: 33   say
+014D: 21 02 00   push [0002]
+0150: 10   not
+0151: 05 22 00   jne 0176
+0154: 13   push true
+0155: 1F 99 FE   pushi FE99H   ; -359
+0158: 1F 02 00   pushi 0002H   ; 2
+015B: 1F 1D 03   pushi 031DH   ; 797
+015E: 1F 01 00   pushi 0001H   ; 1
+0161: 38 2C 00 05  callis 002C, 5
+0165: 12 04 00   pop [0004]
+0168: 21 04 00   push [0004]
+016B: 05 08 00   jne 0176
+016E: 1C 97 07   addsi L0797   ; "In fact..." She ...
+0171: 33   say
+0172: 13   push true
+0173: 12 02 00   pop [0002]
+0176: 1D C4 07   pushs L07C4   ; gargoyles
+0179: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017D: 1D CE 07   pushs L07CE   ; people
+0180: 07 01 00 1B 00  cmps 0001H, 01A0
+0185: 1C D5 07   addsi L07D5   ; "Well, there are ...
+0188: 33   say
+0189: 1D 1F 08   pushs L081F   ; Zaksam
+018C: 1D 26 08   pushs L0826   ; Yvella
+018F: 1D 2D 08   pushs L082D   ; Cador
+0192: 1E 03 00   arrc 0003H   ; 3
+0195: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0199: 1D 33 08   pushs L0833   ; people
+019C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A0: 1D 3A 08   pushs L083A   ; Zaksam
+01A3: 07 01 00 0B 00  cmps 0001H, 01B3
+01A8: 1C 41 08   addsi L0841   ; "He is the traine...
+01AB: 33   say
+01AC: 1D 7D 08   pushs L087D   ; Zaksam
+01AF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B3: 1D 84 08   pushs L0884   ; Cador
+01B6: 07 01 00 2D 00  cmps 0001H, 01E8
+01BB: 1F 35 FF   pushi FF35H   ; -203
+01BE: 38 1B 00 01  callis 001B, 1
+01C2: 38 37 00 01  callis 0037, 1
+01C6: 12 05 00   pop [0005]
+01C9: 21 05 00   push [0005]
+01CC: 05 0E 00   jne 01DD
+01CF: 1C 8A 08   addsi L088A   ; "'Tis too bad he ...
+01D2: 33   say
+01D3: 1D EA 08   pushs L08EA   ; dead
+01D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01DA: 06 0B 00   jmp 01E8
+01DD: 1C EF 08   addsi L08EF   ; "Cador is the hea...
+01E0: 33   say
+01E1: 1D 3B 09   pushs L093B   ; Cador
+01E4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E8: 1D 41 09   pushs L0941   ; dead
+01EB: 07 01 00 0B 00  cmps 0001H, 01FB
+01F0: 1C 46 09   addsi L0946   ; "He was killed in...
+01F3: 33   say
+01F4: 1D F4 09   pushs L09F4   ; dead
+01F7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FB: 1D F9 09   pushs L09F9   ; Yvella
+01FE: 07 01 00 0B 00  cmps 0001H, 020E
+0203: 1C 00 0A   addsi L0A00   ; "She is Cador's w...
+0206: 33   say
+0207: 1D 17 0A   pushs L0A17   ; Yvella
+020A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020E: 1D 1E 0A   pushs L0A1E   ; bye
+0211: 07 01 00 03 00  cmps 0001H, 0219
+0216: 06 03 00   jmp 021C
+0219: 06 2C FE   jmp 0048
+021C: 40   db 40 ???
+021D: 1C 22 0A   addsi L0A22   ; She nods at you a...
+0220: 33   say
+0221: 48   push eventid
+0222: 1F 00 00   pushi 0000H   ; 0
+0225: 22   cmpeq
+0226: 05 01 00   jne 022A
+0229: 3F   abrt
+022A: 25   ret

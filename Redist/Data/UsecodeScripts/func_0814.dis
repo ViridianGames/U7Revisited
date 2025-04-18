@@ -1,0 +1,75 @@
+  .funcnumber 0814H
+  .data
+  .code
+  .argc 0000H
+  .localc 0006H
+  .externsize 0000H
+0000: 1E 00 00   arrc 0000H   ; 0
+0003: 12 00 00   pop [0000]
+0006: 1F 00 00   pushi 0000H   ; 0
+0009: 1F 28 00   pushi 0028H   ; 40
+000C: 1F 9E 01   pushi 019EH   ; 414
+000F: 1F 9C FE   pushi FE9CH   ; -356
+0012: 38 35 00 04  callis 0035, 4
+0016: 12 01 00   pop [0001]
+0019: 2E   sloop
+001A: 02 02 00 03 00 04 00 01 00 6F 00  db 2 ???
+001B:   db 2
+001C:   db 0
+001D:   db 3
+001E:   db 0
+001F:   db 4
+0020:   db 0
+0021:   db 1
+0022:   db 0
+0023:   db 6f
+0024:   db 0
+0025: 21 04 00   push [0004]
+0028: 38 18 00 01  callis 0018, 1
+002C: 12 05 00   pop [0005]
+002F: 1F 01 00   pushi 0001H   ; 1
+0032: 26 05 00   aidx [0005]
+0035: 1F B7 09   pushi 09B7H   ; 2487
+0038: 1F 08 00   pushi 0008H   ; 8
+003B: 0A   sub
+003C: 18   cmpge
+003D: 1F 01 00   pushi 0001H   ; 1
+0040: 26 05 00   aidx [0005]
+0043: 1F B7 09   pushi 09B7H   ; 2487
+0046: 1F 08 00   pushi 0008H   ; 8
+0049: 09   add
+004A: 19   cmple
+004B: 0E   and
+004C: 05 42 00   jne 0091
+004F: 1F 02 00   pushi 0002H   ; 2
+0052: 26 05 00   aidx [0005]
+0055: 1F C8 06   pushi 06C8H   ; 1736
+0058: 1F 08 00   pushi 0008H   ; 8
+005B: 0A   sub
+005C: 18   cmpge
+005D: 1F 02 00   pushi 0002H   ; 2
+0060: 26 05 00   aidx [0005]
+0063: 1F C8 06   pushi 06C8H   ; 1736
+0066: 1F 08 00   pushi 0008H   ; 8
+0069: 09   add
+006A: 19   cmple
+006B: 21 04 00   push [0004]
+006E: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0072: 1F 04 00   pushi 0004H   ; 4
+0075: 22   cmpeq
+0076: 21 04 00   push [0004]
+0079: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+007D: 1F 05 00   pushi 0005H   ; 5
+0080: 22   cmpeq
+0081: 0F   or
+0082: 0E   and
+0083: 0E   and
+0084: 05 0A 00   jne 0091
+0087: 21 00 00   push [0000]
+008A: 21 04 00   push [0004]
+008D: 4A   arra
+008E: 12 00 00   pop [0000]
+0091: 06 86 FF   jmp 001A
+0094: 21 00 00   push [0000]
+0097: 2D   setr
+0098: 32   rts
