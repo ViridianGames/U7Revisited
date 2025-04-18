@@ -1,0 +1,119 @@
+  .funcnumber 018AH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a tough-looking palace guard who takes his job -very'
+ db '- seriously.'
+L0055: db 00
+L0056: db 'name'
+L005A: db 00
+L005B: db '"I am a guard."'
+L006A: db 00
+L006B: db 'name'
+L006F: db 00
+L0070: db 'job'
+L0073: db 00
+L0074: db 'The man looks at you like you are an ignoramus. "I am a guar'
+ db 'd for the palace, idiot. Thou shouldst go about thy business'
+ db '."'
+L00EE: db 00
+L00EF: db 'bye'
+L00F2: db 00
+L00F3: db '"Goodbye."*'
+L00FE: db 00
+L00FF: db '@Move along!@'
+L010C: db 00
+L010D: db '@Stand aside!@'
+L011B: db 00
+L011C: db '@Go about thy business!@'
+L0134: db 00
+L0135: db '@Keep moving!@'
+L0143: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 1F 8A 01   pushi 018AH   ; 394
+0003: 38 1B 00 01  callis 001B, 1
+0007: 38 1C 00 01  callis 001C, 1
+000B: 12 00 00   pop [0000]
+000E: 48   push eventid
+000F: 1F 01 00   pushi 0001H   ; 1
+0012: 22   cmpeq
+0013: 05 53 00   jne 0069
+0016: 1F 00 00   pushi 0000H   ; 0
+0019: 1F FE FE   pushi FEFEH   ; -258
+001C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0020: 1D 00 00   pushs L0000   ; bye
+0023: 1D 04 00   pushs L0004   ; job
+0026: 1D 08 00   pushs L0008   ; name
+0029: 1E 03 00   arrc 0003H   ; 3
+002C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0030: 1C 0D 00   addsi L000D   ; You see a tough-l...
+0033: 33   say
+0034: 04 2D 00   je 0064
+0037: 1D 56 00   pushs L0056   ; name
+003A: 07 01 00 0B 00  cmps 0001H, 004A
+003F: 1C 5B 00   addsi L005B   ; "I am a guard."
+0042: 33   say
+0043: 1D 6B 00   pushs L006B   ; name
+0046: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+004A: 1D 70 00   pushs L0070   ; job
+004D: 07 01 00 04 00  cmps 0001H, 0056
+0052: 1C 74 00   addsi L0074   ; The man looks at ...
+0055: 33   say
+0056: 1D EF 00   pushs L00EF   ; bye
+0059: 07 01 00 03 00  cmps 0001H, 0061
+005E: 06 03 00   jmp 0064
+0061: 06 D0 FF   jmp 0034
+0064: 40   db 40 ???
+0065: 1C F3 00   addsi L00F3   ; "Goodbye."*
+0068: 33   say
+0069: 48   push eventid
+006A: 1F 00 00   pushi 0000H   ; 0
+006D: 22   cmpeq
+006E: 05 6F 00   jne 00E0
+0071: 1F 8A 01   pushi 018AH   ; 394
+0074: 38 1B 00 01  callis 001B, 1
+0078: 38 1C 00 01  callis 001C, 1
+007C: 12 01 00   pop [0001]
+007F: 21 01 00   push [0001]
+0082: 1F 1D 00   pushi 001DH   ; 29
+0085: 22   cmpeq
+0086: 05 57 00   jne 00E0
+0089: 1F 04 00   pushi 0004H   ; 4
+008C: 1F 01 00   pushi 0001H   ; 1
+008F: 38 10 00 02  callis _Random2@2  ; 0010
+0093: 12 02 00   pop [0002]
+0096: 21 02 00   push [0002]
+0099: 1F 01 00   pushi 0001H   ; 1
+009C: 22   cmpeq
+009D: 05 06 00   jne 00A6
+00A0: 1D FF 00   pushs L00FF   ; @Move along!@
+00A3: 12 03 00   pop [0003]
+00A6: 21 02 00   push [0002]
+00A9: 1F 02 00   pushi 0002H   ; 2
+00AC: 22   cmpeq
+00AD: 05 06 00   jne 00B6
+00B0: 1D 0D 01   pushs L010D   ; @Stand aside!@
+00B3: 12 03 00   pop [0003]
+00B6: 21 02 00   push [0002]
+00B9: 1F 03 00   pushi 0003H   ; 3
+00BC: 22   cmpeq
+00BD: 05 06 00   jne 00C6
+00C0: 1D 1C 01   pushs L011C   ; @Go about thy bus...
+00C3: 12 03 00   pop [0003]
+00C6: 21 02 00   push [0002]
+00C9: 1F 04 00   pushi 0004H   ; 4
+00CC: 22   cmpeq
+00CD: 05 06 00   jne 00D6
+00D0: 1D 35 01   pushs L0135   ; @Keep moving!@
+00D3: 12 03 00   pop [0003]
+00D6: 21 03 00   push [0003]
+00D9: 1F 8A 01   pushi 018AH   ; 394
+00DC: 39 40 00 02  calli _ItemSay@2  ; 0040
+00E0: 25   ret

@@ -1,0 +1,122 @@
+  .funcnumber 02D5H
+  .data
+L0000: db '@Round she goes!@'
+L0011: db 00
+L0012: db '@Place your bets.@'
+L0024: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0002H
+  .extern 0937H
+  .extern 0904H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 3E   push itemref
+0006: 38 79 00 01  callis 0079, 1
+000A: 10   not
+000B: 0E   and
+000C: 05 F8 00   jne 0107
+000F: 1F 10 00   pushi 0010H   ; 16
+0012: 1F 01 00   pushi 0001H   ; 1
+0015: 38 10 00 02  callis _Random2@2  ; 0010
+0019: 12 00 00   pop [0000]
+001C: 3E   push itemref
+001D: 39 5C 00 01  calli 005C, 1
+0021: 1F 0A 06   pushi 060AH   ; 1546
+0024: 44 55   pushw 1F55H   ; 8021
+0026: 1F 1D 00   pushi 001DH   ; 29
+0029: 44 58   pushw 4458H   ; 17496
+002B: 44 4E   pushw 1F4EH   ; 8014
+002D: 1F 03 00   pushi 0003H   ; 3
+0030: 44 27   pushw 4427H   ; 17447
+0032: 44 4E   pushw 1F4EH   ; 8014
+0034: 1F 03 00   pushi 0003H   ; 3
+0037: 1F F2 FF   pushi FFF2H   ; -14
+003A: 44 0B   pushw 1F0BH   ; 7947
+003C: 1F 1D 00   pushi 001DH   ; 29
+003F: 44 58   pushw 1F58H   ; 8024
+0041: 1F 01 00   pushi 0001H   ; 1
+0044: 44 27   pushw 4427H   ; 17447
+0046: 44 4E   pushw 1F4EH   ; 8014
+0048: 1F 01 00   pushi 0001H   ; 1
+004B: 44 27   pushw 4427H   ; 17447
+004D: 44 4E   pushw 1F4EH   ; 8014
+004F: 1F 01 00   pushi 0001H   ; 1
+0052: 44 27   pushw 4427H   ; 17447
+0054: 44 4E   pushw 1F4EH   ; 8014
+0056: 1F 01 00   pushi 0001H   ; 1
+0059: 44 27   pushw 4427H   ; 17447
+005B: 44 4E   pushw 214EH   ; 8526
+005D: 21 00 00   push [0000]
+0060: 1F FB FF   pushi FFFBH   ; -5
+0063: 44 0B   pushw 1F0BH   ; 7947
+0065: 1F 1D 00   pushi 001DH   ; 29
+0068: 44 58   pushw 4458H   ; 17496
+006A: 44 4E   pushw 444EH   ; 17486
+006C: 44 01   pushw 4401H   ; 17409
+006E: 44 4E   pushw 214EH   ; 8526
+0070: 21 00 00   push [0000]
+0073: 1F F8 FF   pushi FFF8H   ; -8
+0076: 44 0B   pushw 440BH   ; 17419
+0078: 44 01   pushw 4401H   ; 17409
+007A: 44 4E   pushw 444EH   ; 17486
+007C: 44 01   pushw 4401H   ; 17409
+007E: 44 4E   pushw 444EH   ; 17486
+0080: 44 01   pushw 4401H   ; 17409
+0082: 44 4E   pushw 1F4EH   ; 8014
+0084: 1F 1D 00   pushi 001DH   ; 29
+0087: 44 58   pushw 1E58H   ; 7768
+0089: 1E 2C 00   arrc 002CH   ; 44
+008C: 3E   push itemref
+008D: 38 01 00 02  callis 0001, 2
+0091: 12 01 00   pop [0001]
+0094: 38 38 00 00  callis _GetTimeHour@0  ; 0038
+0098: 1F 0F 00   pushi 000FH   ; 15
+009B: 18   cmpge
+009C: 38 38 00 00  callis _GetTimeHour@0  ; 0038
+00A0: 1F 03 00   pushi 0003H   ; 3
+00A3: 19   cmple
+00A4: 0F   or
+00A5: 05 5F 00   jne 0107
+00A8: 1F 18 FF   pushi FF18H   ; -232
+00AB: 24 00 00   call [0000]   ; 0937H
+00AE: 05 0F 00   jne 00C0
+00B1: 1D 00 00   pushs L0000   ; @Round she goes!@
+00B4: 1D 12 00   pushs L0012   ; @Place your bets.@
+00B7: 1E 02 00   arrc 0002H   ; 2
+00BA: 1F 18 FF   pushi FF18H   ; -232
+00BD: 24 01 00   call [0001]   ; 0904H
+00C0: 1F 09 00   pushi 0009H   ; 9
+00C3: 1F 18 FF   pushi FF18H   ; -232
+00C6: 39 1D 00 02  calli 001D, 2
+00CA: 1F 00 00   pushi 0000H   ; 0
+00CD: 1F 07 00   pushi 0007H   ; 7
+00D0: 1F 08 02   pushi 0208H   ; 520
+00D3: 3E   push itemref
+00D4: 38 35 00 04  callis 0035, 4
+00D8: 12 02 00   pop [0002]
+00DB: 1F 00 00   pushi 0000H   ; 0
+00DE: 1F 05 00   pushi 0005H   ; 5
+00E1: 1F 84 02   pushi 0284H   ; 644
+00E4: 21 02 00   push [0002]
+00E7: 38 35 00 04  callis 0035, 4
+00EB: 12 03 00   pop [0003]
+00EE: 2E   sloop
+00EF: 02 04 00 05 00 06 00 03 00 0D 00  db 2 ???
+00F0:   db 4
+00F1:   db 0
+00F2:   db 5
+00F3:   db 0
+00F4:   db 6
+00F5:   db 0
+00F6:   db 3
+00F7:   db 0
+00F8:   db d
+00F9:   db 0
+00FA: 1F 0B 00   pushi 000BH   ; 11
+00FD: 21 06 00   push [0006]
+0100: 39 8A 00 02  calli 008A, 2
+0104: 06 E8 FF   jmp 00EF
+0107: 25   ret

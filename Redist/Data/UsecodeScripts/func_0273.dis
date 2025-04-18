@@ -1,0 +1,161 @@
+  .funcnumber 0273H ;* Lockpick.
+  .data
+L0000: db 'Unlocked'
+L0008: db 00
+L0009: db 'Unlocked'
+L0011: db 00
+L0012: db 'Pick broke'
+L001C: db 00
+L001D: db 'Unlocked'
+L0025: db 00
+L0026: db 'Pick broke'
+L0030: db 00
+L0031: db '@Strange that did not work.@'
+L004D: db 00
+L004E: db '@Try those on a locked chest or door.@'
+L0074: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0005H
+  .extern 0925H
+  .extern 081BH
+  .extern 081CH
+  .extern 08FEH
+  .extern 08FFH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 5D 01   jne 0165
+0008: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+000C: 12 00 00   pop [0000]
+000F: 3E   push itemref
+0010: 1F 1B 00   pushi 001BH   ; 27
+0013: 39 86 00 02  calli 0086, 2
+0017: 21 00 00   push [0000]
+001A: 38 11 00 01  callis _GetItemType@1  ; 0011
+001E: 12 01 00   pop [0001]
+0021: 21 00 00   push [0000]
+0024: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0028: 12 02 00   pop [0002]
+002B: 1F 1E 00   pushi 001EH   ; 30
+002E: 1F 01 00   pushi 0001H   ; 1
+0031: 38 10 00 02  callis _Random2@2  ; 0010
+0035: 1F 01 00   pushi 0001H   ; 1 * Dexterity.
+0038: 1F 9C FE   pushi FE9CH   ; -356
+003B: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+003F: 17   cmpl
+0040: 05 07 00   jne 004A
+0043: 13   push true  ;* Succeed.
+0044: 12 03 00   pop [0003]
+0047: 06 04 00   jmp 004E
+004A: 14   push false
+004B: 12 03 00   pop [0003]
+004E: 21 01 00   push [0001]
+0051: 1F 0A 02   pushi 020AH   ; 522 * Locked chest.
+0054: 22   cmpeq
+0055: 05 90 00   jne 00E8
+0058: 21 02 00   push [0002]  ;* Chest quality.
+005B: 1F 00 00   pushi 0000H   ; 0
+005E: 22   cmpeq   ;* 0 is good.
+005F: 21 03 00   push [0003]
+0062: 0E   and
+0063: 05 15 00   jne 007B
+0066: 1F 20 03   pushi 0320H   ; 800 * Unlocked.
+0069: 21 00 00   push [0000]
+006C: 39 0D 00 02  calli _SetItemType@2  ; 000D
+0070: 1D 00 00   pushs L0000   ; Unlocked
+0073: 21 00 00   push [0000]
+0076: 39 40 00 02  calli _ItemSay@2  ; 0040
+007A: 2C   db 2c ???
+007B: 21 02 00   push [0002]  ;* Quality.
+007E: 1F FF 00   pushi 00FFH   ; 255 * Trapped!
+0081: 22   cmpeq
+0082: 21 03 00   push [0003]
+0085: 0E   and
+0086: 05 50 00   jne 00D9
+0089: 1F C0 02   pushi 02C0H   ; 704  * Powder keg.
+008C: 38 24 00 01  callis 0024, 1
+0090: 12 04 00   pop [0004]
+0093: 21 04 00   push [0004]
+0096: 05 3C 00   jne 00D5
+0099: 21 00 00   push [0000]
+009C: 38 18 00 01  callis 0018, 1
+00A0: 38 26 00 01  callis 0026, 1
+00A4: 12 05 00   pop [0005]
+00A7: 39 7E 00 00  calli 007E, 0
+00AB: 1F C0 02   pushi 02C0H   ; 704
+00AE: 21 04 00   push [0004]
+00B1: 21 04 00   push [0004]
+00B4: 38 54 00 03  callis 0054, 3  ;* Explode.
+00B8: 12 05 00   pop [0005]
+00BB: 21 03 00   push [0003]
+00BE: 05 14 00   jne 00D5
+00C1: 1F 20 03   pushi 0320H   ; 800
+00C4: 21 00 00   push [0000]
+00C7: 39 0D 00 02  calli _SetItemType@2  ; 000D
+00CB: 1D 09 00   pushs L0009   ; Unlocked
+00CE: 21 00 00   push [0000]
+00D1: 39 40 00 02  calli _ItemSay@2  ; 0040
+00D5: 2C   db 2c ???
+00D6: 06 0E 00   jmp 00E7
+00D9: 1D 12 00   pushs L0012   ; Pick broke
+00DC: 21 00 00   push [0000]
+00DF: 39 40 00 02  calli _ItemSay@2  ; 0040
+00E3: 3E   push itemref
+00E4: 24 00 00   call [0000]   ; 0925H
+00E7: 2C   db 2c ???
+00E8: 1F B1 01   pushi 01B1H   ; 433
+00EB: 1F B0 01   pushi 01B0H   ; 432
+00EE: 1F 0E 01   pushi 010EH   ; 270
+00F1: 1F 78 01   pushi 0178H   ; 376
+00F4: 1E 04 00   arrc 0004H   ; 4
+00F7: 12 06 00   pop [0006]
+00FA: 2E   sloop
+00FB: 02 07 00 08 00 09 00 06 00 59 00  db 2 ???
+00FC:   db 7
+00FD:   db 0
+00FE:   db 8
+00FF:   db 0
+0100:   db 9
+0101:   db 0
+0102:   db 6
+0103:   db 0
+0104:   db 59
+0105:   db 0
+0106: 21 01 00   push [0001]  ;* Shape clicked on.
+0109: 21 09 00   push [0009]  ;* Each door type.
+010C: 22   cmpeq
+010D: 05 4C 00   jne 015C  ;* Jmp if not that one.
+0110: 21 02 00   push [0002]  ;* Door quality.
+0113: 1F 00 00   pushi 0000H   ; 0
+0116: 22   cmpeq
+0117: 05 3B 00   jne 0155
+011A: 21 00 00   push [0000]  ;* Item to unlock.
+011D: 24 01 00   call [0001]   ; 081BH  * Frame%4.
+0120: 1F 02 00   pushi 0002H   ; 2
+0123: 22   cmpeq
+0124: 05 2B 00   jne 0152
+0127: 21 03 00   push [0003]
+012A: 05 16 00   jne 0143
+012D: 1F 00 00   pushi 0000H   ; 0
+0130: 21 00 00   push [0000]
+0133: 24 02 00   call [0002]   ; 081CH
+0136: 1D 1D 00   pushs L001D   ; Unlocked
+0139: 21 00 00   push [0000]
+013C: 39 40 00 02  calli _ItemSay@2  ; 0040
+0140: 06 0E 00   jmp 0151
+0143: 1D 26 00   pushs L0026   ; Pick broke
+0146: 21 00 00   push [0000]
+0149: 39 40 00 02  calli _ItemSay@2  ; 0040
+014D: 3E   push itemref
+014E: 24 00 00   call [0000]   ; 0925H
+0151: 2C   db 2c ???
+0152: 06 07 00   jmp 015C
+0155: 1D 31 00   pushs L0031   ; @Strange that did...
+0158: 24 03 00   call [0003]   ; 08FEH
+015B: 2C   db 2c ???
+015C: 06 9C FF   jmp 00FB
+015F: 1D 4E 00   pushs L004E   ; @Try those on a l...
+0162: 24 04 00   call [0004]   ; 08FFH
+0165: 25   ret

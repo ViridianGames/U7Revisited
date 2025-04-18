@@ -1,0 +1,41 @@
+  .funcnumber 01B3H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0001H
+  .extern 0827H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 02 00   pushi 0002H   ; 2
+0009: 22   cmpeq
+000A: 0F   or
+000B: 05 0D 00   jne 001B
+000E: 1F E1 01   pushi 01E1H   ; 481
+0011: 3E   push itemref
+0012: 39 0D 00 02  calli _SetItemType@2  ; 000D
+0016: 3E   push itemref
+0017: 39 5C 00 01  calli 005C, 1
+001B: 48   push eventid
+001C: 1F 07 00   pushi 0007H   ; 7
+001F: 22   cmpeq
+0020: 05 2A 00   jne 004D
+0023: 1F E1 01   pushi 01E1H   ; 481
+0026: 3E   push itemref
+0027: 39 0D 00 02  calli _SetItemType@2  ; 000D
+002B: 3E   push itemref
+002C: 1F 9C FE   pushi FE9CH   ; -356
+002F: 24 00 00   call [0000]   ; 0827H
+0032: 12 00 00   pop [0000]
+0035: 44 61   pushw 4461H   ; 17505
+0037: 44 6A   pushw 446AH   ; 17514
+0039: 44 01   pushw 2101H   ; 8449
+003B: 21 00 00   push [0000]
+003E: 44 59   pushw 1E59H   ; 7769
+0040: 1E 05 00   arrc 0005H   ; 5
+0043: 1F 9C FE   pushi FE9CH   ; -356
+0046: 38 01 00 02  callis 0001, 2
+004A: 12 01 00   pop [0001]
+004D: 25   ret

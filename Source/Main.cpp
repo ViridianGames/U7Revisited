@@ -96,6 +96,8 @@ int main(int argv, char** argc)
             break;
       }
 
+      g_Player = make_unique<U7Player>();
+
       g_camera.position = Vector3Add(g_camera.target, Vector3{ g_cameraDistance, g_cameraDistance, g_cameraDistance });
       g_camera.up = Vector3 { 0.0f, 1.0f, 0.0f };
       g_camera.fovy = g_cameraDistance;

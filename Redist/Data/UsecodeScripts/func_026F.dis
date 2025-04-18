@@ -1,0 +1,198 @@
+  .funcnumber 026FH ;* Hammer on sword.
+  .data
+L0000: db '@The sword is not heated.@'
+L001A: db 00
+L001B: db '@The sword is too cool.@'
+L0033: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0003H
+  .extern 0690H
+  .extern 0828H
+  .extern 092DH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 24 00   jne 002C
+0008: 1F 99 FE   pushi FE99H   ; -359
+000B: 1F 6F 02   pushi 026FH   ; 623
+000E: 1F 01 00   pushi 0001H   ; 1
+0011: 1F 9C FE   pushi FE9CH   ; -356
+0014: 38 72 00 04  callis 0072, 4
+0018: 10   not
+0019: 05 08 00   jne 0024
+001C: 1F 02 00   pushi 0002H   ; 2
+001F: 39 6A 00 01  calli 006A, 1
+0023: 2C   db 2c ???
+0024: 39 7E 00 00  calli 007E, 0
+0028: 3E   push itemref
+0029: 47 90 06   calle 0690H   ; 1680
+002C: 48   push eventid
+002D: 1F 02 00   pushi 0002H   ; 2
+0030: 22   cmpeq
+0031: 05 D5 00   jne 0109
+0034: 14   push false
+0035: 12 00 00   pop [0000]
+0038: 3E   push itemref
+0039: 38 11 00 01  callis _GetItemType@1  ; 0011
+003D: 12 01 00   pop [0001]
+0040: 21 01 00   push [0001]
+0043: 1F DF 03   pushi 03DFH   ; 991
+0046: 22   cmpeq
+0047: 05 0E 00   jne 0058
+004A: 1F 01 00   pushi 0001H   ; 1
+004D: 1F 9C 02   pushi 029CH   ; 668
+0050: 3E   push itemref
+0051: 38 0E 00 03  callis 000E, 3
+0055: 12 00 00   pop [0000]
+0058: 21 01 00   push [0001]
+005B: 1F 6F 02   pushi 026FH   ; 623
+005E: 22   cmpeq
+005F: 05 07 00   jne 0069
+0062: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0066: 12 00 00   pop [0000]
+0069: 21 00 00   push [0000]
+006C: 38 11 00 01  callis _GetItemType@1  ; 0011
+0070: 1F 9C 02   pushi 029CH   ; 668
+0073: 22   cmpeq
+0074: 05 92 00   jne 0109
+0077: 1F 03 00   pushi 0003H   ; 3
+007A: 1F DF 03   pushi 03DFH   ; 991
+007D: 21 00 00   push [0000]
+0080: 38 0E 00 03  callis 000E, 3
+0084: 12 02 00   pop [0002]
+0087: 21 02 00   push [0002]
+008A: 05 7C 00   jne 0109
+008D: 21 02 00   push [0002]
+0090: 38 18 00 01  callis 0018, 1
+0094: 12 03 00   pop [0003]
+0097: 21 00 00   push [0000]
+009A: 38 18 00 01  callis 0018, 1
+009E: 12 04 00   pop [0004]
+00A1: 1F 01 00   pushi 0001H   ; 1
+00A4: 26 04 00   aidx [0004]
+00A7: 1F 01 00   pushi 0001H   ; 1
+00AA: 26 03 00   aidx [0003]
+00AD: 22   cmpeq
+00AE: 05 58 00   jne 0109
+00B1: 1F 02 00   pushi 0002H   ; 2
+00B4: 26 04 00   aidx [0004]
+00B7: 1F 02 00   pushi 0002H   ; 2
+00BA: 26 03 00   aidx [0003]
+00BD: 22   cmpeq
+00BE: 05 48 00   jne 0109
+00C1: 1F 03 00   pushi 0003H   ; 3
+00C4: 26 04 00   aidx [0004]
+00C7: 1F 01 00   pushi 0001H   ; 1
+00CA: 0A   sub
+00CB: 1F 03 00   pushi 0003H   ; 3
+00CE: 26 03 00   aidx [0003]
+00D1: 22   cmpeq
+00D2: 05 34 00   jne 0109
+00D5: 21 00 00   push [0000]
+00D8: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+00DC: 12 05 00   pop [0005]
+00DF: 21 05 00   push [0005]
+00E2: 1F 08 00   pushi 0008H   ; 8
+00E5: 18   cmpge
+00E6: 21 05 00   push [0005]
+00E9: 1F 0F 00   pushi 000FH   ; 15
+00EC: 19   cmple
+00ED: 0E   and
+00EE: 05 18 00   jne 0109
+00F1: 1F 07 00   pushi 0007H   ; 7
+00F4: 21 02 00   push [0002]
+00F7: 1F 6F 02   pushi 026FH   ; 623
+00FA: 1F 00 00   pushi 0000H   ; 0
+00FD: 1F 02 00   pushi 0002H   ; 2
+0100: 1F 00 00   pushi 0000H   ; 0
+0103: 21 02 00   push [0002]
+0106: 24 01 00   call [0001]   ; 0828H
+0109: 48   push eventid
+010A: 1F 07 00   pushi 0007H   ; 7
+010D: 22   cmpeq
+010E: 05 E4 00   jne 01F5
+0111: 1F 03 00   pushi 0003H   ; 3
+0114: 1F 9C 02   pushi 029CH   ; 668
+0117: 1F 9C FE   pushi FE9CH   ; -356
+011A: 38 1B 00 01  callis 001B, 1
+011E: 38 0E 00 03  callis 000E, 3
+0122: 12 06 00   pop [0006]
+0125: 21 06 00   push [0006]
+0128: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+012C: 12 05 00   pop [0005]
+012F: 1F 9C FE   pushi FE9CH   ; -356
+0132: 38 1B 00 01  callis 001B, 1
+0136: 12 07 00   pop [0007]
+0139: 3E   push itemref
+013A: 24 02 00   call [0002]   ; 092DH
+013D: 12 08 00   pop [0008]
+0140: 21 05 00   push [0005]
+0143: 1F 0D 00   pushi 000DH   ; 13
+0146: 18   cmpge
+0147: 21 05 00   push [0005]
+014A: 1F 0F 00   pushi 000FH   ; 15
+014D: 19   cmple
+014E: 0E   and
+014F: 05 1C 00   jne 016E
+0152: 1D 00 00   pushs L0000   ; @The sword is not...
+0155: 21 07 00   push [0007]
+0158: 39 40 00 02  calli _ItemSay@2  ; 0040
+015C: 21 08 00   push [0008]
+015F: 44 59   pushw 1E59H   ; 7769
+0161: 1E 02 00   arrc 0002H   ; 2
+0164: 21 07 00   push [0007]
+0167: 38 01 00 02  callis 0001, 2
+016B: 12 09 00   pop [0009]
+016E: 21 05 00   push [0005]
+0171: 1F 08 00   pushi 0008H   ; 8
+0174: 22   cmpeq
+0175: 21 05 00   push [0005]
+0178: 1F 09 00   pushi 0009H   ; 9
+017B: 22   cmpeq
+017C: 0F   or
+017D: 05 1C 00   jne 019C
+0180: 1D 1B 00   pushs L001B   ; @The sword is too...
+0183: 21 07 00   push [0007]
+0186: 39 40 00 02  calli _ItemSay@2  ; 0040
+018A: 21 08 00   push [0008]
+018D: 44 59   pushw 1E59H   ; 7769
+018F: 1E 02 00   arrc 0002H   ; 2
+0192: 21 07 00   push [0007]
+0195: 38 01 00 02  callis 0001, 2
+0199: 12 09 00   pop [0009]
+019C: 21 05 00   push [0005]
+019F: 1F 0A 00   pushi 000AH   ; 10
+01A2: 18   cmpge
+01A3: 21 05 00   push [0005]
+01A6: 1F 0C 00   pushi 000CH   ; 12
+01A9: 19   cmple
+01AA: 0E   and
+01AB: 05 47 00   jne 01F5
+01AE: 44 61   pushw 4461H   ; 17505
+01B0: 44 64   pushw 4464H   ; 17508
+01B2: 44 67   pushw 4467H   ; 17511
+01B4: 44 65   pushw 4465H   ; 17509
+01B6: 44 64   pushw 2164H   ; 8548
+01B8: 21 08 00   push [0008]
+01BB: 44 59   pushw 1E59H   ; 7769
+01BD: 1E 07 00   arrc 0007H   ; 7
+01C0: 21 07 00   push [0007]
+01C3: 38 01 00 02  callis 0001, 2
+01C7: 12 09 00   pop [0009]
+01CA: 1F 03 00   pushi 0003H   ; 3
+01CD: 1F DF 03   pushi 03DFH   ; 991
+01D0: 1F 9C FE   pushi FE9CH   ; -356
+01D3: 38 1B 00 01  callis 001B, 1
+01D7: 38 0E 00 03  callis 000E, 3
+01DB: 12 02 00   pop [0002]
+01DE: 1F 91 06   pushi 0691H   ; 1681
+01E1: 44 55   pushw 1F55H   ; 8021
+01E3: 1F 04 00   pushi 0004H   ; 4
+01E6: 44 27   pushw 1E27H   ; 7719
+01E8: 1E 04 00   arrc 0004H   ; 4
+01EB: 21 02 00   push [0002]
+01EE: 38 01 00 02  callis 0001, 2
+01F2: 12 09 00   pop [0009]
+01F5: 25   ret

@@ -1,0 +1,12 @@
+  .funcnumber 0268H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0813H
+0000: 1F 5A 00   pushi 005AH   ; 90
+0003: 1F 01 00   pushi 0001H   ; 1
+0006: 3E   push itemref
+0007: 24 00 00   call [0000]   ; 0813H
+000A: 25   ret

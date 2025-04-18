@@ -1,0 +1,28 @@
+  .funcnumber 02C0H ;* Powder keg.
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 02 00   pushi 0002H   ; 2
+0009: 22   cmpeq
+000A: 0F   or
+000B: 05 26 00   jne 0034
+000E: 3E   push itemref
+000F: 38 6E 00 01  callis 006E, 1
+0013: 12 00 00   pop [0000]
+0016: 21 00 00   push [0000]
+0019: 38 31 00 01  callis 0031, 1
+001D: 10   not
+001E: 05 13 00   jne 0034
+0021: 39 7E 00 00  calli 007E, 0
+0025: 1F C0 02   pushi 02C0H   ; 704
+0028: 3E   push itemref
+0029: 38 22 00 00  callis 0022, 0  ;* Avatar ref.
+002D: 38 54 00 03  callis 0054, 3
+0031: 12 01 00   pop [0001]
+0034: 25   ret

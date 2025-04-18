@@ -1,0 +1,101 @@
+  .funcnumber 028AH
+  .data
+L0000: db ' '
+L0001: db 00
+L0002: db ' West'
+L0007: db 00
+L0008: db ' '
+L0009: db 00
+L000A: db ' East'
+L000F: db 00
+L0010: db ' '
+L0011: db 00
+L0012: db ' North'
+L0018: db 00
+L0019: db ' '
+L001A: db 00
+L001B: db ' South'
+L0021: db 00
+L0022: db '@'Twill not function under a roof!@'
+L0045: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0002H
+  .extern 0932H
+  .extern 0937H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 B4 00   jne 00BC
+0008: 1F 9C FE   pushi FE9CH   ; -356
+000B: 38 18 00 01  callis 0018, 1
+000F: 12 00 00   pop [0000]
+0012: 1F 01 00   pushi 0001H   ; 1
+0015: 26 00 00   aidx [0000]
+0018: 1F A5 03   pushi 03A5H   ; 933
+001B: 0A   sub
+001C: 1F 0A 00   pushi 000AH   ; 10
+001F: 0B   div
+0020: 12 01 00   pop [0001]
+0023: 1F 02 00   pushi 0002H   ; 2
+0026: 26 00 00   aidx [0000]
+0029: 1F 6E 04   pushi 046EH   ; 1134
+002C: 0A   sub
+002D: 1F 0A 00   pushi 000AH   ; 10
+0030: 0B   div
+0031: 12 02 00   pop [0002]
+0034: 21 01 00   push [0001]
+0037: 1F 00 00   pushi 0000H   ; 0
+003A: 17   cmpl
+003B: 05 14 00   jne 0052
+003E: 1D 00 00   pushs L0000   ;  
+0041: 21 01 00   push [0001]
+0044: 24 00 00   call [0000]   ; 0932H
+0047: 09   add
+0048: 1D 02 00   pushs L0002   ;  West
+004B: 09   add
+004C: 12 03 00   pop [0003]
+004F: 06 11 00   jmp 0063
+0052: 1D 08 00   pushs L0008   ;  
+0055: 21 01 00   push [0001]
+0058: 24 00 00   call [0000]   ; 0932H
+005B: 09   add
+005C: 1D 0A 00   pushs L000A   ;  East
+005F: 09   add
+0060: 12 03 00   pop [0003]
+0063: 21 02 00   push [0002]
+0066: 1F 00 00   pushi 0000H   ; 0
+0069: 17   cmpl
+006A: 05 14 00   jne 0081
+006D: 1D 10 00   pushs L0010   ;  
+0070: 21 02 00   push [0002]
+0073: 24 00 00   call [0000]   ; 0932H
+0076: 09   add
+0077: 1D 12 00   pushs L0012   ;  North
+007A: 09   add
+007B: 12 04 00   pop [0004]
+007E: 06 11 00   jmp 0092
+0081: 1D 19 00   pushs L0019   ;  
+0084: 21 02 00   push [0002]
+0087: 24 00 00   call [0000]   ; 0932H
+008A: 09   add
+008B: 1D 1B 00   pushs L001B   ;  South
+008E: 09   add
+008F: 12 04 00   pop [0004]
+0092: 38 62 00 00  callis 0062, 0
+0096: 10   not
+0097: 05 0F 00   jne 00A9
+009A: 21 04 00   push [0004]
+009D: 21 03 00   push [0003]
+00A0: 09   add
+00A1: 3E   push itemref
+00A2: 39 40 00 02  calli _ItemSay@2  ; 0040
+00A6: 06 13 00   jmp 00BC
+00A9: 1F FF FF   pushi FFFFH   ; -1
+00AC: 24 01 00   call [0001]   ; 0937H
+00AF: 05 0A 00   jne 00BC
+00B2: 1D 22 00   pushs L0022   ; @'Twill not funct...
+00B5: 1F FF FF   pushi FFFFH   ; -1
+00B8: 39 40 00 02  calli _ItemSay@2  ; 0040
+00BC: 25   ret

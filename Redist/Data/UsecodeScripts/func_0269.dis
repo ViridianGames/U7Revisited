@@ -1,0 +1,705 @@
+  .funcnumber 0269H ;* Time lord.
+  .data
+L0000: db '"Congratulations, Avatar, on destroying the Sphere. I am fre'
+ db 'e from my celestial prison. I thank thee. But I regret to in'
+ db 'form thee that The Guardian engineered the Sphere such that '
+ db 'its destruction has permanently disabled the Moongates, and '
+ db 'thine Orb of the Moons as well. Thou canst not return to thi'
+ db 'ne home by way of a red Moongate.~~'
+L014F: db 00
+L0150: db '"Thine only hope of leaving Britannia at the conclusion of t'
+ db 'hy quest is to use The Guardian's own vehicle for entering t'
+ db 'he land -- The Black Gate.'
+L01E2: db 00
+L01E3: db '"The Guardian's followers are building The Black Gate of bla'
+ db 'ckrock and will be using magic and natural elements to activ'
+ db 'ate it. The Guardian plans to enter Britannia during the upc'
+ db 'oming Astronomical Alignment, which is imminent. That is the'
+ db ' only time when the elements will work well enough for The B'
+ db 'lack Gate to be permeable and active. Thou wilt need a devic'
+ db 'e which has the ability to vanquish blackrock. If thou hast '
+ db 'not already encountered such a device, thou canst find somet'
+ db 'hing to help thee in the workshop of Rudyom the Mage, in Cov'
+ db 'e.'
+L0401: db 00
+L0402: db '"Before thou canst locate The Black Gate, there is one more '
+ db 'generator which must be destroyed. It is the device used to '
+ db 'transmit The Guardian's voice to his followers and charm the'
+ db 'm into obeying his wishes. Look in the area near Serpent's H'
+ db 'old for a dungeon containing this generator. It is most like'
+ db 'ly shaped like a Cube. It could very well be on The Fellowsh'
+ db 'ip's island east of Serpent's Hold.'
+L058D: db 00
+L058E: db '"When thou hast completed this task, concentrate thine effor'
+ db 'ts in Buccaneer's Den. Thou mayest find clues there as to th'
+ db 'e location of The Black Gate.'
+L0623: db 00
+L0624: db '"Shouldst thou wish to speak with me again, simply use the h'
+ db 'ourglass. Goodbye."*'
+L0674: db 00
+L0675: db '"Avatar! The Astronomical Alignment is almost at hand! Time '
+ db 'is running out! The Guardian must be prevented from coming t'
+ db 'hrough The Black Gate!'
+L0703: db 00
+L0704: db '"The Cube will help thee find the location of The Black Gate'
+ db '. With it in thy possession, those under the influence of Th'
+ db 'e Guardian will be more receptive to speaking the truth to t'
+ db 'hee.'
+L07BC: db 00
+L07BD: db '"Go to Buccaneer's Den. Search for the one called 'Hook'. Ta'
+ db 'lk to the so-called Fellowship. Thou shouldst have no troubl'
+ db 'e ascertaining his whereabouts there. I am sure that thou wi'
+ db 'lt eventually find the location of The Black Gate! Good luck'
+ db '!"*'
+L08B0: db 00
+L08B1: db 'bye'
+L08B4: db 00
+L08B5: db 'job'
+L08B8: db 00
+L08B9: db 'name'
+L08BD: db 00
+L08BE: db 'You see a vaguely familiar but intimidating figure enclosed '
+ db 'in some kind of cylindrical cell. He looks at you intently.~'
+ db '~"It has been many years since we met during the time of Exo'
+ db 'dus! I have never wanted to see thee again as badly as most '
+ db 'recently! It is about time thou shouldst arrive! I do not ha'
+ db 've eras to waste whilst I wait for thee! There is a crisis a'
+ db 'nd Britannia needs thine help! I need thine help! The entire'
+ db ' universe needs thine help!"'
+L0A7E: db 00
+L0A7F: db 'crisis'
+L0A85: db 00
+L0A86: db 'about time'
+L0A90: db 00
+L0A91: db '"Hast thou decided if thou wilt help me?"'
+L0ABA: db 00
+L0ABB: db 'The Time Lord looks relieved.'
+L0AD8: db 00
+L0AD9: db '"Then I have a mission for thee."'
+L0AFA: db 00
+L0AFB: db 'mission'
+L0B02: db 00
+L0B03: db '"Then away with thee!"*'
+L0B1A: db 00
+L0B1B: db '"How may I help thee, Avatar?" the Time Lord asks.'
+L0B4D: db 00
+L0B4E: db 'The Guardian'
+L0B5A: db 00
+L0B5B: db 'ethereal defense'
+L0B6B: db 00
+L0B6C: db 'Tetrahedron'
+L0B77: db 00
+L0B78: db 'ethereal defense'
+L0B88: db 00
+L0B89: db 'Tetrahedron'
+L0B94: db 00
+L0B95: db 'Moongate'
+L0B9D: db 00
+L0B9E: db 'Sphere'
+L0BA4: db 00
+L0BA5: db 'Moongate'
+L0BAD: db 00
+L0BAE: db 'Sphere'
+L0BB4: db 00
+L0BB5: db 'Cube'
+L0BB9: db 00
+L0BBA: db 'noise'
+L0BBF: db 00
+L0BC0: db 'Cube'
+L0BC4: db 00
+L0BC5: db 'noise'
+L0BCA: db 00
+L0BCB: db 'Cube'
+L0BCF: db 00
+L0BD0: db 'fix magic'
+L0BD9: db 00
+L0BDA: db 'fix magic'
+L0BE3: db 00
+L0BE4: db 'name'
+L0BE8: db 00
+L0BE9: db '"I am known as the Time Lord."'
+L0C07: db 00
+L0C08: db 'name'
+L0C0C: db 00
+L0C0D: db 'job'
+L0C10: db 00
+L0C11: db '"I ensure that time flows smoothly through space." He shrugs'
+ db ' his shoulders. "Do not ask me to explain this. It is beyond'
+ db ' mortal beings' comprehension."'
+L0CA8: db 00
+L0CA9: db 'about time'
+L0CB3: db 00
+L0CB4: db '"It was I who sent the red moongate to thine homeland to lur'
+ db 'e thee to Britannia! It took every bit of my strength to mak'
+ db 'e it functional, and still something went wrong. Thou didst '
+ db 'arrive in Trinsic, which was not mine intention. It has ther'
+ db 'efore taken thee much longer to reach me than I anticipated.'
+L0DE0: db 00
+L0DE1: db '"Once thou didst arrive in Britannia, the only other way I c'
+ db 'ould contact thee was via the Wisps. After the considerable '
+ db 'rest I had since creating the red moongate, I managed to rep'
+ db 'air the one Orb of the Moons location that would bring thee '
+ db 'to me. I cannot roam freely through time and space, doing my'
+ db ' work, whilst I am trapped here."'
+L0F2E: db 00
+L0F2F: db 'about time'
+L0F39: db 00
+L0F3A: db 'Wisps'
+L0F3F: db 00
+L0F40: db 'crisis'
+L0F46: db 00
+L0F47: db '"The land is under attack by a powerful and malicious being '
+ db 'from another dimension, and thou art the only one who can st'
+ db 'op him! I have been trapped here by a trick, due to a sorcer'
+ db 'y which The Guardian has performed. The Guardian has put a w'
+ db 'rinkle in the space-time continuum by creating a powerful 'g'
+ db 'enerator' which has made the Moongates and thine Orb of the '
+ db 'Moons mostly inoperable.'
+L10C7: db 00
+L10C8: db '"Thou -must- free me and we must work together in battling T'
+ db 'he Guardian. The fate of thy people depends upon it. Dost th'
+ db 'ou accept?"'
+L114B: db 00
+L114C: db '"Then I have a mission for thee."'
+L116D: db 00
+L116E: db 'mission'
+L1175: db 00
+L1176: db '"Then thou shalt be doomed to never finish thy quest. Art th'
+ db 'ou sure? I give thee one more chance. Dost thou want to help'
+ db '?"'
+L11F0: db 00
+L11F1: db '"Then I have a mission for thee."'
+L1212: db 00
+L1213: db '"Then farewell, Avatar. Leave now. Thou wilt come back when '
+ db 'thou dost realize it is thy destiny to help me."*'
+L1280: db 00
+L1281: db 'crisis'
+L1287: db 00
+L1288: db 'mission'
+L128F: db 00
+L1290: db '"I knew thou wouldst not let me down.~~"Go at once to the Se'
+ db 'rpent's Spine area. Search for the entrance to a dungeon som'
+ db 'ewhere northwest of Britain. I believe it may be called 'Dun'
+ db 'geon Despise'. This will lead thee to the generator causing '
+ db 'the problem. If mine hunch is correct, it will resemble a la'
+ db 'rge Sphere.'
+L13C7: db 00
+L13C8: db '"Thou may have already seen it.'
+L13E7: db 00
+L13E8: db '"Thou must find a way to destroy it.'
+L140C: db 00
+L140D: db '"It may have a defense mechanism. If thou canst not conquer '
+ db 'it, return here and describe the defense to me. Perhaps I ca'
+ db 'n help thee more. It might be wise to use the spells Mark an'
+ db 'd Recall to save thyself the trouble of finding thy way thro'
+ db 'ugh the entire dungeon a second time, should thou have to tr'
+ db 'avel there again."'
+L154B: db 00
+L154C: db 'Sphere'
+L1552: db 00
+L1553: db '"Its defense, as thou dost know, is an unusual Moongate."'
+L158C: db 00
+L158D: db 'Moongate'
+L1595: db 00
+L1596: db 'Sphere'
+L159C: db 00
+L159D: db 'mission'
+L15A4: db 00
+L15A5: db 'Wisps'
+L15AA: db 00
+L15AB: db '"Oddly aloof creatures. They have made good messengers in th'
+ db 'e past."'
+L15EF: db 00
+L15F0: db 'Wisps'
+L15F5: db 00
+L15F6: db 'The Guardian'
+L1602: db 00
+L1603: db '"He is an embodiment of supreme evil. He must be stopped. He'
+ db ' thrives on domination and control."'
+L1663: db 00
+L1664: db 'The Guardian'
+L1670: db 00
+L1671: db 'Sphere'
+L1677: db 00
+L1678: db '"It is a magic generator that The Guardian was able to send '
+ db 'from his world. Its purpose is to disable the Moongates. Tho'
+ db 'u must break its outer defense and enter the structure, taki'
+ db 'ng the smaller Sphere floating inside. Keep the small Sphere'
+ db ', as it will be useful later."'
+L1786: db 00
+L1787: db 'Sphere'
+L178D: db 00
+L178E: db 'Moongate'
+L1796: db 00
+L1797: db '"The Sphere's outer defense sends thy party back to a specif'
+ db 'ic position in space. Until this defense is broken, thou can'
+ db 'st not enter the generator. Thou must find Nicodemus' hourgl'
+ db 'ass.~~"If I am correct in mine hypothesis, the Sphere's inne'
+ db 'r defense will involve Moongates. Look for a visual pattern '
+ db 'to help thee solve this mystery."'
+L18E4: db 00
+L18E5: db 'Moongate'
+L18ED: db 00
+L18EE: db 'Nicodemus'
+L18F7: db 00
+L18F8: db 'hourglass'
+L1901: db 00
+L1902: db 'hourglass'
+L190B: db 00
+L190C: db '"It is an enchanted hourglass which will help thee if it is '
+ db 'used at the site of the Sphere. Once I am free of the power '
+ db 'of the generator, thou canst summon me by using the hourglas'
+ db 's."'
+L19C3: db 00
+L19C4: db 'hourglass'
+L19CD: db 00
+L19CE: db '"It is of no use to thee now, unless thou dost want to summo'
+ db 'n me again."'
+L1A16: db 00
+L1A17: db 'hourglass'
+L1A20: db 00
+L1A21: db 'Nicodemus'
+L1A2A: db 00
+L1A2B: db '"He is a mage that lives west of the forest of Yew."'
+L1A5F: db 00
+L1A60: db 'Nicodemus'
+L1A69: db 00
+L1A6A: db 'fix magic'
+L1A73: db 00
+L1A74: db 'The Time Lord thinks a moment.~~"The ether must be repaired '
+ db 'before the mages in Britannia can use magic again. I suggest'
+ db ' that thou seest Penumbra in Moonglow. She may be able to he'
+ db 'lp thee with this problem."'
+L1B43: db 00
+L1B44: db 'Penumbra'
+L1B4C: db 00
+L1B4D: db '"Magic must be functioning properly now, Avatar. Use it wise'
+ db 'ly."'
+L1B8D: db 00
+L1B8E: db 'fix magic'
+L1B97: db 00
+L1B98: db 'Tetrahedron'
+L1BA3: db 00
+L1BA4: db '"It is a magic generator that The Guardian has sent from his'
+ db ' world. It is controlling the ether which is depended upon b'
+ db 'y the mages to perform magic. Like the Sphere, thou must pen'
+ db 'etrate its outer defense, enter the structure, and take the '
+ db 'smaller Tetrahedron floating inside."'
+L1CB9: db 00
+L1CBA: db 'Tetrahedron'
+L1CC5: db 00
+L1CC6: db 'ethereal defense'
+L1CD6: db 00
+L1CD7: db '"It is not surprising that the Tetrahedron has such a defens'
+ db 'e. Penumbra in Moonglow should be able to help thee with tha'
+ db 't. It is obvious now that the Tetrahedron must be destroyed '
+ db 'before thou canst destroy the Sphere.~~"I am not sure what k'
+ db 'ind of inner defense the Tetrahedron may hold. It may be dan'
+ db 'gerous. Be sure to be well-armed when entering it."'
+L1E36: db 00
+L1E37: db 'ethereal defense'
+L1E47: db 00
+L1E48: db 'Penumbra'
+L1E50: db 00
+L1E51: db '"She is an elderly mage who lives in Moonglow."'
+L1E80: db 00
+L1E81: db 'Penumbra'
+L1E89: db 00
+L1E8A: db 'Cube'
+L1E8E: db 00
+L1E8F: db '"It is a magic generator which The Guardian has sent from hi'
+ db 's world. From what thou dost say, it sounds to me like the d'
+ db 'evice he uses to 'speak' to his followers and charm them int'
+ db 'o submitting to his wishes. I am afraid that before thou can'
+ db 'st destroy it, thou must take care of the other magic genera'
+ db 'tors which The Guardian has placed in Britannia."'
+L1FEC: db 00
+L1FED: db '"It is the third and final magic generator which The Guardia'
+ db 'n has sent from his world. It is the device he uses to 'spea'
+ db 'k' to his followers and charm them into submitting to his wi'
+ db 'shes. Tis in a dungeon near Serpents Hold. Thou must destroy'
+ db ' its outer defense, enter it, and take the smaller Cube floa'
+ db 'ting inside."'
+L2126: db 00
+L2127: db 'Cube'
+L212B: db 00
+L212C: db 'Cube defense'
+L2138: db 00
+L2139: db 'noise'
+L213E: db 00
+L213F: db 'Cube defense'
+L214B: db 00
+L214C: db '"This outer defense can be conquered by using special helmet'
+ db 's which cover your ears. The helmets must be made from a rar'
+ db 'e mineral called 'Caddellite'. It is present in meteors. See'
+ db 'k out Brion, at the Observatory near the Lycaeum. He can giv'
+ db 'e thee more advice on finding this mineral.~~"The inner defe'
+ db 'nse will most likely involve The Guardian himself. Do not li'
+ db 'sten to what he might tell thee."'
+L22D5: db 00
+L22D6: db 'noise'
+L22DB: db 00
+L22DC: db 'Cube defense'
+L22E8: db 00
+L22E9: db 'bye'
+L22EC: db 00
+L22ED: db '"Farewell, Avatar. Good luck to thee."*'
+L2314: db 00
+  .code
+  .argc 0001H
+  .localc 0003H
+  .externsize 0003H
+  .extern 0931H
+  .extern 0911H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F E4 FE   pushi FEE4H   ; -284
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 1F 00 00   pushi 0000H   ; 0
+0016: 1F 99 FE   pushi FE99H   ; -359
+0019: 1F 47 03   pushi 0347H   ; 839
+001C: 1F 01 00   pushi 0001H   ; 1
+001F: 1F 9B FE   pushi FE9BH   ; -357
+0022: 24 00 00   call [0000]   ; 0931H
+0025: 12 00 00   pop [0000]
+0028: 42 04 00   pushf flag:[0004]
+002B: 42 12 00   pushf flag:[0012]
+002E: 10   not
+002F: 0E   and
+0030: 05 23 00   jne 0056
+0033: 1C 00 00   addsi L0000   ; "Congratulations,...
+0036: 33   say
+0037: 1C 50 01   addsi L0150   ; "Thine only hope ...
+003A: 33   say
+003B: 1C E3 01   addsi L01E3   ; "The Guardian's f...
+003E: 33   say
+003F: 1C 02 04   addsi L0402   ; "Before thou cans...
+0042: 33   say
+0043: 1C 8E 05   addsi L058E   ; "When thou hast c...
+0046: 33   say
+0047: 1C 24 06   addsi L0624   ; "Shouldst thou wi...
+004A: 33   say
+004B: 13   push true
+004C: 43 12 00   popf flag:[0012]
+004F: 1F C8 00   pushi 00C8H   ; 200
+0052: 24 01 00   call [0001]   ; 0911H
+0055: 3F   abrt
+0056: 42 05 00   pushf flag:[0005]
+0059: 42 13 00   pushf flag:[0013]
+005C: 10   not
+005D: 0E   and
+005E: 05 17 00   jne 0078
+0061: 1C 75 06   addsi L0675   ; "Avatar! The Astr...
+0064: 33   say
+0065: 1C 04 07   addsi L0704   ; "The Cube will he...
+0068: 33   say
+0069: 1C BD 07   addsi L07BD   ; "Go to Buccaneer'...
+006C: 33   say
+006D: 13   push true
+006E: 43 13 00   popf flag:[0013]
+0071: 1F C8 00   pushi 00C8H   ; 200
+0074: 24 01 00   call [0001]   ; 0911H
+0077: 3F   abrt
+0078: 1D B1 08   pushs L08B1   ; bye
+007B: 1D B5 08   pushs L08B5   ; job
+007E: 1D B9 08   pushs L08B9   ; name
+0081: 1E 03 00   arrc 0003H   ; 3
+0084: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0088: 42 D4 01   pushf flag:[01D4]
+008B: 10   not
+008C: 05 1E 00   jne 00AD
+008F: 1C BE 08   addsi L08BE   ; You see a vaguely...
+0092: 33   say
+0093: 1D 7F 0A   pushs L0A7F   ; crisis
+0096: 1D 86 0A   pushs L0A86   ; about time
+0099: 1E 02 00   arrc 0002H   ; 2
+009C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A0: 13   push true
+00A1: 43 D4 01   popf flag:[01D4]
+00A4: 1F C8 00   pushi 00C8H   ; 200
+00A7: 24 01 00   call [0001]   ; 0911H
+00AA: 06 35 00   jmp 00E2
+00AD: 42 D3 01   pushf flag:[01D3]
+00B0: 10   not
+00B1: 05 2A 00   jne 00DE
+00B4: 1C 91 0A   addsi L0A91   ; "Hast thou decide...
+00B7: 33   say
+00B8: 24 02 00   call [0002]   ; 090AH
+00BB: 12 01 00   pop [0001]
+00BE: 21 01 00   push [0001]
+00C1: 05 12 00   jne 00D6
+00C4: 1C BB 0A   addsi L0ABB   ; The Time Lord loo...
+00C7: 33   say
+00C8: 1C D9 0A   addsi L0AD9   ; "Then I have a mi...
+00CB: 33   say
+00CC: 1D FB 0A   pushs L0AFB   ; mission
+00CF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D3: 06 05 00   jmp 00DB
+00D6: 1C 03 0B   addsi L0B03   ; "Then away with t...
+00D9: 33   say
+00DA: 3F   abrt
+00DB: 06 04 00   jmp 00E2
+00DE: 1C 1B 0B   addsi L0B1B   ; "How may I help t...
+00E1: 33   say
+00E2: 42 D3 01   pushf flag:[01D3]
+00E5: 05 07 00   jne 00EF
+00E8: 1D 4E 0B   pushs L0B4E   ; The Guardian
+00EB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EF: 42 00 00   pushf flag:[0000]
+00F2: 05 0D 00   jne 0102
+00F5: 1D 5B 0B   pushs L0B5B   ; ethereal defense
+00F8: 1D 6C 0B   pushs L0B6C   ; Tetrahedron
+00FB: 1E 02 00   arrc 0002H   ; 2
+00FE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0102: 42 03 00   pushf flag:[0003]
+0105: 05 0D 00   jne 0115
+0108: 1D 78 0B   pushs L0B78   ; ethereal defense
+010B: 1D 89 0B   pushs L0B89   ; Tetrahedron
+010E: 1E 02 00   arrc 0002H   ; 2
+0111: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0115: 42 01 00   pushf flag:[0001]
+0118: 05 0D 00   jne 0128
+011B: 1D 95 0B   pushs L0B95   ; Moongate
+011E: 1D 9E 0B   pushs L0B9E   ; Sphere
+0121: 1E 02 00   arrc 0002H   ; 2
+0124: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0128: 42 04 00   pushf flag:[0004]
+012B: 05 0D 00   jne 013B
+012E: 1D A5 0B   pushs L0BA5   ; Moongate
+0131: 1D AE 0B   pushs L0BAE   ; Sphere
+0134: 1E 02 00   arrc 0002H   ; 2
+0137: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013B: 42 12 00   pushf flag:[0012]
+013E: 42 05 00   pushf flag:[0005]
+0141: 10   not
+0142: 0E   and
+0143: 05 07 00   jne 014D
+0146: 1D B5 0B   pushs L0BB5   ; Cube
+0149: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014D: 42 02 00   pushf flag:[0002]
+0150: 05 0D 00   jne 0160
+0153: 1D BA 0B   pushs L0BBA   ; noise
+0156: 1D C0 0B   pushs L0BC0   ; Cube
+0159: 1E 02 00   arrc 0002H   ; 2
+015C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0160: 42 05 00   pushf flag:[0005]
+0163: 05 0D 00   jne 0173
+0166: 1D C5 0B   pushs L0BC5   ; noise
+0169: 1D CB 0B   pushs L0BCB   ; Cube
+016C: 1E 02 00   arrc 0002H   ; 2
+016F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0173: 42 11 02   pushf flag:[0211]
+0176: 21 00 00   push [0000]
+0179: 0F   or
+017A: 05 07 00   jne 0184
+017D: 1D D0 0B   pushs L0BD0   ; fix magic
+0180: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0184: 42 03 00   pushf flag:[0003]
+0187: 05 07 00   jne 0191
+018A: 1D DA 0B   pushs L0BDA   ; fix magic
+018D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0191: 04 33 02   je 03C7
+0194: 1D E4 0B   pushs L0BE4   ; name
+0197: 07 01 00 0B 00  cmps 0001H, 01A7
+019C: 1C E9 0B   addsi L0BE9   ; "I am known as th...
+019F: 33   say
+01A0: 1D 08 0C   pushs L0C08   ; name
+01A3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A7: 1D 0D 0C   pushs L0C0D   ; job
+01AA: 07 01 00 04 00  cmps 0001H, 01B3
+01AF: 1C 11 0C   addsi L0C11   ; "I ensure that ti...
+01B2: 33   say
+01B3: 1D A9 0C   pushs L0CA9   ; about time
+01B6: 07 01 00 16 00  cmps 0001H, 01D1
+01BB: 1C B4 0C   addsi L0CB4   ; "It was I who sen...
+01BE: 33   say
+01BF: 1C E1 0D   addsi L0DE1   ; "Once thou didst ...
+01C2: 33   say
+01C3: 1D 2F 0F   pushs L0F2F   ; about time
+01C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CA: 1D 3A 0F   pushs L0F3A   ; Wisps
+01CD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D1: 1D 40 0F   pushs L0F40   ; crisis
+01D4: 07 01 00 45 00  cmps 0001H, 021E
+01D9: 1C 47 0F   addsi L0F47   ; "The land is unde...
+01DC: 33   say
+01DD: 1C C8 10   addsi L10C8   ; "Thou -must- free...
+01E0: 33   say
+01E1: 24 02 00   call [0002]   ; 090AH
+01E4: 12 02 00   pop [0002]
+01E7: 21 02 00   push [0002]
+01EA: 05 0E 00   jne 01FB
+01ED: 1C 4C 11   addsi L114C   ; "Then I have a mi...
+01F0: 33   say
+01F1: 1D 6E 11   pushs L116E   ; mission
+01F4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F8: 06 1C 00   jmp 0217
+01FB: 1C 76 11   addsi L1176   ; "Then thou shalt ...
+01FE: 33   say
+01FF: 24 02 00   call [0002]   ; 090AH
+0202: 12 01 00   pop [0001]
+0205: 21 01 00   push [0001]
+0208: 05 07 00   jne 0212
+020B: 1C F1 11   addsi L11F1   ; "Then I have a mi...
+020E: 33   say
+020F: 06 05 00   jmp 0217
+0212: 1C 13 12   addsi L1213   ; "Then farewell, A...
+0215: 33   say
+0216: 3F   abrt
+0217: 1D 81 12   pushs L1281   ; crisis
+021A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+021E: 1D 88 12   pushs L1288   ; mission
+0221: 07 01 00 43 00  cmps 0001H, 0269
+0226: 1C 90 12   addsi L1290   ; "I knew thou woul...
+0229: 33   say
+022A: 42 01 00   pushf flag:[0001]
+022D: 05 04 00   jne 0234
+0230: 1C C8 13   addsi L13C8   ; "Thou may have al...
+0233: 33   say
+0234: 1C E8 13   addsi L13E8   ; "Thou must find a...
+0237: 33   say
+0238: 42 01 00   pushf flag:[0001]
+023B: 10   not
+023C: 05 0E 00   jne 024D
+023F: 1C 0D 14   addsi L140D   ; "It may have a de...
+0242: 33   say
+0243: 1D 4C 15   pushs L154C   ; Sphere
+0246: 39 05 00 01  calli _AddAnswer@1  ; 0005
+024A: 06 11 00   jmp 025E
+024D: 1C 53 15   addsi L1553   ; "Its defense, as ...
+0250: 33   say
+0251: 1D 8D 15   pushs L158D   ; Moongate
+0254: 1D 96 15   pushs L1596   ; Sphere
+0257: 1E 02 00   arrc 0002H   ; 2
+025A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+025E: 13   push true
+025F: 43 D3 01   popf flag:[01D3]
+0262: 1D 9D 15   pushs L159D   ; mission
+0265: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0269: 1D A5 15   pushs L15A5   ; Wisps
+026C: 07 01 00 0B 00  cmps 0001H, 027C
+0271: 1C AB 15   addsi L15AB   ; "Oddly aloof crea...
+0274: 33   say
+0275: 1D F0 15   pushs L15F0   ; Wisps
+0278: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+027C: 1D F6 15   pushs L15F6   ; The Guardian
+027F: 07 01 00 0B 00  cmps 0001H, 028F
+0284: 1C 03 16   addsi L1603   ; "He is an embodim...
+0287: 33   say
+0288: 1D 64 16   pushs L1664   ; The Guardian
+028B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028F: 1D 71 16   pushs L1671   ; Sphere
+0292: 07 01 00 0B 00  cmps 0001H, 02A2
+0297: 1C 78 16   addsi L1678   ; "It is a magic ge...
+029A: 33   say
+029B: 1D 87 17   pushs L1787   ; Sphere
+029E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A2: 1D 8E 17   pushs L178E   ; Moongate
+02A5: 07 01 00 1C 00  cmps 0001H, 02C6
+02AA: 1C 97 17   addsi L1797   ; "The Sphere's out...
+02AD: 33   say
+02AE: 13   push true
+02AF: 43 D2 01   popf flag:[01D2]
+02B2: 1D E5 18   pushs L18E5   ; Moongate
+02B5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B9: 1D EE 18   pushs L18EE   ; Nicodemus
+02BC: 1D F8 18   pushs L18F8   ; hourglass
+02BF: 1E 02 00   arrc 0002H   ; 2
+02C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02C6: 1D 02 19   pushs L1902   ; hourglass
+02C9: 07 01 00 20 00  cmps 0001H, 02EE
+02CE: 42 04 00   pushf flag:[0004]
+02D1: 10   not
+02D2: 05 0E 00   jne 02E3
+02D5: 1C 0C 19   addsi L190C   ; "It is an enchant...
+02D8: 33   say
+02D9: 1D C4 19   pushs L19C4   ; hourglass
+02DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E0: 06 0B 00   jmp 02EE
+02E3: 1C CE 19   addsi L19CE   ; "It is of no use ...
+02E6: 33   say
+02E7: 1D 17 1A   pushs L1A17   ; hourglass
+02EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02EE: 1D 21 1A   pushs L1A21   ; Nicodemus
+02F1: 07 01 00 0B 00  cmps 0001H, 0301
+02F6: 1C 2B 1A   addsi L1A2B   ; "He is a mage tha...
+02F9: 33   say
+02FA: 1D 60 1A   pushs L1A60   ; Nicodemus
+02FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0301: 1D 6A 1A   pushs L1A6A   ; fix magic
+0304: 07 01 00 20 00  cmps 0001H, 0329
+0309: 42 03 00   pushf flag:[0003]
+030C: 10   not
+030D: 05 0E 00   jne 031E
+0310: 1C 74 1A   addsi L1A74   ; The Time Lord thi...
+0313: 33   say
+0314: 1D 44 1B   pushs L1B44   ; Penumbra
+0317: 39 05 00 01  calli _AddAnswer@1  ; 0005
+031B: 06 04 00   jmp 0322
+031E: 1C 4D 1B   addsi L1B4D   ; "Magic must be fu...
+0321: 33   say
+0322: 1D 8E 1B   pushs L1B8E   ; fix magic
+0325: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0329: 1D 98 1B   pushs L1B98   ; Tetrahedron
+032C: 07 01 00 0B 00  cmps 0001H, 033C
+0331: 1C A4 1B   addsi L1BA4   ; "It is a magic ge...
+0334: 33   say
+0335: 1D BA 1C   pushs L1CBA   ; Tetrahedron
+0338: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+033C: 1D C6 1C   pushs L1CC6   ; ethereal defense
+033F: 07 01 00 0F 00  cmps 0001H, 0353
+0344: 1C D7 1C   addsi L1CD7   ; "It is not surpri...
+0347: 33   say
+0348: 13   push true
+0349: 43 07 00   popf flag:[0007]
+034C: 1D 37 1E   pushs L1E37   ; ethereal defense
+034F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0353: 1D 48 1E   pushs L1E48   ; Penumbra
+0356: 07 01 00 0B 00  cmps 0001H, 0366
+035B: 1C 51 1E   addsi L1E51   ; "She is an elderl...
+035E: 33   say
+035F: 1D 81 1E   pushs L1E81   ; Penumbra
+0362: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0366: 1D 8A 1E   pushs L1E8A   ; Cube
+0369: 07 01 00 2B 00  cmps 0001H, 0399
+036E: 42 04 00   pushf flag:[0004]
+0371: 42 03 00   pushf flag:[0003]
+0374: 0F   or
+0375: 10   not
+0376: 05 07 00   jne 0380
+0379: 1C 8F 1E   addsi L1E8F   ; "It is a magic ge...
+037C: 33   say
+037D: 06 04 00   jmp 0384
+0380: 1C ED 1F   addsi L1FED   ; "It is the third ...
+0383: 33   say
+0384: 1D 27 21   pushs L2127   ; Cube
+0387: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+038B: 42 02 00   pushf flag:[0002]
+038E: 10   not
+038F: 05 07 00   jne 0399
+0392: 1D 2C 21   pushs L212C   ; Cube defense
+0395: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0399: 1D 39 21   pushs L2139   ; noise
+039C: 1D 3F 21   pushs L213F   ; Cube defense
+039F: 07 02 00 15 00  cmps 0002H, 03B9
+03A4: 1C 4C 21   addsi L214C   ; "This outer defen...
+03A7: 33   say
+03A8: 13   push true
+03A9: 43 08 00   popf flag:[0008]
+03AC: 1D D6 22   pushs L22D6   ; noise
+03AF: 1D DC 22   pushs L22DC   ; Cube defense
+03B2: 1E 02 00   arrc 0002H   ; 2
+03B5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03B9: 1D E9 22   pushs L22E9   ; bye
+03BC: 07 01 00 03 00  cmps 0001H, 03C4
+03C1: 06 03 00   jmp 03C7
+03C4: 06 CA FD   jmp 0191
+03C7: 40   db 40 ???
+03C8: 1C ED 22   addsi L22ED   ; "Farewell, Avatar...
+03CB: 33   say
+03CC: 25   ret

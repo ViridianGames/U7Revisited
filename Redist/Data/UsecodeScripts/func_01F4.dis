@@ -1,0 +1,59 @@
+  .funcnumber 01F4H
+  .data
+L0000: db '@Moo!@'
+L0006: db 00
+L0007: db '@Moo!@'
+L000D: db 00
+L000E: db '@Moo@'
+L0013: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 52 00   jne 005A
+0008: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+000C: 12 00 00   pop [0000]
+000F: 2E   sloop
+0010: 02 01 00 02 00 03 00 00 00 3F 00  db 2 ???
+0011:   db 1
+0012:   db 0
+0013:   db 2
+0014:   db 0
+0015:   db 3
+0016:   db 0
+0017:   db 0
+0018:   db 0
+0019:   db 3f
+001A:   db 0
+001B: 1F 0A 00   pushi 000AH   ; 10
+001E: 1F 01 00   pushi 0001H   ; 1
+0021: 38 10 00 02  callis _Random2@2  ; 0010
+0025: 1D 00 00   pushs L0000   ; @Moo!@
+0028: 44 52   pushw 4452H   ; 17490
+002A: 44 23   pushw 1E23H   ; 7715
+002C: 1E 03 00   arrc 0003H   ; 3
+002F: 21 03 00   push [0003]
+0032: 38 02 00 03  callis 0002, 3
+0036: 12 04 00   pop [0004]
+0039: 1F 1E 00   pushi 001EH   ; 30
+003C: 1F 15 00   pushi 0015H   ; 21
+003F: 38 10 00 02  callis _Random2@2  ; 0010
+0043: 1D 07 00   pushs L0007   ; @Moo!@
+0046: 44 52   pushw 4452H   ; 17490
+0048: 44 23   pushw 1E23H   ; 7715
+004A: 1E 03 00   arrc 0003H   ; 3
+004D: 21 03 00   push [0003]
+0050: 38 02 00 03  callis 0002, 3
+0054: 12 04 00   pop [0004]
+0057: 06 B6 FF   jmp 0010
+005A: 48   push eventid
+005B: 1F 00 00   pushi 0000H   ; 0
+005E: 22   cmpeq
+005F: 05 08 00   jne 006A
+0062: 1D 0E 00   pushs L000E   ; @Moo@
+0065: 3E   push itemref
+0066: 39 40 00 02  calli _ItemSay@2  ; 0040
+006A: 25   ret

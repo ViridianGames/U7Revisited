@@ -1,0 +1,2081 @@
+  .funcnumber 02CBH
+  .data
+L0000: db 'SIGN ZERO'
+L0009: db 00
+L000A: db 'IS'
+L000C: db 00
+L000D: db 'he|died'
+L0014: db 00
+L0015: db 'where'
+L001A: db 00
+L001B: db 'buried'
+L0021: db 00
+L0022: db 'john|doe'
+L002A: db 00
+L002B: db 'here|lies'
+L0034: db 00
+L0035: db 'thy|(umb'
+L003D: db 00
+L003E: db 'about'
+L0043: db 00
+L0044: db 'sorry'
+L0049: db 00
+L004A: db '|garth|'
+L0051: db 00
+L0052: db 'FOREVER'
+L0059: db 00
+L005A: db 'HERS'
+L005E: db 00
+L005F: db 'YOUTH IS'
+L0067: db 00
+L0068: db 'LADY M:'
+L006F: db 00
+L0070: db 'forever'
+L0077: db 00
+L0078: db 're,'
+L007B: db 00
+L007C: db 'spirit'
+L0082: db 00
+L0083: db 'may|his'
+L008A: db 00
+L008B: db '|julius|'
+L0093: db 00
+L0094: db 'sargeant'
+L009C: db 00
+L009D: db 'died|a'
+L00A3: db 00
+L00A4: db 'argent'
+L00AA: db 00
+L00AB: db 'lies'
+L00AF: db 00
+L00B0: db 'here'
+L00B4: db 00
+L00B5: db 'numbered'
+L00BD: db 00
+L00BE: db 'were'
+L00C2: db 00
+L00C3: db 'days'
+L00C7: db 00
+L00C8: db 'his'
+L00CB: db 00
+L00CC: db '|darek|'
+L00D3: db 00
+L00D4: db 'wi(|us'
+L00DA: db 00
+L00DB: db 'remain'
+L00E1: db 00
+L00E2: db 'words'
+L00E7: db 00
+L00E8: db 'his'
+L00EB: db 00
+L00EC: db '|malc|'
+L00F2: db 00
+L00F3: db 'soar'
+L00F7: db 00
+L00F8: db 'spirit'
+L00FE: db 00
+L00FF: db 'her'
+L0102: db 00
+L0103: db 'may'
+L0106: db 00
+L0107: db '|nina|'
+L010D: db 00
+L010E: db '(e|joke'
+L0115: db 00
+L0116: db 'finished'
+L011E: db 00
+L011F: db 'he|never'
+L0127: db 00
+L0128: db '|bart|'
+L012E: db 00
+L012F: db 'flower'
+L0135: db 00
+L0136: db 'delicate'
+L013E: db 00
+L013F: db 'a'
+L0140: db 00
+L0141: db '|ann|'
+L0146: db 00
+L0147: db 'ship'
+L014B: db 00
+L014C: db 'wi(|(e'
+L0152: db 00
+L0153: db 'down'
+L0157: db 00
+L0158: db 'went'
+L015C: db 00
+L015D: db '|dallas|'
+L0165: db 00
+L0166: db 'pink'
+L016A: db 00
+L016B: db 'great|in'
+L0173: db 00
+L0174: db 'looked'
+L017A: db 00
+L017B: db '|alan|'
+L0181: db 00
+L0182: db 'a pen'
+L0187: db 00
+L0188: db 'killed|by'
+L0191: db 00
+L0192: db 'ken'
+L0195: db 00
+L0196: db 'lies'
+L019A: db 00
+L019B: db 'here'
+L019F: db 00
+L01A0: db 'in|hand'
+L01A7: db 00
+L01A8: db 'a|pencil'
+L01B0: db 00
+L01B1: db 'died|wi('
+L01B9: db 00
+L01BA: db '|jeff|d|'
+L01C2: db 00
+L01C3: db 'sharp'
+L01C8: db 00
+L01C9: db 'were|too'
+L01D1: db 00
+L01D2: db '(e|notes'
+L01DA: db 00
+L01DB: db '|martin|'
+L01E3: db 00
+L01E4: db 'name'
+L01E8: db 00
+L01E9: db 'to|his'
+L01EF: db 00
+L01F0: db 'a|credit'
+L01F8: db 00
+L01F9: db '|tony|b|'
+L0201: db 00
+L0202: db 'him'
+L0205: db 00
+L0206: db 'ma,ered'
+L020D: db 00
+L020E: db 'spells'
+L0214: db 00
+L0215: db '|philip|'
+L021D: db 00
+L021E: db 'end'
+L0221: db 00
+L0222: db 'till|(e'
+L0229: db 00
+L022A: db 'laughed'
+L0231: db 00
+L0232: db '|chuckles|'
+L023C: db 00
+L023D: db 'bad|gump'
+L0245: db 00
+L0246: db 'of|a|big|'
+L024F: db 00
+L0250: db 'bit|(e|rump'
+L025B: db 00
+L025C: db '|art|d|'
+L0263: db 00
+L0264: db 'to|us|all'
+L026D: db 00
+L026E: db 'a|wonder'
+L0276: db 00
+L0277: db 'he|was'
+L027D: db 00
+L027E: db '|jim|g|'
+L0285: db 00
+L0286: db 'a|runner'
+L028E: db 00
+L028F: db 'rebel|and'
+L0298: db 00
+L0299: db 'he|was|a'
+L02A1: db 00
+L02A2: db '|will|'
+L02A8: db 00
+L02A9: db 'with|gumps'
+L02B3: db 00
+L02B4: db 'from|a|bout'
+L02BF: db 00
+L02C0: db 'lost|early'
+L02CA: db 00
+L02CB: db '|mr|mike|'
+L02D4: db 00
+L02D5: db 'made|him'
+L02DD: db 00
+L02DE: db 'sleep'
+L02E3: db 00
+L02E4: db 'awake'
+L02E9: db 00
+L02EA: db 'odd|how'
+L02F1: db 00
+L02F2: db '|paul|'
+L02F8: db 00
+L02F9: db 'd+('
+L02FC: db 00
+L02FD: db 'atomic'
+L0303: db 00
+L0304: db 'demanded'
+L030C: db 00
+L030D: db 'he'
+L030F: db 00
+L0310: db '|zack|'
+L0316: db 00
+L0317: db 'fate'
+L031B: db 00
+L031C: db 'venomous'
+L0324: db 00
+L0325: db 'of'
+L0327: db 00
+L0328: db 'a|victim'
+L0330: db 00
+L0331: db '|phil|s|'
+L0339: db 00
+L033A: db 'radiation'
+L0343: db 00
+L0344: db 'danger'
+L034A: db 00
+L034B: db '|jeff|w|'
+L0353: db 00
+L0354: db 'for|gumps'
+L035D: db 00
+L035E: db 'source'
+L0364: db 00
+L0365: db 'a|good'
+L036B: db 00
+L036C: db '|tony|z|'
+L0374: db 00
+L0375: db 'winged'
+L037B: db 00
+L037C: db 'he|was|only'
+L0387: db 00
+L0388: db 'we|(ought'
+L0391: db 00
+L0392: db '|bill|b|'
+L039A: db 00
+L039B: db 'victim'
+L03A1: db 00
+L03A2: db 'guest'
+L03A7: db 00
+L03A8: db '|charles|c|'
+L03B3: db 00
+L03B4: db 'depainted'
+L03BD: db 00
+L03BE: db 'dearly'
+L03C4: db 00
+L03C5: db '|danny|'
+L03CC: db 00
+L03CD: db 'greener'
+L03D4: db 00
+L03D5: db '(e|grass'
+L03DD: db 00
+L03DE: db 'he|makes'
+L03E6: db 00
+L03E7: db '|bob|'
+L03EC: db 00
+L03ED: db 'gonna'
+L03F2: db 00
+L03F3: db 'she|is|a'
+L03FB: db 00
+L03FC: db 'donna'
+L0401: db 00
+L0402: db 'here|lies'
+L040B: db 00
+L040C: db 'talent'
+L0412: db 00
+L0413: db 'of'
+L0415: db 00
+L0416: db 'a|portrait'
+L0420: db 00
+L0421: db '|karl|'
+L0427: db 00
+L0428: db 'character'
+L0431: db 00
+L0432: db 'explosive'
+L043B: db 00
+L043C: db 'an'
+L043E: db 00
+L043F: db '|chris|d|'
+L0448: db 00
+L0449: db 'smile'
+L044E: db 00
+L044F: db 'with|a'
+L0455: db 00
+L0456: db 'went'
+L045A: db 00
+L045B: db '|glen|'
+L0461: db 00
+L0462: db 'ending'
+L0468: db 00
+L0469: db 'fantastic'
+L0472: db 00
+L0473: db 'had|a'
+L0478: db 00
+L0479: db '|bruce|l|'
+L0482: db 00
+L0483: db 'br+('
+L0487: db 00
+L0488: db 'last'
+L048C: db 00
+L048D: db 'his'
+L0490: db 00
+L0491: db '|loubet|'
+L0499: db 00
+L049A: db 'for|good'
+L04A2: db 00
+L04A3: db 'comi*|gone'
+L04AD: db 00
+L04AE: db 'lo*|time'
+L04B6: db 00
+L04B7: db '|micael|p|'
+L04C1: db 00
+L04C2: db 'over'
+L04C6: db 00
+L04C7: db 'is'
+L04C9: db 00
+L04CA: db '(e|party'
+L04D2: db 00
+L04D3: db '|jake|'
+L04D9: db 00
+L04DA: db 'faces'
+L04DF: db 00
+L04E0: db '(ousand'
+L04E7: db 00
+L04E8: db 'man|of|a'
+L04F0: db 00
+L04F1: db '|gary|w|'
+L04F9: db 00
+L04FA: db 'life'
+L04FE: db 00
+L04FF: db 'full'
+L0503: db 00
+L0504: db 'it|was|a'
+L050C: db 00
+L050D: db '|(e|b+,|'
+L0515: db 00
+L0516: db 'much|work'
+L051F: db 00
+L0520: db 'from|too'
+L0528: db 00
+L0529: db 'kirk|died'
+L0532: db 00
+L0533: db 'here|lies'
+L053C: db 00
+L053D: db 'opponent'
+L0545: db 00
+L0546: db 'wor(y'
+L054B: db 00
+L054C: db 'a'
+L054D: db 00
+L054E: db '|targ|'
+L0554: db 00
+L0555: db 'crystal'
+L055C: db 00
+L055D: db 'like|a'
+L0563: db 00
+L0564: db 'shined'
+L056A: db 00
+L056B: db 'my,ral'
+L0571: db 00
+L0572: db 'here|lies'
+L057B: db 00
+L057C: db 'not'
+L057F: db 00
+L0580: db 'and|why'
+L0587: db 00
+L0588: db 'marc'
+L058C: db 00
+L058D: db 'here|lies'
+L0596: db 00
+L0597: db 'maker'
+L059C: db 00
+L059D: db 'music'
+L05A2: db 00
+L05A3: db '(e'
+L05A5: db 00
+L05A6: db '|nenad|'
+L05AD: db 00
+L05AE: db 'never|done'
+L05B8: db 00
+L05B9: db 'work|was'
+L05C1: db 00
+L05C2: db 'his'
+L05C5: db 00
+L05C6: db 'john'
+L05CA: db 00
+L05CB: db 'here|lies'
+L05D4: db 00
+L05D5: db 'him'
+L05D8: db 00
+L05D9: db 'killed'
+L05DF: db 00
+L05E0: db 'we'
+L05E2: db 00
+L05E3: db '|bruce|a|'
+L05EC: db 00
+L05ED: db 'loaded'
+L05F3: db 00
+L05F4: db 'was'
+L05F7: db 00
+L05F8: db '(e|game'
+L05FF: db 00
+L0600: db 'unaware'
+L0607: db 00
+L0608: db '|eric|'
+L060E: db 00
+L060F: db 'enough'
+L0615: db 00
+L0616: db 'is|not'
+L061C: db 00
+L061D: db '(e|world'
+L0625: db 00
+L0626: db '|raymond|'
+L062F: db 00
+L0630: db 'garriot'
+L0637: db 00
+L0638: db 'by'
+L063A: db 00
+L063B: db 'died'
+L063F: db 00
+L0640: db '|Beth|'
+L0646: db 00
+L0647: db 'di*os'
+L064C: db 00
+L064D: db 'by'
+L064F: db 00
+L0650: db '+ten'
+L0654: db 00
+L0655: db '|jack|'
+L065B: db 00
+L065C: db 'lover'
+L0661: db 00
+L0662: db 'poisoni*'
+L066A: db 00
+L066B: db 'hu*|for'
+L0672: db 00
+L0673: db '|michelle|'
+L067D: db 00
+L067E: db 'tomorrow'
+L0686: db 00
+L0687: db 'gone'
+L068B: db 00
+L068C: db 'today'
+L0691: db 00
+L0692: db 'gone'
+L0696: db 00
+L0697: db '|scott|h|'
+L06A0: db 00
+L06A1: db 'mon,er'
+L06A7: db 00
+L06A8: db '(e'
+L06AA: db 00
+L06AB: db 'by'
+L06AD: db 00
+L06AE: db 'swallowed'
+L06B7: db 00
+L06B8: db '|brian|'
+L06BF: db 00
+L06C0: db '(e|end'
+L06C6: db 00
+L06C7: db 'until'
+L06CC: db 00
+L06CD: db 'managed'
+L06D4: db 00
+L06D5: db '|sherry|c|'
+L06DF: db 00
+L06E0: db 'one'
+L06E3: db 00
+L06E4: db 'was|job'
+L06EB: db 00
+L06EC: db 'quality'
+L06F3: db 00
+L06F4: db '|karen|'
+L06FB: db 00
+L06FC: db 'i|roam'
+L0702: db 00
+L0703: db 'but|,ill'
+L070B: db 00
+L070C: db 'here|i|lie'
+L0716: db 00
+L0717: db '|j|shelton'
+L0721: db 00
+L0722: db 'undergrnd'
+L072B: db 00
+L072C: db 'under|gun'
+L0735: db 00
+L0736: db 'underfed'
+L073E: db 00
+L073F: db '|marco|'
+L0746: db 00
+L0747: db 'of|a|swan'
+L0750: db 00
+L0751: db '(e|grace'
+L0759: db 00
+L075A: db 'she|had'
+L0761: db 00
+L0762: db '|lynn|'
+L0768: db 00
+L0769: db 'urit'
+L076D: db 00
+L076E: db 'canus|meus'
+L0778: db 00
+L0779: db 'me|puergo'
+L0782: db 00
+L0783: db '|chenault|'
+L078D: db 00
+L078E: db 'cocopuff'
+L0796: db 00
+L0797: db 'and|tc'
+L079D: db 00
+L079E: db 'to|dizzy'
+L07A6: db 00
+L07A7: db '|j|crippen|'
+L07B2: db 00
+L07B3: db 'tomb,one'
+L07BB: db 00
+L07BC: db '(e|unknown'
+L07C6: db 00
+L07C7: db '|tim|'
+L07CC: db 00
+L07CD: db 'fireball'
+L07D5: db 00
+L07D6: db 'by|grogs'
+L07DE: db 00
+L07DF: db 'blown|away'
+L07E9: db 00
+L07EA: db '|na(an|'
+L07F1: db 00
+L07F2: db 'what'
+L07F6: db 00
+L07F7: db 'i|drank'
+L07FE: db 00
+L07FF: db 'last|words'
+L0809: db 00
+L080A: db '|james|n|'
+L0813: db 00
+L0814: db 'out'
+L0817: db 00
+L0818: db 'all|te,ed'
+L0821: db 00
+L0822: db 'Ben'
+L0825: db 00
+L0826: db 'here|lies'
+L082F: db 00
+L0830: db 'his|h+d'
+L0837: db 00
+L0838: db 'axe|in'
+L083E: db 00
+L083F: db 'buried|an'
+L0848: db 00
+L0849: db '|scott|'
+L0850: db 00
+L0851: db 'exii'
+L0855: db 00
+L0856: db 'vidi'
+L085A: db 00
+L085B: db 'veni'
+L085F: db 00
+L0860: db '|duke|'
+L0866: db 00
+L0867: db 'print'
+L086C: db 00
+L086D: db 'fit|to'
+L0873: db 00
+L0874: db 'every(i*'
+L087C: db 00
+L087D: db '|mike|h|'
+L0885: db 00
+L0886: db 'to|us|all'
+L088F: db 00
+L0890: db 'sunshine'
+L0898: db 00
+L0899: db 'she|gave'
+L08A1: db 00
+L08A2: db '|robin|'
+L08A9: db 00
+L08AA: db 'clued|in'
+L08B2: db 00
+L08B3: db 'got'
+L08B6: db 00
+L08B7: db 'never'
+L08BC: db 00
+L08BD: db '|m|'
+L08C0: db 00
+L08C1: db '|andrew|'
+L08C9: db 00
+L08CA: db 'gr+t'
+L08CE: db 00
+L08CF: db 'was'
+L08D2: db 00
+L08D3: db '(e|food'
+L08DA: db 00
+L08DB: db '|wayne|s|'
+L08E4: db 00
+L08E5: db 'delivered'
+L08EE: db 00
+L08EF: db 'was'
+L08F2: db 00
+L08F3: db '|craig|c|'
+L08FC: db 00
+L08FD: db 'ate'
+L0900: db 00
+L0901: db 'never'
+L0906: db 00
+L0907: db 'fed|but'
+L090E: db 00
+L090F: db '|jeff|f|'
+L0917: db 00
+L0918: db '(ought'
+L091E: db 00
+L091F: db 'for'
+L0922: db 00
+L0923: db 'food'
+L0927: db 00
+L0928: db '|w|hagy'
+L092F: db 00
+L0930: db 'wi(|gifts'
+L0939: db 00
+L093A: db 'arrived'
+L0941: db 00
+L0942: db '|stevens|'
+L094B: db 00
+L094C: db '|m|'
+L094F: db 00
+L0950: db 'dinner'
+L0956: db 00
+L0957: db 'of'
+L0959: db 00
+L095A: db 'bringer'
+L0961: db 00
+L0962: db '|g|'
+L0965: db 00
+L0966: db '|michelle|'
+L0970: db 00
+L0971: db 'him'
+L0974: db 00
+L0975: db 'was'
+L0978: db 00
+L0979: db 'food'
+L097D: db 00
+L097E: db '|brian|s|'
+L0987: db 00
+L0988: db 'dinner'
+L098E: db 00
+L098F: db 'for'
+L0992: db 00
+L0993: db 'as|in|d|'
+L099B: db 00
+L099C: db 'd|'
+L099E: db 00
+L099F: db '|jackie|'
+L09A7: db 00
+L09A8: db 'record'
+L09AE: db 00
+L09AF: db 'perfect'
+L09B6: db 00
+L09B7: db 'a'
+L09B8: db 00
+L09B9: db 'spained'
+L09C0: db 00
+L09C1: db '|b|adams|'
+L09CA: db 00
+L09CB: db 'now|below'
+L09D4: db 00
+L09D5: db 'who|is'
+L09DB: db 00
+L09DC: db 'fellow'
+L09E2: db 00
+L09E3: db 'a|nice'
+L09E9: db 00
+L09EA: db '|hal|'
+L09EF: db 00
+L09F0: db 'over'
+L09F4: db 00
+L09F5: db 'over|and'
+L09FD: db 00
+L09FE: db 'friend'
+L0A04: db 00
+L0A05: db 'mans|best'
+L0A0E: db 00
+L0A0F: db '|rover|'
+L0A16: db 00
+L0A17: db 'dies'
+L0A1B: db 00
+L0A1C: db 'never'
+L0A21: db 00
+L0A22: db 'love'
+L0A26: db 00
+L0A27: db 'age|old'
+L0A2E: db 00
+L0A2F: db '|felcore|'
+L0A38: db 00
+L0A39: db 'of|course'
+L0A42: db 00
+L0A43: db 'hes|d+d'
+L0A4A: db 00
+L0A4B: db 'morse'
+L0A50: db 00
+L0A51: db 'tony'
+L0A55: db 00
+L0A56: db 'heres'
+L0A5B: db 00
+L0A5C: db 'gross'
+L0A61: db 00
+L0A62: db '|'
+L0A63: db 00
+L0A64: db 'salamon'
+L0A6B: db 00
+L0A6C: db 'larry'
+L0A71: db 00
+L0A72: db 'heres'
+L0A77: db 00
+L0A78: db 'faltran'
+L0A7F: db 00
+L0A80: db 'who|is'
+L0A86: db 00
+L0A87: db 'mcdonald'
+L0A8F: db 00
+L0A90: db 'darren'
+L0A96: db 00
+L0A97: db 'chiltons'
+L0A9F: db 00
+L0AA0: db 'from|(e'
+L0AA7: db 00
+L0AA8: db 'away'
+L0AAC: db 00
+L0AAD: db 'died'
+L0AB1: db 00
+L0AB2: db '|kevin|b|'
+L0ABB: db 00
+L0ABC: db 'food'
+L0AC0: db 00
+L0AC1: db 'worm'
+L0AC5: db 00
+L0AC6: db 'michael|'
+L0ACE: db 00
+L0ACF: db 'and'
+L0AD2: db 00
+L0AD3: db '|beth'
+L0AD8: db 00
+L0AD9: db 'honorably'
+L0AE2: db 00
+L0AE3: db 'died'
+L0AE7: db 00
+L0AE8: db '|a|h|'
+L0AED: db 00
+L0AEE: db 'went'
+L0AF2: db 00
+L0AF3: db 'and'
+L0AF6: db 00
+L0AF7: db 'gone'
+L0AFB: db 00
+L0AFC: db '|john|t|'
+L0B04: db 00
+L0B05: db 'here'
+L0B09: db 00
+L0B0A: db 'installed'
+L0B13: db 00
+L0B14: db 00
+L0B15: db '|rey|'
+L0B1A: db 00
+L0B1B: db 'died'
+L0B1F: db 00
+L0B20: db 'man|never'
+L0B29: db 00
+L0B2A: db 'deservi*'
+L0B32: db 00
+L0B33: db 'a|more'
+L0B39: db 00
+L0B3A: db '|rhoode|'
+L0B42: db 00
+L0B43: db 'missed'
+L0B49: db 00
+L0B4A: db 'she|is'
+L0B50: db 00
+L0B51: db 'moment'
+L0B57: db 00
+L0B58: db 'every'
+L0B5D: db 00
+L0B5E: db '|jasner|'
+L0B66: db 00
+L0B67: db 'he|lays'
+L0B6E: db 00
+L0B6F: db 'now|here'
+L0B77: db 00
+L0B78: db 'lied'
+L0B7C: db 00
+L0B7D: db 'here|he'
+L0B84: db 00
+L0B85: db '|wampol|'
+L0B8D: db 00
+L0B8E: db 'spurni*'
+L0B95: db 00
+L0B96: db 'lovers'
+L0B9C: db 00
+L0B9D: db 'by|a'
+L0BA1: db 00
+L0BA2: db 'wounded'
+L0BA9: db 00
+L0BAA: db '|destra|'
+L0BB2: db 00
+L0BB3: db 'boots|on'
+L0BBB: db 00
+L0BBC: db 'wi(|his'
+L0BC3: db 00
+L0BC4: db 'buried'
+L0BCA: db 00
+L0BCB: db '|mendar|'
+L0BD3: db 00
+L0BD4: db 'good'
+L0BD8: db 00
+L0BD9: db 'looked|so'
+L0BE2: db 00
+L0BE3: db 'never'
+L0BE8: db 00
+L0BE9: db 'old|age'
+L0BF0: db 00
+L0BF1: db '|greghim|'
+L0BFA: db 00
+L0BFB: db 'now'
+L0BFE: db 00
+L0BFF: db 'but|is'
+L0C05: db 00
+L0C06: db 'missed'
+L0C0C: db 00
+L0C0D: db 'was|not'
+L0C14: db 00
+L0C15: db '|sarnan|'
+L0C1D: db 00
+L0C1E: db 'day'
+L0C21: db 00
+L0C22: db 'of|his'
+L0C28: db 00
+L0C29: db 'enchanter'
+L0C32: db 00
+L0C33: db 'gr+te,'
+L0C39: db 00
+L0C3A: db '|erlemar|'
+L0C43: db 00
+L0C44: db 'conquered'
+L0C4D: db 00
+L0C4E: db 'was'
+L0C51: db 00
+L0C52: db 'saw|'
+L0C56: db 00
+L0C57: db 'came|'
+L0C5C: db 00
+L0C5D: db '|galler|'
+L0C65: db 00
+L0C66: db 'forever'
+L0C6D: db 00
+L0C6E: db 'worm|food'
+L0C77: db 00
+L0C78: db 'for|a|day'
+L0C81: db 00
+L0C82: db 'queen'
+L0C87: db 00
+L0C88: db '|elgele(|'
+L0C91: db 00
+L0C92: db 'stops'
+L0C97: db 00
+L0C98: db 'never'
+L0C9D: db 00
+L0C9E: db '(e|si*i*'
+L0CA6: db 00
+L0CA7: db '|pantor|'
+L0CAF: db 00
+L0CB0: db 'ma,er'
+L0CB5: db 00
+L0CB6: db 'and'
+L0CB9: db 00
+L0CBA: db 'fa(er'
+L0CBF: db 00
+L0CC0: db 'beloved'
+L0CC7: db 00
+L0CC8: db 'here|lies'
+L0CD1: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0001H
+  .extern 0908H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 1A   cmpne
+0005: 05 01 00   jne 0009
+0008: 2C   db 2c ???
+0009: 24 00 00   call [0000]   ; 0908H
+000C: 12 00 00   pop [0000]
+000F: 3E   push itemref
+0010: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0014: 12 01 00   pop [0001]
+0017: 21 01 00   push [0001]
+001A: 1F 66 00   pushi 0066H   ; 102
+001D: 16   cmpgt
+001E: 05 13 00   jne 0034
+0021: 1D 00 00   pushs L0000   ; SIGN ZERO
+0024: 1D 0A 00   pushs L000A   ; IS
+0027: 1E 02 00   arrc 0002H   ; 2
+002A: 1F 32 00   pushi 0032H   ; 50
+002D: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0031: 06 3D 0D   jmp 0D71
+0034: 21 01 00   push [0001]
+0037: 1F 00 00   pushi 0000H   ; 0
+003A: 22   cmpeq
+003B: 05 19 00   jne 0057
+003E: 1D 0D 00   pushs L000D   ; he|died
+0041: 1D 15 00   pushs L0015   ; where
+0044: 1D 1B 00   pushs L001B   ; buried
+0047: 1D 22 00   pushs L0022   ; john|doe
+004A: 1D 2B 00   pushs L002B   ; here|lies
+004D: 1E 05 00   arrc 0005H   ; 5
+0050: 1F 32 00   pushi 0032H   ; 50
+0053: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0057: 21 01 00   push [0001]
+005A: 1F 01 00   pushi 0001H   ; 1
+005D: 22   cmpeq
+005E: 05 16 00   jne 0077
+0061: 1D 35 00   pushs L0035   ; thy|(umb
+0064: 1D 3E 00   pushs L003E   ; about
+0067: 1D 44 00   pushs L0044   ; sorry
+006A: 1D 4A 00   pushs L004A   ; |garth|
+006D: 1E 04 00   arrc 0004H   ; 4
+0070: 1F 32 00   pushi 0032H   ; 50
+0073: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0077: 21 01 00   push [0001]
+007A: 1F 02 00   pushi 0002H   ; 2
+007D: 22   cmpeq
+007E: 05 16 00   jne 0097
+0081: 1D 52 00   pushs L0052   ; FOREVER
+0084: 1D 5A 00   pushs L005A   ; HERS
+0087: 1D 5F 00   pushs L005F   ; YOUTH IS
+008A: 1D 68 00   pushs L0068   ; LADY M:
+008D: 1E 04 00   arrc 0004H   ; 4
+0090: 1F 32 00   pushi 0032H   ; 50
+0093: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0097: 21 01 00   push [0001]
+009A: 1F 03 00   pushi 0003H   ; 3
+009D: 22   cmpeq
+009E: 05 19 00   jne 00BA
+00A1: 1D 70 00   pushs L0070   ; forever
+00A4: 1D 78 00   pushs L0078   ; re,
+00A7: 1D 7C 00   pushs L007C   ; spirit
+00AA: 1D 83 00   pushs L0083   ; may|his
+00AD: 1D 8B 00   pushs L008B   ; |julius|
+00B0: 1E 05 00   arrc 0005H   ; 5
+00B3: 1F 32 00   pushi 0032H   ; 50
+00B6: 39 32 00 02  calli _DisplaySign@2  ; 0032
+00BA: 21 01 00   push [0001]
+00BD: 1F 04 00   pushi 0004H   ; 4
+00C0: 22   cmpeq
+00C1: 05 19 00   jne 00DD
+00C4: 1D 94 00   pushs L0094   ; sargeant
+00C7: 1D 9D 00   pushs L009D   ; died|a
+00CA: 1D A4 00   pushs L00A4   ; argent
+00CD: 1D AB 00   pushs L00AB   ; lies
+00D0: 1D B0 00   pushs L00B0   ; here
+00D3: 1E 05 00   arrc 0005H   ; 5
+00D6: 1F 32 00   pushi 0032H   ; 50
+00D9: 39 32 00 02  calli _DisplaySign@2  ; 0032
+00DD: 21 01 00   push [0001]
+00E0: 1F 05 00   pushi 0005H   ; 5
+00E3: 22   cmpeq
+00E4: 05 19 00   jne 0100
+00E7: 1D B5 00   pushs L00B5   ; numbered
+00EA: 1D BE 00   pushs L00BE   ; were
+00ED: 1D C3 00   pushs L00C3   ; days
+00F0: 1D C8 00   pushs L00C8   ; his
+00F3: 1D CC 00   pushs L00CC   ; |darek|
+00F6: 1E 05 00   arrc 0005H   ; 5
+00F9: 1F 32 00   pushi 0032H   ; 50
+00FC: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0100: 21 01 00   push [0001]
+0103: 1F 06 00   pushi 0006H   ; 6
+0106: 22   cmpeq
+0107: 05 19 00   jne 0123
+010A: 1D D4 00   pushs L00D4   ; wi(|us
+010D: 1D DB 00   pushs L00DB   ; remain
+0110: 1D E2 00   pushs L00E2   ; words
+0113: 1D E8 00   pushs L00E8   ; his
+0116: 1D EC 00   pushs L00EC   ; |malc|
+0119: 1E 05 00   arrc 0005H   ; 5
+011C: 1F 32 00   pushi 0032H   ; 50
+011F: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0123: 21 01 00   push [0001]
+0126: 1F 07 00   pushi 0007H   ; 7
+0129: 22   cmpeq
+012A: 05 19 00   jne 0146
+012D: 1D F3 00   pushs L00F3   ; soar
+0130: 1D F8 00   pushs L00F8   ; spirit
+0133: 1D FF 00   pushs L00FF   ; her
+0136: 1D 03 01   pushs L0103   ; may
+0139: 1D 07 01   pushs L0107   ; |nina|
+013C: 1E 05 00   arrc 0005H   ; 5
+013F: 1F 32 00   pushi 0032H   ; 50
+0142: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0146: 21 01 00   push [0001]
+0149: 1F 08 00   pushi 0008H   ; 8
+014C: 22   cmpeq
+014D: 05 16 00   jne 0166
+0150: 1D 0E 01   pushs L010E   ; (e|joke
+0153: 1D 16 01   pushs L0116   ; finished
+0156: 1D 1F 01   pushs L011F   ; he|never
+0159: 1D 28 01   pushs L0128   ; |bart|
+015C: 1E 04 00   arrc 0004H   ; 4
+015F: 1F 32 00   pushi 0032H   ; 50
+0162: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0166: 21 01 00   push [0001]
+0169: 1F 09 00   pushi 0009H   ; 9
+016C: 22   cmpeq
+016D: 05 16 00   jne 0186
+0170: 1D 2F 01   pushs L012F   ; flower
+0173: 1D 36 01   pushs L0136   ; delicate
+0176: 1D 3F 01   pushs L013F   ; a
+0179: 1D 41 01   pushs L0141   ; |ann|
+017C: 1E 04 00   arrc 0004H   ; 4
+017F: 1F 32 00   pushi 0032H   ; 50
+0182: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0186: 21 01 00   push [0001]
+0189: 1F 0A 00   pushi 000AH   ; 10
+018C: 22   cmpeq
+018D: 05 19 00   jne 01A9
+0190: 1D 47 01   pushs L0147   ; ship
+0193: 1D 4C 01   pushs L014C   ; wi(|(e
+0196: 1D 53 01   pushs L0153   ; down
+0199: 1D 58 01   pushs L0158   ; went
+019C: 1D 5D 01   pushs L015D   ; |dallas|
+019F: 1E 05 00   arrc 0005H   ; 5
+01A2: 1F 32 00   pushi 0032H   ; 50
+01A5: 39 32 00 02  calli _DisplaySign@2  ; 0032
+01A9: 21 01 00   push [0001]
+01AC: 1F 0B 00   pushi 000BH   ; 11
+01AF: 22   cmpeq
+01B0: 05 16 00   jne 01C9
+01B3: 1D 66 01   pushs L0166   ; pink
+01B6: 1D 6B 01   pushs L016B   ; great|in
+01B9: 1D 74 01   pushs L0174   ; looked
+01BC: 1D 7B 01   pushs L017B   ; |alan|
+01BF: 1E 04 00   arrc 0004H   ; 4
+01C2: 1F 32 00   pushi 0032H   ; 50
+01C5: 39 32 00 02  calli _DisplaySign@2  ; 0032
+01C9: 21 01 00   push [0001]
+01CC: 1F 0C 00   pushi 000CH   ; 12
+01CF: 22   cmpeq
+01D0: 05 19 00   jne 01EC
+01D3: 1D 82 01   pushs L0182   ; a pen
+01D6: 1D 88 01   pushs L0188   ; killed|by
+01D9: 1D 92 01   pushs L0192   ; ken
+01DC: 1D 96 01   pushs L0196   ; lies
+01DF: 1D 9B 01   pushs L019B   ; here
+01E2: 1E 05 00   arrc 0005H   ; 5
+01E5: 1F 32 00   pushi 0032H   ; 50
+01E8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+01EC: 21 01 00   push [0001]
+01EF: 1F 0D 00   pushi 000DH   ; 13
+01F2: 22   cmpeq
+01F3: 05 16 00   jne 020C
+01F6: 1D A0 01   pushs L01A0   ; in|hand
+01F9: 1D A8 01   pushs L01A8   ; a|pencil
+01FC: 1D B1 01   pushs L01B1   ; died|wi(
+01FF: 1D BA 01   pushs L01BA   ; |jeff|d|
+0202: 1E 04 00   arrc 0004H   ; 4
+0205: 1F 32 00   pushi 0032H   ; 50
+0208: 39 32 00 02  calli _DisplaySign@2  ; 0032
+020C: 21 01 00   push [0001]
+020F: 1F 0E 00   pushi 000EH   ; 14
+0212: 22   cmpeq
+0213: 05 16 00   jne 022C
+0216: 1D C3 01   pushs L01C3   ; sharp
+0219: 1D C9 01   pushs L01C9   ; were|too
+021C: 1D D2 01   pushs L01D2   ; (e|notes
+021F: 1D DB 01   pushs L01DB   ; |martin|
+0222: 1E 04 00   arrc 0004H   ; 4
+0225: 1F 32 00   pushi 0032H   ; 50
+0228: 39 32 00 02  calli _DisplaySign@2  ; 0032
+022C: 21 01 00   push [0001]
+022F: 1F 0F 00   pushi 000FH   ; 15
+0232: 22   cmpeq
+0233: 05 16 00   jne 024C
+0236: 1D E4 01   pushs L01E4   ; name
+0239: 1D E9 01   pushs L01E9   ; to|his
+023C: 1D F0 01   pushs L01F0   ; a|credit
+023F: 1D F9 01   pushs L01F9   ; |tony|b|
+0242: 1E 04 00   arrc 0004H   ; 4
+0245: 1F 32 00   pushi 0032H   ; 50
+0248: 39 32 00 02  calli _DisplaySign@2  ; 0032
+024C: 21 01 00   push [0001]
+024F: 1F 10 00   pushi 0010H   ; 16
+0252: 22   cmpeq
+0253: 05 16 00   jne 026C
+0256: 1D 02 02   pushs L0202   ; him
+0259: 1D 06 02   pushs L0206   ; ma,ered
+025C: 1D 0E 02   pushs L020E   ; spells
+025F: 1D 15 02   pushs L0215   ; |philip|
+0262: 1E 04 00   arrc 0004H   ; 4
+0265: 1F 32 00   pushi 0032H   ; 50
+0268: 39 32 00 02  calli _DisplaySign@2  ; 0032
+026C: 21 01 00   push [0001]
+026F: 1F 11 00   pushi 0011H   ; 17
+0272: 22   cmpeq
+0273: 05 16 00   jne 028C
+0276: 1D 1E 02   pushs L021E   ; end
+0279: 1D 22 02   pushs L0222   ; till|(e
+027C: 1D 2A 02   pushs L022A   ; laughed
+027F: 1D 32 02   pushs L0232   ; |chuckles|
+0282: 1E 04 00   arrc 0004H   ; 4
+0285: 1F 32 00   pushi 0032H   ; 50
+0288: 39 32 00 02  calli _DisplaySign@2  ; 0032
+028C: 21 01 00   push [0001]
+028F: 1F 12 00   pushi 0012H   ; 18
+0292: 22   cmpeq
+0293: 05 16 00   jne 02AC
+0296: 1D 3D 02   pushs L023D   ; bad|gump
+0299: 1D 46 02   pushs L0246   ; of|a|big|
+029C: 1D 50 02   pushs L0250   ; bit|(e|rump
+029F: 1D 5C 02   pushs L025C   ; |art|d|
+02A2: 1E 04 00   arrc 0004H   ; 4
+02A5: 1F 32 00   pushi 0032H   ; 50
+02A8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+02AC: 21 01 00   push [0001]
+02AF: 1F 13 00   pushi 0013H   ; 19
+02B2: 22   cmpeq
+02B3: 05 16 00   jne 02CC
+02B6: 1D 64 02   pushs L0264   ; to|us|all
+02B9: 1D 6E 02   pushs L026E   ; a|wonder
+02BC: 1D 77 02   pushs L0277   ; he|was
+02BF: 1D 7E 02   pushs L027E   ; |jim|g|
+02C2: 1E 04 00   arrc 0004H   ; 4
+02C5: 1F 32 00   pushi 0032H   ; 50
+02C8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+02CC: 21 01 00   push [0001]
+02CF: 1F 14 00   pushi 0014H   ; 20
+02D2: 22   cmpeq
+02D3: 05 16 00   jne 02EC
+02D6: 1D 86 02   pushs L0286   ; a|runner
+02D9: 1D 8F 02   pushs L028F   ; rebel|and
+02DC: 1D 99 02   pushs L0299   ; he|was|a
+02DF: 1D A2 02   pushs L02A2   ; |will|
+02E2: 1E 04 00   arrc 0004H   ; 4
+02E5: 1F 32 00   pushi 0032H   ; 50
+02E8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+02EC: 21 01 00   push [0001]
+02EF: 1F 15 00   pushi 0015H   ; 21
+02F2: 22   cmpeq
+02F3: 05 16 00   jne 030C
+02F6: 1D A9 02   pushs L02A9   ; with|gumps
+02F9: 1D B4 02   pushs L02B4   ; from|a|bout
+02FC: 1D C0 02   pushs L02C0   ; lost|early
+02FF: 1D CB 02   pushs L02CB   ; |mr|mike|
+0302: 1E 04 00   arrc 0004H   ; 4
+0305: 1F 32 00   pushi 0032H   ; 50
+0308: 39 32 00 02  calli _DisplaySign@2  ; 0032
+030C: 21 01 00   push [0001]
+030F: 1F 16 00   pushi 0016H   ; 22
+0312: 22   cmpeq
+0313: 05 19 00   jne 032F
+0316: 1D D5 02   pushs L02D5   ; made|him
+0319: 1D DE 02   pushs L02DE   ; sleep
+031C: 1D E4 02   pushs L02E4   ; awake
+031F: 1D EA 02   pushs L02EA   ; odd|how
+0322: 1D F2 02   pushs L02F2   ; |paul|
+0325: 1E 05 00   arrc 0005H   ; 5
+0328: 1F 32 00   pushi 0032H   ; 50
+032B: 39 32 00 02  calli _DisplaySign@2  ; 0032
+032F: 21 01 00   push [0001]
+0332: 1F 17 00   pushi 0017H   ; 23
+0335: 22   cmpeq
+0336: 05 19 00   jne 0352
+0339: 1D F9 02   pushs L02F9   ; d+(
+033C: 1D FD 02   pushs L02FD   ; atomic
+033F: 1D 04 03   pushs L0304   ; demanded
+0342: 1D 0D 03   pushs L030D   ; he
+0345: 1D 10 03   pushs L0310   ; |zack|
+0348: 1E 05 00   arrc 0005H   ; 5
+034B: 1F 32 00   pushi 0032H   ; 50
+034E: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0352: 21 01 00   push [0001]
+0355: 1F 18 00   pushi 0018H   ; 24
+0358: 22   cmpeq
+0359: 05 19 00   jne 0375
+035C: 1D 17 03   pushs L0317   ; fate
+035F: 1D 1C 03   pushs L031C   ; venomous
+0362: 1D 25 03   pushs L0325   ; of
+0365: 1D 28 03   pushs L0328   ; a|victim
+0368: 1D 31 03   pushs L0331   ; |phil|s|
+036B: 1E 05 00   arrc 0005H   ; 5
+036E: 1F 32 00   pushi 0032H   ; 50
+0371: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0375: 21 01 00   push [0001]
+0378: 1F 19 00   pushi 0019H   ; 25
+037B: 22   cmpeq
+037C: 05 13 00   jne 0392
+037F: 1D 3A 03   pushs L033A   ; radiation
+0382: 1D 44 03   pushs L0344   ; danger
+0385: 1D 4B 03   pushs L034B   ; |jeff|w|
+0388: 1E 03 00   arrc 0003H   ; 3
+038B: 1F 32 00   pushi 0032H   ; 50
+038E: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0392: 21 01 00   push [0001]
+0395: 1F 1A 00   pushi 001AH   ; 26
+0398: 22   cmpeq
+0399: 05 16 00   jne 03B2
+039C: 1D 54 03   pushs L0354   ; for|gumps
+039F: 1D 5E 03   pushs L035E   ; source
+03A2: 1D 65 03   pushs L0365   ; a|good
+03A5: 1D 6C 03   pushs L036C   ; |tony|z|
+03A8: 1E 04 00   arrc 0004H   ; 4
+03AB: 1F 32 00   pushi 0032H   ; 50
+03AE: 39 32 00 02  calli _DisplaySign@2  ; 0032
+03B2: 21 01 00   push [0001]
+03B5: 1F 1B 00   pushi 001BH   ; 27
+03B8: 22   cmpeq
+03B9: 05 16 00   jne 03D2
+03BC: 1D 75 03   pushs L0375   ; winged
+03BF: 1D 7C 03   pushs L037C   ; he|was|only
+03C2: 1D 88 03   pushs L0388   ; we|(ought
+03C5: 1D 92 03   pushs L0392   ; |bill|b|
+03C8: 1E 04 00   arrc 0004H   ; 4
+03CB: 1F 32 00   pushi 0032H   ; 50
+03CE: 39 32 00 02  calli _DisplaySign@2  ; 0032
+03D2: 21 01 00   push [0001]
+03D5: 1F 1C 00   pushi 001CH   ; 28
+03D8: 22   cmpeq
+03D9: 05 13 00   jne 03EF
+03DC: 1D 9B 03   pushs L039B   ; victim
+03DF: 1D A2 03   pushs L03A2   ; guest
+03E2: 1D A8 03   pushs L03A8   ; |charles|c|
+03E5: 1E 03 00   arrc 0003H   ; 3
+03E8: 1F 32 00   pushi 0032H   ; 50
+03EB: 39 32 00 02  calli _DisplaySign@2  ; 0032
+03EF: 21 01 00   push [0001]
+03F2: 1F 1D 00   pushi 001DH   ; 29
+03F5: 22   cmpeq
+03F6: 05 13 00   jne 040C
+03F9: 1D B4 03   pushs L03B4   ; depainted
+03FC: 1D BE 03   pushs L03BE   ; dearly
+03FF: 1D C5 03   pushs L03C5   ; |danny|
+0402: 1E 03 00   arrc 0003H   ; 3
+0405: 1F 32 00   pushi 0032H   ; 50
+0408: 39 32 00 02  calli _DisplaySign@2  ; 0032
+040C: 21 01 00   push [0001]
+040F: 1F 1E 00   pushi 001EH   ; 30
+0412: 22   cmpeq
+0413: 05 16 00   jne 042C
+0416: 1D CD 03   pushs L03CD   ; greener
+0419: 1D D5 03   pushs L03D5   ; (e|grass
+041C: 1D DE 03   pushs L03DE   ; he|makes
+041F: 1D E7 03   pushs L03E7   ; |bob|
+0422: 1E 04 00   arrc 0004H   ; 4
+0425: 1F 32 00   pushi 0032H   ; 50
+0428: 39 32 00 02  calli _DisplaySign@2  ; 0032
+042C: 21 01 00   push [0001]
+042F: 1F 1F 00   pushi 001FH   ; 31
+0432: 22   cmpeq
+0433: 05 16 00   jne 044C
+0436: 1D ED 03   pushs L03ED   ; gonna
+0439: 1D F3 03   pushs L03F3   ; she|is|a
+043C: 1D FC 03   pushs L03FC   ; donna
+043F: 1D 02 04   pushs L0402   ; here|lies
+0442: 1E 04 00   arrc 0004H   ; 4
+0445: 1F 32 00   pushi 0032H   ; 50
+0448: 39 32 00 02  calli _DisplaySign@2  ; 0032
+044C: 21 01 00   push [0001]
+044F: 1F 20 00   pushi 0020H   ; 32
+0452: 22   cmpeq
+0453: 05 16 00   jne 046C
+0456: 1D 0C 04   pushs L040C   ; talent
+0459: 1D 13 04   pushs L0413   ; of
+045C: 1D 16 04   pushs L0416   ; a|portrait
+045F: 1D 21 04   pushs L0421   ; |karl|
+0462: 1E 04 00   arrc 0004H   ; 4
+0465: 1F 32 00   pushi 0032H   ; 50
+0468: 39 32 00 02  calli _DisplaySign@2  ; 0032
+046C: 21 01 00   push [0001]
+046F: 1F 21 00   pushi 0021H   ; 33
+0472: 22   cmpeq
+0473: 05 16 00   jne 048C
+0476: 1D 28 04   pushs L0428   ; character
+0479: 1D 32 04   pushs L0432   ; explosive
+047C: 1D 3C 04   pushs L043C   ; an
+047F: 1D 3F 04   pushs L043F   ; |chris|d|
+0482: 1E 04 00   arrc 0004H   ; 4
+0485: 1F 32 00   pushi 0032H   ; 50
+0488: 39 32 00 02  calli _DisplaySign@2  ; 0032
+048C: 21 01 00   push [0001]
+048F: 1F 22 00   pushi 0022H   ; 34
+0492: 22   cmpeq
+0493: 05 16 00   jne 04AC
+0496: 1D 49 04   pushs L0449   ; smile
+0499: 1D 4F 04   pushs L044F   ; with|a
+049C: 1D 56 04   pushs L0456   ; went
+049F: 1D 5B 04   pushs L045B   ; |glen|
+04A2: 1E 04 00   arrc 0004H   ; 4
+04A5: 1F 32 00   pushi 0032H   ; 50
+04A8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+04AC: 21 01 00   push [0001]
+04AF: 1F 23 00   pushi 0023H   ; 35
+04B2: 22   cmpeq
+04B3: 05 16 00   jne 04CC
+04B6: 1D 62 04   pushs L0462   ; ending
+04B9: 1D 69 04   pushs L0469   ; fantastic
+04BC: 1D 73 04   pushs L0473   ; had|a
+04BF: 1D 79 04   pushs L0479   ; |bruce|l|
+04C2: 1E 04 00   arrc 0004H   ; 4
+04C5: 1F 32 00   pushi 0032H   ; 50
+04C8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+04CC: 21 01 00   push [0001]
+04CF: 1F 24 00   pushi 0024H   ; 36
+04D2: 22   cmpeq
+04D3: 05 16 00   jne 04EC
+04D6: 1D 83 04   pushs L0483   ; br+(
+04D9: 1D 88 04   pushs L0488   ; last
+04DC: 1D 8D 04   pushs L048D   ; his
+04DF: 1D 91 04   pushs L0491   ; |loubet|
+04E2: 1E 04 00   arrc 0004H   ; 4
+04E5: 1F 32 00   pushi 0032H   ; 50
+04E8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+04EC: 21 01 00   push [0001]
+04EF: 1F 25 00   pushi 0025H   ; 37
+04F2: 22   cmpeq
+04F3: 05 16 00   jne 050C
+04F6: 1D 9A 04   pushs L049A   ; for|good
+04F9: 1D A3 04   pushs L04A3   ; comi*|gone
+04FC: 1D AE 04   pushs L04AE   ; lo*|time
+04FF: 1D B7 04   pushs L04B7   ; |micael|p|
+0502: 1E 04 00   arrc 0004H   ; 4
+0505: 1F 32 00   pushi 0032H   ; 50
+0508: 39 32 00 02  calli _DisplaySign@2  ; 0032
+050C: 21 01 00   push [0001]
+050F: 1F 26 00   pushi 0026H   ; 38
+0512: 22   cmpeq
+0513: 05 16 00   jne 052C
+0516: 1D C2 04   pushs L04C2   ; over
+0519: 1D C7 04   pushs L04C7   ; is
+051C: 1D CA 04   pushs L04CA   ; (e|party
+051F: 1D D3 04   pushs L04D3   ; |jake|
+0522: 1E 04 00   arrc 0004H   ; 4
+0525: 1F 32 00   pushi 0032H   ; 50
+0528: 39 32 00 02  calli _DisplaySign@2  ; 0032
+052C: 21 01 00   push [0001]
+052F: 1F 27 00   pushi 0027H   ; 39
+0532: 22   cmpeq
+0533: 05 16 00   jne 054C
+0536: 1D DA 04   pushs L04DA   ; faces
+0539: 1D E0 04   pushs L04E0   ; (ousand
+053C: 1D E8 04   pushs L04E8   ; man|of|a
+053F: 1D F1 04   pushs L04F1   ; |gary|w|
+0542: 1E 04 00   arrc 0004H   ; 4
+0545: 1F 32 00   pushi 0032H   ; 50
+0548: 39 32 00 02  calli _DisplaySign@2  ; 0032
+054C: 21 01 00   push [0001]
+054F: 1F 28 00   pushi 0028H   ; 40
+0552: 22   cmpeq
+0553: 05 16 00   jne 056C
+0556: 1D FA 04   pushs L04FA   ; life
+0559: 1D FF 04   pushs L04FF   ; full
+055C: 1D 04 05   pushs L0504   ; it|was|a
+055F: 1D 0D 05   pushs L050D   ; |(e|b+,|
+0562: 1E 04 00   arrc 0004H   ; 4
+0565: 1F 32 00   pushi 0032H   ; 50
+0568: 39 32 00 02  calli _DisplaySign@2  ; 0032
+056C: 21 01 00   push [0001]
+056F: 1F 29 00   pushi 0029H   ; 41
+0572: 22   cmpeq
+0573: 05 16 00   jne 058C
+0576: 1D 16 05   pushs L0516   ; much|work
+0579: 1D 20 05   pushs L0520   ; from|too
+057C: 1D 29 05   pushs L0529   ; kirk|died
+057F: 1D 33 05   pushs L0533   ; here|lies
+0582: 1E 04 00   arrc 0004H   ; 4
+0585: 1F 32 00   pushi 0032H   ; 50
+0588: 39 32 00 02  calli _DisplaySign@2  ; 0032
+058C: 21 01 00   push [0001]
+058F: 1F 2A 00   pushi 002AH   ; 42
+0592: 22   cmpeq
+0593: 05 16 00   jne 05AC
+0596: 1D 3D 05   pushs L053D   ; opponent
+0599: 1D 46 05   pushs L0546   ; wor(y
+059C: 1D 4C 05   pushs L054C   ; a
+059F: 1D 4E 05   pushs L054E   ; |targ|
+05A2: 1E 04 00   arrc 0004H   ; 4
+05A5: 1F 32 00   pushi 0032H   ; 50
+05A8: 39 32 00 02  calli _DisplaySign@2  ; 0032
+05AC: 21 01 00   push [0001]
+05AF: 1F 2B 00   pushi 002BH   ; 43
+05B2: 22   cmpeq
+05B3: 05 19 00   jne 05CF
+05B6: 1D 55 05   pushs L0555   ; crystal
+05B9: 1D 5D 05   pushs L055D   ; like|a
+05BC: 1D 64 05   pushs L0564   ; shined
+05BF: 1D 6B 05   pushs L056B   ; my,ral
+05C2: 1D 72 05   pushs L0572   ; here|lies
+05C5: 1E 05 00   arrc 0005H   ; 5
+05C8: 1F 32 00   pushi 0032H   ; 50
+05CB: 39 32 00 02  calli _DisplaySign@2  ; 0032
+05CF: 21 01 00   push [0001]
+05D2: 1F 2C 00   pushi 002CH   ; 44
+05D5: 22   cmpeq
+05D6: 05 16 00   jne 05EF
+05D9: 1D 7C 05   pushs L057C   ; not
+05DC: 1D 80 05   pushs L0580   ; and|why
+05DF: 1D 88 05   pushs L0588   ; marc
+05E2: 1D 8D 05   pushs L058D   ; here|lies
+05E5: 1E 04 00   arrc 0004H   ; 4
+05E8: 1F 32 00   pushi 0032H   ; 50
+05EB: 39 32 00 02  calli _DisplaySign@2  ; 0032
+05EF: 21 01 00   push [0001]
+05F2: 1F 2D 00   pushi 002DH   ; 45
+05F5: 22   cmpeq
+05F6: 05 16 00   jne 060F
+05F9: 1D 97 05   pushs L0597   ; maker
+05FC: 1D 9D 05   pushs L059D   ; music
+05FF: 1D A3 05   pushs L05A3   ; (e
+0602: 1D A6 05   pushs L05A6   ; |nenad|
+0605: 1E 04 00   arrc 0004H   ; 4
+0608: 1F 32 00   pushi 0032H   ; 50
+060B: 39 32 00 02  calli _DisplaySign@2  ; 0032
+060F: 21 01 00   push [0001]
+0612: 1F 2E 00   pushi 002EH   ; 46
+0615: 22   cmpeq
+0616: 05 19 00   jne 0632
+0619: 1D AE 05   pushs L05AE   ; never|done
+061C: 1D B9 05   pushs L05B9   ; work|was
+061F: 1D C2 05   pushs L05C2   ; his
+0622: 1D C6 05   pushs L05C6   ; john
+0625: 1D CB 05   pushs L05CB   ; here|lies
+0628: 1E 05 00   arrc 0005H   ; 5
+062B: 1F 32 00   pushi 0032H   ; 50
+062E: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0632: 21 01 00   push [0001]
+0635: 1F 2F 00   pushi 002FH   ; 47
+0638: 22   cmpeq
+0639: 05 16 00   jne 0652
+063C: 1D D5 05   pushs L05D5   ; him
+063F: 1D D9 05   pushs L05D9   ; killed
+0642: 1D E0 05   pushs L05E0   ; we
+0645: 1D E3 05   pushs L05E3   ; |bruce|a|
+0648: 1E 04 00   arrc 0004H   ; 4
+064B: 1F 32 00   pushi 0032H   ; 50
+064E: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0652: 21 01 00   push [0001]
+0655: 1F 30 00   pushi 0030H   ; 48
+0658: 22   cmpeq
+0659: 05 19 00   jne 0675
+065C: 1D ED 05   pushs L05ED   ; loaded
+065F: 1D F4 05   pushs L05F4   ; was
+0662: 1D F8 05   pushs L05F8   ; (e|game
+0665: 1D 00 06   pushs L0600   ; unaware
+0668: 1D 08 06   pushs L0608   ; |eric|
+066B: 1E 05 00   arrc 0005H   ; 5
+066E: 1F 32 00   pushi 0032H   ; 50
+0671: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0675: 21 01 00   push [0001]
+0678: 1F 31 00   pushi 0031H   ; 49
+067B: 22   cmpeq
+067C: 05 16 00   jne 0695
+067F: 1D 0F 06   pushs L060F   ; enough
+0682: 1D 16 06   pushs L0616   ; is|not
+0685: 1D 1D 06   pushs L061D   ; (e|world
+0688: 1D 26 06   pushs L0626   ; |raymond|
+068B: 1E 04 00   arrc 0004H   ; 4
+068E: 1F 32 00   pushi 0032H   ; 50
+0691: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0695: 21 01 00   push [0001]
+0698: 1F 32 00   pushi 0032H   ; 50
+069B: 22   cmpeq
+069C: 05 16 00   jne 06B5
+069F: 1D 30 06   pushs L0630   ; garriot
+06A2: 1D 38 06   pushs L0638   ; by
+06A5: 1D 3B 06   pushs L063B   ; died
+06A8: 1D 40 06   pushs L0640   ; |Beth|
+06AB: 1E 04 00   arrc 0004H   ; 4
+06AE: 1F 32 00   pushi 0032H   ; 50
+06B1: 39 32 00 02  calli _DisplaySign@2  ; 0032
+06B5: 21 01 00   push [0001]
+06B8: 1F 33 00   pushi 0033H   ; 51
+06BB: 22   cmpeq
+06BC: 05 16 00   jne 06D5
+06BF: 1D 47 06   pushs L0647   ; di*os
+06C2: 1D 4D 06   pushs L064D   ; by
+06C5: 1D 50 06   pushs L0650   ; +ten
+06C8: 1D 55 06   pushs L0655   ; |jack|
+06CB: 1E 04 00   arrc 0004H   ; 4
+06CE: 1F 32 00   pushi 0032H   ; 50
+06D1: 39 32 00 02  calli _DisplaySign@2  ; 0032
+06D5: 21 01 00   push [0001]
+06D8: 1F 34 00   pushi 0034H   ; 52
+06DB: 22   cmpeq
+06DC: 05 16 00   jne 06F5
+06DF: 1D 5C 06   pushs L065C   ; lover
+06E2: 1D 62 06   pushs L0662   ; poisoni*
+06E5: 1D 6B 06   pushs L066B   ; hu*|for
+06E8: 1D 73 06   pushs L0673   ; |michelle|
+06EB: 1E 04 00   arrc 0004H   ; 4
+06EE: 1F 32 00   pushi 0032H   ; 50
+06F1: 39 32 00 02  calli _DisplaySign@2  ; 0032
+06F5: 21 01 00   push [0001]
+06F8: 1F 35 00   pushi 0035H   ; 53
+06FB: 22   cmpeq
+06FC: 05 19 00   jne 0718
+06FF: 1D 7E 06   pushs L067E   ; tomorrow
+0702: 1D 87 06   pushs L0687   ; gone
+0705: 1D 8C 06   pushs L068C   ; today
+0708: 1D 92 06   pushs L0692   ; gone
+070B: 1D 97 06   pushs L0697   ; |scott|h|
+070E: 1E 05 00   arrc 0005H   ; 5
+0711: 1F 32 00   pushi 0032H   ; 50
+0714: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0718: 21 01 00   push [0001]
+071B: 1F 36 00   pushi 0036H   ; 54
+071E: 22   cmpeq
+071F: 05 19 00   jne 073B
+0722: 1D A1 06   pushs L06A1   ; mon,er
+0725: 1D A8 06   pushs L06A8   ; (e
+0728: 1D AB 06   pushs L06AB   ; by
+072B: 1D AE 06   pushs L06AE   ; swallowed
+072E: 1D B8 06   pushs L06B8   ; |brian|
+0731: 1E 05 00   arrc 0005H   ; 5
+0734: 1F 32 00   pushi 0032H   ; 50
+0737: 39 32 00 02  calli _DisplaySign@2  ; 0032
+073B: 21 01 00   push [0001]
+073E: 1F 37 00   pushi 0037H   ; 55
+0741: 22   cmpeq
+0742: 05 16 00   jne 075B
+0745: 1D C0 06   pushs L06C0   ; (e|end
+0748: 1D C7 06   pushs L06C7   ; until
+074B: 1D CD 06   pushs L06CD   ; managed
+074E: 1D D5 06   pushs L06D5   ; |sherry|c|
+0751: 1E 04 00   arrc 0004H   ; 4
+0754: 1F 32 00   pushi 0032H   ; 50
+0757: 39 32 00 02  calli _DisplaySign@2  ; 0032
+075B: 21 01 00   push [0001]
+075E: 1F 38 00   pushi 0038H   ; 56
+0761: 22   cmpeq
+0762: 05 16 00   jne 077B
+0765: 1D E0 06   pushs L06E0   ; one
+0768: 1D E4 06   pushs L06E4   ; was|job
+076B: 1D EC 06   pushs L06EC   ; quality
+076E: 1D F4 06   pushs L06F4   ; |karen|
+0771: 1E 04 00   arrc 0004H   ; 4
+0774: 1F 32 00   pushi 0032H   ; 50
+0777: 39 32 00 02  calli _DisplaySign@2  ; 0032
+077B: 21 01 00   push [0001]
+077E: 1F 39 00   pushi 0039H   ; 57
+0781: 22   cmpeq
+0782: 05 16 00   jne 079B
+0785: 1D FC 06   pushs L06FC   ; i|roam
+0788: 1D 03 07   pushs L0703   ; but|,ill
+078B: 1D 0C 07   pushs L070C   ; here|i|lie
+078E: 1D 17 07   pushs L0717   ; |j|shelton
+0791: 1E 04 00   arrc 0004H   ; 4
+0794: 1F 32 00   pushi 0032H   ; 50
+0797: 39 32 00 02  calli _DisplaySign@2  ; 0032
+079B: 21 01 00   push [0001]
+079E: 1F 3A 00   pushi 003AH   ; 58
+07A1: 22   cmpeq
+07A2: 05 16 00   jne 07BB
+07A5: 1D 22 07   pushs L0722   ; undergrnd
+07A8: 1D 2C 07   pushs L072C   ; under|gun
+07AB: 1D 36 07   pushs L0736   ; underfed
+07AE: 1D 3F 07   pushs L073F   ; |marco|
+07B1: 1E 04 00   arrc 0004H   ; 4
+07B4: 1F 32 00   pushi 0032H   ; 50
+07B7: 39 32 00 02  calli _DisplaySign@2  ; 0032
+07BB: 21 01 00   push [0001]
+07BE: 1F 3B 00   pushi 003BH   ; 59
+07C1: 22   cmpeq
+07C2: 05 16 00   jne 07DB
+07C5: 1D 47 07   pushs L0747   ; of|a|swan
+07C8: 1D 51 07   pushs L0751   ; (e|grace
+07CB: 1D 5A 07   pushs L075A   ; she|had
+07CE: 1D 62 07   pushs L0762   ; |lynn|
+07D1: 1E 04 00   arrc 0004H   ; 4
+07D4: 1F 32 00   pushi 0032H   ; 50
+07D7: 39 32 00 02  calli _DisplaySign@2  ; 0032
+07DB: 21 01 00   push [0001]
+07DE: 1F 3C 00   pushi 003CH   ; 60
+07E1: 22   cmpeq
+07E2: 05 16 00   jne 07FB
+07E5: 1D 69 07   pushs L0769   ; urit
+07E8: 1D 6E 07   pushs L076E   ; canus|meus
+07EB: 1D 79 07   pushs L0779   ; me|puergo
+07EE: 1D 83 07   pushs L0783   ; |chenault|
+07F1: 1E 04 00   arrc 0004H   ; 4
+07F4: 1F 32 00   pushi 0032H   ; 50
+07F7: 39 32 00 02  calli _DisplaySign@2  ; 0032
+07FB: 21 01 00   push [0001]
+07FE: 1F 3D 00   pushi 003DH   ; 61
+0801: 22   cmpeq
+0802: 05 16 00   jne 081B
+0805: 1D 8E 07   pushs L078E   ; cocopuff
+0808: 1D 97 07   pushs L0797   ; and|tc
+080B: 1D 9E 07   pushs L079E   ; to|dizzy
+080E: 1D A7 07   pushs L07A7   ; |j|crippen|
+0811: 1E 04 00   arrc 0004H   ; 4
+0814: 1F 32 00   pushi 0032H   ; 50
+0817: 39 32 00 02  calli _DisplaySign@2  ; 0032
+081B: 21 01 00   push [0001]
+081E: 1F 3E 00   pushi 003EH   ; 62
+0821: 22   cmpeq
+0822: 05 13 00   jne 0838
+0825: 1D B3 07   pushs L07B3   ; tomb,one
+0828: 1D BC 07   pushs L07BC   ; (e|unknown
+082B: 1D C7 07   pushs L07C7   ; |tim|
+082E: 1E 03 00   arrc 0003H   ; 3
+0831: 1F 32 00   pushi 0032H   ; 50
+0834: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0838: 21 01 00   push [0001]
+083B: 1F 3F 00   pushi 003FH   ; 63
+083E: 22   cmpeq
+083F: 05 16 00   jne 0858
+0842: 1D CD 07   pushs L07CD   ; fireball
+0845: 1D D6 07   pushs L07D6   ; by|grogs
+0848: 1D DF 07   pushs L07DF   ; blown|away
+084B: 1D EA 07   pushs L07EA   ; |na(an|
+084E: 1E 04 00   arrc 0004H   ; 4
+0851: 1F 32 00   pushi 0032H   ; 50
+0854: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0858: 21 01 00   push [0001]
+085B: 1F 40 00   pushi 0040H   ; 64
+085E: 22   cmpeq
+085F: 05 16 00   jne 0878
+0862: 1D F2 07   pushs L07F2   ; what
+0865: 1D F7 07   pushs L07F7   ; i|drank
+0868: 1D FF 07   pushs L07FF   ; last|words
+086B: 1D 0A 08   pushs L080A   ; |james|n|
+086E: 1E 04 00   arrc 0004H   ; 4
+0871: 1F 32 00   pushi 0032H   ; 50
+0874: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0878: 21 01 00   push [0001]
+087B: 1F 41 00   pushi 0041H   ; 65
+087E: 22   cmpeq
+087F: 05 16 00   jne 0898
+0882: 1D 14 08   pushs L0814   ; out
+0885: 1D 18 08   pushs L0818   ; all|te,ed
+0888: 1D 22 08   pushs L0822   ; Ben
+088B: 1D 26 08   pushs L0826   ; here|lies
+088E: 1E 04 00   arrc 0004H   ; 4
+0891: 1F 32 00   pushi 0032H   ; 50
+0894: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0898: 21 01 00   push [0001]
+089B: 1F 42 00   pushi 0042H   ; 66
+089E: 22   cmpeq
+089F: 05 16 00   jne 08B8
+08A2: 1D 30 08   pushs L0830   ; his|h+d
+08A5: 1D 38 08   pushs L0838   ; axe|in
+08A8: 1D 3F 08   pushs L083F   ; buried|an
+08AB: 1D 49 08   pushs L0849   ; |scott|
+08AE: 1E 04 00   arrc 0004H   ; 4
+08B1: 1F 32 00   pushi 0032H   ; 50
+08B4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+08B8: 21 01 00   push [0001]
+08BB: 1F 43 00   pushi 0043H   ; 67
+08BE: 22   cmpeq
+08BF: 05 16 00   jne 08D8
+08C2: 1D 51 08   pushs L0851   ; exii
+08C5: 1D 56 08   pushs L0856   ; vidi
+08C8: 1D 5B 08   pushs L085B   ; veni
+08CB: 1D 60 08   pushs L0860   ; |duke|
+08CE: 1E 04 00   arrc 0004H   ; 4
+08D1: 1F 32 00   pushi 0032H   ; 50
+08D4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+08D8: 21 01 00   push [0001]
+08DB: 1F 44 00   pushi 0044H   ; 68
+08DE: 22   cmpeq
+08DF: 05 16 00   jne 08F8
+08E2: 1D 67 08   pushs L0867   ; print
+08E5: 1D 6D 08   pushs L086D   ; fit|to
+08E8: 1D 74 08   pushs L0874   ; every(i*
+08EB: 1D 7D 08   pushs L087D   ; |mike|h|
+08EE: 1E 04 00   arrc 0004H   ; 4
+08F1: 1F 32 00   pushi 0032H   ; 50
+08F4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+08F8: 21 01 00   push [0001]
+08FB: 1F 45 00   pushi 0045H   ; 69
+08FE: 22   cmpeq
+08FF: 05 16 00   jne 0918
+0902: 1D 86 08   pushs L0886   ; to|us|all
+0905: 1D 90 08   pushs L0890   ; sunshine
+0908: 1D 99 08   pushs L0899   ; she|gave
+090B: 1D A2 08   pushs L08A2   ; |robin|
+090E: 1E 04 00   arrc 0004H   ; 4
+0911: 1F 32 00   pushi 0032H   ; 50
+0914: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0918: 21 01 00   push [0001]
+091B: 1F 46 00   pushi 0046H   ; 70
+091E: 22   cmpeq
+091F: 05 19 00   jne 093B
+0922: 1D AA 08   pushs L08AA   ; clued|in
+0925: 1D B3 08   pushs L08B3   ; got
+0928: 1D B7 08   pushs L08B7   ; never
+092B: 1D BD 08   pushs L08BD   ; |m|
+092E: 1D C1 08   pushs L08C1   ; |andrew|
+0931: 1E 05 00   arrc 0005H   ; 5
+0934: 1F 32 00   pushi 0032H   ; 50
+0937: 39 32 00 02  calli _DisplaySign@2  ; 0032
+093B: 21 01 00   push [0001]
+093E: 1F 47 00   pushi 0047H   ; 71
+0941: 22   cmpeq
+0942: 05 16 00   jne 095B
+0945: 1D CA 08   pushs L08CA   ; gr+t
+0948: 1D CF 08   pushs L08CF   ; was
+094B: 1D D3 08   pushs L08D3   ; (e|food
+094E: 1D DB 08   pushs L08DB   ; |wayne|s|
+0951: 1E 04 00   arrc 0004H   ; 4
+0954: 1F 32 00   pushi 0032H   ; 50
+0957: 39 32 00 02  calli _DisplaySign@2  ; 0032
+095B: 21 01 00   push [0001]
+095E: 1F 48 00   pushi 0048H   ; 72
+0961: 22   cmpeq
+0962: 05 13 00   jne 0978
+0965: 1D E5 08   pushs L08E5   ; delivered
+0968: 1D EF 08   pushs L08EF   ; was
+096B: 1D F3 08   pushs L08F3   ; |craig|c|
+096E: 1E 03 00   arrc 0003H   ; 3
+0971: 1F 32 00   pushi 0032H   ; 50
+0974: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0978: 21 01 00   push [0001]
+097B: 1F 49 00   pushi 0049H   ; 73
+097E: 22   cmpeq
+097F: 05 16 00   jne 0998
+0982: 1D FD 08   pushs L08FD   ; ate
+0985: 1D 01 09   pushs L0901   ; never
+0988: 1D 07 09   pushs L0907   ; fed|but
+098B: 1D 0F 09   pushs L090F   ; |jeff|f|
+098E: 1E 04 00   arrc 0004H   ; 4
+0991: 1F 32 00   pushi 0032H   ; 50
+0994: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0998: 21 01 00   push [0001]
+099B: 1F 4A 00   pushi 004AH   ; 74
+099E: 22   cmpeq
+099F: 05 16 00   jne 09B8
+09A2: 1D 18 09   pushs L0918   ; (ought
+09A5: 1D 1F 09   pushs L091F   ; for
+09A8: 1D 23 09   pushs L0923   ; food
+09AB: 1D 28 09   pushs L0928   ; |w|hagy
+09AE: 1E 04 00   arrc 0004H   ; 4
+09B1: 1F 32 00   pushi 0032H   ; 50
+09B4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+09B8: 21 01 00   push [0001]
+09BB: 1F 4B 00   pushi 004BH   ; 75
+09BE: 22   cmpeq
+09BF: 05 16 00   jne 09D8
+09C2: 1D 30 09   pushs L0930   ; wi(|gifts
+09C5: 1D 3A 09   pushs L093A   ; arrived
+09C8: 1D 42 09   pushs L0942   ; |stevens|
+09CB: 1D 4C 09   pushs L094C   ; |m|
+09CE: 1E 04 00   arrc 0004H   ; 4
+09D1: 1F 32 00   pushi 0032H   ; 50
+09D4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+09D8: 21 01 00   push [0001]
+09DB: 1F 4C 00   pushi 004CH   ; 76
+09DE: 22   cmpeq
+09DF: 05 19 00   jne 09FB
+09E2: 1D 50 09   pushs L0950   ; dinner
+09E5: 1D 57 09   pushs L0957   ; of
+09E8: 1D 5A 09   pushs L095A   ; bringer
+09EB: 1D 62 09   pushs L0962   ; |g|
+09EE: 1D 66 09   pushs L0966   ; |michelle|
+09F1: 1E 05 00   arrc 0005H   ; 5
+09F4: 1F 32 00   pushi 0032H   ; 50
+09F7: 39 32 00 02  calli _DisplaySign@2  ; 0032
+09FB: 21 01 00   push [0001]
+09FE: 1F 4D 00   pushi 004DH   ; 77
+0A01: 22   cmpeq
+0A02: 05 16 00   jne 0A1B
+0A05: 1D 71 09   pushs L0971   ; him
+0A08: 1D 75 09   pushs L0975   ; was
+0A0B: 1D 79 09   pushs L0979   ; food
+0A0E: 1D 7E 09   pushs L097E   ; |brian|s|
+0A11: 1E 04 00   arrc 0004H   ; 4
+0A14: 1F 32 00   pushi 0032H   ; 50
+0A17: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0A1B: 21 01 00   push [0001]
+0A1E: 1F 4E 00   pushi 004EH   ; 78
+0A21: 22   cmpeq
+0A22: 05 19 00   jne 0A3E
+0A25: 1D 88 09   pushs L0988   ; dinner
+0A28: 1D 8F 09   pushs L098F   ; for
+0A2B: 1D 93 09   pushs L0993   ; as|in|d|
+0A2E: 1D 9C 09   pushs L099C   ; d|
+0A31: 1D 9F 09   pushs L099F   ; |jackie|
+0A34: 1E 05 00   arrc 0005H   ; 5
+0A37: 1F 32 00   pushi 0032H   ; 50
+0A3A: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0A3E: 21 01 00   push [0001]
+0A41: 1F 4F 00   pushi 004FH   ; 79
+0A44: 22   cmpeq
+0A45: 05 19 00   jne 0A61
+0A48: 1D A8 09   pushs L09A8   ; record
+0A4B: 1D AF 09   pushs L09AF   ; perfect
+0A4E: 1D B7 09   pushs L09B7   ; a
+0A51: 1D B9 09   pushs L09B9   ; spained
+0A54: 1D C1 09   pushs L09C1   ; |b|adams|
+0A57: 1E 05 00   arrc 0005H   ; 5
+0A5A: 1F 32 00   pushi 0032H   ; 50
+0A5D: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0A61: 21 01 00   push [0001]
+0A64: 1F 50 00   pushi 0050H   ; 80
+0A67: 22   cmpeq
+0A68: 05 19 00   jne 0A84
+0A6B: 1D CB 09   pushs L09CB   ; now|below
+0A6E: 1D D5 09   pushs L09D5   ; who|is
+0A71: 1D DC 09   pushs L09DC   ; fellow
+0A74: 1D E3 09   pushs L09E3   ; a|nice
+0A77: 1D EA 09   pushs L09EA   ; |hal|
+0A7A: 1E 05 00   arrc 0005H   ; 5
+0A7D: 1F 32 00   pushi 0032H   ; 50
+0A80: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0A84: 21 01 00   push [0001]
+0A87: 1F 51 00   pushi 0051H   ; 81
+0A8A: 22   cmpeq
+0A8B: 05 19 00   jne 0AA7
+0A8E: 1D F0 09   pushs L09F0   ; over
+0A91: 1D F5 09   pushs L09F5   ; over|and
+0A94: 1D FE 09   pushs L09FE   ; friend
+0A97: 1D 05 0A   pushs L0A05   ; mans|best
+0A9A: 1D 0F 0A   pushs L0A0F   ; |rover|
+0A9D: 1E 05 00   arrc 0005H   ; 5
+0AA0: 1F 32 00   pushi 0032H   ; 50
+0AA3: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0AA7: 21 01 00   push [0001]
+0AAA: 1F 52 00   pushi 0052H   ; 82
+0AAD: 22   cmpeq
+0AAE: 05 19 00   jne 0ACA
+0AB1: 1D 17 0A   pushs L0A17   ; dies
+0AB4: 1D 1C 0A   pushs L0A1C   ; never
+0AB7: 1D 22 0A   pushs L0A22   ; love
+0ABA: 1D 27 0A   pushs L0A27   ; age|old
+0ABD: 1D 2F 0A   pushs L0A2F   ; |felcore|
+0AC0: 1E 05 00   arrc 0005H   ; 5
+0AC3: 1F 32 00   pushi 0032H   ; 50
+0AC6: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0ACA: 21 01 00   push [0001]
+0ACD: 1F 53 00   pushi 0053H   ; 83
+0AD0: 22   cmpeq
+0AD1: 05 19 00   jne 0AED
+0AD4: 1D 39 0A   pushs L0A39   ; of|course
+0AD7: 1D 43 0A   pushs L0A43   ; hes|d+d
+0ADA: 1D 4B 0A   pushs L0A4B   ; morse
+0ADD: 1D 51 0A   pushs L0A51   ; tony
+0AE0: 1D 56 0A   pushs L0A56   ; heres
+0AE3: 1E 05 00   arrc 0005H   ; 5
+0AE6: 1F 32 00   pushi 0032H   ; 50
+0AE9: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0AED: 21 01 00   push [0001]
+0AF0: 1F 54 00   pushi 0054H   ; 84
+0AF3: 22   cmpeq
+0AF4: 05 19 00   jne 0B10
+0AF7: 1D 5C 0A   pushs L0A5C   ; gross
+0AFA: 1D 62 0A   pushs L0A62   ; |
+0AFD: 1D 64 0A   pushs L0A64   ; salamon
+0B00: 1D 6C 0A   pushs L0A6C   ; larry
+0B03: 1D 72 0A   pushs L0A72   ; heres
+0B06: 1E 05 00   arrc 0005H   ; 5
+0B09: 1F 32 00   pushi 0032H   ; 50
+0B0C: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0B10: 21 01 00   push [0001]
+0B13: 1F 55 00   pushi 0055H   ; 85
+0B16: 22   cmpeq
+0B17: 05 16 00   jne 0B30
+0B1A: 1D 78 0A   pushs L0A78   ; faltran
+0B1D: 1D 80 0A   pushs L0A80   ; who|is
+0B20: 1D 87 0A   pushs L0A87   ; mcdonald
+0B23: 1D 90 0A   pushs L0A90   ; darren
+0B26: 1E 04 00   arrc 0004H   ; 4
+0B29: 1F 32 00   pushi 0032H   ; 50
+0B2C: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0B30: 21 01 00   push [0001]
+0B33: 1F 56 00   pushi 0056H   ; 86
+0B36: 22   cmpeq
+0B37: 05 19 00   jne 0B53
+0B3A: 1D 97 0A   pushs L0A97   ; chiltons
+0B3D: 1D A0 0A   pushs L0AA0   ; from|(e
+0B40: 1D A8 0A   pushs L0AA8   ; away
+0B43: 1D AD 0A   pushs L0AAD   ; died
+0B46: 1D B2 0A   pushs L0AB2   ; |kevin|b|
+0B49: 1E 05 00   arrc 0005H   ; 5
+0B4C: 1F 32 00   pushi 0032H   ; 50
+0B4F: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0B53: 21 01 00   push [0001]
+0B56: 1F 57 00   pushi 0057H   ; 87
+0B59: 22   cmpeq
+0B5A: 05 19 00   jne 0B76
+0B5D: 1D BC 0A   pushs L0ABC   ; food
+0B60: 1D C1 0A   pushs L0AC1   ; worm
+0B63: 1D C6 0A   pushs L0AC6   ; michael|
+0B66: 1D CF 0A   pushs L0ACF   ; and
+0B69: 1D D3 0A   pushs L0AD3   ; |beth
+0B6C: 1E 05 00   arrc 0005H   ; 5
+0B6F: 1F 32 00   pushi 0032H   ; 50
+0B72: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0B76: 21 01 00   push [0001]
+0B79: 1F 58 00   pushi 0058H   ; 88
+0B7C: 22   cmpeq
+0B7D: 05 13 00   jne 0B93
+0B80: 1D D9 0A   pushs L0AD9   ; honorably
+0B83: 1D E3 0A   pushs L0AE3   ; died
+0B86: 1D E8 0A   pushs L0AE8   ; |a|h|
+0B89: 1E 03 00   arrc 0003H   ; 3
+0B8C: 1F 32 00   pushi 0032H   ; 50
+0B8F: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0B93: 21 01 00   push [0001]
+0B96: 1F 59 00   pushi 0059H   ; 89
+0B99: 22   cmpeq
+0B9A: 05 16 00   jne 0BB3
+0B9D: 1D EE 0A   pushs L0AEE   ; went
+0BA0: 1D F3 0A   pushs L0AF3   ; and
+0BA3: 1D F7 0A   pushs L0AF7   ; gone
+0BA6: 1D FC 0A   pushs L0AFC   ; |john|t|
+0BA9: 1E 04 00   arrc 0004H   ; 4
+0BAC: 1F 32 00   pushi 0032H   ; 50
+0BAF: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0BB3: 21 01 00   push [0001]
+0BB6: 1F 5A 00   pushi 005AH   ; 90
+0BB9: 22   cmpeq
+0BBA: 05 16 00   jne 0BD3
+0BBD: 1D 05 0B   pushs L0B05   ; here
+0BC0: 1D 0A 0B   pushs L0B0A   ; installed
+0BC3: 1D 14 0B   pushs L0B14   ; 
+0BC6: 1D 15 0B   pushs L0B15   ; |rey|
+0BC9: 1E 04 00   arrc 0004H   ; 4
+0BCC: 1F 32 00   pushi 0032H   ; 50
+0BCF: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0BD3: 21 01 00   push [0001]
+0BD6: 1F 5B 00   pushi 005BH   ; 91
+0BD9: 22   cmpeq
+0BDA: 05 19 00   jne 0BF6
+0BDD: 1D 1B 0B   pushs L0B1B   ; died
+0BE0: 1D 20 0B   pushs L0B20   ; man|never
+0BE3: 1D 2A 0B   pushs L0B2A   ; deservi*
+0BE6: 1D 33 0B   pushs L0B33   ; a|more
+0BE9: 1D 3A 0B   pushs L0B3A   ; |rhoode|
+0BEC: 1E 05 00   arrc 0005H   ; 5
+0BEF: 1F 32 00   pushi 0032H   ; 50
+0BF2: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0BF6: 21 01 00   push [0001]
+0BF9: 1F 5C 00   pushi 005CH   ; 92
+0BFC: 22   cmpeq
+0BFD: 05 19 00   jne 0C19
+0C00: 1D 43 0B   pushs L0B43   ; missed
+0C03: 1D 4A 0B   pushs L0B4A   ; she|is
+0C06: 1D 51 0B   pushs L0B51   ; moment
+0C09: 1D 58 0B   pushs L0B58   ; every
+0C0C: 1D 5E 0B   pushs L0B5E   ; |jasner|
+0C0F: 1E 05 00   arrc 0005H   ; 5
+0C12: 1F 32 00   pushi 0032H   ; 50
+0C15: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0C19: 21 01 00   push [0001]
+0C1C: 1F 5D 00   pushi 005DH   ; 93
+0C1F: 22   cmpeq
+0C20: 05 19 00   jne 0C3C
+0C23: 1D 67 0B   pushs L0B67   ; he|lays
+0C26: 1D 6F 0B   pushs L0B6F   ; now|here
+0C29: 1D 78 0B   pushs L0B78   ; lied
+0C2C: 1D 7D 0B   pushs L0B7D   ; here|he
+0C2F: 1D 85 0B   pushs L0B85   ; |wampol|
+0C32: 1E 05 00   arrc 0005H   ; 5
+0C35: 1F 32 00   pushi 0032H   ; 50
+0C38: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0C3C: 21 01 00   push [0001]
+0C3F: 1F 5E 00   pushi 005EH   ; 94
+0C42: 22   cmpeq
+0C43: 05 19 00   jne 0C5F
+0C46: 1D 8E 0B   pushs L0B8E   ; spurni*
+0C49: 1D 96 0B   pushs L0B96   ; lovers
+0C4C: 1D 9D 0B   pushs L0B9D   ; by|a
+0C4F: 1D A2 0B   pushs L0BA2   ; wounded
+0C52: 1D AA 0B   pushs L0BAA   ; |destra|
+0C55: 1E 05 00   arrc 0005H   ; 5
+0C58: 1F 32 00   pushi 0032H   ; 50
+0C5B: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0C5F: 21 01 00   push [0001]
+0C62: 1F 5F 00   pushi 005FH   ; 95
+0C65: 22   cmpeq
+0C66: 05 16 00   jne 0C7F
+0C69: 1D B3 0B   pushs L0BB3   ; boots|on
+0C6C: 1D BC 0B   pushs L0BBC   ; wi(|his
+0C6F: 1D C4 0B   pushs L0BC4   ; buried
+0C72: 1D CB 0B   pushs L0BCB   ; |mendar|
+0C75: 1E 04 00   arrc 0004H   ; 4
+0C78: 1F 32 00   pushi 0032H   ; 50
+0C7B: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0C7F: 21 01 00   push [0001]
+0C82: 1F 60 00   pushi 0060H   ; 96
+0C85: 22   cmpeq
+0C86: 05 19 00   jne 0CA2
+0C89: 1D D4 0B   pushs L0BD4   ; good
+0C8C: 1D D9 0B   pushs L0BD9   ; looked|so
+0C8F: 1D E3 0B   pushs L0BE3   ; never
+0C92: 1D E9 0B   pushs L0BE9   ; old|age
+0C95: 1D F1 0B   pushs L0BF1   ; |greghim|
+0C98: 1E 05 00   arrc 0005H   ; 5
+0C9B: 1F 32 00   pushi 0032H   ; 50
+0C9E: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0CA2: 21 01 00   push [0001]
+0CA5: 1F 61 00   pushi 0061H   ; 97
+0CA8: 22   cmpeq
+0CA9: 05 19 00   jne 0CC5
+0CAC: 1D FB 0B   pushs L0BFB   ; now
+0CAF: 1D FF 0B   pushs L0BFF   ; but|is
+0CB2: 1D 06 0C   pushs L0C06   ; missed
+0CB5: 1D 0D 0C   pushs L0C0D   ; was|not
+0CB8: 1D 15 0C   pushs L0C15   ; |sarnan|
+0CBB: 1E 05 00   arrc 0005H   ; 5
+0CBE: 1F 32 00   pushi 0032H   ; 50
+0CC1: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0CC5: 21 01 00   push [0001]
+0CC8: 1F 62 00   pushi 0062H   ; 98
+0CCB: 22   cmpeq
+0CCC: 05 19 00   jne 0CE8
+0CCF: 1D 1E 0C   pushs L0C1E   ; day
+0CD2: 1D 22 0C   pushs L0C22   ; of|his
+0CD5: 1D 29 0C   pushs L0C29   ; enchanter
+0CD8: 1D 33 0C   pushs L0C33   ; gr+te,
+0CDB: 1D 3A 0C   pushs L0C3A   ; |erlemar|
+0CDE: 1E 05 00   arrc 0005H   ; 5
+0CE1: 1F 32 00   pushi 0032H   ; 50
+0CE4: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0CE8: 21 01 00   push [0001]
+0CEB: 1F 63 00   pushi 0063H   ; 99
+0CEE: 22   cmpeq
+0CEF: 05 19 00   jne 0D0B
+0CF2: 1D 44 0C   pushs L0C44   ; conquered
+0CF5: 1D 4E 0C   pushs L0C4E   ; was
+0CF8: 1D 52 0C   pushs L0C52   ; saw|
+0CFB: 1D 57 0C   pushs L0C57   ; came|
+0CFE: 1D 5D 0C   pushs L0C5D   ; |galler|
+0D01: 1E 05 00   arrc 0005H   ; 5
+0D04: 1F 32 00   pushi 0032H   ; 50
+0D07: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0D0B: 21 01 00   push [0001]
+0D0E: 1F 64 00   pushi 0064H   ; 100
+0D11: 22   cmpeq
+0D12: 05 19 00   jne 0D2E
+0D15: 1D 66 0C   pushs L0C66   ; forever
+0D18: 1D 6E 0C   pushs L0C6E   ; worm|food
+0D1B: 1D 78 0C   pushs L0C78   ; for|a|day
+0D1E: 1D 82 0C   pushs L0C82   ; queen
+0D21: 1D 88 0C   pushs L0C88   ; |elgele(|
+0D24: 1E 05 00   arrc 0005H   ; 5
+0D27: 1F 32 00   pushi 0032H   ; 50
+0D2A: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0D2E: 21 01 00   push [0001]
+0D31: 1F 65 00   pushi 0065H   ; 101
+0D34: 22   cmpeq
+0D35: 05 16 00   jne 0D4E
+0D38: 1D 92 0C   pushs L0C92   ; stops
+0D3B: 1D 98 0C   pushs L0C98   ; never
+0D3E: 1D 9E 0C   pushs L0C9E   ; (e|si*i*
+0D41: 1D A7 0C   pushs L0CA7   ; |pantor|
+0D44: 1E 04 00   arrc 0004H   ; 4
+0D47: 1F 32 00   pushi 0032H   ; 50
+0D4A: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0D4E: 21 01 00   push [0001]
+0D51: 1F 66 00   pushi 0066H   ; 102
+0D54: 22   cmpeq
+0D55: 05 19 00   jne 0D71
+0D58: 1D B0 0C   pushs L0CB0   ; ma,er
+0D5B: 1D B6 0C   pushs L0CB6   ; and
+0D5E: 1D BA 0C   pushs L0CBA   ; fa(er
+0D61: 1D C0 0C   pushs L0CC0   ; beloved
+0D64: 1D C8 0C   pushs L0CC8   ; here|lies
+0D67: 1E 05 00   arrc 0005H   ; 5
+0D6A: 1F 32 00   pushi 0032H   ; 50
+0D6D: 39 32 00 02  calli _DisplaySign@2  ; 0032
+0D71: 25   ret

@@ -38,6 +38,8 @@ public:
       //void MakeCSVFile();
    void LoadInitialGameState();
 
+   void splitUsecodeDis();
+
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
    unsigned int  ReadU32(std::istream &buffer);

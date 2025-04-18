@@ -1,0 +1,122 @@
+  .funcnumber 028BH
+  .data
+L0000: db '@I suspect spinning the wool will be more fruitful '
+L0033: db 00
+L0034: db 'than spinning an empty wheel.@'
+L0052: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0001H
+  .extern 08FFH
+0000: 48   push eventid
+0001: 1F 07 00   pushi 0007H   ; 7
+0004: 22   cmpeq
+0005: 05 7A 00   jne 0082
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F 01 00   pushi 0001H   ; 1
+000E: 1F 69 03   pushi 0369H   ; 873
+0011: 1F 9C FE   pushi FE9CH   ; -356
+0014: 38 35 00 04  callis 0035, 4
+0018: 12 00 00   pop [0000]
+001B: 1F 00 00   pushi 0000H   ; 0
+001E: 12 01 00   pop [0001]
+0021: 21 00 00   push [0000]
+0024: 38 5E 00 01  callis _ArraySize@1  ; 005E
+0028: 1F 00 00   pushi 0000H   ; 0
+002B: 16   cmpgt
+002C: 05 24 00   jne 0053
+002F: 1F 0C 00   pushi 000CH   ; 12
+0032: 1F FF FF   pushi FFFFH   ; -1
+0035: 44 0B   pushw 440BH   ; 17419
+0037: 44 6B   pushw 446BH   ; 17515
+0039: 44 6C   pushw 1F6CH   ; 8044
+003B: 1F 06 00   pushi 0006H   ; 6
+003E: 44 59   pushw 1E59H   ; 7769
+0040: 1E 07 00   arrc 0007H   ; 7
+0043: 1F 9C FE   pushi FE9CH   ; -356
+0046: 38 01 00 02  callis 0001, 2
+004A: 12 02 00   pop [0002]
+004D: 1F 03 00   pushi 0003H   ; 3
+0050: 12 01 00   pop [0001]
+0053: 3E   push itemref
+0054: 39 5C 00 01  calli 005C, 1
+0058: 21 01 00   push [0001]
+005B: 1F 8B 02   pushi 028BH   ; 651
+005E: 44 55   pushw 1F55H   ; 8021
+0060: 1F 0C 00   pushi 000CH   ; 12
+0063: 1F FC FF   pushi FFFCH   ; -4
+0066: 44 0B   pushw 1F0BH   ; 7947
+0068: 1F 06 00   pushi 0006H   ; 6
+006B: 44 58   pushw 4458H   ; 17496
+006D: 44 01   pushw 4401H   ; 17409
+006F: 44 4E   pushw 1F4EH   ; 8014
+0071: 1F 00 00   pushi 0000H   ; 0
+0074: 44 46   pushw 1E46H   ; 7750
+0076: 1E 0B 00   arrc 000BH   ; 11
+0079: 3E   push itemref
+007A: 38 02 00 03  callis 0002, 3
+007E: 12 02 00   pop [0002]
+0081: 2C   db 2c ???
+0082: 48   push eventid
+0083: 1F 02 00   pushi 0002H   ; 2
+0086: 22   cmpeq
+0087: 05 88 00   jne 0112
+008A: 1F 99 FE   pushi FE99H   ; -359
+008D: 1F 99 FE   pushi FE99H   ; -359
+0090: 1F 8D 02   pushi 028DH   ; 653
+0093: 1F 9C FE   pushi FE9CH   ; -356
+0096: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+009A: 12 03 00   pop [0003]
+009D: 21 03 00   push [0003]
+00A0: 05 07 00   jne 00AA
+00A3: 21 03 00   push [0003]
+00A6: 39 6F 00 01  calli 006F, 1
+00AA: 1F 8E 02   pushi 028EH   ; 654
+00AD: 38 24 00 01  callis 0024, 1
+00B1: 12 04 00   pop [0004]
+00B4: 21 04 00   push [0004]
+00B7: 05 57 00   jne 0111
+00BA: 1F 12 00   pushi 0012H   ; 18
+00BD: 21 04 00   push [0004]
+00C0: 39 89 00 02  calli 0089, 2
+00C4: 1F 0B 00   pushi 000BH   ; 11
+00C7: 21 04 00   push [0004]
+00CA: 39 89 00 02  calli 0089, 2
+00CE: 1F 09 00   pushi 0009H   ; 9
+00D1: 1F 00 00   pushi 0000H   ; 0
+00D4: 38 10 00 02  callis _Random2@2  ; 0010
+00D8: 21 04 00   push [0004]
+00DB: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00DF: 3E   push itemref
+00E0: 38 18 00 01  callis 0018, 1
+00E4: 12 05 00   pop [0005]
+00E7: 1F 01 00   pushi 0001H   ; 1
+00EA: 26 05 00   aidx [0005]
+00ED: 1F 01 00   pushi 0001H   ; 1
+00F0: 09   add
+00F1: 1F 01 00   pushi 0001H   ; 1
+00F4: 46 05 00   db 46 ???
+   dw 0005H   ; 5
+00F7: 1F 02 00   pushi 0002H   ; 2
+00FA: 26 05 00   aidx [0005]
+00FD: 1F 01 00   pushi 0001H   ; 1
+0100: 09   add
+0101: 1F 02 00   pushi 0002H   ; 2
+0104: 46 05 00   db 46 ???
+   dw 0005H   ; 5
+0107: 21 05 00   push [0005]
+010A: 38 26 00 01  callis 0026, 1
+010E: 12 02 00   pop [0002]
+0111: 2C   db 2c ???
+0112: 48   push eventid
+0113: 1F 01 00   pushi 0001H   ; 1
+0116: 22   cmpeq
+0117: 05 10 00   jne 012A
+011A: 1D 00 00   pushs L0000   ; @I suspect spinni...
+011D: 1D 34 00   pushs L0034   ; than spinning an ...
+0120: 09   add
+0121: 12 06 00   pop [0006]
+0124: 21 06 00   push [0006]
+0127: 24 00 00   call [0000]   ; 08FFH
+012A: 25   ret

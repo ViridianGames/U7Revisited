@@ -1,0 +1,14 @@
+  .funcnumber 02B1H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 08 00   jne 0010
+0008: 3E   push itemref
+0009: 1F 39 00   pushi 0039H   ; 57
+000C: 39 2E 00 02  calli _PlayMusic@2  ; 002E
+0010: 25   ret

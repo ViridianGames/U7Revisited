@@ -1,0 +1,87 @@
+  .funcnumber 00FAH
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0006H
+  .extern 081BH
+  .extern 081DH
+  .extern 081EH
+  .extern 0818H
+  .extern 0819H
+  .extern 081AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 1A   cmpne
+0005: 05 01 00   jne 0009
+0008: 2C   db 2c ???
+0009: 3E   push itemref
+000A: 24 00 00   call [0000]   ; 081BH
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 1F 01 00   pushi 0001H   ; 1
+0016: 22   cmpeq
+0017: 05 40 00   jne 005A
+001A: 1F 01 00   pushi 0001H   ; 1
+001D: 1F 00 00   pushi 0000H   ; 0
+0020: 1F 03 00   pushi 0003H   ; 3
+0023: 1F 00 00   pushi 0000H   ; 0
+0026: 1F F6 00   pushi 00F6H   ; 246
+0029: 3E   push itemref
+002A: 24 01 00   call [0001]   ; 081DH
+002D: 05 27 00   jne 0057
+0030: 1F 07 00   pushi 0007H   ; 7
+0033: 1F 00 00   pushi 0000H   ; 0
+0036: 1F 00 00   pushi 0000H   ; 0
+0039: 1F 00 00   pushi 0000H   ; 0
+003C: 1F E1 00   pushi 00E1H   ; 225
+003F: 1F 02 00   pushi 0002H   ; 2
+0042: 1F 01 00   pushi 0001H   ; 1
+0045: 1F 88 01   pushi 0188H   ; 392
+0048: 3E   push itemref
+0049: 24 02 00   call [0002]   ; 081EH
+004C: 3E   push itemref
+004D: 1F 1F 00   pushi 001FH   ; 31
+0050: 39 86 00 02  calli 0086, 2
+0054: 06 03 00   jmp 005A
+0057: 24 03 00   call [0003]   ; 0818H
+005A: 21 00 00   push [0000]
+005D: 1F 00 00   pushi 0000H   ; 0
+0060: 22   cmpeq
+0061: 05 40 00   jne 00A4
+0064: 1F 07 00   pushi 0007H   ; 7
+0067: 1F FD FF   pushi FFFDH   ; -3
+006A: 1F 00 00   pushi 0000H   ; 0
+006D: 1F 01 00   pushi 0001H   ; 1
+0070: 1F F6 00   pushi 00F6H   ; 246
+0073: 3E   push itemref
+0074: 24 01 00   call [0001]   ; 081DH
+0077: 05 27 00   jne 00A1
+007A: 1F 07 00   pushi 0007H   ; 7
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1F 00 00   pushi 0000H   ; 0
+0083: 1F 01 00   pushi 0001H   ; 1
+0086: 1F E1 00   pushi 00E1H   ; 225
+0089: 1F 01 00   pushi 0001H   ; 1
+008C: 1F 00 00   pushi 0000H   ; 0
+008F: 1F 88 01   pushi 0188H   ; 392
+0092: 3E   push itemref
+0093: 24 02 00   call [0002]   ; 081EH
+0096: 3E   push itemref
+0097: 1F 1E 00   pushi 001EH   ; 30
+009A: 39 86 00 02  calli 0086, 2
+009E: 06 03 00   jmp 00A4
+00A1: 24 03 00   call [0003]   ; 0818H
+00A4: 21 00 00   push [0000]
+00A7: 1F 02 00   pushi 0002H   ; 2
+00AA: 22   cmpeq
+00AB: 05 04 00   jne 00B2
+00AE: 3E   push itemref
+00AF: 24 04 00   call [0004]   ; 0819H
+00B2: 21 00 00   push [0000]
+00B5: 1F 03 00   pushi 0003H   ; 3
+00B8: 22   cmpeq
+00B9: 05 04 00   jne 00C0
+00BC: 3E   push itemref
+00BD: 24 05 00   call [0005]   ; 081AH
+00C0: 25   ret

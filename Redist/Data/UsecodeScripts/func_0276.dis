@@ -1,0 +1,33 @@
+  .funcnumber 0276H
+  .data
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 0A 00   jne 0012
+0008: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+000C: 12 00 00   pop [0000]
+000F: 06 04 00   jmp 0016
+0012: 3E   push itemref
+0013: 12 00 00   pop [0000]
+0016: 1F 9C FE   pushi FE9CH   ; -356
+0019: 39 5C 00 01  calli 005C, 1
+001D: 44 64   pushw 4464H   ; 17508
+001F: 44 7A   pushw 447AH   ; 17530
+0021: 44 6A   pushw 446AH   ; 17514
+0023: 44 68   pushw 4468H   ; 17512
+0025: 44 64   pushw 4464H   ; 17508
+0027: 44 23   pushw 1E23H   ; 7715
+0029: 1E 06 00   arrc 0006H   ; 6
+002C: 1F 9C FE   pushi FE9CH   ; -356
+002F: 38 01 00 02  callis 0001, 2
+0033: 12 01 00   pop [0001]
+0036: 1F 76 02   pushi 0276H   ; 630
+0039: 21 00 00   push [0000]
+003C: 1F 9C FE   pushi FE9CH   ; -356
+003F: 38 41 00 03  callis 0041, 3
+0043: 12 01 00   pop [0001]
+0046: 25   ret

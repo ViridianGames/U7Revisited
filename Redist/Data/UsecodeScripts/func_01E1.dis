@@ -1,0 +1,19 @@
+  .funcnumber 01E1H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0942H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 02 00   pushi 0002H   ; 2
+0009: 22   cmpeq
+000A: 0F   or
+000B: 05 07 00   jne 0015
+000E: 1F B3 01   pushi 01B3H   ; 435
+0011: 3E   push itemref
+0012: 24 00 00   call [0000]   ; 0942H
+0015: 25   ret

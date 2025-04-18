@@ -1,0 +1,2215 @@
+  .funcnumber 0282H
+  .data
+L0000: db 'This is @not a @valid book'
+L001A: db 00
+L001B: db '~~ ~~MORGAN'S GUIDE TO UNIFINISHED NOVELS~~  ~~by Morgan*'
+L0054: db 00
+L0055: db '~~     An enlightening discourse on the enigma of blank tome'
+ db 's.'
+L0093: db 00
+L0094: db '~Beginning with the heretofore unresolved mysteries of empty'
+ db '...*Page 2*Page 3*Page 4*Page 5*Page 6*Page7'
+L00FC: db 00
+L00FD: db '~~ ~~ "HOW DEATH AFFECTS THOSE WHO WORK AROUND IT WITH REGUL'
+ db 'ARITY"*'
+L0140: db 00
+L0141: db 'Day 1: Subject (Tiery) seems friendly enough and willing to '
+ db 'accept my company.~'
+L0190: db 00
+L0191: db 'Day 2: Subject exhibiting strange sense of humor, very morbi'
+ db 'd.~'
+L01D0: db 00
+L01D1: db 'Day 3:  No contact with subject.~'
+L01F2: db 00
+L01F3: db 'Day 4: Subject makes continual references to recent conversa'
+ db 'tions with cemetery occupants.~'
+L024E: db 00
+L024F: db 'Day 5: ...'
+L0259: db 00
+L025A: db 'MY NOTEBOOK by Alagner~~'
+L0272: db 00
+L0273: db '     These are my observations concerning the organization k'
+ db 'nown as The Fellowship.'
+L02C6: db 00
+L02C7: db 'Although The Fellowship portends to be a group of optimists '
+ db 'with a philosophy called `Triad of Inner Strength', there ar'
+ db 'e many fallacies which can be gleaned by careful examination'
+ db ' of the group's `values'.'
+L0394: db 00
+L0395: db 'The first `value' is Strive For Unity. This implies that tha'
+ db 't we should all work together in harmony and towards one goa'
+ db 'l in life. However, careful examination of this tenet reveal'
+ db 's that members of The Fellowship consider themselves an elit'
+ db 'e group, and a prejudicial one at that. They tend to believe'
+ db ' that if one is not for them, then they are indeed against t'
+ db 'hem! And if one is against them, then may fortune be with th'
+ db 'at person, for he/she may very well come to a bad end!'
+L056F: db 00
+L0570: db 'The second `value' is Trust Thy Brother. This implies that e'
+ db 'ach member trusts implicitly other Fellowship members, and t'
+ db 'hat each will do favors or deeds for another without questio'
+ db 'n. On the other hand, this might mean that a member should d'
+ db 'o what another says REGARDLESS of the implications of the ac'
+ db 't. In other words, `do as I say and do not question it!' see'
+ db 'ms to be the underlying subtext of this tenet.'
+L0706: db 00
+L0707: db 'The third `value' is Worthiness Precedes Reward. If one does'
+ db ' good deeds for The Fellowship, then one will be rewarded. T'
+ db 'he other side of the coin, of course, is that if one does NO'
+ db 'T do good deeds for The Fellowship, then one will get his JU'
+ db 'ST reward! In The Fellowship, a `reward' can be either `good'
+ db '' or `bad'!'
+L083E: db 00
+L083F: db 'The Fellowship has been duping the masses of Britannia now f'
+ db 'or twenty years. They are becoming stronger and stronger. Af'
+ db 'ter careful study, I have come to the conclusion that the gr'
+ db 'oup is serving some higher, malevolent entity, referred to b'
+ db 'y the organization's inner circle as `The Guardian'. More in'
+ db 'formation needs to be obtained about The Guardian, but I am '
+ db 'certain that he is very dangerous.'
+L09C9: db 00
+L09CA: db 'The Fellowship seems to be organized into three distinct gra'
+ db 'des of members. Grade One consists of the general masses of '
+ db 'naive innocents who have joined, thinking that their patheti'
+ db 'c little lives will be helped in some way. Grade Two consist'
+ db 's of the various branch leaders who make up the inner circle'
+ db ' of Fellowship leaders.'
+L0B0D: db 00
+L0B0E: db 'There is also a Grade Three -- those Fellowship leaders who '
+ db 'are in administrative positions within the group: men such a'
+ db 's Batlin, and the mysterious couple Elizabeth and Abraham wh'
+ db 'o travel the country distributing The Fellowship's funds. (N'
+ db 'ot much is known about these two -- it is said they are twin'
+ db 's -- brother and sister.) I believe that the few Grade Three'
+ db ' members are in direct communication with The Guardian and b'
+ db 'elieve they will be serving as his lieutenants should The Gu'
+ db 'ardian ultimately gain power in the land.'
+L0D17: db 00
+L0D18: db 'Already, The Guardian is promising to be a powerful threat. '
+ db 'Magic in Britannia has taken a turn for the worse in the pas'
+ db 't few years. I believe that The Guardian has done something '
+ db 'to cause this malady. Not many people have noticed that Brit'
+ db 'annia's problem with Moongates -- they're being so unreliabl'
+ db 'e -- occurred around the same time. It follows that The Guar'
+ db 'dian is most likely responsible for this serious plague.'
+L0EB8: db 00
+L0EB9: db 'The Guardian also possesses some kind of power which allows '
+ db 'him to speak to and `charm' naive innocents so that they wil'
+ db 'l gladly join The Fellowship and become Grade One members. T'
+ db 'hese unfortunate lambs will most likely become The Guardian''
+ db 's slaves should he ever come into power.'
+L0FD1: db 00
+L0FD2: db 'After I have obtained enough proof of my theories concerning'
+ db ' The Fellowship, I shall present this notebook to Lord Briti'
+ db 'sh himself and rid Britannia of these very dangerous, lying '
+ db 'fascists.'
+L108F: db 00
+L1090: db 'OBSERVATIONS OF BLACK ROCK, by Rudyom The Mage~~'
+L10C0: db 00
+L10C1: db '     The mysterious substance known as Black Rock is complet'
+ db 'ely indestructible. Only by magical means can it be molded a'
+ db 'nd shaped.'
+L1143: db 00
+L1144: db 'Black Rock can be found in small quantities beneath the grou'
+ db 'nd, sometimes near lodes of iron ore or lead.'
+L11AD: db 00
+L11AE: db 'Black Rock can be excavated by conventional means, but melti'
+ db 'ng it down into a malleable substance is impossible, except '
+ db 'by magic.'
+L122F: db 00
+L1230: db 'I have found that a combination of electrical energy and mag'
+ db 'netic energy has a profound effect upon the substance. Toget'
+ db 'her, these properties cause Black Rock to become permeable, '
+ db 'that is, one can put one's hand through the substance as if '
+ db 'it were water!'
+L132E: db 00
+L132F: db 'Further study reveals that Black Rock might work as a telepo'
+ db 'rtation device if magic, electrical energy, magnetic energy,'
+ db ' and the correct alignment of heavenly bodies act together u'
+ db 'pon the substance. This theory still needs to be tested.'
+L141B: db 00
+L141C: db 'The Black Rock transmuter I created out of an old wand does '
+ db 'not work. It was meant to shoot electrical and magnetic char'
+ db 'ges into Black Rock, but all it does is make the substance e'
+ db 'xplode! (I must be careful not to let the transmuter get int'
+ db 'o the wrong hands. Pointing it at a large quantity of Black '
+ db 'Rock might produce a devastating explosion!)'
+L1574: db 00
+L1575: db 'I must quit for the day. The headaches that have been plagui'
+ db 'ng me have gotten worse. I am forgetting more and more. Very'
+ db ' soon, I am afraid, I will forget how to cast simple spells.'
+ db ' I believe something might be affecting the magical ether. B'
+ db 'ut I cannot be sure...'
+L167B: db 00
+L167C: db '~~ ~~ STRANGER IN A STRANGE LAND~~ ~~by Robert Heinlein~~Fir'
+ db 'st Edition*'
+L16C3: db 00
+L16C4: db '  The struggles of an individual from another planet who fin'
+ db 'ds difficutly assimilating into his new society and culture.'
+L173C: db 00
+L173D: db '~~ ~~CHITTY-CHITTY-BANG-BANG~~ ~~by Ian Fleming*'
+L176D: db 00
+L176E: db '    This wonderful childrens's story of a car that could fly'
+ db ' has been pleasing youths and adults alike for many generati'
+ db 'ons.'
+L17EA: db 00
+L17EB: db '~~ ~~THE WIZARD OF OZ ~~ ~~by Frank L. Baum*'
+L1817: db 00
+L1818: db '     The tale of a little girl, Dorthy, who, with her dog, T'
+ db 'oto, travels through whirlwinds and magic to a fanciful land'
+ db ' called Oz. Dorothy's search for ideals in this land win her'
+ db ' three new friends. The first, a brainless scarecrow, whose '
+ db 'ultimate wisdom teaches her the principle of Truth.  The sec'
+ db 'ond, a heartless tin-man, whose undying devotion shows her t'
+ db 'he principle of Love.  Finally, Dorothy encounters a cowardl'
+ db 'y lion, who, facing all perils to save her, demonstrates the'
+ db ' principle of Courage.'
+L1A0E: db 00
+L1A0F: db '~~ ~~ HUBERT'S HAIR-RAISING ADVENTURE ~~ ~~by Bill Peet*'
+L1A47: db 00
+L1A48: db 'Hubert the Lion was haughty and vain And especially proud of'
+ db ' his elegant mane. ~But conceit of this sort isn't proper at'
+ db ' all And Hubert the Lion was due for a fall. ~One day as he '
+ db 'sharpened his claws on a rock He received a most horrible, t'
+ db 'errible shock.'
+L1B46: db 00
+L1B47: db '~A flaming hot spark flew up into the air, Came down on his '
+ db 'head and ignited his hair. ~With a roar of surprise he took '
+ db 'off like a streak, Away through the jungle to Zamboozi Creek'
+ db '. ~He leaped in kersplash! with a shower of bubbles, And cam'
+ db 'e bobbing up with a head full of stubbles. ~At first he just'
+ db ' stared with a wide-open mouth At the cloud of black smoke d'
+ db 'rifting off to the south.'
+L1CC8: db 00
+L1CC9: db 'Then he felt with his paws just in back of his ears And he s'
+ db 'uddenly realized the worst of his fears. ~'I'm ruined,' he s'
+ db 'houted, 'oh what'll I do! I'd rather be dead or go live in a'
+ db ' zoo! ~And if anyone sees me, oh what a disgrace, So I'd bet'
+ db 'ter discover a good hiding place!''
+L1DDB: db 00
+L1DDC: db '~~RECORDS OF THE HIGH COURT OF YEW~~ ~~ ~~'
+L1E06: db 00
+L1E07: db '... Hook -- Hook is known to be an extremely dangerous kille'
+ db 'r, a pirate who left his own band of scalliwags to become a '
+ db 'freelance assassin for whomever might meet his price. It is '
+ db 'believed that he is linked to at least fourteen murders in B'
+ db 'ritannia. All of the victims had been mutilated with a sharp'
+ db ' object believed to be the handiwork of a hook-hand.'
+L1F67: db 00
+L1F68: db '     It is not known where Hook resides, but many believe he'
+ db ' has a secret hideout on Buccaneer's Den. His most recent si'
+ db 'ghting confirmed that he is travelling with a warrior gargoy'
+ db 'le named Forskis.~~'
+L202F: db 00
+L2030: db '... Kellin... is wanted in several townships for thievery. H'
+ db 'e uses many aliases, including Tervis, Kreg, and Hodge. He w'
+ db 'as last seen near the forest of Yew and is believed to have '
+ db 'gone into hiding.~~'
+L20F7: db 00
+L20F8: db '... Sullivan... is wanted in several townships for fraud, th'
+ db 'ievery, and other petty crimes. He is known to be a member o'
+ db 'f The Fellowship, though The Fellowship has denied any knowl'
+ db 'edge of such a member. In many reports of the man's crimes, '
+ db 'victims have stated that he claimed to be the Avatar.'
+L221D: db 00
+L221E: db 'Morfin of Paws, Ledger of Venom Sales*'
+L2244: db 00
+L2245: db '~~ ~~...July, 0359:~Sale - 3 vials - 300~Sale - 5 vials - 48'
+ db '0~ August, 0359:~Sale - 12 vials - 1100~October, 0359:~Sale '
+ db '- 9 vials - 880~December, 0359:~Sale - 10 vials - 1000~Sale '
+ db '- 5 vials - 500~ February, 0360:~Sale - 6 vials - 590~Sale -'
+ db ' 4 vials - 400~Sale - 5 vials - 500~April, 0360:~Sale - 6 vi'
+ db 'als - 620~September, 0360~ Sale - 5 vials - 500~Sale - 5 via'
+ db 'ls - 480~November, 0360:~ Sale - 10 vials - 990~January, 036'
+ db '1:~Sale - 12 vials - 1200... '
+L2406: db 00
+L2407: db '~~ ~~ULTIMA: THE AVATAR ADVENTURES ~~ ~~by Rusel DeMaria and'
+ db ' Caroline Spector*'
+L2455: db 00
+L2456: db 'Within the pages of this tome are the details of the many ad'
+ db 'venturous exploits  of the Avatar, beginning with after the '
+ db 'destruction of Exodus. The details within this book are amaz'
+ db 'ingly accurate, and the descriptions should prove to be surp'
+ db 'risingly vivid.'
+L2555: db 00
+L2556: db '~~ ~~ ~~ ~~ EVERYTHING AN AVATAR SHOULD KNOW ABOUT SEX:*'
+L258E: db 00
+L258F: db '*'
+L2590: db 00
+L2591: db '*'
+L2592: db 00
+L2593: db '~~ ~~ENCYCLOPEDIA BRITANNIA ~~ ~~Volume I. A - E.*'
+L25C5: db 00
+L25C6: db '     Another volume in a long series of books detailing ever'
+ db 'y known geographical location and historical personage. This'
+ db ' work covers Aakara, the first mayor of Trinsic, through Exo'
+ db 'dus, the vile offspring of Mondain and Minax.'
+L26A7: db 00
+L26A8: db '~~ ~~ENCYCLOPEDIA BRITANNIA ~~ ~~Volume II. F - L.*'
+L26DB: db 00
+L26DC: db '     Here is another volume in a long series of books detail'
+ db 'ing every known geographical location and historical persona'
+ db 'ge. This work covers Faalga, the ancient sage of reptiles, t'
+ db 'hrough Lyceaum, the reknowned library that is now a part of '
+ db 'Moonglow.'
+L27D5: db 00
+L27D6: db '~~ ~~ENCYCLOPEDIA BRITANNIA~~ ~~Volume III. M - P.*'
+L2809: db 00
+L280A: db '     Here is another volume in a long series of books detail'
+ db 'ing every known geographical location and historical persona'
+ db 'ge. This tome covers Kanos, an historical tower in ancient Y'
+ db 'ew, through Pusmoran, the orginator of the rarely-used fourt'
+ db 'h person point of view.'
+L2911: db 00
+L2912: db '~~ ~~ENCYCLOPEDIA BRITANNIA~~ ~~Volume IV. Q - U.*'
+L2944: db 00
+L2945: db '     Here is another volume in a long series of books detail'
+ db 'ing every known geographical location and historical persona'
+ db 'ge. This book covers Quaaxetlornicom, the mythilogical snow '
+ db 'beast of the North, through, Utopia, the proposed manifestat'
+ db 'ion of the time-honored concept of a perfect society.'
+L2A6A: db 00
+L2A6B: db '~~ ~~ENCYCLOPEDIA BRITANNIA~~ ~~Volume V. V - Z.*'
+L2A9C: db 00
+L2A9D: db '     Here is another volume in a long series of books detail'
+ db 'ing every known geographical location and historical persona'
+ db 'ge. This tome covers Vargaz, contemporary storyteller and co'
+ db 'mpiler of legendary parables, through Zyand, a prehistoric i'
+ db 'sland.'
+L2B93: db 00
+L2B94: db '~~ ~~KEY TO THE BLACK GATE.*'
+L2BB0: db 00
+L2BB1: db '~~ ~~ ~~The pages bound within this book contain well-docume'
+ db 'nted clue information from the invaluable sources at Origin '
+ db 'Systems.'
+L2C31: db 00
+L2C32: db '~~ ~~COLLECTED PLAYS ~~ ~~by Raymundo.*'
+L2C59: db 00
+L2C5A: db '     Housed inside this anthology of stage works are such gr'
+ db 'eats as "Three on a Codpiece", "The Trials of the Avatar", "'
+ db 'The Plagiarist", "Clue", "Thumbs Down", and several other pr'
+ db 'ize-winning pieces. For convenience in production, several s'
+ db 'uggested costumes and make-up techniques are listed in the b'
+ db 'ack.'
+L2D8A: db 00
+L2D8B: db '~~ ~~NO TIME TO DANCE~~ ~~by B.A. Morler.*'
+L2DB5: db 00
+L2DB6: db '     The wonderful depiction of the busy life of two industr'
+ db 'ious scholars, caught betwixt the demands of a forceful task'
+ db 'master and the pressure of time.'
+L2E4E: db 00
+L2E4F: db '~~ ~~THE SILENCE OF CHASTITY ~~by I.M. Munk.~~'
+L2E7D: db 00
+L2E7E: db 'The treatise on the monks of the Brotherhood of the Rose, in'
+ db 'cluding how they compare to their stereotypes.*'
+L2EE9: db 00
+L2EEA: db '     ...One common misconception is that monks still hold on'
+ db ' to the outdated notion that "silence is golden." While this'
+ db ' was, perhaps, a tenet they supported as late as 0103, no lo'
+ db 'nger do the monks of the renowned Empath Abbey care to remai'
+ db 'n speechless...*'
+L2FEA: db 00
+L2FEB: db '     ...There is no doubt that monks love wine. Not only are'
+ db ' there more monk stories centering on the creation of wine, '
+ db 'but any visit to the Abbey will reveal just how much of the '
+ db 'entire building is devoted to the formation the delicious mi'
+ db 'xture...'
+L30E3: db 00
+L30E4: db '~~ ~~MURDER BY MONGBAT~~ ~~by J. Dial.*'
+L310B: db 00
+L310C: db '     This extraordianary work depicts an enthralling, but fa'
+ db 'r too gory thriller. Chapter after chapter describes innovat'
+ db 'ive and impressive ways to disembowel people and animals.'
+L31BD: db 00
+L31BE: db '~~ ~~DOLPHIN IN THE DUNES~~ ~~by Pietre Hueman.*'
+L31EE: db 00
+L31EF: db '     Contained within the pages of this book is what seems t'
+ db 'o be an allegory for human familial relations. The work is o'
+ db 'bviously fiction, but the understones suggest extensive stud'
+ db 'y on Hueman's part. Halfway through the work, the point of v'
+ db 'iew shifts, permitting the reader to see multiple sides of e'
+ db 'ach issue.'
+L3325: db 00
+L3326: db '~~ ~~MANDIBLES~~ ~~by Peter Munchley.*'
+L334C: db 00
+L334D: db '     Held between the covers of this book is an action-adven'
+ db 'ture novel about a man-eating sea creature who terrorizes a '
+ db 'small coastal town for several months.'
+L33EB: db 00
+L33EC: db '~~ ~~THE BOOK OF THE FELLOWSHIP~~ ~~by Batlin of Britain.*'
+L3426: db 00
+L3427: db '     Good morning to thee, gentle friend and traveller! No m'
+ db 'atter what time of day it might be when thou art reading thi'
+ db 's- no matter what the hour of the clock- I say good morning '
+ db 'to thee because this very moment brings to thee the coming o'
+ db 'f the dawn. The dawn, as everyone knows, is the moment when '
+ db 'illumination comes. The dawn marks the end of the long dark '
+ db 'night. It is the moment that marks a new beginning. It is my'
+ db ' humble hope that these words may be for thee a dawning, or '
+ db 'at least, a sort of awakening...'
+L3627: db 00
+L3628: db '~~ ~~LORD BRITISH~~The biography of Britannia's longtime rul'
+ db 'er~~ ~~ by K.Bennos*'
+L3678: db 00
+L3679: db '     ...While many may remember that Lord British was once b'
+ db 'ut one of eight monarchs (back when the lands were known as '
+ db 'Sosaria), few are aware that he is not even a native of our '
+ db 'own lovely Britannia. His origin is from another world, one '
+ db 'from which he entered ours by way of a red moongate (In fact'
+ db ', it is through this same type of gate that the Avatar of le'
+ db 'gend purportedly enters Britannia.) As ruler of one of the e'
+ db 'ight kingdoms, he was instrumental in selecting a champion t'
+ db 'o face Mondain, Minax, and Exodus.~'
+L387C: db 00
+L387D: db '     When the terrible machine, Exodus, was defeated, 'twas '
+ db 'Lord British behind whom all the people of Sosaria rallied. '
+ db 'The unified land become known as Britannia, with Lord Britis'
+ db 'h as the sole monarch. Though never let it be said he rules '
+ db 'with a tyrannical hand. His reign has always been one of Tru'
+ db 'th, Love, and Courage, supported by his utmost belief in the'
+ db ' eight virtues.~'
+L39F5: db 00
+L39F6: db '     It was Lord British who had the insight to call forth a'
+ db ' quest for the Avatar (whom also happened to be the champion'
+ db ' from the days of Sosaria), and who gave prosperity and happ'
+ db 'iness unto the people.~'
+L3AC1: db 00
+L3AC2: db '     Then came his mysterious disappearance, when the Strang'
+ db 'er who became the Avatar was called by his companions to aid'
+ db ' in the search for the lost monarch. Note how Lord Blackthor'
+ db 'n, affected by the Shadowlords, quickly turned Britannia's f'
+ db 'air lands into a place of terror. But find our noble Lord th'
+ db 'e Avatar did, and Britannia was restored its former, peacefu'
+ db 'l state.~'
+L3C33: db 00
+L3C34: db '     Then came the gargoyles, and our honorable sovereign th'
+ db 'oughtfully requested the return of the Avatar...'
+L3CA0: db 00
+L3CA1: db '~~ ~~GARGOYLE LIKE ME~~ ~~by Darok.*'
+L3CC5: db 00
+L3CC6: db '     Within this work lies a fascinating novel of a human wh'
+ db 'o poses as a Gargoyle to view what life is like from the Gar'
+ db 'gish point of view. The story is a remarkable mix of histori'
+ db 'cal and entertaining facts from encounters with many gargoyl'
+ db 'es.~'
+L3DBA: db 00
+L3DBB: db '     A particular emphasis of the work is the importance of '
+ db 'the gargoyle family structure. As there is no evidence of ga'
+ db 'rgoyles having a gender, it is odd how close "father" gargoy'
+ db 'les maintain a relationship with their (presumably) adopted '
+ db 'sons.~'
+L3EB1: db 00
+L3EB2: db '     The attitudes seems similar to that of how the more int'
+ db 'elligent, winged gargoyles treat the wingless. There is an a'
+ db 'ir of condescension, but the feelings of care still exist, a'
+ db 's if the wingless were children to be protect and watched ov'
+ db 'er by the winged.'
+L3FB3: db 00
+L3FB4: db '~~ ~~TO BE OR NOT TO BE~~ ~~by Wislem.*'
+L3FDB: db 00
+L3FDC: db '     To be the words comprising the complete Gargish primer,'
+ db ' designed to educate the young gargoyle mind, both winged an'
+ db 'd wingless.'
+L405F: db 00
+L4060: db '~~ ~~BOOK OF PROPHECY~~ ~~by Naxatilor the Seer*'
+L4090: db 00
+L4091: db '     An ancient prophecy tells of the final days. When the e'
+ db 'nd of our world shall come. Three signs will precede the end'
+ db '. Thrice shall a being of great evil come into our land, and'
+ db ' by this it shall be known that the end is nigh.~'
+L4176: db 00
+L4177: db '     This evil one is of another race, who consider the evil'
+ db ' one a great prophet. Yet this false prophet follows not the'
+ db ' principles of Control, Passion and Diligence.~'
+L421E: db 00
+L421F: db '     One day the false prophet will come and desecrate our m'
+ db 'ost holy shrine. And the false prophet will steal our most h'
+ db 'oly artifact, the Codex of Ultimate Wisdom.~'
+L42C3: db 00
+L42C4: db '     This shall be the first sign of the end.~'
+L42F2: db 00
+L42F3: db '     Then, it is written, the false prophet shall descend de'
+ db 'ep into the bowels of the earth. And the false prophet will '
+ db 'cause the underworld to collapse. This will cause great eart'
+ db 'hquakes to tear our world asunder, and there will be a time '
+ db 'of plague and famine.~'
+L43F9: db 00
+L43FA: db '     This shall be the second sign of the end.~'
+L4429: db 00
+L442A: db '     One last time shall the prophet come. This time, the fa'
+ db 'lse prophet will come with a band of warriors. And they will'
+ db ' destroy all that remains of the gargoyle race.~'
+L44D2: db 00
+L44D3: db '     There is only one way that this prophecy may be averted'
+ db ': That is by the sacrifice of the false prophet.'
+L453F: db 00
+L4540: db '~~ ~~THE BOOK OF FORGOTTEN MANTRAS.*'
+L4564: db 00
+L4565: db 'akk~hor~kra~maow~detra~sa~nok~spank~a~mi~ah~xiop~yof~ow~ta~g'
+ db 'oo~ si~yam~vil~wez~forat~asg~sem~tex~as~hiy~eyac~hodis~ni~ b'
+ db 'aw~fes~upa~yuit~swer~xes~led~zep~bok~mar~sak~ces~blah~swu...'
+L4619: db 00
+L461A: db '~~ ~~STRUCK COMMANDER~~ ~~by Gilberto.*'
+L4641: db 00
+L4642: db '     This tome is the fanciful story of a man who, along wit'
+ db 'h several comrades, gains access to a flying vehicle -- much'
+ db ' like a cart -- and uses his abilities to fight terrorists a'
+ db 'nd despotic monarchs who employ mercenaries using their own '
+ db 'flying carts.'
+L473F: db 00
+L4740: db '~~ ~~GONE WITH THE WISP~~ ~~by Margareta Mitchellino.*'
+L4776: db 00
+L4777: db '     This novel, purportedly written by a young gypsy woman,'
+ db ' depicts the golden days of Britannia. Filled with short ane'
+ db 'cdotes Mitchellino claims came from her people, the piece is'
+ db ' quite amusing.'
+L483A: db 00
+L483B: db '~~ ~~KARENNA'S WORKOUT~~ ~~by Karenna.*'
+L4862: db 00
+L4863: db '     Found within this plain-bound volume is a combat and ex'
+ db 'ercise training manual. The work provides simple yet complet'
+ db 'e illustrations demonstrating a variety of steps that will n'
+ db 'ot only disable an opponent, but also aids in good cardiovas'
+ db 'cular circulation.'
+L4965: db 00
+L4966: db '~~ ~~KARENNA'S PREGNANCY WORKOUT~~ ~~by Karenna.*'
+L4997: db 00
+L4998: db '     Herein are many words of wisdom for use within the real'
+ db 'm of combat and exercise for pregnant women. The drawings in'
+ db 'cluded perfectly illustrate in explicit detail how these for'
+ db 'ms differ from more conventional styles, and how pregnancy t'
+ db 'ruly affects fighting skills.'
+L4AA5: db 00
+L4AA6: db '~~ ~~KARENNA'S TOTAL BODY WORKOUT~~ ~~by Karenna.*'
+L4AD8: db 00
+L4AD9: db '     Found upon the pages of this combat and exercise traini'
+ db 'ng manual are words that expand upon the original edition. S'
+ db 'adly, this work has recieved much less attention than Karenn'
+ db 'a's other two.'
+L4B9B: db 00
+L4B9C: db '~~ ~~THE FIVE STAGES OF LAWN CARE~~ ~~by A.P. Berk.*'
+L4BD0: db 00
+L4BD1: db '     This is the brilliant and witty depiction of the humoro'
+ db 'us antics of two young boys during one very hot summer in Br'
+ db 'itannia. From courting to practicing sword-play, the duo nev'
+ db 'er seem to be able to avoid trouble. Though the boys grow up'
+ db ' by the end of the story, they don't quite seem to lose all '
+ db 'of their youthful instinct.'
+L4D18: db 00
+L4D19: db '~~ ~~AND THEN THERE WAS KAREN... ~~ ~~by B. MacDae*'
+L4D4C: db 00
+L4D4D: db '     Within the pages of this tome are words that relate the'
+ db ' story of how one man's life was changed by a woman, both du'
+ db 'ring their relationship and after. The tale is bittersweet, '
+ db 'but both survive to to become happier people with better out'
+ db 'looks on their lives.'
+L4E52: db 00
+L4E53: db '~~ ~~THE INTRINSIC COMPLEXITIES OF INVESTIGATING A NEW SPECI'
+ db 'ES OF FLORA IN THE LAND OF BRITANNIA~~ ~~by Perrin*'
+L4EC2: db 00
+L4EC3: db '     This scientific journal describes, with examples, the p'
+ db 'rocess by which one studies plant life. The book is divided '
+ db 'into multiple sections, one for the layman, one for the hobb'
+ db 'yist, and one for the learned scholar, and includes a warnin'
+ db 'g about the difficulties of gathering specimens from the poi'
+ db 'sonous swamps.'
+L4FFD: db 00
+L4FFE: db '~~ ~~RINGWORLD ~~ ~~by Larry Niven*'
+L5021: db 00
+L5022: db '     Herein lie the words that tell of adventures to be had '
+ db 'in the space between Britannia and the heavens. The work, al'
+ db 'though fictional, preposes that there are many undiscovered '
+ db 'lands that lie between Britannia and other suns.'
+L5106: db 00
+L5107: db '~~ ~~THE APOTHECARY'S DESK REFERENCE~~ ~~by Fetoau*'
+L513A: db 00
+L513B: db '     It is the author's expectation that thou art reading th'
+ db 'is to familiarize thyself with the effects of various potion'
+ db 's based on their color. The first part of this work will dis'
+ db 'cuss such aspects, with the remaining pages covering the mat'
+ db 'erials and steps required to make such alchemal creations.*'
+L5266: db 00
+L5267: db '     Definitions:~~Black potion: Drinking this will render t'
+ db 'he individual invisible for several minutes.~Blue potion: Th'
+ db 'is mixture will put the imbiber into a deep sleep.~Orange po'
+ db 'tion: This potion will awaken an individual who was magicall'
+ db 'y put to sleep.~Purple potion: This concoction will provide '
+ db 'magical protection for several minutes of hard fighting.~Whi'
+ db 'te potion: This potion will provide a small bit of illuminat'
+ db 'ion, much like a candle, for a few minutes.~ Yellow potion: '
+ db 'This powerful mixture will give healing aid to the imbiber's'
+ db ' wounds.~~WARNING: Green potion: This potion is a dangerous '
+ db 'toxin, and will poison the imbiber, possibly killing the ind'
+ db 'ividual.~ Red potion: This fabulous drink will cure most poi'
+ db 'sons, including those acquired from the slugs in the swamps '
+ db 'and that gained from drinking a GREEN potion.*'
+L55A1: db 00
+L55A2: db '     This next section details how one can best recreate the'
+ db 'se uncanny concoctions...'
+L55F7: db 00
+L55F8: db '~~ ~~MAGIC AND THE ART OF HORSE-AND-WAGON MAINTENANCE*'
+L562E: db 00
+L562F: db '     This lengthy tome contains wonderous jewels of wisdom c'
+ db 'oncerning all aspects of life. The words exalt the value of '
+ db 'basic, common pleasures and denounce the relevance that mate'
+ db 'rial possesions have to happiness. The philosophy is simple '
+ db 'enough to be easily grasped, yet complete enough to be quite'
+ db ' comprehensive.~'
+L576B: db 00
+L576C: db '     The main irony of the title is apparent to anyone who h'
+ db 'as ever cared for a horse, for, as any stablemaster or horse'
+ db ' owner can attest, horses need no food or rest.'
+L5813: db 00
+L5814: db '~~ ~~JESSE'S BOOK OF PERFORMANCE ART~~ ~~by Jesse.*'
+L5847: db 00
+L5848: db '     This anthology is filled with many performance art scri'
+ db 'pts. The author, a controversial and eccentric Britannian ac'
+ db 'tor, maintains that many aspects of both acting and performa'
+ db 'nce art are quite similar.~'
+L5917: db 00
+L5918: db '     ...Consider the actor. He uses dialogue, facial changes'
+ db ', and movement to convey his lines. His actions, called a PE'
+ db 'RFORMANCE, combined with the playwrite's script, express an '
+ db 'emotion or a message. The performance artist uses the very s'
+ db 'ame techniques. The one possible exception is that he is bot'
+ db 'h the writer AND the performer. In fact, the practice of man'
+ db 'y facets of performance art can better an actor's skill...'
+L5ABA: db 00
+L5ABB: db '~~ ~~THE WRITE STUFF~~ ~~by Perrin*'
+L5ADE: db 00
+L5ADF: db '     Within these pages is found a treatise on the value of '
+ db 'literacy and proper writing skills. The first few chapters b'
+ db 'riefly discuss the various elements of good literature. The '
+ db 'subsequent text analyzes the qualities of the elements to de'
+ db 'termine -why- they are integral to quality literature. The e'
+ db 'ssay ends with a description of the process by which a promi'
+ db 'sing writer can apply what has been learned to construct bet'
+ db 'ter prose.'
+L5C8D: db 00
+L5C8E: db '~~ ~~THAT BEER NEEDS A HEAD ON IT! ~~ ~~by Yongi*'
+L5CBF: db 00
+L5CC0: db '     Found within are many a recipe for the most delicious o'
+ db 'f alcoholic beverages. Not only are the pages filled with de'
+ db 'scriptions of the various processes by which one produces th'
+ db 'ese drinks, but also with a great number of suggestions for '
+ db 'serving methods. In addition, the back index references each'
+ db ' drink by type -and- color.'
+L5E07: db 00
+L5E08: db '~~ ~~THE PROVISIONER'S GUIDE TO USEFUL EQUIPMENT~~ ~~by Dell'
+ db '*'
+L5E45: db 00
+L5E46: db '     While most suppliers will rave about the effectiveness '
+ db 'of a good sword or specially fitted armour, I personally fee'
+ db 'l that proper exploring gear is much more necessary.~'
+L5EF3: db 00
+L5EF4: db '     Consider this, dear reader. While thou might happen to '
+ db 'encouter a wild bear in thy travels, or, even less likely, a'
+ db ' troll, thou art doubtless going to be in need of much more '
+ db 'mundane equipment.~'
+L5FBB: db 00
+L5FBC: db '     With thou possibly be outside city walls when darkness '
+ db 'comes? Then buy a torch. And how wilt thou carry thy provisi'
+ db 'ons? A backpack wilt prove necessary. And what about a conta'
+ db 'iner for thy refreshment? Purchase a jug or bucket. As for..'
+ db '.'
+L60AD: db 00
+L60AE: db '~~ ~~THE ACCEDENS OF ARMOURY~~ ~~by Legh*'
+L60D7: db 00
+L60D8: db '     This book on heraldry not only describes various houses'
+ db ' for ease of recognition, but also demonstrates elements use'
+ db 'd in their concepton. Thus, this book will also permit the r'
+ db 'eader to formalize an heraldric symbol of his own.'
+L61BE: db 00
+L61BF: db '~~ ~~THE BIOPARAPHYSICS OF THE HEALING ARTS~~ ~~by Lady Leig'
+ db 'h*'
+L61FD: db 00
+L61FE: db '     Within this rather in-depth and complex look at healing'
+ db ' are the ideas considered to be -the- definitive text on hea'
+ db 'ling wounds, curing poison, and resurrecting the recently de'
+ db 'ad. Within can be found suggested remedies for any known sic'
+ db 'kness in Britannia, including the dreaded Zoradin's Disease,'
+ db ' which causes a loss of vision followed by an extreme sensit'
+ db 'ivity to noise.~'
+L6376: db 00
+L6377: db '     In addition, the book lists a few of the after-effects '
+ db 'of healing and curing, such as an increase in appetite, inte'
+ db 'nse restlessness, and slight dizzy spells. Though not for go'
+ db 'od as an introduction to healing for beginners, the tome is '
+ db 'perfect for the seasoned healer.'
+L6487: db 00
+L6488: db '~~ ~~WHAT COLOR IS THY BLADE? ~~ ~~by Menion*'
+L64B5: db 00
+L64B6: db 'The first step in effective sword-forging is to fill a cruci'
+ db 'ble with metal. Then, with the bellows, the fire should be m'
+ db 'ade extrememly hot When the flame no longer continues to gro'
+ db 'w in its glow, set the crucible on the fire to melt the meta'
+ db 'l.~'
+L65A9: db 00
+L65AA: db '     Afterwards, pour the molten metal into the blade mold a'
+ db 'nd let it cool. Be warned! The crucible is at an extremely h'
+ db 'igh temperature. Lift the cooled blade from the mold. Again '
+ db 'heat up the fire and set the blade within. Be careful not to'
+ db ' let it lose its shape though. Just set it in there long eno'
+ db 'ugh for the blade to become malleable.~'
+L66FD: db 00
+L66FE: db '     When it is ready, finish shaping it on the anvil with t'
+ db 'he hammer. When thou hast formed a blade of the desired shap'
+ db 'e, use the quenching barrel to cool the metal. It will harde'
+ db 'n quickly, so make sure the blade is as sharp as thou dost w'
+ db 'ant it to be.~'
+L67FC: db 00
+L67FD: db '     All that thou is left to do now is to put the pommel ov'
+ db 'er the tang. It takes some doing to make a fine, sturdy swor'
+ db 'd, but the finished weapon is well worth it!'
+L68A1: db 00
+L68A2: db '~~ ~~THE BLACKSMITH'S HANDBOOK~~ ~~by Christopher*'
+L68D4: db 00
+L68D5: db '     Within this book can be found the details of fine metal'
+ db '-working. The chapters are broken down into sections related'
+ db ' to the specific type of smithy. Armourers need only read th'
+ db 'e chapters on armour, weapon smiths need only read the chapt'
+ db 'ers on weapon forging, and blacksmiths have the remaining ch'
+ db 'apters which discuss horseshoes to iron gates.'
+L6A2F: db 00
+L6A30: db '~~ ~~THIRTEEN MONTHS IN A YEAR~~ ~~by Euralyn*'
+L6A5E: db 00
+L6A5F: db '     This epic details a long, fierce war between swords and'
+ db ' spells in a fictional land called Corellethra. The story re'
+ db 'volves around a family of sorcerers. In an attempt to usurp '
+ db 'his father's power, the youngest brother forms an evil plot '
+ db 'of patricide, and must be stopped by an outside group of sel'
+ db 'l-swords.'
+L6B94: db 00
+L6B95: db '~~ ~~THE DAY IT DIDN'T WORK~~ ~~by R. Allen G.*'
+L6BC4: db 00
+L6BC5: db '     This collection of essays details the difficulties in o'
+ db 'verseeing a group of well-meaning misfits in a mechanical en'
+ db 'vironment --  especially when the overseer is a misfit, as w'
+ db 'ell!'
+L6C7D: db 00
+L6C7E: db '~~ ~~NO ONE LEAVES~~ ~~by R. Allen G.'
+L6CA3: db 00
+L6CA4: db '~~ ~~The sequel to THE DAY IT DIDN'T WORK.*'
+L6CCF: db 00
+L6CD0: db '     This short tome offers insight to why new mechanical co'
+ db 'ntraptions don't always function at the time agreed upon bet'
+ db 'ween mechanician and overseer, despite how constructed they '
+ db 'may appear. In addition, the work discusses how to handle pr'
+ db 'esenting the complaints to the tinkerers who worked on them,'
+ db ' and how to persuade them to finish the work regardless of h'
+ db 'ow tired they are and how late in the evening it is.'
+L6E6C: db 00
+L6E6D: db '~~ ~~A COMPLETE GUIDE TO BRITANNIAN MINERALS, PRECIOUS, AND '
+ db 'SEMI-PRECIOUS STONES~~ ~~by B. Ledbetter*'
+L6ED2: db 00
+L6ED3: db '     Herein one can find the descriptions of a plethora of r'
+ db 'ocks and gems.~'
+L6F1E: db 00
+L6F1F: db '     ...One can find lead in a variety of veins. While a com'
+ db 'mon ore, lead is used with such frequency in items such as h'
+ db 'orse shoes that it is a valuable metal to procure.~'
+L6FCA: db 00
+L6FCB: db '     ...Gold is quite rare. Though generally without functio'
+ db 'n, gold has maintained its worth by its very rarity. The ref'
+ db 'ined form is so full of shine that many give it to their lov'
+ db 'ers as tokens of affection. It is a well-known rumor that on'
+ db 'e who loves enough to give gold loves enough to remain true.'
+ db '~'
+L70F8: db 00
+L70F9: db '     ...Blackrock is an odd substance, only recently discove'
+ db 'red. The there seems to be little interest in it, and even l'
+ db 'ess use for it, a small handful of experimenters have notice'
+ db 'd it has a profound effect on magic (though these same resea'
+ db 'rches refuse to comment on what, exactly, the material does)'
+ db '...'
+L7228: db 00
+L7229: db '~~ ~~TREES, AND THEN SOME! ~~ ~~by Ben*'
+L7250: db 00
+L7251: db '     Previously titled: MY LIFE AS A WOODCUTTER, this classi'
+ db 'c volume pleased readers more than two centuries ago. Much o'
+ db 'f it reads like a journal, with humorous commentary added by'
+ db ' the author between groups of entries.~'
+L732C: db 00
+L732D: db '     Day seven: Today received yet another order for more lo'
+ db 'gs.~~'
+L736E: db 00
+L736F: db '     Day eleven: I am amazed at how frequently people are re'
+ db 'questing my services. There is no longer any doubt to the ru'
+ db 'mors of the rapid growth in Britannia's urban areas.~~'
+L741D: db 00
+L741E: db '     Day sixteen: Found new species of tree. Has silver look'
+ db 'ing leaves that sparkle and grow quite large. Size indicates'
+ db ' that the trees live very long, but grow slowly.~~'
+L74C8: db 00
+L74C9: db '     Day twenty-eight: Had an odd request for a few of these'
+ db ' new "Silverleaf" trees.~~'
+L751F: db 00
+L7520: db '     Day Forty: Number of requests for Silverleaf has nearly'
+ db ' matched that of "ordinary" trees. Wonder what they could wa'
+ db 'nt them for.~~'
+L75A6: db 00
+L75A7: db '     I wonder why everyone has become so crazy for these spe'
+ db 'cial trees. I doubt even one so insane as Lord British's Chu'
+ db 'ckles would pass these off as any sort of precious metal, th'
+ db 'ough if anyone would, we all know it would be the man who ca'
+ db 'rries so much weight with Lord British (the weight of wine b'
+ db 'ottles, that is).'
+L76E4: db 00
+L76E5: db '~~ ~~BLOODIED BLADES AND BUXOM BEAUTIES~~ ~~A.G. Fishmor*'
+L771E: db 00
+L771F: db '     This illustrious tome depicts the life of the romantic '
+ db 'pirate, Roguerre, as he sails the Northeast Sea. As he trave'
+ db 'ls from port to port, his adventures become increasingly dan'
+ db 'gerous, and as equally lucrative. The climax of the novel fi'
+ db 'nds Roguerre in the clutches of a despotic island ruler, fro'
+ db 'm whom he must escape -and- save the beautiful native prince'
+ db 'ss.'
+L788A: db 00
+L788B: db '~~ ~~THE HUNDRED AND ELEVEN YEAR, THREE-MONTH, SEVEN-DAY WAR'
+ db '~~ ~~ by Perrin*'
+L78D7: db 00
+L78D8: db '     Within this work of fiction is written the renowned his'
+ db 'torical treatise that describes an intense and bloody civil '
+ db 'war in the land of Britannia. The parable is designed to str'
+ db 'ike home the advantages the people of Britannia have by rema'
+ db 'ining unified under the rule of Lord British.'
+L79F5: db 00
+L79F6: db '~~ ~~BLACK MOON, RED DAY~~ ~~by Euralyn*'
+L7A1E: db 00
+L7A1F: db '     This novel is set in THIRTEEN MONTHS IN A YEAR's Corell'
+ db 'ethra. The story describes an epic struggle of man against n'
+ db 'ature as shifting celestial bodies cause violent changes in '
+ db 'the land. In the end, only the mighty, supernatural abilitie'
+ db 's of a sorcerous family can prevent global destruction.'
+L7B46: db 00
+L7B47: db '~~ ~~TWO IN THE FOLD~~ ~~by Morian*'
+L7B6A: db 00
+L7B6B: db '     Herein lies a fable of treachery in the fair city of Br'
+ db 'itain. A despicable guild of thieves who seek political powe'
+ db 'r in the government sends two of its best members to infiltr'
+ db 'ate the Royal castle. The true conflict arises when two of t'
+ db 'he Royal gaurds begin to bicker so violently with each other'
+ db ' that they miss important pieces if evidence that lead to th'
+ db 'e two thieves.'
+L7CE1: db 00
+L7CE2: db '~~ ~~THE FOREST OF YEW~~ ~~by Taylor*'
+L7D07: db 00
+L7D08: db '     Though once the large, prosperous city of Justice, Yew '
+ db 'has been swallowed by the Deep Forest. However, let not it b'
+ db 'e said that this turn of events was not by the will of the p'
+ db 'eople.~'
+L7DC3: db 00
+L7DC4: db '     As the cities grew throughout the land, many found it d'
+ db 'ifficult to continue peaceful existances as simple farmers a'
+ db 'nd herders. More and more it became necessary to learn trade'
+ db 's involving the exchange of goods and services, and the was '
+ db 'considerably less instances of of self-sufficiency. While mo'
+ db 'st Britannian found this pleasing, there were those who want'
+ db 'ed a return to the less mechanical side of life.~'
+L7F5D: db 00
+L7F5E: db '     And those same people, many of whom came from Yew, bega'
+ db 'n to populate the Deep Forest. Though it will not be long be'
+ db 'fore the growing cities and towns catch up to them, for now,'
+ db ' many are able to lose themselves amongst the trees, the dee'
+ db 'r, and the Emps.~'
+L805F: db 00
+L8060: db '     Oddly enough, very few people have actually encountered'
+ db ' these ape-like creatures. Little is known about them, they '
+ db 'seem to shun human contact. However, observations have revea'
+ db 'led that they are definitely herbivores, nevering eating mea'
+ db 't. The Emps forge homes from the wood of dead trees, and bui'
+ db 'lt shelters high up in the limbs of Silverleaf trees.~'
+L81C2: db 00
+L81C3: db '     Of course, Emps are not the only creatures who...'
+L81F9: db 00
+L81FA: db '~~ ~~THIS OLDE SHIP~~ ~~by Owen of Minoc*'
+L8223: db 00
+L8224: db '     This tome contains much more than just the fundamentals'
+ db ' for building ships and other assorted sailing vessels, it h'
+ db 'as everything any shipwright could ever need. The text is ai'
+ db 'med at amateurs (which is what most of thou are in compariso'
+ db 'n) but holds jewels of wisdom for even the almost skilled sh'
+ db 'ipwright. The latter part of this fine manual is dedicated t'
+ db 'o the repair of damaged ships, and makes a distinction betwe'
+ db 'en working on one's own ships and those crafted by others.'
+L8402: db 00
+L8403: db '~~ ~~THE CARVER CHRONICLES~~ ~~by Morfin*'
+L842C: db 00
+L842D: db '     Here, finally in one volume are the details of the skil'
+ db 'ls necessary for butchering. The work discusses several cont'
+ db 'emporary styles, including the author's own. Be warned, nobl'
+ db 'e reader, that Morfin leads into a graphic level of detail t'
+ db 'hat would turn the stomach of all but the toughest meat carv'
+ db 'ers.'
+L855D: db 00
+L855E: db '~~ ~~HERO FERTILIZER~~ ~~by Werdron*'
+L8582: db 00
+L8583: db '     A warrior's handbook, depicting several esoteric fighti'
+ db 'ng styles. Each step is accompanied by a short piece of fict'
+ db 'ion, permitting the reader better visualization of the detai'
+ db 'led style.'
+L8641: db 00
+L8642: db '~~ ~~WHAT COULD BE LEFT BUT THE ASHES~~ ~~by N. Flaims*'
+L8679: db 00
+L867A: db '     Herein are the many essays covering an indepth study of'
+ db ' the aftermath of a volcanic eruption. The work was extensiv'
+ db 'ely researched, and is filled with testamonials from many a '
+ db 'survivor. The most interesting story is told by Fendora, a y'
+ db 'oung woman from Minoc, who claims to have experienced a volc'
+ db 'anic eruption near every one of the five towns in which she '
+ db 'has lived.'
+L87EC: db 00
+L87ED: db '~~ ~~THE SUMMER OF MY SATISFACTION~~ ~~by Plexes*'
+L881E: db 00
+L881F: db '     The story within this novel relates the tale of Good Ki'
+ db 'ng Kettle, who rules a great land without any troubles.'
+L8892: db 00
+L8893: db '~~ ~~HITHER COMES THE RAIN~~ ~~by Perrin*'
+L88BC: db 00
+L88BD: db '     Within the pages of this book are descriptions of the v'
+ db 'arious effects of Spring weather on plants and animals in Br'
+ db 'itannia, explaining that Britannia seems to see an increase '
+ db 'in the amount of rainfall each year.'
+L8995: db 00
+L8996: db '~~ ~~WHITE RAIN~~ ~~by Perrin*'
+L89B4: db 00
+L89B5: db '     This detailed tome is filled with descriptions of the v'
+ db 'arious effects Winter weather has on plants and animals in B'
+ db 'ritannia.'
+L8A36: db 00
+L8A37: db '~~ ~~MILORD CONDUCT~~ ~~by Aleina*'
+L8A59: db 00
+L8A5A: db '     Found within is a description of the proper behavior fo'
+ db 'r courtiers and courted individuals. The book reveals many d'
+ db 'ifferent techniques for both polite and impolite seduction.'
+L8B0D: db 00
+L8B0E: db '~~ ~~TO THE DEATH!~~ ~~by Zaksam*'
+L8B2F: db 00
+L8B30: db '     This book is an in-depth manual of the fighting styles '
+ db 'prevalent in Britannia. The author distinguishes between con'
+ db 'temporary and historical styles, and comments on the value o'
+ db 'f each.'
+L8BEB: db 00
+L8BEC: db '~~ ~~BLADE OF THE GRYPHON BARONY~~ ~~by Pebrogdy*'
+L8C1D: db 00
+L8C1E: db '     This novel is about a knight's fight against the doctri'
+ db 'nes of his society to win the love of a common maiden.'
+L8C90: db 00
+L8C91: db '~~ ~~THE WINNING NUMBER~~ ~~by A.P. Berk*'
+L8CBA: db 00
+L8CBB: db '     Herein is the sequel to THE FIVE STAGES OF LAWN CARE. T'
+ db 'his novel, which focuses on the same two men, is set ten yea'
+ db 'rs after the former work.'
+L8D4C: db 00
+L8D4D: db '~~ ~~THE SCENT OF VALOR~~ ~~by Wetterson*'
+L8D76: db 00
+L8D77: db '     Herein can be found the definitive word on chivalry and'
+ db ' the duties to a knight's liege.'
+L8DD3: db 00
+L8DD4: db '~~ ~~HOW THE WEST WAS~~ ~~by Yuclydia*'
+L8DFA: db 00
+L8DFB: db '     This tome of history tracks the geography of Britannia '
+ db 'from the early centuries to more recent times. The included '
+ db 'maps provide a level of detail never before seen in a work o'
+ db 'f this nature. In addition, the short chapter on the once-im'
+ db 'portant virtues reveals their source from the broader tenets'
+ db ' of Truth, Love, and Courage.'
+L8F44: db 00
+L8F45: db '~~ ~~THY MESSAGE RECEIVED! ~~ ~~by For-Lem. Translated by Ji'
+ db 'llian*'
+L8F87: db 00
+L8F88: db '     Within this diary is revealed the poor treatment of the'
+ db ' gargoyle race since the return of the Codex two centuries a'
+ db 'go.~~'
+L9005: db 00
+L9006: db '     To have noticed that humans remain uncomfortable with u'
+ db 's. They have given us our own island to populate, but is thi'
+ db 's gift designed to keep us segregated?~'
+L90A5: db 00
+L90A6: db '     To have wondered why so few gargoyles leave Terfin. To '
+ db 'have no more doubts, having lived in Vesper. To see the hatr'
+ db 'ed for our race. To see, to FEEL, the disgust. To understand'
+ db ' not, for it was humans who destroyed OUR land, not gargoyle'
+ db 's.~'
+L9199: db 00
+L919A: db '     To seek communication. To seek friendship. To seek trus'
+ db 't. To speculate that none are forthcoming. To ask the humans'
+ db ', "Why?" To see the terror and loathing and to know there wi'
+ db 'll be no answer given.~'
+L9265: db 00
+L9266: db '     To hope for a future of harmony, but to realize that wi'
+ db 'th, segregation, there can be none. To hope for education of'
+ db ' both races, for our children and ourselves.*'
+L930B: db 00
+L930C: db '     To hope, and to live...'
+L9328: db 00
+L9329: db '~~ ~~RIBALD ENCOUNTERS~~ ~~by Madden*'
+L934E: db 00
+L934F: db '     Within the pages of this anthology are many stories ful'
+ db 'l of suggestive prose.'
+L93A1: db 00
+L93A2: db '~~ ~~THE KNIGHT AND THE THIEF~~ ~~by Hobbs*'
+L93CD: db 00
+L93CE: db '     This novel describes the life of an heroic warrior suff'
+ db 'ering from delusions of an alternate life as a rogue and cut'
+ db 'purse.'
+L944C: db 00
+L944D: db '~~ ~~THE TRIO~~ ~~by  Leepeartson*'
+L946F: db 00
+L9470: db '     Compiled from the music of three master bards, this ful'
+ db 'l volume contains a collection of songs for a variety of str'
+ db 'inged and percussion instruments.'
+L9509: db 00
+L950A: db '~~ ~~THE BLACK COMPENDIUM ~~ ~~Written by Mondain, with anno'
+ db 'tations by the enchantress Minax and magical formulae by the'
+ db ' hellspawn Exodus.*'
+L9595: db 00
+L9596: db '     To extend one's life is a complicated procedure, taking'
+ db ' years to complete. However, there is an additional side eff'
+ db 'ect: invulnerability. I have broken this work down into chap'
+ db 'ters based on each individual ritual. It is very important t'
+ db 'hat these steps are performed in the order presented.*'
+L96BC: db 00
+L96BD: db '     First, thou must procure a five stone's of the dust of '
+ db 'crushed rubies. This must be mixed thoroughly with the ooze '
+ db 'of a slime, enough to make the rubies into a thick paste. Af'
+ db 'ter thou hast created the paste, set it in an ivory jar and '
+ db 'place the entire container in a bucket of olive oil for thre'
+ db 'e years.*'
+L97F2: db 00
+L97F3: db '     The next step is too procure 10 newborn babes, none mor'
+ db 'e than six days old. With a knife cut from the bone of a har'
+ db 'py, thou must remove of the blood from each newborn. To be k'
+ db 'ept fresh, the blood must be stored in an onyx flask, though'
+ db ' mixing of each baby's blood is quite permissible.*'
+L9916: db 00
+L9917: db '     Now thou shalt seek out...'
+L9936: db 00
+L9937: db '~~ ~~NO WAY TO JUMP~~ ~~by Desmonth*'
+L995B: db 00
+L995C: db '     Herein lies the compilation that discusses various elem'
+ db 'ents found in adventure stories. In addition to an evaluatio'
+ db 'n of their literary worth, one essay demonstrates how to app'
+ db 'ly such elements in other styles.'
+L9A31: db 00
+L9A32: db '~~ ~~STEALING THE WIND~~ ~~by Brianna*'
+L9A58: db 00
+L9A59: db '     Kite-building techniques thou hast never seen before, f'
+ db 'rom the simple box kite to the mind-numbing criscross butter'
+ db 'fly. Each kite is presented in several forms, from beginning'
+ db ' to end. At the end of the essay is a listing of wind variab'
+ db 'les and flying styles.'
+L9B5F: db 00
+L9B60: db '~~ ~~BROMMER'S FLORA~~ ~~by Brommer*'
+L9B84: db 00
+L9B85: db '     This large tome describes most of common plants indigen'
+ db 'ous to Britannia.~~'
+L9BD4: db 00
+L9BD5: db '  ...The Greer plant is especially fascinating, for it spend'
+ db 's most of its life huddled with its leaves wrapperd up in a '
+ db 'tight ball. However, every so often, the leaves will unfurl,'
+ db ' radiating out from the stem...~~'
+L9CAA: db 00
+L9CAB: db '  ...The Reaper is unique in that it is both plant and anima'
+ db 'l. Resembling a large tree, the Reaper is able capable of se'
+ db 'lf-animation as well as self-locomotion. Reapers have been k'
+ db 'nown to attack those who cause harm to their home (i.e. the '
+ db 'forests), but seldom reveal themselves otherwise...'
+L9DCE: db 00
+L9DCF: db '~~ ~~BROMMER'S FAUNA~~ ~~by Brommer*'
+L9DF3: db 00
+L9DF4: db '     Betwixt the covers of this book can be found details on'
+ db ' the most prevalent animals that inhabit the lands of Britan'
+ db 'nia.~~'
+L9E72: db 00
+L9E73: db '  ...Deer are quite prevalent in the forested areas of Brita'
+ db 'nnia. They are shy creatures, generally shunning the presenc'
+ db 'e of man, whom they know hunt them. Atop their head sit a pa'
+ db 'ir of antlers...~~'
+L9F39: db 00
+L9F3A: db '  ...The fox is a small animal, akin to a dog or a wolf. It '
+ db 'is an omnivore, and more than willing to make off with a far'
+ db 'mer's chicken when it tires of other foods...'
+L9FDF: db 00
+L9FE0: db '~~ ~~BROMMER'S BRITANNIA~~ ~~by Brommer*'
+LA008: db 00
+LA009: db '     Betwixt the covers of this atlas is a detailed descript'
+ db 'ion of the entire continent of Britannia and the nearby isla'
+ db 'nds.*'
+LA086: db 00
+LA087: db '~~ ~~BROMMER'S BRITANNIA~~ ~~by Brommer*'
+LA0AF: db 00
+LA0B0: db '     Betwixt the covers of this atlas is a detailed descript'
+ db 'ion of the entire continent of Britannia and the nearby isla'
+ db 'nds.'
+LA12C: db 00
+LA12D: db '~~ ~~UP IS OUT~~ ~~by Goodefellow*'
+LA14F: db 00
+LA150: db '     Herein is discussed the most current theories on gravit'
+ db 'y and mass. After years of study and research, the author fi'
+ db 'nally put the fruits of his labor down in the pages of this '
+ db 'tome, which includes his discussion on falling apples.'
+LA23A: db 00
+LA23B: db '~~ ~WEAVING~~ ~~by Carlyn*'
+LA255: db 00
+LA256: db '     This is a complete sourcebook for a variety of patterns'
+ db '. Included are patterns for clothing, blankets, quilts, and '
+ db 'sheets. The introduction even includes a section on weaving '
+ db 'one's own cloth.~'
+LA31B: db 00
+LA31C: db '     ...take the bale of wool and stretch it out across the '
+ db 'wheel to make the thread. Once that is done, pull the thread'
+ db ' across the loom and begin weaving. Shortly thou wilt have a'
+ db ' nice stretch of cloth from which canst make a variety of us'
+ db 'eful things. For variation, use different colored threads on'
+ db ' the loom to create exciting patterns.'
+LA46E: db 00
+LA46F: db '~~ ~~FOLLOW THE STARS~~ ~~by Laurnen*'
+LA494: db 00
+LA495: db '     This is a guidebook for navigation, with most of the pa'
+ db 'ges illustrating various constellations and heavenly bodies.'
+ db ' The final sections contain maps useful to any ship mate or '
+ db 'captain.'
+LA551: db 00
+LA552: db '~~ ~~HOW TO CONQUER THE WORLD IN THREE EASY STEPS~~ ~~by Max'
+ db 'imillian the Amazingly Mean*'
+LA5AA: db 00
+LA5AB: db '     Found within are the ravings of a deranged meglomaniac '
+ db 'cleric, describing his plans for the domination of Britannia'
+ db '.'
+LA624: db 00
+LA625: db '     ...and after I have acquired the Vas Corp spell, there '
+ db 'will be no one to defy me, for all will fear my casting of t'
+ db 'he spell. Even the loft Lord Brit, himself, will offer his o'
+ db 'beisance to me...'
+LA6EA: db 00
+LA6EB: db '~~ ~~TREN I, II, III, IV . . . XVII*'
+LA70F: db 00
+LA710: db '     This autobiography, penned by the obtuse mage, reveals '
+ db 'Tren's life in all of his incarnations as he continually str'
+ db 'ove to possess more powerful beings.'
+LA7AC: db 00
+LA7AD: db '~~ ~~SIR KILROY~~ ~~Anonymous*'
+LA7CB: db 00
+LA7CC: db '     This novel details the rise of a shining white knight, '
+ db 'driven to madness by the women in his life.'
+LA833: db 00
+LA834: db '~~ ~~MY CUP RUNNETH OVER~~ ~~by Marseine*'
+LA85D: db 00
+LA85E: db '     This illustrious volume holds many detailed instruction'
+ db 's for neophyte vintners. The books even includes tips on sel'
+ db 'ecting choice grapes and proper labeling techiniques. The to'
+ db 'me lists several monks from the Brotherhood of the Rose as s'
+ db 'ources.'
+LA955: db 00
+LA956: db '~~ ~~SPRING PLANTING, AUTUMNM HARVEST*'
+LA97C: db 00
+LA97D: db '     Held within these pages is the explaination of agricult'
+ db 'ure in detail, including the much misunderstood mulching pro'
+ db 'cess. The middle section is an illustrated guide to many gar'
+ db 'dening implements.'
+LAA43: db 00
+LAA44: db '~~ ~~SHOOT THE MOON~~ ~~by Oswauld*'
+LAA67: db 00
+LAA68: db '     Herein can be found the guidebook for druidic culture. '
+ db 'Details on rituals, spells, and the organizational structure'
+ db ' fill the rather large number of pages that make up this fin'
+ db 'e well-spring of knowledge. '
+LAB38: db 00
+LAB39: db '~~ ~~OUTPOST~~ ~~by Gasreth*'
+LAB55: db 00
+LAB56: db '     Betwixt the covers of this volume is invaluable reading'
+ db ' for all soldiers. This manual details the tactics and strat'
+ db 'egies of siege warfare, from the point of view of the attack'
+ db 'er -and- the defender.~'
+LAC21: db 00
+LAC22: db '     ...and remember, a soldier's best line of active defens'
+ db 'e is the cannon. After thy comrades have already loaded the '
+ db 'cannon, simply aim the cannon at thy target and fire away!'
+LACD4: db 00
+LACD5: db '~~ ~~LANDSHIPS~~ ~~by Equinestra*'
+LACF6: db 00
+LACF7: db '     Not only does this extensive tome describe the many rid'
+ db 'ing beasts in Britannia, but it also discusses riding styles'
+ db ' and techniques. In addition, it addresses the reasons for t'
+ db 'he popularity of carts, explaining why so few people choose '
+ db 'to continue riding horses. The final chapter covers flying c'
+ db 'arpets, and how they will ultimately replace all non-magical'
+ db ' means of travel.'
+LAE70: db 00
+LAE71: db '~~ ~~LANDSHIPS OF WAR~~ ~~by Equinestra*'
+LAE99: db 00
+LAE9A: db '     An illustrated guide to jousting and barding. This work'
+ db ' builds upon the concepts presented in the prequel, LANDSHIP'
+ db 'S.'
+LAF14: db 00
+LAF15: db '     ...a preferred tactic of veterans such as Hillard the M'
+ db 'ighty was to center themselves atop their carts and fire mis'
+ db 'siles unto their foes who were unable to surmount the vehicl'
+ db 'e.'
+LAFCB: db 00
+LAFCC: db '~~ ~~WHY GOOD MAGES LIKE BLACK MAGIC~~ ~~by Magus*'
+LAFFE: db 00
+LAFFF: db '     Despite the rather frivolous title, this complete tome '
+ db 'explains the value of applying magic for the benefit of soci'
+ db 'ety, as opposed to selfish, personal gain. The concepts pres'
+ db 'ented herein mesh quite well with those exemplified by the v'
+ db 'irtues.'
+LB0F6: db 00
+LB0F7: db '~~ ~~WHEN STARTS THE ADVENTURE~~ ~~by Sabra*'
+LB123: db 00
+LB124: db '     Herein can be found a novel relating the travels of a f'
+ db 'ledgling warrior, struggling to gain skill and respect in a '
+ db 'treacherous world. As the warrior gains experience in dealin'
+ db 'g with opposition, he begins to notice how well the land is '
+ db 'balanced in ideaology:  for every evil, there seems to be a '
+ db 'good, and vice-versa.'
+LB265: db 00
+LB266: db '~~ ~~WHAT A FOOL BELIEVES~~ ~~by P. Nolan*'
+LB290: db 00
+LB291: db '     Within the pages of this book is the story of a bard, a'
+ db ' blonde, and a bottle -- the perfect combination for a class'
+ db 'ic tale of the war between the sexes.'
+LB32E: db 00
+LB32F: db '~~ ~~THE COMPLEATE HISTORY OF THE LUTE~~ ~~by Devonaillion, '
+ db 'with foreword by the Master Bard, Iolo*'
+LB392: db 00
+LB393: db '     Herein are the words penned by the illustrious master l'
+ db 'ute-player, himself. The voluminous work begins with a descr'
+ db 'iption of the building process and carefully leads into the '
+ db 'music theory. I heartfully and willingly share my title with'
+ db ' this young and very talented virtuoso, and recommend that t'
+ db 'hee follow his words of wisdom well~'
+LB4E3: db 00
+LB4E4: db '          -- Iolo Arbalest'
+LB4FE: db 00
+LB4FF: db '~~ ~~BIRDS OF BRITANNIA~~ ~~by Brother Wayne*'
+LB52C: db 00
+LB52D: db '     Bound here is the comprehensive guide to the avian spec'
+ db 'ies, beautifully and colorfully illustrated by many differen'
+ db 't artists.'
+LB5AF: db 00
+LB5B0: db '     ...Surprising to many is that the Silver-Winged Pharcel'
+ db 'ot is not the most prevelent bird in Britannia, though argua'
+ db 'bly the most visible. Far more popular is the Black-Tipped G'
+ db 'rackle, but it's predilection for dark, cool areas make is c'
+ db 'onsiderable less visible.'
+LB6B9: db 00
+LB6BA: db '~~ ~~I AM NOT A DRAGON~~ ~~by Thomson*'
+LB6E0: db 00
+LB6E1: db '     Within these pages is a bawdy tale of Belnarth, fiction'
+ db 'al lord of Serpent's Hold. This volume is part one of a grea'
+ db 't trilogy involving the humorous exploits of the lord and hi'
+ db 's fellow knights.'
+LB7A6: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AA 08   jne 08B2
+0008: 1F 89 00   pushi 0089H   ; 137
+000B: 12 00 00   pop [0000]
+000E: 3E   push itemref
+000F: 1F 0E 00   pushi 000EH   ; 14
+0012: 39 86 00 02  calli 0086, 2
+0016: 3E   push itemref
+0017: 39 55 00 01  calli 0055, 1
+001B: 3E   push itemref
+001C: 12 01 00   pop [0001]
+001F: 21 01 00   push [0001]
+0022: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0026: 12 02 00   pop [0002]
+0029: 21 02 00   push [0002]
+002C: 21 00 00   push [0000]
+002F: 16   cmpgt
+0030: 05 04 00   jne 0037
+0033: 1C 00 00   addsi L0000   ; This is @not a @v...
+0036: 33   say
+0037: 21 02 00   push [0002]
+003A: 1F 00 00   pushi 0000H   ; 0
+003D: 22   cmpeq
+003E: 05 0C 00   jne 004D
+0041: 1C 1B 00   addsi L001B   ; ~~ ~~MORGAN'S GUI...
+0044: 33   say
+0045: 1C 55 00   addsi L0055   ; ~~     An enlight...
+0048: 33   say
+0049: 1C 94 00   addsi L0094   ; ~Beginning with t...
+004C: 33   say
+004D: 21 02 00   push [0002]
+0050: 1F 01 00   pushi 0001H   ; 1
+0053: 22   cmpeq
+0054: 05 18 00   jne 006F
+0057: 1C FD 00   addsi L00FD   ; ~~ ~~ "HOW DEATH ...
+005A: 33   say
+005B: 1C 41 01   addsi L0141   ; Day 1: Subject (T...
+005E: 33   say
+005F: 1C 91 01   addsi L0191   ; Day 2: Subject ex...
+0062: 33   say
+0063: 1C D1 01   addsi L01D1   ; Day 3:  No contac...
+0066: 33   say
+0067: 1C F3 01   addsi L01F3   ; Day 4: Subject ma...
+006A: 33   say
+006B: 1C 4F 02   addsi L024F   ; Day 5: ...
+006E: 33   say
+006F: 21 02 00   push [0002]
+0072: 1F 02 00   pushi 0002H   ; 2
+0075: 22   cmpeq
+0076: 05 30 00   jne 00A9
+0079: 1C 5A 02   addsi L025A   ; MY NOTEBOOK by Al...
+007C: 33   say
+007D: 1C 73 02   addsi L0273   ;      These are my...
+0080: 33   say
+0081: 1C C7 02   addsi L02C7   ; Although The Fell...
+0084: 33   say
+0085: 1C 95 03   addsi L0395   ; The first `value'...
+0088: 33   say
+0089: 1C 70 05   addsi L0570   ; The second `value...
+008C: 33   say
+008D: 1C 07 07   addsi L0707   ; The third `value'...
+0090: 33   say
+0091: 1C 3F 08   addsi L083F   ; The Fellowship ha...
+0094: 33   say
+0095: 1C CA 09   addsi L09CA   ; The Fellowship se...
+0098: 33   say
+0099: 1C 0E 0B   addsi L0B0E   ; There is also a G...
+009C: 33   say
+009D: 1C 18 0D   addsi L0D18   ; Already, The Guar...
+00A0: 33   say
+00A1: 1C B9 0E   addsi L0EB9   ; The Guardian also...
+00A4: 33   say
+00A5: 1C D2 0F   addsi L0FD2   ; After I have obta...
+00A8: 33   say
+00A9: 21 02 00   push [0002]
+00AC: 1F 03 00   pushi 0003H   ; 3
+00AF: 22   cmpeq
+00B0: 05 20 00   jne 00D3
+00B3: 1C 90 10   addsi L1090   ; OBSERVATIONS OF B...
+00B6: 33   say
+00B7: 1C C1 10   addsi L10C1   ;      The mysterio...
+00BA: 33   say
+00BB: 1C 44 11   addsi L1144   ; Black Rock can be...
+00BE: 33   say
+00BF: 1C AE 11   addsi L11AE   ; Black Rock can be...
+00C2: 33   say
+00C3: 1C 30 12   addsi L1230   ; I have found that...
+00C6: 33   say
+00C7: 1C 2F 13   addsi L132F   ; Further study rev...
+00CA: 33   say
+00CB: 1C 1C 14   addsi L141C   ; The Black Rock tr...
+00CE: 33   say
+00CF: 1C 75 15   addsi L1575   ; I must quit for t...
+00D2: 33   say
+00D3: 21 02 00   push [0002]
+00D6: 1F 04 00   pushi 0004H   ; 4
+00D9: 22   cmpeq
+00DA: 05 08 00   jne 00E5
+00DD: 1C 7C 16   addsi L167C   ; ~~ ~~ STRANGER IN...
+00E0: 33   say
+00E1: 1C C4 16   addsi L16C4   ;   The struggles o...
+00E4: 33   say
+00E5: 21 02 00   push [0002]
+00E8: 1F 05 00   pushi 0005H   ; 5
+00EB: 22   cmpeq
+00EC: 05 08 00   jne 00F7
+00EF: 1C 3D 17   addsi L173D   ; ~~ ~~CHITTY-CHITT...
+00F2: 33   say
+00F3: 1C 6E 17   addsi L176E   ;     This wonderfu...
+00F6: 33   say
+00F7: 21 02 00   push [0002]
+00FA: 1F 06 00   pushi 0006H   ; 6
+00FD: 22   cmpeq
+00FE: 05 08 00   jne 0109
+0101: 1C EB 17   addsi L17EB   ; ~~ ~~THE WIZARD O...
+0104: 33   say
+0105: 1C 18 18   addsi L1818   ;      The tale of ...
+0108: 33   say
+0109: 21 02 00   push [0002]
+010C: 1F 07 00   pushi 0007H   ; 7
+010F: 22   cmpeq
+0110: 05 10 00   jne 0123
+0113: 1C 0F 1A   addsi L1A0F   ; ~~ ~~ HUBERT'S HA...
+0116: 33   say
+0117: 1C 48 1A   addsi L1A48   ; Hubert the Lion w...
+011A: 33   say
+011B: 1C 47 1B   addsi L1B47   ; ~A flaming hot sp...
+011E: 33   say
+011F: 1C C9 1C   addsi L1CC9   ; Then he felt with...
+0122: 33   say
+0123: 21 02 00   push [0002]
+0126: 1F 08 00   pushi 0008H   ; 8
+0129: 22   cmpeq
+012A: 05 1C 00   jne 0149
+012D: 1C DC 1D   addsi L1DDC   ; ~~RECORDS OF THE ...
+0130: 33   say
+0131: 13   push true
+0132: 43 26 01   popf flag:[0126]
+0135: 1C 07 1E   addsi L1E07   ; ... Hook -- Hook ...
+0138: 33   say
+0139: 1C 68 1F   addsi L1F68   ;      It is not kn...
+013C: 33   say
+013D: 1C 30 20   addsi L2030   ; ... Kellin... is ...
+0140: 33   say
+0141: 1C F8 20   addsi L20F8   ; ... Sullivan... i...
+0144: 33   say
+0145: 13   push true
+0146: 43 59 01   popf flag:[0159]
+0149: 21 02 00   push [0002]
+014C: 1F 09 00   pushi 0009H   ; 9
+014F: 22   cmpeq
+0150: 05 0C 00   jne 015F
+0153: 13   push true
+0154: 43 33 02   popf flag:[0233]
+0157: 1C 1E 22   addsi L221E   ; Morfin of Paws, L...
+015A: 33   say
+015B: 1C 45 22   addsi L2245   ; ~~ ~~...July, 035...
+015E: 33   say
+015F: 21 02 00   push [0002]
+0162: 1F 0A 00   pushi 000AH   ; 10
+0165: 22   cmpeq
+0166: 05 08 00   jne 0171
+0169: 1C 07 24   addsi L2407   ; ~~ ~~ULTIMA: THE ...
+016C: 33   say
+016D: 1C 56 24   addsi L2456   ; Within the pages ...
+0170: 33   say
+0171: 21 02 00   push [0002]
+0174: 1F 0B 00   pushi 000BH   ; 11
+0177: 22   cmpeq
+0178: 05 0C 00   jne 0187
+017B: 1C 56 25   addsi L2556   ; ~~ ~~ ~~ ~~ EVERY...
+017E: 33   say
+017F: 1C 8F 25   addsi L258F   ; *
+0182: 33   say
+0183: 1C 91 25   addsi L2591   ; *
+0186: 33   say
+0187: 21 02 00   push [0002]
+018A: 1F 0C 00   pushi 000CH   ; 12
+018D: 22   cmpeq
+018E: 05 08 00   jne 0199
+0191: 1C 93 25   addsi L2593   ; ~~ ~~ENCYCLOPEDIA...
+0194: 33   say
+0195: 1C C6 25   addsi L25C6   ;      Another volu...
+0198: 33   say
+0199: 21 02 00   push [0002]
+019C: 1F 0D 00   pushi 000DH   ; 13
+019F: 22   cmpeq
+01A0: 05 08 00   jne 01AB
+01A3: 1C A8 26   addsi L26A8   ; ~~ ~~ENCYCLOPEDIA...
+01A6: 33   say
+01A7: 1C DC 26   addsi L26DC   ;      Here is anot...
+01AA: 33   say
+01AB: 21 02 00   push [0002]
+01AE: 1F 0E 00   pushi 000EH   ; 14
+01B1: 22   cmpeq
+01B2: 05 08 00   jne 01BD
+01B5: 1C D6 27   addsi L27D6   ; ~~ ~~ENCYCLOPEDIA...
+01B8: 33   say
+01B9: 1C 0A 28   addsi L280A   ;      Here is anot...
+01BC: 33   say
+01BD: 21 02 00   push [0002]
+01C0: 1F 0F 00   pushi 000FH   ; 15
+01C3: 22   cmpeq
+01C4: 05 08 00   jne 01CF
+01C7: 1C 12 29   addsi L2912   ; ~~ ~~ENCYCLOPEDIA...
+01CA: 33   say
+01CB: 1C 45 29   addsi L2945   ;      Here is anot...
+01CE: 33   say
+01CF: 21 02 00   push [0002]
+01D2: 1F 10 00   pushi 0010H   ; 16
+01D5: 22   cmpeq
+01D6: 05 08 00   jne 01E1
+01D9: 1C 6B 2A   addsi L2A6B   ; ~~ ~~ENCYCLOPEDIA...
+01DC: 33   say
+01DD: 1C 9D 2A   addsi L2A9D   ;      Here is anot...
+01E0: 33   say
+01E1: 21 02 00   push [0002]
+01E4: 1F 11 00   pushi 0011H   ; 17
+01E7: 22   cmpeq
+01E8: 05 08 00   jne 01F3
+01EB: 1C 94 2B   addsi L2B94   ; ~~ ~~KEY TO THE B...
+01EE: 33   say
+01EF: 1C B1 2B   addsi L2BB1   ; ~~ ~~ ~~The pages...
+01F2: 33   say
+01F3: 21 02 00   push [0002]
+01F6: 1F 12 00   pushi 0012H   ; 18
+01F9: 22   cmpeq
+01FA: 05 08 00   jne 0205
+01FD: 1C 32 2C   addsi L2C32   ; ~~ ~~COLLECTED PL...
+0200: 33   say
+0201: 1C 5A 2C   addsi L2C5A   ;      Housed insid...
+0204: 33   say
+0205: 21 02 00   push [0002]
+0208: 1F 13 00   pushi 0013H   ; 19
+020B: 22   cmpeq
+020C: 05 08 00   jne 0217
+020F: 1C 8B 2D   addsi L2D8B   ; ~~ ~~NO TIME TO D...
+0212: 33   say
+0213: 1C B6 2D   addsi L2DB6   ;      The wonderfu...
+0216: 33   say
+0217: 21 02 00   push [0002]
+021A: 1F 14 00   pushi 0014H   ; 20
+021D: 22   cmpeq
+021E: 05 10 00   jne 0231
+0221: 1C 4F 2E   addsi L2E4F   ; ~~ ~~THE SILENCE ...
+0224: 33   say
+0225: 1C 7E 2E   addsi L2E7E   ; The treatise on t...
+0228: 33   say
+0229: 1C EA 2E   addsi L2EEA   ;      ...One commo...
+022C: 33   say
+022D: 1C EB 2F   addsi L2FEB   ;      ...There is ...
+0230: 33   say
+0231: 21 02 00   push [0002]
+0234: 1F 15 00   pushi 0015H   ; 21
+0237: 22   cmpeq
+0238: 05 08 00   jne 0243
+023B: 1C E4 30   addsi L30E4   ; ~~ ~~MURDER BY MO...
+023E: 33   say
+023F: 1C 0C 31   addsi L310C   ;      This extraor...
+0242: 33   say
+0243: 21 02 00   push [0002]
+0246: 1F 16 00   pushi 0016H   ; 22
+0249: 22   cmpeq
+024A: 05 08 00   jne 0255
+024D: 1C BE 31   addsi L31BE   ; ~~ ~~DOLPHIN IN T...
+0250: 33   say
+0251: 1C EF 31   addsi L31EF   ;      Contained wi...
+0254: 33   say
+0255: 21 02 00   push [0002]
+0258: 1F 17 00   pushi 0017H   ; 23
+025B: 22   cmpeq
+025C: 05 08 00   jne 0267
+025F: 1C 26 33   addsi L3326   ; ~~ ~~MANDIBLES~~ ...
+0262: 33   say
+0263: 1C 4D 33   addsi L334D   ;      Held between...
+0266: 33   say
+0267: 21 02 00   push [0002]
+026A: 1F 18 00   pushi 0018H   ; 24
+026D: 22   cmpeq
+026E: 05 08 00   jne 0279
+0271: 1C EC 33   addsi L33EC   ; ~~ ~~THE BOOK OF ...
+0274: 33   say
+0275: 1C 27 34   addsi L3427   ;      Good morning...
+0278: 33   say
+0279: 21 02 00   push [0002]
+027C: 1F 19 00   pushi 0019H   ; 25
+027F: 22   cmpeq
+0280: 05 18 00   jne 029B
+0283: 1C 28 36   addsi L3628   ; ~~ ~~LORD BRITISH...
+0286: 33   say
+0287: 1C 79 36   addsi L3679   ;      ...While man...
+028A: 33   say
+028B: 1C 7D 38   addsi L387D   ;      When the ter...
+028E: 33   say
+028F: 1C F6 39   addsi L39F6   ;      It was Lord ...
+0292: 33   say
+0293: 1C C2 3A   addsi L3AC2   ;      Then came hi...
+0296: 33   say
+0297: 1C 34 3C   addsi L3C34   ;      Then came th...
+029A: 33   say
+029B: 21 02 00   push [0002]
+029E: 1F 1A 00   pushi 001AH   ; 26
+02A1: 22   cmpeq
+02A2: 05 10 00   jne 02B5
+02A5: 1C A1 3C   addsi L3CA1   ; ~~ ~~GARGOYLE LIK...
+02A8: 33   say
+02A9: 1C C6 3C   addsi L3CC6   ;      Within this ...
+02AC: 33   say
+02AD: 1C BB 3D   addsi L3DBB   ;      A particular...
+02B0: 33   say
+02B1: 1C B2 3E   addsi L3EB2   ;      The attitude...
+02B4: 33   say
+02B5: 21 02 00   push [0002]
+02B8: 1F 1B 00   pushi 001BH   ; 27
+02BB: 22   cmpeq
+02BC: 05 08 00   jne 02C7
+02BF: 1C B4 3F   addsi L3FB4   ; ~~ ~~TO BE OR NOT...
+02C2: 33   say
+02C3: 1C DC 3F   addsi L3FDC   ;      To be the wo...
+02C6: 33   say
+02C7: 21 02 00   push [0002]
+02CA: 1F 1C 00   pushi 001CH   ; 28
+02CD: 22   cmpeq
+02CE: 05 24 00   jne 02F5
+02D1: 1C 60 40   addsi L4060   ; ~~ ~~BOOK OF PROP...
+02D4: 33   say
+02D5: 1C 91 40   addsi L4091   ;      An ancient p...
+02D8: 33   say
+02D9: 1C 77 41   addsi L4177   ;      This evil on...
+02DC: 33   say
+02DD: 1C 1F 42   addsi L421F   ;      One day the ...
+02E0: 33   say
+02E1: 1C C4 42   addsi L42C4   ;      This shall b...
+02E4: 33   say
+02E5: 1C F3 42   addsi L42F3   ;      Then, it is ...
+02E8: 33   say
+02E9: 1C FA 43   addsi L43FA   ;      This shall b...
+02EC: 33   say
+02ED: 1C 2A 44   addsi L442A   ;      One last tim...
+02F0: 33   say
+02F1: 1C D3 44   addsi L44D3   ;      There is onl...
+02F4: 33   say
+02F5: 21 02 00   push [0002]
+02F8: 1F 1D 00   pushi 001DH   ; 29
+02FB: 22   cmpeq
+02FC: 05 08 00   jne 0307
+02FF: 1C 40 45   addsi L4540   ; ~~ ~~THE BOOK OF ...
+0302: 33   say
+0303: 1C 65 45   addsi L4565   ; akk~hor~kra~maow~...
+0306: 33   say
+0307: 21 02 00   push [0002]
+030A: 1F 1E 00   pushi 001EH   ; 30
+030D: 22   cmpeq
+030E: 05 08 00   jne 0319
+0311: 1C 1A 46   addsi L461A   ; ~~ ~~STRUCK COMMA...
+0314: 33   say
+0315: 1C 42 46   addsi L4642   ;      This tome is...
+0318: 33   say
+0319: 21 02 00   push [0002]
+031C: 1F 1F 00   pushi 001FH   ; 31
+031F: 22   cmpeq
+0320: 05 08 00   jne 032B
+0323: 1C 40 47   addsi L4740   ; ~~ ~~GONE WITH TH...
+0326: 33   say
+0327: 1C 77 47   addsi L4777   ;      This novel, ...
+032A: 33   say
+032B: 21 02 00   push [0002]
+032E: 1F 20 00   pushi 0020H   ; 32
+0331: 22   cmpeq
+0332: 05 08 00   jne 033D
+0335: 1C 3B 48   addsi L483B   ; ~~ ~~KARENNA'S WO...
+0338: 33   say
+0339: 1C 63 48   addsi L4863   ;      Found within...
+033C: 33   say
+033D: 21 02 00   push [0002]
+0340: 1F 21 00   pushi 0021H   ; 33
+0343: 22   cmpeq
+0344: 05 08 00   jne 034F
+0347: 1C 66 49   addsi L4966   ; ~~ ~~KARENNA'S PR...
+034A: 33   say
+034B: 1C 98 49   addsi L4998   ;      Herein are m...
+034E: 33   say
+034F: 21 02 00   push [0002]
+0352: 1F 22 00   pushi 0022H   ; 34
+0355: 22   cmpeq
+0356: 05 08 00   jne 0361
+0359: 1C A6 4A   addsi L4AA6   ; ~~ ~~KARENNA'S TO...
+035C: 33   say
+035D: 1C D9 4A   addsi L4AD9   ;      Found upon t...
+0360: 33   say
+0361: 21 02 00   push [0002]
+0364: 1F 23 00   pushi 0023H   ; 35
+0367: 22   cmpeq
+0368: 05 08 00   jne 0373
+036B: 1C 9C 4B   addsi L4B9C   ; ~~ ~~THE FIVE STA...
+036E: 33   say
+036F: 1C D1 4B   addsi L4BD1   ;      This is the ...
+0372: 33   say
+0373: 21 02 00   push [0002]
+0376: 1F 24 00   pushi 0024H   ; 36
+0379: 22   cmpeq
+037A: 05 08 00   jne 0385
+037D: 1C 19 4D   addsi L4D19   ; ~~ ~~AND THEN THE...
+0380: 33   say
+0381: 1C 4D 4D   addsi L4D4D   ;      Within the p...
+0384: 33   say
+0385: 21 02 00   push [0002]
+0388: 1F 25 00   pushi 0025H   ; 37
+038B: 22   cmpeq
+038C: 05 08 00   jne 0397
+038F: 1C 53 4E   addsi L4E53   ; ~~ ~~THE INTRINSI...
+0392: 33   say
+0393: 1C C3 4E   addsi L4EC3   ;      This scienti...
+0396: 33   say
+0397: 21 02 00   push [0002]
+039A: 1F 26 00   pushi 0026H   ; 38
+039D: 22   cmpeq
+039E: 05 08 00   jne 03A9
+03A1: 1C FE 4F   addsi L4FFE   ; ~~ ~~RINGWORLD ~~...
+03A4: 33   say
+03A5: 1C 22 50   addsi L5022   ;      Herein lie t...
+03A8: 33   say
+03A9: 21 02 00   push [0002]
+03AC: 1F 27 00   pushi 0027H   ; 39
+03AF: 22   cmpeq
+03B0: 05 10 00   jne 03C3
+03B3: 1C 07 51   addsi L5107   ; ~~ ~~THE APOTHECA...
+03B6: 33   say
+03B7: 1C 3B 51   addsi L513B   ;      It is the au...
+03BA: 33   say
+03BB: 1C 67 52   addsi L5267   ;      Definitions:...
+03BE: 33   say
+03BF: 1C A2 55   addsi L55A2   ;      This next se...
+03C2: 33   say
+03C3: 21 02 00   push [0002]
+03C6: 1F 28 00   pushi 0028H   ; 40
+03C9: 22   cmpeq
+03CA: 05 0C 00   jne 03D9
+03CD: 1C F8 55   addsi L55F8   ; ~~ ~~MAGIC AND TH...
+03D0: 33   say
+03D1: 1C 2F 56   addsi L562F   ;      This lengthy...
+03D4: 33   say
+03D5: 1C 6C 57   addsi L576C   ;      The main iro...
+03D8: 33   say
+03D9: 21 02 00   push [0002]
+03DC: 1F 29 00   pushi 0029H   ; 41
+03DF: 22   cmpeq
+03E0: 05 0C 00   jne 03EF
+03E3: 1C 14 58   addsi L5814   ; ~~ ~~JESSE'S BOOK...
+03E6: 33   say
+03E7: 1C 48 58   addsi L5848   ;      This antholo...
+03EA: 33   say
+03EB: 1C 18 59   addsi L5918   ;      ...Consider ...
+03EE: 33   say
+03EF: 21 02 00   push [0002]
+03F2: 1F 2A 00   pushi 002AH   ; 42
+03F5: 22   cmpeq
+03F6: 05 08 00   jne 0401
+03F9: 1C BB 5A   addsi L5ABB   ; ~~ ~~THE WRITE ST...
+03FC: 33   say
+03FD: 1C DF 5A   addsi L5ADF   ;      Within these...
+0400: 33   say
+0401: 21 02 00   push [0002]
+0404: 1F 2B 00   pushi 002BH   ; 43
+0407: 22   cmpeq
+0408: 05 08 00   jne 0413
+040B: 1C 8E 5C   addsi L5C8E   ; ~~ ~~THAT BEER NE...
+040E: 33   say
+040F: 1C C0 5C   addsi L5CC0   ;      Found within...
+0412: 33   say
+0413: 21 02 00   push [0002]
+0416: 1F 2C 00   pushi 002CH   ; 44
+0419: 22   cmpeq
+041A: 05 10 00   jne 042D
+041D: 1C 08 5E   addsi L5E08   ; ~~ ~~THE PROVISIO...
+0420: 33   say
+0421: 1C 46 5E   addsi L5E46   ;      While most s...
+0424: 33   say
+0425: 1C F4 5E   addsi L5EF4   ;      Consider thi...
+0428: 33   say
+0429: 1C BC 5F   addsi L5FBC   ;      With thou po...
+042C: 33   say
+042D: 21 02 00   push [0002]
+0430: 1F 2D 00   pushi 002DH   ; 45
+0433: 22   cmpeq
+0434: 05 08 00   jne 043F
+0437: 1C AE 60   addsi L60AE   ; ~~ ~~THE ACCEDENS...
+043A: 33   say
+043B: 1C D8 60   addsi L60D8   ;      This book on...
+043E: 33   say
+043F: 21 02 00   push [0002]
+0442: 1F 2E 00   pushi 002EH   ; 46
+0445: 22   cmpeq
+0446: 05 0C 00   jne 0455
+0449: 1C BF 61   addsi L61BF   ; ~~ ~~THE BIOPARAP...
+044C: 33   say
+044D: 1C FE 61   addsi L61FE   ;      Within this ...
+0450: 33   say
+0451: 1C 77 63   addsi L6377   ;      In addition,...
+0454: 33   say
+0455: 21 02 00   push [0002]
+0458: 1F 2F 00   pushi 002FH   ; 47
+045B: 22   cmpeq
+045C: 05 14 00   jne 0473
+045F: 1C 88 64   addsi L6488   ; ~~ ~~WHAT COLOR I...
+0462: 33   say
+0463: 1C B6 64   addsi L64B6   ; The first step in...
+0466: 33   say
+0467: 1C AA 65   addsi L65AA   ;      Afterwards, ...
+046A: 33   say
+046B: 1C FE 66   addsi L66FE   ;      When it is r...
+046E: 33   say
+046F: 1C FD 67   addsi L67FD   ;      All that tho...
+0472: 33   say
+0473: 21 02 00   push [0002]
+0476: 1F 30 00   pushi 0030H   ; 48
+0479: 22   cmpeq
+047A: 05 08 00   jne 0485
+047D: 1C A2 68   addsi L68A2   ; ~~ ~~THE BLACKSMI...
+0480: 33   say
+0481: 1C D5 68   addsi L68D5   ;      Within this ...
+0484: 33   say
+0485: 21 02 00   push [0002]
+0488: 1F 31 00   pushi 0031H   ; 49
+048B: 22   cmpeq
+048C: 05 08 00   jne 0497
+048F: 1C 30 6A   addsi L6A30   ; ~~ ~~THIRTEEN MON...
+0492: 33   say
+0493: 1C 5F 6A   addsi L6A5F   ;      This epic de...
+0496: 33   say
+0497: 21 02 00   push [0002]
+049A: 1F 32 00   pushi 0032H   ; 50
+049D: 22   cmpeq
+049E: 05 08 00   jne 04A9
+04A1: 1C 95 6B   addsi L6B95   ; ~~ ~~THE DAY IT D...
+04A4: 33   say
+04A5: 1C C5 6B   addsi L6BC5   ;      This collect...
+04A8: 33   say
+04A9: 21 02 00   push [0002]
+04AC: 1F 33 00   pushi 0033H   ; 51
+04AF: 22   cmpeq
+04B0: 05 0C 00   jne 04BF
+04B3: 1C 7E 6C   addsi L6C7E   ; ~~ ~~NO ONE LEAVE...
+04B6: 33   say
+04B7: 1C A4 6C   addsi L6CA4   ; ~~ ~~The sequel t...
+04BA: 33   say
+04BB: 1C D0 6C   addsi L6CD0   ;      This short t...
+04BE: 33   say
+04BF: 21 02 00   push [0002]
+04C2: 1F 34 00   pushi 0034H   ; 52
+04C5: 22   cmpeq
+04C6: 05 14 00   jne 04DD
+04C9: 1C 6D 6E   addsi L6E6D   ; ~~ ~~A COMPLETE G...
+04CC: 33   say
+04CD: 1C D3 6E   addsi L6ED3   ;      Herein one c...
+04D0: 33   say
+04D1: 1C 1F 6F   addsi L6F1F   ;      ...One can f...
+04D4: 33   say
+04D5: 1C CB 6F   addsi L6FCB   ;      ...Gold is q...
+04D8: 33   say
+04D9: 1C F9 70   addsi L70F9   ;      ...Blackrock...
+04DC: 33   say
+04DD: 21 02 00   push [0002]
+04E0: 1F 35 00   pushi 0035H   ; 53
+04E3: 22   cmpeq
+04E4: 05 20 00   jne 0507
+04E7: 1C 29 72   addsi L7229   ; ~~ ~~TREES, AND T...
+04EA: 33   say
+04EB: 1C 51 72   addsi L7251   ;      Previously t...
+04EE: 33   say
+04EF: 1C 2D 73   addsi L732D   ;      Day seven: T...
+04F2: 33   say
+04F3: 1C 6F 73   addsi L736F   ;      Day eleven: ...
+04F6: 33   say
+04F7: 1C 1E 74   addsi L741E   ;      Day sixteen:...
+04FA: 33   say
+04FB: 1C C9 74   addsi L74C9   ;      Day twenty-e...
+04FE: 33   say
+04FF: 1C 20 75   addsi L7520   ;      Day Forty: N...
+0502: 33   say
+0503: 1C A7 75   addsi L75A7   ;      I wonder why...
+0506: 33   say
+0507: 21 02 00   push [0002]
+050A: 1F 36 00   pushi 0036H   ; 54
+050D: 22   cmpeq
+050E: 05 08 00   jne 0519
+0511: 1C E5 76   addsi L76E5   ; ~~ ~~BLOODIED BLA...
+0514: 33   say
+0515: 1C 1F 77   addsi L771F   ;      This illustr...
+0518: 33   say
+0519: 21 02 00   push [0002]
+051C: 1F 37 00   pushi 0037H   ; 55
+051F: 22   cmpeq
+0520: 05 08 00   jne 052B
+0523: 1C 8B 78   addsi L788B   ; ~~ ~~THE HUNDRED ...
+0526: 33   say
+0527: 1C D8 78   addsi L78D8   ;      Within this ...
+052A: 33   say
+052B: 21 02 00   push [0002]
+052E: 1F 38 00   pushi 0038H   ; 56
+0531: 22   cmpeq
+0532: 05 08 00   jne 053D
+0535: 1C F6 79   addsi L79F6   ; ~~ ~~BLACK MOON, ...
+0538: 33   say
+0539: 1C 1F 7A   addsi L7A1F   ;      This novel i...
+053C: 33   say
+053D: 21 02 00   push [0002]
+0540: 1F 39 00   pushi 0039H   ; 57
+0543: 22   cmpeq
+0544: 05 08 00   jne 054F
+0547: 1C 47 7B   addsi L7B47   ; ~~ ~~TWO IN THE F...
+054A: 33   say
+054B: 1C 6B 7B   addsi L7B6B   ;      Herein lies ...
+054E: 33   say
+054F: 21 02 00   push [0002]
+0552: 1F 3A 00   pushi 003AH   ; 58
+0555: 22   cmpeq
+0556: 05 18 00   jne 0571
+0559: 1C E2 7C   addsi L7CE2   ; ~~ ~~THE FOREST O...
+055C: 33   say
+055D: 1C 08 7D   addsi L7D08   ;      Though once ...
+0560: 33   say
+0561: 1C C4 7D   addsi L7DC4   ;      As the citie...
+0564: 33   say
+0565: 1C 5E 7F   addsi L7F5E   ;      And those sa...
+0568: 33   say
+0569: 1C 60 80   addsi L8060   ;      Oddly enough...
+056C: 33   say
+056D: 1C C3 81   addsi L81C3   ;      Of course, E...
+0570: 33   say
+0571: 21 02 00   push [0002]
+0574: 1F 3B 00   pushi 003BH   ; 59
+0577: 22   cmpeq
+0578: 05 08 00   jne 0583
+057B: 1C FA 81   addsi L81FA   ; ~~ ~~THIS OLDE SH...
+057E: 33   say
+057F: 1C 24 82   addsi L8224   ;      This tome co...
+0582: 33   say
+0583: 21 02 00   push [0002]
+0586: 1F 3C 00   pushi 003CH   ; 60
+0589: 22   cmpeq
+058A: 05 08 00   jne 0595
+058D: 1C 03 84   addsi L8403   ; ~~ ~~THE CARVER C...
+0590: 33   say
+0591: 1C 2D 84   addsi L842D   ;      Here, finall...
+0594: 33   say
+0595: 21 02 00   push [0002]
+0598: 1F 3D 00   pushi 003DH   ; 61
+059B: 22   cmpeq
+059C: 05 08 00   jne 05A7
+059F: 1C 5E 85   addsi L855E   ; ~~ ~~HERO FERTILI...
+05A2: 33   say
+05A3: 1C 83 85   addsi L8583   ;      A warrior's ...
+05A6: 33   say
+05A7: 21 02 00   push [0002]
+05AA: 1F 3E 00   pushi 003EH   ; 62
+05AD: 22   cmpeq
+05AE: 05 08 00   jne 05B9
+05B1: 1C 42 86   addsi L8642   ; ~~ ~~WHAT COULD B...
+05B4: 33   say
+05B5: 1C 7A 86   addsi L867A   ;      Herein are t...
+05B8: 33   say
+05B9: 21 02 00   push [0002]
+05BC: 1F 3F 00   pushi 003FH   ; 63
+05BF: 22   cmpeq
+05C0: 05 08 00   jne 05CB
+05C3: 1C ED 87   addsi L87ED   ; ~~ ~~THE SUMMER O...
+05C6: 33   say
+05C7: 1C 1F 88   addsi L881F   ;      The story wi...
+05CA: 33   say
+05CB: 21 02 00   push [0002]
+05CE: 1F 40 00   pushi 0040H   ; 64
+05D1: 22   cmpeq
+05D2: 05 08 00   jne 05DD
+05D5: 1C 93 88   addsi L8893   ; ~~ ~~HITHER COMES...
+05D8: 33   say
+05D9: 1C BD 88   addsi L88BD   ;      Within the p...
+05DC: 33   say
+05DD: 21 02 00   push [0002]
+05E0: 1F 41 00   pushi 0041H   ; 65
+05E3: 22   cmpeq
+05E4: 05 08 00   jne 05EF
+05E7: 1C 96 89   addsi L8996   ; ~~ ~~WHITE RAIN~~...
+05EA: 33   say
+05EB: 1C B5 89   addsi L89B5   ;      This detaile...
+05EE: 33   say
+05EF: 21 02 00   push [0002]
+05F2: 1F 42 00   pushi 0042H   ; 66
+05F5: 22   cmpeq
+05F6: 05 08 00   jne 0601
+05F9: 1C 37 8A   addsi L8A37   ; ~~ ~~MILORD CONDU...
+05FC: 33   say
+05FD: 1C 5A 8A   addsi L8A5A   ;      Found within...
+0600: 33   say
+0601: 21 02 00   push [0002]
+0604: 1F 43 00   pushi 0043H   ; 67
+0607: 22   cmpeq
+0608: 05 08 00   jne 0613
+060B: 1C 0E 8B   addsi L8B0E   ; ~~ ~~TO THE DEATH...
+060E: 33   say
+060F: 1C 30 8B   addsi L8B30   ;      This book is...
+0612: 33   say
+0613: 21 02 00   push [0002]
+0616: 1F 44 00   pushi 0044H   ; 68
+0619: 22   cmpeq
+061A: 05 08 00   jne 0625
+061D: 1C EC 8B   addsi L8BEC   ; ~~ ~~BLADE OF THE...
+0620: 33   say
+0621: 1C 1E 8C   addsi L8C1E   ;      This novel i...
+0624: 33   say
+0625: 21 02 00   push [0002]
+0628: 1F 45 00   pushi 0045H   ; 69
+062B: 22   cmpeq
+062C: 05 08 00   jne 0637
+062F: 1C 91 8C   addsi L8C91   ; ~~ ~~THE WINNING ...
+0632: 33   say
+0633: 1C BB 8C   addsi L8CBB   ;      Herein is th...
+0636: 33   say
+0637: 21 02 00   push [0002]
+063A: 1F 46 00   pushi 0046H   ; 70
+063D: 22   cmpeq
+063E: 05 08 00   jne 0649
+0641: 1C 4D 8D   addsi L8D4D   ; ~~ ~~THE SCENT OF...
+0644: 33   say
+0645: 1C 77 8D   addsi L8D77   ;      Herein can b...
+0648: 33   say
+0649: 21 02 00   push [0002]
+064C: 1F 47 00   pushi 0047H   ; 71
+064F: 22   cmpeq
+0650: 05 08 00   jne 065B
+0653: 1C D4 8D   addsi L8DD4   ; ~~ ~~HOW THE WEST...
+0656: 33   say
+0657: 1C FB 8D   addsi L8DFB   ;      This tome of...
+065A: 33   say
+065B: 21 02 00   push [0002]
+065E: 1F 48 00   pushi 0048H   ; 72
+0661: 22   cmpeq
+0662: 05 1C 00   jne 0681
+0665: 1C 45 8F   addsi L8F45   ; ~~ ~~THY MESSAGE ...
+0668: 33   say
+0669: 1C 88 8F   addsi L8F88   ;      Within this ...
+066C: 33   say
+066D: 1C 06 90   addsi L9006   ;      To have noti...
+0670: 33   say
+0671: 1C A6 90   addsi L90A6   ;      To have wond...
+0674: 33   say
+0675: 1C 9A 91   addsi L919A   ;      To seek comm...
+0678: 33   say
+0679: 1C 66 92   addsi L9266   ;      To hope for ...
+067C: 33   say
+067D: 1C 0C 93   addsi L930C   ;      To hope, and...
+0680: 33   say
+0681: 21 02 00   push [0002]
+0684: 1F 49 00   pushi 0049H   ; 73
+0687: 22   cmpeq
+0688: 05 08 00   jne 0693
+068B: 1C 29 93   addsi L9329   ; ~~ ~~RIBALD ENCOU...
+068E: 33   say
+068F: 1C 4F 93   addsi L934F   ;      Within the p...
+0692: 33   say
+0693: 21 02 00   push [0002]
+0696: 1F 4A 00   pushi 004AH   ; 74
+0699: 22   cmpeq
+069A: 05 08 00   jne 06A5
+069D: 1C A2 93   addsi L93A2   ; ~~ ~~THE KNIGHT A...
+06A0: 33   say
+06A1: 1C CE 93   addsi L93CE   ;      This novel d...
+06A4: 33   say
+06A5: 21 02 00   push [0002]
+06A8: 1F 4B 00   pushi 004BH   ; 75
+06AB: 22   cmpeq
+06AC: 05 08 00   jne 06B7
+06AF: 1C 4D 94   addsi L944D   ; ~~ ~~THE TRIO~~ ~...
+06B2: 33   say
+06B3: 1C 70 94   addsi L9470   ;      Compiled fro...
+06B6: 33   say
+06B7: 21 02 00   push [0002]
+06BA: 1F 4C 00   pushi 004CH   ; 76
+06BD: 22   cmpeq
+06BE: 05 14 00   jne 06D5
+06C1: 1C 0A 95   addsi L950A   ; ~~ ~~THE BLACK CO...
+06C4: 33   say
+06C5: 1C 96 95   addsi L9596   ;      To extend on...
+06C8: 33   say
+06C9: 1C BD 96   addsi L96BD   ;      First, thou ...
+06CC: 33   say
+06CD: 1C F3 97   addsi L97F3   ;      The next ste...
+06D0: 33   say
+06D1: 1C 17 99   addsi L9917   ;      Now thou sha...
+06D4: 33   say
+06D5: 21 02 00   push [0002]
+06D8: 1F 4D 00   pushi 004DH   ; 77
+06DB: 22   cmpeq
+06DC: 05 08 00   jne 06E7
+06DF: 1C 37 99   addsi L9937   ; ~~ ~~NO WAY TO JU...
+06E2: 33   say
+06E3: 1C 5C 99   addsi L995C   ;      Herein lies ...
+06E6: 33   say
+06E7: 21 02 00   push [0002]
+06EA: 1F 4E 00   pushi 004EH   ; 78
+06ED: 22   cmpeq
+06EE: 05 08 00   jne 06F9
+06F1: 1C 32 9A   addsi L9A32   ; ~~ ~~STEALING THE...
+06F4: 33   say
+06F5: 1C 59 9A   addsi L9A59   ;      Kite-buildin...
+06F8: 33   say
+06F9: 21 02 00   push [0002]
+06FC: 1F 4F 00   pushi 004FH   ; 79
+06FF: 22   cmpeq
+0700: 05 10 00   jne 0713
+0703: 1C 60 9B   addsi L9B60   ; ~~ ~~BROMMER'S FL...
+0706: 33   say
+0707: 1C 85 9B   addsi L9B85   ;      This large t...
+070A: 33   say
+070B: 1C D5 9B   addsi L9BD5   ;   ...The Greer pl...
+070E: 33   say
+070F: 1C AB 9C   addsi L9CAB   ;   ...The Reaper i...
+0712: 33   say
+0713: 21 02 00   push [0002]
+0716: 1F 50 00   pushi 0050H   ; 80
+0719: 22   cmpeq
+071A: 05 10 00   jne 072D
+071D: 1C CF 9D   addsi L9DCF   ; ~~ ~~BROMMER'S FA...
+0720: 33   say
+0721: 1C F4 9D   addsi L9DF4   ;      Betwixt the ...
+0724: 33   say
+0725: 1C 73 9E   addsi L9E73   ;   ...Deer are qui...
+0728: 33   say
+0729: 1C 3A 9F   addsi L9F3A   ;   ...The fox is a...
+072C: 33   say
+072D: 21 02 00   push [0002]
+0730: 1F 51 00   pushi 0051H   ; 81
+0733: 22   cmpeq
+0734: 05 1F 00   jne 0756
+0737: 1C E0 9F   addsi L9FE0   ; ~~ ~~BROMMER'S BR...
+073A: 33   say
+073B: 1C 09 A0   addsi LA009   ;      Betwixt the ...
+073E: 33   say
+073F: 48   push eventid
+0740: 1F 01 00   pushi 0001H   ; 1
+0743: 22   cmpeq
+0744: 05 07 00   jne 074E
+0747: 38 48 00 00  callis 0048, 0
+074B: 12 03 00   pop [0003]
+074E: 1C 87 A0   addsi LA087   ; ~~ ~~BROMMER'S BR...
+0751: 33   say
+0752: 1C B0 A0   addsi LA0B0   ;      Betwixt the ...
+0755: 33   say
+0756: 21 02 00   push [0002]
+0759: 1F 52 00   pushi 0052H   ; 82
+075C: 22   cmpeq
+075D: 05 08 00   jne 0768
+0760: 1C 2D A1   addsi LA12D   ; ~~ ~~UP IS OUT~~ ...
+0763: 33   say
+0764: 1C 50 A1   addsi LA150   ;      Herein is di...
+0767: 33   say
+0768: 21 02 00   push [0002]
+076B: 1F 53 00   pushi 0053H   ; 83
+076E: 22   cmpeq
+076F: 05 0C 00   jne 077E
+0772: 1C 3B A2   addsi LA23B   ; ~~ ~WEAVING~~ ~~b...
+0775: 33   say
+0776: 1C 56 A2   addsi LA256   ;      This is a co...
+0779: 33   say
+077A: 1C 1C A3   addsi LA31C   ;      ...take the ...
+077D: 33   say
+077E: 21 02 00   push [0002]
+0781: 1F 54 00   pushi 0054H   ; 84
+0784: 22   cmpeq
+0785: 05 08 00   jne 0790
+0788: 1C 6F A4   addsi LA46F   ; ~~ ~~FOLLOW THE S...
+078B: 33   say
+078C: 1C 95 A4   addsi LA495   ;      This is a gu...
+078F: 33   say
+0790: 21 02 00   push [0002]
+0793: 1F 55 00   pushi 0055H   ; 85
+0796: 22   cmpeq
+0797: 05 0C 00   jne 07A6
+079A: 1C 52 A5   addsi LA552   ; ~~ ~~HOW TO CONQU...
+079D: 33   say
+079E: 1C AB A5   addsi LA5AB   ;      Found within...
+07A1: 33   say
+07A2: 1C 25 A6   addsi LA625   ;      ...and after...
+07A5: 33   say
+07A6: 21 02 00   push [0002]
+07A9: 1F 56 00   pushi 0056H   ; 86
+07AC: 22   cmpeq
+07AD: 05 08 00   jne 07B8
+07B0: 1C EB A6   addsi LA6EB   ; ~~ ~~TREN I, II, ...
+07B3: 33   say
+07B4: 1C 10 A7   addsi LA710   ;      This autobio...
+07B7: 33   say
+07B8: 21 02 00   push [0002]
+07BB: 1F 57 00   pushi 0057H   ; 87
+07BE: 22   cmpeq
+07BF: 05 08 00   jne 07CA
+07C2: 1C AD A7   addsi LA7AD   ; ~~ ~~SIR KILROY~~...
+07C5: 33   say
+07C6: 1C CC A7   addsi LA7CC   ;      This novel d...
+07C9: 33   say
+07CA: 21 02 00   push [0002]
+07CD: 1F 58 00   pushi 0058H   ; 88
+07D0: 22   cmpeq
+07D1: 05 08 00   jne 07DC
+07D4: 1C 34 A8   addsi LA834   ; ~~ ~~MY CUP RUNNE...
+07D7: 33   say
+07D8: 1C 5E A8   addsi LA85E   ;      This illustr...
+07DB: 33   say
+07DC: 21 02 00   push [0002]
+07DF: 1F 59 00   pushi 0059H   ; 89
+07E2: 22   cmpeq
+07E3: 05 08 00   jne 07EE
+07E6: 1C 56 A9   addsi LA956   ; ~~ ~~SPRING PLANT...
+07E9: 33   say
+07EA: 1C 7D A9   addsi LA97D   ;      Held within ...
+07ED: 33   say
+07EE: 21 02 00   push [0002]
+07F1: 1F 5A 00   pushi 005AH   ; 90
+07F4: 22   cmpeq
+07F5: 05 08 00   jne 0800
+07F8: 1C 44 AA   addsi LAA44   ; ~~ ~~SHOOT THE MO...
+07FB: 33   say
+07FC: 1C 68 AA   addsi LAA68   ;      Herein can b...
+07FF: 33   say
+0800: 21 02 00   push [0002]
+0803: 1F 5B 00   pushi 005BH   ; 91
+0806: 22   cmpeq
+0807: 05 0C 00   jne 0816
+080A: 1C 39 AB   addsi LAB39   ; ~~ ~~OUTPOST~~ ~~...
+080D: 33   say
+080E: 1C 56 AB   addsi LAB56   ;      Betwixt the ...
+0811: 33   say
+0812: 1C 22 AC   addsi LAC22   ;      ...and remem...
+0815: 33   say
+0816: 21 02 00   push [0002]
+0819: 1F 5C 00   pushi 005CH   ; 92
+081C: 22   cmpeq
+081D: 05 08 00   jne 0828
+0820: 1C D5 AC   addsi LACD5   ; ~~ ~~LANDSHIPS~~ ...
+0823: 33   say
+0824: 1C F7 AC   addsi LACF7   ;      Not only doe...
+0827: 33   say
+0828: 21 02 00   push [0002]
+082B: 1F 5D 00   pushi 005DH   ; 93
+082E: 22   cmpeq
+082F: 05 0C 00   jne 083E
+0832: 1C 71 AE   addsi LAE71   ; ~~ ~~LANDSHIPS OF...
+0835: 33   say
+0836: 1C 9A AE   addsi LAE9A   ;      An illustrat...
+0839: 33   say
+083A: 1C 15 AF   addsi LAF15   ;      ...a preferr...
+083D: 33   say
+083E: 21 02 00   push [0002]
+0841: 1F 5E 00   pushi 005EH   ; 94
+0844: 22   cmpeq
+0845: 05 08 00   jne 0850
+0848: 1C CC AF   addsi LAFCC   ; ~~ ~~WHY GOOD MAG...
+084B: 33   say
+084C: 1C FF AF   addsi LAFFF   ;      Despite the ...
+084F: 33   say
+0850: 21 02 00   push [0002]
+0853: 1F 5F 00   pushi 005FH   ; 95
+0856: 22   cmpeq
+0857: 05 08 00   jne 0862
+085A: 1C F7 B0   addsi LB0F7   ; ~~ ~~WHEN STARTS ...
+085D: 33   say
+085E: 1C 24 B1   addsi LB124   ;      Herein can b...
+0861: 33   say
+0862: 21 02 00   push [0002]
+0865: 1F 60 00   pushi 0060H   ; 96
+0868: 22   cmpeq
+0869: 05 08 00   jne 0874
+086C: 1C 66 B2   addsi LB266   ; ~~ ~~WHAT A FOOL ...
+086F: 33   say
+0870: 1C 91 B2   addsi LB291   ;      Within the p...
+0873: 33   say
+0874: 21 02 00   push [0002]
+0877: 1F 61 00   pushi 0061H   ; 97
+087A: 22   cmpeq
+087B: 05 0C 00   jne 088A
+087E: 1C 2F B3   addsi LB32F   ; ~~ ~~THE COMPLEAT...
+0881: 33   say
+0882: 1C 93 B3   addsi LB393   ;      Herein are t...
+0885: 33   say
+0886: 1C E4 B4   addsi LB4E4   ;           -- Iolo...
+0889: 33   say
+088A: 21 02 00   push [0002]
+088D: 1F 62 00   pushi 0062H   ; 98
+0890: 22   cmpeq
+0891: 05 0C 00   jne 08A0
+0894: 1C FF B4   addsi LB4FF   ; ~~ ~~BIRDS OF BRI...
+0897: 33   say
+0898: 1C 2D B5   addsi LB52D   ;      Bound here i...
+089B: 33   say
+089C: 1C B0 B5   addsi LB5B0   ;      ...Surprisin...
+089F: 33   say
+08A0: 21 02 00   push [0002]
+08A3: 1F 63 00   pushi 0063H   ; 99
+08A6: 22   cmpeq
+08A7: 05 08 00   jne 08B2
+08AA: 1C BA B6   addsi LB6BA   ; ~~ ~~I AM NOT A D...
+08AD: 33   say
+08AE: 1C E1 B6   addsi LB6E1   ;      Within these...
+08B1: 33   say
+08B2: 25   ret

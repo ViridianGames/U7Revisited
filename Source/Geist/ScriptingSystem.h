@@ -25,21 +25,25 @@ class Config;
 class ScriptingSystem : public Object
 {
 public:
-	ScriptingSystem();
-	~ScriptingSystem();
+    ScriptingSystem();
+    ~ScriptingSystem();
 
-	virtual void Init(const std::string& configfile);
-	virtual void Shutdown();
-	virtual void Update();
-	virtual void Draw() {};
+    virtual void Init(const std::string& configfile);
+    virtual void Shutdown();
+    virtual void Update();
+    virtual void Draw() {};
 
-	// Register a C++ function to be called from the Lua script "name"
-	void LoadScript(const std::string& path);
-	void RegisterScriptFunction(const std::string& name, lua_CFunction function);
-	void CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
+    void LoadScript(const std::string& path);
+    void RegisterScriptFunction(const std::string& name, lua_CFunction function);
+    void CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
 
-	lua_State* m_luaState = nullptr;
-	std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;
+    // Flag management
+    void SetFlag(int flag_id, bool value);
+    bool GetFlag(int flag_id);
+
+    lua_State* m_luaState = nullptr;
+    std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;
+    std::unordered_map<int, bool> m_flags;
 };
 
 #endif

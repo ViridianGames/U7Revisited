@@ -1,0 +1,71 @@
+  .funcnumber 00D2H
+  .data
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AF 00   jne 00B7
+0008: 3E   push itemref
+0009: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 38 3B 00 00  callis 003B, 0
+0017: 22   cmpeq
+0018: 05 01 00   jne 001C
+001B: 2C   db 2c ???
+001C: 38 3B 00 00  callis 003B, 0
+0020: 3E   push itemref
+0021: 38 15 00 02  callis 0015, 2
+0025: 12 01 00   pop [0001]
+0028: 1F 04 00   pushi 0004H   ; 4
+002B: 1F 01 00   pushi 0001H   ; 1
+002E: 38 10 00 02  callis _Random2@2  ; 0010
+0032: 1F 01 00   pushi 0001H   ; 1
+0035: 16   cmpgt
+0036: 05 7E 00   jne 00B7
+0039: 1F 79 01   pushi 0179H   ; 377
+003C: 38 24 00 01  callis 0024, 1
+0040: 12 02 00   pop [0002]
+0043: 21 02 00   push [0002]
+0046: 05 6E 00   jne 00B7
+0049: 1F 12 00   pushi 0012H   ; 18
+004C: 21 02 00   push [0002]
+004F: 39 89 00 02  calli 0089, 2
+0053: 1F 0B 00   pushi 000BH   ; 11
+0056: 21 02 00   push [0002]
+0059: 39 8A 00 02  calli 008A, 2
+005D: 1F 18 00   pushi 0018H   ; 24
+0060: 21 02 00   push [0002]
+0063: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0067: 3E   push itemref
+0068: 38 18 00 01  callis 0018, 1
+006C: 12 03 00   pop [0003]
+006F: 1F 01 00   pushi 0001H   ; 1
+0072: 26 03 00   aidx [0003]
+0075: 1F 01 00   pushi 0001H   ; 1
+0078: 1F 00 00   pushi 0000H   ; 0
+007B: 38 10 00 02  callis _Random2@2  ; 0010
+007F: 0A   sub
+0080: 12 04 00   pop [0004]
+0083: 1F 02 00   pushi 0002H   ; 2
+0086: 26 03 00   aidx [0003]
+0089: 1F 01 00   pushi 0001H   ; 1
+008C: 1F 00 00   pushi 0000H   ; 0
+008F: 38 10 00 02  callis _Random2@2  ; 0010
+0093: 0A   sub
+0094: 12 05 00   pop [0005]
+0097: 1F 03 00   pushi 0003H   ; 3
+009A: 26 03 00   aidx [0003]
+009D: 1F 01 00   pushi 0001H   ; 1
+00A0: 09   add
+00A1: 12 06 00   pop [0006]
+00A4: 21 06 00   push [0006]
+00A7: 21 05 00   push [0005]
+00AA: 21 04 00   push [0004]
+00AD: 1E 03 00   arrc 0003H   ; 3
+00B0: 38 26 00 01  callis 0026, 1
+00B4: 12 01 00   pop [0001]
+00B7: 25   ret

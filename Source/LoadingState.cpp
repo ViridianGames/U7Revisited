@@ -6,8 +6,6 @@
 #include "U7Globals.h"
 #include "LoadingState.h"
 
-
-
 #include <cstring>
 #include <list>
 #include <string>
@@ -17,6 +15,13 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <filesystem>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <regex>
 
 using namespace std;
 
@@ -105,11 +110,13 @@ void LoadingState::Draw()
 
 void LoadingState::UpdateLoading()
 {
+	
 	if (!m_loadingFailed)
 	{
 		if (!m_loadingVersion)
 		{
 			AddConsoleString(std::string("Loading version..."));
+			splitUsecodeDis();
 			LoadVersion();
 			m_loadingVersion = true;
 			return;
@@ -1246,16 +1253,15 @@ void LoadingState::LoadInitialGameState()
 			short npcCount2 = ReadU16(subFiles);
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
-			Log("File position: " + to_string(filepos));
+			
 			for (int i = 0; i < fullcount; ++i)
 			{
 				if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
 				{
-					Log("Stopper");// subFiles.seekg(2761, ios::cur);
+					//Log("Stopper");// subFiles.seekg(2761, ios::cur);
 				}
 
 				int size = sizeof(NPCblock);
-				Log("NPC block size: " + std::to_string(size));
 				NPCblock thisNPC;
 				
 				thisNPC.x = ReadU8(subFiles);
@@ -1324,9 +1330,6 @@ void LoadingState::LoadInitialGameState()
 				subFiles.read(thisNPC.name, 16);
 
 				int newfilepos = subFiles.tellg();
-				Log("File position after avatar: " + to_string(newfilepos));
-				Log("Size difference: " + to_string(newfilepos - filepos));
-				Log("Iolo starts at 2761 so there are " + to_string(2761 - newfilepos) + " bytes left.");
 
 				g_ObjectList[nextID].get()->SetNPCBlock(thisNPC);
 
@@ -1337,7 +1340,6 @@ void LoadingState::LoadInitialGameState()
 					while (length != 0)
 					{
 						int pointerlocation = subFiles.tellg();
-						Log("File pointer is at " + to_string(pointerlocation));
 						length = ReadU8(subFiles);
 						if (length == 6) //  Object.
 						{
@@ -1390,9 +1392,6 @@ void LoadingState::LoadInitialGameState()
 						}
 					}
 				}
-
-				Log("First block written: ");
-
 			}
 		
 			stringstream npcData;
@@ -1400,4 +1399,92 @@ void LoadingState::LoadInitialGameState()
 
 	}
 
+}
+
+void LoadingState::splitUsecodeDis()
+{
+	string inputFile = "Data/usecode.dis";
+	string outputDir = "Data/UsecodeScripts";
+    // Create output directory
+    filesystem::create_directories(outputDir);
+
+    // Open input file
+    ifstream inFile(inputFile);
+    if (!inFile.is_open()) {
+        cerr << "Error: Could not open " << inputFile << endl;
+        return;
+    }
+
+    stringstream currentFuncContent;
+    string line;
+    string currentFuncNum;
+    bool inFunction = false;
+    regex funcRegex(R"(\.funcnumber[\t ]+([0-9A-Fa-f]+)H)");
+    int lineCount = 0;
+
+    while (getline(inFile, line)) {
+        lineCount++;
+        // Normalize line endings and tabs
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        // Replace tabs with spaces
+        replace(line.begin(), line.end(), '\t', ' ');
+
+        // Check for .funcnumber marker
+        smatch match;
+        if (regex_search(line, match, funcRegex)) {
+            // Save previous function if exists
+            if (inFunction && !currentFuncNum.empty()) {
+                string outputFile = outputDir + "/func_" + currentFuncNum + ".dis";
+                ofstream outFile(outputFile);
+                if (outFile.is_open()) {
+                    outFile << currentFuncContent.str();
+                    outFile.close();
+                    cout << "Created " << outputFile << endl;
+                } else {
+                    cerr << "Error: Could not create " << outputFile << " at line " << lineCount << endl;
+                }
+            }
+
+            // Start new function
+            inFunction = true;
+            currentFuncContent.str("");
+            currentFuncContent.clear();
+            currentFuncNum = match[1].str();
+            currentFuncNum = string(4 - currentFuncNum.length(), '0') + currentFuncNum; // Pad to 4 digits
+            if (currentFuncNum.length() > 4) {
+                cerr << "Warning: Invalid function number at line " << lineCount << ": " << currentFuncNum << endl;
+                currentFuncNum = "";
+                inFunction = false;
+            }
+        } else if (inFunction && line.find(".funcnumber") != string::npos) {
+            cerr << "Warning: Malformed .funcnumber line at " << lineCount << ": " << line << endl;
+        }
+
+        // Append line to current function content
+        if (inFunction) {
+            currentFuncContent << line << "\n";
+        }
+    }
+
+    // Save the last function
+    if (inFunction && !currentFuncNum.empty()) {
+        string outputFile = outputDir + "/func_" + currentFuncNum + ".dis";
+        ofstream outFile(outputFile);
+        if (outFile.is_open()) {
+            outFile << currentFuncContent.str();
+            outFile.close();
+            cout << "Created " << outputFile << endl;
+        } else {
+            cerr << "Error: Could not create " << outputFile << " at line " << lineCount << endl;
+        }
+    } else if (inFunction) {
+        cerr << "Warning: Last function incomplete, no valid .funcnumber found" << endl;
+    }
+
+    inFile.close();
+    if (currentFuncNum.empty() && lineCount > 0) {
+        cerr << "Warning: No valid functions found in " << inputFile << endl;
+    }
 }

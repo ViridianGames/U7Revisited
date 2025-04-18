@@ -1,0 +1,310 @@
+  .funcnumber 01F8H
+  .data
+L0000: db '"Well met, seeker. I am Dracothraxus. Thy test, and I fear, '
+ db 'thy defeat lies before thee. For thou shouldst know that I a'
+ db 'm made immortal by the Keeper of Courage. 'Twould take a tru'
+ db 'ly powerful artifact to destroy me... one that does not exis'
+ db 't." The great dragon paws the earth in expectation of your i'
+ db 'mminent battle.'
+L013B: db 00
+L013C: db 'Dracothraxus sniffs the air distastefully, "I sense my doom '
+ db 'nearby. Perhaps I am to be released at long last. I wish the'
+ db 'e good luck mortal. Defend thyself!"  With that, the dragon '
+ db 'leaps at you.'
+L01FD: db 00
+L01FE: db 'Dracothraxus sniffs the air distastefully, "I sense my doom '
+ db 'nearby. Perhaps I am to be released at long last. I wish the'
+ db 'e good luck mortal. Defend thyself!"  With that, the dragon '
+ db 'leaps at you.'
+L02BF: db 00
+L02C0: db '"Thou hast returned to test thy mettle, little one. Thy cour'
+ db 'age does thee honor, however, I think that thou shalt take t'
+ db 'hine honor to the grave with thee."*'
+L035C: db 00
+L035D: db 'The dragon lets out a searing sigh, "Released at last. I go '
+ db 'now to seek my reward, for this has been a test of my courag'
+ db 'e as well as thine. Thy reward lies beyond the door to the n'
+ db 'orth. Enter the blue gate and the Amulet of Courage will be '
+ db 'thine."*'
+L0455: db 00
+L0456: db '"Well done, little human. Thou art as powerful as thou art c'
+ db 'ourageous. Do not think that thou hast destroyed me, thou ha'
+ db 'st merely bested me. And for this wonderous feat, I think th'
+ db 'ou dost deserve a reward. I have a truly magnificent gem tha'
+ db 't I would give to thee, if thy courage can but continue for '
+ db 'a bit." Dracothraxus opens her mouth wide. Within, you can s'
+ db 'ee a multitude of teeth, each one needle sharp. Also, near t'
+ db 'he back, you see a small but brilliant blue gem. Do you reac'
+ db 'h in and take it?'
+L0647: db 00
+L0648: db 'As you place your hand in the furnace that is the dragon's m'
+ db 'aw, you can't help but wonder if a small gem is worth the ri'
+ db 'sk.'
+L06C3: db 00
+L06C4: db 'Nevertheless, you persevere and retrieve the lovely little g'
+ db 'em.'
+L0703: db 00
+L0704: db 'Just as you are about to pluck the gem literally from the ja'
+ db 'ws of death, the dragon gently places it within her nest. Dr'
+ db 'acothraxus closes her mouth and winks at you. "'Twas merely '
+ db 'a test of thy courage, little one."'
+L07DB: db 00
+L07DC: db '"Tis a pity thy courage goes only so far as bravery in battl'
+ db 'e, and not to trust of an honorable opponent. However, thou '
+ db 'hast earned thy reward, and here it is." The dragon pushes t'
+ db 'he gem forward with her tongue, and removes it from her mout'
+ db 'h. She then places it gently within her nest.'
+L08F9: db 00
+L08FA: db '"I go now to rest, but I shall return. The door will not ope'
+ db 'n until thou hast found a way to best me for good and for al'
+ db 'l. Farewell, little mortal.*'
+L098E: db 00
+  .code
+  .argc 0001H
+  .localc 000FH
+  .externsize 0001H
+  .extern 090AH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 2C   db 2c ???
+0009: 48   push eventid
+000A: 1F 03 00   pushi 0003H   ; 3
+000D: 22   cmpeq
+000E: 05 01 01   jne 0112
+0011: 14   push false
+0012: 12 00 00   pop [0000]
+0015: 3E   push itemref
+0016: 38 11 00 01  callis _GetItemType@1  ; 0011
+001A: 12 01 00   pop [0001]
+001D: 21 01 00   push [0001]
+0020: 1F F8 01   pushi 01F8H   ; 504
+0023: 22   cmpeq
+0024: 10   not
+0025: 05 3C 00   jne 0064
+0028: 1F 04 00   pushi 0004H   ; 4
+002B: 1F 50 00   pushi 0050H   ; 80
+002E: 1F F8 01   pushi 01F8H   ; 504
+0031: 3E   push itemref
+0032: 38 35 00 04  callis 0035, 4
+0036: 12 02 00   pop [0002]
+0039: 2E   sloop
+003A: 02 03 00 04 00 05 00 02 00 1C 00  db 2 ???
+003B:   db 3
+003C:   db 0
+003D:   db 4
+003E:   db 0
+003F:   db 5
+0040:   db 0
+0041:   db 2
+0042:   db 0
+0043:   db 1c
+0044:   db 0
+0045: 1F 04 00   pushi 0004H   ; 4
+0048: 1F F1 00   pushi 00F1H   ; 241
+004B: 1F 1D 03   pushi 031DH   ; 797
+004E: 21 05 00   push [0005]
+0051: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0055: 05 06 00   jne 005E
+0058: 21 05 00   push [0005]
+005B: 12 00 00   pop [0000]
+005E: 06 D9 FF   jmp 003A
+0061: 06 04 00   jmp 0068
+0064: 3E   push itemref
+0065: 12 00 00   pop [0000]
+0068: 1F 04 00   pushi 0004H   ; 4
+006B: 1F F1 00   pushi 00F1H   ; 241
+006E: 1F 1D 03   pushi 031DH   ; 797
+0071: 21 00 00   push [0000]
+0074: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0078: 10   not
+0079: 05 01 00   jne 007D
+007C: 2C   db 2c ???
+007D: 1F 00 00   pushi 0000H   ; 0
+0080: 1F DB FE   pushi FEDBH   ; -293
+0083: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0087: 42 11 03   pushf flag:[0311]
+008A: 10   not
+008B: 05 1C 00   jne 00AA
+008E: 1C 00 00   addsi L0000   ; "Well met, seeker...
+0091: 33   say
+0092: 1F DB FE   pushi FEDBH   ; -293
+0095: 39 04 00 01  calli _HideNPC@1  ; 0004
+0099: 13   push true
+009A: 43 11 03   popf flag:[0311]
+009D: 1F 00 00   pushi 0000H   ; 0
+00A0: 21 00 00   push [0000]
+00A3: 39 1D 00 02  calli 001D, 2
+00A7: 06 68 00   jmp 0112
+00AA: 1F 99 FE   pushi FE99H   ; -359
+00AD: 1F 99 FE   pushi FE99H   ; -359
+00B0: 1F C3 02   pushi 02C3H   ; 707
+00B3: 1F 9B FE   pushi FE9BH   ; -357
+00B6: 38 28 00 04  callis 0028, 4
+00BA: 05 18 00   jne 00D5
+00BD: 1C 3C 01   addsi L013C   ; Dracothraxus snif...
+00C0: 33   say
+00C1: 1F DB FE   pushi FEDBH   ; -293
+00C4: 39 04 00 01  calli _HideNPC@1  ; 0004
+00C8: 1F 00 00   pushi 0000H   ; 0
+00CB: 21 00 00   push [0000]
+00CE: 39 1D 00 02  calli 001D, 2
+00D2: 06 3D 00   jmp 0112
+00D5: 1F 1E 00   pushi 001EH   ; 30
+00D8: 1F C3 02   pushi 02C3H   ; 707
+00DB: 21 00 00   push [0000]
+00DE: 38 0E 00 03  callis 000E, 3
+00E2: 05 18 00   jne 00FD
+00E5: 1C FE 01   addsi L01FE   ; Dracothraxus snif...
+00E8: 33   say
+00E9: 1F DB FE   pushi FEDBH   ; -293
+00EC: 39 04 00 01  calli _HideNPC@1  ; 0004
+00F0: 1F 00 00   pushi 0000H   ; 0
+00F3: 21 00 00   push [0000]
+00F6: 39 1D 00 02  calli 001D, 2
+00FA: 06 15 00   jmp 0112
+00FD: 1C C0 02   addsi L02C0   ; "Thou hast return...
+0100: 33   say
+0101: 1F DB FE   pushi FEDBH   ; -293
+0104: 39 04 00 01  calli _HideNPC@1  ; 0004
+0108: 1F 00 00   pushi 0000H   ; 0
+010B: 21 00 00   push [0000]
+010E: 39 1D 00 02  calli 001D, 2
+0112: 48   push eventid
+0113: 1F 02 00   pushi 0002H   ; 2
+0116: 22   cmpeq
+0117: 05 66 01   jne 0280
+011A: 1F 00 00   pushi 0000H   ; 0
+011D: 1F DB FE   pushi FEDBH   ; -293
+0120: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0124: 42 EF 02   pushf flag:[02EF]
+0127: 05 6B 00   jne 0195
+012A: 1C 5D 03   addsi L035D   ; The dragon lets o...
+012D: 33   say
+012E: 3E   push itemref
+012F: 39 6F 00 01  calli 006F, 1
+0133: 1F DB FE   pushi FEDBH   ; -293
+0136: 39 04 00 01  calli _HideNPC@1  ; 0004
+013A: 1F 00 00   pushi 0000H   ; 0
+013D: 1F 28 00   pushi 0028H   ; 40
+0140: 1F 6C 03   pushi 036CH   ; 876
+0143: 1F 9C FE   pushi FE9CH   ; -356
+0146: 38 1B 00 01  callis 001B, 1
+014A: 38 35 00 04  callis 0035, 4
+014E: 12 06 00   pop [0006]
+0151: 2E   sloop
+0152: 02 07 00 08 00 09 00 06 00 37 00  db 2 ???
+0153:   db 7
+0154:   db 0
+0155:   db 8
+0156:   db 0
+0157:   db 9
+0158:   db 0
+0159:   db 6
+015A:   db 0
+015B:   db 37
+015C:   db 0
+015D: 21 09 00   push [0009]
+0160: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0164: 1F 0A 00   pushi 000AH   ; 10
+0167: 22   cmpeq
+0168: 05 26 00   jne 0191
+016B: 1F A7 03   pushi 03A7H   ; 935
+016E: 44 55   pushw 1F55H   ; 8021
+0170: 1F 03 00   pushi 0003H   ; 3
+0173: 1F FF FF   pushi FFFFH   ; -1
+0176: 44 0B   pushw 440BH   ; 17419
+0178: 44 50   pushw 1F50H   ; 8016
+017A: 1F 21 00   pushi 0021H   ; 33
+017D: 44 58   pushw 1F58H   ; 8024
+017F: 1F 04 00   pushi 0004H   ; 4
+0182: 44 46   pushw 1E46H   ; 7750
+0184: 1E 0A 00   arrc 000AH   ; 10
+0187: 21 09 00   push [0009]
+018A: 38 01 00 02  callis 0001, 2
+018E: 12 0A 00   pop [000A]
+0191: 06 BE FF   jmp 0152
+0194: 2C   db 2c ???
+0195: 42 36 03   pushf flag:[0336]
+0198: 05 03 00   jne 019E
+019B: 06 CE 00   jmp 026C
+019E: 1C 56 04   addsi L0456   ; "Well done, littl...
+01A1: 33   say
+01A2: 24 00 00   call [0000]   ; 090AH
+01A5: 05 73 00   jne 021B
+01A8: 1C 48 06   addsi L0648   ; As you place your...
+01AB: 33   say
+01AC: 1F F8 02   pushi 02F8H   ; 760
+01AF: 38 24 00 01  callis 0024, 1
+01B3: 12 0B 00   pop [000B]
+01B6: 1F 0C 00   pushi 000CH   ; 12
+01B9: 21 0B 00   push [000B]
+01BC: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+01C0: 1F 9C FE   pushi FE9CH   ; -356
+01C3: 38 1B 00 01  callis 001B, 1
+01C7: 38 36 00 01  callis 0036, 1
+01CB: 12 0C 00   pop [000C]
+01CE: 21 0C 00   push [000C]
+01D1: 05 07 00   jne 01DB
+01D4: 1C C4 06   addsi L06C4   ; Nevertheless, you...
+01D7: 33   say
+01D8: 06 3D 00   jmp 0218
+01DB: 1C 04 07   addsi L0704   ; Just as you are a...
+01DE: 33   say
+01DF: 1F 9C FE   pushi FE9CH   ; -356
+01E2: 38 18 00 01  callis 0018, 1
+01E6: 1F 99 FE   pushi FE99H   ; -359
+01E9: 1F 03 00   pushi 0003H   ; 3
+01EC: 4A   arra
+01ED: 4A   arra
+01EE: 12 0D 00   pop [000D]
+01F1: 1F 10 00   pushi 0010H   ; 16
+01F4: 1F 1E 00   pushi 001EH   ; 30
+01F7: 1F 13 01   pushi 0113H   ; 275
+01FA: 21 0D 00   push [000D]
+01FD: 38 35 00 04  callis 0035, 4
+0201: 12 0E 00   pop [000E]
+0204: 21 0E 00   push [000E]
+0207: 05 0E 00   jne 0218
+020A: 21 0E 00   push [000E]
+020D: 38 18 00 01  callis 0018, 1
+0211: 38 26 00 01  callis 0026, 1
+0215: 12 0A 00   pop [000A]
+0218: 06 51 00   jmp 026C
+021B: 1C DC 07   addsi L07DC   ; "Tis a pity thy c...
+021E: 33   say
+021F: 1F F8 02   pushi 02F8H   ; 760
+0222: 38 24 00 01  callis 0024, 1
+0226: 12 0B 00   pop [000B]
+0229: 1F 0C 00   pushi 000CH   ; 12
+022C: 21 0B 00   push [000B]
+022F: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0233: 1F 9C FE   pushi FE9CH   ; -356
+0236: 38 18 00 01  callis 0018, 1
+023A: 1F 99 FE   pushi FE99H   ; -359
+023D: 1F 03 00   pushi 0003H   ; 3
+0240: 4A   arra
+0241: 4A   arra
+0242: 12 0D 00   pop [000D]
+0245: 1F 10 00   pushi 0010H   ; 16
+0248: 1F 1E 00   pushi 001EH   ; 30
+024B: 1F 13 01   pushi 0113H   ; 275
+024E: 21 0D 00   push [000D]
+0251: 38 35 00 04  callis 0035, 4
+0255: 12 0E 00   pop [000E]
+0258: 21 0E 00   push [000E]
+025B: 05 0E 00   jne 026C
+025E: 21 0E 00   push [000E]
+0261: 38 18 00 01  callis 0018, 1
+0265: 38 26 00 01  callis 0026, 1
+0269: 12 0A 00   pop [000A]
+026C: 1C FA 08   addsi L08FA   ; "I go now to rest...
+026F: 33   say
+0270: 3E   push itemref
+0271: 39 6F 00 01  calli 006F, 1
+0275: 13   push true
+0276: 43 36 03   popf flag:[0336]
+0279: 1F DB FE   pushi FEDBH   ; -293
+027C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0280: 25   ret

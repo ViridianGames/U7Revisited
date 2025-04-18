@@ -1,0 +1,67 @@
+  .funcnumber 028DH
+  .data
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0002H
+  .extern 062DH
+  .extern 0828H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 8C 00   jne 0094
+0008: 3E   push itemref
+0009: 38 6E 00 01  callis 006E, 1
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 1F 9C FE   pushi FE9CH   ; -356
+0016: 38 1B 00 01  callis 001B, 1
+001A: 22   cmpeq
+001B: 05 0C 00   jne 002A
+001E: 1F 07 00   pushi 0007H   ; 7
+0021: 4B   db 4b ???
+0022: 3E   push itemref
+0023: 47 2D 06   calle 062DH   ; 1581
+0026: 2C   db 2c ???
+0027: 06 44 00   jmp 006E
+002A: 21 00 00   push [0000]
+002D: 05 3E 00   jne 006E
+0030: 3E   push itemref
+0031: 38 25 00 01  callis 0025, 1
+0035: 12 01 00   pop [0001]
+0038: 21 01 00   push [0001]
+003B: 05 26 00   jne 0064
+003E: 1F 9C FE   pushi FE9CH   ; -356
+0041: 38 36 00 01  callis 0036, 1
+0045: 12 01 00   pop [0001]
+0048: 21 01 00   push [0001]
+004B: 10   not
+004C: 05 12 00   jne 0061
+004F: 21 00 00   push [0000]
+0052: 38 36 00 01  callis 0036, 1
+0056: 12 01 00   pop [0001]
+0059: 1F 04 00   pushi 0004H   ; 4
+005C: 39 6A 00 01  calli 006A, 1
+0060: 3F   abrt
+0061: 06 01 00   jmp 0065
+0064: 2C   db 2c ???
+0065: 1F 07 00   pushi 0007H   ; 7
+0068: 4B   db 4b ???
+0069: 3E   push itemref
+006A: 47 2D 06   calle 062DH   ; 1581
+006D: 2C   db 2c ???
+006E: 1F FF FF   pushi FFFFH   ; -1
+0071: 12 02 00   pop [0002]
+0074: 1F FF FF   pushi FFFFH   ; -1
+0077: 12 03 00   pop [0003]
+007A: 1F FF FF   pushi FFFFH   ; -1
+007D: 12 04 00   pop [0004]
+0080: 1F 07 00   pushi 0007H   ; 7
+0083: 3E   push itemref
+0084: 1F 2D 06   pushi 062DH   ; 1581
+0087: 21 04 00   push [0004]
+008A: 21 03 00   push [0003]
+008D: 21 02 00   push [0002]
+0090: 3E   push itemref
+0091: 24 01 00   call [0001]   ; 0828H
+0094: 25   ret

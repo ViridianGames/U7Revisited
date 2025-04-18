@@ -1,0 +1,84 @@
+  .funcnumber 012AH  * Ring of regeneration.
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 05 00   pushi 0005H   ; 5
+0004: 22   cmpeq
+0005: 05 38 00   jne 0040
+0008: 3E   push itemref
+0009: 38 6E 00 01  callis 006E, 1  ;* Get container.
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 21 00 00   push [0000]
+0016: 38 31 00 01  callis 0031, 1  ;* Is NPC?
+001A: 0E   and
+001B: 05 1B 00   jne 0039
+001E: 3E   push itemref
+001F: 39 5C 00 01  calli 005C, 1
+0023: 1F 64 00   pushi 0064H   ; 100
+0026: 1F 2A 01   pushi 012AH   ; 298
+0029: 44 55   pushw 1E55H   ; 7765
+002B: 1E 02 00   arrc 0002H   ; 2
+002E: 3E   push itemref
+002F: 38 02 00 03  callis 0002, 3
+0033: 12 01 00   pop [0001]
+0036: 06 07 00   jmp 0040
+0039: 1F 00 00   pushi 0000H   ; 0
+003C: 39 6A 00 01  calli 006A, 1
+0040: 48   push eventid
+0041: 1F 06 00   pushi 0006H   ; 6
+0044: 22   cmpeq
+0045: 05 05 00   jne 004D
+0048: 3E   push itemref
+0049: 39 5C 00 01  calli 005C, 1
+004D: 48   push eventid
+004E: 1F 02 00   pushi 0002H   ; 2
+0051: 22   cmpeq
+0052: 05 79 00   jne 00CE
+0055: 3E   push itemref
+0056: 39 5C 00 01  calli 005C, 1
+005A: 3E   push itemref
+005B: 38 6E 00 01  callis 006E, 1
+005F: 12 00 00   pop [0000]
+0062: 21 00 00   push [0000]
+0065: 21 00 00   push [0000]
+0068: 38 31 00 01  callis 0031, 1
+006C: 0E   and
+006D: 05 5E 00   jne 00CE
+0070: 1F 00 00   pushi 0000H   ; 0
+0073: 21 00 00   push [0000]
+0076: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+007A: 12 02 00   pop [0002]
+007D: 1F 03 00   pushi 0003H   ; 3
+0080: 21 00 00   push [0000]
+0083: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0087: 12 03 00   pop [0003]
+008A: 21 03 00   push [0003]
+008D: 21 02 00   push [0002]
+0090: 17   cmpl
+0091: 05 27 00   jne 00BB
+0094: 1F 01 00   pushi 0001H   ; 1
+0097: 1F 03 00   pushi 0003H   ; 3
+009A: 21 00 00   push [0000]
+009D: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+00A1: 12 01 00   pop [0001]
+00A4: 1F 64 00   pushi 0064H   ; 100
+00A7: 1F 01 00   pushi 0001H   ; 1
+00AA: 38 10 00 02  callis _Random2@2  ; 0010
+00AE: 1F 01 00   pushi 0001H   ; 1
+00B1: 22   cmpeq
+00B2: 05 06 00   jne 00BB
+00B5: 3E   push itemref
+00B6: 39 6F 00 01  calli 006F, 1
+00BA: 2C   db 2c ???
+00BB: 1F 64 00   pushi 0064H   ; 100
+00BE: 1F 2A 01   pushi 012AH   ; 298
+00C1: 44 55   pushw 1E55H   ; 7765
+00C3: 1E 02 00   arrc 0002H   ; 2
+00C6: 3E   push itemref
+00C7: 38 02 00 03  callis 0002, 3
+00CB: 12 01 00   pop [0001]
+00CE: 25   ret

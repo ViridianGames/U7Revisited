@@ -1,0 +1,1510 @@
+  .funcnumber 009AH
+  .data
+L0000: db '@Damn candles!@'
+L000F: db 00
+L0010: db '@An Ailem!'
+L001A: db 00
+L001B: db '@I'm famished!@'
+L002A: db 00
+L002B: db '@My door, at last.@'
+L003E: db 00
+L003F: db '@My door, at last.@'
+L0052: db 00
+L0053: db '@Ah, a wall.@'
+L0060: db 00
+L0061: db '@I'll follow it.@'
+L0072: db 00
+L0073: db '@Where am I?@'
+L0080: db 00
+L0081: db '"I'll speak to thee no more, Avatar!" He ignores you.*'
+L00B7: db 00
+L00B8: db 'At your approach, the old man straightens and looking direct'
+ db 'ly at you he says, "Well met, '
+L0112: db 00
+L0113: db '. I am called Erethian. Although thou dost not know me, I kn'
+ db 'ow thee well.'
+L015C: db 00
+L015D: db 'I have seen thee destroy Mondain's power and so defeat that '
+ db 'misguided mage, I have seen thee vanquish the enchantress Mi'
+ db 'nax, I have also seen, in a very unique way, how thou brough'
+ db 't low the hellspawn Exodus."'
+L022D: db 00
+L022E: db 'He falls silent here and you notice that the old man's eyes '
+ db 'are milky white.'
+L027A: db 00
+L027B: db 'bye'
+L027E: db 00
+L027F: db 'Exodus'
+L0285: db 00
+L0286: db 'Minax'
+L028B: db 00
+L028C: db 'Mondain'
+L0293: db 00
+L0294: db 'job'
+L0297: db 00
+L0298: db 'name'
+L029C: db 00
+L029D: db '"Greetings once again, '
+L02B4: db 00
+L02B5: db '. How may I assist thee?" The blind old man looks unerringly'
+ db ' in your direction.'
+L0304: db 00
+L0305: db '"I'll never get any work done like this! What do you wish of'
+ db ' me?" Erethian seems a little pevish at this point.'
+L0374: db 00
+L0375: db 'bye'
+L0378: db 00
+L0379: db 'job'
+L037C: db 00
+L037D: db 'name'
+L0381: db 00
+L0382: db 'black sword'
+L038D: db 00
+L038E: db 'powerful artifact'
+L039F: db 00
+L03A0: db 'daemon mirror'
+L03AD: db 00
+L03AE: db 'daemon gem'
+L03B8: db 00
+L03B9: db 'daemon blade'
+L03C5: db 00
+L03C6: db 'daemon blade'
+L03D2: db 00
+L03D3: db 'the Psyche returns'
+L03E5: db 00
+L03E6: db 'great evil'
+L03F0: db 00
+L03F1: db 'Talisman of Infinity'
+L0405: db 00
+L0406: db 'the Psyche returns'
+L0418: db 00
+L0419: db '"Could this possibly be true?" Erethian's blind eyes light u'
+ db 'p with unabashed glee. "What an opportunity I have here."'
+L048E: db 00
+L048F: db 'He once again notices your presence. "Now, do not let any st'
+ db 'range ideas of destruction enter thy mind, Avatar. I shan't '
+ db 'let thee deprive me of this chance to experience a true wond'
+ db 'er of the world. Run along now... Is there not a right to be'
+ db ' wronged, somewhere else?'
+L0598: db 00
+L0599: db 'the Psyche returns'
+L05AB: db 00
+L05AC: db 'great evil'
+L05B6: db 00
+L05B7: db 'The elderly mage frowns. "I sense no great evil, but then I '
+ db 'never did quite get the knack of cosmic awareness. Neverthel'
+ db 'ess, don't worry thyself over much. These things tend to wor'
+ db 'k themselves out." You feel as if you've just been patted on'
+ db ' the head and asked to go play elsewhere.'
+L06D0: db 00
+L06D1: db 'great evil'
+L06DB: db 00
+L06DC: db 'Talisman of Infinity'
+L06F0: db 00
+L06F1: db '"Ah, yes. I once had a scroll that told of a talisman by tha'
+ db 't name. If only I could remember where I put it. Dost thou b'
+ db 'y chance have the parchment entitled Scroll of Infinity with'
+ db ' thee?'
+L07AB: db 00
+L07AC: db '"If thou dost not have the scroll, I cannot help thee in thi'
+ db 's matter."'
+L07F2: db 00
+L07F3: db '"Here we are. Now then, it appears to be written in a strang'
+ db 'e format. One might even say a code of sorts... I have it! A'
+ db 'pparently, the Talisman currently resides in the Great Void.'
+ db ' A plane somewhat removed from ours. If thou wishest to gain'
+ db ' access to this void, thou shalt need to craft two lenses: o'
+ db 'ne concave, the other convex. Light focused through the prop'
+ db 'erly enchanted lenses will open a conduit between our realm '
+ db 'and the void. I believe this treatise speaks of three Talism'
+ db 'ans of Principle that send out a call to the Infinity Talism'
+ db 'an and bring it here. Once here, it would seem that its sole'
+ db ' purpose is to coerce a powerful force into the void." A tho'
+ db 'ught hits the mage like lightning strikes a tree. "Oh no, Av'
+ db 'atar... Thou shan't gain any more aid from me. I may be blin'
+ db 'd, but I see through thy sham. I'll not help thee send the C'
+ db 'ore into the void." Erethian falls silent, and it would appe'
+ db 'ar that he'll speak no more.'
+L0B93: db 00
+L0B94: db 'Arcadion's voice whispers to you like ripple in still pond, '
+ db '"Fear not, my master. I have some knowledge of these matters'
+ db '."*'
+L0C0F: db 00
+L0C10: db '"Very well. I shall need the scroll to give thee further inf'
+ db 'ormation."'
+L0C56: db 00
+L0C57: db '"Dost thou have the Scroll of Infinity amongst thy possessio'
+ db 'ns?"'
+L0C97: db 00
+L0C98: db '"I needs must touch the scroll to glean its meaning. Else I''
+ db 'll not be able to help thee in this matter."'
+L0D00: db 00
+L0D01: db '"Here we are. Now then, it appears to be written in a strang'
+ db 'e format. One might even say a code of sorts... I have it! A'
+ db 'pparently, the Talisman currently resides in the Great Void.'
+ db ' A plane somewhat removed from ours. If thou wishest to gain'
+ db ' access to this void, thou shalt need to craft two lenses: o'
+ db 'ne concave, the other convex. Light focused through the prop'
+ db 'erly enchanted lenses will open a conduit between our realm '
+ db 'and the void. I believe this treatise speaks of three Talism'
+ db 'ans of Principle that send out a call to the Infinity Talism'
+ db 'an and bring it here. Once here, it would seem that its sole'
+ db ' purpose is to coerce a powerful force into the void." A tho'
+ db 'ught hits the mage like lightning strikes a tree. "Oh no, Av'
+ db 'atar... Thou shan't gain any more aid from me. I may be blin'
+ db 'd, but I see through thy sham. I'll not help thee send the C'
+ db 'ore into the void." Erethian falls silent, and it would appe'
+ db 'ar that he'll speak no more.'
+L10A1: db 00
+L10A2: db 'Arcadion's voice whispers to you like ripple in still pond, '
+ db '"Fear not, my master. I have some knowledge of these matters'
+ db '."*'
+L111D: db 00
+L111E: db '"If thou bringest the scroll to me I can aid the in finding '
+ db 'the meaning of the archaic text."'
+L117B: db 00
+L117C: db 'Talisman of Infinity'
+L1190: db 00
+L1191: db 'powerful artifact'
+L11A2: db 00
+L11A3: db '"I once attempted to create a sword of great power." Erethia'
+ db 'n frowns in concentration then says, "if thou wishest to con'
+ db 'tinue my work, thou shalt have need of some few pieces of fo'
+ db 'rging equipment... And a place to put them... I know just th'
+ db 'e spot. Come with me and I'll see what I can do to help thee'
+ db '."*'
+L12D2: db 00
+L12D3: db 'black sword'
+L12DE: db 00
+L12DF: db 'Erethian nods his head when you tell him of your dilemma wit'
+ db 'h the black sword. "Yes, I can see how the blade would be to'
+ db 'o clumsy to swing in combat. However, if thou were to bind a'
+ db ' magical source of power into the hilt of the blade, thou mi'
+ db 'ghtest be able to counteract the unwieldy nature of the swor'
+ db 'd."'
+L140E: db 00
+L140F: db 'The little gem sparks up at this turn of the conversation. "'
+ db 'I believe that in my current form, I could serve perfectly w'
+ db 'ell as the blade's stabilizing force. In truth, this would a'
+ db 'llow me to give thee access to some of my more dramatic powe'
+ db 'rs." The daemon sounds excited at this prospect, perhaps a l'
+ db 'ittle too excited.'
+L154D: db 00
+L154E: db 'Erethian's voice is quiet as he says, "Consider well before '
+ db 'thou bindest Arcadion into the sword. For it is true that he'
+ db ' will be able to solve the sword's problem of balance, but w'
+ db 'ill he be able to solve his own problems as well?"'
+L1634: db 00
+L1635: db 'problems'
+L163D: db 00
+L163E: db 'You wonder if perhaps Arcadion might be able to shed some li'
+ db 'ght on this issue, and as if reading your thoughts, Erethian'
+ db ' says, "Beware the daemon. His goals are not those of thine '
+ db 'or mine. If he offers to help thee, it is to help himself. O'
+ db 'f that thou canst be sure."'
+L1749: db 00
+L174A: db 'daemon gem'
+L1754: db 00
+L1755: db 'black sword'
+L1760: db 00
+L1761: db 'problems'
+L1769: db 00
+L176A: db '"This is thy choice to make. Apparently thou hast need to ma'
+ db 'ke this sword function, but if the daemon is thy only recour'
+ db 'se, I pity thee. For as surely as Arcadion will be bound wit'
+ db 'hin the sword, thou wilt be bound to possess it. I can tell '
+ db 'thee no more."'
+L1868: db 00
+L1869: db 'problems'
+L1871: db 00
+L1872: db 'name'
+L1876: db 00
+L1877: db 'The mage gives you a half smile, "'Twould seem that thy memo'
+ db 'ry is failing thee, '
+L18C7: db 00
+L18C8: db '. As I have said, my name is Erethian."'
+L18EF: db 00
+L18F0: db 'name'
+L18F4: db 00
+L18F5: db 'job'
+L18F8: db 00
+L18F9: db '"I am a follower of the principle of Truth. But unlike those'
+ db ' of the Lyceaum, I would prefer to seek out the knowledge in'
+ db 'stead of waiting for it to come to me.'
+L1997: db 00
+L1998: db 'It is this curiosity which has brought me to this island fro'
+ db 'm which Exodus, the spawn of Mondain and Minax, sought to ru'
+ db 'le the world.'
+L1A1D: db 00
+L1A1E: db 'The books and scrolls here have taught me much of Britannia''
+ db 's history and other... interesting subjects."'
+L1A87: db 00
+L1A88: db 'His clouded eyes sparkle with intelligence. But you can't he'
+ db 'lp wondering how books and scrolls are of any use to a man a'
+ db 'fflicted with blindness.'
+L1B18: db 00
+L1B19: db 'job'
+L1B1C: db 00
+L1B1D: db 'blindness'
+L1B26: db 00
+L1B27: db 'subjects'
+L1B2F: db 00
+L1B30: db 'Exodus'
+L1B36: db 00
+L1B37: db 'Minax'
+L1B3C: db 00
+L1B3D: db 'Mondain'
+L1B44: db 00
+L1B45: db 'subjects'
+L1B4D: db 00
+L1B4E: db '"If thou art interested, feel free to inspect them. This is '
+ db 'no library." As if regretting his gracious gesture, he adds,'
+ db ' "However, I trust that thou wilt take utmost care with the '
+ db 'older ones." He stops, on the verge of saying more.'
+L1C35: db 00
+L1C36: db 'subjects'
+L1C3E: db 00
+L1C3F: db 'blindness'
+L1C48: db 00
+L1C49: db '"Thou art a tiresome child. Leave me be!" He ignores your pr'
+ db 'esence.*'
+L1C8D: db 00
+L1C8E: db 'Mondain'
+L1C95: db 00
+L1C96: db 'Erethian scowls, "Now there was a mighty wizard. A bit twist'
+ db 'ed but then who knows what happens to the human mind when 't'
+ db 'is subjected to the powers he wielded.'
+L1D34: db 00
+L1D35: db ''Tis even said his skull alone had the power to destroy enem'
+ db 'ies... he must have locked a magical matrix upon it, I'll ha'
+ db 've to research that." He nods his head, seemingly making a m'
+ db 'ental note, then continues with a wistful look on his aged f'
+ db 'eatures,'
+L1E2D: db 00
+L1E2E: db '"I would have loved to study that fascinating Gem of Immorta'
+ db 'lity, but alas, I was born in too late an era."'
+L1E99: db 00
+L1E9A: db 'skull'
+L1E9F: db 00
+L1EA0: db 'Gem of Immortality'
+L1EB2: db 00
+L1EB3: db 'Mondain'
+L1EBA: db 00
+L1EBB: db 'Minax'
+L1EC0: db 00
+L1EC1: db 'A sad sweet smile comes to the wizard's face, "She was quite'
+ db ' a comely lass at one time, with a mind forever searching." '
+ db 'His expression darkens, "But then Mondain forced all of the '
+ db 'good sense from her.'
+L1F89: db 00
+L1F8A: db 'She became a power unto herself, in time. I do not think she'
+ db ' quite rivaled her former mentor, Mondain, but she was a for'
+ db 'ce to be reckoned with, nevertheless.'
+L2027: db 00
+L2028: db 'And that thou didst, with the Quicksword, Enilno. That act w'
+ db 'ill most likely have tales sung about it for the next eon." '
+ db 'Under his breath he adds, "Even if Iolo's the only one who s'
+ db 'ings it."'
+L20E5: db 00
+L20E6: db 'With a look of indignation Iolo says, "Pardon me, sir. But I'
+ db ''ll have thee know that ballads of the Avatar still grace al'
+ db 'l of the finest drinking establishments of Britannia."'
+L2194: db 00
+L2195: db '"And what a dubious distinction that is." The corners of the'
+ db ' mage's mouth come up in a delicate smile.'
+L21FB: db 00
+L21FC: db 'An angry retort dies on Iolo's lips as the elderly mage lift'
+ db 's his hands in a gesture of peace.'
+L225A: db 00
+L225B: db '"Please, forgive the offense I have given. Thou shouldst kno'
+ db 'w that I have seen, almost first hand, the Avatar's bravery '
+ db 'in the face of adversity.'
+L22EC: db 00
+L22ED: db 'I have nothing but the highest regard for the Destroyer of t'
+ db 'he Age of Darkness and Harbinger of the Age of Enlightenment'
+ db '.'
+L2366: db 00
+L2367: db 'Enilno'
+L236D: db 00
+L236E: db 'Minax'
+L2373: db 00
+L2374: db 'Exodus'
+L237A: db 00
+L237B: db '"That being has become a passion of mine, lately." He almost'
+ db ' glows with excitement. "Indeed, 'tis what brought me here. '
+ db 'While I was at the Lyceaum, I happened upon a passage in a m'
+ db 'anuscript that described an Island of Fire.'
+L245A: db 00
+L245B: db 'Upon further research, I found that the entity known as Exod'
+ db 'us was not truly destroyed. The interface between its two pa'
+ db 'rts and the world was merely severed."'
+L24F9: db 00
+L24FA: db 'interface'
+L2503: db 00
+L2504: db 'two parts'
+L250D: db 00
+L250E: db 'Exodus'
+L2514: db 00
+L2515: db 'two parts'
+L251E: db 00
+L251F: db '"One part, his psyche we shall call it, was taken by the gar'
+ db 'goyles who live below us in a realm on the other side of the'
+ db ' world. A truly fascinating culture they have, but I digress'
+ db '..." You begin to wonder just how long this old man has been'
+ db ' out of circulation.'
+L2623: db 00
+L2624: db 'He continues, "The other, I have here. I call it the Dark Co'
+ db 're, because without the psyche, it is mostly lifeless." His '
+ db 'face appears to youthen, and you feel as if you're speaking '
+ db 'to a child describing his new toy... or perhaps, pet.'
+L270D: db 00
+L270E: db '"I believe 'twas the removal of the psyche from the Core tha'
+ db 't caused this island to sink beneath the waves."'
+L277A: db 00
+L277B: db 'gargoyles'
+L2784: db 00
+L2785: db 'psyche'
+L278B: db 00
+L278C: db 'Dark Core'
+L2795: db 00
+L2796: db 'two parts'
+L279F: db 00
+L27A0: db 'interface'
+L27A9: db 00
+L27AA: db 'His expression is unreadable, "The machine that thou destroy'
+ db 'ed was Exodus' means of communication with and control of th'
+ db 'e world.'
+L282A: db 00
+L282B: db 'When it was destroyed, his psyche could no longer retain its'
+ db ' hold on the Dark Core.'
+L287E: db 00
+L287F: db 'I have often wondered if another interface was implemented, '
+ db 'would the psyche return, or possibly be regenerated..."'
+L28F2: db 00
+L28F3: db 'As his idle musings begin to run toward possibly dangerous c'
+ db 'onclusions, his mouth audibly snaps shut.'
+L2958: db 00
+L2959: db 'psyche'
+L295F: db 00
+L2960: db 'Dark Core'
+L2969: db 00
+L296A: db 'interface'
+L2973: db 00
+L2974: db 'gargoyles'
+L297D: db 00
+L297E: db '"Interesting creatures, thou mightest call them balrons, but'
+ db ' they are not the beasts that history has made of them.'
+L29F1: db 00
+L29F2: db 'The larger, winged ones are intelligent and magical by natur'
+ db 'e, while the smaller, wingless ones appear to be the work fo'
+ db 'rce for the species."'
+L2A7F: db 00
+L2A80: db 'He turns his head in your direction with a puzzled expressio'
+ db 'n in his eyes, "I have the oddest feeling that thou hast hea'
+ db 'rd all of this before..." Erethian falls silent.'
+L2B28: db 00
+L2B29: db 'gargoyles'
+L2B32: db 00
+L2B33: db 'psyche'
+L2B39: db 00
+L2B3A: db '"Eventually, I shall turn my studies to that being. The garg'
+ db 'oyles have placed it within a statue, in a shrine they dedic'
+ db 'ated to their principle of Diligence.'
+L2BD7: db 00
+L2BD8: db 'psyche'
+L2BDE: db 00
+L2BDF: db 'Dark Core'
+L2BE8: db 00
+L2BE9: db '"Yes, here it is. It is the cylinder sitting upon yon pedast'
+ db 'al." He motions in the direction of the Dark Core.'
+L2C57: db 00
+L2C58: db '"I have found it to be quite a treasure trove of useful fact'
+ db 's. Its sole purpose seems to be the storage of information.'
+L2CCF: db 00
+L2CD0: db 'Much of the information is trivial, such as the detailed des'
+ db 'cription of the color of the sky on a particular day eons ag'
+ db 'o,'
+L2D4A: db 00
+L2D4B: db 'while other bits give instructions for the manipulation of t'
+ db 'he world.'
+L2D90: db 00
+L2D91: db 'Within it I even found the knowledge to raise and sustain th'
+ db 'is island we stand upon. It is truly a remarkable artifact."'
+L2E09: db 00
+L2E0A: db 'He thinks for a moment, then looks nervously in your directi'
+ db 'on, "Please, do be careful around it. Artifacts seem to have'
+ db ' a tendency to, shall we say, disappear around thee."'
+L2EB7: db 00
+L2EB8: db 'Dark Core'
+L2EC1: db 00
+L2EC2: db 'Enilno'
+L2EC8: db 00
+L2EC9: db '"Ah, now there's a question. I've heard naught of it's exist'
+ db 'ence since the Age of Darkness ended. Would that I knew its '
+ db 'location.'
+L2F4A: db 00
+L2F4B: db 'It was reputedly a great item of magic. Didst thou find it s'
+ db 'o?" He cocks his head to one side as he asks the question.'
+L2FC1: db 00
+L2FC2: db '"Yes, 'tis a pity to lose such an item of antiquity. Perhaps'
+ db ' as time unfolds it will turn up. These things have a way of'
+ db ' surfacing at the strangest times."'
+L305D: db 00
+L305E: db '"No? It didst seem to serve thee well enough to dispatch the'
+ db ' enchantress Minax. But then I suppose only a poor bard blam'
+ db 'es his instrument." He winks mischieviously in your general '
+ db 'direction.'
+L311C: db 00
+L311D: db 'Enilno'
+L3123: db 00
+L3124: db 'Gem of Immortality'
+L3136: db 00
+L3137: db 'Milky eyes glitter up at you like twin marbles, "Ah, yes. Bu'
+ db 't thou knowest all too well about that little bauble.'
+L31A8: db 00
+L31A9: db 'After all, it was thee who smashed it into the shards which '
+ db 'caused thee so much trouble during the regency of Lord Black'
+ db 'thorn.'
+L3227: db 00
+L3228: db 'So much power that even in a shattered state, its magic stil'
+ db 'l flowed. 'Tis sad to lose such an artifact." As if suddenly'
+ db ' remembering with whom he is speaking, he ammends, "Much bet'
+ db 'ter than having Mondain running about mucking with things, I'
+ db ' suppose."'
+L3322: db 00
+L3323: db 'Gem of Immortality'
+L3335: db 00
+L3336: db 'skull'
+L333B: db 00
+L333C: db '"'Twould seem that someone," he pauses dramatically, "let th'
+ db 'at slip into a volcano..." His wry smile belies his careless'
+ db ' tone.'
+L33BA: db 00
+L33BB: db 'skull'
+L33C0: db 00
+L33C1: db 'daemon mirror'
+L33CE: db 00
+L33CF: db '"Ah, so thou hast met that old windbag. Truly, I feel that I'
+ db ' would do better to free myself of that burdensome beast, bu'
+ db 't he sometimes proves to be useful. If it weren't for his wh'
+ db 'ining, perhaps he and I would get along better."'
+L34B3: db 00
+L34B4: db 'free'
+L34B8: db 00
+L34B9: db 'whining'
+L34C0: db 00
+L34C1: db 'daemon mirror'
+L34CE: db 00
+L34CF: db 'whining'
+L34D6: db 00
+L34D7: db '"'Tis his favorite passtime. He begs, pleads, and threatens '
+ db 'me to free him from that stupid mirror. Believe me, if I cou'
+ db 'ld I would have done it long ago." Erethian's lined face sho'
+ db 'ws his chagrin.'
+L359A: db 00
+L359B: db 'whining'
+L35A2: db 00
+L35A3: db 'free'
+L35A7: db 00
+L35A8: db '"He wants this special bauble. I once possessed this gem he '
+ db 'seeks, and I don't think he'd be very happy once he gets it.'
+ db ' I have tried to tell him that 'twould only imprison him in '
+ db 'a more mobile jail, but alas, his head is made of stone."'
+L3695: db 00
+L3696: db 'jail'
+L369A: db 00
+L369B: db 'free'
+L369F: db 00
+L36A0: db 'jail'
+L36A4: db 00
+L36A5: db '"Quite. Arcadion seeks to have dominion over Britannia and b'
+ db 'elieves that the gem will give him the ability to exert his '
+ db 'power here. In truth, the Ether Gem works in the reverse, hi'
+ db 's power will become accessible to the one who possesses the '
+ db 'gem."'
+L379A: db 00
+L379B: db 'Ether Gem'
+L37A4: db 00
+L37A5: db 'jail'
+L37A9: db 00
+L37AA: db 'Ether Gem'
+L37B3: db 00
+L37B4: db '"The gem was pilfered from me by an ill tempered dragon. She'
+ db ' blew her way into this castle, waylayed the golems that pro'
+ db 'tect the Shrine of Principle, then destroyed a perfectly goo'
+ db 'd secret door on her way to the Test of Courage. I'd have li'
+ db 'ked to see her squeeze through the hole she made, 'tis hardl'
+ db 'y big enough for a creature of her bulk." The mage's milky e'
+ db 'yes twinkle with suppressed mirth.'
+L393E: db 00
+L393F: db 'Test of Courage'
+L394E: db 00
+L394F: db 'Shrine of Principle'
+L3962: db 00
+L3963: db 'golems'
+L3969: db 00
+L396A: db 'Ether Gem'
+L3973: db 00
+L3974: db 'golems'
+L397A: db 00
+L397B: db '"Mmmm... Yes. This pair of manshaped, magical constucts used'
+ db ' to guard the Shrine of Principle, but alas, one fell pray t'
+ db 'o falling rocks when the dragon assaulted the castle. The ot'
+ db 'her picked up his, ah... brother, for lack of a better word,'
+ db ' and carried him off through the portal to the Test of Love.'
+ db '"'
+L3AA8: db 00
+L3AA9: db 'Test of Love'
+L3AB5: db 00
+L3AB6: db 'golems'
+L3ABC: db 00
+L3ABD: db 'Shrine of Principle'
+L3AD0: db 00
+L3AD1: db '"The shrine lies through the doors at the rear of the main h'
+ db 'all. There thou canst find three statues, each one dedicated'
+ db ' to a Principle set forth by Lord Britsh at the beginning of'
+ db ' the Age of Enlightenment." Conspiratorially he adds, "A bit'
+ db ' stuffy, but they make nice cloakracks."'
+L3BE9: db 00
+L3BEA: db 'Shrine of Principle'
+L3BFD: db 00
+L3BFE: db 'Test of Love'
+L3C0A: db 00
+L3C0B: db '"I not had the chance to inspect that oddity yet, however, t'
+ db 'hou art welcome to peruse it at thy leisure." He smiles like'
+ db ' a grandfather giving a present to a child.'
+L3CAE: db 00
+L3CAF: db 'Test of Love'
+L3CBB: db 00
+L3CBC: db 'Test of Courage'
+L3CCB: db 00
+L3CCC: db 'heroine's'
+L3CD5: db 00
+L3CD6: db 'hero's'
+L3CDC: db 00
+L3CDD: db '"I believe 'twas set in motion by Lord British in order to t'
+ db 'est..." He gestures in your direction, "A virtuous '
+L3D4C: db 00
+L3D4D: db ' fighting ability and courage. The statues in the back of th'
+ db 'is castle can tell thee more about the tests, though." Ereth'
+ db 'ian grins mysteriously.'
+L3DDC: db 00
+L3DDD: db 'Test of Courage'
+L3DEC: db 00
+L3DED: db 'daemon gem'
+L3DF7: db 00
+L3DF8: db '"So... thou hast made a servant of Arcadion. 'Tis good to be'
+ db ' rid of his incessant whining. I hope that thou findest him '
+ db 'to be as useful as I didst." You're not sure, but his words '
+ db 'might be construed as a curse.'
+L3ECA: db 00
+L3ECB: db 'The gem glows brighter, "'Tis good to see the last of thee, '
+ db 'also, old man. Perhaps in another life, I shall be thy maste'
+ db 'r, and thou the slave." The daemon lets out a chilling littl'
+ db 'e laugh.'
+L3F87: db 00
+L3F88: db 'Erethian looks a little shaken at hearing the daemon's voice'
+ db ', but quickly recovers his composure. "I think not, daemon. '
+ db 'I'm not at all sure that there is a way for thou to get out '
+ db 'of that little gem." The elderly mage's expression is unread'
+ db 'able.*'
+L407E: db 00
+L407F: db 'daemon gem'
+L4089: db 00
+L408A: db 'daemon blade'
+L4096: db 00
+L4097: db '"I see that thou didst not heed my warning. Alas, my pity sh'
+ db 'all be thine eternally. And so, what wouldst thou have of me'
+ db ', Master and Slave of the Shade Blade."'
+L4136: db 00
+L4137: db 'daemon blade'
+L4143: db 00
+L4144: db 'bye'
+L4147: db 00
+L4148: db '"Goodbye and good luck... Thou'lt need it." The old mage sni'
+ db 'ckers under his breath as if enjoying a personal joke, quite'
+ db ' possibly at your expense.*'
+L41DB: db 00
+L41DC: db '"Goodbye and good luck..." Erethian sounds truly sympathetic'
+ db '.'
+L4219: db 00
+  .code
+  .argc 0001H
+  .localc 001AH
+  .externsize 0007H
+  .extern 01B0H
+  .extern 0881H
+  .extern 092DH
+  .extern 0908H
+  .extern 090AH
+  .extern 0696H
+  .extern 069AH
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 C3 01   jne 01CB
+0008: 1F 01 00   pushi 0001H   ; 1
+000B: 1F 50 01   pushi 0150H   ; 336
+000E: 3E   push itemref
+000F: 38 0E 00 03  callis 000E, 3
+0013: 12 00 00   pop [0000]
+0016: 1F 01 00   pushi 0001H   ; 1
+0019: 1F 52 01   pushi 0152H   ; 338
+001C: 3E   push itemref
+001D: 38 0E 00 03  callis 000E, 3
+0021: 12 01 00   pop [0001]
+0024: 1F 01 00   pushi 0001H   ; 1
+0027: 1F E5 03   pushi 03E5H   ; 997
+002A: 3E   push itemref
+002B: 38 0E 00 03  callis 000E, 3
+002F: 12 02 00   pop [0002]
+0032: 21 00 00   push [0000]
+0035: 21 01 00   push [0001]
+0038: 21 02 00   push [0002]
+003B: 0F   or
+003C: 0F   or
+003D: 05 B8 00   jne 00F8
+0040: 1F 64 00   pushi 0064H   ; 100
+0043: 38 00 00 01  callis 0000, 1
+0047: 12 03 00   pop [0003]
+004A: 21 03 00   push [0003]
+004D: 1F 3C 00   pushi 003CH   ; 60
+0050: 18   cmpge
+0051: 05 09 00   jne 005D
+0054: 1D 00 00   pushs L0000   ; @Damn candles!@
+0057: 3E   push itemref
+0058: 39 40 00 02  calli _ItemSay@2  ; 0040
+005C: 2C   db 2c ???
+005D: 21 03 00   push [0003]
+0060: 1F 28 00   pushi 0028H   ; 40
+0063: 19   cmple
+0064: 05 8E 00   jne 00F5
+0067: 21 00 00   push [0000]
+006A: 12 04 00   pop [0004]
+006D: 21 04 00   push [0004]
+0070: 21 01 00   push [0001]
+0073: 4A   arra
+0074: 12 04 00   pop [0004]
+0077: 21 04 00   push [0004]
+007A: 21 02 00   push [0002]
+007D: 4A   arra
+007E: 12 04 00   pop [0004]
+0081: 2E   sloop
+0082: 02 05 00 06 00 07 00 04 00 42 00  db 2 ???
+0083:   db 5
+0084:   db 0
+0085:   db 6
+0086:   db 0
+0087:   db 7
+0088:   db 0
+0089:   db 4
+008A:   db 0
+008B:   db 42
+008C:   db 0
+008D: 21 07 00   push [0007]
+0090: 38 18 00 01  callis 0018, 1
+0094: 12 08 00   pop [0008]
+0097: 21 07 00   push [0007]
+009A: 39 6F 00 01  calli 006F, 1
+009E: 1F FF FF   pushi FFFFH   ; -1
+00A1: 1F 00 00   pushi 0000H   ; 0
+00A4: 1F 00 00   pushi 0000H   ; 0
+00A7: 1F 00 00   pushi 0000H   ; 0
+00AA: 1F 02 00   pushi 0002H   ; 2
+00AD: 26 08 00   aidx [0008]
+00B0: 1F 01 00   pushi 0001H   ; 1
+00B3: 0A   sub
+00B4: 1F 01 00   pushi 0001H   ; 1
+00B7: 26 08 00   aidx [0008]
+00BA: 1F 01 00   pushi 0001H   ; 1
+00BD: 0A   sub
+00BE: 1F 05 00   pushi 0005H   ; 5
+00C1: 39 53 00 07  calli 0053, 7
+00C5: 1F 08 00   pushi 0008H   ; 8
+00C8: 39 0F 00 01  calli 000F, 1
+00CC: 06 B3 FF   jmp 0082
+00CF: 1F 06 00   pushi 0006H   ; 6
+00D2: 44 27   pushw 4427H   ; 17447
+00D4: 44 70   pushw 1F70H   ; 8048
+00D6: 1F 03 00   pushi 0003H   ; 3
+00D9: 44 27   pushw 1D27H   ; 7463
+00DB: 1D 10 00   pushs L0010   ; @An Ailem!
+00DE: 44 52   pushw 4452H   ; 17490
+00E0: 44 01   pushw 1F01H   ; 7937
+00E2: 1F 01 00   pushi 0001H   ; 1
+00E5: 44 27   pushw 4427H   ; 17447
+00E7: 44 6F   pushw 1E6FH   ; 7791
+00E9: 1E 0B 00   arrc 000BH   ; 11
+00EC: 3E   push itemref
+00ED: 38 01 00 02  callis 0001, 2
+00F1: 12 09 00   pop [0009]
+00F4: 2C   db 2c ???
+00F5: 06 D3 00   jmp 01CB
+00F8: 1F 01 00   pushi 0001H   ; 1
+00FB: 1F 69 03   pushi 0369H   ; 873
+00FE: 3E   push itemref
+00FF: 38 0E 00 03  callis 000E, 3
+0103: 05 0C 00   jne 0112
+0106: 1D 1B 00   pushs L001B   ; @I'm famished!@
+0109: 3E   push itemref
+010A: 39 40 00 02  calli _ItemSay@2  ; 0040
+010E: 2C   db 2c ???
+010F: 06 B9 00   jmp 01CB
+0112: 1F 02 00   pushi 0002H   ; 2
+0115: 1F B0 01   pushi 01B0H   ; 432
+0118: 3E   push itemref
+0119: 38 0E 00 03  callis 000E, 3
+011D: 12 0A 00   pop [000A]
+0120: 1F 02 00   pushi 0002H   ; 2
+0123: 1F B1 01   pushi 01B1H   ; 433
+0126: 3E   push itemref
+0127: 38 0E 00 03  callis 000E, 3
+012B: 12 0B 00   pop [000B]
+012E: 21 0A 00   push [000A]
+0131: 21 0B 00   push [000B]
+0134: 0F   or
+0135: 05 2B 00   jne 0163
+0138: 21 0A 00   push [000A]
+013B: 05 13 00   jne 0151
+013E: 1D 2B 00   pushs L002B   ; @My door, at last.@
+0141: 3E   push itemref
+0142: 39 40 00 02  calli _ItemSay@2  ; 0040
+0146: 1F 01 00   pushi 0001H   ; 1
+0149: 4B   db 4b ???
+014A: 21 0A 00   push [000A]
+014D: 47 B0 01   calle 01B0H   ; 432
+0150: 2C   db 2c ???
+0151: 21 0B 00   push [000B]
+0154: 05 09 00   jne 0160
+0157: 1D 3F 00   pushs L003F   ; @My door, at last.@
+015A: 3E   push itemref
+015B: 39 40 00 02  calli _ItemSay@2  ; 0040
+015F: 2C   db 2c ???
+0160: 06 68 00   jmp 01CB
+0163: 1F 10 00   pushi 0010H   ; 16
+0166: 1F 00 00   pushi 0000H   ; 0
+0169: 1F 5F 02   pushi 025FH   ; 607
+016C: 3E   push itemref
+016D: 38 35 00 04  callis 0035, 4
+0171: 12 0C 00   pop [000C]
+0174: 21 0C 00   push [000C]
+0177: 05 51 00   jne 01CB
+017A: 2E   sloop
+017B: 02 0D 00 0E 00 0F 00 0C 00 45 00  db 2 ???
+017C:   db d
+017D:   db 0
+017E:   db e
+017F:   db 0
+0180:   db f
+0181:   db 0
+0182:   db c
+0183:   db 0
+0184:   db 45
+0185:   db 0
+0186: 21 0F 00   push [000F]
+0189: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+018D: 1F 04 00   pushi 0004H   ; 4
+0190: 22   cmpeq
+0191: 3E   push itemref
+0192: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0196: 1F 10 00   pushi 0010H   ; 16
+0199: 18   cmpge
+019A: 0E   and
+019B: 05 21 00   jne 01BF
+019E: 1D 53 00   pushs L0053   ; @Ah, a wall.@
+01A1: 3E   push itemref
+01A2: 39 40 00 02  calli _ItemSay@2  ; 0040
+01A6: 1F 12 00   pushi 0012H   ; 18
+01A9: 1D 61 00   pushs L0061   ; @I'll follow it.@
+01AC: 44 52   pushw 4452H   ; 17490
+01AE: 44 23   pushw 1E23H   ; 7715
+01B0: 1E 03 00   arrc 0003H   ; 3
+01B3: 3E   push itemref
+01B4: 38 02 00 03  callis 0002, 3
+01B8: 12 10 00   pop [0010]
+01BB: 2C   db 2c ???
+01BC: 06 09 00   jmp 01C8
+01BF: 1D 73 00   pushs L0073   ; @Where am I?@
+01C2: 3E   push itemref
+01C3: 39 40 00 02  calli _ItemSay@2  ; 0040
+01C7: 2C   db 2c ???
+01C8: 06 B0 FF   jmp 017B
+01CB: 1F 04 00   pushi 0004H   ; 4
+01CE: 1F F0 00   pushi 00F0H   ; 240
+01D1: 1F 1D 03   pushi 031DH   ; 797
+01D4: 3E   push itemref
+01D5: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+01D9: 10   not
+01DA: 05 01 00   jne 01DE
+01DD: 2C   db 2c ???
+01DE: 48   push eventid
+01DF: 1F 01 00   pushi 0001H   ; 1
+01E2: 22   cmpeq
+01E3: 05 3A 00   jne 0220
+01E6: 24 01 00   call [0001]   ; 0881H
+01E9: 10   not
+01EA: 05 32 00   jne 021F
+01ED: 3E   push itemref
+01EE: 24 02 00   call [0002]   ; 092DH
+01F1: 12 11 00   pop [0011]
+01F4: 21 11 00   push [0011]
+01F7: 1F 04 00   pushi 0004H   ; 4
+01FA: 09   add
+01FB: 1F 08 00   pushi 0008H   ; 8
+01FE: 0D   mod
+01FF: 12 12 00   pop [0012]
+0202: 1F 00 00   pushi 0000H   ; 0
+0205: 1F 9A 00   pushi 009AH   ; 154
+0208: 44 55   pushw 2155H   ; 8533
+020A: 21 12 00   push [0012]
+020D: 44 59   pushw 4459H   ; 17497
+020F: 44 61   pushw 1E61H   ; 7777
+0211: 1E 06 00   arrc 0006H   ; 6
+0214: 3E   push itemref
+0215: 38 01 00 02  callis 0001, 2
+0219: 12 09 00   pop [0009]
+021C: 06 01 00   jmp 0220
+021F: 3F   abrt
+0220: 48   push eventid
+0221: 1F 02 00   pushi 0002H   ; 2
+0224: 22   cmpeq
+0225: 05 16 07   jne 093E
+0228: 24 03 00   call [0003]   ; 0908H
+022B: 12 13 00   pop [0013]
+022E: 42 0E 03   pushf flag:[030E]
+0231: 05 0F 00   jne 0243
+0234: 1F 01 00   pushi 0001H   ; 1
+0237: 1F E2 FE   pushi FEE2H   ; -286
+023A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+023E: 1C 81 00   addsi L0081   ; "I'll speak to th...
+0241: 33   say
+0242: 3F   abrt
+0243: 42 10 03   pushf flag:[0310]
+0246: 10   not
+0247: 05 3C 00   jne 0286
+024A: 1F 00 00   pushi 0000H   ; 0
+024D: 1F E2 FE   pushi FEE2H   ; -286
+0250: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0254: 1C B8 00   addsi L00B8   ; At your approach,...
+0257: 2F 13 00   addsv [0013]
+025A: 1C 13 01   addsi L0113   ; . I am called Ere...
+025D: 33   say
+025E: 1C 5D 01   addsi L015D   ; I have seen thee ...
+0261: 33   say
+0262: 1C 2E 02   addsi L022E   ; He falls silent h...
+0265: 33   say
+0266: 13   push true
+0267: 43 10 03   popf flag:[0310]
+026A: 1D 7B 02   pushs L027B   ; bye
+026D: 1D 7F 02   pushs L027F   ; Exodus
+0270: 1D 86 02   pushs L0286   ; Minax
+0273: 1D 8C 02   pushs L028C   ; Mondain
+0276: 1D 94 02   pushs L0294   ; job
+0279: 1D 98 02   pushs L0298   ; name
+027C: 1E 06 00   arrc 0006H   ; 6
+027F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0283: 06 40 00   jmp 02C6
+0286: 42 2A 03   pushf flag:[032A]
+0289: 42 2B 03   pushf flag:[032B]
+028C: 0F   or
+028D: 10   not
+028E: 05 17 00   jne 02A8
+0291: 1F 00 00   pushi 0000H   ; 0
+0294: 1F E2 FE   pushi FEE2H   ; -286
+0297: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+029B: 1C 9D 02   addsi L029D   ; "Greetings once a...
+029E: 2F 13 00   addsv [0013]
+02A1: 1C B5 02   addsi L02B5   ; . How may I assis...
+02A4: 33   say
+02A5: 06 0E 00   jmp 02B6
+02A8: 1F 01 00   pushi 0001H   ; 1
+02AB: 1F E2 FE   pushi FEE2H   ; -286
+02AE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02B2: 1C 05 03   addsi L0305   ; "I'll never get a...
+02B5: 33   say
+02B6: 1D 75 03   pushs L0375   ; bye
+02B9: 1D 79 03   pushs L0379   ; job
+02BC: 1D 7D 03   pushs L037D   ; name
+02BF: 1E 03 00   arrc 0003H   ; 3
+02C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02C6: 42 37 03   pushf flag:[0337]
+02C9: 05 18 00   jne 02E4
+02CC: 42 38 03   pushf flag:[0338]
+02CF: 10   not
+02D0: 05 0E 00   jne 02E1
+02D3: 42 30 03   pushf flag:[0330]
+02D6: 10   not
+02D7: 05 07 00   jne 02E1
+02DA: 1D 82 03   pushs L0382   ; black sword
+02DD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02E1: 06 14 00   jmp 02F8
+02E4: 42 12 03   pushf flag:[0312]
+02E7: 10   not
+02E8: 05 0D 00   jne 02F8
+02EB: 42 11 03   pushf flag:[0311]
+02EE: 05 07 00   jne 02F8
+02F1: 1D 8E 03   pushs L038E   ; powerful artifact
+02F4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02F8: 42 13 03   pushf flag:[0313]
+02FB: 05 3A 00   jne 0338
+02FE: 42 2F 03   pushf flag:[032F]
+0301: 10   not
+0302: 05 0A 00   jne 030F
+0305: 1D A0 03   pushs L03A0   ; daemon mirror
+0308: 39 05 00 01  calli _AddAnswer@1  ; 0005
+030C: 06 26 00   jmp 0335
+030F: 42 30 03   pushf flag:[0330]
+0312: 10   not
+0313: 05 11 00   jne 0327
+0316: 42 38 03   pushf flag:[0338]
+0319: 10   not
+031A: 05 07 00   jne 0324
+031D: 1D AE 03   pushs L03AE   ; daemon gem
+0320: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0324: 06 0E 00   jmp 0335
+0327: 42 39 03   pushf flag:[0339]
+032A: 10   not
+032B: 05 07 00   jne 0335
+032E: 1D B9 03   pushs L03B9   ; daemon blade
+0331: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0335: 06 1A 00   jmp 0352
+0338: 42 2F 03   pushf flag:[032F]
+033B: 05 14 00   jne 0352
+033E: 42 30 03   pushf flag:[0330]
+0341: 05 0E 00   jne 0352
+0344: 42 39 03   pushf flag:[0339]
+0347: 10   not
+0348: 05 07 00   jne 0352
+034B: 1D C6 03   pushs L03C6   ; daemon blade
+034E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0352: 42 18 03   pushf flag:[0318]
+0355: 05 07 00   jne 035F
+0358: 1D D3 03   pushs L03D3   ; the Psyche returns
+035B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+035F: 42 27 03   pushf flag:[0327]
+0362: 05 07 00   jne 036C
+0365: 1D E6 03   pushs L03E6   ; great evil
+0368: 39 05 00 01  calli _AddAnswer@1  ; 0005
+036C: 42 41 03   pushf flag:[0341]
+036F: 05 07 00   jne 0379
+0372: 1D F1 03   pushs L03F1   ; Talisman of Infinity
+0375: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0379: 14   push false
+037A: 12 14 00   pop [0014]
+037D: 14   push false
+037E: 12 15 00   pop [0015]
+0381: 14   push false
+0382: 12 16 00   pop [0016]
+0385: 14   push false
+0386: 12 17 00   pop [0017]
+0389: 04 9D 05   je 0929
+038C: 1D 06 04   pushs L0406   ; the Psyche returns
+038F: 07 01 00 23 00  cmps 0001H, 03B7
+0394: 1F 00 00   pushi 0000H   ; 0
+0397: 1F E2 FE   pushi FEE2H   ; -286
+039A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+039E: 1C 19 04   addsi L0419   ; "Could this possi...
+03A1: 33   say
+03A2: 1F 01 00   pushi 0001H   ; 1
+03A5: 1F E2 FE   pushi FEE2H   ; -286
+03A8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03AC: 1C 8F 04   addsi L048F   ; He once again not...
+03AF: 33   say
+03B0: 1D 99 05   pushs L0599   ; the Psyche returns
+03B3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03B7: 1D AC 05   pushs L05AC   ; great evil
+03BA: 07 01 00 15 00  cmps 0001H, 03D4
+03BF: 1F 01 00   pushi 0001H   ; 1
+03C2: 1F E2 FE   pushi FEE2H   ; -286
+03C5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+03C9: 1C B7 05   addsi L05B7   ; The elderly mage ...
+03CC: 33   say
+03CD: 1D D1 06   pushs L06D1   ; great evil
+03D0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03D4: 1D DC 06   pushs L06DC   ; Talisman of Infinity
+03D7: 07 01 00 A9 00  cmps 0001H, 0485
+03DC: 42 0F 03   pushf flag:[030F]
+03DF: 10   not
+03E0: 05 51 00   jne 0434
+03E3: 13   push true
+03E4: 43 0F 03   popf flag:[030F]
+03E7: 1C F1 06   addsi L06F1   ; "Ah, yes. I once ...
+03EA: 33   say
+03EB: 24 04 00   call [0004]   ; 090AH
+03EE: 05 3C 00   jne 042D
+03F1: 1F 01 00   pushi 0001H   ; 1
+03F4: 1F 32 00   pushi 0032H   ; 50
+03F7: 1F 1D 03   pushi 031DH   ; 797
+03FA: 1F 9B FE   pushi FE9BH   ; -357
+03FD: 38 28 00 04  callis 0028, 4
+0401: 10   not
+0402: 05 07 00   jne 040C
+0405: 1C AC 07   addsi L07AC   ; "If thou dost not...
+0408: 33   say
+0409: 06 1E 00   jmp 042A
+040C: 1C F3 07   addsi L07F3   ; "Here we are. Now...
+040F: 33   say
+0410: 1F E2 FE   pushi FEE2H   ; -286
+0413: 39 04 00 01  calli _HideNPC@1  ; 0004
+0417: 1F 00 00   pushi 0000H   ; 0
+041A: 1F DC FE   pushi FEDCH   ; -292
+041D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0421: 1C 94 0B   addsi L0B94   ; Arcadion's voice ...
+0424: 33   say
+0425: 13   push true
+0426: 43 0E 03   popf flag:[030E]
+0429: 3F   abrt
+042A: 06 04 00   jmp 0431
+042D: 1C 10 0C   addsi L0C10   ; "Very well. I sha...
+0430: 33   say
+0431: 06 4A 00   jmp 047E
+0434: 1C 57 0C   addsi L0C57   ; "Dost thou have t...
+0437: 33   say
+0438: 24 04 00   call [0004]   ; 090AH
+043B: 05 3C 00   jne 047A
+043E: 1F 01 00   pushi 0001H   ; 1
+0441: 1F 32 00   pushi 0032H   ; 50
+0444: 1F 1D 03   pushi 031DH   ; 797
+0447: 1F 9B FE   pushi FE9BH   ; -357
+044A: 38 28 00 04  callis 0028, 4
+044E: 10   not
+044F: 05 07 00   jne 0459
+0452: 1C 98 0C   addsi L0C98   ; "I needs must tou...
+0455: 33   say
+0456: 06 1E 00   jmp 0477
+0459: 1C 01 0D   addsi L0D01   ; "Here we are. Now...
+045C: 33   say
+045D: 1F E2 FE   pushi FEE2H   ; -286
+0460: 39 04 00 01  calli _HideNPC@1  ; 0004
+0464: 1F 00 00   pushi 0000H   ; 0
+0467: 1F DC FE   pushi FEDCH   ; -292
+046A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+046E: 1C A2 10   addsi L10A2   ; Arcadion's voice ...
+0471: 33   say
+0472: 13   push true
+0473: 43 0E 03   popf flag:[030E]
+0476: 3F   abrt
+0477: 06 04 00   jmp 047E
+047A: 1C 1E 11   addsi L111E   ; "If thou bringest...
+047D: 33   say
+047E: 1D 7C 11   pushs L117C   ; Talisman of Infinity
+0481: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0485: 1D 91 11   pushs L1191   ; powerful artifact
+0488: 07 01 00 0B 00  cmps 0001H, 0498
+048D: 1C A3 11   addsi L11A3   ; "I once attempted...
+0490: 33   say
+0491: 13   push true
+0492: 12 15 00   pop [0015]
+0495: 06 91 04   jmp 0929
+0498: 1D D3 12   pushs L12D3   ; black sword
+049B: 07 01 00 6D 00  cmps 0001H, 050D
+04A0: 1F 01 00   pushi 0001H   ; 1
+04A3: 1F E2 FE   pushi FEE2H   ; -286
+04A6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04AA: 1C DF 12   addsi L12DF   ; Erethian nods his...
+04AD: 33   say
+04AE: 1F 0D 00   pushi 000DH   ; 13
+04B1: 1F 99 FE   pushi FE99H   ; -359
+04B4: 1F F8 02   pushi 02F8H   ; 760
+04B7: 1F 9C FE   pushi FE9CH   ; -356
+04BA: 38 1B 00 01  callis 001B, 1
+04BE: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+04C2: 05 2D 00   jne 04F2
+04C5: 1F 00 00   pushi 0000H   ; 0
+04C8: 1F DD FE   pushi FEDDH   ; -291
+04CB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04CF: 1C 0F 14   addsi L140F   ; The little gem sp...
+04D2: 33   say
+04D3: 1F DD FE   pushi FEDDH   ; -291
+04D6: 39 04 00 01  calli _HideNPC@1  ; 0004
+04DA: 1F 01 00   pushi 0001H   ; 1
+04DD: 1F E2 FE   pushi FEE2H   ; -286
+04E0: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04E4: 1C 4E 15   addsi L154E   ; Erethian's voice ...
+04E7: 33   say
+04E8: 1D 35 16   pushs L1635   ; problems
+04EB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+04EF: 06 0A 00   jmp 04FC
+04F2: 42 2F 03   pushf flag:[032F]
+04F5: 05 04 00   jne 04FC
+04F8: 1C 3E 16   addsi L163E   ; You wonder if per...
+04FB: 33   say
+04FC: 13   push true
+04FD: 43 38 03   popf flag:[0338]
+0500: 1D 4A 17   pushs L174A   ; daemon gem
+0503: 1D 55 17   pushs L1755   ; black sword
+0506: 1E 02 00   arrc 0002H   ; 2
+0509: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+050D: 1D 61 17   pushs L1761   ; problems
+0510: 07 01 00 0B 00  cmps 0001H, 0520
+0515: 1C 6A 17   addsi L176A   ; "This is thy choi...
+0518: 33   say
+0519: 1D 69 18   pushs L1869   ; problems
+051C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0520: 1D 72 18   pushs L1872   ; name
+0523: 07 01 00 11 00  cmps 0001H, 0539
+0528: 1C 77 18   addsi L1877   ; The mage gives yo...
+052B: 2F 13 00   addsv [0013]
+052E: 1C C8 18   addsi L18C8   ; . As I have said,...
+0531: 33   say
+0532: 1D F0 18   pushs L18F0   ; name
+0535: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0539: 1D F5 18   pushs L18F5   ; job
+053C: 07 01 00 2D 00  cmps 0001H, 056E
+0541: 1C F9 18   addsi L18F9   ; "I am a follower ...
+0544: 33   say
+0545: 1C 98 19   addsi L1998   ; It is this curios...
+0548: 33   say
+0549: 1C 1E 1A   addsi L1A1E   ; The books and scr...
+054C: 33   say
+054D: 1C 88 1A   addsi L1A88   ; His clouded eyes ...
+0550: 33   say
+0551: 1D 19 1B   pushs L1B19   ; job
+0554: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0558: 1D 1D 1B   pushs L1B1D   ; blindness
+055B: 1D 27 1B   pushs L1B27   ; subjects
+055E: 1D 30 1B   pushs L1B30   ; Exodus
+0561: 1D 37 1B   pushs L1B37   ; Minax
+0564: 1D 3D 1B   pushs L1B3D   ; Mondain
+0567: 1E 05 00   arrc 0005H   ; 5
+056A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+056E: 1D 45 1B   pushs L1B45   ; subjects
+0571: 07 01 00 0B 00  cmps 0001H, 0581
+0576: 1C 4E 1B   addsi L1B4E   ; "If thou art inte...
+0579: 33   say
+057A: 1D 36 1C   pushs L1C36   ; subjects
+057D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0581: 1D 3F 1C   pushs L1C3F   ; blindness
+0584: 07 01 00 16 00  cmps 0001H, 059F
+0589: 42 2B 03   pushf flag:[032B]
+058C: 10   not
+058D: 05 0A 00   jne 059A
+0590: 13   push true
+0591: 12 14 00   pop [0014]
+0594: 06 92 03   jmp 0929
+0597: 06 05 00   jmp 059F
+059A: 1C 49 1C   addsi L1C49   ; "Thou art a tires...
+059D: 33   say
+059E: 3F   abrt
+059F: 1D 8E 1C   pushs L1C8E   ; Mondain
+05A2: 07 01 00 20 00  cmps 0001H, 05C7
+05A7: 1C 96 1C   addsi L1C96   ; Erethian scowls, ...
+05AA: 33   say
+05AB: 1C 35 1D   addsi L1D35   ; 'Tis even said hi...
+05AE: 33   say
+05AF: 1C 2E 1E   addsi L1E2E   ; "I would have lov...
+05B2: 33   say
+05B3: 1D 9A 1E   pushs L1E9A   ; skull
+05B6: 1D A0 1E   pushs L1EA0   ; Gem of Immortality
+05B9: 1E 02 00   arrc 0002H   ; 2
+05BC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+05C0: 1D B3 1E   pushs L1EB3   ; Mondain
+05C3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05C7: 1D BB 1E   pushs L1EBB   ; Minax
+05CA: 07 01 00 6B 00  cmps 0001H, 063A
+05CF: 1C C1 1E   addsi L1EC1   ; A sad sweet smile...
+05D2: 33   say
+05D3: 1C 8A 1F   addsi L1F8A   ; She became a powe...
+05D6: 33   say
+05D7: 1C 28 20   addsi L2028   ; And that thou did...
+05DA: 33   say
+05DB: 1F 28 00   pushi 0028H   ; 40
+05DE: 1F D1 01   pushi 01D1H   ; 465
+05E1: 3E   push itemref
+05E2: 38 0E 00 03  callis 000E, 3
+05E6: 05 43 00   jne 062C
+05E9: 1F 00 00   pushi 0000H   ; 0
+05EC: 1F FF FF   pushi FFFFH   ; -1
+05EF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+05F3: 1C E6 20   addsi L20E6   ; With a look of in...
+05F6: 33   say
+05F7: 1F 00 00   pushi 0000H   ; 0
+05FA: 1F E2 FE   pushi FEE2H   ; -286
+05FD: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0601: 1C 95 21   addsi L2195   ; "And what a dubio...
+0604: 33   say
+0605: 1F 00 00   pushi 0000H   ; 0
+0608: 1F FF FF   pushi FFFFH   ; -1
+060B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+060F: 1C FC 21   addsi L21FC   ; An angry retort d...
+0612: 33   say
+0613: 1F 00 00   pushi 0000H   ; 0
+0616: 1F E2 FE   pushi FEE2H   ; -286
+0619: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+061D: 1C 5B 22   addsi L225B   ; "Please, forgive ...
+0620: 33   say
+0621: 1C ED 22   addsi L22ED   ; I have nothing bu...
+0624: 33   say
+0625: 1F FF FF   pushi FFFFH   ; -1
+0628: 39 04 00 01  calli _HideNPC@1  ; 0004
+062C: 1D 67 23   pushs L2367   ; Enilno
+062F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0633: 1D 6E 23   pushs L236E   ; Minax
+0636: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+063A: 1D 74 23   pushs L2374   ; Exodus
+063D: 07 01 00 1C 00  cmps 0001H, 065E
+0642: 1C 7B 23   addsi L237B   ; "That being has b...
+0645: 33   say
+0646: 1C 5B 24   addsi L245B   ; Upon further rese...
+0649: 33   say
+064A: 1D FA 24   pushs L24FA   ; interface
+064D: 1D 04 25   pushs L2504   ; two parts
+0650: 1E 02 00   arrc 0002H   ; 2
+0653: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0657: 1D 0E 25   pushs L250E   ; Exodus
+065A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+065E: 1D 15 25   pushs L2515   ; two parts
+0661: 07 01 00 36 00  cmps 0001H, 069C
+0666: 1C 1F 25   addsi L251F   ; "One part, his ps...
+0669: 33   say
+066A: 1C 24 26   addsi L2624   ; He continues, "Th...
+066D: 33   say
+066E: 1C 0E 27   addsi L270E   ; "I believe 'twas ...
+0671: 33   say
+0672: 1D 7B 27   pushs L277B   ; gargoyles
+0675: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0679: 21 16 00   push [0016]
+067C: 10   not
+067D: 05 07 00   jne 0687
+0680: 1D 85 27   pushs L2785   ; psyche
+0683: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0687: 21 17 00   push [0017]
+068A: 10   not
+068B: 05 07 00   jne 0695
+068E: 1D 8C 27   pushs L278C   ; Dark Core
+0691: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0695: 1D 96 27   pushs L2796   ; two parts
+0698: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+069C: 1D A0 27   pushs L27A0   ; interface
+069F: 07 01 00 33 00  cmps 0001H, 06D7
+06A4: 1C AA 27   addsi L27AA   ; His expression is...
+06A7: 33   say
+06A8: 1C 2B 28   addsi L282B   ; When it was destr...
+06AB: 33   say
+06AC: 1C 7F 28   addsi L287F   ; I have often wond...
+06AF: 33   say
+06B0: 1C F3 28   addsi L28F3   ; As his idle musin...
+06B3: 33   say
+06B4: 21 16 00   push [0016]
+06B7: 10   not
+06B8: 05 07 00   jne 06C2
+06BB: 1D 59 29   pushs L2959   ; psyche
+06BE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+06C2: 21 17 00   push [0017]
+06C5: 10   not
+06C6: 05 07 00   jne 06D0
+06C9: 1D 60 29   pushs L2960   ; Dark Core
+06CC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+06D0: 1D 6A 29   pushs L296A   ; interface
+06D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+06D7: 1D 74 29   pushs L2974   ; gargoyles
+06DA: 07 01 00 13 00  cmps 0001H, 06F2
+06DF: 1C 7E 29   addsi L297E   ; "Interesting crea...
+06E2: 33   say
+06E3: 1C F2 29   addsi L29F2   ; The larger, winge...
+06E6: 33   say
+06E7: 1C 80 2A   addsi L2A80   ; He turns his head...
+06EA: 33   say
+06EB: 1D 29 2B   pushs L2B29   ; gargoyles
+06EE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+06F2: 1D 33 2B   pushs L2B33   ; psyche
+06F5: 07 01 00 0F 00  cmps 0001H, 0709
+06FA: 1C 3A 2B   addsi L2B3A   ; "Eventually, I sh...
+06FD: 33   say
+06FE: 13   push true
+06FF: 12 16 00   pop [0016]
+0702: 1D D8 2B   pushs L2BD8   ; psyche
+0705: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0709: 1D DF 2B   pushs L2BDF   ; Dark Core
+070C: 07 01 00 37 00  cmps 0001H, 0748
+0711: 1F 07 00   pushi 0007H   ; 7
+0714: 1F DE 03   pushi 03DEH   ; 990
+0717: 1F 9C FE   pushi FE9CH   ; -356
+071A: 38 1B 00 01  callis 001B, 1
+071E: 38 0E 00 03  callis 000E, 3
+0722: 05 04 00   jne 0729
+0725: 1C E9 2B   addsi L2BE9   ; "Yes, here it is....
+0728: 33   say
+0729: 1C 58 2C   addsi L2C58   ; "I have found it ...
+072C: 33   say
+072D: 1C D0 2C   addsi L2CD0   ; Much of the infor...
+0730: 33   say
+0731: 1C 4B 2D   addsi L2D4B   ; while other bits ...
+0734: 33   say
+0735: 1C 91 2D   addsi L2D91   ; Within it I even ...
+0738: 33   say
+0739: 1C 0A 2E   addsi L2E0A   ; He thinks for a m...
+073C: 33   say
+073D: 13   push true
+073E: 12 17 00   pop [0017]
+0741: 1D B8 2E   pushs L2EB8   ; Dark Core
+0744: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0748: 1D C2 2E   pushs L2EC2   ; Enilno
+074B: 07 01 00 26 00  cmps 0001H, 0776
+0750: 1C C9 2E   addsi L2EC9   ; "Ah, now there's ...
+0753: 33   say
+0754: 1C 4B 2F   addsi L2F4B   ; It was reputedly ...
+0757: 33   say
+0758: 24 04 00   call [0004]   ; 090AH
+075B: 12 18 00   pop [0018]
+075E: 21 18 00   push [0018]
+0761: 05 07 00   jne 076B
+0764: 1C C2 2F   addsi L2FC2   ; "Yes, 'tis a pity...
+0767: 33   say
+0768: 06 04 00   jmp 076F
+076B: 1C 5E 30   addsi L305E   ; "No? It didst see...
+076E: 33   say
+076F: 1D 1D 31   pushs L311D   ; Enilno
+0772: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0776: 1D 24 31   pushs L3124   ; Gem of Immortality
+0779: 07 01 00 13 00  cmps 0001H, 0791
+077E: 1C 37 31   addsi L3137   ; Milky eyes glitte...
+0781: 33   say
+0782: 1C A9 31   addsi L31A9   ; After all, it was...
+0785: 33   say
+0786: 1C 28 32   addsi L3228   ; So much power tha...
+0789: 33   say
+078A: 1D 23 33   pushs L3323   ; Gem of Immortality
+078D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0791: 1D 36 33   pushs L3336   ; skull
+0794: 07 01 00 0B 00  cmps 0001H, 07A4
+0799: 1C 3C 33   addsi L333C   ; "'Twould seem tha...
+079C: 33   say
+079D: 1D BB 33   pushs L33BB   ; skull
+07A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+07A4: 1D C1 33   pushs L33C1   ; daemon mirror
+07A7: 07 01 00 18 00  cmps 0001H, 07C4
+07AC: 1C CF 33   addsi L33CF   ; "Ah, so thou hast...
+07AF: 33   say
+07B0: 1D B4 34   pushs L34B4   ; free
+07B3: 1D B9 34   pushs L34B9   ; whining
+07B6: 1E 02 00   arrc 0002H   ; 2
+07B9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+07BD: 1D C1 34   pushs L34C1   ; daemon mirror
+07C0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+07C4: 1D CF 34   pushs L34CF   ; whining
+07C7: 07 01 00 0B 00  cmps 0001H, 07D7
+07CC: 1C D7 34   addsi L34D7   ; "'Tis his favorit...
+07CF: 33   say
+07D0: 1D 9B 35   pushs L359B   ; whining
+07D3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+07D7: 1D A3 35   pushs L35A3   ; free
+07DA: 07 01 00 12 00  cmps 0001H, 07F1
+07DF: 1C A8 35   addsi L35A8   ; "He wants this sp...
+07E2: 33   say
+07E3: 1D 96 36   pushs L3696   ; jail
+07E6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+07EA: 1D 9B 36   pushs L369B   ; free
+07ED: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+07F1: 1D A0 36   pushs L36A0   ; jail
+07F4: 07 01 00 12 00  cmps 0001H, 080B
+07F9: 1C A5 36   addsi L36A5   ; "Quite. Arcadion ...
+07FC: 33   say
+07FD: 1D 9B 37   pushs L379B   ; Ether Gem
+0800: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0804: 1D A5 37   pushs L37A5   ; jail
+0807: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+080B: 1D AA 37   pushs L37AA   ; Ether Gem
+080E: 07 01 00 1B 00  cmps 0001H, 082E
+0813: 1C B4 37   addsi L37B4   ; "The gem was pilf...
+0816: 33   say
+0817: 1D 3F 39   pushs L393F   ; Test of Courage
+081A: 1D 4F 39   pushs L394F   ; Shrine of Principle
+081D: 1D 63 39   pushs L3963   ; golems
+0820: 1E 03 00   arrc 0003H   ; 3
+0823: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0827: 1D 6A 39   pushs L396A   ; Ether Gem
+082A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+082E: 1D 74 39   pushs L3974   ; golems
+0831: 07 01 00 12 00  cmps 0001H, 0848
+0836: 1C 7B 39   addsi L397B   ; "Mmmm... Yes. Thi...
+0839: 33   say
+083A: 1D A9 3A   pushs L3AA9   ; Test of Love
+083D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0841: 1D B6 3A   pushs L3AB6   ; golems
+0844: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0848: 1D BD 3A   pushs L3ABD   ; Shrine of Principle
+084B: 07 01 00 0B 00  cmps 0001H, 085B
+0850: 1C D1 3A   addsi L3AD1   ; "The shrine lies ...
+0853: 33   say
+0854: 1D EA 3B   pushs L3BEA   ; Shrine of Principle
+0857: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+085B: 1D FE 3B   pushs L3BFE   ; Test of Love
+085E: 07 01 00 0B 00  cmps 0001H, 086E
+0863: 1C 0B 3C   addsi L3C0B   ; "I not had the ch...
+0866: 33   say
+0867: 1D AF 3C   pushs L3CAF   ; Test of Love
+086A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+086E: 1D BC 3C   pushs L3CBC   ; Test of Courage
+0871: 07 01 00 27 00  cmps 0001H, 089D
+0876: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+087A: 05 09 00   jne 0886
+087D: 1D CC 3C   pushs L3CCC   ; heroine's
+0880: 12 19 00   pop [0019]
+0883: 06 06 00   jmp 088C
+0886: 1D D6 3C   pushs L3CD6   ; hero's
+0889: 12 19 00   pop [0019]
+088C: 1C DD 3C   addsi L3CDD   ; "I believe 'twas ...
+088F: 2F 19 00   addsv [0019]
+0892: 1C 4D 3D   addsi L3D4D   ;  fighting ability...
+0895: 33   say
+0896: 1D DD 3D   pushs L3DDD   ; Test of Courage
+0899: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+089D: 1D ED 3D   pushs L3DED   ; daemon gem
+08A0: 07 01 00 4F 00  cmps 0001H, 08F4
+08A5: 1C F8 3D   addsi L3DF8   ; "So... thou hast ...
+08A8: 33   say
+08A9: 1F 0D 00   pushi 000DH   ; 13
+08AC: 1F 99 FE   pushi FE99H   ; -359
+08AF: 1F F8 02   pushi 02F8H   ; 760
+08B2: 1F 9C FE   pushi FE9CH   ; -356
+08B5: 38 1B 00 01  callis 001B, 1
+08B9: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+08BD: 05 2D 00   jne 08ED
+08C0: 1F 00 00   pushi 0000H   ; 0
+08C3: 1F DD FE   pushi FEDDH   ; -291
+08C6: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+08CA: 1C CB 3E   addsi L3ECB   ; The gem glows bri...
+08CD: 33   say
+08CE: 1F DD FE   pushi FEDDH   ; -291
+08D1: 39 04 00 01  calli _HideNPC@1  ; 0004
+08D5: 1F 01 00   pushi 0001H   ; 1
+08D8: 1F E2 FE   pushi FEE2H   ; -286
+08DB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+08DF: 1C 88 3F   addsi L3F88   ; Erethian looks a ...
+08E2: 33   say
+08E3: 1F 00 00   pushi 0000H   ; 0
+08E6: 1F E2 FE   pushi FEE2H   ; -286
+08E9: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+08ED: 1D 7F 40   pushs L407F   ; daemon gem
+08F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+08F4: 1D 8A 40   pushs L408A   ; daemon blade
+08F7: 07 01 00 0F 00  cmps 0001H, 090B
+08FC: 1C 97 40   addsi L4097   ; "I see that thou ...
+08FF: 33   say
+0900: 13   push true
+0901: 43 39 03   popf flag:[0339]
+0904: 1D 37 41   pushs L4137   ; daemon blade
+0907: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+090B: 1D 44 41   pushs L4144   ; bye
+090E: 07 01 00 13 00  cmps 0001H, 0926
+0913: 42 38 03   pushf flag:[0338]
+0916: 10   not
+0917: 05 07 00   jne 0921
+091A: 1C 48 41   addsi L4148   ; "Goodbye and good...
+091D: 33   say
+091E: 06 04 00   jmp 0925
+0921: 1C DC 41   addsi L41DC   ; "Goodbye and good...
+0924: 33   say
+0925: 3F   abrt
+0926: 06 60 FA   jmp 0389
+0929: 40   db 40 ???
+092A: 21 14 00   push [0014]
+092D: 05 04 00   jne 0934
+0930: 3E   push itemref
+0931: 47 96 06   calle 0696H   ; 1686
+0934: 21 15 00   push [0015]
+0937: 05 04 00   jne 093E
+093A: 3E   push itemref
+093B: 47 9A 06   calle 069AH   ; 1690
+093E: 25   ret

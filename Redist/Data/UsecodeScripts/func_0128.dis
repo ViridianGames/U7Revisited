@@ -1,0 +1,51 @@
+  .funcnumber 0128H ;* Ring of invisibility
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 48   push eventid
+0001: 1F 05 00   pushi 0005H   ; 5
+0004: 22   cmpeq
+0005: 48   push eventid
+0006: 1F 06 00   pushi 0006H   ; 6
+0009: 22   cmpeq
+000A: 0F   or
+000B: 05 3A 00   jne 0048
+000E: 3E   push itemref
+000F: 38 6E 00 01  callis 006E, 1
+0013: 12 00 00   pop [0000]
+0016: 21 00 00   push [0000]
+0019: 1F 00 00   pushi 0000H   ; 0
+001C: 1A   cmpne
+001D: 21 00 00   push [0000]
+0020: 38 31 00 01  callis 0031, 1
+0024: 10   not
+0025: 0E   and
+0026: 05 0D 00   jne 0036
+0029: 21 00 00   push [0000]
+002C: 38 6E 00 01  callis 006E, 1
+0030: 12 00 00   pop [0000]
+0033: 06 E0 FF   jmp 0016
+0036: 21 00 00   push [0000]
+0039: 1F 00 00   pushi 0000H   ; 0
+003C: 22   cmpeq
+003D: 05 08 00   jne 0048
+0040: 1F 00 00   pushi 0000H   ; 0
+0043: 39 6A 00 01  calli 006A, 1
+0047: 2C   db 2c ???
+0048: 48   push eventid
+0049: 1F 05 00   pushi 0005H   ; 5
+004C: 22   cmpeq
+004D: 05 0A 00   jne 005A
+0050: 1F 00 00   pushi 0000H   ; 0
+0053: 21 00 00   push [0000]
+0056: 39 89 00 02  calli 0089, 2
+005A: 48   push eventid
+005B: 1F 06 00   pushi 0006H   ; 6
+005E: 22   cmpeq
+005F: 05 0A 00   jne 006C
+0062: 1F 00 00   pushi 0000H   ; 0
+0065: 21 00 00   push [0000]
+0068: 39 8A 00 02  calli 008A, 2
+006C: 25   ret

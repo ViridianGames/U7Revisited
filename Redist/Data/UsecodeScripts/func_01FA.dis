@@ -1,0 +1,42 @@
+  .funcnumber 01FAH
+  .data
+L0000: db 'Batlin watches Hook's death with icy resignation. Time seems'
+ db ' to slow as he turns to you. "This battle is not done, Avata'
+ db 'r. Dost thou imagine thyself an immortal? The Guardian is fa'
+ db 'r more. Return to your precious Earth and rest.~Sleep, that '
+ db 'he may visit your dreams with countless visions of death in '
+ db 'the belly of the Great Sea Serpent."'
+L0150: db 00
+L0151: db '"As for me, I shall begone! Thou shalt never find me! Farewe'
+ db 'll, Avatar!"'
+L0199: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0001H
+  .extern 0639H
+0000: 48   push eventid
+0001: 1F 02 00   pushi 0002H   ; 2
+0004: 22   cmpeq
+0005: 05 39 00   jne 0041
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F E6 FF   pushi FFE6H   ; -26
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1C 00 00   addsi L0000   ; Batlin watches Ho...
+0015: 33   say
+0016: 1C 51 01   addsi L0151   ; "As for me, I sha...
+0019: 33   say
+001A: 1F E6 FF   pushi FFE6H   ; -26
+001D: 39 04 00 01  calli _HideNPC@1  ; 0004
+0021: 1F 00 00   pushi 0000H   ; 0
+0024: 1F 28 00   pushi 0028H   ; 40
+0027: 1F 93 01   pushi 0193H   ; 403
+002A: 1F 9C FE   pushi FE9CH   ; -356
+002D: 38 35 00 04  callis 0035, 4
+0031: 12 00 00   pop [0000]
+0034: 1F 01 00   pushi 0001H   ; 1
+0037: 4B   db 4b ???
+0038: 1F 01 00   pushi 0001H   ; 1
+003B: 26 00 00   aidx [0000]
+003E: 47 39 06   calle 0639H   ; 1593
+0041: 25   ret
