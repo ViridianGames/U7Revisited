@@ -1,0 +1,512 @@
+  .funcnumber 0415H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'murder'
+L000A: db 00
+L000B: db 'job'
+L000E: db 00
+L000F: db 'name'
+L0013: db 00
+L0014: db 'Crown Jewel'
+L001F: db 00
+L0020: db 'Fellowship'
+L002A: db 00
+L002B: db 'Hook'
+L002F: db 00
+L0030: db 'You see a salty old sailor who reeks of tobacco.'
+L0060: db 00
+L0061: db '"Yes, matey?" Gargan asks, coughing.'
+L0085: db 00
+L0086: db 'name'
+L008A: db 00
+L008B: db '"My name is Gargan."~He sniffs loudly.'
+L00B1: db 00
+L00B2: db 'name'
+L00B6: db 00
+L00B7: db 'job'
+L00BA: db 00
+L00BB: db '"I am the Trinsic shipwright. If thou wouldst like to know a'
+ db 'bout a ship or a sextant, just say so."'
+L011E: db 00
+L011F: db 'Gargan coughs.'
+L012D: db 00
+L012E: db 'sextant'
+L0135: db 00
+L0136: db 'ship'
+L013A: db 00
+L013B: db 'ship'
+L013F: db 00
+L0140: db '"Thou dost want to buy a ship?" the old man asks, smiling. ('
+ db 'Apparently not too many folks buy ships these days.)~"My shi'
+ db 'ps are sturdy and well built. They may not be built by Owen,'
+ db ' but they are fine vessels! But thou must first purchase a d'
+ db 'eed."'
+L0235: db 00
+L0236: db 'Gargan wipes his runny nose on his sleeve.'
+L0260: db 00
+L0261: db 'ship'
+L0265: db 00
+L0266: db 'deed'
+L026A: db 00
+L026B: db 'Owen'
+L026F: db 00
+L0270: db 'sextant'
+L0277: db 00
+L0278: db '"Well, ye'll have to come to the shop when it is is open."'
+L02B2: db 00
+L02B3: db '"I sell sextants for 80 gold. Want one?"~Gargan clears his t'
+ db 'hroat.'
+L02F5: db 00
+L02F6: db '"Here ye are!"'
+L0304: db 00
+L0305: db '"Thine arms are too full to carry the sextant!"~Gargan sneez'
+ db 'es.'
+L0344: db 00
+L0345: db '"Thou dost not have enough gold, sailor." ~Gargan sneezes.'
+L037F: db 00
+L0380: db '"Suit thyself."~Gargan sneezes.'
+L039F: db 00
+L03A0: db 'sextant'
+L03A7: db 00
+L03A8: db 'Owen'
+L03AC: db 00
+L03AD: db '"Thou hast not heard of Owen? Finest shipwright in the land.'
+ db ' He lives in Minoc."~Gargan coughs.'
+L040C: db 00
+L040D: db 'Owen'
+L0411: db 00
+L0412: db 'deed'
+L0416: db 00
+L0417: db '"Well, ye'll have to come to the shop when it is open."'
+L044E: db 00
+L044F: db '"I already sold thee the deed to 'The Scaly Eel'! It was the'
+ db ' only ship I had!"'
+L049D: db 00
+L049E: db 'Gargan coughs loudly.'
+L04B3: db 00
+L04B4: db '"The deed I can sell thee is for the ship 'The Scaly Eel.' I'
+ db 't goes for 600 gold. Interested?"'
+L0511: db 00
+L0512: db '"All right, then!" the sailor replies. He hands you the deed'
+ db ' and takes your gold.~Gargan sneezes.'
+L0573: db 00
+L0574: db '"Thou'rt already carrying enough to sink a galleon, '
+L05A8: db 00
+L05A9: db '! If thou wilt leave something behind, mayhaps thou wilt be '
+ db 'able to sail, and I will be glad, indeed, to sell thee the d'
+ db 'eed."~Gargan sneezes.'
+L0636: db 00
+L0637: db '"Sorry, matey," Gargan says. "Thou dost not have enough gold'
+ db '!"~Gargan sneezes.'
+L0685: db 00
+L0686: db '"Some other time, then," the sailor shrugs, disappointed.~Ga'
+ db 'rgan sneezes.'
+L06CF: db 00
+L06D0: db 'deed'
+L06D4: db 00
+L06D5: db 'murder'
+L06DB: db 00
+L06DC: db '"I heard about that. Terrible thing to happen. Can't say I s'
+ db 'aw or heard anything, though."~Gargan coughs, clears his thr'
+ db 'oat loudly, then spits.'
+L076B: db 00
+L076C: db '"Ooooh, yuck!"'
+L077A: db 00
+L077B: db 'murder'
+L0781: db 00
+L0782: db 'Crown Jewel'
+L078D: db 00
+L078E: db '"Yes, that ship was docked overnight." He consults his log. '
+ db '"She sailed for Britain at sunrise. I do not recall seeing a'
+ db 'nyone get on or off."~Gargan snorts and coughs a couple of t'
+ db 'imes.'
+L0847: db 00
+L0848: db 'Crown Jewel'
+L0853: db 00
+L0854: db 'Hook'
+L0858: db 00
+L0859: db '"Matey, I have always seen pirates and sailors with peglegs '
+ db 'and hooks. If thou hast seen one, thou hast seen another." B'
+ db 'ut the man suddenly frowns. "Hmm. Now that thou dost mention'
+ db ' it, I -did- see a man with a hook late last night after sun'
+ db 'down. I was leaving the shop and saw him outside. There was '
+ db 'a wingless gargoyle with him. They were walking east."'
+L09BB: db 00
+L09BC: db 'Gargan sneezes, then coughs a couple of times.'
+L09EA: db 00
+L09EB: db '"I told thee! It was him!"'
+L0A05: db 00
+L0A06: db 'Hook'
+L0A0A: db 00
+L0A0B: db 'Fellowship'
+L0A15: db 00
+L0A16: db '"I am too old to pay attention to them."~Gargan wipes his ru'
+ db 'nny nose on his sleeve.'
+L0A69: db 00
+L0A6A: db 'Fellowship'
+L0A74: db 00
+L0A75: db 'bye'
+L0A78: db 00
+L0A79: db '"May thy day have smooth sailing," the sailor starts to say,'
+ db ' but a coughing spasm interrupts him.*'
+L0ADB: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0005H
+  .extern 0909H
+  .extern 088DH
+  .extern 090AH
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AC 03   jne 03B4
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F EB FF   pushi FFEBH   ; -21
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 1F EB FF   pushi FFEBH   ; -21
+001B: 38 1B 00 01  callis 001B, 1
+001F: 38 1C 00 01  callis 001C, 1
+0023: 12 01 00   pop [0001]
+0026: 1D 00 00   pushs L0000   ; bye
+0029: 1D 04 00   pushs L0004   ; murder
+002C: 1D 0B 00   pushs L000B   ; job
+002F: 1D 0F 00   pushs L000F   ; name
+0032: 1E 04 00   arrc 0004H   ; 4
+0035: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0039: 42 40 00   pushf flag:[0040]
+003C: 05 07 00   jne 0046
+003F: 1D 14 00   pushs L0014   ; Crown Jewel
+0042: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0046: 42 3F 00   pushf flag:[003F]
+0049: 05 07 00   jne 0053
+004C: 1D 20 00   pushs L0020   ; Fellowship
+004F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0053: 42 43 00   pushf flag:[0043]
+0056: 05 07 00   jne 0060
+0059: 1D 2B 00   pushs L002B   ; Hook
+005C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0060: 1F 00 00   pushi 0000H   ; 0
+0063: 12 02 00   pop [0002]
+0066: 42 55 00   pushf flag:[0055]
+0069: 10   not
+006A: 05 0B 00   jne 0078
+006D: 1C 30 00   addsi L0030   ; You see a salty o...
+0070: 33   say
+0071: 13   push true
+0072: 43 55 00   popf flag:[0055]
+0075: 06 04 00   jmp 007C
+0078: 1C 61 00   addsi L0061   ; "Yes, matey?" Gar...
+007B: 33   say
+007C: 04 30 03   je 03AF
+007F: 1D 86 00   pushs L0086   ; name
+0082: 07 01 00 22 00  cmps 0001H, 00A9
+0087: 1C 8B 00   addsi L008B   ; "My name is Garga...
+008A: 33   say
+008B: 1D B2 00   pushs L00B2   ; name
+008E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0092: 21 02 00   push [0002]
+0095: 1F 01 00   pushi 0001H   ; 1
+0098: 09   add
+0099: 12 02 00   pop [0002]
+009C: 21 02 00   push [0002]
+009F: 1F 06 00   pushi 0006H   ; 6
+00A2: 22   cmpeq
+00A3: 05 03 00   jne 00A9
+00A6: 24 01 00   call [0001]   ; 088DH
+00A9: 1D B7 00   pushs L00B7   ; job
+00AC: 07 01 00 2C 00  cmps 0001H, 00DD
+00B1: 1C BB 00   addsi L00BB   ; "I am the Trinsic...
+00B4: 33   say
+00B5: 1C 1F 01   addsi L011F   ; Gargan coughs.
+00B8: 33   say
+00B9: 1D 2E 01   pushs L012E   ; sextant
+00BC: 1D 36 01   pushs L0136   ; ship
+00BF: 1E 02 00   arrc 0002H   ; 2
+00C2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C6: 21 02 00   push [0002]
+00C9: 1F 01 00   pushi 0001H   ; 1
+00CC: 09   add
+00CD: 12 02 00   pop [0002]
+00D0: 21 02 00   push [0002]
+00D3: 1F 06 00   pushi 0006H   ; 6
+00D6: 22   cmpeq
+00D7: 05 03 00   jne 00DD
+00DA: 24 01 00   call [0001]   ; 088DH
+00DD: 1D 3B 01   pushs L013B   ; ship
+00E0: 07 01 00 33 00  cmps 0001H, 0118
+00E5: 1C 40 01   addsi L0140   ; "Thou dost want t...
+00E8: 33   say
+00E9: 1C 36 02   addsi L0236   ; Gargan wipes his ...
+00EC: 33   say
+00ED: 1D 61 02   pushs L0261   ; ship
+00F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F4: 1D 66 02   pushs L0266   ; deed
+00F7: 1D 6B 02   pushs L026B   ; Owen
+00FA: 1E 02 00   arrc 0002H   ; 2
+00FD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0101: 21 02 00   push [0002]
+0104: 1F 01 00   pushi 0001H   ; 1
+0107: 09   add
+0108: 12 02 00   pop [0002]
+010B: 21 02 00   push [0002]
+010E: 1F 06 00   pushi 0006H   ; 6
+0111: 22   cmpeq
+0112: 05 03 00   jne 0118
+0115: 24 01 00   call [0001]   ; 088DH
+0118: 1D 70 02   pushs L0270   ; sextant
+011B: 07 01 00 88 00  cmps 0001H, 01A8
+0120: 21 01 00   push [0001]
+0123: 1F 1E 00   pushi 001EH   ; 30
+0126: 22   cmpeq
+0127: 10   not
+0128: 05 07 00   jne 0132
+012B: 1C 78 02   addsi L0278   ; "Well, ye'll have...
+012E: 33   say
+012F: 06 76 00   jmp 01A8
+0132: 1C B3 02   addsi L02B3   ; "I sell sextants ...
+0135: 33   say
+0136: 24 02 00   call [0002]   ; 090AH
+0139: 05 4A 00   jne 0186
+013C: 1F 99 FE   pushi FE99H   ; -359
+013F: 1F 99 FE   pushi FE99H   ; -359
+0142: 1F 84 02   pushi 0284H   ; 644
+0145: 1F 9B FE   pushi FE9BH   ; -357
+0148: 38 28 00 04  callis 0028, 4
+014C: 12 03 00   pop [0003]
+014F: 21 03 00   push [0003]
+0152: 1F 50 00   pushi 0050H   ; 80
+0155: 18   cmpge
+0156: 05 26 00   jne 017F
+0159: 13   push true
+015A: 1F 99 FE   pushi FE99H   ; -359
+015D: 1F 99 FE   pushi FE99H   ; -359
+0160: 1F 8A 02   pushi 028AH   ; 650
+0163: 1F 01 00   pushi 0001H   ; 1
+0166: 38 2C 00 05  callis 002C, 5
+016A: 12 04 00   pop [0004]
+016D: 1C F6 02   addsi L02F6   ; "Here ye are!"
+0170: 33   say
+0171: 21 04 00   push [0004]
+0174: 10   not
+0175: 05 04 00   jne 017C
+0178: 1C 05 03   addsi L0305   ; "Thine arms are t...
+017B: 33   say
+017C: 06 04 00   jmp 0183
+017F: 1C 45 03   addsi L0345   ; "Thou dost not ha...
+0182: 33   say
+0183: 06 04 00   jmp 018A
+0186: 1C 80 03   addsi L0380   ; "Suit thyself."~G...
+0189: 33   say
+018A: 1D A0 03   pushs L03A0   ; sextant
+018D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0191: 21 02 00   push [0002]
+0194: 1F 01 00   pushi 0001H   ; 1
+0197: 09   add
+0198: 12 02 00   pop [0002]
+019B: 21 02 00   push [0002]
+019E: 1F 06 00   pushi 0006H   ; 6
+01A1: 22   cmpeq
+01A2: 05 03 00   jne 01A8
+01A5: 24 01 00   call [0001]   ; 088DH
+01A8: 1D A8 03   pushs L03A8   ; Owen
+01AB: 07 01 00 22 00  cmps 0001H, 01D2
+01B0: 1C AD 03   addsi L03AD   ; "Thou hast not he...
+01B3: 33   say
+01B4: 1D 0D 04   pushs L040D   ; Owen
+01B7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BB: 21 02 00   push [0002]
+01BE: 1F 01 00   pushi 0001H   ; 1
+01C1: 09   add
+01C2: 12 02 00   pop [0002]
+01C5: 21 02 00   push [0002]
+01C8: 1F 06 00   pushi 0006H   ; 6
+01CB: 22   cmpeq
+01CC: 05 03 00   jne 01D2
+01CF: 24 01 00   call [0001]   ; 088DH
+01D2: 1D 12 04   pushs L0412   ; deed
+01D5: 07 01 00 BF 00  cmps 0001H, 0299
+01DA: 21 01 00   push [0001]
+01DD: 1F 1E 00   pushi 001EH   ; 30
+01E0: 22   cmpeq
+01E1: 10   not
+01E2: 05 07 00   jne 01EC
+01E5: 1C 17 04   addsi L0417   ; "Well, ye'll have...
+01E8: 33   say
+01E9: 06 AD 00   jmp 0299
+01EC: 42 58 00   pushf flag:[0058]
+01EF: 05 0B 00   jne 01FD
+01F2: 1C 4F 04   addsi L044F   ; "I already sold t...
+01F5: 33   say
+01F6: 1C 9E 04   addsi L049E   ; Gargan coughs lou...
+01F9: 33   say
+01FA: 06 7E 00   jmp 027B
+01FD: 1C B4 04   addsi L04B4   ; "The deed I can s...
+0200: 33   say
+0201: 24 02 00   call [0002]   ; 090AH
+0204: 12 05 00   pop [0005]
+0207: 21 05 00   push [0005]
+020A: 05 6A 00   jne 0277
+020D: 1F 99 FE   pushi FE99H   ; -359
+0210: 1F 99 FE   pushi FE99H   ; -359
+0213: 1F 84 02   pushi 0284H   ; 644
+0216: 1F 9B FE   pushi FE9BH   ; -357
+0219: 38 28 00 04  callis 0028, 4
+021D: 12 03 00   pop [0003]
+0220: 21 03 00   push [0003]
+0223: 1F 58 02   pushi 0258H   ; 600
+0226: 18   cmpge
+0227: 05 46 00   jne 0270
+022A: 13   push true
+022B: 1F 99 FE   pushi FE99H   ; -359
+022E: 1F 0E 00   pushi 000EH   ; 14
+0231: 1F 1D 03   pushi 031DH   ; 797
+0234: 1F 01 00   pushi 0001H   ; 1
+0237: 38 2C 00 05  callis 002C, 5
+023B: 12 06 00   pop [0006]
+023E: 21 06 00   push [0006]
+0241: 05 1F 00   jne 0263
+0244: 1C 12 05   addsi L0512   ; "All right, then!...
+0247: 33   say
+0248: 13   push true
+0249: 1F 99 FE   pushi FE99H   ; -359
+024C: 1F 99 FE   pushi FE99H   ; -359
+024F: 1F 84 02   pushi 0284H   ; 644
+0252: 1F 58 02   pushi 0258H   ; 600
+0255: 38 2B 00 05  callis 002B, 5
+0259: 12 07 00   pop [0007]
+025C: 13   push true
+025D: 43 58 00   popf flag:[0058]
+0260: 06 0A 00   jmp 026D
+0263: 1C 74 05   addsi L0574   ; "Thou'rt already ...
+0266: 2F 00 00   addsv [0000]
+0269: 1C A9 05   addsi L05A9   ; ! If thou wilt le...
+026C: 33   say
+026D: 06 04 00   jmp 0274
+0270: 1C 37 06   addsi L0637   ; "Sorry, matey," G...
+0273: 33   say
+0274: 06 04 00   jmp 027B
+0277: 1C 86 06   addsi L0686   ; "Some other time,...
+027A: 33   say
+027B: 1D D0 06   pushs L06D0   ; deed
+027E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0282: 21 02 00   push [0002]
+0285: 1F 01 00   pushi 0001H   ; 1
+0288: 09   add
+0289: 12 02 00   pop [0002]
+028C: 21 02 00   push [0002]
+028F: 1F 06 00   pushi 0006H   ; 6
+0292: 22   cmpeq
+0293: 05 03 00   jne 0299
+0296: 24 01 00   call [0001]   ; 088DH
+0299: 1D D5 06   pushs L06D5   ; murder
+029C: 07 01 00 50 00  cmps 0001H, 02F1
+02A1: 1C DC 06   addsi L06DC   ; "I heard about th...
+02A4: 33   say
+02A5: 1F FE FF   pushi FFFEH   ; -2
+02A8: 24 03 00   call [0003]   ; 08F7H
+02AB: 12 08 00   pop [0008]
+02AE: 21 08 00   push [0008]
+02B1: 05 1F 00   jne 02D3
+02B4: 1F 00 00   pushi 0000H   ; 0
+02B7: 1F FE FF   pushi FFFEH   ; -2
+02BA: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02BE: 1C 6C 07   addsi L076C   ; "Ooooh, yuck!"
+02C1: 33   say
+02C2: 1F FE FF   pushi FFFEH   ; -2
+02C5: 39 04 00 01  calli _HideNPC@1  ; 0004
+02C9: 1F 00 00   pushi 0000H   ; 0
+02CC: 1F EB FF   pushi FFEBH   ; -21
+02CF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02D3: 1D 7B 07   pushs L077B   ; murder
+02D6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02DA: 21 02 00   push [0002]
+02DD: 1F 01 00   pushi 0001H   ; 1
+02E0: 09   add
+02E1: 12 02 00   pop [0002]
+02E4: 21 02 00   push [0002]
+02E7: 1F 06 00   pushi 0006H   ; 6
+02EA: 22   cmpeq
+02EB: 05 03 00   jne 02F1
+02EE: 24 01 00   call [0001]   ; 088DH
+02F1: 1D 82 07   pushs L0782   ; Crown Jewel
+02F4: 07 01 00 22 00  cmps 0001H, 031B
+02F9: 1C 8E 07   addsi L078E   ; "Yes, that ship w...
+02FC: 33   say
+02FD: 1D 48 08   pushs L0848   ; Crown Jewel
+0300: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0304: 21 02 00   push [0002]
+0307: 1F 01 00   pushi 0001H   ; 1
+030A: 09   add
+030B: 12 02 00   pop [0002]
+030E: 21 02 00   push [0002]
+0311: 1F 06 00   pushi 0006H   ; 6
+0314: 22   cmpeq
+0315: 05 03 00   jne 031B
+0318: 24 01 00   call [0001]   ; 088DH
+031B: 1D 54 08   pushs L0854   ; Hook
+031E: 07 01 00 54 00  cmps 0001H, 0377
+0323: 1C 59 08   addsi L0859   ; "Matey, I have al...
+0326: 33   say
+0327: 1C BC 09   addsi L09BC   ; Gargan sneezes, t...
+032A: 33   say
+032B: 1F FE FF   pushi FFFEH   ; -2
+032E: 24 03 00   call [0003]   ; 08F7H
+0331: 12 08 00   pop [0008]
+0334: 21 08 00   push [0008]
+0337: 05 1F 00   jne 0359
+033A: 1F 00 00   pushi 0000H   ; 0
+033D: 1F FE FF   pushi FFFEH   ; -2
+0340: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0344: 1C EB 09   addsi L09EB   ; "I told thee! It ...
+0347: 33   say
+0348: 1F FE FF   pushi FFFEH   ; -2
+034B: 39 04 00 01  calli _HideNPC@1  ; 0004
+034F: 1F 00 00   pushi 0000H   ; 0
+0352: 1F EB FF   pushi FFEBH   ; -21
+0355: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0359: 1D 06 0A   pushs L0A06   ; Hook
+035C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0360: 21 02 00   push [0002]
+0363: 1F 01 00   pushi 0001H   ; 1
+0366: 09   add
+0367: 12 02 00   pop [0002]
+036A: 21 02 00   push [0002]
+036D: 1F 06 00   pushi 0006H   ; 6
+0370: 22   cmpeq
+0371: 05 03 00   jne 0377
+0374: 24 01 00   call [0001]   ; 088DH
+0377: 1D 0B 0A   pushs L0A0B   ; Fellowship
+037A: 07 01 00 22 00  cmps 0001H, 03A1
+037F: 1C 16 0A   addsi L0A16   ; "I am too old to ...
+0382: 33   say
+0383: 1D 6A 0A   pushs L0A6A   ; Fellowship
+0386: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+038A: 21 02 00   push [0002]
+038D: 1F 01 00   pushi 0001H   ; 1
+0390: 09   add
+0391: 12 02 00   pop [0002]
+0394: 21 02 00   push [0002]
+0397: 1F 06 00   pushi 0006H   ; 6
+039A: 22   cmpeq
+039B: 05 03 00   jne 03A1
+039E: 24 01 00   call [0001]   ; 088DH
+03A1: 1D 75 0A   pushs L0A75   ; bye
+03A4: 07 01 00 03 00  cmps 0001H, 03AC
+03A9: 06 03 00   jmp 03AF
+03AC: 06 CD FC   jmp 007C
+03AF: 40   db 40 ???
+03B0: 1C 79 0A   addsi L0A79   ; "May thy day have...
+03B3: 33   say
+03B4: 48   push eventid
+03B5: 1F 00 00   pushi 0000H   ; 0
+03B8: 22   cmpeq
+03B9: 05 06 00   jne 03C2
+03BC: 1F EB FF   pushi FFEBH   ; -21
+03BF: 24 04 00   call [0004]   ; 092EH
+03C2: 25   ret

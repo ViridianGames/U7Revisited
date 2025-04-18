@@ -1,0 +1,21 @@
+  .funcnumber 033CH
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0001H
+  .extern 081FH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 1A   cmpne
+0005: 05 01 00   jne 0009
+0008: 2C   db 2c ???
+0009: 3E   push itemref
+000A: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+000E: 1F 00 00   pushi 0000H   ; 0
+0011: 22   cmpeq
+0012: 05 07 00   jne 001C
+0015: 3E   push itemref
+0016: 24 00 00   call [0000]   ; 081FH
+0019: 12 00 00   pop [0000]
+001C: 25   ret

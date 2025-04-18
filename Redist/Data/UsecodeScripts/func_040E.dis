@@ -1,0 +1,304 @@
+  .funcnumber 040EH
+  .data
+L0000: db '"I will speak with thee after the Fellowship meeting."*'
+L0037: db 00
+L0038: db '"I must get to the Fellowship meeting! I am late! May we spe'
+ db 'ak tomorrow?"*'
+L0082: db 00
+L0083: db 'bye'
+L0086: db 00
+L0087: db 'job'
+L008A: db 00
+L008B: db 'name'
+L008F: db 00
+L0090: db 'password'
+L0098: db 00
+L0099: db 'murder'
+L009F: db 00
+L00A0: db 'Hook'
+L00A4: db 00
+L00A5: db 'Klog'
+L00A9: db 00
+L00AA: db 'Fellowship'
+L00B4: db 00
+L00B5: db 'Crown Jewel'
+L00C0: db 00
+L00C1: db 'You see an alert and no-nonsense guard.'
+L00E8: db 00
+L00E9: db '"What is it?" Johnson asks, sternly.'
+L010D: db 00
+L010E: db 'name'
+L0112: db 00
+L0113: db '"Johnson."'
+L011D: db 00
+L011E: db 'name'
+L0122: db 00
+L0123: db 'job'
+L0126: db 00
+L0127: db '"I have the morning watch guarding the dock. I authorize the'
+ db ' comings and goings of every ship."'
+L0186: db 00
+L0187: db 'ship'
+L018B: db 00
+L018C: db 'murder'
+L0192: db 00
+L0193: db '"I did hear of this. When I arrived at my post at sunrise, I'
+ db ' found Gilberto lying felled on the ground. If thou art aski'
+ db 'ng if I saw anything -- I did not. No one hath passed by me '
+ db 'since I arrived at the dock."'
+L0264: db 00
+L0265: db 'murder'
+L026B: db 00
+L026C: db 'Crown Jewel'
+L0277: db 00
+L0278: db '"The boat left just after sunrise. It did sail to Britain, I'
+ db ' believe. Thou canst ask Gargan the Shipwright about that."'
+L02EF: db 00
+L02F0: db 'Crown Jewel'
+L02FB: db 00
+L02FC: db 'Fellowship'
+L0306: db 00
+L0307: db '"Yes, I am a member. Wouldst thou like to join?"'
+L0337: db 00
+L0338: db '"Then thou shouldst go to see Batlin in Britain."'
+L0369: db 00
+L036A: db '"'Tis thy loss."'
+L037A: db 00
+L037B: db 'Fellowship'
+L0385: db 00
+L0386: db 'Klog'
+L038A: db 00
+L038B: db '"Good man. He is our branch leader here in Trinsic."'
+L03BF: db 00
+L03C0: db 'Klog'
+L03C4: db 00
+L03C5: db 'ship'
+L03C9: db 00
+L03CA: db '"If thou dost want a ship, thou must get a deed from the shi'
+ db 'pwright. Thou must also have the password to leave town."'
+L043F: db 00
+L0440: db 'deed'
+L0444: db 00
+L0445: db 'password'
+L044D: db 00
+L044E: db 'ship'
+L0452: db 00
+L0453: db 'password'
+L045B: db 00
+L045C: db '"What is it?"'
+L0469: db 00
+L046A: db 'Please'
+L0470: db 00
+L0471: db 'Long live the king'
+L0483: db 00
+L0484: db 'Uhh, I don't know'
+L0495: db 00
+L0496: db 'Blackbird'
+L049F: db 00
+L04A0: db 'Blackbird'
+L04A9: db 00
+L04AA: db '"Very well, thou mayest pass."*'
+L04C9: db 00
+L04CA: db '"Thou mayest not pass."*'
+L04E2: db 00
+L04E3: db '"Thou dost not know the password. I am sorry. The Mayor may '
+ db 'give thee the proper password."'
+L053E: db 00
+L053F: db 'Hook'
+L0543: db 00
+L0544: db '"A man with a hook? No, I saw no one all night or all mornin'
+ db 'g."'
+L0583: db 00
+L0584: db 'Hook'
+L0588: db 00
+L0589: db 'deed'
+L058D: db 00
+L058E: db '"Thou canst purchase that from Gargan the Shipwright."'
+L05C4: db 00
+L05C5: db 'deed'
+L05C9: db 00
+L05CA: db 'bye'
+L05CD: db 00
+L05CE: db '"Good day."*'
+L05DA: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0004H
+  .extern 08FCH
+  .extern 090AH
+  .extern 090BH
+  .extern 0834H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F F2 FF   pushi FFF2H   ; -14
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 38 3B 00 00  callis 003B, 0
+0017: 12 00 00   pop [0000]
+001A: 21 00 00   push [0000]
+001D: 1F 07 00   pushi 0007H   ; 7
+0020: 22   cmpeq
+0021: 05 1E 00   jne 0042
+0024: 1F F0 FF   pushi FFF0H   ; -16
+0027: 1F F2 FF   pushi FFF2H   ; -14
+002A: 24 00 00   call [0000]   ; 08FCH
+002D: 12 01 00   pop [0001]
+0030: 21 01 00   push [0001]
+0033: 05 07 00   jne 003D
+0036: 1C 00 00   addsi L0000   ; "I will speak wit...
+0039: 33   say
+003A: 06 04 00   jmp 0041
+003D: 1C 38 00   addsi L0038   ; "I must get to th...
+0040: 33   say
+0041: 3F   abrt
+0042: 1D 83 00   pushs L0083   ; bye
+0045: 1D 87 00   pushs L0087   ; job
+0048: 1D 8B 00   pushs L008B   ; name
+004B: 1E 03 00   arrc 0003H   ; 3
+004E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0052: 42 3D 00   pushf flag:[003D]
+0055: 05 07 00   jne 005F
+0058: 1D 90 00   pushs L0090   ; password
+005B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005F: 42 3C 00   pushf flag:[003C]
+0062: 05 07 00   jne 006C
+0065: 1D 99 00   pushs L0099   ; murder
+0068: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006C: 42 3F 00   pushf flag:[003F]
+006F: 05 10 00   jne 0082
+0072: 1D A0 00   pushs L00A0   ; Hook
+0075: 1D A5 00   pushs L00A5   ; Klog
+0078: 1D AA 00   pushs L00AA   ; Fellowship
+007B: 1E 03 00   arrc 0003H   ; 3
+007E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0082: 42 40 00   pushf flag:[0040]
+0085: 05 07 00   jne 008F
+0088: 1D B5 00   pushs L00B5   ; Crown Jewel
+008B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008F: 42 4E 00   pushf flag:[004E]
+0092: 10   not
+0093: 05 0B 00   jne 00A1
+0096: 1C C1 00   addsi L00C1   ; You see an alert ...
+0099: 33   say
+009A: 13   push true
+009B: 43 4E 00   popf flag:[004E]
+009E: 06 04 00   jmp 00A5
+00A1: 1C E9 00   addsi L00E9   ; "What is it?" Joh...
+00A4: 33   say
+00A5: 04 3E 01   je 01E6
+00A8: 1D 0E 01   pushs L010E   ; name
+00AB: 07 01 00 0B 00  cmps 0001H, 00BB
+00B0: 1C 13 01   addsi L0113   ; "Johnson."
+00B3: 33   say
+00B4: 1D 1E 01   pushs L011E   ; name
+00B7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BB: 1D 23 01   pushs L0123   ; job
+00BE: 07 01 00 0B 00  cmps 0001H, 00CE
+00C3: 1C 27 01   addsi L0127   ; "I have the morni...
+00C6: 33   say
+00C7: 1D 87 01   pushs L0187   ; ship
+00CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CE: 1D 8C 01   pushs L018C   ; murder
+00D1: 07 01 00 0B 00  cmps 0001H, 00E1
+00D6: 1C 93 01   addsi L0193   ; "I did hear of th...
+00D9: 33   say
+00DA: 1D 65 02   pushs L0265   ; murder
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D 6C 02   pushs L026C   ; Crown Jewel
+00E4: 07 01 00 0B 00  cmps 0001H, 00F4
+00E9: 1C 78 02   addsi L0278   ; "The boat left ju...
+00EC: 33   say
+00ED: 1D F0 02   pushs L02F0   ; Crown Jewel
+00F0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F4: 1D FC 02   pushs L02FC   ; Fellowship
+00F7: 07 01 00 22 00  cmps 0001H, 011E
+00FC: 1C 07 03   addsi L0307   ; "Yes, I am a memb...
+00FF: 33   say
+0100: 24 01 00   call [0001]   ; 090AH
+0103: 12 02 00   pop [0002]
+0106: 21 02 00   push [0002]
+0109: 05 07 00   jne 0113
+010C: 1C 38 03   addsi L0338   ; "Then thou should...
+010F: 33   say
+0110: 06 04 00   jmp 0117
+0113: 1C 6A 03   addsi L036A   ; "'Tis thy loss."
+0116: 33   say
+0117: 1D 7B 03   pushs L037B   ; Fellowship
+011A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011E: 1D 86 03   pushs L0386   ; Klog
+0121: 07 01 00 0B 00  cmps 0001H, 0131
+0126: 1C 8B 03   addsi L038B   ; "Good man. He is ...
+0129: 33   say
+012A: 1D C0 03   pushs L03C0   ; Klog
+012D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0131: 1D C5 03   pushs L03C5   ; ship
+0134: 07 01 00 18 00  cmps 0001H, 0151
+0139: 1C CA 03   addsi L03CA   ; "If thou dost wan...
+013C: 33   say
+013D: 1D 40 04   pushs L0440   ; deed
+0140: 1D 45 04   pushs L0445   ; password
+0143: 1E 02 00   arrc 0002H   ; 2
+0146: 39 05 00 01  calli _AddAnswer@1  ; 0005
+014A: 1D 4E 04   pushs L044E   ; ship
+014D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0151: 1D 53 04   pushs L0453   ; password
+0154: 07 01 00 59 00  cmps 0001H, 01B2
+0159: 1C 5C 04   addsi L045C   ; "What is it?"
+015C: 33   say
+015D: 1D 6A 04   pushs L046A   ; Please
+0160: 1D 71 04   pushs L0471   ; Long live the king
+0163: 1D 84 04   pushs L0484   ; Uhh, I don't know
+0166: 1E 03 00   arrc 0003H   ; 3
+0169: 12 03 00   pop [0003]
+016C: 42 3D 00   pushf flag:[003D]
+016F: 05 0A 00   jne 017C
+0172: 21 03 00   push [0003]
+0175: 1D 96 04   pushs L0496   ; Blackbird
+0178: 4A   arra
+0179: 12 03 00   pop [0003]
+017C: 21 03 00   push [0003]
+017F: 24 02 00   call [0002]   ; 090BH
+0182: 12 02 00   pop [0002]
+0185: 21 02 00   push [0002]
+0188: 1D A0 04   pushs L04A0   ; Blackbird
+018B: 22   cmpeq
+018C: 05 1B 00   jne 01AA
+018F: 24 03 00   call [0003]   ; 0834H
+0192: 12 04 00   pop [0004]
+0195: 21 04 00   push [0004]
+0198: 05 07 00   jne 01A2
+019B: 1C AA 04   addsi L04AA   ; "Very well, thou ...
+019E: 33   say
+019F: 06 04 00   jmp 01A6
+01A2: 1C CA 04   addsi L04CA   ; "Thou mayest not ...
+01A5: 33   say
+01A6: 3F   abrt
+01A7: 06 08 00   jmp 01B2
+01AA: 1C E3 04   addsi L04E3   ; "Thou dost not kn...
+01AD: 33   say
+01AE: 13   push true
+01AF: 43 42 00   popf flag:[0042]
+01B2: 1D 3F 05   pushs L053F   ; Hook
+01B5: 07 01 00 0B 00  cmps 0001H, 01C5
+01BA: 1C 44 05   addsi L0544   ; "A man with a hoo...
+01BD: 33   say
+01BE: 1D 84 05   pushs L0584   ; Hook
+01C1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C5: 1D 89 05   pushs L0589   ; deed
+01C8: 07 01 00 0B 00  cmps 0001H, 01D8
+01CD: 1C 8E 05   addsi L058E   ; "Thou canst purch...
+01D0: 33   say
+01D1: 1D C5 05   pushs L05C5   ; deed
+01D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D8: 1D CA 05   pushs L05CA   ; bye
+01DB: 07 01 00 03 00  cmps 0001H, 01E3
+01E0: 06 03 00   jmp 01E6
+01E3: 06 BF FE   jmp 00A5
+01E6: 40   db 40 ???
+01E7: 1C CE 05   addsi L05CE   ; "Good day."*
+01EA: 33   say
+01EB: 25   ret

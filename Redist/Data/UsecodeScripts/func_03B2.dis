@@ -1,0 +1,68 @@
+  .funcnumber 03B2H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a tough-looking guard who takes his job -very- serio'
+ db 'usly.'
+L004E: db 00
+L004F: db 'name'
+L0053: db 00
+L0054: db '"I am a guard."'
+L0063: db 00
+L0064: db 'name'
+L0068: db 00
+L0069: db 'job'
+L006C: db 00
+L006D: db 'The man looks at you like you are an ignoramus. "I am a guar'
+ db 'd, idiot. Thou shouldst go about thy business."'
+L00D8: db 00
+L00D9: db 'bye'
+L00DC: db 00
+L00DD: db '"Goodbye."*'
+L00E8: db 00
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 3E   push itemref
+0001: 38 1B 00 01  callis 001B, 1
+0005: 38 1C 00 01  callis 001C, 1
+0009: 12 00 00   pop [0000]
+000C: 48   push eventid
+000D: 1F 00 00   pushi 0000H   ; 0
+0010: 22   cmpeq
+0011: 05 01 00   jne 0015
+0014: 3F   abrt
+0015: 1F 00 00   pushi 0000H   ; 0
+0018: 1F FE FE   pushi FEFEH   ; -258
+001B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; job
+0025: 1D 08 00   pushs L0008   ; name
+0028: 1E 03 00   arrc 0003H   ; 3
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 1C 0D 00   addsi L000D   ; You see a tough-l...
+0032: 33   say
+0033: 04 2D 00   je 0063
+0036: 1D 4F 00   pushs L004F   ; name
+0039: 07 01 00 0B 00  cmps 0001H, 0049
+003E: 1C 54 00   addsi L0054   ; "I am a guard."
+0041: 33   say
+0042: 1D 64 00   pushs L0064   ; name
+0045: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0049: 1D 69 00   pushs L0069   ; job
+004C: 07 01 00 04 00  cmps 0001H, 0055
+0051: 1C 6D 00   addsi L006D   ; The man looks at ...
+0054: 33   say
+0055: 1D D9 00   pushs L00D9   ; bye
+0058: 07 01 00 03 00  cmps 0001H, 0060
+005D: 06 03 00   jmp 0063
+0060: 06 D0 FF   jmp 0033
+0063: 40   db 40 ???
+0064: 1C DD 00   addsi L00DD   ; "Goodbye."*
+0067: 33   say
+0068: 25   ret

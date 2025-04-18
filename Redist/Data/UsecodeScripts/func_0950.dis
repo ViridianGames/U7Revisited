@@ -1,0 +1,258 @@
+  .funcnumber 0950H
+  .data
+L0000: db 'you'
+L0003: db 00
+L0004: db 'You'
+L0007: db 00
+L0008: db 'mimic'
+L000D: db 00
+L000E: db 'develop'
+L0015: db 00
+L0016: db 'you'
+L0019: db 00
+L001A: db 'you'
+L001D: db 00
+L001E: db 'feel'
+L0022: db 00
+L0023: db 'have'
+L0027: db 00
+L0028: db 'learn'
+L002D: db 00
+L002E: db 'She'
+L0031: db 00
+L0032: db 'she'
+L0035: db 00
+L0036: db 'He'
+L0038: db 00
+L0039: db 'he'
+L003B: db 00
+L003C: db 'mimics'
+L0042: db 00
+L0043: db 'develops'
+L004B: db 00
+L004C: db 'them'
+L0050: db 00
+L0051: db 'feels'
+L0056: db 00
+L0057: db 'has'
+L005A: db 00
+L005B: db 'learns'
+L0061: db 00
+L0062: db '"It appears that thou dost not have enough practical experie'
+ db 'nce to train at this time. If thou couldst return later afte'
+ db 'r thou hast gained more experience, I can help thee."'
+L010F: db 00
+L0110: db 'You gather your gold and count it, finding that you have '
+L0149: db 00
+L014A: db ' gold altogether.'
+L015B: db 00
+L015C: db '"It appears that thou dost not seem to have enough gold to t'
+ db 'rain here. If thou couldst return later after thy pockets ar'
+ db 'e filled..."'
+L01E0: db 00
+L01E1: db '"It appears that thou art already as proficient as I! I am a'
+ db 'fraid that thou cannot be trained further here."'
+L024D: db 00
+L024E: db 'You pay '
+L0256: db 00
+L0257: db ' gold.'
+L025D: db 00
+L025E: db 'Zella begins the session by showing '
+L0282: db 00
+L0283: db ' the proper stance when 'boxing'.~~"'Tis all contingent on b'
+ db 'alance. Use thy weight to control thy movement. Step lightly'
+ db '. 'Tis almost like a dance." Zella shows '
+L0324: db 00
+L0325: db ' some steps, sparring into the air. '
+L0349: db 00
+L034A: db ' '
+L034B: db 00
+L034C: db ' him and slowly '
+L035C: db 00
+L035D: db ' a feel for the technique. After a while it becomes second n'
+ db 'ature. The two of '
+L03AB: db 00
+L03AC: db ' take jabs at each other, and '
+L03CA: db 00
+L03CB: db ' '
+L03CC: db 00
+L03CD: db ' proper defensive maneuvers. When the session is over, '
+L0404: db 00
+L0405: db ' '
+L0406: db 00
+L0407: db ' '
+L0408: db 00
+L0409: db ' '
+L040A: db 00
+L040B: db ' a better grip on the concept of 'boxing'.'
+L0435: db 00
+  .code
+  .argc 0002H
+  .localc 0011H
+  .externsize 0005H
+  .extern 0920H
+  .extern 0922H
+  .extern 0910H
+  .extern 0915H
+  .extern 0917H
+0000: 24 00 00   call [0000]   ; 0920H
+0003: 12 02 00   pop [0002]
+0006: 21 02 00   push [0002]
+0009: 38 27 00 01  callis _GetPlayerName@1  ; 0027
+000D: 12 03 00   pop [0003]
+0010: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0014: 12 04 00   pop [0004]
+0017: 21 02 00   push [0002]
+001A: 1F 9C FE   pushi FE9CH   ; -356
+001D: 22   cmpeq
+001E: 05 39 00   jne 005A
+0021: 1D 00 00   pushs L0000   ; you
+0024: 12 03 00   pop [0003]
+0027: 1D 04 00   pushs L0004   ; You
+002A: 12 05 00   pop [0005]
+002D: 1D 08 00   pushs L0008   ; mimic
+0030: 12 06 00   pop [0006]
+0033: 1D 0E 00   pushs L000E   ; develop
+0036: 12 07 00   pop [0007]
+0039: 1D 16 00   pushs L0016   ; you
+003C: 12 08 00   pop [0008]
+003F: 1D 1A 00   pushs L001A   ; you
+0042: 12 09 00   pop [0009]
+0045: 1D 1E 00   pushs L001E   ; feel
+0048: 12 0A 00   pop [000A]
+004B: 1D 23 00   pushs L0023   ; have
+004E: 12 0B 00   pop [000B]
+0051: 1D 28 00   pushs L0028   ; learn
+0054: 12 0C 00   pop [000C]
+0057: 06 45 00   jmp 009F
+005A: 21 04 00   push [0004]
+005D: 05 0F 00   jne 006F
+0060: 1D 2E 00   pushs L002E   ; She
+0063: 12 05 00   pop [0005]
+0066: 1D 32 00   pushs L0032   ; she
+0069: 12 09 00   pop [0009]
+006C: 06 0C 00   jmp 007B
+006F: 1D 36 00   pushs L0036   ; He
+0072: 12 05 00   pop [0005]
+0075: 1D 39 00   pushs L0039   ; he
+0078: 12 09 00   pop [0009]
+007B: 1D 3C 00   pushs L003C   ; mimics
+007E: 12 06 00   pop [0006]
+0081: 1D 43 00   pushs L0043   ; develops
+0084: 12 07 00   pop [0007]
+0087: 1D 4C 00   pushs L004C   ; them
+008A: 12 08 00   pop [0008]
+008D: 1D 51 00   pushs L0051   ; feels
+0090: 12 0A 00   pop [000A]
+0093: 1D 57 00   pushs L0057   ; has
+0096: 12 0B 00   pop [000B]
+0099: 1D 5B 00   pushs L005B   ; learns
+009C: 12 0C 00   pop [000C]
+009F: 21 02 00   push [0002]
+00A2: 1F 00 00   pushi 0000H   ; 0
+00A5: 22   cmpeq
+00A6: 05 03 00   jne 00AC
+00A9: 06 1A 01   jmp 01C6
+00AC: 1F 02 00   pushi 0002H   ; 2
+00AF: 12 0D 00   pop [000D]
+00B2: 21 0D 00   push [000D]
+00B5: 21 02 00   push [0002]
+00B8: 21 00 00   push [0000]
+00BB: 21 01 00   push [0001]
+00BE: 24 01 00   call [0001]   ; 0922H
+00C1: 12 0E 00   pop [000E]
+00C4: 21 0E 00   push [000E]
+00C7: 1F 00 00   pushi 0000H   ; 0
+00CA: 22   cmpeq
+00CB: 05 07 00   jne 00D5
+00CE: 1C 62 00   addsi L0062   ; "It appears that ...
+00D1: 33   say
+00D2: 06 F1 00   jmp 01C6
+00D5: 21 0E 00   push [000E]
+00D8: 1F 01 00   pushi 0001H   ; 1
+00DB: 22   cmpeq
+00DC: 05 2E 00   jne 010D
+00DF: 1F 99 FE   pushi FE99H   ; -359
+00E2: 1F 99 FE   pushi FE99H   ; -359
+00E5: 1F 84 02   pushi 0284H   ; 644
+00E8: 1F 9B FE   pushi FE9BH   ; -357
+00EB: 38 28 00 04  callis 0028, 4
+00EF: 12 0F 00   pop [000F]
+00F2: 1C 10 01   addsi L0110   ; You gather your g...
+00F5: 2F 0F 00   addsv [000F]
+00F8: 1C 4A 01   addsi L014A   ;  gold altogether.
+00FB: 33   say
+00FC: 21 0F 00   push [000F]
+00FF: 21 00 00   push [0000]
+0102: 17   cmpl
+0103: 05 07 00   jne 010D
+0106: 1C 5C 01   addsi L015C   ; "It appears that ...
+0109: 33   say
+010A: 06 B9 00   jmp 01C6
+010D: 21 0E 00   push [000E]
+0110: 1F 02 00   pushi 0002H   ; 2
+0113: 22   cmpeq
+0114: 05 07 00   jne 011E
+0117: 1C E1 01   addsi L01E1   ; "It appears that ...
+011A: 33   say
+011B: 06 A8 00   jmp 01C6
+011E: 1C 4E 02   addsi L024E   ; You pay 
+0121: 2F 00 00   addsv [0000]
+0124: 1C 57 02   addsi L0257   ;  gold.
+0127: 33   say
+0128: 13   push true
+0129: 1F 99 FE   pushi FE99H   ; -359
+012C: 1F 99 FE   pushi FE99H   ; -359
+012F: 1F 84 02   pushi 0284H   ; 644
+0132: 21 00 00   push [0000]
+0135: 38 2B 00 05  callis 002B, 5
+0139: 12 10 00   pop [0010]
+013C: 1C 5E 02   addsi L025E   ; Zella begins the ...
+013F: 2F 03 00   addsv [0003]
+0142: 1C 83 02   addsi L0283   ;  the proper stanc...
+0145: 2F 03 00   addsv [0003]
+0148: 1C 25 03   addsi L0325   ;  some steps, spar...
+014B: 2F 05 00   addsv [0005]
+014E: 1C 4A 03   addsi L034A   ;  
+0151: 2F 06 00   addsv [0006]
+0154: 1C 4C 03   addsi L034C   ;  him and slowly 
+0157: 2F 07 00   addsv [0007]
+015A: 1C 5D 03   addsi L035D   ;  a feel for the t...
+015D: 2F 08 00   addsv [0008]
+0160: 1C AC 03   addsi L03AC   ;  take jabs at eac...
+0163: 2F 03 00   addsv [0003]
+0166: 1C CB 03   addsi L03CB   ;  
+0169: 2F 0C 00   addsv [000C]
+016C: 1C CD 03   addsi L03CD   ;  proper defensive...
+016F: 2F 09 00   addsv [0009]
+0172: 1C 05 04   addsi L0405   ;  
+0175: 2F 0A 00   addsv [000A]
+0178: 1C 07 04   addsi L0407   ;  
+017B: 2F 09 00   addsv [0009]
+017E: 1C 09 04   addsi L0409   ;  
+0181: 2F 0B 00   addsv [000B]
+0184: 1C 0B 04   addsi L040B   ;  a better grip on...
+0187: 33   say
+0188: 1F 01 00   pushi 0001H   ; 1
+018B: 21 02 00   push [0002]
+018E: 24 02 00   call [0002]   ; 0910H
+0191: 12 11 00   pop [0011]
+0194: 1F 04 00   pushi 0004H   ; 4
+0197: 21 02 00   push [0002]
+019A: 24 02 00   call [0002]   ; 0910H
+019D: 12 12 00   pop [0012]
+01A0: 21 11 00   push [0011]
+01A3: 1F 1E 00   pushi 001EH   ; 30
+01A6: 17   cmpl
+01A7: 05 09 00   jne 01B3
+01AA: 1F 01 00   pushi 0001H   ; 1
+01AD: 21 02 00   push [0002]
+01B0: 24 03 00   call [0003]   ; 0915H
+01B3: 21 12 00   push [0012]
+01B6: 1F 1E 00   pushi 001EH   ; 30
+01B9: 17   cmpl
+01BA: 05 09 00   jne 01C6
+01BD: 1F 01 00   pushi 0001H   ; 1
+01C0: 21 02 00   push [0002]
+01C3: 24 04 00   call [0004]   ; 0917H
+01C6: 25   ret

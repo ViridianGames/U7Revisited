@@ -1,0 +1,65 @@
+  .funcnumber 0348H ;* Flying carpet.
+  .data
+L0000: db '@I do not believe that we can land here safely.@'
+L0030: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0004H
+  .extern 080DH
+  .extern 0812H
+  .extern 08B3H
+  .extern 08FFH
+0000: 3E   push itemref
+0001: 38 58 00 01  callis 0058, 1
+0005: 12 00 00   pop [0000]
+0008: 48   push eventid
+0009: 1F 01 00   pushi 0001H   ; 1
+000C: 22   cmpeq
+000D: 21 00 00   push [0000]
+0010: 1F 00 00   pushi 0000H   ; 0
+0013: 22   cmpeq
+0014: 10   not
+0015: 0E   and
+0016: 05 72 00   jne 008B
+0019: 1F 0A 00   pushi 000AH   ; 10
+001C: 3E   push itemref
+001D: 38 88 00 02  callis 0088, 2
+0021: 10   not
+0022: 05 1D 00   jne 0042
+0025: 24 00 00   call [0000]   ; 080DH Sitting?
+0028: 05 09 00   jne 0034
+002B: 21 00 00   push [0000]
+002E: 24 01 00   call [0001]   ; 0812H
+0031: 06 0B 00   jmp 003F
+0034: 3E   push itemref
+0035: 24 02 00   call [0002]   ; 08B3H * Sit down.
+0038: 05 04 00   jne 003F
+003B: 39 7E 00 00  calli 007E, 0
+003F: 06 49 00   jmp 008B
+0042: 1F 15 00   pushi 0015H   ; 21
+0045: 21 00 00   push [0000]
+0048: 38 88 00 02  callis 0088, 2
+004C: 05 36 00   jne 0085
+004F: 1F 0A 00   pushi 000AH   ; 10
+0052: 3E   push itemref
+0053: 39 8A 00 02  calli 008A, 2
+0057: 1F 1A 00   pushi 001AH   ; 26
+005A: 3E   push itemref
+005B: 39 8A 00 02  calli 008A, 2
+005F: 1F 0A 00   pushi 000AH   ; 10
+0062: 1F FE FF   pushi FFFEH   ; -2
+0065: 44 0B   pushw 440BH   ; 17419
+0067: 44 21   pushw 4421H   ; 17441
+0069: 44 38   pushw 1E38H   ; 7736
+006B: 1E 05 00   arrc 0005H   ; 5
+006E: 21 00 00   push [0000]
+0071: 38 01 00 02  callis 0001, 2
+0075: 12 01 00   pop [0001]
+0078: 1F 00 00   pushi 0000H   ; 0
+007B: 1F FF 00   pushi 00FFH   ; 255
+007E: 39 2E 00 02  calli _PlayMusic@2  ; 002E
+0082: 06 06 00   jmp 008B
+0085: 1D 00 00   pushs L0000   ; @I do not believe...
+0088: 24 03 00   call [0003]   ; 08FFH
+008B: 25   ret

@@ -1,0 +1,283 @@
+  .funcnumber 041CH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'This is a tall, skinny actor with knobby knees.'
+L003C: db 00
+L003D: db 'He wears a woman's wig and is dressed in drag.'
+L006B: db 00
+L006C: db ' he says in falsetto.'
+L0081: db 00
+L0082: db 00
+L0083: db 'Jesse clears his throat. "Hello again!"'
+L00AA: db 00
+L00AB: db 00
+L00AC: db 'name'
+L00B0: db 00
+L00B1: db 'The actor speaks in falsetto.'
+L00CE: db 00
+L00CF: db '"I am Jesse and I am a star."'
+L00EC: db 00
+L00ED: db 'name'
+L00F1: db 00
+L00F2: db 'He slaps his own face and speaks in a normal register, "Oops'
+ db ', sorry! I am so entrenched in the role that I sometimes for'
+ db 'get that I am not a woman!"'
+L0185: db 00
+L0186: db 'job'
+L0189: db 00
+L018A: db '"I work at the Royal Theatre as an actor. I have played -all'
+ db '- the great roles in my career. I now have the chance to pla'
+ db 'y the part of a lifetime -- the Avatar!"'
+L022A: db 00
+L022B: db 'Avatar'
+L0231: db 00
+L0232: db 'Royal Theatre'
+L023F: db 00
+L0240: db 'Royal Theatre'
+L024D: db 00
+L024E: db '"Because it must cater to the masses, we never have the oppo'
+ db 'rtunity to do experimental works -- only the traditional gru'
+ db 'el of mediocrity. But 'tis a wonderful space and it has marv'
+ db 'elous acoustics."'
+L0313: db 00
+L0314: db 'experimental works'
+L0326: db 00
+L0327: db 'masses'
+L032D: db 00
+L032E: db 'Royal Theatre'
+L033B: db 00
+L033C: db 'masses'
+L0342: db 00
+L0343: db '"People like to see tales of heroic adventures, knights in a'
+ db 'rmour, beautiful princesses, wise kings, wizards, evil monst'
+ db 'ers. All that rot."'
+L03CE: db 00
+L03CF: db 'masses'
+L03D5: db 00
+L03D6: db 'Avatar'
+L03DC: db 00
+L03DD: db '"The role is very challenging. I have a plethora of lines an'
+ db 'd I had to work with a trainer for weeks to prepare for the '
+ db 'enormous amount of activity required. This role will make 'J'
+ db 'esse' a household name!"'
+L04A9: db 00
+L04AA: db 'lines'
+L04AF: db 00
+L04B0: db 'challenging'
+L04BB: db 00
+L04BC: db 'Avatar'
+L04C2: db 00
+L04C3: db 'challenging'
+L04CE: db 00
+L04CF: db '"It is easily the most ambitious theatrical production ever '
+ db 'conceived. There is over a hundred hours of play time. That '
+ db 'is a long time for an audience."'
+L0567: db 00
+L0568: db 'challenging'
+L0573: db 00
+L0574: db 'lines'
+L0579: db 00
+L057A: db '"My biggest lines are:~~"Name!"~~"Job!"~~"Bye!"'
+L05A9: db 00
+L05AA: db 'lines'
+L05AF: db 00
+L05B0: db 'experimental works'
+L05C2: db 00
+L05C3: db '"My favorite piece is something Raymundo wrote for me entitl'
+ db 'ed 'Three on a Codpiece'. I stand on stage and invite the au'
+ db 'dience to join me in tearing an undergarment into tiny piece'
+ db 's, after which they are placed in funeral urns and mixed wit'
+ db 'h wheat paste. The pieces of cloth, not the audience members'
+ db '. Then the audience may glue the pieces anywhere on my body '
+ db 'that they wish."'
+L073B: db 00
+L073C: db 'experimental works'
+L074E: db 00
+L074F: db 'bye'
+L0752: db 00
+L0753: db '"Goodbye. Be sure to come to the show when it opens!"*'
+L0789: db 00
+L078A: db '@Name!@'
+L0791: db 00
+L0792: db '@Job!@'
+L0798: db 00
+L0799: db '@Yes! Er, I mean No!@'
+L07AE: db 00
+L07AF: db '@Bye!@'
+L07B5: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0001H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 51 01   jne 0159
+0008: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+000C: 12 00 00   pop [0000]
+000F: 21 00 00   push [0000]
+0012: 05 0D 00   jne 0022
+0015: 1F 01 00   pushi 0001H   ; 1
+0018: 1F E4 FF   pushi FFE4H   ; -28
+001B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+001F: 06 0A 00   jmp 002C
+0022: 1F 00 00   pushi 0000H   ; 0
+0025: 1F E4 FF   pushi FFE4H   ; -28
+0028: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+002C: 1D 00 00   pushs L0000   ; bye
+002F: 1D 04 00   pushs L0004   ; job
+0032: 1D 08 00   pushs L0008   ; name
+0035: 1E 03 00   arrc 0003H   ; 3
+0038: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003C: 42 9D 00   pushf flag:[009D]
+003F: 10   not
+0040: 05 15 00   jne 0058
+0043: 1C 0D 00   addsi L000D   ; This is a tall, s...
+0046: 33   say
+0047: 21 00 00   push [0000]
+004A: 05 04 00   jne 0051
+004D: 1C 3D 00   addsi L003D   ; He wears a woman'...
+0050: 33   say
+0051: 13   push true
+0052: 43 9D 00   popf flag:[009D]
+0055: 06 1F 00   jmp 0077
+0058: 21 00 00   push [0000]
+005B: 05 09 00   jne 0067
+005E: 1D 6C 00   pushs L006C   ;  he says in false...
+0061: 12 01 00   pop [0001]
+0064: 06 06 00   jmp 006D
+0067: 1D 82 00   pushs L0082   ; 
+006A: 12 01 00   pop [0001]
+006D: 1C 83 00   addsi L0083   ; Jesse clears his ...
+0070: 2F 01 00   addsv [0001]
+0073: 1C AB 00   addsi L00AB   ; 
+0076: 33   say
+0077: 04 DA 00   je 0154
+007A: 1D AC 00   pushs L00AC   ; name
+007D: 07 01 00 1F 00  cmps 0001H, 00A1
+0082: 21 00 00   push [0000]
+0085: 05 04 00   jne 008C
+0088: 1C B1 00   addsi L00B1   ; The actor speaks ...
+008B: 33   say
+008C: 1C CF 00   addsi L00CF   ; "I am Jesse and I...
+008F: 33   say
+0090: 1D ED 00   pushs L00ED   ; name
+0093: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0097: 21 00 00   push [0000]
+009A: 05 04 00   jne 00A1
+009D: 1C F2 00   addsi L00F2   ; He slaps his own ...
+00A0: 33   say
+00A1: 1D 86 01   pushs L0186   ; job
+00A4: 07 01 00 11 00  cmps 0001H, 00BA
+00A9: 1C 8A 01   addsi L018A   ; "I work at the Ro...
+00AC: 33   say
+00AD: 1D 2B 02   pushs L022B   ; Avatar
+00B0: 1D 32 02   pushs L0232   ; Royal Theatre
+00B3: 1E 02 00   arrc 0002H   ; 2
+00B6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BA: 1D 40 02   pushs L0240   ; Royal Theatre
+00BD: 07 01 00 18 00  cmps 0001H, 00DA
+00C2: 1C 4E 02   addsi L024E   ; "Because it must ...
+00C5: 33   say
+00C6: 1D 14 03   pushs L0314   ; experimental works
+00C9: 1D 27 03   pushs L0327   ; masses
+00CC: 1E 02 00   arrc 0002H   ; 2
+00CF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D3: 1D 2E 03   pushs L032E   ; Royal Theatre
+00D6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DA: 1D 3C 03   pushs L033C   ; masses
+00DD: 07 01 00 0B 00  cmps 0001H, 00ED
+00E2: 1C 43 03   addsi L0343   ; "People like to s...
+00E5: 33   say
+00E6: 1D CF 03   pushs L03CF   ; masses
+00E9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00ED: 1D D6 03   pushs L03D6   ; Avatar
+00F0: 07 01 00 18 00  cmps 0001H, 010D
+00F5: 1C DD 03   addsi L03DD   ; "The role is very...
+00F8: 33   say
+00F9: 1D AA 04   pushs L04AA   ; lines
+00FC: 1D B0 04   pushs L04B0   ; challenging
+00FF: 1E 02 00   arrc 0002H   ; 2
+0102: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0106: 1D BC 04   pushs L04BC   ; Avatar
+0109: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010D: 1D C3 04   pushs L04C3   ; challenging
+0110: 07 01 00 0B 00  cmps 0001H, 0120
+0115: 1C CF 04   addsi L04CF   ; "It is easily the...
+0118: 33   say
+0119: 1D 68 05   pushs L0568   ; challenging
+011C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0120: 1D 74 05   pushs L0574   ; lines
+0123: 07 01 00 0B 00  cmps 0001H, 0133
+0128: 1C 7A 05   addsi L057A   ; "My biggest lines...
+012B: 33   say
+012C: 1D AA 05   pushs L05AA   ; lines
+012F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0133: 1D B0 05   pushs L05B0   ; experimental works
+0136: 07 01 00 0B 00  cmps 0001H, 0146
+013B: 1C C3 05   addsi L05C3   ; "My favorite piec...
+013E: 33   say
+013F: 1D 3C 07   pushs L073C   ; experimental works
+0142: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0146: 1D 4F 07   pushs L074F   ; bye
+0149: 07 01 00 03 00  cmps 0001H, 0151
+014E: 06 03 00   jmp 0154
+0151: 06 23 FF   jmp 0077
+0154: 40   db 40 ???
+0155: 1C 53 07   addsi L0753   ; "Goodbye. Be sure...
+0158: 33   say
+0159: 48   push eventid
+015A: 1F 00 00   pushi 0000H   ; 0
+015D: 22   cmpeq
+015E: 05 7F 00   jne 01E0
+0161: 38 3B 00 00  callis 003B, 0
+0165: 12 02 00   pop [0002]
+0168: 1F E4 FF   pushi FFE4H   ; -28
+016B: 38 1B 00 01  callis 001B, 1
+016F: 38 1C 00 01  callis 001C, 1
+0173: 12 03 00   pop [0003]
+0176: 1F 04 00   pushi 0004H   ; 4
+0179: 1F 01 00   pushi 0001H   ; 1
+017C: 38 10 00 02  callis _Random2@2  ; 0010
+0180: 12 04 00   pop [0004]
+0183: 21 03 00   push [0003]
+0186: 1F 1D 00   pushi 001DH   ; 29
+0189: 22   cmpeq
+018A: 05 4D 00   jne 01DA
+018D: 21 04 00   push [0004]
+0190: 1F 01 00   pushi 0001H   ; 1
+0193: 22   cmpeq
+0194: 05 06 00   jne 019D
+0197: 1D 8A 07   pushs L078A   ; @Name!@
+019A: 12 05 00   pop [0005]
+019D: 21 04 00   push [0004]
+01A0: 1F 02 00   pushi 0002H   ; 2
+01A3: 22   cmpeq
+01A4: 05 06 00   jne 01AD
+01A7: 1D 92 07   pushs L0792   ; @Job!@
+01AA: 12 05 00   pop [0005]
+01AD: 21 04 00   push [0004]
+01B0: 1F 03 00   pushi 0003H   ; 3
+01B3: 22   cmpeq
+01B4: 05 06 00   jne 01BD
+01B7: 1D 99 07   pushs L0799   ; @Yes! Er, I mean ...
+01BA: 12 05 00   pop [0005]
+01BD: 21 04 00   push [0004]
+01C0: 1F 04 00   pushi 0004H   ; 4
+01C3: 22   cmpeq
+01C4: 05 06 00   jne 01CD
+01C7: 1D AF 07   pushs L07AF   ; @Bye!@
+01CA: 12 05 00   pop [0005]
+01CD: 21 05 00   push [0005]
+01D0: 1F E4 FF   pushi FFE4H   ; -28
+01D3: 39 40 00 02  calli _ItemSay@2  ; 0040
+01D7: 06 06 00   jmp 01E0
+01DA: 1F E4 FF   pushi FFE4H   ; -28
+01DD: 24 00 00   call [0000]   ; 092EH
+01E0: 25   ret

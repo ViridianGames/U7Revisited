@@ -1,0 +1,305 @@
+  .funcnumber 094BH
+  .data
+L0000: db '"To be my final offer -- '
+L0019: db 00
+L001A: db '."'
+L001C: db 00
+L001D: db '"To want '
+L0026: db 00
+L0027: db ' gold."'
+L002E: db 00
+L002F: db '"To accept?"'
+L003B: db 00
+L003C: db '"To have a deal."'
+L004D: db 00
+L004E: db '"To wonder why you bothered me."'
+L006E: db 00
+L006F: db '"To have another offer?"'
+L0087: db 00
+L0088: db '"To notice you are obviously not interested."'
+L00B5: db 00
+L00B6: db '"To accept your offer."'
+L00CD: db 00
+L00CE: db '"To be happy," he says. "To have wanted to keep it anyway! T'
+ db 'o tell you to leave."'
+L011F: db 00
+L0120: db '"To be agreed!"'
+L012F: db 00
+L0130: db '"To be foolish to accept so little!"'
+L0154: db 00
+L0155: db '"To charge more next time. To have sold to you too cheaply!"'
+L0191: db 00
+  .code
+  .argc 0002H
+  .localc 000CH
+  .externsize 0003H
+  .extern 090FH
+  .extern 090AH
+  .extern 0932H
+0000: 1F 00 00   pushi 0000H   ; 0
+0003: 12 02 00   pop [0002]
+0006: 21 01 00   push [0001]
+0009: 12 03 00   pop [0003]
+000C: 21 01 00   push [0001]
+000F: 12 04 00   pop [0004]
+0012: 13   push true
+0013: 12 05 00   pop [0005]
+0016: 14   push false
+0017: 12 06 00   pop [0006]
+001A: 1F 00 00   pushi 0000H   ; 0
+001D: 12 07 00   pop [0007]
+0020: 21 05 00   push [0005]
+0023: 05 7E 02   jne 02A4
+0026: 21 06 00   push [0006]
+0029: 05 0D 00   jne 0039
+002C: 1C 00 00   addsi L0000   ; "To be my final o...
+002F: 2F 03 00   addsv [0003]
+0032: 1C 1A 00   addsi L001A   ; ."
+0035: 33   say
+0036: 06 13 00   jmp 004C
+0039: 21 00 00   push [0000]
+003C: 24 00 00   call [0000]   ; 090FH
+003F: 12 08 00   pop [0008]
+0042: 1C 1D 00   addsi L001D   ; "To want 
+0045: 2F 03 00   addsv [0003]
+0048: 1C 27 00   addsi L0027   ;  gold."
+004B: 33   say
+004C: 21 03 00   push [0003]
+004F: 1F 03 00   pushi 0003H   ; 3
+0052: 0C   mul
+0053: 12 09 00   pop [0009]
+0056: 21 09 00   push [0009]
+0059: 1F 02 00   pushi 0002H   ; 2
+005C: 0B   div
+005D: 12 09 00   pop [0009]
+0060: 21 03 00   push [0003]
+0063: 1F 02 00   pushi 0002H   ; 2
+0066: 0B   div
+0067: 12 0A 00   pop [000A]
+006A: 21 03 00   push [0003]
+006D: 1F 04 00   pushi 0004H   ; 4
+0070: 0B   div
+0071: 12 0B 00   pop [000B]
+0074: 21 0B 00   push [000B]
+0077: 21 0A 00   push [000A]
+007A: 21 03 00   push [0003]
+007D: 21 09 00   push [0009]
+0080: 1E 04 00   arrc 0004H   ; 4
+0083: 12 0C 00   pop [000C]
+0086: 21 06 00   push [0006]
+0089: 05 26 00   jne 00B2
+008C: 1C 2F 00   addsi L002F   ; "To accept?"
+008F: 33   say
+0090: 24 01 00   call [0001]   ; 090AH
+0093: 12 07 00   pop [0007]
+0096: 21 07 00   push [0007]
+0099: 05 0B 00   jne 00A7
+009C: 1C 3C 00   addsi L003C   ; "To have a deal."
+009F: 33   say
+00A0: 21 03 00   push [0003]
+00A3: 2D   setr
+00A4: 06 08 00   jmp 00AF
+00A7: 1C 4E 00   addsi L004E   ; "To wonder why yo...
+00AA: 33   say
+00AB: 1F 00 00   pushi 0000H   ; 0
+00AE: 2D   setr
+00AF: 06 1D 00   jmp 00CF
+00B2: 21 04 00   push [0004]
+00B5: 12 02 00   pop [0002]
+00B8: 1C 6F 00   addsi L006F   ; "To have another ...
+00BB: 33   say
+00BC: 1F 00 00   pushi 0000H   ; 0
+00BF: 1F 01 00   pushi 0001H   ; 1
+00C2: 21 09 00   push [0009]
+00C5: 1F 00 00   pushi 0000H   ; 0
+00C8: 38 0C 00 04  callis _AskNumber@4  ; 000C
+00CC: 12 04 00   pop [0004]
+00CF: 21 04 00   push [0004]
+00D2: 1F 00 00   pushi 0000H   ; 0
+00D5: 22   cmpeq
+00D6: 05 08 00   jne 00E1
+00D9: 1C 88 00   addsi L0088   ; "To notice you ar...
+00DC: 33   say
+00DD: 1F 00 00   pushi 0000H   ; 0
+00E0: 2D   setr
+00E1: 21 04 00   push [0004]
+00E4: 21 03 00   push [0003]
+00E7: 18   cmpge
+00E8: 05 08 00   jne 00F3
+00EB: 1C B6 00   addsi L00B6   ; "To accept your o...
+00EE: 33   say
+00EF: 21 04 00   push [0004]
+00F2: 2D   setr
+00F3: 21 04 00   push [0004]
+00F6: 1F 04 00   pushi 0004H   ; 4
+00F9: 26 0C 00   aidx [000C]
+00FC: 17   cmpl
+00FD: 05 09 00   jne 0109
+0100: 1C CE 00   addsi L00CE   ; "To be happy," he...
+0103: 33   say
+0104: 3F   abrt
+0105: 1F 00 00   pushi 0000H   ; 0
+0108: 2D   setr
+0109: 1F 64 00   pushi 0064H   ; 100
+010C: 38 00 00 01  callis 0000, 1
+0110: 12 07 00   pop [0007]
+0113: 21 02 00   push [0002]
+0116: 1F 00 00   pushi 0000H   ; 0
+0119: 22   cmpeq
+011A: 05 09 00   jne 0126
+011D: 1F 03 00   pushi 0003H   ; 3
+0120: 26 0C 00   aidx [000C]
+0123: 12 02 00   pop [0002]
+0126: 21 04 00   push [0004]
+0129: 1F 03 00   pushi 0003H   ; 3
+012C: 26 0C 00   aidx [000C]
+012F: 18   cmpge
+0130: 05 A6 00   jne 01D9
+0133: 21 07 00   push [0007]
+0136: 1F 5A 00   pushi 005AH   ; 90
+0139: 18   cmpge
+013A: 05 47 00   jne 0184
+013D: 13   push true
+013E: 12 06 00   pop [0006]
+0141: 21 04 00   push [0004]
+0144: 21 02 00   push [0002]
+0147: 0A   sub
+0148: 1F 02 00   pushi 0002H   ; 2
+014B: 0C   mul
+014C: 24 02 00   call [0002]   ; 0932H
+014F: 12 0D 00   pop [000D]
+0152: 21 0D 00   push [000D]
+0155: 38 00 00 01  callis 0000, 1
+0159: 12 0D 00   pop [000D]
+015C: 21 03 00   push [0003]
+015F: 21 0D 00   push [000D]
+0162: 0A   sub
+0163: 21 04 00   push [0004]
+0166: 19   cmple
+0167: 05 0D 00   jne 0177
+016A: 21 04 00   push [0004]
+016D: 1F 01 00   pushi 0001H   ; 1
+0170: 09   add
+0171: 12 03 00   pop [0003]
+0174: 06 0A 00   jmp 0181
+0177: 21 03 00   push [0003]
+017A: 21 0D 00   push [000D]
+017D: 0A   sub
+017E: 12 03 00   pop [0003]
+0181: 06 19 01   jmp 029D
+0184: 21 07 00   push [0007]
+0187: 1F 1E 00   pushi 001EH   ; 30
+018A: 18   cmpge
+018B: 05 43 00   jne 01D1
+018E: 21 04 00   push [0004]
+0191: 21 02 00   push [0002]
+0194: 0A   sub
+0195: 1F 02 00   pushi 0002H   ; 2
+0198: 0C   mul
+0199: 24 02 00   call [0002]   ; 0932H
+019C: 12 0D 00   pop [000D]
+019F: 21 0D 00   push [000D]
+01A2: 38 00 00 01  callis 0000, 1
+01A6: 12 0D 00   pop [000D]
+01A9: 21 03 00   push [0003]
+01AC: 21 0D 00   push [000D]
+01AF: 0A   sub
+01B0: 21 04 00   push [0004]
+01B3: 19   cmple
+01B4: 05 0D 00   jne 01C4
+01B7: 21 04 00   push [0004]
+01BA: 1F 01 00   pushi 0001H   ; 1
+01BD: 09   add
+01BE: 12 03 00   pop [0003]
+01C1: 06 0A 00   jmp 01CE
+01C4: 21 03 00   push [0003]
+01C7: 21 0D 00   push [000D]
+01CA: 0A   sub
+01CB: 12 03 00   pop [0003]
+01CE: 06 CC 00   jmp 029D
+01D1: 1C 20 01   addsi L0120   ; "To be agreed!"
+01D4: 33   say
+01D5: 21 04 00   push [0004]
+01D8: 2D   setr
+01D9: 21 04 00   push [0004]
+01DC: 1F 04 00   pushi 0004H   ; 4
+01DF: 26 0C 00   aidx [000C]
+01E2: 18   cmpge
+01E3: 05 B7 00   jne 029D
+01E6: 21 07 00   push [0007]
+01E9: 1F 28 00   pushi 0028H   ; 40
+01EC: 18   cmpge
+01ED: 05 47 00   jne 0237
+01F0: 13   push true
+01F1: 12 06 00   pop [0006]
+01F4: 21 04 00   push [0004]
+01F7: 21 02 00   push [0002]
+01FA: 0A   sub
+01FB: 1F 02 00   pushi 0002H   ; 2
+01FE: 0C   mul
+01FF: 24 02 00   call [0002]   ; 0932H
+0202: 12 0D 00   pop [000D]
+0205: 21 0D 00   push [000D]
+0208: 38 00 00 01  callis 0000, 1
+020C: 12 0D 00   pop [000D]
+020F: 21 03 00   push [0003]
+0212: 21 0D 00   push [000D]
+0215: 0A   sub
+0216: 21 04 00   push [0004]
+0219: 19   cmple
+021A: 05 0D 00   jne 022A
+021D: 21 04 00   push [0004]
+0220: 1F 01 00   pushi 0001H   ; 1
+0223: 09   add
+0224: 12 03 00   pop [0003]
+0227: 06 0A 00   jmp 0234
+022A: 21 03 00   push [0003]
+022D: 21 0D 00   push [000D]
+0230: 0A   sub
+0231: 12 03 00   pop [0003]
+0234: 06 66 00   jmp 029D
+0237: 21 07 00   push [0007]
+023A: 1F 0F 00   pushi 000FH   ; 15
+023D: 18   cmpge
+023E: 05 43 00   jne 0284
+0241: 21 04 00   push [0004]
+0244: 21 02 00   push [0002]
+0247: 0A   sub
+0248: 1F 02 00   pushi 0002H   ; 2
+024B: 0C   mul
+024C: 24 02 00   call [0002]   ; 0932H
+024F: 12 0D 00   pop [000D]
+0252: 21 0D 00   push [000D]
+0255: 38 00 00 01  callis 0000, 1
+0259: 12 0D 00   pop [000D]
+025C: 21 03 00   push [0003]
+025F: 21 0D 00   push [000D]
+0262: 0A   sub
+0263: 21 04 00   push [0004]
+0266: 19   cmple
+0267: 05 0D 00   jne 0277
+026A: 21 04 00   push [0004]
+026D: 1F 01 00   pushi 0001H   ; 1
+0270: 09   add
+0271: 12 03 00   pop [0003]
+0274: 06 0A 00   jmp 0281
+0277: 21 03 00   push [0003]
+027A: 21 0D 00   push [000D]
+027D: 0A   sub
+027E: 12 03 00   pop [0003]
+0281: 06 19 00   jmp 029D
+0284: 21 07 00   push [0007]
+0287: 1F 05 00   pushi 0005H   ; 5
+028A: 18   cmpge
+028B: 05 08 00   jne 0296
+028E: 1C 30 01   addsi L0130   ; "To be foolish to...
+0291: 33   say
+0292: 1F 00 00   pushi 0000H   ; 0
+0295: 2D   setr
+0296: 1C 55 01   addsi L0155   ; "To charge more n...
+0299: 33   say
+029A: 06 00 00   jmp 029D
+029D: 21 03 00   push [0003]
+02A0: 2D   setr
+02A1: 06 7C FD   jmp 0020
+02A4: 32   rts

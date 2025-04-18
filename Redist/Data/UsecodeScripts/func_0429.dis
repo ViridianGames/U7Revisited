@@ -1,0 +1,383 @@
+  .funcnumber 0429H
+  .data
+L0000: db 'Candice is listening intently to the Fellowship meeting.*'
+L0039: db 00
+L003A: db '"Hast thou seen Batlin? He has not shown up for the Fellowsh'
+ db 'ip meeting!"'
+L0082: db 00
+L0083: db '"Oh! I must not stop to speak with thee! I am late for a Fel'
+ db 'lowship meeting!"*'
+L00D1: db 00
+L00D2: db 'bye'
+L00D5: db 00
+L00D6: db 'job'
+L00D9: db 00
+L00DA: db 'name'
+L00DE: db 00
+L00DF: db 'This is a bright woman who looks much younger than she actua'
+ db 'lly is.'
+L0122: db 00
+L0123: db '"Well! Thy reputation precedes thee! The Avatar in person! W'
+ db 'ord has spread that thou wert in Britain!"'
+L0189: db 00
+L018A: db 'Candice looks guilty about something. She gives you a little'
+ db ' wave, but says nothing. She looks at Patterson, hoping that'
+ db ' he will do the talking.*'
+L021B: db 00
+L021C: db '"Yes, Avatar?" Candice says.'
+L0238: db 00
+L0239: db '"Yes, Avatar?" Candice says.'
+L0255: db 00
+L0256: db 'name'
+L025A: db 00
+L025B: db '"My name is Candice," she says brightly. "I must say I am ho'
+ db 'nored to meet the Avatar!" She curtsies.'
+L02BF: db 00
+L02C0: db 'name'
+L02C4: db 00
+L02C5: db 'job'
+L02C8: db 00
+L02C9: db '"I am the curator of the Royal Museum.'
+L02EF: db 00
+L02F0: db '"Feel free to ask about any of the exhibits.'
+L031C: db 00
+L031D: db '"I hope to see thee there when the museum is open.'
+L034F: db 00
+L0350: db '"I spend the rest of my time working with The Fellowship."'
+L038A: db 00
+L038B: db 'Fellowship'
+L0395: db 00
+L0396: db 'exhibits'
+L039E: db 00
+L039F: db 'Royal Museum'
+L03AB: db 00
+L03AC: db 'Royal Museum'
+L03B8: db 00
+L03B9: db '"It has been in Britain for many, many years. It contains hi'
+ db 'storical artifacts, as well as works of art."'
+L0422: db 00
+L0423: db 'Royal Museum'
+L042F: db 00
+L0430: db 'works of art'
+L043C: db 00
+L043D: db 'artifacts'
+L0446: db 00
+L0447: db 'exhibits'
+L044F: db 00
+L0450: db '"We have just opened a special section in which thou might b'
+ db 'e interested -- an exhibit of 'Avatar artifacts'!"'
+L04BE: db 00
+L04BF: db 'Avatar artifacts'
+L04CF: db 00
+L04D0: db '"Come to the museum when it is open!"'
+L04F5: db 00
+L04F6: db 'exhibits'
+L04FE: db 00
+L04FF: db 'artifacts'
+L0508: db 00
+L0509: db '"There are relics from early Britannia and even from the Thr'
+ db 'ee Ages of Darkness -- back when Britannia was known as Sosa'
+ db 'ria."'
+L0586: db 00
+L0587: db 'artifacts'
+L0590: db 00
+L0591: db 'Avatar artifacts'
+L05A1: db 00
+L05A2: db '"Well, thou surely must recognize them. They are supposed to'
+ db ' be authentic! Things like the Silver Horn and the eight sto'
+ db 'nes. I understand the stones were used for teleportation, an'
+ db 'd if mages were not so sick in the head these days, they cou'
+ db 'ld cast a 'Recall' spell on them to teleport to specific pla'
+ db 'ces around Britannia. I believe if one casts a 'Mark' spell '
+ db 'on one, thou canst re-assign the teleportation location! But'
+ db ' I suppose none of that works anymore."'
+L076D: db 00
+L076E: db 'Iolo whispers to you, "Er, Avatar, thou dost know that I do '
+ db 'not condone stealing. But, er, I do believe these stones may'
+ db ' be useful to us. Perhaps we should come back later when the'
+ db ' museum is closed, if thou dost know what I mean? After all,'
+ db ' these items technically belong to thee!"'
+L0887: db 00
+L0888: db 'Avatar artifacts'
+L0898: db 00
+L0899: db 'works of art'
+L08A5: db 00
+L08A6: db '"Britannia is proud of the artists who donate their works to'
+ db ' the museum. Thou wilt see pieces all over the country by Br'
+ db 'itannian artists Watson, Richard Fox, Randi Frank, Glen John'
+ db 'son, and Denis Loubet."'
+L0971: db 00
+L0972: db 'works of art'
+L097E: db 00
+L097F: db 'Fellowship'
+L0989: db 00
+L098A: db '"We meet every evening at the Hall. Thou must come and visit'
+ db '!'
+L09C7: db 00
+L09C8: db '"Thou must know all about it by now! I hope to see thee at a'
+ db 'n evening meeting!'
+L0A16: db 00
+L0A17: db '"The Fellowship has given me a great purpose in life. I have'
+ db ' made new friends, and have even found love!" She giggles. "'
+ db 'Ooops! I gave away my secret! I must not speak of it. Do for'
+ db 'get I said that, please?"'
+L0AE4: db 00
+L0AE5: db 'Fellowship'
+L0AEF: db 00
+L0AF0: db 'secret'
+L0AF6: db 00
+L0AF7: db 'purpose'
+L0AFE: db 00
+L0AFF: db 'purpose'
+L0B06: db 00
+L0B07: db '"I want to attain a higher level of acceptance in The Fellow'
+ db 'ship. I want to hear the 'voice'. That is mine one true goal'
+ db '."'
+L0B81: db 00
+L0B82: db 'purpose'
+L0B89: db 00
+L0B8A: db 'voice'
+L0B8F: db 00
+L0B90: db 'voice'
+L0B95: db 00
+L0B96: db '"Dost thou not know? The longer one is a member of The Fello'
+ db 'wship, the greater the chances that one will hear the 'voice'
+ db ''. Supposedly, it is a man's voice that thou wilt hear -- pe'
+ db 'rhaps in thy dreams, perhaps while thou art concentrating on'
+ db ' something else -- it is a voice that tells thee things, sug'
+ db 'gests things. I do not know, really. I have not heard it yet'
+ db ', so I am only speaking of what I have heard from others mor'
+ db 'e fortunate than I."'
+L0D4E: db 00
+L0D4F: db 'voice'
+L0D54: db 00
+L0D55: db 'secret'
+L0D5B: db 00
+L0D5C: db '"What secret? I do -not- have a secret! It was a slip of the'
+ db ' tongue. I cannot really speak to anyone about it. Why, if w'
+ db 'ord got out that the Mayor and I... I mean, uhm, -may- I... '
+ db 'er, ask thee to forget that I said anything?"~~Candice turns'
+ db ' beet red and turns away.*'
+L0E66: db 00
+L0E67: db 'bye'
+L0E6A: db 00
+L0E6B: db '"Good day, Avatar."*'
+L0E7F: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0003H
+  .extern 08FCH
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 35 02   jne 023D
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F D7 FF   pushi FFD7H   ; -41
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1F D7 FF   pushi FFD7H   ; -41
+0015: 38 1B 00 01  callis 001B, 1
+0019: 38 1C 00 01  callis 001C, 1
+001D: 12 00 00   pop [0000]
+0020: 38 67 00 00  callis 0067, 0
+0024: 12 01 00   pop [0001]
+0027: 38 3B 00 00  callis 003B, 0
+002B: 12 02 00   pop [0002]
+002E: 21 02 00   push [0002]
+0031: 1F 07 00   pushi 0007H   ; 7
+0034: 22   cmpeq
+0035: 05 2F 00   jne 0067
+0038: 1F E6 FF   pushi FFE6H   ; -26
+003B: 1F D7 FF   pushi FFD7H   ; -41
+003E: 24 00 00   call [0000]   ; 08FCH
+0041: 12 03 00   pop [0003]
+0044: 21 03 00   push [0003]
+0047: 05 08 00   jne 0052
+004A: 1C 00 00   addsi L0000   ; Candice is listen...
+004D: 33   say
+004E: 3F   abrt
+004F: 06 15 00   jmp 0067
+0052: 42 DA 00   pushf flag:[00DA]
+0055: 05 0A 00   jne 0062
+0058: 1C 3A 00   addsi L003A   ; "Hast thou seen B...
+005B: 33   say
+005C: 06 08 00   jmp 0067
+005F: 06 05 00   jmp 0067
+0062: 1C 83 00   addsi L0083   ; "Oh! I must not s...
+0065: 33   say
+0066: 3F   abrt
+0067: 1D D2 00   pushs L00D2   ; bye
+006A: 1D D6 00   pushs L00D6   ; job
+006D: 1D DA 00   pushs L00DA   ; name
+0070: 1E 03 00   arrc 0003H   ; 3
+0073: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0077: 42 AA 00   pushf flag:[00AA]
+007A: 10   not
+007B: 05 0F 00   jne 008D
+007E: 1C DF 00   addsi L00DF   ; This is a bright ...
+0081: 33   say
+0082: 1C 23 01   addsi L0123   ; "Well! Thy reputa...
+0085: 33   say
+0086: 13   push true
+0087: 43 AA 00   popf flag:[00AA]
+008A: 06 2C 00   jmp 00B9
+008D: 21 02 00   push [0002]
+0090: 1F 00 00   pushi 0000H   ; 0
+0093: 22   cmpeq
+0094: 05 1E 00   jne 00B5
+0097: 1F D5 FF   pushi FFD5H   ; -43
+009A: 24 01 00   call [0001]   ; 08F7H
+009D: 12 04 00   pop [0004]
+00A0: 21 04 00   push [0004]
+00A3: 05 08 00   jne 00AE
+00A6: 1C 8A 01   addsi L018A   ; Candice looks gui...
+00A9: 33   say
+00AA: 3F   abrt
+00AB: 06 04 00   jmp 00B2
+00AE: 1C 1C 02   addsi L021C   ; "Yes, Avatar?" Ca...
+00B1: 33   say
+00B2: 06 04 00   jmp 00B9
+00B5: 1C 39 02   addsi L0239   ; "Yes, Avatar?" Ca...
+00B8: 33   say
+00B9: 04 7C 01   je 0238
+00BC: 1D 56 02   pushs L0256   ; name
+00BF: 07 01 00 0B 00  cmps 0001H, 00CF
+00C4: 1C 5B 02   addsi L025B   ; "My name is Candi...
+00C7: 33   say
+00C8: 1D C0 02   pushs L02C0   ; name
+00CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CF: 1D C5 02   pushs L02C5   ; job
+00D2: 07 01 00 2D 00  cmps 0001H, 0104
+00D7: 1C C9 02   addsi L02C9   ; "I am the curator...
+00DA: 33   say
+00DB: 21 00 00   push [0000]
+00DE: 1F 07 00   pushi 0007H   ; 7
+00E1: 22   cmpeq
+00E2: 05 07 00   jne 00EC
+00E5: 1C F0 02   addsi L02F0   ; "Feel free to ask...
+00E8: 33   say
+00E9: 06 04 00   jmp 00F0
+00EC: 1C 1D 03   addsi L031D   ; "I hope to see th...
+00EF: 33   say
+00F0: 1C 50 03   addsi L0350   ; "I spend the rest...
+00F3: 33   say
+00F4: 1D 8B 03   pushs L038B   ; Fellowship
+00F7: 1D 96 03   pushs L0396   ; exhibits
+00FA: 1D 9F 03   pushs L039F   ; Royal Museum
+00FD: 1E 03 00   arrc 0003H   ; 3
+0100: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0104: 1D AC 03   pushs L03AC   ; Royal Museum
+0107: 07 01 00 18 00  cmps 0001H, 0124
+010C: 1C B9 03   addsi L03B9   ; "It has been in B...
+010F: 33   say
+0110: 1D 23 04   pushs L0423   ; Royal Museum
+0113: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0117: 1D 30 04   pushs L0430   ; works of art
+011A: 1D 3D 04   pushs L043D   ; artifacts
+011D: 1E 02 00   arrc 0002H   ; 2
+0120: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0124: 1D 47 04   pushs L0447   ; exhibits
+0127: 07 01 00 23 00  cmps 0001H, 014F
+012C: 21 00 00   push [0000]
+012F: 1F 07 00   pushi 0007H   ; 7
+0132: 22   cmpeq
+0133: 05 0E 00   jne 0144
+0136: 1C 50 04   addsi L0450   ; "We have just ope...
+0139: 33   say
+013A: 1D BF 04   pushs L04BF   ; Avatar artifacts
+013D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0141: 06 04 00   jmp 0148
+0144: 1C D0 04   addsi L04D0   ; "Come to the muse...
+0147: 33   say
+0148: 1D F6 04   pushs L04F6   ; exhibits
+014B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014F: 1D FF 04   pushs L04FF   ; artifacts
+0152: 07 01 00 0B 00  cmps 0001H, 0162
+0157: 1C 09 05   addsi L0509   ; "There are relics...
+015A: 33   say
+015B: 1D 87 05   pushs L0587   ; artifacts
+015E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0162: 1D 91 05   pushs L0591   ; Avatar artifacts
+0165: 07 01 00 39 00  cmps 0001H, 01A3
+016A: 1C A2 05   addsi L05A2   ; "Well, thou surel...
+016D: 33   say
+016E: 1F FF FF   pushi FFFFH   ; -1
+0171: 24 01 00   call [0001]   ; 08F7H
+0174: 12 05 00   pop [0005]
+0177: 21 05 00   push [0005]
+017A: 05 1F 00   jne 019C
+017D: 1F 00 00   pushi 0000H   ; 0
+0180: 1F FF FF   pushi FFFFH   ; -1
+0183: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0187: 1C 6E 07   addsi L076E   ; Iolo whispers to ...
+018A: 33   say
+018B: 1F FF FF   pushi FFFFH   ; -1
+018E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0192: 1F 00 00   pushi 0000H   ; 0
+0195: 1F D7 FF   pushi FFD7H   ; -41
+0198: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+019C: 1D 88 08   pushs L0888   ; Avatar artifacts
+019F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A3: 1D 99 08   pushs L0899   ; works of art
+01A6: 07 01 00 0B 00  cmps 0001H, 01B6
+01AB: 1C A6 08   addsi L08A6   ; "Britannia is pro...
+01AE: 33   say
+01AF: 1D 72 09   pushs L0972   ; works of art
+01B2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B6: 1D 7F 09   pushs L097F   ; Fellowship
+01B9: 07 01 00 2A 00  cmps 0001H, 01E8
+01BE: 21 01 00   push [0001]
+01C1: 10   not
+01C2: 05 07 00   jne 01CC
+01C5: 1C 8A 09   addsi L098A   ; "We meet every ev...
+01C8: 33   say
+01C9: 06 04 00   jmp 01D0
+01CC: 1C C8 09   addsi L09C8   ; "Thou must know a...
+01CF: 33   say
+01D0: 1C 17 0A   addsi L0A17   ; "The Fellowship h...
+01D3: 33   say
+01D4: 1D E5 0A   pushs L0AE5   ; Fellowship
+01D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DB: 1D F0 0A   pushs L0AF0   ; secret
+01DE: 1D F7 0A   pushs L0AF7   ; purpose
+01E1: 1E 02 00   arrc 0002H   ; 2
+01E4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E8: 1D FF 0A   pushs L0AFF   ; purpose
+01EB: 07 01 00 12 00  cmps 0001H, 0202
+01F0: 1C 07 0B   addsi L0B07   ; "I want to attain...
+01F3: 33   say
+01F4: 1D 82 0B   pushs L0B82   ; purpose
+01F7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FB: 1D 8A 0B   pushs L0B8A   ; voice
+01FE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0202: 1D 90 0B   pushs L0B90   ; voice
+0205: 07 01 00 0F 00  cmps 0001H, 0219
+020A: 1C 96 0B   addsi L0B96   ; "Dost thou not kn...
+020D: 33   say
+020E: 1D 4F 0D   pushs L0D4F   ; voice
+0211: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0215: 13   push true
+0216: 43 8C 00   popf flag:[008C]
+0219: 1D 55 0D   pushs L0D55   ; secret
+021C: 07 01 00 09 00  cmps 0001H, 022A
+0221: 1C 5C 0D   addsi L0D5C   ; "What secret? I d...
+0224: 33   say
+0225: 13   push true
+0226: 43 80 00   popf flag:[0080]
+0229: 3F   abrt
+022A: 1D 67 0E   pushs L0E67   ; bye
+022D: 07 01 00 03 00  cmps 0001H, 0235
+0232: 06 03 00   jmp 0238
+0235: 06 81 FE   jmp 00B9
+0238: 40   db 40 ???
+0239: 1C 6B 0E   addsi L0E6B   ; "Good day, Avatar."*
+023C: 33   say
+023D: 48   push eventid
+023E: 1F 00 00   pushi 0000H   ; 0
+0241: 22   cmpeq
+0242: 05 06 00   jne 024B
+0245: 1F D7 FF   pushi FFD7H   ; -41
+0248: 24 02 00   call [0002]   ; 092EH
+024B: 25   ret

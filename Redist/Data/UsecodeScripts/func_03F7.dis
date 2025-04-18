@@ -1,0 +1,172 @@
+  .funcnumber 03F7H ;* Golem
+  .data
+L0000: db '"Hast thou in thy possesion the book on the Stone of Castamb'
+ db 're?"'
+L0040: db 00
+L0041: db 'His eyes reveal his hope. As he takes the book from you, it '
+ db 'almost appears as if he is smiling."'
+L00A1: db 00
+L00A2: db '"That is, indeed, a pity," he says, shaking his head in sadn'
+ db 'ess.'
+L00E2: db 00
+L00E3: db '"Greetings to thee, honorable one. I can but assume that my '
+ db 'presence here was thy doing." It becomes quickly apparent th'
+ db 'at this creature possesses a greater capability for speech t'
+ db 'han his fallen companion.'
+L01B0: db 00
+L01B1: db 'The recently raised golem stares down at the prone, lifeless'
+ db ' body of Bollux. Quickly he looks up at you.~"Wh-what has ha'
+ db 'ppened?"'
+L0231: db 00
+L0232: db '"Now thou must excuse me, for I am off to find my fellow sen'
+ db 'try."*'
+L0274: db 00
+L0275: db '"Hail, friend. I hope that I may assist thee in some way."'
+L02AF: db 00
+L02B0: db '"Art thou here to aid me in healing my brother?"'
+L02E0: db 00
+L02E1: db '"Very good. I am pleased to call thee friend."'
+L030F: db 00
+L0310: db '"Then begone, for I have work to do!"*'
+L0336: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0007H
+  .extern 0893H
+  .extern 0892H
+  .extern 0931H
+  .extern 090AH
+  .extern 0891H
+  .extern 0890H
+  .extern 0894H  ;* Do this one first.
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 30 01   jne 0138
+0008: 1F 04 00   pushi 0004H   ; 4
+000B: 1F F3 00   pushi 00F3H   ; 243
+000E: 1F 1D 03   pushi 031DH   ; 797
+0011: 3E   push itemref
+0012: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+0016: 05 F3 00   jne 010C
+0019: 1F 00 00   pushi 0000H   ; 0
+001C: 1F E0 FE   pushi FEE0H   ; -288
+001F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0023: 42 28 03   pushf flag:[0328]
+0026: 05 03 00   jne 002C
+0029: 24 00 00   call [0000]   ; 0893H
+002C: 42 1C 03   pushf flag:[031C]
+002F: 10   not
+0030: 05 03 00   jne 0036
+0033: 24 01 00   call [0001]   ; 0892H
+0036: 42 1F 03   pushf flag:[031F]
+0039: 05 3A 00   jne 0076
+003C: 42 22 03   pushf flag:[0322]
+003F: 10   not
+0040: 05 33 00   jne 0076
+0043: 1F 99 FE   pushi FE99H   ; -359
+0046: 1F 90 00   pushi 0090H   ; 144
+0049: 1F 82 02   pushi 0282H   ; 642
+004C: 1F 01 00   pushi 0001H   ; 1
+004F: 1F 9B FE   pushi FE9BH   ; -357
+0052: 24 02 00   call [0002]   ; 0931H
+0055: 12 00 00   pop [0000]
+0058: 21 00 00   push [0000]
+005B: 05 18 00   jne 0076
+005E: 1C 00 00   addsi L0000   ; "Hast thou in thy...
+0061: 33   say
+0062: 24 03 00   call [0003]   ; 090AH
+0065: 05 0A 00   jne 0072
+0068: 1C 41 00   addsi L0041   ; His eyes reveal h...
+006B: 33   say
+006C: 24 04 00   call [0004]   ; 0891H
+006F: 06 04 00   jmp 0076
+0072: 1C A2 00   addsi L00A2   ; "That is, indeed,...
+0075: 33   say
+0076: 42 14 03   pushf flag:[0314]
+0079: 10   not
+007A: 05 5F 00   jne 00DC
+007D: 1C E3 00   addsi L00E3   ; "Greetings to the...
+0080: 33   say
+0081: 42 1C 03   pushf flag:[031C]
+0084: 05 49 00   jne 00D0
+0087: 1F 00 00   pushi 0000H   ; 0
+008A: 1F 28 00   pushi 0028H   ; 40
+008D: 1F 9E 01   pushi 019EH   ; 414
+0090: 1F 9C FE   pushi FE9CH   ; -356
+0093: 38 35 00 04  callis 0035, 4
+0097: 12 01 00   pop [0001]
+009A: 2E   sloop
+009B: 02 02 00 03 00 04 00 01 00 27 00  db 2 ???
+009C:   db 2
+009D:   db 0
+009E:   db 3
+009F:   db 0
+00A0:   db 4
+00A1:   db 0
+00A2:   db 1
+00A3:   db 0
+00A4:   db 27
+00A5:   db 0
+00A6: 21 04 00   push [0004]
+00A9: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+00AD: 12 05 00   pop [0005]
+00B0: 21 05 00   push [0005]
+00B3: 1F 04 00   pushi 0004H   ; 4
+00B6: 22   cmpeq
+00B7: 21 05 00   push [0005]
+00BA: 1F 05 00   pushi 0005H   ; 5
+00BD: 22   cmpeq
+00BE: 0F   or
+00BF: 05 08 00   jne 00CA
+00C2: 1C B1 01   addsi L01B1   ; The recently rais...
+00C5: 33   say
+00C6: 24 05 00   call [0005]   ; 0890H
+00C9: 2C   db 2c ???
+00CA: 06 CE FF   jmp 009B
+00CD: 06 09 00   jmp 00D9
+00D0: 1C 32 02   addsi L0232   ; "Now thou must ex...
+00D3: 33   say
+00D4: 13   push true
+00D5: 43 14 03   popf flag:[0314]
+00D8: 3F   abrt
+00D9: 06 2D 00   jmp 0109
+00DC: 42 1E 03   pushf flag:[031E]
+00DF: 05 0A 00   jne 00EC
+00E2: 1C 75 02   addsi L0275   ; "Hail, friend. I ...
+00E5: 33   say
+00E6: 24 05 00   call [0005]   ; 0890H
+00E9: 06 1D 00   jmp 0109
+00EC: 1C B0 02   addsi L02B0   ; "Art thou here to...
+00EF: 33   say
+00F0: 24 03 00   call [0003]   ; 090AH
+00F3: 05 0E 00   jne 0104
+00F6: 1C E1 02   addsi L02E1   ; "Very good. I am ...
+00F9: 33   say
+00FA: 13   push true
+00FB: 43 1E 03   popf flag:[031E]
+00FE: 24 05 00   call [0005]   ; 0890H
+0101: 06 05 00   jmp 0109
+0104: 1C 10 03   addsi L0310   ; "Then begone, for...
+0107: 33   say
+0108: 3F   abrt
+0109: 06 2C 00   jmp 0138
+010C: 1F 04 00   pushi 0004H   ; 4
+010F: 1F F4 00   pushi 00F4H   ; 244
+0112: 1F 1D 03   pushi 031DH   ; 797
+0115: 3E   push itemref
+0116: 38 2A 00 04  callis _GetContainerItems@4  ; 002A
+011A: 1F B0 00   pushi 00B0H   ; 176
+011D: 1F 01 00   pushi 0001H   ; 1
+0120: 1F 1D 03   pushi 031DH   ; 797
+0123: 3E   push itemref
+0124: 38 35 00 04  callis 0035, 4
+0128: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+012C: 1F F4 00   pushi 00F4H   ; 244
+012F: 22   cmpeq
+0130: 0F   or
+0131: 05 04 00   jne 0138
+0134: 3E   push itemref
+0135: 24 06 00   call [0006]   ; 0894H
+0138: 25   ret

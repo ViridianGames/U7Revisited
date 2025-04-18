@@ -1,0 +1,1369 @@
+  .funcnumber 0417H
+  .data
+L0000: db '"Fool!! What possessed thee to cast that damned Armageddon S'
+ db 'pell? I knew it was dangerous! Thou didst know it was danger'
+ db 'ous!! Now look at us! We are all alone on the entire planet!'
+ db ' Britannia is ruined! What kind of Avatar art thou!?! Now, w'
+ db 'ith no Moongates working, we are both forced to spend eterni'
+ db 'ty in this blasted wasteland!~~"Of course, it could be viewe'
+ db 'd as a clever solution to all of our problems. After all, no'
+ db 't even this so-called Guardian would want Britannia now!"*'
+L01DE: db 00
+L01DF: db '"I felt the passing of the remains of Exodus from this realm'
+ db '. It has lifted a great weight from my shoulders. And so Ava'
+ db 'tar, I cannot let this accomplishment go unrewarded. Please '
+ db 'kneel, my friend." Lord British holds out his hands as you o'
+ db 'bey his command.'
+L02DF: db 00
+L02E0: db 'rumble'
+L02E6: db 00
+L02E7: db 'Fellowship'
+L02F1: db 00
+L02F2: db 'bye'
+L02F5: db 00
+L02F6: db 'job'
+L02F9: db 00
+L02FA: db 'name'
+L02FE: db 00
+L02FF: db 'Orb of the Moons'
+L030F: db 00
+L0310: db 'Weston'
+L0316: db 00
+L0317: db 'heal'
+L031B: db 00
+L031C: db 'The Guardian'
+L0328: db 00
+L0329: db 'The Guardian'
+L0335: db 00
+L0336: db 'You see your old friend Lord British, looking a bit older th'
+ db 'an when you last saw him. His eyes gleam at the sight of you'
+ db '.~~"Welcome, my friend," he says, embracing you. "Please. Te'
+ db 'll me what brings thee to Britannia! Or, more importantly, w'
+ db 'hat 'brought' thee here?"'
+L043F: db 00
+L0440: db 'Orb of the Moons'
+L0450: db 00
+L0451: db 'red Moongate'
+L045D: db 00
+L045E: db '"Yes, '
+L0464: db 00
+L0465: db '?" Lord British asks.'
+L047A: db 00
+L047B: db 'name'
+L047F: db 00
+L0480: db 'Lord British laughs. "What, art thou joking, Avatar? Dost th'
+ db 'ou not recognize thine old friend?"'
+L04DF: db 00
+L04E0: db 'name'
+L04E4: db 00
+L04E5: db 'job'
+L04E8: db 00
+L04E9: db 'Lord British rolls his eyes. "Must we go through this formal'
+ db 'ity?" He laughs, shaking his head.'
+L0547: db 00
+L0548: db '"Very well. As thou well knowest, I am sovereign of Britanni'
+ db 'a and have been for some time now. Even though I come from t'
+ db 'hine homeland, I have chosen to live my life here."'
+L05F3: db 00
+L05F4: db 'homeland'
+L05FC: db 00
+L05FD: db 'Britannia'
+L0606: db 00
+L0607: db 'homeland'
+L060F: db 00
+L0610: db '"I know that it has been many a year since I visited our Ear'
+ db 'th, but surely thou dost remember that the two of us hail fr'
+ db 'om the same time and place? And, as brothers in origin, thou'
+ db ' shouldst also remember that thou canst ask me for aid at an'
+ db 'y time thou mightest require it."'
+L0721: db 00
+L0722: db 'homeland'
+L072A: db 00
+L072B: db 'aid'
+L072E: db 00
+L072F: db 'aid'
+L0732: db 00
+L0733: db '"Do not forget, Avatar, that I have the power to heal thee. '
+ db 'That is one bit of magic that still seems to work for me. An'
+ db 'd I could probably provide thee with some equipment and a sp'
+ db 'ellbook."'
+L07F0: db 00
+L07F1: db 'spellbook'
+L07FA: db 00
+L07FB: db 'equipment'
+L0804: db 00
+L0805: db 'heal'
+L0809: db 00
+L080A: db 'aid'
+L080D: db 00
+L080E: db 'Britannia'
+L0817: db 00
+L0818: db '"The state of the land could not be more prosperous. Dost th'
+ db 'ou realize that thou hast been away for 200 Britannian years'
+ db '?" Lord British wags a finger at you.~~ "I am certain that t'
+ db 'hy friends have rued thine absence. 'Tis a shame thou didst '
+ db 'stay away so long! But... I am so very happy to see thee. Br'
+ db 'itannia is prosperous and abundant. Look around thee. Explor'
+ db 'e the newly refurbished castle. Travel the land. Peace is pr'
+ db 'ominent in all quarters.~~"Yes, Britannia has never been bet'
+ db 'ter. Well, almost never."'
+L0A11: db 00
+L0A12: db 'Britannia'
+L0A1B: db 00
+L0A1C: db 'almost never'
+L0A28: db 00
+L0A29: db 'castle'
+L0A2F: db 00
+L0A30: db 'friends'
+L0A37: db 00
+L0A38: db 'magic'
+L0A3D: db 00
+L0A3E: db 'almost never'
+L0A4A: db 00
+L0A4B: db '"Well, 'things' are indeed fine. It is the 'people' I am con'
+ db 'cerned about.~~"There is something wrong in Britannia, but I'
+ db ' do not know what it is. Something is hanging over the heads'
+ db ' of the Britannian people. They are unhappy. One can see it '
+ db 'in their eyes. There is nothing that is unifying the populat'
+ db 'ion, since there has been peace for so long.~~"Perhaps thou '
+ db 'couldst determine what is happening. I implore thee to go ou'
+ db 't amongst the people. Watch them in their daily tasks. Speak'
+ db ' with them. Work with them. Break bread with them. Perhaps t'
+ db 'hey need someone like the Avatar to take an interest in thei'
+ db 'r lives."'
+L0CAC: db 00
+L0CAD: db 'almost never'
+L0CB9: db 00
+L0CBA: db 'red Moongate'
+L0CC6: db 00
+L0CC7: db 'You relate the story of how a red Moongate appeared behind y'
+ db 'our house and mysteriously took you to Trinsic.~~Lord Britis'
+ db 'h's brow creases as you speak. Finally he says, "I did not s'
+ db 'end the red Moongate to fetch thee. Someone or something mus'
+ db 't have activated that Moongate. And that is strange indeed, '
+ db 'because we have been having a bit of trouble with Moongates '
+ db 'as of late. In fact, we have been having trouble with magic '
+ db 'in general!"'
+L0E77: db 00
+L0E78: db 'red Moongate'
+L0E84: db 00
+L0E85: db 'Moongates'
+L0E8E: db 00
+L0E8F: db 'magic'
+L0E94: db 00
+L0E95: db 'Orb of the Moons'
+L0EA5: db 00
+L0EA6: db '"Mine has not worked since the troubles with magic began. In'
+ db ' fact, none of the Moongates have been working reliably for '
+ db 'quite a while!'
+L0F2C: db 00
+L0F2D: db '"Didst thou bring thine Orb of the Moons?"'
+L0F57: db 00
+L0F58: db '"Really? Where is it? Thou dost not have it on thee! '
+L0F8D: db 00
+L0F8E: db '"I see. '
+L0F96: db 00
+L0F97: db '"Hmmm. Thou might be stranded in Britannia. Here. Why not tr'
+ db 'y mine? I shall let thee borrow it. Perhaps it will work for'
+ db ' thee. Be careful, though. The Moongates have become dangero'
+ db 'us."'
+L104F: db 00
+L1050: db 'Lord British hands you his Orb of the Moons.'
+L107C: db 00
+L107D: db '"Thine hands are too full to take the Orb!"'
+L10A8: db 00
+L10A9: db 'Orb of the Moons'
+L10B9: db 00
+L10BA: db 'Moongates'
+L10C3: db 00
+L10C4: db 'magic'
+L10C9: db 00
+L10CA: db 'castle'
+L10D0: db 00
+L10D1: db '"Yes, it has been redecorated since thy last visit. The arch'
+ db 'itects and workers did a splendid job."~~The ruler leans tow'
+ db 'ard you with a sour look on his face.~~ "The only mar in the'
+ db ' entire complex is that damn nursery!"'
+L11AB: db 00
+L11AC: db 'castle'
+L11B2: db 00
+L11B3: db 'nursery'
+L11BA: db 00
+L11BB: db 'nursery'
+L11C2: db 00
+L11C3: db '"I will not go near the place! Kings and dirty diapers do no'
+ db 't mix. The Great Council talked me into implementing the nur'
+ db 'sery after several of my staff started having families. Alth'
+ db 'ough it was probably a necessity, I shall pretend it does no'
+ db 't exist!"'
+L12BC: db 00
+L12BD: db 'nursery'
+L12C4: db 00
+L12C5: db 'Trinsic'
+L12CC: db 00
+L12CD: db '"I have not been down there in many years. Has something hap'
+ db 'pened there?"'
+L1316: db 00
+L1317: db 'Trinsic'
+L131E: db 00
+L131F: db 'nothing much'
+L132B: db 00
+L132C: db 'a murder'
+L1334: db 00
+L1335: db 'nothing much'
+L1341: db 00
+L1342: db '"Indeed. Then it seems that Trinsic has not changed much sin'
+ db 'ce I saw it last." His eyes twinkle.'
+L13A2: db 00
+L13A3: db 'nothing much'
+L13AF: db 00
+L13B0: db 'a murder'
+L13B8: db 00
+L13B9: db '"Murder? In Trinsic?" The ruler looks concerned.~~"I have he'
+ db 'ard nothing about it. Art thou investigating it?"'
+L1426: db 00
+L1427: db '"Very good. It pleases me that thou art concerned about my p'
+ db 'eople."'
+L146A: db 00
+L146B: db '"Ah, but perhaps thou shouldst!"'
+L148B: db 00
+L148C: db 'The king pauses a moment. "Now that thou dost mention it, I '
+ db 'have had reports of other similar murders in the past few mo'
+ db 'nths. In fact, there was one here in Britain three or four y'
+ db 'ears ago. The body was mutilated in a ritualistic fashion. A'
+ db 'pparently there is a maddened killer on the loose. But I hav'
+ db 'e no doubt that someone such as thee, Avatar, can find him!"'
+L15F4: db 00
+L15F5: db 'a murder'
+L15FD: db 00
+L15FE: db 'killer'
+L1604: db 00
+L1605: db 'ritualistic'
+L1610: db 00
+L1611: db 'ritualistic'
+L161C: db 00
+L161D: db '"I do not recall many details. Thou shouldst ask Patterson, '
+ db 'the town mayor, about it. He may remember more."'
+L1689: db 00
+L168A: db 'ritualistic'
+L1695: db 00
+L1696: db 'killer'
+L169C: db 00
+L169D: db '"That is, of course, only an assumption on my part. But that'
+ db ' is all we have had to work with. Unless thou hast already u'
+ db 'ncovered some useful information?"'
+L1737: db 00
+L1738: db 'killer'
+L173E: db 00
+L173F: db 'Hook'
+L1743: db 00
+L1744: db 'Crown Jewel'
+L174F: db 00
+L1750: db 'Fellowship'
+L175A: db 00
+L175B: db '"They are an extremely useful and productive group of citize'
+ db 'ns. Thou shouldst most certainly visit the Fellowship Headqu'
+ db 'arters here in Britain and speak with Batlin. The Fellowship'
+ db ' has done many good deeds throughout Britannia, including fe'
+ db 'eding the poor, educating and helping those in need, and pro'
+ db 'moting general good will and peace."'
+L18AB: db 00
+L18AC: db 'Fellowship'
+L18B6: db 00
+L18B7: db 'Headquarters'
+L18C3: db 00
+L18C4: db 'Batlin'
+L18CA: db 00
+L18CB: db 'Headquarters'
+L18D7: db 00
+L18D8: db '"Yes, it is not far from the castle, to the southwest. It is'
+ db ' just south of the theatre."'
+L1930: db 00
+L1931: db 'Headquarters'
+L193D: db 00
+L193E: db 'Batlin'
+L1944: db 00
+L1945: db '"He is a druid who began The Fellowship about twenty years a'
+ db 'go. He is highly intelligent, and is a warm and gentle human'
+ db ' being."'
+L19C5: db 00
+L19C6: db 'Batlin'
+L19CC: db 00
+L19CD: db 'Hook'
+L19D1: db 00
+L19D2: db '"A man with a hook?" The king rubs his chin.~~"No, I do not '
+ db 'recall ever meeting a man with a hook."'
+L1A35: db 00
+L1A36: db 'Hook'
+L1A3A: db 00
+L1A3B: db 'Crown Jewel'
+L1A46: db 00
+L1A47: db '"I am afraid I cannot possibly know of every ship that comes'
+ db ' through our ports. Thou shouldst check with Clint the Shipw'
+ db 'right if thou hast not done so."'
+L1ADF: db 00
+L1AE0: db 'Crown Jewel'
+L1AEB: db 00
+L1AEC: db 'friends'
+L1AF3: db 00
+L1AF4: db '"Thou must mean Iolo, Shamino, and Dupre, of course."'
+L1B29: db 00
+L1B2A: db 'friends'
+L1B31: db 00
+L1B32: db 'Dupre'
+L1B37: db 00
+L1B38: db 'Shamino'
+L1B3F: db 00
+L1B40: db 'Iolo'
+L1B44: db 00
+L1B45: db 'Iolo'
+L1B49: db 00
+L1B4A: db '"I have seen our friend rarely over the years. I understand '
+ db 'he has been spending most of his time in Trinsic."'
+L1BB8: db 00
+L1BB9: db '"Hello, Iolo! How art thou?"*'
+L1BD6: db 00
+L1BD7: db '"I am well, my liege! 'Tis good to see thee!"*'
+L1C05: db 00
+L1C06: db 'Iolo'
+L1C0A: db 00
+L1C0B: db 'Trinsic'
+L1C12: db 00
+L1C13: db 'Shamino'
+L1C1A: db 00
+L1C1B: db '"That rascal does not come around very often, though I under'
+ db 'stand he spends most of his time in Britain these days!"'
+L1C8F: db 00
+L1C90: db '"What dost thou have to say for thyself, Shamino?"*'
+L1CC3: db 00
+L1CC4: db '"Mine apologies, milord," Shamino says.*'
+L1CEC: db 00
+L1CED: db '"What's this I hear of a woman? An actress? Hmmmm?"*'
+L1D21: db 00
+L1D22: db 'Shamino blushes and shuffles his feet.*'
+L1D49: db 00
+L1D4A: db '"I suspected as much!" the ruler says, laughing.'
+L1D7A: db 00
+L1D7B: db 'Shamino'
+L1D82: db 00
+L1D83: db 'Dupre'
+L1D88: db 00
+L1D89: db '"I have not seen that one since I knighted him. Typical -- I'
+ db ' do the man a favor and he disappears! I heard he might be i'
+ db 'n Jhelom."'
+L1E0B: db 00
+L1E0C: db '"Where hast thou been, Sir Dupre?"*'
+L1E2F: db 00
+L1E30: db '"Oh, here and there, milord," the fighter replies.*'
+L1E63: db 00
+L1E64: db '"I have very few friends from our homeland here in Britannia'
+ db '. Thou must make a point to visit more often! Especially sin'
+ db 'ce thou art a knight!"*'
+L1EF3: db 00
+L1EF4: db '"If thou dost wish it, milord," Dupre says, bowing.*'
+L1F28: db 00
+L1F29: db 'Dupre'
+L1F2E: db 00
+L1F2F: db 'Jhelom'
+L1F35: db 00
+L1F36: db 'Jhelom'
+L1F3C: db 00
+L1F3D: db '"A rather violent place, by all accounts. I have not had the'
+ db ' pleasure of a visit in quite a while."'
+L1FA0: db 00
+L1FA1: db 'Jhelom'
+L1FA7: db 00
+L1FA8: db 'magic'
+L1FAD: db 00
+L1FAE: db '"Something is awry. Magic has not been working for the longe'
+ db 'st time. I even have trouble creating food with magic! It mu'
+ db 'st be something to do with the magical ether.~~"There are th'
+ db 'ose who say that magic is dying, what with the trouble with '
+ db 'the Moongates and the situation with Nystul. I am beginning '
+ db 'to suspect that they might be right!"'
+L20FF: db 00
+L2100: db 'Lord British studies you a moment.'
+L2122: db 00
+L2123: db '"Perhaps magic will work much better for thee. Thou hast not'
+ db ' been in Britannia long. It is possible that whatever has af'
+ db 'fected magic has not made its mark upon thee yet. Please try'
+ db ' it. A spellbook is stored with the rest of thine equipment.'
+ db '"'
+L2214: db 00
+L2215: db 'magic'
+L221A: db 00
+L221B: db 'equipment'
+L2224: db 00
+L2225: db 'spellbook'
+L222E: db 00
+L222F: db 'Nystul'
+L2235: db 00
+L2236: db 'Moongates'
+L223F: db 00
+L2240: db 'Nystul'
+L2246: db 00
+L2247: db '"Er... try talking to him."'
+L2262: db 00
+L2263: db 'The king lowers his voice.~~"He is acting oddly, isn't he? S'
+ db 'omething has happened to his mind. He doesn't seem to be abl'
+ db 'e to concentrate on magic anymore."'
+L22FE: db 00
+L22FF: db '"He is beginning to act much more normally."'
+L232B: db 00
+L232C: db 'Nystul'
+L2332: db 00
+L2333: db 'Moongates'
+L233C: db 00
+L233D: db '"The Moongates are not functioning! We cannot use them as we'
+ db ' have in the past. Not only are they dysfunctional, they are'
+ db ', in fact, dangerous! One of my trusted sages used mine own '
+ db 'Orb of the Moons to travel to the Shrine of Humility, and hi'
+ db 's body did shatter upon entering the gate! If only that mage'
+ db ' in Cove hadn't gone mad!"'
+L2483: db 00
+L2484: db 'Moongates'
+L248D: db 00
+L248E: db 'Cove'
+L2492: db 00
+L2493: db 'mad mage'
+L249B: db 00
+L249C: db 'mad mage'
+L24A4: db 00
+L24A5: db 'The ruler leans forward and speaks quietly.~~"There is a mad'
+ db ' mage in Cove by the name of Rudyom. Dost thou remember him?'
+ db ' Rudyom was working with a magical substance called 'blackro'
+ db 'ck'. Before he went mad, he claimed that this mineral could '
+ db 'solve the problems of the Moongates. I suggest that thou sho'
+ db 'uldst go to Cove and find him. Try to learn what it was he w'
+ db 'as doing with this blackrock material. It could be our only '
+ db 'hope."'
+L264F: db 00
+L2650: db 'mad mage'
+L2658: db 00
+L2659: db 'Rudyom'
+L265F: db 00
+L2660: db 'Rudyom'
+L2666: db 00
+L2667: db '"He was a brilliant and respected mage. But something happen'
+ db 'ed to him in recent years. He seemed to go completely senile'
+ db '."'
+L26E1: db 00
+L26E2: db 'Suddenly, something jars Lord British's memory. "I wonder if'
+ db ' there is a connection with what happened to Rudyom and what'
+ db ' has befallen Nystul!"'
+L2770: db 00
+L2771: db 'Rudyom'
+L2777: db 00
+L2778: db 'Cove'
+L277C: db 00
+L277D: db '"Surely thou dost remember Cove. It is a very pleasant town '
+ db 'to the east of Britain. Quite relaxing."'
+L27E1: db 00
+L27E2: db 'Cove'
+L27E6: db 00
+L27E7: db 'The Guardian'
+L27F3: db 00
+L27F4: db '"I do not know of a 'Guardian'. Art thou sure he really exis'
+ db 'ts? Thou shouldst investigate further."'
+L2857: db 00
+L2858: db 'The Guardian'
+L2864: db 00
+L2865: db 'spellbook'
+L286E: db 00
+L286F: db '"Yes, I have a spellbook stored away with the rest of the eq'
+ db 'uipment."'
+L28B4: db 00
+L28B5: db 'spellbook'
+L28BE: db 00
+L28BF: db 'equipment'
+L28C8: db 00
+L28C9: db '"Thou art welcome to any of mine equipment. I keep it in a l'
+ db 'ocked storeroom here in the castle. Thou wilt find the key i'
+ db 'n my study."'
+L294D: db 00
+L294E: db 'equipment'
+L2957: db 00
+L2958: db 'study'
+L295D: db 00
+L295E: db 'storeroom'
+L2967: db 00
+L2968: db 'storeroom'
+L2971: db 00
+L2972: db '"I am sure thou canst find it."~~The ruler smiles slyly. "Co'
+ db 'nsider it something of a game!"'
+L29CD: db 00
+L29CE: db 'storeroom'
+L29D7: db 00
+L29D8: db 'study'
+L29DD: db 00
+L29DE: db '"'Tis in the western end of the castle."'
+L2A06: db 00
+L2A07: db 'study'
+L2A0C: db 00
+L2A0D: db 'heal'
+L2A11: db 00
+L2A12: db 'Weston'
+L2A18: db 00
+L2A19: db 'Lord British listens to your story about Weston. He looks co'
+ db 'ncerned.~~"I do not recall this case. Let me check... Hmmm..'
+ db '." He quickly scans a large scroll.~~"Imprisoned for the the'
+ db 'ft of one apple from the Royal Orchards... Ludicrous! Someon'
+ db 'e must have usurped mine authority. Thou mayest consider thi'
+ db 's man pardoned. An investigation will commence immediately i'
+ db 'nto the circumstances surrounding his arrest, and into this '
+ db 'fellow, Figg. My thanks to thee, Avatar."'
+L2BE6: db 00
+L2BE7: db 'Weston'
+L2BED: db 00
+L2BEE: db 'rumble'
+L2BF4: db 00
+L2BF5: db 'Lord British looks at you gravely, "The foundation of Britan'
+ db 'nia was shaken with the rising of an island. This event was '
+ db 'no random disaster, it was one of sorcerous intent."'
+L2CA1: db 00
+L2CA2: db 'island'
+L2CA8: db 00
+L2CA9: db 'rumble'
+L2CAF: db 00
+L2CB0: db 'island'
+L2CB6: db 00
+L2CB7: db '"Yes, '
+L2CBD: db 00
+L2CBE: db '. I felt a great disturbance in the ether when this island a'
+ db 'rose from the sea. The island is none other than the Isle of'
+ db ' Fire where thou defeated the Hellspawn Exodus."'
+L2D66: db 00
+L2D67: db 'Exodus'
+L2D6D: db 00
+L2D6E: db 'Isle of Fire'
+L2D7A: db 00
+L2D7B: db 'island'
+L2D81: db 00
+L2D82: db 'Isle of Fire'
+L2D8E: db 00
+L2D8F: db '"'
+L2D90: db 00
+L2D91: db ', thou shouldst know that when I created the shrines of the '
+ db 'Virtues, I also set upon this island three great shrines, de'
+ db 'dicated to the Priciples of Truth, Love, and Courage.'
+L2E3E: db 00
+L2E3F: db 'They reside within the walls of the Castle of Fire. I never '
+ db 'revealed this to thee before as I thought them forever lost '
+ db 'when the Isle of Fire mysteriously sank beneath the waves.'
+L2EF1: db 00
+L2EF2: db 'The shrines are meant for the use of an Avatar only, and the'
+ db 'refore a talisman will be necessary to use one.'
+L2F5D: db 00
+L2F5E: db 'The talismans are guarded by tests that thou shouldst have n'
+ db 'o problem passing if thou wishest to seek thier counsel."'
+L2FD3: db 00
+L2FD4: db 'Isle of Fire'
+L2FE0: db 00
+L2FE1: db 'Exodus'
+L2FE7: db 00
+L2FE8: db '"Thy battle with that strange mixture of machine and spirit '
+ db 'is now legendary. Do be careful if thou art going to the isl'
+ db 'e, for the remains of that being now reside in one of the ch'
+ db 'ambers of the Castle of Fire."'
+L30BA: db 00
+L30BB: db 'Exodus'
+L30C1: db 00
+L30C2: db 'bye'
+L30C5: db 00
+L30C6: db '"Goodbye, '
+L30D0: db 00
+L30D1: db '. Do come back soon."*'
+L30E7: db 00
+L30E8: db '"I congratulate and thank thee, '
+L3108: db 00
+L3109: db '. Thy deeds continue to speak well of thee."'
+L3135: db 00
+  .code
+  .argc 0001H
+  .localc 0012H
+  .externsize 0008H
+  .extern 0908H
+  .extern 08F7H
+  .extern 090AH
+  .extern 0911H
+  .extern 08B4H
+  .extern 08B5H
+  .extern 092EH
+  .extern 092DH
+0000: 14   push false
+0001: 12 00 00   pop [0000]
+0004: 48   push eventid
+0005: 1F 01 00   pushi 0001H   ; 1
+0008: 22   cmpeq
+0009: 05 29 07   jne 0735
+000C: 24 00 00   call [0000]   ; 0908H
+000F: 12 01 00   pop [0001]
+0012: 42 1E 00   pushf flag:[001E]
+0015: 05 0F 00   jne 0027
+0018: 1F 00 00   pushi 0000H   ; 0
+001B: 1F E9 FF   pushi FFE9H   ; -23
+001E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0022: 1C 00 00   addsi L0000   ; "Fool!! What poss...
+0025: 33   say
+0026: 3F   abrt
+0027: 42 0C 03   pushf flag:[030C]
+002A: 05 1F 00   jne 004C
+002D: 42 0D 03   pushf flag:[030D]
+0030: 10   not
+0031: 05 15 00   jne 0049
+0034: 13   push true
+0035: 12 00 00   pop [0000]
+0038: 1F 00 00   pushi 0000H   ; 0
+003B: 1F E9 FF   pushi FFE9H   ; -23
+003E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0042: 1C DF 01   addsi L01DF   ; "I felt the passi...
+0045: 33   say
+0046: 06 FA 06   jmp 0743
+0049: 06 0E 00   jmp 005A
+004C: 42 FE 02   pushf flag:[02FE]
+004F: 10   not
+0050: 05 07 00   jne 005A
+0053: 1D E0 02   pushs L02E0   ; rumble
+0056: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+005E: 12 02 00   pop [0002]
+0061: 1F FF FF   pushi FFFFH   ; -1
+0064: 24 01 00   call [0001]   ; 08F7H
+0067: 12 03 00   pop [0003]
+006A: 1F FC FF   pushi FFFCH   ; -4
+006D: 24 01 00   call [0001]   ; 08F7H
+0070: 12 04 00   pop [0004]
+0073: 1F FD FF   pushi FFFDH   ; -3
+0076: 24 01 00   call [0001]   ; 08F7H
+0079: 12 05 00   pop [0005]
+007C: 1F 00 00   pushi 0000H   ; 0
+007F: 1F E9 FF   pushi FFE9H   ; -23
+0082: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0086: 14   push false
+0087: 12 06 00   pop [0006]
+008A: 14   push false
+008B: 12 07 00   pop [0007]
+008E: 14   push false
+008F: 12 08 00   pop [0008]
+0092: 1D E7 02   pushs L02E7   ; Fellowship
+0095: 1D F2 02   pushs L02F2   ; bye
+0098: 1D F6 02   pushs L02F6   ; job
+009B: 1D FA 02   pushs L02FA   ; name
+009E: 1E 04 00   arrc 0004H   ; 4
+00A1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A5: 42 DD 00   pushf flag:[00DD]
+00A8: 10   not
+00A9: 05 07 00   jne 00B3
+00AC: 1D FF 02   pushs L02FF   ; Orb of the Moons
+00AF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B3: 42 CD 00   pushf flag:[00CD]
+00B6: 42 CC 00   pushf flag:[00CC]
+00B9: 10   not
+00BA: 0E   and
+00BB: 05 07 00   jne 00C5
+00BE: 1D 10 03   pushs L0310   ; Weston
+00C1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C5: 42 D3 00   pushf flag:[00D3]
+00C8: 05 07 00   jne 00D2
+00CB: 1D 17 03   pushs L0317   ; heal
+00CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D2: 42 27 01   pushf flag:[0127]
+00D5: 05 07 00   jne 00DF
+00D8: 1D 1C 03   pushs L031C   ; The Guardian
+00DB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00DF: 42 D4 00   pushf flag:[00D4]
+00E2: 05 07 00   jne 00EC
+00E5: 1D 29 03   pushs L0329   ; The Guardian
+00E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EC: 42 98 00   pushf flag:[0098]
+00EF: 10   not
+00F0: 05 18 00   jne 010B
+00F3: 1C 36 03   addsi L0336   ; You see your old ...
+00F6: 33   say
+00F7: 13   push true
+00F8: 43 98 00   popf flag:[0098]
+00FB: 1D 40 04   pushs L0440   ; Orb of the Moons
+00FE: 1D 51 04   pushs L0451   ; red Moongate
+0101: 1E 02 00   arrc 0002H   ; 2
+0104: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0108: 06 0A 00   jmp 0115
+010B: 1C 5E 04   addsi L045E   ; "Yes, 
+010E: 2F 01 00   addsv [0001]
+0111: 1C 65 04   addsi L0465   ; ?" Lord British a...
+0114: 33   say
+0115: 04 12 06   je 072A
+0118: 1D 7B 04   pushs L047B   ; name
+011B: 07 01 00 0B 00  cmps 0001H, 012B
+0120: 1C 80 04   addsi L0480   ; Lord British laug...
+0123: 33   say
+0124: 1D E0 04   pushs L04E0   ; name
+0127: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012B: 1D E5 04   pushs L04E5   ; job
+012E: 07 01 00 15 00  cmps 0001H, 0148
+0133: 1C E9 04   addsi L04E9   ; Lord British roll...
+0136: 33   say
+0137: 1C 48 05   addsi L0548   ; "Very well. As th...
+013A: 33   say
+013B: 1D F4 05   pushs L05F4   ; homeland
+013E: 1D FD 05   pushs L05FD   ; Britannia
+0141: 1E 02 00   arrc 0002H   ; 2
+0144: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0148: 1D 07 06   pushs L0607   ; homeland
+014B: 07 01 00 12 00  cmps 0001H, 0162
+0150: 1C 10 06   addsi L0610   ; "I know that it h...
+0153: 33   say
+0154: 1D 22 07   pushs L0722   ; homeland
+0157: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015B: 1D 2B 07   pushs L072B   ; aid
+015E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0162: 1D 2F 07   pushs L072F   ; aid
+0165: 07 01 00 2A 00  cmps 0001H, 0194
+016A: 1C 33 07   addsi L0733   ; "Do not forget, A...
+016D: 33   say
+016E: 1D F1 07   pushs L07F1   ; spellbook
+0171: 1D FB 07   pushs L07FB   ; equipment
+0174: 1E 02 00   arrc 0002H   ; 2
+0177: 39 05 00 01  calli _AddAnswer@1  ; 0005
+017B: 42 D3 00   pushf flag:[00D3]
+017E: 10   not
+017F: 05 07 00   jne 0189
+0182: 1D 05 08   pushs L0805   ; heal
+0185: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0189: 13   push true
+018A: 43 D3 00   popf flag:[00D3]
+018D: 1D 0A 08   pushs L080A   ; aid
+0190: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0194: 1D 0E 08   pushs L080E   ; Britannia
+0197: 07 01 00 29 00  cmps 0001H, 01C5
+019C: 1C 18 08   addsi L0818   ; "The state of the...
+019F: 33   say
+01A0: 1D 12 0A   pushs L0A12   ; Britannia
+01A3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A7: 1D 1C 0A   pushs L0A1C   ; almost never
+01AA: 1D 29 0A   pushs L0A29   ; castle
+01AD: 1D 30 0A   pushs L0A30   ; friends
+01B0: 1E 03 00   arrc 0003H   ; 3
+01B3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B7: 42 66 00   pushf flag:[0066]
+01BA: 10   not
+01BB: 05 07 00   jne 01C5
+01BE: 1D 38 0A   pushs L0A38   ; magic
+01C1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01C5: 1D 3E 0A   pushs L0A3E   ; almost never
+01C8: 07 01 00 0B 00  cmps 0001H, 01D8
+01CD: 1C 4B 0A   addsi L0A4B   ; "Well, 'things' a...
+01D0: 33   say
+01D1: 1D AD 0C   pushs L0CAD   ; almost never
+01D4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D8: 1D BA 0C   pushs L0CBA   ; red Moongate
+01DB: 07 01 00 27 00  cmps 0001H, 0207
+01E0: 1C C7 0C   addsi L0CC7   ; You relate the st...
+01E3: 33   say
+01E4: 1D 78 0E   pushs L0E78   ; red Moongate
+01E7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EB: 21 07 00   push [0007]
+01EE: 10   not
+01EF: 05 07 00   jne 01F9
+01F2: 1D 85 0E   pushs L0E85   ; Moongates
+01F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F9: 21 08 00   push [0008]
+01FC: 10   not
+01FD: 05 07 00   jne 0207
+0200: 1D 8F 0E   pushs L0E8F   ; magic
+0203: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0207: 1D 95 0E   pushs L0E95   ; Orb of the Moons
+020A: 07 01 00 69 00  cmps 0001H, 0278
+020F: 1C A6 0E   addsi L0EA6   ; "Mine has not wor...
+0212: 33   say
+0213: 1C 2D 0F   addsi L0F2D   ; "Didst thou bring...
+0216: 33   say
+0217: 24 02 00   call [0002]   ; 090AH
+021A: 05 07 00   jne 0224
+021D: 1C 58 0F   addsi L0F58   ; "Really? Where is...
+0220: 33   say
+0221: 06 04 00   jmp 0228
+0224: 1C 8E 0F   addsi L0F8E   ; "I see. 
+0227: 33   say
+0228: 1C 97 0F   addsi L0F97   ; "Hmmm. Thou might...
+022B: 33   say
+022C: 14   push false
+022D: 1F 99 FE   pushi FE99H   ; -359
+0230: 1F 99 FE   pushi FE99H   ; -359
+0233: 1F 11 03   pushi 0311H   ; 785
+0236: 1F 01 00   pushi 0001H   ; 1
+0239: 38 2C 00 05  callis 002C, 5
+023D: 12 09 00   pop [0009]
+0240: 21 09 00   push [0009]
+0243: 05 0B 00   jne 0251
+0246: 1C 50 10   addsi L1050   ; Lord British hand...
+0249: 33   say
+024A: 13   push true
+024B: 43 DD 00   popf flag:[00DD]
+024E: 06 04 00   jmp 0255
+0251: 1C 7D 10   addsi L107D   ; "Thine hands are ...
+0254: 33   say
+0255: 1D A9 10   pushs L10A9   ; Orb of the Moons
+0258: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025C: 21 07 00   push [0007]
+025F: 10   not
+0260: 05 07 00   jne 026A
+0263: 1D BA 10   pushs L10BA   ; Moongates
+0266: 39 05 00 01  calli _AddAnswer@1  ; 0005
+026A: 21 08 00   push [0008]
+026D: 10   not
+026E: 05 07 00   jne 0278
+0271: 1D C4 10   pushs L10C4   ; magic
+0274: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0278: 1D CA 10   pushs L10CA   ; castle
+027B: 07 01 00 12 00  cmps 0001H, 0292
+0280: 1C D1 10   addsi L10D1   ; "Yes, it has been...
+0283: 33   say
+0284: 1D AC 11   pushs L11AC   ; castle
+0287: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028B: 1D B3 11   pushs L11B3   ; nursery
+028E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0292: 1D BB 11   pushs L11BB   ; nursery
+0295: 07 01 00 0B 00  cmps 0001H, 02A5
+029A: 1C C3 11   addsi L11C3   ; "I will not go ne...
+029D: 33   say
+029E: 1D BD 12   pushs L12BD   ; nursery
+02A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A5: 1D C5 12   pushs L12C5   ; Trinsic
+02A8: 07 01 00 1C 00  cmps 0001H, 02C9
+02AD: 1C CD 12   addsi L12CD   ; "I have not been ...
+02B0: 33   say
+02B1: 1D 17 13   pushs L1317   ; Trinsic
+02B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02B8: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+02BC: 1D 1F 13   pushs L131F   ; nothing much
+02BF: 1D 2C 13   pushs L132C   ; a murder
+02C2: 1E 02 00   arrc 0002H   ; 2
+02C5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02C9: 1D 35 13   pushs L1335   ; nothing much
+02CC: 07 01 00 0F 00  cmps 0001H, 02E0
+02D1: 1C 42 13   addsi L1342   ; "Indeed. Then it ...
+02D4: 33   say
+02D5: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+02D9: 1D A3 13   pushs L13A3   ; nothing much
+02DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E0: 1D B0 13   pushs L13B0   ; a murder
+02E3: 07 01 00 37 00  cmps 0001H, 031F
+02E8: 1C B9 13   addsi L13B9   ; "Murder? In Trins...
+02EB: 33   say
+02EC: 24 02 00   call [0002]   ; 090AH
+02EF: 12 0A 00   pop [000A]
+02F2: 21 0A 00   push [000A]
+02F5: 05 07 00   jne 02FF
+02F8: 1C 27 14   addsi L1427   ; "Very good. It pl...
+02FB: 33   say
+02FC: 06 04 00   jmp 0303
+02FF: 1C 6B 14   addsi L146B   ; "Ah, but perhaps ...
+0302: 33   say
+0303: 1C 8C 14   addsi L148C   ; The king pauses a...
+0306: 33   say
+0307: 1D F5 15   pushs L15F5   ; a murder
+030A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+030E: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+0312: 1D FE 15   pushs L15FE   ; killer
+0315: 1D 05 16   pushs L1605   ; ritualistic
+0318: 1E 02 00   arrc 0002H   ; 2
+031B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+031F: 1D 11 16   pushs L1611   ; ritualistic
+0322: 07 01 00 0F 00  cmps 0001H, 0336
+0327: 1C 1D 16   addsi L161D   ; "I do not recall ...
+032A: 33   say
+032B: 1D 8A 16   pushs L168A   ; ritualistic
+032E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0332: 13   push true
+0333: 43 D1 00   popf flag:[00D1]
+0336: 1D 96 16   pushs L1696   ; killer
+0339: 07 01 00 25 00  cmps 0001H, 0363
+033E: 1C 9D 16   addsi L169D   ; "That is, of cour...
+0341: 33   say
+0342: 1D 38 17   pushs L1738   ; killer
+0345: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0349: 42 43 00   pushf flag:[0043]
+034C: 05 07 00   jne 0356
+034F: 1D 3F 17   pushs L173F   ; Hook
+0352: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0356: 42 40 00   pushf flag:[0040]
+0359: 05 07 00   jne 0363
+035C: 1D 44 17   pushs L1744   ; Crown Jewel
+035F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0363: 1D 50 17   pushs L1750   ; Fellowship
+0366: 07 01 00 18 00  cmps 0001H, 0383
+036B: 1C 5B 17   addsi L175B   ; "They are an extr...
+036E: 33   say
+036F: 1D AC 18   pushs L18AC   ; Fellowship
+0372: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0376: 1D B7 18   pushs L18B7   ; Headquarters
+0379: 1D C4 18   pushs L18C4   ; Batlin
+037C: 1E 02 00   arrc 0002H   ; 2
+037F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0383: 1D CB 18   pushs L18CB   ; Headquarters
+0386: 07 01 00 0B 00  cmps 0001H, 0396
+038B: 1C D8 18   addsi L18D8   ; "Yes, it is not f...
+038E: 33   say
+038F: 1D 31 19   pushs L1931   ; Headquarters
+0392: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0396: 1D 3E 19   pushs L193E   ; Batlin
+0399: 07 01 00 0B 00  cmps 0001H, 03A9
+039E: 1C 45 19   addsi L1945   ; "He is a druid wh...
+03A1: 33   say
+03A2: 1D C6 19   pushs L19C6   ; Batlin
+03A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03A9: 1D CD 19   pushs L19CD   ; Hook
+03AC: 07 01 00 0B 00  cmps 0001H, 03BC
+03B1: 1C D2 19   addsi L19D2   ; "A man with a hoo...
+03B4: 33   say
+03B5: 1D 36 1A   pushs L1A36   ; Hook
+03B8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03BC: 1D 3B 1A   pushs L1A3B   ; Crown Jewel
+03BF: 07 01 00 0B 00  cmps 0001H, 03CF
+03C4: 1C 47 1A   addsi L1A47   ; "I am afraid I ca...
+03C7: 33   say
+03C8: 1D E0 1A   pushs L1AE0   ; Crown Jewel
+03CB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03CF: 1D EC 1A   pushs L1AEC   ; friends
+03D2: 07 01 00 1B 00  cmps 0001H, 03F2
+03D7: 1C F4 1A   addsi L1AF4   ; "Thou must mean I...
+03DA: 33   say
+03DB: 1D 2A 1B   pushs L1B2A   ; friends
+03DE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03E2: 1D 32 1B   pushs L1B32   ; Dupre
+03E5: 1D 38 1B   pushs L1B38   ; Shamino
+03E8: 1D 40 1B   pushs L1B40   ; Iolo
+03EB: 1E 03 00   arrc 0003H   ; 3
+03EE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03F2: 1D 45 1B   pushs L1B45   ; Iolo
+03F5: 07 01 00 3B 00  cmps 0001H, 0435
+03FA: 1C 4A 1B   addsi L1B4A   ; "I have seen our ...
+03FD: 33   say
+03FE: 21 03 00   push [0003]
+0401: 05 23 00   jne 0427
+0404: 1C B9 1B   addsi L1BB9   ; "Hello, Iolo! How...
+0407: 33   say
+0408: 1F 00 00   pushi 0000H   ; 0
+040B: 1F FF FF   pushi FFFFH   ; -1
+040E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0412: 1C D7 1B   addsi L1BD7   ; "I am well, my li...
+0415: 33   say
+0416: 1F FF FF   pushi FFFFH   ; -1
+0419: 39 04 00 01  calli _HideNPC@1  ; 0004
+041D: 1F 00 00   pushi 0000H   ; 0
+0420: 1F E9 FF   pushi FFE9H   ; -23
+0423: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0427: 1D 06 1C   pushs L1C06   ; Iolo
+042A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+042E: 1D 0B 1C   pushs L1C0B   ; Trinsic
+0431: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0435: 1D 13 1C   pushs L1C13   ; Shamino
+0438: 07 01 00 5E 00  cmps 0001H, 049B
+043D: 1C 1B 1C   addsi L1C1B   ; "That rascal does...
+0440: 33   say
+0441: 21 05 00   push [0005]
+0444: 05 4D 00   jne 0494
+0447: 1C 90 1C   addsi L1C90   ; "What dost thou h...
+044A: 33   say
+044B: 1F 00 00   pushi 0000H   ; 0
+044E: 1F FD FF   pushi FFFDH   ; -3
+0451: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0455: 1C C4 1C   addsi L1CC4   ; "Mine apologies, ...
+0458: 33   say
+0459: 1F 00 00   pushi 0000H   ; 0
+045C: 1F E9 FF   pushi FFE9H   ; -23
+045F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0463: 1C ED 1C   addsi L1CED   ; "What's this I he...
+0466: 33   say
+0467: 1F 00 00   pushi 0000H   ; 0
+046A: 1F FD FF   pushi FFFDH   ; -3
+046D: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0471: 1C 22 1D   addsi L1D22   ; Shamino blushes a...
+0474: 33   say
+0475: 1F 00 00   pushi 0000H   ; 0
+0478: 1F E9 FF   pushi FFE9H   ; -23
+047B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+047F: 1C 4A 1D   addsi L1D4A   ; "I suspected as m...
+0482: 33   say
+0483: 1F FD FF   pushi FFFDH   ; -3
+0486: 39 04 00 01  calli _HideNPC@1  ; 0004
+048A: 1F 00 00   pushi 0000H   ; 0
+048D: 1F E9 FF   pushi FFE9H   ; -23
+0490: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0494: 1D 7B 1D   pushs L1D7B   ; Shamino
+0497: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+049B: 1D 83 1D   pushs L1D83   ; Dupre
+049E: 07 01 00 57 00  cmps 0001H, 04FA
+04A3: 1C 89 1D   addsi L1D89   ; "I have not seen ...
+04A6: 33   say
+04A7: 21 04 00   push [0004]
+04AA: 05 3F 00   jne 04EC
+04AD: 1C 0C 1E   addsi L1E0C   ; "Where hast thou ...
+04B0: 33   say
+04B1: 1F 00 00   pushi 0000H   ; 0
+04B4: 1F FC FF   pushi FFFCH   ; -4
+04B7: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04BB: 1C 30 1E   addsi L1E30   ; "Oh, here and the...
+04BE: 33   say
+04BF: 1F 00 00   pushi 0000H   ; 0
+04C2: 1F E9 FF   pushi FFE9H   ; -23
+04C5: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04C9: 1C 64 1E   addsi L1E64   ; "I have very few ...
+04CC: 33   say
+04CD: 1F 00 00   pushi 0000H   ; 0
+04D0: 1F FC FF   pushi FFFCH   ; -4
+04D3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04D7: 1C F4 1E   addsi L1EF4   ; "If thou dost wis...
+04DA: 33   say
+04DB: 1F FC FF   pushi FFFCH   ; -4
+04DE: 39 04 00 01  calli _HideNPC@1  ; 0004
+04E2: 1F 00 00   pushi 0000H   ; 0
+04E5: 1F E9 FF   pushi FFE9H   ; -23
+04E8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+04EC: 1D 29 1F   pushs L1F29   ; Dupre
+04EF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04F3: 1D 2F 1F   pushs L1F2F   ; Jhelom
+04F6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+04FA: 1D 36 1F   pushs L1F36   ; Jhelom
+04FD: 07 01 00 0B 00  cmps 0001H, 050D
+0502: 1C 3D 1F   addsi L1F3D   ; "A rather violent...
+0505: 33   say
+0506: 1D A1 1F   pushs L1FA1   ; Jhelom
+0509: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+050D: 1D A8 1F   pushs L1FA8   ; magic
+0510: 07 01 00 39 00  cmps 0001H, 054E
+0515: 1C AE 1F   addsi L1FAE   ; "Something is awr...
+0518: 33   say
+0519: 1C 00 21   addsi L2100   ; Lord British stud...
+051C: 33   say
+051D: 1C 23 21   addsi L2123   ; "Perhaps magic wi...
+0520: 33   say
+0521: 13   push true
+0522: 43 66 00   popf flag:[0066]
+0525: 1D 15 22   pushs L2215   ; magic
+0528: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+052C: 1D 1B 22   pushs L221B   ; equipment
+052F: 1D 25 22   pushs L2225   ; spellbook
+0532: 1D 2F 22   pushs L222F   ; Nystul
+0535: 1E 03 00   arrc 0003H   ; 3
+0538: 39 05 00 01  calli _AddAnswer@1  ; 0005
+053C: 13   push true
+053D: 12 08 00   pop [0008]
+0540: 21 07 00   push [0007]
+0543: 10   not
+0544: 05 07 00   jne 054E
+0547: 1D 36 22   pushs L2236   ; Moongates
+054A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+054E: 1D 40 22   pushs L2240   ; Nystul
+0551: 07 01 00 27 00  cmps 0001H, 057D
+0556: 42 03 00   pushf flag:[0003]
+0559: 10   not
+055A: 05 15 00   jne 0572
+055D: 42 99 00   pushf flag:[0099]
+0560: 10   not
+0561: 05 07 00   jne 056B
+0564: 1C 47 22   addsi L2247   ; "Er... try talkin...
+0567: 33   say
+0568: 06 04 00   jmp 056F
+056B: 1C 63 22   addsi L2263   ; The king lowers h...
+056E: 33   say
+056F: 06 04 00   jmp 0576
+0572: 1C FF 22   addsi L22FF   ; "He is beginning ...
+0575: 33   say
+0576: 1D 2C 23   pushs L232C   ; Nystul
+0579: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+057D: 1D 33 23   pushs L2333   ; Moongates
+0580: 07 01 00 1C 00  cmps 0001H, 05A1
+0585: 1C 3D 23   addsi L233D   ; "The Moongates ar...
+0588: 33   say
+0589: 1D 84 24   pushs L2484   ; Moongates
+058C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0590: 1D 8E 24   pushs L248E   ; Cove
+0593: 1D 93 24   pushs L2493   ; mad mage
+0596: 1E 02 00   arrc 0002H   ; 2
+0599: 39 05 00 01  calli _AddAnswer@1  ; 0005
+059D: 13   push true
+059E: 12 07 00   pop [0007]
+05A1: 1D 9C 24   pushs L249C   ; mad mage
+05A4: 07 01 00 1C 00  cmps 0001H, 05C5
+05A9: 1C A5 24   addsi L24A5   ; The ruler leans f...
+05AC: 33   say
+05AD: 13   push true
+05AE: 43 65 00   popf flag:[0065]
+05B1: 1F 14 00   pushi 0014H   ; 20
+05B4: 24 03 00   call [0003]   ; 0911H
+05B7: 1D 50 26   pushs L2650   ; mad mage
+05BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05BE: 1D 59 26   pushs L2659   ; Rudyom
+05C1: 39 05 00 01  calli _AddAnswer@1  ; 0005
+05C5: 1D 60 26   pushs L2660   ; Rudyom
+05C8: 07 01 00 15 00  cmps 0001H, 05E2
+05CD: 1C 67 26   addsi L2667   ; "He was a brillia...
+05D0: 33   say
+05D1: 42 99 00   pushf flag:[0099]
+05D4: 05 04 00   jne 05DB
+05D7: 1C E2 26   addsi L26E2   ; Suddenly, somethi...
+05DA: 33   say
+05DB: 1D 71 27   pushs L2771   ; Rudyom
+05DE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05E2: 1D 78 27   pushs L2778   ; Cove
+05E5: 07 01 00 0B 00  cmps 0001H, 05F5
+05EA: 1C 7D 27   addsi L277D   ; "Surely thou dost...
+05ED: 33   say
+05EE: 1D E2 27   pushs L27E2   ; Cove
+05F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05F5: 1D E7 27   pushs L27E7   ; The Guardian
+05F8: 07 01 00 0F 00  cmps 0001H, 060C
+05FD: 1C F4 27   addsi L27F4   ; "I do not know of...
+0600: 33   say
+0601: 13   push true
+0602: 43 D4 00   popf flag:[00D4]
+0605: 1D 58 28   pushs L2858   ; The Guardian
+0608: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+060C: 1D 65 28   pushs L2865   ; spellbook
+060F: 07 01 00 0B 00  cmps 0001H, 061F
+0614: 1C 6F 28   addsi L286F   ; "Yes, I have a sp...
+0617: 33   say
+0618: 1D B5 28   pushs L28B5   ; spellbook
+061B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+061F: 1D BF 28   pushs L28BF   ; equipment
+0622: 07 01 00 18 00  cmps 0001H, 063F
+0627: 1C C9 28   addsi L28C9   ; "Thou art welcome...
+062A: 33   say
+062B: 1D 4E 29   pushs L294E   ; equipment
+062E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0632: 1D 58 29   pushs L2958   ; study
+0635: 1D 5E 29   pushs L295E   ; storeroom
+0638: 1E 02 00   arrc 0002H   ; 2
+063B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+063F: 1D 68 29   pushs L2968   ; storeroom
+0642: 07 01 00 0B 00  cmps 0001H, 0652
+0647: 1C 72 29   addsi L2972   ; "I am sure thou c...
+064A: 33   say
+064B: 1D CE 29   pushs L29CE   ; storeroom
+064E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0652: 1D D8 29   pushs L29D8   ; study
+0655: 07 01 00 0B 00  cmps 0001H, 0665
+065A: 1C DE 29   addsi L29DE   ; "'Tis in the west...
+065D: 33   say
+065E: 1D 07 2A   pushs L2A07   ; study
+0661: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0665: 1D 0D 2A   pushs L2A0D   ; heal
+0668: 07 01 00 10 00  cmps 0001H, 067D
+066D: 1F 00 00   pushi 0000H   ; 0
+0670: 1F 00 00   pushi 0000H   ; 0
+0673: 1F 00 00   pushi 0000H   ; 0
+0676: 24 04 00   call [0004]   ; 08B4H
+0679: 13   push true
+067A: 12 06 00   pop [0006]
+067D: 1D 12 2A   pushs L2A12   ; Weston
+0680: 07 01 00 1C 00  cmps 0001H, 06A1
+0685: 1C 19 2A   addsi L2A19   ; Lord British list...
+0688: 33   say
+0689: 13   push true
+068A: 43 CC 00   popf flag:[00CC]
+068D: 1F 14 00   pushi 0014H   ; 20
+0690: 24 03 00   call [0003]   ; 0911H
+0693: 1F BB FF   pushi FFBBH   ; -69
+0696: 39 3F 00 01  calli 003F, 1
+069A: 1D E7 2B   pushs L2BE7   ; Weston
+069D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+06A1: 1D EE 2B   pushs L2BEE   ; rumble
+06A4: 07 01 00 12 00  cmps 0001H, 06BB
+06A9: 1C F5 2B   addsi L2BF5   ; Lord British look...
+06AC: 33   say
+06AD: 1D A2 2C   pushs L2CA2   ; island
+06B0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+06B4: 1D A9 2C   pushs L2CA9   ; rumble
+06B7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+06BB: 1D B0 2C   pushs L2CB0   ; island
+06BE: 07 01 00 1E 00  cmps 0001H, 06E1
+06C3: 1C B7 2C   addsi L2CB7   ; "Yes, 
+06C6: 2F 01 00   addsv [0001]
+06C9: 1C BE 2C   addsi L2CBE   ; . I felt a great ...
+06CC: 33   say
+06CD: 1D 67 2D   pushs L2D67   ; Exodus
+06D0: 1D 6E 2D   pushs L2D6E   ; Isle of Fire
+06D3: 1E 02 00   arrc 0002H   ; 2
+06D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+06DA: 1D 7B 2D   pushs L2D7B   ; island
+06DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+06E1: 1D 82 2D   pushs L2D82   ; Isle of Fire
+06E4: 07 01 00 20 00  cmps 0001H, 0709
+06E9: 1C 8F 2D   addsi L2D8F   ; "
+06EC: 2F 01 00   addsv [0001]
+06EF: 1C 91 2D   addsi L2D91   ; , thou shouldst k...
+06F2: 33   say
+06F3: 1C 3F 2E   addsi L2E3F   ; They reside withi...
+06F6: 33   say
+06F7: 1C F2 2E   addsi L2EF2   ; The shrines are m...
+06FA: 33   say
+06FB: 1C 5E 2F   addsi L2F5E   ; The talismans are...
+06FE: 33   say
+06FF: 24 05 00   call [0005]   ; 08B5H
+0702: 1D D4 2F   pushs L2FD4   ; Isle of Fire
+0705: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0709: 1D E1 2F   pushs L2FE1   ; Exodus
+070C: 07 01 00 0B 00  cmps 0001H, 071C
+0711: 1C E8 2F   addsi L2FE8   ; "Thy battle with ...
+0714: 33   say
+0715: 1D BB 30   pushs L30BB   ; Exodus
+0718: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+071C: 1D C2 30   pushs L30C2   ; bye
+071F: 07 01 00 03 00  cmps 0001H, 0727
+0724: 06 03 00   jmp 072A
+0727: 06 EB F9   jmp 0115
+072A: 40   db 40 ???
+072B: 1C C6 30   addsi L30C6   ; "Goodbye, 
+072E: 2F 01 00   addsv [0001]
+0731: 1C D1 30   addsi L30D1   ; . Do come back so...
+0734: 33   say
+0735: 48   push eventid
+0736: 1F 00 00   pushi 0000H   ; 0
+0739: 22   cmpeq
+073A: 05 06 00   jne 0743
+073D: 1F E9 FF   pushi FFE9H   ; -23
+0740: 24 06 00   call [0006]   ; 092EH
+0743: 21 00 00   push [0000]
+0746: 13   push true
+0747: 22   cmpeq
+0748: 05 7F 00   jne 07CA
+074B: 3E   push itemref
+074C: 24 07 00   call [0007]   ; 092DH
+074F: 12 0B 00   pop [000B]
+0752: 21 0B 00   push [000B]
+0755: 1F 04 00   pushi 0004H   ; 4
+0758: 09   add
+0759: 1F 08 00   pushi 0008H   ; 8
+075C: 0D   mod
+075D: 12 0C 00   pop [000C]
+0760: 1F 17 04   pushi 0417H   ; 1047
+0763: 44 55   pushw 1F55H   ; 8021
+0765: 1F 0B 00   pushi 000BH   ; 11
+0768: 44 27   pushw 1F27H   ; 7975
+076A: 1F 02 00   pushi 0002H   ; 2
+076D: 44 27   pushw 1F27H   ; 7975
+076F: 1F 03 00   pushi 0003H   ; 3
+0772: 44 27   pushw 1F27H   ; 7975
+0774: 1F 17 04   pushi 0417H   ; 1047
+0777: 44 55   pushw 1F55H   ; 8021
+0779: 1F 03 00   pushi 0003H   ; 3
+077C: 44 27   pushw 1F27H   ; 7975
+077E: 1F 02 00   pushi 0002H   ; 2
+0781: 44 27   pushw 1F27H   ; 7975
+0783: 1F 01 00   pushi 0001H   ; 1
+0786: 44 27   pushw 2127H   ; 8487
+0788: 21 0C 00   push [000C]
+078B: 44 59   pushw 1E59H   ; 7769
+078D: 1E 12 00   arrc 0012H   ; 18
+0790: 3E   push itemref
+0791: 38 01 00 02  callis 0001, 2
+0795: 12 0D 00   pop [000D]
+0798: 44 61   pushw 1F61H   ; 8033
+079A: 1F 01 00   pushi 0001H   ; 1
+079D: 44 27   pushw 4427H   ; 17447
+079F: 44 6C   pushw 1F6CH   ; 8044
+07A1: 1F 06 00   pushi 0006H   ; 6
+07A4: 44 27   pushw 4427H   ; 17447
+07A6: 44 6D   pushw 1F6DH   ; 8045
+07A8: 1F 01 00   pushi 0001H   ; 1
+07AB: 44 27   pushw 4427H   ; 17447
+07AD: 44 6C   pushw 1F6CH   ; 8044
+07AF: 1F 01 00   pushi 0001H   ; 1
+07B2: 44 27   pushw 2127H   ; 8487
+07B4: 21 0B 00   push [000B]
+07B7: 44 59   pushw 1E59H   ; 7769
+07B9: 1E 0E 00   arrc 000EH   ; 14
+07BC: 1F 9C FE   pushi FE9CH   ; -356
+07BF: 38 1B 00 01  callis 001B, 1
+07C3: 38 01 00 02  callis 0001, 2
+07C7: 12 0E 00   pop [000E]
+07CA: 48   push eventid
+07CB: 1F 02 00   pushi 0002H   ; 2
+07CE: 22   cmpeq
+07CF: 05 EB 00   jne 08BD
+07D2: 42 1E 00   pushf flag:[001E]
+07D5: 05 08 00   jne 07E0
+07D8: 1F 01 00   pushi 0001H   ; 1
+07DB: 4B   db 4b ???
+07DC: 06 2D F8   jmp 000C
+07DF: 3F   abrt
+07E0: 42 0D 03   pushf flag:[030D]
+07E3: 10   not
+07E4: 05 BB 00   jne 08A2
+07E7: 13   push true
+07E8: 43 0D 03   popf flag:[030D]
+07EB: 1F 9C FE   pushi FE9CH   ; -356
+07EE: 38 1B 00 01  callis 001B, 1
+07F2: 38 18 00 01  callis 0018, 1
+07F6: 12 0F 00   pop [000F]
+07F9: 1F FF FF   pushi FFFFH   ; -1
+07FC: 1F 00 00   pushi 0000H   ; 0
+07FF: 1F 00 00   pushi 0000H   ; 0
+0802: 1F 00 00   pushi 0000H   ; 0
+0805: 1F 02 00   pushi 0002H   ; 2
+0808: 26 0F 00   aidx [000F]
+080B: 1F 01 00   pushi 0001H   ; 1
+080E: 0A   sub
+080F: 1F 01 00   pushi 0001H   ; 1
+0812: 26 0F 00   aidx [000F]
+0815: 1F 01 00   pushi 0001H   ; 1
+0818: 0A   sub
+0819: 1F 07 00   pushi 0007H   ; 7
+081C: 39 53 00 07  calli 0053, 7
+0820: 1F 43 00   pushi 0043H   ; 67
+0823: 39 0F 00 01  calli 000F, 1
+0827: 1F 00 00   pushi 0000H   ; 0
+082A: 1F 9C FE   pushi FE9CH   ; -356
+082D: 38 1B 00 01  callis 001B, 1
+0831: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0835: 12 10 00   pop [0010]
+0838: 21 10 00   push [0010]
+083B: 1F 03 00   pushi 0003H   ; 3
+083E: 1F 9C FE   pushi FE9CH   ; -356
+0841: 38 1B 00 01  callis 001B, 1
+0845: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0849: 4A   arra
+084A: 12 10 00   pop [0010]
+084D: 1F 01 00   pushi 0001H   ; 1
+0850: 26 10 00   aidx [0010]
+0853: 1F 3C 00   pushi 003CH   ; 60
+0856: 18   cmpge
+0857: 10   not
+0858: 05 1B 00   jne 0876
+085B: 1F 3C 00   pushi 003CH   ; 60
+085E: 1F 01 00   pushi 0001H   ; 1
+0861: 26 10 00   aidx [0010]
+0864: 0A   sub
+0865: 1F 00 00   pushi 0000H   ; 0
+0868: 1F 9C FE   pushi FE9CH   ; -356
+086B: 38 1B 00 01  callis 001B, 1
+086F: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+0873: 12 11 00   pop [0011]
+0876: 1F 02 00   pushi 0002H   ; 2
+0879: 26 10 00   aidx [0010]
+087C: 1F 3C 00   pushi 003CH   ; 60
+087F: 18   cmpge
+0880: 10   not
+0881: 05 1B 00   jne 089F
+0884: 1F 3C 00   pushi 003CH   ; 60
+0887: 1F 02 00   pushi 0002H   ; 2
+088A: 26 10 00   aidx [0010]
+088D: 0A   sub
+088E: 1F 03 00   pushi 0003H   ; 3
+0891: 1F 9C FE   pushi FE9CH   ; -356
+0894: 38 1B 00 01  callis 001B, 1
+0898: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+089C: 12 11 00   pop [0011]
+089F: 06 1B 00   jmp 08BD
+08A2: 1F 00 00   pushi 0000H   ; 0
+08A5: 1F E9 FF   pushi FFE9H   ; -23
+08A8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+08AC: 24 00 00   call [0000]   ; 0908H
+08AF: 12 01 00   pop [0001]
+08B2: 1C E8 30   addsi L30E8   ; "I congratulate a...
+08B5: 2F 01 00   addsv [0001]
+08B8: 1C 09 31   addsi L3109   ; . Thy deeds conti...
+08BB: 33   say
+08BC: 3F   abrt
+08BD: 25   ret

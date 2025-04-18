@@ -1,0 +1,341 @@
+  .funcnumber 0433H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a sturdy-looking farmer's wife. She gives you a hosp'
+ db 'itable smile before returning to her chores.'
+L0075: db 00
+L0076: db '"What brings us the pleasure of having thee back on this day'
+ db ', '
+L00B4: db 00
+L00B5: db '?" says Kelly.'
+L00C3: db 00
+L00C4: db 'name'
+L00C8: db 00
+L00C9: db '"I am called Kelly, '
+L00DD: db 00
+L00DE: db '."'
+L00E0: db 00
+L00E1: db 'name'
+L00E5: db 00
+L00E6: db 'job'
+L00E9: db 00
+L00EA: db '"Mine husband Fred and I run the Farmer's Market."'
+L011C: db 00
+L011D: db 'buy'
+L0120: db 00
+L0121: db 'Farmer's Market'
+L0130: db 00
+L0131: db 'Fred'
+L0135: db 00
+L0136: db 'Fred'
+L013A: db 00
+L013B: db '"My Fred is one of the most respected merchants in Britain. '
+ db 'He sells the eggs and vegetables grown by Brownie and Mack, '
+ db 'as well as exotic imported fruits."'
+L01D6: db 00
+L01D7: db 'Fred'
+L01DB: db 00
+L01DC: db 'Mack'
+L01E0: db 00
+L01E1: db 'Brownie'
+L01E8: db 00
+L01E9: db 'fruits and vegetables'
+L01FE: db 00
+L01FF: db 'eggs'
+L0203: db 00
+L0204: db 'Farmer's Market'
+L0213: db 00
+L0214: db '"The Farmer's Market is where most of Britain buys its food.'
+ db ' Why even the people in Paws will come here to buy eggs and '
+ db 'vegetables. Fred has never raised the price of anything sinc'
+ db 'e opening this market many years ago."'
+L02EE: db 00
+L02EF: db 'Farmer's Market'
+L02FE: db 00
+L02FF: db 'Paws'
+L0303: db 00
+L0304: db 'Britain'
+L030B: db 00
+L030C: db 'eggs'
+L0310: db 00
+L0311: db '"Farmer Mack's chickens lay plenty of eggs. It is a good thi'
+ db 'ng the people here have such healthy appetites!"'
+L037D: db 00
+L037E: db 'eggs'
+L0382: db 00
+L0383: db 'fruits and vegetables'
+L0398: db 00
+L0399: db '"We sell those mostly to older people. Thou dost know, I am '
+ db 'sure, how children do not like to eat their vegetables. Some'
+ db ' people do not want to keep a lot of fruit in their home as '
+ db 'they are afraid of attracting fruit flies."'
+L0478: db 00
+L0479: db 'fruits and vegetables'
+L048E: db 00
+L048F: db 'Brownie'
+L0496: db 00
+L0497: db '"Brownie is a good man. I do hope he runs for the mayorship '
+ db 'again. If he does thou must be sure to vote for him."'
+L0508: db 00
+L0509: db 'Brownie'
+L0510: db 00
+L0511: db 'Mack'
+L0515: db 00
+L0516: db '"I do believe that poor old Mack has been cooped up with his'
+ db ' chickens for too long. He is a good person. Do not be put o'
+ db 'ff by the strange stories he doth tell. He rarely ever sleep'
+ db 's as he spends most of the night staring at the sky. Of cour'
+ db 'se his rooster crows at dawn and no farmer can afford to sle'
+ db 'ep past the dawn. So his mind is a bit ragged."'
+L0671: db 00
+L0672: db 'Mack'
+L0676: db 00
+L0677: db 'Britain'
+L067E: db 00
+L067F: db '"Oh, in Britain they look for quality produce. I see the peo'
+ db 'ple who buy here look over every egg for cracks and every ve'
+ db 'getable for any sign of spoilage."'
+L0719: db 00
+L071A: db 'Britain'
+L0721: db 00
+L0722: db 'Paws'
+L0726: db 00
+L0727: db '"The people of Paws are always short of money. Mine heart go'
+ db 'es out to them. They are always looking to buy the least exp'
+ db 'ensive items for it is all they can afford."'
+L07CB: db 00
+L07CC: db 'Paws'
+L07D0: db 00
+L07D1: db 'buy'
+L07D4: db 00
+L07D5: db '"The market is now closed. Thou must return when we are open'
+ db ' for business."'
+L0820: db 00
+L0821: db '"Wouldst thou like to buy some eggs, fruits or vegetables? W'
+ db 'e have plenty of delicious fresh eggs here for thee. And our'
+ db ' vegetables are sure to keep thee in good health."'
+L08CB: db 00
+L08CC: db '"I am sure we have something here that will be to thy liking'
+ db '."'
+L090A: db 00
+L090B: db '"Perhaps another time then."'
+L0927: db 00
+L0928: db 'buy'
+L092B: db 00
+L092C: db 'bye'
+L092F: db 00
+L0930: db '"Good day to thee, '
+L0943: db 00
+L0944: db '."*'
+L0947: db 00
+L0948: db '@Come to the Farmer's Market!@'
+L0966: db 00
+L0967: db '@The Market is open!@'
+L097C: db 00
+L097D: db '@Vegetables! Meats!@'
+L0991: db 00
+L0992: db '@Come one, come all!@'
+L09A7: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0004H
+  .extern 0909H
+  .extern 090AH
+  .extern 08A7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 99 01   jne 01A1
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F CD FF   pushi FFCDH   ; -51
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F CD FF   pushi FFCDH   ; -51
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1D 00 00   pushs L0000   ; bye
+0030: 1D 04 00   pushs L0004   ; job
+0033: 1D 08 00   pushs L0008   ; name
+0036: 1E 03 00   arrc 0003H   ; 3
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 42 B4 00   pushf flag:[00B4]
+0040: 10   not
+0041: 05 0B 00   jne 004F
+0044: 1C 0D 00   addsi L000D   ; You see a sturdy-...
+0047: 33   say
+0048: 13   push true
+0049: 43 B4 00   popf flag:[00B4]
+004C: 06 0A 00   jmp 0059
+004F: 1C 76 00   addsi L0076   ; "What brings us t...
+0052: 2F 00 00   addsv [0000]
+0055: 1C B5 00   addsi L00B5   ; ?" says Kelly.
+0058: 33   say
+0059: 04 3A 01   je 0196
+005C: 1D C4 00   pushs L00C4   ; name
+005F: 07 01 00 11 00  cmps 0001H, 0075
+0064: 1C C9 00   addsi L00C9   ; "I am called Kelly, 
+0067: 2F 00 00   addsv [0000]
+006A: 1C DE 00   addsi L00DE   ; ."
+006D: 33   say
+006E: 1D E1 00   pushs L00E1   ; name
+0071: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0075: 1D E6 00   pushs L00E6   ; job
+0078: 07 01 00 14 00  cmps 0001H, 0091
+007D: 1C EA 00   addsi L00EA   ; "Mine husband Fre...
+0080: 33   say
+0081: 1D 1D 01   pushs L011D   ; buy
+0084: 1D 21 01   pushs L0121   ; Farmer's Market
+0087: 1D 31 01   pushs L0131   ; Fred
+008A: 1E 03 00   arrc 0003H   ; 3
+008D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0091: 1D 36 01   pushs L0136   ; Fred
+0094: 07 01 00 1E 00  cmps 0001H, 00B7
+0099: 1C 3B 01   addsi L013B   ; "My Fred is one o...
+009C: 33   say
+009D: 1D D7 01   pushs L01D7   ; Fred
+00A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A4: 1D DC 01   pushs L01DC   ; Mack
+00A7: 1D E1 01   pushs L01E1   ; Brownie
+00AA: 1D E9 01   pushs L01E9   ; fruits and vegeta...
+00AD: 1D FF 01   pushs L01FF   ; eggs
+00B0: 1E 04 00   arrc 0004H   ; 4
+00B3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B7: 1D 04 02   pushs L0204   ; Farmer's Market
+00BA: 07 01 00 18 00  cmps 0001H, 00D7
+00BF: 1C 14 02   addsi L0214   ; "The Farmer's Mar...
+00C2: 33   say
+00C3: 1D EF 02   pushs L02EF   ; Farmer's Market
+00C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CA: 1D FF 02   pushs L02FF   ; Paws
+00CD: 1D 04 03   pushs L0304   ; Britain
+00D0: 1E 02 00   arrc 0002H   ; 2
+00D3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D7: 1D 0C 03   pushs L030C   ; eggs
+00DA: 07 01 00 0B 00  cmps 0001H, 00EA
+00DF: 1C 11 03   addsi L0311   ; "Farmer Mack's ch...
+00E2: 33   say
+00E3: 1D 7E 03   pushs L037E   ; eggs
+00E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EA: 1D 83 03   pushs L0383   ; fruits and vegeta...
+00ED: 07 01 00 0B 00  cmps 0001H, 00FD
+00F2: 1C 99 03   addsi L0399   ; "We sell those mo...
+00F5: 33   say
+00F6: 1D 79 04   pushs L0479   ; fruits and vegeta...
+00F9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FD: 1D 8F 04   pushs L048F   ; Brownie
+0100: 07 01 00 0B 00  cmps 0001H, 0110
+0105: 1C 97 04   addsi L0497   ; "Brownie is a goo...
+0108: 33   say
+0109: 1D 09 05   pushs L0509   ; Brownie
+010C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0110: 1D 11 05   pushs L0511   ; Mack
+0113: 07 01 00 0B 00  cmps 0001H, 0123
+0118: 1C 16 05   addsi L0516   ; "I do believe tha...
+011B: 33   say
+011C: 1D 72 06   pushs L0672   ; Mack
+011F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0123: 1D 77 06   pushs L0677   ; Britain
+0126: 07 01 00 0B 00  cmps 0001H, 0136
+012B: 1C 7F 06   addsi L067F   ; "Oh, in Britain t...
+012E: 33   say
+012F: 1D 1A 07   pushs L071A   ; Britain
+0132: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0136: 1D 22 07   pushs L0722   ; Paws
+0139: 07 01 00 0B 00  cmps 0001H, 0149
+013E: 1C 27 07   addsi L0727   ; "The people of Pa...
+0141: 33   say
+0142: 1D CC 07   pushs L07CC   ; Paws
+0145: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0149: 1D D1 07   pushs L07D1   ; buy
+014C: 07 01 00 37 00  cmps 0001H, 0188
+0151: 21 02 00   push [0002]
+0154: 1F 07 00   pushi 0007H   ; 7
+0157: 22   cmpeq
+0158: 10   not
+0159: 05 07 00   jne 0163
+015C: 1C D5 07   addsi L07D5   ; "The market is no...
+015F: 33   say
+0160: 06 1E 00   jmp 0181
+0163: 1C 21 08   addsi L0821   ; "Wouldst thou lik...
+0166: 33   say
+0167: 24 01 00   call [0001]   ; 090AH
+016A: 12 03 00   pop [0003]
+016D: 21 03 00   push [0003]
+0170: 05 0A 00   jne 017D
+0173: 1C CC 08   addsi L08CC   ; "I am sure we hav...
+0176: 33   say
+0177: 24 02 00   call [0002]   ; 08A7H
+017A: 06 04 00   jmp 0181
+017D: 1C 0B 09   addsi L090B   ; "Perhaps another ...
+0180: 33   say
+0181: 1D 28 09   pushs L0928   ; buy
+0184: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0188: 1D 2C 09   pushs L092C   ; bye
+018B: 07 01 00 03 00  cmps 0001H, 0193
+0190: 06 03 00   jmp 0196
+0193: 06 C3 FE   jmp 0059
+0196: 40   db 40 ???
+0197: 1C 30 09   addsi L0930   ; "Good day to thee, 
+019A: 2F 00 00   addsv [0000]
+019D: 1C 44 09   addsi L0944   ; ."*
+01A0: 33   say
+01A1: 48   push eventid
+01A2: 1F 00 00   pushi 0000H   ; 0
+01A5: 22   cmpeq
+01A6: 05 7F 00   jne 0228
+01A9: 38 3B 00 00  callis 003B, 0
+01AD: 12 01 00   pop [0001]
+01B0: 1F CD FF   pushi FFCDH   ; -51
+01B3: 38 1B 00 01  callis 001B, 1
+01B7: 38 1C 00 01  callis 001C, 1
+01BB: 12 02 00   pop [0002]
+01BE: 1F 04 00   pushi 0004H   ; 4
+01C1: 1F 01 00   pushi 0001H   ; 1
+01C4: 38 10 00 02  callis _Random2@2  ; 0010
+01C8: 12 04 00   pop [0004]
+01CB: 21 02 00   push [0002]
+01CE: 1F 07 00   pushi 0007H   ; 7
+01D1: 22   cmpeq
+01D2: 05 4D 00   jne 0222
+01D5: 21 04 00   push [0004]
+01D8: 1F 01 00   pushi 0001H   ; 1
+01DB: 22   cmpeq
+01DC: 05 06 00   jne 01E5
+01DF: 1D 48 09   pushs L0948   ; @Come to the Farm...
+01E2: 12 05 00   pop [0005]
+01E5: 21 04 00   push [0004]
+01E8: 1F 02 00   pushi 0002H   ; 2
+01EB: 22   cmpeq
+01EC: 05 06 00   jne 01F5
+01EF: 1D 67 09   pushs L0967   ; @The Market is op...
+01F2: 12 05 00   pop [0005]
+01F5: 21 04 00   push [0004]
+01F8: 1F 03 00   pushi 0003H   ; 3
+01FB: 22   cmpeq
+01FC: 05 06 00   jne 0205
+01FF: 1D 7D 09   pushs L097D   ; @Vegetables! Meats!@
+0202: 12 05 00   pop [0005]
+0205: 21 04 00   push [0004]
+0208: 1F 04 00   pushi 0004H   ; 4
+020B: 22   cmpeq
+020C: 05 06 00   jne 0215
+020F: 1D 92 09   pushs L0992   ; @Come one, come a...
+0212: 12 05 00   pop [0005]
+0215: 21 05 00   push [0005]
+0218: 1F CD FF   pushi FFCDH   ; -51
+021B: 39 40 00 02  calli _ItemSay@2  ; 0040
+021F: 06 06 00   jmp 0228
+0222: 1F CD FF   pushi FFCDH   ; -51
+0225: 24 03 00   call [0003]   ; 092EH
+0228: 25   ret

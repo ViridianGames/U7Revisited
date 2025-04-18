@@ -1,0 +1,362 @@
+  .funcnumber 0435H
+  .data
+L0000: db 'Gaye is watching the Fellowship meeting. She turns to you br'
+ db 'usquely and puts a finger to her lips, gesturing for you to '
+ db 'be silent.*'
+L0083: db 00
+L0084: db '"I cannot imagine where Batlin is. I am worried about him...'
+ db '"'
+L00C1: db 00
+L00C2: db '"I cannot speak now! I am on my way to the Fellowship meetin'
+ db 'g at the Hall!"*'
+L010E: db 00
+L010F: db 'bye'
+L0112: db 00
+L0113: db 'job'
+L0116: db 00
+L0117: db 'name'
+L011B: db 00
+L011C: db 'Willy'
+L0121: db 00
+L0122: db 'You see a woman who oozes partially sincere friendliness.'
+L015B: db 00
+L015C: db '"Hello again, and what may I do for thee today?" asks Gaye.'
+L0197: db 00
+L0198: db 'name'
+L019C: db 00
+L019D: db '"My name is Gaye."'
+L01AF: db 00
+L01B0: db 'name'
+L01B4: db 00
+L01B5: db 'job'
+L01B8: db 00
+L01B9: db '"I oversee the clothier's here in Britain when I am not purs'
+ db 'uing the teachings of The Fellowship."'
+L021B: db 00
+L021C: db 'Fellowship'
+L0226: db 00
+L0227: db 'buy'
+L022A: db 00
+L022B: db 'clothiers'
+L0234: db 00
+L0235: db 'clothiers'
+L023E: db 00
+L023F: db '"At our clothier's shop we have the finest silks and garment'
+ db 's to buy that thou hast ever seen, imported from every corne'
+ db 'r of Britannia to cater to all tastes."'
+L02DE: db 00
+L02DF: db 'clothiers'
+L02E8: db 00
+L02E9: db 'buy'
+L02EC: db 00
+L02ED: db '"I am so sorry, the clothier's shop is closed. Please return'
+ db ' during our regular business hours. We are open from nine un'
+ db 'til six every day."'
+L0378: db 00
+L0379: db '"Do not tell me! Raymundo sent thee to get an Avatar costume'
+ db '! They cost thirty gold coins. Dost thou want one?"'
+L03E8: db 00
+L03E9: db 'She looks you up and down. "Yes, I think we might be able to'
+ db ' find something for thee."~~After several minutes of rummagi'
+ db 'ng through the store, Gaye returns. "Here it is! Not many le'
+ db 'ft-- we have had a run on them recently!"'
+L04C6: db 00
+L04C7: db '"Um. Perhaps thou couldst return when thou dost have enough '
+ db 'gold." She lays the costume down and smiles.'
+L052F: db 00
+L0530: db '"Oh. Thou canst not carry this with what thou art already ca'
+ db 'rrying. Mayhaps thou couldst dispose of something and return'
+ db ' for the costume."'
+L05BA: db 00
+L05BB: db '"It is, indeed, a pleasure to do business with thee, O great'
+ db ' Avatar!" She grins and hands you the costume.'
+L0625: db 00
+L0626: db '"'Tis strange! I thought for certain that thou wert the thea'
+ db 'trical type!"'
+L066F: db 00
+L0670: db '"Wouldst thou like to buy some clothing today?"'
+L069F: db 00
+L06A0: db '"We have many nice clothes to choose from."'
+L06CB: db 00
+L06CC: db '"Thou mayest look around for thyself. If thou dost change th'
+ db 'y mind be sure to let me know."'
+L0727: db 00
+L0728: db 'buy'
+L072B: db 00
+L072C: db 'Fellowship'
+L0736: db 00
+L0737: db '"Thou wouldst want to attend the Fellowship meeting tonight '
+ db 'at nine o'clock. It is always a moving experience to hear th'
+ db 'e words of Batlin, our founder."'
+L07CF: db 00
+L07D0: db 'Fellowship'
+L07DA: db 00
+L07DB: db 'philosophy'
+L07E5: db 00
+L07E6: db 'Willy'
+L07EB: db 00
+L07EC: db '"Yes, he is a very amusing fellow. I am quite taken with him'
+ db ' and I do see him against my better judgment. He does not se'
+ db 'em like the type to join The Fellowship, though. Since The F'
+ db 'ellowship is my whole life, I do not know if there is a plac'
+ db 'e in it for him. I have not made up my mind about that yet."'
+L0918: db 00
+L0919: db 'Willy'
+L091E: db 00
+L091F: db 'bye'
+L0922: db 00
+L0923: db '"Good day, '
+L092E: db 00
+L092F: db '."*'
+L0932: db 00
+L0933: db '@Clothing? Boots?@'
+L0945: db 00
+L0946: db '@Swamp boots?@'
+L0954: db 00
+L0955: db '@Tunic? Dress?@'
+L0964: db 00
+L0965: db '@Fine clothes here!@'
+L0979: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0006H
+  .extern 0909H
+  .extern 08FCH
+  .extern 090AH
+  .extern 088EH
+  .extern 0919H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 F5 01   jne 01FD
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F CB FF   pushi FFCBH   ; -53
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 38 3B 00 00  callis 003B, 0
+0023: 12 02 00   pop [0002]
+0026: 1F CB FF   pushi FFCBH   ; -53
+0029: 38 1B 00 01  callis 001B, 1
+002D: 38 1C 00 01  callis 001C, 1
+0031: 12 03 00   pop [0003]
+0034: 21 02 00   push [0002]
+0037: 1F 07 00   pushi 0007H   ; 7
+003A: 22   cmpeq
+003B: 05 2F 00   jne 006D
+003E: 1F E6 FF   pushi FFE6H   ; -26
+0041: 1F CB FF   pushi FFCBH   ; -53
+0044: 24 01 00   call [0001]   ; 08FCH
+0047: 12 04 00   pop [0004]
+004A: 21 04 00   push [0004]
+004D: 05 08 00   jne 0058
+0050: 1C 00 00   addsi L0000   ; Gaye is watching ...
+0053: 33   say
+0054: 3F   abrt
+0055: 06 15 00   jmp 006D
+0058: 42 DA 00   pushf flag:[00DA]
+005B: 05 0A 00   jne 0068
+005E: 1C 84 00   addsi L0084   ; "I cannot imagine...
+0061: 33   say
+0062: 06 08 00   jmp 006D
+0065: 06 05 00   jmp 006D
+0068: 1C C2 00   addsi L00C2   ; "I cannot speak n...
+006B: 33   say
+006C: 3F   abrt
+006D: 1D 0F 01   pushs L010F   ; bye
+0070: 1D 13 01   pushs L0113   ; job
+0073: 1D 17 01   pushs L0117   ; name
+0076: 1E 03 00   arrc 0003H   ; 3
+0079: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007D: 42 B5 00   pushf flag:[00B5]
+0080: 05 07 00   jne 008A
+0083: 1D 1C 01   pushs L011C   ; Willy
+0086: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008A: 42 B6 00   pushf flag:[00B6]
+008D: 10   not
+008E: 05 0B 00   jne 009C
+0091: 1C 22 01   addsi L0122   ; You see a woman w...
+0094: 33   say
+0095: 13   push true
+0096: 43 B6 00   popf flag:[00B6]
+0099: 06 04 00   jmp 00A0
+009C: 1C 5C 01   addsi L015C   ; "Hello again, and...
+009F: 33   say
+00A0: 04 4F 01   je 01F2
+00A3: 1D 98 01   pushs L0198   ; name
+00A6: 07 01 00 0B 00  cmps 0001H, 00B6
+00AB: 1C 9D 01   addsi L019D   ; "My name is Gaye."
+00AE: 33   say
+00AF: 1D B0 01   pushs L01B0   ; name
+00B2: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B6: 1D B5 01   pushs L01B5   ; job
+00B9: 07 01 00 14 00  cmps 0001H, 00D2
+00BE: 1C B9 01   addsi L01B9   ; "I oversee the cl...
+00C1: 33   say
+00C2: 1D 1C 02   pushs L021C   ; Fellowship
+00C5: 1D 27 02   pushs L0227   ; buy
+00C8: 1D 2B 02   pushs L022B   ; clothiers
+00CB: 1E 03 00   arrc 0003H   ; 3
+00CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D2: 1D 35 02   pushs L0235   ; clothiers
+00D5: 07 01 00 0B 00  cmps 0001H, 00E5
+00DA: 1C 3F 02   addsi L023F   ; "At our clothier'...
+00DD: 33   say
+00DE: 1D DF 02   pushs L02DF   ; clothiers
+00E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E5: 1D E9 02   pushs L02E9   ; buy
+00E8: 07 01 00 C0 00  cmps 0001H, 01AD
+00ED: 21 03 00   push [0003]
+00F0: 1F 13 00   pushi 0013H   ; 19
+00F3: 22   cmpeq
+00F4: 10   not
+00F5: 05 07 00   jne 00FF
+00F8: 1C ED 02   addsi L02ED   ; "I am so sorry, t...
+00FB: 33   say
+00FC: 06 A7 00   jmp 01A6
+00FF: 42 67 00   pushf flag:[0067]
+0102: 05 83 00   jne 0188
+0105: 1C 79 03   addsi L0379   ; "Do not tell me! ...
+0108: 33   say
+0109: 24 02 00   call [0002]   ; 090AH
+010C: 12 05 00   pop [0005]
+010F: 21 05 00   push [0005]
+0112: 05 69 00   jne 017E
+0115: 1C E9 03   addsi L03E9   ; She looks you up ...
+0118: 33   say
+0119: 1F 99 FE   pushi FE99H   ; -359
+011C: 1F 99 FE   pushi FE99H   ; -359
+011F: 1F 84 02   pushi 0284H   ; 644
+0122: 1F 9B FE   pushi FE9BH   ; -357
+0125: 38 28 00 04  callis 0028, 4
+0129: 12 06 00   pop [0006]
+012C: 21 06 00   push [0006]
+012F: 1F 1E 00   pushi 001EH   ; 30
+0132: 17   cmpl
+0133: 05 07 00   jne 013D
+0136: 1C C7 04   addsi L04C7   ; "Um. Perhaps thou...
+0139: 33   say
+013A: 06 3E 00   jmp 017B
+013D: 14   push false
+013E: 1F 99 FE   pushi FE99H   ; -359
+0141: 1F 99 FE   pushi FE99H   ; -359
+0144: 1F 46 03   pushi 0346H   ; 838
+0147: 1F 01 00   pushi 0001H   ; 1
+014A: 38 2C 00 05  callis 002C, 5
+014E: 12 07 00   pop [0007]
+0151: 21 07 00   push [0007]
+0154: 10   not
+0155: 05 07 00   jne 015F
+0158: 1C 30 05   addsi L0530   ; "Oh. Thou canst n...
+015B: 33   say
+015C: 06 1C 00   jmp 017B
+015F: 1C BB 05   addsi L05BB   ; "It is, indeed, a...
+0162: 33   say
+0163: 13   push true
+0164: 1F 99 FE   pushi FE99H   ; -359
+0167: 1F 99 FE   pushi FE99H   ; -359
+016A: 1F 84 02   pushi 0284H   ; 644
+016D: 1F 1E 00   pushi 001EH   ; 30
+0170: 38 2B 00 05  callis 002B, 5
+0174: 12 08 00   pop [0008]
+0177: 13   push true
+0178: 43 68 00   popf flag:[0068]
+017B: 06 07 00   jmp 0185
+017E: 1C 26 06   addsi L0626   ; "'Tis strange! I ...
+0181: 33   say
+0182: 24 03 00   call [0003]   ; 088EH
+0185: 06 1E 00   jmp 01A6
+0188: 1C 70 06   addsi L0670   ; "Wouldst thou lik...
+018B: 33   say
+018C: 24 02 00   call [0002]   ; 090AH
+018F: 12 09 00   pop [0009]
+0192: 21 09 00   push [0009]
+0195: 05 0A 00   jne 01A2
+0198: 1C A0 06   addsi L06A0   ; "We have many nic...
+019B: 33   say
+019C: 24 03 00   call [0003]   ; 088EH
+019F: 06 04 00   jmp 01A6
+01A2: 1C CC 06   addsi L06CC   ; "Thou mayest look...
+01A5: 33   say
+01A6: 1D 28 07   pushs L0728   ; buy
+01A9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01AD: 1D 2C 07   pushs L072C   ; Fellowship
+01B0: 07 01 00 1C 00  cmps 0001H, 01D1
+01B5: 21 01 00   push [0001]
+01B8: 10   not
+01B9: 05 03 00   jne 01BF
+01BC: 24 04 00   call [0004]   ; 0919H
+01BF: 1C 37 07   addsi L0737   ; "Thou wouldst wan...
+01C2: 33   say
+01C3: 1D D0 07   pushs L07D0   ; Fellowship
+01C6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CA: 1D DB 07   pushs L07DB   ; philosophy
+01CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01D1: 1D E6 07   pushs L07E6   ; Willy
+01D4: 07 01 00 0B 00  cmps 0001H, 01E4
+01D9: 1C EC 07   addsi L07EC   ; "Yes, he is a ver...
+01DC: 33   say
+01DD: 1D 19 09   pushs L0919   ; Willy
+01E0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E4: 1D 1F 09   pushs L091F   ; bye
+01E7: 07 01 00 03 00  cmps 0001H, 01EF
+01EC: 06 03 00   jmp 01F2
+01EF: 06 AE FE   jmp 00A0
+01F2: 40   db 40 ???
+01F3: 1C 23 09   addsi L0923   ; "Good day, 
+01F6: 2F 00 00   addsv [0000]
+01F9: 1C 2F 09   addsi L092F   ; ."*
+01FC: 33   say
+01FD: 48   push eventid
+01FE: 1F 00 00   pushi 0000H   ; 0
+0201: 22   cmpeq
+0202: 05 7F 00   jne 0284
+0205: 38 3B 00 00  callis 003B, 0
+0209: 12 02 00   pop [0002]
+020C: 1F CB FF   pushi FFCBH   ; -53
+020F: 38 1B 00 01  callis 001B, 1
+0213: 38 1C 00 01  callis 001C, 1
+0217: 12 03 00   pop [0003]
+021A: 1F 04 00   pushi 0004H   ; 4
+021D: 1F 01 00   pushi 0001H   ; 1
+0220: 38 10 00 02  callis _Random2@2  ; 0010
+0224: 12 0A 00   pop [000A]
+0227: 21 03 00   push [0003]
+022A: 1F 13 00   pushi 0013H   ; 19
+022D: 22   cmpeq
+022E: 05 4D 00   jne 027E
+0231: 21 0A 00   push [000A]
+0234: 1F 01 00   pushi 0001H   ; 1
+0237: 22   cmpeq
+0238: 05 06 00   jne 0241
+023B: 1D 33 09   pushs L0933   ; @Clothing? Boots?@
+023E: 12 0B 00   pop [000B]
+0241: 21 0A 00   push [000A]
+0244: 1F 02 00   pushi 0002H   ; 2
+0247: 22   cmpeq
+0248: 05 06 00   jne 0251
+024B: 1D 46 09   pushs L0946   ; @Swamp boots?@
+024E: 12 0B 00   pop [000B]
+0251: 21 0A 00   push [000A]
+0254: 1F 03 00   pushi 0003H   ; 3
+0257: 22   cmpeq
+0258: 05 06 00   jne 0261
+025B: 1D 55 09   pushs L0955   ; @Tunic? Dress?@
+025E: 12 0B 00   pop [000B]
+0261: 21 0A 00   push [000A]
+0264: 1F 04 00   pushi 0004H   ; 4
+0267: 22   cmpeq
+0268: 05 06 00   jne 0271
+026B: 1D 65 09   pushs L0965   ; @Fine clothes here!@
+026E: 12 0B 00   pop [000B]
+0271: 21 0B 00   push [000B]
+0274: 1F CB FF   pushi FFCBH   ; -53
+0277: 39 40 00 02  calli _ItemSay@2  ; 0040
+027B: 06 06 00   jmp 0284
+027E: 1F CB FF   pushi FFCBH   ; -53
+0281: 24 05 00   call [0005]   ; 092EH
+0284: 25   ret

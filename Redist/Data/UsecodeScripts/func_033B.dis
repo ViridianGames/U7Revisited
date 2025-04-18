@@ -1,0 +1,107 @@
+  .funcnumber 033BH
+  .data
+L0000: db '@It does not appear as though a bandage is needed.@'
+L0033: db 00
+L0034: db '@Much better.@'
+L0042: db 00
+L0043: db '@Ah, much better!@'
+L0055: db 00
+L0056: db '@Thank thee!@'
+L0063: db 00
+L0064: db '@That looks better.@'
+L0078: db 00
+L0079: db '@Do not soil the bandages.@'
+L0094: db 00
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0004H
+  .extern 08FFH
+  .extern 08FEH
+  .extern 0937H
+  .extern 0925H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 E9 00   jne 00F1
+0008: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+000C: 12 00 00   pop [0000]
+000F: 21 00 00   push [0000]
+0012: 38 31 00 01  callis 0031, 1
+0016: 05 D2 00   jne 00EB
+0019: 1F 00 00   pushi 0000H   ; 0
+001C: 21 00 00   push [0000]
+001F: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0023: 12 01 00   pop [0001]
+0026: 1F 03 00   pushi 0003H   ; 3
+0029: 21 00 00   push [0000]
+002C: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0030: 12 02 00   pop [0002]
+0033: 21 02 00   push [0002]
+0036: 21 01 00   push [0001]
+0039: 22   cmpeq
+003A: 05 09 00   jne 0046
+003D: 1D 00 00   pushs L0000   ; @It does not appe...
+0040: 24 00 00   call [0000]   ; 08FFH
+0043: 06 A2 00   jmp 00E8
+0046: 21 00 00   push [0000]
+0049: 38 3A 00 01  callis 003A, 1
+004D: 1F 9C FE   pushi FE9CH   ; -356
+0050: 22   cmpeq
+0051: 05 09 00   jne 005D
+0054: 1D 34 00   pushs L0034   ; @Much better.@
+0057: 24 01 00   call [0001]   ; 08FEH
+005A: 06 52 00   jmp 00AF
+005D: 21 00 00   push [0000]
+0060: 24 02 00   call [0002]   ; 0937H
+0063: 05 49 00   jne 00AF
+0066: 1F 03 00   pushi 0003H   ; 3
+0069: 1F 01 00   pushi 0001H   ; 1
+006C: 38 10 00 02  callis _Random2@2  ; 0010
+0070: 12 03 00   pop [0003]
+0073: 21 03 00   push [0003]
+0076: 1F 01 00   pushi 0001H   ; 1
+0079: 22   cmpeq
+007A: 05 0A 00   jne 0087
+007D: 1D 43 00   pushs L0043   ; @Ah, much better!@
+0080: 21 00 00   push [0000]
+0083: 39 40 00 02  calli _ItemSay@2  ; 0040
+0087: 21 03 00   push [0003]
+008A: 1F 02 00   pushi 0002H   ; 2
+008D: 22   cmpeq
+008E: 05 0A 00   jne 009B
+0091: 1D 56 00   pushs L0056   ; @Thank thee!@
+0094: 21 00 00   push [0000]
+0097: 39 40 00 02  calli _ItemSay@2  ; 0040
+009B: 21 03 00   push [0003]
+009E: 1F 03 00   pushi 0003H   ; 3
+00A1: 22   cmpeq
+00A2: 05 0A 00   jne 00AF
+00A5: 1D 64 00   pushs L0064   ; @That looks better.@
+00A8: 21 00 00   push [0000]
+00AB: 39 40 00 02  calli _ItemSay@2  ; 0040
+00AF: 1F 04 00   pushi 0004H   ; 4
+00B2: 1F 01 00   pushi 0001H   ; 1
+00B5: 38 10 00 02  callis _Random2@2  ; 0010
+00B9: 12 03 00   pop [0003]
+00BC: 21 02 00   push [0002]
+00BF: 21 03 00   push [0003]
+00C2: 09   add
+00C3: 21 01 00   push [0001]
+00C6: 16   cmpgt
+00C7: 05 0A 00   jne 00D4
+00CA: 21 01 00   push [0001]
+00CD: 21 02 00   push [0002]
+00D0: 0A   sub
+00D1: 12 03 00   pop [0003]
+00D4: 21 03 00   push [0003]
+00D7: 1F 03 00   pushi 0003H   ; 3
+00DA: 21 00 00   push [0000]
+00DD: 38 21 00 03  callis _SetNPCProperty@3  ; 0021
+00E1: 12 03 00   pop [0003]
+00E4: 3E   push itemref
+00E5: 24 03 00   call [0003]   ; 0925H
+00E8: 06 06 00   jmp 00F1
+00EB: 1D 79 00   pushs L0079   ; @Do not soil the ...
+00EE: 24 01 00   call [0001]   ; 08FEH
+00F1: 25   ret

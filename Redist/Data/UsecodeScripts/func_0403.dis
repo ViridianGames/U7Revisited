@@ -1,0 +1,690 @@
+  .funcnumber 0403H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db '"I am sorry, I do not join thieves."'
+L0031: db 00
+L0032: db '"All right, I suppose thou hast learned thy lesson. I shall '
+ db 'rejoin."'
+L0076: db 00
+L0077: db 'Amber'
+L007C: db 00
+L007D: db 'settle down'
+L0088: db 00
+L0089: db 'leave'
+L008E: db 00
+L008F: db 'join'
+L0093: db 00
+L0094: db 'Your old friend Shamino stands before you and you marvel tha'
+ db 't he has finally progressed into what some might call 'middl'
+ db 'e age'.'
+L0113: db 00
+L0114: db '"Yes, '
+L011A: db 00
+L011B: db '?" Shamino asks.'
+L012B: db 00
+L012C: db 'name'
+L0130: db 00
+L0131: db 'Your friend looks at you like you have lost your head. "'Tis'
+ db ' Shamino. -Sha-mi-no-."'
+L0184: db 00
+L0185: db 'name'
+L0189: db 00
+L018A: db 'job'
+L018D: db 00
+L018E: db '"I should hope 'twould be adventuring with thee! I am weary '
+ db 'of loitering about Britain. There is much we could be accomp'
+ db 'lishing! Where hast thou been, anyway?"'
+L022D: db 00
+L022E: db '"But please tell me what brings thee here!"'
+L0259: db 00
+L025A: db 'murder in Trinsic'
+L026B: db 00
+L026C: db 'accomplishing'
+L0279: db 00
+L027A: db 'Britain'
+L0281: db 00
+L0282: db 'accomplishing'
+L028F: db 00
+L0290: db '"Well, I do not know if thou art aware, but we are having ma'
+ db 'ny problems with magic in general, and with the Moongates."'
+L0307: db 00
+L0308: db 'accomplishing'
+L0315: db 00
+L0316: db 'Moongates'
+L031F: db 00
+L0320: db 'magic'
+L0325: db 00
+L0326: db 'Britain'
+L032D: db 00
+L032E: db '"Yes, I have been in Britain as of late, attempting to find '
+ db 'work. Thou dost know that adventuring comes around too infre'
+ db 'quently. One must find -other- diversions. Which reminds me.'
+ db '.. I have thy pocketwatch."'
+L03FD: db 00
+L03FE: db 'Britain'
+L0405: db 00
+L0406: db 'pocketwatch'
+L0411: db 00
+L0412: db 'diversions'
+L041C: db 00
+L041D: db 'pocketwatch'
+L0428: db 00
+L0429: db '"Thou didst leave it when thou didst last visit Britannia. H'
+ db 'ere it is."'
+L0470: db 00
+L0471: db 'Shamino hands you the pocketwatch.'
+L0493: db 00
+L0494: db '"Oops. Thine hands are too full to take it. Ask me about it '
+ db 'later."'
+L04D7: db 00
+L04D8: db '"I already gave thee the pocketwatch, '
+L04FE: db 00
+L04FF: db '. I hope thou didst not lose it again!"'
+L0526: db 00
+L0527: db 'pocketwatch'
+L0532: db 00
+L0533: db 'diversions'
+L053D: db 00
+L053E: db '"The usual. I do not see our old friends often, and Lord Bri'
+ db 'tish rarely finds work for me. I certainly have no time for '
+ db 'wenching or drinking -- I have grown up a bit."*'
+L05E6: db 00
+L05E7: db 'diversions'
+L05F1: db 00
+L05F2: db '"Ahem, I have heard something about an actress, no?"*'
+L0627: db 00
+L0628: db '"What dost thou know of it?"*'
+L0645: db 00
+L0646: db '"'
+L0647: db 00
+L0648: db ', ask him about 'Amber'."*'
+L0662: db 00
+L0663: db '"Thou art a swine, Iolo."'
+L067C: db 00
+L067D: db 'Lord British'
+L0689: db 00
+L068A: db 'friends'
+L0691: db 00
+L0692: db 'Amber'
+L0697: db 00
+L0698: db 'Lord British'
+L06A4: db 00
+L06A5: db '"I suggest that thou proceed immediately to see him!"*'
+L06DB: db 00
+L06DC: db '"I am glad I do not look as aged as -he- does!"'
+L070B: db 00
+L070C: db 'Lord British'
+L0718: db 00
+L0719: db 'friends'
+L0720: db 00
+L0721: db '"Thou dost mean Iolo and Dupre, I presume?"'
+L074C: db 00
+L074D: db 'friends'
+L0754: db 00
+L0755: db 'Dupre'
+L075A: db 00
+L075B: db 'Iolo'
+L075F: db 00
+L0760: db 'Iolo'
+L0764: db 00
+L0765: db '"Dost thou mean that miserable excuse for an archer?"*'
+L079B: db 00
+L079C: db '"Watch what thou dost say, scoundrel!"*'
+L07C3: db 00
+L07C4: db '"Yes, that's Iolo!"'
+L07D7: db 00
+L07D8: db '"Surely he is around somewhere. Where didst thou last leave '
+ db 'him?"'
+L0819: db 00
+L081A: db 'Iolo'
+L081E: db 00
+L081F: db 'Dupre'
+L0824: db 00
+L0825: db '"Dost thou mean that incorrigible wencher and drunkard?"*'
+L085E: db 00
+L085F: db '"Do not forget that my mere thumb can squash in thy face lik'
+ db 'e a marshmallow."*'
+L08AD: db 00
+L08AE: db '"Yes, that's Dupre!"*'
+L08C3: db 00
+L08C4: db '"That's -Sir- Dupre to thee!"*'
+L08E2: db 00
+L08E3: db '"Sir Dupuke? Didst thou say Sir Dupuke?"*'
+L090C: db 00
+L090D: db '"Du-pre-!"*'
+L0918: db 00
+L0919: db '"Pardon -me-, Sir Dupuke!"*'
+L0934: db 00
+L0935: db '"I'm not going to listen to this anymore."*'
+L0960: db 00
+L0961: db '"I believe he is in Jhelom."'
+L097D: db 00
+L097E: db '"He must be around somewhere!"'
+L099C: db 00
+L099D: db 'Dupre'
+L09A2: db 00
+L09A3: db 'join'
+L09A7: db 00
+L09A8: db 'Shamino looks relieved. "I am -so- glad thou didst ask me th'
+ db 'at." He gathers his gear and prepares to follow you.'
+L0A18: db 00
+L0A19: db '"Hmmm. I do not like big crowds. I shall wait until thy grou'
+ db 'p is smaller before joining."'
+L0A72: db 00
+L0A73: db 'leave'
+L0A78: db 00
+L0A79: db 'join'
+L0A7D: db 00
+L0A7E: db 'leave'
+L0A83: db 00
+L0A84: db '"Hmmm. Dost thou merely want me to wait here or dost thou wa'
+ db 'nt me to go home?"'
+L0AD2: db 00
+L0AD3: db 'go home'
+L0ADA: db 00
+L0ADB: db 'wait here'
+L0AE4: db 00
+L0AE5: db 'wait here'
+L0AEE: db 00
+L0AEF: db '"Very well. I shall await thy return."*'
+L0B16: db 00
+L0B17: db '"I really hate to, but if thou dost insist." Shamino grudgin'
+ db 'gly gathers his belongings.*'
+L0B6F: db 00
+L0B70: db 'murder in Trinsic'
+L0B81: db 00
+L0B82: db 'Shamino listens as you tell him the story. "I would be honor'
+ db 'ed to join and help thee in investigating this matter."'
+L0BF5: db 00
+L0BF6: db 'murder in Trinsic'
+L0C07: db 00
+L0C08: db 'Moongates'
+L0C11: db 00
+L0C12: db '"I am confounded by their inability to function properly."'
+L0C4C: db 00
+L0C4D: db '"'Tis a pity that thou art marooned here."'
+L0C77: db 00
+L0C78: db 'Moongates'
+L0C81: db 00
+L0C82: db 'magic'
+L0C87: db 00
+L0C88: db '"Magic all over Britannia seems to be disturbed. Say, dost t'
+ db 'hou remember Nicodemus in the great forest? He has gone mad '
+ db 'and is terribly silly. Perhaps we should visit him."'
+L0D34: db 00
+L0D35: db '"It does not work well. I do not understand it."'
+L0D65: db 00
+L0D66: db '"It will probably work extremely well now, '
+L0D91: db 00
+L0D92: db '."'
+L0D94: db 00
+L0D95: db 'magic'
+L0D9A: db 00
+L0D9B: db 'Amber'
+L0DA0: db 00
+L0DA1: db 'You see a light shine in Shamino's eyes as you mention her n'
+ db 'ame. He is obviously smitten.~~"She is an actress I know."'
+L0E17: db 00
+L0E18: db 'Amber'
+L0E1D: db 00
+L0E1E: db 'settle down'
+L0E29: db 00
+L0E2A: db '"That woman! She cannot understand that I must have mine adv'
+ db 'enturing! I cannot settle down. -Yet-! Soon maybe."~~Shamino'
+ db ' looks concerned. "I have grown up. A bit."'
+L0ECD: db 00
+L0ECE: db 'settle down'
+L0ED9: db 00
+L0EDA: db 'bye'
+L0EDD: db 00
+L0EDE: db 'Shamino bows slightly.*'
+L0EF5: db 00
+  .code
+  .argc 0001H
+  .localc 000CH
+  .externsize 0004H
+  .extern 0908H
+  .extern 08F7H
+  .extern 090BH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 AA 04   jne 04B2
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F FD FF   pushi FFFDH   ; -3
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0016: 12 00 00   pop [0000]
+0019: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+001D: 12 01 00   pop [0001]
+0020: 1F FD FF   pushi FFFDH   ; -3
+0023: 38 1B 00 01  callis 001B, 1
+0027: 12 02 00   pop [0002]
+002A: 24 00 00   call [0000]   ; 0908H
+002D: 12 03 00   pop [0003]
+0030: 1D 00 00   pushs L0000   ; bye
+0033: 1D 04 00   pushs L0004   ; job
+0036: 1D 08 00   pushs L0008   ; name
+0039: 1E 03 00   arrc 0003H   ; 3
+003C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0040: 42 EC 02   pushf flag:[02EC]
+0043: 05 26 00   jne 006C
+0046: 1F 0B 00   pushi 000BH   ; 11
+0049: 38 65 00 01  callis 0065, 1
+004D: 1F 01 00   pushi 0001H   ; 1
+0050: 17   cmpl
+0051: 05 08 00   jne 005C
+0054: 1C 0D 00   addsi L000D   ; "I am sorry, I do...
+0057: 33   say
+0058: 3F   abrt
+0059: 06 10 00   jmp 006C
+005C: 1C 32 00   addsi L0032   ; "All right, I sup...
+005F: 33   say
+0060: 1F FD FF   pushi FFFDH   ; -3
+0063: 39 1E 00 01  calli 001E, 1
+0067: 14   push false
+0068: 43 EC 02   popf flag:[02EC]
+006B: 3F   abrt
+006C: 42 6D 00   pushf flag:[006D]
+006F: 05 07 00   jne 0079
+0072: 1D 77 00   pushs L0077   ; Amber
+0075: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0079: 42 6E 00   pushf flag:[006E]
+007C: 05 07 00   jne 0086
+007F: 1D 7D 00   pushs L007D   ; settle down
+0082: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0086: 21 02 00   push [0002]
+0089: 21 01 00   push [0001]
+008C: 30   in
+008D: 05 07 00   jne 0097
+0090: 1D 89 00   pushs L0089   ; leave
+0093: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0097: 21 02 00   push [0002]
+009A: 21 01 00   push [0001]
+009D: 30   in
+009E: 10   not
+009F: 05 07 00   jne 00A9
+00A2: 1D 8F 00   pushs L008F   ; join
+00A5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A9: 42 16 00   pushf flag:[0016]
+00AC: 10   not
+00AD: 05 0B 00   jne 00BB
+00B0: 1C 94 00   addsi L0094   ; Your old friend S...
+00B3: 33   say
+00B4: 13   push true
+00B5: 43 16 00   popf flag:[0016]
+00B8: 06 0A 00   jmp 00C5
+00BB: 1C 14 01   addsi L0114   ; "Yes, 
+00BE: 2F 03 00   addsv [0003]
+00C1: 1C 1B 01   addsi L011B   ; ?" Shamino asks.
+00C4: 33   say
+00C5: 04 E5 03   je 04AD
+00C8: 1D 2C 01   pushs L012C   ; name
+00CB: 07 01 00 0B 00  cmps 0001H, 00DB
+00D0: 1C 31 01   addsi L0131   ; Your friend looks...
+00D3: 33   say
+00D4: 1D 85 01   pushs L0185   ; name
+00D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DB: 1D 8A 01   pushs L018A   ; job
+00DE: 07 01 00 23 00  cmps 0001H, 0106
+00E3: 1C 8E 01   addsi L018E   ; "I should hope 't...
+00E6: 33   say
+00E7: 42 D5 00   pushf flag:[00D5]
+00EA: 10   not
+00EB: 05 0B 00   jne 00F9
+00EE: 1C 2E 02   addsi L022E   ; "But please tell ...
+00F1: 33   say
+00F2: 1D 5A 02   pushs L025A   ; murder in Trinsic
+00F5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F9: 1D 6C 02   pushs L026C   ; accomplishing
+00FC: 1D 7A 02   pushs L027A   ; Britain
+00FF: 1E 02 00   arrc 0002H   ; 2
+0102: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0106: 1D 82 02   pushs L0282   ; accomplishing
+0109: 07 01 00 18 00  cmps 0001H, 0126
+010E: 1C 90 02   addsi L0290   ; "Well, I do not k...
+0111: 33   say
+0112: 1D 08 03   pushs L0308   ; accomplishing
+0115: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0119: 1D 16 03   pushs L0316   ; Moongates
+011C: 1D 20 03   pushs L0320   ; magic
+011F: 1E 02 00   arrc 0002H   ; 2
+0122: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0126: 1D 26 03   pushs L0326   ; Britain
+0129: 07 01 00 18 00  cmps 0001H, 0146
+012E: 1C 2E 03   addsi L032E   ; "Yes, I have been...
+0131: 33   say
+0132: 1D FE 03   pushs L03FE   ; Britain
+0135: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0139: 1D 06 04   pushs L0406   ; pocketwatch
+013C: 1D 12 04   pushs L0412   ; diversions
+013F: 1E 02 00   arrc 0002H   ; 2
+0142: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0146: 1D 1D 04   pushs L041D   ; pocketwatch
+0149: 07 01 00 48 00  cmps 0001H, 0196
+014E: 42 D9 00   pushf flag:[00D9]
+0151: 10   not
+0152: 05 30 00   jne 0185
+0155: 1C 29 04   addsi L0429   ; "Thou didst leave...
+0158: 33   say
+0159: 14   push false
+015A: 1F 99 FE   pushi FE99H   ; -359
+015D: 1F 99 FE   pushi FE99H   ; -359
+0160: 1F 9F 00   pushi 009FH   ; 159
+0163: 1F 01 00   pushi 0001H   ; 1
+0166: 38 2C 00 05  callis 002C, 5
+016A: 12 04 00   pop [0004]
+016D: 21 04 00   push [0004]
+0170: 05 0B 00   jne 017E
+0173: 1C 71 04   addsi L0471   ; Shamino hands you...
+0176: 33   say
+0177: 13   push true
+0178: 43 D9 00   popf flag:[00D9]
+017B: 06 04 00   jmp 0182
+017E: 1C 94 04   addsi L0494   ; "Oops. Thine hand...
+0181: 33   say
+0182: 06 0A 00   jmp 018F
+0185: 1C D8 04   addsi L04D8   ; "I already gave t...
+0188: 2F 03 00   addsv [0003]
+018B: 1C FF 04   addsi L04FF   ; . I hope thou did...
+018E: 33   say
+018F: 1D 27 05   pushs L0527   ; pocketwatch
+0192: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0196: 1D 33 05   pushs L0533   ; diversions
+0199: 07 01 00 76 00  cmps 0001H, 0214
+019E: 1C 3E 05   addsi L053E   ; "The usual. I do ...
+01A1: 33   say
+01A2: 1D E7 05   pushs L05E7   ; diversions
+01A5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A9: 1F FF FF   pushi FFFFH   ; -1
+01AC: 24 01 00   call [0001]   ; 08F7H
+01AF: 12 05 00   pop [0005]
+01B2: 21 05 00   push [0005]
+01B5: 05 5C 00   jne 0214
+01B8: 1F 00 00   pushi 0000H   ; 0
+01BB: 1F FF FF   pushi FFFFH   ; -1
+01BE: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01C2: 1C F2 05   addsi L05F2   ; "Ahem, I have hea...
+01C5: 33   say
+01C6: 1F FF FF   pushi FFFFH   ; -1
+01C9: 39 04 00 01  calli _HideNPC@1  ; 0004
+01CD: 1F 00 00   pushi 0000H   ; 0
+01D0: 1F FD FF   pushi FFFDH   ; -3
+01D3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01D7: 1C 28 06   addsi L0628   ; "What dost thou k...
+01DA: 33   say
+01DB: 1F 00 00   pushi 0000H   ; 0
+01DE: 1F FF FF   pushi FFFFH   ; -1
+01E1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+01E5: 1C 46 06   addsi L0646   ; "
+01E8: 2F 03 00   addsv [0003]
+01EB: 1C 48 06   addsi L0648   ; , ask him about '...
+01EE: 33   say
+01EF: 1F FF FF   pushi FFFFH   ; -1
+01F2: 39 04 00 01  calli _HideNPC@1  ; 0004
+01F6: 1F 00 00   pushi 0000H   ; 0
+01F9: 1F FD FF   pushi FFFDH   ; -3
+01FC: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0200: 1C 63 06   addsi L0663   ; "Thou art a swine...
+0203: 33   say
+0204: 1D 7D 06   pushs L067D   ; Lord British
+0207: 1D 8A 06   pushs L068A   ; friends
+020A: 1D 92 06   pushs L0692   ; Amber
+020D: 1E 03 00   arrc 0003H   ; 3
+0210: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0214: 1D 98 06   pushs L0698   ; Lord British
+0217: 07 01 00 1A 00  cmps 0001H, 0236
+021C: 42 98 00   pushf flag:[0098]
+021F: 10   not
+0220: 05 08 00   jne 022B
+0223: 1C A5 06   addsi L06A5   ; "I suggest that t...
+0226: 33   say
+0227: 3F   abrt
+0228: 06 04 00   jmp 022F
+022B: 1C DC 06   addsi L06DC   ; "I am glad I do n...
+022E: 33   say
+022F: 1D 0C 07   pushs L070C   ; Lord British
+0232: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0236: 1D 19 07   pushs L0719   ; friends
+0239: 07 01 00 18 00  cmps 0001H, 0256
+023E: 1C 21 07   addsi L0721   ; "Thou dost mean I...
+0241: 33   say
+0242: 1D 4D 07   pushs L074D   ; friends
+0245: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0249: 1D 55 07   pushs L0755   ; Dupre
+024C: 1D 5B 07   pushs L075B   ; Iolo
+024F: 1E 02 00   arrc 0002H   ; 2
+0252: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0256: 1D 60 07   pushs L0760   ; Iolo
+0259: 07 01 00 44 00  cmps 0001H, 02A2
+025E: 1F FF FF   pushi FFFFH   ; -1
+0261: 24 01 00   call [0001]   ; 08F7H
+0264: 12 05 00   pop [0005]
+0267: 21 05 00   push [0005]
+026A: 05 2A 00   jne 0297
+026D: 1C 65 07   addsi L0765   ; "Dost thou mean t...
+0270: 33   say
+0271: 1F 00 00   pushi 0000H   ; 0
+0274: 1F FF FF   pushi FFFFH   ; -1
+0277: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+027B: 1C 9C 07   addsi L079C   ; "Watch what thou ...
+027E: 33   say
+027F: 1F FF FF   pushi FFFFH   ; -1
+0282: 39 04 00 01  calli _HideNPC@1  ; 0004
+0286: 1F 00 00   pushi 0000H   ; 0
+0289: 1F FD FF   pushi FFFDH   ; -3
+028C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0290: 1C C4 07   addsi L07C4   ; "Yes, that's Iolo!"
+0293: 33   say
+0294: 06 04 00   jmp 029B
+0297: 1C D8 07   addsi L07D8   ; "Surely he is aro...
+029A: 33   say
+029B: 1D 1A 08   pushs L081A   ; Iolo
+029E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A2: 1D 1F 08   pushs L081F   ; Dupre
+02A5: 07 01 00 A2 00  cmps 0001H, 034C
+02AA: 1F FC FF   pushi FFFCH   ; -4
+02AD: 24 01 00   call [0001]   ; 08F7H
+02B0: 12 06 00   pop [0006]
+02B3: 21 06 00   push [0006]
+02B6: 05 7A 00   jne 0333
+02B9: 1C 25 08   addsi L0825   ; "Dost thou mean t...
+02BC: 33   say
+02BD: 1F 00 00   pushi 0000H   ; 0
+02C0: 1F FC FF   pushi FFFCH   ; -4
+02C3: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02C7: 1C 5F 08   addsi L085F   ; "Do not forget th...
+02CA: 33   say
+02CB: 1F 00 00   pushi 0000H   ; 0
+02CE: 1F FD FF   pushi FFFDH   ; -3
+02D1: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02D5: 1C AE 08   addsi L08AE   ; "Yes, that's Dupr...
+02D8: 33   say
+02D9: 1F 00 00   pushi 0000H   ; 0
+02DC: 1F FC FF   pushi FFFCH   ; -4
+02DF: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02E3: 1C C4 08   addsi L08C4   ; "That's -Sir- Dup...
+02E6: 33   say
+02E7: 1F 00 00   pushi 0000H   ; 0
+02EA: 1F FD FF   pushi FFFDH   ; -3
+02ED: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02F1: 1C E3 08   addsi L08E3   ; "Sir Dupuke? Dids...
+02F4: 33   say
+02F5: 1F 00 00   pushi 0000H   ; 0
+02F8: 1F FC FF   pushi FFFCH   ; -4
+02FB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+02FF: 1C 0D 09   addsi L090D   ; "Du-pre-!"*
+0302: 33   say
+0303: 1F 00 00   pushi 0000H   ; 0
+0306: 1F FD FF   pushi FFFDH   ; -3
+0309: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+030D: 1C 19 09   addsi L0919   ; "Pardon -me-, Sir...
+0310: 33   say
+0311: 1F 00 00   pushi 0000H   ; 0
+0314: 1F FC FF   pushi FFFCH   ; -4
+0317: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+031B: 1C 35 09   addsi L0935   ; "I'm not going to...
+031E: 33   say
+031F: 1F FC FF   pushi FFFCH   ; -4
+0322: 39 04 00 01  calli _HideNPC@1  ; 0004
+0326: 1F 00 00   pushi 0000H   ; 0
+0329: 1F FD FF   pushi FFFDH   ; -3
+032C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0330: 06 12 00   jmp 0345
+0333: 42 17 00   pushf flag:[0017]
+0336: 10   not
+0337: 05 07 00   jne 0341
+033A: 1C 61 09   addsi L0961   ; "I believe he is ...
+033D: 33   say
+033E: 06 04 00   jmp 0345
+0341: 1C 7E 09   addsi L097E   ; "He must be aroun...
+0344: 33   say
+0345: 1D 9D 09   pushs L099D   ; Dupre
+0348: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+034C: 1D A3 09   pushs L09A3   ; join
+034F: 07 01 00 50 00  cmps 0001H, 03A4
+0354: 1F 00 00   pushi 0000H   ; 0
+0357: 12 07 00   pop [0007]
+035A: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+035E: 12 01 00   pop [0001]
+0361: 2E   sloop
+0362: 02 08 00 09 00 0A 00 01 00 0D 00  db 2 ???
+0363:   db 8
+0364:   db 0
+0365:   db 9
+0366:   db 0
+0367:   db a
+0368:   db 0
+0369:   db 1
+036A:   db 0
+036B:   db d
+036C:   db 0
+036D: 21 07 00   push [0007]
+0370: 1F 01 00   pushi 0001H   ; 1
+0373: 09   add
+0374: 12 07 00   pop [0007]
+0377: 06 E8 FF   jmp 0362
+037A: 21 07 00   push [0007]
+037D: 1F 08 00   pushi 0008H   ; 8
+0380: 17   cmpl
+0381: 05 0E 00   jne 0392
+0384: 1C A8 09   addsi L09A8   ; Shamino looks rel...
+0387: 33   say
+0388: 1F FD FF   pushi FFFDH   ; -3
+038B: 39 1E 00 01  calli 001E, 1
+038F: 06 04 00   jmp 0396
+0392: 1C 19 0A   addsi L0A19   ; "Hmmm. I do not l...
+0395: 33   say
+0396: 1D 73 0A   pushs L0A73   ; leave
+0399: 39 05 00 01  calli _AddAnswer@1  ; 0005
+039D: 1D 79 0A   pushs L0A79   ; join
+03A0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03A4: 1D 7E 0A   pushs L0A7E   ; leave
+03A7: 07 01 00 58 00  cmps 0001H, 0404
+03AC: 1C 84 0A   addsi L0A84   ; "Hmmm. Dost thou ...
+03AF: 33   say
+03B0: 39 09 00 00  calli 0009, 0
+03B4: 1D D3 0A   pushs L0AD3   ; go home
+03B7: 1D DB 0A   pushs L0ADB   ; wait here
+03BA: 1E 02 00   arrc 0002H   ; 2
+03BD: 24 02 00   call [0002]   ; 090BH
+03C0: 12 0B 00   pop [000B]
+03C3: 21 0B 00   push [000B]
+03C6: 1D E5 0A   pushs L0AE5   ; wait here
+03C9: 22   cmpeq
+03CA: 05 1D 00   jne 03EA
+03CD: 1C EF 0A   addsi L0AEF   ; "Very well. I sha...
+03D0: 33   say
+03D1: 1F FD FF   pushi FFFDH   ; -3
+03D4: 39 1F 00 01  calli 001F, 1
+03D8: 1F 0F 00   pushi 000FH   ; 15
+03DB: 1F FD FF   pushi FFFDH   ; -3
+03DE: 38 1B 00 01  callis 001B, 1
+03E2: 39 1D 00 02  calli 001D, 2
+03E6: 3F   abrt
+03E7: 06 1A 00   jmp 0404
+03EA: 1C 17 0B   addsi L0B17   ; "I really hate to...
+03ED: 33   say
+03EE: 1F FD FF   pushi FFFDH   ; -3
+03F1: 39 1F 00 01  calli 001F, 1
+03F5: 1F 0B 00   pushi 000BH   ; 11
+03F8: 1F FD FF   pushi FFFDH   ; -3
+03FB: 38 1B 00 01  callis 001B, 1
+03FF: 39 1D 00 02  calli 001D, 2
+0403: 3F   abrt
+0404: 1D 70 0B   pushs L0B70   ; murder in Trinsic
+0407: 07 01 00 0F 00  cmps 0001H, 041B
+040C: 1C 82 0B   addsi L0B82   ; Shamino listens a...
+040F: 33   say
+0410: 13   push true
+0411: 43 D5 00   popf flag:[00D5]
+0414: 1D F6 0B   pushs L0BF6   ; murder in Trinsic
+0417: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+041B: 1D 08 0C   pushs L0C08   ; Moongates
+041E: 07 01 00 19 00  cmps 0001H, 043C
+0423: 42 04 00   pushf flag:[0004]
+0426: 10   not
+0427: 05 07 00   jne 0431
+042A: 1C 12 0C   addsi L0C12   ; "I am confounded ...
+042D: 33   say
+042E: 06 04 00   jmp 0435
+0431: 1C 4D 0C   addsi L0C4D   ; "'Tis a pity that...
+0434: 33   say
+0435: 1D 78 0C   pushs L0C78   ; Moongates
+0438: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+043C: 1D 82 0C   pushs L0C82   ; magic
+043F: 07 01 00 31 00  cmps 0001H, 0475
+0444: 42 03 00   pushf flag:[0003]
+0447: 10   not
+0448: 05 19 00   jne 0464
+044B: 42 6C 00   pushf flag:[006C]
+044E: 10   not
+044F: 05 0B 00   jne 045D
+0452: 1C 88 0C   addsi L0C88   ; "Magic all over B...
+0455: 33   say
+0456: 13   push true
+0457: 43 6C 00   popf flag:[006C]
+045A: 06 04 00   jmp 0461
+045D: 1C 35 0D   addsi L0D35   ; "It does not work...
+0460: 33   say
+0461: 06 0A 00   jmp 046E
+0464: 1C 66 0D   addsi L0D66   ; "It will probably...
+0467: 2F 03 00   addsv [0003]
+046A: 1C 92 0D   addsi L0D92   ; ."
+046D: 33   say
+046E: 1D 95 0D   pushs L0D95   ; magic
+0471: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0475: 1D 9B 0D   pushs L0D9B   ; Amber
+0478: 07 01 00 0F 00  cmps 0001H, 048C
+047D: 1C A1 0D   addsi L0DA1   ; You see a light s...
+0480: 33   say
+0481: 1D 18 0E   pushs L0E18   ; Amber
+0484: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0488: 13   push true
+0489: 43 6B 00   popf flag:[006B]
+048C: 1D 1E 0E   pushs L0E1E   ; settle down
+048F: 07 01 00 0B 00  cmps 0001H, 049F
+0494: 1C 2A 0E   addsi L0E2A   ; "That woman! She ...
+0497: 33   say
+0498: 1D CE 0E   pushs L0ECE   ; settle down
+049B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+049F: 1D DA 0E   pushs L0EDA   ; bye
+04A2: 07 01 00 03 00  cmps 0001H, 04AA
+04A7: 06 03 00   jmp 04AD
+04AA: 06 18 FC   jmp 00C5
+04AD: 40   db 40 ???
+04AE: 1C DE 0E   addsi L0EDE   ; Shamino bows slig...
+04B1: 33   say
+04B2: 48   push eventid
+04B3: 1F 00 00   pushi 0000H   ; 0
+04B6: 22   cmpeq
+04B7: 05 06 00   jne 04C0
+04BA: 1F FD FF   pushi FFFDH   ; -3
+04BD: 24 03 00   call [0003]   ; 092EH
+04C0: 25   ret

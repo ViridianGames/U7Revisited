@@ -1,0 +1,23 @@
+  .funcnumber 0939H
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 21 00 00   push [0000]
+0003: 1F 00 00   pushi 0000H   ; 0
+0006: 17   cmpl
+0007: 21 00 00   push [0000]
+000A: 1F 9C FE   pushi FE9CH   ; -356
+000D: 18   cmpge
+000E: 0E   and
+000F: 05 0D 00   jne 001F
+0012: 21 00 00   push [0000]
+0015: 38 1B 00 01  callis 001B, 1
+0019: 12 01 00   pop [0001]
+001C: 06 06 00   jmp 0025
+001F: 21 00 00   push [0000]
+0022: 12 01 00   pop [0001]
+0025: 21 01 00   push [0001]
+0028: 2D   setr
+0029: 32   rts

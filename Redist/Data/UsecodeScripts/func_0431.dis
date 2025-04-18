@@ -1,0 +1,180 @@
+  .funcnumber 0431H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a fighter with intense eyes and a serious dispositio'
+ db 'n.'
+L004B: db 00
+L004C: db '"Yes, Avatar?" Denby asks.'
+L0066: db 00
+L0067: db 'name'
+L006B: db 00
+L006C: db '"I am Denby."'
+L0079: db 00
+L007A: db 'name'
+L007E: db 00
+L007F: db 'job'
+L0082: db 00
+L0083: db '"I am a trainer. I specialize in a form of combat which reli'
+ db 'es on one's ability to use intelligence and physical ability'
+ db ' to activate minor magical effects. But I am not a mage. I a'
+ db 'm a fighter."'
+L0144: db 00
+L0145: db 'train'
+L014A: db 00
+L014B: db 'fighter'
+L0152: db 00
+L0153: db 'magical effects'
+L0162: db 00
+L0163: db 'magical effects'
+L0172: db 00
+L0173: db '"For example, I simply teach a combination of physical and m'
+ db 'ental exercises which increases one's intelligence. This, in'
+ db ' turn, gives one an advantage if one desires to practice mag'
+ db 'ic."'
+L022B: db 00
+L022C: db '"Thou shouldst be aware, however, that magic is not working '
+ db 'in Britannia these days. It is a dying phenomenon. No one un'
+ db 'derstands why. Nevertheless, my training should increase any'
+ db ' magic user's primary chances for casting a spell, as well a'
+ db 's their fighting skill."'
+L0334: db 00
+L0335: db 'magical effects'
+L0344: db 00
+L0345: db 'fighter'
+L034C: db 00
+L034D: db '"Although I am a fighter, I have dedicated my life to peace.'
+ db ' There has been too much fighting in the world as it is. Let'
+ db ' history take care of the adversarial qualities which exist '
+ db 'in man. I believe in using my skills as a deterrent."'
+L0436: db 00
+L0437: db 'fighter'
+L043E: db 00
+L043F: db 'train'
+L0444: db 00
+L0445: db '"My fee for training is 75 gold. Does this meet with the app'
+ db 'roval of thy purse strings?"'
+L049D: db 00
+L049E: db 'Denby bows. "I am sorry my fee is too high for thee. Perhaps'
+ db ' at another time thou wilt realize the value of my services.'
+ db '"'
+L0517: db 00
+L0518: db '"Please return during daylight hours if thou dost wish to tr'
+ db 'ain."'
+L0559: db 00
+L055A: db 'train'
+L055F: db 00
+L0560: db 'bye'
+L0563: db 00
+L0564: db 'Denby puts his palms together and bows.*'
+L058C: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0003H
+  .extern 090AH
+  .extern 0875H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 FE 00   jne 0106
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F CF FF   pushi FFCFH   ; -49
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 1D 00 00   pushs L0000   ; bye
+0015: 1D 04 00   pushs L0004   ; job
+0018: 1D 08 00   pushs L0008   ; name
+001B: 1E 03 00   arrc 0003H   ; 3
+001E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0022: 38 3B 00 00  callis 003B, 0
+0026: 12 00 00   pop [0000]
+0029: 1F CF FF   pushi FFCFH   ; -49
+002C: 38 1B 00 01  callis 001B, 1
+0030: 38 1C 00 01  callis 001C, 1
+0034: 12 01 00   pop [0001]
+0037: 42 B2 00   pushf flag:[00B2]
+003A: 10   not
+003B: 05 0B 00   jne 0049
+003E: 1C 0D 00   addsi L000D   ; You see a fighter...
+0041: 33   say
+0042: 13   push true
+0043: 43 B2 00   popf flag:[00B2]
+0046: 06 04 00   jmp 004D
+0049: 1C 4C 00   addsi L004C   ; "Yes, Avatar?" De...
+004C: 33   say
+004D: 04 B1 00   je 0101
+0050: 1D 67 00   pushs L0067   ; name
+0053: 07 01 00 0B 00  cmps 0001H, 0063
+0058: 1C 6C 00   addsi L006C   ; "I am Denby."
+005B: 33   say
+005C: 1D 7A 00   pushs L007A   ; name
+005F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0063: 1D 7F 00   pushs L007F   ; job
+0066: 07 01 00 14 00  cmps 0001H, 007F
+006B: 1C 83 00   addsi L0083   ; "I am a trainer. ...
+006E: 33   say
+006F: 1D 45 01   pushs L0145   ; train
+0072: 1D 4B 01   pushs L014B   ; fighter
+0075: 1D 53 01   pushs L0153   ; magical effects
+0078: 1E 03 00   arrc 0003H   ; 3
+007B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007F: 1D 63 01   pushs L0163   ; magical effects
+0082: 07 01 00 16 00  cmps 0001H, 009D
+0087: 1C 73 01   addsi L0173   ; "For example, I s...
+008A: 33   say
+008B: 42 03 00   pushf flag:[0003]
+008E: 10   not
+008F: 05 04 00   jne 0096
+0092: 1C 2C 02   addsi L022C   ; "Thou shouldst be...
+0095: 33   say
+0096: 1D 35 03   pushs L0335   ; magical effects
+0099: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009D: 1D 45 03   pushs L0345   ; fighter
+00A0: 07 01 00 0B 00  cmps 0001H, 00B0
+00A5: 1C 4D 03   addsi L034D   ; "Although I am a ...
+00A8: 33   say
+00A9: 1D 37 04   pushs L0437   ; fighter
+00AC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B0: 1D 3F 04   pushs L043F   ; train
+00B3: 07 01 00 3B 00  cmps 0001H, 00F3
+00B8: 21 01 00   push [0001]
+00BB: 1F 07 00   pushi 0007H   ; 7
+00BE: 22   cmpeq
+00BF: 05 26 00   jne 00E8
+00C2: 1C 45 04   addsi L0445   ; "My fee for train...
+00C5: 33   say
+00C6: 24 00 00   call [0000]   ; 090AH
+00C9: 05 15 00   jne 00E1
+00CC: 1F 4B 00   pushi 004BH   ; 75
+00CF: 1F 06 00   pushi 0006H   ; 6
+00D2: 1F 02 00   pushi 0002H   ; 2
+00D5: 1F 01 00   pushi 0001H   ; 1
+00D8: 1E 03 00   arrc 0003H   ; 3
+00DB: 24 01 00   call [0001]   ; 0875H
+00DE: 06 04 00   jmp 00E5
+00E1: 1C 9E 04   addsi L049E   ; Denby bows. "I am...
+00E4: 33   say
+00E5: 06 0B 00   jmp 00F3
+00E8: 1C 18 05   addsi L0518   ; "Please return du...
+00EB: 33   say
+00EC: 1D 5A 05   pushs L055A   ; train
+00EF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F3: 1D 60 05   pushs L0560   ; bye
+00F6: 07 01 00 03 00  cmps 0001H, 00FE
+00FB: 06 03 00   jmp 0101
+00FE: 06 4C FF   jmp 004D
+0101: 40   db 40 ???
+0102: 1C 64 05   addsi L0564   ; Denby puts his pa...
+0105: 33   say
+0106: 48   push eventid
+0107: 1F 00 00   pushi 0000H   ; 0
+010A: 22   cmpeq
+010B: 05 06 00   jne 0114
+010E: 1F CF FF   pushi FFCFH   ; -49
+0111: 24 02 00   call [0002]   ; 092EH
+0114: 25   ret

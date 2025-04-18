@@ -1,0 +1,17 @@
+  .funcnumber 034AH
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0813H
+0000: 3E   push itemref
+0001: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0005: 1F 04 00   pushi 0004H   ; 4
+0008: 22   cmpeq
+0009: 05 0A 00   jne 0016
+000C: 1F 5B 00   pushi 005BH   ; 91
+000F: 1F 02 00   pushi 0002H   ; 2
+0012: 3E   push itemref
+0013: 24 00 00   call [0000]   ; 0813H
+0016: 25   ret

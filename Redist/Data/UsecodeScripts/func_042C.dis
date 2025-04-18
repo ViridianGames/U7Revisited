@@ -1,0 +1,521 @@
+  .funcnumber 042CH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Nell with child'
+L001C: db 00
+L001D: db 'Charles is angry'
+L002D: db 00
+L002E: db 'You see a flamboyant-looking gentleman. He is very cheerful '
+ db 'and outgoing, greeting you with a smile and a wave.'
+L009D: db 00
+L009E: db '"In a wink, in a word,~"I do greet thee, Milord."'
+L00CF: db 00
+L00D0: db '"To greet thee, On this day,~"'Tis my pleasure, Milady."'
+L0108: db 00
+L0109: db 'name'
+L010D: db 00
+L010E: db '"From out the dawn, when sun doth rise,~"Until next morn whe'
+ db 'n moon must go,~"I answer to thy beck and cries,~"thine humb'
+ db 'le servant, Carrocio!"'
+L019C: db 00
+L019D: db 'name'
+L01A1: db 00
+L01A2: db 'job'
+L01A5: db 00
+L01A6: db '"The puppet's curtain I unfurl,~"And from mine hands the sto'
+ db 'ry's told,~"For pleasure of a boy or girl,~"To see doth cost'
+ db ' one coin of gold.~"To take good measure of thy power,~"Forg'
+ db 'ed in fire of virtue's heart,~"To ring the bell this very ho'
+ db 'ur,~"Do test thy strength 'til thy muscles smart."'
+L02C8: db 00
+L02C9: db '"And perhaps impress thine own sweetheart!" Carrocio winks a'
+ db 't you.'
+L030B: db 00
+L030C: db '"Or dost thou wish to be a king?~"Yonder sticks a sword in s'
+ db 'tone.~"If thou canst only pull it out~ "Thou wilt be the nex'
+ db 't upon the throne!"'
+L0397: db 00
+L0398: db 'strength test'
+L03A5: db 00
+L03A6: db 'see'
+L03A9: db 00
+L03AA: db 'puppet show'
+L03B5: db 00
+L03B6: db 'puppet show'
+L03C1: db 00
+L03C2: db '"My childhood's eye spied father's toil,~"A puppet's show of'
+ db ' splendor royal.~"Time's breeze has blown, My father's gone,'
+ db '~"His child has grown, Regrets anon,~"Gears and wheels move '
+ db 'the moppets now, in need of no one,~"And so I keep his carni'
+ db 'val song playing on and on alone."'
+L04D4: db 00
+L04D5: db 'puppet show'
+L04E0: db 00
+L04E1: db 'gears and wheels'
+L04F1: db 00
+L04F2: db 'regrets'
+L04F9: db 00
+L04FA: db 'strength test'
+L0507: db 00
+L0508: db '"I am sorry to say~"I have called it a day.~"Come to the gro'
+ db 'unds to test thy fitness~"when I am, yea verily, open for bu'
+ db 'siness."'
+L0588: db 00
+L0589: db '"Take the hammer in thine hands and strike a blow upon the g'
+ db 'round,~"If thine arms be possessed of might then thou shalt '
+ db 'hear a ringing sound.~"Once thou hast struck if thou hearest'
+ db ' naught then thou dost know thy strength is flagging.~"But i'
+ db 'f thou dost win the strength test game thou shalt receive a '
+ db 'stuffed dragon."'
+L06C5: db 00
+L06C6: db 'strength test'
+L06D3: db 00
+L06D4: db 'gears and wheels'
+L06E4: db 00
+L06E5: db '"I fear an end to my family craft, where the show is run by '
+ db 'human heart,~"But bones do age, not so machines, and we cann'
+ db 'ot simply replace a part.~"I carry on as best I can, A machi'
+ db 'ne to play my father's role,~"Control the marionettes unseen'
+ db ', struggling to imbue them with a soul."'
+L07FD: db 00
+L07FE: db 'gears and wheels'
+L080E: db 00
+L080F: db 'regrets'
+L0816: db 00
+L0817: db '"The faces pressed before me, fleeting moments chance of gle'
+ db 'e, From the lowly mongrel beggar to the resident of throne,~'
+ db '"Each know their place and gave me chase to find the one for'
+ db ' me, Woman whom my life may share, this heart that waits alo'
+ db 'ne."'
+L090B: db 00
+L090C: db 'regrets'
+L0913: db 00
+L0914: db 'woman'
+L0919: db 00
+L091A: db 'resident of throne'
+L092C: db 00
+L092D: db 'mongrel beggar'
+L093B: db 00
+L093C: db 'mongrel beggar'
+L094A: db 00
+L094B: db '"A beggar man called Snaz will come to watch my show, ~"to s'
+ db 'teal and sell all my best jokes, mine own personal foe."'
+L09BF: db 00
+L09C0: db 'mongrel beggar'
+L09CE: db 00
+L09CF: db 'resident of throne'
+L09E1: db 00
+L09E2: db '"Thine ignorance doth make me skittish,~"surely thou hast he'
+ db 'ard of wise Lord British."'
+L0A38: db 00
+L0A39: db 'resident of throne'
+L0A4B: db 00
+L0A4C: db 'woman'
+L0A51: db 00
+L0A52: db '"The awakening of mine heart's idyll,~"Lies 'neath me for I '
+ db 'see her still,~"No bard could e'er describe nor tell,~"the t'
+ db 'enderness of my fair Nell."'
+L0AE5: db 00
+L0AE6: db 'woman'
+L0AEB: db 00
+L0AEC: db 'Nell'
+L0AF0: db 00
+L0AF1: db 'Nell'
+L0AF5: db 00
+L0AF6: db '"'Tis said love is a fiery angel,~"Riding soft silk wings of'
+ db ' pure redemption,~"My puppet's heart still as an anvil,~"At '
+ db 'the wicked thrill of her attention.~"By mine angel Nell I am'
+ db ' anointed,~"Humble cowardice felled by Passion's blade,~"As '
+ db 'her beloved I was hence appointed,~"Perchance through destin'
+ db 'y a marriage made."'
+L0C35: db 00
+L0C36: db 'Nell'
+L0C3A: db 00
+L0C3B: db 'marriage'
+L0C43: db 00
+L0C44: db 'wicked thrill'
+L0C51: db 00
+L0C52: db 'wicked thrill'
+L0C5F: db 00
+L0C60: db 'Carrocio looks as if he is lost in a memory. After a moment '
+ db 'he returns to reality.~~"I would not be a gentleman if I spo'
+ db 'ke of this more, Forgive me the candor of mine heart's open '
+ db 'door."~He appears somewhat embarrassed and clears his throat'
+ db ' loudly several times.'
+L0D66: db 00
+L0D67: db 'wicked thrill'
+L0D74: db 00
+L0D75: db 'marriage'
+L0D7D: db 00
+L0D7E: db '"My coins are arrows rushing to make good,~"'Til the day whe'
+ db 'n the jeweller sells his ring,~"For my sure heart is not but'
+ db ' carved from wood,~"And she doth tend to the bed of a king."'
+L0E32: db 00
+L0E33: db 'marriage'
+L0E3B: db 00
+L0E3C: db 'Nell with child'
+L0E4B: db 00
+L0E4C: db 'Nell with child'
+L0E5B: db 00
+L0E5C: db 'Carrocio gives you a shocked look and drops to his knees bef'
+ db 'ore you. "I beseech thee, '
+L0EB2: db 00
+L0EB3: db ', ~"Keep still thy tongue,~"My Nell has ne'er harmed anyone,'
+ db '~"It would cause grievous injury to her reputation,~"Through'
+ db ' the town's wagging lips our secret to spread,~"'Twould make'
+ db ' a permanent end of mine occupation,~"And kill our hope of a'
+ db ' happy life dead." He looks you in the eyes, pleadingly. "In'
+ db ' thee I must place mine hope and trust,~"Part, parcel and wh'
+ db 'ole.~"To ne'er again speak of the spoils of my lust, ~"Thou '
+ db 'must not tell a soul!"'
+L106D: db 00
+L106E: db 'He looks at you awaiting some sort of indication. Will you k'
+ db 'eep his secret?'
+L10B9: db 00
+L10BA: db '"Thou dost walk with honor,~"I know thou wilt not tell,~"Of '
+ db 'dignity's stains I do not bother,~"My concerns are none save'
+ db ' for Nell."'
+L113D: db 00
+L113E: db '"Reconsider, I must insist of thee, Thou art too thin of hid'
+ db 'e,~"If he knew, Nell's brother would murder me,~"And I would'
+ db ' not see Nell widowed before having the chance to become a b'
+ db 'ride."'
+L11F8: db 00
+L11F9: db 'Nell with child'
+L1208: db 00
+L1209: db 'Charles is angry'
+L1219: db 00
+L121A: db '"I am grateful for thine honesty about thy lack of care,~"Bu'
+ db 't why hast thou placed thyself in the center of our affair?~'
+ db '"For Nell's sake I could not bring myself to cause harm to h'
+ db 'er brother,~"I shall convince him of mine intentions,~"I lov'
+ db 'e Nell and no other.~"Leave me now for I must use this time '
+ db 'to properly prepare."'
+L135B: db 00
+L135C: db 'see'
+L135F: db 00
+L1360: db '"I am sorry to say~"I have called it a day.~"Come to the gro'
+ db 'unds at daybreak~"when the puppets are, yea verily, up and a'
+ db 'wake."'
+L13DE: db 00
+L13DF: db '"See foolish pride and love, brutality and sin, Carrocio's t'
+ db 'iny world of moving dolls,~"Enough to make thee gasp, or cry'
+ db ' or grin,~"All who wish to see 'tis time to hear my calls,~"'
+ db 'For now the puppet show is about to begin!"*'
+L14BF: db 00
+L14C0: db 'see'
+L14C3: db 00
+L14C4: db 'bye'
+L14C7: db 00
+L14C8: db '"Perchance to find in mercy's ear, A voice to know as gentle'
+ db ' friend,~"I bid thee well, but hark return, If thou wouldst '
+ db 'see the puppet's play or test thy strength again."'
+L1572: db 00
+L1573: db '@See the puppets!@'
+L1585: db 00
+L1586: db '@Canst thou ring the bell?@'
+L15A1: db 00
+L15A2: db '@Next show starts soon!@'
+L15BA: db 00
+L15BB: db '@Measure thy might!@'
+L15CF: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0004H
+  .extern 0909H
+  .extern 08F7H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 7F 02   jne 0287
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F D4 FF   pushi FFD4H   ; -44
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F D4 FF   pushi FFD4H   ; -44
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0031: 12 03 00   pop [0003]
+0034: 1F FE FF   pushi FFFEH   ; -2
+0037: 24 01 00   call [0001]   ; 08F7H
+003A: 12 04 00   pop [0004]
+003D: 1D 00 00   pushs L0000   ; bye
+0040: 1D 04 00   pushs L0004   ; job
+0043: 1D 08 00   pushs L0008   ; name
+0046: 1E 03 00   arrc 0003H   ; 3
+0049: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004D: 42 7A 00   pushf flag:[007A]
+0050: 05 07 00   jne 005A
+0053: 1D 0D 00   pushs L000D   ; Nell with child
+0056: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005A: 42 89 00   pushf flag:[0089]
+005D: 05 07 00   jne 0067
+0060: 1D 1D 00   pushs L001D   ; Charles is angry
+0063: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0067: 42 AD 00   pushf flag:[00AD]
+006A: 10   not
+006B: 05 0B 00   jne 0079
+006E: 1C 2E 00   addsi L002E   ; You see a flamboy...
+0071: 33   say
+0072: 13   push true
+0073: 43 AD 00   popf flag:[00AD]
+0076: 06 12 00   jmp 008B
+0079: 21 03 00   push [0003]
+007C: 10   not
+007D: 05 07 00   jne 0087
+0080: 1C 9E 00   addsi L009E   ; "In a wink, in a ...
+0083: 33   say
+0084: 06 04 00   jmp 008B
+0087: 1C D0 00   addsi L00D0   ; "To greet thee, O...
+008A: 33   say
+008B: 04 F4 01   je 0282
+008E: 1D 09 01   pushs L0109   ; name
+0091: 07 01 00 0B 00  cmps 0001H, 00A1
+0096: 1C 0E 01   addsi L010E   ; "From out the daw...
+0099: 33   say
+009A: 1D 9D 01   pushs L019D   ; name
+009D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A1: 1D A2 01   pushs L01A2   ; job
+00A4: 07 01 00 23 00  cmps 0001H, 00CC
+00A9: 1C A6 01   addsi L01A6   ; "The puppet's cur...
+00AC: 33   say
+00AD: 21 03 00   push [0003]
+00B0: 10   not
+00B1: 05 04 00   jne 00B8
+00B4: 1C C9 02   addsi L02C9   ; "And perhaps impr...
+00B7: 33   say
+00B8: 1C 0C 03   addsi L030C   ; "Or dost thou wis...
+00BB: 33   say
+00BC: 1D 98 03   pushs L0398   ; strength test
+00BF: 1D A6 03   pushs L03A6   ; see
+00C2: 1D AA 03   pushs L03AA   ; puppet show
+00C5: 1E 03 00   arrc 0003H   ; 3
+00C8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CC: 1D B6 03   pushs L03B6   ; puppet show
+00CF: 07 01 00 18 00  cmps 0001H, 00EC
+00D4: 1C C2 03   addsi L03C2   ; "My childhood's e...
+00D7: 33   say
+00D8: 1D D5 04   pushs L04D5   ; puppet show
+00DB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00DF: 1D E1 04   pushs L04E1   ; gears and wheels
+00E2: 1D F2 04   pushs L04F2   ; regrets
+00E5: 1E 02 00   arrc 0002H   ; 2
+00E8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00EC: 1D FA 04   pushs L04FA   ; strength test
+00EF: 07 01 00 1D 00  cmps 0001H, 0111
+00F4: 21 02 00   push [0002]
+00F7: 1F 07 00   pushi 0007H   ; 7
+00FA: 22   cmpeq
+00FB: 10   not
+00FC: 05 07 00   jne 0106
+00FF: 1C 08 05   addsi L0508   ; "I am sorry to sa...
+0102: 33   say
+0103: 06 04 00   jmp 010A
+0106: 1C 89 05   addsi L0589   ; "Take the hammer ...
+0109: 33   say
+010A: 1D C6 06   pushs L06C6   ; strength test
+010D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0111: 1D D4 06   pushs L06D4   ; gears and wheels
+0114: 07 01 00 0B 00  cmps 0001H, 0124
+0119: 1C E5 06   addsi L06E5   ; "I fear an end to...
+011C: 33   say
+011D: 1D FE 07   pushs L07FE   ; gears and wheels
+0120: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0124: 1D 0F 08   pushs L080F   ; regrets
+0127: 07 01 00 1B 00  cmps 0001H, 0147
+012C: 1C 17 08   addsi L0817   ; "The faces presse...
+012F: 33   say
+0130: 1D 0C 09   pushs L090C   ; regrets
+0133: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0137: 1D 14 09   pushs L0914   ; woman
+013A: 1D 1A 09   pushs L091A   ; resident of throne
+013D: 1D 2D 09   pushs L092D   ; mongrel beggar
+0140: 1E 03 00   arrc 0003H   ; 3
+0143: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0147: 1D 3C 09   pushs L093C   ; mongrel beggar
+014A: 07 01 00 0B 00  cmps 0001H, 015A
+014F: 1C 4B 09   addsi L094B   ; "A beggar man cal...
+0152: 33   say
+0153: 1D C0 09   pushs L09C0   ; mongrel beggar
+0156: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+015A: 1D CF 09   pushs L09CF   ; resident of throne
+015D: 07 01 00 0B 00  cmps 0001H, 016D
+0162: 1C E2 09   addsi L09E2   ; "Thine ignorance ...
+0165: 33   say
+0166: 1D 39 0A   pushs L0A39   ; resident of throne
+0169: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016D: 1D 4C 0A   pushs L0A4C   ; woman
+0170: 07 01 00 12 00  cmps 0001H, 0187
+0175: 1C 52 0A   addsi L0A52   ; "The awakening of...
+0178: 33   say
+0179: 1D E6 0A   pushs L0AE6   ; woman
+017C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0180: 1D EC 0A   pushs L0AEC   ; Nell
+0183: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0187: 1D F1 0A   pushs L0AF1   ; Nell
+018A: 07 01 00 18 00  cmps 0001H, 01A7
+018F: 1C F6 0A   addsi L0AF6   ; "'Tis said love i...
+0192: 33   say
+0193: 1D 36 0C   pushs L0C36   ; Nell
+0196: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019A: 1D 3B 0C   pushs L0C3B   ; marriage
+019D: 1D 44 0C   pushs L0C44   ; wicked thrill
+01A0: 1E 02 00   arrc 0002H   ; 2
+01A3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A7: 1D 52 0C   pushs L0C52   ; wicked thrill
+01AA: 07 01 00 0B 00  cmps 0001H, 01BA
+01AF: 1C 60 0C   addsi L0C60   ; Carrocio looks as...
+01B2: 33   say
+01B3: 1D 67 0D   pushs L0D67   ; wicked thrill
+01B6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BA: 1D 75 0D   pushs L0D75   ; marriage
+01BD: 07 01 00 18 00  cmps 0001H, 01DA
+01C2: 1C 7E 0D   addsi L0D7E   ; "My coins are arr...
+01C5: 33   say
+01C6: 1D 33 0E   pushs L0E33   ; marriage
+01C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CD: 42 7A 00   pushf flag:[007A]
+01D0: 05 07 00   jne 01DA
+01D3: 1D 3C 0E   pushs L0E3C   ; Nell with child
+01D6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01DA: 1D 4C 0E   pushs L0E4C   ; Nell with child
+01DD: 07 01 00 33 00  cmps 0001H, 0215
+01E2: 1C 5C 0E   addsi L0E5C   ; Carrocio gives yo...
+01E5: 2F 00 00   addsv [0000]
+01E8: 1C B3 0E   addsi L0EB3   ; , ~"Keep still th...
+01EB: 33   say
+01EC: 42 89 00   pushf flag:[0089]
+01EF: 10   not
+01F0: 05 1B 00   jne 020E
+01F3: 1C 6E 10   addsi L106E   ; He looks at you a...
+01F6: 33   say
+01F7: 24 02 00   call [0002]   ; 090AH
+01FA: 12 05 00   pop [0005]
+01FD: 21 05 00   push [0005]
+0200: 05 07 00   jne 020A
+0203: 1C BA 10   addsi L10BA   ; "Thou dost walk w...
+0206: 33   say
+0207: 06 04 00   jmp 020E
+020A: 1C 3E 11   addsi L113E   ; "Reconsider, I mu...
+020D: 33   say
+020E: 1D F9 11   pushs L11F9   ; Nell with child
+0211: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0215: 1D 09 12   pushs L1209   ; Charles is angry
+0218: 07 01 00 05 00  cmps 0001H, 0222
+021D: 1C 1A 12   addsi L121A   ; "I am grateful fo...
+0220: 33   say
+0221: 3F   abrt
+0222: 1D 5C 13   pushs L135C   ; see
+0225: 07 01 00 4A 00  cmps 0001H, 0274
+022A: 21 02 00   push [0002]
+022D: 1F 07 00   pushi 0007H   ; 7
+0230: 22   cmpeq
+0231: 10   not
+0232: 05 07 00   jne 023C
+0235: 1C 60 13   addsi L1360   ; "I am sorry to sa...
+0238: 33   say
+0239: 06 30 00   jmp 026C
+023C: 1C DF 13   addsi L13DF   ; "See foolish prid...
+023F: 33   say
+0240: 1F F7 01   pushi 01F7H   ; 503
+0243: 38 30 00 01  callis 0030, 1
+0247: 12 06 00   pop [0006]
+024A: 1F 01 00   pushi 0001H   ; 1
+024D: 26 06 00   aidx [0006]
+0250: 39 5C 00 01  calli 005C, 1
+0254: 1F 0F 00   pushi 000FH   ; 15
+0257: 1F F7 01   pushi 01F7H   ; 503
+025A: 44 55   pushw 1E55H   ; 7765
+025C: 1E 02 00   arrc 0002H   ; 2
+025F: 1F 01 00   pushi 0001H   ; 1
+0262: 26 06 00   aidx [0006]
+0265: 38 02 00 03  callis 0002, 3
+0269: 12 07 00   pop [0007]
+026C: 1D C0 14   pushs L14C0   ; see
+026F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0273: 3F   abrt
+0274: 1D C4 14   pushs L14C4   ; bye
+0277: 07 01 00 03 00  cmps 0001H, 027F
+027C: 06 03 00   jmp 0282
+027F: 06 09 FE   jmp 008B
+0282: 40   db 40 ???
+0283: 1C C8 14   addsi L14C8   ; "Perchance to fin...
+0286: 33   say
+0287: 48   push eventid
+0288: 1F 00 00   pushi 0000H   ; 0
+028B: 22   cmpeq
+028C: 05 A1 00   jne 0330
+028F: 38 3B 00 00  callis 003B, 0
+0293: 12 01 00   pop [0001]
+0296: 1F D4 FF   pushi FFD4H   ; -44
+0299: 38 1B 00 01  callis 001B, 1
+029D: 38 1C 00 01  callis 001C, 1
+02A1: 12 02 00   pop [0002]
+02A4: 1F 04 00   pushi 0004H   ; 4
+02A7: 1F 01 00   pushi 0001H   ; 1
+02AA: 38 10 00 02  callis _Random2@2  ; 0010
+02AE: 12 08 00   pop [0008]
+02B1: 21 02 00   push [0002]
+02B4: 1F 07 00   pushi 0007H   ; 7
+02B7: 22   cmpeq
+02B8: 05 6F 00   jne 032A
+02BB: 21 01 00   push [0001]
+02BE: 1F 03 00   pushi 0003H   ; 3
+02C1: 22   cmpeq
+02C2: 21 01 00   push [0001]
+02C5: 1F 04 00   pushi 0004H   ; 4
+02C8: 22   cmpeq
+02C9: 21 01 00   push [0001]
+02CC: 1F 05 00   pushi 0005H   ; 5
+02CF: 22   cmpeq
+02D0: 21 01 00   push [0001]
+02D3: 1F 06 00   pushi 0006H   ; 6
+02D6: 22   cmpeq
+02D7: 0F   or
+02D8: 0F   or
+02D9: 0F   or
+02DA: 05 4A 00   jne 0327
+02DD: 21 08 00   push [0008]
+02E0: 1F 01 00   pushi 0001H   ; 1
+02E3: 22   cmpeq
+02E4: 05 06 00   jne 02ED
+02E7: 1D 73 15   pushs L1573   ; @See the puppets!@
+02EA: 12 09 00   pop [0009]
+02ED: 21 08 00   push [0008]
+02F0: 1F 02 00   pushi 0002H   ; 2
+02F3: 22   cmpeq
+02F4: 05 06 00   jne 02FD
+02F7: 1D 86 15   pushs L1586   ; @Canst thou ring ...
+02FA: 12 09 00   pop [0009]
+02FD: 21 08 00   push [0008]
+0300: 1F 03 00   pushi 0003H   ; 3
+0303: 22   cmpeq
+0304: 05 06 00   jne 030D
+0307: 1D A2 15   pushs L15A2   ; @Next show starts...
+030A: 12 09 00   pop [0009]
+030D: 21 08 00   push [0008]
+0310: 1F 04 00   pushi 0004H   ; 4
+0313: 22   cmpeq
+0314: 05 06 00   jne 031D
+0317: 1D BB 15   pushs L15BB   ; @Measure thy might!@
+031A: 12 09 00   pop [0009]
+031D: 21 09 00   push [0009]
+0320: 1F D4 FF   pushi FFD4H   ; -44
+0323: 39 40 00 02  calli _ItemSay@2  ; 0040
+0327: 06 06 00   jmp 0330
+032A: 1F D4 FF   pushi FFD4H   ; -44
+032D: 24 03 00   call [0003]   ; 092EH
+0330: 25   ret

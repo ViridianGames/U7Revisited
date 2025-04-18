@@ -1,0 +1,51 @@
+  .funcnumber 03D5H
+  .data
+  .code
+  .argc 0001H
+  .localc 0004H
+  .externsize 0001H
+  .extern 082EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 6C 00   jne 0074
+0008: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+000C: 12 00 00   pop [0000]
+000F: 21 00 00   push [0000]
+0012: 38 11 00 01  callis _GetItemType@1  ; 0011
+0016: 12 01 00   pop [0001]
+0019: 21 00 00   push [0000]
+001C: 38 18 00 01  callis 0018, 1
+0020: 12 02 00   pop [0002]
+0023: 21 01 00   push [0001]
+0026: 1F 41 02   pushi 0241H   ; 577
+0029: 22   cmpeq
+002A: 21 00 00   push [0000]
+002D: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0031: 3E   push itemref
+0032: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+0036: 22   cmpeq
+0037: 0E   and
+0038: 05 2B 00   jne 0066
+003B: 3E   push itemref
+003C: 38 25 00 01  callis 0025, 1
+0040: 12 03 00   pop [0003]
+0043: 21 03 00   push [0003]
+0046: 05 1A 00   jne 0063
+0049: 1F 03 00   pushi 0003H   ; 3
+004C: 26 02 00   aidx [0002]
+004F: 1F 02 00   pushi 0002H   ; 2
+0052: 09   add
+0053: 1F 03 00   pushi 0003H   ; 3
+0056: 46 02 00   db 46 ???
+   dw 0002H   ; 2
+0059: 21 02 00   push [0002]
+005C: 38 26 00 01  callis 0026, 1
+0060: 12 03 00   pop [0003]
+0063: 06 07 00   jmp 006D
+0066: 1F 00 00   pushi 0000H   ; 0
+0069: 39 6A 00 01  calli 006A, 1
+006D: 3E   push itemref
+006E: 24 00 00   call [0000]   ; 082EH
+0071: 12 03 00   pop [0003]
+0074: 25   ret

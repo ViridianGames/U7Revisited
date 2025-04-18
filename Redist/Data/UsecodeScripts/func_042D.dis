@@ -1,0 +1,479 @@
+  .funcnumber 042DH
+  .data
+L0000: db 'Figg is too intent on listening to the Fellowship meeting to'
+ db ' acknowledge your attempts to converse with him.*'
+L006D: db 00
+L006E: db '"Hast thou seen Batlin? Where is he? He needs to lead our me'
+ db 'eting!"'
+L00B1: db 00
+L00B2: db '"My goodness! It is nine o'clock! Excuse me, I must get to t'
+ db 'onight's Fellowship meeting."*'
+L010C: db 00
+L010D: db 'bye'
+L0110: db 00
+L0111: db 'job'
+L0114: db 00
+L0115: db 'name'
+L0119: db 00
+L011A: db 'Weston'
+L0120: db 00
+L0121: db 'Fellowship'
+L012B: db 00
+L012C: db 'You see a man whose wrinkled face forms a caricature of grum'
+ db 'piness.'
+L016F: db 00
+L0170: db '"Thou dost wish words with me, '
+L018F: db 00
+L0190: db '?" asks Figg.'
+L019D: db 00
+L019E: db 'name'
+L01A2: db 00
+L01A3: db '"I am Figg."'
+L01AF: db 00
+L01B0: db 'name'
+L01B4: db 00
+L01B5: db 'job'
+L01B8: db 00
+L01B9: db '"I am the caretaker of the Royal Orchards here in Britain."'
+L01F4: db 00
+L01F5: db 'Royal Orchards'
+L0203: db 00
+L0204: db 'caretaker'
+L020D: db 00
+L020E: db 'caretaker'
+L0217: db 00
+L0218: db '"My responsibilities include caring for the trees, watching '
+ db 'over the pickers at harvest time and protecting the Royal Or'
+ db 'chard from thieves."'
+L02A4: db 00
+L02A5: db 'thieves'
+L02AC: db 00
+L02AD: db 'pickers'
+L02B4: db 00
+L02B5: db 'trees'
+L02BA: db 00
+L02BB: db 'caretaker'
+L02C4: db 00
+L02C5: db 'trees'
+L02CA: db 00
+L02CB: db '"Apple trees require constant care. I must make sure the tre'
+ db 'es all have enough water but not too much. I must keep all t'
+ db 'rees properly trimmed and be watchful so that the crop does '
+ db 'not get infested by bugs or worms. I am also required to pic'
+ db 'k up all of the fallen apples, which is a job in itself."'
+L03F4: db 00
+L03F5: db 'trees'
+L03FA: db 00
+L03FB: db 'pickers'
+L0402: db 00
+L0403: db '"Most of them are migrant farmers from Paws. Because they we'
+ db 're once farmers, they are convinced they know more about the'
+ db ' upkeep of the orchard than I! Of course that is preposterou'
+ db 's. Also the pickers do not take orders very well."'
+L04E9: db 00
+L04EA: db 'pickers'
+L04F1: db 00
+L04F2: db 'thieves'
+L04F9: db 00
+L04FA: db '"They would rob us down to the last twig if I gave them the '
+ db 'chance! I should be awarded a medal from Lord British himsel'
+ db 'f the way I risk my very life and limb protecting this orcha'
+ db 'rd. Why, I just caught another thief recently. His name was '
+ db 'Weston."'
+L05F2: db 00
+L05F3: db 'thieves'
+L05FA: db 00
+L05FB: db 'Weston'
+L0601: db 00
+L0602: db 'Royal Orchards'
+L0610: db 00
+L0611: db '"Here are grown the finest apples in all of Britannia. I wou'
+ db 'ld let thee sample one but it would be against the law as th'
+ db 'ou art obviously not of noble stock."'
+L06AE: db 00
+L06AF: db 'Royal Orchards'
+L06BD: db 00
+L06BE: db 'Weston'
+L06C4: db 00
+L06C5: db '"He now resides in the prison, thanks to me! I knew what he '
+ db 'was up to from the moment I saw him! He had the look of a ha'
+ db 'rdened apple thief so I had him nicked by the town guard."'
+L0777: db 00
+L0778: db 'apple thief'
+L0783: db 00
+L0784: db 'prison'
+L078A: db 00
+L078B: db 'Fellowship'
+L0795: db 00
+L0796: db 'Weston'
+L079C: db 00
+L079D: db 'prison'
+L07A3: db 00
+L07A4: db '"Yes, Weston is now living in our local prison. If thou dost'
+ db ' not believe me, thou canst go there and see for thyself!"'
+L081A: db 00
+L081B: db 'prison'
+L0821: db 00
+L0822: db 'apple thief'
+L082D: db 00
+L082E: db '"Oh, he came here with some sob story. But when one is as as'
+ db 'tute an observer of human behavior as I am, one can tell the'
+ db ' true intent of people, which is often contrary to what they'
+ db ' will say to thee!"'
+L08F5: db 00
+L08F6: db 'apple thief'
+L0901: db 00
+L0902: db 'observer'
+L090A: db 00
+L090B: db 'sob story'
+L0914: db 00
+L0915: db 'sob story'
+L091E: db 00
+L091F: db '"I do not recall, exactly. Something about his impoverished '
+ db 'wife and family starving to death in Paws or some load of ru'
+ db 'bbish."'
+L099E: db 00
+L099F: db 'sob story'
+L09A8: db 00
+L09A9: db 'observer'
+L09B1: db 00
+L09B2: db '"Yes, I do consider myself to be a more than passable judge '
+ db 'of character. And dost thou know how I became so?"'
+L0A20: db 00
+L0A21: db '"Oh, then art thou not the clever one!"'
+L0A48: db 00
+L0A49: db '"Then I shall tell thee! I am a member of The Fellowship!"'
+L0A83: db 00
+L0A84: db 'observer'
+L0A8C: db 00
+L0A8D: db 'philosophy'
+L0A97: db 00
+L0A98: db 'philosophy'
+L0AA2: db 00
+L0AA3: db 'Fellowship'
+L0AAD: db 00
+L0AAE: db '"I am a member of the Fellowship, yes. But it would be a cri'
+ db 'me for me to give apples from the Royal Orchard to The Fello'
+ db 'wship, and it would be a violation of my sacred duty. While '
+ db 'selling apples is also a violation, I was only trying to do '
+ db 'this man Weston a favor. And I suppose these accusations are'
+ db ' the thanks I get? Hmph!"'
+L0BF3: db 00
+L0BF4: db 'He leans in close to you and speaks lower. "Thou art also a '
+ db 'member of The Fellowship, after all. Am I not thy brother? S'
+ db 'houldst thou not trust me?" He gives you a crooked wink.'
+L0CA4: db 00
+L0CA5: db '"Thou seest? I am thy brother!" He hands you an apple.'
+L0CDB: db 00
+L0CDC: db '"I would give thee an apple to show thee my sincerity, but i'
+ db 't seems thou art too encumbered."'
+L0D39: db 00
+L0D3A: db '"But enough of these desperate accusations from a known crim'
+ db 'inal."'
+L0D7C: db 00
+L0D7D: db 'buy'
+L0D80: db 00
+L0D81: db 'Fellowship'
+L0D8B: db 00
+L0D8C: db 'buy'
+L0D8F: db 00
+L0D90: db '"I can do thee a favor as well. Wouldst thou like to buy one'
+ db ' of these beautiful apples for the merest pittance of five g'
+ db 'old coins?"'
+L0E13: db 00
+L0E14: db 'Figg takes an apple from a nearby basket. After polishing it'
+ db ' slightly on his shirt, he hands it to you.'
+L0E7B: db 00
+L0E7C: db '"Thou cannot take thine apple! Thou art carrying too much!"'
+L0EB7: db 00
+L0EB8: db '"Thou dost not even have enough gold to buy one apple! Thou '
+ db 'hast wasted the time of the King's Caretaker of the Royal Or'
+ db 'chard. Away, peasant! Away before I call the guard!"'
+L0F64: db 00
+L0F65: db '"Very well. But thou art passing up an opportunity that few '
+ db 'are offered. In fact, eh, I would appreciate it if thou woul'
+ db 'dst not mention our little chat to anyone. Agreed?"'
+L1010: db 00
+L1011: db '"Ah, I knew thou wert a good 'un."'
+L1033: db 00
+L1034: db '"No! Well, fine, then."*'
+L104C: db 00
+L104D: db 'buy'
+L1050: db 00
+L1051: db 'bye'
+L1054: db 00
+L1055: db '"I can see that thou shouldst be on thy way."*'
+L1083: db 00
+  .code
+  .argc 0001H
+  .localc 000AH
+  .externsize 0006H
+  .extern 0909H
+  .extern 08FCH
+  .extern 090AH
+  .extern 0919H
+  .extern 091AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 DE 02   jne 02E6
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F D3 FF   pushi FFD3H   ; -45
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 24 00 00   call [0000]   ; 0909H
+001C: 12 01 00   pop [0001]
+001F: 38 67 00 00  callis 0067, 0
+0023: 12 02 00   pop [0002]
+0026: 1F E6 FF   pushi FFE6H   ; -26
+0029: 1F D3 FF   pushi FFD3H   ; -45
+002C: 24 01 00   call [0001]   ; 08FCH
+002F: 12 03 00   pop [0003]
+0032: 21 00 00   push [0000]
+0035: 1F 07 00   pushi 0007H   ; 7
+0038: 22   cmpeq
+0039: 05 23 00   jne 005F
+003C: 21 03 00   push [0003]
+003F: 05 08 00   jne 004A
+0042: 1C 00 00   addsi L0000   ; Figg is too inten...
+0045: 33   say
+0046: 3F   abrt
+0047: 06 15 00   jmp 005F
+004A: 42 DA 00   pushf flag:[00DA]
+004D: 05 0A 00   jne 005A
+0050: 1C 6E 00   addsi L006E   ; "Hast thou seen B...
+0053: 33   say
+0054: 06 08 00   jmp 005F
+0057: 06 05 00   jmp 005F
+005A: 1C B2 00   addsi L00B2   ; "My goodness! It ...
+005D: 33   say
+005E: 3F   abrt
+005F: 1D 0D 01   pushs L010D   ; bye
+0062: 1D 11 01   pushs L0111   ; job
+0065: 1D 15 01   pushs L0115   ; name
+0068: 1E 03 00   arrc 0003H   ; 3
+006B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+006F: 42 C6 00   pushf flag:[00C6]
+0072: 05 07 00   jne 007C
+0075: 1D 1A 01   pushs L011A   ; Weston
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 42 94 00   pushf flag:[0094]
+007F: 05 07 00   jne 0089
+0082: 1D 21 01   pushs L0121   ; Fellowship
+0085: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0089: 42 AE 00   pushf flag:[00AE]
+008C: 10   not
+008D: 05 0B 00   jne 009B
+0090: 1C 2C 01   addsi L012C   ; You see a man who...
+0093: 33   say
+0094: 13   push true
+0095: 43 AE 00   popf flag:[00AE]
+0098: 06 0A 00   jmp 00A5
+009B: 1C 70 01   addsi L0170   ; "Thou dost wish w...
+009E: 2F 01 00   addsv [0001]
+00A1: 1C 90 01   addsi L0190   ; ?" asks Figg.
+00A4: 33   say
+00A5: 04 39 02   je 02E1
+00A8: 1D 9E 01   pushs L019E   ; name
+00AB: 07 01 00 0B 00  cmps 0001H, 00BB
+00B0: 1C A3 01   addsi L01A3   ; "I am Figg."
+00B3: 33   say
+00B4: 1D B0 01   pushs L01B0   ; name
+00B7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BB: 1D B5 01   pushs L01B5   ; job
+00BE: 07 01 00 11 00  cmps 0001H, 00D4
+00C3: 1C B9 01   addsi L01B9   ; "I am the caretak...
+00C6: 33   say
+00C7: 1D F5 01   pushs L01F5   ; Royal Orchards
+00CA: 1D 04 02   pushs L0204   ; caretaker
+00CD: 1E 02 00   arrc 0002H   ; 2
+00D0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D4: 1D 0E 02   pushs L020E   ; caretaker
+00D7: 07 01 00 1B 00  cmps 0001H, 00F7
+00DC: 1C 18 02   addsi L0218   ; "My responsibilit...
+00DF: 33   say
+00E0: 1D A5 02   pushs L02A5   ; thieves
+00E3: 1D AD 02   pushs L02AD   ; pickers
+00E6: 1D B5 02   pushs L02B5   ; trees
+00E9: 1E 03 00   arrc 0003H   ; 3
+00EC: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00F0: 1D BB 02   pushs L02BB   ; caretaker
+00F3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F7: 1D C5 02   pushs L02C5   ; trees
+00FA: 07 01 00 0B 00  cmps 0001H, 010A
+00FF: 1C CB 02   addsi L02CB   ; "Apple trees requ...
+0102: 33   say
+0103: 1D F5 03   pushs L03F5   ; trees
+0106: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010A: 1D FB 03   pushs L03FB   ; pickers
+010D: 07 01 00 0B 00  cmps 0001H, 011D
+0112: 1C 03 04   addsi L0403   ; "Most of them are...
+0115: 33   say
+0116: 1D EA 04   pushs L04EA   ; pickers
+0119: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011D: 1D F2 04   pushs L04F2   ; thieves
+0120: 07 01 00 12 00  cmps 0001H, 0137
+0125: 1C FA 04   addsi L04FA   ; "They would rob u...
+0128: 33   say
+0129: 1D F3 05   pushs L05F3   ; thieves
+012C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0130: 1D FB 05   pushs L05FB   ; Weston
+0133: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0137: 1D 02 06   pushs L0602   ; Royal Orchards
+013A: 07 01 00 0B 00  cmps 0001H, 014A
+013F: 1C 11 06   addsi L0611   ; "Here are grown t...
+0142: 33   say
+0143: 1D AF 06   pushs L06AF   ; Royal Orchards
+0146: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014A: 1D BE 06   pushs L06BE   ; Weston
+014D: 07 01 00 25 00  cmps 0001H, 0177
+0152: 1C C5 06   addsi L06C5   ; "He now resides i...
+0155: 33   say
+0156: 1D 78 07   pushs L0778   ; apple thief
+0159: 1D 84 07   pushs L0784   ; prison
+015C: 1E 02 00   arrc 0002H   ; 2
+015F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0163: 42 94 00   pushf flag:[0094]
+0166: 05 07 00   jne 0170
+0169: 1D 8B 07   pushs L078B   ; Fellowship
+016C: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0170: 1D 96 07   pushs L0796   ; Weston
+0173: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0177: 1D 9D 07   pushs L079D   ; prison
+017A: 07 01 00 0B 00  cmps 0001H, 018A
+017F: 1C A4 07   addsi L07A4   ; "Yes, Weston is n...
+0182: 33   say
+0183: 1D 1B 08   pushs L081B   ; prison
+0186: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018A: 1D 22 08   pushs L0822   ; apple thief
+018D: 07 01 00 18 00  cmps 0001H, 01AA
+0192: 1C 2E 08   addsi L082E   ; "Oh, he came here...
+0195: 33   say
+0196: 1D F6 08   pushs L08F6   ; apple thief
+0199: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019D: 1D 02 09   pushs L0902   ; observer
+01A0: 1D 0B 09   pushs L090B   ; sob story
+01A3: 1E 02 00   arrc 0002H   ; 2
+01A6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01AA: 1D 15 09   pushs L0915   ; sob story
+01AD: 07 01 00 0B 00  cmps 0001H, 01BD
+01B2: 1C 1F 09   addsi L091F   ; "I do not recall,...
+01B5: 33   say
+01B6: 1D 9F 09   pushs L099F   ; sob story
+01B9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BD: 1D A9 09   pushs L09A9   ; observer
+01C0: 07 01 00 25 00  cmps 0001H, 01EA
+01C5: 1C B2 09   addsi L09B2   ; "Yes, I do consid...
+01C8: 33   say
+01C9: 24 02 00   call [0002]   ; 090AH
+01CC: 12 04 00   pop [0004]
+01CF: 21 04 00   push [0004]
+01D2: 05 07 00   jne 01DC
+01D5: 1C 21 0A   addsi L0A21   ; "Oh, then art tho...
+01D8: 33   say
+01D9: 06 07 00   jmp 01E3
+01DC: 1C 49 0A   addsi L0A49   ; "Then I shall tel...
+01DF: 33   say
+01E0: 24 03 00   call [0003]   ; 0919H
+01E3: 1D 84 0A   pushs L0A84   ; observer
+01E6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EA: 1D 8D 0A   pushs L0A8D   ; philosophy
+01ED: 07 01 00 0A 00  cmps 0001H, 01FC
+01F2: 24 04 00   call [0004]   ; 091AH
+01F5: 1D 98 0A   pushs L0A98   ; philosophy
+01F8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FC: 1D A3 0A   pushs L0AA3   ; Fellowship
+01FF: 07 01 00 48 00  cmps 0001H, 024C
+0204: 1C AE 0A   addsi L0AAE   ; "I am a member of...
+0207: 33   say
+0208: 21 02 00   push [0002]
+020B: 05 2C 00   jne 023A
+020E: 1C F4 0B   addsi L0BF4   ; He leans in close...
+0211: 33   say
+0212: 13   push true
+0213: 1F 10 00   pushi 0010H   ; 16
+0216: 1F 99 FE   pushi FE99H   ; -359
+0219: 1F 79 01   pushi 0179H   ; 377
+021C: 1F 01 00   pushi 0001H   ; 1
+021F: 38 2C 00 05  callis 002C, 5
+0223: 12 05 00   pop [0005]
+0226: 21 05 00   push [0005]
+0229: 05 07 00   jne 0233
+022C: 1C A5 0C   addsi L0CA5   ; "Thou seest? I am...
+022F: 33   say
+0230: 06 04 00   jmp 0237
+0233: 1C DC 0C   addsi L0CDC   ; "I would give the...
+0236: 33   say
+0237: 06 0B 00   jmp 0245
+023A: 1C 3A 0D   addsi L0D3A   ; "But enough of th...
+023D: 33   say
+023E: 1D 7D 0D   pushs L0D7D   ; buy
+0241: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0245: 1D 81 0D   pushs L0D81   ; Fellowship
+0248: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024C: 1D 8C 0D   pushs L0D8C   ; buy
+024F: 07 01 00 7F 00  cmps 0001H, 02D3
+0254: 1C 90 0D   addsi L0D90   ; "I can do thee a ...
+0257: 33   say
+0258: 24 02 00   call [0002]   ; 090AH
+025B: 12 06 00   pop [0006]
+025E: 21 06 00   push [0006]
+0261: 05 4C 00   jne 02B0
+0264: 1F 99 FE   pushi FE99H   ; -359
+0267: 1F 99 FE   pushi FE99H   ; -359
+026A: 1F 99 FE   pushi FE99H   ; -359
+026D: 1F 84 02   pushi 0284H   ; 644
+0270: 1F 05 00   pushi 0005H   ; 5
+0273: 38 2B 00 05  callis 002B, 5
+0277: 12 07 00   pop [0007]
+027A: 21 07 00   push [0007]
+027D: 05 28 00   jne 02A8
+0280: 13   push true
+0281: 1F 10 00   pushi 0010H   ; 16
+0284: 1F 99 FE   pushi FE99H   ; -359
+0287: 1F 79 01   pushi 0179H   ; 377
+028A: 1F 01 00   pushi 0001H   ; 1
+028D: 38 2C 00 05  callis 002C, 5
+0291: 12 08 00   pop [0008]
+0294: 21 08 00   push [0008]
+0297: 05 07 00   jne 02A1
+029A: 1C 14 0E   addsi L0E14   ; Figg takes an app...
+029D: 33   say
+029E: 06 04 00   jmp 02A5
+02A1: 1C 7C 0E   addsi L0E7C   ; "Thou cannot take...
+02A4: 33   say
+02A5: 06 05 00   jmp 02AD
+02A8: 1C B8 0E   addsi L0EB8   ; "Thou dost not ev...
+02AB: 33   say
+02AC: 3F   abrt
+02AD: 06 1C 00   jmp 02CC
+02B0: 1C 65 0F   addsi L0F65   ; "Very well. But t...
+02B3: 33   say
+02B4: 24 02 00   call [0002]   ; 090AH
+02B7: 12 09 00   pop [0009]
+02BA: 21 09 00   push [0009]
+02BD: 05 07 00   jne 02C7
+02C0: 1C 11 10   addsi L1011   ; "Ah, I knew thou ...
+02C3: 33   say
+02C4: 06 05 00   jmp 02CC
+02C7: 1C 34 10   addsi L1034   ; "No! Well, fine, ...
+02CA: 33   say
+02CB: 3F   abrt
+02CC: 1D 4D 10   pushs L104D   ; buy
+02CF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D3: 1D 51 10   pushs L1051   ; bye
+02D6: 07 01 00 03 00  cmps 0001H, 02DE
+02DB: 06 03 00   jmp 02E1
+02DE: 06 C4 FD   jmp 00A5
+02E1: 40   db 40 ???
+02E2: 1C 55 10   addsi L1055   ; "I can see that t...
+02E5: 33   say
+02E6: 48   push eventid
+02E7: 1F 00 00   pushi 0000H   ; 0
+02EA: 22   cmpeq
+02EB: 05 06 00   jne 02F4
+02EE: 1F D3 FF   pushi FFD3H   ; -45
+02F1: 24 05 00   call [0005]   ; 092EH
+02F4: 25   ret

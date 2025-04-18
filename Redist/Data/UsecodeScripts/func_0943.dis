@@ -1,0 +1,20 @@
+  .funcnumber 0943H
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 21 00 00   push [0000]
+0003: 38 18 00 01  callis 0018, 1
+0007: 12 01 00   pop [0001]
+000A: 1F FF FF   pushi FFFFH   ; -1
+000D: 1F 00 00   pushi 0000H   ; 0
+0010: 1F FE FF   pushi FFFEH   ; -2
+0013: 1F FE FF   pushi FFFEH   ; -2
+0016: 1F 02 00   pushi 0002H   ; 2
+0019: 26 01 00   aidx [0001]
+001C: 1F 01 00   pushi 0001H   ; 1
+001F: 26 01 00   aidx [0001]
+0022: 1F 18 00   pushi 0018H   ; 24
+0025: 39 53 00 07  calli 0053, 7
+0029: 25   ret

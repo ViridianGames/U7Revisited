@@ -1,0 +1,389 @@
+  .funcnumber 0422H
+  .data
+L0000: db 'Nanna gives you a stern look for bothering her during The Fe'
+ db 'llowship meeting, much like the look of an elementary school'
+ db ' teacher you once had.*'
+L008F: db 00
+L0090: db '"I cannot imagine where Batlin may be. He has never missed a'
+ db ' Fellowship meeting!"'
+L00E1: db 00
+L00E2: db '"Oh! Hello! I must not stop to speak now. I am on my way to '
+ db 'The Fellowship meeting!"*'
+L0137: db 00
+L0138: db 'bye'
+L013B: db 00
+L013C: db 'job'
+L013F: db 00
+L0140: db 'name'
+L0144: db 00
+L0145: db 'You see a working-class elderly woman who exudes sweetness.'
+L0180: db 00
+L0181: db '"Yes, may I help thee?" Nanna asks.'
+L01A4: db 00
+L01A5: db 'name'
+L01A9: db 00
+L01AA: db '"Oh, everyone simply calls me 'Nanna'."'
+L01D1: db 00
+L01D2: db 'name'
+L01D6: db 00
+L01D7: db 'job'
+L01DA: db 00
+L01DB: db '"I watch over the Royal Nursery. I am the nanny of these won'
+ db 'derful children."'
+L0228: db 00
+L0229: db 'children'
+L0231: db 00
+L0232: db 'nanny'
+L0237: db 00
+L0238: db 'Royal Nursery'
+L0245: db 00
+L0246: db 'Royal Nursery'
+L0253: db 00
+L0254: db '"There have been a great number of babies born in Britannia '
+ db 'in recent years, so Lord British established this nursery. I'
+ db 't is nice that the noblemen and noblewomen have this luxury '
+ db 'so that they may attend to their daily duties."'
+L0337: db 00
+L0338: db 'Royal Nursery'
+L0345: db 00
+L0346: db 'luxury'
+L034C: db 00
+L034D: db '"Whew! Dost thou smell what I smell, Avatar?"*'
+L037B: db 00
+L037C: db '"I believe that is the smell of diapers, boy. When thou art '
+ db 'a father one day, thou wilt come to know that smell quite we'
+ db 'll."*'
+L03F9: db 00
+L03FA: db 'Royal Nursery'
+L0407: db 00
+L0408: db 'nanny'
+L040D: db 00
+L040E: db '"Well, I feed them and change their diapers and read aloud a'
+ db 'll the books thou dost see lying around. Luckily, I have She'
+ db 'rry to help me."'
+L0496: db 00
+L0497: db 'nanny'
+L049C: db 00
+L049D: db 'Sherry'
+L04A3: db 00
+L04A4: db 'books'
+L04A9: db 00
+L04AA: db 'books'
+L04AF: db 00
+L04B0: db '"Lord British brought them from his homeland. They are very '
+ db 'foreign to us here in Britannia, but the children enjoy them'
+ db ' just the same."'
+L0538: db 00
+L0539: db 'books'
+L053E: db 00
+L053F: db 'Sherry'
+L0545: db 00
+L0546: db '"Sherry is a special mouse who has lived here in the castle '
+ db 'for many, many years. She recites stories for the children."'
+L05BE: db 00
+L05BF: db 'Sherry'
+L05C5: db 00
+L05C6: db 'children'
+L05CE: db 00
+L05CF: db '"They are lovely, are they not? Every day they seem to learn'
+ db ' more and more. Most of the time they are a joy." Nanna whis'
+ db 'pers to you conspiratorially, "And other times I could happi'
+ db 'ly throw them out with the bathwater!"'
+L06A9: db 00
+L06AA: db '"The children must be outside playing with Sherry now."'
+L06E1: db 00
+L06E2: db 'Sherry'
+L06E8: db 00
+L06E9: db 'children'
+L06F1: db 00
+L06F2: db 'luxury'
+L06F8: db 00
+L06F9: db '"Yes, I suppose it really is a luxury. The poorer people in '
+ db 'Britannia certainly do not have such a service for caring fo'
+ db 'r their children. The rich do have an advantage." You detect'
+ db ' a hint of bitterness in her voice.'
+L07D0: db 00
+L07D1: db 'luxury'
+L07D7: db 00
+L07D8: db 'advantage'
+L07E1: db 00
+L07E2: db 'advantage'
+L07EB: db 00
+L07EC: db '"I do not mean to complain by any means. I adore my work. Bu'
+ db 't contrary to the thinking of many of the noblemen and women'
+ db ', a class structure exists in Britannia more than ever befor'
+ db 'e. Taxes are unbearable. The rich get richer, and the poor g'
+ db 'et poorer, as the saying goes."'
+L08FB: db 00
+L08FC: db 'advantage'
+L0905: db 00
+L0906: db 'taxes'
+L090B: db 00
+L090C: db 'class structure'
+L091B: db 00
+L091C: db 'taxes'
+L0921: db 00
+L0922: db '"The Britannian Tax Council drains us all dry. Especially th'
+ db 'e lower and middle classes."'
+L097A: db 00
+L097B: db 'taxes'
+L0980: db 00
+L0981: db 'class structure'
+L0990: db 00
+L0991: db '"Well, look around! There are rich men who live in opulent c'
+ db 'astles. And right outside are poor people who live in hovels'
+ db '. Thou dost know how there are winged gargoyles and wingless'
+ db ' gargoyles? Well, it seems the human race is getting to be j'
+ db 'ust as divided. There is no unity in the land anymore. It is'
+ db ' why I have joined The Fellowship."'
+L0AE0: db 00
+L0AE1: db 'class structure'
+L0AF0: db 00
+L0AF1: db 'philosophy'
+L0AFB: db 00
+L0AFC: db 'Fellowship'
+L0B06: db 00
+L0B07: db 'Fellowship'
+L0B11: db 00
+L0B12: db 'Fellowship'
+L0B1C: db 00
+L0B1D: db 'philosophy'
+L0B27: db 00
+L0B28: db 'She notices your medallion. "But thou dost know all that alr'
+ db 'eady!'
+L0B69: db 00
+L0B6A: db '"Thou shouldst really come to a meeting. Thou wouldst learn '
+ db 'a lot!"'
+L0BAD: db 00
+L0BAE: db 'philosophy'
+L0BB8: db 00
+L0BB9: db 'bye'
+L0BBC: db 00
+L0BBD: db '"Good day! Do come back and visit again soon!"*'
+L0BEC: db 00
+  .code
+  .argc 0001H
+  .localc 0007H
+  .externsize 0005H
+  .extern 08FCH
+  .extern 08F7H
+  .extern 0919H
+  .extern 091AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 69 02   jne 0271
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F DE FF   pushi FFDEH   ; -34
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F DE FF   pushi FFDEH   ; -34
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 38 67 00 00  callis 0067, 0
+002B: 12 02 00   pop [0002]
+002E: 21 00 00   push [0000]
+0031: 1F 07 00   pushi 0007H   ; 7
+0034: 22   cmpeq
+0035: 05 2F 00   jne 0067
+0038: 1F E6 FF   pushi FFE6H   ; -26
+003B: 1F DE FF   pushi FFDEH   ; -34
+003E: 24 00 00   call [0000]   ; 08FCH
+0041: 12 03 00   pop [0003]
+0044: 21 03 00   push [0003]
+0047: 05 08 00   jne 0052
+004A: 1C 00 00   addsi L0000   ; Nanna gives you a...
+004D: 33   say
+004E: 3F   abrt
+004F: 06 15 00   jmp 0067
+0052: 42 DA 00   pushf flag:[00DA]
+0055: 05 0A 00   jne 0062
+0058: 1C 90 00   addsi L0090   ; "I cannot imagine...
+005B: 33   say
+005C: 06 08 00   jmp 0067
+005F: 06 05 00   jmp 0067
+0062: 1C E2 00   addsi L00E2   ; "Oh! Hello! I mus...
+0065: 33   say
+0066: 3F   abrt
+0067: 1D 38 01   pushs L0138   ; bye
+006A: 1D 3C 01   pushs L013C   ; job
+006D: 1D 40 01   pushs L0140   ; name
+0070: 1E 03 00   arrc 0003H   ; 3
+0073: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0077: 42 A3 00   pushf flag:[00A3]
+007A: 10   not
+007B: 05 0B 00   jne 0089
+007E: 1C 45 01   addsi L0145   ; You see a working...
+0081: 33   say
+0082: 13   push true
+0083: 43 A3 00   popf flag:[00A3]
+0086: 06 04 00   jmp 008D
+0089: 1C 81 01   addsi L0181   ; "Yes, may I help ...
+008C: 33   say
+008D: 04 DC 01   je 026C
+0090: 1D A5 01   pushs L01A5   ; name
+0093: 07 01 00 0B 00  cmps 0001H, 00A3
+0098: 1C AA 01   addsi L01AA   ; "Oh, everyone sim...
+009B: 33   say
+009C: 1D D2 01   pushs L01D2   ; name
+009F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A3: 1D D7 01   pushs L01D7   ; job
+00A6: 07 01 00 14 00  cmps 0001H, 00BF
+00AB: 1C DB 01   addsi L01DB   ; "I watch over the...
+00AE: 33   say
+00AF: 1D 29 02   pushs L0229   ; children
+00B2: 1D 32 02   pushs L0232   ; nanny
+00B5: 1D 38 02   pushs L0238   ; Royal Nursery
+00B8: 1E 03 00   arrc 0003H   ; 3
+00BB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BF: 1D 46 02   pushs L0246   ; Royal Nursery
+00C2: 07 01 00 75 00  cmps 0001H, 013C
+00C7: 1C 54 02   addsi L0254   ; "There have been ...
+00CA: 33   say
+00CB: 1D 38 03   pushs L0338   ; Royal Nursery
+00CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D2: 1D 46 03   pushs L0346   ; luxury
+00D5: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D9: 1F FE FF   pushi FFFEH   ; -2
+00DC: 24 01 00   call [0001]   ; 08F7H
+00DF: 12 04 00   pop [0004]
+00E2: 21 01 00   push [0001]
+00E5: 1F 07 00   pushi 0007H   ; 7
+00E8: 22   cmpeq
+00E9: 05 49 00   jne 0135
+00EC: 21 04 00   push [0004]
+00EF: 05 15 00   jne 0107
+00F2: 1F 00 00   pushi 0000H   ; 0
+00F5: 1F FE FF   pushi FFFEH   ; -2
+00F8: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00FC: 1C 4D 03   addsi L034D   ; "Whew! Dost thou ...
+00FF: 33   say
+0100: 1F FE FF   pushi FFFEH   ; -2
+0103: 39 04 00 01  calli _HideNPC@1  ; 0004
+0107: 1F FF FF   pushi FFFFH   ; -1
+010A: 24 01 00   call [0001]   ; 08F7H
+010D: 12 05 00   pop [0005]
+0110: 21 05 00   push [0005]
+0113: 05 15 00   jne 012B
+0116: 1F 00 00   pushi 0000H   ; 0
+0119: 1F FF FF   pushi FFFFH   ; -1
+011C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0120: 1C 7C 03   addsi L037C   ; "I believe that i...
+0123: 33   say
+0124: 1F FF FF   pushi FFFFH   ; -1
+0127: 39 04 00 01  calli _HideNPC@1  ; 0004
+012B: 1F 00 00   pushi 0000H   ; 0
+012E: 1F DE FF   pushi FFDEH   ; -34
+0131: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0135: 1D FA 03   pushs L03FA   ; Royal Nursery
+0138: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013C: 1D 08 04   pushs L0408   ; nanny
+013F: 07 01 00 18 00  cmps 0001H, 015C
+0144: 1C 0E 04   addsi L040E   ; "Well, I feed the...
+0147: 33   say
+0148: 1D 97 04   pushs L0497   ; nanny
+014B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014F: 1D 9D 04   pushs L049D   ; Sherry
+0152: 1D A4 04   pushs L04A4   ; books
+0155: 1E 02 00   arrc 0002H   ; 2
+0158: 39 05 00 01  calli _AddAnswer@1  ; 0005
+015C: 1D AA 04   pushs L04AA   ; books
+015F: 07 01 00 0B 00  cmps 0001H, 016F
+0164: 1C B0 04   addsi L04B0   ; "Lord British bro...
+0167: 33   say
+0168: 1D 39 05   pushs L0539   ; books
+016B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+016F: 1D 3F 05   pushs L053F   ; Sherry
+0172: 07 01 00 0B 00  cmps 0001H, 0182
+0177: 1C 46 05   addsi L0546   ; "Sherry is a spec...
+017A: 33   say
+017B: 1D BF 05   pushs L05BF   ; Sherry
+017E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0182: 1D C6 05   pushs L05C6   ; children
+0185: 07 01 00 2E 00  cmps 0001H, 01B8
+018A: 1C CF 05   addsi L05CF   ; "They are lovely,...
+018D: 33   say
+018E: 1F E0 FF   pushi FFE0H   ; -32
+0191: 38 1B 00 01  callis 001B, 1
+0195: 38 1C 00 01  callis 001C, 1
+0199: 12 06 00   pop [0006]
+019C: 21 06 00   push [0006]
+019F: 1F 19 00   pushi 0019H   ; 25
+01A2: 22   cmpeq
+01A3: 05 0B 00   jne 01B1
+01A6: 1C AA 06   addsi L06AA   ; "The children mus...
+01A9: 33   say
+01AA: 1D E2 06   pushs L06E2   ; Sherry
+01AD: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B1: 1D E9 06   pushs L06E9   ; children
+01B4: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01B8: 1D F2 06   pushs L06F2   ; luxury
+01BB: 07 01 00 12 00  cmps 0001H, 01D2
+01C0: 1C F9 06   addsi L06F9   ; "Yes, I suppose i...
+01C3: 33   say
+01C4: 1D D1 07   pushs L07D1   ; luxury
+01C7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CB: 1D D8 07   pushs L07D8   ; advantage
+01CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D2: 1D E2 07   pushs L07E2   ; advantage
+01D5: 07 01 00 18 00  cmps 0001H, 01F2
+01DA: 1C EC 07   addsi L07EC   ; "I do not mean to...
+01DD: 33   say
+01DE: 1D FC 08   pushs L08FC   ; advantage
+01E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E5: 1D 06 09   pushs L0906   ; taxes
+01E8: 1D 0C 09   pushs L090C   ; class structure
+01EB: 1E 02 00   arrc 0002H   ; 2
+01EE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01F2: 1D 1C 09   pushs L091C   ; taxes
+01F5: 07 01 00 0B 00  cmps 0001H, 0205
+01FA: 1C 22 09   addsi L0922   ; "The Britannian T...
+01FD: 33   say
+01FE: 1D 7B 09   pushs L097B   ; taxes
+0201: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0205: 1D 81 09   pushs L0981   ; class structure
+0208: 07 01 00 1C 00  cmps 0001H, 0229
+020D: 1C 91 09   addsi L0991   ; "Well, look aroun...
+0210: 33   say
+0211: 1D E1 0A   pushs L0AE1   ; class structure
+0214: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0218: 1D F1 0A   pushs L0AF1   ; philosophy
+021B: 1D FC 0A   pushs L0AFC   ; Fellowship
+021E: 1E 02 00   arrc 0002H   ; 2
+0221: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0225: 13   push true
+0226: 43 82 00   popf flag:[0082]
+0229: 1D 07 0B   pushs L0B07   ; Fellowship
+022C: 07 01 00 0A 00  cmps 0001H, 023B
+0231: 24 02 00   call [0002]   ; 0919H
+0234: 1D 12 0B   pushs L0B12   ; Fellowship
+0237: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023B: 1D 1D 0B   pushs L0B1D   ; philosophy
+023E: 07 01 00 1B 00  cmps 0001H, 025E
+0243: 21 02 00   push [0002]
+0246: 05 07 00   jne 0250
+0249: 1C 28 0B   addsi L0B28   ; She notices your ...
+024C: 33   say
+024D: 06 07 00   jmp 0257
+0250: 1C 6A 0B   addsi L0B6A   ; "Thou shouldst re...
+0253: 33   say
+0254: 24 03 00   call [0003]   ; 091AH
+0257: 1D AE 0B   pushs L0BAE   ; philosophy
+025A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+025E: 1D B9 0B   pushs L0BB9   ; bye
+0261: 07 01 00 03 00  cmps 0001H, 0269
+0266: 06 03 00   jmp 026C
+0269: 06 21 FE   jmp 008D
+026C: 40   db 40 ???
+026D: 1C BD 0B   addsi L0BBD   ; "Good day! Do com...
+0270: 33   say
+0271: 48   push eventid
+0272: 1F 00 00   pushi 0000H   ; 0
+0275: 22   cmpeq
+0276: 05 06 00   jne 027F
+0279: 1F DE FF   pushi FFDEH   ; -34
+027C: 24 04 00   call [0004]   ; 092EH
+027F: 25   ret

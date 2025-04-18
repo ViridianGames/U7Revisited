@@ -1,0 +1,919 @@
+  .funcnumber 031DH
+  .data
+L0000: db 'This is not a valid scroll'
+L001A: db 00
+L001B: db 'From the Desk of Lord British'
+L0038: db 00
+L0039: db 'How to keep the Avatar busy for hours looking for a clue--'
+L0073: db 00
+L0074: db '(please scroll forward)*'
+L008C: db 00
+L008D: db 'How to keep the Avatar very busy for hours looking for a clu'
+ db 'e--'
+L00CC: db 00
+L00CD: db '(please scroll forward)*'
+L00E5: db 00
+L00E6: db 'How to keep the Avatar very very busy for hours looking for '
+ db 'a clue --'
+L012B: db 00
+L012C: db '(please scroll forward)*'
+L0144: db 00
+L0145: db 'How to keep the Avatar very -very- very busy for hours looki'
+ db 'ng for a clue --'
+L0191: db 00
+L0192: db '(please scroll forward)*'
+L01AA: db 00
+L01AB: db 'How to keep the Avatar so very -very- very incredibly busy f'
+ db 'or hours looking for a clue --'
+L0205: db 00
+L0206: db '(please scroll forward)*'
+L021E: db 00
+L021F: db 'How to keep the Avatar so very -very- absolutely unbelievabl'
+ db 'y and incredibly busy for hours looking for a clue --'
+L0290: db 00
+L0291: db '(please scroll forward)*'
+L02A9: db 00
+L02AA: db 'When thou art not so busy, thou shouldst seek out Margareta '
+ db 'the gypsy in Minoc and have thy fortune told!'
+L0313: db 00
+L0314: db 'Signed -  Chuckles'
+L0326: db 00
+L0327: db 'KEEP BRITANNIA CLEAN -- SEND THE GARGOYLES BACK! ~~ ~~ ~~ Pa'
+ db 'id for by the Britannian Purity League'
+L0389: db 00
+L038A: db 'The cutting down of Silverleaf Trees will be done no longer '
+ db 'by you. Your compliance is desired. You are thanked, Woodsma'
+ db 'n.~~Salamon~~ ~~Ben, the logger'
+L0421: db 00
+L0422: db 'The cutting down of Silverleaf Trees will be done no longer '
+ db 'by you. Your compliance is desired. You are thanked, Woodsma'
+ db 'n.~~Salamon'
+L04A5: db 00
+L04A6: db 'Bill of Punative Action for the Distribution of Waste Produc'
+ db 'ts in Lock Lake~~78934979.S3, section 835~~'
+L050D: db 00
+L050E: db 'Whereby the members of the offending party shall be immersed'
+ db ' in the lake, heretofore refered to as Lock Lake, up to thei'
+ db 'r necks for not more than three consecutive days and not few'
+ db 'er than...'
+L05CC: db 00
+L05CD: db '"Thou hast received payment. Make the delivery tonight."'
+L0605: db 00
+L0606: db 'Once the construction is complete, store the blackrock in th'
+ db 'e hold of The Crown Jewel.'
+L065C: db 00
+L065D: db 'Finster - Britain (x)'
+L0672: db 00
+L0673: db 'Duncan - Buccaneer's Den (x)'
+L068F: db 00
+L0690: db 'Christopher - Trinsic (x)'
+L06A9: db 00
+L06AA: db 'Frederico - Minoc (x)'
+L06BF: db 00
+L06C0: db 'Tania - Minoc (x)'
+L06D1: db 00
+L06D2: db 'Alagner - New Magincia  (x)'
+L06ED: db 00
+L06EE: db 'Lord British - Britain ( )'
+L0708: db 00
+L0709: db ', the Avatar - ( )'
+L071B: db 00
+L071C: db 'The stone pedestal should be four feet high, three feet wide'
+ db ' and two feet deep. Atop each of the three pedestals shall b'
+ db 'e set the three receptacles: the tetrahedron, the sphere, an'
+ db 'd the cube.~~All of these items for the defense mechanism of'
+ db ' the portal have already been constructed by the Trinsic bla'
+ db 'cksmith.'
+L0850: db 00
+L0851: db 'Crown Jewel~~Sunrise tomorrow - sail for the Isle of the Ava'
+ db 'tar!'
+L0891: db 00
+L0892: db 'To tell you the amount of explosives is quite adequate to de'
+ db 'stroy the altars. To remind you of the need for silence, and'
+ db ' of the punishment it will help you avoid.~~--Runeb'
+L093D: db 00
+L093E: db 'The Narwhal shall be a fine, fine vessel, measuring 100 cubi'
+ db 'ts from bow to stern. She shall be constructed of the finest'
+ db ' Yew wood, with a ballast of thirty-seven cubits. After the '
+ db 'planks are retrograded, I shall preceriprocate the bottom de'
+ db 'cks to insure their verbosity.~Each bunk shall fit exactly w'
+ db 'ithin the 3 foot by four 14 cubit cabin, except for the firs'
+ db 't mate and sergeant's quarters, which will be octagnal the s'
+ db 'ize...~~ ~~Owen of Minoc'
+L0AFA: db 00
+L0AFB: db 'BRITANNIAN TAX COUNCIL'
+L0B11: db 00
+L0B12: db 'TAX DECLARATION'
+L0B21: db 00
+L0B22: db 'To insure the proper record-keeping of thine income and spen'
+ db 'ding, first replicate in triplicate the files numbered 37-A '
+ db 'through 1204-W of the forms. Following each copy, compile th'
+ db 'e aggregate number of expenditures and multiply by tables 3,'
+ db ' 69, 106. The next involves...'
+L0C30: db 00
+L0C31: db 'First thou must needs fill a crucible with metal. Then, usin'
+ db 'g the bellows, make the fire as hot as possible. When the fl'
+ db 'ame no longer continues to glow, thou art ready to proceed b'
+ db 'y setting the crucible on the fire to melt the metal.~~ Afte'
+ db 'rwards, pour the molten metal into the blade mold and let it'
+ db ' cool. Be warned! The crucible is at an extremely high tempe'
+ db 'rature. Do not burn thyself.~~ With the tongs, lift the cool'
+ db 'ed blade from the mold. Again heat up the fire and set the b'
+ db 'lade within. Be careful not to let it lose its shape though.'
+ db ' Just set it in there long enough to become malleable.~~ Whe'
+ db 'n it is ready, take it to the anvil and finish shaping it wi'
+ db 'th the hammer. When thou hast the desired blade, find the qu'
+ db 'enching barrel and plunge the sword in the cool water. It wi'
+ db 'll quickly harden.~~ All that thou must needs do now is to p'
+ db 'ut the pommel over the tang. It takes some doing to make a f'
+ db 'ine, sturdy sword, but the finished weapon is well worth it!'
+L0FF1: db 00
+L0FF2: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L10B8: db 00
+L10B9: db '     DEED~~SHIP NAME: The Scaly Eel~~COMPLETION DATE: 7-21-0'
+ db '355~~ INSPECTION DATE: 8-2-0355~~SHIPWRIGHT: Gargan of Trins'
+ db 'ic'
+L1133: db 00
+L1134: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L11FA: db 00
+L11FB: db '     DEED~~SHIP NAME: The Beast~~COMPLETION DATE: 3-12-0358~'
+ db '~ INSPECTION DATE: 3-19-0358~~SHIPWRIGHT: Clint of Britain'
+L1271: db 00
+L1272: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L1338: db 00
+L1339: db '     DEED~~SHIP NAME: The Excellencia~~COMPLETION DATE:~~ IN'
+ db 'SPECTION DATE:~~SHIPWRIGHT: Owen of Minoc'
+L139E: db 00
+L139F: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L1465: db 00
+L1466: db '     DEED~~SHIP NAME: The Nymphet~~COMPLETION DATE: 12-22-03'
+ db '57~~ INSPECTION DATE: 1-3-0358~~SHIPWRIGHT: Russell of New M'
+ db 'agincia'
+L14E5: db 00
+L14E6: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L15AC: db 00
+L15AD: db '     DEED~~SHIP NAME: The Lusty Wench~~COMPLETION DATE: 6-14'
+ db '-0327~~ INSPECTION DATE: 6-24-0359~~SHIPWRIGHT: Kethron of M'
+ db 'oonglow'
+L162C: db 00
+L162D: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L16F3: db 00
+L16F4: db '     DEED~~SHIP NAME: The Dragon's Breath~~COMPLETION DATE: '
+ db '5-18-0342~~ INSPECTION DATE: 5-23-0342~~SHIPWRIGHT: Rohden o'
+ db 'f Britain'
+L1775: db 00
+L1776: db '       ZARA's DANCE~For the lute.'
+L1797: db 00
+L1798: db '       WINDY NIGHT~For the harp.'
+L17B8: db 00
+L17B9: db '       ONE OF THE BEAST~For the harpsichord.'
+L17E5: db 00
+L17E6: db '       SPRING FIRE~For the xylophone.'
+L180B: db 00
+L180C: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L18D2: db 00
+L18D3: db '     DEED~~SHIP NAME:~~COMPLETION DATE:~~INSPECTION DATE:~~ '
+ db 'SHIPWRIGHT:'
+L191A: db 00
+L191B: db 'Bill of Underwater Scavenging and Cricket Playing~~23568976.'
+ db 'Y7, section 069~~Whereby the participants belonging to the f'
+ db 'irst party of the first team may also engage in supplementar'
+ db 'y treasure seeking within the bounds of two-hundred and thir'
+ db 'ty-nine feet from the docks. ~~Whereby the participants belo'
+ db 'nging to the second party of the second team may follow acco'
+ db 'rdingly provided they use no handkerchiefs within the bounds'
+ db ' of seven and one-half feet of the first party of the first '
+ db 'part. ~~Be it known the second party of the first part may n'
+ db 'ot involve outside...'
+L1B4C: db 00
+L1B4D: db '   G.J.'S SKETCH PAD'
+L1B61: db 00
+L1B62: db '~~Between these columns, upon this pedestal, once sat the CO'
+ db 'DEX OF ULTIMATE WISDOM.~~Now it lies in the infinite darknes'
+ db 's of the Void, forever shining as a beacon of knowledge to t'
+ db 'he races of man and gargoyle.~~Those who would seek the wisd'
+ db 'om contained therein must unite the mystic lenses in the sam'
+ db 'e manner as the Avatar did more than two hundred years ago.~'
+ db 'Lord British~~To search for Singularity through Control, Pas'
+ db 'sion, and Dilligence.~~Lord Draxinusom'
+L1D2C: db 00
+L1D2D: db '~     Ownership of Horse and Carriage~~This writ entitles th'
+ db 'e bearer to ownership and use of the wagon and its accompany'
+ db 'ing horse, Fletcher. Misuse of this writ by those not in ful'
+ db 'l ownership of aforementioned wagon and horse is punishable '
+ db 'under section 7890.3D5 of the Private Ownership of Goods and'
+ db ' Livestock Act, as enforced by the Britannian Tax Council.'
+L1E93: db 00
+L1E94: db '~     Ownership of Horse and Carriage~~This writ entitles th'
+ db 'e bearer to ownership and use of the wagon and its accompany'
+ db 'ing horse, Brikabrak. Misuse of this writ by those not in fu'
+ db 'll ownership of aforementioned wagon and horse is punishable'
+ db ' under section 7890.3D5 of the Private Ownership of Goods an'
+ db 'd Livestock Act, as enforced by the Britannian Tax Council.'
+L1FFB: db 00
+L1FFC: db 'Bill of Indoor Animal Housing~~89634510.P4, section 402~~'
+L2035: db 00
+L2036: db 'Whereby the participants belonging to the owning party are p'
+ db 'ermitted to store both animal and goods related to the care '
+ db 'of said animal indoors, providing...'
+L20D2: db 00
+L20D3: db 'Bill of Carriage Construction ~~48382745.F3, section 058~~'
+L210D: db 00
+L210E: db 'Whereby wood-builders and metal-workers may cross skills wit'
+ db 'hout the need for guild officiation limited by the following'
+ db ' principles...'
+L2194: db 00
+L2195: db 'Bill of Cabin Construction Near Granite Zoned Districts~~ 48'
+ db '923013.Q4, section 193~~'
+L21E9: db 00
+L21EA: db 'Whereby the participants belonging to the Stone Masons's Gui'
+ db 'ld may register compliants unto the party of the Cabin Build'
+ db 'ers, represented here as and/or by members for the Wood-Buil'
+ db 'ders Guild with the intent of...'
+L22BE: db 00
+L22BF: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L2385: db 00
+L2386: db '     DEED~~SHIP NAME: Anne's Revenge~~COMPLETION DATE:11-23-'
+ db '0198 ~~INSPECTION DATE: 1-17-0199~~SHIPWRIGHT: Alluria of Ne'
+ db 'w Magincia'
+L2408: db 00
+L2409: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L24CF: db 00
+L24D0: db '     DEED~~SHIP NAME: Golden Hinde~~COMPLETION DATE: 7-08-01'
+ db '05 ~~INSPECTION DATE: 7-12-0105~~SHIPWRIGHT: Gendra of Trins'
+ db 'ic'
+L254A: db 00
+L254B: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L2611: db 00
+L2612: db '     DEED~~SHIP NAME: Bounty~~COMPLETION DATE: 5-27-0185 ~~I'
+ db 'NSPECTION DATE: 6-04-0185~~SHIPWRIGHT: Gibson of Minoc'
+L2684: db 00
+L2685: db 'Dearest Iolo,~     In Buccaneer's Den I came across an old p'
+ db 'irate who told me he had sailed across the waters of Britann'
+ db 'ia more times than I was summers old. On a gamble, I asked i'
+ db 'f he had ever heard of the legendary Serpent Isle. He had! A'
+ db 'nd he even had a map that would tell how to locate the islan'
+ db 'd. I bought the map and have already begun my search. Howeve'
+ db 'r, I made a copy so that thou mayest follow me after thy cur'
+ db 'rent adventures have ended. I have left the copy with Lord B'
+ db 'ritish, but he promised he wouldst not give it to thee until'
+ db ' thou hast completed thy explorations with '
+L28CC: db 00
+L28CD: db '.~~     'Til I see thee again, my love!~     Gwenno'
+L2900: db 00
+L2901: db '~~All is not as it seems...'
+L291C: db 00
+L291D: db '~     Ownership of Horse and Carriage~~This writ entitles th'
+ db 'e bearer to ownership and use of the wagon and its accompany'
+ db 'ing horse, ____________. Misuse of this writ by those not in'
+ db ' full ownership of aforementioned wagon and horse is punisha'
+ db 'ble under section 7890.3D5 of the Private Ownership of Goods'
+ db ' and Livestock Act, as enforced by the Britannian Tax Counci'
+ db 'l.'
+L2A87: db 00
+L2A88: db '~Very well. It is agreed that we attack Lord British's castl'
+ db 'e at the dawning of the seventh day.~~Fransisa~Corwin~ Brax~'
+ db 'Athelas'
+L2B07: db 00
+L2B08: db '~     Selwyn's Last Will:~~'
+L2B23: db 00
+L2B24: db '     I do hearby bequeath my firedoom staff to anyone who is'
+ db ' mighty and cunning enough to penetrate the defenses of my f'
+ db 'ortress and slay my pet.~~'
+L2BB6: db 00
+L2BB7: db '     May all who read this rot in death!~'
+L2BE0: db 00
+L2BE1: db '          Selwyn'
+L2BF1: db 00
+L2BF2: db '     Throne of `Change' keeps thee at bay, but `Virtue' shal'
+ db 'l show the way!'
+L2C3D: db 00
+L2C3E: db '     I have been here for more days than I am able to rememb'
+ db 'er, though I have not forgotten the day I entered this forsa'
+ db 'ken cave which has become my tomb. That was 2-29-0227. But m'
+ db 'y food ran out long ago, and the rats are more interested in'
+ db ' eating me than letting me eat them. My strength is gone, as'
+ db ' is my will. If thou dost find this, please tell Mythra I lo'
+ db 've her.'
+L2DAD: db 00
+L2DAE: db '     --Denyel'
+L2DBB: db 00
+L2DBC: db '~     Lord British's Last Will and Testament:~~'
+L2DEB: db 00
+L2DEC: db '     Being of sound mind and body, I hereby bequeath all of '
+ db 'my belongings to... Nell, my beloved chambermaid. She has ke'
+ db 'pt me warm so many nights, which is more than I can say for '
+ db 'most of my bloody subjects! And to our unborn child, I beque'
+ db 'ath my crown. Long live the king. Or queen, whichever it sha'
+ db 'll be!~~'
+L2F20: db 00
+L2F21: db '          Lord British'
+L2F37: db 00
+L2F38: db 'By proclamation of Lord British this is an official document'
+ db ' denoting ownership of the heretofore mentioned sailing vess'
+ db 'el. Forgery of this title is prohibited under law no. 198983'
+ db '2.A5, section 809.'
+L2FFE: db 00
+L2FFF: db '     DEED~~SHIP NAME: Golden Ankh~~COMPLETION DATE: 3-8-0338'
+ db '~~ INSPECTION DATE: 3-18-0338~~SHIPWRIGHT: Clint of Britain'
+L3076: db 00
+L3077: db 'Day 1: I circumvented the living statues and made it through'
+ db ' the gate. Despite the long boat ride, I feel no weakness. I'
+ db ' suspect the excitement of the quest gives my strength. I wi'
+ db 'll rest soon.'
+L3138: db 00
+L3139: db 'Day 2: In the large room I encountered the lightening at the'
+ db ' "X." Very clever that -- predicting I would not trust  the '
+ db 'marking. I will not be so foolish  again.'
+L31DA: db 00
+L31DB: db 'Day 3: I found a large chamber, one in which I can see fully'
+ db ' its entire contents. Yet, there are invisible barriers that'
+ db ' prevent me from entering.'
+L326D: db 00
+L326E: db 'Day 4: The barriers are not what I first suspected. They are'
+ db ' walls. I can see the exit, and yet I cannot reach it. This '
+ db 'is maddening!'
+L32F3: db 00
+L32F4: db 'Day 5: I wish I had brought more rations. I did not expect t'
+ db 'o be caught like this. I will starve soon if I do not find t'
+ db 'he way out... and food and water!'
+L338D: db 00
+L338E: db 'Day: I am still without food and whales... I seee but cannot'
+ db '... well hilp arrive in time!? I think but am thoughtful...'
+L3405: db 00
+L3406: db '... I have been in this wretched place for more weeks than I'
+ db ' care to remember -- than I COULD remember were I to try. I '
+ db 'have seen far too much in the way of deception and falsehood'
+ db '. I am forced to wonder how this maze of tunnels can demonst'
+ db 'rate Truth. There is one lesson I can claim to have learned,'
+ db ' thou I wonder with whom I can ever share it: I am not the A'
+ db 'vatar. I wish with my last breath good luck to he... or she.'
+ db '..  who can truly claim the Avatarhood. As I lay here dying,'
+ db ' I ask but one request of the finder:  remember well my stru'
+ db 'g...'
+L3626: db 00
+L3627: db '... I write this with what little hope I have left. Frenke h'
+ db 'as now died -- killed by shooting balls of flame. I will att'
+ db 'empt to navigate the treacherous tunnel of fire alone. Shoul'
+ db 'd my quest succeed, I will emerge the Avatar. I relflect not'
+ db ' upon my other destiny...'
+L3730: db 00
+L3731: db '     This will be my last entry. My ink is all but gone, muc'
+ db 'h like my will. I no longer marvel at how a man can give up,'
+ db ' like the poor fool we found at the end of the invisible maz'
+ db 'e. But I refuse to succumb to the call of my weary bones. I '
+ db 'will trudge on.'
+L3830: db 00
+L3831: db '       SCROLL OF INFINITY~~ artifact TalismanOfInfinity -~ i'
+ db 'f Reality is Magic -~ if Locale(Artifact) is Void -~ Convex '
+ db 'is FindInBritannia(ConvexLens)~ Concave is FindInBritannia(C'
+ db 'oncaveLens)~ ~ if DoLightTest(Concave, Convex) -~ TalismanLi'
+ db 'st is BritanniaSearch(Talisman)~ ~~ Counter is 0~ foreach Ta'
+ db 'lisman in TalismanList -~ if KnowType(Talisman) is Truth -~ '
+ db 'Counter is Counter and 1~ --~ if KnowType(Talisman) is Love '
+ db '-~ Counter is Counter and 1~ --~ if KnowType(Talisman) is Co'
+ db 'urage -~ Counter is Counter and 1~ --~ ~ if Counter is 3 -~ '
+ db 'DoVoidAccess()~ ~~ InifinityAction is Action(Instance,~ aPla'
+ db 'narTravel, Britannia,~ aCallBack, TalismanOfInfinity)~ --~ i'
+ db 'f Reality is PseudoScience -~ EvilEntity is EntitySearch(All'
+ db ', Powerful, Evil)~ if EvilEntity -~ Check is PushReality(Evi'
+ db 'lEntity)~ if not Check -~ Test("Thou shalt never see this!")'
+L3B79: db 00
+L3B7A: db 'The Diary of Erethian:~~'
+L3B92: db 00
+L3B93: db 'Entry #1:'
+L3B9C: db 00
+L3B9D: db '     Perhaps someday I shall have the time and inclination t'
+ db 'o write on this parchment, but for now it pleases me not to.'
+L3C15: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0710H
+  .extern 0908H
+0000: 3E   push itemref
+0001: 38 14 00 01  callis _GetItemQuality@1  ; 0014
+0005: 12 00 00   pop [0000]
+0008: 21 00 00   push [0000]
+000B: 1F 2D 00   pushi 002DH   ; 45
+000E: 22   cmpeq
+000F: 05 05 00   jne 0017
+0012: 3E   push itemref
+0013: 47 10 07   calle 0710H   ; 1808
+0016: 2C   db 2c ???
+0017: 3E   push itemref
+0018: 1F 0E 00   pushi 000EH   ; 14
+001B: 39 86 00 02  calli 0086, 2
+001F: 3E   push itemref
+0020: 39 55 00 01  calli 0055, 1
+0024: 21 00 00   push [0000]
+0027: 1F 33 00   pushi 0033H   ; 51
+002A: 16   cmpgt
+002B: 05 07 00   jne 0035
+002E: 1C 00 00   addsi L0000   ; This is not a val...
+0031: 33   say
+0032: 06 52 04   jmp 0487
+0035: 21 00 00   push [0000]
+0038: 1F 00 00   pushi 0000H   ; 0
+003B: 22   cmpeq
+003C: 05 07 00   jne 0046
+003F: 1C 1B 00   addsi L001B   ; From the Desk of ...
+0042: 33   say
+0043: 06 41 04   jmp 0487
+0046: 21 00 00   push [0000]
+0049: 1F 01 00   pushi 0001H   ; 1
+004C: 22   cmpeq
+004D: 05 3B 00   jne 008B
+0050: 1C 39 00   addsi L0039   ; How to keep the A...
+0053: 33   say
+0054: 1C 74 00   addsi L0074   ; (please scroll fo...
+0057: 33   say
+0058: 1C 8D 00   addsi L008D   ; How to keep the A...
+005B: 33   say
+005C: 1C CD 00   addsi L00CD   ; (please scroll fo...
+005F: 33   say
+0060: 1C E6 00   addsi L00E6   ; How to keep the A...
+0063: 33   say
+0064: 1C 2C 01   addsi L012C   ; (please scroll fo...
+0067: 33   say
+0068: 1C 45 01   addsi L0145   ; How to keep the A...
+006B: 33   say
+006C: 1C 92 01   addsi L0192   ; (please scroll fo...
+006F: 33   say
+0070: 1C AB 01   addsi L01AB   ; How to keep the A...
+0073: 33   say
+0074: 1C 06 02   addsi L0206   ; (please scroll fo...
+0077: 33   say
+0078: 1C 1F 02   addsi L021F   ; How to keep the A...
+007B: 33   say
+007C: 1C 91 02   addsi L0291   ; (please scroll fo...
+007F: 33   say
+0080: 1C AA 02   addsi L02AA   ; When thou art not...
+0083: 33   say
+0084: 1C 14 03   addsi L0314   ; Signed -  Chuckles
+0087: 33   say
+0088: 06 FC 03   jmp 0487
+008B: 21 00 00   push [0000]
+008E: 1F 02 00   pushi 0002H   ; 2
+0091: 22   cmpeq
+0092: 05 07 00   jne 009C
+0095: 1C 27 03   addsi L0327   ; KEEP BRITANNIA CL...
+0098: 33   say
+0099: 06 EB 03   jmp 0487
+009C: 21 00 00   push [0000]
+009F: 1F 03 00   pushi 0003H   ; 3
+00A2: 22   cmpeq
+00A3: 05 14 00   jne 00BA
+00A6: 42 2B 01   pushf flag:[012B]
+00A9: 05 07 00   jne 00B3
+00AC: 1C 8A 03   addsi L038A   ; The cutting down ...
+00AF: 33   say
+00B0: 06 04 00   jmp 00B7
+00B3: 1C 22 04   addsi L0422   ; The cutting down ...
+00B6: 33   say
+00B7: 06 CD 03   jmp 0487
+00BA: 21 00 00   push [0000]
+00BD: 1F 04 00   pushi 0004H   ; 4
+00C0: 22   cmpeq
+00C1: 05 0B 00   jne 00CF
+00C4: 1C A6 04   addsi L04A6   ; Bill of Punative ...
+00C7: 33   say
+00C8: 1C 0E 05   addsi L050E   ; Whereby the membe...
+00CB: 33   say
+00CC: 06 B8 03   jmp 0487
+00CF: 21 00 00   push [0000]
+00D2: 1F 05 00   pushi 0005H   ; 5
+00D5: 22   cmpeq
+00D6: 05 07 00   jne 00E0
+00D9: 1C CD 05   addsi L05CD   ; "Thou hast receiv...
+00DC: 33   say
+00DD: 06 A7 03   jmp 0487
+00E0: 21 00 00   push [0000]
+00E3: 1F 06 00   pushi 0006H   ; 6
+00E6: 22   cmpeq
+00E7: 05 07 00   jne 00F1
+00EA: 1C 06 06   addsi L0606   ; Once the construc...
+00ED: 33   say
+00EE: 06 96 03   jmp 0487
+00F1: 21 00 00   push [0000]
+00F4: 1F 07 00   pushi 0007H   ; 7
+00F7: 22   cmpeq
+00F8: 05 2C 00   jne 0127
+00FB: 24 01 00   call [0001]   ; 0908H
+00FE: 12 01 00   pop [0001]
+0101: 1C 5D 06   addsi L065D   ; Finster - Britain...
+0104: 33   say
+0105: 1C 73 06   addsi L0673   ; Duncan - Buccanee...
+0108: 33   say
+0109: 1C 90 06   addsi L0690   ; Christopher - Tri...
+010C: 33   say
+010D: 1C AA 06   addsi L06AA   ; Frederico - Minoc...
+0110: 33   say
+0111: 1C C0 06   addsi L06C0   ; Tania - Minoc (x)
+0114: 33   say
+0115: 1C D2 06   addsi L06D2   ; Alagner - New Mag...
+0118: 33   say
+0119: 1C EE 06   addsi L06EE   ; Lord British - Br...
+011C: 33   say
+011D: 2F 01 00   addsv [0001]
+0120: 1C 09 07   addsi L0709   ; , the Avatar - ( )
+0123: 33   say
+0124: 06 60 03   jmp 0487
+0127: 21 00 00   push [0000]
+012A: 1F 08 00   pushi 0008H   ; 8
+012D: 22   cmpeq
+012E: 05 07 00   jne 0138
+0131: 1C 1C 07   addsi L071C   ; The stone pedesta...
+0134: 33   say
+0135: 06 4F 03   jmp 0487
+0138: 21 00 00   push [0000]
+013B: 1F 09 00   pushi 0009H   ; 9
+013E: 22   cmpeq
+013F: 05 07 00   jne 0149
+0142: 1C 51 08   addsi L0851   ; Crown Jewel~~Sunr...
+0145: 33   say
+0146: 06 3E 03   jmp 0487
+0149: 21 00 00   push [0000]
+014C: 1F 0A 00   pushi 000AH   ; 10
+014F: 22   cmpeq
+0150: 05 0B 00   jne 015E
+0153: 13   push true
+0154: 43 3F 02   popf flag:[023F]
+0157: 1C 92 08   addsi L0892   ; To tell you the a...
+015A: 33   say
+015B: 06 29 03   jmp 0487
+015E: 21 00 00   push [0000]
+0161: 1F 0B 00   pushi 000BH   ; 11
+0164: 22   cmpeq
+0165: 05 07 00   jne 016F
+0168: 1C 3E 09   addsi L093E   ; The Narwhal shall...
+016B: 33   say
+016C: 06 18 03   jmp 0487
+016F: 21 00 00   push [0000]
+0172: 1F 0C 00   pushi 000CH   ; 12
+0175: 22   cmpeq
+0176: 05 0F 00   jne 0188
+0179: 1C FB 0A   addsi L0AFB   ; BRITANNIAN TAX CO...
+017C: 33   say
+017D: 1C 12 0B   addsi L0B12   ; TAX DECLARATION
+0180: 33   say
+0181: 1C 22 0B   addsi L0B22   ; To insure the pro...
+0184: 33   say
+0185: 06 FF 02   jmp 0487
+0188: 21 00 00   push [0000]
+018B: 1F 0D 00   pushi 000DH   ; 13
+018E: 22   cmpeq
+018F: 05 07 00   jne 0199
+0192: 1C 31 0C   addsi L0C31   ; First thou must n...
+0195: 33   say
+0196: 06 EE 02   jmp 0487
+0199: 21 00 00   push [0000]
+019C: 1F 0E 00   pushi 000EH   ; 14
+019F: 22   cmpeq
+01A0: 05 0B 00   jne 01AE
+01A3: 1C F2 0F   addsi L0FF2   ; By proclamation o...
+01A6: 33   say
+01A7: 1C B9 10   addsi L10B9   ;      DEED~~SHIP N...
+01AA: 33   say
+01AB: 06 D9 02   jmp 0487
+01AE: 21 00 00   push [0000]
+01B1: 1F 0F 00   pushi 000FH   ; 15
+01B4: 22   cmpeq
+01B5: 05 0B 00   jne 01C3
+01B8: 1C 34 11   addsi L1134   ; By proclamation o...
+01BB: 33   say
+01BC: 1C FB 11   addsi L11FB   ;      DEED~~SHIP N...
+01BF: 33   say
+01C0: 06 C4 02   jmp 0487
+01C3: 21 00 00   push [0000]
+01C6: 1F 10 00   pushi 0010H   ; 16
+01C9: 22   cmpeq
+01CA: 05 0B 00   jne 01D8
+01CD: 1C 72 12   addsi L1272   ; By proclamation o...
+01D0: 33   say
+01D1: 1C 39 13   addsi L1339   ;      DEED~~SHIP N...
+01D4: 33   say
+01D5: 06 AF 02   jmp 0487
+01D8: 21 00 00   push [0000]
+01DB: 1F 11 00   pushi 0011H   ; 17
+01DE: 22   cmpeq
+01DF: 05 0B 00   jne 01ED
+01E2: 1C 9F 13   addsi L139F   ; By proclamation o...
+01E5: 33   say
+01E6: 1C 66 14   addsi L1466   ;      DEED~~SHIP N...
+01E9: 33   say
+01EA: 06 9A 02   jmp 0487
+01ED: 21 00 00   push [0000]
+01F0: 1F 12 00   pushi 0012H   ; 18
+01F3: 22   cmpeq
+01F4: 05 0B 00   jne 0202
+01F7: 1C E6 14   addsi L14E6   ; By proclamation o...
+01FA: 33   say
+01FB: 1C AD 15   addsi L15AD   ;      DEED~~SHIP N...
+01FE: 33   say
+01FF: 06 85 02   jmp 0487
+0202: 21 00 00   push [0000]
+0205: 1F 13 00   pushi 0013H   ; 19
+0208: 22   cmpeq
+0209: 05 0B 00   jne 0217
+020C: 1C 2D 16   addsi L162D   ; By proclamation o...
+020F: 33   say
+0210: 1C F4 16   addsi L16F4   ;      DEED~~SHIP N...
+0213: 33   say
+0214: 06 70 02   jmp 0487
+0217: 21 00 00   push [0000]
+021A: 1F 14 00   pushi 0014H   ; 20
+021D: 22   cmpeq
+021E: 05 07 00   jne 0228
+0221: 1C 76 17   addsi L1776   ;        ZARA's DAN...
+0224: 33   say
+0225: 06 5F 02   jmp 0487
+0228: 21 00 00   push [0000]
+022B: 1F 15 00   pushi 0015H   ; 21
+022E: 22   cmpeq
+022F: 05 07 00   jne 0239
+0232: 1C 98 17   addsi L1798   ;        WINDY NIGH...
+0235: 33   say
+0236: 06 4E 02   jmp 0487
+0239: 21 00 00   push [0000]
+023C: 1F 16 00   pushi 0016H   ; 22
+023F: 22   cmpeq
+0240: 05 07 00   jne 024A
+0243: 1C B9 17   addsi L17B9   ;        ONE OF THE...
+0246: 33   say
+0247: 06 3D 02   jmp 0487
+024A: 21 00 00   push [0000]
+024D: 1F 17 00   pushi 0017H   ; 23
+0250: 22   cmpeq
+0251: 05 07 00   jne 025B
+0254: 1C E6 17   addsi L17E6   ;        SPRING FIR...
+0257: 33   say
+0258: 06 2C 02   jmp 0487
+025B: 21 00 00   push [0000]
+025E: 1F 18 00   pushi 0018H   ; 24
+0261: 22   cmpeq
+0262: 05 0B 00   jne 0270
+0265: 1C 0C 18   addsi L180C   ; By proclamation o...
+0268: 33   say
+0269: 1C D3 18   addsi L18D3   ;      DEED~~SHIP N...
+026C: 33   say
+026D: 06 17 02   jmp 0487
+0270: 21 00 00   push [0000]
+0273: 1F 19 00   pushi 0019H   ; 25
+0276: 22   cmpeq
+0277: 05 07 00   jne 0281
+027A: 1C 1B 19   addsi L191B   ; Bill of Underwate...
+027D: 33   say
+027E: 06 06 02   jmp 0487
+0281: 21 00 00   push [0000]
+0284: 1F 1A 00   pushi 001AH   ; 26
+0287: 22   cmpeq
+0288: 05 07 00   jne 0292
+028B: 1C 4D 1B   addsi L1B4D   ;    G.J.'S SKETCH PAD
+028E: 33   say
+028F: 06 F5 01   jmp 0487
+0292: 21 00 00   push [0000]
+0295: 1F 1B 00   pushi 001BH   ; 27
+0298: 22   cmpeq
+0299: 05 07 00   jne 02A3
+029C: 1C 62 1B   addsi L1B62   ; ~~Between these c...
+029F: 33   say
+02A0: 06 E4 01   jmp 0487
+02A3: 21 00 00   push [0000]
+02A6: 1F 1C 00   pushi 001CH   ; 28
+02A9: 22   cmpeq
+02AA: 05 07 00   jne 02B4
+02AD: 1C 2D 1D   addsi L1D2D   ; ~     Ownership o...
+02B0: 33   say
+02B1: 06 D3 01   jmp 0487
+02B4: 21 00 00   push [0000]
+02B7: 1F 1D 00   pushi 001DH   ; 29
+02BA: 22   cmpeq
+02BB: 05 07 00   jne 02C5
+02BE: 1C 94 1E   addsi L1E94   ; ~     Ownership o...
+02C1: 33   say
+02C2: 06 C2 01   jmp 0487
+02C5: 21 00 00   push [0000]
+02C8: 1F 1E 00   pushi 001EH   ; 30
+02CB: 22   cmpeq
+02CC: 05 0B 00   jne 02DA
+02CF: 1C FC 1F   addsi L1FFC   ; Bill of Indoor An...
+02D2: 33   say
+02D3: 1C 36 20   addsi L2036   ; Whereby the parti...
+02D6: 33   say
+02D7: 06 AD 01   jmp 0487
+02DA: 21 00 00   push [0000]
+02DD: 1F 1F 00   pushi 001FH   ; 31
+02E0: 22   cmpeq
+02E1: 05 0B 00   jne 02EF
+02E4: 1C D3 20   addsi L20D3   ; Bill of Carriage ...
+02E7: 33   say
+02E8: 1C 0E 21   addsi L210E   ; Whereby wood-buil...
+02EB: 33   say
+02EC: 06 98 01   jmp 0487
+02EF: 21 00 00   push [0000]
+02F2: 1F 20 00   pushi 0020H   ; 32
+02F5: 22   cmpeq
+02F6: 05 0B 00   jne 0304
+02F9: 1C 95 21   addsi L2195   ; Bill of Cabin Con...
+02FC: 33   say
+02FD: 1C EA 21   addsi L21EA   ; Whereby the parti...
+0300: 33   say
+0301: 06 83 01   jmp 0487
+0304: 21 00 00   push [0000]
+0307: 1F 21 00   pushi 0021H   ; 33
+030A: 22   cmpeq
+030B: 05 0B 00   jne 0319
+030E: 1C BF 22   addsi L22BF   ; By proclamation o...
+0311: 33   say
+0312: 1C 86 23   addsi L2386   ;      DEED~~SHIP N...
+0315: 33   say
+0316: 06 6E 01   jmp 0487
+0319: 21 00 00   push [0000]
+031C: 1F 22 00   pushi 0022H   ; 34
+031F: 22   cmpeq
+0320: 05 0B 00   jne 032E
+0323: 1C 09 24   addsi L2409   ; By proclamation o...
+0326: 33   say
+0327: 1C D0 24   addsi L24D0   ;      DEED~~SHIP N...
+032A: 33   say
+032B: 06 59 01   jmp 0487
+032E: 21 00 00   push [0000]
+0331: 1F 23 00   pushi 0023H   ; 35
+0334: 22   cmpeq
+0335: 05 0B 00   jne 0343
+0338: 1C 4B 25   addsi L254B   ; By proclamation o...
+033B: 33   say
+033C: 1C 12 26   addsi L2612   ;      DEED~~SHIP N...
+033F: 33   say
+0340: 06 44 01   jmp 0487
+0343: 21 00 00   push [0000]
+0346: 1F 24 00   pushi 0024H   ; 36
+0349: 22   cmpeq
+034A: 05 13 00   jne 0360
+034D: 24 01 00   call [0001]   ; 0908H
+0350: 12 01 00   pop [0001]
+0353: 1C 85 26   addsi L2685   ; Dearest Iolo,~   ...
+0356: 2F 01 00   addsv [0001]
+0359: 1C CD 28   addsi L28CD   ; .~~     'Til I se...
+035C: 33   say
+035D: 06 27 01   jmp 0487
+0360: 21 00 00   push [0000]
+0363: 1F 25 00   pushi 0025H   ; 37
+0366: 22   cmpeq
+0367: 05 07 00   jne 0371
+036A: 1C 01 29   addsi L2901   ; ~~All is not as i...
+036D: 33   say
+036E: 06 16 01   jmp 0487
+0371: 21 00 00   push [0000]
+0374: 1F 26 00   pushi 0026H   ; 38
+0377: 22   cmpeq
+0378: 05 07 00   jne 0382
+037B: 1C 1D 29   addsi L291D   ; ~     Ownership o...
+037E: 33   say
+037F: 06 05 01   jmp 0487
+0382: 21 00 00   push [0000]
+0385: 1F 27 00   pushi 0027H   ; 39
+0388: 22   cmpeq
+0389: 05 07 00   jne 0393
+038C: 1C 88 2A   addsi L2A88   ; ~Very well. It is...
+038F: 33   say
+0390: 06 F4 00   jmp 0487
+0393: 21 00 00   push [0000]
+0396: 1F 28 00   pushi 0028H   ; 40
+0399: 22   cmpeq
+039A: 05 13 00   jne 03B0
+039D: 1C 08 2B   addsi L2B08   ; ~     Selwyn's La...
+03A0: 33   say
+03A1: 1C 24 2B   addsi L2B24   ;      I do hearby ...
+03A4: 33   say
+03A5: 1C B7 2B   addsi L2BB7   ;      May all who ...
+03A8: 33   say
+03A9: 1C E1 2B   addsi L2BE1   ;           Selwyn
+03AC: 33   say
+03AD: 06 D7 00   jmp 0487
+03B0: 21 00 00   push [0000]
+03B3: 1F 29 00   pushi 0029H   ; 41
+03B6: 22   cmpeq
+03B7: 05 07 00   jne 03C1
+03BA: 1C F2 2B   addsi L2BF2   ;      Throne of `C...
+03BD: 33   say
+03BE: 06 C6 00   jmp 0487
+03C1: 21 00 00   push [0000]
+03C4: 1F 2A 00   pushi 002AH   ; 42
+03C7: 22   cmpeq
+03C8: 05 08 00   jne 03D3
+03CB: 1C 3E 2C   addsi L2C3E   ;      I have been ...
+03CE: 33   say
+03CF: 1C AE 2D   addsi L2DAE   ;      --Denyel
+03D2: 33   say
+03D3: 21 00 00   push [0000]
+03D6: 1F 2B 00   pushi 002BH   ; 43
+03D9: 22   cmpeq
+03DA: 05 0F 00   jne 03EC
+03DD: 1C BC 2D   addsi L2DBC   ; ~     Lord Britis...
+03E0: 33   say
+03E1: 1C EC 2D   addsi L2DEC   ;      Being of sou...
+03E4: 33   say
+03E5: 1C 21 2F   addsi L2F21   ;           Lord Br...
+03E8: 33   say
+03E9: 06 9B 00   jmp 0487
+03EC: 21 00 00   push [0000]
+03EF: 1F 2C 00   pushi 002CH   ; 44
+03F2: 22   cmpeq
+03F3: 05 0B 00   jne 0401
+03F6: 1C 38 2F   addsi L2F38   ; By proclamation o...
+03F9: 33   say
+03FA: 1C FF 2F   addsi L2FFF   ;      DEED~~SHIP N...
+03FD: 33   say
+03FE: 06 86 00   jmp 0487
+0401: 21 00 00   push [0000]
+0404: 1F 2D 00   pushi 002DH   ; 45
+0407: 22   cmpeq
+0408: 05 07 00   jne 0412
+040B: 3E   push itemref
+040C: 47 10 07   calle 0710H   ; 1808
+040F: 06 75 00   jmp 0487
+0412: 21 00 00   push [0000]
+0415: 1F 2F 00   pushi 002FH   ; 47
+0418: 22   cmpeq
+0419: 05 1B 00   jne 0437
+041C: 1C 77 30   addsi L3077   ; Day 1: I circumve...
+041F: 33   say
+0420: 1C 39 31   addsi L3139   ; Day 2: In the lar...
+0423: 33   say
+0424: 1C DB 31   addsi L31DB   ; Day 3: I found a ...
+0427: 33   say
+0428: 1C 6E 32   addsi L326E   ; Day 4: The barrie...
+042B: 33   say
+042C: 1C F4 32   addsi L32F4   ; Day 5: I wish I h...
+042F: 33   say
+0430: 1C 8E 33   addsi L338E   ; Day: I am still w...
+0433: 33   say
+0434: 06 50 00   jmp 0487
+0437: 21 00 00   push [0000]
+043A: 1F 30 00   pushi 0030H   ; 48
+043D: 22   cmpeq
+043E: 05 07 00   jne 0448
+0441: 1C 06 34   addsi L3406   ; ... I have been i...
+0444: 33   say
+0445: 06 3F 00   jmp 0487
+0448: 21 00 00   push [0000]
+044B: 1F 31 00   pushi 0031H   ; 49
+044E: 22   cmpeq
+044F: 05 0B 00   jne 045D
+0452: 1C 27 36   addsi L3627   ; ... I write this ...
+0455: 33   say
+0456: 1C 31 37   addsi L3731   ;      This will be...
+0459: 33   say
+045A: 06 2A 00   jmp 0487
+045D: 21 00 00   push [0000]
+0460: 1F 32 00   pushi 0032H   ; 50
+0463: 22   cmpeq
+0464: 05 07 00   jne 046E
+0467: 1C 31 38   addsi L3831   ;        SCROLL OF ...
+046A: 33   say
+046B: 06 19 00   jmp 0487
+046E: 21 00 00   push [0000]
+0471: 1F 33 00   pushi 0033H   ; 51
+0474: 22   cmpeq
+0475: 05 0F 00   jne 0487
+0478: 1C 7A 3B   addsi L3B7A   ; The Diary of Eret...
+047B: 33   say
+047C: 1C 93 3B   addsi L3B93   ; Entry #1:
+047F: 33   say
+0480: 1C 9D 3B   addsi L3B9D   ;      Perhaps some...
+0483: 33   say
+0484: 06 00 00   jmp 0487
+0487: 25   ret

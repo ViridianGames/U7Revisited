@@ -1,0 +1,222 @@
+  .funcnumber 0424H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a lean, young fighter with a rather dashing flair.'
+L0047: db 00
+L0048: db '"Hello again!" Zella says.'
+L0062: db 00
+L0063: db 'name'
+L0067: db 00
+L0068: db '"My name is Zella."'
+L007B: db 00
+L007C: db 'name'
+L0080: db 00
+L0081: db 'job'
+L0084: db 00
+L0085: db '"I am a trainer. I specialize in hand-to-hand combat. After '
+ db 'all, a fighter never knows when he might encounter an advers'
+ db 'ary and suddenly realize he is unarmed. I call it 'boxing'. '
+ db 'Boxing is not only a method of fighting -- it is an art."'
+L0172: db 00
+L0173: db 'train'
+L0178: db 00
+L0179: db 'combat'
+L017F: db 00
+L0180: db 'combat'
+L0186: db 00
+L0187: db '"The field of battle contains many arenas. Almost any situat'
+ db 'ion could arise. Every fighter should be knowledgeable and a'
+ db 'dept at many forms of combat. I have mine own theory of figh'
+ db 'ting."'
+L0241: db 00
+L0242: db 'combat'
+L0248: db 00
+L0249: db 'theory'
+L024F: db 00
+L0250: db 'arenas'
+L0256: db 00
+L0257: db 'arenas'
+L025D: db 00
+L025E: db '"All the various arenas of combat, all the various styles on'
+ db 'e may learn in fighting with various weapons, are not fighti'
+ db 'ng in its purest form. To truly be a great fighter one must '
+ db 'go to the source of all fighting knowledge."'
+L033E: db 00
+L033F: db 'arenas'
+L0345: db 00
+L0346: db 'theory'
+L034C: db 00
+L034D: db '"Just as a castle is built from the foundation up, so must a'
+ db ' fighter. One cannot simply begin by learning to fight with '
+ db 'weapons. Weapons are merely an extension of a person's extre'
+ db 'mities. A true fighter learns by using those extremities fir'
+ db 'st."'
+L0441: db 00
+L0442: db 'theory'
+L0448: db 00
+L0449: db 'extremities'
+L0454: db 00
+L0455: db 'fighter'
+L045C: db 00
+L045D: db 'fighter'
+L0464: db 00
+L0465: db '"Make no mistake. Fighters are made, not born. All the natur'
+ db 'al talent in the world will avail thee naught if one does no'
+ db 't have the heart and the will to win. Part of that will is t'
+ db 'he courage to seek out thine own limitations and strive to b'
+ db 'etter them."'
+L0561: db 00
+L0562: db 'fighter'
+L0569: db 00
+L056A: db 'extremities'
+L0575: db 00
+L0576: db '"Thine arms. Thy legs. Thy fists. This is what makes 'boxing'
+ db ''."'
+L05B5: db 00
+L05B6: db 'extremities'
+L05C1: db 00
+L05C2: db 'train'
+L05C7: db 00
+L05C8: db '"My price for training is 45 gold. Is this all right?"'
+L05FE: db 00
+L05FF: db '"Then mayest thou find more inexpensive training elsewhere."'
+L063B: db 00
+L063C: db '"Be so kind as to return during normal training hours, would'
+ db 'st thou?"'
+L0681: db 00
+L0682: db 'train'
+L0687: db 00
+L0688: db 'bye'
+L068B: db 00
+L068C: db '"Good day to thee."*'
+L06A0: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0003H
+  .extern 090AH
+  .extern 0950H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 40 01   jne 0148
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F DC FF   pushi FFDCH   ; -36
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1F DC FF   pushi FFDCH   ; -36
+001C: 38 1B 00 01  callis 001B, 1
+0020: 38 1C 00 01  callis 001C, 1
+0024: 12 01 00   pop [0001]
+0027: 1D 00 00   pushs L0000   ; bye
+002A: 1D 04 00   pushs L0004   ; job
+002D: 1D 08 00   pushs L0008   ; name
+0030: 1E 03 00   arrc 0003H   ; 3
+0033: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0037: 42 A5 00   pushf flag:[00A5]
+003A: 10   not
+003B: 05 0B 00   jne 0049
+003E: 1C 0D 00   addsi L000D   ; You see a lean, y...
+0041: 33   say
+0042: 13   push true
+0043: 43 A5 00   popf flag:[00A5]
+0046: 06 04 00   jmp 004D
+0049: 1C 48 00   addsi L0048   ; "Hello again!" Ze...
+004C: 33   say
+004D: 04 F3 00   je 0143
+0050: 1D 63 00   pushs L0063   ; name
+0053: 07 01 00 0B 00  cmps 0001H, 0063
+0058: 1C 68 00   addsi L0068   ; "My name is Zella."
+005B: 33   say
+005C: 1D 7C 00   pushs L007C   ; name
+005F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0063: 1D 81 00   pushs L0081   ; job
+0066: 07 01 00 11 00  cmps 0001H, 007C
+006B: 1C 85 00   addsi L0085   ; "I am a trainer. ...
+006E: 33   say
+006F: 1D 73 01   pushs L0173   ; train
+0072: 1D 79 01   pushs L0179   ; combat
+0075: 1E 02 00   arrc 0002H   ; 2
+0078: 39 05 00 01  calli _AddAnswer@1  ; 0005
+007C: 1D 80 01   pushs L0180   ; combat
+007F: 07 01 00 18 00  cmps 0001H, 009C
+0084: 1C 87 01   addsi L0187   ; "The field of bat...
+0087: 33   say
+0088: 1D 42 02   pushs L0242   ; combat
+008B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+008F: 1D 49 02   pushs L0249   ; theory
+0092: 1D 50 02   pushs L0250   ; arenas
+0095: 1E 02 00   arrc 0002H   ; 2
+0098: 39 05 00 01  calli _AddAnswer@1  ; 0005
+009C: 1D 57 02   pushs L0257   ; arenas
+009F: 07 01 00 0B 00  cmps 0001H, 00AF
+00A4: 1C 5E 02   addsi L025E   ; "All the various ...
+00A7: 33   say
+00A8: 1D 3F 03   pushs L033F   ; arenas
+00AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AF: 1D 46 03   pushs L0346   ; theory
+00B2: 07 01 00 18 00  cmps 0001H, 00CF
+00B7: 1C 4D 03   addsi L034D   ; "Just as a castle...
+00BA: 33   say
+00BB: 1D 42 04   pushs L0442   ; theory
+00BE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00C2: 1D 49 04   pushs L0449   ; extremities
+00C5: 1D 55 04   pushs L0455   ; fighter
+00C8: 1E 02 00   arrc 0002H   ; 2
+00CB: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CF: 1D 5D 04   pushs L045D   ; fighter
+00D2: 07 01 00 0B 00  cmps 0001H, 00E2
+00D7: 1C 65 04   addsi L0465   ; "Make no mistake....
+00DA: 33   say
+00DB: 1D 62 05   pushs L0562   ; fighter
+00DE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E2: 1D 6A 05   pushs L056A   ; extremities
+00E5: 07 01 00 0B 00  cmps 0001H, 00F5
+00EA: 1C 76 05   addsi L0576   ; "Thine arms. Thy ...
+00ED: 33   say
+00EE: 1D B6 05   pushs L05B6   ; extremities
+00F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F5: 1D C2 05   pushs L05C2   ; train
+00F8: 07 01 00 38 00  cmps 0001H, 0135
+00FD: 21 01 00   push [0001]
+0100: 1F 1D 00   pushi 001DH   ; 29
+0103: 22   cmpeq
+0104: 05 23 00   jne 012A
+0107: 1C C8 05   addsi L05C8   ; "My price for tra...
+010A: 33   say
+010B: 24 00 00   call [0000]   ; 090AH
+010E: 05 12 00   jne 0123
+0111: 1F 2D 00   pushi 002DH   ; 45
+0114: 1F 04 00   pushi 0004H   ; 4
+0117: 1F 01 00   pushi 0001H   ; 1
+011A: 1E 02 00   arrc 0002H   ; 2
+011D: 24 01 00   call [0001]   ; 0950H
+0120: 06 04 00   jmp 0127
+0123: 1C FF 05   addsi L05FF   ; "Then mayest thou...
+0126: 33   say
+0127: 06 0B 00   jmp 0135
+012A: 1C 3C 06   addsi L063C   ; "Be so kind as to...
+012D: 33   say
+012E: 1D 82 06   pushs L0682   ; train
+0131: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0135: 1D 88 06   pushs L0688   ; bye
+0138: 07 01 00 03 00  cmps 0001H, 0140
+013D: 06 03 00   jmp 0143
+0140: 06 0A FF   jmp 004D
+0143: 40   db 40 ???
+0144: 1C 8C 06   addsi L068C   ; "Good day to thee."*
+0147: 33   say
+0148: 48   push eventid
+0149: 1F 00 00   pushi 0000H   ; 0
+014C: 22   cmpeq
+014D: 05 06 00   jne 0156
+0150: 1F DC FF   pushi FFDCH   ; -36
+0153: 24 02 00   call [0002]   ; 092EH
+0156: 25   ret

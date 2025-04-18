@@ -1,0 +1,384 @@
+  .funcnumber 040BH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'woman'
+L0012: db 00
+L0013: db 'man'
+L0016: db 00
+L0017: db 'The peasant looks at you as if he has seen a ghost! "Iolo! T'
+ db 'his '
+L0057: db 00
+L0058: db ' did appear from thin air! Help me!"*'
+L007D: db 00
+L007E: db 'You see a distraught peasant. "Art thou really the Avatar?"'
+L00B9: db 00
+L00BA: db 'Petre bows before you. "^'
+L00D3: db 00
+L00D4: db '."'
+L00D6: db 00
+L00D7: db 'Petre looks confused. "Thou shouldst not make fun of me!" He'
+ db ' turns away.*'
+L0120: db 00
+L0121: db '"What is it, '
+L012E: db 00
+L012F: db '?" Petre asks.'
+L013D: db 00
+L013E: db 'footprints'
+L0148: db 00
+L0149: db 'murder'
+L014F: db 00
+L0150: db 'Spark'
+L0155: db 00
+L0156: db 'Klog'
+L015A: db 00
+L015B: db 'Fellowship'
+L0165: db 00
+L0166: db '"Look in the stables! 'Tis horrible! I will answer thy quest'
+ db 'ions, but first look in the stables!"*'
+L01C8: db 00
+L01C9: db 'name'
+L01CD: db 00
+L01CE: db '"I am called Petre," the man sniffs.'
+L01F2: db 00
+L01F3: db 'name'
+L01F7: db 00
+L01F8: db 'job'
+L01FB: db 00
+L01FC: db '"I am the stables caretaker."'
+L0219: db 00
+L021A: db 'stables'
+L0221: db 00
+L0222: db 'stables'
+L0229: db 00
+L022A: db '"I have worked here for years. I can sell thee a nice horse '
+ db 'and carriage if thou dost want one. The animal and the carri'
+ db 'age are located in a small shelter just outside the north ga'
+ db 'te of the town."'
+L02EE: db 00
+L02EF: db '"Right now the place gives me the creeps!"~~His eyes are wil'
+ db 'd with fright.'
+L0339: db 00
+L033A: db '"The Mayor did not let me clean in there until twenty-four h'
+ db 'ours after thou didst leave Trinsic. He thought we had to ke'
+ db 'ep the place of the crime unsullied. Well, if thou dost ask '
+ db 'me, I can tell thee that it still stinks like the end of the'
+ db ' world in there!"'
+L043B: db 00
+L043C: db 'stables'
+L0443: db 00
+L0444: db 'carriage'
+L044C: db 00
+L044D: db 'murder'
+L0453: db 00
+L0454: db '"I discovered poor Christopher and Inamo earlier this mornin'
+ db 'g. I did not touch a thing. Made me sick, it did!"'
+L04C2: db 00
+L04C3: db 'murder'
+L04C9: db 00
+L04CA: db 'Inamo'
+L04CF: db 00
+L04D0: db 'Christopher'
+L04DB: db 00
+L04DC: db 'Christopher'
+L04E7: db 00
+L04E8: db '"Nice man. He made the shoes for mine horses."'
+L0516: db 00
+L0517: db 'Christopher'
+L0522: db 00
+L0523: db 'Inamo'
+L0528: db 00
+L0529: db '"He worked for very little money. Did basic chores around th'
+ db 'e stables and the pub. I let him sleep in the little back ro'
+ db 'om. He must have been in the wrong place at the wrong time."'
+L05DD: db 00
+L05DE: db 'Inamo'
+L05E3: db 00
+L05E4: db 'carriage'
+L05EC: db 00
+L05ED: db '"The horse and carriage combination sells for 60 gold. Dost '
+ db 'thou want a title?"'
+L063C: db 00
+L063D: db '"Very good. Nothing like a little business transaction to ta'
+ db 'ke my mind off the ghastly scene in the stables."'
+L06AA: db 00
+L06AB: db '"Oh, my. Thine hands are too full to take the title!"'
+L06E0: db 00
+L06E1: db '"Oh. Thou dost not have enough gold to buy the title."'
+L0717: db 00
+L0718: db '"Some other time, then."'
+L0730: db 00
+L0731: db 'carriage'
+L0739: db 00
+L073A: db 'footprints'
+L0744: db 00
+L0745: db '"They doth lead out the back way, yes? They must be the trac'
+ db 'ks of the murderer!"~~His eyes widen a bit more.~~"Or... mur'
+ db 'derers!"'
+L07C5: db 00
+L07C6: db 'footprints'
+L07D0: db 00
+L07D1: db 'Fellowship'
+L07DB: db 00
+L07DC: db '"I do not want to join them, but they seem all right."'
+L0812: db 00
+L0813: db 'Fellowship'
+L081D: db 00
+L081E: db 'Klog'
+L0822: db 00
+L0823: db '"I do not know the man too well. I have no dealings with him'
+ db '."'
+L0861: db 00
+L0862: db 'Klog'
+L0866: db 00
+L0867: db 'Spark'
+L086C: db 00
+L086D: db '"That be Christopher's son. Nice lad."'
+L0893: db 00
+L0894: db 'Petre ruffles the boy's hair.~~"This here is Christopher's s'
+ db 'on. He's a good lad, is Spark, when he's not pilfering thing'
+ db 's from honest shopkeepers."'
+L0927: db 00
+L0928: db 'Spark'
+L092D: db 00
+L092E: db 'bye'
+L0931: db 00
+L0932: db '"Goodbye," the man sniffs.*'
+L094D: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0003H
+  .extern 0909H
+  .extern 090AH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 64 02   jne 026C
+0008: 24 00 00   call [0000]   ; 0909H
+000B: 12 00 00   pop [0000]
+000E: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0012: 12 01 00   pop [0001]
+0015: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+0019: 12 02 00   pop [0002]
+001C: 1D 00 00   pushs L0000   ; bye
+001F: 1D 04 00   pushs L0004   ; job
+0022: 1D 08 00   pushs L0008   ; name
+0025: 1E 03 00   arrc 0003H   ; 3
+0028: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002C: 1F 00 00   pushi 0000H   ; 0
+002F: 1F F5 FF   pushi FFF5H   ; -11
+0032: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0036: 42 14 00   pushf flag:[0014]
+0039: 10   not
+003A: 05 20 00   jne 005D
+003D: 21 02 00   push [0002]
+0040: 05 09 00   jne 004C
+0043: 1D 0D 00   pushs L000D   ; woman
+0046: 12 03 00   pop [0003]
+0049: 06 06 00   jmp 0052
+004C: 1D 13 00   pushs L0013   ; man
+004F: 12 03 00   pop [0003]
+0052: 1C 17 00   addsi L0017   ; The peasant looks...
+0055: 2F 03 00   addsv [0003]
+0058: 1C 58 00   addsi L0058   ;  did appear from ...
+005B: 33   say
+005C: 3F   abrt
+005D: 42 4B 00   pushf flag:[004B]
+0060: 10   not
+0061: 05 37 00   jne 009B
+0064: 1C 7E 00   addsi L007E   ; You see a distrau...
+0067: 33   say
+0068: 24 01 00   call [0001]   ; 090AH
+006B: 12 04 00   pop [0004]
+006E: 21 04 00   push [0004]
+0071: 05 1B 00   jne 008F
+0074: 1C BA 00   addsi L00BA   ; Petre bows before...
+0077: 2F 00 00   addsv [0000]
+007A: 1C D4 00   addsi L00D4   ; ."
+007D: 33   say
+007E: 13   push true
+007F: 43 4B 00   popf flag:[004B]
+0082: 1F 0B 00   pushi 000BH   ; 11
+0085: 1F F5 FF   pushi FFF5H   ; -11
+0088: 39 1D 00 02  calli 001D, 2
+008C: 06 09 00   jmp 0098
+008F: 1C D7 00   addsi L00D7   ; Petre looks confu...
+0092: 33   say
+0093: 13   push true
+0094: 43 4B 00   popf flag:[004B]
+0097: 3F   abrt
+0098: 06 0A 00   jmp 00A5
+009B: 1C 21 01   addsi L0121   ; "What is it, 
+009E: 2F 00 00   addsv [0000]
+00A1: 1C 2F 01   addsi L012F   ; ?" Petre asks.
+00A4: 33   say
+00A5: 42 3C 00   pushf flag:[003C]
+00A8: 05 0D 00   jne 00B8
+00AB: 1D 3E 01   pushs L013E   ; footprints
+00AE: 1D 49 01   pushs L0149   ; murder
+00B1: 1E 02 00   arrc 0002H   ; 2
+00B4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00B8: 42 3F 00   pushf flag:[003F]
+00BB: 05 10 00   jne 00CE
+00BE: 1D 50 01   pushs L0150   ; Spark
+00C1: 1D 56 01   pushs L0156   ; Klog
+00C4: 1D 5B 01   pushs L015B   ; Fellowship
+00C7: 1E 03 00   arrc 0003H   ; 3
+00CA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00CE: 04 96 01   je 0267
+00D1: 42 3C 00   pushf flag:[003C]
+00D4: 10   not
+00D5: 05 08 00   jne 00E0
+00D8: 1C 66 01   addsi L0166   ; "Look in the stab...
+00DB: 33   say
+00DC: 3F   abrt
+00DD: 06 84 01   jmp 0264
+00E0: 1D C9 01   pushs L01C9   ; name
+00E3: 07 01 00 0B 00  cmps 0001H, 00F3
+00E8: 1C CE 01   addsi L01CE   ; "I am called Petr...
+00EB: 33   say
+00EC: 1D F3 01   pushs L01F3   ; name
+00EF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F3: 1D F8 01   pushs L01F8   ; job
+00F6: 07 01 00 0B 00  cmps 0001H, 0106
+00FB: 1C FC 01   addsi L01FC   ; "I am the stables...
+00FE: 33   say
+00FF: 1D 1A 02   pushs L021A   ; stables
+0102: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0106: 1D 22 02   pushs L0222   ; stables
+0109: 07 01 00 24 00  cmps 0001H, 0132
+010E: 1C 2A 02   addsi L022A   ; "I have worked he...
+0111: 33   say
+0112: 42 57 00   pushf flag:[0057]
+0115: 10   not
+0116: 05 07 00   jne 0120
+0119: 1C EF 02   addsi L02EF   ; "Right now the pl...
+011C: 33   say
+011D: 06 04 00   jmp 0124
+0120: 1C 3A 03   addsi L033A   ; "The Mayor did no...
+0123: 33   say
+0124: 1D 3C 04   pushs L043C   ; stables
+0127: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012B: 1D 44 04   pushs L0444   ; carriage
+012E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0132: 1D 4D 04   pushs L044D   ; murder
+0135: 07 01 00 18 00  cmps 0001H, 0152
+013A: 1C 54 04   addsi L0454   ; "I discovered poo...
+013D: 33   say
+013E: 1D C3 04   pushs L04C3   ; murder
+0141: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0145: 1D CA 04   pushs L04CA   ; Inamo
+0148: 1D D0 04   pushs L04D0   ; Christopher
+014B: 1E 02 00   arrc 0002H   ; 2
+014E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0152: 1D DC 04   pushs L04DC   ; Christopher
+0155: 07 01 00 0B 00  cmps 0001H, 0165
+015A: 1C E8 04   addsi L04E8   ; "Nice man. He mad...
+015D: 33   say
+015E: 1D 17 05   pushs L0517   ; Christopher
+0161: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0165: 1D 23 05   pushs L0523   ; Inamo
+0168: 07 01 00 0B 00  cmps 0001H, 0178
+016D: 1C 29 05   addsi L0529   ; "He worked for ve...
+0170: 33   say
+0171: 1D DE 05   pushs L05DE   ; Inamo
+0174: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0178: 1D E4 05   pushs L05E4   ; carriage
+017B: 07 01 00 7B 00  cmps 0001H, 01FB
+0180: 1C ED 05   addsi L05ED   ; "The horse and ca...
+0183: 33   say
+0184: 24 01 00   call [0001]   ; 090AH
+0187: 12 05 00   pop [0005]
+018A: 21 05 00   push [0005]
+018D: 05 60 00   jne 01F0
+0190: 1F 99 FE   pushi FE99H   ; -359
+0193: 1F 99 FE   pushi FE99H   ; -359
+0196: 1F 84 02   pushi 0284H   ; 644
+0199: 1F 9B FE   pushi FE9BH   ; -357
+019C: 38 28 00 04  callis 0028, 4
+01A0: 12 06 00   pop [0006]
+01A3: 21 06 00   push [0006]
+01A6: 1F 3C 00   pushi 003CH   ; 60
+01A9: 18   cmpge
+01AA: 05 3C 00   jne 01E9
+01AD: 14   push false
+01AE: 1F 99 FE   pushi FE99H   ; -359
+01B1: 1F 1C 00   pushi 001CH   ; 28
+01B4: 1F 1D 03   pushi 031DH   ; 797
+01B7: 1F 01 00   pushi 0001H   ; 1
+01BA: 38 2C 00 05  callis 002C, 5
+01BE: 12 07 00   pop [0007]
+01C1: 21 07 00   push [0007]
+01C4: 05 1B 00   jne 01E2
+01C7: 1C 3D 06   addsi L063D   ; "Very good. Nothi...
+01CA: 33   say
+01CB: 13   push true
+01CC: 1F 99 FE   pushi FE99H   ; -359
+01CF: 1F 99 FE   pushi FE99H   ; -359
+01D2: 1F 84 02   pushi 0284H   ; 644
+01D5: 1F 3C 00   pushi 003CH   ; 60
+01D8: 38 2B 00 05  callis 002B, 5
+01DC: 12 08 00   pop [0008]
+01DF: 06 04 00   jmp 01E6
+01E2: 1C AB 06   addsi L06AB   ; "Oh, my. Thine ha...
+01E5: 33   say
+01E6: 06 04 00   jmp 01ED
+01E9: 1C E1 06   addsi L06E1   ; "Oh. Thou dost no...
+01EC: 33   say
+01ED: 06 04 00   jmp 01F4
+01F0: 1C 18 07   addsi L0718   ; "Some other time,...
+01F3: 33   say
+01F4: 1D 31 07   pushs L0731   ; carriage
+01F7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FB: 1D 3A 07   pushs L073A   ; footprints
+01FE: 07 01 00 0B 00  cmps 0001H, 020E
+0203: 1C 45 07   addsi L0745   ; "They doth lead o...
+0206: 33   say
+0207: 1D C6 07   pushs L07C6   ; footprints
+020A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+020E: 1D D1 07   pushs L07D1   ; Fellowship
+0211: 07 01 00 0B 00  cmps 0001H, 0221
+0216: 1C DC 07   addsi L07DC   ; "I do not want to...
+0219: 33   say
+021A: 1D 13 08   pushs L0813   ; Fellowship
+021D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0221: 1D 1E 08   pushs L081E   ; Klog
+0224: 07 01 00 0B 00  cmps 0001H, 0234
+0229: 1C 23 08   addsi L0823   ; "I do not know th...
+022C: 33   say
+022D: 1D 62 08   pushs L0862   ; Klog
+0230: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0234: 1D 67 08   pushs L0867   ; Spark
+0237: 07 01 00 1D 00  cmps 0001H, 0259
+023C: 1F FE FF   pushi FFFEH   ; -2
+023F: 21 01 00   push [0001]
+0242: 30   in
+0243: 10   not
+0244: 05 07 00   jne 024E
+0247: 1C 6D 08   addsi L086D   ; "That be Christop...
+024A: 33   say
+024B: 06 04 00   jmp 0252
+024E: 1C 94 08   addsi L0894   ; Petre ruffles the...
+0251: 33   say
+0252: 1D 28 09   pushs L0928   ; Spark
+0255: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0259: 1D 2E 09   pushs L092E   ; bye
+025C: 07 01 00 03 00  cmps 0001H, 0264
+0261: 06 03 00   jmp 0267
+0264: 06 67 FE   jmp 00CE
+0267: 40   db 40 ???
+0268: 1C 32 09   addsi L0932   ; "Goodbye," the ma...
+026B: 33   say
+026C: 48   push eventid
+026D: 1F 00 00   pushi 0000H   ; 0
+0270: 22   cmpeq
+0271: 05 06 00   jne 027A
+0274: 1F F5 FF   pushi FFF5H   ; -11
+0277: 24 02 00   call [0002]   ; 092EH
+027A: 25   ret

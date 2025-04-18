@@ -1,0 +1,310 @@
+  .funcnumber 041EH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Shamino'
+L0014: db 00
+L0015: db 'This lovely actress is dressed in a mouse costume.'
+L0047: db 00
+L0048: db '"Hello, there!" Amber says.'
+L0063: db 00
+L0064: db 'name'
+L0068: db 00
+L0069: db '"I am Amber."'
+L0076: db 00
+L0077: db 'name'
+L007B: db 00
+L007C: db 'job'
+L007F: db 00
+L0080: db '"I am an actress at the Royal Theatre. I am playing the role'
+ db ' of Sherry the Mouse in the new play."'
+L00E2: db 00
+L00E3: db 'play'
+L00E7: db 00
+L00E8: db 'Sherry'
+L00EE: db 00
+L00EF: db 'Royal Theatre'
+L00FC: db 00
+L00FD: db 'Royal Theatre'
+L010A: db 00
+L010B: db '"'Tis a lovely space in which to perform. I have dedicated m'
+ db 'y life to acting, thou knowest."'
+L0167: db 00
+L0168: db 'Royal Theatre'
+L0175: db 00
+L0176: db 'dedicated'
+L017F: db 00
+L0180: db 'space'
+L0185: db 00
+L0186: db 'space'
+L018B: db 00
+L018C: db '"Raymundo himself had a hand in the design of the theatre."'
+L01C7: db 00
+L01C8: db 'space'
+L01CD: db 00
+L01CE: db 'dedicated'
+L01D7: db 00
+L01D8: db '"Actually, this will be my debut theatrical performance. I h'
+ db 'ave been working as a barmaid waiting for my first chance to'
+ db ' be in the theatre."'
+L0264: db 00
+L0265: db 'dedicated'
+L026E: db 00
+L026F: db 'play'
+L0273: db 00
+L0274: db '"Between thee and me, methinks the play stinks." She winks a'
+ db 't you.'
+L02B6: db 00
+L02B7: db 'play'
+L02BB: db 00
+L02BC: db 'Sherry'
+L02C2: db 00
+L02C3: db '"Canst thou imagine such drivel? I do not believe there ever'
+ db ' was a Sherry the Mouse. Who ever heard of a mouse that coul'
+ db 'd talk! Especially these lines! I would rather play a queen.'
+ db ' Much more fitting for me, I would say."'
+L039F: db 00
+L03A0: db 'Sherry'
+L03A6: db 00
+L03A7: db 'queen'
+L03AC: db 00
+L03AD: db 'lines'
+L03B2: db 00
+L03B3: db 'lines'
+L03B8: db 00
+L03B9: db '"I have to memorize this preposterous children's story calle'
+ db 'd 'Hubert's Hair-Raising Adventure'.'
+L0419: db 00
+L041A: db 'lines'
+L041F: db 00
+L0420: db 'queen'
+L0425: db 00
+L0426: db '"I asked Raymundo about this and he threw a tantrum. He said'
+ db ' that it would not be historically accurate. Ha! As if that '
+ db 'were something of any significance!"'
+L04C2: db 00
+L04C3: db 'queen'
+L04C8: db 00
+L04C9: db 'Shamino'
+L04D0: db 00
+L04D1: db '"Poo Poo Head!" she cries. She then rushes to him and kisses'
+ db ' him full on the mouth. Shamino turns red and shuffles his f'
+ db 'eet.*'
+L054E: db 00
+L054F: db '"Not in front of the Avatar, Poo!"*'
+L0572: db 00
+L0573: db '"To blazes with the Avatar!" She kisses him again. "The Avat'
+ db 'ar is the last one who will convince thee to settle down."'
+L05E9: db 00
+L05EA: db '"Dost thou know my beau? He is probably drowning his sorrows'
+ db ' at the Blue Boar. The lazy knave! I will not let him go abo'
+ db 'ut adventuring. It is time for him to settle down. Thou cans'
+ db 't tell him I said so!"'
+L06B4: db 00
+L06B5: db 'Shamino'
+L06BC: db 00
+L06BD: db 'bye'
+L06C0: db 00
+L06C1: db '"Adieu!"*'
+L06CA: db 00
+L06CB: db '@Hubert the Lion was...@'
+L06E3: db 00
+L06E4: db '@Why do I say that?@'
+L06F8: db 00
+L06F9: db '@My costume is too big.@'
+L0711: db 00
+L0712: db '@I -hate- my lines!@'
+L0726: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0002H
+  .extern 08F7H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 89 01   jne 0191
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F E2 FF   pushi FFE2H   ; -30
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 38 3B 00 00  callis 003B, 0
+0016: 12 00 00   pop [0000]
+0019: 1D 00 00   pushs L0000   ; bye
+001C: 1D 04 00   pushs L0004   ; job
+001F: 1D 08 00   pushs L0008   ; name
+0022: 1E 03 00   arrc 0003H   ; 3
+0025: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0029: 1F FD FF   pushi FFFDH   ; -3
+002C: 24 00 00   call [0000]   ; 08F7H
+002F: 12 01 00   pop [0001]
+0032: 42 6B 00   pushf flag:[006B]
+0035: 21 01 00   push [0001]
+0038: 0F   or
+0039: 05 07 00   jne 0043
+003C: 1D 0D 00   pushs L000D   ; Shamino
+003F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0043: 42 9F 00   pushf flag:[009F]
+0046: 10   not
+0047: 05 0B 00   jne 0055
+004A: 1C 15 00   addsi L0015   ; This lovely actre...
+004D: 33   say
+004E: 13   push true
+004F: 43 9F 00   popf flag:[009F]
+0052: 06 04 00   jmp 0059
+0055: 1C 48 00   addsi L0048   ; "Hello, there!" A...
+0058: 33   say
+0059: 04 30 01   je 018C
+005C: 1D 64 00   pushs L0064   ; name
+005F: 07 01 00 0B 00  cmps 0001H, 006F
+0064: 1C 69 00   addsi L0069   ; "I am Amber."
+0067: 33   say
+0068: 1D 77 00   pushs L0077   ; name
+006B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006F: 1D 7C 00   pushs L007C   ; job
+0072: 07 01 00 14 00  cmps 0001H, 008B
+0077: 1C 80 00   addsi L0080   ; "I am an actress ...
+007A: 33   say
+007B: 1D E3 00   pushs L00E3   ; play
+007E: 1D E8 00   pushs L00E8   ; Sherry
+0081: 1D EF 00   pushs L00EF   ; Royal Theatre
+0084: 1E 03 00   arrc 0003H   ; 3
+0087: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008B: 1D FD 00   pushs L00FD   ; Royal Theatre
+008E: 07 01 00 18 00  cmps 0001H, 00AB
+0093: 1C 0B 01   addsi L010B   ; "'Tis a lovely sp...
+0096: 33   say
+0097: 1D 68 01   pushs L0168   ; Royal Theatre
+009A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009E: 1D 76 01   pushs L0176   ; dedicated
+00A1: 1D 80 01   pushs L0180   ; space
+00A4: 1E 02 00   arrc 0002H   ; 2
+00A7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00AB: 1D 86 01   pushs L0186   ; space
+00AE: 07 01 00 0B 00  cmps 0001H, 00BE
+00B3: 1C 8C 01   addsi L018C   ; "Raymundo himself...
+00B6: 33   say
+00B7: 1D C8 01   pushs L01C8   ; space
+00BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00BE: 1D CE 01   pushs L01CE   ; dedicated
+00C1: 07 01 00 0B 00  cmps 0001H, 00D1
+00C6: 1C D8 01   addsi L01D8   ; "Actually, this w...
+00C9: 33   say
+00CA: 1D 65 02   pushs L0265   ; dedicated
+00CD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D1: 1D 6F 02   pushs L026F   ; play
+00D4: 07 01 00 0B 00  cmps 0001H, 00E4
+00D9: 1C 74 02   addsi L0274   ; "Between thee and...
+00DC: 33   say
+00DD: 1D B7 02   pushs L02B7   ; play
+00E0: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E4: 1D BC 02   pushs L02BC   ; Sherry
+00E7: 07 01 00 18 00  cmps 0001H, 0104
+00EC: 1C C3 02   addsi L02C3   ; "Canst thou imagi...
+00EF: 33   say
+00F0: 1D A0 03   pushs L03A0   ; Sherry
+00F3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F7: 1D A7 03   pushs L03A7   ; queen
+00FA: 1D AD 03   pushs L03AD   ; lines
+00FD: 1E 02 00   arrc 0002H   ; 2
+0100: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0104: 1D B3 03   pushs L03B3   ; lines
+0107: 07 01 00 0B 00  cmps 0001H, 0117
+010C: 1C B9 03   addsi L03B9   ; "I have to memori...
+010F: 33   say
+0110: 1D 1A 04   pushs L041A   ; lines
+0113: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0117: 1D 20 04   pushs L0420   ; queen
+011A: 07 01 00 0B 00  cmps 0001H, 012A
+011F: 1C 26 04   addsi L0426   ; "I asked Raymundo...
+0122: 33   say
+0123: 1D C3 04   pushs L04C3   ; queen
+0126: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012A: 1D C9 04   pushs L04C9   ; Shamino
+012D: 07 01 00 4C 00  cmps 0001H, 017E
+0132: 1F FD FF   pushi FFFDH   ; -3
+0135: 24 00 00   call [0000]   ; 08F7H
+0138: 12 01 00   pop [0001]
+013B: 21 01 00   push [0001]
+013E: 05 2A 00   jne 016B
+0141: 1C D1 04   addsi L04D1   ; "Poo Poo Head!" s...
+0144: 33   say
+0145: 1F 00 00   pushi 0000H   ; 0
+0148: 1F FD FF   pushi FFFDH   ; -3
+014B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+014F: 1C 4F 05   addsi L054F   ; "Not in front of ...
+0152: 33   say
+0153: 1F FD FF   pushi FFFDH   ; -3
+0156: 39 04 00 01  calli _HideNPC@1  ; 0004
+015A: 1F 00 00   pushi 0000H   ; 0
+015D: 1F E2 FF   pushi FFE2H   ; -30
+0160: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0164: 1C 73 05   addsi L0573   ; "To blazes with t...
+0167: 33   say
+0168: 06 04 00   jmp 016F
+016B: 1C EA 05   addsi L05EA   ; "Dost thou know m...
+016E: 33   say
+016F: 13   push true
+0170: 43 6D 00   popf flag:[006D]
+0173: 13   push true
+0174: 43 6E 00   popf flag:[006E]
+0177: 1D B5 06   pushs L06B5   ; Shamino
+017A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017E: 1D BD 06   pushs L06BD   ; bye
+0181: 07 01 00 03 00  cmps 0001H, 0189
+0186: 06 03 00   jmp 018C
+0189: 06 CD FE   jmp 0059
+018C: 40   db 40 ???
+018D: 1C C1 06   addsi L06C1   ; "Adieu!"*
+0190: 33   say
+0191: 48   push eventid
+0192: 1F 00 00   pushi 0000H   ; 0
+0195: 22   cmpeq
+0196: 05 78 00   jne 0211
+0199: 1F E2 FF   pushi FFE2H   ; -30
+019C: 38 1B 00 01  callis 001B, 1
+01A0: 38 1C 00 01  callis 001C, 1
+01A4: 12 02 00   pop [0002]
+01A7: 1F 04 00   pushi 0004H   ; 4
+01AA: 1F 01 00   pushi 0001H   ; 1
+01AD: 38 10 00 02  callis _Random2@2  ; 0010
+01B1: 12 03 00   pop [0003]
+01B4: 21 02 00   push [0002]
+01B7: 1F 1D 00   pushi 001DH   ; 29
+01BA: 22   cmpeq
+01BB: 05 4D 00   jne 020B
+01BE: 21 03 00   push [0003]
+01C1: 1F 01 00   pushi 0001H   ; 1
+01C4: 22   cmpeq
+01C5: 05 06 00   jne 01CE
+01C8: 1D CB 06   pushs L06CB   ; @Hubert the Lion ...
+01CB: 12 04 00   pop [0004]
+01CE: 21 03 00   push [0003]
+01D1: 1F 02 00   pushi 0002H   ; 2
+01D4: 22   cmpeq
+01D5: 05 06 00   jne 01DE
+01D8: 1D E4 06   pushs L06E4   ; @Why do I say that?@
+01DB: 12 04 00   pop [0004]
+01DE: 21 03 00   push [0003]
+01E1: 1F 03 00   pushi 0003H   ; 3
+01E4: 22   cmpeq
+01E5: 05 06 00   jne 01EE
+01E8: 1D F9 06   pushs L06F9   ; @My costume is to...
+01EB: 12 04 00   pop [0004]
+01EE: 21 03 00   push [0003]
+01F1: 1F 04 00   pushi 0004H   ; 4
+01F4: 22   cmpeq
+01F5: 05 06 00   jne 01FE
+01F8: 1D 12 07   pushs L0712   ; @I -hate- my lines!@
+01FB: 12 04 00   pop [0004]
+01FE: 21 04 00   push [0004]
+0201: 1F E2 FF   pushi FFE2H   ; -30
+0204: 39 40 00 02  calli _ItemSay@2  ; 0040
+0208: 06 06 00   jmp 0211
+020B: 1F E2 FF   pushi FFE2H   ; -30
+020E: 24 01 00   call [0001]   ; 092EH
+0211: 25   ret

@@ -1,0 +1,144 @@
+  .funcnumber 094EH
+  .data
+L0000: db 'ale'
+L0003: db 00
+L0004: db 'wine'
+L0008: db 00
+L0009: db 'mead'
+L000D: db 00
+L000E: db 'nothing'
+L0015: db 00
+L0016: db 00
+L0017: db ' per bottle'
+L0022: db 00
+L0023: db '"What would ye like?"'
+L0038: db 00
+L0039: db '"If ye say so. I know that blasted Britannian Tax Council or'
+ db ' what have ye has made the cost o' things too high! Maybe ne'
+ db 'xt time!"'
+L00BA: db 00
+L00BB: db '"^'
+L00BD: db 00
+L00BE: db '. Do ye find the price agreeable?"'
+L00E0: db 00
+L00E1: db '"Done!"'
+L00E8: db 00
+L00E9: db '"Ye got ta lighten yer load first!"'
+L010C: db 00
+L010D: db '"Ye've not got the gold. I kinna do business like that!"'
+L0145: db 00
+L0146: db '"Anything else ye want?"'
+L015E: db 00
+  .code
+  .argc 0000H
+  .localc 000DH
+  .externsize 0004H
+  .extern 090CH
+  .extern 091BH
+  .extern 090AH
+  .extern 08F8H
+0000: 39 07 00 00  calli _SaveAnswers@0  ; 0007
+0004: 13   push true
+0005: 12 00 00   pop [0000]
+0008: 1D 00 00   pushs L0000   ; ale
+000B: 1D 04 00   pushs L0004   ; wine
+000E: 1D 09 00   pushs L0009   ; mead
+0011: 1D 0E 00   pushs L000E   ; nothing
+0014: 1E 04 00   arrc 0004H   ; 4
+0017: 12 01 00   pop [0001]
+001A: 1F 01 00   pushi 0001H   ; 1
+001D: 1F 01 00   pushi 0001H   ; 1
+0020: 1F 05 00   pushi 0005H   ; 5
+0023: 1F 00 00   pushi 0000H   ; 0
+0026: 1E 04 00   arrc 0004H   ; 4
+0029: 12 02 00   pop [0002]
+002C: 1F 68 02   pushi 0268H   ; 616
+002F: 12 03 00   pop [0003]
+0032: 1F 03 00   pushi 0003H   ; 3
+0035: 1F 05 00   pushi 0005H   ; 5
+0038: 1F 00 00   pushi 0000H   ; 0
+003B: 1F 99 FE   pushi FE99H   ; -359
+003E: 1E 04 00   arrc 0004H   ; 4
+0041: 12 04 00   pop [0004]
+0044: 1D 16 00   pushs L0016   ; 
+0047: 12 05 00   pop [0005]
+004A: 1F 00 00   pushi 0000H   ; 0
+004D: 12 06 00   pop [0006]
+0050: 1D 17 00   pushs L0017   ;  per bottle
+0053: 12 07 00   pop [0007]
+0056: 1F 01 00   pushi 0001H   ; 1
+0059: 12 08 00   pop [0008]
+005C: 1C 23 00   addsi L0023   ; "What would ye li...
+005F: 33   say
+0060: 21 00 00   push [0000]
+0063: 05 B4 00   jne 011A
+0066: 21 01 00   push [0001]
+0069: 24 00 00   call [0000]   ; 090CH
+006C: 12 09 00   pop [0009]
+006F: 21 09 00   push [0009]
+0072: 1F 01 00   pushi 0001H   ; 1
+0075: 22   cmpeq
+0076: 05 0B 00   jne 0084
+0079: 1C 39 00   addsi L0039   ; "If ye say so. I ...
+007C: 33   say
+007D: 14   push false
+007E: 12 00 00   pop [0000]
+0081: 06 93 00   jmp 0117
+0084: 21 07 00   push [0007]
+0087: 21 09 00   push [0009]
+008A: 26 02 00   aidx [0002]
+008D: 21 06 00   push [0006]
+0090: 21 09 00   push [0009]
+0093: 26 01 00   aidx [0001]
+0096: 21 05 00   push [0005]
+0099: 24 01 00   call [0001]   ; 091BH
+009C: 12 0A 00   pop [000A]
+009F: 1F 00 00   pushi 0000H   ; 0
+00A2: 12 0B 00   pop [000B]
+00A5: 1C BB 00   addsi L00BB   ; "^
+00A8: 2F 0A 00   addsv [000A]
+00AB: 1C BE 00   addsi L00BE   ; . Do ye find the ...
+00AE: 33   say
+00AF: 24 02 00   call [0002]   ; 090AH
+00B2: 12 0C 00   pop [000C]
+00B5: 21 0C 00   push [000C]
+00B8: 05 1F 00   jne 00DA
+00BB: 13   push true
+00BC: 1F 01 00   pushi 0001H   ; 1
+00BF: 1F 00 00   pushi 0000H   ; 0
+00C2: 21 09 00   push [0009]
+00C5: 26 02 00   aidx [0002]
+00C8: 21 08 00   push [0008]
+00CB: 21 09 00   push [0009]
+00CE: 26 04 00   aidx [0004]
+00D1: 21 03 00   push [0003]
+00D4: 24 03 00   call [0003]   ; 08F8H
+00D7: 12 0B 00   pop [000B]
+00DA: 21 0B 00   push [000B]
+00DD: 1F 01 00   pushi 0001H   ; 1
+00E0: 22   cmpeq
+00E1: 05 07 00   jne 00EB
+00E4: 1C E1 00   addsi L00E1   ; "Done!"
+00E7: 33   say
+00E8: 06 22 00   jmp 010D
+00EB: 21 0B 00   push [000B]
+00EE: 1F 02 00   pushi 0002H   ; 2
+00F1: 22   cmpeq
+00F2: 05 07 00   jne 00FC
+00F5: 1C E9 00   addsi L00E9   ; "Ye got ta lighte...
+00F8: 33   say
+00F9: 06 11 00   jmp 010D
+00FC: 21 0B 00   push [000B]
+00FF: 1F 03 00   pushi 0003H   ; 3
+0102: 22   cmpeq
+0103: 05 07 00   jne 010D
+0106: 1C 0D 01   addsi L010D   ; "Ye've not got th...
+0109: 33   say
+010A: 06 00 00   jmp 010D
+010D: 1C 46 01   addsi L0146   ; "Anything else ye...
+0110: 33   say
+0111: 24 02 00   call [0002]   ; 090AH
+0114: 12 00 00   pop [0000]
+0117: 06 46 FF   jmp 0060
+011A: 39 08 00 00  calli _RestoreAnswers@0  ; 0008
+011E: 25   ret

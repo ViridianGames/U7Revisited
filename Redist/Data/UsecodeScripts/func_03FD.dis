@@ -1,0 +1,11 @@
+  .funcnumber 03FDH
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0001H
+  .extern 0269H
+0000: 1F 69 02   pushi 0269H   ; 617
+0003: 38 1B 00 01  callis 001B, 1
+0007: 47 69 02   calle 0269H   ; 617
+000A: 25   ret

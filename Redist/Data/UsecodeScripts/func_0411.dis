@@ -1,0 +1,215 @@
+  .funcnumber 0411H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'services'
+L000C: db 00
+L000D: db 'murder'
+L0013: db 00
+L0014: db 'job'
+L0017: db 00
+L0018: db 'name'
+L001C: db 00
+L001D: db 'Klog'
+L0021: db 00
+L0022: db 'Fellowship'
+L002C: db 00
+L002D: db 'You see a solemn fellow in healer's robes.'
+L0057: db 00
+L0058: db '"Hello, again," Chantu says. "How may I help thee?"'
+L008B: db 00
+L008C: db 'name'
+L0090: db 00
+L0091: db '"My name is Chantu," he says with a slight bow.'
+L00C0: db 00
+L00C1: db 'name'
+L00C5: db 00
+L00C6: db 'job'
+L00C9: db 00
+L00CA: db '"I am the Trinsic healer. I can perform a heal, a poison cur'
+ db 'e, or a resurrection on any of thy friends. Or on thee, of c'
+ db 'ourse."'
+L0149: db 00
+L014A: db 'murder'
+L0150: db 00
+L0151: db '"'Tis a sad state for Britannia when events such as these ha'
+ db 'ppen. Christopher was a good man. I hope that the villain is'
+ db ' caught."'
+L01D2: db 00
+L01D3: db 'murder'
+L01D9: db 00
+L01DA: db 'services'
+L01E2: db 00
+L01E3: db 'Fellowship'
+L01ED: db 00
+L01EE: db 'The healer frowns. "The Fellowship does not appreciate the e'
+ db 'fforts of healers in Britannia. Although they do admirable t'
+ db 'hings, The Fellowship is short-sighted when evaluating the n'
+ db 'eed for healers. They believe that our work can be done thro'
+ db 'ugh their so-called 'Triad of Inner Strength'."'
+L030D: db 00
+L030E: db 'Chantu notices your medallion and his eyes widen.'
+L033F: db 00
+L0340: db '"Excuse me, '
+L034C: db 00
+L034D: db ', I did not mean to offend thee."'
+L036E: db 00
+L036F: db 'Fellowship'
+L0379: db 00
+L037A: db 'Klog'
+L037E: db 00
+L037F: db 'The healer shrugs. "He does his duty as he sees fit. And I d'
+ db 'o mine."'
+L03C3: db 00
+L03C4: db 'Klog'
+L03C8: db 00
+L03C9: db 'bye'
+L03CC: db 00
+L03CD: db '"Goodbye."*'
+L03D8: db 00
+L03D9: db '@Feeling better?@'
+L03EA: db 00
+L03EB: db '@How are we today?@'
+L03FE: db 00
+L03FF: db '@Thy fever has lessened.@'
+L0418: db 00
+L0419: db '@Try to sleep...@'
+L042A: db 00
+  .code
+  .argc 0001H
+  .localc 0005H
+  .externsize 0003H
+  .extern 0909H
+  .extern 0860H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 EC 00   jne 00F4
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F EF FF   pushi FFEFH   ; -17
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 67 00 00  callis 0067, 0
+001C: 12 01 00   pop [0001]
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; services
+0025: 1D 0D 00   pushs L000D   ; murder
+0028: 1D 14 00   pushs L0014   ; job
+002B: 1D 18 00   pushs L0018   ; name
+002E: 1E 05 00   arrc 0005H   ; 5
+0031: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0035: 42 3F 00   pushf flag:[003F]
+0038: 05 0D 00   jne 0048
+003B: 1D 1D 00   pushs L001D   ; Klog
+003E: 1D 22 00   pushs L0022   ; Fellowship
+0041: 1E 02 00   arrc 0002H   ; 2
+0044: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0048: 42 52 00   pushf flag:[0052]
+004B: 10   not
+004C: 05 0B 00   jne 005A
+004F: 1C 2D 00   addsi L002D   ; You see a solemn ...
+0052: 33   say
+0053: 13   push true
+0054: 43 52 00   popf flag:[0052]
+0057: 06 04 00   jmp 005E
+005A: 1C 58 00   addsi L0058   ; "Hello, again," C...
+005D: 33   say
+005E: 04 8E 00   je 00EF
+0061: 1D 8C 00   pushs L008C   ; name
+0064: 07 01 00 0B 00  cmps 0001H, 0074
+0069: 1C 91 00   addsi L0091   ; "My name is Chant...
+006C: 33   say
+006D: 1D C1 00   pushs L00C1   ; name
+0070: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0074: 1D C6 00   pushs L00C6   ; job
+0077: 07 01 00 04 00  cmps 0001H, 0080
+007C: 1C CA 00   addsi L00CA   ; "I am the Trinsic...
+007F: 33   say
+0080: 1D 4A 01   pushs L014A   ; murder
+0083: 07 01 00 0B 00  cmps 0001H, 0093
+0088: 1C 51 01   addsi L0151   ; "'Tis a sad state...
+008B: 33   say
+008C: 1D D3 01   pushs L01D3   ; murder
+008F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0093: 1D DA 01   pushs L01DA   ; services
+0096: 07 01 00 0C 00  cmps 0001H, 00A7
+009B: 1F 90 01   pushi 0190H   ; 400
+009E: 1F 32 00   pushi 0032H   ; 50
+00A1: 1F 1E 00   pushi 001EH   ; 30
+00A4: 24 01 00   call [0001]   ; 0860H
+00A7: 1D E3 01   pushs L01E3   ; Fellowship
+00AA: 07 01 00 1F 00  cmps 0001H, 00CE
+00AF: 1C EE 01   addsi L01EE   ; The healer frowns...
+00B2: 33   say
+00B3: 21 01 00   push [0001]
+00B6: 05 0E 00   jne 00C7
+00B9: 1C 0E 03   addsi L030E   ; Chantu notices yo...
+00BC: 33   say
+00BD: 1C 40 03   addsi L0340   ; "Excuse me, 
+00C0: 2F 00 00   addsv [0000]
+00C3: 1C 4D 03   addsi L034D   ; , I did not mean ...
+00C6: 33   say
+00C7: 1D 6F 03   pushs L036F   ; Fellowship
+00CA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CE: 1D 7A 03   pushs L037A   ; Klog
+00D1: 07 01 00 0B 00  cmps 0001H, 00E1
+00D6: 1C 7F 03   addsi L037F   ; The healer shrugs...
+00D9: 33   say
+00DA: 1D C4 03   pushs L03C4   ; Klog
+00DD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00E1: 1D C9 03   pushs L03C9   ; bye
+00E4: 07 01 00 03 00  cmps 0001H, 00EC
+00E9: 06 03 00   jmp 00EF
+00EC: 06 6F FF   jmp 005E
+00EF: 40   db 40 ???
+00F0: 1C CD 03   addsi L03CD   ; "Goodbye."*
+00F3: 33   say
+00F4: 48   push eventid
+00F5: 1F 00 00   pushi 0000H   ; 0
+00F8: 22   cmpeq
+00F9: 05 78 00   jne 0174
+00FC: 1F EF FF   pushi FFEFH   ; -17
+00FF: 38 1B 00 01  callis 001B, 1
+0103: 38 1C 00 01  callis 001C, 1
+0107: 12 02 00   pop [0002]
+010A: 1F 04 00   pushi 0004H   ; 4
+010D: 1F 01 00   pushi 0001H   ; 1
+0110: 38 10 00 02  callis _Random2@2  ; 0010
+0114: 12 03 00   pop [0003]
+0117: 21 02 00   push [0002]
+011A: 1F 1D 00   pushi 001DH   ; 29
+011D: 22   cmpeq
+011E: 05 4D 00   jne 016E
+0121: 21 03 00   push [0003]
+0124: 1F 01 00   pushi 0001H   ; 1
+0127: 22   cmpeq
+0128: 05 06 00   jne 0131
+012B: 1D D9 03   pushs L03D9   ; @Feeling better?@
+012E: 12 04 00   pop [0004]
+0131: 21 03 00   push [0003]
+0134: 1F 02 00   pushi 0002H   ; 2
+0137: 22   cmpeq
+0138: 05 06 00   jne 0141
+013B: 1D EB 03   pushs L03EB   ; @How are we today?@
+013E: 12 04 00   pop [0004]
+0141: 21 03 00   push [0003]
+0144: 1F 03 00   pushi 0003H   ; 3
+0147: 22   cmpeq
+0148: 05 06 00   jne 0151
+014B: 1D FF 03   pushs L03FF   ; @Thy fever has le...
+014E: 12 04 00   pop [0004]
+0151: 21 03 00   push [0003]
+0154: 1F 04 00   pushi 0004H   ; 4
+0157: 22   cmpeq
+0158: 05 06 00   jne 0161
+015B: 1D 19 04   pushs L0419   ; @Try to sleep...@
+015E: 12 04 00   pop [0004]
+0161: 21 04 00   push [0004]
+0164: 1F EF FF   pushi FFEFH   ; -17
+0167: 39 40 00 02  calli _ItemSay@2  ; 0040
+016B: 06 06 00   jmp 0174
+016E: 1F EF FF   pushi FFEFH   ; -17
+0171: 24 02 00   call [0002]   ; 092EH
+0174: 25   ret

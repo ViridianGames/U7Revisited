@@ -1,0 +1,42 @@
+  .funcnumber 0937H
+  .data
+  .code
+  .argc 0001H
+  .localc 0000H
+  .externsize 0000H
+0000: 1F 02 00   pushi 0002H   ; 2
+0003: 21 00 00   push [0000]
+0006: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+000A: 1F 0A 00   pushi 000AH   ; 10
+000D: 18   cmpge
+000E: 1F 01 00   pushi 0001H   ; 1
+0011: 21 00 00   push [0000]
+0014: 38 88 00 02  callis 0088, 2
+0018: 10   not
+0019: 1F 07 00   pushi 0007H   ; 7
+001C: 21 00 00   push [0000]
+001F: 38 88 00 02  callis 0088, 2
+0023: 10   not
+0024: 1F 04 00   pushi 0004H   ; 4
+0027: 21 00 00   push [0000]
+002A: 38 88 00 02  callis 0088, 2
+002E: 10   not
+002F: 1F 03 00   pushi 0003H   ; 3
+0032: 21 00 00   push [0000]
+0035: 38 20 00 02  callis _GetNPCProperty@2  ; 0020
+0039: 1F 00 00   pushi 0000H   ; 0
+003C: 16   cmpgt
+003D: 21 00 00   push [0000]
+0040: 38 31 00 01  callis 0031, 1
+0044: 0E   and
+0045: 0E   and
+0046: 0E   and
+0047: 0E   and
+0048: 0E   and
+0049: 05 05 00   jne 0051
+004C: 13   push true
+004D: 2D   setr
+004E: 06 02 00   jmp 0053
+0051: 14   push false
+0052: 2D   setr
+0053: 32   rts

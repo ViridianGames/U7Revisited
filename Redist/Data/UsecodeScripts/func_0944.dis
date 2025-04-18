@@ -1,0 +1,27 @@
+  .funcnumber 0944H
+  .data
+  .code
+  .argc 0001H
+  .localc 0001H
+  .externsize 0000H
+0000: 3E   push itemref
+0001: 38 6E 00 01  callis 006E, 1  ;* Get container.
+0005: 12 01 00   pop [0001]
+0008: 21 01 00   push [0001]
+000B: 1F 9C FE   pushi FE9CH   ; -356
+000E: 38 1B 00 01  callis 001B, 1
+0012: 22   cmpeq   ;* The Avatar?
+0013: 10   not
+0014: 05 18 00   jne 002F  ;* Jmp if so.
+0017: 21 01 00   push [0001]
+001A: 38 6E 00 01  callis 006E, 1  ;* Finding outermost.
+001E: 12 01 00   pop [0001]
+0021: 21 01 00   push [0001]
+0024: 10   not
+0025: 05 04 00   jne 002C
+0028: 1F 00 00   pushi 0000H   ; 0
+002B: 2D   setr
+002C: 06 D9 FF   jmp 0008
+002F: 21 01 00   push [0001]
+0032: 2D   setr
+0033: 32   rts

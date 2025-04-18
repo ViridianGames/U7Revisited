@@ -1,0 +1,254 @@
+  .funcnumber 040FH
+  .data
+L0000: db 'You see a stunningly attractive oriental woman. She is armed'
+ db ' to the teeth.'
+L004A: db 00
+L004B: db '"Thou dost wish to speak with me again?" asks Eiko.'
+L007E: db 00
+L007F: db 'Stay thine hand!'
+L008F: db 00
+L0090: db 'bye'
+L0093: db 00
+L0094: db 'job'
+L0097: db 00
+L0098: db 'name'
+L009C: db 00
+L009D: db 'name'
+L00A1: db 00
+L00A2: db '"My name is Eiko."'
+L00B4: db 00
+L00B5: db 'name'
+L00B9: db 00
+L00BA: db 'job'
+L00BD: db 00
+L00BE: db '"I have no job. I have a quest. My quest is shared with mine'
+ db ' half-sister, Amanda."'
+L0110: db 00
+L0111: db 'quest'
+L0116: db 00
+L0117: db '"We are leaving this dungeon now that our quest is over."'
+L0150: db 00
+L0151: db 'Amanda'
+L0157: db 00
+L0158: db 'quest'
+L015D: db 00
+L015E: db '"Eighteen years ago my father was murdered by a cyclops call'
+ db 'ed Iskander Ironheart. Mine half-sister Amanda and I are his'
+ db ' only surviving kin and we have vowed to avenge him."'
+L020B: db 00
+L020C: db 'quest'
+L0211: db 00
+L0212: db 'Iskander'
+L021A: db 00
+L021B: db 'father'
+L0221: db 00
+L0222: db 'father'
+L0228: db 00
+L0229: db '"Our father was a mage named Kalideth. He was working to fin'
+ db 'd a cause of the disturbances of the ethereal waves that hav'
+ db 'e been preventing magic from working for the past twenty yea'
+ db 'rs and more, as well as the madness that has afflicted all m'
+ db 'ages since then."'
+L032A: db 00
+L032B: db '"Our father was a wise and kind man. His death was a loss fo'
+ db 'r all of Britannia." She sniffs.'
+L0387: db 00
+L0388: db '"His killer deserves to die."'
+L03A5: db 00
+L03A6: db 'father'
+L03AC: db 00
+L03AD: db 'Amanda'
+L03B3: db 00
+L03B4: db '"Neither one of us knew that the other existed until after t'
+ db 'he death of our father."'
+L0408: db 00
+L0409: db '"I had always felt like I had a sister somewhere. But I attr'
+ db 'ibuted those feelings to the natural loneliness a child feel'
+ db 's upon losing a father. Learning about each other has been t'
+ db 'he only good thing that has happened to me since father's de'
+ db 'ath."'
+L04FE: db 00
+L04FF: db 'Amanda'
+L0505: db 00
+L0506: db 'Iskander'
+L050E: db 00
+L050F: db '"Yes, I know I am not pronouncing it correctly. I understand'
+ db ' he has a more human nickname that is actually a translation'
+ db ' from the ancient cyclops language. But I do not know what i'
+ db 't is."'
+L05C9: db 00
+L05CA: db 'Iskander'
+L05D2: db 00
+L05D3: db 'Stay thine hand!'
+L05E3: db 00
+L05E4: db 'You explain to Eiko what you have learned. Kalideth had gone'
+ db ' mad when he fought with Iskander and the source of what is '
+ db 'causing the problems with magic and the mage's minds was the'
+ db ' thing that really killed Kalideth!'
+L06BB: db 00
+L06BC: db '"Then if thou hast discovered the true force that killed my '
+ db 'father, my vengeance against Kalideth would be unjust."'
+L072F: db 00
+L0730: db '"How canst thou say that? I thought that thou wert my sister'
+ db '? Thou art a traitor!"'
+L0782: db 00
+L0783: db 'Stay thine hand!'
+L0793: db 00
+L0794: db 'bye'
+L0797: db 00
+L0798: db '"Farewell."'
+L07A3: db 00
+  .code
+  .argc 0001H
+  .localc 0002H
+  .externsize 0002H
+  .extern 0909H
+  .extern 08F7H
+0000: 48   push eventid
+0001: 1F 00 00   pushi 0000H   ; 0
+0004: 22   cmpeq
+0005: 05 01 00   jne 0009
+0008: 3F   abrt
+0009: 1F 00 00   pushi 0000H   ; 0
+000C: 1F F1 FF   pushi FFF1H   ; -15
+000F: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0013: 24 00 00   call [0000]   ; 0909H
+0016: 12 00 00   pop [0000]
+0019: 1F D0 FF   pushi FFD0H   ; -48
+001C: 24 01 00   call [0001]   ; 08F7H
+001F: 12 01 00   pop [0001]
+0022: 42 C4 02   pushf flag:[02C4]
+0025: 10   not
+0026: 05 0B 00   jne 0034
+0029: 1C 00 00   addsi L0000   ; You see a stunnin...
+002C: 33   say
+002D: 13   push true
+002E: 43 C4 02   popf flag:[02C4]
+0031: 06 04 00   jmp 0038
+0034: 1C 4B 00   addsi L004B   ; "Thou dost wish t...
+0037: 33   say
+0038: 42 DC 02   pushf flag:[02DC]
+003B: 42 DD 02   pushf flag:[02DD]
+003E: 10   not
+003F: 0E   and
+0040: 05 07 00   jne 004A
+0043: 1D 7F 00   pushs L007F   ; Stay thine hand!
+0046: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004A: 1D 90 00   pushs L0090   ; bye
+004D: 1D 94 00   pushs L0094   ; job
+0050: 1D 98 00   pushs L0098   ; name
+0053: 1E 03 00   arrc 0003H   ; 3
+0056: 39 05 00 01  calli _AddAnswer@1  ; 0005
+005A: 04 42 01   je 019F
+005D: 1D 9D 00   pushs L009D   ; name
+0060: 07 01 00 0B 00  cmps 0001H, 0070
+0065: 1C A2 00   addsi L00A2   ; "My name is Eiko."
+0068: 33   say
+0069: 1D B5 00   pushs L00B5   ; name
+006C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0070: 1D BA 00   pushs L00BA   ; job
+0073: 07 01 00 20 00  cmps 0001H, 0098
+0078: 42 DD 02   pushf flag:[02DD]
+007B: 10   not
+007C: 05 0E 00   jne 008D
+007F: 1C BE 00   addsi L00BE   ; "I have no job. I...
+0082: 33   say
+0083: 1D 11 01   pushs L0111   ; quest
+0086: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008A: 06 04 00   jmp 0091
+008D: 1C 17 01   addsi L0117   ; "We are leaving t...
+0090: 33   say
+0091: 1D 51 01   pushs L0151   ; Amanda
+0094: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0098: 1D 58 01   pushs L0158   ; quest
+009B: 07 01 00 1C 00  cmps 0001H, 00BC
+00A0: 1C 5E 01   addsi L015E   ; "Eighteen years a...
+00A3: 33   say
+00A4: 13   push true
+00A5: 43 DB 02   popf flag:[02DB]
+00A8: 1D 0C 02   pushs L020C   ; quest
+00AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AF: 1D 12 02   pushs L0212   ; Iskander
+00B2: 1D 1B 02   pushs L021B   ; father
+00B5: 1E 02 00   arrc 0002H   ; 2
+00B8: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BC: 1D 22 02   pushs L0222   ; father
+00BF: 07 01 00 3B 00  cmps 0001H, 00FF
+00C4: 1C 29 02   addsi L0229   ; "Our father was a...
+00C7: 33   say
+00C8: 21 01 00   push [0001]
+00CB: 05 2A 00   jne 00F8
+00CE: 1F 00 00   pushi 0000H   ; 0
+00D1: 1F D0 FF   pushi FFD0H   ; -48
+00D4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00D8: 1C 2B 03   addsi L032B   ; "Our father was a...
+00DB: 33   say
+00DC: 42 DD 02   pushf flag:[02DD]
+00DF: 10   not
+00E0: 05 04 00   jne 00E7
+00E3: 1C 88 03   addsi L0388   ; "His killer deser...
+00E6: 33   say
+00E7: 1F D0 FF   pushi FFD0H   ; -48
+00EA: 39 04 00 01  calli _HideNPC@1  ; 0004
+00EE: 1F 00 00   pushi 0000H   ; 0
+00F1: 1F F1 FF   pushi FFF1H   ; -15
+00F4: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00F8: 1D A6 03   pushs L03A6   ; father
+00FB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00FF: 1D AD 03   pushs L03AD   ; Amanda
+0102: 07 01 00 30 00  cmps 0001H, 0137
+0107: 1C B4 03   addsi L03B4   ; "Neither one of u...
+010A: 33   say
+010B: 21 01 00   push [0001]
+010E: 05 1F 00   jne 0130
+0111: 1F 00 00   pushi 0000H   ; 0
+0114: 1F D0 FF   pushi FFD0H   ; -48
+0117: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+011B: 1C 09 04   addsi L0409   ; "I had always fel...
+011E: 33   say
+011F: 1F D0 FF   pushi FFD0H   ; -48
+0122: 39 04 00 01  calli _HideNPC@1  ; 0004
+0126: 1F 00 00   pushi 0000H   ; 0
+0129: 1F F1 FF   pushi FFF1H   ; -15
+012C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0130: 1D FF 04   pushs L04FF   ; Amanda
+0133: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0137: 1D 06 05   pushs L0506   ; Iskander
+013A: 07 01 00 0B 00  cmps 0001H, 014A
+013F: 1C 0F 05   addsi L050F   ; "Yes, I know I am...
+0142: 33   say
+0143: 1D CA 05   pushs L05CA   ; Iskander
+0146: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+014A: 1D D3 05   pushs L05D3   ; Stay thine hand!
+014D: 07 01 00 3F 00  cmps 0001H, 0191
+0152: 1C E4 05   addsi L05E4   ; You explain to Ei...
+0155: 33   say
+0156: 1C BC 06   addsi L06BC   ; "Then if thou has...
+0159: 33   say
+015A: 21 01 00   push [0001]
+015D: 05 2A 00   jne 018A
+0160: 1F 00 00   pushi 0000H   ; 0
+0163: 1F D0 FF   pushi FFD0H   ; -48
+0166: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+016A: 42 DE 02   pushf flag:[02DE]
+016D: 10   not
+016E: 05 19 00   jne 018A
+0171: 1C 30 07   addsi L0730   ; "How canst thou s...
+0174: 33   say
+0175: 1F D0 FF   pushi FFD0H   ; -48
+0178: 39 04 00 01  calli _HideNPC@1  ; 0004
+017C: 1F 00 00   pushi 0000H   ; 0
+017F: 1F F1 FF   pushi FFF1H   ; -15
+0182: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0186: 13   push true
+0187: 43 DD 02   popf flag:[02DD]
+018A: 1D 83 07   pushs L0783   ; Stay thine hand!
+018D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0191: 1D 94 07   pushs L0794   ; bye
+0194: 07 01 00 03 00  cmps 0001H, 019C
+0199: 06 03 00   jmp 019F
+019C: 06 BB FE   jmp 005A
+019F: 40   db 40 ???
+01A0: 1C 98 07   addsi L0798   ; "Farewell."
+01A3: 33   say
+01A4: 25   ret

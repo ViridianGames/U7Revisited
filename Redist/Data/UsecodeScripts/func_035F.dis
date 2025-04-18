@@ -1,0 +1,134 @@
+  .funcnumber 035FH
+  .data
+L0000: db '@Why not put the flour on the table first?@'
+L002B: db 00
+L002C: db '@Hey! That really hurt!@'
+L0044: db 00
+  .code
+  .argc 0001H
+  .localc 0009H
+  .externsize 0002H
+  .extern 08FFH
+  .extern 0933H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 4A 01   jne 0152
+0008: 3E   push itemref
+0009: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+000D: 12 00 00   pop [0000]
+0010: 21 00 00   push [0000]
+0013: 1F 00 00   pushi 0000H   ; 0
+0016: 22   cmpeq
+0017: 05 D3 00   jne 00ED
+001A: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+001E: 12 01 00   pop [0001]
+0021: 21 01 00   push [0001]
+0024: 38 18 00 01  callis 0018, 1
+0028: 12 02 00   pop [0002]
+002B: 21 01 00   push [0001]
+002E: 38 11 00 01  callis _GetItemType@1  ; 0011
+0032: 12 03 00   pop [0003]
+0035: 1F FF FF   pushi FFFFH   ; -1
+0038: 12 04 00   pop [0004]
+003B: 21 03 00   push [0003]
+003E: 1F FA 03   pushi 03FAH   ; 1018
+0041: 22   cmpeq
+0042: 05 2A 00   jne 006F
+0045: 1F 01 00   pushi 0001H   ; 1
+0048: 26 02 00   aidx [0002]
+004B: 1F 03 00   pushi 0003H   ; 3
+004E: 1F 00 00   pushi 0000H   ; 0
+0051: 38 10 00 02  callis _Random2@2  ; 0010
+0055: 0A   sub
+0056: 12 04 00   pop [0004]
+0059: 1F 02 00   pushi 0002H   ; 2
+005C: 26 02 00   aidx [0002]
+005F: 12 05 00   pop [0005]
+0062: 1F 03 00   pushi 0003H   ; 3
+0065: 26 02 00   aidx [0002]
+0068: 1F 02 00   pushi 0002H   ; 2
+006B: 09   add
+006C: 12 06 00   pop [0006]
+006F: 21 03 00   push [0003]
+0072: 1F EB 03   pushi 03EBH   ; 1003
+0075: 22   cmpeq
+0076: 05 2A 00   jne 00A3
+0079: 1F 01 00   pushi 0001H   ; 1
+007C: 26 02 00   aidx [0002]
+007F: 12 04 00   pop [0004]
+0082: 1F 02 00   pushi 0002H   ; 2
+0085: 26 02 00   aidx [0002]
+0088: 1F 02 00   pushi 0002H   ; 2
+008B: 1F 00 00   pushi 0000H   ; 0
+008E: 38 10 00 02  callis _Random2@2  ; 0010
+0092: 0A   sub
+0093: 12 05 00   pop [0005]
+0096: 1F 03 00   pushi 0003H   ; 3
+0099: 26 02 00   aidx [0002]
+009C: 1F 02 00   pushi 0002H   ; 2
+009F: 09   add
+00A0: 12 06 00   pop [0006]
+00A3: 21 04 00   push [0004]
+00A6: 1F FF FF   pushi FFFFH   ; -1
+00A9: 22   cmpeq
+00AA: 05 09 00   jne 00B6
+00AD: 1D 00 00   pushs L0000   ; @Why not put the ...
+00B0: 24 00 00   call [0000]   ; 08FFH
+00B3: 06 37 00   jmp 00ED
+00B6: 1F 92 02   pushi 0292H   ; 658
+00B9: 38 24 00 01  callis 0024, 1
+00BD: 12 07 00   pop [0007]
+00C0: 21 07 00   push [0007]
+00C3: 05 27 00   jne 00ED
+00C6: 1F 12 00   pushi 0012H   ; 18
+00C9: 21 07 00   push [0007]
+00CC: 39 89 00 02  calli 0089, 2
+00D0: 1F 00 00   pushi 0000H   ; 0
+00D3: 21 07 00   push [0007]
+00D6: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+00DA: 21 06 00   push [0006]
+00DD: 21 05 00   push [0005]
+00E0: 21 04 00   push [0004]
+00E3: 1E 03 00   arrc 0003H   ; 3
+00E6: 38 26 00 01  callis 0026, 1
+00EA: 12 08 00   pop [0008]
+00ED: 21 00 00   push [0000]
+00F0: 1F 08 00   pushi 0008H   ; 8
+00F3: 22   cmpeq
+00F4: 21 00 00   push [0000]
+00F7: 1F 09 00   pushi 0009H   ; 9
+00FA: 22   cmpeq
+00FB: 0F   or
+00FC: 05 39 00   jne 0138
+00FF: 38 33 00 00  callis _ItemSelectModal@0  ; 0033
+0103: 12 01 00   pop [0001]
+0106: 21 01 00   push [0001]
+0109: 38 11 00 01  callis _GetItemType@1  ; 0011
+010D: 1F 92 02   pushi 0292H   ; 658
+0110: 22   cmpeq
+0111: 05 18 00   jne 012C
+0114: 21 01 00   push [0001]
+0117: 38 12 00 01  callis _GetItemFrame@1  ; 0012
+011B: 1F 02 00   pushi 0002H   ; 2
+011E: 22   cmpeq
+011F: 05 0A 00   jne 012C
+0122: 1F 01 00   pushi 0001H   ; 1
+0125: 21 01 00   push [0001]
+0128: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+012C: 1F 00 00   pushi 0000H   ; 0
+012F: 1D 2C 00   pushs L002C   ; @Hey! That really...
+0132: 21 01 00   push [0001]
+0135: 24 01 00   call [0001]   ; 0933H
+0138: 21 00 00   push [0000]
+013B: 1F 0D 00   pushi 000DH   ; 13
+013E: 22   cmpeq
+013F: 21 00 00   push [0000]
+0142: 1F 0E 00   pushi 000EH   ; 14
+0145: 22   cmpeq
+0146: 0F   or
+0147: 05 08 00   jne 0152
+014A: 1F 00 00   pushi 0000H   ; 0
+014D: 3E   push itemref
+014E: 39 13 00 02  calli _SetItemFrame@2  ; 0013
+0152: 25   ret

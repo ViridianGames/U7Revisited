@@ -1,0 +1,475 @@
+  .funcnumber 042AH
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'exchange'
+L0015: db 00
+L0016: db 'James'
+L001B: db 00
+L001C: db 'You see a helpful and efficient-looking woman.'
+L004A: db 00
+L004B: db '"How may I help thee?" asks Cynthia.'
+L006F: db 00
+L0070: db 'name'
+L0074: db 00
+L0075: db '"My name is Cynthia."'
+L008A: db 00
+L008B: db 'name'
+L008F: db 00
+L0090: db 'job'
+L0093: db 00
+L0094: db '"I am the teller at the Mint. I am also a member of the Brit'
+ db 'annian Tax Council."'
+L00E4: db 00
+L00E5: db 'Britannian Tax Council'
+L00FB: db 00
+L00FC: db 'Mint'
+L0100: db 00
+L0101: db 'Mint'
+L0105: db 00
+L0106: db '"Here at the Mint we store gold, oversee production of coins'
+ db ' and keep an accurate count of how much money the kingdom ha'
+ db 's available for such things as farming, building the roads, '
+ db 'developing sources of fresh water, seeing to the health of t'
+ db 'he citizenry, maintaining the estates of nobles, raising the'
+ db ' guard militia and carrying out the decrees of Lord British.'
+ db '"'
+L026F: db 00
+L0270: db 'Mint'
+L0274: db 00
+L0275: db 'guards'
+L027B: db 00
+L027C: db 'estates'
+L0283: db 00
+L0284: db 'health'
+L028A: db 00
+L028B: db 'water'
+L0290: db 00
+L0291: db 'roads'
+L0296: db 00
+L0297: db 'farms'
+L029C: db 00
+L029D: db 'money'
+L02A2: db 00
+L02A3: db 'Britannian Tax Council'
+L02B9: db 00
+L02BA: db '"The Britannian Tax Council is in charge of the accounting, '
+ db 'assessment and collection of the taxes. If thou wilt be earn'
+ db 'ing any money here in Britannia thou wilt need to take this '
+ db 'paper."'
+L0375: db 00
+L0376: db '"Fill it out and return it here at the end of the year when '
+ db 'thou dost come back to pay thy taxes."'
+L03D8: db 00
+L03D9: db '"Thou art carrying too much. Come back and I will give thee '
+ db 'thy paper when thou art not so greatly encumbered."'
+L0448: db 00
+L0449: db 'Britannian Tax Council'
+L045F: db 00
+L0460: db 'money'
+L0465: db 00
+L0466: db '"In order to keep the standard of money constant, we also op'
+ db 'erate as an exchange for those who possess quantities of gol'
+ db 'd.~~We supply the equivalent value of their gold in spendabl'
+ db 'e coin of the realm and then transform the gold we receive i'
+ db 'nto more money. So, as thou canst see, it is a very efficien'
+ db 't system."'
+L059C: db 00
+L059D: db 'money'
+L05A2: db 00
+L05A3: db 'system'
+L05A9: db 00
+L05AA: db 'exchange'
+L05B2: db 00
+L05B3: db 'farms'
+L05B8: db 00
+L05B9: db '"As I am certain thou dost know, the seven year drought, whi'
+ db 'ch thankfully ended several years ago, has left much of the '
+ db 'farming in the Kingdom in disarray. That is why the cost of '
+ db 'food is so expensive. But without the support of the Royal T'
+ db 'reasury, the prices would be even higher."'
+L06D3: db 00
+L06D4: db 'farms'
+L06D9: db 00
+L06DA: db 'roads'
+L06DF: db 00
+L06E0: db '"The increased use of wagons has caused many of the roads th'
+ db 'roughout Britannia to rapidly deteriorate. It costs a lot of'
+ db ' money to build new roads and keep them all repaired."'
+L078E: db 00
+L078F: db 'roads'
+L0794: db 00
+L0795: db 'water'
+L079A: db 00
+L079B: db '"It is of the utmost importance to the Kingdom to insure its'
+ db ' populous a clean water supply, and that requires a regular '
+ db 'supply of new and fresh wells."'
+L0832: db 00
+L0833: db 'water'
+L0838: db 00
+L0839: db 'health'
+L083F: db 00
+L0840: db '"As Britannia's population has greatly increased in the last'
+ db ' two hundred years, so has the risk of infectious diseases, '
+ db 'such as the mysterious skin deterioration that afflicts thos'
+ db 'e who partake in the venom of the silver serpent. The number'
+ db ' of healers that the Kingdom needs has risen dramatically."'
+L096B: db 00
+L096C: db 'health'
+L0972: db 00
+L0973: db 'estates'
+L097A: db 00
+L097B: db '"The local Lords and Mayors all have residences that are mai'
+ db 'ntained through the auspices of the Kingdom."'
+L09E4: db 00
+L09E5: db 'estates'
+L09EC: db 00
+L09ED: db 'guards'
+L09F3: db 00
+L09F4: db '"The military training is conducted at Serpent's Hold, where'
+ db ' the guards that protect all of the towns and cities of Brit'
+ db 'annia are instructed. 'Tis funded by the Royal Treasury."'
+L0AA5: db 00
+L0AA6: db 'guards'
+L0AAC: db 00
+L0AAD: db 'system'
+L0AB3: db 00
+L0AB4: db '"It not only applies to gold but it also applies to all mine'
+ db 'rals. We oversee the sale and rate of exchange for precious '
+ db 'ores extracted by the Britannian Mining Company. But we do n'
+ db 'ot handle the sale of gems. There is a jeweler in town who h'
+ db 'andles that."'
+L0BB1: db 00
+L0BB2: db 'system'
+L0BB8: db 00
+L0BB9: db 'exchange'
+L0BC1: db 00
+L0BC2: db '"Dost thou have some gold that thou wouldst like to exchange'
+ db '?"'
+L0C00: db 00
+L0C01: db '"I can see thou hast no nuggets or bars of gold. Whatever go'
+ db 'ld thou mayest possess is already the coin of the realm. I c'
+ db 'annot help thee anymore than that."'
+L0C9C: db 00
+L0C9D: db '"We can exchange thy gold nuggets and bars into spendable co'
+ db 'in for thee. I will give thee ten gold coins for each gold n'
+ db 'ugget and one-hundred gold coins for each gold bar."'
+L0D49: db 00
+L0D4A: db '"Oh, my. Thou canst not possibly carry that many gold coins.'
+ db ' Thou must return when thou dost have more space in thy pack'
+ db '."'
+L0DC4: db 00
+L0DC5: db '"And here are '
+L0DD3: db 00
+L0DD4: db ' gold coins for thee in return, '
+L0DF4: db 00
+L0DF5: db '. I thank thee for thy business."'
+L0E16: db 00
+L0E17: db '"Very well. Mayhaps another time."'
+L0E39: db 00
+L0E3A: db '"Please come to The Mint during regular daytime hours."'
+L0E71: db 00
+L0E72: db 'exchange'
+L0E7A: db 00
+L0E7B: db 'James'
+L0E80: db 00
+L0E81: db '"James is mine husband and I am very worried about him. I kn'
+ db 'ow he is feeling very unhappy lately and he dislikes his job'
+ db '. If thou dost speak to him please tell him that even though'
+ db ' we have not been speaking very much lately, that I am still'
+ db ' thinking of him and that I still care about him."'
+L0FA3: db 00
+L0FA4: db 'James'
+L0FA9: db 00
+L0FAA: db 'bye'
+L0FAD: db 00
+L0FAE: db '"Good day, '
+L0FB9: db 00
+L0FBA: db '."*'
+L0FBD: db 00
+  .code
+  .argc 0001H
+  .localc 0010H
+  .externsize 0004H
+  .extern 0909H
+  .extern 090AH
+  .extern 0931H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 FA 02   jne 0302
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F D6 FF   pushi FFD6H   ; -42
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1D 00 00   pushs L0000   ; bye
+0022: 1D 04 00   pushs L0004   ; job
+0025: 1D 08 00   pushs L0008   ; name
+0028: 1E 03 00   arrc 0003H   ; 3
+002B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+002F: 42 DC 00   pushf flag:[00DC]
+0032: 05 07 00   jne 003C
+0035: 1D 0D 00   pushs L000D   ; exchange
+0038: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003C: 42 AF 00   pushf flag:[00AF]
+003F: 05 07 00   jne 0049
+0042: 1D 16 00   pushs L0016   ; James
+0045: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0049: 42 AB 00   pushf flag:[00AB]
+004C: 10   not
+004D: 05 0B 00   jne 005B
+0050: 1C 1C 00   addsi L001C   ; You see a helpful...
+0053: 33   say
+0054: 13   push true
+0055: 43 AB 00   popf flag:[00AB]
+0058: 06 04 00   jmp 005F
+005B: 1C 4B 00   addsi L004B   ; "How may I help t...
+005E: 33   say
+005F: 04 95 02   je 02F7
+0062: 1D 70 00   pushs L0070   ; name
+0065: 07 01 00 0B 00  cmps 0001H, 0075
+006A: 1C 75 00   addsi L0075   ; "My name is Cynth...
+006D: 33   say
+006E: 1D 8B 00   pushs L008B   ; name
+0071: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0075: 1D 90 00   pushs L0090   ; job
+0078: 07 01 00 11 00  cmps 0001H, 008E
+007D: 1C 94 00   addsi L0094   ; "I am the teller ...
+0080: 33   say
+0081: 1D E5 00   pushs L00E5   ; Britannian Tax Co...
+0084: 1D FC 00   pushs L00FC   ; Mint
+0087: 1E 02 00   arrc 0002H   ; 2
+008A: 39 05 00 01  calli _AddAnswer@1  ; 0005
+008E: 1D 01 01   pushs L0101   ; Mint
+0091: 07 01 00 27 00  cmps 0001H, 00BD
+0096: 1C 06 01   addsi L0106   ; "Here at the Mint...
+0099: 33   say
+009A: 1D 70 02   pushs L0270   ; Mint
+009D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00A1: 1D 75 02   pushs L0275   ; guards
+00A4: 1D 7C 02   pushs L027C   ; estates
+00A7: 1D 84 02   pushs L0284   ; health
+00AA: 1D 8B 02   pushs L028B   ; water
+00AD: 1D 91 02   pushs L0291   ; roads
+00B0: 1D 97 02   pushs L0297   ; farms
+00B3: 1D 9D 02   pushs L029D   ; money
+00B6: 1E 07 00   arrc 0007H   ; 7
+00B9: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00BD: 1D A3 02   pushs L02A3   ; Britannian Tax Co...
+00C0: 07 01 00 30 00  cmps 0001H, 00F5
+00C5: 1C BA 02   addsi L02BA   ; "The Britannian T...
+00C8: 33   say
+00C9: 13   push true
+00CA: 1F 99 FE   pushi FE99H   ; -359
+00CD: 1F 0C 00   pushi 000CH   ; 12
+00D0: 1F 1D 03   pushi 031DH   ; 797
+00D3: 1F 01 00   pushi 0001H   ; 1
+00D6: 38 2C 00 05  callis 002C, 5
+00DA: 12 02 00   pop [0002]
+00DD: 21 02 00   push [0002]
+00E0: 05 07 00   jne 00EA
+00E3: 1C 76 03   addsi L0376   ; "Fill it out and ...
+00E6: 33   say
+00E7: 06 04 00   jmp 00EE
+00EA: 1C D9 03   addsi L03D9   ; "Thou art carryin...
+00ED: 33   say
+00EE: 1D 49 04   pushs L0449   ; Britannian Tax Co...
+00F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F5: 1D 60 04   pushs L0460   ; money
+00F8: 07 01 00 1C 00  cmps 0001H, 0119
+00FD: 1C 66 04   addsi L0466   ; "In order to keep...
+0100: 33   say
+0101: 13   push true
+0102: 43 DC 00   popf flag:[00DC]
+0105: 1D 9D 05   pushs L059D   ; money
+0108: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+010C: 1D A3 05   pushs L05A3   ; system
+010F: 1D AA 05   pushs L05AA   ; exchange
+0112: 1E 02 00   arrc 0002H   ; 2
+0115: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0119: 1D B3 05   pushs L05B3   ; farms
+011C: 07 01 00 0B 00  cmps 0001H, 012C
+0121: 1C B9 05   addsi L05B9   ; "As I am certain ...
+0124: 33   say
+0125: 1D D4 06   pushs L06D4   ; farms
+0128: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+012C: 1D DA 06   pushs L06DA   ; roads
+012F: 07 01 00 0B 00  cmps 0001H, 013F
+0134: 1C E0 06   addsi L06E0   ; "The increased us...
+0137: 33   say
+0138: 1D 8F 07   pushs L078F   ; roads
+013B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+013F: 1D 95 07   pushs L0795   ; water
+0142: 07 01 00 0B 00  cmps 0001H, 0152
+0147: 1C 9B 07   addsi L079B   ; "It is of the utm...
+014A: 33   say
+014B: 1D 33 08   pushs L0833   ; water
+014E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0152: 1D 39 08   pushs L0839   ; health
+0155: 07 01 00 0B 00  cmps 0001H, 0165
+015A: 1C 40 08   addsi L0840   ; "As Britannia's p...
+015D: 33   say
+015E: 1D 6C 09   pushs L096C   ; health
+0161: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0165: 1D 73 09   pushs L0973   ; estates
+0168: 07 01 00 0B 00  cmps 0001H, 0178
+016D: 1C 7B 09   addsi L097B   ; "The local Lords ...
+0170: 33   say
+0171: 1D E5 09   pushs L09E5   ; estates
+0174: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0178: 1D ED 09   pushs L09ED   ; guards
+017B: 07 01 00 0B 00  cmps 0001H, 018B
+0180: 1C F4 09   addsi L09F4   ; "The military tra...
+0183: 33   say
+0184: 1D A6 0A   pushs L0AA6   ; guards
+0187: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018B: 1D AD 0A   pushs L0AAD   ; system
+018E: 07 01 00 0B 00  cmps 0001H, 019E
+0193: 1C B4 0A   addsi L0AB4   ; "It not only appl...
+0196: 33   say
+0197: 1D B2 0B   pushs L0BB2   ; system
+019A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019E: 1D B9 0B   pushs L0BB9   ; exchange
+01A1: 07 01 00 2C 01  cmps 0001H, 02D2
+01A6: 1F D6 FF   pushi FFD6H   ; -42
+01A9: 38 1B 00 01  callis 001B, 1
+01AD: 38 1C 00 01  callis 001C, 1
+01B1: 12 03 00   pop [0003]
+01B4: 21 03 00   push [0003]
+01B7: 1F 1E 00   pushi 001EH   ; 30
+01BA: 22   cmpeq
+01BB: 05 09 01   jne 02C7
+01BE: 1C C2 0B   addsi L0BC2   ; "Dost thou have s...
+01C1: 33   say
+01C2: 24 01 00   call [0001]   ; 090AH
+01C5: 12 04 00   pop [0004]
+01C8: 21 04 00   push [0004]
+01CB: 05 F2 00   jne 02C0
+01CE: 1F 99 FE   pushi FE99H   ; -359
+01D1: 1F 99 FE   pushi FE99H   ; -359
+01D4: 1F 85 02   pushi 0285H   ; 645
+01D7: 1F 01 00   pushi 0001H   ; 1
+01DA: 1F 9B FE   pushi FE9BH   ; -357
+01DD: 24 02 00   call [0002]   ; 0931H
+01E0: 12 05 00   pop [0005]
+01E3: 1F 99 FE   pushi FE99H   ; -359
+01E6: 1F 99 FE   pushi FE99H   ; -359
+01E9: 1F 86 02   pushi 0286H   ; 646
+01EC: 1F 01 00   pushi 0001H   ; 1
+01EF: 1F 9B FE   pushi FE9BH   ; -357
+01F2: 24 02 00   call [0002]   ; 0931H
+01F5: 12 06 00   pop [0006]
+01F8: 21 05 00   push [0005]
+01FB: 21 06 00   push [0006]
+01FE: 0F   or
+01FF: 05 07 00   jne 0209
+0202: 13   push true
+0203: 12 07 00   pop [0007]
+0206: 06 04 00   jmp 020D
+0209: 14   push false
+020A: 12 07 00   pop [0007]
+020D: 21 07 00   push [0007]
+0210: 10   not
+0211: 05 07 00   jne 021B
+0214: 1C 01 0C   addsi L0C01   ; "I can see thou h...
+0217: 33   say
+0218: 06 A2 00   jmp 02BD
+021B: 1C 9D 0C   addsi L0C9D   ; "We can exchange ...
+021E: 33   say
+021F: 1F 99 FE   pushi FE99H   ; -359
+0222: 1F 99 FE   pushi FE99H   ; -359
+0225: 1F 85 02   pushi 0285H   ; 645
+0228: 1F 9B FE   pushi FE9BH   ; -357
+022B: 38 28 00 04  callis 0028, 4
+022F: 12 08 00   pop [0008]
+0232: 1F 99 FE   pushi FE99H   ; -359
+0235: 1F 99 FE   pushi FE99H   ; -359
+0238: 1F 86 02   pushi 0286H   ; 646
+023B: 1F 9B FE   pushi FE9BH   ; -357
+023E: 38 28 00 04  callis 0028, 4
+0242: 12 09 00   pop [0009]
+0245: 1F 0A 00   pushi 000AH   ; 10
+0248: 21 08 00   push [0008]
+024B: 0C   mul
+024C: 12 0A 00   pop [000A]
+024F: 1F 64 00   pushi 0064H   ; 100
+0252: 21 09 00   push [0009]
+0255: 0C   mul
+0256: 12 0B 00   pop [000B]
+0259: 21 0A 00   push [000A]
+025C: 21 0B 00   push [000B]
+025F: 09   add
+0260: 12 0C 00   pop [000C]
+0263: 13   push true
+0264: 1F 99 FE   pushi FE99H   ; -359
+0267: 1F 99 FE   pushi FE99H   ; -359
+026A: 1F 84 02   pushi 0284H   ; 644
+026D: 21 0C 00   push [000C]
+0270: 38 2C 00 05  callis 002C, 5
+0274: 12 0D 00   pop [000D]
+0277: 21 0D 00   push [000D]
+027A: 10   not
+027B: 05 07 00   jne 0285
+027E: 1C 4A 0D   addsi L0D4A   ; "Oh, my. Thou can...
+0281: 33   say
+0282: 06 38 00   jmp 02BD
+0285: 13   push true
+0286: 1F 99 FE   pushi FE99H   ; -359
+0289: 1F 99 FE   pushi FE99H   ; -359
+028C: 1F 85 02   pushi 0285H   ; 645
+028F: 21 08 00   push [0008]
+0292: 38 2B 00 05  callis 002B, 5
+0296: 12 0E 00   pop [000E]
+0299: 13   push true
+029A: 1F 99 FE   pushi FE99H   ; -359
+029D: 1F 99 FE   pushi FE99H   ; -359
+02A0: 1F 86 02   pushi 0286H   ; 646
+02A3: 21 09 00   push [0009]
+02A6: 38 2B 00 05  callis 002B, 5
+02AA: 12 0F 00   pop [000F]
+02AD: 1C C5 0D   addsi L0DC5   ; "And here are 
+02B0: 2F 0C 00   addsv [000C]
+02B3: 1C D4 0D   addsi L0DD4   ;  gold coins for t...
+02B6: 2F 00 00   addsv [0000]
+02B9: 1C F5 0D   addsi L0DF5   ; . I thank thee fo...
+02BC: 33   say
+02BD: 06 04 00   jmp 02C4
+02C0: 1C 17 0E   addsi L0E17   ; "Very well. Mayha...
+02C3: 33   say
+02C4: 06 04 00   jmp 02CB
+02C7: 1C 3A 0E   addsi L0E3A   ; "Please come to T...
+02CA: 33   say
+02CB: 1D 72 0E   pushs L0E72   ; exchange
+02CE: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02D2: 1D 7B 0E   pushs L0E7B   ; James
+02D5: 07 01 00 0F 00  cmps 0001H, 02E9
+02DA: 1C 81 0E   addsi L0E81   ; "James is mine hu...
+02DD: 33   say
+02DE: 1D A4 0F   pushs L0FA4   ; James
+02E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E5: 13   push true
+02E6: 43 92 00   popf flag:[0092]
+02E9: 1D AA 0F   pushs L0FAA   ; bye
+02EC: 07 01 00 03 00  cmps 0001H, 02F4
+02F1: 06 03 00   jmp 02F7
+02F4: 06 68 FD   jmp 005F
+02F7: 40   db 40 ???
+02F8: 1C AE 0F   addsi L0FAE   ; "Good day, 
+02FB: 2F 00 00   addsv [0000]
+02FE: 1C BA 0F   addsi L0FBA   ; ."*
+0301: 33   say
+0302: 48   push eventid
+0303: 1F 00 00   pushi 0000H   ; 0
+0306: 22   cmpeq
+0307: 05 06 00   jne 0310
+030A: 1F D6 FF   pushi FFD6H   ; -42
+030D: 24 03 00   call [0003]   ; 092EH
+0310: 25   ret

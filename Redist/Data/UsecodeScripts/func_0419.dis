@@ -1,0 +1,440 @@
+  .funcnumber 0419H
+  .data
+L0000: db 'You are wary of conversing with that trickster Chuckles, but'
+ db ' decide to anyway.'
+L004E: db 00
+L004F: db 'bye'
+L0052: db 00
+L0053: db 'job'
+L0056: db 00
+L0057: db 'name'
+L005B: db 00
+L005C: db '"I will speak if thou dost play The Game, friend," Chuckles '
+ db 'says.'
+L009D: db 00
+L009E: db 'Game'
+L00A2: db 00
+L00A3: db 'bye'
+L00A6: db 00
+L00A7: db 'job'
+L00AA: db 00
+L00AB: db 'name'
+L00AF: db 00
+L00B0: db '"I must not say my name, lest I break the rule of The Game!"'
+L00EC: db 00
+L00ED: db 'name'
+L00F1: db 00
+L00F2: db 'Game'
+L00F6: db 00
+L00F7: db 'job'
+L00FA: db 00
+L00FB: db '"I was, am, and shall be the Court...Fool! I could give thee'
+ db ' a clue if I wish, but for now my job is to play The Game."'
+L0172: db 00
+L0173: db 'Game'
+L0177: db 00
+L0178: db 'clue'
+L017C: db 00
+L017D: db '"Art thou sure thou canst play The Game?"'
+L01A6: db 00
+L01A7: db '"Thou must play The Game to get the clue!"'
+L01D1: db 00
+L01D2: db '"Oops. I did give thee one!"'
+L01EE: db 00
+L01EF: db 'clue'
+L01F3: db 00
+L01F4: db 'Game'
+L01F8: db 00
+L01F9: db '"Thou must play The Game if thou dost want to speak with me.'
+ db '"'
+L0236: db 00
+L0237: db 'Explain it'
+L0241: db 00
+L0242: db 'I know The Game'
+L0251: db 00
+L0252: db 'What are the rules?'
+L0265: db 00
+L0266: db 'I don't understand'
+L0278: db 00
+L0279: db 'Game'
+L027D: db 00
+L027E: db 'I don't understand'
+L0290: db 00
+L0291: db 'I don't understand'
+L02A3: db 00
+L02A4: db 'Explain it'
+L02AE: db 00
+L02AF: db 'Explain it'
+L02B9: db 00
+L02BA: db 'What are the rules?'
+L02CD: db 00
+L02CE: db '"Thou must just learn The Game and then jump in and play it!'
+ db '"'
+L030B: db 00
+L030C: db 'What are the rules?'
+L031F: db 00
+L0320: db 'I know The Game'
+L032F: db 00
+L0330: db '"Then just play it!"'
+L0344: db 00
+L0345: db 'I know the Game'
+L0354: db 00
+L0355: db 'Of what do we speak?'
+L0369: db 00
+L036A: db 'About what do we talk?'
+L0380: db 00
+L0381: db 'What do we converse about?'
+L039B: db 00
+L039C: db 'Of what do we speak?'
+L03B0: db 00
+L03B1: db '"Of what thou wouldst like."'
+L03CD: db 00
+L03CE: db 'a joke'
+L03D4: db 00
+L03D5: db 'thou'
+L03D9: db 00
+L03DA: db 'Lord British'
+L03E6: db 00
+L03E7: db 'the weather'
+L03F2: db 00
+L03F3: db 'the weather'
+L03FE: db 00
+L03FF: db 'weather'
+L0406: db 00
+L0407: db 'Lord British'
+L0413: db 00
+L0414: db 'Lord British'
+L0420: db 00
+L0421: db 'thou'
+L0425: db 00
+L0426: db '"Why dost thou want to speak of me? Canst thou not think of '
+ db 'a thing much more fun of which to speak?"'
+L048B: db 00
+L048C: db 'thou'
+L0490: db 00
+L0491: db 'supper'
+L0497: db 00
+L0498: db 'food'
+L049C: db 00
+L049D: db 'girls'
+L04A2: db 00
+L04A3: db 'women'
+L04A8: db 00
+L04A9: db 'a joke'
+L04AF: db 00
+L04B0: db '"I do not think I can tell a good joke whilst I play The Gam'
+ db 'e! 'Twould be hard! Hmm. Ah! I have one! Why did the hen cro'
+ db 'ss the road? To get to the side she was not on!"'
+L0558: db 00
+L0559: db 'a joke'
+L055F: db 00
+L0560: db 'women'
+L0565: db 00
+L0566: db 'women'
+L056B: db 00
+L056C: db 'girls'
+L0571: db 00
+L0572: db '"There be a lot of fine girls in our fair town! Or is it 'fa'
+ db 'ir girls in our fine town'?" Chuckles shrugs his shoulders.'
+L05E9: db 00
+L05EA: db 'girls'
+L05EF: db 00
+L05F0: db 'food'
+L05F4: db 00
+L05F5: db '"There is good food at the pub! As for me, I like to eat on '
+ db 'the floor of my room!"'
+L0647: db 00
+L0648: db 'Is there liquor?'
+L0658: db 00
+L0659: db 'The pub serves mutton?'
+L066F: db 00
+L0670: db 'Where is the Blue Boar?'
+L0687: db 00
+L0688: db 'Where is the tavern?'
+L069C: db 00
+L069D: db 'Where is the Blue Boar?'
+L06B4: db 00
+L06B5: db '"Thou canst get a good meal there! But I could give thee a g'
+ db 'ood -clue-!"'
+L06FD: db 00
+L06FE: db 'bye'
+L0701: db 00
+L0702: db 'job'
+L0705: db 00
+L0706: db 'clue'
+L070A: db 00
+L070B: db 'supper'
+L0711: db 00
+L0712: db 'supper'
+L0718: db 00
+L0719: db 'bye'
+L071C: db 00
+L071D: db '"So long, my friend! Do not forg... I mean, do not lose how '
+ db 'to play The Game!"*'
+L076C: db 00
+L076D: db '"Bye for now!"*'
+L077C: db 00
+L077D: db '@Hi!@'
+L0782: db 00
+L0783: db '@Want to play The Game?@'
+L079B: db 00
+L079C: db '@Let us play The Game!@'
+L07B3: db 00
+L07B4: db 'Shall we dance?@'
+L07C4: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0004H
+  .extern 090AH
+  .extern 0862H
+  .extern 0861H
+  .extern 090BH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 65 02   jne 026D
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F E7 FF   pushi FFE7H   ; -25
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 42 9A 00   pushf flag:[009A]
+0015: 10   not
+0016: 05 1B 00   jne 0034
+0019: 1C 00 00   addsi L0000   ; You are wary of c...
+001C: 33   say
+001D: 13   push true
+001E: 43 9A 00   popf flag:[009A]
+0021: 1D 4F 00   pushs L004F   ; bye
+0024: 1D 53 00   pushs L0053   ; job
+0027: 1D 57 00   pushs L0057   ; name
+002A: 1E 03 00   arrc 0003H   ; 3
+002D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0031: 06 14 00   jmp 0048
+0034: 1C 5C 00   addsi L005C   ; "I will speak if ...
+0037: 33   say
+0038: 1D 9E 00   pushs L009E   ; Game
+003B: 1D A3 00   pushs L00A3   ; bye
+003E: 1D A7 00   pushs L00A7   ; job
+0041: 1E 03 00   arrc 0003H   ; 3
+0044: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0048: 04 10 02   je 025B
+004B: 1D AB 00   pushs L00AB   ; name
+004E: 07 01 00 12 00  cmps 0001H, 0065
+0053: 1C B0 00   addsi L00B0   ; "I must not say m...
+0056: 33   say
+0057: 1D ED 00   pushs L00ED   ; name
+005A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+005E: 1D F2 00   pushs L00F2   ; Game
+0061: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0065: 1D F7 00   pushs L00F7   ; job
+0068: 07 01 00 0B 00  cmps 0001H, 0078
+006D: 1C FB 00   addsi L00FB   ; "I was, am, and s...
+0070: 33   say
+0071: 1D 73 01   pushs L0173   ; Game
+0074: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0078: 1D 78 01   pushs L0178   ; clue
+007B: 07 01 00 2F 00  cmps 0001H, 00AF
+0080: 42 6F 00   pushf flag:[006F]
+0083: 10   not
+0084: 05 1D 00   jne 00A4
+0087: 1C 7D 01   addsi L017D   ; "Art thou sure th...
+008A: 33   say
+008B: 24 00 00   call [0000]   ; 090AH
+008E: 12 00 00   pop [0000]
+0091: 21 00 00   push [0000]
+0094: 05 06 00   jne 009D
+0097: 24 01 00   call [0001]   ; 0862H
+009A: 06 04 00   jmp 00A1
+009D: 1C A7 01   addsi L01A7   ; "Thou must play T...
+00A0: 33   say
+00A1: 06 0B 00   jmp 00AF
+00A4: 1C D2 01   addsi L01D2   ; "Oops. I did give...
+00A7: 33   say
+00A8: 1D EF 01   pushs L01EF   ; clue
+00AB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00AF: 1D F4 01   pushs L01F4   ; Game
+00B2: 07 01 00 26 00  cmps 0001H, 00DD
+00B7: 1C F9 01   addsi L01F9   ; "Thou must play T...
+00BA: 33   say
+00BB: 39 09 00 00  calli 0009, 0
+00BF: 1D 37 02   pushs L0237   ; Explain it
+00C2: 1D 42 02   pushs L0242   ; I know The Game
+00C5: 1D 52 02   pushs L0252   ; What are the rules?
+00C8: 1D 66 02   pushs L0266   ; I don't understand
+00CB: 1E 04 00   arrc 0004H   ; 4
+00CE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00D2: 1D 79 02   pushs L0279   ; Game
+00D5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D9: 13   push true
+00DA: 43 73 00   popf flag:[0073]
+00DD: 1D 7E 02   pushs L027E   ; I don't understand
+00E0: 07 01 00 0A 00  cmps 0001H, 00EF
+00E5: 24 02 00   call [0002]   ; 0861H
+00E8: 1D 91 02   pushs L0291   ; I don't understand
+00EB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00EF: 1D A4 02   pushs L02A4   ; Explain it
+00F2: 07 01 00 0A 00  cmps 0001H, 0101
+00F7: 24 02 00   call [0002]   ; 0861H
+00FA: 1D AF 02   pushs L02AF   ; Explain it
+00FD: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0101: 1D BA 02   pushs L02BA   ; What are the rules?
+0104: 07 01 00 0B 00  cmps 0001H, 0114
+0109: 1C CE 02   addsi L02CE   ; "Thou must just l...
+010C: 33   say
+010D: 1D 0C 03   pushs L030C   ; What are the rules?
+0110: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0114: 1D 20 03   pushs L0320   ; I know The Game
+0117: 07 01 00 4C 00  cmps 0001H, 0168
+011C: 1C 30 03   addsi L0330   ; "Then just play it!"
+011F: 33   say
+0120: 1D 45 03   pushs L0345   ; I know the Game
+0123: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0127: 39 09 00 00  calli 0009, 0
+012B: 1D 55 03   pushs L0355   ; Of what do we speak?
+012E: 1D 6A 03   pushs L036A   ; About what do we ...
+0131: 1D 81 03   pushs L0381   ; What do we conver...
+0134: 1E 03 00   arrc 0003H   ; 3
+0137: 24 03 00   call [0003]   ; 090BH
+013A: 12 01 00   pop [0001]
+013D: 21 01 00   push [0001]
+0140: 1D 9C 03   pushs L039C   ; Of what do we speak?
+0143: 22   cmpeq
+0144: 05 1E 00   jne 0165
+0147: 1C B1 03   addsi L03B1   ; "Of what thou wou...
+014A: 33   say
+014B: 39 09 00 00  calli 0009, 0
+014F: 1D CE 03   pushs L03CE   ; a joke
+0152: 1D D5 03   pushs L03D5   ; thou
+0155: 1D DA 03   pushs L03DA   ; Lord British
+0158: 1D E7 03   pushs L03E7   ; the weather
+015B: 1E 04 00   arrc 0004H   ; 4
+015E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0162: 06 03 00   jmp 0168
+0165: 24 02 00   call [0002]   ; 0861H
+0168: 1D F3 03   pushs L03F3   ; the weather
+016B: 07 01 00 0A 00  cmps 0001H, 017A
+0170: 24 02 00   call [0002]   ; 0861H
+0173: 1D FF 03   pushs L03FF   ; weather
+0176: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+017A: 1D 07 04   pushs L0407   ; Lord British
+017D: 07 01 00 0A 00  cmps 0001H, 018C
+0182: 24 02 00   call [0002]   ; 0861H
+0185: 1D 14 04   pushs L0414   ; Lord British
+0188: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+018C: 1D 21 04   pushs L0421   ; thou
+018F: 07 01 00 22 00  cmps 0001H, 01B6
+0194: 1C 26 04   addsi L0426   ; "Why dost thou wa...
+0197: 33   say
+0198: 1D 8C 04   pushs L048C   ; thou
+019B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+019F: 39 09 00 00  calli 0009, 0
+01A3: 1D 91 04   pushs L0491   ; supper
+01A6: 1D 98 04   pushs L0498   ; food
+01A9: 1D 9D 04   pushs L049D   ; girls
+01AC: 1D A3 04   pushs L04A3   ; women
+01AF: 1E 04 00   arrc 0004H   ; 4
+01B2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01B6: 1D A9 04   pushs L04A9   ; a joke
+01B9: 07 01 00 0B 00  cmps 0001H, 01C9
+01BE: 1C B0 04   addsi L04B0   ; "I do not think I...
+01C1: 33   say
+01C2: 1D 59 05   pushs L0559   ; a joke
+01C5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01C9: 1D 60 05   pushs L0560   ; women
+01CC: 07 01 00 0A 00  cmps 0001H, 01DB
+01D1: 24 02 00   call [0002]   ; 0861H
+01D4: 1D 66 05   pushs L0566   ; women
+01D7: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01DB: 1D 6C 05   pushs L056C   ; girls
+01DE: 07 01 00 0B 00  cmps 0001H, 01EE
+01E3: 1C 72 05   addsi L0572   ; "There be a lot o...
+01E6: 33   say
+01E7: 1D EA 05   pushs L05EA   ; girls
+01EA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01EE: 1D F0 05   pushs L05F0   ; food
+01F1: 07 01 00 45 00  cmps 0001H, 023B
+01F6: 1C F5 05   addsi L05F5   ; "There is good fo...
+01F9: 33   say
+01FA: 39 09 00 00  calli 0009, 0
+01FE: 1D 48 06   pushs L0648   ; Is there liquor?
+0201: 1D 59 06   pushs L0659   ; The pub serves mu...
+0204: 1D 70 06   pushs L0670   ; Where is the Blue...
+0207: 1D 88 06   pushs L0688   ; Where is the tavern?
+020A: 1E 04 00   arrc 0004H   ; 4
+020D: 24 03 00   call [0003]   ; 090BH
+0210: 12 02 00   pop [0002]
+0213: 21 02 00   push [0002]
+0216: 1D 9D 06   pushs L069D   ; Where is the Blue...
+0219: 22   cmpeq
+021A: 05 1B 00   jne 0238
+021D: 1C B5 06   addsi L06B5   ; "Thou canst get a...
+0220: 33   say
+0221: 39 09 00 00  calli 0009, 0
+0225: 1D FE 06   pushs L06FE   ; bye
+0228: 1D 02 07   pushs L0702   ; job
+022B: 1D 06 07   pushs L0706   ; clue
+022E: 1E 03 00   arrc 0003H   ; 3
+0231: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0235: 06 03 00   jmp 023B
+0238: 24 02 00   call [0002]   ; 0861H
+023B: 1D 0B 07   pushs L070B   ; supper
+023E: 07 01 00 0A 00  cmps 0001H, 024D
+0243: 24 02 00   call [0002]   ; 0861H
+0246: 1D 12 07   pushs L0712   ; supper
+0249: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+024D: 1D 19 07   pushs L0719   ; bye
+0250: 07 01 00 03 00  cmps 0001H, 0258
+0255: 06 03 00   jmp 025B
+0258: 06 ED FD   jmp 0048
+025B: 40   db 40 ???
+025C: 42 73 00   pushf flag:[0073]
+025F: 05 07 00   jne 0269
+0262: 1C 1D 07   addsi L071D   ; "So long, my frie...
+0265: 33   say
+0266: 06 04 00   jmp 026D
+0269: 1C 6D 07   addsi L076D   ; "Bye for now!"*
+026C: 33   say
+026D: 48   push eventid
+026E: 1F 00 00   pushi 0000H   ; 0
+0271: 22   cmpeq
+0272: 05 6F 00   jne 02E4
+0275: 1F E7 FF   pushi FFE7H   ; -25
+0278: 38 1B 00 01  callis 001B, 1
+027C: 38 1C 00 01  callis 001C, 1
+0280: 12 03 00   pop [0003]
+0283: 21 03 00   push [0003]
+0286: 1F 04 00   pushi 0004H   ; 4
+0289: 22   cmpeq
+028A: 05 57 00   jne 02E4
+028D: 1F 04 00   pushi 0004H   ; 4
+0290: 1F 01 00   pushi 0001H   ; 1
+0293: 38 10 00 02  callis _Random2@2  ; 0010
+0297: 12 04 00   pop [0004]
+029A: 21 04 00   push [0004]
+029D: 1F 01 00   pushi 0001H   ; 1
+02A0: 22   cmpeq
+02A1: 05 06 00   jne 02AA
+02A4: 1D 7D 07   pushs L077D   ; @Hi!@
+02A7: 12 05 00   pop [0005]
+02AA: 21 04 00   push [0004]
+02AD: 1F 02 00   pushi 0002H   ; 2
+02B0: 22   cmpeq
+02B1: 05 06 00   jne 02BA
+02B4: 1D 83 07   pushs L0783   ; @Want to play The...
+02B7: 12 05 00   pop [0005]
+02BA: 21 04 00   push [0004]
+02BD: 1F 03 00   pushi 0003H   ; 3
+02C0: 22   cmpeq
+02C1: 05 06 00   jne 02CA
+02C4: 1D 9C 07   pushs L079C   ; @Let us play The ...
+02C7: 12 05 00   pop [0005]
+02CA: 21 04 00   push [0004]
+02CD: 1F 04 00   pushi 0004H   ; 4
+02D0: 22   cmpeq
+02D1: 05 06 00   jne 02DA
+02D4: 1D B4 07   pushs L07B4   ; Shall we dance?@
+02D7: 12 05 00   pop [0005]
+02DA: 21 05 00   push [0005]
+02DD: 1F E7 FF   pushi FFE7H   ; -25
+02E0: 39 40 00 02  calli _ItemSay@2  ; 0040
+02E4: 25   ret

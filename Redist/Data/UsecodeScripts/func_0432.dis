@@ -1,0 +1,300 @@
+  .funcnumber 0432H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'You see a friendly-looking farmer who waves at you as you ap'
+ db 'proach.'
+L0050: db 00
+L0051: db '"Hello again, '
+L005F: db 00
+L0060: db '." says Fred.'
+L006D: db 00
+L006E: db 'name'
+L0072: db 00
+L0073: db '"My name is Fred."'
+L0085: db 00
+L0086: db 'name'
+L008A: db 00
+L008B: db 'job'
+L008E: db 00
+L008F: db '"I sell meats here at the Farmer's Market in Britain."'
+L00C5: db 00
+L00C6: db 'Farmer's Market'
+L00D5: db 00
+L00D6: db 'meats'
+L00DB: db 00
+L00DC: db 'meats'
+L00E1: db 00
+L00E2: db '"They are the tastiest meats that thou canst buy. Do thyself'
+ db ' a favor and try some."'
+L0135: db 00
+L0136: db 'meats'
+L013B: db 00
+L013C: db 'buy'
+L013F: db 00
+L0140: db 'Farmer's Market'
+L014F: db 00
+L0150: db '"Here at the Farmer's Market we sell vegetables bought from '
+ db 'the farmers just outside of town, as well as meats from the '
+ db 'slaughterhouse in Paws."'
+L01E0: db 00
+L01E1: db 'Farmer's Market'
+L01F0: db 00
+L01F1: db 'Paws'
+L01F5: db 00
+L01F6: db 'slaughterhouse'
+L0204: db 00
+L0205: db 'slaughterhouse'
+L0213: db 00
+L0214: db '"It is run by a man named Morfin, a very successful merchant'
+ db ' from Buccaneer's Den."'
+L0267: db 00
+L0268: db 'slaughterhouse'
+L0276: db 00
+L0277: db 'Buccaneer's Den'
+L0286: db 00
+L0287: db 'Morfin'
+L028D: db 00
+L028E: db 'Morfin'
+L0294: db 00
+L0295: db '"Morfin is an unusual character. If I did not know any bette'
+ db 'r I would say he was involved with a number of shady busines'
+ db 's activities."'
+L031B: db 00
+L031C: db 'Morfin'
+L0322: db 00
+L0323: db 'Buccaneer's Den'
+L0332: db 00
+L0333: db '"Morfin left that place because he saw all of the commerce t'
+ db 'hat was developing there as competition to his own business '
+ db 'activities and moved to Paws."'
+L03C9: db 00
+L03CA: db 'Buccaneer's Den'
+L03D9: db 00
+L03DA: db 'Paws'
+L03DE: db 00
+L03DF: db '"Paws is a good place to go to buy things for low prices. Ma'
+ db 'ny of the people are rather poor, I am sorry to say. There i'
+ db 's little active commerce there, however. In Paws, one must d'
+ db 'eal with people on a more personal level."'
+L04BD: db 00
+L04BE: db 'Paws'
+L04C2: db 00
+L04C3: db 'buy'
+L04C6: db 00
+L04C7: db '"Thou must return when the Farmer's Market is open."'
+L04FB: db 00
+L04FC: db '"Wouldst thou like to buy some meats?"'
+L0522: db 00
+L0523: db '"We have a fine selection of meats for thee today, '
+L0556: db 00
+L0557: db '."'
+L0559: db 00
+L055A: db '"Come back when thou art hungry and we shall serve thee then'
+ db '."'
+L0598: db 00
+L0599: db 'buy'
+L059C: db 00
+L059D: db 'bye'
+L05A0: db 00
+L05A1: db '"Goodbye, '
+L05AB: db 00
+L05AC: db '."*'
+L05AF: db 00
+L05B0: db '@Get thy vegetables here!@'
+L05CA: db 00
+L05CB: db '@Get thy meats here!@'
+L05E0: db 00
+L05E1: db '@Eggs for sale!@'
+L05F1: db 00
+L05F2: db '@Best prices in Britannia!@'
+L060D: db 00
+  .code
+  .argc 0001H
+  .localc 0006H
+  .externsize 0004H
+  .extern 0909H
+  .extern 090AH
+  .extern 088CH
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 71 01   jne 0179
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F CE FF   pushi FFCEH   ; -50
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 38 3B 00 00  callis 003B, 0
+001C: 12 01 00   pop [0001]
+001F: 1F CE FF   pushi FFCEH   ; -50
+0022: 38 1B 00 01  callis 001B, 1
+0026: 38 1C 00 01  callis 001C, 1
+002A: 12 02 00   pop [0002]
+002D: 1D 00 00   pushs L0000   ; bye
+0030: 1D 04 00   pushs L0004   ; job
+0033: 1D 08 00   pushs L0008   ; name
+0036: 1E 03 00   arrc 0003H   ; 3
+0039: 39 05 00 01  calli _AddAnswer@1  ; 0005
+003D: 42 B3 00   pushf flag:[00B3]
+0040: 10   not
+0041: 05 0B 00   jne 004F
+0044: 1C 0D 00   addsi L000D   ; You see a friendl...
+0047: 33   say
+0048: 13   push true
+0049: 43 B3 00   popf flag:[00B3]
+004C: 06 0A 00   jmp 0059
+004F: 1C 51 00   addsi L0051   ; "Hello again, 
+0052: 2F 00 00   addsv [0000]
+0055: 1C 60 00   addsi L0060   ; ." says Fred.
+0058: 33   say
+0059: 04 12 01   je 016E
+005C: 1D 6E 00   pushs L006E   ; name
+005F: 07 01 00 0B 00  cmps 0001H, 006F
+0064: 1C 73 00   addsi L0073   ; "My name is Fred."
+0067: 33   say
+0068: 1D 86 00   pushs L0086   ; name
+006B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+006F: 1D 8B 00   pushs L008B   ; job
+0072: 07 01 00 11 00  cmps 0001H, 0088
+0077: 1C 8F 00   addsi L008F   ; "I sell meats her...
+007A: 33   say
+007B: 1D C6 00   pushs L00C6   ; Farmer's Market
+007E: 1D D6 00   pushs L00D6   ; meats
+0081: 1E 02 00   arrc 0002H   ; 2
+0084: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0088: 1D DC 00   pushs L00DC   ; meats
+008B: 07 01 00 12 00  cmps 0001H, 00A2
+0090: 1C E2 00   addsi L00E2   ; "They are the tas...
+0093: 33   say
+0094: 1D 36 01   pushs L0136   ; meats
+0097: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+009B: 1D 3C 01   pushs L013C   ; buy
+009E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A2: 1D 40 01   pushs L0140   ; Farmer's Market
+00A5: 07 01 00 18 00  cmps 0001H, 00C2
+00AA: 1C 50 01   addsi L0150   ; "Here at the Farm...
+00AD: 33   say
+00AE: 1D E1 01   pushs L01E1   ; Farmer's Market
+00B1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00B5: 1D F1 01   pushs L01F1   ; Paws
+00B8: 1D F6 01   pushs L01F6   ; slaughterhouse
+00BB: 1E 02 00   arrc 0002H   ; 2
+00BE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00C2: 1D 05 02   pushs L0205   ; slaughterhouse
+00C5: 07 01 00 18 00  cmps 0001H, 00E2
+00CA: 1C 14 02   addsi L0214   ; "It is run by a m...
+00CD: 33   say
+00CE: 1D 68 02   pushs L0268   ; slaughterhouse
+00D1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00D5: 1D 77 02   pushs L0277   ; Buccaneer's Den
+00D8: 1D 87 02   pushs L0287   ; Morfin
+00DB: 1E 02 00   arrc 0002H   ; 2
+00DE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00E2: 1D 8E 02   pushs L028E   ; Morfin
+00E5: 07 01 00 0B 00  cmps 0001H, 00F5
+00EA: 1C 95 02   addsi L0295   ; "Morfin is an unu...
+00ED: 33   say
+00EE: 1D 1C 03   pushs L031C   ; Morfin
+00F1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00F5: 1D 23 03   pushs L0323   ; Buccaneer's Den
+00F8: 07 01 00 0B 00  cmps 0001H, 0108
+00FD: 1C 33 03   addsi L0333   ; "Morfin left that...
+0100: 33   say
+0101: 1D CA 03   pushs L03CA   ; Buccaneer's Den
+0104: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0108: 1D DA 03   pushs L03DA   ; Paws
+010B: 07 01 00 0B 00  cmps 0001H, 011B
+0110: 1C DF 03   addsi L03DF   ; "Paws is a good p...
+0113: 33   say
+0114: 1D BE 04   pushs L04BE   ; Paws
+0117: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+011B: 1D C3 04   pushs L04C3   ; buy
+011E: 07 01 00 3D 00  cmps 0001H, 0160
+0123: 21 02 00   push [0002]
+0126: 1F 07 00   pushi 0007H   ; 7
+0129: 22   cmpeq
+012A: 10   not
+012B: 05 07 00   jne 0135
+012E: 1C C7 04   addsi L04C7   ; "Thou must return...
+0131: 33   say
+0132: 06 24 00   jmp 0159
+0135: 1C FC 04   addsi L04FC   ; "Wouldst thou lik...
+0138: 33   say
+0139: 24 01 00   call [0001]   ; 090AH
+013C: 12 03 00   pop [0003]
+013F: 21 03 00   push [0003]
+0142: 05 10 00   jne 0155
+0145: 1C 23 05   addsi L0523   ; "We have a fine s...
+0148: 2F 00 00   addsv [0000]
+014B: 1C 57 05   addsi L0557   ; ."
+014E: 33   say
+014F: 24 02 00   call [0002]   ; 088CH
+0152: 06 04 00   jmp 0159
+0155: 1C 5A 05   addsi L055A   ; "Come back when t...
+0158: 33   say
+0159: 1D 99 05   pushs L0599   ; buy
+015C: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0160: 1D 9D 05   pushs L059D   ; bye
+0163: 07 01 00 03 00  cmps 0001H, 016B
+0168: 06 03 00   jmp 016E
+016B: 06 EB FE   jmp 0059
+016E: 40   db 40 ???
+016F: 1C A1 05   addsi L05A1   ; "Goodbye, 
+0172: 2F 00 00   addsv [0000]
+0175: 1C AC 05   addsi L05AC   ; ."*
+0178: 33   say
+0179: 48   push eventid
+017A: 1F 00 00   pushi 0000H   ; 0
+017D: 22   cmpeq
+017E: 05 7F 00   jne 0200
+0181: 38 3B 00 00  callis 003B, 0
+0185: 12 01 00   pop [0001]
+0188: 1F CE FF   pushi FFCEH   ; -50
+018B: 38 1B 00 01  callis 001B, 1
+018F: 38 1C 00 01  callis 001C, 1
+0193: 12 02 00   pop [0002]
+0196: 1F 04 00   pushi 0004H   ; 4
+0199: 1F 01 00   pushi 0001H   ; 1
+019C: 38 10 00 02  callis _Random2@2  ; 0010
+01A0: 12 04 00   pop [0004]
+01A3: 21 02 00   push [0002]
+01A6: 1F 07 00   pushi 0007H   ; 7
+01A9: 22   cmpeq
+01AA: 05 4D 00   jne 01FA
+01AD: 21 04 00   push [0004]
+01B0: 1F 01 00   pushi 0001H   ; 1
+01B3: 22   cmpeq
+01B4: 05 06 00   jne 01BD
+01B7: 1D B0 05   pushs L05B0   ; @Get thy vegetabl...
+01BA: 12 05 00   pop [0005]
+01BD: 21 04 00   push [0004]
+01C0: 1F 02 00   pushi 0002H   ; 2
+01C3: 22   cmpeq
+01C4: 05 06 00   jne 01CD
+01C7: 1D CB 05   pushs L05CB   ; @Get thy meats he...
+01CA: 12 05 00   pop [0005]
+01CD: 21 04 00   push [0004]
+01D0: 1F 03 00   pushi 0003H   ; 3
+01D3: 22   cmpeq
+01D4: 05 06 00   jne 01DD
+01D7: 1D E1 05   pushs L05E1   ; @Eggs for sale!@
+01DA: 12 05 00   pop [0005]
+01DD: 21 04 00   push [0004]
+01E0: 1F 04 00   pushi 0004H   ; 4
+01E3: 22   cmpeq
+01E4: 05 06 00   jne 01ED
+01E7: 1D F2 05   pushs L05F2   ; @Best prices in B...
+01EA: 12 05 00   pop [0005]
+01ED: 21 05 00   push [0005]
+01F0: 1F CE FF   pushi FFCEH   ; -50
+01F3: 39 40 00 02  calli _ItemSay@2  ; 0040
+01F7: 06 06 00   jmp 0200
+01FA: 1F CE FF   pushi FFCEH   ; -50
+01FD: 24 03 00   call [0003]   ; 092EH
+0200: 25   ret

@@ -1,0 +1,990 @@
+  .funcnumber 0402H
+  .data
+L0000: db 'Avatar'
+L0006: db 00
+L0007: db 'You see a boy who appears to be a young teen. He is dirty an'
+ db 'd unkempt. He looks as if he has been crying, but he sits up'
+ db ' straight and looks sharp when he sees you.'
+L00AA: db 00
+L00AB: db '"Who art thou and what dost thou want?" You realize the boy '
+ db 'has a sling in hand.'
+L00FB: db 00
+L00FC: db 'You face the boy and tell him who you are.'
+L0126: db 00
+L0127: db '"So? What makes thee so special?"*'
+L0149: db 00
+L014A: db '"The last time I heard -that- one I fell off a prehistoric c'
+ db 'reature from Eodon!"'
+L019A: db 00
+L019B: db '"Boy, this is the Avatar! '
+L01B5: db 00
+L01B6: db 'Upon my word he is! He has come to help thee!"*'
+L01E5: db 00
+L01E6: db 'Upon my word she is! She has come to help thee!"*'
+L0217: db 00
+L0218: db 'Then the boy narrows his eyes, studying you. He slowly lower'
+ db 's his weapon, ready to act in case it's a trap. You admire t'
+ db 'he boy's obvious experience in dealing with strangers.'
+L02C6: db 00
+L02C7: db 'You and Spark stare at each other. He is not sure what to do'
+ db '. Finally, he nods his head. "All right. I believe thee. Tho'
+ db 'u dost look like paintings I have seen. I am sorry, '
+L0373: db 00
+L0374: db '."'
+L0376: db 00
+L0377: db '"Yes, '
+L037D: db 00
+L037E: db '?" Spark asks. "What dost thou want?"'
+L03A3: db 00
+L03A4: db 'bye'
+L03A7: db 00
+L03A8: db 'murder'
+L03AE: db 00
+L03AF: db 'job'
+L03B2: db 00
+L03B3: db 'name'
+L03B7: db 00
+L03B8: db 'key'
+L03BB: db 00
+L03BC: db 'key'
+L03BF: db 00
+L03C0: db 'leave'
+L03C5: db 00
+L03C6: db 'join'
+L03CA: db 00
+L03CB: db 'scroll'
+L03D1: db 00
+L03D2: db 'medallion'
+L03DB: db 00
+L03DC: db 'gold'
+L03E0: db 00
+L03E1: db 'name'
+L03E5: db 00
+L03E6: db '"I have always been called Spark."'
+L0408: db 00
+L0409: db 'name'
+L040D: db 00
+L040E: db 'job'
+L0411: db 00
+L0412: db '"I have no job. I am only fourteen, so I am just learning ho'
+ db 'w to best help Father in the smithy," he says, proudly. But '
+ db 'then he suddenly realizes something which terrifies him. "An'
+ db 'd now that Father is dead, I am an orphan!"'
+L04F1: db 00
+L04F2: db 'orphan'
+L04F8: db 00
+L04F9: db 'Father'
+L04FF: db 00
+L0500: db 'smithy'
+L0506: db 00
+L0507: db 'smithy'
+L050D: db 00
+L050E: db '"Father was the best blacksmith in Britannia. People were al'
+ db 'ways coming from everywhere to get him to make this and that'
+ db '."'
+L0588: db 00
+L0589: db 'smithy'
+L058F: db 00
+L0590: db 'orphan'
+L0596: db 00
+L0597: db '"My mother died a long time ago. I can just barely remember '
+ db 'her."'
+L05D8: db 00
+L05D9: db 'orphan'
+L05DF: db 00
+L05E0: db 'murder'
+L05E6: db 00
+L05E7: db '"I cannot believe Father is dead. And poor Inamo, too. It is'
+ db ' so strange. I -dreamed- it was happening. Well, in a way.~~'
+ db '"Last night I was having a nightmare about Father. I dreamed'
+ db ' that he screamed, and it woke me up. I looked around the ho'
+ db 'use, but he was not in his bed. I was wide awake, so I went '
+ db 'out to find him."'
+L0724: db 00
+L0725: db 'find'
+L0729: db 00
+L072A: db 'nightmare'
+L0733: db 00
+L0734: db 'Inamo'
+L0739: db 00
+L073A: db '"I am sure thou canst find the man who killed Father!"'
+L0770: db 00
+L0771: db '"Dost thou want me to repeat everything I know about the mur'
+ db 'der?"'
+L07B2: db 00
+L07B3: db '"What dost thou want to know about?"'
+L07D7: db 00
+L07D8: db 'chest'
+L07DD: db 00
+L07DE: db 'key'
+L07E1: db 00
+L07E2: db 'my story'
+L07EA: db 00
+L07EB: db '"All right."'
+L07F7: db 00
+L07F8: db 'murder'
+L07FE: db 00
+L07FF: db 'chest'
+L0804: db 00
+L0805: db '"I am not sure if it's the same one, but I think I saw Fathe'
+ db 'r with a scroll just like the one in the chest one or two da'
+ db 'ys ago. I know he was making something special for someone. '
+ db 'I am fairly certain it was at his shop. As for the medallion'
+ db ', he usually wore it. I do not know why it was in the chest.'
+ db ' And the gold-- I have never seen so much gold in my life. I'
+ db ' cannot imagine why father had it."'
+L0990: db 00
+L0991: db '"Thou shouldst try opening the chest."'
+L09B7: db 00
+L09B8: db 'chest'
+L09BD: db 00
+L09BE: db 'my story'
+L09C6: db 00
+L09C7: db '"It is so strange. I -dreamed- it was happening. Well, in a '
+ db 'way.~~"Last night I was having a nightmare about Father. I d'
+ db 'reamed that he screamed, and it woke me up. I looked around '
+ db 'the house, but he was not in his bed. I was wide awake, so I'
+ db ' went out to find him."'
+L0ACE: db 00
+L0ACF: db 'my story'
+L0AD7: db 00
+L0AD8: db 'nightmare'
+L0AE1: db 00
+L0AE2: db 'find'
+L0AE6: db 00
+L0AE7: db 'nightmare'
+L0AF0: db 00
+L0AF1: db '"I know it sounds witless, but... I dreamed that a big red-f'
+ db 'aced man was watching down on everything and... He looked do'
+ db 'wn... And he noticed Father... That is all I remember."'
+L0BA0: db 00
+L0BA1: db 'nightmare'
+L0BAA: db 00
+L0BAB: db 'find'
+L0BAF: db 00
+L0BB0: db '"No, I did not find him. At least, not right away. But I did'
+ db ' see something."'
+L0BFC: db 00
+L0BFD: db 'something'
+L0C06: db 00
+L0C07: db 'find'
+L0C0B: db 00
+L0C0C: db 'something'
+L0C15: db 00
+L0C16: db '"I was in front of the stables. I saw a man and a wingless g'
+ db 'argoyle running from behind the building. They ran toward th'
+ db 'e dock. Then I went inside and found... Father."~~Spark's vo'
+ db 'ice falters, and he begins to sob a little.'
+L0CF5: db 00
+L0CF6: db 'gargoyle'
+L0CFE: db 00
+L0CFF: db 'man'
+L0D02: db 00
+L0D03: db 'something'
+L0D0C: db 00
+L0D0D: db 'man'
+L0D10: db 00
+L0D11: db '"All I saw of him was that the man had a hook for a right ha'
+ db 'nd."'
+L0D51: db 00
+L0D52: db 'hook'
+L0D56: db 00
+L0D57: db 'man'
+L0D5A: db 00
+L0D5B: db 'gargoyle'
+L0D63: db 00
+L0D64: db '"I cannot tell one gargoyle from another. I could not identi'
+ db 'fy him, except that he had no wings."'
+L0DC5: db 00
+L0DC6: db 'gargoyle'
+L0DCE: db 00
+L0DCF: db 'hook'
+L0DD3: db 00
+L0DD4: db '"Wilt thou go find the Man with the Hook? Let me help thee!"'
+ db ' the boy pleads. His tears cease, and his face takes on a de'
+ db 'termined, forceful look.'
+L0E64: db 00
+L0E65: db '"Take me with thee! Please! I must avenge Father's death! If'
+ db ' thou dost not take me with thee, I will follow thee anyway!'
+ db '"'
+L0EDE: db 00
+L0EDF: db 'The boy is all excited now. "I am an expert with a slingshot'
+ db '! I can strike sewer rats with almost every shot! And I am s'
+ db 'mall -- I do not eat much! Please take me! Please ask me to '
+ db 'join thee!"*'
+L0F9F: db 00
+L0FA0: db 'Iolo whispers to you. "I do not know about taking a child on'
+ db ' the road with us, '
+L0FEF: db 00
+L0FF0: db '."*'
+L0FF3: db 00
+L0FF4: db 'Suddenly, Spark lets his sling fly. His target, a small fly '
+ db 'hovering above Iolo's head, is smacked out of the air. You l'
+ db 'augh as Iolo yelps, jumps away, curses and runs his fingers '
+ db 'through his hair. '
+L10BA: db 00
+L10BB: db 'Suddenly, Spark lets his sling fly. His target, a small fly '
+ db 'hovering above your head, is smacked out of the air. '
+L112C: db 00
+L112D: db '"I told thee I am good! May I join?"'
+L1151: db 00
+L1152: db '"Hooray!" the boy leaps with delight.'
+L1177: db 00
+L1178: db 'leave'
+L117D: db 00
+L117E: db '"Fine." The boy looks angry. "But I'll follow thee anyway."'
+L11B9: db 00
+L11BA: db 'leave'
+L11BF: db 00
+L11C0: db '"I know thou wilt find that man."'
+L11E1: db 00
+L11E2: db '"I know thou wilt find that man."'
+L1203: db 00
+L1204: db 'hook'
+L1208: db 00
+L1209: db 'join'
+L120D: db 00
+L120E: db '"'Tis about time thou didst ask again!"'
+L1235: db 00
+L1236: db '"Hooray!"'
+L123F: db 00
+L1240: db '"Well, on second thought, it looks like too big of a crowd. '
+ db 'I do not like crowds."'
+L1292: db 00
+L1293: db 'join'
+L1297: db 00
+L1298: db 'leave'
+L129D: db 00
+L129E: db 'leave'
+L12A3: db 00
+L12A4: db '"Don't make me go!" Spark cries. "Dost thou really want me t'
+ db 'o go?" He looks at you with puppy-dog eyes.'
+L130B: db 00
+L130C: db '"Well, should I just wait here or dost thou want me to go ho'
+ db 'me to Trinsic?"'
+L1357: db 00
+L1358: db 'go home'
+L135F: db 00
+L1360: db 'wait here'
+L1369: db 00
+L136A: db 'wait here'
+L1373: db 00
+L1374: db '"All right. I shall wait here until thou dost return and ask'
+ db ' me to rejoin."*'
+L13C0: db 00
+L13C1: db 'Spark bows his head and murmurs, "Goodbye, then."*'
+L13F3: db 00
+L13F4: db '"Thou wilt not be sorry!"'
+L140D: db 00
+L140E: db 'Father'
+L1414: db 00
+L1415: db '"Father was the blacksmith. I cannot believe that he has bee'
+ db 'n murdered! He had no enemies that I know of. Unless it was '
+ db 'The Fellowship."'
+L149D: db 00
+L149E: db 'Fellowship'
+L14A8: db 00
+L14A9: db 'Father'
+L14AF: db 00
+L14B0: db 'Fellowship'
+L14BA: db 00
+L14BB: db '"Well, at first they harassed Father and me when they came a'
+ db 'round asking us to join. I suppose they do good things. Many'
+ db ' people like them. Father eventually joined the group after '
+ db 'he went to Britain and took one of their tests."'
+L159F: db 00
+L15A0: db 'tests'
+L15A5: db 00
+L15A6: db 'Fellowship'
+L15B0: db 00
+L15B1: db 'tests'
+L15B6: db 00
+L15B7: db '"I do not know anything about them. I never took one. Maybe '
+ db 'thou shouldst ask the man at the Fellowship Branch. Klog."'
+L162D: db 00
+L162E: db 'Klog'
+L1632: db 00
+L1633: db 'branch'
+L1639: db 00
+L163A: db 'tests'
+L163F: db 00
+L1640: db 'branch'
+L1646: db 00
+L1647: db '"The Fellowship has branches all over Britannia."'
+L1678: db 00
+L1679: db 'branch'
+L167F: db 00
+L1680: db 'Klog'
+L1684: db 00
+L1685: db '"He is the head of the Fellowship Branch here in Trinsic. He'
+ db ' and Father got into an argument a week ago when Klog and tw'
+ db 'o of his friends came over to talk with Father."'
+L172D: db 00
+L172E: db 'friends'
+L1735: db 00
+L1736: db 'argument'
+L173E: db 00
+L173F: db 'Klog'
+L1743: db 00
+L1744: db 'argument'
+L174C: db 00
+L174D: db '"I don't know what it was about. Perhaps thou shouldst ask K'
+ db 'log."'
+L178E: db 00
+L178F: db 'argument'
+L1797: db 00
+L1798: db 'friends'
+L179F: db 00
+L17A0: db '"I do not remember what they look like. I did not recognize '
+ db 'them. They were most likely some other members of The Fellow'
+ db 'ship."'
+L181E: db 00
+L181F: db 'friends'
+L1826: db 00
+L1827: db 'key'
+L182A: db 00
+L182B: db '"That key opened my Father's chest, did it not?"'
+L185B: db 00
+L185C: db '"That looks like the key to Father's chest. I wondered where'
+ db ' it was!"'
+L18A1: db 00
+L18A2: db '"What key? Dost thou have the key to Father's chest? Where i'
+ db 's it?"'
+L18E4: db 00
+L18E5: db 'key'
+L18E8: db 00
+L18E9: db 'gold'
+L18ED: db 00
+L18EE: db 'The boy's eyes widen. "I had no idea that Father had that mu'
+ db 'ch money hidden away!"'
+L1940: db 00
+L1941: db '"I suppose I could give it to thee if thou art going to look'
+ db ' for those who killed my Father!"'
+L199E: db 00
+L199F: db 'gold'
+L19A3: db 00
+L19A4: db 'medallion'
+L19AD: db 00
+L19AE: db '"Father was a member of The Fellowship. I don't know why the'
+ db ' medallion was in the chest -- he usually wore it."'
+L1A1D: db 00
+L1A1E: db 'medallion'
+L1A27: db 00
+L1A28: db 'scroll'
+L1A2E: db 00
+L1A2F: db '"I am not sure if it's the same one, but I think I saw Fathe'
+ db 'r with a scroll just like that one or two days ago. I know h'
+ db 'e was making something special for someone. I am fairly cert'
+ db 'ain it was at his shop."'
+L1AFB: db 00
+L1AFC: db 'shop'
+L1B00: db 00
+L1B01: db 'scroll'
+L1B07: db 00
+L1B08: db 'shop'
+L1B0C: db 00
+L1B0D: db '"It's in the southwest corner of town."'
+L1B34: db 00
+L1B35: db 'shop'
+L1B39: db 00
+L1B3A: db 'Inamo'
+L1B3F: db 00
+L1B40: db '"He was a very nice gargoyle. He helped Father a lot and did'
+ db ' tasks in the stables. I cannot think why anyone would want '
+ db 'to kill him!"'
+L1BC5: db 00
+L1BC6: db 'Inamo'
+L1BCB: db 00
+L1BCC: db 'bye'
+L1BCF: db 00
+L1BD0: db '"All right, I will speak with thee later."*'
+L1BFB: db 00
+  .code
+  .argc 0001H
+  .localc 0013H
+  .externsize 0006H
+  .extern 0908H
+  .extern 0909H
+  .extern 090BH
+  .extern 08F7H
+  .extern 090AH
+  .extern 0931H
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 51 06   jne 0659
+0008: 24 00 00   call [0000]   ; 0908H
+000B: 12 00 00   pop [0000]
+000E: 1D 00 00   pushs L0000   ; Avatar
+0011: 12 01 00   pop [0001]
+0014: 38 23 00 00  callis _GetPartyMembers@0  ; 0023
+0018: 12 02 00   pop [0002]
+001B: 38 5A 00 00  callis _IsPlayerFemale@0  ; 005A
+001F: 12 03 00   pop [0003]
+0022: 1F FE FF   pushi FFFEH   ; -2
+0025: 38 1B 00 01  callis 001B, 1
+0029: 12 04 00   pop [0004]
+002C: 14   push false
+002D: 12 05 00   pop [0005]
+0030: 14   push false
+0031: 12 06 00   pop [0006]
+0034: 14   push false
+0035: 12 07 00   pop [0007]
+0038: 42 15 00   pushf flag:[0015]
+003B: 10   not
+003C: 05 0D 00   jne 004C
+003F: 1F 01 00   pushi 0001H   ; 1
+0042: 1F FE FF   pushi FFFEH   ; -2
+0045: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0049: 06 21 00   jmp 006D
+004C: 21 04 00   push [0004]
+004F: 21 02 00   push [0002]
+0052: 30   in
+0053: 05 0D 00   jne 0063
+0056: 1F 00 00   pushi 0000H   ; 0
+0059: 1F FE FF   pushi FFFEH   ; -2
+005C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0060: 06 0A 00   jmp 006D
+0063: 1F 01 00   pushi 0001H   ; 1
+0066: 1F FE FF   pushi FFFEH   ; -2
+0069: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+006D: 42 46 00   pushf flag:[0046]
+0070: 05 06 00   jne 0079
+0073: 21 00 00   push [0000]
+0076: 12 08 00   pop [0008]
+0079: 42 47 00   pushf flag:[0047]
+007C: 05 06 00   jne 0085
+007F: 21 01 00   push [0001]
+0082: 12 08 00   pop [0008]
+0085: 24 01 00   call [0001]   ; 0909H
+0088: 12 09 00   pop [0009]
+008B: 42 15 00   pushf flag:[0015]
+008E: 10   not
+008F: 05 99 00   jne 012B
+0092: 1C 07 00   addsi L0007   ; You see a boy who...
+0095: 33   say
+0096: 1C AB 00   addsi L00AB   ; "Who art thou and...
+0099: 33   say
+009A: 1C FC 00   addsi L00FC   ; You face the boy ...
+009D: 33   say
+009E: 21 01 00   push [0001]
+00A1: 21 00 00   push [0000]
+00A4: 1E 02 00   arrc 0002H   ; 2
+00A7: 24 02 00   call [0002]   ; 090BH
+00AA: 12 0A 00   pop [000A]
+00AD: 21 0A 00   push [000A]
+00B0: 21 00 00   push [0000]
+00B3: 22   cmpeq
+00B4: 05 11 00   jne 00C8
+00B7: 1C 27 01   addsi L0127   ; "So? What makes t...
+00BA: 33   say
+00BB: 21 00 00   push [0000]
+00BE: 12 08 00   pop [0008]
+00C1: 13   push true
+00C2: 43 46 00   popf flag:[0046]
+00C5: 06 0E 00   jmp 00D6
+00C8: 1C 4A 01   addsi L014A   ; "The last time I ...
+00CB: 33   say
+00CC: 21 01 00   push [0001]
+00CF: 12 08 00   pop [0008]
+00D2: 13   push true
+00D3: 43 47 00   popf flag:[0047]
+00D6: 1F FF FF   pushi FFFFH   ; -1
+00D9: 24 03 00   call [0003]   ; 08F7H
+00DC: 12 0B 00   pop [000B]
+00DF: 21 0B 00   push [000B]
+00E2: 05 31 00   jne 0116
+00E5: 1F 00 00   pushi 0000H   ; 0
+00E8: 1F FF FF   pushi FFFFH   ; -1
+00EB: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+00EF: 1C 9B 01   addsi L019B   ; "Boy, this is the...
+00F2: 33   say
+00F3: 21 03 00   push [0003]
+00F6: 10   not
+00F7: 05 07 00   jne 0101
+00FA: 1C B6 01   addsi L01B6   ; Upon my word he i...
+00FD: 33   say
+00FE: 06 04 00   jmp 0105
+0101: 1C E6 01   addsi L01E6   ; Upon my word she ...
+0104: 33   say
+0105: 1F FF FF   pushi FFFFH   ; -1
+0108: 39 04 00 01  calli _HideNPC@1  ; 0004
+010C: 1F 01 00   pushi 0001H   ; 1
+010F: 1F FE FF   pushi FFFEH   ; -2
+0112: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0116: 1C 18 02   addsi L0218   ; Then the boy narr...
+0119: 33   say
+011A: 1C C7 02   addsi L02C7   ; You and Spark sta...
+011D: 2F 09 00   addsv [0009]
+0120: 1C 74 03   addsi L0374   ; ."
+0123: 33   say
+0124: 13   push true
+0125: 43 15 00   popf flag:[0015]
+0128: 06 0A 00   jmp 0135
+012B: 1C 77 03   addsi L0377   ; "Yes, 
+012E: 2F 08 00   addsv [0008]
+0131: 1C 7E 03   addsi L037E   ; ?" Spark asks. "W...
+0134: 33   say
+0135: 1D A4 03   pushs L03A4   ; bye
+0138: 1D A8 03   pushs L03A8   ; murder
+013B: 1D AF 03   pushs L03AF   ; job
+013E: 1D B3 03   pushs L03B3   ; name
+0141: 1E 04 00   arrc 0004H   ; 4
+0144: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0148: 42 48 00   pushf flag:[0048]
+014B: 05 07 00   jne 0155
+014E: 1D B8 03   pushs L03B8   ; key
+0151: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0155: 42 3E 00   pushf flag:[003E]
+0158: 05 07 00   jne 0162
+015B: 1D BC 03   pushs L03BC   ; key
+015E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0162: 21 04 00   push [0004]
+0165: 21 02 00   push [0002]
+0168: 30   in
+0169: 05 07 00   jne 0173
+016C: 1D C0 03   pushs L03C0   ; leave
+016F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0173: 42 49 00   pushf flag:[0049]
+0176: 21 04 00   push [0004]
+0179: 21 02 00   push [0002]
+017C: 30   in
+017D: 10   not
+017E: 0E   and
+017F: 05 07 00   jne 0189
+0182: 1D C6 03   pushs L03C6   ; join
+0185: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0189: 42 3E 00   pushf flag:[003E]
+018C: 42 64 00   pushf flag:[0064]
+018F: 10   not
+0190: 0E   and
+0191: 05 10 00   jne 01A4
+0194: 1D CB 03   pushs L03CB   ; scroll
+0197: 1D D2 03   pushs L03D2   ; medallion
+019A: 1D DC 03   pushs L03DC   ; gold
+019D: 1E 03 00   arrc 0003H   ; 3
+01A0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01A4: 04 9B 04   je 0642
+01A7: 1D E1 03   pushs L03E1   ; name
+01AA: 07 01 00 0B 00  cmps 0001H, 01BA
+01AF: 1C E6 03   addsi L03E6   ; "I have always be...
+01B2: 33   say
+01B3: 1D 09 04   pushs L0409   ; name
+01B6: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01BA: 1D 0E 04   pushs L040E   ; job
+01BD: 07 01 00 14 00  cmps 0001H, 01D6
+01C2: 1C 12 04   addsi L0412   ; "I have no job. I...
+01C5: 33   say
+01C6: 1D F2 04   pushs L04F2   ; orphan
+01C9: 1D F9 04   pushs L04F9   ; Father
+01CC: 1D 00 05   pushs L0500   ; smithy
+01CF: 1E 03 00   arrc 0003H   ; 3
+01D2: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01D6: 1D 07 05   pushs L0507   ; smithy
+01D9: 07 01 00 0B 00  cmps 0001H, 01E9
+01DE: 1C 0E 05   addsi L050E   ; "Father was the b...
+01E1: 33   say
+01E2: 1D 89 05   pushs L0589   ; smithy
+01E5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E9: 1D 90 05   pushs L0590   ; orphan
+01EC: 07 01 00 0B 00  cmps 0001H, 01FC
+01F1: 1C 97 05   addsi L0597   ; "My mother died a...
+01F4: 33   say
+01F5: 1D D9 05   pushs L05D9   ; orphan
+01F8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FC: 1D E0 05   pushs L05E0   ; murder
+01FF: 07 01 00 4E 00  cmps 0001H, 0252
+0204: 42 43 00   pushf flag:[0043]
+0207: 10   not
+0208: 05 17 00   jne 0222
+020B: 1C E7 05   addsi L05E7   ; "I cannot believe...
+020E: 33   say
+020F: 1D 25 07   pushs L0725   ; find
+0212: 1D 2A 07   pushs L072A   ; nightmare
+0215: 1D 34 07   pushs L0734   ; Inamo
+0218: 1E 03 00   arrc 0003H   ; 3
+021B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+021F: 06 29 00   jmp 024B
+0222: 1C 3A 07   addsi L073A   ; "I am sure thou c...
+0225: 33   say
+0226: 1C 71 07   addsi L0771   ; "Dost thou want m...
+0229: 33   say
+022A: 24 04 00   call [0004]   ; 090AH
+022D: 05 17 00   jne 0247
+0230: 1C B3 07   addsi L07B3   ; "What dost thou w...
+0233: 33   say
+0234: 1D D8 07   pushs L07D8   ; chest
+0237: 1D DE 07   pushs L07DE   ; key
+023A: 1D E2 07   pushs L07E2   ; my story
+023D: 1E 03 00   arrc 0003H   ; 3
+0240: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0244: 06 04 00   jmp 024B
+0247: 1C EB 07   addsi L07EB   ; "All right."
+024A: 33   say
+024B: 1D F8 07   pushs L07F8   ; murder
+024E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0252: 1D FF 07   pushs L07FF   ; chest
+0255: 07 01 00 18 00  cmps 0001H, 0272
+025A: 42 3E 00   pushf flag:[003E]
+025D: 05 07 00   jne 0267
+0260: 1C 05 08   addsi L0805   ; "I am not sure if...
+0263: 33   say
+0264: 06 04 00   jmp 026B
+0267: 1C 91 09   addsi L0991   ; "Thou shouldst tr...
+026A: 33   say
+026B: 1D B8 09   pushs L09B8   ; chest
+026E: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0272: 1D BE 09   pushs L09BE   ; my story
+0275: 07 01 00 18 00  cmps 0001H, 0292
+027A: 1C C7 09   addsi L09C7   ; "It is so strange...
+027D: 33   say
+027E: 1D CF 0A   pushs L0ACF   ; my story
+0281: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0285: 1D D8 0A   pushs L0AD8   ; nightmare
+0288: 1D E2 0A   pushs L0AE2   ; find
+028B: 1E 02 00   arrc 0002H   ; 2
+028E: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0292: 1D E7 0A   pushs L0AE7   ; nightmare
+0295: 07 01 00 0B 00  cmps 0001H, 02A5
+029A: 1C F1 0A   addsi L0AF1   ; "I know it sounds...
+029D: 33   say
+029E: 1D A1 0B   pushs L0BA1   ; nightmare
+02A1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02A5: 1D AB 0B   pushs L0BAB   ; find
+02A8: 07 01 00 12 00  cmps 0001H, 02BF
+02AD: 1C B0 0B   addsi L0BB0   ; "No, I did not fi...
+02B0: 33   say
+02B1: 1D FD 0B   pushs L0BFD   ; something
+02B4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02B8: 1D 07 0C   pushs L0C07   ; find
+02BB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02BF: 1D 0C 0C   pushs L0C0C   ; something
+02C2: 07 01 00 18 00  cmps 0001H, 02DF
+02C7: 1C 16 0C   addsi L0C16   ; "I was in front o...
+02CA: 33   say
+02CB: 1D F6 0C   pushs L0CF6   ; gargoyle
+02CE: 1D FF 0C   pushs L0CFF   ; man
+02D1: 1E 02 00   arrc 0002H   ; 2
+02D4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02D8: 1D 03 0D   pushs L0D03   ; something
+02DB: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02DF: 1D 0D 0D   pushs L0D0D   ; man
+02E2: 07 01 00 12 00  cmps 0001H, 02F9
+02E7: 1C 11 0D   addsi L0D11   ; "All I saw of him...
+02EA: 33   say
+02EB: 1D 52 0D   pushs L0D52   ; hook
+02EE: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02F2: 1D 57 0D   pushs L0D57   ; man
+02F5: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02F9: 1D 5B 0D   pushs L0D5B   ; gargoyle
+02FC: 07 01 00 0B 00  cmps 0001H, 030C
+0301: 1C 64 0D   addsi L0D64   ; "I cannot tell on...
+0304: 33   say
+0305: 1D C6 0D   pushs L0DC6   ; gargoyle
+0308: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+030C: 1D CF 0D   pushs L0DCF   ; hook
+030F: 07 01 00 C9 00  cmps 0001H, 03DD
+0314: 42 43 00   pushf flag:[0043]
+0317: 10   not
+0318: 05 B7 00   jne 03D2
+031B: 21 04 00   push [0004]
+031E: 21 02 00   push [0002]
+0321: 30   in
+0322: 10   not
+0323: 05 A5 00   jne 03CB
+0326: 1C D4 0D   addsi L0DD4   ; "Wilt thou go fin...
+0329: 33   say
+032A: 13   push true
+032B: 43 43 00   popf flag:[0043]
+032E: 1C 65 0E   addsi L0E65   ; "Take me with the...
+0331: 33   say
+0332: 1C DF 0E   addsi L0EDF   ; The boy is all ex...
+0335: 33   say
+0336: 1F FF FF   pushi FFFFH   ; -1
+0339: 24 03 00   call [0003]   ; 08F7H
+033C: 12 0B 00   pop [000B]
+033F: 21 0B 00   push [000B]
+0342: 05 33 00   jne 0378
+0345: 1F 00 00   pushi 0000H   ; 0
+0348: 1F FF FF   pushi FFFFH   ; -1
+034B: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+034F: 1C A0 0F   addsi L0FA0   ; Iolo whispers to ...
+0352: 2F 09 00   addsv [0009]
+0355: 1C F0 0F   addsi L0FF0   ; ."*
+0358: 33   say
+0359: 1F FF FF   pushi FFFFH   ; -1
+035C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0360: 1F 01 00   pushi 0001H   ; 1
+0363: 1F FE FF   pushi FFFEH   ; -2
+0366: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+036A: 1C F4 0F   addsi L0FF4   ; Suddenly, Spark l...
+036D: 33   say
+036E: 1F 01 00   pushi 0001H   ; 1
+0371: 39 0F 00 01  calli 000F, 1
+0375: 06 04 00   jmp 037C
+0378: 1C BB 10   addsi L10BB   ; Suddenly, Spark l...
+037B: 33   say
+037C: 1C 2D 11   addsi L112D   ; "I told thee I am...
+037F: 33   say
+0380: 24 04 00   call [0004]   ; 090AH
+0383: 12 0C 00   pop [000C]
+0386: 21 0C 00   push [000C]
+0389: 05 26 00   jne 03B2
+038C: 1F FE FF   pushi FFFEH   ; -2
+038F: 39 04 00 01  calli _HideNPC@1  ; 0004
+0393: 1F 00 00   pushi 0000H   ; 0
+0396: 1F FE FF   pushi FFFEH   ; -2
+0399: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+039D: 1C 52 11   addsi L1152   ; "Hooray!" the boy...
+03A0: 33   say
+03A1: 1D 78 11   pushs L1178   ; leave
+03A4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03A8: 1F FE FF   pushi FFFEH   ; -2
+03AB: 39 1E 00 01  calli 001E, 1
+03AF: 06 12 00   jmp 03C4
+03B2: 1C 7E 11   addsi L117E   ; "Fine." The boy l...
+03B5: 33   say
+03B6: 1F FE FF   pushi FFFEH   ; -2
+03B9: 39 1E 00 01  calli 001E, 1
+03BD: 1D BA 11   pushs L11BA   ; leave
+03C0: 39 05 00 01  calli _AddAnswer@1  ; 0005
+03C4: 13   push true
+03C5: 43 49 00   popf flag:[0049]
+03C8: 06 04 00   jmp 03CF
+03CB: 1C C0 11   addsi L11C0   ; "I know thou wilt...
+03CE: 33   say
+03CF: 06 04 00   jmp 03D6
+03D2: 1C E2 11   addsi L11E2   ; "I know thou wilt...
+03D5: 33   say
+03D6: 1D 04 12   pushs L1204   ; hook
+03D9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+03DD: 1D 09 12   pushs L1209   ; join
+03E0: 07 01 00 5E 00  cmps 0001H, 0443
+03E5: 1C 0E 12   addsi L120E   ; "'Tis about time ...
+03E8: 33   say
+03E9: 1F 00 00   pushi 0000H   ; 0
+03EC: 12 0D 00   pop [000D]
+03EF: 2E   sloop
+03F0: 02 0E 00 0F 00 10 00 02 00 0D 00  db 2 ???
+03F1:   db e
+03F2:   db 0
+03F3:   db f
+03F4:   db 0
+03F5:   db 10
+03F6:   db 0
+03F7:   db 2
+03F8:   db 0
+03F9:   db d
+03FA:   db 0
+03FB: 21 0D 00   push [000D]
+03FE: 1F 01 00   pushi 0001H   ; 1
+0401: 09   add
+0402: 12 0D 00   pop [000D]
+0405: 06 E8 FF   jmp 03F0
+0408: 21 0D 00   push [000D]
+040B: 1F 08 00   pushi 0008H   ; 8
+040E: 17   cmpl
+040F: 05 1F 00   jne 0431
+0412: 1F FE FF   pushi FFFEH   ; -2
+0415: 39 1E 00 01  calli 001E, 1
+0419: 1F FE FF   pushi FFFEH   ; -2
+041C: 39 04 00 01  calli _HideNPC@1  ; 0004
+0420: 1F 00 00   pushi 0000H   ; 0
+0423: 1F FE FF   pushi FFFEH   ; -2
+0426: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+042A: 1C 36 12   addsi L1236   ; "Hooray!"
+042D: 33   say
+042E: 06 04 00   jmp 0435
+0431: 1C 40 12   addsi L1240   ; "Well, on second ...
+0434: 33   say
+0435: 1D 93 12   pushs L1293   ; join
+0438: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+043C: 1D 98 12   pushs L1298   ; leave
+043F: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0443: 1D 9E 12   pushs L129E   ; leave
+0446: 07 01 00 80 00  cmps 0001H, 04CB
+044B: 1C A4 12   addsi L12A4   ; "Don't make me go...
+044E: 33   say
+044F: 24 04 00   call [0004]   ; 090AH
+0452: 12 11 00   pop [0011]
+0455: 21 11 00   push [0011]
+0458: 05 6C 00   jne 04C7
+045B: 1F FE FF   pushi FFFEH   ; -2
+045E: 39 04 00 01  calli _HideNPC@1  ; 0004
+0462: 1F 01 00   pushi 0001H   ; 1
+0465: 1F FE FF   pushi FFFEH   ; -2
+0468: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+046C: 1C 0C 13   addsi L130C   ; "Well, should I j...
+046F: 33   say
+0470: 39 09 00 00  calli 0009, 0
+0474: 1D 58 13   pushs L1358   ; go home
+0477: 1D 60 13   pushs L1360   ; wait here
+047A: 1E 02 00   arrc 0002H   ; 2
+047D: 24 02 00   call [0002]   ; 090BH
+0480: 12 0A 00   pop [000A]
+0483: 21 0A 00   push [000A]
+0486: 1D 6A 13   pushs L136A   ; wait here
+0489: 22   cmpeq
+048A: 05 1D 00   jne 04AA
+048D: 1C 74 13   addsi L1374   ; "All right. I sha...
+0490: 33   say
+0491: 1F FE FF   pushi FFFEH   ; -2
+0494: 39 1F 00 01  calli 001F, 1
+0498: 1F 0F 00   pushi 000FH   ; 15
+049B: 1F FE FF   pushi FFFEH   ; -2
+049E: 38 1B 00 01  callis 001B, 1
+04A2: 39 1D 00 02  calli 001D, 2
+04A6: 3F   abrt
+04A7: 06 1A 00   jmp 04C4
+04AA: 1C C1 13   addsi L13C1   ; Spark bows his he...
+04AD: 33   say
+04AE: 1F FE FF   pushi FFFEH   ; -2
+04B1: 39 1F 00 01  calli 001F, 1
+04B5: 1F 0B 00   pushi 000BH   ; 11
+04B8: 1F FE FF   pushi FFFEH   ; -2
+04BB: 38 1B 00 01  callis 001B, 1
+04BF: 39 1D 00 02  calli 001D, 2
+04C3: 3F   abrt
+04C4: 06 04 00   jmp 04CB
+04C7: 1C F4 13   addsi L13F4   ; "Thou wilt not be...
+04CA: 33   say
+04CB: 1D 0E 14   pushs L140E   ; Father
+04CE: 07 01 00 12 00  cmps 0001H, 04E5
+04D3: 1C 15 14   addsi L1415   ; "Father was the b...
+04D6: 33   say
+04D7: 1D 9E 14   pushs L149E   ; Fellowship
+04DA: 39 05 00 01  calli _AddAnswer@1  ; 0005
+04DE: 1D A9 14   pushs L14A9   ; Father
+04E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+04E5: 1D B0 14   pushs L14B0   ; Fellowship
+04E8: 07 01 00 16 00  cmps 0001H, 0503
+04ED: 1C BB 14   addsi L14BB   ; "Well, at first t...
+04F0: 33   say
+04F1: 1D A0 15   pushs L15A0   ; tests
+04F4: 39 05 00 01  calli _AddAnswer@1  ; 0005
+04F8: 13   push true
+04F9: 43 3F 00   popf flag:[003F]
+04FC: 1D A6 15   pushs L15A6   ; Fellowship
+04FF: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0503: 1D B1 15   pushs L15B1   ; tests
+0506: 07 01 00 18 00  cmps 0001H, 0523
+050B: 1C B7 15   addsi L15B7   ; "I do not know an...
+050E: 33   say
+050F: 1D 2E 16   pushs L162E   ; Klog
+0512: 1D 33 16   pushs L1633   ; branch
+0515: 1E 02 00   arrc 0002H   ; 2
+0518: 39 05 00 01  calli _AddAnswer@1  ; 0005
+051C: 1D 3A 16   pushs L163A   ; tests
+051F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0523: 1D 40 16   pushs L1640   ; branch
+0526: 07 01 00 0B 00  cmps 0001H, 0536
+052B: 1C 47 16   addsi L1647   ; "The Fellowship h...
+052E: 33   say
+052F: 1D 79 16   pushs L1679   ; branch
+0532: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0536: 1D 80 16   pushs L1680   ; Klog
+0539: 07 01 00 18 00  cmps 0001H, 0556
+053E: 1C 85 16   addsi L1685   ; "He is the head o...
+0541: 33   say
+0542: 1D 2E 17   pushs L172E   ; friends
+0545: 1D 36 17   pushs L1736   ; argument
+0548: 1E 02 00   arrc 0002H   ; 2
+054B: 39 05 00 01  calli _AddAnswer@1  ; 0005
+054F: 1D 3F 17   pushs L173F   ; Klog
+0552: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0556: 1D 44 17   pushs L1744   ; argument
+0559: 07 01 00 0B 00  cmps 0001H, 0569
+055E: 1C 4D 17   addsi L174D   ; "I don't know wha...
+0561: 33   say
+0562: 1D 8F 17   pushs L178F   ; argument
+0565: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0569: 1D 98 17   pushs L1798   ; friends
+056C: 07 01 00 0B 00  cmps 0001H, 057C
+0571: 1C A0 17   addsi L17A0   ; "I do not remembe...
+0574: 33   say
+0575: 1D 1F 18   pushs L181F   ; friends
+0578: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+057C: 1D 27 18   pushs L1827   ; key
+057F: 07 01 00 3A 00  cmps 0001H, 05BE
+0584: 42 3E 00   pushf flag:[003E]
+0587: 05 07 00   jne 0591
+058A: 1C 2B 18   addsi L182B   ; "That key opened ...
+058D: 33   say
+058E: 06 26 00   jmp 05B7
+0591: 1F 99 FE   pushi FE99H   ; -359
+0594: 1F FD 00   pushi 00FDH   ; 253
+0597: 1F 81 02   pushi 0281H   ; 641
+059A: 1F 01 00   pushi 0001H   ; 1
+059D: 1F 9B FE   pushi FE9BH   ; -357
+05A0: 24 05 00   call [0005]   ; 0931H
+05A3: 12 12 00   pop [0012]
+05A6: 21 12 00   push [0012]
+05A9: 05 07 00   jne 05B3
+05AC: 1C 5C 18   addsi L185C   ; "That looks like ...
+05AF: 33   say
+05B0: 06 04 00   jmp 05B7
+05B3: 1C A2 18   addsi L18A2   ; "What key? Dost t...
+05B6: 33   say
+05B7: 1D E5 18   pushs L18E5   ; key
+05BA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05BE: 1D E9 18   pushs L18E9   ; gold
+05C1: 07 01 00 13 00  cmps 0001H, 05D9
+05C6: 1C EE 18   addsi L18EE   ; The boy's eyes wi...
+05C9: 33   say
+05CA: 1C 41 19   addsi L1941   ; "I suppose I coul...
+05CD: 33   say
+05CE: 1D 9F 19   pushs L199F   ; gold
+05D1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05D5: 13   push true
+05D6: 12 06 00   pop [0006]
+05D9: 1D A4 19   pushs L19A4   ; medallion
+05DC: 07 01 00 0F 00  cmps 0001H, 05F0
+05E1: 1C AE 19   addsi L19AE   ; "Father was a mem...
+05E4: 33   say
+05E5: 1D 1E 1A   pushs L1A1E   ; medallion
+05E8: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+05EC: 13   push true
+05ED: 12 07 00   pop [0007]
+05F0: 1D 28 1A   pushs L1A28   ; scroll
+05F3: 07 01 00 16 00  cmps 0001H, 060E
+05F8: 1C 2F 1A   addsi L1A2F   ; "I am not sure if...
+05FB: 33   say
+05FC: 1D FC 1A   pushs L1AFC   ; shop
+05FF: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0603: 1D 01 1B   pushs L1B01   ; scroll
+0606: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+060A: 13   push true
+060B: 12 05 00   pop [0005]
+060E: 1D 08 1B   pushs L1B08   ; shop
+0611: 07 01 00 0B 00  cmps 0001H, 0621
+0616: 1C 0D 1B   addsi L1B0D   ; "It's in the sout...
+0619: 33   say
+061A: 1D 35 1B   pushs L1B35   ; shop
+061D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0621: 1D 3A 1B   pushs L1B3A   ; Inamo
+0624: 07 01 00 0B 00  cmps 0001H, 0634
+0629: 1C 40 1B   addsi L1B40   ; "He was a very ni...
+062C: 33   say
+062D: 1D C6 1B   pushs L1BC6   ; Inamo
+0630: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0634: 1D CC 1B   pushs L1BCC   ; bye
+0637: 07 01 00 03 00  cmps 0001H, 063F
+063C: 06 03 00   jmp 0642
+063F: 06 62 FB   jmp 01A4
+0642: 40   db 40 ???
+0643: 1C D0 1B   addsi L1BD0   ; "All right, I wil...
+0646: 33   say
+0647: 21 05 00   push [0005]
+064A: 21 06 00   push [0006]
+064D: 21 07 00   push [0007]
+0650: 0E   and
+0651: 0E   and
+0652: 05 04 00   jne 0659
+0655: 13   push true
+0656: 43 64 00   popf flag:[0064]
+0659: 48   push eventid
+065A: 1F 00 00   pushi 0000H   ; 0
+065D: 22   cmpeq
+065E: 05 01 00   jne 0662
+0661: 3F   abrt
+0662: 25   ret

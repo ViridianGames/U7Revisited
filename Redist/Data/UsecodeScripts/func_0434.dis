@@ -1,0 +1,622 @@
+  .funcnumber 0434H
+  .data
+L0000: db 'bye'
+L0003: db 00
+L0004: db 'job'
+L0007: db 00
+L0008: db 'name'
+L000C: db 00
+L000D: db 'Jeanette'
+L0015: db 00
+L0016: db 'made bread'
+L0020: db 00
+L0021: db 'sell flour'
+L002B: db 00
+L002C: db 'You see a very clean-looking, portly young man who waves at '
+ db 'you frantically.'
+L0078: db 00
+L0079: db '"Ah, hello there! Good to see thee again!" says Willy.'
+L00AF: db 00
+L00B0: db 'name'
+L00B4: db 00
+L00B5: db '"My given name is Wilhelm, although no one calls me that. I '
+ db 'prefer to be addressed as Willy. Thank thee very much."'
+L0128: db 00
+L0129: db 'name'
+L012D: db 00
+L012E: db 'job'
+L0131: db 00
+L0132: db '"I am the baker here in Britain and I make the sweetest brea'
+ db 'd thou hast ever tasted! '
+L0187: db 00
+L0188: db '"Hast thou had a chance to sample any of my bread yet?"'
+L01BF: db 00
+L01C0: db '"Ah, then thou dost agree it is the sweetest, dost thou not?'
+ db '"'
+L01FD: db 00
+L01FE: db '"Ha! Thou dost see, then? Everyone agrees! That should be pr'
+ db 'oof enough!"'
+L0246: db 00
+L0247: db '"I want some!"*'
+L0256: db 00
+L0257: db '"Here thou art, laddie." Willy hands Spark a pastry and the '
+ db 'boy devours it in one gulp.*'
+L02AF: db 00
+L02B0: db '"Mmmmm! I say, '
+L02BF: db 00
+L02C0: db ', I think we need a lot of this for the road. We had best bu'
+ db 'y some, all right?"*'
+L0310: db 00
+L0311: db '"Thou dost not?! Why, do not be ridiculous! Of course thou d'
+ db 'ost!"'
+L0352: db 00
+L0353: db '"Then here, thou must have some!" He tears a piece of bread '
+ db 'off of one of several loaves he is carrying and stuffs it in'
+ db 'to your mouth. "There! Is it not the sweetest bread thou has'
+ db 't ever tasted? It is, is it not?!" You chew as fast as you c'
+ db 'an in order to answer him.'
+L045D: db 00
+L045E: db 'He grabs your face by the cheeks and plants a big kiss on yo'
+ db 'ur forehead. "Thou art truly a person of good palate and ref'
+ db 'ined taste!"'
+L04E2: db 00
+L04E3: db 'Dejectedly Willy looks down at the loaf of bread he is carry'
+ db 'ing. He sniffs at it twice and tosses it out of sight.'
+L0555: db 00
+L0556: db 'bread'
+L055B: db 00
+L055C: db 'baker'
+L0561: db 00
+L0562: db '"Please come to the bakery when it is open in daytime hours '
+ db 'and thou shalt sample some!"'
+L05BA: db 00
+L05BB: db 'baker'
+L05C0: db 00
+L05C1: db 'He nods. "Yes, I am a baker and I have many secret recipes p'
+ db 'assed down to me by my father and mother. Why, there are eve'
+ db 'n those who say I am a master baker!'
+L065D: db 00
+L065E: db '"And there are those who call me a... doughnut," he says wit'
+ db 'h a frown.'
+L06A4: db 00
+L06A5: db 'baker'
+L06AA: db 00
+L06AB: db 'doughnut'
+L06B3: db 00
+L06B4: db 'master baker'
+L06C0: db 00
+L06C1: db 'father and mother'
+L06D2: db 00
+L06D3: db 'secret recipes'
+L06E1: db 00
+L06E2: db 'secret recipes'
+L06F0: db 00
+L06F1: db '"Oh, dear. Do not tell me that thou art yet another person w'
+ db 'ho is trying to pry one of my secret recipes out of me! If t'
+ db 'hat is what thou art after then thou wilt just be disappoint'
+ db 'ed!"'
+L07A9: db 00
+L07AA: db 'secret recipes'
+L07B8: db 00
+L07B9: db 'father and mother'
+L07CA: db 00
+L07CB: db 'Willy wipes away a tear. "Gone. Both of them. Gone to join m'
+ db 'ine ancestors in that great kitchen in the sky. I will never'
+ db ' be able to cook as they did. Still I plod along, trying to '
+ db 'keep the family name alive, and that is why I am a baker. Bu'
+ db 't I suppose it is not the only reason."'
+L08E2: db 00
+L08E3: db 'father and mother'
+L08F4: db 00
+L08F5: db 'why'
+L08F8: db 00
+L08F9: db 'master baker'
+L0905: db 00
+L0906: db '"Yes, many people tell me that. Now thou dost say it, too. I'
+ db 'f thou dost say so, then it must be true!"'
+L096C: db 00
+L096D: db 'Willy takes a bite of his own bread. "Mmmm. I -am- a master '
+ db 'baker!"'
+L09B0: db 00
+L09B1: db 'master baker'
+L09BD: db 00
+L09BE: db 'doughnut'
+L09C6: db 00
+L09C7: db 'He gives you a long puzzled look. After a moment he takes on'
+ db 'e of his loaves of bread and swats you over the head with it'
+ db '.'
+L0A40: db 00
+L0A41: db 'doughnut'
+L0A49: db 00
+L0A4A: db 'why'
+L0A4D: db 00
+L0A4E: db '"Actually, there is a very good reason why I am a baker."'
+L0A87: db 00
+L0A88: db 'why'
+L0A8B: db 00
+L0A8C: db 'reason'
+L0A92: db 00
+L0A93: db 'reason'
+L0A99: db 00
+L0A9A: db '"Because the way to a woman's heart is through her stomach. '
+ db 'Why, I have two women in love with me right now and I did no'
+ db 't even have to pursue either one."'
+L0B34: db 00
+L0B35: db 'reason'
+L0B3B: db 00
+L0B3C: db 'two women'
+L0B45: db 00
+L0B46: db 'two women'
+L0B4F: db 00
+L0B50: db 'He sighs. "If thou must know, their names are Jeanette and G'
+ db 'aye."'
+L0B91: db 00
+L0B92: db 'two women'
+L0B9B: db 00
+L0B9C: db 'Gaye'
+L0BA0: db 00
+L0BA1: db 'Jeanette'
+L0BA9: db 00
+L0BAA: db 'Jeanette'
+L0BB2: db 00
+L0BB3: db '"Jeanette is a pleasant enough girl, but to be honest I cann'
+ db 'ot see myself with a tavern wench. She thinks I have not not'
+ db 'iced how she feels about me. Frankly, I wish she would just '
+ db 'leave me alone."'
+L0C77: db 00
+L0C78: db 'Jeanette'
+L0C80: db 00
+L0C81: db 'Gaye'
+L0C85: db 00
+L0C86: db '"Gaye, who runs the costume shoppe, is of more interest to m'
+ db 'e. But she is a Fellowship member and I have no wish to beco'
+ db 'me one. I hope that it does not prevent us from courting."'
+L0D38: db 00
+L0D39: db 'Gaye'
+L0D3D: db 00
+L0D3E: db 'bread'
+L0D43: db 00
+L0D44: db '"My bread is the finest in Britannia. It is renown for both '
+ db 'its pleasant taste and its very reasonable price. But it is '
+ db 'a lot of work making enough to satisfy the constant demand f'
+ db 'or it. I need to hire someone to help me."'
+L0E22: db 00
+L0E23: db 'bread'
+L0E28: db 00
+L0E29: db 'hire'
+L0E2D: db 00
+L0E2E: db 'buy'
+L0E31: db 00
+L0E32: db 'buy'
+L0E35: db 00
+L0E36: db '"I not only have bread for sale, but pastries, cakes and rol'
+ db 'ls as well. The most delicious baked goods thou couldst ever'
+ db ' wish to pop into thy mouth! Wouldst thou like to buy some?"'
+L0EEA: db 00
+L0EEB: db '"If thou wert a person of truly refined taste, thou wouldst '
+ db 'buy some!"'
+L0F31: db 00
+L0F32: db '"I am afraid the bakery is closed. Please come back during n'
+ db 'ormal business hours."'
+L0F84: db 00
+L0F85: db 'buy'
+L0F88: db 00
+L0F89: db 'hire'
+L0F8D: db 00
+L0F8E: db '"Thou couldst work for me here in the shoppe making bread. O'
+ db 'r I will buy sacks of flour from thee. Thou couldst buy them'
+ db ' wholesale in Paws, and I will pay thee 4 gold per sack."'
+L103F: db 00
+L1040: db '"Dost thou wish to work here in the shoppe for me?" Willy as'
+ db 'ks hopefully.'
+L1089: db 00
+L108A: db '"Excellent! Thou canst start work immediately! I shall pay t'
+ db 'hee 5 gold for every five loaves of bread thou dost make. Al'
+ db 'l right?"'
+L110B: db 00
+L110C: db '"First thou must make dough from the flour. Simply spread so'
+ db 'me flour out on the table, add some water to make it thick a'
+ db 'nd, well, doughy. Then use the dough in the oven to bake it.'
+ db ' Wait a bit, then-- voila! Thou dost have bread!"'
+L11F1: db 00
+L11F2: db '"Very well. But I warn thee that employment is hard to obtai'
+ db 'n in these times!"'
+L1240: db 00
+L1241: db '"'Tis a pity thou art unavailable. Thou dost look like one w'
+ db 'ho doth know their way around a kitchen."'
+L12A6: db 00
+L12A7: db '"I would be happy to talk with thee about employment at my s'
+ db 'hoppe during normal business hours."'
+L1307: db 00
+L1308: db 'hire'
+L130C: db 00
+L130D: db 'made bread'
+L1317: db 00
+L1318: db 'made bread'
+L1322: db 00
+L1323: db 'sell flour'
+L132D: db 00
+L132E: db 'sell flour'
+L1338: db 00
+L1339: db 'bye'
+L133C: db 00
+L133D: db '"Good day to thee, '
+L1350: db 00
+L1351: db ', and bon appetit!"*'
+L1365: db 00
+L1366: db '@Luscious bread!@'
+L1377: db 00
+L1378: db '@Delicious pastries!@'
+L138D: db 00
+L138E: db '@Bread fit for a king!@'
+L13A5: db 00
+L13A6: db '@Fresh pastries!@'
+L13B7: db 00
+  .code
+  .argc 0001H
+  .localc 000FH
+  .externsize 0009H
+  .extern 0909H
+  .extern 0908H
+  .extern 08F7H
+  .extern 0931H
+  .extern 090AH
+  .extern 0946H
+  .extern 0947H
+  .extern 0948H
+  .extern 092EH
+0000: 48   push eventid
+0001: 1F 01 00   pushi 0001H   ; 1
+0004: 22   cmpeq
+0005: 05 74 03   jne 037C
+0008: 1F 00 00   pushi 0000H   ; 0
+000B: 1F CC FF   pushi FFCCH   ; -52
+000E: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0012: 24 00 00   call [0000]   ; 0909H
+0015: 12 00 00   pop [0000]
+0018: 24 01 00   call [0001]   ; 0908H
+001B: 12 01 00   pop [0001]
+001E: 1F CC FF   pushi FFCCH   ; -52
+0021: 38 1B 00 01  callis 001B, 1
+0025: 38 1C 00 01  callis 001C, 1
+0029: 12 02 00   pop [0002]
+002C: 38 3B 00 00  callis 003B, 0
+0030: 12 03 00   pop [0003]
+0033: 1F FE FF   pushi FFFEH   ; -2
+0036: 24 02 00   call [0002]   ; 08F7H
+0039: 12 04 00   pop [0004]
+003C: 1D 00 00   pushs L0000   ; bye
+003F: 1D 04 00   pushs L0004   ; job
+0042: 1D 08 00   pushs L0008   ; name
+0045: 1E 03 00   arrc 0003H   ; 3
+0048: 39 05 00 01  calli _AddAnswer@1  ; 0005
+004C: 42 85 00   pushf flag:[0085]
+004F: 05 07 00   jne 0059
+0052: 1D 0D 00   pushs L000D   ; Jeanette
+0055: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0059: 42 CB 00   pushf flag:[00CB]
+005C: 05 07 00   jne 0066
+005F: 1D 16 00   pushs L0016   ; made bread
+0062: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0066: 1F 0E 00   pushi 000EH   ; 14
+0069: 1F 99 FE   pushi FE99H   ; -359
+006C: 1F 5F 03   pushi 035FH   ; 863
+006F: 1F 01 00   pushi 0001H   ; 1
+0072: 1F 9B FE   pushi FE9BH   ; -357
+0075: 24 03 00   call [0003]   ; 0931H
+0078: 12 05 00   pop [0005]
+007B: 1F 0F 00   pushi 000FH   ; 15
+007E: 1F 99 FE   pushi FE99H   ; -359
+0081: 1F 5F 03   pushi 035FH   ; 863
+0084: 1F 01 00   pushi 0001H   ; 1
+0087: 1F 9B FE   pushi FE9BH   ; -357
+008A: 24 03 00   call [0003]   ; 0931H
+008D: 12 06 00   pop [0006]
+0090: 21 05 00   push [0005]
+0093: 21 06 00   push [0006]
+0096: 0F   or
+0097: 05 07 00   jne 00A1
+009A: 1D 21 00   pushs L0021   ; sell flour
+009D: 39 05 00 01  calli _AddAnswer@1  ; 0005
+00A1: 42 B5 00   pushf flag:[00B5]
+00A4: 10   not
+00A5: 05 0B 00   jne 00B3
+00A8: 1C 2C 00   addsi L002C   ; You see a very cl...
+00AB: 33   say
+00AC: 13   push true
+00AD: 43 B5 00   popf flag:[00B5]
+00B0: 06 04 00   jmp 00B7
+00B3: 1C 79 00   addsi L0079   ; "Ah, hello there!...
+00B6: 33   say
+00B7: 04 B7 02   je 0371
+00BA: 1D B0 00   pushs L00B0   ; name
+00BD: 07 01 00 0B 00  cmps 0001H, 00CD
+00C2: 1C B5 00   addsi L00B5   ; "My given name is...
+00C5: 33   say
+00C6: 1D 29 01   pushs L0129   ; name
+00C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+00CD: 1D 2E 01   pushs L012E   ; job
+00D0: 07 01 00 BB 00  cmps 0001H, 0190
+00D5: 1C 32 01   addsi L0132   ; "I am the baker h...
+00D8: 33   say
+00D9: 21 02 00   push [0002]
+00DC: 1F 12 00   pushi 0012H   ; 18
+00DF: 22   cmpeq
+00E0: 05 A9 00   jne 018C
+00E3: 1C 88 01   addsi L0188   ; "Hast thou had a ...
+00E6: 33   say
+00E7: 24 04 00   call [0004]   ; 090AH
+00EA: 12 07 00   pop [0007]
+00ED: 21 07 00   push [0007]
+00F0: 05 6E 00   jne 0161
+00F3: 1C C0 01   addsi L01C0   ; "Ah, then thou do...
+00F6: 33   say
+00F7: 24 04 00   call [0004]   ; 090AH
+00FA: 12 08 00   pop [0008]
+00FD: 21 08 00   push [0008]
+0100: 05 57 00   jne 015A
+0103: 1C FE 01   addsi L01FE   ; "Ha! Thou dost se...
+0106: 33   say
+0107: 1F FE FF   pushi FFFEH   ; -2
+010A: 24 02 00   call [0002]   ; 08F7H
+010D: 12 04 00   pop [0004]
+0110: 21 04 00   push [0004]
+0113: 05 41 00   jne 0157
+0116: 1F 00 00   pushi 0000H   ; 0
+0119: 1F FE FF   pushi FFFEH   ; -2
+011C: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0120: 1C 47 02   addsi L0247   ; "I want some!"*
+0123: 33   say
+0124: 1F 00 00   pushi 0000H   ; 0
+0127: 1F CC FF   pushi FFCCH   ; -52
+012A: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+012E: 1C 57 02   addsi L0257   ; "Here thou art, l...
+0131: 33   say
+0132: 1F 00 00   pushi 0000H   ; 0
+0135: 1F FE FF   pushi FFFEH   ; -2
+0138: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+013C: 1C B0 02   addsi L02B0   ; "Mmmmm! I say, 
+013F: 2F 01 00   addsv [0001]
+0142: 1C C0 02   addsi L02C0   ; , I think we need...
+0145: 33   say
+0146: 1F FE FF   pushi FFFEH   ; -2
+0149: 39 04 00 01  calli _HideNPC@1  ; 0004
+014D: 1F 00 00   pushi 0000H   ; 0
+0150: 1F CC FF   pushi FFCCH   ; -52
+0153: 39 03 00 02  calli _SwitchTalkTo@2  ; 0003
+0157: 06 04 00   jmp 015E
+015A: 1C 11 03   addsi L0311   ; "Thou dost not?! ...
+015D: 33   say
+015E: 06 1B 00   jmp 017C
+0161: 1C 53 03   addsi L0353   ; "Then here, thou ...
+0164: 33   say
+0165: 24 04 00   call [0004]   ; 090AH
+0168: 12 09 00   pop [0009]
+016B: 21 09 00   push [0009]
+016E: 05 07 00   jne 0178
+0171: 1C 5E 04   addsi L045E   ; He grabs your fac...
+0174: 33   say
+0175: 06 04 00   jmp 017C
+0178: 1C E3 04   addsi L04E3   ; Dejectedly Willy ...
+017B: 33   say
+017C: 1D 56 05   pushs L0556   ; bread
+017F: 1D 5C 05   pushs L055C   ; baker
+0182: 1E 02 00   arrc 0002H   ; 2
+0185: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0189: 06 04 00   jmp 0190
+018C: 1C 62 05   addsi L0562   ; "Please come to t...
+018F: 33   say
+0190: 1D BB 05   pushs L05BB   ; baker
+0193: 07 01 00 22 00  cmps 0001H, 01BA
+0198: 1C C1 05   addsi L05C1   ; He nods. "Yes, I ...
+019B: 33   say
+019C: 1C 5E 06   addsi L065E   ; "And there are th...
+019F: 33   say
+01A0: 1D A5 06   pushs L06A5   ; baker
+01A3: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01A7: 1D AB 06   pushs L06AB   ; doughnut
+01AA: 1D B4 06   pushs L06B4   ; master baker
+01AD: 1D C1 06   pushs L06C1   ; father and mother
+01B0: 1D D3 06   pushs L06D3   ; secret recipes
+01B3: 1E 04 00   arrc 0004H   ; 4
+01B6: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01BA: 1D E2 06   pushs L06E2   ; secret recipes
+01BD: 07 01 00 0B 00  cmps 0001H, 01CD
+01C2: 1C F1 06   addsi L06F1   ; "Oh, dear. Do not...
+01C5: 33   say
+01C6: 1D AA 07   pushs L07AA   ; secret recipes
+01C9: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01CD: 1D B9 07   pushs L07B9   ; father and mother
+01D0: 07 01 00 12 00  cmps 0001H, 01E7
+01D5: 1C CB 07   addsi L07CB   ; Willy wipes away ...
+01D8: 33   say
+01D9: 1D E3 08   pushs L08E3   ; father and mother
+01DC: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01E0: 1D F5 08   pushs L08F5   ; why
+01E3: 39 05 00 01  calli _AddAnswer@1  ; 0005
+01E7: 1D F9 08   pushs L08F9   ; master baker
+01EA: 07 01 00 0F 00  cmps 0001H, 01FE
+01EF: 1C 06 09   addsi L0906   ; "Yes, many people...
+01F2: 33   say
+01F3: 1C 6D 09   addsi L096D   ; Willy takes a bit...
+01F6: 33   say
+01F7: 1D B1 09   pushs L09B1   ; master baker
+01FA: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+01FE: 1D BE 09   pushs L09BE   ; doughnut
+0201: 07 01 00 0B 00  cmps 0001H, 0211
+0206: 1C C7 09   addsi L09C7   ; He gives you a lo...
+0209: 33   say
+020A: 1D 41 0A   pushs L0A41   ; doughnut
+020D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0211: 1D 4A 0A   pushs L0A4A   ; why
+0214: 07 01 00 12 00  cmps 0001H, 022B
+0219: 1C 4E 0A   addsi L0A4E   ; "Actually, there ...
+021C: 33   say
+021D: 1D 88 0A   pushs L0A88   ; why
+0220: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0224: 1D 8C 0A   pushs L0A8C   ; reason
+0227: 39 05 00 01  calli _AddAnswer@1  ; 0005
+022B: 1D 93 0A   pushs L0A93   ; reason
+022E: 07 01 00 12 00  cmps 0001H, 0245
+0233: 1C 9A 0A   addsi L0A9A   ; "Because the way ...
+0236: 33   say
+0237: 1D 35 0B   pushs L0B35   ; reason
+023A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+023E: 1D 3C 0B   pushs L0B3C   ; two women
+0241: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0245: 1D 46 0B   pushs L0B46   ; two women
+0248: 07 01 00 18 00  cmps 0001H, 0265
+024D: 1C 50 0B   addsi L0B50   ; He sighs. "If tho...
+0250: 33   say
+0251: 1D 92 0B   pushs L0B92   ; two women
+0254: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0258: 1D 9C 0B   pushs L0B9C   ; Gaye
+025B: 1D A1 0B   pushs L0BA1   ; Jeanette
+025E: 1E 02 00   arrc 0002H   ; 2
+0261: 39 05 00 01  calli _AddAnswer@1  ; 0005
+0265: 1D AA 0B   pushs L0BAA   ; Jeanette
+0268: 07 01 00 0B 00  cmps 0001H, 0278
+026D: 1C B3 0B   addsi L0BB3   ; "Jeanette is a pl...
+0270: 33   say
+0271: 1D 78 0C   pushs L0C78   ; Jeanette
+0274: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0278: 1D 81 0C   pushs L0C81   ; Gaye
+027B: 07 01 00 0B 00  cmps 0001H, 028B
+0280: 1C 86 0C   addsi L0C86   ; "Gaye, who runs t...
+0283: 33   say
+0284: 1D 39 0D   pushs L0D39   ; Gaye
+0287: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+028B: 1D 3E 0D   pushs L0D3E   ; bread
+028E: 07 01 00 18 00  cmps 0001H, 02AB
+0293: 1C 44 0D   addsi L0D44   ; "My bread is the ...
+0296: 33   say
+0297: 1D 23 0E   pushs L0E23   ; bread
+029A: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+029E: 1D 29 0E   pushs L0E29   ; hire
+02A1: 1D 2E 0E   pushs L0E2E   ; buy
+02A4: 1E 02 00   arrc 0002H   ; 2
+02A7: 39 05 00 01  calli _AddAnswer@1  ; 0005
+02AB: 1D 32 0E   pushs L0E32   ; buy
+02AE: 07 01 00 32 00  cmps 0001H, 02E5
+02B3: 21 02 00   push [0002]
+02B6: 1F 12 00   pushi 0012H   ; 18
+02B9: 22   cmpeq
+02BA: 05 1D 00   jne 02DA
+02BD: 1C 36 0E   addsi L0E36   ; "I not only have ...
+02C0: 33   say
+02C1: 24 04 00   call [0004]   ; 090AH
+02C4: 12 0A 00   pop [000A]
+02C7: 21 0A 00   push [000A]
+02CA: 05 06 00   jne 02D3
+02CD: 24 05 00   call [0005]   ; 0946H
+02D0: 06 04 00   jmp 02D7
+02D3: 1C EB 0E   addsi L0EEB   ; "If thou wert a p...
+02D6: 33   say
+02D7: 06 04 00   jmp 02DE
+02DA: 1C 32 0F   addsi L0F32   ; "I am afraid the ...
+02DD: 33   say
+02DE: 1D 85 0F   pushs L0F85   ; buy
+02E1: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+02E5: 1D 89 0F   pushs L0F89   ; hire
+02E8: 07 01 00 52 00  cmps 0001H, 033F
+02ED: 21 02 00   push [0002]
+02F0: 1F 12 00   pushi 0012H   ; 18
+02F3: 22   cmpeq
+02F4: 05 3D 00   jne 0334
+02F7: 1C 8E 0F   addsi L0F8E   ; "Thou couldst wor...
+02FA: 33   say
+02FB: 1C 40 10   addsi L1040   ; "Dost thou wish t...
+02FE: 33   say
+02FF: 24 04 00   call [0004]   ; 090AH
+0302: 12 0B 00   pop [000B]
+0305: 21 0B 00   push [000B]
+0308: 05 22 00   jne 032D
+030B: 1C 8A 10   addsi L108A   ; "Excellent! Thou ...
+030E: 33   say
+030F: 24 04 00   call [0004]   ; 090AH
+0312: 12 0C 00   pop [000C]
+0315: 21 0C 00   push [000C]
+0318: 05 0B 00   jne 0326
+031B: 13   push true
+031C: 43 CB 00   popf flag:[00CB]
+031F: 1C 0C 11   addsi L110C   ; "First thou must ...
+0322: 33   say
+0323: 06 04 00   jmp 032A
+0326: 1C F2 11   addsi L11F2   ; "Very well. But I...
+0329: 33   say
+032A: 06 04 00   jmp 0331
+032D: 1C 41 12   addsi L1241   ; "'Tis a pity thou...
+0330: 33   say
+0331: 06 04 00   jmp 0338
+0334: 1C A7 12   addsi L12A7   ; "I would be happy...
+0337: 33   say
+0338: 1D 08 13   pushs L1308   ; hire
+033B: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+033F: 1D 0D 13   pushs L130D   ; made bread
+0342: 07 01 00 0A 00  cmps 0001H, 0351
+0347: 24 06 00   call [0006]   ; 0947H
+034A: 1D 18 13   pushs L1318   ; made bread
+034D: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0351: 1D 23 13   pushs L1323   ; sell flour
+0354: 07 01 00 0A 00  cmps 0001H, 0363
+0359: 24 07 00   call [0007]   ; 0948H
+035C: 1D 2E 13   pushs L132E   ; sell flour
+035F: 39 06 00 01  calli _RemoveAnswer@1  ; 0006
+0363: 1D 39 13   pushs L1339   ; bye
+0366: 07 01 00 03 00  cmps 0001H, 036E
+036B: 06 03 00   jmp 0371
+036E: 06 46 FD   jmp 00B7
+0371: 40   db 40 ???
+0372: 1C 3D 13   addsi L133D   ; "Good day to thee, 
+0375: 2F 00 00   addsv [0000]
+0378: 1C 51 13   addsi L1351   ; , and bon appetit!"*
+037B: 33   say
+037C: 48   push eventid
+037D: 1F 00 00   pushi 0000H   ; 0
+0380: 22   cmpeq
+0381: 05 7F 00   jne 0403
+0384: 38 3B 00 00  callis 003B, 0
+0388: 12 03 00   pop [0003]
+038B: 1F CC FF   pushi FFCCH   ; -52
+038E: 38 1B 00 01  callis 001B, 1
+0392: 38 1C 00 01  callis 001C, 1
+0396: 12 02 00   pop [0002]
+0399: 1F 04 00   pushi 0004H   ; 4
+039C: 1F 01 00   pushi 0001H   ; 1
+039F: 38 10 00 02  callis _Random2@2  ; 0010
+03A3: 12 0D 00   pop [000D]
+03A6: 21 02 00   push [0002]
+03A9: 1F 12 00   pushi 0012H   ; 18
+03AC: 22   cmpeq
+03AD: 05 4D 00   jne 03FD
+03B0: 21 0D 00   push [000D]
+03B3: 1F 01 00   pushi 0001H   ; 1
+03B6: 22   cmpeq
+03B7: 05 06 00   jne 03C0
+03BA: 1D 66 13   pushs L1366   ; @Luscious bread!@
+03BD: 12 0E 00   pop [000E]
+03C0: 21 0D 00   push [000D]
+03C3: 1F 02 00   pushi 0002H   ; 2
+03C6: 22   cmpeq
+03C7: 05 06 00   jne 03D0
+03CA: 1D 78 13   pushs L1378   ; @Delicious pastri...
+03CD: 12 0E 00   pop [000E]
+03D0: 21 0D 00   push [000D]
+03D3: 1F 03 00   pushi 0003H   ; 3
+03D6: 22   cmpeq
+03D7: 05 06 00   jne 03E0
+03DA: 1D 8E 13   pushs L138E   ; @Bread fit for a ...
+03DD: 12 0E 00   pop [000E]
+03E0: 21 0D 00   push [000D]
+03E3: 1F 04 00   pushi 0004H   ; 4
+03E6: 22   cmpeq
+03E7: 05 06 00   jne 03F0
+03EA: 1D A6 13   pushs L13A6   ; @Fresh pastries!@
+03ED: 12 0E 00   pop [000E]
+03F0: 21 0E 00   push [000E]
+03F3: 1F CC FF   pushi FFCCH   ; -52
+03F6: 39 40 00 02  calli _ItemSay@2  ; 0040
+03FA: 06 06 00   jmp 0403
+03FD: 1F CC FF   pushi FFCCH   ; -52
+0400: 24 08 00   call [0008]   ; 092EH
+0403: 25   ret
