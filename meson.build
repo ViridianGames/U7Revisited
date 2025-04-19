@@ -6,8 +6,13 @@ deps = []
 
 opt = cmake.subproject_options()
 opt.add_cmake_defines({'GLFW_LIBRARY_TYPE': 'OBJECT'})
+opt.add_cmake_defines({'CMAKE_POLICY_VERSION_MINIMUM': '3.5'})
+
 raylib = cmake.subproject('raylib', options: opt)
 deps += raylib.get_variable('raylib_dep')
+
+lua = cmake.subproject('lua', options: opt)
+deps += lua.get_variable('lua_dep')
 
 # Windows build seems to require dependency to this.
 if host_machine.system() == 'windows'
@@ -15,6 +20,8 @@ if host_machine.system() == 'windows'
   winmm_lib = c_compiler.find_library('winmm', required: false)
   deps += winmm_lib
 endif
+
+# incdirs = include_directories('ThirdParty/lua/src')
 
 # Only cpp files needed here. Keep alphabetized.
 executable('U7Revisited',
@@ -30,11 +37,13 @@ executable('U7Revisited',
   'Source/Geist/ParticleSystem.cpp',
   'Source/Geist/Primitives.cpp',
   'Source/Geist/RaylibModel.cpp',
-  'Source/Geist/RNG.cpp',
   'Source/Geist/ResourceManager.cpp',
+  'Source/Geist/RNG.cpp',
+  'Source/Geist/ScriptingSystem.cpp',
   'Source/Geist/StateMachine.cpp',
   'Source/Geist/TooltipSystem.cpp',
 
+  'Source/ConversationState.cpp',
   'Source/LoadingState.cpp',
   'Source/Main.cpp',
   'Source/MainState.cpp',
@@ -50,4 +59,5 @@ executable('U7Revisited',
   'Source/WorldEditorState.cpp',
 
   dependencies: deps,
+  #include_directories: incdirs
 )
