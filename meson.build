@@ -21,8 +21,6 @@ if host_machine.system() == 'windows'
   deps += winmm_lib
 endif
 
-# incdirs = include_directories('ThirdParty/lua/src')
-
 # Only cpp files needed here. Keep alphabetized.
 executable('U7Revisited',
   'Source/Geist/BaseUnits.cpp',
@@ -58,6 +56,5 @@ executable('U7Revisited',
   'Source/U7Object.cpp',
   'Source/WorldEditorState.cpp',
 
-  dependencies: deps,
-  #include_directories: incdirs
+  dependencies: deps
 )
