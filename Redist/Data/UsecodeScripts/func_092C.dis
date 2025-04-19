@@ -1,9 +1,0 @@
-  .funcnumber 092CH
-  .data
-  .code
-  .argc 0001H
-  .localc 0000H
-  .externsize 0000H
-0000: 1F 4B 00   pushi 004BH   ; 75
-0003: 39 0F 00 01  calli 000F, 1
-0007: 25   ret
