@@ -8,5 +8,5 @@ Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 2
-map_Kd Models/3dmodels/336light_source.png
-map_d Models/3dmodels/336light_source.png
+map_Kd Models/3dmodels/light_source_336.png
+map_d Models/3dmodels/light_source_336.png
