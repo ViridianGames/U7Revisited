@@ -7,11 +7,14 @@ LIBS = ./ThirdParty/raylib/lib/libraylib.a ./ThirdParty/lua/src/liblua.a -lGL -l
 SOURCES = Source/*.cpp Source/Geist/*.cpp
 DEBUG_TARGET = Redist/u7revisited_debug
 RELEASE_TARGET = Redist/u7revisited
+LUA_LIB = ThirdParty/lua/src/liblua.a
 
 all: debug
 
 Redist:
 	mkdir -p Redist
+	$(LUA_LIB):
+		$(MAKE) -C ThirdParty/lua/src linux
 
 debug: Redist $(SOURCES)
 	$(CC) $(DEBUG_FLAGS) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(DEBUG_TARGET) $(LIBS)

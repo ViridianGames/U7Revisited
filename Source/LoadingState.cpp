@@ -116,7 +116,7 @@ void LoadingState::UpdateLoading()
 		if (!m_loadingVersion)
 		{
 			AddConsoleString(std::string("Loading version..."));
-			splitUsecodeDis();
+			//splitUsecodeDis();
 			LoadVersion();
 			m_loadingVersion = true;
 			return;
