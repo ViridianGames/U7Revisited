@@ -1054,18 +1054,16 @@ void LoadingState::LoadModels()
 {
 	string directoryPath("Models/3dmodels");
 
-	for (const auto& entry : directory_iterator(directoryPath)) {
-        if (entry.is_regular_file()) {
+	for (const auto& entry : directory_iterator(directoryPath))
+	{
+        if (entry.is_regular_file())
+		{
             std::string ext = entry.path().extension().string();
-            // Convert extension to lowercase for case-insensitive comparison
-            for (char& c : ext) {
-                c = std::tolower(c);
-            }
 
-            // Check for .obj or .gltf extensions
-            if (ext == ".obj" || ext == ".gltf") {
+            if (ext == ".obj" || ext == ".gltf")
+			{
                 std::string filepath = entry.path().string();
-                Model model = LoadModel(filepath.c_str()); // Raylib model loading
+                Model model = LoadModel(filepath.c_str());
             }
         }
     }
