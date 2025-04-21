@@ -24,6 +24,7 @@
 #include <regex>
 
 using namespace std;
+using namespace std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  LoadingState
@@ -1051,32 +1052,23 @@ void LoadingState::CreateShapeTable()
 
 void LoadingState::LoadModels()
 {
-	ifstream directory("Models/3dmodels/modelnames.txt");
-	if (!directory.is_open())
-	{
-		return;
-	}
+	string directoryPath("Models/3dmodels");
 
-	//Read in file header
-	while (!directory.eof())
-	{
+	for (const auto& entry : directory_iterator(directoryPath)) {
+        if (entry.is_regular_file()) {
+            std::string ext = entry.path().extension().string();
+            // Convert extension to lowercase for case-insensitive comparison
+            for (char& c : ext) {
+                c = std::tolower(c);
+            }
 
-		std::string m_Filename;
-		std::getline(directory, m_Filename);
-
-		if (m_Filename.length() == 0)
-			continue;
-
-		// Look for the file, try a glTF...
-		std::string modelPath = "Models/3dmodels/" + m_Filename + std::string(".gltf");
-		if (!FileExists(modelPath.c_str()))
-		{
-			// Then an OBJ.
-			modelPath = "Models/3dmodels/" + m_Filename + std::string(".obj");
-		}
-
-		g_ResourceManager->AddModel(std::move(RaylibModel(modelPath.c_str()).Decenter()), modelPath);
-	}
+            // Check for .obj or .gltf extensions
+            if (ext == ".obj" || ext == ".gltf") {
+                std::string filepath = entry.path().string();
+                Model model = LoadModel(filepath.c_str()); // Raylib model loading
+            }
+        }
+    }
 }
 
 void LoadingState::CreateObjectTable()
