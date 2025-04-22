@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.4.55",
+		"generator":"Khronos glTF Blender I/O v4.4.56",
 		"version":"2.0"
 	},
 	"scene":0,
@@ -15,13 +15,13 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Crate"
+			"name":"Cube.002"
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"Texture",
+			"name":"Material.002",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -32,7 +32,7 @@
 	],
 	"meshes":[
 		{
-			"name":"Crate",
+			"name":"Cube.002",
 			"primitives":[
 				{
 					"attributes":{
@@ -55,69 +55,69 @@
 	"images":[
 		{
 			"mimeType":"image/png",
-			"name":"texture",
-			"uri":"crate_804.png"
+			"name":"Crate-Colors",
+			"uri":"crate_804x00.png"
 		}
 	],
 	"accessors":[
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":504,
+			"count":552,
 			"max":[
-				-0.007023215293884277,
-				0.9843131303787231,
-				-0.004422038793563843
+				0.4000000059604645,
+				0.2750000059604645,
+				0.20000000298023224
 			],
 			"min":[
-				-1.987393856048584,
-				0.015661537647247314,
-				-0.9946075677871704
+				-0.4000000059604645,
+				-0.2750000059604645,
+				-0.20000000298023224
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":504,
+			"count":552,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":504,
+			"count":552,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":756,
+			"count":828,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":6048,
+			"byteLength":6624,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":6048,
-			"byteOffset":6048,
+			"byteLength":6624,
+			"byteOffset":6624,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4032,
-			"byteOffset":12096,
+			"byteLength":4416,
+			"byteOffset":13248,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1512,
-			"byteOffset":16128,
+			"byteLength":1656,
+			"byteOffset":17664,
 			"target":34963
 		}
 	],
@@ -129,7 +129,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":17640,
+			"byteLength":19320,
 			"uri":"crate_804x00.bin"
 		}
 	]

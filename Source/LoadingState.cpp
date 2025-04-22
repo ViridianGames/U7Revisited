@@ -569,12 +569,14 @@ void LoadingState::LoadFaces()
 					xStart += frameOffsets[i].width - frameOffsets[i].xDrawOffset - 1;
 					yStart += frameOffsets[i].height - frameOffsets[i].yDrawOffset - 1;
 
+					int paletteNumber = 0;
+
 					if (spanType == 0) // Not RLE, raw pixel data.
 					{
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 						}
 					}
 					else // RLE.
@@ -592,7 +594,7 @@ void LoadingState::LoadFaces()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 								}
 							}
 							else
@@ -600,7 +602,7 @@ void LoadingState::LoadFaces()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 								}
 							}
 							xStart += runLength;
@@ -843,24 +845,34 @@ void LoadingState::CreateShapeTable()
 
 	vector<FLXEntryData> paletteEntryMap = ParseFLXHeader(palette);
 
-	//  We only want the first palette for now.
-	palette.seekg(paletteEntryMap[0].offset);
-	unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[0].length);
-	palette.read((char*)paletteData, paletteEntryMap[1].length);
-
-	//  Currently only loading the base palette.  Other palettes are for lighting effects.
-	for (int j = 0; j < 256; ++j)
+	for(int i = 0; i < paletteEntryMap.size(); ++i)
 	{
-		unsigned char r = paletteData[j * 3];
-		unsigned char g = paletteData[j * 3 + 1];
-		unsigned char b = paletteData[j * 3 + 2];
-		m_palette[j].r = r * 4;
-		m_palette[j].g = g * 4;
-		m_palette[j].b = b * 4;
-		m_palette[j].a = 255;
+		if(paletteEntryMap[i].length == 0)
+		{
+			continue;
+		}
+		palette.seekg(paletteEntryMap[i].offset);
+		unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[1].length);
+		palette.read((char*)paletteData, paletteEntryMap[1].length);
+	
+		std::array<Color, 256> thisPalette;
+		//  Currently only loading the base palette.  Other palettes are for lighting effects.
+		for (int j = 0; j < 256; ++j)
+		{
+			unsigned char r = paletteData[j * 3];
+			unsigned char g = paletteData[j * 3 + 1];
+			unsigned char b = paletteData[j * 3 + 2];
+			thisPalette[j].r = r * 4;
+			thisPalette[j].g = g * 4;
+			thisPalette[j].b = b * 4;
+			thisPalette[j].a = 255;
+		}
+	
+		thisPalette[254] = Color{ 128, 128, 128, 128 };
+
+		m_palettes.push_back(thisPalette);
 	}
 
-	m_palette[254] = Color{ 128, 128, 128, 128 };
 
 	palette.close();
 
@@ -893,7 +905,7 @@ void LoadingState::CreateShapeTable()
 				for (int j = 0; j < 8; ++j)
 				{
 					unsigned char Value = ReadU8(shapes);
-					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palette[Value]);
+					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
 				}
 			}
 
@@ -943,6 +955,16 @@ void LoadingState::CreateShapeTable()
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
+			int paletteNumber = 0;
+			if(thisShape == 508 || thisShape == 512) // Stained glass
+			{
+				paletteNumber = 3;
+			}
+			if(thisShape == 912) // Blood
+			{
+				paletteNumber = 12;
+			}
+
 			//  Read the frame data.
 			for (int i = 0; i < frameCount; ++i)
 			{
@@ -988,7 +1010,7 @@ void LoadingState::CreateShapeTable()
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 						}
 					}
 					else // RLE.
@@ -1006,7 +1028,7 @@ void LoadingState::CreateShapeTable()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							else
@@ -1014,7 +1036,7 @@ void LoadingState::CreateShapeTable()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							xStart += runLength;
@@ -1063,7 +1085,8 @@ void LoadingState::LoadModels()
             if (ext == ".obj" || ext == ".gltf")
 			{
                 std::string filepath = entry.path().string();
-                Model model = LoadModel(filepath.c_str());
+				g_ResourceManager->AddModel(filepath);
+                //Model model = LoadModel(filepath.c_str());
             }
         }
     }

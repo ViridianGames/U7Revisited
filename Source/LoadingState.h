@@ -55,7 +55,7 @@ public:
 
    std::vector<FLXEntryData> ParseFLXHeader(std::istream &file);
 
-   std::array<Color, 256> m_palette;
+   std::vector<std::array<Color, 256>> m_palettes;
    
    Gui* m_LoadingGui = nullptr;
 
