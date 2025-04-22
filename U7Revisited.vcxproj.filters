@@ -210,6 +210,9 @@
     <ClCompile Include="Source\U7LuaFuncs.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7Player.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
@@ -393,6 +396,9 @@
       <Filter>Source\Geist</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7LuaFuncs.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7Player.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -45,6 +45,7 @@
     <ClCompile Include="Source\U7Gump.cpp" />
     <ClCompile Include="Source\U7LuaFuncs.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
+    <ClCompile Include="Source\U7Player.cpp" />
     <ClCompile Include="Source\WorldEditorState.cpp" />
     <ClCompile Include="ThirdParty\lua\src\lapi.c" />
     <ClCompile Include="ThirdParty\lua\src\lauxlib.c" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Source\U7Gump.h" />
     <ClInclude Include="Source\U7LuaFuncs.h" />
     <ClInclude Include="Source\U7Object.h" />
+    <ClInclude Include="Source\U7Player.h" />
     <ClInclude Include="Source\WorldEditorState.h" />
     <ClInclude Include="ThirdParty\lua\src\lapi.h" />
     <ClInclude Include="ThirdParty\lua\src\lauxlib.h" />
@@ -194,6 +196,7 @@
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -215,6 +218,7 @@
       <AdditionalIncludeDirectories>Source\Geist;ThirdParty\raylib\include;ThirdParty\raylib\external;ThirdParty\nlohmann;ThirdParty\lua\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
