@@ -126,6 +126,11 @@ int main(int argv, char** argc)
       Font conversationFont = LoadFontEx(conversationFontPath, conversationFontSize, NULL, 0);
       g_ConversationFont = make_shared<Font>(conversationFont);
 
+      const char* guiFontPath = "Data/Fonts/babyblocks.ttf"; float guiFontSize = 8;
+      Font guiFont = LoadFontEx(guiFontPath, guiFontSize, NULL, 0);
+      g_guiFont = make_shared<Font>(guiFont);
+
+
       g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
       SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
       g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);

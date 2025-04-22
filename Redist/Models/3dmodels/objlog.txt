@@ -1,0 +1,328 @@
+Processing: ./anvil_991x00.obj
+Updated: ./anvil_991x00.obj (backup created: ./anvil_991x00.obj.bak)
+Processing: ./bag_802x00.obj
+Updated: ./bag_802x00.obj (backup created: ./bag_802x00.obj.bak)
+Processing: ./bag_802x01.obj
+Updated: ./bag_802x01.obj (backup created: ./bag_802x01.obj.bak)
+Processing: ./book_642x00.obj
+Updated: ./book_642x00.obj (backup created: ./book_642x00.obj.bak)
+Processing: ./book_642x01.obj
+Updated: ./book_642x01.obj (backup created: ./book_642x01.obj.bak)
+Processing: ./book_642x02.obj
+Updated: ./book_642x02.obj (backup created: ./book_642x02.obj.bak)
+Processing: ./book_642x03.obj
+Updated: ./book_642x03.obj (backup created: ./book_642x03.obj.bak)
+Processing: ./book_642x04.obj
+Updated: ./book_642x04.obj (backup created: ./book_642x04.obj.bak)
+Processing: ./book_642x05.obj
+Updated: ./book_642x05.obj (backup created: ./book_642x05.obj.bak)
+Processing: ./book_642x06.obj
+Updated: ./book_642x06.obj (backup created: ./book_642x06.obj.bak)
+Processing: ./book_642x07.obj
+Updated: ./book_642x07.obj (backup created: ./book_642x07.obj.bak)
+Processing: ./book_642x08.obj
+Updated: ./book_642x08.obj (backup created: ./book_642x08.obj.bak)
+Processing: ./book_642x09.obj
+Updated: ./book_642x09.obj (backup created: ./book_642x09.obj.bak)
+Processing: ./book_642x10.obj
+Updated: ./book_642x10.obj (backup created: ./book_642x10.obj.bak)
+Processing: ./book_642x11.obj
+Updated: ./book_642x11.obj (backup created: ./book_642x11.obj.bak)
+Processing: ./book_642x12.obj
+Updated: ./book_642x12.obj (backup created: ./book_642x12.obj.bak)
+Processing: ./book_642x13.obj
+Updated: ./book_642x13.obj (backup created: ./book_642x13.obj.bak)
+Processing: ./book_642x14.obj
+Updated: ./book_642x14.obj (backup created: ./book_642x14.obj.bak)
+Processing: ./book_642x15.obj
+Updated: ./book_642x15.obj (backup created: ./book_642x15.obj.bak)
+Processing: ./book_642x16.obj
+Updated: ./book_642x16.obj (backup created: ./book_642x16.obj.bak)
+Processing: ./book_642x17.obj
+Updated: ./book_642x17.obj (backup created: ./book_642x17.obj.bak)
+Processing: ./book_642x18.obj
+Updated: ./book_642x18.obj (backup created: ./book_642x18.obj.bak)
+Processing: ./book_642x19.obj
+Updated: ./book_642x19.obj (backup created: ./book_642x19.obj.bak)
+Processing: ./book_642x20.obj
+Updated: ./book_642x20.obj (backup created: ./book_642x20.obj.bak)
+Processing: ./book_642x21.obj
+Updated: ./book_642x21.obj (backup created: ./book_642x21.obj.bak)
+Processing: ./book_642x22.obj
+Updated: ./book_642x22.obj (backup created: ./book_642x22.obj.bak)
+Processing: ./book_642x23.obj
+Updated: ./book_642x23.obj (backup created: ./book_642x23.obj.bak)
+Processing: ./book_642x24.obj
+Updated: ./book_642x24.obj (backup created: ./book_642x24.obj.bak)
+Processing: ./book_642x25.obj
+Updated: ./book_642x25.obj (backup created: ./book_642x25.obj.bak)
+Processing: ./book_642x26.obj
+Updated: ./book_642x26.obj (backup created: ./book_642x26.obj.bak)
+Processing: ./book_642x27.obj
+Updated: ./book_642x27.obj (backup created: ./book_642x27.obj.bak)
+Processing: ./book_642x28.obj
+Updated: ./book_642x28.obj (backup created: ./book_642x28.obj.bak)
+Processing: ./book_642x29.obj
+Updated: ./book_642x29.obj (backup created: ./book_642x29.obj.bak)
+Processing: ./bottle_616x05.obj
+Updated: ./bottle_616x05.obj (backup created: ./bottle_616x05.obj.bak)
+Processing: ./bottle_616x09.obj
+Updated: ./bottle_616x09.obj (backup created: ./bottle_616x09.obj.bak)
+Processing: ./bottle_616x14.obj
+Updated: ./bottle_616x14.obj (backup created: ./bottle_616x14.obj.bak)
+Processing: ./candle_336x00.obj
+Updated: ./candle_336x00.obj (backup created: ./candle_336x00.obj.bak)
+Processing: ./candle_336x01.obj
+Updated: ./candle_336x01.obj (backup created: ./candle_336x01.obj.bak)
+Processing: ./candle_336x02.obj
+Updated: ./candle_336x02.obj (backup created: ./candle_336x02.obj.bak)
+Processing: ./candle_336x03.obj
+Updated: ./candle_336x03.obj (backup created: ./candle_336x03.obj.bak)
+Processing: ./candle_336x04.obj
+Updated: ./candle_336x04.obj (backup created: ./candle_336x04.obj.bak)
+Processing: ./candle_336x05.obj
+Updated: ./candle_336x05.obj (backup created: ./candle_336x05.obj.bak)
+Processing: ./candle_336x06.obj
+Updated: ./candle_336x06.obj (backup created: ./candle_336x06.obj.bak)
+Processing: ./candle_336x07.obj
+Updated: ./candle_336x07.obj (backup created: ./candle_336x07.obj.bak)
+Processing: ./candle_336x08.obj
+Updated: ./candle_336x08.obj (backup created: ./candle_336x08.obj.bak)
+Processing: ./candle_336x09.obj
+Updated: ./candle_336x09.obj (backup created: ./candle_336x09.obj.bak)
+Processing: ./candle_336x10.obj
+Updated: ./candle_336x10.obj (backup created: ./candle_336x10.obj.bak)
+Processing: ./candle_336x11.obj
+Updated: ./candle_336x11.obj (backup created: ./candle_336x11.obj.bak)
+Processing: ./candle_336x12.obj
+Updated: ./candle_336x12.obj (backup created: ./candle_336x12.obj.bak)
+Processing: ./candle_336x13.obj
+Updated: ./candle_336x13.obj (backup created: ./candle_336x13.obj.bak)
+Processing: ./candle_336x14.obj
+Updated: ./candle_336x14.obj (backup created: ./candle_336x14.obj.bak)
+Processing: ./candle_336x15.obj
+Updated: ./candle_336x15.obj (backup created: ./candle_336x15.obj.bak)
+Processing: ./candle_338x00.obj
+Updated: ./candle_338x00.obj (backup created: ./candle_338x00.obj.bak)
+Processing: ./candle_338x01.obj
+Updated: ./candle_338x01.obj (backup created: ./candle_338x01.obj.bak)
+Processing: ./candle_338x02.obj
+Updated: ./candle_338x02.obj (backup created: ./candle_338x02.obj.bak)
+Processing: ./candle_338x03.obj
+Updated: ./candle_338x03.obj (backup created: ./candle_338x03.obj.bak)
+Processing: ./candle_338x04.obj
+Updated: ./candle_338x04.obj (backup created: ./candle_338x04.obj.bak)
+Processing: ./candle_338x05.obj
+Updated: ./candle_338x05.obj (backup created: ./candle_338x05.obj.bak)
+Processing: ./candle_338x07.obj
+Updated: ./candle_338x07.obj (backup created: ./candle_338x07.obj.bak)
+Processing: ./candle_338x08.obj
+Updated: ./candle_338x08.obj (backup created: ./candle_338x08.obj.bak)
+Processing: ./candle_338x09.obj
+Updated: ./candle_338x09.obj (backup created: ./candle_338x09.obj.bak)
+Processing: ./candle_338x10.obj
+Updated: ./candle_338x10.obj (backup created: ./candle_338x10.obj.bak)
+Processing: ./candle_338x11.obj
+Updated: ./candle_338x11.obj (backup created: ./candle_338x11.obj.bak)
+Processing: ./candle_338x12.obj
+Updated: ./candle_338x12.obj (backup created: ./candle_338x12.obj.bak)
+Processing: ./candle_338x13.obj
+Updated: ./candle_338x13.obj (backup created: ./candle_338x13.obj.bak)
+Processing: ./candle_338x14.obj
+Updated: ./candle_338x14.obj (backup created: ./candle_338x14.obj.bak)
+Processing: ./candle_338x15.obj
+Updated: ./candle_338x15.obj (backup created: ./candle_338x15.obj.bak)
+Processing: ./chair_873x00.obj
+Updated: ./chair_873x00.obj (backup created: ./chair_873x00.obj.bak)
+Processing: ./chair_873x01.obj
+Updated: ./chair_873x01.obj (backup created: ./chair_873x01.obj.bak)
+Processing: ./chair_873x06.obj
+Updated: ./chair_873x06.obj (backup created: ./chair_873x06.obj.bak)
+Processing: ./chair_873x10.obj
+Updated: ./chair_873x10.obj (backup created: ./chair_873x10.obj.bak)
+Processing: ./chair_873x13.obj
+Updated: ./chair_873x13.obj (backup created: ./chair_873x13.obj.bak)
+Processing: ./chair_873x18.obj
+Updated: ./chair_873x18.obj (backup created: ./chair_873x18.obj.bak)
+Processing: ./chair_873x21.obj
+Updated: ./chair_873x21.obj (backup created: ./chair_873x21.obj.bak)
+Processing: ./chair_873x25.obj
+Updated: ./chair_873x25.obj (backup created: ./chair_873x25.obj.bak)
+Processing: ./chest_800x00.obj
+Updated: ./chest_800x00.obj (backup created: ./chest_800x00.obj.bak)
+Processing: ./cube_generator_241x00.obj
+Updated: ./cube_generator_241x00.obj (backup created: ./cube_generator_241x00.obj.bak)
+Processing: ./desk_283x00.obj
+Updated: ./desk_283x00.obj (backup created: ./desk_283x00.obj.bak)
+Processing: ./desk_407x00.obj
+Updated: ./desk_407x00.obj (backup created: ./desk_407x00.obj.bak)
+Processing: ./easel_837x00.obj
+Updated: ./easel_837x00.obj (backup created: ./easel_837x00.obj.bak)
+Processing: ./easel_837x01.obj
+Updated: ./easel_837x01.obj (backup created: ./easel_837x01.obj.bak)
+Processing: ./easel_837x02.obj
+Updated: ./easel_837x02.obj (backup created: ./easel_837x02.obj.bak)
+Processing: ./easel_837x03.obj
+Updated: ./easel_837x03.obj (backup created: ./easel_837x03.obj.bak)
+Processing: ./easel_837x04.obj
+Updated: ./easel_837x04.obj (backup created: ./easel_837x04.obj.bak)
+Processing: ./easel_837x05.obj
+Updated: ./easel_837x05.obj (backup created: ./easel_837x05.obj.bak)
+Processing: ./easel_837x06.obj
+Updated: ./easel_837x06.obj (backup created: ./easel_837x06.obj.bak)
+Processing: ./easel_837x07.obj
+Updated: ./easel_837x07.obj (backup created: ./easel_837x07.obj.bak)
+Processing: ./forge_739x00.obj
+Updated: ./forge_739x00.obj (backup created: ./forge_739x00.obj.bak)
+Processing: ./keg_258x00.obj
+Updated: ./keg_258x00.obj (backup created: ./keg_258x00.obj.bak)
+Processing: ./keg_434x00.obj
+Updated: ./keg_434x00.obj (backup created: ./keg_434x00.obj.bak)
+Processing: ./locked_chest_522x00.obj
+Updated: ./locked_chest_522x00.obj (backup created: ./locked_chest_522x00.obj.bak)
+Processing: ./mountain_195x00.obj
+Updated: ./mountain_195x00.obj (backup created: ./mountain_195x00.obj.bak)
+Processing: ./mountain_195x04.obj
+Warning: No mtllib line found in ./mountain_195x04.obj
+Processing: ./mountain_395x00.obj
+Warning: No mtllib line found in ./mountain_395x00.obj
+Processing: ./mountain_395x04.obj
+Updated: ./mountain_395x04.obj (backup created: ./mountain_395x04.obj.bak)
+Processing: ./mountain_396x00.obj
+Updated: ./mountain_396x00.obj (backup created: ./mountain_396x00.obj.bak)
+Processing: ./pew_897.obj
+Updated: ./pew_897.obj (backup created: ./pew_897.obj.bak)
+Processing: ./pillar_687x00.obj
+Updated: ./pillar_687x00.obj (backup created: ./pillar_687x00.obj.bak)
+Processing: ./pillar_687x01.obj
+Updated: ./pillar_687x01.obj (backup created: ./pillar_687x01.obj.bak)
+Processing: ./pillar_687x02.obj
+Updated: ./pillar_687x02.obj (backup created: ./pillar_687x02.obj.bak)
+Processing: ./pillar_687x03.obj
+Updated: ./pillar_687x03.obj (backup created: ./pillar_687x03.obj.bak)
+Processing: ./pillar_687x04.obj
+Updated: ./pillar_687x04.obj (backup created: ./pillar_687x04.obj.bak)
+Processing: ./pillar_913x02.obj
+Updated: ./pillar_913x02.obj (backup created: ./pillar_913x02.obj.bak)
+Processing: ./pillar_913x03.obj
+Updated: ./pillar_913x03.obj (backup created: ./pillar_913x03.obj.bak)
+Processing: ./pillar_920x02.obj
+Updated: ./pillar_920x02.obj (backup created: ./pillar_920x02.obj.bak)
+Processing: ./pillar_920x03.obj
+Updated: ./pillar_920x03.obj (backup created: ./pillar_920x03.obj.bak)
+Processing: ./scroll_797x00.obj
+Updated: ./scroll_797x00.obj (backup created: ./scroll_797x00.obj.bak)
+Processing: ./scroll_797x01.obj
+Updated: ./scroll_797x01.obj (backup created: ./scroll_797x01.obj.bak)
+Processing: ./scroll_797x02.obj
+Updated: ./scroll_797x02.obj (backup created: ./scroll_797x02.obj.bak)
+Processing: ./scroll_797x03.obj
+Updated: ./scroll_797x03.obj (backup created: ./scroll_797x03.obj.bak)
+Processing: ./sign_360x00.obj
+Updated: ./sign_360x00.obj (backup created: ./sign_360x00.obj.bak)
+Processing: ./sign_360x01.obj
+Updated: ./sign_360x01.obj (backup created: ./sign_360x01.obj.bak)
+Processing: ./sign_360x03.obj
+Updated: ./sign_360x03.obj (backup created: ./sign_360x03.obj.bak)
+Processing: ./sign_360x04.obj
+Updated: ./sign_360x04.obj (backup created: ./sign_360x04.obj.bak)
+Processing: ./sign_360x05.obj
+Updated: ./sign_360x05.obj (backup created: ./sign_360x05.obj.bak)
+Processing: ./sign_360x06.obj
+Updated: ./sign_360x06.obj (backup created: ./sign_360x06.obj.bak)
+Processing: ./sign_360x07.obj
+Updated: ./sign_360x07.obj (backup created: ./sign_360x07.obj.bak)
+Processing: ./sign_360x08.obj
+Updated: ./sign_360x08.obj (backup created: ./sign_360x08.obj.bak)
+Processing: ./sign_360x09.obj
+Updated: ./sign_360x09.obj (backup created: ./sign_360x09.obj.bak)
+Processing: ./sign_361x00.obj
+Updated: ./sign_361x00.obj (backup created: ./sign_361x00.obj.bak)
+Processing: ./sign_361x01.obj
+Updated: ./sign_361x01.obj (backup created: ./sign_361x01.obj.bak)
+Processing: ./sign_361x03.obj
+Updated: ./sign_361x03.obj (backup created: ./sign_361x03.obj.bak)
+Processing: ./sign_361x04.obj
+Updated: ./sign_361x04.obj (backup created: ./sign_361x04.obj.bak)
+Processing: ./sign_361x05.obj
+Updated: ./sign_361x05.obj (backup created: ./sign_361x05.obj.bak)
+Processing: ./sign_361x06.obj
+Updated: ./sign_361x06.obj (backup created: ./sign_361x06.obj.bak)
+Processing: ./sign_361x07.obj
+Updated: ./sign_361x07.obj (backup created: ./sign_361x07.obj.bak)
+Processing: ./sign_361x08.obj
+Updated: ./sign_361x08.obj (backup created: ./sign_361x08.obj.bak)
+Processing: ./sign_361x09.obj
+Updated: ./sign_361x09.obj (backup created: ./sign_361x09.obj.bak)
+Processing: ./spellbook_761x00.obj
+Updated: ./spellbook_761x00.obj (backup created: ./spellbook_761x00.obj.bak)
+Processing: ./spellbook_761x00_si.obj
+Updated: ./spellbook_761x00_si.obj (backup created: ./spellbook_761x00_si.obj.bak)
+Processing: ./stove_664x00.obj
+Updated: ./stove_664x00.obj (backup created: ./stove_664x00.obj.bak)
+Processing: ./stove_664x01.obj
+Updated: ./stove_664x01.obj (backup created: ./stove_664x01.obj.bak)
+Processing: ./table_1000x00.obj
+Updated: ./table_1000x00.obj (backup created: ./table_1000x00.obj.bak)
+Processing: ./table_1000x01.obj
+Updated: ./table_1000x01.obj (backup created: ./table_1000x01.obj.bak)
+Processing: ./table_1000x02.obj
+Updated: ./table_1000x02.obj (backup created: ./table_1000x02.obj.bak)
+Processing: ./table_1001x00.obj
+Updated: ./table_1001x00.obj (backup created: ./table_1001x00.obj.bak)
+Processing: ./table_1002x00.obj
+Updated: ./table_1002x00.obj (backup created: ./table_1002x00.obj.bak)
+Processing: ./table_1002x01.obj
+Updated: ./table_1002x01.obj (backup created: ./table_1002x01.obj.bak)
+Processing: ./table_1003x00.obj
+Updated: ./table_1003x00.obj (backup created: ./table_1003x00.obj.bak)
+Processing: ./table_1018x00.obj
+Updated: ./table_1018x00.obj (backup created: ./table_1018x00.obj.bak)
+Processing: ./table_333x00.obj
+Updated: ./table_333x00.obj (backup created: ./table_333x00.obj.bak)
+Processing: ./table_633x00.obj
+Updated: ./table_633x00.obj (backup created: ./table_633x00.obj.bak)
+Processing: ./table_633x01.obj
+Updated: ./table_633x01.obj (backup created: ./table_633x01.obj.bak)
+Processing: ./table_633x02.obj
+Updated: ./table_633x02.obj (backup created: ./table_633x02.obj.bak)
+Processing: ./table_633x03.obj
+Updated: ./table_633x03.obj (backup created: ./table_633x03.obj.bak)
+Processing: ./table_633x04.obj
+Updated: ./table_633x04.obj (backup created: ./table_633x04.obj.bak)
+Processing: ./table_633x05.obj
+Updated: ./table_633x05.obj (backup created: ./table_633x05.obj.bak)
+Processing: ./table_890x00.obj
+Updated: ./table_890x00.obj (backup created: ./table_890x00.obj.bak)
+Processing: ./table_890x01.obj
+Updated: ./table_890x01.obj (backup created: ./table_890x01.obj.bak)
+Processing: ./table_890x03.obj
+Updated: ./table_890x03.obj (backup created: ./table_890x03.obj.bak)
+Processing: ./table_964x01.obj
+Updated: ./table_964x01.obj (backup created: ./table_964x01.obj.bak)
+Processing: ./table_964x03.obj
+Updated: ./table_964x03.obj (backup created: ./table_964x03.obj.bak)
+Processing: ./table_964x04.obj
+Updated: ./table_964x04.obj (backup created: ./table_964x04.obj.bak)
+Processing: ./table_971x00.obj
+Updated: ./table_971x00.obj (backup created: ./table_971x00.obj.bak)
+Processing: ./table_971x01.obj
+Updated: ./table_971x01.obj (backup created: ./table_971x01.obj.bak)
+Processing: ./table_971x03.obj
+Updated: ./table_971x03.obj (backup created: ./table_971x03.obj.bak)
+Processing: ./throne_292x18.obj
+Updated: ./throne_292x18.obj (backup created: ./throne_292x18.obj.bak)
+Processing: ./water_trough_719x00.obj
+Updated: ./water_trough_719x00.obj (backup created: ./water_trough_719x00.obj.bak)
+Processing: ./water_trough_719x01.obj
+Updated: ./water_trough_719x01.obj (backup created: ./water_trough_719x01.obj.bak)
+Processing: ./water_trough_719x02.obj
+Updated: ./water_trough_719x02.obj (backup created: ./water_trough_719x02.obj.bak)
+Processing: ./water_trough_719x03.obj
+Updated: ./water_trough_719x03.obj (backup created: ./water_trough_719x03.obj.bak)
+Processing: ./wood_long_table.obj
+Updated: ./wood_long_table.obj (backup created: ./wood_long_table.obj.bak)
+Processing: ./wood_round_table.obj
+Updated: ./wood_round_table.obj (backup created: ./wood_round_table.obj.bak)
+Processing: ./zzwrongcube.obj
+Updated: ./zzwrongcube.obj (backup created: ./zzwrongcube.obj.bak)

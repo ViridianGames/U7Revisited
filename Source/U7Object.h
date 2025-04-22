@@ -85,7 +85,7 @@ public:
    void Interact(int event);
 
 
-   bool Pick();
+   float Pick(); //  Returns distance if hit, -1 if no hit
 
    bool AddObjectToInventory(int objectid);
    bool RemoveObjectFromInventory(int objectid);

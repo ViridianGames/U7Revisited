@@ -29,6 +29,8 @@ public:
    void SetupCuboidGui();
    void SetupMeshGui();
    void SetupCharacterGui();
+   void SetupShapePointerGui();
+   void SetupDontDrawGui();
 
    void ChangeGui(Gui* newGui);
    void SwitchToGuiForDrawType(ShapeDrawType drawType);
@@ -49,6 +51,8 @@ public:
    std::unique_ptr<Gui> m_cuboidGui;
    std::unique_ptr<Gui> m_meshGui;
    std::unique_ptr<Gui> m_characterGui;
+   std::unique_ptr<Gui> m_shapePointerGui;
+   std::unique_ptr<Gui> m_dontDrawGui;
 
    Gui* m_currentGui = nullptr;
 

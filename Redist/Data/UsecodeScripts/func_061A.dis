@@ -1,8 +1,0 @@
-  .funcnumber 061AH
-  .data
-  .code
-  .argc 0001H
-  .localc 0000H
-  .externsize 0000H
-0000: 39 70 00 00  calli 0070, 0
-0004: 25   ret

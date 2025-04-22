@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Directory containing .obj files (default: current directory)
+OBJ_DIR="${1:-.}"
+
+# Dry-run flag (set to 1 for dry-run, 0 for actual changes)
+DRY_RUN=0
+
+# Check if directory exists
+if [ ! -d "$OBJ_DIR" ]; then
+    echo "Error: Directory '$OBJ_DIR' does not exist."
+    exit 1
+fi
+
+# Process each .obj file
+for file in "$OBJ_DIR"/*.obj; do
+    if [ -f "$file" ]; then
+        echo "Processing: $file"
+
+        # Extract filename without .obj extension
+        filename=$(basename "$file" .obj)
+
+        # New mtllib line
+        new_line="mtllib $filename.mtl"
+
+        # Check if mtllib line exists
+        if grep -q "^mtllib " "$file"; then
+            if [ $DRY_RUN -eq 1 ]; then
+                # Dry-run: Show current mtllib line and proposed change
+                echo "Current mtllib line:"
+                grep "^mtllib " "$file"
+                echo "Would replace with: $new_line"
+            else
+                # Perform the replacement (in-place, with backup)
+                sed -i.bak "s/^mtllib .*/$new_line/" "$file"
+                if [ $? -eq 0 ]; then
+                    echo "Updated: $file (backup created: $file.bak)"
+                else
+                    echo "Error: Failed to update $file"
+                fi
+            fi
+        else
+            echo "Warning: No mtllib line found in $file"
+            if [ $DRY_RUN -eq 0 ]; then
+                # Optionally append the mtllib line at the start (uncomment if needed)
+                # echo "$new_line" | cat - "$file" > temp && mv temp "$file"
+                # echo "Appended: $new_line to $file"
+                :
+            fi
+        fi
+    fi
+done
+
+# If no .obj files found
+if [ ! "$(ls -A "$OBJ_DIR"/*.obj 2>/dev/null)" ]; then
+    echo "No .obj files found in '$OBJ_DIR'."
+fi
