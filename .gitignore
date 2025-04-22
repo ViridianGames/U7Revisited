@@ -7,7 +7,6 @@
 !Redist/Data/U7/U7.txt
 
 /subprojects/raylib/
-/subprojects/lua-5.4.6/
 /subprojects/packagecache/
 *.o
 liblua.a
