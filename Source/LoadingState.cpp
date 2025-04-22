@@ -955,19 +955,19 @@ void LoadingState::CreateShapeTable()
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
-			int paletteNumber = 0;
-			if(thisShape == 508 || thisShape == 512) // Stained glass
-			{
-				paletteNumber = 3;
-			}
-			if(thisShape == 912) // Blood
-			{
-				paletteNumber = 12;
-			}
-
 			//  Read the frame data.
 			for (int i = 0; i < frameCount; ++i)
 			{
+				int paletteNumber = 0;
+				// if(thisShape == 508 || thisShape == 512 || (thisShape == 732 && (i == 4 || i == 5))) // Stained glass
+				// {
+				// 	paletteNumber = 11;
+				// }
+				// if(thisShape == 912) // Blood
+				// {
+				// 	paletteNumber = 11;
+				// }
+
 				ShapeData& shapeData = g_shapeTable[thisShape][i];
 				//  Seek to the start of this frame's data.
 				if (i > 0)
