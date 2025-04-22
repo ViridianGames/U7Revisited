@@ -38,6 +38,8 @@ public:
       //void MakeCSVFile();
    void LoadInitialGameState();
 
+   void splitUsecodeDis();
+
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
    unsigned int  ReadU32(std::istream &buffer);
@@ -53,7 +55,7 @@ public:
 
    std::vector<FLXEntryData> ParseFLXHeader(std::istream &file);
 
-   std::array<Color, 256> m_palette;
+   std::vector<std::array<Color, 256>> m_palettes;
    
    Gui* m_LoadingGui = nullptr;
 

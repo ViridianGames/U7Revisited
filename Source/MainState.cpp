@@ -171,12 +171,12 @@ void MainState::Update()
 	{
 		if (m_heightCutoff == 4.0f)
 		{
-			m_heightCutoff = 9.0f;
+			m_heightCutoff = 10.0f;
 			AddConsoleString("Viewing Second Floor");
 		}
-		else if (m_heightCutoff == 9.0f)
+		else if (m_heightCutoff == 10.0f)
 		{
-			m_heightCutoff = 15.0f;
+			m_heightCutoff = 16.0f;
 			AddConsoleString("Viewing Third Floor");
 		}
 	}
@@ -185,10 +185,10 @@ void MainState::Update()
 	{
 		if (m_heightCutoff == 15.0f)
 		{
-			m_heightCutoff = 9.0f;
+			m_heightCutoff = 10.0f;
 			AddConsoleString("Viewing Second Floor");
 		}
-		else if (m_heightCutoff == 9.0f)
+		else if (m_heightCutoff == 10.0f)
 		{
 			m_heightCutoff = 4.0f;
 			AddConsoleString("Viewing First Floor");

@@ -23,6 +23,7 @@
 #include "U7Object.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "U7Player.h"
 
 //class ConversationState;
 
@@ -135,6 +136,8 @@ extern std::array<ObjectData, 1024> g_objectTable;
 extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
 
 extern unsigned int g_minimapSize;
+
+extern std::unique_ptr<U7Player> g_Player;
 
 extern std::vector< std::vector<unsigned short> > g_World;
 

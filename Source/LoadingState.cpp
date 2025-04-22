@@ -6,8 +6,6 @@
 #include "U7Globals.h"
 #include "LoadingState.h"
 
-
-
 #include <cstring>
 #include <list>
 #include <string>
@@ -17,8 +15,16 @@
 #include <fstream>
 #include <algorithm>
 #include <unordered_map>
+#include <filesystem>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <regex>
 
 using namespace std;
+using namespace std::filesystem;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  LoadingState
@@ -105,11 +111,13 @@ void LoadingState::Draw()
 
 void LoadingState::UpdateLoading()
 {
+	
 	if (!m_loadingFailed)
 	{
 		if (!m_loadingVersion)
 		{
 			AddConsoleString(std::string("Loading version..."));
+			//splitUsecodeDis();
 			LoadVersion();
 			m_loadingVersion = true;
 			return;
@@ -561,12 +569,14 @@ void LoadingState::LoadFaces()
 					xStart += frameOffsets[i].width - frameOffsets[i].xDrawOffset - 1;
 					yStart += frameOffsets[i].height - frameOffsets[i].yDrawOffset - 1;
 
+					int paletteNumber = 0;
+
 					if (spanType == 0) // Not RLE, raw pixel data.
 					{
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 						}
 					}
 					else // RLE.
@@ -584,7 +594,7 @@ void LoadingState::LoadFaces()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 								}
 							}
 							else
@@ -592,7 +602,7 @@ void LoadingState::LoadFaces()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
 								}
 							}
 							xStart += runLength;
@@ -835,24 +845,34 @@ void LoadingState::CreateShapeTable()
 
 	vector<FLXEntryData> paletteEntryMap = ParseFLXHeader(palette);
 
-	//  We only want the first palette for now.
-	palette.seekg(paletteEntryMap[0].offset);
-	unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[0].length);
-	palette.read((char*)paletteData, paletteEntryMap[1].length);
-
-	//  Currently only loading the base palette.  Other palettes are for lighting effects.
-	for (int j = 0; j < 256; ++j)
+	for(int i = 0; i < paletteEntryMap.size(); ++i)
 	{
-		unsigned char r = paletteData[j * 3];
-		unsigned char g = paletteData[j * 3 + 1];
-		unsigned char b = paletteData[j * 3 + 2];
-		m_palette[j].r = r * 4;
-		m_palette[j].g = g * 4;
-		m_palette[j].b = b * 4;
-		m_palette[j].a = 255;
+		if(paletteEntryMap[i].length == 0)
+		{
+			continue;
+		}
+		palette.seekg(paletteEntryMap[i].offset);
+		unsigned char* paletteData = (unsigned char*)malloc(paletteEntryMap[1].length);
+		palette.read((char*)paletteData, paletteEntryMap[1].length);
+	
+		std::array<Color, 256> thisPalette;
+		//  Currently only loading the base palette.  Other palettes are for lighting effects.
+		for (int j = 0; j < 256; ++j)
+		{
+			unsigned char r = paletteData[j * 3];
+			unsigned char g = paletteData[j * 3 + 1];
+			unsigned char b = paletteData[j * 3 + 2];
+			thisPalette[j].r = r * 4;
+			thisPalette[j].g = g * 4;
+			thisPalette[j].b = b * 4;
+			thisPalette[j].a = 255;
+		}
+	
+		thisPalette[254] = Color{ 128, 128, 128, 128 };
+
+		m_palettes.push_back(thisPalette);
 	}
 
-	m_palette[254] = Color{ 128, 128, 128, 128 };
 
 	palette.close();
 
@@ -885,7 +905,7 @@ void LoadingState::CreateShapeTable()
 				for (int j = 0; j < 8; ++j)
 				{
 					unsigned char Value = ReadU8(shapes);
-					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palette[Value]);
+					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
 				}
 			}
 
@@ -938,6 +958,16 @@ void LoadingState::CreateShapeTable()
 			//  Read the frame data.
 			for (int i = 0; i < frameCount; ++i)
 			{
+				int paletteNumber = 0;
+				// if(thisShape == 508 || thisShape == 512 || (thisShape == 732 && (i == 4 || i == 5))) // Stained glass
+				// {
+				// 	paletteNumber = 11;
+				// }
+				// if(thisShape == 912) // Blood
+				// {
+				// 	paletteNumber = 11;
+				// }
+
 				ShapeData& shapeData = g_shapeTable[thisShape][i];
 				//  Seek to the start of this frame's data.
 				if (i > 0)
@@ -980,7 +1010,7 @@ void LoadingState::CreateShapeTable()
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 						}
 					}
 					else // RLE.
@@ -998,7 +1028,7 @@ void LoadingState::CreateShapeTable()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							else
@@ -1006,7 +1036,7 @@ void LoadingState::CreateShapeTable()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palette[Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							xStart += runLength;
@@ -1044,32 +1074,22 @@ void LoadingState::CreateShapeTable()
 
 void LoadingState::LoadModels()
 {
-	ifstream directory("Models/3dmodels/modelnames.txt");
-	if (!directory.is_open())
+	string directoryPath("Models/3dmodels");
+
+	for (const auto& entry : directory_iterator(directoryPath))
 	{
-		return;
-	}
-
-	//Read in file header
-	while (!directory.eof())
-	{
-
-		std::string m_Filename;
-		std::getline(directory, m_Filename);
-
-		if (m_Filename.length() == 0)
-			continue;
-
-		// Look for the file, try a glTF...
-		std::string modelPath = "Models/3dmodels/" + m_Filename + std::string(".gltf");
-		if (!FileExists(modelPath.c_str()))
+        if (entry.is_regular_file())
 		{
-			// Then an OBJ.
-			modelPath = "Models/3dmodels/" + m_Filename + std::string(".obj");
-		}
+            std::string ext = entry.path().extension().string();
 
-		g_ResourceManager->AddModel(std::move(RaylibModel(modelPath.c_str()).Decenter()), modelPath);
-	}
+            if (ext == ".obj" || ext == ".gltf")
+			{
+                std::string filepath = entry.path().string();
+				g_ResourceManager->AddModel(filepath);
+                //Model model = LoadModel(filepath.c_str());
+            }
+        }
+    }
 }
 
 void LoadingState::CreateObjectTable()
@@ -1246,16 +1266,15 @@ void LoadingState::LoadInitialGameState()
 			short npcCount2 = ReadU16(subFiles);
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
-			Log("File position: " + to_string(filepos));
+			
 			for (int i = 0; i < fullcount; ++i)
 			{
 				if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
 				{
-					Log("Stopper");// subFiles.seekg(2761, ios::cur);
+					//Log("Stopper");// subFiles.seekg(2761, ios::cur);
 				}
 
 				int size = sizeof(NPCblock);
-				Log("NPC block size: " + std::to_string(size));
 				NPCblock thisNPC;
 				
 				thisNPC.x = ReadU8(subFiles);
@@ -1324,9 +1343,6 @@ void LoadingState::LoadInitialGameState()
 				subFiles.read(thisNPC.name, 16);
 
 				int newfilepos = subFiles.tellg();
-				Log("File position after avatar: " + to_string(newfilepos));
-				Log("Size difference: " + to_string(newfilepos - filepos));
-				Log("Iolo starts at 2761 so there are " + to_string(2761 - newfilepos) + " bytes left.");
 
 				g_ObjectList[nextID].get()->SetNPCBlock(thisNPC);
 
@@ -1337,7 +1353,6 @@ void LoadingState::LoadInitialGameState()
 					while (length != 0)
 					{
 						int pointerlocation = subFiles.tellg();
-						Log("File pointer is at " + to_string(pointerlocation));
 						length = ReadU8(subFiles);
 						if (length == 6) //  Object.
 						{
@@ -1390,9 +1405,6 @@ void LoadingState::LoadInitialGameState()
 						}
 					}
 				}
-
-				Log("First block written: ");
-
 			}
 		
 			stringstream npcData;
@@ -1400,4 +1412,92 @@ void LoadingState::LoadInitialGameState()
 
 	}
 
+}
+
+void LoadingState::splitUsecodeDis()
+{
+	string inputFile = "Data/usecode.dis";
+	string outputDir = "Data/UsecodeScripts";
+    // Create output directory
+    filesystem::create_directories(outputDir);
+
+    // Open input file
+    ifstream inFile(inputFile);
+    if (!inFile.is_open()) {
+        cerr << "Error: Could not open " << inputFile << endl;
+        return;
+    }
+
+    stringstream currentFuncContent;
+    string line;
+    string currentFuncNum;
+    bool inFunction = false;
+    regex funcRegex(R"(\.funcnumber[\t ]+([0-9A-Fa-f]+)H)");
+    int lineCount = 0;
+
+    while (getline(inFile, line)) {
+        lineCount++;
+        // Normalize line endings and tabs
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        // Replace tabs with spaces
+        replace(line.begin(), line.end(), '\t', ' ');
+
+        // Check for .funcnumber marker
+        smatch match;
+        if (regex_search(line, match, funcRegex)) {
+            // Save previous function if exists
+            if (inFunction && !currentFuncNum.empty()) {
+                string outputFile = outputDir + "/func_" + currentFuncNum + ".dis";
+                ofstream outFile(outputFile);
+                if (outFile.is_open()) {
+                    outFile << currentFuncContent.str();
+                    outFile.close();
+                    cout << "Created " << outputFile << endl;
+                } else {
+                    cerr << "Error: Could not create " << outputFile << " at line " << lineCount << endl;
+                }
+            }
+
+            // Start new function
+            inFunction = true;
+            currentFuncContent.str("");
+            currentFuncContent.clear();
+            currentFuncNum = match[1].str();
+            currentFuncNum = string(4 - currentFuncNum.length(), '0') + currentFuncNum; // Pad to 4 digits
+            if (currentFuncNum.length() > 4) {
+                cerr << "Warning: Invalid function number at line " << lineCount << ": " << currentFuncNum << endl;
+                currentFuncNum = "";
+                inFunction = false;
+            }
+        } else if (inFunction && line.find(".funcnumber") != string::npos) {
+            cerr << "Warning: Malformed .funcnumber line at " << lineCount << ": " << line << endl;
+        }
+
+        // Append line to current function content
+        if (inFunction) {
+            currentFuncContent << line << "\n";
+        }
+    }
+
+    // Save the last function
+    if (inFunction && !currentFuncNum.empty()) {
+        string outputFile = outputDir + "/func_" + currentFuncNum + ".dis";
+        ofstream outFile(outputFile);
+        if (outFile.is_open()) {
+            outFile << currentFuncContent.str();
+            outFile.close();
+            cout << "Created " << outputFile << endl;
+        } else {
+            cerr << "Error: Could not create " << outputFile << " at line " << lineCount << endl;
+        }
+    } else if (inFunction) {
+        cerr << "Warning: Last function incomplete, no valid .funcnumber found" << endl;
+    }
+
+    inFile.close();
+    if (currentFuncNum.empty() && lineCount > 0) {
+        cerr << "Warning: No valid functions found in " << inputFile << endl;
+    }
 }

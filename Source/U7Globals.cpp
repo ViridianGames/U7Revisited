@@ -76,6 +76,8 @@ bool g_pixelated = false;
 RenderTexture2D g_renderTarget;
 RenderTexture2D g_guiRenderTarget;
 
+std::unique_ptr<U7Player> g_Player;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {
