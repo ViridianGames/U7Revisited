@@ -1072,8 +1072,8 @@ void ShapeEditorState::Draw()
 		Texture* r = g_shapeTable[m_currentShape][m_currentFrame].GetRightTexture();
 
 		//  Draw original texture with label and border
-		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize, 1, WHITE);
-		float yoffset = g_guiFontSize + 2;
+		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize * g_DrawScale, 1, WHITE);
+		float yoffset = (g_guiFontSize + 2) * g_DrawScale;
 		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
 		yoffset += scale;
 		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
@@ -1081,16 +1081,16 @@ void ShapeEditorState::Draw()
 		//  Draw top texture with labels and borders
 		yoffset += float(d->height) * scale + scale + scale;
 		float rightoffset = yoffset;
-		DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
 
 		//  Draw front texture with labels and borders
 		yoffset += float(d->height) * scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
@@ -1099,8 +1099,8 @@ void ShapeEditorState::Draw()
 		yoffset = rightoffset;
 		//yoffset += float(r->height) * scale + scale + scale;
 		float xoffset = d->width * scale + scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);

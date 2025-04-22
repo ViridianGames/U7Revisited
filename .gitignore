@@ -8,4 +8,5 @@
 
 /subprojects/raylib/
 *.o
+*.d
 liblua.a
