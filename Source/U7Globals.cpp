@@ -24,9 +24,11 @@ Texture* g_Minimap;
 std::shared_ptr<Font> g_Font;
 std::shared_ptr<Font> g_SmallFont;
 std::shared_ptr<Font> g_ConversationFont;
+std::shared_ptr<Font> g_guiFont;
 
 //float g_smallFontSize = 8;
 float g_fontSize = 16;
+float g_guiFontSize = 8;
 
 std::unique_ptr<RNG> g_VitalRNG;
 std::unique_ptr<RNG> g_NonVitalRNG;
