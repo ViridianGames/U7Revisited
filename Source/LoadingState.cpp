@@ -1086,7 +1086,6 @@ void LoadingState::LoadModels()
 			{
                 std::string filepath = entry.path().string();
 				g_ResourceManager->AddModel(filepath);
-                //Model model = LoadModel(filepath.c_str());
             }
         }
     }
@@ -1095,7 +1094,6 @@ void LoadingState::LoadModels()
 void LoadingState::CreateObjectTable()
 {
 	//  Open the two files that define the objects in the object table.
-	// Open the two files that define the objects in the object table.
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 
 	std::stringstream tfa;

@@ -129,9 +129,17 @@ void MainState::Update()
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
 				(*node).second->Update();
-				//Vector3 centerPoint = Vector3Add((*node).second->m_Pos, (*node).second.get()->m_shapeData->m_boundingBoxCenterPoint);
+				if(g_objectTable[(*node).second->m_shapeData->m_shape].m_height == 0)
+				{
+					int stopper = 0;
+				}
 
-				float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
+				Vector3 boundingBoxCenterPoint = {g_objectTable[(*node).second->m_shapeData->m_shape].m_width / 2,
+					g_objectTable[(*node).second->m_shapeData->m_shape].m_height / 2,
+					g_objectTable[(*node).second->m_shapeData->m_shape].m_depth / 2};
+				Vector3 centerPoint = Vector3Add((*node).second->m_Pos, boundingBoxCenterPoint);
+
+				float distance = Vector3Distance(centerPoint, g_camera.target);
 				distance -= (*node).second->m_Pos.y;
 				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
 				{
@@ -214,9 +222,9 @@ void MainState::Update()
 				continue;
 			}
 
-			bool picked = (*node)->Pick();
+			float picked = (*node)->Pick();
 
-			if (picked)
+			if (picked != -1)
 			{
 				g_selectedShape = (*node)->m_shapeData->GetShape();
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
@@ -256,9 +264,9 @@ void MainState::Update()
 				continue;
 			}
 
-			bool picked = (*node)->Pick();
+			float picked = (*node)->Pick();
 
-			if (picked)
+			if (picked != -1)
 			{
 				g_selectedShape = (*node)->m_shapeData->GetShape();
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
@@ -278,6 +286,9 @@ void MainState::Update()
 	{
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
+		float closest = 1000000.0f;
+		int closestObject = 0;
+
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
 			if (*node == nullptr || !(*node)->m_Visible)
@@ -285,16 +296,22 @@ void MainState::Update()
 				continue;
 			}
 
-			bool picked = (*node)->Pick();
+			float picked = (*node)->Pick();
 
-			if (picked)
+			if (picked != -1)
 			{
-				g_selectedShape = (*node)->m_shapeData->GetShape();
-				g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				m_selectedObject = (*node)->m_ID;
-
-				break;
+				if (picked < closest)
+				{
+					closest = picked;
+					closestObject = (*node)->m_ID;
+				}
 			}
+		}
+		if(closestObject != 0)
+		{
+			g_selectedShape = g_ObjectList[closestObject]->m_shapeData->GetShape();
+			g_selectedFrame = g_ObjectList[closestObject]->m_shapeData->GetFrame();
+			m_selectedObject = closestObject;
 		}
 	}
 }

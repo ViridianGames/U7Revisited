@@ -103,15 +103,20 @@ void U7Object::SetPos(Vector3 pos)
    m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
 }
 
-bool U7Object::Pick()
+float U7Object::Pick()
 {
-   bool picked = false;
-
    Ray ray = GetMouseRay(GetMousePosition(), g_camera);
 
    RayCollision collision = GetRayCollisionBox(ray, m_boundingBox);
 
-   return collision.hit;
+   if(collision.hit)
+   {
+      return collision.distance;
+   }
+   else
+   {
+      return -1;
+   }
 }
 
 void U7Object::SetDest(Vector3 dest)
