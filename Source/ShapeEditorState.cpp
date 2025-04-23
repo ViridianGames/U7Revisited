@@ -840,30 +840,54 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTMODELBUTTON)
 	{
-		m_modelIndex++;
-		if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			m_modelIndex = g_ResourceManager->m_ModelList.begin();
+			for(int i = 0; i < 10; ++i)
+			{
+				m_modelIndex++;
+				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.begin();
+				}
+			}
 		}
+		else
+		{
+			m_modelIndex++;
+			if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+			{
+				m_modelIndex = g_ResourceManager->m_ModelList.begin();
+			}
+		}
+
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVMODELBUTTON)
 	{
-		if (m_modelIndex != g_ResourceManager->m_ModelList.begin())
+		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			m_modelIndex--;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
+			for(int i = 0; i < 10; ++i)
+			{
+				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.end();
+				}
+				m_modelIndex--;
+			}
 		}
 		else
 		{
-			m_modelIndex = g_ResourceManager->m_ModelList.end();
+			if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+			{
+				m_modelIndex = g_ResourceManager->m_ModelList.end();
+			}
 			m_modelIndex--;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		}
+
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
