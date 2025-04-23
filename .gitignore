@@ -9,6 +9,7 @@
 /subprojects/raylib/
 /subprojects/packagecache/
 *.o
+*.d
 liblua.a
 cmake-build-debug/
 

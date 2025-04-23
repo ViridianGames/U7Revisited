@@ -385,6 +385,20 @@ void ShapeEditorState::Update()
 		}
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
+	{
+		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+		{
+			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame)
+			{
+				g_camera.target = (*node).second->m_Pos;
+				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
+				g_CameraMoved = true;
+				break;
+			}
+		}
+	}
+
 	if (m_currentGui->GetActiveElementID() == GE_TOPXMINUSBUTTON)
 	{
 		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth - 1 >= 0)
@@ -826,30 +840,54 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTMODELBUTTON)
 	{
-		m_modelIndex++;
-		if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			m_modelIndex = g_ResourceManager->m_ModelList.begin();
+			for(int i = 0; i < 10; ++i)
+			{
+				m_modelIndex++;
+				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.begin();
+				}
+			}
 		}
+		else
+		{
+			m_modelIndex++;
+			if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+			{
+				m_modelIndex = g_ResourceManager->m_ModelList.begin();
+			}
+		}
+
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVMODELBUTTON)
 	{
-		if (m_modelIndex != g_ResourceManager->m_ModelList.begin())
+		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			m_modelIndex--;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
+			for(int i = 0; i < 10; ++i)
+			{
+				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.end();
+				}
+				m_modelIndex--;
+			}
 		}
 		else
 		{
-			m_modelIndex = g_ResourceManager->m_ModelList.end();
+			if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+			{
+				m_modelIndex = g_ResourceManager->m_ModelList.end();
+			}
 			m_modelIndex--;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
-			g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		}
+
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
@@ -1072,8 +1110,8 @@ void ShapeEditorState::Draw()
 		Texture* r = g_shapeTable[m_currentShape][m_currentFrame].GetRightTexture();
 
 		//  Draw original texture with label and border
-		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize, 1, WHITE);
-		float yoffset = g_guiFontSize + 2;
+		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize * g_DrawScale, 1, WHITE);
+		float yoffset = (g_guiFontSize + 2) * g_DrawScale;
 		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
 		yoffset += scale;
 		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
@@ -1081,16 +1119,16 @@ void ShapeEditorState::Draw()
 		//  Draw top texture with labels and borders
 		yoffset += float(d->height) * scale + scale + scale;
 		float rightoffset = yoffset;
-		DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
 
 		//  Draw front texture with labels and borders
 		yoffset += float(d->height) * scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
@@ -1099,8 +1137,8 @@ void ShapeEditorState::Draw()
 		yoffset = rightoffset;
 		//yoffset += float(r->height) * scale + scale + scale;
 		float xoffset = d->width * scale + scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize, 1, WHITE);
-		yoffset += g_guiFontSize + 2 + scale;
+		DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		yoffset += (g_guiFontSize + 2) * g_DrawScale;
 		DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 		yoffset -= scale;
 		DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);
@@ -1432,10 +1470,6 @@ void ShapeEditorState::SetupDontDrawGui()
 
 	//  Dont Draw specific setup
 	m_dontDrawGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Don't Draw";
-
-
-
-
 }
 
 void ShapeEditorState::SetupCommonGui(Gui* gui)
@@ -1516,4 +1550,7 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_guiFont.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset;
+	gui->AddTextButton(GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
 }

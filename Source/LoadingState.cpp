@@ -50,7 +50,13 @@ void LoadingState::Init(const string& configfile)
 
 void LoadingState::OnEnter()
 {
-
+	#ifdef DEBUG_MODE
+    AddConsoleString("Debug Build", RED);
+    #elif defined(RELEASE_MODE)
+    AddConsoleString("Release Build");
+    #else
+	AddConsoleString("No build defined, please fix this.");
+    #endif
 }
 
 void LoadingState::OnExit()

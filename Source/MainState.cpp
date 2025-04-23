@@ -191,7 +191,7 @@ void MainState::Update()
 
 	if (IsKeyPressed(KEY_PAGE_DOWN))
 	{
-		if (m_heightCutoff == 15.0f)
+		if (m_heightCutoff == 16.0f)
 		{
 			m_heightCutoff = 10.0f;
 			AddConsoleString("Viewing Second Floor");
