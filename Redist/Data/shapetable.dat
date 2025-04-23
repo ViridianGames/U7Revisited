@@ -4478,9 +4478,9 @@
 289 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 289 29 
 289 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 289 30 
 289 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 289 31 
-290 0 0 0 32 8 0 8 32 7 32 0 9 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 290 0 
-290 1 0 0 32 8 0 8 32 7 32 0 10 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 290 1 
-290 2 0 0 32 8 0 8 32 7 32 0 10 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 290 2 
+290 0 0 0 32 8 0 8 32 7 32 0 9 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x00.obj 1 0 290 0 
+290 1 0 0 32 8 0 8 32 7 32 0 10 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x01.obj 1 0 290 1 
+290 2 0 0 32 8 0 8 32 7 32 0 10 8 3 1 1 1 -1 0 0.5 180 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x02.obj 1 0 290 2 
 290 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 3 
 290 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 4 
 290 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 5 
@@ -4510,8 +4510,8 @@
 290 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 29 
 290 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 30 
 290 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 31 
-291 0 0 1 4 29 0 32 8 10 4 1 10 31 1 0.5 1 1 0.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 291 0 
-291 1 0 1 4 29 0 41 8 10 4 1 10 31 1 0.5 1 1 0.3 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 291 1 
+291 0 0 1 4 29 0 32 8 10 4 1 10 31 3 0.5 1 1 0.5 0 -1 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_291x00.obj 1 0 291 0 
+291 1 0 1 4 29 0 41 8 10 4 1 10 31 3 0.5 1 1 0.5 0 -1 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_291x01.obj 1 0 291 1 
 291 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 291 2 
 291 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 291 3 
 291 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 291 4 
@@ -4574,7 +4574,7 @@
 292 29 0 0 8 8 0 8 8 9 8 0 12 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 292 29 
 292 30 0 0 8 8 0 8 8 12 8 0 9 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 292 30 
 292 31 0 0 8 8 0 8 8 9 8 0 5 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 292 31 
-293 0 0 0 8 32 0 32 8 16 0 0 22 27 1 1 1.2 1 0.1 0.2 0.5 0 0 0 0 3 0 0 Models/3dmodels/zzwrongcube.obj 1 0 293 0 
+293 0 0 0 8 32 0 32 8 16 0 0 22 27 2 1 1.2 1 0.1 0.2 0.5 0 0 0 0 3 0 0 Models/3dmodels/zzwrongcube.obj 1 0 293 0 
 293 1 0 0 8 32 0 32 8 16 0 0 21 27 1 1 1.2 1 0.1 0.2 0.5 0 0 0 0 3 0 0 Models/3dmodels/zzwrongcube.obj 1 0 293 1 
 293 2 0 0 8 32 0 32 8 16 0 0 22 27 1 1 1.2 1 0.1 0.2 0.5 0 0 0 0 3 0 0 Models/3dmodels/zzwrongcube.obj 1 0 293 2 
 293 3 0 0 8 32 0 32 8 16 0 0 21 27 1 1 1.2 1 0.1 0.2 0.1 0 0 0 0 3 0 0 Models/3dmodels/zzwrongcube.obj 1 0 293 3 
@@ -4734,7 +4734,7 @@
 297 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 297 29 
 297 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 297 30 
 297 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 297 31 
-298 0 0 0 5 5 0 5 5 0 5 0 0 5 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 298 0 
+298 0 0 0 5 5 0 5 5 0 5 0 0 5 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 298 0 
 298 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 298 1 
 298 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 298 2 
 298 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 298 3 
@@ -4862,7 +4862,7 @@
 301 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 301 29 
 301 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 301 30 
 301 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 301 31 
-302 0 0 0 16 16 0 16 16 0 16 0 11 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 302 0 
+302 0 0 0 16 16 0 16 16 0 16 0 11 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 302 0 
 302 1 0 0 16 16 0 16 16 5 16 0 27 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 302 1 
 302 2 0 0 16 16 0 16 16 11 16 0 28 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 302 2 
 302 3 0 0 16 16 0 16 16 1 16 0 3 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 302 3 
@@ -4894,7 +4894,7 @@
 302 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 302 29 
 302 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 302 30 
 302 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 302 31 
-303 0 0 0 8 32 0 32 8 4 8 0 1 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 303 0 
+303 0 0 0 8 32 0 32 8 4 8 0 1 32 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 303 0 
 303 1 0 0 8 32 0 32 8 8 8 0 5 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 303 1 
 303 2 0 0 8 32 0 32 8 12 8 0 9 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 303 2 
 303 3 0 0 8 32 0 32 8 16 8 0 13 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 303 3 
@@ -5086,7 +5086,7 @@
 308 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 308 29 
 308 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 308 30 
 308 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 308 31 
-309 0 0 0 56 16 0 16 56 14 56 0 6 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 309 0 
+309 0 0 0 56 16 0 16 56 14 56 0 6 16 6 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 309 0 
 309 1 0 0 56 16 0 16 56 16 56 0 16 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 309 1 
 309 2 0 0 56 16 0 16 56 9 56 0 8 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 309 2 
 309 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 309 3 
@@ -5182,7 +5182,7 @@
 311 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 311 29 
 311 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 311 30 
 311 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 311 31 
-312 0 0 0 24 40 0 40 24 0 24 0 1 40 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 312 0 
+312 0 0 0 24 40 0 40 24 0 24 0 1 40 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 312 0 
 312 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 312 1 
 312 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 312 2 
 312 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 312 3 
@@ -5502,8 +5502,8 @@
 321 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 321 29 
 321 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 321 30 
 321 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 321 31 
-322 0 0 0 8 32 3 0 11 15 8 0 15 32 0 1 1 1 0 0 0 0 1 2 2 2 3 1 Models/3dmodels/zzwrongcube.obj 1 0 322 0 
-322 1 0 0 8 32 0 31 13 13 8 0 19 32 1 1 1 1 0 0 0 0 0 0 0 2 2 0 Models/3dmodels/zzwrongcube.obj 1 0 322 1 
+322 0 0 0 8 32 3 0 11 15 8 0 15 32 3 1 1 1 0.5 0 -1 0 1 2 2 2 3 1 Models/3dmodels/open_shutter_322x00.obj 1 0 322 0 
+322 1 0 0 8 32 0 31 13 13 8 0 19 32 3 1 1 1 0.5 0 -1 0 0 0 0 2 2 0 Models/3dmodels/open_shutter_322x01.obj 1 0 322 1 
 322 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 2 
 322 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 3 
 322 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 4 
@@ -5534,7 +5534,7 @@
 322 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 29 
 322 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 30 
 322 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 322 31 
-323 0 0 0 16 16 0 16 16 23 16 0 32 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 323 0 
+323 0 0 0 16 16 0 16 16 23 16 0 32 16 6 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 323 0 
 323 1 0 0 16 16 0 16 16 24 16 0 32 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 323 1 
 323 2 0 0 16 16 0 16 16 24 16 0 36 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 323 2 
 323 3 0 0 16 16 0 16 16 28 16 0 34 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 323 3 
@@ -5694,7 +5694,7 @@
 327 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 327 29 
 327 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 327 30 
 327 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 327 31 
-328 0 0 0 16 16 0 16 16 48 16 0 48 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 328 0 
+328 0 0 0 16 16 0 16 16 48 16 0 48 16 6 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 328 0 
 328 1 0 0 16 16 0 16 16 48 16 0 47 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 328 1 
 328 2 0 0 16 16 0 16 16 47 16 0 48 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 328 2 
 328 3 0 0 16 16 0 16 16 48 16 0 47 16 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 328 3 
@@ -5726,7 +5726,7 @@
 328 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 328 29 
 328 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 328 30 
 328 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 328 31 
-329 0 0 0 8 8 0 8 8 5 8 0 5 8 2 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 329 0 
+329 0 0 0 8 8 0 8 8 5 8 0 5 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 329 0 
 329 1 0 0 8 8 0 8 8 5 8 0 5 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 329 1 
 329 2 0 0 8 8 0 8 8 8 8 0 23 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 329 2 
 329 3 0 0 8 8 0 8 8 14 8 0 34 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 329 3 
@@ -7102,9 +7102,9 @@
 371 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 29 
 371 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 30 
 371 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 31 
-372 0 0 0 32 8 0 8 32 19 32 0 13 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 372 0 
-372 1 0 0 32 8 0 8 32 19 32 0 13 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 372 1 
-372 2 0 0 32 8 0 8 32 19 32 0 13 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 372 2 
+372 0 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x00.obj 1 0 372 0 
+372 1 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x01.obj 1 0 372 1 
+372 2 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x02.obj 1 0 372 2 
 372 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 3 
 372 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 4 
 372 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 5 
@@ -10238,7 +10238,7 @@
 469 29 0 0 8 8 0 8 8 27 8 0 18 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 29 
 469 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 30 
 469 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 31 
-470 0 0 0 32 24 0 24 32 16 32 0 12 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 470 0 
+470 0 0 0 32 24 0 24 32 16 32 0 12 24 3 1 1 1 1.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/well_470x00.gltf 1 0 470 0 
 470 1 0 0 32 24 0 24 32 17 32 0 13 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 470 1 
 470 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 470 2 
 470 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 470 3 
@@ -18878,7 +18878,7 @@
 739 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 739 29 
 739 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 739 30 
 739 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 739 31 
-740 0 0 0 40 8 0 8 40 10 40 0 10 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 740 0 
+740 0 0 0 40 8 0 8 40 10 40 0 10 8 6 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 740 0 
 740 1 0 0 40 8 0 8 40 12 40 0 10 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 740 1 
 740 2 0 0 40 8 0 8 40 16 40 0 19 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 740 2 
 740 3 0 0 40 8 0 8 40 16 40 0 19 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 740 3 
@@ -26690,7 +26690,7 @@
 984 1 0 0 32 8 0 8 32 4 32 0 4 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 984 1 
 984 2 0 0 32 8 0 8 32 3 32 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 984 2 
 984 3 0 0 32 8 0 8 32 3 32 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 984 3 
-984 4 0 0 32 8 0 8 32 4 32 0 2 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 984 4 
+984 4 0 0 32 8 0 8 32 4 32 0 2 8 1 1 1 1 0 0.1 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 984 4 
 984 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 984 5 
 984 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 984 6 
 984 7 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 984 7 
