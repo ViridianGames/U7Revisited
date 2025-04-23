@@ -133,5 +133,4 @@ executable('U7Revisited',
   sources,
   dependencies: dependencies,
   include_directories: include_directories,
-  cpp_args: [],
 )
