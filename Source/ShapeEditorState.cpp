@@ -385,6 +385,20 @@ void ShapeEditorState::Update()
 		}
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
+	{
+		for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+		{
+			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame)
+			{
+				g_camera.target = (*node).second->m_Pos;
+				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
+				g_CameraMoved = true;
+				break;
+			}
+		}
+	}
+
 	if (m_currentGui->GetActiveElementID() == GE_TOPXMINUSBUTTON)
 	{
 		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth - 1 >= 0)
@@ -1432,10 +1446,6 @@ void ShapeEditorState::SetupDontDrawGui()
 
 	//  Dont Draw specific setup
 	m_dontDrawGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Don't Draw";
-
-
-
-
 }
 
 void ShapeEditorState::SetupCommonGui(Gui* gui)
@@ -1516,4 +1526,7 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_guiFont.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset;
+	gui->AddTextButton(GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
 }
