@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug u7revisited_debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/Redist/u7revisited_debug",
@@ -12,7 +12,6 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -21,6 +20,26 @@
                 }
             ],
             "preLaunchTask": "build-debug"
+        },
+        {
+            "name": "Debug u7revisited_release",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/Redist/u7revisited",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/Redist",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build-release"
         }
     ]
 }

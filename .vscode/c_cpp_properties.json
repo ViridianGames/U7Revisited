@@ -1,19 +1,32 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Debug",
+            "defines": ["DEBUG_MODE"],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
             "includePath": [
-                "${workspaceFolder}/Source",
                 "${workspaceFolder}/Source/Geist",
                 "${workspaceFolder}/ThirdParty/raylib/include",
                 "${workspaceFolder}/ThirdParty/raylib/external",
                 "${workspaceFolder}/ThirdParty/lua/src"
-            ],
-            "defines": [],
+            ]
+        },
+        {
+            "name": "Release",
+            "defines": ["RELEASE_MODE"],
             "compilerPath": "/usr/bin/g++",
-            "cStandard": "c11",
-            "cppStandard": "c++17",  // Updated from c++14 to c++17
-            "intelliSenseMode": "linux-gcc-x64"
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "includePath": [
+                "${workspaceFolder}/Source/Geist",
+                "${workspaceFolder}/ThirdParty/raylib/include",
+                "${workspaceFolder}/ThirdParty/raylib/external",
+                "${workspaceFolder}/ThirdParty/lua/src"
+            ]
         }
     ],
     "version": 4
