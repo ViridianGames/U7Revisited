@@ -1,8 +1,15 @@
-project('Ultima 7 Revisited', ['cpp', 'c'],
-        default_options: ['cpp_std=c++17'])
+project('Ultima 7 Revisited', ['c', 'cpp'],
+        version: '1.0.0',
+        default_options: ['warning_level=3'])
 
 # Suppress float-to-int warnings (C4244)
 add_project_arguments('/wd4244', language: 'cpp')
+
+# Suppress truncation from 'double' to 'float' warnings (C4305)
+add_project_arguments('/wd4305', language: 'cpp')
+
+# Declare C++17 for CPP source files
+add_project_arguments('/std:c++17', language: 'cpp')
 
 cmake = import('cmake')
 
@@ -116,7 +123,9 @@ sources = files(
            'Source/TitleState.cpp',
            'Source/U7Globals.cpp',
            'Source/U7Gump.cpp',
+           'Source/U7LuaFuncs.cpp',
            'Source/U7Object.cpp',
+           'Source/U7Player.cpp',
            'Source/WorldEditorState.cpp',
 )
 
@@ -124,4 +133,5 @@ executable('U7Revisited',
   sources,
   dependencies: dependencies,
   include_directories: include_directories,
+  cpp_args: [],
 )
