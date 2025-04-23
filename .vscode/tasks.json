@@ -5,20 +5,28 @@
             "label": "build-debug",
             "type": "shell",
             "command": "make",
-            "args": ["debug"],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": ["$gcc"]
+            "args": [
+                "debug"
+            ],
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "build-release",
             "type": "shell",
             "command": "make",
-            "args": ["release"],
-            "group": "build",
-            "problemMatcher": ["$gcc"]
+            "args": [
+                "release"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }
