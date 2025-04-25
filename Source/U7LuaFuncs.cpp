@@ -290,6 +290,123 @@ static int LuaRemoveAnswer(lua_State* L)
     return 0;
 }
 
+static int LuaGetItemType(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int type = 0; // TODO: g_ItemManager->GetItemType(item_id)
+    lua_pushinteger(L, type);
+    return 1;
+}
+
+static int LuaGetItemFrame(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int frame = 0; // TODO: g_ItemManager->GetItemFrame(item_id)
+    lua_pushinteger(L, frame);
+    return 1;
+}
+
+static int LuaSetItemFrame(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int frame = luaL_checkinteger(L, 2);
+    // TODO: g_ItemManager->SetItemFrame(item_id, frame)
+    return 0;
+}
+
+static int LuaGetItemQuality(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int quality = 0; // TODO: g_ItemManager->GetItemQuality(item_id)
+    lua_pushinteger(L, quality);
+    return 1;
+}
+
+static int LuaSetItemQuality(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int quality = luaL_checkinteger(L, 2);
+    // TODO: g_ItemManager->SetItemQuality(item_id, quality)
+    return 0;
+}
+
+static int LuaGetItemInfo(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    lua_newtable(L);
+    // TODO: Push x, y, z coordinates or other attributes
+    return 1;
+}
+
+static int LuaGetContainerItems(lua_State* L) {
+    int container_id = luaL_checkinteger(L, 1);
+    int type = luaL_checkinteger(L, 2);
+    int x = luaL_checkinteger(L, 3);
+    int y = luaL_checkinteger(L, 4);
+    lua_newtable(L);
+    // TODO: Push list of item IDs
+    return 1;
+}
+
+static int LuaRemoveItem(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    // TODO: g_ItemManager->RemoveItem(item_id)
+    return 0;
+}
+
+static int LuaGetDistance(lua_State* L) {
+    int obj1_id = luaL_checkinteger(L, 1);
+    int obj2_id = luaL_checkinteger(L, 2);
+    int distance = 0; // TODO: g_World->GetDistance(obj1_id, obj2_id)
+    lua_pushinteger(L, distance);
+    return 1;
+}
+
+static int LuaPlayMusic(lua_State* L) {
+    int track = luaL_checkinteger(L, 1);
+    int loop = luaL_checkinteger(L, 2);
+    // TODO: g_AudioSystem->PlayMusic(track, loop)
+    return 0;
+}
+
+static int LuaSetItemState(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    // TODO: g_ItemManager->SetItemState(item_id)
+    return 0;
+}
+
+static int LuaGetWearer(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int wearer_id = 0; // TODO: g_ItemManager->GetWearer(item_id)
+    lua_pushinteger(L, wearer_id);
+    return 1;
+}
+
+static int LuaGetItemShape(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int shape = 0; // TODO: g_ItemManager->GetItemShape(item_id)
+    lua_pushinteger(L, shape);
+    return 1;
+}
+
+static int LuaCheckItemState(lua_State* L) {
+    int item_id = luaL_checkinteger(L, 1);
+    int state = 0; // TODO: g_ItemManager->CheckItemState(item_id)
+    lua_pushinteger(L, state);
+    return 1;
+}
+
+static int LuaFindItems(lua_State* L) {
+    int obj_id = luaL_checkinteger(L, 1);
+    int type = luaL_checkinteger(L, 2);
+    int distance = luaL_checkinteger(L, 3);
+    int flags = luaL_checkinteger(L, 4);
+    lua_newtable(L);
+    // TODO: g_World->FindItems(obj_id, type, distance, flags)
+    return 1;
+}
+
+static int LuaApplyEffect(lua_State* L) {
+    int obj_id = luaL_checkinteger(L, 1);
+    int effect = luaL_checkinteger(L, 2);
+    // TODO: g_EffectSystem->ApplyEffect(obj_id, effect)
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -317,5 +434,22 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("trigger_ferry", LuaTriggerFerry);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswer);
     g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswer);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_type", LuaGetItemType);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaGetItemFrame);
+    g_ScriptingSystem->RegisterScriptFunction("set_item_frame", LuaSetItemFrame);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_quality", LuaGetItemQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaSetItemQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_info", LuaGetItemInfo);    
+    g_ScriptingSystem->RegisterScriptFunction("get_container_items", LuaGetContainerItems);    
+    g_ScriptingSystem->RegisterScriptFunction("remove_item", LuaRemoveItem);
+    g_ScriptingSystem->RegisterScriptFunction("get_distance", LuaGetDistance);
+    g_ScriptingSystem->RegisterScriptFunction("play_music", LuaPlayMusic);
+    g_ScriptingSystem->RegisterScriptFunction("set_item_state", LuaSetItemState);
+    g_ScriptingSystem->RegisterScriptFunction("get_wearer", LuaGetWearer);
+    g_ScriptingSystem->RegisterScriptFunction("get_item_shape", LuaGetItemShape);
+    g_ScriptingSystem->RegisterScriptFunction("check_item_state", LuaCheckItemState);
+    g_ScriptingSystem->RegisterScriptFunction("find_items", LuaFindItems);
+    g_ScriptingSystem->RegisterScriptFunction("apply_effect", LuaApplyEffect);
+
     cout << "Registered all Lua functions\n";
 }

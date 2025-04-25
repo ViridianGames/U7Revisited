@@ -54,7 +54,7 @@ void Gump::Draw()
 	{
 		auto object = GetObjectFromID(item);
 		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_Pos.x + xoffset, m_Pos.y + yoffset}, 0, 1, Color{255, 255, 255, 255});
-		xoffset += object->m_shapeData->GetTexture()->width + 2;
+		xoffset += object->m_shapeData->GetTexture()->width + 1;
 	}
 }
 

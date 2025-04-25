@@ -66,12 +66,19 @@ void ShapeEditorState::Init(const string& configfile)
 
 void ShapeEditorState::ChangeGui(Gui* newGui)
 {
+	m_bboardGui->m_ActiveElement = -1;
 	m_bboardGui->m_Active = false;
+	m_flatGui->m_ActiveElement = -1;
 	m_flatGui->m_Active = false;
+	m_cuboidGui->m_ActiveElement = -1;
 	m_cuboidGui->m_Active = false;
+	m_meshGui->m_ActiveElement = -1;
 	m_meshGui->m_Active = false;
+	m_characterGui->m_ActiveElement = -1;
 	m_characterGui->m_Active = false;
+	m_shapePointerGui->m_ActiveElement = -1;
 	m_shapePointerGui->m_Active = false;
+	m_dontDrawGui->m_ActiveElement = -1;
 	m_dontDrawGui->m_Active = false;
 
 	newGui->m_Active = true;
@@ -214,14 +221,13 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[newShape][0].IsValid())
 		{
 			m_currentShape = newShape;
+			m_currentFrame = 0;
 			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
 		}
 		else
 		{
 			m_currentShape = 0;
 		}
-
-		m_currentFrame = 0;
 	}
 
 	if (IsKeyPressed(KEY_D) || m_currentGui->GetActiveElementID() == GE_NEXTSHAPEBUTTON)

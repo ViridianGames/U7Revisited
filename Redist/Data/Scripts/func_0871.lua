@@ -1,0 +1,55 @@
+-- Function 0871: Tavern shop dialogue
+function func_0871(eventid, itemref)
+    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13
+
+    local0 = _GetPlayerName(eventid)
+    _SaveAnswers()
+    local1 = true
+    local2 = {"wine", "ale", "silverleaf", "ham", "fish", "mead", "jerky", "nothing"}
+    local3 = {616, 616, 377, 377, 377, 616, 377, 0}
+    local4 = {5, 3, 31, 11, 13, 0, 15, -359}
+    local5 = {2, 2, 20, 10, 3, 5, 25, 0}
+    local6 = {0}
+    local7 = 0
+    local8 = {" for a bottle", " for a bottle", " for a plateful", " for one slice", " each", " for a bottle", " for ten pieces", ""}
+    local9 = {1, 1, 1, 1, 1, 1, 10, 0}
+    say(itemref, "\"What wouldst thou like?\"")
+    while local1 do
+        local10 = call_090CH(local2)
+        if local10 == 1 then
+            say(itemref, "\"Very well.\"")
+            local1 = false
+        elseif local10 == 6 and not get_flag(299) then
+            say(itemref, "\"I have no more. For some reason, no one is sending Silverleaf to us, so I cannot make a meal from it.\"")
+        else
+            local11 = call_091BH(local8[local10], local5[local10], local9[local10], local2[local10], local6[local10] or "")
+            local12 = 0
+            say(itemref, "^" .. local11 .. " Is that all right?")
+            local13 = get_answer()
+            if local13 then
+                if local3[local10] == 616 then
+                    local12 = call_08F8H(true, 1, 0, local5[local10], local9[local10], local4[local10], local3[local10])
+                else
+                    local11 = "How many "
+                    if local9[local10] > 1 then
+                        local11 = local11 .. "sets "
+                    end
+                    local11 = local11 .. "wouldst thou like?"
+                    say(itemref, "^" .. local11 .. "\"")
+                    local12 = call_08F8H(true, 1, 20, local5[local10], local9[local10], local4[local10], local3[local10])
+                end
+            end
+            if local12 == 1 then
+                say(itemref, "\"Done!\"")
+            elseif local12 == 2 then
+                say(itemref, "\"But, " .. local0 .. ", thou cannot possibly carry that much!\"")
+            elseif local12 == 3 then
+                say(itemref, "\"I am sorry, " .. local0 .. ", thou hast not enough gold for that.\"")
+            end
+            say(itemref, "\"Wouldst thou like something else?\"")
+            local1 = get_answer()
+        end
+    end
+    _RestoreAnswers()
+    return
+end

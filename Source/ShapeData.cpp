@@ -685,7 +685,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 	{
       m_customMesh->UpdateAnim("idle");
 
-      if (m_meshOutline)
+      if (m_meshOutline && !g_pixelated)
       {
          glClearStencil(0);
          glClear(GL_STENCIL_BUFFER_BIT);
