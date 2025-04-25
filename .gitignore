@@ -7,6 +7,10 @@
 !Redist/Data/U7/U7.txt
 
 /subprojects/raylib/
+/subprojects/packagecache/
 *.o
 *.d
 liblua.a
+cmake-build-debug/
+
+.idea/
