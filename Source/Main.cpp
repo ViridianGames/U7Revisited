@@ -30,10 +30,12 @@
 #include <string>
 #include <sstream>
 #include <memory>
+#include <filesystem>
 
 #include "rlgl.h"
 
 using namespace std;
+using namespace std::filesystem;
 
 int main(int argv, char** argc)
 {
@@ -57,9 +59,9 @@ int main(int argv, char** argc)
       g_VitalRNG->SeedRNG(GetTime() * 1000);
       int x = g_VitalRNG->Random(7);
 
-      switch (x)
+      switch (0)
       {
-         case 0: //  Staring Location
+         case 0: //  Starting Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
 			   break;
 
@@ -180,8 +182,24 @@ int main(int argv, char** argc)
       g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
 
       //  Initialize scripts
-      g_ScriptingSystem->LoadScript("Data/Scripts/npc.lua");
-      g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua");
+
+      string directoryPath("Data/Scripts");
+
+      for (const auto& entry : directory_iterator(directoryPath))
+      {
+           if (entry.is_regular_file())
+         {
+               std::string ext = entry.path().extension().string();
+   
+               if (ext == ".lua")
+            {
+                   std::string filepath = entry.path().string();
+                  g_ScriptingSystem->LoadScript(filepath);
+               }
+           }
+       }
+
+       g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua");
 
       RegisterAllLuaFunctions();
 

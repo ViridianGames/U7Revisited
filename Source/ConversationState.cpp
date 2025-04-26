@@ -74,7 +74,7 @@ void ConversationState::Update()
 				 400 * g_DrawScale,
 				 float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale) }))
 			{
-				SetAnswer("func_154", m_answers[i]);
+				SetAnswer(m_luaFunction, m_answers[i]);
 				
 				m_answers.clear();
 				m_dialogue.clear();
@@ -87,19 +87,19 @@ void ConversationState::Update()
 	if(m_answerPending)
 	{
 		m_answerPending = false;
-		g_ScriptingSystem->CallScript("func_154", {286, 2});  
+		g_ScriptingSystem->CallScript(m_luaFunction, {m_npcId, 2});  
 	}
 
    if (IsKeyReleased(KEY_SPACE))
 	{
 		if(m_dialogue.size() <= 1)
 		{
-			GetAnswers("func_154");
+			GetAnswers(m_luaFunction);
 			if(m_answers.size() == 0)
 			{
 				m_dialogue.clear();
 				m_answers.clear();
-				SetAnswer("func_154", "nil");
+				SetAnswer(m_luaFunction, "nil");
 				g_StateMachine->PopState();
 			}
 		}	

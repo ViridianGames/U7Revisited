@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -42,15 +43,37 @@ void ScriptingSystem::Update()
 
 void ScriptingSystem::LoadScript(const std::string& path)
 {
+    if(path == "Data/Scripts/func_040B.lua")
+    {
+        // Skip loading this script as it is not needed
+        int stopper = 0;
+    }
+
     if (luaL_dofile(m_luaState, path.c_str()) != LUA_OK)
     {
         std::cerr << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
         lua_pop(m_luaState, 1);
     }
+    else
+    {
+        // Get the actual function number from the path
+        std::string func_name = path.substr(path.find_last_of('/') + 1);
+        func_name = func_name.substr(0, func_name.find_last_of('.'));
+        m_loadedLuaScripts.push_back(func_name);    
+        std::cout << "Loaded script: " << path << "\n";
+    }
 }
 
 void ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
 {
+    //  Check if the function is loaded
+    auto it = std::find(m_loadedLuaScripts.begin(), m_loadedLuaScripts.end(), func_name);
+    if (it == m_loadedLuaScripts.end())
+    {
+        std::cerr << "Function " << func_name << " not loaded.\n";
+        return;
+    }
+
     lua_getglobal(m_luaState, func_name.c_str());
     if (lua_isfunction(m_luaState, -1))
     {

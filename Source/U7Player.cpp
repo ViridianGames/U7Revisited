@@ -7,4 +7,5 @@ U7Player::U7Player()
 	m_PlayerName = "Avatar";
 	m_PlayerPosition = { 0.0f, 0.0f, 0.0f };
 	m_PlayerDirection = { 0.0f, 0.0f, 1.0f }; // Default direction facing forward
+	m_isMale = true; // Default
 }

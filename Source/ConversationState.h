@@ -34,6 +34,11 @@ public:
 
    void SetAnswer(const std::string& func_name, const std::string& answer);
 
+   void SetLuaFunction(const std::string& func_name)
+   {
+      m_luaFunction = func_name;
+   }
+
    Gui* m_Gui;
 
    int m_npcId;
@@ -42,6 +47,8 @@ public:
 
    std::vector<std::string> m_dialogue;
    std::vector<std::string> m_answers;
+
+   std::string m_luaFunction;
 };
 
 #endif

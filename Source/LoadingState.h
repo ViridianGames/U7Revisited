@@ -35,10 +35,7 @@ public:
    void LoadVersion();
    void MakeMap();
    void LoadModels();
-      //void MakeCSVFile();
    void LoadInitialGameState();
-
-   void splitUsecodeDis();
 
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);

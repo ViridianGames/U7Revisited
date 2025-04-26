@@ -9,6 +9,12 @@
 #include "ShapeData.h"
 #include "LoadingState.h"
 
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <format>
+#include <iomanip>
+
 using namespace std;
 
 U7Object::~U7Object()
@@ -162,5 +168,19 @@ void U7Object::SetNPCBlock(NPCblock block)
 
 void U7Object::Interact(int event)
 {
-   g_ScriptingSystem->CallScript("func_154", {286, event});  
+   int NPCId = static_cast<int>(m_NPCData.index2);
+
+   g_ConversationState->SetNPC(NPCId);
+
+
+   string scriptName = "func_04";
+
+   stringstream ss;
+   ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
+
+   scriptName += ss.str();
+
+   g_ConversationState->SetLuaFunction(scriptName);
+
+    g_ScriptingSystem->CallScript(scriptName, {event, NPCId});  
 }

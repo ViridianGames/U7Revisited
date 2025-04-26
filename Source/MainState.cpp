@@ -232,7 +232,7 @@ void MainState::Update()
 
 				if ((*node)->m_hasConversationTree)
 				{
-					(*node)->Interact(2);
+					(*node)->Interact(1);
 				}
 				else
 				{

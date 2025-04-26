@@ -24,6 +24,8 @@ public:
 	void SetPartyMember(int index, int npc_id) { m_PartyMembers[index] = npc_id; }
 	void SetPartyMembers(std::vector<int> partyMembers) { m_PartyMembers = partyMembers; }
 	void SetPlayerName(std::string name) { m_PlayerName = name; }
+	void SetMale(bool isMale) { m_isMale = isMale; }
+	bool GetIsMale() { return m_isMale; }
 	std::string GetPlayerName() { return m_PlayerName; }
 	void SetPlayerPosition(Vector3 position) { m_PlayerPosition = position; }
 	Vector3 GetPlayerPosition() { return m_PlayerPosition; }
@@ -43,6 +45,8 @@ public:
 	std::string m_PlayerName;
 	Vector3 m_PlayerPosition;
 	Vector3 m_PlayerDirection;
+
+	bool m_isMale;
 
 };
 

@@ -10,13 +10,20 @@ using namespace std;
 
 static int LuaSay(lua_State* L)
 {
-    cout << "Lua says: " << luaL_checkstring(L, 2) << "\n";
-    const char* text = luaL_checkstring(L, 2);
+    cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
+    const char* text = luaL_checkstring(L, 1);
 
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-    g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
     g_ConversationState->AddDialogue(text);
 
+    return 0;
+}
+
+static int LuaBark(lua_State* L)
+{
+    const char* text = luaL_checkstring(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
     return 0;
 }
 
@@ -37,7 +44,7 @@ static int LuaStartConversation(lua_State* L)
     }
 
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-    g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
+    //g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
     return 0;
 }
 
@@ -192,8 +199,9 @@ static int LuaSpendGold(lua_State* L)
 static int LuaSwitchTalkTo(lua_State* L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    int unknown = luaL_checkinteger(L, 2); // Placeholder
+    //int unknown = luaL_checkinteger(L, 2); // Placeholder
     cout << "Switching talk to NPC ID: " << npc_id << "\n";
+    //g_ConversationState->SetNPC(npc_id);
     // TODO: Set conversation focus to npc_id
     return 0;
 }
@@ -225,11 +233,11 @@ static int LuaGetPartyMembers(lua_State* L)
 
 static int LuaIsPartyMember(lua_State* L)
 {
-    int npc_id = luaL_checkinteger(L, 1);
-    lua_getglobal(L, "party_members"); // Assume table from get_party_members
-    bool is_member = false; // TODO: Check if npc_id is in party_members
-    cout << "Checking if NPC ID " << npc_id << " is party member\n";
-    lua_pushboolean(L, is_member);
+    //int npc_id = luaL_checkinteger(L, 1);
+    //lua_getglobal(L, "party_members"); // Assume table from get_party_members
+    //bool is_member = false; // TODO: Check if npc_id is in party_members
+    //cout << "Checking if NPC ID " << npc_id << " is party member\n";
+    lua_pushboolean(L, false);
     return 1;
 }
 
@@ -241,9 +249,13 @@ static int LuaTriggerFerry(lua_State* L)
     return 0;
 }
 
-static int LuaAddAnswer(lua_State* L)
-{
-    const char* answer = luaL_checkstring(L, 1);
+static int LuaAddAnswer(lua_State* L) {
+    // Check stack for input argument
+    if (lua_gettop(L) < 1) {
+        return luaL_error(L, "Expected at least one argument");
+    }
+
+    // Get or create global answers table
     lua_getglobal(L, "answers");
     if (!lua_istable(L, -1)) {
         lua_pop(L, 1);
@@ -251,12 +263,50 @@ static int LuaAddAnswer(lua_State* L)
         lua_setglobal(L, "answers");
         lua_getglobal(L, "answers");
     }
+    if (!lua_istable(L, -1)) {
+        return luaL_error(L, "Failed to create answers table");
+    }
 
-    int len = lua_rawlen(L, -1);
-    lua_pushstring(L, answer);
-    lua_rawseti(L, -2, len + 1);
-    lua_pop(L, 1); // Pop answers table
-    cout << "Added answer: " << answer << "\n";
+    // Store answers table index
+    int answers_idx = lua_gettop(L);
+    int len = lua_rawlen(L, answers_idx);
+
+    // Check type of first argument
+    int type = lua_type(L, 1);
+    if (type == LUA_TSTRING) {
+        // Single string: add it directly
+        const char* answer = luaL_checkstring(L, 1);
+        lua_pushstring(L, answer);
+        if (!lua_istable(L, answers_idx)) {
+            return luaL_error(L, "Answers table lost at index %d", answers_idx);
+        }
+        lua_rawseti(L, answers_idx, len + 1);
+        std::cout << "Added answer: " << answer << "\n";
+    } else if (type == LUA_TTABLE) {
+        // Table: iterate over elements and add strings
+        int table_len = lua_rawlen(L, 1);
+        for (int i = 1; i <= table_len; ++i) {
+            lua_rawgeti(L, 1, i); // Push table[i]
+            if (lua_isstring(L, -1)) {
+                const char* answer = lua_tostring(L, -1);
+                lua_pushstring(L, answer); // Push copy for answers table
+                if (!lua_istable(L, answers_idx)) {
+                    return luaL_error(L, "Answers table lost at index %d", answers_idx);
+                }
+                lua_rawseti(L, answers_idx, len + 1);
+                len++; // Increment for next insertion
+                std::cout << "Added answer: " << answer << "\n";
+            } else {
+                std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+            }
+            lua_pop(L, 1); // Pop table[i]
+        }
+    } else {
+        return luaL_error(L, "Expected string or table, got %s", lua_typename(L, type));
+    }
+
+    // Clean up: pop answers table
+    lua_pop(L, 1);
     return 0;
 }
 
@@ -407,10 +457,38 @@ static int LuaApplyEffect(lua_State* L) {
     return 0;
 }
 
+static int LuaGetLordOrLady(lua_State* L)
+{
+    int lord_or_lady = 0; // TODO: g_Player->GetLordOrLady()
+    if (g_Player->GetIsMale())
+    {
+        lua_pushstring(L, "Milord");
+    } else
+    {
+        lua_pushstring(L, "Milady");
+    }
+    return 0;
+}
+
+static int LuaIsAvatarFemale(lua_State* L)
+{
+    lua_pushboolean(L, !g_Player->GetIsMale());
+    return 0;
+}
+
+//  TODO:  This is a placeholder function.  It should check if a certain character is in the party.
+static int LuaIsInParty(lua_State* L)
+{
+    int obj_id = luaL_checkinteger(L, 1);
+    lua_pushboolean(L, false);
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
     g_ScriptingSystem->RegisterScriptFunction("say", LuaSay);
+    g_ScriptingSystem->RegisterScriptFunction("bark", LuaSay);
     g_ScriptingSystem->RegisterScriptFunction("move", LuaMove);
     g_ScriptingSystem->RegisterScriptFunction("StartConversation", LuaStartConversation);
     g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
@@ -450,6 +528,9 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("check_item_state", LuaCheckItemState);
     g_ScriptingSystem->RegisterScriptFunction("find_items", LuaFindItems);
     g_ScriptingSystem->RegisterScriptFunction("apply_effect", LuaApplyEffect);
+    g_ScriptingSystem->RegisterScriptFunction("get_lord_or_lady", LuaGetLordOrLady);
+    g_ScriptingSystem->RegisterScriptFunction("get_is_female_avatar", LuaIsAvatarFemale);
+    g_ScriptingSystem->RegisterScriptFunction("is_in_party", LuaIsInParty);
 
     cout << "Registered all Lua functions\n";
 }
