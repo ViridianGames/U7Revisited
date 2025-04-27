@@ -46,6 +46,7 @@ public:
     std::unordered_map<int, bool> m_flags;
 
     std::vector<std::string> m_loadedLuaScripts;
+    std::vector<std::string> m_loadedLuaScriptPaths;
 };
 
 #endif
