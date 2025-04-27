@@ -57,8 +57,8 @@ void ConversationState::OnExit()
 
 void ConversationState::Shutdown()
 {
-	UnloadRenderTexture(g_guiRenderTarget);
-	UnloadRenderTexture(g_renderTarget);
+	//UnloadRenderTexture(g_guiRenderTarget);
+	//UnloadRenderTexture(g_renderTarget);
 	
 }
 

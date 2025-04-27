@@ -730,42 +730,88 @@ void ShapeEditorState::Update()
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKWIDTHPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.x -= .1f;
+
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.x -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.x -= .05f;
+		}
+	
 		if(shapeData.m_Scaling.x < -9.9f) shapeData.m_Scaling.x = -9.9f;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKWIDTHMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.x += .1f;
+
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.x += 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.x += .05f;
+		}
+
 		if (shapeData.m_Scaling.x > 9.9) shapeData.m_Scaling.x = 9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKHEIGHTMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.y += .1f;
+		if(IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.y += 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.y += .05f;
+		}
 		if (shapeData.m_Scaling.y > 9.9) shapeData.m_Scaling.y = 9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKHEIGHTPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.y -= .1f;
+		if(IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.y -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.y -= .05f;
+		}
 		if (shapeData.m_Scaling.y < -9.9f) shapeData.m_Scaling.y = 9.9f;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKDEPTHMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.z += .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.z += 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.z += .05f;
+		}
 		if (shapeData.m_Scaling.z < 0) shapeData.m_Scaling.z = 0;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKDEPTHPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_Scaling.z -= .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_Scaling.z -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_Scaling.z -= .05f;
+		}
 		if (shapeData.m_Scaling.z < -9.9) shapeData.m_Scaling.z = -9.9;
 	}
 
@@ -773,42 +819,84 @@ void ShapeEditorState::Update()
 		if (m_currentGui->GetActiveElementID() == GE_TWEAKXPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.x -= .1f;
+		if(IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.x -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.x -= .05f;
+		}
 		if(shapeData.m_TweakPos.x < -9.9) shapeData.m_TweakPos.x = -9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKXMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.x += .1f;
+		if(IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.x += 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.x += .05f;
+		}
 		if (shapeData.m_TweakPos.x > 9.9) shapeData.m_TweakPos.x = 9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKYMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.y += .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.y += 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.y += .05f;
+		}
 		if (shapeData.m_TweakPos.y > 9.9) shapeData.m_TweakPos.y = 9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKYPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.y -= .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.y -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.y -= .05f;
+		}
 		if (shapeData.m_TweakPos.y < -9.9) shapeData.m_TweakPos.y = -9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKZMINUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.z += .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.z += 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.z += .05f;
+		}
 		if (shapeData.m_TweakPos.z > 9.9) shapeData.m_TweakPos.z = 9.9;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKZPLUSBUTTON)
 	{
 		somethingChanged = true;
-		shapeData.m_TweakPos.z -= .1f;
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			shapeData.m_TweakPos.z -= 1.0f;
+		}
+		else
+		{
+			shapeData.m_TweakPos.z -= .05f;
+		}
 		if (shapeData.m_TweakPos.z < -9.9) shapeData.m_TweakPos.z = -9.9;
 	}
 
@@ -1048,37 +1136,37 @@ void ShapeEditorState::Update()
 	}
 
 	std::ostringstream out;
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_Scaling.x;
 	m_currentGui->GetElement(GE_TWEAKWIDTHTEXTAREA)->m_String = "W:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_Scaling.y;
 	m_currentGui->GetElement(GE_TWEAKHEIGHTTEXTAREA)->m_String = "H:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_Scaling.z;
 	m_currentGui->GetElement(GE_TWEAKDEPTHTEXTAREA)->m_String = "D:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_TweakPos.x;
 	m_currentGui->GetElement(GE_TWEAKXTEXTAREA)->m_String = "X:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_TweakPos.y;
 	m_currentGui->GetElement(GE_TWEAKYTEXTAREA)->m_String = "Y:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_TweakPos.z;
 	m_currentGui->GetElement(GE_TWEAKZTEXTAREA)->m_String = "Z:" + out.str();
 
 	out.str("");
-	out.precision(1);
+	out.precision(2);
 	out << std::fixed << shapeData.m_rotation;
 	m_currentGui->GetElement(GE_TWEAKROTATIONTEXTAREA)->m_String = out.str();
 
