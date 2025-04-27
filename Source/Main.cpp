@@ -47,19 +47,6 @@ int main(int argv, char** argc)
       g_Engine->Init("Data/engine.cfg");
 
       g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
-      g_outlineShader = LoadShader(NULL, "Data/Shaders/outline.fs");
-
-      float outlineSize = 1.0f;
-      float outlineColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Black outline
-      float textureSize[2] = { (float)g_Engine->m_ScreenWidth, (float)g_Engine->m_ScreenHeight };
-  
-      int outlineSizeLoc = GetShaderLocation(g_outlineShader, "outlineSize");
-      int outlineColorLoc = GetShaderLocation(g_outlineShader, "outlineColor");
-      int textureSizeLoc = GetShaderLocation(g_outlineShader, "textureSize");
-  
-      SetShaderValue(g_outlineShader, outlineSizeLoc, &outlineSize, SHADER_UNIFORM_FLOAT);
-      SetShaderValue(g_outlineShader, outlineColorLoc, outlineColor, SHADER_UNIFORM_VEC4);
-      SetShaderValue(g_outlineShader, textureSizeLoc, textureSize, SHADER_UNIFORM_VEC2);
 
       rlDisableBackfaceCulling();
       rlEnableDepthTest();
@@ -150,11 +137,6 @@ int main(int argv, char** argc)
       SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
       g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
       SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
-      g_shaderRenderTarget = LoadRenderTexture(g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight);
-      SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
-
-
-
 
       g_VitalRNG = make_unique<RNG>();
       g_VitalRNG->SeedRNG(7777);
