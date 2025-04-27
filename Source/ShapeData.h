@@ -173,6 +173,8 @@ public:
 	RaylibModel* m_customMesh = nullptr;
 
 	bool m_meshOutline = true;
+
+	std::string m_luaScript;
 };
 
 #endif

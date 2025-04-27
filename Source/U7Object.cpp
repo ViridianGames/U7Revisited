@@ -168,19 +168,26 @@ void U7Object::SetNPCBlock(NPCblock block)
 
 void U7Object::Interact(int event)
 {
-   int NPCId = static_cast<int>(m_NPCData.index2);
+   if(m_hasConversationTree)
+   {
 
-   g_ConversationState->SetNPC(NPCId);
+      int NPCId = static_cast<int>(m_NPCData.index2);
 
+      g_ConversationState->SetNPC(NPCId);
 
-   string scriptName = "func_04";
+      string scriptName = "func_04";
 
-   stringstream ss;
-   ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
+      stringstream ss;
+      ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
 
-   scriptName += ss.str();
+      scriptName += ss.str();
 
-   g_ConversationState->SetLuaFunction(scriptName);
+      g_ConversationState->SetLuaFunction(scriptName);
 
-    g_ScriptingSystem->CallScript(scriptName, {event, NPCId});  
+      g_ScriptingSystem->CallScript(scriptName, {event, NPCId});  
+   }
+   else
+   {
+      g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_shapeData->m_shape, m_shapeData->m_frame });
+   }
 }

@@ -2,6 +2,7 @@
 #include "Geist/Engine.h"
 #include "Geist/StateMachine.h"
 #include "Geist/ResourceManager.h"
+#include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
 #include "ShapeEditorState.h"
 #include "rlgl.h"
@@ -255,6 +256,16 @@ void ShapeEditorState::Update()
 		}
 
 		m_currentFrame = 0;
+
+		m_luaScriptIndex = 0;
+		for (int i = 0; i < g_ScriptingSystem->m_loadedLuaScripts.size(); ++i)
+		{
+			if (g_ScriptingSystem->m_loadedLuaScripts[i] == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
+			{
+				m_luaScriptIndex = i;
+				break;
+			}
+		}
 	}
 
 	if (IsKeyPressed(KEY_W) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
@@ -984,6 +995,56 @@ void ShapeEditorState::Update()
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 	}
 
+	if (m_currentGui->GetActiveElementID() == GE_NEXTLUASCRIPTBUTTON)
+	{
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			for(int i = 0; i < 10; ++i)
+			{
+				m_luaScriptIndex++;
+				if (m_luaScriptIndex > g_ScriptingSystem->m_loadedLuaScripts.size())
+				{
+					m_luaScriptIndex = 0;
+				}
+			}
+		}
+		else
+		{
+			m_luaScriptIndex++;
+			if (m_luaScriptIndex > g_ScriptingSystem->m_loadedLuaScripts.size())
+			{
+				m_luaScriptIndex = 0;
+			}
+		}
+
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_loadedLuaScripts[m_luaScriptIndex]);
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_PREVLUASCRIPTBUTTON)
+	{
+		if (IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			for(int i = 0; i < 10; ++i)
+			{
+				m_luaScriptIndex--;
+				if (m_luaScriptIndex < 0)
+				{
+					m_luaScriptIndex = g_ScriptingSystem->m_loadedLuaScripts.size();
+				}
+			}
+		}
+		else
+		{
+			m_luaScriptIndex--;
+			if (m_luaScriptIndex < 0)
+			{
+				m_luaScriptIndex = g_ScriptingSystem->m_loadedLuaScripts.size();
+			}
+		}
+
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_loadedLuaScripts[m_luaScriptIndex]);
+	}
+
 	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)
 	{
 		int pointerShape = shapeData.m_pointerShape;
@@ -1180,6 +1241,8 @@ void ShapeEditorState::Update()
 		std::string newStr = g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName.substr(16);
 		m_currentGui->GetElement(GE_MODELNAMETEXTAREA)->m_String = newStr;
 	}
+
+	m_currentGui->GetElement(GE_LUASCRIPTTEXTAREA)->m_String = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
 }
 
 
@@ -1344,7 +1407,7 @@ void ShapeEditorState::SetupCuboidGui()
 	m_cuboidGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Cuboid";
 
 	int yoffset = 13;
-	int y = 134;
+	int y = 156;
 
 	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y);
 	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
@@ -1478,7 +1541,7 @@ void ShapeEditorState::SetupMeshGui()
 	m_meshGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Mesh";
 
 	int yoffset = 13;
-	int y = 134;
+	int y = 156;
 
 	m_meshGui->AddTextArea(GE_MODELTEXTAREA, g_guiFont.get(), "Model:", 2, y);
 
@@ -1535,7 +1598,7 @@ void ShapeEditorState::SetupShapePointerGui()
 	m_shapePointerGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Pointer";
 
 	int yoffset = 13;
-	int y = 134;
+	int y = 156;
 
 	m_shapePointerGui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 2, y, g_LeftArrow);
 	m_shapePointerGui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 50, y, g_RightArrow);
@@ -1647,4 +1710,15 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 	gui->AddTextButton(GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
+
+	y += yoffset;
+
+	gui->AddTextArea(GE_LUASCRIPTLABEL, g_guiFont.get(), "Lua Script:", 2, y);
+
+	y += yoffset;
+
+	gui->AddIconButton(GE_PREVLUASCRIPTBUTTON, 2, y, g_LeftArrow);
+	gui->AddTextArea(GE_LUASCRIPTTEXTAREA, g_guiFont.get(), "", 12, y);
+	gui->AddIconButton(GE_NEXTLUASCRIPTBUTTON, 110, y, g_RightArrow);
+
 }

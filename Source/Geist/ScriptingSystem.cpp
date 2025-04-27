@@ -43,9 +43,8 @@ void ScriptingSystem::Update()
 
 void ScriptingSystem::LoadScript(const std::string& path)
 {
-    if(path == "Data/Scripts/func_040B.lua")
+    if(path == "Data/Scripts/default.lua")
     {
-        // Skip loading this script as it is not needed
         int stopper = 0;
     }
 

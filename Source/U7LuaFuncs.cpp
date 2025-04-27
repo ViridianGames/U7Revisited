@@ -8,6 +8,14 @@
 
 using namespace std;
 
+static int LuaDebugPrint(lua_State* L)
+{
+    const char* text = luaL_checkstring(L, 1);
+    cout << "Lua debug says: " << text << "\n";
+    AddConsoleString(text, Color{ 255, 255, 255, 255 });
+    return 0;
+}
+
 static int LuaSay(lua_State* L)
 {
     cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
@@ -531,6 +539,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_lord_or_lady", LuaGetLordOrLady);
     g_ScriptingSystem->RegisterScriptFunction("get_is_female_avatar", LuaIsAvatarFemale);
     g_ScriptingSystem->RegisterScriptFunction("is_in_party", LuaIsInParty);
+    g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 
     cout << "Registered all Lua functions\n";
 }
+

@@ -59,6 +59,8 @@ public:
    std::string m_sideDrawStrings[7];
    std::string m_sideStrings[6];
 
+   int m_luaScriptIndex = 0;
+
    // DEEP BREATH
 
    enum GuiElements
@@ -214,6 +216,11 @@ public:
       GE_CURRENTFRAMEPOINTERIDTEXTAREA,
 
       GE_JUMPTOINSTANCE,
+
+      GE_LUASCRIPTLABEL,
+      GE_PREVLUASCRIPTBUTTON,
+      GE_LUASCRIPTTEXTAREA,
+      GE_NEXTLUASCRIPTBUTTON,
 
       GE_LASTGUIELEMENT
    };

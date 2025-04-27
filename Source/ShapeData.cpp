@@ -35,6 +35,7 @@ ShapeData::ShapeData()
 	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
 	m_meshOutline = true;
 	m_useShapePointer = false;
+	m_luaScript = "default";
 }
 
 void ShapeData::Init(int shape, int frame, bool shouldreset)
@@ -165,6 +166,7 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << m_useShapePointer << " ";
 	outStream << m_pointerShape << " ";
 	outStream << m_pointerFrame << " ";
+	outStream << m_luaScript << " ";
 	outStream << endl;
 
 	outStream.flush();
@@ -221,6 +223,8 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >>  m_useShapePointer;
 	inStream >> m_pointerShape;
 	inStream >> m_pointerFrame;
+
+	// inStream >> m_luaScript;
 
 	Init(m_shape, m_frame, false);
 

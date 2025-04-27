@@ -230,22 +230,7 @@ void MainState::Update()
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				m_selectedObject = (*node)->m_ID;
 
-				if ((*node)->m_hasConversationTree)
-				{
-					(*node)->Interact(1);
-				}
-				else
-				{
-					g_selectedShape = (*node)->m_shapeData->GetShape();
-					g_selectedFrame = (*node)->m_shapeData->GetFrame();
-					m_selectedObject = (*node)->m_ID;
-	
-					if ((*node)->m_isContainer)
-					{
-						OpenGump((*node)->m_ID);
-					}
-					break;
-				}
+				(*node)->Interact(1);
 				break;
 			}
 		}
@@ -271,8 +256,7 @@ void MainState::Update()
 				g_selectedShape = (*node)->m_shapeData->GetShape();
 				g_selectedFrame = (*node)->m_shapeData->GetFrame();
 				m_selectedObject = (*node)->m_ID;
-
-				if ((*node)->m_isContainer)
+				if( (*node)->m_isContainer)
 				{
 					OpenGump((*node)->m_ID);
 				}
