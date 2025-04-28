@@ -162,5 +162,3 @@ This project does not include any original game content. To use this software, y
 The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the LICENSE file.
 
 This project is made by fans, for fans, to preserve and enhance the legacy of Ultima VII for future generations.
-
-## Dependencies

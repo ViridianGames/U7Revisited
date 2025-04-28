@@ -1,26 +1,60 @@
 #!/bin/bash
 # Main wrapper script for U7Revisited development tasks
 
+# --- Colors ---
+CLR_RST="\e[0m" # Reset
+CLR_RED="\e[31m" # Error
+CLR_GRN="\e[32m" # Success
+CLR_YLW="\e[33m" # Warning
+CLR_BLU="\e[34m" # Info / Headers
+CLR_CYN="\e[36m" # Info / Prompt
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 SCRIPTS_SUBDIR="scripts" # Directory where other scripts reside
 
 # --- Helper Functions ---
 print_header() {
     echo ""
-    echo "=================================================="
-    printf "  U7Revisited Task: %s\\n" "$1"
-    echo "=================================================="
+    echo -e "${CLR_BLU}==================================================${CLR_RST}"
+    printf "  ${CLR_BLU}U7Revisited Task: %s${CLR_RST}\n" "$1"
+    echo -e "${CLR_BLU}==================================================${CLR_RST}"
 }
 
 print_footer() {
-    echo "=================================================="
-    echo "  Task Finished"
-    echo "=================================================="
+    echo -e "${CLR_BLU}==================================================${CLR_RST}"
+    echo -e "  ${CLR_GRN}Task Finished${CLR_RST}"
+    echo -e "${CLR_BLU}==================================================${CLR_RST}"
     echo ""
 }
 
 print_error() {
-    echo "[U7 ERROR] $1" >&2
+    echo -e "${CLR_RED}[U7 ERROR] $1${CLR_RST}" >&2
+}
+
+# Simple spinner function
+spinner() {
+    local pid=$1
+    local delay=0.1
+    local spinstr='|/-\'
+    # Hide cursor
+    tput civis
+    # Ensure cleanup on exit/interrupt
+    trap 'tput cnorm; exit' INT TERM EXIT
+
+    while ps -p $pid > /dev/null; do
+        local temp=${spinstr#?}
+        # Use \r to return to beginning of line and overwrite
+        printf "\r${CLR_BLU}[U7Revisited] Working.. [%c]${CLR_RST}" "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+    done
+    # Clear the spinner line after loop finishes
+    # Get terminal width or default to 80, print spaces, then return cursor
+    printf "\r%-${COLUMNS:-80}s\r" ""
+    # Restore cursor
+    tput cnorm
+    # Remove the trap
+    trap - INT TERM EXIT
 }
 
 # --- Check for scripts directory ---
@@ -148,9 +182,17 @@ if [[ "$DO_SETUP_IDE" == true ]]; then
     print_header "IDE Setup (Linux/macOS)"
     SETUP_SCRIPT="${SCRIPTS_DIR}/setup_ide.sh"
     if [ -f "$SETUP_SCRIPT" ]; then
-        echo "--> Running IDE setup script..."
-        bash "$SETUP_SCRIPT"
+        # Use standard echo (adds newline) so spinner appears below
+        echo -e "${CLR_CYN}--> Running IDE setup script...${CLR_RST}"
+        # Run script in background
+        bash "$SETUP_SCRIPT" &
+        SETUP_PID=$!
+        # Start spinner
+        spinner $SETUP_PID
+        # Wait for script to finish and get exit code
+        wait $SETUP_PID
         SETUP_EXIT_CODE=$?
+
         if [ ${SETUP_EXIT_CODE} -ne 0 ]; then
              print_error "IDE setup script failed with exit code ${SETUP_EXIT_CODE}."
              exit 1
@@ -216,10 +258,18 @@ if [[ "$BUILD_NEEDED" == true && "$ONLY_NON_BUILD_COMMAND" == false ]]; then
 
     print_header "Build ($BUILD_TYPE)"
     if [ -f "$BUILD_SCRIPT" ]; then
-        echo "--> Running build script: ${BUILD_SCRIPT} ${BUILD_ARGS[@]}"
-         bash "$BUILD_SCRIPT" ${BUILD_ARGS[@]}
-         BUILD_EXIT_CODE=$?
-         if [ ${BUILD_EXIT_CODE} -ne 0 ]; then
+        # Use standard echo (adds newline) so spinner appears below
+        echo -e "${CLR_CYN}--> Running build script: ${BUILD_SCRIPT} ${BUILD_ARGS[@]}${CLR_RST}"
+        # Run script in background
+        bash "$BUILD_SCRIPT" ${BUILD_ARGS[@]} &
+        BUILD_PID=$!
+        # Start spinner
+        spinner $BUILD_PID
+        # Wait for script to finish and get exit code
+        wait $BUILD_PID
+        BUILD_EXIT_CODE=$?
+
+        if [ ${BUILD_EXIT_CODE} -ne 0 ]; then
              print_error "Build script failed with exit code ${BUILD_EXIT_CODE}."
              exit 1
          fi
