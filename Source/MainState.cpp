@@ -97,7 +97,6 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
 	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
-	//AddConsoleString(std::string("TOO HEAVY"));
 }
 
 void MainState::OnExit()
@@ -107,8 +106,6 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
-	UnloadRenderTexture(g_guiRenderTarget);
-	UnloadRenderTexture(g_renderTarget);
 	
 }
 
@@ -211,9 +208,7 @@ void MainState::Update()
 
 	if (WasLMBDoubleClicked())
 	{
-		//AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
-      
-      std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -238,8 +233,6 @@ void MainState::Update()
 
 	if (WasRMBDoubleClicked())
 	{
-		//AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
-
 		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)

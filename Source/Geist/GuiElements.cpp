@@ -419,16 +419,7 @@ void GuiScrollBar::Draw()
 		center->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + xmiddle)) - 1, m_Gui->m_Pos.y + (m_Pos.y), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), 1 });
 		right->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), 1, 1 });
 
-		//int debugadjustedx = m_Gui->m_Pos.x + (m_Pos.x);
-		//int debugadjustedy = int(m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f));
-
-		//int debugadjustedw = m_Width;
-		//int debugadjustedh = m_SpurActive->m_sourceRect.height;
-
-		//DrawRectangle(debugadjustedx, debugadjustedy, debugadjustedw, debugadjustedh, Color(1, 0, 0, .5), true);
-
 		spur->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x - (float(spur->m_sourceRect.width) / 2))) + ((float(m_Value) / float(m_ValueRange)) * m_Width),
-			//int(m_Gui->m_Pos.y + ((m_Pos.y + (float(spur->m_sourceRect.height) / 2)))),
 			m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f), 1, 1 });
 	}
 }

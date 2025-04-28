@@ -46,7 +46,6 @@ void ConversationState::Init(const string& configfile)
 void ConversationState::OnEnter()
 {
 	ClearConsole();
-	//AddConsoleString(std::string("You have entered conversation state!"));
 }
 
 void ConversationState::OnExit()
@@ -57,8 +56,6 @@ void ConversationState::OnExit()
 
 void ConversationState::Shutdown()
 {
-	//UnloadRenderTexture(g_guiRenderTarget);
-	//UnloadRenderTexture(g_renderTarget);
 	
 }
 
@@ -79,7 +76,6 @@ void ConversationState::Update()
 				m_answers.clear();
 				m_dialogue.clear();
 				m_answerPending = true;
-				//g_StateMachine->PopState();
 			}
 		}
 	}
@@ -138,7 +134,6 @@ void ConversationState::Draw()
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({0, 0, 0, 0});
-	//DrawTextureRec(* g_ResourceManager->GetTexture("Images/GUI/guielements.png"), {0, 28, 640, 388}, { 0, 0 }, WHITE);
 	DrawRectangleRounded({100, 10, 500, 110}, .25, 100, { 0, 0, 0, 224 });
 
 	m_Gui->Draw();
@@ -204,7 +199,6 @@ void ConversationState::SetAnswer(const std::string& func_name, const std::strin
 		lua_setglobal(g_ScriptingSystem->m_luaState, "answer");
 		return;
 	}
-	//lua_pop(g_ScriptingSystem->m_luaState, 1);
     lua_pushstring(g_ScriptingSystem->m_luaState, answer.c_str());
     lua_setglobal(g_ScriptingSystem->m_luaState, "answer");
 }
