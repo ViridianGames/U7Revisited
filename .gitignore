@@ -41,3 +41,7 @@ cmake-build-debug/
 # Makefiles (use Meson or Justfile)
 makefile
 Makefile
+
+# Notebook files
+*.ipynb
+*.vscode-notebook

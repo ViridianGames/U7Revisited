@@ -304,8 +304,10 @@ int main(int argv, char** argc)
          // --- Health Check Path ---
          Log("Running health check initialization...", LOG_INFO);
 
+         Log("Registering Lua C++ functions...", LOG_INFO);
          // Register Lua functions first so scripts can find them during load
          RegisterAllLuaFunctions(); 
+         Log("Lua C++ functions registered.", LOG_INFO);
 
          // Load/check core assets needed for basic functionality
          bool criticalAssetsOk = LoadCoreGameAssets(true, isVerbose);
@@ -338,7 +340,9 @@ int main(int argv, char** argc)
 
          g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
+         Log("Registering Lua C++ functions...", LOG_INFO);
          RegisterAllLuaFunctions();
+         Log("Lua C++ functions registered.", LOG_INFO);
 
          // Pass isHealthCheck=false AND isVerbose flag to asset loader
          if (!LoadCoreGameAssets(false, isVerbose)) {
