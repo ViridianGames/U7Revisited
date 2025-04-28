@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) Launch Debug (via script)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/mnt/Volume1/ExternalProjects/U7Revisited/scripts/run_u7.sh",
+            "args": ["--debug"],
+            "stopAtEntry": false,
+            "cwd": "/mnt/Volume1/ExternalProjects/U7Revisited/scripts",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb", // Change to "gdb" if you use GDB
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for lldb/gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            // Optional: Add "preLaunchTask": "Build Debug" if you have a tasks.json
+        },
+        {
+            "name": "(lldb) Launch Release (via script)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/mnt/Volume1/ExternalProjects/U7Revisited/scripts/run_u7.sh",
+            "args": [], // No --debug for release
+            "stopAtEntry": false,
+            "cwd": "/mnt/Volume1/ExternalProjects/U7Revisited/scripts",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb", // Change to "gdb" if you use GDB
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for lldb/gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+             // Optional: Add "preLaunchTask": "Build Release" if you have a tasks.json
+        }
+    ]
+}

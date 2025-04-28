@@ -1,16 +1,43 @@
-/U7Revisited/x64
-/x64
-/.vs
-/Linux/U7Revisited/build
-/Linux/U7Revisited/dist
-/Redist/Data/U7
+# Build directories
+/build/
+/buildDir/
+/x64/
+/U7Revisited/x64/
+
+# IDE-specific files (but keep ide-config)
+/.vs/
+/.vscode/
+/.idea/
+!/.idea_sample/
+/nbproject/
+
+# Generated output 
+/Redist/*
+!/Redist/Data/
+/Redist/Data/U7/
 !Redist/Data/U7/U7.txt
 
+# Meson subprojects
 /subprojects/raylib/
 /subprojects/packagecache/
+
+# Compiled Objects
 *.o
 *.d
-liblua.a
+*.a
+*.so
+*.dll
+*.exe
+
+# Other build artifacts
 cmake-build-debug/
 
-.idea/
+# VS Generated files (use meson --backend vs)
+*.sln
+*.vcxproj
+*.vcxproj.user
+*.filters
+
+# Makefiles (use Meson or Justfile)
+makefile
+Makefile

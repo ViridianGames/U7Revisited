@@ -1,15 +1,52 @@
 project('Ultima 7 Revisited', ['c', 'cpp'],
         version: '1.0.0',
-        default_options: ['warning_level=3'])
+        default_options: [
+          'warning_level=3', 
+          'cpp_std=c++17',
+          'buildtype=release',  # Default to release build
+          'b_ndebug=if-release'  # Define NDEBUG in release mode
+        ])
 
-# Suppress float-to-int warnings (C4244)
-add_project_arguments('/wd4244', language: 'cpp')
+# Get compiler
+cpp = meson.get_compiler('cpp')
+host_system = host_machine.system()
 
-# Suppress truncation from 'double' to 'float' warnings (C4305)
-add_project_arguments('/wd4305', language: 'cpp')
+# Check for 64-bit architecture
+if host_machine.cpu_family() != 'x86_64'
+  error('This project requires 64-bit build. Current architecture: ' + host_machine.cpu_family())
+endif
 
-# Declare C++17 for CPP source files
-add_project_arguments('/std:c++17', language: 'cpp')
+# Platform-specific compiler flags
+if host_system == 'windows'
+  # Windows-specific compiler flags for MSVC
+  add_project_arguments('/wd4244', language: 'cpp') # Suppress float-to-int warnings
+  add_project_arguments('/wd4305', language: 'cpp') # Suppress truncation from 'double' to 'float' warnings
+elif host_system == 'linux'
+  # Linux-specific compiler flags
+  add_project_arguments('-Wno-unused-result', language: 'cpp')
+  add_project_arguments('-Wno-format-security', language: 'cpp')
+endif
+
+# Apply different flags for debug and release builds
+if get_option('buildtype') == 'debug'
+  message('Configuring debug build')
+  # Add debug-specific flags here
+  if host_system == 'windows'
+    add_project_arguments('/Zi', language: 'cpp')  # Debug information
+    add_project_arguments('/Od', language: 'cpp')  # Disable optimization
+  else
+    add_project_arguments('-g', language: 'cpp')   # Debug information
+    add_project_arguments('-O0', language: 'cpp')  # Disable optimization
+  endif
+elif get_option('buildtype') == 'release'
+  message('Configuring release build')
+  # Add release-specific flags here
+  if host_system == 'windows'
+    add_project_arguments('/O2', language: 'cpp')  # Optimize for speed
+  else
+    add_project_arguments('-O2', language: 'cpp')  # Optimize for speed
+  endif
+endif
 
 cmake = import('cmake')
 
@@ -21,6 +58,7 @@ raylib_options.add_cmake_defines({
      'GLFW_LIBRARY_TYPE': 'OBJECT',
      'CMAKE_POLICY_VERSION_MINIMUM': '3.5',
      'PLATFORM': 'Desktop',
+     'CMAKE_SKIP_INSTALL_RULES': 'ON',  # Skip install rules for raylib
 })
 
 # setup raylib dependency
@@ -28,7 +66,7 @@ raylib_subproject = cmake.subproject('raylib', options: raylib_options)
 dependencies += raylib_subproject.dependency('raylib')
 
 raylib_external_include = include_directories('ThirdParty/raylib/external')
-dependencies += declare_dependency(include_directories: raylib_external_include)
+dependencies += declare_dependency(include_directories: raylib_external_include) # Uncommented: Required include path
 
 # declare the lua dependency referencing the bundled version
 lua_sources = files(
@@ -66,11 +104,18 @@ lua_sources = files(
     'ThirdParty/lua/src/lutf8lib.c',
 )
 lua_include = include_directories('ThirdParty/lua/src')
+
+# Set platform-specific Lua defines
+lua_args = ['-DLUA_COMPAT_5_3']
+if host_system == 'windows'
+  lua_args += '-DLUA_BUILD_AS_DLL'
+endif
+
 lua_lib = static_library(
     'lua',
     lua_sources,
     include_directories: lua_include,
-    c_args: ['-DLUA_COMPAT_5_3', '-DLUA_BUILD_AS_DLL']
+    c_args: lua_args
 )
 
 dependencies += declare_dependency(
@@ -78,11 +123,19 @@ dependencies += declare_dependency(
     link_with: lua_lib
 )
 
-# Windows build requires dependency of winmm
-if host_machine.system() == 'windows'
+# Platform-specific dependencies
+if host_system == 'windows'
   cc = meson.get_compiler('c')
   dependencies += [
-    cc.find_library('winmm', required: false)
+    cc.find_library('winmm', required: true)
+  ]
+elif host_system == 'linux'
+  # Linux-specific dependencies if needed
+  cc = meson.get_compiler('c')
+  dependencies += [
+    cc.find_library('m', required: true),  # Math library
+    cc.find_library('dl', required: true), # Dynamic linking library
+    cc.find_library('pthread', required: true) # Threading library
   ]
 endif
 
@@ -129,8 +182,22 @@ sources = files(
            'Source/WorldEditorState.cpp',
 )
 
-executable('U7Revisited',
+# Build the executable with appropriate build type
+output_suffix = ''
+if get_option('buildtype') == 'debug'
+  output_suffix = '_debug'
+else
+  output_suffix = '_release'
+endif
+
+u7_exe = executable('U7Revisited' + output_suffix,
   sources,
   dependencies: dependencies,
   include_directories: include_directories,
+  install: true,  # Use Meson's built-in install
+  install_dir: 'bin' # Install executable into 'bin' subdir
 )
+
+# Platform-specific installation targets for both debug and release builds
+# REMOVED custom run_target commands previously here
+# Installation should now be done via 'meson install -C builddir'

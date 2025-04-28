@@ -1,36 +1,129 @@
-# Ultima VII: Revisited
+# Ultima VII: Revisited (unoften)
 
-You're at the unoften Ultima VII: Revisited fork, created to contribute improvements and 
-features to the main project. Like the Guardian's beacon that called the Avatar to 
-Britannia, this repository calls forth contributors to enhance the legacy of this 
-legendary RPG through a modern replacement engine.
+You're at the unoften Ultima VII: Revisited fork, created to contribute improvements and features to the main project. 
+Like the Guardian's beacon that called the Avatar to Britannia, this repository calls forth contributors to enhance 
+the legacy of this legendary RPG through a modern replacement engine.
 
-## Installation and Running the Engine
+## Installation and Building
 
-To run this program, you will need to copy the contents of your original DOS ULTIMA7 
-folder to `/Data/u7`. This will allow the replacement engine to read in the maps and 
-graphics from the original files.
+### Prerequisites
 
-- Locate your Ultima 7 game files (eg. `C:\Program Files (x86)\GOG Galaxy\Games\Ultima 7`)
-- Copy ALL of these files, folders and subfolders into `./Data/U7` (*hint: look for the 
-  `U7.txt` file*)
+- C++17 compatible compiler (e.g., GCC, Clang, MSVC)
+- Meson build system (version 0.60 or newer recommended)
+- Ninja build tool (usually installed with Meson)
+- Git (for cloning the repository)
+- Original Ultima VII game data files (The Black Gate, Forge of Virtue recommended)
+- Bash (for Linux/macOS scripts) or CMD/PowerShell (for Windows `.bat` scripts)
+
+### Recommended Workflow using the `u7` Script
+
+The easiest way to manage common development tasks (build, run, clean, IDE setup) is using the unified wrapper script `u7` (Linux/macOS) or `u7.bat` (Windows) located in the project root.
+
+1.  **Initial IDE Setup (One Time):**
+    *   After cloning, run the IDE setup script:
+        *   Linux/macOS: `./u7 setup`
+        *   Windows: `.\\u7.bat setup`
+    *   This generates standard configuration files for VS Code and CLion (see `scripts/setup_ide.sh` and `scripts/setup_ide.bat` for details) and provides instructions for other IDEs.
+    *   **Important CLion Note:** After running the setup, you still need to manually set the 'Working Directory' in the generated `U7_Debug*` and `U7_Release*` configurations to `${PROJECT_DIR}/Redist`.
+
+2.  **Building:**
+    *   Build Debug: `./u7 build` or `.\\u7.bat build`
+    *   Build Release: `./u7 build --release` or `.\\u7.bat build --release`
+    *   Clean & Build Debug: `./u7 clean build` or `.\\u7.bat clean build`
+
+3.  **Running:**
+    *   Ensure original game data is copied to `Redist/Data/U7/` (see "Important Data Files Setup" below).
+    *   Run Debug (builds first if needed): `./u7 run` or `.\\u7.bat run`
+    *   Run Release (builds first if needed): `./u7 run --release` or `.\\u7.bat run --release`
+    *   Run Debug with game arguments: `./u7 run -- --some-game-flag` or `.\\u7.bat run -- --some-game-flag`
+
+4.  **Cleaning:**
+    *   Clean Debug build directory: `./u7 clean` or `.\\u7.bat clean`
+    *   Clean Release build directory: `./u7 clean --release` or `.\\u7.bat clean --release`
+
+For more options, run `./u7 --help` or `.\\u7.bat --help`.
+
+The `u7` script calls other helper scripts (`build.*`, `run_u7.*`, `setup_ide.*`, `copy_executable.*`) located in the `scripts/` directory.
+
+### Manual Building with Meson (Alternative)
+
+If you prefer not to use the `u7` wrapper script, you can use Meson directly.
+
+1.  **Configure (choose one):**
+    *   **Debug Build:**
+        ```bash
+        meson setup build-debug --buildtype=debug
+        ```
+    *   **Release Build:**
+        ```bash
+        meson setup build-release --buildtype=release
+        ```
+
+2.  **Compile:**
+    *   Compile the configured build type:
+        ```bash
+        meson compile -C build-debug
+        # or
+        meson compile -C build-release
+        ```
+
+The compiled executable will be located in `build-<type>/install_prefix/bin/` (e.g., `build-debug/install_prefix/bin/U7Revisited_debug`).
+
+### Running the Game Manually
+
+**Important Data Files Setup:**
+1.  Ensure you have legally obtained the original Ultima VII game files.
+2.  Copy the *contents* of your original DOS `ULTIMA7` game data folder into the `Redist/Data/U7/` directory within this project.
+3.  This must include the original game files (STATIC, GAMEDAT, etc.) required by the engine.
+4.  The engine currently supports The Black Gate and data from Forge of Virtue.
+
+**Run using the Individual Launcher Scripts:**
+
+If building manually, use the provided scripts in the `scripts/` directory. They copy the executable to the `Redist/` directory and run it from there.
+
+*   **On Linux/macOS:**
+    ```bash
+    ./scripts/run_u7.sh          # Runs Release build by default
+    ./scripts/run_u7.sh --debug  # Runs Debug build
+    ```
+*   **On Windows:**
+    ```bash
+    .\\scripts\\run_u7.bat         # Runs Release build by default
+    .\\scripts\\run_u7.bat --debug # Runs Debug build
+    ```
 
 ## Developer Installation Notes
 
-- Clone the project into a local folder using whatever git interface you prefer
-- Copy the entire contents of your original DOS ULTIMA7 directory to 
-  `$(SolutionDir)/Redist/Data/U7/`
-- Make sure you have the [Meson Build system](https://mesonbuild.com/) installed
-- Run `meson setup build`, or if you want to generate a Visual Studio project, 
-  `meson setup --backend vs build`
-- Run `meson compile -C build` to build the project
-- Go to `build/` directory and run the `u7revisited` program
+- Follow the **Recommended Workflow using the `u7` Script** section above.
+- Ensure the original game data is copied to `Redist/Data/U7/` as described.
+- The `u7 setup` command helps configure common IDEs.
+
+## IDE Setup
+
+Using the `u7 setup` or `u7.bat setup` command (see "Recommended Workflow") is the preferred method for configuring common IDEs (VS Code, CLion) automatically.
+
+If setting up manually or using another IDE:
+
+1.  **Open the Project:** Open the project's root folder.
+2.  **Build System:** Ensure your IDE integrates with Meson or can run the `./build.sh` / `.\\build.bat` script.
+3.  **Run/Debug Configuration:**
+    *   Configure your IDE to execute the `./scripts/run_u7.sh` (Linux/macOS) or `.\\scripts\\run_u7.bat` (Windows) script.
+    *   Pass `--debug` as an argument to the script for debug builds.
+    *   Set the **Working Directory** for the script execution to the project's root directory (the directory containing this README). The `run_u7.*` script handles changing into the `Redist` directory internally.
+
+## Documentation
+
+Project-specific documentation can be found in the `docs/` directory:
+
+*   `docs/CODING_STANDARDS.md`: Guidelines for writing code in this project.
+*   `docs/MODELING_GUIDE.md`: Information on 3D model requirements and integration.
+*   `docs/ROADMAP.md`: Overview of planned features and development direction.
 
 ## Controls:
 
-- `WASD`: Move around.
-- `Q/E`: Rotate left and right.
-- `Mousewheel`: Zoom in/Zoom out.
+- `WASD`:  Move around.
+- `Q/E`:  Rotate left and right.
+- `Mousewheel`:  Zoom in/Zoom out.
 - To teleport to a location, left-click there in the minimap.
 - Press `ESC` to exit.
 
@@ -38,29 +131,22 @@ graphics from the original files.
 
 For feedback about this fork and contributions, please open an issue in this repository.
 
-Have fun, and Rule Britannia.
-
 ## Original Project Information
 
-This is an open source project based on the work from 
-[github.com/viridiangames](https://github.com/viridiangames).
+This is an open source project based on the work from [github.com/viridiangames](https://github.com/viridiangames).
 
-The original author, Anthony Salter, welcomes feedback at anthony.salter@gmail.com with 
-`Revisited` in the subject line.
+The original author, Anthony Salter, welcomes feedback at anthony.salter@gmail.com with `Revisited` in the subject line.
 
 **From the original README:** "FEEDBACK IS WELCOME BOY HOWDY IS IT WELCOME!"
 
+Have fun, and Rule Britannia.
+
 ## Legal Disclaimers
 
-Ultima VII: The Black Gate and all associated trademarks and copyrights are property of 
-Electronic Arts Inc. This project is a non-commercial fan-made engine replacement, and is 
-not affiliated with or endorsed by Electronic Arts.
+Ultima VII: The Black Gate and any associated trademarks and copyrights are property of Electronic Arts Inc. This project is a non-commercial fan-made engine replacement, and is not affiliated with or endorsed by Electronic Arts.
 
-This project does not include any original game content. To use this software, you must 
-legally own a copy of Ultima VII: The Black Gate.
+This project does not include any original game content. To use this software, you must legally own a copy of Ultima VII: The Black Gate.
 
-The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the 
-LICENSE file.
+The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the LICENSE file.
 
-This project is made by fans, for fans, to preserve and enhance the legacy of Ultima VII 
-for future generations.
+This project is made by fans, for fans, to preserve and enhance the legacy of Ultima VII for future generations.

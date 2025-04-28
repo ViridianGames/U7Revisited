@@ -12,7 +12,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <format>
 #include <iomanip>
 
 using namespace std;
