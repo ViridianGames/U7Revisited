@@ -1,43 +1,74 @@
 # Changelog
 
-All notable changes to the Ultima VII: Revisited project from this fork will be documented in this file.
+All notable changes to the Ultima VII: Revisited project from the unoften fork will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+This section documents changes made in this fork compared to the original `ViridianGames/U7Revisited` baseline.
+
 ### Added
-- Standardized IDE configuration *templates* (VS Code, JetBrains, NetBeans) in `ide-config/` directory.
-- `.gitignore` entries to ignore IDE-specific directories while tracking `ide-config/`.
-- Build system migrated to Meson from CMake.
-- Separate debug and release build configurations using Meson build types (`-Dbuildtype=debug|release`).
-- Launcher scripts (`run_u7.sh`, `run_u7.bat`) that detect and run the appropriate build type (`_debug` or `_release`) from the build directory (`build-debug/bin` or `build-release/bin`).
+
+**Build System & Workflow:**
+- Unified wrapper script (`u7`, `u7.bat`) for common development tasks (build, run, clean, setup), replacing manual Meson commands.
+- Standardized debug (`build-debug/`) and release (`build-release/`) build directories managed via Meson build types (`-Dbuildtype=debug|release`).
+- Centralized helper scripts for build, run, setup, and copying executables into the `scripts/` directory.
 - Enforced 64-bit architecture requirement in the build system.
-- Unified wrapper script (`u7`, `u7.bat`) for common dev tasks (build, run, clean, setup).
-- Build scripts (`scripts/build.sh`, `scripts/build.bat`) called by the wrapper.
-- IDE setup scripts (`scripts/setup_ide.sh`, `scripts/setup_ide.bat`) called by the wrapper.
-- Helper scripts for CLion setup (`scripts/copy_executable.sh`, `scripts/copy_executable.bat`).
+
+**Running & Debugging:**
+- Launcher scripts (`scripts/run_u7.sh`, `scripts/run_u7.bat`) called by `u7 run` that handle detecting build type, copying the executable to `Redist/`, and running from the correct directory.
+- Health check functionality (`u7 run --debug --healthcheck`) to verify core asset loading without launching the full game.
+- Detailed health check status messages and exit codes (0 for success/non-critical errors, 1 for critical failures).
+
+**Logging & Error Handling:**
+- ANSI color codes added to console logging (`LoggingCallback`) for improved readability (INFO-Blue, WARN-Yellow, ERROR/FATAL-Red).
+- Centralized asset error tracking system (`g_AssetLoadErrors`, `AssetLoadError` struct, `AddAssetError` helper) for standardized reporting.
+
+**IDE & Developer Experience:**
+- Standardized IDE configuration *templates* (VS Code, CLion) generated via `u7 setup` using scripts in `scripts/setup_ide.*`.
+- `.gitignore` updated to ignore common IDE files and standardized build directories.
+
+**Scripting:**
+- Refactored Lua C++ function registration (`U7LuaFuncs.cpp`) into a proper Lua module loadable via `require 'U7LuaFuncs'`, fixing script load errors.
+
+**Documentation:**
+- This `CHANGELOG.md` file to track changes in the fork.
+- Centralized documentation directory (`docs/`). (Note: Original repo had some docs at root).
 
 ### Changed
-- Build system uses standard Meson build directories (`build-debug/`, `build-release/`) instead of copying artifacts to source `Redist/`.
-- Launcher scripts (`run_u7.sh`, `run_u7.bat`) now change to the project root directory before execution to ensure correct asset loading.
-- Meson build system uses `install: true` for the executable target.
-- Build, Run, Setup, and Helper scripts moved into the `scripts/` directory.
-- `run_u7.sh`/`.bat` scripts now copy the executable to `Redist/` before running, and execute from within `Redist/`.
-- README updated to reflect the new `u7` wrapper script workflow and script locations.
+
+**Build System:**
+- Migrated fully to Meson, removing remnants of CMake or other systems. (Note: Original used Meson but had other files like Makefiles, VS solutions).
+- Meson build system now uses `install: true` for the executable target and installs to the standard build directories (`build-*/`), instead of requiring manual copy or custom install targets.
+
+**Workflow:**
+- Running the game (`u7 run`) now involves an explicit step of copying the built executable to `Redist/` before execution, ensuring it runs from the location with the necessary data files.
+- Project scripts (build, run, setup, etc.) organized into the `scripts/` directory instead of being at the root or elsewhere.
+
+**Error Handling:**
+- `LoadCoreGameAssets` now uses the `AddAssetError` system for consistent reporting of issues (file not found, script syntax errors, etc.).
+- `LoadCoreGameAssets` differentiates between critical failures (returns `false`, causes health check exit code 1) and non-critical errors like script load failures (logs errors, allows health check exit code 0 if core assets are okay).
+- `ScriptingSystem::LoadScript` now returns a boolean and logs errors internally, allowing the calling code (`LoadCoreGameAssets`) to decide if a script load failure is critical.
+
+**Documentation:**
+- `README.md` significantly updated to reflect the new `u7` wrapper script workflow, build process, health check, and script locations.
 
 ### Removed
-- Obsolete custom Meson `run_target`s for installation (`install_to_redist*`).
-- Installation scripts (`ide-config/install.sh`, `ide-config/install.bat`) for copying IDE configurations.
-- Removed Linux-specific NetBeans configuration files (Linux directory) as they're no longer needed with the Meson build system.
-- Removed IDE-specific .vscode directory from version control in favor of standardized ide-config directory.
+
+- Obsolete build/install mechanisms (e.g., custom Meson `run_target`s like `install_to_redist*`, root-level Makefiles/Justfiles if they existed and were primary).
+- Old IDE setup mechanisms (e.g., `ide-config/install.sh`, `ide-config/install.bat`).
+- Platform-specific directories from root (e.g., `Linux/`).
+- IDE-specific files/directories from version control (e.g., `.vscode/`) in favor of generated configurations via `u7 setup`.
 
 ### Fixed
-- Made system library dependencies (`winmm`, `m`, `dl`, `pthread`) required in `meson.build` for clearer errors.
-- Removed C++20 dependency (`<format>` header) for better compiler compatibility.
-- Fixed Meson deprecation warnings by updating to the newer API.
-- Build configuration ensures consistent 64-bit architecture across platforms.
+
+- Made system library dependencies (`winmm`, `m`, `dl`, `pthread`) explicitly required in `meson.build` for clearer build errors if missing.
+- Removed C++20 dependency (`<format>` header) introduced temporarily, improving compatibility with older compilers.
+- Resolved Meson deprecation warnings by updating to newer API calls.
+- Ensured build configuration enforces a consistent 64-bit architecture across platforms.
+- Corrected Lua script loading issues caused by C++ functions not being available via `require` by refactoring to use `luaL_requiref`.
 
 ## Previous Versions
 

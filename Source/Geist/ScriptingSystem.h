@@ -46,8 +46,14 @@ public:
     std::unordered_map<int, bool> m_flags;
 
     std::vector<std::pair<std::string, std::string> > m_scriptFiles;
+    std::string m_lastError; // Store the last Lua error message
+
     //std::vector<std::string> m_loadedLuaScripts;
     //std::vector<std::string> m_loadedLuaScriptPaths;
+
+    const std::string& GetLastError() const { return m_lastError; } // Getter for the last error
+
+    lua_State* GetLuaState() { return m_luaState; }
 };
 
 #endif

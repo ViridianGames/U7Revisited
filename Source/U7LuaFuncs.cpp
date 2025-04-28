@@ -32,6 +32,7 @@ static int LuaBark(lua_State* L)
     const char* text = luaL_checkstring(L, 1);
     int x = luaL_checkinteger(L, 2);
     int y = luaL_checkinteger(L, 3);
+    cout << "NPC Bark at (" << x << ", " << y << "): " << text << "\n";
     return 0;
 }
 
@@ -492,55 +493,64 @@ static int LuaIsInParty(lua_State* L)
     return 0;
 }
 
+static const struct luaL_Reg u7lib[] = {
+    {"debug_print", LuaDebugPrint},
+    {"say", LuaSay},
+    {"bark", LuaBark},
+    {"move", LuaMove},
+    {"start_conversation", LuaStartConversation},
+    {"get_flag", LuaGetFlag},
+    {"set_flag", LuaSetFlag},
+    {"get_player_name", LuaGetPlayerName},
+    {"has_item", LuaHasItem},
+    {"is_player_female", LuaIsPlayerFemale},
+    {"get_stat", LuaGetStat},
+    {"set_stat", LuaSetStat},
+    {"get_answer", LuaGetAnswer},
+    {"save_answers", LuaSaveAnswers},
+    {"restore_answers", LuaRestoreAnswers},
+    {"buy_item", LuaBuyItem},
+    {"get_gold", LuaGetGold},
+    {"spend_gold", LuaSpendGold},
+    {"switch_talk_to", LuaSwitchTalkTo},
+    {"hide_npc", LuaHideNPC},
+    {"get_party_member", LuaGetPartyMember},
+    {"get_party_members", LuaGetPartyMembers},
+    {"is_party_member", LuaIsPartyMember},
+    {"trigger_ferry", LuaTriggerFerry},
+    {"add_answer", LuaAddAnswer},
+    {"remove_answer", LuaRemoveAnswer},
+    {"get_item_type", LuaGetItemType},
+    {"get_item_frame", LuaGetItemFrame},
+    {"set_item_frame", LuaSetItemFrame},
+    {"get_item_quality", LuaGetItemQuality},
+    {"set_item_quality", LuaSetItemQuality},
+    {"get_item_info", LuaGetItemInfo},    
+    {"get_container_items", LuaGetContainerItems},    
+    {"remove_item", LuaRemoveItem},
+    {"get_distance", LuaGetDistance},
+    {"play_music", LuaPlayMusic},
+    {"set_item_state", LuaSetItemState},
+    {"get_wearer", LuaGetWearer},
+    {"get_item_shape", LuaGetItemShape},
+    {"check_item_state", LuaCheckItemState},
+    {"find_items", LuaFindItems},
+    {"apply_effect", LuaApplyEffect},
+    {"get_lord_or_lady", LuaGetLordOrLady},
+    {"is_avatar_female", LuaIsAvatarFemale},
+    {"is_in_party", LuaIsInParty},
+    {NULL, NULL} // Sentinel
+};
+
+static int luaopen_U7LuaFuncs(lua_State *L) {
+    luaL_newlib(L, u7lib);
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
-    cout << "Registering Lua functions\n";
-    g_ScriptingSystem->RegisterScriptFunction("say", LuaSay);
-    g_ScriptingSystem->RegisterScriptFunction("bark", LuaSay);
-    g_ScriptingSystem->RegisterScriptFunction("move", LuaMove);
-    g_ScriptingSystem->RegisterScriptFunction("StartConversation", LuaStartConversation);
-    g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
-    g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
-    g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
-    g_ScriptingSystem->RegisterScriptFunction("has_item", LuaHasItem);
-    g_ScriptingSystem->RegisterScriptFunction("is_player_female", LuaIsPlayerFemale);
-    g_ScriptingSystem->RegisterScriptFunction("get_stat", LuaGetStat);
-    g_ScriptingSystem->RegisterScriptFunction("set_stat", LuaSetStat);
-    g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("buy_item", LuaBuyItem);
-    g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
-    g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
-    g_ScriptingSystem->RegisterScriptFunction("get_gold", LuaGetGold);
-    g_ScriptingSystem->RegisterScriptFunction("spend_gold", LuaSpendGold);
-    g_ScriptingSystem->RegisterScriptFunction("switch_talk_to", LuaSwitchTalkTo);
-    g_ScriptingSystem->RegisterScriptFunction("hide_npc", LuaHideNPC);
-    g_ScriptingSystem->RegisterScriptFunction("get_party_member", LuaGetPartyMember);
-    g_ScriptingSystem->RegisterScriptFunction("get_party_members", LuaGetPartyMembers);
-    g_ScriptingSystem->RegisterScriptFunction("is_party_member", LuaIsPartyMember);
-    g_ScriptingSystem->RegisterScriptFunction("trigger_ferry", LuaTriggerFerry);
-    g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_type", LuaGetItemType);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaGetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("set_item_frame", LuaSetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_quality", LuaGetItemQuality);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaSetItemQuality);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_info", LuaGetItemInfo);    
-    g_ScriptingSystem->RegisterScriptFunction("get_container_items", LuaGetContainerItems);    
-    g_ScriptingSystem->RegisterScriptFunction("remove_item", LuaRemoveItem);
-    g_ScriptingSystem->RegisterScriptFunction("get_distance", LuaGetDistance);
-    g_ScriptingSystem->RegisterScriptFunction("play_music", LuaPlayMusic);
-    g_ScriptingSystem->RegisterScriptFunction("set_item_state", LuaSetItemState);
-    g_ScriptingSystem->RegisterScriptFunction("get_wearer", LuaGetWearer);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_shape", LuaGetItemShape);
-    g_ScriptingSystem->RegisterScriptFunction("check_item_state", LuaCheckItemState);
-    g_ScriptingSystem->RegisterScriptFunction("find_items", LuaFindItems);
-    g_ScriptingSystem->RegisterScriptFunction("apply_effect", LuaApplyEffect);
-    g_ScriptingSystem->RegisterScriptFunction("get_lord_or_lady", LuaGetLordOrLady);
-    g_ScriptingSystem->RegisterScriptFunction("get_is_female_avatar", LuaIsAvatarFemale);
-    g_ScriptingSystem->RegisterScriptFunction("is_in_party", LuaIsInParty);
-    g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
-
-    cout << "Registered all Lua functions\n";
+    // Load the U7LuaFuncs module and make it available via require 'U7LuaFuncs'
+    luaL_requiref(g_ScriptingSystem->m_luaState, "U7LuaFuncs", luaopen_U7LuaFuncs, 1);
+    lua_pop(g_ScriptingSystem->m_luaState, 1); // Remove the module table from the stack
 }
 

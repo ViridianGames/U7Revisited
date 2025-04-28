@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <filesystem>
 
 using namespace std;
 
@@ -41,35 +42,39 @@ void ScriptingSystem::Update()
 {
 }
 
-bool ScriptingSystem::LoadScript(const std::string& path)
+bool ScriptingSystem::LoadScript(const std::string& scriptName)
 {
-	// Get the actual function name from the path
-	std::string func_name;
-#if defined(_WINDOWS) || defined(_WIN32)
-	func_name = path.substr(path.find_last_of('\\') + 1);
-#else
-	func_name = path.substr(path.find_last_of('/') + 1);
-#endif
-	func_name = func_name.substr(0, func_name.find_last_of('.'));
+	std::string fullPath = scriptName;
+	// Ensure using consistent path separators if needed, although filesystem::path should handle it
 
-	if (path == "Data/Scripts\\func_0401.lua")
+	// Check if script is already loaded by path
+	for (const auto& pair : m_scriptFiles)
 	{
-		int stopper = 0;
+		if (pair.first == fullPath)
+		{
+			Log("Script already loaded: " + fullPath, LOG_DEBUG);
+			return true; // Already loaded, treat as success
+		}
 	}
 
-	if (luaL_dofile(m_luaState, path.c_str()) != LUA_OK)
+	// Attempt to load the script file
+	if (luaL_dofile(m_luaState, fullPath.c_str()) != LUA_OK)
 	{
-		std::cerr << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
-		lua_pop(m_luaState, 1);
-		return false;
-	}
-	else
-	{
-		std::cout << "Loaded script: " << path << "\n";
+		m_lastError = lua_tostring(m_luaState, -1); // Store the error message
+		lua_pop(m_luaState, 1); // Pop the error message from the stack
+		// Log is now handled by AddAssetError in Main.cpp
+		// Log("Failed to load " + fullPath + ": " + m_lastError, LOG_ERROR);
+		return false; // Signal failure
 	}
 
-	string thispath = path;
-	m_scriptFiles.push_back(make_pair(func_name, thispath));
+	// If successful, add to the list
+	// Extract just the filename part for lookup? Or keep full path?
+	// Let's keep the full path for consistency and the filename for potential lookup needs.
+	std::filesystem::path p(fullPath);
+	std::string filename = p.filename().string();
+	m_scriptFiles.push_back({fullPath, filename});
+	Log("Loaded script: " + fullPath, LOG_INFO);
+	m_lastError.clear(); // Clear last error on success
 	return true;
 }
 

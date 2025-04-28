@@ -39,10 +39,18 @@
 using namespace std;
 using namespace std::filesystem;
 
+// Helper function to add an asset loading error to the global list
+void AddAssetError(const std::string& filePath, const std::string& errorType, const std::string& errorMessage) {
+    g_AssetLoadErrors.push_back({filePath, errorType, errorMessage});
+    // Also log it immediately for visibility during loading
+    Log("Asset Error [" + errorType + "]: File='" + filePath + "', Msg='" + errorMessage + "'", LOG_ERROR);
+}
+
 // Helper function to check file existence and log errors
 bool CheckFileExists(const std::string& path) {
     if (!exists(path)) {
-        Log("Required file not found: " + path, LOG_ERROR);
+        // Log("Required file not found: " + path, LOG_ERROR); // Logging is now handled by AddAssetError
+        AddAssetError(path, "FileNotFound", "Required file or directory not found.");
         return false;
     }
     return true;
@@ -52,7 +60,8 @@ bool CheckFileExists(const std::string& path) {
 // Returns true if successful, false otherwise.
 bool LoadCoreGameAssets(bool isHealthCheck) {
     Log("Loading/Checking Core Game Assets...");
-    bool success = true;
+    bool criticalSuccess = true; // Track critical failures (non-script related generally)
+    g_AssetLoadErrors.clear(); // Clear errors at the start of loading
 
     // --- Files required for both modes (existence check minimum) ---
     const std::vector<std::string> requiredFiles = {
@@ -63,20 +72,21 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
         "Images/pointer.png",
         "Images/GUI/guielements.png",
         "Images/GUI/gumps.png"
+        // Add other critical file paths here
     };
 
     for (const auto& file : requiredFiles) {
         if (!CheckFileExists(file)) {
-            success = false; // Mark failure but continue checking other files
+            criticalSuccess = false; // Mark critical failure
         }
     }
 
-    // --- Script Loading (Attempt load in both modes, ScriptingSystem handles errors) ---
+    // --- Script Loading (Attempt load in both modes, report errors) ---
     Log("Loading scripts...");
     string scriptDirectoryPath("Data/Scripts");
     if (!exists(scriptDirectoryPath) || !is_directory(scriptDirectoryPath)) {
-         Log("Script directory not found: " + scriptDirectoryPath, LOG_ERROR);
-         success = false;
+         AddAssetError(scriptDirectoryPath, "DirectoryNotFound", "Script directory not found.");
+         criticalSuccess = false;
     } else {
         try {
             for (const auto& entry : directory_iterator(scriptDirectoryPath)) {
@@ -84,24 +94,23 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
                     std::string ext = entry.path().extension().string();
                     if (ext == ".lua") {
                         std::string filepath = entry.path().string();
-                        // Re-added boolean check now that LoadScript returns bool
                         if (!g_ScriptingSystem->LoadScript(filepath)) {
-                            // Log message already happens inside LoadScript on failure
-                            success = false; // Mark failure for LoadCoreGameAssets
+                            // Script failed to load, add error to the list but DON'T mark critical failure
+                            AddAssetError(filepath, "ScriptSyntaxError", g_ScriptingSystem->GetLastError());
                         }
                     }
                 }
             }
             // Also load specific required scripts
-            // Re-added boolean check now that LoadScript returns bool
-             if (!g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua")) {
-                 // Log message already happens inside LoadScript on failure
-                 success = false; // Mark failure for LoadCoreGameAssets
-             }
+            std::string erethianPath = "Data/Scripts/erethian.lua";
+            if (!g_ScriptingSystem->LoadScript(erethianPath)) {
+                 AddAssetError(erethianPath, "ScriptSyntaxError", g_ScriptingSystem->GetLastError());
+                 // Decide if this specific script IS critical? For now, treat like others.
+            }
 
         } catch (const std::exception& e) {
-            Log(std::string("Exception during script loading: ") + e.what(), LOG_ERROR);
-            success = false;
+            AddAssetError(scriptDirectoryPath, "ScriptLoadingException", std::string("Exception during script directory iteration: ") + e.what());
+            criticalSuccess = false;
         }
     }
 
@@ -112,97 +121,145 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
         // Shaders
         g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
         if (g_alphaDiscard.id == 0) { // Basic check if shader loading failed
-             Log("Failed to load shader: Data/Shaders/alphaDiscard.fs", LOG_ERROR);
-             success = false;
+             AddAssetError("Data/Shaders/alphaDiscard.fs", "ShaderLoadFailed", "LoadShader returned ID 0.");
+             criticalSuccess = false;
         }
-
 
         // Fonts
         float baseFontSize = 9;
         g_fontSize = baseFontSize * int(g_DrawScale); // g_DrawScale calculated earlier
 
-        Font font = LoadFontEx("Data/Fonts/softsquare.ttf", g_fontSize, NULL, 0);
-        if (font.texture.id == 0) { Log("Failed to load font: Data/Fonts/softsquare.ttf", LOG_ERROR); success = false; }
+        const char* softsquarePath = "Data/Fonts/softsquare.ttf";
+        Font font = LoadFontEx(softsquarePath, g_fontSize, NULL, 0);
+        if (font.texture.id == 0) {
+            AddAssetError(softsquarePath, "FontLoadFailed", "LoadFontEx failed for main font.");
+            criticalSuccess = false;
+        }
         else { g_Font = make_shared<Font>(font); }
 
-        Font smallFont = LoadFontEx("Data/Fonts/softsquare.ttf", baseFontSize, NULL, 0);
-         if (smallFont.texture.id == 0) { Log("Failed to load small font: Data/Fonts/softsquare.ttf", LOG_ERROR); success = false; }
+        Font smallFont = LoadFontEx(softsquarePath, baseFontSize, NULL, 0);
+         if (smallFont.texture.id == 0) {
+             AddAssetError(softsquarePath, "FontLoadFailed", "LoadFontEx failed for small font.");
+             criticalSuccess = false; // This might be less critical, adjust if needed
+         }
         else { g_SmallFont = make_shared<Font>(smallFont); }
 
         const char* conversationFontPath = "Data/Fonts/lantern.ttf"; float conversationFontSize = 18;
         Font conversationFont = LoadFontEx(conversationFontPath, conversationFontSize, NULL, 0);
-         if (conversationFont.texture.id == 0) { Log("Failed to load font: " + string(conversationFontPath), LOG_ERROR); success = false; }
+         if (conversationFont.texture.id == 0) {
+             AddAssetError(conversationFontPath, "FontLoadFailed", "LoadFontEx failed for conversation font.");
+             criticalSuccess = false;
+         }
         else { g_ConversationFont = make_shared<Font>(conversationFont); }
 
         const char* guiFontPath = "Data/Fonts/babyblocks.ttf"; float guiFontSize = 8;
         Font guiFont = LoadFontEx(guiFontPath, guiFontSize, NULL, 0);
-        if (guiFont.texture.id == 0) { Log("Failed to load font: " + string(guiFontPath), LOG_ERROR); success = false; }
+        if (guiFont.texture.id == 0) {
+             AddAssetError(guiFontPath, "FontLoadFailed", "LoadFontEx failed for GUI font.");
+             criticalSuccess = false;
+         }
         else { g_guiFont = make_shared<Font>(guiFont); }
 
-        // Render Targets
+        // Render Targets - Check if LoadRenderTexture can fail meaningfully?
+        // Raylib's LoadRenderTexture seems less likely to fail catastrophically unless OOM.
+        // Assuming success unless specific errors arise.
         g_renderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
         SetTextureFilter(g_renderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
         g_guiRenderTarget = LoadRenderTexture(g_Engine->m_RenderWidth, g_Engine->m_RenderHeight);
         SetTextureFilter(g_guiRenderTarget.texture, RL_TEXTURE_FILTER_ANISOTROPIC_4X);
 
-        // GUI Sprites (uses ResourceManager which should handle errors internally, but we checked file existence above)
-        g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png"); // Assume GetTexture loads or queues, success depends on file check
+        // GUI Sprites (uses ResourceManager)
+        // Check if ResourceManager->GetTexture signals errors or if CheckFileExists is enough
+        // Assuming CheckFileExists above covers the critical path for now.
+        // If GetTexture can fail later (e.g., bad image format), add error reporting there.
+        g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
 
-        g_Borders.clear(); // Ensure vectors are empty before pushing
+        g_Borders.clear();
         g_ConversationBorders.clear();
 
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 0, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 0, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 0, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  0, 2, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 2, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  4, 2, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 4, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 4, 2, 2));
-        g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 4, 2, 2));
+        // Sprite creation relies on textures loaded via ResourceManager.
+        // Assuming GetTexture logs its own errors if loading fails after file existence check.
+        // If not, we'd need to check texture validity here.
+        try {
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 0, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 0, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 0, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  0, 2, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 2, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  4, 2, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 4, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false),  2, 4, 2, 2));
+             g_Borders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 4, 4, 2, 2));
 
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 28, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 28, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 28, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 36, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 36, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 36, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 42, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 42, 8, 8));
-        g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 42, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 28, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 28, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 28, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 36, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 36, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 36, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 0, 42, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 42, 8, 8));
+             g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 42, 8, 8));
 
-        g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 11);
-        g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 11);
-        g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 4, 11);
-        g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 4, 11);
-        g_ActiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 10, 0, 1, 11);
-        g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 4, 11);
+             g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 11);
+             g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 11);
+             g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 4, 11);
+             g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 4, 11);
+             g_ActiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 10, 0, 1, 11);
+             g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 4, 11);
 
-        g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
-        g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
+             g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
+             g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
 
-        g_gumpBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 6, 176, 154, 98);
-        g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
-        g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
+             g_gumpBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 6, 176, 154, 98);
+             g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
+             g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
+        } catch (const std::exception& e) {
+             // Catch potential errors during sprite creation if GetTexture throws or dereferences null
+             AddAssetError("Images/GUI/guielements.png or Images/GUI/gumps.png", "SpriteCreationFailed", std::string("Exception during sprite creation: ") + e.what());
+             criticalSuccess = false;
+         }
+
 
     } // End !isHealthCheck block
 
     // --- Assets needed in both modes (or construction is sufficient) ---
     Log("Creating terrain...");
-    g_Terrain = make_unique<Terrain>(); // Assuming constructor is safe without graphics
-
-    // Random Number Generators
-    g_VitalRNG = make_unique<RNG>();
-    g_VitalRNG->SeedRNG(isHealthCheck ? 7777 : (int)(GetTime() * 1000)); // Use fixed seed for HC
-    g_NonVitalRNG = make_unique<RNG>();
-    g_NonVitalRNG->SeedRNG(isHealthCheck ? 1234 : (int)(GetTime() * 1000 + 1)); // Use fixed seed for HC
-
-    if (success) {
-         Log("Core Game Assets Load/Check Successful.");
-    } else {
-         Log("Core Game Assets Load/Check Failed. See errors above.", LOG_ERROR);
+    try {
+        g_Terrain = make_unique<Terrain>(); // Assuming constructor is safe without graphics
+    } catch (const std::exception& e) {
+        AddAssetError("Terrain", "InitializationFailed", std::string("Exception during Terrain construction: ") + e.what());
+        criticalSuccess = false;
     }
-    return success;
+
+    // Random Number Generators (Unlikely to fail unless memory allocation fails)
+    try {
+        g_VitalRNG = make_unique<RNG>();
+        g_VitalRNG->SeedRNG(isHealthCheck ? 7777 : (int)(GetTime() * 1000));
+        g_NonVitalRNG = make_unique<RNG>();
+        g_NonVitalRNG->SeedRNG(isHealthCheck ? 1234 : (int)(GetTime() * 1000 + 1));
+    } catch (const std::exception& e) {
+        AddAssetError("RNG", "InitializationFailed", std::string("Exception during RNG construction: ") + e.what());
+        criticalSuccess = false; // RNG failure is likely critical
+    }
+
+    // --- Final Summary --- 
+    if (!g_AssetLoadErrors.empty()) {
+        Log("----------------------------------------", LOG_WARNING);
+        Log("Asset Loading completed with ERRORS:", LOG_WARNING);
+        for (const auto& error : g_AssetLoadErrors) {
+            Log("  - Type: " + error.errorType + ", File: '" + error.filePath + "', Msg: " + error.errorMessage, LOG_ERROR);
+        }
+        Log("----------------------------------------", LOG_WARNING);
+    }
+
+    if (criticalSuccess) {
+         Log("Core Game Assets Load/Check: CRITICAL SUCCESS (non-critical errors may exist).", g_AssetLoadErrors.empty() ? LOG_INFO : LOG_WARNING);
+    } else {
+         Log("Core Game Assets Load/Check: CRITICAL FAILURE. See errors above.", LOG_ERROR);
+    }
+
+    return criticalSuccess; // Return true only if all CRITICAL assets loaded correctly
 }
 
 int main(int argv, char** argc)
@@ -224,18 +281,30 @@ int main(int argv, char** argc)
          // --- Health Check Path ---
          Log("Running health check initialization...");
 
+         // Register Lua functions first so scripts can find them during load
+         RegisterAllLuaFunctions(); 
+
          // Load/check core assets needed for basic functionality
-         if (!LoadCoreGameAssets(true)) { // Pass true for isHealthCheck
-             Log("Health check failed: Core asset loading/checking failed.", LOG_ERROR);
-             exit(1); // Exit with non-zero code on failure
+         bool criticalAssetsOk = LoadCoreGameAssets(true); // Pass true for isHealthCheck
+
+         if (!criticalAssetsOk) {
+             // LoadCoreGameAssets already logged the details and summary.
+             Log("Health check failed due to CRITICAL asset errors.", LOG_FATAL);
+             exit(1); // Exit with non-zero code on critical failure
          }
 
-         // TODO: Add more specific health checks if needed, e.g.,
-         // - Check if essential U7 data files exist (if expected)?
-         // - Instantiate LoadingState and call specific non-graphical Load* methods?
-
-         Log("Health check finished successfully.");
-         exit(0); // Exit with zero code on success
+         // If we reached here, critical assets are OK.
+         // Now check if there were *any* asset errors (including non-critical like scripts).
+         if (!g_AssetLoadErrors.empty()) {
+            Log("Health check finished with NON-CRITICAL errors (see summary above).", LOG_WARNING);
+            // Still exit 0 because critical assets loaded, but log indicates issues.
+            exit(0);
+         }
+         else {
+            // Only log pure success if critical assets loaded AND no errors were recorded.
+            Log("Health check finished successfully.", LOG_INFO);
+            exit(0); // Exit with zero code on success
+         }
       }
       else {
          // --- Normal Game Initialization & Main Loop ---
@@ -246,6 +315,9 @@ int main(int argv, char** argc)
 
          // Calculate draw scale needed for font loading
           g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
+
+         // Register Lua functions first so scripts can find them during load
+         RegisterAllLuaFunctions();
 
          // Load core assets (pass false for isHealthCheck)
          if (!LoadCoreGameAssets(false)) {
@@ -304,9 +376,6 @@ int main(int argv, char** argc)
          g_camera.up = Vector3 { 0.0f, 1.0f, 0.0f };
          g_camera.fovy = g_cameraDistance;
          g_camera.projection = CAMERA_ORTHOGRAPHIC;
-
-         // Lua function registration (after scripts are loaded)
-         RegisterAllLuaFunctions();
 
          // Initialize states (remains here, depends on assets being loaded)
          Log("Initializing states.");

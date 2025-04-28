@@ -14,6 +14,7 @@
 #include <string>
 #include <unordered_map>
 #include <array>
+#include <memory>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -275,5 +276,15 @@ extern float g_cameraRotation; // angle around target
 extern EngineModes g_engineMode;
 
 void RecalculateCamera();
+
+// Structure to hold information about asset loading errors
+struct AssetLoadError {
+    std::string filePath;
+    std::string errorType; // e.g., "FileNotFound", "ScriptSyntaxError", "ShaderLoadFailed"
+    std::string errorMessage;
+};
+
+// Global list to store asset loading errors encountered during startup
+inline std::vector<AssetLoadError> g_AssetLoadErrors;
 
 #endif
