@@ -51,6 +51,13 @@ void Engine::Init(const std::string &configfile, bool isHealthCheck)
 	Log("Done with Engine::Init()");
 }
 
+// Dummy implementation for pure virtual Object::Init to satisfy the compiler
+void Engine::Init([[maybe_unused]] const std::string& data) {
+   Log("Engine::Init(string) called unexpectedly!", LOG_WARNING);
+   // This function shouldn't normally be called for Engine.
+   // If needed, load config from 'data' string here, similar to the other Init.
+}
+
 void Engine::Shutdown()
 {
 	g_StateMachine->Shutdown();

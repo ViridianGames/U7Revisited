@@ -35,15 +35,21 @@
 class Object
 {
 public:
-	Object() { };
-	explicit Object(const std::string& file) { };
-	Object(const Object&) = default;             //  Default copy constructor
-	Object(Object&&) = default;                  //  Default move constructor
-	Object& operator=(const Object&) = default;  //  Default assignment operator
-	Object& operator=(Object&&) = default;       //  Default move operator
-	virtual ~Object() = default;                 //  Default destructor
+	explicit Object() = default;
+	virtual ~Object() = default;
 
-	virtual void Init() { Init(std::string("")); }
+	// Prevent copying and assignment
+	Object(const Object&) = delete;
+	Object& operator=(const Object&) = delete;
+
+	// Prevent moving
+	Object(Object&&) = delete;
+	Object& operator=(Object&&) = delete;
+
+	// Virtual initializer for derived classes that need file path
+	explicit Object([[maybe_unused]] const std::string& file) { };
+
+	// Virtual initializer taking configuration data (e.g., JSON string)
 	virtual void Init(const std::string& data) = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;

@@ -41,7 +41,7 @@ void ScriptingSystem::Update()
 {
 }
 
-void ScriptingSystem::LoadScript(const std::string& path)
+bool ScriptingSystem::LoadScript(const std::string& path)
 {
 	// Get the actual function name from the path
 	std::string func_name;
@@ -61,6 +61,7 @@ void ScriptingSystem::LoadScript(const std::string& path)
 	{
 		std::cerr << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
 		lua_pop(m_luaState, 1);
+		return false;
 	}
 	else
 	{
@@ -69,6 +70,7 @@ void ScriptingSystem::LoadScript(const std::string& path)
 
 	string thispath = path;
 	m_scriptFiles.push_back(make_pair(func_name, thispath));
+	return true;
 }
 
 string ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)

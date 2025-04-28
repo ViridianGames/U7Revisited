@@ -20,11 +20,23 @@ TARGET_RELEASE_PATH="${REDIST_DIR}/${TARGET_RELEASE_EXE}"
 
 # Default to release unless --debug is passed
 RUN_DEBUG=false
+# Check for --healthcheck flag separately
+RUN_HEALTHCHECK=false
+GAME_ARGS=() # Array to hold arguments meant for the game
+
 for arg in "$@"; do
-  if [[ "$arg" == "--debug" ]]; then
-    RUN_DEBUG=true
-    break
-  fi
+  case "$arg" in
+    --debug)
+      RUN_DEBUG=true
+      ;;
+    --healthcheck)
+      RUN_HEALTHCHECK=true
+      ;;
+    *)
+      # Assume other arguments are for the game executable
+      GAME_ARGS+=("$arg")
+      ;;
+  esac
 done
 
 SOURCE_PATH=""
@@ -87,8 +99,16 @@ fi
 echo "Changing directory to ${REDIST_DIR}"
 cd "$REDIST_DIR" || exit 1
 
-# Run the executable from the Redist directory
-echo "Running ${TARGET_EXE} from $(pwd)..."
-"./${TARGET_EXE}" "$@" # Pass along arguments
+# Prepare arguments for the executable
+EXEC_ARGS=()
+if [[ "$RUN_HEALTHCHECK" == true ]]; then
+    EXEC_ARGS+=("--healthcheck")
+fi
+# Append the filtered game arguments
+EXEC_ARGS+=("${GAME_ARGS[@]}")
+
+# Run the executable from the Redist directory, passing potentially modified args
+echo "Running ${TARGET_EXE} ${EXEC_ARGS[*]} from $(pwd)..."
+"./${TARGET_EXE}" "${EXEC_ARGS[@]}" # Pass along potentially modified arguments
 
 exit $?

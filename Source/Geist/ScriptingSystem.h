@@ -33,7 +33,7 @@ public:
     virtual void Update();
     virtual void Draw() {};
 
-    void LoadScript(const std::string& path);
+    bool LoadScript(const std::string& path);
     void RegisterScriptFunction(const std::string& name, lua_CFunction function);
     std::string CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
 

@@ -17,8 +17,6 @@
 
 #include "Object.h"
 #include "Config.h"
-#include "Engine.h"
-#include "ResourceManager.h"
 
 class Engine : public Object
 {
@@ -26,6 +24,7 @@ public:
 	Engine() {};
 
 	virtual void Init(const std::string& configfile, bool isHealthCheck = false);
+	virtual void Init(const std::string& data) override;
 	virtual void Shutdown();
 	virtual void Update();
 	virtual void Draw();
