@@ -74,58 +74,88 @@ DO_CONFIGURE=false
 DO_RUN=false
 DO_SETUP_IDE=false
 DO_FIX_REQUIRES=false # New flag
+SHOW_WARNINGS=false # New flag for build output verbosity
 
-# --- Argument Parsing ---
+# --- Argument Parsing --- Allow flexible order ---
 COMMAND_GIVEN=false
+RUN_ARGS_STARTED=false
 while [[ $# -gt 0 ]]; do
+    # Stop processing options if we hit the game args separator or if run command was last
+    if [[ "$1" == "--" && "$RUN_ARGS_STARTED" == false ]]; then
+        RUN_ARGS_STARTED=true
+        shift # Consume the '--'
+        RUN_EXTRA_ARGS+=("$@") # Add all remaining args to game args
+        break # Stop processing command-line args
+    fi
+    if [[ "$RUN_ARGS_STARTED" == true ]]; then
+        RUN_EXTRA_ARGS+=("$1") # Add to game args if already started
+        shift
+        continue
+    fi
+
+    ARG_PROCESSED=false
     case "$1" in
         build)
             DO_BUILD=true
             COMMAND_GIVEN=true
-            shift
+            ARG_PROCESSED=true
             ;;
-        run)
+        run) # Run still consumes remaining args
             DO_RUN=true
             COMMAND_GIVEN=true
-            shift
-             # Remaining args are for the game itself
-            RUN_EXTRA_ARGS=("$@")
-            break # Consume rest for run
+            ARG_PROCESSED=true
+            RUN_ARGS_STARTED=true # Mark that subsequent args are for the game
             ;;
         clean)
             DO_CLEAN=true
             COMMAND_GIVEN=true
-             # Allow chaining, e.g., u7 clean build
-            shift
+            ARG_PROCESSED=true
             ;;
         configure)
              DO_CONFIGURE=true
              COMMAND_GIVEN=true
-             shift
+             ARG_PROCESSED=true
             ;;
         setup)
             DO_SETUP_IDE=true
             COMMAND_GIVEN=true
-            shift
+            ARG_PROCESSED=true
             ;;
-        scripts) # New command
+        scripts) # Scripts command needs the next argument
             COMMAND_GIVEN=true
-            shift # Move past 'scripts'
+            ARG_PROCESSED=true
+            shift # Consume 'scripts'
             if [[ "$1" == "--fix-requires" ]]; then
                  DO_FIX_REQUIRES=true
-                 shift # Move past '--fix-requires'
+                 # Shift will happen at end of loop
             else
                  print_error "Unknown scripts command: '$1'. Available: --fix-requires"
                  exit 1
             fi
             ;;
-        --debug) # Explicitly request debug build
+        --debug)
             BUILD_TYPE="debug"
-            shift
+            ARG_PROCESSED=true
             ;;
-        --release) # Allow explicit --release for clarity, but it's the default
+        debug) # Alias for --debug
+            BUILD_TYPE="debug"
+            ARG_PROCESSED=true
+            ;;
+        --release)
             BUILD_TYPE="release"
-            shift
+            ARG_PROCESSED=true
+            ;;
+        release) # Alias for --release
+            BUILD_TYPE="release"
+            ARG_PROCESSED=true
+            ;;
+        --warnings)
+            SHOW_WARNINGS=true
+            ARG_PROCESSED=true
+            ;;
+        warnings) # Alias for --warnings
+            SHOW_WARNINGS=true
+            ARG_PROCESSED=true
             ;;
         -h|--help)
             echo "Usage: $0 [command...] [options...] [-- game_args...]"
@@ -142,6 +172,7 @@ while [[ $# -gt 0 ]]; do
             echo "Options:"
             echo "  --debug         Perform actions for the debug build type."
             echo "  --release       Perform actions for the release build type (default)."
+            echo "  --warnings      Show compiler warnings in the build summary (default: errors only)."
             echo "  -h, --help      Show this help message."
             echo ""
             echo "Examples:"
@@ -152,28 +183,34 @@ while [[ $# -gt 0 ]]; do
             echo "  $0 run -- --some-game-flag # Run release, passing flag to game"
             echo "  $0 setup                # Generate IDE config files (Linux/macOS)"
             echo "  $0 scripts --fix-requires # Check/fix Lua scripts"
+            echo "  $0 build --warnings     # Build release, show warnings in summary"
             exit 0
             ;;
-        --) # Separator for game args if 'run' isn't the last command
-            shift
-            RUN_EXTRA_ARGS=("$@")
-            break
-            ;;
-        *) # Check if it's a valid script argument *after* a command
-            if [[ "$COMMAND_GIVEN" == false ]]; then
-                 print_error "Unknown command or option: $1. Commands must come before options like --debug or --release."
-                 exit 1
+        *) # Unrecognized argument
+            # If run command was just processed, this is a game arg
+            if [[ "$RUN_ARGS_STARTED" == true ]]; then
+                 RUN_EXTRA_ARGS+=("$1")
+                 ARG_PROCESSED=true # Treat as processed run arg
             else
-                # If a command was given, maybe this is an arg for the game?
-                # Re-add it to RUN_EXTRA_ARGS if DO_RUN is the intended final action
-                # This part is tricky without knowing the final action intended.
-                # For simplicity, we'll error out on unknown args after a command unless it's after 'run'
-                print_error "Unknown argument: $1. Did you mean to put it after '--' for the 'run' command?"
-                exit 1
+                 print_error "Unknown command or option: $1"
+                 exit 1
             fi
             ;;
     esac
+    shift # Move to the next argument
 done
+
+# --- Report Effective Settings --- START
+if [[ "$COMMAND_GIVEN" == true ]]; then # Only report if a command was actually given
+    echo -e "${CLR_CYN}--- Effective Settings ---${CLR_RST}"
+    printf "  Build Type:    %s\n" "$BUILD_TYPE"
+    printf "  Show Warnings: %s\n" "$SHOW_WARNINGS"
+    if [[ "$DO_CLEAN" == true ]]; then printf "  Clean Target:  true\n"; fi
+    if [[ "$DO_CONFIGURE" == true ]]; then printf "  Configure:     true\n"; fi
+    # Add other relevant flags here if needed
+    echo -e "${CLR_CYN}--------------------------${CLR_RST}"
+fi
+# --- Report Effective Settings --- END
 
 # --- Execute Tasks ---
 
@@ -260,19 +297,71 @@ if [[ "$BUILD_NEEDED" == true && "$ONLY_NON_BUILD_COMMAND" == false ]]; then
     if [ -f "$BUILD_SCRIPT" ]; then
         # Use standard echo (adds newline) so spinner appears below
         echo -e "${CLR_CYN}--> Running build script: ${BUILD_SCRIPT} ${BUILD_ARGS[@]}${CLR_RST}"
-        # Run script in background
-        bash "$BUILD_SCRIPT" ${BUILD_ARGS[@]} &
-        BUILD_PID=$!
-        # Start spinner
-        spinner $BUILD_PID
-        # Wait for script to finish and get exit code
-        wait $BUILD_PID
-        BUILD_EXIT_CODE=$?
 
+        # --- MODIFIED BUILD EXECUTION --- START
+
+        BUILD_OUTPUT_FILE=$(mktemp)
+        trap 'rm -f "$BUILD_OUTPUT_FILE"; tput cnorm; echo "Build interrupted."; exit' INT TERM EXIT
+
+        # Run build script in background, redirecting output to temp file
+        bash "$BUILD_SCRIPT" ${BUILD_ARGS[@]} > "$BUILD_OUTPUT_FILE" 2>&1 &
+        BUILD_PID=$!
+        spinner $BUILD_PID # Show spinner
+        wait $BUILD_PID # Wait for build to finish
+        BUILD_EXIT_CODE=$?
+        trap - INT TERM EXIT # Remove trap before processing output
+
+        # Define specific grep patterns for errors and warnings
+        ERROR_PATTERN=': error:| fatal error:| error |ERROR:|FAIL:|Fail:'
+        WARNING_PATTERN=': warning:| warning |WARN:|WARN |\[-W.*\]$'
+
+        # Determine combined grep pattern for summary based on --warnings flag
+        SUMMARY_GREP_PATTERN=$ERROR_PATTERN
+        if [[ "$SHOW_WARNINGS" == true ]]; then
+             SUMMARY_GREP_PATTERN="$ERROR_PATTERN|$WARNING_PATTERN"
+        fi
+
+        # Show summary header
+        echo -e "${CLR_BLU}--- Build Output Summary ---${CLR_RST}"
+
+        # Run grep for summary
+        if grep -q -E "$SUMMARY_GREP_PATTERN" "$BUILD_OUTPUT_FILE"; then
+             grep --color=always -E "$SUMMARY_GREP_PATTERN" "$BUILD_OUTPUT_FILE"
+        else
+             echo -e "${CLR_GRN}  No relevant messages found in build log.${CLR_RST}"
+        fi
+        echo -e "${CLR_BLU}--------------------------${CLR_RST}"
+
+        # --- Count Total Errors and Warnings --- START
+        TOTAL_ERRORS=$(grep -c -E "$ERROR_PATTERN" "$BUILD_OUTPUT_FILE")
+        TOTAL_WARNINGS=$(grep -c -E "$WARNING_PATTERN" "$BUILD_OUTPUT_FILE")
+
+        printf "${CLR_BLU}Build Totals:${CLR_RST} "
+        printf "${CLR_RED}%d Errors${CLR_RST}, " "$TOTAL_ERRORS"
+        printf "${CLR_YLW}%d Warnings${CLR_RST}\n" "$TOTAL_WARNINGS"
+        # --- Count Total Errors and Warnings --- END
+
+        # --- Add informational message about hidden warnings --- START
+        if [[ ${BUILD_EXIT_CODE} -eq 0 && ${TOTAL_WARNINGS} -gt 0 && "$SHOW_WARNINGS" == false ]]; then
+             echo -e "${CLR_CYN}[U7 INFO] Build succeeded, but warnings were detected. Re-run with --warnings to see details.${CLR_RST}"
+        fi
+        # --- Add informational message about hidden warnings --- END
+
+        # Always report if the build command itself failed
         if [ ${BUILD_EXIT_CODE} -ne 0 ]; then
-             print_error "Build script failed with exit code ${BUILD_EXIT_CODE}."
-             exit 1
-         fi
+             print_error "Build script failed with exit code ${BUILD_EXIT_CODE}. (See full log above if summary is filtered)"
+             # Optionally show full log here again if needed, even if filtered?
+             # echo -e "${CLR_YLW}--- Full Log ---${CLR_RST}"
+             # cat "$BUILD_OUTPUT_FILE"
+             rm -f "$BUILD_OUTPUT_FILE" # Clean up
+             exit 1 # Exit with failure code
+        fi
+
+        # Clean up the temporary file if build succeeded
+        rm -f "$BUILD_OUTPUT_FILE"
+
+        # --- MODIFIED BUILD EXECUTION --- END
+
         print_footer
     else
         print_error "Build script not found: ${BUILD_SCRIPT}"

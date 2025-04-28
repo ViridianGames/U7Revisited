@@ -19,6 +19,8 @@ the legacy of this legendary RPG through a modern replacement engine.
 
 The easiest way to manage common development tasks (build, run, clean, IDE setup) is using the unified wrapper script `u7` (Linux/macOS) or `u7.bat` (Windows) located in the project root.
 
+**Argument Flexibility:** Commands (`build`, `clean`, `setup`, `scripts`) and options (`debug`, `release`, `warnings`) can generally be specified in any order before the `run` command or the `--` separator for game arguments. Options can be provided with or without leading `--` (e.g., `debug` is the same as `--debug`). The script will print the effective settings before executing tasks.
+
 1.  **Initial IDE Setup (One Time):**
     *   After cloning, run the IDE setup script:
         *   Linux/macOS: `./u7 setup`
@@ -31,6 +33,8 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
     *   Build Debug: `./u7 build --debug` or `.\\u7.bat build --debug`
     *   Clean & Build Release: `./u7 clean build` or `.\\u7.bat clean build`
     *   Clean & Build Debug: `./u7 clean build --debug` or `.\\u7.bat clean build --debug`
+    *   Build Release & Show Warnings: `./u7 build --warnings` or `.\\u7.bat build --warnings`
+    *   **Build Output:** The build command shows a progress spinner. After completion, it prints a summary of errors (default) or errors and warnings (`--warnings`). It always reports the total counts and final build status.
 
 3.  **Running:**
     *   Ensure original game data is copied to `Redist/Data/U7/` (see "Important Data Files Setup" below).
@@ -161,6 +165,6 @@ Ultima VII: The Black Gate and any associated trademarks and copyrights are prop
 
 This project does not include any original game content. To use this software, you must legally own a copy of Ultima VII: The Black Gate.
 
-The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the LICENSE file.
+The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the [LICENSE] file.
 
 This project is made by fans, for fans, to preserve and enhance the legacy of Ultima VII for future generations.

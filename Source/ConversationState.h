@@ -6,6 +6,7 @@
 #include <deque>
 #include <array>
 #include <math.h>
+#include "lua.hpp"
 
 class ParticleSystem;
 class Gui;
@@ -27,7 +28,7 @@ public:
    virtual void OnExit();
 
    void SetNPC(int npcId) { m_npcId = npcId; }
-   void AddDialogue(std::string str) { m_dialogue.push_back(str); }
+   void AddDialogue(const std::string& text) { m_dialogue.push_back(text); }
    void AddAnswer(std::string answer) { m_answers.push_back(answer); }
 
    void GetAnswers(const std::string& func_name);

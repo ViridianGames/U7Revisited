@@ -16,6 +16,8 @@ This section documents changes made in this fork compared to the original `Virid
 - Standardized debug (`build-debug/`) and release (`build-release/`) build directories managed via Meson build types (`-Dbuildtype=debug|release`).
 - Centralized helper scripts for build, run, setup, and copying executables into the `scripts/` directory.
 - Enforced 64-bit architecture requirement in the build system.
+- Improved `u7 build` output: Shows spinner, captures full log, prints filtered summary (errors-only by default, `--warnings` flag to include warnings), and always reports total error/warning counts and final build status.
+- Added flexible argument parsing to `u7` script (e.g., accepts `debug` or `--debug`) and confirmation of effective settings before execution.
 
 **Running & Debugging:**
 - Launcher scripts (`scripts/run_u7.sh`, `scripts/run_u7.bat`) called by `u7 run` that handle detecting build type, copying the executable to `Redist/`, and running from the correct directory.
