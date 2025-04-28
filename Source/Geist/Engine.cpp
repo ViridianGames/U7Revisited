@@ -9,7 +9,7 @@
 #include <time.h>
 using namespace std;
 
-void Engine::Init(const std::string &configfile)
+void Engine::Init(const std::string &configfile, bool isHealthCheck)
 {
 	Log("Starting Engine::Init()");
 	m_Done = false;
@@ -36,13 +36,17 @@ void Engine::Init(const std::string &configfile)
 	m_ScreenHeight = m_EngineConfig.GetNumber("v_res");
 
 	//  Initialize Raylib and the screen.
-	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
-	if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
-	{
-		ToggleFullscreen();
-	}
-	SetTargetFPS(60);
-	HideCursor(); // We'll use our own.
+	if (!isHealthCheck) {
+		InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
+		if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
+		{
+			ToggleFullscreen();
+		}
+		SetTargetFPS(60);
+		HideCursor(); // We'll use our own.
+	} else {
+      Log("Skipping graphics initialization for health check.");
+   }
 
 	Log("Done with Engine::Init()");
 }

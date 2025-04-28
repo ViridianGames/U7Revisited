@@ -31,6 +31,7 @@
 #include <sstream>
 #include <memory>
 #include <filesystem>
+#include <cstring> // Required for strcmp
 
 #include "rlgl.h"
 
@@ -41,27 +42,46 @@ int main(int argv, char** argc)
 {
     SetTraceLogCallback(LoggingCallback);
 
+    bool isHealthCheck = false;
+    if (argv > 1 && strcmp(argc[1], "--healthcheck") == 0) {
+        isHealthCheck = true;
+        Log("Health check mode enabled.");
+    }
+
    try
    {
       g_Engine = make_unique<Engine>();
-      g_Engine->Init("Data/engine.cfg");
+      g_Engine->Init("Data/engine.cfg", isHealthCheck);
 
-      g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
+      if (isHealthCheck) {
+         // Health Check Logic (Placeholder for now - will implement loading steps later)
+         Log("Running health check initialization...");
+         
+         // TODO: Instantiate LoadingState and call Load* methods, checking results.
+         
+         Log("Health check finished successfully.");
+         // If we reach here without critical errors, exit 0.
+         // Error handling within loading steps will exit non-zero if needed.
+         exit(0); 
+      }
+      else {
+         // Normal Game Initialization & Main Loop
+         g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
 
-      rlDisableBackfaceCulling();
-      rlEnableDepthTest();
+         rlDisableBackfaceCulling();
+         rlEnableDepthTest();
 
-      g_cameraDistance = 26;
-      g_cameraRotation = 0.0f;
+         g_cameraDistance = 26;
+         g_cameraRotation = 0.0f;
 
-      //  Pick a random initial location
-      g_VitalRNG = make_unique<RNG>();
-      g_VitalRNG->SeedRNG(GetTime() * 1000);
-      int x = g_VitalRNG->Random(7);
+         //  Pick a random initial location
+         g_VitalRNG = make_unique<RNG>();
+         g_VitalRNG->SeedRNG(GetTime() * 1000);
+         int x = g_VitalRNG->Random(7);
 
-      switch (0)
-      {
-         case 0: //  Starting Location
+         switch (0)
+         {
+            case 0: //  Starting Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
 			   break;
 
@@ -251,7 +271,21 @@ int main(int argv, char** argc)
    catch (string errorCode)
    {
       Log(errorCode, LOG_ERROR);
-      exit(0);
+      // Ensure non-zero exit on caught error string
+      // Check if we need specific handling for health check errors here?
+      // For now, any caught string error indicates failure.
+      exit(1); 
+   }
+   catch (const std::exception& e) 
+   {
+      // Catch standard exceptions too
+      Log(std::string("Caught exception: ") + e.what(), LOG_ERROR);
+      exit(1);
+   }
+   catch (...) 
+   {
+       Log("Caught unknown exception.", LOG_ERROR);
+       exit(1);
    }
 
    if (g_Engine)
