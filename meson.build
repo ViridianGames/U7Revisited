@@ -31,6 +31,7 @@ endif
 if get_option('buildtype') == 'debug'
   message('Configuring debug build')
   # Add debug-specific flags here
+  add_project_arguments('-DDEBUG_MODE', language: 'cpp') # Define DEBUG_MODE for C++
   if host_system == 'windows'
     add_project_arguments('/Zi', language: 'cpp')  # Debug information
     add_project_arguments('/Od', language: 'cpp')  # Disable optimization
@@ -41,6 +42,7 @@ if get_option('buildtype') == 'debug'
 elif get_option('buildtype') == 'release'
   message('Configuring release build')
   # Add release-specific flags here
+  add_project_arguments('-DRELEASE_MODE', language: 'cpp') # Define RELEASE_MODE for C++
   if host_system == 'windows'
     add_project_arguments('/O2', language: 'cpp')  # Optimize for speed
   else
