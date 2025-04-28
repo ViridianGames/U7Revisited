@@ -221,10 +221,10 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> m_meshOutline;
 
 	inStream >>  m_useShapePointer;
-	inStream >> m_pointerShape;
+	inStream >> m_pointerShape; 
 	inStream >> m_pointerFrame;
 
-	// inStream >> m_luaScript;
+	inStream >> m_luaScript;
 
 	Init(m_shape, m_frame, false);
 

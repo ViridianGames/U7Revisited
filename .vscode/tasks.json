@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "make",
             "args": [
-                "debug",
+                "debug"
             ],
             "group": "build",
             "problemMatcher": [

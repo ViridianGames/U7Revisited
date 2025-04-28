@@ -258,9 +258,9 @@ void ShapeEditorState::Update()
 		m_currentFrame = 0;
 
 		m_luaScriptIndex = 0;
-		for (int i = 0; i < g_ScriptingSystem->m_loadedLuaScripts.size(); ++i)
+		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 		{
-			if (g_ScriptingSystem->m_loadedLuaScripts[i] == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
+			if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
 			{
 				m_luaScriptIndex = i;
 				break;
@@ -1002,7 +1002,7 @@ void ShapeEditorState::Update()
 			for(int i = 0; i < 10; ++i)
 			{
 				m_luaScriptIndex++;
-				if (m_luaScriptIndex > g_ScriptingSystem->m_loadedLuaScripts.size())
+				if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
 				{
 					m_luaScriptIndex = 0;
 				}
@@ -1011,13 +1011,13 @@ void ShapeEditorState::Update()
 		else
 		{
 			m_luaScriptIndex++;
-			if (m_luaScriptIndex > g_ScriptingSystem->m_loadedLuaScripts.size())
+			if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
 			{
 				m_luaScriptIndex = 0;
 			}
 		}
 
-		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_loadedLuaScripts[m_luaScriptIndex]);
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVLUASCRIPTBUTTON)
@@ -1029,7 +1029,7 @@ void ShapeEditorState::Update()
 				m_luaScriptIndex--;
 				if (m_luaScriptIndex < 0)
 				{
-					m_luaScriptIndex = g_ScriptingSystem->m_loadedLuaScripts.size();
+					m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
 				}
 			}
 		}
@@ -1038,11 +1038,11 @@ void ShapeEditorState::Update()
 			m_luaScriptIndex--;
 			if (m_luaScriptIndex < 0)
 			{
-				m_luaScriptIndex = g_ScriptingSystem->m_loadedLuaScripts.size();
+				m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
 			}
 		}
 
-		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_loadedLuaScripts[m_luaScriptIndex]);
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVSHAPEPOINTERBUTTON)

@@ -184,10 +184,10 @@ void U7Object::Interact(int event)
 
       g_ConversationState->SetLuaFunction(scriptName);
 
-      g_ScriptingSystem->CallScript(scriptName, {event, NPCId});  
+      AddConsoleString(g_ScriptingSystem->CallScript(scriptName, {event, NPCId}));  
    }
    else
    {
-      g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_shapeData->m_shape, m_shapeData->m_frame });
+      AddConsoleString(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_shapeData->m_shape, m_shapeData->m_frame }));
    }
 }

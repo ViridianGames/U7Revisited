@@ -108,6 +108,11 @@ void ConversationState::Update()
 			m_dialogue.erase(m_dialogue.begin());
 		}
 	}
+
+	if (IsKeyReleased(KEY_F1))
+	{
+		g_StateMachine->PopState();
+	}
 }
 
 void ConversationState::Draw()

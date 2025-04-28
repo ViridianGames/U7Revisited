@@ -64,21 +64,37 @@ void ScriptingSystem::LoadScript(const std::string& path)
 	}
 	else
 	{
-		m_loadedLuaScripts.push_back(func_name);
-		m_loadedLuaScriptPaths.push_back(path);
 		std::cout << "Loaded script: " << path << "\n";
 	}
+
+	string thispath = path;
+	m_scriptFiles.push_back(make_pair(func_name, thispath));
 }
 
-void ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
+string ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
 {
 	//  Check if the function is loaded
-	auto it = std::find(m_loadedLuaScripts.begin(), m_loadedLuaScripts.end(), func_name);
-	if (it == m_loadedLuaScripts.end())
+	bool valid = false;
+	string path = "";
+	for(auto& script : m_scriptFiles)
 	{
-		std::cerr << "Function " << func_name << " not loaded.\n";
-		return;
+		if (script.first == func_name)
+		{
+			valid = true;
+			std::cout << "Calling script: " << script.second << "\n";
+			path = script.second;
+			break;
+		}
 	}
+
+	if (!valid)
+	{
+		string error = "Function " + func_name + " not loaded.";
+		std::cerr << error << "\n";
+		return error;
+	}
+
+	LoadScript(path);
 
 	lua_getglobal(m_luaState, func_name.c_str());
 	if (lua_isfunction(m_luaState, -1))
@@ -89,16 +105,20 @@ void ScriptingSystem::CallScript(const std::string& func_name, const std::vector
 		}
 		if (lua_pcall(m_luaState, args.size(), 0, 0) != LUA_OK)
 		{
-			std::cerr << "Error in " << func_name << ": " << lua_tostring(m_luaState, -1) << "\n";
-			luaL_traceback(m_luaState, m_luaState, nullptr, 1);
-			std::cerr << lua_tostring(m_luaState, -1) << "\n";
+			std::string error = lua_tostring(m_luaState, -1);
+			//std::cerr << "Error in " << func_name << ": " << lua_tostring(m_luaState, -1) << "\n";
+			luaL_traceback(m_luaState, m_luaState, error.c_str(), 1);
+			//std::string traceback = "Error in " + func_name + ":" + lua_tostring(m_luaState, -1);
+			std::cerr << error << "\n";
 			lua_pop(m_luaState, 2);
+			return error;
 		}
 	}
 	else
 	{
 		lua_pop(m_luaState, 1);
 	}
+	return "";
 }
 
 void ScriptingSystem::RegisterScriptFunction(const std::string& name, lua_CFunction function)

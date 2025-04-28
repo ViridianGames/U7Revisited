@@ -35,7 +35,7 @@ public:
 
     void LoadScript(const std::string& path);
     void RegisterScriptFunction(const std::string& name, lua_CFunction function);
-    void CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
+    std::string CallScript(const std::string& func_name, const std::vector<lua_Integer>& args);
 
     // Flag management
     void SetFlag(int flag_id, bool value);
@@ -45,8 +45,9 @@ public:
     std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;
     std::unordered_map<int, bool> m_flags;
 
-    std::vector<std::string> m_loadedLuaScripts;
-    std::vector<std::string> m_loadedLuaScriptPaths;
+    std::vector<std::pair<std::string, std::string> > m_scriptFiles;
+    //std::vector<std::string> m_loadedLuaScripts;
+    //std::vector<std::string> m_loadedLuaScriptPaths;
 };
 
 #endif
