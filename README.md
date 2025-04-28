@@ -44,7 +44,7 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
     *   Run Release with game arguments: `./u7 run --some-game-flag` or `.\u7.bat run -- --some-game-flag`
     *   Run Debug with game arguments: `./u7 run --debug --some-game-flag` or `.\u7.bat run --debug -- --some-game-flag`
     *   **Running the Health Check:**
-        *   Use `./u7 run --debug --healthcheck` or `.\u7.bat run --debug --healthcheck` (Health check always runs verbosely)
+        *   Use `./u7 healthcheck` (This implies a debug build and runs verbosely).
         *   This performs essential asset loading checks without launching the full game.
         *   Output is color-coded: **Blue** for INFO, **Yellow** for WARN, **Red** for ERROR.
         *   If it exits with code 0 and message "Health check finished successfully.", all core assets loaded without issues.

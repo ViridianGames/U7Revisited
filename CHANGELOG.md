@@ -42,6 +42,9 @@ This section documents changes made in this fork compared to the original `Virid
 - Added `scripts/check_lua_requires.sh` script to verify and add missing `require "U7LuaFuncs"` to Lua scripts in `Redist/Data/Scripts/`, with interactive confirmation.
 - Integrated the check script into the main wrapper via `u7 scripts --fix-requires`.
 
+**New Command:**
+- Added `healthcheck` command to `u7` script as a shortcut for `./u7 run --debug --healthcheck`.
+
 ### Changed
 
 **Build System:**
