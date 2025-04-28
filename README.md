@@ -27,19 +27,21 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
     *   **Important CLion Note:** After running the setup, you still need to manually set the 'Working Directory' in the generated `U7_Debug*` and `U7_Release*` configurations to `${PROJECT_DIR}/Redist`.
 
 2.  **Building:**
-    *   Build Debug: `./u7 build` or `.\\u7.bat build`
-    *   Build Release: `./u7 build --release` or `.\\u7.bat build --release`
-    *   Clean & Build Debug: `./u7 clean build` or `.\\u7.bat clean build`
+    *   Build Release (Default): `./u7 build` or `.\\u7.bat build`
+    *   Build Debug: `./u7 build --debug` or `.\\u7.bat build --debug`
+    *   Clean & Build Release: `./u7 clean build` or `.\\u7.bat clean build`
+    *   Clean & Build Debug: `./u7 clean build --debug` or `.\\u7.bat clean build --debug`
 
 3.  **Running:**
     *   Ensure original game data is copied to `Redist/Data/U7/` (see "Important Data Files Setup" below).
-    *   Run Debug (builds first if needed): `./u7 run` or `.\\u7.bat run`
-    *   Run Release (builds first if needed): `./u7 run --release` or `.\\u7.bat run --release`
-    *   Run Debug with game arguments: `./u7 run -- --some-game-flag` or `.\\u7.bat run -- --some-game-flag`
+    *   Run Release (Default - builds first if needed): `./u7 run` or `.\\u7.bat run`
+    *   Run Debug (builds first if needed): `./u7 run --debug` or `.\\u7.bat run --debug`
+    *   Run Release with game arguments: `./u7 run -- --some-game-flag` or `.\\u7.bat run -- --some-game-flag`
+    *   Run Debug with game arguments: `./u7 run --debug -- --some-game-flag` or `.\\u7.bat run --debug -- --some-game-flag`
 
 4.  **Cleaning:**
-    *   Clean Debug build directory: `./u7 clean` or `.\\u7.bat clean`
-    *   Clean Release build directory: `./u7 clean --release` or `.\\u7.bat clean --release`
+    *   Clean Release build directory (Default): `./u7 clean` or `.\\u7.bat clean`
+    *   Clean Debug build directory: `./u7 clean --debug` or `.\\u7.bat clean --debug`
 
 For more options, run `./u7 --help` or `.\\u7.bat --help`.
 
