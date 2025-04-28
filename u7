@@ -1,0 +1,222 @@
+#!/bin/bash
+# Main wrapper script for U7Revisited development tasks
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+SCRIPTS_SUBDIR="scripts" # Directory where other scripts reside
+
+# --- Helper Functions ---
+print_header() {
+    echo ""
+    echo "=================================================="
+    printf "  U7Revisited Task: %s\\n" "$1"
+    echo "=================================================="
+}
+
+print_footer() {
+    echo "=================================================="
+    echo "  Task Finished"
+    echo "=================================================="
+    echo ""
+}
+
+print_error() {
+    echo "[U7 ERROR] $1" >&2
+}
+
+# --- Check for scripts directory ---
+SCRIPTS_DIR="${SCRIPT_DIR}/${SCRIPTS_SUBDIR}"
+if [ ! -d "${SCRIPTS_DIR}" ]; then
+    print_error "Scripts directory '${SCRIPTS_DIR}' not found!"
+    exit 1
+fi
+
+# --- Default values ---
+BUILD_TYPE="release" # Default to release
+BUILD_ARGS=()
+RUN_EXTRA_ARGS=()
+DO_BUILD=false
+DO_CLEAN=false
+DO_CONFIGURE=false
+DO_RUN=false
+DO_SETUP_IDE=false
+
+# --- Argument Parsing ---
+COMMAND_GIVEN=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        build)
+            DO_BUILD=true
+            COMMAND_GIVEN=true
+            shift
+            ;;
+        run)
+            DO_RUN=true
+            COMMAND_GIVEN=true
+            shift
+             # Remaining args are for the game itself
+            RUN_EXTRA_ARGS=("$@")
+            break # Consume rest for run
+            ;;
+        clean)
+            DO_CLEAN=true
+            COMMAND_GIVEN=true
+             # Allow chaining, e.g., u7 clean build
+            shift
+            ;;
+        configure)
+             DO_CONFIGURE=true
+             COMMAND_GIVEN=true
+             shift
+            ;;
+        setup)
+            DO_SETUP_IDE=true
+            COMMAND_GIVEN=true
+            shift
+            ;;
+        --debug) # Explicitly request debug build
+            BUILD_TYPE="debug"
+            shift
+            ;;
+        --release) # Allow explicit --release for clarity, but it's the default
+            BUILD_TYPE="release"
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [command...] [options...] [-- game_args...]"
+            echo ""
+            echo "Commands:"
+            echo "  build         Build the project (default: release)."
+            echo "  run           Run the project (builds first if needed, default: release)."
+            echo "  clean         Clean the build directory for the selected type."
+            echo "  configure     Force configure before build."
+            echo "  setup         Run the IDE setup script (Linux/macOS)."
+            echo ""
+            echo "Options:"
+            echo "  --debug       Perform actions for the debug build type."
+            echo "  --release     Perform actions for the release build type (default)."
+            echo "  -h, --help    Show this help message."
+            echo ""
+            echo "Examples:"
+            echo "  $0 build                # Build release (default)"
+            echo "  $0 build --debug        # Build debug"
+            echo "  $0 run                  # Build (if needed) and run release"
+            echo "  $0 clean build --debug   # Clean debug, then build debug"
+            echo "  $0 run -- --some-game-flag # Run release, passing flag to game"
+            echo "  $0 setup                # Generate IDE config files (Linux/macOS)"
+            exit 0
+            ;;
+        --) # Separator for game args if 'run' isn't the last command
+            shift
+            RUN_EXTRA_ARGS=("$@")
+            break
+            ;;
+        *) # Check if it's a valid script argument *after* a command
+            if [[ "$COMMAND_GIVEN" == false ]]; then
+                 print_error "Unknown command or option: $1. Commands must come before options like --debug or --release."
+                 exit 1
+            else
+                # If a command was given, maybe this is an arg for the game?
+                # Re-add it to RUN_EXTRA_ARGS if DO_RUN is the intended final action
+                # This part is tricky without knowing the final action intended.
+                # For simplicity, we'll error out on unknown args after a command unless it's after 'run'
+                print_error "Unknown argument: $1. Did you mean to put it after '--' for the 'run' command?"
+                exit 1
+            fi
+            ;;
+    esac
+done
+
+# --- Execute Tasks ---
+
+# Setup IDE
+if [[ "$DO_SETUP_IDE" == true ]]; then
+    print_header "IDE Setup (Linux/macOS)"
+    SETUP_SCRIPT="${SCRIPTS_DIR}/setup_ide.sh"
+    if [ -f "$SETUP_SCRIPT" ]; then
+        echo "--> Running IDE setup script..."
+        bash "$SETUP_SCRIPT"
+        SETUP_EXIT_CODE=$?
+        if [ ${SETUP_EXIT_CODE} -ne 0 ]; then
+             print_error "IDE setup script failed with exit code ${SETUP_EXIT_CODE}."
+             exit 1
+        fi
+        print_footer
+    else
+        print_error "Setup script not found: ${SETUP_SCRIPT}"
+        exit 1
+    fi
+fi
+
+# Handle build dependencies (clean, configure)
+if [[ "$DO_CLEAN" == true ]]; then
+    BUILD_ARGS+=("--clean")
+fi
+if [[ "$DO_CONFIGURE" == true ]]; then
+     BUILD_ARGS+=("--configure")
+fi
+
+# Add --release flag specifically for build.sh if needed
+if [[ "$BUILD_TYPE" == "release" ]]; then
+     BUILD_ARGS+=("--release")
+fi
+
+
+# Build (if build cmd or run cmd was specified, and not only setup)
+BUILD_NEEDED=$( [[ "$DO_BUILD" == true || "$DO_RUN" == true ]] && echo true || echo false )
+BUILD_SCRIPT="${SCRIPTS_DIR}/build.sh"
+
+if [[ "$BUILD_NEEDED" == true && ( ! "$DO_SETUP_IDE" == true || "$COMMAND_GIVEN" == true ) ]]; then
+    # Only run build if build/run requested AND (setup wasn't requested OR other commands were also given)
+    # This prevents 'u7 setup' from triggering a build.
+
+    # The --release flag is added above if needed. build.sh defaults to debug if it's absent.
+
+    print_header "Build ($BUILD_TYPE)"
+    if [ -f "$BUILD_SCRIPT" ]; then
+        echo "--> Running build script: ${BUILD_SCRIPT} ${BUILD_ARGS[@]}"
+         bash "$BUILD_SCRIPT" ${BUILD_ARGS[@]}
+         BUILD_EXIT_CODE=$?
+         if [ ${BUILD_EXIT_CODE} -ne 0 ]; then
+             print_error "Build script failed with exit code ${BUILD_EXIT_CODE}."
+             exit 1
+         fi
+        print_footer
+    else
+        print_error "Build script not found: ${BUILD_SCRIPT}"
+        exit 1
+    fi
+fi
+
+
+# Run
+if [[ "$DO_RUN" == true ]]; then
+    print_header "Run ($BUILD_TYPE)"
+    RUN_SCRIPT="${SCRIPTS_DIR}/run_u7.sh"
+    RUN_FLAGS=()
+     if [[ "$BUILD_TYPE" == "debug" ]]; then
+        RUN_FLAGS+=("--debug")
+     fi
+     RUN_FLAGS+=("${RUN_EXTRA_ARGS[@]}")
+
+    if [ -f "$RUN_SCRIPT" ]; then
+         echo "--> Running execution script: ${RUN_SCRIPT} ${RUN_FLAGS[@]}"
+         bash "$RUN_SCRIPT" "${RUN_FLAGS[@]}"
+         RUN_EXIT_CODE=$?
+         if [ ${RUN_EXIT_CODE} -ne 0 ]; then
+             # Non-zero exit from game might be normal or error, just report it
+             echo "[U7 INFO] Game process exited with code ${RUN_EXIT_CODE}."
+         fi
+         print_footer
+    else
+         print_error "Run script not found: ${RUN_SCRIPT}"
+         exit 1
+    fi
+fi
+
+# If no command was given, show help implicitly.
+if [[ "$COMMAND_GIVEN" == false ]]; then
+    bash "$0" --help
+    exit 1 # Exit with error if no command specified
+fi
+
+exit 0 
