@@ -36,10 +36,12 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
     *   Ensure original game data is copied to `Redist/Data/U7/` (see "Important Data Files Setup" below).
     *   Run Release (Default - builds first if needed): `./u7 run` or `.\\u7.bat run`
     *   Run Debug (builds first if needed): `./u7 run --debug` or `.\\u7.bat run --debug`
+    *   Run Quietly (Default): Logging shows Warnings/Errors only.
+    *   Run Verbosely: `./u7 run --verbose` or `./u7 run --debug --verbose` (Shows INFO level logs during loading)
     *   Run Release with game arguments: `./u7 run -- --some-game-flag` or `.\\u7.bat run -- --some-game-flag`
     *   Run Debug with game arguments: `./u7 run --debug -- --some-game-flag` or `.\\u7.bat run --debug -- --some-game-flag`
     *   **Running the Health Check:**
-        *   Use `./u7 run --debug --healthcheck` or `.\\u7.bat run --debug --healthcheck`
+        *   Use `./u7 run --debug --healthcheck` or `.\\u7.bat run --debug --healthcheck` (Health check always runs verbosely)
         *   This performs essential asset loading checks without launching the full game.
         *   Output is color-coded: **Blue** for INFO, **Yellow** for WARN, **Red** for ERROR.
         *   If it exits with code 0 and message "Health check finished successfully.", all core assets loaded without issues.

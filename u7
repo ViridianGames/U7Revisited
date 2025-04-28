@@ -285,18 +285,34 @@ if [[ "$DO_RUN" == true ]]; then
     print_header "Run ($BUILD_TYPE)"
     RUN_SCRIPT="${SCRIPTS_DIR}/run_u7.sh"
     RUN_FLAGS=()
+    PASS_THROUGH_ARGS=() # Arguments for run_u7.sh itself
+
+     # Check for args meant for run_u7.sh vs the game
+     # Note: RUN_EXTRA_ARGS contains everything after 'run' or '--'
+     for arg in "${RUN_EXTRA_ARGS[@]}"; do
+         case "$arg" in
+             --healthcheck) PASS_THROUGH_ARGS+=("--healthcheck") ;;
+             --verbose) PASS_THROUGH_ARGS+=("--verbose") ;;
+             # Could add other run_u7 specific flags here
+             *) break ;; # Stop processing run_u7 flags at first non-flag
+         esac
+         shift # Shift only if it was a known flag for run_u7
+         RUN_EXTRA_ARGS=("${RUN_EXTRA_ARGS[@]:1}") # Update game args array (crude shift)
+     done
+
      if [[ "$BUILD_TYPE" == "debug" ]]; then
-        RUN_FLAGS+=("--debug")
+        PASS_THROUGH_ARGS+=("--debug") # --debug is also handled by run_u7.sh
      fi
-     RUN_FLAGS+=("${RUN_EXTRA_ARGS[@]}")
+     # Append remaining args (should be game args now)
+     PASS_THROUGH_ARGS+=("${RUN_EXTRA_ARGS[@]}")
 
     if [ -f "$RUN_SCRIPT" ]; then
-         echo "--> Running execution script: ${RUN_SCRIPT} ${RUN_FLAGS[@]}"
-         bash "$RUN_SCRIPT" "${RUN_FLAGS[@]}"
+         echo -e "${CLR_CYN}--> Running execution script: ${RUN_SCRIPT} ${PASS_THROUGH_ARGS[*]}${CLR_RST}"
+         # Run in foreground, pass filtered args
+         bash "$RUN_SCRIPT" "${PASS_THROUGH_ARGS[@]}"
          RUN_EXIT_CODE=$?
          if [ ${RUN_EXIT_CODE} -ne 0 ]; then
-             # Non-zero exit from game might be normal or error, just report it
-             echo "[U7 INFO] Game process exited with code ${RUN_EXIT_CODE}."
+             echo -e "${CLR_YLW}[U7 INFO] Game process exited with code ${RUN_EXIT_CODE}.${CLR_RST}"
          fi
          print_footer
     else

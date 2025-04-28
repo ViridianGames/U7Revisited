@@ -24,6 +24,7 @@ This section documents changes made in this fork compared to the original `Virid
 
 **Logging & Error Handling:**
 - ANSI color codes added to console logging (`LoggingCallback`) for improved readability (INFO-Blue, WARN-Yellow, ERROR/FATAL-Red).
+- Added `--verbose` flag to `u7 run` command to control log output level (Default: Warnings+, Verbose: Info+). Health check implies verbose.
 - Centralized asset error tracking system (`g_AssetLoadErrors`, `AssetLoadError` struct, `AddAssetError` helper) for standardized reporting.
 
 **IDE & Developer Experience:**

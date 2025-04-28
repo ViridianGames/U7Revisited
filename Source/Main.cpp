@@ -58,10 +58,11 @@ bool CheckFileExists(const std::string& path) {
 
 // Function to load core game assets or check their existence
 // Returns true if successful, false otherwise.
-bool LoadCoreGameAssets(bool isHealthCheck) {
-    Log("Loading/Checking Core Game Assets...");
-    bool criticalSuccess = true; // Track critical failures (non-script related generally)
-    g_AssetLoadErrors.clear(); // Clear errors at the start of loading
+bool LoadCoreGameAssets(bool isHealthCheck, bool isVerbose) {
+    // Use LOG_INFO for progress messages, which will only print if verbose log level is set
+    Log("Loading/Checking Core Game Assets...", LOG_INFO);
+    bool criticalSuccess = true;
+    g_AssetLoadErrors.clear();
 
     // --- Files required for both modes (existence check minimum) ---
     const std::vector<std::string> requiredFiles = {
@@ -82,7 +83,7 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
     }
 
     // --- Script Loading (Attempt load in both modes, report errors) ---
-    Log("Loading scripts...");
+    Log("Loading scripts...", LOG_INFO);
     string scriptDirectoryPath("Data/Scripts");
     if (!exists(scriptDirectoryPath) || !is_directory(scriptDirectoryPath)) {
          AddAssetError(scriptDirectoryPath, "DirectoryNotFound", "Script directory not found.");
@@ -117,7 +118,7 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
 
     // --- Graphics-dependent loading (Only in normal mode) ---
     if (!isHealthCheck) {
-        Log("Loading graphics-dependent assets...");
+        Log("Loading graphics-dependent assets...", LOG_INFO);
         // Shaders
         g_alphaDiscard = LoadShader(NULL, "Data/Shaders/alphaDiscard.fs");
         if (g_alphaDiscard.id == 0) { // Basic check if shader loading failed
@@ -224,7 +225,7 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
     } // End !isHealthCheck block
 
     // --- Assets needed in both modes (or construction is sufficient) ---
-    Log("Creating terrain...");
+    Log("Creating terrain...", LOG_INFO);
     try {
         g_Terrain = make_unique<Terrain>(); // Assuming constructor is safe without graphics
     } catch (const std::exception& e) {
@@ -243,33 +244,55 @@ bool LoadCoreGameAssets(bool isHealthCheck) {
         criticalSuccess = false; // RNG failure is likely critical
     }
 
-    // --- Final Summary --- 
+    // --- Final Summary (ALWAYS PRINT ERRORS if any exist) --- 
     if (!g_AssetLoadErrors.empty()) {
+        // Use LOG_WARNING for summary header so it appears even in quiet mode if there are errors
         Log("----------------------------------------", LOG_WARNING);
         Log("Asset Loading completed with ERRORS:", LOG_WARNING);
         for (const auto& error : g_AssetLoadErrors) {
+            // Individual errors logged via AddAssetError use LOG_ERROR, which always shows
             Log("  - Type: " + error.errorType + ", File: '" + error.filePath + "', Msg: " + error.errorMessage, LOG_ERROR);
         }
         Log("----------------------------------------", LOG_WARNING);
     }
 
+    // Final status message - Use LOG_INFO normally, but LOG_WARNING/ERROR for failures
     if (criticalSuccess) {
          Log("Core Game Assets Load/Check: CRITICAL SUCCESS (non-critical errors may exist).", g_AssetLoadErrors.empty() ? LOG_INFO : LOG_WARNING);
     } else {
          Log("Core Game Assets Load/Check: CRITICAL FAILURE. See errors above.", LOG_ERROR);
     }
 
-    return criticalSuccess; // Return true only if all CRITICAL assets loaded correctly
+    return criticalSuccess;
 }
 
 int main(int argv, char** argc)
 {
+    // Set default log level (can be overridden)
+    // LOG_WARNING: Only warnings, errors, fatals will be shown by default
+    SetTraceLogLevel(LOG_WARNING);
     SetTraceLogCallback(LoggingCallback);
 
     bool isHealthCheck = false;
-    if (argv > 1 && strcmp(argc[1], "--healthcheck") == 0) {
-        isHealthCheck = true;
-        Log("Health check mode enabled.");
+    bool isVerbose = false;
+
+    // Simple argument parsing
+    for (int i = 1; i < argv; ++i) {
+        if (strcmp(argc[i], "--healthcheck") == 0) {
+            isHealthCheck = true;
+            // Health check implies verbose logging during check
+            isVerbose = true;
+            Log("Health check mode enabled.", LOG_INFO); // Log at INFO level
+        } else if (strcmp(argc[i], "--verbose") == 0) {
+            isVerbose = true;
+            Log("Verbose mode enabled.", LOG_INFO); // Log at INFO level
+        }
+        // Add other argument checks here if needed
+    }
+
+    // Set log level based on flags
+    if (isVerbose) {
+        SetTraceLogLevel(LOG_INFO); // Show info, warnings, errors, fatals
     }
 
    try
@@ -279,13 +302,13 @@ int main(int argv, char** argc)
 
       if (isHealthCheck) {
          // --- Health Check Path ---
-         Log("Running health check initialization...");
+         Log("Running health check initialization...", LOG_INFO);
 
          // Register Lua functions first so scripts can find them during load
          RegisterAllLuaFunctions(); 
 
          // Load/check core assets needed for basic functionality
-         bool criticalAssetsOk = LoadCoreGameAssets(true); // Pass true for isHealthCheck
+         bool criticalAssetsOk = LoadCoreGameAssets(true, isVerbose);
 
          if (!criticalAssetsOk) {
              // LoadCoreGameAssets already logged the details and summary.
@@ -308,20 +331,18 @@ int main(int argv, char** argc)
       }
       else {
          // --- Normal Game Initialization & Main Loop ---
+         Log("Initializing game (Normal Mode)...", LOG_INFO);
 
-         // Basic graphics setup (moved up slightly for context)
          rlDisableBackfaceCulling();
          rlEnableDepthTest();
 
-         // Calculate draw scale needed for font loading
-          g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
+         g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
-         // Register Lua functions first so scripts can find them during load
          RegisterAllLuaFunctions();
 
-         // Load core assets (pass false for isHealthCheck)
-         if (!LoadCoreGameAssets(false)) {
-             // Throw an exception or log fatal error if essential assets fail in normal mode
+         // Pass isHealthCheck=false AND isVerbose flag to asset loader
+         if (!LoadCoreGameAssets(false, isVerbose)) {
+             // Still throw error on critical failure in normal mode
              throw std::runtime_error("Failed to load essential game assets. Check logs.");
          }
 

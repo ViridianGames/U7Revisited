@@ -22,6 +22,7 @@ TARGET_RELEASE_PATH="${REDIST_DIR}/${TARGET_RELEASE_EXE}"
 RUN_DEBUG=false
 # Check for --healthcheck flag separately
 RUN_HEALTHCHECK=false
+PASS_VERBOSE=false # Flag to pass --verbose to executable
 GAME_ARGS=() # Array to hold arguments meant for the game
 
 for arg in "$@"; do
@@ -31,6 +32,9 @@ for arg in "$@"; do
       ;;
     --healthcheck)
       RUN_HEALTHCHECK=true
+      ;;
+    --verbose) # New flag
+      PASS_VERBOSE=true
       ;;
     *)
       # Assume other arguments are for the game executable
@@ -103,6 +107,9 @@ cd "$REDIST_DIR" || exit 1
 EXEC_ARGS=()
 if [[ "$RUN_HEALTHCHECK" == true ]]; then
     EXEC_ARGS+=("--healthcheck")
+fi
+if [[ "$PASS_VERBOSE" == true ]]; then # Pass verbose flag if received
+     EXEC_ARGS+=("--verbose")
 fi
 # Append the filtered game arguments
 EXEC_ARGS+=("${GAME_ARGS[@]}")
