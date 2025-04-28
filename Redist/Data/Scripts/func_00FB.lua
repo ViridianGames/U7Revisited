@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 00FB: Ship sail logic with deed checks and messages
 function func_00FB(eventid, itemref)
     -- Local variables (5 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Fred's dialogue in Britain, covering meat sales at the Farmer's Market, Paws slaughterhouse, and Morfin's activities.
 function func_0432(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_042E.lua
   -- James's dialogue as the innkeeper at Wayfarer's Inn
   local U7 = require("U7LuaFuncs")

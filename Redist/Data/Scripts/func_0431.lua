@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Denby's dialogue in Britain, covering intelligence-based combat training and pacifist philosophy.
 function func_0431(eventid, itemref)
     local local0, local1

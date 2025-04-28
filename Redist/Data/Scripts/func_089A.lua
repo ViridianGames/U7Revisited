@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages intelligence training, checking gold and stats.
 function func_089A(p0, p1)
     local local2, local3, local4, local5, local6, local7, local8, local9, local10

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Brother Wayne's dialogue near Empath Abbey, covering his aimless wandering, studies with Taylor, and love for nature.
 function func_046D(eventid, itemref)
     local local0

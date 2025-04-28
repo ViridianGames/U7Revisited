@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Jux" spell, disarming traps or unlocking chests with a sprite effect.
 function func_0650(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

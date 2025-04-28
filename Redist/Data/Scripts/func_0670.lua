@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Quas Wis" spell, causing fear or confusion in nearby NPCs.
 function func_0670(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AD: Manages Horance's Well of Souls dialogue
 function func_08AD()
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 031D: Manages scroll text display
 function func_031D(itemref)
     -- Local variables (2 as per .localc)

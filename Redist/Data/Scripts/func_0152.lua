@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages lit light source (e.g., candle), switching to unlit or updating state.
 function func_0152H(eventid, itemref)
     if eventid == 1 or eventid == 2 then

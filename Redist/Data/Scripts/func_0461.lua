@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0461.lua
 -- Garritt's dialogue as a merchant in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C8: Applies NPC effects for Minoc or Fellowship
 function func_06C8(eventid, itemref)
     -- Local variables (4 as per .localc)

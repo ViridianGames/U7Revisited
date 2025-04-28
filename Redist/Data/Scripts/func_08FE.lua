@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Chains two external function calls with a parameter.
 function func_08FE(p0)
     local local1

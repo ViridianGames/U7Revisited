@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D9: Foranamo's hostile dialogue and attack trigger
 function func_04D9(eventid, itemref)
     -- Local variables (16 as per .localc)

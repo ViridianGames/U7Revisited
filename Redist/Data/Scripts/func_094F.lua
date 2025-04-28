@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages combat training, boosting strength and combat skills.
 function func_094F(p0, p1)
     local local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12

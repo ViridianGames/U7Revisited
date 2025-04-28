@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Resets a flag and initiates an endgame sequence similar to func_0715.
 function func_0716(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

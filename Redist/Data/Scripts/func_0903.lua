@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0903: Pig NPC dialogue
 function func_0903(eventid, itemref)
     local local0, local1, local2, local3

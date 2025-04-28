@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0838: Update item frame
 function func_0838(eventid, itemref)
     local local0, local1, local2

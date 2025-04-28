@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks for sufficient water in a container and triggers effects or a failure message.
 function func_068D(eventid, itemref)
     local local0, local1, local2

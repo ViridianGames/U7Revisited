@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start tavern_vendor_0951.lua
 local strings = {
     [0x0000] = "ale",

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers a sprite effect and creates items, likely for a magical or environmental effect involving a specific item.
 function func_063C(eventid, itemref)
     local local0, local1

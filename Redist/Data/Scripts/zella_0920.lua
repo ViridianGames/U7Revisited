@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start zella_0920.lua
 local strings = {
     [0x0062] = "It appears that thou dost not have enough gold to train.",

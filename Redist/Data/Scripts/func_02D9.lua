@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02D9: Item state with quality-based updates
 function func_02D9(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0809: Handle cart interaction
 function func_0809(eventid, itemref)
     local local0, local1, local2, local3, local4

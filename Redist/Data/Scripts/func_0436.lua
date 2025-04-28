@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Coop's dialogue in Britain, covering Iolo's Bows operations and The Avatars performances.
 function func_0436(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

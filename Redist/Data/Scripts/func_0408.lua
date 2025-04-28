@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Julia's dialogue in Minoc, covering her tinker role, Minoc murders, ship plans, and party interactions.
 
 -- Global variables for answer handling

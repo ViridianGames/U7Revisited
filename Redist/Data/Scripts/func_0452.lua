@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0452.lua
 -- Patterson's dialogue as the mayor of Britain
 local U7 = require("U7LuaFuncs")

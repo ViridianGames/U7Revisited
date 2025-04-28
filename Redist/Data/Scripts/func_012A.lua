@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 012A: Manages ring of regeneration
 function func_012A(itemref)
     -- Local variables (4 as per .localc)

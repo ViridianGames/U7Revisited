@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0483.lua
 -- Myra's dialogue as a florist in Britain
 local U7 = require("U7LuaFuncs")

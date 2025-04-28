@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E6: Gordy's overseer dialogue and Fellowship funding
 function func_04E6(eventid, itemref)
     -- Local variables (9 as per .localc)

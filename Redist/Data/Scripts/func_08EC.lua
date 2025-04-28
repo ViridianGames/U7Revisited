@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08EC: Manages poem recitation
 function func_08EC()
     -- Local variables (3 as per .localc)

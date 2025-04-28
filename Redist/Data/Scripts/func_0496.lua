@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Penumbra's dialogue in Moonglow, addressing the ether disturbance, the Ethereal Ring, blackrock protection, and the Tetrahedron in Dungeon Deceit.
 function func_0496(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BA: Quaeven's learning center dialogue and Fellowship zeal
 function func_04BA(eventid, itemref)
     -- Local variables (4 as per .localc)

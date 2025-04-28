@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03B6: Winch action delegate
 function func_03B6(eventid, itemref)
     calli_007E()

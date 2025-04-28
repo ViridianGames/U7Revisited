@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Flam" spell, creating a fire effect on a selected target, with a fallback if the target is invalid.
 function func_0646(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Mani" spell, fully healing all party members with a sprite effect.
 function func_067F(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

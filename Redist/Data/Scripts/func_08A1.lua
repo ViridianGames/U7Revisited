@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A1: Manages equipment purchase dialogue
 function func_08A1()
     -- Local variables (15 as per .localc)

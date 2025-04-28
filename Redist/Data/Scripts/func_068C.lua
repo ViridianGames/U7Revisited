@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles item interactions with another specific type and frame.
 function func_068C(eventid, itemref)
     local local0, local1

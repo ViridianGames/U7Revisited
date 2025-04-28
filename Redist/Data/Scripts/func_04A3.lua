@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A3: Phearcy's bartender dialogue and Zelda/Brion quest
 function func_04A3(eventid, itemref)
     -- Local variables (9 as per .localc)

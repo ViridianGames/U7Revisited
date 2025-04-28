@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Updates an array of coordinates by incrementing indices.
 function func_082A(p0, p1, p2)
     local local3

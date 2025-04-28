@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0921: Prompt and select party member for training
 function func_0921(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

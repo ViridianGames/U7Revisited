@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages shrine interactions (Truth, Love, Courage), providing dialogue and stat boosts.
 function func_0356H(eventid, itemref)
     if eventid == 1 then

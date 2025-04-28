@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02F0: Music box state and playback
 function func_02F0(eventid, itemref)
     -- Local variable (1 as per .localc)

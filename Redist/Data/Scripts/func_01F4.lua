@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01F4: Cow NPC with party-based dialogue
 function func_01F4(eventid, itemref)
     -- Local variables (5 as per .localc)

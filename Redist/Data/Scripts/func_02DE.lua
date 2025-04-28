@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02DE: Item frame toggle with array updates
 function func_02DE(eventid, itemref)
     -- Local variables (2 as per .localc)

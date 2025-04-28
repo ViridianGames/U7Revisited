@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044D.lua
 -- Jergan's dialogue as a castle advisor in Britain
 local U7 = require("U7LuaFuncs")

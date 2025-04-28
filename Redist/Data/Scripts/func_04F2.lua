@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F2: Taylor's monk dialogue and smoke bomb offer
 function func_04F2(eventid, itemref)
     -- Local variables (6 as per .localc)

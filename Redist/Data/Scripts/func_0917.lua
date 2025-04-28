@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0917: Adjust NPC stats with balanced training
 function func_0917(eventid, itemref)
     local local0, local1, local2, local3

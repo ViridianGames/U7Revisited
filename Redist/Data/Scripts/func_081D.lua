@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts an item's frame and type, updating its position.
 function func_081D(p0, p1, p2, p3, p4, p5)
     local local6, local7

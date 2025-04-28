@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles food consumption, applying nutritional effects based on item frame.
 function func_0179H(eventid, itemref)
     local nutrition_values = {

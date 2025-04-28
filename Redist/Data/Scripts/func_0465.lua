@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0465.lua
 -- Greg's dialogue as a tailor in Britain
 local U7 = require("U7LuaFuncs")

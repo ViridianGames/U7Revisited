@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks a value and sets a flag based on a threshold.
 function func_08FD(p0)
     external_000FH(76) -- Unmapped intrinsic

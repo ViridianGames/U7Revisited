@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0451.lua
 -- Wislem's dialogue as a mage advisor in Castle British
 local U7 = require("U7LuaFuncs")

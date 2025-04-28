@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C7: Applies NPC effects for Minoc
 function func_06C7(eventid, itemref)
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06AF: Manages poppy field sleep effect
 function func_06AF(eventid, itemref)
     -- Local variables (6 as per .localc)

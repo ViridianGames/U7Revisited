@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B2: Tobias's dialogue and Garritt accusation
 function func_04B2(eventid, itemref)
     -- Local variables (3 as per .localc)

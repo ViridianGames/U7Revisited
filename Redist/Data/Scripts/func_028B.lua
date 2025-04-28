@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 028B: Manages spinning wheel crafting
 function func_028B(itemref)
     -- Local variables (7 as per .localc)

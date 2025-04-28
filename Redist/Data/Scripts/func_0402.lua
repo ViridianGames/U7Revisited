@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Spark's dialogue in Trinsic, covering his father's murder, chest contents, and joining the Avatar to seek vengeance.
 
 -- Global variables for answer handling, similar to erethian_inline.lua

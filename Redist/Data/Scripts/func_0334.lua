@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Displays text on a plaque based on its quality, used for various signs and inscriptions.
 function func_0334H(eventid, itemref)
     local target = itemref

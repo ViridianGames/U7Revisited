@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AB: Manages Fellowship meeting dialogue
 function func_08AB()
     -- Local variables (6 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Displays random NPC dialogue based on NPC state.
 function func_092E(p0)
     local local1, local2, local3, local4

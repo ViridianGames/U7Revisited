@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Toggles an item’s frame between even and odd values, likely for a switch or lever.
 function func_0291H(eventid, itemref)
     if eventid == 1 then

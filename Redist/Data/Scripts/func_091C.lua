@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Formats a shop price string for an item with a "To sell" prefix.
 function func_091C(p0, p1, p2, p3, p4)
     local local5

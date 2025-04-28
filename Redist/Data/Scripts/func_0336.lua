@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages diaper usage, changing state or warning about improper use.
 function func_0336H(eventid, itemref)
     if eventid == 1 then

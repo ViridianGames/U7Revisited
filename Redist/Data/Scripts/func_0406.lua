@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Trellek the Emp's dialogue, covering his food gathering, wife Saralek, wisp knowledge, and potential party joining.
 
 -- Global variables for answer handling

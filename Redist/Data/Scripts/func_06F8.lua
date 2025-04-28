@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06F8: Manages Forge entry and Erethian's spell mishap
 function func_06F8(eventid, itemref)
     -- Local variables (49 as per .localc)

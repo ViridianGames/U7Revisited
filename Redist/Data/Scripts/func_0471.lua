@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0471.lua
 -- Anya's dialogue as an innkeeper in Britain
 local U7 = require("U7LuaFuncs")

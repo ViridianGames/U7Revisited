@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02F8: Gem interaction with mirror-breaking
 function func_02F8(eventid, itemref)
     -- Local variables (9 as per .localc)

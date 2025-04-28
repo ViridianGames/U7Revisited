@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages coin flipping game with dialogue for heads or tails.
 function func_0284H(eventid, itemref)
     if eventid ~= 1 then

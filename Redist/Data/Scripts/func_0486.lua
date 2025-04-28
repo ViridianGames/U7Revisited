@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Robin's dialogue in New Magincia, covering his schemes, the stolen locket, and plans to kidnap Constance.
 function func_0486(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Sentri's dialogue in Britain, covering his combat training, views on Britain, and party interactions.
 
 -- Global variables for answer handling

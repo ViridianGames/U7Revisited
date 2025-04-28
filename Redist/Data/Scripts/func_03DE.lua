@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03DE: Telepathic mind probe narrative
 function func_03DE(eventid, itemref)
     -- Local variable (1 as per .localc)

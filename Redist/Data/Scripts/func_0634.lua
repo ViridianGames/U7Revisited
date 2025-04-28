@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages barge movement, checking item types and ferryman presence to trigger ferry operations.
 function func_0634(eventid, itemref)
     local local0, local1, local2, local3

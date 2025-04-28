@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A7: Feridwyn's Fellowship dialogue and venom theft quest
 function func_04A7(eventid, itemref)
     -- Local variables (8 as per .localc)

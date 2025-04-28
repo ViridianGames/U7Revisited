@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D1: Manages acting lesson dialogue
 function func_08D1()
     -- Local variables (2 as per .localc)

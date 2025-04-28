@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Jillian's dialogue in Moonglow, as a scholar and tutor at the Lycaeum, offering training and discussing the town's geography and Ambrosia's history.
 function func_049F(eventid, itemref)
     local local0, local1, local2

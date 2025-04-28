@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C2: Manages Forsythe's sacrifice dialogue
 function func_08C2()
     -- Local variables (2 as per .localc)

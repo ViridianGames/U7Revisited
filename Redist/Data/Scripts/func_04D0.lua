@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D0: Blorn's gargoyle-hating dialogue and Lap-Lem feud
 function func_04D0(eventid, itemref)
     -- Local variables (5 as per .localc)

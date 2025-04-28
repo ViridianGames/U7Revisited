@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04EF: Owings's comedic miner dialogue
 function func_04EF(eventid, itemref)
     -- Local variables (5 as per .localc)

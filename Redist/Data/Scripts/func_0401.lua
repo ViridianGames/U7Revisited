@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles Iolo's dialogue and interactions in Trinsic, including initial cutscene, murder discussion, and party join/leave mechanics.
 
 -- Global variables for answer handling, similar to erethian_inline.lua

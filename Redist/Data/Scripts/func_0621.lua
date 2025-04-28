@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages party member banter, delivering location-specific or context-sensitive dialogue during exploration.
 function func_0621(eventid, itemref)
     local local0, local1, local2, local3, local4

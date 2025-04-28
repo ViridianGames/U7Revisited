@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Kissme's dialogue in Ambrosia, as a flirtatious fairy spreading love dust, discussing the island's history and Caddellite guarded by the hydra.
 function func_0497(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

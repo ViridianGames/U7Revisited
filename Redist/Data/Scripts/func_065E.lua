@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Nox" spell, applying poison to a selected target.
 function func_065E(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A3: Forge egg spawning logic
 function func_06A3(eventid, itemref)
     -- Local variables (30 as per .localc)

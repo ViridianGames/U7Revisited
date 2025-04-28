@@ -37,6 +37,10 @@ This section documents changes made in this fork compared to the original `Virid
 - This `CHANGELOG.md` file to track changes in the fork.
 - Centralized documentation directory (`docs/`). (Note: Original repo had some docs at root).
 
+**Utility Scripts:**
+- Added `scripts/check_lua_requires.sh` script to verify and add missing `require "U7LuaFuncs"` to Lua scripts in `Redist/Data/Scripts/`, with interactive confirmation.
+- Integrated the check script into the main wrapper via `u7 scripts --fix-requires`.
+
 ### Changed
 
 **Build System:**
@@ -69,6 +73,7 @@ This section documents changes made in this fork compared to the original `Virid
 - Resolved Meson deprecation warnings by updating to newer API calls.
 - Ensured build configuration enforces a consistent 64-bit architecture across platforms.
 - Corrected Lua script loading issues caused by C++ functions not being available via `require` by refactoring to use `luaL_requiref`.
+- Iteratively fixed logic in `scripts/check_lua_requires.sh` to correctly handle path detection, duplicate prevention, and reporting for Lua require statements.
 
 ## Previous Versions
 

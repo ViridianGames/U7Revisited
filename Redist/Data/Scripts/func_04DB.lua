@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04DB: Aurvidlem's provisioner dialogue and resentment
 function func_04DB(eventid, itemref)
     -- Local variables (3 as per .localc)

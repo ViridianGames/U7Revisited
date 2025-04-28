@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06F6: Manages Arcadion's dialogue and interactions
 function func_06F6(eventid, itemref)
     -- Local variables (30 as per .localc)

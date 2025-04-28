@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0914: Increment NPC stats
 function func_0914(eventid, itemref)
     local local0

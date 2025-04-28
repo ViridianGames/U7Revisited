@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts an item's frame based on a given offset.
 function func_081C(offset, itemref)
     local local2, local3

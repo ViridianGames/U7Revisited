@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0481.lua
 -- Corin's dialogue as a candlemaker in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Trinsic guard’s dialogue, checking for the correct password to allow passage.
 function func_0326H(eventid, itemref)
     if eventid == 0 then

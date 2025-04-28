@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Boosts NPC stats (strength, dexterity, intelligence) when using an item, with a cap at 30.
 function func_0289H(eventid, itemref)
     if eventid == 1 then

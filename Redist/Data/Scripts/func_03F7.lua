@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03F7: Golem dialogue and item interactions
 function func_03F7(eventid, itemref)
     -- Local variables (6 as per .localc)

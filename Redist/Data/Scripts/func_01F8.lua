@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01F8: Dracothraxus dragon NPC dialogue and courage test
 function func_01F8(eventid, itemref)
     -- Local variables (15 as per .localc)

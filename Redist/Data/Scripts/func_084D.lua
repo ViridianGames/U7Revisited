@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles Fellowship quest dialogue, managing membership and test prompts.
 function func_084D()
     local local0, local1, local2

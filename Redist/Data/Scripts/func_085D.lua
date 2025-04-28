@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages a shop interaction for food items, with Silverleaf availability based on a flag.
 function func_085D()
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14

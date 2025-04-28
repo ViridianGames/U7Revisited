@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0457.lua
 -- Klog's dialogue as a Fellowship organizer in Britain
 local U7 = require("U7LuaFuncs")

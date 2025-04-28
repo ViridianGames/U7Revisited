@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E8: Manages ankh search function
 function func_08E8(local0)
     -- Local variables (5 as per .localc)

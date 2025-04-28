@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0851: Package delivery quest
 function func_0851(eventid, itemref)
     local local0, local1, local2, local3

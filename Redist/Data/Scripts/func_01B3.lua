@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01B3: Item type switching
 function func_01B3(eventid, itemref)
     -- Local variables (2 as per .localc)

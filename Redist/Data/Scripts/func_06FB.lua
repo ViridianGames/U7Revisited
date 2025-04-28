@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06FB: Manages item spawning for quality 100
 function func_06FB(eventid, itemref)
     -- Local variable (1 as per .localc)

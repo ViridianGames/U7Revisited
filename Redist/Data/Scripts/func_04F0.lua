@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F0: Anton's prisoner dialogue and Fellowship revelations
 function func_04F0(eventid, itemref)
     -- Local variables (7 as per .localc)

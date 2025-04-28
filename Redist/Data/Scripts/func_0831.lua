@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0831: Ship preparation
 function func_0831(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

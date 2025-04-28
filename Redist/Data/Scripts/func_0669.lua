@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Por Xen" spell, causing nearby NPCs to dance with random banter and sprite effects.
 function func_0669(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10

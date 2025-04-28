@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0717: Handle item type 668
 function func_0717(eventid, itemref)
     local local0, local1, local2, local3, local4

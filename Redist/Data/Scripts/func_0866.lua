@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0866: Random noun pair with plural
 function func_0866(eventid, itemref)
     local local0, local1, local2, local3

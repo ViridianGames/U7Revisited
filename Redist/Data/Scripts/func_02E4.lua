@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Places an item in a container, likely for a specific quest or interaction.
 function func_02E4H(eventid, itemref)
     local items = get_container_items(-356, 810, 300, -359) -- TODO: Implement LuaGetContainerItems for callis 002A.

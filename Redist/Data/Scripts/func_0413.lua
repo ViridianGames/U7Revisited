@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Apollonia's dialogue in Trinsic, covering her pub and inn services, flirtations, and murder comments.
 function func_0413(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

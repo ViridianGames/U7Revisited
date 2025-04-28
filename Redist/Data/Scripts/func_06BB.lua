@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BB: Manages combat effects with recursion
 function func_06BB(eventid, itemref)
     -- Local variables (6 as per .localc)

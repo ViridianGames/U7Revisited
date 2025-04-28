@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Grav" spell, dispelling electrical or energy effects on a selected target.
 function func_066A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

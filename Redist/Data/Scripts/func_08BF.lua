@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08BF: Manages stat comparison and adjustment
 function func_08BF(local0)
     -- Local variables (3 as per .localc)

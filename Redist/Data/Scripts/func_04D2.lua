@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D2: Liana's clerk dialogue and critical views
 function func_04D2(eventid, itemref)
     -- Local variables (6 as per .localc)

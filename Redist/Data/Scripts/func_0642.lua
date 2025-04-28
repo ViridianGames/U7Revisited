@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Flam" spell, negating fire effects on a selected target, with a fallback if the target is invalid.
 function func_0642(eventid, itemref)
     local local0, local1, local2, local3

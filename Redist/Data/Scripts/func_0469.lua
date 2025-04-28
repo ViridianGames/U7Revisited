@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0469.lua
 -- Zella's dialogue as an herbalist in Britain
 local U7 = require("U7LuaFuncs")

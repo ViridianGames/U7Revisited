@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CB: Cador's miner dialogue and Fellowship enthusiasm
 function func_04CB(eventid, itemref)
     -- Local variables (9 as per .localc)

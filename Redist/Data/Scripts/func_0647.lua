@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Kal" spell, summoning a magical effect with a specific item creation.
 function func_0647(eventid, itemref)
     local local0

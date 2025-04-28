@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06AB: Manages NPC behavior and sets flag
 function func_06AB(eventid, itemref)
     -- Local variables (4 as per .localc)

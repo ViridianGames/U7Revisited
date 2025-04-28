@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E5: Manages Sentri's combat training dialogue
 function func_08E5(local0, local1)
     -- Local variables (13 as per .localc)

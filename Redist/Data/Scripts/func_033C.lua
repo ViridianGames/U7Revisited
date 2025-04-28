@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 033C: Manages item interaction
 function func_033C(itemref)
     -- Local variables (1 as per .localc)

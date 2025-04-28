@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Tolemac's dialogue in Moonglow, as a farmer and Fellowship member, discussing his brother Cubolt and refusal to reconvert.
 function func_049D(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Rowena's dialogue in Skara Brae, as Horance's enthralled ghostly lady, covering her role in the Dark Tower and her detachment.
 function func_0490(eventid, itemref)
     local local0, local1, local2, local3

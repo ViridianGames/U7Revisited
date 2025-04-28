@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Garok's dialogue in a dungeon, covering his magic troubles, a voice in his head, and dungeon navigation.
 function func_046E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08F2: Manages confrontation dialogue
 function func_08F2(local0, local1)
     -- Local variables (8 as per .localc)

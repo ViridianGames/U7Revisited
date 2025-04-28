@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Simulates fishing with a pole, with random outcomes for catching fish or losing bait.
 function func_0296H(eventid, itemref)
     if eventid == 1 or eventid == 4 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages William's dialogue in Minoc, covering sawmill operations, murders, and Fellowship teachings.
 function func_045D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

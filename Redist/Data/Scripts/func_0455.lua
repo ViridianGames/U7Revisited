@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0455.lua
 -- Abraham's dialogue as a Fellowship member in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01F7: NPC donation dialogue
 function func_01F7(eventid, itemref)
     -- Local variable (1 as per .localc)

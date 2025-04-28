@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B1: Manages Horance's reward dialogue
 function func_08B1()
     -- Local variables (4 as per .localc)

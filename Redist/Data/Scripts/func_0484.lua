@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0484.lua
 -- Elric's dialogue as a glassblower in Britain
 local U7 = require("U7LuaFuncs")

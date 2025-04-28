@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0823: Update item properties
 function func_0823(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Applies healing to an NPC and deducts gold.
 function func_091D(p0, p1)
     local local2, local3, local4, local5, local6

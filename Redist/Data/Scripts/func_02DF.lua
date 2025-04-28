@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02DF: Training equipment dialogue
 function func_02DF(eventid, itemref)
     -- Local variable (1 as per .localc)

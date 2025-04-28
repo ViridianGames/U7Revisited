@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C5: Sets Forge or game progression flag
 function func_06C5(eventid, itemref)
     if eventid == 3 then

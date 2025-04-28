@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CC: Mara's miner dialogue and anti-gargoyle sentiment
 function func_04CC(eventid, itemref)
     -- Local variables (9 as per .localc)

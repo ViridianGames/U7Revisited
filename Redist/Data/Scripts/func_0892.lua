@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0892: Adjhar golem post-quest dialogue
 function func_0892(eventid, itemref)
     local local0, local1

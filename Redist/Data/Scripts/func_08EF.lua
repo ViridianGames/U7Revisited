@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08EF: Manages Trent's dialogue
 function func_08EF()
     -- Local variables (6 as per .localc)

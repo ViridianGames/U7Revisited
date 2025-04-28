@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02DA: Child rescue and item transformation
 function func_02DA(eventid, itemref)
     -- Local variables (3 as per .localc)

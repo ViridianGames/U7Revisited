@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CE: Eldroth's provisioner dialogue and quirky advice
 function func_04CE(eventid, itemref)
     -- Local variables (5 as per .localc)

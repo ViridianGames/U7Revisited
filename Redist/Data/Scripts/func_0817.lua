@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0817: Update door flags and items
 function func_0817(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

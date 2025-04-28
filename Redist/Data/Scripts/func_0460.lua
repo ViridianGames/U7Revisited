@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0460.lua
 -- Finn's dialogue as a beggar in Britain
 local U7 = require("U7LuaFuncs")

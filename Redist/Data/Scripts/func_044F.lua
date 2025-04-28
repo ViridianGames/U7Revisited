@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044F.lua
 -- Inwistain's dialogue as a scholar in Castle British
 local U7 = require("U7LuaFuncs")

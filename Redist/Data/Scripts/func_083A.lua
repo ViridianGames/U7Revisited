@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Retrieves the position of a triples game near the Avatar.
 function func_083A()
     local local0, local1

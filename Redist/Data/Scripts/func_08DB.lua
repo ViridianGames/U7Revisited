@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08DB: Manages spell purchase dialogue
 function func_08DB()
     -- Local variables (10 as per .localc)

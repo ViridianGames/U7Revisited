@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B0: Manages poison effect on party members
 function func_06B0(eventid, itemref)
     -- Local variables (4 as per .localc)

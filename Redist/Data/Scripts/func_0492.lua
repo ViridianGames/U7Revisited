@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Quenton's dialogue in Skara Brae, as a ghostly fisherman, covering his tragic past, the fire, and his daughter Marney's plight.
 function func_0492(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

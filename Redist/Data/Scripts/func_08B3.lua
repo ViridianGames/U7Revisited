@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B3: Manages party composition
 function func_08B3(itemref)
     -- Local variables (14 as per .localc)

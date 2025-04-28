@@ -50,6 +50,9 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
     *   Clean Release build directory (Default): `./u7 clean` or `.\\u7.bat clean`
     *   Clean Debug build directory: `./u7 clean --debug` or `.\\u7.bat clean --debug`
 
+5.  **Utility Scripts:**
+    *   Check and fix missing Lua requires: `./u7 scripts --fix-requires`
+
 For more options, run `./u7 --help` or `.\\u7.bat --help`.
 
 The `u7` script calls other helper scripts (`build.*`, `run_u7.*`, `setup_ide.*`, `copy_executable.*`) located in the `scripts/` directory.
@@ -159,3 +162,5 @@ This project does not include any original game content. To use this software, y
 The U7Revisited engine code is provided under the BSD 2-Clause License as detailed in the LICENSE file.
 
 This project is made by fans, for fans, to preserve and enhance the legacy of Ultima VII for future generations.
+
+## Dependencies

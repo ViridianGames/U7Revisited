@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08CA: Manages intelligence and magic training dialogue
 function func_08CA(local0, local1)
     -- Local variables (12 as per .localc)

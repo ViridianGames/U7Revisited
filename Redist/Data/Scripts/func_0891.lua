@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0891: Adjhar golem revival instructions
 function func_0891(eventid, itemref)
     set_flag(802, true)

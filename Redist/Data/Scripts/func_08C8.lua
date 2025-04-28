@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C8: Manages strength and combat training dialogue
 function func_08C8(local0, local1)
     -- Local variables (11 as per .localc)

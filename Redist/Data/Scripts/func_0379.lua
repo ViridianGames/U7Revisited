@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Likely handles lamppost interaction or state change in Trinsic.
 -- Checks event IDs (1 or 2), performs item checks, and modifies item properties (type, frame).
 -- Uses random frame selection and sets item state, possibly for lighting or animation.

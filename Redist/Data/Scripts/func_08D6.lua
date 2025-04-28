@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D6: Manages Rowena's lament dialogue
 function func_08D6()
     -- Local variables (2 as per .localc)

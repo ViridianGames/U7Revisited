@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02A3: Parrot NPC dialogue with treasure hint
 function func_02A3(eventid, itemref)
     -- Local variables (6 as per .localc)

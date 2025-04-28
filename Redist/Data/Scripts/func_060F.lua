@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers the game's end sequence, positioning an object and updating NPC properties.
 function func_060F(eventid, itemref)
     local local0, local1

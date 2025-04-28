@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02C4: Toggle item frame
 function func_02C4(eventid, itemref)
     -- Local variables (2 as per .localc)

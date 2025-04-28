@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0124H(eventid, itemref)
     if eventid == 1 then
         if not U7IsItemOnBarge(itemref) then

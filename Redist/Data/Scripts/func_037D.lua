@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 037D: Manages item quality-based NPC effects
 function func_037D(itemref)
     -- Local variables (4 as per .localc)

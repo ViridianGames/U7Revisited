@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0476.lua
 -- Bram's dialogue as a butcher in Britain
 local U7 = require("U7LuaFuncs")

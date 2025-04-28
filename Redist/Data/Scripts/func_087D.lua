@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts the Avatar's frame based on gender and applies item effects.
 function func_087D()
     local local0, local1, local2

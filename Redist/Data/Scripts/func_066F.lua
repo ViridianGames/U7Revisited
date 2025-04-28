@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Zu" spell, inducing deep sleep on multiple NPCs in an area with a sprite effect.
 function func_066F(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

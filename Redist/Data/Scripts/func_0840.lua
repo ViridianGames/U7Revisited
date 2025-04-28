@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0840: Sage notebook quest
 function func_0840(eventid, itemref)
     local local0, local1, local2, local3

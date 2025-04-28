@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E6: Manages golem body removal
 function func_08E6(local0)
     -- Local variables (4 as per .localc)

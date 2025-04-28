@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages NPC greetings, with special dialogue for specific party members.
 function func_08F5(p0, p1)
     local local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15

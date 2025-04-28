@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06FA: Displays environmental messages
 function func_06FA(eventid, itemref)
     local item_type = call_GetItemType(itemref)

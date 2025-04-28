@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Reyna's dialogue near Empath Abbey, covering healing services, her mother's grave, and forest connections.
 function func_046C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24

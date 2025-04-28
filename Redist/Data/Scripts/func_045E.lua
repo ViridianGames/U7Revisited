@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Karenna's dialogue in Minoc, covering combat training, murders, Jakher's relationship, and gypsy connections.
 function func_045E(eventid, itemref)
     local local0, local1, local2, local3

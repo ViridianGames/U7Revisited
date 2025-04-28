@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041F: Manages Kristy's dialogue and interactions
 function func_041F(itemref)
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 019A: Manages item quality and effects
 function func_019A(itemref)
     -- Local variables (5 as per .localc)

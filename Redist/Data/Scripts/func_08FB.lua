@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Retrieves names of party members.
 function func_08FB()
     local party_members = get_party_members()

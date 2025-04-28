@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Chantu's dialogue in Trinsic, covering his healing services, views on the Fellowship, and the murder.
 function func_0411(eventid, itemref)
     local local0, local1, local2, local3, local4

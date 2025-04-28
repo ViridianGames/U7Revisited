@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Ort Por Ylem" spell, attracting a selected object to the player.
 function func_0656(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

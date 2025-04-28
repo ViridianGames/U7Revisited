@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks nearby items and returns a type based on specific conditions.
 function func_080C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

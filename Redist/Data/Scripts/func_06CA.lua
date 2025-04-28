@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06CA: Applies NPC effects for Minoc or dungeon
 function func_06CA(eventid, itemref)
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Bet Lor" spell, triggering a small light effect.
 function func_0644(eventid, itemref)
     local local0

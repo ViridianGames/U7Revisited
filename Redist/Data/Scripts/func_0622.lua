@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages bed interactions, allowing the player to rest for a specified number of hours, advancing game time and updating party state.
 function func_0622(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12

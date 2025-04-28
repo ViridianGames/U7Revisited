@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A1: Item manipulation in the Forge
 function func_06A1(eventid, itemref)
     -- Local variables (11 as per .localc)

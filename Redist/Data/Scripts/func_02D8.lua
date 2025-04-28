@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02D8: NPC blacksmith dialogue
 function func_02D8(eventid, itemref)
     if eventid ~= 1 then

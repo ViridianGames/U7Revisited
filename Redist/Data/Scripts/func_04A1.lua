@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A1: Chad's dialogue and training mechanic
 function func_04A1(eventid, itemref)
     -- Local variables (8 as per .localc)

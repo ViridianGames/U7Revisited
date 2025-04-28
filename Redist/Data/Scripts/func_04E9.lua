@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E9: Paul's actor dialogue and Passion Play performance
 function func_04E9(eventid, itemref)
     -- Local variables (13 as per .localc)

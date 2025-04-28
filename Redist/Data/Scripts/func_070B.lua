@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Processes container items and applies effects based on conditions.
 function func_070B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

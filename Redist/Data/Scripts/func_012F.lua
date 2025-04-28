@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 012F: Manages item transformation
 function func_012F(itemref)
     if eventid() == 2 then

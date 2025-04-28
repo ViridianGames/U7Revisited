@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles shop transactions.ConcurrentHashMap including gold checks and item distribution.
 function func_08F8(p0, p1, p2, p3, p4, p5, p6)
     local local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18

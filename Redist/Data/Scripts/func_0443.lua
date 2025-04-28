@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0443.lua
 -- Clint's dialogue as the shipwright in Britain
 local U7 = require("U7LuaFuncs")

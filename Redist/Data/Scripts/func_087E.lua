@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Searches for items within a bounding box and applies effects based on type.
 function func_087E(p0, p1, p2, p3)
     local local4, local5, local6, local7, local8, local9

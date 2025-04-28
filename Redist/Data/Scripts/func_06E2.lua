@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06E2: Applies NPC effect
 function func_06E2(eventid, itemref)
     if eventid == 3 then

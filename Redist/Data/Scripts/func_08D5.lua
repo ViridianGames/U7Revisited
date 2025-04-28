@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D5: Manages rescue dialogue
 function func_08D5()
     -- Local variable (1 as per .localc)

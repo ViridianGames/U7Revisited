@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A5: Manages Fellowship hostility
 function func_06A5(eventid, itemref)
     if eventid == 3 then

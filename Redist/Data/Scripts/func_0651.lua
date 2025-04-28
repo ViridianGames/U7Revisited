@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Ort Ylem" spell, transforming specific item types (e.g., 722, 723 to 417, 556) to attract or manipulate objects.
 function func_0651(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

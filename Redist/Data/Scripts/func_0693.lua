@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0693: Move player to specific position
 function func_0693(eventid, itemref)
     local local0, local1, local2

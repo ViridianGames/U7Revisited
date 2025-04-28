@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Judith's dialogue in Britain, covering music teaching, The Avatars performances, and marriage issues with Patterson.
 function func_0428(eventid, itemref)
     local local0, local1

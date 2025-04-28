@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manipulates an item's quality and type, likely for transforming objects (e.g., ore to ingot) based on specific item types, with a fallback action if quality is non-zero.
 function func_0600(eventid, itemref)
     local local0, local1, local2, local3

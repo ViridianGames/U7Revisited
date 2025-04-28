@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages well interaction, possibly for drawing water.
 function func_0188H(eventid, itemref)
     if eventid ~= 1 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Tym" spell, dispelling time-based effects.
 function func_0687(eventid, itemref)
     local local0

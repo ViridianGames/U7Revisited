@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CD: Zaksam's trainer dialogue and anti-gargoyle views
 function func_04CD(eventid, itemref)
     -- Local variables (6 as per .localc)

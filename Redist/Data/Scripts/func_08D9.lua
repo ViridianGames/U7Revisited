@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D9: Manages Rowena's unresponsive dialogue
 function func_08D9()
     if not get_flag(0x01C9) then

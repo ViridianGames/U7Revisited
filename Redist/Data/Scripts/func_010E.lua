@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 010E: Manages item interactions
 function func_010E(itemref)
     -- Local variables (1 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages the Orb of the Moons, creating moongates for teleportation or displaying error messages.
 function func_0311H(eventid, itemref)
     if eventid == 1 then

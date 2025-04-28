@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0450.lua
 -- Miranda's dialogue as a councilor in Castle British
 local U7 = require("U7LuaFuncs")

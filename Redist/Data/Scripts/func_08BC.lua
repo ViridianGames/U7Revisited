@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08BC: Manages reagent and potion purchase dialogue
 function func_08BC(itemref)
     -- Local variables (15 as per .localc)

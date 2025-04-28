@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 034D: Manages item quality-based interaction
 function func_034D(itemref)
     -- Local variables (1 as per .localc)

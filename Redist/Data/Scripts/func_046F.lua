@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Gharl's dialogue in a jail cell, covering his hunting lifestyle and a secret about a troll ally.
 function func_046F(eventid, itemref)
     local local0, local1, local2, local3

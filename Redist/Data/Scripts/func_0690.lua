@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles item type interactions (707, 760, or others), creating objects and triggering effects.
 function func_0690(eventid, itemref)
     local local0, local1

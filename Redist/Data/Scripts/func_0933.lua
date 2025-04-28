@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0933: Conditional follow wall for combat-ready NPC
 function func_0933(eventid, itemref)
     local local0

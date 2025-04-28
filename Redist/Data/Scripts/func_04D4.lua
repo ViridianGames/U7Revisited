@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D4: Yvella's dialogue and Catherine's arc
 function func_04D4(eventid, itemref)
     -- Local variables (12 as per .localc)

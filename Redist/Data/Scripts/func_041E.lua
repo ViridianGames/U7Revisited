@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041E: Manages Amber's dialogue and interactions
 function func_041E(itemref)
     -- Local variables (5 as per .localc)

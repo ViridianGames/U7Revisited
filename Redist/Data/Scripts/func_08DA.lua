@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08DA: Manages Rowena's unwell dialogue
 function func_08DA()
     local local0 = call_0909H()

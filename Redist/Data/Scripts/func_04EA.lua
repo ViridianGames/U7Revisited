@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04EA: Meryl's brief actress dialogue
 function func_04EA(eventid, itemref)
     -- Local variables (4 as per .localc)

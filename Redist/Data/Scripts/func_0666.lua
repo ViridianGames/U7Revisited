@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Wis Corp" spell, creating a temporary ghost effect with a timed duration and sprite effects.
 function func_0666(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

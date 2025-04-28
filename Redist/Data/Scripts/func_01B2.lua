@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01B2: Item interaction with dialogue and container check
 function func_01B2(eventid, itemref)
     -- Local variables (3 as per .localc)

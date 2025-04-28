@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D8: Wis-Sur's mage dialogue and paranoia
 function func_04D8(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 031C: Manages ship interaction
 function func_031C(itemref)
     if eventid() == 1 then

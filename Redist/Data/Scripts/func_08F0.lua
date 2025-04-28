@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08F0: Manages Trent and Rowena's reunion dialogue
 function func_08F0()
     -- Local variables (2 as per .localc)

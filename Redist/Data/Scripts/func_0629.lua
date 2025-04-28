@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages beer tap interactions, adjusting frames and creating items, similar to func_0628 but with different frame ranges.
 function func_0629(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

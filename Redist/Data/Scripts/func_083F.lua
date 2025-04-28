@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles winch effects, applying items to matching quality objects.
 function func_083F(p0, p1)
     local local2, local3, local4, local5, local6, local7

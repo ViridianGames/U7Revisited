@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A3: Manages projectile purchase dialogue
 function func_08A3()
     -- Local variables (14 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C4: Sets plot progression flag
 function func_06C4(eventid, itemref)
     if eventid == 3 then

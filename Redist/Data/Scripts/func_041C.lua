@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041C: Manages Jesse's dialogue and interactions
 function func_041C(itemref)
     -- Local variables (6 as per .localc)

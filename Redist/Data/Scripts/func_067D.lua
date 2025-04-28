@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas An Xen Ex" spell, dispelling summoned creatures in an area.
 function func_067D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

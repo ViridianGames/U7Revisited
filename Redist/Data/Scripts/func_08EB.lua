@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08EB: Manages item or party movement
 function func_08EB(local0, local1, itemref)
     -- Local variables (18 as per .localc)

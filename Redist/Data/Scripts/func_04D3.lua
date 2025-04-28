@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D3: Lap-Lem's gargoyle miner dialogue and Blorn conflict
 function func_04D3(eventid, itemref)
     -- Local variables (3 as per .localc)

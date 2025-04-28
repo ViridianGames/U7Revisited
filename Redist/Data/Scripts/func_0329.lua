@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Simulates spinning a top, with random outcomes and visual effects.
 function func_0329H(eventid, itemref)
     if eventid == 1 and not check_in_usecode(itemref) then -- TODO: Implement LuaCheckInUsecode for callis 0079.

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Gorn's dialogue in a cave, covering his quest to find Brom, his homeland Balema, and suspicions about the Avatar influenced by Brom's voice.
 function func_048A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

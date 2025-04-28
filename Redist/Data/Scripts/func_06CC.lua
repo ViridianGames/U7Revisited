@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06CC: Manages party member effects and item spawning
 function func_06CC(eventid, itemref)
     -- Local variables (6 as per .localc)

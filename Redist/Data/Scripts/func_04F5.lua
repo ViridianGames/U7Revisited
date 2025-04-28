@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F5: Kreg's monk/thief dialogue and escape plot
 function func_04F5(eventid, itemref)
     -- Local variables (8 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0441.lua
 -- Neno's dialogue as the stablemaster in Britain
 local U7 = require("U7LuaFuncs")

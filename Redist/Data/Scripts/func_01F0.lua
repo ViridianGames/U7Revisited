@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01F0: Dog NPC interaction
 function func_01F0(eventid, itemref)
     -- Local variable (1 as per .localc)

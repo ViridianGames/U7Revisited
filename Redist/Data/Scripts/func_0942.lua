@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0942: Handle torch or candle
 function func_0942(eventid, itemref)
     local local0, local1, local2, local3

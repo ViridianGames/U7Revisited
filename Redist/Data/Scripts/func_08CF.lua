@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08CF: Manages human Fellowship sermon dialogue
 function func_08CF()
     -- Local variables (5 as per .localc)

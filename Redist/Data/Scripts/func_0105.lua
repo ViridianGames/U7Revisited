@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0105H(eventid, itemref)
     if eventid == 7 then
         U7SetItemState(itemref)

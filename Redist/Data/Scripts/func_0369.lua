@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers an action for an item, possibly a quest item, if worn by a character.
 function func_0369H(eventid, itemref)
     if eventid == 1 then

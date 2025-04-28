@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers party member banter when the player attempts theft, with random dialogue expressing disapproval.
 function func_063A(eventid, itemref)
     local local0, local1

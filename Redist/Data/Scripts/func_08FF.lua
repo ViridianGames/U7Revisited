@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08FF: Manages dialogue effect application
 function func_08FF(local0)
     -- Local variables (1 as per .localc)

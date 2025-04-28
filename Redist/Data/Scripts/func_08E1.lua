@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E1: Manages gargoyle merchant dialogue
 function func_08E1()
     -- Local variables (13 as per .localc)

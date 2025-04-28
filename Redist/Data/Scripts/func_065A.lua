@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Bet Xen" spell, summoning small creatures with random success.
 function func_065A(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0844: Find item with frame 12
 function func_0844(eventid, itemref)
     local local0, local1, local2, local3, local4

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FB: Danag's dialogue and Black Gate revelations
 function func_04FB(eventid, itemref)
     -- Local variables (3 as per .localc)

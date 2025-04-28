@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles NPC reactions to player theft, with party members (Dupre, Shamino, Iolo) leaving the party and setting flags.
 function func_0633(eventid, itemref)
     if eventid ~= 1 then

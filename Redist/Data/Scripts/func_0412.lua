@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Dell's dialogue in Trinsic, covering his shopkeeping, Fellowship involvement, and dismissive murder attitude.
 function func_0412(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

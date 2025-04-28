@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages the three-headed hydra's dialogue in Skara Brae, guarding the Caddellite, with a humorous and threatening tone, escalating to combat if provoked.
 function func_0495(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

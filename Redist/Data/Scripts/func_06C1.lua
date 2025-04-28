@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C1: Manages item movement and cleanup
 function func_06C1(eventid, itemref)
     -- Local variables (17 as per .localc)

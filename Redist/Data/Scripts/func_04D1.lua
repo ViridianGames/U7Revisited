@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D1: Auston's mayoral dialogue and uprising fears
 function func_04D1(eventid, itemref)
     -- Local variables (6 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0839: Apply item effects
 function func_0839(eventid, itemref)
     local local0, local1, local2

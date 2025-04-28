@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Vas Por" spell, creating a powerful movement effect in an area.
 function func_067E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

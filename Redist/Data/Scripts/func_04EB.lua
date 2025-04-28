@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04EB: Dustin's brief Passion Play actor dialogue
 function func_04EB(eventid, itemref)
     -- Local variables (4 as per .localc)

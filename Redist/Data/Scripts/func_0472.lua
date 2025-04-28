@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0472.lua
 -- Torwin's dialogue as a stablemaster in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Nicholas's dialogue in Britain, covering toddler tag game, diaper-changing, and orphaned status.
 function func_0421(eventid, itemref)
     local local0, local1, local2, local3

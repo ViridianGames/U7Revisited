@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Klog's dialogue in Trinsic, covering his Fellowship leadership, murder involvement (with Cube), and Christopher's argument.
 function func_0410(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08BE: Manages weight training dialogue
 function func_08BE(local0, local1)
     -- Local variables (10 as per .localc)

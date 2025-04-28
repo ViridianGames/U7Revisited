@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0474.lua
 -- Jorin's dialogue as a fisherman in Britain
 local U7 = require("U7LuaFuncs")

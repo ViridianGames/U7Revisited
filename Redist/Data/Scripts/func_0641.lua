@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Rel Hur" spell, manipulating wind or movement, with random effects or a fallback if the spell fails.
 function func_0641(eventid, itemref)
     local local0, local1, local2, local3

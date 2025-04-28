@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04DC: Sullivan's dialogue and Guardian revelation
 function func_04DC(eventid, itemref)
     -- Local variables (8 as per .localc)

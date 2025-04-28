@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles Time Lord’s dialogue, guiding the Avatar through the main quest.
 function func_0269H(eventid, itemref)
     if eventid == 0 then

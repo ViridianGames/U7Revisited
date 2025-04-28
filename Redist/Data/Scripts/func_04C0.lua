@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C0: Menion's trainer dialogue and sword forging
 function func_04C0(eventid, itemref)
     -- Local variables (5 as per .localc)

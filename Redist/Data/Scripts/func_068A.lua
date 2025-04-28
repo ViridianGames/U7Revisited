@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Clears a specific flag and applies an effect.
 function func_068A(eventid, itemref)
     set_flag(749, false)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Fades in the palette and triggers a sprite effect, likely for a visual transition.
 function func_0636(eventid, itemref)
     local local0

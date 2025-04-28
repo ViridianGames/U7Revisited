@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AC: Manages healing services dialogue
 function func_08AC(local0, local1, local2)
     -- Local variables (10 as per .localc)

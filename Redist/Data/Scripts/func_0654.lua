@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas An Nox" spell, curing poison for party members with a sprite effect.
 function func_0654(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

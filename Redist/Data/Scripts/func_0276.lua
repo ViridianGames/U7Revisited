@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages interaction with an item, possibly a map or telescope.
 function func_0276H(eventid, itemref)
     local target

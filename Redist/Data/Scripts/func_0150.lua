@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles unlit candle interaction, switching to lit candle state.
 function func_0150H(eventid, itemref)
     if eventid == 1 or eventid == 2 then

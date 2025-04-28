@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0846: Check specific items
 function func_0846(eventid, itemref)
     if not call_0072H(15, 668, 1, _NPCInParty(-356)) and not call_0072H(15, 668, 2, _NPCInParty(-356)) then

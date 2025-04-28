@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0943: Move object with offsets
 function func_0943(eventid, itemref)
     local local0

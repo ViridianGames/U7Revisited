@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0905: Light torch effect
 function func_0905(eventid, itemref)
     local local0

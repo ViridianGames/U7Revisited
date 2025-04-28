@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0133H(eventid, itemref)
     if eventid == 1 and U7GetItemFrame(itemref) == 0 then
         local item_pos = U7GetItemInfo(itemref)

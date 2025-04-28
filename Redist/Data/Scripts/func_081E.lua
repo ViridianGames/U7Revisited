@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Searches for an item with specific frame and position, applying adjustments if found.
 function func_081E(p0, p1, p2, p3, p4, p5, p6, p7, p8)
     local local9, local10, local11, local12, local13, local14, local15

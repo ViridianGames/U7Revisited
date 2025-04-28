@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers a teleportation effect, fading out the palette and centering the view around the Avatar.
 function func_063F(eventid, itemref)
     local local0

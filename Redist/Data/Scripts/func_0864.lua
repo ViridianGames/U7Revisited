@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0864: Random item dialogue
 function func_0864(eventid, itemref)
     local local0, local1, local2, local3

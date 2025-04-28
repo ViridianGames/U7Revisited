@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Generates another random phrase for mad-libs style dialogue.
 function func_086B()
     local local0, local1, local2

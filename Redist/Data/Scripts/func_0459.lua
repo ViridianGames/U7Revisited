@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0459.lua
 -- Alagner's dialogue as a scholar in Britain
 local U7 = require("U7LuaFuncs")

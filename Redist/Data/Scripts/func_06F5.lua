@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06F5: Manages Erethian's sword handoff
 function func_06F5(eventid, itemref)
     -- Local variables (9 as per .localc)

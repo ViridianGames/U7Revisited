@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Amanda's dialogue, covering her vengeance quest against a cyclops, relationship with Eiko, and quest resolution.
 function func_0430(eventid, itemref)
     local local0, local1, local2

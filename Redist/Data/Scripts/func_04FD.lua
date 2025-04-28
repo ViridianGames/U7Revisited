@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FD: Cosmo's dialogue and virginity quest
 function func_04FD(eventid, itemref)
     -- Local variables (3 as per .localc)

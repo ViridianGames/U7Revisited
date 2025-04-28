@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AE: Komor's beggar dialogue and gold requests
 function func_04AE(eventid, itemref)
     -- Local variables (9 as per .localc)

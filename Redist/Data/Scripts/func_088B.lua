@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Teleports party members to a specific location and updates flags.
 function func_088B()
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

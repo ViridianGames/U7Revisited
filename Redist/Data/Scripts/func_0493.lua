@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Mayor Forsythe's dialogue in Skara Brae, as a cowardly ghost, covering his role in the fire, the Liche, and his potential sacrifice.
 function func_0493(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Flam Hur" spell, creating a fiery wind effect on a selected target.
 function func_066B(eventid, itemref)
     local local0, local1, local2

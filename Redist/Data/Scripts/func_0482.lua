@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0482.lua
 -- Thane's dialogue as a cooper in Britain
 local U7 = require("U7LuaFuncs")

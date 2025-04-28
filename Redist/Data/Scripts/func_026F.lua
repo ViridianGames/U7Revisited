@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 026F: Manages hammer-on-sword forging
 function func_026F(itemref)
     -- Local variables (10 as per .localc)

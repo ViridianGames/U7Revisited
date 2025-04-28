@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 042B: Manages Patterson's dialogue and interactions
 function func_042B(itemref)
     -- Local variables (4 as per .localc)

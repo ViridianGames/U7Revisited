@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08DD: Manages earthquake NPC behavior
 function func_08DD(itemref)
     -- Local variables (11 as per .localc)

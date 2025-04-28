@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0883: Mayor introduces Petre
 function func_0883(eventid, itemref)
     local local0

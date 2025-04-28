@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Greg's dialogue in Britain, covering provisioner shop, lucky items, Gorn's story, and a fake Avatar encounter.
 function func_0426(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

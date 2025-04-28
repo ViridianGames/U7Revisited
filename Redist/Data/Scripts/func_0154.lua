@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles potion or reagent usage, with dialogue and stat modifications.
 function func_0154H(eventid, itemref)
     if eventid ~= 1 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0828: Use bucket on item
 function func_0828(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

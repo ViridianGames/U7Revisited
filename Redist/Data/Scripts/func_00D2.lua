@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 00D2: Item processing with quality checks and randomization
 function func_00D2(eventid, itemref)
     -- Local variables (7 as per .localc)

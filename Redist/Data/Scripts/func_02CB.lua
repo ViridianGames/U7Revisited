@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02CB: Tombstone inscriptions
 function func_02CB(eventid, itemref)
     -- Local variables (2 as per .localc)

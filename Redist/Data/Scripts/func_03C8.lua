@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03C8: Frame-based actions with positioning
 function func_03C8(eventid, itemref)
     -- Local variables (2 as per .localc)

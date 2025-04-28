@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0698: Handle item type 521 and 500
 function func_0698(eventid, itemref)
     local local0, local1, local2, local3, local4

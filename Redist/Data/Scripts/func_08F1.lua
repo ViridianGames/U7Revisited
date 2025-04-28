@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08F1: Manages insult generation
 function func_08F1(local0)
     -- Local variables (2 as per .localc)

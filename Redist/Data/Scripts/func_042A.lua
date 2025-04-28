@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 042A: Manages Cynthia's dialogue and interactions
 function func_042A(itemref)
     -- Local variables (16 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Des Sanct" spell, lowering the target's defense.
 function func_0658(eventid, itemref)
     local local0, local1, local2, local3

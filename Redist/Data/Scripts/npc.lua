@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 
 function on_interact(event)
     if event == 1 then

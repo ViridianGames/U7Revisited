@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Increments an item's quality and updates it, possibly for tracking usage or progression.
 function func_0607(eventid, itemref)
     local local0

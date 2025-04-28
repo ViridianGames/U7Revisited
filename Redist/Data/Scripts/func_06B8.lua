@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B8: Manages party member effects with recursion
 function func_06B8(eventid, itemref)
     -- Local variables (8 as per .localc)

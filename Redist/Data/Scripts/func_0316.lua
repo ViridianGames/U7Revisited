@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles interaction with an item, warning against wasting it if conditions aren’t met.
 function func_0316H(eventid, itemref)
     if eventid == 1 then

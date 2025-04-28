@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B1: Manages paralysis trap effect
 function func_06B1(eventid, itemref)
     -- Local variables (6 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02BD: Lit torch behavior
 function func_02BD(eventid, itemref)
     -- Local variables (2 as per .localc)

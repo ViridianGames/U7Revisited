@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F8: Brion's observatory dialogue and orrery viewer quest
 function func_04F8(eventid, itemref)
     -- Local variables (18 as per .localc)

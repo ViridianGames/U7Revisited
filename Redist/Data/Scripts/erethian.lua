@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function table.find(t, val)
     for i, v in ipairs(t) do
         if v == val then return i end

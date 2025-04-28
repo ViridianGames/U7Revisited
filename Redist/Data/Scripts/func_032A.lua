@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 032A: Manages bucket water usage
 function func_032A(itemref)
     -- Local variables (35 as per .localc)

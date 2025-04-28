@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E2: Manages gargoyle reagent purchase dialogue
 function func_08E2()
     -- Local variables (13 as per .localc)

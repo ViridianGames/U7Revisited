@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles interaction with an item, warning against wasting it if no wearer is present.
 function func_0288H(eventid, itemref)
     if eventid == 1 then

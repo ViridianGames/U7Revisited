@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages lockpick usage on chests or doors, with chance of success or breaking.
 function func_0273H(eventid, itemref)
     if eventid ~= 1 then

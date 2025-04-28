@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C7: Denton's tavernkeeper dialogue and investigation hub
 function func_04C7(eventid, itemref)
     -- Local variables (9 as per .localc)

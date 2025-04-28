@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F1: Papa/Murray's cave-dweller dialogue and Yew revelation
 function func_04F1(eventid, itemref)
     -- Local variables (3 as per .localc)

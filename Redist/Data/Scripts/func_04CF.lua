@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CF: Yongi's bartender dialogue and anti-gargoyle stance
 function func_04CF(eventid, itemref)
     -- Local variables (14 as per .localc)

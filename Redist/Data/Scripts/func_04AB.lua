@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AB: Garritt's dialogue and venom theft confession
 function func_04AB(eventid, itemref)
     -- Local variables (9 as per .localc)

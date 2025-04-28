@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C0: Manages Mordra's Skara Brae dialogue
 function func_08C0()
     -- Local variables (7 as per .localc)

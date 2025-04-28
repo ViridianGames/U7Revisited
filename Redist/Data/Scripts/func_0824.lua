@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0824: Update item position and type
 function func_0824(eventid, itemref)
     local local0, local1, local2, local3, local4

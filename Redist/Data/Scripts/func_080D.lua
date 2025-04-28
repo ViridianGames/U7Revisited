@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks if all party members are sitting.
 function func_080D()
     local local0, local1, local2, local3, local4

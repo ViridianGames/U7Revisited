@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06AE: Triggers NPC-specific function
 function func_06AE(eventid, itemref)
     if eventid == 3 then

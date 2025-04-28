@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0479.lua
 -- Hal's dialogue as a tanner in Britain
 local U7 = require("U7LuaFuncs")

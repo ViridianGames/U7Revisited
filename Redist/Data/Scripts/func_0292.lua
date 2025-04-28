@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages cooking dough in an oven, producing bread with random outcomes.
 function func_0292H(eventid, itemref)
     if eventid == 1 then

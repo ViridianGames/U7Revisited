@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A0: Effrem's dialogue with baby Mikhail
 function func_04A0(eventid, itemref)
     -- Local variables (10 as per .localc)

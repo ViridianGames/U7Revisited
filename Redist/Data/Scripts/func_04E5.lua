@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E5: Budo's provisioner dialogue and ship deed sale
 function func_04E5(eventid, itemref)
     -- Local variables (13 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02E7: Dragon reward mechanic
 function func_02E7(eventid, itemref)
     -- Local variables (6 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0896: Bollux golem post-event dialogue
 function func_0896(eventid, itemref)
     _SwitchTalkTo(0, -289)

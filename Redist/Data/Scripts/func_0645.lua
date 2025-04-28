@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Lor" spell, summoning a bright light effect and adjusting party member properties.
 function func_0645(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

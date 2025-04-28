@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Gargan's dialogue in Trinsic, covering shipwright services, Crown Jewel and Hook knowledge, and Fellowship dismissal.
 function func_0415(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

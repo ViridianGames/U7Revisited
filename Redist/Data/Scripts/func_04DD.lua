@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04DD: Wench's hostess dialogue and secret passage hint
 function func_04DD(eventid, itemref)
     -- Local variables (10 as per .localc)

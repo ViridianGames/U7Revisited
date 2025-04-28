@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B4: Draxinusom's gargoyle leader dialogue
 function func_04B4(eventid, itemref)
     -- Local variables (3 as per .localc)

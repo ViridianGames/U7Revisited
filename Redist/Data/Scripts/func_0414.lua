@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Markus's dialogue in Trinsic, covering his combat training, town comments, and minimal murder engagement.
 function func_0414(eventid, itemref)
     local local0, local1

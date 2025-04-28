@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0822: Update array values
 function func_0822(eventid, itemref)
     local local0, local1

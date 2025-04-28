@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C2: Jehanne's provisioner dialogue, ship sale, and Pendaran's misdeeds
 function func_04C2(eventid, itemref)
     -- Local variables (13 as per .localc)

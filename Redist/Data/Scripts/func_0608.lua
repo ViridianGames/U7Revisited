@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles a confrontation scene where Fellowship members (Hook, Forskis, Abraham, Elizabeth) sentence the Avatar to death, adjusting NPC alignments and triggering actions.
 function func_0608(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

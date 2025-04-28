@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Nanna's dialogue in Britain, covering Royal Nursery duties, class structure views, and Fellowship membership.
 function func_0422(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

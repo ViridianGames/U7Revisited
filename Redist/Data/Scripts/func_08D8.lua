@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D8: Manages Rowena's awakened dialogue
 function func_08D8()
     -- Local variables (5 as per .localc)

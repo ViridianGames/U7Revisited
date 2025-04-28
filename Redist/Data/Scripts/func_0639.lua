@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles the "Kal Ort Por" teleportation spell, triggering a sprite effect and endgame sequence.
 function func_0639(eventid, itemref)
     local local0, local1

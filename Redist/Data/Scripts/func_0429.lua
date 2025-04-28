@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Candice's dialogue in Britain, covering Royal Museum curation, Fellowship involvement, and secret affair with Patterson.
 function func_0429(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

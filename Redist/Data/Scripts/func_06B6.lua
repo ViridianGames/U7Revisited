@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B6: Manages item frame manipulation
 function func_06B6(eventid, itemref)
     -- Local variables (8 as per .localc)

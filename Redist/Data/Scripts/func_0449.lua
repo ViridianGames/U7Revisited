@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0449.lua
 -- Nanna's dialogue as the nanny at Castle British
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0695: Create and position items
 function func_0695(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

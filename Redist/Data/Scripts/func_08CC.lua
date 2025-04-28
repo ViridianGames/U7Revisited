@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08CC: Manages drink purchase dialogue
 function func_08CC()
     -- Local variables (14 as per .localc)

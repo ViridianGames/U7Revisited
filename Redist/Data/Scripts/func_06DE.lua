@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06DE: Triggers item or environmental effect
 function func_06DE(eventid, itemref)
     if eventid == 3 then

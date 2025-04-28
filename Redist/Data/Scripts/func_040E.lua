@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 040E: Manages Johnson's dialogue and interactions
 function func_040E(itemref)
     -- Local variables (5 as per .localc)

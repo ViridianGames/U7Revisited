@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Iskander's dialogue, a cyclops hero, covering his heroic past, tribal homeland search, and the tetrahedron riddle.
 function func_046B(eventid, itemref)
     local local0, local1, local2, local3, local4

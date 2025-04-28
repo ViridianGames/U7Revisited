@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A8: Brita's shelter dialogue and venom theft reactions
 function func_04A8(eventid, itemref)
     -- Local variables (4 as per .localc)

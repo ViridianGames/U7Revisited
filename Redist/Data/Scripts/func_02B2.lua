@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02B2: Play music track
 function func_02B2(eventid, itemref)
     if eventid == 1 then

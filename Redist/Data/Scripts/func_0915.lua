@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0915: Adjust NPC stats based on training
 function func_0915(eventid, itemref)
     local local0, local1, local2, local3, local4

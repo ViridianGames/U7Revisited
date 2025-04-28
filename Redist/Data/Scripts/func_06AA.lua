@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06AA: Avatar's initial appearance via moongate
 function func_06AA(eventid, itemref)
     -- Local variables (3 as per .localc)

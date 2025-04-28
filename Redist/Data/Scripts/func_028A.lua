@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 028A: Manages directional display
 function func_028A(itemref)
     -- Local variables (5 as per .localc)

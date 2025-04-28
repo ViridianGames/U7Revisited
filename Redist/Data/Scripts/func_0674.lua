@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Oort Hur" spell, creating a powerful wind effect in an area with random outcomes.
 function func_0674(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BD: Manages random effects and item spawning
 function func_06BD(eventid, itemref)
     -- Local variables (13 as per .localc)

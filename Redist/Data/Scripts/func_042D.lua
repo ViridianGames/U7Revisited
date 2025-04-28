@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_042D.lua
   -- Figg's dialogue about the Royal Orchards and Weston's theft
   local U7 = require("U7LuaFuncs")

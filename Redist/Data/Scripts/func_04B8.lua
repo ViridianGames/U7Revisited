@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B8: Runeb's Fellowship dialogue and combat trigger
 function func_04B8(eventid, itemref)
     -- Local variables (4 as per .localc)

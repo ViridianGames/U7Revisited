@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Mani Ylem" spell, creating food items for party members with random quality.
 function func_0648(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

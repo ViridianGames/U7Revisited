@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A2: Elad's healer dialogue
 function func_04A2(eventid, itemref)
     -- Local variables (3 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Flam" spell, creating a fire effect on a selected target.
 function func_0652(eventid, itemref)
     local local0, local1, local2, local3

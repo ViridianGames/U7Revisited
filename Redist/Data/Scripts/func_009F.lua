@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 009F: Manages clock time display
 function func_009F(itemref)
     -- Local variables (4 as per .localc)

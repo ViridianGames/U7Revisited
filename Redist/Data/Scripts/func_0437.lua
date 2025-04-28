@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Grayson's dialogue in Britain, covering armour and weapons sales and Fellowship benefits.
 function func_0437(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

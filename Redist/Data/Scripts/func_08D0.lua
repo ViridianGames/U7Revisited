@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D0: Manages meditation and combat training dialogue
 function func_08D0(local0, local1)
     -- Local variables (12 as per .localc)

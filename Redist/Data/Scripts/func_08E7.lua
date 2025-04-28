@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E7: Manages position check function
 function func_08E7()
     -- Local variables (3 as per .localc)

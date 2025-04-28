@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BC: Sarpling's shop dialogue and Runeb's plot revelation
 function func_04BC(eventid, itemref)
     -- Local variables (5 as per .localc)

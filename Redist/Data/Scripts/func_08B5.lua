@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B5: Manages Lord British's ship and crystal offer
 function func_08B5()
     -- Local variables (6 as per .localc)

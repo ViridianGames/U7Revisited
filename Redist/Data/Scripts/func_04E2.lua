@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E2: Blacktooth's dialogue and Mole reconciliation
 function func_04E2(eventid, itemref)
     -- Local variables (12 as per .localc)

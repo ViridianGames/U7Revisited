@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D6: For-Lem's scholar dialogue and Catherine's friendship
 function func_04D6(eventid, itemref)
     -- Local variables (2 as per .localc)

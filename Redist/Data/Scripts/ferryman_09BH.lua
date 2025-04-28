@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start ferryman_09BH.lua
 local strings = {
     [0x0000] = "The hooded figure in the boat ignores you completely.*",

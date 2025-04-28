@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_043F.lua
 -- Jesamine's dialogue as the apothecary's wife in Britain
 local U7 = require("U7LuaFuncs")

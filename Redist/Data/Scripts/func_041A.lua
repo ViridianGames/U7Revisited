@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041A: Manages Batlin's dialogue and interactions
 function func_041A(itemref)
     -- Local variables (14 as per .localc)

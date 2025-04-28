@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers Time Lord dialogue when using an hourglass under specific conditions.
 function func_0347H(eventid, itemref)
     if eventid == 1 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles pickaxe usage on trees or objects, checking for valid targets.
 function func_0270H(eventid, itemref)
     if eventid == 1 then

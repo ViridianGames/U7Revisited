@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 012D: Manages generic item interaction
 function func_012D(itemref)
     if eventid() == 1 then

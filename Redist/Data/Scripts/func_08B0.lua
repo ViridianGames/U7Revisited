@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B0: Describes liche's state
 function func_08B0()
     if not get_flag(0x01C5) then

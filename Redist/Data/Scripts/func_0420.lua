@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Max's dialogue in Britain, covering toddler play, singing, and pacifier interactions in the Royal Nursery.
 function func_0420(eventid, itemref)
     local local0, local1, local2, local3

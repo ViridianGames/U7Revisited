@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0882: Ferry interaction
 function func_0882(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AF: Manages Horance's Well of Souls guidance
 function func_08AF()
     -- Local variables (4 as per .localc)

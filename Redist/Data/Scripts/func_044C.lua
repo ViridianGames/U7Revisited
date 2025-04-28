@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044C.lua
 -- Geoffrey's dialogue as the captain of the guard in Britain
 local U7 = require("U7LuaFuncs")

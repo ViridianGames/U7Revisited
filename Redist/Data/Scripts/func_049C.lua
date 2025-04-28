@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Balayna's dialogue in Moonglow, as the Fellowship clerk, discussing meetings, citizens, and doubts about Rankin's leadership.
 function func_049C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

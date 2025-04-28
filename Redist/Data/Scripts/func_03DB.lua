@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03DB: Baby crying and transformation
 function func_03DB(eventid, itemref)
     -- Local variables (4 as per .localc)

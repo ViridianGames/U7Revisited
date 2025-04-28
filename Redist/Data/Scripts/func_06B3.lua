@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B3: Executes item-specific functions
 function func_06B3(eventid, itemref)
     -- Local variables (9 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0102H(eventid, itemref)
     if eventid == 1 then
         if not U7IsItemValid(itemref) then

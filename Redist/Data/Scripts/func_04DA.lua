@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04DA: Anmanivas's hostile dialogue and attack trigger
 function func_04DA(eventid, itemref)
     -- Local variables (15 as per .localc)

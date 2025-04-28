@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Prompts for an NPC or "Nobody" and returns the selected NPC ID.
 function func_090E()
     local local0, local1, local2, local3, local4

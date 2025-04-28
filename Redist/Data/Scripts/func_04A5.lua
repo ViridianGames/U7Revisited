@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A5: Frank the fox's snarky dialogue
 function func_04A5(eventid, itemref)
     -- Local variables (6 as per .localc)

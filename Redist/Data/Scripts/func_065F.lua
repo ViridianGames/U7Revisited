@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Zu" spell, inducing sleep on a selected target.
 function func_065F(eventid, itemref)
     local local0, local1, local2, local3

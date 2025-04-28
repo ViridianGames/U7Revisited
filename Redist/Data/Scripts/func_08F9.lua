@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Compares values across three arrays and returns true if all conditions are met.
 function func_08F9(p0, p1, p2)
     local local3, local4, local5, local6

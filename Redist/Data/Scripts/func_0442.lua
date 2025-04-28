@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0442.lua
 -- Grayson's dialogue as the armorer in Britain
 local U7 = require("U7LuaFuncs")

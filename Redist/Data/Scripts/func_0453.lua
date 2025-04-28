@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0453.lua
 -- Batlin's dialogue as the Fellowship leader in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Lor" spell, creating a light effect with a specific intensity.
 function func_064D(eventid, itemref)
     local local0

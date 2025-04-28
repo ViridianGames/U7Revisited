@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers a specific effect or scene transition when using an item with frame 3.
 function func_0350H(eventid, itemref)
     if eventid == 1 then

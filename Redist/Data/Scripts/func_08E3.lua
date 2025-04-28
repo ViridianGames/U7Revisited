@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E3: Manages jewelry purchase dialogue
 function func_08E3()
     -- Local variables (13 as per .localc)

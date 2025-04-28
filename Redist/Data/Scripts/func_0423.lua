@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Csil's dialogue in Britain, covering healing services, antibiotic theories, Lord British's malady, and Fellowship distrust.
 function func_0423(eventid, itemref)
     local local0, local1, local2, local3, local4

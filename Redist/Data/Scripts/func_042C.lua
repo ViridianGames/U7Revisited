@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 042C: Manages Carrocio's dialogue and interactions
 function func_042C(itemref)
     -- Local variables (10 as per .localc)

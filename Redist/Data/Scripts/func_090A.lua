@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Prompts for a yes/no answer and returns a boolean.
 function func_090A()
     save_answers() -- Unmapped intrinsic

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Jux Por Ylem" spell, creating a trap or hazardous object at a selected location.
 function func_0686(eventid, itemref)
     local local0, local1, local2, local3

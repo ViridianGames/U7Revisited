@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E4: Lucky's rogue dialogue and training offer
 function func_04E4(eventid, itemref)
     -- Local variables (4 as per .localc)

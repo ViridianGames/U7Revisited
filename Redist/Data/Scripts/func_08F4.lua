@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08F4: Manages Iolo's assistance dialogue
 function func_08F4(local0, local1)
     -- Local variables (2 as per .localc)

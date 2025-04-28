@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_043B.lua
 -- Willy's dialogue at the bakery in Britain
 local U7 = require("U7LuaFuncs")

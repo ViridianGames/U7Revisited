@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 018A: Manages palace guard dialogue
 function func_018A(itemref)
     -- Local variables (4 as per .localc)

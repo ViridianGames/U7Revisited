@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B2: Manages Horance's post-quest dialogue
 function func_08B2()
     -- Local variable (1 as per .localc)

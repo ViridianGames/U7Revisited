@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0468.lua
 -- Carlyn's dialogue as a healer in Britain
 local U7 = require("U7LuaFuncs")

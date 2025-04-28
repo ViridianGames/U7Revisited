@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Instructs the player to use a brush and pigments for painting.
 function func_0345H(eventid, itemref)
     if eventid == 1 then

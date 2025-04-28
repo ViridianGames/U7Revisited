@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Corp Por" spell, dealing significant damage to a selected target, bypassing Avatar protection.
 function func_0679(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

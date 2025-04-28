@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Nox" spell, curing poison on a selected target, with a fallback effect if the target is invalid.
 function func_0649(eventid, itemref)
     local local0, local1, local2

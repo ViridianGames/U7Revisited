@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Kal An Mani" spell, attempting to resurrect a target, or dealing damage if failed.
 function func_0680(eventid, itemref)
     local local0, local1

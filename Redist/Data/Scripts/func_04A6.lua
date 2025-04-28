@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A6: Thurston's miller dialogue and wheat delivery
 function func_04A6(eventid, itemref)
     -- Local variables (10 as per .localc)

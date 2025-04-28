@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Gaye's dialogue in Britain, covering clothier operations, clothing sales, Willy's interest, and Fellowship activities.
 function func_0435(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

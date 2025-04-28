@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06E1: Counts flags for progression
 function func_06E1(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Conducts the Fellowship examination, presenting questions and responses.
 function func_084E()
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

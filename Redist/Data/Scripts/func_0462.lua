@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0462.lua
 -- Cynthia's dialogue as a banker in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages sword crafting outcomes, updating flags and displaying messages based on a random quality check.
 function func_0691(eventid, itemref)
     local local0, local1, local2, local3

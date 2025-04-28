@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0463.lua
 -- Sean's dialogue as a jeweler in Britain
 local U7 = require("U7LuaFuncs")

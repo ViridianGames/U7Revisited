@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06CB: Initializes local variable
 function func_06CB(eventid, itemref)
     -- Local variables (1 as per .localc)

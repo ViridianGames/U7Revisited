@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages bucket interaction, possibly for filling or emptying.
 function func_0178H(eventid, itemref)
     if eventid ~= 1 then

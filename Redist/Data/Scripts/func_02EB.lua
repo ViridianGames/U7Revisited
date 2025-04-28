@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02EB: Soul cage for liche capture/release
 function func_02EB(eventid, itemref)
     -- Local variables (4 as per .localc)

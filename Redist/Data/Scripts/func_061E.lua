@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles generator interaction with specific parameters, triggering effects and setting values during event 2.
 function func_061E(eventid, itemref)
     local local0, local1, local2

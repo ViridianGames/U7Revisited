@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BD: Forbrak's tavern dialogue and town insights
 function func_04BD(eventid, itemref)
     -- Local variables (7 as per .localc)

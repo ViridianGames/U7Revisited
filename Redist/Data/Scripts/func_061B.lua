@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles the generator in Dungeon Despise, triggering effects and creating items when interacted with during event 2.
 function func_061B(eventid, itemref)
     local local0, local1

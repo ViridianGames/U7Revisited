@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Flam Grav" spell, creating a fiery electrical effect with a chance to ignite objects.
 function func_066E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

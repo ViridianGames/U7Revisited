@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Por Ylem" spell, teleporting an object to a random location if it is not a specific type (330).
 function func_0662(eventid, itemref)
     local local0, local1, local2

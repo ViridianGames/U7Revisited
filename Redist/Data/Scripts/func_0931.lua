@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0931: Check condition with threshold
 function func_0931(eventid, itemref)
     local local0

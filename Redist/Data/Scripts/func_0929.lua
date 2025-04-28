@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0929: Comment on fist weapon
 function func_0929(eventid, itemref)
     local local0, local1

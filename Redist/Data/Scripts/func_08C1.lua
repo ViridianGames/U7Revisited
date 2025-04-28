@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C1: Manages Rowena's reunion dialogue
 function func_08C1()
     -- Local variable (1 as per .localc)

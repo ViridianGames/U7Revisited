@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Clears a flag, sets schedules for party members, and triggers an action on an item.
 function func_0613(eventid, itemref)
     local local0, local1, local2, local3

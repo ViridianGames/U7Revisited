@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Bet Ort" spell, triggering a small magical effect with a sprite animation.
 function func_0643(eventid, itemref)
     local local0, local1

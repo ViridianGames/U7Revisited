@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Por" spell, dispelling movement restrictions on a selected target.
 function func_065C(eventid, itemref)
     local local0, local1, local2, local3

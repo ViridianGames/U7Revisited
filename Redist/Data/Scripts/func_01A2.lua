@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01A2: Giant bones item creation based on time
 function func_01A2(eventid, itemref)
     -- Local variables (5 as per .localc)

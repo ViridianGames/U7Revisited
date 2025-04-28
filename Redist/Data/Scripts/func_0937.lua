@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0937: Check NPC combat readiness
 function func_0937(eventid, itemref)
     if _GetNPCProperty(2, itemref) >= 10 and

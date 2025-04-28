@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 030E: Manages weapon interaction
 function func_030E(itemref)
     -- Local variables (6 as per .localc)

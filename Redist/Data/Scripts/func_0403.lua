@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Shamino's dialogue in Britain, discussing his activities, pocketwatch, magic issues, Amber, and joining the party.
 
 -- Global variables for answer handling

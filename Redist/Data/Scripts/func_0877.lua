@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0877: Nastassia's tale
 function func_0877(eventid, itemref)
     say(itemref, "\"I shall tell thee the story of the only unhappy person in Cove -- Nastassia. She is the only person in town without a lover. Not that she does not have suitors -- she is quite beautiful! All she thinks about is the Shrine of Compassion, which is where thou wouldst probably find her at this moment.\"~~De Maria strums his lute and sings:~~")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Ex Por" spell, unlocking or opening specific objects (e.g., doors, chests) with a frame adjustment.
 function func_0667(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

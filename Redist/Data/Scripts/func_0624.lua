@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages bedroll retrieval and placement, handling events for interaction, state changes, and positioning in Trinsic.
 function func_0624(eventid, itemref)
     local local0, local1, local2

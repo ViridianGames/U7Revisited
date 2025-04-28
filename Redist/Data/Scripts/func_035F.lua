@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 035F: Manages flour usage
 function func_035F(itemref)
     -- Local variables (9 as per .localc)

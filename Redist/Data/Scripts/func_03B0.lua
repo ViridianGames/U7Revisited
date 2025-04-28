@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03B0: Spitting action with dialogue
 function func_03B0(eventid, itemref)
     -- Local variable (1 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Mariah's dialogue in Moonglow, as a disoriented mage selling spells and reagents, commenting on the Lycaeum and her mental state.
 function func_0499(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

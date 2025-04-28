@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles a dialogue sequence with Erethian, displaying messages and creating magical effects.
 function func_069E(eventid, itemref)
     local local0, local1

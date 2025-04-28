@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0885: Investigation evidence check
 function func_0885(eventid, itemref)
     local local0, local1

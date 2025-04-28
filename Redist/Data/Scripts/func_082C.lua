@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks if a gangplank is blocked by nearby items.
 function func_082C(p0, p1, p2, p3)
     local local4, local5, local6, local7, local8

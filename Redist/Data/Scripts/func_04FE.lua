@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FE: Lasher's dialogue and virgin detection role
 function func_04FE(eventid, itemref)
     -- Local variables (7 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manipulates NPC properties and triggers actions based on property values, likely related to NPC health or status, ending with a message indicating poor health.
 function func_0603(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Nox Grav" spell, applying a poisonous electrical effect to a selected target.
 function func_0675(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

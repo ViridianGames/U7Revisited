@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C9: Leigh's healer dialogue and blood analysis
 function func_04C9(eventid, itemref)
     -- Local variables (3 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Battles's dialogue in New Magincia, covering his role, the shipwreck, and the locket's whereabouts.
 function func_0487(eventid, itemref)
     local local0, local1, local2, local3

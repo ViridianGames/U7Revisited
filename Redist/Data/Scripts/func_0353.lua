@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Describes fine cloth, suggesting trade in Minoc or cutting into bandages.
 function func_0353H(eventid, itemref)
     if eventid == 1 then

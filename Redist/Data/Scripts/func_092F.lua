@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Displays random NPC dialogue with a "To" prefix based on NPC state.
 function func_092F(p0)
     local local1, local2, local3, local4

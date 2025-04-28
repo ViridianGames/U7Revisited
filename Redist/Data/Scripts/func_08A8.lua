@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A8: Manages potion purchase dialogue
 function func_08A8()
     -- Local variables (13 as per .localc)

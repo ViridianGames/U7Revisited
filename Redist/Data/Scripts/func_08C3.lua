@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C3: Manages spell purchase dialogue
 function func_08C3()
     -- Local variables (10 as per .localc)

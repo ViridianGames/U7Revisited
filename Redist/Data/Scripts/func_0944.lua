@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0944: Find outermost container
 function func_0944(eventid, itemref)
     local local0

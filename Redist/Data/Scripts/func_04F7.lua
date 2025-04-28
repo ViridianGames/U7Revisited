@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F7: Caine's tormented dialogue and Skara Brae's tragic past
 function func_04F7(eventid, itemref)
     -- Local variables (5 as per .localc)

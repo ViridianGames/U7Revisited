@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A6: Awards experience and sets flag
 function func_06A6(eventid, itemref)
     if eventid == 3 and not get_flag(0x0000) then

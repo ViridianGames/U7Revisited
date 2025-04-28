@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Displays book contents based on item quality, covering various texts.
 function func_0282H(eventid, itemref)
     if eventid ~= 1 then

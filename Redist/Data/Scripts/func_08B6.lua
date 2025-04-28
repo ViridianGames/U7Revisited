@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B6: Manages Lucky's gambling training
 function func_08B6(local0, local1)
     -- Local variables (10 as per .localc)

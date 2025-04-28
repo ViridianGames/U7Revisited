@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02C0: Powder keg behavior
 function func_02C0(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F9: Nelson's Lycaeum dialogue and romantic subplot
 function func_04F9(eventid, itemref)
     -- Local variables (20 as per .localc)

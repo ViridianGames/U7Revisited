@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Cubolt's dialogue in Moonglow, as a farmer concerned about his brother Tolemac's involvement with the Fellowship.
 function func_049B(eventid, itemref)
     local local0, local1, local2, local3

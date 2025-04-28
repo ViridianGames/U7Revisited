@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages item activity and applies effects based on item state.
 function func_0692(eventid, itemref)
     local local0, local1, local2

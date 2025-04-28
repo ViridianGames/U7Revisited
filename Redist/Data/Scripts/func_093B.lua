@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts an NPC’s property based on a value and bounds.
 function func_093B(p0, p1, p2, p3)
     local local4, local5, local6

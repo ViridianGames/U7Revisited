@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0901: Select valid party member
 function func_0901(eventid, itemref)
     local local0, local1, local2

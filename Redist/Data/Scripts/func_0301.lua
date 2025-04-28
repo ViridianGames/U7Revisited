@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles smokebomb usage, creating a smoke effect and affecting NPCs.
 function func_0301H(eventid, itemref)
     if eventid == 1 or eventid == 4 then

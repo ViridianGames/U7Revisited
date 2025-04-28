@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B0: Andrew's dairy dialogue and venom theft clues
 function func_04B0(eventid, itemref)
     -- Local variables (13 as per .localc)

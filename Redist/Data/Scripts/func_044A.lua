@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044A.lua
 -- Lord British's dialogue as the ruler of Britannia
 local U7 = require("U7LuaFuncs")

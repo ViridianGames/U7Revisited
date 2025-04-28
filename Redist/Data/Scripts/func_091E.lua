@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Cures poison from an NPC and deducts gold.
 function func_091E(p0, p1)
     local local2, local3

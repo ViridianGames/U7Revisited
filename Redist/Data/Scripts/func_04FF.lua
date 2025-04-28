@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FF: Myrtle's dialogue in Bee Cave
 function func_04FF(eventid, itemref)
     -- Local variables (5 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Zella's dialogue in Britain, covering boxing training, combat philosophy, and training services.
 function func_0424(eventid, itemref)
     local local0, local1

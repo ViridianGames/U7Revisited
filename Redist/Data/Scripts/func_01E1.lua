@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01E1: Delegate to external function
 function func_01E1(eventid, itemref)
     -- No local variables (as per .localc)

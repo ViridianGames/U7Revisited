@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01B0: State-based item processing
 function func_01B0(eventid, itemref)
     -- Local variable (1 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0812: Play music and update state
 function func_0812(eventid, itemref)
     local local0, local1, local2, local3

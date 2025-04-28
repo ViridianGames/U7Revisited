@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Neno's dialogue in Britain, covering bard ambitions, music studies, and The Avatars performances.
 function func_0427(eventid, itemref)
     local local0, local1

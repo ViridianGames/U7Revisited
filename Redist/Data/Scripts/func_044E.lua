@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044E.lua
 -- Chuckles's dialogue as the court jester in Castle British
 local U7 = require("U7LuaFuncs")

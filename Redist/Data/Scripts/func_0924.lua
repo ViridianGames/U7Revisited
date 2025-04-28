@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0924: Check and manage item transaction
 function func_0924(eventid, itemref)
     local local0, local1, local2, local3

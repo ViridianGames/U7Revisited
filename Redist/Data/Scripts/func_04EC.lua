@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04EC: Ellen's Fellowship dialogue and murder alibi
 function func_04EC(eventid, itemref)
     -- Local variables (2 as per .localc)

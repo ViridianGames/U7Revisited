@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 030D: Manages ship plank interaction
 function func_030D(itemref)
     if eventid() == 1 then

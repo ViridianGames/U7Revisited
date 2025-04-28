@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Wis" spell, displaying the player's directional coordinates (e.g., "West North").
 function func_064E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

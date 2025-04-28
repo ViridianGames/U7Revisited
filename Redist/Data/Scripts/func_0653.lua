@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Lor" spell, creating a strong light effect with high intensity.
 function func_0653(eventid, itemref)
     local local0

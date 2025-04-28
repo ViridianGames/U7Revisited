@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Generates a random nickname for mad-libs style dialogue.
 function func_086E()
     local local0, local1, local2

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FC: Kallibrus's dialogue and Cosmo's quest support
 function func_04FC(eventid, itemref)
     -- Local variables (5 as per .localc)

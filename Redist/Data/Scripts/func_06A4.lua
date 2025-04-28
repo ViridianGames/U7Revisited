@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A4: Sets Forge progression flag
 function func_06A4(eventid, itemref)
     if eventid == 3 then

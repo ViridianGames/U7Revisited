@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0920: Select party member for training
 function func_0920(eventid, itemref)
     local local0

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Caroline's dialogue in Trinsic, covering Fellowship recruitment, Christopher's murder, and ambient slogans.
 function func_0416(eventid, itemref)
     local local0, local1, local2, local3, local4

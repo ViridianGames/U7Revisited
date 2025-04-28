@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C5: Horffe's guard dialogue and statue defense
 function func_04C5(eventid, itemref)
     -- Local variables (3 as per .localc)

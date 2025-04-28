@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02BE: Cannon firing mechanics
 function func_02BE(eventid, itemref)
     -- Local variables (14 as per .localc)

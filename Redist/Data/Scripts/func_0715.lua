@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Initiates an endgame sequence, updating container items and applying effects.
 function func_0715(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12

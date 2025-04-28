@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Katrina's dialogue in New Magincia, covering her shepherd role, friend Henry, island strangers, and party joining.
 
 -- Global variables for answer handling

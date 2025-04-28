@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D7: Ansikart's tavern keeper dialogue and mediator role
 function func_04D7(eventid, itemref)
     -- Local variables (6 as per .localc)

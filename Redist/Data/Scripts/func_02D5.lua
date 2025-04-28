@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02D5: Gambling wheel mechanic
 function func_02D5(eventid, itemref)
     -- Local variables (7 as per .localc)

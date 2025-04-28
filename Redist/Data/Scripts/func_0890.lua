@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0890: Adjhar golem dialogue
 function func_0890(eventid, itemref)
     local local0

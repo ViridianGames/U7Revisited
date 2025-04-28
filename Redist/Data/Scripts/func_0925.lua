@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0925: Adjust item weight
 function func_0925(eventid, itemref)
     local local0, local1

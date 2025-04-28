@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers a complex action, possibly for a magical or environmental effect.
 function func_0302H(eventid, itemref)
     if eventid == 1 and call_script(0x0906) then -- TODO: Map 0906H (possibly condition check).

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B7: Teregus's altar keeper dialogue
 function func_04B7(eventid, itemref)
     -- Local variables (6 as per .localc)

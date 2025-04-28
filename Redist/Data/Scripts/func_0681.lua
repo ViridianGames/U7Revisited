@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Corp Hur" spell, dealing significant damage to a selected target with a wind effect.
 function func_0681(eventid, itemref)
     local local0, local1, local2, local3

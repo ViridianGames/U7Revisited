@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Diane's dialogue in Britain, covering stable operations, horse and carriage sales, and local connections.
 function func_0438(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

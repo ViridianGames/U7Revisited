@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Morz's dialogue in Moonglow, as a shy farmer with a stutter, conflicted about joining the Fellowship due to Tolemac's encouragement and Cubolt's opposition.
 function func_049E(eventid, itemref)
     local local0, local1

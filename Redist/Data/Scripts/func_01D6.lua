@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01D6: Container item check and positioning
 function func_01D6(eventid, itemref)
     -- Local variables (3 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Implements an anti-cheat mechanism, detecting cheating, delivering a guilty verdict, and applying severe penalties (e.g., death).
 function func_063E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

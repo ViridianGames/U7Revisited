@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 028E: Manages container-based item interaction
 function func_028E(itemref)
     -- Local variables (5 as per .localc)

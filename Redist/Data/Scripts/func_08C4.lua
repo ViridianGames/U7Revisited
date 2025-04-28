@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C4: Manages reagent purchase dialogue
 function func_08C4()
     -- Local variables (13 as per .localc)

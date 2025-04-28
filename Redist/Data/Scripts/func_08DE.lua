@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08DE: Manages ape-like creature dialogue
 function func_08DE()
     -- Local variables (2 as per .localc)

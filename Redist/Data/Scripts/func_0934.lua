@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0934: Get party members excluding NPC
 function func_0934(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

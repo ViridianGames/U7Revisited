@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04CA: Ian's Retreat dialogue and key access
 function func_04CA(eventid, itemref)
     -- Local variables (3 as per .localc)

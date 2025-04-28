@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages flying carpet usage, allowing takeoff or landing with safety checks.
 function func_0348H(eventid, itemref)
     local state = get_item_state(itemref) -- TODO: Implement LuaGetItemState for callis 0058.

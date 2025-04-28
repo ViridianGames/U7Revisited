@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages item manipulation, randomly toggling properties for item 377 in a container.
 function func_0627(eventid, itemref)
     local local0, local1, local2

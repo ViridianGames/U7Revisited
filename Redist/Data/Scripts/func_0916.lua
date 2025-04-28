@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0916: Increment NPC secondary stats
 function func_0916(eventid, itemref)
     local local0, local1

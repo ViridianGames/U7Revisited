@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0912: Set NPC property
 function func_0912(eventid, itemref)
     local local0

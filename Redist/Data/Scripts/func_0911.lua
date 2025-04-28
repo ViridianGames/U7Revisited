@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0911: Set party member property
 function func_0911(eventid, itemref)
     local local0, local1, local2, local3, local4

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B8: Manages egg collection job
 function func_08B8()
     -- Local variables (7 as per .localc)

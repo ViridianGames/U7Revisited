@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0945: Find container chain
 function func_0945(eventid, itemref)
     local local0, local1

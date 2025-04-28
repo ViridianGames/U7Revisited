@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages dialogue for Gargan, including coughing and pipe-smoking.
 function func_088D()
     local local0, local1

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages password-protected access, requiring "Blackbird" to pass, with multiple NPC interactions and flag checks.
 function func_0631(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

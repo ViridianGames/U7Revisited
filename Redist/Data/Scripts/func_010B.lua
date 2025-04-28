@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 010B: Manages music playback
 function func_010B(itemref)
     if eventid() == 1 then

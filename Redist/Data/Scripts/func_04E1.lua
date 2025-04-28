@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E1: Sintag's guard dialogue and Hook's location
 function func_04E1(eventid, itemref)
     -- Local variables (6 as per .localc)

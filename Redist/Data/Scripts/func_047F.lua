@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Timmons's dialogue in Jhelom, covering his ambition to join De Snel's guild and Sprellic's duel.
 function func_047F(eventid, itemref)
     local local0, local1, local2, local3, local4

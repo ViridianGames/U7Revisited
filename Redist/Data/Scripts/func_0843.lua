@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0843: NPC and item manipulation
 function func_0843(eventid, itemref)
     local local0

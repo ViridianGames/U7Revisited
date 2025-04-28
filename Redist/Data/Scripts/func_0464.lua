@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0464.lua
 -- Dell's dialogue as a shopkeeper in Britain
 local U7 = require("U7LuaFuncs")

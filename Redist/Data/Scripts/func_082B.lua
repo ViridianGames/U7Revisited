@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Negates an array's elements by incrementing indices.
 function func_082B(p0, p1)
     local local2

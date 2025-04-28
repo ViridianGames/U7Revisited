@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01FA: Batlin's dialogue after Hook's death
 function func_01FA(eventid, itemref)
     -- Local variable (1 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Sanct Grav" spell, creating a protective electrical barrier at a selected location.
 function func_067B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10

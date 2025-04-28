@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks if an NPC is in the party or has a specific status.
 function func_08F7(p0)
     local local1, local2

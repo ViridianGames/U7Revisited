@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages winch operations, checking bridge and gangplank states.
 function func_083E(p0, p1)
     local local2, local3, local4, local5, local6, local7, local8

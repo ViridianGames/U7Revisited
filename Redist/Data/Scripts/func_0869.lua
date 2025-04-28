@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0869: Random verb forms
 function func_0869(eventid, itemref)
     local local0, local1, local2, local3, local4

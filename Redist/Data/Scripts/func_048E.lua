@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Trent's dialogue in Skara Brae, as the ghostly smith, covering his work on the Soul Cage, his hatred for Horance, and his loss of Rowena.
 function func_048E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

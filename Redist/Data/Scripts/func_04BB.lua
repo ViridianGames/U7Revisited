@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BB: Silamo's wingless gardener dialogue and social tensions
 function func_04BB(eventid, itemref)
     if eventid == 0 then

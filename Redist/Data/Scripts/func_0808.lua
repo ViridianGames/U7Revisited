@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0808: Update party flags
 function func_0808(eventid, itemref)
     local local0, local1, local2, local3, local4

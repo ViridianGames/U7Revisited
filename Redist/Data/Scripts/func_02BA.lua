@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02BA: Cloth to bandages transformation
 function func_02BA(eventid, itemref)
     -- Local variables (2 as per .localc)

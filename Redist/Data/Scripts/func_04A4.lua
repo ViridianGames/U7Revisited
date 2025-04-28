@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A4: Addom's dialogue and crystal purchase
 function func_04A4(eventid, itemref)
     -- Local variables (7 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Jaana's dialogue in Cove, including her healing services, relationship with Lord Heather, and party interactions.
 
 -- Global variables for answer handling

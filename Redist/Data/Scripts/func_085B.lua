@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Displays random NPC dialogue for NPC -244.
 function func_085B()
     local local0, local1, local2, local3

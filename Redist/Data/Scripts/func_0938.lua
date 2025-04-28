@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0938: Check NPC combat ineligibility
 function func_0938(eventid, itemref)
     itemref = call_0939H(itemref)

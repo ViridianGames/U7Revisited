@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04D5: Catherine's child dialogue and gargoyle sympathy
 function func_04D5(eventid, itemref)
     -- Local variables (3 as per .localc)

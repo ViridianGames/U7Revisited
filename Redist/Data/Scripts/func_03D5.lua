@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03D5: Item interaction with positioning
 function func_03D5(eventid, itemref)
     -- Local variables (4 as per .localc)

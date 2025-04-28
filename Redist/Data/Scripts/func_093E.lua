@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks if the Avatar is within a specific region.
 function func_093E()
     local local0, local1

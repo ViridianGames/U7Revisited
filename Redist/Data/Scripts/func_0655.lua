@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts a protection spell ("Uus Sanct") on a selected target.
 function func_0655(p0)
     local local0, local1, local2, local3, local4

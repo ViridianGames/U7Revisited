@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06F7: Manages golem scroll tracking
 function func_06F7(eventid, itemref)
     -- Local variables (44 as per .localc)

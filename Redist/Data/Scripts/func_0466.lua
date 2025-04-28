@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0466.lua
 -- Gaylen's dialogue as a baker in Britain
 local U7 = require("U7LuaFuncs")

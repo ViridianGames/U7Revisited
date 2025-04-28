@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02B5: Music and item iteration
 function func_02B5(eventid, itemref)
     -- Local variables (4 as per .localc)

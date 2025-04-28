@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages a cannon interaction, playing music and triggering effects if conditions are met.
 function func_0378H(eventid, itemref)
     if eventid == 1 then

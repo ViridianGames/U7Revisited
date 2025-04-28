@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Uus Sanct" spell, raising defense for party members with a sprite effect.
 function func_065B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

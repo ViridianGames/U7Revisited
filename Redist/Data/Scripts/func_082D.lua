@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts gangplank position based on type.
 function func_082D(p0, p1, p2)
     if p0 == 781 then

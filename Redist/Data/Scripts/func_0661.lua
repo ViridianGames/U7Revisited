@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Ort Grav" spell, creating an electrical or energy effect on a selected target.
 function func_0661(eventid, itemref)
     local local0, local1, local2

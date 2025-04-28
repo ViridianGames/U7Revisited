@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0902: Select NPC in party
 function func_0902(eventid, itemref)
     local local0, local1, local2, local3, local4

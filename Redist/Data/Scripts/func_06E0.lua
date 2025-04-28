@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06E0: Applies effects to items
 function func_06E0(eventid, itemref)
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Nystul's dialogue in Britain, covering his senility, magic issues, and spell/reagent sales.
 function func_0418(eventid, itemref)
     local local0, local1, local2

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles Forsythe's decision to sacrifice himself, with party size checks.
 function func_088A()
     local local0, local1, local2, local3, local4

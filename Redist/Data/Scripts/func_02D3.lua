@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02D3: Crossbow bolt advertisement
 function func_02D3(eventid, itemref)
     -- Local variable (1 as per .localc)

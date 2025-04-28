@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Tym Vas Flam" spell, creating a timed fire effect at a selected location.
 function func_067A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

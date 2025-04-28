@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks an item's frame and applies specific adjustments or effects.
 function func_081F(eventid, itemref)
     local local1

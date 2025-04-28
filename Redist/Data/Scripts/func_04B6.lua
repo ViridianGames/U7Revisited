@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B6: Inmanilem's healer dialogue
 function func_04B6(eventid, itemref)
     -- Local variables (2 as per .localc)

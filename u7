@@ -39,6 +39,7 @@ DO_CLEAN=false
 DO_CONFIGURE=false
 DO_RUN=false
 DO_SETUP_IDE=false
+DO_FIX_REQUIRES=false # New flag
 
 # --- Argument Parsing ---
 COMMAND_GIVEN=false
@@ -73,6 +74,17 @@ while [[ $# -gt 0 ]]; do
             COMMAND_GIVEN=true
             shift
             ;;
+        scripts) # New command
+            COMMAND_GIVEN=true
+            shift # Move past 'scripts'
+            if [[ "$1" == "--fix-requires" ]]; then
+                 DO_FIX_REQUIRES=true
+                 shift # Move past '--fix-requires'
+            else
+                 print_error "Unknown scripts command: '$1'. Available: --fix-requires"
+                 exit 1
+            fi
+            ;;
         --debug) # Explicitly request debug build
             BUILD_TYPE="debug"
             shift
@@ -85,16 +97,18 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 [command...] [options...] [-- game_args...]"
             echo ""
             echo "Commands:"
-            echo "  build         Build the project (default: release)."
-            echo "  run           Run the project (builds first if needed, default: release)."
-            echo "  clean         Clean the build directory for the selected type."
-            echo "  configure     Force configure before build."
-            echo "  setup         Run the IDE setup script (Linux/macOS)."
+            echo "  build           Build the project (default: release)."
+            echo "  run             Run the project (builds first if needed, default: release)."
+            echo "  clean           Clean the build directory for the selected type."
+            echo "  configure       Force configure before build."
+            echo "  setup           Run the IDE setup script (Linux/macOS)."
+            echo "  scripts         Run utility scripts:"
+            echo "    --fix-requires  Check and add missing 'require "U7LuaFuncs"' to Lua scripts."
             echo ""
             echo "Options:"
-            echo "  --debug       Perform actions for the debug build type."
-            echo "  --release     Perform actions for the release build type (default)."
-            echo "  -h, --help    Show this help message."
+            echo "  --debug         Perform actions for the debug build type."
+            echo "  --release       Perform actions for the release build type (default)."
+            echo "  -h, --help      Show this help message."
             echo ""
             echo "Examples:"
             echo "  $0 build                # Build release (default)"
@@ -103,6 +117,7 @@ while [[ $# -gt 0 ]]; do
             echo "  $0 clean build --debug   # Clean debug, then build debug"
             echo "  $0 run -- --some-game-flag # Run release, passing flag to game"
             echo "  $0 setup                # Generate IDE config files (Linux/macOS)"
+            echo "  $0 scripts --fix-requires # Check/fix Lua scripts"
             exit 0
             ;;
         --) # Separator for game args if 'run' isn't the last command
@@ -147,6 +162,29 @@ if [[ "$DO_SETUP_IDE" == true ]]; then
     fi
 fi
 
+# Fix Lua Requires Script
+if [[ "$DO_FIX_REQUIRES" == true ]]; then
+    print_header "Fix Lua Requires"
+    FIX_SCRIPT="${SCRIPTS_DIR}/check_lua_requires.sh"
+    if [ -f "$FIX_SCRIPT" ]; then
+        echo "--> Running Lua require check script..."
+        bash "$FIX_SCRIPT" # Execute the script
+        FIX_EXIT_CODE=$?
+        # Exit code 2 from check_lua_requires.sh means user chose to restore backups
+        if [ ${FIX_EXIT_CODE} -ne 0 ] && [ ${FIX_EXIT_CODE} -ne 2 ]; then
+             print_error "Lua require check script failed with exit code ${FIX_EXIT_CODE}."
+             # Don't exit here if the user restored (exit code 2), just report
+             if [ ${FIX_EXIT_CODE} -ne 2 ]; then exit 1; fi
+        elif [ ${FIX_EXIT_CODE} -eq 2 ]; then
+             echo "[U7 INFO] Changes were restored from backup by user request."
+        fi
+        print_footer
+    else
+        print_error "Lua require check script not found: ${FIX_SCRIPT}"
+        exit 1
+    fi
+fi
+
 # Handle build dependencies (clean, configure)
 if [[ "$DO_CLEAN" == true ]]; then
     BUILD_ARGS+=("--clean")
@@ -160,14 +198,19 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
      BUILD_ARGS+=("--release")
 fi
 
-
-# Build (if build cmd or run cmd was specified, and not only setup)
+# Build (if build cmd or run cmd was specified, and not only setup or scripts)
 BUILD_NEEDED=$( [[ "$DO_BUILD" == true || "$DO_RUN" == true ]] && echo true || echo false )
 BUILD_SCRIPT="${SCRIPTS_DIR}/build.sh"
 
-if [[ "$BUILD_NEEDED" == true && ( ! "$DO_SETUP_IDE" == true || "$COMMAND_GIVEN" == true ) ]]; then
-    # Only run build if build/run requested AND (setup wasn't requested OR other commands were also given)
-    # This prevents 'u7 setup' from triggering a build.
+# Determine if ONLY setup or fix-requires was specified
+ONLY_NON_BUILD_COMMAND=$( [[ ( "$DO_SETUP_IDE" == true || "$DO_FIX_REQUIRES" == true ) && \
+                             "$DO_BUILD" == false && \
+                             "$DO_CLEAN" == false && \
+                             "$DO_CONFIGURE" == false && \
+                             "$DO_RUN" == false ]] && echo true || echo false )
+
+# Only run build if build/run was requested AND it wasn't the case that ONLY setup/fix-requires was specified.
+if [[ "$BUILD_NEEDED" == true && "$ONLY_NON_BUILD_COMMAND" == false ]]; then
 
     # The --release flag is added above if needed. build.sh defaults to debug if it's absent.
 
@@ -186,7 +229,6 @@ if [[ "$BUILD_NEEDED" == true && ( ! "$DO_SETUP_IDE" == true || "$COMMAND_GIVEN"
         exit 1
     fi
 fi
-
 
 # Run
 if [[ "$DO_RUN" == true ]]; then

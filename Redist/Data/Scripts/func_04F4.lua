@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F4: Cairbre's sell-sword dialogue and unicorn quest
 function func_04F4(eventid, itemref)
     -- Local variables (3 as per .localc)

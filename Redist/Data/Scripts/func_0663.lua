@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Des Sanct" spell, lowering defense for multiple targets in an area with a sprite effect.
 function func_0663(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks if an NPC’s level is below a threshold.
 function func_08FC(p0, p1)
     local local2

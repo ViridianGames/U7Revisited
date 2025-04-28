@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Vas Xen" spell, summoning a powerful creature with random type and strength.
 function func_0685(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

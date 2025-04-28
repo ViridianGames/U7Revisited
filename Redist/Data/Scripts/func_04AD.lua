@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AD: Beverlea's antique shop dialogue and sales
 function func_04AD(eventid, itemref)
     -- Local variables (20 as per .localc)

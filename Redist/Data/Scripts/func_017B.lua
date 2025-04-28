@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 017B: Manages sign text display
 function func_017B(itemref)
     -- Local variables (2 as per .localc)

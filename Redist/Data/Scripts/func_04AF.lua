@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AF: Fenn's beggar dialogue and venom theft defense
 function func_04AF(eventid, itemref)
     -- Local variables (9 as per .localc)

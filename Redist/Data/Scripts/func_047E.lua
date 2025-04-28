@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Syria's dialogue in Jhelom, covering her mercenary background, the honor flag, and Sprellic's duel.
 function func_047E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

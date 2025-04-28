@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 020E: Manages item transformation near light
 function func_020E(itemref)
     -- Local variables (6 as per .localc)

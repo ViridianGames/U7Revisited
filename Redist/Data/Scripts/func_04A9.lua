@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04A9: Alina's shelter dialogue and Weston's plight
 function func_04A9(eventid, itemref)
     -- Local variables (2 as per .localc)

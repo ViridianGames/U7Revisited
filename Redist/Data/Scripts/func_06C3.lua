@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C3: Manages Minoc murder scene
 function func_06C3(eventid, itemref)
     -- Local variables (1 as per .localc)

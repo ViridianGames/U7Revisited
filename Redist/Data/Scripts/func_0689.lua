@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Applies damage to an NPC based on their strength and health.
 function func_0689(eventid, itemref)
     local local0, local1

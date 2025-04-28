@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06D6: Manages item manipulation and deletion
 function func_06D6(eventid, itemref)
     -- Local variables (9 as per .localc)

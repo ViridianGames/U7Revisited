@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0445.lua
 -- Judith's dialogue as the musician in Britain
 local U7 = require("U7LuaFuncs")

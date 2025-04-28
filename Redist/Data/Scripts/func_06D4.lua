@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06D4: Manages item movement
 function func_06D4(eventid, itemref)
     -- Local variables (1 as per .localc)

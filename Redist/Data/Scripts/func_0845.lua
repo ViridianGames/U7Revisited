@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0845: Daemon magic restoration
 function func_0845(eventid, itemref)
     local local0, local1, local2, local3, local4

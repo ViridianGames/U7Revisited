@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start ship_gangplank_0096.lua
 local strings = {
     [0x0000] = "@The sails must be furled before the planks are raised.@",

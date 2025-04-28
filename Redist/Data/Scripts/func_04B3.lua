@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B3: Polly's tavern dialogue and romance arc
 function func_04B3(eventid, itemref)
     -- Local variables (12 as per .localc)

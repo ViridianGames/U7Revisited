@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Generates a random animal name and plural form for mad-libs style dialogue.
 function func_086C()
     local local0, local1, local2, local3

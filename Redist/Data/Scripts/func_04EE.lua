@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04EE: Perrin's scholar dialogue and training offer
 function func_04EE(eventid, itemref)
     -- Local variables (4 as per .localc)

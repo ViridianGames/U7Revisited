@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C8: Tory's counselor dialogue and Riky's kidnapping
 function func_04C8(eventid, itemref)
     -- Local variables (9 as per .localc)

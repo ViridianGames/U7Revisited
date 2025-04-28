@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0448.lua
 -- Weston's dialogue as a prisoner in Britain's jail
 local U7 = require("U7LuaFuncs")

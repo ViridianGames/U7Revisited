@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles resurrection of party members or NPCs, playing music, adjusting positions, and managing game state.
 function func_060E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25, local26, local27, local28, local29, local30

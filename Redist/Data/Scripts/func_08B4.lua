@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08B4: Manages Lord British's healing services
 function func_08B4(local0, local1, local2)
     -- Local variables (9 as per .localc)

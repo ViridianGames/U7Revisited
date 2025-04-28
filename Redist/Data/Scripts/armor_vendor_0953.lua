@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start armor_vendor_0953.lua
 local strings = {
     [0x0000] = "crested helm",

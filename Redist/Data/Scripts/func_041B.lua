@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041B: Manages Raymundo's dialogue and interactions
 function func_041B(itemref)
     -- Local variables (10 as per .localc)

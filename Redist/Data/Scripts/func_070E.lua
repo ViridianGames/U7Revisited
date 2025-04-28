@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages door states in Courage based on helmet egg flags, updating portcullis or wall frames.
 function func_070E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

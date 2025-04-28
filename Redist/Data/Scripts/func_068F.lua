@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Applies a flag-based effect to an item based on flags 814 or 813.
 function func_068F(eventid, itemref)
     local local0, local1

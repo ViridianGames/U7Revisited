@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02C5: Item iteration with position-based script call
 function func_02C5(eventid, itemref)
     -- Local variables (6 as per .localc)

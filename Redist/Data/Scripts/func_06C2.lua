@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C2: Manages item movement in Forge
 function func_06C2(eventid, itemref)
     -- Local variables (10 as per .localc)

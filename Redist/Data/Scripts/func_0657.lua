@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Por Ort Wis" spell, granting temporary clairvoyance with a navigation effect.
 function func_0657(eventid, itemref)
     local local0, local1

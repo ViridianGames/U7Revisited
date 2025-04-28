@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages a Fellowship meeting led by Elynor, including member testimonials.
 function func_087B()
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02C3: Item interaction with script call
 function func_02C3(eventid, itemref)
     -- Local variable (1 as per .localc)

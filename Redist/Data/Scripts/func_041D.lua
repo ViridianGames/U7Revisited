@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 041D: Manages Stuart's dialogue and interactions
 function func_041D(itemref)
     -- Local variables (5 as per .localc)

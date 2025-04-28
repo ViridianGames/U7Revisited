@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages the Wisp's (Xorinia's) dialogue in Britannia, facilitating an information trade about Alagner's notebook and the Time Lord, warning about the Guardian's Black Gate.
 function func_0500(eventid, itemref)
     local local0, local1, local2, local3, local4

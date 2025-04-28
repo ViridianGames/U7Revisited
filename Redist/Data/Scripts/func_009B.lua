@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 009B: Manages Ferryman's dialogue
 function func_009B(itemref)
     -- Local variables (9 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0820: Open door
 function func_0820(eventid, itemref)
     local local0, local1

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0444.lua
 -- Denby's dialogue as the trainer in Britain
 local U7 = require("U7LuaFuncs")

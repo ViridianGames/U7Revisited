@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06F9: Manages egg mechanics outside Forge
 function func_06F9(eventid, itemref)
     -- Local variables (31 as per .localc)

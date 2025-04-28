@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03E0: Item interaction with array updates
 function func_03E0(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 011C: Manages sundial time display
 function func_011C(itemref)
     -- Local variables (2 as per .localc)

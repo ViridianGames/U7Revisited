@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles generator interaction, likely in a dungeon, triggering effects and creating items during event 2.
 function func_061D(eventid, itemref)
     local local0, local1

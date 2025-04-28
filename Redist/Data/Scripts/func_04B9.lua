@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B9: Quan's Fellowship dialogue and altar conflict denial
 function func_04B9(eventid, itemref)
     -- Local variables (5 as per .localc)

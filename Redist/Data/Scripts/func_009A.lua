@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 009A: Manages Erethian's dialogue
 function func_009A(itemref)
     -- Local variables (26 as per .localc)

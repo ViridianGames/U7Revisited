@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Horance's dialogue in Skara Brae, as the Liche, covering his plans to rule Britannia, his use of caddellite ore, and his obsession with Rowena.
 function func_048D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

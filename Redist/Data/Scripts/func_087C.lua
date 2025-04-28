@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles an Emp's request for honey, with dialogue and flag updates.
 function func_087C()
     local local0, local1

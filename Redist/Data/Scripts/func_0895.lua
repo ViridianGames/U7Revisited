@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0895: Bollux golem dialogue
 function func_0895(eventid, itemref)
     local local0, local1, local2, local3

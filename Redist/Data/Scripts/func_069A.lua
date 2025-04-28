@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers a sequence of effects, creating objects and applying combat-related mechanics.
 function func_069A(eventid, itemref)
     local local0, local1, local2, local3, local4

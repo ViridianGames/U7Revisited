@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0477.lua
 -- Soren's dialogue as a cobbler in Britain
 local U7 = require("U7LuaFuncs")

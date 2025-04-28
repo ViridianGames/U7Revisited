@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Initializes the Avatar's appearance via a moongate, setting flags and creating items to set up the game's starting scene.
 function func_0618(eventid, itemref)
     local local0

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B5: Inforlem's trainer dialogue
 function func_04B5(eventid, itemref)
     -- Local variables (2 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0480.lua
 -- Verna's dialogue as a baker's apprentice in Britain
 local U7 = require("U7LuaFuncs")

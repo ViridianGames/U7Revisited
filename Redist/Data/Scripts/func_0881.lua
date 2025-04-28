@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0881: Find item with specific frame
 function func_0881(eventid, itemref)
     local local0, local1, local2, local3

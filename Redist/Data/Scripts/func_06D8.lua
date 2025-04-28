@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06D8: Applies effect and deletes item
 function func_06D8(eventid, itemref)
     if eventid == 3 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0456.lua
 -- Ellen's dialogue as a Fellowship recruiter in Britain
 local U7 = require("U7LuaFuncs")

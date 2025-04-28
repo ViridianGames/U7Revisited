@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Petre's dialogue and interactions
 
 -- Global variables for answer handling

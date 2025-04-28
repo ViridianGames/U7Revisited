@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06CF: Manages item movement
 function func_06CF(eventid, itemref)
     -- Local variables (2 as per .localc)

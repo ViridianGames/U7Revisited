@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Zu" spell, waking a selected NPC or object, with a fallback effect if the target is invalid.
 function func_0640(eventid, itemref)
     local local0, local1, local2

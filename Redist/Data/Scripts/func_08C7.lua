@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C7: Manages Fellowship play dialogue
 function func_08C7()
     -- Local variables (2 as per .localc)

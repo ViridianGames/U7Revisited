@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0458.lua
 -- Candice's dialogue as a Fellowship treasurer in Britain
 local U7 = require("U7LuaFuncs")

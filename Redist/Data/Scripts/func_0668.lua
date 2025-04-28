@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "An Xen Ex" spell, dispelling summoned creatures or effects on a selected target.
 function func_0668(eventid, itemref)
     local local0, local1, local2

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C9: Applies NPC effects for Minoc mill approach
 function func_06C9(eventid, itemref)
     -- Local variables (4 as per .localc)

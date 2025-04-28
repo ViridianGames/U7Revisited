@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts coordinates and triggers an action, possibly for positioning an object or NPC in a game event.
 function func_0606(eventid, itemref)
     local local0, local1, local2

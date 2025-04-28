@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Dupre's dialogue in Jhelom, covering his knighthood, duelling, Sprellic, Fellowship, and party interactions.
 
 -- Global variables for answer handling

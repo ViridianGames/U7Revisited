@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles key usage on locked chests or doors, checking for matching quality.
 function func_0281H(eventid, itemref)
     if eventid ~= 1 then

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0128H(eventid, itemref)
     if eventid == 5 or eventid == 6 then
         local wearer = U7GetWearer(itemref)

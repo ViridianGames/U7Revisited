@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Increments a counter based on an input parameter.
 function func_092B(p0, p1)
     local local1, local2, local3, local4

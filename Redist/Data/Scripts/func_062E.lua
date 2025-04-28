@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages cloth weaving on a loom, converting thread to cloth if the correct item is selected.
 function func_062E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

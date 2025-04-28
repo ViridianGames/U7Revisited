@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0473.lua
 -- Elara's dialogue as a carpenter in Britain
 local U7 = require("U7LuaFuncs")

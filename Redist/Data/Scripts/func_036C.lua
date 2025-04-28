@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 036C: Manages item type transformation
 function func_036C(itemref)
     if eventid() == 2 then

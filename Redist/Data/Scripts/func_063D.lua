@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles NPC dialogue loops for specific NPCs (quality < 256), displaying custom messages, and triggers an "Oink" sound for event 0.
 function func_063D(eventid, itemref)
     local local0, local1, local2

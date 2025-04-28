@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0440.lua
 -- Kessler's dialogue as the apothecary in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A0: Manages food purchase dialogue
 function func_08A0()
     -- Local variables (14 as per .localc)

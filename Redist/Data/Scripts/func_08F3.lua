@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08F3: Manages Iolo's combat preference dialogue
 function func_08F3(local0)
     -- Local variables (8 as per .localc)

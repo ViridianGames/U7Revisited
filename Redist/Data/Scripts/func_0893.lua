@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0893: Adjhar golem final dialogue
 function func_0893(eventid, itemref)
     _SwitchTalkTo(0, -288)

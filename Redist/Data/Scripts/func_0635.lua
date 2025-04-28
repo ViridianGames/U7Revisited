@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages oven interactions, triggering banter and creating bread when baking is complete.
 function func_0635(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

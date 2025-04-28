@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Zelda's dialogue in Moonglow, as the Lycaeum advisor, discussing her duties, townspeople, and romantic interest in Brion.
 function func_0498(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

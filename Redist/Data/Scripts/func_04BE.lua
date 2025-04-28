@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BE: Betra's provisioner dialogue and Fellowship skepticism
 function func_04BE(eventid, itemref)
     -- Local variables (3 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages wool spinning on a spinning wheel, converting wool to thread if the correct item is selected.
 function func_062D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9

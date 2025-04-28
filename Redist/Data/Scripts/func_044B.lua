@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_044B.lua
   -- Rudyom's dialogue about magic, moongates, and blackrock
   local U7 = require("U7LuaFuncs")

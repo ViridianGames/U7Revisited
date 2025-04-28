@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Prompts for an answer from a provided list and returns the selected index.
 function func_090C(p0)
     local local1

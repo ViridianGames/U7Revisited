@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Transforms an item's type based on its current type, likely for crafting or quest progression.
 function func_0611(eventid, itemref)
     local local0, local1, local2, local3, local4

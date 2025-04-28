@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AA: Merrick's shelter dialogue and venom theft suspicions
 function func_04AA(eventid, itemref)
     -- Local variables (7 as per .localc)

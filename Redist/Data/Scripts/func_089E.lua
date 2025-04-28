@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages healing services, offering healing, poison curing, or resurrection, with special handling for party members.
 function func_089E(p0, p1, p2)
     local local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21

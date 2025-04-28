@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02E5: Item creation with positioning
 function func_02E5(eventid, itemref)
     -- Local variables (3 as per .localc)

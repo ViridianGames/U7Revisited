@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages a combat sequence with directional movement and item interactions.
 function func_069D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

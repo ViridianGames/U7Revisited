@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0826: Check item type
 function func_0826(eventid, itemref)
     local local0, local1

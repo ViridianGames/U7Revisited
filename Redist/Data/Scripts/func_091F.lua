@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Resurrects an NPC and deducts gold.
 function func_091F(p0, p1)
     local local2, local3

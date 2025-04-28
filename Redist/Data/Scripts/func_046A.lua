@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Tiery's dialogue in Empath Abbey, covering graveyard duties, local connections, and humorous misunderstandings.
 function func_046A(eventid, itemref)
     local local0, local1

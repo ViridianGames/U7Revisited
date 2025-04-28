@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Start weapon_vendor_0952.lua
 local strings = {
     [0x0000] = "2-handed axe",

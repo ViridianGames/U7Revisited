@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Filters an array by removing a specific value.
 function func_093C(p0, p1)
     local local2, local3, local4, local5

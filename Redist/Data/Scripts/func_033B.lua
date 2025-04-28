@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 033B: Manages bandage healing
 function func_033B(itemref)
     -- Local variables (4 as per .localc)

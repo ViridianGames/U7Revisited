@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 020A: Manages locked chest interaction
 function func_020A(itemref)
     if eventid() == 1 then

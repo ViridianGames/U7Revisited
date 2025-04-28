@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01AF: Bellows for forging (e.g., black sword)
 function func_01AF(eventid, itemref)
     -- Local variables (16 as per .localc)

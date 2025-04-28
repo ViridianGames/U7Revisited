@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AA: Manages armor purchase dialogue
 function func_08AA()
     -- Local variables (13 as per .localc)

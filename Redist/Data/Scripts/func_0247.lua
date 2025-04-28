@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages bedroll usage, checking space and setting up a bed.
 function func_0247H(eventid, itemref)
     if eventid == 1 and not get_wearer(itemref) then -- TODO: Implement LuaGetWearer for callis 006E.

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Updates an NPC’s status if in the party and a flag is set.
 function func_093F(p0, p1)
     local local2

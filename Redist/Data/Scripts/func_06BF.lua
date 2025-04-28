@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BF: Manages random party member effect
 function func_06BF(eventid, itemref)
     -- Local variables (6 as per .localc)

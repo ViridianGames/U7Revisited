@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Prompts for a gold amount and adds it to the inventory.
 function func_084B(p0)
     local local1, local2

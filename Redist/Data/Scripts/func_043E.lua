@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_043E.lua
 -- Brownie's dialogue as a farmer and mayoral candidate in Britain
 local U7 = require("U7LuaFuncs")

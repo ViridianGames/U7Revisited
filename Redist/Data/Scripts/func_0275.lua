@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles interaction with an item, possibly a sextant or navigation tool.
 function func_0275H(eventid, itemref)
     local target

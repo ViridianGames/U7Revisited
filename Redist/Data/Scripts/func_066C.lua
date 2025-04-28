@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Mani" spell, fully healing a selected target by setting their health to maximum.
 function func_066C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

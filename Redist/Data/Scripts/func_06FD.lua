@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06FD: Manages item positioning and spawning
 function func_06FD(eventid, itemref)
     -- Local variables (15 as per .localc)

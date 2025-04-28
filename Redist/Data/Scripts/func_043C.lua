@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_043C.lua
 -- Mack's dialogue near Britain
 local U7 = require("U7LuaFuncs")

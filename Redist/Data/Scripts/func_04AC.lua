@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04AC: Morfin's merchant dialogue and venom theft investigation
 function func_04AC(eventid, itemref)
     -- Local variables (27 as per .localc)

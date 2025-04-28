@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01EF: Cat NPC interaction
 function func_01EF(eventid, itemref)
     -- Local variable (1 as per .localc)

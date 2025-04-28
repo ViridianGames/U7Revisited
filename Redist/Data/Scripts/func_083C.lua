@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Finds nearby gold items for the triples game.
 function func_083C(p0)
     local local1, local2, local3, local4, local5, local6

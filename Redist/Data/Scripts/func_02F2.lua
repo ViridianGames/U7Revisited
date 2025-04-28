@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 02F2: Horance transformation from liche to ghost
 function func_02F2(eventid, itemref)
     -- Local variables (9 as per .localc)

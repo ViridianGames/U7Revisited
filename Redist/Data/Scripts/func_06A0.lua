@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A0: Erethian's spellcasting and tool spawning
 function func_06A0(eventid, itemref)
     -- Local variables (23 as per .localc)

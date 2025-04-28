@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Lucy's dialogue in Britain, covering Blue Boar tavern services, The Avatars band, and Dupre interactions.
 function func_0425(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7

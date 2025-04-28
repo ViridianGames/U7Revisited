@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0814: Find items at specific location
 function func_0814(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

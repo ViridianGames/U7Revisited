@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E7: Mandy's innkeeper dialogue and Hook's murder hint
 function func_04E7(eventid, itemref)
     -- Local variables (15 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles wand usage, triggering specific effects or endgame conditions based on item type.
 function func_0303H(eventid, itemref)
     local target

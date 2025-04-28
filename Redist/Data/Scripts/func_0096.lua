@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 function func_0096H(eventid, itemref)
     if eventid == 1 then
         if U7GetItemShape(itemref, 10) == 0 then

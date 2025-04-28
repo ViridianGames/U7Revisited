@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Checks for specific items and updates their state, creating effects.
 function func_070C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

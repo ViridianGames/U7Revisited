@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0913: Find party member index
 function func_0913(eventid, itemref)
     local local0, local1, local2, local3

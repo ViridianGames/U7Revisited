@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages game state transitions based on flags, likely for triggering events or cutscenes when specific conditions are met.
 function func_060B(eventid, itemref)
     if eventid == 2 then

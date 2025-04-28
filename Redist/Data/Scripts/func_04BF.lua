@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04BF: Martingo's eccentric Sultan dialogue and Ethereal Ring quest
 function func_04BF(eventid, itemref)
     -- Local variables (10 as per .localc)

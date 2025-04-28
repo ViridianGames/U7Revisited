@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Paulette's dialogue in Skara Brae, as the ghostly barmaid, covering her flirtatious demeanor, the fire, and her refusal to be a sacrifice.
 function func_0491(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

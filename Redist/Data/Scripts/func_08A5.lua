@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A5: Displays random poetic messages for a torch
 function func_08A5()
     -- Local variables (4 as per .localc)

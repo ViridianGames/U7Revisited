@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0923: Check and manage spellbook transaction
 function func_0923(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles bed interactions, preventing sleep during combat and managing nap time.
 function func_0800(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12

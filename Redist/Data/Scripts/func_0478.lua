@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0478.lua
 -- Liora's dialogue as a weaver in Britain
 local U7 = require("U7LuaFuncs")

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A9: Sets progression flag
 function func_06A9(eventid, itemref)
     if eventid == 3 then

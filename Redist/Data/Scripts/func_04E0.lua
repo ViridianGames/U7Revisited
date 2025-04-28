@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E0: Roberto's host dialogue and secret passage hint
 function func_04E0(eventid, itemref)
     -- Local variables (12 as per .localc)

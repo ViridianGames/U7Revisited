@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06B5: Manages item spawning in blacksmith's house
 function func_06B5(eventid, itemref)
     -- Local variables (7 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0470.lua
 -- Markus's dialogue as a blacksmith in Britain
 local U7 = require("U7LuaFuncs")

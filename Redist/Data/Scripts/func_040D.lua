@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 040D: Manages Gilberto's dialogue and interactions
 function func_040D(itemref)
     -- Local variables (4 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0900: Random party member selection
 function func_0900(eventid, itemref)
     local random = _Random2(10, 1)

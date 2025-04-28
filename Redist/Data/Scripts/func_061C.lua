@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages ferry movement, toggling a flag and creating items to adjust positions based on the ferry's state.
 function func_061C(eventid, itemref)
     local local0, local1

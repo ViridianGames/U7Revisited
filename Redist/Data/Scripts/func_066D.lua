@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Sanct Lor" spell, granting invisibility to a selected target.
 function func_066D(eventid, itemref)
     local local0, local1, local2

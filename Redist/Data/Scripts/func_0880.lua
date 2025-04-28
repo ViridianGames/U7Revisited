@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0880: Adjust item position
 function func_0880(eventid, itemref)
     local local0, local1, local2

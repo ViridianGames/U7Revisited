@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Clint's dialogue in Britain, covering ship and sextant sales, sailing past, and opinions on the Fellowship and Crown Jewel.
 function func_0439(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Chuckles' dialogue in Britain, focusing on "The Game" wordplay challenge and jester antics.
 function func_0419(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

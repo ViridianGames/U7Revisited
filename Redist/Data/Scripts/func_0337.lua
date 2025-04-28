@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles paintbrush usage, applying paint with random dialogue outcomes.
 function func_0337H(eventid, itemref)
     if eventid == 1 then

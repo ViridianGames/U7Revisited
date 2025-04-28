@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Rel Ylem" spell, transforming a specific item (type 915) with a sprite effect.
 function func_0678(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

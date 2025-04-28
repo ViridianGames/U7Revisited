@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08CE: Manages gargoyle Fellowship sermon dialogue
 function func_08CE()
     -- Local variables (6 as per .localc)

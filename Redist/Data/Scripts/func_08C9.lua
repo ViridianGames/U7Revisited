@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08C9: Manages blackrock placement check
 function func_08C9(itemref)
     -- Local variables (16 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Formats a shop price string for an item.
 function func_091B(p0, p1, p2, p3, p4)
     local local5

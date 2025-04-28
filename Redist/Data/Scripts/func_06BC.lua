@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BC: Manages nearby item effects
 function func_06BC(eventid, itemref)
     -- Local variables (5 as per .localc)

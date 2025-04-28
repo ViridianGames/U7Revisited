@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0862: Chuckles dialogue
 function func_0862(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

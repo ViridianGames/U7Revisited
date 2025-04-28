@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0940: Start NPC speech or trigger
 function func_0940(eventid, itemref)
     if not start_speech(itemref) then

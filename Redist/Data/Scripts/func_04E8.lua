@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04E8: Smithy's game manager dialogue and rule explanations
 function func_04E8(eventid, itemref)
     -- Local variables (6 as per .localc)

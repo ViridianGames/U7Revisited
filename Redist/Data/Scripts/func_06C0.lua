@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C0: Manages item effect application
 function func_06C0(eventid, itemref)
     -- Local variables (5 as per .localc)

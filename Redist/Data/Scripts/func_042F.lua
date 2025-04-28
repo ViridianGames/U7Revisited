@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_042F.lua
   -- Jeanette's dialogue at the Blue Boar tavern
   local U7 = require("U7LuaFuncs")

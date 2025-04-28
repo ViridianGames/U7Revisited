@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas Wis" spell, granting enhanced perception or revealing hidden elements.
 function func_065D(eventid, itemref)
     local local0

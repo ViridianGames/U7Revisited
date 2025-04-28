@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles Trent's completion of the Soul Cage in Skara Brae, setting flags, creating the cage item, and delivering dialogue to instruct the Avatar.
 function func_0617(eventid, itemref)
     local local0, local1

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08AE: Manages Horance's follow-up dialogue
 function func_08AE(local0)
     -- Local variable (1 as per .localc)

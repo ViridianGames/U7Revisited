@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Calculates a value based on an NPC’s property.
 function func_08F6(p0)
     local local1, local2, local3

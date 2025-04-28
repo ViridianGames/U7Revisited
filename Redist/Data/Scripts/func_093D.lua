@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Performs a bubble sort on two parallel arrays based on distance.
 function func_093D(p0, p1)
     local local2, local3, local4, local5

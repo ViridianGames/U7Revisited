@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C4: Richter's armourer dialogue and blood evidence
 function func_04C4(eventid, itemref)
     -- Local variables (10 as per .localc)

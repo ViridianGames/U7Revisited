@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 01DF: Emp NPC dialogue
 function func_01DF(eventid, itemref)
     -- Local variables (10 as per .localc)

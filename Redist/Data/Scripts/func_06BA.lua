@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BA: Manages vomiting effect and item spawning
 function func_06BA(eventid, itemref)
     -- Local variables (13 as per .localc)

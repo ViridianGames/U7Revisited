@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06BE: Applies item-specific effect
 function func_06BE(eventid, itemref)
     if eventid == 3 then

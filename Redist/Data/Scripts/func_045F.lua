@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Jakher's dialogue in Minoc, covering combat training, murders, Karenna's relationship, and Owen's past.
 function func_045F(eventid, itemref)
     local local0, local1, local2, local3, local4

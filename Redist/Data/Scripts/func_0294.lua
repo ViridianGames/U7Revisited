@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers an action for an item, possibly a generic use script.
 function func_0294H(eventid, itemref)
     if eventid == 1 then

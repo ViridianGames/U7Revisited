@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0939: Validate NPC ID
 function func_0939(eventid, itemref)
     local local0

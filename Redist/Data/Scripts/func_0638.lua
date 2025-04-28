@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages book reading, displaying content based on item quality, with special handling for specific books and flags.
 function func_0638(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6

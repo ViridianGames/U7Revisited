@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03DF: Item position-based action trigger
 function func_03DF(eventid, itemref)
     -- Local variables (4 as per .localc)

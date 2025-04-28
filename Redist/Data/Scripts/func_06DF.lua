@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06DF: Manages item spawning
 function func_06DF(eventid, itemref)
     -- Local variables (1 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Adjusts an item's frame based on specific conditions.
 function func_080B(itemref)
     local local0

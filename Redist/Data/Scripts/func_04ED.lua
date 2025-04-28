@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04ED: Kessler's apothecary dialogue and venom transactions
 function func_04ED(eventid, itemref)
     -- Local variables (10 as per .localc)

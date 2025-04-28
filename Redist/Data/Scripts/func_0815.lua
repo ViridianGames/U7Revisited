@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0815: Handle door locking
 function func_0815(eventid, itemref)
     local local0, local1, local2, local3, local4

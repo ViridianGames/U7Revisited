@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03B2: Guard NPC dialogue
 function func_03B2(eventid, itemref)
     -- Local variable (1 as per .localc)

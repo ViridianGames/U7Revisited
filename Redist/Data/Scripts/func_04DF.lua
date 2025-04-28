@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04DF: Martine's hostess dialogue and secret passage hint
 function func_04DF(eventid, itemref)
     -- Local variables (11 as per .localc)

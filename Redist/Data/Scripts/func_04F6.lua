@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F6: Alagner's scholarly dialogue and Fellowship investigation
 function func_04F6(eventid, itemref)
     -- Local variables (5 as per .localc)

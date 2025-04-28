@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Xen" spell, summoning a creature with a random type from a predefined set.
 function func_0660(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

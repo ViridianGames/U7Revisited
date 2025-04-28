@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A2: Manages training dialogue
 function func_08A2(local0, local1)
     -- Local variables (11 as per .localc)

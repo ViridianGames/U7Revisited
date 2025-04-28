@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0467.lua
 -- Wisp's dialogue as an alchemist in Britain
 local U7 = require("U7LuaFuncs")

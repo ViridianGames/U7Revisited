@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0447.lua
 -- Charles's dialogue as a servant at Castle British
 local U7 = require("U7LuaFuncs")

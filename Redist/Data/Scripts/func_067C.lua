@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Hur Grav Ylem" spell, creating a wind and electrical effect that moves objects.
 function func_067C(eventid, itemref)
     local local0, local1, local2

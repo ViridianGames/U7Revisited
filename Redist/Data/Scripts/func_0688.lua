@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Triggers NPC dancing behavior, setting flags and applying effects.
 function func_0688(eventid, itemref)
     if eventid == 2 then

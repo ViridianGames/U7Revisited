@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0919: Describe The Fellowship
 function func_0919(eventid, itemref)
     local local0, local1

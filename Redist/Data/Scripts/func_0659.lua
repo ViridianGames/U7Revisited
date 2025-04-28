@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Mani" spell, healing a selected target by adjusting their health.
 function func_0659(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

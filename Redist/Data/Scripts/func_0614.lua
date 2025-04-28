@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Delivers context-specific dialogue from an NPC (likely the Guardian or an ally), guiding or taunting the Avatar during the Black Gate quest.
 function func_0614(eventid, itemref)
     local local0

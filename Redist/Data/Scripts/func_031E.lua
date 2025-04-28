@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 031E: Manages item transformation
 function func_031E(itemref)
     if eventid() == 1 then

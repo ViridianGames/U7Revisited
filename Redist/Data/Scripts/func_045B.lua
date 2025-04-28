@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Burnside's dialogue in Minoc, covering town governance, murders, monument plans, and Fellowship membership.
 function func_045B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06D0: Triggers puzzle or event
 function func_06D0(eventid, itemref)
     -- Local variables (2 as per .localc)

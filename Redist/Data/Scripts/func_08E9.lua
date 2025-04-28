@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08E9: Manages item type and frame check function
 function func_08E9(local0)
     -- Local variables (2 as per .localc)

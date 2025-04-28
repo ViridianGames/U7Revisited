@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04F3: Malloy's miner dialogue and tunnel project
 function func_04F3(eventid, itemref)
     -- Local variables (6 as per .localc)

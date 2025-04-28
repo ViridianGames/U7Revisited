@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C1: Pendaran's knight dialogue and statue confession
 function func_04C1(eventid, itemref)
     -- Local variables (2 as per .localc)

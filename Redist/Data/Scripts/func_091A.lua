@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Delivers Fellowship philosophy dialogue and offers membership.
 function func_091A()
     local local0, local1

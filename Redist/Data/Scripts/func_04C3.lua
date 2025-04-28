@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C3: Lord John-Paul's leadership dialogue and statue investigation
 function func_04C3(eventid, itemref)
     -- Local variables (7 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Wakes the player after resting in a bed, delivering a wake-up message and updating party state, with special handling for bedrolls.
 function func_0623(eventid, itemref)
     local local0, local1, local2, local3, local4, local5

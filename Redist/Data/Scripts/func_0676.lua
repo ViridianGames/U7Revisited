@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "In Zu Grav" spell, inducing sleep with an electrical effect on a selected target.
 function func_0676(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8

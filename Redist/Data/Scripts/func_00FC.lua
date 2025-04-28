@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 00FC: Display time on item (e.g., clock)
 function func_00FC(eventid, itemref)
     -- Local variables (3 as per .localc)

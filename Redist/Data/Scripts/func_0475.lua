@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- func_0475.lua
 -- Tilda's dialogue as a seamstress in Britain
 local U7 = require("U7LuaFuncs")

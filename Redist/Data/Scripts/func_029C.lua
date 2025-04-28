@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 029C: Manages sword pickup and forging
 function func_029C(itemref)
     -- Local variables (13 as per .localc)

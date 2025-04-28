@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 040F: Manages Eiko's dialogue and interactions
 function func_040F(itemref)
     -- Local variables (2 as per .localc)

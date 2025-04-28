@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06AD: Triggers item-specific function
 function func_06AD(eventid, itemref)
     if eventid == 3 then

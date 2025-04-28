@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Manages Leavell's dialogue in New Magincia, covering his shady past, the shipwreck, and Constance.
 function func_0488(eventid, itemref)
     local local0, local1, local2, local3

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04C6: Jordan's bow seller dialogue and statue witness
 function func_04C6(eventid, itemref)
     -- Local variables (8 as per .localc)

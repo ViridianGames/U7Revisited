@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Vas An Flam" spell, negating fire effects across multiple targets in an area.
 function func_064B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11

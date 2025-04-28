@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08A4: Manages weapon purchase dialogue
 function func_08A4()
     -- Local variables (14 as per .localc)

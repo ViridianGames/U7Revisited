@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0801: Check for bedroll
 function func_0801(eventid, itemref)
     local local0, local1, local2

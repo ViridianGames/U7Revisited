@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04FA: Rankin's deceptive Fellowship dialogue and murder cover-up
 function func_04FA(eventid, itemref)
     -- Local variables (12 as per .localc)

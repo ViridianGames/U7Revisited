@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06FC: Manages item selection and positioning
 function func_06FC(eventid, itemref)
     -- Local variables (19 as per .localc)

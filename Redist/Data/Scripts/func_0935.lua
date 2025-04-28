@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 0935: Find NPC with lowest quantity
 function func_0935(eventid, itemref)
     local local0, local1, local2, local3

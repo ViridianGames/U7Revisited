@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 03A8: Item type switching
 function func_03A8(eventid, itemref)
     if eventid == 2 then

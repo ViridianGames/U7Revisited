@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06A2: Item manipulation with dramatic response
 function func_06A2(eventid, itemref)
     -- Local variables (12 as per .localc)

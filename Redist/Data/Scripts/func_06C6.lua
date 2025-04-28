@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 06C6: Manages NPC effects based on flags
 function func_06C6(eventid, itemref)
     if eventid ~= 3 then

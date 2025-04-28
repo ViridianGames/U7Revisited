@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Casts the "Kal Ort Por" spell, teleporting the caster to a random location with a sprite effect.
 function func_0664(eventid, itemref)
     local local0, local1, local2

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Handles torch interaction, switching to lit torch state.
 function func_0253H(eventid, itemref)
     if eventid == 1 or eventid == 2 then

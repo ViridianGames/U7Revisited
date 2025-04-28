@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Decrements an item's quality and updates it, possibly for tracking usage or degradation.
 function func_0609(eventid, itemref)
     local local0

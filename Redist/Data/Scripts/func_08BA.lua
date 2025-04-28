@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08BA: Manages fortune-telling dialogue
 function func_08BA()
     -- Local variables (3 as per .localc)

@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 04B1: Camille's farm dialogue and Tobias defense
 function func_04B1(eventid, itemref)
     -- Local variables (10 as per .localc)

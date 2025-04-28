@@ -1,3 +1,4 @@
+require "U7LuaFuncs"
 -- Function 08D7: Manages Rowena's dialogue
 function func_08D7()
     -- Local variables (10 as per .localc)
