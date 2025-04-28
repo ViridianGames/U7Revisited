@@ -74,6 +74,7 @@ DO_CONFIGURE=false
 DO_RUN=false
 DO_SETUP_IDE=false
 DO_FIX_REQUIRES=false # New flag
+DO_HEALTHCHECK=false # New flag for healthcheck command
 SHOW_WARNINGS=false # New flag for build output verbosity
 
 # --- Argument Parsing --- Allow flexible order ---
@@ -121,6 +122,12 @@ while [[ $# -gt 0 ]]; do
             COMMAND_GIVEN=true
             ARG_PROCESSED=true
             ;;
+        healthcheck)
+            DO_HEALTHCHECK=true
+            COMMAND_GIVEN=true
+            ARG_PROCESSED=true
+            BUILD_TYPE="debug" # Healthcheck implies debug
+            ;;
         scripts) # Scripts command needs the next argument
             COMMAND_GIVEN=true
             ARG_PROCESSED=true
@@ -166,8 +173,9 @@ while [[ $# -gt 0 ]]; do
             echo "  clean           Clean the build directory for the selected type."
             echo "  configure       Force configure before build."
             echo "  setup           Run the IDE setup script (Linux/macOS)."
+            echo "  healthcheck     Run the asset loading health check (implies --debug)."
             echo "  scripts         Run utility scripts:"
-            echo "    --fix-requires  Check and add missing 'require "U7LuaFuncs"' to Lua scripts."
+            echo "    --fix-requires  Check and add missing 'require \"U7LuaFuncs\"' to Lua scripts."
             echo ""
             echo "Options:"
             echo "  --debug         Perform actions for the debug build type."
@@ -277,8 +285,8 @@ if [[ "$BUILD_TYPE" == "release" ]]; then
      BUILD_ARGS+=("--release")
 fi
 
-# Build (if build cmd or run cmd was specified, and not only setup or scripts)
-BUILD_NEEDED=$( [[ "$DO_BUILD" == true || "$DO_RUN" == true ]] && echo true || echo false )
+# Build (if build cmd, run cmd, or healthcheck cmd was specified, and not only setup/scripts)
+BUILD_NEEDED=$( [[ "$DO_BUILD" == true || "$DO_RUN" == true || "$DO_HEALTHCHECK" == true ]] && echo true || echo false )
 BUILD_SCRIPT="${SCRIPTS_DIR}/build.sh"
 
 # Determine if ONLY setup or fix-requires was specified
@@ -286,9 +294,10 @@ ONLY_NON_BUILD_COMMAND=$( [[ ( "$DO_SETUP_IDE" == true || "$DO_FIX_REQUIRES" == 
                              "$DO_BUILD" == false && \
                              "$DO_CLEAN" == false && \
                              "$DO_CONFIGURE" == false && \
-                             "$DO_RUN" == false ]] && echo true || echo false )
+                             "$DO_RUN" == false && \
+                             "$DO_HEALTHCHECK" == false ]] && echo true || echo false )
 
-# Only run build if build/run was requested AND it wasn't the case that ONLY setup/fix-requires was specified.
+# Only run build if build/run/healthcheck was requested AND it wasn't the case that ONLY setup/fix-requires was specified.
 if [[ "$BUILD_NEEDED" == true && "$ONLY_NON_BUILD_COMMAND" == false ]]; then
 
     # The --release flag is added above if needed. build.sh defaults to debug if it's absent.
@@ -369,41 +378,42 @@ if [[ "$BUILD_NEEDED" == true && "$ONLY_NON_BUILD_COMMAND" == false ]]; then
     fi
 fi
 
-# Run
-if [[ "$DO_RUN" == true ]]; then
-    print_header "Run ($BUILD_TYPE)"
+# Run / Healthcheck
+if [[ "$DO_RUN" == true || "$DO_HEALTHCHECK" == true ]]; then # Include healthcheck flag
+    # Determine Header
+    if [[ "$DO_HEALTHCHECK" == true ]]; then
+        print_header "Health Check"
+    else
+        print_header "Run ($BUILD_TYPE)"
+    fi
+
     RUN_SCRIPT="${SCRIPTS_DIR}/run_u7.sh"
     RUN_FLAGS=()
-    PASS_THROUGH_ARGS=() # Arguments for run_u7.sh itself
 
-     # Check for args meant for run_u7.sh vs the game
-     # Note: RUN_EXTRA_ARGS contains everything after 'run' or '--'
-     for arg in "${RUN_EXTRA_ARGS[@]}"; do
-         case "$arg" in
-             --healthcheck) PASS_THROUGH_ARGS+=("--healthcheck") ;;
-             --verbose) PASS_THROUGH_ARGS+=("--verbose") ;;
-             # Could add other run_u7 specific flags here
-             *) break ;; # Stop processing run_u7 flags at first non-flag
-         esac
-         shift # Shift only if it was a known flag for run_u7
-         RUN_EXTRA_ARGS=("${RUN_EXTRA_ARGS[@]:1}") # Update game args array (crude shift)
-     done
-
-     if [[ "$BUILD_TYPE" == "debug" ]]; then
-        PASS_THROUGH_ARGS+=("--debug") # --debug is also handled by run_u7.sh
-     fi
-     # Append remaining args (should be game args now)
-     PASS_THROUGH_ARGS+=("${RUN_EXTRA_ARGS[@]}")
+    # Determine Run Flags
+    if [[ "$DO_HEALTHCHECK" == true ]]; then
+        RUN_FLAGS=(--debug --healthcheck) # Force flags for healthcheck
+        echo "--> Running health check..."
+    else
+        # Original logic for regular run
+        if [[ "$BUILD_TYPE" == "debug" ]]; then
+            RUN_FLAGS+=(--debug)
+        fi
+        # Append any extra arguments passed after '--'
+        if [ ${#RUN_EXTRA_ARGS[@]} -ne 0 ]; then
+            RUN_FLAGS+=("${RUN_EXTRA_ARGS[@]}")
+        fi
+        echo "--> Running execution script: $RUN_SCRIPT ${RUN_FLAGS[*]}"
+    fi
 
     if [ -f "$RUN_SCRIPT" ]; then
-         echo -e "${CLR_CYN}--> Running execution script: ${RUN_SCRIPT} ${PASS_THROUGH_ARGS[*]}${CLR_RST}"
-         # Run in foreground, pass filtered args
-         bash "$RUN_SCRIPT" "${PASS_THROUGH_ARGS[@]}"
+         bash "$RUN_SCRIPT" "${RUN_FLAGS[@]}"
          RUN_EXIT_CODE=$?
-         if [ ${RUN_EXIT_CODE} -ne 0 ]; then
+         # Only print non-zero exit for regular run, healthcheck handles its own messages
+         if [[ "$DO_HEALTHCHECK" == false && ${RUN_EXIT_CODE} -ne 0 ]]; then
              echo -e "${CLR_YLW}[U7 INFO] Game process exited with code ${RUN_EXIT_CODE}.${CLR_RST}"
          fi
-         print_footer
+        print_footer
     else
          print_error "Run script not found: ${RUN_SCRIPT}"
          exit 1
