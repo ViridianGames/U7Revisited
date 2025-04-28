@@ -49,7 +49,6 @@ void AddAssetError(const std::string& filePath, const std::string& errorType, co
 // Helper function to check file existence and log errors
 bool CheckFileExists(const std::string& path) {
     if (!exists(path)) {
-        // Log("Required file not found: " + path, LOG_ERROR); // Logging is now handled by AddAssetError
         AddAssetError(path, "FileNotFound", "Required file or directory not found.");
         return false;
     }

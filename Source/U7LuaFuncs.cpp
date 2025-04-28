@@ -3,6 +3,7 @@
 #include "Geist/ScriptingSystem.h"
 #include "Geist/StateMachine.h"
 #include "ConversationState.h"
+#include "Geist/Logging.h"
 #include <iostream>
 #include <cstring>
 
@@ -53,7 +54,7 @@ static int LuaStartConversation(lua_State* L)
     }
 
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-    //g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
+    g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
     return 0;
 }
 
@@ -208,10 +209,9 @@ static int LuaSpendGold(lua_State* L)
 static int LuaSwitchTalkTo(lua_State* L)
 {
     int npc_id = luaL_checkinteger(L, 1);
-    //int unknown = luaL_checkinteger(L, 2); // Placeholder
-    cout << "Switching talk to NPC ID: " << npc_id << "\n";
-    //g_ConversationState->SetNPC(npc_id);
-    // TODO: Set conversation focus to npc_id
+    Log(std::string("Switching talk to NPC ID: ") + std::to_string(npc_id), LOG_INFO);
+    g_ConversationState->SetNPC(npc_id);
+    // TODO: Set conversation focus to npc_id (Review if SetNPC is sufficient or if more state clearing is needed)
     return 0;
 }
 
@@ -242,10 +242,6 @@ static int LuaGetPartyMembers(lua_State* L)
 
 static int LuaIsPartyMember(lua_State* L)
 {
-    //int npc_id = luaL_checkinteger(L, 1);
-    //lua_getglobal(L, "party_members"); // Assume table from get_party_members
-    //bool is_member = false; // TODO: Check if npc_id is in party_members
-    //cout << "Checking if NPC ID " << npc_id << " is party member\n";
     lua_pushboolean(L, false);
     return 1;
 }
