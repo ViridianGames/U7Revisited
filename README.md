@@ -1,8 +1,5 @@
 # Ultima VII: Revisited
 
-<!-- FORK_NOTE_START -->
-* **Note:** This is the `unoften` fork ([github.com/unoften/U7Revisited](https://github.com/unoften/U7Revisited)), used for developing features and improvements intended for the main project at [github.com/viridiangames/U7Revisited](https://github.com/viridiangames/U7Revisited). *
-<!-- FORK_NOTE_END -->
 
 Welcome to Ultima VII: Revisited, an attempt to write a replacement engine for Ultima VII: The Black Gate.
 
