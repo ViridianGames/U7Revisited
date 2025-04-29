@@ -52,9 +52,9 @@ The easiest way to manage common development tasks (build, run, clean, IDE setup
         *   Use `./u7 healthcheck` (This implies a debug build and runs verbosely).
         *   This performs essential asset loading checks without launching the full game.
         *   Output is color-coded: **Blue** for INFO, **Yellow** for WARN, **Red** for ERROR.
-        *   If it exits with code 0 and message "Health check finished successfully.", all core assets loaded without issues.
-        *   If it exits with code 0 and message "Health check finished with NON-CRITICAL errors...", core assets loaded, but some issues (like script errors) were detected and logged.
-        *   If it exits with code 1, critical assets failed to load.
+        *   If it exits with code 0 and message `Health check PASSED (OK) successfully.`, all core assets loaded without issues.
+        *   If it exits with code 0 and message `Health check PASSED (OK) with N non-critical errors...` or `Health check PASSED (OK) but required U7 data directories were missing...`, core assets loaded, but some issues (like script errors or missing U7 data) were detected and logged (details appear above the final message).
+        *   If it exits with code 1, critical assets failed to load or the program crashed during initialization.
 
 4.  **Cleaning:**
     *   Clean Release build directory (Default): `./u7 clean` or `.\u7.bat clean`
