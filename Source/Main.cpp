@@ -48,8 +48,17 @@ void AddAssetError(const std::string& filePath, const std::string& errorType, co
 
 // Helper function to check file existence and log errors
 bool CheckFileExists(const std::string& path) {
-    if (!exists(path)) {
-        AddAssetError(path, "FileNotFound", "Required file or directory not found.");
+    if (!exists(path) || !is_regular_file(path)) { // Ensure it's a file
+        AddAssetError(path, "FileNotFound", "Required file not found or is not a regular file.");
+        return false;
+    }
+    return true;
+}
+
+// Helper function to check directory existence and log errors
+bool CheckDirectoryExists(const std::string& path) {
+    if (!exists(path) || !is_directory(path)) {
+        AddAssetError(path, "DirectoryNotFound", "Required directory not found or is not a directory.");
         return false;
     }
     return true;
@@ -63,8 +72,8 @@ bool LoadCoreGameAssets(bool isHealthCheck, bool isVerbose) {
     bool criticalSuccess = true;
     g_AssetLoadErrors.clear();
 
-    // --- Files required for both modes (existence check minimum) ---
-    const std::vector<std::string> requiredFiles = {
+    // --- Files required for core engine function ---
+    const std::vector<std::string> requiredEngineFiles = {
         "Data/Shaders/alphaDiscard.fs",
         "Data/Fonts/softsquare.ttf",
         "Data/Fonts/lantern.ttf",
@@ -72,21 +81,33 @@ bool LoadCoreGameAssets(bool isHealthCheck, bool isVerbose) {
         "Images/pointer.png",
         "Images/GUI/guielements.png",
         "Images/GUI/gumps.png"
-        // Add other critical file paths here
     };
 
-    for (const auto& file : requiredFiles) {
+    Log("Checking required engine files...", LOG_INFO);
+    for (const auto& file : requiredEngineFiles) {
         if (!CheckFileExists(file)) {
             criticalSuccess = false; // Mark critical failure
         }
     }
 
+    // --- Check for essential U7 Data Directories ---
+    Log("Checking required U7 data directories...", LOG_INFO);
+    if (!CheckDirectoryExists("Data/U7/STATIC")) {
+        criticalSuccess = false;
+    }
+    if (!CheckDirectoryExists("Data/U7/GAMEDAT")) {
+        criticalSuccess = false;
+    }
+    // Optional: Check for a key file within one of them if directory check isn't enough?
+    // if (criticalSuccess && !CheckFileExists("Data/U7/STATIC/U7CHUNKS")) { // Example
+    //    criticalSuccess = false;
+    // }
+
     // --- Script Loading (Attempt load in both modes, report errors) ---
     Log("Loading scripts...", LOG_INFO);
-    string scriptDirectoryPath("Data/Scripts");
-    if (!exists(scriptDirectoryPath) || !is_directory(scriptDirectoryPath)) {
-         AddAssetError(scriptDirectoryPath, "DirectoryNotFound", "Script directory not found.");
-         criticalSuccess = false;
+    std::string scriptDirectoryPath("Data/Scripts");
+    if (!CheckDirectoryExists(scriptDirectoryPath)) { // Use new helper
+         criticalSuccess = false; // Script dir is critical
     } else {
         try {
             for (const auto& entry : directory_iterator(scriptDirectoryPath)) {
@@ -257,7 +278,11 @@ bool LoadCoreGameAssets(bool isHealthCheck, bool isVerbose) {
 
     // Final status message - Use LOG_INFO normally, but LOG_WARNING/ERROR for failures
     if (criticalSuccess) {
-         Log("Core Game Assets Load/Check: CRITICAL SUCCESS (non-critical errors may exist).", g_AssetLoadErrors.empty() ? LOG_INFO : LOG_WARNING);
+         if (g_AssetLoadErrors.empty()) {
+             Log("Core Game Assets Load/Check: CRITICAL SUCCESS (All assets OK).", LOG_INFO);
+         } else {
+             Log("Core Game Assets Load/Check: CRITICAL SUCCESS (but non-critical errors found).", LOG_WARNING);
+         }
     } else {
          Log("Core Game Assets Load/Check: CRITICAL FAILURE. See errors above.", LOG_ERROR);
     }
@@ -313,20 +338,22 @@ int main(int argv, char** argc)
 
          if (!criticalAssetsOk) {
              // LoadCoreGameAssets already logged the details and summary.
-             Log("Health check failed due to CRITICAL asset errors.", LOG_FATAL);
+             Log("Health check FAILED due to CRITICAL asset errors.", LOG_FATAL); // Keep fatal wording
              exit(1); // Exit with non-zero code on critical failure
          }
 
          // If we reached here, critical assets are OK.
          // Now check if there were *any* asset errors (including non-critical like scripts).
          if (!g_AssetLoadErrors.empty()) {
-            Log("Health check finished with NON-CRITICAL errors (see summary above).", LOG_WARNING);
+            // Log("Health check finished with NON-CRITICAL errors (see summary above).", LOG_WARNING);
+            Log("Health check PASSED (OK) with " + std::to_string(g_AssetLoadErrors.size()) + " non-critical errors (see details above).", LOG_WARNING);
             // Still exit 0 because critical assets loaded, but log indicates issues.
             exit(0);
          }
          else {
             // Only log pure success if critical assets loaded AND no errors were recorded.
-            Log("Health check finished successfully.", LOG_INFO);
+            // Log("Health check finished successfully.", LOG_INFO);
+            Log("Health check PASSED (OK) successfully.", LOG_INFO);
             exit(0); // Exit with zero code on success
          }
       }
