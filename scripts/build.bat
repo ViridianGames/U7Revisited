@@ -7,22 +7,22 @@ REM Ensure SCRIPT_DIR ends with a backslash for reliable path joining
 IF "%SCRIPT_DIR:~-1%" NEQ "\" SET "SCRIPT_DIR=%SCRIPT_DIR%\"
 SET "PROJECT_ROOT=%SCRIPT_DIR%..\"
 
-SET "BUILD_TYPE=debug"
-SET "BUILD_DIR=%PROJECT_ROOT%build-debug"
+SET "BUILD_TYPE=release"
+SET "BUILD_DIR=%PROJECT_ROOT%build-release"
 SET "SHOULD_CONFIGURE=false"
 SET "SHOULD_CLEAN=false"
 SET "SHOULD_RUN=false"
+SET "SHOW_WARNINGS=false"
 SET "RUN_ARGS="
 SET "EXTRA_MESON_ARGS="
 
 REM --- Argument Parsing ---
-REM Batch argument parsing is less elegant than bash
 :ArgLoop
 IF "%~1"=="" GOTO ArgsDone
 
-IF /I "%~1"=="--release" (
-    SET "BUILD_TYPE=release"
-    SET "BUILD_DIR=%PROJECT_ROOT%build-release"
+IF /I "%~1"=="--debug" (
+    SET "BUILD_TYPE=debug"
+    SET "BUILD_DIR=%PROJECT_ROOT%build-debug"
     SHIFT
     GOTO ArgLoop
 )
@@ -36,17 +36,20 @@ IF /I "%~1"=="--clean" (
     SHIFT
     GOTO ArgLoop
 )
+IF /I "%~1"=="--warnings" (
+    SET "SHOW_WARNINGS=true"
+    SHIFT
+    GOTO ArgLoop
+)
 IF /I "%~1"=="--run" (
     SET "SHOULD_RUN=true"
     SHIFT
-    REM Collect remaining arguments for run_u7.bat
     SET RUN_ARGS=!cmdcmdline:*--run =!
     GOTO ArgsDone
 )
 IF /I "%~1"=="-h" GOTO Help
 IF /I "%~1"=="--help" GOTO Help
 
-REM Check for -D or -C arguments
 echo "%~1" | findstr /B /C:"-D" > nul
 IF !ERRORLEVEL! == 0 (
     SET "EXTRA_MESON_ARGS=!EXTRA_MESON_ARGS! %1"
@@ -60,17 +63,16 @@ IF !ERRORLEVEL! == 0 (
     GOTO ArgLoop
 )
 
-REM Treat unknown as potential run args if --run hasn't been seen (this is imperfect)
-REM A robust solution would require more complex parsing
 echo Warning: Unknown or misplaced argument: %1
 SHIFT
 GOTO ArgLoop
 
 :Help
-echo Usage: %~nx0 [--release] [--configure] [--clean] [--run] [-Doption=value...] [run_script_args...]
-echo   --release    : Build the release version (default: debug)
+echo Usage: %~nx0 [--debug] [--configure] [--clean] [--warnings] [--run] [-Doption=value...] [run_script_args...]
+echo   --debug      : Build the debug version (default: release)
 echo   --configure  : Force run 'meson setup' even if build dir exists
 echo   --clean      : Remove the build directory before building
+echo   --warnings   : Display compiler warnings (output may not be filtered)
 echo   --run        : Run the project using run_u7.bat after building
 echo   -D.../-C...  : Pass arguments directly to 'meson setup'
 echo   run_script_args: Arguments passed to run_u7.bat when using --run
@@ -79,6 +81,7 @@ exit /b 0
 :ArgsDone
 
 echo --- Building U7Revisited (%BUILD_TYPE%) ---
+IF "%SHOW_WARNINGS%"=="true" echo --- Warnings will be shown (output not filtered) ---
 
 REM --- Clean ---
 IF "%SHOULD_CLEAN%"=="true" (
@@ -108,10 +111,9 @@ IF "%SHOULD_CONFIGURE%"=="true" (
 
 IF "%DO_SETUP%"=="true" (
     echo [Configure] Configuring (%BUILD_TYPE%) in %BUILD_DIR%...
-    REM Check if Meson exists
     where meson > nul 2> nul
     IF !ERRORLEVEL! NEQ 0 (
-        echo [Configure] Error: 'meson' command not found in PATH. Please install Meson and ensure it's in your PATH. >&2
+        echo [Configure] Error: 'meson' command not found in PATH. >&2
         exit /b 1
     )
     meson setup "%BUILD_DIR%" --buildtype="%BUILD_TYPE%" %EXTRA_MESON_ARGS%
@@ -129,19 +131,27 @@ IF "%DO_SETUP%"=="true" (
             exit /b 1
           )
      ) ELSE (
-        echo [Configure] Build directory %BUILD_DIR% already configured. Skipping setup. Use --configure to force.
+        echo [Configure] Build directory %BUILD_DIR% already configured. Skipping setup.
      )
 )
 
-
 REM --- Compile ---
 echo [Compile] Compiling (%BUILD_TYPE%) in %BUILD_DIR%...
+REM Batch cannot easily capture/filter/count like bash script.
+REM Just run the compile command directly.
 meson compile -C "%BUILD_DIR%"
-IF !ERRORLEVEL! NEQ 0 (
-    echo [Compile] Error: Meson compile failed! >&2
+SET COMPILE_EXIT_CODE=!ERRORLEVEL!
+
+IF !COMPILE_EXIT_CODE! NEQ 0 (
+    echo [Compile] Error: Meson compile failed! (Exit Code: !COMPILE_EXIT_CODE!) >&2
     exit /b 1
 )
 echo [Compile] Meson compile successful.
+
+REM Add note about warnings if requested but not filtered
+IF "%SHOW_WARNINGS%"=="true" (
+    echo [Compile] Note: Warnings requested; check full Meson output above.
+)
 
 echo --- Build successful (%BUILD_TYPE%) ---
 

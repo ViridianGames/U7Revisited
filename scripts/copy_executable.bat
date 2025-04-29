@@ -11,10 +11,11 @@ SET "BUILD_DIR_DEBUG=%PROJECT_ROOT%build-debug"
 SET "BUILD_DIR_RELEASE=%PROJECT_ROOT%build-release"
 SET "REDIST_DIR=%PROJECT_ROOT%Redist"
 
-REM SET "SOURCE_DEBUG_PATH=%BUILD_DIR_DEBUG%\install_prefix\bin\U7Revisited_debug.exe"
-REM SET "SOURCE_RELEASE_PATH=%BUILD_DIR_RELEASE%\install_prefix\bin\U7Revisited_release.exe"
-SET "SOURCE_DEBUG_PATH=%BUILD_DIR_DEBUG%\U7Revisited_debug.exe"
-SET "SOURCE_RELEASE_PATH=%BUILD_DIR_RELEASE%\U7Revisited_release.exe"
+REM Assume Meson installs targets to install_prefix/bin like on Linux
+REM Adjust this if Meson install behaves differently on Windows
+SET "INSTALL_SUBDIR=install_prefix\bin"
+SET "SOURCE_DEBUG_PATH=%BUILD_DIR_DEBUG%\%INSTALL_SUBDIR%\U7Revisited_debug.exe"
+SET "SOURCE_RELEASE_PATH=%BUILD_DIR_RELEASE%\%INSTALL_SUBDIR%\U7Revisited_release.exe"
 
 SET "TARGET_DEBUG_PATH=%REDIST_DIR%\U7Revisited_debug.exe"
 SET "TARGET_RELEASE_PATH=%REDIST_DIR%\U7Revisited_release.exe"
@@ -48,6 +49,7 @@ IF "%SOURCE_PATH%"=="" (
 )
 IF NOT EXIST "%SOURCE_PATH%" (
     echo Error (Helper Script): Source executable for copy not found at %SOURCE_PATH% >&2
+    echo Note: Assumed install path is build-type\%INSTALL_SUBDIR% >&2
     exit /b 1
 )
 

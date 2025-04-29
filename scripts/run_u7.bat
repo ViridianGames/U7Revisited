@@ -1,6 +1,7 @@
 @echo off
 REM Script to run the appropriate version of U7Revisited (debug or release)
 REM Copies the executable to Redist/ before running it.
+setlocal enabledelayedexpansion
 
 SET "SCRIPT_DIR=%~dp0"
 REM Ensure SCRIPT_DIR ends with a backslash for reliable path joining
@@ -11,9 +12,10 @@ SET "BUILD_DIR_DEBUG=%PROJECT_ROOT%build-debug"
 SET "BUILD_DIR_RELEASE=%PROJECT_ROOT%build-release"
 SET "REDIST_DIR=%PROJECT_ROOT%Redist"
 
-REM Source paths directly within the build directory
-SET "SOURCE_DEBUG_PATH=%BUILD_DIR_DEBUG%\U7Revisited_debug.exe"
-SET "SOURCE_RELEASE_PATH=%BUILD_DIR_RELEASE%\U7Revisited_release.exe"
+REM Assumed source paths from copy_executable.bat
+SET "INSTALL_SUBDIR=install_prefix\bin"
+SET "SOURCE_DEBUG_PATH=%BUILD_DIR_DEBUG%\%INSTALL_SUBDIR%\U7Revisited_debug.exe"
+SET "SOURCE_RELEASE_PATH=%BUILD_DIR_RELEASE%\%INSTALL_SUBDIR%\U7Revisited_release.exe"
 
 REM Target paths within Redist
 SET TARGET_DEBUG_EXE=U7Revisited_debug.exe
@@ -21,11 +23,32 @@ SET TARGET_RELEASE_EXE=U7Revisited_release.exe
 SET TARGET_DEBUG_PATH=%REDIST_DIR%\%TARGET_DEBUG_EXE%
 SET TARGET_RELEASE_PATH=%REDIST_DIR%\%TARGET_RELEASE_EXE%
 
-REM Default to release unless --debug is passed
+REM Parse arguments
 SET RUN_DEBUG=false
-FOR %%A IN (%*) DO (
-    IF /I "%%A"=="--debug" SET RUN_DEBUG=true
-)
+SET RUN_HEALTHCHECK=false
+SET PASS_VERBOSE=false
+SET GAME_ARGS=
+
+:ParseRunArgsLoop
+IF "%~1"=="" GOTO ParseRunArgsDone
+
+    IF /I "%~1"=="--debug" (
+        SET RUN_DEBUG=true
+    ) ELSE IF /I "%~1"=="--healthcheck" (
+        SET RUN_HEALTHCHECK=true
+        REM Healthcheck implies debug and verbose for the run
+        SET RUN_DEBUG=true
+        SET PASS_VERBOSE=true
+    ) ELSE IF /I "%~1"=="--verbose" (
+        SET PASS_VERBOSE=true
+    ) ELSE (
+        REM Collect other args as game args
+        SET GAME_ARGS=!GAME_ARGS! %1
+    )
+    SHIFT
+    GOTO ParseRunArgsLoop
+
+:ParseRunArgsDone
 
 SET SOURCE_PATH=
 SET TARGET_PATH=
@@ -40,9 +63,7 @@ IF "%RUN_DEBUG%"=="true" (
         SET TARGET_EXE=%TARGET_DEBUG_EXE%
     ) ELSE (
         echo Error: Debug source executable not found at %SOURCE_DEBUG_PATH%
-        echo Please build the debug version first using:
-        echo   meson setup build-debug --buildtype=debug
-        echo   meson compile -C build-debug
+        echo Please build the debug version first.
         exit /b 1
     )
 ) ELSE (
@@ -62,12 +83,7 @@ IF "%RUN_DEBUG%"=="true" (
         echo Checked paths:
         echo   %SOURCE_RELEASE_PATH%
         echo   %SOURCE_DEBUG_PATH%
-        echo Please build the project first using commands like:
-        echo   meson setup build-release --buildtype=release
-        echo   meson compile -C build-release
-        echo or:
-        echo   meson setup build-debug --buildtype=debug
-        echo   meson compile -C build-debug
+        echo Please build the project first.
         exit /b 1
     )
 )
@@ -82,11 +98,14 @@ IF NOT EXIST "%REDIST_DIR%" (
     )
 )
 
-REM Copy the executable to Redist
-echo Copying %SOURCE_PATH% to %TARGET_PATH%...
-copy /Y "%SOURCE_PATH%" "%TARGET_PATH%" > nul
+REM Copy the executable to Redist using the helper script (consistent logic)
+SET "COPY_SCRIPT=%SCRIPT_DIR%copy_executable.bat"
+SET "COPY_ARG="
+IF "%RUN_DEBUG%"=="true" SET "COPY_ARG=--debug"
+echo Copying executable via: %COPY_SCRIPT% %COPY_ARG%
+call "%COPY_SCRIPT%" %COPY_ARG%
 IF ERRORLEVEL 1 (
-    echo Error: Failed to copy executable.
+    echo Error: Failed to copy executable using %COPY_SCRIPT%.
     exit /b 1
 )
 
@@ -98,9 +117,22 @@ IF ERRORLEVEL 1 (
     exit /b 1
 )
 
+REM Prepare arguments for the executable
+SET EXEC_ARGS=
+IF "%RUN_HEALTHCHECK%"=="true" (
+    SET EXEC_ARGS=--healthcheck
+)
+IF "%PASS_VERBOSE%"=="true" (
+    REM Avoid double adding if healthcheck already added it
+    echo "%EXEC_ARGS%" | findstr /I /C:"--verbose" > nul
+    IF ERRORLEVEL 1 SET EXEC_ARGS=%EXEC_ARGS% --verbose
+)
+REM Append the collected game arguments
+SET EXEC_ARGS=%EXEC_ARGS% %GAME_ARGS%
+
 REM Run the executable from the Redist directory
-echo Running %TARGET_EXE% from %CD%...
-"%TARGET_EXE%" %*
+echo Running %TARGET_EXE% %EXEC_ARGS% from %CD%...
+"%TARGET_EXE%" %EXEC_ARGS%
 SET EXIT_CODE=%ERRORLEVEL%
 
 popd
