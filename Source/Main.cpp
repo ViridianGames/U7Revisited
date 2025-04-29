@@ -92,15 +92,32 @@ bool LoadCoreGameAssets(bool isHealthCheck, bool isVerbose) {
 
     // --- Check for essential U7 Data Directories ---
     Log("Checking required U7 data directories...", LOG_INFO);
-    if (!CheckDirectoryExists("Data/U7/STATIC")) {
-        criticalSuccess = false;
+    std::string staticPath = "Data/U7/STATIC";
+    std::string gamedatPath = "Data/U7/GAMEDAT";
+
+    if (!CheckDirectoryExists(staticPath)) {
+        if (!isHealthCheck) { // In normal mode, this is a critical failure
+            criticalSuccess = false;
+        } else {
+            // In health check, log a warning but don't fail critically
+            // The AddAssetError in CheckDirectoryExists already logged the specific error
+            Log("U7 data directory '" + staticPath + "' not found. Proceeding with health check for local assets.", LOG_WARNING);
+        }
     }
-    if (!CheckDirectoryExists("Data/U7/GAMEDAT")) {
-        criticalSuccess = false;
+    if (!CheckDirectoryExists(gamedatPath)) {
+        if (!isHealthCheck) { // In normal mode, this is a critical failure
+            criticalSuccess = false;
+        } else {
+             // In health check, log a warning but don't fail critically
+            Log("U7 data directory '" + gamedatPath + "' not found. Proceeding with health check for local assets.", LOG_WARNING);
+        }
     }
     // Optional: Check for a key file within one of them if directory check isn't enough?
-    // if (criticalSuccess && !CheckFileExists("Data/U7/STATIC/U7CHUNKS")) { // Example
-    //    criticalSuccess = false;
+    // We only perform further checks if the directories exist and it's NOT a CI health check
+    // (or if it IS a health check but we want to check deeper locally)
+    // bool performDeepU7Check = exists(staticPath) && exists(gamedatPath) && (!isHealthCheck /* || allowDeepHealthCheckFlag */ );
+    // if (performDeepU7Check && !CheckFileExists("Data/U7/STATIC/U7CHUNKS")) { // Example
+    //    criticalSuccess = false; // Failure here IS critical if we expect U7 data
     // }
 
     // --- Script Loading (Attempt load in both modes, report errors) ---
@@ -345,8 +362,20 @@ int main(int argv, char** argc)
          // If we reached here, critical assets are OK.
          // Now check if there were *any* asset errors (including non-critical like scripts).
          if (!g_AssetLoadErrors.empty()) {
-            // Log("Health check finished with NON-CRITICAL errors (see summary above).", LOG_WARNING);
-            Log("Health check PASSED (OK) with " + std::to_string(g_AssetLoadErrors.size()) + " non-critical errors (see details above).", LOG_WARNING);
+            // Check if the U7 data directories were among the errors
+            bool u7DataMissing = false;
+            for (const auto& error : g_AssetLoadErrors) {
+                if ((error.filePath == "Data/U7/STATIC" || error.filePath == "Data/U7/GAMEDAT") && error.errorType == "DirectoryNotFound") {
+                    u7DataMissing = true;
+                    break;
+                }
+            }
+
+            if (u7DataMissing) {
+                Log("Health check PASSED (OK) but required U7 data directories were missing (" + std::to_string(g_AssetLoadErrors.size()) + " total non-critical errors found).", LOG_WARNING);
+            } else {
+                Log("Health check PASSED (OK) with " + std::to_string(g_AssetLoadErrors.size()) + " non-critical errors (see details above).", LOG_WARNING);
+            }
             // Still exit 0 because critical assets loaded, but log indicates issues.
             exit(0);
          }
