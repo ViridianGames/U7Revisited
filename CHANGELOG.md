@@ -74,6 +74,7 @@ This section documents changes made in this fork compared to the original `Virid
 
 ### Fixed
 
+- Health check (`--healthcheck`) now correctly handles missing original U7 data directories (`Data/U7/STATIC`, `Data/U7/GAMEDAT`) without causing a critical failure, allowing checks to pass in CI environments where only local assets are present (Fixes #24).
 - Made system library dependencies (`winmm`, `m`, `dl`, `pthread`) explicitly required in `meson.build` for clearer build errors if missing.
 - Removed C++20 dependency (`<format>` header) introduced temporarily, improving compatibility with older compilers.
 - Resolved Meson deprecation warnings by updating to newer API calls.
