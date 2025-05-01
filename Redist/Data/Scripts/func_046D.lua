@@ -3,7 +3,7 @@ function func_046D(eventid, itemref)
     local local0
 
     if eventid == 1 then
-        switch_talk_to(-109, 0)
+        switch_talk_to(109, 0)
         local0 = get_player_name()
 
         add_answer({"bye", "job", "name"})
@@ -77,7 +77,7 @@ function func_046D(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-109)
+        switch_talk_to(109)
     end
     return
 end

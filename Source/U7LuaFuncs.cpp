@@ -8,270 +8,76 @@
 
 using namespace std;
 
-static int LuaDebugPrint(lua_State* L)
+// '-' - Function stubbed but not implemented
+// '+' - Function implemented
+
+static int LuaDebugPrint(lua_State *L)
 {
-    const char* text = luaL_checkstring(L, 1);
+    const char *text = luaL_checkstring(L, 1);
     cout << "Lua debug says: " << text << "\n";
-    AddConsoleString(text, Color{ 255, 255, 255, 255 });
+    AddConsoleString(text, Color{255, 255, 255, 255});
     return 0;
 }
 
-static int LuaSay(lua_State* L)
+static int LuaAddDialogue(lua_State *L)
 {
     cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
-    const char* text = luaL_checkstring(L, 1);
+    const char *text = luaL_checkstring(L, 1);
 
-    g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
     g_ConversationState->AddDialogue(text);
 
     return 0;
 }
 
-static int LuaBark(lua_State* L)
+// Opcode 0033
+static int LuaStartConversation(lua_State *L)
 {
-    const char* text = luaL_checkstring(L, 1);
-    int x = luaL_checkinteger(L, 2);
-    int y = luaL_checkinteger(L, 3);
-    return 0;
-}
-
-static int LuaMove(lua_State* L)
-{
-    int x = luaL_checkinteger(L, 1);
-    int y = luaL_checkinteger(L, 2);
-    cout << "Move to (" << x << ", " << y << ")\n";
-    // TODO: Implement object movement
-    return 0;
-}
-
-static int LuaStartConversation(lua_State* L)
-{
-    if (g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
-    {
-        return 0;
-    }
-
+    AddConsoleString("LUA: start_conversation called");
     g_StateMachine->PushState(STATE_CONVERSATIONSTATE);
-    //g_ConversationState->SetNPC(luaL_checkinteger(L, 1));
     return 0;
 }
 
-static int LuaGetFlag(lua_State* L)
+// Opcode 0003
+static int LuaSwitchTalkTo(lua_State *L)
 {
-    int flag_id = luaL_checkinteger(L, 1);
-    bool value = g_ScriptingSystem->GetFlag(flag_id);
-    lua_pushboolean(L, value);
-    return 1;
-}
-
-static int LuaSetFlag(lua_State* L)
-{
-    int flag_id = luaL_checkinteger(L, 1);
-    bool value = lua_toboolean(L, 2);
-    g_ScriptingSystem->SetFlag(flag_id, value);
-    return 0;
-}
-
-static int LuaGetPlayerName(lua_State* L)
-{
-    const char* player_name = "Avatar"; // TODO: g_Player->GetName()
-    if (player_name && player_name[0] != '\0')
-    {
-        lua_pushstring(L, player_name);
-    }
-    else
-    {
-        lua_pushstring(L, "Avatar");
-    }
-    return 1;
-}
-
-static int LuaHasItem(lua_State* L)
-{
-    int item_id = luaL_checkinteger(L, 1);
-    bool has_item = false; // TODO: g_Player->HasItem(item_id)
-    lua_pushboolean(L, has_item);
-    return 1;
-}
-
-static int LuaIsPlayerFemale(lua_State* L)
-{
-    bool is_female = false; // TODO: g_Player->IsFemale()
-    lua_pushboolean(L, is_female);
-    return 1;
-}
-
-static int LuaGetStat(lua_State* L)
-{
-    int object_id = luaL_checkinteger(L, 1);
-    int stat_id = luaL_checkinteger(L, 2);
-    int value = 0; // TODO: g_Player->GetStat(object_id, stat_id)
-    lua_pushinteger(L, value);
-    return 1;
-}
-
-static int LuaSetStat(lua_State* L)
-{
-    int object_id = luaL_checkinteger(L, 1);
-    int stat_id = luaL_checkinteger(L, 2);
-    int value = luaL_checkinteger(L, 3);
-    // TODO: g_Player->SetStat(object_id, stat_id, value)
-    return 0;
-}
-
-static int LuaGetAnswer(lua_State* L)
-{
-    lua_getglobal(L, "answers");
-    if (!lua_istable(L, -1)) {
-        lua_pop(L, 1);
-        lua_pushinteger(L, 0);
-        return 1;
-    }
-
-    lua_getglobal(L, "answer");
-    const char* selected_answer = lua_tostring(L, -1);
-    lua_pop(L, 1);
-
-    if (selected_answer) {
-        for (int i = 1; i <= lua_rawlen(L, -1); i++) {
-            lua_rawgeti(L, -1, i);
-            if (strcmp(lua_tostring(L, -1), selected_answer) == 0) {
-                lua_pop(L, 2); // Pop answer and answers table
-                lua_pushinteger(L, i);
-                return 1;
-            }
-            lua_pop(L, 1);
-        }
-    }
-
-    lua_pop(L, 1); // Pop answers table
-    lua_pushinteger(L, 0);
-    return 1;
-}
-
-static int LuaSaveAnswers(lua_State* L)
-{
-    // TODO: Save answers table to a stack or temporary storage
-    cout << "Saving answers\n";
-    return 0;
-}
-
-static int LuaRestoreAnswers(lua_State* L)
-{
-    // TODO: Restore answers table from storage
-    cout << "Restoring answers\n";
-    return 0;
-}
-
-static int LuaBuyItem(lua_State* L)
-{
-    const char* prefix = luaL_checkstring(L, 1);
-    int item_id = luaL_checkinteger(L, 2);
-    int quantity = luaL_checkinteger(L, 3);
-    int price = luaL_checkinteger(L, 4);
-    const char* item_name = luaL_checkstring(L, 5);
-    int result = 0; // 1=success, 2=can't carry, 3=no gold
-
-    if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(item_id, quantity)) {
-        g_Player->AddItem(item_id, quantity);
-        g_Player->SpendGold(price * quantity);
-        result = 1;
-    } else if (!g_Player->CanCarry(item_id, quantity)) {
-        result = 2;
-    } else {
-        result = 3;
-    }
-
-    lua_pushinteger(L, result);
-    return 1;
-}
-
-static int LuaGetGold(lua_State* L)
-{
-    int gold = 0; // TODO: g_Player->GetGold()
-    lua_pushinteger(L, gold);
-    return 1;
-}
-
-static int LuaSpendGold(lua_State* L)
-{
-    int amount = luaL_checkinteger(L, 1);
-    bool success = g_Player->GetGold() >= amount;
-    if (success) {
-        g_Player->SpendGold(amount);
-    }
-    lua_pushboolean(L, success);
-    return 1;
-}
-
-static int LuaSwitchTalkTo(lua_State* L)
-{
+    AddConsoleString("LUA: switch_talk_to called");
     int npc_id = luaL_checkinteger(L, 1);
-    //int unknown = luaL_checkinteger(L, 2); // Placeholder
+    int frame = luaL_checkinteger(L, 2);
+    g_ConversationState->SetNPC(npc_id, frame);
     cout << "Switching talk to NPC ID: " << npc_id << "\n";
-    //g_ConversationState->SetNPC(npc_id);
-    // TODO: Set conversation focus to npc_id
-    return 0;
 }
 
-static int LuaHideNPC(lua_State* L)
+// Opcode 0004
+static int LuaHideNPC(lua_State *L)
 {
+    AddConsoleString("LUA: hide_npc called");
     int npc_id = luaL_checkinteger(L, 1);
+    g_ConversationState->SetNPC(npc_id, -1);
     cout << "Hiding NPC ID: " << npc_id << "\n";
-    // TODO: Hide NPC from conversation
-    return 0;
 }
 
-static int LuaGetPartyMember(lua_State* L)
+// Opcode 0005
+//  Adds a list of answers to the conversation system.  The list can just be one answer.
+static int LuaAddAnswers(lua_State *L)
 {
-    int index = luaL_checkinteger(L, 1);
-    int npc_id = 0; // TODO: Return NPC ID for party member at index (e.g., -2=Shamino)
-    cout << "Getting party member at index: " << index << "\n";
-    lua_pushinteger(L, npc_id);
-    return 1;
-}
-
-static int LuaGetPartyMembers(lua_State* L)
-{
-    // TODO: Return list of party member IDs
-    lua_newtable(L);
-    cout << "Getting party members\n";
-    return 1;
-}
-
-static int LuaIsPartyMember(lua_State* L)
-{
-    //int npc_id = luaL_checkinteger(L, 1);
-    //lua_getglobal(L, "party_members"); // Assume table from get_party_members
-    //bool is_member = false; // TODO: Check if npc_id is in party_members
-    //cout << "Checking if NPC ID " << npc_id << " is party member\n";
-    lua_pushboolean(L, false);
-    return 1;
-}
-
-static int LuaTriggerFerry(lua_State* L)
-{
-    int object_id = luaL_checkinteger(L, 1);
-    cout << "Triggering ferry for object ID: " << object_id << "\n";
-    // TODO: Start ferry transport (e.g., scene change to Skara Brae or mainland)
-    return 0;
-}
-
-static int LuaAddAnswer(lua_State* L) {
+    AddConsoleString("LUA: add_answers called");
     // Check stack for input argument
-    if (lua_gettop(L) < 1) {
+    if (lua_gettop(L) < 1)
+    {
         return luaL_error(L, "Expected at least one argument");
     }
 
     // Get or create global answers table
     lua_getglobal(L, "answers");
-    if (!lua_istable(L, -1)) {
+    if (!lua_istable(L, -1))
+    {
         lua_pop(L, 1);
         lua_newtable(L);
         lua_setglobal(L, "answers");
         lua_getglobal(L, "answers");
     }
-    if (!lua_istable(L, -1)) {
+    if (!lua_istable(L, -1))
+    {
         return luaL_error(L, "Failed to create answers table");
     }
 
@@ -281,35 +87,46 @@ static int LuaAddAnswer(lua_State* L) {
 
     // Check type of first argument
     int type = lua_type(L, 1);
-    if (type == LUA_TSTRING) {
+    if (type == LUA_TSTRING)
+    {
         // Single string: add it directly
-        const char* answer = luaL_checkstring(L, 1);
+        const char *answer = luaL_checkstring(L, 1);
         lua_pushstring(L, answer);
-        if (!lua_istable(L, answers_idx)) {
+        if (!lua_istable(L, answers_idx))
+        {
             return luaL_error(L, "Answers table lost at index %d", answers_idx);
         }
         lua_rawseti(L, answers_idx, len + 1);
         std::cout << "Added answer: " << answer << "\n";
-    } else if (type == LUA_TTABLE) {
+    }
+    else if (type == LUA_TTABLE)
+    {
         // Table: iterate over elements and add strings
         int table_len = lua_rawlen(L, 1);
-        for (int i = 1; i <= table_len; ++i) {
+        for (int i = 1; i <= table_len; ++i)
+        {
             lua_rawgeti(L, 1, i); // Push table[i]
-            if (lua_isstring(L, -1)) {
-                const char* answer = lua_tostring(L, -1);
+            if (lua_isstring(L, -1))
+            {
+                const char *answer = lua_tostring(L, -1);
                 lua_pushstring(L, answer); // Push copy for answers table
-                if (!lua_istable(L, answers_idx)) {
+                if (!lua_istable(L, answers_idx))
+                {
                     return luaL_error(L, "Answers table lost at index %d", answers_idx);
                 }
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
                 std::cout << "Added answer: " << answer << "\n";
-            } else {
+            }
+            else
+            {
                 std::cout << "Warning: Non-string element at index " << i << " ignored\n";
             }
             lua_pop(L, 1); // Pop table[i]
         }
-    } else {
+    }
+    else
+    {
         return luaL_error(L, "Expected string or table, got %s", lua_typename(L, type));
     }
 
@@ -318,11 +135,15 @@ static int LuaAddAnswer(lua_State* L) {
     return 0;
 }
 
-static int LuaRemoveAnswer(lua_State* L)
+// Opcode 0006
+//  Removes a list of answers from the conversation system. The list can be just one answer.
+static int LuaRemoveAnswers(lua_State *L)
 {
-    const char* answer = luaL_checkstring(L, 1);
+    AddConsoleString("LUA: remove_answers called");
+    const char *answer = luaL_checkstring(L, 1);
     lua_getglobal(L, "answers");
-    if (!lua_istable(L, -1)) {
+    if (!lua_istable(L, -1))
+    {
         lua_pop(L, 1);
         return 0;
     }
@@ -331,10 +152,12 @@ static int LuaRemoveAnswer(lua_State* L)
     lua_newtable(L); // New answers table
     int new_index = 1;
 
-    for (int i = 1; i <= len; i++) {
+    for (int i = 1; i <= len; i++)
+    {
         lua_rawgeti(L, -2, i);
-        const char* current = lua_tostring(L, -1);
-        if (current && strcmp(current, answer) != 0) {
+        const char *current = lua_tostring(L, -1);
+        if (current && strcmp(current, answer) != 0)
+        {
             lua_pushstring(L, current);
             lua_rawseti(L, -3, new_index);
             new_index++;
@@ -348,49 +171,180 @@ static int LuaRemoveAnswer(lua_State* L)
     return 0;
 }
 
-static int LuaGetItemType(lua_State* L) {
+// Opcode 0007
+static int LuaSaveAnswers(lua_State *L)
+{
+    AddConsoleString("LUA: save_answers called");
+    // TODO: Save answers table to a stack or temporary storage
+    cout << "Saving answers\n";
+    return 0;
+}
+
+// Opcode 0008
+static int LuaRestoreAnswers(lua_State *L)
+{
+    AddConsoleString("LUA: restore_answers called");
+    // TODO: Restore answers table from storage
+    cout << "Restoring answers\n";
+    return 0;
+}
+
+// Opcode 000A
+static int LuaGetAnswer(lua_State *L)
+{
+    AddConsoleString("LUA: get_answer called");
+    lua_getglobal(L, "answers");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    lua_getglobal(L, "answer");
+    const char *selected_answer = lua_tostring(L, -1);
+    lua_pop(L, 1);
+
+    if (selected_answer)
+    {
+        for (int i = 1; i <= lua_rawlen(L, -1); i++)
+        {
+            lua_rawgeti(L, -1, i);
+            if (strcmp(lua_tostring(L, -1), selected_answer) == 0)
+            {
+                lua_pop(L, 2); // Pop answer and answers table
+                lua_pushinteger(L, i);
+                return 1;
+            }
+            lua_pop(L, 1);
+        }
+    }
+
+    lua_pop(L, 1); // Pop answers table
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// Opcode 000B
+static int LuaAskYesNo(lua_State *L)
+{
+    AddConsoleString("LUA: ask_yes_no called");
+    const char *text = luaL_checkstring(L, 1);
+    cout << "Asking yes/no: " << text << "\n";
+}
+
+// Opcode 000C
+//  Pops up a modal dialog allowing the player to enter a number with a slider.
+static int LuaAskNumber(lua_State *L)
+{
+    AddConsoleString("LUA: ask_number called");
+    return 0;
+}
+
+// Opcode 000D
+static int LuaSetItemShape(lua_State *L)
+{
+    AddConsoleString("LUA: set_item_shape called");
+    int item_id = luaL_checkinteger(L, 1);
+    int shape = luaL_checkinteger(L, 2);
+}
+
+// Opcode 0011
+static int LuaGetItemShape(lua_State *L)
+{
+    AddConsoleString("LUA: get_item_shape called");
     int item_id = luaL_checkinteger(L, 1);
     int type = 0; // TODO: g_ItemManager->GetItemType(item_id)
     lua_pushinteger(L, type);
     return 1;
 }
 
-static int LuaGetItemFrame(lua_State* L) {
+// Opcode 0012
+static int LuaGetItemFrame(lua_State *L)
+{
+    AddConsoleString("LUA: get_item_frame called");
     int item_id = luaL_checkinteger(L, 1);
     int frame = 0; // TODO: g_ItemManager->GetItemFrame(item_id)
     lua_pushinteger(L, frame);
     return 1;
 }
 
-static int LuaSetItemFrame(lua_State* L) {
+// Opcode 0013
+static int LuaSetItemFrame(lua_State *L)
+{
+    AddConsoleString("LUA: set_item_frame called");
     int item_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
     // TODO: g_ItemManager->SetItemFrame(item_id, frame)
     return 0;
 }
 
-static int LuaGetItemQuality(lua_State* L) {
+// Opcode 0014
+static int LuaGetItemQuality(lua_State *L)
+{
+    AddConsoleString("LUA: get_item_quality called");
     int item_id = luaL_checkinteger(L, 1);
     int quality = 0; // TODO: g_ItemManager->GetItemQuality(item_id)
     lua_pushinteger(L, quality);
     return 1;
 }
 
-static int LuaSetItemQuality(lua_State* L) {
+static int LuaSetItemQuality(lua_State *L)
+{
+    AddConsoleString("LUA: set_item_quality called");
     int item_id = luaL_checkinteger(L, 1);
     int quality = luaL_checkinteger(L, 2);
     // TODO: g_ItemManager->SetItemQuality(item_id, quality)
     return 0;
 }
 
-static int LuaGetItemInfo(lua_State* L) {
-    int item_id = luaL_checkinteger(L, 1);
-    lua_newtable(L);
-    // TODO: Push x, y, z coordinates or other attributes
+// Opcode 0020
+static int LuaGetNPCProperty(lua_State *L)
+{
+    AddConsoleString("LUA: get_npc_property called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int property_id = luaL_checkinteger(L, 2);
+    int value = 0; // TODO: g_NPCManager->GetProperty(npc_id, property_id)
+    lua_pushinteger(L, value);
     return 1;
 }
 
-static int LuaGetContainerItems(lua_State* L) {
+// Opcode 0021
+static int LuaSetNPCProperty(lua_State *L)
+{
+    AddConsoleString("LUA: set_npc_property called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int property_id = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
+}
+
+// Opcode 0023
+static int LuaGetPartyMembers(lua_State *L)
+{
+    AddConsoleString("LUA: get_party_members called");
+    //lua_newtable(L);
+}
+
+// Opcode 0027
+static int LuaGetPlayerName(lua_State *L)
+{
+    AddConsoleString("LUA: get_player_name called");
+    const char *player_name = "Avatar"; // TODO: g_Player->GetName()
+    if (player_name && player_name[0] != '\0')
+    {
+        lua_pushstring(L, player_name);
+    }
+    else
+    {
+        lua_pushstring(L, "Avatar");
+    }
+    return 1;
+}
+
+// Opcode 002A
+static int LuaGetContainerItems(lua_State *L)
+{
+    AddConsoleString("LUA: get_container_items called");
     int container_id = luaL_checkinteger(L, 1);
     int type = luaL_checkinteger(L, 2);
     int x = luaL_checkinteger(L, 3);
@@ -400,13 +354,236 @@ static int LuaGetContainerItems(lua_State* L) {
     return 1;
 }
 
-static int LuaRemoveItem(lua_State* L) {
+// Opcode 002E
+static int LuaPlayMusic(lua_State *L)
+{
+    AddConsoleString("LUA: play_music called");
+    int track = luaL_checkinteger(L, 1);
+    int loop = luaL_checkinteger(L, 2);
+    // TODO: g_AudioSystem->PlayMusic(track, loop)
+    return 0;
+}
+
+// Opcode 002F
+static int LuaNPCInParty(lua_State *L)
+{
+    AddConsoleString("LUA: npc_in_party called");
+    int npc_id = luaL_checkinteger(L, 1);
+    bool in_party = false; // TODO: g_Party->IsMember(npc_id)
+    lua_pushboolean(L, in_party);
+    return 1;
+}
+
+// Opcode 0032
+static int LuaDisplaySign(lua_State *L)
+{
+    AddConsoleString("LUA: display_sign called");
+    int object_id = luaL_checkinteger(L, 1);
+    const char *text = luaL_checkstring(L, 2);
+    cout << "Displaying sign for object ID: " << object_id << "\n";
+}
+
+// Opcode 0033
+static int LuaItemSelectModal(lua_State *L)
+{
+    AddConsoleString("LUA: item_select_modal called");
+    int item_id = luaL_checkinteger(L, 1);
+    const char *text = luaL_checkstring(L, 2);
+    cout << "Item select modal for item ID: " << item_id << "\n";
+}
+
+// Opcode 0038
+static int LuaGetTimeHour(lua_State *L)
+{
+    AddConsoleString("LUA: get_time_hour called");
+    int hour = 0; // TODO: g_TimeSystem->GetHour()
+    lua_pushinteger(L, hour);
+    return 1;
+}
+
+// Opcode 0039
+static int LuaGetTimeMinute(lua_State *L)
+{
+    AddConsoleString("LUA: get_time_minute called");
+    int minute = 0; // TODO: g_TimeSystem->GetMinute()
+    lua_pushinteger(L, minute);
+    return 1;
+}
+
+// Opcode 0040
+static int LuaBark(lua_State *L)
+{
+    AddConsoleString("LUA: bark called");
+    int itemref = luaL_checkinteger(L, 1);
+    const char *text = luaL_checkstring(L, 1);
+    return 0;
+}
+
+// Opcode 005A
+static int LuaIsAvatarFemale(lua_State *L)
+{
+    AddConsoleString("LUA: is_avatar_female called");
+    lua_pushboolean(L, !g_Player->GetIsMale());
+    return 0;
+}
+
+
+
+
+
+
+
+
+static int LuaMove(lua_State *L)
+{
+    int x = luaL_checkinteger(L, 1);
+    int y = luaL_checkinteger(L, 2);
+    cout << "Move to (" << x << ", " << y << ")\n";
+    // TODO: Implement object movement
+    return 0;
+}
+
+static int LuaGetFlag(lua_State *L)
+{
+    int flag_id = luaL_checkinteger(L, 1);
+    bool value = g_ScriptingSystem->GetFlag(flag_id);
+    lua_pushboolean(L, value);
+    return 1;
+}
+
+static int LuaSetFlag(lua_State *L)
+{
+    int flag_id = luaL_checkinteger(L, 1);
+    bool value = lua_toboolean(L, 2);
+    g_ScriptingSystem->SetFlag(flag_id, value);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+static int LuaHasItem(lua_State *L)
+{
+    int item_id = luaL_checkinteger(L, 1);
+    bool has_item = false; // TODO: g_Player->HasItem(item_id)
+    lua_pushboolean(L, has_item);
+    return 1;
+}
+
+static int LuaGetStat(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int stat_id = luaL_checkinteger(L, 2);
+    int value = 0; // TODO: g_Player->GetStat(object_id, stat_id)
+    lua_pushinteger(L, value);
+    return 1;
+}
+
+static int LuaSetStat(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int stat_id = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
+    // TODO: g_Player->SetStat(object_id, stat_id, value)
+    return 0;
+}
+
+static int LuaBuyItem(lua_State *L)
+{
+    const char *prefix = luaL_checkstring(L, 1);
+    int item_id = luaL_checkinteger(L, 2);
+    int quantity = luaL_checkinteger(L, 3);
+    int price = luaL_checkinteger(L, 4);
+    const char *item_name = luaL_checkstring(L, 5);
+    int result = 0; // 1=success, 2=can't carry, 3=no gold
+
+    if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(item_id, quantity))
+    {
+        g_Player->AddItem(item_id, quantity);
+        g_Player->SpendGold(price * quantity);
+        result = 1;
+    }
+    else if (!g_Player->CanCarry(item_id, quantity))
+    {
+        result = 2;
+    }
+    else
+    {
+        result = 3;
+    }
+
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+static int LuaGetGold(lua_State *L)
+{
+    int gold = 0; // TODO: g_Player->GetGold()
+    lua_pushinteger(L, gold);
+    return 1;
+}
+
+static int LuaSpendGold(lua_State *L)
+{
+    int amount = luaL_checkinteger(L, 1);
+    bool success = g_Player->GetGold() >= amount;
+    if (success)
+    {
+        g_Player->SpendGold(amount);
+    }
+    lua_pushboolean(L, success);
+    return 1;
+}
+
+static int LuaGetPartyMember(lua_State *L)
+{
+    int index = luaL_checkinteger(L, 1);
+    int npc_id = 0; // TODO: Return NPC ID for party member at index (e.g., -2=Shamino)
+    cout << "Getting party member at index: " << index << "\n";
+    lua_pushinteger(L, npc_id);
+    return 1;
+}
+
+static int LuaTriggerFerry(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    cout << "Triggering ferry for object ID: " << object_id << "\n";
+    // TODO: Start ferry transport (e.g., scene change to Skara Brae or mainland)
+    return 0;
+}
+
+
+
+
+
+
+
+static int LuaGetItemInfo(lua_State *L)
+{
+    int item_id = luaL_checkinteger(L, 1);
+    lua_newtable(L);
+    // TODO: Push x, y, z coordinates or other attributes
+    return 1;
+}
+
+
+
+static int LuaRemoveItem(lua_State *L)
+{
     int item_id = luaL_checkinteger(L, 1);
     // TODO: g_ItemManager->RemoveItem(item_id)
     return 0;
 }
 
-static int LuaGetDistance(lua_State* L) {
+static int LuaGetDistance(lua_State *L)
+{
     int obj1_id = luaL_checkinteger(L, 1);
     int obj2_id = luaL_checkinteger(L, 2);
     int distance = 0; // TODO: g_World->GetDistance(obj1_id, obj2_id)
@@ -414,41 +591,33 @@ static int LuaGetDistance(lua_State* L) {
     return 1;
 }
 
-static int LuaPlayMusic(lua_State* L) {
-    int track = luaL_checkinteger(L, 1);
-    int loop = luaL_checkinteger(L, 2);
-    // TODO: g_AudioSystem->PlayMusic(track, loop)
-    return 0;
-}
 
-static int LuaSetItemState(lua_State* L) {
+
+static int LuaSetItemState(lua_State *L)
+{
     int item_id = luaL_checkinteger(L, 1);
     // TODO: g_ItemManager->SetItemState(item_id)
     return 0;
 }
 
-static int LuaGetWearer(lua_State* L) {
+static int LuaGetWearer(lua_State *L)
+{
     int item_id = luaL_checkinteger(L, 1);
     int wearer_id = 0; // TODO: g_ItemManager->GetWearer(item_id)
     lua_pushinteger(L, wearer_id);
     return 1;
 }
 
-static int LuaGetItemShape(lua_State* L) {
-    int item_id = luaL_checkinteger(L, 1);
-    int shape = 0; // TODO: g_ItemManager->GetItemShape(item_id)
-    lua_pushinteger(L, shape);
-    return 1;
-}
-
-static int LuaCheckItemState(lua_State* L) {
+static int LuaCheckItemState(lua_State *L)
+{
     int item_id = luaL_checkinteger(L, 1);
     int state = 0; // TODO: g_ItemManager->CheckItemState(item_id)
     lua_pushinteger(L, state);
     return 1;
 }
 
-static int LuaFindItems(lua_State* L) {
+static int LuaFindItems(lua_State *L)
+{
     int obj_id = luaL_checkinteger(L, 1);
     int type = luaL_checkinteger(L, 2);
     int distance = luaL_checkinteger(L, 3);
@@ -458,89 +627,104 @@ static int LuaFindItems(lua_State* L) {
     return 1;
 }
 
-static int LuaApplyEffect(lua_State* L) {
+static int LuaApplyEffect(lua_State *L)
+{
     int obj_id = luaL_checkinteger(L, 1);
     int effect = luaL_checkinteger(L, 2);
     // TODO: g_EffectSystem->ApplyEffect(obj_id, effect)
     return 0;
 }
 
-static int LuaGetLordOrLady(lua_State* L)
+static int LuaGetLordOrLady(lua_State *L)
 {
     int lord_or_lady = 0; // TODO: g_Player->GetLordOrLady()
     if (g_Player->GetIsMale())
     {
         lua_pushstring(L, "Milord");
-    } else
+    }
+    else
     {
         lua_pushstring(L, "Milady");
     }
     return 0;
 }
 
-static int LuaIsAvatarFemale(lua_State* L)
+static int LuaRandom(lua_State *L)
 {
-    lua_pushboolean(L, !g_Player->GetIsMale());
-    return 0;
+    AddConsoleString("LUA: random called");
+    int min = luaL_checkinteger(L, 1);
+    int max = luaL_checkinteger(L, 2);
+    int random_value = g_VitalRNG->Random(max - min) + min;
+    lua_pushinteger(L, random_value);
+    return 1;
 }
 
-//  TODO:  This is a placeholder function.  It should check if a certain character is in the party.
-static int LuaIsInParty(lua_State* L)
+static int LuaRemoveFromParty(lua_State *L)
 {
-    int obj_id = luaL_checkinteger(L, 1);
-    lua_pushboolean(L, false);
-    return 0;
+    AddConsoleString("LUA: remove_from_party called");
+    int npc_id = luaL_checkinteger(L, 1);
+}
+
+static int LuaAddToParty(lua_State *L)
+{
+    AddConsoleString("LUA: add_to_party called");
+    int npc_id = luaL_checkinteger(L, 1);
 }
 
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
-    g_ScriptingSystem->RegisterScriptFunction("say", LuaSay);
-    g_ScriptingSystem->RegisterScriptFunction("bark", LuaSay);
-    g_ScriptingSystem->RegisterScriptFunction("move", LuaMove);
-    g_ScriptingSystem->RegisterScriptFunction("StartConversation", LuaStartConversation);
-    g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
-    g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
-    g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
-    g_ScriptingSystem->RegisterScriptFunction("has_item", LuaHasItem);
-    g_ScriptingSystem->RegisterScriptFunction("is_player_female", LuaIsPlayerFemale);
-    g_ScriptingSystem->RegisterScriptFunction("get_stat", LuaGetStat);
-    g_ScriptingSystem->RegisterScriptFunction("set_stat", LuaSetStat);
-    g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("buy_item", LuaBuyItem);
-    g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
-    g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
-    g_ScriptingSystem->RegisterScriptFunction("get_gold", LuaGetGold);
-    g_ScriptingSystem->RegisterScriptFunction("spend_gold", LuaSpendGold);
+
+    //  These functions handle the conversation system.
     g_ScriptingSystem->RegisterScriptFunction("switch_talk_to", LuaSwitchTalkTo);
     g_ScriptingSystem->RegisterScriptFunction("hide_npc", LuaHideNPC);
+    g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
+    g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
+    g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
+
+    //  These are general utility functions.
+    g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
+    g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
+    g_ScriptingSystem->RegisterScriptFunction("item_select_modal", LuaItemSelectModal);
+    g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
+
+    //  These functions are used to manipulate the game world.
+    g_ScriptingSystem->RegisterScriptFunction("get_object_shape", LuaGetItemShape);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_shape", LuaSetItemShape);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_frame", LuaGetItemFrame);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_frame", LuaSetItemFrame);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_quality", LuaGetItemQuality);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetItemQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_property", LuaGetNPCProperty);
+    g_ScriptingSystem->RegisterScriptFunction("set_npc_property", LuaSetNPCProperty);
+
+    //  These functions are used to manipulate the party.
     g_ScriptingSystem->RegisterScriptFunction("get_party_member", LuaGetPartyMember);
     g_ScriptingSystem->RegisterScriptFunction("get_party_members", LuaGetPartyMembers);
-    g_ScriptingSystem->RegisterScriptFunction("is_party_member", LuaIsPartyMember);
-    g_ScriptingSystem->RegisterScriptFunction("trigger_ferry", LuaTriggerFerry);
-    g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswer);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_type", LuaGetItemType);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaGetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("set_item_frame", LuaSetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_quality", LuaGetItemQuality);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_frame", LuaSetItemQuality);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_info", LuaGetItemInfo);    
-    g_ScriptingSystem->RegisterScriptFunction("get_container_items", LuaGetContainerItems);    
-    g_ScriptingSystem->RegisterScriptFunction("remove_item", LuaRemoveItem);
-    g_ScriptingSystem->RegisterScriptFunction("get_distance", LuaGetDistance);
-    g_ScriptingSystem->RegisterScriptFunction("play_music", LuaPlayMusic);
-    g_ScriptingSystem->RegisterScriptFunction("set_item_state", LuaSetItemState);
-    g_ScriptingSystem->RegisterScriptFunction("get_wearer", LuaGetWearer);
-    g_ScriptingSystem->RegisterScriptFunction("get_item_shape", LuaGetItemShape);
-    g_ScriptingSystem->RegisterScriptFunction("check_item_state", LuaCheckItemState);
-    g_ScriptingSystem->RegisterScriptFunction("find_items", LuaFindItems);
-    g_ScriptingSystem->RegisterScriptFunction("apply_effect", LuaApplyEffect);
+    g_ScriptingSystem->RegisterScriptFunction("npc_in_party", LuaNPCInParty);
+    g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);
+    g_ScriptingSystem->RegisterScriptFunction("remove_from_party", LuaRemoveFromParty);
+
+    //  These functions are used to get information about the Avatar/player.
+    g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
+    g_ScriptingSystem->RegisterScriptFunction("is_player_female", LuaIsAvatarFemale);
     g_ScriptingSystem->RegisterScriptFunction("get_lord_or_lady", LuaGetLordOrLady);
-    g_ScriptingSystem->RegisterScriptFunction("get_is_female_avatar", LuaIsAvatarFemale);
-    g_ScriptingSystem->RegisterScriptFunction("is_in_party", LuaIsInParty);
+
+    //  These functions are used to get information about the world and objects.
+    g_ScriptingSystem->RegisterScriptFunction("get_time_hour", LuaGetTimeHour);
+    g_ScriptingSystem->RegisterScriptFunction("get_time_minute", LuaGetTimeMinute);
+    g_ScriptingSystem->RegisterScriptFunction("display_sign", LuaDisplaySign);
+    g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
+
+    //  These are new functions designed to be called by Lua scripts.
+    g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
+    g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
+    
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 
     cout << "Registered all Lua functions\n";
 }
-

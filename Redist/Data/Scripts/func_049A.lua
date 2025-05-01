@@ -6,15 +6,15 @@ function func_049A(eventid, itemref)
         return
     end
 
-    switch_talk_to(-154, 0)
+    switch_talk_to(154, 0)
     add_answer({"bye", "Fellowship", "job", "name"})
-    local0 = switch_talk_to(-1)
-    local1 = switch_talk_to(-2)
-    local2 = switch_talk_to(-240)
-    local3 = switch_talk_to(-220)
+    local0 = switch_talk_to(1)
+    local1 = switch_talk_to(2)
+    local2 = switch_talk_to(240)
+    local3 = switch_talk_to(220)
     local4 = get_player_name()
     local5 = get_party_size()
-    set_schedule(-154, 2)
+    set_schedule(154, 2)
     local14 = get_answer({"the Avatar", local4, local5})
 
     if not get_flag(702) then
@@ -35,21 +35,21 @@ function func_049A(eventid, itemref)
                     say("He seems truly worried.~~\"I will do job better. I promise! I beat harder and more often!\"")
                     if local2 then
                         say("*")
-                        switch_talk_to(-240, 0)
+                        switch_talk_to(240, 0)
                         if get_flag(707) then
                             local8 = "Anton,"
                         else
                             local8 = "a prisoner,"
                         end
                         say("\"Thank thee ever so much, " .. local4 .. ",\" says " .. local8 .. " sarcastically.*")
-                        hide_npc(-240)
-                        switch_talk_to(-154, 0)
+                        hide_npc(240)
+                        switch_talk_to(154, 0)
                     end
                     if local2 and local3 then
-                        switch_talk_to(-220, 0)
+                        switch_talk_to(220, 0)
                         say("\"Now, now, Anton, the nice person was simply answering a question.\"*")
-                        hide_npc(-220)
-                        switch_talk_to(-154, 0)
+                        hide_npc(220)
+                        switch_talk_to(154, 0)
                     end
                 else
                     say("\"Good. I do my job good!\"")
@@ -68,25 +68,25 @@ function func_049A(eventid, itemref)
         elseif answer == "job" then
             say("\"I torture prisoners,\" he says, thumping his chest proudly.*")
             if local1 then
-                switch_talk_to(-2, 0)
+                switch_talk_to(2, 0)
                 say("Spark's eyes light up.~\"Torture? Wow! He quickly looks at you and changes expressions.~~ \"I, er, mean, that is very awful.\"*")
-                hide_npc(-2)
-                switch_talk_to(-154, 0)
+                hide_npc(2)
+                switch_talk_to(154, 0)
             end
             local11 = get_answer()
             if local11 then
                 if local2 and local3 then
                     say("He points to one of the prisoners.~~\"He not fun like the other. Torture other first.\"*")
-                    switch_talk_to(-220, 0)
+                    switch_talk_to(220, 0)
                     say("\"What? No, that's all right, " .. local4 .. ". Torture me, first.\"*")
-                    hide_npc(-220)
-                    switch_talk_to(-240, 0)
+                    hide_npc(220)
+                    switch_talk_to(240, 0)
                     say("\"Yes, " .. local4 .. ". Torture him first.\"*")
-                    hide_npc(-240)
-                    switch_talk_to(-220, 0)
+                    hide_npc(240)
+                    switch_talk_to(220, 0)
                     say("\"I thank thee,\" he says to the other.*")
-                    hide_npc(-220)
-                    switch_talk_to(-154, 0)
+                    hide_npc(220)
+                    switch_talk_to(154, 0)
                     say("\"Go ahead,\" says Grod.*")
                     local13 = add_item(true, -359, -359, 622, 1)
                     if local13 then
@@ -126,10 +126,10 @@ function func_049A(eventid, itemref)
                 say("\"There one!\" he says, pointing to a man.*")
                 if not get_flag(737) and get_flag(738) then
                     say("\"There another one!\" he says, indicating the other man.")
-                    switch_talk_to(-220, 0)
+                    switch_talk_to(220, 0)
                     say("\"How art thou today, " .. local4 .. "?\" he says, smiling.")
-                    hide_npc(-220)
-                    switch_talk_to(-154, 0)
+                    hide_npc(220)
+                    switch_talk_to(154, 0)
                 end
             end
             remove_answer("prisoners")
@@ -139,10 +139,10 @@ function func_049A(eventid, itemref)
                 say("\"Except that one. He not scream. He just talk. And talk. I get so bored I get mad. So I torture more. And,\" he throws up his hands, \"he just talk more! I no know what to do.\"*")
             end
             if local0 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"That is terrible, " .. local5 .. ". We must command him to stop!\"*")
-                hide_npc(-1)
-                switch_talk_to(-154, 0)
+                hide_npc(1)
+                switch_talk_to(154, 0)
             end
             if local3 then
                 say("\"I try make him stop. But he talk and talk. You try? Maybe he stop.\"")

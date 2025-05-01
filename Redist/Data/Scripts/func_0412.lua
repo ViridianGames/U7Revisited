@@ -3,11 +3,11 @@ function func_0412(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
 
     if eventid == 1 then
-        switch_talk_to(-18, 0)
+        switch_talk_to(18, 0)
         local0 = get_schedule()
         local1 = get_player_name()
         local2 = get_player_name()
-        local3 = switch_talk_to(-18)
+        local3 = switch_talk_to(18)
         local4 = "Avatar"
         local5 = apply_effect(-16, -18) -- Unmapped intrinsic 08FC
 
@@ -56,10 +56,10 @@ function func_0412(eventid, itemref)
                 remove_answer("murder")
                 local7 = get_item_type(-1)
                 if local7 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("Iolo whispers to you, \"Pleasant chap, is he not?\"")
-                    hide_npc(-1)
-                    switch_talk_to(-18, 0)
+                    hide_npc(1)
+                    switch_talk_to(18, 0)
                 end
             elseif answer == "Fellowship" then
                 apply_effect() -- Unmapped intrinsic 0919
@@ -95,7 +95,7 @@ function func_0412(eventid, itemref)
         end
     elseif eventid == 0 then
         local0 = get_schedule()
-        local3 = switch_talk_to(-18)
+        local3 = switch_talk_to(18)
         local8 = random(1, 4)
         local9 = check_item_state(-18)
 
@@ -111,7 +111,7 @@ function func_0412(eventid, itemref)
             end
             item_say(local9, -18)
         else
-            switch_talk_to(-18)
+            switch_talk_to(18)
         end
     end
     return

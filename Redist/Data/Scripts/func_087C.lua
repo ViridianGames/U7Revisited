@@ -2,7 +2,7 @@
 function func_087C()
     local local0, local1
 
-    switch_talk_to(-283, 0)
+    switch_talk_to(283, 0)
     if not get_flag(340) then
         say("The ape-like creature slowly and cautiously walks up to you. He, or she, sniffs for a moment, and then points to the honey you are carrying.")
     end

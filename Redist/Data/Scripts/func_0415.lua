@@ -3,9 +3,9 @@ function func_0415(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
     if eventid == 1 then
-        switch_talk_to(-21, 0)
+        switch_talk_to(21, 0)
         local0 = get_schedule()
-        local1 = switch_talk_to(-21)
+        local1 = switch_talk_to(21)
         local2 = false
 
         add_answer({"bye", "murder", "job", "name"})
@@ -99,10 +99,10 @@ function func_0415(eventid, itemref)
                 say("\"I heard about that. Terrible thing to happen. Can't say I saw or heard anything, though.\" Gargan coughs, clears his throat loudly, then spits.")
                 local7 = get_item_type(-2)
                 if local7 then
-                    switch_talk_to(-2, 0)
+                    switch_talk_to(2, 0)
                     say("\"Ooooh, yuck!\"")
-                    hide_npc(-2)
-                    switch_talk_to(-21, 0)
+                    hide_npc(2)
+                    switch_talk_to(21, 0)
                 end
                 remove_answer("murder")
             elseif answer == "Crown Jewel" then
@@ -113,10 +113,10 @@ function func_0415(eventid, itemref)
                 say("Gargan sneezes, then coughs a couple of times.")
                 local8 = get_item_type(-2)
                 if local8 then
-                    switch_talk_to(-2, 0)
+                    switch_talk_to(2, 0)
                     say("\"I told thee! It was him!\"")
-                    hide_npc(-2)
-                    switch_talk_to(-21, 0)
+                    hide_npc(2)
+                    switch_talk_to(21, 0)
                 end
                 remove_answer("Hook")
             elseif answer == "Fellowship" then
@@ -132,7 +132,7 @@ function func_0415(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-21)
+        switch_talk_to(21)
     end
     return
 end

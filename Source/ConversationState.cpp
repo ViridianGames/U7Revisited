@@ -46,7 +46,6 @@ void ConversationState::Init(const string& configfile)
 void ConversationState::OnEnter()
 {
 	ClearConsole();
-	//AddConsoleString(std::string("You have entered conversation state!"));
 }
 
 void ConversationState::OnExit()
@@ -57,8 +56,6 @@ void ConversationState::OnExit()
 
 void ConversationState::Shutdown()
 {
-	//UnloadRenderTexture(g_guiRenderTarget);
-	//UnloadRenderTexture(g_renderTarget);
 	
 }
 

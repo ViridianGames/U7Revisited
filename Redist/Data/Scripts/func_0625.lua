@@ -28,22 +28,22 @@ function func_0625(eventid, itemref)
     local2 = {307, 440}
     local3 = get_item_data(-356)
     if get_location() == 0 then -- Unmapped intrinsic
-        switch_talk_to(-259, 0)
+        switch_talk_to(259, 0)
         say("You see an irate guard.~~Years of indoctrination have instilled in him an overly developed sense of discipline~~and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.~~ \"Such behavior will never be tolerated inside the sanctuary of Trinsic's walls.~~Thy red cloak and blonde curls show only that thou art a vile imposter and not a true Avatar.~~To the Death!\"")
-        hide_npc(-259)
+        hide_npc(259)
         external_007CH() -- Unmapped intrinsic
         return
     end
 
     if local2[local1[local3]] then
-        switch_talk_to(-258, 0)
+        switch_talk_to(258, 0)
         say("The guard glares at you. \"Unrepentant scoundrel!\"")
-        hide_npc(-258)
+        hide_npc(258)
         external_007CH() -- Unmapped intrinsic
         return
     end
 
-    switch_talk_to(-258, 0)
+    switch_talk_to(258, 0)
     local4 = count_items(-359, -359, 644, -357) -- Unmapped intrinsic
     if get_random(1, 2) == 1 and local4 then
         say("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
@@ -81,7 +81,7 @@ function func_0625(eventid, itemref)
     local5 = get_answer()
     if not local5 then
         say("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
-        hide_npc(-258)
+        hide_npc(258)
         add_item(-356, 2, 5, {17447, 8046, 1573, 7765})
         local13 = add_item(-356, {1596, 8021, 1, 7719})
         return

@@ -12,7 +12,7 @@ function func_0410(eventid, itemref)
             apply_effect() -- Unmapped intrinsic 08AB
         end
 
-        switch_talk_to(-16, 0)
+        switch_talk_to(16, 0)
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(63) then
             add_answer({"test", "argument"})
@@ -127,7 +127,7 @@ function func_0410(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-16)
+        switch_talk_to(16)
     end
     return
 end

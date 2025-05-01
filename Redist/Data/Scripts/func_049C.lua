@@ -7,7 +7,7 @@ function func_049C(eventid, itemref)
         return
     end
 
-    switch_talk_to(-156, 0)
+    switch_talk_to(156, 0)
     local0 = get_player_name()
     local1 = get_random()
     local2 = false
@@ -52,7 +52,7 @@ function func_049C(eventid, itemref)
             if local5 then
                 say("\"What's this?\" she asks, taking the vial from you. She opens it up and sniffs. \"Very good quality. I wonder why he...\" she clutches her throat and gasps. You notice a wispy smoke rise from the top of the vial now spilling out of her hands. Choking, she falls to the ground, and dies.*")
                 set_flag(525, true)
-                set_schedule(-156, 1)
+                set_schedule(156, 1)
                 kill_actor(-156) -- Unmapped intrinsic
                 return
             else

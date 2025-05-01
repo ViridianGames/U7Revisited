@@ -3,11 +3,11 @@ function func_0436(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
     if eventid == 1 then
-        switch_talk_to(-54, 0)
+        switch_talk_to(54, 0)
         local0 = get_answer({"Avatar"})
         local1 = get_player_name()
         local2 = get_party_size()
-        local3 = switch_talk_to(-54)
+        local3 = switch_talk_to(54)
 
         if local3 == 7 then
             local4 = get_item_type(-39)
@@ -26,10 +26,10 @@ function func_0436(eventid, itemref)
                 say("The applause is tumultuous.*")
                 local6 = get_item_type(-1)
                 if local6 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"Hmmm. They must have seen thee coming, " .. local1 .. ".\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-54, 0)
+                    hide_npc(1)
+                    switch_talk_to(54, 0)
                 end
                 return
             else
@@ -48,14 +48,14 @@ function func_0436(eventid, itemref)
         if not get_flag(183) then
             say("You see a young, wiry teen.")
             if local6 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Hello, lad! This is " .. local0 .. ", the Avatar! This is my young apprentice, Coop. How go things, Coop?\"*")
-                switch_talk_to(-54, 0)
+                switch_talk_to(54, 0)
                 say("\"Not too badly, milord. I sold a triple crossbow this morning.\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Lovely! Lovely! Keep that gold coming in, that's what I always say!\"*")
-                hide_npc(-1)
-                switch_talk_to(-54, 0)
+                hide_npc(1)
+                switch_talk_to(54, 0)
             end
             set_flag(183, true)
         else
@@ -82,20 +82,20 @@ function func_0436(eventid, itemref)
             elseif answer == "responsibility" then
                 say("\"I sell many goods but I also plan to perpetuate the good name of Iolo by becoming a master archer! Iolo has taught me well!\"*")
                 if local6 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"Yes, the lad is good! He was good before I taught him the first lesson.\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-54, 0)
+                    hide_npc(1)
+                    switch_talk_to(54, 0)
                 end
                 say("\"What I would not give to join thy group and go adventuring! But, then there would be no one to run the shoppe. So I cannot go. But someday... Anyway, I please myself in the evenings by singing with a musical group.\"")
                 remove_answer("responsibility")
                 add_answer("singing")
             elseif answer == "Iolo" then
                 say("\"Hello, boss!\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Greetings, lad. Thou art looking well.\"*")
-                hide_npc(-1)
-                switch_talk_to(-54, 0)
+                hide_npc(1)
+                switch_talk_to(54, 0)
                 say("\"The same to thee, milord!\"*")
                 remove_answer("Iolo")
             elseif answer == "singing" then
@@ -117,7 +117,7 @@ function func_0436(eventid, itemref)
         end
     elseif eventid == 0 then
         local2 = get_party_size()
-        local3 = switch_talk_to(-54)
+        local3 = switch_talk_to(54)
         local7 = random(1, 4)
         local8 = ""
 
@@ -133,7 +133,7 @@ function func_0436(eventid, itemref)
             end
             item_say(local8, -54)
         else
-            switch_talk_to(-54)
+            switch_talk_to(54)
         end
     end
     return

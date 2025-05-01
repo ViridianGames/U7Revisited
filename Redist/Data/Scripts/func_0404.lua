@@ -9,7 +9,7 @@ function func_0404(eventid, itemref)
     local local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
 
     if eventid == 1 then
-        switch_talk_to(-4, 0)
+        switch_talk_to(4, 0)
         if not get_flag(747) then
             local flag_check = get_stat(11)
             if flag_check >= 1 then
@@ -19,7 +19,7 @@ function func_0404(eventid, itemref)
                 return
             else
                 say("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
-                switch_talk_to(-4)
+                switch_talk_to(4)
                 set_flag(747, false)
                 answers = {}
                 answer = nil
@@ -29,7 +29,7 @@ function func_0404(eventid, itemref)
 
         local0 = get_player_name()
         local1 = get_party_members()
-        local2 = switch_talk_to(-4)
+        local2 = switch_talk_to(4)
         local3 = get_player_name()
         local4 = get_item_type(-1)
         local5 = get_item_type(-3)
@@ -71,16 +71,16 @@ function func_0404(eventid, itemref)
         if answer == "name" then
             say("\"Why, dost thou not recognize me? It is I, Lord British!\" he laughs. \"Dost thou not know thy friend Dupre when thou seest him, " .. local3 .. "?\"")
             if local5 then
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"*")
-                hide_npc(-3)
-                switch_talk_to(-4, 0)
+                hide_npc(3)
+                switch_talk_to(4, 0)
                 say("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
             elseif local4 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"*")
-                hide_npc(-1)
-                switch_talk_to(-4, 0)
+                hide_npc(1)
+                switch_talk_to(4, 0)
                 say("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
             end
             remove_answer("name")
@@ -105,7 +105,7 @@ function func_0404(eventid, itemref)
             if local15 >= 8 then
                 say("\"It would be both an honor and a pleasure to join thee on thine adventures once again.\"")
                 set_flag(365, true)
-                switch_talk_to(-4)
+                switch_talk_to(4)
                 add_answer("leave")
             else
                 say("\"Hmm. Too crowded for my liking. Come back if thou shouldst diminish thy group by a member or two.\"")
@@ -118,14 +118,14 @@ function func_0404(eventid, itemref)
             return
         elseif answer == "go home" then
             say("\"I shall depart thy company if that is truly thy wish. If thou shouldst ever need me again, thou hast only to ask.\" He turns away from you, obviously disappointed.*")
-            switch_talk_to(-4, 11)
+            switch_talk_to(4, 11)
             set_flag(365, false)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"Very well. I shall await thy return.\"*")
-            switch_talk_to(-4, 15)
+            switch_talk_to(4, 15)
             set_flag(365, false)
             answers = {}
             answer = nil
@@ -182,12 +182,12 @@ function func_0404(eventid, itemref)
                 say("\"Terrible what happened to our poor friend Iolo. We must try and get his body to a healer while there may still be time to revive him. I do miss him so.\"")
             elseif local4 then
                 say("\"" .. local3 .. ", there is a strange old man following thee, and he bears a vague resemblance to Iolo! It is most odd.\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Thy drinking must have blurred thy vision, Sir Dupre.\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Then thou hadst better join me for one later. It will give thee the chance to catch up to me.\"")
-                hide_npc(-1)
-                switch_talk_to(-4, 0)
+                hide_npc(1)
+                switch_talk_to(4, 0)
             else
                 say("\"We should find that rascal Iolo and have him join us as well.\"")
             end
@@ -200,12 +200,12 @@ function func_0404(eventid, itemref)
                 say("\"A sad fate to befall our fine comrade Shamino. He will be sorely missed. We must try and get his remains to a healer. Perhaps he may still be revived.\"")
             elseif local5 then
                 say("Sir Dupre snorts, \"From what I had heard Shamino was all but settled down and retired from the adventuring life.\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"I still have a few wild oats left to sow, thank thee very much.\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Then it is good to see another member of our old sowing circle once again!\"")
-                hide_npc(-3)
-                switch_talk_to(-4, 0)
+                hide_npc(3)
+                switch_talk_to(4, 0)
             else
                 say("\"Let us go and find Shamino and make this a proper reunion!\"")
             end
@@ -236,7 +236,7 @@ function func_0404(eventid, itemref)
     end
 
     if eventid == 0 then
-        switch_talk_to(-4)
+        switch_talk_to(4)
         answers = {}
         answer = nil
     end

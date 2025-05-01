@@ -7,7 +7,7 @@ function func_060A(eventid, itemref)
     end
 
     if get_schedule(-232) == 9 then
-        set_schedule(-232, 10)
+        set_schedule(232, 10)
     end
 
     local0 = add_item(0, 7, 520, itemref)
@@ -86,7 +86,7 @@ function func_060A(eventid, itemref)
                 set_item_quality(local16, local17)
                 set_item_owner(local13, local17)
             end
-            set_schedule(-232, local12)
+            set_schedule(232, local12)
             if local12 then
                 item_say("@A winner on " .. local6 .. ".@", -232)
             end

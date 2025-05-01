@@ -7,7 +7,7 @@ function func_049F(eventid, itemref)
         return
     end
 
-    switch_talk_to(-159, 0)
+    switch_talk_to(159, 0)
     local0 = get_player_name()
     local1 = get_party_size()
     local2 = get_random()

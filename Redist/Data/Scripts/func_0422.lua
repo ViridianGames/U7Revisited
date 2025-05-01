@@ -3,9 +3,9 @@ function func_0422(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-34, 0)
+        switch_talk_to(34, 0)
         local0 = get_schedule()
-        local1 = switch_talk_to(-34)
+        local1 = switch_talk_to(34)
         local2 = get_item_type()
 
         if local0 == 7 then
@@ -46,17 +46,17 @@ function func_0422(eventid, itemref)
                 if local1 == 7 then
                     local4 = get_item_type(-2)
                     if local4 then
-                        switch_talk_to(-2, 0)
+                        switch_talk_to(2, 0)
                         say("\"Whew! Dost thou smell what I smell, Avatar?\"*")
-                        hide_npc(-2)
+                        hide_npc(2)
                     end
                     local5 = get_item_type(-1)
                     if local5 then
-                        switch_talk_to(-1, 0)
+                        switch_talk_to(1, 0)
                         say("\"I believe that is the smell of diapers, boy. When thou art a father one day, thou wilt come to know that smell quite well.\"*")
-                        hide_npc(-1)
+                        hide_npc(1)
                     end
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                 end
                 remove_answer("Royal Nursery")
             elseif answer == "nanny" then
@@ -110,7 +110,7 @@ function func_0422(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-34)
+        switch_talk_to(34)
     end
     return
 end

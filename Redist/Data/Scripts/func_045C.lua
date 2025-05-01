@@ -3,10 +3,10 @@ function func_045C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13
 
     if eventid == 1 then
-        switch_talk_to(-92, 0)
+        switch_talk_to(92, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-92)
+        local2 = switch_talk_to(92)
 
         add_answer({"bye", "job", "name"})
 
@@ -38,12 +38,12 @@ function func_045C(eventid, itemref)
                     say("He coughs into the rag he had just been using to polish the bar.")
                     local3 = get_item_type(-4)
                     if local3 then
-                        switch_talk_to(-4, 0)
+                        switch_talk_to(4, 0)
                         say("\"Hello again, Sir Dupre! Didst thou enjoy mine establishment so much that thou hast returned?\"*")
-                        switch_talk_to(-92, 0)
+                        switch_talk_to(92, 0)
                         say("\"My dear Rutherford, this is not a reflection on The Checquered Cork, but I simply like a good drink!\"*")
-                        hide_npc(-4)
-                        switch_talk_to(-92, 0)
+                        hide_npc(4)
+                        switch_talk_to(92, 0)
                     end
                     add_answer({"room", "buy", "events", "Minoc"})
                 else
@@ -132,7 +132,7 @@ function func_045C(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-92)
+        switch_talk_to(92)
     end
     return
 end

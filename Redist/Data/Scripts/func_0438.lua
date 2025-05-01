@@ -3,7 +3,7 @@ function func_0438(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-56, 0)
+        switch_talk_to(56, 0)
         local0 = get_player_name()
         local1 = get_item_type()
         local2 = get_party_size()
@@ -80,7 +80,7 @@ function func_0438(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-56)
+        switch_talk_to(56)
     end
     return
 end

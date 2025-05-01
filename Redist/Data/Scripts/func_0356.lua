@@ -6,7 +6,7 @@ function func_0356H(eventid, itemref)
         end
         local frame = get_item_frame(itemref)
         if frame == 16 then
-            switch_talk_to(-287, 0)
+            switch_talk_to(287, 0)
             if not get_flag(0x030C) then
                 say(0, '"Our gratitude is thine, Avatar. Thou hast saved Britannia from what might have become a second Age of Darkness. Again, thou dost prove thy worthiness to be the instrument of Lord British."')
                 return
@@ -29,7 +29,7 @@ function func_0356H(eventid, itemref)
                 return
             end
         elseif frame == 14 then
-            switch_talk_to(-287, 1)
+            switch_talk_to(287, 1)
             if not get_flag(0x030C) then
                 say(0, '"Thy Love for life is boundless. Thine heart-felt actions are a shining example to all of Britannia."')
                 return
@@ -44,7 +44,7 @@ function func_0356H(eventid, itemref)
             end
             return
         elseif frame == 15 then
-            switch_talk_to(-287, 2)
+            switch_talk_to(287, 2)
             if not get_flag(0x030C) then
                 say(0, '"Thine onus is abated and Britannia is free of Exodus\' grasp once more. Thy deeds will long be rembered as the most courageous in the history of this land."')
                 return
@@ -62,16 +62,16 @@ function func_0356H(eventid, itemref)
     elseif eventid == 4 then
         local frame = get_item_frame(itemref)
         if frame == 16 then
-            switch_talk_to(-287, 0)
+            switch_talk_to(287, 0)
             say(0, '"Thou hast mastered the Test of Truth, and so a boon of great intellect and magical ability will be bestowed upon thee. Use -- and respect -- thy powers well, Avatar."')
         elseif frame == 14 then
-            switch_talk_to(-287, 1)
+            switch_talk_to(287, 1)
             say(0, '"My heart is gladdened to learn that Love is a Principle thou dost hold dear, evident by thy successful completion of the Test of Love. Now, then, shall a blessing of quickness and skill be thine."')
         elseif frame == 15 then
-            switch_talk_to(-287, 2)
+            switch_talk_to(287, 2)
             say(0, '"Well done, mighty warrior! The unsurpassed Courage which flows through thy veins could be none other than that of the Avatar. Thou hast proven thyself worthy of the reward of Courage with Valor, Sacrifice, Honor, and Spirituality... Receive it now in Humility."')
         end
-        hide_npc(-287)
+        hide_npc(287)
         local arr = {7719, 2, 8033, 8044, 17447, 10, 8045, 17447, 2, 8044, 17447, 2}
         execute_action(-356, arr, check_item_state(-356)) -- TODO: Implement LuaCheckItemState for callis 001B.
         local arr2 = {7719, 8, 8021, 854}
@@ -96,7 +96,7 @@ function func_0356H(eventid, itemref)
                 local arr = {7719, 15, 8021, 854}
                 execute_action(itemref, arr)
             else
-                switch_talk_to(-287, 0)
+                switch_talk_to(287, 0)
                 say(0, '"Thou hast now experienced the full meaning of the Principle of Truth. The value of such is beyond measure, for truth shall guide thee throughout thy life\'s endeavors."')
                 say(0, 'The statue\'s voice takes on a warning tone. "Know this Truth: the Psyche returns to the Core..." With that said, the statue becomes quiet once more.')
                 set_flag(0x0317, false)
@@ -118,7 +118,7 @@ function func_0356H(eventid, itemref)
                 local arr = {7719, 15, 8021, 854}
                 execute_action(itemref, arr)
             else
-                switch_talk_to(-287, 1)
+                switch_talk_to(287, 1)
                 say(0, '"Now hast thou earnestly experienced all that is Love. \'Tis a benefit never to be taken lightly, for Love is a formidable motivator. Remember always the lessons in Compassion, Sacrifice, and Justice thou hast mastered."')
                 say(0, 'The voice of the Keeper of Love fills with compassion as she speaks. "Do have a care, Avatar. For a great evil stirs within Britannia, I know not the source."')
                 set_flag(0x0317, false)
@@ -140,7 +140,7 @@ function func_0356H(eventid, itemref)
                 local arr = {7719, 15, 8021, 854}
                 execute_action(itemref, arr)
             else
-                switch_talk_to(-287, 2)
+                switch_talk_to(287, 2)
                 say(0, 'Urgency breaks into the voice of the statue. "I lay upon thee a geas, and as thou art the Avatar, thou art bound to respond. Thy quest is to seek the Talisman of Infinity. Within this castle there lies a scroll which can tell thee of its use. Go now, for time grows short.')
                 set_flag(0x0317, false)
                 return

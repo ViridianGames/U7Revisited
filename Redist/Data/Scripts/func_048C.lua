@@ -3,7 +3,7 @@ function func_048C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
     if eventid == 1 then
-        switch_talk_to(-140, 0)
+        switch_talk_to(140, 0)
         if not get_flag(436) then
             say("This undead fellow looks through you. Though he is obviously aware of his surroundings, you are quite sure that he doesn't even see you.*")
             return
@@ -32,21 +32,21 @@ function func_048C(eventid, itemref)
                 end
             end
         end
-        local5 = switch_talk_to(-144)
+        local5 = switch_talk_to(144)
         if local5 then
             say("\"Oh, hello there, lady Rowena. 'Tis good to see ye again. It brings a ray o' sunshine into this old man's heart ta see yer beauteous face,\" he says, smiling.*")
-            switch_talk_to(-144, 0)
+            switch_talk_to(144, 0)
             say("She curtsies delicately and smiles back.~~\"Hello, Markham. It is good, indeed, to see that none of this horrible business can keep thee from giving a lady a compliment.\"*")
-            hide_npc(-144)
-            switch_talk_to(-140, 0)
+            hide_npc(144)
+            switch_talk_to(140, 0)
         end
-        local6 = switch_talk_to(-147)
+        local6 = switch_talk_to(147)
         if local6 then
             say("\"Oh, uh, hello there Mayor. I thought ye were sequestered in the Town Hall. Well, uh, it's good ta see ya again.\"*")
-            switch_talk_to(-147, 0)
+            switch_talk_to(147, 0)
             say("\"Yes, well, it is good to see thee again, too.\"*")
-            hide_npc(-147)
-            switch_talk_to(-140, 0)
+            hide_npc(147)
+            switch_talk_to(140, 0)
             set_flag(445, true)
         end
         if not get_flag(452) then
@@ -60,16 +60,16 @@ function func_048C(eventid, itemref)
             local answer = get_answer()
             if answer == "name" then
                 say("The heavy-set zombie wipes his mouth off on the back of his hand. \"I be Markham. Markham o' the Keg.\" He pats the large keg of wine he carries.")
-                local7 = switch_talk_to(-145)
+                local7 = switch_talk_to(145)
                 if local7 and not get_flag(441) then
                     if not local2 then
-                        hide_npc(-146)
+                        hide_npc(146)
                     end
                     if not get_flag(420) then
-                        switch_talk_to(-145, 0)
+                        switch_talk_to(145, 0)
                         say("The lovely " .. local0 .. " strolls over and pats Markham's rather large belly. \"Yes, he's Markham of the Keg, all right.\" She smiles sweetly down at the older man.*")
-                        hide_npc(-145)
-                        switch_talk_to(-140, 0)
+                        hide_npc(145)
+                        switch_talk_to(140, 0)
                         say("\"That's enough of that!\" Markham smacks the pretty young woman on her ghostly posterior.~~ \"Make yerself useful and fetch me a haunch o' venison.\" She turns away, giggling. He looks at you with a mirthful expression, \"I just don't know what I'm goin' ta do with that girl.\"")
                     end
                 end
@@ -80,12 +80,12 @@ function func_048C(eventid, itemref)
             elseif answer == "fire" then
                 say("He looks uncomfortable, \"Caine blew the town to the four winds, and now we're all trapped here, slaves of that bastard Horance.\" Tiny blue flames appear in the pupils of his glazed eyes, then go out as he regains his composure.")
                 add_answer({"Horance", "Caine"})
-                local8 = switch_talk_to(-146)
+                local8 = switch_talk_to(146)
                 if local8 and get_flag(442) then
-                    switch_talk_to(-146, 0)
+                    switch_talk_to(146, 0)
                     say("\"Please, Markham. Have a little pity for Caine. He was trying to create something to save the town when he made his fatal mistake.\" The pale ghost looks deeply troubled.")
-                    hide_npc(-146)
-                    switch_talk_to(-140, 0)
+                    hide_npc(146)
+                    switch_talk_to(140, 0)
                     local2 = true
                     local1 = "yer right Quen,"
                 end
@@ -105,10 +105,10 @@ function func_048C(eventid, itemref)
             elseif answer == "Horance" then
                 say("\"For all the years I've been in Skara Brae, he's been a raving lunatic. What with all o' them silly rhymes and his crazy laughter.~~\"Then one night, we all hears thunder when there isn't a cloud in the starry sky, and I seem to recall a full moon...\" He gets a thoughtful look on his face. \"But as I was sayin', there was this thunder, then this deep, dark laughter coming from the tower on the northern point -- Horance's Dark Tower.\" After this he falls silent for a moment.")
                 if local2 then
-                    switch_talk_to(-146, 0)
+                    switch_talk_to(146, 0)
                     say("The pale ghost moves forward and whispers, \"I was already living in the half world of the dead when these events took place, and ever since, I've felt a strange pull coming from the tower.\"*")
-                    hide_npc(-146)
-                    switch_talk_to(-140, 0)
+                    hide_npc(146)
+                    switch_talk_to(140, 0)
                 end
                 say("After a brief swig, he continues, \"Then, even worse... I'm out checkin' on the cows when I hears a sound like moanin'. It's off to the east, so I look that way, into the graveyard y'know, and what do I see?~~\"I'll tell ya what I seen. The graves, rippin' open like the people in 'em got a place to go.\" Eyes wide, he tips back another sip.")
                 remove_answer("Horance")

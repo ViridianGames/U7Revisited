@@ -9,61 +9,61 @@ function func_087B()
     say("\"Now I would like to hear from our members who have gathered here this evening. Share with us how The Fellowship has helped thee!\"")
     local0 = external_08F7H(-82) -- Unmapped intrinsic
     if not local0 then
-        switch_talk_to(-82, 0)
+        switch_talk_to(82, 0)
         say("\"The Fellowship has improved mine ability to run my business,\" says Gregor.*")
-        hide_npc(-82)
+        hide_npc(82)
     end
     local1 = external_08F7H(-90) -- Unmapped intrinsic
     if not local1 then
-        switch_talk_to(-90, 0)
+        switch_talk_to(90, 0)
         say("\"The Fellowship has taught me how to face mine own potential for greatness unquestioningly,\" says Owen.*")
-        switch_talk_to(-81, 0)
+        switch_talk_to(81, 0)
         say("\"Thank thee for sharing, brother!\"*")
-        hide_npc(-90)
+        hide_npc(90)
     end
     local2 = external_08F7H(-91) -- Unmapped intrinsic
     if not local2 then
-        switch_talk_to(-91, 0)
+        switch_talk_to(91, 0)
         say("You notice that Burnside has apparently nodded off. After a nudge from the person next to him, his eyes pop open. \"Umm... what was that question again...?\" he asks sheepishly.*")
-        hide_npc(-91)
+        hide_npc(91)
     end
     local3 = external_08F7H(-93) -- Unmapped intrinsic
     if not local3 then
-        switch_talk_to(-93, 0)
+        switch_talk_to(93, 0)
         say("\"The Fellowship has helped me to have more courage to deal with the unexpected terrors of life,\" says William.*")
-        hide_npc(-93)
+        hide_npc(93)
     end
     local4 = external_08F7H(-97) -- Unmapped intrinsic
     if not local4 then
-        switch_talk_to(-97, 0)
+        switch_talk_to(97, 0)
         say("\"The Fellowship has helped me to have the firm hand that is necessary as the supervisor of the mine,\" says Mikos.*")
-        hide_npc(-97)
+        hide_npc(97)
     end
     local5 = external_08F7H(-2) -- Unmapped intrinsic
     if not local5 then
-        switch_talk_to(-2, 0)
+        switch_talk_to(2, 0)
         say("\"Everything about this Fellowship gives me the creeps!\" says Spark.*")
-        hide_npc(-2)
+        hide_npc(2)
     end
     local6 = external_08F7H(-1) -- Unmapped intrinsic
     if not local6 then
-        switch_talk_to(-1, 0)
+        switch_talk_to(1, 0)
         say("\"Elynor is certainly going out of her way to make them feel like they are persecuted,\" says Iolo.*")
-        hide_npc(-1)
+        hide_npc(1)
     end
     local7 = external_08F7H(-3) -- Unmapped intrinsic
     if not local7 then
-        switch_talk_to(-3, 0)
+        switch_talk_to(3, 0)
         say("\"These Fellowship members seem fixated upon their own personal gain and very little else,\" says Shamino.*")
-        hide_npc(-3)
+        hide_npc(3)
     end
     local8 = external_08F7H(-4) -- Unmapped intrinsic
     if not local8 then
-        switch_talk_to(-4, 0)
+        switch_talk_to(4, 0)
         say("\"Why are these people so fascinated by The Fellowship anyway? I do not understand it.\"*")
-        hide_npc(-4)
+        hide_npc(4)
     end
-    switch_talk_to(-81, 0)
+    switch_talk_to(81, 0)
     say("With that Elynor is once again the center of attention of the meeting. \"Let us now begin our evening's meditations.\" After a few minutes of silence you begin to realize that this meditation is going to continue for quite some time and that now might be a good time to leave inconspicuously.*")
     abort()
     return

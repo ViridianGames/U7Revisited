@@ -3,7 +3,7 @@ function func_0427(eventid, itemref)
     local local0, local1
 
     if eventid == 1 then
-        switch_talk_to(-39, 0)
+        switch_talk_to(39, 0)
         local0 = get_schedule()
 
         if local0 == 7 then
@@ -53,7 +53,7 @@ function func_0427(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-39)
+        switch_talk_to(39)
     end
     return
 end

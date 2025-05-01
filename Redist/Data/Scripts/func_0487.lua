@@ -3,11 +3,11 @@ function func_0487(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-135, 0)
+        switch_talk_to(135, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-134)
-        local3 = switch_talk_to(-136)
+        local2 = switch_talk_to(134)
+        local3 = switch_talk_to(136)
 
         add_answer({"bye", "job", "name"})
         if not get_flag(381) then
@@ -36,22 +36,22 @@ function func_0487(eventid, itemref)
             elseif answer == "Robin" then
                 say("\"Robin be a high stakes gamblin' gent who makes his living inna casino at Buccaneer's Den.\"")
                 if local2 then
-                    switch_talk_to(-134, 0)
+                    switch_talk_to(134, 0)
                     say("\"A living that would not have been anything near as profitable if not for thy good works, Battles.\"*")
-                    switch_talk_to(-135, 0)
+                    switch_talk_to(135, 0)
                     say("\"Thank yer, Milord.\"*")
-                    hide_npc(-134)
-                    switch_talk_to(-135, 0)
+                    hide_npc(134)
+                    switch_talk_to(135, 0)
                 end
                 remove_answer("Robin")
                 add_answer({"casino", "gamblin' gent"})
             elseif answer == "gamblin' gent" then
                 say("\"Gamblin' is how Robin makes his living. I do not think he has had a regular post in all of his life!\"")
                 if local2 then
-                    switch_talk_to(-134, 0)
+                    switch_talk_to(134, 0)
                     say("\"Why, I thank thee for the compliment, Battles!\"*")
-                    hide_npc(-134)
-                    switch_talk_to(-135, 0)
+                    hide_npc(134)
+                    switch_talk_to(135, 0)
                 end
                 remove_answer("gamblin' gent")
             elseif answer == "casino" then
@@ -60,22 +60,22 @@ function func_0487(eventid, itemref)
             elseif answer == "Leavell" then
                 say("\"He's a lady's man, he is. But do not be thinkin' he cannot handle hissel' inna fight. T'would be yer last mistake.\"")
                 if local3 then
-                    switch_talk_to(-136, 0)
+                    switch_talk_to(136, 0)
                     say("\"I can near out wrestle thee, Battles, ye old dog!\"*")
-                    switch_talk_to(-135, 0)
+                    switch_talk_to(135, 0)
                     say("\"Har! Har! Har! Har!\"")
-                    hide_npc(-136)
-                    switch_talk_to(-135, 0)
+                    hide_npc(136)
+                    switch_talk_to(135, 0)
                 end
                 remove_answer("Leavell")
                 add_answer({"fight", "lady's man"})
             elseif answer == "lady's man" then
                 say("\"Why, I reckon Leavell has broken near as many hearts as I have made stop beating!\"")
                 if local3 then
-                    switch_talk_to(-136, 0)
+                    switch_talk_to(136, 0)
                     say("\"So many!\"*")
-                    hide_npc(-136)
-                    switch_talk_to(-135, 0)
+                    hide_npc(136)
+                    switch_talk_to(135, 0)
                 end
                 remove_answer("lady's man")
             elseif answer == "fight" then
@@ -104,7 +104,7 @@ function func_0487(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-135)
+        switch_talk_to(135)
     end
     return
 end

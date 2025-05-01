@@ -13,11 +13,11 @@ function func_0406(eventid, itemref)
         local1 = "Avatar"
         local2 = get_party_members()
         local3 = false
-        local4 = switch_talk_to(-6)
+        local4 = switch_talk_to(6)
         local5 = get_item_type(-10)
         local6 = has_item(-359, -359, 772, 1, -357)
 
-        switch_talk_to(-6, 0)
+        switch_talk_to(6, 0)
 
         if not get_flag(25) then
             local7 = local0
@@ -47,10 +47,10 @@ function func_0406(eventid, itemref)
                 return
             end
             if local5 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Boy, this is the Avatar! Upon my word he is! He has come to help thee!\"*")
-                hide_npc(-1)
-                switch_talk_to(-6, 0)
+                hide_npc(1)
+                switch_talk_to(6, 0)
             end
             say("\"You are greeted.\"")
             set_flag(25, true)
@@ -182,7 +182,7 @@ function func_0406(eventid, itemref)
         return
     elseif eventid == 0 then
         local12 = get_schedule()
-        local13 = switch_talk_to(-6)
+        local13 = switch_talk_to(6)
         local14 = check_item_state(-6)
         local15 = random(1, 4)
         local6 = has_item(-359, -359, 772, 1, -357)

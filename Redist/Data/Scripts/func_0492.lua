@@ -3,7 +3,7 @@ function func_0492(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
 
     if eventid == 1 then
-        switch_talk_to(-146, 0)
+        switch_talk_to(146, 0)
         if not get_flag(442) then
             say("The pale ghost seems to see you but cannot speak to you for some reason. In frustration the ghost turns away.*")
             return
@@ -11,7 +11,7 @@ function func_0492(eventid, itemref)
 
         local0 = false
         local1 = get_player_name()
-        local2 = switch_talk_to(-140)
+        local2 = switch_talk_to(140)
         if get_flag(452) then
             local3 = "Markham"
         else
@@ -30,34 +30,34 @@ function func_0492(eventid, itemref)
 
         if local7 or local8 then
             if local7 then
-                switch_talk_to(-144, 0)
+                switch_talk_to(144, 0)
                 say("\"Hello, Quenton. I hope thou art doing well.\" Rowena gives the pale ghost a winning smile.*")
-                hide_npc(-144)
-                switch_talk_to(-146, 0)
+                hide_npc(144)
+                switch_talk_to(146, 0)
                 say("\"Yes, milady. I am doing as well as can be expected. It gladdens mine heart to see that thou art once again free. Hast thou been to see Trent yet?\"*")
-                switch_talk_to(-144, 0)
+                switch_talk_to(144, 0)
                 say("\"Alas, no. This kind person is taking me to him.\" She indicates you.*")
-                hide_npc(-144)
-                switch_talk_to(-146, 0)
+                hide_npc(144)
+                switch_talk_to(146, 0)
                 say("\"These are glad tidings, for he misses thee so.\"*")
             end
             if local8 then
-                switch_talk_to(-147, 0)
+                switch_talk_to(147, 0)
                 say("\"Well met, Quenton.\" The Mayor's mustache spreads as he smiles.*")
-                hide_npc(-147)
-                switch_talk_to(-146, 0)
+                hide_npc(147)
+                switch_talk_to(146, 0)
                 say("\"Hello, Mayor. How dost thou fare, milord?\"*")
-                switch_talk_to(-147, 0)
+                switch_talk_to(147, 0)
                 say("Forsythe seems taken aback by Quenton's sincere sounding query. \"Why, I fare well, Quenton. I thank thee for thy concern.\"*")
-                hide_npc(-147)
-                switch_talk_to(-146, 0)
+                hide_npc(147)
+                switch_talk_to(146, 0)
                 say("He smiles in acknowledgement of the Mayor's thanks.*")
             end
             local9 = true
         end
 
         if not local9 then
-            switch_talk_to(-146, 0)
+            switch_talk_to(146, 0)
         end
 
         if not get_flag(459) then
@@ -95,10 +95,10 @@ function func_0492(eventid, itemref)
                 say("\"After I was murdered, my good friend, Yorl, cared for her as his own. He tried his best, but her sickness only worsened. After several months she weakened, and died.\" He stops here, tears filling his ghostly eyes, then, angrily, he says, \"And now her spirit is held by Horance the Liche. Thou must rescue her from that foul beast!\" He attempts to grab you, but his hands pass through without resistance.*")
                 if local2 then
                     if not get_flag(436) then
-                        switch_talk_to(-140, 0)
+                        switch_talk_to(140, 0)
                         say("\"Now, now, Quen. Settle down.\" " .. local3 .. " moves closer to you and whispers, \"Fergive him, " .. local1 .. ".~~\"He sometimes loses control like that when he talks about his daughter. Sure'n ya can understand, tho'.\"*")
-                        hide_npc(-140)
-                        switch_talk_to(-146, 0)
+                        hide_npc(140)
+                        switch_talk_to(146, 0)
                     end
                 else
                     say("Quenton regains control of himself. \"Forgive me, " .. local1 .. ". I've no right to inflict my woes upon thee. It hurts to think of my sweet Marney in the power of that... creature.\"")
@@ -112,19 +112,19 @@ function func_0492(eventid, itemref)
                 say("\"Once, over two centuries ago, I knew a gifted mage named Horance. His two loves in life were the study of magic, and writing lovely poetry. The people of Skara Brae felt safe in the knowledge that this sort of mage protected the town. Then he began to change.~~\"First his beautiful sonnets became a rhyming doggerel. It became the only way in which he would speak. His spells, which he displayed before the townsfolk, became destructive and violent. People began to fear him. My death occurred at about this time. Not long after that, he became reclusive. He had a tower built on the northern point and never removed himself from it.~~ \"Then, one night, the graves in the graveyard opened and the dead began to walk.\"*")
                 if local2 then
                     if not get_flag(436) then
-                        switch_talk_to(-140, 0)
+                        switch_talk_to(140, 0)
                         say(local3 .. " nods his head emphatically, \"'At's right, I seen it, I did.\"*")
-                        hide_npc(-140)
-                        switch_talk_to(-146, 0)
+                        hide_npc(140)
+                        switch_talk_to(146, 0)
                     end
                 end
                 say("\"They marched to his tower, and now they roam all over the island, performing his bidding.\"*")
                 if local2 then
                     if not get_flag(436) then
-                        switch_talk_to(-140, 0)
+                        switch_talk_to(140, 0)
                         say("\"It be gettin' so's a ghost cannot make an honest livin' no more. Hmph.\" " .. local3 .. " looks a bit disgruntled.*")
-                        hide_npc(-140)
-                        switch_talk_to(-146, 0)
+                        hide_npc(140)
+                        switch_talk_to(146, 0)
                     end
                 end
                 remove_answer("Liche")

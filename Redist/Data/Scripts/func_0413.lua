@@ -7,10 +7,10 @@ function func_0413(eventid, itemref)
         local0 = get_schedule()
         local1 = get_player_name()
         local2 = get_player_name()
-        local3 = switch_talk_to(-19)
+        local3 = switch_talk_to(19)
         local4 = is_player_female()
 
-        switch_talk_to(-19, 0)
+        switch_talk_to(19, 0)
         add_answer({"bye", "murder", "job", "name"})
         if local3 == 23 then
             add_answer({"buy", "room", "drink", "food"})
@@ -96,7 +96,7 @@ function func_0413(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-19)
+        switch_talk_to(19)
     end
     return
 end

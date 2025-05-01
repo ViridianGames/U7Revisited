@@ -3,8 +3,8 @@ function func_0431(eventid, itemref)
     local local0, local1
 
     if eventid == 1 then
-        switch_talk_to(-49, 0)
-        local0 = switch_talk_to(-49)
+        switch_talk_to(49, 0)
+        local0 = switch_talk_to(49)
         local1 = false
 
         add_answer({"bye", "job", "name"})
@@ -51,7 +51,7 @@ function func_0431(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-49)
+        switch_talk_to(49)
     end
     return
 end

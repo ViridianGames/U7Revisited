@@ -5,7 +5,7 @@ function func_0326H(eventid, itemref)
     end
     local state = check_item_state(itemref) -- TODO: Implement LuaCheckItemState for callis 001B.
     local state2 = check_item_state2(itemref) -- TODO: Implement LuaCheckItemState2 for callis 001C.
-    switch_talk_to(-259, 0)
+    switch_talk_to(259, 0)
     add_answer({"bye", "job", "name"})
     if not get_flag(0x003D) then
         add_answer("password")

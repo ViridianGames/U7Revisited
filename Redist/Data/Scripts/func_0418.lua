@@ -6,7 +6,7 @@ function func_0418(eventid, itemref)
         return
     end
 
-    switch_talk_to(-24, 0)
+    switch_talk_to(24, 0)
     add_answer({"bye", "job", "name"})
 
     if not get_flag(153) then
@@ -42,10 +42,10 @@ function func_0418(eventid, itemref)
                 say("\"Sometimes the magic works, sometimes it doth not.\" He waves his hand, and drops his wand. \"Oops!\" he cries, as he bends to pick it up.")
                 local0 = get_item_type(-2)
                 if local0 then
-                    switch_talk_to(-2, 0)
+                    switch_talk_to(2, 0)
                     say("\"Art thou sure this man is not really the jester?\"")
-                    hide_npc(-2)
-                    switch_talk_to(-24, 0)
+                    hide_npc(2)
+                    switch_talk_to(24, 0)
                 end
                 say("\"Anyway, as I was saying, uhm, what was I saying? Oh yes. Magic. I can still sell thee some spells or reagents if thou wouldst like.\"")
             else

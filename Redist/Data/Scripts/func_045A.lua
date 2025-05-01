@@ -3,9 +3,9 @@ function func_045A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17
 
     if eventid == 1 then
-        switch_talk_to(-90, 0)
+        switch_talk_to(90, 0)
         local0 = get_party_size()
-        local1 = switch_talk_to(-90)
+        local1 = switch_talk_to(90)
         local2 = get_player_name()
         local3 = false
         local4 = get_item_type()
@@ -37,7 +37,7 @@ function func_045A(eventid, itemref)
         if not get_flag(277) then
             say("You see a young man dressed in an expensive tunic. He is very serious.")
             set_flag(277, true)
-            switch_talk_to(-90, 11)
+            switch_talk_to(90, 11)
         else
             say("Owen looks at you and sniffs. \"It would appear thou dost wish to speak with me again.\"")
         end
@@ -226,7 +226,7 @@ function func_045A(eventid, itemref)
             elseif answer == "tribute" then
                 say("\"I know! My work will stand as my monument! My name will endure long after any statue has worn away to dust! People will remember -me-, I promise thee that!\"")
                 say("And, with a dramatic flourish, Owen produces a dagger. Before you can stop him, he plunges it into his chest. He coughs loudly as blood spurts from his mouth, soaking his fine linen tunic in wine-red guilt. After a moment, it is all over. Owen, the greatest shipwright who ever lived, is dead.*")
-                switch_talk_to(-90)
+                switch_talk_to(90)
                 kill_npc(100) -- Unmapped intrinsic 0911
                 return
             elseif answer == "Crown Jewel" then
@@ -255,7 +255,7 @@ function func_045A(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-90)
+        switch_talk_to(90)
     end
     return
 end

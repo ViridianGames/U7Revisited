@@ -3,7 +3,7 @@ function func_0421(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-33, 0)
+        switch_talk_to(33, 0)
         local0 = get_item_type(-34)
 
         add_answer({"bye", "job", "name"})
@@ -18,10 +18,10 @@ function func_0421(eventid, itemref)
             local answer = get_answer()
             if answer == "name" then
                 if local0 then
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"His name is Nicholas.\"")
-                    hide_npc(-34)
-                    switch_talk_to(-33, 0)
+                    hide_npc(34)
+                    switch_talk_to(33, 0)
                 else
                     say("\"Nick-las\".")
                 end
@@ -32,14 +32,14 @@ function func_0421(eventid, itemref)
                     say("The toddler is obviously deeply engaged in a game of tag and will not stop to speak.*")
                     return
                 elseif local0 then
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"Why, his job is to wet his diaper! Is that not right, Nicholas?\" Nanna says in baby-talk.")
-                    switch_talk_to(-33, 0)
+                    switch_talk_to(33, 0)
                     say("\"Whee! Dia-per!\"")
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"Nicholas is one of our orphans. He was left in front of the castle one morning. 'Tis a sad state of affairs when this kind of thing happens.\"")
-                    hide_npc(-34)
-                    switch_talk_to(-33, 0)
+                    hide_npc(34)
+                    switch_talk_to(33, 0)
                 else
                     say("\"Whee! Dia-per!\"")
                 end
@@ -47,17 +47,17 @@ function func_0421(eventid, itemref)
             elseif answer == "wet" then
                 say("You notice that Nicholas' diaper is wet.")
                 if local0 then
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"Oh, my. He's wet, is he not? Couldst thou be a dear and change him for me? I would appreciate it!\"")
-                    hide_npc(-34)
+                    hide_npc(34)
                 end
                 say("\"Yeeee! Dia-per! Geeee!\" Nicholas says happily.")
                 remove_answer("wet")
             elseif answer == "diaper" then
                 if local0 then
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"The diapers are there on that table. If thou wouldst just use one on Nicholas...\"")
-                    hide_npc(-34)
+                    hide_npc(34)
                 else
                     say("Nicholas points to the diapers on the table.")
                 end
@@ -68,7 +68,7 @@ function func_0421(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        local1 = switch_talk_to(-33)
+        local1 = switch_talk_to(33)
         local2 = check_item_state(-33)
         if local2 == 25 then
             local3 = random(1, 4)

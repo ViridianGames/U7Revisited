@@ -6,7 +6,7 @@ function func_046B(eventid, itemref)
         return
     end
 
-    switch_talk_to(-107, 0)
+    switch_talk_to(107, 0)
     local0 = get_answer({"Avatar"})
     local1 = local0
     local2 = get_player_name()

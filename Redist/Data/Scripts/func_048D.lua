@@ -4,14 +4,14 @@ function func_048D(eventid, itemref)
 
     if eventid == 1 then
         if not get_flag(437) then
-            switch_talk_to(-141, 0)
+            switch_talk_to(141, 0)
             say("You attempt to speak to the undead creature, but it does not, or cannot, respond.*")
             return
         end
 
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-144)
+        local2 = switch_talk_to(144)
         local3 = false
         if not get_flag(419) then
             if not get_flag(427) then
@@ -24,7 +24,7 @@ function func_048D(eventid, itemref)
             apply_effect() -- Unmapped intrinsic
         end
         if not get_flag(426) then
-            switch_talk_to(-141, 0)
+            switch_talk_to(141, 0)
         end
         local4 = get_part_of_day()
         local5 = get_schedule(-141)
@@ -40,25 +40,25 @@ function func_048D(eventid, itemref)
                 say("The Liche practically glows, power coursing visibly through its undead veins.")
             end
             say("You step forward to confront this vile-looking creature and he slowly turns to face you. As his intense gaze locks onto your form, you almost wish you hadn't been so bold.~~ \"" .. local0 .. ".\" A sardonic expression comes to his undead features. \"How may I help thee?\" You get the distinct impression that help is the last thing you'll get from the Liche.")
-            local6 = switch_talk_to(-3)
-            local7 = switch_talk_to(-1)
+            local6 = switch_talk_to(3)
+            local7 = switch_talk_to(1)
             if local6 then
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. local1 .. ". Methinks he'll cause naught but evil.\"")
-                hide_npc(-3)
-                switch_talk_to(-141, 0)
+                hide_npc(3)
+                switch_talk_to(141, 0)
             elseif local7 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("Iolo steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. local1 .. ". Methinks he'll cause naught but evil.\"")
-                hide_npc(-1)
-                switch_talk_to(-141, 0)
+                hide_npc(1)
+                switch_talk_to(141, 0)
             end
-            local8 = switch_talk_to(-2)
+            local8 = switch_talk_to(2)
             if local8 then
-                switch_talk_to(-2, 0)
+                switch_talk_to(2, 0)
                 say("\"Uh, " .. local1 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.*")
-                hide_npc(-2)
-                switch_talk_to(-141, 0)
+                hide_npc(2)
+                switch_talk_to(141, 0)
             end
             set_flag(453, true)
         else
@@ -105,10 +105,10 @@ function func_048D(eventid, itemref)
                 say("A harsh cackle escapes his dry throat. \"I am the illustrious Lord of the Dead, soon to be Lord of all Britannia. Dost thou have any idea of the number of dead people and creatures there are? I thought not.~~\"The dead of the ages are mine to summon and control. The graves of beloved ancestors will spew forth their contents into an army. A special treat for the living, mine undead monsters will be. Imagine a skeletal dragon that cannot be killed. Consider a cabal of everliving mages eternally enthralled to me.~~\"And the most beautiful part of my plot is that, as the living die in these battles, and they will die, they will swell the ranks of the undead host. I will rule supreme -- a world of the dead!\" A terrifying glimpse of his sick and twisted future causes you to shiver ever so slightly.~~\"And I will have a queen, the lovely Rowena.\"")
                 add_answer("Rowena")
                 if local2 then
-                    switch_talk_to(-144, 0)
+                    switch_talk_to(144, 0)
                     say("\"Yes, my Lord. I must be the happiest Lady in all the land.\" Her gaze never wanders from the horrid face of the Liche.")
-                    hide_npc(-144)
-                    switch_talk_to(-141, 0)
+                    hide_npc(144)
+                    switch_talk_to(141, 0)
                 end
             elseif answer == "Rowena" then
                 if local2 then
@@ -122,18 +122,18 @@ function func_048D(eventid, itemref)
                 remove_answer("ore")
             elseif answer == "bye" then
                 say("\"It is truly sad to see thee go.\" He says with a sardonic smile.*")
-                local9 = switch_talk_to(-4)
-                local7 = switch_talk_to(-1)
+                local9 = switch_talk_to(4)
+                local7 = switch_talk_to(1)
                 if local9 then
-                    switch_talk_to(-4, 0)
+                    switch_talk_to(4, 0)
                     say("\"Yeah, right.\"*")
-                    hide_npc(-4)
-                    switch_talk_to(-141, 0)
+                    hide_npc(4)
+                    switch_talk_to(141, 0)
                 elseif local7 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"Yeah, right.\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-141, 0)
+                    hide_npc(1)
+                    switch_talk_to(141, 0)
                 end
                 say("\"Feel free to explore mine humble abode. Though, have a care. My guardians are none too intelligent and will most likely assault anything living.\" He smiles with his death's head grin.*")
                 break

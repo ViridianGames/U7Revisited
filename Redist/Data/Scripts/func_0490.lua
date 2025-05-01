@@ -4,7 +4,7 @@ function func_0490(eventid, itemref)
 
     if eventid == 1 then
         if not get_flag(440) then
-            switch_talk_to(-144, 0)
+            switch_talk_to(144, 0)
             say("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.*")
             set_flag(423, false)
             return
@@ -15,29 +15,29 @@ function func_0490(eventid, itemref)
         local0 = is_player_female()
         local1 = get_player_name()
         if not get_flag(422) then
-            switch_talk_to(-144, 1)
+            switch_talk_to(144, 1)
             apply_effect() -- Unmapped intrinsic
         end
         if not get_flag(426) then
-            switch_talk_to(-144, 1)
+            switch_talk_to(144, 1)
             apply_effect() -- Unmapped intrinsic
         end
         if not get_flag(423) and not get_flag(425) then
-            switch_talk_to(-144, 1)
+            switch_talk_to(144, 1)
             apply_effect() -- Unmapped intrinsic
         end
         local2 = get_part_of_day()
         local3 = get_schedule(-144)
         if local2 == 0 or local2 == 1 then
             if local3 == 14 then
-                switch_talk_to(-144, 0)
+                switch_talk_to(144, 0)
                 apply_effect() -- Unmapped intrinsic
             elseif local3 ~= 16 then
-                switch_talk_to(-144, 0)
+                switch_talk_to(144, 0)
                 apply_effect() -- Unmapped intrinsic
             end
         end
-        switch_talk_to(-144, 0)
+        switch_talk_to(144, 0)
         if not get_flag(457) then
             say("You see a ghostly lady wearing a long, black gown. Something is a bit strange about the way she looks, but you can't quite place it. After a pause, she says, \"Greetings, " .. local1 .. ". I am Rowena, lady of this wondrous tower.\" She gestures around the room, indicating the moldering walls and cobwebbed rafters.")
             set_flag(457, true)

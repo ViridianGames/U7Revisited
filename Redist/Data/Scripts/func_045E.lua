@@ -3,10 +3,10 @@ function func_045E(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-94, 0)
+        switch_talk_to(94, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-94)
+        local2 = switch_talk_to(94)
 
         add_answer({"murders", "bye", "job", "name"})
 
@@ -48,12 +48,12 @@ function func_045E(eventid, itemref)
             elseif answer == "Jakher" then
                 say("\"He is quite an able trainer in his own right. Not as skilled as myself, obviously. But I do think he is cute, though I bid thee, do not tell him that I spoke of this. It will only encourage him.\"")
                 if get_item_type(-95) then
-                    switch_talk_to(-95, 0)
+                    switch_talk_to(95, 0)
                     say("\"Art thou speaking about me? Mine ears are burning!\"*")
-                    switch_talk_to(-94, 0)
+                    switch_talk_to(94, 0)
                     say("\"Nothing thou shouldst be concerned about, Jakher.\" She winks at you.*")
-                    hide_npc(-95)
-                    switch_talk_to(-94, 0)
+                    hide_npc(95)
+                    switch_talk_to(94, 0)
                 end
                 set_flag(246, true)
                 remove_answer("Jakher")
@@ -84,12 +84,12 @@ function func_045E(eventid, itemref)
             elseif answer == "attractive" then
                 say("\"Jakher told thee he doth find me attractive? He denies it, of course, but I have known for years that he doth have feelings for me.\"")
                 if get_item_type(-95) then
-                    switch_talk_to(-95, 0)
+                    switch_talk_to(95, 0)
                     say("\"What? What didst thou say?\"*")
-                    switch_talk_to(-94, 0)
+                    switch_talk_to(94, 0)
                     say("\"Nothing, Jakher. Go away.\" She giggles conspiratorally at you.*")
-                    hide_npc(-95)
-                    switch_talk_to(-94, 0)
+                    hide_npc(95)
+                    switch_talk_to(94, 0)
                 end
                 remove_answer("attractive")
             elseif answer == "gypsies" then
@@ -105,7 +105,7 @@ function func_045E(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-94)
+        switch_talk_to(94)
     end
     return
 end

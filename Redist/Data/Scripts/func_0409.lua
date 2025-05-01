@@ -9,10 +9,10 @@ function func_0409(eventid, itemref)
     local local10, local11
 
     if eventid == 1 then
-        switch_talk_to(-9, 0)
+        switch_talk_to(9, 0)
         local0 = get_player_name()
         local1 = get_party_members()
-        local2 = switch_talk_to(-9)
+        local2 = switch_talk_to(9)
         local3 = get_player_name()
         local4 = get_item_type(-3)
         local5 = get_item_type(-1)
@@ -79,7 +79,7 @@ function func_0409(eventid, itemref)
             end
             if local7 >= 6 then
                 say("\"It would be an honor, " .. local0 .. "!\"")
-                switch_talk_to(-9)
+                switch_talk_to(9)
                 add_answer("leave")
                 remove_answer("join")
             else
@@ -93,13 +93,13 @@ function func_0409(eventid, itemref)
             return
         elseif answer == "go home" then
             say("\"If thou dost think it best, I shall. If thou dost need me again thou dost have but to ask.\"*")
-            switch_talk_to(-9, 11)
+            switch_talk_to(9, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"I shall be happy to wait here until thou dost return.\"*")
-            switch_talk_to(-9, 15)
+            switch_talk_to(9, 15)
             answers = {}
             answer = nil
             return
@@ -141,11 +141,11 @@ function func_0409(eventid, itemref)
                 say("\"Iolo should be in our party adventuring with us.\"")
             else
                 say("\"How hast thou been keeping thyself all these years, Iolo?\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"The years have not been as kind to me as they obviously have been to thee, milady.\"*")
-                switch_talk_to(-9, 0)
+                switch_talk_to(9, 0)
                 say("\"Ha! I see thou art still a scallywag, Iolo.\"*")
-                hide_npc(-1)
+                hide_npc(1)
             end
             remove_answer("Iolo")
         elseif answer == "Shamino" then
@@ -153,11 +153,11 @@ function func_0409(eventid, itemref)
                 say("\"Shamino should be here with us.\"")
             else
                 say("\"Is that a gray hair I see in thine hair, Shamino?\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"It is not! Where?\"*")
-                switch_talk_to(-9, 0)
+                switch_talk_to(9, 0)
                 say("\"Perhaps it is but a trick of the light.\"*")
-                hide_npc(-3)
+                hide_npc(3)
             end
             remove_answer("Shamino")
         elseif answer == "Dupre" then
@@ -165,13 +165,13 @@ function func_0409(eventid, itemref)
                 say("\"I cannot help but miss Dupre a little. I have not seen him since he was knighted.\"")
             else
                 say("\"Sir Dupre, hast thou finished thy studies yet?\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("Dupre looks confounded. \"My studies, milady?\"*")
-                switch_talk_to(-9, 0)
+                switch_talk_to(9, 0)
                 say("\"Of all the various drinking establishments in Britannia!\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Oh, yes, of course, my studies! Continuing mine education has always been of the utmost importance to me.\"*")
-                hide_npc(-4)
+                hide_npc(4)
             end
             remove_answer("Dupre")
         elseif answer == "bye" then
@@ -185,7 +185,7 @@ function func_0409(eventid, itemref)
         answer = nil
         return
     elseif eventid == 0 then
-        switch_talk_to(-9)
+        switch_talk_to(9)
         answers = {}
         answer = nil
     end

@@ -13,17 +13,17 @@ function func_0402(eventid, itemref)
         local1 = "Avatar"
         local2 = get_party_members()
         local3 = is_player_female()
-        local4 = switch_talk_to(-2)
+        local4 = switch_talk_to(2)
         local5 = false
         local6 = false
         local7 = false
 
         if not get_flag(21) then
-            switch_talk_to(-2, 1)
+            switch_talk_to(2, 1)
         elseif is_party_member(local4, local2) then
-            switch_talk_to(-2, 0)
+            switch_talk_to(2, 0)
         else
-            switch_talk_to(-2, 1)
+            switch_talk_to(2, 1)
         end
 
         if not get_flag(70) then
@@ -59,10 +59,10 @@ function func_0402(eventid, itemref)
             end
             local11 = get_item_type(-1)
             if local11 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Boy, this is the Avatar! " .. (local3 and "Upon my word she is! She has come to help thee!\"*" or "Upon my word he is! He has come to help thee!\"*"))
-                hide_npc(-1)
-                switch_talk_to(-2, 1)
+                hide_npc(1)
+                switch_talk_to(2, 1)
             end
             say("Then the boy narrows his eyes, studying you. He slows his weapon, ready to act in case it's a trap. You admire the boy's obvious experience in dealing with strangers.")
             say("You and Spark stare at each other. He is not sure what to do. Finally, he nods his head. \"All right. I believe thee. Thou dost look like paintings I have seen. I am sorry, " .. local9 .. ".\"")
@@ -159,10 +159,10 @@ function func_0402(eventid, itemref)
                     say("The boy is all excited now. \"I am an expert with a slingshot! I can strike sewer rats with almost every shot! And I am small -- I do not eat much! Please take me! Please ask me to join thee!\"*")
                     local11 = get_item_type(-1)
                     if local11 then
-                        switch_talk_to(-1, 0)
+                        switch_talk_to(1, 0)
                         say("Iolo whispers to you. \"I do not know about taking a child on the road with us, " .. local9 .. ".\"*")
-                        hide_npc(-1)
-                        switch_talk_to(-2, 1)
+                        hide_npc(1)
+                        switch_talk_to(2, 1)
                         say("Suddenly, Spark lets his sling fly. His target, a small fly hovering above Iolo's head, is smacked out of the air. You laugh as Iolo yelps, jumps away, curses and runs his fingers through his hair.")
                         apply_effect(1) -- Unmapped intrinsic 000F
                     else
@@ -171,15 +171,15 @@ function func_0402(eventid, itemref)
                     say("\"I told thee I am good! May I join?\"")
                     local12 = get_item_type()
                     if local12 then
-                        hide_npc(-2)
-                        switch_talk_to(-2, 0)
+                        hide_npc(2)
+                        switch_talk_to(2, 0)
                         say("\"Hooray!\" the boy leaps with delight.")
                         add_answer("leave")
-                        switch_talk_to(-2)
+                        switch_talk_to(2)
                     else
                         say("\"Fine.\" The boy looks angry. \"But I'll follow thee anyway.\"")
                         add_answer("leave")
-                        switch_talk_to(-2)
+                        switch_talk_to(2)
                     end
                     set_flag(73, true)
                 else
@@ -196,8 +196,8 @@ function func_0402(eventid, itemref)
                 local13 = local13 + 1
             end
             if local13 >= 8 then
-                hide_npc(-2)
-                switch_talk_to(-2, 0)
+                hide_npc(2)
+                switch_talk_to(2, 0)
                 say("\"Hooray!\"")
             else
                 say("\"Well, on second thought, it looks like too big of a crowd. I do not like crowds.\"")
@@ -208,8 +208,8 @@ function func_0402(eventid, itemref)
             say("\"Don't make me go!\" Spark cries. \"Dost thou really want me to go?\" He looks at you with puppy-dog eyes.")
             local17 = get_item_type()
             if local17 then
-                hide_npc(-2)
-                switch_talk_to(-2, 1)
+                hide_npc(2)
+                switch_talk_to(2, 1)
                 say("\"Well, should I just wait here or dost thou want me to go home to Trinsic?\"")
                 answers = {"go home", "wait here"}
                 answer = nil
@@ -219,13 +219,13 @@ function func_0402(eventid, itemref)
             end
         elseif answer == "go home" then
             say("Spark bows his head and murmurs, \"Goodbye, then.\"*")
-            switch_talk_to(-2, 11)
+            switch_talk_to(2, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"All right. I shall wait here until thou dost return and ask me to rejoin.\"*")
-            switch_talk_to(-2, 15)
+            switch_talk_to(2, 15)
             answers = {}
             answer = nil
             return

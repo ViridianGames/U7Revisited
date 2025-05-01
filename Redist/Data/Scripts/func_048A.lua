@@ -3,12 +3,12 @@ function func_048A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 1 then
-        switch_talk_to(-138, 0)
+        switch_talk_to(138, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-1)
-        local3 = switch_talk_to(-3)
-        local4 = switch_talk_to(-4)
+        local2 = switch_talk_to(1)
+        local3 = switch_talk_to(3)
+        local4 = switch_talk_to(4)
         local5 = check_item(-359, -359, 644, -357) -- Unmapped intrinsic
 
         add_answer({"bye", "job", "name"})
@@ -72,24 +72,24 @@ function func_048A(eventid, itemref)
                     say("\"I can see by dat medallion thou dost vear dat thou hast snuck into dis place by disguising thyself as vone of dem. Very clever, Avatar!\"")
                 end
                 if local2 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("Iolo whispers to you, \"This fellow is quite sharp, is he not?\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-138, 0)
+                    hide_npc(1)
+                    switch_talk_to(138, 0)
                 end
                 remove_answer("camp")
                 add_answer("danger")
             elseif answer == "danger" then
                 say("\"Zo far de only danger I haf found down here has been a female fighter. She vas beautiful. Vhen I vent to talk to her she hit me over de head mit her svord. Vhen I voke up she vas gone. I bet she tought she had killed me but mine head is harder dan dat. I vas not even vounded.\"")
                 if local3 then
-                    switch_talk_to(-3, 0)
+                    switch_talk_to(3, 0)
                     say("Shamino whispers to you. \"Luckily, Gorn was hit in the one spot where he has no feeling whatsoever -- his head!\"*")
-                    switch_talk_to(-138, 0)
+                    switch_talk_to(138, 0)
                     say("\"Hey, vhat are you vhispering about over dere?\"*")
-                    switch_talk_to(-3, 0)
+                    switch_talk_to(3, 0)
                     say("\"Oh, nothing. Nothing at all.\"*")
-                    hide_npc(-3)
-                    switch_talk_to(-138, 0)
+                    hide_npc(3)
+                    switch_talk_to(138, 0)
                 end
                 remove_answer("danger")
             elseif answer == "cave" then
@@ -111,10 +111,10 @@ function func_048A(eventid, itemref)
             elseif answer == "next strange thing" then
                 say("\"De voice ov Brom tells me dat 'Worldliness Receives Avard'. I haf been tinking about dat von for a long time und I still haf not figured it out. But I vill not give up until I find Brom.\"")
                 if local4 then
-                    switch_talk_to(-4, 0)
+                    switch_talk_to(4, 0)
                     say("\"A mysterious voice speaking inside someone's head, suggesting the philosophy of The Fellowship. Does this sound familiar, " .. local0 .. "?\"*")
-                    hide_npc(-4)
-                    switch_talk_to(-138, 0)
+                    hide_npc(4)
+                    switch_talk_to(138, 0)
                 end
                 remove_answer("next strange thing")
                 add_answer("find Brom")
@@ -132,7 +132,7 @@ function func_048A(eventid, itemref)
                 remove_answer("find Brom")
             elseif answer == "look for Brom" then
                 say("\"If dat is how thou vants it. Den I shall go on searching for Brom mit no vone else but myself. Good luck in vhatever qvest thou art on, Avatar. Farewell to thee!\"*")
-                set_schedule(-138, 12)
+                set_schedule(138, 12)
                 break
             elseif answer == "it's a trick" then
                 say("Gorn seems distracted for a moment. He puts his hand to his ear as if he is listening to something. He looks back at you with a shocked expression on his face. \"I haf just heard de voice ov Brom and he says dat I should not trust thee! I tought dat thou vert my friend, Avatar! Go avay! I do not vish to speak vith thee again!\"*")

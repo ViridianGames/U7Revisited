@@ -3,11 +3,11 @@ function func_0425(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7
 
     if eventid == 1 then
-        switch_talk_to(-37, 0)
+        switch_talk_to(37, 0)
         local0 = get_player_name()
         local1 = {"Avatar"}
         local2 = get_party_size()
-        local3 = switch_talk_to(-37)
+        local3 = switch_talk_to(37)
         local4 = get_item_type()
         local5 = local0
         local6 = get_answer(local1)
@@ -32,10 +32,10 @@ function func_0425(eventid, itemref)
                     set_flag(132, true)
                     local7 = get_item_type(-4)
                     if local7 then
-                        switch_talk_to(-4, 0)
+                        switch_talk_to(4, 0)
                         say("\"Damn! How did she know?\"")
-                        hide_npc(-4)
-                        switch_talk_to(-37, 0)
+                        hide_npc(4)
+                        switch_talk_to(37, 0)
                     end
                 else
                     say("\"Oh, really?\" she says in mock surprise. \"Why, I have always wanted to meet the Avatar!\"")
@@ -63,10 +63,10 @@ function func_0425(eventid, itemref)
                     local7 = get_item_type(-4)
                     if local7 then
                         say("She addresses Dupre. \"How about thou, handsome? Want something to eat?\" She bats her eyelashes.*")
-                        switch_talk_to(-4, 0)
+                        switch_talk_to(4, 0)
                         say("\"My dear, thou wouldst make any man hungry!\"*")
-                        hide_npc(-4)
-                        switch_talk_to(-37, 0)
+                        hide_npc(4)
+                        switch_talk_to(37, 0)
                         say("\"I like thy friends, " .. local5 .. ".\"")
                     end
                 else
@@ -113,7 +113,7 @@ function func_0425(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-37)
+        switch_talk_to(37)
     end
     return
 end

@@ -6,7 +6,7 @@ function func_0430(eventid, itemref)
         return
     end
 
-    switch_talk_to(-48, 0)
+    switch_talk_to(48, 0)
     local0 = get_player_name()
     local1 = get_item_type(-15)
 
@@ -45,10 +45,10 @@ function func_0430(eventid, itemref)
             end
             say("\"Mine half-sister is Eiko. She, like myself, is a warrior trained by Karenna in the ways of combat. We studied long and hard together to master the skills that " .. local2 .. " required to achieve our vengeance.\"")
             if local1 then
-                switch_talk_to(-15, 0)
+                switch_talk_to(15, 0)
                 say("\"The two of us had not even met before our father's death. But we bonded like sisters in the rigorous disciplines we learned from our trainer, Karenna of Minoc.\"*")
-                hide_npc(-15)
-                switch_talk_to(-48, 0)
+                hide_npc(15)
+                switch_talk_to(48, 0)
             end
             remove_answer("half-sister")
         elseif answer == "inner peace" then
@@ -64,30 +64,30 @@ function func_0430(eventid, itemref)
         elseif answer == "cyclops" then
             say("\"We have been tracking this creature for years, ever since we completed our training. We have followed him from one end of Britannia to another. Sometimes he was just one step ahead of us. But now we know that we are nearer to him than we have ever been before.\"")
             if local1 then
-                switch_talk_to(-15, 0)
+                switch_talk_to(15, 0)
                 say("\"When we find him there shall be no escape. We want vengeance and we mean to have it!\"*")
-                hide_npc(-15)
-                switch_talk_to(-48, 0)
+                hide_npc(15)
+                switch_talk_to(48, 0)
             end
             remove_answer("cyclops")
         elseif answer == "impaled" then
             say("\"Our father fought bravely for his life. He did not die easily. He died a hero's death. Although we may both die in the effort, we intend to give his murderer a death fit for a true villain.\"")
             if local1 then
-                switch_talk_to(-15, 0)
+                switch_talk_to(15, 0)
                 say("Eiko smiles wickedly.*")
-                hide_npc(-15)
-                switch_talk_to(-48, 0)
+                hide_npc(15)
+                switch_talk_to(48, 0)
             end
             remove_answer("impaled")
         elseif answer == "Stay thine hand!" then
             say("You explain to Amanda what you have learned. Kalideth had gone mad when he fought with Iskander and the source of what is causing the problems with magic and the mage's minds - the thing that really killed Kalideth - has been destroyed.~~\"Thou hast robbed me of my rightful vengeance! How dare thee!\"")
             if local1 then
-                switch_talk_to(-15, 0)
+                switch_talk_to(15, 0)
                 say("Eiko sighs, and her shoulders slump. \"Come now, sister. With the matter of our father's untimely death now settled we can at last let it go. Now we can devote our lives to ourselves rather than remain trapped in the past. It is for the best, thou must trust me.\"*")
-                switch_talk_to(-48, 0)
+                switch_talk_to(48, 0)
                 say("Amanda shakes her head, dazed and confused. \"Perhaps thou art correct, Eiko. I must think.\"*")
-                hide_npc(-15)
-                switch_talk_to(-48, 0)
+                hide_npc(15)
+                switch_talk_to(48, 0)
                 set_flag(734, true)
             else
                 say("Amanda turns and slams her fist into the wall, then collapses onto it with a sob. After a moment, she straightens, but does not turn to face you.~~\"Have no fear that I will continue my vengeance against the cyclops. I am not so far gone that I would kill a creature for acting in self-defense.~\"But I must have some time to myself now. Please, go. I must think.\"")

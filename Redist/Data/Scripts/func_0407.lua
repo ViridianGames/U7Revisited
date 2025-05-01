@@ -9,13 +9,13 @@ function func_0407(eventid, itemref)
     local local10, local11
 
     if eventid == 1 then
-        switch_talk_to(-7, 0)
+        switch_talk_to(7, 0)
         local0 = get_schedule()
         local1 = is_player_female()
         local2 = get_party_members()
-        local3 = switch_talk_to(-7)
+        local3 = switch_talk_to(7)
         local4 = get_player_name()
-        local5 = switch_talk_to(-7)
+        local5 = switch_talk_to(7)
         local6 = 0
 
         -- Initialize answers
@@ -66,7 +66,7 @@ function func_0407(eventid, itemref)
             if local6 >= 6 then
                 say("Sentri bows. \"I am very pleased to join thy group.\"")
                 set_flag(219, true)
-                switch_talk_to(-7)
+                switch_talk_to(7)
                 add_answer("leave")
             else
                 say("\"I like small crowds, Avatar. Thou art travelling with a group too large for my tastes. If thou shouldst lose someone along the way, return and I shall be happy to join thee.\"")
@@ -80,14 +80,14 @@ function func_0407(eventid, itemref)
         elseif answer == "go home" then
             say("\"Farewell, " .. local4 .. ". If thou dost need my services again, I shall be only too happy to comply.\"*")
             set_flag(219, false)
-            switch_talk_to(-7, 11)
+            switch_talk_to(7, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"Very good. I shall wait here until thou dost return.\"*")
             set_flag(219, false)
-            switch_talk_to(-7, 15)
+            switch_talk_to(7, 15)
             answers = {}
             answer = nil
             return
@@ -101,7 +101,7 @@ function func_0407(eventid, itemref)
             add_answer("Lord British")
         elseif answer == "train" then
             if not get_flag(219) then
-                local5 = switch_talk_to(-7)
+                local5 = switch_talk_to(7)
                 if local5 == 27 or local5 == 11 or local5 == 15 then
                     say("\"My fee is 30 gold for a training session. Is this all right?\"")
                     answers = {true, false}
@@ -123,10 +123,10 @@ function func_0407(eventid, itemref)
             local11 = get_item_type(-1)
             if local11 then
                 say("\"How art thou, friend? Thou dost look like thou couldst use a little training thyself!\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"What is this? Everyone doth make fun of my physique!\"*")
-                hide_npc(-1)
-                switch_talk_to(-7, 0)
+                hide_npc(1)
+                switch_talk_to(7, 0)
                 say("\"I am not making fun, Iolo. I am serious!\" Sentri laughs.")
             else
                 say("\"I miss that fellow!\"")
@@ -136,15 +136,15 @@ function func_0407(eventid, itemref)
             local11 = get_item_type(-3)
             if local11 then
                 say("\"Say, Shamino, art thou still spending thy time dressing in women's clothes?\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"-What-?!?!\"*")
-                switch_talk_to(-7, 0)
+                switch_talk_to(7, 0)
                 say("\"Or art thou wasting away thy life in a healer's den, now that thou art in thy middle ages?\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Careful, friend. Those are fighting words!\"*")
-                switch_talk_to(-7, 0)
+                switch_talk_to(7, 0)
                 say("Sentri punches Shamino good-naturedly. \"And that is all they are, my dear friend. Words! 'Tis good to see thee!\"")
-                hide_npc(-3)
+                hide_npc(3)
             else
                 say("\"'Twould be good to share a joke or two with him!\"")
             end
@@ -155,18 +155,18 @@ function func_0407(eventid, itemref)
                 say("\"Ah, my good friend Dupre! Hast thou some good ale on thee?\"*")
                 if has_item(3, -359, 616, 1, -4) then
                     say("\"Art thou joking? I -always- have ale!\"*")
-                    switch_talk_to(-7, 0)
+                    switch_talk_to(7, 0)
                     say("\"Then we should have some before someone else does!\"")
-                    switch_talk_to(-4, 0)
+                    switch_talk_to(4, 0)
                     say("\"'Twould be a pleasure. However, I must be prudent and save the ale for when we need it.\"*")
-                    switch_talk_to(-7, 0)
+                    switch_talk_to(7, 0)
                     say("Sentri feels of Dupre's head. \"Art thou feeling all right, Dupre? Or has knighthood done something to thy brain?\"")
                 else
                     say("\"No, but I would be glad to stop in a pub and share a few pints with thee!\"*")
-                    switch_talk_to(-7, 0)
+                    switch_talk_to(7, 0)
                     say("\"Mmmm! Sounds good to me! Next time we pass a place, let us stop!\"")
                 end
-                hide_npc(-4)
+                hide_npc(4)
             else
                 say("\"I want to see that no-good trouble-maker! He is a knight now, I hear! Sir Dupre indeed!\"")
             end
@@ -185,7 +185,7 @@ function func_0407(eventid, itemref)
         answer = nil
         return
     elseif eventid == 0 then
-        switch_talk_to(-7)
+        switch_talk_to(7)
         answers = {}
         answer = nil
     end

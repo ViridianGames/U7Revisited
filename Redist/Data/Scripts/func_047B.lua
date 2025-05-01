@@ -3,10 +3,10 @@ function func_047B(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20
 
     if eventid == 1 then
-        switch_talk_to(-123, 0)
+        switch_talk_to(123, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-123)
+        local2 = switch_talk_to(123)
         local3 = false
         local4 = get_item_type(-122)
         local5 = get_item_type(-125) and is_npc_dead(-125)
@@ -28,14 +28,14 @@ function func_047B(eventid, itemref)
             set_flag(373, true)
             if local1 == -4 then
                 say("\"Art thou still here?\" she asks Dupre.")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"I have not finished making mine assessment of thy fine drinking establishment!\"*")
-                switch_talk_to(-123, 0)
+                switch_talk_to(123, 0)
                 say("\"What? Art thou working for Brommer's Britannia travel guides?\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"No, my dear. This research is strictly for mine own digestion!\"*")
-                hide_npc(-4)
-                switch_talk_to(-123, 0)
+                hide_npc(4)
+                switch_talk_to(123, 0)
             end
         else
             say("\"Good day to thee, " .. local0 .. ". Rest and take a load off.\"")
@@ -70,16 +70,16 @@ function func_047B(eventid, itemref)
             elseif answer == "Ophelia" then
                 say("\"Ophelia this! Ophelia that! That is all I ever hear all bloody day! If all thou dost want to talk about is her, talk to someone else!\"")
                 if local4 then
-                    switch_talk_to(-122, 0)
+                    switch_talk_to(122, 0)
                     say("\"Do not hate me just because I am beautiful, Daphne.\"*")
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"That is not the reason I hate thee, Ophelia!\"*")
-                    switch_talk_to(-122, 0)
+                    switch_talk_to(122, 0)
                     say("\"Oh, yes, I remember now. Thou dost hate me because I am beautiful, and thou art not!\"*")
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"Thank thee so much, " .. local0 .. ", for bringing up my favorite subject.\"*")
-                    hide_npc(-122)
-                    switch_talk_to(-123, 0)
+                    hide_npc(122)
+                    switch_talk_to(123, 0)
                 end
                 remove_answer("Ophelia")
             elseif answer == "Bunk and Stool" then
@@ -149,7 +149,7 @@ function func_047B(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-123)
+        switch_talk_to(123)
     end
     return
 end

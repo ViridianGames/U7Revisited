@@ -3,9 +3,9 @@ function func_0414(eventid, itemref)
     local local0, local1
 
     if eventid == 1 then
-        switch_talk_to(-20, 0)
+        switch_talk_to(20, 0)
         local0 = get_schedule()
-        local1 = switch_talk_to(-20)
+        local1 = switch_talk_to(20)
 
         add_answer({"bye", "murder", "job", "name"})
 
@@ -48,7 +48,7 @@ function func_0414(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-20)
+        switch_talk_to(20)
     end
     return
 end

@@ -3,7 +3,7 @@ function func_060C(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23
 
     if get_schedule(-232) == 9 then
-        set_schedule(-232, 10)
+        set_schedule(232, 10)
     end
 
     if not npc_in_party(-232) then
@@ -41,7 +41,7 @@ function func_060C(eventid, itemref)
     set_flag(34, local14)
     if not local14 then
         local15 = add_item(4, 90, -359, -356)
-        local15 = set_schedule(-356, local15)
+        local15 = set_schedule(356, local15)
         for local16 in ipairs(local15) do
             local17 = local16
             local18 = get_item_data(local17)

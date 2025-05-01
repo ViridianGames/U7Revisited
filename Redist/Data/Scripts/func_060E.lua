@@ -26,7 +26,7 @@ function func_060E(eventid, itemref)
             set_flag(58, local14)
             if not local14 then
                 local15 = add_item(4, 90, -359, -356)
-                local15 = set_schedule(-356, local15)
+                local15 = set_schedule(356, local15)
                 for local16 in ipairs(local15) do
                     local17 = local16
                     local18 = get_item_data(local17)

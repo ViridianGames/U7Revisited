@@ -3,13 +3,13 @@ function func_047E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-126, 0)
+        switch_talk_to(126, 0)
         local0 = get_player_name()
         local1 = get_party_size()
         local2 = get_item_type(-126)
         local3 = get_item_type(-125)
         local4 = get_item_type(-127)
-        local5 = switch_talk_to(-125)
+        local5 = switch_talk_to(125)
 
         add_answer({"bye", "job", "name"})
 
@@ -83,10 +83,10 @@ function func_047E(eventid, itemref)
             elseif answer == "return" then
                 say("\"Since Sprellic has not done this, it proves that he is sincere in the grievous insult that he has made against us.\"*")
                 if local5 then
-                    switch_talk_to(-125, 0)
+                    switch_talk_to(125, 0)
                     say("\"And I shall grievously insult him-- through his heart!\"*")
-                    hide_npc(-125)
-                    switch_talk_to(-126, 0)
+                    hide_npc(125)
+                    switch_talk_to(126, 0)
                 end
                 remove_answer("return")
             elseif answer == "Sprellic" then
@@ -99,10 +99,10 @@ function func_047E(eventid, itemref)
             elseif answer == "Library of Scars" then
                 say("\"The Library of Scars is the greatest guild of fighters in Britannia.\"*")
                 if local5 then
-                    switch_talk_to(-125, 0)
+                    switch_talk_to(125, 0)
                     say("\"Here! Here!\"*")
-                    hide_npc(-125)
-                    switch_talk_to(-126, 0)
+                    hide_npc(125)
+                    switch_talk_to(126, 0)
                 end
                 remove_answer("Library of Scars")
             elseif answer == "De Snel" then
@@ -141,7 +141,7 @@ function func_047E(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-126)
+        switch_talk_to(126)
     end
     return
 end

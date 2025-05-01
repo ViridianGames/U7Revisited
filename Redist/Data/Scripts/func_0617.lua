@@ -11,7 +11,7 @@ function func_0617(eventid, itemref)
     elseif eventid == 2 then
         set_schedule(itemref, 15)
         if npc_in_party(-142) then
-            switch_talk_to(-142, 1)
+            switch_talk_to(142, 1)
             say("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
             return
         end

@@ -9,10 +9,10 @@ function func_0408(eventid, itemref)
     local local10, local11, local12, local13
 
     if eventid == 1 then
-        switch_talk_to(-8, 0)
+        switch_talk_to(8, 0)
         local0 = get_player_name()
         local1 = get_party_members()
-        local2 = switch_talk_to(-8)
+        local2 = switch_talk_to(8)
         local3 = get_player_name()
         local4 = get_item_type(-2)
         local5 = 0
@@ -76,7 +76,7 @@ function func_0408(eventid, itemref)
                     say("\"Aye! It would be my pleasure!\"")
                 end
                 set_flag(264, true)
-                switch_talk_to(-8)
+                switch_talk_to(8)
                 add_answer({"leave", "Dupre", "Shamino", "Iolo"})
                 remove_answer("join")
             else
@@ -100,7 +100,7 @@ function func_0408(eventid, itemref)
             say("\"Well! Fine, if that is thy wish, I shall leave!\"*")
             set_flag(257, true)
             set_flag(264, false)
-            switch_talk_to(-8, 11)
+            switch_talk_to(8, 11)
             answers = {}
             answer = nil
             return
@@ -108,7 +108,7 @@ function func_0408(eventid, itemref)
             say("\"Very well. I shall wait here until thou dost return.\"*")
             set_flag(257, true)
             set_flag(264, false)
-            switch_talk_to(-8, 15)
+            switch_talk_to(8, 15)
             answers = {}
             answer = nil
             return
@@ -153,10 +153,10 @@ function func_0408(eventid, itemref)
                 say("\"Perhaps we should go find Iolo and have him join us as well.\"")
             else
                 say("\"Hello, Iolo.\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"'Tis a pleasure to see thee again, Julia.\"*")
-                hide_npc(-1)
-                switch_talk_to(-8, 0)
+                hide_npc(1)
+                switch_talk_to(8, 0)
             end
             remove_answer("Iolo")
         elseif answer == "Shamino" then
@@ -165,10 +165,10 @@ function func_0408(eventid, itemref)
                 say("\"Perhaps we should go find Shamino and have him join us as well.\"")
             else
                 say("\"Hello, Shamino!\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Oh, Julia! Good of thee to be joining us again!\"*")
-                hide_npc(-3)
-                switch_talk_to(-8, 0)
+                hide_npc(3)
+                switch_talk_to(8, 0)
             end
             remove_answer("Shamino")
         elseif answer == "Dupre" then
@@ -177,27 +177,27 @@ function func_0408(eventid, itemref)
                 say("\"Perhaps we should go find Sir Dupre and have him join us as well.\"")
             else
                 say("\"Once again our paths cross, Sir Dupre!\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Julia! I was just wondering if we would ever see thee again!\"*")
-                switch_talk_to(-8, 0)
+                switch_talk_to(8, 0)
                 say("\"Well, thou canst wonder no more, Dupre.\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"" .. local3 .. ", just between thou, myself and the lamppost, thou hadst better watch Julia. She hath a temper.\"*")
-                hide_npc(-4)
-                switch_talk_to(-8, 0)
+                hide_npc(4)
+                switch_talk_to(8, 0)
             end
             remove_answer("Dupre")
         elseif answer == "Spark" then
             say("\"And who is this fine young lad?\"")
             if not local4 then
-                switch_talk_to(-2, 0)
+                switch_talk_to(2, 0)
                 say("\"My name is Spark, milady.\"*")
-                switch_talk_to(-8, 0)
+                switch_talk_to(8, 0)
                 say("\"He is a cute one! And so well-mannered!\"")
-                switch_talk_to(-2, 0)
+                switch_talk_to(2, 0)
                 say("Spark turns beet red.")
-                hide_npc(-2)
-                switch_talk_to(-8, 0)
+                hide_npc(2)
+                switch_talk_to(8, 0)
                 set_flag(289, true)
             end
             remove_answer("Spark")
@@ -212,7 +212,7 @@ function func_0408(eventid, itemref)
         answer = nil
         return
     elseif eventid == 0 then
-        switch_talk_to(-8)
+        switch_talk_to(8)
         answers = {}
         answer = nil
     end

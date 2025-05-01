@@ -3,10 +3,10 @@ function func_0434(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
 
     if eventid == 1 then
-        switch_talk_to(-52, 0)
+        switch_talk_to(52, 0)
         local0 = get_player_name()
         local1 = get_answer({"Avatar"})
-        local2 = switch_talk_to(-52)
+        local2 = switch_talk_to(52)
         local3 = get_party_size()
         local4 = get_item_type(-2)
         local5 = add_item(-359, -359, 863, 1, -357) -- Unmapped intrinsic 0931
@@ -45,14 +45,14 @@ function func_0434(eventid, itemref)
                         if local8 then
                             say("\"Ha! Thou dost see, then? Everyone agrees! That should be proof enough!\"")
                             if local4 then
-                                switch_talk_to(-2, 0)
+                                switch_talk_to(2, 0)
                                 say("\"I want some!\"*")
-                                switch_talk_to(-52, 0)
+                                switch_talk_to(52, 0)
                                 say("\"Here thou art, laddie.\" Willy hands Spark a pastry and the boy devours it in one gulp.*")
-                                switch_talk_to(-2, 0)
+                                switch_talk_to(2, 0)
                                 say("\"Mmmmm! I say, " .. local1 .. ", I think we need a lot of this for the road. We had best buy some, all right?\"*")
-                                hide_npc(-2)
-                                switch_talk_to(-52, 0)
+                                hide_npc(2)
+                                switch_talk_to(52, 0)
                             end
                         else
                             say("\"Thou dost not?! Why, do not be ridiculous! Of course thou dost!\"")
@@ -158,7 +158,7 @@ function func_0434(eventid, itemref)
         end
     elseif eventid == 0 then
         local3 = get_party_size()
-        local2 = switch_talk_to(-52)
+        local2 = switch_talk_to(52)
         local13 = random(1, 4)
         local14 = ""
 
@@ -174,7 +174,7 @@ function func_0434(eventid, itemref)
             end
             item_say(local14, -52)
         else
-            switch_talk_to(-52)
+            switch_talk_to(52)
         end
     end
     return

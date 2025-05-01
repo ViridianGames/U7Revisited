@@ -6,7 +6,7 @@ function func_046E(eventid, itemref)
         return
     end
 
-    switch_talk_to(-110, 0)
+    switch_talk_to(110, 0)
     add_answer({"bye", "job", "name"})
 
     if not get_flag(714) then

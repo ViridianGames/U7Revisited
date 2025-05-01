@@ -3,7 +3,7 @@ function func_0269H(eventid, itemref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(-284, 0) -- Switch to Time Lord NPC.
+    switch_talk_to(284, 0) -- Switch to Time Lord NPC.
     local obj = call_script(0x0931, -357, 1, 839, -359, 0) -- TODO: Map 0931H (possibly get NPC state).
     if not get_flag(0x0004) and not get_flag(0x0012) then
         say(0, '"Congratulations, Avatar, on destroying the Sphere. I am free from my celestial prison. I thank thee. But I regret to inform thee that The Guardian engineered the Sphere such that its destruction has permanently disabled the Moongates, and thine Orb of the Moons as well. Thou canst not return to thine home by way of a red Moongate."')

@@ -3,8 +3,8 @@ function func_0429(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 1 then
-        switch_talk_to(-41, 0)
-        local0 = switch_talk_to(-41)
+        switch_talk_to(41, 0)
+        local0 = switch_talk_to(41)
         local1 = get_item_type()
         local2 = get_schedule()
 
@@ -72,10 +72,10 @@ function func_0429(eventid, itemref)
                 say("\"Well, thou surely must recognize them. They are supposed to be authentic! Things like the Silver Horn and the eight stones. I understand the stones were used for teleportation, and if mages were not so sick in the head these days, they could cast a 'Recall' spell on them to teleport to specific places around Britannia. I believe if one casts a 'Mark' spell on one, thou canst re-assign the teleportation location! But I suppose none of that works anymore.\"")
                 local5 = get_item_type(-1)
                 if local5 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("Iolo whispers to you, \"Er, Avatar, thou dost know that I do not condone stealing. But, er, I do believe these stones may be useful to us. Perhaps we should come back later when the museum is closed, if thou dost know what I mean? After all, these items technically belong to thee!\"")
-                    hide_npc(-1)
-                    switch_talk_to(-41, 0)
+                    hide_npc(1)
+                    switch_talk_to(41, 0)
                 end
                 remove_answer("Avatar artifacts")
             elseif answer == "works of art" then
@@ -108,7 +108,7 @@ function func_0429(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-41)
+        switch_talk_to(41)
     end
     return
 end

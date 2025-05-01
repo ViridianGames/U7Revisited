@@ -3,7 +3,7 @@ function func_046F(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-111, 0)
+        switch_talk_to(111, 0)
         local0 = get_answer({"Avatar"})
         local1 = get_player_name()
 

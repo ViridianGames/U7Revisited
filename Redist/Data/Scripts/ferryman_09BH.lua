@@ -51,7 +51,7 @@ function ferryman_09BH(object_id, event)
             return
         end
 
-        switch_talk_to(-285, 0) -- Avatar
+        switch_talk_to(285, 0) -- Avatar
         local shamino_id = get_party_member(-2) -- Shamino
         local iolo_id = get_party_member(-3) -- Iolo
         local player_name = get_player_name() or "Avatar"
@@ -98,24 +98,24 @@ function ferryman_09BH(object_id, event)
                 if not get_flag(0x0197) then
                     say(object_id, strings[0x048E])
                     if iolo_id and shamino_id then
-                        switch_talk_to(-3, 0) -- Iolo
+                        switch_talk_to(3, 0) -- Iolo
                         say(object_id, strings[0x04DF] .. player_name .. strings[0x04E7])
-                        hide_npc(-3)
-                        switch_talk_to(-2, 0) -- Shamino
+                        hide_npc(3)
+                        switch_talk_to(2, 0) -- Shamino
                         say(object_id, strings[0x0513])
-                        hide_npc(-2)
-                        switch_talk_to(-3, 0) -- Iolo
+                        hide_npc(2)
+                        switch_talk_to(3, 0) -- Iolo
                         say(object_id, strings[0x0545])
-                        hide_npc(-3)
+                        hide_npc(3)
                         if spark_id then
-                            switch_talk_to(-1, 0) -- Spark
+                            switch_talk_to(1, 0) -- Spark
                             say(object_id, strings[0x0586])
-                            hide_npc(-1)
-                            switch_talk_to(-2, 0) -- Shamino
+                            hide_npc(1)
+                            switch_talk_to(2, 0) -- Shamino
                             say(object_id, strings[0x0601])
-                            hide_npc(-2)
+                            hide_npc(2)
                         end
-                        switch_talk_to(-285, 0) -- Avatar
+                        switch_talk_to(285, 0) -- Avatar
                     end
                 else
                     say(object_id, strings[0x0665])

@@ -3,7 +3,7 @@ function func_048E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 1 then
-        switch_talk_to(-142, 0)
+        switch_talk_to(142, 0)
         local0 = check_item(-359, 0, 295, 1, -357)
         local1 = get_party_size()
         local2 = get_item_type(-142, 747)
@@ -32,11 +32,11 @@ function func_048E(eventid, itemref)
             add_answer("sacrifice")
         end
         if not get_flag(422) then
-            switch_talk_to(-142, 1)
+            switch_talk_to(142, 1)
             apply_effect() -- Unmapped intrinsic
         end
         if not get_flag(421) then
-            switch_talk_to(-142, 1)
+            switch_talk_to(142, 1)
             set_flag(449, false)
             apply_effect() -- Unmapped intrinsic
         end
@@ -95,8 +95,8 @@ function func_048E(eventid, itemref)
             elseif answer == "ring" then
                 local5 = remove_item(-359, 0, 295, 1)
                 say("You hold out the ring to Trent. At first he ignores you. Then, recognizing the ring, he takes it from you and holds it before him. Something in him snaps and his huge frame slumps forward.~~You let the ghost cry for a while, and when he finishes, you see a remarkable change in his appearance.")
-                hide_npc(-142)
-                switch_talk_to(-142, 1)
+                hide_npc(142)
+                switch_talk_to(142, 1)
                 say("The flames that once burned in his eyes are now gone, replaced by a deep shade of blue. He looks like a new man, or rather, ghost as it were.~~ \"Forgive my behavior, " .. local1 .. ". I know not what came over me. I remember flames, but they burned no hotter than mine own Hatred.\" He looks pained at the memory.~~ \"Thou hast seen her? Thou hast seen Rowena? And she still cares for me. Well, all the more reason to finish this Soul Cage. We must free her from Horance's vile sorcery.\"")
                 set_flag(421, true)
                 remove_answer({"bye", "ring", "killed", "Rowena", "wife", "Horance", "job", "name", "iron cage"})

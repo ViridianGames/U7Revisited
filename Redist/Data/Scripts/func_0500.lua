@@ -8,7 +8,7 @@ function func_0500(eventid, itemref)
 
     local0 = get_party_members()
     local1 = get_schedule(itemref)
-    switch_talk_to(-256, 0)
+    switch_talk_to(256, 0)
 
     if local1 ~= 3 then
         say("The wisp does not respond.*")

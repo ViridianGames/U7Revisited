@@ -6,7 +6,7 @@ function func_0496(eventid, itemref)
         return
     end
 
-    switch_talk_to(-150, 0)
+    switch_talk_to(150, 0)
     set_flag(482, get_flag(482))
     local0 = get_player_name()
     local1 = check_item(-359, -359, 759, 1, -357) -- Unmapped intrinsic
@@ -23,7 +23,7 @@ function func_0496(eventid, itemref)
     if not get_flag(504) then
         say("The mage, having been asleep for 200 years, looks just as she did upon your last visit to Britannia.~~\"Avatar! I cannot believe 'tis thee! Thou didst come and wake me! I knew thee would!\"")
         say("Suddenly, Penumbra grabs her head in pain. \"Oh!\" she cries. \"Mine head! The pain! What is happening? What didst thou do to me?\" She closes her eyes and concentrates. \"There is a disturbance in the ether! I can feel my magical powers fading! Help me, " .. local0 .. "! Help me!!\"")
-        set_schedule(-150, 11)
+        set_schedule(150, 11)
         apply_effect(800) -- Unmapped intrinsic
         add_answer("ether")
         set_flag(504, true)

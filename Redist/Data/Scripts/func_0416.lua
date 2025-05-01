@@ -3,9 +3,9 @@ function func_0416(eventid, itemref)
     local local0, local1, local2, local3, local4
 
     if eventid == 1 then
-        switch_talk_to(-22, 0)
+        switch_talk_to(22, 0)
         local0 = get_schedule()
-        local1 = switch_talk_to(-22)
+        local1 = switch_talk_to(22)
 
         if local0 == 7 then
             local2 = apply_effect(-16, -22) -- Unmapped intrinsic 08FC
@@ -57,7 +57,7 @@ function func_0416(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        local1 = switch_talk_to(-22)
+        local1 = switch_talk_to(22)
         local3 = random(1, 4)
         local4 = check_item_state(-22)
 
@@ -73,7 +73,7 @@ function func_0416(eventid, itemref)
             end
             item_say(local4, -22)
         else
-            switch_talk_to(-22)
+            switch_talk_to(22)
         end
     end
     return

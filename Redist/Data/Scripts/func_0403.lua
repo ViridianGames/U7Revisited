@@ -8,10 +8,10 @@ function func_0403(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7
 
     if eventid == 1 then
-        switch_talk_to(-3, 0)
+        switch_talk_to(3, 0)
         local0 = is_player_female()
         local1 = get_party_members()
-        local2 = switch_talk_to(-3)
+        local2 = switch_talk_to(3)
         local3 = get_player_name()
 
         -- Initialize answers
@@ -79,15 +79,15 @@ function func_0403(eventid, itemref)
             remove_answer("diversions")
             local5 = get_item_type(-1)
             if local5 then
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Ahem, I have heard something about an actress, no?\"*")
-                hide_npc(-1)
-                switch_talk_to(-3, 0)
+                hide_npc(1)
+                switch_talk_to(3, 0)
                 say("\"What dost thou know of it?\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"" .. local3 .. ", ask him about 'Amber'.\"*")
-                hide_npc(-1)
-                switch_talk_to(-3, 0)
+                hide_npc(1)
+                switch_talk_to(3, 0)
                 say("\"Thou art a swine, Iolo.\"")
                 add_answer({"Lord British", "friends", "Amber"})
             end
@@ -109,10 +109,10 @@ function func_0403(eventid, itemref)
             local5 = get_item_type(-1)
             if local5 then
                 say("\"Dost thou mean that miserable excuse for an archer?\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"Watch what thou dost say, scoundrel!\"*")
-                hide_npc(-1)
-                switch_talk_to(-3, 0)
+                hide_npc(1)
+                switch_talk_to(3, 0)
                 say("\"Yes, that's Iolo!\"")
             else
                 say("\"Surely he is around somewhere. Where didst thou last leave him?\"")
@@ -122,22 +122,22 @@ function func_0403(eventid, itemref)
             local6 = get_item_type(-4)
             if local6 then
                 say("\"Dost thou mean that incorrigible wencher and drunkard?\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Do not forget that my mere thumb can squash in thy face like a marshmallow.\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Yes, that's Dupre!\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"That's -Sir- Dupre to thee!\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Sir Dupuke? Didst thou say Sir Dupuke?\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Du-pre-!\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Pardon -me-, Sir Dupuke!\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"I'm not going to listen to this anymore.\"*")
-                hide_npc(-4)
-                switch_talk_to(-3, 0)
+                hide_npc(4)
+                switch_talk_to(3, 0)
             else
                 if not get_flag(23) then
                     say("\"I believe he is in Jhelom.\"")
@@ -154,7 +154,7 @@ function func_0403(eventid, itemref)
             end
             if local7 >= 8 then
                 say("Shamino looks relieved. \"I am -so- glad thou didst asked me that.\" He gathers his gear and prepares to follow you.")
-                switch_talk_to(-3)
+                switch_talk_to(3)
             else
                 say("\"Hmmm. I do not like big crowds. I shall wait until thy group is smaller before joining.\"")
             end
@@ -167,13 +167,13 @@ function func_0403(eventid, itemref)
             return
         elseif answer == "go home" then
             say("\"I really hate to, but if thou dost insist.\" Shamino grudgingly gathers his belongings.*")
-            switch_talk_to(-3, 11)
+            switch_talk_to(3, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"Very well. I shall await thy return.\"*")
-            switch_talk_to(-3, 15)
+            switch_talk_to(3, 15)
             answers = {}
             answer = nil
             return
@@ -220,7 +220,7 @@ function func_0403(eventid, itemref)
     end
 
     if eventid == 0 then
-        switch_talk_to(-3)
+        switch_talk_to(3)
         answers = {}
         answer = nil
     end

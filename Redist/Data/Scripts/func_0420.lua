@@ -3,7 +3,7 @@ function func_0420(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-32, 0)
+        switch_talk_to(32, 0)
         local0 = get_item_type(-34)
 
         add_answer({"bye", "job", "name"})
@@ -19,10 +19,10 @@ function func_0420(eventid, itemref)
             if answer == "name" then
                 say("\"Makth.\"")
                 if local0 then
-                    switch_talk_to(-34, 0)
+                    switch_talk_to(34, 0)
                     say("\"He says his name is Max.\"")
-                    hide_npc(-34)
-                    switch_talk_to(-32, 0)
+                    hide_npc(34)
+                    switch_talk_to(32, 0)
                 end
                 remove_answer("name")
             elseif answer == "job" then
@@ -52,7 +52,7 @@ function func_0420(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        local1 = switch_talk_to(-32)
+        local1 = switch_talk_to(32)
         local2 = check_item_state(-32)
         if local2 == 25 then
             local3 = random(1, 4)

@@ -3,10 +3,10 @@ function func_0426(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-38, 0)
+        switch_talk_to(38, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-38)
+        local2 = switch_talk_to(38)
         local3 = get_item_type()
 
         add_answer({"bye", "job", "name"})
@@ -90,7 +90,7 @@ function func_0426(eventid, itemref)
         end
     elseif eventid == 0 then
         local1 = get_party_size()
-        local2 = switch_talk_to(-38)
+        local2 = switch_talk_to(38)
         local4 = random(1, 4)
         local5 = ""
 
@@ -106,7 +106,7 @@ function func_0426(eventid, itemref)
             end
             item_say(local5, -38)
         else
-            switch_talk_to(-38)
+            switch_talk_to(38)
         end
     end
     return

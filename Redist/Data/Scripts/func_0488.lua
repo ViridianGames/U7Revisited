@@ -3,11 +3,11 @@ function func_0488(eventid, itemref)
     local local0, local1, local2, local3
 
     if eventid == 1 then
-        switch_talk_to(-136, 0)
+        switch_talk_to(136, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-134)
-        local3 = switch_talk_to(-135)
+        local2 = switch_talk_to(134)
+        local3 = switch_talk_to(135)
 
         add_answer({"bye", "job", "name"})
         if not get_flag(381) then
@@ -38,10 +38,10 @@ function func_0488(eventid, itemref)
             elseif answer == "Battles" then
                 say("\"He has an eye like a hawk, and is quicker than a cat. 'Twould be wise of thee to pay him respect.\"")
                 if local3 then
-                    switch_talk_to(-135, 0)
+                    switch_talk_to(135, 0)
                     say("\"Har! Har! Thou art too correct, Leavell!\"")
-                    hide_npc(-135)
-                    switch_talk_to(-136, 0)
+                    hide_npc(135)
+                    switch_talk_to(136, 0)
                 end
                 remove_answer("Battles")
                 add_answer({"respect", "quick", "eye"})
@@ -64,10 +64,10 @@ function func_0488(eventid, itemref)
             elseif answer == "Robin" then
                 say("\"He is a gambler by profession, who earns his winnings at the House of Games's tables on Buccaneer's Den.\"")
                 if local2 then
-                    switch_talk_to(-134, 0)
+                    switch_talk_to(134, 0)
                     say("\"Soon we shall return and the money will pour like sweet wine once again, eh, Leavell?\"")
-                    hide_npc(-134)
-                    switch_talk_to(-136, 0)
+                    hide_npc(134)
+                    switch_talk_to(136, 0)
                 end
                 remove_answer("Robin")
                 add_answer({"Buccaneer's Den", "profession"})
@@ -75,10 +75,10 @@ function func_0488(eventid, itemref)
                 say("\"Gambling is what Robin does for money. But he spends so much time talking about Lord British that thou wouldst think he was royalty or something!\"")
                 if local2 then
                     say("Suddenly Leavell gets an embarrassed look on his face and stops talking.*")
-                    switch_talk_to(-134, 0)
+                    switch_talk_to(134, 0)
                     say("\"Enough about that, Leavell!\"*")
-                    hide_npc(-134)
-                    switch_talk_to(-136, 0)
+                    hide_npc(134)
+                    switch_talk_to(136, 0)
                 end
                 remove_answer("profession")
             elseif answer == "Buccaneer's Den" then
@@ -95,10 +95,10 @@ function func_0488(eventid, itemref)
             elseif answer == "Sintag" then
                 say("\"Battles and myself are more than capable of taking care of Sintag...\" *")
                 if local3 then
-                    switch_talk_to(-135, 0)
+                    switch_talk_to(135, 0)
                     say("\"Yeh, thou art bloody right we coulda handled him! We'd a slit him like a sheep! Har!\" *")
-                    hide_npc(-135)
-                    switch_talk_to(-136, 0)
+                    hide_npc(135)
+                    switch_talk_to(136, 0)
                 end
                 say("\"But Gordy had hired a troupe of ruffians to chase after us. 'Tis a pity. I would have liked to teach him a lesson or two. In fact, one day I think I shall.\"")
                 remove_answer("Sintag")
@@ -131,7 +131,7 @@ function func_0488(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-136)
+        switch_talk_to(136)
     end
     return
 end

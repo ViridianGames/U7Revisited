@@ -4,8 +4,8 @@ function func_0499(eventid, itemref)
 
     if eventid ~= 1 then
         local3 = get_schedule(-153)
-        switch_talk_to(-153, 0)
-        set_schedule(-153, 11)
+        switch_talk_to(153, 0)
+        set_schedule(153, 11)
         if local3 == 11 then
             if not get_flag(3) then
                 local4 = get_random(1, 4)
@@ -26,7 +26,7 @@ function func_0499(eventid, itemref)
         return
     end
 
-    switch_talk_to(-153, 0)
+    switch_talk_to(153, 0)
     local0 = get_player_name()
     local1 = get_party_size()
     add_answer({"bye", "job", "name"})
@@ -44,12 +44,12 @@ function func_0499(eventid, itemref)
         while true do
             local answer = get_answer()
             if answer == "name" then
-                local2 = switch_talk_to(-1)
+                local2 = switch_talk_to(1)
                 if local2 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"Surely thou dost recognize thine old companion, Mariah?\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-153, 0)
+                    hide_npc(1)
+                    switch_talk_to(153, 0)
                 else
                     say("\"Hast thou already forgotten me, " .. local1 .. "? I am Mariah.\"")
                 end
@@ -76,12 +76,12 @@ function func_0499(eventid, itemref)
         while true do
             local answer = get_answer()
             if answer == "name" then
-                local2 = switch_talk_to(-1)
+                local2 = switch_talk_to(1)
                 if local2 then
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"Surely thou dost recognize thine old companion, Mariah?\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-153, 0)
+                    hide_npc(1)
+                    switch_talk_to(153, 0)
                     say("\"Yes, dost thou not recognize me?\" She pauses, glaring at you. \"But who art thou, and where are my pastries?\"")
                 else
                     say("\"Yes, thou mayest tell me thy name,\" she says, glancing around the building. \"Are not the many books beautiful?\"")

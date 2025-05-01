@@ -3,10 +3,10 @@ function func_045F(eventid, itemref)
     local local0, local1, local2, local3, local4
 
     if eventid == 1 then
-        switch_talk_to(-95, 0)
+        switch_talk_to(95, 0)
         local0 = get_player_name()
         local1 = get_party_size()
-        local2 = switch_talk_to(-95)
+        local2 = switch_talk_to(95)
 
         add_answer({"bye", "job", "name"})
 
@@ -63,12 +63,12 @@ function func_045F(eventid, itemref)
             elseif answer == "Karenna" then
                 say("\"A skillful and fierce battler, but a bit short-sighted when it comes to tactics, I'm afraid. Still, a woman as attractive as she is diverting enough when encountered. But do not mention to her that I said that. It would just encourage her. It is uncomfortable enough sharing the same roof with her as it is.\"")
                 if get_item_type(-94) then
-                    switch_talk_to(-94, 0)
+                    switch_talk_to(94, 0)
                     say("\"What art thou whispering about over there?\"*")
-                    switch_talk_to(-95, 0)
+                    switch_talk_to(95, 0)
                     say("\"Nothing! Nothing at all!\" Jakher winks at you.*")
-                    hide_npc(-94)
-                    switch_talk_to(-95, 0)
+                    hide_npc(94)
+                    switch_talk_to(95, 0)
                 end
                 remove_answer("Karenna")
                 set_flag(246, true)
@@ -76,12 +76,12 @@ function func_045F(eventid, itemref)
             elseif answer == "short-sighted" then
                 say("\"She is the sort of person who labors under the belief that all problems can be solved in one of three ways. Hit them harder. Hit them faster. Or, hit them some more.\"")
                 if get_item_type(-94) then
-                    switch_talk_to(-94, 0)
+                    switch_talk_to(94, 0)
                     say("\"Art thou talking about me? I feel mine ears burning!\"*")
-                    switch_talk_to(-95, 0)
+                    switch_talk_to(95, 0)
                     say("\"Thou art dreaming, Karenna. Why would I talk about thee?\" He giggles conspiratorially at you.*")
-                    hide_npc(-94)
-                    switch_talk_to(-95, 0)
+                    hide_npc(94)
+                    switch_talk_to(95, 0)
                 end
                 remove_answer("short-sighted")
             elseif answer == "roof" then
@@ -104,7 +104,7 @@ function func_045F(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-95)
+        switch_talk_to(95)
     end
     return
 end

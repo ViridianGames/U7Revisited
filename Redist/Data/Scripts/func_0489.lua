@@ -3,7 +3,7 @@ function func_0489(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15
 
     if eventid == 1 then
-        switch_talk_to(-137, 0)
+        switch_talk_to(137, 0)
         local0 = get_schedule()
         local1 = get_player_name()
         local2 = get_party_size()
@@ -158,7 +158,7 @@ function func_0489(eventid, itemref)
             end
             item_say(local15, -137) -- Unmapped intrinsic
         else
-            switch_talk_to(-137)
+            switch_talk_to(137)
         end
     end
     return

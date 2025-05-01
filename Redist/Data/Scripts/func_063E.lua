@@ -20,7 +20,7 @@ function func_063E(eventid, itemref)
         local0 = set_npc_property(-356, 7, 0)
         local0 = set_npc_property(-356, 8, 0)
     elseif eventid == 2 then
-        switch_talk_to(-23, 0)
+        switch_talk_to(23, 0)
         say("Busted, you thieving scoundrel bastard! Perhaps the only thing more ridiculous than your pathetic attempt to destroy the black gate without paying proper dues is your inevitably embarrassing explanation to the friend to whom you are, no doubt, showing this!")
         say("For the atrocious crime of cheating against the virtues of Britannia, I find you guilty.*")
         apply_effect(15) -- Unmapped intrinsic
@@ -37,7 +37,7 @@ function func_063E(eventid, itemref)
         set_flag(30, true)
         set_item_quality(-23, 2)
         external_004BH(-23, 0) -- Unmapped intrinsic
-        set_schedule(-23, 0)
+        set_schedule(23, 0)
         set_flag(itemref, 25, true)
     end
     return

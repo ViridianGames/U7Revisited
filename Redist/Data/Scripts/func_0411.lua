@@ -3,7 +3,7 @@ function func_0411(eventid, itemref)
     local local0, local1, local2, local3, local4
 
     if eventid == 1 then
-        switch_talk_to(-17, 0)
+        switch_talk_to(17, 0)
         local0 = get_player_name()
         local1 = get_item_type()
 
@@ -47,7 +47,7 @@ function func_0411(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        local2 = switch_talk_to(-17)
+        local2 = switch_talk_to(17)
         local3 = random(1, 4)
         local4 = check_item_state(-17)
 
@@ -63,7 +63,7 @@ function func_0411(eventid, itemref)
             end
             item_say(local4, -17)
         else
-            switch_talk_to(-17)
+            switch_talk_to(17)
         end
     end
     return

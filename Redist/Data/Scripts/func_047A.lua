@@ -3,11 +3,11 @@ function func_047A(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25, local26
 
     if eventid == 1 then
-        switch_talk_to(-122, 0)
+        switch_talk_to(122, 0)
         local0 = get_player_name()
         local1 = is_player_female()
         local2 = get_party_size()
-        local3 = switch_talk_to(-122)
+        local3 = switch_talk_to(122)
 
         add_answer({"bye", "job", "name"})
 
@@ -55,14 +55,14 @@ function func_047A(eventid, itemref)
             elseif answer == "Daphne" then
                 say("\"Honestly, I cannot imagine why thou wouldst be interested in her.\" She lets out a throaty laugh.*")
                 if local4 then
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"I heard that, Ophelia. Thou art a spiteful wench!\"*")
-                    switch_talk_to(-122, 0)
+                    switch_talk_to(122, 0)
                     say("\"Now, now, Daphne. Temper, Temper! We don't want to scare off the patrons with a poor disposition in addition to a poor face!\"*")
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"Witch!\"*")
-                    hide_npc(-123)
-                    switch_talk_to(-122, 0)
+                    hide_npc(123)
+                    switch_talk_to(122, 0)
                 end
                 remove_answer("Daphne")
             elseif answer == "Bunk and Stool" then
@@ -186,14 +186,14 @@ function func_047A(eventid, itemref)
             elseif answer == "Cosmo" then
                 say("\"Who? Oh, he is a local boy who comes in here and moons over me on occasion. Do not concern thyself with him. I do not.\"")
                 if local4 then
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"Why what kind of way is that to speak of he who will soon become thy betrothed! Finally, I can make thee move out of mine house! Every moment of sharing my life with thee has been intolerable!\"*")
-                    switch_talk_to(-122, 0)
+                    switch_talk_to(122, 0)
                     say("\"Do not get thine hopes up yet, my dear Daphne! I have put a condition on our marriage and poor Cosmo will never be able to fulfill it!\"")
-                    switch_talk_to(-123, 0)
+                    switch_talk_to(123, 0)
                     say("\"Thou dost never know! The thought of thee in thy wedding gown with thy groom Cosmo at thy side is simply delicious! Perhaps he is the man who will finally teach thee to be a lady at last!\"")
-                    hide_npc(-123)
-                    switch_talk_to(-122, 0)
+                    hide_npc(123)
+                    switch_talk_to(122, 0)
                 end
                 remove_answer("Cosmo")
             elseif answer == "Sprellic dead" then
@@ -207,7 +207,7 @@ function func_047A(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-122)
+        switch_talk_to(122)
     end
     return
 end

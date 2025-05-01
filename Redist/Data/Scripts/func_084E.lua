@@ -2,7 +2,7 @@
 function func_084E()
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
-    switch_talk_to(-26, 0)
+    switch_talk_to(26, 0)
     local0 = external_0908H() -- Unmapped intrinsic
     say("\"These questions are all hypothetical. Do not let them confuse or upset thee.~~\"Question One: Thou art feeling depressed right now. Is it more likely because -~A: Thou hast disappointed a friend, or~B: A friend has disappointed thee?\"")
     local1 = external_090BH({"B: Friend has disappointed me", "A: I disappointed a friend"}) -- Unmapped intrinsic

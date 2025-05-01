@@ -11,14 +11,14 @@ function func_0401(eventid, itemref)
     set_flag(20, true)
     local0 = get_player_name()
     local1 = get_party_members()
-    local2 = switch_talk_to(-1)
+    local2 = switch_talk_to(1)
     local3 = get_player_name()
     local4 = is_player_female()
 
     if eventid == 3 then
         if not get_flag(59) and not get_flag(92) then
             play_music(35, 0)
-            switch_talk_to(-356, 16, {17493, 7715, 1706})
+            switch_talk_to(356, 16, {17493, 7715, 1706})
             say("There, there...")
             say("'Tis horrible!")
             say("I know, 'tis shocking!")
@@ -36,23 +36,23 @@ function func_0401(eventid, itemref)
     end
 
     if get_flag(59) == false and eventid == 2 then
-        switch_talk_to(-1, 0)
+        switch_talk_to(1, 0)
         say("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.~~\"! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...~~\"Lo and behold! Who says that magic is dying! Here is living proof that it is not!~~ \"Dost thou realize, " .. local0 .. ", that it hath been 200 Britannian years since we last met? Why, thou hast not aged at all!\"")
         say("Iolo winks conspiratorially. He whispers, \"Due no doubt to the difference in the structure of time in our original homeland and that of Britannia?\"~~He resumes speaking aloud. \"I have aged a little, as thou canst see. But of course, I have stayed here in Britannia all this time.~~\"Oh, but Avatar! Wait until I tell the others! They will be happy to see thee! Welcome to Trinsic!\"*")
         local6 = local4 and "her" or "him"
         say("The distraught peasant interrupts Iolo. \"Show " .. local6 .. " the stables, milord. 'Tis horrible!\"*")
-        hide_npc(-11)
-        switch_talk_to(-1, 0)
+        hide_npc(11)
+        switch_talk_to(1, 0)
         say("Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.~~ \"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
         if not check_item_state() then
             say("Iolo takes you aside and whispers, \"Avatar, for the sake of our mutual sanity, I strongly suggest that thou shouldst purchase a mouse.\"")
         end
         say("", {8021, 20, 17447, 17452, 7715, 1786, 5})
         -- Earthquake effect (unmapped intrinsic 08DDH)
-        switch_talk_to(-11, 7)
-        switch_talk_to(-12, 3)
-        switch_talk_to(-1, 0)
-        switch_talk_to(-11, 0)
+        switch_talk_to(11, 7)
+        switch_talk_to(12, 3)
+        switch_talk_to(1, 0)
+        switch_talk_to(11, 0)
         if not get_flag(59) then
             say({17492, 7715, 0, 0}, itemref)
             set_flag(59, true)
@@ -65,7 +65,7 @@ function func_0401(eventid, itemref)
     if eventid == 1 then
         local0 = get_player_name()
         local1 = get_party_members()
-        local2 = switch_talk_to(-1)
+        local2 = switch_talk_to(1)
         local3 = get_player_name()
         local8 = get_item_type(-11)
         local9 = get_item_type(-3)
@@ -161,10 +161,10 @@ function func_0401(eventid, itemref)
             local12 = get_item_type(-4)
             if local12 then
                 say("\"Why, he is right there, " .. local3 .. ".\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"I am right here, " .. local3 .. ".\"*")
-                hide_npc(-4)
-                switch_talk_to(-1, 0)
+                hide_npc(4)
+                switch_talk_to(1, 0)
                 say("\"See? I told thee!\"")
             else
                 say("\"I am sure we shall find him somewhere. Last I heard, he was in Jhelom. Didst thou know he was knighted?\"")
@@ -181,10 +181,10 @@ function func_0401(eventid, itemref)
         elseif answer == "Shamino" then
             if local9 then
                 say("\"Why, he is right there, " .. local3 .. ".\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"I am right here, " .. local3 .. ".\"*")
-                hide_npc(-3)
-                switch_talk_to(-1, 0)
+                hide_npc(3)
+                switch_talk_to(1, 0)
                 say("\"See? I told thee!\"")
             else
                 say("\"Thy best bet in finding that rascal is to look in Britain. He has a girlfriend employed as an actress at the Royal Theatre.\"")
@@ -234,13 +234,13 @@ function func_0401(eventid, itemref)
             end
         elseif answer == "go home" then
             say("\"Farewell, then. I shall always rejoin if thou dost so desire.\" Iolo turns away from you.*")
-            switch_talk_to(-1, 11)
+            switch_talk_to(1, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"Very well. I shall wait here until thou dost return and ask me to rejoin.\"*")
-            switch_talk_to(-1, 15)
+            switch_talk_to(1, 15)
             answers = {}
             answer = nil
             return
@@ -251,7 +251,7 @@ function func_0401(eventid, itemref)
                 local15 = local15 + 1
             end
             if local15 >= 8 then
-                switch_talk_to(-1)
+                switch_talk_to(1)
                 remove_answer("join")
                 add_answer("leave")
             else
@@ -279,7 +279,7 @@ function func_0401(eventid, itemref)
     end
 
     if eventid == 0 then
-        switch_talk_to(-1)
+        switch_talk_to(1)
         answers = {}
         answer = nil
     end

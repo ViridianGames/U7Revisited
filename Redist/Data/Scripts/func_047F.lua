@@ -3,7 +3,7 @@ function func_047F(eventid, itemref)
     local local0, local1, local2, local3, local4
 
     if eventid == 1 then
-        switch_talk_to(-127, 0)
+        switch_talk_to(127, 0)
         local0 = get_player_name()
         local1 = get_party_size()
         local2 = get_item_type(-127)
@@ -72,7 +72,7 @@ function func_047F(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-127)
+        switch_talk_to(127)
     end
     return
 end

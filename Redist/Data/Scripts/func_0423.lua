@@ -3,8 +3,8 @@ function func_0423(eventid, itemref)
     local local0, local1, local2, local3, local4
 
     if eventid == 1 then
-        switch_talk_to(-35, 0)
-        local0 = switch_talk_to(-35)
+        switch_talk_to(35, 0)
+        local0 = switch_talk_to(35)
         local1 = false
 
         add_answer({"bye", "services", "job", "name"})
@@ -38,18 +38,18 @@ function func_0423(eventid, itemref)
                 remove_answer("practice")
                 local2 = get_item_type(-3)
                 if local2 then
-                    switch_talk_to(-3, 0)
+                    switch_talk_to(3, 0)
                     say("\"He is probably the best healer in all Britannia. Why, he cured a, er, particular problem I had in no time at all.\"*")
                     local3 = get_item_type(-1)
                     if local3 then
-                        switch_talk_to(-1, 0)
+                        switch_talk_to(1, 0)
                         say("\"Oh? What problem was that?\"*")
-                        switch_talk_to(-3, 0)
+                        switch_talk_to(3, 0)
                         say("\"Never mind. The whole world does not need to know about it.\"*")
-                        hide_npc(-1)
+                        hide_npc(1)
                     end
-                    hide_npc(-3)
-                    switch_talk_to(-35, 0)
+                    hide_npc(3)
+                    switch_talk_to(35, 0)
                 end
             elseif answer == "Lord British" then
                 say("\"Well, Lord British himself was struck down with some sort of malady. He sent for me. I arrived at the castle as soon as I could leave my patients, and I examined the king. It appeared to me that something had infested his blood. I have a theory about it, which I am convinced is correct. Others, however, do not share my view.\"")
@@ -85,7 +85,7 @@ function func_0423(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-35)
+        switch_talk_to(35)
     end
     return
 end

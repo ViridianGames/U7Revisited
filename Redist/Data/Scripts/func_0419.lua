@@ -3,7 +3,7 @@ function func_0419(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 1 then
-        switch_talk_to(-25, 0)
+        switch_talk_to(25, 0)
 
         if not get_flag(154) then
             say("You are wary of conversing with that trickster Chuckles, but decide to anyway.")
@@ -106,7 +106,7 @@ function func_0419(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        local3 = switch_talk_to(-25)
+        local3 = switch_talk_to(25)
         local4 = check_item_state(-25)
         if local4 == 4 then
             local5 = random(1, 4)

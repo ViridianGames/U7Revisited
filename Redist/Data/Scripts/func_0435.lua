@@ -3,11 +3,11 @@ function func_0435(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
 
     if eventid == 1 then
-        switch_talk_to(-53, 0)
+        switch_talk_to(53, 0)
         local0 = get_player_name()
         local1 = get_item_type()
         local2 = get_party_size()
-        local3 = switch_talk_to(-53)
+        local3 = switch_talk_to(53)
 
         if local3 == 7 then
             local4 = apply_effect(-26, -53) -- Unmapped intrinsic 08FC
@@ -103,7 +103,7 @@ function func_0435(eventid, itemref)
         end
     elseif eventid == 0 then
         local2 = get_party_size()
-        local3 = switch_talk_to(-53)
+        local3 = switch_talk_to(53)
         local10 = random(1, 4)
         local11 = ""
 
@@ -119,7 +119,7 @@ function func_0435(eventid, itemref)
             end
             item_say(local11, -53)
         else
-            switch_talk_to(-53)
+            switch_talk_to(53)
         end
     end
     return

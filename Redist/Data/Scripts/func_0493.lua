@@ -3,7 +3,7 @@ function func_0493(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
     if eventid == 1 then
-        switch_talk_to(-147, 0)
+        switch_talk_to(147, 0)
         local0 = false
         local1 = get_part_of_day()
         local2 = get_schedule(-147)
@@ -174,7 +174,7 @@ function func_0493(eventid, itemref)
                 remove_answer(local7)
             elseif answer == "leave" then
                 say("\"As thou wishest!\"")
-                set_schedule(-147, 11)
+                set_schedule(147, 11)
                 apply_effect() -- Unmapped intrinsic
             elseif answer == "Trent" then
                 say("\"Trent is in the smithy, not far from here, across the road.\"")

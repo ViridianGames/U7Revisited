@@ -536,7 +536,7 @@ void LoadingState::LoadFaces()
 			}
 
 			//  Read the frame data.
-			for (int i = 0; i < 1; ++i)
+			for (int i = 0; i < frameCount; ++i)
 			{
 				ShapeData& shapeData = g_shapeTable[thisShape][i];
 				//  Seek to the start of this frame's data.
@@ -615,7 +615,7 @@ void LoadingState::LoadFaces()
 						}
 					}
 				}
-				g_ResourceManager->AddTexture(tempImage, "U7FACES" + std::to_string(thisShape));
+				g_ResourceManager->AddTexture(tempImage, "U7FACES" + std::to_string(thisShape) + std::to_string(i));
 				//shapeData.SetDefaultTexture(tempImage);
 			}
 

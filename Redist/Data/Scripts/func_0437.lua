@@ -3,10 +3,10 @@ function func_0437(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-55, 0)
+        switch_talk_to(55, 0)
         local0 = get_item_type()
         local1 = get_party_size()
-        local2 = switch_talk_to(-55)
+        local2 = switch_talk_to(55)
 
         if local1 == 7 then
             local3 = apply_effect(-26, -55) -- Unmapped intrinsic 08FC
@@ -91,7 +91,7 @@ function func_0437(eventid, itemref)
         end
     elseif eventid == 0 then
         local1 = get_party_size()
-        local2 = switch_talk_to(-55)
+        local2 = switch_talk_to(55)
         local5 = random(1, 4)
         local6 = ""
 
@@ -107,7 +107,7 @@ function func_0437(eventid, itemref)
             end
             item_say(local6, -55)
         else
-            switch_talk_to(-55)
+            switch_talk_to(55)
         end
     end
     return

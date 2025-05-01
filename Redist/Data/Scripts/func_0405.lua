@@ -9,10 +9,10 @@ function func_0405(eventid, itemref)
     local local10, local11, local12, local13, local14
 
     if eventid == 1 then
-        switch_talk_to(-5, 0)
+        switch_talk_to(5, 0)
         local0 = is_player_female()
         local1 = get_party_members()
-        local2 = switch_talk_to(-5)
+        local2 = switch_talk_to(5)
         local3 = get_player_name()
         local4 = get_item_type(-1)
         local5 = get_item_type(-3)
@@ -89,7 +89,7 @@ function func_0405(eventid, itemref)
             end
             if local9 >= 8 then
                 say("\"I would be honored to join thee, " .. local3 .. "!\"")
-                switch_talk_to(-5)
+                switch_talk_to(5)
                 add_answer("leave")
                 remove_answer("join")
             else
@@ -102,13 +102,13 @@ function func_0405(eventid, itemref)
             return
         elseif answer == "go home" then
             say("\"I shall obey thy wish. I would be happy to re-join if thou shouldst ask. Goodbye.\"*")
-            switch_talk_to(-5, 11)
+            switch_talk_to(5, 11)
             answers = {}
             answer = nil
             return
         elseif answer == "wait here" then
             say("\"Very well. I shall wait until thou dost return.\"*")
-            switch_talk_to(-5, 15)
+            switch_talk_to(5, 15)
             answers = {}
             answer = nil
             return
@@ -123,26 +123,26 @@ function func_0405(eventid, itemref)
             say("Jaana blushes. \"Yes, I have been seeing our Town Mayor for some time now.\"")
             remove_answer("Lord Heather")
             if local7 then
-                switch_talk_to(-77, 0)
+                switch_talk_to(77, 0)
                 say("\"I see that thou art leaving Cove for a while, my dear?\"*")
-                switch_talk_to(-5, 0)
+                switch_talk_to(5, 0)
                 say("\"Yes, milord. But I shall return. I promise thee.\"*")
-                switch_talk_to(-77, 0)
+                switch_talk_to(77, 0)
                 say("\"I shall try not to worry about thee, but it will be difficult.\"*")
-                switch_talk_to(-5, 0)
+                switch_talk_to(5, 0)
                 say("\"Do not worry. I shall be safe with the Avatar.\"*")
-                switch_talk_to(-77, 0)
+                switch_talk_to(77, 0)
                 say("\"I do hope so.\" The Mayor embraces Jaana.*")
-                hide_npc(-77)
-                switch_talk_to(-5, 0)
+                hide_npc(77)
+                switch_talk_to(5, 0)
             end
         elseif answer == "Iolo" then
             if local4 then
                 say("\"He looks the same to me! Perhaps he has a little more waistline than before... but that is to be expected if one stays away from adventuring for too long!\"*")
-                switch_talk_to(-1, 0)
+                switch_talk_to(1, 0)
                 say("\"What dost thou mean? 'Little more waistline' indeed!\"*")
-                hide_npc(-1)
-                switch_talk_to(-5, 0)
+                hide_npc(1)
+                switch_talk_to(5, 0)
                 say("\"No offense intended, Iolo!\"")
             else
                 say("\"Where is he? 'Twould be good to see him!\"")
@@ -151,10 +151,10 @@ function func_0405(eventid, itemref)
         elseif answer == "Shamino" then
             if local5 then
                 say("\"Shamino, thou dost not look like a 'kid' anymore! What didst happen? Didst thou reach the venerable age of thirty?\"*")
-                switch_talk_to(-3, 0)
+                switch_talk_to(3, 0)
                 say("\"Hmph. I am still a kid at heart.\"*")
-                hide_npc(-3)
-                switch_talk_to(-5, 0)
+                hide_npc(3)
+                switch_talk_to(5, 0)
                 say("\"That is a relief.\" She grins cheekily.")
             else
                 say("\"Oh, I would love to see him. I wonder where he might be.\"")
@@ -163,11 +163,11 @@ function func_0405(eventid, itemref)
         elseif answer == "Dupre" then
             if local6 then
                 say("\"For someone recently knighted, he has retained his good looks and boyish charm, hasn't he?\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Thou dost mean 'mannish' charm, dost thou not?\"*")
-                switch_talk_to(-5, 0)
+                switch_talk_to(5, 0)
                 say("\"Oh, pardon -me-, sir. Thine immaturity confused me for a moment.\"*")
-                switch_talk_to(-4, 0)
+                switch_talk_to(4, 0)
                 say("\"Art thou going to let her get away with that, " .. local3 .. "?\"*")
                 local11 = get_item_type()
                 if local11 then
@@ -175,7 +175,7 @@ function func_0405(eventid, itemref)
                 else
                     say("\"Good!\" Jaana winks at you from behind his back.*")
                 end
-                hide_npc(-4)
+                hide_npc(4)
             else
                 say("\"I miss having a drink or two with that rogue! Let's go find that knight!\"")
             end
@@ -194,7 +194,7 @@ function func_0405(eventid, itemref)
         answer = nil
         return
     elseif eventid == 0 then
-        switch_talk_to(-5)
+        switch_talk_to(5)
         answers = {}
         answer = nil
     end

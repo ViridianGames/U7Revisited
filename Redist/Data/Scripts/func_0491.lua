@@ -3,7 +3,7 @@ function func_0491(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
 
     if eventid == 1 then
-        switch_talk_to(-145, 0)
+        switch_talk_to(145, 0)
         local0 = get_player_name()
         local1 = is_player_female()
         local2 = get_part_of_day()
@@ -33,23 +33,23 @@ function func_0491(eventid, itemref)
             say("\"Go away! Thou art cruel and mean-hearted.\" She turns away, but not before you see the tears in her eyes.*")
             return
         end
-        local6 = switch_talk_to(-144)
+        local6 = switch_talk_to(144)
         if local6 and not get_flag(446) then
             say("Paulette perks up as she sees Rowena.~~\"Hello, milady. 'Tis good to see thee again. How art thou?\"*")
-            switch_talk_to(-144, 0)
+            switch_talk_to(144, 0)
             say("\"I am fine, Paulette. I thank thee for thy concern.\"*")
-            hide_npc(-144)
-            switch_talk_to(-145, 0)
+            hide_npc(144)
+            switch_talk_to(145, 0)
             say("\"'Tis good news indeed, milady.\"")
             set_flag(446, true)
         end
-        local7 = switch_talk_to(-147)
+        local7 = switch_talk_to(147)
         if local7 and not get_flag(445) then
             say("\"Hello, Mayor. It has been quite a while since we've seen thee in our tavern. There was a time, I remember, when we couldn't keep thee away.\"*")
-            switch_talk_to(-147, 0)
+            switch_talk_to(147, 0)
             say("The mayor becomes quickly embarrassed as he tries to quiet the rather friendly Paulette.~~\"I, er, used to be a wine connoisseur of sorts,\" he says to you.*")
-            hide_npc(-147)
-            switch_talk_to(-145, 0)
+            hide_npc(147)
+            switch_talk_to(145, 0)
             say("\"'Tis not all thou wert a connoisseur of,\" adds Paulette, eyes twinkling. \"I seem to remember thou had quite a taste for redheads.\"")
             set_flag(445, true)
         end
@@ -93,12 +93,12 @@ function func_0491(eventid, itemref)
                 local8 = get_answer()
                 if local8 then
                     say("\"I am sorry, " .. local0 .. ",\" she giggles, \"but all we serve here are... spirits!\"*")
-                    local9 = switch_talk_to(-140)
+                    local9 = switch_talk_to(140)
                     if local9 and get_flag(436) then
-                        switch_talk_to(-140, 0)
+                        switch_talk_to(140, 0)
                         say("\"That's a good one, wench,\" laughs the portly ghost.*")
-                        hide_npc(-140)
-                        switch_talk_to(-145, 0)
+                        hide_npc(140)
+                        switch_talk_to(145, 0)
                     end
                 else
                     say("\"Very well, " .. local0 .. ".\"")

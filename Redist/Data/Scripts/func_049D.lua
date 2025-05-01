@@ -7,7 +7,7 @@ function func_049D(eventid, itemref)
         return
     end
 
-    switch_talk_to(-157, 0)
+    switch_talk_to(157, 0)
     local0 = get_player_name()
     local1 = get_random()
     add_answer({"bye", "Fellowship", "job", "name"})

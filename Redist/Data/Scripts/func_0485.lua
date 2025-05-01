@@ -3,13 +3,13 @@ function func_0485(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-133, 0)
+        switch_talk_to(133, 0)
         local0 = get_player_name()
-        local1 = switch_talk_to(-3)
-        local2 = switch_talk_to(-1)
-        local3 = switch_talk_to(-4)
-        local4 = switch_talk_to(-2)
-        local5 = switch_talk_to(-132)
+        local1 = switch_talk_to(3)
+        local2 = switch_talk_to(1)
+        local3 = switch_talk_to(4)
+        local4 = switch_talk_to(2)
+        local5 = switch_talk_to(132)
 
         add_answer({"bye", "job", "name"})
         if not get_flag(384) then
@@ -43,31 +43,31 @@ function func_0485(eventid, itemref)
                 if local6 then
                     say("With a big smile Constance takes a dipper and submerges it in the cool water of her bucket. She draws out the dipper and hands it to you. You drink and find the water delicious and very refreshing.")
                     if local2 then
-                        switch_talk_to(-1, 0)
+                        switch_talk_to(1, 0)
                         say("\"Actually, I feel quite parched myself. Might I have some as well?\" Constance nods yes, and hands him a dipper of water. He drinks with loud gulping sounds.*")
-                        hide_npc(-1)
-                        switch_talk_to(-133, 0)
+                        hide_npc(1)
+                        switch_talk_to(133, 0)
                     end
                     if local1 then
-                        switch_talk_to(-3, 0)
+                        switch_talk_to(3, 0)
                         say("\"I, too, am feeling dry. Wouldst thou share thy water with me, milady?\" Constance fills the dipper with water for Shamino and he drinks until water runs down his chin.*")
-                        hide_npc(-3)
-                        switch_talk_to(-133, 0)
+                        hide_npc(3)
+                        switch_talk_to(133, 0)
                     end
                     if local1 and local3 then
-                        switch_talk_to(-3, 0)
+                        switch_talk_to(3, 0)
                         say("You see Shamino nudge Dupre. \"Art thou not going to have a drink?\"")
-                        hide_npc(-3)
-                        switch_talk_to(-4, 0)
+                        hide_npc(3)
+                        switch_talk_to(4, 0)
                         say("\"I shall wait until we find something a bit stronger than water to quench my thirst.\"*")
-                        hide_npc(-4)
-                        switch_talk_to(-133, 0)
+                        hide_npc(4)
+                        switch_talk_to(133, 0)
                     end
                     if local4 then
-                        switch_talk_to(-2, 0)
+                        switch_talk_to(2, 0)
                         say("Constance hands Spark a dipper full of water. He drinks it down in one long slurp. Upon finishing it, he burps. With an embarrassed grin he bows apologetically to Constance as he hands her back the dipper.")
-                        hide_npc(-2)
-                        switch_talk_to(-133, 0)
+                        hide_npc(2)
+                        switch_talk_to(133, 0)
                     end
                 else
                     say("\"If thou wouldst ever change thy mind thou needest only let me know.\"")
@@ -93,12 +93,12 @@ function func_0485(eventid, itemref)
             elseif answer == "locket found" then
                 say("You tell Constance of how you have returned the locket that has been stolen from Henry. \"Oh, how could I ever have doubted my dear darling Henry?\" she frowns. \"I thank thee for telling me the truth.\"")
                 if local5 then
-                    switch_talk_to(-132, 0)
+                    switch_talk_to(132, 0)
                     say("\"Constance, I am sorry that things ran afoul as they did, but if thou wilt, I would like thee to have this locket as a symbol of my love.\"*")
-                    switch_talk_to(-133, 0)
+                    switch_talk_to(133, 0)
                     say("\"My sweet Henry, mine heart belongs to only thee.\"*")
-                    hide_npc(-132)
-                    switch_talk_to(-133, 0)
+                    hide_npc(132)
+                    switch_talk_to(133, 0)
                 end
                 remove_answer("locket found")
             elseif answer == "another" then
@@ -138,7 +138,7 @@ function func_0485(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-133)
+        switch_talk_to(133)
     end
     return
 end

@@ -3,14 +3,14 @@ function func_047D(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        switch_talk_to(-125, 0)
+        switch_talk_to(125, 0)
         local0 = get_player_name()
         local1 = get_party_size()
         local2 = get_item_type(-125)
         local3 = get_item_type(-127)
         local4 = get_item_type(-126)
-        local5 = switch_talk_to(-126)
-        local6 = switch_talk_to(-127)
+        local5 = switch_talk_to(126)
+        local6 = switch_talk_to(127)
 
         add_answer({"bye", "job", "name"})
 
@@ -55,10 +55,10 @@ function func_047D(eventid, itemref)
             elseif answer == "duel" then
                 say("\"A responsibility, yes, even a necessity. The cost of being honorable is that one must defend one's honor. There is no telling just where or when the next stain on one's honor may appear. Like this Sprellic fool, for instance. The perfect example!\"*")
                 if local5 then
-                    switch_talk_to(-126, 0)
+                    switch_talk_to(126, 0)
                     say("\"I'll make a stain on his honor, that's for sure. A blood red one!\"*")
-                    hide_npc(-126)
-                    switch_talk_to(-125, 0)
+                    hide_npc(126)
+                    switch_talk_to(125, 0)
                 end
                 add_answer("Sprellic")
                 remove_answer("duel")
@@ -66,10 +66,10 @@ function func_047D(eventid, itemref)
                 if not get_flag(356) then
                     say("\"The bloody idiot had no idea that when he took our honor flag he would be seen doing it. Hence, he never considered the fact that he would have to fight a duel over our sullied honor. But now that the whole town is talking of the incident there is no way that we could refrain from standing up for ourselves. Especially since he has refused to return what he has taken from us.\"*")
                     if local6 then
-                        switch_talk_to(-127, 0)
+                        switch_talk_to(127, 0)
                         say("\"Were he not such a cad, he would see the foolishness of his actions. 'Tis now up to us to show him!\"*")
-                        hide_npc(-127)
-                        switch_talk_to(-125, 0)
+                        hide_npc(127)
+                        switch_talk_to(125, 0)
                     end
                     add_answer({"honor flag", "misunderstanding"})
                 else
@@ -96,7 +96,7 @@ function func_047D(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-125)
+        switch_talk_to(125)
     end
     return
 end

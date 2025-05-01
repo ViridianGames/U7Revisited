@@ -15,19 +15,19 @@ function func_0417(eventid, itemref)
         local8 = false
 
         if get_flag(30) then
-            switch_talk_to(-23, 0)
+            switch_talk_to(23, 0)
             say("\"Fool!! What possessed thee to cast that damned Armageddon Spell? I knew it was dangerous! Thou didst know it was dangerous!! Now look at us! We are all alone on the entire planet! Britannia is ruined! What kind of Avatar art thou!?! Now, with no Moongates working, we are both forced to spend eternity in this blasted wasteland!")
             say("\"Of course, it could be viewed as a clever solution to all of our problems. After all, not even this so-called Guardian would want Britannia now!\"*")
             return
         end
         if get_flag(780) and not get_flag(781) then
             local0 = true
-            switch_talk_to(-23, 0)
+            switch_talk_to(23, 0)
             say("\"I felt the passing of the remains of Exodus from this realm. It has lifted a great weight from my shoulders. And so Avatar, I cannot let this accomplishment go unrewarded. Please kneel, my friend.\" Lord British holds out his hands as you obey his command.")
             goto exodus_event
         end
 
-        switch_talk_to(-23, 0)
+        switch_talk_to(23, 0)
         add_answer({"Fellowship", "bye", "job", "name"})
         if not get_flag(221) then
             add_answer("Orb of the Moons")
@@ -191,10 +191,10 @@ function func_0417(eventid, itemref)
                 say("\"I have seen our friend rarely over the years. I understand he has been spending most of his time in Trinsic.\"")
                 if local3 then
                     say("\"Hello, Iolo! How art thou?\"*")
-                    switch_talk_to(-1, 0)
+                    switch_talk_to(1, 0)
                     say("\"I am well, my liege! 'Tis good to see thee!\"*")
-                    hide_npc(-1)
-                    switch_talk_to(-23, 0)
+                    hide_npc(1)
+                    switch_talk_to(23, 0)
                 end
                 remove_answer("Iolo")
                 add_answer("Trinsic")
@@ -202,28 +202,28 @@ function func_0417(eventid, itemref)
                 say("\"That rascal does not come around very often, though I understand he spends most of his time in Britain these days!\"")
                 if local5 then
                     say("\"What dost thou have to say for thyself, Shamino?\"*")
-                    switch_talk_to(-3, 0)
+                    switch_talk_to(3, 0)
                     say("\"Mine apologies, milord,\" Shamino says.*")
-                    switch_talk_to(-23, 0)
+                    switch_talk_to(23, 0)
                     say("\"What's this I hear of a woman? An actress? Hmmmm?\"*")
-                    switch_talk_to(-3, 0)
+                    switch_talk_to(3, 0)
                     say("Shamino blushes and shuffles his feet.*")
-                    switch_talk_to(-23, 0)
+                    switch_talk_to(23, 0)
                     say("\"I suspected as much!\" the ruler says, laughing.")
-                    hide_npc(-3)
+                    hide_npc(3)
                 end
                 remove_answer("Shamino")
             elseif answer == "Dupre" then
                 say("\"I have not seen that one since I knighted him. Typical -- I do the man a favor and he disappears! I heard he might be in Jhelom.\"")
                 if local4 then
                     say("\"Where hast thou been, Sir Dupre?\"*")
-                    switch_talk_to(-4, 0)
+                    switch_talk_to(4, 0)
                     say("\"Oh, here and there, milord,\" the fighter replies.*")
-                    switch_talk_to(-23, 0)
+                    switch_talk_to(23, 0)
                     say("\"I have very few friends from our homeland here in Britannia. Thou must make a point to visit more often! Especially since thou art a knight!\"*")
-                    switch_talk_to(-4, 0)
+                    switch_talk_to(4, 0)
                     say("\"If thou dost wish it, milord,\" Dupre says, bowing.*")
-                    hide_npc(-4)
+                    hide_npc(4)
                 end
                 remove_answer("Dupre")
                 add_answer("Jhelom")
@@ -328,7 +328,7 @@ function func_0417(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        switch_talk_to(-23)
+        switch_talk_to(23)
     elseif eventid == 2 then
         if get_flag(30) then
             return
@@ -345,7 +345,7 @@ function func_0417(eventid, itemref)
     end
     exodus_event:
         if local0 then
-            switch_talk_to(-23, 0)
+            switch_talk_to(23, 0)
             say("\"I congratulate and thank thee, " .. local1 .. ". Thy deeds continue to speak well of thee.\"")
             return
         end
