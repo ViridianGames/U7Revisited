@@ -17,64 +17,64 @@ function func_0445(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00CD then
-            table.insert(answers, "music")
+            add_answer( "music")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00BC then
-            U7.say("You see a lively woman tuning a lute, her fingers dancing over the strings.")
-            U7.setFlag(0x00BC, true)
+            add_dialogue("You see a lively woman tuning a lute, her fingers dancing over the strings.")
+            set_flag(0x00BC, true)
         else
-            U7.say("\"Well met, \" .. U7.getPlayerName() .. \"!\" Judith says with a smile.")
+            add_dialogue("\"Well met, \" .. U7.getPlayerName() .. \"!\" Judith says with a smile.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Judith strums a chord. \"Got more to chat about?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Judith strums a chord. \"Got more to chat about?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Judith, musician and bard of Britain.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Judith, musician and bard of Britain.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I play music at the Blue Boar and other taverns. My tunes lift spirits, and I hear all the town’s gossip. Want to hear a song?\"")
-                table.insert(answers, "music")
-                table.insert(answers, "gossip")
-                U7.setFlag(0x00CD, true)
+                add_dialogue("\"I play music at the Blue Boar and other taverns. My tunes lift spirits, and I hear all the town’s gossip. Want to hear a song?\"")
+                add_answer( "music")
+                add_answer( "gossip")
+                set_flag(0x00CD, true)
             elseif choice == "music" then
-                U7.say("\"I play ballads, jigs, and laments. My lute’s my companion, crafted in New Magincia. Come to the Blue Boar tonight, and I’ll play for thee.\"")
-                table.insert(answers, "Blue Boar")
-                U7.RemoveAnswer("music")
+                add_dialogue("\"I play ballads, jigs, and laments. My lute’s my companion, crafted in New Magincia. Come to the Blue Boar tonight, and I’ll play for thee.\"")
+                add_answer( "Blue Boar")
+                remove_answer("music")
             elseif choice == "Blue Boar" then
-                U7.say("\"It’s Britain’s liveliest tavern. Lucy runs it, and Jeanette serves the drinks. My music keeps the crowd merry, though some folk drink too much.\"")
-                U7.RemoveAnswer("Blue Boar")
+                add_dialogue("\"It’s Britain’s liveliest tavern. Lucy runs it, and Jeanette serves the drinks. My music keeps the crowd merry, though some folk drink too much.\"")
+                remove_answer("Blue Boar")
             elseif choice == "gossip" then
-                U7.say("\"Plenty of talk at the tavern. Some say the Fellowship’s behind recent thefts, but they’re all smiles when they drink. Hard to know what’s true.\"")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("gossip")
+                add_dialogue("\"Plenty of talk at the tavern. Some say the Fellowship’s behind recent thefts, but they’re all smiles when they drink. Hard to know what’s true.\"")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("gossip")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s got a following here, but I’ve heard whispers they pressure folk to join. They tip well at the tavern, though, so I keep my lute strummin’.\"")
+                add_dialogue("\"The Fellowship’s got a following here, but I’ve heard whispers they pressure folk to join. They tip well at the tavern, though, so I keep my lute strummin’.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Maybe they’re not so bad. I’ll keep an ear out.\"")
+                    add_dialogue("\"Maybe they’re not so bad. I’ll keep an ear out.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Nay, I’d rather sing than join their chorus.\"")
+                    add_dialogue("\"Nay, I’d rather sing than join their chorus.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Keep a song in thy heart, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Keep a song in thy heart, \" .. U7.getPlayerName() .. \"!\"")
                 break
             end
         end

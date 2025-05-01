@@ -17,62 +17,62 @@ function func_044F(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00D4 then
-            table.insert(answers, "lore")
+            add_answer( "lore")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00C5 then
-            U7.say("You see an aged scholar surrounded by dusty tomes, scribbling notes with a quill.")
-            U7.setFlag(0x00C5, true)
+            add_dialogue("You see an aged scholar surrounded by dusty tomes, scribbling notes with a quill.")
+            set_flag(0x00C5, true)
         else
-            U7.say("\"Well met, \" .. U7.getPlayerName() .. \",\" Inwistain says, peering over his spectacles.")
+            add_dialogue("\"Well met, \" .. U7.getPlayerName() .. \",\" Inwistain says, peering over his spectacles.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Inwistain sets down his quill. \"What knowledge dost thou seek?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Inwistain sets down his quill. \"What knowledge dost thou seek?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Inwistain, scholar and keeper of Britannia’s lore in Castle British.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Inwistain, scholar and keeper of Britannia’s lore in Castle British.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I study Britannia’s history and counsel Lord British on matters of lore. The past holds lessons, but new shadows like the Fellowship trouble me.\"")
-                table.insert(answers, "lore")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00D4, true)
+                add_dialogue("\"I study Britannia’s history and counsel Lord British on matters of lore. The past holds lessons, but new shadows like the Fellowship trouble me.\"")
+                add_answer( "lore")
+                add_answer( "Fellowship")
+                set_flag(0x00D4, true)
             elseif choice == "lore" then
-                U7.say("\"Britannia’s tales speak of heroes like thee, Avatar, and perils overcome. Yet, the Fellowship’s rise echoes darker chapters of ambition.\"")
-                table.insert(answers, "Fellowship")
-                table.insert(answers, "history")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("lore")
+                add_dialogue("\"Britannia’s tales speak of heroes like thee, Avatar, and perils overcome. Yet, the Fellowship’s rise echoes darker chapters of ambition.\"")
+                add_answer( "Fellowship")
+                add_answer( "history")
+                set_flag(0x0094, true)
+                remove_answer("lore")
             elseif choice == "history" then
-                U7.say("\"From the Age of Darkness to the Quest of the Avatar, Britannia’s story is one of struggle and virtue. I fear the Fellowship may rewrite it for their own ends.\"")
-                table.insert(answers, "Fellowship")
-                U7.RemoveAnswer("history")
+                add_dialogue("\"From the Age of Darkness to the Quest of the Avatar, Britannia’s story is one of struggle and virtue. I fear the Fellowship may rewrite it for their own ends.\"")
+                add_answer( "Fellowship")
+                remove_answer("history")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship claims to unify, but their texts hint at control, not unlike old cults in our annals. Their secrecy recalls dangers past—investigate them, Avatar.\"")
+                add_dialogue("\"The Fellowship claims to unify, but their texts hint at control, not unlike old cults in our annals. Their secrecy recalls dangers past—investigate them, Avatar.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou findest merit in their words? I’ll review their texts again, but with caution.\"")
+                    add_dialogue("\"Thou findest merit in their words? I’ll review their texts again, but with caution.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Thy wariness matches my own. Seek their true intent, for Britannia’s history depends on it.\"")
+                    add_dialogue("\"Thy wariness matches my own. Seek their true intent, for Britannia’s history depends on it.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"May wisdom guide thee, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"May wisdom guide thee, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end

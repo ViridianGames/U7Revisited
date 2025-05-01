@@ -17,63 +17,63 @@ function func_0452(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00D7 then
-            table.insert(answers, "governance")
+            add_answer( "governance")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00C8 then
-            U7.say("You see a polished man in fine attire, exuding confidence but with a guarded smile.")
-            U7.setFlag(0x00C8, true)
+            add_dialogue("You see a polished man in fine attire, exuding confidence but with a guarded smile.")
+            set_flag(0x00C8, true)
         else
-            U7.say("\"Welcome, \" .. U7.getPlayerName() .. \",\" Patterson says with a practiced nod.")
+            add_dialogue("\"Welcome, \" .. U7.getPlayerName() .. \",\" Patterson says with a practiced nod.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Patterson adjusts his cloak. \"What business hast thou with Britain’s mayor?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Patterson adjusts his cloak. \"What business hast thou with Britain’s mayor?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Patterson, mayor of Britain, serving its people with pride.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Patterson, mayor of Britain, serving its people with pride.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I govern Britain, ensuring its prosperity and order. The Fellowship aids my efforts, though some, like that farmer Brownie, challenge my rule.\"")
-                table.insert(answers, "governance")
-                table.insert(answers, "Brownie")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00D7, true)
+                add_dialogue("\"I govern Britain, ensuring its prosperity and order. The Fellowship aids my efforts, though some, like that farmer Brownie, challenge my rule.\"")
+                add_answer( "governance")
+                add_answer( "Brownie")
+                add_answer( "Fellowship")
+                set_flag(0x00D7, true)
             elseif choice == "governance" then
-                U7.say("\"Running Britain demands strength. Taxes fund our growth, and the Fellowship’s support keeps order, despite rabble-rousers like Brownie.\"")
-                table.insert(answers, "Brownie")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("governance")
+                add_dialogue("\"Running Britain demands strength. Taxes fund our growth, and the Fellowship’s support keeps order, despite rabble-rousers like Brownie.\"")
+                add_answer( "Brownie")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("governance")
             elseif choice == "Brownie" then
-                U7.say("\"Brownie’s a farmer stirring trouble with his mayoral campaign. He claims I favor the Fellowship, but his ideas would bankrupt Britain.\"")
-                table.insert(answers, "Fellowship")
-                U7.RemoveAnswer("Brownie")
+                add_dialogue("\"Brownie’s a farmer stirring trouble with his mayoral campaign. He claims I favor the Fellowship, but his ideas would bankrupt Britain.\"")
+                add_answer( "Fellowship")
+                remove_answer("Brownie")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship brings unity and progress. Their guidance strengthens Britain, though some distrust them. I find their vision aligns with mine.\"")
+                add_dialogue("\"The Fellowship brings unity and progress. Their guidance strengthens Britain, though some distrust them. I find their vision aligns with mine.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou seest their value? Good. They’re key to Britain’s future.\"")
+                    add_dialogue("\"Thou seest their value? Good. They’re key to Britain’s future.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Distrust them? Speak to their leaders—thou wilt see their worth.\"")
+                    add_dialogue("\"Distrust them? Speak to their leaders—thou wilt see their worth.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Fare well, \" .. U7.getPlayerName() .. \". Support Britain’s progress.\"")
+                add_dialogue("\"Fare well, \" .. U7.getPlayerName() .. \". Support Britain’s progress.\"")
                 break
             end
         end

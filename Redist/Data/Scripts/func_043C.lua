@@ -14,97 +14,97 @@ function func_043C(eventid)
         local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
         local var_0002 = U7.callExtern(0x092E, 2) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_008A then
-            table.insert(answers, "UFO")
+            add_answer( "UFO")
         end
 
         if not flag_00B3 then
-            U7.say("You see a wiry farmer with wild eyes, clutching a turnip like it’s gold.")
-            U7.setFlag(0x00B3, true)
+            add_dialogue("You see a wiry farmer with wild eyes, clutching a turnip like it’s gold.")
+            set_flag(0x00B3, true)
         else
-            U7.say("\"Back again, \" .. U7.getPlayerName() .. \"?\" Mack says, eyeing you suspiciously.")
+            add_dialogue("\"Back again, \" .. U7.getPlayerName() .. \"?\" Mack says, eyeing you suspiciously.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Mack scratches his head. \"What’s that? Got more questions?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Mack scratches his head. \"What’s that? Got more questions?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Mack’s my name! Farmer, inventor, and truth-seeker!\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Mack’s my name! Farmer, inventor, and truth-seeker!\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I farm turnips, best in Britannia! Also tinker with inventions. Made a contraption to scare crows, but it scares me too sometimes.\"")
-                table.insert(answers, "turnips")
-                table.insert(answers, "inventions")
+                add_dialogue("\"I farm turnips, best in Britannia! Also tinker with inventions. Made a contraption to scare crows, but it scares me too sometimes.\"")
+                add_answer( "turnips")
+                add_answer( "inventions")
             elseif choice == "turnips" then
-                U7.say("\"My turnips are the finest! Big, juicy, and full of secrets. Want one? Only 3 gold!\"")
-                table.insert(answers, "buy")
-                U7.RemoveAnswer("turnips")
+                add_dialogue("\"My turnips are the finest! Big, juicy, and full of secrets. Want one? Only 3 gold!\"")
+                add_answer( "buy")
+                remove_answer("turnips")
             elseif choice == "inventions" then
-                U7.say("\"Got a plow-sharpening machine and a chicken feeder. But my pride’s the Great Hoe—cuts weeds like magic! Still working out the kinks, though.\"")
-                table.insert(answers, "Great Hoe")
-                U7.RemoveAnswer("inventions")
+                add_dialogue("\"Got a plow-sharpening machine and a chicken feeder. But my pride’s the Great Hoe—cuts weeds like magic! Still working out the kinks, though.\"")
+                add_answer( "Great Hoe")
+                remove_answer("inventions")
             elseif choice == "Great Hoe" then
-                U7.say("\"It’s a marvel! Sharpens itself, but sometimes it wanders off. Found it in the barn once, hoeing by itself!\"")
-                U7.RemoveAnswer("Great Hoe")
+                add_dialogue("\"It’s a marvel! Sharpens itself, but sometimes it wanders off. Found it in the barn once, hoeing by itself!\"")
+                remove_answer("Great Hoe")
             elseif choice == "buy" then
-                U7.say("\"A turnip for 3 gold. Deal?\"")
+                add_dialogue("\"A turnip for 3 gold. Deal?\"")
                 local response = U7.callExtern(0x090A, var_0001)
                 if response == 0 then
                     local gold_result = U7.removeGold(3)
                     if gold_result then
                         local item_result = U7.giveItem(16, 1, 380)
                         if item_result then
-                            U7.say("\"Here’s thy turnip! Guard it well!\"")
+                            add_dialogue("\"Here’s thy turnip! Guard it well!\"")
                         else
-                            U7.say("\"Thou art too weighed down to carry this turnip!\"")
+                            add_dialogue("\"Thou art too weighed down to carry this turnip!\"")
                         end
                     else
-                        U7.say("\"No gold, no turnip. Come back when thou art richer!\"")
+                        add_dialogue("\"No gold, no turnip. Come back when thou art richer!\"")
                     end
                 else
-                    U7.say("\"Suit thyself, but thou art missing out!\"")
+                    add_dialogue("\"Suit thyself, but thou art missing out!\"")
                 end
-                U7.RemoveAnswer("buy")
+                remove_answer("buy")
             elseif choice == "UFO" then
-                U7.say("\"Thou knowest about the lights in the sky? I saw one, big as a barn, hovering over my field! It left strange marks in the dirt. The turnips there grew twice as big!\"")
-                table.insert(answers, "lights")
-                table.insert(answers, "marks")
-                U7.RemoveAnswer("UFO")
+                add_dialogue("\"Thou knowest about the lights in the sky? I saw one, big as a barn, hovering over my field! It left strange marks in the dirt. The turnips there grew twice as big!\"")
+                add_answer( "lights")
+                add_answer( "marks")
+                remove_answer("UFO")
             elseif choice == "lights" then
-                U7.say("\"Bright, pulsing lights, not like any star. Moved too fast to be a bird or balloon. I’m telling thee, it was no natural thing!\"")
-                U7.RemoveAnswer("lights")
+                add_dialogue("\"Bright, pulsing lights, not like any star. Moved too fast to be a bird or balloon. I’m telling thee, it was no natural thing!\"")
+                remove_answer("lights")
             elseif choice == "marks" then
-                U7.say("\"Circles in the dirt, perfect as a compass. I keep ‘em hidden under hay. If thou findest a strange metal piece, bring it to me!\"")
-                table.insert(answers, "metal piece")
-                U7.RemoveAnswer("marks")
+                add_dialogue("\"Circles in the dirt, perfect as a compass. I keep ‘em hidden under hay. If thou findest a strange metal piece, bring it to me!\"")
+                add_answer( "metal piece")
+                remove_answer("marks")
             elseif choice == "metal piece" then
-                U7.say("\"A shiny bit, like no metal I’ve seen. If thou bringest me one, I’ll trade thee something special—maybe a turnip or two!\"")
+                add_dialogue("\"A shiny bit, like no metal I’ve seen. If thou bringest me one, I’ll trade thee something special—maybe a turnip or two!\"")
                 local item_check = U7.hasItem(16, 1, 381)
                 if item_check then
                     local trade_result = U7.removeItem(16, 1, 381)
                     if trade_result then
                         local item_result = U7.giveItem(16, 2, 380)
                         if item_result then
-                            U7.say("\"By the Virtues, thou found it! Here’s two turnips for thy trouble!\"")
+                            add_dialogue("\"By the Virtues, thou found it! Here’s two turnips for thy trouble!\"")
                         else
-                            U7.say("\"Thou canst not carry more turnips! Clear some space!\"")
+                            add_dialogue("\"Thou canst not carry more turnips! Clear some space!\"")
                         end
                     end
                 else
-                    U7.say("\"No metal piece? Keep an eye out, friend!\"")
+                    add_dialogue("\"No metal piece? Keep an eye out, friend!\"")
                 end
-                U7.RemoveAnswer("metal piece")
+                remove_answer("metal piece")
             elseif choice == "bye" then
-                U7.say("\"Watch the skies, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Watch the skies, \" .. U7.getPlayerName() .. \"!\"")
                 break
             end
         end

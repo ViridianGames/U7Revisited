@@ -20,94 +20,97 @@
           local var_0002 = U7.callExtern(0x0911, 2) -- Unknown interaction
           local var_0003 = U7.callExtern(0x092E, 3) -- Unknown interaction
 
-          table.insert(answers, "bye")
-          table.insert(answers, "job")
-          table.insert(answers, "name")
+          add_answer( "bye")
+          add_answer( "job")
+          add_answer( "name")
           if flag_007B then
-              table.insert(answers, "Charles")
+              add_answer( "Charles")
           end
 
           if not flag_00B0 then
-              U7.say("This young, lovely tavern wench is sexy and sweet.")
-              U7.setFlag(0x00B0, true)
+              add_dialogue("This young, lovely tavern wench is sexy and sweet.")
+              set_flag(0x00B0, true)
           else
-              U7.say("\"Hello again!\" bubbly Jeanette says.")
+              add_dialogue("\"Hello again!\" bubbly Jeanette says.")
           end
 
           while true do
               if #answers == 0 then
-                  U7.say("Jeanette smiles. \"Anything else I can help thee with?\"")
-                  table.insert(answers, "bye")
-                  table.insert(answers, "job")
-                  table.insert(answers, "name")
+                  add_dialogue("Jeanette smiles. \"Anything else I can help thee with?\"")
+                  add_answer( "bye")
+                  add_answer( "job")
+                  add_answer( "name")
+                  start_dialogue()
               end
 
               local choice = U7.getPlayerChoice(answers)
               if choice == "name" then
-                  U7.say("\"Jeanette, at thy service!\"")
-                  U7.RemoveAnswer("name")
+                  add_dialogue("\"Jeanette, at thy service!\"")
+                  remove_answer("name")
               elseif choice == "job" then
-                  U7.say("\"I work for Lucy at the Blue Boar. I serve food and drinks.")
+                  add_dialogue("\"I work for Lucy at the Blue Boar. I serve food and drinks.")
                   if U7.getPartyMember(23) then
-                      U7.say("\"If there is anything thou wouldst like, please say so! And, er, I shall give thee a discount if thou dost buy from me!\"")
+                      add_dialogue("\"If there is anything thou wouldst like, please say so! And, er, I shall give thee a discount if thou dost buy from me!\"")
                       local result = U7.callExtern(0x08F7, dupre_id)
                       if result == 0 then
-                          U7.say("\"Why, Sir Dupre! How good to see thee again!\"")
+                          add_dialogue("\"Why, Sir Dupre! How good to see thee again!\"")
                           _SwitchTalkTo(0, dupre_id)
-                          U7.say("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
+                          add_dialogue("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
                           _SwitchTalkTo(0, npc_id)
-                          U7.say("\"Any time, milord! Any time!\"")
+                          add_dialogue("\"Any time, milord! Any time!\"")
                           U7.HideNPC(dupre_id)
                           _SwitchTalkTo(0, npc_id)
                       end
-                      table.insert(answers, "buy")
-                      table.insert(answers, "drink")
-                      table.insert(answers, "food")
+                      add_answer( "buy")
+                      add_answer( "drink")
+                      add_answer( "food")
+                      start_dialogue()
                   else
-                      U7.say("\"I work during the day and evening hours. Thou shouldst come by the pub then and we shall talk more!\"")
+                      add_dialogue("\"I work during the day and evening hours. Thou shouldst come by the pub then and we shall talk more!\"")
                   end
               elseif choice == "food" then
-                  U7.say("\"Lucy is a good cook. I recommend everything. Especially Silverleaf.\"")
-                  table.insert(answers, "Silverleaf")
-                  U7.RemoveAnswer("food")
+                  add_dialogue("\"Lucy is a good cook. I recommend everything. Especially Silverleaf.\"")
+                  add_answer( "Silverleaf")
+                  remove_answer("food")
               elseif choice == "Silverleaf" then
-                  U7.say("\"Wonderful dish. Try it!\"")
-                  U7.RemoveAnswer("Silverleaf")
+                  add_dialogue("\"Wonderful dish. Try it!\"")
+                  remove_answer("Silverleaf")
               elseif choice == "drink" then
-                  U7.say("\"Thou dost look like thou dost need a good drink!\"")
-                  U7.RemoveAnswer("drink")
+                  add_dialogue("\"Thou dost look like thou dost need a good drink!\"")
+                  remove_answer("drink")
               elseif choice == "buy" then
                   U7.callExtern(0x08A0, var_0001)
               elseif choice == "Charles" then
-                  U7.say("\"He spoke of me, did he? Well, he may think again! I cannot bring myself to socialize with the upper class. Those bourgeoisie rich men are obnoxious and egotistical. Besides, I am in love with another.\"")
+                  add_dialogue("\"He spoke of me, did he? Well, he may think again! I cannot bring myself to socialize with the upper class. Those bourgeoisie rich men are obnoxious and egotistical. Besides, I am in love with another.\"")
                   flag_007D = true
-                  U7.setFlag(0x007D, true)
-                  U7.RemoveAnswer("Charles")
-                  table.insert(answers, "another")
-                  table.insert(answers, "upper class")
+                  set_flag(0x007D, true)
+                  remove_answer("Charles")
+                  add_answer( "another")
+                  add_answer( "upper class")
+                  start_dialogue()
               elseif choice == "upper class" then
-                  U7.say("\"They are all alike. They work in castles and have piles of gold and can have any woman they want! On the other hand, a humble merchant is the perfect man.\"")
-                  U7.RemoveAnswer("upper class")
+                  add_dialogue("\"They are all alike. They work in castles and have piles of gold and can have any woman they want! On the other hand, a humble merchant is the perfect man.\"")
+                  remove_answer("upper class")
               elseif choice == "another" then
-                  U7.say("\"'Tis Willy the Baker! But he does not know it yet!\" she giggles.")
+                  add_dialogue("\"'Tis Willy the Baker! But he does not know it yet!\" she giggles.")
                   flag_0085 = true
-                  U7.setFlag(0x0085, true)
+                  set_flag(0x0085, true)
                   local iolo_result = U7.callExtern(0x08F7, iolo_id)
                   if iolo_result == 0 then
                       _SwitchTalkTo(0, iolo_id)
-                      U7.say("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
+                      add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
                       U7.HideNPC(iolo_id)
                       _SwitchTalkTo(0, npc_id)
                   else
-                      U7.say("You point out to Jeanette that Charles is a servant.")
+                      add_dialogue("You point out to Jeanette that Charles is a servant.")
                   end
-                  U7.say("Jeanette thinks about what was said. \"Thou art right! I cannot believe I have been so blind! Oh, Charles! I can actually consider Charles! And he is... so handsome!\" Jeanette squeals with delight. \"I shall have to flirt with him in earnest next time he is in the pub!\"")
+                  add_dialogue("Jeanette thinks about what was said. \"Thou art right! I cannot believe I have been so blind! Oh, Charles! I can actually consider Charles! And he is... so handsome!\" Jeanette squeals with delight. \"I shall have to flirt with him in earnest next time he is in the pub!\"")
                   flag_007E = true
-                  U7.setFlag(0x007E, true)
+                  set_flag(0x007E, true)
                   U7.callExtern(0x0911, 20)
-                  U7.RemoveAnswer("another")
+                  remove_answer("another")
               elseif choice == "bye" then
-                  U7.say("\"Farewell!\"")
+                  add_dialogue("\"Farewell!\"")
                   break
               end
           end

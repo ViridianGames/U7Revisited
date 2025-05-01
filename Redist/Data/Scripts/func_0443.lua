@@ -17,49 +17,49 @@ function func_0443(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00CB then
-            table.insert(answers, "ships")
+            add_answer( "ships")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00BA then
-            U7.say("You see a weathered man with hands stained by pitch, inspecting a ship’s hull.")
-            U7.setFlag(0x00BA, true)
+            add_dialogue("You see a weathered man with hands stained by pitch, inspecting a ship’s hull.")
+            set_flag(0x00BA, true)
         else
-            U7.say("\"Ahoy, \" .. U7.getPlayerName() .. \"!\" Clint says with a wave.")
+            add_dialogue("\"Ahoy, \" .. U7.getPlayerName() .. \"!\" Clint says with a wave.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Clint scratches his beard. \"Got more to discuss?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Clint scratches his beard. \"Got more to discuss?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Clint, shipwright of Britain’s docks.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Clint, shipwright of Britain’s docks.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I build and repair ships for merchants and adventurers. Need a vessel or a deed? I’ve got both.\"")
-                table.insert(answers, "ships")
-                table.insert(answers, "buy")
-                U7.setFlag(0x00CB, true)
+                add_dialogue("\"I build and repair ships for merchants and adventurers. Need a vessel or a deed? I’ve got both.\"")
+                add_answer( "ships")
+                add_answer( "buy")
+                set_flag(0x00CB, true)
             elseif choice == "ships" then
-                U7.say("\"My ships are sturdy, built with timber from Yew. From small skiffs to galleons, they’ll carry thee across Britannia’s seas.\"")
-                table.insert(answers, "timber")
-                U7.RemoveAnswer("ships")
+                add_dialogue("\"My ships are sturdy, built with timber from Yew. From small skiffs to galleons, they’ll carry thee across Britannia’s seas.\"")
+                add_answer( "timber")
+                remove_answer("ships")
             elseif choice == "timber" then
-                U7.say("\"Yew’s forests provide the best oak. Costs a fortune to ship it here, but no one’s drowned in a Clint-built vessel yet.\"")
-                U7.RemoveAnswer("timber")
+                add_dialogue("\"Yew’s forests provide the best oak. Costs a fortune to ship it here, but no one’s drowned in a Clint-built vessel yet.\"")
+                remove_answer("timber")
             elseif choice == "buy" then
-                U7.say("\"A ship’s deed is 200 gold, a skiff’s 50. What’s thy fancy?\"")
+                add_dialogue("\"A ship’s deed is 200 gold, a skiff’s 50. What’s thy fancy?\"")
                 local response = U7.callExtern(0x08A6, var_0001)
                 if response == 0 then
                     local item_choice = U7.getPlayerChoice({"ship", "skiff", "none"})
@@ -68,44 +68,44 @@ function func_0443(eventid)
                         if gold_result then
                             local item_result = U7.giveItem(16, 1, 390)
                             if item_result then
-                                U7.say("\"Here’s the deed to thy ship. She’s docked and ready!\"")
+                                add_dialogue("\"Here’s the deed to thy ship. She’s docked and ready!\"")
                             else
-                                U7.say("\"Thou canst not carry the deed! Clear some space.\"")
+                                add_dialogue("\"Thou canst not carry the deed! Clear some space.\"")
                             end
                         else
-                            U7.say("\"Thou lackest the gold for a ship.\"")
+                            add_dialogue("\"Thou lackest the gold for a ship.\"")
                         end
                     elseif item_choice == "skiff" then
                         local gold_result = U7.removeGold(50)
                         if gold_result then
                             local item_result = U7.giveItem(16, 1, 391)
                             if item_result then
-                                U7.say("\"Here’s the deed to thy skiff. Small but swift!\"")
+                                add_dialogue("\"Here’s the deed to thy skiff. Small but swift!\"")
                             else
-                                U7.say("\"Thou canst not carry the deed! Clear some space.\"")
+                                add_dialogue("\"Thou canst not carry the deed! Clear some space.\"")
                             end
                         else
-                            U7.say("\"Thou lackest the gold for a skiff.\"")
+                            add_dialogue("\"Thou lackest the gold for a skiff.\"")
                         end
                     else
-                        U7.say("\"No sale? Come back when thou’rt ready to sail.\"")
+                        add_dialogue("\"No sale? Come back when thou’rt ready to sail.\"")
                     end
                 else
-                    U7.say("\"Not sailing today? My docks are always open.\"")
+                    add_dialogue("\"Not sailing today? My docks are always open.\"")
                 end
-                U7.RemoveAnswer("buy")
+                remove_answer("buy")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s been buying ships, claiming they’re for ‘spreading unity.’ But I’ve seen their crews—look more like mercenaries than missionaries.\"")
+                add_dialogue("\"The Fellowship’s been buying ships, claiming they’re for ‘spreading unity.’ But I’ve seen their crews—look more like mercenaries than missionaries.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Maybe they’re just traders. I’ll keep watch.\"")
+                    add_dialogue("\"Maybe they’re just traders. I’ll keep watch.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say(\"Nay, something’s fishy. I don’t trust ‘em.\"")
+                    add_dialogue(\"Nay, something’s fishy. I don’t trust ‘em.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Fair winds, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Fair winds, \" .. U7.getPlayerName() .. \"!\"")
                 break
             end
         end

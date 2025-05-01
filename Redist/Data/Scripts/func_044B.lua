@@ -17,64 +17,64 @@
           local var_0002 = U7.callExtern(0x08DC, 2) -- Reagents interaction
           local var_0003 = U7.callExtern(0x0911, 3) -- Unknown interaction
 
-          table.insert(answers, "bye")
-          table.insert(answers, "job")
-          table.insert(answers, "name")
+          add_answer( "bye")
+          add_answer( "job")
+          add_answer( "name")
           if flag_0065 then
-              table.insert(answers, "Moongates")
-              table.insert(answers, "blackrock")
+              add_answer( "Moongates")
+              add_answer( "blackrock")
           end
 
           if not flag_00E7 then
-              U7.say("This elderly mage looks older and more senile than when you last saw him.")
-              U7.setFlag(0x00E7, true)
+              add_dialogue("This elderly mage looks older and more senile than when you last saw him.")
+              set_flag(0x00E7, true)
           elseif not flag_0003 then
-              U7.say("\"Who art thou?\" Rudyom asks. \"Oh -- I remember.\"")
+              add_dialogue("\"Who art thou?\" Rudyom asks. \"Oh -- I remember.\"")
           else
-              U7.say("\"Hello again, Avatar!\" Rudyom says, beaming.")
+              add_dialogue("\"Hello again, Avatar!\" Rudyom says, beaming.")
           end
 
           while true do
               if #answers == 0 then
-                  U7.say("Rudyom looks confused. \"What was that? Let's try again.\"")
-                  table.insert(answers, "bye")
-                  table.insert(answers, "job")
-                  table.insert(answers, "name")
+                  add_dialogue("Rudyom looks confused. \"What was that? Let's try again.\"")
+                  add_answer( "bye")
+                  add_answer( "job")
+                  add_answer( "name")
               end
 
               local choice = U7.getPlayerChoice(answers)
               if choice == "name" then
-                  U7.say("\"That I know. My name is Rudyom.\"")
-                  U7.RemoveAnswer("name")
+                  add_dialogue("\"That I know. My name is Rudyom.\"")
+                  remove_answer("name")
               elseif choice == "job" then
                   if not flag_0003 then
-                      U7.say("\"I am not sure anymore. I was a powerful mage at one time! Now nothing works. Magic is afoul! I suppose I could sell thee some reagents and spells if thou dost want. And mind the carpet -- it does not work!\"")
-                      table.insert(answers, "carpet")
+                      add_dialogue("\"I am not sure anymore. I was a powerful mage at one time! Now nothing works. Magic is afoul! I suppose I could sell thee some reagents and spells if thou dost want. And mind the carpet -- it does not work!\"")
+                      add_answer( "carpet")
                   else
-                      U7.say("\"I am a powerful mage! Magic is my milieu! I can sell thee spells or reagents.\"")
+                      add_dialogue("\"I am a powerful mage! Magic is my milieu! I can sell thee spells or reagents.\"")
                   end
-                  table.insert(answers, "reagents")
-                  table.insert(answers, "spells")
-                  table.insert(answers, "magic")
+                  add_answer( "reagents")
+                  add_answer( "spells")
+                  add_answer( "magic")
               elseif choice == "magic" then
                   if not flag_0003 then
-                      U7.say("\"I do not understand what is wrong. My magic does not work so well anymore.\"")
+                      add_dialogue("\"I do not understand what is wrong. My magic does not work so well anymore.\"")
                   else
-                      U7.say("\"The ether is flowing freely! Magic is with us once again!\"")
+                      add_dialogue("\"The ether is flowing freely! Magic is with us once again!\"")
                   end
-                  U7.RemoveAnswer("magic")
+                  remove_answer("magic")
               elseif choice == "carpet" then
-                  U7.say("\"The big blue carpet. 'Tis a flying carpet. It does not work like it should.\"")
-                  U7.say("Rudyom looks around and scratches his head.")
-                  U7.say("\"Funny. It was here a while ago. Oh! I remember now. Some adventurers borrowed my flying carpet a few weeks ago. When they returned they said they had lost it near Serpent's Spine. Somewhere in the vicinity of the Lost River. I suppose if thou didst want to go and find it, thou couldst keep it. It did not work very well. Perhaps thou canst make it work. I did not like the color, anyway!\"")
-                  U7.RemoveAnswer("carpet")
+                  add_dialogue("\"The big blue carpet. 'Tis a flying carpet. It does not work like it should.\"")
+                  add_dialogue("Rudyom looks around and scratches his head.")
+                  add_dialogue("\"Funny. It was here a while ago. Oh! I remember now. Some adventurers borrowed my flying carpet a few weeks ago. When they returned they said they had lost it near Serpent's Spine. Somewhere in the vicinity of the Lost River. I suppose if thou didst want to go and find it, thou couldst keep it. It did not work very well. Perhaps thou canst make it work. I did not like the color, anyway!\"")
+                  remove_answer("carpet")
               elseif choice == "spells" then
-                  U7.say("\"Dost thou wish to buy some spells?\"")
+                  add_dialogue("\"Dost thou wish to buy some spells?\"")
                   if U7.callExtern(0x090A, var_0000) == 0 then
                       U7.callExtern(0x08DB, var_0001)
                   else
-                      U7.say("\"Oh. Never mind, then.\"")
+                      add_dialogue("\"Oh. Never mind, then.\"")
                   end
               elseif choice == "reagents" then
-                  U7.say("\"Dost thou wish to buy some reagents?\"")
+                  add_dialogue("\"Dost thou wish to buy some reagents?\"")
                   if U7.callExtern(0x090A, var_

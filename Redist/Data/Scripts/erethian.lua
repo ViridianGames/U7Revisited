@@ -105,30 +105,30 @@ function func_154(object_id, event)
                 "name", -- Was strings[0x037D]
             }
             if get_flag(0x0330) and not get_flag(0x0337) and not get_flag(0x0338) then
-                table.insert(answers, "black sword") -- Was strings[0x0382]
+                add_answer( "black sword") -- Was strings[0x0382]
             end
             if get_flag(0x0311) and get_flag(0x0312) and not get_flag(0x0337) then
-                table.insert(answers, "powerful artifact") -- Was strings[0x038E]
+                add_answer( "powerful artifact") -- Was strings[0x038E]
             end
             if not get_flag(0x0313) then
                 if get_flag(0x032F) then
-                    table.insert(answers, "daemon mirror") -- Was strings[0x03A0]
+                    add_answer( "daemon mirror") -- Was strings[0x03A0]
                 elseif get_flag(0x0330) and not get_flag(0x0338) then
-                    table.insert(answers, "daemon gem") -- Was strings[0x03AE]
+                    add_answer( "daemon gem") -- Was strings[0x03AE]
                 elseif get_flag(0x0339) then
-                    table.insert(answers, "daemon blade") -- Was strings[0x03B9]
+                    add_answer( "daemon blade") -- Was strings[0x03B9]
                 end
             elseif get_flag(0x032F) and get_flag(0x0330) and get_flag(0x0339) then
-                table.insert(answers, "daemon blade") -- Was strings[0x03C6]
+                add_answer( "daemon blade") -- Was strings[0x03C6]
             end
             if get_flag(0x0318) then
-                table.insert(answers, "the Psyche returns") -- Was strings[0x03D3]
+                add_answer( "the Psyche returns") -- Was strings[0x03D3]
             end
             if get_flag(0x0327) then
-                table.insert(answers, "great evil") -- Was strings[0x03E6]
+                add_answer( "great evil") -- Was strings[0x03E6]
             end
             if get_flag(0x0341) then
-                table.insert(answers, "Talisman of Infinity") -- Was strings[0x03F1]
+                add_answer( "Talisman of Infinity") -- Was strings[0x03F1]
             end
         end
         print("Answers set to: ", table.concat(answers, ", "))
@@ -184,7 +184,7 @@ function func_154(object_id, event)
         if false then -- TODO: GetContainerItems
             say("The little gem sparks up at this turn of the conversation. \"I believe that in my current form, I could serve perfectly well as the blade's stabilizing force. In truth, this would allow me to give thee access to some of my more dramatic powers.\" The daemon sounds excited at this prospect, perhaps a little too excited.") -- Was strings[0x140F]
             say("Erethian's voice is quiet as he says, \"Consider well before thou bindest Arcadion into the sword. For it is true that he will be able to solve the sword's problem of balance, but will he be able to solve his own problems as well?\"") -- Was strings[0x154E]
-            table.insert(answers, "problems") -- Was strings[0x1635]
+            add_answer( "problems") -- Was strings[0x1635]
         else
             say("You wonder if perhaps Arcadion might be able to shed some light on this issue, and as if reading your thoughts, Erethian says, \"Beware the daemon. His goals are not those of thine or mine. If he offers to help thee, it is to help himself. Of that thou canst be sure.\"") -- Was strings[0x163E]
         end
@@ -203,11 +203,11 @@ function func_154(object_id, event)
         say("The books and scrolls here have taught me much of Britannia's history and other... interesting subjects.\"") -- Was strings[0x1A1E]
         say("His clouded eyes sparkle with intelligence. But you can't help wondering how books and scrolls are of any use to a man afflicted with blindness.") -- Was strings[0x1A88]
         table.remove(answers, table.find(answers, "job")) -- Was strings[0x1B19]
-        table.insert(answers, "blindness") -- Was strings[0x1B1D]
-        table.insert(answers, "subjects") -- Was strings[0x1B27]
-        table.insert(answers, "Exodus") -- Was strings[0x1B30]
-        table.insert(answers, "Minax") -- Was strings[0x1B37]
-        table.insert(answers, "Mondain") -- Was strings[0x1B3D]
+        add_answer( "blindness") -- Was strings[0x1B1D]
+        add_answer( "subjects") -- Was strings[0x1B27]
+        add_answer( "Exodus") -- Was strings[0x1B30]
+        add_answer( "Minax") -- Was strings[0x1B37]
+        add_answer( "Mondain") -- Was strings[0x1B3D]
     elseif answer == "subjects" then -- Was strings[0x1B45]
         say("\"If thou art interested, feel free to inspect them. This is no library.\" As if regretting his gracious gesture, he adds, \"However, I trust that thou wilt take utmost care with the older ones.\" He stops, on the verge of saying more.") -- Was strings[0x1B4E]
         table.remove(answers, table.find(answers, "subjects")) -- Was strings[0x1C36]
@@ -224,8 +224,8 @@ function func_154(object_id, event)
         say("Erethian scowls, \"Now there was a mighty wizard. A bit twisted but then who knows what happens to the human mind when 'tis subjected to the powers he wielded.") -- Was strings[0x1C96]
         say("'Tis even said his skull alone had the power to destroy enemies... he must have locked a magical matrix upon it, I'll have to research that.\" He nods his head, seemingly making a mental note, then continues with a wistful look on his aged features,") -- Was strings[0x1D35]
         say("\"I would have loved to study that fascinating Gem of Immortality, but alas, I was born in too late an era.\"") -- Was strings[0x1E2E]
-        table.insert(answers, "skull") -- Was strings[0x1E9A]
-        table.insert(answers, "Gem of Immortality") -- Was strings[0x1EA0]
+        add_answer( "skull") -- Was strings[0x1E9A]
+        add_answer( "Gem of Immortality") -- Was strings[0x1EA0]
         table.remove(answers, table.find(answers, "Mondain")) -- Was strings[0x1EB3]
     elseif answer == "Minax" then -- Was strings[0x1EBB]
         say("A sad sweet smile comes to the wizard's face, \"She was quite a comely lass at one time, with a mind forever searching.\" His expression darkens, \"But then Mondain forced all of the good sense from her.") -- Was strings[0x1EC1]
@@ -238,24 +238,24 @@ function func_154(object_id, event)
             say("\"Please, forgive the offense I have given. Thou shouldst know that I have seen, almost first hand, the Avatar's bravery in the face of adversity.") -- Was strings[0x225B]
             say("I have nothing but the highest regard for the Destroyer of the Age of Darkness and Harbinger of the Age of Enlightenment.") -- Was strings[0x22ED]
         end
-        table.insert(answers, "Enilno") -- Was strings[0x2367]
+        add_answer( "Enilno") -- Was strings[0x2367]
         table.remove(answers, table.find(answers, "Minax")) -- Was strings[0x236E]
     elseif answer == "Exodus" then -- Was strings[0x2374]
         say("\"That being has become a passion of mine, lately.\" He almost glows with excitement. \"Indeed, 'tis what brought me here. While I was at the Lyceaum, I happened upon a passage in a manuscript that described an Island of Fire.") -- Was strings[0x237B]
         say("Upon further research, I found that the entity known as Exodus was not truly destroyed. The interface between its two parts and the world was merely severed.\"") -- Was strings[0x245B]
-        table.insert(answers, "interface") -- Was strings[0x24FA]
-        table.insert(answers, "two parts") -- Was strings[0x2504]
+        add_answer( "interface") -- Was strings[0x24FA]
+        add_answer( "two parts") -- Was strings[0x2504]
         table.remove(answers, table.find(answers, "Exodus")) -- Was strings[0x250E]
     elseif answer == "two parts" then -- Was strings[0x2515]
         say("\"One part, his psyche we shall call it, was taken by the gargoyles who live below us in a realm on the other side of the world. A truly fascinating culture they have, but I digress...\" You begin to wonder just how long this old man has been out of circulation.") -- Was strings[0x251F]
         say("He continues, \"The other, I have here. I call it the Dark Core, because without the psyche, it is mostly lifeless.\" His face appears to youthen, and you feel as if you're speaking to a child describing his new toy... or perhaps, pet.") -- Was strings[0x2624]
         say("\"I believe 'twas the removal of the psyche from the Core that caused this island to sink beneath the waves.\"") -- Was strings[0x270E]
-        table.insert(answers, "gargoyles") -- Was strings[0x277B]
+        add_answer( "gargoyles") -- Was strings[0x277B]
         if not v_16 then
-            table.insert(answers, "psyche") -- Was strings[0x2785]
+            add_answer( "psyche") -- Was strings[0x2785]
         end
         if not v_17 then
-            table.insert(answers, "Dark Core") -- Was strings[0x278C]
+            add_answer( "Dark Core") -- Was strings[0x278C]
         end
         table.remove(answers, table.find(answers, "two parts")) -- Was strings[0x2796]
     elseif answer == "interface" then -- Was strings[0x27A0]
@@ -264,10 +264,10 @@ function func_154(object_id, event)
         say("I have often wondered if another interface was implemented, would the psyche return, or possibly be regenerated...\"") -- Was strings[0x287F]
         say("As his idle musings begin to run toward possibly dangerous conclusions, his mouth audibly snaps shut.") -- Was strings[0x28F3]
         if not v_16 then
-            table.insert(answers, "psyche") -- Was strings[0x2959]
+            add_answer( "psyche") -- Was strings[0x2959]
         end
         if not v_17 then
-            table.insert(answers, "Dark Core") -- Was strings[0x2960]
+            add_answer( "Dark Core") -- Was strings[0x2960]
         end
         table.remove(answers, table.find(answers, "interface")) -- Was strings[0x296A]
     elseif answer == "gargoyles" then -- Was strings[0x2974]
@@ -310,29 +310,29 @@ function func_154(object_id, event)
         table.remove(answers, table.find(answers, "skull")) -- Was strings[0x33BB]
     elseif answer == "daemon mirror" then -- Was strings[0x33C1]
         say("\"Ah, so thou hast met that old windbag. Truly, I feel that I would do better to free myself of that burdensome beast, but he sometimes proves to be useful. If it weren't for his whining, perhaps he and I would get along better.\"") -- Was strings[0x33CF]
-        table.insert(answers, "free") -- Was strings[0x34B4]
-        table.insert(answers, "whining") -- Was strings[0x34B9]
+        add_answer( "free") -- Was strings[0x34B4]
+        add_answer( "whining") -- Was strings[0x34B9]
         table.remove(answers, table.find(answers, "daemon mirror")) -- Was strings[0x34C1]
     elseif answer == "whining" then -- Was strings[0x34D7]
         say("\"'Tis his favorite pastime. He begs, pleads, and threatens me to free him from that stupid mirror. Believe me, if I could I would have done it long ago.\" Erethian's lined face shows his chagrin.") -- Was strings[0x34D7]
         table.remove(answers, table.find(answers, "whining")) -- Was strings[0x359B]
     elseif answer == "free" then -- Was strings[0x35A3]
         say("\"He wants this special bauble. I once possessed this gem he seeks, and I don't think he'd be very happy once he gets it. I have tried to tell him that 'twould only imprison him in a more mobile jail, but alas, his head is made of stone.\"") -- Was strings[0x35A8]
-        table.insert(answers, "jail") -- Was strings[0x3696]
+        add_answer( "jail") -- Was strings[0x3696]
         table.remove(answers, table.find(answers, "free")) -- Was strings[0x369B]
     elseif answer == "jail" then -- Was strings[0x36A0]
         say("\"Quite. Arcadion seeks to have dominion over Britannia and believes that the gem will give him the ability to exert his power here. In truth, the Ether Gem works in the reverse, his power will become accessible to the one who possesses the gem.\"") -- Was strings[0x36A5]
-        table.insert(answers, "Ether Gem") -- Was strings[0x379B]
+        add_answer( "Ether Gem") -- Was strings[0x379B]
         table.remove(answers, table.find(answers, "jail")) -- Was strings[0x37A5]
     elseif answer == "Ether Gem" then -- Was strings[0x37B4]
         say("\"The gem was pilfered from me by an ill tempered dragon. She blew her way into this castle, waylayed the golems that protect the Shrine of Principle, then destroyed a perfectly good secret door on her way to the Test of Courage. I'd have liked to see her squeeze through the hole she made, 'tis hardly big enough for a creature of her bulk.\" The mage's milky eyes twinkle with suppressed mirth.") -- Was strings[0x37B4]
-        table.insert(answers, "Test of Courage") -- Was strings[0x393F]
-        table.insert(answers, "Shrine of Principle") -- Was strings[0x394F]
-        table.insert(answers, "golems") -- Was strings[0x3963]
+        add_answer( "Test of Courage") -- Was strings[0x393F]
+        add_answer( "Shrine of Principle") -- Was strings[0x394F]
+        add_answer( "golems") -- Was strings[0x3963]
         table.remove(answers, table.find(answers, "Ether Gem")) -- Was strings[0x396A]
     elseif answer == "golems" then -- Was strings[0x397B]
         say("\"Mmmm... Yes. This pair of manshaped, magical constucts used to guard the Shrine of Principle, but alas, one fell pray to falling rocks when the dragon assaulted the castle. The other picked up his, ah... brother, for lack of a better word, and carried him off through the portal to the Test of Love.\"") -- Was strings[0x397B]
-        table.insert(answers, "Test of Love") -- Was strings[0x3AA9]
+        add_answer( "Test of Love") -- Was strings[0x3AA9]
         table.remove(answers, table.find(answers, "golems")) -- Was strings[0x3AB6]
     elseif answer == "Shrine of Principle" then -- Was strings[0x3AD1]
         say("\"The shrine lies through the doors at the rear of the main hall. There thou canst find three statues, each one dedicated to a Principle set forth by Lord Britsh at the beginning of the Age of Enlightenment.\" Conspiratorially he adds, \"A bit stuffy, but they make nice cloakracks.\"") -- Was strings[0x3AD1]

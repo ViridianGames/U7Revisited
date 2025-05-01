@@ -17,70 +17,70 @@ function func_0449(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00CF then
-            table.insert(answers, "children")
+            add_answer( "children")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00C0 then
-            U7.say("You see an elderly woman with a warm smile, knitting a tiny sweater.")
-            U7.setFlag(0x00C0, true)
+            add_dialogue("You see an elderly woman with a warm smile, knitting a tiny sweater.")
+            set_flag(0x00C0, true)
         else
-            U7.say("\"Good to see thee, \" .. U7.getPlayerName() .. \",\" Nanna says kindly.")
+            add_dialogue("\"Good to see thee, \" .. U7.getPlayerName() .. \",\" Nanna says kindly.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Nanna sets down her knitting. \"What’s on thy mind, dear?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Nanna sets down her knitting. \"What’s on thy mind, dear?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"I’m Nanna, nanny to the children of Castle British.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"I’m Nanna, nanny to the children of Castle British.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I care for the castle’s children—nobles’ heirs and servants’ little ones alike. I teach ‘em manners and keep ‘em out of trouble.\"")
-                table.insert(answers, "children")
-                table.insert(answers, "castle")
-                U7.setFlag(0x00CF, true)
+                add_dialogue("\"I care for the castle’s children—nobles’ heirs and servants’ little ones alike. I teach ‘em manners and keep ‘em out of trouble.\"")
+                add_answer( "children")
+                add_answer( "castle")
+                set_flag(0x00CF, true)
             elseif choice == "children" then
-                U7.say("\"They’re a lively bunch, full of spirit. But I worry about the older ones—some are drawn to the Fellowship’s promises.\"")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("children")
+                add_dialogue("\"They’re a lively bunch, full of spirit. But I worry about the older ones—some are drawn to the Fellowship’s promises.\"")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("children")
             elseif choice == "castle" then
-                U7.say("\"Castle British is a grand place, but it’s not all feasts and finery. We servants work hard, and there’s always gossip to keep up with.\"")
-                table.insert(answers, "gossip")
-                U7.RemoveAnswer("castle")
+                add_dialogue("\"Castle British is a grand place, but it’s not all feasts and finery. We servants work hard, and there’s always gossip to keep up with.\"")
+                add_answer( "gossip")
+                remove_answer("castle")
             elseif choice == "gossip" then
-                U7.say("\"Oh, there’s talk of young Charles fancying Jeanette from the Blue Boar, and whispers of Fellowship folk meeting in the castle’s shadows.\"")
-                table.insert(answers, "Jeanette")
-                table.insert(answers, "Fellowship")
-                U7.RemoveAnswer("gossip")
+                add_dialogue("\"Oh, there’s talk of young Charles fancying Jeanette from the Blue Boar, and whispers of Fellowship folk meeting in the castle’s shadows.\"")
+                add_answer( "Jeanette")
+                add_answer( "Fellowship")
+                remove_answer("gossip")
             elseif choice == "Jeanette" then
-                U7.say("\"That lass at the Blue Boar’s caught Charles’s eye. He’s a good lad, but shy. I hope he finds the courage to speak to her.\"")
-                U7.setFlag(0x007B, true)
-                U7.RemoveAnswer("Jeanette")
+                add_dialogue("\"That lass at the Blue Boar’s caught Charles’s eye. He’s a good lad, but shy. I hope he finds the courage to speak to her.\"")
+                set_flag(0x007B, true)
+                remove_answer("Jeanette")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s got a way with words, luring in the young with talk of purpose. But I’ve seen their kind before—promises that hide agendas.\"")
+                add_dialogue("\"The Fellowship’s got a way with words, luring in the young with talk of purpose. But I’ve seen their kind before—promises that hide agendas.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Mayhap I’m too old and cynical. I’ll ponder their ways.\"")
+                    add_dialogue("\"Mayhap I’m too old and cynical. I’ll ponder their ways.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Nay, I’ve raised enough children to know trouble when I see it.\"")
+                    add_dialogue("\"Nay, I’ve raised enough children to know trouble when I see it.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Mind thy manners, \" .. U7.getPlayerName() .. \",\" Nanna says with a wink.")
+                add_dialogue("\"Mind thy manners, \" .. U7.getPlayerName() .. \",\" Nanna says with a wink.")
                 break
             end
         end

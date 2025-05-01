@@ -17,73 +17,73 @@ function func_0459(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00DE then
-            table.insert(answers, "research")
+            add_answer( "research")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00CF then
-            U7.say("You see a studious man surrounded by books, eyeing you with cautious curiosity.")
-            U7.setFlag(0x00CF, true)
+            add_dialogue("You see a studious man surrounded by books, eyeing you with cautious curiosity.")
+            set_flag(0x00CF, true)
         else
-            U7.say("\"Back again, \" .. U7.getPlayerName() .. \"?\" Alagner says, adjusting his glasses.")
+            add_dialogue("\"Back again, \" .. U7.getPlayerName() .. \"?\" Alagner says, adjusting his glasses.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Alagner sets down a book. \"What knowledge dost thou seek?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Alagner sets down a book. \"What knowledge dost thou seek?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Alagner, scholar of Britannia’s truths, seeking answers beyond the obvious.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Alagner, scholar of Britannia’s truths, seeking answers beyond the obvious.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I study Britannia’s history and society, uncovering patterns. The Fellowship’s rise alarms me, as does their sway over folk like Patterson.\"")
-                table.insert(answers, "research")
-                table.insert(answers, "Patterson")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00DE, true)
+                add_dialogue("\"I study Britannia’s history and society, uncovering patterns. The Fellowship’s rise alarms me, as does their sway over folk like Patterson.\"")
+                add_answer( "research")
+                add_answer( "Patterson")
+                add_answer( "Fellowship")
+                set_flag(0x00DE, true)
             elseif choice == "research" then
-                U7.say("\"My research reveals the Fellowship’s influence growing unchecked. Their ties to Figg and Patterson suggest a deeper agenda.\"")
-                table.insert(answers, "Figg")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("research")
+                add_dialogue("\"My research reveals the Fellowship’s influence growing unchecked. Their ties to Figg and Patterson suggest a deeper agenda.\"")
+                add_answer( "Figg")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("research")
             elseif choice == "Patterson" then
-                U7.say("\"Patterson’s alliance with the Fellowship blinds him to their motives. His rivalry with Brownie only strengthens their grip.\"")
-                table.insert(answers, "Brownie")
-                U7.RemoveAnswer("Patterson")
+                add_dialogue("\"Patterson’s alliance with the Fellowship blinds him to their motives. His rivalry with Brownie only strengthens their grip.\"")
+                add_answer( "Brownie")
+                remove_answer("Patterson")
             elseif choice == "Brownie" then
-                U7.say("\"Brownie’s campaign, though flawed, resists the Fellowship’s control. His voice is one of few challenging their narrative.\"")
-                U7.RemoveAnswer("Brownie")
+                add_dialogue("\"Brownie’s campaign, though flawed, resists the Fellowship’s control. His voice is one of few challenging their narrative.\"")
+                remove_answer("Brownie")
             elseif choice == "Figg" then
-                U7.say("\"Figg’s zeal in Weston’s case reeks of Fellowship loyalty. His actions serve their order, not justice.\"")
-                table.insert(answers, "Weston")
-                U7.RemoveAnswer("Figg")
+                add_dialogue("\"Figg’s zeal in Weston’s case reeks of Fellowship loyalty. His actions serve their order, not justice.\"")
+                add_answer( "Weston")
+                remove_answer("Figg")
             elseif choice == "Weston" then
-                U7.say("\"Weston’s punishment was harsh, driven by Figg’s Fellowship ties. My research suggests they exploit such cases to justify control.\"")
-                U7.RemoveAnswer("Weston")
+                add_dialogue("\"Weston’s punishment was harsh, driven by Figg’s Fellowship ties. My research suggests they exploit such cases to justify control.\"")
+                remove_answer("Weston")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s unity is a facade for power. Their leaders—Batlin, Elizabeth—hide truths I aim to uncover. Seek their secrets, Avatar.\"")
+                add_dialogue("\"The Fellowship’s unity is a facade for power. Their leaders—Batlin, Elizabeth—hide truths I aim to uncover. Seek their secrets, Avatar.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou trustest them? I urge caution—my findings point to deception.\"")
+                    add_dialogue("\"Thou trustest them? I urge caution—my findings point to deception.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Thy skepticism is wise. Dig deeper, for Britannia’s sake.\"")
+                    add_dialogue("\"Thy skepticism is wise. Dig deeper, for Britannia’s sake.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Seek truth, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Seek truth, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end

@@ -17,89 +17,89 @@ function func_043A(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_0092 then
-            table.insert(answers, "James")
+            add_answer( "James")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00B1 then
-            U7.say("You see a lovely young woman with a serious expression and bright eyes.")
-            U7.setFlag(0x00B1, true)
+            add_dialogue("You see a lovely young woman with a serious expression and bright eyes.")
+            set_flag(0x00B1, true)
         else
-            U7.say("\"Greetings, \" .. U7.getPlayerName() .. \",\" says Cynthia.")
+            add_dialogue("\"Greetings, \" .. U7.getPlayerName() .. \",\" says Cynthia.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Cynthia looks attentive. \"Is there more I can assist thee with?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Cynthia looks attentive. \"Is there more I can assist thee with?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"I am Cynthia.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"I am Cynthia.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I work here at the Royal Mint. I count the gold and prepare it for Lord British’s treasury.\"")
-                table.insert(answers, "Royal Mint")
-                table.insert(answers, "treasury")
+                add_dialogue("\"I work here at the Royal Mint. I count the gold and prepare it for Lord British’s treasury.\"")
+                add_answer( "Royal Mint")
+                add_answer( "treasury")
             elseif choice == "Royal Mint" then
-                U7.say("\"Here we handle all the gold that comes into Britain. It is a weighty responsibility, but I am proud to serve the kingdom.\"")
-                table.insert(answers, "gold")
-                U7.RemoveAnswer("Royal Mint")
+                add_dialogue("\"Here we handle all the gold that comes into Britain. It is a weighty responsibility, but I am proud to serve the kingdom.\"")
+                add_answer( "gold")
+                remove_answer("Royal Mint")
             elseif choice == "treasury" then
-                U7.say("\"The treasury funds Lord British’s endeavors, from maintaining the castle to supporting the poor. Every
+                add_dialogue("\"The treasury funds Lord British’s endeavors, from maintaining the castle to supporting the poor. Every
 
  coin counts.\"")
-                U7.RemoveAnswer("treasury")
+                remove_answer("treasury")
             elseif choice == "gold" then
-                U7.say("\"Wouldst thou like to exchange thy gold nuggets or bars for coins? I can assist thee with that.\"")
+                add_dialogue("\"Wouldst thou like to exchange thy gold nuggets or bars for coins? I can assist thee with that.\"")
                 local response = U7.callExtern(0x090A, var_0001)
                 if response == 0 then
                     U7.callExtern(0x090A, var_0001)
                 else
-                    U7.say("\"Very well, perhaps another time.\"")
+                    add_dialogue("\"Very well, perhaps another time.\"")
                 end
-                U7.RemoveAnswer("gold")
+                remove_answer("gold")
             elseif choice == "James" then
-                U7.say("\"Oh, my husband James! He works so hard at the inn, but I worry about him. He seems so unhappy lately, always talking about pirates and adventures. I wish he could see how much I love him.\"")
-                table.insert(answers, "unhappy")
-                table.insert(answers, "pirates")
-                U7.setFlag(0x0092, true)
-                U7.RemoveAnswer("James")
+                add_dialogue("\"Oh, my husband James! He works so hard at the inn, but I worry about him. He seems so unhappy lately, always talking about pirates and adventures. I wish he could see how much I love him.\"")
+                add_answer( "unhappy")
+                add_answer( "pirates")
+                set_flag(0x0092, true)
+                remove_answer("James")
             elseif choice == "unhappy" then
-                U7.say("\"I think James feels trapped by his responsibilities. He inherited the inn from his father, but it is not what he wants. I try to support him, but it is difficult.\"")
-                table.insert(answers, "support")
-                U7.RemoveAnswer("unhappy")
+                add_dialogue("\"I think James feels trapped by his responsibilities. He inherited the inn from his father, but it is not what he wants. I try to support him, but it is difficult.\"")
+                add_answer( "support")
+                remove_answer("unhappy")
             elseif choice == "pirates" then
-                U7.say("\"James has this silly dream of becoming a pirate and sailing to Buccaneer’s Den. I think he just wants to escape his troubles, but I could never leave Britain.\"")
-                table.insert(answers, "Buccaneer’s Den")
-                U7.RemoveAnswer("pirates")
+                add_dialogue("\"James has this silly dream of becoming a pirate and sailing to Buccaneer’s Den. I think he just wants to escape his troubles, but I could never leave Britain.\"")
+                add_answer( "Buccaneer’s Den")
+                remove_answer("pirates")
             elseif choice == "Buccaneer’s Den" then
-                U7.say("\"I hear it is a dangerous place, full of gamblers and rogues. James thinks it sounds exciting, but I would rather he stay here with me.\"")
-                U7.RemoveAnswer("Buccaneer’s Den")
+                add_dialogue("\"I hear it is a dangerous place, full of gamblers and rogues. James thinks it sounds exciting, but I would rather he stay here with me.\"")
+                remove_answer("Buccaneer’s Den")
             elseif choice == "support" then
-                U7.say("\"I do my best to make James happy, but sometimes I wonder if I am enough. He thinks I care about money because of my job, but I only care about him.\"")
-                U7.RemoveAnswer("support")
+                add_dialogue("\"I do my best to make James happy, but sometimes I wonder if I am enough. He thinks I care about money because of my job, but I only care about him.\"")
+                remove_answer("support")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship? I have heard of them, but I am wary. They speak of unity, but some of their members seem too eager to judge others. I prefer to trust my own heart.\"")
+                add_dialogue("\"The Fellowship? I have heard of them, but I am wary. They speak of unity, but some of their members seem too eager to judge others. I prefer to trust my own heart.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Perhaps I misjudge them. I shall think on it.\"")
+                    add_dialogue("\"Perhaps I misjudge them. I shall think on it.\"")
                 else
-                    U7.say("\"I stand by my words. Their philosophy does not sit well with me.\"")
+                    add_dialogue("\"I stand by my words. Their philosophy does not sit well with me.\"")
                     U7.callExtern(0x091A, var_0003)
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Fare thee well, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Fare thee well, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end

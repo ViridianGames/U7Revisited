@@ -17,79 +17,79 @@ function func_0456(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00DB then
-            table.insert(answers, "community")
+            add_answer( "community")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00CC then
-            U7.say("You see a cheerful woman with a Fellowship medallion, distributing pamphlets with a warm smile.")
-            U7.setFlag(0x00CC, true)
+            add_dialogue("You see a cheerful woman with a Fellowship medallion, distributing pamphlets with a warm smile.")
+            set_flag(0x00CC, true)
         else
-            U7.say("\"Hello again, \" .. U7.getPlayerName() .. \",\" Ellen says, offering a pamphlet.")
+            add_dialogue("\"Hello again, \" .. U7.getPlayerName() .. \",\" Ellen says, offering a pamphlet.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Ellen beams. \"What can the Fellowship share with thee today?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Ellen beams. \"What can the Fellowship share with thee today?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"I’m Ellen, a recruiter for the Fellowship, here to bring Britannia together.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"I’m Ellen, a recruiter for the Fellowship, here to bring Britannia together.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I recruit for the Fellowship, building our community with Batlin, Elizabeth, and Abraham. We help all, unlike troublemakers like Brownie.\"")
-                table.insert(answers, "community")
-                table.insert(answers, "Batlin")
-                table.insert(answers, "Brownie")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00DB, true)
+                add_dialogue("\"I recruit for the Fellowship, building our community with Batlin, Elizabeth, and Abraham. We help all, unlike troublemakers like Brownie.\"")
+                add_answer( "community")
+                add_answer( "Batlin")
+                add_answer( "Brownie")
+                add_answer( "Fellowship")
+                set_flag(0x00DB, true)
             elseif choice == "community" then
-                U7.say("\"Our community uplifts Britannia, from leaders like Patterson to workers. Even those like Weston could find solace with us, had he joined.\"")
-                table.insert(answers, "Weston")
-                table.insert(answers, "Patterson")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("community")
+                add_dialogue("\"Our community uplifts Britannia, from leaders like Patterson to workers. Even those like Weston could find solace with us, had he joined.\"")
+                add_answer( "Weston")
+                add_answer( "Patterson")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("community")
             elseif choice == "Batlin" then
-                U7.say("\"Batlin’s wisdom guides us. With Elizabeth and Abraham, we spread his vision, countering divisive voices like Brownie’s.\"")
-                table.insert(answers, "Brownie")
-                U7.RemoveAnswer("Batlin")
+                add_dialogue("\"Batlin’s wisdom guides us. With Elizabeth and Abraham, we spread his vision, countering divisive voices like Brownie’s.\"")
+                add_answer( "Brownie")
+                remove_answer("Batlin")
             elseif choice == "Brownie" then
-                U7.say("\"Brownie’s campaign stirs unrest, challenging Patterson’s leadership. The Fellowship offers unity, a path he cannot provide.\"")
-                table.insert(answers, "Patterson")
-                U7.RemoveAnswer("Brownie")
+                add_dialogue("\"Brownie’s campaign stirs unrest, challenging Patterson’s leadership. The Fellowship offers unity, a path he cannot provide.\"")
+                add_answer( "Patterson")
+                remove_answer("Brownie")
             elseif choice == "Patterson" then
-                U7.say("\"Mayor Patterson’s alliance with us strengthens Britain. His support ensures our community thrives, unlike Brownie’s chaos.\"")
-                U7.RemoveAnswer("Patterson")
+                add_dialogue("\"Mayor Patterson’s alliance with us strengthens Britain. His support ensures our community thrives, unlike Brownie’s chaos.\"")
+                remove_answer("Patterson")
             elseif choice == "Weston" then
-                U7.say("\"Weston’s theft was sad, but Figg’s justice, guided by our principles, was necessary. The Fellowship could have given him purpose.\"")
-                table.insert(answers, "Figg")
-                U7.RemoveAnswer("Weston")
+                add_dialogue("\"Weston’s theft was sad, but Figg’s justice, guided by our principles, was necessary. The Fellowship could have given him purpose.\"")
+                add_answer( "Figg")
+                remove_answer("Weston")
             elseif choice == "Figg" then
-                U7.say("\"Figg’s loyalty, seen in handling Weston’s case, exemplifies our dedication to order. He’s a true Fellowship member.\"")
-                U7.RemoveAnswer("Figg")
+                add_dialogue("\"Figg’s loyalty, seen in handling Weston’s case, exemplifies our dedication to order. He’s a true Fellowship member.\"")
+                remove_answer("Figg")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship unites Britannia, offering hope to all. Join us, as many have, and discover thy role in our harmonious future.\"")
+                add_dialogue("\"The Fellowship unites Britannia, offering hope to all. Join us, as many have, and discover thy role in our harmonious future.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thy eagerness gladdens me. Speak with Batlin or Elizabeth to join our cause.\"")
+                    add_dialogue("\"Thy eagerness gladdens me. Speak with Batlin or Elizabeth to join our cause.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Doubt is but a step to truth. Visit our hall, and let our community show thee the way.\"")
+                    add_dialogue("\"Doubt is but a step to truth. Visit our hall, and let our community show thee the way.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Find thy place with us, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Find thy place with us, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end

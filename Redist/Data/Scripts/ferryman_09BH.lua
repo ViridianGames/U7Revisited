@@ -58,7 +58,7 @@ function ferryman_09BH(object_id, event)
         local spark_id = get_party_member(-1) -- Spark
 
         if not get_flag(0x0198) then
-            table.insert(answers, strings[0x0037]) -- sacrifice
+            add_answer( strings[0x0037]) -- sacrifice
         end
 
         if not get_flag(0x01C3) then
@@ -68,7 +68,7 @@ function ferryman_09BH(object_id, event)
             say(object_id, strings[0x0118])
         else
             say(object_id, strings[0x0186])
-            table.insert(answers, strings[0x022C]) -- return
+            add_answer( strings[0x022C]) -- return
         end
 
         if get_flag(0x01A3) then
@@ -78,7 +78,7 @@ function ferryman_09BH(object_id, event)
         -- Default answers
         answers = {strings[0x028A], strings[0x028E], strings[0x0299], strings[0x02A7], strings[0x02B0], strings[0x02B4]} -- bye, Skara Brae, Misty Channel, Ferryman, job, name
         if not get_flag(0x0197) then
-            table.insert(answers, strings[0x02B9]) -- pay
+            add_answer( strings[0x02B9]) -- pay
         end
         log("Initial answers: ", table.concat(answers, ", "))
 
@@ -171,12 +171,12 @@ function ferryman_09BH(object_id, event)
             end
             answers = {strings[0x028A], strings[0x028E], strings[0x0299], strings[0x02A7], strings[0x02B0], strings[0x02B4]} -- Reset answers
             if not get_flag(0x0197) then
-                table.insert(answers, strings[0x02B9]) -- pay
+                add_answer( strings[0x02B9]) -- pay
             else
-                table.insert(answers, strings[0x022C]) -- return
+                add_answer( strings[0x022C]) -- return
             end
             if not get_flag(0x0198) then
-                table.insert(answers, strings[0x0037]) -- sacrifice
+                add_answer( strings[0x0037]) -- sacrifice
             end
             log("Updated answers: ", table.concat(answers, ", "))
         end

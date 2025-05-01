@@ -17,69 +17,69 @@ function func_0462(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00E1 then
-            table.insert(answers, "finances")
+            add_answer( "finances")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00D2 then
-            U7.say("You see a composed woman with a ledger, managing accounts behind a bank counter.")
-            U7.setFlag(0x00D2, true)
+            add_dialogue("You see a composed woman with a ledger, managing accounts behind a bank counter.")
+            set_flag(0x00D2, true)
         else
-            U7.say("\"Welcome back, \" .. U7.getPlayerName() .. \",\" Cynthia says with a polite smile.")
+            add_dialogue("\"Welcome back, \" .. U7.getPlayerName() .. \",\" Cynthia says with a polite smile.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Cynthia adjusts her ledger. \"What banking needs dost thou have?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Cynthia adjusts her ledger. \"What banking needs dost thou have?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Cynthia, banker of Britain, managing the city’s wealth.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Cynthia, banker of Britain, managing the city’s wealth.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I oversee Britain’s finances, handling accounts and loans. The Fellowship’s donations aid stability, but their influence grows strong.\"")
-                table.insert(answers, "finances")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00E1, true)
+                add_dialogue("\"I oversee Britain’s finances, handling accounts and loans. The Fellowship’s donations aid stability, but their influence grows strong.\"")
+                add_answer( "finances")
+                add_answer( "Fellowship")
+                set_flag(0x00E1, true)
             elseif choice == "finances" then
-                U7.say("\"The city’s coffers are steady, but poverty festers in Paws. Cases like Weston’s show how desperation strains our system.\"")
-                table.insert(answers, "Weston")
-                table.insert(answers, "Paws")
-                U7.RemoveAnswer("finances")
+                add_dialogue("\"The city’s coffers are steady, but poverty festers in Paws. Cases like Weston’s show how desperation strains our system.\"")
+                add_answer( "Weston")
+                add_answer( "Paws")
+                remove_answer("finances")
             elseif choice == "Paws" then
-                U7.say("\"Paws is a poor village nearby. Many, like Weston, struggle to survive, and the Fellowship’s promises of aid often fall short.\"")
-                table.insert(answers, "Weston")
-                table.insert(answers, "Fellowship")
-                U7.RemoveAnswer("Paws")
+                add_dialogue("\"Paws is a poor village nearby. Many, like Weston, struggle to survive, and the Fellowship’s promises of aid often fall short.\"")
+                add_answer( "Weston")
+                add_answer( "Fellowship")
+                remove_answer("Paws")
             elseif choice == "Weston" then
-                U7.say("\"Weston stole to feed his family, but Figg’s swift justice, backed by the Fellowship, left no room for mercy.\"")
-                table.insert(answers, "Figg")
-                U7.RemoveAnswer("Weston")
+                add_dialogue("\"Weston stole to feed his family, but Figg’s swift justice, backed by the Fellowship, left no room for mercy.\"")
+                add_answer( "Figg")
+                remove_answer("Weston")
             elseif choice == "Figg" then
-                U7.say("\"Figg’s loyalty to the Fellowship drives his actions, like Weston’s arrest. His zeal worries me more than his intent.\"")
-                U7.RemoveAnswer("Figg")
+                add_dialogue("\"Figg’s loyalty to the Fellowship drives his actions, like Weston’s arrest. His zeal worries me more than his intent.\"")
+                remove_answer("Figg")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship funds civic projects, but their sway over Patterson and others makes me question their true goals.\"")
+                add_dialogue("\"The Fellowship funds civic projects, but their sway over Patterson and others makes me question their true goals.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou seest their good? Perhaps, but their influence bears watching.\"")
+                    add_dialogue("\"Thou seest their good? Perhaps, but their influence bears watching.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Thy caution aligns with mine. Their motives may not be as pure as claimed.\"")
+                    add_dialogue("\"Thy caution aligns with mine. Their motives may not be as pure as claimed.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Farewell, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Farewell, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end

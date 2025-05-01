@@ -17,65 +17,65 @@ function func_044E(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00D3 then
-            table.insert(answers, "jests")
+            add_answer( "jests")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00C4 then
-            U7.say("You see a wiry man in motley, juggling apples with a mischievous grin.")
-            U7.setFlag(0x00C4, true)
+            add_dialogue("You see a wiry man in motley, juggling apples with a mischievous grin.")
+            set_flag(0x00C4, true)
         else
-            U7.say("\"Ho, \" .. U7.getPlayerName() .. \"!\" Chuckles cackles, tossing an apple.")
+            add_dialogue("\"Ho, \" .. U7.getPlayerName() .. \"!\" Chuckles cackles, tossing an apple.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Chuckles spins a coin. \"What’s thy jest, friend?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Chuckles spins a coin. \"What’s thy jest, friend?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Chuckles I be, jester to Lord British’s court!\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Chuckles I be, jester to Lord British’s court!\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I juggle, jest, and jape to keep the castle merry! My quips lighten hearts, but I hear whispers darker than my riddles.\"")
-                table.insert(answers, "jests")
-                table.insert(answers, "whispers")
-                U7.setFlag(0x00D3, true)
+                add_dialogue("\"I juggle, jest, and jape to keep the castle merry! My quips lighten hearts, but I hear whispers darker than my riddles.\"")
+                add_answer( "jests")
+                add_answer( "whispers")
+                set_flag(0x00D3, true)
             elseif choice == "jests" then
-                U7.say("\"Here’s a riddle: what group speaks of unity but hides in shadows? Answer’s the Fellowship, methinks! Want another?\"")
-                table.insert(answers, "Fellowship")
-                table.insert(answers, "riddle")
-                U7.RemoveAnswer("jests")
+                add_dialogue("\"Here’s a riddle: what group speaks of unity but hides in shadows? Answer’s the Fellowship, methinks! Want another?\"")
+                add_answer( "Fellowship")
+                add_answer( "riddle")
+                remove_answer("jests")
             elseif choice == "riddle" then
-                U7.say("\"What’s green as emerald, yet rules no land? Lord British’s crown, for his heart serves Britannia! Ha! Like that one?\"")
-                U7.RemoveAnswer("riddle")
+                add_dialogue("\"What’s green as emerald, yet rules no land? Lord British’s crown, for his heart serves Britannia! Ha! Like that one?\"")
+                remove_answer("riddle")
             elseif choice == "whispers" then
-                U7.say("\"Servants talk of Fellowship folk skulking in the halls, meeting advisors after dark. Even my jests can’t lighten that gloom.\"")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x0094, true)
-                U7.RemoveAnswer("whispers")
+                add_dialogue("\"Servants talk of Fellowship folk skulking in the halls, meeting advisors after dark. Even my jests can’t lighten that gloom.\"")
+                add_answer( "Fellowship")
+                set_flag(0x0094, true)
+                remove_answer("whispers")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s all smiles and promises, but their eyes dart like thieves in a market. I’d jest about ‘em, but my jokes might cut too deep.\"")
+                add_dialogue("\"The Fellowship’s all smiles and promises, but their eyes dart like thieves in a market. I’d jest about ‘em, but my jokes might cut too deep.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou likest their tune? I’ll keep my japes gentle, then.\"")
+                    add_dialogue("\"Thou likest their tune? I’ll keep my japes gentle, then.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Wise to doubt ‘em! Their game’s no laughing matter.\"")
+                    add_dialogue("\"Wise to doubt ‘em! Their game’s no laughing matter.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Keep a skip in thy step, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Keep a skip in thy step, \" .. U7.getPlayerName() .. \"!\"")
                 break
             end
         end

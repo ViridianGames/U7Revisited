@@ -17,73 +17,73 @@ function func_0465(eventid)
         local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
         local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
 
-        table.insert(answers, "bye")
-        table.insert(answers, "job")
-        table.insert(answers, "name")
+        add_answer( "bye")
+        add_answer( "job")
+        add_answer( "name")
         if flag_00E4 then
-            table.insert(answers, "tailoring")
+            add_answer( "tailoring")
         end
         if flag_0094 then
-            table.insert(answers, "Fellowship")
+            add_answer( "Fellowship")
         end
 
         if not flag_00D5 then
-            U7.say("You see a skilled man stitching fabric, surrounded by bolts of cloth in a tidy shop.")
-            U7.setFlag(0x00D5, true)
+            add_dialogue("You see a skilled man stitching fabric, surrounded by bolts of cloth in a tidy shop.")
+            set_flag(0x00D5, true)
         else
-            U7.say("\"Ho, \" .. U7.getPlayerName() .. \",\" Greg says, threading a needle.")
+            add_dialogue("\"Ho, \" .. U7.getPlayerName() .. \",\" Greg says, threading a needle.")
         end
 
         while true do
             if #answers == 0 then
-                U7.say("Greg pauses his work. \"Need a new cloak or some talk?\"")
-                table.insert(answers, "bye")
-                table.insert(answers, "job")
-                table.insert(answers, "name")
+                add_dialogue("Greg pauses his work. \"Need a new cloak or some talk?\"")
+                add_answer( "bye")
+                add_answer( "job")
+                add_answer( "name")
             end
 
             local choice = U7.getPlayerChoice(answers)
             if choice == "name" then
-                U7.say("\"Greg, tailor of Britain, makin’ fine garments for all.\"")
-                U7.RemoveAnswer("name")
+                add_dialogue("\"Greg, tailor of Britain, makin’ fine garments for all.\"")
+                remove_answer("name")
             elseif choice == "job" then
-                U7.say("\"I sew clothes—tunics, cloaks, you name it. The Fellowship’s trade policies help my stock, but their pull with Patterson’s unsettling.\"")
-                table.insert(answers, "tailoring")
-                table.insert(answers, "Fellowship")
-                U7.setFlag(0x00E4, true)
+                add_dialogue("\"I sew clothes—tunics, cloaks, you name it. The Fellowship’s trade policies help my stock, but their pull with Patterson’s unsettling.\"")
+                add_answer( "tailoring")
+                add_answer( "Fellowship")
+                set_flag(0x00E4, true)
             elseif choice == "tailoring" then
-                U7.say("\"I craft from wool and silk, but high costs hit my customers hard. Folk like Weston can’t afford basics, and that’s a problem.\"")
-                table.insert(answers, "Weston")
-                table.insert(answers, "costs")
-                U7.RemoveAnswer("tailoring")
+                add_dialogue("\"I craft from wool and silk, but high costs hit my customers hard. Folk like Weston can’t afford basics, and that’s a problem.\"")
+                add_answer( "Weston")
+                add_answer( "costs")
+                remove_answer("tailoring")
             elseif choice == "costs" then
-                U7.say("\"Fellowship fees and taxes raise my prices. It’s tough on the poor, like those in Paws, pushin’ ‘em toward desperation.\"")
-                table.insert(answers, "Paws")
-                table.insert(answers, "Fellowship")
-                U7.RemoveAnswer("costs")
+                add_dialogue("\"Fellowship fees and taxes raise my prices. It’s tough on the poor, like those in Paws, pushin’ ‘em toward desperation.\"")
+                add_answer( "Paws")
+                add_answer( "Fellowship")
+                remove_answer("costs")
             elseif choice == "Paws" then
-                U7.say("\"Paws is a poor village nearby. Weston’s from there—strugglin’ folk, ignored by the Fellowship despite their talk of aid.\"")
-                table.insert(answers, "Weston")
-                U7.RemoveAnswer("Paws")
+                add_dialogue("\"Paws is a poor village nearby. Weston’s from there—strugglin’ folk, ignored by the Fellowship despite their talk of aid.\"")
+                add_answer( "Weston")
+                remove_answer("Paws")
             elseif choice == "Weston" then
-                U7.say("\"Weston stole to feed his family—tragic. Figg’s arrest, pushed by the Fellowship, was cold, no heart in it.\"")
-                table.insert(answers, "Figg")
-                U7.RemoveAnswer("Weston")
+                add_dialogue("\"Weston stole to feed his family—tragic. Figg’s arrest, pushed by the Fellowship, was cold, no heart in it.\"")
+                add_answer( "Figg")
+                remove_answer("Weston")
             elseif choice == "Figg" then
-                U7.say("\"Figg’s a Fellowship man, all about their rules. His role in Weston’s arrest shows they care more for order than people.\"")
-                U7.RemoveAnswer("Figg")
+                add_dialogue("\"Figg’s a Fellowship man, all about their rules. His role in Weston’s arrest shows they care more for order than people.\"")
+                remove_answer("Figg")
             elseif choice == "Fellowship" then
-                U7.say("\"The Fellowship’s trade deals keep my shop stocked, but their ties to Patterson and Figg make me question what they’re really plannin’.\"")
+                add_dialogue("\"The Fellowship’s trade deals keep my shop stocked, but their ties to Patterson and Figg make me question what they’re really plannin’.\"")
                 local response = U7.callExtern(0x0919, var_0002)
                 if response == 0 then
-                    U7.say("\"Thou thinkest they’re fair? They help trade, but I’m keepin’ watch.\"")
+                    add_dialogue("\"Thou thinkest they’re fair? They help trade, but I’m keepin’ watch.\"")
                     U7.callExtern(0x091A, var_0003)
                 else
-                    U7.say("\"Smart to doubt ‘em. Their grip on Britain’s tighter than they admit.\"")
+                    add_dialogue("\"Smart to doubt ‘em. Their grip on Britain’s tighter than they admit.\"")
                 end
-                U7.RemoveAnswer("Fellowship")
+                remove_answer("Fellowship")
             elseif choice == "bye" then
-                U7.say("\"Mind thy threads, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Mind thy threads, \" .. U7.getPlayerName() .. \".\"")
                 break
             end
         end
