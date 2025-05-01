@@ -11,7 +11,7 @@
       local npc_id = -74 -- Rudyom's NPC ID
 
       if eventid == 1 then
-          U7.SwitchTalkTo(0, npc_id)
+          _SwitchTalkTo(0, npc_id)
           local var_0000 = U7.callExtern(0x090A, 0) -- Unknown interaction
           local var_0001 = U7.callExtern(0x08DB, 1) -- Spells interaction
           local var_0002 = U7.callExtern(0x08DC, 2) -- Reagents interaction

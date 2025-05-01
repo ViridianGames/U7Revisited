@@ -10,7 +10,7 @@ function func_04FC(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -252)
+    switch_talk_to(252, 0)
     local0 = call_08F7H(-253)
     local1 = call_08F7H(-244)
     local2 = false
@@ -46,10 +46,10 @@ function func_04FC(eventid, itemref)
             say("\"To have been partners for many, many years. To have been bonded for even longer!\"")
             if local1 then
                 say("*")
-                _SwitchTalkTo(0, -244)
+                switch_talk_to(244, 0)
                 say("\"He, uh, means by bonded, that we are very good friends.\" He turns to the gargoyle.~~\"I told thee to be careful how thou dost phrase things. Thou couldst start many false rumors if thou wert not more specific.\"~~The gargoyle nods sheepishly.*")
                 _HideNPC(-244)
-                _SwitchTalkTo(0, -252)
+                switch_talk_to(252, 0)
             end
             local2 = true
             _RemoveAnswer("Cairbre")
@@ -76,10 +76,10 @@ function func_04FC(eventid, itemref)
             say("\"To be related to difference in genders, I know, but to see no such thing in gargoyles. To believe there is a certain human... woman... who sent him here.~~\"To have heard Cosmo say, 'love,' but Cairbre claims there is no such thing. To comprehend not, but to help friends anyway.\"")
             if local1 then
                 say("*")
-                _SwitchTalkTo(0, -244)
+                switch_talk_to(244, 0)
                 say("\"That is what I like about him, ", local3, ", loyal to the end!\" he says, patting the gargoyle on the shoulder.*")
                 _HideNPC(-244)
-                _SwitchTalkTo(0, -252)
+                switch_talk_to(252, 0)
             end
             _RemoveAnswer("woman")
         elseif answer == "bye" then

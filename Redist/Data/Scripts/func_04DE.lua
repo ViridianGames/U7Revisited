@@ -26,7 +26,7 @@ function func_04DE(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -222)
+    switch_talk_to(222, 0)
     local0 = callis_003B()
     local1 = callis_0067()
     _AddAnswer({"bye", "job", "name"})
@@ -76,24 +76,24 @@ function func_04DE(eventid, itemref)
                 local5 = call_08F7H(-2)
                 if not local5 then
                     say("\"Uhm, wait a minute. How old art thou, boy?\"*")
-                    _SwitchTalkTo(0, -2)
+                    switch_talk_to(2, 0)
                     say("\"Uhm, eighteen.\"*")
-                    _SwitchTalkTo(0, -222)
+                    switch_talk_to(222, 0)
                     say("\"Thou dost not look eighteen.\"*")
-                    _SwitchTalkTo(0, -2)
+                    switch_talk_to(2, 0)
                     say("\"All right, I am sixteen.\"*")
-                    _SwitchTalkTo(0, -222)
+                    switch_talk_to(222, 0)
                     say("\"Thou dost not look sixteen either. Well, never mind. Thou canst enter. But make sure the management doth not see thee.\" Glenno scratches his head. \"Yes, but... no! I am the management! All right, come on. Just don't cause any trouble.\"*")
-                    _SwitchTalkTo(0, -2)
+                    switch_talk_to(2, 0)
                     say("\"All right! Wenches!\"*")
                     _HideNPC(-2)
                     local6 = call_08F7H(-1)
                     if not local6 then
-                        _SwitchTalkTo(0, -1)
+                        switch_talk_to(1, 0)
                         say("Iolo whispers to you, \"Methinks young Spark hath learned a lot whilst adventuring with thee!\"*")
                         _HideNPC(-1)
                     end
-                    _SwitchTalkTo(0, -222)
+                    switch_talk_to(222, 0)
                 end
                 _AddAnswer({"drink", "The Baths"})
             else

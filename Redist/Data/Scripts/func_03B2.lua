@@ -8,7 +8,7 @@ function func_03B2(eventid, itemref)
     end
 
     local0 = callis_001C(callis_001B(itemref))
-    _SwitchTalkTo(0, -258)
+    switch_talk_to(258, 0)
     say("You see a tough-looking guard who takes his job -very- seriously.")
 
     while true do

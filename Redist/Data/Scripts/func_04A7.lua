@@ -10,7 +10,7 @@ function func_04A7(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -167)
+    switch_talk_to(167, 0)
     local0 = call_0909H()
     local1 = callis_0067()
     local2 = false
@@ -37,10 +37,10 @@ function func_04A7(eventid, itemref)
         say("\"Garritt, my son, told me that Tobias was in possession of some silver snake venom. I went to investigate and found Tobias with it!\"*")
         local4 = call_08F7H(-170)
         if local4 then
-            _SwitchTalkTo(0, -170)
+            switch_talk_to(170, 0)
             say("\"That is correct! I am a witness that what Feridwyn has said is the truth!\"*")
             _HideNPC(-170)
-            _SwitchTalkTo(0, -167)
+            switch_talk_to(167, 0)
         end
         say("\"I have often said that Tobias was no good. Now here is proof. He is the thief that has been praying upon one of our honest merchants! And to think I let him come into contact with my son! I hope he shall be dealt with in a manner appropriate to one who is leading youth astray from the way of The Fellowship.\"")
         say("\"I suggest that thou go and speak with his mother at once! Camille should keep a tighter rein on her offspring!\"*")
@@ -85,10 +85,10 @@ function func_04A7(eventid, itemref)
                 say("\"A wonderful woman. Thou shouldst meet her.\"")
                 local7 = call_08F7H(-168)
                 if local7 then
-                    _SwitchTalkTo(0, -168)
+                    switch_talk_to(168, 0)
                     say("\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"*")
                     _HideNPC(-168)
-                    _SwitchTalkTo(0, -167)
+                    switch_talk_to(167, 0)
                 end
             else
                 say("\"As thou dost already know my wife Brita, I am certain thou wilt agree that thou couldst not find a more dedicated practitioner of The Fellowship's teachings.\"")

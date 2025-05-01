@@ -2,7 +2,7 @@
 function func_0850(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13
 
-    _SwitchTalkTo(0, -26)
+    switch_talk_to(26, 0)
     local0 = _GetPlayerName(eventid)
     local1 = call_0009H()
     say(itemref, "The ceremony begins as Batlin stands before the gathered Fellowship members. The hall fills with thunderous cheers. They look at him with a mixture of awe and sheer adoration. Batlin stands and basks in the warm reception for a moment, a triumphant smile on his face. With a slight gesture of his hand the crowd becomes quiet.")
@@ -15,81 +15,81 @@ function func_0850(eventid, itemref)
     say(itemref, "\"Now I think would be a good time to hear the words of our fellow members. To hear them share with us how The Fellowship has been bringing positive change to their lives.\"")
     local2 = call_08F7H(-41)
     if local2 then
-        _SwitchTalkTo(0, -41)
+        switch_talk_to(41, 0)
         say(itemref, "\"The Fellowship has shown me that I was afraid of myself and that I had to open myself up to life's experiences,\" says Candice.*")
         _HideNPC(-41)
     end
     local3 = call_08F7H(-43)
     if local3 then
-        _SwitchTalkTo(0, -43)
+        switch_talk_to(43, 0)
         say(itemref, "\"The Fellowship helps me be more honest with people,\" says Patterson.*")
-        _SwitchTalkTo(0, -26)
+        switch_talk_to(26, 0)
         say(itemref, "\"Thank thee for sharing, Patterson.\"*")
         _HideNPC(-43)
     end
     local4 = call_08F7H(-45)
     if local4 then
-        _SwitchTalkTo(0, -45)
+        switch_talk_to(45, 0)
         say(itemref, "\"The Fellowship has taught me how to better perform my duties as the Caretaker of the Royal Orchards,\" says Figg.*")
         _HideNPC(-45)
     end
     local5 = call_08F7H(-53)
     if local5 then
-        _SwitchTalkTo(0, -53)
+        switch_talk_to(53, 0)
         say(itemref, "\"The Fellowship has taught me to, first and foremost, treat people with respect,\" says Gaye.*")
         _HideNPC(-53)
     end
     local6 = call_08F7H(-55)
     if local6 then
-        _SwitchTalkTo(0, -55)
+        switch_talk_to(55, 0)
         say(itemref, "\"After joining The Fellowship I learned how to be a man's man,\" says Grayson.*")
         _HideNPC(-55)
     end
     local7 = call_08F7H(-58)
     if local7 then
-        _SwitchTalkTo(0, -58)
+        switch_talk_to(58, 0)
         say(itemref, "\"The Fellowship is helping me back from the brink of personal and financial oblivion,\" says Gordon.*")
-        _SwitchTalkTo(0, -26)
+        switch_talk_to(26, 0)
         say(itemref, "\"Right thou art, brother!\"*")
         _HideNPC(-58)
     end
     local8 = call_08F7H(-59)
     if local8 then
-        _SwitchTalkTo(0, -59)
+        switch_talk_to(59, 0)
         say(itemref, "\"The Fellowship has freed me from the illusory appeals of mediocrity,\" says Sean.*")
         _HideNPC(-59)
     end
     local9 = call_08F7H(-63)
     if local9 then
-        _SwitchTalkTo(0, -63)
+        switch_talk_to(63, 0)
         say(itemref, "\"In The Fellowship I am learning that I need to devote my life to a special purpose,\" says Millie.*")
         _HideNPC(-63)
     end
     local10 = call_08F7H(-2)
     if local10 then
-        _SwitchTalkTo(0, -2)
+        switch_talk_to(2, 0)
         say(itemref, "\"This whole ceremony and everyone in it doth give me the willies!\"*")
         _HideNPC(-2)
     end
     local11 = call_08F7H(-1)
     if local11 then
-        _SwitchTalkTo(0, -1)
+        switch_talk_to(1, 0)
         say(itemref, "\"'Tis a sad thing to see so many people who have nothing else better in their lives than blindly following this dubious spiritual leader.\"*")
         _HideNPC(-1)
     end
     local12 = call_08F7H(-3)
     if local12 then
-        _SwitchTalkTo(0, -3)
+        switch_talk_to(3, 0)
         say(itemref, "\"'Tis a sad thing that Britannia has fallen so far as to leave itself open to a group like this Fellowship.\"*")
         _HideNPC(-3)
     end
     local13 = call_08F7H(-4)
     if local13 then
-        _SwitchTalkTo(0, -4)
+        switch_talk_to(4, 0)
         say(itemref, "\"'Tis a sad thing when I cannot even keep my eyes open from the boredom of this Fellowship ceremony!\"*")
         _HideNPC(-4)
     end
-    _SwitchTalkTo(0, -26)
+    switch_talk_to(26, 0)
     say(itemref, "From watching Batlin and the others you get the feeling that the Fellowship ceremony is going to last long into the night. Now would be a good moment to slip away without drawing much attention to yourself...*")
     return
 end

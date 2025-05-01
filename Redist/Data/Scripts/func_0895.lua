@@ -2,7 +2,7 @@
 function func_0895(eventid, itemref)
     local local0, local1, local2, local3
 
-    _SwitchTalkTo(0, -289)
+    switch_talk_to(289, 0)
     say(itemref, "\"Bollux stares ahead, almost vacantly. Despite his features and lack of motion, it is apparent by his expression that some of Castambre's magic still resides within.\"")
     while local0 do
         local1 = _GetContainerItems(4, 243, 797, itemref)
@@ -10,8 +10,8 @@ function func_0895(eventid, itemref)
         if _GetItemQuality(local2) == 243 then
             say(itemref, "\"Bollux turns to see Adjar standing nearby, quite alive. Instantly, Bollux's expression changes detectably.\"")
             _HideNPC(-289)
-            _SwitchTalkTo(1, -289)
-            _SwitchTalkTo(0, -288)
+            switch_talk_to(289, 1)
+            switch_talk_to(288, 0)
             say(itemref, "\"Adjhar simply smiles.~\"Greetings, brother.\"")
         end
         local0 = get_next_item() -- sloop

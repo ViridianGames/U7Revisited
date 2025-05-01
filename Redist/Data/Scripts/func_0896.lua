@@ -1,6 +1,6 @@
 -- Function 0896: Bollux golem post-event dialogue
 function func_0896(eventid, itemref)
-    _SwitchTalkTo(0, -289)
+    switch_talk_to(289, 0)
     say(itemref, "\"The golem seems to have regained his staid composure. However, life is still evident within his gem-like eyes.\"")
     _AddAnswer({"bye", "job", "name"})
     while true do

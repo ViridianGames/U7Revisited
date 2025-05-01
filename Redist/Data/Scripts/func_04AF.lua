@@ -26,7 +26,7 @@ function func_04AF(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -175)
+    switch_talk_to(175, 0)
     local0 = call_0909H()
     _AddAnswer({"bye", "job", "name"})
 
@@ -68,10 +68,10 @@ function func_04AF(eventid, itemref)
             say("\"He is my best friend and the bravest man I know.\"")
             local1 = call_08F7H(-174)
             if local1 then
-                _SwitchTalkTo(0, -174)
+                switch_talk_to(174, 0)
                 say("\"Oh, please! Thou art making mine eyes leak!\"*")
                 _HideNPC(-174)
-                _SwitchTalkTo(0, -175)
+                switch_talk_to(175, 0)
             end
             _RemoveAnswer("Komor")
         elseif answer == "Merrick" then
@@ -122,10 +122,10 @@ function func_04AF(eventid, itemref)
             say("\"He is the son of Feridwyn and Brita, who run the shelter. Garritt crosses the road to avoid us.\"")
             local1 = call_08F7H(-174)
             if local1 then
-                _SwitchTalkTo(0, -174)
+                switch_talk_to(174, 0)
                 say("\"We would not want the likes of him walking down our side of the road anyway!\"*")
                 _HideNPC(-174)
-                _SwitchTalkTo(0, -175)
+                switch_talk_to(175, 0)
             end
             _RemoveAnswer("Garritt")
         elseif answer == "give" then

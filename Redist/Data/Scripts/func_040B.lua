@@ -10,7 +10,7 @@ function func_040B(eventid, itemref)
         local0 = get_lord_or_lady()
         local1 = is_in_party(0)
         local2 = get_is_female_avatar()
-        -- _SwitchTalkTo(0, -11)
+        -- switch_talk_to(11, 0)
         -- if not get_flag(20) then
         --     if local2 then
         --         local3 = "woman"

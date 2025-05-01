@@ -10,7 +10,7 @@ function func_04F5(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -245)
+    switch_talk_to(245, 0)
     local0 = call_0909H()
     local1 = callis_001B(-245)
     _AddAnswer({"bye", "job", "name"})

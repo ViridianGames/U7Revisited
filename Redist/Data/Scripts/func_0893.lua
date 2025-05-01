@@ -1,6 +1,6 @@
 -- Function 0893: Adjhar golem final dialogue
 function func_0893(eventid, itemref)
-    _SwitchTalkTo(0, -288)
+    switch_talk_to(288, 0)
     say(itemref, "\"Adjhar appears to have resumed the stance of a more traditional golem guardian -- staunch and distant. However, it is impossible to miss the glimmer of intelligence in his eyes.\"")
     _AddAnswer({"bye", "job", "name"})
     while true do

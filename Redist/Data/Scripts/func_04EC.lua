@@ -18,7 +18,7 @@ function func_04EC(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -236)
+    switch_talk_to(236, 0)
     local0 = callis_003B()
     _AddAnswer({"bye", "job", "name", "murder"})
 

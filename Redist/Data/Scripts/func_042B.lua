@@ -4,7 +4,7 @@ function func_042B(itemref)
     local local0, local1, local2, local3
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -43)
+        switch_talk_to(43, 0)
         local0 = callis_003B()
         if local0 == 7 then
             local1 = call_08FCH(-26, -43)
@@ -35,13 +35,13 @@ function func_042B(itemref)
             if local2 then
                 say("\"Avatar! Er, uhm, how art thee? Oh, dost thou know Candice, the curator at the Royal Museum? She is a 'brother' at The Fellowship. I was, er, just seeing her home!\"")
                 if local3 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"Hmmm. And does thy wife know thou art seeing Candice home?\"")
                     _HideNPC(-1)
                 else
                     say("You ask if Judith knows about this.")
                 end
-                _SwitchTalkTo(0, -43)
+                switch_talk_to(43, 0)
                 say("\"Why, she doth not need to know! It does not matter! 'Tis nothing, really!\" The Mayor is sweating profusely. He looks at you with beady eyes. He knows he has been found out. His body slumps. He is mortified and ashamed. \"Thou hast discovered my... our secret. Please do not tell Judith. I... will end this. I swear. Candice -- we must stop meeting. I... I'm sorry.\" You decide to leave Patterson and Candice to work out what has happened, and you hope that the Mayor has learned something about honesty.*")
                 call_0911H(20)
                 abort()
@@ -99,10 +99,10 @@ function func_042B(itemref)
                 say("\"Why, I do not know what she is talking about! I work late, that is all!\"")
                 local3 = call_08F7H(-1)
                 if local3 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -43)
+                    switch_talk_to(43, 0)
                 end
                 _RemoveAnswer("Judith suspicious")
             elseif cmp_strings("Candice", 1) then

@@ -6,7 +6,7 @@ function func_040D(itemref)
     if eventid() == 0 then
         abort()
     end
-    _SwitchTalkTo(0, -13)
+    switch_talk_to(13, 0)
     local0 = callis_003B()
     _AddAnswer({"bye", "murder", "job", "name"})
     if get_flag(61) then

@@ -10,7 +10,7 @@ function func_04B1(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -177)
+    switch_talk_to(177, 0)
     local0 = call_0909H()
 
     if get_flag(0x0213) and not get_flag(0x0234) then

@@ -2,7 +2,7 @@
 function func_0890(eventid, itemref)
     local local0
 
-    _SwitchTalkTo(0, -288)
+    switch_talk_to(288, 0)
     if not get_flag(788) then
         _AddAnswer({"bye", "sacrificed", "Don't know"})
         set_flag(788, true)

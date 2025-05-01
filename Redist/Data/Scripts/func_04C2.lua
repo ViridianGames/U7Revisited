@@ -34,7 +34,7 @@ function func_04C2(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -194)
+    switch_talk_to(194, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = false

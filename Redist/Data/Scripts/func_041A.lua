@@ -5,7 +5,7 @@ function func_041A(itemref)
     local local10, local11, local12, local13
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -26)
+        switch_talk_to(26, 0)
         local0 = callis_001B(-26)
         local1 = callis_001C(local0)
         local2 = call_0931H(-359, 981, 1, -357)

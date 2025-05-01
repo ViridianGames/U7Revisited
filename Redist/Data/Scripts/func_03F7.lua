@@ -8,7 +8,7 @@ function func_03F7(eventid, itemref)
     end
 
     local0 = _GetContainerItems(4, 243, 797, itemref)
-    _SwitchTalkTo(0, -288)
+    switch_talk_to(288, 0)
 
     if not local0 then
         if not get_flag(0x0328) then

@@ -10,7 +10,7 @@ function func_04F4(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -244)
+    switch_talk_to(244, 0)
     local0 = call_08F7H(-253)
     local1 = call_08F7H(-252)
     local2 = call_0909H()
@@ -47,10 +47,10 @@ function func_04F4(eventid, itemref)
             say("\"'Tis a long story. Cosmo is looking for the unicorn that supposedly inhabits this cavern.\" He looks you in the eye and shrugs.~~\"He is a fool.\"")
             if local0 then
                 say("*")
-                _SwitchTalkTo(0, -253)
+                switch_talk_to(253, 0)
                 say("\"I heard that, Cairbre!\"*")
                 _HideNPC(-253)
-                _SwitchTalkTo(0, -244)
+                switch_talk_to(244, 0)
             end
             set_flag(0x02E0, true)
             _RemoveAnswer("senses")

@@ -10,7 +10,7 @@ function func_04C8(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -200)
+    switch_talk_to(200, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = false
@@ -136,10 +136,10 @@ function func_04C8(eventid, itemref)
             say("\"He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.~~\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"*")
             local7 = call_08F7H(-1)
             if local7 then
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("Iolo smiles proudly.~~\"My shop has, er, grown a bit since thou wert here last, ", local0, ".\"")
                 _HideNPC(-1)
-                _SwitchTalkTo(0, -200)
+                switch_talk_to(200, 0)
             end
             _RemoveAnswer("Sir Jordan")
         elseif answer == "bye" then

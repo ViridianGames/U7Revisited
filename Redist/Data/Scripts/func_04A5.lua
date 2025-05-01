@@ -4,13 +4,13 @@ function func_04A5(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 0 then
-        _SwitchTalkTo(0, -165)
+        switch_talk_to(165, 0)
         return
     elseif eventid ~= 1 then
         return
     end
 
-    _SwitchTalkTo(0, -165)
+    switch_talk_to(165, 0)
     local0 = call_0908H()
     local2 = false
     _AddAnswer({"bye", "job", "name"})
@@ -50,10 +50,10 @@ function func_04A5(eventid, itemref)
             say("\"Speaking of thy friends, I have heard that thy companion, Dupre, is a drunken sot.\"")
             local3 = call_08F7H(-4)
             if local3 then
-                _SwitchTalkTo(0, -4)
+                switch_talk_to(4, 0)
                 say("\"Hey, I don't think --\"*")
                 _HideNPC(-4)
-                _SwitchTalkTo(0, -165)
+                switch_talk_to(165, 0)
             end
             say("\"Yes, from what I have been told, that Dupre has no will when confronted by a tankard of, well, anything.~~\"As a matter of fact, thou hast fairly poor taste in companions overall.\"")
             _AddAnswer("companions")
@@ -62,10 +62,10 @@ function func_04A5(eventid, itemref)
             say("\"I am glad thou didst ask, ", local0, ". Thy friend, Iolo, charges far too much for his bows. Perhaps thou couldst have a chat with him.\"")
             local4 = call_08F7H(-1)
             if local4 then
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("\"Too much? What dost thou mean, too --\"*")
                 _HideNPC(-1)
-                _SwitchTalkTo(0, -165)
+                switch_talk_to(165, 0)
             end
             say("\"His bows and crossbows just aren't of the quality that is worth the kind of gold he charges.\"~~He takes a step back.~~\"Gads! Thy breath could gag an ox. Thou shouldst consider taking better care of thy teeth, or thy fellows will leave thee.\"")
             _AddAnswer("teeth")
@@ -74,10 +74,10 @@ function func_04A5(eventid, itemref)
             say("\"That is the reason for thine offensive mouth odor. I have not seen anything that yellow since the time thy fellow Shamino ran away from a battle in fear.\"")
             local5 = call_08F7H(-3)
             if local5 then
-                _SwitchTalkTo(0, -3)
+                switch_talk_to(3, 0)
                 say("\"Thou must be mad!\" Shamino turns to you. \"This rogue needs to be taught a lesson.\"*")
                 _HideNPC(-3)
-                _SwitchTalkTo(0, -165)
+                switch_talk_to(165, 0)
             end
             say("\"And thy friend, Shamino, ", local0, ", has quite a bellicose temper.\"")
             _AddAnswer("bellicose")
@@ -91,10 +91,10 @@ function func_04A5(eventid, itemref)
         elseif answer == "unschooled" then
             say("\"Trust me, ", local0, ", thou art too ignorant to argue with me.\"")
             if local3 then
-                _SwitchTalkTo(0, -4)
+                switch_talk_to(4, 0)
                 say("\"Oh, this is too much!\"*")
                 _HideNPC(-4)
-                _SwitchTalkTo(0, -165)
+                switch_talk_to(165, 0)
             end
             _RemoveAnswer("unschooled")
         elseif answer == "nose" then

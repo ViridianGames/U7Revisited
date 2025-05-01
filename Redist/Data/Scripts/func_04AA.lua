@@ -10,7 +10,7 @@ function func_04AA(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -170)
+    switch_talk_to(170, 0)
     local0 = call_0908H()
     local1 = "Avatar"
     local2 = "None of thy concern"

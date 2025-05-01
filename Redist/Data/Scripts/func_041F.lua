@@ -4,7 +4,7 @@ function func_041F(itemref)
     local local0, local1, local2, local3
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -31)
+        switch_talk_to(31, 0)
         local0 = call_08F7H(-34)
         _AddAnswer({"bye", "job", "name"})
         if not get_flag(160) then
@@ -18,10 +18,10 @@ function func_041F(itemref)
             if cmp_strings("name", 1) then
                 say("\"Kwisty.\"")
                 if local0 then
-                    _SwitchTalkTo(0, -34)
+                    switch_talk_to(34, 0)
                     say("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
                     _HideNPC(-34)
-                    _SwitchTalkTo(0, -31)
+                    switch_talk_to(31, 0)
                 end
                 _RemoveAnswer("name")
             elseif cmp_strings("job", 1) then
@@ -46,10 +46,10 @@ function func_041F(itemref)
             elseif cmp_strings("winner", 1) then
                 say("\"I am winner!\" she proclaims loudly.")
                 if local0 then
-                    _SwitchTalkTo(0, -34)
+                    switch_talk_to(34, 0)
                     say("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
                     _HideNPC(-34)
-                    _SwitchTalkTo(0, -31)
+                    switch_talk_to(31, 0)
                 end
                 _RemoveAnswer("winner")
             elseif cmp_strings("bye", 1) then

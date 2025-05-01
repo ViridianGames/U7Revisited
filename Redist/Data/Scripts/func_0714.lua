@@ -38,7 +38,7 @@ function func_0714(eventid, itemref)
             end
             say(itemref, "@According to the tome, a `heart' will be necessary to perform this ritual.@")
             if not get_flag(796) then
-                _SwitchTalkTo(0, -289)
+                switch_talk_to(289, 0)
                 say(itemref, '"I will give him mine!"')
                 _HideNPC(-289)
                 local13 = call_0001H(500, {7719}, -356)
@@ -46,11 +46,11 @@ function func_0714(eventid, itemref)
                 while local14 do
                     local16 = local14
                     if _GetContainerItems(4, 243, 797, local16) then
-                        _SwitchTalkTo(0, -289)
+                        switch_talk_to(289, 0)
                         say(itemref, "You watch in stunned horror as Bollux pierces his chest open with his fingers.")
                         _HideNPC(-289)
                         local17 = call_0087H(local16, local2)
-                        _SwitchTalkTo(0, -289)
+                        switch_talk_to(289, 0)
                         say(itemref, "He pulls forth a heart-shape stone and, with a final flurry of action, drops the stone upon Adjhar's chest as he falls dead to the ground.")
                         _HideNPC(-289)
                         local18 = call_0001H(1808, {8021, 1, 17447, 8046, 2, 17447, 8047, 2, 17447, 8045, 2, 8487, local17, 7769}, local2)

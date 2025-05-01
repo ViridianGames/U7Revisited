@@ -152,7 +152,7 @@ function func_06F8(eventid, itemref)
                 abort()
             end
 
-            _SwitchTalkTo(1, -286)
+            switch_talk_to(286, 1)
             say("\"No! Thou must not do this!\" Erethian's voice is full of anguish. He raises his arms and begins a powerful spell.")
             say("\"Vas Ort Rel Tym...\"")
             say("He stops mid-spell and begins another, pointing towards the Talisman of Infinity.")

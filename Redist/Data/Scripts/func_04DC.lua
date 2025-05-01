@@ -10,7 +10,7 @@ function func_04DC(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -220)
+    switch_talk_to(220, 0)
     local0 = call_0909H()
     local1 = call_0908H()
     local2 = call_08F7H(-240)
@@ -54,10 +54,10 @@ function func_04DC(eventid, itemref)
             say("\"'Tis truly a fantastic group of people, ", local0, ". We spread guidance and prosperity to the people who reside in our fair land. Of course, at the moment, my fellow members are a bit... displeased with me.\"")
             if not local2 then
                 say("*")
-                _SwitchTalkTo(0, -240)
+                switch_talk_to(240, 0)
                 say("\"That's a bit of an understatement!\"*")
                 _HideNPC(-240)
-                _SwitchTalkTo(0, -220)
+                switch_talk_to(220, 0)
             end
             _AddAnswer({"displeased", "prosperity", "guidance"})
             _RemoveAnswer("Fellowship")
@@ -82,19 +82,19 @@ function func_04DC(eventid, itemref)
             _RemoveAnswer("loan")
         elseif answer == "Oops" then
             if not local2 then
-                _SwitchTalkTo(0, -240)
+                switch_talk_to(240, 0)
                 say("\"What the fool means is that he used to don a costume and pretend to be thee in an attempt to woo goods from the proprietors.\"*")
                 _HideNPC(-240)
-                _SwitchTalkTo(0, -220)
+                switch_talk_to(220, 0)
                 say("\"Quite true, Avatar. The ruse worked far too well. 'Twas a true shame, to be honest. I should not have gotten away with it, and, indeed, am being properly castigated for it now.\"")
             else
                 say("\"Oh, just that I have been impersonating thee for some time now to take items from shopkeepers without paying for them. Well, -had- been actually. Now I am being properly castigated for it.\"")
                 if not local3 then
                     say("*")
-                    _SwitchTalkTo(0, -154)
+                    switch_talk_to(154, 0)
                     say("\"I thank thee.\"*")
                     _HideNPC(-154)
-                    _SwitchTalkTo(0, -220)
+                    switch_talk_to(220, 0)
                     say("\"Thou art welcome.\" He nods.*")
                 end
             end
@@ -103,10 +103,10 @@ function func_04DC(eventid, itemref)
             say("\"Well, until I was caught, I would go from shop to shop all across Britannia, posing as `the Avatar.' The owners were all too happy to supply me with numerous gifts. Thou truly hast a good life, ", local0, ".\"")
             if not local2 then
                 say("*")
-                _SwitchTalkTo(0, -240)
+                switch_talk_to(240, 0)
                 say("\"Ask him about his taxes, ", local0, ".\"*")
                 _HideNPC(-240)
-                _SwitchTalkTo(0, -220)
+                switch_talk_to(220, 0)
                 _AddAnswer("taxes")
             end
             _AddAnswer("gifts")

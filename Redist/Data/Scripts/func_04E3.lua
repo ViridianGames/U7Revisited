@@ -25,7 +25,7 @@ function func_04E3(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -227)
+    switch_talk_to(227, 0)
     local0 = call_0909H()
     local1 = callis_0067()
     local2 = callis_001B(-227)
@@ -58,10 +58,10 @@ function func_04E3(eventid, itemref)
                 say("\"All right. I was born in a cave. So my mother named me Mole.\"*")
                 local3 = call_08F7H(-1)
                 if not local3 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"I thought thou said it was a long story.\"*")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -227)
+                    switch_talk_to(227, 0)
                 end
             else
                 say("\"Very well. How 'bout if I just say that I was born in a cave, so my mother named me Mole.\"")

@@ -34,7 +34,7 @@ function func_04CD(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -205)
+    switch_talk_to(205, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = callis_001C(callis_001B(-205))

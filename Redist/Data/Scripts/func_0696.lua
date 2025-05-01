@@ -19,7 +19,7 @@ function func_0696(eventid, itemref)
             else
                 local7 = call_0026H(local6)
                 call_087DH()
-                _SwitchTalkTo(1, -286)
+                switch_talk_to(286, 1)
                 say(itemref, "Erethian looks irritated by your question, \"'Tis not a hindrance for one sensitive enough to feel the ridges the ink makes on the page.")
                 say(itemref, "Dost thou think me an invalid? Know that in my searches, I have faced dangers that would turn even one such as thee to quivering flesh.\"")
                 say(itemref, "The mage's eyes begin to glow softly. \"My magic is strong enough to tear down the fabric of reality and reconstruct it as I see fit.")
@@ -29,20 +29,20 @@ function func_0696(eventid, itemref)
                 local0 = true
             end
         else
-            _SwitchTalkTo(3, -286)
+            switch_talk_to(286, 3)
             say(itemref, "\"Even the great dragon's form is not beyond my power.\" Erethian begins speaking softly, then rises to a crescendo with the words,")
             say(itemref, "\"Rel An-Quas Ailem In BAL-ZEN\"!*")
             local1 = true
         end
     else
-        _SwitchTalkTo(2, -286)
+        switch_talk_to(286, 2)
         say(itemref, "The dragon looks down its snout menacingly at what you guess is meant to be you. Even in this powerful form, it would seem that Erethian is still blind, however, you get the impression that he is quite capable of taking care of himself.")
         say(itemref, "\"Enough of these silly charades, I really am quite busy with my studies.\" He intones the words,")
         say(itemref, "\"An Ort Rel\"!*")
         local5 = true
     end
     if not local0 and not local1 and not local2 and not local3 and not local5 then
-        _SwitchTalkTo(1, -286)
+        switch_talk_to(286, 1)
         if not get_flag(811) then
             local7 = call_0025H(itemref)
             if not call_0085H(0, 500, local6) then
@@ -95,7 +95,7 @@ function func_0696(eventid, itemref)
         local11 = call_0001H(1687, {8021, 1, 17447, 8042, 2, 17447, 8041, 1, 17447, 8040, 1, 17447, 8042, 2, 17447, 8040, 3, 7719}, local0)
     end
     if local4 then
-        _SwitchTalkTo(1, -286)
+        switch_talk_to(286, 1)
         if not get_flag(810) then
             say(itemref, "The old mage seems on the verge of saying something, stops then says, \"Were quarter's not so confined here, I'd show thee that my blindness in no way hampers my abilities.\" His affliction seems to be a touchy subject with the mage.*")
         else

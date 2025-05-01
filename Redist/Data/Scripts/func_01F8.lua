@@ -33,7 +33,7 @@ function func_01F8(eventid, itemref)
             -- Note: Original has 'db 2c' here, ignored
         end
 
-        _SwitchTalkTo(0, -293)
+        switch_talk_to(293, 0)
 
         if not get_flag(0x0311) then
             say("\"Well met, seeker. I am Dracothraxus. Thy test, and I fear, thy defeat lies before thee. For thou shouldst know that I am made immortal by the Keeper of Courage. 'Twould take a truly powerful artifact to destroy me... one that does not exist.\" The great dragon paws the earth in expectation of your imminent battle.")
@@ -57,7 +57,7 @@ function func_01F8(eventid, itemref)
 
     -- Eventid == 2: Post-combat reward and courage test
     if eventid == 2 then
-        _SwitchTalkTo(0, -293)
+        switch_talk_to(293, 0)
 
         if not get_flag(0x02EF) then
             say("The dragon lets out a searing sigh, \"Released at last. I go now to seek my reward, for this has been a test of my courage as well as thine. Thy reward lies beyond the door to the north. Enter the blue gate and the Amulet of Courage will be thine.\"*")

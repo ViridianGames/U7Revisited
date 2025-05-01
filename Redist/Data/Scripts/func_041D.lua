@@ -4,7 +4,7 @@ function func_041D(itemref)
     local local0, local1, local2, local3, local4
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -29)
+        switch_talk_to(29, 0)
         _AddAnswer({"bye", "job", "name"})
         if not get_flag(158) then
             say("This actor has much stage presence and a booming voice.")
@@ -28,18 +28,18 @@ function func_041D(itemref)
                 say("Stuart's feathers are obviously ruffled. \"Yes. I have been cast as second banana yet again! I am much more suited to play the Avatar, but did Raymundo cast me? Noooo!\"")
                 local0 = call_08F7H(-1)
                 if local0 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"But thou art nothing like me!\"*")
-                    _SwitchTalkTo(0, -29)
+                    switch_talk_to(29, 0)
                     say("\"And who art thou, pray tell?\"*")
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"Why, I am the -real- Iolo!\"*")
-                    _SwitchTalkTo(0, -29)
+                    switch_talk_to(29, 0)
                     say("\"Of course thou art. And I am really Lord British. Thou must take me for an ass to think I would believe that.\"*")
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("Your friend whispers to you. \"These actor types. A touchy bunch, eh?\"*")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -29)
+                    switch_talk_to(29, 0)
                 end
                 _AddAnswer({"Avatar", "Raymundo"})
                 _RemoveAnswer("Iolo")

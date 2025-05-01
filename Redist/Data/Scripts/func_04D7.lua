@@ -10,7 +10,7 @@ function func_04D7(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -215)
+    switch_talk_to(215, 0)
     _AddAnswer({"bye", "job", "name"})
 
     if not get_flag(0x0294) then

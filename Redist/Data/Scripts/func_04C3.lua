@@ -9,7 +9,7 @@ function func_04C3(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -195)
+    switch_talk_to(195, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = call_08F7H(-197)
@@ -85,10 +85,10 @@ function func_04C3(eventid, itemref)
         elseif answer == "Sir Horffe" then
             say("\"He is the captain of the guards. I would have no other for his position. He is the most honorable warrior I have ever met.\"")
             if local2 then
-                _SwitchTalkTo(0, -197)
+                switch_talk_to(197, 0)
                 say("\"To thank you, Sir!\"")
                 _HideNPC(-197)
-                _SwitchTalkTo(0, -195)
+                switch_talk_to(195, 0)
             end
             if not local3 then
                 say("\"He seems to have taken a dislike for The Fellowship, however. I have noticed he is reluctant to mention this around Sir Richter.\" He shrugs.")
@@ -141,10 +141,10 @@ function func_04C3(eventid, itemref)
                 say("\"Now I must apologize to Sir Horffe!\"")
                 if local2 then
                     say("*")
-                    _SwitchTalkTo(0, -197)
+                    switch_talk_to(197, 0)
                     say("\"To have no need! To be happy the true vandal is discovered.\"*")
                     _HideNPC(-197)
-                    _SwitchTalkTo(0, -195)
+                    switch_talk_to(195, 0)
                 end
             end
             set_flag(0x0261, true)

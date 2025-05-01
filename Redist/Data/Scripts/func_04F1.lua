@@ -7,7 +7,7 @@ function func_04F1(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -241)
+    switch_talk_to(241, 0)
     local0 = false
     local1 = call_08F7H(-10)
     local2 = call_08F7H(-1)
@@ -66,10 +66,10 @@ function func_04F1(eventid, itemref)
             else
                 say("\"Cave good to us. We stay away from bees. They no hurt us. We no hurt them. We take honey when they sleep. We eat the mice in cave. Cook them up on campfire. Very good!\"*")
                 if local2 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"I may puke.\"*")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -241)
+                    switch_talk_to(241, 0)
                 end
             end
             _RemoveAnswer("cave")
@@ -87,15 +87,15 @@ function func_04F1(eventid, itemref)
                         return
                     else
                         say("He points at Tseramed. \"Him bee hunter! Go away!\" The man spits at you and turns away.*")
-                        _SwitchTalkTo(0, -10)
+                        switch_talk_to(10, 0)
                         say("\"This is an act, I tell thee! These people are not savages! They are Britannians!\"*")
                         _HideNPC(-10)
                         if local2 then
-                            _SwitchTalkTo(0, -1)
+                            switch_talk_to(1, 0)
                             say("\"He seems quite savage to me!\"*")
                             _HideNPC(-1)
                         end
-                        _SwitchTalkTo(0, -241)
+                        switch_talk_to(241, 0)
                         set_flag(0x02D3, true)
                         return
                     end
@@ -123,10 +123,10 @@ function func_04F1(eventid, itemref)
             else
                 say("\"Mama and me live in cave since babies.\"")
                 if local2 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"Avatar! They must have been abandoned in here! Why, they must be brother and sister!\"")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -241)
+                    switch_talk_to(241, 0)
                 end
             end
             _RemoveAnswer("Mama and thee")

@@ -32,10 +32,10 @@ function func_0862(eventid, itemref)
         if local5 == "Yes, I do" or local5 == "Canst thou help?" then
             say(itemref, "\"Hmmm. I might could give thee a clue.\"")
             if not local0 then
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say(itemref, "\"I would like to give Chuckles a black eye!\"")
                 _HideNPC(-1)
-                _SwitchTalkTo(0, -25)
+                switch_talk_to(25, 0)
             end
             local3 = true
             call_0009H()

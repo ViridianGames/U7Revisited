@@ -2,7 +2,7 @@
 function func_0892(eventid, itemref)
     local local0, local1
 
-    _SwitchTalkTo(0, -288)
+    switch_talk_to(288, 0)
     say(itemref, "\"Adjhar appears to have resumed the stance of a more traditional golem guardian -- staunch and unmoving. However, it is impossible to miss the glimmer of intelligence in his eyes.\"")
     _AddAnswer({"bye", "job", "name"})
     local0 = false

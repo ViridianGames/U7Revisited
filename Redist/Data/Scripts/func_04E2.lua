@@ -25,7 +25,7 @@ function func_04E2(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -226)
+    switch_talk_to(226, 0)
     local0 = call_0908H()
     local1 = callis_0067()
     local2 = "Avatar"
@@ -96,16 +96,16 @@ function func_04E2(eventid, itemref)
             say("\"He has abandoned all of his pirate ways! He is a bloody saint now, and whenever he sees me he tries to convince me to join The Fellowship. I avoid him at all costs now. I cannot stand to see him this way. It burns my blood!\"~~Then, in a moment of weakness, the tough pirate says in a small voice, \"I miss him, too. We were best mates.\" You could swear there are tears in his eyes.*")
             local7 = call_08F7H(-2)
             if not local7 then
-                _SwitchTalkTo(0, -2)
+                switch_talk_to(2, 0)
                 say("Spark whispers, \"Oh, come on, be a man!\"*")
                 _HideNPC(-2)
                 local8 = call_08F7H(-4)
                 if not local8 then
-                    _SwitchTalkTo(0, -4)
+                    switch_talk_to(4, 0)
                     say("Dupre turns away to suppress a smirk.*")
                     _HideNPC(-4)
                 end
-                _SwitchTalkTo(0, -226)
+                switch_talk_to(226, 0)
             end
             say("You can see that the pirate is upset, so you decide to leave him alone.~~\"Yeah, go away. That's right! I never can keep any friends!")
             if not get_flag(0x02A4) then

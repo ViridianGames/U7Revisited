@@ -6,7 +6,7 @@ function func_0894(eventid, itemref)
         call_001DH(11, eventid)
     end
     if eventid == 1 then
-        _SwitchTalkTo(0, -289)
+        switch_talk_to(289, 0)
         if get_flag(804) and not get_flag(796) then
             say(itemref, "\"I -must- return his life to him. He -will- have a new heart!\" The determination is quite evident by his forceful glare and stance.")
         end
@@ -18,7 +18,7 @@ function func_0894(eventid, itemref)
             say(itemref, "\"The stone statue stands with a lowered head. Despite its granite features, a downcast look is apparent on its face. Surprisingly, it turns to speak with you.\"")
             say(itemref, "@Why, by the stars, I believe it is a creature!@")
             say(itemref, "\"Slowly, as if with great effort, it raises it head.\"")
-            _SwitchTalkTo(0, -289)
+            switch_talk_to(289, 0)
             if check_condition(40, 414, -356) then
                 local1 = _GetItemFrame(itemref)
                 if local1 == 4 or local1 == 5 then
@@ -37,7 +37,7 @@ function func_0894(eventid, itemref)
         local3 = false
         while true do
             local answer = get_answer()
-            _SwitchTalkTo(0, -289)
+            switch_talk_to(289, 0)
             if answer == "name" then
                 _RemoveAnswer("name")
                 if not get_flag(797) then

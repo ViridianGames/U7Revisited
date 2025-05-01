@@ -11,7 +11,7 @@ function func_04B3(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -179)
+    switch_talk_to(179, 0)
     local0 = call_0909H()
     local1 = callis_003B()
     local2 = callis_001B(-179)

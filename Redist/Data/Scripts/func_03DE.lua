@@ -5,7 +5,7 @@ function func_03DE(eventid, itemref)
 
     if eventid == 1 then
         _IsPlayerFemale()
-        _SwitchTalkTo(0, -356)
+        switch_talk_to(356, 0)
         if not get_flag(0x0301) then
             set_flag(0x0301, true)
             say("You feel as if your mind is being probed, delicately at first, then with more insistance. Images of long past memories flit before your eyes and old emotions resurface. At one point, the images pause as you remember the words Love, Sol, Moons, and Death then a strange sense of deja vu comes over you as the vision comes up to the current time. The images cease and a vast wave of power overwhelms you. A wall of darkness falls...")

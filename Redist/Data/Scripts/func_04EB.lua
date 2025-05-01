@@ -26,7 +26,7 @@ function func_04EB(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -235)
+    switch_talk_to(235, 0)
     say("You see a short, stocky actor in his mid- to late forties. He cannot speak to you now because he is concentrating.ConcurrentModificationException his lines for the Passion Play. Perhaps you should speak to Paul.*")
 
     return

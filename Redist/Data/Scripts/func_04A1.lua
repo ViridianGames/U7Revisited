@@ -10,7 +10,7 @@ function func_04A1(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -161)
+    switch_talk_to(161, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = "Avatar"
@@ -39,16 +39,16 @@ function func_04A1(eventid, itemref)
             elseif local4 == local2 then
                 say("\"Of course, of course,\" he smiles. \"I should have realized that thou wert the Avatar. Why, it must have been, oh, at least, two weeks since thy last visit!\" He winks.")
                 if call_08F7H(-3) then
-                    _SwitchTalkTo(0, -3)
+                    switch_talk_to(3, 0)
                     say("\"Thou art a fool! Cannot thy feeble eyes see this is the Avatar?\"")
                     _HideNPC(-3)
-                    _SwitchTalkTo(0, -161)
+                    switch_talk_to(161, 0)
                     say("\"Yes, yes! I can see that,\" he laughs. \"Then I must be Iolo!\"")
                     local6 = call_08F7H(-1)
-                    _SwitchTalkTo(0, -3)
+                    switch_talk_to(3, 0)
                     say(local6 and "\"No, rogue! He is Iolo!\" He nods to Iolo. \"Thou... art a blind idiot!\"" or "\"No, rogue, thou art a blind idiot!\"")
                     _HideNPC(-3)
-                    _SwitchTalkTo(0, -161)
+                    switch_talk_to(161, 0)
                 end
                 set_flag(0x01F3, true)
             end

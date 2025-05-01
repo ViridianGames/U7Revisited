@@ -10,7 +10,7 @@ function func_04A3(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -163)
+    switch_talk_to(163, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = call_08F7H(-4)
@@ -30,10 +30,10 @@ function func_04A3(eventid, itemref)
     _AddAnswer({"bye", "Fellowship", "job", "name"})
     if local2 then
         say("\"Why, Hello, Sir Dupre. Things fare well I trust?\"")
-        _SwitchTalkTo(0, -4)
+        switch_talk_to(4, 0)
         say("\"Greetings, fair Phearcy. Yes, thank thee, things are well.\"")
         _HideNPC(-4)
-        _SwitchTalkTo(0, -163)
+        switch_talk_to(163, 0)
     end
 
     if not get_flag(0x0205) then

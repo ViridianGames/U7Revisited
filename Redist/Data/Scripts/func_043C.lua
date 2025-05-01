@@ -9,7 +9,7 @@ function func_043C(eventid)
     local npc_id = -50 -- Mack's NPC ID
 
     if eventid == 1 then
-        U7.SwitchTalkTo(0, npc_id)
+        _SwitchTalkTo(0, npc_id)
         local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
         local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
         local var_0002 = U7.callExtern(0x092E, 2) -- Unknown interaction

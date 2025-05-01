@@ -10,7 +10,7 @@ function func_04BF(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -191)
+    switch_talk_to(191, 0)
     local0 = callis_IsPlayerFemale()
     local1 = call_0908H()
     _AddAnswer({"bye", "job", "name"})
@@ -82,10 +82,10 @@ function func_04BF(eventid, itemref)
             say("\"'Tis the island thou dost stand upon!\" He turns to the invisible person on his left and whispers, \"Thou art correct -- this person really is a fool!\" ~~Martingo turns back to you. \"As I said, I am the Sultan here. I am the master of all of these subjects.\" He gestures around the room.")
             local5 = call_08F7H(-1)
             if local5 then
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")
                 call_092FH(-1)
-                _SwitchTalkTo(0, -191)
+                switch_talk_to(191, 0)
             end
             _RemoveAnswer("Spektran")
         elseif answer == "Lucinda" then

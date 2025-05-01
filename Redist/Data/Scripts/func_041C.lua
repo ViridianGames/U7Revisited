@@ -6,9 +6,9 @@ function func_041C(itemref)
     if eventid() == 1 then
         local0 = callis_005A()
         if local0 then
-            _SwitchTalkTo(1, -28)
+            switch_talk_to(28, 1)
         else
-            _SwitchTalkTo(0, -28)
+            switch_talk_to(28, 0)
         end
         _AddAnswer({"bye", "job", "name"})
         if not get_flag(157) then

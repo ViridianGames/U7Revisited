@@ -10,7 +10,7 @@ function func_04BD(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -189)
+    switch_talk_to(189, 0)
     local0 = false
     local1 = false
     local2 = call_08F7H(-4)
@@ -18,25 +18,25 @@ function func_04BD(eventid, itemref)
 
     if local2 then
         say("\"To greet you, human,\" the gargoyle says to Dupre. \"To ask how well the study is progressing?\"")
-        _SwitchTalkTo(0, -4)
+        switch_talk_to(4, 0)
         say("\"Why 'tis progressing nicely, friend Forbrak.\"")
         local3 = call_08F7H(-3)
         if local3 and not get_flag(0x024E) then
             call_092FH(-189)
-            _SwitchTalkTo(0, -3)
+            switch_talk_to(3, 0)
             say("\"-What- study?\"")
-            _SwitchTalkTo(0, -4)
+            switch_talk_to(4, 0)
             say("\"Why, er, surely thou hast heard of the famous guides compiled for Brommer!\"")
-            _SwitchTalkTo(0, -3)
+            switch_talk_to(3, 0)
             say("\"Aye, I have. But I'll be tarred if there is one detailing various drinking establishments!\"")
-            _SwitchTalkTo(0, -4)
+            switch_talk_to(4, 0)
             say("\"Well, yes, er, 'tis, ah, something new. Now, how about a drink!\"")
-            _SwitchTalkTo(0, -3)
+            switch_talk_to(3, 0)
             say("\"New? 'Tis about as new as my backside...,\" mutters Shamino.")
             call_092FH(-3)
         end
         call_092FH(-4)
-        _SwitchTalkTo(0, -189)
+        switch_talk_to(189, 0)
     end
 
     if not get_flag(0x024E) then

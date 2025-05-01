@@ -14,7 +14,7 @@ function func_01F7(eventid, itemref)
             return
         end
 
-        _SwitchTalkTo(0, -44)
+        switch_talk_to(44, 0)
         say("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
 
         if call_090AH() then

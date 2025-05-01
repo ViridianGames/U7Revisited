@@ -10,7 +10,7 @@ function func_0444(eventid)
     local npc_id = -58 -- Denby's NPC ID
 
     if eventid == 1 then
-        U7.SwitchTalkTo(0, npc_id)
+        _SwitchTalkTo(0, npc_id)
         local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
         local var_0001 = U7.callExtern(0x08A7, 1) -- Training interaction
         local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction

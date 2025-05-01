@@ -6,7 +6,7 @@ function func_040E(itemref)
     if eventid() == 0 then
         abort()
     end
-    _SwitchTalkTo(0, -14)
+    switch_talk_to(14, 0)
     local0 = callis_003B()
     if local0 == 7 then
         local1 = call_08FCH(-16, -14)

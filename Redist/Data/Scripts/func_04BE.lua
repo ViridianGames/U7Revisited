@@ -10,7 +10,7 @@ function func_04BE(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -190)
+    switch_talk_to(190, 0)
     local0 = false
     _AddAnswer({"bye", "job", "name"})
 

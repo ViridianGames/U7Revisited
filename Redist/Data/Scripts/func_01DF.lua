@@ -12,7 +12,7 @@ function func_01DF(eventid, itemref)
 
     -- Check for honey (item 772)
     local0 = call_0931H(-359, -359, 772, 1, -357)
-    _SwitchTalkTo(0, -283)
+    switch_talk_to(283, 0)
 
     if not get_flag(0x0154) then
         if not local0 then

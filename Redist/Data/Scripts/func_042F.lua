@@ -14,7 +14,7 @@
       local iolo_id = -37 -- Iolo's NPC ID
 
       if eventid == 1 then
-          U7.SwitchTalkTo(0, npc_id)
+          _SwitchTalkTo(0, npc_id)
           local var_0000 = U7.callExtern(0x08F7, 0) -- External function call
           local var_0001 = U7.callExtern(0x08A0, 1) -- Buy interaction
           local var_0002 = U7.callExtern(0x0911, 2) -- Unknown interaction
@@ -53,12 +53,12 @@
                       local result = U7.callExtern(0x08F7, dupre_id)
                       if result == 0 then
                           U7.say("\"Why, Sir Dupre! How good to see thee again!\"")
-                          U7.SwitchTalkTo(0, dupre_id)
+                          _SwitchTalkTo(0, dupre_id)
                           U7.say("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
-                          U7.SwitchTalkTo(0, npc_id)
+                          _SwitchTalkTo(0, npc_id)
                           U7.say("\"Any time, milord! Any time!\"")
                           U7.HideNPC(dupre_id)
-                          U7.SwitchTalkTo(0, npc_id)
+                          _SwitchTalkTo(0, npc_id)
                       end
                       table.insert(answers, "buy")
                       table.insert(answers, "drink")
@@ -94,10 +94,10 @@
                   U7.setFlag(0x0085, true)
                   local iolo_result = U7.callExtern(0x08F7, iolo_id)
                   if iolo_result == 0 then
-                      U7.SwitchTalkTo(0, iolo_id)
+                      _SwitchTalkTo(0, iolo_id)
                       U7.say("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
                       U7.HideNPC(iolo_id)
-                      U7.SwitchTalkTo(0, npc_id)
+                      _SwitchTalkTo(0, npc_id)
                   else
                       U7.say("You point out to Jeanette that Charles is a servant.")
                   end

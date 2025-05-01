@@ -9,7 +9,7 @@ function func_04B8(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -184)
+    switch_talk_to(184, 0)
     local0 = callis_003B()
     local1 = callis_001B(-184)
     if local0 == 7 then

@@ -9,7 +9,7 @@ function func_04FF(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -255)
+    switch_talk_to(255, 0)
     local0 = call_08F7H(-241) -- Murray
     local1 = call_08F7H(-2)   -- Spark
     local2 = call_08F7H(-1)   -- Iolo
@@ -21,24 +21,24 @@ function func_04FF(eventid, itemref)
     if not get_flag(0x02C0) then
         say("You see a lovely naked woman. She is not in the least concerned that she is wearing no clothes.*")
         if local1 and local2 then
-            _SwitchTalkTo(0, -2)
+            switch_talk_to(2, 0)
             say("Spark's eyes widen and his jaw drops.*")
             _HideNPC(-2)
-            _SwitchTalkTo(0, -1)
+            switch_talk_to(1, 0)
             say("\"Close thy mouth, boy. An insect may fly in. And put thine eyes back in thine head. They shall look strange dangling out of their sockets.\"*")
             _HideNPC(-1)
-            _SwitchTalkTo(0, -255)
+            switch_talk_to(255, 0)
         end
         say("\"Me Mama!\" the woman exclaims proudly.")
         if not get_flag(0x02D4) and local0 then
-            _SwitchTalkTo(0, -241)
+            switch_talk_to(241, 0)
             say("\"Forget it, Myrtle. The jig is up. They know all about us.\"*")
-            _SwitchTalkTo(0, -255)
+            switch_talk_to(255, 0)
             say("\"Murray! Didst thou give us away? How couldst thou do it? This just isn't going to be much fun anymore knowing that someone is aware of the truth!\"*")
-            _SwitchTalkTo(0, -241)
+            switch_talk_to(241, 0)
             say("\"Sorry, dear.\"*")
             _HideNPC(-241)
-            _SwitchTalkTo(0, -255)
+            switch_talk_to(255, 0)
             local4 = true
         elseif local0 then
             say("You tell the woman what Papa said about their past lives.~~\"Well, blast it! Why did he tell our secret? I will never forgive him! What a knave!\"")
@@ -73,10 +73,10 @@ function func_04FF(eventid, itemref)
             if not local4 then
                 say("Mama explains. \"Eat. Sleep. Love.\"*")
                 if local3 then
-                    _SwitchTalkTo(0, -4)
+                    switch_talk_to(4, 0)
                     say("\"What else is there?\"*")
                     _HideNPC(-4)
-                    _SwitchTalkTo(0, -255)
+                    switch_talk_to(255, 0)
                 end
             else
                 say("\"We do our best to eat, sleep, and love each other down here isolated from the rest of society.\"")

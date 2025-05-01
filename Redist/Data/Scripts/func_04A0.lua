@@ -10,7 +10,7 @@ function func_04A0(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -160)
+    switch_talk_to(160, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = "the Avatar"
@@ -59,10 +59,10 @@ function func_04A0(eventid, itemref)
         elseif answer == "Jillian" or answer == "wife" then
             say("\"My wife? Jillian? She's the scholar. She is a very good one, too. Not that I could not have done well. I could have. Better, in fact. But it is not worth arguing about now. She has her occupation, even if I do not have one. I should have a job, though. Dost thou not agree, ", local1, "? This is not what a man ought to be doing. Staying at home raising the children, like this. 'Tis a disgrace!\"")
             if local5 then
-                _SwitchTalkTo(0, -159)
+                switch_talk_to(159, 0)
                 say("\"Now Effrem! Thou knowest perfectly well what we agreed when little Mikhail was born. Thou shouldst be ashamed, talking such nonsense.\"")
                 _HideNPC(-159)
-                _SwitchTalkTo(0, -160)
+                switch_talk_to(160, 0)
                 say("He raises his shoulders, making him appear quite sheepish.")
             end
             _RemoveAnswer({"Jillian", "wife"})

@@ -10,7 +10,7 @@ function func_04DB(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -219)
+    switch_talk_to(219, 0)
     _AddAnswer({"bye", "job", "name"})
 
     if not get_flag(0x0298) then

@@ -26,7 +26,7 @@ function func_04EA(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -234)
+    switch_talk_to(234, 0)
     say("You see a middle-aged actress with a very serious expression. She is unable to speak with you because she is concentrating on her part in the Passion Play. Perhaps you should speak to Paul.*")
 
     return

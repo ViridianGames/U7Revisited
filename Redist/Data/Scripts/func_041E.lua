@@ -4,7 +4,7 @@ function func_041E(itemref)
     local local0, local1, local2, local3, local4
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -30)
+        switch_talk_to(30, 0)
         local0 = callis_003B()
         _AddAnswer({"bye", "job", "name"})
         local1 = call_08F7H(-3)
@@ -52,10 +52,10 @@ function func_041E(itemref)
                 local1 = call_08F7H(-3)
                 if local1 then
                     say("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.*")
-                    _SwitchTalkTo(0, -3)
+                    switch_talk_to(3, 0)
                     say("\"Not in front of the Avatar, Poo!\"*")
                     _HideNPC(-3)
-                    _SwitchTalkTo(0, -30)
+                    switch_talk_to(30, 0)
                     say("\"To blazes with the Avatar!\" She kisses him again. \"The Avatar is the last one who will convince thee to settle down.\"")
                 else
                     say("\"Dost thou know my beau? He is probably drowning his sorrows at the Blue Boar. The lazy knave! I will not let him go about adventuring. It is time for him to settle down. Thou canst tell him I said so!\"")

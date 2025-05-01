@@ -10,7 +10,7 @@ function func_04C7(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -199)
+    switch_talk_to(199, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = call_08F7H(-4)
@@ -28,10 +28,10 @@ function func_04C7(eventid, itemref)
 
     if local2 then
         say("\"Greetings to thee, Sir Dupre. Art thou back again for thy study of wines for Brommer?\"")
-        _SwitchTalkTo(0, -4)
+        switch_talk_to(4, 0)
         say("\"Why, ah, yes, my good friend, Denton. I am, uh, still conducting that study.\" He turns to you and shrugs, grinning sheepishly.")
         _HideNPC(-4)
-        _SwitchTalkTo(0, -199)
+        switch_talk_to(199, 0)
     end
 
     if not get_flag(0x0270) then
@@ -113,16 +113,16 @@ function func_04C7(eventid, itemref)
                 local4 = call_08F7H(-1)
                 local5 = call_08F7H(-2)
                 if local5 then
-                    _SwitchTalkTo(0, -2)
+                    switch_talk_to(2, 0)
                     say("\"To get to the other side! Oh, that joke is new,\" he says sarcastically.\"*")
                     _HideNPC(-2)
                 end
                 if local4 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("Iolo whispers in your ear.~~\"", local0, ", we have heard that one before. 'Tis best we leave him before he indulges in another joke.\"")
                     _HideNPC(-1)
                 end
-                _SwitchTalkTo(0, -199)
+                switch_talk_to(199, 0)
                 _SaveAnswers()
                 _AddAnswer({"I don't know", "to get to the other side"})
             else
@@ -149,10 +149,10 @@ function func_04C7(eventid, itemref)
             say("\"The Fellowship is a twenty-year-old organization that holds many festivals, parades, and celebrations. In addition, they maintain a shelter in the town of Paws. They have an underlying philosophy called the Triad of Inner Strength. This triad is broken into the three principles known as `strive for unity,' `trust thy brother,' and `worthiness precedes reward.'I will now explain the meaning of each principple.\"")
             local5 = call_08F7H(-2)
             if local5 then
-                _SwitchTalkTo(0, -2)
+                switch_talk_to(2, 0)
                 say("\"This Denton fellow is really long-winded.\"*")
                 _HideNPC(-2)
-                _SwitchTalkTo(0, -199)
+                switch_talk_to(199, 0)
             end
             say("\"Strive for unity seems to mean that The Fellowship wants others to work together for the weal of society. Trust thy brother implies that each person should not question the actions of others. Worthiness precedes reward indicates that The Fellowship's attitude towards reward is that one must do well to be rewarded.\"")
             local7 = callis_0067()

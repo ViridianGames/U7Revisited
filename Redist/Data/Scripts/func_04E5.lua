@@ -26,7 +26,7 @@ function func_04E5(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -229)
+    switch_talk_to(229, 0)
     local0 = callis_003B()
     local1 = callis_001C(callis_001B(-229))
     local2 = call_0931H(1, -359, 981, 1, -357)
@@ -42,16 +42,16 @@ function func_04E5(eventid, itemref)
             say("\"Hello, hello my friend! Thou dost look like thou needest to spend money!\"*")
             local3 = call_08F7H(-3)
             if not local3 then
-                _SwitchTalkTo(0, -3)
+                switch_talk_to(3, 0)
                 say("\"This place looks quite well-off.\"*")
                 _HideNPC(-3)
                 local4 = call_08F7H(-1)
                 if not local4 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"The entire island is very opulent. It is not the same island we once knew.\"*")
                     _HideNPC(-1)
                 end
-                _SwitchTalkTo(0, -229)
+                switch_talk_to(229, 0)
             end
         else
             say("\"Hello! How art thou, my friend?\"")

@@ -12,7 +12,7 @@ function func_040A(eventid, itemref)
     local local40, local41, local42
 
     if eventid == 1 then
-        _SwitchTalkTo(0, -10)
+        switch_talk_to(10, 0)
         local0 = call_0908H()
         local1 = call_0909H()
         local2 = callis_0023()

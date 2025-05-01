@@ -29,7 +29,7 @@ function func_04CF(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -207)
+    switch_talk_to(207, 0)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = "the Avatar"
@@ -41,10 +41,10 @@ function func_04CF(eventid, itemref)
 
     if local3 then
         say("\"Ah, me good friend, Dupre. What kinna do fer ye this fine day?\"")
-        _SwitchTalkTo(0, -4)
+        switch_talk_to(4, 0)
         say("\"Ah, master Yongi, always ready to offer a tankard of thy finest.\"")
         _HideNPC(-4)
-        _SwitchTalkTo(0, -207)
+        switch_talk_to(207, 0)
     end
 
     if not get_flag(0x028C) then

@@ -9,7 +9,7 @@ function func_04F7(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -247)
+    switch_talk_to(247, 0)
     if not get_flag(0x01B2) then
         say("The non-corporeal man stares past you, seemingly past the confines of the building, and, perhaps, of the world. Then, he suddenly shudders, as if he is filled with pain.*")
         return

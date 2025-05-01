@@ -10,7 +10,7 @@ function func_04FA(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -250)
+    switch_talk_to(250, 0)
     local0 = call_0908H()
     local1 = false
     local2 = call_08F7H(-156)

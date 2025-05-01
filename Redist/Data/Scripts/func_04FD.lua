@@ -10,7 +10,7 @@ function func_04FD(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -253)
+    switch_talk_to(253, 0)
     local0 = call_0909H()
     local1 = call_08F7H(-252)
     local2 = call_08F7H(-244)
@@ -38,19 +38,19 @@ function func_04FD(eventid, itemref)
             say("\"Aye, ", local0, ", we are to be wed as soon I return to her silky arms.\"")
             if local2 then
                 say("*")
-                _SwitchTalkTo(0, -244)
+                switch_talk_to(244, 0)
                 say("\"Oh, please!\" He rolls his eyes.*")
                 _HideNPC(-244)
-                _SwitchTalkTo(0, -253)
+                switch_talk_to(253, 0)
             end
             _RemoveAnswer("betrothed")
         elseif answer == "searching" then
             say("\"Well, ", local0, ", 'tis a bit of a personal matter.\"")
             if local2 then
                 say("*")
-                _SwitchTalkTo(0, -244)
+                switch_talk_to(244, 0)
                 say("\"What he is searching for, ", local0, ", is his virginity!\"*")
-                _SwitchTalkTo(0, -253)
+                switch_talk_to(253, 0)
                 say("\"That is not true!\" He blushes.~~\"I am looking for a way to -prove-... my virginity!\"*")
                 _HideNPC(-244)
                 _AddAnswer("proof")

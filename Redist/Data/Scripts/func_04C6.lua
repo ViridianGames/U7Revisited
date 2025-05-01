@@ -10,7 +10,7 @@ function func_04C6(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -198)
+    switch_talk_to(198, 0)
     local0 = call_0909H()
     local1 = call_0908H()
     local2 = ""
@@ -34,21 +34,21 @@ function func_04C6(eventid, itemref)
             say("He laughs. \"Yes, but of course thou art.\"")
             set_flag(0x025B, true)
             if local3 then
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("\"'Tis true, Sir Jordan. He is the Avatar.\"*")
                 _HideNPC(-1)
-                _SwitchTalkTo(0, -198)
+                switch_talk_to(198, 0)
                 say("Jordan smiles. \"I see. And who wouldst thou be? Shamino?\"*")
                 if not local4 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"No.\" He points to Shamino. \"He is. I am Iolo!\"*")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -198)
+                    switch_talk_to(198, 0)
                 else
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"No. I am Iolo, not Shamino!\"*")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -198)
+                    switch_talk_to(198, 0)
                 end
                 say("\"Of course!\" He says, patronizingly. \"How could I not recognize the great Iolo.\"")
             end
@@ -91,13 +91,13 @@ function func_04C6(eventid, itemref)
             say("\"The great archer himself, Iolo, started that branch more than two hundred years ago.\"")
             if local3 then
                 say("*")
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("\"I, er, thank thee for thy compliment.\"*")
-                _SwitchTalkTo(0, -198)
+                switch_talk_to(198, 0)
                 say("\"'Twould mean more wert thou Iolo!\"*")
-                _SwitchTalkTo(0, -1)
+                switch_talk_to(1, 0)
                 say("\"Listen, here, rogue, I truly -am-...\"*")
-                _SwitchTalkTo(0, -198)
+                switch_talk_to(198, 0)
                 say("\"Yes, yes, I know. Thou really -art- Iolo... And I am Lord British!\"*")
                 _HideNPC(-1)
             end

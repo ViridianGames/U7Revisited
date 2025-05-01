@@ -10,7 +10,7 @@ function func_04CC(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -203)
+    switch_talk_to(203, 0)
     local0 = call_0909H()
     local1 = call_0908H()
     local2 = "the Avatar"

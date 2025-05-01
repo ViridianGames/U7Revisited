@@ -7,7 +7,7 @@ function func_01FA(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -26)
+    switch_talk_to(26, 0)
     say("Batlin watches Hook's death with icy resignation. Time seems to slow as he turns to you. \"This battle is not done, Avatar. Dost thou imagine thyself an immortal? The Guardian is far more. Return to your precious Earth and rest.~Sleep, that he may visit your dreams with countless visions of death in the belly of the Great Sea Serpent.\"")
     say("\"As for me, I shall begone! Thou shalt never find me! Farewell, Avatar!\"")
     _HideNPC(-26)

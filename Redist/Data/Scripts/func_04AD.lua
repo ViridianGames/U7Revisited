@@ -26,7 +26,7 @@ function func_04AD(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -173)
+    switch_talk_to(173, 0)
     local0 = call_0909H()
     local1 = callis_003B()
     local2 = callis_001B(-173)

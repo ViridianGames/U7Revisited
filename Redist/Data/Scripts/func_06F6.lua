@@ -15,12 +15,12 @@ function func_06F6(eventid, itemref)
             end
         end
         if not local0 then
-            _SwitchTalkTo(0, -290)
+            switch_talk_to(290, 0)
             say("\"Yes, Master. How may I serve thee...\" The wavering visage in the mirror hesitates for a moment, \"Thou art not my master.\"")
-            _SwitchTalkTo(1, -286)
+            switch_talk_to(286, 1)
             local5 = get_flag(0x0310) and "the mage" or "Erethian"
             say("Suprised, ", local5, " looks around and says, \"I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!\" The old man waves his hand, negligently.")
-            _SwitchTalkTo(0, -290)
+            switch_talk_to(290, 0)
             say("Through a tightly clenched smile, the figure replies, \"Very well...\" And after a significant pause, \"Master.\"*")
             call_0843H()
         else
@@ -46,7 +46,7 @@ function func_06F6(eventid, itemref)
             end
         end
     else
-        _SwitchTalkTo(0, -292)
+        switch_talk_to(292, 0)
         if not get_flag(0x0343) then
             local10 = callis_0001({1, 17447, 8040, 1, 17447, 8041, 1, 17447, 8042, 4, 7769}, callis_001B(-356))
             local15 = callis_0001({1782, 8021, 7, 7719}, itemref)
@@ -136,7 +136,7 @@ function func_06F6(eventid, itemref)
                 local11 = _ItemSelectModal()
                 local17 = call_GetItemType(local11)
                 local18 = callis_0018(local11)
-                _SwitchTalkTo(0, -292)
+                switch_talk_to(292, 0)
                 if not callis_0031(local11) then
                     if local17 == 721 or local17 == 989 then
                         say("The daemon speaks with a sanctimonious tone. \"I could not in honor take the life of my most wondrous master.\"")
@@ -144,16 +144,16 @@ function func_06F6(eventid, itemref)
                         if callis_0019(local11, callis_001B(-356), itemref) <= 5 then
                             say("\"Yes! I have long sought the end of Lord British, my traitorous master.\"")
                             local19 = call_0908H()
-                            _SwitchTalkTo(0, -23)
+                            switch_talk_to(23, 0)
                             say("\"", local19, ", for what reason art thou brandishing that black sword in my presence?\"")
-                            _SwitchTalkTo(0, -292)
+                            switch_talk_to(292, 0)
                             say("The daemon responds, using your mouth. \"This blade is thy doom,...\" You spit the words, \"Lord British!\"")
                             _HideNPC(-292)
-                            _SwitchTalkTo(0, -356)
+                            switch_talk_to(356, 0)
                             say("Lord British looks truly taken aback, his eyes narrow calculatingly. \"What foul treachery is this?\"")
-                            _SwitchTalkTo(0, -23)
+                            switch_talk_to(23, 0)
                             say("You find yourself unable to respond, and your muscles are clenching as if to lash out with the wicked blade in your hand.")
-                            _SwitchTalkTo(0, -23)
+                            switch_talk_to(23, 0)
                             say("\"Perhaps when thou art sitting in a dungeon, thy tongue will loosen.\"")
                             say("\"Guards!\"*")
                             local14 = true
@@ -168,10 +168,10 @@ function func_06F6(eventid, itemref)
                         if callis_0019(local11, callis_001B(-356), itemref) <= 5 then
                             if not call_GetContainerItems(4, 241, 797, local11) then
                                 say("\"Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.\"")
-                                _SwitchTalkTo(0, -293)
+                                switch_talk_to(293, 0)
                                 say("The dragon responds with great resignation. \"My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.\"")
                                 _HideNPC(-293)
-                                _SwitchTalkTo(0, -292)
+                                switch_talk_to(292, 0)
                                 say("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*")
                                 local15 = true
                             else
@@ -232,7 +232,7 @@ function func_06F6(eventid, itemref)
         local11 = _ItemSelectModal()
         local17 = call_GetItemType(local11)
         local18 = callis_0018(local11)
-        _SwitchTalkTo(0, -292)
+        switch_talk_to(292, 0)
         if not callis_0031(local11) then
             if local17 == 721 or local17 == 989 then
                 say("The daemon speaks with a sanctimonious tone. \"I could not in honor take the life of my most wondrous master.\"")
@@ -240,16 +240,16 @@ function func_06F6(eventid, itemref)
                 if callis_0019(local11, callis_001B(-356), itemref) <= 5 then
                     say("\"Yes! I have long sought the end of Lord British, my traitorous master.\"")
                     local19 = call_0908H()
-                    _SwitchTalkTo(0, -23)
+                    switch_talk_to(23, 0)
                     say("\"", local19, ", for what reason art thou brandishing that black sword in my presence?\"")
-                    _SwitchTalkTo(0, -292)
+                    switch_talk_to(292, 0)
                     say("The daemon responds, using your mouth. \"This blade is thy doom,...\" You spit the words, \"Lord British!\"")
                     _HideNPC(-292)
-                    _SwitchTalkTo(0, -356)
+                    switch_talk_to(356, 0)
                     say("Lord British looks truly taken aback, his eyes narrow calculatingly. \"What foul treachery is this?\"")
-                    _SwitchTalkTo(0, -23)
+                    switch_talk_to(23, 0)
                     say("You find yourself unable to respond, and your muscles are clenching as if to lash out with the wicked blade in your hand.")
-                    _SwitchTalkTo(0, -23)
+                    switch_talk_to(23, 0)
                     say("\"Perhaps when thou art sitting in a dungeon, thy tongue will loosen.\"")
                     say("\"Guards!\"*")
                     local14 = true
@@ -264,10 +264,10 @@ function func_06F6(eventid, itemref)
                 if callis_0019(local11, callis_001B(-356), itemref) <= 5 then
                     if not call_GetContainerItems(4, 241, 797, local11) then
                         say("\"Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.\"")
-                        _SwitchTalkTo(0, -293)
+                        switch_talk_to(293, 0)
                         say("The dragon responds with great resignation. \"My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.\"")
                         _HideNPC(-293)
-                        _SwitchTalkTo(0, -292)
+                        switch_talk_to(292, 0)
                         say("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*")
                         local15 = true
                     else

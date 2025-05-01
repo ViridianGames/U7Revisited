@@ -10,7 +10,7 @@ function func_04A8(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -168)
+    switch_talk_to(168, 0)
     local0 = call_0909H()
     _AddAnswer({"bye", "job", "name"})
 
@@ -47,10 +47,10 @@ function func_04A8(eventid, itemref)
                 say("\"Mine husband is the most honorable man I have ever met in my life.\"")
                 local2 = call_08F7H(-167)
                 if local2 then
-                    _SwitchTalkTo(0, -167)
+                    switch_talk_to(167, 0)
                     say("\"Do not put stock in the proud boasts of wives, good Avatar. I am a simple man who only does what he can.\"*")
                     _HideNPC(-167)
-                    _SwitchTalkTo(0, -168)
+                    switch_talk_to(168, 0)
                 end
             end
             _RemoveAnswer("Feridwyn")

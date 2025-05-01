@@ -26,7 +26,7 @@ function func_04AE(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -174)
+    switch_talk_to(174, 0)
     local0 = call_0909H()
     local1 = call_08F7H(-175)
     _AddAnswer({"bye", "job", "name"})
@@ -49,10 +49,10 @@ function func_04AE(eventid, itemref)
             _AddAnswer("beggar")
             local1 = call_08F7H(-175)
             if local1 then
-                _SwitchTalkTo(0, -175)
+                switch_talk_to(175, 0)
                 say("\"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!\"*")
                 _HideNPC(-175)
-                _SwitchTalkTo(0, -174)
+                switch_talk_to(174, 0)
             end
         elseif answer == "beggar" then
             say("\"I was not always a beggar. Like Fenn and Merrick, I used to be a farmer, too. But times got worse, and times are always bad in Paws.\"")
@@ -64,20 +64,20 @@ function func_04AE(eventid, itemref)
             _AddAnswer({"wealth", "chums"})
             local1 = call_08F7H(-175)
             if local1 then
-                _SwitchTalkTo(0, -175)
+                switch_talk_to(175, 0)
                 say("\"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!\"*")
                 _HideNPC(-175)
-                _SwitchTalkTo(0, -174)
+                switch_talk_to(174, 0)
             end
         elseif answer == "chums" then
             say("\"Fenn and me have been friends since we were little tiny babes.\"")
             local1 = call_08F7H(-175)
             if local1 then
                 say("\"I would bet thee that thou didst not think we would end up like this. Eh, Fenn?\"*")
-                _SwitchTalkTo(0, -175)
+                switch_talk_to(175, 0)
                 say("\"Not in me wildest dreams, Komor.\"*")
                 _HideNPC(-175)
-                _SwitchTalkTo(0, -174)
+                switch_talk_to(174, 0)
             end
             _RemoveAnswer("chums")
         elseif answer == "wealth" then

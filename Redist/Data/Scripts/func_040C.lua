@@ -9,7 +9,7 @@ function func_040C(itemref)
     local local10, local11, local12, local13, local14
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -12)
+        switch_talk_to(12, 0)
         local0 = call_0909H()
         local1 = call_0908H()
         local2 = call_08F7H(-2)
@@ -77,7 +77,7 @@ function func_040C(itemref)
                 _HideNPC(-12)
                 local6 = call_08F7H(-1)
                 if not local6 then
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
                     _HideNPC(-1)
                 end
@@ -95,19 +95,19 @@ function func_040C(itemref)
                 local6 = call_08F7H(-1)
                 if not local6 then
                     say("\"Iolo! Who is this stranger?\"")
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. local1 .. ", the Avatar!\"")
                     if local3 then
                         say("\"I simply cannot believe she is here!\"")
                     else
                         say("\"I simply cannot believe he is here!\"")
                     end
-                    _SwitchTalkTo(0, -12)
+                    switch_talk_to(12, 0)
                     say("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
-                    _SwitchTalkTo(0, -1)
+                    switch_talk_to(1, 0)
                     say("\"I swear to thee, it is the Avatar!\"")
                     _HideNPC(-1)
-                    _SwitchTalkTo(0, -12)
+                    switch_talk_to(12, 0)
                 else
                     say("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
                 end
@@ -122,14 +122,14 @@ function func_040C(itemref)
                 local7 = call_08F7H(-11)
                 if not local7 then
                     say("\"Petre here knows something about all of this.\"")
-                    _SwitchTalkTo(0, -11)
+                    switch_talk_to(11, 0)
                     say("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
                     _HideNPC(-11)
                 else
-                    _SwitchTalkTo(0, -12)
+                    switch_talk_to(12, 0)
                     say("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
                 end
-                _SwitchTalkTo(0, -12)
+                switch_talk_to(12, 0)
                 say("The Mayor continues. \"Hast thou searched the stables?\"")
                 call_0885H()
             else

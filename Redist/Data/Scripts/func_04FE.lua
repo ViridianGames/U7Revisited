@@ -9,7 +9,7 @@ function func_04FE(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -254)
+    switch_talk_to(254, 0)
     local0 = call_0909H()
 
     if not get_flag(0x02CD) then
@@ -124,22 +124,22 @@ function func_04FE(eventid, itemref)
                     local6 = call_08F7H(-4)
                     if not local3 then
                         if local4 then
-                            _SwitchTalkTo(0, -1)
+                            switch_talk_to(1, 0)
                             say("\"There's no shame in it, milord,\" says Iolo, looking very serious.*")
                             _HideNPC(-1)
-                            _SwitchTalkTo(0, -254)
+                            switch_talk_to(254, 0)
                         end
                         if local5 then
-                            _SwitchTalkTo(0, -3)
+                            switch_talk_to(3, 0)
                             say("\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.*")
                             _HideNPC(-3)
-                            _SwitchTalkTo(0, -254)
+                            switch_talk_to(254, 0)
                         end
                         if local6 then
-                            _SwitchTalkTo(0, -4)
+                            switch_talk_to(4, 0)
                             say("\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.*")
                             _HideNPC(-4)
-                            _SwitchTalkTo(0, -254)
+                            switch_talk_to(254, 0)
                         end
                         _AddAnswer("virginity")
                     end

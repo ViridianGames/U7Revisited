@@ -9,7 +9,7 @@ function func_04D9(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -217)
+    switch_talk_to(217, 0)
     local0 = callis_001B(-217)
     local1 = callis_001B(-218)
     local2 = call_0908H()
@@ -51,10 +51,10 @@ function func_04D9(eventid, itemref)
                     say("\"^", local13, "!\"", local14, " \"To be the cause for our unhappiness.\"")
                     local15 = call_08F7H(-218)
                     if not local15 then
-                        _SwitchTalkTo(0, -218)
+                        switch_talk_to(218, 0)
                         say("The gargoyle by his side also rises.~~\"To be the reason for our poverty. To die, ", local13, ", to die!\"*")
                         _HideNPC(-218)
-                        _SwitchTalkTo(0, -217)
+                        switch_talk_to(217, 0)
                         say("The two gargoyles force the table from their path with ease as they charge to attack you.*")
                     else
                         say("He forces the table from his path with ease as he charges to attack you.*")

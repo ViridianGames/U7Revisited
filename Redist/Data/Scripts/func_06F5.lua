@@ -3,7 +3,7 @@ function func_06F5(eventid, itemref)
     -- Local variables (9 as per .localc)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
-    _SwitchTalkTo(1, -286)
+    switch_talk_to(286, 1)
     say("Erethian's face begins to take on an ashen palor, but he looks contented with a job well done. \"As I have said, I myself once attempted to create an artifact of great power. I crafted the hilt from a dark substance that is immutable, save by magical means. The blade, however, is cast of an alloy of this substance and the purest metals known to Britannia. My artistic skills served me well enough to fashion the hilt but, alas, the strength was not in my arm to beat a good temper into the blade. Perhaps, thou canst finish this great artifact for me...\" He pulls a poorly worked blade with a fine hilt out of thin air. \"Fear not to touch the hilt when the blade is hot, for heat apparently does not travel well across the medium of the pure, black substance. I wish thee good luck.\"")
 
     local0 = callis_0024(668)

@@ -9,7 +9,7 @@ function func_04DA(eventid, itemref)
         return
     end
 
-    _SwitchTalkTo(0, -218)
+    switch_talk_to(218, 0)
     local0 = callis_001B(-218)
     local1 = callis_001B(-217)
     local2 = call_0908H()
@@ -49,10 +49,10 @@ function func_04DA(eventid, itemref)
                     local14 = call_08F7H(-217)
                     if not local14 then
                         say("setting a hand on the shoulder of the gargoyle next to him.*")
-                        _SwitchTalkTo(0, -217)
+                        switch_talk_to(217, 0)
                         say("The other gargoyle also stands. Anger flashes across his face as he points a finger at you.~~ \"To be the cause for our unhappiness, ", local13, "!\"*")
                         _HideNPC(-217)
-                        _SwitchTalkTo(0, -218)
+                        switch_talk_to(218, 0)
                     end
                     say("\"To be the reason for our poverty. To die, ", local13, ", to die!\"*")
                     calli_001D(0, local0)

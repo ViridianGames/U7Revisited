@@ -5,7 +5,7 @@ function func_042A(itemref)
     local local10, local11, local12, local13, local14, local15
 
     if eventid() == 1 then
-        _SwitchTalkTo(0, -42)
+        switch_talk_to(42, 0)
         local0 = call_0909H()
         local1 = callis_003B()
         _AddAnswer({"bye", "job", "name"})
