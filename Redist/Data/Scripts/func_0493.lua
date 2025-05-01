@@ -199,6 +199,7 @@ function func_0493(eventid, itemref)
                 break
             end
         end
+    end
     elseif eventid == 0 then
         return
     end

@@ -9,7 +9,7 @@ function func_0281H(eventid, itemref)
     local key_quality = get_item_quality(itemref) -- TODO: Implement LuaGetItemQuality for callis 0014.
     local target_quality = get_item_quality(target)
     local door_types = {376, 270, 432, 433} -- 0178H, 010EH, 01B0H, 01B1H.
-    if get_item_type(target[1]) in_array(door_types) and key_quality == target_quality then
+    if (in_array(door_types, get_item_type(target[1]))) and key_quality == target_quality then
         call_script(0x0815, target) -- TODO: Map 0815H (unlock action).
     end
     if item_type == 522 and key_quality == target_quality then -- 020AH: Locked chest.

@@ -1,21 +1,21 @@
 -- func_0462.lua
 -- Cynthia's dialogue as a banker in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0462(eventid)
     local answers = {}
-    local flag_00D2 = U7.getFlag(0x00D2) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00E1 = U7.getFlag(0x00E1) -- Finances topic
+    local flag_00D2 = get_flag(0x00D2) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00E1 = get_flag(0x00E1) -- Finances topic
     local npc_id = -81 -- Cynthia's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0462(eventid)
             add_dialogue("You see a composed woman with a ledger, managing accounts behind a bank counter.")
             set_flag(0x00D2, true)
         else
-            add_dialogue("\"Welcome back, \" .. U7.getPlayerName() .. \",\" Cynthia says with a polite smile.")
+            add_dialogue("\"Welcome back, \" .. get_player_name() .. \",\" Cynthia says with a polite smile.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0462(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Cynthia, banker of Britain, managing the city’s wealth.\"")
                 remove_answer("name")
@@ -70,21 +70,21 @@ function func_0462(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship funds civic projects, but their sway over Patterson and others makes me question their true goals.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou seest their good? Perhaps, but their influence bears watching.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Thy caution aligns with mine. Their motives may not be as pure as claimed.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Farewell, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Farewell, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

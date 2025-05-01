@@ -1,21 +1,21 @@
 -- func_0460.lua
 -- Finn's dialogue as a beggar in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0460(eventid)
     local answers = {}
-    local flag_00D0 = U7.getFlag(0x00D0) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00DF = U7.getFlag(0x00DF) -- Poverty topic
+    local flag_00D0 = get_flag(0x00D0) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00DF = get_flag(0x00DF) -- Poverty topic
     local npc_id = -79 -- Finn's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0460(eventid)
             add_dialogue("You see a ragged man with weary eyes, clutching a worn cup for coins.")
             set_flag(0x00D0, true)
         else
-            add_dialogue("\"Thou’rt back, \" .. U7.getPlayerName() .. \",\" Finn mutters, shivering.")
+            add_dialogue("\"Thou’rt back, \" .. get_player_name() .. \",\" Finn mutters, shivering.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0460(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Finn, just a beggar, forgotten by most in Britain.\"")
                 remove_answer("name")
@@ -66,21 +66,21 @@ function func_0460(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship talks big—unity, help for all—but I ain’t seen a coin from ‘em. They’re all smiles for Patterson, not us beggars.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou think they’re kind? Maybe, but they pass me by every day.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Aye, don’t trust ‘em. They’re up to somethin’, mark my words.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Spare a coin someday, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Spare a coin someday, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

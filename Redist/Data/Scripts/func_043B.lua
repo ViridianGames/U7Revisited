@@ -1,21 +1,21 @@
 -- func_043B.lua
 -- Willy's dialogue at the bakery in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_043B(eventid)
     local answers = {}
-    local flag_0085 = U7.getFlag(0x0085) -- Jeanette's affection
-    local flag_00B2 = U7.getFlag(0x00B2) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
+    local flag_0085 = get_flag(0x0085) -- Jeanette's affection
+    local flag_00B2 = get_flag(0x00B2) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
     local npc_id = -49 -- Willy's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x08A2, 1) -- Buy interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x08A2, 1) -- Buy interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_043B(eventid)
             add_dialogue("You see a portly man covered in flour, his hands busy kneading dough.")
             set_flag(0x00B2, true)
         else
-            add_dialogue("\"Welcome back, \" .. U7.getPlayerName() .. \"!\" Willy says with a grin.")
+            add_dialogue("\"Welcome back, \" .. get_player_name() .. \"!\" Willy says with a grin.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_043B(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Willy’s the name. Best baker in Britain!\"")
                 remove_answer("name")
@@ -59,9 +59,9 @@ function func_043B(eventid)
                 remove_answer("flour")
             elseif choice == "buy" then
                 add_dialogue("\"What’ll it be? A loaf of bread for 5 gold, or a cake for 10?\"")
-                local response = U7.callExtern(0x08A2, var_0001)
+                local response = call_extern(0x08A2, var_0001)
                 if response == 0 then
-                    local gold_choice = U7.getPlayerChoice({"bread", "cake", "none"})
+                    local gold_choice = get_answer({"bread", "cake", "none"})
                     if gold_choice == "bread" then
                         local gold_result = U7.removeGold(5)
                         if gold_result then
@@ -102,10 +102,10 @@ function func_043B(eventid)
                 remove_answer("court")
             elseif choice == "Fellowship" then
                 add_dialogue("\"Aye, I’m a member of the Fellowship. They’ve been good to me, helped me get a loan to expand the bakery. Their philosophy’s all about hard work and trust.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou shouldst consider joining. It’s done wonders for my business!\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Not interested? Well, to each their own.\"")
                 end
@@ -116,7 +116,7 @@ function func_043B(eventid)
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

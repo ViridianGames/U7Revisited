@@ -16,10 +16,10 @@ function func_040A(eventid, itemref)
         local0 = call_0908H()
         local1 = call_0909H()
         local2 = callis_0023()
-        local3 = callis_001B(-356, local2)
+        local3 = callis_001B(356, local2)
         local3 = call_093CH(local3)
-        local4 = callis_001B(-10)
-        local5 = callis_001B(-6)
+        local4 = callis_001B(10)
+        local5 = callis_001B(6)
         local6 = callis_005A() and "Elizabeth" or "Abraham"
         local7 = callis_005E(local2)
         local8 = local7 > 1 and "s" or ""
@@ -37,8 +37,8 @@ function func_040A(eventid, itemref)
             answer = nil
             abort()
         end
-        if local4 in local2 then
-            call_08F4H(local7, local0)
+        if npc_in_party(local4) then
+               call_08F4H(local7, local0)
             if not local21 then
                 add_answer("hermits")
             end
@@ -111,7 +111,7 @@ function func_040A(eventid, itemref)
         elseif cmp_strings("Fellowship", 1) then
             remove_answer("Fellowship")
             if get_flag(29) then
-                if local4 in local2 or get_flag(354) then
+                if npc_in_party(local4) then
                     add_dialogue("I have no love for The Fellowship. We shall speak of it when I know thee better.")
                 else
                     add_dialogue("I do not trust The Fellowship, and most especially " .. local6 .. ".")
@@ -148,7 +148,7 @@ function func_040A(eventid, itemref)
         elseif cmp_strings("job", 1) then
             if not local10 then
                 local10 = true
-                if local4 in local2 then
+                if npc_in_party(local4) then
                     add_dialogue("I travel with thee, " .. local22 .. ", to aid thee with my wood craft.")
                     add_answer("forest")
                 else
@@ -164,7 +164,7 @@ function func_040A(eventid, itemref)
             local3 = call_08F5H(local3, local2)
             remove_answer("introduce")
             if not get_flag(29) or local13 then
-                if local4 in local2 or callis_005E(local3) == 0 then
+                if npc_in_party(local4) or callis_005E(local3) == 0 then
                     add_answer("Fellowship")
                     local13 = true
                 end
@@ -262,7 +262,7 @@ function func_040A(eventid, itemref)
             else
                 add_dialogue("Such bees as thou hast never seen! Large as a wolf they are, with wings stretching over a span in length.")
                 add_dialogue("A creature stung by them will pass into a deep, death-like sleep.")
-                if not (local4 in local2) then
+                if not (npc_in_party(local4)) then
                     add_dialogue("I have hunted them on many occasions, for I use their poison on my arrows. And I like their honey. Perhaps together we might journey into the cave for some?")
                     add_answer({"arrows", "join"})
                 end
@@ -278,7 +278,7 @@ function func_040A(eventid, itemref)
                     local30 = 6
                 end
                 local31 = callis_0028(-359, -359, 568, -357)
-                if (local4 in local2) and local31 <= 6 and local30 > 0 then
+                if (npc_in_party(local4)) and local31 <= 6 and local30 > 0 then
                     local28 = "Shall I fashion these stingers into arrows?"
                 end
             else
@@ -419,25 +419,4 @@ function func_040A(eventid, itemref)
         answer = nil
         abort()
     end
-end
-
--- Helper functions
-function eventid
-    return 0 -- Placeholder
-end
-
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(id)
-    return false -- Placeholder
-end
-
-function set_flag(id, value)
-    -- Placeholder
-end
-
-function cmp_strings(str, count)
-    return false -- Placeholder
 end

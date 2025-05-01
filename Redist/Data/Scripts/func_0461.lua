@@ -1,21 +1,21 @@
 -- func_0461.lua
 -- Garritt's dialogue as a merchant in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0461(eventid)
     local answers = {}
-    local flag_00D1 = U7.getFlag(0x00D1) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00E0 = U7.getFlag(0x00E0) -- Trade topic
+    local flag_00D1 = get_flag(0x00D1) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00E0 = get_flag(0x00E0) -- Trade topic
     local npc_id = -80 -- Garritt's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0461(eventid)
             add_dialogue("You see a well-dressed man with a ledger, overseeing crates in Britain’s market.")
             set_flag(0x00D1, true)
         else
-            add_dialogue("\"Back again, \" .. U7.getPlayerName() .. \"?\" Garritt says, tallying his wares.")
+            add_dialogue("\"Back again, \" .. get_player_name() .. \"?\" Garritt says, tallying his wares.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0461(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Garritt, merchant of Britain’s finest goods.\"")
                 remove_answer("name")
@@ -65,21 +65,21 @@ function func_0461(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship boosts trade with their talk of unity, but their dues and ties to Patterson make me wonder what they’re really after.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou thinkest them fair? Mayhap, but their fees hit my purse hard.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Aye, I don’t fully trust ‘em either. Something’s off with their plans.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Safe travels, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Safe travels, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

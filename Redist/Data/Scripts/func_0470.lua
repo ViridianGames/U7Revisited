@@ -1,21 +1,21 @@
 -- func_0470.lua
 -- Markus's dialogue as a blacksmith in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0470(eventid)
     local answers = {}
-    local flag_00DA = U7.getFlag(0x00DA) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00E9 = U7.getFlag(0x00E9) -- Forge topic
+    local flag_00DA = get_flag(0x00DA) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00E9 = get_flag(0x00E9) -- Forge topic
     local npc_id = -89 -- Markus's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0470(eventid)
             add_dialogue("You see a burly man hammering iron, sparks flying in his smoky forge.")
             set_flag(0x00DA, true)
         else
-            add_dialogue("\"Ho, \" .. U7.getPlayerName() .. \",\" Markus says, wiping sweat from his brow.")
+            add_dialogue("\"Ho, \" .. get_player_name() .. \",\" Markus says, wiping sweat from his brow.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0470(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Markus, blacksmith of Britain, forgin’ steel for all.\"")
                 remove_answer("name")
@@ -74,15 +74,21 @@ function func_0470(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s deals keep my forge stocked, but their ties to Patterson and Figg make me think they’re hammerin’ out more than just trade.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m keepin’ my eye on ‘em.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Smart to question ‘em. Their influence is heavier than my anvil.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Stay sharp, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Stay sharp, \" .. get_player_name() .. \".\"")
                 break
             end
+        end
+    elseif eventid == 0 then
+        call_extern(0x092E, npc_id)
+    end
+end
+-- func_0470.lua

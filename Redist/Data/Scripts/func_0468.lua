@@ -1,21 +1,21 @@
 -- func_0468.lua
 -- Carlyn's dialogue as a healer in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0468(eventid)
     local answers = {}
-    local flag_00D8 = U7.getFlag(0x00D8) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00E7 = U7.getFlag(0x00E7) -- Healing topic
+    local flag_00D8 = get_flag(0x00D8) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00E7 = get_flag(0x00E7) -- Healing topic
     local npc_id = -87 -- Carlyn's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0468(eventid)
             add_dialogue("You see a gentle woman tending to a patient, her hands steady with care.")
             set_flag(0x00D8, true)
         else
-            add_dialogue("\"Welcome, \" .. U7.getPlayerName() .. \",\" Carlyn says, offering a kind smile.")
+            add_dialogue("\"Welcome, \" .. get_player_name() .. \",\" Carlyn says, offering a kind smile.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0468(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Carlyn, healer of Britain, tendin’ to the sick and weary.\"")
                 remove_answer("name")
@@ -74,21 +74,21 @@ function func_0468(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship funds some healing supplies, but their sway over Patterson and folk like Figg makes me doubt their true intentions.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou believest in their aid? They help some, but I’m wary.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Good to question ‘em. Their influence feels more like control.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Stay well, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Stay well, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

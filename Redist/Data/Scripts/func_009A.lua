@@ -219,6 +219,7 @@ function func_009A(itemref)
                 callis_0005("Enilno")
                 callis_0006("Minax")
             elseif cmp_strings("End of dialogue handling for Minax and other topics...")
+            then
                 -- (Truncated dialogue handling continues similarly for Exodus, two parts, interface, gargoyles, psyche, Dark Core, etc.)
                 -- Full implementation would follow the same pattern of checking flags, adding/removing answers, and displaying dialogue.
             end

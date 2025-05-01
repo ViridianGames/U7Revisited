@@ -50,7 +50,6 @@ function func_04F9(eventid, itemref)
             remove_answer("North East sea")
         elseif answer == "stern" then
             add_dialogue("\"She has put an extraordinary amount of time and effort into ensuring the activities in this edifice happen smoothly. And,\" he adds, \"she takes it personally when they do not!\"")
-            remove_answer("stern h
             remove_answer("stern")
         elseif answer == "beautiful" then
             add_dialogue("\"Dost thou not agree? I am flushed whenever her fair presence passes by. But!\" he holds up his index finger, \"I fear she does not share a mutual attraction. And she is far too serious for me to feel comfortable with a proposal.\"")

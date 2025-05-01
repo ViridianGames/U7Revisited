@@ -1,21 +1,21 @@
 -- func_0482.lua
 -- Thane's dialogue as a cooper in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0482(eventid)
     local answers = {}
-    local flag_00E6 = U7.getFlag(0x00E6) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00F5 = U7.getFlag(0x00F5) -- Coopering topic
+    local flag_00E6 = get_flag(0x00E6) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00F5 = get_flag(0x00F5) -- Coopering topic
     local npc_id = -101 -- Thane's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0482(eventid)
             add_dialogue("You see a sturdy man hammering wood, his workshop stacked with barrels.")
             set_flag(0x00E6, true)
         else
-            add_dialogue("\"Hail, \" .. U7.getPlayerName() .. \",\" Thane says, tightening a hoop.")
+            add_dialogue("\"Hail, \" .. get_player_name() .. \",\" Thane says, tightening a hoop.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0482(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Thane, cooper of Britain, craftin’ barrels for all.\"")
                 remove_answer("name")
@@ -74,21 +74,21 @@ function func_0482(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s deals keep my shop stocked, but their ties to Patterson and Figg make me think they’re hammerin’ out more than just trade.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m watchin’ close.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Wise to doubt ‘em. Their influence is heavier than a full barrel.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Stay strong, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Stay strong, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

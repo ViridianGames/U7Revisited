@@ -671,6 +671,35 @@ static int LuaAddToParty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
 }
 
+static int LuaIsInArray(lua_State *L)
+{
+    AddConsoleString("LUA: is_in_array called");
+    int value = luaL_checkinteger(L, 1);
+    lua_getglobal(L, "array");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        return 0;
+    }
+
+    int len = lua_rawlen(L, -1);
+    for (int i = 1; i <= len; i++)
+    {
+        lua_rawgeti(L, -1, i);
+        if (lua_isinteger(L, -1) && lua_tointeger(L, -1) == value)
+        {
+            lua_pop(L, 2); // Pop value and array
+            lua_pushboolean(L, true);
+            return 1;
+        }
+        lua_pop(L, 1); // Pop value
+    }
+
+    lua_pop(L, 1); // Pop array
+    lua_pushboolean(L, false);
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -723,6 +752,7 @@ void RegisterAllLuaFunctions()
     //  These are new functions designed to be called by Lua scripts.
     g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
     g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
+    g_ScriptingSystem->RegisterScriptFunction("in_array", LuaIsInArray);
     
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 

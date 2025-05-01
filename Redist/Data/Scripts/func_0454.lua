@@ -1,21 +1,21 @@
 -- func_0454.lua
 -- Elizabeth's dialogue as a Fellowship member in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0454(eventid)
     local answers = {}
-    local flag_00CA = U7.getFlag(0x00CA) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00D9 = U7.getFlag(0x00D9) -- Outreach topic
+    local flag_00CA = get_flag(0x00CA) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00D9 = get_flag(0x00D9) -- Outreach topic
     local npc_id = -73 -- Elizabeth's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0454(eventid)
             add_dialogue("You see a poised woman with a welcoming smile, her Fellowship medallion gleaming.")
             set_flag(0x00CA, true)
         else
-            add_dialogue("\"Greetings, \" .. U7.getPlayerName() .. \",\" Elizabeth says, her tone inviting.")
+            add_dialogue("\"Greetings, \" .. get_player_name() .. \",\" Elizabeth says, her tone inviting.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0454(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I am Elizabeth, a devoted servant of the Fellowship, here to foster unity.\"")
                 remove_answer("name")
@@ -75,21 +75,21 @@ function func_0454(eventid)
                 remove_answer("Weston")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship is Britannia’s hope, uniting all under Batlin’s vision. Join us, and thou wilt find purpose, as many in Britain have.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thy openness warms my heart. Speak with Batlin to join our family.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Skepticism is understandable. Visit our hall, meet our members, and see our truth.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Embrace unity, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Embrace unity, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

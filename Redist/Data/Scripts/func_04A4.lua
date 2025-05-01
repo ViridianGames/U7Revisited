@@ -40,7 +40,7 @@ function func_04A4(eventid, itemref)
             add_answer("residents")
             remove_answer("travel")
         elseif answer == "residents" then
-            add_dialogue(""'Twas a joke, ", local1, ".\"")
+            add_dialogue("\"'Twas a joke, " .. local1 .. ".\"")
             remove_answer("residents")
         elseif answer == "items" then
             add_dialogue("\"I have found many odd artifacts. Many of the things thou hast seen in The Music Hall and the Lycaeum have been brought to them by me.\"")

@@ -25,7 +25,7 @@ function func_070D(eventid, itemref)
                 if get_item_quality(local7) == 12 then
                     local8 = add_item(local7, {3, -1, 17419, 8014, 32, 8024, 303, 7765})
                 end
-            end 1000
+            end
             apply_effect(28) -- Unmapped intrinsic
             if local4 then
                 apply_effect(28) -- Unmapped intrinsic

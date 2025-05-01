@@ -1,21 +1,21 @@
 -- func_043D.lua
 -- Millie's dialogue as a weaver in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_043D(eventid)
     local answers = {}
-    local flag_00C6 = U7.getFlag(0x00C6) -- Weston topic
-    local flag_00B4 = U7.getFlag(0x00B4) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
+    local flag_00C6 = get_flag(0x00C6) -- Weston topic
+    local flag_00B4 = get_flag(0x00B4) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
     local npc_id = -51 -- Millie's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Buy interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Buy interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_043D(eventid)
             add_dialogue("You see a kind-faced woman surrounded by colorful threads and a humming loom.")
             set_flag(0x00B4, true)
         else
-            add_dialogue("\"Good to see thee again, \" .. U7.getPlayerName() .. \",\" Millie says warmly.")
+            add_dialogue("\"Good to see thee again, \" .. get_player_name() .. \",\" Millie says warmly.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_043D(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I’m Millie, the weaver.\"")
                 remove_answer("name")
@@ -59,7 +59,7 @@ function func_043D(eventid)
                 remove_answer("mother")
             elseif choice == "buy" then
                 add_dialogue("\"I’ve got fine cloth for 10 gold a bolt. Interested?\"")
-                local response = U7.callExtern(0x090A, var_0001)
+                local response = call_extern(0x090A, var_0001)
                 if response == 0 then
                     local gold_result = U7.removeGold(10)
                     if gold_result then
@@ -93,21 +93,21 @@ function func_043D(eventid)
                 remove_answer("help")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship? They talk of unity, but I don’t trust their promises. Too many of their members look down on folk like me and Weston.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Mayhap I’m wrong about them. I’ll give it some thought.\"")
                 else
                     add_dialogue("\"Nay, I’ll stick to my own judgment. They’re not for me.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Safe travels, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Safe travels, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

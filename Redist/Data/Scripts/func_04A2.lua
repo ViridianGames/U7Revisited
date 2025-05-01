@@ -56,7 +56,7 @@ function func_04A2(eventid, itemref)
             remove_answer("ties")
         elseif answer == "residents" then
             add_dialogue("\"There are many people in Moonglow. My father once told me that the town was much smaller during his time. In fact, he said that Moonglow used to be separate from the Lycaeum!~~But, I digress. Thou didst ask about the people. I know most of the residents here. Dost thou want to know about the Lycaeum, the observatory, The Fellowship, the farmers, the trainer, or the tavern?\"")
-            add_answer({"1234({"tavern", "trainer", "farmers", "Fellowship", "observatory", "Lycaeum"})
+            add_answer({"tavern", "trainer", "farmers", "Fellowship","observatory", "Lycaeum"})
             remove_answer("residents")
             _SaveAnswers()
             add_answer({"Lycaeum", "observatory", "Fellowship", "farmers", "trainer", "tavern", "shop keeper", "no one"})

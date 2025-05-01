@@ -343,7 +343,7 @@ function func_0417(eventid, itemref)
             local16 = apply_effect(-356, local15) -- Unmapped intrinsic 0001
         end
     end
-    exodus_event:
+    ::exodus_event::
         if local0 then
             switch_talk_to(23, 0)
             add_dialogue("\"I congratulate and thank thee, " .. local1 .. ". Thy deeds continue to speak well of thee.\"")

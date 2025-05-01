@@ -1,21 +1,21 @@
 -- func_043E.lua
 -- Brownie's dialogue as a farmer and mayoral candidate in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_043E(eventid)
     local answers = {}
-    local flag_00B5 = U7.getFlag(0x00B5) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00C7 = U7.getFlag(0x00C7) -- Campaign topic
+    local flag_00B5 = get_flag(0x00B5) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00C7 = get_flag(0x00C7) -- Campaign topic
     local npc_id = -52 -- Brownie's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_043E(eventid)
             add_dialogue("You see a sturdy farmer with calloused hands and a hopeful smile.")
             set_flag(0x00B5, true)
         else
-            add_dialogue("\"Well met, \" .. U7.getPlayerName() .. \"!\" Brownie says cheerfully.")
+            add_dialogue("\"Well met, \" .. get_player_name() .. \"!\" Brownie says cheerfully.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_043E(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I’m Brownie, farmer and candidate for mayor of Britain.\"")
                 remove_answer("name")
@@ -74,7 +74,7 @@ function func_043E(eventid)
                 remove_answer("campaign")
             elseif choice == "support" then
                 add_dialogue("\"Folks in Paws and the fields back me, but I need more votes in Britain. If thou couldst spread the word, I’d be grateful.\"")
-                local response = U7.callExtern(0x090A, var_0001)
+                local response = call_extern(0x090A, var_0001)
                 if response == 0 then
                     add_dialogue("\"Thou’lt help? Bless thee! Here’s a carrot from my fields.\"")
                     local item_result = U7.giveItem(16, 1, 383)
@@ -87,21 +87,21 @@ function func_043E(eventid)
                 remove_answer("support")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship claims to help all, but they favor their own. I’ve seen them pressure farmers to join or face trouble at market. I don’t trust ‘em.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Maybe I’m too harsh. I’ll think on their ideas.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Nay, I’ve seen enough to know they’re not for me.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Vote for Brownie, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Vote for Brownie, \" .. get_player_name() .. \"!\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

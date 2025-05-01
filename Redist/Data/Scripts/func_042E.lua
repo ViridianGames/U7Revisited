@@ -1,18 +1,17 @@
 -- func_042E.lua
   -- James's dialogue as the innkeeper at Wayfarer's Inn
-  local U7 = require("U7LuaFuncs")
-
+  
   function func_042E(eventid)
       local answers = {}
-      local flag_0092 = U7.getFlag(0x0092) -- Cynthia said topic
-      local flag_00AF = U7.getFlag(0x00AF) -- First meeting
+      local flag_0092 = get_flag(0x0092) -- Cynthia said topic
+      local flag_00AF = get_flag(0x00AF) -- First meeting
       local npc_id = -46 -- James's NPC ID
 
       if eventid == 1 then
           _SwitchTalkTo(0, npc_id)
-          local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-          local var_0001 = U7.callExtern(0x090A, 1) -- Room interaction
-          local var_0002 = U7.callExtern(0x092E, 2) -- Unknown interaction
+          local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+          local var_0001 = call_extern(0x090A, 1) -- Room interaction
+          local var_0002 = call_extern(0x092E, 2) -- Unknown interaction
 
           add_answer( "bye")
           add_answer( "job")
@@ -25,7 +24,7 @@
               add_dialogue("You see a sour-faced innkeeper who looks at you as if all of his problems were your fault.")
               set_flag(0x00AF, true)
           else
-              add_dialogue("\"What must I do for thee now, \" .. U7.getPlayerName() .. \"?\" asks James.")
+              add_dialogue("\"What must I do for thee now, \" .. get_player_name() .. \"?\" asks James.")
           end
 
           while true do
@@ -36,7 +35,7 @@
                   add_answer( "name")
               end
 
-              local choice = U7.getPlayerChoice(answers)
+              local choice = get_answer(answers)
               if choice == "name" then
                   add_dialogue("\"My name is James.\"")
                   remove_answer("name")
@@ -58,7 +57,7 @@
                   add_answer( "listening")
                   remove_answer("desk clerk")
               elseif choice == "listening" then
-                  add_dialogue("\"That is correct, \" .. U7.getPlayerName() .. \". So if thou dost have a problem, allow me the courtesy of not having to hear all about it. Now what was it that I was saying again?\"")
+                  add_dialogue("\"That is correct, \" .. get_player_name() .. \". So if thou dost have a problem, allow me the courtesy of not having to hear all about it. Now what was it that I was saying again?\"")
                   remove_answer("listening")
               elseif choice == "solve" then
                   add_dialogue("\"Maybe solving people's problems is an easy task for other innkeepers, but, not only am I bad at it, I have mine own problems as well.\"")
@@ -78,7 +77,7 @@
                   add_dialogue("\"As I understand it they have an excellent House of Games there as well as opulent baths. Or at least so I have heard from Gordon, the man who sells fish and chips.\"")
                   remove_answer("Buccaneer's Den")
               elseif choice == "Cynthia" then
-                  add_dialogue("\"Do not mistake my words, \" .. U7.getPlayerName() .. \". I love Cynthia with all mine heart. But there are I times I feel I am too young to be married. Besides, I know I cannot be a good husband for her.\"")
+                  add_dialogue("\"Do not mistake my words, \" .. get_player_name() .. \". I love Cynthia with all mine heart. But there are I times I feel I am too young to be married. Besides, I know I cannot be a good husband for her.\"")
                   add_answer( "good husband")
                   remove_answer("Cynthia")
               elseif choice == "pirate" then
@@ -104,9 +103,9 @@
                   add_dialogue("\"Already I can sense she is worried about our marriage. I know that there is something wrong between us.\"")
                   remove_answer("happy")
               elseif choice == "room" then
-                  if U7.getSchedule() == 7 then
+                  if get_schedule() == 7 then
                       add_dialogue("\"Oh, I suppose thou wouldst like a room now! There, that is just what I mean! It is ten gold pieces per person for a night. Thou dost want a room, dost thou not?\"")
-                      local response = U7.callExtern(0x090A, var_0001)
+                      local response = call_extern(0x090A, var_0001)
                       if response == 0 then
                           local party_count = U7.getPartyMembers()
                           local cost = party_count * 10
@@ -125,7 +124,7 @@
                           add_dialogue("James wipes his brow. \"Phew! That was a close call!\"")
                       end
                   else
-                      add_dialogue("\"Please, \" .. U7.getPlayerName() .. \". Do allow me some time to myself! Presently I am not doing the business of the inn and I do wish to keep it that way. Thou must attend to the inn during business hours.\"")
+                      add_dialogue("\"Please, \" .. get_player_name() .. \". Do allow me some time to myself! Presently I am not doing the business of the inn and I do wish to keep it that way. Thou must attend to the inn during business hours.\"")
                   end
                   remove_answer("room")
               elseif choice == "Cynthia said" then
@@ -137,7 +136,7 @@
               end
           end
       elseif eventid == 0 then
-          U7.callExtern(0x092E, npc_id)
+          call_extern(0x092E, npc_id)
       end
   end
 

@@ -1,21 +1,21 @@
 -- func_0459.lua
 -- Alagner's dialogue as a scholar in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0459(eventid)
     local answers = {}
-    local flag_00CF = U7.getFlag(0x00CF) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00DE = U7.getFlag(0x00DE) -- Research topic
+    local flag_00CF = get_flag(0x00CF) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00DE = get_flag(0x00DE) -- Research topic
     local npc_id = -78 -- Alagner's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0459(eventid)
             add_dialogue("You see a studious man surrounded by books, eyeing you with cautious curiosity.")
             set_flag(0x00CF, true)
         else
-            add_dialogue("\"Back again, \" .. U7.getPlayerName() .. \"?\" Alagner says, adjusting his glasses.")
+            add_dialogue("\"Back again, \" .. get_player_name() .. \"?\" Alagner says, adjusting his glasses.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0459(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Alagner, scholar of Britannia’s truths, seeking answers beyond the obvious.\"")
                 remove_answer("name")
@@ -74,21 +74,21 @@ function func_0459(eventid)
                 remove_answer("Weston")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s unity is a facade for power. Their leaders—Batlin, Elizabeth—hide truths I aim to uncover. Seek their secrets, Avatar.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou trustest them? I urge caution—my findings point to deception.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Thy skepticism is wise. Dig deeper, for Britannia’s sake.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Seek truth, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Seek truth, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

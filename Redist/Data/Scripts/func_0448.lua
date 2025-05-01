@@ -1,21 +1,21 @@
 -- func_0448.lua
 -- Weston's dialogue as a prisoner in Britain's jail
-local U7 = require("U7LuaFuncs")
+
 
 function func_0448(eventid)
     local answers = {}
-    local flag_00BF = U7.getFlag(0x00BF) -- First meeting
-    local flag_00C6 = U7.getFlag(0x00C6) -- Weston topic
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
+    local flag_00BF = get_flag(0x00BF) -- First meeting
+    local flag_00C6 = get_flag(0x00C6) -- Weston topic
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
     local npc_id = -62 -- Weston's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0448(eventid)
             add_dialogue("You see a weary man in tattered clothes, sitting behind bars with a defeated look.")
             set_flag(0x00BF, true)
         else
-            add_dialogue("\"Thou’rt back, \" .. U7.getPlayerName() .. \",\" Weston says, his voice low.")
+            add_dialogue("\"Thou’rt back, \" .. get_player_name() .. \",\" Weston says, his voice low.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0448(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Weston’s my name. Not that it matters in here.\"")
                 remove_answer("name")
@@ -71,7 +71,7 @@ function func_0448(eventid)
                 remove_answer("Figg")
             elseif choice == "help" then
                 add_dialogue("\"If thou couldst bring food or coin to my family in Paws, I’d be forever grateful. They’re near the mill. Tell ‘em I’m sorry.\"")
-                local response = U7.callExtern(0x090A, var_0001)
+                local response = call_extern(0x090A, var_0001)
                 if response == 0 then
                     add_dialogue("\"Bless thee! My heart’s lighter knowing someone might help.\"")
                 else
@@ -80,21 +80,21 @@ function func_0448(eventid)
                 remove_answer("help")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s got their claws in Britain. Figg’s one of ‘em, and I heard they pushed the guards to lock me up quick. They don’t care about folk like me.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Mayhap I’m wrong, but I doubt it. Be careful around ‘em.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"They’re trouble, mark my words. Keep thy distance.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Please, don’t forget my family, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Please, don’t forget my family, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

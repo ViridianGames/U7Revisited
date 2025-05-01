@@ -1,21 +1,21 @@
 -- func_0445.lua
 -- Judith's dialogue as the musician in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0445(eventid)
     local answers = {}
-    local flag_00BC = U7.getFlag(0x00BC) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00CD = U7.getFlag(0x00CD) -- Music topic
+    local flag_00BC = get_flag(0x00BC) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00CD = get_flag(0x00CD) -- Music topic
     local npc_id = -59 -- Judith's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x08A8, 1) -- Performance interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x08A8, 1) -- Performance interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0445(eventid)
             add_dialogue("You see a lively woman tuning a lute, her fingers dancing over the strings.")
             set_flag(0x00BC, true)
         else
-            add_dialogue("\"Well met, \" .. U7.getPlayerName() .. \"!\" Judith says with a smile.")
+            add_dialogue("\"Well met, \" .. get_player_name() .. \"!\" Judith says with a smile.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0445(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Judith, musician and bard of Britain.\"")
                 remove_answer("name")
@@ -65,21 +65,21 @@ function func_0445(eventid)
                 remove_answer("gossip")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s got a following here, but I’ve heard whispers they pressure folk to join. They tip well at the tavern, though, so I keep my lute strummin’.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Maybe they’re not so bad. I’ll keep an ear out.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Nay, I’d rather sing than join their chorus.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Keep a song in thy heart, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Keep a song in thy heart, \" .. get_player_name() .. \"!\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

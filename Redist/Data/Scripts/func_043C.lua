@@ -1,18 +1,18 @@
 -- func_043C.lua
 -- Mack's dialogue near Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_043C(eventid)
     local answers = {}
-    local flag_00B3 = U7.getFlag(0x00B3) -- First meeting
-    local flag_008A = U7.getFlag(0x008A) -- UFO topic
+    local flag_00B3 = get_flag(0x00B3) -- First meeting
+    local flag_008A = get_flag(0x008A) -- UFO topic
     local npc_id = -50 -- Mack's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x092E, 2) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x092E, 2) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -25,7 +25,7 @@ function func_043C(eventid)
             add_dialogue("You see a wiry farmer with wild eyes, clutching a turnip like it’s gold.")
             set_flag(0x00B3, true)
         else
-            add_dialogue("\"Back again, \" .. U7.getPlayerName() .. \"?\" Mack says, eyeing you suspiciously.")
+            add_dialogue("\"Back again, \" .. get_player_name() .. \"?\" Mack says, eyeing you suspiciously.")
         end
 
         while true do
@@ -36,7 +36,7 @@ function func_043C(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Mack’s my name! Farmer, inventor, and truth-seeker!\"")
                 remove_answer("name")
@@ -57,7 +57,7 @@ function func_043C(eventid)
                 remove_answer("Great Hoe")
             elseif choice == "buy" then
                 add_dialogue("\"A turnip for 3 gold. Deal?\"")
-                local response = U7.callExtern(0x090A, var_0001)
+                local response = call_extern(0x090A, var_0001)
                 if response == 0 then
                     local gold_result = U7.removeGold(3)
                     if gold_result then
@@ -104,12 +104,12 @@ function func_043C(eventid)
                 end
                 remove_answer("metal piece")
             elseif choice == "bye" then
-                add_dialogue("\"Watch the skies, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Watch the skies, \" .. get_player_name() .. \"!\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

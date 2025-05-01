@@ -2,7 +2,8 @@
 function func_0854(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
-    local0 = _GetPlayerName(eventid)
+    local0 = get_player_name(eventid)
+    ::start::
     add_dialogue(itemref, "\"How many portions wouldst thou wish to sell?\"")
     local1 = _AskNumber(0, 1, 10, 0)
     if local1 == 0 then

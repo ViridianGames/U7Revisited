@@ -1,21 +1,21 @@
 -- func_0449.lua
 -- Nanna's dialogue as the nanny at Castle British
-local U7 = require("U7LuaFuncs")
+
 
 function func_0449(eventid)
     local answers = {}
-    local flag_00C0 = U7.getFlag(0x00C0) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00CF = U7.getFlag(0x00CF) -- Children topic
+    local flag_00C0 = get_flag(0x00C0) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00CF = get_flag(0x00CF) -- Children topic
     local npc_id = -63 -- Nanna's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0449(eventid)
             add_dialogue("You see an elderly woman with a warm smile, knitting a tiny sweater.")
             set_flag(0x00C0, true)
         else
-            add_dialogue("\"Good to see thee, \" .. U7.getPlayerName() .. \",\" Nanna says kindly.")
+            add_dialogue("\"Good to see thee, \" .. get_player_name() .. \",\" Nanna says kindly.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0449(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I’m Nanna, nanny to the children of Castle British.\"")
                 remove_answer("name")
@@ -71,21 +71,21 @@ function func_0449(eventid)
                 remove_answer("Jeanette")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s got a way with words, luring in the young with talk of purpose. But I’ve seen their kind before—promises that hide agendas.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Mayhap I’m too old and cynical. I’ll ponder their ways.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Nay, I’ve raised enough children to know trouble when I see it.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Mind thy manners, \" .. U7.getPlayerName() .. \",\" Nanna says with a wink.")
+                add_dialogue("\"Mind thy manners, \" .. get_player_name() .. \",\" Nanna says with a wink.")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

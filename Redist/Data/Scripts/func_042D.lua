@@ -1,22 +1,21 @@
 -- func_042D.lua
   -- Figg's dialogue about the Royal Orchards and Weston's theft
-  local U7 = require("U7LuaFuncs")
-
+  
   function func_042D(eventid)
       local answers = {}
-      local flag_00C6 = U7.getFlag(0x00C6) -- Weston topic
-      local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-      local flag_00AE = U7.getFlag(0x00AE) -- First meeting
+      local flag_00C6 = get_flag(0x00C6) -- Weston topic
+      local flag_0094 = get_flag(0x0094) -- Fellowship topic
+      local flag_00AE = get_flag(0x00AE) -- First meeting
       local npc_id = -45 -- Figg's NPC ID
 
       if eventid == 1 then
           _SwitchTalkTo(0, npc_id)
-          local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-          local var_0001 = U7.callExtern(0x090A, 1) -- Buy interaction
-          local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-          local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-          local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
-          local var_0005 = U7.callExtern(0x08FC, 5) -- Unknown interaction
+          local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+          local var_0001 = call_extern(0x090A, 1) -- Buy interaction
+          local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+          local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+          local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
+          local var_0005 = call_extern(0x08FC, 5) -- Unknown interaction
 
           add_answer( "bye")
           add_answer( "job")
@@ -32,7 +31,7 @@
               add_dialogue("You see a man whose wrinkled face forms a caricature of grumpiness.")
               set_flag(0x00AE, true)
           else
-              add_dialogue("\"Thou dost wish words with me, \" .. U7.getPlayerName() .. \"?\" asks Figg.")
+              add_dialogue("\"Thou dost wish words with me, \" .. get_player_name() .. \"?\" asks Figg.")
           end
 
           while true do
@@ -43,7 +42,7 @@
                   add_answer( "name")
               end
 
-              local choice = U7.getPlayerChoice(answers)
+              local choice = get_answer(answers)
               if choice == "name" then
                   add_dialogue("\"I am Figg.\"")
                   remove_answer("name")
@@ -91,17 +90,17 @@
                   remove_answer("sob story")
               elseif choice == "observer" then
                   add_dialogue("\"Yes, I do consider myself to be a more than passable judge of character. And dost thou know how I became so?\"")
-                  local response = U7.callExtern(0x090A, var_0001)
+                  local response = call_extern(0x090A, var_0001)
                   if response == 0 then
                       add_dialogue("\"Oh, then art thou not the clever one!\"")
                   else
                       add_dialogue("\"Then I shall tell thee! I am a member of The Fellowship!\"")
-                      U7.callExtern(0x0919, var_0002)
+                      call_extern(0x0919, var_0002)
                   end
                   remove_answer("observer")
               elseif choice == "Fellowship" then
                   add_dialogue("\"I am a member of the Fellowship, yes. But it would be a crime for me to give apples from the Royal Orchard to The Fellowship, and it would be a violation of my sacred duty. While selling apples is also a violation, I was only trying to do this man Weston a favor. And I suppose these accusations are the thanks I get? Hmph!\"")
-                  if U7.getPlayerChoice("Fellowship_member") then
+                  if get_answer("Fellowship_member") then
                       add_dialogue("He leans in close to you and speaks lower. \"Thou art also a member of The Fellowship, after all. Am I not thy brother? Shouldst thou not trust me?\" He gives you a crooked wink.")
                       local item_result = U7.giveItem(16, 1, 377)
                       if item_result then
@@ -116,7 +115,7 @@
                   remove_answer("Fellowship")
               elseif choice == "buy" then
                   add_dialogue("\"I can do thee a favor as well. Wouldst thou like to buy one of these beautiful apples for the merest pittance of five gold coins?\"")
-                  local buy_response = U7.callExtern(0x090A, var_0001)
+                  local buy_response = call_extern(0x090A, var_0001)
                   if buy_response == 0 then
                       local gold_result = U7.removeGold(5)
                       if gold_result then
@@ -132,7 +131,7 @@
                       end
                   else
                       add_dialogue("\"Very well. But thou art passing up an opportunity that few are offered. In fact, eh, I would appreciate it if thou wouldst not mention our little chat to anyone. Agreed?\"")
-                      local agree_response = U7.callExtern(0x090A, var_0001)
+                      local agree_response = call_extern(0x090A, var_0001)
                       if agree_response == 0 then
                           add_dialogue("\"Ah, I knew thou wert a good 'un.\"")
                       else
@@ -147,7 +146,7 @@
               end
           end
       elseif eventid == 0 then
-          U7.callExtern(0x092E, npc_id)
+          call_extern(0x092E, npc_id)
       end
   end
 

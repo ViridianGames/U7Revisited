@@ -1,21 +1,21 @@
 -- func_043F.lua
 -- Jesamine's dialogue as the apothecary's wife in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_043F(eventid)
     local answers = {}
-    local flag_00B6 = U7.getFlag(0x00B6) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00C8 = U7.getFlag(0x00C8) -- Kessler’s health topic
+    local flag_00B6 = get_flag(0x00B6) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00C8 = get_flag(0x00C8) -- Kessler’s health topic
     local npc_id = -53 -- Jesamine's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_043F(eventid)
             add_dialogue("You see a gentle woman with worried eyes, tidying shelves of herbs and potions.")
             set_flag(0x00B6, true)
         else
-            add_dialogue("\"Welcome back, \" .. U7.getPlayerName() .. \",\" Jesamine says softly.")
+            add_dialogue("\"Welcome back, \" .. get_player_name() .. \",\" Jesamine says softly.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_043F(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I’m Jesamine, wife of Kessler, the apothecary.\"")
                 remove_answer("name")
@@ -76,7 +76,7 @@ function func_043F(eventid)
                 remove_answer("health")
             elseif choice == "buy" then
                 add_dialogue("\"A potion for 15 gold. Wilt thou take one?\"")
-                local response = U7.callExtern(0x090A, var_0001)
+                local response = call_extern(0x090A, var_0001)
                 if response == 0 then
                     local gold_result = U7.removeGold(15)
                     if gold_result then
@@ -95,21 +95,21 @@ function func_043F(eventid)
                 remove_answer("buy")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship? They’ve offered Kessler help with the shop, but their aid comes with strings. I’d rather we stay independent.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Mayhap they mean well. I’ll consider their offer.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"No, I trust my instincts. We’ll manage without them.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Take care, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Take care, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

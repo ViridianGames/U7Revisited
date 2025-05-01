@@ -1,21 +1,21 @@
 -- func_0442.lua
 -- Grayson's dialogue as the armorer in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0442(eventid)
     local answers = {}
-    local flag_00B9 = U7.getFlag(0x00B9) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00CA = U7.getFlag(0x00CA) -- Crime topic
+    local flag_00B9 = get_flag(0x00B9) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00CA = get_flag(0x00CA) -- Crime topic
     local npc_id = -56 -- Grayson's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x08A5, 1) -- Buy interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x08A5, 1) -- Buy interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0442(eventid)
             add_dialogue("You see a broad-shouldered man polishing a gleaming breastplate.")
             set_flag(0x00B9, true)
         else
-            add_dialogue("\"Hail, \" .. U7.getPlayerName() .. \"!\" Grayson says with a nod.")
+            add_dialogue("\"Hail, \" .. get_player_name() .. \"!\" Grayson says with a nod.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0442(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Grayson, armorer and weaponsmith.\"")
                 remove_answer("name")
@@ -66,9 +66,9 @@ function func_0442(eventid)
                 remove_answer("crime")
             elseif choice == "buy" then
                 add_dialogue("\"A sword’s 50 gold, a shield’s 30. What dost thou need?\"")
-                local response = U7.callExtern(0x08A5, var_0001)
+                local response = call_extern(0x08A5, var_0001)
                 if response == 0 then
-                    local item_choice = U7.getPlayerChoice({"sword", "shield", "none"})
+                    local item_choice = get_answer({"sword", "shield", "none"})
                     if item_choice == "sword" then
                         local gold_result = U7.removeGold(50)
                         if gold_result then
@@ -102,21 +102,21 @@ function func_0442(eventid)
                 remove_answer("buy")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s got a strong grip in Britain. They buy my gear in bulk, but I don’t like their secrecy. Something’s off about ‘em.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Maybe I’m too suspicious. I’ll keep an eye on ‘em.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Nay, I trust my gut. They’re trouble.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Stay sharp, \" .. U7.getPlayerName() .. \"!\"")
+                add_dialogue("\"Stay sharp, \" .. get_player_name() .. \"!\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

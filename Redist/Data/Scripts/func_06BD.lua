@@ -14,7 +14,7 @@ function func_06BD(eventid, itemref)
 
     while sloop() do
         local6 = local0
-        if not local3 or not (local6 in local1) then
+        if not local3 or not (npc_in_party(local6)) then
             local7 = 0
             local8 = {}
             while local7 < local2 do

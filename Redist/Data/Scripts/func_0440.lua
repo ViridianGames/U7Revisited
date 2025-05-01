@@ -1,21 +1,21 @@
 -- func_0440.lua
 -- Kessler's dialogue as the apothecary in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0440(eventid)
     local answers = {}
-    local flag_00B7 = U7.getFlag(0x00B7) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00C8 = U7.getFlag(0x00C8) -- Health topic
+    local flag_00B7 = get_flag(0x00B7) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00C8 = get_flag(0x00C8) -- Health topic
     local npc_id = -54 -- Kessler's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x08A3, 1) -- Buy interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x08A3, 1) -- Buy interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0440(eventid)
             add_dialogue("You see a thin man with tired eyes, surrounded by vials and herbs, coughing softly.")
             set_flag(0x00B7, true)
         else
-            add_dialogue("\"Greetings, \" .. U7.getPlayerName() .. \",\" Kessler says, stifling a cough.")
+            add_dialogue("\"Greetings, \" .. get_player_name() .. \",\" Kessler says, stifling a cough.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0440(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"I’m Kessler, apothecary of Britain.\"")
                 remove_answer("name")
@@ -62,9 +62,9 @@ function func_0440(eventid)
                 remove_answer("herbs")
             elseif choice == "buy" then
                 add_dialogue("\"A healing potion’s 15 gold, a tonic’s 10. What’ll it be?\"")
-                local response = U7.callExtern(0x08A3, var_0001)
+                local response = call_extern(0x08A3, var_0001)
                 if response == 0 then
-                    local item_choice = U7.getPlayerChoice({"potion", "tonic", "none"})
+                    local item_choice = get_answer({"potion", "tonic", "none"})
                     if item_choice == "potion" then
                         local gold_result = U7.removeGold(15)
                         if gold_result then
@@ -119,21 +119,21 @@ function func_0440(eventid)
                 remove_answer("remedy")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s been sniffing around, offering to fund my shop. But I’ve heard they expect loyalty in return. I’d rather keep my freedom.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Perhaps they’re not so bad. I’ll hear them out.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Nay, I’ll stay clear. Too many strings attached.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Stay healthy, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Stay healthy, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 

@@ -1,21 +1,21 @@
 -- func_0463.lua
 -- Sean's dialogue as a jeweler in Britain
-local U7 = require("U7LuaFuncs")
+
 
 function func_0463(eventid)
     local answers = {}
-    local flag_00D3 = U7.getFlag(0x00D3) -- First meeting
-    local flag_0094 = U7.getFlag(0x0094) -- Fellowship topic
-    local flag_00E2 = U7.getFlag(0x00E2) -- Jewelry topic
+    local flag_00D3 = get_flag(0x00D3) -- First meeting
+    local flag_0094 = get_flag(0x0094) -- Fellowship topic
+    local flag_00E2 = get_flag(0x00E2) -- Jewelry topic
     local npc_id = -82 -- Sean's NPC ID
 
     if eventid == 1 then
         _SwitchTalkTo(0, npc_id)
-        local var_0000 = U7.callExtern(0x0909, 0) -- Unknown interaction
-        local var_0001 = U7.callExtern(0x090A, 1) -- Item interaction
-        local var_0002 = U7.callExtern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = U7.callExtern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = U7.callExtern(0x092E, 4) -- Unknown interaction
+        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
+        local var_0001 = call_extern(0x090A, 1) -- Item interaction
+        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
+        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
+        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
 
         add_answer( "bye")
         add_answer( "job")
@@ -31,7 +31,7 @@ function func_0463(eventid)
             add_dialogue("You see a meticulous man polishing a gem, his shop gleaming with fine jewelry.")
             set_flag(0x00D3, true)
         else
-            add_dialogue("\"Good to see thee, \" .. U7.getPlayerName() .. \",\" Sean says, setting down a ring.")
+            add_dialogue("\"Good to see thee, \" .. get_player_name() .. \",\" Sean says, setting down a ring.")
         end
 
         while true do
@@ -42,7 +42,7 @@ function func_0463(eventid)
                 add_answer( "name")
             end
 
-            local choice = U7.getPlayerChoice(answers)
+            local choice = get_answer(answers)
             if choice == "name" then
                 add_dialogue("\"Sean, jeweler of Britain, crafting beauty for the discerning.\"")
                 remove_answer("name")
@@ -69,21 +69,21 @@ function func_0463(eventid)
                 remove_answer("Figg")
             elseif choice == "Fellowship" then
                 add_dialogue("\"The Fellowship’s deals boost commerce, but their hold over Patterson and push for control makes me wary of their true aims.\"")
-                local response = U7.callExtern(0x0919, var_0002)
+                local response = call_extern(0x0919, var_0002)
                 if response == 0 then
                     add_dialogue("\"Thou trustest their ways? They aid trade, but I watch ‘em closely.\"")
-                    U7.callExtern(0x091A, var_0003)
+                    call_extern(0x091A, var_0003)
                 else
                     add_dialogue("\"Good to stay cautious. Their influence runs deeper than they let on.\"")
                 end
                 remove_answer("Fellowship")
             elseif choice == "bye" then
-                add_dialogue("\"Come back anytime, \" .. U7.getPlayerName() .. \".\"")
+                add_dialogue("\"Come back anytime, \" .. get_player_name() .. \".\"")
                 break
             end
         end
     elseif eventid == 0 then
-        U7.callExtern(0x092E, npc_id)
+        call_extern(0x092E, npc_id)
     end
 end
 
