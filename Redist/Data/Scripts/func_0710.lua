@@ -19,7 +19,7 @@ function func_0710(eventid, itemref)
         end
         if get_flag(795) and not get_flag(796) then
             call_08FEH("@All the golems are alive now.@")
-            say(itemref, "*")
+            add_dialogue(itemref, "*")
             return
         end
         local6 = false
@@ -55,8 +55,8 @@ function func_0710(eventid, itemref)
         end
         call_0086H(itemref, 14)
         call_0055H(itemref)
-        say(itemref, "     Vas Flam Uus~~")
-        say(itemref, "This scroll will permit thee to perform the ritual necessary to either create, or reconstruct, stone creatures and instill within them the power of thought. First, gather the materials discussed in the previous chapters. After thou hast performed said task, thou shouldst refer back to this scroll and begin...")
+        add_dialogue(itemref, "     Vas Flam Uus~~")
+        add_dialogue(itemref, "This scroll will permit thee to perform the ritual necessary to either create, or reconstruct, stone creatures and instill within them the power of thought. First, gather the materials discussed in the previous chapters. After thou hast performed said task, thou shouldst refer back to this scroll and begin...")
         if local6 and local7 then
             local15 = call_0001H(7938, 1812, {17493, 7715}, -356)
         end
@@ -77,7 +77,7 @@ function func_0710(eventid, itemref)
         local16[2] = local16[2] - 1
         local16[3] = local16[3] + 2
         local22 = call_0026H(local16)
-        say(itemref, "@He gave up his heart... so that Adjhar may live!* Well, not to be morbid, but I suppose the incantation should work now.@")
+        add_dialogue(itemref, "@He gave up his heart... so that Adjhar may live!* Well, not to be morbid, but I suppose the incantation should work now.@")
         set_item_glow(-356)
     end
 end

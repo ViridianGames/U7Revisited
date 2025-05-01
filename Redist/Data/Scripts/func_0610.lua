@@ -41,19 +41,19 @@ function func_0610(eventid, itemref)
 
     if local8 then
         switch_talk_to(1, 0)
-        say("\"I am gladdened to see thee still alive, my good friend. I was sorely grieved at thine apparent demise.~~\"In the midst of our battle I did lose track of thee. It is good to find thee safe.~~\"If thou art feeling up to it, let us then continue our quest.\"*")
+        add_dialogue("\"I am gladdened to see thee still alive, my good friend. I was sorely grieved at thine apparent demise.~~\"In the midst of our battle I did lose track of thee. It is good to find thee safe.~~\"If thou art feeling up to it, let us then continue our quest.\"*")
         hide_npc(1)
     end
 
     if local9 then
         switch_talk_to(3, 0)
-        say("\"Thy recovery is a miracle! 'Twould have been a severe blow for this world to lose its Avatar.~~\"When at last thou wert found, thy body was being taken to this place in a wagon driven by two hooded Fellowship members.~~\"Thou hast suffered through a terrible ordeal and travelled far. Perhaps thou shouldst rest...\"*")
+        add_dialogue("\"Thy recovery is a miracle! 'Twould have been a severe blow for this world to lose its Avatar.~~\"When at last thou wert found, thy body was being taken to this place in a wagon driven by two hooded Fellowship members.~~\"Thou hast suffered through a terrible ordeal and travelled far. Perhaps thou shouldst rest...\"*")
         hide_npc(3)
     end
 
     if local10 then
         switch_talk_to(4, 0)
-        say("\"The Fellowship members who brought thee to this place did not speak once during the entire journey.~~\"But it seems they did the right thing in bringing thee here for thou hast been revived!~~\"Let us all have a drink in celebration! We will be ready to leave whenever thou dost wish it.\"*")
+        add_dialogue("\"The Fellowship members who brought thee to this place did not speak once during the entire journey.~~\"But it seems they did the right thing in bringing thee here for thou hast been revived!~~\"Let us all have a drink in celebration! We will be ready to leave whenever thou dost wish it.\"*")
         hide_npc(4)
     end
 

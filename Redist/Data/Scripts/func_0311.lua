@@ -2,7 +2,7 @@
 function func_0311H(eventid, itemref)
     if eventid == 1 then
         if get_flag(0x0004) then
-            say(0, {"It work before.", "How odd!"})
+            add_dialogue(0, {"It work before.", "How odd!"})
             return
         end
         if get_flag(0x0057) or not call_script(0x093E) then -- TODO: Map 093EH (possibly check condition).
@@ -77,7 +77,7 @@ function func_0311H(eventid, itemref)
     elseif eventid == 8 then
         if not call_script(0x0826, itemref) then -- TODO: Map 0826H (possibly check state).
             call_script(0x0821, itemref)
-            say(0, {"Let thyself enter.", "No, Avatar."})
+            add_dialogue(0, {"Let thyself enter.", "No, Avatar."})
         end
     elseif eventid == 7 then
         if not call_script(0x0826, itemref) then

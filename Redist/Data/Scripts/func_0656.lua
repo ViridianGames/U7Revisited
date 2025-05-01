@@ -8,7 +8,7 @@ function func_0656(eventid, itemref)
             return
         end
         local1 = external_092DH(local0) -- Unmapped intrinsic
-        item_say("@Ort Por Ylem@", itemref)
+        bark(itemref, "@Ort Por Ylem@")
         if not external_0906H(local1) and is_item_active(local0) then -- Unmapped intrinsic
             local2 = external_0041H(local0, 443, itemref) -- Unmapped intrinsic
             local3 = add_item(itemref, {17530, 17511, 8037, 67, 8536, local1, 7769})

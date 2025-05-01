@@ -11,83 +11,83 @@ function func_04D7(eventid, itemref)
     end
 
     switch_talk_to(215, 0)
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x0294) then
-        say("The winged gargoyle has a very calm air about him. As he first sees you, a smile of recognition appears on his face. \"To present greetings, Avatar.\"")
+        add_dialogue("The winged gargoyle has a very calm air about him. As he first sees you, a smile of recognition appears on his face. \"To present greetings, Avatar.\"")
         set_flag(0x0294, true)
     else
-        say("\"To ask how to help you?\"")
+        add_dialogue("\"To ask how to help you?\"")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be called Ansikart.\"")
-            _AddAnswer("Ansikart")
-            _RemoveAnswer("name")
+            add_dialogue("\"To be called Ansikart.\"")
+            add_answer("Ansikart")
+            remove_answer("name")
         elseif answer == "Ansikart" then
-            say("\"To mean `anti-dry-master.'\"")
-            _RemoveAnswer("Ansikart")
+            add_dialogue("\"To mean `anti-dry-master.'\"")
+            remove_answer("Ansikart")
         elseif answer == "job" then
-            say("\"To serve food and drink to others.\"")
-            _AddAnswer({"others", "buy"})
+            add_dialogue("\"To serve food and drink to others.\"")
+            add_answer({"others", "buy"})
         elseif answer == "buy" then
             local0 = callis_001C(callis_001B(-215))
             if local0 == 7 then
                 call_0841H()
             else
-                say("\"To apologize, but to ask you to return when I am open.\"")
+                add_dialogue("\"To apologize, but to ask you to return when I am open.\"")
             end
         elseif answer == "others" then
-            say("\"To know all the gargoyles in Vesper. To want to know about specific ones?\"")
+            add_dialogue("\"To know all the gargoyles in Vesper. To want to know about specific ones?\"")
             local1 = call_090AH()
             if not local1 then
-                say("\"To want information, perhaps, about the provisioner or the sage?\"")
-                _AddAnswer({"provisioner", "sage"})
+                add_dialogue("\"To want information, perhaps, about the provisioner or the sage?\"")
+                add_answer({"provisioner", "sage"})
             else
-                say("\"To warn you that many hold resentment for their poor treatment. To be careful, please.\"")
+                add_dialogue("\"To warn you that many hold resentment for their poor treatment. To be careful, please.\"")
             end
-            _AddAnswer("Vesper")
-            _RemoveAnswer("others")
+            add_answer("Vesper")
+            remove_answer("others")
         elseif answer == "Vesper" then
-            say("\"To be a town full of hate -- to have the humans hate us and to know many hate them, especially Anmanivas and Foranamo. To be not a good thing.\" He appears saddened.")
-            _AddAnswer({"Foranamo", "Anmanivas"})
-            _RemoveAnswer("Vesper")
+            add_dialogue("\"To be a town full of hate -- to have the humans hate us and to know many hate them, especially Anmanivas and Foranamo. To be not a good thing.\" He appears saddened.")
+            add_answer({"Foranamo", "Anmanivas"})
+            remove_answer("Vesper")
         elseif answer == "sage" then
-            say("\"To be named Wis-Sur.\"")
+            add_dialogue("\"To be named Wis-Sur.\"")
             if not get_flag(0x0003) then
-                say("\"To be a great mind, knowledgeable in many things.\"")
+                add_dialogue("\"To be a great mind, knowledgeable in many things.\"")
             else
-                say("\"To have once been a great mind. To be now paranoid and reclusive. To feel pity for Wis-Sur.\"")
+                add_dialogue("\"To have once been a great mind. To be now paranoid and reclusive. To feel pity for Wis-Sur.\"")
             end
-            _RemoveAnswer("sage")
+            remove_answer("sage")
         elseif answer == "provisioner" then
-            say("\"To be Aurvidlem. To have become sullen lately, but to know not why.\"")
-            _RemoveAnswer("provisioner")
+            add_dialogue("\"To be Aurvidlem. To have become sullen lately, but to know not why.\"")
+            remove_answer("provisioner")
         elseif answer == "For-Lem" then
-            say("\"To be a laborer for the town.\"")
-            _AddAnswer({"tolerant"})
-            _RemoveAnswer("For-Lem")
+            add_dialogue("\"To be a laborer for the town.\"")
+            add_answer({"tolerant"})
+            remove_answer("For-Lem")
         elseif answer == "Lap-Lem" then
-            say("\"To mine for the Mining company here. To be the only gargoyle still mining here.\" He nods his head.~~ \"To be very tolerant, like For-Lem.\"")
-            _AddAnswer({"For-Lem", "tolerant"})
-            _RemoveAnswer("Lap-Lem")
+            add_dialogue("\"To mine for the Mining company here. To be the only gargoyle still mining here.\" He nods his head.~~ \"To be very tolerant, like For-Lem.\"")
+            add_answer({"For-Lem", "tolerant"})
+            remove_answer("Lap-Lem")
         elseif answer == "tolerant" then
-            say("\"To work now with only humans, who hate and degrade him. To continue working, however, despite this. To be quite tolerant of human intolerance.\" He nods, as if to emphasize his point.")
-            _RemoveAnswer("tolerant")
+            add_dialogue("\"To work now with only humans, who hate and degrade him. To continue working, however, despite this. To be quite tolerant of human intolerance.\" He nods, as if to emphasize his point.")
+            remove_answer("tolerant")
         elseif answer == "Anmanivas" then
             local2 = callis_0037(callis_001B(-217))
             if not local2 then
                 local3 = "have been"
-                say("\"To have been killed by you in this very tavern. To remember not?~~\"To have been his fault, but still, to tell you I feel remorse for him and his brother.\"")
+                add_dialogue("\"To have been killed by you in this very tavern. To remember not?~~\"To have been his fault, but still, to tell you I feel remorse for him and his brother.\"")
             else
                 local3 = "be"
             end
-            say("\"To have worked the mines with Lap-Lem, but to have left just recently.\" He shakes his head.~~\"To hate the humans who work there, and who live on the other side of the oasis. To be too violent. To ", local3, " no longer permitted on the other side.\"")
-            _AddAnswer("Lap-Lem")
-            _RemoveAnswer("Anmanivas")
+            add_dialogue("\"To have worked the mines with Lap-Lem, but to have left just recently.\" He shakes his head.~~\"To hate the humans who work there, and who live on the other side of the oasis. To be too violent. To ", local3, " no longer permitted on the other side.\"")
+            add_answer("Lap-Lem")
+            remove_answer("Anmanivas")
         elseif answer == "Foranamo" then
             local4 = callis_0037(callis_001B(-218))
             if not local4 then
@@ -95,10 +95,10 @@ function func_04D7(eventid, itemref)
             else
                 local5 = "be"
             end
-            say("\"To be brother to Anmanivas and to have been raised by the same parent. To hate humans as much as Anmanivas, and,\" he sighs, \"to ", local5, " allowed no longer to visit the human side.\"")
-            _RemoveAnswer("Foranamo")
+            add_dialogue("\"To be brother to Anmanivas and to have been raised by the same parent. To hate humans as much as Anmanivas, and,\" he sighs, \"to ", local5, " allowed no longer to visit the human side.\"")
+            remove_answer("Foranamo")
         elseif answer == "bye" then
-            say("\"To hope you will bring peace again to our people, Avatar.\"*")
+            add_dialogue("\"To hope you will bring peace again to our people, Avatar.\"*")
             return
         end
     end
@@ -107,7 +107,7 @@ function func_04D7(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

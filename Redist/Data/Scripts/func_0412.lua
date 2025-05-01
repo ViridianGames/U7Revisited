@@ -13,9 +13,9 @@ function func_0412(eventid, itemref)
 
         if local0 == 7 then
             if local5 then
-                say("Dell frowns at you for distracting him during the Fellowship meeting.*")
+                add_dialogue("Dell frowns at you for distracting him during the Fellowship meeting.*")
             else
-                say("\"I do not have time to talk with thee! I must get to the meeting of The Fellowship! Come to my shop tomorrow!\"*")
+                add_dialogue("\"I do not have time to talk with thee! I must get to the meeting of The Fellowship! Come to my shop tomorrow!\"*")
             end
             return
         end
@@ -23,41 +23,41 @@ function func_0412(eventid, itemref)
         add_answer({"bye", "murder", "job", "name"})
 
         if not get_flag(83) then
-            say("You see a stern shopkeeper who might once have been a strong fighter.")
+            add_dialogue("You see a stern shopkeeper who might once have been a strong fighter.")
             if local3 == 7 then
-                say("\"Thou hast entered my shop, so thou had best buy something.\"")
+                add_dialogue("\"Thou hast entered my shop, so thou had best buy something.\"")
             end
-            say("\"Who might I be addressing?\"")
+            add_dialogue("\"Who might I be addressing?\"")
             local6 = get_answer({local4, local2})
             if local6 == local2 then
-                say("\"Hmph. My name is Dell.\"")
+                add_dialogue("\"Hmph. My name is Dell.\"")
             else
-                say("\"Oh, art thou really? I did not know there were so many of thee! Why, only last week did an 'Avatar' come through here! He took me for 20 gold, too! An expert trickster, he was!\"~~Dell looks you up and down. \"Avatar, indeed! I do not like Avatars. But never mind that. I am called Dell. What dost thou want?\"")
+                add_dialogue("\"Oh, art thou really? I did not know there were so many of thee! Why, only last week did an 'Avatar' come through here! He took me for 20 gold, too! An expert trickster, he was!\"~~Dell looks you up and down. \"Avatar, indeed! I do not like Avatars. But never mind that. I am called Dell. What dost thou want?\"")
             end
             set_flag(83, true)
         else
-            say("\"How may I help thee?\" Dell asks.")
+            add_dialogue("\"How may I help thee?\" Dell asks.")
         end
 
         while true do
             local answer = get_answer()
             if answer == "name" then
-                say("\"My name is Dell. Did I not say that already?\"")
+                add_dialogue("\"My name is Dell. Did I not say that already?\"")
                 remove_answer("name")
             elseif answer == "job" then
-                say("Dell looks disgruntled. \"I sell weapons, armour, and provisions when I am not doing work for The Fellowship.\"")
+                add_dialogue("Dell looks disgruntled. \"I sell weapons, armour, and provisions when I am not doing work for The Fellowship.\"")
                 add_answer("buy")
                 if local3 == 7 then
-                    say("\"If thou art not going to buy anything, then get thy face out of my sight!\"")
+                    add_dialogue("\"If thou art not going to buy anything, then get thy face out of my sight!\"")
                 end
                 add_answer("Fellowship")
             elseif answer == "murder" then
-                say("\"I am afraid I know nothing about it save for what is being said in the street, so do not ask me. If thou art not going to buy anything, then thou art wasting my time. Go away.\"")
+                add_dialogue("\"I am afraid I know nothing about it save for what is being said in the street, so do not ask me. If thou art not going to buy anything, then thou art wasting my time. Go away.\"")
                 remove_answer("murder")
                 local7 = get_item_type(-1)
                 if local7 then
                     switch_talk_to(1, 0)
-                    say("Iolo whispers to you, \"Pleasant chap, is he not?\"")
+                    add_dialogue("Iolo whispers to you, \"Pleasant chap, is he not?\"")
                     hide_npc(1)
                     switch_talk_to(18, 0)
                 end
@@ -69,7 +69,7 @@ function func_0412(eventid, itemref)
                 remove_answer("philosophy")
             elseif answer == "buy" then
                 if local3 == 7 then
-                    say("\"Certainly, " .. local1 .. ". What type of ware wouldst thou wish to see?\"")
+                    add_dialogue("\"Certainly, " .. local1 .. ". What type of ware wouldst thou wish to see?\"")
                     save_answers()
                     add_answer({"provisions", "armour", "weapons", "nothing"})
                     local answer = get_answer()
@@ -83,12 +83,12 @@ function func_0412(eventid, itemref)
                         restore_answers()
                     end
                 else
-                    say("\"Come to my shop during business hours.\"")
+                    add_dialogue("\"Come to my shop during business hours.\"")
                 end
             elseif answer == "bye" then
-                say("\"Hmpf.\"")
+                add_dialogue("\"Hmpf.\"")
                 if local3 == 7 then
-                    say("\"Spend more money next time thou dost come in.\"*")
+                    add_dialogue("\"Spend more money next time thou dost come in.\"*")
                 end
                 break
             end
@@ -97,7 +97,7 @@ function func_0412(eventid, itemref)
         local0 = get_schedule()
         local3 = switch_talk_to(18)
         local8 = random(1, 4)
-        local9 = check_item_state(-18)
+        local9 = check_item_state(18)
 
         if local3 == 7 then
             if local8 == 1 then
@@ -109,7 +109,7 @@ function func_0412(eventid, itemref)
             elseif local8 == 4 then
                 local9 = "@Finest goods here!@"
             end
-            item_say(local9, -18)
+            bark(18, local9)
         else
             switch_talk_to(18)
         end

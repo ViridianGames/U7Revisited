@@ -10,10 +10,10 @@ function func_094B(p0, p1)
     local7 = 0
     while local5 do
         if not local6 then
-            say("\"To be my final offer -- " .. local3 .. ".\"")
+            add_dialogue("\"To be my final offer -- " .. local3 .. ".\"")
         else
             local8 = external_090FH(p0) -- Unmapped intrinsic
-            say("\"To want " .. local3 .. " gold.\"")
+            add_dialogue("\"To want " .. local3 .. " gold.\"")
         end
         local9 = local3 * 3
         local9 = math.floor(local9 / 2)
@@ -21,28 +21,28 @@ function func_094B(p0, p1)
         local11 = math.floor(local3 / 4)
         local12 = {local11, local10, local3, local9}
         if not local6 then
-            say("\"To accept?\"")
+            add_dialogue("\"To accept?\"")
             local7 = external_090AH() -- Unmapped intrinsic
             if local7 then
-                say("\"To have a deal.\"")
+                add_dialogue("\"To have a deal.\"")
                 return local3
             else
-                say("\"To wonder why you bothered me.\"")
+                add_dialogue("\"To wonder why you bothered me.\"")
                 return 0
             end
         else
             local4 = local2
-            say("\"To have another offer?\"")
+            add_dialogue("\"To have another offer?\"")
             local4 = ask_number(0, 1, local9, 0) -- Unmapped intrinsic
         end
         if local4 == 0 then
-            say("\"To notice you are obviously not interested.\"")
+            add_dialogue("\"To notice you are obviously not interested.\"")
             return 0
         elseif local4 >= local3 then
-            say("\"To accept your offer.\"")
+            add_dialogue("\"To accept your offer.\"")
             return local4
         elseif local4 < local12[4] then
-            say("\"To be happy,\" he says. \"To have wanted to keep it anyway! To tell you to leave.\"")
+            add_dialogue("\"To be happy,\" he says. \"To have wanted to keep it anyway! To tell you to leave.\"")
             abort()
             return 0
         end
@@ -94,10 +94,10 @@ function func_094B(p0, p1)
                 local3 = local3 - local13
             end
         elseif local7 >= 5 then
-            say("\"To be foolish to accept so little!\"")
+            add_dialogue("\"To be foolish to accept so little!\"")
             return 0
         end
-        say("\"To charge more next time. To have sold to you too cheaply!\"")
+        add_dialogue("\"To charge more next time. To have sold to you too cheaply!\"")
     end
     return local3
 end

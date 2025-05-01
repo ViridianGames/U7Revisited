@@ -29,7 +29,7 @@ function func_0625(eventid, itemref)
     local3 = get_item_data(-356)
     if get_location() == 0 then -- Unmapped intrinsic
         switch_talk_to(259, 0)
-        say("You see an irate guard.~~Years of indoctrination have instilled in him an overly developed sense of discipline~~and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.~~ \"Such behavior will never be tolerated inside the sanctuary of Trinsic's walls.~~Thy red cloak and blonde curls show only that thou art a vile imposter and not a true Avatar.~~To the Death!\"")
+        add_dialogue("You see an irate guard.~~Years of indoctrination have instilled in him an overly developed sense of discipline~~and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.~~ \"Such behavior will never be tolerated inside the sanctuary of Trinsic's walls.~~Thy red cloak and blonde curls show only that thou art a vile imposter and not a true Avatar.~~To the Death!\"")
         hide_npc(259)
         external_007CH() -- Unmapped intrinsic
         return
@@ -37,7 +37,7 @@ function func_0625(eventid, itemref)
 
     if local2[local1[local3]] then
         switch_talk_to(258, 0)
-        say("The guard glares at you. \"Unrepentant scoundrel!\"")
+        add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
         hide_npc(258)
         external_007CH() -- Unmapped intrinsic
         return
@@ -46,12 +46,12 @@ function func_0625(eventid, itemref)
     switch_talk_to(258, 0)
     local4 = count_items(-359, -359, 644, -357) -- Unmapped intrinsic
     if get_random(1, 2) == 1 and local4 then
-        say("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
+        add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
         local5 = get_answer()
         if not local5 then
-            say("\"What is your liberty worth?\"")
+            add_dialogue("\"What is your liberty worth?\"")
             if external_084BH(local4) then -- Unmapped intrinsic
-                say("The guard looks unimpressed by your paltry offer. \"How about a bit more? Our jail is populated by some unsavory characters.\"")
+                add_dialogue("The guard looks unimpressed by your paltry offer. \"How about a bit more? Our jail is populated by some unsavory characters.\"")
                 if not external_084BH(local4) then -- Unmapped intrinsic
                     if is_player_female() then
                         local6 = "woman"
@@ -69,7 +69,7 @@ function func_0625(eventid, itemref)
                         set_schedule(local13, 12)
                     end
                     local15 = add_item(8, 30, -359, itemref)
-                    say("The guard winks. \"I am pleased to see that thou art a thinking " .. local6 .. ". I will take care of this disturbance.\"")
+                    add_dialogue("The guard winks. \"I am pleased to see that thou art a thinking " .. local6 .. ". I will take care of this disturbance.\"")
                     play_music(itemref, 255)
                     return
                 end
@@ -77,17 +77,17 @@ function func_0625(eventid, itemref)
         end
     end
 
-    say("You see an angry guard. \"Cease and desist immediately!.~~Wilt thou come quietly?\"")
+    add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Wilt thou come quietly?\"")
     local5 = get_answer()
     if not local5 then
-        say("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
+        add_dialogue("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
         hide_npc(258)
         add_item(-356, 2, 5, {17447, 8046, 1573, 7765})
         local13 = add_item(-356, {1596, 8021, 1, 7719})
         return
     end
 
-    say("\"An unfortunate decision, my friend.\"")
+    add_dialogue("\"An unfortunate decision, my friend.\"")
     external_007CH() -- Unmapped intrinsic
     return
 end

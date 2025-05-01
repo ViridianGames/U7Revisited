@@ -52,35 +52,35 @@ function tavern_vendor_0951(object_id, event)
     log("Initial answers: ", table.concat(answers, ", "))
 
     while continue do
-        say(object_id, strings[0x00BB])
+        add_dialogue(object_id, strings[0x00BB])
         local choice = get_answer()
         if choice == 1 then
-            say(object_id, strings[0x00D5])
+            add_dialogue(object_id, strings[0x00D5])
             continue = false
         elseif choice == 6 and not get_flag(0x012B) then
-            say(object_id, strings[0x00DD] .. (get_player_name() or "Avatar") .. strings[0x01C2])
+            add_dialogue(object_id, strings[0x00DD] .. (get_player_name() or "Avatar") .. strings[0x01C2])
         else
             local price = prices[choice]
             local item_id = item_ids[choice]
             local suffix = suffixes[choice]
             local result = buy_item(suffix, item_id, 1, price, items[choice])
-            say(object_id, strings[0x01C5] .. result .. strings[0x01C8])
+            add_dialogue(object_id, strings[0x01C5] .. result .. strings[0x01C8])
             local buy_response = get_answer()
             if price == 377 then
-                say(object_id, strings[0x01EB])
+                add_dialogue(object_id, strings[0x01EB])
                 buy_response = buy_item(suffix, item_id, math.random(1, 20), price, items[choice])
             else
                 buy_response = buy_item(suffix, item_id, 1, price, items[choice])
             end
             if buy_response == 1 then
-                say(object_id, strings[0x0209])
+                add_dialogue(object_id, strings[0x0209])
             elseif buy_response == 2 then
-                say(object_id, strings[0x0211])
+                add_dialogue(object_id, strings[0x0211])
             elseif buy_response == 3 then
-                say(object_id, strings[0x0239])
+                add_dialogue(object_id, strings[0x0239])
             end
         end
-        say(object_id, strings[0x0264])
+        add_dialogue(object_id, strings[0x0264])
         continue = get_answer()
     end
     restore_answers()

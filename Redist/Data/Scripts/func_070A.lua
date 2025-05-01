@@ -11,7 +11,7 @@ function func_070A(eventid, itemref)
                 set_item_frame(local1, 7)
                 local2 = external_0015H(local1, 65) -- Unmapped intrinsic
                 local2 = external_0036H(local0) -- Unmapped intrinsic
-                item_say("@I summon thee!@", local0)
+                bark(local0, "@I summon thee!@")
                 local2 = add_item(external_001BH(-356), {22, 7719}) -- Unmapped intrinsic
                 local2 = add_item(local0, {8033, 2, 17447, 8044, 1802, 17493, 7937, 3, 17447, 8045, 1, 17447, 8044, 2, 17447, 8033, 2, 17447, 8048, 3, 17447, 7791})
                 local3 = external_0035H(0, 20, 336, itemref) -- Unmapped intrinsic

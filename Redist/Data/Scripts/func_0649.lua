@@ -5,7 +5,7 @@ function func_0649(eventid, itemref)
     if eventid == 1 then
         local0 = item_select_modal() -- Unmapped intrinsic
         local1 = external_092DH(local0) -- Unmapped intrinsic
-        item_say("@An Nox@", itemref)
+        bark(itemref, "@An Nox@")
         if not external_0906H(local1) and is_item_active(local0) then -- Unmapped intrinsic
             local2 = add_item(itemref, {17511, 17509, 8038, 64, 8536, local1, 7769})
             local2 = add_item(local0, 6, 1609, {17493, 7715})

@@ -16,29 +16,29 @@ function func_08CD()
     local8 = {1, 1, 1, 1, 1, 1, 10, 0}
 
     while local0 do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         local9 = call_090CH(local1)
         if local9 == 1 then
-            say("All right.")
+            add_dialogue("All right.")
             local0 = false
         else
             local10 = call_091BH(local7[local9], local4[local9], local6[local9], local1[local9], local5)
             local11 = 0
-            say("^", local10, " Canst thou afford my price?")
+            add_dialogue("^", local10, " Canst thou afford my price?")
             local12 = call_090AH()
             if local12 then
                 local temp = local2[local9] == 616 and "" or "How many " .. (local8[local9] > 1 and "sets " or "") .. "wouldst thou like?"
-                say("^" .. temp .. "\"")
+                add_dialogue("^" .. temp .. "\"")
                 local11 = call_08F8H(true, 1, local2[local9] == 616 and 0 or 20, local4[local9], local8[local9], local3[local9], local2[local9])
             end
             if local11 == 1 then
-                say("Excellent.")
+                add_dialogue("Excellent.")
             elseif local11 == 2 then
-                say("Thou cannot carry that much of a load.")
+                add_dialogue("Thou cannot carry that much of a load.")
             elseif local11 == 3 then
-                say("Thou dost not have the gold for that!")
+                add_dialogue("Thou dost not have the gold for that!")
             end
-            say("Is there something else thou mayest wish to buy?")
+            add_dialogue("Is there something else thou mayest wish to buy?")
             local0 = call_090AH()
         end
     end
@@ -48,6 +48,6 @@ function func_08CD()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

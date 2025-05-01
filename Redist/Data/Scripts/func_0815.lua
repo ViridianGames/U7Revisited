@@ -14,7 +14,7 @@ function func_0815(eventid, itemref)
         local3 = 2
     elseif local1 == 1 then
         local4 = "@Excuse me, the door is already open. Is it not rather futile to lock it now?@"
-        say(itemref, local4)
+        add_dialogue(itemref, local4)
     elseif local1 == 2 then
         if local2 == 228 then
             set_flag(737, true)
@@ -24,7 +24,7 @@ function func_0815(eventid, itemref)
         local3 = 0
     elseif local1 == 3 and _Random2(10, 1) == 1 then
         local4 = "@Excuse me, the door appears magically locked. Is it not rather difficult to unlock it with a key?@"
-        say(itemref, local4)
+        add_dialogue(itemref, local4)
     end
     if local3 ~= -1 then
         call_081CH(local3, eventid)

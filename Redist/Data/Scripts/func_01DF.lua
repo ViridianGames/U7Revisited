@@ -16,7 +16,7 @@ function func_01DF(eventid, itemref)
 
     if not get_flag(0x0154) then
         if not local0 then
-            say("The creature ignores you.*")
+            add_dialogue("The creature ignores you.*")
             return -- abrt
         end
         call_087CH()
@@ -24,28 +24,28 @@ function func_01DF(eventid, itemref)
 
     -- Initial greeting
     if not get_flag(0x013C) then
-        say("The ape-like creature approaches you cautiously. After a few minutes, it says, \"You are greeted, human.\"")
+        add_dialogue("The ape-like creature approaches you cautiously. After a few minutes, it says, \"You are greeted, human.\"")
         set_flag(0x013C, true)
     else
-        say("The emp approaches you cautiously. After a few minutes, it says, \"You are greeted, human.\"")
+        add_dialogue("The emp approaches you cautiously. After a few minutes, it says, \"You are greeted, human.\"")
     end
 
     -- Honey check
-    say("\"Is more honey had by you?\" The Emp asks hopefully.")
+    add_dialogue("\"Is more honey had by you?\" The Emp asks hopefully.")
     local1 = call_090AH()
     if not local1 then
         if local0 then
             call_087CH()
         else
-            say("\"No honey is had by you,\" says the Emp, obviously disappointed.")
+            add_dialogue("\"No honey is had by you,\" says the Emp, obviously disappointed.")
         end
     else
-        say("Obviously disappointed, the Emp says, \"That is too bad. What is your wish?\"")
+        add_dialogue("Obviously disappointed, the Emp says, \"That is too bad. What is your wish?\"")
     end
 
     -- Main dialogue loop
     while true do
-        _AddAnswer({"bye", "job", "name"})
+        add_answer({"bye", "job", "name"})
         local answer = wait_for_answer()
 
         if answer == "name" then
@@ -68,33 +68,33 @@ function func_01DF(eventid, itemref)
             end
 
             if local2 == 1 then
-                say("\"Terandan is my name.\"")
+                add_dialogue("\"Terandan is my name.\"")
                 local9 = "he"
             elseif local2 == 2 then
-                say("\"Sendala is my name.\"")
+                add_dialogue("\"Sendala is my name.\"")
                 local9 = "she"
             elseif local2 == 3 then
-                say("\"Tvellum is my name.\"")
+                add_dialogue("\"Tvellum is my name.\"")
                 local9 = "he"
             elseif local2 == 4 then
-                say("\"Simrek is my name.\"")
+                add_dialogue("\"Simrek is my name.\"")
                 local9 = "she"
             end
 
-            _RemoveAnswer("name")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"No job is had by me. Food is gathered by me.\"")
-            _AddAnswer("food")
+            add_dialogue("\"No job is had by me. Food is gathered by me.\"")
+            add_answer("food")
         elseif answer == "food" then
-            say("\"Fruit, milk, cheese are eaten by Emps.\"")
-            _AddAnswer({"cheese", "milk", "fruits"})
+            add_dialogue("\"Fruit, milk, cheese are eaten by Emps.\"")
+            add_answer({"cheese", "milk", "fruits"})
         elseif answer == "milk" or answer == "cheese" then
-            say("\"Cheese and milk are liked by Emps, but they are hard to find. Only from humans can these foods be found.\"")
-            _RemoveAnswer({"milk", "cheese"})
+            add_dialogue("\"Cheese and milk are liked by Emps, but they are hard to find. Only from humans can these foods be found.\"")
+            remove_answer({"milk", "cheese"})
         elseif answer == "fruits" then
-            say("\"Fruits are found easily in the forest,\" ", local9, " says. \"They are what Emps use as food most often.\"")
+            add_dialogue("\"Fruits are found easily in the forest,\" ", local9, " says. \"They are what Emps use as food most often.\"")
         elseif answer == "bye" then
-            say("\"Farewell is said to you.\"*")
+            add_dialogue("\"Farewell is said to you.\"*")
             break
         end
 
@@ -112,7 +112,7 @@ end
 function set_flag(flag, value) -- Placeholder
 end
 
-function say(...) -- Concatenate and display
+function add_dialogue(...) -- Concatenate and display
     local args = {...}
     print(table.concat(args)) -- Adjust to your dialogue system
 end

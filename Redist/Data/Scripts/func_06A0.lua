@@ -38,8 +38,8 @@ function func_06A0(eventid, itemref)
 
     if local1 and local3 then
         switch_talk_to(286, 1)
-        say("Amidst muttered curses detailing the uselessness of ether and bothersome inter-dimensional beings, Erethian intones the magical words,")
-        say("\"An Vas Ailem!   Kal Bet Ailem!\"*")
+        add_dialogue("Amidst muttered curses detailing the uselessness of ether and bothersome inter-dimensional beings, Erethian intones the magical words,")
+        add_dialogue("\"An Vas Ailem!   Kal Bet Ailem!\"*")
         _HideNPC(-286)
 
         -- Spawn well and tools
@@ -78,9 +78,9 @@ function func_06A0(eventid, itemref)
         end
 
         switch_talk_to(286, 1)
-        say("Little beads of sweat appear on the elderly mage's furrowed brow. \"That was a bit harder than I'd expected.\" He pauses to mop his forehead with the tip of his sleeve, \"I had to redirect a small underground river for the well to tap. Now, then. Thou shalt have need of some few tools to make use of this equipment, shan't thee?\" His rhetorical question goes unanswered as he once again prepares to unleash his will upon the world.")
+        add_dialogue("Little beads of sweat appear on the elderly mage's furrowed brow. \"That was a bit harder than I'd expected.\" He pauses to mop his forehead with the tip of his sleeve, \"I had to redirect a small underground river for the well to tap. Now, then. Thou shalt have need of some few tools to make use of this equipment, shan't thee?\" His rhetorical question goes unanswered as he once again prepares to unleash his will upon the world.")
         if local14 and call_GetItemQuality(local14) == 100 then
-            say("He stops himself for a moment and says, \"If perchance thou hadst some item or other laying upon the floor here, thou'lt find it within yonder chest.\" He motions to the chest sitting on the floor, then continues with his spell.*")
+            add_dialogue("He stops himself for a moment and says, \"If perchance thou hadst some item or other laying upon the floor here, thou'lt find it within yonder chest.\" He motions to the chest sitting on the floor, then continues with his spell.*")
         end
         _HideNPC(-286)
 
@@ -108,7 +108,7 @@ function func_06A0(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

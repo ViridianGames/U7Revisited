@@ -6,65 +6,65 @@ function func_041E(itemref)
     if eventid() == 1 then
         switch_talk_to(30, 0)
         local0 = callis_003B()
-        _AddAnswer({"bye", "job", "name"})
+        add_answer({"bye", "job", "name"})
         local1 = call_08F7H(-3)
         if local1 then
-            _AddAnswer("Shamino")
+            add_answer("Shamino")
         end
         if not get_flag(159) then
-            say("This lovely actress is dressed in a mouse costume.")
-            say("\"Hello, there!\" Amber says.")
+            add_dialogue("This lovely actress is dressed in a mouse costume.")
+            add_dialogue("\"Hello, there!\" Amber says.")
             set_flag(159, true)
         else
-            say("\"How may I help thee?\" Amber asks.")
+            add_dialogue("\"How may I help thee?\" Amber asks.")
         end
         while true do
             if cmp_strings("name", 1) then
-                say("\"I am Amber.\"")
-                _RemoveAnswer("name")
+                add_dialogue("\"I am Amber.\"")
+                remove_answer("name")
             elseif cmp_strings("job", 1) then
-                say("\"I am an actress at the Royal Theatre. I am playing the role of Sherry the Mouse in the new play.\"")
-                _AddAnswer({"play", "Sherry", "Royal Theatre"})
+                add_dialogue("\"I am an actress at the Royal Theatre. I am playing the role of Sherry the Mouse in the new play.\"")
+                add_answer({"play", "Sherry", "Royal Theatre"})
             elseif cmp_strings("Royal Theatre", 1) then
-                say("\"'Tis a lovely space in which to perform. I have dedicated my life to acting, thou knowest.\"")
-                _RemoveAnswer("Royal Theatre")
-                _AddAnswer({"dedicated", "space"})
+                add_dialogue("\"'Tis a lovely space in which to perform. I have dedicated my life to acting, thou knowest.\"")
+                remove_answer("Royal Theatre")
+                add_answer({"dedicated", "space"})
             elseif cmp_strings("space", 1) then
-                say("\"Raymundo himself had a hand in the design of the theatre.\"")
-                _RemoveAnswer("space")
+                add_dialogue("\"Raymundo himself had a hand in the design of the theatre.\"")
+                remove_answer("space")
             elseif cmp_strings("dedicated", 1) then
-                say("\"Actually, this will be my debut theatrical performance. I have been working as a barmaid waiting for my first chance to be in the theatre.\"")
-                _RemoveAnswer("dedicated")
+                add_dialogue("\"Actually, this will be my debut theatrical performance. I have been working as a barmaid waiting for my first chance to be in the theatre.\"")
+                remove_answer("dedicated")
             elseif cmp_strings("play", 1) then
-                say("\"Between thee and me, methinks the play stinks.\" She winks at you.")
-                _RemoveAnswer("play")
+                add_dialogue("\"Between thee and me, methinks the play stinks.\" She winks at you.")
+                remove_answer("play")
             elseif cmp_strings("Sherry", 1) then
-                say("\"Canst thou imagine such drivel? I do not believe there ever was a Sherry the Mouse. Who ever heard of a mouse that could talk! Especially these lines! I would rather play a queen. Much more fitting for me, I would say.\"")
-                _RemoveAnswer("Sherry")
-                _AddAnswer({"queen", "lines"})
+                add_dialogue("\"Canst thou imagine such drivel? I do not believe there ever was a Sherry the Mouse. Who ever heard of a mouse that could talk! Especially these lines! I would rather play a queen. Much more fitting for me, I would say.\"")
+                remove_answer("Sherry")
+                add_answer({"queen", "lines"})
             elseif cmp_strings("lines", 1) then
-                say("\"I have to memorize this preposterous children's story called 'Hubert's Hair-Raising Adventure'.\"")
-                _RemoveAnswer("lines")
+                add_dialogue("\"I have to memorize this preposterous children's story called 'Hubert's Hair-Raising Adventure'.\"")
+                remove_answer("lines")
             elseif cmp_strings("queen", 1) then
-                say("\"I asked Raymundo about this and he threw a tantrum. He said that it would not be historically accurate. Ha! As if that were something of any significance!\"")
-                _RemoveAnswer("queen")
+                add_dialogue("\"I asked Raymundo about this and he threw a tantrum. He said that it would not be historically accurate. Ha! As if that were something of any significance!\"")
+                remove_answer("queen")
             elseif cmp_strings("Shamino", 1) then
                 local1 = call_08F7H(-3)
                 if local1 then
-                    say("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.*")
+                    add_dialogue("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.*")
                     switch_talk_to(3, 0)
-                    say("\"Not in front of the Avatar, Poo!\"*")
+                    add_dialogue("\"Not in front of the Avatar, Poo!\"*")
                     _HideNPC(-3)
                     switch_talk_to(30, 0)
-                    say("\"To blazes with the Avatar!\" She kisses him again. \"The Avatar is the last one who will convince thee to settle down.\"")
+                    add_dialogue("\"To blazes with the Avatar!\" She kisses him again. \"The Avatar is the last one who will convince thee to settle down.\"")
                 else
-                    say("\"Dost thou know my beau? He is probably drowning his sorrows at the Blue Boar. The lazy knave! I will not let him go about adventuring. It is time for him to settle down. Thou canst tell him I said so!\"")
+                    add_dialogue("\"Dost thou know my beau? He is probably drowning his sorrows at the Blue Boar. The lazy knave! I will not let him go about adventuring. It is time for him to settle down. Thou canst tell him I said so!\"")
                 end
                 set_flag(109, true)
                 set_flag(110, true)
-                _RemoveAnswer("Shamino")
+                remove_answer("Shamino")
             elseif cmp_strings("bye", 1) then
-                say("\"Adieu!\"*")
+                add_dialogue("\"Adieu!\"*")
                 break
             end
         end
@@ -82,7 +82,7 @@ function func_041E(itemref)
             elseif local4 == 4 then
                 local0 = "@I -hate- my lines!@"
             end
-            _ItemSay(local0, -30)
+            bark(30, local0)
         else
             call_092EH(-30)
         end
@@ -94,7 +94,7 @@ function eventid()
     return 0 -- Placeholder
 end
 
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

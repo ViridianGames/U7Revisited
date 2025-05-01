@@ -13,73 +13,73 @@ function func_04C1(eventid, itemref)
     switch_talk_to(193, 0)
     local0 = call_0909H()
     local1 = false
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x026A) then
-        say("You are greeted with a stern look on this man's face.")
+        add_dialogue("You are greeted with a stern look on this man's face.")
         set_flag(0x026A, true)
     else
-        say("\"^", local0, ".\" He nods at you.")
+        add_dialogue("\"^", local0, ".\" He nods at you.")
     end
 
     if get_flag(0x025E) and not get_flag(0x0276) then
-        _AddAnswer("statue")
+        add_answer("statue")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"Thou mayest call me Sir Pendaran.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"Thou mayest call me Sir Pendaran.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I am a knight here in Serpent's Hold. 'Tis my job to help protect the citizens of Britannia.\"")
-            _AddAnswer({"Serpent's Hold", "protect"})
+            add_dialogue("\"I am a knight here in Serpent's Hold. 'Tis my job to help protect the citizens of Britannia.\"")
+            add_answer({"Serpent's Hold", "protect"})
         elseif answer == "protect" then
-            say("\"Aye, ", local0, ". Britannia can be a dangerous place outside town boundaries. Especially now that the ruling faction have gone soft!\"")
-            _AddAnswer({"soft", "ruling faction"})
-            _RemoveAnswer("protect")
+            add_dialogue("\"Aye, ", local0, ". Britannia can be a dangerous place outside town boundaries. Especially now that the ruling faction have gone soft!\"")
+            add_answer({"soft", "ruling faction"})
+            remove_answer("protect")
         elseif answer == "ruling faction" then
-            say("\"Well, I mean Lord British and his advisors.\"")
-            _RemoveAnswer("ruling faction")
+            add_dialogue("\"Well, I mean Lord British and his advisors.\"")
+            remove_answer("ruling faction")
         elseif answer == "soft" then
-            say("\"Though I'd follow the land's ideals to the ends of the land, I find it difficult to accept how poor the conditions are in Britannia. Brigands populate the land, disease overruns the towns, and corruption fills the councils. Were it not for The Fellowship, I would be hard pressed to avoid falling on mine own blade, despite how dishonorable an act that may seem.\"")
+            add_dialogue("\"Though I'd follow the land's ideals to the ends of the land, I find it difficult to accept how poor the conditions are in Britannia. Brigands populate the land, disease overruns the towns, and corruption fills the councils. Were it not for The Fellowship, I would be hard pressed to avoid falling on mine own blade, despite how dishonorable an act that may seem.\"")
             local1 = true
-            _RemoveAnswer({"worthless", "soft"})
-            _AddAnswer("Fellowship")
+            remove_answer({"worthless", "soft"})
+            add_answer("Fellowship")
         elseif answer == "Fellowship" then
-            say("\"A noble group of people who strive to instill a greater sense of spiritual knowledge throughout all of Britannia. 'Twil be but a matter of time, ", local0, ", before all people will see the wisdom.\"")
-            _RemoveAnswer("Fellowship")
+            add_dialogue("\"A noble group of people who strive to instill a greater sense of spiritual knowledge throughout all of Britannia. 'Twil be but a matter of time, ", local0, ", before all people will see the wisdom.\"")
+            remove_answer("Fellowship")
         elseif answer == "Serpent's Hold" then
-            say("\"I live here in the hold with my lady.\"")
-            _AddAnswer("lady")
-            _RemoveAnswer("Serpent's Hold")
+            add_dialogue("\"I live here in the hold with my lady.\"")
+            add_answer("lady")
+            remove_answer("Serpent's Hold")
         elseif answer == "lady" then
-            say("\"Her name is Jehanne, ", local0, ",\" he says suspiciously. \"She is the provisioner.\"")
-            _RemoveAnswer("lady")
+            add_dialogue("\"Her name is Jehanne, ", local0, ",\" he says suspiciously. \"She is the provisioner.\"")
+            remove_answer("lady")
         elseif answer == "statue" then
-            say("\"Terrible shame, ", local0, ".\" He eyes you coldly.")
+            add_dialogue("\"Terrible shame, ", local0, ".\" He eyes you coldly.")
             if get_flag(0x025D) then
-                _AddAnswer("Thou didst do it!")
+                add_answer("Thou didst do it!")
             end
-            _RemoveAnswer("statue")
+            remove_answer("statue")
         elseif answer == "Thou didst do it!" then
-            say("\"What! Thou art accusing me! Preposterous. I had nothing to do with it!\"")
-            _RemoveAnswer("Thou didst do it!")
-            _AddAnswer("Lady Jehanne")
+            add_dialogue("\"What! Thou art accusing me! Preposterous. I had nothing to do with it!\"")
+            remove_answer("Thou didst do it!")
+            add_answer("Lady Jehanne")
         elseif answer == "Lady Jehanne" then
             set_flag(0x0276, true)
-            say("He shakes his head.~~\"Thou wouldst take the word of a woman over that of a knight of the Hold? Thou art lower than a worm!\" He glares at you for a moment, and then his expression changes.~~\"All right,\" he says, \"I am the one who defaced the statue, but only because the government has become so worthless and soft!\" He quickly turns away from you, ashamed.~~\"If thou dost think it best,\" he sighs, \"tomorrow I shall beg forgiveness from my fellow knights.\"")
+            add_dialogue("He shakes his head.~~\"Thou wouldst take the word of a woman over that of a knight of the Hold? Thou art lower than a worm!\" He glares at you for a moment, and then his expression changes.~~\"All right,\" he says, \"I am the one who defaced the statue, but only because the government has become so worthless and soft!\" He quickly turns away from you, ashamed.~~\"If thou dost think it best,\" he sighs, \"tomorrow I shall beg forgiveness from my fellow knights.\"")
             _SaveAnswers()
-            _AddAnswer({"no need", "'tis best"})
+            add_answer({"no need", "'tis best"})
         elseif answer == "'tis best" then
-            say("Nodding his agreement, he sighs again, and turns away.*")
+            add_dialogue("Nodding his agreement, he sighs again, and turns away.*")
             return
         elseif answer == "no need" then
-            say("\"No, no, ", local0, ". Thou hast shown me the way. I must repent.\" He turns away from you to reflect on his decision.*")
+            add_dialogue("\"No, no, ", local0, ". Thou hast shown me the way. I must repent.\" He turns away from you to reflect on his decision.*")
             return
         elseif answer == "bye" then
-            say("\"Good day to thee, ", local0, ".\"*")
+            add_dialogue("\"Good day to thee, ", local0, ".\"*")
             break
         end
     end
@@ -88,7 +88,7 @@ function func_04C1(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

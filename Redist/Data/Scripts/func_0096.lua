@@ -1,11 +1,11 @@
 function func_0096H(eventid, itemref)
     if eventid == 1 then
-        if U7GetItemShape(itemref, 10) == 0 then
-            U7Say("The sails must be furled before the planks are raised.", 0)
+        if get_item_shape(itemref, 10) == 0 then
+            bark(0, "The sails must be furled before the planks are raised.")
             return
         end
         if not U7IsGangplankAccessible(itemref) then
-            U7Say("I think the gangplank is blocked.", 0)
+            bark(0, "I think the gangplank is blocked.")
             return
         end
         if U7CheckCondition() then

@@ -11,62 +11,62 @@ function func_040E(itemref)
     if local0 == 7 then
         local1 = call_08FCH(-16, -14)
         if local1 then
-            say("\"I will speak with thee after the Fellowship meeting.\"")
+            add_dialogue("\"I will speak with thee after the Fellowship meeting.\"")
         else
-            say("\"I must get to the Fellowship meeting! I am late! May we speak tomorrow?\"")
+            add_dialogue("\"I must get to the Fellowship meeting! I am late! May we speak tomorrow?\"")
         end
         abort()
     end
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
     if get_flag(61) then
-        _AddAnswer("password")
+        add_answer("password")
     end
     if get_flag(60) then
-        _AddAnswer("murder")
+        add_answer("murder")
     end
     if get_flag(63) then
-        _AddAnswer({"Hook", "Klog", "Fellowship"})
+        add_answer({"Hook", "Klog", "Fellowship"})
     end
     if get_flag(64) then
-        _AddAnswer("Crown Jewel")
+        add_answer("Crown Jewel")
     end
     if not get_flag(78) then
-        say("You see an alert and no-nonsense guard.")
+        add_dialogue("You see an alert and no-nonsense guard.")
         set_flag(78, true)
     else
-        say("\"What is it?\" Johnson asks, sternly.")
+        add_dialogue("\"What is it?\" Johnson asks, sternly.")
     end
     while true do
         if cmp_strings("name", 1) then
-            say("\"Johnson.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"Johnson.\"")
+            remove_answer("name")
         elseif cmp_strings("job", 1) then
-            say("\"I have the morning watch guarding the dock. I authorize the comings and goings of every ship.\"")
-            _AddAnswer("ship")
+            add_dialogue("\"I have the morning watch guarding the dock. I authorize the comings and goings of every ship.\"")
+            add_answer("ship")
         elseif cmp_strings("murder", 1) then
-            say("\"I did hear of this. When I arrived at my post at sunrise, I found Gilberto lying felled on the ground. If thou art asking if I saw anything -- I did not. No one hath passed by me since I arrived at the dock.\"")
-            _RemoveAnswer("murder")
+            add_dialogue("\"I did hear of this. When I arrived at my post at sunrise, I found Gilberto lying felled on the ground. If thou art asking if I saw anything -- I did not. No one hath passed by me since I arrived at the dock.\"")
+            remove_answer("murder")
         elseif cmp_strings("Crown Jewel", 1) then
-            say("\"The boat left just after sunrise. It did sail to Britain, I believe. Thou canst ask Gargan the Shipwright about that.\"")
-            _RemoveAnswer("Crown Jewel")
+            add_dialogue("\"The boat left just after sunrise. It did sail to Britain, I believe. Thou canst ask Gargan the Shipwright about that.\"")
+            remove_answer("Crown Jewel")
         elseif cmp_strings("Fellowship", 1) then
-            say("\"Yes, I am a member. Wouldst thou like to join?\"")
+            add_dialogue("\"Yes, I am a member. Wouldst thou like to join?\"")
             local2 = call_090AH()
             if local2 then
-                say("\"Then thou shouldst go to see Batlin in Britain.\"")
+                add_dialogue("\"Then thou shouldst go to see Batlin in Britain.\"")
             else
-                say("\"'Tis thy loss.\"")
+                add_dialogue("\"'Tis thy loss.\"")
             end
-            _RemoveAnswer("Fellowship")
+            remove_answer("Fellowship")
         elseif cmp_strings("Klog", 1) then
-            say("\"Good man. He is our branch leader here in Trinsic.\"")
-            _RemoveAnswer("Klog")
+            add_dialogue("\"Good man. He is our branch leader here in Trinsic.\"")
+            remove_answer("Klog")
         elseif cmp_strings("ship", 1) then
-            say("\"If thou dost want a ship, thou must get a deed from the shipwright. Thou must also have the password to leave town.\"")
-            _AddAnswer({"deed", "password"})
-            _RemoveAnswer("ship")
+            add_dialogue("\"If thou dost want a ship, thou must get a deed from the shipwright. Thou must also have the password to leave town.\"")
+            add_answer({"deed", "password"})
+            remove_answer("ship")
         elseif cmp_strings("password", 1) then
-            say("\"What is it?\"")
+            add_dialogue("\"What is it?\"")
             local3 = {"Please", "Long live the king", "Uhh, I don't know"}
             if get_flag(61) then
                 table.insert(local3, "Blackbird")
@@ -75,23 +75,23 @@ function func_040E(itemref)
             if local2 == "Blackbird" then
                 local4 = call_0834H()
                 if local4 then
-                    say("\"Very well, thou mayest pass.\"")
+                    add_dialogue("\"Very well, thou mayest pass.\"")
                 else
-                    say("\"Thou mayest not pass.\"")
+                    add_dialogue("\"Thou mayest not pass.\"")
                 end
                 abort()
             else
-                say("\"Thou dost not know the password. I am sorry. The Mayor may give thee the proper password.\"")
+                add_dialogue("\"Thou dost not know the password. I am sorry. The Mayor may give thee the proper password.\"")
                 set_flag(66, true)
             end
         elseif cmp_strings("Hook", 1) then
-            say("\"A man with a hook? No, I saw no one all night or all morning.\"")
-            _RemoveAnswer("Hook")
+            add_dialogue("\"A man with a hook? No, I saw no one all night or all morning.\"")
+            remove_answer("Hook")
         elseif cmp_strings("deed", 1) then
-            say("\"Thou canst purchase that from Gargan the Shipwright.\"")
-            _RemoveAnswer("deed")
+            add_dialogue("\"Thou canst purchase that from Gargan the Shipwright.\"")
+            remove_answer("deed")
         elseif cmp_strings("bye", 1) then
-            say("\"Good day.\"")
+            add_dialogue("\"Good day.\"")
             break
         end
     end
@@ -102,7 +102,7 @@ function eventid()
     return 0 -- Placeholder
 end
 
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

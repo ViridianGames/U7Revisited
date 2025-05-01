@@ -14,7 +14,7 @@ function func_0691(eventid, itemref)
                 set_flag(813, true)
                 external_005AH() -- Unmapped intrinsic
                 switch_talk_to(356, external_005AH())
-                say("After a short while you notice that the edge has definitely improved.")
+                add_dialogue("After a short while you notice that the edge has definitely improved.")
                 hide_npc(356)
             end
         elseif not get_flag(814) then
@@ -22,20 +22,20 @@ function func_0691(eventid, itemref)
                 set_flag(814, true)
                 external_005AH() -- Unmapped intrinsic
                 switch_talk_to(356, external_005AH())
-                say("You feel that you've done the best job that you can, but the sword doesn't feel quite right. It's much too heavy and cumbersome to wield as a weapon.")
+                add_dialogue("You feel that you've done the best job that you can, but the sword doesn't feel quite right. It's much too heavy and cumbersome to wield as a weapon.")
                 set_flag(823, true)
                 hide_npc(356)
             elseif local3 < 20 then
                 set_flag(813, false)
                 external_005AH() -- Unmapped intrinsic
                 switch_talk_to(356, external_005AH())
-                say("That last blow was perhaps a bit too hard, It'll take a while to hammer out the flaws.")
+                add_dialogue("That last blow was perhaps a bit too hard, It'll take a while to hammer out the flaws.")
                 hide_npc(356)
             end
         else
             external_005AH() -- Unmapped intrinsic
             switch_talk_to(356, external_005AH())
-            say("The blade has been worked as well as it can be. It will take some form of magic to make this sword blank into a usable weapon.")
+            add_dialogue("The blade has been worked as well as it can be. It will take some form of magic to make this sword blank into a usable weapon.")
             hide_npc(356)
         end
     end

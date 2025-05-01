@@ -9,12 +9,12 @@ function func_063D(eventid, itemref)
             local1 = 0
             while local1 < 10 do
                 local2 = external_086FH() -- Unmapped intrinsic
-                say('"' .. local2 .. '"')
+                add_dialogue('"' .. local2 .. '"')
                 local1 = local1 + 1
             end
         end
     elseif eventid == 0 then
-        item_say("@Oink@", itemref)
+        bark(itemref, "@Oink@")
     end
     return
 end

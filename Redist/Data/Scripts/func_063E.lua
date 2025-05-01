@@ -21,10 +21,10 @@ function func_063E(eventid, itemref)
         local0 = set_npc_property(-356, 8, 0)
     elseif eventid == 2 then
         switch_talk_to(23, 0)
-        say("Busted, you thieving scoundrel bastard! Perhaps the only thing more ridiculous than your pathetic attempt to destroy the black gate without paying proper dues is your inevitably embarrassing explanation to the friend to whom you are, no doubt, showing this!")
-        say("For the atrocious crime of cheating against the virtues of Britannia, I find you guilty.*")
+        add_dialogue("Busted, you thieving scoundrel bastard! Perhaps the only thing more ridiculous than your pathetic attempt to destroy the black gate without paying proper dues is your inevitably embarrassing explanation to the friend to whom you are, no doubt, showing this!")
+        add_dialogue("For the atrocious crime of cheating against the virtues of Britannia, I find you guilty.*")
         apply_effect(15) -- Unmapped intrinsic
-        say("Judgement rendered.* Sentence selected:* Death.*")
+        add_dialogue("Judgement rendered.* Sentence selected:* Death.*")
         local0 = add_item(-356, 21, {14422})
         local2 = get_party_members()
         for local3 in ipairs(local2) do

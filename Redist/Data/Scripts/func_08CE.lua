@@ -10,35 +10,35 @@ function func_08CE()
     local4 = call_0908H()
     local5 = call_08F7H(-1)
 
-    say("The winged gargoyle begins his sermon.")
+    add_dialogue("The winged gargoyle begins his sermon.")
     if not local0 then
-        say("You see the gargoyle clerk taking notes in the corner.")
+        add_dialogue("You see the gargoyle clerk taking notes in the corner.")
     end
-    say("\"To talk tonight about why The Fellowship is important to your lives. To know that each of us sought The Fellowship to feel complete. To have had dreams and longings.\"")
+    add_dialogue("\"To talk tonight about why The Fellowship is important to your lives. To know that each of us sought The Fellowship to feel complete. To have had dreams and longings.\"")
     if not local2 then
         callis_0003(0, -186)
-        say("\"To be very true.\"")
+        add_dialogue("\"To be very true.\"")
         callis_0004(-186)
         callis_0003(0, -185)
     end
-    say("\"To know that others who are not members have given up their dreams. To see that they succumb to the mediocrity of their lives to find stability.\"")
+    add_dialogue("\"To know that others who are not members have given up their dreams. To see that they succumb to the mediocrity of their lives to find stability.\"")
     if not local3 then
         callis_0003(0, -2)
-        say("\"This is truly boring. Let us get some food -- I am hungry!\"")
+        add_dialogue("\"This is truly boring. Let us get some food -- I am hungry!\"")
         callis_0004(-2)
         callis_0003(0, -185)
     end
-    say("\"To see them begin to produce unreal ideas and become misaligned. To stray from the true path to what they seek. To lose contact with reality.\" He sighs. \"To find failure, not success in what they do.\"")
+    add_dialogue("\"To see them begin to produce unreal ideas and become misaligned. To stray from the true path to what they seek. To lose contact with reality.\" He sighs. \"To find failure, not success in what they do.\"")
     if not local1 then
         callis_0003(0, -188)
-        say("\"To be very sad.\"")
+        add_dialogue("\"To be very sad.\"")
         callis_0004(-188)
         callis_0003(0, -185)
     end
-    say("\"To know,\" he smiles, \"that each of the members present has faced such an awakening into the real world. To find in the order a clear path to reach what we seek!\"~~ The members present all stand and shout.")
+    add_dialogue("\"To know,\" he smiles, \"that each of the members present has faced such an awakening into the real world. To find in the order a clear path to reach what we seek!\"~~ The members present all stand and shout.")
     if not local5 then
         callis_0003(0, -1)
-        say("\"'Tis time for us to depart, ", local4, ".\"")
+        add_dialogue("\"'Tis time for us to depart, ", local4, ".\"")
         callis_0004(-1)
         abort()
     end
@@ -47,7 +47,7 @@ function func_08CE()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

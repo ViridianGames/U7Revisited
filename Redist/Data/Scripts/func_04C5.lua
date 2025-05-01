@@ -11,7 +11,7 @@ function func_04C5(eventid, itemref)
     end
 
     switch_talk_to(197, 0)
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x026E) then
         local0 = callis_0019(-195, -197)
@@ -24,69 +24,69 @@ function func_04C5(eventid, itemref)
         else
             local1 = "."
         end
-        say("You see a gargoyle with a very stern expression on his face", local1)
+        add_dialogue("You see a gargoyle with a very stern expression on his face", local1)
         local2 = call_08F7H(-195)
         set_flag(0x026E, true)
     else
-        say("\"To ask how to be of assistance.\" His eyes narrow.")
+        add_dialogue("\"To ask how to be of assistance.\" His eyes narrow.")
     end
 
     if get_flag(0x025E) and not get_flag(0x0265) then
-        _AddAnswer("statue")
+        add_answer("statue")
     end
     if get_flag(0x0276) and not get_flag(0x0261) then
-        _AddAnswer("Pendaran did it")
+        add_answer("Pendaran did it")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be named Horffe.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"To be named Horffe.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"To be the Captain of the guard. To serve and protect the people of Serpent's Hold.\"")
-            _AddAnswer({"Serpent's Hold", "Captain"})
+            add_dialogue("\"To be the Captain of the guard. To serve and protect the people of Serpent's Hold.\"")
+            add_answer({"Serpent's Hold", "Captain"})
         elseif answer == "Captain" then
-            say("\"To have been commanded to protect the people who live in Serpent's Hold and to maintain the general order of the knights.\"")
-            _RemoveAnswer("Captain")
-            _AddAnswer({"knights", "people"})
+            add_dialogue("\"To have been commanded to protect the people who live in Serpent's Hold and to maintain the general order of the knights.\"")
+            remove_answer("Captain")
+            add_answer({"knights", "people"})
         elseif answer == "people" or answer == "Serpent's Hold" then
-            say("\"To direct you to Sir Denton, the tavernkeeper at the Hallowed Dock. To know more about the Hold and the people than I.\"")
-            _RemoveAnswer({"Serpent's Hold", "people"})
+            add_dialogue("\"To direct you to Sir Denton, the tavernkeeper at the Hallowed Dock. To know more about the Hold and the people than I.\"")
+            remove_answer({"Serpent's Hold", "people"})
         elseif answer == "Pendaran did it" then
-            say("\"To thank you for this information. To be pleased to know the identity of my assailant.\"")
-            _RemoveAnswer("Pendaran did it")
+            add_dialogue("\"To thank you for this information. To be pleased to know the identity of my assailant.\"")
+            remove_answer("Pendaran did it")
         elseif answer == "knights" then
-            say("\"To inform you that many fine warriors take up residence between the Hold's walls. To have little fear of an attack from bandits or vicious animals.\"")
-            _RemoveAnswer("knights")
+            add_dialogue("\"To inform you that many fine warriors take up residence between the Hold's walls. To have little fear of an attack from bandits or vicious animals.\"")
+            remove_answer("knights")
         elseif answer == "statue" then
-            say("\"To know nothing about that!\"")
+            add_dialogue("\"To know nothing about that!\"")
             if get_flag(0x025F) then
-                _AddAnswer("blood on fragments")
+                add_answer("blood on fragments")
             end
-            _RemoveAnswer("statue")
+            remove_answer("statue")
         elseif answer == "blood on fragments" then
-            say("His rough demeanor softens.~~\"To be my blood.\" He sighs. \"But to be not the one who defaced the statue! To have been wounded while trying to stop the vandal.\"")
-            _AddAnswer("vandal")
-            _RemoveAnswer("blood on fragments")
+            add_dialogue("His rough demeanor softens.~~\"To be my blood.\" He sighs. \"But to be not the one who defaced the statue! To have been wounded while trying to stop the vandal.\"")
+            add_answer("vandal")
+            remove_answer("blood on fragments")
             set_flag(0x0265, true)
         elseif answer == "vandal" then
-            say("He looks down at his feet.~~\"To know not who he was. To have been very dark. To ask you not to tell Sir Richter.\"")
-            _RemoveAnswer("vandal")
-            _AddAnswer({"Sir Richter", "dark"})
+            add_dialogue("He looks down at his feet.~~\"To know not who he was. To have been very dark. To ask you not to tell Sir Richter.\"")
+            remove_answer("vandal")
+            add_answer({"Sir Richter", "dark"})
         elseif answer == "dark" then
-            say("\"To have been very poor visibility, but to be positive I was scuffling with an armed knight.\"")
-            _RemoveAnswer("dark")
+            add_dialogue("\"To have been very poor visibility, but to be positive I was scuffling with an armed knight.\"")
+            remove_answer("dark")
         elseif answer == "Sir Richter" then
-            say("\"To know he will not believe one who openly defies The Fellowship.\"")
-            _RemoveAnswer("Sir Richter")
-            _AddAnswer("Fellowship")
+            add_dialogue("\"To know he will not believe one who openly defies The Fellowship.\"")
+            remove_answer("Sir Richter")
+            add_answer("Fellowship")
         elseif answer == "Fellowship" then
-            say("\"To know little about it. To like little about it.\"")
-            _RemoveAnswer("Fellowship")
+            add_dialogue("\"To know little about it. To like little about it.\"")
+            remove_answer("Fellowship")
         elseif answer == "bye" then
-            say("\"To say goodbye.\"*")
+            add_dialogue("\"To say goodbye.\"*")
             return
         end
     end
@@ -95,7 +95,7 @@ function func_04C5(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

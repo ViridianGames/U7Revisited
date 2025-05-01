@@ -3,7 +3,7 @@ function func_067F(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6
 
     if eventid == 1 then
-        item_say("@Vas Mani@", itemref)
+        bark(itemref, "@Vas Mani@")
         if not external_0906H() then -- Unmapped intrinsic
             local0 = add_item(itemref, {64, 17496, 17514, 17520, 7781})
             local1 = get_party_members()

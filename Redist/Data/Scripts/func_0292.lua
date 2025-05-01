@@ -16,7 +16,7 @@ function func_0292H(eventid, itemref)
                         local arr = {7715, 17493, 658}
                         execute_action(itemref, arr, 60) -- TODO: Implement LuaExecuteAction for callis 0002.
                         if random(1, 2) == 1 then
-                            say(0, "Do not over cook it!")
+                            add_dialogue(0, "Do not over cook it!")
                         end
                     end
                 end
@@ -34,9 +34,9 @@ function func_0292H(eventid, itemref)
                 update_container(pos)
                 local outcome = random(1, 3)
                 if outcome == 1 then
-                    say(0, "I believe the bread is ready.")
+                    add_dialogue(0, "I believe the bread is ready.")
                 elseif outcome == 2 then
-                    say(0, "Mmm... Smells good.")
+                    add_dialogue(0, "Mmm... Smells good.")
                 end
             end
         end

@@ -5,10 +5,10 @@ function func_08B2()
 
     callis_0003(1, -141)
     local0 = call_0908H()
-    say("Horance looks at you curiously, \"Thy task is done here in Skara Brae. Thou hast my respect and lifelong gratitude.\"")
+    add_dialogue("Horance looks at you curiously, \"Thy task is done here in Skara Brae. Thou hast my respect and lifelong gratitude.\"")
 
     if not get_flag(0x017C) then
-        say("But...,\" he hesitates here as if unsure how to proceed, \"...shouldst thou not return to the quest which brought thee here?\"")
+        add_dialogue("But...,\" he hesitates here as if unsure how to proceed, \"...shouldst thou not return to the quest which brought thee here?\"")
         callis_0005("quest")
     end
 
@@ -18,16 +18,16 @@ function func_08B2()
         local answer = wait_for_answer()
         if answer == "quest" then
             if not get_flag(0x01B0) then
-                say("Why, yes. I sense that the spirit of Caine has not left the island yet. Is he not waiting for thy return?")
+                add_dialogue("Why, yes. I sense that the spirit of Caine has not left the island yet. Is he not waiting for thy return?")
             else
-                say("Thou wert brought to Britannia for a reason, I surmise. If thou dost not know what it is, shouldst thou not seek it out?")
+                add_dialogue("Thou wert brought to Britannia for a reason, I surmise. If thou dost not know what it is, shouldst thou not seek it out?")
             end
             callis_0006("quest")
         elseif answer == "Skara Brae" then
-            say("I intend to restore this town and furthermore, make it a place of beauty and renown. I enjoin thee to return in future times to see if my boast doth come to pass.")
+            add_dialogue("I intend to restore this town and furthermore, make it a place of beauty and renown. I enjoin thee to return in future times to see if my boast doth come to pass.")
             callis_0006("Skara Brae")
         elseif answer == "bye" then
-            say("Goodbye, ", local0, ". I hope that thou farest well in thy quest.\" He turns away.")
+            add_dialogue("Goodbye, ", local0, ". I hope that thou farest well in thy quest.\" He turns away.")
             abort()
             break
         end
@@ -37,7 +37,7 @@ function func_08B2()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

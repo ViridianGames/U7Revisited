@@ -8,7 +8,7 @@ function func_0667(eventid, itemref)
         local2 = external_092DH(local0) -- Unmapped intrinsic
         local3 = {828, 845, 433, 432, 376, 270}
         local4 = {376, 270, 433, 432}
-        item_say("@Ex Por@", itemref)
+        bark(itemref, "@Ex Por@")
         if not external_0906H(local2) then -- Unmapped intrinsic
             if not contains(local3, local1) then
                 local5 = get_item_frame(local0)

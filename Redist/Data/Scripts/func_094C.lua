@@ -6,14 +6,14 @@ function func_094C()
     local0 = true
     local1 = {140, 120, 90, 70, 50, 30}
     while local0 do
-        say("\"To be interested in which circle?\"")
+        add_dialogue("\"To be interested in which circle?\"")
         local2 = external_090CH({"Sixth", "Fifth", "Fourth", "Third", "Second", "First", "none"}) -- Unmapped intrinsic
         local2 = local2 - 1
         if local2 == 0 then
             if get_flag(3) then
-                say("\"To wonder why you bother me so!\"")
+                add_dialogue("\"To wonder why you bother me so!\"")
             else
-                say("\"To understand.\"")
+                add_dialogue("\"To understand.\"")
             end
             break
         elseif local2 == 1 then
@@ -35,24 +35,24 @@ function func_094C()
             local3 = {"Tremor", "Flame Strike", "Clone", "Fire Ring", "nothing"}
             local4 = {55, 51, 49, 50, 0}
         end
-        say("\"To buy which spell?\"")
+        add_dialogue("\"To buy which spell?\"")
         local5 = external_090CH(local3) -- Unmapped intrinsic
         local6 = local4[local5]
         local7 = local1[local2]
         local8 = local3[local5]
-        say("\"To cost " .. local7 .. " gold for " .. local8 .. " spell.\"")
+        add_dialogue("\"To cost " .. local7 .. " gold for " .. local8 .. " spell.\"")
         local9 = external_0924H(local7, local6) -- Unmapped intrinsic
         if local9 == 1 then
-            say("\"To agree!\"")
+            add_dialogue("\"To agree!\"")
         elseif local9 == 2 then
-            say("\"To be without a spellbook, human.\"")
+            add_dialogue("\"To be without a spellbook, human.\"")
             local0 = false
         elseif local9 == 3 then
-            say("\"To have not have enough gold for that!\"")
+            add_dialogue("\"To have not have enough gold for that!\"")
         elseif local9 == 4 then
-            say("\"To see you already have that spell.\"")
+            add_dialogue("\"To see you already have that spell.\"")
         end
-        say("\"To be interested in another spell?\"")
+        add_dialogue("\"To be interested in another spell?\"")
         local0 = external_090AH() -- Unmapped intrinsic
     end
     restore_answers() -- Unmapped intrinsic

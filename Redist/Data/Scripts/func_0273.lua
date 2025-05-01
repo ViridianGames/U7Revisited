@@ -12,7 +12,7 @@ function func_0273H(eventid, itemref)
     if item_type == 522 then -- 020AH: Locked chest.
         if quality == 0 and success then
             set_item_type(target, 800) -- 0320H: Unlocked chest.
-            item_say(target, "Unlocked") -- TODO: Implement LuaItemSay for calli 0040.
+            bark(target, "Unlocked") -- TODO: Implement LuaItemSay for calli 0040.
             return
         end
         if quality == 255 and success then
@@ -25,13 +25,13 @@ function func_0273H(eventid, itemref)
             end
             if success then
                 set_item_type(target, 800)
-                item_say(target, "Unlocked")
+                bark(target, "Unlocked")
             else
-                item_say(target, "Pick broke")
+                bark(target, "Pick broke")
                 call_script(0x0925, itemref) -- TODO: Map 0925H.
             end
         else
-            item_say(target, "Pick broke")
+            bark(target, "Pick broke")
             call_script(0x0925, itemref)
         end
     end
@@ -43,17 +43,17 @@ function func_0273H(eventid, itemref)
                 if frame % 4 == 2 then
                     if success then
                         call_script(0x081C, target, 0) -- TODO: Map 081CH.
-                        item_say(target, "Unlocked")
+                        bark(target, "Unlocked")
                     else
-                        item_say(target, "Pick broke")
+                        bark(target, "Pick broke")
                         call_script(0x0925, itemref)
                     end
                 end
             else
-                say(0, "Strange that did not work.")
+                add_dialogue(0, "Strange that did not work.")
             end
             return
         end
     end
-    say(0, "Try those on a locked chest or door.")
+    add_dialogue(0, "Try those on a locked chest or door.")
 end

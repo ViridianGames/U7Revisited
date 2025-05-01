@@ -3,7 +3,7 @@ function func_065D(eventid, itemref)
     local local0
 
     if eventid == 1 then
-        item_say("@Vas Wis@", itemref)
+        bark("@Vas Wis@", itemref)
         if not external_0906H() then -- Unmapped intrinsic
             local0 = add_item(itemref, {1629, 17493, 17519, 17520, 8047, 67, 7768})
         else

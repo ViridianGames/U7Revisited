@@ -15,7 +15,7 @@ function func_0247H(eventid, itemref)
                     call_script(0x0828, itemref, arr1, arr2, -1, 583, 7) -- TODO: Map 0828H.
                 else
                     location[2] = location[2] - 5
-                    say(0, "There is no room for thy bedroll there.")
+                    add_dialogue(0, "There is no room for thy bedroll there.")
                 end
             end
         end

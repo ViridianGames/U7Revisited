@@ -3,7 +3,7 @@ function func_0923(eventid, itemref)
     local local0, local1, local2, local3
 
     local2 = check_condition(-359, -359, 644, -357)
-    say(itemref, "\" Agreeable?\"")
+    add_dialogue(itemref, "\" Agreeable?\"")
     if not get_answer() then
         local3 = 0
     else

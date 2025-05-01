@@ -215,13 +215,13 @@ function func_0621(eventid, itemref)
         local0 = "@" .. local0 .. "@"
         local4 = switch_talk_to(local2)
         if local4 then
-            item_say(local0, local2)
+            bark(local2, local0)
         end
     else
         local4 = switch_talk_to(local2)
         if local4 then
             switch_talk_to(local2, 0)
-            say(local0)
+            add_dialogue(local0)
             hide_npc(local2)
         end
     end

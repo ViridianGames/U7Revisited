@@ -16,7 +16,7 @@ function func_04C6(eventid, itemref)
     local2 = ""
     local3 = call_08F7H(-1)
     local4 = call_08F7H(-3)
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x025A) then
         local2 = local1
@@ -25,44 +25,44 @@ function func_04C6(eventid, itemref)
     end
 
     if not get_flag(0x026F) then
-        say("You see a man who, despite being blind, quickly acknowledges you.~~\"I am Jordan. Sir Jordan. And thou art?\"")
+        add_dialogue("You see a man who, despite being blind, quickly acknowledges you.~~\"I am Jordan. Sir Jordan. And thou art?\"")
         local6 = call_090BH({local0, local1})
         if local6 == local1 then
-            say("\"My pleasure, ", local1, ".\" He shakes your hand.")
+            add_dialogue("\"My pleasure, ", local1, ".\" He shakes your hand.")
             set_flag(0x025A, true)
         else
-            say("He laughs. \"Yes, but of course thou art.\"")
+            add_dialogue("He laughs. \"Yes, but of course thou art.\"")
             set_flag(0x025B, true)
             if local3 then
                 switch_talk_to(1, 0)
-                say("\"'Tis true, Sir Jordan. He is the Avatar.\"*")
+                add_dialogue("\"'Tis true, Sir Jordan. He is the Avatar.\"*")
                 _HideNPC(-1)
                 switch_talk_to(198, 0)
-                say("Jordan smiles. \"I see. And who wouldst thou be? Shamino?\"*")
+                add_dialogue("Jordan smiles. \"I see. And who wouldst thou be? Shamino?\"*")
                 if not local4 then
                     switch_talk_to(1, 0)
-                    say("\"No.\" He points to Shamino. \"He is. I am Iolo!\"*")
+                    add_dialogue("\"No.\" He points to Shamino. \"He is. I am Iolo!\"*")
                     _HideNPC(-1)
                     switch_talk_to(198, 0)
                 else
                     switch_talk_to(1, 0)
-                    say("\"No. I am Iolo, not Shamino!\"*")
+                    add_dialogue("\"No. I am Iolo, not Shamino!\"*")
                     _HideNPC(-1)
                     switch_talk_to(198, 0)
                 end
-                say("\"Of course!\" He says, patronizingly. \"How could I not recognize the great Iolo.\"")
+                add_dialogue("\"Of course!\" He says, patronizingly. \"How could I not recognize the great Iolo.\"")
             end
         end
         set_flag(0x026F, true)
     else
-        say("\"Greetings, ", local2, ".\"")
+        add_dialogue("\"Greetings, ", local2, ".\"")
     end
 
     if get_flag(0x025E) and not get_flag(0x0261) then
-        _AddAnswer("statue")
+        add_answer("statue")
     end
 
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x025A) then
         local2 = local1
@@ -74,63 +74,63 @@ function func_04C6(eventid, itemref)
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"As I told thee, my name is Sir Jordan.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"As I told thee, my name is Sir Jordan.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I sell bows and crossbows here at Iolo's South.\"")
-            _AddAnswer({"sell", "Iolo's South"})
+            add_dialogue("\"I sell bows and crossbows here at Iolo's South.\"")
+            add_answer({"sell", "Iolo's South"})
         elseif answer == "Iolo's South" then
-            say("\"The original branch is in Britain. But I do fine business here in the Hold.\"")
-            _RemoveAnswer("Iolo's South")
-            _AddAnswer({"Hold", "original branch"})
+            add_dialogue("\"The original branch is in Britain. But I do fine business here in the Hold.\"")
+            remove_answer("Iolo's South")
+            add_answer({"Hold", "original branch"})
         elseif answer == "Hold" then
-            say("\"Serpent's Hold, ", local0, ". I have sold many quality bows to the knights here.\"")
-            _RemoveAnswer("Hold")
-            _AddAnswer("knights")
+            add_dialogue("\"Serpent's Hold, ", local0, ". I have sold many quality bows to the knights here.\"")
+            remove_answer("Hold")
+            add_answer("knights")
         elseif answer == "original branch" then
-            say("\"The great archer himself, Iolo, started that branch more than two hundred years ago.\"")
+            add_dialogue("\"The great archer himself, Iolo, started that branch more than two hundred years ago.\"")
             if local3 then
-                say("*")
+                add_dialogue("*")
                 switch_talk_to(1, 0)
-                say("\"I, er, thank thee for thy compliment.\"*")
+                add_dialogue("\"I, er, thank thee for thy compliment.\"*")
                 switch_talk_to(198, 0)
-                say("\"'Twould mean more wert thou Iolo!\"*")
+                add_dialogue("\"'Twould mean more wert thou Iolo!\"*")
                 switch_talk_to(1, 0)
-                say("\"Listen, here, rogue, I truly -am-...\"*")
+                add_dialogue("\"Listen, here, rogue, I truly -am-...\"*")
                 switch_talk_to(198, 0)
-                say("\"Yes, yes, I know. Thou really -art- Iolo... And I am Lord British!\"*")
+                add_dialogue("\"Yes, yes, I know. Thou really -art- Iolo... And I am Lord British!\"*")
                 _HideNPC(-1)
             end
-            _RemoveAnswer("original branch")
+            remove_answer("original branch")
         elseif answer == "knights" then
-            say("\"There are many who live within the walls of the Hold. Sir Denton, the bartender at the Hallowed Dock, knows them all.\"")
-            _RemoveAnswer("knights")
+            add_dialogue("\"There are many who live within the walls of the Hold. Sir Denton, the bartender at the Hallowed Dock, knows them all.\"")
+            remove_answer("knights")
         elseif answer == "sell" then
             local7 = callis_001C(callis_001B(-198))
             if local7 == 7 then
-                say("\"Weapons or missiles?\"")
+                add_dialogue("\"Weapons or missiles?\"")
                 _SaveAnswers()
-                _AddAnswer({"missiles", "weapons"})
+                add_answer({"missiles", "weapons"})
             else
-                say("\"I am sorry, ", local0, ", but I can only sell things during my shop hours -- from 6 in the morning 'til 6 at night.\"")
+                add_dialogue("\"I am sorry, ", local0, ", but I can only sell things during my shop hours -- from 6 in the morning 'til 6 at night.\"")
             end
-            _RemoveAnswer("sell")
+            remove_answer("sell")
         elseif answer == "weapons" then
             call_08A4H()
-            _RemoveAnswer("weapons")
+            remove_answer("weapons")
         elseif answer == "missiles" then
             call_08A3H()
-            _RemoveAnswer("missiles")
+            remove_answer("missiles")
         elseif answer == "statue" then
-            say("He looks defensive. \"I had nothing to do with that.~~ \"But, I will tell thee that, on the night of the incident, I heard the sounds of scuffling in the commons. And, later on in the evening, I heard a woman cry out, as if in surprise!\"")
-            _AddAnswer("woman")
-            _RemoveAnswer("statue")
+            add_dialogue("He looks defensive. \"I had nothing to do with that.~~ \"But, I will tell thee that, on the night of the incident, I heard the sounds of scuffling in the commons. And, later on in the evening, I heard a woman cry out, as if in surprise!\"")
+            add_answer("woman")
+            remove_answer("statue")
         elseif answer == "woman" then
-            say("\"I am not positive, ", local2, ", but I believe the voice was that of Lady Jehanne.\" He nods his head knowingly. \"Someone has lost their sense of unity.\"")
-            _RemoveAnswer("woman")
+            add_dialogue("\"I am not positive, ", local2, ", but I believe the voice was that of Lady Jehanne.\" He nods his head knowingly. \"Someone has lost their sense of unity.\"")
+            remove_answer("woman")
             set_flag(0x025C, true)
         elseif answer == "bye" then
-            say("\"I hope to see thee again, ", local2, ".\"*")
+            add_dialogue("\"I hope to see thee again, ", local2, ".\"*")
             return
         end
     end
@@ -139,7 +139,7 @@ function func_04C6(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

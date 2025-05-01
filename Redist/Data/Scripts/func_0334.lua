@@ -67,7 +67,7 @@ function func_0334H(eventid, itemref)
         text = {"enter", "to", "here", "hammer"}
     elseif quality == 8 then
         text = {"goi*", "to|k)p", "carefully", "pick|item"}
-        say(0, {"Look at it now!", "The sign appears to have changed!", "By Jove, I think thou art on the right track!"})
+        add_dialogue(0, {"Look at it now!", "The sign appears to have changed!", "By Jove, I think thou art on the right track!"})
     elseif quality == 9 then
         text = {"faces|()", "tru(", "ring|of", "a|golden"}
     elseif quality == 10 then
@@ -154,7 +154,7 @@ function func_0334H(eventid, itemref)
             execute_action(target, arr)
             local arr2 = {7719, 8024, 17496, 19, 8033, 17517, 17496, 29, 7937, 17518, 17493}
             execute_action(-23, arr2)
-            say(0, {"Yancey-Hausman will pay!", "He's dead, Avatar!", ""})
+            add_dialogue(0, {"Yancey-Hausman will pay!", "He's dead, Avatar!", ""})
             local arr3 = {7715, 17494, 26}
             execute_action(-356, arr3)
             return

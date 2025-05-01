@@ -27,7 +27,7 @@ function func_00FC(eventid, itemref)
     local2 = tostring(local0) .. ":" .. tostring(local1)
 
     -- Display time on item
-    _ItemSay(local2, itemref)
+    bark(itemref, local2)
 
     return
 end

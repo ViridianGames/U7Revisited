@@ -2,7 +2,7 @@ function func_0102H(eventid, itemref)
     if eventid == 1 then
         if not U7IsItemValid(itemref) then
             U7SetItemState(itemref)
-            U7Say("It is about time!", 0)
+            bark(0, "It is about time!")
         else
             U7CallScript(0x0628, itemref)
         end

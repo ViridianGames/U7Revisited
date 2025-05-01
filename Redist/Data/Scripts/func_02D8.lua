@@ -6,7 +6,7 @@ function func_02D8(eventid, itemref)
 
     if _NPCInParty(-2) then
         switch_talk_to(2, 0)
-        say("\"Thou dost need a blacksmith to do that. I wager my dad could do it... I mean, could have... if he were still alive...\"")
+        add_dialogue("\"Thou dost need a blacksmith to do that. I wager my dad could do it... I mean, could have... if he were still alive...\"")
         _HideNPC(-2)
     end
 
@@ -14,6 +14,6 @@ function func_02D8(eventid, itemref)
 end
 
 -- Helper function
-function say(message)
+function add_dialogue(message)
     print(message) -- Adjust to your dialogue system
 end

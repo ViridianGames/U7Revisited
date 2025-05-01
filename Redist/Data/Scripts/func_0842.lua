@@ -14,38 +14,38 @@ function func_0842(eventid, itemref)
     local8 = 0
     local9 = {" per bottle", " per bottle", " for one portion", " for one portion", " for one portion", " for one bottle", " for one loaf", " for one portion", ""}
     local10 = {1, 1, 1, 1, 1, 1, 1, 1, 0}
-    say(itemref, "\"What wouldst thou like?\"")
+    add_dialogue(itemref, "\"What wouldst thou like?\"")
     while local2 do
         local11 = call_090CH(local3)
         if local11 == 1 then
-            say(itemref, "\"Nothing at all? Well, alright.\"")
+            add_dialogue(itemref, "\"Nothing at all? Well, alright.\"")
             if not local1 then
-                say(itemref, "She bats her eyelashes at you and grins.")
+                add_dialogue(itemref, "She bats her eyelashes at you and grins.")
             end
             local2 = false
         elseif local11 == 6 and not get_flag(299) then
-            say(itemref, "\"I have none to sell thee, " .. local0 .. ", for the logger will no longer supply it.\"")
+            add_dialogue(itemref, "\"I have none to sell thee, " .. local0 .. ", for the logger will no longer supply it.\"")
         else
             local12 = call_091BH(local9[local11], local6[local11], local10[local11], local3[local11], local7[local11] or "")
             local13 = 0
-            say(itemref, "^" .. local12 .. " Is that price all right?\"")
+            add_dialogue(itemref, "^" .. local12 .. " Is that price all right?\"")
             local14 = get_answer()
             if local14 then
                 if local4[local11] == 377 then
-                    say(itemref, "\"How many wouldst thou like?\"")
+                    add_dialogue(itemref, "\"How many wouldst thou like?\"")
                     local13 = call_08F8H(true, 1, 20, local6[local11], local10[local11], local5[local11], local4[local11])
                 else
                     local13 = call_08F8H(true, 1, 0, local6[local11], local10[local11], local5[local11], local4[local11])
                 end
             end
             if local13 == 1 then
-                say(itemref, "\"'Tis thine!\"")
+                add_dialogue(itemref, "\"'Tis thine!\"")
             elseif local13 == 2 then
-                say(itemref, "\"Thou cannot possibly carry that much, " .. local0 .. "!\"")
+                add_dialogue(itemref, "\"Thou cannot possibly carry that much, " .. local0 .. "!\"")
             elseif local13 == 3 then
-                say(itemref, "\"Hmmm. Thou dost not have enough gold!\"")
+                add_dialogue(itemref, "\"Hmmm. Thou dost not have enough gold!\"")
             end
-            say(itemref, "\"Wouldst thou like something else?\"")
+            add_dialogue(itemref, "\"Wouldst thou like something else?\"")
             local2 = get_answer()
         end
     end

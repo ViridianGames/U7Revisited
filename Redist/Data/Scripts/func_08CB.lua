@@ -17,31 +17,31 @@ function func_08CB()
     local9 = {1, 1, 1, 1, 10, 0}
 
     while local1 do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         local10 = call_090CH(local2)
         if local10 == 1 then
-            say("Very well, ", local0, ".")
+            add_dialogue("Very well, ", local0, ".")
             local1 = false
         elseif local10 == 4 and get_flag(0x012B) then
-            say("I am truly sorry, ", local0, ", but I have not been able to get any of that for some time now. It seems the man who used to cut down the Silverleaf trees has stopped.")
+            add_dialogue("I am truly sorry, ", local0, ", but I have not been able to get any of that for some time now. It seems the man who used to cut down the Silverleaf trees has stopped.")
         else
             local11 = call_091BH(local8[local10], local5[local10], local7[local10], local2[local10], local6[local10])
             local12 = 0
-            say("^", local11, ". Art thou happy with the price?")
+            add_dialogue("^", local11, ". Art thou happy with the price?")
             local13 = call_090AH()
             if local13 then
-                say("How many dost thou want?")
+                add_dialogue("How many dost thou want?")
                 local14 = call_08F8H(true, 1, 20, local5[local10], local9[local10], local4[local10], local3[local10])
             end
             if local14 == 1 then
-                say("Agreed.")
+                add_dialogue("Agreed.")
             elseif local14 == 2 then
-                say("Thou cannot carry that much!")
+                add_dialogue("Thou cannot carry that much!")
             elseif local14 == 3 then
-                say("Thou hast not the gold for that!")
+                add_dialogue("Thou hast not the gold for that!")
             end
         end
-        say("Wouldst thou like something else?")
+        add_dialogue("Wouldst thou like something else?")
         local1 = call_090AH()
     end
 
@@ -50,7 +50,7 @@ function func_08CB()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -13,28 +13,28 @@ function func_085E()
     local7 = 0
     local8 = " per bottle"
     local9 = 1
-    say("\"What wouldst thou like to buy?\"")
+    add_dialogue("\"What wouldst thou like to buy?\"")
     while local1 do
         local10 = external_090CH(local2) -- Unmapped intrinsic
         if local10 == 1 then
-            say("\"Very well, " .. local0 .. ".\"")
+            add_dialogue("\"Very well, " .. local0 .. ".\"")
             local1 = false
         else
             local11 = external_091BH(local8, local5[local10], local7, local2[local10], local6) -- Unmapped intrinsic
             local12 = 0
-            say("\"^" .. local11 .. " Dost thou accept my price?\"")
+            add_dialogue("\"^" .. local11 .. " Dost thou accept my price?\"")
             local13 = external_090AH() -- Unmapped intrinsic
             if not local13 then
                 local12 = external_08F8H(true, 1, 0, local5[local10], local9, local4[local10], local3[local10]) -- Unmapped intrinsic
             end
             if local12 == 1 then
-                say("\"Agreed.\"")
+                add_dialogue("\"Agreed.\"")
             elseif local12 == 2 then
-                say("\"Thou cannot carry that much!\"")
+                add_dialogue("\"Thou cannot carry that much!\"")
             elseif local12 == 3 then
-                say("\"Thou hast not the gold for that!\"")
+                add_dialogue("\"Thou hast not the gold for that!\"")
             end
-            say("\"Wouldst thou like something else?\"")
+            add_dialogue("\"Wouldst thou like something else?\"")
             local1 = external_090AH() -- Unmapped intrinsic
         end
     end

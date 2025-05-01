@@ -72,6 +72,6 @@ function func_092E(p0)
             local3 = "@Catch me if thou can!@"
         end
     end
-    item_say(local3, local1)
+    bark(local1, local3)
     return
 end

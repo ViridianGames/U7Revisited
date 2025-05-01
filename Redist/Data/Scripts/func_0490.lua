@@ -5,7 +5,7 @@ function func_0490(eventid, itemref)
     if eventid == 1 then
         if not get_flag(440) then
             switch_talk_to(144, 0)
-            say("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.*")
+            add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.*")
             set_flag(423, false)
             return
         end
@@ -39,28 +39,28 @@ function func_0490(eventid, itemref)
         end
         switch_talk_to(144, 0)
         if not get_flag(457) then
-            say("You see a ghostly lady wearing a long, black gown. Something is a bit strange about the way she looks, but you can't quite place it. After a pause, she says, \"Greetings, " .. local1 .. ". I am Rowena, lady of this wondrous tower.\" She gestures around the room, indicating the moldering walls and cobwebbed rafters.")
+            add_dialogue("You see a ghostly lady wearing a long, black gown. Something is a bit strange about the way she looks, but you can't quite place it. After a pause, she says, \"Greetings, " .. local1 .. ". I am Rowena, lady of this wondrous tower.\" She gestures around the room, indicating the moldering walls and cobwebbed rafters.")
             set_flag(457, true)
         else
-            say("Rowena smiles in an abstract manner as you approach. \"Ah, thou hast returned, " .. local1 .. ". How may the lady of the tower be of assistance to thee?\"")
+            add_dialogue("Rowena smiles in an abstract manner as you approach. \"Ah, thou hast returned, " .. local1 .. ". How may the lady of the tower be of assistance to thee?\"")
         end
         add_answer({"bye", "tower", "job", "name"})
         while true do
             local answer = get_answer()
             if answer == "name" then
-                say("\"I am called... Rowena\"")
+                add_dialogue("\"I am called... Rowena\"")
                 remove_answer("name")
             elseif answer == "job" then
-                say("She stares blankly for a second, then, as if on cue, \"I am the Mistress of the Tower. I tend to my Lord Horance's needs and keep our place looking respectable.\" It would appear that she's been falling behind in the latter duty.")
+                add_dialogue("She stares blankly for a second, then, as if on cue, \"I am the Mistress of the Tower. I tend to my Lord Horance's needs and keep our place looking respectable.\" It would appear that she's been falling behind in the latter duty.")
                 add_answer("Horance")
             elseif answer == "tower" then
-                say("After a moment, \"This is a lovely tower, dost thou not agree?\" Before you can answer, she continues.~~ \"Dost thou see the lovely rays of light playing across the flagstones of the floor? Water sparkles in the fountain. This is truly a beautiful place in which to live.\" Her eyes fix upon the floor.")
+                add_dialogue("After a moment, \"This is a lovely tower, dost thou not agree?\" Before you can answer, she continues.~~ \"Dost thou see the lovely rays of light playing across the flagstones of the floor? Water sparkles in the fountain. This is truly a beautiful place in which to live.\" Her eyes fix upon the floor.")
                 remove_answer("tower")
             elseif answer == "Horance" then
-                say("She blinks once, then, \"Horance... What a wonderful name. He found me lost and lonely and brought me here to be a lady. Is he not truly the most magnificent of Lords?\"")
+                add_dialogue("She blinks once, then, \"Horance... What a wonderful name. He found me lost and lonely and brought me here to be a lady. Is he not truly the most magnificent of Lords?\"")
                 remove_answer("Horance")
             elseif answer == "bye" then
-                say("She pauses. \"Goodbye, " .. local1 .. ". I hope thou hast enjoyed thy visit to our glorious tower. Please, return whenever thou wishest.\" You feel as if you've been speaking to a statue.*")
+                add_dialogue("She pauses. \"Goodbye, " .. local1 .. ". I hope thou hast enjoyed thy visit to our glorious tower. Please, return whenever thou wishest.\" You feel as if you've been speaking to a statue.*")
                 break
             end
         end

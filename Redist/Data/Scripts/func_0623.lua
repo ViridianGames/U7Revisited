@@ -10,7 +10,7 @@ function func_0623(eventid, itemref)
     if local0 ~= -356 then
         switch_talk_to(local0, 0)
         local1 = local0
-        say("\"Arise, " .. local1 .. ". Time to continue the quest.\"")
+        add_dialogue("\"Arise, " .. local1 .. ". Time to continue the quest.\"")
         hide_npc(local0)
     end
 

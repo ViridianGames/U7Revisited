@@ -22,7 +22,7 @@ function func_0149H(eventid, itemref)
             U7ExecuteAction(itemref, arr)
             U7ExecuteAction(-356, {8037, 17447, 2, 8033, 17447, -6, 7})
         else
-            U7Say("Try it outside!", 0)
+            bark(0, "Try it outside!")
         end
     end
 end

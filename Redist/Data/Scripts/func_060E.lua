@@ -49,7 +49,7 @@ function func_060E(eventid, itemref)
                         set_schedule(local17, 11)
                         local22 = math.floor((local6[2] - local5[2]) / 4)
                         local23 = "@A winnah in lane " .. local22 .. "!@"
-                        item_say(local23, -232, 1)
+                        bark(232, local23, 1)
                         remove_item(local17)
                     end
                 end

@@ -15,28 +15,28 @@ function func_04B8(eventid, itemref)
     if local0 == 7 then
         local2 = call_08FCH(-185, -184)
         if local2 then
-            say("The gargoyle turns to you, frowning. He moves his massive hand to his mouth and use one finger to cross his lips. The Fellowship meeting is in progress.*")
+            add_dialogue("The gargoyle turns to you, frowning. He moves his massive hand to his mouth and use one finger to cross his lips. The Fellowship meeting is in progress.*")
         else
-            say("The gargoyle, obviously in a hurry, ignores you.*")
+            add_dialogue("The gargoyle, obviously in a hurry, ignores you.*")
         end
         return
     end
 
-    _AddAnswer({"bye", "Fellowship", "job", "name"})
+    add_answer({"bye", "Fellowship", "job", "name"})
 
     if not get_flag(0x0249) then
-        say("The gargoyle gives you a menacing glare. Judging by his size, he would make a formidable foe.")
+        add_dialogue("The gargoyle gives you a menacing glare. Judging by his size, he would make a formidable foe.")
         set_flag(0x0249, true)
     else
-        say("\"To ask what you need?\" says Runeb.")
+        add_dialogue("\"To ask what you need?\" says Runeb.")
     end
 
     if not get_flag(0x0255) then
         if not get_flag(0x023F) then
-            _AddAnswer("altar destruction")
+            add_answer("altar destruction")
         end
         if not get_flag(0x0240) then
-            _AddAnswer("frame Quan")
+            add_answer("frame Quan")
         end
     end
 
@@ -44,37 +44,37 @@ function func_04B8(eventid, itemref)
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be Runeb.\"")
+            add_dialogue("\"To be Runeb.\"")
             set_flag(0x0255, true)
-            _AddAnswer("Runeb")
+            add_answer("Runeb")
             if not get_flag(0x023F) then
-                _AddAnswer("altar destruction")
+                add_answer("altar destruction")
             end
             if not get_flag(0x0240) then
-                _AddAnswer("frame Quan")
+                add_answer("frame Quan")
             end
-            _RemoveAnswer("name")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"To be Fellowship clerk.\"")
+            add_dialogue("\"To be Fellowship clerk.\"")
         elseif answer == "Runeb" then
-            say("\"To mean `busy one,'\" he says sarcastically.")
-            _RemoveAnswer("Runeb")
+            add_dialogue("\"To mean `busy one,'\" he says sarcastically.")
+            remove_answer("Runeb")
         elseif answer == "Fellowship" then
             local3 = callis_0067()
             if local3 then
-                say("\"To have a branch here. To meet at usual time each night.\"")
+                add_dialogue("\"To have a branch here. To meet at usual time each night.\"")
             else
-                say("\"To have more important things to do now. To ask me later, human.\"")
+                add_dialogue("\"To have more important things to do now. To ask me later, human.\"")
             end
-            _RemoveAnswer("Fellowship")
+            remove_answer("Fellowship")
         elseif answer == "frame Quan" or answer == "altar destruction" then
             call_0911H(100)
-            say("\"To be sorry you know that. To need now to kill Sarpling.\" He grins at you.~~\"To need now to kill you!\"*")
+            add_dialogue("\"To be sorry you know that. To need now to kill Sarpling.\" He grins at you.~~\"To need now to kill you!\"*")
             calli_001D(0, local1)
             calli_003D(2, local1)
             return
         elseif answer == "bye" then
-            say("He waits for you to leave before he returns to what he was doing.*")
+            add_dialogue("He waits for you to leave before he returns to what he was doing.*")
             break
         end
     end
@@ -83,7 +83,7 @@ function func_04B8(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

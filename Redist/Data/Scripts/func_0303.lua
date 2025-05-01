@@ -23,7 +23,7 @@ function func_0303H(eventid, itemref)
                 set_condition(true) -- TODO: Implement LuaSetCondition for calli 0075.
             else
                 switch_talk_to(26, 0)
-                say(0, 'The wand glows faintly. Batlin smirks. "Not yet, Avatar."')
+                add_dialogue(0, 'The wand glows faintly. Batlin smirks. "Not yet, Avatar."')
                 hide_npc(26)
                 return
             end

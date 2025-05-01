@@ -5,7 +5,7 @@ function func_01F0(eventid, itemref)
 
     -- Eventid == 1: Player interaction
     if eventid == 1 then
-        _ItemSay("@Good doggy.@", -356)
+        bark(356, "@Good doggy.@")
         calli_001D(9, itemref)
     end
 
@@ -13,9 +13,9 @@ function func_01F0(eventid, itemref)
     if eventid == 0 then
         local0 = _Random2(1, 2)
         if local0 == 1 then
-            _ItemSay("@Arf@", itemref)
+            bark(itemref, "@Arf@")
         elseif local0 == 2 then
-            _ItemSay("@Bark@", itemref)
+            bark(itemref, "@Bark@")
         end
     end
 

@@ -7,7 +7,7 @@ function func_0942(eventid, itemref)
         local3 = _SetItemQuality(_Random2(60, 30), eventid)
     end
     if _GetItemType(eventid) == 595 and _GetItemQuality(eventid) == 255 then
-        _ItemSay("Spent", eventid)
+        bark(eventid, "Spent")
     end
     local4 = get_container(eventid)
     if local4 == 0 or is_npc(local4) then

@@ -2,7 +2,7 @@
 function func_0270H(eventid, itemref)
     if eventid == 1 then
         if not check_item_held(-356, 1, 839, -359) then -- TODO: Implement LuaCheckItemHeld for callis 0072.
-            say(0, "Thou must hold that in thine hand.")
+            add_dialogue(0, "Thou must hold that in thine hand.")
             return
         end
         local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
@@ -16,10 +16,10 @@ function func_0270H(eventid, itemref)
                 call_script(0x0828, target, arr2, arr1, arr3, 624, 7) -- TODO: Map 0828H.
                 use_item() -- TODO: Implement LuaUseItem for calli 007E.
             else
-                say(0, "It seems the tree will yield nothing of value.")
+                add_dialogue(0, "It seems the tree will yield nothing of value.")
             end
         else
-            say(0, "It seems that a pick is not needed for that.")
+            add_dialogue(0, "It seems that a pick is not needed for that.")
         end
     elseif eventid == 7 then
         local items = find_items(-356, 932, 3, 0) -- TODO: Implement LuaFindItems for callis 0035.

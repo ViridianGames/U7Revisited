@@ -15,7 +15,7 @@ function func_08A8()
     local8 = 1
 
     while true do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         if not local0 then
             callis_0008()
             return
@@ -23,26 +23,26 @@ function func_08A8()
 
         local9 = call_090CH(local1)
         if local9 == 1 then
-            say("Fine.")
+            add_dialogue("Fine.")
             local0 = false
         else
             local10 = call_091BH(local7, local4[local9], local6, local1[local9], local5[local9])
             local11 = 0
-            say("^", local10, " Dost thou still wish to trade?")
+            add_dialogue("^", local10, " Dost thou still wish to trade?")
             local12 = call_090AH()
             if local12 then
-                say("How many wouldst thou like?")
+                add_dialogue("How many wouldst thou like?")
                 local11 = call_08F8H(false, 1, 20, local4[local9], local8, local3[local9], local2)
             end
             if local11 == 1 then
-                say("Done!")
+                add_dialogue("Done!")
             elseif local11 == 2 then
-                say("Thou cannot possibly carry that much!")
+                add_dialogue("Thou cannot possibly carry that much!")
             elseif local11 == 3 then
-                say("Thou dost not have enough gold for that!")
+                add_dialogue("Thou dost not have enough gold for that!")
             end
         end
-        say("Wouldst thou like something else?")
+        add_dialogue("Wouldst thou like something else?")
         local0 = call_090AH()
     end
 
@@ -50,6 +50,6 @@ function func_08A8()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

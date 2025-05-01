@@ -20,7 +20,7 @@ function func_02F2(eventid, itemref)
             end
             local3 = callis_0001({754, 8021, 28, 7719}, -356)
             switch_talk_to(141, 1)
-            say("As the Soul Cage dissolves into dust, a great transformation comes upon the Liche. Where the evil spirit was caged you see the form of a familiar person. It's Horance! He's a ghost, but he much more resembles a man than an undead terror.")
+            add_dialogue("As the Soul Cage dissolves into dust, a great transformation comes upon the Liche. Where the evil spirit was caged you see the form of a familiar person. It's Horance! He's a ghost, but he much more resembles a man than an undead terror.")
             call_08ADH()
         end
     end
@@ -29,7 +29,7 @@ function func_02F2(eventid, itemref)
 end
 
 -- Helper functions
-function say(message)
+function add_dialogue(message)
     print(message)
 end
 

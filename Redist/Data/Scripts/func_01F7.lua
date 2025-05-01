@@ -15,7 +15,7 @@ function func_01F7(eventid, itemref)
         end
 
         switch_talk_to(44, 0)
-        say("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
+        add_dialogue("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
 
         if call_090AH() then
             local0 = callis_002B(-359, -359, -359, 644, 1)
@@ -40,6 +40,6 @@ function func_01F7(eventid, itemref)
 end
 
 -- Helper function (assumed to be defined elsewhere)
-function say(message)
+function add_dialogue(message)
     print(message) -- Adjust to your dialogue system
 end

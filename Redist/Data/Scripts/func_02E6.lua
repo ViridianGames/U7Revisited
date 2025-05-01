@@ -5,7 +5,7 @@ function func_02E6(eventid, itemref)
     end
 
     if _NPCInParty(-2) and call_0937H(-2) then
-        _ItemSay("@Gee, is that neat.@", -2)
+        bark(2, "@Gee, is that neat.@")
     end
 
     return

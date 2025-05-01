@@ -30,11 +30,11 @@ function func_08F8(p0, p1, p2, p3, p4, p5, p6)
                     switch_talk_to(local18, 0)
                     local14 = true
                     if p4 == 1 then
-                        say("\"I will carry that.\"")
+                        add_dialogue("\"I will carry that.\"")
                     elseif local13 == 1 then
-                        say("\"I will carry some.\"")
+                        add_dialogue("\"I will carry some.\"")
                     else
-                        say("\"I will carry some, as well.\"")
+                        add_dialogue("\"I will carry some, as well.\"")
                     end
                     hide_npc(local18)
                 end

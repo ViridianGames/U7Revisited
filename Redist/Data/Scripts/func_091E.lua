@@ -6,9 +6,9 @@ function func_091E(p0, p1)
     if external_0088H(8, local2) then -- Unmapped intrinsic
         external_008AH(8, local2) -- Unmapped intrinsic
         local3 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        say("\"The wounds have been healed.\"")
+        add_dialogue("\"The wounds have been healed.\"")
     else
-        say("\"That individual does not need curing!\"")
+        add_dialogue("\"That individual does not need curing!\"")
     end
     return
 end

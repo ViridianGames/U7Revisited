@@ -26,14 +26,14 @@ function func_0296H(eventid, itemref)
                 update_container(pos) -- TODO: Implement LuaUpdateContainer for callis 0026.
                 local outcome = random(1, 3)
                 if outcome == 1 then
-                    say(0, "Indded, a whopper!")
+                    add_dialogue(0, "Indded, a whopper!")
                     if is_party_member(-2) then -- Shamino.
                         call_script(0x0933, -2, "I have seen bigger.", 16) -- TODO: Map 0933H (delayed say).
                     end
                 elseif outcome == 2 then
-                    say(0, "What a meal!")
+                    add_dialogue(0, "What a meal!")
                 elseif outcome == 3 then
-                    say(0, {"That fish does not", "look right."})
+                    add_dialogue(0, {"That fish does not", "look right."})
                 end
             end
         else

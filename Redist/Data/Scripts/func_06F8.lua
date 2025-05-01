@@ -153,11 +153,11 @@ function func_06F8(eventid, itemref)
             end
 
             switch_talk_to(286, 1)
-            say("\"No! Thou must not do this!\" Erethian's voice is full of anguish. He raises his arms and begins a powerful spell.")
-            say("\"Vas Ort Rel Tym...\"")
-            say("He stops mid-spell and begins another, pointing towards the Talisman of Infinity.")
-            say("\"Vas An Ort Ailem!\"")
-            say("You immediately recognize the resonance of a spell gone awry, and apparently so does Erethian. A look of horror comes to his wrinkled features which appear to become more lined by the second.*")
+            add_dialogue("\"No! Thou must not do this!\" Erethian's voice is full of anguish. He raises his arms and begins a powerful spell.")
+            add_dialogue("\"Vas Ort Rel Tym...\"")
+            add_dialogue("He stops mid-spell and begins another, pointing towards the Talisman of Infinity.")
+            add_dialogue("\"Vas An Ort Ailem!\"")
+            add_dialogue("You immediately recognize the resonance of a spell gone awry, and apparently so does Erethian. A look of horror comes to his wrinkled features which appear to become more lined by the second.*")
             local28 = callis_000E(10, 154, itemref)
             local16 = callis_0001({8045, 2, 17447, 8044, 2, 7719}, local28)
             callis_0059(1)
@@ -241,7 +241,7 @@ function set_flag(flag, value)
     -- Placeholder
 end
 
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -14,66 +14,66 @@ function func_04F4(eventid, itemref)
     local0 = call_08F7H(-253)
     local1 = call_08F7H(-252)
     local2 = call_0909H()
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x02C8) then
-        say("The warrior carries himself with confidence.")
+        add_dialogue("The warrior carries himself with confidence.")
         set_flag(0x02C8, true)
     else
-        say("\"Hail, ", local2, ",\" says Cairbre.")
+        add_dialogue("\"Hail, ", local2, ",\" says Cairbre.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"Thou mayest call me Cairbre, ", local2, ".\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"Thou mayest call me Cairbre, ", local2, ".\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I am a sell-sword. But at the moment, I am trying to help my friend regain his senses.\"")
-            _RemoveAnswer("job")
-            _AddAnswer({"senses", "friend"})
+            add_dialogue("\"I am a sell-sword. But at the moment, I am trying to help my friend regain his senses.\"")
+            remove_answer("job")
+            add_answer({"senses", "friend"})
         elseif answer == "friend" then
-            say("\"I was not about to let Cosmo venture down here by himself. So, I offered to accompany him, as did Kallibrus.\"")
+            add_dialogue("\"I was not about to let Cosmo venture down here by himself. So, I offered to accompany him, as did Kallibrus.\"")
             if local1 then
-                say("He points to the gargoyle.")
-                _AddAnswer("Kallibrus")
+                add_dialogue("He points to the gargoyle.")
+                add_answer("Kallibrus")
             end
-            _RemoveAnswer("friend")
+            remove_answer("friend")
         elseif answer == "Kallibrus" then
-            say("\"He is a comrade in arms of mine, and also a friend of Cosmo's. I have yet to meet a more trustworthy companion, for he more than disproves all the rumors about gargoyles.\"")
-            _RemoveAnswer("Kallibrus")
+            add_dialogue("\"He is a comrade in arms of mine, and also a friend of Cosmo's. I have yet to meet a more trustworthy companion, for he more than disproves all the rumors about gargoyles.\"")
+            remove_answer("Kallibrus")
         elseif answer == "senses" then
-            say("\"'Tis a long story. Cosmo is looking for the unicorn that supposedly inhabits this cavern.\" He looks you in the eye and shrugs.~~\"He is a fool.\"")
+            add_dialogue("\"'Tis a long story. Cosmo is looking for the unicorn that supposedly inhabits this cavern.\" He looks you in the eye and shrugs.~~\"He is a fool.\"")
             if local0 then
-                say("*")
+                add_dialogue("*")
                 switch_talk_to(253, 0)
-                say("\"I heard that, Cairbre!\"*")
+                add_dialogue("\"I heard that, Cairbre!\"*")
                 _HideNPC(-253)
                 switch_talk_to(244, 0)
             end
             set_flag(0x02E0, true)
-            _RemoveAnswer("senses")
-            _AddAnswer({"fool", "unicorn"})
+            remove_answer("senses")
+            add_answer({"fool", "unicorn"})
         elseif answer == "unicorn" then
-            say("\"The unicorn is traditionally a way to prove the purity of a young maiden. However, less commonly known is that it will also reveal a young man's, uh, lack of, um, wild oats.\"")
-            _RemoveAnswer("unicorn")
+            add_dialogue("\"The unicorn is traditionally a way to prove the purity of a young maiden. However, less commonly known is that it will also reveal a young man's, uh, lack of, um, wild oats.\"")
+            remove_answer("unicorn")
         elseif answer == "fool" then
-            say("\"Ophelia does not love him! She simply sent him on this quest to be rid of him. I doubt she expects him to find the unicorn, let alone return to her.\"")
-            _RemoveAnswer("fool")
-            _AddAnswer({"rid", "Ophelia"})
+            add_dialogue("\"Ophelia does not love him! She simply sent him on this quest to be rid of him. I doubt she expects him to find the unicorn, let alone return to her.\"")
+            remove_answer("fool")
+            add_answer({"rid", "Ophelia"})
         elseif answer == "Ophelia" then
-            say("\"He met her in Jhelom. She was serving in the Bunk and Stool. Apparently it was 'love at first sight,' as he calls it.\"")
-            _RemoveAnswer("Ophelia")
+            add_dialogue("\"He met her in Jhelom. She was serving in the Bunk and Stool. Apparently it was 'love at first sight,' as he calls it.\"")
+            remove_answer("Ophelia")
         elseif answer == "rid" then
-            say("\"The nature of her request is quite ironic, for I would expect that the unicorn would have shunned her quite some time ago. He is not to her tastes, I would imagine, and, were he to truly know her, she would not be to his. But, alas, love is blind, as they say.\"")
-            _AddAnswer("they")
-            _RemoveAnswer("rid")
+            add_dialogue("\"The nature of her request is quite ironic, for I would expect that the unicorn would have shunned her quite some time ago. He is not to her tastes, I would imagine, and, were he to truly know her, she would not be to his. But, alas, love is blind, as they say.\"")
+            add_answer("they")
+            remove_answer("rid")
         elseif answer == "they" then
-            say("\"I do not know who 'they' are, but that is what they say, is it not?\"")
-            _RemoveAnswer("they")
+            add_dialogue("\"I do not know who 'they' are, but that is what they say, is it not?\"")
+            remove_answer("they")
         elseif answer == "bye" then
-            say("\"'Til next time, ", local2, ".\"*")
+            add_dialogue("\"'Til next time, ", local2, ".\"*")
             return
         end
     end
@@ -82,7 +82,7 @@ function func_04F4(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

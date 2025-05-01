@@ -63,10 +63,10 @@ function armor_vendor_0953(object_id, event)
     log("Initial answers: ", table.concat(answers, ", "))
 
     while continue do
-        say(object_id, strings[0x00A6])
+        add_dialogue(object_id, strings[0x00A6])
         local choice = get_answer()
         if choice == 1 then
-            say(object_id, strings[0x00C7])
+            add_dialogue(object_id, strings[0x00C7])
             continue = false
         else
             local price = prices[choice]
@@ -74,18 +74,18 @@ function armor_vendor_0953(object_id, event)
             local prefix = prefixes[choice]
             local suffix = suffixes[choice]
             local result = buy_item(prefix, item_id, 1, price, items[choice])
-            say(object_id, strings[0x00CF] .. result .. strings[0x00D2])
+            add_dialogue(object_id, strings[0x00CF] .. result .. strings[0x00D2])
             local buy_response = get_answer()
             buy_response = buy_item(prefix, item_id, 1, price, items[choice])
             if buy_response == 1 then
-                say(object_id, strings[0x00E8])
+                add_dialogue(object_id, strings[0x00E8])
             elseif buy_response == 2 then
-                say(object_id, strings[0x00F0])
+                add_dialogue(object_id, strings[0x00F0])
             elseif buy_response == 3 then
-                say(object_id, strings[0x0118])
+                add_dialogue(object_id, strings[0x0118])
             end
         end
-        say(object_id, strings[0x0143])
+        add_dialogue(object_id, strings[0x0143])
         continue = get_answer()
     end
     restore_answers()

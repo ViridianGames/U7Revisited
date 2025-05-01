@@ -14,136 +14,136 @@ function func_04C8(eventid, itemref)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = false
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x0271) then
-        say("The woman smiles at you compassionately.")
+        add_dialogue("The woman smiles at you compassionately.")
         set_flag(0x0271, true)
     else
-        say("Tory smiles and reaches out to you. \"Hello, ", local0, ". I sense thou art troubled.\"")
+        add_dialogue("Tory smiles and reaches out to you. \"Hello, ", local0, ". I sense thou art troubled.\"")
     end
 
     if get_flag(0x025E) and not get_flag(0x0261) then
-        _AddAnswer("statue")
+        add_answer("statue")
     end
     if get_flag(0x0277) and not get_flag(0x0278) then
-        _AddAnswer("Riky")
+        add_answer("Riky")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"I am Lady Tory, ", local1, ".\"")
+            add_dialogue("\"I am Lady Tory, ", local1, ".\"")
             if not get_flag(0x0277) then
-                say("\"Mother of Riky,\" she says, sobbing.")
-                _AddAnswer("Riky")
+                add_dialogue("\"Mother of Riky,\" she says, sobbing.")
+                add_answer("Riky")
             end
-            _RemoveAnswer("name")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"My job is to provide counsel for Lord John-Paul and anyone else in need of guidance here at the Hold.\"")
-            _AddAnswer({"Hold", "Lord John-Paul"})
+            add_dialogue("\"My job is to provide counsel for Lord John-Paul and anyone else in need of guidance here at the Hold.\"")
+            add_answer({"Hold", "Lord John-Paul"})
         elseif answer == "Riky" then
             if not get_flag(0x0277) then
-                say("\"My poor baby boy. He -- he was taken one night by cruel harpies who wanted a child for their own. I -- I know not where they have taken him, but I have heard some of the knights mention that a group of the vile women-birds cluster around the shrine of Honor. But, they have not yet been able to defeat them.\" She sniffs. \"But thou ", local1, ", thou wilt help me get my child back. Oh, please, wilt thou?\"")
+                add_dialogue("\"My poor baby boy. He -- he was taken one night by cruel harpies who wanted a child for their own. I -- I know not where they have taken him, but I have heard some of the knights mention that a group of the vile women-birds cluster around the shrine of Honor. But, they have not yet been able to defeat them.\" She sniffs. \"But thou ", local1, ", thou wilt help me get my child back. Oh, please, wilt thou?\"")
                 local3 = call_090AH()
                 if local3 then
-                    say("\"I cannot thank thee enough for helping me!\" She appears to have cheered up greatly.")
+                    add_dialogue("\"I cannot thank thee enough for helping me!\" She appears to have cheered up greatly.")
                 else
-                    say("\"Thou art a no more than a coward. Get thee gone, coward!\"")
+                    add_dialogue("\"Thou art a no more than a coward. Get thee gone, coward!\"")
                     set_flag(0x0278, true)
                 end
                 set_flag(0x0277, true)
             else
-                say("\"Hast thou found my child?\"")
+                add_dialogue("\"Hast thou found my child?\"")
                 local3 = call_090AH()
                 if local3 then
                     local4 = call_0931H(2, -359, 730, 1, -357)
                     if local4 then
                         call_0911H(100)
-                        say("\"I cannot begin to express my gratitude, ", local1, ". Thank thee ever so much!\"~She begins sobbing for joy. \"Pl-please set him back gently in the cradle.\"")
+                        add_dialogue("\"I cannot begin to express my gratitude, ", local1, ". Thank thee ever so much!\"~She begins sobbing for joy. \"Pl-please set him back gently in the cradle.\"")
                         set_flag(0x0278, true)
                     else
                         local5 = call_0931H(-359, -359, 730, 1, -357)
                         if local5 then
-                            say("\"Why, that's not my little Riky, ", local1, ". Thou hast someone else's child. Oh, where could my boy have been taken?\" she says, crying.")
+                            add_dialogue("\"Why, that's not my little Riky, ", local1, ". Thou hast someone else's child. Oh, where could my boy have been taken?\" she says, crying.")
                         else
-                            say("\"But, I see no child with thee. Thine humor is quite dark. Please return when thou art carrying my baby boy!\"*")
+                            add_dialogue("\"But, I see no child with thee. Thine humor is quite dark. Please return when thou art carrying my baby boy!\"*")
                             return
                         end
                     end
                 else
-                    say("\"Please, I beseech thee, continue thine hunt!\"")
+                    add_dialogue("\"Please, I beseech thee, continue thine hunt!\"")
                 end
             end
-            _RemoveAnswer("Riky")
+            remove_answer("Riky")
         elseif answer == "statue" then
-            say("\"Hmm,\" she appears thoughtful, \"when the incident was brought up to everyone here at the hold, I remember Sir Jordan becoming a bit nervous. Perhaps thou shouldst speak with him.\"")
-            _RemoveAnswer("statue")
+            add_dialogue("\"Hmm,\" she appears thoughtful, \"when the incident was brought up to everyone here at the hold, I remember Sir Jordan becoming a bit nervous. Perhaps thou shouldst speak with him.\"")
+            remove_answer("statue")
         elseif answer == "Hold" then
-            say("\"I sense that thou wishest to know about the residents here at Serpent's Hold. Is this correct?\"")
+            add_dialogue("\"I sense that thou wishest to know about the residents here at Serpent's Hold. Is this correct?\"")
             local6 = call_090AH()
             if not local6 then
-                say("\"Very well. Come to me if thou changest thy mind.\"")
+                add_dialogue("\"Very well. Come to me if thou changest thy mind.\"")
             else
-                say("\"As counselor for the Hold, I can tell thee about many people. Hast thou met the healer or the provisioner? And, as a warrior thyself, thou mayest wish to visit the trainer and the armourer.\"")
+                add_dialogue("\"As counselor for the Hold, I can tell thee about many people. Hast thou met the healer or the provisioner? And, as a warrior thyself, thou mayest wish to visit the trainer and the armourer.\"")
                 if not local2 then
-                    _AddAnswer("Lord John-Paul")
+                    add_answer("Lord John-Paul")
                 end
-                _AddAnswer({"provisioner", "trainer", "armourer", "healer"})
+                add_answer({"provisioner", "trainer", "armourer", "healer"})
             end
-            _RemoveAnswer("Hold")
+            remove_answer("Hold")
         elseif answer == "Lord John-Paul" then
-            say("\"He is an extraordinary leader. Everyone looks up to him. Thou hast only to ask his captain.\"")
-            _RemoveAnswer("Lord John-Paul")
-            _AddAnswer("captain")
+            add_dialogue("\"He is an extraordinary leader. Everyone looks up to him. Thou hast only to ask his captain.\"")
+            remove_answer("Lord John-Paul")
+            add_answer("captain")
             local2 = true
         elseif answer == "healer" then
-            say("\"Lady Leigh is very skilled as a healer. I have yet to see her lose a patient.\"")
-            _RemoveAnswer("healer")
+            add_dialogue("\"Lady Leigh is very skilled as a healer. I have yet to see her lose a patient.\"")
+            remove_answer("healer")
         elseif answer == "armourer" then
-            say("\"Hmmm. Well, Sir Richter has changed much recently -- ever since he joined The Fellowship. He seems a little less compassionate.\"")
-            _AddAnswer("Fellowship")
-            _RemoveAnswer("armourer")
+            add_dialogue("\"Hmmm. Well, Sir Richter has changed much recently -- ever since he joined The Fellowship. He seems a little less compassionate.\"")
+            add_answer("Fellowship")
+            remove_answer("armourer")
         elseif answer == "tavernkeeper" then
-            say("\"Sir Denton is the most astute man I have ever met. He is the only one I cannot sense. And I have never seen him remove his armour....\" She shrugs.")
-            _RemoveAnswer("tavernkeeper")
+            add_dialogue("\"Sir Denton is the most astute man I have ever met. He is the only one I cannot sense. And I have never seen him remove his armour....\" She shrugs.")
+            remove_answer("tavernkeeper")
         elseif answer == "trainer" then
-            say("\"I know Menion least of all. He is very quiet, spending most of his spare time weaponsmithing. The tavernkeeper may know more about him.\"")
-            _AddAnswer("tavernkeeper")
-            _RemoveAnswer("trainer")
+            add_dialogue("\"I know Menion least of all. He is very quiet, spending most of his spare time weaponsmithing. The tavernkeeper may know more about him.\"")
+            add_answer("tavernkeeper")
+            remove_answer("trainer")
         elseif answer == "provisioner" then
-            say("\"Her name is Lady Jehanne. She is the Lady of Sir Pendaran,\" she says with a gleam in her eye.")
-            _AddAnswer("Sir Pendaran")
-            _RemoveAnswer("provisioner")
+            add_dialogue("\"Her name is Lady Jehanne. She is the Lady of Sir Pendaran,\" she says with a gleam in her eye.")
+            add_answer("Sir Pendaran")
+            remove_answer("provisioner")
         elseif answer == "captain" then
-            say("\"The Captain of the guard, Sir Horffe, is a gargoyle. He was found by two humans who raised him to be a valiant knight. He is a very dedicated warrior, and rarely leaves Lord John-Paul's side.\"")
+            add_dialogue("\"The Captain of the guard, Sir Horffe, is a gargoyle. He was found by two humans who raised him to be a valiant knight. He is a very dedicated warrior, and rarely leaves Lord John-Paul's side.\"")
             if not get_flag(0x026E) then
-                _AddAnswer("Gargish accent")
+                add_answer("Gargish accent")
             end
-            _RemoveAnswer("captain")
+            remove_answer("captain")
         elseif answer == "Gargish accent" then
-            say("\"Despite his human upbringing, Horffe has struggled to maintain his Gargish identity. By speaking in the same manner as his brethren, he feels he can better hold on to his background.\"")
-            _RemoveAnswer("Gargish accent")
+            add_dialogue("\"Despite his human upbringing, Horffe has struggled to maintain his Gargish identity. By speaking in the same manner as his brethren, he feels he can better hold on to his background.\"")
+            remove_answer("Gargish accent")
         elseif answer == "Sir Pendaran" then
-            say("\"He is a brave and hearty fighter, and,\" she smiles, \"he is also a bit on the attractive side.\"")
-            _RemoveAnswer("Sir Pendaran")
+            add_dialogue("\"He is a brave and hearty fighter, and,\" she smiles, \"he is also a bit on the attractive side.\"")
+            remove_answer("Sir Pendaran")
         elseif answer == "Fellowship" then
-            say("\"The Fellowship does not have a branch here, but two of our knights are members: Sir Richter and Sir Pendaran. I know they are interested in having Sir Jordan join as well.\"")
-            _RemoveAnswer("Fellowship")
-            _AddAnswer("Sir Jordan")
+            add_dialogue("\"The Fellowship does not have a branch here, but two of our knights are members: Sir Richter and Sir Pendaran. I know they are interested in having Sir Jordan join as well.\"")
+            remove_answer("Fellowship")
+            add_answer("Sir Jordan")
         elseif answer == "Sir Jordan" then
-            say("\"He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.~~\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"*")
+            add_dialogue("\"He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.~~\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"*")
             local7 = call_08F7H(-1)
             if local7 then
                 switch_talk_to(1, 0)
-                say("Iolo smiles proudly.~~\"My shop has, er, grown a bit since thou wert here last, ", local0, ".\"")
+                add_dialogue("Iolo smiles proudly.~~\"My shop has, er, grown a bit since thou wert here last, ", local0, ".\"")
                 _HideNPC(-1)
                 switch_talk_to(200, 0)
             end
-            _RemoveAnswer("Sir Jordan")
+            remove_answer("Sir Jordan")
         elseif answer == "bye" then
-            say("\"I sense thou hast pressing engagements elsewhere. I bid thee farewell.\"*")
+            add_dialogue("\"I sense thou hast pressing engagements elsewhere. I bid thee farewell.\"*")
             return
         end
     end
@@ -152,7 +152,7 @@ function func_04C8(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

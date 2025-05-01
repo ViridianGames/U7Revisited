@@ -19,6 +19,6 @@ function func_0603(eventid, itemref)
         external_0835(itemref, 1, 1) -- Unmapped intrinsic
     end
 
-    item_say("@Thou dost not look well.@", itemref)
+    bark(itemref, "@Thou dost not look well.@")
     return
 end

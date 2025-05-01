@@ -12,18 +12,18 @@ function func_08A2(local0, local1)
     local4 = 2
     local5 = call_0922H(local4, local2, local0, local1)
     if local5 == 0 then
-        say("I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.")
+        add_dialogue("I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.")
     elseif local5 == 1 then
         local6 = callis_0028(-359, -359, 644, -357)
-        say("You gather your gold and count it, finding that you have ", local6, " gold altogether.")
+        add_dialogue("You gather your gold and count it, finding that you have ", local6, " gold altogether.")
         if local6 < local0 then
-            say("I am sorry, but thou dost not seem to have enough gold to train now.")
+            add_dialogue("I am sorry, but thou dost not seem to have enough gold to train now.")
         end
     elseif local5 == 2 then
-        say("After giving a few test questions, she exclaims, \"Thou art easily as well educated as I! There is nothing I have that could help thee.\"")
+        add_dialogue("After giving a few test questions, she exclaims, \"Thou art easily as well educated as I! There is nothing I have that could help thee.\"")
     else
         local7 = callis_002B(true, -359, -359, 644, local0)
-        say("You pay ", local0, " gold, and the training session begins.")
+        add_dialogue("You pay ", local0, " gold, and the training session begins.")
         if local2 == -356 then
             local8 = "You"
             local9 = "you"
@@ -33,7 +33,7 @@ function func_08A2(local0, local1)
             local9 = local3
             local10 = "s"
         end
-        say(local8, " and Jillian study for some time. In addition, she teaches a little on the theory of magic. Afterwards, ", local9, " notice", local10, " an increase in knowledge and magical understanding.")
+        add_dialogue(local8, " and Jillian study for some time. In addition, she teaches a little on the theory of magic. Afterwards, ", local9, " notice", local10, " an increase in knowledge and magical understanding.")
         local11 = call_0910H(6, local2)
         if local11 >= 30 then
             call_0918H(1, local2)
@@ -48,6 +48,6 @@ function func_08A2(local0, local1)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

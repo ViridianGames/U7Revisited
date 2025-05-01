@@ -9,9 +9,9 @@
       local flag_007D = false -- Charles inquiry
       local flag_007E = false -- Charles correction
       local flag_0085 = false -- Willy reveal
-      local npc_id = -47 -- Jeanette's NPC ID
-      local dupre_id = -4 -- Dupre's NPC ID
-      local iolo_id = -37 -- Iolo's NPC ID
+      local npc_id = 47 -- Jeanette's NPC ID
+      local dupre_id = 4 -- Dupre's NPC ID
+      local iolo_id = 37 -- Iolo's NPC ID
 
       if eventid == 1 then
           _SwitchTalkTo(0, npc_id)

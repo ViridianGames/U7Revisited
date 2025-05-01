@@ -12,23 +12,23 @@ function func_087A()
     local6 = {"", "", "", "", "", "", "", " for a dozen", "", ""}
     local7 = -359
     local8 = {1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
-    say("\"What can I sell to thee?\"")
+    add_dialogue("\"What can I sell to thee?\"")
     while local0 do
         local9 = external_090CH(local1) -- Unmapped intrinsic
         if local9 == 1 then
-            say("\"Very good.\"")
+            add_dialogue("\"Very good.\"")
             local0 = false
         else
             local10 = external_091BH(local4[local9], local1[local9], local3[local9], local5, local6[local9]) -- Unmapped intrinsic
             local11 = 0
-            say("\"^" .. local10 .. ". Is that acceptable?\"")
+            add_dialogue("\"^" .. local10 .. ". Is that acceptable?\"")
             local12 = external_090AH() -- Unmapped intrinsic
             if not local12 then
                 if local2[local9] == 595 or local2[local9] == 782 then
                     if local2[local9] == 782 then
-                        say("\"How many sets of twelve wouldst thou like?\"")
+                        add_dialogue("\"How many sets of twelve wouldst thou like?\"")
                     else
-                        say("\"How many wouldst thou like?\"")
+                        add_dialogue("\"How many wouldst thou like?\"")
                     end
                     local11 = external_08F8H(true, 1, 20, local3[local9], local8[local9], local7, local2[local9]) -- Unmapped intrinsic
                 else
@@ -36,13 +36,13 @@ function func_087A()
                 end
             end
             if local11 == 1 then
-                say("\"Very good!\"")
+                add_dialogue("\"Very good!\"")
             elseif local11 == 2 then
-                say("\"I am sorry, but thou cannot possibly carry that much weight!\"")
+                add_dialogue("\"I am sorry, but thou cannot possibly carry that much weight!\"")
             elseif local11 == 3 then
-                say("\"Thou dost not have enough gold for that,\" he says, shaking his head.~~\"Too many birds in the hand is worth a bush.\"")
+                add_dialogue("\"Thou dost not have enough gold for that,\" he says, shaking his head.~~\"Too many birds in the hand is worth a bush.\"")
             end
-            say("\"Wouldst thou care to purchase something else?\"")
+            add_dialogue("\"Wouldst thou care to purchase something else?\"")
             local0 = external_090AH() -- Unmapped intrinsic
         end
     end

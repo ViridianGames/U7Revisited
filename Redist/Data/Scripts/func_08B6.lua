@@ -11,19 +11,19 @@ function func_08B6(local0, local1)
     local3 = 1
     local4 = call_0922H(local3, local2, local0, local1)
     if local4 == 0 then
-        say("Ah! But thou hast not the practical experience to train with me at this time! Go and experience life and return later.")
+        add_dialogue("Ah! But thou hast not the practical experience to train with me at this time! Go and experience life and return later.")
     elseif local4 == 1 then
         local5 = callis_0028(-359, -359, 644, -357)
-        say("You gather your gold and count it, finding that you have ", local5, " gold altogether.")
+        add_dialogue("You gather your gold and count it, finding that you have ", local5, " gold altogether.")
         if local5 < local0 then
-            say("Hmm. Thou art a little short on gold. Perhaps thou couldst visit the House of Games, win some booty, then return!")
+            add_dialogue("Hmm. Thou art a little short on gold. Perhaps thou couldst visit the House of Games, win some booty, then return!")
         end
     elseif local4 == 2 then
-        say("Thou art already as talented as I! Thou hast no need of my services!")
+        add_dialogue("Thou art already as talented as I! Thou hast no need of my services!")
     else
         local6 = callis_002B(true, -359, -359, 644, local0)
-        say("You pay ", local0, " gold, and the training session begins.")
-        say("Lucky produces a deck of cards, three sea shells and a rock, and a pair of dice. In turn, the pirate takes each item and begins to show various methods of utilizing them. He shows how to deal cards from the bottom of the deck, and how to do a false shuffle. With the shells and rock, he shows lightning-fast maneuvers which hide the rock under one of the shells, the one it couldn't possibly be under. Finally, he shows how to use saliva to weight the dice so that they always turn up lucky.")
+        add_dialogue("You pay ", local0, " gold, and the training session begins.")
+        add_dialogue("Lucky produces a deck of cards, three sea shells and a rock, and a pair of dice. In turn, the pirate takes each item and begins to show various methods of utilizing them. He shows how to deal cards from the bottom of the deck, and how to do a false shuffle. With the shells and rock, he shows lightning-fast maneuvers which hide the rock under one of the shells, the one it couldn't possibly be under. Finally, he shows how to use saliva to weight the dice so that they always turn up lucky.")
 
         if local2 == -356 then
             local7 = call_0931H(0, -359, 955, 1, -357)
@@ -42,7 +42,7 @@ function func_08B6(local0, local1)
             local10 = "to do so."
         end
 
-        say("When the training session is over, Lucky ", local8, local9, local10)
+        add_dialogue("When the training session is over, Lucky ", local8, local9, local10)
         local11 = call_0910H(2, local2)
         if local11 >= 30 then
             call_0916H(1, local2)
@@ -53,6 +53,6 @@ function func_08B6(local0, local1)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

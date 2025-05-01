@@ -3,10 +3,10 @@ function func_0669(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10
 
     if eventid == 1 then
-        item_say("@Por Xen@", itemref)
+        bark(itemref, "@Por Xen@")
         if not external_0906H() then -- Unmapped intrinsic
             local0 = add_item(itemref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
-            item_say("@Everybody DANCE now!@", itemref)
+            bark(itemref, "@Everybody DANCE now!@")
         else
             local0 = add_item(itemref, {1542, 17493, 17514, 17520, 7781})
         end

@@ -101,10 +101,10 @@ function func_0886(eventid, itemref)
         "What is the latitude of the northern-most point of the island Spektran?"
     }
     local20 = {60, 60, 60, 30, 0, 120, 60, 120}
-    say(itemref, "\"Before I give thee the password, I must admit I have had my doubts about thou truly being the Avatar. I shall ask thee a few questions regarding the geography of Britannia. Please answer with the number of the longitude or latitude from thy cloth map. Remember-- longitude refers to the lines that run north-south. They are determined by the numbers at the bottom of the map. Latitude refers to the lines that run east-west. They are determined by the numbers on the left side of thy map. If these questions are answered correctly, then I will cast aside all my doubts.\"")
+    add_dialogue(itemref, "\"Before I give thee the password, I must admit I have had my doubts about thou truly being the Avatar. I shall ask thee a few questions regarding the geography of Britannia. Please answer with the number of the longitude or latitude from thy cloth map. Remember-- longitude refers to the lines that run north-south. They are determined by the numbers at the bottom of the map. Latitude refers to the lines that run east-west. They are determined by the numbers on the left side of thy map. If these questions are answered correctly, then I will cast aside all my doubts.\"")
     while local5 do
         local29 = local19[local0[local5]]
-        say(itemref, "\"" .. local29 .. "\"")
+        add_dialogue(itemref, "\"" .. local29 .. "\"")
         local30 = _AskNumber(0, 5, 210, 0)
         if local30 == local20[local0[local5]] then
             local2 = true

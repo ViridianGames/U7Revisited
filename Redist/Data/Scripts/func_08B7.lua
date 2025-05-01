@@ -19,7 +19,7 @@ function func_08B7()
     local10 = -37
 
     while true do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         if not local1 then
             callis_0008()
             return
@@ -27,28 +27,28 @@ function func_08B7()
 
         local11 = call_090CH(local2)
         if local11 == 1 then
-            say("Fine.")
+            add_dialogue("Fine.")
             local1 = false
         elseif local11 == 7 and not get_flag(0x012B) then
-            say("Oh, I am so terribly sorry, ", local0, ", but there is no more. The logger in Yew refuses to chop down any more Silverleaf trees. I, personally, thinks it is a dreadful decision.")
+            add_dialogue("Oh, I am so terribly sorry, ", local0, ", but there is no more. The logger in Yew refuses to chop down any more Silverleaf trees. I, personally, thinks it is a dreadful decision.")
         else
             local12 = call_091BH(local8[local11], local5[local11], local7, local2[local11], local6)
             local13 = 0
-            say("^", local12, " Dost thou still want it?")
+            add_dialogue("^", local12, " Dost thou still want it?")
             local14 = call_090AH()
             if local14 then
-                say("How many wouldst thou like?")
+                add_dialogue("How many wouldst thou like?")
                 local13 = call_08F8H(true, 1, local4[local11] == 0 and 20 or 0, local5[local11], local9, local10, local3[local11])
             end
             if local13 == 1 then
-                say("Done!")
+                add_dialogue("Done!")
             elseif local13 == 2 then
-                say("Thou cannot possibly carry that much!")
+                add_dialogue("Thou cannot possibly carry that much!")
             elseif local13 == 3 then
-                say("Thou dost not have enough gold for that!")
+                add_dialogue("Thou dost not have enough gold for that!")
             end
         end
-        say("Wouldst thou like something else?")
+        add_dialogue("Wouldst thou like something else?")
         local1 = call_090AH()
     end
 
@@ -56,7 +56,7 @@ function func_08B7()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

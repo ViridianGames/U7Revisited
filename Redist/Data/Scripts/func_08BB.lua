@@ -8,7 +8,7 @@ function func_08BB(itemref)
     local2 = {180, 150, 130, 100, 80, 60, 40, 20}
 
     while local1 do
-        say("Which circle art thou interested in?")
+        add_dialogue("Which circle art thou interested in?")
         local3 = call_090CH({"Eighth", "Seventh", "Sixth", "Fifth", "Fourth", "Third", "Second", "First", "nothing"})
         local3 = local3 - 1
         if local3 == 0 then
@@ -41,29 +41,29 @@ function func_08BB(itemref)
             local5 = {67, 70, 71, 68, 0}
         end
 
-        say("What spell wouldst thou like to buy?")
+        add_dialogue("What spell wouldst thou like to buy?")
         local6 = call_090CH(local4)
         if local6 == 1 then
-            say("Fine.")
+            add_dialogue("Fine.")
             break
         end
 
         local7 = local5[local6]
         local8 = local2[local6]
         local9 = local4[local6]
-        say("The ", local9, " spell will cost ", local8, " gold.")
+        add_dialogue("The ", local9, " spell will cost ", local8, " gold.")
         local0 = call_0923H(local8, local7)
         if local0 == 1 then
-            say("Done!")
+            add_dialogue("Done!")
         elseif local0 == 2 then
-            say("Thou dost not have a spellbook.")
+            add_dialogue("Thou dost not have a spellbook.")
             local1 = false
         elseif local0 == 3 then
-            say("Thou dost not have enough gold for that!")
+            add_dialogue("Thou dost not have enough gold for that!")
         elseif local0 == 4 then
-            say("Thou dost already have that spell!")
+            add_dialogue("Thou dost already have that spell!")
         end
-        say("Wouldst thou like another spell?")
+        add_dialogue("Wouldst thou like another spell?")
         local1 = call_090AH()
     end
 
@@ -72,6 +72,6 @@ function func_08BB(itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

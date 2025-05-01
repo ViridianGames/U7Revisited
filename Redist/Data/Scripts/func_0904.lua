@@ -4,7 +4,7 @@ function func_0904(eventid, itemref)
 
     if _NPCInParty(itemref) then
         if not check_item_state(25, itemref) then
-            _ItemSay("@Oink@", itemref)
+            bark(itemref, "@Oink@")
         else
             local2 = 0
             while local2 do

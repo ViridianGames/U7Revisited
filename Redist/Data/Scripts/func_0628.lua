@@ -28,8 +28,8 @@ function func_0628(eventid, itemref)
         elseif local8 == 2 then
             external_08FEH("@Thou art wasting it!@") -- Unmapped intrinsic
         end
-        if npc_in_party(-4) then
-            item_say("@That is perfectly good beer!@", -4)
+        if npc_in_party(4) then
+            bark(4, "@That is perfectly good beer!@")
         end
         local7 = add_item(itemref, 16, 1576, {7765})
     end

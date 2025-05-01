@@ -16,12 +16,12 @@ function func_040C(itemref)
         local3 = callis_005A()
         if get_flag(90) and not get_flag(72) then
             if not answer then
-                say("\"Hast thou properly searched the stables?\"")
+                add_dialogue("\"Hast thou properly searched the stables?\"")
                 answers = {true, false}
                 answer = call_090AH()
                 return
             elseif answer == true then
-                say("\"What didst thou find?\"")
+                add_dialogue("\"What didst thou find?\"")
                 callis_0009()
                 local4 = {"a body", "a bucket", "nothing"}
                 if not get_flag(60) then
@@ -31,54 +31,54 @@ function func_040C(itemref)
                 answer = call_090BH(answers)
                 return
             else
-                say("\"Well, do so, then come speak with me!\"")
+                add_dialogue("\"Well, do so, then come speak with me!\"")
                 answers = {}
                 answer = nil
                 abort()
             end
         elseif answer == "a key" then
             if not local2 then
-                say("\"Hmmm, a key. Perhaps if thou dost ask Christopher's son about it, he may know what it is for.\"")
+                add_dialogue("\"Hmmm, a key. Perhaps if thou dost ask Christopher's son about it, he may know what it is for.\"")
             else
-                say("\"Ask Spark about it. He may know something.\"")
+                add_dialogue("\"Ask Spark about it. He may know something.\"")
             end
             set_flag(72, true)
             answers = {}
             answer = nil
             return
         elseif answer == "a body" then
-            say("\"I know that! What ELSE didst thou find? Thou shouldst look again, Avatar!\"")
+            add_dialogue("\"I know that! What ELSE didst thou find? Thou shouldst look again, Avatar!\"")
             answers = {}
             answer = nil
             abort()
         elseif answer == "a bucket" then
-            say("\"Yes, obviously it is filled with poor Christopher's own blood. But surely there was something else that might point us in the direction of the killer or killers - thou shouldst look again, Avatar.\"")
+            add_dialogue("\"Yes, obviously it is filled with poor Christopher's own blood. But surely there was something else that might point us in the direction of the killer or killers - thou shouldst look again, Avatar.\"")
             answers = {}
             answer = nil
             abort()
         elseif answer == "nothing" then
-            say("\"Thou shouldst look again, 'Avatar'!\"")
+            add_dialogue("\"Thou shouldst look again, 'Avatar'!\"")
             answers = {}
             answer = nil
             abort()
         end
         if get_flag(89) then
             if not answer then
-                say("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")
+                add_dialogue("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")
                 answers = {true, false}
                 answer = call_090AH()
                 return
             elseif answer == true then
-                say("\"Splendid. Then thou must really be the Avatar after all!\"")
+                add_dialogue("\"Splendid. Then thou must really be the Avatar after all!\"")
                 set_flag(89, false)
                 call_0883H()
             else
-                say("\"Then leave our people to work it out for themselves.\"")
+                add_dialogue("\"Then leave our people to work it out for themselves.\"")
                 _HideNPC(-12)
                 local6 = call_08F7H(-1)
                 if not local6 then
                     switch_talk_to(1, 0)
-                    say("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
+                    add_dialogue("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
                     _HideNPC(-1)
                 end
                 answers = {}
@@ -90,50 +90,50 @@ function func_040C(itemref)
             if not answer then
                 callis_005C(itemref)
                 callis_001D(11, callis_001B(-12, -12))
-                say("You see a middle-aged nobleman.")
+                add_dialogue("You see a middle-aged nobleman.")
                 set_flag(76, true)
                 local6 = call_08F7H(-1)
                 if not local6 then
-                    say("\"Iolo! Who is this stranger?\"")
+                    add_dialogue("\"Iolo! Who is this stranger?\"")
                     switch_talk_to(1, 0)
-                    say("\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. local1 .. ", the Avatar!\"")
+                    add_dialogue("\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. local1 .. ", the Avatar!\"")
                     if local3 then
-                        say("\"I simply cannot believe she is here!\"")
+                        add_dialogue("\"I simply cannot believe she is here!\"")
                     else
-                        say("\"I simply cannot believe he is here!\"")
+                        add_dialogue("\"I simply cannot believe he is here!\"")
                     end
                     switch_talk_to(12, 0)
-                    say("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
+                    add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
                     switch_talk_to(1, 0)
-                    say("\"I swear to thee, it is the Avatar!\"")
+                    add_dialogue("\"I swear to thee, it is the Avatar!\"")
                     _HideNPC(-1)
                     switch_talk_to(12, 0)
                 else
-                    say("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
+                    add_dialogue("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
                 end
-                say("The mayor looks at you again as if he were studying every pore on your face. Finally, he smiles.")
-                say("\"Welcome, Avatar.\"")
-                say("But just as suddenly, Finnigan's face becomes stern.")
-                say("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands. Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
+                add_dialogue("The mayor looks at you again as if he were studying every pore on your face. Finally, he smiles.")
+                add_dialogue("\"Welcome, Avatar.\"")
+                add_dialogue("But just as suddenly, Finnigan's face becomes stern.")
+                add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands. Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
                 answers = {true, false}
                 answer = call_090AH()
                 return
             elseif answer == true then
                 local7 = call_08F7H(-11)
                 if not local7 then
-                    say("\"Petre here knows something about all of this.\"")
+                    add_dialogue("\"Petre here knows something about all of this.\"")
                     switch_talk_to(11, 0)
-                    say("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
+                    add_dialogue("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
                     _HideNPC(-11)
                 else
                     switch_talk_to(12, 0)
-                    say("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
+                    add_dialogue("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
                 end
                 switch_talk_to(12, 0)
-                say("The Mayor continues. \"Hast thou searched the stables?\"")
+                add_dialogue("The Mayor continues. \"Hast thou searched the stables?\"")
                 call_0885H()
             else
-                say("\"Well, thou could not be the real Avatar then!\"")
+                add_dialogue("\"Well, thou could not be the real Avatar then!\"")
                 set_flag(89, true)
                 answers = {}
                 answer = nil
@@ -141,20 +141,20 @@ function func_040C(itemref)
             end
         else
             if not answer then
-                say("\"Yes, Avatar?\" Finnigan asks.")
+                add_dialogue("\"Yes, Avatar?\" Finnigan asks.")
                 answers = {}
-                _AddAnswer({"bye", "murder", "job", "name"})
+                add_answer({"bye", "murder", "job", "name"})
                 if not get_flag(91) then
-                    _AddAnswer("report")
+                    add_answer("report")
                 end
                 if not get_flag(63) then
-                    _AddAnswer({"Klog", "Fellowship"})
+                    add_answer({"Klog", "Fellowship"})
                 end
                 if get_flag(66) and not get_flag(61) then
-                    _AddAnswer("password")
+                    add_answer("password")
                 end
                 if get_flag(69) and not get_flag(68) then
-                    _AddAnswer("Pay me now, please")
+                    add_answer("Pay me now, please")
                 end
                 answer = call_090BH(answers)
                 return
@@ -163,61 +163,61 @@ function func_040C(itemref)
 
         -- Process answer
         if cmp_strings("name", 1) then
-            say("\"My name is Finnigan.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"My name is Finnigan.\"")
+            remove_answer("name")
         elseif cmp_strings("job", 1) then
-            say("\"I am the Mayor of Trinsic and have been since I arrived here three years ago.\"")
-            _AddAnswer("Trinsic")
+            add_dialogue("\"I am the Mayor of Trinsic and have been since I arrived here three years ago.\"")
+            add_answer("Trinsic")
         elseif cmp_strings("Trinsic", 1) then
             local8 = local3 and "by one who claimed she was the Avatar." or "by one who claimed he was the Avatar."
-            say("\"Trinsic was once the city of Honor. I suppose it still is. Our Rune of Honor was taken many years ago " .. local8 .. " I believe it now resides in the Royal Museum in Britain, yet the empty pedestal still remains in the center of town. I feel this is symbolic of the town itself. It is rather empty -- of people, of life, and of honor. 'Tis sad, really.\"")
-            say("\"Then there is this murder, of course. We have temporarily closed the gates of the city and require a password to get in or out.\"")
-            _RemoveAnswer("Trinsic")
-            _AddAnswer("password")
+            add_dialogue("\"Trinsic was once the city of Honor. I suppose it still is. Our Rune of Honor was taken many years ago " .. local8 .. " I believe it now resides in the Royal Museum in Britain, yet the empty pedestal still remains in the center of town. I feel this is symbolic of the town itself. It is rather empty -- of people, of life, and of honor. 'Tis sad, really.\"")
+            add_dialogue("\"Then there is this murder, of course. We have temporarily closed the gates of the city and require a password to get in or out.\"")
+            remove_answer("Trinsic")
+            add_answer("password")
         elseif cmp_strings("Pay me now, please", 1) then
-            say("\"Of course, " .. local1 .. ". Here is thy gold.\"")
+            add_dialogue("\"Of course, " .. local1 .. ". Here is thy gold.\"")
             if not callis_002C(true, -359, -359, 644, 100) then
-                say("\"Here thou art.\"")
+                add_dialogue("\"Here thou art.\"")
                 set_flag(69, false)
                 set_flag(68, true)
             else
-                say("\"Oh, I am sorry, " .. local1 .. ". Thou still cannot carry this amount. Thou must return to me later.\"")
+                add_dialogue("\"Oh, I am sorry, " .. local1 .. ". Thou still cannot carry this amount. Thou must return to me later.\"")
             end
-            _RemoveAnswer("Pay me now, please")
+            remove_answer("Pay me now, please")
         elseif cmp_strings("murder", 1) then
             if not get_flag(61) then
-                say("\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo. Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder. After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
-                say("The mayor hesitates, then leans in to speak quietly.")
-                say("\"Actually, I have seen something like this before. It was about four years ago, in Britain.\"")
-                _AddAnswer({"report", "Britain", "Inamo", "Christopher", "Gilberto"})
+                add_dialogue("\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo. Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder. After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
+                add_dialogue("The mayor hesitates, then leans in to speak quietly.")
+                add_dialogue("\"Actually, I have seen something like this before. It was about four years ago, in Britain.\"")
+                add_answer({"report", "Britain", "Inamo", "Christopher", "Gilberto"})
                 set_flag(91, true)
-                _RemoveAnswer("murder")
+                remove_answer("murder")
             else
-                say("\"I hope thou art progressing on the murder investigation.\"")
+                add_dialogue("\"I hope thou art progressing on the murder investigation.\"")
             end
         elseif cmp_strings("Britain", 1) then
-            say("\"'Twas before I came to Trinsic. There was a murder with strikingly similar aspects. A body was found mutilated exactly like poor Christopher. It appeared to be a ritualistic killing. I would wager that whoever was responsible for that murder is the culprit behind this one.\"")
-            _RemoveAnswer("Britain")
+            add_dialogue("\"'Twas before I came to Trinsic. There was a murder with strikingly similar aspects. A body was found mutilated exactly like poor Christopher. It appeared to be a ritualistic killing. I would wager that whoever was responsible for that murder is the culprit behind this one.\"")
+            remove_answer("Britain")
         elseif cmp_strings("son", 1) then
-            say("\"Christopher's son is called Spark. Their house is in the northwest area of town.\"")
-            _RemoveAnswer("son")
+            add_dialogue("\"Christopher's son is called Spark. Their house is in the northwest area of town.\"")
+            remove_answer("son")
         elseif cmp_strings("Gilberto", 1) then
-            say("\"He was struck from behind early this morning and was knocked senseless. Johnson, the morning watch, found him unconscious. He is recuperating at Chantu the Healer's house on the west side of town.\"")
-            _RemoveAnswer("Gilberto")
-            _AddAnswer({"Chantu", "Johnson"})
+            add_dialogue("\"He was struck from behind early this morning and was knocked senseless. Johnson, the morning watch, found him unconscious. He is recuperating at Chantu the Healer's house on the west side of town.\"")
+            remove_answer("Gilberto")
+            add_answer({"Chantu", "Johnson"})
         elseif cmp_strings("Chantu", 1) then
-            say("\"He is our town healer. He hath been here for years. Nice fellow.\"")
-            _RemoveAnswer("Chantu")
+            add_dialogue("\"He is our town healer. He hath been here for years. Nice fellow.\"")
+            remove_answer("Chantu")
         elseif cmp_strings("report", 1) then
             if get_flag(68) then
-                say("\"I am satisfied with thy report. Please carry on thine investigation, Avatar.\"")
+                add_dialogue("\"I am satisfied with thy report. Please carry on thine investigation, Avatar.\"")
             elseif not get_flag(93) then
-                say("\"Art thou ready to answer some questions concerning the investigation?\"")
+                add_dialogue("\"Art thou ready to answer some questions concerning the investigation?\"")
                 answers = {true, false}
                 answer = nil
                 return
             else
-                say("\"Shall we continue thy report?\"")
+                add_dialogue("\"Shall we continue thy report?\"")
                 answers = {true, false}
                 answer = nil
                 return
@@ -230,57 +230,57 @@ function func_040C(itemref)
                 call_0884H()
             end
         elseif cmp_strings(false, 1) then
-            say("\"Oh. Well, carry on with thine investigation.\"")
+            add_dialogue("\"Oh. Well, carry on with thine investigation.\"")
         elseif cmp_strings("Fellowship", 1) then
-            say("\"Why, they are an extremely helpful group. Their branch office is just east of mine. Very optimistic group of people.\"")
-            _RemoveAnswer("Fellowship")
+            add_dialogue("\"Why, they are an extremely helpful group. Their branch office is just east of mine. Very optimistic group of people.\"")
+            remove_answer("Fellowship")
         elseif cmp_strings("Klog", 1) then
-            say("\"He is the Fellowship branch leader. Kind man.\"")
-            _RemoveAnswer("Klog")
+            add_dialogue("\"He is the Fellowship branch leader. Kind man.\"")
+            remove_answer("Klog")
         elseif cmp_strings("Johnson", 1) then
-            say("\"He is probably at the dock right now.\"")
-            _RemoveAnswer("Johnson")
+            add_dialogue("\"He is probably at the dock right now.\"")
+            remove_answer("Johnson")
         elseif cmp_strings("Christopher", 1) then
-            say("\"Christopher was the local blacksmith. He lives, or rather -lived-, with his son in the northwest part of town. The blacksmith's shop is in the southwest corner. Christopher was not a rich man by any means -- he barely kept himself and his son alive. But he certainly enjoyed his work.\"")
-            _RemoveAnswer("Christopher")
-            _AddAnswer("son")
+            add_dialogue("\"Christopher was the local blacksmith. He lives, or rather -lived-, with his son in the northwest part of town. The blacksmith's shop is in the southwest corner. Christopher was not a rich man by any means -- he barely kept himself and his son alive. But he certainly enjoyed his work.\"")
+            remove_answer("Christopher")
+            add_answer("son")
         elseif cmp_strings("Inamo", 1) then
-            say("\"The Gargoyle Inamo slept in the stables, as I understand it. I believe he emigrated here from Terfin a few months ago. It seems that he was merely a chance victim of someone intent on violence.\"")
-            _RemoveAnswer("Inamo")
+            add_dialogue("\"The Gargoyle Inamo slept in the stables, as I understand it. I believe he emigrated here from Terfin a few months ago. It seems that he was merely a chance victim of someone intent on violence.\"")
+            remove_answer("Inamo")
         elseif cmp_strings("password", 1) then
             if get_flag(68) and not get_flag(61) then
-                say("\"Oh, dost thou want the password now?\"")
+                add_dialogue("\"Oh, dost thou want the password now?\"")
                 answers = {true, false}
                 answer = nil
                 return
             else
-                say("\"I will give thee the password when thou hast given me a report on the progress of thine investigation.\"")
-                _AddAnswer("report")
+                add_dialogue("\"I will give thee the password when thou hast given me a report on the progress of thine investigation.\"")
+                add_answer("report")
                 set_flag(66, true)
             end
-            _RemoveAnswer("password")
+            remove_answer("password")
         elseif cmp_strings(true, 1) then
             if call_0886H() then
-                say("\"Excellent! I have no doubts now that thou art the one true Avatar!\"")
-                say("\"Oh-- I almost forgot! The password to leave or enter the town is 'Blackbird'!\"")
+                add_dialogue("\"Excellent! I have no doubts now that thou art the one true Avatar!\"")
+                add_dialogue("\"Oh-- I almost forgot! The password to leave or enter the town is 'Blackbird'!\"")
                 set_flag(61, true)
                 call_0911H(100)
                 answers = {}
                 answer = nil
                 abort()
             else
-                say("\"Hmmm. I am afraid that I still have my doubts about thou being the Avatar. My public duty disallows me to give thee the password. I am sorry.\"")
+                add_dialogue("\"Hmmm. I am afraid that I still have my doubts about thou being the Avatar. My public duty disallows me to give thee the password. I am sorry.\"")
                 answers = {}
                 answer = nil
                 abort()
             end
         elseif cmp_strings(false, 1) then
-            say("The Mayor shrugs and looks at you as if you were mad.")
+            add_dialogue("The Mayor shrugs and looks at you as if you were mad.")
             answers = {}
             answer = nil
             abort()
         elseif cmp_strings("bye", 1) then
-            say("The Mayor nods his head at you and goes on about his business.")
+            add_dialogue("The Mayor nods his head at you and goes on about his business.")
             answers = {}
             answer = nil
             return
@@ -303,7 +303,7 @@ function func_040C(itemref)
             elseif local13 == 4 then
                 local14 = "@I am too old for this...@"
             end
-            _ItemSay(local14, -12)
+            bark(12, local14)
         else
             call_092EH(-12)
         end
@@ -317,7 +317,7 @@ function eventid()
     return 0 -- Placeholder
 end
 
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -9,7 +9,7 @@ function func_0831(eventid, itemref)
     while local3 do
         local5 = local3
         if not call_0829H(local5) then
-            say(itemref, "@One of the gangplanks seems to be blocked. It must be lowered to sail.@")
+            add_dialogue(itemref, "@One of the gangplanks seems to be blocked. It must be lowered to sail.@")
             return
         end
         local3 = get_next_item() -- sloop

@@ -11,57 +11,57 @@ function func_0432(eventid, itemref)
         add_answer({"bye", "job", "name"})
 
         if not get_flag(179) then
-            say("You see a friendly-looking farmer who waves at you as you approach.")
+            add_dialogue("You see a friendly-looking farmer who waves at you as you approach.")
             set_flag(179, true)
         else
-            say("\"Hello again, " .. local0 .. ".\" says Fred.")
+            add_dialogue("\"Hello again, " .. local0 .. ".\" says Fred.")
         end
 
         while true do
             local answer = get_answer()
             if answer == "name" then
-                say("\"My name is Fred.\"")
+                add_dialogue("\"My name is Fred.\"")
                 remove_answer("name")
             elseif answer == "job" then
-                say("\"I sell meats here at the Farmer's Market in Britain.\"")
+                add_dialogue("\"I sell meats here at the Farmer's Market in Britain.\"")
                 add_answer({"Farmer's Market", "meats"})
             elseif answer == "meats" then
-                say("\"They are the tastiest meats that thou canst buy. Do thyself a favor and try some.\"")
+                add_dialogue("\"They are the tastiest meats that thou canst buy. Do thyself a favor and try some.\"")
                 remove_answer("meats")
                 add_answer("buy")
             elseif answer == "Farmer's Market" then
-                say("\"Here at the Farmer's Market we sell vegetables bought from the farmers just outside of town, as well as meats from the slaughterhouse in Paws.\"")
+                add_dialogue("\"Here at the Farmer's Market we sell vegetables bought from the farmers just outside of town, as well as meats from the slaughterhouse in Paws.\"")
                 remove_answer("Farmer's Market")
                 add_answer({"Paws", "slaughterhouse"})
             elseif answer == "slaughterhouse" then
-                say("\"It is run by a man named Morfin, a very successful merchant from Buccaneer's Den.\"")
+                add_dialogue("\"It is run by a man named Morfin, a very successful merchant from Buccaneer's Den.\"")
                 remove_answer("slaughterhouse")
                 add_answer({"Buccaneer's Den", "Morfin"})
             elseif answer == "Morfin" then
-                say("\"Morfin is an unusual character. If I did not know any better I would say he was involved with a number of shady business activities.\"")
+                add_dialogue("\"Morfin is an unusual character. If I did not know any better I would say he was involved with a number of shady business activities.\"")
                 remove_answer("Morfin")
             elseif answer == "Buccaneer's Den" then
-                say("\"Morfin left that place because he saw all of the commerce that was developing there as competition to his own business activities and moved to Paws.\"")
+                add_dialogue("\"Morfin left that place because he saw all of the commerce that was developing there as competition to his own business activities and moved to Paws.\"")
                 remove_answer("Buccaneer's Den")
             elseif answer == "Paws" then
-                say("\"Paws is a good place to go to buy things for low prices. Many of the people are rather poor, I am sorry to say. There is little active commerce there, however. In Paws, one must deal with people on a more personal level.\"")
+                add_dialogue("\"Paws is a good place to go to buy things for low prices. Many of the people are rather poor, I am sorry to say. There is little active commerce there, however. In Paws, one must deal with people on a more personal level.\"")
                 remove_answer("Paws")
             elseif answer == "buy" then
                 if local2 ~= 7 then
-                    say("\"Thou must return when the Farmer's Market is open.\"")
+                    add_dialogue("\"Thou must return when the Farmer's Market is open.\"")
                 else
-                    say("\"Wouldst thou like to buy some meats?\"")
+                    add_dialogue("\"Wouldst thou like to buy some meats?\"")
                     local3 = get_answer()
                     if local3 then
-                        say("\"We have a fine selection of meats for thee today, " .. local0 .. ".\"")
+                        add_dialogue("\"We have a fine selection of meats for thee today, " .. local0 .. ".\"")
                         buy_meats() -- Unmapped intrinsic 088C
                     else
-                        say("\"Come back when thou art hungry and we shall serve thee then.\"")
+                        add_dialogue("\"Come back when thou art hungry and we shall serve thee then.\"")
                     end
                 end
                 remove_answer("buy")
             elseif answer == "bye" then
-                say("\"Goodbye, " .. local0 .. ".\"*")
+                add_dialogue("\"Goodbye, " .. local0 .. ".\"*")
                 break
             end
         end
@@ -81,7 +81,7 @@ function func_0432(eventid, itemref)
             elseif local4 == 4 then
                 local5 = "@Best prices in Britannia!@"
             end
-            item_say(local5, -50)
+            bark(50, local5)
         else
             switch_talk_to(50)
         end

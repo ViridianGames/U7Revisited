@@ -17,11 +17,11 @@ function func_0622(eventid, itemref)
     end
 
     switch_talk_to(local1, 0)
-    say("\"In how many hours shall " .. local5 .. " wake thee up, " .. local3 .. "?\"")
+    add_dialogue("\"In how many hours shall " .. local5 .. " wake thee up, " .. local3 .. "?\"")
     local2 = ask_number(8, 1, 12, 0)
 
     if local2 == 0 then
-        say(local3 .. " gives you an exasperated look.* \"Never mind, then.\"")
+        add_dialogue(local3 .. " gives you an exasperated look.* \"Never mind, then.\"")
         if not external_0801(itemref) then -- Unmapped intrinsic
             external_0624(itemref) -- Unmapped intrinsic
         end
@@ -33,7 +33,7 @@ function func_0622(eventid, itemref)
         hide_npc(local1)
         set_flag(-356, 1)
     else
-        say("\"Pleasant dreams.\"")
+        add_dialogue("\"Pleasant dreams.\"")
         hide_npc(local1)
         if get_random(1, 4) == 1 then
             external_0940(1) -- Unmapped intrinsic

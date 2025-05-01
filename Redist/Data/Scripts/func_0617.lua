@@ -12,7 +12,7 @@ function func_0617(eventid, itemref)
         set_schedule(itemref, 15)
         if npc_in_party(-142) then
             switch_talk_to(142, 1)
-            say("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
+            add_dialogue("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
             return
         end
         set_flag(462, true)

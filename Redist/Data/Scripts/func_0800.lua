@@ -9,9 +9,9 @@ function func_0800(eventid, itemref)
         switch_talk_to(local1, 0)
         local2 = get_player_name(local1) -- Unmapped intrinsic
         if local1 == -356 then
-            say("\"This is no time to sleep! Look alive!\"")
+            add_dialogue("\"This is no time to sleep! Look alive!\"")
         else
-            say(local2 .. " glares. \"This is no time to sleep! Look alive!\"")
+            add_dialogue(local2 .. " glares. \"This is no time to sleep! Look alive!\"")
         end
         if not external_0801H(local0) then -- Unmapped intrinsic
             external_0624H(local0) -- Unmapped intrinsic

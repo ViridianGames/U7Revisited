@@ -590,7 +590,7 @@ bool WasRMBDoubleClicked()
 	return false;
 }
 
-// int l_say(lua_State* L)
+// int l_add_dialogue(lua_State* L)
 // {
 // 	const char* message = luaL_checkstring(L, 1);
 // 	printf("Lua says: %s\n", message);

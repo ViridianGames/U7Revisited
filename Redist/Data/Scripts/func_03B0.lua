@@ -8,7 +8,7 @@ function func_03B0(eventid, itemref)
     end
 
     if _GetItemFrame(itemref) == 0 and call_0937H(-356) and not callis_0081() then
-        _ItemSay("@ptui!@", -356)
+        bark(356, "@ptui!@")
         local0 = callis_0002({3, 24, 7768}, itemref)
     end
 

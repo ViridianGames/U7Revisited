@@ -6,13 +6,13 @@ function func_0845(eventid, itemref)
     local2 = _GetNPCProperty(6, _NPCInParty(-356))
     local3 = eventid and "the blade" or "the gem"
     if local1 == local2 then
-        say(itemref, "\"Thy power needs no replenishing, master.\" The daemon sounds a bit put out.")
+        add_dialogue(itemref, "\"Thy power needs no replenishing, master.\" The daemon sounds a bit put out.")
     else
         local4 = _SetNPCProperty(5, _NPCInParty(-356), local2)
         if local4 then
-            say(itemref, "Energy courses from " .. local3 .. " into you, restoring your magical reserves, \"It is done, master.\"")
+            add_dialogue(itemref, "Energy courses from " .. local3 .. " into you, restoring your magical reserves, \"It is done, master.\"")
         else
-            say(itemref, "\"I fear something is amiss, master.\" The daemon sounds almost worried.")
+            add_dialogue(itemref, "\"I fear something is amiss, master.\" The daemon sounds almost worried.")
         end
     end
     return

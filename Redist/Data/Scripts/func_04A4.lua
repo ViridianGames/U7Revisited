@@ -11,15 +11,15 @@ function func_04A4(eventid, itemref)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = false
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x0206) then
-        say("You see a handsome, hardened, muscular man who, surprisingly, bears a friendly smile on his face.")
+        add_dialogue("You see a handsome, hardened, muscular man who, surprisingly, bears a friendly smile on his face.")
         set_flag(0x0206, true)
     else
-        say("\"Please, ", local1, ". Join me for some company.\"")
+        add_dialogue("\"Please, ", local1, ". Join me for some company.\"")
         if not (get_flag(0x01DD) and get_flag(0x01ED)) then
-            _AddAnswer("crystal")
+            add_answer("crystal")
         end
     end
 
@@ -27,78 +27,78 @@ function func_04A4(eventid, itemref)
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"I am called Addom, ", local1, ".\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"I am called Addom, ", local1, ".\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I travel the world in search of rare and unique items to sell to museums. I am not a resident of Moonglow.\"")
-            _AddAnswer({"items", "travel", "Moonglow"})
+            add_dialogue("\"I travel the world in search of rare and unique items to sell to museums. I am not a resident of Moonglow.\"")
+            add_answer({"items", "travel", "Moonglow"})
             if not (get_flag(0x01DD) and get_flag(0x01ED)) then
-                _AddAnswer("crystal")
+                add_answer("crystal")
             end
         elseif answer == "travel" then
-            say("\"I have been all over Britannia, ", local1, ". Nothing about the land frightens me any longer.\" He grins. \"The same is not true of some of the residents.\"")
-            _AddAnswer("residents")
-            _RemoveAnswer("travel")
+            add_dialogue("\"I have been all over Britannia, ", local1, ". Nothing about the land frightens me any longer.\" He grins. \"The same is not true of some of the residents.\"")
+            add_answer("residents")
+            remove_answer("travel")
         elseif answer == "residents" then
-            say(""'Twas a joke, ", local1, ".\"")
-            _RemoveAnswer("residents")
+            add_dialogue(""'Twas a joke, ", local1, ".\"")
+            remove_answer("residents")
         elseif answer == "items" then
-            say("\"I have found many odd artifacts. Many of the things thou hast seen in The Music Hall and the Lycaeum have been brought to them by me.\"")
+            add_dialogue("\"I have found many odd artifacts. Many of the things thou hast seen in The Music Hall and the Lycaeum have been brought to them by me.\"")
             if not get_flag(0x01DD) then
-                say("\"In fact, ", local1, ", I have this unique crystal I found on the mainland near Jhelom that I am hoping will fetch a fair price from Nelson.\"He pulls out a small clear crystal and shows it to you.The facets gleam in the light.")
+                add_dialogue("\"In fact, ", local1, ", I have this unique crystal I found on the mainland near Jhelom that I am hoping will fetch a fair price from Nelson.\"He pulls out a small clear crystal and shows it to you.The facets gleam in the light.")
                 if not local2 then
-                    _AddAnswer("Nelson")
+                    add_answer("Nelson")
                 end
             end
-            _RemoveAnswer("items")
+            remove_answer("items")
         elseif answer == "Nelson" then
-            say("\"He is in charge of the Lycaeum. He loves trinkets and rarities.\"")
+            add_dialogue("\"He is in charge of the Lycaeum. He loves trinkets and rarities.\"")
             local2 = true
-            _RemoveAnswer("Nelson")
+            remove_answer("Nelson")
         elseif answer == "Moonglow" then
-            say("\"I am afraid, ", local1, ", that I know nothing about this fair city. I reside in Yew with my wife, Penni, who is the trainer there.\"Actually, ", local1, ", I have met two people here, other than Nelson.\"")
-            _RemoveAnswer("Moonglow")
-            _AddAnswer({"Penni", "people"})
+            add_dialogue("\"I am afraid, ", local1, ", that I know nothing about this fair city. I reside in Yew with my wife, Penni, who is the trainer there.\"Actually, ", local1, ", I have met two people here, other than Nelson.\"")
+            remove_answer("Moonglow")
+            add_answer({"Penni", "people"})
             set_flag(0x01DE, true)
         elseif answer == "people" then
-            say("I have come to know the bartender and the healer.")
-            _RemoveAnswer("people")
-            _AddAnswer({"healer", "bartender"})
+            add_dialogue("I have come to know the bartender and the healer.")
+            remove_answer("people")
+            add_answer({"healer", "bartender"})
         elseif answer == "bartender" then
-            say("\"Phearcy is quite friendly. But he does love to gossip. He has offered me a deal whereby I might earn free meals if I can discover why Nelson's assistant reacts differently to some man, or something like that. I am not going to bother, but pray, do not tell Phearcy that!\"")
+            add_dialogue("\"Phearcy is quite friendly. But he does love to gossip. He has offered me a deal whereby I might earn free meals if I can discover why Nelson's assistant reacts differently to some man, or something like that. I am not going to bother, but pray, do not tell Phearcy that!\"")
             if not local2 then
-                _AddAnswer("Nelson")
+                add_answer("Nelson")
             end
-            _RemoveAnswer("bartender")
+            remove_answer("bartender")
         elseif answer == "healer" then
-            say("\"Elad is very generous. In fact, he is letting me sleep in one of his spare beds while I am in town. His only charge,\" he laughs, \"is the stories I tell him about mine adventures.Not a bad trade if I say so myself,\" he shrugs.")
-            _RemoveAnswer("healer")
+            add_dialogue("\"Elad is very generous. In fact, he is letting me sleep in one of his spare beds while I am in town. His only charge,\" he laughs, \"is the stories I tell him about mine adventures.Not a bad trade if I say so myself,\" he shrugs.")
+            remove_answer("healer")
         elseif answer == "Penni" then
-            say("\"She teaches close-quarter combat. Everything I needed to know to survive on my journeys I learned from her.\"")
-            _RemoveAnswer("Penni")
+            add_dialogue("\"She teaches close-quarter combat. Everything I needed to know to survive on my journeys I learned from her.\"")
+            remove_answer("Penni")
         elseif answer == "crystal" then
-            say("\"Dost thou mean this?\" He pulls a small, clear, multi-faceted gem from a pouch beneath his cloak. \"I just found this recently. I was hoping to sell it to the Lycaeum, but, alas, they have no use for it. Dost thou want it, perhaps?\" he asks, hopefully. \"I will sell it to thee for 20 gold.\"")
+            add_dialogue("\"Dost thou mean this?\" He pulls a small, clear, multi-faceted gem from a pouch beneath his cloak. \"I just found this recently. I was hoping to sell it to the Lycaeum, but, alas, they have no use for it. Dost thou want it, perhaps?\" he asks, hopefully. \"I will sell it to thee for 20 gold.\"")
             local3 = call_090AH()
             if local3 then
                 local4 = callis_002C(false, -359, -359, 746, 1)
                 local5 = callis_002B(true, -359, -359, 644, 20)
                 if local5 then
                     if local4 then
-                        say("\"I thank thee.\"")
+                        add_dialogue("\"I thank thee.\"")
                         set_flag(0x01ED, true)
                     else
-                        say("\"I am truly sorry, ", local1, ", but thou dost not have enough room.\"")
+                        add_dialogue("\"I am truly sorry, ", local1, ", but thou dost not have enough room.\"")
                     end
                     local6 = callis_002B(false, -359, -359, 746, 1)
                 else
-                    say("\"I am truly sorry, ", local1, ", but thou dost not have enough gold.\"")
+                    add_dialogue("\"I am truly sorry, ", local1, ", but thou dost not have enough gold.\"")
                 end
             else
-                say("\"Very well,\" he sighs, disappointed.")
+                add_dialogue("\"Very well,\" he sighs, disappointed.")
             end
-            _RemoveAnswer("crystal")
+            remove_answer("crystal")
         elseif answer == "bye" then
-            say("\"May thy days be always pleasant, ", local1, ".\"")
+            add_dialogue("\"May thy days be always pleasant, ", local1, ".\"")
             break
         end
 
@@ -109,7 +109,7 @@ function func_04A4(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -23,16 +23,16 @@ function func_085A()
         local7 = ""
         local8 = 1
     end
-    say("\"What wouldst thou like to buy?\"")
+    add_dialogue("\"What wouldst thou like to buy?\"")
     while local0 do
         local9 = external_090CH(local1) -- Unmapped intrinsic
         if local9 == 1 then
-            say("\"Tsk tsk... I am broken-hearted...\"")
+            add_dialogue("\"Tsk tsk... I am broken-hearted...\"")
             local0 = false
         else
             local10 = external_091BH(local7, local1[local9], local4[local9], local6, local5[local9]) -- Unmapped intrinsic
             local11 = 0
-            say("\"^" .. local10 .. " Art thou still interested?\"")
+            add_dialogue("\"^" .. local10 .. " Art thou still interested?\"")
             local12 = external_090AH() -- Unmapped intrinsic
             if not local12 then
                 local11 = external_08F8H(true, 1, 5, local4[local9], local8, local3[local9], local2[local9]) -- Unmapped intrinsic
@@ -40,13 +40,13 @@ function func_085A()
                 local11 = external_08F8H(false, 1, 0, local4[local9], local8, local3[local9], local2[local9]) -- Unmapped intrinsic
             end
             if local11 == 1 then
-                say("\"Done!\"")
+                add_dialogue("\"Done!\"")
             elseif local11 == 2 then
-                say("\"Thou cannot possibly carry that much!\"")
+                add_dialogue("\"Thou cannot possibly carry that much!\"")
             elseif local11 == 3 then
-                say("\"Thou dost not have enough gold for that!\"")
+                add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
-            say("\"Wouldst thou like something else?\"")
+            add_dialogue("\"Wouldst thou like something else?\"")
             local0 = external_090AH() -- Unmapped intrinsic
         end
     end

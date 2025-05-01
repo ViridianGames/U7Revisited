@@ -1,9 +1,9 @@
 -- Function 08B0: Describes liche's state
 function func_08B0()
     if not get_flag(0x01C5) then
-        say("Before you is the vile form of a liche. It remains motionless and its eyes stare straight ahead.")
+        add_dialogue("Before you is the vile form of a liche. It remains motionless and its eyes stare straight ahead.")
     else
-        say("The Liche remains motionless and seemingly unaware of your presence.")
+        add_dialogue("The Liche remains motionless and seemingly unaware of your presence.")
     end
     abort()
 
@@ -11,7 +11,7 @@ function func_08B0()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -16,50 +16,50 @@ function func_04B3(eventid, itemref)
     local1 = callis_003B()
     local2 = callis_001B(-179)
     local2 = callis_001C(local2)
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if get_flag(0x0212) then
-        _AddAnswer("thief")
+        add_answer("thief")
     end
     if get_flag(0x0218) then
-        _RemoveAnswer("thief")
+        remove_answer("thief")
     end
     if not get_flag(0x0215) then
-        _AddAnswer("Merrick")
+        add_answer("Merrick")
     end
     if not get_flag(0x0214) then
-        _AddAnswer("Morfin")
+        add_answer("Morfin")
     end
     if not get_flag(0x0216) then
-        _AddAnswer("Thurston")
+        add_answer("Thurston")
     end
 
     if not get_flag(0x022C) then
-        say("You see the town bartender. She looks very busy, but she obviously takes pride in her work.")
+        add_dialogue("You see the town bartender. She looks very busy, but she obviously takes pride in her work.")
         set_flag(0x022C, true)
     else
-        say("Polly smiles. \"What can I do for thee, ", local0, "?\"")
+        add_dialogue("Polly smiles. \"What can I do for thee, ", local0, "?\"")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"I am Polly. It is a pleasure to meet thee.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"I am Polly. It is a pleasure to meet thee.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"The owner and proprietor of the Salty Dog, the finest eating and drinking establishment in all of Paws, at thy service.\"")
+            add_dialogue("\"The owner and proprietor of the Salty Dog, the finest eating and drinking establishment in all of Paws, at thy service.\"")
             if local2 == 23 then
-                _AddAnswer({"room", "buy", "Paws"})
+                add_answer({"room", "buy", "Paws"})
             else
-                say("\"However, the Salty Dog is now closed. Please return during business hours.\"")
-                _AddAnswer("Paws")
+                add_dialogue("\"However, the Salty Dog is now closed. Please return during business hours.\"")
+                add_answer("Paws")
             end
         elseif answer == "buy" then
             call_08CDH()
-            _RemoveAnswer("buy")
+            remove_answer("buy")
         elseif answer == "room" then
-            say("\"For but 5 gold thou canst let one of our lovely rooms. Dost thou wish to stay here for the night?\"")
+            add_dialogue("\"For but 5 gold thou canst let one of our lovely rooms. Dost thou wish to stay here for the night?\"")
             local3 = call_090AH()
             if local3 then
                 local4 = callis_GetPartyMembers()
@@ -72,38 +72,38 @@ function func_04B3(eventid, itemref)
                 if local9 >= local8 then
                     local10 = callis_002C(true, 255, -359, 641, 1)
                     if local10 then
-                        say("\"Here is thy key for this inn. 'Twill only work once.\"")
+                        add_dialogue("\"Here is thy key for this inn. 'Twill only work once.\"")
                         local11 = callis_002B(true, -359, -359, 644, local8)
                     else
-                        say("\"Sorry, ", local0, ", thou must lose some of thy bundles before I can give thee thy key.\"")
+                        add_dialogue("\"Sorry, ", local0, ", thou must lose some of thy bundles before I can give thee thy key.\"")
                     end
                 else
-                    say("\"I am truly sorry, ", local0, ", but the rooms cost more gold than thou hast.\"")
+                    add_dialogue("\"I am truly sorry, ", local0, ", but the rooms cost more gold than thou hast.\"")
                 end
             else
-                say("\"Perhaps another evening then.\"")
+                add_dialogue("\"Perhaps another evening then.\"")
             end
-            _RemoveAnswer("room")
+            remove_answer("room")
         elseif answer == "Paws" then
-            say("\"Actually, there are no other inns or pubs in Paws. It is a small place, but our food and drink here is quite good, honestly.\"")
-            _RemoveAnswer("Paws")
+            add_dialogue("\"Actually, there are no other inns or pubs in Paws. It is a small place, but our food and drink here is quite good, honestly.\"")
+            remove_answer("Paws")
         elseif answer == "thief" then
-            say("\"There is a thief in this town! Silver serpent venom was stolen from Morfin, the merchant who operates the slaughterhouse.\"")
+            add_dialogue("\"There is a thief in this town! Silver serpent venom was stolen from Morfin, the merchant who operates the slaughterhouse.\"")
             set_flag(0x0212, true)
-            _RemoveAnswer("thief")
+            remove_answer("thief")
         elseif answer == "Merrick" then
-            say("\"He used to be a farmer. He is not a bad sort. He has just had a bad run of luck. Now he is a devout Fellowship member.\"")
-            _RemoveAnswer("Merrick")
+            add_dialogue("\"He used to be a farmer. He is not a bad sort. He has just had a bad run of luck. Now he is a devout Fellowship member.\"")
+            remove_answer("Merrick")
         elseif answer == "Morfin" then
-            say("\"Morfin is a very shrewd and successful merchant, and also a Fellowship member, but I cannot help but feel that he would sell his own mother if he could get the right price for her. 'Tis little wonder why the thief chose to steal from him.\"")
-            _AddAnswer("thief")
-            _RemoveAnswer("Morfin")
+            add_dialogue("\"Morfin is a very shrewd and successful merchant, and also a Fellowship member, but I cannot help but feel that he would sell his own mother if he could get the right price for her. 'Tis little wonder why the thief chose to steal from him.\"")
+            add_answer("thief")
+            remove_answer("Morfin")
         elseif answer == "Thurston" then
-            say("You relate to Polly what you heard Thurston say about her. She is taken completely by surprise. \"Thurston really said that about me! I have always liked him, but in truth I have always thought I was not good enough for him!\"")
+            add_dialogue("You relate to Polly what you heard Thurston say about her. She is taken completely by surprise. \"Thurston really said that about me! I have always liked him, but in truth I have always thought I was not good enough for him!\"")
             set_flag(0x021B, true)
-            _RemoveAnswer("Thurston")
+            remove_answer("Thurston")
         elseif answer == "bye" then
-            say("\"Good day to thee, ", local0, ".\"*")
+            add_dialogue("\"Good day to thee, ", local0, ".\"*")
             break
         end
     end
@@ -112,7 +112,7 @@ function func_04B3(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

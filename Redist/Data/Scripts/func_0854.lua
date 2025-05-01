@@ -3,22 +3,22 @@ function func_0854(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     local0 = _GetPlayerName(eventid)
-    say(itemref, "\"How many portions wouldst thou wish to sell?\"")
+    add_dialogue(itemref, "\"How many portions wouldst thou wish to sell?\"")
     local1 = _AskNumber(0, 1, 10, 0)
     if local1 == 0 then
-        say(itemref, "\"Oh, my. We truly do need the meat. Well, perhaps next time.\"")
+        add_dialogue(itemref, "\"Oh, my. We truly do need the meat. Well, perhaps next time.\"")
         return
     end
     local2 = check_gold(8, -359, 377, -357)
     if local2 < local1 then
-        say(itemref, "\"Thou cannot sell me what thou dost not have! Now, truly...!\"")
+        add_dialogue(itemref, "\"Thou cannot sell me what thou dost not have! Now, truly...!\"")
         goto start
     end
-    say(itemref, "\"Excellent! I accept the trade, " .. local0 .. ". Here is thy gold.\"")
+    add_dialogue(itemref, "\"Excellent! I accept the trade, " .. local0 .. ". Here is thy gold.\"")
     local3 = local1 * 5
     local4 = give_item(true, -359, -359, 644, local3)
     if not local4 then
-        say(itemref, "\"Oh, dear. Thou cannot possibly carry this much gold! Perhaps thou mayest return when thou hast dropped something else.\"")
+        add_dialogue(itemref, "\"Oh, dear. Thou cannot possibly carry this much gold! Perhaps thou mayest return when thou hast dropped something else.\"")
         return
     end
     local5 = remove_gold(true, 8, -359, 377, local1)

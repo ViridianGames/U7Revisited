@@ -7,15 +7,15 @@ function func_018A(itemref)
     if eventid() == 1 then
         callis_0003(0, -258)
         callis_0005({"bye", "job", "name"})
-        say("You see a tough-looking palace guard who takes his job -very- seriously.")
+        add_dialogue("You see a tough-looking palace guard who takes his job -very- seriously.")
         while true do
             if cmp_strings("name", 0x004A) then
-                say("\"I am a guard.\"")
+                add_dialogue("\"I am a guard.\"")
                 callis_0006("name")
             elseif cmp_strings("job", 0x0056) then
-                say("The man looks at you like you are an ignoramus. \"I am a guard for the palace, idiot. Thou shouldst go about thy business.\"")
+                add_dialogue("The man looks at you like you are an ignoramus. \"I am a guard for the palace, idiot. Thou shouldst go about thy business.\"")
             elseif cmp_strings("bye", 0x0061) then
-                say("\"Goodbye.\"")
+                add_dialogue("\"Goodbye.\"")
                 break
             end
         end
@@ -35,7 +35,7 @@ function func_018A(itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -48,7 +48,7 @@ function func_02F8(eventid, itemref)
 end
 
 -- Helper functions
-function say(message)
+function add_dialogue(message)
     print(message)
 end
 

@@ -2,11 +2,11 @@
 function func_0870(p0, p1, p2)
     local local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
 
-    say("\"I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
+    add_dialogue("\"I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
     save_answers() -- Unmapped intrinsic
     local3 = external_090AH() -- Unmapped intrinsic
     if not local3 then
-        say("\"Which of my services dost thou have need of?\"")
+        add_dialogue("\"Which of my services dost thou have need of?\"")
         local4 = {"resurrect", "cure poison", "heal"}
         local5 = external_090BH(local4) -- Unmapped intrinsic
         if local5 == "heal" or local5 == "cure poison" then
@@ -17,10 +17,10 @@ function func_0870(p0, p1, p2)
                 local6 = "cured of poison"
                 local7 = p1
             end
-            say("\"Who dost thou wish to be " .. local6 .. "?\"")
+            add_dialogue("\"Who dost thou wish to be " .. local6 .. "?\"")
             local8 = external_090EH() -- Unmapped intrinsic
             if local8 == 0 then
-                say("\"Very well. It pleases me that thou art healthy.\"")
+                add_dialogue("\"Very well. It pleases me that thou art healthy.\"")
                 return
             end
         end
@@ -30,14 +30,14 @@ function func_0870(p0, p1, p2)
             if local10 == 0 then
                 local10 = external_000EH(25, 414, local9) -- Unmapped intrinsic
                 if local10 == 0 then
-                    say("\"I do not see anyone who needs resurrecting. I must be able to see the body to resurrect. If thou art carrying thy friend, pray lay them on the ground so that I may attend to them.\"")
+                    add_dialogue("\"I do not see anyone who needs resurrecting. I must be able to see the body to resurrect. If thou art carrying thy friend, pray lay them on the ground so that I may attend to them.\"")
                     abort()
                 end
             end
-            say("\"Thy friend is badly wounded. I will attempt to restore them.\"")
+            add_dialogue("\"Thy friend is badly wounded. I will attempt to restore them.\"")
             local7 = p0
         end
-        say("\"My price is " .. local7 .. " gold. Is this price agreeable?\"")
+        add_dialogue("\"My price is " .. local7 .. " gold. Is this price agreeable?\"")
         local11 = external_090AH() -- Unmapped intrinsic
         if not local11 then
             local12 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
@@ -50,13 +50,13 @@ function func_0870(p0, p1, p2)
                     external_091FH(local7, local10) -- Unmapped intrinsic
                 end
             else
-                say("\"Tsk, tsk. Thou dost not have enough gold for the service. I do hope I may help thee another day.\"")
+                add_dialogue("\"Tsk, tsk. Thou dost not have enough gold for the service. I do hope I may help thee another day.\"")
             end
         else
-            say("\"Then thou must look elsewhere for that service.\"")
+            add_dialogue("\"Then thou must look elsewhere for that service.\"")
         end
     else
-        say("\"If thou hast need of my services later, I will be here.\"")
+        add_dialogue("\"If thou hast need of my services later, I will be here.\"")
     end
     restore_answers() -- Unmapped intrinsic
     return

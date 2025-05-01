@@ -12,34 +12,34 @@ function func_0876(eventid, itemref)
     local6 = {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0}
     local7 = {" for a bottle", " for a bottle", " for a bottle", " for a bottle", " for a hunk", " for a bunch", " for one piece", " for one slice", " for one portion", " for one loaf", " for 10 pieces", ""}
     local8 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 0}
-    say(itemref, "\"What wouldst thou choose to buy, " .. local0 .. "?\"")
+    add_dialogue(itemref, "\"What wouldst thou choose to buy, " .. local0 .. "?\"")
     while local1 do
         local9 = call_090CH(local2)
         if local9 == 1 then
-            say(itemref, "\"Very well, " .. local0 .. ".\"")
+            add_dialogue(itemref, "\"Very well, " .. local0 .. ".\"")
             local1 = false
         end
         local10 = ""
         local11 = 0
         local12 = call_091BH(local7[local9], local5[local9], local6[local9], local2[local9], local10)
-        say(itemref, "^" .. local12 .. ". Dost thou find the price acceptable?")
+        add_dialogue(itemref, "^" .. local12 .. ". Dost thou find the price acceptable?")
         local13 = get_answer()
         if local13 then
             if local3[local9] == 616 then
                 local11 = call_08F8H(true, 1, 0, local5[local9], local8[local9], local4[local9], local3[local9])
             else
-                say(itemref, "\"How many dost thou want to purchase?\"")
+                add_dialogue(itemref, "\"How many dost thou want to purchase?\"")
                 local11 = call_08F8H(true, 1, 20, local5[local9], local8[local9], local4[local9], local3[local9])
             end
         end
         if local11 == 1 then
-            say(itemref, "\"Very good, " .. local0 .. ".\"")
+            add_dialogue(itemref, "\"Very good, " .. local0 .. ".\"")
         elseif local11 == 2 then
-            say(itemref, "\"I believe thou cannot carry that much, " .. local0 .. ".\"")
+            add_dialogue(itemref, "\"I believe thou cannot carry that much, " .. local0 .. ".\"")
         elseif local11 == 3 then
-            say(itemref, "\"It would appear thou dost not have enough gold for that!\"")
+            add_dialogue(itemref, "\"It would appear thou dost not have enough gold for that!\"")
         end
-        say(itemref, "\"Wouldst thou care to buy something else?\"")
+        add_dialogue(itemref, "\"Wouldst thou care to buy something else?\"")
         local1 = get_answer()
     end
     _RestoreAnswers()

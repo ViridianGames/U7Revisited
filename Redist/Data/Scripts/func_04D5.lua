@@ -11,54 +11,54 @@ function func_04D5(eventid, itemref)
 
     switch_talk_to(213, 0)
     local0 = call_0909H()
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     local1 = call_08F7H(-214)
     if local1 then
-        _AddAnswer("gargoyle")
+        add_answer("gargoyle")
     end
     if get_flag(0x0285) then
-        _RemoveAnswer("gargoyle")
-        _AddAnswer("For-Lem")
+        remove_answer("gargoyle")
+        add_answer("For-Lem")
     end
 
     if not get_flag(0x0292) then
-        say("You see before you a young girl with a carefree expression. As she notices you, her eyes grow wide as she exclaims, \"Thou art the person in one of For... one of -my- story books! Thou art the Avatar!\"")
+        add_dialogue("You see before you a young girl with a carefree expression. As she notices you, her eyes grow wide as she exclaims, \"Thou art the person in one of For... one of -my- story books! Thou art the Avatar!\"")
         set_flag(0x0292, true)
     else
-        say("\"How dost thou do, ", local0, " Avatar?\" She curtseys.")
+        add_dialogue("\"How dost thou do, ", local0, " Avatar?\" She curtseys.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"My name is Catherine, ", local0, " Avatar.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"My name is Catherine, ", local0, " Avatar.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I have no job, ", local0, " Avatar. I live with my father and mother here in Vesper.\"")
-            _AddAnswer({"Vesper", "mother", "father"})
+            add_dialogue("\"I have no job, ", local0, " Avatar. I live with my father and mother here in Vesper.\"")
+            add_answer({"Vesper", "mother", "father"})
         elseif answer == "father" then
             local2 = callis_0037(callis_001B(-203))
-            say("\"He is the overseer at the mines, ", local0, " Avatar.\"")
+            add_dialogue("\"He is the overseer at the mines, ", local0, " Avatar.\"")
             if not local2 then
-                say("\"Of course, he's gone now...\" She looks down at her feet.")
+                add_dialogue("\"Of course, he's gone now...\" She looks down at her feet.")
             end
-            _RemoveAnswer("father")
+            remove_answer("father")
         elseif answer == "mother" then
-            say("\"Yes, ", local0, " Avatar. She is there right now.\" She points, apparently indicating her house.")
-            _RemoveAnswer("mother")
+            add_dialogue("\"Yes, ", local0, " Avatar. She is there right now.\" She points, apparently indicating her house.")
+            remove_answer("mother")
         elseif answer == "Vesper" then
-            say("\"That is the name of our city, ", local0, " Avatar. If thou art lost, thou mayest wish to speak with the town clerk.\"")
-            _RemoveAnswer("Vesper")
+            add_dialogue("\"That is the name of our city, ", local0, " Avatar. If thou art lost, thou mayest wish to speak with the town clerk.\"")
+            remove_answer("Vesper")
         elseif answer == "gargoyle" then
-            say("\"I'm sorry, ", local0, " Avatar, my mother told me never to speak with strangers.\" She quickly turns away.*")
+            add_dialogue("\"I'm sorry, ", local0, " Avatar, my mother told me never to speak with strangers.\" She quickly turns away.*")
             return
         elseif answer == "For-Lem" then
-            say("A tear glistens as it rolls gently down her cheek. \"He is no more. My -- my father killed him for talking to me, and -- and 'tis all thy fault!\" She turns away, sobbing.*")
+            add_dialogue("A tear glistens as it rolls gently down her cheek. \"He is no more. My -- my father killed him for talking to me, and -- and 'tis all thy fault!\" She turns away, sobbing.*")
             return
         elseif answer == "bye" then
-            say("\"Goodbye, ", local0, " Avatar.\"*")
+            add_dialogue("\"Goodbye, ", local0, " Avatar.\"*")
             return
         end
     end
@@ -67,7 +67,7 @@ function func_04D5(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -4,7 +4,7 @@ function func_0645(eventid, itemref)
 
     if eventid == 1 then
         if not get_flag(61) then
-            item_say("@Kal Lor@", itemref)
+            bark(itemref, "@Kal Lor@")
             if not external_0906H() then -- Unmapped intrinsic
                 set_flag(39, true)
                 local0 = add_item(itemref, {1605, 17493, 17519, 17505, 17517, 17516, 17505, 8047, 64, 7768})

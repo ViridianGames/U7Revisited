@@ -6,7 +6,7 @@ function func_0672(p0)
         local0 = item_select_modal() -- Unmapped intrinsic
         external_005CH(itemref) -- Unmapped intrinsic
         local1 = external_092DH(local0) -- Unmapped intrinsic
-        item_say("@Kal Flam Grav@", itemref)
+        bark(itemref, "@Kal Flam Grav@")
         external_0906H()
         if not external_0906H() then
             local2 = external_0001H({17509, 17511, 8038, 65, 8536, local1, 7769}, itemref) -- Unmapped intrinsic

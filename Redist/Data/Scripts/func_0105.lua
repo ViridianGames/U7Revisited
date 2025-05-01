@@ -23,6 +23,6 @@ function func_0105H(eventid, itemref)
             U7UpdateContainer(info)
         end
     elseif eventid == 1 then
-        U7Say("I believe that one threads a loom before using it.", 0)
+        bark(0, "I believe that one threads a loom before using it.")
     end
 end

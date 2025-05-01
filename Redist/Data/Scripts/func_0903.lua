@@ -10,11 +10,11 @@ function func_0903(eventid, itemref)
         end
         _SwitchTalkTo(local2, itemref)
         if not check_item_state(25, itemref) then
-            say(itemref, "\"Oink\"")
+            add_dialogue(itemref, "\"Oink\"")
         else
             while local0 do
                 local1 = local0
-                say(itemref, local1 .. "")
+                add_dialogue(itemref, local1 .. "")
                 local0 = get_next_string() -- sloop
             end
         end

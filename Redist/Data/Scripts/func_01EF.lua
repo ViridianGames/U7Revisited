@@ -5,7 +5,7 @@ function func_01EF(eventid, itemref)
 
     -- Eventid == 1: Player interaction
     if eventid == 1 then
-        _ItemSay("@Here kitty, kitty@", -356)
+        bark(356, "@Here kitty, kitty@")
         calli_001D(0, itemref)
         calli_004B(7, itemref)
         calli_004C(-356, itemref)
@@ -16,7 +16,7 @@ function func_01EF(eventid, itemref)
 
     -- Eventid == 0: Meow
     if eventid == 0 then
-        _ItemSay("@Meow@", itemref)
+        bark(itemref, "@Meow@")
     end
 
     return

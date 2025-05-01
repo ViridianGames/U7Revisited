@@ -52,6 +52,6 @@ function func_092F(p0)
             local3 = "@To call for service!@"
         end
     end
-    item_say(local3, local1)
+    bark(local1, local3)
     return
 end

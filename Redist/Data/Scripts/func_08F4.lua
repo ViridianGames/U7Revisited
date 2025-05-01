@@ -8,24 +8,24 @@ function func_08F4(local0, local1)
         local2 = "the party"
     end
     if get_flag(0x015D) then
-        say("\"", local1, ", I have weighed thine actions against thy former conduct. Now that I am travelling with ", local2, "...")
-        say("I forgive thy misrepresentation at our first meeting.\"")
+        add_dialogue("\"", local1, ", I have weighed thine actions against thy former conduct. Now that I am travelling with ", local2, "...")
+        add_dialogue("I forgive thy misrepresentation at our first meeting.\"")
         set_flag(0x015D, false)
     end
     if callis_0010(3, 1) == 1 then
-        say("\"I enjoy travelling with ", local2, ".\"")
+        add_dialogue("\"I enjoy travelling with ", local2, ".\"")
     end
     if callis_0088(0, -356) then
-        say("\"Avatar! 'Tis strange to converse yet not see the speaker. Invisibility is queer magic.\"")
+        add_dialogue("\"Avatar! 'Tis strange to converse yet not see the speaker. Invisibility is queer magic.\"")
     end
-    say("\"How may I assist ", local2, ", ", local1, "?\"")
+    add_dialogue("\"How may I assist ", local2, ", ", local1, "?\"")
     callis_0005({"leave", "bees"})
 
     return
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

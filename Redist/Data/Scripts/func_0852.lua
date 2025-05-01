@@ -58,7 +58,7 @@ function func_0852(eventid, itemref)
     local22 = {1, 6, 6, 2, 31, 40}
     while local5 do
         local25 = local21[local0[local5]]
-        say(itemref, "\"" .. local25 .. "\"")
+        add_dialogue(itemref, "\"" .. local25 .. "\"")
         local26 = _AskNumber(0, 1, 60, 0)
         if local26 == local22[local0[local5]] then
             local2 = true

@@ -6,7 +6,7 @@ function func_066A(eventid, itemref)
         local0 = item_select_modal() -- Unmapped intrinsic
         local1 = external_092DH(local0) -- Unmapped intrinsic
         local2 = {902, 900, 895, 768}
-        item_say("@An Grav@", itemref)
+        bark(itemref, "@An Grav@")
         if not external_0906H(local1) then -- Unmapped intrinsic
             local3 = add_item(itemref, {17514, 17520, 8559, local1, 8025, 65, 7768})
             for local4 in ipairs(local0) do

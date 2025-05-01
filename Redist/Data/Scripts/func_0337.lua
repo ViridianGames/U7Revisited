@@ -3,7 +3,7 @@ function func_0337H(eventid, itemref)
     if eventid == 1 then
         local frame = get_item_frame(itemref)
         if frame < 2 then
-            say(0, "Finger-painting again?")
+            add_dialogue(0, "Finger-painting again?")
             return
         end
         local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
@@ -24,16 +24,16 @@ function func_0337H(eventid, itemref)
             elseif outcome == 5 then
                 message = "What is it?"
             end
-            say(0, message)
+            add_dialogue(0, message)
             if frame_mod < 7 then
                 set_item_frame(target, target_frame + 1)
             end
         elseif get_wearer(target) then
-            say(0, "Tattooing?")
+            add_dialogue(0, "Tattooing?")
         else
-            say(0, {"The stain will", "never come out."})
+            add_dialogue(0, {"The stain will", "never come out."})
         end
     else
-        say(0, "Use pigments!")
+        add_dialogue(0, "Use pigments!")
     end
 end

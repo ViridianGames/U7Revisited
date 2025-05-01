@@ -12,83 +12,83 @@ function func_04BE(eventid, itemref)
 
     switch_talk_to(190, 0)
     local0 = false
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x024F) then
-        say("The gargoyle welcomes you by making a sweeping motion with his open hand.")
+        add_dialogue("The gargoyle welcomes you by making a sweeping motion with his open hand.")
         set_flag(0x024F, true)
     else
-        say("\"To welcome you again, human,\" says Betra.")
+        add_dialogue("\"To welcome you again, human,\" says Betra.")
     end
 
     if not get_flag(0x0251) and get_flag(0x023E) then
-        _AddAnswer("Quaeven")
+        add_answer("Quaeven")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be named Betra. To be new to Terfin?\"")
+            add_dialogue("\"To be named Betra. To be new to Terfin?\"")
             local1 = call_090AH()
             if local1 then
-                say("\"To tell you to talk to Teregus, the sage or Forbrak, the tavernkeeper, for information about town. To help with building locations and residents.\"")
+                add_dialogue("\"To tell you to talk to Teregus, the sage or Forbrak, the tavernkeeper, for information about town. To help with building locations and residents.\"")
             else
-                say("\"To welcome you back to Terfin.\"")
+                add_dialogue("\"To welcome you back to Terfin.\"")
             end
-            _RemoveAnswer("name")
-            _AddAnswer({"Betra", "Terfin"})
+            remove_answer("name")
+            add_answer({"Betra", "Terfin"})
             set_flag(0x0251, true)
             if get_flag(0x023E) and not local0 then
-                _AddAnswer("Quaeven")
+                add_answer("Quaeven")
             end
         elseif answer == "Betra" then
-            say("\"To be the word for `small valor.'\"")
-            _RemoveAnswer("Betra")
+            add_dialogue("\"To be the word for `small valor.'\"")
+            remove_answer("Betra")
         elseif answer == "job" then
-            say("\"To be the seller of provisions.\"")
-            _AddAnswer("buy")
+            add_dialogue("\"To be the seller of provisions.\"")
+            add_answer("buy")
         elseif answer == "Terfin" then
-            say("\"To be the town set aside for us gargoyles who wish to reside in our own culture.\"")
-            _AddAnswer({"culture", "set aside"})
-            _RemoveAnswer("Terfin")
+            add_dialogue("\"To be the town set aside for us gargoyles who wish to reside in our own culture.\"")
+            add_answer({"culture", "set aside"})
+            remove_answer("Terfin")
         elseif answer == "culture" then
-            say("\"To have many things unique to our race -- other than our appearance -- that distinguish us from humans. To be different, but also equal.\"")
-            _RemoveAnswer("culture")
+            add_dialogue("\"To have many things unique to our race -- other than our appearance -- that distinguish us from humans. To be different, but also equal.\"")
+            remove_answer("culture")
         elseif answer == "set aside" then
-            say("\"To have been put here by the humans. To be permitted to leave, and also to reside elsewhere, but to know that many humans do not like us.\"")
-            _AddAnswer("dislike")
-            _RemoveAnswer("set aside")
+            add_dialogue("\"To have been put here by the humans. To be permitted to leave, and also to reside elsewhere, but to know that many humans do not like us.\"")
+            add_answer("dislike")
+            remove_answer("set aside")
         elseif answer == "dislike" then
-            say("\"To be very ironic. To say that the only town with an equal number of humans and gargoyles is the one where most racial conflicts occur.\" ~~He shrugs. \"To have been unwise, perhaps, to put so many differences together. To be sad times.\"")
-            _RemoveAnswer("dislike")
+            add_dialogue("\"To be very ironic. To say that the only town with an equal number of humans and gargoyles is the one where most racial conflicts occur.\" ~~He shrugs. \"To have been unwise, perhaps, to put so many differences together. To be sad times.\"")
+            remove_answer("dislike")
         elseif answer == "buy" then
             local2 = callis_001C(callis_001B(-190))
             if local2 == 7 then
                 call_0853H()
             else
-                say("\"To sell to you during the hours of 9 in the morning and 6 in the evening. To be sorry, but to sell nothing before or after those hours.\"")
+                add_dialogue("\"To sell to you during the hours of 9 in the morning and 6 in the evening. To be sorry, but to sell nothing before or after those hours.\"")
             end
         elseif answer == "Quaeven" then
-            say("He smiles at the mention of the name.~~ \"To be a likable young gargoyle.\"")
+            add_dialogue("He smiles at the mention of the name.~~ \"To be a likable young gargoyle.\"")
             local0 = true
-            _AddAnswer("join Fellowship?")
-            _RemoveAnswer("Quaeven")
+            add_answer("join Fellowship?")
+            remove_answer("Quaeven")
         elseif answer == "join Fellowship?" then
-            say("\"To join The Fellowship?\" He shakes his head. \"To be an organization not for me. To be quite happy as I am, devoted to the altars. To believe Quaeven to have been misled by the others in The Fellowship. To not trust them, especially Sarpling.\"")
-            _AddAnswer({"altars", "Sarpling", "misled"})
-            _RemoveAnswer("join Fellowship?")
+            add_dialogue("\"To join The Fellowship?\" He shakes his head. \"To be an organization not for me. To be quite happy as I am, devoted to the altars. To believe Quaeven to have been misled by the others in The Fellowship. To not trust them, especially Sarpling.\"")
+            add_answer({"altars", "Sarpling", "misled"})
+            remove_answer("join Fellowship?")
         elseif answer == "misled" then
-            say("\"To believe that there is deceit from The Fellowship, and to expect that is not what it appears. To believe promises of happiness made when Quaeven first joined came true from Quaeven, himself, not The Fellowship.\"")
-            _RemoveAnswer("misled")
+            add_dialogue("\"To believe that there is deceit from The Fellowship, and to expect that is not what it appears. To believe promises of happiness made when Quaeven first joined came true from Quaeven, himself, not The Fellowship.\"")
+            remove_answer("misled")
         elseif answer == "Sarpling" then
-            say("\"To trust him as far as I could throw him, and to certainly throw him as far as I could.\"")
-            _RemoveAnswer("Sarpling")
+            add_dialogue("\"To trust him as far as I could throw him, and to certainly throw him as far as I could.\"")
+            remove_answer("Sarpling")
         elseif answer == "altars" then
-            say("\"To have heard the rumors about destroying the altars. To be upset, but to have no evidence.~~ \"To know that only two gargoyles have easy access to such weapons. To be one of those gargoyles, and to know Sarpling is the other.\"")
-            _RemoveAnswer("altars")
+            add_dialogue("\"To have heard the rumors about destroying the altars. To be upset, but to have no evidence.~~ \"To know that only two gargoyles have easy access to such weapons. To be one of those gargoyles, and to know Sarpling is the other.\"")
+            remove_answer("altars")
         elseif answer == "bye" then
-            say("\"To wish you safe travels, human.\"*")
+            add_dialogue("\"To wish you safe travels, human.\"*")
             break
         end
     end
@@ -97,7 +97,7 @@ function func_04BE(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

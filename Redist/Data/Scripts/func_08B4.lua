@@ -3,11 +3,11 @@ function func_08B4(local0, local1, local2)
     -- Local variables (9 as per .localc)
     local local3, local4, local5, local6, local7, local8, local9, local10, local11
 
-    say("I can still heal, cure poison, and sometimes resurrect. Art thou in need of one of these?")
+    add_dialogue("I can still heal, cure poison, and sometimes resurrect. Art thou in need of one of these?")
     callis_0007()
     local3 = call_090AH()
     if local3 then
-        say("Of which service dost thou have need?")
+        add_dialogue("Of which service dost thou have need?")
         local4 = {"resurrect", "cure poison", "heal"}
         local5 = call_090BH(local4)
         if local5 == "heal" or local5 == "cure poison" then
@@ -18,10 +18,10 @@ function func_08B4(local0, local1, local2)
                 local6 = "cured of poison"
                 local7 = local1
             end
-            say("Who dost thou wish to be ", local6, "?")
+            add_dialogue("Who dost thou wish to be ", local6, "?")
             local8 = call_090EH()
             if local8 == 0 then
-                say("'Tis good to hear that thou art well. Do not hesitate to come and see me if thou dost need healing of any kind.")
+                add_dialogue("'Tis good to hear that thou art well. Do not hesitate to come and see me if thou dost need healing of any kind.")
                 return
             end
         elseif local5 == "resurrect" then
@@ -31,27 +31,27 @@ function func_08B4(local0, local1, local2)
             if local11 == 0 then
                 local11 = callis_000E(25, 414, local10)
                 if local11 == 0 then
-                    say("I do apologize, ", local9, ", but I do not see anyone who must be resurrected. I must be able to see the body. If thou art carrying thine unlucky companion, please lay them on the ground.")
+                    add_dialogue("I do apologize, ", local9, ", but I do not see anyone who must be resurrected. I must be able to see the body. If thou art carrying thine unlucky companion, please lay them on the ground.")
                     return
                 end
             end
-            say("Indeed, this person is badly wounded. I will attempt to return them to health.")
+            add_dialogue("Indeed, this person is badly wounded. I will attempt to return them to health.")
             local7 = local0
         end
 
-        say("Of course, it will never cost thee anything to use mine healing services.")
+        add_dialogue("Of course, it will never cost thee anything to use mine healing services.")
         if local5 == "heal" then
             call_091DH(local7, local8)
-            say("Done!")
+            add_dialogue("Done!")
         elseif local5 == "cure poison" then
             call_091EH(local7, local8)
-            say("Done!")
+            add_dialogue("Done!")
         elseif local5 == "resurrect" then
             call_091FH(local7, local11)
-            say("Done!")
+            add_dialogue("Done!")
         end
     else
-        say("If thou hast need of my services later, I will be here.")
+        add_dialogue("If thou hast need of my services later, I will be here.")
     end
 
     callis_0008()
@@ -59,6 +59,6 @@ function func_08B4(local0, local1, local2)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

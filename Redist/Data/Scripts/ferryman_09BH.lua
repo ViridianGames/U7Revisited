@@ -47,7 +47,7 @@ function ferryman_09BH(object_id, event)
     log("ferryman_09BH called with object_id:", object_id, "event:", event)
     if event == 1 then
         if get_flag(0x01B3) then
-            say(object_id, strings[0x0000])
+            add_dialogue(object_id, strings[0x0000])
             return
         end
 
@@ -62,17 +62,17 @@ function ferryman_09BH(object_id, event)
         end
 
         if not get_flag(0x01C3) then
-            say(object_id, strings[0x0041])
+            add_dialogue(object_id, strings[0x0041])
             set_flag(0x01C3, true)
         elseif not get_flag(0x0197) then
-            say(object_id, strings[0x0118])
+            add_dialogue(object_id, strings[0x0118])
         else
-            say(object_id, strings[0x0186])
+            add_dialogue(object_id, strings[0x0186])
             add_answer( strings[0x022C]) -- return
         end
 
         if get_flag(0x01A3) then
-            say(object_id, strings[0x0233])
+            add_dialogue(object_id, strings[0x0233])
         end
 
         -- Default answers
@@ -84,87 +84,87 @@ function ferryman_09BH(object_id, event)
 
         while true do
             if answer == strings[0x02BD] or answer == strings[0x0309] then -- name
-                say(object_id, strings[0x02C2])
+                add_dialogue(object_id, strings[0x02C2])
                 remove_answer(strings[0x0309])
             elseif answer == strings[0x030E] then -- job
-                say(object_id, strings[0x0312])
+                add_dialogue(object_id, strings[0x0312])
             elseif answer == strings[0x0383] or answer == strings[0x03CD] then -- Ferryman
-                say(object_id, strings[0x038C])
+                add_dialogue(object_id, strings[0x038C])
                 remove_answer(strings[0x03CD])
             elseif answer == strings[0x03D6] or answer == strings[0x0475] then -- Misty Channel
-                say(object_id, strings[0x03E4])
+                add_dialogue(object_id, strings[0x03E4])
                 remove_answer(strings[0x0475])
             elseif answer == strings[0x0483] or answer == strings[0x06AD] then -- Skara Brae
                 if not get_flag(0x0197) then
-                    say(object_id, strings[0x048E])
+                    add_dialogue(object_id, strings[0x048E])
                     if iolo_id and shamino_id then
                         switch_talk_to(3, 0) -- Iolo
-                        say(object_id, strings[0x04DF] .. player_name .. strings[0x04E7])
+                        add_dialogue(object_id, strings[0x04DF] .. player_name .. strings[0x04E7])
                         hide_npc(3)
                         switch_talk_to(2, 0) -- Shamino
-                        say(object_id, strings[0x0513])
+                        add_dialogue(object_id, strings[0x0513])
                         hide_npc(2)
                         switch_talk_to(3, 0) -- Iolo
-                        say(object_id, strings[0x0545])
+                        add_dialogue(object_id, strings[0x0545])
                         hide_npc(3)
                         if spark_id then
                             switch_talk_to(1, 0) -- Spark
-                            say(object_id, strings[0x0586])
+                            add_dialogue(object_id, strings[0x0586])
                             hide_npc(1)
                             switch_talk_to(2, 0) -- Shamino
-                            say(object_id, strings[0x0601])
+                            add_dialogue(object_id, strings[0x0601])
                             hide_npc(2)
                         end
                         switch_talk_to(285, 0) -- Avatar
                     end
                 else
-                    say(object_id, strings[0x0665])
+                    add_dialogue(object_id, strings[0x0665])
                 end
                 remove_answer(strings[0x06AD])
             elseif answer == strings[0x06BF] or answer == strings[0x0973] then -- pay
                 if not get_flag(0x0197) then
-                    say(object_id, strings[0x06C3])
+                    add_dialogue(object_id, strings[0x06C3])
                     local choice = get_answer()
                     if choice == 1 then
                         local paid = spend_gold(2) -- Two coins
                         if paid then
-                            say(object_id, strings[0x06FA])
+                            add_dialogue(object_id, strings[0x06FA])
                             trigger_ferry(object_id) -- Start boat travel
                         else
-                            say(object_id, strings[0x0788])
+                            add_dialogue(object_id, strings[0x0788])
                         end
                     else
-                        say(object_id, strings[0x07B4])
+                        add_dialogue(object_id, strings[0x07B4])
                     end
                 end
                 remove_answer(strings[0x0973])
             elseif answer == strings[0x06B8] or answer == strings[0x096C] then -- return
-                say(object_id, strings[0x07E1])
+                add_dialogue(object_id, strings[0x07E1])
                 local choice = get_answer()
                 if choice == 1 then
                     local party_members = get_party_members()
                     local is_spirit = is_party_member(-144, party_members) or is_party_member(-147, party_members)
                     if not is_spirit then
-                        say(object_id, strings[0x0810])
+                        add_dialogue(object_id, strings[0x0810])
                     else
-                        say(object_id, strings[0x0883])
+                        add_dialogue(object_id, strings[0x0883])
                         trigger_ferry(object_id) -- Return to mainland
                     end
                 else
-                    say(object_id, strings[0x08EC])
+                    add_dialogue(object_id, strings[0x08EC])
                 end
                 remove_answer(strings[0x096C])
             elseif answer == strings[0x0977] or answer == strings[0x0A32] or answer == strings[0x0A9D] then -- sacrifice
                 if not get_flag(0x0199) then
-                    say(object_id, strings[0x0981])
+                    add_dialogue(object_id, strings[0x0981])
                     remove_answer(strings[0x0A32])
                     set_flag(0x0199, true)
                 else
-                    say(object_id, strings[0x0A3C])
+                    add_dialogue(object_id, strings[0x0A3C])
                     remove_answer(strings[0x0A9D])
                 end
             elseif answer == strings[0x0AA7] then -- bye
-                say(object_id, strings[0x0AAB])
+                add_dialogue(object_id, strings[0x0AAB])
                 answers = {}
                 answer = nil
                 return

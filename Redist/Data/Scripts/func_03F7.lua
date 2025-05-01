@@ -20,44 +20,44 @@ function func_03F7(eventid, itemref)
         if not get_flag(0x031F) and not get_flag(0x0322) then
             local0 = call_0931H(-359, 144, 642, 1, -357)
             if not local0 then
-                say("\"Hast thou in thy possession the book on the Stone of Castambre?\"")
+                add_dialogue("\"Hast thou in thy possession the book on the Stone of Castambre?\"")
                 if call_090AH() then
-                    say("His eyes reveal his hope. As he takes the book from you, it almost appears as if he is smiling.")
+                    add_dialogue("His eyes reveal his hope. As he takes the book from you, it almost appears as if he is smiling.")
                     call_0891H()
                 else
-                    say("\"That is, indeed, a pity,\" he says, shaking his head in sadness.")
+                    add_dialogue("\"That is, indeed, a pity,\" he says, shaking his head in sadness.")
                 end
             end
         end
         if not get_flag(0x0314) then
-            say("\"Greetings to thee, honorable one. I can but assume that my presence here was thy doing.\" It becomes quickly apparent that this creature possesses a greater capability for speech than his fallen companion.")
+            add_dialogue("\"Greetings to thee, honorable one. I can but assume that my presence here was thy doing.\" It becomes quickly apparent that this creature possesses a greater capability for speech than his fallen companion.")
             if not get_flag(0x031C) then
                 local1 = callis_0035(0, 40, 414, -356)
                 while local1 do
                     -- Note: Original has 'sloop' and 'db 2' for iteration, ignored
                     local4 = _GetItemFrame(local4)
                     if local4 == 4 or local4 == 5 then
-                        say("The recently raised golem stares down at the prone, lifeless body of Bollux. Quickly he looks up at you.\"Wh-what has happened?\"")
+                        add_dialogue("The recently raised golem stares down at the prone, lifeless body of Bollux. Quickly he looks up at you.\"Wh-what has happened?\"")
                         call_0890H()
                     end
                     local1 = callis_0035(0, 40, 414, -356)
                 end
             else
-                say("\"Now thou must excuse me, for I am off to find my fellow sentry.\"")
+                add_dialogue("\"Now thou must excuse me, for I am off to find my fellow sentry.\"")
                 set_flag(0x0314, true)
                 return -- abrt
             end
         elseif not get_flag(0x031E) then
-            say("\"Hail, friend. I hope that I may assist thee in some way.\"")
+            add_dialogue("\"Hail, friend. I hope that I may assist thee in some way.\"")
             call_0890H()
         else
-            say("\"Art thou here to aid me in healing my brother?\"")
+            add_dialogue("\"Art thou here to aid me in healing my brother?\"")
             if call_090AH() then
-                say("\"Very good. I am pleased to call thee friend.\"")
+                add_dialogue("\"Very good. I am pleased to call thee friend.\"")
                 set_flag(0x031E, true)
                 call_0890H()
             else
-                say("\"Then begone, for I have work to do!\"")
+                add_dialogue("\"Then begone, for I have work to do!\"")
                 return -- abrt
             end
         end
@@ -72,7 +72,7 @@ function func_03F7(eventid, itemref)
 end
 
 -- Helper functions
-function say(message)
+function add_dialogue(message)
     print(message)
 end
 

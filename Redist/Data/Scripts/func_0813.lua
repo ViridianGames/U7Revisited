@@ -56,7 +56,7 @@ function func_0813(eventid, itemref)
         end
         if local7 ~= "" then
             if not call_0937H(local3) then
-                _ItemSay(local7, local3)
+                bark(local3, local7)
             end
         end
         local9 = _SetNPCProperty(9, local3, local1)

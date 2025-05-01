@@ -12,28 +12,28 @@ function func_089C()
     local6 = 1
     local7 = ""
     local8 = 1
-    say("\"To purchase what item?\"")
+    add_dialogue("\"To purchase what item?\"")
     while local0 do
         local9 = external_090CH(local1) -- Unmapped intrinsic
         if local9 == 1 then
-            say("\"To be accepted.\"")
+            add_dialogue("\"To be accepted.\"")
             local0 = false
         else
             local10 = external_091CH(local7, local4[local9], local6, local1[local9], local5) -- Unmapped intrinsic
             local11 = 0
-            say("\"^" .. local10 .. " To be agreeable?\"")
+            add_dialogue("\"^" .. local10 .. " To be agreeable?\"")
             local12 = external_090AH() -- Unmapped intrinsic
             if not local12 then
                 local11 = external_08F8H(false, 1, 0, local4[local9], local8, local3, local2[local9]) -- Unmapped intrinsic
             end
             if local11 == 1 then
-                say("\"To be agreed.\"")
+                add_dialogue("\"To be agreed.\"")
             elseif local11 == 2 then
-                say("\"To be without the ability to carry that much!\"")
+                add_dialogue("\"To be without the ability to carry that much!\"")
             elseif local11 == 3 then
-                say("\"To have less than enough gold for that.\"")
+                add_dialogue("\"To have less than enough gold for that.\"")
             end
-            say("\"To want something else?\"")
+            add_dialogue("\"To want something else?\"")
             local0 = external_090AH() -- Unmapped intrinsic
         end
     end

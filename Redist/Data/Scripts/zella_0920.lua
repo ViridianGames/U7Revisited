@@ -53,18 +53,18 @@ function zella_0920(object_id, event)
     if event == 2 then
         local gold_amount = get_gold() -- Placeholder: callis 0028
         if gold_amount == 0 then
-            say(object_id, strings[0x0062])
+            add_dialogue(object_id, strings[0x0062])
         elseif gold_amount == 1 then
-            say(object_id, strings[0x0110] .. gold_amount .. strings[0x014A])
+            add_dialogue(object_id, strings[0x0110] .. gold_amount .. strings[0x014A])
             if gold_amount < 644 then
-                say(object_id, strings[0x015C])
+                add_dialogue(object_id, strings[0x015C])
             end
         elseif gold_amount == 2 then
-            say(object_id, strings[0x01E1])
+            add_dialogue(object_id, strings[0x01E1])
         else
-            say(object_id, strings[0x024E] .. gold_amount .. strings[0x0257])
+            add_dialogue(object_id, strings[0x024E] .. gold_amount .. strings[0x0257])
             spend_gold(gold_amount) -- Placeholder: callis 002B
-            say(object_id, strings[0x025E] .. player_name .. strings[0x0283] .. player_name .. strings[0x0325] .. pronoun_lower .. strings[0x034A] .. mimic .. strings[0x034C] .. develops .. strings[0x035D] .. them .. strings[0x03AC] .. player_name .. strings[0x03CB] .. learns .. strings[0x03CD] .. pronoun .. strings[0x0405] .. feels .. strings[0x0407] .. pronoun_lower .. strings[0x0409] .. has .. strings[0x040B])
+            add_dialogue(object_id, strings[0x025E] .. player_name .. strings[0x0283] .. player_name .. strings[0x0325] .. pronoun_lower .. strings[0x034A] .. mimic .. strings[0x034C] .. develops .. strings[0x035D] .. them .. strings[0x03AC] .. player_name .. strings[0x03CB] .. learns .. strings[0x03CD] .. pronoun .. strings[0x0405] .. feels .. strings[0x0407] .. pronoun_lower .. strings[0x0409] .. has .. strings[0x040B])
             local strength = get_stat(player_id, 1) -- Requires implementation
             local dexterity = get_stat(player_id, 4)
             if strength < 30 then

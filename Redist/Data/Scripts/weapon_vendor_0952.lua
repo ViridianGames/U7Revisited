@@ -41,28 +41,28 @@ function weapon_vendor_0952(object_id, event)
     log("Initial answers: ", table.concat(answers, ", "))
 
     while continue do
-        say(object_id, strings[0x0043])
+        add_dialogue(object_id, strings[0x0043])
         local choice = get_answer()
         if choice == 1 then
-            say(object_id, strings[0x0064])
+            add_dialogue(object_id, strings[0x0064])
             continue = false
         else
             local price = prices[choice]
             local item_id = item_ids[choice]
             local prefix = prefixes[choice]
             local result = buy_item(prefix, item_id, 1, price, items[choice])
-            say(object_id, strings[0x0070] .. result .. strings[0x0073])
+            add_dialogue(object_id, strings[0x0070] .. result .. strings[0x0073])
             local buy_response = get_answer()
             buy_response = buy_item(prefix, item_id, 1, price, items[choice])
             if buy_response == 1 then
-                say(object_id, strings[0x0095])
+                add_dialogue(object_id, strings[0x0095])
             elseif buy_response == 2 then
-                say(object_id, strings[0x009D])
+                add_dialogue(object_id, strings[0x009D])
             elseif buy_response == 3 then
-                say(object_id, strings[0x00C5])
+                add_dialogue(object_id, strings[0x00C5])
             end
         end
-        say(object_id, strings[0x00F0])
+        add_dialogue(object_id, strings[0x00F0])
         continue = get_answer()
     end
     restore_answers()

@@ -13,7 +13,7 @@ function func_0281H(eventid, itemref)
         call_script(0x0815, target) -- TODO: Map 0815H (unlock action).
     end
     if item_type == 522 and key_quality == target_quality then -- 020AH: Locked chest.
-        item_say(target, "Unlocked") -- TODO: Implement LuaItemSay for calli 0040.
+        bark(target, "Unlocked") -- TODO: Implement LuaItemSay for calli 0040.
         set_item_type(target, 800) -- 0320H: Unlocked chest.
         if target_quality == 253 then
             set_flag(0x003E, true)
@@ -30,11 +30,11 @@ function func_0281H(eventid, itemref)
             current = get_wearer(current) -- TODO: Implement LuaGetWearer for callis 006E.
         end
         if found then
-            item_say(-356, "Key inside")
+            bark(356, "Key inside")
         else
             lock_item(target) -- TODO: Implement LuaLockItem for calli 0080.
             set_item_type(target, 522) -- 020AH: Locked chest.
-            item_say(target, "Locked")
+            bark(target, "Locked")
         end
     end
 end

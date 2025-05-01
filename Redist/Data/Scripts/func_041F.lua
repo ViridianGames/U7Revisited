@@ -6,54 +6,54 @@ function func_041F(itemref)
     if eventid() == 1 then
         switch_talk_to(31, 0)
         local0 = call_08F7H(-34)
-        _AddAnswer({"bye", "job", "name"})
+        add_answer({"bye", "job", "name"})
         if not get_flag(160) then
-            say("This is a cute toddler holding a baby doll.")
-            say("\"Hi!\" Kristy exclaims.")
+            add_dialogue("This is a cute toddler holding a baby doll.")
+            add_dialogue("\"Hi!\" Kristy exclaims.")
             set_flag(160, true)
         else
-            say("\"Hi!\" Kristy exclaims.")
+            add_dialogue("\"Hi!\" Kristy exclaims.")
         end
         while true do
             if cmp_strings("name", 1) then
-                say("\"Kwisty.\"")
+                add_dialogue("\"Kwisty.\"")
                 if local0 then
                     switch_talk_to(34, 0)
-                    say("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
+                    add_dialogue("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
                     _HideNPC(-34)
                     switch_talk_to(31, 0)
                 end
-                _RemoveAnswer("name")
+                remove_answer("name")
             elseif cmp_strings("job", 1) then
                 local1 = callis_001C(-31)
                 if local1 == 25 then
-                    say("\"Tag! Playing tag!\"")
-                    say("The toddler runs off in search of a nursery-mate.*")
+                    add_dialogue("\"Tag! Playing tag!\"")
+                    add_dialogue("The toddler runs off in search of a nursery-mate.*")
                     abort()
                 else
-                    say("Kristy looks confused. \"Sing. Horsey. Rosa. Winner.\"")
-                    _AddAnswer({"winner", "Rosa", "horsey", "sing"})
+                    add_dialogue("Kristy looks confused. \"Sing. Horsey. Rosa. Winner.\"")
+                    add_answer({"winner", "Rosa", "horsey", "sing"})
                 end
             elseif cmp_strings("sing", 1) then
-                say("Kristy is more than happy to do so. \"A-B-C-D-E-F-G! H-I-K-M-M-M-O-P! Q-T-W-Y-X-Z!\" She is proud of her song, although she didn't get it quite right.")
-                _RemoveAnswer("sing")
+                add_dialogue("Kristy is more than happy to do so. \"A-B-C-D-E-F-G! H-I-K-M-M-M-O-P! Q-T-W-Y-X-Z!\" She is proud of her song, although she didn't get it quite right.")
+                remove_answer("sing")
             elseif cmp_strings("horsey", 1) then
-                say("\"I love horsey!\" She rocks hard on the rocking horse.")
-                _RemoveAnswer("horsey")
+                add_dialogue("\"I love horsey!\" She rocks hard on the rocking horse.")
+                remove_answer("horsey")
             elseif cmp_strings("Rosa", 1) then
-                say("Kristy hugs her baby doll tight. \"Rosa!\"")
-                _RemoveAnswer("Rosa")
+                add_dialogue("Kristy hugs her baby doll tight. \"Rosa!\"")
+                remove_answer("Rosa")
             elseif cmp_strings("winner", 1) then
-                say("\"I am winner!\" she proclaims loudly.")
+                add_dialogue("\"I am winner!\" she proclaims loudly.")
                 if local0 then
                     switch_talk_to(34, 0)
-                    say("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
+                    add_dialogue("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
                     _HideNPC(-34)
                     switch_talk_to(31, 0)
                 end
-                _RemoveAnswer("winner")
+                remove_answer("winner")
             elseif cmp_strings("bye", 1) then
-                say("\"Bye bye!\"*")
+                add_dialogue("\"Bye bye!\"*")
                 break
             end
         end
@@ -71,7 +71,7 @@ function func_041F(itemref)
             elseif local3 == 4 then
                 local0 = "@Catch me if thou can!@"
             end
-            _ItemSay(local0, -31)
+            bark(31, local0)
         end
     end
 end
@@ -81,7 +81,7 @@ function eventid()
     return 0 -- Placeholder
 end
 
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -12,26 +12,26 @@ function func_0856(eventid, itemref)
     end
     if local2 == -1 or local2 == -10 then
         local0 = eventid / 2
-        say(itemref, "\"I cannot charge a master such as thyself full price.\"")
+        add_dialogue(itemref, "\"I cannot charge a master such as thyself full price.\"")
     end
     local4 = 2
     local5 = check_training_eligibility(local4, local2, eventid, itemref)
     if local5 == 0 then
-        say(itemref, "\"After a bit of target practice, he says, \\\"I am sorry to say this, but thou dost need more practice before I will be able to train thee. Perhaps at a later time thou wilt be in a better position to receive mine instruction.\\\"")
+        add_dialogue(itemref, "\"After a bit of target practice, he says, \\\"I am sorry to say this, but thou dost need more practice before I will be able to train thee. Perhaps at a later time thou wilt be in a better position to receive mine instruction.\\\"")
         return
     elseif local5 == 1 then
         local6 = check_gold(-359, -359, 644, -357)
-        say(itemref, "\"You gather your gold and count it, finding that you have " .. local6 .. " gold altogether.\"")
+        add_dialogue(itemref, "\"You gather your gold and count it, finding that you have " .. local6 .. " gold altogether.\"")
         if local6 < eventid then
-            say(itemref, "\"Thou hast not the gold to train.\"")
+            add_dialogue(itemref, "\"Thou hast not the gold to train.\"")
             return
         end
     elseif local5 == 2 then
-        say(itemref, "\"After a few target shots, he exclaims, \\\"Thou art already as proficient as I! I can do nothing to improve thy coordination of hand and eye!\\\"")
+        add_dialogue(itemref, "\"After a few target shots, he exclaims, \\\"Thou art already as proficient as I! I can do nothing to improve thy coordination of hand and eye!\\\"")
         return
     end
     local7 = remove_gold(true, -359, -359, 644, eventid)
-    say(itemref, "\"You pay " .. eventid .. " gold, and the training session begins.\"")
+    add_dialogue(itemref, "\"You pay " .. eventid .. " gold, and the training session begins.\"")
     if local2 == -356 then
         local8 = "You"
     else
@@ -43,7 +43,7 @@ function func_0856(eventid, itemref)
         local9 = local3
     end
     local10 = local2 == -356 and "" or "s"
-    say(itemref, local8 .. " and Bradman spend some time taking target practice with the bow. Shortly, " .. local9 .. " notice" .. local10 .. " a significant increase in hand-eye coordination.")
+    add_dialogue(itemref, local8 .. " and Bradman spend some time taking target practice with the bow. Shortly, " .. local9 .. " notice" .. local10 .. " a significant increase in hand-eye coordination.")
     local11 = get_stat(1, local2)
     if local11 < 30 then
         train_strength(2, local2)

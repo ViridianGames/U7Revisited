@@ -17,7 +17,7 @@ function func_04E9(eventid, itemref)
             elseif local12 == 4 then
                 local9 = "@We shall entertain thee!@"
             end
-            _ItemSay(local9, -233)
+            bark(233, local9)
         else
             call_092EH(-233)
         end
@@ -28,37 +28,37 @@ function func_04E9(eventid, itemref)
 
     switch_talk_to(233, 0)
     local0 = callis_001C(callis_001B(-233))
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x02B8) then
-        say("You see a young entertainer who beckons to you.")
+        add_dialogue("You see a young entertainer who beckons to you.")
         set_flag(0x02B8, true)
     else
-        say("\"Yes?\" Paul asks.")
+        add_dialogue("\"Yes?\" Paul asks.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"I am Paul. My colleagues' names are Meryl and Dustin.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"I am Paul. My colleagues' names are Meryl and Dustin.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"We perform a Passion Play about The Fellowship. It costs only 2 gold per person to see. If thou dost want us to perform it, please say so.\"")
-            _AddAnswer({"perform", "Fellowship", "Passion Play"})
+            add_dialogue("\"We perform a Passion Play about The Fellowship. It costs only 2 gold per person to see. If thou dost want us to perform it, please say so.\"")
+            add_answer({"perform", "Fellowship", "Passion Play"})
         elseif answer == "Passion Play" then
-            say("\"A Passion Play is a morality tale performed on stage.\"")
-            _RemoveAnswer("Passion Play")
+            add_dialogue("\"A Passion Play is a morality tale performed on stage.\"")
+            remove_answer("Passion Play")
         elseif answer == "Fellowship" then
-            say("\"It would be much simpler to view the play.\"")
-            _RemoveAnswer("Fellowship")
+            add_dialogue("\"It would be much simpler to view the play.\"")
+            remove_answer("Fellowship")
         elseif answer == "perform" then
             if local0 ~= 29 then
-                say("\"I am sorry to say we are on our break. Please return to the stage area during normal hours.\"")
+                add_dialogue("\"I am sorry to say we are on our break. Please return to the stage area during normal hours.\"")
             else
-                say("\"Wouldst thou like to see our Passion Play?\"")
+                add_dialogue("\"Wouldst thou like to see our Passion Play?\"")
                 if not call_090AH() then
-                    say("\"Some other time, then, I hope.\"*")
+                    add_dialogue("\"Some other time, then, I hope.\"*")
                     return
                 end
                 local1 = call_08F7H(-234)
@@ -72,19 +72,19 @@ function func_04E9(eventid, itemref)
                     local7 = callis_0028(-359, -359, 644, -357)
                     if local7 >= local4 * 2 then
                         local9 = callis_002B(true, -359, -359, 644, local4 * 2)
-                        say("Paul takes your gold. \"We thank thee. If thou wouldst make thyself comfortable, we shall begin.\"")
+                        add_dialogue("Paul takes your gold. \"We thank thee. If thou wouldst make thyself comfortable, we shall begin.\"")
                         call_08C7H()
                     else
-                        say("\"Oh dear. I am afraid thou dost not have enough gold to pay for the performance. Some other time, I hope.\"*")
+                        add_dialogue("\"Oh dear. I am afraid thou dost not have enough gold to pay for the performance. Some other time, I hope.\"*")
                         return
                     end
                 else
-                    say("\"I am sorry. It seems my fellow thespians are not available. The Passion Play has temporarily closed.\"*")
+                    add_dialogue("\"I am sorry. It seems my fellow thespians are not available. The Passion Play has temporarily closed.\"*")
                     return
                 end
             end
         elseif answer == "bye" then
-            say("The actor bows to you.*")
+            add_dialogue("The actor bows to you.*")
             return
         end
     end
@@ -93,7 +93,7 @@ function func_04E9(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

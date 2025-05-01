@@ -3,14 +3,14 @@ function func_064E(eventid, itemref)
     local local0, local1, local2, local3, local4, local5
 
     if eventid == 1 then
-        item_say("@In Wis@", itemref)
+        bark(itemref, "@In Wis@")
         if not external_0906H() then -- Unmapped intrinsic
             local0 = add_item(itemref, {1614, 8021, 4, 17447, 17519, 17505, 8045, 67, 7768})
         else
             local0 = add_item(itemref, {1542, 17493, 17519, 17505, 7789})
         end
     elseif eventid == 2 then
-        local1 = get_item_data(-356)
+        local1 = get_item_data(356)
         local2 = (local1[1] - 933) / 10
         local3 = (local1[2] - 1134) / 10
         if local2 < 0 then
@@ -23,7 +23,7 @@ function func_064E(eventid, itemref)
         else
             local5 = " " .. external_0932H(local3) .. " South"
         end
-        item_say(local4 .. local5, itemref)
+        bark(itemref, local4 .. local5)
     end
     return
 end

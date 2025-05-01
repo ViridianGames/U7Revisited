@@ -10,7 +10,7 @@ function func_0336H(eventid, itemref)
             elseif item_type == 822 and get_item_frame(target) == 2 then -- 0336H: Diaper with specific frame.
                 call_script(0x0925, itemref) -- TODO: Map 0925H (possibly item cleanup).
             else
-                say(0, "Those are for babies.")
+                add_dialogue(0, "Those are for babies.")
             end
         elseif frame == 1 then
             local target = item_select_modal()
@@ -23,7 +23,7 @@ function func_0336H(eventid, itemref)
                 call_script(0x0925, itemref)
             end
         elseif frame == 2 then
-            say(0, "That is for dirty diapers.")
+            add_dialogue(0, "That is for dirty diapers.")
         end
     end
 end

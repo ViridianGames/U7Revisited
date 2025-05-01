@@ -13,14 +13,14 @@ function func_0949(eventid, itemref)
     local7 = 0
     local8 = ""
     local9 = 1
-    say(itemref, "\"To want what item?\"")
+    add_dialogue(itemref, "\"To want what item?\"")
     while local0 do
         local10 = call_090CH(local1)
         if local10 == 1 then
             if get_flag(3) then
-                say(itemref, "\"To be good. To want to sell nothing to you.\"")
+                add_dialogue(itemref, "\"To be good. To want to sell nothing to you.\"")
             else
-                say(itemref, "\"To understand.\"")
+                add_dialogue(itemref, "\"To understand.\"")
             end
             local0 = false
         else
@@ -35,19 +35,19 @@ function func_0949(eventid, itemref)
                 return
             end
             local13 = 0
-            say(itemref, "\"" .. local12 .. " To accept the price?\"")
+            add_dialogue(itemref, "\"" .. local12 .. " To accept the price?\"")
             local14 = get_answer()
             if local14 then
                 local13 = call_08F8H(false, 1, 0, local11, local9, local3[local10], local2[local10])
             end
             if local13 == 1 then
-                say(itemref, "\"To be agreed!\"")
+                add_dialogue(itemref, "\"To be agreed!\"")
             elseif local13 == 2 then
-                say(itemref, "\"To be unable to carry that much, human!\"")
+                add_dialogue(itemref, "\"To be unable to carry that much, human!\"")
             elseif local13 == 3 then
-                say(itemref, "\"To have not enough gold for that!\"")
+                add_dialogue(itemref, "\"To have not enough gold for that!\"")
             end
-            say(itemref, "\"To want something else?\"")
+            add_dialogue(itemref, "\"To want something else?\"")
             local0 = get_answer()
         end
     end

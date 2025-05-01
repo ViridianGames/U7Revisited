@@ -16,129 +16,129 @@ function func_04B0(eventid, itemref)
     local1 = callis_003B()
     local2 = callis_001B(-176)
     local3 = false
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if get_flag(0x0212) then
-        _AddAnswer("thief")
+        add_answer("thief")
     end
     if get_flag(0x0218) then
-        _RemoveAnswer("thief")
-        _AddAnswer("theft solved")
+        remove_answer("thief")
+        add_answer("theft solved")
     end
 
     if not get_flag(0x0229) then
-        say("You see a cheerful, handsome young man who gives you a friendly wave as you approach.")
+        add_dialogue("You see a cheerful, handsome young man who gives you a friendly wave as you approach.")
         set_flag(0x0229, true)
     else
-        say("\"Greetings, ", local0, ",\" says Andrew.")
+        add_dialogue("\"Greetings, ", local0, ",\" says Andrew.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"My name is Andrew. How art thou, ", local0, "?\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"My name is Andrew. How art thou, ", local0, "?\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("\"I am the owner and proprietor of the dairy here in Paws.\"")
-            _AddAnswer({"Paws", "dairy"})
+            add_dialogue("\"I am the owner and proprietor of the dairy here in Paws.\"")
+            add_answer({"Paws", "dairy"})
         elseif answer == "dairy" then
-            say("\"Yes, I sell milk and cheese. Thou mayest find the dairy between Camille's farm and the slaughterhouse.\"")
-            _AddAnswer({"milk", "cheese", "slaughterhouse", "Camille"})
-            _RemoveAnswer("dairy")
+            add_dialogue("\"Yes, I sell milk and cheese. Thou mayest find the dairy between Camille's farm and the slaughterhouse.\"")
+            add_answer({"milk", "cheese", "slaughterhouse", "Camille"})
+            remove_answer("dairy")
         elseif answer == "milk" then
             if local2 == 7 then
-                say("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
+                add_dialogue("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
                 local4 = call_090AH()
                 if local4 then
                     local5 = callis_002B(true, -359, -359, 644, 3)
                     if local5 then
                         local6 = callis_002C(true, 7, -359, 616, 1)
                         if local6 then
-                            say("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"*")
+                            add_dialogue("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"*")
                             local7 = call_090AH()
                             if not local7 then
                                 break
                             end
                         else
-                            say("\"Thou hast not the room for the jug.\"")
+                            add_dialogue("\"Thou hast not the room for the jug.\"")
                             callis_002C(true, -359, -359, 644, 3)
                         end
                     else
-                        say("\"Thou hast not the gold for this, ", local0, ". Perhaps some other time.\"")
+                        add_dialogue("\"Thou hast not the gold for this, ", local0, ". Perhaps some other time.\"")
                     end
                 else
-                    say("\"Perhaps next time, ", local0, ".\"")
+                    add_dialogue("\"Perhaps next time, ", local0, ".\"")
                 end
             else
-                say("\"I would be more than happy to sell thee a jug of milk, but for now the dairy is closed.\"")
+                add_dialogue("\"I would be more than happy to sell thee a jug of milk, but for now the dairy is closed.\"")
             end
-            _RemoveAnswer("milk")
+            remove_answer("milk")
         elseif answer == "cheese" then
             if local2 == 7 then
-                say("\"I sell wedges for 2 gold each. Still interested?\"")
+                add_dialogue("\"I sell wedges for 2 gold each. Still interested?\"")
                 local8 = call_090AH()
                 if local8 then
-                    say("\"How many dost thou want?\"")
+                    add_dialogue("\"How many dost thou want?\"")
                     local9 = call_AskNumber(1, 1, 20, 1)
                     local10 = local9 * 2
                     local11 = callis_0028(-359, -359, 644, -357)
                     if local11 >= local10 then
                         local12 = callis_002C(true, 27, -359, 377, local9)
                         if local12 then
-                            say("\"Here it is.\"")
+                            add_dialogue("\"Here it is.\"")
                             local12 = callis_002B(true, -359, -359, 644, local10)
                         else
-                            say("\"Thou hast not the room for this cheese.\"")
+                            add_dialogue("\"Thou hast not the room for this cheese.\"")
                         end
                     else
-                        say("\"Thou hast not the gold for this, ", local0, ". Perhaps something else.\"")
+                        add_dialogue("\"Thou hast not the gold for this, ", local0, ". Perhaps something else.\"")
                     end
                 else
-                    say("\"I understand, ", local0, ". Perhaps when thou dost become more hungry.\"")
+                    add_dialogue("\"I understand, ", local0, ". Perhaps when thou dost become more hungry.\"")
                 end
             else
-                say("\"I would be more than happy to sell thee some cheese, but for now the dairy is closed.\"")
+                add_dialogue("\"I would be more than happy to sell thee some cheese, but for now the dairy is closed.\"")
             end
-            _RemoveAnswer("cheese")
+            remove_answer("cheese")
         elseif answer == "Camille" then
-            say("\"Camille is a good woman. She is still an advocate of the old virtues. She runs the farm by herself. Well, with the help of her son, Tobias.\"")
-            _AddAnswer("Tobias")
-            _RemoveAnswer("Camille")
+            add_dialogue("\"Camille is a good woman. She is still an advocate of the old virtues. She runs the farm by herself. Well, with the help of her son, Tobias.\"")
+            add_answer("Tobias")
+            remove_answer("Camille")
         elseif answer == "Tobias" then
-            say("\"A rather defensive young lad, I cannot say that I know that much about him.\"")
-            _RemoveAnswer("Tobias")
+            add_dialogue("\"A rather defensive young lad, I cannot say that I know that much about him.\"")
+            remove_answer("Tobias")
         elseif answer == "Paws" then
-            say("\"Of course everyone is up in arms about this business concerning the missing venom.\"")
-            _RemoveAnswer("Paws")
+            add_dialogue("\"Of course everyone is up in arms about this business concerning the missing venom.\"")
+            remove_answer("Paws")
         elseif answer == "venom" then
-            say("\"It could be hidden anywhere. With all the trade that occurs in this town, it would be easy to hide. I do not know much else about the substance. Perhaps Morfin himself would know what kinds of effects it might produce.\"")
-            _RemoveAnswer("venom")
+            add_dialogue("\"It could be hidden anywhere. With all the trade that occurs in this town, it would be easy to hide. I do not know much else about the substance. Perhaps Morfin himself would know what kinds of effects it might produce.\"")
+            remove_answer("venom")
         elseif answer == "thief" then
-            say("\"Be wary, for there is a thief in this town! Some silver serpent venom was stolen from Morfin.\"")
+            add_dialogue("\"Be wary, for there is a thief in this town! Some silver serpent venom was stolen from Morfin.\"")
             set_flag(0x0212, true)
-            _AddAnswer("venom")
+            add_answer("venom")
             if not local3 then
-                _AddAnswer("Morfin")
+                add_answer("Morfin")
             end
-            _RemoveAnswer("thief")
+            remove_answer("thief")
         elseif answer == "theft solved" then
-            say("\"Thou hast put the people in our town at ease by finding the culprit!\"")
-            _RemoveAnswer("theft solved")
+            add_dialogue("\"Thou hast put the people in our town at ease by finding the culprit!\"")
+            remove_answer("theft solved")
         elseif answer == "slaughterhouse" then
-            say("\"The slaughterhouse is run by Morfin, the merchant. He is always busy, coming and going at all hours, sometimes carrying things.\"")
-            _AddAnswer("Morfin")
-            _RemoveAnswer("slaughterhouse")
+            add_dialogue("\"The slaughterhouse is run by Morfin, the merchant. He is always busy, coming and going at all hours, sometimes carrying things.\"")
+            add_answer("Morfin")
+            remove_answer("slaughterhouse")
         elseif answer == "Morfin" then
-            say("\"He bought the slaughterhouse a few years ago, soon after he joined The Fellowship. I knew the previous owner.\"")
-            _AddAnswer("previous owner")
-            _RemoveAnswer("Morfin")
+            add_dialogue("\"He bought the slaughterhouse a few years ago, soon after he joined The Fellowship. I knew the previous owner.\"")
+            add_answer("previous owner")
+            remove_answer("Morfin")
             local3 = true
         elseif answer == "previous owner" then
-            say("\"I was just a lad when I first saw the old slaughterhouse. The old man who owned it even showed me the storeroom in there once. The door to it is locked. I think Morfin has the key somewhere in his house.\"")
-            _RemoveAnswer("previous owner")
+            add_dialogue("\"I was just a lad when I first saw the old slaughterhouse. The old man who owned it even showed me the storeroom in there once. The door to it is locked. I think Morfin has the key somewhere in his house.\"")
+            remove_answer("previous owner")
         elseif answer == "bye" then
-            say("\"I hope I was of some assistance to thee, ", local0, ".\"*")
+            add_dialogue("\"I hope I was of some assistance to thee, ", local0, ".\"*")
             break
         end
     end
@@ -147,7 +147,7 @@ function func_04B0(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

@@ -19,7 +19,7 @@ function func_0329H(eventid, itemref)
         set_flag(0x001F, false)
         set_flag(0x0020, false)
         set_flag(0x0021, false)
-        say(-356, "Spin baby!")
+        add_dialogue(-356, "Spin baby!")
         while true do
             local angle = random(0, 2) * 8
             set_item_state(itemref) -- TODO: Implement LuaSetItemState for calli 005C.

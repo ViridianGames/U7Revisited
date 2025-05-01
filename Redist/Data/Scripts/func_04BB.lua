@@ -7,46 +7,46 @@ function func_04BB(eventid, itemref)
     end
 
     switch_talk_to(187, 0)
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x024C) then
-        say("You see a frowning gargoyle.")
+        add_dialogue("You see a frowning gargoyle.")
         set_flag(0x024C, true)
     else
-        say("\"To ask what you need, human,\" says Silamo.")
+        add_dialogue("\"To ask what you need, human,\" says Silamo.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be named `Silamo.'\"")
+            add_dialogue("\"To be named `Silamo.'\"")
             if get_flag(0x023D) then
-                _AddAnswer("wingless status")
+                add_answer("wingless status")
             end
-            _RemoveAnswer("name")
-            _AddAnswer("Silamo")
+            remove_answer("name")
+            add_answer("Silamo")
         elseif answer == "Silamo" then
-            say("\"To know my name if I were winged.\" He scowls at you.")
-            _RemoveAnswer("Silamo")
+            add_dialogue("\"To know my name if I were winged.\" He scowls at you.")
+            remove_answer("Silamo")
         elseif answer == "job" then
-            say("\"To be the gardener,\" he shrugs, \"nothing more.\"~~ He does not seem to be interested in speaking with you.")
+            add_dialogue("\"To be the gardener,\" he shrugs, \"nothing more.\"~~ He does not seem to be interested in speaking with you.")
         elseif answer == "wingless status" then
-            say("He stares at you for a moment.~~\"To be right, human.~~ \"To feel I am treated less for an absence of wings. To see Quaeven treated better since joining The Fellowship. To be devoted to the altar of singularity. But, perhaps to change if The Fellowship cares not about wings.\"")
-            _AddAnswer({"Quaeven", "treated"})
-            _RemoveAnswer("wingless status")
+            add_dialogue("He stares at you for a moment.~~\"To be right, human.~~ \"To feel I am treated less for an absence of wings. To see Quaeven treated better since joining The Fellowship. To be devoted to the altar of singularity. But, perhaps to change if The Fellowship cares not about wings.\"")
+            add_answer({"Quaeven", "treated"})
+            remove_answer("wingless status")
         elseif answer == "Quaeven" then
-            say("\"To be also without wings, but to be respected as if he were winged.\"")
-            _RemoveAnswer("Quaeven")
+            add_dialogue("\"To be also without wings, but to be respected as if he were winged.\"")
+            remove_answer("Quaeven")
         elseif answer == "treated" then
-            say("\"To see many others include him in many events from which I am excluded. To know others include him in many more decision-making councils, too.\"")
-            _RemoveAnswer("treated")
-            _AddAnswer("others")
+            add_dialogue("\"To see many others include him in many events from which I am excluded. To know others include him in many more decision-making councils, too.\"")
+            remove_answer("treated")
+            add_answer("others")
         elseif answer == "others" then
-            say("\"Gargoyles in The Fellowship.\"")
-            _RemoveAnswer("others")
+            add_dialogue("\"Gargoyles in The Fellowship.\"")
+            remove_answer("others")
         elseif answer == "bye" then
-            say("\"To get back to work.\"*")
+            add_dialogue("\"To get back to work.\"*")
             break
         end
     end
@@ -55,7 +55,7 @@ function func_04BB(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

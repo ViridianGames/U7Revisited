@@ -17,7 +17,7 @@ function func_01F4(eventid, itemref)
 
     -- Eventid == 0: Simple moo
     if eventid == 0 then
-        _ItemSay("@Moo@", itemref)
+        bark(itemref, "@Moo@")
     end
 
     return

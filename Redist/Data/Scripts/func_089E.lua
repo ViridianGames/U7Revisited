@@ -4,11 +4,11 @@ function func_089E(p0, p1, p2)
 
     local3 = external_001BH(-5) -- Unmapped intrinsic
     local4 = get_party_members()
-    say("\"I am able to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
+    add_dialogue("\"I am able to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
     save_answers() -- Unmapped intrinsic
     local5 = external_090AH() -- Unmapped intrinsic
     if not local5 then
-        say("\"Which of my services dost thou have need of?\"")
+        add_dialogue("\"Which of my services dost thou have need of?\"")
         local6 = {"resurrect", "cure poison", "heal"}
         local7 = external_090BH(local6) -- Unmapped intrinsic
         if local7 == "heal" or local7 == "cure poison" then
@@ -19,7 +19,7 @@ function func_089E(p0, p1, p2)
                 local8 = "cured of poison"
                 local9 = p1
             end
-            say("\"Who dost thou wish to be " .. local8 .. "?\"")
+            add_dialogue("\"Who dost thou wish to be " .. local8 .. "?\"")
             local10 = external_008DH() -- Unmapped intrinsic
             local11 = get_player_name(local10) -- Unmapped intrinsic
             local12 = external_008DH() -- Unmapped intrinsic
@@ -34,7 +34,7 @@ function func_089E(p0, p1, p2)
             local19 = external_090CH({"Nobody", unpack(local13)}) -- Unmapped intrinsic
             local20 = local19 == 1 and 0 or local14[local19 - 1]
             if local20 == 0 then
-                say("\"Avatar! Thou dost tell me to prepare to heal and then thou dost tell me 'Nobody'! Is this thine idea of a joke? Healing is a serious business!\"")
+                add_dialogue("\"Avatar! Thou dost tell me to prepare to heal and then thou dost tell me 'Nobody'! Is this thine idea of a joke? Healing is a serious business!\"")
                 return
             end
             local9 = local20
@@ -45,11 +45,11 @@ function func_089E(p0, p1, p2)
             if local16 == 0 then
                 local16 = external_000EH(25, 414, local15) -- Unmapped intrinsic
                 if local16 == 0 then
-                    say("\"I do believe I am going blind. I do not see anyone who is in need of resurrection. Art thou fooling me again, or art thou hiding the injured one? I must be able to see the person to help them. If thou art carrying thy friend in thy pack, pray lay them on the ground so that I may perform my duties as thou hast requested.\"")
+                    add_dialogue("\"I do believe I am going blind. I do not see anyone who is in need of resurrection. Art thou fooling me again, or art thou hiding the injured one? I must be able to see the person to help them. If thou art carrying thy friend in thy pack, pray lay them on the ground so that I may perform my duties as thou hast requested.\"")
                     abort()
                 end
             end
-            say("\"Indeed, thy friend is grievously wounded. Make room here, and I will heal them to the best of mine abilities.\"")
+            add_dialogue("\"Indeed, thy friend is grievously wounded. Make room here, and I will heal them to the best of mine abilities.\"")
             if external_001BH(-5) == local4 then -- Unmapped intrinsic
                 local0 = 0
             else
@@ -58,7 +58,7 @@ function func_089E(p0, p1, p2)
             local9 = local0
         end
         if external_001BH(-5) == local4 then -- Unmapped intrinsic
-            say("\"Since I am travelling in thy group, I shall waive my fee.\"")
+            add_dialogue("\"Since I am travelling in thy group, I shall waive my fee.\"")
             if local7 == "heal" then
                 external_091DH(local9, local20) -- Unmapped intrinsic
                 set_flag(41, true)
@@ -73,7 +73,7 @@ function func_089E(p0, p1, p2)
                 external_0066H(10) -- Unmapped intrinsic
             end
         else
-            say("\"My price is " .. local9 .. " gold. Is this price agreeable?\"")
+            add_dialogue("\"My price is " .. local9 .. " gold. Is this price agreeable?\"")
             local5 = external_090AH() -- Unmapped intrinsic
             if not local5 then
                 local17 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
@@ -86,14 +86,14 @@ function func_089E(p0, p1, p2)
                         external_091FH(local9, local16) -- Unmapped intrinsic
                     end
                 else
-                    say("\"Thou dost not have that much gold! Mayhaps thou couldst return with more and purchase the service then.\"")
+                    add_dialogue("\"Thou dost not have that much gold! Mayhaps thou couldst return with more and purchase the service then.\"")
                 end
             else
-                say("\"Then thou must look elsewhere for that service.\"")
+                add_dialogue("\"Then thou must look elsewhere for that service.\"")
             end
         end
     else
-        say("\"If thou hast need of my services later, I will be here.\"")
+        add_dialogue("\"If thou hast need of my services later, I will be here.\"")
     end
     restore_answers() -- Unmapped intrinsic
     return

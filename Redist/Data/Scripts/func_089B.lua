@@ -11,20 +11,20 @@ function func_089B(p0, p1)
     local5 = 3
     local6 = external_0922H(local5, local2, p0, p1) -- Unmapped intrinsic
     if local6 == 0 then
-        say("\"To be without the practical experience required to train at this time.\"")
+        add_dialogue("\"To be without the practical experience required to train at this time.\"")
     elseif local6 == 1 then
         local7 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
-        say("You gather your gold and count it, finding that you have " .. local7 .. " gold altogether.")
+        add_dialogue("You gather your gold and count it, finding that you have " .. local7 .. " gold altogether.")
         if local7 < p0 then
-            say("\"To need more gold than you have. To need 50 gold.\"")
+            add_dialogue("\"To need more gold than you have. To need 50 gold.\"")
         end
     elseif local6 == 2 then
-        say("After examining " .. local4 .. " muscles, he says, \"To be stronger than I. To need no further training in combat.\"")
+        add_dialogue("After examining " .. local4 .. " muscles, he says, \"To be stronger than I. To need no further training in combat.\"")
     else
         local8 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        say("You pay " .. p0 .. " gold, and the training session begins.")
+        add_dialogue("You pay " .. p0 .. " gold, and the training session begins.")
         local9 = local2 == -356 and "you begin" or local3 .. " begins"
-        say("The gargoyle begins with some intense weight-lifting which eventually leads to target practice with throwing axes. At the end, " .. local9 .. " to notice a change in physical prowess and hand-eye coordination.")
+        add_dialogue("The gargoyle begins with some intense weight-lifting which eventually leads to target practice with throwing axes. At the end, " .. local9 .. " to notice a change in physical prowess and hand-eye coordination.")
         local10 = external_0910H(0, local2) -- Unmapped intrinsic
         if local10 < 30 then
             external_0914H(1, local2) -- Unmapped intrinsic

@@ -4,7 +4,7 @@ function func_066F(eventid, itemref)
 
     if eventid == 1 then
         local0 = get_item_data(itemref)
-        item_say("@Vas Zu@", itemref)
+        bark(itemref, "@Vas Zu@")
         if not external_0906H() then -- Unmapped intrinsic
             create_object(-1, 0, 0, 0, local0[2] - 2, local0[1] - 2, 7) -- Unmapped intrinsic
             local1 = add_item(itemref, {1647, 17493, 17514, 17511, 17519, 17509, 8033, 65, 7768})

@@ -13,14 +13,14 @@ function func_094A()
     local7 = ""
     local8 = {1, 1, 1, 1, 1, 0}
     local9 = ""
-    say("\"To want what item?\"")
+    add_dialogue("\"To want what item?\"")
     while local0 do
         local10 = external_090CH(local1) -- Unmapped intrinsic
         if local10 == 1 then
             if get_flag(3) then
-                say("\"To be good. To want to sell nothing to you.\"")
+                add_dialogue("\"To be good. To want to sell nothing to you.\"")
             else
-                say("\"To understand.\"")
+                add_dialogue("\"To understand.\"")
             end
             local0 = false
         else
@@ -34,20 +34,20 @@ function func_094A()
             end
             local12 = external_091CH(local7, local11, local6[local10], local1[local10], local5) -- Unmapped intrinsic
             local13 = 0
-            say("\"" .. local12 .. " To agree to the cost?\"")
+            add_dialogue("\"" .. local12 .. " To agree to the cost?\"")
             local14 = external_090AH() -- Unmapped intrinsic
             if not local14 then
-                say("\"To want how many?\"")
+                add_dialogue("\"To want how many?\"")
                 local13 = external_08F8H(true, 1, 20, local11, local8[local10], local3[local10], local2[local10]) -- Unmapped intrinsic
             end
             if local13 == 1 then
-                say("\"To be agreed!\"")
+                add_dialogue("\"To be agreed!\"")
             elseif local13 == 2 then
-                say("\"To be unable to carry that much, human!\"")
+                add_dialogue("\"To be unable to carry that much, human!\"")
             elseif local13 == 3 then
-                say("\"To have not enough gold for that!\"")
+                add_dialogue("\"To have not enough gold for that!\"")
             end
-            say("\"To want something else?\"")
+            add_dialogue("\"To want something else?\"")
             local0 = external_090AH() -- Unmapped intrinsic
         end
     end

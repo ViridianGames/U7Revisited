@@ -12,15 +12,15 @@ function func_0951(eventid, itemref)
     local6 = ""
     local7 = 0
     local8 = 1
-    say(itemref, "\"What wouldst thou like?\"")
+    add_dialogue(itemref, "\"What wouldst thou like?\"")
     while local0 do
         local9 = call_090CH(local1)
         if local9 == 1 then
-            say(itemref, "\"Fine.\"")
+            add_dialogue(itemref, "\"Fine.\"")
             local0 = false
         elseif local9 == 6 then
             if not get_flag(299) then
-                say(itemref, "\"I regret to tell thee that this fine establishment will no longer be able to provide our fine customers with Silverleaf. The person who provides me with the delicate meal is no longer able to procure it. I am dreadfully sorry, " .. (get_player_name() or "Avatar") .. ".\"")
+                add_dialogue(itemref, "\"I regret to tell thee that this fine establishment will no longer be able to provide our fine customers with Silverleaf. The person who provides me with the delicate meal is no longer able to procure it. I am dreadfully sorry, " .. (get_player_name() or "Avatar") .. ".\"")
                 return
             end
         end
@@ -31,11 +31,11 @@ function func_0951(eventid, itemref)
         local14 = local6
         local15 = call_091BH(local10, local11, local12, local13, local14)
         local16 = 0
-        say(itemref, "^" .. local15 .. " That is a fair price, is it not?")
+        add_dialogue(itemref, "^" .. local15 .. " That is a fair price, is it not?")
         local17 = get_answer()
         if local17 then
             if local2[local9] == 377 then
-                say(itemref, "\"How many wouldst thou like?\"")
+                add_dialogue(itemref, "\"How many wouldst thou like?\"")
                 local18 = call_08F8H(true, 1, 20, local4[local9], local8, local3[local9], local2[local9])
                 local16 = local18
             else
@@ -44,13 +44,13 @@ function func_0951(eventid, itemref)
             end
         end
         if local16 == 1 then
-            say(itemref, "\"Done!\"")
+            add_dialogue(itemref, "\"Done!\"")
         elseif local16 == 2 then
-            say(itemref, "\"Thou cannot possibly carry that much!\"")
+            add_dialogue(itemref, "\"Thou cannot possibly carry that much!\"")
         elseif local16 == 3 then
-            say(itemref, "\"Thou dost not have enough gold for that!\"")
+            add_dialogue(itemref, "\"Thou dost not have enough gold for that!\"")
         end
-        say(itemref, "\"Wouldst thou like something else?\"")
+        add_dialogue(itemref, "\"Wouldst thou like something else?\"")
         local0 = get_answer()
     end
     _RestoreAnswers()

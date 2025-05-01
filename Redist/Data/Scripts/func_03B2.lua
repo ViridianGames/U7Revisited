@@ -9,19 +9,19 @@ function func_03B2(eventid, itemref)
 
     local0 = callis_001C(callis_001B(itemref))
     switch_talk_to(258, 0)
-    say("You see a tough-looking guard who takes his job -very- seriously.")
+    add_dialogue("You see a tough-looking guard who takes his job -very- seriously.")
 
     while true do
-        _AddAnswer({"bye", "job", "name"})
+        add_answer({"bye", "job", "name"})
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"I am a guard.\"")
-            _RemoveAnswer("name")
+            add_dialogue("\"I am a guard.\"")
+            remove_answer("name")
         elseif answer == "job" then
-            say("The man looks at you like you are an ignoramus. \"I am a guard, idiot. Thou shouldst go about thy business.\"")
+            add_dialogue("The man looks at you like you are an ignoramus. \"I am a guard, idiot. Thou shouldst go about thy business.\"")
         elseif answer == "bye" then
-            say("\"Goodbye.\"")
+            add_dialogue("\"Goodbye.\"")
             break
         end
 
@@ -32,7 +32,7 @@ function func_03B2(eventid, itemref)
 end
 
 -- Helper functions
-function say(message)
+function add_dialogue(message)
     print(message) -- Adjust to your dialogue system
 end
 

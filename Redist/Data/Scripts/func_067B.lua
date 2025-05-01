@@ -5,7 +5,7 @@ function func_067B(eventid, itemref)
     local0 = false
     if eventid == 1 then
         local1 = item_select_modal() -- Unmapped intrinsic
-        item_say("@In Sanct Grav@", itemref)
+        bark(itemref, "@In Sanct Grav@")
         local2 = local1[2] + 1
         local3 = local1[3] + 1
         local4 = local1[4]

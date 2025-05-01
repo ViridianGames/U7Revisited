@@ -3,11 +3,11 @@ function func_08AC(local0, local1, local2)
     -- Local variables (10 as per .localc)
     local local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
 
-    say("I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?")
+    add_dialogue("I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?")
     callis_0007()
     local3 = call_090AH()
     if local3 then
-        say("Which of my services dost thou have need of?")
+        add_dialogue("Which of my services dost thou have need of?")
         local4 = {"resurrect", "cure poison", "heal"}
         local5 = call_090BH(local4)
         if local5 == "heal" or local5 == "cure poison" then
@@ -18,10 +18,10 @@ function func_08AC(local0, local1, local2)
                 local6 = "cured of poison"
                 local7 = local1
             end
-            say("Who dost thou wish to have ", local6, "?")
+            add_dialogue("Who dost thou wish to have ", local6, "?")
             local8 = call_090EH()
             if local8 == 0 then
-                say("Excellent, thou art uninjured!")
+                add_dialogue("Excellent, thou art uninjured!")
                 return
             end
         elseif local5 == "resurrect" then
@@ -30,15 +30,15 @@ function func_08AC(local0, local1, local2)
             if local10 == 0 then
                 local10 = callis_000E(25, 414, local9)
                 if local10 == 0 then
-                    say("There seems to be no one who needs such assistance. Perhaps, if I have overlooked anyone, thou couldst set him or her before me.")
+                    add_dialogue("There seems to be no one who needs such assistance. Perhaps, if I have overlooked anyone, thou couldst set him or her before me.")
                     return
                 end
             end
             local7 = local0
-            say("Indeed, this individual needs restoration!")
+            add_dialogue("Indeed, this individual needs restoration!")
         end
 
-        say("My price is ", local7, " gold. Art thou interested?")
+        add_dialogue("My price is ", local7, " gold. Art thou interested?")
         local11 = call_090AH()
         if local11 then
             local12 = callis_0028(-359, -359, 644, -357)
@@ -51,13 +51,13 @@ function func_08AC(local0, local1, local2)
                     call_091FH(local7, local10)
                 end
             else
-                say("Thou dost not have enough gold! Mayhaps thou couldst return when thou hast more.")
+                add_dialogue("Thou dost not have enough gold! Mayhaps thou couldst return when thou hast more.")
             end
         else
-            say("Then thou must go elsewhere.")
+            add_dialogue("Then thou must go elsewhere.")
         end
     else
-        say("If thou needest my services later, I will be here.")
+        add_dialogue("If thou needest my services later, I will be here.")
     end
 
     callis_0008()
@@ -65,6 +65,6 @@ function func_08AC(local0, local1, local2)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

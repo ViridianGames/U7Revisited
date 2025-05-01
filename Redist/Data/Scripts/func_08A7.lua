@@ -15,7 +15,7 @@ function func_08A7()
     local8 = {1, 1, 1, 1, 1, 12, 0}
 
     while true do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         if not local0 then
             callis_0008()
             return
@@ -23,12 +23,12 @@ function func_08A7()
 
         local9 = call_090CH(local1)
         if local9 == 1 then
-            say("Fine.")
+            add_dialogue("Fine.")
             local0 = false
         else
             local10 = call_091BH(local7[local9], local4[local9], local6[local9], local1[local9], local5[local9])
             local11 = 0
-            say("^", local10, " Wilt thou pay my price?")
+            add_dialogue("^", local10, " Wilt thou pay my price?")
             local12 = call_090AH()
             if local12 then
                 local10 = "How many "
@@ -36,18 +36,18 @@ function func_08A7()
                     local10 = local10 .. "dozen "
                 end
                 local10 = local10 .. "wouldst thou like?"
-                say("\"", local10, "\"")
+                add_dialogue("\"", local10, "\"")
                 local11 = call_08F8H(true, 1, 20, local4[local9], local8[local9], local3[local9], local2[local9])
             end
             if local11 == 1 then
-                say("Thou wilt indeed be pleased with thy purchase. We have only the finest produce.")
+                add_dialogue("Thou wilt indeed be pleased with thy purchase. We have only the finest produce.")
             elseif local11 == 2 then
-                say("Thou cannot possibly carry that much!")
+                add_dialogue("Thou cannot possibly carry that much!")
             elseif local11 == 3 then
-                say("Thou dost not have enough coin to pay for that!")
+                add_dialogue("Thou dost not have enough coin to pay for that!")
             end
         end
-        say("Wouldst thou like to purchase something else?")
+        add_dialogue("Wouldst thou like to purchase something else?")
         local0 = call_090AH()
     end
 
@@ -55,6 +55,6 @@ function func_08A7()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

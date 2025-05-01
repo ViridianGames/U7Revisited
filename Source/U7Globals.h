@@ -199,7 +199,7 @@ void AddConsoleString(std::string string, Color color = Color{ 255, 255, 255, 25
 
 void DrawConsole();
 
-//int l_say(lua_State* L);
+//int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
 

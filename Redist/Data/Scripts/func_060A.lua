@@ -56,7 +56,7 @@ function func_060A(eventid, itemref)
         local8 = {}
         local9 = ""
     else
-        item_say("@Didst thou win?@", -232)
+        item_say(232, "@Didst thou win?@")
     end
 
     if get_flag(6) then
@@ -88,7 +88,7 @@ function func_060A(eventid, itemref)
             end
             set_schedule(232, local12)
             if local12 then
-                item_say("@A winner on " .. local6 .. ".@", -232)
+                item_say(232, "@A winner on " .. local6 .. ".@")
             end
             local7 = true
         end
@@ -96,7 +96,7 @@ function func_060A(eventid, itemref)
     end
 
     if not local7 and local12 then
-        item_say("@It is " .. local6 .. ".@", -232)
+        item_say(232, "@It is " .. local6 .. ".@")
     end
 
     return

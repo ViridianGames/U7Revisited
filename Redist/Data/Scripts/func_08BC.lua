@@ -27,29 +27,29 @@ function func_08BC(itemref)
     local11 = -153
 
     while local1 do
-        say("What wouldst thou like to buy?")
+        add_dialogue("What wouldst thou like to buy?")
         local12 = call_090CH(local2)
         if local12 == 1 then
-            say("Fine.")
+            add_dialogue("Fine.")
             local1 = false
         else
             local13 = call_091BH(local7[local12], local5[local12], local9, local2[local12], local6 or local8[local12])
             local14 = 0
-            say("\"", local13, " Dost thou like the price?")
+            add_dialogue("\"", local13, " Dost thou like the price?")
             local0 = call_090AH()
             if local0 then
-                say(itemref == "Reagents" and "How many dost thou want?" or "How many dost thou want?")
+                add_dialogue(itemref == "Reagents" and "How many dost thou want?" or "How many dost thou want?")
                 local14 = call_08F8H(itemref == "Reagents", 1, itemref == "Reagents" and 20 or 0, local5[local12], local10, local4[local12], local3[local12])
             end
             if local14 == 1 then
-                say("Done!")
+                add_dialogue("Done!")
             elseif local14 == 2 then
-                say("Thou cannot possibly carry that much!")
+                add_dialogue("Thou cannot possibly carry that much!")
             elseif local14 == 3 then
-                say("Thou dost not have enough gold for that!")
+                add_dialogue("Thou dost not have enough gold for that!")
             end
         end
-        say("Wouldst thou like something else?")
+        add_dialogue("Wouldst thou like something else?")
         local1 = call_090AH()
     end
 
@@ -58,6 +58,6 @@ function func_08BC(itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

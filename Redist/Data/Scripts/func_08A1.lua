@@ -17,7 +17,7 @@ function func_08A1()
     local9 = 1
 
     while true do
-        say("What dost thou want to buy?")
+        add_dialogue("What dost thou want to buy?")
         if not local1 then
             callis_0008()
             return
@@ -25,35 +25,35 @@ function func_08A1()
 
         local10 = call_090CH(local2)
         if local10 == 1 then
-            say("Fine, ", local0, ".")
+            add_dialogue("Fine, ", local0, ".")
             local1 = false
         else
             local11 = call_091BH(local7[local10], local4[local10], local6[local10], local2[local10], local5[local10])
             local12 = 0
             if local3[local10] == 782 or local3[local10] == 595 or local3[local10] == 627 then
-                say("^", local11, " Dost thou agree?")
+                add_dialogue("^", local11, " Dost thou agree?")
                 local13 = call_090AH()
                 if local13 then
-                    say("How many sets of twelve wouldst thou like?")
+                    add_dialogue("How many sets of twelve wouldst thou like?")
                     local12 = call_08F8H(true, 1, 20, local4[local10], local9, local8, local3[local10])
                 end
             else
-                say("^", local11, ". Is that acceptable?")
+                add_dialogue("^", local11, ". Is that acceptable?")
                 local14 = call_090AH()
                 if local14 then
-                    say("How many wouldst thou like?")
+                    add_dialogue("How many wouldst thou like?")
                     local12 = call_08F8H(true, 1, 0, local4[local10], local9, local8, local3[local10])
                 end
             end
             if local12 == 1 then
-                say("Very good, ", local0, ".")
+                add_dialogue("Very good, ", local0, ".")
             elseif local12 == 2 then
-                say("But, ", local0, ", thou cannot possibly carry that much!")
+                add_dialogue("But, ", local0, ", thou cannot possibly carry that much!")
             elseif local12 == 3 then
-                say("I am sorry, but thou hast not enough gold for that!")
+                add_dialogue("I am sorry, but thou hast not enough gold for that!")
             end
         end
-        say("Wouldst thou care to purchase something else?")
+        add_dialogue("Wouldst thou care to purchase something else?")
         local1 = call_090AH()
     end
 
@@ -61,6 +61,6 @@ function func_08A1()
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end

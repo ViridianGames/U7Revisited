@@ -13,61 +13,61 @@ function func_04EE(eventid, itemref)
     switch_talk_to(238, 0)
     local0 = call_0908H()
     local1 = call_0909H()
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x0145) then
-        say("The man before you stretches and inhales deeply.")
+        add_dialogue("The man before you stretches and inhales deeply.")
     else
-        say("\"Glorious day, ", local0, ".\" Perrin grins.")
+        add_dialogue("\"Glorious day, ", local0, ".\" Perrin grins.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"Please, ", local1, ", call me Perrin. I reside here in Empath Abbey.\"")
-            _RemoveAnswer("name")
-            _AddAnswer("Empath Abbey")
+            add_dialogue("\"Please, ", local1, ", call me Perrin. I reside here in Empath Abbey.\"")
+            remove_answer("name")
+            add_answer("Empath Abbey")
         elseif answer == "job" then
-            say("\"I am a scholar, ", local1, ". Dost thou want training in the realm of books?\"")
+            add_dialogue("\"I am a scholar, ", local1, ". Dost thou want training in the realm of books?\"")
             local2 = call_090AH()
             if local2 then
-                say("\"My price is 45 gold for each training session, but I will also teach thee what little I know about magic. Is this acceptable?\"")
+                add_dialogue("\"My price is 45 gold for each training session, but I will also teach thee what little I know about magic. Is this acceptable?\"")
                 local3 = call_090AH()
                 if local3 then
                     call_08CAH(45, {6, 2})
                 else
-                    say("\"Very well, ", local1, ".\"")
+                    add_dialogue("\"Very well, ", local1, ".\"")
                 end
             else
-                say("\"Forgive me, I am a bit overzealous in my search for students. I hope thou wilt return in the future.\"")
+                add_dialogue("\"Forgive me, I am a bit overzealous in my search for students. I hope thou wilt return in the future.\"")
             end
         elseif answer == "Empath Abbey" then
-            say("\"This is a pleasant location. I like the privacy, which gives me a chance to study when I need to. The Brotherhood is across the road, and I am near a healer. Also, I have begun a study on the effects of dealing with death for undertakers. I am using Tiery as a case study.\"")
-            _RemoveAnswer("Empath Abbey")
-            _AddAnswer({"Tiery", "healer", "Brotherhood"})
+            add_dialogue("\"This is a pleasant location. I like the privacy, which gives me a chance to study when I need to. The Brotherhood is across the road, and I am near a healer. Also, I have begun a study on the effects of dealing with death for undertakers. I am using Tiery as a case study.\"")
+            remove_answer("Empath Abbey")
+            add_answer({"Tiery", "healer", "Brotherhood"})
         elseif answer == "Brotherhood" then
-            say("\"That is the abbey. The monks who reside there are famous for their ability to produce exquisite wine. Nearby is the Highcourt and a prison.\"")
-            _RemoveAnswer("Brotherhood")
-            _AddAnswer({"prison", "highcourt", "wine"})
+            add_dialogue("\"That is the abbey. The monks who reside there are famous for their ability to produce exquisite wine. Nearby is the Highcourt and a prison.\"")
+            remove_answer("Brotherhood")
+            add_answer({"prison", "highcourt", "wine"})
         elseif answer == "wine" then
-            say("\"Thou shouldst try some. The monks have been making it for more than three hundred years!\"")
-            _RemoveAnswer("wine")
+            add_dialogue("\"Thou shouldst try some. The monks have been making it for more than three hundred years!\"")
+            remove_answer("wine")
         elseif answer == "highcourt" then
-            say("\"The official there is named Sir Jeff. From what I hear, he runs his ship very tight. I do not envy the jailer that works with him. It must be extremely difficult to be near such a strict disciplinarian all day long.\"")
-            _RemoveAnswer("highcourt")
+            add_dialogue("\"The official there is named Sir Jeff. From what I hear, he runs his ship very tight. I do not envy the jailer that works with him. It must be extremely difficult to be near such a strict disciplinarian all day long.\"")
+            remove_answer("highcourt")
         elseif answer == "prison" then
-            say("\"It is located just behind the court. And,\" he grins, \"I am proud to say that is at least one thing about which I know nothing.\"")
-            _RemoveAnswer("prison")
+            add_dialogue("\"It is located just behind the court. And,\" he grins, \"I am proud to say that is at least one thing about which I know nothing.\"")
+            remove_answer("prison")
         elseif answer == "Tiery" then
-            say("\"He is the undertaker who lives just north of the Brotherhood.\"")
-            _RemoveAnswer("Tiery")
+            add_dialogue("\"He is the undertaker who lives just north of the Brotherhood.\"")
+            remove_answer("Tiery")
         elseif answer == "healer" then
-            say("\"I have yet to meet her, but I know she loves animals. I have seen her playing with the deer and squirrels that inhabit this region.\"")
-            _RemoveAnswer("healer")
+            add_dialogue("\"I have yet to meet her, but I know she loves animals. I have seen her playing with the deer and squirrels that inhabit this region.\"")
+            remove_answer("healer")
             set_flag(0x013B, true)
         elseif answer == "bye" then
-            say("\"Goodbye, ", local0, ". Best of luck in thy journeys.\"*")
+            add_dialogue("\"Goodbye, ", local0, ". Best of luck in thy journeys.\"*")
             return
         end
     end
@@ -76,7 +76,7 @@ function func_04EE(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

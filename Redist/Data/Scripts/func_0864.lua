@@ -17,6 +17,6 @@ function func_0864(eventid, itemref)
             local2 = "@I am sorry, truly!@"
         end
     end
-    _ItemSay(local2, local0)
+    bark(local0, local2)
     return
 end

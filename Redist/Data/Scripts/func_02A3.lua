@@ -13,7 +13,7 @@ function func_02A3(eventid, itemref)
         local1 = _ItemSelectModal()
         calli_0086(15, itemref)
         if not callis_0031(local1) then
-            _ItemSay("@Hey, that hurt!@", local1)
+            bark(local1, "@Hey, that hurt!@")
             -- Note: Original has 'db 2c' here, ignored
         end
         if _GetItemType(local1) == 675 and _GetItemFrame(local1) == 10 then
@@ -48,7 +48,7 @@ function func_02A3(eventid, itemref)
     if local0 == 11 then
         local4 = callis_0028(-359, -359, 644, -357)
         local5 = "Party gold: " .. tostring(local4)
-        _ItemSay(local5, itemref)
+        bark(itemref, local5)
     end
 
     if local0 == 17 or local0 == 18 or local0 == 19 then

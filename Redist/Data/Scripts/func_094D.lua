@@ -12,29 +12,29 @@ function func_094D()
     local6 = {0, 0, 1, 0}
     local7 = {" for one portion", " for one loaf", " for 10 portions", ""}
     local8 = {1, 1, 10, 0}
-    say("\"What would ye like?\"")
+    add_dialogue("\"What would ye like?\"")
     while local0 do
         local9 = external_090CH(local1) -- Unmapped intrinsic
         if local9 == 1 then
-            say("\"If ye say so. I know that blasted Britannian Tax Council or what have ye has made the cost o' things too high! Maybe next time!\"")
+            add_dialogue("\"If ye say so. I know that blasted Britannian Tax Council or what have ye has made the cost o' things too high! Maybe next time!\"")
             local0 = false
         else
             local10 = external_091BH(local5, local1[local9], local2[local9], local6[local9], local7[local9]) -- Unmapped intrinsic
             local11 = 0
-            say("\"^" .. local10 .. " Is that acceptable?\"")
+            add_dialogue("\"^" .. local10 .. " Is that acceptable?\"")
             local12 = external_090AH() -- Unmapped intrinsic
             if not local12 then
-                say("\"How much do ye want?\"")
+                add_dialogue("\"How much do ye want?\"")
                 local11 = external_08F8H(true, 1, 20, local2[local9], local8[local9], local4[local9], local3) -- Unmapped intrinsic
             end
             if local11 == 1 then
-                say("\"Done!\"")
+                add_dialogue("\"Done!\"")
             elseif local11 == 2 then
-                say("\"Ye got ta lighten yer load first!\"")
+                add_dialogue("\"Ye got ta lighten yer load first!\"")
             elseif local11 == 3 then
-                say("\"Ye've not got the gold. I kinna do business like that!\"")
+                add_dialogue("\"Ye've not got the gold. I kinna do business like that!\"")
             end
-            say("\"Anything else ye want?\"")
+            add_dialogue("\"Anything else ye want?\"")
             local0 = external_090AH() -- Unmapped intrinsic
         end
     end

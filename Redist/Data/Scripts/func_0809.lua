@@ -22,9 +22,9 @@ function func_0809(eventid, itemref)
                     end
                 else
                     if _ArraySize(_GetPartyMembers()) == 1 then
-                        say(itemref, "@The title for this cart must first be purchased.@")
+                        add_dialogue(itemref, "@The title for this cart must first be purchased.@")
                     else
-                        say(itemref, "@We must first purchase the title for this cart.@")
+                        add_dialogue(itemref, "@We must first purchase the title for this cart.@")
                     end
                 end
             end

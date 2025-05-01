@@ -10,17 +10,17 @@ function func_0326H(eventid, itemref)
     if not get_flag(0x003D) then
         add_answer("password")
     end
-    say(0, "You see a tough-looking guard who takes his job -very- seriously.")
+    add_dialogue(0, "You see a tough-looking guard who takes his job -very- seriously.")
     local answer = get_answer()
     while answer do
         if answer == "name" then
-            say(0, '"My name is not important."')
+            add_dialogue(0, '"My name is not important."')
             remove_answer("name")
         elseif answer == "job" then
-            say(0, '"I keep villains and knaves out of Trinsic and keep a record of all who leave. Thou must have a password to leave."')
+            add_dialogue(0, '"I keep villains and knaves out of Trinsic and keep a record of all who leave. Thou must have a password to leave."')
             add_answer("password")
         elseif answer == "password" then
-            say(0, '"What is the password?"')
+            add_dialogue(0, '"What is the password?"')
             local options = {"Please", "Long live the king", "Uhh, I don't know"}
             if not get_flag(0x003D) then
                 table.insert(options, "Blackbird")
@@ -29,15 +29,15 @@ function func_0326H(eventid, itemref)
             if choice == "Blackbird" then
                 local result = call_script(0x0834) -- TODO: Map 0834H (possibly check condition).
                 if result then
-                    say(0, '"Very well, thou mayest pass."')
+                    add_dialogue(0, '"Very well, thou mayest pass."')
                     return
                 end
             else
-                say(0, '"Thou dost not know the password. Sorry. The Mayor can give thee the proper password."')
+                add_dialogue(0, '"Thou dost not know the password. Sorry. The Mayor can give thee the proper password."')
                 set_flag(0x0042, true)
             end
         elseif answer == "bye" then
-            say(0, '"Goodbye."')
+            add_dialogue(0, '"Goodbye."')
             return
         end
         answer = get_answer()

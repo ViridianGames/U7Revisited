@@ -18,7 +18,7 @@ function func_03DB(eventid, itemref)
         calli_0089(11, local3)
         if local3 then
             local1 = callis_0026(local2)
-            _ItemSay("@Whaaahh!!@", local3)
+            bark(local3, "@Whaaahh!!@")
         end
     end
 

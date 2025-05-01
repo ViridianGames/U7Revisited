@@ -17,7 +17,7 @@ function func_04EB(eventid, itemref)
             elseif local2 == 4 then
                 local3 = "@We shall entertain thee!@"
             end
-            _ItemSay(local3, -235)
+            bark(235, local3)
         else
             call_092EH(-235)
         end
@@ -27,13 +27,13 @@ function func_04EB(eventid, itemref)
     end
 
     switch_talk_to(235, 0)
-    say("You see a short, stocky actor in his mid- to late forties. He cannot speak to you now because he is concentrating.ConcurrentModificationException his lines for the Passion Play. Perhaps you should speak to Paul.*")
+    add_dialogue("You see a short, stocky actor in his mid- to late forties. He cannot speak to you now because he is concentrating.ConcurrentModificationException his lines for the Passion Play. Perhaps you should speak to Paul.*")
 
     return
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

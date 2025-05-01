@@ -17,7 +17,7 @@ function func_0684(eventid, itemref)
                 local6 = external_0051H(local0) -- Unmapped intrinsic
             end
         end
-        item_say("@In Mani Corp@", itemref)
+        bark(itemref, "@In Mani Corp@")
         if not external_0906H(local6) then -- Unmapped intrinsic
             local7 = 1
             local8 = add_item(itemref, {17519, 17505, 8045, 64, 8536, local3, 7769})

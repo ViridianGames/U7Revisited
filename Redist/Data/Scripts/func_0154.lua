@@ -35,7 +35,7 @@ function func_0154H(eventid, itemref)
         elseif frame == 7 then
             set_item_quality(obj, 0)
         elseif frame >= 8 then
-            say(0, "What is this!") -- Dialogue for invalid frame.
+            add_dialogue(0, "What is this!") -- Dialogue for invalid frame.
             return
         end
     else
@@ -43,7 +43,7 @@ function func_0154H(eventid, itemref)
         if effect == 1 then
             call_script(0x0909) -- TODO: Map 0909H.
             local gender = is_player_female() and "lady" or "lord"
-            say(0, "Those are expensive, " .. gender .. "! Plese waste them not!") -- Concatenated dialogue.
+            add_dialogue(0, "Those are expensive, " .. gender .. "! Plese waste them not!") -- Concatenated dialogue.
         else
             call_script(0x08FD, 60) -- TODO: Map 08FDH.
         end

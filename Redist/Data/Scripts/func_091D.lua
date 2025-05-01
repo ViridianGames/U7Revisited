@@ -9,11 +9,11 @@ function func_091D(p0, p1)
         local5 = local2 - local3
         external_0912H(3, p1, local5) -- Unmapped intrinsic
         local6 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        say("\"The wounds have been healed.\"")
+        add_dialogue("\"The wounds have been healed.\"")
     elseif p1 == -356 then
-        say("\"Thou seemest quite healthy!\"")
+        add_dialogue("\"Thou seemest quite healthy!\"")
     else
-        say("\"" .. local4 .. " is already healthy!\"")
+        add_dialogue("\"" .. local4 .. " is already healthy!\"")
     end
     return
 end

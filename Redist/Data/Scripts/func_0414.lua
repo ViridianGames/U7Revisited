@@ -10,40 +10,40 @@ function func_0414(eventid, itemref)
         add_answer({"bye", "murder", "job", "name"})
 
         if not get_flag(84) then
-            say("You see a solid-looking but seemingly bored fighter.")
+            add_dialogue("You see a solid-looking but seemingly bored fighter.")
             set_flag(84, true)
         else
-            say("\"Yes?\" Markus asks.")
+            add_dialogue("\"Yes?\" Markus asks.")
         end
 
         while true do
             local answer = get_answer()
             if answer == "name" then
-                say("\"I am Markus the trainer.\"")
+                add_dialogue("\"I am Markus the trainer.\"")
                 remove_answer("name")
             elseif answer == "job" then
-                say("\"I am a trainer here in Trinsic,\" he says gruffly. \"If thou dost wish to increase thy skill in combat I can help thee.\"")
+                add_dialogue("\"I am a trainer here in Trinsic,\" he says gruffly. \"If thou dost wish to increase thy skill in combat I can help thee.\"")
                 add_answer({"train", "Trinsic"})
             elseif answer == "murder" then
-                say("\"I heard about it, but I assure thee I know nothing of the details.\" Markus yawns.")
+                add_dialogue("\"I heard about it, but I assure thee I know nothing of the details.\" Markus yawns.")
                 remove_answer("murder")
             elseif answer == "Trinsic" then
-                say("The fighter shrugs. \"The town is all right.\" He sniffs.")
+                add_dialogue("The fighter shrugs. \"The town is all right.\" He sniffs.")
                 remove_answer("Trinsic")
             elseif answer == "train" then
                 if local1 == 7 then
-                    say("\"The cost to train with me is 20 gold. Too costly, right?\"")
+                    add_dialogue("\"The cost to train with me is 20 gold. Too costly, right?\"")
                     if get_answer() then
                         apply_effect(20, 4) -- Unmapped intrinsic 08BD
                     else
-                        say("Markus yawns. \"Very well.\"")
+                        add_dialogue("Markus yawns. \"Very well.\"")
                     end
                 else
-                    say("\"Please come to my place of business during normal daylight hours.\"")
+                    add_dialogue("\"Please come to my place of business during normal daylight hours.\"")
                     remove_answer("train")
                 end
             elseif answer == "bye" then
-                say("\"Goodbye,\" the fighter bows.*")
+                add_dialogue("\"Goodbye,\" the fighter bows.*")
                 break
             end
         end

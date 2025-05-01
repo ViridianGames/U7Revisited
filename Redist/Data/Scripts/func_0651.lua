@@ -9,7 +9,7 @@ function func_0651(eventid, itemref)
         local2 = item_select_modal() -- Unmapped intrinsic
         local3 = get_item_type(local2)
         local4 = external_092DH(local2) -- Unmapped intrinsic
-        item_say("@Ort Ylem@", itemref)
+        bark(itemref, "@Ort Ylem@")
         if external_0906H() and contains(local0, local3) then -- Unmapped intrinsic
             local5 = add_item(itemref, {17511, 17509, 8038, 67, 8536, local4, 7769})
             local5 = add_item(local2, 4, 1617, {17493, 7715})

@@ -5,7 +5,7 @@ function func_0288H(eventid, itemref)
         if get_wearer(target) then -- TODO: Implement LuaGetWearer for callis 0031.
             set_item_quality(target, 1) -- TODO: Implement LuaSetItemQuality for calli 0089.
         else
-            say(0, "Do not waste that!")
+            add_dialogue(0, "Do not waste that!")
         end
         call_script(0x0925, itemref) -- TODO: Map 0925H (possibly item cleanup or state update).
     end

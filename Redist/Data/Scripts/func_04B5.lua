@@ -13,82 +13,82 @@ function func_04B5(eventid, itemref)
     switch_talk_to(181, 0)
     local0 = false
     local1 = callis_003B()
-    _AddAnswer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"})
 
     if not get_flag(0x0246) then
-        say("The gargoyle has a pleasant expression on his face.")
+        add_dialogue("The gargoyle has a pleasant expression on his face.")
         set_flag(0x0246, true)
     else
-        say("\"To be pleased at your return, human,\" says Inforlem.")
+        add_dialogue("\"To be pleased at your return, human,\" says Inforlem.")
     end
 
     while true do
         local answer = wait_for_answer()
 
         if answer == "name" then
-            say("\"To be known as Inforlem.\"")
-            _AddAnswer("Inforlem")
-            _RemoveAnswer("name")
+            add_dialogue("\"To be known as Inforlem.\"")
+            add_answer("Inforlem")
+            remove_answer("name")
         elseif answer == "Inforlem" then
-            say("\"To mean `make strong one.'\"")
-            _RemoveAnswer("Inforlem")
+            add_dialogue("\"To mean `make strong one.'\"")
+            remove_answer("Inforlem")
         elseif answer == "job" then
-            say("\"To train others in Terfin to be strong and powerful. To sell some weapons, also.\"")
-            _AddAnswer({"buy", "Terfin", "others", "train"})
+            add_dialogue("\"To train others in Terfin to be strong and powerful. To sell some weapons, also.\"")
+            add_answer({"buy", "Terfin", "others", "train"})
             if not get_flag(0x0244) and not local0 then
-                _AddAnswer("conflicts")
+                add_answer("conflicts")
             end
         elseif answer == "buy" then
             if local1 == 3 or local1 == 4 or local1 == 5 then
                 call_089CH()
             else
-                say("\"To sell during shop hours. To ask you to come back to me at that time, please.\"")
+                add_dialogue("\"To sell during shop hours. To ask you to come back to me at that time, please.\"")
             end
         elseif answer == "train" then
             if local1 == 3 or local1 == 4 or local1 == 5 then
-                say("\"To be a better warrior or mage?\"")
-                _AddAnswer({"mage", "warrior"})
+                add_dialogue("\"To be a better warrior or mage?\"")
+                add_answer({"mage", "warrior"})
             else
-                say("\"To train during training hours. To ask you to come back to me at that time, please.\"")
+                add_dialogue("\"To train during training hours. To ask you to come back to me at that time, please.\"")
             end
         elseif answer == "warrior" then
-            say("\"To charge 50 gold for each training session. To be all right?\"")
+            add_dialogue("\"To charge 50 gold for each training session. To be all right?\"")
             local2 = call_090AH()
             if local2 then
                 call_089BH(50, 4, {1, 0, 3})
             else
-                say("\"To apologize, but I must charge that amount!\"")
+                add_dialogue("\"To apologize, but I must charge that amount!\"")
             end
-            _RemoveAnswer("warrior")
+            remove_answer("warrior")
         elseif answer == "mage" then
-            say("\"To charge 50 gold for each training session. To be acceptable?\"")
+            add_dialogue("\"To charge 50 gold for each training session. To be acceptable?\"")
             local2 = call_090AH()
             if local2 then
                 call_089AH(50, 2, {6})
             else
-                say("\"To apologize, but I must charge that amount!\"")
+                add_dialogue("\"To apologize, but I must charge that amount!\"")
             end
-            _RemoveAnswer("mage")
+            remove_answer("mage")
         elseif answer == "conflicts" then
-            say("\"To know of the conflicts between the altars and the Fellowship, but to have no information. To suggest you see Quan, The Fellowship leader here and ask him.\"")
+            add_dialogue("\"To know of the conflicts between the altars and the Fellowship, but to have no information. To suggest you see Quan, The Fellowship leader here and ask him.\"")
             set_flag(0x023C, true)
             local0 = true
-            _RemoveAnswer("conflicts")
+            remove_answer("conflicts")
         elseif answer == "Terfin" then
-            say("\"To see there are troubles here, but to be unaware of the causes and solutions.\"")
-            _RemoveAnswer("Terfin")
+            add_dialogue("\"To see there are troubles here, but to be unaware of the causes and solutions.\"")
+            remove_answer("Terfin")
         elseif answer == "others" then
-            say("\"To tell you Forbrak knows much about Terfin and its residents, and,\" he says, \"about its conflicts.\"")
-            _AddAnswer("Forbrak")
+            add_dialogue("\"To tell you Forbrak knows much about Terfin and its residents, and,\" he says, \"about its conflicts.\"")
+            add_answer("Forbrak")
             if not local0 then
-                _AddAnswer("conflicts")
+                add_answer("conflicts")
             end
-            _RemoveAnswer("others")
+            remove_answer("others")
         elseif answer == "Forbrak" then
-            say("\"To be the tavernkeeper.\"")
-            _RemoveAnswer("Forbrak")
+            add_dialogue("\"To be the tavernkeeper.\"")
+            remove_answer("Forbrak")
         elseif answer == "bye" then
-            say("\"To expect to see you again, human.\"*")
+            add_dialogue("\"To expect to see you again, human.\"*")
             break
         end
     end
@@ -97,7 +97,7 @@ function func_04B5(eventid, itemref)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
 

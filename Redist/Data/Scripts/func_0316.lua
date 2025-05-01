@@ -7,7 +7,7 @@ function func_0316H(eventid, itemref)
         elseif get_item_shape(target, 18) then -- TODO: Implement LuaGetItemShape for callis 0088.
             set_item_quality(target, 0)
         else
-            say(0, "Do not waste that!")
+            add_dialogue(0, "Do not waste that!")
         end
         set_stat(itemref, 67)
         call_script(0x0925, itemref) -- TODO: Map 0925H (possibly item cleanup).

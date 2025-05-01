@@ -17,7 +17,7 @@ function func_0348H(eventid, itemref)
             execute_action(state, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
             play_music(255, 0)
         else
-            say(0, "I do not believe that we can land here safely.")
+            add_dialogue(0, "I do not believe that we can land here safely.")
         end
     end
 end

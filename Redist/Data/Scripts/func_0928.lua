@@ -4,7 +4,7 @@ function func_0928(eventid, itemref)
 
     local1 = _GetItemFrame(get_item_container(itemref)) % 2
     if local1 == 0 then
-        say(itemref, {"I bet that would work much better if thou wouldst put some liquid in it..."})
+        add_dialogue(itemref, {"I bet that would work much better if thou wouldst put some liquid in it..."})
         add_dialogue_option("Perhaps some BEER for instance.", -4)
         add_dialogue_option("Or maybe some WINE>>>", -3)
     else
@@ -20,14 +20,14 @@ function func_0928(eventid, itemref)
         end
         local9 = math.random(1, 10)
         if local9 == 1 then
-            say(itemref, "mmmm... I bet that would sure wet a body's whistle.")
+            add_dialogue(itemref, "mmmm... I bet that would sure wet a body's whistle.")
         end
         if local9 == 2 then
             local10 = show_dialogue_options()
             local8 = "Why dost thou not wait until dinner to drink that " .. local2[local1] .. ", " .. local10 .. "."
         end
         if local9 > 2 then
-            say(itemref, local8)
+            add_dialogue(itemref, local8)
         end
     end
     return

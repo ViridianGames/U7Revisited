@@ -8,7 +8,7 @@ function func_068D(eventid, itemref)
         local2 = add_item(-356, {8033, 10, 7719})
         local2 = add_item(local1, {1678, 8021, 2, 7719})
     else
-        item_say("@There's not enough water.@", -356)
+        bark(356, "@There's not enough water.@")
     end
     return
 end

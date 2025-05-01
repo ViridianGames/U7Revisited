@@ -20,19 +20,19 @@ function func_08BE(local0, local1)
     local3 = 3
     local4 = call_0922H(local3, local2, local0, local1)
     if local4 == 0 then
-        say("I am sorry, but thou dost not have enough practical experience with weights to train at this time. Perhaps in the future, when thou art ready, I could train thee.")
+        add_dialogue("I am sorry, but thou dost not have enough practical experience with weights to train at this time. Perhaps in the future, when thou art ready, I could train thee.")
     elseif local4 == 1 then
         local5 = callis_0028(-359, -359, 644, -357)
-        say("You gather your gold and count it, finding that you have ", local5, " gold altogether.")
+        add_dialogue("You gather your gold and count it, finding that you have ", local5, " gold altogether.")
         if local5 < local0 then
-            say("Thou dost not have enough gold to train here.")
+            add_dialogue("Thou dost not have enough gold to train here.")
         end
     elseif local4 == 2 then
-        say("\"Thou art already as strong as I!\" he exclaims, noticing ", local8, " muscles and build. \"Thou dost certainly know as much as I about building strong muscles.\"")
+        add_dialogue("\"Thou art already as strong as I!\" he exclaims, noticing ", local8, " muscles and build. \"Thou dost certainly know as much as I about building strong muscles.\"")
     else
         local9 = callis_002B(true, -359, -359, 644, local0)
-        say("You pay ", local0, " gold, and the training session begins.")
-        say("He begins with a short, but extensive, weight training program, followed by a sparring match with heavy weaponry. Shortly, ", local7, " to feel stronger, and better able to utilize that strength in battle.")
+        add_dialogue("You pay ", local0, " gold, and the training session begins.")
+        add_dialogue("He begins with a short, but extensive, weight training program, followed by a sparring match with heavy weaponry. Shortly, ", local7, " to feel stronger, and better able to utilize that strength in battle.")
         local10 = call_0910H(0, local2)
         if local10 >= 30 then
             call_0914H(2, local2)
@@ -47,6 +47,6 @@ function func_08BE(local0, local1)
 end
 
 -- Helper functions
-function say(...)
+function add_dialogue(...)
     print(table.concat({...}))
 end
