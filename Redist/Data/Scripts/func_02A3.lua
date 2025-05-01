@@ -37,7 +37,7 @@ function func_02A3(eventid, itemref)
             local2 = callis_0001({"@Gimmee a cracker!@", 17490, 7715}, itemref)
         elseif local3 == 6 or local3 == 7 then
             local2 = callis_0001({"@Pretty bird!@", 17490, 7715}, itemref)
-            if _NPCInParty(-2) then
+            if npc_in_party(2) then
                 local2 = callis_0002(16, {"@Ugly Bird!@", 17490, 7715}, callis_001B(-2))
                 local2 = callis_0002(32, {"@Ugly Boy!@", 17490, 7715}, itemref)
                 local2 = callis_0002(48, {"@Hey!!@", 17490, 7715}, callis_001B(-2))
@@ -58,7 +58,7 @@ function func_02A3(eventid, itemref)
                 19, 8006, 18, 8024,
                 17, 8006, 17, 7768
             }, itemref)
-            if _NPCInParty(-2) then
+            if npc_in_party(2) then
                 local2 = callis_0002(4, {"@That is really weird.@", 7762}, callis_001B(-2))
             end
         end

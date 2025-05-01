@@ -4,7 +4,7 @@ function func_02E6(eventid, itemref)
         return
     end
 
-    if _NPCInParty(-2) and call_0937H(-2) then
+    if npc_in_party(2) and call_0937H(-2) then
         bark(2, "@Gee, is that neat.@")
     end
 

@@ -2,7 +2,7 @@
 function func_0903(eventid, itemref)
     local local0, local1, local2, local3
 
-    if _NPCInParty(itemref) then
+    if npc_in_party(itemref) then
         if itemref == -356 then
             local2 = _IsPlayerFemale()
         else

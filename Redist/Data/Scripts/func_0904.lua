@@ -2,7 +2,7 @@
 function func_0904(eventid, itemref)
     local local0, local1, local2, local3
 
-    if _NPCInParty(itemref) then
+    if npc_in_party(itemref) then
         if not check_item_state(25, itemref) then
             bark(itemref, "@Oink@")
         else

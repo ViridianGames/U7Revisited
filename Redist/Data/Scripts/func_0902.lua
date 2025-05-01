@@ -6,7 +6,7 @@ function func_0902(eventid, itemref)
     local1 = _GetPartyMembers()
     while local1 do
         local2 = local1
-        if local0[local2] and _NPCInParty(local2) then
+        if local0[local2] and npc_in_party(local2) then
             set_return(local2)
         end
         local1 = get_next_party_member() -- sloop

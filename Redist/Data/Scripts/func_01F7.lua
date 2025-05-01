@@ -10,7 +10,7 @@ function func_01F7(eventid, itemref)
             return
         end
 
-        if _NPCInParty(-44) then
+        if npc_in_party(44) then
             return
         end
 

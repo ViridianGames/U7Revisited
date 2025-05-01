@@ -6,7 +6,7 @@ function func_0901(eventid, itemref)
     local1 = _ArraySize(local0)
     if local1 ~= 0 then
         local2 = set_training_target(local0[0])
-        if _NPCInParty(local2) then
+        if npc_in_party(local2) then
             set_return(local2)
         end
     end

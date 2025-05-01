@@ -40,7 +40,7 @@ function func_02E7(eventid, itemref)
         end
         if local5 > 7 then
             local4 = callis_0002({local5 - 1, 24, 17496, 7715}, itemref)
-            if _NPCInParty(-44) and call_0937H(-44) then
+            if npc_in_party(44) and call_0937H(-44) then
                 local4 = callis_0002(15, {"@Avatar wins a Dragon!@", 17490, 7715}, -44)
                 local4 = callis_002C(false, 0, -359, 742, 1)
             end
