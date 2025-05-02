@@ -201,6 +201,8 @@ int main(int argv, char** argc)
 
        g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua");
 
+      g_ScriptingSystem->SortScripts();
+
       RegisterAllLuaFunctions();
 
       //  Initialize states

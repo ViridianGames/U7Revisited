@@ -71,6 +71,15 @@ void ScriptingSystem::LoadScript(const std::string& path)
 	m_scriptFiles.push_back(make_pair(func_name, thispath));
 }
 
+void ScriptingSystem::SortScripts()
+{
+	// Sort the script files by name
+	std::sort(m_scriptFiles.begin(), m_scriptFiles.end(), [](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b)
+	{
+		return a.first < b.first;
+	});
+}
+
 string ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
 {
 	//  Check if the function is loaded
