@@ -11,7 +11,7 @@ function func_04BF(eventid, itemref)
     end
 
     switch_talk_to(191, 0)
-    local0 = callis_IsPlayerFemale()
+    local0 = callisis_player_female()
     local1 = call_0908H()
     add_answer({"bye", "job", "name"})
 

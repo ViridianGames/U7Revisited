@@ -4,7 +4,7 @@ function func_03DE(eventid, itemref)
     local local0
 
     if eventid == 1 then
-        _IsPlayerFemale()
+        is_player_female()
         switch_talk_to(356, 0)
         if not get_flag(0x0301) then
             set_flag(0x0301, true)

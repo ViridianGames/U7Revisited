@@ -9,7 +9,7 @@ function func_043C(eventid)
     local npc_id = -50 -- Mack's NPC ID
 
     if eventid == 1 then
-        _SwitchTalkTo(0, npc_id)
+        switch_talk_to(npc_id, 0)
         local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
         local var_0001 = call_extern(0x090A, 1) -- Item interaction
         local var_0002 = call_extern(0x092E, 2) -- Unknown interaction

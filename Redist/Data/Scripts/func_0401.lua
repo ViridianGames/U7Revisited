@@ -67,8 +67,8 @@ function func_0401(eventid, itemref)
         local1 = get_party_members()
         local2 = switch_talk_to(1)
         local3 = get_player_name()
-        local8 = get_item_type(-11)
-        local9 = get_item_type(-3)
+        local8 = npc_in_party(11)
+        local9 = npc_in_party(3)
         local10 = false
         local11 = false
 
@@ -78,10 +78,10 @@ function func_0401(eventid, itemref)
         if not get_flag(87) then
             add_answer("Trinsic")
         end
-        if is_party_member(local2, local1) then
+        if npc_in_party(1) then
             add_answer("leave")
         end
-        if not is_party_member(local2, local1) then
+        if not npc_in_party(1) then
             add_answer("join")
         end
         if not get_flag(63) then
@@ -102,6 +102,7 @@ function func_0401(eventid, itemref)
         -- Prompt for answer, similar to erethian_inline.lua
         if not answer then
             add_dialogue("\"Yes, my friend?\" Iolo asks.")
+            start_conversation()
             answer = get_answer()
         end
 

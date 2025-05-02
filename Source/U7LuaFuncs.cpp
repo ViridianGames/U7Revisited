@@ -42,9 +42,15 @@ static int LuaSwitchTalkTo(lua_State *L)
 {
     AddConsoleString("LUA: switch_talk_to called");
     int npc_id = luaL_checkinteger(L, 1);
-    int frame = luaL_checkinteger(L, 2);
+    int frame = 0;
+    if (lua_gettop(L) > 1)
+    {
+        frame = luaL_checkinteger(L, 2);
+    }
     g_ConversationState->SetNPC(npc_id, frame);
     cout << "Switching talk to NPC ID: " << npc_id << "\n";
+
+    return 0;
 }
 
 // Opcode 0004
@@ -54,6 +60,8 @@ static int LuaHideNPC(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     g_ConversationState->SetNPC(npc_id, -1);
     cout << "Hiding NPC ID: " << npc_id << "\n";
+
+    return 0;
 }
 
 // Opcode 0005
@@ -322,7 +330,14 @@ static int LuaSetNPCProperty(lua_State *L)
 static int LuaGetPartyMembers(lua_State *L)
 {
     AddConsoleString("LUA: get_party_members called");
-    //lua_newtable(L);
+    lua_newtable(L);
+    vector<string> party_members = g_Player->GetPartyMembers();
+    for (size_t i = 0; i < party_members.size(); ++i)
+    {
+        lua_pushstring(L, party_members[i].c_str());
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
 }
 
 // Opcode 0027
@@ -369,7 +384,7 @@ static int LuaNPCInParty(lua_State *L)
 {
     AddConsoleString("LUA: npc_in_party called");
     int npc_id = luaL_checkinteger(L, 1);
-    bool in_party = false; // TODO: g_Party->IsMember(npc_id)
+    bool in_party = g_Player->NPCInParty(npc_id);
     lua_pushboolean(L, in_party);
     return 1;
 }
@@ -504,20 +519,20 @@ static int LuaBuyItem(lua_State *L)
     const char *item_name = luaL_checkstring(L, 5);
     int result = 0; // 1=success, 2=can't carry, 3=no gold
 
-    if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(item_id, quantity))
-    {
-        g_Player->AddItem(item_id, quantity);
-        g_Player->SpendGold(price * quantity);
-        result = 1;
-    }
-    else if (!g_Player->CanCarry(item_id, quantity))
-    {
-        result = 2;
-    }
-    else
-    {
-        result = 3;
-    }
+    // if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(item_id, quantity))
+    // {
+    //     g_Player->AddItem(item_id, quantity);
+    //     g_Player->SpendGold(price * quantity);
+    //     result = 1;
+    // }
+    // else if (!g_Player->CanCarry(item_id, quantity))
+    // {
+    //     result = 2;
+    // }
+    // else
+    // {
+    //     result = 3;
+    // }
 
     lua_pushinteger(L, result);
     return 1;

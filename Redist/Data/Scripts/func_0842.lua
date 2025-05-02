@@ -4,7 +4,7 @@ function func_0842(eventid, itemref)
 
     _SaveAnswers()
     local0 = _GetPlayerName(eventid)
-    local1 = _IsPlayerFemale()
+    local1 = is_player_female()
     local2 = true
     local3 = {"ale", "wine", "cake", "Silverleaf", "flounder", "mead", "bread", "mutton", "nothing"}
     local4 = {616, 616, 377, 377, 377, 616, 377, 377, 0}

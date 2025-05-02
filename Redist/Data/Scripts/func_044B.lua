@@ -10,7 +10,7 @@ function func_044B(eventid)
     local npc_id = -74 -- Rudyom's NPC ID
 
     if eventid == 1 then
-        switch_talk_to(74, 0) -- Originally _SwitchTalkTo(0, npc_id), swapped and abs(npc_id)
+        switch_talk_to(74, 0) -- Originally switch_talk_to(npc_id, 0), swapped and abs(npc_id)
         local var_0000 = call_extern(0x090A, 0) -- Unknown interaction
         local var_0001 = call_extern(0x08DB, 1) -- Spells interaction
         local var_0002 = call_extern(0x08DC, 2) -- Reagents interaction

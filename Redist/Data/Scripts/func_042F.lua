@@ -13,7 +13,7 @@
       local iolo_id = 37 -- Iolo's NPC ID
 
       if eventid == 1 then
-          _SwitchTalkTo(0, npc_id)
+          switch_talk_to(npc_id, 0)
           local var_0000 = call_extern(0x08F7, 0) -- External function call
           local var_0001 = call_extern(0x08A0, 1) -- Buy interaction
           local var_0002 = call_extern(0x0911, 2) -- Unknown interaction
@@ -53,12 +53,12 @@
                       local result = call_extern(0x08F7, dupre_id)
                       if result == 0 then
                           add_dialogue("\"Why, Sir Dupre! How good to see thee again!\"")
-                          _SwitchTalkTo(0, dupre_id)
+                          switch_talk_to(dupre_id, 0)
                           add_dialogue("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
-                          _SwitchTalkTo(0, npc_id)
+                          switch_talk_to(npc_id, 0)
                           add_dialogue("\"Any time, milord! Any time!\"")
                           hide_npc(dupre_id)
-                          _SwitchTalkTo(0, npc_id)
+                          switch_talk_to(npc_id, 0)
                       end
                       add_answer( "buy")
                       add_answer( "drink")
@@ -96,10 +96,10 @@
                   set_flag(0x0085, true)
                   local iolo_result = call_extern(0x08F7, iolo_id)
                   if iolo_result == 0 then
-                      _SwitchTalkTo(0, iolo_id)
+                      switch_talk_to(iolo_id, 0)
                       add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
                       hide_npc(iolo_id)
-                      _SwitchTalkTo(0, npc_id)
+                      switch_talk_to(npc_id, 0)
                   else
                       add_dialogue("You point out to Jeanette that Charles is a servant.")
                   end

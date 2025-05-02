@@ -118,7 +118,7 @@ function func_04FE(eventid, itemref)
                     add_dialogue("\"I thought as much!\" Lasher starts to pace nervously. \"If thou wouldst not mind standing back a bit, I would be most appreciative.\"")
                 else
                     add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades. Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
-                    local3 = _IsPlayerFemale()
+                    local3 = is_player_female()
                     local4 = call_08F7H(-1)
                     local5 = call_08F7H(-3)
                     local6 = call_08F7H(-4)

@@ -4,11 +4,11 @@ function func_0903(eventid, itemref)
 
     if npc_in_party(itemref) then
         if itemref == -356 then
-            local2 = _IsPlayerFemale()
+            local2 = is_player_female()
         else
             local2 = 0
         end
-        _SwitchTalkTo(local2, itemref)
+        switch_talk_to(itemref, local2)
         if not check_item_state(25, itemref) then
             add_dialogue(itemref, "\"Oink\"")
         else

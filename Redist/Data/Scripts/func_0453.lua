@@ -10,7 +10,7 @@ function func_0453(eventid)
     local npc_id = -72 -- Batlin's NPC ID
 
     if eventid == 1 then
-        _SwitchTalkTo(0, npc_id)
+        switch_talk_to(npc_id, 0)
         local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
         local var_0001 = call_extern(0x090A, 1) -- Item interaction
         local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction

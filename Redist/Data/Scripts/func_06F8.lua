@@ -75,13 +75,13 @@ function func_06F8(eventid, itemref)
                 call_087DH()
                 local19 = callis_0018(callis_001B(-356))
                 if local19[2] > local5[2] then
-                    if not _IsPlayerFemale() then
+                    if not is_player_female() then
                         _SetItemFrame(20, call_0881H())
                     else
                         _SetItemFrame(18, call_0881H())
                     end
                 else
-                    if not _IsPlayerFemale() then
+                    if not is_player_female() then
                         _SetItemFrame(21, call_0881H())
                     else
                         _SetItemFrame(19, call_0881H())

@@ -14,7 +14,7 @@ function func_04DD(eventid, itemref)
     local1 = callis_001C(callis_001B(-221))
     local2 = call_0908H()
     local3 = "Avatar"
-    local4 = callis_IsPlayerFemale()
+    local4 = callisis_player_female()
     add_answer({"bye", "job", "name"})
 
     if not get_flag(0x029F) then

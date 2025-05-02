@@ -14,7 +14,7 @@ function func_04A0(eventid, itemref)
     local0 = call_0908H()
     local1 = call_0909H()
     local2 = "the Avatar"
-    local3 = _IsPlayerFemale()
+    local3 = is_player_female()
     local4 = false
     local5 = call_08F7H(-159)
     local6 = local3 and "woman" or "man"
@@ -80,7 +80,7 @@ function func_04A0(eventid, itemref)
             end
             remove_answer("Moonglow")
         elseif answer == "bye" then
-            if _IsPlayerFemale() then
+            if is_player_female() then
                 add_dialogue("\"Leaving so soon? Fine, leave me with the baby. Go on, leave me. Just like my wife!\"")
             else
                 add_dialogue("\"Leaving so soon? Ah, that's all right, ", local1, ". I understand, thou hast real man things to do.\"")

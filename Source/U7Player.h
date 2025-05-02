@@ -22,7 +22,7 @@ public:
 	void AddGold(int amount) { m_Gold += amount; }
 	void SetGold(int amount) { m_Gold = amount; }
 	void SetPartyMember(int index, int npc_id) { m_PartyMembers[index] = npc_id; }
-	void SetPartyMembers(std::vector<int> partyMembers) { m_PartyMembers = partyMembers; }
+	//void SetPartyMembers(std::vector<int> partyMembers) { m_PartyMemberIDs = partyMembers; }
 	void SetPlayerName(std::string name) { m_PlayerName = name; }
 	void SetMale(bool isMale) { m_isMale = isMale; }
 	bool GetIsMale() { return m_isMale; }
@@ -31,17 +31,13 @@ public:
 	Vector3 GetPlayerPosition() { return m_PlayerPosition; }
 	void SetPlayerDirection(Vector3 direction) { m_PlayerDirection = direction; }
 	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
-	bool CanCarry(int objectId, int quantity) { 
-		// Placeholder for actual carry logic
-		return true; 
-	}
-	void AddItem(int itemId, int quantity) { 
-		// Placeholder for actual item addition logic
-	}
+	std::vector<std::string>& GetPartyMembers();
+	bool NPCInParty(int npc_id);
 
 	private:
 	int m_Gold;
-	std::vector<int> m_PartyMembers;
+	std::vector<std::string> m_PartyMembers;
+	std::vector<int> m_PartyMemberIDs;
 	std::string m_PlayerName;
 	Vector3 m_PlayerPosition;
 	Vector3 m_PlayerDirection;
