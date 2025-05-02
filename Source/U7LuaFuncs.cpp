@@ -255,6 +255,8 @@ static int LuaSetItemShape(lua_State *L)
     AddConsoleString("LUA: set_item_shape called");
     int item_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
+    GetObjectFromID(item_id)->m_shapeData->m_shape = shape;
+    return 0;
 }
 
 // Opcode 0011
@@ -262,8 +264,8 @@ static int LuaGetItemShape(lua_State *L)
 {
     AddConsoleString("LUA: get_item_shape called");
     int item_id = luaL_checkinteger(L, 1);
-    int type = 0; // TODO: g_ItemManager->GetItemType(item_id)
-    lua_pushinteger(L, type);
+    int shape = GetObjectFromID(item_id)->m_shapeData->GetShape();
+    lua_pushinteger(L, shape);
     return 1;
 }
 
@@ -272,7 +274,7 @@ static int LuaGetItemFrame(lua_State *L)
 {
     AddConsoleString("LUA: get_item_frame called");
     int item_id = luaL_checkinteger(L, 1);
-    int frame = 0; // TODO: g_ItemManager->GetItemFrame(item_id)
+    int frame = GetObjectFromID(item_id)->m_shapeData->GetFrame();
     lua_pushinteger(L, frame);
     return 1;
 }
@@ -283,7 +285,7 @@ static int LuaSetItemFrame(lua_State *L)
     AddConsoleString("LUA: set_item_frame called");
     int item_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
-    // TODO: g_ItemManager->SetItemFrame(item_id, frame)
+    GetObjectFromID(item_id)->m_shapeData->m_frame = frame;
     return 0;
 }
 
@@ -292,7 +294,7 @@ static int LuaGetItemQuality(lua_State *L)
 {
     AddConsoleString("LUA: get_item_quality called");
     int item_id = luaL_checkinteger(L, 1);
-    int quality = 0; // TODO: g_ItemManager->GetItemQuality(item_id)
+    int quality = GetObjectFromID(item_id)->m_Quality;
     lua_pushinteger(L, quality);
     return 1;
 }
@@ -302,7 +304,7 @@ static int LuaSetItemQuality(lua_State *L)
     AddConsoleString("LUA: set_item_quality called");
     int item_id = luaL_checkinteger(L, 1);
     int quality = luaL_checkinteger(L, 2);
-    // TODO: g_ItemManager->SetItemQuality(item_id, quality)
+    GetObjectFromID(item_id)->m_Quality = quality;
     return 0;
 }
 

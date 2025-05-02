@@ -103,6 +103,7 @@ public:
 
    int m_ObjectType;
    int m_Frame;
+   int m_Quality;
 
    bool m_Visible;
    bool m_Selected;
