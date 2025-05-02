@@ -23,7 +23,7 @@ public:
    virtual void OnEnter();
    virtual void OnExit();
 
-   void SetupCommonGui(Gui* gui);
+   int SetupCommonGui(Gui* gui);
    void SetupBboardGui();
    void SetupFlatGui();
    void SetupCuboidGui();
@@ -223,6 +223,7 @@ public:
       GE_NEXTLUASCRIPTBUTTON,
 
       GE_OPENLUASCRIPTBUTTON,
+      GE_SETLUASCRIPTTOSHAPEIDBUTTON,
 
       GE_LASTGUIELEMENT
    };

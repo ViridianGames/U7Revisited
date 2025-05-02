@@ -1167,6 +1167,33 @@ void ShapeEditorState::Update()
 		#endif
 	}
 
+	if(m_currentGui->GetActiveElementID() == GE_SETLUASCRIPTTOSHAPEIDBUTTON)
+	{
+		stringstream ss;
+		ss << std::uppercase << std::hex << m_currentShape;
+		std::string funcName = "func_0" + ss.str();
+
+		int newScriptIndex = 0;
+		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		{
+			if (g_ScriptingSystem->m_scriptFiles[i].first == funcName)
+			{
+				newScriptIndex = i;
+				break;
+			}
+		}
+
+		if(newScriptIndex != 0)
+		{
+			m_luaScriptIndex = newScriptIndex;
+			g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = (g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].first);
+		}
+		else
+		{
+			AddConsoleString("No script found for shape ID: " + std::to_string(m_currentShape));
+		}
+	}
+
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
@@ -1383,7 +1410,7 @@ void ShapeEditorState::SetupBboardGui()
 
 	m_bboardGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_bboardGui.get());
+	int y = SetupCommonGui(m_bboardGui.get());
 
 	//  Billboard specific setup
 
@@ -1403,12 +1430,11 @@ void ShapeEditorState::SetupFlatGui()
 
 	m_flatGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_flatGui.get());
+	int y = SetupCommonGui(m_flatGui.get());
 
 	//  Flat specific setup
 
-	int yoffset = 15;
-	int y = 4;
+	int yoffset = 13;
 	
 	m_flatGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Flat";
 }
@@ -1426,14 +1452,13 @@ void ShapeEditorState::SetupCuboidGui()
 
 	m_cuboidGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_cuboidGui.get());
+	int y = SetupCommonGui(m_cuboidGui.get());
 
 	//  Cuboid specific setup
 
 	m_cuboidGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Cuboid";
 
 	int yoffset = 13;
-	int y = 170;
 
 	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y);
 	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
@@ -1560,14 +1585,13 @@ void ShapeEditorState::SetupMeshGui()
 
 	m_meshGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_meshGui.get());
+	int y = SetupCommonGui(m_meshGui.get());
 
 	//  Mesh specific setup
 
 	m_meshGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Mesh";
 
 	int yoffset = 13;
-	int y = 170;
 
 	m_meshGui->AddTextArea(GE_MODELTEXTAREA, g_guiFont.get(), "Model:", 2, y);
 
@@ -1598,7 +1622,7 @@ void ShapeEditorState::SetupCharacterGui()
 
 	m_characterGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_characterGui.get());
+	int y = SetupCommonGui(m_characterGui.get());
 
 	//  Character specific setup
 	m_characterGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Character";
@@ -1617,14 +1641,13 @@ void ShapeEditorState::SetupShapePointerGui()
 
 	m_shapePointerGui->AddOctagonBox(GE_PANELBORDER, 0, 0, 120, 360, g_Borders);
 
-	SetupCommonGui(m_shapePointerGui.get());
+	int y = SetupCommonGui(m_shapePointerGui.get());
 
 	//  Shape Pointer specific setup
 
 	m_shapePointerGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Pointer";
 
 	int yoffset = 13;
-	int y = 170;
 
 	m_shapePointerGui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 2, y, g_LeftArrow);
 	m_shapePointerGui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 50, y, g_RightArrow);
@@ -1655,7 +1678,7 @@ void ShapeEditorState::SetupDontDrawGui()
 	m_dontDrawGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Don't Draw";
 }
 
-void ShapeEditorState::SetupCommonGui(Gui* gui)
+int ShapeEditorState::SetupCommonGui(Gui* gui)
 {
 	int yoffset = 13;
 	int y = 4;
@@ -1742,6 +1765,7 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 	y += yoffset;
 
 	gui->AddTextArea(GE_LUASCRIPTLABEL, g_guiFont.get(), "Lua Script:", 2, y);
+	gui->AddTextButton(GE_OPENLUASCRIPTBUTTON, 60, y - 2, "Open Script", g_guiFont.get());
 
 	y += yoffset;
 
@@ -1751,7 +1775,10 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_OPENLUASCRIPTBUTTON, 8, y - 2, "Open Lua Script", g_guiFont.get());
+	gui->AddTextButton(GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
 
+	y += yoffset;
+
+	return y;
 
 }
