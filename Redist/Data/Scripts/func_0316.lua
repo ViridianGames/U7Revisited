@@ -4,7 +4,7 @@ function func_0316H(eventid, itemref)
         local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
         if get_wearer(target) then -- TODO: Implement LuaGetWearer for callis 0031.
             set_item_quality(target, 0)
-        elseif get_item_shape(target, 18) then -- TODO: Implement LuaGetItemShape for callis 0088.
+        elseif get_object_shape(target, 18) then -- TODO: Implement LuaGetItemShape for callis 0088.
             set_item_quality(target, 0)
         else
             add_dialogue(0, "Do not waste that!")

@@ -11,7 +11,7 @@ function func_083B()
     for local5 in ipairs(local4) do
         local6 = local5
         local7 = local6
-        local8 = get_item_frame(local7)
+        local8 = get_object_frame(local7)
         local9 = math.floor(local8 / 8) + 1
         local3 = array_append(local3, local9)
         if local9 == 1 then

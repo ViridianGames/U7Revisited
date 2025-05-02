@@ -1,7 +1,7 @@
 -- Manages cooking dough in an oven, producing bread with random outcomes.
 function func_0292H(eventid, itemref)
     if eventid == 1 then
-        local frame = get_item_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
+        local frame = get_object_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
         if frame == 1 or frame == 2 then
             local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
             local item_type = get_item_type(target) -- TODO: Implement LuaGetItemType for callis 0011.
@@ -29,7 +29,7 @@ function func_0292H(eventid, itemref)
             remove_item(itemref) -- TODO: Implement LuaRemoveItem for calli 006F.
             local food = find_object_by_type(377) -- 0179H: Likely bread.
             if food then
-                set_item_frame(food, 12)
+                set_object_frame(food, 12)
                 set_item_quality(food, 11)
                 update_container(pos)
                 local outcome = random(1, 3)

@@ -64,7 +64,7 @@ function func_060E(eventid, itemref)
                     local0 = get_item_by_type(764)
                     for local16 in ipairs(local0) do
                         local17 = local16
-                        set_item_frame(local17, 0)
+                        set_object_frame(local17, 0)
                     end
                 end
             end

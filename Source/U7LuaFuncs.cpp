@@ -250,61 +250,65 @@ static int LuaAskNumber(lua_State *L)
 }
 
 // Opcode 000D
-static int LuaSetItemShape(lua_State *L)
+static int LuaSetObjectShape(lua_State *L)
 {
-    AddConsoleString("LUA: set_item_shape called");
-    int item_id = luaL_checkinteger(L, 1);
+    AddConsoleString("LUA: set_object_shape called");
+    int object_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
-    GetObjectFromID(item_id)->m_shapeData->m_shape = shape;
+    U7Object *object = GetObjectFromID(object_id).get();
+    int currentFrame = object->m_shapeData->GetFrame();
+    object->m_shapeData = &g_shapeTable[shape][currentFrame];
     return 0;
 }
 
 // Opcode 0011
-static int LuaGetItemShape(lua_State *L)
+static int LuaGetObjectShape(lua_State *L)
 {
-    AddConsoleString("LUA: get_item_shape called");
-    int item_id = luaL_checkinteger(L, 1);
-    int shape = GetObjectFromID(item_id)->m_shapeData->GetShape();
+    AddConsoleString("LUA: get_object_shape called");
+    int object_id = luaL_checkinteger(L, 1);
+    int shape = GetObjectFromID(object_id)->m_shapeData->GetShape();
     lua_pushinteger(L, shape);
     return 1;
 }
 
 // Opcode 0012
-static int LuaGetItemFrame(lua_State *L)
+static int LuaGetObjectFrame(lua_State *L)
 {
-    AddConsoleString("LUA: get_item_frame called");
-    int item_id = luaL_checkinteger(L, 1);
-    int frame = GetObjectFromID(item_id)->m_shapeData->GetFrame();
+    AddConsoleString("LUA: get_object_frame called");
+    int object_id = luaL_checkinteger(L, 1);
+    int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
     lua_pushinteger(L, frame);
     return 1;
 }
 
 // Opcode 0013
-static int LuaSetItemFrame(lua_State *L)
+static int LuaSetObjectFrame(lua_State *L)
 {
-    AddConsoleString("LUA: set_item_frame called");
-    int item_id = luaL_checkinteger(L, 1);
+    AddConsoleString("LUA: set_object_frame called");
+    int object_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
-    GetObjectFromID(item_id)->m_shapeData->m_frame = frame;
+    U7Object *object = GetObjectFromID(object_id).get();
+    int currentShape = object->m_shapeData->GetShape();
+    object->m_shapeData = &g_shapeTable[currentShape][frame];
     return 0;
 }
 
 // Opcode 0014
-static int LuaGetItemQuality(lua_State *L)
+static int LuaGetObjectQuality(lua_State *L)
 {
-    AddConsoleString("LUA: get_item_quality called");
-    int item_id = luaL_checkinteger(L, 1);
-    int quality = GetObjectFromID(item_id)->m_Quality;
+    AddConsoleString("LUA: get_object_quality called");
+    int object_id = luaL_checkinteger(L, 1);
+    int quality = GetObjectFromID(object_id)->m_Quality;
     lua_pushinteger(L, quality);
     return 1;
 }
 
-static int LuaSetItemQuality(lua_State *L)
+static int LuaSetObjectQuality(lua_State *L)
 {
-    AddConsoleString("LUA: set_item_quality called");
-    int item_id = luaL_checkinteger(L, 1);
+    AddConsoleString("LUA: set_object_quality called");
+    int object_id = luaL_checkinteger(L, 1);
     int quality = luaL_checkinteger(L, 2);
-    GetObjectFromID(item_id)->m_Quality = quality;
+    GetObjectFromID(object_id)->m_Quality = quality;
     return 0;
 }
 
@@ -359,15 +363,15 @@ static int LuaGetPlayerName(lua_State *L)
 }
 
 // Opcode 002A
-static int LuaGetContainerItems(lua_State *L)
+static int LuaGetContainerObjects(lua_State *L)
 {
-    AddConsoleString("LUA: get_container_items called");
+    AddConsoleString("LUA: get_container_objects called");
     int container_id = luaL_checkinteger(L, 1);
     int type = luaL_checkinteger(L, 2);
     int x = luaL_checkinteger(L, 3);
     int y = luaL_checkinteger(L, 4);
     lua_newtable(L);
-    // TODO: Push list of item IDs
+    // TODO: Push list of object IDs
     return 1;
 }
 
@@ -401,12 +405,12 @@ static int LuaDisplaySign(lua_State *L)
 }
 
 // Opcode 0033
-static int LuaItemSelectModal(lua_State *L)
+static int LuaObjectSelectModal(lua_State *L)
 {
-    AddConsoleString("LUA: item_select_modal called");
-    int item_id = luaL_checkinteger(L, 1);
+    AddConsoleString("LUA: object_select_modal called");
+    int object_id = luaL_checkinteger(L, 1);
     const char *text = luaL_checkstring(L, 2);
-    cout << "Item select modal for item ID: " << item_id << "\n";
+    cout << "Object select modal for object ID: " << object_id << "\n";
 }
 
 // Opcode 0038
@@ -431,7 +435,7 @@ static int LuaGetTimeMinute(lua_State *L)
 static int LuaBark(lua_State *L)
 {
     AddConsoleString("LUA: bark called");
-    int itemref = luaL_checkinteger(L, 1);
+    int objectref = luaL_checkinteger(L, 1);
     const char *text = luaL_checkstring(L, 1);
     return 0;
 }
@@ -483,17 +487,6 @@ static int LuaSetFlag(lua_State *L)
 
 
 
-
-
-
-static int LuaHasItem(lua_State *L)
-{
-    int item_id = luaL_checkinteger(L, 1);
-    bool has_item = false; // TODO: g_Player->HasItem(item_id)
-    lua_pushboolean(L, has_item);
-    return 1;
-}
-
 static int LuaGetStat(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
@@ -512,22 +505,22 @@ static int LuaSetStat(lua_State *L)
     return 0;
 }
 
-static int LuaBuyItem(lua_State *L)
+static int LuaBuyObject(lua_State *L)
 {
     const char *prefix = luaL_checkstring(L, 1);
-    int item_id = luaL_checkinteger(L, 2);
+    int object_id = luaL_checkinteger(L, 2);
     int quantity = luaL_checkinteger(L, 3);
     int price = luaL_checkinteger(L, 4);
-    const char *item_name = luaL_checkstring(L, 5);
+    const char *object_name = luaL_checkstring(L, 5);
     int result = 0; // 1=success, 2=can't carry, 3=no gold
 
-    // if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(item_id, quantity))
+    // if (g_Player->GetGold() >= price * quantity && g_Player->CanCarry(object_id, quantity))
     // {
-    //     g_Player->AddItem(item_id, quantity);
+    //     g_Player->AddObject(object_id, quantity);
     //     g_Player->SpendGold(price * quantity);
     //     result = 1;
     // }
-    // else if (!g_Player->CanCarry(item_id, quantity))
+    // else if (!g_Player->CanCarry(object_id, quantity))
     // {
     //     result = 2;
     // }
@@ -582,9 +575,9 @@ static int LuaTriggerFerry(lua_State *L)
 
 
 
-static int LuaGetItemInfo(lua_State *L)
+static int LuaGetObjectInfo(lua_State *L)
 {
-    int item_id = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 1);
     lua_newtable(L);
     // TODO: Push x, y, z coordinates or other attributes
     return 1;
@@ -592,10 +585,9 @@ static int LuaGetItemInfo(lua_State *L)
 
 
 
-static int LuaRemoveItem(lua_State *L)
+static int LuaRemoveObject(lua_State *L)
 {
-    int item_id = luaL_checkinteger(L, 1);
-    // TODO: g_ItemManager->RemoveItem(item_id)
+    int object_id = luaL_checkinteger(L, 1);
     return 0;
 }
 
@@ -610,37 +602,36 @@ static int LuaGetDistance(lua_State *L)
 
 
 
-static int LuaSetItemState(lua_State *L)
+static int LuaSetObjectState(lua_State *L)
 {
-    int item_id = luaL_checkinteger(L, 1);
-    // TODO: g_ItemManager->SetItemState(item_id)
+    int object_id = luaL_checkinteger(L, 1);
     return 0;
 }
 
 static int LuaGetWearer(lua_State *L)
 {
-    int item_id = luaL_checkinteger(L, 1);
-    int wearer_id = 0; // TODO: g_ItemManager->GetWearer(item_id)
+    int object_id = luaL_checkinteger(L, 1);
+    int wearer_id = 0;
     lua_pushinteger(L, wearer_id);
     return 1;
 }
 
-static int LuaCheckItemState(lua_State *L)
+static int LuaCheckObjectState(lua_State *L)
 {
-    int item_id = luaL_checkinteger(L, 1);
-    int state = 0; // TODO: g_ItemManager->CheckItemState(item_id)
+    int object_id = luaL_checkinteger(L, 1);
+    int state = 0;
     lua_pushinteger(L, state);
     return 1;
 }
 
-static int LuaFindItems(lua_State *L)
+static int LuaFindObjects(lua_State *L)
 {
     int obj_id = luaL_checkinteger(L, 1);
     int type = luaL_checkinteger(L, 2);
     int distance = luaL_checkinteger(L, 3);
     int flags = luaL_checkinteger(L, 4);
     lua_newtable(L);
-    // TODO: g_World->FindItems(obj_id, type, distance, flags)
+    // TODO: g_World->FindObjects(obj_id, type, distance, flags)
     return 1;
 }
 
@@ -717,6 +708,44 @@ static int LuaIsInArray(lua_State *L)
     return 1;
 }
 
+//  Does the container contain this specific object?
+static int LuaHasObject(lua_State *L)
+{
+    AddConsoleString("LUA: get_object called");
+    int objectref = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 2);
+
+    if(GetObjectFromID(object_id)->IsInInventory(object_id))
+    {
+        lua_pushboolean(L, true);
+        return 1;
+    }
+    else
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+}
+
+//  Does the container contain any object of this shape/frame type?
+static int LuaHasObjectOfType(lua_State *L)
+{
+    AddConsoleString("LUA: get_object called");
+    int objectref = luaL_checkinteger(L, 1);
+    int object_id = luaL_checkinteger(L, 2);
+
+    if(GetObjectFromID(object_id)->IsInInventory(object_id))
+    {
+        lua_pushboolean(L, true);
+        return 1;
+    }
+    else
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -735,16 +764,18 @@ void RegisterAllLuaFunctions()
     //  These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
-    g_ScriptingSystem->RegisterScriptFunction("item_select_modal", LuaItemSelectModal);
+    g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
+    g_ScriptingSystem->RegisterScriptFunction("has_object", LuaHasObject);
+    g_ScriptingSystem->RegisterScriptFunction("has_object_of_type", LuaHasObjectOfType);
 
     //  These functions are used to manipulate the game world.
-    g_ScriptingSystem->RegisterScriptFunction("get_object_shape", LuaGetItemShape);
-    g_ScriptingSystem->RegisterScriptFunction("set_object_shape", LuaSetItemShape);
-    g_ScriptingSystem->RegisterScriptFunction("get_object_frame", LuaGetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("set_object_frame", LuaSetItemFrame);
-    g_ScriptingSystem->RegisterScriptFunction("get_object_quality", LuaGetItemQuality);
-    g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetItemQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_shape", LuaGetObjectShape);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_shape", LuaSetObjectShape);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_frame", LuaGetObjectFrame);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_frame", LuaSetObjectFrame);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_quality", LuaGetObjectQuality);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetObjectQuality);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_property", LuaGetNPCProperty);
     g_ScriptingSystem->RegisterScriptFunction("set_npc_property", LuaSetNPCProperty);
 

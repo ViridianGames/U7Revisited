@@ -4,7 +4,7 @@ function func_0154H(eventid, itemref)
         return
     end
     call_script(0x08FA, itemref) -- TODO: Map 08FAH (possibly item check).
-    local frame = get_item_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
+    local frame = get_object_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
     local obj = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
     local wearer = get_wearer(obj) -- TODO: Implement LuaGetWearer for callis 0031.
     set_stat(itemref, 90) -- Sets quality to 90.

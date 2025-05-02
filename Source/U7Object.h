@@ -90,6 +90,9 @@ public:
    bool AddObjectToInventory(int objectid);
    bool RemoveObjectFromInventory(int objectid);
 
+   bool IsInInventory(int objectid);
+   bool IsInInventory(int shape, int frame);
+
    void SetNPCBlock(NPCblock block);
    
    Vector3 m_Pos;

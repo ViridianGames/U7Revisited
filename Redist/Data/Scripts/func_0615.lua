@@ -2,7 +2,7 @@
 function func_0615(eventid, itemref)
     if eventid == 2 then
         set_item_type(itemref, 754)
-        set_item_frame(itemref, 0)
+        set_object_frame(itemref, 0)
     end
     return
 end

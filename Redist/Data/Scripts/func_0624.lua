@@ -10,7 +10,7 @@ function func_0624(eventid, itemref)
         set_schedule(itemref, 2, 1572)
     elseif eventid == 2 then
         set_item_type(itemref, 583)
-        set_item_frame(itemref, 0)
+        set_object_frame(itemref, 0)
     elseif eventid == 7 then
         external_007E() -- Unmapped intrinsic
         local2 = add_item(-356, {8033, 1, 17447, 17516, 17456, 7769})

@@ -6,7 +6,7 @@ function func_080D()
     for local1 in ipairs(local0) do
         local2 = local1
         local3 = local2
-        local4 = get_item_frame(local3)
+        local4 = get_object_frame(local3)
         if local4 ~= 10 and local4 ~= 26 then
             return false
         end

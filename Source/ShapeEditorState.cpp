@@ -133,6 +133,16 @@ void ShapeEditorState::OnEnter()
 		}
 	}
 
+	m_luaScriptIndex = 0;
+	for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+	{
+		if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
+		{
+			m_luaScriptIndex = i;
+			break;
+		}
+	}
+
 	SwitchToGuiForDrawType(shapeData.m_drawType);
 }
 
@@ -1143,6 +1153,20 @@ void ShapeEditorState::Update()
 		}
 	}
 
+	if(m_currentGui->GetActiveElementID() == GE_OPENLUASCRIPTBUTTON)
+	{
+		std::string filePath = g_ScriptingSystem->m_scriptFiles[m_luaScriptIndex].second;
+
+		// Open the file with the default system application
+		#ifdef _WIN32
+			system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
+		#elif __APPLE__
+			system(("open \"" + std::string(filePath) + "\"").c_str());
+		#else // Linux and others
+			system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
+		#endif
+	}
+
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
@@ -1160,7 +1184,9 @@ void ShapeEditorState::Update()
 	}	
 
 	//  Update GUI Textareas
-	m_currentGui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape);
+	std::stringstream ss;
+    ss << std::uppercase << std::hex << m_currentShape;
+	m_currentGui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape) + " (" + ss.str() + ")";
 	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame);
 	
 	if (m_currentGui == m_cuboidGui.get())
@@ -1407,7 +1433,7 @@ void ShapeEditorState::SetupCuboidGui()
 	m_cuboidGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Cuboid";
 
 	int yoffset = 13;
-	int y = 156;
+	int y = 170;
 
 	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y);
 	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
@@ -1541,7 +1567,7 @@ void ShapeEditorState::SetupMeshGui()
 	m_meshGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Mesh";
 
 	int yoffset = 13;
-	int y = 156;
+	int y = 170;
 
 	m_meshGui->AddTextArea(GE_MODELTEXTAREA, g_guiFont.get(), "Model:", 2, y);
 
@@ -1598,7 +1624,7 @@ void ShapeEditorState::SetupShapePointerGui()
 	m_shapePointerGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Pointer";
 
 	int yoffset = 13;
-	int y = 156;
+	int y = 170;
 
 	m_shapePointerGui->AddIconButton(GE_PREVSHAPEPOINTERBUTTON, 2, y, g_LeftArrow);
 	m_shapePointerGui->AddIconButton(GE_NEXTSHAPEPOINTERBUTTON, 50, y, g_RightArrow);
@@ -1639,12 +1665,14 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 	y += yoffset;
 
 	gui->AddIconButton(GE_PREVSHAPEBUTTON, 2, y, g_LeftArrow);
-	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 50, y, g_RightArrow);
-	gui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_guiFont.get(), "S:" + to_string(m_currentShape), 12, y);
+	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 70, y, g_RightArrow);
+	std::stringstream ss;
+    ss << std::uppercase << std::hex << m_currentShape;
+	gui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_guiFont.get(), "S:" + to_string(m_currentShape) + " (" + ss.str() + ")", 12, y);
 
-	gui->AddIconButton(GE_PREVFRAMEBUTTON, 62, y, g_LeftArrow);
+	gui->AddIconButton(GE_PREVFRAMEBUTTON, 80, y, g_LeftArrow);
 	gui->AddIconButton(GE_NEXTFRAMEBUTTON, 110, y, g_RightArrow);
-	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 71, y);
+	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 90, y);
 
 	y += yoffset;
 
@@ -1720,5 +1748,10 @@ void ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_PREVLUASCRIPTBUTTON, 2, y, g_LeftArrow);
 	gui->AddTextArea(GE_LUASCRIPTTEXTAREA, g_guiFont.get(), "", 12, y);
 	gui->AddIconButton(GE_NEXTLUASCRIPTBUTTON, 110, y, g_RightArrow);
+
+	y += yoffset;
+
+	gui->AddTextButton(GE_OPENLUASCRIPTBUTTON, 8, y - 2, "Open Lua Script", g_guiFont.get());
+
 
 }

@@ -12,7 +12,7 @@ function func_070E(eventid, itemref)
             local6 = get_item_quality(local4)
             external_006FH(local4) -- Unmapped intrinsic
             local7 = get_item_by_type(936) -- Unmapped intrinsic
-            set_item_frame(local7, 0)
+            set_object_frame(local7, 0)
             local8 = external_0015H(local7, local6) -- Unmapped intrinsic
             local8 = set_item_data(local5)
         end
@@ -25,7 +25,7 @@ function func_070E(eventid, itemref)
                 local5 = get_item_data(local4)
                 external_006FH(local4) -- Unmapped intrinsic
                 local7 = get_item_by_type(936) -- Unmapped intrinsic
-                set_item_frame(local7, 0)
+                set_object_frame(local7, 0)
                 local8 = external_0015H(local7, local6) -- Unmapped intrinsic
                 local8 = set_item_data(local5)
             end
@@ -38,7 +38,7 @@ function func_070E(eventid, itemref)
                 local5 = get_item_data(local4)
                 external_006FH(local4) -- Unmapped intrinsic
                 local7 = get_item_by_type(303) -- Unmapped intrinsic
-                set_item_frame(local7, 4)
+                set_object_frame(local7, 4)
                 local8 = external_0015H(local7, local6) -- Unmapped intrinsic
                 local8 = set_item_data(local5)
             end
@@ -52,7 +52,7 @@ function func_070E(eventid, itemref)
                 local5 = get_item_data(local4)
                 external_006FH(local4) -- Unmapped intrinsic
                 local7 = get_item_by_type(936) -- Unmapped intrinsic
-                set_item_frame(local7, 0)
+                set_object_frame(local7, 0)
                 local8 = external_0015H(local7, local6) -- Unmapped intrinsic
                 local8 = set_item_data(local5)
             end
@@ -65,7 +65,7 @@ function func_070E(eventid, itemref)
                 local5 = get_item_data(local4)
                 external_006FH(local4) -- Unmapped intrinsic
                 local7 = get_item_by_type(303) -- Unmapped intrinsic
-                set_item_frame(local7, 4)
+                set_object_frame(local7, 4)
                 local8 = external_0015H(local7, local6) -- Unmapped intrinsic
                 local8 = set_item_data(local5)
             end
@@ -78,7 +78,7 @@ function func_070E(eventid, itemref)
             local6 = get_item_quality(local4)
             external_006FH(local4) -- Unmapped intrinsic
             local7 = get_item_by_type(303) -- Unmapped intrinsic
-            set_item_frame(local7, 4)
+            set_object_frame(local7, 4)
             local8 = external_0015H(local7, local6) -- Unmapped intrinsic
             local8 = set_item_data(local5)
         end

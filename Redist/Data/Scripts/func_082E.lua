@@ -13,7 +13,7 @@ function func_082E(eventid, itemref)
             local7 = get_item_data(local6)
             local8 = external_000EH(1, 981, local6) -- Unmapped intrinsic
             local9 = get_item_data(local8)
-            if local9[1] == local7[1] and local9[2] == local7[2] and local9[3] == local7[3] + 2 and get_item_frame(local6) == get_item_frame(local8) then
+            if local9[1] == local7[1] and local9[2] == local7[2] and local9[3] == local7[3] + 2 and get_object_frame(local6) == get_object_frame(local8) then
                 local3 = local3 + 1
                 if local8 == itemref then
                     local10 = get_item_data(local8)
@@ -34,7 +34,7 @@ function func_082E(eventid, itemref)
             for local14 in ipairs(local1) do
                 local15 = local14
                 local13 = local15
-                set_item_frame(local13, (local3 * 8 + get_item_frame(local13)) % 8)
+                set_object_frame(local13, (local3 * 8 + get_object_frame(local13)) % 8)
             end
         end
     end

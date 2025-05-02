@@ -11,7 +11,7 @@ function func_060C(eventid, itemref)
         for local1 in ipairs(local0) do
             local2 = local1
             local3 = local2
-            set_item_frame(local3, 0)
+            set_object_frame(local3, 0)
             trigger_action(local3) -- Unmapped intrinsic
         end
         return
@@ -23,7 +23,7 @@ function func_060C(eventid, itemref)
     local7 = get_item_by_type(763)
     for local8 in ipairs(local7) do
         local9 = local8
-        local10 = get_item_frame(local9)
+        local10 = get_object_frame(local9)
         if local10 == 1 or local10 == 2 then
             local6 = local9
         end
@@ -79,7 +79,7 @@ function func_060C(eventid, itemref)
             local0 = get_item_by_type(764)
             for local16 in ipairs(local0) do
                 local17 = local16
-                set_item_frame(local17, 0)
+                set_object_frame(local17, 0)
             end
         end
     end

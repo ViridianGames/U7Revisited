@@ -16,7 +16,7 @@ function func_0716(eventid, itemref)
         end
     end
     if local1 then
-        set_item_frame(local1, 29)
+        set_object_frame(local1, 29)
     end
     local5 = add_item(external_001BH(-356), {1813, 17493, 7715}) -- Unmapped intrinsic
     return

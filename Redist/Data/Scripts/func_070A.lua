@@ -8,7 +8,7 @@ function func_070A(eventid, itemref)
             local0 = external_000EH(0, 154, itemref) -- Unmapped intrinsic
             if not local0 then
                 local1 = get_item_by_type(641) -- Unmapped intrinsic
-                set_item_frame(local1, 7)
+                set_object_frame(local1, 7)
                 local2 = external_0015H(local1, 65) -- Unmapped intrinsic
                 local2 = external_0036H(local0) -- Unmapped intrinsic
                 bark(local0, "@I summon thee!@")
@@ -18,9 +18,9 @@ function func_070A(eventid, itemref)
                 for local4 in ipairs(local3) do
                     local5 = local4
                     local1 = local5
-                    if get_item_frame(local1) == 7 or get_item_frame(local1) == 9 then
+                    if get_object_frame(local1) == 7 or get_object_frame(local1) == 9 then
                         local6 = get_item_by_type(338) -- Unmapped intrinsic
-                        set_item_frame(local1, get_item_frame(local6))
+                        set_object_frame(local1, get_object_frame(local6))
                         local2 = set_item_data(get_item_data(local1))
                         external_006FH(local1) -- Unmapped intrinsic
                     end
@@ -29,14 +29,14 @@ function func_070A(eventid, itemref)
                 for local7 in ipairs(local3) do
                     local8 = local7
                     local1 = local8
-                    if get_item_frame(local1) == 9 then
+                    if get_object_frame(local1) == 9 then
                         local9 = external_0035H(16, 1, 275, local1) -- Unmapped intrinsic
                         for local10 in ipairs(local9) do
                             local11 = local10
                             local12 = local11
-                            if get_item_frame(local12) == 6 and get_item_quality(local12) == 201 then
+                            if get_object_frame(local12) == 6 and get_item_quality(local12) == 201 then
                                 local13 = get_item_by_type(895) -- Unmapped intrinsic
-                                set_item_frame(local13, 0)
+                                set_object_frame(local13, 0)
                                 local2 = set_item_data(get_item_data(local12))
                             end
                         end
@@ -58,7 +58,7 @@ function func_070A(eventid, itemref)
                 for local18 in ipairs(local3) do
                     local19 = local18
                     local1 = local19
-                    if get_item_frame(local1) == 29 then
+                    if get_object_frame(local1) == 29 then
                         external_08E6H(local1) -- Unmapped intrinsic
                     end
                 end
@@ -66,7 +66,7 @@ function func_070A(eventid, itemref)
                 for local20 in ipairs(local3) do
                     local21 = local20
                     local1 = local21
-                    if get_item_frame(local1) == 0 then
+                    if get_object_frame(local1) == 0 then
                         external_006FH(local1) -- Unmapped intrinsic
                     end
                 end
@@ -104,7 +104,7 @@ function func_070A(eventid, itemref)
                 create_object(-1, 0, 0, 0, local21[2] - 2, local21[1] - 2, 8) -- Unmapped intrinsic
                 create_object(-1, 0, 0, 0, local21[2] - 2, local21[1] - 2, 7) -- Unmapped intrinsic
                 apply_effect(52) -- Unmapped intrinsic
-                set_item_frame(local1, 19)
+                set_object_frame(local1, 19)
                 local2 = add_item(local1, {1802, 8021, 5, 7975, 4, 7769})
             else
                 local27 = get_item_data(local1)[6][-359]

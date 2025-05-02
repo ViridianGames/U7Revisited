@@ -15,7 +15,7 @@ function func_060D(eventid, itemref)
         local5 = add_item(local3, 644)
         if local5 then
             set_schedule(local5, 18)
-            set_item_frame(local5, 0)
+            set_object_frame(local5, 0)
             set_item_owner({local4[1], local4[2] - 9, local4[3]}, local5)
         end
     end

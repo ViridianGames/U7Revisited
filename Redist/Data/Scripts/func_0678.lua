@@ -15,9 +15,9 @@ function func_0678(eventid, itemref)
             local2 = add_item(itemref, {1542, 17493, 17511, 8549, local1, 7769})
         end
     else
-        local5 = get_item_frame(itemref) * 10
+        local5 = get_object_frame(itemref) * 10
         set_item_type(itemref, 645)
-        set_item_frame(itemref, local5)
+        set_object_frame(itemref, local5)
     end
     return
 end

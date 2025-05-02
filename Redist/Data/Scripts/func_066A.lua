@@ -16,7 +16,7 @@ function func_066A(eventid, itemref)
                     local3 = external_0025H(local0) -- Unmapped intrinsic
                     if local3 then
                         local3 = set_item_data(get_item_data(-358))
-                        set_item_frame(local0, 0)
+                        set_object_frame(local0, 0)
                     end
                 end
             end

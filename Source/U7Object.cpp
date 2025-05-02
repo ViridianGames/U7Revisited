@@ -188,6 +188,37 @@ void U7Object::Interact(int event)
    }
    else
    {
-      AddConsoleString(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_shapeData->m_shape, m_shapeData->m_frame }));
+      AddConsoleString(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
    }
+}
+
+bool U7Object::IsInInventory(int objectid)
+{
+   for (int i = 0; i < m_inventory.size(); i++)
+   {
+      if (m_inventory[i] == objectid)
+      {
+         return true;
+      }
+   }
+
+   return false;
+}
+
+bool U7Object::IsInInventory(int shape, int frame)
+{
+   for (int i = 0; i < m_inventory.size(); i++)
+   {
+      if(GetObjectFromID(m_inventory[i])->m_shapeData->m_shape == shape &&
+         GetObjectFromID(m_inventory[i])->m_shapeData->m_frame == frame)
+      {
+         return true;
+      }
+      else
+      {
+         return true;
+      }
+   }
+
+   return false;
 }

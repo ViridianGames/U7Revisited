@@ -23,11 +23,11 @@ function func_070F(eventid, itemref)
         local8 = get_item_by_type(414) -- Unmapped intrinsic
         external_006BH(itemref) -- Unmapped intrinsic
         external_006CH(local8, itemref) -- Unmapped intrinsic
-        set_item_frame(local8, 30)
+        set_object_frame(local8, 30)
         external_003FH(-23) -- Unmapped intrinsic
         local9 = set_item_data(local7)
         local10 = get_item_by_type(797) -- Unmapped intrinsic
-        set_item_frame(local10, 0)
+        set_object_frame(local10, 0)
         local9 = external_0015H(local10, 43) -- Unmapped intrinsic
         local9 = set_item_data(local7)
         local11 = add_item(local8, {797, 17493, 17443, 7724})
@@ -56,7 +56,7 @@ function func_070F(eventid, itemref)
                 local11 = get_item_by_type(762) -- Unmapped intrinsic
                 external_006BH(itemref) -- Unmapped intrinsic
                 external_006CH(local11, itemref) -- Unmapped intrinsic
-                set_item_frame(local11, 22)
+                set_object_frame(local11, 22)
                 external_08E6H(itemref) -- Unmapped intrinsic
                 local9 = set_item_data(local12)
             elseif local15 == 241 then
@@ -65,7 +65,7 @@ function func_070F(eventid, itemref)
                 local11 = get_item_by_type(778) -- Unmapped intrinsic
                 external_006BH(itemref) -- Unmapped intrinsic
                 external_006CH(local11, itemref) -- Unmapped intrinsic
-                set_item_frame(local11, 7)
+                set_object_frame(local11, 7)
                 external_08E6H(itemref) -- Unmapped intrinsic
                 local9 = set_item_data(local12)
             end

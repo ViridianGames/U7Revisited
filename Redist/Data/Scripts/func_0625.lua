@@ -9,7 +9,7 @@ function func_0625(eventid, itemref)
                 local16 = local15
                 local17 = local16
                 set_schedule(local17, 31)
-                set_item_frame(local17, 0)
+                set_object_frame(local17, 0)
             end
             local18 = {295, 420}
             external_003EH(-357, local18) -- Unmapped intrinsic

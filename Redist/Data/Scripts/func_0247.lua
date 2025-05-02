@@ -2,7 +2,7 @@
 function func_0247H(eventid, itemref)
     if eventid == 1 and not get_wearer(itemref) then -- TODO: Implement LuaGetWearer for callis 006E.
         local location = get_item_info(itemref) -- TODO: Implement LuaGetItemInfo for callis 0018.
-        if get_item_frame(itemref) == 0 then -- TODO: Implement LuaGetItemFrame for callis 0012.
+        if get_object_frame(itemref) == 0 then -- TODO: Implement LuaGetItemFrame for callis 0012.
             local last_created = set_last_created(itemref) -- TODO: Implement LuaSetLastCreated for callis 0025.
             if last_created then
                 local can_place = check_horizontal_space(1011, 17, location) -- TODO: Implement LuaCheckHorizontalSpace for callis 0085.
@@ -25,6 +25,6 @@ function func_0247H(eventid, itemref)
         call_script(0x0828, itemref, {7719, 2, 8021, 583}) -- TODO: Map 0828H.
     elseif eventid == 2 then
         set_item_type(itemref, 1011) -- 03F3H: Bed.
-        set_item_frame(itemref, 17) -- TODO: Implement LuaSetItemFrame for calli 0013.
+        set_object_frame(itemref, 17) -- TODO: Implement LuaSetItemFrame for calli 0013.
     end
 end

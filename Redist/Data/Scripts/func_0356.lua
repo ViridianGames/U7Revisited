@@ -4,7 +4,7 @@ function func_0356H(eventid, itemref)
         if not get_flag(0x0317) then
             return
         end
-        local frame = get_item_frame(itemref)
+        local frame = get_object_frame(itemref)
         if frame == 16 then
             switch_talk_to(287, 0)
             if not get_flag(0x030C) then
@@ -60,7 +60,7 @@ function func_0356H(eventid, itemref)
             return
         end
     elseif eventid == 4 then
-        local frame = get_item_frame(itemref)
+        local frame = get_object_frame(itemref)
         if frame == 16 then
             switch_talk_to(287, 0)
             add_dialogue(0, '"Thou hast mastered the Test of Truth, and so a boon of great intellect and magical ability will be bestowed upon thee. Use -- and respect -- thy powers well, Avatar."')
@@ -77,7 +77,7 @@ function func_0356H(eventid, itemref)
         local arr2 = {7719, 8, 8021, 854}
         execute_action(itemref, arr2)
     elseif eventid == 2 then
-        local frame = get_item_frame(itemref)
+        local frame = get_object_frame(itemref)
         if frame == 16 then
             if not get_flag(0x0318) then
                 local pos = get_item_info(check_item_state(-356))

@@ -21,7 +21,7 @@ function func_0296H(eventid, itemref)
         if caught then
             local food = find_object_by_type(377) -- 0179H: Fish.
             if food then
-                set_item_frame(food, 12)
+                set_object_frame(food, 12)
                 set_item_quality(food, 11)
                 update_container(pos) -- TODO: Implement LuaUpdateContainer for callis 0026.
                 local outcome = random(1, 3)

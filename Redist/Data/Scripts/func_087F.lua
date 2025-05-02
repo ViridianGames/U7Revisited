@@ -7,7 +7,7 @@ function func_087F(p0)
         local3 = local2
         local4 = local3
         local5 = get_item_quality(local4)
-        local6 = get_item_frame(local4)
+        local6 = get_object_frame(local4)
         local7 = get_item_data(local4)
         if local5 == 10 and local6 == 6 then
             local8 = external_0035H(0, 1, -1, local4) -- Unmapped intrinsic
@@ -28,7 +28,7 @@ function func_087F(p0)
                 if not local9 then
                     local9 = get_item_by_type(800) -- Unmapped intrinsic
                     external_0015H(local9, 100) -- Unmapped intrinsic
-                    set_item_frame(local9, 0)
+                    set_object_frame(local9, 0)
                     local15 = set_item_data(local7)
                 end
                 for local16 in ipairs(local8) do
@@ -39,11 +39,11 @@ function func_087F(p0)
                     if local18[3] < 5 and local12 ~= local9 then
                         if local13 == 338 then
                             local19 = get_item_quality(local12)
-                            local20 = get_item_frame(local12)
+                            local20 = get_object_frame(local12)
                             external_006FH(local12) -- Unmapped intrinsic
                             local12 = get_item_by_type(336) -- Unmapped intrinsic
                             external_0015H(local12, local19) -- Unmapped intrinsic
-                            set_item_frame(local12, local20)
+                            set_object_frame(local12, local20)
                         end
                         local15 = external_0025H(local12) -- Unmapped intrinsic
                         external_0036H(local9) -- Unmapped intrinsic
@@ -55,11 +55,11 @@ function func_087F(p0)
             local21 = get_item_type(p0)
             if local21 == 338 then
                 local19 = get_item_quality(p0)
-                local20 = get_item_frame(p0)
+                local20 = get_object_frame(p0)
                 external_006FH(p0) -- Unmapped intrinsic
                 p0 = get_item_by_type(336) -- Unmapped intrinsic
                 external_0015H(p0, local19) -- Unmapped intrinsic
-                set_item_frame(p0, local20)
+                set_object_frame(p0, local20)
             end
             local15 = external_0025H(p0) -- Unmapped intrinsic
             external_0036H(local9) -- Unmapped intrinsic

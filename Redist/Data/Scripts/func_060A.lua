@@ -14,7 +14,7 @@ function func_060A(eventid, itemref)
     local1 = add_item(0, 5, 644, local0)
     local2 = 0
     local3 = 0
-    local4 = get_item_frame(itemref)
+    local4 = get_object_frame(itemref)
     local5 = math.floor(local4 / 4)
 
     if local5 == 0 then

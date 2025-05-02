@@ -11,7 +11,7 @@ function func_0667(eventid, itemref)
         bark(itemref, "@Ex Por@")
         if not external_0906H(local2) then -- Unmapped intrinsic
             if not contains(local3, local1) then
-                local5 = get_item_frame(local0)
+                local5 = get_object_frame(local0)
                 if (local5 + 1) % 4 ~= 0 then
                     local6 = add_item(itemref, {66, 17496, 17511, 17509, 8550, local2, 7769})
                     local6 = add_item(local0, 6, 1639, {17493, 7715})
@@ -21,9 +21,9 @@ function func_0667(eventid, itemref)
             local6 = add_item(itemref, {1542, 17493, 17511, 17509, 8550, local2, 7769})
         end
     elseif eventid == 2 then
-        local5 = get_item_frame(itemref)
+        local5 = get_object_frame(itemref)
         local7 = local5 - 3
-        set_item_frame(itemref, local7)
+        set_object_frame(itemref, local7)
     end
     return
 end

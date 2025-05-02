@@ -7,7 +7,7 @@ function func_063E(eventid, itemref)
         if not local0 then
             local1 = get_item_data(-356)
             local0 = set_item_data({local1[1], local1[2] - 4, local1[3] - 2})
-            set_item_frame(-23, 16)
+            set_object_frame(-23, 16)
         end
         local0 = add_item(-356, 1, 1598, {17493, 7715})
         local0 = set_npc_property(-356, 2, 0)

@@ -275,7 +275,7 @@ function func_0638(eventid, itemref)
         add_dialogue("     Now that the creature is enchanted, of course, it will become necessary to instruct it, much as one educates a child. However, a stone golem will learn much more quickly...")
         local2 = set_item_quality(itemref, 144)
         if not get_flag(805) then
-            local3 = get_item_frame(797)
+            local3 = get_object_frame(797)
             local4 = set_item_quality(local3, 45)
             local5 = get_item_data(-356)
             local6 = set_item_data(local5)

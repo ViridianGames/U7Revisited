@@ -1,7 +1,7 @@
 -- Triggers a specific effect or scene transition when using an item with frame 3.
 function func_0350H(eventid, itemref)
     if eventid == 1 then
-        local frame = get_item_frame(itemref)
+        local frame = get_object_frame(itemref)
         if frame == 3 then
             local arr = {7768, 67, 7937, 17486, 17447, 4, 7947, -3, 4, 7975, 2, 8021, 1782}
             execute_action(itemref, arr) -- TODO: Implement LuaExecuteAction for callis 0001.

@@ -24,7 +24,7 @@ function func_0623(eventid, itemref)
     set_flag(-356, 1, true)
     set_flag(-356, 1, false)
 
-    if get_item_type(itemref) == 1011 and get_item_frame(itemref) == 17 then
+    if get_item_type(itemref) == 1011 and get_object_frame(itemref) == 17 then
         external_0624(itemref) -- Unmapped intrinsic
     end
 

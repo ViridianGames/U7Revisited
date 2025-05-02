@@ -9,7 +9,7 @@ function func_070C(eventid, itemref)
         external_006FH(local1) -- Unmapped intrinsic
         external_006FH(local0) -- Unmapped intrinsic
         local4 = get_item_by_type(641) -- Unmapped intrinsic
-        set_item_frame(local4, 30)
+        set_object_frame(local4, 30)
         local5 = external_0015H(local4, 66) -- Unmapped intrinsic
         local5 = set_item_data(local3)
         create_object(-1, 0, 0, 0, local3[2] - 2, local3[1] - 1, 13) -- Unmapped intrinsic

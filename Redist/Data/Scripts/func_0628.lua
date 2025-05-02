@@ -2,10 +2,10 @@
 function func_0628(eventid, itemref)
     local local0, local1, local2, local3, local4, local5, local6, local7, local8
 
-    local0 = get_item_frame(912)
+    local0 = get_object_frame(912)
     if local0 then
         set_flag(local0, 18)
-        set_item_frame(local0, get_random(12, 15))
+        set_object_frame(local0, get_random(12, 15))
         local1 = get_item_data(itemref)
         local2 = add_item(itemref, 0, 2, 810)
         for local3 in ipairs(local2) do
@@ -13,8 +13,8 @@ function func_0628(eventid, itemref)
             local5 = local4
             local6 = get_item_data(local5)
             if local6[1] == local1[1] - 1 and local6[2] == local1[2] + 1 and local6[3] == local1[3] then
-                if get_item_frame(local5) == 0 then
-                    set_item_frame(local5, 4)
+                if get_object_frame(local5) == 0 then
+                    set_object_frame(local5, 4)
                     local7 = add_item(itemref, 16, 1576, {7765})
                 end
             end

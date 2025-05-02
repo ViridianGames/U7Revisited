@@ -34,7 +34,7 @@ function func_0626(eventid, itemref)
         set_flag(itemref, 37)
         remove_item(itemref)
     elseif local0 == 848 or local0 == 268 then
-        if get_item_frame(itemref) ~= 2 then
+        if get_object_frame(itemref) ~= 2 then
             local13 = add_item(itemref, {2, 17478, 7937, 37, 7768})
         end
         remove_item(itemref)

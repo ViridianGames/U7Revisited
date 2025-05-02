@@ -101,7 +101,7 @@ function func_046C(eventid, itemref)
                 if not local6 then
                     local7 = ""
                     for i = 0, 9 do
-                        local8 = get_item_frame(local13)
+                        local8 = get_object_frame(local13)
                         if local8 == 4 then
                             local7 = "I realize there are already very beautiful flowers here, but there can never be enough to demonstrate how much she is missed."
                         end

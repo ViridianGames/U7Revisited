@@ -15,9 +15,9 @@ function func_0635(eventid, itemref)
         local3 = add_item(itemref, 0, 2, 831)
         if #local3 > 0 then
             remove_item(itemref)
-            local4 = get_item_frame(377)
+            local4 = get_object_frame(377)
             if local4 then
-                set_item_frame(itemref, 0)
+                set_object_frame(itemref, 0)
                 local1 = set_item_data(local2)
                 local5 = get_random(1, 3)
                 if local5 == 1 then

@@ -11,11 +11,11 @@ function func_0314H(eventid, itemref)
             local arr = {7769, obj, 8449, 17511, 17505}
             execute_action(-356, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
         end
-        local frame = get_item_frame(itemref)
+        local frame = get_object_frame(itemref)
         if frame % 2 == 0 then
-            set_item_frame(itemref, frame + 1)
+            set_object_frame(itemref, frame + 1)
         else
-            set_item_frame(itemref, frame - 1)
+            set_object_frame(itemref, frame - 1)
         end
         set_stat(itemref, 28)
         local items1 = find_items(itemref, 870, 15, 0)

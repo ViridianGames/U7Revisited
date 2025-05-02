@@ -19,7 +19,7 @@ function func_0715(eventid, itemref)
         local6 = get_item_data(local1)
         create_object(-1, 0, 0, 0, local6[2], local6[1], 17) -- Unmapped intrinsic
         apply_effect(62) -- Unmapped intrinsic
-        set_item_frame(local1, 29)
+        set_object_frame(local1, 29)
     end
     external_005DH() -- Unmapped intrinsic
     local0 = external_0035H(176, 40, 912, external_001BH(-356)) -- Unmapped intrinsic

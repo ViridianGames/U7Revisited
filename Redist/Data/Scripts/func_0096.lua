@@ -1,6 +1,6 @@
 function func_0096H(eventid, itemref)
     if eventid == 1 then
-        if get_item_shape(itemref, 10) == 0 then
+        if get_object_shape(itemref, 10) == 0 then
             bark(0, "The sails must be furled before the planks are raised.")
             return
         end

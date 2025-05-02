@@ -18,7 +18,7 @@ function func_0800(eventid, itemref)
         end
         hide_npc(local1)
     else
-        local3 = get_item_frame(local0)
+        local3 = get_object_frame(local0)
         local4 = get_item_type(local0)
         if local3 > 3 and not external_0801H(local0) then -- Unmapped intrinsic
             local5 = get_item_data(local0)
@@ -26,7 +26,7 @@ function func_0800(eventid, itemref)
             for local7 in ipairs(local6) do
                 local8 = local7
                 local9 = local8
-                if get_item_frame(local9) <= 2 then
+                if get_object_frame(local9) <= 2 then
                     local10 = get_item_data(local9)
                     if local10[1] == local5[1] and local10[2] == local5[2] and local10[3] + 1 == local5[3] then
                         local0 = local9

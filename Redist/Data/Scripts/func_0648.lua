@@ -15,10 +15,10 @@ function func_0648(eventid, itemref)
             local3 = local2
             local4 = local3
             local5 = get_item_data(local4)
-            local6 = get_item_frame(377)
+            local6 = get_object_frame(377)
             if local6 then
                 local7 = get_random(1, 30)
-                set_item_frame(local6, local7)
+                set_object_frame(local6, local7)
                 set_flag(local6, 18, true)
                 local0 = set_item_data(local5)
             end

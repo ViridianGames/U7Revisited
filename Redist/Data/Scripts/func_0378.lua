@@ -1,7 +1,7 @@
 -- Manages a cannon interaction, playing music and triggering effects if conditions are met.
 function func_0378H(eventid, itemref)
     if eventid == 1 then
-        if get_item_frame(itemref) == 1 then
+        if get_object_frame(itemref) == 1 then
             play_music(48, 0)
             local items = find_items(itemref, 888, 125, 0) -- TODO: Implement LuaFindItems for callis 0035.
             local objects = call_script(0x093C, itemref) -- TODO: Map 093CH (possibly get objects).
