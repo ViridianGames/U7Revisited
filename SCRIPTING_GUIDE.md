@@ -56,7 +56,7 @@ Now we can switch back to the game and try again.  We don't have to shut the gam
 ![image](https://github.com/user-attachments/assets/d8ba4d38-c528-4d17-9b09-b328991ddadc)
 
 
-Hmmm...the script still has an error.
+Hmmm...the script still has an error, and the error message given even helpfully tells us what line number it's on (line 3).
 
 ![image](https://github.com/user-attachments/assets/a41ef10f-a7db-4dc2-93e4-dd3f78d40d86)
 
