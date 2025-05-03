@@ -159,7 +159,7 @@ void ConversationState::Draw()
 	DrawConsole();
 
 	//  Draw version number in lower-right
-	DrawTextEx(*g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
 	EndTextureMode();
    	DrawTexturePro(g_guiRenderTarget.texture,

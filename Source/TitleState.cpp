@@ -134,6 +134,9 @@ void TitleState::Draw()
 
    DrawConsole();
 
+   //  Draw version number in lower-right
+   DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
+
    if (m_mouseMoved)
    {
       m_guiManager.Draw();
@@ -146,8 +149,8 @@ void TitleState::Draw()
       { 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
       { 0, 0 }, 0, WHITE);
 
-   //  Draw version number in lower-right
-   DrawTextEx(*g_Font, g_version.c_str(), Vector2{ GetRenderWidth() * .92f, GetRenderHeight() * .94f }, g_fontSize, 1, WHITE);
+   
+
 
    //DrawTexture(*m_title, 0, 0, WHITE);
 
