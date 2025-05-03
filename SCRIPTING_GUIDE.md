@@ -66,6 +66,8 @@ Okay, it's calling two functions, U7SetItemType and U7SetItemQuality.  They're t
 
 The correct replacement for U7SetItemType is set_object_shape and the correct replacement for U7SetItemQuality is set_object_quality.  So the script becomes:
 
+![image](https://github.com/user-attachments/assets/ab2c5aba-ffab-4521-bb7f-023639f34f39)
+
 We make those changes and save the file.  Again, we don't even have to shut down the game!
 
 Double-click the shutter and the scripts now properly replace the "closed shutter" shape with the "open shutter" shape...
