@@ -129,7 +129,8 @@ Problems you're going to encounter:
 
 *  Figuring out what script goes where.  Some objects have scripts that are the same number as the shape of the object (in hex) so that’s a good way to start.  Most of the conversation scripts will be easy since they all start with 04 and they mention the name of the character somewhere.  But it'll be harder to identify other scripts and it's possible we won't figure out where every script goes.  I've provided a list of each script number and a blurb about our best guess for what that script is for.
 
-Click to open the script number list.
+[Click to open the script number list.](https://github.com/ViridianGames/U7Revisited/Redist/Data/Scripts/function_comments.txt)
+
 
 *  Misspelled functions (or incorrect functions).  Now that I've got an 85% or so complete list of the functions these scripts call, it's clear that a lot of these function names changed during the conversion.  I've done my best to go through with mass search-and-replace, but there will still be some issues.
 
