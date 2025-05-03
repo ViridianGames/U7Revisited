@@ -140,7 +140,7 @@ void ConversationState::Draw()
 
 	m_Gui->Draw();
 
-	DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId)), { 4, 10 }, 0, 2, WHITE);	
+	DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId) + to_string(m_npcFrame)), {4, 10}, 0, 2, WHITE);
 
 	if(m_dialogue.size() > 0)
 	{
