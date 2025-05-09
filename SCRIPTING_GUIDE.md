@@ -1,6 +1,9 @@
 Bringing Ultima VII To Life: A Guide to Objects and Scripts
 
-First things first – if you’re serious about this, please join my Discord!  It’ll make getting answers to questions and submitting your changes much easier!  https://discord.gg/9FWAMGcXgd
+First things first – if you’re serious about this, please join my Discord!  It’ll make getting answers to questions and callis	0000, 1
+callis	0001, 2
+callis	0002, 3
+submitting your changes much easier!  https://discord.gg/9FWAMGcXgd
 
 Here’s a quick overview of how the game world of Ultima VII works.
 
@@ -83,46 +86,80 @@ Here is the list of Lua functions the scripts can call, and what they do.
 These functions handle the conversation system:
 
 switch_talk_to(npc_id, frame) - Presents further dialogue using the portrait of the NPC specified (different frames can express different emotions). Returns true or false if the NPC is not present.
+
 hide_npc(npc_id) - Hides NPC face away from the conversation.
+
 add_dialogue(string) - Adds the string to the dialogue to be presented when the conversation starts.
+
 add_answer(str_or_array) - Adds an answer or set of answers to be presented at the end of the dialogue.
+
 start_conversation() - Starts the conversation system with the added information.
+
 remove_answer(str_or_array) - Removes an answer or set of answers from set, typically after it's been used.
+
 save_answers() - Save current set of answers and clear working set.  Typically used when you want to ask a yes/no question.
 restore_answers() - Restores current set of answers from saved set.
+
 get_answer() - Get answer from player as a string.
+
 
 These functions are used to manipulate the game world:
 
+
 get_object_shape(objectId) - returns the "shape" value of the object
+
 set_object_shape(objectId, shape) - changes the shape of given object to the new value
+
 get_object_frame(objectId) - returns the "frame" value of the object
+
 set_object_frame(objectId, frame) - Set object to given frame.
+
 get_object_quality(objectId) - returns a "quality" value of the object
+
 set_object_quality(objectId, ) - sets the "quality" value of the object
+
 
 These functions manipulate NPCs and the party:
 
+
 get_npc_property(objectId, property_id) - returns NPC's property value (9 is food level)
+
 set_npc_property(objectId, property_id, value) - sets NPC's property value (9 is food level)
+
 get_party_member(index) - Returns the ID of the party member at index.
+
 get_party_members() - Returns an array of strings containing a list of NPC's in the party
+
 get_player_name() - Returns name of the player as a string, or "Avatar" if not set
+
 npc_in_party(npc_id) - Returns true if the given NPC is in the party
+
 
 These are general utility functions:
 
+
 ask_yes_no() - Pops up a modal dialogue prompting the user to choose "yes" or "no".
+
 ask_number(min, max, step, default) - Pops up a modal dialogue that allows the user to choose a number by showing a slider with given parameters.
-item_select_modal() - switches the engine to cross-cursor "use" mode. Returns an objectId of the object selected by user by single-click. Does not return until user the user single-clicks on something.
+
+object_select_modal() - switches the engine to cross-cursor "use" mode. Returns an objectId of the object selected by user by single-click. Does not return until user the user single-clicks on something.
+
 random(lo, hi) - Returns a random integer from lo to hi inclusively.
-get_container_items(container_objectId, type, quality, ???) - returns an array of items in container.  Can filter by item type or quality.
+
+get_container_objects(container_objectId, type, quality, ???) - returns an array of items in container.  Can filter by item type or quality.
+
 play_music(objectId, songnum) - Play song.
+
 display_sign(signnum, text) - Display sign (the gump numbered signnum) and display the text given ("text" is an array of strings).  Also for books, gravestones, etc.
+
 get_time_hour() - Return game time (hours, 0-23).
+
 get_time_minute() - Return game time (minutes, 0-59).
+
 bark(objectId, str) - displays a string on the screen near the specified item
+
 is_player_female() - returns 0 if male, 1 if female
+
 start_end_game() - starts the endgame
 
 Problems you're going to encounter:
