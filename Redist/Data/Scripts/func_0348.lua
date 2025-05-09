@@ -1,23 +1,24 @@
--- Manages flying carpet usage, allowing takeoff or landing with safety checks.
-function func_0348H(eventid, itemref)
-    local state = get_item_state(itemref) -- TODO: Implement LuaGetItemState for callis 0058.
-    if eventid == 1 and state ~= 0 then
-        if not get_object_shape(itemref, 10) then
-            if call_script(0x080D) then -- TODO: Map 080DH (possibly check sitting).
-                call_script(0x0812, state) -- TODO: Map 0812H (possibly toggle state).
+--- Best guess: Manages a flying carpet, allowing the player to sit/stand and move, with a check for safe landing.
+function func_0348(eventid, itemref)
+    local var_0000, var_0001
+
+    var_0000 = unknown_0058H(itemref)
+    if eventid == 1 and var_0000 ~= 0 then
+        if not unknown_0088H(10, itemref) then
+            if unknown_080DH() then
+                var_0000 = unknown_0812H(var_0000)
             else
-                if not call_script(0x08B3, itemref) then -- TODO: Map 08B3H (possibly sit down).
-                    use_item() -- TODO: Implement LuaUseItem for calli 007E.
+                if not unknown_08B3H(itemref) then
+                    unknown_007EH()
                 end
             end
-        elseif get_object_shape(itemref, 21) then
-            set_item_quality(itemref, 10)
-            set_item_quality(itemref, 26)
-            local arr = {7736, 17441, 17419, -2, 10}
-            execute_action(state, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
-            play_music(255, 0)
+        elseif unknown_0088H(21, var_0000) then
+            unknown_008AH(10, itemref)
+            unknown_008AH(26, itemref)
+            var_0001 = unknown_0001H({10, -2, 17419, 17441, 7736}, var_0000)
+            unknown_002EH(255, 0)
         else
-            add_dialogue(0, "I do not believe that we can land here safely.")
+            unknown_08FFH("@I do not believe that we can land here safely.@")
         end
     end
 end

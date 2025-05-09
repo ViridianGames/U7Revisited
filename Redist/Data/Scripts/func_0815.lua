@@ -1,32 +1,37 @@
--- Function 0815: Handle door locking
+--- Best guess: Manages door state (locked/unlocked) with dialogue feedback, tied to quality checks.
 function func_0815(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local1 = call_081BH(eventid)
-    local2 = _GetItemQuality(itemref)
-    local3 = -1
-    if local1 == 0 then
-        if local2 == 228 then
+    var_0000 = itemref
+    var_0001 = get_door_state(var_0000) --- Guess: Gets door state
+    var_0002 = get_item_quality(itemref) --- Guess: Gets item quality
+    var_0003 = -1
+    if var_0001 == 0 then
+        if var_0002 == 228 then
             set_flag(737, false)
-        elseif local2 == 247 then
+        end
+        if var_0002 == 247 then
             set_flag(738, false)
         end
-        local3 = 2
-    elseif local1 == 1 then
-        local4 = "@Excuse me, the door is already open. Is it not rather futile to lock it now?@"
-        add_dialogue(itemref, local4)
-    elseif local1 == 2 then
-        if local2 == 228 then
+        var_0003 = 2
+    elseif var_0001 == 1 then
+        var_0004 = "@Excuse me, the door is already open. Is it not rather futile to lock it now?@"
+        bark(itemref, var_0004) --- Guess: Item says dialogue
+    elseif var_0001 == 2 then
+        if var_0002 == 228 then
             set_flag(737, true)
-        elseif local2 == 247 then
+        end
+        if var_0002 == 247 then
             set_flag(738, true)
         end
-        local3 = 0
-    elseif local1 == 3 and _Random2(10, 1) == 1 then
-        local4 = "@Excuse me, the door appears magically locked. Is it not rather difficult to unlock it with a key?@"
-        add_dialogue(itemref, local4)
+        var_0003 = 0
+    elseif var_0001 == 3 then
+        if random(1, 10) == 1 then
+            var_0004 = "@Excuse me, the door appears magically locked. Is it not rather difficult to unlock it with a key?@"
+            bark(itemref, var_0004) --- Guess: Item says dialogue
+        end
     end
-    if local3 ~= -1 then
-        call_081CH(local3, eventid)
+    if var_0003 ~= -1 then
+        set_door_state(var_0003, var_0000) --- Guess: Sets door state
     end
 end

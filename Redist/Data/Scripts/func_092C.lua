@@ -1,5 +1,4 @@
--- Triggers a flag-related action.
-function func_092C(p0)
-    external_000FH(75) -- Unmapped intrinsic
-    return
+--- Best guess: Plays a sound effect (ID 75), likely used for ambient or event-driven audio cues.
+function func_092C(P0)
+    unknown_000FH(75)
 end

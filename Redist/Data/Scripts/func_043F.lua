@@ -1,116 +1,105 @@
--- func_043F.lua
--- Jesamine's dialogue as the apothecary's wife in Britain
+--- Best guess: Manages Millie’s dialogue, a Fellowship recruiter discussing the organization, her brother Thad, and the Meditation Retreat, with flag-based progression and random Fellowship slogans.
+function func_043F(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-
-function func_043F(eventid)
-    local answers = {}
-    local flag_00B6 = get_flag(0x00B6) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00C8 = get_flag(0x00C8) -- Kessler’s health topic
-    local npc_id = -53 -- Jesamine's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00C8 then
-            add_answer( "Kessler")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00B6 then
-            add_dialogue("You see a gentle woman with worried eyes, tidying shelves of herbs and potions.")
-            set_flag(0x00B6, true)
-        else
-            add_dialogue("\"Welcome back, \" .. get_player_name() .. \",\" Jesamine says softly.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Jesamine glances up. \"Is there more I can help thee with?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"I’m Jesamine, wife of Kessler, the apothecary.\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I help my husband run the apothecary. I manage the shop while he mixes potions and tends to the sick.\"")
-                add_answer( "apothecary")
-                add_answer( "Kessler")
-                set_flag(0x00C8, true)
-            elseif choice == "apothecary" then
-                add_dialogue("\"We sell herbs, potions, and remedies. Kessler’s skill is renowned, but I worry he works too hard.\"")
-                add_answer( "remedies")
-                add_answer( "works too hard")
-                remove_answer("apothecary")
-            elseif choice == "remedies" then
-                add_dialogue("\"We’ve got healing salves, sleep draughts, and more. Need anything? A potion’s 15 gold.\"")
-                add_answer( "buy")
-                remove_answer("remedies")
-            elseif choice == "works too hard" then
-                add_dialogue("\"Kessler’s up all hours, brewing or visiting patients. He’s not been well himself, but he won’t rest.\"")
-                add_answer( "not well")
-                remove_answer("works too hard")
-            elseif choice == "not well" then
-                add_dialogue("\"He coughs at night and tires easily. I’ve tried giving him his own remedies, but he insists he’s fine. I fear for him.\"")
-                remove_answer("not well")
-            elseif choice == "Kessler" then
-                add_dialogue("\"My husband is a good man, always helping others. But his health worries me, and he listens not to my pleas to slow down.\"")
-                add_answer( "health")
-                remove_answer("Kessler")
-            elseif choice == "health" then
-                add_dialogue("\"If thou knowest a healer or a way to ease his cough, I’d be forever grateful. I can’t lose him.\"")
-                remove_answer("health")
-            elseif choice == "buy" then
-                add_dialogue("\"A potion for 15 gold. Wilt thou take one?\"")
-                local response = call_extern(0x090A, var_0001)
-                if response == 0 then
-                    local gold_result = U7.removeGold(15)
-                    if gold_result then
-                        local item_result = U7.giveItem(16, 1, 384)
-                        if item_result then
-                            add_dialogue("\"Here’s a potion, crafted by Kessler himself.\"")
-                        else
-                            add_dialogue("\"Thou art too burdened to carry the potion!\"")
-                        end
-                    else
-                        add_dialogue("\"Sorry, thou lackest the gold for a potion.\"")
-                    end
-                else
-                    add_dialogue("\"Perhaps another time, then.\"")
+    if eventid ~= 1 then
+        if eventid == 0 then
+            var_0002 = unknown_003BH()
+            var_0005 = unknown_001CH(unknown_001BH(63))
+            var_0006 = random2(4, 1)
+            if var_0005 == 12 then
+                if var_0006 == 1 then
+                    var_0007 = "Fellowship meeting tonight!@"
+                elseif var_0006 == 2 then
+                    var_0007 = "@Strive For Unity!@"
+                elseif var_0006 == 3 then
+                    var_0007 = "@Trust Thy Brother!@"
+                elseif var_0006 == 4 then
+                    var_0007 = "@Worthiness Precedes Reward!@"
                 end
-                remove_answer("buy")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship? They’ve offered Kessler help with the shop, but their aid comes with strings. I’d rather we stay independent.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Mayhap they mean well. I’ll consider their offer.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"No, I trust my instincts. We’ll manage without them.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Take care, \" .. get_player_name() .. \".\"")
-                break
+                bark(var_0007, 63)
+            else
+                unknown_092EH(63)
             end
         end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        add_dialogue("\"I shall see thee later! Maybe even at tonight's Fellowship meeting!\"")
+        return
     end
-end
 
-return func_043F
+    start_conversation()
+    switch_talk_to(0, 63)
+    var_0000 = unknown_0909H()
+    var_0001 = unknown_0067H()
+    var_0002 = unknown_003BH()
+    if var_0002 == 7 then
+        var_0003 = unknown_08FCH(26, 63)
+        if var_0003 then
+            add_dialogue("Millie ignores your attempts to get her attention and goes back to intently watching the Fellowship ceremony.")
+            return
+        elseif get_flag(218) then
+            add_dialogue("Millie looks perturbed. \"Batlin has never missed a meeting before. What does he expect? Does he want -me- to run the meeting?\"")
+        else
+            add_dialogue("\"Sorry, I cannot speak with thee now! I am late for the Fellowship meeting!\"")
+            return
+        end
+    end
+    add_answer({"bye", "job", "name"})
+    if not get_flag(321) then
+        add_answer("Thad")
+    end
+    if not get_flag(192) then
+        add_dialogue("You see a cute-looking woman who beams with a huge smile when she notices you looking at her.")
+        set_flag(192, true)
+    else
+        add_dialogue("\"It is good to speak with thee, again,\" says Millie.")
+    end
+    while true do
+        if cmps("name") then
+            add_dialogue("\"My name is Millie,\" she giggles coyly.")
+            remove_answer("name")
+        elseif cmps("job") then
+            add_dialogue("\"I suppose I have no job, but is that really so bad? I am a member of The Fellowship and I talk to people about them all day long.\"")
+            add_answer({"talk", "Fellowship"})
+        elseif cmps("Fellowship") then
+            if var_0001 then
+                add_dialogue("\"I see we have the same job!\" She laughs at her own joke. \"Dost thou spend all thy time talking to people about The Fellowship? For if that is what thou dost do, thou must get thyself another corner!\" Millie's face wrinkles in displeasure.")
+            else
+                add_dialogue("\"Dost thou know what The Fellowship is?\"")
+                var_0004 = unknown_090AH()
+                if var_0004 then
+                    add_dialogue("\"Oh, I think thou dost not really know!\"")
+                    unknown_0919H()
+                    remove_answer("Fellowship")
+                    add_answer("philosophy")
+                else
+                    unknown_0919H()
+                    remove_answer("Fellowship")
+                    add_answer("philosophy")
+                end
+            end
+        elseif cmps("philosophy") then
+            unknown_091AH()
+            add_dialogue("\"If thou dost wish, thou mayest attend tonight's meeting at the Fellowship Hall. It begins at nine o'clock sharp. Just tell them that thou art my guest. I shall see thee there, I hope.\" Millie giggles and looks away shyly.")
+            remove_answer("philosophy")
+        elseif cmps("talk") then
+            add_dialogue("\"I spend all my time trying to recruit, er... spread the word of The Fellowship. It is better than having a job! I learned how to do this at the Meditation Retreat.\"")
+            remove_answer("talk")
+            add_answer("Meditation Retreat")
+        elseif cmps("Meditation Retreat") then
+            add_dialogue("\"'Tis located on an island in south Britannia near Serpent's Hold. Most new Fellowship members spend some time down there learning the tenets of the group. One can also learn to hear 'the voice' at the retreat.\"")
+            add_answer("the voice")
+            remove_answer("Meditation Retreat")
+            set_flag(139, true)
+        elseif cmps("the voice") then
+            add_dialogue("\"Fellowship members have an inner voice which speaks to them. I have not heard it yet, but I am working toward it. I may need to spend another few days at the Meditation Retreat in order to do so. Batlin tells me not to be discouraged, though. He says I will hear it when I have made myself worthy.\"")
+            remove_answer("the voice")
+            set_flag(138, true)
+        elseif cmps("Thad") then
+            add_dialogue("Millie rolls her eyes. \"Thou hast met my brother? Thou poor thing! He is really a candidate for the asylum, I wouldst say! He believes The Fellowship kidnapped me and charmed me into following them. Well, I joined of mine own free will, without a second thought, and it was a pure lark! No one coerced me! Thad can go hang! Mama always said he was the impulsive one in the family!\"")
+            remove_answer("Thad")
+        elseif cmps("bye") then
+            break
+        end
+    end
+    return
+end

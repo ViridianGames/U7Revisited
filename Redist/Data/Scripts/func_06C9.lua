@@ -1,16 +1,13 @@
--- Function 06C9: Applies NPC effects for Minoc mill approach
+--- Best guess: Triggers an effect on NPCs (94, 95) when approaching the Minoc mill, activated by event ID 3.
 function func_06C9(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
+    if eventid == 3 then
+        var_0000 = {94, 95}
+        for i = 1, #var_0000 do
+            var_0003 = var_0000[i]
+            unknown_093FH(11, var_0003)
+        end
     end
-
-    local0 = {-94, -95}
-    for _, local3 in ipairs(local0) do
-        call_093FH(11, local3)
-    end
-
     return
 end

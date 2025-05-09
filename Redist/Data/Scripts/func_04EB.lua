@@ -1,46 +1,28 @@
--- Function 04EB: Dustin's brief Passion Play actor dialogue
+--- Best guess: Manages an unnamed actor’s dialogue in Buccaneer’s Den, focused on preparing for the Passion Play, redirecting conversation to Paul.
 function func_04EB(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid == 0 then
-        local0 = callis_003B()
-        local1 = callis_001C(callis_001B(-235))
-        local2 = callis_Random2(4, 1)
-        if local1 == 29 then
-            if local2 == 1 then
-                local3 = "@See the Passion Play!@"
-            elseif local2 == 2 then
-                local3 = "@The Fellowship presents...@"
-            elseif local2 == 3 then
-                local3 = "@Come view the Passion Play!@"
-            elseif local2 == 4 then
-                local3 = "@We shall entertain thee!@"
+    if eventid == 1 then
+        switch_talk_to(0, 235)
+        add_dialogue("You see a short, stocky actor in his mid- to late forties. He cannot speak to you now because he is concentrating on his lines for the Passion Play. Perhaps you should speak to Paul.")
+    elseif eventid == 0 then
+        var_0000 = unknown_003BH()
+        var_0001 = unknown_001CH(unknown_001BH(235))
+        if var_0001 == 29 then
+            var_0002 = random2(4, 1)
+            if var_0002 == 1 then
+                var_0003 = "@See the Passion Play!@"
+            elseif var_0002 == 2 then
+                var_0003 = "@The Fellowship presents...@"
+            elseif var_0002 == 3 then
+                var_0003 = "@Come view the Passion Play!@"
+            elseif var_0002 == 4 then
+                var_0003 = "@We shall entertain thee!@"
             end
-            bark(235, local3)
+            bark(var_0003, 235)
         else
-            call_092EH(-235)
+            unknown_092EH(235)
         end
-        return
-    elseif eventid ~= 1 then
-        return
     end
-
-    switch_talk_to(235, 0)
-    add_dialogue("You see a short, stocky actor in his mid- to late forties. He cannot speak to you now because he is concentrating.ConcurrentModificationException his lines for the Passion Play. Perhaps you should speak to Paul.*")
-
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
 end

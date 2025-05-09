@@ -1,123 +1,101 @@
--- func_0442.lua
--- Grayson's dialogue as the armorer in Britain
+--- Best guess: Handles dialogue with Sherry the Mouse, who assists in the Royal Nursery, plays with children, and searches for cheese, offering to recite "Hubert's Hair-Raising Adventure" and accepting cheese from the player.
+function func_0442(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-
-function func_0442(eventid)
-    local answers = {}
-    local flag_00B9 = get_flag(0x00B9) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00CA = get_flag(0x00CA) -- Crime topic
-    local npc_id = -56 -- Grayson's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x08A5, 1) -- Buy interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00CA then
-            add_answer( "crime")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00B9 then
-            add_dialogue("You see a broad-shouldered man polishing a gleaming breastplate.")
-            set_flag(0x00B9, true)
+        switch_talk_to(66, 0)
+        var_0000 = get_player_name()
+        var_0001 = get_player_title()
+        add_answer({"bye", "job", "name"})
+        if not get_flag(195) then
+            add_dialogue("You see a very large mouse with an air of superior intelligence.")
+            add_dialogue("\"Avatar!\" she exclaims. \"I cannot believe thou art here, " .. var_0000 .. "!\"")
+            set_flag(195, true)
         else
-            add_dialogue("\"Hail, \" .. get_player_name() .. \"!\" Grayson says with a nod.")
+            add_dialogue("\"Hello, " .. var_0000 .. "!\" Sherry the Mouse exclaims.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Grayson sets down his hammer. \"What else can I do for thee?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Grayson, armorer and weaponsmith.\"")
+            var_0002 = get_answer()
+            if var_0002 == "name" then
+                add_dialogue("\"Why, dost thou not remember Sherry, " .. var_0000 .. "?\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I forge and sell weapons and armor. Swords, shields, plate—whatever keeps thee alive. Looking to buy?\"")
-                add_answer( "armor")
-                add_answer( "buy")
-                set_flag(0x00CA, true)
-            elseif choice == "armor" then
-                add_dialogue("\"My plate armor’s the best in Britain. Forged with steel from Minoc, tempered to take a beating. But crime’s been up, so folk need it more.\"")
-                add_answer( "crime")
-                add_answer( "Minoc")
-                remove_answer("armor")
-            elseif choice == "Minoc" then
-                add_dialogue("\"Minoc’s mines produce fine steel. Costs a bit, but it’s worth it for gear that won’t fail in battle.\"")
-                remove_answer("Minoc")
-            elseif choice == "crime" then
-                add_dialogue("\"Thieves and cutpurses are bolder these days. Word is, some are tied to the Fellowship, though I’ve no proof. Makes folk buy more armor, at least.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("crime")
-            elseif choice == "buy" then
-                add_dialogue("\"A sword’s 50 gold, a shield’s 30. What dost thou need?\"")
-                local response = call_extern(0x08A5, var_0001)
-                if response == 0 then
-                    local item_choice = get_answer({"sword", "shield", "none"})
-                    if item_choice == "sword" then
-                        local gold_result = U7.removeGold(50)
-                        if gold_result then
-                            local item_result = U7.giveItem(16, 1, 388)
-                            if item_result then
-                                add_dialogue("\"Here’s a fine sword, sharp and true.\"")
+            elseif var_0002 == "job" then
+                var_0002 = unknown_001CH(66) --- Guess: Gets object state
+                if var_0002 == 25 then
+                    add_dialogue("\"I am trying to keep up with these children! We are playing tag through the castle! I must run! Talk to me later in the nursery!\"")
+                    abort()
+                else
+                    add_dialogue("\"I mainly assist Nanna in the Royal Nursery during the day. I watch the children alone in the evenings while Nanna has dinner and goes to her Fellowship meeting. Other times I run around the castle looking for mouse food!\"")
+                    add_answer({"mouse food", "castle", "Royal Nursery"})
+                end
+            elseif var_0002 == "Royal Nursery" then
+                add_dialogue("\"The children are so much fun. I like to read them their favorite story. It happens to be Lord British's favorite children's story, too! He read it to me oh, those many years ago.\"")
+                remove_answer("Royal Nursery")
+                add_answer({"story", "children"})
+            elseif var_0002 == "children" then
+                add_dialogue("\"If thou hast not had the chance yet, do look around and meet them. They are most wonderful and amusing.\"")
+                remove_answer("children")
+            elseif var_0002 == "castle" then
+                add_dialogue("\"It is much the same as it was when thou wert last here. There has been a bit of remodeling. After all, it has been 200 years since thou wert last here! I believe Lord British has a storeroom with quite a bit of equipment inside.\"")
+                remove_answer("castle")
+            elseif var_0002 == "mouse food" then
+                add_dialogue("\"Well, cheese is my favorite. If thou dost ever have cheese to give away, I will gladly eat it. But I will generally eat most anything. Dost thou have any cheese for me?\"")
+                var_0003 = select_option()
+                if var_0003 then
+                    var_0004 = unknown_0931H(26, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
+                    var_0005 = unknown_0931H(27, 359, 377, 1, 357) --- Guess: Checks for cheese in inventory
+                    if var_0004 or var_0005 then
+                        add_dialogue("\"Want to give me some?\"")
+                        var_0006 = select_option()
+                        if var_0006 then
+                            var_0005 = unknown_002B(true, 26, 359, 377, 1) --- Guess: Deducts cheese
+                            var_0006 = unknown_002B(true, 27, 359, 377, 1) --- Guess: Deducts cheese
+                            if var_0005 or var_0006 then
+                                add_dialogue("\"Thank thee, " .. var_0000 .. "!\"")
                             else
-                                add_dialogue("\"Thou canst not carry the sword! Lighten thy load.\"")
+                                add_dialogue("\"I am unable to take thy cheese at the moment, " .. var_0001 .. ".\"")
                             end
                         else
-                            add_dialogue("\"Thou lackest the gold for a sword.\"")
-                        end
-                    elseif item_choice == "shield" then
-                        local gold_result = U7.removeGold(30)
-                        if gold_result then
-                            local item_result = U7.giveItem(16, 1, 389)
-                            if item_result then
-                                add_dialogue("\"Here’s a sturdy shield to guard thee.\"")
-                            else
-                                add_dialogue("\"Thou canst not carry the shield! Lighten thy load.\"")
-                            end
-                        else
-                            add_dialogue("\"Thou lackest the gold for a shield.\"")
+                            add_dialogue("\"Well! I thought thou wert my friend!\"")
                         end
                     else
-                        add_dialogue("\"No purchase? Come back when thou’rt ready.\"")
+                        add_dialogue("\"But thou hast not got any cheese!\"")
                     end
                 else
-                    add_dialogue("\"Not today? My forge’ll still be here.\"")
+                    add_dialogue("\"Too bad! If thou dost find any, please keep me in mind!\"")
                 end
-                remove_answer("buy")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s got a strong grip in Britain. They buy my gear in bulk, but I don’t like their secrecy. Something’s off about ‘em.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Maybe I’m too suspicious. I’ll keep an eye on ‘em.\"")
-                    call_extern(0x091A, var_0003)
+                remove_answer("mouse food")
+            elseif var_0002 == "story" then
+                add_dialogue("\"Dost thou want to hear the story? It is called 'Hubert's Hair-Raising Adventure'.\"")
+                var_0007 = select_option()
+                if var_0007 then
+                    add_dialogue("Sherry stands on her hind legs, takes a deep breath, and then recites -- from memory -- very, very fast:")
+                    save_answers()
+                    unknown_08ECH() --- Guess: Recites "Hubert's Hair-Raising Adventure"
                 else
-                    add_dialogue("\"Nay, I trust my gut. They’re trouble.\"")
+                    add_dialogue("\"Some other time, then!\"")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Stay sharp, \" .. get_player_name() .. \"!\"")
+                remove_answer("story")
+            elseif var_0002 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Farewell, " .. var_0001 .. "!\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        var_0002 = unknown_001CH(66) --- Guess: Gets object state
+        if var_0002 == 25 then
+            var_0007 = random(1, 4)
+            if var_0007 == 1 then
+                var_0008 = "@Tag! Thou art it!@"
+            elseif var_0007 == 2 then
+                var_0008 = "@Cannot catch me!@"
+            elseif var_0007 == 3 then
+                var_0008 = "@Nyah nyah! Thou art it!@"
+            elseif var_0007 == 4 then
+                var_0008 = "@Catch me if thou can!@"
+            end
+            bark(66, var_0008)
+        end
     end
 end
-
-return func_0442

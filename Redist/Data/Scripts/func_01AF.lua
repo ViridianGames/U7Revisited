@@ -1,204 +1,92 @@
--- Function 01AF: Bellows for forging (e.g., black sword)
+--- Best guess: Controls a bellows in a forge, animating it and heating a sword blank (ID 668) over a firepit (ID 739), adjusting frames based on position and state for a crafting sequence.
 function func_01AF(eventid, itemref)
-    -- Local variables (16 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14, local15
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
+    local var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
+    local var_000E, var_000F
 
-    -- Check item frame (3 to 5)
-    local0 = _GetItemFrame(itemref)
-    if local0 >= 3 and local0 <= 5 then
-        -- Eventid == 1: Initial action
+    var_0000 = get_object_frame(itemref)
+    if var_0000 >= 3 and var_0000 <= 5 then
         if eventid == 1 then
-            calli_005C(itemref)
-            call_0828H(7, itemref, 431, -1, 0, 1, itemref)
-        end
-
-        -- Eventid == 7: Forging logic
-        if eventid == 7 then
-            -- Create array for forging conditions
-            local1 = callis_0001({
-                3, 8006, 1, 7975,
-                4, 8006, 1, 7975,
-                5, 8006, 1, 7975,
-                4, 17478, 7937, 47, 7768
-            }, itemref)
-
-            local2 = call_092DH(itemref)
-            local1 = callis_0001({8033, 3, 17447, 8556, local2, 7769}, -356)
-
-            -- Find firepit (739)
-            local3 = callis_000E(3, 739, itemref)
-            local4 = _GetItemFrame(local3)
-
-            -- Find sword blank (668)
-            local5 = callis_000E(3, 668, itemref)
-            local6 = _GetItemFrame(local5)
-
-            if not local3 then
-                return
+            -- call [0000] (0828H, unmapped)
+            unknown_0828H(7, itemref, 431, -1, 0, 1, itemref)
+        elseif eventid == 7 then
+            var_0001 = unknown_0001H({{3, 8006, 1, 7975}, {4, 8006, 1, 7975}, {5, 8006, 1, 7975}, {4, 17478, 7937, 47, 7768}}, itemref)
+            -- call [0001] (092DH, unmapped)
+            var_0002 = unknown_092DH(itemref)
+            var_0001 = unknown_0001H({8033, 3, 17447, 8556, var_0002, 7769}, 356)
+            var_0003 = unknown_000EH(3, 739, itemref)
+            var_0004 = get_object_frame(var_0003)
+            var_0005 = unknown_000EH(3, 668, itemref)
+            var_0006 = get_object_frame(var_0005)
+            if not var_0003 then
+                if var_0004 == 4 then
+                    var_0001 = unknown_0001H({{4, 8006, 15, 7975}, {5, 8006, 1, 7719}}, var_0003)
+                elseif var_0004 == 5 then
+                    var_0001 = unknown_0001H({{4, 8006, 15, 7975}, {5, 8006, 15, 7975}, {6, 8006, 1, 7719}}, var_0003)
+                elseif var_0004 == 6 then
+                    var_0001 = unknown_0001H({{4, 8006, 15, 7975}, {5, 8006, 15, 7975}, {6, 8006, 15, 7975}, {7, 8006, 1, 7719}}, var_0003)
+                elseif var_0004 == 7 then
+                    var_0001 = unknown_0001H({{4, 8006, 15, 7975}, {5, 8006, 15, 7975}, {6, 8006, 15, 7975}, {7, 8006, 1, 7719}}, var_0003)
+                    if not var_0005 then
+                        var_0007 = unknown_0018H(var_0003)
+                        var_0008 = unknown_0018H(var_0005)
+                        var_0009 = false
+                        if aidx(var_0008, 1) == aidx(var_0007, 1) and aidx(var_0008, 2) + 1 == aidx(var_0007, 2) and aidx(var_0008, 3) - 2 == aidx(var_0007, 3) then
+                            var_0009 = true
+                        end
+                        if var_0009 then
+                            if var_0006 <= 7 then
+                                return
+                            elseif var_0006 >= 13 and var_0006 <= 15 then
+                                var_0001 = unknown_0001H({{1679, 8021, 25, 7975}, {8, 8006, 2, 7719}}, var_0005)
+                            elseif var_0006 == 8 then
+                                var_0001 = unknown_0001H({{1679, 8021, 25, 7975}, {8, 8006, 25, 7975}, {9, 8006, 2, 7719}}, var_0005)
+                            elseif var_0006 == 9 then
+                                var_0001 = unknown_0001H({{1679, 8021, 25, 7975}, {8, 8006, 25, 7975}, {9, 8006, 25, 7975}, {10, 8006, 2, 7719}}, var_0005)
+                            elseif var_0006 == 10 then
+                                var_0001 = unknown_0001H({{1679, 8021, 25, 7975}, {8, 8006, 25, 7975}, {9, 8006, 25, 7975}, {10, 8006, 25, 7975}, {11, 8006, 2, 7719}}, var_0005)
+                            elseif var_0006 == 11 or var_0006 == 12 then
+                                var_0001 = unknown_0001H({{1679, 8021, 25, 7975}, {8, 8006, 25, 7975}, {9, 8006, 25, 7975}, {10, 8006, 25, 7975}, {11, 8006, 25, 7975}, {12, 8006, 2, 7719}}, var_0005)
+                            end
+                        end
+                    end
+                end
             end
-
-            -- Update firepit based on frame
-            if local4 == 4 then
-                local1 = callis_0001({4, 8006, 15, 7975, 5, 8006, 1, 7719}, local3)
-            elseif local4 == 5 then
-                local1 = callis_0001({
-                    4, 8006, 15, 7975,
-                    5, 8006, 15, 7975,
-                    6, 8006, 1, 7719
-                }, local3)
-            elseif local4 == 6 then
-                local1 = callis_0001({
-                    4, 8006, 15, 7975,
-                    5, 8006, 15, 7975,
-                    6, 8006, 15, 7975,
-                    7, 8006, 1, 7719
-                }, local3)
-            elseif local4 == 7 then
-                local1 = callis_0001({
-                    4, 8006, 15, 7975,
-                    5, 8006, 15, 7975,
-                    6, 8006, 15, 7975,
-                    7, 8006, 1, 7719
-                }, local3)
-            end
-
-            if not local5 then
-                return
-            end
-
-            -- Check positions
-            local7 = callis_0018(local3)
-            local8 = callis_0018(local5)
-            local9 = false
-
-            if local8[1] == local7[1] and
-               local8[2] == local7[2] + 1 and
-               local8[3] == local7[3] - 2 then
-                local9 = true
-            end
-
-            if not local9 then
-                return
-            end
-
-            -- Check sword blank frame
-            if local6 <= 7 then
-                return
-            end
-
-            if local6 >= 13 and local6 <= 15 then
-                local1 = callis_0001({
-                    1679, 8021, 25, 7975,
-                    8, 8006, 2, 7719
-                }, local5)
-            elseif local6 == 8 then
-                local1 = callis_0001({
-                    1679, 8021, 25, 7975,
-                    8, 8006, 25, 7975,
-                    9, 8006, 2, 7719
-                }, local5)
-            elseif local6 == 9 then
-                local1 = callis_0001({
-                    1679, 8021, 25, 7975,
-                    8, 8006, 25, 7975,
-                    9, 8006, 25, 7975,
-                    10, 8006, 2, 7719
-                }, local5)
-            elseif local6 == 10 then
-                local1 = callis_0001({
-                    1679, 8021, 25, 7975,
-                    8, 8006, 25, 7975,
-                    9, 8006, 25, 7975,
-                    10, 8006, 25, 7975,
-                    11, 8006, 2, 7719
-                }, local5)
-            elseif local6 == 11 or local6 == 12 then
-                local1 = callis_0001({
-                    1679, 8021, 25, 7975,
-                    8, 8006, 25, 7975,
-                    9, 8006, 25, 7975,
-                    10, 8006, 25, 7975,
-                    11, 8006, 25, 7975,
-                    12, 8006, 2, 7719
-                }, local5)
-            end
-
-            return
         end
     else
-        -- Eventid == 1: Alternative action
         if eventid == 1 then
-            calli_005C(itemref)
-            call_0828H(7, itemref, 431, -1, 0, 1, itemref)
-        end
-
-        -- Eventid == 7: Heat sword
-        if eventid == 7 then
-            calli_005C(itemref)
-            local10 = callis_0001({
-                0, 8006, 1, 7975,
-                1, 8006, 1, 7975,
-                2, 8006, 1, 7975,
-                1, 8006, 1, 7975,
-                0, 8006, 1, 7975,
-                1, 8006, 1, 7975,
-                2, 8006, 1, 7975,
-                1, 8006, 1, 7975,
-                0, 17478, 7937, 47, 7768
-            }, itemref)
-
-            local2 = call_0827H(itemref, -356)
-            local10 = callis_0001({
-                8033, 3, 17447, 17516, 8033, 3, 17447, 17516, 8545,
-                local2, 7769
-            }, -356)
-
-            local11 = callis_0035(176, 4, 739, itemref)
-
-            -- Loop to process firepit frames
+            -- calli 005C, 1 (unmapped)
+            unknown_005CH(itemref)
+            -- call [0000] (0828H, unmapped)
+            unknown_0828H(7, itemref, 431, -1, 0, 1, itemref)
+        elseif eventid == 7 then
+            -- calli 005C, 1 (unmapped)
+            unknown_005CH(356)
+            var_000A = unknown_0001H({{0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7975}, {0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7937, 47, 7768}}, itemref)
+            -- call [0002] (0827H, unmapped)
+            var_0002 = unknown_0827H(itemref, 356)
+            var_000A = unknown_0001H({{8033, 3, 17447, 17516}, {8033, 3, 17447, 8545}, var_0002, 7769}, 356)
+            var_000B = check_flag_location(176, 4, 739, itemref)
             while true do
-                local14 = local11 -- Firepit
-                local15 = _GetItemFrame(local14)
-
-                if local15 == 0 then
-                    local10 = callis_0001({
-                        3, 8006, 2, 8006, 1, 8006, 0, 8006, 47, 17496, 7715
-                    }, local14)
-                    local10 = callis_0002({
-                        18, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724
-                    }, local14)
-                elseif local15 == 1 then
-                    local10 = callis_0001({
-                        3, 8006, 2, 8006, 1, 8006, 47, 17496, 7715
-                    }, local14)
-                    local10 = callis_0002({
-                        17, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724
-                    }, local14)
-                elseif local15 == 2 then
-                    local10 = callis_0001({
-                        3, 8006, 2, 8006, 47, 17496, 7715
-                    }, local14)
-                    local10 = callis_0002({
-                        16, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724
-                    }, local14)
-                elseif local15 == 3 then
-                    local10 = callis_0001({
-                        3, 8006, 47, 17496, 7715
-                    }, local14)
-                    local10 = callis_0002({
-                        15, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724
-                    }, local14)
+                var_000C = var_000B
+                var_000D = var_000C
+                var_000E = var_000D
+                var_000F = get_object_frame(var_000E)
+                if var_000F == 0 then
+                    var_000A = unknown_0001H({{3, 8006, 2, 8006, 1, 8006, 0, 8006, 47, 17496, 7715}}, var_000E)
+                    var_000A = unknown_0002H({{18, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724}}, var_000E)
+                elseif var_000F == 1 then
+                    var_000A = unknown_0001H({{3, 8006, 2, 8006, 1, 8006, 47, 17496, 7715}}, var_000E)
+                    var_000A = unknown_0002H({{17, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724}}, var_000E)
+                elseif var_000F == 2 then
+                    var_000A = unknown_0001H({{3, 8006, 2, 8006, 47, 17496, 7715}}, var_000E)
+                    var_000A = unknown_0002H({{16, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724}}, var_000E)
+                elseif var_000F == 3 then
+                    var_000A = unknown_0001H({{3, 8006, 47, 17496, 7715}}, var_000E)
+                    var_000A = unknown_0002H({{15, 0, 8006, 3, 7975, 1, 8006, 3, 7975, 2, 17478, 7724}}, var_000E)
                 end
-
-                -- Note: Original has 'sloop' and 'db' instructions, treated as loop continuation
-                if not local11 then
-                    break
-                end
-                local11 = callis_0035(176, 4, 739, itemref) -- Re-check firepit
             end
         end
     end
-
     return
 end

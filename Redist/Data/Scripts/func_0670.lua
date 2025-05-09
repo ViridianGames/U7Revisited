@@ -1,27 +1,29 @@
--- Casts the "Quas Wis" spell, causing fear or confusion in nearby NPCs.
+--- Best guess: Implements the detect spell (Quas Wis), revealing NPC properties or states for party members.
 function func_0670(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Quas Wis@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1648, 17493, 17511, 17509, 17510, 17505, 8045, 65, 7768})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1648, 17493, 17511, 17509, 17510, 17505, 8045, 65, 7768})
         else
-            local0 = add_item(itemref, {1542, 17493, 17511, 17509, 17510, 17505, 7789})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 17509, 17510, 17505, 7789})
         end
     elseif eventid == 2 then
-        local1 = add_item(-1, 8, 25, itemref)
-        local2 = get_party_members()
-        for local3 in ipairs(local1) do
-            local4 = local3
-            local5 = local4
-            if not contains(local2, local5) and get_npc_property(local5, 2) > 5 then
-                set_flag(local5, 0, true)
-                external_004BH(local5, 7) -- Unmapped intrinsic
-                external_0022H() -- Unmapped intrinsic
-                external_004CH(local5) -- Unmapped intrinsic
+        var_0001 = unknown_0035H(8, 25, -1, itemref) --- Guess: Sets NPC location
+        var_0002 = get_party_members()
+        -- Guess: sloop reveals NPC properties
+        for i = 1, 5 do
+            var_0005 = {3, 4, 5, 1, 62}[i]
+            if not (var_0005 == var_0002[1] or var_0005 == var_0002[2] or ...) then
+                if get_npc_property(2, var_0005) > 5 then
+                    unknown_001DH(0, var_0005) --- Guess: Sets object behavior
+                    set_npc_behavior(7, var_0005) --- Guess: Sets NPC behavior
+                    unknown_0022H() --- Guess: Resets dialogue state
+                    set_npc_state(7, var_0005) --- Guess: Sets NPC state
+                end
             end
         end
     end
-    return
 end

@@ -1,20 +1,13 @@
--- Function 01D6: Container item check and positioning
+--- Best guess: Checks for and manipulates container contents (shape 810), possibly repositioning items or triggering an effect if empty.
 function func_01D6(eventid, itemref)
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    -- Check for item 810 in container
-    local0 = _GetContainerItems(-359, -359, 810, -356)
-    if local0 then
-        return
+    var_0000 = get_container_objects(0, 359, 810, 356)
+    if not var_0000 then
+        var_0001 = {-5, -5}
+        var_0002 = {-1, -1}
+        -- call [0000] (0828H, unmapped)
+        unknown_0828H(9, var_0000, 810, 0, var_0002, var_0001, itemref)
     end
-
-    -- Create offset arrays
-    local1 = {-5, -5}
-    local2 = {-1, -1}
-
-    -- Call positioning function
-    call_0828H(9, local0, 810, 0, local2, local1, itemref)
-
     return
 end

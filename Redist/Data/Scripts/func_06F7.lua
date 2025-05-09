@@ -1,277 +1,248 @@
--- Function 06F7: Manages golem scroll tracking
+--- Best guess: Tracks scrolls in a forge, checking containers for specific items (types 240–248) and updating flags when conditions are met, likely part of a quest.
 function func_06F7(eventid, itemref)
-    -- Local variables (44 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
-    local local20, local21, local22, local23, local24, local25, local26, local27, local28, local29
-    local local30, local31, local32, local33, local34, local35, local36, local37, local38, local39
-    local local40, local41, local42, local43
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031, var_0032, var_0033, var_0034, var_0035, var_0036, var_0037, var_0038, var_0039, var_0040, var_0041, var_0042, var_0043, var_0044
 
-    local0 = call_GetItemQuality(itemref)
-
-    if local0 == 240 then
-        local1 = false
-        local2 = callis_0035(0, 80, 762, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 22 and not call_GetContainerItems(4, 240, 797, local5) then
-                local1 = local5
+    var_0000 = unknown_0014H(itemref)
+    if var_0000 == 240 then
+        var_0001 = false
+        var_0002 = unknown_0035H(0, 80, 762, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 22 and not unknown_002AH(4, 240, 797, var_0005) then
+                var_0001 = var_0005
             end
         end
-        if not local1 and not get_flag(0x02EE) then
-            set_flag(0x02EE, true)
-            local7 = callis_0024(callis_006B(local1))
-            callis_006C(local1, local7)
-            local8 = callis_0026(callis_0018(local1))
-            call_08E6H(local1)
+        if not var_0001 and not get_flag(750) then
+            set_flag(750, true)
+            var_0007 = unknown_0024H(unknown_0011H(var_0001))
+            unknown_006CH(var_0001, var_0007)
+            var_0008 = unknown_0026H(unknown_0018H(var_0001))
+            unknown_08E6H(var_0001)
         end
-    elseif local0 == 241 then
-        local9 = false
-        local2 = callis_0035(0, 80, 778, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 7 and not call_GetContainerItems(4, 241, 797, local5) then
-                local9 = local5
+    elseif var_0000 == 241 then
+        var_0009 = false
+        var_0002 = unknown_0035H(0, 80, 778, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 7 and not unknown_002AH(4, 241, 797, var_0005) then
+                var_0009 = var_0005
             end
         end
-        if not local9 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local9))
-            callis_0089(18, local12)
-            callis_0053(-1, 0, 0, 0, local8[2] - 2, local8[1] - 2, 4)
-            callis_0053(-1, 0, 0, 0, local8[2], local8[1] - 1, 17)
-            call_000FH(9)
-            local13 = callis_0024(504)
-            _SetItemFrame(19, local13)
-            callis_0089(18, local13)
-            local14 = callis_0001({8021, 2, 17447, 7769}, local13)
-            set_flag(0x02EF, true)
-            call_08E6H(local9)
+        if not var_0009 then
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0009))
+            unknown_08E6H(var_0009)
+            set_flag(753, true)
         end
-    elseif local0 == 243 and not get_flag(0x02F1) then
-        local15 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 243, 797, local5) then
-                local15 = local5
+    elseif var_0000 == 243 then
+        var_0015 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 243, 797, var_0005) then
+                var_0015 = var_0005
             end
         end
-        if not local15 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local15))
-            set_flag(0x02F1, true)
-            call_08E6H(local15)
+        if not var_0015 and not get_flag(753) then
+            set_flag(753, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0015))
+            unknown_08E6H(var_0015)
         end
-    elseif local0 == 244 and not get_flag(0x02F2) then
-        local16 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 244, 797, local5) then
-                local16 = local5
+    elseif var_0000 == 244 then
+        var_0016 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 244, 797, var_0005) then
+                var_0016 = var_0005
             end
         end
-        if not local16 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local16))
-            set_flag(0x02F2, true)
-            call_08E6H(local16)
+        if not var_0016 and not get_flag(754) then
+            set_flag(754, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0016))
+            unknown_08E6H(var_0016)
         end
-    elseif local0 == 245 and not get_flag(0x02F3) then
-        local17 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 245, 797, local5) then
-                local17 = local5
+    elseif var_0000 == 245 then
+        var_0017 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 245, 797, var_0005) then
+                var_0017 = var_0005
             end
         end
-        if not local17 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local17))
-            set_flag(0x02F3, true)
-            call_08E6H(local17)
+        if not var_0017 then
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0017))
+            set_flag(755, true)
+            unknown_08E6H(var_0017)
         end
-    elseif local0 == 246 and not get_flag(0x02F4) then
-        local18 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 246, 797, local5) then
-                local18 = local5
+    elseif var_0000 == 246 then
+        var_0018 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 246, 797, var_0005) then
+                var_0018 = var_0005
             end
         end
-        if not local18 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local18))
-            set_flag(0x02F4, true)
-            call_08E6H(local18)
+        if not var_0018 and not get_flag(756) then
+            set_flag(756, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0018))
+            unknown_08E6H(var_0018)
         end
-    elseif local0 == 247 and not get_flag(0x02F5) then
-        local19 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 247, 797, local5) then
-                local19 = local5
+    elseif var_0000 == 247 then
+        var_0019 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 247, 797, var_0005) then
+                var_0019 = var_0005
             end
         end
-        if not local19 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local19))
-            set_flag(0x02F5, true)
-            call_08E6H(local19)
+        if not var_0019 and not get_flag(757) then
+            set_flag(757, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0019))
+            unknown_08E6H(var_0019)
         end
-    elseif local0 == 248 and not get_flag(0x02F6) then
-        local20 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 248, 797, local5) then
-                local20 = local5
+    elseif var_0000 == 248 then
+        var_0020 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 248, 797, var_0005) then
+                var_0020 = var_0005
             end
         end
-        if not local20 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local20))
-            set_flag(0x02F6, true)
-            call_08E6H(local20)
+        if not var_0020 and not get_flag(758) then
+            set_flag(758, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0020))
+            unknown_08E6H(var_0020)
         end
-    elseif local0 == 249 and not get_flag(0x02F7) then
-        local21 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 249, 797, local5) then
-                local21 = local5
+    elseif var_0000 == 249 then
+        var_0021 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 249, 797, var_0005) then
+                var_0021 = var_0005
             end
         end
-        if not local21 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local21))
-            set_flag(0x02F7, true)
-            call_08E6H(local21)
+        if not var_0021 and not get_flag(759) then
+            set_flag(759, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0021))
+            unknown_08E6H(var_0021)
         end
-    elseif local0 == 250 and not get_flag(0x02F8) then
-        local22 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 250, 797, local5) then
-                local22 = local5
+    elseif var_0000 == 250 then
+        var_0022 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 250, 797, var_0005) then
+                var_0022 = var_0005
             end
         end
-        if not local22 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local22))
-            set_flag(0x02F8, true)
-            call_08E6H(local22)
+        if not var_0022 and not get_flag(760) then
+            set_flag(760, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0022))
+            unknown_08E6H(var_0022)
         end
-    elseif local0 == 251 and not get_flag(0x02F9) then
-        local23 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 251, 797, local5) then
-                local23 = local5
+    elseif var_0000 == 251 then
+        var_0023 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 251, 797, var_0005) then
+                var_0023 = var_0005
             end
         end
-        if not local23 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local23))
-            set_flag(0x02F9, true)
-            call_08E6H(local23)
+        if not var_0023 and not get_flag(761) then
+            set_flag(761, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0023))
+            unknown_08E6H(var_0023)
         end
-    elseif local0 == 252 and not get_flag(0x02FA) then
-        local24 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 252, 797, local5) then
-                local24 = local5
+    elseif var_0000 == 252 then
+        var_0024 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 252, 797, var_0005) then
+                var_0024 = var_0005
             end
         end
-        if not local24 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local24))
-            set_flag(0x02FA, true)
-            call_08E6H(local24)
+        if not var_0024 and not get_flag(762) then
+            set_flag(762, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0024))
+            unknown_08E6H(var_0024)
         end
-    elseif local0 == 253 and not get_flag(0x02FB) then
-        local25 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 253, 797, local5) then
-                local25 = local5
+    elseif var_0000 == 253 then
+        var_0025 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 253, 797, var_0005) then
+                var_0025 = var_0005
             end
         end
-        if not local25 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local25))
-            set_flag(0x02FB, true)
-            call_08E6H(local25)
+        if not var_0025 and not get_flag(763) then
+            set_flag(763, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0025))
+            unknown_08E6H(var_0025)
         end
-    elseif local0 == 254 and not get_flag(0x02FC) then
-        local26 = false
-        local2 = callis_0035(0, 80, 400, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemFrame(local5)
-            if local6 == 0 and not call_GetContainerItems(4, 254, 797, local5) then
-                local26 = local5
+    elseif var_0000 == 254 then
+        var_0026 = false
+        var_0002 = unknown_0035H(0, 80, 400, 356)
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0012H(var_0005)
+            if var_0006 == 0 and not unknown_002AH(4, 254, 797, var_0005) then
+                var_0026 = var_0005
             end
         end
-        if not local26 then
-            local12 = callis_0024(414)
-            _SetItemFrame(4, local12)
-            local8 = callis_0026(callis_0018(local26))
-            set_flag(0x02FC, true)
-            call_08E6H(local26)
+        if not var_0026 and not get_flag(764) then
+            set_flag(764, true)
+            var_0012 = unknown_0024H(414)
+            unknown_0013H(4, var_0012)
+            var_0008 = unknown_0026H(unknown_0018H(var_0026))
+            unknown_08E6H(var_0026)
         end
     end
-
-    callis_005C(itemref)
-    callis_0002(3, {1783, 17493, 7715}, itemref)
-
+    unknown_005CH(itemref)
+    unknown_0002H(3, 1783, {17493, 7715}, itemref)
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
 end

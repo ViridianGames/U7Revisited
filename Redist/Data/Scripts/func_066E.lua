@@ -1,28 +1,29 @@
--- Casts the "In Flam Grav" spell, creating a fiery electrical effect with a chance to ignite objects.
+--- Best guess: Manages the "In Flam Grav" spell, creating a fire wall or explosion (ID 895) at a selected location, with a fallback effect if the spell fails.
 function func_066E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
-        bark(itemref, "@In Flam Grav@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 17510, 8549, local1, 8025, 65, 7768})
-            local3 = get_item_by_type(895) -- Unmapped intrinsic
-            if local3 then
-                local4 = local0[2] + 1
-                local5 = local0[3] + 1
-                local6 = local0[4]
-                local7 = {local6, local5, local4}
-                local8 = set_item_data(local7)
-                local9 = 100
-                local8 = set_item_quality(local3, local9)
-                set_flag(local3, 18, true)
-                local8 = add_item(local3, local9, 8493, {17493, 7715})
-            end
-        else
-            local2 = add_item(itemref, {1542, 17493, 17511, 17510, 8549, local1, 7769})
-        end
+    if eventid ~= 1 then
+        return
     end
-    return
+
+    var_0000 = _ItemSelectModal()
+    var_0001 = unknown_092DH(var_0000)
+    unknown_005CH(itemref)
+    bark(itemref, "@In Flam Grav@")
+    if not unknown_0906H() then
+        var_0002 = unknown_0001H(itemref, {17511, 17510, 8549, var_0001, 8025, 65, 7768})
+        var_0003 = unknown_0024H(895)
+        if not var_0003 then
+            var_0004 = var_0000[2] + 1
+            var_0005 = var_0000[3] + 1
+            var_0006 = var_0000[4]
+            var_0007 = {var_0004, var_0005, var_0006}
+            var_0008 = unknown_0026H(var_0007)
+            unknown_0089H(18, var_0003)
+            var_0009 = unknown_0015H(100, var_0003)
+            var_0008 = unknown_0002H(var_0009, 100, 8493, var_0003)
+        end
+    else
+        var_0002 = unknown_0001H(itemref, {1542, 17493, 17511, 17510, 8549, var_0001, 7769})
+    end
 end

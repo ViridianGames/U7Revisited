@@ -1,19 +1,22 @@
--- Function 0804: Find and remove item
-function func_0804(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+--- Best guess: Finds an item matching frame and quality criteria, destroying it if found.
+function func_0804(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local3 = check_position(16, 30, local2, -356)
-    local4 = 0
-    while local5 do
-        local7 = local5
-        local8 = _GetItemFrame(local7)
-        local9 = _GetItemQuality(local7)
-        if local8 == local1 and (local9 == local0 or local0 == -359) then
-            local4 = local7
+    var_0000 = itemref
+    var_0001 = arg1
+    var_0002 = arg2
+    var_0003 = unknown_0035H(16, 30, var_0002, 356) --- Guess: Sets NPC location
+    var_0004 = 0
+    -- Guess: sloop searches for matching item
+    for i = 1, 5 do
+        var_0007 = {5, 6, 7, 3, 55}[i]
+        var_0008 = get_item_frame(var_0007) --- Guess: Gets item frame
+        var_0009 = get_item_quality(var_0007) --- Guess: Gets item quality
+        if var_0008 == var_0001 and (var_0009 == var_0000 or var_0000 == 359) then
+            var_0004 = var_0007
         end
-        local5 = get_next_item() -- sloop
     end
-    if local4 then
-        delete_item(local4)
+    if var_0004 then
+        destroy_item_silent(var_0004) --- Guess: Destroys item silently
     end
 end

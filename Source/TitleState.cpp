@@ -26,6 +26,7 @@ TitleState::~TitleState()
 void TitleState::Init(const string& configfile)
 {
    CreateTitleGUI();
+   CreateCreditsGUI();
    m_title = g_ResourceManager->GetTexture("Images/title.png");
 }
 
@@ -139,7 +140,8 @@ void TitleState::Draw()
 
    if (m_mouseMoved)
    {
-      m_guiManager.Draw();
+      m_TitleGui->Draw();
+      m_CreditsGui->Draw();
    }
 
    //  Draw any tooltips
@@ -178,32 +180,80 @@ void TitleState::CreateTitleGUI()
    //m_TitleGui->AddTextArea(GUI_TITLE_TITLE, g_Font.get(), "Ultima VII: Revisited", (320 - (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale))) / 2, 20,
    //   (MeasureText("Ultima VII: Revisited", g_Font->baseSize * g_DrawScale)), 0, Color{255, 255, 255, 255}, true);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, 190, "Begin",
+   int y = 186;
+   int yoffset = 22;
+
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, y, "Begin",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, 220, "Shape Editor",
+   y += yoffset;
+
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, y, "Shape Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, 250, "Object Editor",
+   y += yoffset;
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, y, "Object Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, 280, "World Editor",
+   y += yoffset;
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, y, "World Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, 310, "Quit",
+   y += yoffset;
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OPTIONS, y, "Options",
+         g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+         g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   // y += yoffset;
+   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_CREDITS, y, "Credits",
+   //       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+   //       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+               
+
+   y += yoffset;
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, y, "Quit",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
    m_TitleGui->m_Active = true;
 
    m_TitleGui->m_Draggable = true;
-
-   m_guiManager.AddGui(m_TitleGui);
 }
+
+void TitleState::CreateCreditsGUI()
+{
+   m_CreditsGui = make_shared<Gui>();
+   m_CreditsGui->m_Font = g_SmallFont;
+
+   m_CreditsGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
+   m_CreditsGui->AddOctagonBox(GUI_CREDITS_PANEL, 220, 180, 200, 160, g_Borders);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_SmallFont.get(), "CREDITS!", 290, 185 );
+
+   int idOffset = 1;
+   int yOffset = 16;
+   int y = 186;
+
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Project Lead", 290, y += yOffset);;
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Anthony Salter", 290, y += yOffset);
+
+
+
+   // m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_Font.get(), "CREDITS!", 220, 180, 100, 20, Color{255, 255, 255, 255}, false, 0, true, true);
+
+   m_CreditsGui->AddStretchButtonCentered(GUI_CREDITS_BUTTON_BACK, 310, "Back",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   m_CreditsGui->m_Active = false;
+
+   m_CreditsGui->m_Draggable = true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///  UPDATERS
@@ -211,11 +261,9 @@ void TitleState::CreateTitleGUI()
 
 void TitleState::UpdateTitle()
 {
-   m_guiManager.Update();
-   //m_TitleGui->Update();
-   
-   if(!m_TitleGui->m_Active)
-      return;
+   //m_guiManager.Update();
+   m_TitleGui->Update();
+   m_CreditsGui->Update();
    
    if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_QUIT)
    {
@@ -237,10 +285,23 @@ void TitleState::UpdateTitle()
       g_StateMachine->MakeStateTransition(STATE_OBJECTEDITORSTATE);
    }
 
-   if(m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_WORLD_EDITOR)
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_WORLD_EDITOR)
    {
       g_StateMachine->MakeStateTransition(STATE_WORLDEDITORSTATE);
-      
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_CREDITS)
+   {
+      m_TitleGui->m_Active = false;
+      m_CreditsGui->m_Active = true;
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if(m_CreditsGui->m_ActiveElement == GUI_CREDITS_BUTTON_BACK)
+   {
+      m_TitleGui->m_Active = true;
+      m_CreditsGui->m_Active = false;
+      m_CreditsGui->m_ActiveElement = -1;
    }
 
    if (IsKeyPressed(KEY_ESCAPE))

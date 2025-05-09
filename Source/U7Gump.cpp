@@ -46,15 +46,30 @@ void Gump::Draw()
 {
 	Gui::Draw();
 
+	float scale = 1.0f;
+
 	shared_ptr<U7Object> thisObject = GetObjectFromID(m_containerId);
-	int yoffset = 26;
-	int xoffset = 52;
+	int yoffset = 11 * scale;
+	int xoffset = 11 * scale;
+
+	int width = 80 * scale;
+
+	int y = 0;
 
 	for (auto& item : thisObject->m_inventory)
 	{
 		auto object = GetObjectFromID(item);
 		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_Pos.x + xoffset, m_Pos.y + yoffset}, 0, 1, Color{255, 255, 255, 255});
 		xoffset += object->m_shapeData->GetTexture()->width + 1;
+		if(yoffset + object->m_shapeData->GetTexture()->height > y)
+		{
+			y = yoffset + object->m_shapeData->GetTexture()->height;
+		}
+		if (xoffset > width)
+		{
+			xoffset = 11 * scale;
+			yoffset = y;
+		}
 	}
 }
 

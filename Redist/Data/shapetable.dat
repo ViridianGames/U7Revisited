@@ -4479,7 +4479,7 @@
 289 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 289 30 default 
 289 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 289 31 default 
 290 0 0 0 32 8 0 8 32 7 32 0 9 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x00.obj 1 0 290 0 default 
-290 1 0 0 32 8 0 8 32 7 32 0 10 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x01.obj 1 0 290 1 default 
+290 1 0 0 32 8 0 8 32 7 32 0 10 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x01.obj 1 0 290 1 func_0122 
 290 2 0 0 32 8 0 8 32 7 32 0 10 8 3 1 1 1 -1 0 0.5 180 1 2 2 3 3 1 Models/3dmodels/closed_shutter_290x02.obj 1 0 290 2 default 
 290 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 3 default 
 290 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 290 4 default 
@@ -7102,9 +7102,9 @@
 371 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 29 default 
 371 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 30 default 
 371 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 371 31 default 
-372 0 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x00.obj 1 0 372 0 default 
-372 1 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x01.obj 1 0 372 1 default 
-372 2 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x02.obj 1 0 372 2 default 
+372 0 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x00.obj 1 0 372 0 func_0174 
+372 1 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 -1 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x01.obj 1 0 372 1 func_0174 
+372 2 0 0 32 8 0 8 32 19 32 0 13 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/open_shutter_372x02.obj 1 0 372 2 func_0174 
 372 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 3 default 
 372 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 4 default 
 372 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 372 5 default 

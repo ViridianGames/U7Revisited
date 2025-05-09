@@ -1,9 +1,9 @@
--- Checks if an NPC’s level is below a threshold.
-function func_08FC(p0, p1)
-    local local2
+--- Best guess: Compares the distance between two items to a threshold (20), returning true if less than the threshold, false otherwise, likely for proximity-based triggers.
+function func_08FC(var_0000, var_0001)
+    local var_0002
 
-    local2 = external_0019H(p0, p1) -- Unmapped intrinsic
-    if local2 < 20 then
+    var_0002 = unknown_0019H(var_0000, var_0001)
+    if var_0002 < 20 then
         return true
     end
     return false

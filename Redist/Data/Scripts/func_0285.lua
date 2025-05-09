@@ -1,6 +1,9 @@
--- Provides information about gold exchange rates.
-function func_0285H(eventid, itemref)
+--- Best guess: Displays the exchange rate for a gold nugget (10 crowns) when the item is used.
+function func_0285(eventid, itemref)
+    local var_0000
+
     if eventid == 1 then
-        add_dialogue(0, "I believe that the current exchange rate is ten crowns per nugget at the mint in Britian.")
+        var_0000 = "@I believe that the current exchange rate is ten crowns per nugget at the mint in Britian.@"
+        unknown_08FFH(var_0000)
     end
 end

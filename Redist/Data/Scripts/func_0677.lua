@@ -1,55 +1,65 @@
--- Casts the "Vas Por Ylem" spell, creating a tremor or earthquake effect with random directional movements.
+--- Best guess: Implements the tremor spell (Vas Por Ylem), causing area-wide effects with random outcomes.
 function func_0677(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Vas Por Ylem@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1655, 8021, 67, 17496, 17517, 17505, 7784})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1655, 8021, 67, 17496, 17517, 17505, 7784})
         else
-            local0 = add_item(itemref, {1542, 17493, 17517, 17505, 7784})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17517, 17505, 7784})
         end
     elseif eventid == 2 then
-        local1 = add_item(-359, 8, 40, itemref)
-        local2 = get_party_members()
-        local3 = 12
-        local4 = external_0088H(itemref, 6) -- Unmapped intrinsic
-        for local5 in ipairs(local1) do
-            local6 = local5
-            local7 = local6
-            if not local4 or not contains(local2, local7) then
-                local8 = 0
-                local9 = {}
-                while local8 < local3 do
-                    local10 = get_random(0, 8)
-                    if local10 == 0 then
-                        table.insert(local9, {17505, 17516, 7789})
-                    elseif local10 == 1 then
-                        table.insert(local9, {17505, 17505, 7789})
-                    elseif local10 == 2 then
-                        table.insert(local9, {17505, 17518, 7788})
-                    elseif local10 == 3 then
-                        table.insert(local9, {17505, 17505, 7777})
-                    elseif local10 == 4 then
-                        table.insert(local9, {17505, 17508, 7789})
-                    elseif local10 == 5 then
-                        table.insert(local9, {17505, 17517, 7780})
-                    elseif local10 == 6 then
-                        local11 = 7984 + get_random(0, 3) * 2
-                        table.insert(local9, {17505, 8556, local11, 7769})
-                    elseif local10 == 7 then
-                        local11 = 7984 + get_random(0, 3) * 2
-                        table.insert(local9, {17505, 8557, local11, 7769})
-                    elseif local10 == 8 then
-                        local11 = 7984 + get_random(0, 3) * 2
-                        table.insert(local9, {17505, 8548, local11, 7769})
+        var_0001 = unknown_0035H(8, 40, 359, itemref) --- Guess: Sets NPC location
+        var_0002 = get_party_members()
+        var_0003 = 12
+        var_0004 = unknown_0088H(6, itemref)
+        -- Guess: sloop applies tremor effects
+        for i = 1, 5 do
+            var_0007 = {5, 6, 7, 1, 462}[i]
+            if not var_0004 and not (var_0007 == var_0002[1] or var_0007 == var_0002[2] or ...) then
+                var_0008 = 0
+                var_0009 = {}
+                while var_0008 < var_0003 do
+                    var_000A = random(0, 8)
+                    if var_000A == 0 then
+                        var_000B = {17505, 17516, 7789}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 1 then
+                        var_000B = {17505, 17505, 7789}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 2 then
+                        var_000B = {17505, 17518, 7788}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 3 then
+                        var_000B = {17505, 17505, 7777}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 4 then
+                        var_000B = {17505, 17508, 7789}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 5 then
+                        var_000B = {17505, 17517, 7780}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 6 then
+                        var_000C = 7984 + random(0, 3) * 2
+                        var_000B = {17505, 8556, var_000C, 7769}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 7 then
+                        var_000C = 7984 + random(0, 3) * 2
+                        var_000B = {17505, 8557, var_000C, 7769}
+                        var_0009 = {var_000B, var_0009}
+                    elseif var_000A == 8 then
+                        var_000C = 7984 + random(0, 3) * 2
+                        var_000B = {17505, 8548, var_000C, 7769}
+                        var_0009 = {var_000B, var_0009}
                     end
-                    local8 = local8 + 1
+                    var_0008 = var_0008 + 1
                 end
-                local0 = add_item(local7, local9)
+                destroy_item(var_0007)
+                var_0000 = add_container_items(var_0007, var_0009[1])
             end
         end
-        external_0059H(local3 * 3) -- Unmapped intrinsic
+        set_spell_duration(var_0003 * 3) --- Guess: Sets spell duration
     end
-    return
 end

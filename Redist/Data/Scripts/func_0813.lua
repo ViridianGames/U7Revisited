@@ -1,64 +1,65 @@
--- Function 0813: Feed NPC interaction
-function func_0813(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+--- Best guess: Handles NPC feeding (e.g., garlic, type 842), adjusting NPC properties with dialogue responses.
+function func_0813(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local3 = _ItemSelectModal()
-    local4 = _GetPartyMembers()
-    if table.contains(local4, local3) and not call_0088H(1, local3) and not call_0088H(7, local3) and not call_0088H(4, local3) then
-        local5 = _GetNPCProperty(9, local3)
-        local6 = local5 + local1
-        if local5 > 24 then
-            local7 = "@No, thank thee.@"
+    var_0000 = itemref
+    var_0001 = arg1
+    var_0002 = arg2
+    var_0003 = item_select_modal() --- Guess: Selects item
+    var_0004 = get_party_members()
+    if table.contains(var_0004, var_0003) and not _CheckNPCStatus(1, var_0003) and not _CheckNPCStatus(7, var_0003) and not _CheckNPCStatus(4, var_0003) then
+        var_0005 = get_npc_property(9, var_0003) --- Guess: Gets NPC property
+        var_0006 = var_0005 + var_0001
+        if var_0005 > 24 then
+            var_0007 = "@No, thank thee.@"
         else
-            local2 = get_item_container(local2)
-            call_0086H(itemref, local0)
-            call_0925H(local2)
-            local8 = _Random2(10, 1)
-            if local5 <= 4 then
-                if local6 <= 4 then
-                    local7 = "@More!@"
-                    if local8 >= 6 then
-                        local7 = "@I must have more!@"
+            consume_item(var_0002) --- Guess: Consumes item
+            set_item_behavior(var_0000, var_0000) --- Guess: Sets item behavior
+            apply_item_effect(var_0002) --- Guess: Applies item effect
+            var_0008 = random(1, 10)
+            if var_0005 <= 4 then
+                if var_0006 <= 4 then
+                    var_0007 = "@More!@"
+                    if var_0008 >= 6 then
+                        var_0007 = "@I must have more!@"
                     end
-                elseif local6 < 10 then
-                    local7 = "@I am still hungry.@"
-                    if local8 < 6 and local3 ~= -356 then
-                        local7 = "@May I have some more?@"
+                elseif var_0006 < 10 then
+                    var_0007 = "@I am still hungry.@"
+                    if var_0008 >= 6 and var_0003 ~= 356 then
+                        var_0007 = "@May I have some more?@"
                     end
-                elseif local6 < 20 then
-                    if _GetItemType(local2) == 842 then
-                        local7 = "@Yum, garlic!@"
+                elseif var_0006 < 20 then
+                    if get_item_type(var_0002) == 842 then
+                        var_0007 = "@Yum, garlic!@"
                     else
-                        local7 = "@Ah yes, much better.@"
+                        var_0007 = "@Ah yes, much better.@"
                     end
                 else
-                    local7 = "@That hit the spot!@"
-                    if local8 < 6 then
-                        local7 = "@Burp@"
+                    var_0007 = "@That hit the spot!@"
+                    if var_0008 >= 6 then
+                        var_0007 = "@Burp@"
                     end
                 end
-            elseif local5 < 20 then
-                if _GetItemType(local2) == 842 then
-                    local7 = "@Yum, garlic!@"
+            elseif var_0005 < 20 then
+                if get_item_type(var_0002) == 842 then
+                    var_0007 = "@Yum, garlic!@"
                 else
-                    local7 = "@Ahh, very tasty.@"
+                    var_0007 = "@Ahh, very tasty.@"
                 end
-                if local6 > 24 and local8 < 3 then
-                    local7 = "@Belch@"
+                if var_0006 > 24 and var_0008 >= 3 then
+                    var_0007 = "@Belch@"
                 end
             else
-                if get_flag(155) and local8 < 2 then
-                    local7 = "@I'll soon be plump.@"
-                elseif local8 < 5 then
-                    local7 = "@I'll soon be plump.@"
+                if get_flag(155) and var_0008 >= 2 then
+                    var_0007 = "@I'll soon be plump.@"
+                elseif var_0008 >= 5 then
+                    var_0007 = "@I'll soon be plump.@"
                 end
             end
         end
-        if local7 ~= "" then
-            if not call_0937H(local3) then
-                bark(local3, local7)
-            end
+        if var_0007 ~= "" and is_item_valid_for_use(var_0003) then
+            bark(var_0003, var_0007) --- Guess: Item says dialogue
         end
-        local9 = _SetNPCProperty(9, local3, local1)
+        var_0009 = set_npc_property(9, var_0001, var_0003) --- Guess: Sets NPC property
     end
 end

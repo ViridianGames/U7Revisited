@@ -1,85 +1,97 @@
--- func_0452.lua
--- Patterson's dialogue as the mayor of Britain
+--- Best guess: Handles dialogue with Gregor, head of the Minoc Fellowship and Britannian Mining Company, discussing Minoc’s trade, social changes, and the murders, with interruptions during Fellowship meetings or private moments with Elynor.
+function func_0452(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-
-function func_0452(eventid)
-    local answers = {}
-    local flag_00C8 = get_flag(0x00C8) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00D7 = get_flag(0x00D7) -- Governance topic
-    local npc_id = -71 -- Patterson's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00D7 then
-            add_answer( "governance")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00C8 then
-            add_dialogue("You see a polished man in fine attire, exuding confidence but with a guarded smile.")
-            set_flag(0x00C8, true)
-        else
-            add_dialogue("\"Welcome, \" .. get_player_name() .. \",\" Patterson says with a practiced nod.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Patterson adjusts his cloak. \"What business hast thou with Britain’s mayor?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
+        switch_talk_to(82, 0)
+        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = unknown_001CH(82) --- Guess: Gets object state
+        if var_0000 == 7 then
+            if var_0001 ~= 16 then
+                add_dialogue("Gregor is busy concentrating on the Fellowship meeting and cannot talk now.")
+                abort()
             end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Patterson, mayor of Britain, serving its people with pride.\"")
+        end
+        var_0002 = unknown_08FCH(81, 82) --- Guess: Checks NPC time interaction
+        if var_0002 then
+            add_dialogue("\"No time for idle chatter! I must get to the Fellowship Meeting! I am late!\"")
+            abort()
+        end
+        var_0003 = get_player_title()
+        add_answer({"bye", "job", "name"})
+        var_0004 = unknown_08F7H(81) --- Guess: Checks player status
+        if var_0004 and var_0000 == 0 and var_0001 == 16 then
+            add_answer("Elynor")
+        end
+        if not get_flag(269) then
+            add_dialogue("You see an old man whose domineering disposition matches the hardened physique of his aged body.")
+            set_flag(269, true)
+        else
+            add_dialogue("\"Art thou addressing me?\" Gregor scowls.")
+        end
+        while true do
+            var_0005 = get_answer()
+            if var_0005 == "name" then
+                add_dialogue("\"My name is Gregor.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I govern Britain, ensuring its prosperity and order. The Fellowship aids my efforts, though some, like that farmer Brownie, challenge my rule.\"")
-                add_answer( "governance")
-                add_answer( "Brownie")
-                add_answer( "Fellowship")
-                set_flag(0x00D7, true)
-            elseif choice == "governance" then
-                add_dialogue("\"Running Britain demands strength. Taxes fund our growth, and the Fellowship’s support keeps order, despite rabble-rousers like Brownie.\"")
-                add_answer( "Brownie")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("governance")
-            elseif choice == "Brownie" then
-                add_dialogue("\"Brownie’s a farmer stirring trouble with his mayoral campaign. He claims I favor the Fellowship, but his ideas would bankrupt Britain.\"")
-                add_answer( "Fellowship")
-                remove_answer("Brownie")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship brings unity and progress. Their guidance strengthens Britain, though some distrust them. I find their vision aligns with mine.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou seest their value? Good. They’re key to Britain’s future.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0005 == "job" then
+                if not get_flag(287) then
+                    add_dialogue("\"I am in charge of the Minoc branch of the Britannian Mining Company.\"")
+                    add_answer({"Britannian Mining Company", "Minoc"})
                 else
-                    add_dialogue("\"Distrust them? Speak to their leaders—thou wilt see their worth.\"")
+                    add_dialogue("\"Art thou fevered, " .. var_0003 .. "? Dost thou not realize why we have gathered at this spot? 'Tis shameful, thine unaffected manner in the presence of such tragedy!\"")
+                    set_flag(287, true)
+                    add_answer("murders")
                 end
+            elseif var_0005 == "Minoc" then
+                add_dialogue("\"Our town is a major center of trade in Britannia, and it is a place of social change.\"")
+                remove_answer("Minoc")
+                add_answer({"social change", "trade"})
+            elseif var_0005 == "Britannian Mining Company" then
+                add_dialogue("\"The Britannian Mining Company produces a wide variety of minerals that are essential to the continuation of progress in Britannia.\"")
+                remove_answer("Britannian Mining Company")
+            elseif var_0005 == "trade" then
+                add_dialogue("\"Here in Minoc we have one of the largest mining operations in Britannia, a sawmill, an inn, the Artist's Guild, and a shipwright.\"")
+                add_answer({"shipwright", "Artist's Guild", "inn", "sawmill"})
+                remove_answer("trade")
+            elseif var_0005 == "social change" then
+                add_dialogue("\"Here in Minoc we are erecting a monument to our good shipwright Owen, a master craftsman whose name will soon be known throughout Britannia. We also have a very active Fellowship branch.\"")
+                remove_answer("social change")
+                add_answer({"Fellowship", "monument"})
+            elseif var_0005 == "sawmill" then
+                add_dialogue("\"A long-standing and profitable business. A shame it will become more renowned for the murders that were committed there than for any of the fine work it does.\"")
+                remove_answer("sawmill")
+            elseif var_0005 == "inn" then
+                add_dialogue("\"The Checquered Cork is famous for its rustic character and atmosphere. It is a fine place. Do not be put off by its apparent uncleanliness.\"")
+                remove_answer("inn")
+            elseif var_0005 == "Artist's Guild" then
+                add_dialogue("\"The Artist's Guild is a small collection of craftspeople who have huddled together to sell their little trinkets. They pride themselves on being the local dissenters of everything.\"")
+                remove_answer("Artist's Guild")
+            elseif var_0005 == "shipwright" then
+                add_dialogue("\"I may have already mentioned Owen, the shipwright. He builds the finest ships that have ever set sail.\"")
+                remove_answer("shipwright")
+            elseif var_0005 == "monument" then
+                add_dialogue("\"I helped to organize things with Mayor Burnside to get the monument built.\"")
+                if not get_flag(247) then
+                    add_dialogue("\"It will be huge and made of the finest ore from our mine.\"")
+                end
+                remove_answer("monument")
+            elseif var_0005 == "Fellowship" then
+                add_dialogue("\"They have done immeasurable good for Minoc, helping to counter the disunity that can plague a town such as ours where so many people are fixated upon monetary gain.\"")
                 remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Fare well, \" .. get_player_name() .. \". Support Britain’s progress.\"")
+            elseif var_0005 == "murders" then
+                add_dialogue("\"It is terrible! The gypsies Frederico and Tania have been found murdered in William's sawmill!\"")
+                remove_answer("murders")
+            elseif var_0005 == "Elynor" then
+                add_dialogue("\"Leave us in peace, damn thee! Elynor and I are in love and we wish to be alone together! Find thy cheap excitations elsewhere!\"")
+                remove_answer("Elynor")
+            elseif var_0005 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Be on thy way then.\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(82) --- Guess: Triggers a game event
     end
 end
-
-return func_0452

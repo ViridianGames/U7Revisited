@@ -1,94 +1,88 @@
--- func_0470.lua
--- Markus's dialogue as a blacksmith in Britain
+--- Best guess: Handles dialogue with D’Rel, a prisoner in Yew’s Abbey prison, discussing his incarceration for tax evasion, his disdain for the Britannian Tax Council, Sir Jeff, and Goth, and his connection to Hook from Buccaneer’s Den.
+function func_0470(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-
-function func_0470(eventid)
-    local answers = {}
-    local flag_00DA = get_flag(0x00DA) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E9 = get_flag(0x00E9) -- Forge topic
-    local npc_id = -89 -- Markus's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E9 then
-            add_answer( "forge")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00DA then
-            add_dialogue("You see a burly man hammering iron, sparks flying in his smoky forge.")
-            set_flag(0x00DA, true)
+        switch_talk_to(112, 0)
+        var_0000 = get_player_name()
+        var_0001 = get_player_title()
+        var_0002 = false
+        var_0003 = "Nystul"
+        var_0004 = "Geoffrey"
+        add_answer({"bye", "job", "name"})
+        if not get_flag(330) then
+            add_dialogue("You see a rough-looking man with a bitter expression on his face.")
+            set_flag(330, true)
         else
-            add_dialogue("\"Ho, \" .. get_player_name() .. \",\" Markus says, wiping sweat from his brow.")
+            add_dialogue("D'Rel scowls at you. \"What in the blazes do ye want?\"")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Markus sets down his hammer. \"Need a blade or some talk?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Markus, blacksmith of Britain, forgin’ steel for all.\"")
+            var_0005 = get_answer()
+            if var_0005 == "name" then
+                add_dialogue("\"What do ye care about the name of a wretch?\"")
+                add_answer({"care", "wretch"})
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I forge swords, tools, and armor. The Fellowship’s trade deals bring iron, but their hold on Patterson’s got me suspicious.\"")
-                add_answer( "forge")
-                add_answer( "Fellowship")
-                set_flag(0x00E9, true)
-            elseif choice == "forge" then
-                add_dialogue("\"My forge runs hot, but iron’s pricey due to taxes. Folk like Weston can’t afford tools, and that’s sparkin’ trouble.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("forge")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes drive up my costs. It’s roughest on Paws folk, pushin’ ‘em to acts like Weston’s.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of here. Weston’s from there—starvin’ folk, and the Fellowship’s aid don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—damn shame. Figg’s arrest, backed by the Fellowship, was cold, no mercy.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, enforcin’ their rules. His part in Weston’s arrest shows they’re more about control than helpin’ folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals keep my forge stocked, but their ties to Patterson and Figg make me think they’re hammerin’ out more than just trade.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m keepin’ my eye on ‘em.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Smart to question ‘em. Their influence is heavier than my anvil.\"")
+            elseif var_0005 == "wretch" then
+                add_dialogue("\"They've put me in here to rot, they have!\"")
+                remove_answer("wretch")
+                add_answer({"rot", "they"})
+            elseif var_0005 == "they" then
+                add_dialogue("\"The Britannian Tax Council done it. They and the two here -- Sir Jeff and Goth.\"")
+                remove_answer("they")
+                add_answer({"Goth", "Sir Jeff"})
+                if not var_0002 then
+                    add_answer("Britannian Tax Council")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Stay sharp, \" .. get_player_name() .. \".\"")
+            elseif var_0005 == "rot" then
+                add_dialogue("\"They told me I'd be here for the rest of my life. I have no reason to doubt them either!\"")
+                remove_answer("rot")
+            elseif var_0005 == "Sir Jeff" then
+                add_dialogue("\"That stuffed cock believes he's above everyone in Britannia. Just because he presides over the High Court he thinks he can pass judgement over any and everyone.\"")
+                remove_answer("Sir Jeff")
+            elseif var_0005 == "Goth" then
+                add_dialogue("\"That thieving scoundrel belongs in here more than I do! Don't trust him if ye've gotta choice.\"")
+                remove_answer("Goth")
+            elseif var_0005 == "Britannian Tax Council" then
+                add_dialogue("\"Thieves, the whole lot of 'em! Tryin' to take a person's hard-earned gold. Mayhaps they wouldn't need to take all of our money if they would go out and earn their own!\"")
+                var_0002 = true
+                remove_answer("Britannian Tax Council")
+            elseif var_0005 == "care" then
+                add_dialogue("\"Ye care, do ye? All right, then. I'll tell ye my name if ye tell me thine, deal?\"")
+                var_0005 = select_option()
+                if var_0005 then
+                    var_0006 = ask_answer({var_0000, var_0003, var_0004})
+                    add_dialogue("\"" .. var_0006 .. ", eh. Very well, a deal's a deal. I'm D'Rel.\"")
+                else
+                    add_dialogue("\"I thought as much.\"")
+                end
+                remove_answer("care")
+            elseif var_0005 == "job" then
+                add_dialogue("\"None now. But 'til I made this mine home, I was a sailor, a... privateer, out of Buccaneer's Den.\"")
+                add_answer({"Buccaneer's Den", "thine home"})
+            elseif var_0005 == "thine home" then
+                add_dialogue("\"Well, actually I am in here for not paying my taxes. After all, I... earned the money, why should I give it to the Britannian Tax Council?\"")
+                remove_answer("thine home")
+                if not var_0002 then
+                    add_answer("Britannian Tax Council")
+                end
+            elseif var_0005 == "Buccaneer's Den" then
+                add_dialogue("\"Thou hast heard of Buccaneer's Den, hast thou not? 'Tis the island due east of the mainland. Home of the sort of men who walk with peg-legs, have hooks for hands, and carry parrots on their shoulders! Har! Har!\"")
+                remove_answer("Buccaneer's Den")
+                if not get_flag(67) then
+                    add_answer("Hook")
+                end
+            elseif var_0005 == "Hook" then
+                add_dialogue("\"Yeah, I know Hook. Lookin' for him, are ye? He be from Buccaneer's Den. He usually travels with some gargoyle named Forskis or something like that. If ye see him, give him my... hello, for me.\" He gestures to his clenched fist.")
+                remove_answer("Hook")
+                set_flag(309, true)
+                unknown_0911H(10) --- Guess: Submits item or advances quest
+            elseif var_0005 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Aye, get thy face from my sight!\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
--- func_0470.lua

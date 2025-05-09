@@ -1,40 +1,38 @@
--- Manages Markus's dialogue in Trinsic, covering his combat training, town comments, and minimal murder engagement.
+--- Best guess: Handles dialogue with Markus, the Trinsic trainer, discussing his combat training services and the local murder, with training options during business hours.
 function func_0414(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
+    start_conversation()
     if eventid == 1 then
         switch_talk_to(20, 0)
-        local0 = get_schedule()
-        local1 = switch_talk_to(20)
-
+        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = unknown_001CH(20) --- Guess: Gets object state
         add_answer({"bye", "murder", "job", "name"})
-
         if not get_flag(84) then
             add_dialogue("You see a solid-looking but seemingly bored fighter.")
             set_flag(84, true)
         else
             add_dialogue("\"Yes?\" Markus asks.")
         end
-
         while true do
-            local answer = get_answer()
-            if answer == "name" then
+            var_0000 = get_answer()
+            if var_0000 == "name" then
                 add_dialogue("\"I am Markus the trainer.\"")
                 remove_answer("name")
-            elseif answer == "job" then
+            elseif var_0000 == "job" then
                 add_dialogue("\"I am a trainer here in Trinsic,\" he says gruffly. \"If thou dost wish to increase thy skill in combat I can help thee.\"")
                 add_answer({"train", "Trinsic"})
-            elseif answer == "murder" then
+            elseif var_0000 == "murder" then
                 add_dialogue("\"I heard about it, but I assure thee I know nothing of the details.\" Markus yawns.")
                 remove_answer("murder")
-            elseif answer == "Trinsic" then
+            elseif var_0000 == "Trinsic" then
                 add_dialogue("The fighter shrugs. \"The town is all right.\" He sniffs.")
                 remove_answer("Trinsic")
-            elseif answer == "train" then
-                if local1 == 7 then
+            elseif var_0000 == "train" then
+                if var_0001 == 7 then
                     add_dialogue("\"The cost to train with me is 20 gold. Too costly, right?\"")
-                    if get_answer() then
-                        apply_effect(20, 4) -- Unmapped intrinsic 08BD
+                    if not select_option() then
+                        unknown_08BDH(20, 4) --- Guess: Trains combat skill
                     else
                         add_dialogue("Markus yawns. \"Very well.\"")
                     end
@@ -42,13 +40,12 @@ function func_0414(eventid, itemref)
                     add_dialogue("\"Please come to my place of business during normal daylight hours.\"")
                     remove_answer("train")
                 end
-            elseif answer == "bye" then
-                add_dialogue("\"Goodbye,\" the fighter bows.*")
+            elseif var_0000 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Goodbye,\" the fighter bows.")
     elseif eventid == 0 then
-        switch_talk_to(20)
+        unknown_092EH(20) --- Guess: Triggers a game event
     end
-    return
 end

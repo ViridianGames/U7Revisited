@@ -1,6 +1,5 @@
--- Triggers an action on an item and sets a flag, likely for a one-time event or state change.
+--- Best guess: Destroys an item and sets a quest flag, possibly for quest cleanup.
 function func_0619(eventid, itemref)
-    trigger_action(itemref) -- Unmapped intrinsic
-    set_flag(itemref, 1)
-    return
+    destroy_item(itemref) --- Guess: Destroys item
+    unknown_008AH(1, itemref) --- Guess: Sets quest flag
 end

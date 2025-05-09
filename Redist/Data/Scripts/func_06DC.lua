@@ -1,8 +1,7 @@
--- Function 06DC: Resets or disables state
+--- Best guess: Disables a flag or effect when event ID 3 is triggered, likely part of a dungeon or trap deactivation.
 function func_06DC(eventid, itemref)
     if eventid == 3 then
-        callis_0075(false)
+        unknown_0075H(false)
     end
-
     return
 end

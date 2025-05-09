@@ -1,13 +1,13 @@
--- Formats a shop price string for an item.
-function func_091B(p0, p1, p2, p3, p4)
-    local local5
+--- Best guess: Formats a shop price string (e.g., “sells ham for 10 gold.”) based on item name, price, and quantity, adjusting verb for singular/plural.
+function func_091B(P0, P1, P2, P3, P4)
+    local var_0000
 
-    local5 = p4 .. p3 .. " "
-    if p2 == 1 then
-        local5 = local5 .. "sell "
+    var_0000 = P4 .. " " .. P3
+    if P2 == 1 then
+        var_0000 = var_0000 .. "sell "
     else
-        local5 = local5 .. "sells "
+        var_0000 = var_0000 .. "sells "
     end
-    local5 = local5 .. "for " .. p1 .. " gold" .. p0 .. "."
-    return local5
+    var_0000 = var_0000 .. "for " .. P1 .. " gold" .. P0 .. "."
+    return var_0000
 end

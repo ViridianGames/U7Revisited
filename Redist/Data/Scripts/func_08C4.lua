@@ -1,52 +1,44 @@
--- Function 08C4: Manages reagent purchase dialogue
+--- Best guess: Manages a shop dialogue for purchasing magical reagents, handling item selection, pricing, and inventory checks with a casual tone.
 function func_08C4()
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    callis_0007()
-    local0 = true
-    local1 = {"Nightshade", "Mandrake Root", "Spider Silk", "Blood Moss", "Garlic", "nothing"}
-    local2 = {842, 842, 842, 842, 842, 0}
-    local3 = {2, 3, 6, 1, 4, -359}
-    local4 = {5, 5, 3, 3, 2, 0}
-
-    while local0 do
-        add_dialogue("What wouldst thou like to buy?")
-        local5 = call_090CH(local1)
-        if local5 == 1 then
-            add_dialogue("Fine.")
-            local0 = false
+    save_answers()
+    var_0000 = true
+    var_0001 = {"Nightshade", "Mandrake Root", "Spider Silk", "Blood Moss", "Garlic", "nothing"}
+    var_0002 = {842, 842, 842, 842, 842, 0}
+    var_0003 = {2, 3, 6, 1, 4, 359}
+    var_0004 = {5, 5, 3, 3, 2, 0}
+    add_dialogue("\"What wouldst thou like to buy?\"")
+    while var_0000 do
+        var_0005 = unknown_090CH(var_0001)
+        if var_0005 == 1 then
+            add_dialogue("\"Fine.\"")
+            var_0000 = false
         else
-            local6 = ""
-            local7 = 0
-            local8 = ""
-            local9 = 1
-            local10 = call_091BH(local8, local4[local5], local7, local1[local5], local6)
-            local11 = 0
-            add_dialogue("^", local10, " Okey-dokey?")
-            local12 = call_090AH()
-            if local12 then
-                add_dialogue("How many wouldst thou like?")
-                local11 = call_08F8H(true, 1, 20, local4[local5], local9, local3[local5], local2[local5])
+            var_0006 = ""
+            var_0007 = 0
+            var_0008 = ""
+            var_0009 = 1
+            var_0010 = unknown_091BH(var_0008, var_0001[var_0005], var_0007, var_0004[var_0005], var_0006)
+            var_0011 = 0
+            add_dialogue("^" .. var_0010 .. " Okey-dokey?")
+            var_0012 = unknown_090AH()
+            if not var_0012 then
+                add_dialogue("\"How many wouldst thou like?\"")
+                var_0011 = unknown_08F8H(true, 1, 20, var_0004[var_0005], var_0009, var_0003[var_0005], var_0002[var_0005])
             end
-            if local11 == 1 then
-                add_dialogue("Done!")
-            elseif local11 == 2 then
-                add_dialogue("Thou cannot possibly carry that much!")
-            elseif local11 == 3 then
-                add_dialogue("Thou dost not have enough gold for that!")
+            if var_0011 == 1 then
+                add_dialogue("\"Done!\"")
+            elseif var_0011 == 2 then
+                add_dialogue("\"Thou cannot possibly carry that much!\"")
+            elseif var_0011 == 3 then
+                add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
+            add_dialogue("\"Wouldst thou like something else?\"")
+            var_0000 = unknown_090AH()
         end
-        add_dialogue("Wouldst thou like something else?")
-        local0 = call_090AH()
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

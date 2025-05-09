@@ -1,63 +1,63 @@
--- Function 0860: Healing services dialogue
-function func_0860(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10
+--- Best guess: Offers healing, poison curing, or resurrection services, with cost checks and party member selection.
+function func_0860(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    local3 = _GetPlayerName(eventid)
-    add_dialogue(itemref, "\"I am able to heal, cure poison, and resurrect. Art thou in need of one of these services?\"")
-    _SaveAnswers()
-    local4 = get_answer()
-    if local4 then
-        add_dialogue(itemref, "\"Which of my services dost thou need?\"")
-        local5 = {"resurrect", "cure poison", "heal"}
-        local6 = call_090BH(local5)
-        if local6 == "heal" or local6 == "cure poison" then
-            if local6 == "heal" then
-                local7 = "healed"
-                local8 = eventid
-            elseif local6 == "cure poison" then
-                local7 = "cured of poison"
-                local8 = itemref
+    start_conversation()
+    var_0003 = get_player_name() --- Guess: Gets player name
+    add_dialogue("@I am able to heal, cure poison, and resurrect. Art thou in need of one of these services?@")
+    save_answers() --- Guess: Saves dialogue answers
+    var_0004 = get_dialogue_choice() --- Guess: Gets dialogue choice
+    if var_0004 then
+        add_dialogue("@Which of my services dost thou need?@")
+        var_0005 = {"resurrect", "cure poison", "heal"}
+        var_0006 = show_dialogue_options(var_0005) --- Guess: Shows dialogue options
+        if var_0006 == "heal" or var_0006 == "cure poison" then
+            if var_0006 == "heal" then
+                var_0007 = "healed"
+                var_0008 = arg2
+            elseif var_0006 == "cure poison" then
+                var_0007 = "cured of poison"
+                var_0008 = arg1
             end
-            add_dialogue(itemref, "\"Who dost thou wish to be " .. local7 .. "?\"")
-            local9 = select_party_member()
-            if local9 == 0 then
-                add_dialogue(itemref, "\"So thou art healthy? 'Tis good news. If thou dost need my services in the future, do not hesitate to return.\"")
+            add_dialogue("@Who dost thou wish to be " .. var_0007 .. "?@")
+            var_0009 = select_party_member() --- Guess: Selects party member
+            if var_0009 == 0 then
+                add_dialogue("@So thou art healthy? 'Tis good news...@")
                 return
             end
-        elseif local6 == "resurrect" then
-            local10 = call_0022H()
-            local11 = check_condition(25, 400, local10)
-            if local11 == 0 then
-                local11 = check_condition(25, 414, local10)
-                if local11 == 0 then
-                    add_dialogue(itemref, "\"I apologize, " .. local3 .. ", but I do not see anyone who is in need of resurrection. I must be able to see the body to save the spirit. If thou art carrying thy misfortunate friend, pray lay them on the ground so that I may return them to this world.\"")
+        elseif var_0006 == "resurrect" then
+            var_000A = unknown_0022H() --- Guess: Unknown function, possibly combat status
+            var_000B = unknown_000EH(25, 400, var_000A) --- Guess: Unknown function, possibly resurrection check
+            if var_000B == 0 then
+                var_000B = unknown_000EH(25, 414, var_000A) --- Guess: Unknown function, possibly resurrection check
+                if var_000B == 0 then
+                    add_dialogue("@I apologize, " .. var_0003 .. ", but I do not see anyone who is in need of resurrection...@")
                     return
                 end
             end
-            add_dialogue(itemref, "\"Indeed, thy friend has departed this life. I will attempt to restore them to this world.\"")
-            local8 = eventid
+            add_dialogue("@Indeed, thy friend has departed this life...@")
+            var_0008 = eventid
         end
-        add_dialogue(itemref, "\"My price is " .. local8 .. " gold. Is this satisfactory?\"")
-        local12 = get_answer()
-        if local12 then
-            local13 = check_gold(-359, -359, 644, -357)
-            if local13 >= local8 then
-                if local6 == "heal" then
-                    heal(local8, local9)
-                elseif local6 == "cure poison" then
-                    cure_poison(local8, local9)
-                elseif local6 == "resurrect" then
-                    resurrect(local8, local11)
+        add_dialogue("@My price is " .. var_0008 .. " gold. Is this satisfactory?@")
+        var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
+        if var_000C then
+            var_000D = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+            if var_000D >= var_0008 then
+                if var_0006 == "heal" then
+                    heal_character(var_0008, var_0009) --- Guess: Heals character
+                elseif var_0006 == "cure poison" then
+                    cure_poison(var_0009) --- Guess: Cures poison
+                elseif var_0006 == "resurrect" then
+                    resurrect_character(var_0008, var_000B) --- Guess: Resurrects character
                 end
             else
-                add_dialogue(itemref, "\"Thou dost not have any gold. I am truly sorry. I cannot help thee until thou canst provide the proper fee.\" Chantu bows respectfully.")
+                add_dialogue("@Thou dost not have any gold...@")
             end
         else
-            add_dialogue(itemref, "\"Then I am truly sorry. I must charge what I must charge. We do not live in prosperous times.\"")
+            add_dialogue("@Then I am truly sorry...@")
         end
     else
-        add_dialogue(itemref, "\"Well, if thou dost decide that my services are needed, I am always here.\"")
+        add_dialogue("@Well, if thou dost decide that my services are needed...@")
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores dialogue answers
 end

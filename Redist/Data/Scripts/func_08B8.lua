@@ -1,45 +1,33 @@
--- Function 08B8: Manages egg collection job
+--- Best guess: Manages a dialogue for exchanging eggs for gold, checking the player’s inventory and handling payment or rejection.
 function func_08B8()
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    callis_0007()
-    local0 = 1
-    local1 = 1
-    add_dialogue("Excellent! Dost thou have some eggs for me?")
-    local2 = call_090AH()
-
-    if local2 then
-        add_dialogue("Very good! Let me see how many thou dost have...")
-        local3 = callis_0028(24, -359, 377, -357)
-        if local3 == 0 then
-            add_dialogue("But thou dost not have a single one in thy possession! Thou dost waste my time!")
-            abort()
+    save_answers()
+    var_0000 = 1
+    var_0001 = 1
+    add_dialogue("\"Excellent! Dost thou have some eggs for me?\"")
+    var_0002 = unknown_090AH()
+    if not var_0002 then
+        add_dialogue("\"Very good! Let me see how many thou dost have...\"")
+        var_0003 = unknown_0028H(24, 359, 377, 357)
+        if var_0003 == 0 then
+            add_dialogue("\"But thou dost not have a single one in thy possession! Thou dost waste my time!\"")
+            return
+        end
+        var_0004 = var_0003 / var_0001 * var_0000
+        add_dialogue("\"Lovely! " .. var_0003 .. "! That means I owe thee " .. var_0004 .. " gold. Here thou art! I shall take the eggs from thee now!\"")
+        var_0005 = unknown_002CH(true, 359, 359, 644, var_0004)
+        if var_0005 then
+            var_0006 = unknown_002BH(true, 24, 359, 377, var_0003)
+            add_dialogue("\"Come back and work for me at any time!\"")
+            return
         else
-            local4 = math.floor(local3 / local1) * local0
-            add_dialogue("Lovely! ", local3, "! That means I owe thee ", local4, " gold. Here thou art! I shall take the eggs from thee now!")
-            local5 = callis_002C(true, -359, -359, 644, local4)
-            if local5 then
-                local6 = callis_002B(true, 24, -359, 377, local3)
-                add_dialogue("Come back and work for me at any time!")
-                abort()
-            else
-                add_dialogue("If thou wouldst travel in a lighter fashion, thou wouldst have hands to take my gold!")
-            end
+            add_dialogue("\"If thou wouldst travel in a lighter fashion, thou wouldst have hands to take my gold!\"")
         end
     else
-        add_dialogue("No? What hast thou been doing with my chickens? Art thou some kind of fowl pervert?")
+        add_dialogue("\"No? What hast thou been doing with my chickens? Art thou some kind of fowl pervert?\"")
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function abort()
-    -- Placeholder
 end

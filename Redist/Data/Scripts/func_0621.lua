@@ -1,230 +1,224 @@
--- Manages party member banter, delivering location-specific or context-sensitive dialogue during exploration.
+--- Best guess: Handles party member banter for various locations (e.g., dungeons, shrines) and events, with checks for missing quest items (sphere, cube, tetrahedron).
 function func_0621(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if eventid ~= 3 then
-        return
-    end
-
-    local0 = ""
-    local1 = get_item_quality(itemref)
-    local2 = itemref
-    local3 = 0
-
-    if local1 == 0 then
-        local0 = "@Welcome, Avatar.@"
-        local3 = 0
-    elseif local1 == 1 then
-        if not get_flag(343) then
-            local0 = "Perhaps thou shouldst use the crystal ball."
-            local2 = -357
-            local3 = 1
+    start_conversation()
+    if eventid == 3 then
+        var_0000 = ""
+        var_0001 = get_item_quality(itemref) --- Guess: Gets item quality
+        var_0002 = itemref
+        var_0003 = 0
+        if var_0001 == 0 then
+            var_0000 = "@Welcome, Avatar.@"
+            var_0003 = 0
+        elseif var_0001 == 1 then
+            if not get_flag(343) then
+                var_0000 = "Perhaps thou shouldst use the crystal ball."
+                var_0002 = 357
+                var_0003 = 1
+            else
+                abort()
+            end
+        elseif var_0001 == 2 then
+            var_0000 = "Are we there yet?"
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 3 then
+            var_0000 = "I could use a drink."
+            var_0002 = 4
+            var_0003 = 0
+        elseif var_0001 == 4 then
+            var_0000 = "I am too old for this."
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 5 then
+            var_0000 = "I heard something!"
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 6 then
+            var_0000 = "Oh no! Not more rain!"
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 7 then
+            var_0000 = "We could use swamp boots!"
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 8 then
+            var_0000 = "When can we rest?"
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 9 then
+            var_0000 = "This is Dungeon Destard."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 10 then
+            var_0000 = "This is Dungeon Despise."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 11 then
+            var_0000 = "This is Dungeon Deceit."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 12 then
+            var_0000 = "This is Bee Cave."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 13 then
+            var_0000 = "This is the Minoc Mine."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 14 then
+            var_0000 = "This is the Vesper Mine."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 15 then
+            var_0000 = "This looks interesting."
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 16 then
+            var_0000 = "This place is creepy."
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 17 then
+            var_0000 = "Wow...!"
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 18 then
+            var_0000 = "Let's sing a sea shanty!"
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 19 then
+            var_0000 = "Let us win some gold!"
+            var_0002 = 4
+            var_0003 = 0
+        elseif var_0001 == 20 then
+            var_0000 = "Avatar, they are doing a play about thee!"
+            var_0002 = 1
+            var_0003 = 1
+        elseif var_0001 == 21 then
+            var_0000 = "Britain sure is big!"
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 22 then
+            var_0000 = "Be most careful. Who knows what may be lurking amongst the trees..."
+            var_0002 = 357
+            var_0003 = 1
+        elseif var_0001 == 23 then
+            var_0000 = "Brushed up on thy Gargish?"
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 24 then
+            var_0000 = "Real fighters live here!"
+            var_0002 = 4
+            var_0003 = 0
+        elseif var_0001 == 25 then
+            var_0000 = "Thy old relics are here!"
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 26 then
+            var_0000 = "That bread smells good..."
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 27 then
+            var_0000 = "That food smells good..."
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 28 then
+            var_0000 = "That fruit looks good..."
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 29 then
+            var_0000 = "I am getting sleepy..."
+            var_0002 = 2
+            var_0003 = 0
+        elseif var_0001 == 30 then
+            var_0000 = "The Shrine of Compassion!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 31 then
+            var_0000 = "The Shrine of Honesty!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 32 then
+            var_0000 = "The Shrine of Justice!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 33 then
+            var_0000 = "The Shrine of Spirituality!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 34 then
+            var_0000 = "The Shrine of Honor!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 35 then
+            var_0000 = "The Shrine of Valor!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 36 then
+            var_0000 = "The Shrine of Sacrifice!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 37 then
+            var_0000 = "The Shrine of Humility!"
+            var_0002 = 3
+            var_0003 = 0
+        elseif var_0001 == 38 then
+            var_0000 = "Watch for bridge trolls."
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 39 then
+            var_0000 = "Ah, home sweet home."
+            var_0002 = 1
+            var_0003 = 0
+        elseif var_0001 == 40 then
+            var_0000 = "The noise! Agh! It hurts!"
+            var_0002 = 357
+            var_0003 = 0
+        elseif var_0001 == 41 then
+            if not unknown_0931H(0, 359, 981, 1, 357) and get_flag(4) then
+                var_0000 = "You left the small sphere!"
+                var_0002 = 357
+                var_0003 = 1
+            else
+                abort()
+            end
+        elseif var_0001 == 42 then
+            if not unknown_0931H(1, 359, 981, 1, 357) and get_flag(5) then
+                var_0000 = "You left the small cube!"
+                var_0002 = 357
+                var_0003 = 1
+            else
+                abort()
+            end
+        elseif var_0001 == 43 then
+            if not unknown_0931H(2, 359, 981, 1, 357) and get_flag(3) then
+                var_0000 = "You left the small tetrahedron!"
+                var_0002 = 357
+                var_0003 = 1
+            else
+                abort()
+            end
+        end
+        if var_0002 == 357 then
+            var_0002 = get_player_id()
+            if var_0002 == 356 then
+                abort()
+            end
+        end
+        if var_0003 == 0 then
+            var_0000 = "@" .. var_0000 .. "@"
+            var_0004 = unknown_08F7H(var_0002) --- Guess: Checks player status
+            if var_0004 then
+                bark(var_0002, var_0000)
+            end
         else
-            return
-        end
-    elseif local1 == 2 then
-        local0 = "Are we there yet?"
-        local2 = -2
-        local3 = 0
-    elseif local1 == 3 then
-        local0 = "I could use a drink."
-        local2 = -4
-        local3 = 0
-    elseif local1 == 4 then
-        local0 = "I am too old for this."
-        local2 = -1
-        local3 = 0
-    elseif local1 == 5 then
-        local0 = "I heard something!"
-        local2 = -357
-        local3 = 0
-    elseif local1 == 6 then
-        local0 = "Oh no! Not more rain!"
-        local2 = -1
-        local3 = 0
-    elseif local1 == 7 then
-        local0 = "We could use swamp boots!"
-        local2 = -1
-        local3 = 0
-    elseif local1 == 8 then
-        local0 = "When can we rest?"
-        local2 = -2
-        local3 = 0
-    elseif local1 == 9 then
-        local0 = "This is Dungeon Destard."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 10 then
-        local0 = "This is Dungeon Despise."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 11 then
-        local0 = "This is Dungeon Deceit."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 12 then
-        local0 = "This is Bee Cave."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 13 then
-        local0 = "This is the Minoc Mine."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 14 then
-        local0 = "This is the Vesper Mine."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 15 then
-        local0 = "This looks interesting."
-        local2 = -3
-        local3 = 0
-    elseif local1 == 16 then
-        local0 = "This place is creepy."
-        local2 = -357
-        local3 = 0
-    elseif local1 == 17 then
-        local0 = "Wow...!"
-        local2 = -357
-        local3 = 0
-    elseif local1 == 18 then
-        local0 = "Let's sing a sea shanty!"
-        local2 = -1
-        local3 = 0
-    elseif local1 == 19 then
-        local0 = "Let us win some gold!"
-        local2 = -4
-        local3 = 0
-    elseif local1 == 20 then
-        local0 = "Avatar, they are doing a play about thee!"
-        local2 = -1
-        local3 = 1
-    elseif local1 == 21 then
-        local0 = "Britain sure is big!"
-        local2 = -2
-        local3 = 0
-    elseif local1 == 22 then
-        local0 = "Be most careful. Who knows what may be lurking amongst the trees..."
-        local2 = -357
-        local3 = 1
-    elseif local1 == 23 then
-        local0 = "Brushed up on thy Gargish?"
-        local2 = -357
-        local3 = 0
-    elseif local1 == 24 then
-        local0 = "Real fighters live here!"
-        local2 = -4
-        local3 = 0
-    elseif local1 == 25 then
-        local0 = "Thy old relics are here!"
-        local2 = -1
-        local3 = 0
-    elseif local1 == 26 then
-        local0 = "That bread smells good..."
-        local2 = -2
-        local3 = 0
-    elseif local1 == 27 then
-        local0 = "That food smells good..."
-        local2 = -2
-        local3 = 0
-    elseif local1 == 28 then
-        local0 = "That fruit looks good..."
-        local2 = -2
-        local3 = 0
-    elseif local1 == 29 then
-        local0 = "I am getting sleepy..."
-        local2 = -2
-        local3 = 0
-    elseif local1 == 30 then
-        local0 = "The Shrine of Compassion!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 31 then
-        local0 = "The Shrine of Honesty!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 32 then
-        local0 = "The Shrine of Justice!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 33 then
-        local0 = "The Shrine of Spirituality!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 34 then
-        local0 = "The Shrine of Honor!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 35 then
-        local0 = "The Shrine of Valor!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 36 then
-        local0 = "The Shrine of Sacrifice!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 37 then
-        local0 = "The Shrine of Humility!"
-        local2 = -3
-        local3 = 0
-    elseif local1 == 38 then
-        local0 = "Watch for bridge trolls."
-        local2 = -357
-        local3 = 0
-    elseif local1 == 39 then
-        local0 = "Ah, home sweet home."
-        local2 = -1
-        local3 = 0
-    elseif local1 == 40 then
-        local0 = "The noise! Agh! It hurts!"
-        local2 = -357
-        local3 = 0
-    elseif local1 == 41 then
-        if not check_item(-359, 0, 981, 1, -357) and get_flag(4) then
-            local0 = "You left the small sphere!"
-            local2 = -357
-            local3 = 1
-        else
-            return
-        end
-    elseif local1 == 42 then
-        if not check_item(-359, 1, 981, 1, -357) and get_flag(5) then
-            local0 = "You left the small cube!"
-            local2 = -357
-            local3 = 1
-        else
-            return
-        end
-    elseif local1 == 43 then
-        if not check_item(-359, 2, 981, 1, -357) and get_flag(3) then
-            local0 = "You left the small tetrahedron!"
-            local2 = -357
-            local3 = 1
-        else
-            return
-        end
-    end
-
-    if local2 == -357 then
-        local2 = get_player_name()
-        if local2 == -356 then
-            return
-        end
-    end
-
-    if local3 == 0 then
-        local0 = "@" .. local0 .. "@"
-        local4 = switch_talk_to(local2)
-        if local4 then
-            bark(local2, local0)
-        end
-    else
-        local4 = switch_talk_to(local2)
-        if local4 then
-            switch_talk_to(local2, 0)
-            add_dialogue(local0)
-            hide_npc(local2)
+            var_0004 = unknown_08F7H(var_0002) --- Guess: Checks player status
+            if var_0004 then
+                switch_talk_to(var_0002, 0)
+                add_dialogue(var_0000)
+                hide_npc(var_0002)
+            end
         end
     end
-
-    return
 end

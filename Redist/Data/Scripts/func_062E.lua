@@ -1,37 +1,37 @@
--- Manages cloth weaving on a loom, converting thread to cloth if the correct item is selected.
+--- Best guess: Manages a loom mechanic, weaving thread (ID 261) into cloth, with dialogue prompting correct item use and updating item states.
 function func_062E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 7 then
-        local0 = is_item_active(itemref) -- Unmapped intrinsic
-        if not local0 then
-            local1 = external_0827H(itemref, -356) -- Unmapped intrinsic
-            local2 = get_item_data(itemref)
-            local3 = external_0025H(itemref) -- Unmapped intrinsic
-            if local3 then
-                local3 = external_0036H(-356) -- Unmapped intrinsic
-                if not local3 then
-                    local3 = set_item_data(local2)
-                    external_006AH(4) -- Unmapped intrinsic
+        var_0000 = unknown_006EH(itemref)
+        if not var_0000 then
+            var_0001 = unknown_0827H(itemref, -356)
+            var_0002 = unknown_0018H(itemref)
+            var_0003 = unknown_0025H(itemref)
+            if not var_0003 then
+                var_0003 = unknown_0036H(-356)
+                if not var_0003 then
+                    var_0003 = unknown_0026H(var_0002)
+                    unknown_006AH(4)
                     return
+                else
+                    var_0003 = unknown_0001H(-356, {1582, 17493, 17505, 17516, 8449, var_0001, 7769})
                 end
-                local3 = add_item(-356, {1582, 17493, 17505, 17516, 8449, local1, 7769})
             end
         else
-            external_007EH() -- Unmapped intrinsic
+            unknown_007EH()
         end
-    elseif eventid == 2 or local0 then
-        local4 = item_select_modal() -- Unmapped intrinsic
-        local5 = get_item_type(local4)
-        if local5 == 261 then
-            local6 = {-2, -1, 0}
-            local7 = {1, 1, 1}
-            local8 = -1
-            local9 = add_item(local4, 7, 261, local8, local7, local6)
+    elseif eventid == 2 or var_0000 then
+        var_0004 = _ItemSelectModal()
+        var_0005 = get_object_shape(var_0004)
+        if var_0005 == 261 then
+            var_0006 = {-2, -1, 0}
+            var_0007 = {1, 1, 1}
+            var_0008 = -1
+            unknown_0828H(7, var_0004, 261, var_0008, var_0007, var_0006, var_0004)
         else
-            local9 = "@Why dost thou not weave cloth with that thread on the loom?@"
-            external_08FFH(local9) -- Unmapped intrinsic
+            var_0009 = "@Why dost thou not weave cloth with that thread on the loom?@"
+            unknown_08FFH(var_0009)
         end
     end
-    return
 end

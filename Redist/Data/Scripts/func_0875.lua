@@ -1,59 +1,58 @@
--- Function 0875: Denby training dialogue
-function func_0875(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
+--- Best guess: Provides training in strength, dexterity, and intelligence, with detailed dialogue and stat improvements.
+function func_0875(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010
 
-    local2 = select_training_target(eventid, itemref)
-    local3 = _GetNPCName(local2)
-    local4 = _GetPlayerName(local2)
-    if local3 == local4 then
-        local3 = "you"
+    var_0002 = get_training_target() --- Guess: Gets training target
+    var_0003 = get_player_name(var_0002) --- Guess: Gets player name
+    var_0004 = start_ceremony() --- Guess: Starts ceremony
+    if var_0003 == var_0004 then
+        var_0003 = "you"
     end
-    if local2 == 0 then
+    if var_0002 == 0 then
         return
     end
-    local5 = 3
-    local6 = check_training_eligibility(local5, local2, eventid, itemref)
-    if local6 == 0 then
-        add_dialogue(itemref, "\"I am sorry, but thou dost not have enough practical experience to train at this time. If thou couldst return at a later date, I would be most happy to train thee.\"")
+    var_0005 = 3
+    var_0006 = evaluate_training_ability(var_0005, var_0002, arg1, arg2) --- Guess: Evaluates training ability
+    if var_0006 == 0 then
+        add_dialogue("@I am sorry, but thou dost not have enough practical experience...@")
         return
-    elseif local6 == 1 then
-        local7 = check_gold(-359, -359, 644, -357)
-        add_dialogue(itemref, "\"You gather your gold and count it, finding that you have " .. local7 .. " gold altogether.\"")
-        if local7 < eventid then
-            add_dialogue(itemref, "\"I regret that thou dost not seem to have enough gold to train here. Mayhaps at another time, when thy fortunes are more prosperous...\"")
+    elseif var_0006 == 1 then
+        var_0007 = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+        add_dialogue("@You gather your gold and count it, finding that you have " .. var_0007 .. " gold altogether.@")
+        if var_0007 < var_0000 then
+            add_dialogue("@I regret that thou dost not seem to have enough gold...@")
             return
         end
-    elseif local6 == 2 then
-        add_dialogue(itemref, "\"Thou art already as proficient as I! I am afraid that thou cannot be trained further in this.\"")
+    elseif var_0006 == 2 then
+        add_dialogue("@Thou art already as proficient as I!...@")
         return
     end
-    local8 = remove_gold(true, -359, -359, 644, eventid)
-    add_dialogue(itemref, "\"You pay " .. eventid .. " gold, and the training session begins.\"")
-    if local3 == "you" then
-        local9 = "complete"
-        local10 = "feel"
-        local11 = "your"
-        local12 = "spend"
-        local13 = "you"
+    var_0008 = remove_item_from_inventory(359, 644, 359, var_0000) --- Guess: Removes item from inventory
+    add_dialogue("@You pay " .. var_0000 .. " gold, and the training session begins.@")
+    if var_0003 == "you" then
+        var_0009 = "complete"
+        var_000A = "feel"
+        var_000B = "your"
+        var_000C = "spend"
+        var_000D = "you"
     else
-        local9 = "completes"
-        local10 = "feels"
-        local11 = "their"
-        local12 = "spends"
-        local13 = "them"
+        var_0009 = "completes"
+        var_000A = "feels"
+        var_000B = "their"
+        var_000C = "spends"
+        var_000D = "them"
     end
-    add_dialogue(itemref, "\"Denby hands " .. local3 .. " a chart with runes printed on it. \\\"Study these runes and memorize them,\\\" he says. After " .. local3 .. " " .. local9 .. " this task, " .. local3 .. " " .. local10 .. " that there is a bit of knowledge in " .. local11 .. " mind that was not there earlier.~~\\\"Now we shall exercise. Practice what I teach thee at least twice a day. Then thou shalt become more agile and limber.\\\" ^" .. local3 .. " " .. local12 .. " a while mimicking the movements which Denby shows " .. local13 .. ". Finally, Denby teaches " .. local13 .. " a few magic words to intone for meditational purposes. When the training session is complete, " .. local3 .. " " .. local10 .. " much more energized and ready for anything that might come " .. local11 .. " way...*\"")
-    local14 = get_stat(1, local2)
-    local15 = get_stat(2, local2)
-    local16 = get_stat(6, local2)
-    if local14 < 30 then
-        train_strength(1, local2)
+    add_dialogue("@Denby hands " .. var_0003 .. " a chart with runes printed on it... " .. var_0003 .. " " .. var_0009 .. " this task, " .. var_0003 .. " " .. var_000A .. " that there is a bit of knowledge in " .. var_000B .. " mind that was not there earlier... " .. var_000C .. " a while mimicking the movements which Denby shows " .. var_000D .. ". Finally, Denby teaches " .. var_000D .. " a few magic words... " .. var_000A .. " much more energized and ready for anything that might come " .. var_000B .. " way...@")
+    var_000E = get_training_level(1, var_0002) --- Guess: Gets training level
+    var_000F = get_training_level(2, var_0002) --- Guess: Gets training level
+    var_0010 = get_training_level(6, var_0002) --- Guess: Gets training level
+    if var_000E < 30 then
+        improve_training_level(var_0002, 1) --- Guess: Improves strength
     end
-    if local15 < 30 then
-        train_dexterity(1, local2)
+    if var_000F < 30 then
+        improve_dexterity(var_0002, 1) --- Guess: Improves dexterity
     end
-    if local16 < 30 then
-        train_intelligence(1, local2)
+    if var_0010 < 30 then
+        improve_intelligence(var_0002, 1) --- Guess: Improves intelligence
     end
-    return
 end

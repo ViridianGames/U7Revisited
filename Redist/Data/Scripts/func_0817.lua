@@ -1,23 +1,26 @@
--- Function 0817: Update door flags and items
+--- Best guess: Updates door states based on flag conditions, spawning items for visual effects.
 function func_0817(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    set_flag(740, local0[1])
-    set_flag(741, local0[2])
-    set_flag(742, local0[3])
-    local1 = check_position(0, 15, 949, -356)
+    var_0000 = itemref
+    set_flag(740, var_0000[1])
+    set_flag(741, var_0000[2])
+    set_flag(742, var_0000[3])
+    var_0001 = unknown_0035H(0, 15, 949, 356) --- Guess: Sets NPC location
     if not get_flag(740) then
-        local2 = 230
-    elseif not get_flag(741) then
-        local2 = 220
-    elseif not get_flag(742) then
-        local2 = 210
+        var_0002 = 230
     end
-    while local3 do
-        local5 = local3
-        if _GetItemQuality(local5) == local2 then
-            local6 = call_0001H({0, 17478, 7969, 16, 17496, 17443, 7937, 1, 7750}, local5)
+    if not get_flag(741) then
+        var_0002 = 220
+    end
+    if not get_flag(742) then
+        var_0002 = 210
+    end
+    -- Guess: sloop updates door qualities
+    for i = 1, 5 do
+        var_0005 = {3, 4, 5, 1, 51}[i]
+        if get_item_quality(var_0005) == var_0002 then
+            var_0006 = add_container_items(var_0005, {0, 17478, 7969, 16, 17496, 17443, 7937, 1, 7750})
         end
-        local3 = get_next_item() -- sloop
     end
 end

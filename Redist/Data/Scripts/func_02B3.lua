@@ -1,7 +1,7 @@
--- Function 02B3: Play music track
+--- Best guess: Plays a specific music track (ID 58) when triggered, likely for an ambient or event-based sound effect.
 function func_02B3(eventid, itemref)
     if eventid == 1 then
-        _PlayMusic(itemref, 58)
+        play_music(itemref, 58)
     end
     return
 end

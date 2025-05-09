@@ -1,72 +1,74 @@
-function func_0124H(eventid, itemref)
+--- Best guess: Manages a seating interaction on a barge or chair, assigning party members to seats based on proximity and state.
+function func_0124(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014
+
     if eventid == 1 then
-        if not U7IsItemOnBarge(itemref) then
-            local barge = U7GetBarge(itemref)
-            if barge == 652 or barge == 840 then
-                if U7GetItemShape(itemref, 10) == 0 then
-                    if barge == 652 then
-                        U7CallScript(0x028C, itemref)
-                    elseif barge == 840 then
-                        U7CallScript(0x0348, itemref)
+        if unknown_0058H(itemref) then
+            var_0000 = func_080CH(0, itemref)
+            if var_0000 == 652 or var_0000 == 840 then
+                if not unknown_0088H(10, itemref) then
+                    if var_0000 == 652 then
+                        calle_028CH(itemref)
+                    elseif var_0000 == 840 then
+                        calle_0348H(itemref)
                     end
                 else
-                    U7PerformBargeAction(itemref)
+                    var_0001 = unknown_08B3H(itemref)
                 end
             end
         else
-            U7AddItemToBarge(itemref, 292)
-            local count = U7CountNearbyItems(itemref, -356) + 15
-            U7AddItemsToBarge(itemref, count, 292)
+            func_080AH(292, itemref)
+            var_0002 = unknown_0019H(-356, itemref) + 15
+            var_0001 = unknown_0002H(var_0002, {292, 17493, 7715}, itemref)
         end
     elseif eventid == 2 then
-        local items = U7GetItemInfo(-356)
-        local valid_seats = U7CreateArray(2791, 2517, 2615, 2727, 2277, 2615, 2517, 2469)
-        local barge_seats = U7CreateArray(2775, 2181)
-        local flag_set = false
-        if items[1] == barge_seats[1] and items[2] == barge_seats[2] and not U7GetGlobalFlag(0x02E7) then
-            U7SetGlobalFlag(0x02E7, true)
-            barge_seats[2] = barge_seats[2] + 2
-            U7MoveItem(barge_seats[2], barge_seats[1], 0, 0, 0, 17)
-            U7SetItemQuality(itemref, 62)
-            U7StartEndgame()
-            local obj = U7FindObjectByType(895)
-            if obj ~= nil then
-                U7SetItemQuality(obj, 18)
-                U7UpdateContainer(barge_seats)
+        var_0003 = unknown_0018H(-356)
+        var_0004 = {2469, 2615, 2277, 2727, 2517, 2615, 2517, 2791}
+        var_0005 = {2181, 2775}
+        var_0006 = 0
+        if var_0003[1] == var_0005[1] and var_0003[2] == var_0005[2] and get_flag(743) == false then
+            set_flag(743, true)
+            var_0007 = unknown_0053H(-1, 0, 0, 0, var_0005[2] + 1, var_0005[1] + 1, 17)
+            unknown_0086H(itemref, 62)
+            _StartEndgame()
+            var_0007 = unknown_0024H(895)
+            if not var_0007 then
+                unknown_0089H(18, var_0007)
+                var_0001 = unknown_0026H(var_0005)
             end
-            return
+            abort()
         end
-        local seat_index = 1
-        while seat_index <= #valid_seats do
-            if items[1] == valid_seats[seat_index] and items[2] == valid_seats[seat_index + 1] then
-                seat_index = U7CheckSeat(seat_index)
-                valid_seats[1] = seat_index
-                valid_seats[2] = seat_index + 1
-                break
-            end
-            seat_index = U7CheckSeat(seat_index)
-            if seat_index <= 1 then
-                break
-            end
+        var_0008 = 1
+        while var_0003[1] == var_0004[var_0008] and var_0003[2] == var_0004[var_0008 + 1] do
+            var_0008 = func_080BH(var_0008)
+            var_0004[var_0008] = var_0008
+            var_0004[var_0008 + 1] = var_0008 + 1
         end
-        if not flag_set then
-            local party = U7GetPartyMembers()
-            local pos1, pos2, pos3 = {}, {}, {}
-            local items_info = U7GetItemInfo(-356)
-            local idx = 1
-            for _, member in ipairs(party) do
-                local member_pos = U7GetItemInfo(member)
-                pos1[idx] = member_pos[1] - items_info[1]
-                pos2[idx] = member_pos[2] - items_info[2]
-                pos3[idx] = U7IsPartyMember(member)
-                idx = idx + 1
+        var_0008 = func_080BH(var_0008)
+        if var_0008 > 1 then
+            var_0009 = _GetPartyMembers()
+            var_000A = {}
+            var_000B = {}
+            var_000C = {}
+            var_000D = unknown_0018H(-356)
+            var_000E = 1
+            for var_000F in ipairs(var_0009) do
+                var_0010 = unknown_0018H(var_0011)
+                var_000A[var_000E] = var_0010[1] - var_000D[1]
+                var_000B[var_000E] = var_0010[2] - var_000D[2]
+                var_000C[var_000E] = var_0011
+                var_0012 = unknown_006BH(var_0011)
+                var_000E = var_000E + 1
             end
-            idx = 1
-            for _, item in ipairs(items_info) do
-                local arr = U7CreateArray(item - pos2[idx], pos1[idx] - item)
-                U7MovePartyMember(party[idx], arr)
-                U7UpdatePartyMember(party[idx])
-                idx = idx + 1
+            func_003EH(var_0006, -357)
+            var_000D = unknown_0018H(-356)
+            var_000E = 1
+            for var_0013 in ipairs(var_0009) do
+                var_000D[3] - var_000D[2] = var_000B[var_000E]
+                var_000D[3] - var_000D[1] = var_000A[var_000E]
+                func_003EH(var_000C[var_000E], var_0011)
+                unknown_006CH(var_000C[var_000E], var_0011)
+                var_000E = var_000E + 1
             end
         end
     end

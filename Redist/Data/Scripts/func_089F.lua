@@ -1,41 +1,41 @@
--- Manages combat training with Jakher, checking gold and stats.
-function func_089F(p0, p1)
-    local local2, local3, local4, local5, local6, local7, local8, local9, local10
+--- Best guess: Manages a combat training session with Jakher, checking player intelligence and gold, enhancing tactical skills if conditions are met.
+function func_089F(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
-    local2 = external_0920H() -- Unmapped intrinsic
-    local3 = external_090FH(local2) -- Unmapped intrinsic
-    local4 = external_0908H() -- Unmapped intrinsic
-    if local3 == local4 then
-        local3 = "you"
+    var_0002 = unknown_0920H()
+    var_0003 = _GetPlayerName(var_0002)
+    var_0004 = _GetPlayerName()
+    if var_0003 == var_0004 then
+        var_0003 = "you"
     end
-    if local2 == 0 then
+    if var_0002 == 0 then
         return
     end
-    local5 = 2
-    local6 = external_0922H(local5, local2, p0, p1) -- Unmapped intrinsic
-    if local6 == 0 then
+    var_0005 = 2
+    var_0006 = unknown_0922H(var_0005, var_0002, P0, P1)
+    if var_0006 == 0 then
         add_dialogue("Jakher looks into your eyes, sizing you up intellectually. \"Thou dost need to learn more on the field of battle. If we spoke now I would be wasting my breath. Thou wouldst not understand a word I said.\"")
-    elseif local6 == 1 then
-        local7 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
-        add_dialogue("You gather your gold and count it, finding that you have " .. local7 .. " gold altogether.")
-        if local7 < p0 then
+    elseif var_0006 == 1 then
+        var_0007 = unknown_0028H(-359, -359, 644, -357)
+        add_dialogue("You gather your gold and count it, finding that you have " .. var_0007 .. " gold altogether.")
+        if var_0007 < P0 then
             add_dialogue("\"Thou dost not seem to have as much gold as I require to train here. Mayhaps at another time, when thy fortunes are more prosperous...\"")
+            return
         end
-    elseif local6 == 2 then
+    elseif var_0006 == 2 then
         add_dialogue("\"Thou art already well-versed in the tactics of the battlefield. I am afraid that I am unable to train thee further in this.\"")
-    else
-        local8 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        add_dialogue("You pay " .. p0 .. " gold, and the training session begins.")
-        add_dialogue("Jakher's eyes glow bright as he begins to explain some of the strategies used by great military leaders in awesome battles fought in ages past. He whispers to " .. local3 .. " conspiratorially as he draws maps in the dirt. After some time, " .. local3 .. " can practically feel some of his shrewdness starting to be absorbed.")
-        local9 = external_0910H(2, local2) -- Unmapped intrinsic
-        local10 = external_0910H(0, local2) -- Unmapped intrinsic
-        if local9 < 30 then
-            external_0916H(1, local2) -- Unmapped intrinsic
-        end
-        if local10 < 30 then
-            external_0914H(1, local2) -- Unmapped intrinsic
-        end
+        return
+    end
+    var_0008 = unknown_002BH(true, -359, -359, 644, P0)
+    add_dialogue("You pay " .. P0 .. " gold, and the training session begins.")
+    add_dialogue("Jakher's eyes glow bright as he begins to explain some of the strategies used by great military leaders in awesome battles fought in ages past. He whispers to " .. var_0003 .. " conspiratorially as he draws maps in the dirt. After some time, " .. var_0003 .. " can practically feel some of his shrewdness starting to be absorbed.")
+    var_0009 = unknown_0910H(2, var_0002)
+    var_000A = unknown_0910H(0, var_0002)
+    if var_0009 < 30 then
+        unknown_0916H(1, var_0002)
+    end
+    if var_000A < 30 then
+        unknown_0914H(1, var_0002)
     end
     add_dialogue("\"I look forward to thy return.\"")
-    return
 end

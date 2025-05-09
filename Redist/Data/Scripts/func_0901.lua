@@ -1,14 +1,14 @@
--- Function 0901: Select valid party member
+--- Best guess: Filters party members to find a valid NPC, defaulting to 356 if none found.
 function func_0901(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local0 = call_093CH(_GetPartyMembers(), -356)
-    local1 = _ArraySize(local0)
-    if local1 ~= 0 then
-        local2 = set_training_target(local0[0])
-        if npc_in_party(local2) then
-            set_return(local2)
+    var_0000 = filter_party_members(get_party_members(), get_item_owner(356)) --- Guess: Filters party members
+    var_0001 = array_size(var_0000) --- Guess: Gets array size
+    if var_0001 ~= 0 then
+        var_0002 = get_party_member(var_0001) --- Guess: Gets party member
+        if not npc_in_party(var_0002) then --- Guess: Checks if NPC is in party
+            return var_0002
         end
     end
-    set_return(-356)
+    return 356
 end

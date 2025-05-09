@@ -1,20 +1,19 @@
--- Function 0867: Random adjective pair
+--- Best guess: Generates adjective pairs (e.g., "constipated", "dyslexic"), possibly for NPC descriptions.
 function func_0867(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = {
-        "constipated", "fractal", "dysfuctional", "dyslexic", "diurectic", "glandular",
-        "hormonal", "obtuse", "obese", "partisan", "bilateral", "symmetrical",
-        "frontal", "superfluous", "super-saturated", "molar", "low-pressure", "diagnostic",
-        "acidic", "empirical", "basic", "suicidal", "comforting", "passive",
-        "hedonisitic", "pagan", "philanthropic", "operatic", "staged", "affected",
-        "grotesque", "orgasmic", "organic", "pedantic", "imperialist", "Gumpy",
+    var_0000 = {
+        "constipated", "fractal", "dysfuctional", "dyslexic", "diurectic",
+        "glandular", "hormonal", "obtuse", "obese", "partisan", "bilateral",
+        "symmetrical", "frontal", "superfluous", "super-saturated", "molar",
+        "low-pressure", "diagnostic", "acidic", "empirical", "basic",
+        "suicidal", "comforting", "passive", "hedonisitic", "pagan",
+        "philanthropic", "operatic", "staged", "affected", "grotesque",
+        "orgasmic", "organic", "pedantic", "imperialist", "Gumpy",
         "co-dependent"
     }
-    local1 = _ArraySize(local0)
-    local1 = _Random2(local1, 1)
-    local2 = local0[local1]
-    local1 = _Random2(local1, 1)
-    local3 = local0[local1]
-    set_return({local3, local2})
+    var_0001 = random(1, array_size(var_0000)) --- Guess: Generates random index
+    var_0002 = var_0000[var_0001]
+    var_0003 = var_0000[random(1, array_size(var_0000))] --- Guess: Generates random index
+    return {var_0002, var_0003}
 end

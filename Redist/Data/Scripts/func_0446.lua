@@ -1,91 +1,122 @@
--- func_0446.lua
--- Nell's dialogue as a servant at Castle British
+--- Best guess: Handles dialogue with Miranda, a Great Council member, discussing women’s rights, her son Max, and a bill to protect Lock Lake, asking the player to deliver it to Lord Heather in Cove for signing.
+function func_0446(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-
-function func_0446(eventid)
-    local answers = {}
-    local flag_00BD = get_flag(0x00BD) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00CE = get_flag(0x00CE) -- Castle topic
-    local npc_id = -60 -- Nell's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00CE then
-            add_answer( "castle")
+        switch_talk_to(70, 0)
+        var_0000 = get_player_name()
+        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        add_answer({"bye", "job", "name"})
+        if not get_flag(222) then
+            add_answer("signed")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00BD then
-            add_dialogue("You see a young woman in a crisp apron, polishing silverware with practiced ease.")
-            set_flag(0x00BD, true)
+        if not get_flag(199) then
+            add_dialogue("This is a lovely, earthy woman with a warm smile.")
+            add_dialogue("\"Word has spread quickly of thine arrival, Avatar! Welcome!\"")
+            set_flag(199, true)
         else
-            add_dialogue("\"Hello again, \" .. get_player_name() .. \",\" Nell says with a curtsy.")
+            add_dialogue("\"Hello, " .. var_0000 .. ",\" Miranda says. \"Nice to see thee again.\"")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Nell pauses her work. \"Need something else, milord?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"I’m Nell, servant to Lord British.\"")
+            var_0002 = get_answer()
+            if var_0002 == "name" then
+                add_dialogue("\"I am Miranda.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I clean, cook, and tend to the castle’s needs. It’s hard work, but I’m proud to serve His Majesty.\"")
-                add_answer( "castle")
-                add_answer( "Lord British")
-                set_flag(0x00CE, true)
-            elseif choice == "castle" then
-                add_dialogue("\"Castle British is grand, but it’s a maze of halls and duties. I’ve worked here since I was a girl, and I still get lost sometimes.\"")
-                add_answer( "duties")
-                remove_answer("castle")
-            elseif choice == "duties" then
-                add_dialogue("\"Polishing silver, scrubbing floors, and helping in the kitchens. Keeps me busy, but I hear all the castle gossip.\"")
-                add_answer( "gossip")
-                remove_answer("duties")
-            elseif choice == "Lord British" then
-                add_dialogue("\"His Majesty is kind but busy. I rarely see him, though he always thanks us servants when he does. Some say he’s troubled by the Fellowship’s growing influence.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("Lord British")
-            elseif choice == "gossip" then
-                add_dialogue("\"Oh, there’s always talk! Servants whisper about strange visitors to the castle—Fellowship folk, mostly, meeting with advisors late at night.\"")
-                add_answer( "Fellowship")
-                remove_answer("gossip")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s everywhere in Britain now. They’re polite, but I don’t like how they watch everyone. Makes my skin crawl.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Perhaps I’m being unfair. I’ll think on it.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0002 == "job" then
+                add_dialogue("\"I serve on the Great Council. Today we are working on a bill of law. When I am not here in the castle, I am kept busy with a young child.\"")
+                add_answer({"child", "bill", "Great Council"})
+            elseif var_0002 == "Great Council" then
+                add_dialogue("\"The Great Council supports Lord British in the legislation of Britannia's laws. I am honored to be one of the three women serving on the Council.\"")
+                add_answer("women")
+                remove_answer("Great Council")
+            elseif var_0002 == "women" then
+                add_dialogue("\"I am particularly concerned about women's duties and privileges and their available opportunities in the land. Our history has been kind to women in general, but there is still room for improvement.\"")
+                add_answer("improvement")
+                remove_answer("women")
+            elseif var_0002 == "improvement" then
+                add_dialogue("\"More women could hold public office, for one thing. And I would personally like to be rid of those scantily-clad women in heroic fantasy paintings.\"")
+                remove_answer("improvement")
+            elseif var_0002 == "child" then
+                add_dialogue("Miranda smiles. \"Yes, my son's name is Max.\"")
+                if var_0001 == 2 or var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
+                    add_dialogue("\"He is probably in the Royal Nursery.\"")
                 else
-                    add_dialogue("\"Nay, I trust my instincts. They’re up to something.\"")
+                    var_0002 = unknown_08F7H(32) --- Guess: Checks player status
+                    if var_0002 then
+                        add_dialogue("\"He's right here! Say hello to the Avatar, Max.\"")
+                        switch_talk_to(32, 0)
+                        add_dialogue("\"Hi. I'm a funny boy!\"")
+                        hide_npc(32)
+                        switch_talk_to(70, 0)
+                        add_dialogue("\"He's quite precocious.\"")
+                    else
+                        add_dialogue("\"I wonder where he could be...\"")
+                    end
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Farewell, \" .. get_player_name() .. \".\"")
+                add_dialogue("\"He is quite obviously his father's son. Perhaps thou hast met him? Raymundo -- the director of the Royal Theatre. We believe Max will be quite a performer when he's older.\"")
+                set_flag(105, true)
+                remove_answer("child")
+            elseif var_0002 == "bill" then
+                if var_0001 == 2 or var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
+                    add_dialogue("\"Inwisloklem and I are drafting a bill which would make illegal any distribution of waste products in Lock Lake, near Cove. The lake is quite defiled.\"")
+                    add_answer("Cove")
+                else
+                    add_dialogue("\"I would like to speak with thee about the new bill we are drafting. Please come to the Council Chamber during normal working hours and we shall talk.\"")
+                end
+                remove_answer("bill")
+            elseif var_0002 == "Cove" then
+                add_dialogue("\"Art thou travelling to Cove?\"")
+                var_0003 = select_option()
+                if var_0003 then
+                    add_dialogue("\"That is good news! Perhaps thou couldst do us a great favor. We need this bill delivered to Lord Heather in Cove. He must read it and give us his approval by signing it. I know thou hast far more important things to do than running errands, but it would be greatly appreciated. Wilt thou do it?\"")
+                    var_0004 = select_option()
+                    if var_0004 then
+                        add_dialogue("\"Wonderful! Here is the bill. Please bring it back to me when it is signed. And we thank thee.\"")
+                        var_0005 = unknown_002CH(true, 359, 4, 797, 1) --- Guess: Checks inventory space
+                        if var_0005 then
+                            set_flag(106, true)
+                        else
+                            add_dialogue("\"Thine hands are too full to take the bill!\"")
+                        end
+                    else
+                        add_dialogue("\"Oh. All right. We know that thou art very busy. We shall find another way to deliver the bill. Thank thee anyway.\"")
+                    end
+                else
+                    add_dialogue("\"Thou wilt not be travelling to Cove at all? Well, all right then. Never mind.\"")
+                end
+                remove_answer("Cove")
+            elseif var_0002 == "signed" then
+                add_dialogue("\"Didst thou have Lord Heather sign the bill?\"")
+                var_0006 = select_option()
+                if var_0006 then
+                    add_dialogue("\"Excellent! Let me see it.\"")
+                    if not get_flag(222) then
+                        var_0007 = unknown_0931H(359, 4, 797, 1, 357) --- Guess: Checks for signed bill
+                        if var_0007 then
+                            var_0005 = unknown_002BH(true, 359, 4, 797, 1) --- Guess: Deducts signed bill
+                            if var_0005 then
+                                add_dialogue("\"It looks in order! We thank thee, Avatar!\"")
+                                unknown_0911H(20) --- Guess: Submits signed bill
+                            else
+                                add_dialogue("\"Wait, where is it? Thou dost not have it. I hope thou hast not lost it. Thou shouldst go and find it. 'Tis an important document!\"")
+                            end
+                        else
+                            add_dialogue("\"Wait! Where is it? Thou dost not have it. I hope thou hast not lost it. Thou shouldst go and find it. 'Tis an important document!\"")
+                        end
+                    else
+                        add_dialogue("\"But thou hast not had the bill signed! Please do so, as soon as possible, if thou wouldst.\"")
+                    end
+                else
+                    add_dialogue("\"Oh. Well, the next time thou art in Cove, perhaps thou wilt find time to see him.\"")
+                end
+                remove_answer("signed")
+            elseif var_0002 == "bye" then
                 break
             end
         end
+        add_dialogue("\"We shall see thee again soon, I hope, Avatar.\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(70) --- Guess: Triggers a game event
     end
 end
-
-return func_0446

@@ -1,12 +1,13 @@
--- Function 0801: Check for bedroll
+--- Best guess: Tests if an item is a bedroll (type 1011, frame 17).
 function func_0801(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local1 = _GetItemFrame(eventid)
-    local2 = _GetItemType(eventid)
-    if local1 == 17 and local2 == 1011 then
-        set_return(true)
+    var_0000 = itemref
+    var_0001 = get_item_frame(var_0000) --- Guess: Gets item frame
+    var_0002 = get_item_type(var_0000) --- Guess: Gets item type
+    if var_0001 == 17 and var_0002 == 1011 then
+        return true
     else
-        set_return(false)
+        return false
     end
 end

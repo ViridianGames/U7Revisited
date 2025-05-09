@@ -1,10 +1,9 @@
--- Updates an NPC’s status if in the party and a flag is set.
-function func_093F(p0, p1)
-    local local2
+--- Best guess: Removes an NPC from the party if they are a member and a specific flag is set, updating their state.
+function func_093F(P0, P1)
+    local var_0000
 
-    local2 = get_party_members()
-    if external_0939H(p1) and get_flag(57) and table.contains(local2, p0) then -- Unmapped intrinsic
-        external_001DH(p0, p1) -- Unmapped intrinsic
+    var_0000 = _GetPartyMembers()
+    if unknown_0939H(P1) and table.contains(var_0000, P1) and get_flag(57) then
+        unknown_001DH(P0, P1)
     end
-    return
 end

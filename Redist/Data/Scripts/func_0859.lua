@@ -1,42 +1,42 @@
--- Function 0859: Armor shop dialogue
-function func_0859(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Manages an armor shop transaction, with single-item purchases for items like gauntlets and plate armor.
+function func_0859()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    _SaveAnswers()
-    local0 = true
-    local1 = {"gauntlets", "scale armour", "gorget", "plate leggings", "plate armour", "great helm", "nothing"}
-    local2 = {580, 570, 586, 576, 573, 541, 0}
-    local3 = {-359}
-    local4 = {25, 100, 40, 200, 325, 200, 0}
-    local5 = {"", "", "a ", "", "", "a ", ""}
-    local6 = {1, 0, 0, 1, 0, 0, 0}
-    local7 = {" for a pair", "", "", " for a pair", "", "", ""}
-    local8 = 1
-    add_dialogue(itemref, "\"What wouldst thou like to buy?\"")
-    while local0 do
-        local9 = call_090CH(local1)
-        if local9 == 1 then
-            add_dialogue(itemref, "\"Tsk tsk... I am broken-hearted...\"")
-            local0 = false
+    start_conversation()
+    save_answers() --- Guess: Saves current answers
+    var_0000 = true
+    var_0001 = {"gauntlets", "scale armour", "gorget", "plate leggings", "plate armour", "great helm", "nothing"}
+    var_0002 = {580, 570, 586, 576, 573, 541, 0}
+    var_0003 = -359
+    var_0004 = {25, 100, 40, 200, 325, 200, 0}
+    var_0005 = {"", "", "a ", "", "", "a ", ""}
+    var_0006 = {1, 0, 0, 1, 0, 0, 0}
+    var_0007 = {" for a pair", "", "", " for a pair", "", "", ""}
+    var_0008 = 1
+    add_dialogue("@\"What wouldst thou like to buy?\"@")
+    while var_0000 do
+        var_0009 = select_item(var_0001) --- Guess: Selects item
+        if var_0009 == 1 then
+            add_dialogue("@\"Tsk tsk... I am broken-hearted...\"@")
+            var_0000 = false
         else
-            local10 = call_091BH(local7[local9], local4[local9], local6[local9], local1[local9], local5[local9])
-            local11 = 0
-            add_dialogue(itemref, "^" .. local10 .. " Is that acceptable?\"")
-            local12 = get_answer()
-            if local12 then
-                local11 = call_08F8H(false, 1, 0, local4[local9], local8, local3[0], local2[local9])
+            var_000A = format_price(var_0007[var_0009], var_0004[var_0009], var_0006[var_0009], var_0001[var_0009], var_0005[var_0009]) --- Guess: Formats price
+            var_000B = 0
+            add_dialogue("@\"" .. var_000A .. " Is that acceptable?\"@")
+            var_000C = get_dialogue_choice() --- Guess: Gets player choice
+            if var_000C then
+                var_000B = process_purchase(false, 1, 0, var_0004[var_0009], var_0008, var_0003, var_0002[var_0009]) --- Guess: Processes single purchase
+                if var_000B == 1 then
+                    add_dialogue("@\"Done!\"@")
+                elseif var_000B == 2 then
+                    add_dialogue("@\"Thou cannot possibly carry that much!\"@")
+                elseif var_000B == 3 then
+                    add_dialogue("@\"Thou dost not have enough gold for that!\"@")
+                end
+                add_dialogue("@\"Wouldst thou like something else?\"@")
+                var_0000 = get_dialogue_choice() --- Guess: Continues transaction
             end
-            if local11 == 1 then
-                add_dialogue(itemref, "\"Done!\"")
-            elseif local11 == 2 then
-                add_dialogue(itemref, "\"Thou cannot possibly carry that much!\"")
-            elseif local11 == 3 then
-                add_dialogue(itemref, "\"Thou dost not have enough gold for that!\"")
-            end
-            add_dialogue(itemref, "\"Wouldst thou like something else?\"")
-            local0 = get_answer()
         end
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores saved answers
 end

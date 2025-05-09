@@ -1,57 +1,56 @@
--- Displays random NPC dialogue with a "To" prefix based on NPC state.
-function func_092F(p0)
-    local local1, local2, local3, local4
+--- Best guess: Makes a gargoyle NPC randomly say a context-specific phrase in their syntax (e.g., “To say hello!”), based on their state.
+function func_092F(P0)
+    local var_0000, var_0001, var_0002, var_0003
 
-    local1 = external_001BH(p0) -- Unmapped intrinsic
-    if not external_0937H(local1) then -- Unmapped intrinsic
+    var_0000 = unknown_001BH(P0)
+    if not unknown_0937H(var_0000) then
         return
     end
-    local2 = external_001CH(local1) -- Unmapped intrinsic
-    local3 = ""
-    local4 = get_random(1, 4)
-    if local2 == 11 then
-        if local4 == 1 then
-            local3 = "@To say hello!@"
-        elseif local4 == 2 then
-            local3 = "@To greet you!@"
-        elseif local4 == 3 then
-            local3 = "@To hope you have a nice day!@"
-        elseif local4 == 4 then
-            local3 = "@To ask how you are?@"
+    var_0001 = unknown_001CH(var_0000)
+    var_0002 = ""
+    var_0003 = random2(4, 1)
+    if var_0001 == 11 then
+        if var_0003 == 1 then
+            var_0002 = "@To say hello!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@To greet you!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@To hope you have a nice day!@"
+        elseif var_0003 == 4 then
+            var_0002 = "@To ask how you are?@"
         end
-    elseif local2 == 14 then
-        local3 = "@Z-z-z-z...@"
-    elseif local2 == 23 then
-        if local4 == 1 then
-            local3 = "@To suggest you try the wine.@"
-        elseif local4 == 2 then
-            local3 = "@To offer fresh food.@"
-        elseif local4 == 3 then
-            local3 = "@To recommend the mutton.@"
-        elseif local4 == 4 then
-            local3 = "@To recommend the ale.@"
+    elseif var_0001 == 14 then
+        var_0002 = "@Z-z-z-z...@"
+    elseif var_0001 == 23 then
+        if var_0003 == 1 then
+            var_0002 = "@To suggest you try the wine.@"
+        elseif var_0003 == 2 then
+            var_0002 = "@To offer fresh food.@"
+        elseif var_0003 == 3 then
+            var_0002 = "@To recommend the mutton.@"
+        elseif var_0003 == 4 then
+            var_0002 = "@To recommend the ale.@"
         end
-    elseif local2 == 28 then
-        if local4 == 1 then
-            local3 = "@To Strive For Unity.@"
-        elseif local4 == 2 then
-            local3 = "@To Trust Thy Brother.@"
-        elseif local4 == 3 then
-            local3 = "@To say Worthiness Precedes Reward.@"
-        elseif local4 == 4 then
-            local3 = "@To join The Fellowship!@"
+    elseif var_0001 == 28 then
+        if var_0003 == 1 then
+            var_0002 = "@To Strive For Unity.@"
+        elseif var_0003 == 2 then
+            var_0002 = "@To Trust Thy Brother.@"
+        elseif var_0003 == 3 then
+            var_0002 = "@To say Worthiness Precedes Reward.@"
+        elseif var_0003 == 4 then
+            var_0002 = "@To join The Fellowship!@"
         end
-    elseif local2 == 26 then
-        if local4 == 1 then
-            local3 = "@To be very Good!@"
-        elseif local4 == 2 then
-            local3 = "@To be tasty!@"
-        elseif local4 == 3 then
-            local3 = "@To be delicious!@"
-        elseif local4 == 4 then
-            local3 = "@To call for service!@"
+    elseif var_0001 == 26 then
+        if var_0003 == 1 then
+            var_0002 = "@To be very Good!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@To be tasty!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@To be delicious!@"
+        elseif var_0003 == 4 then
+            var_0002 = "@To call for service!@"
         end
     end
-    bark(local1, local3)
-    return
+    bark(var_0002, var_0000)
 end

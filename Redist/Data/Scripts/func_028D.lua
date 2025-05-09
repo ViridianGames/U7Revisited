@@ -1,34 +1,28 @@
--- Function 028D: Manages container-based item interaction
-function func_028D(itemref)
-    -- Local variables (5 as per .localc)
-    local local0, local1, local2, local3, local4
+--- Best guess: Manages item pickup or interaction, checking container and player ownership, triggering specific actions (type 1581) if conditions are met.
+function func_028D(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if eventid() == 1 then
-        local0 = callis_006E(itemref)
-        if local0 == callis_001B(-356) then
-            calle_062DH(itemref)
-        elseif local0 then
-            local1 = callis_0025(itemref)
-            if local1 then
-                local1 = callis_0036(-356)
-                if not local1 then
-                    local1 = callis_0036(local0)
-                    callis_006A(4)
-                    abort()
+    if eventid == 1 then
+        var_0000 = unknown_006EH(itemref)
+        if var_0000 == unknown_001BH(-356) then
+            unknown_062DH(7, itemref)
+        elseif var_0000 then
+            var_0001 = unknown_0025H(itemref)
+            if var_0001 then
+                var_0001 = unknown_0036H(-356)
+                if not var_0001 then
+                    var_0001 = unknown_0036H(var_0000)
+                    unknown_006AH(4)
+                else
+                    unknown_062DH(7, itemref)
                 end
             end
-            calle_062DH(itemref)
+        else
+            var_0002 = -1
+            var_0003 = -1
+            var_0004 = -1
+            unknown_0828H(itemref, var_0002, var_0003, var_0004, 1581, itemref, 7)
         end
-        local2, local3, local4 = -1, -1, -1
-        call_0828H(7, itemref, local2, local3, local4, itemref)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
-end
-
-function abort()
-    -- Placeholder
+    return
 end

@@ -1,11 +1,12 @@
--- Handles generator interaction, likely in a dungeon, triggering effects and creating items during event 2.
+--- Best guess: Manages an item interaction, likely a lever or switch, updating its state and triggering a specific game event or object (ID 617) with predefined properties.
 function func_061D(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid == 2 then
-        local0 = get_item_data(itemref)
-        external_0806(itemref, 238) -- Unmapped intrinsic
-        local1 = add_item(25, 617, {17493, 7715})
+    if eventid ~= 2 then
+        return
     end
-    return
+
+    var_0000 = unknown_0018H(itemref)
+    unknown_0806H(itemref, 238)
+    var_0001 = unknown_0002H(25, {617, 17493, 7715}, 617)
 end

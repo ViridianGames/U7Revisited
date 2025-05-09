@@ -1,52 +1,52 @@
--- Handles shop transactions.ConcurrentHashMap including gold checks and item distribution.
-function func_08F8(p0, p1, p2, p3, p4, p5, p6)
-    local local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18
+--- Best guess: Manages item purchasing by NPCs, calculating quantity, checking gold, distributing items among party members, and returning a status code (0-3).
+function func_08F8(var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006)
+    local var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
-    local7 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
-    if p2 == 0 then
-        local8 = 1
+    var_0007 = unknown_0028H(359, 359, 644, 357)
+    if var_0002 == 0 then
+        var_0008 = 1
     else
-        local8 = ask_number(1, 1, p2, p1) -- Unmapped intrinsic
+        var_0008 = unknown_000CH(1, 1, var_0002, var_0001)
     end
-    if p4 > 1 then
-        local9 = p4 * local8
+    if var_0004 > 1 then
+        var_0009 = var_0004 * var_0008
     else
-        local9 = local8
+        var_0009 = var_0008
     end
-    if local8 == 0 then
-        local10 = 0
-    elseif local7 >= p3 * local8 then
-        local11 = external_002CH(p0, p5, -359, p6, local9) -- Unmapped intrinsic
-        if not local11 then
-            local10 = 1
-            local12 = add_item_to_container(-359, -359, -359, 644, p3 * local8) -- Unmapped intrinsic
-            local13 = 0
-            local14 = false
-            for local15, local16 in ipairs(p1) do
-                local17 = local16
-                local18 = local17
-                if local18 ~= -356 then
-                    local13 = local13 + 1
-                    switch_talk_to(local18, 0)
-                    local14 = true
-                    if p4 == 1 then
+    if var_0008 == 0 then
+        var_0010 = 0
+    elseif var_0007 >= var_0003 * var_0008 then
+        var_0011 = unknown_002CH(var_0000, var_0005, 359, var_0006, var_0009)
+        if var_0011 then
+            var_0010 = 1
+            var_0012 = unknown_002BH(true, 359, 359, 644, var_0003 * var_0008)
+            var_0013 = 0
+            var_0014 = false
+            for _, var_0017 in ipairs(var_0000) do
+                var_0018 = unknown_003AH(var_0017)
+                unknown_006FH(var_0017)
+                if var_0018 ~= 356 then
+                    var_0013 = var_0013 + 1
+                    unknown_0003H(0, var_0018)
+                    var_0014 = true
+                    if var_0004 == 1 then
                         add_dialogue("\"I will carry that.\"")
-                    elseif local13 == 1 then
+                    elseif var_0013 == 1 then
                         add_dialogue("\"I will carry some.\"")
                     else
                         add_dialogue("\"I will carry some, as well.\"")
                     end
-                    hide_npc(local18)
+                    unknown_0004H(var_0018)
                 end
             end
-            if local14 then
-                external_0091H() -- Unmapped intrinsic
+            if var_0014 then
+                unknown_0091H()
             end
         else
-            local10 = 2
+            var_0010 = 2
         end
     else
-        local10 = 3
+        var_0010 = 3
     end
-    return local10
+    return var_0010
 end

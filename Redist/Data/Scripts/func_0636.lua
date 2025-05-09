@@ -1,11 +1,10 @@
--- Fades in the palette and triggers a sprite effect, likely for a visual transition.
+--- Best guess: Applies sprite effects and fades the palette, likely for visual transitions or effects.
 function func_0636(eventid, itemref)
-    local local0
+    local var_0000
 
-    set_schedule(1, 1, 12)
-    if switch_talk_to(itemref, -356) then
-        local0 = get_item_data(itemref)
-        create_object(-1, 0, 0, 0, local0[2], local0[1], 7) -- Unmapped intrinsic
+    set_game_state(1, 1, 12) --- Guess: Sets game state
+    if get_object_ref(itemref) == 356 then --- Guess: Gets object reference
+        var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 7) --- Guess: Applies sprite effect
     end
-    return
 end

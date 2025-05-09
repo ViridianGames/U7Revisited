@@ -21,10 +21,18 @@ enum GUIIDS
    GUI_TITLE_BUTTON_WORLD_EDITOR,
    GUI_TITLE_BUTTON_OPTIONS,
    GUI_TITLE_BUTTON_QUIT,
+   GUI_TITLE_BUTTON_CREDITS,
 
    GUI_TITLE_SCREEN_LAST
 };
 
+enum CREDITSIDS
+{
+   GUI_CREDITS_PANEL = 0,
+   GUI_CREDITS_BUTTON_BACK,
+   GUI_CREDITS_TITLE,
+   GUI_CREDITS_SCREEN_LAST = 1000
+};
 
 class TitleState : public State
 {
@@ -42,12 +50,14 @@ public:
    virtual void OnExit();
    
    void CreateTitleGUI();
+   void CreateCreditsGUI();
    void UpdateTitle();
 
    void TestUpdate();
    void TestDraw();
    
    std::shared_ptr<Gui> m_TitleGui;
+   std::shared_ptr<Gui> m_CreditsGui;
 
    std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
 
@@ -55,8 +65,6 @@ public:
 
    bool m_mouseMoved;
    Texture* m_title;
-
-   GuiManager m_guiManager;
 };
 
 #endif

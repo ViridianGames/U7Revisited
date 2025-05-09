@@ -1,14 +1,13 @@
--- Cures poison from an NPC and deducts gold.
-function func_091E(p0, p1)
-    local local2, local3
+--- Best guess: Cures poison for a character, checking if they are poisoned, deducting gold, and displaying a success or failure message.
+function func_091E(P0, P1)
+    local var_0000, var_0001
 
-    local2 = external_001BH(p1) -- Unmapped intrinsic
-    if external_0088H(8, local2) then -- Unmapped intrinsic
-        external_008AH(8, local2) -- Unmapped intrinsic
-        local3 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
+    var_0000 = unknown_001BH(P1)
+    if not unknown_0088H(8, var_0000) then
+        unknown_008AH(8, var_0000)
+        var_0001 = unknown_002BH(true, -359, -359, 644, P0)
         add_dialogue("\"The wounds have been healed.\"")
     else
         add_dialogue("\"That individual does not need curing!\"")
     end
-    return
 end

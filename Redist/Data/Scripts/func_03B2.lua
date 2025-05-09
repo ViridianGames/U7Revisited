@@ -1,20 +1,17 @@
--- Function 03B2: Guard NPC dialogue
+--- Best guess: Manages a guard NPC’s dialogue, responding gruffly to name and job queries, likely for immersion or quest interaction.
 function func_03B2(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
+    var_0000 = unknown_001CH(unknown_001BH(itemref))
     if eventid == 0 then
-        return -- abrt
+        return
     end
-
-    local0 = callis_001C(callis_001B(itemref))
-    switch_talk_to(258, 0)
+    switch_talk_to(0, 258)
+    start_conversation()
+    add_answer({"bye", "job", "name"})
     add_dialogue("You see a tough-looking guard who takes his job -very- seriously.")
-
     while true do
-        add_answer({"bye", "job", "name"})
-        local answer = wait_for_answer()
-
+        local answer = get_answer()
         if answer == "name" then
             add_dialogue("\"I am a guard.\"")
             remove_answer("name")
@@ -24,18 +21,6 @@ function func_03B2(eventid, itemref)
             add_dialogue("\"Goodbye.\"")
             break
         end
-
-        -- Note: Original has 'db 40' here, possibly a debug artifact, ignored
     end
-
     return
-end
-
--- Helper functions
-function add_dialogue(message)
-    print(message) -- Adjust to your dialogue system
-end
-
-function wait_for_answer()
-    return "bye" -- Placeholder
 end

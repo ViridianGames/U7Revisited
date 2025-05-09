@@ -1,8 +1,7 @@
--- Function 06E2: Applies NPC effect
+--- Best guess: Triggers an effect with parameter 128 when event ID 3 is received, likely a minimal dungeon trigger.
 function func_06E2(eventid, itemref)
     if eventid == 3 then
-        callis_001D(0, callis_001B(-128))
+        unknown_001DH(0, 128)
     end
-
     return
 end

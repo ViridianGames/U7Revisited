@@ -1,53 +1,30 @@
--- Function 01A2: Giant bones item creation based on time
+--- Best guess: Spawns ammo (ID 581) near giant bones at a specific time, likely for a timed resource generation mechanic.
 function func_01A2(eventid, itemref)
-    -- Local variables (5 as per .localc)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    -- Check if eventid == 1
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        var_0000 = get_object_quality(itemref)
+        if var_0000 ~= get_time_hour() then
+            var_0001 = check_flag_location(0, 581, 5, itemref)
+            if not var_0001 then
+                -- callis 0024, 1 (unmapped)
+                var_0002 = unknown_0024H(581)
+                if var_0002 then
+                    -- calli 0089, 2 (unmapped)
+                    unknown_0089H(18, var_0002)
+                    unknown_0089H(11, var_0002)
+                    -- callis 0017, 2 (unmapped)
+                    var_0003 = unknown_0017H(random2(100, 1), var_0002)
+                    -- callis 0018, 1 (unmapped)
+                    var_0004 = unknown_0018H(itemref)
+                    -- callis 0026, 1 (unmapped)
+                    var_0003 = unknown_0026H({aidx(var_0004, 1) + 1, aidx(var_0004, 2), aidx(var_0004, 3)})
+                    if not var_0003 then
+                        var_0003 = unknown_0015H(get_time_hour(), itemref)
+                    end
+                end
+            end
+        end
     end
-
-    -- Check if item quality matches current hour
-    local0 = _GetItemQuality(itemref)
-    if local0 == _GetTimeHour() then
-        return
-    end
-
-    -- Check item property (581)
-    local1 = callis_0035(0, 5, 581, itemref)
-    if not local1 then
-        return
-    end
-
-    -- Create item (581, possibly ammo)
-    local2 = callis_0024(581)
-    if not local2 then
-        return
-    end
-
-    -- Set item attributes
-    calli_0089(18, local2)
-    calli_0089(11, local2)
-
-    -- Randomize value (1 to 100) and apply
-    local3 = callis_0017(_Random2(1, 100), local2)
-
-    -- Get bones' position
-    local4 = callis_0018(itemref)
-
-    -- Adjust position (x + 1)
-    local4[1] = local4[1] + 1
-
-    -- Note: Original has 'db 46' here, possibly a debug artifact, ignored
-
-    -- Update position
-    local3 = callis_0026(local4)
-
-    if not local3 then
-        -- Update item with current hour
-        local3 = callis_0015(_GetTimeHour(), itemref)
-    end
-
     return
 end

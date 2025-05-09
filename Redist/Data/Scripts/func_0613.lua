@@ -1,14 +1,13 @@
--- Clears a flag, sets schedules for party members, and triggers an action on an item.
+--- Best guess: Updates party member states and clears item states, possibly for quest progression.
 function func_0613(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
     set_flag(57, false)
-    local0 = get_party_members()
-    for local1 in ipairs(local0) do
-        local2 = local1
-        local3 = local2
-        set_schedule(local3, 31)
+    var_0000 = get_party_members()
+    -- Guess: sloop updates party member states
+    for i = 1, 4 do
+        var_0003 = {1, 2, 3, 0}[i]
+        unknown_001DH(31, var_0003) --- Guess: Sets object behavior
     end
-    trigger_action(itemref) -- Unmapped intrinsic
-    return
+    unknown_0060H(itemref) --- Guess: Clears item state
 end

@@ -1,19 +1,12 @@
--- Function 02D8: NPC blacksmith dialogue
+--- Best guess: Manages an NPC (ID -2, likely Spark) commenting on needing a blacksmith, possibly for a quest-related item.
 function func_02D8(eventid, itemref)
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        if not npc_in_party(2) then
+            switch_talk_to(0, 2)
+            start_conversation()
+            add_dialogue("\"Thou dost need a blacksmith to do that. I wager my dad could do it... I mean, could have... if he were still alive...\"")
+            hide_npc(2)
+        end
     end
-
-    if npc_in_party(2) then
-        switch_talk_to(2, 0)
-        add_dialogue("\"Thou dost need a blacksmith to do that. I wager my dad could do it... I mean, could have... if he were still alive...\"")
-        _HideNPC(-2)
-    end
-
     return
-end
-
--- Helper function
-function add_dialogue(message)
-    print(message) -- Adjust to your dialogue system
 end

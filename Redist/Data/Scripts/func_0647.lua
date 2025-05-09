@@ -1,14 +1,14 @@
--- Casts the "Vas Kal" spell, summoning a magical effect with a specific item creation.
+--- Best guess: Implements the summon spell (Vas Kal), spawning a creature with visual effects.
 function func_0647(eventid, itemref)
-    local local0
+    local var_0000
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Vas Kal@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {62, 17496, 17514, 7785})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {62, 17496, 17514, 7785})
         else
-            local0 = add_item(itemref, {1542, 17493, 17514, 7785})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17514, 7785})
         end
     end
-    return
 end

@@ -1,34 +1,33 @@
--- Handles wand usage, triggering specific effects or endgame conditions based on item type.
-function func_0303H(eventid, itemref)
-    local target
+--- Best guess: Handles a wand’s interaction with specific items (e.g., Black Gate, ID 305) or NPCs (e.g., Batlin, ID 403), triggering effects or dialogue.
+function func_0303(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+
     if eventid == 4 then
-        target = itemref
+        var_0000 = itemref
     else
-        target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
+        var_0000 = _ItemSelectModal()
     end
-    if target then
-        use_item() -- TODO: Implement LuaUseItem for calli 007E.
-        local item_type = get_item_type(target)
-        if item_type == 914 then -- 0392H: Likely a specific wand.
-            local obj = call_script(0x092D, target) -- TODO: Map 092DH (possibly item effect).
-            local arr1 = {7719, 5, 7981}
-            execute_action(target, arr1) -- TODO: Implement LuaExecuteAction for callis 0001.
-            perform_action(-356, target, 704) -- TODO: Implement LuaPerformAction for callis 0041.
-            local arr2 = {7769, obj, 8449, 17511, 17505, 17530}
-            execute_action(-356, arr2)
-        elseif item_type == 305 then -- 0131H: Black Gate.
-            local items = find_items(target, 168, 12, 176) -- TODO: Implement LuaFindItems for callis 0035.
-            local batlin = find_items(-356, 403, 80, 0)
-            if not batlin and not items then
-                set_condition(true) -- TODO: Implement LuaSetCondition for calli 0075.
+    if var_0000 then
+        unknown_007EH()
+        var_0001 = get_object_shape(var_0000)
+        if var_0001 == 914 then
+            var_0002 = unknown_092DH(var_0000)
+            var_0003 = unknown_0001H({7981, 5, 7719}, var_0000)
+            var_0003 = unknown_0041H(704, var_0000, -356)
+            var_0003 = unknown_0001H({17530, 17505, 17511, 8449, var_0002, 7769}, -356)
+        elseif var_0001 == 305 then
+            var_0004 = unknown_0035H(176, 12, 168, itemref)
+            var_0005 = unknown_0035H(0, 80, 403, -356)
+            if not var_0005 and not var_0004 then
+                unknown_0075H(true)
             else
-                switch_talk_to(26, 0)
-                add_dialogue(0, 'The wand glows faintly. Batlin smirks. "Not yet, Avatar."')
-                hide_npc(26)
-                return
+                unknown_0003H(0, -26)
+                add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
+                unknown_0004H(-26)
+                abort()
             end
         end
-        apply_effect(62) -- TODO: Implement LuaApplyEffect for calli 000F.
-        start_endgame() -- TODO: Implement LuaStartEndgame for calli 005D.
+        unknown_000FH(62)
+        _StartEndgame()
     end
 end

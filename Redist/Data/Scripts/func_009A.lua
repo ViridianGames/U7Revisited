@@ -1,263 +1,353 @@
--- Function 009A: Manages Erethian's dialogue
-function func_009A(itemref)
-    -- Local variables (26 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
-    local local20, local21, local22, local23, local24, local25
+--- Best guess: Manages Erethian’s dialogue on the Island of Fire, covering his studies, the Dark Core, Arcadion, and the Talisman of Infinity, with topic selection and flag-based progression.
+function func_009A(eventid, itemref)
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019
 
-    if eventid() == 0 then
-        local0 = callis_000E(1, 336, itemref)
-        local1 = callis_000E(1, 338, itemref)
-        local2 = callis_000E(1, 997, itemref)
-        local3 = callis_0000(100)
-        if local3 >= 60 then
-            callis_0040("@Damn candles!@", itemref)
-        elseif local3 <= 40 then
-            local4 = {local0}
-            table.insert(local4, local1)
-            table.insert(local4, local2)
-            while sloop() do
-                local7 = local4[local7]
-                local8 = callis_0018(local7)
-                callis_006F(local7)
-                callis_0053(-1, 0, 0, 0, local8[2] - 1, local8[1] - 1, 5)
-                call_000FH(8)
+    if eventid == 0 then
+        var_0000 = unknown_000EH(336, itemref)
+        var_0001 = unknown_000EH(338, itemref)
+        var_0002 = unknown_000EH(997, itemref)
+        if var_0000 or var_0001 or var_0002 then
+            var_0003 = unknown_0000H(100)
+            if var_0003 >= 60 then
+                unknown_0040H("@Damn candles!@", itemref)
+            elseif var_0003 <= 40 then
+                var_0004 = var_0000
+                table.insert(var_0004, var_0001)
+                table.insert(var_0004, var_0002)
+                for _, var_0007 in ipairs(var_0004) do
+                    var_0008 = unknown_0018H(var_0007)
+                    unknown_006FH(var_0007)
+                    unknown_0053H(-1, 0, 0, 0, var_0008[2] - 1, var_0008[1] - 1, 5)
+                end
+                unknown_000FH(8)
             end
-            local9 = {
-                {18, "@An Ailem!", 17447, 8048},
-                {3, "@My door, at last.@", 7463, nil},
-                {1, "@My door, at last.@", 17447, 7791}
+            local directions = {
+                {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791},
+                {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791}
             }
-            callis_0001(local9, itemref)
-            if callis_000E(2, 432, itemref) or callis_000E(2, 433, itemref) then
-                callis_0040("@My door, at last.@", itemref)
-                call_01B0H(local0, itemref)
-            elseif callis_000E(2, 433, itemref) then
-                callis_0040("@My door, at last.@", itemref)
-            end
-            local12 = callis_0035(16, 0, 607, itemref)
-            if not local12 then
-                while sloop() do
-                    if callis_0012(local12) == 4 and callis_0012(itemref) >= 16 then
-                        callis_0040("@Ah, a wall.@", itemref)
-                        local13 = {{18, "@I'll follow it.@", 17490, 7715}}
-                        callis_0002(18, local13, itemref)
-                        break
+            unknown_0002H(itemref, directions[math.random(1, 2)])
+        end
+        var_0009 = unknown_000EH(432, itemref)
+        var_0010 = unknown_000EH(433, itemref)
+        if var_0009 or var_0010 then
+            var_0011 = unknown_0035H(16, 0, 607, itemref)
+            if var_0011 then
+                for _, var_0014 in ipairs(var_0011) do
+                    if unknown_0012H(var_0014) == 4 and unknown_0012H(itemref) >= 16 then
+                        unknown_0040H("@Ah, a wall.@", itemref)
+                        unknown_0002H(itemref, {18, "@I'll follow it.@", 17490, 7715})
                     else
-                        callis_0040("@Where am I?@", itemref)
+                        unknown_0040H("@Where am I?@", itemref)
                     end
                 end
             end
         end
-        if not callis_002A(4, 240, 797, itemref) then
+    elseif eventid == 1 then
+        if not unknown_0881H() then
+            var_0012 = unknown_092DH(itemref)
+            var_0013 = (var_0012 + 4) % 8
+            unknown_0001H(0, 154, 8533, var_0013, 17497, 7777)
+        else
             return
         end
-    elseif eventid() == 2 then
-        local13 = call_0908H()
-        if get_flag(0x030E) then
-            callis_0003(1, -286)
+    elseif eventid == 2 then
+        var_0013 = unknown_0908H()
+        if get_flag(782) then
+            unknown_0003H(1, -286)
             add_dialogue("\"I'll speak to thee no more, Avatar!\" He ignores you.")
-            abort()
+            return
         end
-        if not get_flag(0x0310) then
-            callis_0003(0, -286)
-            add_dialogue("At your approach, the old man straightens and looking directly at you he says, \"Well met, ", local13, ". I am called Erethian. Although thou dost not know me, I know thee well.")
-            add_dialogue("I have seen thee destroy Mondain's power and so defeat that misguided mage, I have seen thee vanquish the enchantress Minax, I have also seen, in a very unique way, how thou brought low the hellspawn Exodus.\"")
+        if not get_flag(784) then
+            unknown_0003H(0, -286)
+            add_dialogue("At your approach, the old man straightens and looking directly at you he says, \"Well met, " .. var_0013 .. ". I am called Erethian. Although thou dost not know me, I know thee well.")
+            add_dialogue("I have seen thee destroy Mondain's power and so defeat that misguided mage, I have seen thee vanquish the enchantress Minax, I have also seen, in a very unique way, how thou brought low the hellspawn Exodus.")
             add_dialogue("He falls silent here and you notice that the old man's eyes are milky white.")
-            set_flag(0x0310, true)
-            callis_0005({"bye", "Exodus", "Minax", "Mondain", "job", "name"})
+            set_flag(784, true)
+            add_answer({"bye", "Exodus", "Minax", "Mondain", "job", "name"})
         else
-            if not get_flag(0x032A) and not get_flag(0x032B) then
-                callis_0003(0, -286)
-                add_dialogue("\"Greetings once again, ", local13, ". How may I assist thee?\" The blind old man looks unerringly in your direction.")
-            else
-                callis_0003(1, -286)
+            if get_flag(810) or get_flag(811) then
+                unknown_0003H(1, -286)
                 add_dialogue("\"I'll never get any work done like this! What do you wish of me?\" Erethian seems a little pevish at this point.")
+            else
+                unknown_0003H(0, -286)
+                add_dialogue("\"Greetings once again, " .. var_0013 .. ". How may I assist thee?\" The blind old man looks unerringly in your direction.")
             end
-            callis_0005({"bye", "job", "name"})
+            add_answer({"bye", "job", "name"})
         end
-        if not get_flag(0x0337) and not get_flag(0x0338) and not get_flag(0x0330) then
-            callis_0005("black sword")
+        if not get_flag(823) and not get_flag(824) and not get_flag(816) then
+            add_answer("black sword")
         end
-        if not get_flag(0x0312) and not get_flag(0x0311) then
-            callis_0005("powerful artifact")
+        if not get_flag(785) and not get_flag(815) and get_flag(808) then
+            add_answer("powerful artifact")
         end
-        if not get_flag(0x0313) then
-            if not get_flag(0x032F) then
-                callis_0005("daemon mirror")
-            elseif not get_flag(0x0330) and not get_flag(0x0338) then
-                callis_0005("daemon gem")
-            elseif not get_flag(0x0339) then
-                callis_0005("daemon blade")
+        if not get_flag(787) then
+            if not get_flag(816) then
+                add_answer("daemon mirror")
+            elseif not get_flag(824) then
+                add_answer("daemon gem")
+            elseif not get_flag(825) then
+                add_answer("daemon blade")
             end
-        elseif not get_flag(0x032F) and not get_flag(0x0330) and not get_flag(0x0339) then
-            callis_0005("daemon blade")
+        elseif not get_flag(816) and not get_flag(825) then
+            add_answer("daemon blade")
         end
-        if not get_flag(0x0318) then
-            callis_0005("the Psyche returns")
+        if not get_flag(792) then
+            add_answer("the Psyche returns")
         end
-        if not get_flag(0x0327) then
-            callis_0005("great evil")
+        if not get_flag(807) then
+            add_answer("great evil")
         end
-        if not get_flag(0x0341) then
-            callis_0005("Talisman of Infinity")
+        if not get_flag(833) then
+            add_answer("Talisman of Infinity")
         end
-        local14 = false
-        local15 = false
-        local16 = false
-        local17 = false
+        var_0014 = false
+        var_0015 = false
+        var_0016 = false
+        var_0017 = false
         while true do
-            if cmp_strings("the Psyche returns", 0x03B7) then
-                callis_0003(0, -286)
+            local response = string.lower(unknown_XXXXH())
+            if response == "the psyche returns" then
+                unknown_0003H(0, -286)
                 add_dialogue("\"Could this possibly be true?\" Erethian's blind eyes light up with unabashed glee. \"What an opportunity I have here.\"")
-                callis_0003(1, -286)
-                add_dialogue("He once again notices your presence. \"Now, do not let any strange ideas of destruction enter thy mind, Avatar. I shan't let thee deprive me of this chance to experience a true wonder of the world. Run along now... Is there not a right to be wronged, somewhere else?\"")
-                callis_0006("the Psyche returns")
-            elseif cmp_strings("great evil", 0x03D4) then
-                callis_0003(1, -286)
+                unknown_0003H(1, -286)
+                add_dialogue("He once again notices your presence. \"Now, do not let any strange ideas of destruction enter thy mind, Avatar. I shan't let thee deprive me of this chance to experience a true wonder of the world. Run along now... Is there not a right to be wronged, somewhere else?")
+                remove_answer("the Psyche returns")
+            elseif response == "great evil" then
+                unknown_0003H(1, -286)
                 add_dialogue("The elderly mage frowns. \"I sense no great evil, but then I never did quite get the knack of cosmic awareness. Nevertheless, don't worry thyself over much. These things tend to work themselves out.\" You feel as if you've just been patted on the head and asked to go play elsewhere.")
-                callis_0006("great evil")
-            elseif cmp_strings("Talisman of Infinity", 0x0485) then
-                if not get_flag(0x030F) then
-                    set_flag(0x030F, true)
+                remove_answer("great evil")
+            elseif response == "talisman of infinity" then
+                if not get_flag(783) then
+                    set_flag(783, true)
                     add_dialogue("\"Ah, yes. I once had a scroll that told of a talisman by that name. If only I could remember where I put it. Dost thou by chance have the parchment entitled Scroll of Infinity with thee?\"")
-                    if call_090AH() then
-                        if not callis_0028(1, 50, 797, -357) then
+                    if unknown_090AH() then
+                        if not unknown_0028H(1, 50, 797, 357) then
                             add_dialogue("\"If thou dost not have the scroll, I cannot help thee in this matter.\"")
                         else
-                            add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.\"")
-                            callis_0004(-286)
-                            callis_0003(0, -292)
+                            add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
+                            unknown_0004H(-286)
+                            unknown_0003H(0, -292)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
-                            set_flag(0x030E, true)
-                            abort()
+                            set_flag(782, true)
+                            return
                         end
                     else
                         add_dialogue("\"Very well. I shall need the scroll to give thee further information.\"")
                     end
                 else
                     add_dialogue("\"Dost thou have the Scroll of Infinity amongst thy possessions?\"")
-                    if call_090AH() then
-                        if not callis_0028(1, 50, 797, -357) then
+                    if unknown_090AH() then
+                        if not unknown_0028H(1, 50, 797, 357) then
                             add_dialogue("\"I needs must touch the scroll to glean its meaning. Else I'll not be able to help thee in this matter.\"")
                         else
-                            add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.\"")
-                            callis_0004(-286)
-                            callis_0003(0, -292)
+                            add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
+                            unknown_0004H(-286)
+                            unknown_0003H(0, -292)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
-                            set_flag(0x030E, true)
-                            abort()
+                            set_flag(782, true)
+                            return
                         end
                     else
                         add_dialogue("\"If thou bringest the scroll to me I can aid thee in finding the meaning of the archaic text.\"")
                     end
                 end
-                callis_0006("Talisman of Infinity")
-            elseif cmp_strings("powerful artifact", 0x0498) then
+                remove_answer("Talisman of Infinity")
+            elseif response == "powerful artifact" then
                 add_dialogue("\"I once attempted to create a sword of great power.\" Erethian frowns in concentration then says, \"if thou wishest to continue my work, thou shalt have need of some few pieces of forging equipment... And a place to put them... I know just the spot. Come with me and I'll see what I can do to help thee.\"")
-                local15 = true
-            elseif cmp_strings("black sword", 0x050D) then
-                callis_0003(1, -286)
+                var_0015 = true
+            elseif response == "black sword" then
+                unknown_0003H(1, -286)
                 add_dialogue("Erethian nods his head when you tell him of your dilemma with the black sword. \"Yes, I can see how the blade would be too clumsy to swing in combat. However, if thou were to bind a magical source of power into the hilt of the blade, thou mightest be able to counteract the unwieldy nature of the sword.\"")
-                if callis_002A(13, -359, 760, callis_001B(-356)) then
-                    callis_0003(0, -291)
-                    add_dialogue("The little gem sparks up at this turn of the conversation. \"I believe that in my current form, I could serve perfectly well as the blade's stabilizing force. In truth, this would allow me to give thee access to some of my more dramatic powers.\" The daemon sounds excited at this prospect, perhaps a little too excited.\"")
-                    callis_0004(-291)
-                    callis_0003(1, -286)
+                if unknown_002AH(13, 359, 760, unknown_001BH(-356)) then
+                    unknown_0003H(0, -291)
+                    add_dialogue("The little gem sparks up at this turn of the conversation. \"I believe that in my current form, I could serve perfectly well as the blade's stabilizing force. In truth, this would allow me to give thee access to some of my more dramatic powers.\" The daemon sounds excited at this prospect, perhaps a little too excited.")
+                    unknown_0004H(-291)
+                    unknown_0003H(1, -286)
                     add_dialogue("Erethian's voice is quiet as he says, \"Consider well before thou bindest Arcadion into the sword. For it is true that he will be able to solve the sword's problem of balance, but will he be able to solve his own problems as well?\"")
-                    callis_0005("problems")
-                elseif not get_flag(0x032F) then
+                    add_answer("problems")
+                elseif not get_flag(815) then
                     add_dialogue("You wonder if perhaps Arcadion might be able to shed some light on this issue, and as if reading your thoughts, Erethian says, \"Beware the daemon. His goals are not those of thine or mine. If he offers to help thee, it is to help himself. Of that thou canst be sure.\"")
                 end
-                set_flag(0x0338, true)
-                callis_0006({"daemon gem", "black sword"})
-            elseif cmp_strings("problems", 0x0520) then
+                set_flag(824, true)
+                remove_answer({"daemon gem", "black sword"})
+            elseif response == "problems" then
                 add_dialogue("\"This is thy choice to make. Apparently thou hast need to make this sword function, but if the daemon is thy only recourse, I pity thee. For as surely as Arcadion will be bound within the sword, thou wilt be bound to possess it. I can tell thee no more.\"")
-                callis_0006("problems")
-            elseif cmp_strings("name", 0x0539) then
-                add_dialogue("The mage gives you a half smile, \"'Twould seem that thy memory is failing thee, ", local13, ". As I have said, my name is Erethian.\"")
-                callis_0006("name")
-            elseif cmp_strings("job", 0x056E) then
+                remove_answer("problems")
+            elseif response == "name" then
+                add_dialogue("The mage gives you a half smile, \"'Twould seem that thy memory is failing thee, " .. var_0013 .. ". As I have said, my name is Erethian.\"")
+                remove_answer("name")
+            elseif response == "job" then
                 add_dialogue("\"I am a follower of the principle of Truth. But unlike those of the Lyceaum, I would prefer to seek out the knowledge instead of waiting for it to come to me.")
                 add_dialogue("It is this curiosity which has brought me to this island from which Exodus, the spawn of Mondain and Minax, sought to rule the world.")
                 add_dialogue("The books and scrolls here have taught me much of Britannia's history and other... interesting subjects.\"")
                 add_dialogue("His clouded eyes sparkle with intelligence. But you can't help wondering how books and scrolls are of any use to a man afflicted with blindness.")
-                callis_0006("job")
-                callis_0005({"blindness", "subjects", "Exodus", "Minax", "Mondain"})
-            elseif cmp_strings("subjects", 0x0581) then
+                remove_answer("job")
+                add_answer({"blindness", "subjects", "Exodus", "Minax", "Mondain"})
+            elseif response == "subjects" then
                 add_dialogue("\"If thou art interested, feel free to inspect them. This is no library.\" As if regretting his gracious gesture, he adds, \"However, I trust that thou wilt take utmost care with the older ones.\" He stops, on the verge of saying more.")
-                callis_0006("subjects")
-            elseif cmp_strings("blindness", 0x059F) then
-                if not get_flag(0x032B) then
-                    local14 = true
+                remove_answer("subjects")
+            elseif response == "blindness" then
+                if not get_flag(811) then
+                    var_0014 = true
                 else
                     add_dialogue("\"Thou art a tiresome child. Leave me be!\" He ignores your presence.")
-                    abort()
+                    return
                 end
-            elseif cmp_strings("Mondain", 0x05C7) then
+            elseif response == "mondain" then
                 add_dialogue("Erethian scowls, \"Now there was a mighty wizard. A bit twisted but then who knows what happens to the human mind when 'tis subjected to the powers he wielded.")
                 add_dialogue("'Tis even said his skull alone had the power to destroy enemies... he must have locked a magical matrix upon it, I'll have to research that.\" He nods his head, seemingly making a mental note, then continues with a wistful look on his aged features,")
                 add_dialogue("\"I would have loved to study that fascinating Gem of Immortality, but alas, I was born in too late an era.\"")
-                callis_0005({"skull", "Gem of Immortality"})
-                callis_0006("Mondain")
-            elseif cmp_strings("Minax", 0x063A) then
+                add_answer({"skull", "Gem of Immortality"})
+                remove_answer("Mondain")
+            elseif response == "minax" then
                 add_dialogue("A sad sweet smile comes to the wizard's face, \"She was quite a comely lass at one time, with a mind forever searching.\" His expression darkens, \"But then Mondain forced all of the good sense from her.")
                 add_dialogue("She became a power unto herself, in time. I do not think she quite rivaled her former mentor, Mondain, but she was a force to be reckoned with, nevertheless.")
                 add_dialogue("And that thou didst, with the Quicksword, Enilno. That act will most likely have tales sung about it for the next eon.\" Under his breath he adds, \"Even if Iolo's the only one who sings it.\"")
-                if callis_000E(40, 465, itemref) then
-                    callis_0003(0, -1)
+                if unknown_000EH(40, 465, itemref) then
+                    unknown_0003H(0, -1)
                     add_dialogue("With a look of indignation Iolo says, \"Pardon me, sir. But I'll have thee know that ballads of the Avatar still grace all of the finest drinking establishments of Britannia.\"")
-                    callis_0003(0, -286)
+                    unknown_0003H(0, -286)
                     add_dialogue("\"And what a dubious distinction that is.\" The corners of the mage's mouth come up in a delicate smile.")
-                    callis_0003(0, -1)
+                    unknown_0003H(0, -1)
                     add_dialogue("An angry retort dies on Iolo's lips as the elderly mage lifts his hands in a gesture of peace.")
-                    callis_0003(0, -286)
+                    unknown_0003H(0, -286)
                     add_dialogue("\"Please, forgive the offense I have given. Thou shouldst know that I have seen, almost first hand, the Avatar's bravery in the face of adversity.")
                     add_dialogue("I have nothing but the highest regard for the Destroyer of the Age of Darkness and Harbinger of the Age of Enlightenment.")
-                    callis_0004(-1)
+                    unknown_0004H(-1)
                 end
-                callis_0005("Enilno")
-                callis_0006("Minax")
-            elseif cmp_strings("End of dialogue handling for Minax and other topics...")
-            then
-                -- (Truncated dialogue handling continues similarly for Exodus, two parts, interface, gargoyles, psyche, Dark Core, etc.)
-                -- Full implementation would follow the same pattern of checking flags, adding/removing answers, and displaying dialogue.
-            end
-            if local14 then
-                calle_0696H(itemref)
-            end
-            if local15 then
-                calle_069AH(itemref)
+                add_answer("Enilno")
+                remove_answer("Minax")
+            elseif response == "exodus" then
+                add_dialogue("\"That being has become a passion of mine, lately.\" He almost glows with excitement. \"Indeed, 'tis what brought me here. While I was at the Lyceaum, I happened upon a passage in a manuscript that described an Island of Fire.")
+                add_dialogue("Upon further research, I found that the entity known as Exodus was not truly destroyed. The interface between its two parts and the world was merely severed.\"")
+                add_answer({"interface", "two parts"})
+                remove_answer("Exodus")
+            elseif response == "two parts" then
+                add_dialogue("\"One part, his psyche we shall call it, was taken by the gargoyles who live below us in a realm on the other side of the world. A truly fascinating culture they have, but I digress...\" You begin to wonder just how long this old man has been out of circulation.")
+                add_dialogue("He continues, \"The other, I have here. I call it the Dark Core, because without the psyche, it is mostly lifeless.\" His face appears to youthen, and you feel as if you're speaking to a child describing his new toy... or perhaps, pet.")
+                add_dialogue("\"I believe 'twas the removal of the psyche from the Core that caused this island to sink beneath the waves.\"")
+                add_answer("gargoyles")
+                if not var_0016 then
+                    add_answer("psyche")
+                end
+                if not var_0017 then
+                    add_answer("Dark Core")
+                end
+                remove_answer("two parts")
+            elseif response == "interface" then
+                add_dialogue("His expression is unreadable, \"The machine that thou destroyed was Exodus' means of communication with and control of the world.")
+                add_dialogue("When it was destroyed, his psyche could no longer retain its hold on the Dark Core.")
+                add_dialogue("I have often wondered if another interface was implemented, would the psyche return, or possibly be regenerated...\"")
+                add_dialogue("As his idle musings begin to run toward possibly dangerous conclusions, his mouth audibly snaps shut.")
+                if not var_0016 then
+                    add_answer("psyche")
+                end
+                if not var_0017 then
+                    add_answer("Dark Core")
+                end
+                remove_answer("interface")
+            elseif response == "gargoyles" then
+                add_dialogue("\"Interesting creatures, thou mightest call them balrons, but they are not the beasts that history has made of them.")
+                add_dialogue("The larger, winged ones are intelligent and magical by nature, while the smaller, wingless ones appear to be the work force for the species.\"")
+                add_dialogue("He turns his head in your direction with a puzzled expression in his eyes, \"I have the oddest feeling that thou hast heard all of this before...\" Erethian falls silent.")
+                remove_answer("gargoyles")
+            elseif response == "psyche" then
+                add_dialogue("\"Eventually, I shall turn my studies to that being. The gargoyles have placed it within a statue, in a shrine they dedicated to their principle of Diligence.\"")
+                var_0016 = true
+                remove_answer("psyche")
+            elseif response == "dark core" then
+                if unknown_000EH(7, 990, unknown_001BH(-356)) then
+                    add_dialogue("\"Yes, here it is. It is the cylinder sitting upon yon pedestal.\" He motions in the direction of the Dark Core.")
+                end
+                add_dialogue("\"I have found it to be quite a treasure trove of useful facts. Its sole purpose seems to be the storage of information.")
+                add_dialogue("Much of the information is trivial, such as the detailed description of the color of the sky on a particular day eons ago,")
+                add_dialogue("while other bits give instructions for the manipulation of the world.")
+                add_dialogue("Within it I even found the knowledge to raise and sustain this island we stand upon. It is truly a remarkable artifact.\"")
+                add_dialogue("He thinks for a moment, then looks nervously in your direction, \"Please, do be careful around it. Artifacts seem to have a tendency to, shall we say, disappear around thee.\"")
+                var_0017 = true
+                remove_answer("Dark Core")
+            elseif response == "enilno" then
+                add_dialogue("\"Ah, now there's a question. I've heard naught of it's existence since the Age of Darkness ended. Would that I knew its location.")
+                add_dialogue("It was reputedly a great item of magic. Didst thou find it so?\" He cocks his head to one side as he asks the question.")
+                var_0018 = unknown_090AH()
+                if var_0018 then
+                    add_dialogue("\"Yes, 'tis a pity to lose such an item of antiquity. Perhaps as time unfolds it will turn up. These things have a way of surfacing at the strangest times.\"")
+                else
+                    add_dialogue("\"No? It didst seem to serve thee well enough to dispatch the enchantress Minax. But then I suppose only a poor bard blames his instrument.\" He winks mischievously in your general direction.")
+                end
+                remove_answer("Enilno")
+            elseif response == "gem of immortality" then
+                add_dialogue("Milky eyes glitter up at you like twin marbles, \"Ah, yes. But thou knowest all too well about that little bauble.")
+                add_dialogue("After all, it was thee who smashed it into the shards which caused thee so much trouble during the regency of Lord Blackthorn.")
+                add_dialogue("So much power that even in a shattered state, its magic still flowed. 'Tis sad to lose such an artifact.\" As if suddenly remembering with whom he is speaking, he amends, \"Much better than having Mondain running about mucking with things, I suppose.\"")
+                remove_answer("Gem of Immortality")
+            elseif response == "skull" then
+                add_dialogue("\"'Twould seem that someone,\" he pauses dramatically, \"let that slip into a volcano...\" His wry smile belies his careless tone.")
+                remove_answer("skull")
+            elseif response == "daemon mirror" then
+                add_dialogue("\"Ah, so thou hast met that old windbag. Truly, I feel that I would do better to free myself of that burdensome beast, but he sometimes proves to be useful. If it weren't for his whining, perhaps he and I would get along better.\"")
+                add_answer({"free", "whining"})
+                remove_answer("daemon mirror")
+            elseif response == "whining" then
+                add_dialogue("\"'Tis his favorite pastime. He begs, pleads, and threatens me to free him from that stupid mirror. Believe me, if I could I would have done it long ago.\" Erethian's lined face shows his chagrin.")
+                remove_answer("whining")
+            elseif response == "free" then
+                add_dialogue("\"He wants this special bauble. I once possessed this gem he seeks, and I don't think he'd be very happy once he gets it. I have tried to tell him that 'twould only imprison him in a more mobile jail, but alas, his head is made of stone.\"")
+                add_answer("jail")
+                remove_answer("free")
+            elseif response == "jail" then
+                add_dialogue("\"Quite. Arcadion seeks to have dominion over Britannia and believes that the gem will give him the ability to exert his power here. In truth, the Ether Gem works in the reverse, his power will become accessible to the one who possesses the gem.\"")
+                add_answer("Ether Gem")
+                remove_answer("jail")
+            elseif response == "ether gem" then
+                add_dialogue("\"The gem was pilfered from me by an ill tempered dragon. She blew her way into this castle, waylayed the golems that protect the Shrine of Principle, then destroyed a perfectly good secret door on her way to the Test of Courage. I'd have liked to see her squeeze through the hole she made, 'tis hardly big enough for a creature of her bulk.\" The mage's milky eyes twinkle with suppressed mirth.")
+                add_answer({"Test of Courage", "Shrine of Principle", "golems"})
+                remove_answer("Ether Gem")
+            elseif response == "golems" then
+                add_dialogue("\"Mmmm... Yes. This pair of manshaped, magical constucts used to guard the Shrine of Principle, but alas, one fell pray to falling rocks when the dragon assaulted the castle. The other picked up his, ah... brother, for lack of a better word, and carried him off through the portal to the Test of Love.\"")
+                add_answer("Test of Love")
+                remove_answer("golems")
+            elseif response == "shrine of principle" then
+                add_dialogue("\"The shrine lies through the doors at the rear of the main hall. There thou canst find three statues, each one dedicated to a Principle set forth by Lord British at the beginning of the Age of Enlightenment.\" Conspiratorially he adds, \"A bit stuffy, but they make nice cloakracks.\"")
+                remove_answer("Shrine of Principle")
+            elseif response == "test of love" then
+                add_dialogue("\"I not had the chance to inspect that oddity yet, however, thou art welcome to peruse it at thy leisure.\" He smiles like a grandfather giving a present to a child.")
+                remove_answer("Test of Love")
+            elseif response == "test of courage" then
+                var_0019 = unknown_005AH() and "heroine's" or "hero's"
+                add_dialogue("\"I believe 'twas set in motion by Lord British in order to test...\" He gestures in your direction, \"A virtuous " .. var_0019 .. " fighting ability and courage. The statues in the back of this castle can tell thee more about the tests, though.\" Erethian grins mysteriously.")
+                remove_answer("Test of Courage")
+            elseif response == "daemon gem" then
+                add_dialogue("\"So... thou hast made a servant of Arcadion. 'Tis good to be rid of his incessant whining. I hope that thou findest him to be as useful as I didst.\" You're not sure, but his words might be construed as a curse.")
+                if unknown_002AH(13, 359, 760, unknown_001BH(-356)) then
+                    unknown_0003H(0, -291)
+                    add_dialogue("The gem glows brighter, \"'Tis good to see the last of thee, also, old man. Perhaps in another life, I shall be thy master, and thou the slave.\" The daemon lets out a chilling little laugh.")
+                    unknown_0004H(-291)
+                    unknown_0003H(1, -286)
+                    add_dialogue("Erethian looks a little shaken at hearing the daemon's voice, but quickly recovers his composure. \"I think not, daemon. I'm not at all sure that there is a way for thou to get out of that little gem.\" The elderly mage's expression is unreadable.")
+                    unknown_0003H(0, -286)
+                end
+                remove_answer("daemon gem")
+            elseif response == "daemon blade" then
+                add_dialogue("\"I see that thou didst not heed my warning. Alas, my pity shall be thine eternally. And so, what wouldst thou have of me, Master and Slave of the Shade Blade.\"")
+                set_flag(825, true)
+                remove_answer("daemon blade")
+            elseif response == "bye" then
+                if not get_flag(824) then
+                    add_dialogue("\"Goodbye and good luck... Thou'lt need it.\" The old mage snickers under his breath as if enjoying a personal joke, quite possibly at your expense.")
+                else
+                    add_dialogue("\"Goodbye and good luck...\" Erethian sounds truly sympathetic.")
+                end
+                return
             end
         end
+        if var_0014 then
+            unknown_0696H(itemref)
+        end
+        if var_0015 then
+            unknown_069AH(itemref)
+        end
     end
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
-end
-
-function cmp_strings(str, addr)
-    return false -- Placeholder
-end
-
-function sloop()
-    return false -- Placeholder
-end
-
-function eventid()
-    return 0 -- Placeholder
+    return
 end

@@ -1,41 +1,31 @@
--- Processes container items and applies effects based on conditions.
+--- Best guess: Manages a container mechanic, checking items within a container (ID -356), applying effects based on container state, and creating items (ID 1803).
 function func_070B(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    if not external_0944H(itemref) then -- Unmapped intrinsic
-        local0 = get_item_data(itemref)
-        local1 = false
-        local2 = external_0025H(itemref) -- Unmapped intrinsic
-        if not external_0036H(external_001BH(-356)) then -- Unmapped intrinsic
-            local2 = set_item_data(local0)
-            local3 = get_container_items(-359, -359, -1, external_001BH(-356)) -- Unmapped intrinsic
-            for local4 in ipairs(local3) do
-                local5 = local4
-                local6 = local5
-                if local1 == 0 then
-                    if not external_08E9H(local6) then -- Unmapped intrinsic
-                        local2 = external_0025H(local6) -- Unmapped intrinsic
-                        local7 = get_item_data(external_001BH(-356)) -- Unmapped intrinsic
-                        local2 = set_item_data(local7)
-                    end
-                elseif local1 == 1 then
-                    if not external_08EAH(local6) then -- Unmapped intrinsic
-                        local2 = external_0025H(local6) -- Unmapped intrinsic
-                        local7 = get_item_data(external_001BH(-356)) -- Unmapped intrinsic
-                        local2 = set_item_data(local7)
-                    end
-                elseif local1 == 2 then
-                    if local6 == external_001BH(-356) and is_item_active(local6) then -- Unmapped intrinsic
-                        local2 = external_0025H(local6) -- Unmapped intrinsic
-                        local7 = get_item_data(external_001BH(-356)) -- Unmapped intrinsic
-                        local2 = set_item_data(local7)
-                    end
-                end
-                local1 = local1 + 1
+    if not unknown_0944H(itemref) then
+        var_0000 = unknown_0018H(itemref)
+        var_0001 = false
+        var_0002 = unknown_0025H(itemref)
+        var_0003 = get_container_objects(-359, -359, -1, unknown_001BH(-356))
+        for var_0004 in ipairs(var_0003) do
+            if var_0001 == false and not unknown_08E9H(var_0006) then
+                var_0002 = unknown_0025H(var_0006)
+                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0002 = unknown_0026H(var_0007)
             end
-            local2 = external_0025H(itemref) -- Unmapped intrinsic
+            if var_0001 == true and not unknown_08EAH(var_0006) then
+                var_0002 = unknown_0025H(var_0006)
+                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0002 = unknown_0026H(var_0007)
+            end
+            if var_0001 == 2 and unknown_006EH(var_0006) == unknown_001BH(-356) then
+                var_0002 = unknown_0025H(var_0006)
+                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0002 = unknown_0026H(var_0007)
+            end
         end
+        var_0001 = var_0001 + 1
+        var_0002 = unknown_0025H(itemref)
     end
-    local8 = add_item(itemref, {1803, 17493, 17443, 7724})
-    return
+    var_0008 = unknown_0001H(itemref, {1803, 17493, 17443, 7724})
 end

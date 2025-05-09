@@ -1,12 +1,13 @@
--- Handles the generator in Dungeon Despise, triggering effects and creating items when interacted with during event 2.
+--- Best guess: Manages a generator mechanic in the Despise dungeon, updating its state and triggering an event or object (ID 617) with specific properties, likely for a puzzle or environmental effect.
 function func_061B(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid == 2 then
-        external_0806(itemref, 234) -- Unmapped intrinsic
-        local0 = get_item_quality(617)
-        set_schedule(617, 15)
-        local1 = add_item(25, 617, {17493, 7715})
+    if eventid ~= 2 then
+        return
     end
-    return
+
+    unknown_0806H(itemref, 234)
+    var_0000 = unknown_001BH(617)
+    unknown_001DH(15, 617)
+    var_0001 = unknown_0002H(25, {617, 17493, 7715}, 617)
 end

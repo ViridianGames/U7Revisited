@@ -1,11 +1,7 @@
--- Function 020A: Manages locked chest interaction
-function func_020A(itemref)
-    if eventid() == 1 then
-        callis_0040("Locked", itemref)
+--- Best guess: Indicates a locked chest, displaying a "Locked" message when interacted with, likely requiring a key or lockpick.
+function func_020A(eventid, itemref)
+    if eventid == 1 then
+        unknown_0040H("Locked", itemref)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

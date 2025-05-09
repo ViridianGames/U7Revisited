@@ -1,25 +1,23 @@
--- Function 03D5: Item interaction with positioning
+--- Best guess: Aligns an object (shape 577) with another’s frame and position, possibly for a puzzle or placement mechanic.
 function func_03D5(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 1 then
-        return
-    end
-
-    local0 = _ItemSelectModal()
-    local1 = _GetItemType(local0)
-    local2 = callis_0018(local0)
-    if local1 == 577 and _GetItemFrame(local0) == _GetItemFrame(itemref) then
-        local3 = callis_0025(itemref)
-        if local3 then
-            -- Note: Original has 'db 46' here, ignored
-            local3 = callis_0026(local2)
+    if eventid == 1 then
+        var_0000 = item_select_modal()
+        var_0001 = get_object_shape(var_0000)
+        var_0002 = unknown_0018H(var_0000)
+        if var_0001 == 577 and get_object_frame(var_0000) == get_object_frame(itemref) then
+            var_0003 = unknown_0025H(itemref)
+            if var_0003 then
+                aidx(var_0002, 3, aidx(var_0002, 3) + 2)
+                var_0003 = unknown_0026H(var_0002)
+            end
+        else
+            -- calli 006A, 1 (unmapped)
+            unknown_006AH(0)
         end
-    else
-        calli_006A(0)
+        -- call [0000] (082EH, unmapped)
+        var_0003 = unknown_082EH(itemref)
     end
-    local3 = call_082EH(itemref)
-
     return
 end

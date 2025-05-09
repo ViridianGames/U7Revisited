@@ -2015,9 +2015,9 @@ function get_flag(flag)
 
 function set_flag(flag, value)
 
-function _SaveAnswers()
+function save_answers()
 
-function _RestoreAnswers()
+function restore_answers()
 
 File: func_04A3.lua
 --------------------------------------------------
@@ -2033,9 +2033,9 @@ function get_flag(flag)
 
 function set_flag(flag, value)
 
-function _SaveAnswers()
+function save_answers()
 
-function _RestoreAnswers()
+function restore_answers()
 
 File: func_04A4.lua
 --------------------------------------------------

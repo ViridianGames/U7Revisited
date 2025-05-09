@@ -1,9 +1,31 @@
--- Toggles an item’s frame between even and odd values, likely for a switch or lever.
-function func_0291H(eventid, itemref)
+--- Best guess: Toggles an item’s frame (e.g., on/off state) by incrementing or decrementing based on its current frame.
+function func_0291(eventid, itemref)
+    local var_0000, var_0001
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
-        local delta = frame % 2 == 0 and 1 or -1
-        frame = frame + delta
-        set_object_frame(itemref, frame) -- TODO: Implement LuaSetItemFrame for calli 0013.
+        var_0000 = get_object_frame(itemref)
+        if var_0000 % 2 == 0 then
+            var_0001 = 1
+        else
+            var_0001 = -1
+        end
+        var_0000 = var_0000 + var_0001
+        get_object_frame(var_0000, itemref)
+    end
+end
+ |contentType="text/x-lua">
+--- Best guess: Toggles an item’s frame (e.g., on/off state) by incrementing or decrementing based on its current frame.
+function func_0291(eventid, itemref)
+    local var_0000, var_0001
+
+    if eventid == 1 then
+        var_0000 = get_object_frame(itemref)
+        if var_0000 % 2 == 0 then
+            var_0001 = 1
+        else
+            var_0001 = -1
+        end
+        var_0000 = var_0000 + var_0001
+        get_object_frame(var_0000, itemref)
     end
 end

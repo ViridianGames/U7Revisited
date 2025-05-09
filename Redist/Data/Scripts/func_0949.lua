@@ -1,56 +1,53 @@
--- Function 0949: Potion shop
+--- Best guess: Handles potion purchase with flag-based pricing adjustments and dialogue.
 function func_0949(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
-    _SaveAnswers()
-    local0 = true
-    local1 = {"orange potion", "red potion", "purple potion", "blue potion", "nothing"}
-    local2 = {340, 340, 340, 340, 0}
-    local3 = {4, 2, 5, 0, -359}
-    local4 = {10, 150, 150, 30, 0}
-    local5 = {45, 600, 600, 120, 0}
-    local6 = {"a ", "a ", "a ", "a ", ""}
-    local7 = 0
-    local8 = ""
-    local9 = 1
-    add_dialogue(itemref, "\"To want what item?\"")
-    while local0 do
-        local10 = call_090CH(local1)
-        if local10 == 1 then
+    start_conversation()
+    save_answers() --- Guess: Saves dialogue answers
+    var_0000 = true
+    var_0001 = {"orange potion", "red potion", "purple potion", "blue potion", "nothing"}
+    var_0002 = {340, 340, 340, 340, 0}
+    var_0003 = {4, 2, 5, 0, 359}
+    var_0004 = {10, 150, 150, 30, 0}
+    var_0005 = {45, 600, 600, 120, 0}
+    var_0006 = {"a ", "a ", "a ", "a ", ""}
+    var_0007 = 0
+    var_0008 = ""
+    var_0009 = 1
+    add_dialogue("@To want what item?@")
+    while var_0000 do
+        var_000A = show_purchase_options(var_0001) --- Guess: Shows purchase options
+        if var_000A == 1 then
             if get_flag(3) then
-                add_dialogue(itemref, "\"To be good. To want to sell nothing to you.\"")
+                add_dialogue("@To be good. To want to sell nothing to you.@")
             else
-                add_dialogue(itemref, "\"To understand.\"")
+                add_dialogue("@To understand.@")
             end
-            local0 = false
+            var_0000 = false
         else
             if get_flag(3) then
-                local11 = local5[local10]
-                local12 = call_091CH(local8, local11, local7, local1[local10], local6[local10])
+                var_000B = var_0005[var_000A]
+                var_000C = format_price_message(var_0001[var_000A], var_000B, var_0007, var_0008) --- Guess: Formats price message
             else
-                local11 = local4[local10]
-                local12 = call_091CH(local8, local11, local7, local1[local10], local6[local10])
+                var_000B = adjust_potion_price(var_0004[var_000A]) --- Guess: Adjusts potion price
+                var_000C = format_price_message(var_0001[var_000A], var_000B, var_0007, var_0006[var_000A]) --- Guess: Formats price message
             end
-            if local11 == 0 then
-                return
+            var_000D = 0
+            add_dialogue("@^" .. var_000C .. " To accept the price?@")
+            var_000E = get_dialogue_choice() --- Guess: Gets dialogue choice
+            if var_000E then
+                var_000D = purchase_item(false, 1, 0, var_000B, var_0009, var_0003[var_000A]) --- Guess: Purchases item
             end
-            local13 = 0
-            add_dialogue(itemref, "\"" .. local12 .. " To accept the price?\"")
-            local14 = get_answer()
-            if local14 then
-                local13 = call_08F8H(false, 1, 0, local11, local9, local3[local10], local2[local10])
+            if var_000D == 1 then
+                add_dialogue("@To be agreed!@")
+            elseif var_000D == 2 then
+                add_dialogue("@To be unable to carry that much, human!@")
+            elseif var_000D == 3 then
+                add_dialogue("@To have not enough gold for that!@")
             end
-            if local13 == 1 then
-                add_dialogue(itemref, "\"To be agreed!\"")
-            elseif local13 == 2 then
-                add_dialogue(itemref, "\"To be unable to carry that much, human!\"")
-            elseif local13 == 3 then
-                add_dialogue(itemref, "\"To have not enough gold for that!\"")
-            end
-            add_dialogue(itemref, "\"To want something else?\"")
-            local0 = get_answer()
+            add_dialogue("@To want something else?@")
+            var_0000 = get_dialogue_choice() --- Guess: Gets dialogue choice
         end
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores dialogue answers
 end

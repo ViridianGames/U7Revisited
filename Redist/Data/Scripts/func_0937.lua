@@ -1,13 +1,14 @@
--- Function 0937: Check NPC combat readiness
-function func_0937(eventid, itemref)
-    if _GetNPCProperty(2, itemref) >= 10 and
-       not check_item_state(1, itemref) and
-       not check_item_state(7, itemref) and
-       not check_item_state(4, itemref) and
-       _GetNPCProperty(3, itemref) > 0 and
-       is_npc(itemref) then
-        set_return(true)
-    else
-        set_return(false)
+--- Best guess: Checks multiple NPC properties and flags, returning true if all conditions are met (e.g., for eligibility or state validation).
+function func_0937(eventid, itemref, arg1)
+    local var_0000, var_0001
+
+    if get_npc_property(2, arg1) >= 10 and --- Guess: Gets NPC property
+       not check_item_flag(arg1, 1) and --- Guess: Checks item flag
+       not check_item_flag(arg1, 7) and --- Guess: Checks item flag
+       not check_item_flag(arg1, 4) and --- Guess: Checks item flag
+       get_npc_property(3, arg1) > 0 and --- Guess: Gets NPC property
+       check_item_status(arg1) then --- Guess: Checks item status
+        return true
     end
+    return false
 end

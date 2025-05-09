@@ -1,16 +1,15 @@
--- Function 0823: Update item properties
+--- Best guess: Updates item position based on quality and predefined arrays, tied to environmental effects.
 function func_0823(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local1 = {2879, 2919, 567, 2175, 1023, 1855, 519, 261, 1231}
-    local2 = {1810, 2402, 1609, 2338, 2435, 402, 491, 2826, 1314}
-    local3 = {0, 2, 0, 0, 1, 0, 0, 0, 0}
-    local4 = _GetItemQuality(eventid) + 1
-    if not get_flag(308) and local4 == 8 then
-        local4 = 9
+    var_0000 = itemref
+    var_0001 = {2879, 2919, 567, 2175, 1023, 1855, 519, 261, 1231}
+    var_0002 = {1810, 2402, 1609, 2338, 2435, 402, 491, 2826, 1314}
+    var_0003 = {0, 2, 0, 0, 1, 0, 0, 0, 0}
+    var_0004 = get_item_quality(var_0000) + 1 --- Guess: Gets item quality
+    if not get_flag(308) and var_0004 == 8 then
+        var_0004 = 9
     end
-    local5[1] = local1[local4]
-    local5[2] = local2[local4]
-    local5[3] = local3[local4]
-    set_return(local5)
+    var_0005 = {var_0001[var_0004], var_0002[var_0004], var_0003[var_0004]}
+    return var_0005
 end

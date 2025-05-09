@@ -1,7 +1,7 @@
--- Function 0930: Follow wall with parameters
-function func_0930(eventid, itemref)
-    local local0
+--- Best guess: Calls an unknown function with three arguments, possibly for NPC interaction or state modification.
+function func_0930(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002
 
-    local2 = follow_wall(-1, eventid, itemref)
-    set_return(local2)
+    var_0002 = unknown_0002H(1, arg1, arg2) --- Guess: Unknown function call
+    return var_0002
 end

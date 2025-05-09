@@ -1,34 +1,36 @@
--- Casts the "Por Xen" spell, causing nearby NPCs to dance with random banter and sprite effects.
+--- Best guess: Implements the dance spell (Por Xen), causing nearby NPCs to dance with random exclamations.
 function func_0669(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Por Xen@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
             bark(itemref, "@Everybody DANCE now!@")
         else
-            local0 = add_item(itemref, {1542, 17493, 17514, 17520, 7781})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17514, 17520, 7781})
         end
     elseif eventid == 2 then
-        local1 = 25
-        local2 = external_0934H(local1) -- Unmapped intrinsic
-        for local3 in ipairs(local2) do
-            local4 = local3
-            local5 = local4
-            local6 = get_npc_property(local5, 2)
-            if local6 > 5 and local6 < 25 then
-                local7 = get_item_data(local5)
-                create_object(-1, 0, 0, 0, local7[2], local7[1], 16) -- Unmapped intrinsic
-                external_093FH(local5, 4) -- Unmapped intrinsic
-                set_flag(local5, 15, true)
-                local8 = {"@Yow!@", "@Boogie!@", "@I'm bad!@", "@Oh, yeah!@", "@Huh!@", "@Yeah!@", "@Dance!@"}
-                local9 = get_random(1, 7)
-                local10 = get_random(10, 40)
-                external_0933H(local5, local8[local9]) -- Unmapped intrinsic
-                local0 = add_item(local5, local10, 1672, {17493, 7715})
+        var_0001 = 25
+        var_0002 = get_nearby_npcs(var_0001) --- Guess: Gets nearby NPCs
+        -- Guess: sloop triggers dance for NPCs
+        for i = 1, 5 do
+            var_0005 = {3, 4, 5, 2, 198}[i]
+            if not (var_0005 == var_0002[1] or var_0005 == var_0002[2] or ...) then
+                var_0006 = get_npc_property(2, var_0005) --- Guess: Gets NPC property
+                if var_0006 > 5 and var_0006 < 25 then
+                    var_0007 = unknown_0018H(var_0005) --- Guess: Gets position data
+                    apply_sprite_effect(-1, 0, 0, 0, var_0007[2], var_0007[1], 16) --- Guess: Applies sprite effect
+                    update_npc_state(4, var_0005) --- Guess: Updates NPC state
+                    set_item_flag(var_0005, 15)
+                    var_0008 = {"@Yow!@", "@Boogie!@", "@I'm bad!@", "@Oh, yeah!@", "@Huh!@", "@Yeah!@", "@Dance!@"}
+                    var_0009 = random(1, 7)
+                    var_000A = random(10, 40)
+                    npc_add_dialogue(var_0005, var_0008[var_0009]) --- Guess: NPC says random phrase
+                    var_0000 = add_container_items(var_0005, {var_000A, 1672, 17493, 7715})
+                end
             end
         end
     end
-    return
 end

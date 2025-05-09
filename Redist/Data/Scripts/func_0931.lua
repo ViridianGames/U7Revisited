@@ -1,11 +1,10 @@
--- Function 0931: Check condition with threshold
-function func_0931(eventid, itemref)
-    local local0
+--- Best guess: Checks if a party has sufficient items of a specific type, returning true if the condition is met.
+function func_0931(eventid, itemref, arg1, arg2, arg3, arg4)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local5 = check_condition(eventid, itemref, local2, local4)
-    if local5 >= local3 then
-        set_return(true)
-    else
-        set_return(false)
+    var_0005 = check_item_ownership(arg1, arg2, arg3, arg4) --- Guess: Checks item ownership
+    if var_0005 >= arg4 then
+        return true
     end
+    return false
 end

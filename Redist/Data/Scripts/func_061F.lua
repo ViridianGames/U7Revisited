@@ -1,5 +1,4 @@
--- Clears an item flag, possibly disabling a state like dancing.
+--- Best guess: Clears an item flag (ID 15), likely related to a dancing mechanic or animation, with minimal logic.
 function func_061F(eventid, itemref)
-    set_flag(itemref, 15, false)
-    return
+    unknown_008AH(itemref, 15)
 end

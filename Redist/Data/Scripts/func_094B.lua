@@ -1,103 +1,93 @@
--- Handles haggling negotiation for a price.
-function func_094B(p0, p1)
-    local local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13
+--- Best guess: Manages a haggling interaction for an item’s price, allowing the player to counter-offer and returning the final agreed price.
+function func_094B(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    local2 = 0
-    local3 = p1
-    local4 = p1
-    local5 = true
-    local6 = false
-    local7 = 0
-    while local5 do
-        if not local6 then
-            add_dialogue("\"To be my final offer -- " .. local3 .. ".\"")
+    var_0000 = 0
+    var_0001 = P1
+    var_0002 = P1
+    var_0003 = true
+    var_0004 = false
+    var_0005 = 0
+    while var_0003 do
+        if not var_0004 then
+            add_dialogue("\"To be my final offer -- " .. var_0001 .. ".\"")
         else
-            local8 = external_090FH(p0) -- Unmapped intrinsic
-            add_dialogue("\"To want " .. local3 .. " gold.\"")
+            var_0006 = _GetPlayerName(P0)
+            add_dialogue("\"To want " .. var_0001 .. " gold.\"")
         end
-        local9 = local3 * 3
-        local9 = math.floor(local9 / 2)
-        local10 = math.floor(local3 / 2)
-        local11 = math.floor(local3 / 4)
-        local12 = {local11, local10, local3, local9}
-        if not local6 then
+        var_0007 = var_0001 * 3
+        var_0008 = var_0007 / 2
+        var_0009 = var_0001 / 2
+        var_000A = var_0001 / 4
+        var_000B = {var_000A, var_0009, var_0001, var_0008}
+        if var_0004 then
             add_dialogue("\"To accept?\"")
-            local7 = external_090AH() -- Unmapped intrinsic
-            if local7 then
+            var_0005 = _SelectOption()
+            if var_0005 then
                 add_dialogue("\"To have a deal.\"")
-                return local3
+                return var_0001
             else
                 add_dialogue("\"To wonder why you bothered me.\"")
                 return 0
             end
-        else
-            local4 = local2
-            add_dialogue("\"To have another offer?\"")
-            local4 = ask_number(0, 1, local9, 0) -- Unmapped intrinsic
         end
-        if local4 == 0 then
+        var_0002 = var_0001
+        add_dialogue("\"To have another offer?\"")
+        var_0001 = ask_number(0, 1, var_0008, 0)
+        if var_0001 == 0 then
             add_dialogue("\"To notice you are obviously not interested.\"")
             return 0
-        elseif local4 >= local3 then
+        elseif var_0001 >= var_0001 then
             add_dialogue("\"To accept your offer.\"")
-            return local4
-        elseif local4 < local12[4] then
+            return var_0001
+        elseif var_0001 < var_000B[4] then
             add_dialogue("\"To be happy,\" he says. \"To have wanted to keep it anyway! To tell you to leave.\"")
             abort()
             return 0
         end
-        local7 = external_0000H(100) -- Unmapped intrinsic
-        if local2 == 0 then
-            local2 = local12[3]
+        var_0005 = unknown_0000H(100)
+        if var_0002 == 0 then
+            var_0002 = var_000B[3]
         end
-        if local4 >= local12[3] then
-            local6 = true
-            local13 = external_0932H((local4 - local2) * 2) -- Unmapped intrinsic
-            local13 = external_0000H(local13) -- Unmapped intrinsic
-            if local3 - local13 <= local4 then
-                local3 = local4 + 1
+        if var_0001 >= var_000B[4] then
+            if var_0005 >= 90 then
+                var_0004 = true
+                var_000D = unknown_0932H((var_0001 - var_0002) * 2)
+                var_000D = unknown_0000H(var_000D)
+                if var_0001 - var_000D <= var_0001 then
+                    var_0001 = var_0001 + 1
+                else
+                    var_0001 = var_0001 - var_000D
+                end
+            elseif var_0005 >= 30 then
+                var_000D = unknown_0932H((var_0001 - var_0002) * 2)
+                var_000D = unknown_0000H(var_000D)
+                if var_0001 - var_000D <= var_0001 then
+                    var_0001 = var_0001 + 1
+                else
+                    var_0001 = var_0001 - var_000D
+                end
             else
-                local3 = local3 - local13
+                add_dialogue("\"To be agreed!\"")
+                return var_0001
             end
-        elseif local7 >= 90 then
-            local6 = true
-            local13 = external_0932H((local4 - local2) * 2) -- Unmapped intrinsic
-            local13 = external_0000H(local13) -- Unmapped intrinsic
-            if local3 - local13 <= local4 then
-                local3 = local4 + 1
+        elseif var_0001 >= var_000B[3] then
+            if var_0005 >= 40 then
+                var_0004 = true
+                var_000D = unknown_0932H((var_0001 - var_0002) * 2)
+                var_000D = unknown_0000H(var_000D)
+                if var_0001 - var_000D <= var_0001 then
+                    var_0001 = var_0001 + 1
+                else
+                    var_0001 = var_0001 - var_000D
+                end
             else
-                local3 = local3 - local13
+                add_dialogue("\"To be foolish to accept so little!\"")
+                return 0
             end
-        elseif local7 >= 30 then
-            local13 = external_0932H((local4 - local2) * 2) -- Unmapped intrinsic
-            local13 = external_0000H(local13) -- Unmapped intrinsic
-            if local3 - local13 <= local4 then
-                local3 = local4 + 1
-            else
-                local3 = local3 - local13
-            end
-        elseif local7 >= 40 then
-            local6 = true
-            local13 = external_0932H((local4 - local2) * 2) -- Unmapped intrinsic
-            local13 = external_0000H(local13) -- Unmapped intrinsic
-            if local3 - local13 <= local4 then
-                local3 = local4 + 1
-            else
-                local3 = local3 - local13
-            end
-        elseif local7 >= 15 then
-            local13 = external_0932H((local4 - local2) * 2) -- Unmapped intrinsic
-            local13 = external_0000H(local13) -- Unmapped intrinsic
-            if local3 - local13 <= local4 then
-                local3 = local4 + 1
-            else
-                local3 = local3 - local13
-            end
-        elseif local7 >= 5 then
-            add_dialogue("\"To be foolish to accept so little!\"")
-            return 0
+        elseif var_0005 >= 5 then
+            add_dialogue("\"To charge more next time. To have sold to you too cheaply!\"")
         end
-        add_dialogue("\"To charge more next time. To have sold to you too cheaply!\"")
+        return var_0001
     end
-    return local3
 end

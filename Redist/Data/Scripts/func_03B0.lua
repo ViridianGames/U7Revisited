@@ -1,16 +1,14 @@
--- Function 03B0: Spitting action with dialogue
+--- Best guess: Triggers an NPC (ID 356) to spit and react, possibly a humorous or environmental interaction.
 function func_03B0(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        if get_object_frame(itemref) == 0 and not unknown_0937H(356) then
+            bark(356, "ptui!")
+            if not unknown_0081H() then
+                var_0000 = unknown_0002H({3, 24, 7768}, itemref)
+            end
+        end
     end
-
-    if _GetItemFrame(itemref) == 0 and call_0937H(-356) and not callis_0081() then
-        bark(356, "@ptui!@")
-        local0 = callis_0002({3, 24, 7768}, itemref)
-    end
-
     return
 end

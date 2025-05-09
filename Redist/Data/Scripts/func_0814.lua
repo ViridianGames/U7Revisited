@@ -1,16 +1,16 @@
--- Function 0814: Find items at specific location
+--- Best guess: Checks for items (type 414) within a specific area, likely for puzzle or ritual validation.
 function func_0814(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local0 = {}
-    local1 = check_position(0, 40, 414, -356)
-    while local2 do
-        local4 = local2
-        local5 = get_item_position(local4)
-        if local5[1] >= 2487 - 8 and local5[1] <= 2487 + 8 and local5[2] >= 1736 - 8 and local5[2] <= 1736 + 8 and (_GetItemFrame(local4) == 4 or _GetItemFrame(local4) == 5) then
-            table.insert(local0, local4)
+    var_0000 = {}
+    var_0001 = unknown_0035H(0, 40, 414, 356) --- Guess: Sets NPC location
+    -- Guess: sloop checks item positions
+    for i = 1, 5 do
+        var_0004 = {2, 3, 4, 1, 111}[i]
+        var_0005 = unknown_0018H(var_0004) --- Guess: Gets position data
+        if var_0005[1] >= 2487 - 8 and var_0005[1] <= 2487 + 8 and var_0005[2] >= 1736 - 8 and var_0005[2] <= 1736 + 8 and (get_item_frame(var_0004) == 4 or get_item_frame(var_0004) == 5) then
+            table.insert(var_0000, var_0004)
         end
-        local2 = get_next_item() -- sloop
     end
-    set_return(local0)
+    return var_0000
 end

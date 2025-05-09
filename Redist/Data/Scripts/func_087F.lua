@@ -1,69 +1,76 @@
--- Processes items of type 800 with specific quality and frame, creating or updating items.
-function func_087F(p0)
-    local local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21
+--- Best guess: Searches for nearby items with specific quality and frame attributes, processes them, and triggers explosions, likely for inventory or environmental effects.
+function func_087F(itemref)
+    local var_0000, var_0001, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000C, var_000D, var_000E, var_000F, var_0012, var_0013, var_0014, var_0015
 
-    local1 = external_0035H(16, 15, 275, itemref) -- Unmapped intrinsic
-    for local2 in ipairs(local1) do
-        local3 = local2
-        local4 = local3
-        local5 = get_item_quality(local4)
-        local6 = get_object_frame(local4)
-        local7 = get_item_data(local4)
-        if local5 == 10 and local6 == 6 then
-            local8 = external_0035H(0, 1, -1, local4) -- Unmapped intrinsic
-            local9 = 0
-            if not local8 then
-                for local10 in ipairs(local8) do
-                    local11 = local10
-                    local12 = local11
-                    local13 = get_item_type(local12)
-                    if local13 == 800 then
-                        local14 = get_item_data(local12)
-                        if local14[1] == local7[1] and local14[2] == local7[2] then
-                            local9 = local12
-                            external_0015H(local9, 100) -- Unmapped intrinsic
+    var_0001 = find_nearby_items(16, 15, 275, itemref) --- Guess: Finds nearby items
+    for i = 1, 10 do --- Guess: Sloop loop for 10 iterations
+        var_0004 = var_0001[i]
+        if var_0004 then
+            var_0005 = get_item_quality(var_0004) --- Guess: Gets item quality
+            var_0006 = get_item_frame(var_0004) --- Guess: Gets item frame
+            var_0007 = get_position_data(var_0004) --- Guess: Gets position data
+            if var_0005 == 10 and var_0006 == 6 then
+                var_0008 = find_nearby_items(0, 1, -1, var_0004) --- Guess: Finds nearby items
+                var_0009 = 0
+                if var_0008 then
+                    for j = 1, 10 do --- Guess: Sloop loop for 10 iterations
+                        var_000C = var_0008[j]
+                        if var_000C then
+                            var_000D = get_item_type(var_000C) --- Guess: Gets item type
+                            if var_000D == 800 then
+                                var_000E = get_position_data(var_000C) --- Guess: Gets position data
+                                if var_000E[1] == var_0007[1] and var_000E[2] == var_0007[2] then
+                                    var_0009 = var_000C
+                                    var_000F = set_item_quality(var_0009, 100) --- Guess: Sets item quality
+                                end
+                            end
                         end
                     end
-                end
-                if not local9 then
-                    local9 = get_item_by_type(800) -- Unmapped intrinsic
-                    external_0015H(local9, 100) -- Unmapped intrinsic
-                    set_object_frame(local9, 0)
-                    local15 = set_item_data(local7)
-                end
-                for local16 in ipairs(local8) do
-                    local17 = local16
-                    local12 = local17
-                    local13 = get_item_type(local12)
-                    local18 = get_item_data(local12)
-                    if local18[3] < 5 and local12 ~= local9 then
-                        if local13 == 338 then
-                            local19 = get_item_quality(local12)
-                            local20 = get_object_frame(local12)
-                            external_006FH(local12) -- Unmapped intrinsic
-                            local12 = get_item_by_type(336) -- Unmapped intrinsic
-                            external_0015H(local12, local19) -- Unmapped intrinsic
-                            set_object_frame(local12, local20)
-                        end
-                        local15 = external_0025H(local12) -- Unmapped intrinsic
-                        external_0036H(local9) -- Unmapped intrinsic
+                    if not var_0009 then
+                        var_0009 = create_item(800) --- Guess: Creates item
+                        var_000F = set_item_quality(var_0009, 100) --- Guess: Sets item quality
+                        set_item_frame(var_0009, 0) --- Guess: Sets item frame
+                        var_000F = get_item_position(var_0007) --- Guess: Gets item position
                     end
+                    for k = 1, 10 do --- Guess: Sloop loop for 10 iterations
+                        var_000C = var_0008[k]
+                        if var_000C then
+                            var_000D = get_item_type(var_000C) --- Guess: Gets item type
+                            var_00012 = get_position_data(var_000C) --- Guess: Gets position data
+                            if var_00012[3] < 5 and var_000C ~= var_0009 then
+                                if var_000D == 338 then
+                                    var_00013 = get_item_quality(var_000C) --- Guess: Gets item quality
+                                    var_00014 = get_item_frame(var_000C) --- Guess: Gets item frame
+                                    var_000C = unknown_006FH(var_000C) --- Guess: Unknown function
+                                    var_000C = create_item(336) --- Guess: Creates item
+                                    var_000F = set_item_quality(var_000C, var_00013) --- Guess: Sets item quality
+                                    set_item_frame(var_000C, var_00014) --- Guess: Sets item frame
+                                end
+                                var_000F = move_item(var_000C) --- Guess: Moves item
+                                var_000F = remove_item(var_0009) --- Guess: Removes item
+                            end
+                        end
+                    end
+                else
+                    var_0009 = create_item(800) --- Guess: Creates item
+                    var_000F = set_item_quality(var_0009, 100) --- Guess: Sets item quality
+                    set_item_frame(var_0009, 0) --- Guess: Sets item frame
+                    var_000F = get_item_position(var_0007) --- Guess: Gets item position
                 end
+                var_000E = get_position_data(var_0009) --- Guess: Gets position data
+                create_explosion(-1, 0, 0, 0, var_000E[2] - 1, var_000E[1] - 1, 13) --- Guess: Creates explosion
+                var_00015 = get_item_type(var_0000) --- Guess: Gets item type
+                if var_00015 == 338 then
+                    var_00013 = get_item_quality(var_0000) --- Guess: Gets item quality
+                    var_00014 = get_item_frame(var_0000) --- Guess: Gets item frame
+                    var_0000 = unknown_006FH(var_0000) --- Guess: Unknown function
+                    var_0000 = create_item(336) --- Guess: Creates item
+                    var_000F = set_item_quality(var_0000, var_00013) --- Guess: Sets item quality
+                    set_item_frame(var_0000, var_00014) --- Guess: Sets item frame
+                end
+                var_000F = move_item(var_0000) --- Guess: Moves item
+                var_000F = remove_item(var_0009) --- Guess: Removes item
             end
-            local14 = get_item_data(local9)
-            local15 = create_object(-1, local14[2] - 1, local14[1] - 1, 0, 0, 0, 13) -- Unmapped intrinsic
-            local21 = get_item_type(p0)
-            if local21 == 338 then
-                local19 = get_item_quality(p0)
-                local20 = get_object_frame(p0)
-                external_006FH(p0) -- Unmapped intrinsic
-                p0 = get_item_by_type(336) -- Unmapped intrinsic
-                external_0015H(p0, local19) -- Unmapped intrinsic
-                set_object_frame(p0, local20)
-            end
-            local15 = external_0025H(p0) -- Unmapped intrinsic
-            external_0036H(local9) -- Unmapped intrinsic
         end
     end
-    return
 end

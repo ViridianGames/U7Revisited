@@ -1,13 +1,12 @@
--- Function 0925: Adjust item weight
-function func_0925(eventid, itemref)
-    local local0, local1
+--- Best guess: Manages item quantity, decrementing or removing items based on quantity.
+function func_0925(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002
 
-    local1 = get_item_weight(-356, itemref)
-    if local1 <= 1 then
-        delete_item(itemref)
+    var_0001 = get_item_quantity(arg1, 356) --- Guess: Gets item quantity
+    if var_0001 <= 1 then
+        unknown_006FH(arg1) --- Guess: Unknown function, possibly removes item
     else
-        local1 = local1 - 1
-        local2 = set_item_weight(local1, itemref)
+        var_0001 = var_0001 - 1
+        var_0002 = set_item_quantity(arg1, var_0001) --- Guess: Sets item quantity
     end
-    return
 end

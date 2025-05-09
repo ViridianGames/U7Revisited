@@ -230,7 +230,7 @@ typedef unsigned int IdxT;
 ** of a partition. (If you don't want/need this "randomness", ~0 is a
 ** good choice.)
 */
-#if !defined(l_randomizePivot)		/* { */
+#if !defined(lrandomizePivot)		/* { */
 
 #include <time.h>
 
@@ -243,7 +243,7 @@ typedef unsigned int IdxT;
 ** anything without risking overflows. A safe way to use their values
 ** is to copy them to an array of a known type and use the array values.
 */
-static unsigned int l_randomizePivot (void) {
+static unsigned int lrandomizePivot (void) {
   clock_t c = clock();
   time_t t = time(NULL);
   unsigned int buff[sof(c) + sof(t)];
@@ -391,7 +391,7 @@ static void auxsort (lua_State *L, IdxT lo, IdxT up,
       up = p - 1;  /* tail call for [lo .. p - 1]  (lower interval) */
     }
     if ((up - lo) / 128 > n) /* partition too imbalanced? */
-      rnd = l_randomizePivot();  /* try a new randomization */
+      rnd = lrandomizePivot();  /* try a new randomization */
   }  /* tail call auxsort(L, lo, up, rnd) */
 }
 

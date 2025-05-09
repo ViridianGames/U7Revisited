@@ -1,4 +1,4 @@
--- Applies an effect to an item, possibly a potion or reagent.
-function func_0268H(eventid, itemref)
-    call_script(0x0813, itemref, 1, 90) -- TODO: Map 0813H (possibly apply effect like stat boost).
+--- Best guess: Applies a specific effect (ID 90) to an item, likely related to food or consumable mechanics.
+function func_0268(eventid, itemref)
+    unknown_0813H(90, 1, itemref)
 end

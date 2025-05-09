@@ -1,20 +1,22 @@
--- Searches for items within a bounding box and applies effects based on type.
-function func_087E(p0, p1, p2, p3)
-    local local4, local5, local6, local7, local8, local9
+--- Best guess: Searches for nearby items meeting positional and type criteria, processing them with external functions, possibly for inventory or environmental checks.
+function func_087E(itemref, arg1, arg2, arg3)
+    local var_0004, var_0007, var_0008, var_0009
 
-    local4 = external_0035H(0, p2, -1, p0) -- Unmapped intrinsic
-    for local5 in ipairs(local4) do
-        local6 = local5
-        local7 = local6
-        local8 = get_item_type(local7)
-        local9 = get_item_data(local7)
-        if local9[1] <= p1[1] and local9[1] >= p3[1] and local9[2] <= p1[2] and local9[2] >= p3[2] and local9[3] < 5 and local8 ~= 189 then
-            if not external_0031H(local7) then -- Unmapped intrinsic
-                external_087FH(local7) -- Unmapped intrinsic
-            else
-                external_0880H(p1, local7) -- Unmapped intrinsic
+    var_0004 = find_nearby_items(0, arg2, -1, arg1) --- Guess: Finds nearby items
+    for i = 1, 10 do --- Guess: Sloop loop for 10 iterations
+        var_0007 = var_0004[i]
+        if var_0007 then
+            var_0008 = get_item_type(var_0007) --- Guess: Gets item type
+            var_0009 = get_position_data(var_0007) --- Guess: Gets position data
+            if var_0009[1] <= arg1[1] and var_0009[1] >= arg3[1] and
+               var_0009[2] <= arg1[2] and var_0009[2] >= arg3[2] and
+               var_0009[3] < 5 and var_0008 ~= 189 then
+                if not check_item_flag(var_0007) then --- Guess: Checks item flag
+                    calle_087FH(var_0007) --- External call to process item
+                else
+                    calle_0880H(arg1, var_0007) --- External call to alternative processing
+                end
             end
         end
     end
-    return
 end

@@ -1,13 +1,14 @@
--- Triggers a specific effect or scene transition when using an item with frame 3.
-function func_0350H(eventid, itemref)
+--- Best guess: Manages a quest item, triggering specific effects when used in a particular state (frame 3), setting a flag for quest progression.
+function func_0350(eventid, itemref)
+    local var_0000, var_0001
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref)
-        if frame == 3 then
-            local arr = {7768, 67, 7937, 17486, 17447, 4, 7947, -3, 4, 7975, 2, 8021, 1782}
-            execute_action(itemref, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
+        var_0000 = get_object_frame(itemref)
+        if var_0000 == 3 then
+            var_0001 = unknown_0001H({1782, 8021, 2, 7975, 4, -3, 7947, 4, 17447, 17486, 7937, 67, 7768}, itemref)
         end
     elseif eventid == 2 then
-        set_flag(0x032F, true)
-        call_script(0x06F6, itemref) -- TODO: Map 06F6H (possibly scene transition).
+        set_flag(815, true)
+        unknown_06F6H(itemref)
     end
 end

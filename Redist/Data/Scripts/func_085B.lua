@@ -1,22 +1,21 @@
--- Displays random NPC dialogue for NPC 244.
+--- Best guess: Generates random NPC dialogue for an NPC (ID -244) in a specific state (ID 11), expressing frustration or confusion.
 function func_085B()
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = external_001BH(244) -- Unmapped intrinsic
-    local1 = external_001CH(local0) -- Unmapped intrinsic
-    local2 = ""
-    local3 = get_random(1, 4)
-    if local1 == 11 then
-        if local3 == 1 then
-            local2 = "@We'll never find it!@"
-        elseif local3 == 2 then
-            local2 = "@Love. Hah!@"
-        elseif local3 == 3 then
-            local2 = "@I thought thou had it!@"
-        elseif local3 == 4 then
-            local2 = "@Why me?@"
+    var_0000 = unknown_001BH(-244)
+    var_0001 = unknown_001CH(var_0000)
+    var_0002 = ""
+    var_0003 = random2(4, 1)
+    if var_0001 == 11 then
+        if var_0003 == 1 then
+            var_0002 = "@We'll never find it!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Love. Hah!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@I thought thou had it!@"
+        elseif var_0003 == 4 then
+            var_0002 = "@Why me?@"
         end
+        bark(var_0000, var_0002)
     end
-    bark(local0, local2)
-    return
 end

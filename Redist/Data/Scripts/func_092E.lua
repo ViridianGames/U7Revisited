@@ -1,77 +1,76 @@
--- Displays random NPC dialogue based on NPC state.
-function func_092E(p0)
-    local local1, local2, local3, local4
+--- Best guess: Makes an NPC randomly say a context-specific phrase based on their state (e.g., working, eating, playing tag), tailored to human NPCs.
+function func_092E(P0)
+    local var_0000, var_0001, var_0002, var_0003
 
-    local1 = external_001BH(p0) -- Unmapped intrinsic
-    if not external_0937H(local1) then -- Unmapped intrinsic
+    var_0000 = unknown_001BH(P0)
+    if not unknown_0937H(var_0000) then
         return
     end
-    local2 = external_001CH(local1) -- Unmapped intrinsic
-    local3 = ""
-    local4 = get_random(1, 4)
-    if local2 == 11 then
-        if local4 == 1 then
-            local3 = "@Looks like rain...@"
-        elseif local4 == 2 then
-            local3 = "@Greetings.@"
-        elseif local4 == 3 then
-            local3 = "@Oh, my aching back...@"
-        elseif local4 == 4 then
-            local3 = "@Ho hum...@"
+    var_0001 = unknown_001CH(var_0000)
+    var_0002 = ""
+    var_0003 = random2(4, 1)
+    if var_0001 == 11 then
+        if var_0003 == 1 then
+            var_0002 = "@Looks like rain...@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Greetings.@"
+        elseif var_0003 == 3 then
+            var_0002 = "@Oh, my aching back...@"
+        elseif var_0003 == 4 then
+            var_0002 = "@Ho hum...@"
         end
-    elseif local2 == 14 then
-        local3 = "@Z-z-z-z...@"
-    elseif local2 == 23 then
-        if local4 == 1 then
-            local3 = "@Try the wine.@"
-        elseif local4 == 2 then
-            local3 = "@The bread is fresh.@"
-        elseif local4 == 3 then
-            local3 = "@Try the mutton.@"
-        elseif local4 == 4 then
-            local3 = "@I recommend the ale.@"
+    elseif var_0001 == 14 then
+        var_0002 = "@Z-z-z-z...@"
+    elseif var_0001 == 23 then
+        if var_0003 == 1 then
+            var_0002 = "@Try the wine.@"
+        elseif var_0003 == 2 then
+            var_0002 = "@The bread is fresh.@"
+        elseif var_0003 == 3 then
+            var_0002 = "@Try the mutton.@"
+        elseif var_0003 == 4 then
+            var_0002 = "@I recommend the ale.@"
         end
-    elseif local2 == 28 then
-        if local4 == 1 then
-            local3 = "@Strive For Unity.@"
-        elseif local4 == 2 then
-            local3 = "@Trust Thy Brother.@"
-        elseif local4 == 3 then
-            local3 = "@Worthiness Precedes Reward.@"
-        elseif local4 == 4 then
-            local3 = "@Join The Fellowship!@"
+    elseif var_0001 == 28 then
+        if var_0003 == 1 then
+            var_0002 = "@Strive For Unity.@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Trust Thy Brother.@"
+        elseif var_0003 == 3 then
+            var_0002 = "@Worthiness Precedes Reward.@"
+        elseif var_0003 == 4 then
+            var_0002 = "@Join The Fellowship!@"
         end
-    elseif local2 == 26 then
-        if local4 == 1 then
-            local3 = "@Mmmm! Good!@"
-        elseif local4 == 2 then
-            local3 = "@Tasty!@"
-        elseif local4 == 3 then
-            local3 = "@This is good!@"
-        elseif local4 == 4 then
-            local3 = "@Waiter! Waiter!@"
+    elseif var_0001 == 26 then
+        if var_0003 == 1 then
+            var_0002 = "@Mmmm! Good!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Tasty!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@This is good!@"
+        elseif var_0003 == 4 then
+            var_0002 = "@Waiter! Waiter!@"
         end
-    elseif local2 == 6 then
-        if local4 == 1 then
-            local3 = "@Whew! 'Tis hot!@"
-        elseif local4 == 2 then
-            local3 = "@Ouch! Cut myself!@"
-        elseif local4 == 3 then
-            local3 = "@Work...work...work...@"
-        elseif local4 == 4 then
-            local3 = "@We need rain...@"
+    elseif var_0001 == 6 then
+        if var_0003 == 1 then
+            var_0002 = "@Whew! 'Tis hot!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Ouch! Cut myself!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@Work...work...work...@"
+        elseif var_0003 == 4 then
+            var_0002 = "@We need rain...@"
         end
-    elseif local2 == 25 then
-        if local4 == 1 then
-            local3 = "@Tag! Thou art it!@"
-        elseif local4 == 2 then
-            local3 = "@Cannot catch me!@"
-        elseif local4 == 3 then
-            local3 = "@Nyah nyah! Thou art it!@"
-        elseif local4 == 4 then
-            local3 = "@Catch me if thou can!@"
+    elseif var_0001 == 25 then
+        if var_0003 == 1 then
+            var_0002 = "@Tag! Thou art it!@"
+        elseif var_0003 == 2 then
+            var_0002 = "@Cannot catch me!@"
+        elseif var_0003 == 3 then
+            var_0002 = "@Nyah nyah! Thou art it!@"
+        elseif var_0003 == 4 then
+            var_0002 = "@Catch me if thou can!@"
         end
     end
-    bark(local1, local3)
-    return
+    bark(var_0002, var_0000)
 end

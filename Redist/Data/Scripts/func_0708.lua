@@ -1,4 +1,4 @@
--- Function 0708: Delete item
+--- Best guess: Silently destroys an item, possibly a cleanup function for ritual or event completion.
 function func_0708(eventid, itemref)
-    delete_item(itemref)
+    destroy_item_silent(itemref) --- Guess: Destroys item silently
 end

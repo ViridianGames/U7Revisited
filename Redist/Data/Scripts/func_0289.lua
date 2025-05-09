@@ -1,23 +1,36 @@
--- Boosts NPC stats (strength, dexterity, intelligence) when using an item, with a cap at 30.
-function func_0289H(eventid, itemref)
+--- Best guess: Boosts NPC stats (strength, dexterity, intelligence) when a consumable item is used on them.
+function func_0289(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
+
     if eventid == 1 then
-        local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-        if not get_wearer(target) then -- TODO: Implement LuaGetWearer for callis 0031.
-            local strength = get_npc_property(target, 0) -- TODO: Implement LuaGetNPCProperty for callis 0020.
-            local dexterity = get_npc_property(target, 1)
-            local intelligence = get_npc_property(target, 2)
-            strength = strength + 5 > 30 and 30 or strength + 5
-            dexterity = dexterity + 5 > 30 and 30 or dexterity + 5
-            intelligence = intelligence + 5 > 30 and 30 or intelligence + 5
-            call_script(0x0835, target, 0, strength) -- TODO: Map 0835H (possibly set_stat).
-            call_script(0x0835, target, 1, dexterity)
-            call_script(0x0835, target, 2, intelligence)
-            set_stat(itemref, 72) -- Sets quality to 72.
-            local arr = {7715, 17449, 1, 8021, 1539, 8024, 71}
-            execute_action(target, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
-            remove_item(itemref) -- TODO: Implement LuaRemoveItem for calli 006F.
+        var_0000 = _ItemSelectModal()
+        if not unknown_0031H(var_0000) then
+            var_0001 = _GetNPCProperty(0, var_0000)
+            var_0002 = _GetNPCProperty(1, var_0000)
+            var_0003 = _GetNPCProperty(2, var_0000)
+            if var_0001 + 5 > 30 then
+                var_0001 = 30
+            else
+                var_0001 = var_0001 + 5
+            end
+            if var_0002 + 5 > 30 then
+                var_0002 = 30
+            else
+                var_0002 = var_0002 + 5
+            end
+            if var_0003 + 5 > 30 then
+                var_0003 = 30
+            else
+                var_0003 = var_0003 + 5
+            end
+            unknown_0835H(var_0001, 0, var_0000)
+            unknown_0835H(var_0002, 1, var_0000)
+            unknown_0835H(var_0003, 2, var_0000)
+            unknown_0086H(itemref, 72)
+            var_0004 = unknown_0001H({71, 8024, 1539, 8021, 1, 17449, 7715}, var_0000)
+            unknown_006FH(itemref)
         else
-            call_script(0x08FD, 60) -- TODO: Map 08FDH (possibly say or error action).
+            unknown_08FDH(60)
         end
     end
 end

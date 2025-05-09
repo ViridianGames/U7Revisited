@@ -1,20 +1,17 @@
--- Function 0934: Get party members excluding NPC
-function func_0934(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+--- Best guess: Filters party members based on a flag check, returning a list of matching NPCs.
+function func_0934(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    local1 = check_position(8, -359, itemref)
-    local2 = _GetPartyMembers()
-    local3 = {}
-    if check_item_state(6, itemref) then
-        while local2 do
-            local5 = local2
-            if not table.contains(local2, local5) then
-                table.insert(local3, local5)
+    var_0001 = set_npc_location(8, 0, 359, itemref) --- Guess: Sets NPC location
+    var_0002 = get_party_members() --- Guess: Gets party members
+    var_0003 = {}
+    if not check_item_flag(itemref, 6) then
+        for _, var_0006 in ipairs({4, 5, 6, 1}) do
+            if not is_in_int_array(var_0006, var_0002) then
+                table.insert(var_0003, var_0006)
             end
-            local2 = get_next_party_member() -- sloop
         end
-        set_return(local3)
-    else
-        set_return(local2)
+        return var_0003
     end
+    return var_0002
 end

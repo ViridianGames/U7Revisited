@@ -1,95 +1,103 @@
--- func_0464.lua
--- Dell's dialogue as a shopkeeper in Britain
+--- Best guess: Handles dialogue with Tavenor, an Emp in Yew, discussing Emp lifestyle (food, Silverleaf trees), their aversion to violence, and addressing human destruction of the forest, urging the player to stop cutting Silverleaf trees.
+function func_0464(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003
 
-
-function func_0464(eventid)
-    local answers = {}
-    local flag_00D4 = get_flag(0x00D4) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E3 = get_flag(0x00E3) -- Shop topic
-    local npc_id = -83 -- Dell's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E3 then
-            add_answer( "shop")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00D4 then
-            add_dialogue("You see a busy man arranging goods in a bustling shop, his apron dusted with flour.")
-            set_flag(0x00D4, true)
-        else
-            add_dialogue("\"Hail, \" .. get_player_name() .. \",\" Dell says, wiping his hands.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Dell grins. \"Need supplies or just a chat?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
+        var_0000 = unknown_0931H(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
+        switch_talk_to(100, 0)
+        if not get_flag(340) then
+            if not var_0000 then
+                add_dialogue("The creature ignores you.")
+                abort()
             end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Dell, shopkeeper of Britain, sellin’ all thou might need.\"")
+            unknown_08EDH() --- Guess: Interacts with Emp
+        end
+        if not get_flag(318) then
+            if not get_flag(316) then
+                add_dialogue("The ape-like creature in front of you approaches very cautiously. After a few minutes of staring you up and down, it cocks its head toward you.")
+                add_dialogue("\"You are human.\"")
+                set_flag(316, true)
+            else
+                add_dialogue("The Emp in front of you approaches very cautiously. After a few minutes of staring you up and down, he cocks his head towards you.")
+                add_dialogue("\"You are human.\"")
+            end
+            set_flag(318, true)
+        else
+            add_dialogue("\"You are greeted by me, human.\" Tavenor slowly approaches.")
+        end
+        add_answer({"bye", "job", "name"})
+        var_0001 = false
+        while true do
+            var_0002 = get_answer()
+            if var_0002 == "name" then
+                add_dialogue("\"Tavenor is my name.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I run this shop, sellin’ food, tools, and more. The Fellowship’s trade rules help stock my shelves, but their sway over Patterson’s a bit much.\"")
-                add_answer( "shop")
-                add_answer( "Fellowship")
-                set_flag(0x00E3, true)
-            elseif choice == "shop" then
-                add_dialogue("\"Got bread, tools, even some cloth. Prices are high, though—folk like Weston can’t afford much, and that leads to trouble.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("shop")
-            elseif choice == "prices" then
-                add_dialogue("\"Taxes and Fellowship fees drive costs up. It’s tough on the poor, like those in Paws, pushin’ ‘em to desperate acts.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of here. Many, like Weston, barely scrape by, and the Fellowship’s promises don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—heartbreakin’. Figg’s quick arrest, with Fellowship backin’, showed no compassion.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s all for the Fellowship, enforcin’ their rules. His part in Weston’s arrest makes me doubt their talk of unity.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s trade deals keep goods flowin’, but their hold on Patterson and folk like Figg makes me think they’re after more than unity.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou believest their cause? They aid trade, but I keep an eye on ‘em.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0002 == "job" then
+                if not get_flag(302) then
+                    add_dialogue("\"The meaning of `job' is not understood.\"")
+                    add_answer("explain job")
                 else
-                    add_dialogue("\"Wise to question ‘em. Their influence feels heavier than their promises.\"")
+                    add_dialogue("\"No job is had by me. Food is gathered by me and my family.\"")
+                    add_answer("food")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Take care, \" .. get_player_name() .. \".\"")
+            elseif var_0002 == "explain job" then
+                add_dialogue("\"`Job' now understood by me. No job is had by me. Food is gathered by me and my family.\" He watches you carefully. \"Your job is to cut down Silverleaf trees, yes?\"")
+                set_flag(302, true)
+                var_0002 = select_option()
+                if var_0002 then
+                    add_dialogue("\"That is as I expected. You are a menace. You are asked to stop, please.\" He turns away from you.")
+                    abort()
+                else
+                    add_dialogue("\"The truth is known to me, but, belief is hard for me.\"")
+                    var_0003 = unknown_08F7H(6) --- Guess: Checks player status
+                    if var_0003 then
+                        add_dialogue("*")
+                        switch_talk_to(6, 0)
+                        add_dialogue("\"The truth is spoken by the human,\" Trellek says to the other Emp. \"He is to be trusted. His good will was felt by me.\"")
+                        hide_npc(6)
+                        switch_talk_to(100, 0)
+                        add_dialogue("The Emp nods at Trellek, and then turns to you. \"The truth is now clear to me. You are wished good luck.\"")
+                    else
+                        add_dialogue("The Emp eyes you a little longer. \"Your good intentions are known to me. You are asked to be the messenger. Humans will not be destroyers, please.\"")
+                    end
+                    remove_answer("explain job")
+                    set_flag(302, true)
+                end
+                add_answer({"Silverleaf trees", "food"})
+            elseif var_0002 == "food" then
+                add_dialogue("\"Fruit and milk are Emp foods. Especially fruits are liked by me. Meats,\" he shakes his head,")
+                add_dialogue("\"are -not- liked by Emps.\"")
+                remove_answer("food")
+                add_answer({"milk", "fruits", "meats"})
+            elseif var_0002 == "milk" then
+                add_dialogue("\"Milk is good. Milk with honey is preferred by me.\"")
+                if not var_0001 then
+                    add_answer("honey")
+                end
+                remove_answer("milk")
+            elseif var_0002 == "Silverleaf trees" then
+                add_dialogue("\"Silverleaf trees are Emp homes.\"")
+                remove_answer("Silverleaf trees")
+            elseif var_0002 == "meats" then
+                add_dialogue("\"Meats are from killed animals. Killing is bad. Destroying is bad.\"")
+                remove_answer("meats")
+            elseif var_0002 == "fruits" then
+                add_dialogue("\"Fruits are good and sweet -- like honey!\"")
+                remove_answer("fruits")
+                if not var_0001 then
+                    add_answer("honey")
+                end
+            elseif var_0002 == "honey" then
+                add_dialogue("\"Honey is favorite food of all Emps!\"")
+                var_0001 = true
+                remove_answer("honey")
+            elseif var_0002 == "bye" then
                 break
             end
         end
+        add_dialogue("\"You are told `goodbye.'\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
-
-return func_0464

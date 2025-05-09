@@ -1,43 +1,37 @@
--- Searches for nearby seats and assigns party members to them.
-function func_080A(seat_shape, seat_clicked)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18
+--- Best guess: Manages a seating arrangement mechanic, finding nearby seats (P0) and assigning party members to the closest available seat (P1), excluding the clicked seat.
+function func_080A(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013
 
-    local2 = {}
-    local3 = external_0035H(0, 15, seat_shape, -356) -- Unmapped intrinsic
-    for local4 in ipairs(local3) do
-        local5 = local4
-        local6 = local5
-        local7 = 0
-        local8 = 9999
-        for local9 in ipairs(local3) do
-            local10 = local9
-            local11 = local10
-            local7 = local7 + 1
-            if local11 ~= 0 and local11 ~= seat_clicked then
-                local12 = external_0019H(local11, seat_clicked) -- Unmapped intrinsic
-                if local12 < local8 then
-                    local8 = local12
-                    local13 = local7
+    var_0002 = {}
+    var_0003 = unknown_0035H(0, 15, P0, unknown_001BH(-356))
+    for var_0004 in ipairs(var_0003) do
+        var_0007 = 0
+        var_0008 = 9999
+        for var_0009 in ipairs(var_0003) do
+            var_0007 = var_0007 + 1
+            if var_000B ~= 0 and var_000B ~= P1 then
+                var_000C = unknown_0019H(var_000B, P1)
+                if var_000C < var_0008 then
+                    var_0008 = var_000C
+                    var_000D = var_0007
                 end
             end
         end
-        local2 = array_append(local2, local3[local13])
+        table.insert(var_0002, var_0003[var_000D])
+        var_0003[var_000D] = 0
     end
-    external_0046H(seat_clicked, -356) -- Unmapped intrinsic
-    local14 = array_size(local2) -- Unmapped intrinsic
-    local15 = get_party_members()
-    local7 = 2
-    for local16 in ipairs(local15) do
-        local17 = local16
-        local18 = local17
-        if local7 - 1 > local14 then
+    unknown_0046H(P1, unknown_001BH(-356))
+    var_000E = #var_0002
+    var_000F = _GetPartyMembers()
+    var_0007 = 2
+    for var_0010 in ipairs(var_000F) do
+        if var_0007 - 1 > var_000E then
             break
         end
-        if external_001CH(local18) ~= 16 then -- Unmapped intrinsic
-            local13 = local7 - 1
-            external_0046H(local2[local13], local18) -- Unmapped intrinsic
+        if unknown_001CH(var_0012) ~= 16 then
+            var_0013 = var_0007 - 1
+            unknown_0046H(var_0002[var_0013], var_0012)
         end
-        local7 = local7 + 1
+        var_0007 = var_0007 + 1
     end
-    return
 end

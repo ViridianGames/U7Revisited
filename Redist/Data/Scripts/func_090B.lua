@@ -1,10 +1,9 @@
--- Prompts for an answer from a provided list and returns the selected answer.
-function func_090B(p0)
-    local local1
+--- Best guess: Displays a list of string options, adds them as answers, and returns the selected option’s string.
+function func_090B(P0)
+    local var_0000
 
-    save_answers() -- Unmapped intrinsic
-    add_answer(p0) -- Unmapped intrinsic
-    local1 = external_000AH() -- Unmapped intrinsic
-    restore_answers() -- Unmapped intrinsic
-    return local1
+    save_answers()
+    var_0000 = add_answer(P0)
+    restore_answers()
+    return var_0000
 end

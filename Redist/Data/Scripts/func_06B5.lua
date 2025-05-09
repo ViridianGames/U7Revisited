@@ -1,42 +1,34 @@
--- Function 06B5: Manages item spawning in blacksmith's house
+--- Best guess: Manages an egg in a blacksmith’s house, checking nearby items (types 270, 376) and triggering external functions based on their properties.
 function func_06B5(eventid, itemref)
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    if eventid ~= 3 then
-        return
-    end
-
-    local0 = callis_0035(0, 40, 270, itemref)
-    local0 = callis_0035(0, 40, 376, itemref)[1]
-    local1 = {}
-    while sloop() do
-        local4 = local0
-        local1[#local1 + 1] = callis_0019(local1, local4, itemref)
-    end
-
-    local0 = call_093DH(local1)
-    local5 = 1
-    while local0[local5 + 1] do
-        local4 = local0[local5 + 1]
-        if local4 then
-            if call_081BH(local4) == 2 then
-                local5 = local5 + 1
-            else
-                local6 = call_GetItemType(local4)
-                if local6 == 270 then
-                    call_010EH(local4)
-                elseif local6 == 376 then
-                    call_0178H(local4)
+    if eventid == 3 then
+        var_0000 = unknown_0035H(0, 40, 270, itemref)
+        var_0000 = unknown_0035H(0, 40, 376, itemref)[var_0000]
+        var_0001 = {}
+        for i = 1, #var_0000 do
+            var_0001 = unknown_0019H(var_0001, var_0000[i], itemref)
+        end
+        var_0000 = unknown_093DH(var_0001, var_0000)
+        var_0005 = 1
+        while var_0005 <= #var_0000 do
+            var_0004 = var_0000[var_0005]
+            if var_0004 then
+                if unknown_081BH(var_0004) == 2 then
+                    var_0005 = var_0005 + 1
+                else
+                    var_0006 = unknown_0011H(var_0004)
+                    if var_0006 == 270 then
+                        unknown_010EH(var_0004)
+                    elseif var_0006 == 376 then
+                        unknown_0178H(var_0004)
+                    end
+                    break
                 end
+            else
+                break
             end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

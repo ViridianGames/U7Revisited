@@ -1,31 +1,22 @@
--- Function 06BB: Manages combat effects with recursion
+--- Best guess: Applies effects to party members not matching a specific NPC ID (356) with non-zero dexterity, triggering a sequence when event ID 3 is received.
 function func_06BB(eventid, itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
-        local0 = call_GetItemQuality(itemref)
-        local1 = _GetPartyMembers()
-        while sloop() do
-            local4 = local1
-            if callis_001B(local4) ~= -356 then
-                if not callis_004A(15, callis_0020(2, local4)) then
-                    callis_005C(local4)
-                    call_093FH(0, local4)
-                    callis_004B(7, local4)
-                    callis_004C(-356, local4)
-                    local5 = callis_0002(local0, {1723, 17493, 7715}, local4)
-                end
+        var_0000 = unknown_0014H(itemref)
+        var_0001 = unknown_0023H()
+        for i = 1, #var_0001 do
+            var_0004 = var_0001[i]
+            if var_0004 ~= 356 and not unknown_004AH(15, unknown_0020H(2, var_0004)) then
+                unknown_005CH(var_0004)
+                unknown_093FH(0, var_0004)
+                unknown_004BH(7, var_0004)
+                unknown_004CH(356, var_0004)
+                var_0005 = unknown_0002H(var_0000, 1723, {17493, 7715}, var_0004)
             end
         end
     elseif eventid == 2 then
-        call_093FH(31, itemref)
+        unknown_093FH(31, itemref)
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

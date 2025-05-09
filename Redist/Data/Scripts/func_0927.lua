@@ -1,25 +1,28 @@
--- Function 0927: Comment on empty drinking vessel
-function func_0927(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+--- Best guess: Provides dialogue for liquid containers, suggesting liquids or commenting on use if the frame is non-zero.
+function func_0927(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    local1 = _GetItemFrame(get_item_container(itemref))
-    if local1 == 0 then
-        add_dialogue(itemref, {"I bet that would work much better if thou wouldst put some liquid in it..."})
-        add_dialogue_option("Perhaps some BEER for instance.", -4)
-        add_dialogue_option("Or maybe some WINE>>>", -3)
-    else
-        local2 = {"last stuff", "stuff", "stuff", "stuff", "stuff", "stuff", "ale", "beer", "wine", "blood", "water"}
-        local3 = math.random(1, 10)
-        local4 = local2[local1]
-        local5 = "Gee, I bet that " .. local4 .. " was pretty good...."
-        if local3 == 1 then
-            local6 = "mmmm... I bet that would sure wet a body's whistle."
+    start_conversation()
+    if is_item_equipped(arg1) then --- Guess: Checks if item is equipped
+        var_0001 = get_item_frame(arg1) --- Guess: Gets item frame
+        if var_0001 == 0 then
+            say_with_newline({"@I bet that would work much better if thou wouldst put some liquid in it...@"})
+            add_dialogue("@Perhaps some BEER for instance.@")
+            add_dialogue("@Or maybe some WINE>>>@")
+        else
+            set_item_frame(arg1, 0) --- Guess: Sets item frame
+            var_0002 = {"last stuff", "stuff", "stuff", "stuff", "stuff", "stuff", "ale", "beer", "wine", "blood", "water"}
+            unknown_000FH(90) --- Guess: Unknown function
+            var_0003 = random(1, 10) --- Guess: Generates random number
+            var_0004 = var_0002[var_0001]
+            var_0005 = "@Gee, I bet that " .. var_0004 .. " was pretty good....@"
+            if var_0003 == 1 then
+                var_0006 = "@mmmm... I bet that would sure wet a body's whistle.@"
+            elseif var_0003 == 2 then
+                var_0007 = get_player_name_context() --- Guess: Gets player name
+                var_0005 = "@Why dost thou not wait until dinner to drink that " .. var_0004 .. ", " .. var_0007 .. ".@"
+            end
+            say_with_newline({var_0005})
         end
-        if local3 == 2 then
-            local7 = show_dialogue_options()
-            local5 = "Why dost thou not wait until dinner to drink that " .. local4 .. ", " .. local7 .. "."
-        end
-        add_dialogue(itemref, local5)
     end
-    return
 end

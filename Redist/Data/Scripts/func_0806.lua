@@ -1,16 +1,18 @@
--- Function 0806: Create items at position
-function func_0806(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7
+--- Best guess: Places items (type 968) around a position, setting a spell duration, likely for an area effect.
+function func_0806(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    local2 = get_item_position(eventid)
-    local3 = check_position(176, 20, local1, local2)
-    local3 = table.insert(local3, check_position(176, 20, local1 + 1, local2))
-    local3 = table.insert(local3, check_position(176, 20, local1 + 2, local2))
-    local3 = table.insert(local3, check_position(176, 20, local1 + 3, local2))
-    while local4 do
-        local6 = local4
-        local7 = call_0001H({968, 8021, 6, -1, 17419, 7758}, local6)
-        local4 = get_next_item() -- sloop
+    var_0000 = itemref
+    var_0001 = arg1
+    var_0002 = unknown_0018H(var_0000) --- Guess: Gets position data
+    var_0003 = unknown_0035H(176, 20, var_0001, var_0002) --- Guess: Sets NPC location
+    var_0003 = unknown_0035H(176, 20, var_0001 + 1, var_0002) --- Guess: Sets NPC location
+    var_0003 = unknown_0035H(176, 20, var_0001 + 2, var_0002) --- Guess: Sets NPC location
+    var_0003 = unknown_0035H(176, 20, var_0001 + 3, var_0002) --- Guess: Sets NPC location
+    -- Guess: sloop places items around position
+    for i = 1, 5 do
+        var_0006 = {4, 5, 6, 3, 31}[i]
+        var_0007 = add_container_items(var_0006, {968, 8021, 6, -1, 17419, 7758})
     end
-    call_0059H(7)
+    set_spell_duration(7) --- Guess: Sets spell duration
 end

@@ -1,47 +1,44 @@
--- Manages horse movement in a race, adjusting positions and frames based on random events and race state.
+--- Best guess: Manages a crafting or transformation mechanic, checking item quality and positions, updating item states, and potentially generating new items based on random outcomes.
 function func_060D(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011
 
-    if eventid == 2 then
+    if eventid ~= 2 then
         return
     end
 
-    local0 = add_item(0, 10, 410, itemref)
-    local1 = get_item_quality(local0)
-    local2 = {915, 916, 914}
-    local3 = local2[local1 + 1]
-    if get_random(1, 20) == 1 then
-        local4 = get_item_data(itemref)
-        local5 = add_item(local3, 644)
-        if local5 then
-            set_schedule(local5, 18)
-            set_object_frame(local5, 0)
-            set_item_owner({local4[1], local4[2] - 9, local4[3]}, local5)
+    var_0000 = unknown_0035H(0, 10, 410, itemref)
+    var_0001 = _GetItemQuality(var_0000)
+    var_0002 = {915, 916, 914}
+    var_0003 = var_0002[var_0001]
+    if random2(20, 1) == 1 then
+        var_0004 = unknown_0018H(itemref)
+        var_0005 = unknown_0024H(var_0003)
+        if var_0005 then
+            unknown_0089H(18, var_0005)
+            get_object_frame(var_0005, 0)
+            var_0006 = unknown_0026H({var_0004[2], var_0004[1] - 9})
         end
     end
 
-    local7 = add_item(0, 10, -359, itemref)
-    local8 = get_item_data(itemref)
-    local9 = local8[1]
-    local10 = local8[2]
-    for local11 in ipairs(local7) do
-        local12 = local11
-        local13 = get_item_data(local12)
-        local14 = local13[1]
-        local15 = local13[2]
-        local16 = local13[3]
-        if local14 <= local9 and local15 == local10 and local16 == 1 then
-            local17 = remove_item(local12)
-            if local17 then
-                set_item_owner({local16, local15, local14 + 1}, local12)
+    var_0007 = unknown_0035H(0, 10, 359, itemref)
+    var_0008 = unknown_0018H(itemref)
+    var_0009 = var_0008[1]
+    var_000A = var_0008[2]
+    for var_000D in ipairs(var_0007) do
+        var_000E = unknown_0018H(var_000D)
+        var_000F = var_000E[1]
+        var_0010 = var_000E[2]
+        var_0011 = var_000E[3]
+        if var_000F <= var_0009 and var_0010 == var_000A and var_0011 == 1 then
+            var_0006 = unknown_0025H(var_000D)
+            if var_0006 then
+                var_0006 = unknown_0026H({var_0011, var_0010, var_000F + 1})
             end
-        elseif local14 == local9 + 1 and local15 == local10 and local16 == 1 then
-            local17 = remove_item(local12)
-            if local17 then
-                set_item_owner({0, local15, local14}, local12)
+        elseif var_000F == var_0009 + 1 and var_0010 == var_000A and var_0011 == 1 then
+            var_0006 = unknown_0025H(var_000D)
+            if var_0006 then
+                var_0006 = unknown_0026H({0, var_0010, var_000F})
             end
         end
     end
-
-    return
 end

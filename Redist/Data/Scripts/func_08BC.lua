@@ -1,63 +1,58 @@
--- Function 08BC: Manages reagent and potion purchase dialogue
-function func_08BC(itemref)
-    -- Local variables (15 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14
+--- Best guess: Manages a shop dialogue for purchasing reagents or potions, handling item selection, pricing, and inventory checks based on the input parameter.
+function func_08BC(eventid)
+    start_conversation()
+    local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015
 
-    callis_0007()
-    local1 = true
-    if itemref == "Reagents" then
-        local2 = {"Black Pearl", "Nightshade", "Mandrake Root", "Ginseng", "Garlic", "Nothing"}
-        local3 = {842, 842, 842, 842, 842, 0}
-        local4 = {0, 2, 3, 5, 4, -359}
-        local5 = {8, 6, 7, 2, 1, 0}
-        local6 = ""
-        local7 = {" each", " for one button", " each", " for one portion", " for one clove", ""}
+    save_answers()
+    var_0001 = true
+    if eventid == "Reagents" then
+        var_0002 = {"Black Pearl", "Nightshade", "Mandrake Root", "Ginseng", "Garlic", "Nothing"}
+        var_0003 = {842, 842, 842, 842, 842, 0}
+        var_0004 = {0, 2, 3, 5, 4, 359}
+        var_0005 = {8, 6, 7, 2, 1, 0}
+        var_0006 = ""
+        var_0007 = {" each", " for one button", " each", " for one portion", " for one clove", ""}
     else
-        local2 = {"black potion", "orange potion", "nothing"}
-        local3 = {340, 340, 0}
-        local4 = {7, 4, -359}
-        local5 = {90, 15, 0}
-        local8 = {"a ", "a ", ""}
-        local7 = {" for one vial", " for one vial", ""}
+        var_0002 = {"black potion", "orange potion", "nothing"}
+        var_0003 = {340, 340, 0}
+        var_0004 = {7, 4, 359}
+        var_0005 = {90, 15, 0}
+        var_0008 = {"a ", "a ", ""}
+        var_0007 = {" for one vial", " for one vial", ""}
     end
-
-    local9 = 0
-    local10 = 1
-    local11 = -153
-
-    while local1 do
-        add_dialogue("What wouldst thou like to buy?")
-        local12 = call_090CH(local2)
-        if local12 == 1 then
-            add_dialogue("Fine.")
-            local1 = false
+    var_0009 = 0
+    var_0010 = 1
+    var_0011 = -153
+    add_dialogue("\"What wouldst thou like to buy?\"")
+    while var_0001 do
+        var_0012 = unknown_090CH(var_0002)
+        if var_0012 == 1 then
+            add_dialogue("\"Fine.\"")
+            var_0001 = false
         else
-            local13 = call_091BH(local7[local12], local5[local12], local9, local2[local12], local6 or local8[local12])
-            local14 = 0
-            add_dialogue("\"", local13, " Dost thou like the price?")
-            local0 = call_090AH()
-            if local0 then
-                add_dialogue(itemref == "Reagents" and "How many dost thou want?" or "How many dost thou want?")
-                local14 = call_08F8H(itemref == "Reagents", 1, itemref == "Reagents" and 20 or 0, local5[local12], local10, local4[local12], local3[local12])
+            var_0013 = unknown_091BH(var_0006 or var_0008[var_0012], var_0002[var_0012], var_0009, var_0005[var_0012], var_0007[var_0012])
+            var_0014 = 0
+            add_dialogue("\"" .. var_0013 .. " Dost thou like the price?\"")
+            var_0015 = unknown_090AH()
+            if not var_0015 then
+                if eventid == "Reagents" then
+                    add_dialogue("\"How many dost thou want?\"")
+                    var_0014 = unknown_08F8H(false, 1, 20, var_0005[var_0012], var_0010, var_0004[var_0012], var_0003[var_0012])
+                else
+                    var_0014 = unknown_08F8H(false, 1, 0, var_0005[var_0012], var_0010, var_0004[var_0012], var_0003[var_0012])
+                end
             end
-            if local14 == 1 then
-                add_dialogue("Done!")
-            elseif local14 == 2 then
-                add_dialogue("Thou cannot possibly carry that much!")
-            elseif local14 == 3 then
-                add_dialogue("Thou dost not have enough gold for that!")
+            if var_0014 == 1 then
+                add_dialogue("\"Done!\"")
+            elseif var_0014 == 2 then
+                add_dialogue("\"Thou cannot possibly carry that much!\"")
+            elseif var_0014 == 3 then
+                add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
+            add_dialogue("\"Wouldst thou like something else?\"")
+            var_0001 = unknown_090AH()
         end
-        add_dialogue("Wouldst thou like something else?")
-        local1 = call_090AH()
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

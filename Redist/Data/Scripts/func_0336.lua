@@ -1,29 +1,35 @@
--- Manages diaper usage, changing state or warning about improper use.
-function func_0336H(eventid, itemref)
+--- Best guess: Manages a diaper item, changing its state (clean, used, dirty) when applied to specific items (e.g., baby, ID 730).
+function func_0336(eventid, itemref)
+    local var_0000, var_0001, var_0002
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref)
-        if frame == 0 then
-            local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-            local item_type = get_item_type(target)
-            if item_type == 730 or item_type == 864 then -- 02DAH, 0360H: Likely baby or crib.
-                set_object_frame(itemref, 1)
-            elseif item_type == 822 and get_object_frame(target) == 2 then -- 0336H: Diaper with specific frame.
-                call_script(0x0925, itemref) -- TODO: Map 0925H (possibly item cleanup).
+        var_0000 = get_object_frame(itemref)
+        if var_0000 == 0 then
+            var_0001 = _ItemSelectModal()
+            var_0002 = get_object_shape(var_0001)
+            if var_0002 == 730 or var_0002 == 864 then
+                get_object_frame(1, itemref)
+            elseif var_0002 == 822 then
+                if get_object_frame(var_0001) == 2 then
+                    unknown_0925H(itemref)
+                end
             else
-                add_dialogue(0, "Those are for babies.")
+                unknown_08FEH("@Those are for babies.@")
             end
-        elseif frame == 1 then
-            local target = item_select_modal()
-            if get_wearer(target) then -- TODO: Implement LuaGetWearer for callis 0031.
-                set_item_status(target, 0) -- TODO: Implement LuaSetItemStatus for calli 001D.
-                set_npc_status(target, 7) -- TODO: Implement LuaSetNPCStatus for calli 004B.
-                set_npc_state(target, -356) -- TODO: Implement LuaSetNPCState for calli 004C.
-                call_script(0x0925, itemref)
-            elseif item_type == 822 and get_object_frame(target) == 2 then
-                call_script(0x0925, itemref)
+        elseif var_0000 == 1 then
+            var_0001 = _ItemSelectModal()
+            if unknown_0031H(var_0001) then
+                unknown_001DH(0, var_0001)
+                unknown_004BH(7, var_0001)
+                unknown_004CH(-356, var_0001)
+                unknown_0925H(itemref)
+            elseif get_object_shape(var_0001) == 822 then
+                if get_object_frame(var_0001) == 2 then
+                    unknown_0925H(itemref)
+                end
             end
-        elseif frame == 2 then
-            add_dialogue(0, "That is for dirty diapers.")
+        elseif var_0000 == 2 then
+            unknown_08FEH("@That is for dirty diapers.@")
         end
     end
 end

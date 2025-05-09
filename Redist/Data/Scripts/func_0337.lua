@@ -1,39 +1,44 @@
--- Handles paintbrush usage, applying paint with random dialogue outcomes.
-function func_0337H(eventid, itemref)
+--- Best guess: Manages a paintbrush, allowing painting on specific items (e.g., canvas, ID 837) with pigments, with random feedback messages.
+function func_0337(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref)
-        if frame < 2 then
-            add_dialogue(0, "Finger-painting again?")
-            return
-        end
-        local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-        local item_type = get_item_type(target)
-        if item_type == 823 and get_object_frame(target) < 2 then -- 0337H: Paintbrush.
-            local target_frame = get_object_frame(target)
-            local frame_mod = target_frame % 8
-            local outcome = random(1, 10)
-            local message
-            if outcome == 1 then
-                message = "Looks great!"
-            elseif outcome == 2 then
-                message = "Do not quit your day job."
-            elseif outcome == 3 then
-                message = {"I can barely", "see the numbers."}
-            elseif outcome == 4 then
-                message = "Stay within the lines."
-            elseif outcome == 5 then
-                message = "What is it?"
-            end
-            add_dialogue(0, message)
-            if frame_mod < 7 then
-                set_object_frame(target, target_frame + 1)
-            end
-        elseif get_wearer(target) then
-            add_dialogue(0, "Tattooing?")
+        var_0000 = get_object_frame(itemref)
+        if var_0000 < 2 then
+            unknown_08FEH("@Finger-painting again?@")
         else
-            add_dialogue(0, {"The stain will", "never come out."})
+            var_0001 = _ItemSelectModal()
+            var_0002 = get_object_shape(var_0001)
+            if var_0002 == 823 then
+                if get_object_frame(var_0001) < 2 then
+                    var_0001 = _ItemSelectModal()
+                    if get_object_shape(var_0001) == 837 then
+                        var_0003 = get_object_frame(var_0001) % 8
+                        var_0004 = random2(10, 1)
+                        if var_0004 == 1 then
+                            var_0005 = "@Looks great!@"
+                        elseif var_0004 == 2 then
+                            var_0005 = "@Do not quit your day job.@"
+                        elseif var_0004 == 3 then
+                            var_0005 = {"@I can barely", "see the numbers.@"}
+                        elseif var_0004 == 4 then
+                            var_0005 = "@Stay within the lines.@"
+                        elseif var_0004 == 5 then
+                            var_0005 = "@What is it?@"
+                        end
+                        unknown_08FEH(var_0005)
+                        if var_0003 < 7 then
+                            get_object_frame(get_object_frame(var_0001) + 1, var_0001)
+                        end
+                    elseif unknown_0031H(var_0001) then
+                        unknown_08FEH("@Tattooing?@")
+                    else
+                        unknown_08FEH({"@The stain will", "never come out.@"})
+                    end
+                end
+            else
+                unknown_08FEH("@Use pigments!@")
+            end
         end
-    else
-        add_dialogue(0, "Use pigments!")
     end
 end

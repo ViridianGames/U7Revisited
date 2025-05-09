@@ -1,38 +1,41 @@
--- Casts the "Tym Vas Flam" spell, creating a timed fire effect at a selected location.
+--- Best guess: Manages the "Tym Vas Flam" spell, igniting a target (ID 621) with a fiery effect, applying status effects and creating visual items, with a fallback effect if the spell fails.
 function func_067A(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local0 = false
-    if eventid == 1 then
-        local1 = item_select_modal() -- Unmapped intrinsic
-        local2 = external_092DH(local1) -- Unmapped intrinsic
-        local3 = {local1[2], local1[3], local1[4]}
-        bark(itemref, "@Tym Vas Flam@")
-        if not external_0906H(local2) then -- Unmapped intrinsic
-            local4 = get_item_by_type(621) -- Unmapped intrinsic
-            if local4 then
-                set_flag(local4, 18, true)
-                set_flag(local4, 0, true)
-                local5 = set_item_data(local3)
-                if local5 then
-                    set_npc_property(local4, 3, 1)
-                    local5 = external_0041H(local4, 621, itemref) -- Unmapped intrinsic
-                    local5 = add_item(itemref, 12, 17530, {17493, 7715})
-                    local5 = add_item(local4, 14, 17453, {17493, 7715})
-                else
-                    local0 = true
-                end
-            else
-                local0 = true
-            end
-            local5 = add_item(itemref, {17519, 17520, 8042, 65, 8536, local2, 7769})
-            create_object(-1, 0, 0, 0, local3[2], local3[1], 13) -- Unmapped intrinsic
-        else
-            local0 = true
-        end
-        if local0 then
-            local5 = add_item(itemref, {1542, 17493, 17519, 17520, 8554, local2, 7769})
-        end
+    var_0000 = false
+    if eventid ~= 1 then
+        return
     end
-    return
+
+    unknown_005CH(itemref)
+    var_0001 = _ItemSelectModal()
+    var_0002 = unknown_092DH(var_0001)
+    var_0003 = {var_0001[2], var_0001[3], var_0001[4]}
+    bark(itemref, "@Tym Vas Flam@")
+    if not unknown_0906H() then
+        var_0004 = unknown_0024H(621)
+        if not var_0004 then
+            unknown_0089H(18, var_0004)
+            unknown_0089H(0, var_0004)
+            var_0005 = unknown_0026H(var_0003)
+            if var_0005 then
+                var_0005 = _SetNPCProperty(var_0004, 1, 3)
+                var_0005 = unknown_0041H(621, var_0004, itemref)
+                var_0005 = unknown_0002H(12, 7715, 17530, var_0004)
+                var_0005 = unknown_0002H(14, 7715, 17453, var_0004)
+            else
+                var_0000 = true
+            end
+        else
+            var_0000 = true
+        end
+        var_0005 = unknown_0001H(itemref, {17530, 17519, 17520, 8042, 65, 8536, var_0002, 7769})
+        unknown_0053H(-1, 0, 0, 0, var_0003[2], var_0003[1], 13)
+    else
+        var_0000 = true
+    end
+
+    if var_0000 then
+        var_0005 = unknown_0001H(itemref, {1542, 17493, 17519, 17520, 8554, var_0002, 7769})
+    end
 end

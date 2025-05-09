@@ -1,16 +1,13 @@
--- Function 06C8: Applies NPC effects for Minoc or Fellowship
+--- Best guess: Applies an effect to specific NPCs (85, 8, 88) when event ID 3 is triggered, likely part of a dungeon sequence.
 function func_06C8(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
+    if eventid == 3 then
+        var_0000 = {85, 8, 88}
+        for i = 1, #var_0000 do
+            var_0003 = var_0000[i]
+            unknown_093FH(11, var_0003)
+        end
     end
-
-    local0 = {-85, -8, -88}
-    for _, local3 in ipairs(local0) do
-        call_093FH(11, local3)
-    end
-
     return
 end

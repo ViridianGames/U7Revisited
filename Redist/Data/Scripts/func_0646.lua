@@ -1,25 +1,25 @@
--- Casts the "In Flam" spell, creating a fire effect on a selected target, with a fallback if the target is invalid.
+--- Best guess: Implements the fireball spell (In Flam), targeting and damaging specific item types with spell effects.
 function func_0646(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        destroy_item(itemref)
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@In Flam@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = external_0041H(local0, 280, itemref) -- Unmapped intrinsic
-            local2 = add_item(itemref, {17530, 17514, 17520, 8559, local1, 7769})
+        if check_spell_requirements() then
+            var_0002 = apply_spell_effect(280, var_0000, itemref) --- Guess: Applies spell effect
+            var_0002 = add_container_items(itemref, {17530, 17514, 17520, 8559, var_0001, 7769})
         else
-            local2 = add_item(itemref, {1542, 17493, 17514, 17520, 8559, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17514, 17520, 8559, var_0001, 7769})
         end
     elseif eventid == 4 then
-        local3 = get_item_type(itemref)
-        if local3 == 481 or local3 == 336 or local3 == 889 or local3 == 595 then
-            external_0095H(local3) -- Unmapped intrinsic
-            local2 = add_item(itemref, {local3, 17493, 7715})
+        var_0003 = get_item_type(itemref)
+        if var_0003 == 481 or var_0003 == 336 or var_0003 == 889 or var_0003 == 595 then
+            consume_reagents(var_0003) --- Guess: Consumes reagents
+            var_0002 = add_container_items(itemref, {17493, 7715})
         else
-            external_08FDH(60) -- Unmapped intrinsic
+            play_spell_animation(60) --- Guess: Plays spell animation
         end
     end
-    return
 end

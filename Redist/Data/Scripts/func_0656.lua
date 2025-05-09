@@ -1,30 +1,30 @@
--- Casts the "Ort Por Ylem" spell, attracting a selected object to the player.
+--- Best guess: Implements the teleport spell (Ort Por Ylem), moving a target to the caster’s location with spell effects.
 function func_0656(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        if local0[1] == 0 then
+        destroy_item(itemref)
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        if var_0000[1] == 0 then
             return
         end
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@Ort Por Ylem@")
-        if not external_0906H(local1) and is_item_active(local0) then -- Unmapped intrinsic
-            local2 = external_0041H(local0, 443, itemref) -- Unmapped intrinsic
-            local3 = add_item(itemref, {17530, 17511, 8037, 67, 8536, local1, 7769})
+        if check_spell_requirements() and not is_item_valid(var_0000) and var_0000[1] ~= 0 then
+            var_0002 = apply_spell_effect(443, var_0000, itemref) --- Guess: Applies spell effect
+            var_0002 = add_container_items(itemref, {17530, 17511, 8037, 67, 8536, var_0001, 7769})
         else
-            local3 = add_item(itemref, {1542, 17493, 17511, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 8549, var_0001, 7769})
         end
     elseif eventid == 4 then
-        local3 = {785, 1011, 696, 583, 873, 740, 470, 743, 434, 258, 431, 810, 329, 653, 651, 654, 261}
-        local4 = {787, 788, 950, 949}
-        local5 = get_item_type(itemref)
-        if contains(local4, local5) then
-            local2 = add_item(itemref, {local5, 7765})
-        elseif not contains(local3, local5) then
-            external_0095H(local5) -- Unmapped intrinsic
-            local2 = add_item(itemref, {local5, 7765})
+        local valid_types = {785, 788, 950, 949}
+        local invalid_types = {787, 1011, 696, 583, 873, 740, 470, 743, 434, 258, 431, 810, 329, 653, 651, 654, 261}
+        var_0003 = get_item_type(itemref)
+        if var_0003 == valid_types[1] or var_0003 == valid_types[2] or var_0003 == valid_types[3] or var_0003 == valid_types[4] then
+            var_0002 = add_container_items(itemref, {var_0003, 7765})
+        elseif not (var_0003 == invalid_types[1] or var_0003 == invalid_types[2] or ...) then
+            consume_reagents(var_0003) --- Guess: Consumes reagents
+            var_0002 = add_container_items(itemref, {var_0003, 7765})
         end
     end
-    return
 end

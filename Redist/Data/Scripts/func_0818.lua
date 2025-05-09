@@ -1,4 +1,4 @@
--- Function 0818: Blocked door message
+--- Best guess: Displays a blocked door message, likely for interaction feedback.
 function func_0818(eventid, itemref)
-    add_dialogue(itemref, "@The door appears blocked.@")
+    bark(itemref, "@The door appears blocked.@") --- Guess: Item says dialogue
 end

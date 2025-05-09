@@ -1,31 +1,26 @@
--- Function 028A: Manages directional display
-function func_028A(itemref)
-    -- Local variables (5 as per .localc)
-    local local0, local1, local2, local3, local4
+--- Best guess: Displays the player's coordinates as a compass direction (e.g., "North East"), failing if under a roof, likely for navigation.
+function func_028A(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if eventid() == 1 then
-        local0 = callis_0018(-356)
-        local1 = math.floor((local0[1] - 933) / 10)
-        local2 = math.floor((local0[2] - 1134) / 10)
-        if local1 < 0 then
-            local3 = " " .. call_0932H(local1) .. " West"
+    if eventid == 1 then
+        var_0000 = unknown_0018H(-356)
+        var_0001 = math.floor((var_0000[1] - 933) / 10)
+        var_0002 = math.floor((var_0000[2] - 1134) / 10)
+        if var_0001 < 0 then
+            var_0003 = " " .. unknown_0932H(var_0001) .. " West"
         else
-            local3 = " " .. call_0932H(local1) .. " East"
+            var_0003 = " " .. unknown_0932H(var_0001) .. " East"
         end
-        if local2 < 0 then
-            local4 = " " .. call_0932H(local2) .. " North"
+        if var_0002 < 0 then
+            var_0004 = " " .. unknown_0932H(var_0002) .. " North"
         else
-            local4 = " " .. call_0932H(local2) .. " South"
+            var_0004 = " " .. unknown_0932H(var_0002) .. " South"
         end
-        if not callis_0062() then
-            callis_0040(local4 .. local3, itemref)
-        elseif call_0937H(-1) then
-            callis_0040("@'Twill not function under a roof!@", -1)
+        if not unknown_0062H() then
+            unknown_0040H(var_0004 .. var_0003, itemref)
+        elseif unknown_0937H(-1) then
+            unknown_0040H("@'Twill not function under a roof!@", -1)
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

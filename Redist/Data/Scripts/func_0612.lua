@@ -1,5 +1,4 @@
--- Triggers an action on an item, possibly for activation or destruction.
+--- Best guess: Triggers an item effect, possibly for a specific action or event.
 function func_0612(eventid, itemref)
-    trigger_action(itemref) -- Unmapped intrinsic
-    return
+    unknown_005FH(itemref) --- Guess: Triggers item effect
 end

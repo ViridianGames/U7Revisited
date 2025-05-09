@@ -1,5 +1,4 @@
--- Wrapper function calling an external function (intrinsic 0326H) with the item reference, likely for item interaction or event handling.
+--- Best guess: Calls an external function to handle item interaction, possibly for a specific item or NPC action.
 function func_0502(eventid, itemref)
-    external_0326(itemref) -- Unmapped intrinsic
-    return
+    unknown_0326H(itemref) --- Guess: Handles item interaction
 end

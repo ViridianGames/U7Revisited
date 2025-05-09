@@ -1,46 +1,47 @@
--- Function 0889: Tavern shop dialogue
+--- Best guess: Manages purchase of provisions (e.g., wine, cheese) with a unique dialogue style.
 function func_0889(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    _SaveAnswers()
-    local0 = true
-    local1 = {"wine", "ale", "mead", "milk", "grapes", "cheese", "bread", "ham", "flounder", "jerky", "nothing"}
-    local2 = {616, 616, 616, 616, 377, 377, 377, 377, 377, 377, 0}
-    local3 = {5, 3, 0, 7, 19, 27, 0, 11, 13, 15, -359}
-    local4 = {2, 1, 7, 3, 1, 3, 1, 9, 2, 12, 0}
-    local5 = {"", "", "", "", "", "", "", "", "", "", ""}
-    local6 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-    local7 = {" for a bottle", " for a bottle", " for a bottle", " for a bottle", " for a bunch", " per wedge", " for a loaf", " for a slice", " for one portion", " for ten pieces", ""}
-    local8 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 0}
-    add_dialogue(itemref, "\"To desire what item?\"")
-    while local0 do
-        local9 = call_090CH(local1)
-        if local9 == 1 then
-            add_dialogue(itemref, "\"To understand.\"")
-            local0 = false
-        end
-        local10 = call_091CH(local7[local9], local4[local9], local6[local9], local1[local9], local5[local9])
-        local11 = 0
-        add_dialogue(itemref, "^" .. local10 .. " To agree to the price?")
-        local12 = get_answer()
-        if local12 then
-            if local2[local9] == 616 then
-                local11 = call_08F8H(true, 1, 0, local4[local9], local8[local9], local3[local9], local2[local9])
-            else
-                add_dialogue(itemref, "\"To request how many?\"")
-                local11 = call_08F8H(true, 1, 20, local4[local9], local8[local9], local3[local9], local2[local9])
+    start_conversation()
+    save_answers() --- Guess: Saves dialogue answers
+    var_0000 = true
+    var_0001 = {"wine", "ale", "mead", "milk", "grapes", "cheese", "bread", "ham", "flounder", "jerky", "nothing"}
+    var_0002 = {616, 616, 616, 616, 377, 377, 377, 377, 377, 377, 0}
+    var_0003 = {5, 3, 0, 7, 19, 27, 0, 11, 13, 15, 359}
+    var_0004 = {2, 1, 7, 3, 1, 3, 1, 9, 2, 12, 0}
+    var_0005 = {"", "", "", "", "", "", "", "", "", "", ""}
+    var_0006 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+    var_0007 = {" for a bottle", " for a bottle", " for a bottle", " for a bottle", " for a bunch", " per wedge", " for a loaf", " for a slice", " for one portion", " for ten pieces", ""}
+    var_0008 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 10, 0}
+    while var_0000 do
+        add_dialogue("@To desire what item?@")
+        var_0009 = show_purchase_options(var_0001) --- Guess: Shows purchase options
+        if var_0009 == 1 then
+            add_dialogue("@To understand.@")
+            var_0000 = false
+        else
+            var_000A = format_price_message(var_0001[var_0009], var_0004[var_0009], var_0007[var_0009], var_0005[var_0009]) --- Guess: Formats price message
+            var_000B = 0
+            add_dialogue("@^" .. var_000A .. " To agree to the price?@")
+            var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
+            if var_000C then
+                if var_0002[var_0009] == 616 then
+                    var_000B = purchase_item(true, 1, 0, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                else
+                    add_dialogue("@To request how many?@")
+                    var_000B = purchase_item(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                end
             end
+            if var_000B == 1 then
+                add_dialogue("@To be done!@")
+            elseif var_000B == 2 then
+                add_dialogue("@To carry too much already!@")
+            elseif var_000B == 3 then
+                add_dialogue("@To be without enough gold!@")
+            end
+            add_dialogue("@To request something else?@")
+            var_0000 = get_dialogue_choice() --- Guess: Gets dialogue choice
         end
-        if local11 == 1 then
-            add_dialogue(itemref, "\"To be done!\"")
-        elseif local11 == 2 then
-            add_dialogue(itemref, "\"To carry too much already!\"")
-        elseif local11 == 3 then
-            add_dialogue(itemref, "\"To be without enough gold!\"")
-        end
-        add_dialogue(itemref, "\"To request something else?\"")
-        local0 = get_answer()
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores dialogue answers
 end

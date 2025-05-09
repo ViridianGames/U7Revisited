@@ -1094,7 +1094,7 @@ void GuiSprite::Draw()
 	if (m_Sprite && m_Active && m_Visible)
 	{
 		m_Sprite->DrawScaled(Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
-			m_Width, m_Height }, Vector2{ 0, 0 }, 0, m_Color);
+			m_Width * m_ScaleX, m_Height * m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
 	}
 }
 

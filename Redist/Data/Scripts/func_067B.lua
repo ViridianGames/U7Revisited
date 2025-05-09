@@ -1,37 +1,37 @@
--- Casts the "In Sanct Grav" spell, creating a protective electrical barrier at a selected location.
+--- Best guess: Manages the "In Sanct Grav" spell, creating a protective wall or barrier (ID 768) at a selected location, with a fallback effect if the spell fails.
 function func_067B(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
-    local0 = false
-    if eventid == 1 then
-        local1 = item_select_modal() -- Unmapped intrinsic
-        bark(itemref, "@In Sanct Grav@")
-        local2 = local1[2] + 1
-        local3 = local1[3] + 1
-        local4 = local1[4]
-        local5 = {local4, local3, local2}
-        local6 = external_0085H(768, local5, 0) -- Unmapped intrinsic
-        if not external_0906H() and local6 then -- Unmapped intrinsic
-            local7 = add_item(itemref, {17511, 17510, 7781})
-            local8 = get_item_by_type(768) -- Unmapped intrinsic
-            if local8 then
-                local9 = set_item_data(local5)
-                if local9 then
-                    local10 = 200
-                    set_item_quality(local8, local10)
-                    local9 = add_item(local8, local10, 8493)
-                else
-                    local0 = true
-                end
-            else
-                local0 = true
+    var_0000 = false
+    if eventid ~= 1 then
+        return
+    end
+
+    unknown_005CH(itemref)
+    var_0001 = _ItemSelectModal()
+    bark(itemref, "@In Sanct Grav@")
+    var_0002 = var_0001[2] + 1
+    var_0003 = var_0001[3] + 1
+    var_0004 = var_0001[4]
+    var_0005 = {var_0002, var_0003, var_0004}
+    var_0006 = unknown_0085H(0, 768, var_0005)
+    if unknown_0906H() and var_0006 then
+        var_0007 = unknown_0001H(itemref, {17511, 17510, 7781})
+        var_0008 = unknown_0024H(768)
+        if not var_0008 then
+            var_0009 = unknown_0026H(var_0005)
+            if not var_0009 then
+                var_000A = unknown_0015H(200, var_0008)
+                var_0009 = unknown_0002H(var_000A, 200, 8493, var_0008)
             end
         else
-            local0 = true
+            var_0000 = true
         end
-        if local0 then
-            local7 = add_item(itemref, {1542, 17493, 17511, 17510, 7781})
-        end
+    else
+        var_0000 = true
     end
-    return
+
+    if var_0000 then
+        var_0007 = unknown_0001H(itemref, {1542, 17493, 17511, 17510, 7781})
+    end
 end

@@ -1,30 +1,31 @@
--- Simulates spinning a top, with random outcomes and visual effects.
-function func_0329H(eventid, itemref)
-    if eventid == 1 and not check_in_usecode(itemref) then -- TODO: Implement LuaCheckInUsecode for callis 0079.
-        use_item() -- TODO: Implement LuaUseItem for calli 007E.
-        call_script(0x083C) -- TODO: Map 083CH (possibly initialize effect).
-        local state = call_script(0x083A) -- TODO: Map 083AH (possibly get state).
-        if get_time_hour() >= 15 or get_time_hour() <= 3 then -- TODO: Implement LuaGetTimeHour for callis 0038.
-            while true do
-                set_item_quality(itemref, 11) -- TODO: Implement LuaSetItemQuality for calli 008A.
+--- Best guess: Simulates a roulette game, checking time and casino state to determine outcomes and trigger effects.
+function func_0329(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
+
+    if eventid == 1 and not unknown_0079H(itemref) then
+        unknown_007EH()
+        var_0000 = unknown_083CH()
+        var_0000 = unknown_083AH()
+        if _GetTimeHour() >= 15 or _GetTimeHour() <= 3 then
+            for var_0001 in ipairs(var_0000) do
+                unknown_008AH(11, var_0003)
             end
+            unknown_001DH(9, -232)
         end
-        set_item_status(-232, 9) -- TODO: Implement LuaSetItemStatus for calli 001D.
-        local items1 = find_objects_by_type(814) -- TODO: Implement LuaFindObjectsByType for callis 0030.
-        local items2 = find_objects_by_type(809)
-        local items3 = find_objects_by_type(818)
-        if #items3 > 0 or #items2 ~= 3 or #items1 < 1 then
+        var_0004 = unknown_0030H(814)
+        var_0005 = unknown_0030H(809)
+        var_0006 = unknown_0030H(818)
+        if #var_0006 > 0 or #var_0005 ~= 3 or #var_0004 < 1 then
             return
         end
-        set_flag(0x001F, false)
-        set_flag(0x0020, false)
-        set_flag(0x0021, false)
-        add_dialogue(-356, "Spin baby!")
-        while true do
-            local angle = random(0, 2) * 8
-            set_item_state(itemref) -- TODO: Implement LuaSetItemState for calli 005C.
-            local arr = {7758, 17496, 29, 7947, -3, 22, 8014, 17496, 29, 7947, -3, angle, 8533, 1547}
-            execute_action(itemref, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
+        set_flag(31, false)
+        set_flag(32, false)
+        set_flag(33, false)
+        unknown_0933H(0, "@Spin baby!@", -356)
+        for var_0007 in ipairs(var_0005) do
+            var_000A = random2(2, 0) * 8
+            unknown_005CH(var_0009)
+            var_000B = unknown_0001H({1547, 8533, var_000A, -3, 7947, 29, 17496, 8014, 22, -3, 7947, 29, 17496, 7758}, var_0009)
         end
     end
 end

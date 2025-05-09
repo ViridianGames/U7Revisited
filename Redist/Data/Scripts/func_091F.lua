@@ -1,13 +1,12 @@
--- Resurrects an NPC and deducts gold.
-function func_091F(p0, p1)
-    local local2, local3
+--- Best guess: Resurrects a character, deducting gold if successful, and displays a success or failure message.
+function func_091F(P0, P1)
+    local var_0000, var_0001
 
-    local2 = external_0051H(p1) -- Unmapped intrinsic
-    if local2 ~= 0 then
+    var_0000 = unknown_0051H(P1)
+    if var_0000 then
         add_dialogue("\"Breath doth return to the body. Thy comrade is alive!\"")
-        local3 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
+        var_0001 = unknown_002BH(true, -359, -359, 644, P0)
     else
         add_dialogue("\"Alas, I cannot save thy friend. I will provide a proper burial. Thou must go on and continue with thine own life.\"")
     end
-    return
 end

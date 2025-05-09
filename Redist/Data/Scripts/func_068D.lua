@@ -1,14 +1,13 @@
--- Checks for sufficient water in a container and triggers effects or a failure message.
+--- Best guess: Manages a brewing or mixing mechanic, checking item frame (3 or 7) and container items (ID 668), creating a new item (ID 1678) if water is present, or displaying an error message otherwise.
 function func_068D(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local0 = get_object_frame(itemref)
-    local1 = get_container_items(-359, -359, 668, -356)
-    if local0 == 3 or local0 == 7 then
-        local2 = add_item(-356, {8033, 10, 7719})
-        local2 = add_item(local1, {1678, 8021, 2, 7719})
+    var_0000 = get_object_frame(itemref)
+    var_0001 = get_container_objects(359, 359, 668, unknown_001BH(356))
+    if var_0000 == 3 or var_0000 == 7 then
+        var_0002 = unknown_0001H(unknown_001BH(356), {8033, 10, 7719})
+        var_0002 = unknown_0001H(var_0001, {1678, 8021, 2, 7719})
     else
-        bark(356, "@There's not enough water.@")
+        bark(unknown_001BH(356), "@There's not enough water.@")
     end
-    return
 end

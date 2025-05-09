@@ -1,4 +1,8 @@
--- Function 0827: Apply item effect
-function func_0827(eventid, itemref)
-    set_return(call_001AH(eventid, local1))
+--- Best guess: Sets an array value at a specific index, likely for state management.
+function func_0827(eventid, itemref, arg1)
+    local var_0000, var_0001
+
+    var_0000 = itemref
+    var_0001 = arg1
+    return set_array_value(var_0000, var_0001, var_0000[var_0001]) --- Guess: Sets array value
 end

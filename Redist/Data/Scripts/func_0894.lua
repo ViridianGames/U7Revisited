@@ -1,135 +1,131 @@
--- Function 0894: Stone golem dialogue
+--- Best guess: Initiates the quest to restore Adjhar, offering a book and discussing golem creation.
 function func_0894(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if not get_flag(795) then
-        call_001DH(11, eventid)
-    end
     if eventid == 1 then
-        switch_talk_to(289, 0)
+        switch_talk_to(0, 289) --- Guess: Initiates dialogue
         if get_flag(804) and not get_flag(796) then
-            add_dialogue(itemref, "\"I -must- return his life to him. He -will- have a new heart!\" The determination is quite evident by his forceful glare and stance.")
+            add_dialogue("@I -must- return his life to him. He -will- have a new heart!...@")
         end
         if not get_flag(808) then
-            call_0896H()
+            calle_0896H() --- External call to Bollux dialogue
         end
         if not get_flag(795) then
-            set_flag(795, true)
-            add_dialogue(itemref, "\"The stone statue stands with a lowered head. Despite its granite features, a downcast look is apparent on its face. Surprisingly, it turns to speak with you.\"")
-            add_dialogue(itemref, "@Why, by the stars, I believe it is a creature!@")
-            add_dialogue(itemref, "\"Slowly, as if with great effort, it raises it head.\"")
-            switch_talk_to(289, 0)
-            if check_condition(40, 414, -356) then
-                local1 = _GetItemFrame(itemref)
-                if local1 == 4 or local1 == 5 then
-                    add_dialogue(itemref, "\"What dost thou... want?\" it asks slowly.")
-                else
-                    add_dialogue(itemref, "\"Help him?\" it asks carefully, pointing to the fallen statue lying beside it.")
-                    add_answer("help")
-                end
-                add_answer("Creature?")
-            else
-                add_dialogue(itemref, "\"In what way may I assist thee?\"")
-            end
+            calle_0895H() --- External call to Bollux dialogue
         end
-        add_answer({"bye", "job", "name"})
-        local2 = false
-        local3 = false
+        if not get_flag(789) then
+            set_flag(789, true)
+            add_dialogue("@The stone statue stands with a lowered head...@")
+            say_with_newline("@Why, by the stars, I believe it is a creature!@") --- Guess: Says with newline
+            add_dialogue("@Slowly, as if with great effort, it raises it head.@")
+            switch_talk_to(0, 289) --- Guess: Initiates dialogue
+            var_0001 = get_item_frame(select_party_member(40, 414, 356)) --- Guess: Selects party member
+            if var_0001 == 4 or var_0001 == 5 then
+                add_dialogue("@What dost thou... want?' it asks slowly.@")
+            else
+                add_dialogue("@Help him?' it asks carefully, pointing to the fallen statue lying beside it.@")
+                add_answer("help") --- Guess: Adds dialogue option
+            end
+            add_answer("Creature?") --- Guess: Adds dialogue option
+        else
+            add_dialogue("@In what way may I assist thee?@")
+        end
+        add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
+        var_0002 = false
+        var_0003 = false
         while true do
-            local answer = get_answer()
-            switch_talk_to(289, 0)
-            if answer == "name" then
-                remove_answer("name")
+            switch_talk_to(0, 289) --- Guess: Initiates dialogue
+            if compare_answer("name", 1) then
+                remove_answer("name") --- Guess: Removes dialogue option
                 if not get_flag(797) then
-                    add_dialogue(itemref, "\"He tilts his head and stares at you quizzically.~ \"I apologize. Did I not already tell thee my master called me Bollux?\"")
+                    add_dialogue("@He tilts his head and stares at you quizzicaly...@")
                 else
-                    add_dialogue(itemref, "\"My master named me Bollux.\"")
+                    add_dialogue("@My master named me Bollux.@")
                     set_flag(797, true)
                 end
-                if not local3 then
-                    add_answer("master")
+                if not var_0003 then
+                    add_answer("master") --- Guess: Adds dialogue option
                 end
-            elseif answer == "job" then
-                add_dialogue(itemref, "\"I am a guardian of the Shrines of the Principles.\"")
-                add_answer("guardian")
-            elseif answer == "guardian" then
-                remove_answer("guardian")
-                add_dialogue(itemref, "\"We were... created to protect the Shrines of the Principles. Only the... Avatar should use their power. Adjhar and I were... keeping watch... when the wall fell on Adjhar. And the loud noise came... I carried him here so that I could restore him, but I do not... know how.\"")
-            elseif answer == "Creature?" then
-                remove_answer("Creature?")
-                add_dialogue(itemref, "\"We are called stone golems... because we are made out of stone and rock.\"")
-                if not local2 then
-                    add_answer("made")
-                    local2 = true
+            elseif compare_answer("job", 1) then
+                add_dialogue("@I am a guardian of the Shrines of the Principles.@")
+                add_answer("guardian") --- Guess: Adds dialogue option
+            elseif compare_answer("guardian", 1) then
+                remove_answer("guardian") --- Guess: Removes dialogue option
+                add_dialogue("@We were... created to protect the Shrines of the Principles...@")
+            elseif compare_answer("Creature?", 1) then
+                remove_answer("Creature?") --- Guess: Removes dialogue option
+                add_dialogue("@We are called stone golems... because we are made out of stone and rock.@")
+                if not var_0002 then
+                    add_answer("made") --- Guess: Adds dialogue option
+                    var_0002 = true
                 end
-                add_answer("stone")
-            elseif answer == "master" or answer == "Astelleron" then
-                remove_answer({"master", "Astelleron"})
-                local3 = true
-                add_dialogue(itemref, "\"Astelleron made us. He is our master.\"")
-                if not local2 then
-                    add_answer("made")
-                    local2 = true
+                add_answer("stone") --- Guess: Adds dialogue option
+            elseif compare_answer("master", 2) or compare_answer("Astelleron", 2) then
+                remove_answer({"master", "Astelleron"}) --- Guess: Removes dialogue options
+                var_0003 = true
+                add_dialogue("@Astelleron made us. He is our master.@")
+                if not var_0002 then
+                    add_answer("made") --- Guess: Adds dialogue option
+                    var_0002 = true
                 end
-            elseif answer == "stone" then
-                remove_answer("stone")
-                add_dialogue(itemref, "\"We were... fashioned... out of the rock from the quarry on this small island.\"")
-            elseif answer == "made" then
-                local2 = true
-                remove_answer("made")
-                add_dialogue(itemref, "\"I know nothing about the process, but Astelleron once told me he used something called... magic to give us life and... animation.\" The golem pauses, obviously conscious of his next thought.~\"He did not like his... solitude. He said he was... lonely.\"")
-                add_answer({"lonely", "magic"})
-                if not local3 then
-                    add_answer("Astelleron")
+            elseif compare_answer("stone", 1) then
+                remove_answer("stone") --- Guess: Removes dialogue option
+                add_dialogue("@We were... fashioned... out of the rock from the quarry on this small island.@")
+            elseif compare_answer("made", 1) then
+                var_0002 = true
+                remove_answer("made") --- Guess: Removes dialogue option
+                add_dialogue("@I know nothing about the process, but Astelleron once told me he used something called... magic...@")
+                add_answer({"lonely", "magic"}) --- Guess: Adds dialogue options
+                if not var_0003 then
+                    add_answer("Astelleron") --- Guess: Adds dialogue option
                 end
-            elseif answer == "magic" then
-                remove_answer("magic")
-                add_dialogue(itemref, "\"I do not know what... it is, but there are many books in his house. Perhaps... there is something there about... magic.\"")
-                add_answer("books")
-            elseif answer == "books" then
-                remove_answer("books")
+            elseif compare_answer("magic", 1) then
+                remove_answer("magic") --- Guess: Removes dialogue option
+                add_dialogue("@I do not know what... it is, but there are many books in his house...@")
+                add_answer("books") --- Guess: Adds dialogue option
+            elseif compare_answer("books", 1) then
+                remove_answer("books") --- Guess: Removes dialogue option
                 if not get_flag(803) then
-                    add_dialogue(itemref, "\"I have a book here that Adjhar said told about... our... creation. This might help bring Adjhar back.\"")
-                    local4 = give_item(false, -359, 144, 642, 1)
-                    if local4 then
-                        add_dialogue(itemref, "\"He hands to you a very old tome. It is evident the book has seen much use, for the leather covering is wearing away to reveal the wood beneath and the pages are quite dog-eared.~\"I have already set up five... rocks to mark a spot for the... blood.\"")
-                        add_answer("blood")
+                    add_dialogue("@I have a book here that Adjhar said told about... our... creation...@")
+                    var_0004 = add_item_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
+                    if var_0004 then
+                        add_dialogue("@He hands to you a very old tome...@")
+                        add_answer("blood") --- Guess: Adds dialogue option
                         set_flag(803, true)
                     else
-                        add_dialogue(itemref, "\"Thou art... carrying too much. Put something down and I can give this to you.\"")
+                        add_dialogue("@Thou art... carrying too much. Put something down and I can give this to you.@")
                     end
                 else
-                    add_dialogue(itemref, "\"There are several... more books lying about the house. I do not... know what they are about. Adjhar read them.\"")
+                    add_dialogue("@There are several... more books lying about the house...@")
                 end
-            elseif answer == "lonely" then
-                remove_answer("lonely")
-                add_dialogue(itemref, "\"Astelleron said it was how... a person feels when no one is around. He told us how... happy he felt after we were... born.~ He called me... a son.\"")
-            elseif answer == "help" then
-                remove_answer("help")
-                add_dialogue(itemref, "\"My companion... Adjhar... He is dying. Thou must help repair him. Please, I beg... thee.\"")
+            elseif compare_answer("lonely", 1) then
+                remove_answer("lonely") --- Guess: Removes dialogue option
+                add_dialogue("@Astelleron said it was how... a person feels when no one is around...@")
+            elseif compare_answer("help", 1) then
+                remove_answer("help") --- Guess: Removes dialogue option
+                add_dialogue("@My companion... Adjhar... He is dying. Thou must help repair him...@")
                 if not get_flag(803) then
-                    add_dialogue(itemref, "\"I have a book here that Adjhar said told about... our... creation. This might help bring him back.\"")
-                    local4 = give_item(false, -359, 144, 642, 1)
-                    if local4 then
-                        add_dialogue(itemref, "\"He hands to you a very old tome. It is evident the book has seen much use, for the leather covering is wearing away to reveal the wood beneath and the pages are quite dog-eared. \"I have already set up five... rocks to mark a spot for the... blood.\"")
-                        add_answer("blood")
+                    add_dialogue("@I have a book here that Adjhar said told about... our... creation...@")
+                    var_0004 = add_item_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
+                    if var_0004 then
+                        add_dialogue("@He hands to you a very old tome...@")
+                        add_answer("blood") --- Guess: Adds dialogue option
                         set_flag(803, true)
                     else
-                        add_dialogue(itemref, "\"Thou art... carrying too much. Put something down and I can give this to you.\"")
+                        add_dialogue("@Thou art... carrying too much. Put something down and I can give this to you.@")
                     end
                 end
-                add_answer("Adjhar")
-            elseif answer == "Adjhar" then
-                remove_answer("Adjhar")
-                add_dialogue(itemref, "\"He is my brother... and my friend. We protected the... Shrines together. We cannot let him... stay like that. Help me... assist him.\"")
-            elseif answer == "blood" then
-                remove_answer("blood")
-                add_dialogue(itemref, "\"I did not... understand the book, but I remember... blood...\"")
-            elseif answer == "bye" then
-                add_dialogue(itemref, "\"Good... bye.\"*")
+                add_answer("Adjhar") --- Guess: Adds dialogue option
+            elseif compare_answer("Adjhar", 1) then
+                remove_answer("Adjhar") --- Guess: Removes dialogue option
+                add_dialogue("@He is my brother... and my friend. We protected the... Shrines together...@")
+            elseif compare_answer("blood", 1) then
+                remove_answer("blood") --- Guess: Removes dialogue option
+                add_dialogue("@I did not... understand the book, but I remember... blood...@")
+            elseif compare_answer("bye", 1) then
+                add_dialogue("@Good... bye.@")
                 return
             end
         end
     end
-    return
 end

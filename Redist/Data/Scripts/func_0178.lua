@@ -1,25 +1,28 @@
--- Manages bucket interaction, possibly for filling or emptying.
-function func_0178H(eventid, itemref)
+--- Best guess: Manages a door interaction, toggling its state (open/closed) and updating its position and frame based on conditions.
+function func_0178(eventid, itemref)
+    local var_0000
+
     if eventid ~= 1 then
-        local state = call_script(0x081B, itemref) -- TODO: Map 081BH (get bucket state?).
-        if state == 1 then
-            if not call_script(0x081D, itemref, 270, 0, 0, 0, 7) then -- TODO: Map 081DH.
-                call_script(0x081E, itemref, 433, 1, 2, 432, 0, 3, 0, 1) -- TODO: Map 081EH.
-                set_stat(itemref, 31) -- Sets quality to 31 (filled?).
-            else
-                call_script(0x0818) -- TODO: Map 0818H (failure action?).
-            end
-        elseif state == 0 then
-            if not call_script(0x081D, itemref, 270, 1, 0, 0, 7) then
-                call_script(0x081E, itemref, 433, 0, 1, 432, 1, 0, -3, 7)
-                set_stat(itemref, 30) -- Sets quality to 30 (empty?).
-            else
-                call_script(0x0818)
-            end
-        elseif state == 2 then
-            call_script(0x0819, itemref) -- TODO: Map 0819H (use bucket?).
-        elseif state == 3 then
-            call_script(0x081A, itemref) -- TODO: Map 081AH (drop bucket?).
+        return
+    end
+    var_0000 = unknown_081BH(eventid, itemref)
+    if var_0000 == 1 then
+        if unknown_081DH(7, 0, 0, 0, 270, itemref) then
+            unknown_081EH(1, 0, 3, 0, 432, 2, 1, 433, itemref)
+            unknown_0086H(itemref, 31)
+        else
+            unknown_0818H()
         end
+    elseif var_0000 == 0 then
+        if unknown_081DH(7, 0, 0, 1, 270, itemref) then
+            unknown_081EH(7, -3, 0, 1, 432, 1, 0, 433, itemref)
+            unknown_0086H(itemref, 30)
+        else
+            unknown_0818H()
+        end
+    elseif var_0000 == 2 then
+        unknown_0819H(itemref)
+    elseif var_0000 == 3 then
+        unknown_081AH(itemref)
     end
 end

@@ -1,10 +1,12 @@
--- Adjusts gangplank position based on type.
-function func_082D(p0, p1, p2)
-    if p0 == 781 then
-        p1 = external_082BH(3, p1) -- Unmapped intrinsic
-        p2 = external_082AH(3, p1, p2) -- Unmapped intrinsic
-    elseif p0 == 150 then
-        p2 = external_082AH(3, p1, p2) -- Unmapped intrinsic
+--- Best guess: Manages gangplank positioning for item types 781 or 150, adjusting position arrays using helper functions (082BH, 082AH).
+function func_082D(P0, P1, P2)
+    local var_0000, var_0001, var_0002
+
+    if P0 == 781 then
+        P1 = unknown_082BH(3, P1)
+        P2 = unknown_082AH(3, P1, P2)
+    elseif P0 == 150 then
+        P2 = unknown_082AH(3, P1, P2)
     end
-    return p2
+    return P2
 end

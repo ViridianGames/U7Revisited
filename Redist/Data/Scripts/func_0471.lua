@@ -1,95 +1,129 @@
--- func_0471.lua
--- Anya's dialogue as an innkeeper in Britain
+--- Best guess: Handles dialogue with Smith, a talking horse in Yew, who humorously discusses his lack of a job, interior decorating skills, and provides a cryptic clue about gargoyles and Rasputin in exchange for being left alone.
+function func_0471(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-
-function func_0471(eventid)
-    local answers = {}
-    local flag_00DB = get_flag(0x00DB) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00EA = get_flag(0x00EA) -- Inn topic
-    local npc_id = -90 -- Anya's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00EA then
-            add_answer( "inn")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00DB then
-            add_dialogue("You see a welcoming woman cleaning mugs, her inn cozy with the hum of travelers.")
-            set_flag(0x00DB, true)
+        switch_talk_to(113, 0)
+        var_0000 = get_player_name()
+        var_0001 = unknown_08F7H(1) --- Guess: Checks player status
+        var_0002 = false
+        add_answer({"bye", "job", "name"})
+        if not get_flag(331) then
+            add_dialogue("You see a horse. \"What else did you expect to see?\"")
+            set_flag(331, true)
         else
-            add_dialogue("\"Good to see thee, \" .. get_player_name() .. \",\" Anya says, pouring a drink.")
+            add_dialogue("\"What now, " .. var_0000 .. "?\" asks Smith.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Anya leans on the counter. \"Need a room or some gossip?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Anya, innkeeper of Britain’s finest rest stop.\"")
+            var_0003 = get_answer()
+            if var_0003 == "name" then
+                add_dialogue("\"Yes, I have a name.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I run this inn, offerin’ beds and ale to travelers. The Fellowship’s trade deals keep my pantry full, but their sway over Patterson’s a bit much.\"")
-                add_answer( "inn")
-                add_answer( "Fellowship")
-                set_flag(0x00EA, true)
-            elseif choice == "inn" then
-                add_dialogue("\"Got cozy rooms and hearty stew, but prices ain’t cheap. Folk like Weston can’t afford a night here, and that’s causin’ strife.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("inn")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes raise my rates. It’s toughest on Paws folk, drivin’ ‘em to acts like Weston’s.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of Britain. Weston’s from there—strugglin’ folk, and the Fellowship’s aid don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—heart-wrenchin’. Figg’s arrest, pushed by the Fellowship, was harsh, no care for his troubles.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, all about their order. His role in Weston’s arrest shows they’re more about control than helpin’ folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals keep my inn stocked, but their ties to Patterson and folk like Figg make me wonder what they’re really plottin’.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m watchin’ close.\"")
-                    call_extern(0x091A, var_0003)
+                if var_0001 then
+                    switch_talk_to(1, 0)
+                    add_dialogue("\"Scoundrel! When thou art asked thy name, thou shouldst respond politely and accurately! The Avatar has just asked thee for -thy- name.\"")
+                    switch_talk_to(113, 0)
+                    add_dialogue("\"My name? You can call me what you want, but I will only respond to Smith.\"")
+                    add_answer("Smith")
+                    hide_npc(1)
                 else
-                    add_dialogue("\"Wise to doubt ‘em. Their influence feels heavier than their promises.\"")
+                    add_answer("-thy- name")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Rest well, \" .. get_player_name() .. \".\"")
+            elseif var_0003 == "-thy- name" then
+                add_dialogue("\"My name? You can call me what you want, but I will only respond to Smith.\"")
+                add_answer("Smith")
+                remove_answer("-thy- name")
+            elseif var_0003 == "job" then
+                add_dialogue("\"Job? -Job-? I'm a horse, what kind of job could I have?\" He looks off in the distance. \"I can see it now: Smith -- Baker extraordinaire.\"")
+                add_dialogue("\"Actually, I have gotten quite good at interior decorating. See how I arranged my abode? You like it, don't you?\"")
+                var_0003 = select_option()
+                if var_0003 then
+                    add_dialogue("\"Good. I will let you continue talking to me then! Which do you prefer, my living room or my bedroom?\"")
+                    save_answers()
+                    add_answer({"bedroom", "living room"})
+                else
+                    add_dialogue("\"That's funny, I feel the same way about you!\"")
+                    abort()
+                end
+            elseif var_0003 == "bedroom" or var_0003 == "living room" then
+                add_dialogue("\"You always did have bad taste!\"")
+                remove_answer({"bedroom", "living room"})
+                restore_answers()
+            elseif var_0003 == "Smith" then
+                if not var_0002 then
+                    var_0004 = "still want"
+                else
+                    var_0004 = "want"
+                end
+                add_dialogue("\"Yep, that's what I told you to call me. Oh, I get it! You " .. var_0004 .. " something from me, don't you?\"")
+                var_0003 = select_option()
+                if var_0003 then
+                    add_dialogue("\"I thought as much. You've always been a selfish one. What do you want? Now, let's see... Money? Advice? Happiness? No, you usually want a clue of some sort, don't you. Of course, you may have become altruistic over the past 200 years....\"")
+                    add_dialogue("\"I know! You want to save Britannia!\"")
+                    add_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+                else
+                    add_dialogue("\"Then what are you talking to me for?\"")
+                    abort()
+                end
+                remove_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+            elseif var_0003 == "money" then
+                add_dialogue("\"From a horse? Right! Like I've got some to give you.\"")
+                remove_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+            elseif var_0003 == "advice" then
+                add_dialogue("\"Don't talk to horses!\"")
+                abort()
+            elseif var_0003 == "happiness" then
+                add_dialogue("\"Who doesn't?\"")
+                remove_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+            elseif var_0003 == "to save Britannia" then
+                add_dialogue("\"You really expect me to believe that? You're just in this for the money.\"")
+                remove_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+            elseif var_0003 == "a clue" then
+                add_dialogue("\"Now we're getting to the nitty-gritty. O.K., I'll give you a clue, but what's in it for me? Let me guess. Money? Love? No, knowing you it's probably nothing. With any luck, you'll go away and leave me alone.\"")
+                remove_answer({"to save Britannia", "happiness", "a clue", "advice", "money"})
+                add_answer({"will not make you glue", "nothing", "love", "money"})
+            elseif var_0003 == "nothing" then
+                add_dialogue("\"I've already got that!\"")
+                abort()
+            elseif var_0003 == "money" then
+                add_dialogue("\"Sure! Like I have a use for that!\"")
+                abort()
+            elseif var_0003 == "love" then
+                add_dialogue("\"Sorry, I don't get into that.\"")
+                abort()
+            elseif var_0003 == "will not make you glue" then
+                add_dialogue("\"Threats, huh? And how do you expect me to respond to that? With courtesy and open hooves?\"")
+                add_dialogue("\"Tell you what: you go away and leave me alone, and I'll tell you a clue. Fair?\"")
+                var_0003 = select_option()
+                if var_0003 then
+                    add_dialogue("\"Now we're talking! Done deal. Here we go.\" He checks around to make sure no else is within earshot. \"The gargoyles,\" he pauses, \"are not evil.\"")
+                    add_dialogue("\"And Rasputin is a mean Martian. There, that's it! Now get!\"")
+                    abort()
+                else
+                    add_dialogue("\"Fine. I'm not going to talk to you anyway!\"")
+                    abort()
+                end
+                remove_answer("will not make you glue")
+            elseif var_0003 == "bye" then
+                add_dialogue("\"That's just fine. I was getting tired of you anyway.\"")
+                if var_0001 then
+                    switch_talk_to(1, 0)
+                    add_dialogue("\"Why, how dare thou speakest to the Avatar in that manner, Smith!\"")
+                    switch_talk_to(113, 0)
+                    add_dialogue("\"And who are you? My master?\"")
+                    switch_talk_to(1, 0)
+                    add_dialogue("\"Why, as a matter of fact...\"")
+                    switch_talk_to(113, 0)
+                    add_dialogue("\"Sure, whatever.\"")
+                    hide_npc(1)
+                    add_dialogue("*")
+                    abort()
+                end
                 break
             end
         end
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
-
-return func_0471

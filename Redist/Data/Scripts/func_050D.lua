@@ -1,5 +1,4 @@
--- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
+--- Best guess: Executes a single external function call, likely related to item or NPC interaction, with minimal logic, possibly for a specific event trigger or action in the game.
 function func_050D(eventid, itemref)
-    external_03B2(itemref) -- Unmapped intrinsic
-    return
+    unknown_03B2H(itemref)
 end

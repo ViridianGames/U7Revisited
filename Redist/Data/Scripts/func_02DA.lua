@@ -1,27 +1,26 @@
--- Function 02DA: Child rescue and item transformation
+--- Best guess: Handles a child NPC interaction, prompting return to Lady Tory or commenting on party size, possibly for a quest.
 function func_02DA(eventid, itemref)
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    if eventid ~= 1 then
-        return
-    end
-
-    if _GetItemFrame(itemref) == 2 then
-        local0 = "@Praise All! The child is still alive. He must be returned to Lady Tory immediately!@"
-        call_08FFH(local0)
-    else
-        local1 = _ItemSelectModal()
-        local2 = _GetItemType(local1[1])
-        if local2 == 987 then
-            call_08FFH("@Pardon me my friend, dost thou not think that would be a little crowded?@")
-        elseif local2 == 992 then
-            _SetItemType(987, local1)
-            call_0925H(itemref)
+    if eventid == 1 then
+        if get_object_frame(itemref) == 2 then
+            start_conversation()
+            add_dialogue("@Praise All! The child is still alive. He must be returned to Lady Tory immediately!@")
         else
-            call_08FDH(60)
+            var_0001 = item_select_modal()
+            var_0002 = get_object_shape(var_0001)
+            if var_0002 == 987 then
+                start_conversation()
+                add_dialogue("@Pardon me my friend, dost thou not think that would be a little crowded?@")
+            elseif var_0002 == 992 then
+                set_object_shape(var_0001, 987)
+                -- call [0001] (0925H, unmapped)
+                unknown_0925H(itemref)
+            else
+                -- call [0002] (08FDH, unmapped)
+                unknown_08FDH(60)
+            end
         end
     end
-
     return
 end

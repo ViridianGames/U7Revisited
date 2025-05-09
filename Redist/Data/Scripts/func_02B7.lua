@@ -1,7 +1,8 @@
--- Function 02B7: Delegate to external function
+--- Best guess: Calls an external function (ID 252) for an object interaction, possibly a clock or timer mechanism.
 function func_02B7(eventid, itemref)
     if eventid == 1 then
-        calle_00FCH(itemref)
+        -- calle 00FCH, 252 (unmapped)
+        unknown_00FCH(itemref)
     end
     return
 end

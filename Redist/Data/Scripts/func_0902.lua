@@ -1,15 +1,13 @@
--- Function 0902: Select NPC in party
+--- Best guess: Iterates over negative indices to find a party member not in the party, defaulting to 356.
 function func_0902(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local0 = {-10, -2, -9, -8, -7, -5, -4, -3, -1}
-    local1 = _GetPartyMembers()
-    while local1 do
-        local2 = local1
-        if local0[local2] and npc_in_party(local2) then
-            set_return(local2)
+    var_0000 = {10, 2, 9, 8, 7, 5, 4, 3, 1}
+    var_0001 = get_party_members() --- Guess: Gets party members
+    for _, var_0004 in ipairs({2, 3, 4, 0}) do
+        if is_in_int_array(get_item_owner(var_0004), var_0001) and not npc_in_party(var_0004) then --- Guess: Checks if NPC is in party
+            return var_0004
         end
-        local1 = get_next_party_member() -- sloop
     end
-    set_return(-356)
+    return 356
 end

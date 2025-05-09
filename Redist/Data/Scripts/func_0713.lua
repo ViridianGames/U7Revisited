@@ -1,22 +1,22 @@
--- Function 0713: Move and delete items
+--- Best guess: Applies visual effects and destroys items, likely for a ritual or trap effect.
 function func_0713(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local0 = itemref
+    var_0000 = itemref
     if eventid == 2 then
-        local1 = get_item_position(local0)
-        move_object(-1, 0, 0, 0, local1[2], local1[1], 12)
-        call_000FH(62)
-        if _GetItemFrame(local0) == 3 then
-            _SetItemFrame(2, local0)
+        var_0001 = unknown_0018H(var_0000) --- Guess: Gets position data
+        apply_sprite_effect(-1, 0, 0, 0, var_0001[2], var_0001[1], 12) --- Guess: Applies sprite effect
+        unknown_000FH(62) --- Guess: Triggers event
+        if get_item_frame(var_0000) == 3 then --- Guess: Gets item frame
+            set_item_frame(var_0000, 2) --- Guess: Sets item frame
         end
-        local2 = check_position(176, 20, 912, local0)
-        while local3 do
-            local5 = local3
-            move_object(-1, 0, 0, 0, local1[2], local1[1], 12)
-            call_000FH(62)
-            delete_item(local5)
-            local3 = get_next_item() -- sloop
+        var_0002 = unknown_0035H(176, 20, 912, var_0000) --- Guess: Sets NPC location
+        -- Guess: sloop applies effects and destroys items
+        for i = 1, 5 do
+            var_0005 = {3, 4, 5, 2, 48}[i]
+            apply_sprite_effect(-1, 0, 0, 0, var_0001[2], var_0001[1], 12) --- Guess: Applies sprite effect
+            unknown_000FH(62) --- Guess: Triggers event
+            destroy_item_silent(var_0005) --- Guess: Destroys item silently
         end
     end
 end

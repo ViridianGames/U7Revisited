@@ -1,54 +1,70 @@
--- Function 02BE: Cannon firing mechanics
+--- Best guess: Manages a cannon’s interaction, checking for powder and cannonballs, displaying messages if missing, and firing based on direction.
 function func_02BE(eventid, itemref)
-    -- Local variables (14 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
+    local var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     if eventid == 1 then
-        calli_007E()
-        local0 = callis_0035(0, 10, 704, itemref) -- Powder
-        local1 = callis_0035(0, 10, 703, itemref) -- Cannonballs
-        if not local0 then
-            call_08FEH("@It needs powder!@")
-            -- Note: Original has 'db 2c' here, ignored
+        -- calli 007E, 0 (unmapped)
+        unknown_007EH()
+        var_0000 = check_flag_location(0, 10, 704, itemref)
+        var_0001 = check_flag_location(0, 10, 703, itemref)
+        if not var_0000 then
+            start_conversation()
+            add_dialogue("@It needs powder!@")
+            return
         end
-        if not local1 then
-            call_08FEH("@It needs cannon balls!@")
-            -- Note: Original has 'db 2c' here, ignored
+        if not var_0001 then
+            start_conversation()
+            add_dialogue("@It needs cannon balls!@")
+            return
         end
-        call_0925H(local0[1])
-        call_0925H(local1[1])
-        local2 = _ItemSelectModal()
-        local3 = callis_0018(itemref)
-        local4 = local2[2] - local3[1]
-        local5 = local3[2] - local2[3]
-        local6 = (local5 > local4 and call_0932H(local5) or call_0932H(local4)) > 0 and
-                 (local4 > 0 and 2 or 6) or
-                 (local5 > 0 and 4 or 0)
-        _SetItemFrame(local6 // 2, itemref)
-        calli_0076(702, 702, 30, 703, local6, itemref)
+        -- call [0001] (0925H, unmapped)
+        unknown_0925H(aidx(var_0000, 1))
+        -- call [0001] (0925H, unmapped)
+        unknown_0925H(aidx(var_0001, 1))
+        var_0002 = item_select_modal()
+        var_0003 = unknown_0018H(itemref)
+        var_0004 = aidx(var_0002, 2) - aidx(var_0003, 1)
+        var_0005 = aidx(var_0002, 3) - aidx(var_0003, 2)
+        if unknown_0932H(var_0004) > unknown_0932H(var_0005) then
+            if var_0004 > 0 then
+                var_0006 = 2
+            else
+                var_0006 = 6
+            end
+        else
+            if var_0005 > 0 then
+                var_0006 = 4
+            else
+                var_0006 = 0
+            end
+        end
+        set_object_frame(itemref, var_0006 / 2)
+        -- calli 0076, 6 (unmapped)
+        unknown_0076H(702, 702, 30, 703, var_0006, itemref)
     elseif eventid == 4 then
-        local7 = _GetItemType(itemref)
-        local8 = _GetItemFrame(itemref)
-        if local7 == 704 then
-            local9 = callis_0002(1, {704, 17493, 7715}, itemref)
-            -- Note: Original has 'db 2c' here, ignored
+        var_0007 = get_object_shape(itemref)
+        var_0008 = get_object_frame(itemref)
+        if var_0007 == 704 then
+            var_0009 = unknown_0002H({1, 704, {17493, 7715}}, itemref)
+        elseif var_0007 == 376 or var_0007 == 270 then
+            var_000A = {18, 17, 16, 10, 9, 8, 2, 1, 0}
+        elseif var_0007 == 433 or var_0007 == 432 then
+            var_000A = {6, 5, 4, 2, 1, 0}
         end
-        if local7 == 376 or local7 == 270 then
-            local10 = {0, 1, 2, 8, 9, 10, 17, 18}
-        elseif local7 == 433 or local7 == 432 then
-            local10 = {0, 1, 2, 4, 5, 6}
-        end
-        while local10 do
-            -- Note: Original has 'sloop' for iteration
-            local13 = local10
-            if local8 == local13 then
-                calli_006F(itemref)
+        while true do
+            var_000B = var_000A
+            var_000C = var_000B
+            var_000D = var_000C
+            if var_0008 == var_000D then
+                -- calli 006F, 1 (unmapped)
+                unknown_006FH(itemref)
                 break
             end
-            local10 = next(local10)
+            if not var_000D then
+                break
+            end
         end
     end
-
     return
 end

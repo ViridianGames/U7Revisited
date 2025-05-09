@@ -1,10 +1,10 @@
--- Function 0848: Check item types
+--- Best guess: Checks if an item type matches a list (e.g., 504, 505), returning true if found, likely for validation.
 function func_0848(eventid, itemref)
-    local local0 = eventid
+    local var_0000
 
-    if local0 == 504 or local0 == 505 or local0 == 230 or local0 == 381 or local0 == 375 or local0 == 382 or local0 == 534 or local0 == 501 or local0 == 380 or local0 == 480 or local0 == 465 or local0 == 487 or local0 == 488 or local0 == 489 or local0 == 506 or local0 == 445 or local0 == 446 or local0 == 154 then
-        set_return(1)
-    else
-        set_return(0)
+    var_0000 = itemref
+    if var_0000 == 504 or var_0000 == 505 or var_0000 == 230 or var_0000 == 381 or var_0000 == 375 or var_0000 == 382 or var_0000 == 534 or var_0000 == 501 or var_0000 == 380 or var_0000 == 480 or var_0000 == 465 or var_0000 == 487 or var_0000 == 488 or var_0000 == 489 or var_0000 == 506 or var_0000 == 445 or var_0000 == 446 or var_0000 == 154 then
+        return 1
     end
+    return 0
 end

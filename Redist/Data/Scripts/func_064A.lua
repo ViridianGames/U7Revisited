@@ -1,34 +1,32 @@
--- Casts the "Wis Jux" spell, revealing traps and setting their quality to trigger effects.
+--- Best guess: Manages a trap activation mechanic with the spell “Wis Jux,” creating trap items (ID 176) at calculated positions and updating their states.
 function func_064A(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    if eventid == 1 then
-        bark(itemref, "@Wis Jux@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {17511, 8037, 66, 7768})
-            local1 = external_08F6H(-356) -- Unmapped intrinsic
-            local2 = local1 + 21
-            local3 = add_item(local0, 176, local2, 200)
-            for local4 in ipairs(local3) do
-                local5 = local4
-                local6 = local5
-                local0 = add_item(local6, 5, 1610, {17493, 7715})
-            end
-            local7 = add_item(local0, 176, local2, 522)
-            local8 = add_item(local0, 176, local2, 800)
-            for local4 in ipairs({local7, local8}) do
-                local5 = local4
-                local6 = local5
-                if get_item_quality(local6) == 255 then
-                    local0 = add_item(local6, 5, 1610, {17493, 7715})
-                end
-            end
-        else
-            local0 = add_item(itemref, {1542, 17493, 17511, 7781})
-        end
-    elseif eventid == 2 then
-        local0 = get_item_data(itemref)
-        create_object(-1, 0, 0, 0, local0[2], local0[1], 16) -- Unmapped intrinsic
+    if eventid ~= 1 then
+        var_000C = unknown_0018H(itemref)
+        unknown_0053H(-1, 0, 0, 0, var_000C[2], var_000C[1], 16)
+        return
     end
-    return
+
+    unknown_005CH(itemref)
+    bark(itemref, "@Wis Jux@")
+    if not unknown_0906H() then
+        var_0000 = unknown_0001H(itemref, {17511, 8037, 66, 7768})
+        var_0001 = unknown_08F6H(-356)
+        var_0002 = var_0001 + 21
+        var_0003 = unknown_0035H(176, var_0002, 200, itemref)
+        for var_0004 in ipairs(var_0003) do
+            var_0000 = unknown_0002H(5, {1610, 17493, 7715}, var_0006)
+        end
+        var_0007 = unknown_0035H(176, var_0002, 800, itemref)
+        var_0008 = unknown_0035H(176, var_0002, 522, itemref)
+        var_0009 = table.insert(var_0007, var_0008)
+        for var_000A in ipairs(var_0009) do
+            if _GetItemQuality(var_0006) == 255 then
+                var_0000 = unknown_0002H(5, {1610, 17493, 7715}, var_0006)
+            end
+        end
+    else
+        var_0000 = unknown_0001H(itemref, {1542, 17493, 17511, 7781})
+    end
 end

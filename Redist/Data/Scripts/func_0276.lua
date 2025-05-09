@@ -1,13 +1,13 @@
--- Manages interaction with an item, possibly a map or telescope.
-function func_0276H(eventid, itemref)
-    local target
+--- Best guess: Similar to func_0275, manages an item interaction with a target selection and effect application, with slight variations.
+function func_0276(eventid, itemref)
+    local var_0000, var_0001
+
     if eventid == 1 then
-        target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
+        var_0000 = _ItemSelectModal()
     else
-        target = itemref
+        var_0000 = itemref
     end
-    set_item_state(-356) -- TODO: Implement LuaSetItemState for calli 005C.
-    local arr = {7715, 17508, 17512, 17514, 17530, 17508}
-    execute_action(-356, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
-    perform_action(-356, target, 630) -- TODO: Implement LuaPerformAction for callis 0041.
+    unknown_005CH(-356)
+    var_0001 = unknown_0001H({17508, 17530, 17514, 17512, 17508, 7715}, -356)
+    var_0001 = unknown_0041H(630, var_0000, -356)
 end

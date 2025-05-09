@@ -1,21 +1,17 @@
--- Function 02C4: Toggle item frame
+--- Best guess: Toggles an object’s frame (0 or 1) and sets quality (28), likely for a switch or toggleable object animation.
 function func_02C4(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        var_0000 = get_object_frame(itemref)
+        var_0001 = var_0000
+        if var_0000 == 1 then
+            var_0001 = 0
+        elseif var_0000 == 0 then
+            var_0001 = 1
+        end
+        set_object_quality(itemref, 28)
+        set_object_frame(itemref, var_0001)
     end
-
-    local0 = _GetItemFrame(itemref)
-    local1 = local0
-    if local0 == 1 then
-        local1 = 0
-    elseif local0 == 0 then
-        local1 = 1
-    end
-    calli_0086(28, itemref)
-    _SetItemFrame(local1, itemref)
-
     return
 end

@@ -1,21 +1,18 @@
--- Searches for an item with specific frame and position, applying adjustments if found.
-function func_081E(p0, p1, p2, p3, p4, p5, p6, p7, p8)
-    local local9, local10, local11, local12, local13, local14, local15
+--- Best guess: Checks if an item (P7) matches a specific frame (P6) and position (P5) near a pedestal (P8), triggering an action (081DH) if conditions are met.
+function func_081E(P0, P1, P2, P3, P4, P5, P6, P7, P8)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
-    local9 = get_item_data(p8)
-    local10 = local9[p5]
-    local11 = external_0035H(0, 7, p7, p8) -- Unmapped intrinsic
-    local12 = false
-    for local13 in ipairs(local11) do
-        local14 = local13
-        local15 = local14
-        if external_081BH(local15) == p6 and local9[p5] == local10 then -- Unmapped intrinsic
-            local12 = true
+    var_0009 = unknown_0018H(P8)
+    var_000A = var_0009[P5]
+    var_000B = unknown_0035H(0, 7, P7, P8)
+    var_000C = false
+    for var_000D in ipairs(var_000B) do
+        if unknown_081BH(0, var_000F) == P6 and var_0009[P5] == var_000A then
+            var_000C = true
             break
         end
     end
-    if not local12 then
-        local12 = external_081DH(p0, p1, p2, p3, p4, local15) -- Unmapped intrinsic
+    if not var_000C then
+        var_000C = unknown_081DH(P0, P1, P2, P3, P4, var_000F)
     end
-    return
 end

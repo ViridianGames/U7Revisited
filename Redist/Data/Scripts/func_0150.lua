@@ -1,6 +1,6 @@
--- Handles unlit candle interaction, switching to lit candle state.
-function func_0150H(eventid, itemref)
+--- Best guess: Manages an unlit candle, changing its type to 338 (lit candle) when used or examined.
+function func_0150(eventid, itemref)
     if eventid == 1 or eventid == 2 then
-        call_script(0x0942, 338, itemref) -- TODO: Map 0942H to specific Lua function or confirm script call.
+        unknown_0942H(338, itemref)
     end
 end

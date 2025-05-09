@@ -1,9 +1,8 @@
--- Function 0940: Start NPC speech or trigger
-function func_0940(eventid, itemref)
-    if not start_speech(itemref) then
-        call_0614H(0)
+--- Best guess: Initiates NPC speech, calling an external function if speech fails.
+function func_0940(eventid, itemref, arg1)
+    if not start_speech(arg1) then --- Guess: Starts speech
+        calle_0614H(0) --- External call to unknown function
     else
-        trigger_ferry()
+        unknown_007EH() --- Guess: Unknown function
     end
-    return
 end

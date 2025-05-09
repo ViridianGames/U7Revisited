@@ -1,9 +1,11 @@
--- Triggers an action for an item, possibly a quest item, if worn by a character.
-function func_0369H(eventid, itemref)
+--- Best guess: Triggers an effect for a specific item when used, checking ownership to ensure valid interaction.
+function func_0369(eventid, itemref)
+    local var_0000
+
     if eventid == 1 then
-        local wearer = get_wearer(itemref)
-        if wearer then
-            call_script(0x080A, itemref, 873) -- TODO: Map 080AH (possibly use item).
+        var_0000 = unknown_006EH(itemref)
+        if var_0000 then
+            unknown_080AH(873, itemref)
         end
     end
 end

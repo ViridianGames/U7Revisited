@@ -1,104 +1,104 @@
--- Function 0887: Compare and adjust party stats
-function func_0887(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Performs complex item manipulation and explosion creation, possibly for combat or traps.
+function func_0887(eventid, itemref, positions1, positions2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
-    local3 = false
-    local4 = false
-    local5 = false
-    local6 = false
-    local7 = false
-    local8 = false
-    local9 = false
-    local10 = false
-    local11 = false
-    if itemref[1] ~= eventid[1] then
-        local3 = true
-    elseif itemref[1] < eventid[1] then
-        eventid[1] = eventid[1] - 1
-        local4 = true
+    var_0003 = false
+    var_0004 = false
+    var_0005 = false
+    var_0006 = false
+    var_0007 = false
+    var_0008 = false
+    var_0009 = false
+    var_000A = false
+    var_000B = false
+    if positions1[1] ~= positions2[1] or positions1[2] ~= positions2[2] then
+        var_0003 = true
     else
-        eventid[1] = eventid[1] + 1
-        local5 = true
+        if positions1[1] < positions2[1] then
+            positions2[1] = positions2[1] - 1
+            var_0004 = true
+        elseif positions1[1] > positions2[1] then
+            positions2[1] = positions2[1] + 1
+            var_0005 = true
+        end
     end
-    if itemref[2] ~= eventid[2] then
-        if itemref[2] < eventid[2] then
-            eventid[2] = eventid[2] - 1
-            if not local4 then
-                local8 = true
-                local4 = false
+    if positions1[2] ~= positions2[2] then
+        if positions1[2] < positions2[2] then
+            if var_0004 then
+                positions2[2] = positions2[2] - 1
+                var_0008 = true
+                var_0004 = false
+            elseif var_0005 then
+                positions2[1] = positions2[1] - 1
+                var_000A = true
+                var_0005 = false
             else
-                if not local5 then
-                    local10 = true
-                    local5 = false
-                else
-                    local6 = true
-                end
+                var_0006 = true
             end
-        else
-            eventid[2] = eventid[2] + 1
-            if not local4 then
-                local9 = true
-                local4 = false
+        elseif positions1[2] > positions2[2] then
+            if var_0004 then
+                positions2[2] = positions2[2] + 1
+                var_0009 = true
+                var_0004 = false
+            elseif var_0005 then
+                positions2[1] = positions2[1] + 1
+                var_000B = true
+                var_0005 = false
             else
-                if not local5 then
-                    local11 = true
-                    local5 = false
-                else
-                    local7 = true
-                end
+                var_0007 = true
             end
         end
-    else
-        move_object(-1, 0, 0, 0, eventid[2] - 1, itemref[1] - 1, 4)
-        local12 = get_random(9)
-        local12 = call_0024H(275)
-        _SetItemFrame(6, local12)
-        call_0089H(151, local12)
-        _SetItemQuality(151, local12)
-        call_0026H(eventid)
-        _SetItemQuality(local12)
-        call_0888H(local12)
-        delete_item(local12)
-        delete_item(itemref)
-        set_item_glow(itemref)
-        local0 = {17493, 7715}
-        set_return(0)
     end
-    if not local4 and not local5 then
-        local15 = _Random2(1, -1)
-        eventid[2] = eventid[2] + local15
+    if var_0003 then
+        create_explosion(-1, 0, 0, 0, positions2[2] - 1, positions2[1] - 1, 4) --- Guess: Creates explosion
+        unknown_000FH(9) --- Guess: Unknown function
+        var_000C = set_item_type(275, itemref) --- Guess: Sets item type
+        set_item_frame(6, var_000C) --- Guess: Sets item frame
+        set_item_flag(18, var_000C, true) --- Guess: Sets item flag
+        var_000D = set_item_quality(151, var_000C) --- Guess: Sets item quality
+        var_000D = update_position(positions2) --- Guess: Updates position
+        calle_0888H(var_000C) --- External call to item processing
+        unknown_006FH(var_000C) --- Guess: Unknown function, possibly removes item
+        unknown_006FH(eventid) --- Guess: Unknown function, possibly removes item
+        destroy_item(itemref) --- Guess: Destroys item
+        add_container_items(itemref, {1800, 17493, 7715}) --- Guess: Adds items to container
+        return 0
     end
-    if not local6 and not local7 then
-        local15 = _Random2(1, -1)
-        eventid[1] = eventid[1] + local15
+    if not var_0004 and not var_0005 then
+        var_000F = random(-1, 1) --- Guess: Generates random number
+        positions2[2] = positions2[2] + var_000F
     end
-    if not local10 then
-        if local15 == 1 then
-            eventid[2] = eventid[2] + 1
-        elseif local15 == 2 then
-            eventid[1] = eventid[1] - 1
+    if not var_0006 and not var_0007 then
+        var_000F = random(-1, 1) --- Guess: Generates random number
+        positions2[1] = positions2[1] + var_000F
+    end
+    if var_000A then
+        if random(1, 3) == 1 then
+            positions2[2] = positions2[2] + 1
+        elseif random(1, 3) == 2 then
+            positions2[1] = positions2[1] - 1
         end
     end
-    if not local8 then
-        if local15 == 1 then
-            eventid[2] = eventid[2] + 1
-        elseif local15 == 2 then
-            eventid[1] = eventid[1] + 1
+    if var_0008 then
+        if random(1, 3) == 1 then
+            positions2[2] = positions2[2] + 1
+        elseif random(1, 3) == 2 then
+            positions2[1] = positions2[1] + 1
         end
     end
-    if not local11 then
-        if local15 == 1 then
-            eventid[2] = eventid[2] - 1
-        elseif local15 == 2 then
-            eventid[1] = eventid[1] - 1
+    if var_000B then
+        if random(1, 3) == 1 then
+            positions2[2] = positions2[2] - 1
+        elseif random(1, 3) == 2 then
+            positions2[1] = positions2[1] - 1
         end
     end
-    if not local9 then
-        if local15 == 1 then
-            eventid[2] = eventid[2] - 1
-        elseif local15 == 2 then
-            eventid[1] = eventid[1] + 1
+    if var_0009 then
+        if random(1, 3) == 1 then
+            positions2[2] = positions2[2] - 1
+        elseif random(1, 3) == 2 then
+            positions2[1] = positions2[1] + 1
         end
     end
-    set_return(eventid)
+    return positions2
 end

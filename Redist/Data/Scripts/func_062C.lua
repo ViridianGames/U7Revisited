@@ -1,44 +1,40 @@
--- Manages forging, processing rock and blood to create items, with special handling for golem bodies and tree objects.
+--- Best guess: Manages a forge routine, combining rock (ID 331) and blood (ID 912) items to craft golem bodies or other items, updating states and flags based on item quality (243 or 244).
 function func_062C(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013
 
-    local0 = itemref
-    local1 = external_0945H(local0) -- Unmapped intrinsic
-    local2 = add_item(local0, 0, 18, 331, {1736, 2487})
-    for local3 in ipairs(local2) do
-        local4 = local3
-        local5 = local4
-        local6 = add_item(local5, 176, 3, 912)
-        for local7 in ipairs(local6) do
-            local8 = local7
-            local9 = local8
-            local10 = get_object_frame(local9)
-            local11 = get_item_data(local9)
-            remove_item(local9)
-            set_object_frame(local0, local10)
-            local13 = set_item_data(local11)
+    var_0000 = itemref
+    var_0001 = unknown_0945H(var_0000)
+    var_0002 = unknown_0035H(0, 18, 331, {1736, 2487})
+    for var_0003 in ipairs(var_0002) do
+        var_0006 = unknown_0035H(176, 3, 912, var_0005)
+        for var_0007 in ipairs(var_0006) do
+            var_000A = get_object_frame(var_0009)
+            var_000B = unknown_0018H(var_0009)
+            unknown_006FH(var_0009)
+            var_000C = unknown_0024H(912)
+            get_object_frame(var_000C, var_000A)
+            var_000D = unknown_0026H(var_000B)
         end
     end
-    local14 = get_container_items(-359, local1, 797)
-    local15 = add_item(local0, {17453, 17452, 7715})
-    if get_item_quality(local14) == 243 then
-        external_08E6H(local1) -- Unmapped intrinsic
+
+    var_000E = get_container_objects(4, 359, 797, var_0001)
+    var_000F = unknown_0001H(var_0000, {17453, 17452, 7715})
+    if _GetItemQuality(var_000E) == 243 then
+        unknown_08E6H(var_0001)
         set_flag(753, false)
         set_flag(795, true)
-    elseif get_item_quality(local14) == 244 then
-        external_08E6H(local1) -- Unmapped intrinsic
+    elseif _GetItemQuality(var_000E) == 244 then
+        unknown_08E6H(var_0001)
         set_flag(796, false)
         set_flag(754, false)
     end
-    local2 = get_item_by_type(932)
-    for local16 in ipairs(local2) do
-        local17 = local16
-        local18 = local17
-        if get_object_frame(local18) == 2 or get_object_frame(local18) == 3 then
-            external_0092H(local18) -- Unmapped intrinsic
-            set_schedule(0, 1, 12)
-            local19 = add_item(local18, {1599, 8021, 30, 7975, 1811, 8021, 1590, 17493, 7715})
+
+    var_0002 = unknown_0030H(932)
+    for var_0010 in ipairs(var_0002) do
+        if get_object_frame(var_0012) == 2 or get_object_frame(var_0012) == 3 then
+            unknown_0092H(var_0012)
+            unknown_008CH(0, 1, 12)
+            var_0013 = unknown_0001H(var_0012, {1599, 8021, 30, 7975, 1811, 8021, 1590, 17493, 7715})
         end
     end
-    return
 end

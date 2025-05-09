@@ -1,24 +1,17 @@
--- Function 0903: Pig NPC dialogue
-function func_0903(eventid, itemref)
-    local local0, local1, local2, local3
+--- Best guess: Handles pig NPC dialogue, saying "Oink" or performing actions based on flags.
+function func_0903(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if npc_in_party(itemref) then
-        if itemref == -356 then
-            local2 = is_player_female()
+    if not npc_in_party(arg1) then --- Guess: Checks if NPC is in party
+        var_0002 = arg1 == 356 and is_player_female() or 0 --- Guess: Checks player gender
+        switch_talk_to(var_0002, arg1) --- Guess: Initiates dialogue
+        if not check_item_flag(itemref, 25) then --- Guess: Checks item flag
+            add_dialogue("@Oink@")
         else
-            local2 = 0
-        end
-        switch_talk_to(itemref, local2)
-        if not check_item_state(25, itemref) then
-            add_dialogue(itemref, "\"Oink\"")
-        else
-            while local0 do
-                local1 = local0
-                add_dialogue(itemref, local1 .. "")
-                local0 = get_next_string() -- sloop
+            for _, var_0005 in ipairs({3, 4, 5, 0}) do
+                add_dialogue(var_0005 .. "") --- Guess: Says action value
             end
         end
-        _HideNPC(itemref)
+        hide_npc(arg1) --- Guess: Hides NPC
     end
-    return
 end

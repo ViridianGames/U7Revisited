@@ -1,16 +1,16 @@
--- Function 0915: Adjust NPC stats based on training
-function func_0915(eventid, itemref)
-    local local0, local1, local2, local3, local4
+--- Best guess: Improves an NPC’s dexterity training level based on strength.
+function func_0915(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    while local0 < eventid do
-        local3 = call_0910H(1, itemref)
-        call_0912H(1, 1, itemref)
-        local4 = local3 + 1
-        local5 = call_0910H(4, itemref)
-        local6 = (local4 * local5 + (local3 - 1)) / local3
-        call_0912H(local6 - local5, 4, itemref)
-        call_0912H(-1, 7, itemref)
-        local0 = local0 + 1
+    var_0002 = 0
+    while var_0002 < arg1 do
+        var_0003 = get_training_level(1, arg2) --- Guess: Gets training level
+        set_training_level(1, arg2, 1) --- Guess: Sets training level
+        var_0004 = var_0003 + 1
+        var_0005 = get_training_level(4, arg2) --- Guess: Gets training level
+        var_0006 = (var_0004 * var_0005 + var_0003 - 1) / var_0003
+        set_training_level(4, arg2, var_0006 - var_0005) --- Guess: Sets training level
+        set_training_level(7, arg2, -1) --- Guess: Sets training level
+        var_0002 = var_0002 + 1
     end
-    return
 end

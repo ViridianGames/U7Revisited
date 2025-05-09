@@ -1,50 +1,45 @@
--- Function 06BA: Manages vomiting effect and item spawning
+--- Best guess: Applies effects to party members with non-zero strength, displaying random distress messages and triggering a sequence when event ID 3 is received.
 function func_06BA(eventid, itemref)
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 3 then
-        local0 = _GetPartyMembers()
-        while sloop() do
-            local3 = local0
-            if not callis_004A(callis_0020(0, local3), call_GetItemQuality(itemref)) then
-                local4 = callis_001B(local3)
-                callis_005C(local4)
-                call_0620H(local4)
-                local5 = callis_0002(25, {1567, 17493, 7715}, local4)
-                local5 = callis_0001({8033, 4, 17447, 8046, 4, 17447, 8045, 4, 17447, 8044, 5, 17447, 7715}, local4)
-                if not call_0937H(local4) then
-                    call_0904H({"@Yuk!@", "@Oh no!@", "@Eeehhh!@", "@Ohh!@"}, local4)
+        var_0000 = unknown_0023H()
+        for i = 1, #var_0000 do
+            var_0003 = var_0000[i]
+            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(itemref)) then
+                var_0004 = unknown_001BH(var_0003)
+                unknown_005CH(var_0004)
+                unknown_0620H(var_0004)
+                var_0005 = unknown_0002H(25, 1567, {17493, 7715}, var_0004)
+                var_0005 = unknown_0001H({8033, 4, 17447, 8046, 4, 17447, 8045, 4, 17447, 8044, 5, 17447, 7715}, var_0004)
+                if not unknown_0937H(var_0004) then
+                    unknown_0904H({"@Yuk!@", "@Oh no!@", "@Eeehhh!@", "@Ohh!@"}, var_0004)
                 end
-                local5 = callis_0002(17, {1722, 17493, 7715}, local4)
+                var_0005 = unknown_0002H(17, 1722, {17493, 7715}, var_0004)
             end
         end
     elseif eventid == 2 then
-        local6 = 0
-        local7 = {}
-        while local6 < 16 do
-            local8 = _Random2(3, 0)
-            if #local7 == 0 then
-                local7[local6 + local8 + 1] = local6 + local8
+        var_0006 = 0
+        var_0007 = 0
+        while var_0006 < 16 do
+            if var_0007 == 0 then
+                var_0007 = var_0006 + unknown_0010H(3, 0)
             else
-                local7[#local7 + 1] = local6 + local8
+                var_0007 = {var_0007, var_0006 + unknown_0010H(3, 0)}
             end
-            local6 = local6 + 4
+            var_0006 = var_0006 + 4
         end
-        while sloop() do
-            local11 = callis_0024(912)
-            if local11 then
-                callis_0089(18, local11)
-                local12 = callis_0026(callis_0018(itemref))
-                _SetItemFrame(local7[local10 + 1], local11)
+        for i = 1, #var_0007 do
+            var_0008 = var_0007[i]
+            if var_0008 then
+                var_0005 = unknown_0024H(912)
+                if var_0005 then
+                    unknown_0089H(18, var_0005)
+                    var_000C = unknown_0026H(unknown_0018H(itemref))
+                    unknown_0013H(var_0008, var_0005)
+                end
             end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

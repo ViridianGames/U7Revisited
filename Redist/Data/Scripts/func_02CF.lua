@@ -1,21 +1,21 @@
--- Function 02CF: Item creation with positioning
+--- Best guess: Repositions container items (shape 810) with specific offsets, likely for a puzzle or environmental effect.
 function func_02CF(eventid, itemref)
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local0 = _GetContainerItems(1, -359, 810, -356, callis_001B())
-    if not local0 then
-        local1 = {-1, 0, -1, 0, -2, -2, 1, 1}
-        local2 = {-4, -4, 1, 1, -2, -1, -2, -1}
-        call_0828H(7, local0, 810, 0, local2, local1, itemref)
+    var_0000 = get_container_objects(1, 359, 810, 356)
+    if not var_0000 then
+        var_0001 = {-1, 0, -1, 0, -2, -2, 1, 1}
+        var_0002 = {-4, -4, 1, 1, -2, -1, -2, -1}
+        -- call [0000] (0828H, unmapped)
+        unknown_0828H(7, var_0000, 810, 0, var_0002, var_0001, itemref)
     else
-        local0 = _GetContainerItems(0, -359, 810, -356, callis_001B())
-        if not local0 then
-            local1 = {-1, 0, -1, 0, -2, -2, 1, 1}
-            local2 = {-4, -4, 1, 1, -2, -1, -2, -1}
-            call_0828H(7, local0, 810, 0, local2, local1, itemref)
+        var_0000 = get_container_objects(0, 359, 810, 356)
+        if not var_0000 then
+            var_0001 = {-1, 0, -1, 0, -2, -2, 1, 1}
+            var_0002 = {-4, -4, 1, 1, -2, -1, -2, -1}
+            -- call [0000] (0828H, unmapped)
+            unknown_0828H(7, var_0000, 810, 0, var_0002, var_0001, itemref)
         end
     end
-
     return
 end

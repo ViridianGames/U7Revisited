@@ -1,14 +1,15 @@
--- Prompts for a yes/no answer and returns a boolean.
+--- Best guess: Prompts the user with a Yes/No choice, returning true for “Yes” and false for “No”.
 function func_090A()
-    save_answers() -- Unmapped intrinsic
-    add_answer({"No", "Yes"}) -- Unmapped intrinsic
+    local var_0000
+
+    save_answers()
     while true do
-        local answer = get_answer() -- Unmapped intrinsic
-        if answer == "Yes" then
-            restore_answers() -- Unmapped intrinsic
+        var_0000 = add_answer({"No", "Yes"})
+        if var_0000 == "Yes" then
+            restore_answers()
             return true
-        elseif answer == "No" then
-            restore_answers() -- Unmapped intrinsic
+        elseif var_0000 == "No" then
+            restore_answers()
             return false
         end
     end

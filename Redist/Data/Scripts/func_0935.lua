@@ -1,14 +1,12 @@
--- Function 0935: Find NPC with lowest quantity
-function func_0935(eventid, itemref)
-    local local0, local1, local2, local3
+--- Best guess: Compares item attributes across a list, updating a value to the smallest attribute.
+function func_0935(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local2 = itemref[1]
-    while itemref do
-        local3 = itemref
-        if get_item_quantity(local3, local0) < get_item_quantity(local2, local0) then
-            local2 = local3
+    var_0002 = arg2[1]
+    for _, var_0005 in ipairs({3, 4, 5, 1}) do
+        if compare_item_attribute(var_0005, arg1) < compare_item_attribute(var_0002, arg1) then --- Guess: Compares item attributes
+            var_0002 = var_0005
         end
-        itemref = get_next_member() -- sloop
     end
-    set_return(local2)
+    return var_0002
 end

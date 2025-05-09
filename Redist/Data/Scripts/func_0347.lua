@@ -1,11 +1,12 @@
--- Triggers Time Lord dialogue when using an hourglass under specific conditions.
-function func_0347H(eventid, itemref)
+--- Best guess: Triggers a dialogue with the Time Lord (func_0269) when an hourglass is used, if specific conditions (flag 4) are met.
+function func_0347(eventid, itemref)
+    local var_0000
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref)
-        if frame == 1 and not get_flag(0x0004) then
-            local state = check_item_state(617) -- TODO: Implement LuaCheckItemState for callis 001B.
-            call_script(0x0269, state)
-            set_stat(itemref, 67)
+        var_0000 = get_object_frame(itemref)
+        if var_0000 == 1 and not get_flag(4) then
+            func_0269(617, unknown_001BH(itemref))
+            unknown_0086H(itemref, 67)
         end
     end
 end

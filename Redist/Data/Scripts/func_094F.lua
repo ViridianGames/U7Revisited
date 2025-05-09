@@ -1,38 +1,39 @@
--- Manages combat training, boosting strength and combat skills.
-function func_094F(p0, p1)
-    local local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Manages a combat training session, checking player strength and gold, enhancing strength if conditions are met.
+function func_094F(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    local2 = external_0920H() -- Unmapped intrinsic
-    local3 = get_player_name(local2) -- Unmapped intrinsic
-    if local2 == 0 then
+    var_0002 = unknown_0920H()
+    var_0003 = _GetPlayerName(var_0002)
+    if var_0002 == 0 then
         return
     end
-    local4 = 3
-    local5 = external_0922H(local4, local2, p0, p1) -- Unmapped intrinsic
-    if local5 == 0 then
+    var_0004 = 3
+    var_0005 = unknown_0922H(var_0004, var_0002, P0, P1)
+    if var_0005 == 0 then
         add_dialogue("After a very quick run, he turns and says, \"Thou dost not yet have the stamina. If thou so wishest, I could train thee at a later date.\"")
-    elseif local5 == 1 then
-        local6 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
-        add_dialogue("You gather your gold and count it, finding that you have " .. local6 .. " gold altogether.")
-        if local6 < p0 then
+        return
+    elseif var_0005 == 1 then
+        var_0006 = unknown_0028H(-359, -359, 644, -357)
+        add_dialogue("You gather your gold and count it, finding that you have " .. var_0006 .. " gold altogether.")
+        if var_0006 < P0 then
             add_dialogue("\"It seems thou dost not have enough gold to train at this time.\"")
+            return
         end
-    elseif local5 == 2 then
+    elseif var_0005 == 2 then
         add_dialogue("After a short run, he turns and says, \"Thou art already as strong as I! I am afraid that there is nothing further I can show thee.\"")
-    else
-        local7 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        add_dialogue("You pay " .. p0 .. " gold, and the training session begins.")
-        local8 = local2 == -356 and "you feel " or local3 .. " feels "
-        local9 = local2 == -356 and "you have " or (is_player_female() and "she " or "he ") .. "has " -- Unmapped intrinsic
-        add_dialogue("After sparring for half an hour, " .. local8 .. " as though " .. local9 .. "learned how to better apply force when fighting.")
-        local10 = external_0910H(0, local2) -- Unmapped intrinsic
-        if local10 < 30 then
-            external_0914H(1, local2) -- Unmapped intrinsic
-        end
-        local11 = external_0910H(4, local2) -- Unmapped intrinsic
-        if local11 < 30 then
-            external_0917H(2, local2) -- Unmapped intrinsic
-        end
+        return
     end
-    return
+    var_0007 = unknown_002BH(true, -359, -359, 644, P0)
+    add_dialogue("You pay " .. P0 .. " gold, and the training session begins.")
+    var_0008 = var_0002 == -356 and "you feel " or var_0003 .. " feels "
+    var_0009 = var_0002 == -356 and "you have " or (_IsPlayerFemale() and "she " or "he ") .. "has "
+    add_dialogue("After sparring for half an hour, " .. var_0008 .. " as though " .. var_0009 .. "learned how to better apply force when fighting.")
+    var_000C = unknown_0910H(0, var_0002)
+    if var_000C < 30 then
+        unknown_0914H(1, var_0002)
+    end
+    var_000D = unknown_0910H(4, var_0002)
+    if var_000D < 30 then
+        unknown_0917H(2, var_0002)
+    end
 end

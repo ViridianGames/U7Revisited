@@ -1,24 +1,25 @@
--- Casts the "Vas An Nox" spell, curing poison for party members with a sprite effect.
+--- Best guess: Implements the mass cure poison spell (Vas An Nox), curing poison for all party members with visual effects.
 function func_0654(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        local0 = get_item_data(itemref)
-        create_object(-1, 0, 0, 0, local0[2] - 2, local0[1] - 2, 7) -- Unmapped intrinsic
+        destroy_item(itemref)
+        var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 7) --- Guess: Applies sprite effect
         bark(itemref, "@Vas An Nox@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local1 = add_item(itemref, {1620, 8021, 64, 17496, 17511, 17509, 7782})
+        if check_spell_requirements() then
+            var_0001 = add_container_items(itemref, {1620, 8021, 64, 17496, 17511, 17509, 7782})
         else
-            local1 = add_item(itemref, {1542, 17493, 17511, 17509, 7782})
+            var_0001 = add_container_items(itemref, {1542, 17493, 17511, 17509, 7782})
         end
     elseif eventid == 2 then
-        local2 = get_party_members()
-        for local3 in ipairs(local2) do
-            local4 = local3
-            local5 = local4
-            set_flag(local5, 8, true)
-            set_flag(local5, 7, true)
+        var_0002 = get_party_members()
+        table.insert(var_0002, 356)
+        -- Guess: sloop cures poison for party members
+        for i = 1, 5 do
+            var_0005 = {3, 4, 5, 2, 23}[i]
+            unknown_008AH(8, var_0005) --- Guess: Sets quest flag
+            unknown_008AH(7, var_0005) --- Guess: Sets quest flag
         end
     end
-    return
 end

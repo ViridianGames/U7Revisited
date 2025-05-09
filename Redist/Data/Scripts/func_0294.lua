@@ -1,6 +1,6 @@
--- Triggers an action for an item, possibly a generic use script.
-function func_0294H(eventid, itemref)
+--- Best guess: Handles generic use of an item, delegating to a specific function for processing.
+function func_0294(eventid, itemref)
     if eventid == 1 then
-        call_script(0x0809, itemref) -- TODO: Map 0809H (possibly use_item or specific action).
+        unknown_0809H(itemref)
     end
 end

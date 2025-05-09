@@ -1,17 +1,19 @@
--- Function 02BD: Lit torch behavior
+--- Best guess: Manages a lit torch’s interaction, calling external functions to update its state or trigger effects, possibly for lighting or environmental changes.
 function func_02BD(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
     if eventid == 1 or eventid == 2 then
-        call_0839H(595, itemref)
+        -- call [0000] (0839H, unmapped)
+        unknown_0839H(595, itemref)
     elseif eventid == 7 then
-        local0 = call_0827H(itemref, -356)
-        local1 = callis_0001({17505, 17514, 8449, local0, 7769}, -356)
-        call_0839H(595, itemref)
+        -- call [0001] (0827H, unmapped)
+        var_0000 = unknown_0827H(itemref, 356)
+        var_0001 = unknown_0001H({17505, 17514, 8449, var_0000, 7769}, 356)
+        -- call [0000] (0839H, unmapped)
+        unknown_0839H(595, itemref)
     elseif eventid == 5 then
-        call_0905H(itemref)
+        -- call [0002] (0905H, unmapped)
+        unknown_0905H(itemref)
     end
-
     return
 end

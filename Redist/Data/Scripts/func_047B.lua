@@ -1,155 +1,157 @@
--- Manages Daphne's dialogue in Jhelom, covering tavern operations, Sprellic's duels, betting, and rivalry with Ophelia.
+--- Best guess: Manages Daphne’s dialogue, a barmaid at The Bunk and Stool in Jhelom, discussing her overworked role, Sprellic’s troubles, and betting against him, with flag-based interactions and banter with Ophelia.
 function func_047B(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    if eventid == 1 then
-        switch_talk_to(123, 0)
-        local0 = get_player_name()
-        local1 = get_party_size()
-        local2 = switch_talk_to(123)
-        local3 = false
-        local4 = get_item_type(-122)
-        local5 = get_item_type(-125) and is_npc_dead(-125)
-        local6 = get_item_type(-126) and is_npc_dead(-126)
-        local7 = get_item_type(-127) and is_npc_dead(-127)
-        local8 = get_item_type(-124) and is_npc_dead(-124)
-
-        if local5 or local6 or local7 or local8 then
-            local3 = true
+    if eventid ~= 1 then
+        if eventid == 0 then
+            unknown_092EH(123)
         end
-
-        add_answer({"bye", "job", "name"})
-        if not get_flag(375) then
-            add_answer("winnings")
-        end
-
-        if not get_flag(373) then
-            add_dialogue("You see a disgruntled, obviously overworked barmaid. She gives you a perfunctory grunt of a hello.")
-            set_flag(373, true)
-            if local1 == -4 then
-                add_dialogue("\"Art thou still here?\" she asks Dupre.")
-                switch_talk_to(4, 0)
-                add_dialogue("\"I have not finished making mine assessment of thy fine drinking establishment!\"*")
-                switch_talk_to(123, 0)
-                add_dialogue("\"What? Art thou working for Brommer's Britannia travel guides?\"*")
-                switch_talk_to(4, 0)
-                add_dialogue("\"No, my dear. This research is strictly for mine own digestion!\"*")
-                hide_npc(4)
-                switch_talk_to(123, 0)
-            end
-        else
-            add_dialogue("\"Good day to thee, " .. local0 .. ". Rest and take a load off.\"")
-        end
-
-        while true do
-            local answer = get_answer()
-            if answer == "name" then
-                add_dialogue("\"I am Daphne.\"")
-                remove_answer("name")
-            elseif answer == "job" then
-                add_dialogue("\"That is an easy one. I am the workhorse in residence of the Bunk and Stool. While our resident princess flirts with the customers I do all the cooking, cleaning and serving.\"")
-                add_answer({"room", "Bunk and Stool", "buy", "princess", "workhorse"})
-            elseif answer == "buy" then
-                if local2 == 23 then
-                    buy_food() -- Unmapped intrinsic 0871
-                else
-                    add_dialogue("\"Sorry, " .. local0 .. ", I do not sell food and drink at this time.\"")
-                end
-                remove_answer("buy")
-            elseif answer == "workhorse" then
-                add_dialogue("\"Ever since the owner, Sprellic, got himself into trouble with the Library of Scars, there hath been no one else to run the place. Ohh, mine aching back!\"")
-                remove_answer("workhorse")
-                add_answer({"Library of Scars", "Sprellic"})
-            elseif answer == "princess" then
-                add_dialogue("\"Hmmph! That would be Ophelia.\"")
-                remove_answer("princess")
-                add_answer("Ophelia")
-            elseif answer == "room" then
-                add_dialogue("\"Thou shalt have to ask Ophelia about that. My domain is the kitchen!\"")
-                remove_answer("room")
-            elseif answer == "Ophelia" then
-                add_dialogue("\"Ophelia this! Ophelia that! That is all I ever hear all bloody day! If all thou dost want to talk about is her, talk to someone else!\"")
-                if local4 then
-                    switch_talk_to(122, 0)
-                    add_dialogue("\"Do not hate me just because I am beautiful, Daphne.\"*")
-                    switch_talk_to(123, 0)
-                    add_dialogue("\"That is not the reason I hate thee, Ophelia!\"*")
-                    switch_talk_to(122, 0)
-                    add_dialogue("\"Oh, yes, I remember now. Thou dost hate me because I am beautiful, and thou art not!\"*")
-                    switch_talk_to(123, 0)
-                    add_dialogue("\"Thank thee so much, " .. local0 .. ", for bringing up my favorite subject.\"*")
-                    hide_npc(122)
-                    switch_talk_to(123, 0)
-                end
-                remove_answer("Ophelia")
-            elseif answer == "Bunk and Stool" then
-                add_dialogue("\"The Bunk and Stool is where the fighters and ruffians come to drink in Jhelom. 'Tis not an easy job keeping such a lot happy with all their drinking and duelling and gambling.\"")
-                remove_answer("Bunk and Stool")
-                add_answer("gambling")
-            elseif answer == "Sprellic" then
-                add_dialogue("\"The fool was caught stealing the honor flag from the wall of the Library of Scars! Now the three students who challenged him will kill him on the duelling field. 'Tis a tragedy.\"")
-                set_flag(366, true)
-                remove_answer("Sprellic")
-            elseif answer == "Library of Scars" then
-                add_dialogue("\"That is the fighting club in Jhelom which produces perhaps the toughest fighters in all Britannia. Sprellic has never fought before in his entire life.\"")
-                remove_answer("Library of Scars")
-            elseif answer == "gambling" then
-                if local3 then
-                    add_dialogue("\"I am sorry. All bets are off since the matter has been resolved.\"")
-                else
-                    add_dialogue("\"In fact, I am taking bets on the upcoming duels. Dost thou wish to bet that Sprellic will lose to any of the three other duellists?\"")
-                    local10 = get_answer()
-                    if local10 then
-                        add_dialogue("\"How much wouldst thou like to bet?\"")
-                        local10 = ask_number(0, 10, 200, 0) -- Unmapped intrinsic
-                        if local10 == 0 then
-                            add_dialogue("\"Perhaps thou art not truly serious about thy convictions. Mayhaps the princess will take thy line of bets.\"")
-                        else
-                            add_dialogue("\"Thou wouldst bet " .. local10 .. " gold that Sprellic will lose?\"")
-                            local11 = get_answer()
-                            if not local11 then
-                                add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
-                            else
-                                local12 = get_gold(-359, -359, 644, -357) -- Unmapped intrinsic
-                                if local12 >= local10 then
-                                    local13 = add_item(-359, 0, 921, math.floor(local10 / 10)) -- Unmapped intrinsic
-                                    if local13 then
-                                        add_dialogue("\"Very well. Let me give thee markers for thy gold. Each one is worth 10 gold coins. If Sprellic loses, thou mayest come collect twice that amount of gold from me.~~" .. local0 .. ", thy markers are, of course, worthless.\"")
-                                        add_dialogue("\"Thou mayest come see me after the duels and exchange this marker for thy winnings if thou hast won.\"")
-                                        remove_gold(-359, -359, 644, local10) -- Unmapped intrinsic
-                                        set_flag(375, true)
-                                    else
-                                        add_dialogue("\"Oh! Thou must return later when thou hast enough room in thy pack for these markers.\"")
-                                    end
-                                else
-                                    add_dialogue("\"Thou hast not the amount of gold thou dost want to bet! Art thou trying to swindle me?\"")
-                                end
-                            end
-                        end
-                    else
-                        add_dialogue("\"Then if thou wouldst like to bet in favor of Sprellic, thou mayest see Ophelia, but I warn thee thou wilt be throwing thy money away!\"")
-                    end
-                end
-                remove_answer("gambling")
-            elseif answer == "winnings" then
-                local17 = get_gold(-359, 0, 921, -357) -- Unmapped intrinsic
-                local18 = local17 * 20
-                local19 = add_item(-359, -359, 644, local18) -- Unmapped intrinsic
-                if local19 then
-                    add_dialogue("\"Here are thy winnings, " .. local0 .. ". But I have reason to believe that thou wert the one who killed poor Sprellic! If this is the way that thou makest thy money, then thou shouldst be ashamed!\"")
-                    local20 = remove_item(-359, 0, 921, local17) -- Unmapped intrinsic
-                    set_flag(378, true)
-                else
-                    add_dialogue("\"Thou cannot possibly carry all that gold. Thou must come back when I can give thee the proper amount of gold!\"")
-                end
-                remove_answer("winnings")
-            elseif answer == "bye" then
-                add_dialogue("\"Enjoy thyself.\"*")
-                break
-            end
-        end
-    elseif eventid == 0 then
-        switch_talk_to(123)
+        return
     end
+
+    start_conversation()
+    switch_talk_to(0, 123)
+    var_0000 = unknown_0909H()
+    var_0001 = unknown_003BH()
+    var_0002 = unknown_001CH(unknown_001BH(123))
+    var_0003 = unknown_08F7H(122)
+    var_0004 = false
+    var_0005 = unknown_0037H(unknown_001BH(124))
+    var_0006 = unknown_0037H(unknown_001BH(125))
+    var_0007 = unknown_0037H(unknown_001BH(126))
+    var_0008 = unknown_0037H(unknown_001BH(127))
+    if var_0005 or var_0006 or var_0007 or var_0008 then
+        var_0004 = true
+    end
+    add_answer({"bye", "job", "name"})
+    if var_0005 and not get_flag(378) then
+        add_answer("winnings")
+    end
+    if not get_flag(373) then
+        add_dialogue("You see a disgruntled, obviously overworked barmaid. She gives you a perfunctory grunt of a hello.")
+        set_flag(373, true)
+        var_0009 = unknown_08F7H(-4)
+        if var_0009 then
+            add_dialogue("\"Art thou still here?\" she asks Dupre.")
+            switch_talk_to(0, -4)
+            add_dialogue("\"I have not finished making mine assessment of thy fine drinking establishment!\"")
+            switch_talk_to(0, 123)
+            add_dialogue("\"What? Art thou working for Brommer's Britannia travel guides?\"")
+            switch_talk_to(0, -4)
+            add_dialogue("\"No, my dear. This research is strictly for mine own digestion!\"")
+            hide_npc4)
+            switch_talk_to(0, 123)
+        end
+    else
+        add_dialogue("\"Good day to thee, " .. var_0000 .. ". Rest and take a load off.\"")
+    end
+    while true do
+        if cmps("name") then
+            add_dialogue("\"I am Daphne.\"")
+            remove_answer("name")
+        elseif cmps("job") then
+            add_dialogue("\"That is an easy one. I am the workhorse in residence of the Bunk and Stool. While our resident princess flirts with the customers I do all the cooking, cleaning and serving.\"")
+            add_answer({"room", "Bunk and Stool", "buy", "princess", "workhorse"})
+        elseif cmps("buy") then
+            if var_0002 == 23 then
+                unknown_0871H()
+            else
+                add_dialogue("\"Sorry, " .. var_0000 .. ", I do not sell food and drink at this time.\"")
+            end
+            remove_answer("buy")
+        elseif cmps("workhorse") then
+            add_dialogue("\"Ever since the owner, Sprellic, got himself into trouble with the Library of Scars, there hath been no one else to run the place. Ohh, mine aching back!\"")
+            remove_answer("workhorse")
+            add_answer({"Library of Scars", "Sprellic"})
+        elseif cmps("princess") then
+            add_dialogue("\"Hmmph! That would be Ophelia.\"")
+            remove_answer("princess")
+            add_answer("Ophelia")
+        elseif cmps("room") then
+            add_dialogue("\"Thou shalt have to ask Ophelia about that. My domain is the kitchen!\"")
+            remove_answer("room")
+        elseif cmps("Ophelia") then
+            add_dialogue("\"Ophelia this! Ophelia that! That is all I ever hear all bloody day! If all thou dost want to talk about is her, talk to someone else!\"")
+            if var_0003 then
+                switch_talk_to(0, 122)
+                add_dialogue("\"Do not hate me just because I am beautiful, Daphne.\"")
+                switch_talk_to(0, 123)
+                add_dialogue("\"That is not the reason I hate thee, Ophelia!\"")
+                switch_talk_to(0, 122)
+                add_dialogue("\"Oh, yes, I remember now. Thou dost hate me because I am beautiful, and thou art not!\"")
+                switch_talk_to(0, 123)
+                add_dialogue("\"Thank thee so much, " .. var_0000 .. ", for bringing up my favorite subject.\"")
+                _hide_npc(122)
+                switch_talk_to(0, 123)
+            end
+            remove_answer("Ophelia")
+        elseif cmps("Bunk and Stool") then
+            add_dialogue("\"The Bunk and Stool is where the fighters and ruffians come to drink in Jhelom. 'Tis not an easy job keeping such a lot happy with all their drinking and duelling and gambling.\"")
+            remove_answer("Bunk and Stool")
+            add_answer("gambling")
+        elseif cmps("Sprellic") then
+            add_dialogue("\"The fool was caught stealing the honor flag from the wall of the Library of Scars! Now the three students who challenged him will kill him on the duelling field. 'Tis a tragedy.\"")
+            set_flag(366, true)
+            remove_answer("Sprellic")
+        elseif cmps("Library of Scars") then
+            add_dialogue("\"That is the fighting club in Jhelom which produces perhaps the toughest fighters in all Britannia. Sprellic has never fought before in his entire life.\"")
+            remove_answer("Library of Scars")
+        elseif cmps("gambling") then
+            if var_0004 then
+                add_dialogue("\"I am sorry. All bets are off since the matter has been resolved.\"")
+            else
+                add_dialogue("\"In fact, I am taking bets on the upcoming duels. Dost thou wish to bet that Sprellic will lose to any of the three other duellists?\"")
+                var_000A = unknown_090AH()
+                if var_000A then
+                    add_dialogue("\"How much wouldst thou like to bet?\"")
+                    var_000B = ask_number(0, 10, 200, 0)
+                    if var_000B == 0 then
+                        add_dialogue("\"Perhaps thou art not truly serious about thy convictions. Mayhaps the princess will take thy line of bets.\"")
+                    else
+                        add_dialogue("\"Thou wouldst bet " .. var_000B .. " gold that Sprellic will lose?\"")
+                        var_000C = unknown_090AH()
+                        if not var_000C then
+                            add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
+                            goto gambling_start
+                        end
+                        var_000D = unknown_0028H(359, 359, 644, 357)
+                        if var_000D >= var_000B then
+                            var_000E = unknown_002CH(false, 1, 359, 921, var_000B // 10)
+                            if var_000E then
+                                var_000F = unknown_002BH(true, 359, 359, 644, var_000B)
+                                set_flag(378, true)
+                                add_dialogue("\"Very well. Let me give thee markers for thy gold. Each one is worth 10 gold coins. If Sprellic loses, thou mayest come collect twice that amount of gold from me.~~\"Should he win, " .. var_0000 .. ", thy markers are, of course, worthless.\"")
+                                add_dialogue("\"Thou mayest come see me after the duels and exchange this marker for thy winnings if thou hast won.\"")
+                            else
+                                add_dialogue("\"Oh! Thou must return later when thou hast enough room in thy pack for these markers.\"")
+                            end
+                        else
+                            add_dialogue("\"Thou hast not the amount of gold thou dost want to bet! Art thou trying to swindle me?\"")
+                        end
+                    end
+                else
+                    add_dialogue("\"Then if thou wouldst like to bet in favor of Sprellic, thou mayest see Ophelia, but I warn thee thou wilt be throwing thy money away!\"")
+                end
+            end
+            remove_answer("gambling")
+        elseif cmps("winnings") then
+            var_0011 = unknown_0028H(1, 359, 921, 357)
+            var_0012 = var_0011 * 20
+            var_0013 = unknown_002CH(true, 359, 359, 644, var_0012)
+            if var_0013 then
+                var_0014 = unknown_002BH(false, 1, 359, 921, var_0011)
+                add_dialogue("\"Here are thy winnings, " .. var_0000 .. ". But I have reason to believe that thou wert the one who killed poor Sprellic! If this is the way that thou makest thy money, then thou shouldst be ashamed!\"")
+                set_flag(378, true)
+            else
+                add_dialogue("\"Thou cannot possibly carry all that gold. Thou must come back when I can give thee the proper amount of gold!\"")
+            end
+            remove_answer("winnings")
+        elseif cmps("bye") then
+            break
+        end
+    end
+    add_dialogue("\"Enjoy thyself.\"")
     return
+
+::gambling_start::
 end

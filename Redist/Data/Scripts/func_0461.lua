@@ -1,86 +1,64 @@
--- func_0461.lua
--- Garritt's dialogue as a merchant in Britain
+--- Best guess: Handles dialogue with Mikos, the foreman of the Minoc mine, discussing the mine’s operations, machinery, miners (Owings, Malloy, and Fodus), and reacting defensively to mentions of the “silver fluid” Fodus referenced.
+function func_0461(eventid, itemref)
+    local var_0000, var_0001, var_0002
 
-
-function func_0461(eventid)
-    local answers = {}
-    local flag_00D1 = get_flag(0x00D1) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E0 = get_flag(0x00E0) -- Trade topic
-    local npc_id = -80 -- Garritt's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E0 then
-            add_answer( "trade")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00D1 then
-            add_dialogue("You see a well-dressed man with a ledger, overseeing crates in Britain’s market.")
-            set_flag(0x00D1, true)
-        else
-            add_dialogue("\"Back again, \" .. get_player_name() .. \"?\" Garritt says, tallying his wares.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Garritt glances up. \"What’s thy business in the market?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Garritt, merchant of Britain’s finest goods.\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I trade goods in Britain’s market, from cloth to grain. The Fellowship’s push for unity aids business, but their fees sting.\"")
-                add_answer( "trade")
-                add_answer( "Fellowship")
-                set_flag(0x00E0, true)
-            elseif choice == "trade" then
-                add_dialogue("\"Trade’s brisk, but taxes and Fellowship dues cut deep. Folk like Weston suffer most—poverty drives ‘em to desperate acts.\"")
-                add_answer( "Weston")
-                add_answer( "Fellowship")
-                remove_answer("trade")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston, that poor sod, stole apples to feed his kin. Figg’s harsh justice, backed by the Fellowship, crushed him.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, all about order. His role in Weston’s arrest shows their influence over Britain’s laws.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship boosts trade with their talk of unity, but their dues and ties to Patterson make me wonder what they’re really after.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou thinkest them fair? Mayhap, but their fees hit my purse hard.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Aye, I don’t fully trust ‘em either. Something’s off with their plans.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Safe travels, \" .. get_player_name() .. \".\"")
-                break
-            end
-        end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+    start_conversation()
+    if eventid == 0 then
+        abort()
     end
+    switch_talk_to(97, 0)
+    var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+    if var_0000 == 7 then
+        var_0001 = unknown_08FCH(81, 97) --- Guess: Checks NPC time interaction
+        if var_0001 then
+            add_dialogue("Mikos is lost in meditation at the Fellowship meeting and does not hear you.")
+        else
+            add_dialogue("\"I must run to the Fellowship meeting! I shall speak with thee another time!\"")
+        end
+        abort()
+    end
+    var_0002 = get_player_title()
+    if not get_flag(284) then
+        add_dialogue("A sneering man watches as you approach. His eyes shift back and forth suspiciously.")
+        set_flag(284, true)
+    else
+        add_dialogue("Mikos heaves his shoulders and sighs. \"What dost thou want this time?\"")
+    end
+    add_answer({"bye", "job", "name"})
+    if get_flag(263) then
+        add_answer("silver fluid")
+    end
+    while true do
+        var_0003 = get_answer()
+        if var_0003 == "name" then
+            add_dialogue("\"I am Mikos.\"")
+            remove_answer("name")
+        elseif var_0003 == "job" then
+            add_dialogue("\"I am the foreman of the Minoc mine.\"")
+            add_answer({"mine", "Minoc"})
+        elseif var_0003 == "Minoc" then
+            add_dialogue("He spits on the ground. \"A pox on them! Down here I am safe from all of their arguing. Next, they will be killing each other.\"")
+            remove_answer("Minoc")
+        elseif var_0003 == "mine" then
+            add_dialogue("\"This mine is run by the Britannian Mining Company. It is inside what was once the dungeon Covetous. They mine for iron ore, lead and other minerals with highly trained miners and special mining machinery.\"")
+            remove_answer("mine")
+            add_answer({"machinery", "miners"})
+        elseif var_0003 == "miners" then
+            add_dialogue("\"Currently most of the miners are away as the machines are being repaired. Right now we have two engineers, Owings and Malloy, down in a branch of the main tunnel. Do not disturb them, for they are involved in a special project. We also have a gargoyle, Fodus, who is helping to maintain a semblance of the mine's usual operations.\"")
+            remove_answer("miners")
+            add_answer("Owings and Malloy")
+        elseif var_0003 == "machinery" then
+            add_dialogue("\"This place is full of machinery that is very dangerous if thou dost not know what thou art doing. Thou dost not wish to see what one of those digging contraptions can do to a man if he gets too close!\"")
+            remove_answer("machinery")
+        elseif var_0003 == "Owings and Malloy" then
+            add_dialogue("Mikos shakes his head slowly. \"I am not sure where the Britannian Mining Company found them.\"")
+            remove_answer("Owings and Malloy")
+        elseif var_0003 == "silver fluid" then
+            add_dialogue("You repeat the words to Mikos that you heard Fodus say. Mikos gives you a shocked look. \"I have no idea what he is talking about, but I would say it is typical for a gargoyle. Just trying to shirk of his duty. Say, thou hadst better leave this place if thou ist spending all thy time disrupting the work of the mine!\"")
+            abort()
+        elseif var_0003 == "bye" then
+            break
+        end
+    end
+    add_dialogue("\"Do not wander around down here, " .. var_0002 .. ". Thou shouldst leave right away.\"")
 end
-
-return func_0461

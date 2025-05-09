@@ -1,29 +1,22 @@
--- Function 04FE: Lasher's dialogue and virgin detection role
+--- Best guess: Manages Lasher’s dialogue, a unicorn in a dungeon who detects virgins, sharing his cursed history and reluctance to aid virginity tests, especially for Cosmo’s quest.
 function func_04FE(eventid, itemref)
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 0 then
         return
-    elseif eventid ~= 1 then
-        return
     end
-
-    switch_talk_to(254, 0)
-    local0 = call_0909H()
-
-    if not get_flag(0x02CD) then
+    switch_talk_to(0, 254)
+    var_0000 = unknown_0909H()
+    start_conversation()
+    if not get_flag(717) then
         add_dialogue("You see a creature the size and shape of a horse. From its head protrudes a single straight horn. It looks at you with eyes that shine with intelligence.")
-        set_flag(0x02CD, true)
+        set_flag(717, true)
     else
         add_dialogue("\"I greet thee once again, Avatar,\" says Lasher, the unicorn.")
     end
-
     add_answer({"bye", "job", "name"})
-
     while true do
-        local answer = wait_for_answer()
-
+        local answer = get_answer()
         if answer == "name" then
             add_dialogue("The creature speaks. \"My name is Lasher.\"")
             remove_answer("name")
@@ -32,8 +25,8 @@ function func_04FE(eventid, itemref)
             add_answer({"purpose", "unicorn"})
         elseif answer == "unicorn" then
             add_dialogue("Lasher stares at you, stupefied. \"Tell me, dost thou know what a unicorn is?\"")
-            local1 = call_090AH()
-            if not local1 then
+            var_0001 = unknown_090AH()
+            if not var_0001 then
                 add_dialogue("Lasher stares blankly at you. His mouth hangs open. \"Very well. Then I shall tell thee what a unicorn is.\"")
             else
                 add_dialogue("Lasher shakes his head sadly. \"No, thou merely thinks thou dost know what a unicorn is, but I shall tell thee the truth.\"")
@@ -42,7 +35,8 @@ function func_04FE(eventid, itemref)
             remove_answer("unicorn")
             add_answer("wizard")
         elseif answer == "purpose" then
-            add_dialogue("\"Oh, do not be coy with me, Avatar. Thou dost know very well the purpose of a unicorn. ~~We are foolproof virgin detectors!\"")
+            add_dialogue("\"Oh, do not be coy with me, Avatar. Thou dost know very well the purpose of a unicorn.\"")
+            add_dialogue("We are foolproof virgin detectors!")
             remove_answer("purpose")
             add_answer("virgin detector")
         elseif answer == "wizard" then
@@ -75,77 +69,42 @@ function func_04FE(eventid, itemref)
             add_dialogue("\"Yes, I find it most unpleasant to actually come into physical contact with anyone who is not a virgin, and I will avoid doing so whenever possible.\"")
             remove_answer("sensitive")
             add_answer({"unpleasant", "avoid"})
-        elseif answer == "unpleasant" then
-            add_dialogue("\"Actually, the part of being a virgin detector that I find the most intolerable is having to perform upon demand for some clever mage or bard or hero who wants a potential wife to try to touch me.\"")
-            remove_answer("unpleasant")
-            add_answer("wife")
-        elseif answer == "wife" then
-            add_dialogue("\"It is a tragedy. The man always gets nervous, then places a condition on the marriage that his bride must be a virgin. They call me to put her to the test, and the man's bachelorhood is granted a reprieve. I have destroyed more engagements than the Bubonic Plague.\"")
-            remove_answer("wife")
-            if not get_flag(0x02D1) then
-                add_answer("bachelorhood")
-            end
-        elseif answer == "bachelorhood" then
-            add_dialogue("\"Just like those fools who are wandering around down here looking for me for the same reason, I would wager. Well, they can lose that notion. I like women, I truly do, and frankly, I am sick and tired of being used as the instrument of their humiliation.\"")
-            remove_answer("marriages")
-            if get_flag(0x02E0) then
-                add_answer("male virginity test")
-            else
-                add_answer("fools")
-            end
-            remove_answer("bachelorhood")
-        elseif answer == "fools" then
-            add_dialogue("\"I am a magical creature. I can avoid them down here as long as I want. They will die of old age before they catch me. I refuse to assist them in weaseling out of some breach of promise. Thou canst tell them that if thou dost see them.\"")
-            set_flag(0x02D0, true)
-            remove_answer("fools")
-        elseif answer == "male virginity test" then
-            add_dialogue("\"They want the virginity test for a man who is getting married?!\" Lasher lets out a long surprised laugh. \"In all mine existence, I have never heard of such a thing!\"")
-            remove_answer("male virginity test")
-            add_answer("getting married")
-        elseif answer == "getting married" then
-            add_dialogue("\"Oh, she must be quite a ravishing maiden if he is willing to risk life and limb to come down here and prove his virtue.\"")
-            remove_answer("getting married")
-            add_answer("ravishing maiden")
-        elseif answer == "ravishing maiden" then
-            add_dialogue("\"This boy must be smitten something fierce by this maid. I suppose that I should go and investigate this further. If he is as sincere about this as thou dost say, then perhaps I will help the poor lad.\"")
-            remove_answer("ravishing maiden")
-            set_flag(0x02D1, true)
         elseif answer == "avoid" then
             add_dialogue("\"Yes, well, I did not wish to get this personal with thee, but if thou does not mind, art thou a virgin?\"")
-            local2 = call_090AH()
-            if not local2 then
-                if not get_flag(0x029D) and not get_flag(0x029C) and not get_flag(0x029E) then
+            var_0002 = unknown_090AH()
+            if not var_0002 then
+                if not get_flag(669) or not get_flag(668) or not get_flag(670) then
                     add_dialogue("\"I thought as much!\" Lasher starts to pace nervously. \"If thou wouldst not mind standing back a bit, I would be most appreciative.\"")
                 else
                     add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades. Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
-                    local3 = is_player_female()
-                    local4 = call_08F7H(-1)
-                    local5 = call_08F7H(-3)
-                    local6 = call_08F7H(-4)
-                    if not local3 then
-                        if local4 then
-                            switch_talk_to(1, 0)
-                            add_dialogue("\"There's no shame in it, milord,\" says Iolo, looking very serious.*")
-                            _HideNPC(-1)
-                            switch_talk_to(254, 0)
+                    var_0003 = unknown_005AH()
+                    var_0004 = unknown_08F7H(1)
+                    var_0005 = unknown_08F7H(3)
+                    var_0006 = unknown_08F7H(4)
+                    if not var_0003 then
+                        if var_0004 then
+                            switch_talk_to(0, 1)
+                            add_dialogue("\"There's no shame in it, milord,\" says Iolo, looking very serious.")
+                            hide_npc(1)
+                            switch_talk_to(0, 254)
                         end
-                        if local5 then
-                            switch_talk_to(3, 0)
-                            add_dialogue("\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.*")
-                            _HideNPC(-3)
-                            switch_talk_to(254, 0)
+                        if var_0005 then
+                            switch_talk_to(0, 3)
+                            add_dialogue("\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.")
+                            hide_npc(3)
+                            switch_talk_to(0, 254)
                         end
-                        if local6 then
-                            switch_talk_to(4, 0)
-                            add_dialogue("\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.*")
-                            _HideNPC(-4)
-                            switch_talk_to(254, 0)
+                        if var_0006 then
+                            switch_talk_to(0, 4)
+                            add_dialogue("\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.")
+                            hide_npc(4)
+                            switch_talk_to(0, 254)
                         end
                         add_answer("virginity")
                     end
                 end
             else
-                if not get_flag(0x029D) and not get_flag(0x029C) and not get_flag(0x029E) then
+                if not get_flag(669) or not get_flag(668) or not get_flag(670) then
                     add_dialogue("\"I beg thy pardon, but perhaps thou shouldst go to the Lycaeum and have someone look up the definition of the word 'virginity' for thee. Wouldst thou mind stepping back, please?! Thou dost make me nervous.\"")
                 else
                     add_dialogue("\"Yes, I could tell the answer to my question before thou didst even speak it. Art thou a virgin by choice or by circumstance?\"")
@@ -174,28 +133,45 @@ function func_04FE(eventid, itemref)
         elseif answer == "lust" then
             add_dialogue("\"If quenching thy lust is thine only concern, then thou shouldst find satisfaction at the Baths, in Buccaneer's Den. But be sure to take a full purse.\"")
             remove_answer({"lust", "love"})
+        elseif answer == "unpleasant" then
+            add_dialogue("\"Actually, the part of being a virgin detector that I find the most intolerable is having to perform upon demand for some clever mage or bard or hero who wants a potential wife to try to touch me.\"")
+            remove_answer("unpleasant")
+            add_answer("wife")
+        elseif answer == "wife" then
+            add_dialogue("\"It is a tragedy. The man always gets nervous, then places a condition on the marriage that his bride must be a virgin. They call me to put her to the test, and the man's bachelorhood is granted a reprieve. I have destroyed more engagements than the Bubonic Plague.\"")
+            remove_answer("wife")
+            if not get_flag(721) then
+                add_answer("bachelorhood")
+            end
+        elseif answer == "bachelorhood" then
+            add_dialogue("\"Just like those fools who are wandering around down here looking for me for the same reason, I would wager. Well, they can lose that notion. I like women, I truly do, and frankly, I am sick and tired of being used as the instrument of their humiliation.\"")
+            remove_answer("marriages")
+            if get_flag(736) then
+                add_answer("male virginity test")
+            else
+                add_answer("fools")
+            end
+            remove_answer("bachelorhood")
+        elseif answer == "fools" then
+            add_dialogue("\"I am a magical creature. I can avoid them down here as long as I want. They will die of old age before they catch me. I refuse to assist them in weaseling out of some breach of promise. Thou canst tell them that if thou dost see them.\"")
+            set_flag(720, true)
+            remove_answer("fools")
+        elseif answer == "male virginity test" then
+            add_dialogue("\"They want the virginity test for a man who is getting married?!\" Lasher lets out a long surprised laugh. \"In all mine existence, I have never heard of such a thing!\"")
+            remove_answer("male virginity test")
+            add_answer("getting married")
+        elseif answer == "getting married" then
+            add_dialogue("\"Oh, she must be quite a ravishing maiden if he is willing to risk life and limb to come down here and prove his virtue.\"")
+            remove_answer("getting married")
+            add_answer("ravishing maiden")
+        elseif answer == "ravishing maiden" then
+            add_dialogue("\"This boy must be smitten something fierce by this maid. I suppose that I should go and investigate this further. If he is as sincere about this as thou dost say, then perhaps I will help the poor lad.\"")
+            remove_answer("ravishing maiden")
+            set_flag(721, true)
         elseif answer == "bye" then
-            add_dialogue("\"Fare thee well, Avatar.\"*")
-            return
+            add_dialogue("\"Fare thee well, Avatar.\"")
+            break
         end
     end
-
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function wait_for_answer()
-    return "bye" -- Placeholder
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
 end

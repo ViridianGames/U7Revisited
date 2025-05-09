@@ -1,12 +1,11 @@
--- Function 04EA: Meryl's brief actress dialogue
+--- Best guess: Manages Meryl’s brief actress dialogue, displaying random promotional messages for the Passion Play when examined (event 0) or a focused actress message when spoken to (event 1).
 function func_04EA(eventid, itemref)
-    -- Local variables (4 as per .localc)
     local local0, local1, local2, local3
 
     if eventid == 0 then
-        local0 = callis_003B()
-        local1 = callis_001C(callis_001B(-234))
-        local2 = callis_Random2(4, 1)
+        local0 = unknown_003BH()
+        local1 = unknown_001CH(unknown_001BH(-234))
+        local2 = random2(4, 1)
         if local1 == 29 then
             if local2 == 1 then
                 local3 = "@See the Passion Play!@"
@@ -19,28 +18,13 @@ function func_04EA(eventid, itemref)
             end
             bark(234, local3)
         else
-            call_092EH(-234)
+            unknown_092EH(-234)
         end
         return
     elseif eventid ~= 1 then
         return
     end
 
-    switch_talk_to(234, 0)
-    add_dialogue("You see a middle-aged actress with a very serious expression. She is unable to speak with you because she is concentrating on her part in the Passion Play. Perhaps you should speak to Paul.*")
-
-    return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
+    switch_talk_to(0, -234)
+    add_dialogue("You see a middle-aged actress with a very serious expression. She is unable to speak with you because she is concentrating on her part in the Passion Play. Perhaps you should speak to Paul.")
 end

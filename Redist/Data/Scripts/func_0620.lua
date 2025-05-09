@@ -1,5 +1,4 @@
--- Sets an item flag, possibly enabling a state like dancing.
+--- Best guess: Sets an item flag (15), possibly for a dance animation or state change.
 function func_0620(eventid, itemref)
-    set_flag(itemref, 15, true)
-    return
+    set_item_flag(itemref, 15) --- Guess: Sets item flag
 end

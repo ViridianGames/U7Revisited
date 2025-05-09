@@ -1,14 +1,13 @@
--- Function 0944: Find outermost container
+--- Best guess: Finds the outermost container of an item, ensuring it’s not owned by the Avatar (ID 356).
 function func_0944(eventid, itemref)
-    local local0
+    local var_0000, var_0001
 
-    local0 = get_container(itemref) -- callis 006E
-    while local0 do
-        if local0 == -356 then -- Avatar check
-            set_return(local0)
-            return
+    var_0001 = get_item_container(itemref) --- Guess: Gets item container
+    while var_0001 and get_item_owner(var_0001) ~= 356 do --- Guess: Gets item owner
+        var_0001 = get_item_container(var_0001) --- Guess: Gets item container
+        if not var_0001 then
+            return 0
         end
-        local0 = get_container(local0)
     end
-    set_return(0)
+    return var_0001
 end

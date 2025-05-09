@@ -1,36 +1,18 @@
--- Function 06C3: Manages Minoc murder scene
+--- Best guess: Manages the Minoc murder scene, setting flag 290, managing timers, and triggering effects when event ID 3 is received.
 function func_06C3(eventid, itemref)
-    -- Local variables (1 as per .localc)
-    local local0
+    local var_0000
 
-    if eventid ~= 3 then
-        return
-    end
-
-    if not get_flag(0x0122) then
-        set_flag(0x0122, true)
-        callis_0066(5)
-        abort()
-    else
-        local0 = callis_0065(5)
-        if local0 >= 24 then
-            call_080FH()
+    if eventid == 3 then
+        if not get_flag(290) then
+            set_flag(290, true)
+            unknown_0066H(5)
+            return
         end
-        callis_006F(itemref)
+        var_0000 = unknown_0065H(5)
+        if var_0000 >= 24 then
+            unknown_080FH()
+            unknown_006FH(itemref)
+        end
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
 end

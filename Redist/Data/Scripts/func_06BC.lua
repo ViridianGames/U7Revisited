@@ -1,26 +1,21 @@
--- Function 06BC: Manages nearby item effects
+--- Best guess: Applies effects to nearby items (type 359, within 40 units) not already affected when event ID 3 is triggered, likely part of a dungeon trap.
 function func_06BC(eventid, itemref)
-    -- Local variables (5 as per .localc)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if eventid ~= 3 then
-        return
-    end
-
-    local0 = call_GetItemQuality(itemref)
-    local1 = callis_0035(8, local0 == 0 and 40 or local0, -359, itemref)
-    while sloop() do
-        local4 = local1
-        if not callis_0088(6, local4) then
-            call_093FH(0, local4)
-            callis_008A(1, local4)
+    if eventid == 3 then
+        var_0000 = unknown_0014H(itemref)
+        if not var_0000 then
+            var_0001 = unknown_0035H(8, 40, 359, itemref)
+        else
+            var_0001 = unknown_0035H(8, var_0000, 359, itemref)
+        end
+        for i = 1, #var_0001 do
+            var_0004 = var_0001[i]
+            if not unknown_0088H(6, var_0004) then
+                unknown_093FH(0, var_0004)
+                unknown_0089H(1, var_0004)
+            end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

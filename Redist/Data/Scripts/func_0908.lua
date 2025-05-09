@@ -1,4 +1,5 @@
--- Function 0908: Get player name
+--- Best guess: Returns the player’s name based on a condition (opcode 0022H).
 function func_0908(eventid, itemref)
-    set_return(_GetPlayerName(call_0022H()))
+    unknown_0022H() --- Guess: Unknown condition check
+    return get_player_name() --- Guess: Gets player name
 end

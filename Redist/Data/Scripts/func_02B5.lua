@@ -1,23 +1,24 @@
--- Function 02B5: Music and item iteration
+--- Best guess: Plays music (ID 55) and cycles NPC frames (ID 534) for an animation or event trigger.
 function func_02B5(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 1 then
-        return
-    end
-
-    _PlayMusic(itemref, 55)
-    if _GetItemFrame(itemref) == 1 then
-        calli_007E()
-        local0 = callis_0030(534)
-        while local0 do
-            -- Note: Original has 'sloop' and 'db 2' for iteration, ignored
-            local3 = local0 -- Current item
-            calli_001D(3, local3)
-            local0 = callis_0030(534) -- Re-check items
+    if eventid == 1 then
+        play_music(itemref, 55)
+        if get_object_frame(itemref) == 1 then
+            -- calli 007E, 0 (unmapped)
+            unknown_007EH()
+            var_0000 = unknown_0030H(534)
+            while true do
+                var_0001 = var_0000
+                var_0002 = var_0001
+                var_0003 = var_0002
+                -- calli 001D, 2 (unmapped)
+                unknown_001DH(3, var_0003)
+                if not var_0003 then
+                    break
+                end
+            end
         end
     end
-
     return
 end

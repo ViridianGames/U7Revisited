@@ -1,21 +1,23 @@
--- Casts the "Vas Mani" spell, fully healing a selected target by setting their health to maximum.
+--- Best guess: Manages the "Vas Mani" spell, healing a selected target’s health (ID 64) by restoring their hit points, with a fallback effect if the spell fails.
 function func_066C(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
-        bark(itemref, "@Vas Mani@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {64, 17496, 17511, 17509, 8550, local1, 7769})
-            if not is_item_active(local0) then -- Unmapped intrinsic
-                local3 = get_npc_property(local0, 0)
-                local4 = get_npc_property(local0, 3)
-                local5 = set_npc_property(local0, 3, local3 - local4)
-            end
-        else
-            local2 = add_item(itemref, {1542, 17493, 17511, 17509, 8550, local1, 7769})
-        end
+    if eventid ~= 1 then
+        return
     end
-    return
+
+    var_0000 = _ItemSelectModal()
+    unknown_005CH(var_0000)
+    var_0001 = unknown_092DH(var_0000)
+    bark(itemref, "@Vas Mani@")
+    if not unknown_0906H() then
+        var_0002 = unknown_0001H(itemref, {64, 17496, 17511, 17509, 8550, var_0001, 7769})
+        if not unknown_0031H(var_0000) then
+            var_0003 = _GetNPCProperty(var_0000, 0)
+            var_0004 = _GetNPCProperty(var_0000, 3)
+            var_0005 = _SetNPCProperty(var_0000, 3, var_0003 - var_0004)
+        end
+    else
+        var_0002 = unknown_0001H(itemref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
+    end
 end

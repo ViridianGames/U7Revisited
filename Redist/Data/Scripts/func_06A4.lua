@@ -1,13 +1,7 @@
--- Function 06A4: Sets Forge progression flag
+--- Best guess: Sets flag 60 when triggered by event ID 3, likely part of a dungeon forge sequence.
 function func_06A4(eventid, itemref)
     if eventid == 3 then
-        set_flag(0x003C, true)
+        set_flag(60, true)
     end
-
     return
-end
-
--- Helper functions
-function set_flag(flag, value)
-    -- Placeholder
 end

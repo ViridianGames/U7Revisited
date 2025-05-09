@@ -1,6 +1,7 @@
-function func_0142H(eventid, itemref)
+--- Best guess: Handles interaction with a specific item, changing its type to 291 and setting its frame to 2 when used.
+function func_0142(eventid, itemref)
     if eventid == 1 then
-        U7SetItemType(itemref, 291)
-        U7SetItemQuality(itemref, 2)
+        set_object_shape(291, itemref)
+        unknown_0086H(itemref, 2)
     end
 end

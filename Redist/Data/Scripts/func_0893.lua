@@ -1,20 +1,19 @@
--- Function 0893: Adjhar golem final dialogue
+--- Best guess: Handles final dialogue with Adjhar after mastering the Principle of Love.
 function func_0893(eventid, itemref)
-    switch_talk_to(288, 0)
-    add_dialogue(itemref, "\"Adjhar appears to have resumed the stance of a more traditional golem guardian -- staunch and distant. However, it is impossible to miss the glimmer of intelligence in his eyes.\"")
-    add_answer({"bye", "job", "name"})
+    start_conversation()
+    switch_talk_to(0, 288) --- Guess: Initiates dialogue
+    add_dialogue("@Adjhar appears to have resumed the stance of a more traditional golem guardian...@")
+    add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     while true do
-        local answer = get_answer()
-        if answer == "name" then
-            add_dialogue(itemref, "\"I am and always will be the one called Adjhar.\"")
-            remove_answer("name")
-        elseif answer == "job" then
-            add_dialogue(itemref, "\"Now that thou hast mastered the Principle of Love, I no longer serve a function.\"")
-            remove_answer("job")
-        elseif answer == "bye" then
-            add_dialogue(itemref, "\"Goodbye, Avatar. As always I thank thee for thy kindness in assisting two brothers in need. Forget not the lessons taught by the Shrines.\"*")
+        if compare_answer("name", 1) then
+            add_dialogue("@I am and always will be the one called Adjhar.@")
+            remove_answer("name") --- Guess: Removes dialogue option
+        elseif compare_answer("job", 1) then
+            add_dialogue("@Now that thou hast mastered the Principle of Love, I no longer serve a function.@")
+            remove_answer("job") --- Guess: Removes dialogue option
+        elseif compare_answer("bye", 1) then
+            add_dialogue("@Goodbye, Avatar. As always I thank thee for thy kindness in assisting two brothers in need...@")
             return
         end
     end
-    return
 end

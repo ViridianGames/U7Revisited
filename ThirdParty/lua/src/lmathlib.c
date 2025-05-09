@@ -571,7 +571,7 @@ static lua_Unsigned project (lua_Unsigned ran, lua_Unsigned n,
 }
 
 
-static int math_random (lua_State *L) {
+static int mathrandom (lua_State *L) {
   lua_Integer low, up;
   lua_Unsigned p;
   RanState *state = (RanState *)lua_touserdata(L, lua_upvalueindex(1));
@@ -632,7 +632,7 @@ static void randseed (lua_State *L, RanState *state) {
 }
 
 
-static int math_randomseed (lua_State *L) {
+static int mathrandomseed (lua_State *L) {
   RanState *state = (RanState *)lua_touserdata(L, lua_upvalueindex(1));
   if (lua_isnone(L, 1)) {
     randseed(L, state);
@@ -647,8 +647,8 @@ static int math_randomseed (lua_State *L) {
 
 
 static const luaL_Reg randfuncs[] = {
-  {"random", math_random},
-  {"randomseed", math_randomseed},
+  {"random", mathrandom},
+  {"randomseed", mathrandomseed},
   {NULL, NULL}
 };
 

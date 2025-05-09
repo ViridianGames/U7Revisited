@@ -1,117 +1,66 @@
--- func_0443.lua
--- Clint's dialogue as the shipwright in Britain
+--- Best guess: Handles dialogue with Boots, Lord British’s personal cook, discussing her meals, her husband Bennie’s forgetfulness, and a shortage of mutton, offering to pay for mutton deliveries.
+function func_0443(eventid, itemref)
+    local var_0000
 
-
-function func_0443(eventid)
-    local answers = {}
-    local flag_00BA = get_flag(0x00BA) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00CB = get_flag(0x00CB) -- Ships topic
-    local npc_id = -57 -- Clint's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x08A6, 1) -- Buy interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00CB then
-            add_answer( "ships")
+        switch_talk_to(67, 0)
+        add_answer({"bye", "job", "name"})
+        if get_flag(114) then
+            add_answer("mutton")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00BA then
-            add_dialogue("You see a weathered man with hands stained by pitch, inspecting a ship's hull.")
-            set_flag(0x00BA, true)
+        if not get_flag(196) then
+            add_dialogue("This is an elderly woman who epitomizes 'grandmotherly'.")
+            set_flag(196, true)
         else
-            add_dialogue("\"Ahoy, \" .. get_player_name() .. \"!\" Clint says with a wave.")
+            add_dialogue("\"Hello, again!\" Boots says.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Clint scratches his beard. \"Got more to discuss?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Clint, shipwright of Britain's docks.\"")
+            var_0000 = get_answer()
+            if var_0000 == "name" then
+                add_dialogue("\"All my brothers and sisters called me 'Boots' when I was a baby, and it hath remained my name ever since.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I build and repair ships for merchants and adventurers. Need a vessel or a deed? I've got both.\"")
-                add_answer( "ships")
-                add_answer( "buy")
-                set_flag(0x00CB, true)
-            elseif choice == "ships" then
-                add_dialogue("\"My ships are sturdy, built with timber from Yew. From small skiffs to galleons, they'll carry thee across Britannia's seas.\"")
-                add_answer( "timber")
-                remove_answer("ships")
-            elseif choice == "timber" then
-                add_dialogue("\"Yew's forests provide the best oak. Costs a fortune to ship it here, but no one's drowned in a Clint-built vessel yet.\"")
-                remove_answer("timber")
-            elseif choice == "buy" then
-                add_dialogue("\"A ship's deed is 200 gold, a skiff's 50. What's thy fancy?\"")
-                local response = call_extern(0x08A6, var_0001)
-                if response == 0 then
-                    local item_choice = get_answer({"ship", "skiff", "none"})
-                    if item_choice == "ship" then
-                        local gold_result = U7.removeGold(200)
-                        if gold_result then
-                            local item_result = U7.giveItem(16, 1, 390)
-                            if item_result then
-                                add_dialogue("\"Here's the deed to thy ship. She's docked and ready!\"")
-                            else
-                                add_dialogue("\"Thou canst not carry the deed! Clear some space.\"")
-                            end
-                        else
-                            add_dialogue("\"Thou lackest the gold for a ship.\"")
-                        end
-                    elseif item_choice == "skiff" then
-                        local gold_result = U7.removeGold(50)
-                        if gold_result then
-                            local item_result = U7.giveItem(16, 1, 391)
-                            if item_result then
-                                add_dialogue("\"Here's the deed to thy skiff. Small but swift!\"")
-                            else
-                                add_dialogue("\"Thou canst not carry the deed! Clear some space.\"")
-                            end
-                        else
-                            add_dialogue("\"Thou lackest the gold for a skiff.\"")
-                        end
-                    else
-                        add_dialogue("\"No sale? Come back when thou'rt ready to sail.\"")
-                    end
+            elseif var_0000 == "job" then
+                add_dialogue("\"Why, I am Lord British's personal cook! I prepare meals for the entire castle.\"")
+                add_answer("meals")
+            elseif var_0000 == "meals" then
+                add_dialogue("\"Just go to the dining room at breakfast or supper time and mine husband Bennie will serve thee!\"")
+                add_answer({"Bennie", "supper", "breakfast"})
+                remove_answer("meals")
+            elseif var_0000 == "breakfast" then
+                add_dialogue("\"For breakfast I usually prepare a dish that my Liege brought with him from his homeland. Here we call it Eggs British. It is served with assorted fruits and tea, of course. It is the King's favorite.\"")
+                remove_answer("breakfast")
+            elseif var_0000 == "supper" then
+                add_dialogue("\"This meal is usually whatever meat or game or fish Lord British requests, accompanied by several additional courses and a fine dessert.\"")
+                remove_answer("supper")
+            elseif var_0000 == "Bennie" then
+                add_dialogue("\"He's a dear, but he has become a little absent-minded in his later years. He never remembers to bring enough meat from the slaughterhouse in Paws. In fact, we are short this week!\"")
+                add_answer({"short", "absent-minded"})
+                remove_answer("Bennie")
+                set_flag(113, true)
+            elseif var_0000 == "absent-minded" then
+                add_dialogue("\"Last week I asked him to put a little garlic into some soup. He put in the garlic and then forgot about it. So he went and put some more in. Then he forgot he did that. So he put in more. Well, thou canst imagine the look on Lord British's face when he finally did taste that soup! It is a good thing we live and work in the castle of such a just ruler.\"")
+                remove_answer("absent-minded")
+            elseif var_0000 == "short" then
+                add_dialogue("\"That is right, we do not have enough. If thou couldst bring me mutton from the slaughterhouse, I will pay thee 5 gold for every portion thou canst bring. All right?\"")
+                var_0000 = select_option()
+                if var_0000 then
+                    add_dialogue("\"Good, I will be awaiting thy return!\"")
+                    set_flag(114, true)
                 else
-                    add_dialogue("\"Not sailing today? My docks are always open.\"")
+                    add_dialogue("\"Oh dear. Well, I know thou art busy. Some other time, then.\"")
                 end
-                remove_answer("buy")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship's been buying ships, claiming they're for 'spreading unity.' But I've seen their crews—look more like mercenaries than missionaries.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Maybe they're just traders. I'll keep watch.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Nay, something's fishy. I don't trust 'em.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Fair winds, \" .. get_player_name() .. \"!\"")
+                remove_answer("short")
+            elseif var_0000 == "mutton" then
+                add_dialogue("\"Splendid! Let's see, we agreed on 5 gold per portion, if I remember correctly.\"")
+                unknown_0854H() --- Guess: Submits mutton
+                remove_answer("mutton")
+            elseif var_0000 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Bye now!\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(67) --- Guess: Triggers a game event
     end
 end
-
-return func_0443

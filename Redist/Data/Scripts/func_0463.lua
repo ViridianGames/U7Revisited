@@ -1,90 +1,49 @@
--- func_0463.lua
--- Sean's dialogue as a jeweler in Britain
+--- Best guess: Handles dialogue with Fodus, a sick gargoyle miner in the Minoc mine, discussing his job, the “secret ore” (blackrock), and his need for “silver fluid” (possibly venom), revealing delirious insights into mine operations.
+function func_0463(eventid, itemref)
+    local var_0000
 
-
-function func_0463(eventid)
-    local answers = {}
-    local flag_00D3 = get_flag(0x00D3) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E2 = get_flag(0x00E2) -- Jewelry topic
-    local npc_id = -82 -- Sean's NPC ID
-
+    start_conversation()
+    if eventid == 0 then
+        abort()
+    end
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E2 then
-            add_answer( "jewelry")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00D3 then
-            add_dialogue("You see a meticulous man polishing a gem, his shop gleaming with fine jewelry.")
-            set_flag(0x00D3, true)
+        switch_talk_to(99, 0)
+        var_0000 = get_player_title()
+        if not get_flag(285) then
+            add_dialogue("You see a wingless gargoyle with a terrible skin disease. It looks as if his face is falling off in patches.")
+            set_flag(285, true)
         else
-            add_dialogue("\"Good to see thee, \" .. get_player_name() .. \",\" Sean says, setting down a ring.")
+            add_dialogue("\"To want something else?\" Fodus asks.")
         end
-
+        add_answer({"bye", "job", "name"})
         while true do
-            if #answers == 0 then
-                add_dialogue("Sean smiles. \"Care to browse my wares or chat?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Sean, jeweler of Britain, crafting beauty for the discerning.\"")
+            var_0001 = get_answer()
+            if var_0001 == "name" then
+                add_dialogue("\"To be named Fodus.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I craft and sell jewelry—rings, necklaces, the lot. The Fellowship’s trade deals help, but their grip on folk like Patterson concerns me.\"")
-                add_answer( "jewelry")
-                add_answer( "Fellowship")
-                set_flag(0x00E2, true)
-            elseif choice == "jewelry" then
-                add_dialogue("\"My gems come from Minoc, but taxes make ‘em pricey. Poor folk like Weston can’t afford such luxuries, and that breeds trouble.\"")
-                add_answer( "Weston")
-                add_answer( "Minoc")
-                remove_answer("jewelry")
-            elseif choice == "Minoc" then
-                add_dialogue("\"Minoc’s mines supply my gems, but the Fellowship’s trade rules raise costs. It’s harder for honest folk to get by.\"")
-                add_answer( "Fellowship")
-                remove_answer("Minoc")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his family—sad case. Figg’s quick arrest, pushed by the Fellowship, showed no mercy.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship loyalist, enforcin’ their order. His role in Weston’s case makes me question their so-called unity.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals boost commerce, but their hold over Patterson and push for control makes me wary of their true aims.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest their ways? They aid trade, but I watch ‘em closely.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Good to stay cautious. Their influence runs deeper than they let on.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Come back anytime, \" .. get_player_name() .. \".\"")
+            elseif var_0001 == "job" then
+                add_dialogue("\"To be a digger in the mines. To be looking for iron ore and lead and...\"")
+                add_answer("and...")
+            elseif var_0001 == "and..." then
+                add_dialogue("\"The secret ore...\"")
+                add_dialogue("A wave of delirium passes over the gargoyle. \"To... to be going back to work now, Mikos!... To be working hard!... To have no need to give me any more of the silver fluid...\"")
+                set_flag(263, true)
+                remove_answer("and...")
+                add_answer({"silver fluid", "secret ore"})
+            elseif var_0001 == "secret ore" then
+                add_dialogue("\"To be called... blackrock.\"")
+                remove_answer("secret ore")
+                add_answer("blackrock")
+            elseif var_0001 == "blackrock" then
+                add_dialogue("\"To be the lode located in a hidden area of the mine...\" The gargoyle's eyes roll up into his head. He is obviously sick.")
+                remove_answer("blackrock")
+            elseif var_0001 == "silver fluid" then
+                add_dialogue("\"To need the venom... to have more venom...\"")
+                remove_answer("silver fluid")
+            elseif var_0001 == "bye" then
                 break
             end
         end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        add_dialogue("\"To be going back to work now, Mikos...\"")
     end
 end
-
-return func_0463

@@ -1,33 +1,23 @@
--- Checks for a blocked bridge and applies effects if conditions are met.
+--- Best guess: Checks for bridge-blocking items (ID 870) within a radius, displaying a message if blocked, and creates items (ID 1553) with specific properties.
 function func_080E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
-    local0 = {}
-    for local1 in ipairs(local0) do
-        local2 = local1
-        local3 = local2
-        if get_item_type(local3) == 870 then
-            local4 = get_item_data(local3)
-            local5 = local4[1]
-            local6 = local4[2]
-            local7 = local4[3]
-            local8 = external_0035H(0, 10, -359, local3) -- Unmapped intrinsic
-            for local9 in ipairs(local8) do
-                local10 = local9
-                local11 = local10
-                local4 = get_item_data(local11)
-                if local4[3] > local7 and local4[1] <= local5 and local4[1] >= local5 - 3 and local4[2] <= local6 and local4[2] >= local6 - 6 then
-                    external_08FFH("I believe the bridge is blocked.") -- Unmapped intrinsic
+    for var_0000 in ipairs(_GetPartyMembers()) do
+        if get_object_shape(var_0003) == 870 then
+            var_0004 = unknown_0018H(var_0003)
+            var_0005 = var_0004[1]
+            var_0006 = var_0004[2]
+            var_0007 = var_0004[3]
+            var_0008 = unknown_0035H(0, 10, -359, var_0003)
+            for var_0009 in ipairs(var_0008) do
+                var_0004 = unknown_0018H(var_000B)
+                if var_0004[3] > var_0007 and var_0004[1] <= var_0005 and var_0004[1] >= var_0005 - 3 and var_0004[2] <= var_0006 and var_0004[2] >= var_0006 - 6 then
+                    unknown_08FFH("I believe the bridge is blocked.")
                     return false
                 end
             end
-            local14 = add_item(local3, {34, 17496, 7937, 0, 17478, 7937, 1553, 8021, 34, 17496, 7937, 1, 8006, 34, 17496, 7937, 0, 7750})
-        else
-            local14 = add_item(local3, {34, 17496, 7937, 0, 8006, 34, 17496, 7937, 1, 17478, 1553, 8021, 34, 17496, 7937, 0, 7750})
         end
+        var_000E = unknown_0001H(var_0003, {34, 17496, 7937, 0, 8006, 34, 17496, 7937, 1, 17478, 1553, 8021, 34, 17496, 7937, 0, 7750})
     end
-    if array_size(local0) == 0 then -- Unmapped intrinsic
-        return false
-    end
-    return true
+    return #var_0000 == 0
 end

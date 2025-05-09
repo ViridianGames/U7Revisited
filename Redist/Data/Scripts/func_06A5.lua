@@ -1,18 +1,12 @@
--- Function 06A5: Manages Fellowship hostility
+--- Best guess: Triggers a hostile reaction against a Fellowship member, displaying a message and initiating combat if flag 6 is set.
 function func_06A5(eventid, itemref)
     if eventid == 3 then
-        if not get_flag(0x0006) then
-            callis_001D(callis_001B(0, -103), -103)
-            call_0904H("@Fellowship scum!@", -103)
+        if get_flag(6) then
+            unknown_001DH(0, unknown_001BH(103))
+            unknown_0904H("@Fellowship scum!@", 103)
         else
-            call_0467H(callis_001B(-103))
+            unknown_0467H(unknown_001BH(103))
         end
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
 end

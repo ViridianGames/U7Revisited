@@ -1,35 +1,31 @@
--- Function 0840: Sage notebook quest
+--- Best guess: Manages a sage conversation, offering a notebook key if dialogue choices are correct.
 function func_0840(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    _SaveAnswers()
-    local0 = call_090BH({"I don't know", "Have Faith", "Strive for Unity", "No Answers", "Be Good"})
-    if local0 == "No Answers" then
-        add_dialogue(itemref, "The sage smiles. \"Thou hast begun thy journey on the road to enlightenment. As thou hast heard, all is not what one has been taught by one's teachers. 'Tis a pity. Now I suppose thou dost want to borrow the notebook?\"")
-        local1 = get_answer()
-        if local1 then
-            add_dialogue(itemref, "\"Very well. Dost thou promise to return my notebook?\"")
-            local2 = get_answer()
-            if local2 then
-                if check_gold(-359, 254, 641, -357) then
-                    add_dialogue(itemref, "\"Then go find it! Thou hast the key!\"")
+    save_answers() --- Guess: Saves dialogue answers
+    var_0000 = show_dialogue_options({"I don't know", "Have Faith", "Strive for Unity", "No Answers", "Be Good"}) --- Guess: Shows dialogue options
+    if var_0000 == "No Answers" then
+        add_dialogue("The sage smiles. \"Thou hast begun thy journey on the road to enlightenment. As thou hast heard, all is not what one has been taught by one's teachers. 'Tis a pity. Now I suppose thou dost want to borrow the notebook?\"")
+        var_0001 = get_dialogue_choice() --- Guess: Gets dialogue choice
+        if var_0001 then
+            add_dialogue("\"Very well. Dost thou promise to return my notebook?\"")
+            var_0002 = get_dialogue_choice() --- Guess: Gets dialogue choice
+            if var_0002 then
+                if check_item_ownership(359, 254, 641, 357) then
+                    add_dialogue("\"Then go find it! Thou hast the key!\"")
+                elseif add_item_to_inventory(359, 254, 641, 1) then
+                    add_dialogue("\"Very well. I am counting on thee to return it to me personally. No telling what misfortune may befall thee if thou dost fail to do so. And as further incentive, I just might give thee something else which will help thee in thy quest if thou dost return it to me safely.~~\"Here is the key to my storeroom, the first building to the south of here.\" He grins slyly. \"Thou must determine how to find the notebook thyself!\"")
                 else
-                    local3 = give_item(false, -359, 254, 641, 1)
-                    if local3 then
-                        add_dialogue(itemref, "\"Very well. I am counting on thee to return it to me personally. No telling what misfortune may befall thee if thou dost fail to do so. And as further incentive, I just might give thee something else which will help thee in thy quest if thou dost return it to me safely.~~\"Here is the key to my storeroom, the first building to the south of here.\" He grins slyly. \"Thou must determine how to find the notebook thyself!\"")
-                    else
-                        add_dialogue(itemref, "\"Thou hast not enough room to take my key! Unload thy belongings and we shall try all of this again!\"*")
-                    end
+                    add_dialogue("\"Thou hast not enough room to take my key! Unload thy belongings and we shall try all of this again!\"")
                 end
             else
-                add_dialogue(itemref, "\"Then I cannot let thee borrow the notebook!\"")
+                add_dialogue("\"Then I cannot let thee borrow the notebook!\"")
             end
         else
-            add_dialogue(itemref, "\"Oh. Very well, then.\"*")
+            add_dialogue("\"Oh. Very well, then.\"")
         end
     else
-        add_dialogue(itemref, "The sage frowns. \"That is not correct. Go and seek the true answer.\"*")
+        add_dialogue("The sage frowns. \"That is not correct. Go and seek the true answer.\"")
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores dialogue answers
 end

@@ -1,11 +1,11 @@
--- Function 0945: Find container chain
+--- Best guess: Iterates through nested containers to find the outermost container.
 function func_0945(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001, var_0002
 
-    local0 = get_container(itemref) -- callis 006E
-    while local0 do
-        local1 = local0
-        local0 = get_container(local0)
+    var_0001 = get_item_container(itemref) --- Guess: Gets item container
+    while var_0001 do
+        var_0002 = var_0001
+        var_0001 = get_item_container(var_0001) --- Guess: Gets item container
     end
-    set_return(local1)
+    return var_0002
 end

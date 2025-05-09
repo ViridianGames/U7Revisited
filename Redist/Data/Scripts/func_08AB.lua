@@ -1,70 +1,56 @@
--- Function 08AB: Manages Fellowship meeting dialogue
+--- Best guess: Manages a Fellowship meeting dialogue led by Klog in Trinsic, with multiple NPCs giving testimonials and player reactions, advancing a narrative sequence.
 function func_08AB()
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local0 = call_08F7H(-14)
-    local1 = call_08F7H(-236)
-    local2 = call_08F7H(-18)
-    local3 = call_08F7H(-22)
-    local4 = call_08F7H(-1)
-    local5 = call_08F7H(-2)
-
-    callis_0003(0, -16)
+    var_0000 = unknown_08F7H(-14)
+    var_0001 = unknown_08F7H(-236)
+    var_0002 = unknown_08F7H(-18)
+    var_0003 = unknown_08F7H(-22)
+    var_0004 = unknown_08F7H(-1)
+    var_0005 = unknown_08F7H(-2)
+    unknown_0003H(0, -16)
     add_dialogue("Klog is leading the town members in a Fellowship meeting.")
-    add_dialogue("\"Thank you, Fellowship members of Trinsic, for attending our meeting this evening.~~I am certain you are all sorely aware of the crimes that have been committed in our city. Now is a time to mourn those whom we have lost. We will always remember Christopher, our blacksmith, as a valuable citizen of our town as well as a dear friend. Inamo was an amiable and hard-working gargoyle. As their deaths show us, Britannia needs The Fellowship now more than ever.")
-    add_dialogue("\"The Fellowship was created to advance a philosophy, a method of applying an optimistic order of thought to one's life. How dost thou follow this method? By applying the Triad of Inner Strength to thy life. The Triad is composed of three principles that, when applied in unison to thy life, can soothe the fever of a society that teaches thee to accept failure and banishes the destructive illusory thoughts and feelings from thy spirit.")
-    add_dialogue("\"The first principle is to Strive For Unity. This means that we should reject divisiveness, put aside our differences and work together for the good of us all.")
-    add_dialogue("\"The second principle is to Trust Thy Brother. Trust is essential, for what will you accomplish if you must be divided by constantly watching each other?")
-    add_dialogue("\"The third and final principle is Worthiness Precedes Reward. One must strive to be worthy of the rewards each of us seeks, for if one is not worthy of reward, why should you believe they should receive it?")
-    add_dialogue("\"We must spread the philosophy to everyone who can hear it. For who is there to lift the disunited, mistrustful, and unworthy Britannia up from its sad state but we of The Fellowship?")
+    add_dialogue("\"Thank you, Fellowship members of Trinsic, for attending our meeting this evening.\"~~\"I am certain you are all sorely aware of the crimes that have been committed in our city. Now is a time to mourn those whom we have lost. We will always remember Christopher, our blacksmith, as a valuable citizen of our town as well as a dear friend. Inamo was an amiable and hard-working gargoyle. As their deaths show us, Britannia needs The Fellowship now more than ever.\"")
+    add_dialogue("\"The Fellowship was created to advance a philosophy, a method of applying an optimistic order of thought to one's life. How dost thou follow this method? By applying the Triad of Inner Strength to thy life. The Triad is composed of three principles that, when applied in unison to thy life, can soothe the fever of a society that teaches thee to accept failure and banishes the destructive illusory thoughts and feelings from thy spirit.\"")
+    add_dialogue("\"The first principle is to Strive For Unity. This means that we should reject divisiveness, put aside our differences and work together for the good of us all.\"")
+    add_dialogue("\"The second principle is to Trust Thy Brother. Trust is essential, for what will you accomplish if you must be divided by constantly watching each other?\"")
+    add_dialogue("\"The third and final principle is Worthiness Precedes Reward. One must strive to be worthy of the rewards each of us seeks, for if one is not worthy of reward, why should you believe they should receive it?\"")
+    add_dialogue("\"We must spread the philosophy to everyone who can hear it. For who is there to lift the disunited, mistrustful, and unworthy Britannia up from its sad state but we of The Fellowship?\"")
     add_dialogue("\"And now is the time we ask each of our members to give testimonial aloud, and tell how walking with The Fellowship has affected their life.\"")
-
-    if local1 then
-        callis_0003(0, -236)
+    if var_0001 then
+        unknown_0003H(0, -236)
         add_dialogue("\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
-        callis_0004(-236)
+        unknown_0004H(-236)
     end
-    if local0 then
-        callis_0003(0, -14)
+    if var_0000 then
+        unknown_0003H(0, -14)
         add_dialogue("\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
-        callis_0004(-14)
+        unknown_0004H(-14)
     end
-    if local2 then
-        callis_0003(0, -18)
+    if var_0002 then
+        unknown_0003H(0, -18)
         add_dialogue("\"The Fellowship has made me a happier, more agreeable person.\"")
-        callis_0003(0, -16)
+        unknown_0003H(0, -16)
         add_dialogue("\"Thank thee for sharing, brother!\"")
-        callis_0004(-18)
+        unknown_0004H(-18)
     end
-    if local3 then
-        callis_0003(0, -22)
+    if var_0003 then
+        unknown_0003H(0, -22)
         add_dialogue("\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
-        callis_0004(-22)
+        unknown_0004H(-22)
     end
-    if local5 then
-        callis_0003(0, -2)
+    if var_0005 then
+        unknown_0003H(0, -2)
         add_dialogue("Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
-        callis_0004(-2)
+        unknown_0004H(-2)
     end
-    if local4 then
-        callis_0003(0, -1)
+    if var_0004 then
+        unknown_0003H(0, -1)
         add_dialogue("Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
-        callis_0004(-1)
+        unknown_0004H(-1)
     end
-
-    callis_0003(0, -16)
+    unknown_0003H(0, -16)
     add_dialogue("It is apparent that the meeting will be continuing for some time... You decide you have more important matters to attend to.")
-    abort()
-
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function abort()
-    -- Placeholder
 end

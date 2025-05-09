@@ -1,16 +1,16 @@
--- Casts the "Vas Lor" spell, creating a strong light effect with high intensity.
+--- Best guess: Implements the great light spell (Vas Lor), illuminating a large area with weather-like effects.
 function func_0653(eventid, itemref)
-    local local0
+    local var_0000
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Vas Lor@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1619, 17493, 17511, 8037, 68, 17496, 7715})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1619, 17493, 17511, 8037, 68, 17496, 7715})
         else
-            local0 = add_item(itemref, {1542, 17493, 17511, 7781})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 7781})
         end
     elseif eventid == 2 then
-        external_0057H(5000) -- Unmapped intrinsic
+        set_weather_state(5000) --- Guess: Sets weather state
     end
-    return
 end

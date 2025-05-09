@@ -1,8 +1,8 @@
--- Checks if the Avatar is within a specific region.
+--- Best guess: Returns the coordinates of a specific location based on predefined arrays, possibly for navigation or teleportation.
 function func_093E()
-    local local0, local1
+    local var_0000, var_0001
 
-    local0 = {0, 2064, 912}
-    local1 = {15, 2352, 1104}
-    return external_08F9H(local0, local1, external_0018H(-356)) -- Unmapped intrinsic
+    var_0000 = {0, 2064, 912}
+    var_0001 = {15, 2352, 1104}
+    return unknown_08F9H(var_0000, var_0001, unknown_0018H(-356))
 end

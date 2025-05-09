@@ -1,13 +1,33 @@
--- Generates a random entity name and plural form for mad-libs style dialogue.
+--- Best guess: Generates a random singular/plural noun pair from a list of biological, cultural, and humorous terms, appending "s" to the singular form if the plural is "*".
 function func_086D()
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = {"dicot", "*", "conifer", "*", "slug", "*", "sloth", "*", "mole-person", "mole-people", "pod-person", "pod-people", "Canadian", "*", "Dominican", "*", "Basque", "*", "Gypsy", "Gypsies", "Serb", "*", "Croat", "*", "Mongol", "*", "Slav", "*", "Hindu", "*", "Christian", "*", "Christian Scientist", "*", "cephalopod", "*", "rock critic", "*"}
-    local1 = math.floor(get_random(1, #local0 / 2))
-    local2 = local0[local1 * 2 - 1]
-    local3 = local0[local1 * 2]
-    if local3 == "*" then
-        local3 = local2 .. "s"
+    var_0000 = {
+        "dicot", "*",
+        "conifer", "*",
+        "slug", "*",
+        "sloth", "*",
+        "mole-person", "mole-people",
+        "pod-person", "pod-people",
+        "Canadian", "*",
+        "Dominican", "*",
+        "Basque", "*",
+        "Gypsy", "Gypsies",
+        "Serb", "*",
+        "Croat", "*",
+        "Mongol", "*",
+        "Slav", "*",
+        "Hindu", "*",
+        "Christian", "*",
+        "Christian Scientist", "*",
+        "cephalopod", "*",
+        "rock critic", "*"
+    }
+    var_0001 = random(1, array_size(var_0000) / 2) --- Guess: Selects random index
+    var_0002 = var_0000[(var_0001 * 2) - 1] --- Guess: Gets singular form
+    var_0003 = var_0000[var_0001 * 2] --- Guess: Gets plural form
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "s" --- Guess: Appends "s" for plural
     end
-    return {local3, local2}
+    return {var_0002, var_0003} --- Guess: Returns singular/plural pair
 end

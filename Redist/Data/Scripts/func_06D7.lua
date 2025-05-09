@@ -1,16 +1,10 @@
--- Function 06D7: Applies effect and deletes item
+--- Best guess: Checks flag 468 and triggers an effect with parameter 5 when event ID 3 is received, likely part of a dungeon sequence.
 function func_06D7(eventid, itemref)
     if eventid == 3 then
-        if not get_flag(0x01D4) then
-            call_0940H(5)
-            callis_006F(itemref)
+        if not get_flag(468) then
+            unknown_0940H(5)
+            unknown_006FH(itemref)
         end
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
 end

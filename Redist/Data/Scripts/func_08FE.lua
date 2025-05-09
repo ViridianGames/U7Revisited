@@ -1,8 +1,8 @@
--- Chains two external function calls with a parameter.
-function func_08FE(p0)
-    local local1
+--- Best guess: Retrieves a value and applies an action to an item using that value, likely for item manipulation or quest progression.
+function func_08FE(var_0000)
+    local var_0001
 
-    local1 = external_0900H() -- Unmapped intrinsic
-    external_0904H(p0, local1) -- Unmapped intrinsic
+    var_0001 = unknown_0900H()
+    unknown_0904H(var_0000, var_0001)
     return
 end

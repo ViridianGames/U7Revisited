@@ -1,16 +1,17 @@
--- Casts the "Kal Wis Corp" spell, creating a temporary ghost effect with a timed duration and sprite effects.
+--- Best guess: Implements the stop time spell (Kal Wis Corp), freezing time for a duration based on game time with multiple flags.
 function func_0666(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@Kal Wis Corp@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {17511, 17509, 8038, 67, 7768})
-            local1 = get_item_data(itemref)
-            local2 = local1[1] - 2
-            local3 = local1[2] - 2
-            create_object(-1, 0, 0, 0, local3, local2, 13) -- Unmapped intrinsic
-            create_object(-1, 0, 0, 0, local3, local2, 7) -- Unmapped intrinsic
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {17511, 17509, 8038, 67, 7768})
+            var_0001 = unknown_0018H(itemref) --- Guess: Gets position data
+            var_0002 = var_0001[1] - 2
+            var_0003 = var_0001[2] - 2
+            apply_sprite_effect(-1, 0, 0, 0, var_0003, var_0002, 13) --- Guess: Applies sprite effect
+            apply_sprite_effect(-1, 0, 0, 0, var_0003, var_0002, 7) --- Guess: Applies sprite effect
             set_flag(434, true)
             set_flag(435, true)
             set_flag(436, true)
@@ -22,20 +23,20 @@ function func_0666(eventid, itemref)
             set_flag(442, true)
             set_flag(443, true)
             set_flag(439, true)
-            local4 = get_time_hour() -- Unmapped intrinsic
-            local5 = get_time_minute() -- Unmapped intrinsic
-            if local4 < 6 then
-                local6 = (6 - local4) * 60
-                local6 = local6 + (60 - local5)
-                local6 = local6 * 25
+            var_0004 = get_time_hour() --- Guess: Gets current hour
+            var_0005 = get_time_minute() --- Guess: Gets current minute
+            if var_0004 < 6 then
+                var_0006 = (6 - var_0004) * 60
+                var_0006 = var_0006 + (60 - var_0005)
+                var_0006 = var_0006 * 25
             else
-                local6 = (23 - local4) * 60
-                local6 = local6 + (60 - local5)
-                local6 = local6 * 25
+                var_0006 = (23 - var_0004) * 60
+                var_0006 = var_0006 + (60 - var_0005)
+                var_0006 = var_0006 * 25
             end
-            local0 = add_item(itemref, local6, 1638, {17493, 17452, 7715})
+            var_0000 = add_container_items(itemref, {var_0006, 1638, 17493, 17452, 7715})
         else
-            local0 = add_item(itemref, {1542, 17493, 17511, 17509, 7782})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 17509, 7782})
         end
     elseif eventid == 2 then
         set_flag(434, false)
@@ -50,5 +51,4 @@ function func_0666(eventid, itemref)
         set_flag(443, false)
         set_flag(439, false)
     end
-    return
 end

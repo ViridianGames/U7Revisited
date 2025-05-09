@@ -1,38 +1,41 @@
--- Function 02F2: Horance transformation from liche to ghost
+--- Best guess: Manages a soul cage’s transformation of a liche into Horance’s ghost, displaying a narrative message, part of a quest.
 function func_02F2(eventid, itemref)
-    -- Local variables (9 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid ~= 1 then
-        return
-    end
-
-    if _GetItemFrame(itemref) == 5 then
-        local0 = _ItemSelectModal()
-        local1 = _GetItemType(local0)
-        if get_flag(0x01AF) or local1 == 519 or local1 == 747 then
-            local2 = callis_0035(0, 40, 747, itemref)
-            if not local2 then
-                local3 = callis_0001({7981, 9, 8024, 7, -4, 7947, 37, 8024, 2, 7975, 45, 8024, 1, 7750}, local2)
-                local4 = callis_0018(local2)
-                local3 = callis_0053(-1, 0, 0, 0, local4[2] - 3, local4[1] - 2, 12)
-                calli_006F(itemref)
+    if eventid == 1 then
+        if get_object_frame(itemref) == 5 then
+            var_0000 = item_select_modal()
+            var_0001 = get_object_shape(var_0000)
+            if get_flag(431) ~= true and (var_0001 == 519 or var_0001 == 747) then
+                var_0002 = check_flag_location(0, 40, 747, itemref)
+                if var_0002 then
+                    var_0003 = unknown_0001H({7981, 9, 8024, 7, -4, 7947, 37, 8024, 2, 7975, 45, 8024, 1, 7750}, var_0002)
+                    var_0004 = unknown_0018H(var_0002)
+                    var_0005 = unknown_0053H(-1, 0, 0, 0, aidx(var_0004, 2) - 3, aidx(var_0004, 1) - 2, 12)
+                    -- calli 006F, 1 (unmapped)
+                    unknown_006FH(itemref)
+                end
+                var_0003 = unknown_0001H({754, 8021, 28, 7719}, 356)
             end
-            local3 = callis_0001({754, 8021, 28, 7719}, -356)
-            switch_talk_to(141, 1)
-            add_dialogue("As the Soul Cage dissolves into dust, a great transformation comes upon the Liche. Where the evil spirit was caged you see the form of a familiar person. It's Horance! He's a ghost, but he much more resembles a man than an undead terror.")
-            call_08ADH()
         end
+    elseif eventid == 2 then
+        set_flag(426, true)
+        var_0005 = {-141, -147, -146, -145, -140, -144, -143}
+        while true do
+            var_0006 = var_0005
+            var_0007 = var_0006
+            var_0008 = var_0007
+            unknown_008AH(1, var_0008)
+            unknown_001DH(15, var_0008)
+            if not var_0008 then
+                break
+            end
+        end
+        switch_talk_to(1, -141)
+        start_conversation()
+        add_dialogue("As the Soul Cage dissolves into dust, a great transformation comes upon the Liche. Where the evil spirit was caged you see the form of a familiar person. It's Horance! He's a ghost, but he much more resembles a man than an undead terror.")
+        -- call [0000] (08ADH, unmapped)
+        unknown_08ADH()
     end
-
     return
-end
-
--- Helper functions
-function add_dialogue(message)
-    print(message)
-end
-
-function get_flag(flag)
-    return false -- Placeholder
 end

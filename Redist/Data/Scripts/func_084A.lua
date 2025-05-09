@@ -1,28 +1,23 @@
--- Initializes party inventory with specific items and qualities.
+--- Best guess: Initializes party members with specific items (IDs 411, 403) and positions (IDs 318, 315, 309, 306), placing items in containers.
 function func_084A()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    local0 = 1
-    local1 = {411, 411, 411, 411, 403, 403, 403, 403}
-    local2 = {318, 315, 309, 306, 318, 315, 309, 306}
-    local3 = {0, 0, 0, 0, 2, 2, 2, 2}
-    local4 = get_party_members()
-    for local5 in ipairs(local4) do
-        local6 = local5
-        local7 = local6
-        local8 = local1[local0]
-        local8 = array_append(local8, local2[local0])
-        local8 = array_append(local8, local3[local0])
-        local0 = local0 + 1
-        local9 = get_container_items(-359, -359, -359, local7)
-        for local10 in ipairs(local9) do
-            local11 = local10
-            local12 = local11
-            local13 = external_0025H(local12) -- Unmapped intrinsic
-            if local13 then
-                local14 = set_item_data(local8)
+    var_0000 = 1
+    var_0001 = {411, 411, 411, 411, 403, 403, 403, 403}
+    var_0002 = {318, 315, 309, 306, 318, 315, 309, 306}
+    var_0003 = {0, 0, 0, 0, 2, 2, 2, 2}
+    var_0004 = _GetPartyMembers()
+    for var_0005 in ipairs(var_0004) do
+        var_0008 = var_0001[var_0000]
+        table.insert(var_0008, var_0002[var_0000])
+        table.insert(var_0008, var_0003[var_0000])
+        var_0000 = var_0000 + 1
+        var_0009 = get_container_objects(-359, -359, -359, var_0007)
+        for var_000A in ipairs(var_0009) do
+            var_000D = unknown_0025H(var_000C)
+            if not var_000D then
+                var_000D = unknown_0026H(var_0008)
             end
         end
     end
-    return
 end

@@ -1,23 +1,20 @@
--- Teleports party members to a specific location and updates flags.
+--- Best guess: Triggers a sacrifice event, creating a well item (ID 748), updating NPC states, and setting a flag for quest progression.
 function func_088B()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local0 = external_0035H(0, 10, 748, -356) -- Unmapped intrinsic
-    local1 = 15
-    local2 = -3
-    local3 = -3
-    external_0059H(local1) -- Unmapped intrinsic
-    local4 = get_item_data(local0)
-    create_object(-1, local4[2] + local3, local4[1] + local2, 0, 0, 0, 1) -- Unmapped intrinsic
-    local5 = external_0002H(local0, {7750, 0}, local1) -- Unmapped intrinsic
-    external_001FH(-147) -- Unmapped intrinsic
-    external_001DH(-147, 15) -- Unmapped intrinsic
-    local6 = {-145, -146, -140, -144, -142, -143, -147}
-    for local7, local8 in ipairs(local6) do
-        local9 = local8
-        external_003FH(local9) -- Unmapped intrinsic
+    var_0000 = unknown_0035H(0, 10, 748, -356)
+    var_0001 = 15
+    var_0002 = -3
+    var_0003 = -3
+    var_0004 = unknown_0018H(var_0000)
+    unknown_0053H(-1, 0, 0, 0, var_0004[2] + var_0003, var_0004[1] + var_0002, 1)
+    var_0005 = unknown_0002H(var_0001, {7750}, var_0000)
+    unknown_001FH(-147)
+    unknown_001DH(15, -147)
+    var_0006 = {-145, -146, -140, -144, -142, -143, -147}
+    for var_0007 in ipairs(var_0006) do
+        unknown_003FH(var_0009)
     end
     set_flag(419, true)
     abort()
-    return
 end

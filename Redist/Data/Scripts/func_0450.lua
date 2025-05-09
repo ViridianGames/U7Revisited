@@ -1,88 +1,81 @@
--- func_0450.lua
--- Miranda's dialogue as a councilor in Castle British
+--- Best guess: Handles dialogue with De Maria, a bard in Cove, who sings tales about the townsfolk, particularly Nastassia and his love Zinaida, offering to perform a song or tale about Cove’s people.
+function func_0450(eventid, itemref)
+    local var_0000, var_0001, var_0002
 
-
-function func_0450(eventid)
-    local answers = {}
-    local flag_00C6 = get_flag(0x00C6) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00D5 = get_flag(0x00D5) -- Justice topic
-    local npc_id = -69 -- Miranda's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00D5 then
-            add_answer( "justice")
+        switch_talk_to(80, 0)
+        add_answer({"bye", "job", "name"})
+        if not get_flag(227) then
+            add_answer("Nastassia")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
+        if not get_flag(228) and not get_flag(242) then
+            add_answer("Zinaida")
         end
-
-        if not flag_00C6 then
-            add_dialogue("You see a poised woman in fine robes, reviewing a scroll of laws with a steady gaze.")
-            set_flag(0x00C6, true)
+        if not get_flag(237) then
+            add_dialogue("This flamboyant bard exudes a festive aura.")
+            add_dialogue("\"I have sung about thee in many a song! And here thou art in the flesh! I recognized thee immediately.\" The man bows. \"Welcome, Avatar!\"")
+            set_flag(237, true)
         else
-            add_dialogue("\"Hail, \" .. get_player_name() .. \",\" Miranda says with a measured nod.")
+            add_dialogue("\"Greetings again, Avatar!\" De Maria bows.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Miranda sets aside her scroll. \"What matter dost thou bring before me?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Miranda, councilor to Lord British, keeper of Britannia’s laws.\"")
+            var_0000 = get_answer()
+            if var_0000 == "name" then
+                add_dialogue("\"I am De Maria, the Bard.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I draft and uphold the laws of Britannia, ensuring justice prevails. Yet, the Fellowship’s influence tests the balance of our courts.\"")
-                add_answer( "justice")
-                add_answer( "Fellowship")
-                set_flag(0x00D5, true)
-            elseif choice == "justice" then
-                add_dialogue("\"Justice must be fair, yet firm. Cases like Weston’s trouble me—poverty drives crime, but the Fellowship’s sway over judgments concerns me more.\"")
-                add_answer( "Weston")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("justice")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his family, yet Figg’s harsh sentence reeks of Fellowship bias. I’m reviewing his case, but pressure mounts.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s devotion to the Fellowship blinds him to mercy. His accusations against Weston were swift, perhaps too swift.\"")
-                add_answer( "Fellowship")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s calls for unity mask a desire for power. They lobby for lenient laws for their members, undermining justice. I urge thee to probe their motives, Avatar.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou seest good in them? I’ll weigh their words, but my trust is thin.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Thy caution is prudent. Uncover their true aims, for Britannia’s laws depend on it.\"")
+                if not get_flag(228) then
+                    add_answer("Zinaida")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Let justice guide thee, \" .. get_player_name() .. \".\"")
+                set_flag(242, true)
+            elseif var_0000 == "job" then
+                add_dialogue("\"I spin tales and sing songs!\"")
+                if not get_flag(227) then
+                    add_dialogue("\"I also know a good deal about the folks in Cove.\"")
+                    add_answer({"folks", "song", "tale"})
+                end
+            elseif var_0000 == "folks" or var_0000 == "song" or var_0000 == "tale" then
+                add_dialogue("\"What if I combine all three? Shall I sing a song which is a tale about the people of Cove?\"")
+                var_0001 = select_option()
+                if var_0001 then
+                    add_dialogue("\"Very well, then!\"")
+                    save_answers()
+                    unknown_0877H() --- Guess: Performs a song or tale
+                    restore_answers()
+                else
+                    add_dialogue("\"'Tis thy choice... and thy mistake!\"")
+                end
+                remove_answer({"folks", "song", "tale"})
+            elseif var_0000 == "Nastassia" then
+                add_dialogue("\"Ah, dear Nastassia. Wouldst thou like to hear her tale?\"")
+                var_0001 = select_option()
+                if var_0001 then
+                    add_dialogue("\"Very well, then!\"")
+                    save_answers()
+                    unknown_0877H() --- Guess: Performs a song or tale
+                    restore_answers()
+                    remove_answer("Nastassia")
+                else
+                    add_dialogue("\"Oh. I thought thou wert curious. Never mind then.\"")
+                    remove_answer("Nastassia")
+                end
+            elseif var_0000 == "Zinaida" then
+                add_dialogue("\"My love! My flower! Mine angel! The provider of the sweetest nectar my mouth has ever known! She is the light of my day! The notes of my songs! The flesh of my...\"")
+                var_0002 = unknown_08F7H(79) --- Guess: Checks player status
+                if var_0002 then
+                    switch_talk_to(79, 0)
+                    add_dialogue("\"Enough, my love. I think the Avatar dost know thy meaning!\"")
+                    hide_npc(79)
+                    switch_talk_to(80, 0)
+                end
+                add_dialogue("De Maria stops his reverie, sighs, and smiles at you. \"Thou dost apprehend my meaning...\"")
+                remove_answer("Zinaida")
+            elseif var_0000 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Do take care of thyself!\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(80) --- Guess: Triggers a game event
     end
 end
-
-return func_0450

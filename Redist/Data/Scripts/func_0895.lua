@@ -1,38 +1,36 @@
--- Function 0895: Bollux golem dialogue
+--- Best guess: Manages dialogue with Bollux after restoration, acknowledging Adjhar’s revival.
 function func_0895(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    switch_talk_to(289, 0)
-    add_dialogue(itemref, "\"Bollux stares ahead, almost vacantly. Despite his features and lack of motion, it is apparent by his expression that some of Castambre's magic still resides within.\"")
-    while local0 do
-        local1 = _GetContainerItems(4, 243, 797, itemref)
-        local2 = check_position(176, 1, 797, itemref)
-        if _GetItemQuality(local2) == 243 then
-            add_dialogue(itemref, "\"Bollux turns to see Adjar standing nearby, quite alive. Instantly, Bollux's expression changes detectably.\"")
-            _HideNPC(-289)
-            switch_talk_to(289, 1)
-            switch_talk_to(288, 0)
-            add_dialogue(itemref, "\"Adjhar simply smiles.~\"Greetings, brother.\"")
+    start_conversation()
+    switch_talk_to(0, 289) --- Guess: Initiates dialogue
+    add_dialogue("@Bollux stares ahead, almost vacantly...@")
+    var_0000 = set_npc_location(0, 40, 1015, itemref) --- Guess: Sets NPC location
+    for _, var_0003 in ipairs({1, 2, 3, 0}) do
+        if get_container_items(4, 243, 797, itemref) or get_item_quality(set_npc_location(176, 1, 797, itemref)) == 243 then
+            add_dialogue("@Bollux turns to see Adjar standing nearby, quite alive...@")
+            hide_npc(289) --- Guess: Hides NPC
+            switch_talk_to(1, 289) --- Guess: Initiates dialogue
+            switch_talk_to(0, 288) --- Guess: Initiates dialogue
+            add_dialogue("@Adjhar simply smiles.~'Greetings, brother.'@")
         end
-        local0 = get_next_item() -- sloop
     end
-    add_answer({"bye", "job", "name"})
+    add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     while true do
-        local answer = get_answer()
-        if answer == "name" then
-            remove_answer("name")
+        if compare_answer("name", 1) then
+            remove_answer("name") --- Guess: Removes dialogue option
             if not get_flag(797) then
-                add_dialogue(itemref, "\"He tilts his head and stares at you quizzically.~ \"I apologize. Did I not already tell thee my master called me Bollux?\"")
+                remove_answer("name") --- Guess: Removes dialogue option
+                add_dialogue("@He tilts his head and stares at you quizzicaly...@")
             else
-                add_dialogue(itemref, "\"My master named me Bollux.\"")
+                add_dialogue("@My master named me Bollux.@")
                 set_flag(797, true)
             end
-        elseif answer == "job" then
-            add_dialogue(itemref, "\"I am here... to guard the Shrine... of Love.\"")
-        elseif answer == "bye" then
-            add_dialogue(itemref, "\"Fare thee... well.\"*")
+        elseif compare_answer("job", 1) then
+            add_dialogue("@I am here... to guard the Shrine... of Love.@")
+        elseif compare_answer("bye", 1) then
+            add_dialogue("@Fare thee... well.@")
             return
         end
     end
-    return
 end

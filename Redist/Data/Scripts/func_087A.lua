@@ -1,51 +1,47 @@
--- Manages a shop interaction for various items like bedrolls and torches.
+--- Best guess: Manages a merchant transaction, allowing the player to buy items with quantity and weight checks, using dialogue for negotiation.
 function func_087A()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    save_answers() -- Unmapped intrinsic
-    local0 = true
-    local1 = {"bedroll", "pick", "powder keg", "hoe", "shovel", "bag", "backpack", "oil flasks", "torch", "nothing"}
-    local2 = {583, 624, 704, 626, 625, 802, 801, 782, 595, 0}
-    local3 = {16, 12, 30, 10, 10, 3, 10, 48, 3, 0}
-    local4 = {"a ", "a ", "a ", "a ", "a ", "a ", "a ", "", "a ", ""}
-    local5 = 0
-    local6 = {"", "", "", "", "", "", "", " for a dozen", "", ""}
-    local7 = -359
-    local8 = {1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
-    add_dialogue("\"What can I sell to thee?\"")
-    while local0 do
-        local9 = external_090CH(local1) -- Unmapped intrinsic
-        if local9 == 1 then
-            add_dialogue("\"Very good.\"")
-            local0 = false
+    start_conversation()
+    save_answers() --- Guess: Saves current answers
+    var_0000 = true
+    var_0001 = {"bedroll", "pick", "powder keg", "hoe", "shovel", "bag", "backpack", "oil flasks", "torch", "nothing"}
+    var_0002 = {583, 624, 704, 626, 625, 802, 801, 782, 595, 0}
+    var_0003 = {16, 12, 30, 10, 10, 3, 10, 48, 3, 0}
+    var_0004 = {"a ", "a ", "a ", "a ", "a ", "a ", "a ", "", "a ", ""}
+    var_0005 = 0
+    var_0006 = {"", "", "", "", "", "", "", " for a dozen", "", ""}
+    var_0007 = -359
+    var_0008 = {1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
+    add_dialogue("@What can I sell to thee?@")
+    while var_0000 do
+        var_0009 = calle_090CH(var_0001) --- External call to select item
+        if var_0009 == 1 then
+            add_dialogue("@Very good.@")
+            var_0000 = false
         else
-            local10 = external_091BH(local4[local9], local1[local9], local3[local9], local5, local6[local9]) -- Unmapped intrinsic
-            local11 = 0
-            add_dialogue("\"^" .. local10 .. ". Is that acceptable?\"")
-            local12 = external_090AH() -- Unmapped intrinsic
-            if not local12 then
-                if local2[local9] == 595 or local2[local9] == 782 then
-                    if local2[local9] == 782 then
-                        add_dialogue("\"How many sets of twelve wouldst thou like?\"")
-                    else
-                        add_dialogue("\"How many wouldst thou like?\"")
-                    end
-                    local11 = external_08F8H(true, 1, 20, local3[local9], local8[local9], local7, local2[local9]) -- Unmapped intrinsic
+            var_000A = calle_091BH(var_0006[var_0009], var_0003[var_0009], var_0005, var_0001[var_0009], var_0004[var_0009]) --- External call to format price
+            var_000B = 0
+            add_dialogue("@^" .. var_000A .. ". Is that acceptable?@")
+            var_000C = get_dialogue_choice() --- Guess: Gets player choice
+            if var_000C then
+                if var_0002[var_0009] == 595 or var_0002[var_0009] == 782 then
+                    add_dialogue(var_0002[var_0009] == 782 and "@How many sets of twelve wouldst thou like?@" or "@How many wouldst thou like?@")
+                    var_000B = calle_08F8H(true, 1, 20, var_0003[var_0009], var_0008[var_0007], var_0007, var_0002[var_0009]) --- External call to process purchase
                 else
-                    local11 = external_08F8H(false, 1, 0, local3[local9], local8[local9], local7, local2[local9]) -- Unmapped intrinsic
+                    var_000B = calle_08F8H(false, 1, 0, var_0003[var_0009], var_0008[var_0007], var_0007, var_0002[var_0009]) --- External call to process purchase
                 end
+                if var_000B == 1 then
+                    add_dialogue("@Very good!@")
+                elseif var_000B == 2 then
+                    add_dialogue("@I am sorry, but thou cannot possibly carry that much weight!@")
+                elseif var_000B == 3 then
+                    add_dialogue("@Thou dost not have enough gold for that,\" he says, shaking his head.~~\"Too many birds in the hand is worth a bush.\"@")
+                end
+                add_dialogue("@Wouldst thou care to purchase something else?@")
+                var_0000 = get_dialogue_choice() --- Guess: Continues transaction
             end
-            if local11 == 1 then
-                add_dialogue("\"Very good!\"")
-            elseif local11 == 2 then
-                add_dialogue("\"I am sorry, but thou cannot possibly carry that much weight!\"")
-            elseif local11 == 3 then
-                add_dialogue("\"Thou dost not have enough gold for that,\" he says, shaking his head.~~\"Too many birds in the hand is worth a bush.\"")
-            end
-            add_dialogue("\"Wouldst thou care to purchase something else?\"")
-            local0 = external_090AH() -- Unmapped intrinsic
         end
     end
-    restore_answers() -- Unmapped intrinsic
-    return
+    restore_answers() --- Guess: Restores saved answers
 end

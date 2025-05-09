@@ -1,36 +1,30 @@
--- Function 0921: Prompt and select party member for training
-function func_0921(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
+--- Best guess: Displays party member names for training selection, returning the selected NPC ID or 0 if "Nobody" is chosen.
+function func_0921(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    add_dialogue(itemref, "\"One of you wishes to train?\"")
-    local1 = get_answer()
-    if not local1 then
-        add_dialogue(itemref, "\"Which of you wishes to train?\"")
-        local2 = call_08FBH()
-        local3 = _GetPartyMembers()
-        local4 = {}
-        local5 = {}
-        while local3 do
-            local6 = local3
-            if local6 ~= eventid then
-                table.insert(local4, _GetPlayerName(local6))
-                table.insert(local5, local6)
-            end
-            local3 = get_next_party_member() -- sloop
-        end
-        local2 = local4
-        local3 = local5
-        local9 = table.insert(local3, 0)
-        local10 = call_090CH(table.insert(local2, "Nobody"))
-        local11 = local9[local10]
-        if local11 == 0 then
-            local12 = 0
-        else
-            local12 = set_training_target(local11)
-        end
+    start_conversation()
+    add_dialogue("@One of you wishes to train?@")
+    var_0001 = get_dialogue_choice() --- Guess: Gets dialogue choice
+    if not var_0001 then
+        add_dialogue("@Perhaps at a later time.@")
+        var_000C = 0
     else
-        add_dialogue(itemref, "\"Perhaps at a later time.\"")
-        local12 = 0
+        add_dialogue("@Which of you wishes to train?@")
+        var_0003 = get_party_members() --- Guess: Gets party members
+        var_0004 = {}
+        var_0005 = {}
+        for _, var_0008 in ipairs({6, 7, 8, 3}) do
+            if var_0008 ~= arg1 then
+                table.insert(var_0004, get_player_name(var_0008)) --- Guess: Gets player name
+                table.insert(var_0005, var_0008)
+            end
+        end
+        var_0002 = var_0004
+        var_0003 = var_0005
+        var_0009 = var_0003
+        var_000A = show_purchase_options(var_0002, "Nobody") --- Guess: Shows purchase options
+        var_000B = var_000A == array_size(var_0002) + 1 and 0 or get_npc_id(var_0009[var_000A]) --- Guess: Gets NPC ID
+        var_000C = var_000B
     end
-    set_return(local12)
+    return var_000C
 end

@@ -1,34 +1,33 @@
--- Function 02D5: Gambling wheel mechanic
+--- Best guess: Simulates a gambling wheel interaction, prompting bets and cycling states, active outside 3 AM to 3 PM.
 function func_02D5(eventid, itemref)
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    if eventid ~= 1 or callis_0079(itemref) then
-        return
-    end
-
-    local0 = _Random2(1, 16)
-    calli_005C(itemref)
-    local1 = callis_0001({
-        1546, 8021, 29, 17496, 8014, 3, 17447, 8014, 3, -14, 7947, 29,
-        8024, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447,
-        8526, local0, -5, 7947, 29, 17496, 17486, 17409, 8526, local0,
-        -8, 17419, 17409, 17486, 17409, 17486, 17409, 8014, 29, 7768
-    }, itemref)
-    if _GetTimeHour() >= 15 or _GetTimeHour() <= 3 then
-        if call_0937H(-232) then
-            call_0904H({"@Round she goes!@", "@Place your bets.@"}, -232)
+    if eventid == 1 and not unknown_0079H(itemref) then
+        var_0000 = random2(16, 1)
+        -- calli 005C, 1 (unmapped)
+        unknown_005CH(itemref)
+        var_0001 = unknown_0001H({1546, 8021, 29, 17496, 8014, 3, 17447, 8014, 3, -14, 7947, 29, 8024, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8014, 1, 17447, 8526, var_0000, -5, 7947, 29, 17496, 17486, 17409, 17486, 17409, 17486, 17409, 8014, 29, 7768}, itemref)
+        if get_time_hour() >= 15 or get_time_hour() <= 3 then
+            if not unknown_0937H(-232) then
+                start_conversation()
+                add_dialogue("@Round she goes!@")
+                add_dialogue("@Place your bets.@")
+            end
+            -- calli 001D, 2 (unmapped)
+            unknown_001DH(9, -232)
+            var_0002 = check_flag_location(0, 7, 520, itemref)
+            var_0003 = check_flag_location(0, 5, 644, var_0002)
+            while true do
+                var_0004 = var_0003
+                var_0005 = var_0004
+                var_0006 = var_0005
+                -- calli 008A, 2 (unmapped)
+                unknown_008AH(11, var_0006)
+                if not var_0006 then
+                    break
+                end
+            end
         end
-        calli_001D(9, -232)
-        local2 = callis_0035(0, 7, 520, itemref)
-        local3 = callis_0035(0, 5, 644, local2)
-        while local3 do
-            -- Note: Original has 'sloop' and 'db 2' for iteration, ignored
-            local6 = local3
-            calli_008A(11, local6)
-            local3 = callis_0035(0, 5, 644, local2)
-        end
     end
-
     return
 end

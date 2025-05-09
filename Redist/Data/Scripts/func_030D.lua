@@ -1,15 +1,11 @@
--- Function 030D: Manages ship plank interaction
-function func_030D(itemref)
-    if eventid() == 1 then
-        if not callis_0088(10, itemref) then
-            call_08FFH("@The sails must be furled before the planks can be lowered.@")
-        elseif not call_0829H(itemref) then
-            call_08FFH("@I think the gangplank is blocked.@")
+--- Best guess: Manages ship gangplank interactions, checking sail state and obstructions, displaying appropriate messages.
+function func_030D(eventid, itemref)
+    if eventid == 1 then
+        if not unknown_0088H(10, itemref) then
+            unknown_08FFH("@The sails must be furled before the planks can be lowered.@", itemref)
+        elseif not unknown_0829H(itemref) then
+            unknown_08FFH("@I think the gangplank is blocked.@", itemref)
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

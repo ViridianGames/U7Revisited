@@ -1,10 +1,10 @@
--- Function 0846: Check specific items
+--- Best guess: Checks item properties (type 668, 760) for specific values, likely for puzzle or state validation.
 function func_0846(eventid, itemref)
-    if not call_0072H(15, 668, 1, npc_in_party(356)) and not call_0072H(15, 668, 2, npc_in_party(356)) then
-        set_return(0)
+    if not check_item_property(15, 668, 1, 356) and not check_item_property(15, 668, 2, 356) then --- Guess: Checks item property
+        return 0
     end
-    if not call_0072H(13, 760, 1, npc_in_party(356)) and not call_0072H(13, 760, 2, npc_in_party(356)) then
-        set_return(0)
+    if not check_item_property(13, 760, 1, 356) and not check_item_property(13, 760, 2, 356) then --- Guess: Checks item property
+        return 0
     end
-    set_return(1)
+    return 1
 end

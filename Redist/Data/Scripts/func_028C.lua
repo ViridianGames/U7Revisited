@@ -1,11 +1,7 @@
--- Function 028C: Manages barge interaction
-function func_028C(itemref)
-    if eventid() == 1 then
-        call_0809H(itemref)
+--- Best guess: Triggers an action for a barge when event ID 1 is received, likely for transportation or movement mechanics.
+function func_028C(eventid, itemref)
+    if eventid == 1 then
+        unknown_0809H(itemref)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

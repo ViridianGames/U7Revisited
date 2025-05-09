@@ -1,39 +1,34 @@
--- Function 037D: Manages item quality-based NPC effects
-function func_037D(itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+--- Best guess: Modifies item properties based on quality and event ID, applying random or specific effects.
+function func_037D(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid() == 1 then
-        local0 = callis_0014(itemref)
-        local1 = callis_0033()
-        callis_0086(itemref, 90)
-        if local0 == 1 then
-            callis_0089(1, local1)
-        elseif local0 == 2 then
-            local2 = callis_0010(13, 1)
-            local3 = 13 - local2
-            call_092AH(local3, local1)
-        elseif local0 == 3 then
-            callis_008A(8, local1)
-            callis_008A(7, local1)
-            callis_008A(1, local1)
-            callis_008A(2, local1)
-            callis_008A(3, local1)
-        elseif local0 == 4 then
-            callis_0089(8, local1)
-        elseif local0 == 5 then
-            callis_008A(1, local1)
-        elseif local0 == 6 then
-            callis_0089(9, local1)
-        elseif local0 == 7 then
-            callis_0057(100)
-        elseif local0 == 8 then
-            callis_0089(0, local1)
+    if eventid == 1 then
+        var_0000 = _GetItemQuality(itemref)
+        var_0001 = unknown_0033H()
+        unknown_0086H(itemref, 90)
+        if var_0000 == 1 then
+            unknown_0089H(var_0001, 1)
+        elseif var_0000 == 2 then
+            var_0002 = random2(10, 1)
+            var_0003 = 13 - var_0002
+            unknown_092AH(var_0001, var_0003)
+        elseif var_0000 == 3 then
+            unknown_008AH(var_0001, 8)
+            unknown_008AH(var_0001, 7)
+            unknown_008AH(var_0001, 1)
+            unknown_008AH(var_0001, 2)
+            unknown_008AH(var_0001, 3)
+        elseif var_0000 == 4 then
+            unknown_0089H(var_0001, 8)
+        elseif var_0000 == 5 then
+            unknown_008AH(var_0001, 1)
+        elseif var_0000 == 6 then
+            unknown_0089H(var_0001, 9)
+        elseif var_0000 == 7 then
+            unknown_0057H(100)
+        elseif var_0000 == 8 then
+            unknown_0089H(var_0001, 0)
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

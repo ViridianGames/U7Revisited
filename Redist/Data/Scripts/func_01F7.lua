@@ -1,45 +1,24 @@
--- Function 01F7: NPC donation dialogue
+--- Best guess: Manages an NPC (likely a beggar or thief, ID 44) requesting a gold donation, hiding after receiving it or if conditions aren’t met.
 function func_01F7(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
-    -- Eventid == 1: Donation request
     if eventid == 1 then
-        if callis_0079(itemref) ~= 0 then
-            -- Note: Original has 'db 2c' here, possibly a debug artifact, ignored
+        -- callis 0079, 1 (unmapped)
+        if not unknown_0079H(itemref) then
             return
         end
-
-        if npc_in_party(44) then
-            return
+        if not npc_in_party(44) then
+            switch_talk_to(0, 44)
+            start_conversation()
+            add_dialogue("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
+            -- call [0000] (090AH, unmapped)
+            if unknown_090AH() then
+                var_0000 = give_item_to_party(359, 359, 644, 1, 357)
+                var_0000 = unknown_0001H({0, 8006, 31, -1, 17419, 8014, 0, 17478, 7715}, itemref)
+                var_0000 = unknown_0001H({85, 8024, 2, 7975, 83, 8024, 3, 7975, 83, 8024, 85, 8024, 1, 7975, 84, 8024, 83, 8024, 85, 8024, 11, 17447, 7715}, itemref)
+            end
+            hide_npc(44)
         end
-
-        switch_talk_to(44, 0)
-        add_dialogue("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
-
-        if call_090AH() then
-            local0 = callis_002B(-359, -359, -359, 644, 1)
-            local0 = callis_0001({
-                0, 8006, 31, -1, 17419, 8014,
-                0, 17478, 7715
-            }, itemref)
-            local0 = callis_0001({
-                85, 8024, 2, 7975,
-                83, 8024, 3, 7975,
-                83, 8024, 85, 8024,
-                1, 7975, 84, 8024,
-                83, 8024, 85, 8024,
-                11, 17447, 7715
-            }, itemref)
-        end
-
-        _HideNPC(-44)
     end
-
     return
-end
-
--- Helper function (assumed to be defined elsewhere)
-function add_dialogue(message)
-    print(message) -- Adjust to your dialogue system
 end

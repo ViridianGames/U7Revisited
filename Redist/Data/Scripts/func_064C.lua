@@ -1,29 +1,26 @@
--- Casts the "Vas In Flam" spell, creating fire effects across multiple targets in an area.
+--- Best guess: Manages the "Vas In Flam" spell (stronger variant), creating fire-related items (e.g., explosions, IDs 481, 336, 889, 595) at calculated positions, with a fallback effect if the spell fails.
 function func_064C(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    if eventid == 1 then
-        bark(itemref, "@Vas In Flam@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {17511, 17510, 7781})
-            local1 = 25
-            local2 = {481, 336, 889, 595}
-            for local3 in ipairs(local2) do
-                local4 = local3
-                local5 = local4
-                local6 = add_item(itemref, 0, local1, local5)
-                for local7 in ipairs(local6) do
-                    local8 = local7
-                    local9 = local8
-                    local10 = get_item_type(local9)
-                    local11 = calculate_distance(local9, itemref) / 3 + 2 -- Unmapped intrinsic
-                    external_0095H(local10) -- Unmapped intrinsic
-                    local0 = add_item(local9, local11, local10, {17493, 7715})
-                end
-            end
-        else
-            local0 = add_item(itemref, {1542, 17493, 17511, 17510, 7781})
-        end
+    if eventid ~= 1 then
+        return
     end
-    return
+
+    unknown_005CH(itemref)
+    bark(itemref, "@Vas In Flam@")
+    if not unknown_0906H() then
+        var_0000 = unknown_0001H(itemref, {17511, 17510, 7781})
+        var_0001 = 25
+        var_0002 = {481, 336, 889, 595}
+        for var_0003 in ipairs(var_0002) do
+            var_0006 = unknown_0035H(0, var_0001, var_0005, itemref)
+            for var_0007 in ipairs(var_0006) do
+                var_000A = get_object_shape(var_0009)
+                var_000B = unknown_0019H(var_0009, itemref) // 3 + 2
+                var_0000 = unknown_0002H(unknown_0095H(var_000A), var_000B, {var_000A, 17493, 7715}, var_0009)
+            end
+        end
+    else
+        var_0000 = unknown_0001H(itemref, {1542, 17493, 17511, 17510, 7781})
+    end
 end

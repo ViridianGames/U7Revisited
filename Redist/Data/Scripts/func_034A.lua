@@ -1,6 +1,7 @@
--- Function 034A: Manages item frame-based interaction
-function func_034A(itemref)
-    if callis_0012(itemref) == 4 then
-        call_0813H(91, 2, itemref)
+--- Best guess: Activates an item action (type 91) when its frame is 4, likely for a switch or trigger mechanism.
+function func_034A(eventid, itemref)
+    if unknown_0012H(itemref) == 4 then
+        unknown_0813H(itemref, 2, 91)
     end
+    return
 end

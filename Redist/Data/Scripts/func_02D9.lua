@@ -1,40 +1,39 @@
--- Function 02D9: Item state with quality-based updates
+--- Best guess: Updates an object’s state based on quality, possibly for a dynamic environmental effect or puzzle.
 function func_02D9(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        -- calli 007E, 0 (unmapped)
+        unknown_007EH()
+        var_0000 = get_object_quality(itemref)
+        if var_0000 == 0 or var_0000 > 7 then
+            -- call [0000] (0940H, unmapped)
+            unknown_0940H(25)
+            return
+        end
+        if var_0000 == 1 then
+            if get_flag(343) ~= true then
+                var_0001 = {3, 2416, 2690}
+            else
+                var_0001 = {3, 2464, 2690}
+            end
+        elseif var_0000 == 2 then
+            var_0001 = {3, 1149, 911}
+        elseif var_0000 == 3 then
+            var_0001 = {3, 2597, 2600}
+        elseif var_0000 == 4 then
+            var_0001 = {3, 215, 2807}
+        elseif var_0000 == 5 then
+            var_0001 = {3, 1344, 159}
+        elseif var_0000 == 6 then
+            var_0001 = {3, 1907, 1545}
+        elseif var_0000 == 7 then
+            var_0001 = {3, 1431, 2344}
+        elseif var_0000 == 255 then
+            return
+        end
+        -- calli 004F, 1 (unmapped)
+        unknown_004FH(var_0001)
     end
-
-    calli_007E()
-    local0 = _GetItemQuality(itemref)
-    if local0 == 0 or local0 > 7 then
-        call_0940H(25)
-        -- Note: Original has 'db 2c' here, ignored
-    elseif local0 == 1 then
-        local1 = get_flag(0x0157) and {3, 2464, 2690} or {3, 2416, 2690}
-    elseif local0 == 2 then
-        local1 = {3, 1149, 911}
-    elseif local0 == 3 then
-        local1 = {3, 2597, 2600}
-    elseif local0 == 4 then
-        local1 = {3, 215, 2807}
-    elseif local0 == 5 then
-        local1 = {3, 1344, 159}
-    elseif local0 == 6 then
-        local1 = {3, 1907, 1545}
-    elseif local0 == 7 then
-        local1 = {3, 1431, 2344}
-    end
-    if local1 then
-        calli_004F(local1)
-    end
-
     return
-end
-
--- Helper function
-function get_flag(flag)
-    return false -- Placeholder
 end

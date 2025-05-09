@@ -1,9 +1,8 @@
--- Checks a value and sets a flag based on a threshold.
-function func_08FD(p0)
-    external_000FH(76) -- Unmapped intrinsic
-    if p0 > 6 then
-        p0 = 1
+--- Best guess: Checks an item’s property (76) and sets a variable based on its value, triggering an action if the value exceeds 6, likely for item state management.
+function func_08FD(var_0000)
+    if unknown_000FH(76) > 6 then
+        var_0000 = 1
     end
-    external_006AH(p0) -- Unmapped intrinsic
+    unknown_006AH(var_0000)
     return
 end

@@ -1,92 +1,72 @@
--- func_044C.lua
--- Geoffrey's dialogue as the captain of the guard in Britain
+--- Best guess: Manages Rayburt’s dialogue, a combat trainer specializing in meditation, discussing his dog Regal and his wife Pamela, with flag-based training sessions and business hour checks.
+function func_044C(eventid, itemref)
+    local var_0000, var_0001
 
-
-function func_044C(eventid)
-    local answers = {}
-    local flag_00C2 = get_flag(0x00C2) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00D1 = get_flag(0x00D1) -- Security topic
-    local npc_id = -65 -- Geoffrey's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00D1 then
-            add_answer( "security")
+    if eventid ~= 1 then
+        if eventid == 0 then
+            unknown_092EH(76)
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00C2 then
-            add_dialogue("You see a stern man in polished armor, his gaze sharp as he surveys the castle grounds.")
-            set_flag(0x00C2, true)
-        else
-            add_dialogue("\"Hail, \" .. get_player_name() .. \",\" Geoffrey says with a crisp salute.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Geoffrey straightens. \"What business hast thou with me?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Geoffrey, captain of Lord British’s guard.\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I command the castle guard, ensuring the safety of Lord British and Britannia’s heart. Crime’s rising, though, and my men are stretched thin.\"")
-                add_answer( "security")
-                add_answer( "crime")
-                set_flag(0x00D1, true)
-            elseif choice == "security" then
-                add_dialogue("\"The castle’s fortified, but I’ve doubled patrols. Strange visitors—Fellowship folk, mostly—come and go at odd hours. I trust them not.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("security")
-            elseif choice == "crime" then
-                add_dialogue("\"Thefts and brawls are up in Britain. Some prisoners, like that Weston fellow, claim desperation, but I suspect organized trouble. The Fellowship’s name keeps surfacing.\"")
-                add_answer( "Weston")
-                add_answer( "Fellowship")
-                remove_answer("crime")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston’s in jail for stealing apples. Figg pushed hard for his arrest. I pity the man’s family, but the law’s the law.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a loyal servant, but his zeal borders on cruelty. He’s tight with the Fellowship, which makes me question his motives.\"")
-                add_answer( "Fellowship")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s influence grows, and I mislike their secrecy. They’ve offered to ‘aid’ my guards, but I’ll not have outsiders meddling in castle affairs.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou thinkest them trustworthy? I’ll keep an open mind, but my eyes are sharper.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Good. Stay wary, Avatar. They’re not what they seem.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Stay vigilant, \" .. get_player_name() .. \". Britannia counts on thee.\"")
-                break
-            end
-        end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        add_dialogue("Rayburt bows.")
+        set_flag(238, true)
+        return
     end
-end
 
-return func_044C
+    start_conversation()
+    switch_talk_to(0, 76)
+    var_0000 = unknown_003BH()
+    var_0001 = unknown_001CH(unknown_001BH(76))
+    add_answer({"bye", "job", "name"})
+    if not get_flag(228) then
+        add_answer("Pamela")
+    end
+    if not get_flag(233) then
+        add_dialogue("You startle a fighter who seems lost in thought.")
+        if var_0001 == 27 then
+            add_dialogue("His dog seemed to be meditating as well.")
+        end
+        set_flag(233, true)
+    else
+        add_dialogue("\"Hello again,\" Rayburt says.")
+    end
+    while true do
+        if cmps("name") then
+            add_dialogue("\"I am Rayburt.\"")
+            if var_0001 == 27 then
+                add_dialogue("He turns to the dog. \"And this is Regal.\"")
+                add_answer("Regal")
+            end
+            remove_answer("name")
+            if not get_flag(228) then
+                add_answer("Pamela")
+            end
+            set_flag(238, true)
+        elseif cmps("job") then
+            add_dialogue("\"I am a trainer. I specialize in a style of combat that relies on concentration and meditation. It shall boost thy dexterity and intelligence, as well as thy combat skill.\"")
+            add_answer({"train", "meditation"})
+        elseif cmps("Regal") then
+            add_dialogue("\"He is an exceptionally smart animal. He understands the meditative way of life.~~Rayburt throws the dog a cookie, which is snarfed up in the blink of an eye. \"He is cute, too,\" Rayburt says with complete seriousness.")
+            remove_answer("Regal")
+        elseif cmps("Pamela") then
+            add_dialogue("You see a hint of a smile on Rayburt's face. \"She and I are one person.\"")
+            remove_answer("Pamela")
+        elseif cmps("meditation") then
+            add_dialogue("\"Most of all combat occurs in the mind before the first blow is ever struck. The key to victory is to first win the inner battle in the mind. Winning that inner battle is what I help my students to learn.\"")
+            remove_answer("meditation")
+        elseif cmps("train") then
+            if var_0001 == 27 then
+                add_dialogue("\"I charge 60 gold for a session, but thou wilt benefit greatly. Is this agreeable?\"")
+                if unknown_090AH() then
+                    unknown_08D0H(60, 4, 2, {1})
+                else
+                    add_dialogue("\"It is not the first time I have been accused of being too expensive.\"")
+                end
+            else
+                add_dialogue("\"Please come to my studio during business hours if thou wishest to train.\"")
+                remove_answer("train")
+            end
+        elseif cmps("bye") then
+            break
+        end
+    end
+    return
+end

@@ -1,5 +1,4 @@
--- Displays a "Magically Locked" message for an item.
+--- Best guess: Displays a message indicating an item is magically locked when interacted with.
 function func_081A(eventid, itemref)
-    bark(itemref, "Magically Locked")
-    return
+    bark(itemref, "@Magically Locked@")
 end

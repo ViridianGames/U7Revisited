@@ -1,39 +1,40 @@
--- Function 0829: Gangplank manipulation
+--- Best guess: Manages gangplank positioning (type 781 or 150), adjusting based on frame and location.
 function func_0829(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
-    local1 = {0, 1, 0, -3}
-    local2 = {1, 0, -3, 0}
-    local3 = {781, 781, 150, 150}
-    local4 = {680}
-    local5 = _GetItemType(eventid)
-    local6 = _GetItemFrame(eventid)
-    local7 = get_item_position(eventid)
-    local8 = local3[local6 + 1]
-    local9[1] = local1[local6 + 1]
-    local9[2] = local2[local6 + 1]
-    local9[3] = 1
-    if local5 == local8 then
-        if not call_082CH(local4, -3, local7, eventid) then
-            set_return(false)
+    var_0000 = itemref
+    var_0001 = {0, 1, 0, -3}
+    var_0002 = {1, 0, -3, 0}
+    var_0003 = {781, 781, 150, 150}
+    var_0004 = {680}
+    var_0005 = get_item_type(var_0000) --- Guess: Gets item type
+    var_0006 = get_item_frame(var_0000) --- Guess: Gets item frame
+    var_0007 = unknown_0018H(var_0000) --- Guess: Gets position data
+    var_0008 = var_0003[var_0006 + 1]
+    var_0009 = {var_0007[1] + var_0001[var_0006 + 1], var_0007[2] + var_0002[var_0006 + 1], var_0007[3] + 1}
+    if var_0005 == var_0008 then
+        if check_gangplank_position(var_0004, -3, var_0007, var_0000) then --- Guess: Checks gangplank position
+            var_0007 = adjust_gangplank_position(var_0005, var_0009, var_0007) --- Guess: Adjusts gangplank position
+        else
+            return false
         end
-        local7 = call_082DH(local5, local9, local7)
     else
-        local7 = call_082DH(local5, local9, local7)
-        if not call_082CH(local4, -3, local7, eventid) then
-            set_return(false)
+        var_0007 = adjust_gangplank_position(var_0005, var_0009, var_0007) --- Guess: Adjusts gangplank position
+        if check_gangplank_position(var_0004, -3, var_0007, var_0000) then --- Guess: Checks gangplank position
+            var_0007 = adjust_gangplank_position(var_0005, var_0009, var_0007) --- Guess: Adjusts gangplank position
+        else
+            return false
         end
     end
-    if local5 == 150 then
-        _SetItemType(781, eventid)
+    if var_0005 == 150 then
+        set_item_type(781, var_0000) --- Guess: Sets item type
     else
-        _SetItemType(150, eventid)
+        set_item_type(150, var_0000) --- Guess: Sets item type
     end
-    local10 = call_0025H(eventid)
-    if local10 then
-        local10 = call_0026H(local7)
-        set_return(true)
-    else
-        set_return(false)
+    var_000A = unknown_0025H(var_0000) --- Guess: Checks position
+    if not var_000A then
+        var_000A = unknown_0026H(var_0007) --- Guess: Updates position
+        return true
     end
+    return false
 end

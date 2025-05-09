@@ -1,47 +1,47 @@
--- Function 0853: General store dialogue
-function func_0853(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Handles a shop transaction for eclectic items, with quantity prompts for bulk items like oil flasks.
+function func_0853()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    _SaveAnswers()
-    local0 = true
-    local1 = {"horn polish", "nail file", "wing scratcher", "jug", "jar", "bucket", "powder keg", "shovel", "bag", "oil flasks", "torch", "nothing"}
-    local2 = {937, 937, 937, 6, 681, 810, 704, 625, 802, 782, 595, 0}
-    local3 = {2, 5, 5, 2, 3, 3, 35, 14, 6, 72, 4, 0}
-    local4 = {"", "a ", "a ", "a ", "a ", "a ", "a ", "a ", "a ", "", "a ", ""}
-    local5 = 1
-    local6 = {" per application", "", "", "", "", "", "", "", "", " per dozen", "", ""}
-    local7 = {3, 1, 1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
-    local8 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
-    add_dialogue(itemref, "\"To make what purchase?\"")
-    while local0 do
-        local9 = call_090CH(local1)
-        if local9 == 1 then
-            add_dialogue(itemref, "\"To be acceptable.\"")
-            local0 = false
+    start_conversation()
+    save_answers() --- Guess: Saves current answers
+    var_0000 = true
+    var_0001 = {"horn polish", "nail file", "wing scratcher", "jug", "jar", "bucket", "powder keg", "shovel", "bag", "oil flasks", "torch", "nothing"}
+    var_0002 = {937, 937, 937, 6, 681, 810, 704, 625, 802, 782, 595, 0}
+    var_0003 = {2, 5, 5, 2, 3, 3, 35, 14, 6, 72, 4, 0}
+    var_0004 = {"", "a ", "a ", "a ", "a ", "a ", "a ", "a ", "a ", "a ", "a ", ""}
+    var_0005 = 1
+    var_0006 = {" per application", "", "", "", "", "", "", "", "", " per dozen", "", ""}
+    var_0007 = {-359, -359, -359, -359, -359, -359, -359, -359, -359, -359, -359, 0}
+    var_0008 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
+    add_dialogue("@\"To make what purchase?\"@")
+    while var_0000 do
+        var_0009 = select_item(var_0001) --- Guess: Selects item
+        if var_0009 == 1 then
+            add_dialogue("@\"To be acceptable.\"@")
+            var_0000 = false
         else
-            local10 = call_091CH(local6[local9], local3[local9], local5, local1[local9], local4[local9])
-            local11 = 0
-            add_dialogue(itemref, "^" .. local10 .. ". To be an acceptable price?\"")
-            local12 = get_answer()
-            if local12 then
-                if local2[local9] == 595 or local2[local9] == 782 then
-                    add_dialogue(itemref, local2[local9] == 782 and "\"To want how many sets of twelve?\"" or "\"To want how many?\"")
-                    local11 = call_08F8H(false, 1, 20, local3[local9], local8[local9], local7[local9], local2[local9])
+            var_000A = format_price_with_unit(var_0006[var_0009], var_0003[var_0009], var_0005, var_0001[var_0009], var_0004[var_0009]) --- Guess: Formats price with unit
+            var_000B = 0
+            add_dialogue("@\"" .. var_000A .. ". To be an acceptable price?\"@")
+            var_000C = get_dialogue_choice() --- Guess: Gets player choice
+            if var_000C then
+                if var_0002[var_0009] == 595 or var_0002[var_0009] == 782 then
+                    add_dialogue(var_0002[var_0009] == 782 and "@\"To want how many sets of twelve?\"@" or "@\"To want how many?\"@")
+                    var_000B = process_purchase(false, 1, 20, var_0003[var_0009], var_0008[var_0009], var_0007[var_0009], var_0002[var_0009]) --- Guess: Processes bulk purchase
                 else
-                    local11 = call_08F8H(false, 1, 0, local3[local9], local8[local9], local7[local9], local2[local9])
+                    var_000B = process_purchase(false, 1, 0, var_0003[var_0009], var_0008[var_0009], var_0007[var_0009], var_0002[var_0009]) --- Guess: Processes single purchase
                 end
+                if var_000B == 1 then
+                    add_dialogue("@\"To accept!\"@")
+                elseif var_000B == 2 then
+                    add_dialogue("@\"To be unable to travel with that much weight!\"@")
+                elseif var_000B == 3 then
+                    add_dialogue("@\"To have not the money for that!\"@")
+                end
+                add_dialogue("@\"To make another purchase?\"@")
+                var_0000 = get_dialogue_choice() --- Guess: Continues transaction
             end
-            if local11 == 1 then
-                add_dialogue(itemref, "\"To accept!\"")
-            elseif local11 == 2 then
-                add_dialogue(itemref, "\"To be unable to travel with that much weight!\"")
-            elseif local11 == 3 then
-                add_dialogue(itemref, "\"To have not the money for that!\"")
-            end
-            add_dialogue(itemref, "\"To make another purchase?\"")
-            local0 = get_answer()
         end
     end
-    _RestoreAnswers()
-    return
+    restore_answers() --- Guess: Restores saved answers
 end

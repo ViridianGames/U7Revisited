@@ -1,19 +1,19 @@
--- Casts the "Sanct Lor" spell, granting invisibility to a selected target.
+--- Best guess: Manages the "Sanct Lor" spell, granting invisibility (ID 1645) to a selected target, with a fallback effect if the spell fails.
 function func_066D(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        var_0000 = _ItemSelectModal()
+        unknown_005CH(itemref)
+        var_0001 = unknown_092DH(var_0000)
         bark(itemref, "@Sanct Lor@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17514, 17520, 8047, 67, 8536, local1, 7769})
-            local2 = add_item(local0, 4, 1645, {17493, 7715})
+        if not unknown_0906H() then
+            var_0002 = unknown_0001H(itemref, {17514, 17520, 8047, 67, 8536, var_0001, 7769})
+            var_0002 = unknown_0002H(4, {1645, 17493, 7715}, var_0000)
         else
-            local2 = add_item(itemref, {1542, 17493, 17514, 17520, 8559, local1, 7769})
+            var_0002 = unknown_0001H(itemref, {1542, 17493, 17514, 17520, 8559, var_0001, 7769})
         end
     elseif eventid == 2 then
-        set_flag(itemref, 0, true)
+        unknown_0089H(0, itemref)
     end
-    return
 end

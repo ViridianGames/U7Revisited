@@ -1,28 +1,27 @@
--- Manages barge movement, checking item types and ferryman presence to trigger ferry operations.
+--- Best guess: Manages barge or ferry movement, checking ownership and NPC presence (e.g., ferryman).
 function func_0634(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = external_0058H(itemref) -- Unmapped intrinsic
-    if local0 then
-        local1 = get_item_type(itemref) -- Unmapped intrinsic
-        if local1 == 840 then
-            external_0812H(local0) -- Unmapped intrinsic
-        elseif local1 == 652 then
-            external_028CH(itemref) -- Unmapped intrinsic
-        elseif local1 == 199 then
-            local2 = add_item(-356, 0, 25, 155)
-            if local2 and local2 == local0 then
-                if get_flag(20, -356) == local2 then
-                    external_061CH(local0) -- Unmapped intrinsic
-                    set_flag(20, -356, false)
+    var_0000 = get_item_owner(itemref) --- Guess: Gets item owner
+    if not var_0000 then
+        var_0001 = get_item_type(itemref) --- Guess: Gets item type
+        if var_0001 == 840 then
+            unknown_0812H(var_0000) --- Guess: Handles barge movement
+        elseif var_0001 == 652 then
+            calle_028CH(itemref) --- External call to handle specific item
+        elseif var_0001 == 199 then
+            var_0002 = unknown_0035H(0, 25, 155, 356) --- Guess: Sets NPC location
+            if not var_0002 then
+                if get_item_owner(var_0002) == var_0000 and unknown_0088H(20, 356) == var_0002 then
+                    calle_061CH(var_0000) --- External call to handle ferry
+                    unknown_008AH(20, 356) --- Guess: Sets quest flag
                 end
             else
-                local3 = get_flag(20, -356)
-                if not local3 then
-                    external_0831H(local3) -- Unmapped intrinsic
+                var_0003 = unknown_0088H(20, 356)
+                if not var_0003 then
+                    unknown_0831H(var_0003) --- Guess: Triggers ferry event
                 end
             end
         end
     end
-    return
 end

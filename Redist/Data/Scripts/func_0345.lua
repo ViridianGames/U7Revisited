@@ -1,7 +1,9 @@
--- Instructs the player to use a brush and pigments for painting.
-function func_0345H(eventid, itemref)
+--- Best guess: Displays a message instructing the player to use a brush and pigments, personalized with the player’s name.
+function func_0345(eventid, itemref)
+    local var_0000
+
     if eventid == 1 then
-        local choice = call_script(0x0908) -- TODO: Map 0908H (possibly get choice).
-        add_dialogue(0, "Thou shouldst use the brush and pigments, " .. choice .. ".")
+        var_0000 = "@Thou shouldst use the brush and pigments, " .. unknown_0908H() .. ".@"
+        unknown_08FFH(var_0000)
     end
 end

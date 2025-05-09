@@ -1,68 +1,57 @@
--- Function 06BD: Manages random effects and item spawning
+--- Best guess: Triggers a complex sequence of effects on nearby items and party members when event ID 3 is received, with random selections and array-based operations.
 function func_06BD(eventid, itemref)
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    if eventid ~= 3 then
-        return
-    end
-
-    local0 = callis_0035(8, 40, -359, itemref)
-    local1 = _GetPartyMembers()
-    local2 = 10
-    local3 = callis_0088(6, itemref)
-
-    while sloop() do
-        local6 = local0
-        if not local3 or not (npc_in_party(local6)) then
-            local7 = 0
-            local8 = {}
-            while local7 < local2 do
-                local9 = _Random2(8, 0)
-                if local9 == 0 then
-                    local10 = {17505, 17516, 7789}
-                    table.insert(local8, local10)
-                elseif local9 == 1 then
-                    local10 = {17505, 17505, 7789}
-                    table.insert(local8, local10)
-                elseif local9 == 2 then
-                    local10 = {17505, 7788, 17516}
-                    table.insert(local8, local10)
-                elseif local9 == 3 then
-                    local10 = {17505, 7777, 17505}
-                    table.insert(local8, local10)
-                elseif local9 == 4 then
-                    local10 = {17505, 17508, 7789}
-                    table.insert(local8, local10)
-                elseif local9 == 5 then
-                    local10 = {17505, 7780, 17517}
-                    table.insert(local8, local10)
-                elseif local9 == 6 then
-                    local11 = 7984 + _Random2(3, 0) * 2
-                    local10 = {17505, 8556, local11, 7769}
-                    table.insert(local8, local10)
-                elseif local9 == 7 then
-                    local11 = 7984 + _Random2(3, 0) * 2
-                    local10 = {17505, 8557, local11, 7769}
-                    table.insert(local8, local10)
-                elseif local9 == 8 then
-                    local11 = 7984 + _Random2(3, 0) * 2
-                    local10 = {17505, 8548, local11, 7769}
-                    table.insert(local8, local10)
+    if eventid == 3 then
+        var_0000 = unknown_0035H(8, 40, 359, itemref)
+        var_0001 = unknown_0023H()
+        var_0002 = 10
+        var_0003 = unknown_0088H(6, itemref)
+        for i = 1, #var_0000 do
+            var_0006 = var_0000[i]
+            if not var_0003 or not (var_0006 in var_0001) then
+                var_0007 = 0
+                var_0008 = ""
+                while var_0007 < var_0002 do
+                    var_0009 = unknown_0010H(8, 0)
+                    if var_0009 == 0 then
+                        var_000A = {17505, 17516, 7789}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 1 then
+                        var_000A = {17505, 17505, 7789}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 2 then
+                        var_000A = {17505, 17518, 7788}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 3 then
+                        var_000A = {17505, 17505, 7777}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 4 then
+                        var_000A = {17505, 17508, 7789}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 5 then
+                        var_000A = {17505, 17517, 7780}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 6 then
+                        var_000B = 7984 + unknown_0010H(3, 0) * 2
+                        var_000A = {17505, 8556, var_000B, 7769}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 7 then
+                        var_000B = 7984 + unknown_0010H(3, 0) * 2
+                        var_000A = {17505, 8557, var_000B, 7769}
+                        var_0008 = {var_0008, var_000A}
+                    elseif var_0009 == 8 then
+                        var_000B = 7984 + unknown_0010H(3, 0) * 2
+                        var_000A = {17505, 8548, var_000B, 7769}
+                        var_0008 = {var_0008, var_000A}
+                    end
+                    var_0007 = var_0007 + 1
                 end
-                local7 = local7 + 1
+                unknown_005CH(var_0006)
+                var_000C = unknown_0001H(var_0008, var_0006)
             end
-            callis_005C(local6)
-            local12 = callis_0001(local8[local6 + 1], local6)
         end
+        unknown_0059H(var_0002 * 3)
     end
-
-    callis_0059(local2 * 3)
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

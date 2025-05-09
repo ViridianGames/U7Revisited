@@ -1,177 +1,153 @@
--- Summons a creature or triggers combat effects based on item type and quality.
+--- Best guess: Manages a summoning ritual (ID 1802), triggered by event 3, summoning an entity (ID 641) and applying environmental effects, with cleanup for various item types.
 function func_070A(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25, local26, local27, local28, local29, local30, local31, local32, local33, local34, local35, local36, local37, local38, local39, local40, local41, local42, local43, local44, local45
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E, var_001F, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_002A, var_002B, var_002C, var_002D
 
-    if eventid == 3 then
-        if not get_item_quality(itemref) and not get_flag(827) then
-            set_flag(827, true)
-            local0 = external_000EH(0, 154, itemref) -- Unmapped intrinsic
-            if not local0 then
-                local1 = get_item_by_type(641) -- Unmapped intrinsic
-                set_object_frame(local1, 7)
-                local2 = external_0015H(local1, 65) -- Unmapped intrinsic
-                local2 = external_0036H(local0) -- Unmapped intrinsic
-                bark(local0, "@I summon thee!@")
-                local2 = add_item(external_001BH(-356), {22, 7719}) -- Unmapped intrinsic
-                local2 = add_item(local0, {8033, 2, 17447, 8044, 1802, 17493, 7937, 3, 17447, 8045, 1, 17447, 8044, 2, 17447, 8033, 2, 17447, 8048, 3, 17447, 7791})
-                local3 = external_0035H(0, 20, 336, itemref) -- Unmapped intrinsic
-                for local4 in ipairs(local3) do
-                    local5 = local4
-                    local1 = local5
-                    if get_object_frame(local1) == 7 or get_object_frame(local1) == 9 then
-                        local6 = get_item_by_type(338) -- Unmapped intrinsic
-                        set_object_frame(local1, get_object_frame(local6))
-                        local2 = set_item_data(get_item_data(local1))
-                        external_006FH(local1) -- Unmapped intrinsic
-                    end
-                end
-                local3 = external_0035H(0, 20, 338, itemref) -- Unmapped intrinsic
-                for local7 in ipairs(local3) do
-                    local8 = local7
-                    local1 = local8
-                    if get_object_frame(local1) == 9 then
-                        local9 = external_0035H(16, 1, 275, local1) -- Unmapped intrinsic
-                        for local10 in ipairs(local9) do
-                            local11 = local10
-                            local12 = local11
-                            if get_object_frame(local12) == 6 and get_item_quality(local12) == 201 then
-                                local13 = get_item_by_type(895) -- Unmapped intrinsic
-                                set_object_frame(local13, 0)
-                                local2 = set_item_data(get_item_data(local12))
-                            end
+    if eventid ~= 3 then
+        if eventid == 2 then
+            if get_object_shape(itemref) == 154 then
+                var_001A = {unknown_0018H(itemref), 200, 6}
+                var_0003 = unknown_0035H(16, 20, 275, var_001A)
+                if not var_0003 then
+                    for var_001B in ipairs(var_0003) do
+                        var_001A = {unknown_0018H(var_0001), -359, 0}
+                        var_001D = unknown_0035H(16, 0, 275, var_001A)
+                        for var_001E in ipairs(var_001D) do
+                            var_0002 = unknown_0001H(var_0020, {17480, 7724})
+                            var_0002 = unknown_0001H(unknown_001BH(-356), {1802, 17493, 17452, 7715})
                         end
                     end
                 end
-                local3 = external_0035H(0, 30, 895, itemref) -- Unmapped intrinsic
-                for local14 in ipairs(local3) do
-                    local15 = local14
-                    local1 = local15
-                    external_006FH(local1) -- Unmapped intrinsic
-                end
-                local3 = external_0035H(0, 30, 168, itemref) -- Unmapped intrinsic
-                for local16 in ipairs(local3) do
-                    local17 = local16
-                    local1 = local17
-                    external_006FH(local1) -- Unmapped intrinsic
-                end
-                local3 = external_0035H(0, 10, 400, itemref) -- Unmapped intrinsic
-                for local18 in ipairs(local3) do
-                    local19 = local18
-                    local1 = local19
-                    if get_object_frame(local1) == 29 then
-                        external_08E6H(local1) -- Unmapped intrinsic
+            elseif get_object_shape(itemref) == 721 or get_object_shape(itemref) == 989 then
+                var_0001 = unknown_0035H(8, 30, 354, unknown_001BH(-356))
+                if not var_0001 then
+                    var_0021 = unknown_0018H(var_0001)
+                    unknown_0053H(-1, 0, 0, 0, var_0021[2] - 2, var_0021[1] - 2, 8)
+                    unknown_0053H(-1, 0, 0, 0, var_0021[2] - 2, var_0021[1] - 2, 7)
+                    unknown_000FH(52)
+                    get_object_frame(var_0001, 19)
+                    var_0002 = unknown_0001H(var_0001, {1802, 8021, 5, 7975, 4, 7769})
+                else
+                    var_001A = {unknown_0018H(var_0001), -359, 6}
+                    var_0003 = unknown_0035H(16, 0, 275, var_0001)
+                    for var_0022 in ipairs(var_0003) do
+                        var_0002 = unknown_0001H(var_0001, {17480, 7724})
+                        var_0002 = unknown_0001H(unknown_001BH(-356), {1802, 17493, 17452, 7715})
                     end
                 end
-                local3 = external_0035H(16, 0, 275, itemref) -- Unmapped intrinsic
-                for local20 in ipairs(local3) do
-                    local21 = local20
-                    local1 = local21
-                    if get_object_frame(local1) == 0 then
-                        external_006FH(local1) -- Unmapped intrinsic
+            end
+            if not unknown_0088H(-356, 4) then
+                abort()
+            end
+            if get_object_shape(itemref) == 354 then
+                var_0024 = unknown_0019H(unknown_001BH(-356), itemref)
+                if var_0024 < 20 and not unknown_0088H(unknown_001BH(-356), 23) then
+                    var_0021 = unknown_0018H(itemref)
+                    unknown_0053H(-1, 0, 0, 0, var_0021[2] + 3, var_0021[1] + 3, 17)
+                    var_0025 = _GetPartyMembers()
+                    for var_0026 in ipairs(var_0025) do
+                        var_0029 = ""
+                        var_002A = random2(8, 0)
+                        if var_002A == 0 then
+                            var_002B = {17505, 17516, 7789}
+                            var_0029 = var_002B
+                        elseif var_002A == 1 then
+                            var_002B = {17505, 17505, 7789}
+                            var_0029 = var_002B
+                        elseif var_002A == 2 then
+                            var_002B = {17505, 17518, 7788}
+                            var_0029 = var_002B
+                        elseif var_002A == 3 then
+                            var_002B = {17505, 17505, 7777}
+                            var_0029 = var_002B
+                        elseif var_002A == 4 then
+                            var_002B = {17505, 17508, 7789}
+                            var_0029 = var_002B
+                        elseif var_002A == 5 then
+                            var_002B = {17505, 17517, 7780}
+                            var_0029 = var_002B
+                        elseif var_002A == 6 then
+                            var_002C = random2(3, 0) * 2 + 7984
+                            var_002B = {17505, 8556, var_002C, 7769}
+                            var_0029 = var_002B
+                        elseif var_002A == 7 then
+                            var_002C = random2(3, 0) * 2 + 7984
+                            var_002B = {17505, 8557, var_002C, 7769}
+                            var_0029 = var_002B
+                        elseif var_002A == 8 then
+                            var_002C = random2(3, 0) * 2 + 7984
+                            var_002B = {17505, 8548, var_002C, 7769}
+                            var_0029 = var_002B
+                        end
+                        unknown_005CH(var_0028)
+                        var_0002 = unknown_0001H(var_0028, var_0029)
                     end
+                    unknown_0059H(3)
+                    var_002D = random2(20, 5)
+                    var_0002 = unknown_0001H(itemref, {1802, 8021, 1, 17447, 8047, 1, 17447, 8044, 2, 17447, 8045, 1, 17447, 8556, var_002D, 17447, 7780})
+                else
+                    var_002D = random2(15, 5)
+                    var_0002 = unknown_0001H(itemref, {1802, 8021, 10, 8487, var_002D, 17447, 7780})
                 end
-                local3 = external_0035H(8, 1, 154, itemref) -- Unmapped intrinsic
-                for local22 in ipairs(local3) do
-                    local23 = local22
-                    local1 = local23
-                    external_08E6H(local1) -- Unmapped intrinsic
-                end
-                external_006FH(itemref) -- Unmapped intrinsic
             end
         end
-    elseif eventid == 2 then
-        if get_item_type(itemref) == 154 then
-            local24 = get_item_data(itemref)[6][200]
-            local3 = external_0035H(16, 20, 275, local24) -- Unmapped intrinsic
-            if local3 then
-                for local25 in ipairs(local3) do
-                    local26 = local25
-                    local27 = local26
-                    local24 = get_item_data(local27)[6][-359]
-                    local28 = external_0035H(16, 0, 275, local24) -- Unmapped intrinsic
-                    for local29 in ipairs(local28) do
-                        local30 = local29
-                        local31 = local30
-                        local2 = add_item(local31, {17480, 7724})
-                        local2 = add_item(external_001BH(-356), {1802, 17493, 17452, 7715}) -- Unmapped intrinsic
+        return
+    end
+
+    if not _GetItemQuality(itemref) and not get_flag(827) then
+        set_flag(827, true)
+        var_0000 = unknown_000EH(0, 154, itemref)
+        if not var_0000 then
+            var_0001 = unknown_0024H(641)
+            get_object_frame(var_0001, 7)
+            var_0002 = unknown_0015H(65, var_0001)
+            var_0002 = unknown_0036H(var_0000)
+            bark(var_0000, "@I summon thee!@")
+            var_0002 = unknown_0001H(unknown_001BH(-356), {22, 7719})
+            var_0002 = unknown_0001H(var_0000, {8033, 2, 17447, 8044, 1802, 17493, 7937, 3, 17447, 8045, 1, 17447, 8044, 2, 17447, 8033, 2, 17447, 8048, 3, 17447, 7791})
+            var_0003 = unknown_0035H(0, 20, 336, itemref)
+            for var_0004 in ipairs(var_0003) do
+                if get_object_frame(var_0001) == 7 or get_object_frame(var_0001) == 9 then
+                    var_0006 = unknown_0024H(338)
+                    get_object_frame(var_0006, get_object_frame(var_0001))
+                    var_0002 = unknown_0026H(unknown_0018H(var_0001))
+                    unknown_006FH(var_0001)
+                end
+            end
+            var_0003 = unknown_0035H(0, 20, 338, itemref)
+            for var_0007 in ipairs(var_0003) do
+                if get_object_frame(var_0001) == 9 then
+                    var_0009 = unknown_0035H(16, 1, 275, var_0001)
+                    for var_000A in ipairs(var_0009) do
+                        if get_object_frame(var_000C) == 6 and _GetItemQuality(var_000C) == 201 then
+                            var_000D = unknown_0024H(895)
+                            get_object_frame(var_000D, 0)
+                            var_0002 = unknown_0026H(unknown_0018H(var_000C))
+                        end
                     end
                 end
+                unknown_006FH(var_0001)
             end
-        elseif get_item_type(itemref) == 721 or get_item_type(itemref) == 989 then
-            local1 = external_0035H(8, 30, 354, external_001BH(-356)) -- Unmapped intrinsic
-            if local1 then
-                local21 = get_item_data(local1)
-                create_object(-1, 0, 0, 0, local21[2] - 2, local21[1] - 2, 8) -- Unmapped intrinsic
-                create_object(-1, 0, 0, 0, local21[2] - 2, local21[1] - 2, 7) -- Unmapped intrinsic
-                apply_effect(52) -- Unmapped intrinsic
-                set_object_frame(local1, 19)
-                local2 = add_item(local1, {1802, 8021, 5, 7975, 4, 7769})
-            else
-                local27 = get_item_data(local1)[6][-359]
-                local3 = external_0035H(16, 0, 275, local1) -- Unmapped intrinsic
-                for local32 in ipairs(local3) do
-                    local33 = local32
-                    local34 = local33
-                    local2 = add_item(local34, {17480, 7724})
-                    local2 = add_item(external_001BH(-356), {1802, 17493, 17452, 7715}) -- Unmapped intrinsic
+            var_0003 = unknown_0035H(0, 30, 168, itemref)
+            for var_0012 in ipairs(var_0003) do
+                unknown_006FH(var_0001)
+            end
+            var_0003 = unknown_0035H(0, 10, 400, itemref)
+            for var_0014 in ipairs(var_0003) do
+                if get_object_frame(var_0001) == 29 then
+                    unknown_08E6H(var_0001)
                 end
             end
-        end
-        if not external_0088H(external_001BH(-356), 4) then -- Unmapped intrinsic
-            abort()
-        end
-        if get_item_type(itemref) == 354 then
-            local35 = external_0019H(external_001BH(-356), itemref) -- Unmapped intrinsic
-            if local35 < 20 and external_0088H(external_001BH(-356), 23) then -- Unmapped intrinsic
-                local21 = get_item_data(itemref)
-                create_object(-1, 0, 0, 0, local21[2] + 3, local21[1] + 3, 17) -- Unmapped intrinsic
-                local36 = get_party_members()
-                for local37 in ipairs(local36) do
-                    local38 = local37
-                    local39 = local38
-                    local40 = ""
-                    local41 = get_random(0, 8)
-                    if local41 == 0 then
-                        local42 = {17505, 17516, 7789}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 1 then
-                        local42 = {17505, 17505, 7789}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 2 then
-                        local42 = {17505, 17518, 7788}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 3 then
-                        local42 = {17505, 17505, 7777}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 4 then
-                        local42 = {17505, 17508, 7789}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 5 then
-                        local42 = {17505, 17517, 7780}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 6 then
-                        local43 = 7984 + get_random(0, 3) * 2
-                        local42 = {17505, 8556, local43, 7769}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 7 then
-                        local43 = 7984 + get_random(0, 3) * 2
-                        local42 = {17505, 8557, local43, 7769}
-                        local40 = array_append(local40, local42)
-                    elseif local41 == 8 then
-                        local43 = 7984 + get_random(0, 3) * 2
-                        local42 = {17505, 8548, local43, 7769}
-                        local40 = array_append(local40, local42)
-                    end
-                    local2 = add_item(local39, local40)
+            var_0003 = unknown_0035H(16, 0, 275, itemref)
+            for var_0016 in ipairs(var_0003) do
+                if get_object_frame(var_0001) == 0 then
+                    unknown_006FH(var_0001)
                 end
-                external_0059H(3) -- Unmapped intrinsic
-                local44 = get_random(5, 20)
-                local2 = add_item(itemref, {1802, 8021, 1, 17447, 8047, 1, 17447, 8044, 2, 17447, 8045, 1, 17447, 8556, local44, 17447, 7780})
-            else
-                local44 = get_random(5, 15)
-                local2 = add_item(itemref, {1802, 8021, 10, 8487, local44, 17447, 7780})
             end
+            var_0003 = unknown_0035H(8, 1, 154, itemref)
+            for var_0018 in ipairs(var_0003) do
+                unknown_08E6H(var_0001)
+            end
+            unknown_006FH(itemref)
         end
     end
-    return
 end

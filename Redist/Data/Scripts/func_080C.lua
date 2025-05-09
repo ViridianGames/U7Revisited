@@ -1,17 +1,16 @@
--- Checks nearby items and returns a type based on specific conditions.
+--- Best guess: Identifies the type of an item (ID -359) within a radius, returning a specific item ID (840, 652, or 199) based on predefined lists.
 function func_080C(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    local1 = external_0035H(0, 2, -359, itemref) -- Unmapped intrinsic
-    local2 = {840}
-    local3 = {301, 757, 774, 773, 660, 652, 796}
-    for local4 in ipairs(local1) do
-        local5 = local4
-        local6 = local5
-        local7 = get_item_type(local6)
-        if contains(local2, local7) then
+    var_0001 = unknown_0035H(0, 2, -359, itemref)
+    var_0002 = {840}
+    var_0003 = {301, 757, 774, 773, 660, 652, 796}
+    for var_0004 in ipairs(var_0001) do
+        var_0007 = get_object_shape(var_0006)
+        if table.contains(var_0002, var_0007) then
             return 840
-        elseif contains(local3, local7) then
+        end
+        if table.contains(var_0003, var_0007) then
             return 652
         end
     end

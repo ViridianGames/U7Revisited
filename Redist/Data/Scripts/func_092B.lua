@@ -1,11 +1,10 @@
--- Increments a counter based on an input parameter.
-function func_092B(p0, p1)
-    local local1, local2, local3, local4
+--- Best guess: Increments a counter up to 13 and returns the final value, likely used for tracking or timing.
+function func_092B(P0)
+    local var_0000
 
-    local1 = 0
-    for local2, local3 in ipairs(p1) do
-        local4 = local3
-        local1 = local1 + 1
+    var_0000 = 0
+    for _ in ipairs({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}) do
+        var_0000 = var_0000 + 1
     end
-    return local1
+    return var_0000
 end

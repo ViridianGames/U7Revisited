@@ -1,101 +1,87 @@
--- func_0448.lua
--- Weston's dialogue as a prisoner in Britain's jail
+--- Best guess: Handles dialogue with Nell, a chambermaid at Lord British’s castle, discussing her family, fiance Carrocio, and her secret pregnancy, with trust-based dialogue depending on the player’s identity.
+function func_0448(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-
-function func_0448(eventid)
-    local answers = {}
-    local flag_00BF = get_flag(0x00BF) -- First meeting
-    local flag_00C6 = get_flag(0x00C6) -- Weston topic
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local npc_id = -62 -- Weston's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00C6 then
-            add_answer( "arrest")
+        var_0000 = get_player_name()
+        var_0001 = "Avatar"
+        switch_talk_to(72, 0)
+        if not get_flag(120) then
+            var_0002 = var_0000
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
+        if not get_flag(121) then
+            var_0002 = var_0001
         end
-
-        if not flag_00BF then
-            add_dialogue("You see a weary man in tattered clothes, sitting behind bars with a defeated look.")
-            set_flag(0x00BF, true)
-        else
-            add_dialogue("\"Thou’rt back, \" .. get_player_name() .. \",\" Weston says, his voice low.")
+        if get_flag(119) then
+            add_dialogue("Nell will not speak to you.")
+            abort()
         end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Weston sighs. \"Got more to say to a poor soul like me?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
+        if not get_flag(201) then
+            add_dialogue("You see a servant girl who looks at you in wonder. \"Thou dost look familiar. Who art thou?\"")
+            var_0003 = ask_answer({var_0001, var_0000})
+            if var_0003 == var_0000 then
+                add_dialogue("\"Oh. Hello. I am Nell.\"")
+                set_flag(120, true)
+            else
+                add_dialogue("\"I thought so! I have seen thy portrait before. And I had heard that thou wouldst be visiting! I'm Nell.\"")
+                set_flag(121, true)
             end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Weston’s my name. Not that it matters in here.\"")
+            if not get_flag(120) then
+                var_0002 = var_0000
+            end
+            if not get_flag(121) then
+                var_0002 = var_0001
+            end
+            set_flag(201, true)
+        else
+            add_dialogue("\"Hello, " .. var_0002 .. ".\"")
+        end
+        add_answer({"bye", "job", "name"})
+        while true do
+            var_0004 = get_answer()
+            if var_0004 == "name" then
+                add_dialogue("\"I told thee my name is Nell.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I was a farmer in Paws, scraping by. Now I’m just a prisoner, thanks to Figg and his blasted apples.\"")
-                add_answer( "arrest")
-                add_answer( "Paws")
-                set_flag(0x00C6, true)
-            elseif choice == "Paws" then
-                add_dialogue("\"It’s a poor village south of Britain. My wife and kids are there, starving while I rot in this cell.\"")
-                add_answer( "family")
-                remove_answer("Paws")
-            elseif choice == "family" then
-                add_dialogue("\"My wife’s doing what she can, but without me, they’ve naught. I only took those apples to feed ‘em. Please, if thou canst help ‘em…\"")
-                add_answer( "help")
-                remove_answer("family")
-            elseif choice == "arrest" then
-                add_dialogue("\"Figg caught me taking apples from the Royal Orchard. I was desperate, not a thief! He turned me over to the guards, and here I am.\"")
-                add_answer( "Figg")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("arrest")
-            elseif choice == "Figg" then
-                add_dialogue("\"That pompous caretaker, Figg! He’s got no heart, accusing me of being a hardened thief. He’s cozy with the Fellowship, too.\"")
-                add_answer( "Fellowship")
-                remove_answer("Figg")
-            elseif choice == "help" then
-                add_dialogue("\"If thou couldst bring food or coin to my family in Paws, I’d be forever grateful. They’re near the mill. Tell ‘em I’m sorry.\"")
-                local response = call_extern(0x090A, var_0001)
-                if response == 0 then
-                    add_dialogue("\"Bless thee! My heart’s lighter knowing someone might help.\"")
+            elseif var_0004 == "job" then
+                add_dialogue("\"I am a chambermaid. I am responsible for keeping the castle tidy. Just a servant girl, really.\"")
+                add_answer({"servant", "castle"})
+            elseif var_0004 == "castle" then
+                add_dialogue("\"It is very large. Keeps me very busy. Thou wouldst not believe how dusty it gets.\"")
+                remove_answer("castle")
+            elseif var_0004 == "servant" then
+                add_dialogue("\"I suppose I'll always be a servant. My parents are servants. My brother is a servant. My fiance is a servant. My child will probably be a servant.\"")
+                add_answer({"child", "fiance", "brother", "parents"})
+                remove_answer("servant")
+            elseif var_0004 == "parents" then
+                add_dialogue("\"They work in the castle as well. Boots is my mother. Bennie is my father. They have been here for years. I was born in this castle and played in the nursery.\"")
+                remove_answer("parents")
+            elseif var_0004 == "brother" then
+                add_dialogue("\"Thou mightest run into him. He is also a servant in the castle. Charles. Other than not being as smart as I am, he is all right. For a bumbling ass, that is!\" She laughs.")
+                set_flag(118, true)
+                remove_answer("brother")
+            elseif var_0004 == "fiance" then
+                add_dialogue("\"That would be Carrocio, that dear man who runs the Punch and Judy Show. He writes the loveliest love poetry. We are getting married as soon as Carrocio can afford a wedding ring.\"")
+                set_flag(117, true)
+                remove_answer("fiance")
+            elseif var_0004 == "child" then
+                add_dialogue("Nell looks worried. \"Shhh! I do not want anyone to know. 'Tis not showing yet, is it? Carrocio and I are getting married as soon as possible. He -is- the father. I think. Then again, it could be... no, probably not him. Or could it be...? Hmmm. That would be interesting! Wait! What am I saying? The father is most definitely Carrocio! Please do not tell anyone. 'Twould be embarrassing. All right?\"")
+                var_0004 = select_option()
+                if var_0004 then
+                    add_dialogue("\"I know I can trust thee, " .. var_0002 .. ".\"")
                 else
-                    add_dialogue("\"I understand. It’s a hard world out there.\"")
+                    add_dialogue("\"But thou wouldst ruin my reputation! Please -- a servant girl needs all the self-esteem she can get without that burden!\" Nell turns away from you.")
+                    set_flag(119, true)
+                    abort()
                 end
-                remove_answer("help")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s got their claws in Britain. Figg’s one of ‘em, and I heard they pushed the guards to lock me up quick. They don’t care about folk like me.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Mayhap I’m wrong, but I doubt it. Be careful around ‘em.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"They’re trouble, mark my words. Keep thy distance.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Please, don’t forget my family, \" .. get_player_name() .. \".\"")
+                remove_answer("child")
+                set_flag(122, true)
+            elseif var_0004 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Goodbye, " .. var_0002 .. ".\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(72) --- Guess: Triggers a game event
     end
 end
-
-return func_0448

@@ -1,12 +1,13 @@
--- Function 03A8: Item type switching
+--- Best guess: Changes an object’s shape (ID 936) on use or calls an external function (ID 303), possibly for a quest item or mechanism.
 function func_03A8(eventid, itemref)
     if eventid == 2 then
-        _SetItemType(936, itemref)
-        return -- abrt
+        set_object_shape(itemref, 936)
+        return
     elseif eventid == 1 then
-        calli_006A(0)
-        -- Note: Original has 'db 2c' here, ignored
-        call_0832H(303, itemref)
+        -- calli 006A, 1 (unmapped)
+        unknown_006AH(0)
     end
+    -- call [0000] (0832H, unmapped)
+    unknown_0832H(303, itemref)
     return
 end

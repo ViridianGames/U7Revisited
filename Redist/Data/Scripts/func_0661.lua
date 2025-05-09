@@ -1,17 +1,17 @@
--- Casts the "Ort Grav" spell, creating an electrical or energy effect on a selected target.
+--- Best guess: Implements the lightning spell (Ort Grav), dealing damage to a target area with spell effects.
 function func_0661(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
     if eventid == 1 or eventid == 4 then
-        local0 = item_select_modal() -- Unmapped intrinsic
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        destroy_item(itemref)
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@Ort Grav@")
-        local1 = external_092DH(local0) -- Unmapped intrinsic
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = external_0041H(local0, 807, itemref) -- Unmapped intrinsic
-            local2 = add_item(itemref, {17505, 17530, 17514, 17514, 8048, 65, 17496, 17519, 8549, local1, 7769})
+        if check_spell_requirements() then
+            var_0002 = apply_spell_effect(807, var_0000, itemref) --- Guess: Applies spell effect
+            var_0002 = add_container_items(itemref, {17505, 17530, 17514, 17514, 8048, 65, 17496, 17519, 8549, var_0001, 7769})
         else
-            local2 = add_item(itemref, {1542, 17493, 17514, 17520, 17519, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17514, 17520, 17519, 8549, var_0001, 7769})
         end
     end
-    return
 end

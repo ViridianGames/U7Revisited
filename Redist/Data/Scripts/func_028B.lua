@@ -1,39 +1,34 @@
--- Function 028B: Manages spinning wheel crafting
-function func_028B(itemref)
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+--- Best guess: Manages a spinning wheel, checking for wool (type 873) to produce thread (type 653), with a message if empty, and updating item frame randomly.
+function func_028B(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    if eventid() == 7 then
-        local0 = callis_0035(0, 1, 873, -356)
-        local1 = 0
-        if callis_005E(local0) > 0 then
-            local2 = callis_0001({12, -1, 17419, 17515, 8044, 6, 7769}, -356)
-            local1 = 3
+    if eventid == 7 then
+        var_0000 = unknown_0035H(0, 1, 873, -356)
+        var_0001 = 0
+        if #var_0000 > 0 then
+            var_0002 = unknown_0001H({12, -1, 17419, 17515, 8044, 6, 7769}, -356)
+            var_0001 = 3
         end
-        callis_005C(itemref)
-        local2 = callis_0002(local1, {651, 8021, 12, -4, 7947, 6, 17496, 17409, 8014, 0, 7750}, itemref)
-    elseif eventid() == 2 then
-        local3 = callis_002A(-359, -359, 653, -356)
-        if local3 then
-            callis_006F(local3)
+        unknown_005CH(itemref)
+        var_0002 = unknown_0002H(itemref, {var_0001, 651, 8021, 12, -4, 7947, 6, 17496, 17409, 8014, 0, 7750})
+    elseif eventid == 2 then
+        var_0003 = unknown_002AH(-359, -359, 653, -356)
+        if var_0003 then
+            unknown_006FH(var_0003)
         end
-        local4 = callis_0024(654)
-        if local4 then
-            callis_0089(18, local4)
-            callis_0089(11, local4)
-            callis_0013(9 + callis_0010(0, 9), local4)
-            local5 = callis_0018(itemref)
-            local5[1] = local5[1] + 1
-            local5[2] = local5[2] + 1
-            local2 = callis_0026(local5)
+        var_0004 = unknown_0024H(654)
+        if var_0004 then
+            unknown_0089H(18, var_0004)
+            unknown_0089H(11, var_0004)
+            unknown_0013H(math.random(0, 9), var_0004)
+            var_0005 = unknown_0018H(itemref)
+            var_0005[1] = var_0005[1] + 1
+            var_0005[2] = var_0005[2] + 1
+            var_0002 = unknown_0026H(var_0005)
         end
-    elseif eventid() == 1 then
-        local6 = "@I suspect spinning the wool will be more fruitful than spinning an empty wheel.@"
-        call_08FFH(local6)
+    elseif eventid == 1 then
+        var_0006 = "@I suspect spinning the wool will be more fruitful than spinning an empty wheel.@"
+        unknown_08FFH(var_0006, itemref)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

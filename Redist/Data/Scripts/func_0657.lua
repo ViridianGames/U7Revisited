@@ -1,17 +1,16 @@
--- Casts the "Por Ort Wis" spell, granting temporary clairvoyance with a navigation effect.
+--- Best guess: Implements the douse spell (Por Ort Wis), extinguishing light sources or effects with teleportation effects.
 function func_0657(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
     if eventid == 1 then
         bark(itemref, "@Por Ort Wis@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1623, 17493, 17514, 17519, 8048, 67, 17496, 7791})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1623, 17493, 17514, 17519, 8048, 67, 17496, 7791})
         else
-            local0 = add_item(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
         end
     elseif eventid == 2 then
-        local1 = get_item_data(itemref)
-        external_0050H(200, 45) -- Unmapped intrinsic
+        var_0001 = unknown_0018H(itemref) --- Guess: Gets position data
+        teleport_object(itemref, 200) --- Guess: Teleports object
     end
-    return
 end

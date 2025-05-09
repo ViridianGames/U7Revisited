@@ -1,4 +1,4 @@
--- Function 0819: Locked door message
+--- Best guess: Displays a locked door message, likely for interaction feedback.
 function func_0819(eventid, itemref)
-    bark(eventid, "Locked")
+    bark(itemref, "@Locked@") --- Guess: Item says dialogue
 end

@@ -1,46 +1,38 @@
--- Function 08B3: Manages party composition
-function func_08B3(itemref)
-    -- Local variables (14 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13
+--- Best guess: Manages party member interactions, updating the party list based on item qualities and conditions, likely for quest or dialogue purposes.
+function func_08B3(eventid)
+    local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    local1 = 1
-    local2 = 0
-    local3 = false
-    local4 = callis_0023()
-    local5 = callis_0058(itemref)
-    local6 = callis_0035(0, 30, 292, itemref)
-    local7 = {}
-    local8 = {}
-
-    while sloop() do
-        local11 = local6
-        if callis_0058(local11) == local5 and (not local3 and call_GetItemQuality(local11) == 255) then
-            callis_0046(local11, -356)
-            local4 = call_093CH(callis_001B(-356), local4)
-            local3 = true
-        else
-            table.insert(local8, callis_0019(-356, local11))
-            table.insert(local7, local11)
+    var_0001 = 1
+    var_0002 = 0
+    var_0003 = false
+    var_0004 = unknown_0023H()
+    var_0005 = unknown_0058H(eventid)
+    var_0006 = unknown_0035H(0, 30, 292, eventid)
+    var_0007 = {}
+    var_0008 = {}
+    for i = 1, #var_0006 do
+        var_0011 = var_0006[i]
+        if unknown_0058H(var_0011) == var_0005 then
+            if not var_0003 and unknown_0014H(var_0011) == 255 then
+                unknown_0046H(var_0011, 356)
+                var_0004 = unknown_093CH(unknown_001BH(356), var_0004)
+                var_0003 = true
+            else
+                table.insert(var_0008, unknown_0019H(356, var_0011))
+                table.insert(var_0007, var_0011)
+            end
         end
     end
-
-    local12 = callis_005E(local4)
-    local7 = call_093DH(local7, local8)
-
-    while sloop() do
-        if local12 >= local1 then
-            callis_0046(local4[local1], local11)
-            local1 = local1 + 1
+    var_0012 = unknown_005EH(var_0004)
+    var_0007 = unknown_093DH(var_0007, var_0008)
+    for i = 1, #var_0007 do
+        var_0011 = var_0007[i]
+        if var_0012 >= var_0001 then
+            unknown_0046H(var_0011, var_0004[var_0001])
+            var_0001 = var_0001 + 1
         else
             return true
         end
     end
-
     return false
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

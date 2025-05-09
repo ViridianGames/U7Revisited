@@ -1,13 +1,14 @@
--- Handles generator interaction with specific parameters, triggering effects and setting values during event 2.
+--- Best guess: Manages a lever or switch interaction, setting specific game state values (likely for a puzzle or mechanism) and triggering an event with object ID 275.
 function func_061E(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    if eventid == 2 then
-        external_0806(itemref, 242) -- Unmapped intrinsic
-        local0 = 275
-        local1 = 5
-        local2 = 1
-        external_0804(local0, local1, local2) -- Unmapped intrinsic
+    if eventid ~= 2 then
+        return
     end
-    return
+
+    unknown_0806H(itemref, 242)
+    var_0000 = 275
+    var_0001 = 5
+    var_0002 = 1
+    unknown_0804H(var_0002, var_0001, var_0000)
 end

@@ -1,21 +1,22 @@
--- Function 0717: Handle item type 668
+--- Best guess: Checks item type (668) and triggers explosions, possibly for a trap or ritual effect.
 function func_0717(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003
 
-    if _GetItemType(itemref) == 668 then
-        local0 = get_item_position(itemref)
-        local1 = call_0025H(itemref)
-        if not call_0036H(call_001BH(-356)) then
-            call_0026H(local0)
-            call_006AH(5)
+    if get_item_type(itemref) == 668 then --- Guess: Gets item type
+        var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+        var_0001 = unknown_0025H(itemref) --- Guess: Checks position
+        if not get_item_position(356) then --- Guess: Gets item position
+            var_0002 = unknown_0026H(var_0000) --- Guess: Updates position
+            trigger_explosion(5) --- Guess: Triggers explosion
         end
     else
-        local2 = _GetContainerItems(-359, -359, 668, itemref)
-        local3 = call_006EH(local2)
-        local1 = call_0025H(local2)
-        if not call_0036H(call_001BH(-356)) and not call_0036H(local3) then
-            call_006AH(5)
+        var_0002 = get_container_items(359, 668, 359, 4) --- Guess: Gets container items
+        var_0003 = unknown_006EH(var_0002) --- Guess: Gets item state
+        var_0001 = unknown_0025H(var_0002) --- Guess: Checks position
+        if not get_item_position(356) then --- Guess: Gets item position
+            var_0002 = get_item_position(var_0003) --- Guess: Gets item position
+            trigger_explosion(5) --- Guess: Triggers explosion
         end
     end
-    call_0838H(itemref)
+    calle_0838H(itemref) --- External call to unknown function
 end

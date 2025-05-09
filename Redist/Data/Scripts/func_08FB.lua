@@ -1,9 +1,4 @@
--- Retrieves names of party members.
+--- Best guess: Returns the player’s name from the party members list, likely used for dialogue personalization.
 function func_08FB()
-    local party_members = get_party_members()
-    local names = {}
-    for _, member in ipairs(party_members) do
-        table.insert(names, get_player_name(member)) -- Unmapped intrinsic
-    end
-    return names
+    return unknown_0027H(unknown_0023H())
 end

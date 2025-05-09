@@ -1,14 +1,14 @@
--- Adjusts an item's frame and type, updating its position.
-function func_081D(p0, p1, p2, p3, p4, p5)
-    local local6, local7
+--- Best guess: Updates an item’s type (P4) and frame (P3), moving it to a new position (P1, P2), returning true if successful.
+function func_081D(P0, P1, P2, P3, P4, P5)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    external_081CH(p3, p5) -- Unmapped intrinsic
-    set_item_type(p5, p4)
-    local6 = get_item_data(p5)
-    local6[1] = local6[1] + p2
-    local6[2] = local6[2] + p1
-    if not external_0025H(p5) then -- Unmapped intrinsic
-        local7 = set_item_data(local6)
+    unknown_081CH(P3, P5)
+    set_object_shape(P5, P4)
+    var_0006 = unknown_0018H(P5)
+    var_0006[1] = var_0006[1] + P2
+    var_0006[2] = var_0006[2] + P1
+    if not unknown_0025H(P5) then
+        var_0007 = unknown_0026H(var_0006)
     end
     return true
 end

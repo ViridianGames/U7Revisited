@@ -1,80 +1,73 @@
--- Function 029C: Manages sword pickup and forging
-function func_029C(itemref)
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Manages sword interactions during forging, checking heat (frame 8-12) and position, updating frames or displaying failure messages, with specific event triggers.
+function func_029C(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    if eventid() == 1 then
-        if callis_0072(-359, 623, 1, -356) then
-            local0 = callis_000E(3, 991, itemref)
-            if local0 then
-                local1 = callis_0018(itemref)
-                local2 = callis_0018(local0)
-                if local1[1] == local2[1] and local1[2] == local2[2] and local1[3] == local2[3] + 1 then
-                    local3 = callis_0012(itemref)
-                    if local3 >= 10 and local3 <= 12 then
-                        call_026FH(local0)
+    if eventid == 1 then
+        if unknown_0072H(359, 623, 1, -356) then
+            var_0000 = unknown_000EH(3, 991, itemref)
+            if var_0000 then
+                var_0001 = unknown_0018H(itemref)
+                var_0002 = unknown_0018H(var_0000)
+                if var_0001[1] == var_0002[1] and var_0001[2] == var_0002[2] and var_0001[3] == var_0002[3] + 1 then
+                    var_0003 = unknown_0012H(var_0000)
+                    if var_0003 >= 10 and var_0003 <= 12 then
+                        unknown_026FH(var_0000)
                     end
                 end
             end
         end
-        callis_007E()
-        local4 = callis_0012(itemref)
-        if local4 >= 8 and local4 <= 15 then
-            if not callis_006E(itemref) then
-                local5 = {-1, 1, 1, 0}
-                local6 = {0, 1, 2, 0}
-                call_0828H(7, itemref, 668, -3, local6, local5, itemref)
-            elseif not call_0944H(itemref) then
-                local7 = call_0945H(itemref)
-                local5 = {1, -1, 1, 0}
-                local6 = {0, 1, 2, 0}
-                call_0828H(7, local7, 668, -3, local6, local5, local7)
+        unknown_007EH()
+        var_0004 = unknown_0012H(itemref)
+        if var_0004 >= 8 and var_0004 <= 15 then
+            if not unknown_006EH(itemref) then
+                var_0005 = {1, -1, 1, 0}
+                var_0006 = {0, 2, 1, 2}
+                unknown_0828H(itemref, var_0005, var_0006, -3, 668, itemref, 7)
             else
-                callis_0001({668, 8021, 2, 7719}, itemref)
+                var_0007 = unknown_0945H(itemref)
+                var_0005 = {1, -1, 1, 0}
+                var_0006 = {0, 2, 1, 2}
+                unknown_0828H(var_0007, var_0005, var_0006, -3, 668, var_0007, 7)
             end
         end
-    elseif eventid() == 7 then
-        local9 = call_092DH(itemref)
-        callis_0001({668, 17493, 8033, 3, 17447, 8556, local9, 7769}, callis_001B(-356))
-        callis_0001({1815, 8021, 3, 7719}, itemref)
-    elseif eventid() == 2 then
-        local10 = callis_002A(-359, -359, 668, callis_001B(-356))
-        if not local10 then
-            local11 = callis_0033()
-            local12 = callis_0011(local11)
-            if local12 == 991 and callis_0012(local11) == 1 then
-                call_0828H(8, local11, 668, 0, 2, 0, local11)
-            elseif local12 == 739 and callis_0012(local11) >= 4 and callis_0012(local11) <= 7 then
-                call_0828H(9, local11, 668, 0, 0, 1, local11)
-            elseif local12 == 741 then
-                local3 = callis_0012(local10)
-                if local3 >= 8 and local3 <= 12 then
-                    call_0828H(10, local11, 668, 0, 1, 0, local11)
+    elseif eventid == 7 then
+        var_0009 = unknown_092DH(itemref)
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
+        var_0008 = unknown_0001H({1815, 8021, 3, 7719}, itemref)
+    elseif eventid == 2 then
+        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        if var_000A then
+            var_000B = unknown_0033H()
+            var_000C = unknown_0011H(var_000B)
+            if var_000C == 991 and unknown_0012H(var_000B) == 1 then
+                unknown_0828H(var_000B, 0, 0, 2, 668, var_000B, 8)
+            elseif var_000C == 739 and unknown_0012H(var_000B) >= 4 and unknown_0012H(var_000B) <= 7 then
+                unknown_0828H(var_000B, 1, 0, 0, 668, var_000B, 9)
+            elseif var_000C == 741 then
+                var_0003 = unknown_0012H(var_000A)
+                if var_0003 >= 8 and var_0003 <= 12 then
+                    unknown_0828H(var_000B, 0, 1, 0, 668, var_000B, 10)
                 else
-                    callis_0040("@The sword's not hot.@", callis_001B(-356))
+                    unknown_0040H("@The sword's not hot.@", unknown_001BH(-356))
                 end
             end
         else
-            callis_0040("@I can't pick it up.@", callis_001B(-356))
+            unknown_0040H("@I can't pick it up.@", unknown_001BH(-356))
         end
-    elseif eventid() == 8 then
-        local9 = call_092DH(itemref)
-        callis_0001({8033, 3, 17447, 8556, local9, 7769}, callis_001B(-356))
-        local10 = callis_002A(-359, -359, 668, callis_001B(-356))
-        callis_0001({1675, 8021, 3, 7719}, local10)
-    elseif eventid() == 9 then
-        local9 = call_092DH(itemref)
-        callis_0001({8033, 3, 17447, 8556, local9, 7769}, callis_001B(-356))
-        local10 = callis_002A(-359, -359, 668, callis_001B(-356))
-        callis_0001({1676, 8021, 3, 7719}, local10)
-    elseif eventid() == 10 then
-        local9 = call_092DH(itemref)
-        callis_0001({8556, local9, 7769}, callis_001B(-356))
-        callis_0001({1677, 8021, 5, 7719}, itemref)
+    elseif eventid == 8 then
+        var_0009 = unknown_092DH(itemref)
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
+        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        var_0008 = unknown_0001H({1675, 8021, 3, 7719}, var_000A)
+    elseif eventid == 9 then
+        var_0009 = unknown_092DH(itemref)
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
+        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        var_0008 = unknown_0001H({1676, 8021, 3, 7719}, var_000A)
+    elseif eventid == 10 then
+        var_0009 = unknown_092DH(itemref)
+        var_0008 = unknown_0001H({8556, var_0009, 7769}, unknown_001BH(-356))
+        var_0008 = unknown_0001H({1677, 8021, 5, 7719}, itemref)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

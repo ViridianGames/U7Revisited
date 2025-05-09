@@ -1,16 +1,15 @@
--- Adjusts an NPC’s property based on a parameter.
-function func_092A(p0, p1)
-    local local2, local3, local4
+--- Best guess: Adjusts a character’s health (NPC property 3) by adding or subtracting damage, ensuring it stays within bounds.
+function func_092A(P0, P1)
+    local var_0000, var_0001, var_0002
 
-    if not external_0031H(p1) then -- Unmapped intrinsic
-        local2 = get_npc_property(0, p1) -- Unmapped intrinsic
-        local3 = get_npc_property(3, p1) -- Unmapped intrinsic
-        if local3 + p0 < 1 then
-            p0 = -local3
-        elseif local3 + p0 > local2 then
-            p0 = local2 - local3
+    if not unknown_0031H(P1) then
+        var_0000 = _GetNPCProperty(0, P1)
+        var_0001 = _GetNPCProperty(3, P1)
+        if var_0001 + P0 < 1 then
+            var_0000 = -1 * var_0001
+        elseif var_0001 + P0 > var_0000 then
+            var_0000 = var_0000 - var_0001
         end
-        local4 = set_npc_property(3, p1, p0) -- Unmapped intrinsic
+        var_0002 = _SetNPCProperty(var_0000, 3, P1)
     end
-    return
 end

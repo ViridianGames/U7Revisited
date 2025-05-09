@@ -1,37 +1,35 @@
--- Initiates an endgame sequence, updating container items and applying effects.
+--- Best guess: Checks for ritual items and triggers the endgame sequence if conditions are met.
 function func_0715(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    local0 = external_0035H(8, 40, 1015, external_001BH(-356)) -- Unmapped intrinsic
-    local1 = false
-    for local2 in ipairs(local0) do
-        local3 = local2
-        local4 = local3
-        if get_container_items(4, 243, 797, local4) then -- Unmapped intrinsic
-            local1 = local4
+    var_0000 = unknown_0035H(8, 40, 1015, 356) --- Guess: Sets NPC location
+    var_0001 = false
+    -- Guess: sloop checks for ritual items
+    for i = 1, 5 do
+        var_0004 = {2, 3, 4, 0, 53}[i]
+        if get_container_items(243, 797, var_0004, 4) then --- Guess: Gets container items
+            var_0001 = var_0004
         end
-        if get_container_items(4, 244, 797, local4) then -- Unmapped intrinsic
-            local1 = local4
+        if get_container_items(244, 797, var_0004, 4) then --- Guess: Gets container items
+            var_0001 = var_0004
         end
     end
-    if local1 then
-        local5 = add_item(local1, {8033, 2, 17447, 17517, 17460, 8025, 3, 7719})
-        local6 = get_item_data(local1)
-        create_object(-1, 0, 0, 0, local6[2], local6[1], 17) -- Unmapped intrinsic
-        apply_effect(62) -- Unmapped intrinsic
-        set_object_frame(local1, 29)
+    if var_0001 then
+        var_0005 = add_container_items(var_0001, {8033, 2, 17447, 17517, 17460, 8025, 3, 7719})
+        var_0006 = unknown_0018H(var_0001) --- Guess: Gets position data
+        apply_sprite_effect(-1, 0, 0, 0, var_0006[2], var_0006[1], 17) --- Guess: Applies sprite effect
+        unknown_000FH(62) --- Guess: Triggers event
+        start_endgame() --- Guess: Starts endgame sequence
     end
-    external_005DH() -- Unmapped intrinsic
-    local0 = external_0035H(176, 40, 912, external_001BH(-356)) -- Unmapped intrinsic
-    for local7 in ipairs(local0) do
-        local8 = local7
-        local9 = local8
-        local10 = get_item_data(local9)
-        local11 = get_item_by_type(895) -- Unmapped intrinsic
-        local12 = set_item_data(local10)
-        external_006FH(local9) -- Unmapped intrinsic
-        local5 = add_item(local11, {get_random(150, 200), 17453, 17452, 7715})
+    var_0000 = unknown_0035H(176, 40, 912, 356) --- Guess: Sets NPC location
+    -- Guess: sloop destroys items with random effects
+    for i = 1, 5 do
+        var_0009 = {7, 8, 9, 0, 69}[i]
+        var_000A = unknown_0018H(var_0009) --- Guess: Gets position data
+        var_000B = get_item_status(895) --- Guess: Gets item status
+        var_000C = unknown_0026H(var_000A) --- Guess: Updates position
+        destroy_item_silent(var_0009) --- Guess: Destroys item silently
+        var_0005 = add_container_items(var_000B, {random(50, 150), 17453, 17452, 7715})
     end
-    external_001DH(local1, 15) -- Unmapped intrinsic
-    return
+    unknown_001DH(15, var_0001) --- Guess: Sets object behavior
 end

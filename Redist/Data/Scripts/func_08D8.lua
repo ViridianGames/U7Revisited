@@ -1,65 +1,54 @@
--- Function 08D8: Manages Rowena's awakened dialogue
+--- Best guess: Manages a dialogue with Rowena in Skara Brae, where she asks to be escorted to Trent, joining the party if space is available, with options to discuss Trent or end the conversation.
 function func_08D8()
-    -- Local variables (5 as per .localc)
-    local local0, local1, local2, local3, local4
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local0 = callis_005A()
-    local1 = call_0909H()
-    if not get_flag(0x01B8) then
-        callis_0003(0, -144)
-        add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")
-        set_flag(0x01A7, false)
-        abort()
+    var_0000 = unknown_0909H()
+    var_0001 = unknown_0023H()
+    var_0002 = unknown_001BH(-144)
+    if var_0002 and table.contains(var_0001, var_0002) then
+        unknown_001FH(-144)
+        add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit ends and the other begins, then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Rowena performs a curtsey then turns to regard her handsome husband.")
+        unknown_001DH(15, unknown_001BH(-144))
+        set_flag(422, true)
+        return
     end
-    if not get_flag(0x01A9) then
-        local2 = call_08F7H(-141)
-        if not local2 then
-            add_dialogue("The music of the little box makes Rowena turn her head in your direction. She blinks several times as if waking from a dream, or, in this case, a nightmare. When she sees the Liche, she pretends to be enthralled, but as soon as he is no longer looking in her direction, she motions for you to come closer.")
-        else
-            add_dialogue("The music of the little box makes Rowena turn her head in your direction. She blinks several times as if waking from a dream, or, in this case, a nightmare.")
+    add_dialogue("\"How can I help thee, " .. var_0000 .. "? I must get to Trent quickly.\" She looks impatient to be with her husband.")
+    while true do
+        add_answer({"bye", "Trent"})
+        if not unknown_XXXXH() then
+            if string.lower(unknown_XXXXH()) == "trent" then
+                add_dialogue("Her face lights up as you say her husband's name. \"He is the town smith. He hand crafted that music box thou didst use to awaken me from Horance's dark power.\"")
+                remove_answer("Trent")
+            elseif string.lower(unknown_XXXXH()) == "sacrifice" then
+                add_dialogue("\"I cannot do that to my poor Trent, at least not without seeing him one more time.\" She shakes her head in negation.")
+                set_flag(413, true)
+            elseif string.lower(unknown_XXXXH()) == "bye" then
+                add_dialogue("\"Yes, we must be getting to the smithy. Trent will be worrying about me.\"")
+                return
+            end
         end
-        add_dialogue("\"I am in control of my mind for the time being, but I know not for how long. Tell me what has transpired in the town outside.\" You relay to her what you know of the events you've heard in town.")
-        if not get_flag(0x01C7) then
-            add_dialogue("\"My poor Trent. I cannot bear to think that he's become so hurt that he would forget our love.\" She wrings her hands in sorrow and notices something on one of them.")
-        else
-            add_dialogue("\"And what of my poor Trent? He must be heartsick. I must find a way to get a message to him.\" Something on her hand sparkles brilliantly.")
-        end
-        add_dialogue("\"Please, ", local1, ", wouldst thou take this ring to him and tell him that I still love him. Mayhaps it will restore him to the beloved Trent I knew.\"")
-        local3 = callis_0024(295)
-        local4 = call_0907H(callis_001B(-356))
-        if not local4 then
-            add_dialogue("She takes a ring from her slender finger and places it in your hand. You expect it to pass right through, but it rests neatly in your palm.")
-        else
-            local4 = callis_0026(callis_0018(-356))
-            add_dialogue("She takes a ring from her slender finger and places it in your hand. You expect it to pass right through, and it does. Fortunately, it falls to the floor, softly ringing as it strikes the stones.")
-        end
-        if not local0 then
-            add_dialogue("\"I thank thee, kind lady. I know not how to repay thee.\"")
-        else
-            add_dialogue("\"I thank thee, kind sir. I know not how to repay thee.\"")
-        end
-        add_dialogue("Rowena's eyes begin to look a little glassy and she blinks slowly as if entering a deep trance.")
-        set_flag(0x01A9, true)
     end
-    add_dialogue("She blinks slowly. \"What beautiful music. My Lord... Horance, once gave me a music box like that one.\" Rowena turns away, distracted.")
-    abort()
-
+    add_dialogue("\"This place is horrible. Wouldst thou be so kind as to take me to mine husband, Trent? He has a tendency to worry about me.\"")
+    var_0004 = unknown_090AH()
+    if var_0004 then
+        var_0005 = false
+        add_dialogue("Rowena smiles radiantly, \"Thank thee, " .. var_0000 .. ". Thy spirit is a generous one, indeed.\"")
+        var_0006 = 0
+        var_0001 = unknown_0023H()
+        for _, _ in ipairs(var_0001) do
+            var_0006 = var_0006 + 1
+        end
+        if var_0006 < 8 then
+            add_dialogue("She steps in line and motions for you to lead on.")
+            unknown_001EH(-144)
+            var_0005 = true
+            return
+        else
+            add_dialogue("\"Thou hast too many people in thy party at the moment for me to travel with thee.\"")
+            return
+        end
+    end
+    add_dialogue("\"Then I shall wait here for one of virtue who would safeguard my well being, and help me to return to mine husband.\" She seems distanced as she turns away from you.")
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
 end

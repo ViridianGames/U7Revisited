@@ -1,80 +1,73 @@
--- Manages Caroline's dialogue in Trinsic, covering Fellowship recruitment, Christopher's murder, and ambient slogans.
+--- Best guess: Handles dialogue with Caroline, a Fellowship recruiter in Trinsic, discussing her role and the local murder, with invitations to Fellowship meetings.
 function func_0416(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
+    start_conversation()
     if eventid == 1 then
         switch_talk_to(22, 0)
-        local0 = get_schedule()
-        local1 = switch_talk_to(22)
-
-        if local0 == 7 then
-            local2 = apply_effect(-16, -22) -- Unmapped intrinsic 08FC
-            if local2 then
-                add_dialogue("Caroline asks you to keep your voice down. The Fellowship meeting is in progress.*")
+        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        if var_0000 == 7 then
+            var_0001 = unknown_08FCH(16, 22) --- Guess: Checks time for Fellowship meeting
+            if var_0001 then
+                add_dialogue("Caroline asks you to keep your voice down. The Fellowship meeting is in progress.")
             else
-                add_dialogue("\"Oh! I cannot stop to speak with thee now! I am late for the Fellowship meeting!\"*")
+                add_dialogue("\"Oh! I cannot stop to speak with thee now! I am late for the Fellowship meeting!\"")
             end
-            return
+            abort()
         end
-
         add_answer({"bye", "murder", "job", "name"})
-
         if not get_flag(86) then
             add_dialogue("You see a young woman with a bright smile.")
             set_flag(86, true)
         else
             add_dialogue("\"Hello again!\" Caroline says brightly.")
         end
-
         while true do
-            local answer = get_answer()
-            if answer == "name" then
+            var_0002 = get_answer()
+            if var_0002 == "name" then
                 add_dialogue("\"My parents named me Caroline,\" she says proudly.")
                 remove_answer("name")
-            elseif answer == "job" then
+            elseif var_0002 == "job" then
                 add_dialogue("\"I have no 'job' per se. I have devoted mine energies to helping The Fellowship. I hope to recruit new members.\"")
                 add_answer("Fellowship")
-            elseif answer == "murder" then
+            elseif var_0002 == "murder" then
                 add_dialogue("She looks concerned. \"'Tis awful! Christopher was a nice man. Didst thou know he was one of our members? I cannot believe he is dead...\"")
                 remove_answer("murder")
                 add_answer("members")
-            elseif answer == "members" then
+            elseif var_0002 == "members" then
                 add_dialogue("\"Of The Fellowship. We meet every night at the hall. Thou shouldst visit!\"")
                 remove_answer("members")
-            elseif answer == "Fellowship" then
-                apply_effect() -- Unmapped intrinsic 0919
+            elseif var_0002 == "Fellowship" then
+                unknown_0919H() --- Guess: Explains Fellowship philosophy
                 remove_answer("Fellowship")
                 add_answer({"philosophy", "society"})
-            elseif answer == "society" then
+            elseif var_0002 == "society" then
                 add_dialogue("\"Every night at nine o'clock we have a meeting in the Fellowship hall. Thou mayest consider thyself invited to attend.\"")
                 remove_answer("society")
-            elseif answer == "philosophy" then
-                apply_effect() -- Unmapped intrinsic 091A
+            elseif var_0002 == "philosophy" then
+                unknown_091AH() --- Guess: Provides detailed Fellowship information
                 remove_answer("philosophy")
-            elseif answer == "bye" then
-                add_dialogue("\"Goodbye!\"*")
+            elseif var_0002 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Goodbye!\"")
     elseif eventid == 0 then
-        local1 = switch_talk_to(22)
-        local3 = random(1, 4)
-        local4 = check_item_state(22)
-
-        if local4 == 12 then
-            if local3 == 1 then
-                local4 = "@Come to Fellowship Hall!@"
-            elseif local3 == 2 then
-                local4 = "@Strive For Unity!@"
-            elseif local3 == 3 then
-                local4 = "@Trust Thy Brother!@"
-            elseif local3 == 4 then
-                local4 = "@Worthiness Precedes Reward!@"
+        var_0002 = unknown_001CH(22) --- Guess: Gets object state
+        var_0003 = random(1, 4)
+        if var_0002 == 12 then
+            if var_0003 == 1 then
+                var_0004 = "@Come to Fellowship Hall!@"
+            elseif var_0003 == 2 then
+                var_0004 = "@Strive For Unity!@"
+            elseif var_0003 == 3 then
+                var_0004 = "@Trust Thy Brother!@"
+            elseif var_0003 == 4 then
+                var_0004 = "@Worthiness Precedes Reward!@"
             end
-            bark(22, local4)
+            bark(22, var_0004)
         else
-            switch_talk_to(22)
+            unknown_092EH(22) --- Guess: Triggers a game event
         end
     end
-    return
 end

@@ -1,12 +1,11 @@
--- Function 08F1: Manages insult generation
-function func_08F1(local0)
-    -- Local variables (2 as per .localc)
-    local local1, local2
+--- Best guess: Randomly selects an insult from a list, cycling until a different insult is chosen, used for NPC dialogue or confrontation.
+function func_08F1(var_0000)
+    local var_0001, var_0002
 
-    local1 = {"coward", "toad", "snake", "scoundrel", "wretch", "deceiver", "viper"}
-    local2 = local0
-    while local2 == local0 do
-        local2 = local1[callis_0010(callis_005E(local1), 1)]
+    var_0001 = {"coward", "toad", "snake", "scoundrel", "wretch", "deceiver", "viper"}
+    var_0002 = var_0000
+    while var_0002 == var_0000 do
+        var_0002 = var_0001[math.random(1, #var_0001)]
     end
-    return local2
+    return var_0002
 end

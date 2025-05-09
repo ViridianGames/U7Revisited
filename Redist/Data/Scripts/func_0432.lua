@@ -1,90 +1,85 @@
--- Manages Fred's dialogue in Britain, covering meat sales at the Farmer's Market, Paws slaughterhouse, and Morfin's activities.
+--- Best guess: Handles dialogue with Fred, a farmer at the Farmer's Market, selling meats and discussing the slaughterhouse in Paws run by Morfin, a merchant from Buccaneer's Den.
 function func_0432(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
+    start_conversation()
     if eventid == 1 then
         switch_talk_to(50, 0)
-        local0 = get_player_name()
-        local1 = get_party_size()
-        local2 = switch_talk_to(50)
-
+        var_0000 = get_player_title()
+        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = unknown_001CH(50) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-
         if not get_flag(179) then
             add_dialogue("You see a friendly-looking farmer who waves at you as you approach.")
             set_flag(179, true)
         else
-            add_dialogue("\"Hello again, " .. local0 .. ".\" says Fred.")
+            add_dialogue("\"Hello again, " .. var_0000 .. ".\" says Fred.")
         end
-
         while true do
-            local answer = get_answer()
-            if answer == "name" then
+            var_0003 = get_answer()
+            if var_0003 == "name" then
                 add_dialogue("\"My name is Fred.\"")
                 remove_answer("name")
-            elseif answer == "job" then
+            elseif var_0003 == "job" then
                 add_dialogue("\"I sell meats here at the Farmer's Market in Britain.\"")
                 add_answer({"Farmer's Market", "meats"})
-            elseif answer == "meats" then
+            elseif var_0003 == "meats" then
                 add_dialogue("\"They are the tastiest meats that thou canst buy. Do thyself a favor and try some.\"")
                 remove_answer("meats")
                 add_answer("buy")
-            elseif answer == "Farmer's Market" then
+            elseif var_0003 == "Farmer's Market" then
                 add_dialogue("\"Here at the Farmer's Market we sell vegetables bought from the farmers just outside of town, as well as meats from the slaughterhouse in Paws.\"")
                 remove_answer("Farmer's Market")
                 add_answer({"Paws", "slaughterhouse"})
-            elseif answer == "slaughterhouse" then
+            elseif var_0003 == "slaughterhouse" then
                 add_dialogue("\"It is run by a man named Morfin, a very successful merchant from Buccaneer's Den.\"")
                 remove_answer("slaughterhouse")
                 add_answer({"Buccaneer's Den", "Morfin"})
-            elseif answer == "Morfin" then
+            elseif var_0003 == "Morfin" then
                 add_dialogue("\"Morfin is an unusual character. If I did not know any better I would say he was involved with a number of shady business activities.\"")
                 remove_answer("Morfin")
-            elseif answer == "Buccaneer's Den" then
+            elseif var_0003 == "Buccaneer's Den" then
                 add_dialogue("\"Morfin left that place because he saw all of the commerce that was developing there as competition to his own business activities and moved to Paws.\"")
                 remove_answer("Buccaneer's Den")
-            elseif answer == "Paws" then
+            elseif var_0003 == "Paws" then
                 add_dialogue("\"Paws is a good place to go to buy things for low prices. Many of the people are rather poor, I am sorry to say. There is little active commerce there, however. In Paws, one must deal with people on a more personal level.\"")
                 remove_answer("Paws")
-            elseif answer == "buy" then
-                if local2 ~= 7 then
+            elseif var_0003 == "buy" then
+                if var_0002 ~= 7 then
                     add_dialogue("\"Thou must return when the Farmer's Market is open.\"")
                 else
                     add_dialogue("\"Wouldst thou like to buy some meats?\"")
-                    local3 = get_answer()
-                    if local3 then
-                        add_dialogue("\"We have a fine selection of meats for thee today, " .. local0 .. ".\"")
-                        buy_meats() -- Unmapped intrinsic 088C
+                    var_0003 = select_option()
+                    if var_0003 then
+                        add_dialogue("\"We have a fine selection of meats for thee today, " .. var_0000 .. ".\"")
+                        unknown_088CH() --- Guess: Processes meat purchase
                     else
                         add_dialogue("\"Come back when thou art hungry and we shall serve thee then.\"")
                     end
                 end
                 remove_answer("buy")
-            elseif answer == "bye" then
-                add_dialogue("\"Goodbye, " .. local0 .. ".\"*")
+            elseif var_0003 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Goodbye, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        local1 = get_party_size()
-        local2 = switch_talk_to(50)
-        local4 = random(1, 4)
-        local5 = ""
-
-        if local2 == 7 then
-            if local4 == 1 then
-                local5 = "@Get thy vegetables here!@"
-            elseif local4 == 2 then
-                local5 = "@Get thy meats here!@"
-            elseif local4 == 3 then
-                local5 = "@Eggs for sale!@"
-            elseif local4 == 4 then
-                local5 = "@Best prices in Britannia!@"
+        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = unknown_001CH(50) --- Guess: Gets object state
+        if var_0002 == 7 then
+            var_0004 = random(1, 4)
+            if var_0004 == 1 then
+                var_0005 = "@Get thy vegetables here!@"
+            elseif var_0004 == 2 then
+                var_0005 = "@Get thy meats here!@"
+            elseif var_0004 == 3 then
+                var_0005 = "@Eggs for sale!@"
+            elseif var_0004 == 4 then
+                var_0005 = "@Best prices in Britannia!@"
             end
-            bark(50, local5)
+            bark(50, var_0005)
         else
-            switch_talk_to(50)
+            unknown_092EH(50) --- Guess: Triggers a game event
         end
     end
-    return
 end

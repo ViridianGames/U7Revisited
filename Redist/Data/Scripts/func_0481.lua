@@ -1,95 +1,149 @@
--- func_0481.lua
--- Corin's dialogue as a candlemaker in Britain
+--- Best guess: Handles dialogue with Russell, a shipwright in New Magincia, selling ship deeds and sextants, and discussing a shipwreck involving three strangers, a locket, the Crown Jewel, and Hook.
+function func_0481(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-
-function func_0481(eventid)
-    local answers = {}
-    local flag_00E5 = get_flag(0x00E5) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00F4 = get_flag(0x00F4) -- Candles topic
-    local npc_id = -100 -- Corin's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00F4 then
-            add_answer( "candles")
+        switch_talk_to(129, 0)
+        var_0000 = get_player_title()
+        var_0001 = unknown_003BH() --- Guess: Checks game state
+        var_0002 = unknown_001CH(129) --- Guess: Gets object state
+        var_0003 = unknown_0067H() --- Guess: Checks Fellowship membership
+        add_answer({"bye", "job", "name"})
+        if not get_flag(381) then
+            add_answer("locket")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
+        if var_0003 then
+            add_answer("medallion")
         end
-
-        if not flag_00E5 then
-            add_dialogue("You see a careful man pouring wax, his shop glowing with rows of candles.")
-            set_flag(0x00E5, true)
+        if not get_flag(295) then
+            add_answer({"Crown Jewel", "Hook"})
+        end
+        if not get_flag(384) then
+            add_answer("strangers")
+        end
+        if not get_flag(394) then
+            add_dialogue("Before you is a shrewd-looking craftsman, obviously filled with the contentment of a peaceful life.")
+            set_flag(394, true)
         else
-            add_dialogue("\"Hail, \" .. get_player_name() .. \",\" Corin says, trimming a wick.")
+            add_dialogue("\"What may I do for thee?\" says Russell.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Corin sets down a mold. \"Need a candle or a chat?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Corin, candlemaker of Britain, lightin’ the way for all.\"")
+            var_0004 = get_answer()
+            if var_0004 == "name" then
+                add_dialogue("\"I am Russell, a shipwright.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I craft candles for homes and shops. The Fellowship’s trade deals bring wax, but their hold on Patterson’s got me a bit uneasy.\"")
-                add_answer( "candles")
-                add_answer( "Fellowship")
-                set_flag(0x00F4, true)
-            elseif choice == "candles" then
-                add_dialogue("\"I make tallow and beeswax candles, but prices are high from taxes. Folk like Weston can’t afford light, and that’s stirrin’ trouble.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("candles")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes drive up my costs. It’s hardest on Paws folk, pushin’ ‘em to acts like Weston’s.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of Britain. Weston’s from there—strugglin’ folk, and the Fellowship’s aid don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—sad tale. Figg’s arrest, backed by the Fellowship, was harsh, no mercy shown.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, enforcin’ their order. His role in Weston’s arrest shows they’re more about control than helpin’ folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals keep my shop lit, but their ties to Patterson and Figg make me think they’re kindlin’ more than just trade.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m watchin’ close.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0004 == "job" then
+                add_dialogue("\"I build ships in New Magincia. It is a profession I enjoy very much. I also sell deeds for my ships, and sextants by which one can navigate the open seas.\"")
+                add_answer({"sextants", "deeds", "New Magincia"})
+            elseif var_0004 == "deeds" then
+                if var_0002 == 7 then
+                    if get_flag(403) then
+                        add_dialogue("\"But I have already sold thee the deed to 'The Nymphet'! I am afraid that was the only ship I had at this time.\"")
+                    else
+                        add_dialogue("\"Thou wishest to purchase my ship 'The Nymphet'? The deed will cost thee 600 gold.\"")
+                        var_0005 = select_option()
+                        if var_0005 then
+                            var_0006 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                            if var_0006 >= 600 then
+                                var_0007 = unknown_002CH(false, 359, 17, 797, 1) --- Guess: Checks inventory space
+                                if var_0007 then
+                                    add_dialogue("\"'The Nymphet' is thine, " .. var_0000 .. ". Enjoy the waters.\"")
+                                    var_0008 = unknown_002BH(true, 359, 359, 644, 600) --- Guess: Deducts item and adds item
+                                    set_flag(403, true)
+                                else
+                                    add_dialogue("\"Thou art carrying too much to take thy deed. Come back after putting some things down.\"")
+                                end
+                            else
+                                add_dialogue("\"Mine apologies, " .. var_0000 .. ", thou dost not have enough gold.\"")
+                            end
+                        else
+                            add_dialogue("\"I understand, " .. var_0000 .. ", the seas aren't for everyone.\"")
+                        end
+                    end
                 else
-                    add_dialogue("\"Wise to doubt ‘em. Their influence is heavier than a crate of wax.\"")
+                    add_dialogue("\"When my shop is again open I shall be more than happy to help thee.\"")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Stay bright, \" .. get_player_name() .. \".\"")
+                remove_answer("deeds")
+            elseif var_0004 == "sextants" then
+                if var_0002 == 7 then
+                    add_dialogue("\"Thou wishest to purchase one of my fine sextants? 'Twill cost thee 40 gold.\"")
+                    var_0009 = select_option()
+                    if var_0009 then
+                        var_000A = unknown_0931H(359, 359, 644, 40, 357) --- Guess: Checks item in inventory
+                        if var_000A then
+                            add_dialogue("\"'Tis thine, " .. var_0000 .. ". Enjoy the waters.\"")
+                            var_000B = unknown_002BH(true, 359, 359, 644, 40) --- Guess: Deducts item and adds item
+                            var_000B = unknown_002CH(true, 359, 359, 650, 1) --- Guess: Checks inventory space
+                            if not var_000B then
+                                add_dialogue("\"I would gladly give thee thy sextant but thou shalt have to put something down! Thou art carrying too much to take it.\"")
+                            end
+                        else
+                            add_dialogue("\"Mine apologies, " .. var_0000 .. ", thou dost not have enough gold.\"")
+                        end
+                    else
+                        add_dialogue("\"I understand, " .. var_0000 .. ", some of us can navigate with just the naked stars!\"")
+                    end
+                else
+                    add_dialogue("\"At present my shop is closed. If thou wilt come back during business hours I shall be more than happy to help thee.\"")
+                end
+                remove_answer("sextants")
+            elseif var_0004 == "New Magincia" then
+                add_dialogue("\"Things have been very peaceful in New Magincia. There has been little trouble from outsiders lately.\"")
+                add_answer("outsiders")
+                remove_answer("New Magincia")
+            elseif var_0004 == "outsiders" then
+                add_dialogue("\"Before thine arrival there had not been a stranger in New Magincia for years, save for the survivors of the shipwreck.\"")
+                add_answer("shipwreck")
+                remove_answer("outsiders")
+            elseif var_0004 == "shipwreck" then
+                add_dialogue("\"I found the wreckage. Three men were clinging to it for their lives.\"")
+                add_answer({"three men", "wreckage"})
+                remove_answer("shipwreck")
+            elseif var_0004 == "wreckage" then
+                add_dialogue("\"I had never seen a ship like it before. The markings show it was constructed by a Minoc shipwright named Owen. It was not very well constructed.\"")
+                remove_answer("wreckage")
+            elseif var_0004 == "three men" or var_0004 == "strangers" then
+                add_dialogue("\"They were from Buccaneer's Den. Most people that come here come because they are lost on their way to or from Buccaneer's Den.\"")
+                set_flag(384, true)
+                add_answer("Buccaneer's Den")
+                remove_answer({"three men", "strangers"})
+            elseif var_0004 == "Buccaneer's Den" then
+                add_dialogue("\"The three men wish to go back. They say there is a house of games in Buccaneer's Den.\" Russell shrugs. \"As if that would be a reason to go there.\"")
+                add_dialogue("\"I offered to sell them a ship, but they had no money. They actually seemed offended when I would not give it to them for free!\"")
+                remove_answer("Buccaneer's Den")
+            elseif var_0004 == "locket" then
+                add_dialogue("\"The three strangers tried to offer me some kind of trinket to build or sell them a ship. It sounds like the locket thou art describing.\"")
+                add_answer("trinket")
+                remove_answer("locket")
+            elseif var_0004 == "trinket" then
+                add_dialogue("\"I would not have accepted their offer, but I was curious. Later they said nothing when I wanted to see the trinket again. I doubt they have it.\"")
+                remove_answer("trinket")
+            elseif var_0004 == "medallion" then
+                add_dialogue("\"I could not help noticing your medallion. It does look somewhat sinister. I cannot recall ever having seen one like it before.\"")
+                remove_answer("medallion")
+            elseif var_0004 == "Crown Jewel" then
+                if not get_flag(385) then
+                    add_dialogue("\"The Crown Jewel just left here a short while ago. I do not know where it was headed.\"")
+                    set_flag(385, true)
+                else
+                    add_dialogue("\"I have heard nothing more of the Crown Jewel since we last spoke of it.\"")
+                end
+                remove_answer("Crown Jewel")
+            elseif var_0004 == "Hook" then
+                if not get_flag(386) then
+                    add_dialogue("\"Just as the Crown Jewel left I saw a man with a hook jump on board. There was a gargoyle accompanying him.\"")
+                    set_flag(386, true)
+                else
+                    add_dialogue("\"I have heard nothing more of this man Hook since we last spoke of him.\"")
+                end
+                remove_answer("Hook")
+            elseif var_0004 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Fare thee well, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(129) --- Guess: Triggers a game event
     end
 end
-
-return func_0481

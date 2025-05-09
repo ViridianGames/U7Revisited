@@ -1,16 +1,16 @@
--- Casts the "In Lor" spell, creating a light effect with a specific intensity.
+--- Best guess: Manages the "In Lor" spell, creating a light source (ID 500) with specific properties, with a fallback effect if the spell fails.
 function func_064D(eventid, itemref)
-    local local0
+    local var_0000
 
     if eventid == 1 then
+        unknown_005CH(itemref)
         bark(itemref, "@In Lor@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1613, 17493, 17511, 8037, 68, 17496, 7715})
+        if not unknown_0906H() then
+            var_0000 = unknown_0001H(itemref, {1613, 17493, 17511, 8037, 68, 17496, 7715})
         else
-            local0 = add_item(itemref, {1542, 17493, 17511, 7781})
+            var_0000 = unknown_0001H(itemref, {1542, 17493, 17511, 7781})
         end
     elseif eventid == 2 then
-        external_0057H(500) -- Unmapped intrinsic
+        unknown_0057H(500)
     end
-    return
 end

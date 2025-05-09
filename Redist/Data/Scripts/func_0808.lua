@@ -1,13 +1,13 @@
--- Function 0808: Update party flags
+--- Best guess: Removes party members and resets flags, possibly for party management or event cleanup.
 function func_0808(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = call_093CH(_GetPartyMembers(), -356)
-    local1 = call_001CH(-356)
-    while local2 do
-        local4 = local2
+    var_0000 = remove_from_party(get_party_members(), 356) --- Guess: Removes from party
+    var_0001 = get_party_leader() --- Guess: Gets party leader
+    -- Guess: sloop resets flags for party members
+    for i = 1, 5 do
+        var_0004 = {2, 3, 4, 0, 17}[i]
         set_flag(57, false)
-        call_001DH(local1, local4)
-        local2 = get_next_item() -- sloop
+        unknown_001DH(var_0001, var_0004) --- Guess: Sets object behavior
     end
 end

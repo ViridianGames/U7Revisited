@@ -1,54 +1,33 @@
--- Function 00D2: Item processing with quality checks and randomization
+--- Best guess: Creates and positions an item (ID 377) randomly near an object if conditions are met, likely for spawning resources or loot.
 function func_00D2(eventid, itemref)
-    -- Local variables (7 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    -- Check if eventid == 1
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        var_0000 = get_object_quality(itemref)
+        -- callis 003B, 0 (unmapped)
+        if var_0000 == unknown_003BH() then
+            return
+        end
+        -- callis 003B, 0 (unmapped)
+        var_0001 = unknown_0015H(unknown_003BH(), itemref)
+        if random2(4, 1) > 1 then
+            -- callis 0024, 1 (unmapped)
+            var_0002 = unknown_0024H(377)
+            if var_0002 then
+                -- calli 0089, 2 (unmapped)
+                unknown_0089H(18, var_0002)
+                -- calli 008A, 2 (unmapped)
+                unknown_008AH(11, var_0002)
+                set_object_frame(var_0002, 24)
+                -- callis 0018, 1 (unmapped)
+                var_0003 = unknown_0018H(itemref)
+                var_0004 = aidx(var_0003, 1) - random2(1, 0)
+                var_0005 = aidx(var_0003, 2) - random2(1, 0)
+                var_0006 = aidx(var_0003, 3) + 1
+                -- callis 0026, 1 (unmapped)
+                var_0001 = unknown_0026H({var_0004, var_0005, var_0006})
+            end
+        end
     end
-
-    -- Get item quality and store in local0
-    local0 = _GetItemQuality(itemref)
-
-    -- Call function 003B and compare with local0
-    if local0 == callis_003B() then
-        -- Note: Original has 'db 2c' here, possibly a debug artifact, ignored
-    end
-
-    -- Call function 0015 and store result in local1
-    local1 = callis_0015(itemref)
-
-    -- Random check (original checks if Random2(0,1) > 1, which is impossible)
-    -- Assuming Random2(min, max) returns integer in [min, max]
-    if _Random2(0, 1) > 1 then
-        -- This condition seems unreachable; possible bug in original
-        return
-    end
-
-    -- Call function 0024 with 377 (0179H)
-    local2 = callis_0024(377)
-
-    -- If local2 is non-zero, proceed
-    if local2 == 0 then
-        return
-    end
-
-    -- Set item attributes
-    calli_0089(18, local2)  -- Set attribute 18
-    calli_008A(11, local2)  -- Set attribute 11
-    _SetItemFrame(24, local2)  -- Set item frame to 24
-
-    -- Get array from function 0018
-    local3 = callis_0018(itemref)
-
-    -- Modify array elements
-    local4 = 1 - _Random2(0, 1)  -- Array index 1
-    local5 = 1 - _Random2(0, 1)  -- Array index 2
-    local6 = 2                    -- Array index 3 (1 + 1)
-
-    -- Create new array and pass to function 0026
-    local1 = callis_0026({local4, local5, local6})
-
-    return local1
+    return
 end

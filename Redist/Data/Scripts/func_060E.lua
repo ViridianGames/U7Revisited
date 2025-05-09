@@ -1,77 +1,98 @@
--- Handles resurrection of party members or NPCs, playing music, adjusting positions, and managing game state.
+--- Best guess: Handles a resurrection mechanic, restoring party members or NPCs, playing music, and managing item states (e.g., containers, frames) with complex array-based animations and NPC property updates.
 function func_060E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25, local26, local27, local28, local29, local30
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E
 
     if eventid == 4 then
-        set_schedule(0, 1, 12)
-        play_music(0, 255)
-        play_music(0, 17)
-        external_0083() -- Unmapped intrinsic
-        local0 = resurrect_actor(itemref) -- Unmapped intrinsic
-        for local1 in ipairs(local0) do
-            local2 = local1
-            local3 = local2
-            local4 = resurrect_party_member(local3) -- Unmapped intrinsic
+        unknown_008CH(0, 1, 12)
+        _PlayMusic(0, 255)
+        _PlayMusic(0, 17)
+        unknown_0083H()
+        var_0000 = unknown_0093H(itemref)
+        for var_0003 in ipairs(var_0000) do
+            var_0004 = unknown_0051H(var_0003)
         end
-        local4 = add_item(5, {1550, 17493, 7715}, itemref)
+        var_0004 = unknown_0002H(5, {1550, 17493, 7715}, itemref)
+    end
+
+    if eventid ~= 2 then
+        unknown_0073H()
         return
     end
 
-    if eventid == 2 then
-        local5 = get_item_type(itemref)
-        local6 = get_item_data(itemref)
-        set_flag(57, false)
-        if not get_flag(87) then
-            local14 = get_container_items(-356, {763, 899, 1791}, {753, 1595, -356})
-            set_flag(58, local14)
-            if not local14 then
-                local15 = add_item(4, 90, -359, -356)
-                local15 = set_schedule(356, local15)
-                for local16 in ipairs(local15) do
-                    local17 = local16
-                    local18 = get_item_data(local17)
-                    if local18[1] <= local6[1] and local18[1] >= local6[1] - 5 and local18[2] + 8 <= local6[2] and local18[2] - 8 >= local6[2] then
-                        local19 = get_item_quality(local19, local17)
-                        local20 = local19 * 6
-                        while local20 > 100 do
-                            local21 = add_item(100, 644)
-                            if local21 then
-                                set_item_quality(100, local21)
-                                set_item_owner(local18, local21)
-                            end
-                            local20 = local20 - 100
+    var_0005 = get_object_shape(itemref)
+    var_0006 = unknown_0018H(itemref)
+    set_flag(57, false)
+    if get_flag(87) then
+        set_flag(58, unknown_08F9H(unknown_0018H(-356), {0=1791, 1595=899, 753=-356}))
+        if not get_flag(58) then
+            var_0007 = unknown_0035H(4, 90, 359, -356)
+            var_0007 = unknown_093CH(unknown_001BH(-356), var_0007)
+            for var_000A in ipairs(var_0007) do
+                if unknown_001CH(var_000A) == 0 then
+                    var_000B = unknown_003CH(var_000A)
+                    if var_000B == 0 or var_000B == 1 then
+                        unknown_001DH(12, var_000A)
+                    elseif var_000B == 3 or var_000B == 2 then
+                        var_000C = get_container_objects(359, 359, 359, var_000A)
+                        for var_000F in ipairs(var_000C) do
+                            unknown_006FH(var_000F)
                         end
-                        local21 = add_item(local20, 644)
-                        if local21 then
-                            set_item_quality(local20, local21)
-                            set_item_owner(local18, local21)
-                        end
-                        set_schedule(local17, 11)
-                        local22 = math.floor((local6[2] - local5[2]) / 4)
-                        local23 = "@A winnah in lane " .. local22 .. "!@"
-                        bark(232, local23, 1)
-                        remove_item(local17)
-                    end
-                end
-                if not get_flag(58) then
-                    set_flag(58, true)
-                elseif not get_flag(59) then
-                    set_flag(59, true)
-                elseif not get_flag(60) and get_flag(59) then
-                    set_flag(58, false)
-                    set_flag(59, false)
-                    set_flag(60, false)
-                    local0 = get_item_by_type(764)
-                    for local16 in ipairs(local0) do
-                        local17 = local16
-                        set_object_frame(local17, 0)
+                        unknown_003FH(var_000A)
                     end
                 end
             end
         else
-            external_0073() -- Unmapped intrinsic
+            var_0010 = {1733, 836}
+            get_object_frame(-356, 13)
+            unknown_0089H(-356, 1)
+            var_0011 = {2=-1, 2=1, -1=4, -1=-4, 1=4, 1=-4, 4=0, 4=0, 4=0, 4=-4}
+            var_0012 = 0
+            var_0013 = {8496=var_0012, 8496=var_0012, 8502=var_0012, 8498=var_0012, 8502=var_0012, 8498=var_0012, 8496=var_0012, 8502=var_0012, 7730=var_0012}
+            var_0014 = {8=-17, 0=-17, 8=8, 8=8, 8=-7, 8=0, 0=8, 0=-7}
+            var_0015 = {13=var_0012, 13=var_0012, 29=var_0012, 29=var_0012, 29=var_0012, 13=var_0012, 13=var_0012}
+            var_0016 = 1
+            var_0017 = unknown_008DH()
+            for var_0018 in ipairs(var_0017) do
+                unknown_008AH(var_0018, 8)
+                unknown_008AH(var_0018, 7)
+                unknown_008AH(var_0018, 3)
+                unknown_008AH(var_0018, 2)
+                unknown_008AH(var_0018, 0)
+                unknown_008AH(var_0018, 9)
+                var_0004 = _SetNPCProperty(var_0018, 0, _GetNPCProperty(var_0018, 3) - _GetNPCProperty(var_0018, 3))
+                var_0004 = _SetNPCProperty(var_0018, 5, _GetNPCProperty(var_0018, 6) - _GetNPCProperty(var_0018, 5))
+                unknown_001DH(var_0018, 31)
+            end
+            var_001A = var_0017
+            if unknown_001CH(-167) == 0 or unknown_001CH(-168) == 0 then
+                if not unknown_0938H(-167) then
+                    var_001A = table.insert(var_001A, unknown_001BH(-167))
+                    unknown_001DH(-167, 11)
+                end
+                if not unknown_0938H(-168) then
+                    var_001A = table.insert(var_001A, unknown_001BH(-168))
+                    unknown_001DH(-168, 11)
+                end
+            end
+            unknown_003EH(var_0010, -357)
+            for var_001B in ipairs(var_001A) do
+                if var_001B == unknown_001BH(-356) then
+                    unknown_005CH(var_001B)
+                    if not unknown_0088H(var_001B, 1) then
+                        var_0004 = unknown_0001H(var_001B, {var_0013[var_0016], 17497, 7777})
+                        var_001D = {var_0010[3] - 1, var_0010[2], var_0010[1] + var_0011[var_0016 + 1]}
+                    else
+                        var_001D = {var_0010[3], var_0010[2], var_0010[1] + var_0014[var_0016 + 1]}
+                        get_object_frame(var_001B, var_0015[var_0016])
+                        var_001E = random2(20, 14)
+                        var_0004 = unknown_0001H(var_001B, {1561, 8533, var_001E, 7719})
+                    end
+                    unknown_003EH(var_001D, var_001B)
+                    var_0016 = var_0016 + 2
+                end
+            end
+            unknown_008AH(-356, 4)
+            var_0004 = unknown_0001H(-356, {1552, 8021, 2, 7719})
         end
     end
-
-    return
 end

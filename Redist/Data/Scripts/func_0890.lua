@@ -1,110 +1,109 @@
--- Function 0890: Adjhar golem dialogue
+--- Best guess: Handles dialogue with Adjhar, progressing a quest involving Bollux’s sacrifice and the book "The Stone of Castambre".
 function func_0890(eventid, itemref)
-    local local0
+    local var_0000, var_0001
 
-    switch_talk_to(288, 0)
+    start_conversation()
+    switch_talk_to(0, 288) --- Guess: Initiates dialogue
     if not get_flag(788) then
-        add_answer({"bye", "sacrificed", "Don't know"})
+        add_answer({"bye", "sacrificed", "Don't know"}) --- Guess: Adds dialogue options
         set_flag(788, true)
     else
-        add_answer({"bye", "job", "name"})
+        add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     end
     if not get_flag(798) then
-        add_answer("what next")
+        add_answer("what next") --- Guess: Adds dialogue option
     end
     while true do
-        local answer = get_answer()
-        if answer == "Don't know" then
-            add_dialogue(itemref, "\"He kneels over the body and inspects the other golem. As his fingers trace around the gaping hole in Bollux's chest, an expression of understanding fills his visage.~\"H-his heart is gone!\"~ He stares down at his own chest. \"He sacrificed himself by giving me his heart... the fool!\" His words are insulting but his tone is affectionate.\"")
-            remove_answer({"sacrificed", "Don't know"})
-            add_dialogue(itemref, "\"I must help him, as he helped me! Wilt thou assist?\"")
-            if get_answer() then
-                add_dialogue(itemref, "\"Very good,\" he says, noticeably relieved. \"I thank thee in advance.\"")
+        if compare_answer("Don't know", 1) then
+            add_dialogue("@He kneels over the body and inspects the other golem...@")
+            remove_answer({"sacrificed", "Don't know"}) --- Guess: Removes dialogue options
+            add_dialogue("@I must help him, as he helped me! Wilt thou assist?@")
+            if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                add_dialogue("@Very good,' he says, noticeably relieved. 'I thank thee in advance.@")
                 set_flag(798, true)
-                add_answer({"fool", "job", "name"})
+                add_answer({"fool", "job", "name"}) --- Guess: Adds dialogue options
             else
-                add_dialogue(itemref, "\"Then I must go this one myself,\" he says angrily. \"'Tis no more than one friend would do for another... no more than Bollux did for me!\"")
-                add_dialogue(itemref, "\"He looks at you carefully. His stoney features do nothing to hide the suspicion on his face, or in his voice.~\"It is quite obvious to me thou art but a lost traveler and certainly not the Avatar for whom I mistook thee.\"*")
+                add_dialogue("@Then I must go this one myself,' he says angrily...@")
+                add_dialogue("@He looks at you carefully. His stoney features...@")
                 return
             end
-        elseif answer == "sacrificed" then
-            add_dialogue(itemref, "\"You quickly relate the details of Bollux's death as he pulled the object from his chest and placed it in the other golem's.~\"He sacrificed himself by giving me his heart... the fool!\" His words are insulting but his tone is affectionate.\"")
-            remove_answer({"sacrificed", "Don't know"})
-            add_dialogue(itemref, "\"I must help him, as he helped me! Wilt thou assist?\"")
-            if get_answer() then
-                add_dialogue(itemref, "\"Very good,\" he says, notably relieved. \"I thank thee in advance.\"")
+        elseif compare_answer("sacrificed", 1) then
+            add_dialogue("@You quickly relate the details of Bollux's death...@")
+            remove_answer({"sacrificed", "Don't know"}) --- Guess: Removes dialogue options
+            add_dialogue("@I must help him, as he helped me! Wilt thou assist?@")
+            if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                add_dialogue("@Very good,' he says, notably relieved. 'I thank thee in advance.@")
                 set_flag(798, true)
-                add_answer({"fool", "job", "name"})
+                add_answer({"fool", "job", "name"}) --- Guess: Adds dialogue options
             else
-                add_dialogue(itemref, "\"Then I must go this one myself,\" he says angrily. \"'Tis no more than one friend would do for another... no more than Bollux did for me!\"")
-                add_dialogue(itemref, "\"He looks at you carefully. His stoney features do nothing to hide the suspicion on his face, or in his voice.~\"It is quite obvious to me thou art but a lost traveler and certainly not the Avatar for whom I mistook thee.\"*")
+                add_dialogue("@Then I must go this one myself,' he says angrily...@")
+                add_dialogue("@He looks at you carefully. His stoney features...@")
                 return
             end
-        elseif answer == "name" then
-            remove_answer("name")
-            add_dialogue(itemref, "\"I am the golem called Adjhar, at thy service.\"")
-        elseif answer == "job" then
-            add_dialogue(itemref, "\"I am one of the guardians of the Shrines of the Principles. That was exactly what Bollux and I were doing when the wall fell and crushed me.\"")
-            add_answer({"wall", "Shrines", "Bollux"})
-        elseif answer == "Shrines" then
-            remove_answer("Shrines")
-            add_dialogue(itemref, "\"Surely thou hast heard of the Shrines of the Three Principles: Truth, Love, and Courage! We golems were fabricated to protect the Shrines, for only an Avatar -- -the- Avatar -- may utilize the awesome power they can convey.\"")
-        elseif answer == "wall" then
-            remove_answer("wall")
-            add_dialogue(itemref, "\"I do not remember the incident clearly. However, I will relate what I can recall. Bollux and I were standing guard in the Shrine Room of the Principles when we detected an intrusion into the castle. I remember nothing more than being aware of great heat, and then part of the wall crumbling atop me, crushing my legs. I suppose Bollux was more fortunate. Was it he who carried me here?\"")
-            if get_answer() then
-                add_dialogue(itemref, "\"Then it is imperative that we find a way to bring him back! If nothing else, I owe him my gratitude.\"")
+        elseif compare_answer("name", 1) then
+            remove_answer("name") --- Guess: Removes dialogue option
+            add_dialogue("@I am the golem called Adjhar, at thy service.@")
+        elseif compare_answer("job", 1) then
+            add_dialogue("@I am one of the guardians of the Shrines of the Principles...@")
+            add_answer({"wall", "Shrines", "Bollux"}) --- Guess: Adds dialogue options
+        elseif compare_answer("Shrines", 1) then
+            remove_answer("Shrines") --- Guess: Removes dialogue option
+            add_dialogue("@Surely thou hast heard of the Shrines of the Three Principles...@")
+        elseif compare_answer("wall", 1) then
+            remove_answer("wall") --- Guess: Removes dialogue option
+            add_dialogue("@I do not remember the incident clearly...@")
+            if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                add_dialogue("@Then it is imperative that we find a way to bring him back!...@")
             else
-                add_dialogue(itemref, "\"Strange,\" he says, puzzled. \"I am at a loss then to explain my arrival here.~Regardless, I -must- find a way to restore life to him!\"")
+                add_dialogue("@Strange,' he says, puzzled. 'I am at a loss then to explain my arrival here...@")
             end
-        elseif answer == "Bollux" then
-            add_dialogue(itemref, "\"Hast thou not already met him? He is my older brother, and my friend.\"")
-            remove_answer("Bollux")
-            add_answer("older")
-        elseif answer == "older" then
-            add_dialogue(itemref, "\"Master Astelleron -- we actually called him our father -- created him before he did me. And he instilled Bollux with a personality first.\"")
-            remove_answer("older")
-        elseif answer == "what next" then
-            remove_answer("what next")
-            add_dialogue(itemref, "\"Dost thou have the book entitled, `The Stone of Castambre?'\"")
-            if get_answer() then
-                local0 = check_condition(-359, 144, 642, 1, -357)
-                if local0 then
-                    add_dialogue(itemref, "\"His eyes reveal his hope. As he takes the book from you, it almost appears as if he is smiling.\"")
-                    call_0891H()
+        elseif compare_answer("Bollux", 1) then
+            add_dialogue("@Hast thou not already met him? He is my older brother, and my friend.@")
+            remove_answer("Bollux") --- Guess: Removes dialogue option
+            add_answer("older") --- Guess: Adds dialogue option
+        elseif compare_answer("older", 1) then
+            add_dialogue("@Master Astelleron -- we actually called him our father...@")
+            remove_answer("older") --- Guess: Removes dialogue option
+        elseif compare_answer("what next", 1) then
+            remove_answer("what next") --- Guess: Removes dialogue option
+            add_dialogue("@Dost thou have the book entitled, 'The Stone of Castambre?'@")
+            if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                var_0000 = check_item_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
+                if var_0000 then
+                    add_dialogue("@His eyes reveal his hope. As he takes the book from you...@")
+                    calle_0891H() --- External call to quest progression
                 else
-                    add_dialogue(itemref, "\"I must see the book the book to use it. Perhaps thou hast mislaid it about somewhere.\" He stares directly at you. \"'Tis vital that I have that tome. I beg thee, retrieve it for me!\"")
+                    add_dialogue("@I must see the book the book to use it...@")
                     set_flag(799, true)
                 end
             else
-                add_dialogue(itemref, "\"Please go and recover it then. I believe it contains information that may help my companion.\"")
+                add_dialogue("@Please go and recover it then. I believe it contains information...@")
                 set_flag(799, true)
             end
-        elseif answer == "fool" then
-            remove_answer("fool")
-            add_dialogue(itemref, "\"Poor Bollux did not know of the Stone of Castambre. His sacrifice was, perhaps, unnecessary. Hast thou, perchance, come across MacCuth's \"The Stone of Castambre?\"")
-            if get_answer() then
-                add_dialogue(itemref, "\"Dost thou have it with thee?\"")
-                if get_answer() then
-                    local0 = check_condition(-359, 144, 642, 1, -357)
-                    if local0 then
-                        add_dialogue(itemref, "\"His eyes reveal his hope. As he takes the book from you, it almost appears as if he is smiling.\"")
-                        call_0891H()
+        elseif compare_answer("fool", 1) then
+            remove_answer("fool") --- Guess: Removes dialogue option
+            add_dialogue("@Poor Bollux did not know of the Stone of Castambre...@")
+            if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                add_dialogue("@Dost thou have it with thee?@")
+                if get_dialogue_choice() then --- Guess: Gets dialogue choice
+                    var_0000 = check_item_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
+                    if var_0000 then
+                        add_dialogue("@His eyes reveal his hope. As he takes the book from you...@")
+                        calle_0891H() --- External call to quest progression
                     else
-                        add_dialogue(itemref, "\"I must see the book the book to use it. Perhaps thou hast mislaid it about somewhere.\" He stares directly at you. \"'Tis vital that I have that tome. I beg thee, retrieve it for me!\"")
+                        add_dialogue("@I must see the book the book to use it...@")
                         set_flag(799, true)
                     end
                 else
-                    add_dialogue(itemref, "\"Please go and recover it then. I believe it contains information that may help my companion.\"")
+                    add_dialogue("@Please go and recover it then. I believe it contains information...@")
                     set_flag(799, true)
                 end
             else
-                add_dialogue(itemref, "\"Then I recommend thou dost search within my master's chambers for it. The pages contain words which may help my companion.\"")
+                add_dialogue("@Then I recommend thou dost search within my master's chambers for it...@")
             end
-        elseif answer == "bye" then
-            add_dialogue(itemref, "\"I can offer nothing more for thine assistance than my deepest appreciation. Please journey in peace.\"*")
+        elseif compare_answer("bye", 1) then
+            add_dialogue("@I can offer nothing more for thine assistance than my deepest appreciation...@")
             return
         end
     end
-    return
 end

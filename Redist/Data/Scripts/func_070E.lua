@@ -1,87 +1,51 @@
--- Manages door states in Courage based on helmet egg flags, updating portcullis or wall frames.
+--- Best guess: Manages a door mechanic in the Courage region, checking flags (829, 830) to toggle door (ID 936) and metal wall (ID 303) states based on quality.
 function func_070E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    local0 = external_0035H(0, 1, 936, itemref) -- Unmapped intrinsic
-    local1 = external_0035H(0, 1, 303, itemref) -- Unmapped intrinsic
-    if get_flag(829) and get_flag(830) then
-        for local2 in ipairs(local1) do
-            local3 = local2
-            local4 = local3
-            local5 = get_item_data(local4)
-            local6 = get_item_quality(local4)
-            external_006FH(local4) -- Unmapped intrinsic
-            local7 = get_item_by_type(936) -- Unmapped intrinsic
-            set_object_frame(local7, 0)
-            local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-            local8 = set_item_data(local5)
+    var_0000 = unknown_0035H(0, 1, 936, itemref)
+    var_0001 = unknown_0035H(0, 1, 303, itemref)
+    if not (get_flag(829) and get_flag(830)) then
+        for var_0002 in ipairs(var_0001) do
+            var_0005 = unknown_0018H(var_0004)
+            var_0006 = _GetItemQuality(var_0004)
+            unknown_006FH(var_0004)
+            var_0007 = unknown_0024H(936)
+            get_object_frame(var_0007, 0)
+            var_0008 = unknown_0015H(var_0006, var_0007)
+            var_0008 = unknown_0026H(var_0005)
         end
     elseif get_flag(829) then
-        for local9 in ipairs(local1) do
-            local10 = local9
-            local4 = local10
-            local6 = get_item_quality(local4)
-            if local6 == 11 then
-                local5 = get_item_data(local4)
-                external_006FH(local4) -- Unmapped intrinsic
-                local7 = get_item_by_type(936) -- Unmapped intrinsic
-                set_object_frame(local7, 0)
-                local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-                local8 = set_item_data(local5)
+        for var_0009 in ipairs(var_0000) do
+            var_0006 = _GetItemQuality(var_0004)
+            if var_0006 == 11 then
+                var_0005 = unknown_0018H(var_0004)
+                unknown_006FH(var_0004)
+                var_0007 = unknown_0024H(936)
+                get_object_frame(var_0007, 0)
+                var_0008 = unknown_0015H(var_0006, var_0007)
+                var_0008 = unknown_0026H(var_0005)
             end
         end
-        for local11 in ipairs(local0) do
-            local12 = local11
-            local4 = local12
-            local6 = get_item_quality(local4)
-            if local6 == 12 then
-                local5 = get_item_data(local4)
-                external_006FH(local4) -- Unmapped intrinsic
-                local7 = get_item_by_type(303) -- Unmapped intrinsic
-                set_object_frame(local7, 4)
-                local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-                local8 = set_item_data(local5)
+        for var_000B in ipairs(var_0001) do
+            var_0006 = _GetItemQuality(var_0004)
+            if var_0006 == 12 then
+                var_0005 = unknown_0018H(var_0004)
+                unknown_006FH(var_0004)
+                var_0007 = unknown_0024H(303)
+                get_object_frame(var_0007, 4)
+                var_0008 = unknown_0015H(var_0006, var_0007)
+                var_0008 = unknown_0026H(var_0005)
             end
         end
     elseif get_flag(830) then
-        for local13 in ipairs(local1) do
-            local14 = local13
-            local4 = local14
-            local6 = get_item_quality(local4)
-            if local6 == 12 then
-                local5 = get_item_data(local4)
-                external_006FH(local4) -- Unmapped intrinsic
-                local7 = get_item_by_type(936) -- Unmapped intrinsic
-                set_object_frame(local7, 0)
-                local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-                local8 = set_item_data(local5)
-            end
-        end
-        for local15 in ipairs(local0) do
-            local16 = local15
-            local4 = local16
-            local6 = get_item_quality(local4)
-            if local6 == 11 then
-                local5 = get_item_data(local4)
-                external_006FH(local4) -- Unmapped intrinsic
-                local7 = get_item_by_type(303) -- Unmapped intrinsic
-                set_object_frame(local7, 4)
-                local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-                local8 = set_item_data(local5)
-            end
-        end
-    else
-        for local17 in ipairs(local0) do
-            local18 = local17
-            local4 = local18
-            local5 = get_item_data(local4)
-            local6 = get_item_quality(local4)
-            external_006FH(local4) -- Unmapped intrinsic
-            local7 = get_item_by_type(303) -- Unmapped intrinsic
-            set_object_frame(local7, 4)
-            local8 = external_0015H(local7, local6) -- Unmapped intrinsic
-            local8 = set_item_data(local5)
+        for var_000D in ipairs(var_0001) do
+            var_0005 = unknown_0018H(var_0004)
+            var_0006 = _GetItemQuality(var_0004)
+            unknown_006FH(var_0004)
+            var_0007 = unknown_0024H(303)
+            get_object_frame(var_0007, 4)
+            var_0008 = unknown_0015H(var_0006, var_0007)
+            var_0008 = unknown_0026H(var_0005)
         end
     end
-    return
 end

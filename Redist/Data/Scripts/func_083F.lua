@@ -1,20 +1,17 @@
--- Handles winch effects, applying items to matching quality objects.
-function func_083F(p0, p1)
-    local local2, local3, local4, local5, local6, local7
+--- Best guess: Checks for items (IDs 271, 272) matching the quality of a winch (P1), applying effects (via 0834H) and updating states if conditions are met.
+function func_083F(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    local2 = array_append(external_0030H(271), external_0030H(272)) -- Unmapped intrinsic
-    local3 = false
-    for local4 in ipairs(local2) do
-        local5 = local4
-        local6 = local5
-        if get_item_quality(local6) == get_item_quality(p1) then
-            local7 = external_0834H() -- Unmapped intrinsic
-            local7 = add_item(p1, {6, -1, 17419, 8014, 1, 7750})
-            local3 = true
+    var_0002 = table.insert(unknown_0030H(271), unknown_0030H(272))
+    var_0003 = false
+    for var_0004 in ipairs(var_0002) do
+        if _GetItemQuality(var_0006) == _GetItemQuality(P1) then
+            var_0007 = unknown_0834H()
+            var_0007 = unknown_0001H(P1, {6, -1, 17419, 8014, 1, 7750})
+            var_0003 = true
         end
     end
-    if local3 and p0 then
-        local7 = add_item(-356, {4, -2, 17419, 17505, 17516, 7937, 6, 7769})
+    if var_0003 and P0 then
+        var_0007 = unknown_0001H(-356, {4, -2, 17419, 17505, 17516, 7937, 6, 7769})
     end
-    return
 end

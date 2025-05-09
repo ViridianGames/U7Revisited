@@ -1,36 +1,30 @@
--- Function 030E: Manages weapon interaction
-function func_030E(itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+--- Best guess: Handles weapon attacks, prompting the player to attack with it and managing item transformations or actions based on selections.
+function func_030E(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid() == 1 then
-        call_08FFH("@Perhaps thou shouldst attack with it.@")
-    elseif eventid() == 4 then
-        local0 = callis_0033()
-        local1 = {local0[3], local0[2], local0[1]}
-        local2 = callis_0024(895)
-        if not local2 then
-            callis_0089(18, local2)
-            local3 = callis_0026(local1)
-            if not local3 then
-                callis_0002({100, 17453, 7715}, local2)
+    if eventid == 1 then
+        unknown_08FFH("@Perhaps thou shouldst attack with it.@", itemref)
+    elseif eventid == 4 then
+        var_0000 = unknown_0033H()
+        var_0001 = {var_0000[2], var_0000[3], var_0000[4]}
+        var_0002 = unknown_0024H(895)
+        if var_0002 then
+            unknown_0089H(18, var_0002)
+            var_0003 = unknown_0026H(var_0001)
+            if not var_0003 then
+                var_0003 = unknown_0002H(var_0002, {100, 7715})
             end
-            if local0[4] == 0 then
-                local4 = callis_0024(224)
-                if not local4 then
-                    callis_0089(18, local4)
-                    callis_0026(local1)
-                end
+        elseif var_0000[4] == 0 then
+            var_0004 = unknown_0024H(224)
+            if var_0004 then
+                unknown_0089H(18, var_0004)
+                var_0003 = unknown_0026H(var_0001)
             end
         end
-        local5 = callis_0035(0, 2, 782, local0)
-        if not local5 then
-            call_0925H(local5)
+        var_0005 = unknown_0035H(0, 2, 782, var_0000)
+        if not var_0005 then
+            unknown_0925H(var_0005)
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

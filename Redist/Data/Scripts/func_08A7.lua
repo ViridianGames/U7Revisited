@@ -1,60 +1,49 @@
--- Function 08A7: Manages food purchase dialogue
+--- Best guess: Manages a shop dialogue for purchasing produce (e.g., grapes, eggs), handling item selection, pricing, and inventory checks with quantity prompts for bulk items.
 function func_08A7()
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    callis_0007()
-    local0 = true
-    local1 = {"grapes", "pumpkin", "carrot", "banana", "apple", "eggs", "nothing"}
-    local2 = {377, 377, 377, 377, 377, 377, 0}
-    local3 = {19, 21, 18, 17, 16, 24, -359}
-    local4 = {3, 4, 3, 3, 3, 12, 0}
-    local5 = {"", "a ", "a ", "a ", "an ", "", ""}
-    local6 = {1, 0, 0, 0, 0, 12, 0}
-    local7 = {" for a bunch", "", "", "", "", " for one dozen", ""}
-    local8 = {1, 1, 1, 1, 1, 12, 0}
-
-    while true do
-        add_dialogue("What wouldst thou like to buy?")
-        if not local0 then
-            callis_0008()
-            return
-        end
-
-        local9 = call_090CH(local1)
-        if local9 == 1 then
-            add_dialogue("Fine.")
-            local0 = false
+    save_answers()
+    var_0000 = true
+    var_0001 = {"grapes", "pumpkin", "carrot", "banana", "apple", "eggs", "nothing"}
+    var_0002 = {377, 377, 377, 377, 377, 377, 0}
+    var_0003 = {19, 21, 18, 17, 16, 24, 359}
+    var_0004 = {3, 4, 3, 3, 3, 12, 0}
+    var_0005 = {"", "a ", "a ", "a ", "an ", "", ""}
+    var_0006 = {1, 1, 1, 1, 1, 12, 0}
+    var_0007 = {" for a bunch", "", "", "", "", " for one dozen", ""}
+    var_0008 = {1, 1, 1, 1, 1, 12, 0}
+    add_dialogue("\"What wouldst thou like to buy?\"")
+    while var_0000 do
+        var_0009 = unknown_090CH(var_0001)
+        if var_0009 == 1 then
+            add_dialogue("\"Fine.\"")
+            var_0000 = false
         else
-            local10 = call_091BH(local7[local9], local4[local9], local6[local9], local1[local9], local5[local9])
-            local11 = 0
-            add_dialogue("^", local10, " Wilt thou pay my price?")
-            local12 = call_090AH()
-            if local12 then
-                local10 = "How many "
-                if local8[local9] > 1 then
-                    local10 = local10 .. "dozen "
+            var_0010 = unknown_091BH(var_0005[var_0009], var_0001[var_0009], var_0006[var_0009], var_0004[var_0009], var_0007[var_0009])
+            var_0011 = 0
+            add_dialogue("^" .. var_0010 .. " Wilt thou pay my price?")
+            var_0012 = unknown_090AH()
+            if not var_0012 then
+                local quantity_text = "How many "
+                if var_0008[var_0009] > 1 then
+                    quantity_text = quantity_text .. "dozen "
                 end
-                local10 = local10 .. "wouldst thou like?"
-                add_dialogue("\"", local10, "\"")
-                local11 = call_08F8H(true, 1, 20, local4[local9], local8[local9], local3[local9], local2[local9])
+                quantity_text = quantity_text .. "wouldst thou like?"
+                add_dialogue("\"" .. quantity_text .. "\"")
+                var_0011 = unknown_08F8H(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009], var_0002[var_0009])
             end
-            if local11 == 1 then
-                add_dialogue("Thou wilt indeed be pleased with thy purchase. We have only the finest produce.")
-            elseif local11 == 2 then
-                add_dialogue("Thou cannot possibly carry that much!")
-            elseif local11 == 3 then
-                add_dialogue("Thou dost not have enough coin to pay for that!")
+            if var_0011 == 1 then
+                add_dialogue("\"Thou wilt indeed be pleased with thy purchase. We have only the finest produce.\"")
+            elseif var_0011 == 2 then
+                add_dialogue("\"Thou cannot possibly carry that much!\"")
+            elseif var_0011 == 3 then
+                add_dialogue("\"Thou dost not have enough coin to pay for that!\"")
             end
+            add_dialogue("\"Wouldst thou like to purchase something else?\"")
+            var_0000 = unknown_090AH()
         end
-        add_dialogue("Wouldst thou like to purchase something else?")
-        local0 = call_090AH()
     end
-
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

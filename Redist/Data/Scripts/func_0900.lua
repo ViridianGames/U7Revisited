@@ -1,9 +1,8 @@
--- Function 0900: Random party member selection
+--- Best guess: Randomly selects between func_0901 and func_0902 to return an NPC ID.
 function func_0900(eventid, itemref)
-    local random = _Random2(10, 1)
-    if random < 4 then
-        set_return(call_0902H())
+    if random(1, 10) < 4 then --- Guess: Generates random number
+        return calle_0902H() --- External call to NPC selection
     else
-        set_return(call_0901H())
+        return calle_0901H() --- External call to NPC selection
     end
 end

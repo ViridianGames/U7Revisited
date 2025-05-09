@@ -1,42 +1,45 @@
--- Manages cooking dough in an oven, producing bread with random outcomes.
-function func_0292H(eventid, itemref)
+--- Best guess: Manages cooking dough into bread on a fire pit (ID 831), with a chance to burn if overcooked.
+function func_0292(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
+
     if eventid == 1 then
-        local frame = get_object_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
-        if frame == 1 or frame == 2 then
-            local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-            local item_type = get_item_type(target) -- TODO: Implement LuaGetItemType for callis 0011.
-            if item_type == 831 then -- 033FH: Likely dough.
-                local last_created = set_last_created(itemref) -- TODO: Implement LuaSetLastCreated for callis 0025.
-                if last_created then
-                    local pos = get_item_info(target) -- TODO: Implement LuaGetItemInfo for callis 0018.
-                    pos[1] = pos[1] - random(1, 2)
-                    pos[3] = pos[3] + 1
-                    local updated = update_container(pos) -- TODO: Implement LuaUpdateContainer for callis 0026.
-                    if updated then
-                        local arr = {7715, 17493, 658}
-                        execute_action(itemref, arr, 60) -- TODO: Implement LuaExecuteAction for callis 0002.
-                        if random(1, 2) == 1 then
-                            add_dialogue(0, "Do not over cook it!")
+        var_0000 = get_object_frame(itemref)
+        if var_0000 == 1 or var_0000 == 2 then
+            var_0001 = _ItemSelectModal()
+            var_0002 = get_object_shape(var_0001)
+            if var_0002 == 831 then
+                var_0003 = unknown_0025H(itemref)
+                if not var_0003 then
+                    var_0004 = unknown_0018H(var_0001)
+                    var_0004[1] = var_0004[1] - random2(2, 1)
+                    var_0004[3] = var_0004[3] + 1
+                    var_0003 = unknown_0026H(var_0004)
+                    if not var_0003 then
+                        var_0003 = unknown_0002H(60, 658, {17493, 7715}, itemref)
+                        if random2(2, 1) == 1 then
+                            unknown_08FEH("@Do not over cook it!@")
                         end
                     end
                 end
             end
         end
     elseif eventid == 2 then
-        local pos = get_item_info(itemref)
-        local items = find_items(itemref, 831, 2, 0) -- TODO: Implement LuaFindItems for callis 0035.
-        if #items > 0 then
-            remove_item(itemref) -- TODO: Implement LuaRemoveItem for calli 006F.
-            local food = find_object_by_type(377) -- 0179H: Likely bread.
-            if food then
-                set_object_frame(food, 12)
-                set_item_quality(food, 11)
-                update_container(pos)
-                local outcome = random(1, 3)
-                if outcome == 1 then
-                    add_dialogue(0, "I believe the bread is ready.")
-                elseif outcome == 2 then
-                    add_dialogue(0, "Mmm... Smells good.")
+        var_0004 = unknown_0018H(itemref)
+        var_0005 = unknown_0035H(0, 2, 831, itemref)
+        if #var_0005 > 0 then
+            return
+        end
+        var_0006 = unknown_0024H(377)
+        if not var_0006 then
+            unknown_0089H(18, var_0006)
+            get_object_frame(0, itemref)
+            var_0003 = unknown_0026H(var_0004)
+            if not var_0003 then
+                var_0007 = random2(3, 1)
+                if var_0007 == 1 then
+                    unknown_08FEH("@I believe the bread is ready.@")
+                elseif var_0007 == 2 then
+                    unknown_08FEH("@Mmm... Smells good.@")
                 end
             end
         end

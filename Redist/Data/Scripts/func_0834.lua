@@ -1,52 +1,52 @@
--- Function 0834: Raise portcullis
+--- Best guess: Raises portcullises (types 271, 272) and adds items, tied to flag-based state changes.
 function func_0834(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
     if not get_flag(87) then
         set_flag(87, true)
     end
-    local0 = {check_position(0, 25, 276, -356), check_position(0, 25, 277, -356)} -- Tops
-    local1 = {check_position(0, 25, 271, -356), check_position(0, 25, 272, -356)} -- Portcullises
-    while local2 do
-        local4 = local2
-        local5 = call_0042H(local4)
-        if local5 == 0 then
-            local6 = call_0001H({3, -7, 7947, 0, 8006, 1543, 8021, 32, 7768}, local4)
-            while local7 do
-                local9 = local7
-                local6 = call_0001H({3, 8006, 2, 8006, 1, 7750}, local9)
-                local7 = get_next_item() -- sloop
+    var_0000 = create_array(unknown_0035H(0, 25, 276, 356), unknown_0035H(0, 25, 277, 356)) --- Guess: Sets NPC location
+    var_0001 = create_array(unknown_0035H(0, 25, 271, 356), unknown_0035H(0, 25, 272, 356)) --- Guess: Sets NPC location
+    -- Guess: sloop processes portcullises
+    for i = 1, 5 do
+        var_0004 = {2, 3, 4, 1, 427}[i]
+        var_0005 = get_item_lift(var_0004) --- Guess: Gets item lift
+        if var_0005 == 0 then
+            var_0006 = add_container_items(var_0004, {3, -7, 7947, 0, 8006, 1543, 8021, 32, 7768})
+            -- Guess: sloop adds items for each sail
+            for i = 1, 5 do
+                var_0009 = {7, 8, 9, 0, 31}[i]
+                var_0006 = add_container_items(var_0009, {3, 8006, 2, 8006, 1, 7750})
             end
-        elseif local5 == 1 then
-            local6 = call_0001H({2, -7, 7947, 1, 8006, 1543, 8021, 32, 17496, 7715}, local4)
-            while local10 do
-                local11 = local10
-                local6 = call_0001H({3, 8006, 2, 7750}, local11)
-                local10 = get_next_item() -- sloop
+        elseif var_0005 == 1 then
+            var_0006 = add_container_items(var_0004, {2, -7, 7947, 1, 8006, 1543, 8021, 32, 17496, 7715})
+            -- Guess: sloop adds items for each sail
+            for i = 1, 5 do
+                var_0009 = {10, 11, 9, 0, 26}[i]
+                var_0006 = add_container_items(var_0009, {3, 8006, 2, 7750})
             end
-        elseif local5 == 2 then
-            local6 = call_0001H({1, -7, 7947, 2, 8006, 1543, 8021, 32, 7768}, local4)
-            while local12 do
-                local13 = local12
-                local6 = call_0001H({3, 7750}, local13)
-                local12 = get_next_item() -- sloop
+        elseif var_0005 == 2 then
+            var_0006 = add_container_items(var_0004, {1, 8006, 1543, 8021, 32, 7768})
+            -- Guess: sloop adds items for each sail
+            for i = 1, 5 do
+                var_0009 = {12, 13, 9, 0, 21}[i]
+                var_0006 = add_container_items(var_0009, {3, 7750})
             end
-        elseif local5 == 3 then
-            local6 = call_0001H({2, -7, 7947, 3, 8006, 1545, 8021, 32, 7768}, local4)
-            while local14 do
-                local15 = local14
-                local6 = call_0001H({3, 7750}, local15)
-                local14 = get_next_item() -- sloop
+        elseif var_0005 == 3 then
+            var_0006 = add_container_items(var_0004, {3, -7, 7947, 3, 8006, 1545, 8021, 32, 7768})
+            -- Guess: sloop adds items for each sail
+            for i = 1, 5 do
+                var_0009 = {14, 15, 9, 0, 31}[i]
+                var_0006 = add_container_items(var_0009, {3, 7750})
             end
-        elseif local5 == 4 then
-            local6 = call_0001H({3, -7, 7947, 3, 8006, 1543, 8021, 32, 7768}, local4)
-            while local16 do
-                local17 = local16
-                local6 = call_0001H({0, 8006, 1, 8006, 2, 7750}, local17)
-                local16 = get_next_item() -- sloop
+        elseif var_0005 == 4 then
+            var_0006 = add_container_items(var_0004, {0, 8006, 1, 8006, 2, 7750})
+            -- Guess: sloop adds items for each sail
+            for i = 1, 5 do
+                var_0009 = {16, 17, 9, 0, 31}[i]
+                var_0006 = add_container_items(var_0009, {0, 8006, 1, 8006, 2, 7750})
             end
         end
-        local2 = get_next_item() -- sloop
     end
-    set_return(true)
+    return true
 end

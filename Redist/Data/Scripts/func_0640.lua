@@ -1,23 +1,22 @@
--- Casts the "An Zu" spell, waking a selected NPC or object, with a fallback effect if the target is invalid.
+--- Best guess: Implements the sleep spell (An Zu), targeting a party member and applying a sleep effect with animation.
 function func_0640(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        destroy_item(itemref)
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@An Zu@")
-        if external_0906H(local1) and local0[1] ~= 0 then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 8037, 64, 8536, local1, 7769})
-            local2 = add_item(local0, 5, 1600, {17493, 7715})
+        if check_spell_requirements() and var_0000[1] ~= 0 then
+            var_0002 = add_container_items(itemref, {17511, 8037, 64, 8536, var_0001, 7769})
         else
-            local2 = add_item(itemref, {1542, 17493, 17511, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 8549, var_0001, 7769})
         end
     elseif eventid == 2 then
-        if is_item_active(itemref) then -- Unmapped intrinsic
-            set_schedule(itemref, 1)
+        if is_item_valid(itemref) then --- Guess: Checks item validity
+            unknown_008AH(1, itemref) --- Guess: Sets quest flag
         else
-            external_08FDH(60) -- Unmapped intrinsic
+            play_spell_animation(60) --- Guess: Plays spell animation
         end
     end
-    return
 end

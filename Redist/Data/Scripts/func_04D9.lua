@@ -1,103 +1,81 @@
--- Function 04D9: Foranamo's hostile dialogue and attack trigger
+--- Best guess: Manages Anmanivas’s dialogue in Vesper, a hostile gargoyle who may attack the player due to resentment toward humans.
 function func_04D9(eventid, itemref)
-    -- Local variables (16 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000D, var_000E, var_000F
 
-    if eventid == 0 then
-        return
-    elseif eventid ~= 1 then
-        return
-    end
-
-    switch_talk_to(217, 0)
-    local0 = callis_001B(-217)
-    local1 = callis_001B(-218)
-    local2 = call_0908H()
-    local3 = call_0909H()
-    local4 = "the Avatar"
-    local5 = callis_003C(local0)
-    local6 = callis_001C(local0)
-    add_answer({"bye", "job", "name"})
-
-    if local5 == 1 then
-        add_dialogue("The gargoyle's hatred is so bitter that he resists the spell.*")
-        calli_003D(2, local0)
-        calli_003D(2, local1)
-        return
-    end
-
-    if local6 == 16 then
-        add_dialogue("The gargoyle stares at you, displeased at the interruption.")
-        while true do
-            local answer = wait_for_answer()
-
-            if answer == "name" then
-                add_dialogue("\"To have no desire to tell you. To demand to know who you are!\"")
-                local7 = call_090BH({local3, local4, local2})
-                if local7 == local4 then
-                    add_dialogue("As the gargoyle looks up at you, anger crosses his face. He stands quickly, overturning his drink.")
-                    local8 = 0
-                    local9 = callis_GetPartyMembers()
-                    for local10, local11 in ipairs(local9) do
-                        local8 = local8 + 1
-                    end
-                    if local8 == 1 then
-                        local13 = "human"
-                        local14 = " he says, pointing at you."
+    if eventid == 1 then
+        switch_talk_to(0, 217)
+        var_0000 = unknown_001BH(217)
+        var_0001 = unknown_001BH(218)
+        var_0002 = unknown_0908H()
+        var_0003 = unknown_0909H()
+        var_0004 = "the Avatar"
+        var_0005 = unknown_003CH(var_0000)
+        if var_0005 == 1 then
+            add_dialogue("The gargoyle's hatred is so bitter that he resists the spell.")
+            unknown_003DH(2, var_0000)
+            unknown_003DH(2, var_0001)
+            return
+        end
+        var_0006 = unknown_001CH(var_0000)
+        if var_0006 == 16 then
+            start_conversation()
+            add_answer({"bye", "job", "name"})
+            add_dialogue("The gargoyle stares at you, displeased at the interruption.")
+            while true do
+                local answer = get_answer()
+                if answer == "name" then
+                    add_dialogue("\"To have no desire to tell you. To demand to know who you are!\"")
+                    remove_answer("name")
+                    var_0007 = unknown_090BH({var_0003, var_0004, var_0002})
+                    if var_0007 == var_0004 then
+                        add_dialogue("As the gargoyle looks up at you, anger crosses his face. He stands quickly, overturning his drink.")
+                        var_0008 = 0
+                        var_0009 = unknown_0023H()
+                        for _ = 1, var_0009 do
+                            var_0008 = var_0008 + 1
+                        end
+                        if var_0008 == 1 then
+                            var_000D = "human"
+                            var_000E = " he says, pointing at you."
+                        else
+                            var_000D = "humans"
+                            var_000E = " he says, pointing at you and your companions."
+                        end
+                        add_dialogue("\"^\" .. var_000D .. \"!\" .. var_000E .. \" \"To be the cause for our unhappiness.\"")
+                        var_000F = unknown_08F7H(218)
+                        if not var_000F then
+                            switch_talk_to(0, 218)
+                            add_dialogue("The gargoyle by his side also rises.")
+                            add_dialogue("\"To be the reason for our poverty. To die, \" .. var_000D .. \", to die!\"")
+                            hide_npc(218)
+                            switch_talk_to(0, 217)
+                            add_dialogue("The two gargoyles force the table from their path with ease as they charge to attack you.")
+                        else
+                            add_dialogue("He forces the table from his path with ease as he charges to attack you.")
+                        end
+                        unknown_001DH(0, var_0000)
+                        unknown_001DH(0, var_0001)
+                        unknown_003DH(2, var_0000)
+                        unknown_003DH(2, var_0001)
+                        return
                     else
-                        local13 = "humans"
-                        local14 = " he says, pointing at you and your companions."
+                        add_dialogue("\"To tell you to go away!\"")
+                        return
                     end
-                    add_dialogue("\"^", local13, "!\"", local14, " \"To be the cause for our unhappiness.\"")
-                    local15 = call_08F7H(-218)
-                    if not local15 then
-                        switch_talk_to(218, 0)
-                        add_dialogue("The gargoyle by his side also rises.~~\"To be the reason for our poverty. To die, ", local13, ", to die!\"*")
-                        _HideNPC(-218)
-                        switch_talk_to(217, 0)
-                        add_dialogue("The two gargoyles force the table from their path with ease as they charge to attack you.*")
-                    else
-                        add_dialogue("He forces the table from his path with ease as he charges to attack you.*")
-                    end
-                    calli_001D(0, local0)
-                    calli_001D(0, local1)
-                    calli_003D(2, local0)
-                    calli_003D(2, local1)
-                    return
-                else
-                    add_dialogue("\"To tell you to go away!\"*")
+                elseif answer == "job" then
+                    add_dialogue("\"To have none!\" He glares fiercely at you.")
+                    remove_answer("job")
+                elseif answer == "bye" then
+                    add_dialogue("He grunts his dismissal.")
                     return
                 end
-                remove_answer("name")
-            elseif answer == "job" then
-                add_dialogue("\"To have none!\" He glares fiercely at you.\"")
-                remove_answer("job")
-            elseif answer == "bye" then
-                add_dialogue("He grunts his dismissal.*")
-                return
             end
+        else
+            add_dialogue("Though he glares as he passes, the gargoyle seems much too intent on reaching his destination to bother with you.")
+            return
         end
-    else
-        add_dialogue("Though he glares as he passes, the gargoyle seems much too intent on reaching his destination to bother with you.*")
+    elseif eventid == 0 then
         return
     end
-
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function wait_for_answer()
-    return "bye" -- Placeholder
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
 end

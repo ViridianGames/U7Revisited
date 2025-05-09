@@ -1,22 +1,12 @@
--- Function 03F5: Item interaction with array updates
+--- Best guess: Animates an object with a sequence of frames, likely for a decorative or interactive effect.
 function func_03F5(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid ~= 1 or callis_0079(itemref) then
-        return
+    if not unknown_0079H(itemref) and eventid == 1 then
+        var_0000 = {0, 8006, 3, 8006, 4, 8006, 17, 8024, 4, 8006, 3, 8006, 0, 8006, 1, 8006, 2, 8006, 17, 8024, 2, 8006, 1, 8006, 0, 7750}
+        -- calli 005C, 1 (unmapped)
+        unknown_005CH(itemref)
+        var_0001 = unknown_0001H(var_0000, itemref)
     end
-
-    calli_005C(itemref)
-    local0 = {0, 8006, 3, 8006, 4, 8006, 17, 8024, 4, 8006, 3, 8006, 0, 8006, 1, 8006, 2, 8006, 17, 8024, 2, 8006, 1, 8006, 0, 7750}
-    local1 = callis_0001(arra(local0, {2, -26, 7691}), itemref)
-
     return
-end
-
--- Helper function
-function arra(array, value)
-    local new_array = {unpack(array)}
-    table.insert(new_array, value)
-    return new_array
 end

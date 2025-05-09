@@ -1,11 +1,10 @@
--- Triggers the game's end sequence, positioning an object and updating NPC properties.
+--- Best guess: Triggers an endgame sequence, updating item properties, playing animations, and initiating the game’s conclusion, likely tied to a specific item or event.
 function func_060F(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    local0 = get_item_data(itemref)
-    create_object(1, 0, 0, 0, local0[2], local0[1], 17) -- Unmapped intrinsic
-    apply_effect(62) -- Unmapped intrinsic
-    start_endgame()
-    local1 = set_npc_property(itemref, 0, 12, 3)
-    return
+    var_0000 = unknown_0018H(itemref)
+    unknown_0053H(1, 0, 0, 0, var_0000[2], var_0000[1], 17)
+    unknown_000FH(62)
+    _StartEndgame()
+    var_0011 = unknown_0061H(3, 12, 0, _GetNPCProperty(itemref, 0))
 end

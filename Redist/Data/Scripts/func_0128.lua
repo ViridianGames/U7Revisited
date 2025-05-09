@@ -1,16 +1,19 @@
-function func_0128H(eventid, itemref)
+--- Best guess: Manages a ring of invisibility, toggling invisibility status for the wearer based on equip/unequip events.
+function func_0128(eventid, itemref)
+    local var_0000
+
     if eventid == 5 or eventid == 6 then
-        local wearer = U7GetWearer(itemref)
-        while wearer ~= nil and wearer ~= 0 and not U7IsWearerValid(wearer) do
-            wearer = U7GetWearer(wearer)
+        var_0000 = unknown_006EH(itemref)
+        while var_0000 ~= 0 and not unknown_0031H(var_0000) do
+            var_0000 = unknown_006EH(var_0000)
         end
-        if wearer == 0 then
-            U7ApplyInvisibility(0)
+        if var_0000 == 0 then
+            unknown_006AH(0)
         end
         if eventid == 5 then
-            U7SetItemQuality(wearer, 0)
+            unknown_0089H(0, var_0000)
         elseif eventid == 6 then
-            U7RemoveItemQuality(wearer, 0)
+            unknown_008AH(0, var_0000)
         end
     end
 end

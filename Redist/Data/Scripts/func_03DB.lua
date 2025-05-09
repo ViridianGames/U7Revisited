@@ -1,33 +1,23 @@
--- Function 03DB: Baby crying and transformation
+--- Best guess: Spawns a screaming creature (ID 992) with a chance to cry out, possibly for a trap or ambush.
 function func_03DB(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 1 then
-        return
-    end
-
-    calli_007E()
-    local0 = {0, 8006, 3, 8006, 4, 8006, 17, 8024, 4, 8006, 3, 8006, 0, 8006, 1, 8006, 2, 8006, 17, 8024, 2, 8006, 1, 8006, 0, 7750}
-    local1 = callis_0001(arra(local0, {2, -26, 7691}), itemref)
-    if _Random2(1, 10) == 1 then
-        local2 = callis_0018(itemref)
-        _SetItemType(992, itemref)
-        local3 = callis_0024(730)
-        calli_0089(18, local3)
-        calli_0089(11, local3)
-        if local3 then
-            local1 = callis_0026(local2)
-            bark(local3, "@Whaaahh!!@")
+    if eventid == 1 then
+        -- calli 007E, 0 (unmapped)
+        unknown_007EH()
+        var_0000 = {0, 8006, 3, 8006, 4, 8006, 17, 8024, 4, 8006, 3, 8006, 0, 8006, 1, 8006, 2, 8006, 17, 8024, 2, 8006, 1, 8006, 0, 7750}
+        var_0001 = unknown_0001H(var_0000, itemref)
+        if random2(10, 1) == 1 then
+            var_0002 = unknown_0018H(itemref)
+            set_object_shape(itemref, 992)
+            var_0003 = unknown_0024H(730)
+            unknown_0089H(18, var_0003)
+            unknown_0089H(11, var_0003)
+            if var_0003 then
+                var_0001 = unknown_0026H(var_0002)
+                bark(var_0003, "@Whaaahh!!@")
+            end
         end
     end
-
     return
-end
-
--- Helper function
-function arra(array, value)
-    local new_array = {unpack(array)}
-    table.insert(new_array, value)
-    return new_array
 end

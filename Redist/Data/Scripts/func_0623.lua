@@ -1,32 +1,25 @@
--- Wakes the player after resting in a bed, delivering a wake-up message and updating party state, with special handling for bedrolls.
+--- Best guess: Wakes the Avatar from a bedroll, addressing them by name and updating party member states.
 function func_0623(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid ~= 2 then
-        return
+    if eventid == 2 then
+        var_0000 = get_player_id()
+        if var_0000 ~= 356 then
+            switch_talk_to(var_0000, 0)
+            var_0001 = get_player_name()
+            add_dialogue("\"Arise, " .. var_0001 .. ". Time to continue the quest.\"")
+            hide_npc(var_0000)
+        end
+        var_0002 = get_party_members()
+        -- Guess: sloop updates party member states
+        for i = 1, 4 do
+            var_0005 = {3, 4, 5, 2}[i]
+            unknown_093FH(31, var_0005) --- Guess: Updates object state
+        end
+        unknown_0089H(1, 356) --- Guess: Sets item flag
+        unknown_008AH(1, 356) --- Guess: Sets quest flag
+        if get_item_type(itemref) == 1011 and get_item_frame(itemref) == 17 then
+            calle_0624H(itemref, 1) --- External call to retrieve bedroll
+        end
     end
-
-    local0 = get_player_name()
-    if local0 ~= -356 then
-        switch_talk_to(local0, 0)
-        local1 = local0
-        add_dialogue("\"Arise, " .. local1 .. ". Time to continue the quest.\"")
-        hide_npc(local0)
-    end
-
-    local2 = get_party_members()
-    for local3 in ipairs(local2) do
-        local4 = local3
-        local5 = local4
-        set_schedule(local5, 31)
-    end
-
-    set_flag(-356, 1, true)
-    set_flag(-356, 1, false)
-
-    if get_item_type(itemref) == 1011 and get_object_frame(itemref) == 17 then
-        external_0624(itemref) -- Unmapped intrinsic
-    end
-
-    return
 end

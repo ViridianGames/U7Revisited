@@ -1,33 +1,22 @@
--- Function 06FB: Manages item spawning for quality 100
+--- Best guess: Handles item interactions based on event IDs 2 or 3, triggering external calls and flag-based actions, likely related to a forge or quest trigger.
 function func_06FB(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
     if eventid == 3 then
-        if call_GetItemQuality(itemref) == 100 then
-            if not get_flag(0x02FF) then
-                set_flag(0x02FF, true)
-                local0 = callis_0001({1786, 8021, 20, 17447, 17452, 7715}, itemref)
-                call_08DDH(local0)
-            elseif not get_flag(0x030C) then
-                if callis_0000(100) <= 10 then
-                    call_08DDH(local0)
+        if unknown_0014H(itemref) == 100 then
+            if not get_flag(767) then
+                set_flag(767, true)
+                var_0000 = unknown_0001H({1786, 8021, 20, 17447, 17452, 7715}, itemref)
+                unknown_08DDH()
+            elseif not get_flag(780) then
+                if unknown_0000H(100) <= 10 then
+                    unknown_08DDH()
                 end
             end
         end
     elseif eventid == 2 then
-        local0 = callis_0001({1786, 8021, 20, 17447, 17452, 7715}, callis_001B(-356))
-        call_08DDH(local0)
+        var_0000 = unknown_0001H({1786, 8021, 20, 17447, 17452, 7715}, unknown_001BH(356))
+        unknown_08DDH()
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
 end

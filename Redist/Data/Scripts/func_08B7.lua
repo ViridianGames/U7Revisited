@@ -1,65 +1,54 @@
--- Function 08B7: Manages food purchase dialogue
+--- Best guess: Manages a shop dialogue for purchasing food and drink items, similar to func_08A0, with handling for Silverleaf scarcity.
 function func_08B7()
-    -- Local variables (15 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    local0 = call_0909H()
-    callis_0007()
-    local1 = true
-    local2 = {"wine", "ale", "cake", "bread", "Silverleaf", "ham", "trout", "mead", "beef", "mutton", "nothing"}
-    local3 = {616, 616, 377, 377, 377, 377, 377, 616, 377, 377, 0}
-    local4 = {5, 3, 4, 0, 31, 11, 12, 0, 9, 8, -359}
-    local5 = {5, 5, 3, 4, 50, 20, 5, 15, 20, 6, 0}
-    local6 = ""
-    local7 = 0
-    local8 = {" for a bottle", " for a bottle", " for one piece", " for a loaf", " for one portion", 
-              " for one slice", " for one portion", " for a bottle", " for a rack", " for one portion", ""}
-    local9 = 1
-    local10 = -37
-
-    while true do
-        add_dialogue("What wouldst thou like to buy?")
-        if not local1 then
-            callis_0008()
-            return
-        end
-
-        local11 = call_090CH(local2)
-        if local11 == 1 then
-            add_dialogue("Fine.")
-            local1 = false
-        elseif local11 == 7 and not get_flag(0x012B) then
-            add_dialogue("Oh, I am so terribly sorry, ", local0, ", but there is no more. The logger in Yew refuses to chop down any more Silverleaf trees. I, personally, thinks it is a dreadful decision.")
+    var_0000 = unknown_0909H()
+    save_answers()
+    var_0001 = true
+    var_0002 = {"wine", "ale", "cake", "bread", "Silverleaf", "ham", "trout", "mead", "beef", "mutton", "nothing"}
+    var_0003 = {616, 616, 377, 377, 377, 377, 377, 616, 377, 377, 0}
+    var_0004 = {5, 3, 4, 0, 31, 11, 12, 0, 9, 8, 359}
+    var_0005 = {5, 5, 3, 4, 50, 20, 5, 15, 20, 6, 0}
+    var_0006 = ""
+    var_0007 = 0
+    var_0008 = {" for a bottle", " for a bottle", " for one piece", " for a loaf", " for one portion", " for one slice", " for one portion", " for a bottle", " for a rack", " for one portion", ""}
+    var_0009 = 1
+    var_0010 = -37
+    add_dialogue("\"What wouldst thou like to buy?\"")
+    while var_0001 do
+        var_0011 = unknown_090CH(var_0002)
+        if var_0011 == 1 then
+            add_dialogue("\"Fine.\"")
+            var_0001 = false
+        elseif var_0011 == 7 then
+            if not get_flag(299) then
+                add_dialogue("\"Oh, I am so terribly sorry, " .. var_0000 .. ", but there is no more. The logger in Yew refuses to chop down any more Silverleaf trees. I, personally, thinks it is a dreadful decision.\"")
+            end
         else
-            local12 = call_091BH(local8[local11], local5[local11], local7, local2[local11], local6)
-            local13 = 0
-            add_dialogue("^", local12, " Dost thou still want it?")
-            local14 = call_090AH()
-            if local14 then
-                add_dialogue("How many wouldst thou like?")
-                local13 = call_08F8H(true, 1, local4[local11] == 0 and 20 or 0, local5[local11], local9, local10, local3[local11])
+            var_0012 = unknown_091BH(var_0006, var_0002[var_0011], var_0007, var_0005[var_0011], var_0008[var_0011])
+            var_0013 = 0
+            add_dialogue("^" .. var_0012 .. " Dost thou still want it?")
+            var_0014 = unknown_090AH()
+            if not var_0014 then
+                if var_0003[var_0011] == 377 then
+                    add_dialogue("\"How many wouldst thou like?\"")
+                    var_0013 = unknown_08F8H(true, 1, 20, var_0005[var_0011], var_0009, var_0004[var_0011], var_0003[var_0011])
+                else
+                    var_0013 = unknown_08F8H(true, 1, 0, var_0005[var_0011], var_0009, var_0004[var_0011], var_0003[var_0011])
+                end
             end
-            if local13 == 1 then
-                add_dialogue("Done!")
-            elseif local13 == 2 then
-                add_dialogue("Thou cannot possibly carry that much!")
-            elseif local13 == 3 then
-                add_dialogue("Thou dost not have enough gold for that!")
+            if var_0013 == 1 then
+                add_dialogue("\"Done!\"")
+            elseif var_0013 == 2 then
+                add_dialogue("\"Thou cannot possibly carry that much!\"")
+            elseif var_0013 == 3 then
+                add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
+            add_dialogue("\"Wouldst thou like something else?\"")
+            var_0001 = unknown_090AH()
         end
-        add_dialogue("Wouldst thou like something else?")
-        local1 = call_090AH()
     end
-
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
 end

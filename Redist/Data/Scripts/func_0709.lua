@@ -1,6 +1,6 @@
--- Function 0709: Set local variable
+--- Best guess: Sets a flag to true, likely a trigger or state initializer for an event or ritual.
 function func_0709(eventid, itemref)
-    local local0
+    local var_0000
 
-    local0 = 1
+    var_0000 = 1
 end

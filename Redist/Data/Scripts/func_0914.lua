@@ -1,12 +1,12 @@
--- Function 0914: Increment NPC stats
-function func_0914(eventid, itemref)
-    local local0
+--- Best guess: Initializes training levels for an NPC (properties 0 and 3).
+function func_0914(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002
 
-    while local0 < eventid do
-        call_0912H(1, 0, itemref)
-        call_0912H(1, 3, itemref)
-        call_0912H(-1, 7, itemref)
-        local0 = local0 + 1
+    var_0002 = 0
+    while var_0002 < arg1 do
+        set_training_level(0, arg2, 1) --- Guess: Sets training level
+        set_training_level(3, arg2, 1) --- Guess: Sets training level
+        set_training_level(7, arg2, -1) --- Guess: Sets training level
+        var_0002 = var_0002 + 1
     end
-    return
 end

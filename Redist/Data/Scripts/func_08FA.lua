@@ -1,8 +1,8 @@
--- Checks NPC status and applies effects if conditions are met.
-function func_08FA(p0)
-    if not external_0088H(11, p0) and not external_0088H(23, p0) then -- Unmapped intrinsic
-        external_007AH() -- Unmapped intrinsic
-        external_0633H(p0) -- Unmapped intrinsic
+--- Best guess: Triggers an action for an item if specific properties (11 and 23) are not set, likely related to item interaction or quest progression.
+function func_08FA(var_0000)
+    if not unknown_0088H(11, var_0000) and not unknown_0088H(23, var_0000) then
+        unknown_007AH()
+        unknown_0633H(var_0000)
     end
     return
 end

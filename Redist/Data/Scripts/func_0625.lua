@@ -1,93 +1,94 @@
--- Manages Trinsic guard interactions, handling confrontations, bribe negotiations, and imprisonment based on player actions and location.
+--- Best guess: Handles a confrontation with a Trinsic guard, offering options to bribe, surrender, or fight, with outcomes affecting game state.
 function func_0625(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019
 
-    if eventid ~= 1 then
-        if eventid == 2 then
-            local14 = get_party_members()
-            for local15 in ipairs(local14) do
-                local16 = local15
-                local17 = local16
-                set_schedule(local17, 31)
-                set_object_frame(local17, 0)
-            end
-            local18 = {295, 420}
-            external_003EH(-357, local18) -- Unmapped intrinsic
-            local19 = add_item(-359, 10, 828)
-            if local19 and local19 == 1 then
-                local13 = external_081FH(local19) -- Unmapped intrinsic
-            end
-            external_084AH() -- Unmapped intrinsic
-            local13 = add_item(-356, {1596, 8021, 1, 7719})
-        end
-        return
-    end
-
-    local0 = get_item_type(itemref)
-    local1 = {273, 379}
-    local2 = {307, 440}
-    local3 = get_item_data(-356)
-    if get_location() == 0 then -- Unmapped intrinsic
-        switch_talk_to(259, 0)
-        add_dialogue("You see an irate guard.~~Years of indoctrination have instilled in him an overly developed sense of discipline~~and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.~~ \"Such behavior will never be tolerated inside the sanctuary of Trinsic's walls.~~Thy red cloak and blonde curls show only that thou art a vile imposter and not a true Avatar.~~To the Death!\"")
-        hide_npc(259)
-        external_007CH() -- Unmapped intrinsic
-        return
-    end
-
-    if local2[local1[local3]] then
-        switch_talk_to(258, 0)
-        add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
-        hide_npc(258)
-        external_007CH() -- Unmapped intrinsic
-        return
-    end
-
-    switch_talk_to(258, 0)
-    local4 = count_items(-359, -359, 644, -357) -- Unmapped intrinsic
-    if get_random(1, 2) == 1 and local4 then
-        add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
-        local5 = get_answer()
-        if not local5 then
-            add_dialogue("\"What is your liberty worth?\"")
-            if external_084BH(local4) then -- Unmapped intrinsic
-                add_dialogue("The guard looks unimpressed by your paltry offer. \"How about a bit more? Our jail is populated by some unsavory characters.\"")
-                if not external_084BH(local4) then -- Unmapped intrinsic
-                    if is_player_female() then
-                        local6 = "woman"
-                    else
-                        local6 = "man"
+    start_conversation()
+    if eventid == 1 then
+        var_0000 = get_item_type(itemref) --- Guess: Gets item type
+        var_0001 = {273, 379}
+        var_0002 = {307, 440}
+        var_0003 = unknown_0018H(356) --- Guess: Gets position data
+        if is_in_trinsic() then --- Guess: Checks if in Trinsic
+            switch_talk_to(259, 0)
+            add_dialogue("You see an irate guard.")
+            add_dialogue("Years of indoctrination have instilled in him an overly developed sense of discipline")
+            add_dialogue("and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.")
+            add_dialogue(" \"Such behavior will never be tolerated inside the sanctuary of Trinsic's walls.")
+            add_dialogue("Thy red cloak and blonde curls show only that thou art a vile imposter and not a true Avatar.")
+            add_dialogue("To the Death!\"")
+            hide_npc(259)
+            initiate_combat() --- Guess: Initiates combat
+        elseif unknown_08F9H(var_0002, var_0001, var_0003) then
+            switch_talk_to(258, 0)
+            add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
+            hide_npc(258)
+            initiate_combat() --- Guess: Initiates combat
+        else
+            switch_talk_to(258, 0)
+            var_0004 = count_party_money(359, 359, 644, 357) --- Guess: Counts party money
+            if random(1, 2) == 1 and var_0004 then
+                add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
+                var_0005 = select_option()
+                if not var_0005 then
+                    add_dialogue("\"What is your liberty worth?\"")
+                    if not unknown_084BH(var_0004) then --- Guess: Unknown bribe check
+                        add_dialogue("The guard looks unimpressed by your paltry offer. \"How about a bit more? Our jail is populated by some unsavory characters.\"")
+                        if not unknown_084BH(var_0004) then
+                            var_0006 = is_player_female() and "woman" or "man"
+                            var_0007 = {946, 806, 720, 394}
+                            var_0008 = {}
+                            -- Guess: sloop sets NPC locations
+                            for i = 1, 5 do
+                                var_000B = {9, 10, 11, 7, 24}[i]
+                                var_0008[i] = unknown_0035H(0, 30, var_000B, itemref) --- Guess: Sets NPC location
+                            end
+                            -- Guess: sloop sets NPC behaviors
+                            for i = 1, 5 do
+                                var_000E = {12, 13, 14, 8, 13}[i]
+                                unknown_001DH(12, var_000E) --- Guess: Sets object behavior
+                            end
+                            var_000F = unknown_0035H(8, 30, 359, itemref) --- Guess: Sets NPC location
+                            -- Guess: sloop checks NPC schedules
+                            for i = 1, 5 do
+                                var_0012 = {16, 17, 18, 15, 27}[i]
+                                if unknown_001CH(var_0012) == 0 then --- Guess: Gets schedule
+                                    unknown_001DH(12, var_0012) --- Guess: Sets object behavior
+                                end
+                            end
+                            add_dialogue("The guard winks. \"I am pleased to see that thou art a thinking " .. var_0006 .. ". I will take care of this disturbance.\"")
+                            play_music(itemref, 255)
+                            abort()
+                        end
                     end
-                    local7 = {946, 806, 720, 394}
-                    local8 = {}
-                    for local9 in ipairs(local7) do
-                        local10 = local9
-                        local11 = add_item(local7[local10], 30, itemref)
-                    end
-                    for local12 in ipairs(local8) do
-                        local13 = local12
-                        set_schedule(local13, 12)
-                    end
-                    local15 = add_item(8, 30, -359, itemref)
-                    add_dialogue("The guard winks. \"I am pleased to see that thou art a thinking " .. local6 .. ". I will take care of this disturbance.\"")
-                    play_music(itemref, 255)
-                    return
                 end
             end
+            add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Wilt thou come quietly?\"")
+            if select_option() then
+                add_dialogue("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
+                hide_npc(258)
+                destroy_item(356) --- Guess: Destroys item
+                var_0013 = unknown_0002H(2, {5, 17447, 8046, 1573, 7765}, 356) --- Guess: Adds items to container
+                abort()
+            else
+                add_dialogue("\"An unfortunate decision, my friend.\"")
+                initiate_combat() --- Guess: Initiates combat
+            end
         end
+    elseif eventid == 2 then
+        var_0014 = get_party_members()
+        -- Guess: sloop updates party member states
+        for i = 1, 5 do
+            var_0017 = {21, 22, 23, 20, 22}[i]
+            unknown_093FH(31, var_0017) --- Guess: Updates object state
+            set_item_frame(var_0017, 0)
+        end
+        var_0018 = {295, 420, 0}
+        unknown_003EH(356, var_0018) --- Guess: Sets NPC target
+        var_0019 = unknown_0035H(0, 10, 828, 356) --- Guess: Sets NPC location
+        if var_0019 and unknown_081BH(var_0019) == 1 then
+            var_0013 = unknown_081FH(var_0019)
+        end
+        unknown_084AH() --- Guess: Unknown operation
+        var_0013 = add_container_items(356, {1596, 8021, 1, 7719})
     end
-
-    add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Wilt thou come quietly?\"")
-    local5 = get_answer()
-    if not local5 then
-        add_dialogue("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
-        hide_npc(258)
-        add_item(-356, 2, 5, {17447, 8046, 1573, 7765})
-        local13 = add_item(-356, {1596, 8021, 1, 7719})
-        return
-    end
-
-    add_dialogue("\"An unfortunate decision, my friend.\"")
-    external_007CH() -- Unmapped intrinsic
-    return
 end

@@ -1,16 +1,16 @@
--- Casts the "An Tym" spell, dispelling time-based effects.
+--- Best guess: Implements the time acceleration spell (An Tym), speeding up game time.
 function func_0687(eventid, itemref)
-    local local0
+    local var_0000
 
     if eventid == 1 then
+        destroy_item(itemref)
         bark(itemref, "@An Tym@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1671, 17493, 17520, 8042, 67, 7768})
+        if check_spell_requirements() then
+            var_0000 = add_container_items(itemref, {1671, 17493, 17520, 8042, 67, 7768})
         else
-            local0 = add_item(itemref, {1542, 17493, 17520, 7786})
+            var_0000 = add_container_items(itemref, {1542, 17493, 17520, 7786})
         end
     elseif eventid == 2 then
-        external_0056H(100) -- Unmapped intrinsic
+        set_game_speed(100) --- Guess: Sets game speed
     end
-    return
 end

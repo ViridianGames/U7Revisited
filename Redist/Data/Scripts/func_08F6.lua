@@ -1,13 +1,13 @@
--- Calculates a value based on an NPC’s property.
-function func_08F6(p0)
-    local local1, local2, local3
+--- Best guess: Calculates a value based on an NPC’s property, dividing it by 100 and iteratively halving until below 1, returning the iteration count.
+function func_08F6(var_0000)
+    local var_0001, var_0002, var_0003
 
-    local1 = external_001BH(p0) -- Unmapped intrinsic
-    local2 = math.floor(get_npc_property(8, local1) / 100) -- Unmapped intrinsic
-    local3 = 1
-    while local2 > 0 do
-        local3 = local3 + 1
-        local2 = math.floor(local2 / 2)
+    var_0001 = unknown_001BH(var_0000)
+    var_0002 = math.floor(unknown_0020H(8, var_0001) / 100)
+    var_0003 = 1
+    while var_0002 > 0 do
+        var_0003 = var_0003 + 1
+        var_0002 = math.floor(var_0002 / 2)
     end
-    return local3
+    return var_0003
 end

@@ -1,21 +1,21 @@
--- Adjusts an item's frame based on specific conditions.
-function func_080B(itemref)
-    local local0
+--- Best guess: Manages a state counter, adjusting its value based on comparisons and flag 743, returning the final state.
+function func_080B()
+    local var_0000
 
-    local0 = itemref
-    if local0 < 5 then
-        local0 = local0 + 2
-        return local0
-    elseif local0 == 5 then
-        if not get_flag(743) then
-            local0 = 7
-        else
-            local0 = 1
-        end
-        return local0
-    elseif local0 > 5 then
-        local0 = 1
-        return local0
+    if var_0000 < 5 then
+        var_0000 = var_0000 + 2
+        return var_0000
     end
-    return local0
+    if var_0000 == 5 then
+        if not get_flag(743) then
+            var_0000 = 7
+        else
+            var_0000 = 1
+        end
+        return var_0000
+    end
+    if var_0000 > 5 then
+        var_0000 = 1
+        return var_0000
+    end
 end

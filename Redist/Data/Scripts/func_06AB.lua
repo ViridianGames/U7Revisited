@@ -1,22 +1,14 @@
--- Function 06AB: Manages NPC behavior and sets flag
+--- Best guess: Sets flag 290 and applies an effect to specific NPCs (IDs 90, 92, 86, 87) when triggered by event ID 3, likely part of a dungeon sequence.
 function func_06AB(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
+    if eventid == 3 then
+        set_flag(290, true)
+        var_0000 = {90, 92, 86, 87}
+        for i = 1, #var_0000 do
+            var_0003 = var_0000[i]
+            unknown_001DH(11, var_0003)
+        end
     end
-
-    set_flag(0x0122, true)
-    local0 = {-90, -92, -86, -87}
-    for _, npc in ipairs(local0) do
-        callis_001D(11, npc)
-    end
-
     return
-end
-
--- Helper functions
-function set_flag(flag, value)
-    -- Placeholder
 end

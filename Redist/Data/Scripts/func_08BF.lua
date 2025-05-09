@@ -1,14 +1,12 @@
--- Function 08BF: Manages stat comparison and adjustment
-function func_08BF(local0)
-    -- Local variables (3 as per .localc)
-    local local1, local2, local3
+--- Best guess: Compares a party member’s strength and mana, adjusting mana if strength exceeds it, likely for balance or quest purposes.
+function func_08BF(eventid)
+    local var_0001, var_0002, var_0003
 
-    local1 = call_0910H(0, local0)
-    local2 = call_0910H(3, local0)
-    if local1 > local2 then
-        local3 = local1 - local2
-        call_0912H(local3, 3, local0)
+    var_0001 = unknown_0910H(0, eventid)
+    var_0002 = unknown_0910H(3, eventid)
+    if var_0001 > var_0002 then
+        var_0003 = var_0001 - var_0002
+        unknown_0912H(var_0003, 3, eventid)
     end
-
     return
 end

@@ -1,24 +1,15 @@
--- Function 06BF: Manages random party member effect
+--- Best guess: Randomly applies an effect to party members based on item quality when event ID 3 is triggered, likely part of a dungeon trap.
 function func_06BF(eventid, itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid ~= 3 then
-        return
+    if eventid == 3 then
+        var_0000 = unknown_0023H()
+        var_0001 = unknown_0014H(itemref)
+        for i = 1, #var_0000 do
+            var_0004 = var_0000[i]
+            var_0005 = unknown_0010H(var_0001, 1)
+            unknown_0936H(var_0004, var_0005)
+        end
     end
-
-    local0 = _GetPartyMembers()
-    local1 = call_GetItemQuality(itemref)
-    while sloop() do
-        local4 = local0
-        local5 = _Random2(local1, 1)
-        call_0936H(local4, local5)
-    end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

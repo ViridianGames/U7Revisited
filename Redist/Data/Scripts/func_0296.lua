@@ -1,54 +1,56 @@
--- Simulates fishing with a pole, with random outcomes for catching fish or losing bait.
-function func_0296H(eventid, itemref)
+--- Best guess: Simulates fishing, with outcomes ranging from catching a fish to losing bait, based on random chance.
+function func_0296(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
+
     if eventid == 1 or eventid == 4 then
-        use_item() -- TODO: Implement LuaUseItem for calli 007E.
-        local target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-        local arr = {7783, 17505}
-        execute_action(-356, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
-        if not check_environment(target, {2, 3, 4}) then -- TODO: Implement LuaCheckEnvironment for callis 0090.
-            set_environment(0) -- TODO: Implement LuaSetEnvironment for calli 006A.
-            return
+        unknown_007EH()
+        var_0000 = _ItemSelectModal()
+        var_0001 = unknown_0001H({17505, 7783}, -356)
+        if not unknown_0090H({var_0000[2], var_0000[3], var_0000[4]}) then
+            unknown_006AH(0)
         end
-        local pos = get_item_info(-356) -- TODO: Implement LuaGetItemInfo for callis 0018.
-        pos[1] = pos[1] + 1
-        local fish = find_items(-356, 509, 15, 0) -- TODO: Implement LuaFindItems for callis 0035.
-        local attempts = 0
-        while fish do
-            attempts = attempts + 1
-            fish = next(fish) -- Simulate sloop iteration.
+        var_0002 = unknown_0018H(-356)
+        var_0002[1] = var_0002[1] + 1
+        var_0003 = false
+        var_0004 = 0
+        var_0005 = unknown_0035H(0, 15, 509, -356)
+        for var_0006 in ipairs(var_0005) do
+            var_0004 = var_0004 + 1
         end
-        local caught = attempts > 0 and random(1, 10) <= attempts
-        if caught then
-            local food = find_object_by_type(377) -- 0179H: Fish.
-            if food then
-                set_object_frame(food, 12)
-                set_item_quality(food, 11)
-                update_container(pos) -- TODO: Implement LuaUpdateContainer for callis 0026.
-                local outcome = random(1, 3)
-                if outcome == 1 then
-                    add_dialogue(0, "Indded, a whopper!")
-                    if is_party_member(-2) then -- Shamino.
-                        call_script(0x0933, -2, "I have seen bigger.", 16) -- TODO: Map 0933H (delayed say).
+        if var_0004 > 0 and random2(10, 1) <= var_0004 then
+            var_0003 = true
+        end
+        if var_0003 then
+            var_0008 = unknown_0024H(377)
+            if not var_0008 then
+                get_object_frame(12, var_0008)
+                unknown_0089H(11, var_0008)
+                var_0001 = unknown_0026H(var_0002)
+                var_0009 = random2(3, 1)
+                if var_0009 == 1 then
+                    unknown_08FEH("@Indded, a whopper!@")
+                    if not unknown_002FH(-2) then
+                        unknown_0933H(16, "@I have seen bigger.@", -2)
                     end
-                elseif outcome == 2 then
-                    add_dialogue(0, "What a meal!")
-                elseif outcome == 3 then
-                    add_dialogue(0, {"That fish does not", "look right."})
+                elseif var_0009 == 2 then
+                    unknown_08FEH("@What a meal!@")
+                elseif var_0009 == 3 then
+                    unknown_08FEH({"@That fish does not", "look right.@"})
                 end
             end
         else
-            local outcome = random(1, 4)
-            if outcome == 1 then
-                call_script(0x0933, -356, "Not even a bite!", 0)
-            elseif outcome == 2 then
-                call_script(0x0933, -356, "It got away!", 0)
-                if is_party_member(-1) then -- Generic NPC.
-                    call_script(0x0933, -1, "It was the Big One!", 16)
+            var_0009 = random2(4, 1)
+            if var_0009 == 1 then
+                unknown_0933H(0, "@Not even a bite!@", -356)
+            elseif var_0009 == 2 then
+                unknown_0933H(0, "@It got away!@", -356)
+                if not unknown_002FH(-1) then
+                    unknown_0933H(16, "@It was the Big One!@", -1)
                 end
-            elseif outcome == 3 then
-                call_script(0x0933, -356, "I've lost my bait.", 0)
-            elseif outcome == 4 then
-                call_script(0x0933, -356, "I felt a nibble.", 0)
+            elseif var_0009 == 3 then
+                unknown_0933H(0, "@I've lost my bait.@", -356)
+            elseif var_0009 == 4 then
+                unknown_0933H(0, "@I felt a nibble.@", -356)
             end
         end
     end

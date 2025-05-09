@@ -1,50 +1,51 @@
--- Manages a shop interaction, prompting for item purchases and handling transactions.
+--- Best guess: Manages a shop interaction, allowing the purchase of items (e.g., cloth, jar) with quantity and price validation, handling inventory and gold checks.
 function func_084C()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    save_answers() -- Unmapped intrinsic
-    local0 = true
-    local1 = {"cloth", "jar", "bucket", "powder keg", "shovel", "oil flasks", "torch", "nothing"}
-    local2 = {851, 824, 810, 704, 625, 782, 595, 0}
-    local3 = {-359, -359, -359, -359, -359, -359, -359, -359}
-    local4 = {3, 2, 4, 25, 12, 60, 4, 0}
-    local5 = {"", "a ", "a ", "a ", "a ", "an ", "a ", ""}
-    local6 = {" per bolt", "", "", "", "", " for a dozen", "", ""}
-    local7 = {1, 1, 1, 1, 1, 12, 1, 0}
+    save_answers()
+    var_0000 = true
+    var_0001 = {"cloth", "jar", "bucket", "powder keg", "shovel", "oil flasks", "torch", "nothing"}
+    var_0002 = {851, 824, 810, 704, 625, 782, 595, 0}
+    var_0003 = {-359, 0, 0, -359, -359, -359, -359, -359}
+    var_0004 = {3, 2, 4, 25, 12, 60, 4, 0}
+    var_0005 = {"", "a ", "a ", "a ", "a ", "an ", "a ", ""}
+    var_0006 = {" per bolt", "", "", "", "", " for a dozen", "", ""}
+    var_0007 = {1, 1, 1, 1, 1, 12, 1, 0}
     add_dialogue("\"To purchase what item?\"")
-    while local0 do
-        local8 = external_090CH(local1) -- Unmapped intrinsic
-        if local8 == 1 then
+    while var_0000 do
+        var_0008 = unknown_090CH(var_0001)
+        if var_0008 == 1 then
             add_dialogue("\"To be fine.\"")
-            local0 = false
+            var_0000 = false
         else
-            local9 = 1
-            local10 = 1
-            local11 = external_091CH(local5[local8], local1[local8], local4[local8], local9, local6[local8]) -- Unmapped intrinsic
-            local12 = 0
-            add_dialogue("\"^" .. local11 .. ". To be acceptable?\"")
-            local13 = external_090AH() -- Unmapped intrinsic
-            if not local13 then
-                if local2[local8] == 595 or local2[local8] == 782 then
-                    add_dialogue("\"To want to buy how many sets of twelve?\"")
+            var_0009 = 1
+            var_000A = 1
+            var_000B = unknown_091CH(var_0005[var_0008], var_0001[var_0008], var_0004[var_0008], var_0009, var_0006[var_0008])
+            var_000C = 0
+            add_dialogue("\"^" .. var_000B .. ". To be acceptable?\"")
+            var_000D = unknown_090AH()
+            if not var_000D then
+                if var_0002[var_0008] == 595 or var_0002[var_0008] == 782 then
+                    if var_0002[var_0008] == 782 then
+                        add_dialogue("\"To want to buy how many sets of twelve?\"")
+                    else
+                        add_dialogue("\"To want to buy how many?\"")
+                    end
+                    var_000C = unknown_08F8H(true, var_0007[var_0008], var_0004[var_0008], 1, var_0003[var_0008], var_0002[var_0008])
                 else
-                    add_dialogue("\"To want to buy how many?\"")
+                    var_000C = unknown_08F8H(false, var_0007[var_0008], var_0004[var_0008], 0, var_0003[var_0008], var_0002[var_0008])
                 end
-                local12 = external_08F8H(true, 1, 20, local4[local8], local7[local8], local3[local8], local2[local8]) -- Unmapped intrinsic
-            else
-                local12 = external_08F8H(false, 1, 0, local4[local8], local7[local8], local3[local8], local2[local8]) -- Unmapped intrinsic
+                if var_000C == 1 then
+                    add_dialogue("\"To be done!\"")
+                elseif var_000C == 2 then
+                    add_dialogue("\"To be unable to carry that much, human.\"")
+                elseif var_000C == 3 then
+                    add_dialogue("\"To have not the right amount of gold!\"")
+                end
+                add_dialogue("\"To buy something else?\"")
+                var_0000 = unknown_090AH()
             end
-            if local12 == 1 then
-                add_dialogue("\"To be done!\"")
-            elseif local12 == 2 then
-                add_dialogue("\"To be unable to carry that much, human.\"")
-            elseif local12 == 3 then
-                add_dialogue("\"To have not the right amount of gold!\"")
-            end
-            add_dialogue("\"To buy something else?\"")
-            local0 = external_090AH() -- Unmapped intrinsic
         end
     end
-    restore_answers() -- Unmapped intrinsic
-    return
+    restore_answers()
 end

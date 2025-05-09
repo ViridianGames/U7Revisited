@@ -1,23 +1,23 @@
--- Function 0698: Handle item type 521 and 500
+--- Best guess: Spawns items and applies sprite effects, likely for transformation visuals tied to Erethian's shape-shifting.
 function func_0698(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = get_item_position(itemref)
-    local1 = check_position(4, 1, 521, itemref)
-    local2 = check_position(4, 1, 500, itemref)
-    if local1 then
-        move_object(-1, 0, 0, 0, local0[2], local0[1], 13)
-        call_000FH(67)
-        delete_item(local1)
-        _SetItemFrame(28, itemref)
-        local3 = call_0001H(1686, {8021, 3, 17447, 8033, 4, 17447, 8044, 5, 17447, 7789}, itemref)
+    var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+    var_0001 = unknown_0035H(4, 1, 521, itemref) --- Guess: Sets NPC location
+    var_0002 = unknown_0035H(4, 1, 500, itemref) --- Guess: Sets NPC location
+    if var_0001 then
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 13) --- Guess: Applies sprite effect
+        unknown_000FH(67) --- Guess: Triggers event
+        destroy_item_silent(var_0001) --- Guess: Destroys item silently
+        set_item_frame(itemref, 28) --- Guess: Sets item frame
+        var_0003 = add_container_items(itemref, {1686, 8021, 3, 17447, 8033, 4, 17447, 8044, 5, 17447, 7789})
     end
-    if local2 then
-        move_object(-1, 0, 0, 0, local0[2], local0[1], 17)
-        move_object(-1, 0, 0, 0, local0[2], local0[1], 7)
-        call_000FH(62)
-        delete_item(local2)
-        _SetItemFrame(30, itemref)
-        local3 = call_0001H(1686, {8021, 3, 17447, 8033, 4, 17447, 8048, 5, 17447, 7791}, itemref)
+    if var_0002 then
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 17) --- Guess: Applies sprite effect
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 7) --- Guess: Applies sprite effect
+        unknown_000FH(62) --- Guess: Triggers event
+        destroy_item_silent(var_0002) --- Guess: Destroys item silently
+        set_item_frame(itemref, 30) --- Guess: Sets item frame
+        var_0003 = add_container_items(itemref, {1686, 8021, 3, 17447, 8033, 4, 17447, 8048, 5, 17447, 7791})
     end
 end

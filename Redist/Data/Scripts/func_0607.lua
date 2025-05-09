@@ -1,8 +1,7 @@
--- Increments an item's quality and updates it, possibly for tracking usage or progression.
+--- Best guess: Increments an item counter, possibly for tracking usage or state.
 function func_0607(eventid, itemref)
-    local local0
+    local var_0000
 
-    local0 = get_item_quality(itemref) + 1
-    set_item_quality(itemref, local0)
-    return
+    var_0000 = get_item_counter(itemref) + 1 --- Guess: Gets item counter
+    set_item_counter(itemref, var_0000) --- Guess: Sets item counter
 end

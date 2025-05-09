@@ -1,95 +1,110 @@
--- func_0478.lua
--- Liora's dialogue as a weaver in Britain
+--- Best guess: Handles dialogue with Joseph, the mayor of Jhelom, discussing the town’s duelling culture, the Library of Scars, the Fellowship’s potential branch, and his neutral stance on Sprellic’s dispute.
+function func_0478(eventid, itemref)
+    local var_0000, var_0001
 
-
-function func_0478(eventid)
-    local answers = {}
-    local flag_00E2 = get_flag(0x00E2) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00F1 = get_flag(0x00F1) -- Weaving topic
-    local npc_id = -97 -- Liora's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00F1 then
-            add_answer( "weaving")
+        switch_talk_to(120, 0)
+        var_0000 = get_player_title()
+        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
+        add_answer({"bye", "job", "name"})
+        if not get_flag(535) then
+            add_answer("Elizabeth and Abraham")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
+        if not get_flag(368) then
+            add_answer("Sprellic")
         end
-
-        if not flag_00E2 then
-            add_dialogue("You see a skilled woman working a loom, her shop vibrant with woven tapestries.")
-            set_flag(0x00E2, true)
+        if not get_flag(370) then
+            add_dialogue("You see a man who exudes the outward mannerisms of a shrewd administrator, in contrast to his youthful appearance.")
+            set_flag(370, true)
         else
-            add_dialogue("\"Greetings, \" .. get_player_name() .. \",\" Liora says, adjusting her loom.")
+            add_dialogue("Joseph nods his head respectfully to you. \"How may I assist thee?\"")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Liora pauses her weaving. \"Need cloth or a word?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Liora, weaver of Britain, craftin’ fine fabrics for all.\"")
+            var_0001 = get_answer()
+            if var_0001 == "name" then
+                add_dialogue("\"My name is Joseph.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I weave cloth—blankets, rugs, and more. The Fellowship’s trade deals bring wool, but their hold on Patterson’s got me uneasy.\"")
-                add_answer( "weaving")
-                add_answer( "Fellowship")
-                set_flag(0x00F1, true)
-            elseif choice == "weaving" then
-                add_dialogue("\"I spin wool into fine cloth, but prices are high from taxes. Folk like Weston can’t afford a blanket, and that’s causin’ strife.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("weaving")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes drive up my costs. It’s toughest on Paws folk, pushin’ ‘em to acts like Weston’s.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of Britain. Weston’s from there—strugglin’ folk, and the Fellowship’s aid don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—heartbreakin’. Figg’s arrest, backed by the Fellowship, was cold, no mercy given.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, enforcin’ their order. His role in Weston’s arrest shows they’re more about control than helpin’ folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals keep my loom busy, but their ties to Patterson and Figg make me think they’re weavin’ a bigger scheme than trade.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m keepin’ my eye sharp.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Wise to doubt ‘em. Their influence is heavier than my finest cloth.\"")
-                end
+            elseif var_0001 == "job" then
+                add_dialogue("\"Presently, I am the mayor of Jhelom.\"")
+                add_answer({"Jhelom", "mayor"})
+            elseif var_0001 == "mayor" then
+                add_dialogue("\"I may seem a bit young for the job, but in a town such as this I am called upon to help keep order as often as administrate. I use my sword and pen in equal measure.\"")
+                remove_answer("mayor")
+            elseif var_0001 == "Jhelom" then
+                add_dialogue("\"This town is a rough place. A fine place for fighting men and women to live. Perhaps thou hast seen our local sport?\"")
+                remove_answer("Jhelom")
+                add_answer("sport")
+            elseif var_0001 == "sport" then
+                add_dialogue("\"Why, 'tis duelling! At twelve noon every day, the town square becomes a battlefield.\"")
+                add_answer({"battlefield", "duelling"})
+                remove_answer("sport")
+            elseif var_0001 == "duelling" then
+                add_dialogue("\"Well, the sound is worse than the act. 'Tis actually just a form of training and exercise. The fighters practice with targets and such. That is where I can be found, keeping mine own skills sharp.\"")
+                remove_answer("duelling")
+            elseif var_0001 == "battlefield" then
+                add_dialogue("\"I am exaggerating. Many of the fighters in town gather to spar with the training dummies and practice various methods of combat. There are a few harmless matches at times. Some are a bit rough every now and then. Some folks take wagers on it and turn a profit.\"")
+                remove_answer("battlefield")
+                add_answer({"take wagers", "spar"})
+            elseif var_0001 == "spar" then
+                add_dialogue("\"Ahem... Of course most duels are simply to the blood, not to the death. It is a practice that helps restrain the passing knaves and rogues.\"")
+                remove_answer("spar")
+            elseif var_0001 == "take wagers" then
+                add_dialogue("\"Speak to Daphne or Ophelia at the Bunk and Stool, our town pub and inn.\"")
+                remove_answer("take wagers")
+            elseif var_0001 == "Fellowship" then
+                add_dialogue("\"That is what many of the duels are fought over! Some say The Fellowship is a load of rot, some say it is the only truth. Others say it is foolishness. Of course, as Mayor I remain neutral on such matters.\"")
                 remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Keep warm, \" .. get_player_name() .. \".\"")
+                add_answer({"foolishness", "truth"})
+            elseif var_0001 == "Elizabeth and Abraham" then
+                if not get_flag(136) then
+                    add_dialogue("\"Elizabeth and Abraham?\" Joseph scratches his head. \"Oh, yes! They were the Fellowship members who were just here! They were trying to start a branch in Jhelom. I am undecided on what to tell them. We will probably have a town meeting to decide if there should be a branch here. The couple said they were returning to Britain for a few days.\"")
+                    set_flag(363, true)
+                else
+                    add_dialogue("\"Elizabeth and Abraham?\" Joseph scratches his head. \"Oh, yes! They were the Fellowship members who were here -- why, it must have been last week or so. I have not seen them since.\"")
+                end
+                add_answer("Fellowship")
+                remove_answer("Elizabeth and Abraham")
+            elseif var_0001 == "truth" then
+                add_dialogue("\"De Snel, the leader of the Library of Scars, requires that his members fight in many duels. One week they will fight for one cause and the next week for the opposite side.\"")
+                remove_answer("truth")
+                add_answer({"Library of Scars", "De Snel"})
+            elseif var_0001 == "foolishness" then
+                if var_0001 then
+                    add_dialogue("Joseph looks a little embarrassed. \"I meant no insult to thee as a member of The Fellowship, " .. var_0000 .. ".\"")
+                else
+                    add_dialogue("\"If thou must know mine opinion,\" he says to you in quiet confidence, \"I agree with those that say The Fellowship is a bunch of foolishness.\"")
+                end
+                remove_answer("foolishness")
+            elseif var_0001 == "De Snel" then
+                add_dialogue("\"De Snel says he only wishes the best for his school. If his fighters are ever beaten he throws them out and recruits the winner to join the Library of Scars.\"")
+                remove_answer("De Snel")
+            elseif var_0001 == "Library of Scars" then
+                add_dialogue("\"It attracts fighters from all over Britannia who want to learn from De Snel. They are an unruly bunch. Thou wouldst do best to stay clear of them.\"")
+                remove_answer("Library of Scars")
+            elseif var_0001 == "Sprellic" then
+                add_dialogue("\"Yes, I have heard of the events surrounding this fellow Sprellic and the duels against the Library of Scars, but frankly, mine official policy has been to not get involved in these sort of personal disputes.\"")
+                remove_answer("Sprellic")
+                add_answer({"personal dispute", "get involved"})
+            elseif var_0001 == "get involved" then
+                add_dialogue("\"De Snel and I have an understanding. He works his side of the street and I work mine. It is hard enough to maintain order in this town without kindizing that. If I intervene De Snel will challenge me to a duel and if I am killed then his control of our town would be absolute.\"")
+                remove_answer("get involved")
+                add_answer({"understanding", "challenge"})
+            elseif var_0001 == "personal dispute" then
+                add_dialogue("\"As Mayor and the peacekeeper I have to pick and choose my fights very carefully. There is no love lost between myself and the members of the Library of Scars, but they can legitimately claim that they have been wronged. I am required to remain impartial in this matter. As far as I can see, Sprellic brought this on himself when he took the honor flag. If thou dost wish to stop the duel, thou dost need only convince him to give it back.\"")
+                remove_answer("personal dispute")
+            elseif var_0001 == "understanding" then
+                add_dialogue("\"Believe me, we are not in each other's company so often because we are friends. We do so to maintain a careful watch on each other. Keep thy friends close, but keep thine enemies closer. Words to live by in Jhelom.\"")
+                remove_answer("understanding")
+            elseif var_0001 == "challenge" then
+                add_dialogue("\"When I say that De Snel would challenge me to a duel I do not mean to insinuate that it would in any way be a fair or honorable contest-- more like a dagger in the back from one of his bullies as I was walking down a dark alley somewhere. That it would be a duel is just the story he would tell to make mine assassination somehow honorable.\"")
+                remove_answer("challenge")
+            elseif var_0001 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Enjoy thy stay in my city. But if thou hast no stomach for fighting thou shouldst not stay long.\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(120) --- Guess: Triggers a game event
     end
 end
-
-return func_0478

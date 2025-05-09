@@ -1,15 +1,12 @@
-function func_0096H(eventid, itemref)
+--- Best guess: Handles barge interaction, checking sail and gangplank states before raising planks, displaying error messages if conditions fail.
+function func_0096(eventid, itemref)
     if eventid == 1 then
-        if get_object_shape(itemref, 10) == 0 then
-            bark(0, "The sails must be furled before the planks are raised.")
-            return
-        end
-        if not U7IsGangplankAccessible(itemref) then
-            bark(0, "I think the gangplank is blocked.")
-            return
-        end
-        if U7CheckCondition() then
-            U7UseItem()
+        if not unknown_0088H(10, itemref) then
+            unknown_08FFH("@The sails must be furled before the planks are raised.@")
+        elseif not unknown_0829H(itemref) then
+            unknown_08FFH("@I think the gangplank is blocked.@")
+        elseif not unknown_0081H() then
+            unknown_007EH()
         end
     end
 end

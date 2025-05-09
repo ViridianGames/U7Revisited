@@ -1,40 +1,40 @@
--- Function 0810: Cube puzzle floor manipulation
-function func_0810(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
+--- Best guess: Manages a cube puzzle, spawning floors (type 368 or 369) based on egg proximity.
+function func_0810(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    if local1 == 0 then
-        local1 = 368
-        local2 = 8
+    var_0000 = itemref
+    if arg1 == 0 then
+        var_0001 = 368
+        var_0002 = 8
     else
-        local1 = 369
-        local2 = 5
+        var_0001 = 369
+        var_0002 = 5
     end
-    local3 = get_item_position(itemref)
-    local3 = table.insert(local3, _GetItemQuality(itemref))
-    local3 = table.insert(local3, 6)
-    local4 = check_position(16, 80, 275, local3)
-    local5 = 0
-    while local6 do
-        local8 = local6
-        local5 = local5 + 1
-        local3 = get_item_position(local8)
-        local9 = check_position(0, 1, local1, local3)
-        if eventid == 1 then
-            if local9 then
-                local10 = call_0025H(local9)
-                local10 = call_0026H(-358)
-                call_000FH(10)
+    var_0003 = unknown_0018H(itemref) --- Guess: Gets position data
+    var_0003 = create_array(get_item_quality(itemref), 6, var_0003) --- Guess: Creates array
+    var_0004 = unknown_0035H(16, 80, 275, var_0003) --- Guess: Sets NPC location
+    var_0005 = 0
+    -- Guess: sloop manages floor spawning near eggs
+    for i = 1, 5 do
+        var_0008 = {6, 7, 8, 4, 155}[i]
+        var_0005 = var_0005 + 1
+        var_0003 = unknown_0018H(var_0008) --- Guess: Gets position data
+        var_0009 = unknown_0035H(0, 1, var_0001, var_0003) --- Guess: Sets NPC location
+        if var_0000 == 1 then
+            if var_0009 then
+                var_000A = unknown_0025H(var_0009) --- Guess: Checks position
+                unknown_0026H(358) --- Guess: Updates position
+                unknown_000FH(10) --- Guess: Triggers event
             end
         else
-            if local9 == 0 then
-                local11 = call_0024H(local1)
-                _SetItemFrame(local2, local11)
-                local10 = call_0026H(local3)
-                local10 = call_0025H(local9)
-                local10 = call_0026H(-358)
-                call_000FH(83)
+            if var_0009 == 0 then
+                var_000B = get_item_status(var_0001) --- Guess: Gets item status
+                set_item_frame(var_000B, var_0002) --- Guess: Sets item frame
+                var_000A = unknown_0026H(var_0003) --- Guess: Updates position
+                var_000A = unknown_0025H(var_0009) --- Guess: Checks position
+                unknown_0026H(358) --- Guess: Updates position
+                unknown_000FH(83) --- Guess: Triggers event
             end
         end
-        local6 = get_next_item() -- sloop
     end
 end

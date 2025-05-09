@@ -1,4 +1,4 @@
--- Triggers a script for an unknown item interaction (possibly a lever or switch).
-function func_0216H(eventid, itemref)
-    call_script(0x0500, itemref) -- TODO: Map 0500H to specific Lua function or confirm script call.
+--- Best guess: Handles interaction with a specific item, delegating to a specialized function for processing.
+function func_0216(eventid, itemref)
+    unknown_0500H(itemref)
 end

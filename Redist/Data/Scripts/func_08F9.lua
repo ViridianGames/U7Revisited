@@ -1,11 +1,10 @@
--- Compares values across three arrays and returns true if all conditions are met.
-function func_08F9(p0, p1, p2)
-    local local3, local4, local5, local6
+--- Best guess: Checks if values in one array are within bounds defined by another array, returning false if any value is out of bounds, true otherwise.
+function func_08F9(var_0000, var_0001, var_0002)
+    local var_0003, var_0004, var_0005, var_0006
 
-    local3 = {3, 2, 1}
-    for local4, local5 in ipairs(local3) do
-        local6 = local5
-        if p2[local6] < p1[local6] or p2[local6] > p0[local6] then
+    var_0003 = {3, 2, 1}
+    for _, var_0006 in ipairs(var_0003) do
+        if var_0002[var_0006] < var_0001[var_0006] or var_0002[var_0006] > var_0000[var_0006] then
             return false
         end
     end

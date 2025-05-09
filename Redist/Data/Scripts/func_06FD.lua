@@ -1,60 +1,75 @@
--- Function 06FD: Manages item positioning and spawning
+--- Best guess: Manages item interactions for event ID 2, adjusting positions and triggering effects for items with specific quality and frame, likely part of a forge or environmental mechanic.
 function func_06FD(eventid, itemref)
-    -- Local variables (15 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
     if eventid == 2 then
-        local0 = false
-        local1 = false
-        local2 = callis_0035(0, 80, 797, callis_001B(-356))
-        while sloop() do
-            local5 = local2
-            local6 = call_GetItemQuality(local5)
-            local7 = call_GetItemFrame(local5)
-            if local6 == 150 and local7 == 4 then
-                local0 = local5
-                local1 = callis_0018(local5)
+        var_0000 = false
+        var_0001 = false
+        var_0002 = unknown_0035H(0, 80, 797, unknown_001BH(356))
+        for i = 1, #var_0002 do
+            var_0005 = var_0002[i]
+            var_0006 = unknown_0014H(var_0005)
+            var_0007 = unknown_0012H(var_0005)
+            if var_0006 == 150 and var_0007 == 4 then
+                var_0000 = var_0005
+                var_0001 = unknown_0018H(var_0005)
             end
         end
-
-        local8 = callis_0018(itemref)
-        local9 = call_0887H(local0, local1, local8)
-        if not local9 then
-            callis_006F(local0)
+        var_0008 = unknown_0018H(itemref)
+        var_0009 = unknown_0887H(var_0000, var_0001, var_0008)
+        if not var_0009 then
+            unknown_006FH(var_0000)
         end
-
-        local10 = callis_0024(895)
-        callis_0013(0, local10)
-        callis_0089(18, local10)
-
-        if callis_0085(0, 721, local9) then
-            local11 = callis_0026(local9)
-        elseif callis_0085(0, 721, {local9[1] + 1, local9[2], local9[3]}) then
-            local11 = callis_0026(local9)
-        elseif callis_0085(0, 721, {local9[1] - 2, local9[2], local9[3]}) then
-            local11 = callis_0026(local9)
+        var_0010 = unknown_0024H(895)
+        unknown_0013H(0, var_0010)
+        unknown_0089H(18, var_0010)
+        if not unknown_0085H(0, 721, var_0009) then
+            var_0011 = unknown_0026H(var_0009)
+        elseif not unknown_0085H(0, 721, {var_0009[1], var_0009[2] + 1, var_0009[3]}) then
+            var_0011 = unknown_0026H({var_0009[1], var_0009[2] + 1, var_0009[3]})
+        elseif not unknown_0085H(0, 721, {var_0009[1], var_0009[2] - 2, var_0009[3]}) then
+            var_0011 = unknown_0026H({var_0009[1], var_0009[2] - 2, var_0009[3]})
         else
-            callis_0053(-1, 0, 0, 0, local9[2], local9[1], 4)
-            call_000FH(9)
-            local12 = callis_0024(275)
-            callis_0013(6, local12)
-            callis_0089(18, local12)
-            local11 = callis_0015(151, local12)
-            callis_0026(local9)
-            call_0888H(local12)
-            callis_006F(local0)
-            callis_006F(local12)
+            unknown_0053H(-1, 0, 0, 0, var_0009[2], var_0009[1], 4)
+            unknown_000FH(9)
+            var_0012 = unknown_0024H(275)
+            unknown_0013H(6, var_0012)
+            unknown_0089H(18, var_0012)
+            var_0011 = unknown_0015H(151, var_0012)
+            var_0011 = unknown_0026H(var_0009)
+            unknown_0888H(var_0012)
+            unknown_006FH(var_0000)
+            unknown_006FH(var_0012)
         end
-
-        local13 = callis_0002(9, {1800, 17493, 7715}, local10)
-        local14 = callis_0001({1789, 17493, 7715}, local10)
+        var_0013 = unknown_0002H(9, {17493, 7715, 1800}, var_0010)
+        var_0008 = unknown_0018H(var_0010)
+        var_0009 = unknown_0887H(var_0000, var_0001, var_0008)
+        if not var_0009 then
+            unknown_006FH(var_0000)
+        end
+        var_0010 = unknown_0024H(895)
+        unknown_0013H(0, var_0010)
+        unknown_0089H(18, var_0010)
+        if not unknown_0085H(0, 721, var_0009) then
+            var_0011 = unknown_0026H(var_0009)
+        elseif not unknown_0085H(0, 721, {var_0009[1], var_0009[2] + 1, var_0009[3]}) then
+            var_0011 = unknown_0026H({var_0009[1], var_0009[2] + 1, var_0009[3]})
+        elseif not unknown_0085H(0, 721, {var_0009[1], var_0009[2] - 2, var_0009[3]}) then
+            var_0011 = unknown_0026H({var_0009[1], var_0009[2] - 2, var_0009[3]})
+        else
+            unknown_0053H(-1, 0, 0, 0, var_0009[2], var_0009[1], 4)
+            unknown_000FH(9)
+            var_0012 = unknown_0024H(275)
+            unknown_0013H(6, var_0012)
+            unknown_0089H(18, var_0012)
+            var_0011 = unknown_0015H(151, var_0012)
+            var_0011 = unknown_0026H(var_0009)
+            unknown_0888H(var_0012)
+            unknown_006FH(var_0000)
+            unknown_006FH(var_0012)
+        end
+        var_0013 = unknown_0002H(9, {17493, 7715, 1800}, var_0010)
+        var_0014 = unknown_0001H({1789, 17493, 7715}, var_0010)
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

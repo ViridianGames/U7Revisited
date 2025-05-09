@@ -1,119 +1,60 @@
--- Function 0886: Geography quiz for password
+--- Best guess: Conducts a geography quiz to verify the player’s identity, requiring map-based answers.
 function func_0886(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23, local24, local25, local26, local27, local28, local29, local30
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E
 
-    local0 = {0, 0, 0}
-    local1 = {3, 2, 1}
-    local2 = false
-    if not get_flag(42) and not get_flag(43) and not get_flag(44) and not get_flag(45) and not get_flag(46) and not get_flag(47) and not get_flag(48) and not get_flag(49) then
-        while local5 do
-            local6 = _Random2(8, 1)
-            if not table.contains(local0, local6) then
-                local0[local5] = local6
-                local5 = local5 + 1
-            end
+    start_conversation()
+    var_0000 = {0, 0, 0}
+    var_0001 = {3, 2, 1}
+    var_0002 = false
+    if not get_flag(42) and not get_flag(43) and not get_flag(44) and not get_flag(45) and
+       not get_flag(46) and not get_flag(47) and not get_flag(48) and not get_flag(49) then
+        for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
+            repeat
+                var_0006 = random(1, 8) --- Guess: Generates random number
+            until not is_in_int_array(var_0006, var_0000)
+            var_0000[var_0005] = var_0006
         end
-        while local5 do
-            if local0[local5] == 1 then
-                set_flag(42, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 2 then
-                set_flag(43, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 3 then
-                set_flag(44, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 4 then
-                set_flag(45, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 5 then
-                set_flag(46, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 6 then
-                set_flag(47, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 7 then
-                set_flag(48, true)
-            end
-            local5 = get_next_index() -- sloop
-        end
-        while local5 do
-            if local0[local5] == 8 then
-                set_flag(49, true)
-            end
-            local5 = get_next_index() -- sloop
+        for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
+            if var_0000[var_0005] == 1 then set_flag(42, true) end
+            if var_0000[var_0005] == 2 then set_flag(43, true) end
+            if var_0000[var_0005] == 3 then set_flag(44, true) end
+            if var_0000[var_0005] == 4 then set_flag(45, true) end
+            if var_0000[var_0005] == 5 then set_flag(46, true) end
+            if var_0000[var_0005] == 6 then set_flag(47, true) end
+            if var_0000[var_0005] == 7 then set_flag(48, true) end
+            if var_0000[var_0005] == 8 then set_flag(49, true) end
         end
     else
-        while local5 do
-            if not get_flag(42) and not table.contains(local0, 1) then
-                local0[local5] = 1
-            end
-            if not get_flag(43) and not table.contains(local0, 2) then
-                local0[local5] = 2
-            end
-            if not get_flag(44) and not table.contains(local0, 3) then
-                local0[local5] = 3
-            end
-            if not get_flag(45) and not table.contains(local0, 4) then
-                local0[local5] = 4
-            end
-            if not get_flag(46) and not table.contains(local0, 5) then
-                local0[local5] = 5
-            end
-            if not get_flag(47) and not table.contains(local0, 6) then
-                local0[local5] = 6
-            end
-            if not get_flag(48) and not table.contains(local0, 7) then
-                local0[local5] = 7
-            end
-            if not get_flag(49) and not table.contains(local0, 8) then
-                local0[local5] = 8
-            end
-            local5 = get_next_index() -- sloop
+        for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
+            if not get_flag(42) and not is_in_int_array(1, var_0000) then var_0000[var_0005] = 1 end
+            if not get_flag(43) and not is_in_int_array(2, var_0000) then var_0000[var_0005] = 2 end
+            if not get_flag(44) and not is_in_int_array(3, var_0000) then var_0000[var_0005] = 3 end
+            if not get_flag(45) and not is_in_int_array(4, var_0000) then var_0000[var_0005] = 4 end
+            if not get_flag(46) and not is_in_int_array(5, var_0000) then var_0000[var_0005] = 5 end
+            if not get_flag(47) and not is_in_int_array(6, var_0000) then var_0000[var_0005] = 6 end
+            if not get_flag(48) and not is_in_int_array(7, var_0000) then var_0000[var_0005] = 7 end
+            if not get_flag(49) and not is_in_int_array(8, var_0000) then var_0000[var_0005] = 8 end
         end
     end
-    local19 = {
-        "What longitude runs through the center of Skara Brae?",
-        "What latitude runs through the center of Buccaneer's Den?",
-        "What latitude runs through the center of the Deep Forest?",
-        "What latitude runs through the center of Skara Brae?",
-        "What latitude runs through the center of Dagger Isle?",
-        "What longitude runs through the center of the island Terfin?",
-        "What longitude runs through the center of the island Buccaneer's Den?",
-        "What is the latitude of the northern-most point of the island Spektran?"
+    var_0019 = {
+        "@What longitude runs through the center of Skara Brae?@",
+        "@What latitude runs through the center of Buccaneer's Den?@",
+        "@What latitude runs through the center of the Deep Forest?@",
+        "@What latitude runs through the center of Skara Brae?@",
+        "@What latitude runs through the center of Dagger Isle?@",
+        "@What longitude runs through the center of the island Terfin?@",
+        "@What longitude runs through the center of the island Buccaneer's Den?@",
+        "@What is the latitude of the northern-most point of the island Spektran?@"
     }
-    local20 = {60, 60, 60, 30, 0, 120, 60, 120}
-    add_dialogue(itemref, "\"Before I give thee the password, I must admit I have had my doubts about thou truly being the Avatar. I shall ask thee a few questions regarding the geography of Britannia. Please answer with the number of the longitude or latitude from thy cloth map. Remember-- longitude refers to the lines that run north-south. They are determined by the numbers at the bottom of the map. Latitude refers to the lines that run east-west. They are determined by the numbers on the left side of thy map. If these questions are answered correctly, then I will cast aside all my doubts.\"")
-    while local5 do
-        local29 = local19[local0[local5]]
-        add_dialogue(itemref, "\"" .. local29 .. "\"")
-        local30 = _AskNumber(0, 5, 210, 0)
-        if local30 == local20[local0[local5]] then
-            local2 = true
+    var_001A = {60, 60, 60, 30, 0, 120, 60, 120}
+    add_dialogue("@Before I give thee the password, I must admit I have had my doubts...@")
+    for _, var_0005 in ipairs({1, 2, 3, 4, 5}) do
+        var_001D = var_0019[var_0000[var_0005]]
+        add_dialogue("@'" .. var_001D .. "'@")
+        var_001E = ask_number(0, 210, 0, 5) --- Guess: Asks for numeric input
+        if var_001E == var_001A[var_0000[var_0005]] then
+            var_0002 = true
         end
-        local5 = get_next_index() -- sloop
     end
-    if not local2 then
-        set_return(false)
-    else
-        set_return(true)
-    end
+    return var_0002
 end

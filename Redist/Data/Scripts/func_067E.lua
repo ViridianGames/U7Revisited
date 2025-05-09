@@ -1,26 +1,26 @@
--- Casts the "In Vas Por" spell, creating a powerful movement effect in an area.
+--- Best guess: Manages the "In Vas Por" spell, causing a mass teleport or movement effect (ID 1662) for party members within a radius, with a fallback effect if the spell fails.
 function func_067E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    if eventid == 1 then
-        bark(itemref, "@In Vas Por@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1662, 17493, 17514, 17519, 8048, 64, 17496, 7791})
-            local1 = get_item_data(itemref)
-            create_object(-1, 0, 0, 0, local1[2] - 2, local1[1] - 2, 7) -- Unmapped intrinsic
-            local2 = get_party_members()
-            for local3 in ipairs(local2) do
-                local4 = local3
-                local5 = local4
-                local6 = calculate_distance(local5, itemref) -- Unmapped intrinsic
-                local6 = math.floor(local6 / 3) + 5
-                local0 = add_item(local5, local6, 1662, {17493, 7715})
-            end
-        else
-            local0 = add_item(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
+    if eventid ~= 1 then
+        if eventid == 2 then
+            unknown_0089H(12, itemref)
         end
-    elseif eventid == 2 then
-        set_flag(itemref, 12, true)
+        return
     end
-    return
+
+    unknown_005CH(itemref)
+    bark(itemref, "@In Vas Por@")
+    if not unknown_0906H() then
+        var_0000 = unknown_0001H(itemref, {1662, 17493, 17514, 17519, 8048, 64, 17496, 7791})
+        var_0001 = unknown_0018H(itemref)
+        unknown_0053H(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 7)
+        var_0002 = _GetPartyMembers()
+        for var_0003 in ipairs(var_0002) do
+            var_0006 = unknown_0019H(var_0005, itemref)
+            var_0000 = unknown_0002H(var_0006 // 3 + 5, 1662, {17493, 7715}, var_0005)
+        end
+    else
+        var_0000 = unknown_0001H(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
+    end
 end

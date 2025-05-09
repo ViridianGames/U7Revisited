@@ -1,21 +1,33 @@
--- Function 0866: Random noun pair with plural
+--- Best guess: Generates noun pairs (e.g., "batting cage" or "batting cages"), likely for item or concept references.
 function func_0866(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = {
-        "batting cage", "*", "flagstaff", "*", "digit", "*", "nail", "*",
-        "epaphite", "*", "sycophant", "*", "demagouge", "*", "prophet", "*",
-        "profit", "*", "pus", "pus", "mulch", "mulch", "Garden Gnome", "*",
-        "personal crisis", "personal crises", "wit", "*", "bathysphere", "*",
-        "jello-flavoring", "*", "origami ball", "*", "communion wafer", "*",
-        "armageddon", "*", "baloon payment", "*"
+    var_0000 = {
+        {"batting cage", "*"},
+        {"flagstaff", "*"},
+        {"digit", "*"},
+        {"nail", "*"},
+        {"epaphite", "*"},
+        {"sycophant", "*"},
+        {"demagouge", "*"},
+        {"prophet", "profit"},
+        {"pus", "pus"},
+        {"mulch", "mulch"},
+        {"Garden Gnome", "*"},
+        {"personal crisis", "personal crises"},
+        {"wit", "*"},
+        {"bathysphere", "*"},
+        {"jello-flavoring", "*"},
+        {"origami ball", "*"},
+        {"communion wafer", "*"},
+        {"armageddon", "*"},
+        {"baloon payment", "*"}
     }
-    local1 = _ArraySize(local0) / 2
-    local1 = _Random2(local1, 1)
-    local2 = local0[local1 * 2 - 1]
-    local3 = local0[local1 * 2]
-    if local3 == "*" then
-        local3 = local2 .. "s"
+    var_0001 = random(1, math.floor(array_size(var_0000) / 2)) --- Guess: Generates random index
+    var_0002 = var_0000[var_0001 * 2 - 1][1]
+    var_0003 = var_0000[var_0001 * 2][1]
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "s"
     end
-    set_return({local3, local2})
+    return {var_0002, var_0003}
 end

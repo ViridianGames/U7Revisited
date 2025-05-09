@@ -1,95 +1,60 @@
--- func_0469.lua
--- Zella's dialogue as an herbalist in Britain
+--- Best guess: Handles dialogue with Sir Jeff, the High Court official at Yew’s Abbey prison, discussing his judicial role, the prisoners (a pirate and a troll), and his distrust of the jailer Goth.
+function func_0469(eventid, itemref)
+    local var_0000, var_0001
 
-
-function func_0469(eventid)
-    local answers = {}
-    local flag_00D9 = get_flag(0x00D9) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E8 = get_flag(0x00E8) -- Herbs topic
-    local npc_id = -88 -- Zella's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E8 then
-            add_answer( "herbs")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00D9 then
-            add_dialogue("You see a knowledgeable woman sorting herbs, her shop fragrant with dried plants.")
-            set_flag(0x00D9, true)
+        switch_talk_to(105, 0)
+        var_0000 = get_player_title()
+        add_answer({"bye", "job", "name"})
+        if not get_flag(323) then
+            add_dialogue("The man greets you with stern, suspicious eyes.")
+            set_flag(323, true)
         else
-            add_dialogue("\"Ho, \" .. get_player_name() .. \",\" Zella says, crushing leaves.")
+            add_dialogue("\"What is thy business, " .. var_0000 .. "?\"")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Zella brushes her hands. \"Need herbs or a bit of talk?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Zella, herbalist of Britain, dealin' in nature's remedies.\"")
+            var_0001 = get_answer()
+            if var_0001 == "name" then
+                add_dialogue("\"I am Sir Jeff, " .. var_0000 .. ".\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I sell herbs for healin' and cookin'. The Fellowship's trade deals bring supplies, but their grip on Patterson's a touch concernin'.\"")
-                add_answer( "herbs")
-                add_answer( "Fellowship")
-                set_flag(0x00E8, true)
-            elseif choice == "herbs" then
-                add_dialogue("\"Got ginseng, mandrake, and more, but prices are steep. Folk like Weston can't afford 'em, and that's stirrin' trouble.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("herbs")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes drive up my costs. It's hardest on Paws folk, pushin' 'em to acts like Weston's.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of Britain. Weston's from there—starvin' folk, and the Fellowship's promises don't reach 'em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—sad tale. Figg's arrest, backed by the Fellowship, was harsh, no kindness shown.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg's a Fellowship man, pushin' their order. His role in Weston's arrest shows they care more for control than folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship's deals keep my herb stock full, but their ties to Patterson and Figg make me wonder what they're really after.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest 'em? They help trade, but I'm watchin' close.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0001 == "job" then
+                add_dialogue("\"I am the High Court official at the prison here in the Abbey.\"")
+                add_answer({"Abbey", "official"})
+            elseif var_0001 == "official" then
+                add_dialogue("\"I am the judiciary part of Britannia's government. It is my job to see that criminals are brought to justice.\"")
+                add_answer("criminals")
+                remove_answer("official")
+            elseif var_0001 == "criminals" then
+                add_dialogue("\"We have two prisoners already, but there are many scoundrels who still roam free.\"")
+                add_answer({"scoundrels", "prisoners"})
+                remove_answer("criminals")
+            elseif var_0001 == "prisoners" then
+                add_dialogue("\"Thou, of course, hast never met them,\" he says, his brow narrowing, \"but we have a pirate, and,\" he pauses, \"a troll. If thou dost wish to see them, speak with Goth, the jailer.\"")
+                add_answer("Goth")
+                remove_answer("prisoners")
+            elseif var_0001 == "scoundrels" then
+                add_dialogue("\"See for thyself, the posted bills for known villains are in the log book in the courtroom.\"")
+                remove_answer("scoundrels")
+            elseif var_0001 == "Goth" then
+                add_dialogue("\"He has only been working here for a few weeks, but I already know he is not trustworthy. There is something obviously unscrupulous about him. He is not a friend of thine, is he?\"")
+                var_0001 = select_option()
+                if var_0001 then
+                    add_dialogue("\"I suspected as much.\" He turns away from you.")
+                    abort()
                 else
-                    add_dialogue("\"Good to doubt 'em. Their influence feels heavier than their words.\"")
+                    add_dialogue("\"No,\" he says, watching you closely, \"of course he is not.\"")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Stay healthy, \" .. get_player_name() .. \".\"")
+                remove_answer("Goth")
+            elseif var_0001 == "Abbey" then
+                add_dialogue("\"The monks live and study there, but they do little more than winemaking. Well, I know one of them tends the garden.\"")
+                remove_answer("Abbey")
+            elseif var_0001 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Keep thine heart and mind on the straight path, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
-
-return func_0469

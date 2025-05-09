@@ -1,38 +1,37 @@
--- Function 0868: Random verb forms
+--- Best guess: Generates verb conjugations (e.g., "lactate", "lactated"), likely for dialogue or actions.
 function func_0868(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = {
-        "lactate", "lactated", "lactating",
-        "grovel", "grovelled", "grovelling",
-        "brew", "*", "*",
-        "digest", "*", "*",
-        "complain", "*", "*",
-        "gump", "*", "*",
-        "guffaw", "*", "*",
-        "loiter", "*", "*",
-        "solicit", "*", "*",
-        "represent", "*", "*",
-        "conjugate", "*", "*",
-        "sink", "sank", "*",
-        "harvest", "*", "*",
-        "gossip", "*", "*",
-        "falsify", "falsified", "*",
-        "sue", "sued", "suing",
-        "gyrate", "gyrated", "gyrating",
-        "outstrech", "*", "*",
-        "deflower", "*", "*"
+    var_0000 = {
+        {"lactate", "lactated", "lactating"},
+        {"grovel", "grovelled", "grovelling"},
+        {"brew", "*", "*"},
+        {"digest", "*", "*"},
+        {"complain", "*", "*"},
+        {"gump", "*", "*"},
+        {"guffaw", "*", "*"},
+        {"loiter", "*", "*"},
+        {"solicit", "*", "*"},
+        {"represent", "*", "*"},
+        {"conjugate", "*", "*"},
+        {"sink", "sank", "*"},
+        {"harvest", "*", "*"},
+        {"gossip", "*", "*"},
+        {"falsify", "falsified", "*"},
+        {"sue", "sued", "suing"},
+        {"gyrate", "gyreated", "gyrating"},
+        {"outstrech", "*", "*"},
+        {"deflower", "*", "*"}
     }
-    local1 = _ArraySize(local0) / 3
-    local1 = _Random2(local1, 1)
-    local2 = local0[local1 * 3 - 2]
-    local3 = local0[local1 * 3 - 1]
-    local4 = local0[local1 * 3]
-    if local3 == "*" then
-        local3 = local2 .. "ed"
+    var_0001 = random(1, math.floor(array_size(var_0000) / 3)) --- Guess: Generates random index
+    var_0002 = var_0000[var_0001 * 3 - 2][1]
+    var_0003 = var_0000[var_0001 * 3 - 1][1]
+    var_0004 = var_0000[var_0001 * 3][1]
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "ed"
     end
-    if local4 == "*" then
-        local4 = local2 .. "ing"
+    if var_0004 == "*" then
+        var_0004 = var_0002 .. "ing"
     end
-    set_return({local4, local3, local2})
+    return {var_0002, var_0003, var_0004}
 end

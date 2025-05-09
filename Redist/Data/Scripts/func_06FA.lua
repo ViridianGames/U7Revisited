@@ -1,12 +1,9 @@
--- Function 06FA: Displays environmental messages
+--- Best guess: Displays dialogue based on item types (275, 721, 989) when triggered, likely indicating environmental events like tremors or instability.
 function func_06FA(eventid, itemref)
-    local item_type = call_GetItemType(itemref)
-
-    if item_type == 275 then
-        call_08FFH("It would seem the nearby island is not at all stable.")
-    elseif item_type == 721 or item_type == 989 then
-        call_08FFH("All is not right in Britannia. Perhaps Lord British will know the reason behind this tremor.")
+    if unknown_0011H(itemref) == 275 then
+        unknown_08FFH("@It would seem the nearby island is not at all stable.@")
+    elseif unknown_0011H(itemref) == 721 or unknown_0011H(itemref) == 989 then
+        unknown_08FFH("@All is not right in Britannia. Perhaps Lord British will know the reason behind this tremor.@")
     end
-
     return
 end

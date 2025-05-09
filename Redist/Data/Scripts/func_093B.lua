@@ -1,12 +1,11 @@
--- Adjusts an NPC’s property based on a value and bounds.
-function func_093B(p0, p1, p2, p3)
-    local local4, local5, local6
+--- Best guess: Adjusts an NPC’s property by subtracting a value, capping at the maximum or a calculated threshold.
+function func_093B(P0, P1, P2, P3)
+    local var_0000, var_0001, var_0002
 
-    local4 = get_npc_property(p2, p3) -- Unmapped intrinsic
-    local5 = local4 + p0 * 2
-    if local5 > get_npc_property(p1, p3) then -- Unmapped intrinsic
-        local5 = get_npc_property(p1, p3) -- Unmapped intrinsic
+    var_0000 = _GetNPCProperty(P2, P3)
+    var_0001 = var_0000 + P0 * 2
+    if var_0001 > _GetNPCProperty(P1, P3) then
+        var_0001 = _GetNPCProperty(P1, P3)
     end
-    local6 = set_npc_property(p2, p3, local5 - local4) -- Unmapped intrinsic
-    return
+    var_0002 = _SetNPCProperty(var_0001 - var_0000, P2, P3)
 end

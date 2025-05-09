@@ -1,23 +1,24 @@
--- Function 0803: Initialize raft
+--- Best guess: Spawns an item (type 981) with specific positioning, possibly for an event trigger.
 function func_0803(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    local1 = check_position(0, 40, 230, eventid)
-    if call_0088H(1, local1) then
-        local1 = 0
+    var_0000 = itemref
+    var_0001 = unknown_0035H(0, 40, 230, var_0000) --- Guess: Sets NPC location
+    if not _CheckNPCStatus(1, var_0001) then
+        var_0001 = 0
     end
-    if not get_flag(3) and not local1 then
-        _SetItemType(981, eventid)
+    if not get_flag(3) and not var_0001 then
+        set_item_type(981, var_0000) --- Guess: Sets item type
         set_flag(3, true)
-        local2 = {885, 2743, 0}
-        call_003EH(local2, eventid)
-        local2[2] = local2[2] + 2
-        call_003EH(local2, -356)
-        call_0808H()
-        local3 = 200
-        local4 = 1
-        local5 = -359
-        call_0804H(local5, local4, local3)
-        local6 = call_0002H(8, 1566, {17493, 7715}, -356)
+        var_0002 = {0, 885, 2743}
+        unknown_003EH(var_0002, var_0000) --- Guess: Sets NPC target
+        var_0002[2] = var_0002[2] + 2
+        unknown_003EH(var_0002, 356) --- Guess: Sets NPC target
+        calle_0808H() --- External call to party management
+        var_0003 = 200
+        var_0004 = 1
+        var_0005 = 359
+        calle_0804H(var_0003, var_0004, var_0005) --- External call to item search
+        var_0006 = add_container_items_at(356, {8, 1566, 17493, 7715})
     end
 end

@@ -1,37 +1,38 @@
--- Casts the "Vas An Xen Ex" spell, dispelling summoned creatures in an area.
+--- Best guess: Manages the "Vas An Xen Ex" spell, freeing a creature or entity (ID 1661) within a radius, with random placement and a fallback effect if the spell fails.
 function func_067D(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    if eventid == 1 then
-        bark(itemref, "@Vas An Xen Ex@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1661, 17493, 17514, 17519, 17520, 8047, 65, 7768})
-            local1 = get_item_data(itemref)
-            create_object(-1, 0, 0, 0, local1[2] - 2, local1[1] - 2, 7) -- Unmapped intrinsic
-            local2 = 25
-            local3 = external_0934H(local2) -- Unmapped intrinsic
-            for local4 in ipairs(local3) do
-                local5 = local4
-                local6 = local5
-                local2 = calculate_distance(local6, itemref) -- Unmapped intrinsic
-                local2 = math.floor(local2 / 4) + 4
-                if get_random(1, 3) ~= 1 then
-                    local0 = add_item(local6, local2, 1661, {17493, 7715})
+    if eventid ~= 1 then
+        if eventid == 2 then
+            var_0007 = unknown_003AH(itemref)
+            if table.contains({-356, -218, -217}, var_0007) then
+                var_0008 = unknown_003CH(-356)
+                if var_0008 then
+                    unknown_0089H(2, itemref)
+                else
+                    unknown_008AH(2, itemref)
                 end
             end
-        else
-            local0 = add_item(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
         end
-    elseif eventid == 2 then
-        local7 = get_item_owner(itemref)
-        if not contains({-356, -218, -217}, local7) then
-            local8 = external_003CH(-356) -- Unmapped intrinsic
-            if local8 then
-                set_flag(itemref, 2, true)
-            else
-                external_008AH(itemref, 2) -- Unmapped intrinsic
+        return
+    end
+
+    unknown_005CH(itemref)
+    bark(itemref, "@Vas An Xen Ex@")
+    if not unknown_0906H() then
+        var_0000 = unknown_0001H(itemref, {1661, 17493, 17514, 17519, 17520, 8047, 65, 7768})
+        var_0001 = unknown_0018H(itemref)
+        unknown_0053H(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 7)
+        var_0002 = 25
+        var_0003 = unknown_0934H(var_0002)
+        for var_0004 in ipairs(var_0003) do
+            var_0006 = unknown_0019H(var_0006, itemref)
+            var_0002 = var_0006 // 4 + 4
+            if random2(3, 1) ~= 1 then
+                var_0000 = unknown_0002H(var_0002, 1661, {17493, 7715}, var_0006)
             end
         end
+    else
+        var_0000 = unknown_0001H(itemref, {1542, 17493, 17514, 17519, 17520, 7791})
     end
-    return
 end

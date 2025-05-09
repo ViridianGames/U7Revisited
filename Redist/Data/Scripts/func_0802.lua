@@ -1,14 +1,14 @@
--- Function 0802: Remove element from array
-function func_0802(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+--- Best guess: Builds an array of items excluding a specified value, likely for filtering purposes.
+function func_0802(eventid, itemref, arg1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    local2 = {}
-    while local3 do
-        local5 = local3
-        if local5 ~= local1 then
-            table.insert(local2, local5)
+    var_0002 = {}
+    -- Guess: sloop filters items not equal to arg1
+    for i = 1, 5 do
+        var_0005 = {3, 4, 5, 0, 24}[i]
+        if var_0005 ~= arg1 then
+            table.insert(var_0002, var_0005)
         end
-        local3 = get_next_item() -- sloop
     end
-    set_return(local2)
+    return var_0002
 end

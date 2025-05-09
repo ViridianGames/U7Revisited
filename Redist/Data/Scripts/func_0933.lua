@@ -1,9 +1,8 @@
--- Function 0933: Conditional follow wall for combat-ready NPC
-function func_0933(eventid, itemref)
-    local local0
+--- Best guess: Checks an item’s status via func_0937, then adds items to a container if the condition fails.
+function func_0933(eventid, itemref, arg1, arg2, arg3)
+    local var_0000, var_0001, var_0002, var_0003
 
-    if not call_0937H(local2) then
-        local3 = follow_wall(eventid, itemref, {17490, 7715})
+    if not calle_0937H(arg3) then --- External call to func_0937
+        var_0003 = unknown_0002H(arg1, arg2, {17490, 7715}, get_item_owner(arg3)) --- Guess: Unknown function call
     end
-    return
 end

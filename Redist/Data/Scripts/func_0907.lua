@@ -1,4 +1,4 @@
--- Function 0907: Process item ownership
+--- Best guess: Returns the position of an item’s owner.
 function func_0907(eventid, itemref)
-    set_return(call_0036H(call_001BH(itemref)))
+    return get_item_position(get_item_owner(itemref)) --- Guess: Gets item position
 end

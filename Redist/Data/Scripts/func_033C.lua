@@ -1,17 +1,11 @@
--- Function 033C: Manages item interaction
-function func_033C(itemref)
-    -- Local variables (1 as per .localc)
-    local local0
+--- Best guess: Triggers an action for an item with quality 0 when event ID is not 1, likely for a specific item interaction.
+function func_033C(eventid, itemref)
+    local var_0000
 
-    if eventid() ~= 1 then
-        return
+    if eventid ~= 1 then
+        if unknown_0014H(itemref) == 0 then
+            var_0000 = unknown_081FH(itemref)
+        end
     end
-    if callis_0014(itemref) == 0 then
-        local0 = call_081FH(itemref)
-    end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

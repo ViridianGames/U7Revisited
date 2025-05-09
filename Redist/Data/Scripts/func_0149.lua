@@ -1,28 +1,33 @@
-function func_0149H(eventid, itemref)
-    if not U7IsItemValid(itemref) then
+--- Best guess: Handles a storm cloak interaction, moving it to specific coordinates or displaying an error if used indoors.
+function func_0149(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+
+    if not unknown_0079H(itemref) then
         return
     end
     if eventid == 1 then
-        local wearer = U7GetWearer(itemref)
-        if wearer == nil then
-            local items = U7GetItemInfo(-356)
-            items[1] = items[1] + 1
-            local obj = U7FindObject(itemref)
-            if obj == nil then
-                U7UpdateContainer(items)
-            end
-            if U7CheckCondition() then
-                U7UseItem()
+        var_0000 = unknown_006EH(itemref)
+        if not var_0000 then
+            var_0001 = unknown_0018H(-356)
+            var_0001[1] = var_0001[1] + 1
+            var_0002 = unknown_0025H(itemref)
+            if not var_0002 then
+                var_0002 = unknown_0026H(var_0001)
             end
         end
-        U7ExecuteAction(itemref, {-1, -1, -2, 329, 7})
+        if not unknown_0081H() then
+            unknown_007EH()
+        end
+        var_0003 = -1
+        var_0004 = -1
+        var_0005 = -2
+        unknown_0828H(7, itemref, 329, var_0005, {var_0004, var_0003})
     elseif eventid == 7 then
-        if not U7IsOutdoor() then
-            local arr = U7CreateArray(7750, 0, 8013, 17419, -1, 14, 8006, 0, 8013, 17419, -1, 3, 7975, 2, 8015, 17419, -1, 3, 7975, 5, 8016, 17419, -1, 14)
-            U7ExecuteAction(itemref, arr)
-            U7ExecuteAction(-356, {8037, 17447, 2, 8033, 17447, -6, 7})
+        if not unknown_0062H() then
+            var_0002 = unknown_0001H({0, 14, -1, 17419, 8015, 3, -3, 17419, 8013, 2, 7975, 3, -1, 17419, 8016, 5, 7975, 14, -1, 17419, 8013, 0, 7750}, itemref)
+            var_0002 = unknown_0001H({7, -6, 7947, 2, 17447, 8033, 2, 17447, 8037, 6, 17497, 17505, 7788}, -356)
         else
-            bark(0, "Try it outside!")
+            unknown_08FEH("@Try it outside!@")
         end
     end
 end

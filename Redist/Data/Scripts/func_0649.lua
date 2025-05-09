@@ -1,20 +1,24 @@
--- Casts the "An Nox" spell, curing poison on a selected target, with a fallback effect if the target is invalid.
+--- Best guess: Implements the cure poison spell (An Nox), removing poison status from a selected target.
 function func_0649(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        destroy_item(itemref)
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@An Nox@")
-        if not external_0906H(local1) and is_item_active(local0) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 17509, 8038, 64, 8536, local1, 7769})
-            local2 = add_item(local0, 6, 1609, {17493, 7715})
+        if check_spell_requirements() then
+            if is_item_valid(var_0000) then
+                var_0002 = add_container_items(itemref, {17511, 17509, 8038, 64, 8536, var_0001, 7769})
+                var_0002 = add_container_items(var_0000, {6, 1609, 17493, 7715})
+            else
+                var_0002 = add_container_items(itemref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
+            end
         else
-            local2 = add_item(itemref, {1542, 17493, 17511, 17509, 8550, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 17509, 8550, var_0001, 7769})
         end
     elseif eventid == 2 then
-        set_flag(itemref, 8, true)
-        set_flag(itemref, 7, true)
+        unknown_008AH(8, itemref) --- Guess: Sets quest flag
+        unknown_008AH(7, itemref) --- Guess: Sets quest flag
     end
-    return
 end

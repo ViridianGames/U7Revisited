@@ -1,20 +1,16 @@
--- Function 01B3: Item type switching
+--- Best guess: Changes an object’s shape (ID 481) and updates its state, possibly for a transformation or animation effect (e.g., a magical item or environmental object).
 function func_01B3(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
-    -- Eventid == 1 or 2: Set item type
     if eventid == 1 or eventid == 2 then
-        _SetItemType(481, itemref)
-        calli_005C(itemref)
+        set_object_shape(itemref, 481)
+        -- calli 005C, 1 (unmapped)
+        unknown_005CH(itemref)
+    elseif eventid == 7 then
+        set_object_shape(itemref, 481)
+        -- call [0000] (0827H, unmapped)
+        var_0000 = unknown_0827H(itemref, 356)
+        var_0001 = unknown_0001H({17505, 17514, 8449, var_0000, 7769}, 356)
     end
-
-    -- Eventid == 7: Update position
-    if eventid == 7 then
-        _SetItemType(481, itemref)
-        local0 = call_0827H(itemref, -356)
-        local1 = callis_0001({17505, 17514, 8449, local0, 7769}, -356)
-    end
-
     return
 end

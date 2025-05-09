@@ -1,11 +1,12 @@
--- Function 0826: Check item type
+--- Best guess: Checks if an item type is in a specific set (157, 779), likely for validation.
 function func_0826(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    local1 = {157, 779}
-    if _GetItemType(eventid) == local1 then
-        set_return(true)
+    var_0000 = itemref
+    var_0001 = {157, 779}
+    if table.contains(var_0001, get_item_type(var_0000)) then --- Guess: Gets item type
+        return true
     else
-        set_return(false)
+        return false
     end
 end

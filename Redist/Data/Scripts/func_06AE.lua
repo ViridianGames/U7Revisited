@@ -1,8 +1,7 @@
--- Function 06AE: Triggers NPC-specific function
+--- Best guess: Applies an effect to NPC ID 149 via an external function (ID 1173) when event ID 3 is triggered, likely part of a dungeon trap.
 function func_06AE(eventid, itemref)
     if eventid == 3 then
-        call_0495H(callis_001B(-149))
+        unknown_0495H(unknown_001BH(149))
     end
-
     return
 end

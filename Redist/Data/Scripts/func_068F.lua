@@ -1,14 +1,14 @@
--- Applies a flag-based effect to an item based on flags 814 or 813.
+--- Best guess: Selects a game state or item frame (13, 14, or 15) based on flags 814 and 813, applying it to an item (ID 7750), likely for a puzzle or mechanism.
 function func_068F(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
     if not get_flag(814) then
-        local0 = 15
+        var_0000 = 15
     elseif not get_flag(813) then
-        local0 = 14
+        var_0000 = 14
     else
-        local0 = 13
+        var_0000 = 13
     end
-    local1 = add_item(itemref, {local0, 7750})
-    return
+
+    var_0001 = unknown_0001H(itemref, {var_0000, 7750})
 end

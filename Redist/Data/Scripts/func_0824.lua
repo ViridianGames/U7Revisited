@@ -1,24 +1,25 @@
--- Function 0824: Update item position and type
+--- Best guess: Applies damage to the party or sets game state based on item type and quality, likely for traps or hazards.
 function func_0824(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    if _Random2(3, 1) == 1 and _GetItemQuality(eventid) ~= 8 then
-        call_0071H(4, 3, -356)
-        call_0086H(itemref, 62)
-        local1 = get_item_position(-356)
-        local2 = get_item_position(eventid)
-        local3 = _GetItemType(eventid)
-        if local3 == 776 or local3 == 777 or local3 == 779 then
-            local1 = call_0825H(2, local2, local1)
-        elseif local3 == 157 then
-            local1 = call_0825H(1, local2, local1)
+    var_0000 = itemref
+    if random(1, 3) == 1 and get_item_quality(var_0000) ~= 8 then
+        apply_damage_to_party(4, 3, 356) --- Guess: Applies damage to party
+        set_item_behavior(itemref, 62) --- Guess: Sets item behavior
+        var_0001 = unknown_0018H(356) --- Guess: Gets position data
+        var_0002 = unknown_0018H(var_0000) --- Guess: Gets position data
+        var_0003 = get_item_type(var_0000) --- Guess: Gets item type
+        if var_0003 == 776 or var_0003 == 777 or var_0003 == 779 then
+            var_0001 = calle_0825H(2, var_0002, var_0001) --- External call to adjust position
+        elseif var_0003 == 157 then
+            var_0001 = calle_0825H(1, var_0002, var_0001) --- External call to adjust position
         end
-        call_003EH(local1, -356)
+        unknown_003EH(var_0001, 356) --- Guess: Sets NPC target
     else
-        call_008CH(0, 1, 12)
-        call_0086H(itemref, 11)
-        call_0823H(eventid)
-        call_003EH(-357)
-        call_0001H({1590, 17493, 7715}, -356)
+        set_game_state(0, 1, 12) --- Guess: Sets game state
+        set_item_behavior(itemref, 11) --- Guess: Sets item behavior
+        calle_0823H(var_0000) --- External call to update position
+        unknown_003EH(357, 357) --- Guess: Sets NPC target
+        var_0004 = add_container_items(356, {1590, 17493, 7715})
     end
 end

@@ -1,32 +1,34 @@
--- Casts an explosion spell ("Vas In Flam Grav") on a target area.
-function func_0673(p0)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13
+--- Best guess: Implements the poison storm spell (Vas In Flam Grav), creating a poison field with random damage.
+function func_0673(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    if get_event_id() == 1 then
-        local0 = 25
-        external_005CH(itemref) -- Unmapped intrinsic
-        local1 = external_0934H(local0) -- Unmapped intrinsic
+    if eventid == 1 then
+        var_0000 = 25
+        var_0001 = get_nearby_npcs(var_0000) --- Guess: Gets nearby NPCs
+        destroy_item(itemref)
         bark(itemref, "@Vas In Flam Grav@")
-        if not external_0906H() then
-            local2 = external_0001H({17514, 17520, 17516, 17517, 8044, 65, 7768}, itemref) -- Unmapped intrinsic
-            for local3, local4 in ipairs({{1, -1, 0, 1, 2}, {0, -1, 0, 1, 2}, {-1, -1, 0, 1, 2}, {-2, -1, 0, 1, 2}}) do
-                local5 = local4
-                local6 = local5[1]
-                local7 = local5[2]
-                local8 = local5[3]
-                local9 = {local6, local7, local8}
-                local10 = external_0024H(895) -- Unmapped intrinsic
-                if local10 then
-                    local2 = external_0026H(local9) -- Unmapped intrinsic
-                    external_0089H(local10, 18) -- Unmapped intrinsic
-                    local11 = 30
-                    local12 = external_0015H(local10, local11) -- Unmapped intrinsic
-                    local2 = external_0002H({17453, 7715}, local10) -- Unmapped intrinsic
+        if check_spell_requirements() then
+            var_0002 = add_container_items(itemref, {17514, 17520, 17516, 17517, 8044, 65, 7768})
+            -- Guess: sloop creates poison field
+            for i = 1, 5 do
+                var_0005 = {3, 4, 5, 1, 147}[i]
+                var_0006 = unknown_0018H(var_0005) --- Guess: Gets position data
+                var_0007 = var_0006[1]
+                var_0008 = var_0006[2]
+                var_0009 = var_0006[3]
+                var_000A = {0, var_0008, var_0007}
+                var_000B = get_item_status(895) --- Guess: Gets item status
+                if var_000B then
+                    var_0002 = unknown_0026H(var_000A) --- Guess: Updates position
+                    var_000C = random(1, 15)
+                    var_000D = 30 + var_000C
+                    var_0002 = set_item_quality(var_000B, var_000D)
+                    set_item_flag(var_000B, 18)
+                    var_0002 = add_container_items(var_000B, {var_000D, 17453, 7715})
                 end
             end
         else
-            local2 = external_0001H({1542, 17493, 17514, 17520, 17516, 17517, 7788}, itemref) -- Unmapped intrinsic
+            var_0002 = add_container_items(itemref, {1542, 17493, 17514, 17520, 17516, 17517, 7788})
         end
     end
-    return
 end

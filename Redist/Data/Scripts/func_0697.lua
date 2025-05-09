@@ -1,57 +1,49 @@
--- Function 0697: Erethian's transformation effects
+--- Best guess: Manages Erethian's failed transformations (rodent, cow) with sound effects and visual effects.
 function func_0697(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
-    local0 = get_item_position(itemref)
+    var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
     if not get_flag(3) then
         if not get_flag(811) then
             set_flag(811, true)
-            move_object(-1, 0, 0, 0, local0[2] - 2, local0[1] - 2, 13)
-            move_object(-1, 0, 0, 0, local0[2] - 2, local0[1] - 2, 7)
-            call_000FH(67)
-            _SetItemFrame(4, itemref)
-            local1 = call_0024H(274)
-            _SetItemFrame(28, local1)
-            local2 = call_0026H(local0)
-            local3 = call_0001H(1686, {8021, 16, 7719}, itemref)
-            local4 = call_0001H({8035, 3, 17447, 8044, 4, 17447, 8045, 4, 7769}, local1)
-        else
-            if not get_flag(812) then
-                set_flag(812, true)
-                move_object(-1, 0, 0, 0, local0[2], local0[1] - 1, 17)
-                move_object(-1, 0, 0, 0, local0[2] - 2, local0[1] - 2, 4)
-                call_000FH(9)
-                delete_item(check_condition(1, 274, itemref))
-                local5 = call_0024H(504)
-                _SetItemFrame(19, local5)
-                local2 = call_0026H(local0)
-                local6 = check_condition(1, 154, local5)
-                local3 = call_0001H(1686, {8021, 14, 7719}, local6)
-                local7 = call_0001H({8041, 2, 17447, 8042, 3, 17447, 8040, 4, 7975, 4, 7769}, local5)
-            else
-                move_object(-1, 0, 0, 0, local0[2], local0[1], 17)
-                move_object(-1, 0, 0, 0, local0[2], local0[1], 7)
-                call_000FH(8)
-                delete_item(check_condition(1, 154, itemref))
-                _SetItemFrame(28, check_condition(1, 154, itemref))
-                local2 = call_0026H(local0)
-                local3 = call_0001H({8033, 4, 17447, 8044, 5, 17447, 7789}, local6)
-                call_001DH(29, local6)
-                local8 = call_0881H()
-                local9 = call_0002H(13, {17453, 7724}, local8)
-                local10 = call_0001H(1693, {8021, 11, 7719}, call_001BH(-356))
-            end
+            apply_sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 13) --- Guess: Applies sprite effect
+            apply_sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 7) --- Guess: Applies sprite effect
+            unknown_000FH(67) --- Guess: Triggers event
+            set_item_frame(itemref, 4) --- Guess: Sets item frame
+            var_0001 = get_item_status(274) --- Guess: Gets item status
+            set_item_frame(var_0001, 28) --- Guess: Sets item frame
+            var_0002 = unknown_0026H(var_0000) --- Guess: Updates position
+            var_0003 = add_container_items(itemref, {1686, 8021, 16, 7719})
+            var_0004 = add_container_items(var_0001, {8035, 2, 17447, 8044, 3, 17447, 8045, 4, 17447, 7769})
+        elseif not get_flag(812) then
+            set_flag(812, true)
+            apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 17) --- Guess: Applies sprite effect
+            apply_sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 4) --- Guess: Applies sprite effect
+            unknown_000FH(9) --- Guess: Triggers event
+            set_item_frame(itemref, 4) --- Guess: Sets item frame
+            var_0005 = get_item_status(504) --- Guess: Gets item status
+            var_0006 = set_item_type_at(154, var_0005, 1) --- Guess: Sets item type at position
+            var_0003 = add_container_items(itemref, {1686, 8021, 14, 7719})
+            var_0007 = add_container_items(var_0005, {8033, 4, 17447, 8044, 5, 17447, 7789})
+            var_0002 = unknown_0026H(var_0000) --- Guess: Updates position
+            unknown_001DH(29, var_0006)
+            unknown_008AH(16, 356) --- Guess: Sets quest flag
+            var_0008 = get_conversation_target() --- Guess: Gets conversation target
+            var_0009 = add_container_items(var_0008, {13, 17453, 7724})
+            var_000A = add_container_items(356, {1693, 8021, 11, 7719})
+            bark(itemref, "@Squeak!@")
         end
-    else
-        set_flag(812, true)
-        move_object(-1, 0, 0, 0, local0[2], local0[1], 17)
-        move_object(-1, 0, 0, 0, local0[2], local0[1], 4)
-        call_000FH(62)
-        _SetItemFrame(4, itemref)
-        local11 = call_0024H(500)
-        _SetItemFrame(23, local11)
-        local2 = call_0026H(local0)
-        local12 = call_0001H(1688, {7463, "@Squeak!@", 8018, 11, 7719}, itemref)
-        local13 = call_0001H({8036, 2, 17447, 8034, 1, 17447, 8036, 1, 17447, 8035, 2, 17447, 8036, 1, 17447, 8035, 1, 17447, 8034, 4, 7975, 4, 7769}, local11)
+    elseif not get_flag(811) then
+        set_flag(811, true)
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 17) --- Guess: Applies sprite effect
+        apply_sprite_effect(-1, 0, 0, 0, var_0000[2] - 2, var_0000[1] - 2, 7) --- Guess: Applies sprite effect
+        unknown_000FH(62) --- Guess: Triggers event
+        set_item_frame(itemref, 4) --- Guess: Sets item frame
+        var_000D = get_item_status(500) --- Guess: Gets item status
+        set_item_frame(var_000D, 23) --- Guess: Sets item frame
+        var_0002 = unknown_0026H(var_0000) --- Guess: Updates position
+        var_0003 = add_container_items(itemref, {1688, 8021, 7, 7463, "@MOO?!@", 8018, 11, 7719})
+        var_000E = add_container_items(var_000D, {8040, 1, 17447, 8041, 1, 17447, 8042, 2, 17447, 8041, 2, 17447, 8042, 1, 17447, 8041, 1, 17447, 8040, 4, 7975, 4, 7769})
+        bark(itemref, "@MOO?!@")
     end
 end

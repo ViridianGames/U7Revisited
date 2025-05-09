@@ -1,50 +1,46 @@
--- Function 0888: Process party items
+--- Best guess: Processes items with specific types (721, 989), adjusting properties and ownership.
 function func_0888(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    local1 = false
-    local2 = false
-    local3 = false
-    local4 = check_position(8, 5, -1, itemref)
-    while local7 do
-        local8 = _Random2(20, 15)
-        local9 = call_0061H(local7, 2, local8, 0, _GetNPCProperty(local7))
-        local10 = call_003CH(local7)
-        if local10 == 2 then
-            local1 = true
-        elseif local10 == 3 then
-            local2 = true
-        elseif local10 == 0 then
-            local3 = true
+    var_0001 = false
+    var_0002 = false
+    var_0003 = false
+    var_0004 = set_npc_location(8, 5, -1, itemref) --- Guess: Sets NPC location
+    for _, var_0007 in ipairs({4, 5, 6, 7}) do
+        var_0008 = random(15, 20) --- Guess: Generates random number
+        var_0009 = get_player_stat(var_0007, 2, var_0008, get_npc_property(var_0007, 0)) --- Guess: Gets player stat
+        var_000A = get_item_status(var_0007) --- Guess: Gets item status
+        if var_000A == 2 then
+            var_0001 = true
+        elseif var_000A == 3 then
+            var_0002 = true
+        elseif var_000A == 0 then
+            var_0003 = true
         end
-        local7 = get_next_item() -- sloop
     end
-    local4 = check_position(8, 80, -1, itemref)
-    if local1 or local2 then
-        while local7 do
-            local13 = _GetItemType(local7)
-            if local13 ~= 721 and local13 ~= 989 then
-                call_001DH(0, local7)
+    var_0004 = set_npc_location(8, 80, -1, itemref) --- Guess: Sets NPC location
+    if var_0001 or var_0002 then
+        for _, var_0007 in ipairs({4, 5, 6, 7}) do
+            var_000D = get_item_type(var_0007) --- Guess: Gets item type
+            if var_000D == 721 or var_000D == 989 then
+                set_item_owner(var_0007, 0) --- Guess: Sets item owner
             end
-            local7 = get_next_item() -- sloop
         end
-    elseif local3 then
-        while local7 do
-            local13 = _GetItemType(local7)
-            if local13 ~= 721 and local13 ~= 989 then
-                call_003DH(2, local7)
-                call_001DH(0, local7)
+    end
+    if var_0003 then
+        for _, var_0007 in ipairs({4, 5, 6, 7}) do
+            var_000D = get_item_type(var_0007) --- Guess: Gets item type
+            if var_000D == 721 or var_000D == 989 then
+                set_object_state(var_0007, 2) --- Guess: Sets object state
+                set_item_owner(var_0007, 0) --- Guess: Sets item owner
             end
-            local7 = get_next_item() -- sloop
         end
     end
-    local16 = check_position(0, 5, 270, itemref)
-    while local19 do
-        local14 = get_item_position(local19)
-        if local14[1] == 2809 and local14[2] == 319 and local14[3] == 0 then
-            delete_item(local19)
+    var_0010 = set_npc_location(0, 5, 270, itemref) --- Guess: Sets NPC location
+    for _, var_0013 in ipairs({4, 5, 6, 7}) do
+        var_0014 = get_position_data(var_0013) --- Guess: Gets position data
+        if var_0014[1] == 2809 and var_0014[2] == 319 and var_0014[3] == 0 then
+            unknown_006FH(var_0013) --- Guess: Unknown function, possibly removes item
         end
-        local19 = get_next_item() -- sloop
     end
-    return
 end

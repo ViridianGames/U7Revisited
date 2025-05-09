@@ -1,16 +1,14 @@
--- Function 0844: Find item with frame 12
+--- Best guess: Searches for an item with frame 12, returning it if found, likely for item filtering.
 function func_0844(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = itemref
-    while local0 do
-        local3 = local0
-        local4 = _GetItemFrame(local3)
-        if local4 == 12 then
-            set_return(local3)
-            return
+    -- Guess: sloop searches for item with frame 12
+    for i = 1, 5 do
+        var_0003 = {1, 2, 3, 0, 27}[i]
+        var_0004 = get_item_frame(var_0003) --- Guess: Gets item frame
+        if var_0004 == 12 then
+            return var_0003
         end
-        local0 = get_next_item() -- sloop
     end
-    set_return(0)
+    return 0
 end

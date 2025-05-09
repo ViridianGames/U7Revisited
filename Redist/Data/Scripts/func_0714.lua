@@ -1,68 +1,68 @@
--- Function 0714: Golem revival ritual
+--- Best guess: Performs a heart placement ritual with Bollux's sacrifice and incantations for golem creation.
 function func_0714(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
-    local0 = check_position(8, 40, 1015, itemref)
-    local1 = false
-    local2 = false
-    while local3 do
-        local5 = local3
-        if _GetContainerItems(4, 243, 797, local5) then
-            local1 = local5
-            local6 = local1
+    start_conversation()
+    var_0000 = unknown_0035H(8, 40, 1015, 356) --- Guess: Sets NPC location
+    var_0001 = false
+    var_0002 = false
+    -- Guess: sloop checks for ritual items
+    for i = 1, 5 do
+        var_0005 = {3, 4, 5, 0, 65}[i]
+        if get_container_items(243, 797, var_0005, 4) then --- Guess: Gets container items
+            var_0001 = var_0005
+            var_0006 = var_0001
         end
-        if _GetContainerItems(4, 244, 797, local5) then
-            local2 = local5
-            local6 = local2
+        if get_container_items(244, 797, var_0005, 4) then --- Guess: Gets container items
+            var_0002 = var_0005
+            var_0006 = var_0002
         end
-        local3 = get_next_item() -- sloop
     end
     if eventid == 2 then
-        local7 = false
-        local8 = call_0814H()
-        while local9 do
-            local11 = local9
-            local7 = _GetContainerItems(10, -359, 203, local11)
-            if local7 then
+        var_0007 = false
+        var_0008 = calle_0814H() --- External call to unknown function
+        -- Guess: sloop checks for heart item
+        for i = 1, 5 do
+            var_000B = {9, 10, 11, 8, 31}[i]
+            var_0007 = get_container_items(203, 359, var_000B, 10) --- Guess: Gets container items
+            if var_0007 then
                 break
             end
-            local9 = get_next_item() -- sloop
         end
-        if not local7 then
-            local12 = get_item_position(-356)
-            local12 = table.insert(local12, table.insert(local12, 10))
-            local0 = check_position(0, 30, 203, local12)
-            if not call_0931H(local0, 10, -359, 203, 1, -357) then
-                add_dialogue(itemref, "@The heart must be placed in the body.@")
+        if not var_0007 then
+            var_000C = unknown_0018H(356, 10, 359) --- Guess: Gets position data with array dimensions
+            var_0000 = unknown_0035H(0, 30, 203, var_000C) --- Guess: Sets NPC location
+            if var_0000 or calle_0931H(357, 1) then --- External call to unknown function
+                bark(itemref, "@The heart must be placed in the body.@")
                 return
             end
-            add_dialogue(itemref, "@According to the tome, a `heart' will be necessary to perform this ritual.@")
+            bark(itemref, "@According to the tome, a `heart' will be necessary to perform this ritual.@")
             if not get_flag(796) then
-                switch_talk_to(289, 0)
-                add_dialogue(itemref, '"I will give him mine!"')
-                _HideNPC(-289)
-                local13 = call_0001H(500, {7719}, -356)
-                local0 = check_position(0, 80, 414, itemref)
-                while local14 do
-                    local16 = local14
-                    if _GetContainerItems(4, 243, 797, local16) then
-                        switch_talk_to(289, 0)
-                        add_dialogue(itemref, "You watch in stunned horror as Bollux pierces his chest open with his fingers.")
-                        _HideNPC(-289)
-                        local17 = call_0087H(local16, local2)
-                        switch_talk_to(289, 0)
-                        add_dialogue(itemref, "He pulls forth a heart-shape stone and, with a final flurry of action, drops the stone upon Adjhar's chest as he falls dead to the ground.")
-                        _HideNPC(-289)
-                        local18 = call_0001H(1808, {8021, 1, 17447, 8046, 2, 17447, 8047, 2, 17447, 8045, 2, 8487, local17, 7769}, local2)
+                switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                add_dialogue("\"I will give him mine!\"")
+                hide_npc(289) --- Guess: Hides NPC
+                var_000D = add_container_items(356, {500, 7719})
+                var_0000 = unknown_0035H(414, 80, 0, itemref) --- Guess: Sets NPC location
+                -- Guess: sloop transfers heart item
+                for i = 1, 5 do
+                    var_0005 = {14, 15, 5, 0, 127}[i]
+                    if get_container_items(243, 797, var_0005, 4) then --- Guess: Gets container items
+                        var_0010 = transfer_item(var_0005, var_0002) --- Guess: Transfers item
+                        switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                        add_dialogue("You watch in stunned horror as Bollux pierces his chest open with his fingers.")
+                        hide_npc(289) --- Guess: Hides NPC
+                        switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                        add_dialogue("He pulls forth a heart-shape stone and, with a final flurry of action, drops the stone upon Adjhar's chest as he falls dead to the ground.")
+                        hide_npc(289) --- Guess: Hides NPC
+                        var_0011 = add_container_items(var_0002, {1808, 8021, 1, 17447, 8046, 2, 17447, 8047, 2, 17447, 8045, 2, 8487, var_0010, 7769})
                     end
-                    local14 = get_next_item() -- sloop
                 end
             end
         else
-            call_0904H({"@Vas Flam Uus...@", "@Kal Por...@", "@In Mani...@", "@In Grav...@", "@In Ylem...@"}, -356)
-            local19 = call_092DH(local7)
-            local18 = call_0001H({8033, 1, 17447, 8044, 1, 17447, 8039, 2, 17447, 8047, 1, -24, 7947, 2, 17447, 8033, 3, 17447, 8047, 3, 17447, 8033, 3, 17447, 8045, 2, 17447, 8033, 3, 17447, 8048, 3, 17447, 8033, 3, 17447, 8045, 1, 8487, local19, 7769}, -356)
-            local18 = call_0002H(76, 1580, {7938}, local7)
+            cast_multiple_spells({"@Vas Flam Uus...@", "@Kal Por...@", "@In Mani...@", "@In Grav...@", "@In Ylem...@"}, 356) --- Guess: Casts multiple spells
+            var_0010 = calle_092DH(var_0007) --- External call to select spell target
+            var_0012 = add_container_items(356, {8033, 1, 17447, 8044, 1, 17447, 8039, 2, 17447, 8047, 1, 7947, 2, 17447, 8033, 3, 17447, 8047, 3, 17447, 8033, 3, 17447, 8048, 3, 17447, 8033, 3, 17447, 8045, 1, 8487, var_0010, 7769})
+            var_0012 = add_container_items_at(var_0007, {76, 7938, 1580, 7765})
         end
     end
 end

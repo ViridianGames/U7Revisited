@@ -1,20 +1,20 @@
--- Checks an item's frame and applies specific adjustments or effects.
+--- Best guess: Manages a mechanic checking an item’s frame state (via 081BH), triggering actions (081DH, 0818H) based on frame values (0 or 1), and setting flags or states.
 function func_081F(eventid, itemref)
-    local local1
+    local var_0000, var_0001
 
-    local1 = external_081BH(itemref) -- Unmapped intrinsic
-    if local1 == 1 then
-        if not external_081DH(7, 0, 0, 0, 845, itemref) then -- Unmapped intrinsic
-            external_0086H(itemref, 31) -- Unmapped intrinsic
+    var_0001 = unknown_081BH(eventid, itemref)
+    if var_0001 == 1 then
+        if unknown_081DH(7, 0, 0, 0, 845, eventid, itemref) then
+            unknown_0086H(itemref, 31)
         else
-            external_0818H() -- Unmapped intrinsic
+            unknown_0818H()
             return false
         end
-    elseif local1 == 0 then
-        if not external_081DH(7, 0, 0, 1, 845, itemref) then -- Unmapped intrinsic
-            external_0086H(itemref, 30) -- Unmapped intrinsic
+    elseif var_0001 == 0 then
+        if unknown_081DH(7, 0, 0, 1, 845, eventid, itemref) then
+            unknown_0086H(itemref, 30)
         else
-            external_0818H() -- Unmapped intrinsic
+            unknown_0818H()
             return false
         end
     end

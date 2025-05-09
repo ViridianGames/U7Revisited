@@ -1,6 +1,5 @@
--- Clears a specific flag and applies an effect.
+--- Best guess: Disables a game flag (ID 749) and triggers a game mode switch, likely for a specific event or state reset.
 function func_068A(eventid, itemref)
     set_flag(749, false)
-    external_0045H(0) -- Unmapped intrinsic
-    return
+    unknown_0045H(0)
 end

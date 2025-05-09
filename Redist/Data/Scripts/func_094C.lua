@@ -1,60 +1,62 @@
--- Manages a shop for spell scrolls by magic circle.
+--- Best guess: Manages a magic shop interaction, allowing the purchase of spells from various circles, with spellbook and gold checks.
 function func_094C()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    save_answers() -- Unmapped intrinsic
-    local0 = true
-    local1 = {140, 120, 90, 70, 50, 30}
-    while local0 do
+    save_answers()
+    var_0000 = true
+    var_0001 = {140, 120, 90, 70, 50, 30}
+    while var_0000 do
         add_dialogue("\"To be interested in which circle?\"")
-        local2 = external_090CH({"Sixth", "Fifth", "Fourth", "Third", "Second", "First", "none"}) -- Unmapped intrinsic
-        local2 = local2 - 1
-        if local2 == 0 then
+        var_0002 = _SelectIndex({"Sixth", "Fifth", "Fourth", "Third", "Second", "First", "none"}) - 1
+        if var_0002 == 0 then
             if get_flag(3) then
-                add_dialogue("\"To wonder why you bother me so!\"")
-            else
                 add_dialogue("\"To understand.\"")
+            else
+                add_dialogue("\"To wonder why you bother me so!\"")
             end
             break
-        elseif local2 == 1 then
-            local3 = {"Light", "Locate", "Great Douse", "Great Ignite", "nothing"}
-            local4 = {13, 14, 11, 12, 0}
-        elseif local2 == 2 then
-            local3 = {"Great Light", "Destroy Trap", "Enchant", "Fire Blast", "nothing"}
-            local4 = {19, 16, 17, 18, 0}
-        elseif local2 == 3 then
-            local3 = {"Swarm", "Curse", "Poison", "Paralyze", "nothing"}
-            local4 = {26, 24, 30, 28, 0}
-        elseif local2 == 4 then
-            local3 = {"Conjure", "Reveal", "Mass Curse", "Lightning", "nothing"}
-            local4 = {32, 37, 35, 33, 0}
-        elseif local2 == 5 then
-            local3 = {"Fire Field", "Dispel Field", "Explosion", "Mass Sleep", "nothing"}
-            local4 = {46, 42, 43, 47, 0}
+        elseif var_0002 == 1 then
+            var_0003 = {"Light", "Locate", "Great Douse", "Great Ignite", "nothing"}
+            var_0004 = {13, 14, 11, 12, 0}
+        elseif var_0002 == 2 then
+            var_0003 = {"Great Light", "Destroy Trap", "Enchant", "Fire Blast", "nothing"}
+            var_0004 = {19, 16, 17, 18, 0}
+        elseif var_0002 == 3 then
+            var_0003 = {"Swarm", "Curse", "Poison", "Paralyze", "nothing"}
+            var_0004 = {26, 24, 30, 28, 0}
+        elseif var_0002 == 4 then
+            var_0003 = {"Conjure", "Reveal", "Mass Curse", "Lightning", "nothing"}
+            var_0004 = {32, 37, 35, 33, 0}
+        elseif var_0002 == 5 then
+            var_0003 = {"Fire Field", "Dispel Field", "Explosion", "Mass Sleep", "nothing"}
+            var_0004 = {46, 42, 43, 47, 0}
         else
-            local3 = {"Tremor", "Flame Strike", "Clone", "Fire Ring", "nothing"}
-            local4 = {55, 51, 49, 50, 0}
+            var_0003 = {"Tremor", "Flame Strike", "Clone", "Fire Ring", "nothing"}
+            var_0004 = {55, 51, 49, 50, 0}
         end
         add_dialogue("\"To buy which spell?\"")
-        local5 = external_090CH(local3) -- Unmapped intrinsic
-        local6 = local4[local5]
-        local7 = local1[local2]
-        local8 = local3[local5]
-        add_dialogue("\"To cost " .. local7 .. " gold for " .. local8 .. " spell.\"")
-        local9 = external_0924H(local7, local6) -- Unmapped intrinsic
-        if local9 == 1 then
+        var_0005 = _SelectIndex(var_0003)
+        if var_0005 == 1 then
+            add_dialogue("\"To be fine.\"")
+            break
+        end
+        var_0006 = var_0004[var_0005]
+        var_0007 = var_0001[var_0002]
+        var_0008 = var_0003[var_0005]
+        add_dialogue("\"To cost " .. var_0007 .. " gold for " .. var_0008 .. " spell.\"")
+        var_0009 = unknown_0924H(var_0007, var_0006)
+        if var_0009 == 1 then
             add_dialogue("\"To agree!\"")
-        elseif local9 == 2 then
+        elseif var_0009 == 2 then
             add_dialogue("\"To be without a spellbook, human.\"")
-            local0 = false
-        elseif local9 == 3 then
+            var_0000 = false
+        elseif var_0009 == 3 then
             add_dialogue("\"To have not have enough gold for that!\"")
-        elseif local9 == 4 then
+        elseif var_0009 == 4 then
             add_dialogue("\"To see you already have that spell.\"")
         end
         add_dialogue("\"To be interested in another spell?\"")
-        local0 = external_090AH() -- Unmapped intrinsic
+        var_0000 = _SelectOption()
     end
-    restore_answers() -- Unmapped intrinsic
-    return
+    restore_answers()
 end

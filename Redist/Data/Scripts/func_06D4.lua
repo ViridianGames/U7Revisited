@@ -1,20 +1,13 @@
--- Function 06D4: Manages item movement
+--- Best guess: Checks flag 4 and creates an item (type 600, quality 1288) at a specific location when event ID 3 is triggered, likely part of a dungeon puzzle.
 function func_06D4(eventid, itemref)
-    -- Local variables (1 as per .localc)
-    local local0
+    local var_0000
 
     if eventid == 3 then
-        if get_flag(0x0004) == 0 then
-            local0 = {1, 1288, 600}
-            call_0811H(local0)
-            callis_003E(local0, -356)
+        if get_flag(4) == 0 then
+            var_0000 = {1288, 600}
+            unknown_0811H(var_0000)
+            unknown_003EH(356, var_0000)
         end
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
 end

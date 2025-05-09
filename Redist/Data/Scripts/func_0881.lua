@@ -1,13 +1,12 @@
--- Function 0881: Find item with specific frame
+--- Best guess: Searches for items with specific frames (18–21), possibly for event triggers.
 function func_0881(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = check_position(0, 0, 854, -356)
-    while local3 do
-        if _GetItemFrame(local3) >= 18 and _GetItemFrame(local3) <= 21 then
-            set_return(local3)
+    var_0000 = set_npc_location(0, 0, 854, 356) --- Guess: Sets NPC location
+    for _, var_0003 in ipairs({1, 2, 3, 0}) do
+        if get_item_frame(var_0003) >= 18 and get_item_frame(var_0003) <= 21 then --- Guess: Gets item frame
+            return var_0003
         end
-        local3 = get_next_item() -- sloop
     end
-    set_return(0)
+    return 0
 end

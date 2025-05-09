@@ -1,58 +1,36 @@
--- Function 08D6: Manages Rowena's lament dialogue
+--- Best guess: Manages a dialogue with Trent and Rowena after their reunion, where they refuse a sacrifice and focus on their love, with an option to end the conversation.
 function func_08D6()
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    start_conversation()
+    local var_0000, var_0001
 
-    local0 = call_0909H()
-    local1 = call_08F7H(-142)
-
-    if not local1 then
+    var_0000 = unknown_0909H()
+    var_0001 = unknown_08F7H(-142)
+    if not var_0001 then
         add_dialogue("\"Where, oh where has my dear husband gone. I cannot stand to be away from him!\"")
-        abort()
+        return
     end
-
     add_dialogue("As far as you can tell, the couple haven't released their embrace since they were first reunited, and they show no sign of doing so at any time in the near future.")
-    callis_0005("bye")
     while true do
-        if cmp_strings("sacrifice", 0x0078) then
-            callis_0006("sacrifice")
-            if not get_flag(0x019D) then
-                callis_0003(1, -142)
-                add_dialogue("\"No, ", local0, ". She is my life. If thou takest her, thou takest mine heart.\" Trent holds on tightly to his wife.")
-                set_flag(0x019D, true)
-                callis_0004(-142)
-                callis_0003(1, -144)
-            else
-                add_dialogue("\"I cannot leave my lord like this. Surely thou canst understand, ", local0, ".\"")
+        add_answer("bye")
+        if not unknown_XXXXH() then
+            add_answer("sacrifice")
+            if string.lower(unknown_XXXXH()) == "sacrifice" then
+                remove_answer("sacrifice")
+                if not get_flag(413) then
+                    unknown_0003H(1, -142)
+                    add_dialogue("\"No, " .. var_0000 .. ". She is my life. If thou takest her, thou takest mine heart.\" Trent holds on tightly to his wife.")
+                    set_flag(413, true)
+                    unknown_0004H(-142)
+                    unknown_0003H(1, -144)
+                else
+                    add_dialogue("\"I cannot leave my lord like this. Surely thou canst understand, " .. var_0000 .. ".\"")
+                end
+            end
+            if string.lower(unknown_XXXXH()) == "bye" then
+                add_dialogue("The couple continue staring into one another's eyes as if to make up for all of the years they lost.")
+                return
             end
         end
-        if cmp_strings("bye", 0x0085) then
-            add_dialogue("The couple continue staring into one another's eyes as if to make up for all of the years they lost.")
-            abort()
-        end
-        break
     end
-
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
-end
-
-function cmp_strings(str, addr)
-    return false -- Placeholder
 end

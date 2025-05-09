@@ -1,23 +1,16 @@
--- Function 02D3: Crossbow bolt advertisement
+--- Best guess: Manages an NPC (ID -1) advertising Iolo’s crossbow bolts, hiding after dialogue, likely a promotional easter egg.
 function func_02D3(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        -- call [0000] (0908H, unmapped)
+        var_0000 = unknown_0908H()
+        if not npc_in_party(1) then
+            switch_talk_to(0, 1)
+            start_conversation()
+            add_dialogue("\"" .. var_0000 .. " dost thou notice the unique Iolo trademark on these bolts? They are designed for maximum performance with genuine IOLO crossbows, available at a location near Yew.\"")
+            hide_npc(1)
+        end
     end
-
-    local0 = call_0908H()
-    if npc_in_party(1) then
-        switch_talk_to(1, 0)
-        add_dialogue("\"", local0, " dost thou notice the unique Iolo trademark on these bolts? They are designed for maximum performance with genuine IOLO crossbows, available at a location near Yew.\"")
-        _HideNPC(-1)
-    end
-
     return
-end
-
--- Helper function
-function add_dialogue(...)
-    print(table.concat({...})) -- Adjust to your dialogue system
 end

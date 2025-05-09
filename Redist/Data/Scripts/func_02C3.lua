@@ -1,16 +1,16 @@
--- Function 02C3: Item interaction with script call
+--- Best guess: Triggers an external function (ID 1782) or updates an object (shape 990) with a state change, possibly for a puzzle or mechanism.
 function func_02C3(eventid, itemref)
-    -- Local variable (1 as per .localc)
-    local local0
+    local var_0000
 
     if eventid == 1 then
-        calle_06F6H(itemref)
+        -- calle 06F6H, 1782 (unmapped)
+        unknown_06F6H(itemref)
     elseif eventid == 2 then
-        if _GetItemType(itemref) == 990 then
-            calli_008C(0, 1, 12)
-            local0 = callis_0001({990, 8021, 3, 7719}, itemref)
+        if get_object_shape(itemref) == 990 then
+            -- calli 008C, 3 (unmapped)
+            unknown_008CH(0, 1, 12)
+            var_0000 = unknown_0001H({990, 8021, 3, 7719}, itemref)
         end
     end
-
     return
 end

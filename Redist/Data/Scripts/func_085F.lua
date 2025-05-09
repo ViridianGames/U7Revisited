@@ -1,48 +1,48 @@
--- Manages combat training, checking gold and dexterity.
-function func_085F(p0, p1)
-    local local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15
+--- Best guess: Manages a training session with Chad, checking player stats and gold, providing combat training if conditions are met.
+function func_085F(P0, P1)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
-    local2 = external_0908H() -- Unmapped intrinsic
-    local3 = external_0909H() -- Unmapped intrinsic
-    local4 = "the Avatar"
+    var_0002 = unknown_0908H()
+    var_0003 = unknown_0909H()
+    var_0004 = "the Avatar"
     if not get_flag(497) then
-        local5 = local2
+        var_0005 = var_0002
     elseif not get_flag(499) then
-        local5 = local4
+        var_0005 = var_0004
     elseif not get_flag(498) then
-        local5 = local3
+        var_0005 = var_0003
     end
-    local6 = external_0920H() -- Unmapped intrinsic
-    local7 = get_player_name(local6) -- Unmapped intrinsic
-    if local6 == 0 then
+    var_0006 = unknown_0920H()
+    var_0007 = _GetPlayerName(var_0006)
+    if var_0006 == 0 then
         return
     end
-    local8 = 3
-    local9 = external_0922H(local8, local6, p0, p1) -- Unmapped intrinsic
-    if local9 == 0 then
+    var_0008 = 3
+    var_0009 = unknown_0922H(var_0008, var_0006, P0, P1)
+    if var_0009 == 0 then
         add_dialogue("\"It seems that thou dost need a little more time to hone thy reflexes. If thou dost wish to return later, when thou hast more experience, I would be most happy to train thee.\"")
-    elseif local9 == 1 then
-        local10 = get_container_items(-359, -359, 644, -357) -- Unmapped intrinsic
-        add_dialogue("You gather your gold and count it, finding that you have " .. local10 .. " gold altogether.")
-        if local10 < p0 then
+    elseif var_0009 == 1 then
+        var_000A = unknown_0028H(-359, -359, 644, -357)
+        add_dialogue("You gather your gold and count it, finding that you have " .. var_000A .. " gold altogether.")
+        if var_000A < P0 then
             add_dialogue("\"Thou hast not enough gold to pay me. I am sorry but I cannot train thee now.\"")
+            return
         end
-    elseif local9 == 2 then
-        add_dialogue("\"Zounds! Thou art quick. Too quick, in fact, for me to be able to help thee become faster. I am sorry, " .. local5 .. ".\"")
-    else
-        local11 = add_item_to_container(-359, -359, -359, 644, p0) -- Unmapped intrinsic
-        add_dialogue("You pay " .. p0 .. " gold, and the training session begins.")
-        local12 = local6 == -356 and "You" or local7
-        local13 = local6 == -356 and "you" or local7
-        add_dialogue(local12 .. " and Chad spar for a few minutes. He teaches " .. local13 .. " several expert maneuvers that better utilize speed and agility in combat.")
-        local14 = external_0910H(1, local6) -- Unmapped intrinsic
-        if local14 < 30 then
-            external_0917H(1, local6) -- Unmapped intrinsic
-        end
-        local15 = external_0910H(4, local6) -- Unmapped intrinsic
-        if local15 < 30 then
-            external_0915H(2, local6) -- Unmapped intrinsic
-        end
+    elseif var_0009 == 2 then
+        add_dialogue("\"Zounds! Thou art quick. Too quick, in fact, for me to be able to help thee become faster. I am sorry, " .. var_0005 .. ".\"")
+        return
     end
-    return
+    var_000B = unknown_002BH(true, -359, -359, 644, P0)
+    add_dialogue("You pay " .. P0 .. " gold, and the training session begins.")
+    var_000C = var_0006 == -356 and "You" or var_0007
+    var_000D = var_0006 == -356 and "you" or var_0007
+    add_dialogue(var_000C .. " and Chad spar for a few minutes. He teaches " .. var_000D .. " several expert maneuvers that better utilize speed and agility in combat.")
+    var_000E = unknown_0910H(1, var_0006)
+    if var_000E < 30 then
+        unknown_0917H(1, var_0006)
+    end
+    var_000F = unknown_0910H(4, var_0006)
+    if var_000F < 30 then
+        unknown_0915H(2, var_0006)
+    end
 end

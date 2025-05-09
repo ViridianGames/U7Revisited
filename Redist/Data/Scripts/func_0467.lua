@@ -1,95 +1,79 @@
--- func_0467.lua
--- Wisp's dialogue as an alchemist in Britain
+--- Best guess: Handles dialogue with Thad, a zealous warrior in Yew, who is hostile to Fellowship members, discussing his quest to destroy the Fellowship, save his enchanted sister Millie, and his knowledge of Yew’s hunters.
+function func_0467(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-
-function func_0467(eventid)
-    local answers = {}
-    local flag_00D7 = get_flag(0x00D7) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00E6 = get_flag(0x00E6) -- Potions topic
-    local npc_id = -86 -- Wisp's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00E6 then
-            add_answer( "potions")
+        switch_talk_to(103, 0)
+        var_0000 = unknown_0067H() --- Guess: Checks Fellowship membership
+        if var_0000 then
+            var_0001 = unknown_001BH(103) --- Guess: Gets object ref
+            add_dialogue("The man scowls at you. \"Thou wearest the symbol of that most foul of groups, The Fellowship. Prepare to die!\"")
+            unknown_003DH(2, var_0001) --- Guess: Initiates combat
+            unknown_001DH(0, var_0001) --- Guess: Sets object behavior
+            abort()
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00D7 then
-            add_dialogue("You see a focused man mixing vials, surrounded by bubbling potions in a cluttered shop.")
-            set_flag(0x00D7, true)
+        var_0002 = get_player_title()
+        var_0003 = false
+        if not get_flag(321) then
+            add_dialogue("Eyeing you carefully, the man before you takes an aggressive stance.")
+            set_flag(321, true)
         else
-            add_dialogue("\"Greetings, \" .. get_player_name() .. \",\" Wisp says, stirring a potion.")
+            add_dialogue("\"Good day, " .. var_0002 .. ",\" Thad says coolly.")
         end
-
+        add_answer({"bye", "job", "name"})
         while true do
-            if #answers == 0 then
-                add_dialogue("Wisp sets down a vial. \"Need a potion or some insight?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Wisp, alchemist of Britain, brewin’ remedies and more.\"")
+            var_0004 = get_answer()
+            if var_0004 == "name" then
+                add_dialogue("He stares at you for a moment. \"Thad is my name, " .. var_0002 .. ".\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I craft potions—healin’, sleep, you name it. The Fellowship’s trade deals get me herbs, but their hold on Patterson’s a bit worrisome.\"")
-                add_answer( "potions")
-                add_answer( "Fellowship")
-                set_flag(0x00E6, true)
-            elseif choice == "potions" then
-                add_dialogue("\"Got salves for wounds, draughts for sleep. Herbs are costly, though—folk like Weston can’t afford ‘em, and that stirs trouble.\"")
-                add_answer( "Weston")
-                add_answer( "herbs")
-                remove_answer("potions")
-            elseif choice == "herbs" then
-                add_dialogue("\"Herbs come from Yew and Moonglow, but Fellowship fees hike prices. It’s tough on Paws folk, pushin’ ‘em to desperation like Weston.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("herbs")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of here. Weston’s from there—strugglin’ folk, and the Fellowship’s aid don’t seem to reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his family—heartbreakin’. Figg’s arrest, backed by the Fellowship, was swift, no pity given.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship loyalist, pushin’ their agenda. His role in Weston’s arrest shows they care more for order than folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s trade deals keep my shop stocked, but their ties to Patterson and Figg make me question what they’re really brewin’.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m keepin’ a sharp eye.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Wise to doubt ‘em. Their influence feels like a potion gone wrong.\"")
+            elseif var_0004 == "job" then
+                add_dialogue("\"Job? I have not the time for a job. I am on a quest to rid this land of that which plagues it!\"")
+                add_answer({"plague", "quest"})
+            elseif var_0004 == "quest" then
+                add_dialogue("\"I have devoted mine entire life to this, nothing will get in my way, not even Batlin.\"")
+                remove_answer("quest")
+                add_answer("Batlin")
+            elseif var_0004 == "Batlin" then
+                add_dialogue("\"He is the leader of the cursed organization, The Fellowship!\"")
+                if not var_0003 then
+                    add_answer("The Fellowship")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Mind thy health, \" .. get_player_name() .. \".\"")
+                remove_answer("Batlin")
+            elseif var_0004 == "plague" then
+                add_dialogue("\"Surely thou hast heard of The Fellowship, a most foul and evil organization. It has even infested the lovely forest of Yew!\"")
+                add_answer("Yew")
+                if not var_0003 then
+                    add_answer("The Fellowship")
+                end
+                remove_answer("plague")
+            elseif var_0004 == "The Fellowship" then
+                add_dialogue("\"I know little about their practices, but I do know they live outside the bounds of moral decency. They have kidnapped my beloved sister, Millie, and have cast a spell of enchantment. Now she lives as they do. I have vowed to remove this wicked spell and will slay the entire organization should that prove necessary!\"")
+                add_dialogue("\"Thou, also, hast taken up a similar cause, I expect. Yes?\"")
+                var_0004 = select_option()
+                if var_0004 then
+                    add_dialogue("\"Excellent.\" He shakes your hand. \"Thou art indeed a worthy warrior, " .. var_0002 .. ".\"")
+                else
+                    add_dialogue("\"No?\" He seems genuinely surprised. \"Then perhaps thou wilt consider taking up my quest in thine own manner.\"")
+                    var_0005 = select_option()
+                    if var_0005 then
+                        add_dialogue("\"I expected as much. Thou art truly an honorable warrior.\"")
+                    else
+                        add_dialogue("\"What manner of scoundrel art thou? Remove thyself from my presence before I decide to smite thee from thy wretched life!\"")
+                        abort()
+                    end
+                end
+                var_0003 = true
+                remove_answer("The Fellowship")
+            elseif var_0004 == "Yew" then
+                add_dialogue("\"I know the land, but not the people. There is nothing useful I have to tell thee.\" He appears thoughtful for a moment. \"Perhaps I can aid thee a bit. I do know that there are two hunters who sometimes frequent this area. One, a woman, carries a spear. The other is an archer. That is all I can tell thee.\"")
+                remove_answer("Yew")
+            elseif var_0004 == "bye" then
                 break
             end
         end
+        add_dialogue("\"May thine endeavors reach fruition, " .. var_0002 .. ".\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
-
-return func_0467

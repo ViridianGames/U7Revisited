@@ -1,36 +1,23 @@
--- Function 06CC: Manages party member effects and item spawning
+--- Best guess: Applies effects to party members when event ID 3 is triggered and flag 5 is not set, based on item quality, likely in a dungeon trap.
 function func_06CC(eventid, itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid ~= 3 then
-        return
-    end
-
-    if get_flag(0x0005) == 0 then
-        local0 = call_GetItemQuality(itemref)
-        local1 = _GetPartyMembers()
-        while sloop() do
-            local4 = local1
-            if not callis_0072(-359, 638, 9, local4) then
-                if local0 == 30 then
-                    local5 = 30
-                else
-                    local5 = _Random2(local0, 1)
+    if eventid == 3 then
+        if get_flag(5) == 0 then
+            var_0000 = unknown_0014H(itemref)
+            var_0001 = unknown_0023H()
+            for i = 1, #var_0001 do
+                var_0004 = var_0001[i]
+                if not unknown_0072H(359, 638, 9, var_0004) then
+                    if var_0000 == 30 then
+                        var_0005 = 30
+                    else
+                        var_0005 = unknown_0010H(var_0000, 1)
+                    end
+                    unknown_0071H(5, var_0005, var_0004)
                 end
-                callis_0071(5, local5, local4)
             end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
-end
-
-function get_flag(flag)
-    return false -- Placeholder
 end

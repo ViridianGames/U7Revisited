@@ -1,30 +1,31 @@
--- Function 0809: Handle cart interaction
+--- Best guess: Manages cart interaction, checking ownership and triggering movement or dialogue.
 function func_0809(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local1 = check_sitting(eventid)
-    if not local1 then
-        if call_0088H(10, eventid) then
-            call_008AH(10, eventid)
-            call_008AH(26, eventid)
-            call_0904H("@Whoa!@", -356)
+    var_0000 = itemref
+    var_0001 = get_item_owner(var_0000) --- Guess: Gets item owner
+    if not var_0001 then
+        if not _CheckNPCStatus(10, var_0000) then
+            _SetQuestFlag(10, var_0000) --- Guess: Sets quest flag
+            _SetQuestFlag(26, var_0000) --- Guess: Sets quest flag
+            cast_multiple_spells({"@Whoa!@"}, 356) --- Guess: Casts multiple spells
         else
-            local2 = check_position(0, 16, 796, eventid)
-            if not local2 then
-                local3 = check_gold(-359, _GetItemQuality(local2), 797, -357)
-                if not local3 then
-                    if call_080DH() then
-                        call_0089H(10, eventid)
-                        call_0089H(26, local1)
-                        call_0904H("@Giddy-up!@", -356)
+            var_0002 = unknown_0035H(0, 16, 796, var_0000) --- Guess: Sets NPC location
+            if not var_0002 then
+                var_0003 = check_item_ownership(359, 797, 796, 10) --- Guess: Checks item ownership
+                if not var_0003 then
+                    if calle_080DH() then --- External call to check sitting
+                        set_item_flag(var_0000, 10) --- Guess: Sets item flag
+                        set_item_flag(var_0001, 26) --- Guess: Sets item flag
+                        cast_multiple_spells({"@Giddy-up!@"}, 356) --- Guess: Casts multiple spells
                     else
-                        local4 = call_08B3H(eventid)
+                        var_0004 = calle_08B3H(var_0000) --- External call to sit down
                     end
                 else
-                    if _ArraySize(_GetPartyMembers()) == 1 then
-                        add_dialogue(itemref, "@The title for this cart must first be purchased.@")
+                    if array_size(get_party_members()) == 1 then
+                        bark(itemref, "@The title for this cart must first be purchased.@")
                     else
-                        add_dialogue(itemref, "@We must first purchase the title for this cart.@")
+                        bark(itemref, "@We must first purchase the title for this cart.@")
                     end
                 end
             end

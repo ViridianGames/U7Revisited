@@ -1,46 +1,56 @@
--- Function 0828: Use bucket on item
-function func_0828(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
+--- Best guess: Moves items (e.g., bucket contents) to a new location, handling arrays and positioning.
+function func_0828(eventid, itemref, arg1, arg2, arg3, arg4, arg5, arg6)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    if call_006EH(local6) then
-        call_006AH(0)
+    var_0000 = eventid
+    var_0001 = itemref
+    var_0002 = arg1
+    var_0003 = arg2
+    var_0004 = arg3
+    var_0005 = arg4
+    var_0006 = arg5
+    if get_item_container(var_0006) then --- Guess: Gets item container
+        trigger_explosion(0) --- Guess: Triggers explosion
         return
     end
-    set_item_glow(-356)
-    local7 = get_item_position(local6)
-    if local5 < 0 and _ArraySize(local5) == 1 then
-        local8 = local3
-        while local8 <= 3 + local7[3] do
-            if local8 >= local5 then
-                local9[1] = local7[1] + local5
-                local9[2] = local7[2] + local4
-                local9[3] = local7[3] + local8
-                if not call_007DH(local0, local1, local2, local9) then
-                    return
+    destroy_item(356) --- Guess: Destroys item
+    var_0007 = unknown_0018H(var_0006) --- Guess: Gets position data
+    if var_0005 < 0 and array_size(var_0005) == 1 then
+        var_0008 = var_0003
+        if var_0008 <= var_0007[3] then
+            var_0009 = {var_0007[1], var_0007[2], var_0007[3] + var_0008}
+            while var_0008 >= -var_0005 do
+                while var_0008 >= -var_0004 do
+                    move_item_to_location(var_0000, var_0001, var_0002, var_0009) --- Guess: Moves item to location
+                    var_0008 = var_0008 - 1
                 end
+                var_000A = var_000A - 1
             end
-            local8 = local8 + 1
         end
     else
-        local12 = 0
-        while local13 do
-            local14 = local12 + 1
-            local11 = local4[local14]
-            local8 = local3[local14]
-            local9[1] = local7[1] + local5[local14]
-            local9[2] = local7[2] + local11
-            if local3 < -1 then
-                local9[3] = local7[3]
-            elseif local3 == -1 then
-                local9[3] = local7[3]
+        var_000C = 0
+        -- Guess: sloop moves items based on arrays
+        for i = 1, 5 do
+            var_000C = var_000C + 1
+            var_000B = var_0004[var_000C]
+            var_0008 = var_0003[var_000C]
+            var_0009 = {var_0007[1] + var_000A, var_0007[2] + var_000B, var_0007[3]}
+            if var_0003 < -1 then
+                var_0008 = 0
+                while var_0008 >= var_0003 do
+                    var_0009 = {var_0007[1], var_0007[2], var_0007[3] + var_0008}
+                    move_item_to_location(var_0000, var_0001, var_0002, var_0009) --- Guess: Moves item to location
+                    var_0008 = var_0008 - 1
+                end
             else
-                local9[3] = local7[3] + local8
+                if var_0003 == -1 then
+                    var_0009 = {var_0007[1], var_0007[2], var_0007[3]}
+                else
+                    var_0009 = {var_0007[1], var_0007[2], var_0007[3] + var_0008}
+                end
+                move_item_to_location(var_0000, var_0001, var_0002, var_0009) --- Guess: Moves item to location
             end
-            if not call_007DH(local0, local1, local2, local9) then
-                return
-            end
-            local13 = get_next_item() -- sloop
         end
     end
-    call_006AH(0)
+    trigger_explosion(0) --- Guess: Triggers explosion
 end

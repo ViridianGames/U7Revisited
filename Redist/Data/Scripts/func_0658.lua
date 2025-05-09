@@ -1,17 +1,17 @@
--- Casts the "Des Sanct" spell, lowering the target's defense.
+--- Best guess: Implements the untrap spell (Des Sanct), disarming traps on a selected target with spell effects.
 function func_0658(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        destroy_item(itemref)
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@Des Sanct@")
-        if external_0906H(local1) and local0[1] ~= 0 then -- Unmapped intrinsic
-            local2 = external_0041H(local0, 281, itemref) -- Unmapped intrinsic
-            local3 = add_item(itemref, {17530, 17514, 17520, 8037, 67, 8536, local1, 7769})
+        if check_spell_requirements() and var_0000[1] ~= 0 then
+            var_0002 = apply_spell_effect(281, var_0000, itemref) --- Guess: Applies spell effect
+            var_0003 = add_container_items(itemref, {17530, 17514, 17520, 8037, 67, 8536, var_0001, 7769})
         else
-            local3 = add_item(itemref, {1542, 17493, 17514, 17520, 8549, local1, 7769})
+            var_0003 = add_container_items(itemref, {1542, 17493, 17514, 17520, 8549, var_0001, 7769})
         end
     end
-    return
 end

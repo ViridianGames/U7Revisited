@@ -1,24 +1,23 @@
--- Function 02C5: Item iteration with position-based script call
+--- Best guess: Searches for objects (shape 734) and applies an external function (ID 734), possibly for a proximity-based effect or trigger.
 function func_02C5(eventid, itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid ~= 1 then
-        return
-    end
-
-    local0 = callis_0018(itemref)
-    local1 = callis_0035(0, 4, 734, itemref)
-    while local1 do
-        -- Note: Original has 'sloop' and 'db 2c' for iteration, ignored
-        local4 = local1
-        local5 = callis_0018(local4)
-        if local5[1] == local0 then
-            calle_02DEH(local4)
-            -- Note: Original has 'db 2c' here, ignored
+    if eventid == 1 then
+        var_0000 = unknown_0018H(itemref)
+        var_0001 = check_flag_location(0, 4, 734, itemref)
+        while true do
+            var_0002 = var_0001
+            var_0003 = var_0002
+            var_0004 = var_0003
+            var_0005 = unknown_0018H(var_0004)
+            if aidx(var_0005, 1) == var_0000 then
+                -- calle 02DEH, 734 (unmapped)
+                unknown_02DEH(var_0004)
+            end
+            if not var_0004 then
+                break
+            end
         end
-        local1 = callis_0035(0, 4, 734, itemref)
     end
-
     return
 end

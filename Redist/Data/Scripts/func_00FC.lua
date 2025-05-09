@@ -1,33 +1,21 @@
--- Function 00FC: Display time on item (e.g., clock)
+--- Best guess: Displays the current time (hour:minute) above a clock object, using a 12-hour format with leading zero for minutes.
 function func_00FC(eventid, itemref)
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    -- Check if eventid == 1
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        var_0000 = get_time_hour()
+        if var_0000 > 12 then
+            var_0000 = var_0000 - 12
+        end
+        if var_0000 == 0 then
+            var_0000 = 12
+        end
+        var_0001 = get_time_minute()
+        if var_0001 < 10 then
+            var_0001 = "0" .. var_0001
+        end
+        var_0002 = " " .. var_0000 .. ":" .. var_0001
+        bark(itemref, var_0002)
     end
-
-    -- Get hour and adjust for 12-hour format
-    local0 = _GetTimeHour()
-    if local0 > 12 then
-        local0 = local0 - 12
-    end
-    if local0 == 0 then
-        local0 = 12
-    end
-
-    -- Get minute and pad with leading zero if < 10
-    local1 = _GetTimeMinute()
-    if local1 < 10 then
-        local1 = "0" .. local1
-    end
-
-    -- Format time string (e.g., "12:05")
-    local2 = tostring(local0) .. ":" .. tostring(local1)
-
-    -- Display time on item
-    bark(itemref, local2)
-
     return
 end

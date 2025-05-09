@@ -1,22 +1,23 @@
--- Function 0820: Open door
+--- Best guess: Locks a door (type 828) if not blocked, setting behavior flags.
 function func_0820(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    local1 = call_081BH(eventid)
-    if local1 == 1 then
-        if not call_081DH(7, 0, 0, 0, 828, eventid) then
-            call_0086H(itemref, 31)
+    var_0000 = itemref
+    var_0001 = get_door_state(var_0000) --- Guess: Gets door state
+    if var_0001 == 1 then
+        if not check_door_blocked(7, 0, 0, 0, 828, var_0000) then --- Guess: Checks door blockage
+            set_item_behavior(itemref, 31) --- Guess: Sets item behavior
         else
-            call_0818H()
-            set_return(false)
+            calle_0818H() --- External call to display blocked message
+            return false
         end
-    elseif local1 == 0 then
-        if not call_081DH(7, 0, 0, 1, 828, eventid) then
-            call_0086H(itemref, 30)
+    elseif var_0001 == 0 then
+        if not check_door_blocked(7, 0, 0, 1, 828, var_0000) then --- Guess: Checks door blockage
+            set_item_behavior(itemref, 30) --- Guess: Sets item behavior
         else
-            call_0818H()
-            set_return(false)
+            calle_0818H() --- External call to display blocked message
+            return false
         end
     end
-    set_return(true)
+    return true
 end

@@ -1,8 +1,7 @@
--- Changes an item's type and applies an effect on event ID 1.
-function func_0174(p0)
-    if get_event_id() == 1 then
-        set_item_type(itemref, 290) -- Unmapped intrinsic
-        external_0086H(itemref, 2) -- Unmapped intrinsic
+--- Best guess: Handles interaction with a specific item, changing its type to 290 and setting its frame to 2 when used.
+function func_0174(eventid, itemref)
+    if eventid == 1 then
+        set_object_shape(290, itemref)
+        unknown_0086H(itemref, 2)
     end
-    return
 end

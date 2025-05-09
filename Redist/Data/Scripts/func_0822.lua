@@ -1,9 +1,11 @@
--- Function 0822: Update array values
+--- Best guess: Reorders array elements, possibly for position or state updates.
 function func_0822(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    local1[1] = local0[2]
-    local1[2] = local0[3]
-    local1[3] = local0[4]
-    set_return(local1)
+    var_0000 = itemref
+    var_0001 = var_0000
+    var_0001[1] = var_0000[2]
+    var_0001[2] = var_0000[3]
+    var_0001[3] = var_0000[4]
+    return var_0001
 end

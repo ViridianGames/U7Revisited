@@ -1,28 +1,20 @@
--- Function 020E: Manages item transformation near light
-function func_020E(itemref)
-    -- Local variables (6 as per .localc)
-    local local0, local1, local2, local3, local4, local5
+--- Best guess: Checks proximity of a light source (type 440) to an item, transforming it (type 889) if conditions are met, likely for a light-based puzzle.
+function func_020E(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    if eventid() == 1 or eventid() == 2 then
-        local0 = callis_0035(128, 10, 440, itemref)
-        local1 = callis_0018(itemref)
-        while sloop() do
-            local4 = local0
-            local5 = callis_0018(local4)
-            if local1[1] == local5[1] and local1[2] == local5[2] and local1[3] == local5[3] then
-                callis_006F(local4)
-                callis_000D(889, itemref)
-                callis_0086(itemref, 46)
+    if eventid == 1 or eventid == 2 then
+        var_0000 = unknown_0035H(128, 10, 440, itemref)
+        var_0001 = unknown_0018H(itemref)
+        var_0001[1] = var_0001[1] + 3
+        var_0001[2] = var_0001[2] + 3
+        for _, var_0004 in ipairs(var_0000) do
+            var_0005 = unknown_0018H(var_0004)
+            if var_0001[1] == var_0005[1] and var_0001[2] == var_0005[2] and var_0001[3] == var_0005[3] then
+                unknown_006FH(var_0004)
+                unknown_000DH(889, itemref)
+                unknown_0086H(itemref, 46)
             end
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
-end
-
-function sloop()
-    return false -- Placeholder
+    return
 end

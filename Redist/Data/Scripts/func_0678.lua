@@ -1,23 +1,24 @@
--- Casts the "Rel Ylem" spell, transforming a specific item (type 915) with a sprite effect.
+--- Best guess: Implements the shape-shift spell (Rel Ylem), transforming an item (type 915) with visual effects.
 function func_0678(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        destroy_item(itemref)
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@Rel Ylem@")
-        if not external_0906H(local1) and get_item_type(local0) == 915 then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 8037, 66, 8536, local1, 7769})
-            local3 = get_item_data(local0)
-            create_object(-1, 0, 0, 0, local3[2], local3[1], 13) -- Unmapped intrinsic
-            local4 = add_item(local0, 5, 1656, {17493, 7715})
+        if check_spell_requirements() and get_item_type(var_0000) == 915 then
+            var_0002 = add_container_items(itemref, {17511, 8037, 66, 8536, var_0001, 7769})
+            var_0003 = unknown_0018H(var_0000) --- Guess: Gets position data
+            apply_sprite_effect(-1, 0, 0, 0, var_0003[2], var_0003[1], 13) --- Guess: Applies sprite effect
+            var_0004 = add_container_items(var_0000, {5, 1656, 17493, 7715})
         else
-            local2 = add_item(itemref, {1542, 17493, 17511, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 8549, var_0001, 7769})
         end
     else
-        local5 = get_object_frame(itemref) * 10
-        set_item_type(itemref, 645)
-        set_object_frame(itemref, local5)
+        var_0005 = set_item_count(1, itemref) --- Guess: Sets item count
+        var_0005 = var_0005 * 10
+        set_item_type(645, itemref) --- Guess: Sets item type
+        var_0005 = set_item_weight(var_0005, itemref) --- Guess: Sets item weight
     end
-    return
 end

@@ -1,37 +1,39 @@
--- Manages a combat sequence with directional movement and item interactions.
+--- Best guess: Manages an interaction mechanic with item ID 718, applying directional effects based on item quality (0-7) and triggering an external function (0828H).
 function func_069D(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 7 then
-        external_0070H() -- Unmapped intrinsic
+        unknown_0070H()
     end
-    local0 = external_0881H() -- Unmapped intrinsic
-    if local0 then
-        external_006FH(local0) -- Unmapped intrinsic
+
+    var_0000 = unknown_0881H()
+    if var_0000 then
+        var_0000 = unknown_006FH(var_0000)
     end
-    local1 = false
-    local2 = false
-    local3 = external_000EH(10, 718, -356) -- Unmapped intrinsic
-    if local3 then
-        local4 = external_092DH(local3) -- Unmapped intrinsic
-        if local4 == 0 or local4 == 1 or local4 == 7 then
-            local1 = {-1, 1, 0, 0}
-            local2 = {0, 0, 1, -1}
-        elseif local4 == 2 then
-            local1 = {-1, 0, 0, 1}
-            local2 = {0, -1, 1, 0}
-        elseif local4 == 3 or local4 == 4 or local4 == 5 then
-            local1 = {-1, 1, 0, 0}
-            local2 = {0, 0, -1, 1}
-        elseif local4 == 6 then
-            local1 = {1, 0, 0, -1}
-            local2 = {0, -1, 1, 0}
+
+    var_0001 = false
+    var_0002 = false
+    var_0003 = unknown_000EH(10, 718, unknown_001BH(-356))
+    if not var_0003 then
+        var_0004 = unknown_092DH(var_0003)
+        if var_0004 == 0 or var_0004 == 1 or var_0004 == 7 then
+            var_0001 = {-1, 1, 0, 0}
+            var_0002 = {0, 0, 1, -1}
+        elseif var_0004 == 2 then
+            var_0001 = {-1, 0, 0, 1}
+            var_0002 = {0, -1, 1, 0}
+        elseif var_0004 == 3 or var_0004 == 4 or var_0004 == 5 then
+            var_0001 = {-1, 1, 0, 0}
+            var_0002 = {0, 0, -1, 1}
+        elseif var_0004 == 6 then
+            var_0001 = {1, 0, 0, -1}
+            var_0002 = {0, -1, 1, 0}
+        else
+            var_0001 = {-1, 0, 1, 0}
+            var_0002 = {0, 1, 0, -1}
         end
-    else
-        local1 = {-1, 0, 1, 0}
-        local2 = {0, 1, 0, -1}
     end
-    local5 = external_001BH(-356) -- Unmapped intrinsic
-    external_0828H(local5, local1, local2, 0, 1693, local5, 7) -- Unmapped intrinsic
-    return
+
+    var_0005 = unknown_001BH(-356)
+    unknown_0828H(7, var_0005, 1693, 0, var_0002, var_0001, var_0005)
 end

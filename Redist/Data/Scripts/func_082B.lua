@@ -1,11 +1,11 @@
--- Negates an array's elements by incrementing indices.
-function func_082B(p0, p1)
-    local local2
+--- Best guess: Negates values in an array (P1) at specified indices, returning the modified array.
+function func_082B(P0, P1)
+    local var_0000, var_0001, var_0002
 
-    local2 = 0
-    while local2 ~= p0 do
-        local2 = local2 + 1
-        p1[local2] = -p1[local2]
+    var_0002 = 0
+    while var_0002 ~= P0 do
+        var_0002 = var_0002 + 1
+        P1[var_0002] = P1[var_0002] * -1
     end
-    return p1
+    return P1
 end

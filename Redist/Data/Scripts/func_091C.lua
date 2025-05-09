@@ -1,7 +1,7 @@
--- Formats a shop price string for an item with a "To sell" prefix.
-function func_091C(p0, p1, p2, p3, p4)
-    local local5
+--- Best guess: Formats a shop price string in gargoyle syntax (e.g., “To sell item for 10 gold.”) for use in shop dialogue.
+function func_091C(P0, P1, P2, P3, P4)
+    local var_0000
 
-    local5 = "To sell " .. p4 .. p3 .. " for " .. p1 .. " gold" .. p0 .. "."
-    return local5
+    var_0000 = "To sell " .. P4 .. P3 .. " for " .. P1 .. " gold" .. P0 .. "."
+    return var_0000
 end

@@ -1,13 +1,12 @@
--- Filters an array by removing a specific value.
-function func_093C(p0, p1)
-    local local2, local3, local4, local5
+--- Best guess: Creates a new array from an input array, excluding a specified element.
+function func_093C(P0, P1)
+    local var_0000
 
-    local2 = {}
-    for local3, local4 in ipairs(p0) do
-        local5 = local4
-        if local5 ~= p1 then
-            table.insert(local2, local5)
+    var_0000 = {}
+    for var_0001 in ipairs(P0) do
+        if var_0002 ~= P1 then
+            table.insert(var_0000, var_0002)
         end
     end
-    return local2
+    return var_0000
 end

@@ -1,12 +1,11 @@
--- Function 08E7: Manages position check function
+--- Best guess: Checks if the player’s position is within specific coordinate bounds, likely for triggering a quest or event.
 function func_08E7()
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local0 = callis_0018(callis_001B(-356))
-    local1 = {1392, 1936}
-    local2 = {1743, 2495}
-    if local0[1] >= local1[1] and local0[2] >= local1[2] and local0[1] <= local2[1] and local0[2] <= local2[2] then
+    var_0000 = unknown_0018H(-356)
+    var_0001 = {1392, 1936}
+    var_0002 = {1743, 2495}
+    if var_0000[1] >= var_0001[1] and var_0000[2] >= var_0001[2] and var_0000[1] <= var_0002[1] and var_0000[2] <= var_0002[2] then
         return 1
     end
     return 0

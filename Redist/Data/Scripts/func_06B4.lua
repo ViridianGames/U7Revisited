@@ -1,17 +1,14 @@
--- Function 06B4: Manages random party member effect
+--- Best guess: Randomly applies an effect to a party member when event ID 3 is triggered, based on item quality and a random selection.
 function func_06B4(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
+    if eventid == 3 then
+        unknown_000FH(28)
+        var_0000 = unknown_0023H()
+        var_0001 = unknown_092BH(var_0000)
+        var_0002 = unknown_0010H(var_0001, 1)
+        var_0003 = unknown_0010H(unknown_0014H(itemref), 1)
+        unknown_0936H(unknown_001BH(var_0000[var_0002]), var_0003)
     end
-
-    local0 = _GetPartyMembers()
-    local1 = call_092BH(local0)
-    local2 = _Random2(local1, 1)
-    local3 = _Random2(call_GetItemQuality(itemref), 1)
-    call_0936H(callis_001B(local0[local2 + 1]), local3)
-
     return
 end

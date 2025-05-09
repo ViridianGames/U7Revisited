@@ -1,4 +1,4 @@
--- Checks the Avatar’s status.
-function func_092D(p0)
-    return external_0087H(p0, -356) -- Unmapped intrinsic
+--- Best guess: Returns the direction from the Avatar to a specified item or character, likely used for orientation or movement.
+function func_092D(P0)
+    return unknown_0087H(P0, -356)
 end

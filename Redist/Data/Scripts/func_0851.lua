@@ -1,30 +1,32 @@
--- Function 0851: Package delivery quest
-function func_0851(eventid, itemref)
-    local local0, local1, local2, local3
+--- Best guess: Initiates a quest to deliver a sealed package to Elynor in Minoc, checking inventory and setting quest flags.
+function func_0851()
+    local var_0000, var_0001, var_0002, var_0003
 
+    start_conversation()
     if not get_flag(214) then
-        add_dialogue(itemref, "\"I need thee to deliver this sealed package unopened to Elynor, the leader of our Fellowship branch in Minoc. Elynor will reward thee upon receiving it, thou dost have my word. May I trust thee to do it?\"")
+        add_dialogue("@\"I need thee to deliver this sealed package unopened to Elynor, the leader of our Fellowship branch in Minoc. Elynor will reward thee upon receiving it, thou dost have my word. May I trust thee to do it?\"@")
     else
-        add_dialogue(itemref, "\"Hast thou reconsidered thy task? Wilt thou deliver the package to Elynor in Minoc?\"")
+        add_dialogue("@\"Hast thou reconsidered thy task? Wilt thou deliver the package to Elynor in Minoc?\"@")
     end
-    local0 = get_answer()
-    if local0 then
-        local1 = call_0029H(-359, -359, 798, -26)
-        local2 = call_0025H(local1)
-        local3 = call_0036H(-356)
-        if local3 then
-            add_dialogue(itemref, "\"Excellent! Here it is. Thou must now be on thy way!\"*")
-            set_flag(143, true)
-            call_0911H(200)
-            return
+    var_0000 = get_dialogue_choice() --- Guess: Gets player choice
+    if not var_0000 then
+        var_0001 = check_inventory_space(-359, -359, 798, -26) --- Guess: Checks inventory space
+        var_0002 = move_item(var_0001) --- Guess: Moves package
+        var_0003 = remove_item(-356) --- Guess: Removes temporary item
+        if not var_0003 then
+            add_dialogue("@\"Excellent! Here it is. Thou must now be on thy way!\"@")
+            set_flag(143, true) --- Guess: Marks quest accepted
+            set_quest_property(200) --- Guess: Sets quest property
+            abort() --- Guess: Aborts script
+        else
+            var_0003 = remove_item(-26) --- Guess: Removes alternative item
+            add_dialogue("@\"Zounds! Thine hands are too full to take the box. Please divest thyself of some of thy belongings.\"@")
+            set_flag(215, true) --- Guess: Marks inventory full
+            abort() --- Guess: Aborts script
         end
-        local3 = call_0036H(-26)
-        add_dialogue(itemref, "\"Zounds! Thine hands are too full to take the box. Please divest thyself of some of thy belongings.\"*")
-        set_flag(215, true)
-        return
     else
-        add_dialogue(itemref, "\"Avatar, I know that thou hast gone on many quests. The quest for the spiritual is often the most fearsome and elusive one of all, as we both know. Do not be afraid of thyself, Avatar, for that is what prevents us from doing that which we must do. We shall speak of this again once thou hast reconsidered. Ask me about the package again tomorrow.\"*")
-        set_flag(214, true)
-        return
+        add_dialogue("@\"Avatar, I know that thou hast gone on many quests. The quest for the spiritual is often the most fearsome and elusive one of all, as we both know. Do not be afraid of thyself, Avatar, for that is what prevents us from doing that which we must do. We shall speak of this again once thou hast reconsidered. Ask me about the package again tomorrow.\"@")
+        set_flag(214, true) --- Guess: Marks quest declined
+        abort() --- Guess: Aborts script
     end
 end

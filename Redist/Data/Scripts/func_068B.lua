@@ -1,11 +1,10 @@
--- Handles item interactions with a specific type and frame.
+--- Best guess: Applies a game effect or status (ID 991) to an entity (ID -356), triggering external functions (0837H, 0838H) if successful, likely for a specific event or interaction.
 function func_068B(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
-    local0 = external_000EH(5, 991, -356) -- Unmapped intrinsic
-    if local0 then
-        local1 = external_0837H(local0, 0, 1, itemref) -- Unmapped intrinsic
-        external_0838H(itemref) -- Unmapped intrinsic
+    var_0000 = unknown_000EH(5, 991, unknown_001BH(-356))
+    if not var_0000 then
+        var_0001 = unknown_0837H(1, 0, 0, var_0000, itemref)
+        unknown_0838H(itemref)
     end
-    return
 end

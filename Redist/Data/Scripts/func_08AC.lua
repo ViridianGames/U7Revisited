@@ -1,70 +1,63 @@
--- Function 08AC: Manages healing services dialogue
-function func_08AC(local0, local1, local2)
-    -- Local variables (10 as per .localc)
-    local local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+--- Best guess: Manages a healer’s dialogue offering services (heal, cure poison, resurrect), handling service selection, pricing, and application to party members.
+function func_08AC(var_0000, var_0001, var_0002)
+    start_conversation()
+    local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    add_dialogue("I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?")
-    callis_0007()
-    local3 = call_090AH()
-    if local3 then
-        add_dialogue("Which of my services dost thou have need of?")
-        local4 = {"resurrect", "cure poison", "heal"}
-        local5 = call_090BH(local4)
-        if local5 == "heal" or local5 == "cure poison" then
-            if local5 == "heal" then
-                local6 = "healed"
-                local7 = local2
-            elseif local5 == "cure poison" then
-                local6 = "cured of poison"
-                local7 = local1
+    add_dialogue("\"I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
+    save_answers()
+    var_0003 = unknown_090AH()
+    if not var_0003 then
+        add_dialogue("\"Which of my services dost thou have need of?\"")
+        var_0004 = {"resurrect", "cure poison", "heal"}
+        var_0005 = unknown_090BH(var_0004)
+        if var_0005 == "heal" or var_0005 == "cure poison" then
+            if var_0005 == "heal" then
+                var_0006 = "healed"
+                var_0007 = var_0002
+            elseif var_0005 == "cure poison" then
+                var_0006 = "cured of poison"
+                var_0007 = var_0001
             end
-            add_dialogue("Who dost thou wish to have ", local6, "?")
-            local8 = call_090EH()
-            if local8 == 0 then
-                add_dialogue("Excellent, thou art uninjured!")
+            add_dialogue("\"Who dost thou wish to have " .. var_0006 .. "?\"")
+            var_0008 = unknown_090EH()
+            if var_0008 == 0 then
+                add_dialogue("\"Excellent, thou art uninjured!\"")
                 return
             end
-        elseif local5 == "resurrect" then
-            local9 = callis_0022()
-            local10 = callis_000E(25, 400, local9)
-            if local10 == 0 then
-                local10 = callis_000E(25, 414, local9)
-                if local10 == 0 then
-                    add_dialogue("There seems to be no one who needs such assistance. Perhaps, if I have overlooked anyone, thou couldst set him or her before me.")
+        elseif var_0005 == "resurrect" then
+            var_0009 = unknown_0022H()
+            var_0010 = unknown_000EH(25, 400, var_0009)
+            if var_0010 == 0 then
+                var_0010 = unknown_000EH(25, 414, var_0009)
+                if var_0010 == 0 then
+                    add_dialogue("\"There seems to be no one who needs such assistance. Perhaps, if I have overlooked anyone, thou couldst set him or her before me.\"")
                     return
                 end
             end
-            local7 = local0
-            add_dialogue("Indeed, this individual needs restoration!")
+            var_0007 = var_0000
+            add_dialogue("\"Indeed, this individual needs restoration!\"")
         end
-
-        add_dialogue("My price is ", local7, " gold. Art thou interested?")
-        local11 = call_090AH()
-        if local11 then
-            local12 = callis_0028(-359, -359, 644, -357)
-            if local12 >= local7 then
-                if local5 == "heal" then
-                    call_091DH(local7, local8)
-                elseif local5 == "cure poison" then
-                    call_091EH(local7, local8)
-                elseif local5 == "resurrect" then
-                    call_091FH(local7, local10)
+        add_dialogue("\"My price is " .. var_0007 .. " gold. Art thou interested?\"")
+        var_0011 = unknown_090AH()
+        if not var_0011 then
+            var_0012 = unknown_0028H(359, 359, 644, 357)
+            if var_0012 >= var_0007 then
+                if var_0005 == "heal" then
+                    unknown_091DH(var_0007, var_0008)
+                elseif var_0005 == "cure poison" then
+                    unknown_091EH(var_0007, var_0008)
+                elseif var_0005 == "resurrect" then
+                    unknown_091FH(var_0007, var_0010)
                 end
             else
-                add_dialogue("Thou dost not have enough gold! Mayhaps thou couldst return when thou hast more.")
+                add_dialogue("\"Thou dost not have enough gold! Mayhaps thou couldst return when thou hast more.\"")
             end
         else
-            add_dialogue("Then thou must go elsewhere.")
+            add_dialogue("\"Then thou must go elsewhere.\"")
         end
     else
-        add_dialogue("If thou needest my services later, I will be here.")
+        add_dialogue("\"If thou needest my services later, I will be here.\"")
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

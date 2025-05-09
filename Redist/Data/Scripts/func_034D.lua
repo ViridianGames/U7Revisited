@@ -1,16 +1,11 @@
--- Function 034D: Manages item quality-based interaction
-function func_034D(itemref)
-    -- Local variables (1 as per .localc)
-    local local0
+--- Best guess: Triggers an action for an item with quality 0 when event ID is not 1, likely for another specific item interaction.
+function func_034D(eventid, itemref)
+    local var_0000
 
-    if eventid() ~= 1 then
-        if callis_0014(itemref) == 0 then
-            local0 = call_0820H(itemref)
+    if eventid ~= 1 then
+        if unknown_0014H(itemref) == 0 then
+            var_0000 = unknown_0820H(itemref)
         end
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

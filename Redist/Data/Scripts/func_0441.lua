@@ -1,100 +1,56 @@
--- func_0441.lua
--- Neno's dialogue as the stablemaster in Britain
+--- Best guess: Handles dialogue with Wislem, a gargoyle advisor to Lord British, discussing gargoyle integration into Britannian society and the murder of Inamo in Trinsic, urging the player to inform Draxinusom.
+function func_0441(eventid, itemref)
+    local var_0000
 
-
-function func_0441(eventid)
-    local answers = {}
-    local flag_00B8 = get_flag(0x00B8) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00C9 = get_flag(0x00C9) -- Horses topic
-    local npc_id = -55 -- Neno's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x08A4, 1) -- Buy interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00C9 then
-            add_answer( "horses")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00B8 then
-            add_dialogue("You see a burly man with straw in his hair, brushing down a horse.")
-            set_flag(0x00B8, true)
+    start_conversation()
+    if eventid == 0 then
+        abort()
+    elseif eventid == 1 then
+        switch_talk_to(65, 0)
+        add_answer({"bye", "job", "name"})
+        if not get_flag(194) then
+            add_dialogue("You see an impressive winged gargoyle with a stately demeanor.")
+            set_flag(194, true)
         else
-            add_dialogue("\"Ho there, \" .. get_player_name() .. \"!\" Neno calls out.")
+            add_dialogue("\"To greet thee again,\" Wislem says.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Neno grins. \"Got more to talk about?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Neno, stablemaster of Britain’s finest stables.\"")
+            var_0000 = get_answer()
+            if var_0000 == "name" then
+                add_dialogue("\"To be known as Wislem.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I tend the horses here—feed ‘em, groom ‘em, and rent ‘em out to travelers. Need a steed?\"")
-                add_answer( "horses")
-                add_answer( "rent")
-                set_flag(0x00C9, true)
-            elseif choice == "horses" then
-                add_dialogue("\"Got the best mounts in Britannia. Sturdy, fast, and loyal. I raise ‘em from foals, so they’re like family.\"")
-                add_answer( "foals")
-                remove_answer("horses")
-            elseif choice == "foals" then
-                add_dialogue("\"Raising a foal takes years of care. I’ve got a new one, born last spring, already showing spirit.\"")
-                remove_answer("foals")
-            elseif choice == "rent" then
-                add_dialogue("\"A horse for a day’s 20 gold. Want one?\"")
-                local response = call_extern(0x08A4, var_0001)
-                if response == 0 then
-                    local gold_result = U7.removeGold(20)
-                    if gold_result then
-                        local item_result = U7.giveItem(16, 1, 387)
-                        if item_result then
-                            add_dialogue("\"Here’s thy horse’s reins. Treat her well!\"")
-                        else
-                            add_dialogue("\"Thou art too laden to take the reins! Clear some space.\"")
-                        end
-                    else
-                        add_dialogue("\"No gold, no horse. Come back when thou hast the coin.\"")
-                    end
+                add_answer("Wislem")
+            elseif var_0000 == "Wislem" then
+                add_dialogue("To be the word for `wise man.'")
+                remove_answer("Wislem")
+            elseif var_0000 == "job" then
+                add_dialogue("\"To be advisor to Lord British, and act as representative for my race here in Britain. To be honored to be in long line of advisors to the king.\"")
+                add_answer("advisor")
+            elseif var_0000 == "advisor" then
+                add_dialogue("\"To make sure the gargoyle race is heard in the castle. To have been a long road to acceptance and integration into Britannian society.\"")
+                add_answer({"society", "integration"})
+                remove_answer("advisor")
+            elseif var_0000 == "integration" then
+                add_dialogue("\"To tell you that, not long after your last visit, the gargoyles settled upon Terfin, an island to the southeast. To have moved, little by little, onto the mainland.\"")
+                remove_answer("integration")
+            elseif var_0000 == "society" then
+                add_dialogue("\"To be accepted in most places. To feel sad, however, that there are still towns that do not accept us. But our Lord and King, Draxinusom, is still alive and is doing a magnificent job. To know and help all gargoyles who are alive.\"")
+                add_answer("Inamo")
+                remove_answer("society")
+            elseif var_0000 == "Inamo" then
+                add_dialogue("Wislem listens to your story about the murders in Trinsic. \"To be sad to hear this. To suggest that you visit Lord Draxinusom in Terfin and tell him about Inamo. He will know who Inamo's parent gargoyle is. To recommend you relay this news as soon as possible.\"")
+                add_dialogue("\"To go soon and tell Draxinusom about Inamo?\"")
+                var_0000 = select_option()
+                if var_0000 then
+                    add_dialogue("\"To know you are reliable.\"")
                 else
-                    add_dialogue("\"No horse today? Fair enough.\"")
+                    add_dialogue("\"To be concerned that Inamo's parent shall never know what happened.\" He appears saddened.")
                 end
-                remove_answer("rent")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship? They’ve been asking to stable their horses for free, claiming it’s for ‘unity.’ I told ‘em to pay like everyone else.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Maybe I’ll hear ‘em out, but I doubt it.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Nay, I don’t need their fancy talk. My horses don’t care for it.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Ride safe, \" .. get_player_name() .. \"!\"")
+                remove_answer("Inamo")
+            elseif var_0000 == "bye" then
                 break
             end
         end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        add_dialogue("\"To bid farewell.\"")
     end
 end
-
-return func_0441

@@ -1,12 +1,12 @@
--- Function 0916: Increment NPC secondary stats
-function func_0916(eventid, itemref)
-    local local0, local1
+--- Best guess: Initializes multiple training levels for an NPC (properties 2 and 7).
+function func_0916(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003
 
-    while local0 < eventid do
-        local3 = call_0910H(2, itemref)
-        call_0912H(1, 2, itemref)
-        call_0912H(-1, 7, itemref)
-        local0 = local0 + 1
+    var_0002 = 0
+    while var_0002 < arg1 do
+        var_0003 = get_training_level(2, arg2) --- Guess: Gets training level
+        set_training_level(2, arg2, 1) --- Guess: Sets training level
+        set_training_level(7, arg2, -1) --- Guess: Sets training level
+        var_0002 = var_0002 + 1
     end
-    return
 end

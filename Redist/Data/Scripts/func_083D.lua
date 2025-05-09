@@ -1,103 +1,101 @@
--- Processes triples game outcomes, displaying messages and handling payouts.
+--- Best guess: Manages a Triples game, evaluating game state (via 083BH), determining outcomes, and distributing rewards based on money items (via 083CH).
 function func_083D()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016
 
-    if external_001CH(-232) == 9 then -- Unmapped intrinsic
-        external_001DH(-232, 10) -- Unmapped intrinsic
+    if unknown_001CH(-232) == 9 then
+        unknown_001DH(10, -232)
     end
-    local0 = external_083AH() -- Unmapped intrinsic
-    local1 = external_083BH() -- Unmapped intrinsic
-    local2 = local1[1]
-    local3 = local1[2]
-    local4 = external_083CH(local0) -- Unmapped intrinsic
-    if not external_002FH(-232) then -- Unmapped intrinsic
-        for local5 in ipairs(local4) do
-            local6 = local5
-            local7 = local6
-            external_0089H(local7, 11) -- Unmapped intrinsic
+    var_0000 = unknown_083AH()
+    var_0001 = unknown_083BH()
+    var_0002 = var_0001[1]
+    var_0003 = var_0001[2]
+    var_0004 = unknown_083CH(0, var_0000)
+    if not _NPCInParty(-232) then
+        for var_0005 in ipairs(var_0004) do
+            unknown_0089H(var_0007, 11)
         end
     end
-    local8 = "@Too bad...@"
-    if #local4 == 0 then
-        external_0933H(0, local8, -232) -- Unmapped intrinsic
+    var_0008 = "@Too bad...@"
+    if #var_0004 == 0 then
+        unknown_0933H(0, var_0008, -232)
     end
-    if local2 == 6 then
-        if not local3 then
-            local9 = {5, 5, 5}
-            local10 = {3, 2, 1}
-            local11 = 27
-            local8 = "@Triples! On the two!@"
+    if var_0002 == 6 then
+        if var_0003 == 0 then
+            var_0009 = {5, 5, 5}
+            var_000A = {3, 2, 1}
+            var_000B = 27
+            var_0008 = "@Triples! On the two!@"
         else
-            local9 = {3, 3, 3}
-            local10 = {3, 2, 1}
-            local11 = 4
-            local8 = "@Full wheel!@"
+            var_0009 = {3, 3, 3}
+            var_000A = {3, 2, 1}
+            var_000B = 4
+            var_0008 = "@Full wheel!@"
         end
-    elseif local2 == 9 then
-        local9 = {7, 7, 7}
-        local10 = {3, 2, 1}
-        local11 = 27
-        local8 = "@Triples! On the three!@"
-    elseif local2 == 3 then
-        local9 = {1, 1, 1}
-        local10 = {3, 2, 1}
-        local11 = 27
-        local8 = "@Triples! On the one!@"
-    elseif not local3 then
-        local9 = {4, 4, 4}
-        local10 = {3, 2, 1}
-    elseif local2 == 4 then
-        local9 = 2
-        local10 = {3, 2, 1}
-        local11 = 8
-        local8 = "@Sum of 4!@"
-    elseif local2 == 5 then
-        local9 = 2
-        local10 = 1
-        local11 = 4
-        local8 = "@Sum of 5!@"
-    elseif local2 == 7 then
-        local9 = 6
-        local10 = 3
-        local11 = 3
-        local8 = "@Seven!@"
-    elseif local2 == 8 then
-        local9 = 6
-        local10 = 1
-        local11 = 8
-        local8 = "@Big eight!@"
+    elseif var_0002 == 9 then
+        var_0009 = {7, 7, 7}
+        var_000A = {3, 2, 1}
+        var_000B = 27
+        var_0008 = "@Triples! On the three!@"
+    elseif var_0002 == 3 then
+        var_0009 = {1, 1, 1}
+        var_000A = {3, 2, 1}
+        var_000B = 27
+        var_0008 = "@Triples! On the one!@"
+    elseif var_0003 == 0 then
+        table.insert(var_0009, {4, 4, 4})
+        table.insert(var_000A, {3, 2, 1})
+    elseif var_0002 == 4 then
+        var_0009 = 2
+        var_000A = 3
+        var_000B = 8
+        var_0008 = "@Sum of 4!@"
+    elseif var_0002 == 5 then
+        var_0009 = 2
+        var_000A = 1
+        var_000B = 4
+        var_0008 = "@Sum of 5!@"
+    elseif var_0002 == 7 then
+        var_0009 = 6
+        var_000A = 3
+        var_000B = 3
+        var_0008 = "@Seven!@"
+    elseif var_0002 == 8 then
+        var_0009 = 6
+        var_000A = 1
+        var_000B = 8
+        var_0008 = "@Big eight!@"
     end
-    if get_flag(6) then
-        local11 = local11 * 2
+    if not get_flag(6) then
+        var_000B = var_000B * 2
     end
-    for local12 in ipairs(local4) do
-        local13 = local12
-        local7 = local13
-        local14 = 0
-        local15 = false
-        for local16 in ipairs(local9) do
-            local17 = local16
-            local18 = local7
-            local14 = local14 + 1
-            local19 = get_item_data(local18)
-            if local19[1] - local14 * local9[local14] + 1 == local0[1] and local19[2] - local14 * local10[local14] + 1 == local0[2] then
-                local20 = external_0016H(local18, 9) -- Unmapped intrinsic
-                local20 = local20 * local11
-                if local20 > 100 then
-                    local21 = get_item_by_type(644) -- Unmapped intrinsic
-                    local22 = external_0017H(local21, 100) -- Unmapped intrinsic
-                    local22 = set_item_data(local19)
-                    local20 = local20 - 100
-                else
-                    local21 = get_item_by_type(644) -- Unmapped intrinsic
-                    local22 = external_0017H(local21, local20) -- Unmapped intrinsic
-                    local22 = set_item_data(local19)
+    for var_000C in ipairs(var_0004) do
+        var_000E = 0
+        var_000F = false
+        for var_0010 in ipairs(var_0009) do
+            var_000E = var_000E + 1
+            var_0013 = unknown_0018H(var_0007)
+            if var_0013[1] == var_0000[1] - var_000E + 1 and var_0013[2] == var_0000[2] - var_000E + 1 then
+                var_0014 = unknown_0016H(var_0007, 9)
+                var_0014 = var_0014 * var_000B
+                if var_0014 > 100 then
+                    var_0015 = unknown_0024H(644)
+                    if var_0015 then
+                        var_0016 = unknown_0017H(var_0015, 100)
+                        var_0016 = unknown_0026H(var_0013)
+                    end
+                    var_0014 = var_0014 - 100
+                    goto continue
                 end
-                local15 = true
+                var_0015 = unknown_0024H(644)
+                if var_0015 then
+                    var_0016 = unknown_0017H(var_0015, var_0014)
+                    var_0016 = unknown_0026H(var_0013)
+                end
+                var_000F = true
             end
+            ::continue::
         end
-        external_006FH(local7) -- Unmapped intrinsic
+        unknown_006FH(var_0007)
     end
-    external_0933H(0, local8, -232) -- Unmapped intrinsic
-    return
+    unknown_0933H(0, var_0008, -232)
 end

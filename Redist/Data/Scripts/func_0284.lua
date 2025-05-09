@@ -1,28 +1,23 @@
--- Manages coin flipping game with dialogue for heads or tails.
-function func_0284H(eventid, itemref)
-    if eventid ~= 1 then
-        return
-    end
-    use_item() -- TODO: Implement LuaUseItem for calli 007E.
-    set_stat(itemref, 23) -- Sets quality to 23.
-    local result = call_script(0x0937, -356) -- TODO: Map 0937H (possibly check state).
-    local result2 = call_script(0x0937, -1)
-    if not (result or not result2) then
-        return
-    end
-    if call_script(0x08F7, -1) then -- TODO: Map 08F7H (possibly coin flip condition).
-        return
-    end
-    call_script(0x0933, -356, "Call it.", 0) -- TODO: Map 0933H (possibly say with delay).
-    local flip = random(1, 2)
-    if flip == 1 then
-        call_script(0x0933, -1, "Tails.", 16)
-        call_script(0x0933, -356, "It is heads.", 32)
-    else
-        call_script(0x0933, -1, "Heads.", 16)
-        call_script(0x0933, -356, "It is tails.", 32)
-    end
-    if random(1, 3) == 1 then
-        call_script(0x0933, -1, "Again!", 48)
+--- Best guess: Simulates a coin toss game, allowing the player to call heads or tails and displaying the outcome.
+function func_0284(eventid, itemref)
+    local var_0000
+
+    if eventid == 1 then
+        unknown_007EH()
+        unknown_0086H(itemref, 23)
+        if not (unknown_0937H(-356) or not unknown_0937H(-1)) and not unknown_08F7H(-1) then
+            unknown_0933H(0, "@Call it.@", -356)
+            var_0000 = random2(2, 1)
+            if var_0000 == 1 then
+                unknown_0933H(16, "@Tails.@", -1)
+                unknown_0933H(32, "@It is heads.@", -356)
+            else
+                unknown_0933H(16, "@Heads.@", -1)
+                unknown_0933H(32, "@It is tails.@", -356)
+            end
+            if random2(3, 1) == 1 then
+                unknown_0933H(48, "@Again!@", -1)
+            end
+        end
     end
 end

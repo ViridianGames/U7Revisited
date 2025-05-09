@@ -1,20 +1,31 @@
--- Function 0865: Random noun pair with plural
+--- Best guess: Generates word pairs (e.g., "soup" or "soups"), possibly for linguistic puzzles.
 function func_0865(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = {
-        "soup", "*", "eruption", "*", "quagmire", "*", "bureaucracy", "bureaucracies",
-        "tractor", "*", "Socialism", "*", "Capitalism", "*", "hammer", "*",
-        "sickle", "*", "imperialism", "*", "crankshaft", "*", "carbuerator", "*",
-        "Gump", "*", "lenticular cloud", "*", "clock", "*", "sloop", "*",
-        "barge", "*"
+    var_0000 = {
+        {"soup", "*"},
+        {"eruption", "*"},
+        {"quagmire", "*"},
+        {"bureaucracy", "bureaucracies"},
+        {"tractor", "*"},
+        {"Socialism", "*"},
+        {"Capitalism", "*"},
+        {"hammer", "*"},
+        {"sickle", "*"},
+        {"imperialism", "*"},
+        {"crankshaft", "*"},
+        {"carbuerator", "*"},
+        {"Gump", "*"},
+        {"lenticular cloud", "*"},
+        {"clock", "*"},
+        {"sloop", "*"},
+        {"barge", "*"}
     }
-    local1 = _ArraySize(local0) / 2
-    local1 = _Random2(local1, 1)
-    local2 = local0[local1 * 2 - 1]
-    local3 = local0[local1 * 2]
-    if local3 == "*" then
-        local3 = local2 .. "s"
+    var_0001 = random(1, math.floor(array_size(var_0000) / 2)) --- Guess: Generates random index
+    var_0002 = var_0000[var_0001 * 2 - 1][1]
+    var_0003 = var_0000[var_0001 * 2][1]
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "s"
     end
-    set_return({local3, local2})
+    return {var_0002, var_0003}
 end

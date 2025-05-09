@@ -1,53 +1,47 @@
--- Function 08A2: Manages training dialogue
-function func_08A2(local0, local1)
-    -- Local variables (11 as per .localc)
-    local local2, local3, local4, local5, local6, local7, local8, local9, local10
+--- Best guess: Manages a training session dialogue with Jillian, checking player stats and gold, and applying stat increases upon successful payment.
+function func_08A2(var_0000, var_0001)
+    local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    local2 = call_0920H()
-    local3 = callis_0027(local2)
-    if local2 == 0 then
+    var_0002 = unknown_0920H()
+    var_0003 = unknown_0027H(var_0002)
+    if var_0002 == 0 then
         return
     end
-
-    local4 = 2
-    local5 = call_0922H(local4, local2, local0, local1)
-    if local5 == 0 then
-        add_dialogue("I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.")
-    elseif local5 == 1 then
-        local6 = callis_0028(-359, -359, 644, -357)
-        add_dialogue("You gather your gold and count it, finding that you have ", local6, " gold altogether.")
-        if local6 < local0 then
-            add_dialogue("I am sorry, but thou dost not seem to have enough gold to train now.")
+    var_0004 = 2
+    var_0005 = unknown_0922H(var_0004, var_0002, var_0000, var_0001)
+    if var_0005 == 0 then
+        add_dialogue("\"I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.\"")
+        return
+    elseif var_0005 == 1 then
+        var_0006 = unknown_0028H(359, 359, 644, 357)
+        add_dialogue("You gather your gold and count it, finding that you have " .. var_0006 .. " gold altogether.")
+        if var_0006 < var_0000 then
+            add_dialogue("\"I am sorry, but thou dost not seem to have enough gold to train now.\"")
+            return
         end
-    elseif local5 == 2 then
+    elseif var_0005 == 2 then
         add_dialogue("After giving a few test questions, she exclaims, \"Thou art easily as well educated as I! There is nothing I have that could help thee.\"")
-    else
-        local7 = callis_002B(true, -359, -359, 644, local0)
-        add_dialogue("You pay ", local0, " gold, and the training session begins.")
-        if local2 == -356 then
-            local8 = "You"
-            local9 = "you"
-            local10 = ""
-        else
-            local8 = local3
-            local9 = local3
-            local10 = "s"
-        end
-        add_dialogue(local8, " and Jillian study for some time. In addition, she teaches a little on the theory of magic. Afterwards, ", local9, " notice", local10, " an increase in knowledge and magical understanding.")
-        local11 = call_0910H(6, local2)
-        if local11 >= 30 then
-            call_0918H(1, local2)
-        end
-        local12 = call_0910H(2, local2)
-        if local12 >= 30 then
-            call_0916H(1, local2)
-        end
+        return
     end
-
+    var_0007 = unknown_002BH(true, 359, 359, 644, var_0000)
+    add_dialogue("You pay " .. var_0000 .. " gold, and the training session begins.")
+    if var_0002 == 356 then
+        var_0008 = "You"
+        var_0009 = "you"
+        var_0010 = ""
+    else
+        var_0008 = var_0003
+        var_0009 = var_0003
+        var_0010 = "s"
+    end
+    add_dialogue(var_0008 .. " and Jillian study for some time. In addition, she teaches a little on the theory of magic. Afterwards, " .. var_0009 .. " notice" .. var_0010 .. " an increase in knowledge and magical understanding.")
+    var_0011 = unknown_0910H(6, var_0002)
+    if var_0011 < 30 then
+        unknown_0918H(1, var_0002)
+    end
+    var_0012 = unknown_0910H(2, var_0002)
+    if var_0012 < 30 then
+        unknown_0916H(1, var_0002)
+    end
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

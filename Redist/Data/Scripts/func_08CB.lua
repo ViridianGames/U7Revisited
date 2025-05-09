@@ -1,59 +1,47 @@
--- Function 08CB: Manages food purchase dialogue
+--- Best guess: Manages a shop dialogue for purchasing food items, handling item selection, pricing, and Silverleaf scarcity based on a flag.
 function func_08CB()
-    -- Local variables (15 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12, local13, local14
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    local0 = call_0909H()
-    callis_0007()
-    local1 = true
-    local2 = {"ham", "cake", "Silverleaf", "trout", "mutton rations", "nothing"}
-    local3 = {377, 377, 377, 377, 377, 0}
-    local4 = {11, 5, 31, 12, 15, -359}
-    local5 = {10, 2, 25, 2, 12, 0}
-    local6 = {"", "", "", "", "", ""}
-    local7 = {0, 0, 0, 0, 1, 0}
-    local8 = {" for a slice", " per piece", " for one portion", " for one portion", " for ten servings", ""}
-    local9 = {1, 1, 1, 1, 10, 0}
-
-    while local1 do
-        add_dialogue("What wouldst thou like to buy?")
-        local10 = call_090CH(local2)
-        if local10 == 1 then
-            add_dialogue("Very well, ", local0, ".")
-            local1 = false
-        elseif local10 == 4 and get_flag(0x012B) then
-            add_dialogue("I am truly sorry, ", local0, ", but I have not been able to get any of that for some time now. It seems the man who used to cut down the Silverleaf trees has stopped.")
+    var_0000 = unknown_0909H()
+    save_answers()
+    var_0001 = true
+    var_0002 = {"ham", "cake", "Silverleaf", "trout", "mutton rations", "nothing"}
+    var_0003 = {377, 377, 377, 377, 377, 0}
+    var_0004 = {11, 5, 31, 12, 15, 359}
+    var_0005 = {10, 2, 25, 2, 12, 0}
+    var_0006 = {"", "", "", "", "", ""}
+    var_0007 = {0, 0, 0, 0, 1, 0}
+    var_0008 = {" for a slice", " per piece", " for one portion", " for one portion", " for ten servings", ""}
+    var_0009 = {1, 1, 1, 1, 10, 0}
+    add_dialogue("\"What wouldst thou like to buy?\"")
+    while var_0001 do
+        var_0010 = unknown_090CH(var_0002)
+        if var_0010 == 1 then
+            add_dialogue("\"Very well, " .. var_0000 .. ".\"")
+            var_0001 = false
+        elseif var_0010 == 4 and not get_flag(299) then
+            add_dialogue("\"I am truly sorry, " .. var_0000 .. ", but I have not been able to get any of that for some time now. It seems the man who used to cut down the Silverleaf trees has stopped.\"")
         else
-            local11 = call_091BH(local8[local10], local5[local10], local7[local10], local2[local10], local6[local10])
-            local12 = 0
-            add_dialogue("^", local11, ". Art thou happy with the price?")
-            local13 = call_090AH()
-            if local13 then
-                add_dialogue("How many dost thou want?")
-                local14 = call_08F8H(true, 1, 20, local5[local10], local9[local10], local4[local10], local3[local10])
+            var_0011 = unknown_091BH(var_0006[var_0010], var_0002[var_0010], var_0007[var_0010], var_0005[var_0010], var_0008[var_0010])
+            var_0012 = 0
+            add_dialogue("^" .. var_0011 .. ". Art thou happy with the price?")
+            var_0013 = unknown_090AH()
+            if not var_0013 then
+                add_dialogue("\"How many dost thou want?\"")
+                var_0012 = unknown_08F8H(true, 1, 20, var_0005[var_0010], var_0009[var_0010], var_0004[var_0010], var_0003[var_0010])
             end
-            if local14 == 1 then
-                add_dialogue("Agreed.")
-            elseif local14 == 2 then
-                add_dialogue("Thou cannot carry that much!")
-            elseif local14 == 3 then
-                add_dialogue("Thou hast not the gold for that!")
+            if var_0012 == 1 then
+                add_dialogue("\"Agreed.\"")
+            elseif var_0012 == 2 then
+                add_dialogue("\"Thou cannot carry that much!\"")
+            elseif var_0012 == 3 then
+                add_dialogue("\"Thou hast not the gold for that!\"")
             end
+            add_dialogue("\"Wouldst thou like something else?\"")
+            var_0001 = unknown_090AH()
         end
-        add_dialogue("Wouldst thou like something else?")
-        local1 = call_090AH()
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
 end

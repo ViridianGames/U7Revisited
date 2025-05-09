@@ -1,25 +1,27 @@
--- Manages a cannon interaction, playing music and triggering effects if conditions are met.
-function func_0378H(eventid, itemref)
+--- Best guess: Manages a sextant, checking nearby items and triggering a quest event if conditions (e.g., flag 407) are met.
+function func_0378(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+
     if eventid == 1 then
         if get_object_frame(itemref) == 1 then
-            play_music(48, 0)
-            local items = find_items(itemref, 888, 125, 0) -- TODO: Implement LuaFindItems for callis 0035.
-            local objects = call_script(0x093C, itemref) -- TODO: Map 093CH (possibly get objects).
-            if #objects == 1 then
-                local cannon_pos = get_item_info(itemref)
-                local object_pos = get_item_info(objects[1])
-                local aligned = cannon_pos[1] < object_pos[1]
-                local flag_check = get_flag(0x0197)
-                if aligned == flag_check then
-                    local target = find_items(-356, 155, 100, 0)
-                    if target then
-                        apply_effect(target, 0) -- TODO: Implement LuaApplyEffect for calli 0092.
-                        call_script(0x061C, get_item_state(target)) -- TODO: Map 061CH (possibly trigger effect).
+            play_music(itemref, 48)
+            var_0000 = unknown_0035H(0, 125, 888, itemref) --- Guess: Creates an object with specified parameters
+            var_0000 = unknown_093CH(itemref) --- Guess: Retrieves nearby items
+            if array_size(var_0000) == 1 then
+                var_0001 = unknown_0018H(itemref) --- Guess: Retrieves object position or attributes
+                var_0002 = unknown_0018H(var_0000) --- Guess: Retrieves object position or attributes
+                var_0003 = var_0001[1] < var_0002[1]
+                var_0004 = get_flag(407)
+                if var_0003 == var_0004 then
+                    var_0005 = unknown_0035H(0, 100, 155, 356) --- Guess: Creates an object with specified parameters
+                    if var_0005 then
+                        unknown_0092H(var_0005) --- Guess: Updates object state
+                        unknown_061CH(unknown_0058H(var_0005)) --- Guess: Handles quest-specific event; Guess (0058H): Gets object’s owner
                     end
                 end
             end
         else
-            play_music(24, 0)
+            play_music(itemref, 24)
         end
     end
 end

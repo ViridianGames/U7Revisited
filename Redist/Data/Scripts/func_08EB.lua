@@ -1,121 +1,88 @@
--- Function 08EB: Manages item or party movement
-function func_08EB(local0, local1, itemref)
-    -- Local variables (18 as per .localc)
-    local local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
-    local local13, local14, local15, local16, local17, local18
+--- Best guess: Adjusts item positions based on type (sextant, map, or sextant part), moving them to specific coordinates for quest or puzzle purposes.
+function func_08EB(var_0000, var_0001, var_0002)
+    local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
-    local3 = 4
-    local4 = 0
-    local5 = callis_0018(itemref)
-    local6 = local5
-
-    if local1 == 154 then
-        local7 = callis_0035(0, 0, -1, itemref)
-        while sloop() do
-            local10 = local7
-            local11 = callis_0018(local10)
-            if local11[3] >= 5 then
-                local12 = callis_0025(local10)
-                local13 = callis_0010(3, 1)
-                if local13 == 1 then
-                    local11[1] = local11[1] - 1
-                    callis_0046(local11, 1)
-                elseif local13 == 2 then
-                    local11[2] = local11[2] - 1
-                    callis_0046(local11, 2)
-                elseif local13 == 3 then
-                    local11[1] = local11[1] - 1
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] - 1
-                    callis_0046(local11, 2)
+    var_0003 = 4
+    var_0004 = 0
+    var_0005 = unknown_0018H(itemref)
+    var_0006 = var_0005
+    if var_0001 == 154 then
+        var_0007 = unknown_0035H(0, 0, -1, itemref)
+        for _, var_0010 in ipairs(var_0007) do
+            var_0011 = unknown_0018H(var_0010)
+            if var_0011[3] < 5 then
+                var_0012 = unknown_0025H(var_0010)
+                var_0013 = unknown_0010H(3, 1)
+                if var_0013 == 1 then
+                    var_0011[1] = var_0011[1] - 1
+                elseif var_0013 == 2 then
+                    var_0011[2] = var_0011[2] - 1
+                elseif var_0013 == 3 then
+                    var_0011[1] = var_0011[1] - 1
+                    var_0011[2] = var_0011[2] - 1
                 end
-                local12 = callis_0026(local11)
+                var_0012 = unknown_0026H(var_0011)
             end
         end
-    elseif local1 == 1015 then
-        local7 = callis_0035(0, 1, -1, itemref)
-        while sloop() do
-            local10 = local7
-            local11 = callis_0018(local10)
-            if local11[3] >= 5 then
-                local12 = callis_0025(local10)
-                if local11[1] == local5[1] and local11[2] == local5[2] then
-                    local11[1] = local11[1] - 2
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] - 2
-                    callis_0046(local11, 2)
-                elseif local11[1] <= local5[1] and local11[2] <= local5[2] then
-                    local11[1] = local11[1] - 1
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] - 1
-                    callis_0046(local11, 2)
+    elseif var_0001 == 1015 then
+        var_0007 = unknown_0035H(0, 1, -1, itemref)
+        for _, var_0010 in ipairs(var_0007) do
+            var_0011 = unknown_0018H(var_0010)
+            if var_0011[3] < 5 then
+                var_0012 = unknown_0025H(var_0010)
+                if var_0011[1] == var_0005[1] and var_0011[2] == var_0005[2] then
+                    var_0011[1] = var_0011[1] - 2
+                    var_0011[2] = var_0011[2] - 2
+                elseif var_0011[1] <= var_0005[1] and var_0011[2] <= var_0005[2] then
+                    var_0011[1] = var_0011[1] - 1
+                    var_0011[2] = var_0011[2] - 1
                 end
-                local12 = callis_0026(local11)
+                var_0012 = unknown_0026H(var_0011)
             end
         end
-    elseif local1 == 504 then
-        local3 = 6
-        local4 = 2
-        local7 = callis_0035(0, 3, -1, itemref)
-        while sloop() do
-            local10 = local7
-            local11 = callis_0018(local10)
-            if local11[3] >= 5 and (callis_0011(local10) ~= 331 and callis_0011(local10) ~= 224) then
-                local12 = callis_0025(local10)
-                if local11[1] == local5[1] and local11[2] == local5[2] then
-                    local11[1] = local11[1] - 4
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] - 4
-                    callis_0046(local11, 2)
-                elseif local11[1] <= local5[1] and local11[2] <= local5[2] then
-                    local18 = local3 - callis_0019(itemref, local10)
-                    local11[1] = local11[1] - local18
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] - local18
-                    callis_0046(local11, 2)
+    elseif var_0001 == 504 then
+        var_0003 = 6
+        var_0004 = 2
+        var_0007 = unknown_0035H(0, 3, -1, itemref)
+        for _, var_0010 in ipairs(var_0007) do
+            var_0011 = unknown_0018H(var_0010)
+            if var_0011[3] < 5 and (unknown_0011H(var_0010) ~= 331 and unknown_0011H(var_0010) ~= 224) then
+                if var_0011[1] == var_0005[1] and var_0011[2] == var_0005[2] then
+                    var_0018 = var_0003 - unknown_0019H(itemref, var_0010)
+                    var_0011[1] = var_0011[1] - var_0018
+                    var_0011[2] = var_0011[2] - var_0018
+                elseif var_0011[1] <= var_0005[1] and var_0011[2] <= var_0005[2] then
+                    var_0011[1] = var_0011[1] - 1
+                    var_0011[2] = var_0011[2] - 1
                 end
-                local12 = callis_0026(local11)
+                var_0012 = unknown_0026H(var_0011)
             end
         end
-        local6[1] = local6[1] - 2
-        callis_0046(local6, 1)
-        local6[2] = local6[2] - 2
-        callis_0046(local6, 2)
     end
-
-    if not callis_0085(local0, local1, local5) then
-        local4 = local4 + 1
-        local7 = callis_0035(0, local4, -1, local6)
-        while sloop() do
-            local10 = local7
-            local11 = callis_0018(local10)
-            if local11[1] >= local5[1] and local11[2] >= local5[2] and local11[3] >= 5 then
-                local12 = callis_0025(local10)
-                if local11[1] == local5[1] or local11[2] == local5[2] then
-                    if local11[1] == local5[1] then
-                        local11[1] = local11[1] + 1
-                        callis_0046(local11, 1)
+    if not unknown_0085H(var_0000, var_0001, var_0005) then
+        var_0004 = var_0004 + 1
+        var_0007 = unknown_0035H(0, var_0004, -1, var_0006)
+        for _, var_0010 in ipairs(var_0007) do
+            var_0011 = unknown_0018H(var_0010)
+            if var_0011[1] >= var_0005[1] and var_0011[2] >= var_0005[2] and var_0011[3] < 5 then
+                var_0012 = unknown_0025H(var_0010)
+                if var_0011[1] == var_0005[1] or var_0011[2] == var_0005[2] then
+                    if var_0011[1] == var_0005[1] then
+                        var_0011[1] = var_0011[1] + 1
                     end
-                    if local11[2] == local5[2] then
-                        local11[2] = local11[2] + 1
-                        callis_0046(local11, 2)
+                    if var_0011[2] == var_0005[2] then
+                        var_0011[2] = var_0011[2] + 1
                     end
                 else
-                    local11[1] = local11[1] + 1
-                    callis_0046(local11, 1)
-                    local11[2] = local11[2] + 1
-                    callis_0046(local11, 2)
+                    var_0011[1] = var_0011[1] + 1
+                    var_0011[2] = var_0011[2] + 1
                 end
-                local12 = callis_0026(local11)
+                var_0012 = unknown_0026H(var_0011)
             end
         end
-        if local4 == local3 then
+        if var_0004 == var_0003 then
             return
         end
     end
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
+    return
 end

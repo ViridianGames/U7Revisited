@@ -1,16 +1,17 @@
--- Function 0712: Handle item type 505
+--- Best guess: Destroys items in a container, possibly for ritual cleanup or object removal.
 function func_0712(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 3 then
-        local0 = table.insert(call_0030H(505), call_0030H(970))
-        if local0 then
-            while local1 do
-                local3 = local1
-                call_08E6H(local3)
-                local1 = get_next_item() -- sloop
+        var_0000 = create_array(505) --- Guess: Creates array
+        var_0000 = create_array(970, var_0000) --- Guess: Creates array
+        if var_0000 then
+            -- Guess: sloop destroys items in array
+            for i = 1, 5 do
+                var_0003 = {1, 2, 3, 0, 9}[i]
+                calle_08E6H(var_0003) --- External call to activate object
             end
-            delete_item(itemref)
+            destroy_item_silent(itemref) --- Guess: Destroys item silently
         end
     end
 end

@@ -1,100 +1,70 @@
--- Function 08F3: Manages Iolo's combat preference dialogue
-function func_08F3(local0)
-    -- Local variables (8 as per .localc)
-    local local1, local2, local3, local4, local5, local6, local7, local8
+--- Best guess: Manages a dialogue with Shamino discussing combat preferences (valor vs. enchantment, melee vs. ranged), with gender-specific responses and flag-based progression.
+function func_08F3(var_0000)
+    start_conversation()
+    local var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    callis_0007()
-    local1 = false
-    local2 = false
-    callis_0005({"bye", "valor in arms", "enchantment"})
+    save_answers()
+    var_0001 = false
+    var_0002 = false
+    add_answer({"bye", "valor in arms", "enchantment"})
     add_dialogue("\"Tell me something, if thou please. Many years have passed since I first learned my woodcraft. Such craft includes skill in arms, and I must know... Does the Avatar prefer mystical enchantment to overcome enemies, or physical strength and valor in arms?\"")
-    local3 = false
-
+    var_0003 = false
     while true do
-        if cmp_strings("enchantment", 0x003A) then
+        if string.lower(unknown_XXXXH()) == "enchantment" then
             add_dialogue("\"I have suspected it! No skill have I in such deep matters, but perchance our speech might turn to enchantment when our quest is complete.\"")
-            set_flag(0x015E, true)
+            set_flag(350, true)
             break
-        end
-        if cmp_strings("valor in arms", 0x006C) then
+        elseif string.lower(unknown_XXXXH()) == "valor in arms" then
             add_dialogue("\"I have often suspected it! I am honored to travel with thee. I shall watch thee diligently, for surely thou art the greatest fighter who ever lived.\"")
             add_dialogue("\"When our quest is complete we shall regale each other with our exploits. Tell me, dost thou prefer hand to hand combat or ranged weaponry?\"")
-            callis_0006({"valor in arms", "enchantment"})
-            callis_0005({"ranged weaponry", "hand to hand"})
-            set_flag(0x015E, false)
-            local1 = false
-        end
-        if cmp_strings("hand to hand", 0x00A8) then
-            callis_0006("hand to hand")
-            local4 = "and thou seemest man enough for such close work"
-            if callis_005A() == 1 then
-                local4 = "especially in women. The women of Britannia seldom have them"
-                local2 = true
+            remove_answer({"valor in arms", "enchantment"})
+            add_answer({"ranged weaponry", "hand to hand"})
+            set_flag(350, false)
+            var_0001 = false
+        elseif string.lower(unknown_XXXXH()) == "hand to hand" then
+            remove_answer("hand to hand")
+            var_0004 = "and thou seemest man enough for such close work"
+            if unknown_005AH() == 1 then
+                var_0004 = "especially in women. The women of Britannia seldom have them"
+                var_0002 = true
             end
-            add_dialogue("\"Such weapons require strength and daring! I admire such qualities, ", local4, ".\"")
+            add_dialogue("\"Such weapons require strength and daring! I admire such qualities, " .. var_0004 .. ".\"")
             add_dialogue("\"But my preferences run to the bow. An ancient weapon, and elegant, a fine bow of Yew may bring down game sooner than a sword.\"")
-            local3 = true
-        end
-        if cmp_strings("ranged weaponry", 0x00C3) then
-            callis_0006("ranged weaponry")
+            var_0003 = true
+        elseif string.lower(unknown_XXXXH()) == "ranged weaponry" then
+            remove_answer("ranged weaponry")
             add_dialogue("\"Such is also my choice. Few are my peers in the art of archery. A keen eye and steady hand are required, and that is rare in the men of this day. Even rarer in women. Sad, that the women of Britannia should be innocent of such art!\"")
-            local2 = true
-            local3 = true
-        end
-        if local2 then
-            local5 = false
-            while sloop() do
-                local7 = callis_0020(10, local8)
-                if local7 == 1 then
-                    local5 = true
+            var_0002 = true
+            var_0003 = true
+        elseif var_0002 then
+            var_0002 = false
+            var_0005 = false
+            for _, var_0008 in ipairs(var_0003) do
+                if unknown_0020H(10, var_0008) == 1 then
+                    var_0005 = true
                     break
                 end
             end
-            if local5 then
-                callis_0003(0, local8)
+            if var_0005 then
+                unknown_0003H(0, var_0008)
                 add_dialogue("\"Take care with thy words, master woodsman.\"")
-                callis_0003(0, -10)
+                unknown_0003H(0, -10)
                 add_dialogue("\"I do not mean this gracious company! Surely thou art among the elite of Britannia and a rare figure of a woman.\"")
-                callis_0003(0, local8)
+                unknown_0003H(0, var_0008)
                 add_dialogue("\"Thy speech does me service. Alas! Too few are the women who learn skill in arms.\"")
-                callis_0004(local8)
+                unknown_0004H(var_0008)
             end
-        end
-        if local3 then
+        elseif var_0003 then
             break
-        end
-        if cmp_strings("bye", 0x0153) then
-            if not local1 then
+        elseif string.lower(unknown_XXXXH()) == "bye" then
+            if not var_0001 then
                 add_dialogue("\"Please, Avatar, I simply must know.\"")
-                local1 = true
             else
-                abort()
+                return
             end
+            var_0001 = true
         end
-        break
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
-end
-
-function cmp_strings(str, addr)
-    return false -- Placeholder
-end
-
-function sloop()
-    return false -- Placeholder
 end

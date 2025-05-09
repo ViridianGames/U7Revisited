@@ -1,121 +1,81 @@
--- func_0444.lua
--- Denby's dialogue as the trainer in Britain
+--- Best guess: Handles dialogue with Bennie, Head Servant at Lord British’s castle, serving meals and discussing his family’s service, with comments on his absent-mindedness.
+function func_0444(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0009, var_000A
 
-
-function func_0444(eventid)
-    local answers = {}
-    local flag_00BB = get_flag(0x00BB) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00CC = get_flag(0x00CC) -- Training topic
-    local npc_id = -58 -- Denby's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x08A7, 1) -- Training interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00CC then
-            add_answer( "training")
+        switch_talk_to(68, 0)
+        var_0000 = get_player_name()
+        add_answer({"bye", "job", "name"})
+        if not get_flag(113) then
+            add_answer("absent-minded")
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00BB then
-            add_dialogue("You see a grizzled man with scars on his knuckles, watching a sparring match.")
-            set_flag(0x00BB, true)
+        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = get_party_members()
+        if not get_flag(197) then
+            add_dialogue("You see an elderly man with good humor and a warm smile.")
+            set_flag(197, true)
         else
-            add_dialogue("\"Back for more, \" .. get_player_name() .. \"?\" Denby says with a grin.")
+            add_dialogue("\"Yes, Avatar?\" Bennie asks with authority.")
         end
-
         while true do
-            if #answers == 0 then
-                add_dialogue("Denby crosses his arms. \"What’s on thy mind?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Denby, trainer of Britain’s fighters.\"")
+            var_0003 = get_answer()
+            if var_0003 == "name" then
+                add_dialogue("\"All my friends call me Bennie.\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I train folk in combat—sword, axe, or bare fists. Keeps Britain safe. Want to spar or train?\"")
-                add_answer( "training")
-                add_answer( "combat")
-                set_flag(0x00CC, true)
-            elseif choice == "combat" then
-                add_dialogue("\"Britain’s got tough fighters, but some lack discipline. I teach ‘em to strike hard and stay standing.\"")
-                add_answer( "fighters")
-                remove_answer("combat")
-            elseif choice == "fighters" then
-                add_dialogue("\"Got a few regulars—guards, adventurers, even a noble or two. Some Fellowship types train here, but they’re too secretive for my taste.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("fighters")
-            elseif choice == "training" then
-                add_dialogue("\"A session’s 25 gold. I’ll teach thee to fight better—strength, speed, or defense. Ready?\"")
-                local response = call_extern(0x08A7, var_0001)
-                if response == 0 then
-                    local gold_result = U7.removeGold(25)
-                    if gold_result then
-                        local skill_choice = get_answer({"strength", "speed", "defense", "none"})
-                        if skill_choice == "strength" then
-                            local skill_result = U7.increaseSkill(1, 1)
-                            if skill_result then
-                                add_dialogue("\"Good! Thou’rt hitting harder already.\"")
-                            else
-                                add_dialogue("\"Something’s off—thy strength didn’t improve. Try again later.\"")
+            elseif var_0003 == "job" then
+                add_dialogue("\"I am the Head Servant at the castle. My job consists of keeping the other servants in line and serving the meals.\"")
+                add_answer({"meals", "Head Servant"})
+            elseif var_0003 == "Head Servant" then
+                add_dialogue("\"Yes, I have been Head Servant for many years. Mine entire family works for Lord British. My son is the king's gentleman's gentleman. My daughter is the Royal Chambermaid. My wife is Head Cook. We are pleased to work for Lord British.\"")
+                remove_answer("Head Servant")
+            elseif var_0003 == "meals" then
+                add_dialogue("\"My wife, Boots, is the head cook. Her specialty is roast beef. She makes wonderful pastries, too. Enough of those will give thee a very un-Avatar-like figure!\"")
+                if var_0001 == 3 or var_0001 == 6 then
+                    add_dialogue("\"Wouldst thou like to order a meal?\"")
+                    var_0003 = select_option()
+                    if var_0003 then
+                        if not get_flag(216) then
+                            var_0004 = unknown_0065H(1) --- Guess: Checks daily meal limit
+                        else
+                            set_flag(216, true)
+                            var_0004 = 25
+                        end
+                        if var_0004 >= 24 then
+                            add_dialogue("\"For thee, it is free!\"")
+                            add_dialogue("Bennie serves you and your party a delicious meal of beef and pastry.")
+                            var_0002 = get_party_members()
+                            var_0005 = 0
+                            for _ = 1, var_0002 do
+                                var_0005 = var_0005 + 1
                             end
-                        elseif skill_choice == "speed" then
-                            local skill_result = U7.increaseSkill(2, 1)
-                            if skill_result then
-                                add_dialogue("\"Nice! Thou’rt moving quicker now.\"")
+                            var_0009 = unknown_002CH(true, 9, 359, 377, var_0005) --- Guess: Checks inventory space
+                            var_000A = unknown_002CH(true, 6, 359, 377, var_0005) --- Guess: Checks inventory space
+                            if var_0009 or var_000A then
+                                unknown_0066H(1) --- Guess: Resets daily meal limit
+                                add_dialogue("\"Return tomorrow and thou canst have another free meal.\"")
                             else
-                                add_dialogue("\"Something’s off—thy speed didn’t improve. Try again later.\"")
-                            end
-                        elseif skill_choice == "defense" then
-                            local skill_result = U7.increaseSkill(3, 1)
-                            if skill_result then
-                                add_dialogue("\"Solid! Thou’rt tougher to hit now.\"")
-                            else
-                                add_dialogue("\"Something’s off—thy defense didn’t improve. Try again later.\"")
+                                add_dialogue("\"Thou art carrying too much to take the beef and pastry!\"")
                             end
                         else
-                            add_dialogue("\"Changed thy mind? Come back when thou’rt ready.\"")
+                            add_dialogue("\"I am sorry, " .. var_0000 .. ", but I am allowed to serve thee only once per day. Return tomorrow for a meal.\"")
                         end
                     else
-                        add_dialogue("\"No gold, no training. Earn some coin and come back.\"")
+                        add_dialogue("\"Oh. Well, thou must return when thou art hungry.\"")
                     end
                 else
-                    add_dialogue("\"Not today? My training ground’s always here.\"")
+                    add_dialogue("\"Come to the dining room during breakfast or dinner and I will be most honored to serve thee!\"")
                 end
-                remove_answer("training")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship trains some of their own here, but they’re cagey. Always whispering, never sharing. I don’t trust folk who hide their moves.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Mayhap they’re just private. I’ll give ‘em a chance.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Nay, my gut says they’re up to no good.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Keep thy blade sharp, \" .. get_player_name() .. \"!\"")
+                remove_answer("meals")
+            elseif var_0003 == "absent-minded" then
+                add_dialogue("\"Yes, I suppose I am. I am also becoming a little hard-of-hearing. When thou hast seen as many years as I have, one's faculties are no longer perfect.\"")
+                remove_answer("absent-minded")
+            elseif var_0003 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Safe journeys, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        unknown_092EH(68) --- Guess: Triggers a game event
     end
 end
-
-return func_0444

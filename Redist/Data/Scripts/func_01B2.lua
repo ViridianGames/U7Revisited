@@ -1,37 +1,31 @@
--- Function 01B2: Item interaction with dialogue and container check
+--- Best guess: Handles a container or trap interaction, displaying a message ("It is about time!") and updating its state (e.g., opening a chest or triggering a trap) when activated.
 function func_01B2(eventid, itemref)
-    -- Local variables (3 as per .localc)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    -- Eventid == 1: Dialogue or external call
     if eventid == 1 then
-        if callis_0079(itemref) == 0 then
-            calli_005C(itemref)
-            call_08FEH("@It is about time!@")
+        -- callis 0079, 1 (unmapped)
+        if not unknown_0079H(itemref) then
+            -- calli 005C, 1 (unmapped)
+            unknown_005CH(itemref)
+            start_conversation()
+            add_dialogue("@It is about time!@")
         else
-            calle_0629H(itemref)
+            -- calle 0629H, 1577 (unmapped)
+            unknown_0629H(itemref)
         end
-    end
-
-    -- Eventid == 8: Container and position update
-    if eventid == 8 then
-        local0 = callis_0018(itemref)
-        local0[1] = local0[1] + 1 -- Adjust x position
-        local0[2] = local0[2] - 1 -- Adjust y position
-
-        -- Note: Original has 'db 46' here, possibly a debug artifact, ignored
-
-        local1 = _GetContainerItems(-359, -359, 810, -356)
-        if local1 then
-            local2 = callis_0025(local1)
-            if local2 then
-                _SetItemFrame(3, local1)
-                local2 = callis_0026(local0)
+    elseif eventid == 8 then
+        var_0000 = unknown_0018H(itemref)
+        aidx(var_0000, 1, aidx(var_0000, 1) + 1)
+        aidx(var_0000, 2, aidx(var_0000, 2) - 1)
+        var_0001 = get_container_objects(359, 359, 810, 356)
+        if var_0001 then
+            var_0002 = unknown_0025H(var_0001)
+            if var_0002 then
+                set_object_frame(var_0001, 3)
+                var_0002 = unknown_0026H(var_0000)
             end
+            var_0002 = unknown_0001H({17516, 7937, 0, 7769}, 356)
         end
-
-        local2 = callis_0001({17516, 7937, 0, 7769}, -356)
     end
-
     return
 end

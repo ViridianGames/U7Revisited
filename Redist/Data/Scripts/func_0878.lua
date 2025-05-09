@@ -1,38 +1,37 @@
--- Function 0878: De Snel combat training
-function func_0878(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+--- Best guess: Offers combat training, focusing on sleight of hand and strike feints.
+function func_0878(eventid, itemref, arg1, arg2)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local2 = select_training_target(eventid, itemref)
-    if local2 == 0 then
+    var_0002 = get_training_target() --- Guess: Gets training target
+    if var_0002 == 0 then
         return
     end
-    local3 = 2
-    local4 = check_training_eligibility(local3, local2, eventid, itemref)
-    if local4 == 0 then
-        add_dialogue(itemref, "\"Thou dost not have enough practical experience to study fighting with me at this time!\" he scoffs.")
+    var_0003 = 2
+    var_0004 = evaluate_training_ability(var_0003, var_0002, arg1, arg2) --- Guess: Evaluates training ability
+    if var_0004 == 0 then
+        add_dialogue("@Thou dost not have enough practical experience to study fighting with me...@")
         return
-    elseif local4 == 1 then
-        local5 = check_gold(-359, -359, 644, -357)
-        add_dialogue(itemref, "\"You gather your gold and count it, finding that you have " .. local5 .. " gold altogether.\"")
-        if local5 < eventid then
-            add_dialogue(itemref, "\"Hmmm... it appears thou art without the necessary amount of gold. When thy coffers are more full, I might be able to help thee.\" He smirks.")
+    elseif var_0004 == 1 then
+        var_0005 = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+        add_dialogue("@You gather your gold and count it, finding that you have " .. var_0005 .. " gold altogether.@")
+        if var_0005 < var_0000 then
+            add_dialogue("@Hmmm... it appears thou art without the necessary amount of gold...@")
             return
         end
-    elseif local4 == 2 then
-        add_dialogue(itemref, "\"Thou art already close in skill to me! Thou hast peaked in thine own potential. There is nothing further I can do for thee.\"")
+    elseif var_0004 == 2 then
+        add_dialogue("@Thou art already close in skill to me!...@")
         return
     end
-    local6 = remove_gold(true, -359, -359, 644, eventid)
-    add_dialogue(itemref, "\"You pay " .. eventid .. " gold, and the training session begins.\"")
-    local7 = _GetNPCName(local2)
-    local8 = _GetPlayerName(local2)
-    if local7 == local8 then
-        local7 = "you"
+    var_0006 = remove_item_from_inventory(359, 644, 359, var_0000) --- Guess: Removes item from inventory
+    add_dialogue("@You pay " .. var_0000 .. " gold, and the training session begins.@")
+    var_0007 = get_player_name(var_0002) --- Guess: Gets player name
+    var_0008 = start_ceremony() --- Guess: Starts ceremony
+    if var_0007 == var_0008 then
+        var_0007 = "you"
     end
-    add_dialogue(itemref, "\"The session, which consists of various techniques involving sleight of hand and strike feints, takes a fairly short amount of time.~ De Snel straightens suddenly and sheathes his blade. \\\"That is all for now. If thou dost wish more training, thou couldst most assuredly benefit from mine experience.\\\" He looks " .. local7 .. " up and down insolently. \\\"Thou seemest to be an apt pupil. Thou mayest return at a later time and advance thy training.\\\"")
-    local9 = get_stat(4, local2)
-    if local9 < 30 then
-        train_combat(2, local2)
+    add_dialogue("@The session, which consists of various techniques involving sleight of hand and strike feints... " .. var_0007 .. " up and down insolently. 'Thou seemest to be an apt pupil...@")
+    var_0009 = get_training_level(4, var_0002) --- Guess: Gets training level
+    if var_0009 < 30 then
+        improve_combat_skill(var_0002, 2) --- Guess: Improves combat skill
     end
-    return
 end

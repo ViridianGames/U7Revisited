@@ -1,25 +1,25 @@
--- Casts the "In Zu Grav" spell, inducing sleep with an electrical effect on a selected target.
+--- Best guess: Implements the sleep field spell (In Zu Grav), inducing sleep in a target area.
 function func_0676(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        destroy_item(itemref)
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@In Zu Grav@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 17510, 8549, local1, 8025, 65, 7768})
-            local3 = local0[2] + 1
-            local4 = local0[3] + 1
-            local5 = local0[4]
-            local6 = {local5, local4, local3}
-            local7 = get_item_by_type(902) -- Unmapped intrinsic
-            if local7 then
-                set_flag(local7, 18, true)
-                set_item_data(local6)
+        if check_spell_requirements() then
+            var_0002 = add_container_items(itemref, {17511, 17510, 8549, var_0001, 8025, 65, 7768})
+            var_0003 = var_0000[2] + 1
+            var_0004 = var_0000[3] + 1
+            var_0005 = var_0000[4]
+            var_0006 = {var_0005, var_0004, var_0003}
+            var_0007 = get_item_status(902) --- Guess: Gets item status
+            if var_0007 then
+                set_item_flag(var_0007, 18)
+                var_0008 = unknown_0026H(var_0006) --- Guess: Updates position
             end
         else
-            local2 = add_item(itemref, {1542, 17493, 17511, 17510, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 17510, 8549, var_0001, 7769})
         end
     end
-    return
 end

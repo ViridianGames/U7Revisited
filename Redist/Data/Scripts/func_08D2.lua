@@ -1,58 +1,66 @@
--- Function 08D2: Manages Trent and Rowena's reunion dialogue
-function func_08D2()
-    -- Local variables (2 as per .localc)
-    local local0, local1
+--- Best guess: Manages a dialogue with a healer offering resurrection, curing, or healing services, with gold checks and party member selection.
+function func_08D2(var_0000, var_0001, var_0002)
+    start_conversation()
+    local var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013
 
-    local0 = call_0909H()
-    local1 = call_08F7H(-142)
-
-    if not local1 then
-        add_dialogue("\"Where, oh where has my dear husband gone. I cannot stand to be away from him!\"")
-        abort()
+    var_0003 = unknown_0909H()
+    add_dialogue("\"Dost thou want mine aid?\"")
+    save_answers()
+    var_0004 = unknown_090AH()
+    if not var_0004 then
+        add_dialogue("\"I am glad of that, " .. var_0003 .. ". I am happy to help those in need, but I would be far happier if there were never a need!\"")
+        restore_answers()
+        return
     end
-
-    add_dialogue("As far as you can tell, the couple haven't released their embrace since they were first reunited, and they show no sign of doing so at any time in the near future.")
-    callis_0005("bye")
-    while true do
-        if cmp_strings("sacrifice", 0x0078) then
-            callis_0006("sacrifice")
-            if not get_flag(0x019D) then
-                callis_0003(1, -142)
-                add_dialogue("\"No, ", local0, ". She is my life. If thou takest her, thou takest mine heart.\" Trent holds on tightly to his wife.")
-                set_flag(0x019D, true)
-                callis_0004(-142)
-                callis_0003(1, -144)
-            else
-                add_dialogue("\"I cannot leave my lord like this. Surely thou canst understand, ", local0, ".\"")
+    add_dialogue("\"What is thy need?\"")
+    var_0005 = {"resurrection", "curing", "healing"}
+    var_0006 = unknown_090BH(var_0005)
+    if var_0006 == "healing" or var_0006 == "curing" then
+        if var_0006 == "healing" then
+            var_0007 = "healed"
+            var_0008 = var_0002
+        elseif var_0006 == "curing" then
+            var_0007 = "cured"
+            var_0008 = var_0001
+        end
+        add_dialogue("\"Who needs to be " .. var_0007 .. "?\"")
+        var_0009 = unknown_090EH()
+        if var_0009 == 0 then
+            add_dialogue("\"None of you seem to require mine aid.\"~~She appears pleased.")
+            restore_answers()
+            return
+        end
+    elseif var_0006 == "resurrection" then
+        var_0010 = unknown_0022H()
+        var_0011 = unknown_000EH(25, 400, var_0010)
+        var_0008 = var_0000
+        if var_0011 == 0 then
+            var_0011 = unknown_000EH(25, 414, var_0010)
+            if var_0011 == 0 then
+                add_dialogue("\"I am sorry, but thou hast not presented anyone to me who requires mine assistance. If there is someone who truly needs my skills, I must have a closer look.\"")
+                restore_answers()
+                return
             end
         end
-        if cmp_strings("bye", 0x0085) then
-            add_dialogue("The couple continue staring into one another's eyes as if to make up for all of the years they lost.")
-            abort()
-        end
-        break
     end
-
+    add_dialogue("\"I must charge thee " .. var_0008 .. " gold. Is this price agreeable?\"")
+    var_0012 = unknown_090AH()
+    if var_0012 then
+        var_0013 = unknown_0028H(359, 359, 644, 357)
+        if var_0013 >= var_0008 then
+            if var_0006 == "healing" then
+                unknown_091DH(var_0008, var_0009)
+            elseif var_0006 == "curing" then
+                unknown_091EH(var_0008, var_0009)
+            elseif var_0006 == "resurrection" then
+                unknown_091FH(var_0008, var_0011)
+            end
+        else
+            add_dialogue("\"I am sorry, " .. var_0003 .. ", but thou dost not have enough gold. Perhaps, I will be able to aid thee next time.\"")
+        end
+    else
+        add_dialogue("\"Then I cannot help thee, " .. var_0003 .. ". I am truly sorry, but my fees are set.\"")
+    end
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
-end
-
-function get_flag(flag)
-    return false -- Placeholder
-end
-
-function set_flag(flag, value)
-    -- Placeholder
-end
-
-function abort()
-    -- Placeholder
-end
-
-function cmp_strings(str, addr)
-    return false -- Placeholder
 end

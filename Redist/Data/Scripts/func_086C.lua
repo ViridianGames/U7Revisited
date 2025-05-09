@@ -1,13 +1,32 @@
--- Generates a random animal name and plural form for mad-libs style dialogue.
+--- Best guess: Generates a random singular/plural noun pair from a list of animals and biological categories, appending "s" to the singular form if the plural is "*".
 function func_086C()
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = {"armadillo", "*", "octopus", "octopi", "ungulate", "*", "cockatoo", "*", "ferret", "*", "weasel", "*", "bassalope", "*", "platypus", "platypuses", "no-see-um", "*", "alpaca", "*", "mooncow", "*", "thundermoose", "*", "llama", "*", "iguana", "*", "reptile", "*", "amphibian", "*", "mammal", "*", "invertebrate", "*"}
-    local1 = math.floor(get_random(1, #local0 / 2))
-    local2 = local0[local1 * 2 - 1]
-    local3 = local0[local1 * 2]
-    if local3 == "*" then
-        local3 = local2 .. "s"
+    var_0000 = {
+        "armadillo", "*",
+        "octopus", "octopi",
+        "ungulate", "*",
+        "cockatoo", "*",
+        "ferret", "*",
+        "weasel", "*",
+        "bassalope", "*",
+        "platypus", "platypuses",
+        "no-see-um", "*",
+        "alpaca", "*",
+        "mooncow", "*",
+        "thundermoose", "*",
+        "llama", "*",
+        "iguana", "*",
+        "reptile", "*",
+        "amphibian", "*",
+        "mammal", "*",
+        "invertebrate", "*"
+    }
+    var_0001 = random(1, array_size(var_0000) / 2) --- Guess: Selects random index
+    var_0002 = var_0000[(var_0001 * 2) - 1] --- Guess: Gets singular form
+    var_0003 = var_0000[var_0001 * 2] --- Guess: Gets plural form
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "s" --- Guess: Appends "s" for plural
     end
-    return {local3, local2}
+    return {var_0002, var_0003} --- Guess: Returns singular/plural pair
 end

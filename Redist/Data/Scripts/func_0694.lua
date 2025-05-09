@@ -1,36 +1,40 @@
--- Function 0694: Update item frame and position
+--- Best guess: Adjusts item frames based on current frame, possibly for animation or state transitions.
 function func_0694(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    local0 = _GetItemFrame(itemref)
-    local1 = 0
-    local2 = 0
-    if local0 == 1 then
-        local1 = 16
-        local2 = 19
-    elseif local0 == 2 then
-        local1 = 0
-        local2 = 3
-    elseif local0 == 3 then
-        local1 = 20
-        local2 = 23
-    elseif local0 == 4 or local0 == 5 then
-        local1 = 12
-        local2 = 15
-    elseif local0 == 6 then
-        return
+    var_0000 = get_item_frame(itemref) --- Guess: Gets item frame
+    var_0001 = 0
+    var_0002 = 0
+    if var_0000 == 1 then
+        var_0001 = 16
+        var_0002 = 19
+    elseif var_0000 == 2 then
+        var_0001 = 0
+        var_0002 = 3
+    elseif var_0000 == 3 then
+        var_0001 = 20
+        var_0002 = 23
+    elseif var_0000 == 4 or var_0000 == 5 then
+        var_0001 = 12
+        var_0002 = 15
+    elseif var_0000 == 6 then
+        -- No action
     end
-    local3 = get_item_position(call_001BH(-356))
-    local5 = call_0024H(912)
-    call_0089H(18, local5)
-    _SetItemFrame(_Random2(local1, local2), local5)
-    local6 = call_0026H(local4)
-    local7 = _GetItemQuality(itemref)
-    if local0 == 2 and local7 then
-        local7 = local7 - 1
-        local8 = _SetItemQuality(local7, itemref)
+    var_0003 = unknown_0018H(356) --- Guess: Gets position data
+    var_0003[1] = var_0003[1] + 1
+    var_0003[2] = var_0003[2] - 1
+    var_0003[3] = 0
+    var_0005 = get_item_status(912) --- Guess: Gets item status
+    set_item_flag(var_0005, 18)
+    var_0006 = unknown_0026H(var_0003) --- Guess: Updates position
+    var_0007 = get_item_quality(itemref) --- Guess: Gets item quality
+    if var_0000 == 2 and var_0007 then
+        var_0007 = var_0007 - 1
+        var_0008 = set_item_quality(itemref, var_0007)
     else
-        local9 = call_0001H(0, {7750}, itemref)
+        var_0009 = add_container_items(itemref, {0, 7750})
     end
-    call_000FH(40)
+    var_0004 = random(var_0001, var_0002)
+    set_item_frame(var_0005, var_0004) --- Guess: Sets item frame
+    unknown_000FH(40) --- Guess: Triggers event
 end

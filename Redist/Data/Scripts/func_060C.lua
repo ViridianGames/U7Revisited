@@ -1,88 +1,77 @@
--- Manages the end of a horse race, resetting horse frames, handling bets, and announcing the winning lane.
+--- Best guess: Manages a racing game mechanic, likely a horse race, checking lane outcomes, updating item frames, and awarding wins based on position comparisons, with NPC dialogue for results.
 function func_060C(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16, local17, local18, local19, local20, local21, local22, local23
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017
 
-    if get_schedule(-232) == 9 then
-        set_schedule(232, 10)
+    if unknown_001CH(232) == 9 then
+        unknown_001DH(10, 232)
     end
 
-    if not npc_in_party(-232) then
-        local0 = add_item(0, 50, 764, -356)
-        for local1 in ipairs(local0) do
-            local2 = local1
-            local3 = local2
-            set_object_frame(local3, 0)
-            trigger_action(local3) -- Unmapped intrinsic
+    if not _NPCInParty(232) then
+        var_0000 = unknown_0035H(0, 50, 764, -356)
+        for var_0003 in ipairs(var_0000) do
+            get_object_frame(var_0003, 0)
+            unknown_005CH(var_0003)
         end
-        return
-    end
-
-    local4 = add_item(0, 7, 644, itemref)
-    local5 = get_item_data(itemref)
-    local6 = 0
-    local7 = get_item_by_type(763)
-    for local8 in ipairs(local7) do
-        local9 = local8
-        local10 = get_object_frame(local9)
-        if local10 == 1 or local10 == 2 then
-            local6 = local9
-        end
-    end
-
-    local7 = get_item_by_type(763)
-    if get_flag(6) then
-        local12 = 6
     else
-        local12 = 3
-    end
-
-    local13 = get_item_data(local6)
-    local14 = get_container_items(-356, {763, 899, 1791}, {753, 1595, -356})
-    set_flag(34, local14)
-    if not local14 then
-        local15 = add_item(4, 90, -359, -356)
-        local15 = set_schedule(356, local15)
-        for local16 in ipairs(local15) do
-            local17 = local16
-            local18 = get_item_data(local17)
-            if local18[1] <= local13[1] and local18[1] >= local13[1] - 5 and local18[2] + 8 <= local13[2] and local18[2] - 8 >= local13[2] then
-                local19 = get_item_quality(local19, local17)
-                local20 = local19 * local12
-                while local20 > 100 do
-                    local21 = add_item(100, 644)
-                    if local21 then
-                        set_item_quality(100, local21)
-                        set_item_owner(local18, local21)
-                    end
-                    local20 = local20 - 100
-                end
-                local21 = add_item(local20, 644)
-                if local21 then
-                    set_item_quality(local20, local21)
-                    set_item_owner(local18, local21)
-                end
-                set_schedule(local17, 11)
-                local22 = math.floor((local13[2] - local5[2]) / 4)
-                local23 = "@A winnah in lane " .. local22 .. "!@"
-                bark(232, local23, 1)
-                remove_item(local17)
+        var_0004 = unknown_0035H(0, 7, 644, itemref)
+        var_0005 = unknown_0018H(itemref)
+        var_0006 = 0
+        var_0007 = unknown_0030H(763)
+        for var_000A in ipairs(var_0004) do
+            if get_object_frame(var_000A) == 1 or get_object_frame(var_000A) == 2 then
+                var_0006 = var_000A
             end
         end
-        if not get_flag(34) then
+        var_0000 = unknown_0030H(763)
+        var_000B = unknown_0018H(var_0006)[1]
+        if not get_flag(6) then
+            var_000C = 6
+        else
+            var_000C = 3
+        end
+        var_000D = unknown_0001H(var_0006, {73=8024, 74=8006, 73=7750})
+        if get_flag(34) == false then
             set_flag(34, true)
+            for var_0010 in ipairs(var_0004) do
+                var_0011 = unknown_0018H(var_0010)
+                if var_0011[1] <= var_000B and var_0011[1] >= var_000B - 5 and var_0011[2] + 8 <= var_0005[2] and var_0011[2] - 8 >= var_0005[2] then
+                    if var_0011[2] == var_0005[2] then
+                        var_0012 = unknown_0016H(644, var_0010)
+                        var_0012 = var_0012 * var_000C
+                        while var_0012 > 100 do
+                            var_0013 = unknown_0024H(644)
+                            if var_0013 then
+                                var_000D = unknown_0017H(var_0012, var_0013)
+                                var_000D = unknown_0026H(var_0011)
+                            end
+                            var_0012 = var_0012 - 100
+                        end
+                        var_0013 = unknown_0024H(644)
+                        if var_0013 then
+                            var_000D = unknown_0017H(var_0012, var_0013)
+                            var_000D = unknown_0026H(var_0011)
+                        end
+                        unknown_0089H(11, var_0010)
+                        var_0014 = math.abs(var_0005[2] - var_0011[2]) - 4
+                        var_0015 = "@A winnah in lane " .. var_0014 .. "!@"
+                        unknown_0933H(1, var_0015, 232)
+                    end
+                    unknown_006FH(var_0010)
+                end
+            end
         elseif not get_flag(35) then
             set_flag(35, true)
-        elseif not get_flag(36) and get_flag(35) then
+        elseif not get_flag(36) then
+            set_flag(36, true)
+        elseif not get_flag(37) and get_flag(36) then
             set_flag(34, false)
             set_flag(35, false)
             set_flag(36, false)
-            local0 = get_item_by_type(764)
-            for local16 in ipairs(local0) do
-                local17 = local16
-                set_object_frame(local17, 0)
+            set_flag(37, false)
+            var_0000 = unknown_0030H(764)
+            for var_0003 in ipairs(var_0000) do
+                get_object_frame(var_0003, 0)
             end
         end
     end
-
-    return
 end

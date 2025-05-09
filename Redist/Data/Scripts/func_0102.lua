@@ -1,24 +1,26 @@
-function func_0102H(eventid, itemref)
+--- Best guess: Manages a keg interaction, displaying a message and handling specific use cases, including filling containers.
+function func_0102(eventid, itemref)
+    local var_0000, var_0001, var_0002
+
     if eventid == 1 then
-        if not U7IsItemValid(itemref) then
-            U7SetItemState(itemref)
-            bark(0, "It is about time!")
+        if not unknown_0079H(itemref) then
+            unknown_005CH(itemref)
+            unknown_08FEH("@It is about time!@")
         else
-            U7CallScript(0x0628, itemref)
+            unknown_0628H(itemref)
         end
     elseif eventid == 8 then
-        local items = U7GetContainerItems(-356, 810, -359, -359)
-        local container = U7GetItemInfo(itemref)
-        container[1] = container[1] - 2
-        container[2] = container[2] + 1
-        if items ~= nil then
-            local obj = U7FindObject(items)
-            if obj ~= nil then
-                U7SetItemFrame(obj, 4)
-                U7UpdateContainer(container)
+        var_0000 = unknown_0018H(itemref)
+        var_0000[1] = var_0000[1] - 2
+        var_0000[2] = var_0000[2] + 1
+        var_0001 = get_container_objects(-359, -359, 810, -356)
+        if var_0001 then
+            var_0002 = unknown_0025H(var_0001)
+            if var_0002 then
+                get_object_frame(var_0001, 4)
+                var_0002 = unknown_0026H(var_0000)
             end
         end
-        local arr = U7CreateArray(7769, 0, 7937, 17516)
-        U7ExecuteAction(-356, arr)
+        var_0002 = unknown_0001H({17516, 7937, 0, 7769}, -356)
     end
 end

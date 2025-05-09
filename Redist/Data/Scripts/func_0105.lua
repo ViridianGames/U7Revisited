@@ -1,28 +1,27 @@
-function func_0105H(eventid, itemref)
+--- Best guess: Manages a loom interaction, creating thread and cloth items when used, with an error message if threading is incorrect.
+function func_0105(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
+
     if eventid == 7 then
-        U7SetItemState(itemref)
-        local arr1 = U7CreateArray(7750, 0, 8014, 17409, 17496, 6, 7947, -4, 32, 8021, 261)
-        local result1 = U7ExecuteAction(itemref, arr1)
-        local obj = U7GetNearbyObject(itemref, -356)
-        local arr2 = U7CreateArray(7769, obj, 8449, 17511, 17447, 1, 7947, -5, 9)
-        U7ExecuteAction(-356, arr2)
+        unknown_005CH(itemref)
+        var_0000 = unknown_0001H({261, 8021, 32, -4, 7947, 6, 17496, 17409, 8014, 0, 7750}, itemref)
+        var_0001 = unknown_0827H(itemref, -356)
+        var_0000 = unknown_0001H({9, -5, 7947, 1, 17447, 17505, 17511, 8449, var_0001, 7769}, -356)
     elseif eventid == 2 then
-        local items = U7GetContainerItems(-356, 654, -359, -359)
-        if items == nil then
-            U7ProcessItem(items)
+        var_0002 = get_container_objects(-359, -359, 654, -356)
+        if var_0002 then
+            unknown_006FH(var_0002)
         end
-        local obj = U7FindObjectByType(851)
-        if obj ~= nil then
-            U7SetItemQuality(obj, 18)
-            U7SetItemQuality(obj, 11)
-            local frame = U7Random(0, 4)
-            U7SetItemFrame(obj, frame)
-            local info = U7GetItemInfo(itemref)
-            info[1] = info[1] + 1
-            info[2] = info[2] + 1
-            U7UpdateContainer(info)
+        var_0003 = unknown_0024H(851)
+        if var_0003 then
+            unknown_0089H(18, var_0003)
+            get_object_frame(var_0003, random2(4, 0))
+            var_0004 = unknown_0018H(itemref)
+            var_0004[1] = var_0004[1] + 1
+            var_0004[2] = var_0004[2] + 1
+            var_0000 = unknown_0026H(var_0004)
         end
     elseif eventid == 1 then
-        bark(0, "I believe that one threads a loom before using it.")
+        unknown_08FFH("@I believe that one threads a loom before using it.@")
     end
 end

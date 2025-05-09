@@ -1,6 +1,8 @@
--- Function 03B6: Winch action delegate
+--- Best guess: Calls an external function (ID 083EH) for a winch interaction, possibly for a mechanical or environmental effect.
 function func_03B6(eventid, itemref)
-    calli_007E()
-    call_083EH(eventid, itemref)
+    -- calli 007E, 0 (unmapped)
+    unknown_007EH()
+    -- call [0000] (083EH, unmapped)
+    unknown_083EH(eventid, itemref)
     return
 end

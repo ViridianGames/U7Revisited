@@ -1,33 +1,32 @@
--- Function 0869: Random verb forms
+--- Best guess: Generates verb conjugations (e.g., "collate", "collating"), possibly for event triggers.
 function func_0869(eventid, itemref)
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = {
-        "collate", "collated", "collating",
-        "sear", "*", "*",
-        "croak", "*", "*",
-        "power-nap", "power-napped", "power-napping",
-        "network", "*", "*",
-        "conjure", "conjured", "conjuring",
-        "campaign", "*", "*",
-        "protest", "*", "*",
-        "spew", "*", "*",
-        "inhabit", "*", "*",
-        "censor", "*", "*",
-        "lay off", "laid off", "laying off",
-        "irradiate", "irradiated", "irradiating",
-        "martinize", "martinized", "martinizing"
+    var_0000 = {
+        {"collate", "collated", "collating"},
+        {"sear", "*", "*"},
+        {"croak", "*", "*"},
+        {"power-nap", "power-napped", "power-napping"},
+        {"network", "*", "*"},
+        {"conjure", "conjured", "conjuring"},
+        {"campaign", "*", "*"},
+        {"protest", "*", "*"},
+        {"spew", "*", "*"},
+        {"inhabit", "*", "*"},
+        {"censor", "*", "*"},
+        {"lay off", "laid off", "laying off"},
+        {"irradiate", "irradiated", "irradiating"},
+        {"martinize", "martinized", "martinizing"}
     }
-    local1 = _ArraySize(local0) / 3
-    local1 = _Random2(local1, 1)
-    local2 = local0[local1 * 3 - 2]
-    local3 = local0[local1 * 3 - 1]
-    local4 = local0[local1 * 3]
-    if local3 == "*" then
-        local3 = local2 .. "ed"
+    var_0001 = random(1, math.floor(array_size(var_0000) / 3)) --- Guess: Generates random index
+    var_0002 = var_0000[var_0001 * 3 - 2][1]
+    var_0003 = var_0000[var_0001 * 3 - 1][1]
+    var_0004 = var_0000[var_0001 * 3][1]
+    if var_0003 == "*" then
+        var_0003 = var_0002 .. "ed"
     end
-    if local4 == "*" then
-        local4 = local2 .. "ing"
+    if var_0004 == "*" then
+        var_0004 = var_0002 .. "ing"
     end
-    set_return({local4, local3, local2})
+    return {var_0002, var_0003, var_0004}
 end

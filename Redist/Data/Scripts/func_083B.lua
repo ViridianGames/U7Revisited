@@ -1,32 +1,25 @@
--- Evaluates triples game results, counting frames and checking for winning conditions.
+--- Best guess: Analyzes Triples game items (ID 809), counting frame-based states (1, 2, 3) and checking for winning conditions (all same state).
 function func_083B()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    local0 = 0
-    local1 = 0
-    local2 = 0
-    local3 = 1
-    local4 = external_0030H(809) -- Unmapped intrinsic
-    local3 = {}
-    for local5 in ipairs(local4) do
-        local6 = local5
-        local7 = local6
-        local8 = get_object_frame(local7)
-        local9 = math.floor(local8 / 8) + 1
-        local3 = array_append(local3, local9)
-        if local9 == 1 then
-            local0 = local0 + 1
-        elseif local9 == 2 then
-            local1 = local1 + 1
-        elseif local9 == 3 then
-            local2 = local2 + 1
+    var_0000 = 0
+    var_0001 = 0
+    var_0002 = 0
+    var_0003 = {1}
+    var_0004 = unknown_0030H(809)
+    for var_0005 in ipairs(var_0004) do
+        var_0008 = get_object_frame(var_0007)
+        var_0009 = math.floor(var_0008 / 8) + 1
+        table.insert(var_0003, var_0009)
+        if var_0009 == 1 then
+            var_0000 = var_0000 + 1
+        elseif var_0009 == 2 then
+            var_0001 = var_0001 + 1
+        elseif var_0009 == 3 then
+            var_0002 = var_0002 + 1
         end
     end
-    local10 = local3[1] + local3[2] + local3[3]
-    if local0 == 3 or local1 == 3 or local2 == 3 then
-        local11 = true
-    else
-        local11 = false
-    end
-    return {local11, local10}
+    var_000A = var_0003[1] + var_0003[2] + var_0003[3]
+    var_000B = (var_0000 == 3 or var_0001 == 3 or var_0002 == 3)
+    return {var_000B, var_000A}
 end

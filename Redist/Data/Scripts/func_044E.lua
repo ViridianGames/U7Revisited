@@ -1,87 +1,83 @@
--- func_044E.lua
--- Chuckles's dialogue as the court jester in Castle British
+--- Best guess: Manages Pamela’s dialogue, the innkeeper at the Out’n’Inn in Cove, discussing her business, her affection for Rayburt and his dog Regal, and room rentals, with flag-based transactions and a loop for party member pricing.
+function func_044E(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-
-function func_044E(eventid)
-    local answers = {}
-    local flag_00C4 = get_flag(0x00C4) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00D3 = get_flag(0x00D3) -- Jests topic
-    local npc_id = -67 -- Chuckles's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00D3 then
-            add_answer( "jests")
+    if eventid ~= 1 then
+        if eventid == 0 then
+            unknown_092EH(78)
         end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00C4 then
-            add_dialogue("You see a wiry man in motley, juggling apples with a mischievous grin.")
-            set_flag(0x00C4, true)
-        else
-            add_dialogue("\"Ho, \" .. get_player_name() .. \"!\" Chuckles cackles, tossing an apple.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Chuckles spins a coin. \"What’s thy jest, friend?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Chuckles I be, jester to Lord British’s court!\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I juggle, jest, and jape to keep the castle merry! My quips lighten hearts, but I hear whispers darker than my riddles.\"")
-                add_answer( "jests")
-                add_answer( "whispers")
-                set_flag(0x00D3, true)
-            elseif choice == "jests" then
-                add_dialogue("\"Here’s a riddle: what group speaks of unity but hides in shadows? Answer’s the Fellowship, methinks! Want another?\"")
-                add_answer( "Fellowship")
-                add_answer( "riddle")
-                remove_answer("jests")
-            elseif choice == "riddle" then
-                add_dialogue("\"What’s green as emerald, yet rules no land? Lord British’s crown, for his heart serves Britannia! Ha! Like that one?\"")
-                remove_answer("riddle")
-            elseif choice == "whispers" then
-                add_dialogue("\"Servants talk of Fellowship folk skulking in the halls, meeting advisors after dark. Even my jests can’t lighten that gloom.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("whispers")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s all smiles and promises, but their eyes dart like thieves in a market. I’d jest about ‘em, but my jokes might cut too deep.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou likest their tune? I’ll keep my japes gentle, then.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Wise to doubt ‘em! Their game’s no laughing matter.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Keep a skip in thy step, \" .. get_player_name() .. \"!\"")
-                break
-            end
-        end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        add_dialogue("\"See thee soon!\"")
+        return
     end
-end
 
-return func_044E
+    start_conversation()
+    switch_talk_to(0, 78)
+    var_0000 = unknown_001CH(unknown_001BH(78))
+    add_answer({"bye", "job", "name"})
+    if not get_flag(228) then
+        add_answer("Rayburt")
+    end
+    if not get_flag(235) then
+        add_dialogue("You see a friendly woman in her thirties.")
+        set_flag(235, true)
+    else
+        add_dialogue("\"Greetings, again!\" Pamela says.")
+    end
+    add_answer("Out'n Inn")
+    while true do
+        if cmps("name") then
+            add_dialogue("\"I am Pamela!\"")
+            remove_answer("name")
+            if not get_flag(228) then
+                add_answer("Rayburt")
+            end
+            set_flag(240, true)
+        elseif cmps("job") then
+            add_dialogue("\"I am the Innkeeper at the Out'n'Inn.\"")
+            if var_0000 == 16 or var_0000 == 11 then
+                add_dialogue("\"If thou wouldst like a room, just say so!\"")
+                add_answer("room")
+            elseif var_0000 == 26 then
+                add_dialogue("\"Please come by if thou wouldst like to rest thy weary feet for the night!\"")
+            end
+        elseif cmps("room") then
+            add_dialogue("\"The room is quite inexpensive. Only 8 gold per person. Want one?\"")
+            if unknown_090AH() then
+                var_0001 = _GetPartyMembers()
+                var_0002 = 0
+                for i = 1, var_0001 do
+                    var_0002 = var_0002 + 1
+                end
+                var_0006 = var_0002 * 8
+                var_0007 = unknown_0028H(359, 359, 644, 357)
+                if var_0007 >= var_0006 then
+                    var_0008 = unknown_002CH(true, 359, 255, 641, 1)
+                    if not var_0008 then
+                        add_dialogue("\"Thou art carrying too much to take the room key!\"")
+                    else
+                        add_dialogue("\"Here is thy room key. It is good only until thou leavest.\"")
+                        var_0009 = unknown_002BH(359, 359, 644, var_0006)
+                    end
+                else
+                    add_dialogue("\"Thou dost not have enough gold, eh? Too bad.\"")
+                end
+            else
+                add_dialogue("\"Another night, then.\"")
+            end
+            remove_answer("room")
+        elseif cmps("Out'n Inn") then
+            add_dialogue("\"Well... Cove is the city of Love and Passion, didst thou not know? Thou must be careful. If thou dost stay too long in Cove, thou wilt fall in love with someone! Mark my words!\"")
+            remove_answer("Out'n Inn")
+        elseif cmps("Rayburt") then
+            add_dialogue("\"Oooh, he is such a wonderful man, dost thou not think? He is so intense and serious. Handsome, too! Oh, and I like Regal as well.\"")
+            remove_answer("Rayburt")
+            add_answer("Regal")
+        elseif cmps("Regal") then
+            add_dialogue("\"As far as dogs go, he is handsome, too!\"")
+            remove_answer("Regal")
+        elseif cmps("bye") then
+            break
+        end
+    end
+    return
+end

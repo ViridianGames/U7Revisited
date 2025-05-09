@@ -1,25 +1,24 @@
--- Function 0896: Bollux golem post-event dialogue
+--- Best guess: Handles dialogue with Bollux after he loses his duty.
 function func_0896(eventid, itemref)
-    switch_talk_to(289, 0)
-    add_dialogue(itemref, "\"The golem seems to have regained his staid composure. However, life is still evident within his gem-like eyes.\"")
-    add_answer({"bye", "job", "name"})
+    start_conversation()
+    switch_talk_to(0, 289) --- Guess: Initiates dialogue
+    add_dialogue("@The golem seems to have regained his staid composure...@")
+    add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     while true do
-        local answer = get_answer()
-        if answer == "name" then
-            remove_answer("name")
+        if compare_answer("name", 1) then
+            remove_answer("name") --- Guess: Removes dialogue option
             if not get_flag(797) then
-                add_dialogue(itemref, "\"He tilts his head and stares at you quizzically.~ \"I apologize. Did I not already tell thee my master called me Bollux?\"")
+                add_dialogue("@He tilts his head and stares at you quizzicaly...@")
             else
-                add_dialogue(itemref, "\"My master named me Bollux.\"")
+                add_dialogue("@My master named me Bollux.@")
                 set_flag(797, true)
             end
-        elseif answer == "job" then
-            add_dialogue(itemref, "\"I am here to guard....\" He pauses, obviously deep in thought.\"I am without a duty now.\"")
-            remove_answer("job")
-        elseif answer == "bye" then
-            add_dialogue(itemref, "\"Good... bye.\"*")
+        elseif compare_answer("job", 1) then
+            add_dialogue("@I am here to guard....' He pauses, obviously deep in thought.'I am without a duty now.@")
+            remove_answer("job") --- Guess: Removes dialogue option
+        elseif compare_answer("bye", 1) then
+            add_dialogue("@Good... bye.@")
             return
         end
     end
-    return
 end

@@ -1,6 +1,5 @@
--- Initiates a combat sequence by calling func_0699.
+--- Best guess: Triggers an external function call (0699H) after setting up a game state, likely for a specific event or cleanup.
 function func_069B(eventid, itemref)
-    external_008CH(0, 1, 12) -- Unmapped intrinsic
-    external_0699H(itemref) -- Unmapped intrinsic
-    return
+    unknown_008CH(0, 1, 12)
+    unknown_0699H(itemref)
 end

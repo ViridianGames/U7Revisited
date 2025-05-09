@@ -1,43 +1,43 @@
--- Manages sword crafting outcomes, updating flags and displaying messages based on a random quality check.
+--- Best guess: Manages sword forging with random quality checks and dialogue feedback for the player.
 function func_0691(eventid, itemref)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
+    start_conversation()
     if eventid == 2 then
-        local0 = external_000EH(2, 668, -356) -- Unmapped intrinsic
-        local1 = get_item_data(local0)
-        local2 = add_item(itemref, {45, 7768})
-        local2 = add_item(itemref, {1680, 8021, 1, 17447, 7715})
+        var_0000 = set_item_type_at(668, 356, 2) --- Guess: Sets item type at position
+        var_0001 = unknown_0018H(var_0000) --- Guess: Gets position data
+        var_0002 = add_container_items(itemref, {45, 7768})
+        var_0002 = add_container_items(itemref, {1680, 8021, 1, 17447, 7715})
     elseif eventid == 1 then
-        local3 = external_0000H(100) -- Unmapped intrinsic
+        var_0003 = generaterandom_value(100) --- Guess: Generates random value
         if not get_flag(813) then
-            if local3 > 66 then
+            if var_0003 > 66 then
                 set_flag(813, true)
-                external_005AH() -- Unmapped intrinsic
-                switch_talk_to(356, external_005AH())
+                is_player_female() --- Guess: Checks player gender
+                switch_talk_to(356, 1) --- Guess: Initiates dialogue
                 add_dialogue("After a short while you notice that the edge has definitely improved.")
-                hide_npc(356)
+                hide_npc(356) --- Guess: Hides NPC
             end
         elseif not get_flag(814) then
-            if local3 > 66 then
+            if var_0003 > 66 then
                 set_flag(814, true)
-                external_005AH() -- Unmapped intrinsic
-                switch_talk_to(356, external_005AH())
+                is_player_female() --- Guess: Checks player gender
+                switch_talk_to(356, 1) --- Guess: Initiates dialogue
                 add_dialogue("You feel that you've done the best job that you can, but the sword doesn't feel quite right. It's much too heavy and cumbersome to wield as a weapon.")
                 set_flag(823, true)
-                hide_npc(356)
-            elseif local3 < 20 then
+                hide_npc(356) --- Guess: Hides NPC
+            elseif var_0003 < 20 then
                 set_flag(813, false)
-                external_005AH() -- Unmapped intrinsic
-                switch_talk_to(356, external_005AH())
+                is_player_female() --- Guess: Checks player gender
+                switch_talk_to(356, 1) --- Guess: Initiates dialogue
                 add_dialogue("That last blow was perhaps a bit too hard, It'll take a while to hammer out the flaws.")
-                hide_npc(356)
+                hide_npc(356) --- Guess: Hides NPC
             end
         else
-            external_005AH() -- Unmapped intrinsic
-            switch_talk_to(356, external_005AH())
+            is_player_female() --- Guess: Checks player gender
+            switch_talk_to(356, 1) --- Guess: Initiates dialogue
             add_dialogue("The blade has been worked as well as it can be. It will take some form of magic to make this sword blank into a usable weapon.")
-            hide_npc(356)
+            hide_npc(356) --- Guess: Hides NPC
         end
     end
-    return
 end

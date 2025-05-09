@@ -1,51 +1,43 @@
--- Function 08E1: Manages gargoyle merchant dialogue
+--- Best guess: Manages a shop dialogue with a gargoyle vendor for purchasing potions and jewelry, handling item selection, pricing, and inventory checks.
 function func_08E1()
-    -- Local variables (13 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9
-    local local10, local11, local12
+    start_conversation()
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012
 
-    callis_0007()
-    local0 = true
-    local1 = {"white potion", "black potion", "gold clawring", "gold earring", "gold chain", "gold horncaps", "nothing"}
-    local2 = {340, 340, 937, 937, 937, 937, 0}
-    local3 = {6, 7, 6, 5, 4, 2, -359}
-    local4 = {110, 60, 10, 5, 20, 30, 0}
-    local5 = {"a ", "a ", "a ", "a ", "a ", "", ""}
-    local6 = {0, 0, 0, 0, 0, 1, 0}
-    local7 = {"", "", "", "", "", " per pair", ""}
-    local8 = 1
-
-    while local0 do
-        add_dialogue("To want to buy what item?")
-        local9 = call_090CH(local1)
-        if local9 == 1 then
-            add_dialogue("To be acceptable.")
-            local0 = false
+    save_answers()
+    var_0000 = true
+    var_0001 = {"white potion", "black potion", "gold clawring", "gold earring", "gold chain", "gold horncaps", "nothing"}
+    var_0002 = {340, 340, 937, 937, 937, 937, 0}
+    var_0003 = {6, 7, 6, 5, 4, 2, 359}
+    var_0004 = {110, 60, 10, 5, 20, 30, 0}
+    var_0005 = {"a ", "a ", "a ", "a ", "a ", "", ""}
+    var_0006 = {0, 0, 0, 0, 0, 1, 0}
+    var_0007 = {"", "", "", "", "", " per pair", ""}
+    var_0008 = 1
+    add_dialogue("\"To want to buy what item?\"")
+    while var_0000 do
+        var_0009 =-pod unknown_090CH(var_0001)
+        if var_0009 == 1 then
+            add_dialogue("\"To be acceptable.\"")
+            var_0000 = false
         else
-            local10 = call_091CH(local7[local9], local4[local9], local6[local9], local1[local9], local5[local9])
-            local11 = 0
-            add_dialogue("^", local10, ". To be an acceptable price?")
-            local12 = call_090AH()
-            if local12 then
-                local11 = call_08F8H(false, 1, 0, local4[local9], local8, local3[local9], local2[local9])
+            var_0010 = unknown_091CH(var_0005[var_0009], var_0004[var_0009], var_0006[var_0009], var_0001[var_0009], var_0007[var_0009])
+            var_0011 = 0
+            add_dialogue("^" .. var_0010 .. ". To be an acceptable price?")
+            var_0012 = unknown_090AH()
+            if not var_0012 then
+                var_0011 = unknown_08F8H(false, 1, 0, var_0004[var_0009], var_0008, var_0003[var_0009], var_0002[var_0009])
             end
-            if local11 == 1 then
-                add_dialogue("To be agreed!")
-            elseif local11 == 2 then
-                add_dialogue("To be unable to carry that much! He shakes his head.")
-            elseif local11 == 3 then
-                add_dialogue("To have not enough gold for that!")
+            if var_0011 == 1 then
+                add_dialogue("\"To be agreed!\"")
+            elseif var_0011 == 2 then
+                add_dialogue("\"To be unable to carry that much!\" He shakes his head.")
+            elseif var_0011 == 3 then
+                add_dialogue("\"To have not enough gold for that!\"")
             end
-            add_dialogue("To desire another item?")
-            local0 = call_090AH()
+            add_dialogue("\"To desire another item?\"")
+            var_0000 = unknown_090AH()
         end
     end
-
-    callis_0008()
+    restore_answers()
     return
-end
-
--- Helper functions
-function add_dialogue(...)
-    print(table.concat({...}))
 end

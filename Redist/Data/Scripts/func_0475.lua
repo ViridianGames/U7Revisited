@@ -1,95 +1,119 @@
--- func_0475.lua
--- Tilda's dialogue as a seamstress in Britain
+--- Best guess: Handles dialogue with Goth, the untrustworthy jailer at Yew’s Empath Abbey prison, offering information about prisoners (D’Rel and a troll) and selling cell keys for gold, with a sneering demeanor.
+function func_0475(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-
-function func_0475(eventid)
-    local answers = {}
-    local flag_00DF = get_flag(0x00DF) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00EE = get_flag(0x00EE) -- Sewing topic
-    local npc_id = -94 -- Tilda's NPC ID
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00EE then
-            add_answer( "sewing")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00DF then
-            add_dialogue("You see a deft woman stitching fabric, her shop lined with colorful threads.")
-            set_flag(0x00DF, true)
+        switch_talk_to(117, 0)
+        var_0000 = get_player_title()
+        add_answer({"bye", "job", "name"})
+        if not get_flag(335) then
+            add_dialogue("The beady-eyed man sneers at you.")
+            set_flag(335, true)
         else
-            add_dialogue("\"Welcome, \" .. get_player_name() .. \",\" Tilda says, snipping a thread.")
+            add_dialogue("\"What dost thou want now?\" Goth spits.")
         end
-
+        if not get_flag(300) then
+            add_answer("buy keys")
+        end
         while true do
-            if #answers == 0 then
-                add_dialogue("Tilda sets down her needle. \"Need a mend or some chatter?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"Tilda, seamstress of Britain, stitchin’ fine clothes for all.\"")
+            var_0001 = get_answer()
+            if var_0001 == "name" then
+                add_dialogue("\"Goth. Not that it is any of thy business!\"")
                 remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I sew dresses, tunics, and cloaks. The Fellowship’s trade deals bring thread, but their hold on Patterson’s got me a bit wary.\"")
-                add_answer( "sewing")
-                add_answer( "Fellowship")
-                set_flag(0x00EE, true)
-            elseif choice == "sewing" then
-                add_dialogue("\"I craft garments from linen to silk, but prices are high. Folk like Weston can’t afford a new shirt, and that’s causin’ trouble.\"")
-                add_answer( "Weston")
-                add_answer( "prices")
-                remove_answer("sewing")
-            elseif choice == "prices" then
-                add_dialogue("\"Fellowship fees and taxes drive up my costs. It’s toughest on Paws folk, pushin’ ‘em to acts like Weston’s.\"")
-                add_answer( "Paws")
-                add_answer( "Fellowship")
-                remove_answer("prices")
-            elseif choice == "Paws" then
-                add_dialogue("\"Paws is a poor village south of Britain. Weston’s from there—strugglin’ folk, and the Fellowship’s aid don’t reach ‘em.\"")
-                add_answer( "Weston")
-                remove_answer("Paws")
-            elseif choice == "Weston" then
-                add_dialogue("\"Weston stole apples to feed his kin—such a pity. Figg’s arrest, backed by the Fellowship, was harsh, no kindness shown.\"")
-                add_answer( "Figg")
-                remove_answer("Weston")
-            elseif choice == "Figg" then
-                add_dialogue("\"Figg’s a Fellowship man, enforcin’ their order. His role in Weston’s arrest shows they’re more about control than helpin’ folk.\"")
-                remove_answer("Figg")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship’s deals keep my shop threaded, but their ties to Patterson and Figg make me think they’re weavin’ a bigger plan.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thou trustest ‘em? They aid trade, but I’m keepin’ my eyes sharp.\"")
-                    call_extern(0x091A, var_0003)
+            elseif var_0001 == "job" then
+                add_dialogue("\"What does it look like I do?\" he says, holding up a ring of keys. \"Gardening?\"")
+                add_answer({"gardening", "keys"})
+            elseif var_0001 == "gardening" then
+                add_dialogue("\"What? Art thou daft?\" He shakes his head. \"Well, at least thou art in the right area for gardening.\"")
+                add_answer("area")
+                remove_answer("gardening")
+            elseif var_0001 == "area" then
+                add_dialogue("\"Empath Abbey, dolt!\"")
+                add_answer("Empath Abbey")
+                remove_answer("area")
+            elseif var_0001 == "Empath Abbey" then
+                add_dialogue("\"As a matter of fact, I know quite a bit about the people who live here. And I just might even tell thee. What is it worth to thee in gold?\"")
+                save_answers()
+                add_answer({"5", "4", "3", "2", "nothing"})
+                remove_answer("Empath Abbey")
+            elseif var_0001 == "nothing" then
+                restore_answers()
+                add_dialogue("\"Fine by me!\"")
+            elseif var_0001 == "4" or var_0001 == "3" or var_0001 == "2" then
+                add_dialogue("He glowers at you. \"Thou must do better than that, fool!\"")
+            elseif var_0001 == "5" then
+                restore_answers()
+                var_0002 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                if var_0002 > 4 then
+                    var_0003 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
+                    add_dialogue("\"I will tell thee what I know: Sir Jeff is in charge of the High Court. 'E's a real mean bastard, so I would stay away from 'im. The monks nearby make excellent wine, and Aimi doth warm a man's... heart. And whatever thou dost, do not waste time talking to the undertaker -- 'e's daft in the head.\"")
                 else
-                    add_dialogue("\"Wise to doubt ‘em. Their influence is heavier than a bolt of silk.\"")
+                    add_dialogue("\"Thou dost not have enough gold, toad.\"")
                 end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Keep thy seams tight, \" .. get_player_name() .. \".\"")
+                remove_answer({"5", "4", "3", "2"})
+            elseif var_0001 == "keys" then
+                add_dialogue("\"These? They are for the prisoner's cells, witless knave!\"")
+                add_answer({"buy keys", "prisoners"})
+                remove_answer("keys")
+            elseif var_0001 == "prisoners" then
+                add_dialogue("\"I will tell thee for 5 gold. Interested?\"")
+                var_0004 = select_option()
+                if var_0004 then
+                    var_0005 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    if var_0005 > 4 then
+                        var_0006 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
+                        add_dialogue("\"One of them is named D'Rel. E's a pirate, from Buccaneer's Den.\"")
+                        add_answer("another prisoner")
+                    else
+                        add_dialogue("\"Thou dost not have enough money, stonehead.\"")
+                    end
+                else
+                    add_dialogue("\"Pinchpenny!\"")
+                    abort()
+                end
+                remove_answer("prisoners")
+            elseif var_0001 == "another prisoner" then
+                add_dialogue("\"Another, eh. Hast thou 5 more gold for me?\"")
+                var_0007 = select_option()
+                if var_0007 then
+                    var_0008 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    if var_0008 > 4 then
+                        add_dialogue("\"The other one is a troll. 'E don't talk much, but 'e's the first troll prisoner I have ever seen.\"")
+                        var_0009 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
+                        remove_answer("another prisoner")
+                    else
+                        add_dialogue("\"Thou canst not fool me, brainless dolt. Thou dost not have enough gold!\"")
+                    end
+                else
+                    add_dialogue("\"Fine, slug!\"")
+                    abort()
+                end
+                remove_answer("another prisoner")
+            elseif var_0001 == "buy keys" then
+                add_dialogue("\"Thou dost want these, eh?\" he asks, holding up keys. \"'Twill cost thee... 20 gold. Still want them?\"")
+                var_000A = select_option()
+                if var_000A then
+                    var_000B = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    if var_000B > 19 then
+                        add_dialogue("\"Done!\"")
+                        var_000C = unknown_002BH(false, 359, 359, 644, 20) --- Guess: Deducts item and adds item
+                        var_000C = unknown_002CH(false, 359, 248, 641, 1) --- Guess: Checks inventory space
+                        remove_answer("buy keys")
+                    else
+                        add_dialogue("He smiles cruelly. \"I am afraid thou dost not have enough gold.\"")
+                    end
+                else
+                    add_dialogue("\"Fine. Rot for all I care!\"")
+                    abort()
+                end
+                remove_answer("buy keys")
+            elseif var_0001 == "bye" then
                 break
             end
         end
+        add_dialogue("\"Indeed, knave. Get thee gone!\"")
     elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+        abort()
     end
 end
-
-return func_0475

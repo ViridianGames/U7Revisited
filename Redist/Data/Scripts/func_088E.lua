@@ -1,42 +1,41 @@
--- Manages a shop interaction for clothing and footwear items.
+--- Best guess: Manages a clothing shop interaction, allowing the purchase of apparel (e.g., swamp boots, tunic) with price validation.
 function func_088E()
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
-    save_answers() -- Unmapped intrinsic
-    local0 = true
-    local1 = {"swamp boots", "pants", "dress", "tunic", "leather boots", "kidney belt", "shoes", "nothing"}
-    local2 = {588, 738, 249, 249, 587, 584, 585, 0}
-    local3 = {-359, 0, 1, 0, -359, -359, -359, -359}
-    local4 = {50, 30, 30, 30, 40, 20, 20, 0}
-    local5 = {"", "", "a ", "a ", "", "a ", "", ""}
-    local6 = {1, 1, 0, 0, 1, 0, 1, 0}
-    local7 = {" for one pair", " for one pair", "", "", " for one pair", "", " for one pair", ""}
-    local8 = 1
+    save_answers()
+    var_0000 = true
+    var_0001 = {"swamp boots", "pants", "dress", "tunic", "leather boots", "kidney belt", "shoes", "nothing"}
+    var_0002 = {588, 738, 249, 249, 587, 584, 585, 0}
+    var_0003 = {-359, 0, 1, 0, -359, -359, -359, -359}
+    var_0004 = {50, 30, 30, 30, 40, 20, 20, 0}
+    var_0005 = {"", "", "a ", "a ", "", "a ", "", ""}
+    var_0006 = {1, 1, 0, 0, 1, 0, 1, 0}
+    var_0007 = {" for one pair", " for one pair", "", "", " for one pair", "", " for one pair", ""}
+    var_0008 = 1
     add_dialogue("\"What wouldst thou like to buy?\"")
-    while local0 do
-        local9 = external_090CH(local1) -- Unmapped intrinsic
-        if local9 == 1 then
+    while var_0000 do
+        var_0009 = unknown_090CH(var_0001)
+        if var_0009 == 1 then
             add_dialogue("\"Fine.\"")
-            local0 = false
+            var_0000 = false
         else
-            local10 = external_091BH(local5[local9], local1[local9], local4[local9], local6[local9], local7[local9]) -- Unmapped intrinsic
-            local11 = 0
-            add_dialogue("\"^" .. local10 .. " Is that acceptable?\"")
-            local12 = external_090AH() -- Unmapped intrinsic
-            if not local12 then
-                local11 = external_08F8H(true, 1, 0, local4[local9], local8, local3[local9], local2[local9]) -- Unmapped intrinsic
+            var_000A = unknown_091BH(var_0005[var_0009], var_0001[var_0009], var_0004[var_0009], var_0006[var_0009], var_0007[var_0009])
+            var_000B = 0
+            add_dialogue("\"^" .. var_000A .. " Is that acceptable?\"")
+            var_000C = unknown_090AH()
+            if not var_000C then
+                var_000B = unknown_08F8H(true, var_0008, var_0004[var_0009], 0, var_0003[var_0009], var_0002[var_0009])
+                if var_000B == 1 then
+                    add_dialogue("\"Done!\"")
+                elseif var_000B == 2 then
+                    add_dialogue("\"Thou cannot possibly carry that much!\"")
+                elseif var_000B == 3 then
+                    add_dialogue("\"Thou dost not have enough gold for that!\"")
+                end
+                add_dialogue("\"Wouldst thou like something else?\"")
+                var_0000 = unknown_090AH()
             end
-            if local11 == 1 then
-                add_dialogue("\"Done!\"")
-            elseif local11 == 2 then
-                add_dialogue("\"Thou cannot possibly carry that much!\"")
-            elseif local11 == 3 then
-                add_dialogue("\"Thou dost not have enough gold for that!\"")
-            end
-            add_dialogue("\"Wouldst thou like something else?\"")
-            local0 = external_090AH() -- Unmapped intrinsic
         end
     end
-    restore_answers() -- Unmapped intrinsic
-    return
+    restore_answers()
 end

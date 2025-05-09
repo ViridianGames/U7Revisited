@@ -1,22 +1,21 @@
--- Handles Trent's completion of the Soul Cage in Skara Brae, setting flags, creating the cage item, and delivering dialogue to instruct the Avatar.
+--- Best guess: Handles dialogue and item manipulation for a quest item (possibly an hourglass), instructing the Avatar to take it to Mordra.
 function func_0617(eventid, itemref)
-    local local0, local1
+    local var_0000, var_0001
 
     set_flag(424, true)
-
+    start_conversation()
     if eventid == 1 then
-        local0 = add_item(20, {1559, 17493, 7715}, itemref)
-        local1 = add_item(40, 747, itemref)
-        local0 = add_item(19, {1, 17478, 7724}, local1)
+        var_0000 = unknown_0002H(20, {1559, 17493, 17452, 7715}, itemref) --- Guess: Adds item to container
+        var_0001 = unknown_000EH(40, 747, itemref) --- Guess: Unknown item operation
+        var_0000 = unknown_0002H(19, 1, {17478, 7724}, var_0001) --- Guess: Adds item to container
     elseif eventid == 2 then
-        set_schedule(itemref, 15)
-        if npc_in_party(-142) then
-            switch_talk_to(142, 1)
+        unknown_001DH(15, itemref) --- Guess: Sets object behavior
+        if not npc_in_party(142) then
+            switch_talk_to(142, 0)
             add_dialogue("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
-            return
+            abort()
+        else
+            set_flag(462, true)
         end
-        set_flag(462, true)
     end
-
-    return
 end

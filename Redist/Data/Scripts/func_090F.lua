@@ -1,4 +1,4 @@
--- Retrieves the name of an NPC.
-function func_090F(p0)
-    return get_player_name(external_001BH(p0)) -- Unmapped intrinsic
+--- Best guess: Returns the name of a specified character ID.
+function func_090F(P0)
+    return _GetPlayerName(unknown_001BH(P0))
 end

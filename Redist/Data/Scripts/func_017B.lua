@@ -1,293 +1,282 @@
--- Function 017B: Manages sign text display
-function func_017B(itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+--- Best guess: Displays various signs and messages based on item quality, ranging from location names to gravestones and warnings, used for world-building and navigation.
+function func_017B(eventid, itemref)
+    local var_0000, var_0001
 
-    if eventid() ~= 1 then
+    if eventid == 1 then
         return
     end
-    local0 = call_0908H()
-    local1 = callis_0014(itemref)
-    if local1 > 151 then
-        callis_0032({"SIGN", "VALID", "NOT A", "THIS IS"}, 49)
-    elseif local1 == 0 then
-        callis_0032({"lizard", "gilded", "at|(e", "drink"}, 49)
-    elseif local1 == 1 then
-        callis_0032({"47", "~population", "brae~", "skara"}, 49)
-    elseif local1 == 2 then
-        callis_0032({"trinsic"}, 49)
-    elseif local1 == 3 then
-        callis_0032({"hound", "honorable", "(e"}, 49)
-    elseif local1 == 4 then
-        callis_0032({"HALL", "FELLOWSHIP"}, 49)
-    elseif local1 == 5 then
-        callis_0032({"britain"}, 49)
-    elseif local1 == 6 then
-        callis_0032({"THE AVATAR@", "@TRIALS OF", "RAYMUNDO'S", "COMING:"}, 49)
-    elseif local1 == 7 then
-        callis_0032({"NOW", "SEATS", "THY", "RESERVE"}, 49)
-    elseif local1 == 8 then
-        callis_0032({"museum", "royal"}, 49)
-    elseif local1 == 9 then
-        callis_0032({"hall", "music", "(e"}, 49)
-    elseif local1 == 11 then
-        callis_0032({"inn", "wayfarer's", "(e"}, 49)
-    elseif local1 == 12 then
-        callis_0032({"bows", "iolos"}, 49)
-    elseif local1 == 13 then
-        callis_0032({"boar", "blue", "(e"}, 49)
-    elseif local1 == 14 then
-        callis_0032({"clo(iers", "gayes"}, 49)
-    elseif local1 == 15 then
-        callis_0032({"armoury", ",ar", "nor("}, 49)
-    elseif local1 == 16 then
-        callis_0032({"oar", "oaken", "(e"}, 49)
-    elseif local1 == 17 then
-        callis_0032({"bakery"}, 49)
-    elseif local1 == 18 then
-        callis_0032({"jeweler"}, 49)
-    elseif local1 == 19 then
-        callis_0032({"market", "farmers"}, 49)
-    elseif local1 == 20 then
-        callis_0032({"apo(ecary"}, 49)
-    elseif local1 == 21 then
-        callis_0032({"mint", "royal"}, 49)
-    elseif local1 == 22 then
-        callis_0032({"h+ler", "(e", "csil"}, 49)
-    elseif local1 == 23 then
-        callis_0032({"provisions"}, 49)
-    elseif local1 == 24 then
-        callis_0032({"orchards", "royal"}, 49)
-    elseif local1 == 25 then
-        callis_0032({"ART THOU AN AVATAR?", " -- ", "TEST OF STRENGTH"}, 49)
-    elseif local1 == 26 then
-        callis_0032({"show", "judy", "punch and"}, 49)
-    elseif local1 == 27 then
-        callis_0032({"fish|n|chips"}, 49)
-    elseif local1 == 28 then
-        callis_0032({"cove"}, 49)
-    elseif local1 == 29 then
-        callis_0032({"emerald", "(e", "out|n|inn"}, 49)
-    elseif local1 == 30 then
-        callis_0032({"walk", "lovers"}, 49)
-    elseif local1 == 31 then
-        callis_0032({"den", "buccaneers", "(e|ba(s"}, 49)
-    elseif local1 == 32 then
-        callis_0032({"games", "of", "house"}, 49)
-    elseif local1 == 33 then
-        callis_0032({"virgin", "fallen", "(e"}, 49)
-    elseif local1 == 34 then
-        callis_0032({"budos"}, 49)
-    elseif local1 == 35 then
-        callis_0032({"RETREAT", "MEDITATION"}, 49)
-    elseif local1 == 36 then
-        callis_0032({"GO THIS WAY"}, 49)
-    elseif local1 == 37 then
-        callis_0032({"lycaeum"}, 49)
-    elseif local1 == 38 then
-        callis_0032({"dock", "hallowed", "(e"}, 49)
-    elseif local1 == 39 then
-        callis_0032({"knave", "friendly", "(e"}, 49)
-    elseif local1 == 40 then
-        callis_0032({"lizard", "gilded", "(e"}, 49)
-    elseif local1 == 41 then
-        callis_0032({"h+ler", "provisions"}, 49)
-    elseif local1 == 42 then
-        callis_0032({"eldro(s", "items", "of", "house"}, 49)
-    elseif local1 == 43 then
-        callis_0032({"company", "mini*", "britannian"}, 49)
-    elseif local1 == 44 then
-        callis_0032({"branch", "minoc"}, 49)
-    elseif local1 == 45 then
-        callis_0032({"trainer", "scholar"}, 49)
-    elseif local1 == 46 then
-        callis_0032({"town|hall"}, 49)
-    elseif local1 == 47 then
-        callis_0032({"magics", "wis-surs"}, 49)
-    elseif local1 == 48 then
-        callis_0032({"observatory"}, 49)
-    elseif local1 == 49 then
-        callis_0032({"vesper"}, 49)
-    elseif local1 == 50 then
-        callis_0032({"moo*low"}, 49)
-    elseif local1 == 51 then
-        callis_0032({"terfin"}, 49)
-    elseif local1 == 52 then
-        callis_0032({"hold", "serpents"}, 49)
-    elseif local1 == 53 then
-        callis_0032({"abbey", "empa("}, 49)
-    elseif local1 == 54 then
-        callis_0032({"jhelom"}, 49)
-    elseif local1 == 55 then
-        callis_0032({"minoc"}, 49)
-    elseif local1 == 56 then
-        callis_0032({"undertaker"}, 49)
-    elseif local1 == 57 then
-        callis_0032({"britannia", "of", "court"}, 49)
-    elseif local1 == 58 then
-        callis_0032({"high", "prison"}, 49)
-    elseif local1 == 59 then
-        callis_0032({"damsel", "mode,", "(e"}, 49)
-    elseif local1 == 60 then
-        callis_0032({"armoury", "blacksmi("}, 49)
-    elseif local1 == 61 then
-        callis_0032({"center", "recr+tion"}, 49)
-    elseif local1 == 62 then
-        callis_0032({"knowledge", "of", "hall"}, 49)
-    elseif local1 == 63 then
-        callis_0032({"avatar", "(ere"}, 49)
-    elseif local1 == 64 then
-        callis_0032({"hello", "the|avatars", "in|person", "tonight|9-12"}, 49)
-    elseif local1 == 65 then
-        callis_0032({"why?", "ask", "why"}, 49)
-    elseif local1 == 66 then
-        callis_0032({"honor", "of", ",r)t"}, 49)
-    elseif local1 == 67 then
-        callis_0032({"pa(", "paladins"}, 49)
-    elseif local1 == 68 then
-        callis_0032({"FELLOWSHIP", "THE", "OF", "AVENUE"}, 49)
-    elseif local1 == 69 then
-        callis_0032({"walk", "widows"}, 49)
-    elseif local1 == 70 then
-        callis_0032({"hallway", "harolds"}, 49)
-    elseif local1 == 71 then
-        callis_0032({"fools|way"}, 49)
-    elseif local1 == 72 then
-        callis_0032({"road", "whitsaber", ",rand"}, 49)
-    elseif local1 == 73 then
-        callis_0032({"avenue", "chalice"}, 49)
-    elseif local1 == 74 then
-        callis_0032({"coves", "two"}, 49)
-    elseif local1 == 75 then
-        callis_0032({"road", "wall", "we,"}, 49)
-    elseif local1 == 76 then
-        callis_0032({"road", "wall", "we,"}, 49)
-    elseif local1 == 77 then
-        callis_0032({"road", "wall", "we,"}, 49)
-    elseif local1 == 78 then
-        callis_0032({"road", "wall", "we,"}, 49)
-    elseif local1 == 79 then
-        callis_0032({"road", "wall", "+,"}, 49)
-    elseif local1 == 80 then
-        callis_0032({"road", "wall", "+,"}, 49)
-    elseif local1 == 81 then
-        callis_0032({"road", "wall", "+,"}, 49)
-    elseif local1 == 82 then
-        callis_0032({"road", "wall", "nor("}, 49)
-    elseif local1 == 83 then
-        callis_0032({"road", "wall", "sou("}, 49)
-    elseif local1 == 84 then
-        callis_0032({"way", "heroes"}, 49)
-    elseif local1 == 85 then
-        callis_0032({"sou(", "iolos"}, 49)
-    elseif local1 == 86 then
-        callis_0032({"paws"}, 49)
-    elseif local1 == 87 then
-        callis_0032({"salty|dog", "(e"}, 49)
-    elseif local1 == 88 then
-        callis_0032({"SHELTER", "FELLOWSHIP"}, 49)
-    elseif local1 == 89 then
-        callis_0032({"branch", "vesper"}, 49)
-    elseif local1 == 90 then
-        callis_0032({"cork", "checquered", "(e"}, 49)
-    elseif local1 == 91 then
-        callis_0032({"guild", "artists"}, 49)
-    elseif local1 == 92 then
-        callis_0032({",ool", "and", "(e bunk"}, 49)
-    elseif local1 == 93 then
-        callis_0032({"scars", "of", "library", "(e"}, 49)
-    elseif local1 == 94 then
-        callis_0032({"clo(es", "carlyns"}, 49)
-    elseif local1 == 95 then
-        callis_0032({"richard", "lies|ma,er", "walls", "wi(in|(ese"}, 49)
-    elseif local1 == 96 then
-        callis_0032({"ca,le|way"}, 49)
-    elseif local1 == 97 then
-        callis_0032({"lane", "british", "lord"}, 49)
-    elseif local1 == 98 then
-        callis_0032({"noble|road"}, 49)
-    elseif local1 == 99 then
-        callis_0032({"avenue", "we,|end"}, 49)
-    elseif local1 == 100 then
-        callis_0032({"hazle|lane"}, 49)
-    elseif local1 == 101 then
-        callis_0032({"nor(", "square", "park"}, 49)
-    elseif local1 == 102 then
-        callis_0032({"sou(", "square", "park"}, 49)
-    elseif local1 == 103 then
-        callis_0032({",r)t", "market"}, 49)
-    elseif local1 == 104 then
-        callis_0032({"way", "golden"}, 49)
-    elseif local1 == 105 then
-        callis_0032({"avenue", "center"}, 49)
-    elseif local1 == 106 then
-        callis_0032({"lane", "spike"}, 49)
-    elseif local1 == 107 then
-        callis_0032({"avenue", "avatar"}, 49)
-    elseif local1 == 108 then
-        callis_0032({"lane", ",able"}, 49)
-    elseif local1 == 109 then
-        callis_0032({"avenue", "end", "+,"}, 49)
-    elseif local1 == 110 then
-        callis_0032({"road", "farm"}, 49)
-    elseif local1 == 111 then
-        callis_0032({",r)t", "nugget"}, 49)
-    elseif local1 == 112 then
-        callis_0032({"cove", "cool"}, 49)
-    elseif local1 == 113 then
-        callis_0032({"avenue", "end", "nor("}, 49)
-    elseif local1 == 114 then
-        callis_0032({"way", "eye", "golden"}, 49)
-    elseif local1 == 115 then
-        callis_0032({"tower", "dark", "(e", "to"}, 49)
-    elseif local1 == 116 then
-        callis_0032({"LANDSLIDES", "OF", "BEWARE"}, 49)
-    elseif local1 == 117 then
-        callis_0032({"ENTER", "NOT", "DO", "DANGER:"}, 49)
-    elseif local1 == 118 then
-        callis_0032({"one", "number", "old"}, 49)
-    elseif local1 == 119 then
-        callis_0032({"liche", "(e", "free", "do|not"}, 49)
-    elseif local1 == 120 then
-        callis_0032({"wi(in", "mon,ers", "beware"}, 49)
-    elseif local1 == 121 then
-        callis_0032({"graves", "paupers"}, 49)
-    elseif local1 == 122 then
-        callis_0032({"soul", "of|a", "a|soul", "|manrik|"}, 49)
-    elseif local1 == 123 then
-        callis_0032({"(e|loss", "words|for", "jules|no", "here|lies"}, 49)
-    elseif local1 == 124 then
-        callis_0032({"tragedy", "dea(|a", "her", "|morgan|"}, 49)
-    elseif local1 == 125 then
-        callis_0032({"many", "friend|to", "ke(ian", "here|lies"}, 49)
-    elseif local1 == 126 then
-        callis_0032({"his|body", "deeper|(an", "his|soul", "|wadley|"}, 49)
-    elseif local1 == 127 then
-        callis_0032({"spirit", "kindred", "jenna", "here|lies"}, 49)
-    elseif local1 == 128 then
-        callis_0032({"end", "d+d"}, 49)
-    elseif local1 == 129 then
-        callis_0032({"brae", "skara", "to"}, 49)
-    elseif local1 == 130 then
-        callis_0032({"GUARDIAN", "OF|THE", "THRONE", "THE"}, 49)
-    elseif local1 == 131 then
-        callis_0032({"britain", "to", "nor("}, 49)
-    elseif local1 == 132 then
-        callis_0032({"lever", "pull"}, 49)
-    elseif local1 == 133 then
-        callis_0032({"round", "and", "round"}, 49)
-    elseif local1 == 134 then
-        callis_0032({"out", "way"}, 49)
-    elseif local1 == 135 then
-        callis_0032({"open", "doors", "keep"}, 49)
-    elseif local1 == 136 then
-        callis_0032({"tower", "selwyns"}, 49)
-    elseif local1 == 137 then
-        callis_0032({"fire", "(e", "follow"}, 49)
+    var_0000 = unknown_0908H()
+    var_0001 = unknown_0014H(itemref)
+    if var_0001 > 151 then
+        unknown_0032H({"SIGN", "VALID", "NOT A", "THIS IS"}, 49)
+    elseif var_0001 == 0 then
+        unknown_0032H({"lizard", "gilded", "at|(e", "drink"}, 49)
+    elseif var_0001 == 1 then
+        unknown_0032H({"47", "~population", "brae~", "skara"}, 49)
+    elseif var_0001 == 2 then
+        unknown_0032H({"trinsic"}, 49)
+    elseif var_0001 == 3 then
+        unknown_0032H({"hound", "honorable", "(e"}, 49)
+    elseif var_0001 == 4 then
+        unknown_0032H({"HALL", "FELLOWSHIP"}, 49)
+    elseif var_0001 == 5 then
+        unknown_0032H({"britain"}, 49)
+    elseif var_0001 == 6 then
+        unknown_0032H({"THE AVATAR@", "@TRIALS OF", "RAYMUNDO'S", "COMING:"}, 49)
+    elseif var_0001 == 7 then
+        unknown_0032H({"NOW", "SEATS", "THY", "RESERVE"}, 49)
+    elseif var_0001 == 8 then
+        unknown_0032H({"museum", "royal"}, 49)
+    elseif var_0001 == 9 then
+        unknown_0032H({"hall", "music", "(e"}, 49)
+    elseif var_0001 == 11 then
+        unknown_0032H({"inn", "wayfarer's", "(e"}, 49)
+    elseif var_0001 == 12 then
+        unknown_0032H({"bows", "iolos"}, 49)
+    elseif var_0001 == 13 then
+        unknown_0032H({"boar", "blue", "(e"}, 49)
+    elseif var_0001 == 14 then
+        unknown_0032H({"clo(iers", "gayes"}, 49)
+    elseif var_0001 == 15 then
+        unknown_0032H({"armoury", ",ar", "nor("}, 49)
+    elseif var_0001 == 16 then
+        unknown_0032H({"oar", "oaken", "(e"}, 49)
+    elseif var_0001 == 17 then
+        unknown_0032H({"bakery"}, 49)
+    elseif var_0001 == 18 then
+        unknown_0032H({"jeweler"}, 49)
+    elseif var_0001 == 19 then
+        unknown_0032H({"market", "farmers"}, 49)
+    elseif var_0001 == 20 then
+        unknown_0032H({"apo(ecary"}, 49)
+    elseif var_0001 == 21 then
+        unknown_0032H({"mint", "royal"}, 49)
+    elseif var_0001 == 22 then
+        unknown_0032H({"h+ler", "(e", "csil"}, 49)
+    elseif var_0001 == 23 then
+        unknown_0032H({"provisions"}, 49)
+    elseif var_0001 == 24 then
+        unknown_0032H({"orchards", "royal"}, 49)
+    elseif var_0001 == 25 then
+        unknown_0032H({"ART THOU AN AVATAR?", " -- ", "TEST OF STRENGTH"}, 49)
+    elseif var_0001 == 26 then
+        unknown_0032H({"show", "judy", "punch and"}, 49)
+    elseif var_0001 == 27 then
+        unknown_0032H({"fish|n|chips"}, 49)
+    elseif var_0001 == 28 then
+        unknown_0032H({"cove"}, 49)
+    elseif var_0001 == 29 then
+        unknown_0032H({"emerald", "(e", "out|n|inn"}, 49)
+    elseif var_0001 == 30 then
+        unknown_0032H({"walk", "lovers"}, 49)
+    elseif var_0001 == 31 then
+        unknown_0032H({"den", "buccaneers", "(e|ba(s"}, 49)
+    elseif var_0001 == 32 then
+        unknown_0032H({"games", "of", "house"}, 49)
+    elseif var_0001 == 33 then
+        unknown_0032H({"virgin", "fallen", "(e"}, 49)
+    elseif var_0001 == 34 then
+        unknown_0032H({"budos"}, 49)
+    elseif var_0001 == 35 then
+        unknown_0032H({"RETREAT", "MEDITATION"}, 49)
+    elseif var_0001 == 36 then
+        unknown_0032H({"GO THIS WAY"}, 49)
+    elseif var_0001 == 37 then
+        unknown_0032H({"lycaeum"}, 49)
+    elseif var_0001 == 38 then
+        unknown_0032H({"dock"}, 49)
+    elseif var_0001 == 39 then
+        unknown_0032H({"hallowed", "(e", "knave"}, 49)
+    elseif var_0001 == 40 then
+        unknown_0032H({"friendly", "(e", "lizard"}, 49)
+    elseif var_0001 == 41 then
+        unknown_0032H({"gilded", "(e", "h+ler"}, 49)
+    elseif var_0001 == 42 then
+        unknown_0032H({"provisions", "eldro(s"}, 49)
+    elseif var_0001 == 43 then
+        unknown_0032H({"items", "of", "house"}, 49)
+    elseif var_0001 == 44 then
+        unknown_0032H({"company", "mini*", "britannian"}, 49)
+    elseif var_0001 == 45 then
+        unknown_0032H({"branch", "minoc"}, 49)
+    elseif var_0001 == 46 then
+        unknown_0032H({"trainer", "scholar"}, 49)
+    elseif var_0001 == 47 then
+        unknown_0032H({"town|hall"}, 49)
+    elseif var_0001 == 48 then
+        unknown_0032H({"magics", "wis-surs"}, 49)
+    elseif var_0001 == 49 then
+        unknown_0032H({"observatory"}, 49)
+    elseif var_0001 == 50 then
+        unknown_0032H({"vesper"}, 49)
+    elseif var_0001 == 51 then
+        unknown_0032H({"moo*low"}, 49)
+    elseif var_0001 == 52 then
+        unknown_0032H({"terfin"}, 49)
+    elseif var_0001 == 53 then
+        unknown_0032H({"hold", "serpents"}, 49)
+    elseif var_0001 == 54 then
+        unknown_0032H({"abbey", "empa("}, 49)
+    elseif var_0001 == 55 then
+        unknown_0032H({"jhelom"}, 49)
+    elseif var_0001 == 56 then
+        unknown_0032H({"minoc"}, 49)
+    elseif var_0001 == 57 then
+        unknown_0032H({"undertaker"}, 49)
+    elseif var_0001 == 58 then
+        unknown_0032H({"britannia", "of", "court"}, 49)
+    elseif var_0001 == 59 then
+        unknown_0032H({"high", "prison"}, 49)
+    elseif var_0001 == 60 then
+        unknown_0032H({"damsel", "mode,", "(e"}, 49)
+    elseif var_0001 == 61 then
+        unknown_0032H({"armoury"}, 49)
+    elseif var_0001 == 62 then
+        unknown_0032H({"blacksmi("}, 49)
+    elseif var_0001 == 63 then
+        unknown_0032H({"center", "recr+tion"}, 49)
+    elseif var_0001 == 64 then
+        unknown_0032H({"knowledge", "of", "hall"}, 49)
+    elseif var_0001 == 65 then
+        unknown_0032H({"avatar", "(ere"}, 49)
+    elseif var_0001 == 66 then
+        unknown_0032H({"hello", "the|avatars", "in|person"}, 49)
+    elseif var_0001 == 67 then
+        unknown_0032H({"tonight|9-12", "why?", "ask"}, 49)
+    elseif var_0001 == 68 then
+        unknown_0032H({"why", "honor", "of"}, 49)
+    elseif var_0001 == 69 then
+        unknown_0032H({",r)t", "pa(", "paladins"}, 49)
+    elseif var_0001 == 70 then
+        unknown_0032H({"FELLOWSHIP", "THE", "OF"}, 49)
+    elseif var_0001 == 71 then
+        unknown_0032H({"AVENUE", "walk", "widows"}, 49)
+    elseif var_0001 == 72 then
+        unknown_0032H({"hallway", "harolds"}, 49)
+    elseif var_0001 == 73 then
+        unknown_0032H({"fools|way"}, 49)
+    elseif var_0001 == 74 then
+        unknown_0032H({"road", "whitsaber", ",rand"}, 49)
+    elseif var_0001 == 75 then
+        unknown_0032H({"avenue", "chalice"}, 49)
+    elseif var_0001 == 76 then
+        unknown_0032H({"coves", "two"}, 49)
+    elseif var_0001 == 77 then
+        unknown_0032H({"road", "wall", "we,"}, 49)
+    elseif var_0001 == 78 then
+        unknown_0032H({"road", "wall", "+,"}, 49)
+    elseif var_0001 == 79 then
+        unknown_0032H({"road", "wall", "nor("}, 49)
+    elseif var_0001 == 80 then
+        unknown_0032H({"road", "wall", "sou("}, 49)
+    elseif var_0001 == 81 then
+        unknown_0032H({"way", "heroes"}, 49)
+    elseif var_0001 == 82 then
+        unknown_0032H({"sou(", "iolos"}, 49)
+    elseif var_0001 == 83 then
+        unknown_0032H({"paws"}, 49)
+    elseif var_0001 == 84 then
+        unknown_0032H({"salty|dog", "(e"}, 49)
+    elseif var_0001 == 85 then
+        unknown_0032H({"SHELTER", "FELLOWSHIP"}, 49)
+    elseif var_0001 == 86 then
+        unknown_0032H({"branch", "vesper"}, 49)
+    elseif var_0001 == 87 then
+        unknown_0032H({"cork", "checquered", "(e"}, 49)
+    elseif var_0001 == 88 then
+        unknown_0032H({"guild", "artists"}, 49)
+    elseif var_0001 == 89 then
+        unknown_0032H({",ool", "and", "(e bunk"}, 49)
+    elseif var_0001 == 90 then
+        unknown_0032H({"scars", "of", "library", "(e"}, 49)
+    elseif var_0001 == 91 then
+        unknown_0032H({"clo(es", "carlyns"}, 49)
+    elseif var_0001 == 92 then
+        unknown_0032H({"richard", "lies|ma,er", "walls", "wi(in|(ese"}, 49)
+    elseif var_0001 == 93 then
+        unknown_0032H({"ca,le|way"}, 49)
+    elseif var_0001 == 94 then
+        unknown_0032H({"lane", "british", "lord"}, 49)
+    elseif var_0001 == 95 then
+        unknown_0032H({"noble|road"}, 49)
+    elseif var_0001 == 96 then
+        unknown_0032H({"avenue", "we,|end"}, 49)
+    elseif var_0001 == 97 then
+        unknown_0032H({"hazle|lane"}, 49)
+    elseif var_0001 == 98 then
+        unknown_0032H({"nor(", "square", "park"}, 49)
+    elseif var_0001 == 99 then
+        unknown_0032H({"sou(", "square", "park"}, 49)
+    elseif var_0001 == 100 then
+        unknown_0032H({",r)t", "market"}, 49)
+    elseif var_0001 == 101 then
+        unknown_0032H({"way", "golden"}, 49)
+    elseif var_0001 == 102 then
+        unknown_0032H({"avenue", "center"}, 49)
+    elseif var_0001 == 103 then
+        unknown_0032H({"lane", "spike"}, 49)
+    elseif var_0001 == 104 then
+        unknown_0032H({"avenue", "avatar"}, 49)
+    elseif var_0001 == 105 then
+        unknown_0032H({"lane", ",able"}, 49)
+    elseif var_0001 == 106 then
+        unknown_0032H({"avenue", "end", "+,"}, 49)
+    elseif var_0001 == 107 then
+        unknown_0032H({"road", "farm"}, 49)
+    elseif var_0001 == 108 then
+        unknown_0032H({",r)t", "nugget"}, 49)
+    elseif var_0001 == 109 then
+        unknown_0032H({"cove", "cool"}, 49)
+    elseif var_0001 == 110 then
+        unknown_0032H({"avenue", "end", "nor("}, 49)
+    elseif var_0001 == 111 then
+        unknown_0032H({"way", "eye", "golden"}, 49)
+    elseif var_0001 == 112 then
+        unknown_0032H({"tower", "dark", "(e", "to"}, 49)
+    elseif var_0001 == 113 then
+        unknown_0032H({"LANDSLIDES", "OF", "BEWARE"}, 49)
+    elseif var_0001 == 114 then
+        unknown_0032H({"ENTER", "NOT", "DO", "DANGER:"}, 49)
+    elseif var_0001 == 115 then
+        unknown_0032H({"one", "number", "old"}, 49)
+    elseif var_0001 == 116 then
+        unknown_0032H({"liche", "(e", "free", "do|not"}, 49)
+    elseif var_0001 == 117 then
+        unknown_0032H({"wi(in", "mon,ers", "beware"}, 49)
+    elseif var_0001 == 118 then
+        unknown_0032H({"graves", "paupers"}, 49)
+    elseif var_0001 == 119 then
+        unknown_0032H({"soul", "of|a", "a|soul", "|manrik|"}, 49)
+    elseif var_0001 == 120 then
+        unknown_0032H({"(e|loss", "words|for", "jules|no", "here|lies"}, 49)
+    elseif var_0001 == 121 then
+        unknown_0032H({"tragedy", "dea(|a", "her", "|morgan|"}, 49)
+    elseif var_0001 == 122 then
+        unknown_0032H({"many", "friend|to", "ke(ian", "here|lies"}, 49)
+    elseif var_0001 == 123 then
+        unknown_0032H({"his|body", "deeper|(an", "his|soul", "|wadley|"}, 49)
+    elseif var_0001 == 124 then
+        unknown_0032H({"spirit", "kindred", "jenna", "here|lies"}, 49)
+    elseif var_0001 == 125 then
+        unknown_0032H({"end", "d+d"}, 49)
+    elseif var_0001 == 126 then
+        unknown_0032H({"brae", "skara", "to"}, 49)
+    elseif var_0001 == 127 then
+        unknown_0032H({"GUARDIAN", "OF|THE", "THRONE", "THE"}, 49)
+    elseif var_0001 == 128 then
+        unknown_0032H({"britain", "to", "nor("}, 49)
+    elseif var_0001 == 129 then
+        unknown_0032H({"lever", "pull"}, 49)
+    elseif var_0001 == 130 then
+        unknown_0032H({"round", "and", "round"}, 49)
+    elseif var_0001 == 131 then
+        unknown_0032H({"out", "way"}, 49)
+    elseif var_0001 == 132 then
+        unknown_0032H({"open", "doors", "keep"}, 49)
+    elseif var_0001 == 133 then
+        unknown_0032H({"tower", "selwyns"}, 49)
+    elseif var_0001 == 134 then
+        unknown_0032H({"fire", "(e", "follow"}, 49)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end

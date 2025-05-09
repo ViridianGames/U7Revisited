@@ -1,29 +1,28 @@
--- Casts the "In Wis" spell, displaying the player's directional coordinates (e.g., "West North").
+--- Best guess: Manages the "In Wis" spell, displaying the player’s coordinates with directional labels (North, South, East, West), with a fallback effect if the spell fails.
 function func_064E(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
         bark(itemref, "@In Wis@")
-        if not external_0906H() then -- Unmapped intrinsic
-            local0 = add_item(itemref, {1614, 8021, 4, 17447, 17519, 17505, 8045, 67, 7768})
+        if not unknown_0906H() then
+            var_0000 = unknown_0001H(itemref, {1614, 8021, 4, 17447, 17519, 17505, 8045, 67, 7768})
         else
-            local0 = add_item(itemref, {1542, 17493, 17519, 17505, 7789})
+            var_0000 = unknown_0001H(itemref, {1542, 17493, 17519, 17505, 7789})
         end
     elseif eventid == 2 then
-        local1 = get_item_data(356)
-        local2 = (local1[1] - 933) / 10
-        local3 = (local1[2] - 1134) / 10
-        if local2 < 0 then
-            local4 = " " .. external_0932H(local2) .. " West"
+        var_0001 = unknown_0018H(-356)
+        var_0002 = (var_0001[1] - 933) // 10
+        var_0003 = (var_0001[2] - 1134) // 10
+        if var_0002 < 0 then
+            var_0004 = " " .. unknown_0932H(var_0002) .. " West"
         else
-            local4 = " " .. external_0932H(local2) .. " East"
+            var_0004 = " " .. unknown_0932H(var_0002) .. " East"
         end
-        if local3 < 0 then
-            local5 = " " .. external_0932H(local3) .. " North"
+        if var_0003 < 0 then
+            var_0005 = " " .. unknown_0932H(var_0003) .. " North"
         else
-            local5 = " " .. external_0932H(local3) .. " South"
+            var_0005 = " " .. unknown_0932H(var_0003) .. " South"
         end
-        bark(itemref, local4 .. local5)
+        bark(itemref, var_0004 .. var_0005)
     end
-    return
 end

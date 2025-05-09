@@ -1,11 +1,14 @@
--- Prompts for a party member or "Nobody" and returns the selected NPC ID.
+--- Best guess: Prompts the user to select a party member or “Nobody”, returning the selected member’s ID or 0, starting with the party leader.
 function func_090D()
-    local local0, local1, local2, local3, local4
+    local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    local0 = external_08FBH() -- Unmapped intrinsic
-    local1 = get_party_members()
-    local2 = {unpack(local1), 0}
-    local3 = external_090CH({"Nobody", unpack(local0)}) -- Unmapped intrinsic
-    local4 = local3 == 1 and 0 or local2[local3 - 1]
-    return external_003AH(local4) -- Unmapped intrinsic
+    var_0000 = _GetPartyLeader()
+    var_0001 = _GetPartyMembers()
+    var_0002 = {0, 0}
+    var_0003 = _SelectIndex({var_0000, "Nobody"})
+    var_0004 = var_0002[var_0003]
+    if var_0004 == 0 then
+        return 0
+    end
+    return _003AH(var_0004)
 end

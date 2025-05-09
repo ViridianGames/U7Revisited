@@ -1,36 +1,26 @@
--- Function 06B6: Manages item frame manipulation
+--- Best guess: Triggers effects on nearby items (type 873, within 20 units) based on their frame, cycling through specific sequences in a dungeon trap.
 function func_06B6(eventid, itemref)
-    -- Local variables (8 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    if eventid ~= 3 then
-        return
-    end
-
-    local0 = callis_0035(0, 20, 873, itemref)
-    local1 = {}
-    while sloop() do
-        local4 = local0
-        local1[#local1 + 1] = callis_0019(local1, local4, itemref)
-    end
-
-    local0 = call_093DH(local1)
-    local4 = local0[2]
-    if local4 then
-        local5 = call_GetItemFrame(local4)
-        local6 = local5 % 4
-        if local6 < 3 then
-            local7 = callis_0001({8014, 83, 7768}, local4)
-        else
-            local5 = local5 - local6
-            local7 = callis_0001({local5, 8006, 83, 7768}, local4)
+    if eventid == 3 then
+        unknown_000FH(28)
+        var_0000 = unknown_0035H(0, 20, 873, itemref)
+        var_0001 = {}
+        for i = 1, #var_0000 do
+            var_0001 = unknown_0019H(var_0001, var_0000[i], itemref)
+        end
+        var_0000 = unknown_093DH(var_0001, var_0000)
+        var_0004 = var_0000[1]
+        if var_0004 then
+            var_0005 = unknown_0012H(var_0004)
+            var_0006 = var_0005 % 4
+            if var_0006 >= 3 then
+                var_0007 = unknown_0001H({8014, 83, 7768}, var_0004)
+            else
+                var_0005 = var_0005 - var_0006
+                var_0007 = unknown_0001H({var_0005, 8006, 83, 7768}, var_0004)
+            end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

@@ -1,20 +1,17 @@
--- Function 02BA: Cloth to bandages transformation
+--- Best guess: Handles a scissors interaction, converting them to bandages (shape 827) or displaying a suggestion to use them for cutting cloth.
 function func_02BA(eventid, itemref)
-    -- Local variables (2 as per .localc)
-    local local0, local1
+    local var_0000, var_0001
 
-    if eventid ~= 1 then
-        return
+    if eventid == 1 then
+        var_0000 = item_select_modal()
+        var_0001 = get_object_shape(aidx(var_0000, 1))
+        if var_0001 == 851 then
+            set_object_shape(var_0000, 827)
+            set_object_frame(var_0000, random2(2, 0))
+        else
+            start_conversation()
+            add_dialogue("@Might not those come in handy for cutting cloth into bandages?@")
+        end
     end
-
-    local0 = _ItemSelectModal()
-    local1 = _GetItemType(local0[1])
-    if local1 == 851 then
-        _SetItemType(827, local0)
-        _SetItemFrame(_Random2(0, 2), local0)
-    else
-        call_08FFH("@Might not those come in handy for cutting cloth into bandages?@")
-    end
-
     return
 end

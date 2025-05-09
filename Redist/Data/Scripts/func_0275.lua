@@ -1,12 +1,12 @@
--- Handles interaction with an item, possibly a sextant or navigation tool.
-function func_0275H(eventid, itemref)
-    local target
+--- Best guess: Manages an item interaction, selecting a target and applying an effect with specific parameters.
+function func_0275(eventid, itemref)
+    local var_0000, var_0001
+
     if eventid == 1 then
-        target = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
+        var_0000 = _ItemSelectModal()
     else
-        target = itemref
+        var_0000 = itemref
     end
-    local arr = {7715, 17508, 17512, 17514, 17530, 17508}
-    execute_action(-356, arr) -- TODO: Implement LuaExecuteAction for callis 0001.
-    perform_action(-356, target, 629) -- TODO: Implement LuaPerformAction for callis 0041.
+    var_0001 = unknown_0001H({17508, 17530, 17514, 17512, 17508, 7715}, -356)
+    var_0001 = unknown_0041H(629, var_0000, -356)
 end

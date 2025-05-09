@@ -1,31 +1,24 @@
--- Function 06B8: Manages party member effects with recursion
+--- Best guess: Applies effects to party members with non-zero strength when event ID 3 is triggered, potentially paralyzing them and triggering a sequence.
 function func_06B8(eventid, itemref)
-    -- Local variables (8 as per .localc)
-    local local0, local1, local2, local3, local4, local5, local6, local7
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 3 then
-        local0 = _GetPartyMembers()
-        local1 = call_GetItemQuality(itemref)
-        while sloop() do
-            local4 = local0
-            local5 = callis_0020(0, local4)
-            if not callis_004A(15, local5) then
-                local6 = callis_001B(local4)
-                call_0620H(local6)
-                local7 = callis_0002(local1, {1567, 7765}, local6)
-                callis_005C(local4)
-                call_093FH(4, local4)
-                local7 = callis_0002(local1, {1720, 17493, 7715}, local4)
+        var_0000 = unknown_0023H()
+        var_0001 = unknown_0014H(itemref)
+        for i = 1, #var_0000 do
+            var_0004 = var_0000[i]
+            var_0005 = unknown_0020H(0, var_0004)
+            if not unknown_004AH(15, var_0005) then
+                var_0006 = unknown_001BH(var_0004)
+                unknown_0620H(var_0006)
+                var_0007 = unknown_0002H(var_0001, 1567, {7765}, var_0006)
+                unknown_005CH(var_0004)
+                unknown_093FH(4, var_0004)
+                var_0007 = unknown_0002H(var_0001, 1720, {17493, 7715}, var_0004)
             end
         end
     elseif eventid == 2 then
-        call_093FH(31, itemref)
+        unknown_093FH(31, itemref)
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

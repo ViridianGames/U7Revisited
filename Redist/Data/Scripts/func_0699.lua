@@ -1,61 +1,60 @@
--- Handles combat mechanics, checking item positions and applying directional effects to party members.
+--- Best guess: Aligns party members in a pattern around the Avatar, likely for a ritual or formation setup.
 function func_0699(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8, local9, local10, local11, local12, local13, local14, local15, local16
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010
 
-    local0 = get_item_data(itemref)[6][8]
-    local1 = external_0035H(16, 40, 275, local0) -- Unmapped intrinsic
-    local2 = get_item_data(itemref)[6][9]
-    local3 = external_0035H(16, 40, 275, local2) -- Unmapped intrinsic
-    if local1 and local3 then
-        local4 = get_item_data(local1[1])
-        local5 = get_item_data(local3[1])
-        local6 = external_0881H() -- Unmapped intrinsic
-        external_003EH(local4, itemref) -- Unmapped intrinsic
-        external_003EH(local5, external_001BH(-356)) -- Unmapped intrinsic
-        if local6 then
-            external_003EH(local5, local6) -- Unmapped intrinsic
+    var_0000 = unknown_0018H(itemref, 8, 6) --- Guess: Gets position data with array dimensions
+    var_0001 = unknown_0035H(16, 40, 275, var_0000) --- Guess: Sets NPC location
+    var_0002 = unknown_0018H(itemref, 9, 6) --- Guess: Gets position data with array dimensions
+    var_0003 = unknown_0035H(16, 40, 275, var_0002) --- Guess: Sets NPC location
+    if var_0001 and var_0003 then
+        var_0004 = unknown_0018H(var_0001[1]) --- Guess: Gets position data
+        var_0005 = unknown_0018H(var_0003[1]) --- Guess: Gets position data
+        var_0006 = get_conversation_target() --- Guess: Gets conversation target
+        unknown_003EH(var_0004, itemref) --- Guess: Sets NPC target
+        unknown_003EH(var_0005, 356) --- Guess: Sets NPC target
+        if not var_0006 then
+            unknown_003EH(var_0005, var_0006) --- Guess: Sets NPC target
         end
-        local7 = 1
-        local8 = get_party_members()
-        local9 = local5
-        for local10 in ipairs(local8) do
-            local11 = local10
-            local12 = local11
-            if local7 == 1 then
-                external_0009H(local5[1] - 2, local5[2], 9) -- Unmapped intrinsic
-                external_0009H(local5[1] + 2, local5[2], 2) -- Unmapped intrinsic
-            elseif local7 == 2 then
-                external_0009H(local5[1] + 2, local5[2], 1) -- Unmapped intrinsic
-                external_0009H(local5[1] + 2, local5[2], 2) -- Unmapped intrinsic
-            elseif local7 == 3 then
-                external_0009H(local5[1] - 4, local5[2], 1) -- Unmapped intrinsic
-                external_0009H(local5[1] + 4, local5[2], 2) -- Unmapped intrinsic
-            elseif local7 == 4 then
-                external_0009H(local5[1], local5[2] + 4, 1) -- Unmapped intrinsic
-                external_0009H(local5[1], local5[2] + 4, 2) -- Unmapped intrinsic
-            elseif local7 == 5 then
-                external_0009H(local5[1] + 4, local5[2], 1) -- Unmapped intrinsic
-                external_0009H(local5[1] + 4, local5[2], 2) -- Unmapped intrinsic
-            elseif local7 == 6 then
-                external_0009H(local5[1] - 2, local5[2], 1) -- Unmapped intrinsic
-                external_0009H(local5[1] + 6, local5[2], 2) -- Unmapped intrinsic
-            elseif local7 == 7 then
-                external_0009H(local5[1] + 2, local5[2], 1) -- Unmapped intrinsic
-                external_0009H(local5[1] + 6, local5[2], 2) -- Unmapped intrinsic
+        var_0007 = 1
+        var_0008 = get_party_members()
+        var_0009 = var_0005
+        -- Guess: sloop aligns party members in a pattern
+        for i = 1, 5 do
+            var_000C = {10, 11, 12, 8, 346}[i]
+            if var_0007 == 1 then
+                var_0009[1] = var_0009[1] - 2
+                var_0009[2] = var_0009[2] + 2
+            elseif var_0007 == 2 then
+                var_0009[1] = var_0009[1] + 2
+                var_0009[2] = var_0009[2] + 2
+            elseif var_0007 == 3 then
+                var_0009[1] = var_0009[1] - 4
+                var_0009[2] = var_0009[2] + 4
+            elseif var_0007 == 4 then
+                var_0009[1] = var_0009[1] + 1
+                var_0009[2] = var_0009[2] + 4
+            elseif var_0007 == 5 then
+                var_0009[1] = var_0009[1] + 4
+                var_0009[2] = var_0009[2] + 4
+            elseif var_0007 == 6 then
+                var_0009[1] = var_0009[1] - 2
+                var_0009[2] = var_0009[2] + 6
+            elseif var_0007 == 7 then
+                var_0009[1] = var_0009[1] + 2
+                var_0009[2] = var_0009[2] + 6
             end
-            if local12 == external_001BH(-356) then
-                external_003EH(local9, local12) -- Unmapped intrinsic
-                local13 = add_item(local12, {0, 7769})
-                local7 = local7 + 1
+            if var_000C ~= 356 then
+                unknown_003EH(var_0009, var_000C) --- Guess: Sets NPC target
+                var_000D = add_container_items(var_000C, {0, 7769})
+                var_0007 = var_0007 + 1
             end
         end
-        local14 = add_item(itemref, {1692, 8021, 2, 7975, 4, 7769})
-        local15 = add_item(external_001BH(-356), {0, 7769})
-        if external_005AH() then -- Unmapped intrinsic
-            local16 = add_item(local6, {20, 7750})
+        var_000E = add_container_items(itemref, {1692, 8021, 2, 7975, 4, 7769})
+        var_000F = add_container_items(356, {0, 7769})
+        if is_player_female() then --- Guess: Checks player gender
+            var_0010 = add_container_items(var_0006, {20, 7750})
         else
-            local16 = add_item(local6, {18, 7750})
+            var_0010 = add_container_items(var_0006, {18, 7750})
         end
     end
-    return
 end

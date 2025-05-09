@@ -1,25 +1,22 @@
--- Function 08A5: Displays random poetic messages for a torch
+--- Best guess: Displays random poetic dialogue for an item (likely a statue or book) based on a random selection, possibly for ambiance or lore.
 function func_08A5()
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    local0 = callis_001B(-252)
-    local1 = callis_001C(local0)
-    local2 = ""
-    local3 = callis_0010(4, 1)
-
-    if local1 == 11 then
-        if local3 == 1 then
-            local2 = "To wonder about love."
-        elseif local3 == 2 then
-            local2 = "To have found it yet?"
-        elseif local3 == 3 then
-            local2 = "To have no torch."
-        elseif local3 == 4 then
-            local2 = "To be glad to help."
+    var_0000 = unknown_001BH(252)
+    var_0001 = unknown_001CH(var_0000)
+    var_0002 = ""
+    var_0003 = unknown_0010H(4, 1)
+    if var_0001 == 11 then
+        if var_0003 == 1 then
+            var_0002 = "@To wonder about love.@"
+        elseif var_0003 == 2 then
+            var_0002 = "@To have found it yet?@"
+        elseif var_0003 == 3 then
+            var_0002 = "@To have no torch.@"
+        elseif var_0003 == 4 then
+            var_0002 = "@To be glad to help.@"
         end
-        callis_0040(local2, local0)
     end
-
+    unknown_0040H(var_0002, var_0000)
     return
 end

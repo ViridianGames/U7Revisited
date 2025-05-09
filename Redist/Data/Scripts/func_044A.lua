@@ -1,88 +1,97 @@
--- func_044A.lua
--- Lord British's dialogue as the ruler of Britannia
+--- Best guess: Manages Rudyom’s dialogue, a senile mage discussing his failing magic, blackrock experiments, and a lost flying carpet, with flag-based spell and reagent transactions.
+function func_044A(eventid, itemref)
+    local var_0000, var_0001
 
-
-function func_044A(eventid)
-    local answers = {}
-    local flag_00C1 = get_flag(0x00C1) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00D0 = get_flag(0x00D0) -- Kingdom topic
-    local npc_id = -64 -- Lord British's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00D0 then
-            add_answer( "kingdom")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00C1 then
-            add_dialogue("You see a regal figure in a crown, his eyes warm yet burdened with the weight of rule.")
-            set_flag(0x00C1, true)
-        else
-            add_dialogue("\"Welcome, \" .. get_player_name() .. \", my friend,\" Lord British says with a nod.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Lord British leans forward. \"What troubles thee, Avatar?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
-            end
-
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"I am Lord British, ruler of Britannia, though thou knowest me well, Avatar.\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I govern Britannia, striving to uphold the Virtues and ensure prosperity for all. Yet, challenges grow, and I rely on thee to aid our land.\"")
-                add_answer( "kingdom")
-                add_answer( "Virtues")
-                set_flag(0x00D0, true)
-            elseif choice == "kingdom" then
-                add_dialogue("\"Britannia thrives, yet shadows stir. The Fellowship’s influence spreads, and I hear troubling whispers of unrest. Thy presence gives me hope.\"")
-                add_answer( "Fellowship")
-                add_answer( "unrest")
-                set_flag(0x0094, true)
-                remove_answer("kingdom")
-            elseif choice == "Virtues" then
-                add_dialogue("\"The Eight Virtues guide us—Honesty, Compassion, Valor, Justice, Sacrifice, Honor, Spirituality, and Humility. I fear some turn from them, swayed by easier paths.\"")
-                add_answer( "Fellowship")
-                remove_answer("Virtues")
-            elseif choice == "unrest" then
-                add_dialogue("\"There are tales of theft, discord, and strange happenings. My advisors suspect the Fellowship may play a role, though they cloak their actions in goodwill.\"")
-                add_answer( "Fellowship")
-                remove_answer("unrest")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship speaks of unity and progress, but their secrecy concerns me. They’ve gained favor in Britain, yet I sense not all is as it seems. Watch them closely, Avatar.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Thy faith in their cause is noted, but remain vigilant.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Thy caution is wise. Investigate their doings, for Britannia’s sake.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Go with the Virtues, \" .. get_player_name() .. \". Britannia needs thee.\"")
-                break
-            end
-        end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+    if eventid == 0 then
+        return
     end
-end
 
-return func_044A
+    start_conversation()
+    switch_talk_to(0, 74)
+    add_answer({"bye", "job", "name"})
+    if not get_flag(101) then
+        add_answer({"Moongates", "blackrock"})
+    end
+    if not get_flag(231) then
+        add_dialogue("This elderly mage looks older and more senile than when you last saw him.")
+        set_flag(231, true)
+    else
+        if not get_flag(3) then
+            add_dialogue("\"Who art thou?\" Rudyom asks. \"Oh -- I remember.\"")
+        else
+            add_dialogue("\"Hello again, Avatar!\" Rudyom says, beaming.")
+        end
+    end
+    while true do
+        if cmps("name") then
+            add_dialogue("\"That I know. My name is Rudyom.\"")
+            remove_answer("name")
+        elseif cmps("job") then
+            if not get_flag(3) then
+                add_dialogue("\"I am not sure anymore. I was a powerful mage at one time! Now nothing works. Magic is afoul! I suppose I could sell thee some reagents and spells if thou dost want. And mind the carpet -- it does not work!\"")
+                add_answer("carpet")
+            else
+                add_dialogue("\"I am a powerful mage! Magic is my milieu! I can sell thee spells or reagents.\"")
+            end
+            add_answer({"reagents", "spells", "magic"})
+        elseif cmps("magic") then
+            if not get_flag(3) then
+                add_dialogue("\"I do not understand what is wrong. My magic does not work so well anymore.\"")
+            else
+                add_dialogue("\"The ether is flowing freely! Magic is with us once again!\"")
+            end
+            remove_answer("magic")
+        elseif cmps("carpet") then
+            add_dialogue("\"The big blue carpet. 'Tis a flying carpet. It does not work like it should.\"")
+            add_dialogue("Rudyom looks around and scratches his head.")
+            add_dialogue("\"Funny. It was here a while ago. Oh! I remember now. Some adventurers borrowed my flying carpet a few weeks ago. When they returned they said they had lost it near Serpent's Spine. Somewhere in the vicinity of the Lost River. I suppose if thou didst want to go and find it, thou couldst keep it. It did not work very well. Perhaps thou canst make it work. I did not like the color, anyway!\"")
+            remove_answer("carpet")
+        elseif cmps("spells") then
+            add_dialogue("\"Dost thou wish to buy some spells?\"")
+            var_0000 = unknown_090AH()
+            if var_0000 then
+                unknown_08DBH()
+            else
+                add_dialogue("\"Oh. Never mind, then.\"")
+            end
+        elseif cmps("reagents") then
+            add_dialogue("\"Dost thou wish to buy some reagents?\"")
+            var_0001 = unknown_090AH()
+            if var_0001 then
+                unknown_08DCH()
+            else
+                add_dialogue("\"Oh. Never mind, then.\"")
+            end
+        elseif cmps("blackrock") then
+            add_dialogue("\"Do not mention that foul mineral's name to me! It hast caused me much frustration! Before my mind lost me I was conducting experiments with the infernal material. But now I cannot for the life of me remember what it was I was trying to do.\"")
+            add_answer("experiments")
+            remove_answer("blackrock")
+        elseif cmps("Moongates") then
+            if not get_flag(4) then
+                add_dialogue("\"They are a nuisance, are they not? I do believe that blackrock is the solution to the problem. I wish my mind had not lost me, or I could continue my work...\"")
+            else
+                add_dialogue("\"I understand they are gone for good. Do not blame thyself, Avatar. The disaster will only pave the way for a new era in experimentation and discovery. I hope.\"")
+            end
+            remove_answer("Moongates")
+        elseif cmps("experiments") then
+            add_dialogue("\"I wrote them all down in my notebook, which is somewhere around here. Thou art welcome to look at it. But stay away from that damned transmuter -- 'tis dangerous!\"")
+            add_answer({"notebook", "transmuter"})
+            remove_answer("experiments")
+        elseif cmps("notebook") then
+            add_dialogue("\"I used it to record mine experiments with blackrock and the blackrock transmuter.\"")
+            remove_answer("notebook")
+        elseif cmps("transmuter") then
+            add_dialogue("\"'Tis that wand-like thing. It was supposed to magnetize and magically transmute blackrock, but it doth not work correctly. Try pointing it at a piece of blackrock and thou wilt see what I mean. But do not stand too close! Thou art welcome to take it if thou dost want a piece of garbage!\"")
+            unknown_0911H(50)
+            remove_answer("transmuter")
+        elseif cmps("bye") then
+            if not get_flag(3) then
+                add_dialogue("\"Leaving so soon? Deary me. I hope I remember thee if thou dost come back.\"")
+            else
+                add_dialogue("\"Goodbye, Avatar.\"")
+            end
+            break
+        end
+    end
+    return
+end

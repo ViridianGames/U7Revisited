@@ -1,13 +1,7 @@
--- Function 06C4: Sets plot progression flag
+--- Best guess: Sets flag 695 when event ID 3 is triggered, likely part of a dungeon or event trigger.
 function func_06C4(eventid, itemref)
     if eventid == 3 then
-        set_flag(0x02B7, true)
+        set_flag(695, true)
     end
-
     return
-end
-
--- Helper functions
-function set_flag(flag, value)
-    -- Placeholder
 end

@@ -1,25 +1,16 @@
--- Function 06B0: Manages poison effect on party members
+--- Best guess: Applies a poison effect to party members when event ID 3 is triggered, if their strength is not zero, likely in a toxic area.
 function func_06B0(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
-    end
-
-    call_000FH(28)
-    local0 = _GetPartyMembers()
-    while sloop() do
-        local3 = local0
-        if not callis_004A(callis_0020(0, local3), call_GetItemQuality(itemref)) then
-            callis_0089(8, callis_001B(local3))
+    if eventid == 3 then
+        unknown_000FH(28)
+        var_0000 = unknown_0023H()
+        for i = 1, #var_0000 do
+            var_0003 = var_0000[i]
+            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(itemref)) then
+                unknown_0089H(8, unknown_001BH(var_0003))
+            end
         end
     end
-
     return
-end
-
--- Helper functions
-function sloop()
-    return false -- Placeholder
 end

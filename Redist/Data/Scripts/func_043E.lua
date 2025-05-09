@@ -1,108 +1,203 @@
--- func_043E.lua
--- Brownie's dialogue as a farmer and mayoral candidate in Britain
+--- Best guess: Manages Snaz’s dialogue, a beggar who tells jokes for gold coins, covering topics like The Fellowship, Lord British, and Weston, with flag-based progression and inventory checks for payments.
+function func_043E(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
-
-function func_043E(eventid)
-    local answers = {}
-    local flag_00B5 = get_flag(0x00B5) -- First meeting
-    local flag_0094 = get_flag(0x0094) -- Fellowship topic
-    local flag_00C7 = get_flag(0x00C7) -- Campaign topic
-    local npc_id = -52 -- Brownie's NPC ID
-
-    if eventid == 1 then
-        switch_talk_to(npc_id, 0)
-        local var_0000 = call_extern(0x0909, 0) -- Unknown interaction
-        local var_0001 = call_extern(0x090A, 1) -- Item interaction
-        local var_0002 = call_extern(0x0919, 2) -- Fellowship interaction
-        local var_0003 = call_extern(0x091A, 3) -- Philosophy interaction
-        local var_0004 = call_extern(0x092E, 4) -- Unknown interaction
-
-        add_answer( "bye")
-        add_answer( "job")
-        add_answer( "name")
-        if flag_00C7 then
-            add_answer( "campaign")
-        end
-        if flag_0094 then
-            add_answer( "Fellowship")
-        end
-
-        if not flag_00B5 then
-            add_dialogue("You see a sturdy farmer with calloused hands and a hopeful smile.")
-            set_flag(0x00B5, true)
-        else
-            add_dialogue("\"Well met, \" .. get_player_name() .. \"!\" Brownie says cheerfully.")
-        end
-
-        while true do
-            if #answers == 0 then
-                add_dialogue("Brownie nods. \"Anything else I can help thee with?\"")
-                add_answer( "bye")
-                add_answer( "job")
-                add_answer( "name")
+    if eventid ~= 1 then
+        if eventid == 0 then
+            var_000F = unknown_003BH()
+            var_0010 = unknown_001CH(unknown_001BH(62))
+            var_0011 = random2(4, 1)
+            if var_0010 == 12 then
+                if var_0011 == 1 then
+                    var_0012 = "@Spare change?@"
+                elseif var_0011 == 2 then
+                    var_0012 = "@Got a coin for me?@"
+                elseif var_0011 == 3 then
+                    var_0012 = "@Jokes for sale!@"
+                elseif var_0011 == 4 then
+                    var_0012 = "@Handouts accepted!@"
+                end
+                bark(var_0012, 62)
+            else
+                unknown_092EH(62)
             end
+        end
+        add_dialogue("\"I do hope I did amuse thee.\"")
+        return
+    end
 
-            local choice = get_answer(answers)
-            if choice == "name" then
-                add_dialogue("\"I’m Brownie, farmer and candidate for mayor of Britain.\"")
-                remove_answer("name")
-            elseif choice == "job" then
-                add_dialogue("\"I farm the fields north of Britain—potatoes, carrots, and the like. Also running for mayor to make things fairer for folk like me.\"")
-                add_answer( "farming")
-                add_answer( "mayor")
-            elseif choice == "farming" then
-                add_dialogue("\"It’s honest work. Sunup to sundown, tending crops. I sell my produce at market, but prices are tight with taxes so high.\"")
-                add_answer( "taxes")
-                add_answer( "market")
-                remove_answer("farming")
-            elseif choice == "market" then
-                add_dialogue("\"Britain’s market is bustling, but the fees to sell there eat into my earnings. If I’m mayor, I’ll lower those fees for farmers.\"")
-                remove_answer("market")
-            elseif choice == "taxes" then
-                add_dialogue("\"Lord British means well, but his taxes hit small farmers hard. The Fellowship’s been pushing for exemptions, but only for their own.\"")
-                add_answer( "Fellowship")
-                set_flag(0x0094, true)
-                remove_answer("taxes")
-            elseif choice == "mayor" then
-                add_dialogue("\"I’m running for mayor to give the common folk a voice. Britain’s run by nobles and guilds, but farmers and workers deserve better.\"")
-                add_answer( "campaign")
-                set_flag(0x00C7, true)
-                remove_answer("mayor")
-            elseif choice == "campaign" then
-                add_dialogue("\"My campaign’s about fairness. Lower taxes, fewer fees, and less influence from groups like the Fellowship. I’ve got support from farmers, but the nobles aren’t keen.\"")
-                add_answer( "support")
-                remove_answer("campaign")
-            elseif choice == "support" then
-                add_dialogue("\"Folks in Paws and the fields back me, but I need more votes in Britain. If thou couldst spread the word, I’d be grateful.\"")
-                local response = call_extern(0x090A, var_0001)
-                if response == 0 then
-                    add_dialogue("\"Thou’lt help? Bless thee! Here’s a carrot from my fields.\"")
-                    local item_result = U7.giveItem(16, 1, 383)
-                    if not item_result then
-                        add_dialogue("\"Oh, thou art too laden to carry it. Clear some space!\"")
+    start_conversation()
+    switch_talk_to(0, 62)
+    var_0000 = unknown_0909H()
+    add_answer({"bye", "job", "name"})
+    if not get_flag(191) then
+        add_dialogue("You see a filthy beggar who flashes you a grin as though you were his best friend in the whole world.")
+        set_flag(191, true)
+    else
+        add_dialogue("\"Hello again, " .. var_0000 .. ",\" says Snaz.")
+    end
+    while true do
+        if cmps("name") then
+            add_dialogue("\"I am called Snaz.\"")
+            remove_answer("name")
+        elseif cmps("job") then
+            add_dialogue("\"I have no job for I am a beggar. For a gold coin I shall tell thee a joke.\"")
+            add_answer({"tell a joke", "beggar"})
+        elseif cmps("beggar") then
+            add_dialogue("\"When I was just a little boy I was made an orphan and left homeless and penniless. That was a joke life played on me. 'Tis a funny joke, eh?~~\"But I would not charge thee a gold piece for that one.\"")
+            remove_answer("beggar")
+        elseif cmps("tell a joke") then
+            add_dialogue("\"Dost thou wish to hear one?\"")
+            var_0001 = unknown_090AH()
+            if var_0001 then
+                var_0002 = unknown_002BH(359, 359, 644, 1)
+                if var_0002 then
+                    add_dialogue("\"All right, here is one...\"")
+                    add_answer("Fellowship joke")
+                else
+                    add_dialogue("\"If thou dost want to hear a joke, thou must pay me, " .. var_0000 .. ". Come back when thy pockets are full. The richer thou art, the funnier I get!\"")
+                end
+            else
+                add_dialogue("\"Have a heart, I pray thee! I have a wife and six hungry children to feed.\" He feels your stare upon him. \"Oh, very well. Wouldst thou believe I have a cat and it just had kittens?\"")
+            end
+            remove_answer("tell a joke")
+        elseif cmps("Fellowship joke") then
+            add_dialogue("\"I was discussing philosophy with a Fellowship member the other day and he asked me, 'What, in thine opinion, is the height of stupidity?'~~\"So I said, 'I do not know. How tall art thou?'~~\"No, really, I make sport of The Fellowship, but I mean it sincerely...\"")
+            remove_answer("Fellowship joke")
+            add_answer({"Lord British joke", "Fellowship"})
+        elseif cmps("Fellowship") then
+            add_dialogue("\"That is what I dearly love about The Fellowship. They could always take a joke!~~\"And from what I hear they play funny jokes themselves! Like the joke they played in Trinsic!\"")
+            remove_answer("Fellowship")
+        elseif cmps("Lord British joke") then
+            add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
+            var_0003 = unknown_090AH()
+            if not var_0003 then
+                add_dialogue("\"I see I have reached the limits of thy sense of humor.\"")
+                remove_answer("Lord British joke")
+            else
+                var_0004 = unknown_002BH(359, 359, 644, 1)
+                if var_0004 then
+                    add_dialogue("\"I was at the castle of Lord British the other day and I noticed he has three large pools. So I asked why he doth have three of them.~~\"He pointed to the first one and said the first was to swim in cool water.~~\"The second was for friends to swim in warm water.~~\"I noticed that the third pool was empty and I asked him why.~~\"He said that it was for people who could not swim!\"")
+                    remove_answer("Lord British joke")
+                    add_answer({"Weston joke", "Lord British"})
+                else
+                    add_dialogue("\"Thou art more destitute than I! If I tell thee any more jokes now thou mayest steal mine act!\"")
+                    remove_answer("Lord British joke")
+                end
+            end
+        elseif cmps("Lord British") then
+            add_dialogue("\"Poor Lord British! When faced with a gigantic menace that threatens his entire kingdom he is an extremely capable ruler.~~\"But what happens when there are a myriad of smaller things that all threaten the welfare of his people indirectly?~~\"There is a riddle for thee to solve!\"")
+            remove_answer("Lord British")
+        elseif cmps("Weston joke") then
+            add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
+            var_0005 = unknown_090AH()
+            if not var_0005 then
+                add_dialogue("\"Very well. If thou didst not get the first two there is no good reason for me to continue now.\"")
+                remove_answer("Weston joke")
+            else
+                var_0006 = unknown_002BH(359, 359, 644, 1)
+                if var_0006 then
+                    add_dialogue("\"A man named Weston came to me deep in perplexity.~~\"He told me he wanted to steal some apples from the Royal Orchards but if he did he would feel bad about it in the morning.~~\"So I gave him this advice -- sleep until noon!\"")
+                    remove_answer("Weston joke")
+                    add_answer({"mage joke", "Weston"})
+                else
+                    add_dialogue("\"Thy pockets are empty, " .. var_0000 .. ". Perhaps it is time to stop laughing and start worrying!\"")
+                    remove_answer("Weston joke")
+                end
+            end
+        elseif cmps("Weston") then
+            add_dialogue("\"Weston now sits in the castle prison, where he shall most certainly rot for the rest of his life. Heh-heh-heh!~~\"Try as I might, I cannot best that little jest!\"")
+            remove_answer("Weston")
+        elseif cmps("mage joke") then
+            add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
+            var_0007 = unknown_090AH()
+            if not var_0007 then
+                add_dialogue("\"Thou art wise. Thou shouldst save thy gold to pay a healer to cure that ache in thy side.\"")
+                remove_answer("mage joke")
+            else
+                var_0008 = unknown_002BH(359, 359, 644, 1)
+                if var_0008 then
+                    add_dialogue("\"Whilst travelling on the road I came across a mage.~~\"He looked as if he had not eaten for days and complained of a terrible pain in his stomach.~~\"So I told him his stomach was empty. If he put something in it he would feel better.~~\"Later he complained to me of a headache. I said his headache was caused by a similar problem as his stomach.~~\"No doubt it did hurt him so because, being a mage, there was nothing left in it!\"")
+                    remove_answer("mage joke")
+                    add_answer({"Sullivan joke", "mages"})
+                else
+                    add_dialogue("\"Now thou art playing a joke on me. Thou art broke!\"")
+                    remove_answer("mage joke")
+                end
+            end
+        elseif cmps("mages") then
+            add_dialogue("\"All of the mages have gone daft or mad! What other proper response is there in a world that is so terrifically funny?!\"")
+            remove_answer("mages")
+        elseif cmps("Sullivan joke") then
+            add_dialogue("\"Thou art a brave Avatar! Dost thou wish to hear another?\"")
+            var_0009 = unknown_090AH()
+            if not var_0009 then
+                add_dialogue("\"Aha! Not as brave as I thought!\"")
+                remove_answer("joke five")
+            else
+                var_000A = unknown_002BH(359, 359, 644, 1)
+                if var_000A then
+                    add_dialogue("\"Didst thou knowest that the notorious Sullivan the Trickster recently became a father?~~\"It is true! They say the baby has his father's eyes and his mother's nose, but they made the baby give them back.\"")
+                    remove_answer("Sullivan joke")
+                    add_answer({"gold joke", "Sullivan"})
+                else
+                    add_dialogue("\"Thou mayest be laughing but surely thy purse is not, for it is empty.\"")
+                end
+        elseif cmps("Sullivan") then
+            add_dialogue("\"Yes, I know the man they call Sullivan the Trickster! In fact thou dost remind me of him!~~\"Or does he remind me of thee?~~\"He is so tricky that just talking about him has caused me to trick myself! Heh-Hee-Haa!\"")
+            remove_answer("Sullivan")
+        elseif cmps("gold joke") then
+            add_dialogue("\"I have amused thee so far! Wouldst thou like to hear another? It is a joke about gold!\"")
+            var_000B = unknown_090AH()
+            if var_000B then
+                var_000C = unknown_002BH(359, 359, 644, 1)
+                if var_000C then
+                    unknown_000FH(23)
+                    add_dialogue("\"Thank thee very much! Now, goodbye!\"")
+                    add_dialogue("\"Dost thou get it? Ha! Ha! Ha! Ha! If not, it would be my pleasure to repeat it.\"")
+                    add_dialogue("\"Wouldst thou like to hear the gold joke again?\"")
+                    var_000D = unknown_090AH()
+                    if var_000D then
+                        add_dialogue("\"Now listen carefully...\"")
+                        var_000E = unknown_002BH(359, 359, 644, 1)
+                        if var_000E then
+                            goto gold_joke_repeat
+                        else
+                            add_dialogue("\"Oh, I am so sorry. I cannot tell thee the joke again for thou art out of money.\"")
+                        end
+                    else
+                        add_dialogue("\"I see thou art becoming wise to the ways of show business, " .. var_0000 .. ". Good day to thee!\"")
+                        return
                     end
                 else
-                    add_dialogue("\"No matter, I’ll keep at it.\"")
+                    add_dialogue("\"I can see thou art so poor that thou cannot even afford a sense of humor!\"")
                 end
-                remove_answer("support")
-            elseif choice == "Fellowship" then
-                add_dialogue("\"The Fellowship claims to help all, but they favor their own. I’ve seen them pressure farmers to join or face trouble at market. I don’t trust ‘em.\"")
-                local response = call_extern(0x0919, var_0002)
-                if response == 0 then
-                    add_dialogue("\"Maybe I’m too harsh. I’ll think on their ideas.\"")
-                    call_extern(0x091A, var_0003)
-                else
-                    add_dialogue("\"Nay, I’ve seen enough to know they’re not for me.\"")
-                end
-                remove_answer("Fellowship")
-            elseif choice == "bye" then
-                add_dialogue("\"Vote for Brownie, \" .. get_player_name() .. \"!\"")
-                break
+            else
+                add_dialogue("\"Oh, it is a pity that thou dost not wish to hear it! It is the funniest one yet and my personal favorite!\"")
             end
+            remove_answer("gold joke")
+        elseif cmps("bye") then
+            break
         end
-    elseif eventid == 0 then
-        call_extern(0x092E, npc_id)
+    end
+    return
+
+::gold_joke_repeat::
+    unknown_000FH(23)
+    add_dialogue("\"Thank thee very much! Now, goodbye!\"")
+    add_dialogue("\"Dost thou get it? Ha! Ha! Ha! Ha! If not, it would be my pleasure to repeat it.\"")
+    add_dialogue("\"Wouldst thou like to hear the gold joke again?\"")
+    var_000D = unknown_090AH()
+    if var_000D then
+        add_dialogue("\"Now listen carefully...\"")
+        var_000E = unknown_002BH(359, 359, 644, 1)
+        if var_000E then
+            goto gold_joke_repeat
+        else
+            add_dialogue("\"Oh, I am so sorry. I cannot tell thee the joke again for thou art out of money.\"")
+        end
+    else
+        add_dialogue("\"I see thou art becoming wise to the ways of show business, " .. var_0000 .. ". Good day to thee!\"")
+        return
     end
 end
-
-return func_043E

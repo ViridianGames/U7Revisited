@@ -1,13 +1,11 @@
--- Checks if a gangplank is blocked by nearby items.
-function func_082C(p0, p1, p2, p3)
-    local local4, local5, local6, local7, local8
+--- Best guess: Checks if a gangplank (P3) is blocked by items (P0) within a radius defined by P1, returning true if blocked, false otherwise.
+function func_082C(P0, P1, P2, P3)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    local4 = external_0035H(calculate_distance(p1, -359), p3) -- Unmapped intrinsic
-    for local5 in ipairs(local4) do
-        local6 = local5
-        local7 = local6
-        local8 = get_item_data(local7)
-        if local8[1] <= p2[1] and local8[1] >= p2[1] + p1 and local8[2] <= p2[2] and local8[2] >= p2[2] + p1 and local8[3] <= 2 and local7 ~= p3 and not contains(p0, get_item_type(local7)) and external_0088H(local7, 24) then -- Unmapped intrinsic
+    var_0004 = unknown_0035H(32, unknown_0932H(P1), -359, P3)
+    for var_0005 in ipairs(var_0004) do
+        var_0008 = unknown_0018H(var_0007)
+        if var_0008[1] <= P2[1] and var_0008[1] >= P2[1] + P1 and var_0008[2] <= P2[2] and var_0008[2] >= P2[2] + P1 and var_0008[3] <= 2 and var_0007 ~= P3 and not table.contains(P0, get_object_shape(var_0007)) and not unknown_0088H(P3, 24) then
             return true
         end
     end

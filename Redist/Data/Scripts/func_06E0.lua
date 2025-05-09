@@ -1,25 +1,17 @@
--- Function 06E0: Applies effects to items
+--- Best guess: Checks flag 4 and triggers effects on nearby items (types 776, 777) when event ID 3 is received, likely part of a dungeon trap.
 function func_06E0(eventid, itemref)
-    -- Local variables (4 as per .localc)
-    local local0, local1, local2, local3
+    local var_0000, var_0001, var_0002, var_0003
 
-    if eventid ~= 3 then
-        return
-    end
-
-    if not get_flag(0x0004) then
-        local0 = callis_0035(16, 10, 776, itemref)
-        table.insert(local0, callis_0035(16, 10, 777, itemref)[1])
-        for _, local3 in ipairs(local0) do
-            call_0925H(local3)
+    if eventid == 3 then
+        if not get_flag(4) then
+            var_0000 = unknown_0035H(16, 10, 776, itemref)
+            var_0000 = {var_0000, unpack(unknown_0035H(16, 10, 777, itemref))}
+            for i = 1, #var_0000 do
+                var_0003 = var_0000[i]
+                unknown_0925H(var_0003)
+            end
+            unknown_0925H(itemref)
         end
-        call_0925H(itemref)
     end
-
     return
-end
-
--- Helper functions
-function get_flag(flag)
-    return false -- Placeholder
 end

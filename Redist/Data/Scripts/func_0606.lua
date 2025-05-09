@@ -1,12 +1,12 @@
--- Adjusts coordinates and triggers an action, possibly for positioning an object or NPC in a game event.
+--- Best guess: Adjusts object position based on retrieved coordinates, possibly for dynamic movement or placement.
 function func_0606(eventid, itemref)
-    local local0, local1, local2
+    local var_0000, var_0001, var_0002
 
-    local0 = get_item_data(itemref)
-    local1 = local0[1] - 3
-    local2 = local0[2] - 4
-
-    create_object(-1, 0, 0, 0, local2, local1, 9) -- Unmapped intrinsic
-    apply_effect(69) -- Unmapped intrinsic
-    return
+    var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+    var_0001 = var_0000[1]
+    var_0002 = var_0000[2]
+    var_0001 = var_0001 - 3
+    var_0002 = var_0002 - 4
+    unknown_0053H(-1, 0, 0, 0, var_0002, var_0001, 9) --- Guess: Moves object
+    unknown_000FH(69) --- Guess: Unknown operation
 end

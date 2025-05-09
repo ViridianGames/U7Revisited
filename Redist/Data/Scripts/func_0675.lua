@@ -1,25 +1,25 @@
--- Casts the "In Nox Grav" spell, applying a poisonous electrical effect to a selected target.
+--- Best guess: Implements the poison field spell (In Nox Grav), creating a poison field at a target location.
 function func_0675(eventid, itemref)
-    local local0, local1, local2, local3, local4, local5, local6, local7, local8
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        local0 = item_select_modal() -- Unmapped intrinsic
-        local1 = external_092DH(local0) -- Unmapped intrinsic
+        var_0000 = item_select_modal() --- Guess: Selects spell target
+        destroy_item(itemref)
+        var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(itemref, "@In Nox Grav@")
-        if not external_0906H(local1) then -- Unmapped intrinsic
-            local2 = add_item(itemref, {17511, 17510, 8037, 110, 8536, local1, 7769})
-            local3 = get_item_by_type(900) -- Unmapped intrinsic
-            if local3 then
-                local4 = local0[2] + 1
-                local5 = local0[3] + 1
-                local6 = local0[4]
-                local7 = {local6, local5, local4}
-                set_flag(local3, 18, true)
-                set_item_data(local7)
+        if check_spell_requirements() then
+            var_0002 = add_container_items(itemref, {17511, 17510, 8037, 110, 8536, var_0001, 7769})
+            var_0003 = get_item_status(900) --- Guess: Gets item status
+            if var_0003 then
+                var_0004 = var_0000[2] + 1
+                var_0005 = var_0000[3] + 1
+                var_0006 = var_0000[4]
+                var_0007 = {var_0006, var_0005, var_0004}
+                set_item_flag(var_0003, 18)
+                var_0002 = unknown_0026H(var_0007) --- Guess: Updates position
             end
         else
-            local2 = add_item(itemref, {1542, 17493, 17511, 17510, 8549, local1, 7769})
+            var_0002 = add_container_items(itemref, {1542, 17493, 17511, 17510, 8549, var_0001, 7769})
         end
     end
-    return
 end

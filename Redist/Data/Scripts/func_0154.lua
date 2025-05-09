@@ -1,52 +1,53 @@
--- Handles potion or reagent usage, with dialogue and stat modifications.
-function func_0154H(eventid, itemref)
-    if eventid ~= 1 then
-        return
-    end
-    call_script(0x08FA, itemref) -- TODO: Map 08FAH (possibly item check).
-    local frame = get_object_frame(itemref) -- TODO: Implement LuaGetItemFrame for callis 0012.
-    local obj = item_select_modal() -- TODO: Implement LuaItemSelectModal for callis 0033.
-    local wearer = get_wearer(obj) -- TODO: Implement LuaGetWearer for callis 0031.
-    set_stat(itemref, 90) -- Sets quality to 90.
-    if wearer then
-        set_stat(68, 1) -- Apply effect (calli 000F).
-        if frame == 0 then
-            set_item_quality(obj, 1) -- TODO: Implement LuaSetItemQuality for calli 0089.
-        elseif frame == 1 then
-            local effect = random(3, 12) -- Random effect value.
-            call_script(0x092A, obj, effect) -- TODO: Map 092AH.
-        elseif frame == 2 then
-            set_item_quality(obj, 8)
-            set_item_quality(obj, 7)
-            set_item_quality(obj, 1)
-            set_item_quality(obj, 2)
-            set_item_quality(obj, 3)
-        elseif frame == 3 then
-            set_item_quality(obj, 8)
-        elseif frame == 4 then
-            set_item_quality(obj, 1)
-            if get_item_quality(obj) == -150 then -- TODO: Implement LuaGetItemQuality for callis 003A.
-                set_item_status(obj, 7) -- TODO: Implement LuaSetItemStatus for calli 001D.
+--- Best guess: Manages portion items, applying various effects (e.g., poisoning, healing) based on frame, with warnings for misuse.
+function func_0154(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+
+    if eventid == 1 then
+        unknown_08FAH(itemref)
+        var_0000 = get_object_frame(itemref)
+        var_0001 = _ItemSelectModal()
+        var_0002 = unknown_0031H(var_0001)
+        unknown_0086H(itemref, 90)
+        if not var_0002 then
+            unknown_000FH(68)
+            if var_0000 == 0 then
+                unknown_0089H(1, var_0001)
+            elseif var_0000 == 1 then
+                var_0003 = random2(12, 3)
+                unknown_092AH(var_0003, var_0001)
+            elseif var_0000 == 2 then
+                unknown_008AH(8, var_0001)
+                unknown_008AH(7, var_0001)
+                unknown_008AH(1, var_0001)
+                unknown_008AH(2, var_0001)
+                unknown_008AH(3, var_0001)
+            elseif var_0000 == 3 then
+                unknown_0089H(8, var_0001)
+            elseif var_0000 == 4 then
+                unknown_008AH(1, var_0001)
+                if unknown_003AH(var_0001) == -150 then
+                    unknown_001DH(7, var_0001)
+                end
+            elseif var_0000 == 5 then
+                unknown_0089H(9, var_0001)
+            elseif var_0000 == 6 then
+                unknown_0057H(100)
+            elseif var_0000 == 7 then
+                unknown_0089H(0, var_0001)
+            elseif var_0000 >= 8 then
+                unknown_08FFH("@What is this!@")
+                abort()
             end
-        elseif frame == 5 then
-            set_item_quality(obj, 9)
-        elseif frame == 6 then
-            set_stat(100, 1) -- Apply effect (calli 0057).
-        elseif frame == 7 then
-            set_item_quality(obj, 0)
-        elseif frame >= 8 then
-            add_dialogue(0, "What is this!") -- Dialogue for invalid frame.
-            return
-        end
-    else
-        local effect = random(1, 3)
-        if effect == 1 then
-            call_script(0x0909) -- TODO: Map 0909H.
-            local gender = is_player_female() and "lady" or "lord"
-            add_dialogue(0, "Those are expensive, " .. gender .. "! Plese waste them not!") -- Concatenated dialogue.
         else
-            call_script(0x08FD, 60) -- TODO: Map 08FDH.
+            var_0003 = random2(3, 1)
+            if var_0003 == 1 then
+                var_0004 = unknown_0909H()
+                var_0005 = "@Those are expensive, " .. var_0004 .. "! Plese waste them not!@"
+                unknown_08FFH(var_0005)
+            else
+                unknown_08FDH(60)
+            end
         end
+        unknown_0925H(itemref)
     end
-    call_script(0x0925, itemref) -- TODO: Map 0925H.
 end

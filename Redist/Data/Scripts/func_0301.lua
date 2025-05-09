@@ -1,24 +1,26 @@
--- Handles smokebomb usage, creating a smoke effect and affecting NPCs.
-function func_0301H(eventid, itemref)
+--- Best guess: Manages a smokebomb, creating a smoke effect at the player’s location and affecting nearby NPCs.
+function func_0301(eventid, itemref)
+    local var_0000, var_0001, var_0002, var_0003, var_0004
+
     if eventid == 1 or eventid == 4 then
-        use_item() -- TODO: Implement LuaUseItem for calli 007E.
-        local npcs = find_items(itemref, 494, 300, 0) -- TODO: Implement LuaFindItems for callis 0035.
-        for _, npc in ipairs(npcs) do
-            set_item_status(npc, 7) -- TODO: Implement LuaSetItemStatus for calli 001D.
-            set_npc_status(npc, 7) -- TODO: Implement LuaSetNPCStatus for calli 004B.
-            set_npc_state(npc, -356) -- TODO: Implement LuaSetNPCState for calli 004C.
+        unknown_007EH()
+        var_0000 = unknown_0035H(0, 300, 494, itemref)
+        for var_0001 in ipairs(var_0000) do
+            unknown_001DH(0, var_0003)
+            unknown_004BH(7, var_0003)
+            unknown_004CH(-356, var_0003)
         end
-        local pos = get_item_info(itemref) -- TODO: Implement LuaGetItemInfo for callis 0018.
-        set_item_state(itemref) -- TODO: Implement LuaSetItemState for calli 005C.
-        create_effect(25, pos[1], pos[2], 0, 0, 3, 2) -- TODO: Implement LuaCreateEffect for calli 0053.
-        create_effect(25, pos[1], pos[2], 1, 0, 3, 2)
-        create_effect(25, pos[1], pos[2], 2, -2, 3, 2)
-        create_effect(25, pos[1], pos[2], 3, 0, 3, 2)
-        create_effect(25, pos[1], pos[2], 4, 0, 3, 2)
-        create_effect(25, pos[1], pos[2], 1, 2, 3, 2)
-        create_effect(25, pos[1], pos[2], 2, 2, 3, 2)
-        create_effect(25, pos[1], pos[2], 3, 2, 3, 2)
-        create_effect(25, pos[1], pos[2], 4, -2, 3, 2)
-        remove_item(itemref) -- TODO: Implement LuaRemoveItem for calli 006F.
+        var_0004 = unknown_0018H(itemref)
+        unknown_005CH(itemref)
+        unknown_0053H(25, 0, 0, 0, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 1, 0, 2, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 2, 0, -2, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 3, 2, 0, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 4, -2, 0, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 1, 2, 2, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 2, -2, 2, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 3, 2, -2, var_0004[2], var_0004[1], 3)
+        unknown_0053H(25, 4, -2, -2, var_0004[2], var_0004[1], 3)
+        unknown_006FH(itemref)
     end
 end

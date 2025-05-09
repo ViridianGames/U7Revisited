@@ -1,12 +1,8 @@
--- Function 031E: Manages item transformation
-function func_031E(itemref)
-    if eventid() == 1 then
-        callis_000D(799, itemref)
-        callis_0086(itemref, 14)
+--- Best guess: Changes an item’s type to 799 and sets its frame to 14 when event ID 1 is received, likely for a transformation or state change.
+function func_031E(eventid, itemref)
+    if eventid == 1 then
+        unknown_000DH(799, itemref)
+        unknown_0086H(itemref, 14)
     end
-end
-
--- Helper functions
-function eventid()
-    return 0 -- Placeholder
+    return
 end
