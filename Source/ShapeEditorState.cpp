@@ -162,11 +162,6 @@ void ShapeEditorState::Update()
 	m_currentGui->Update();
 	ShapeData& shapeData = g_shapeTable[m_currentShape][m_currentFrame];
 
-	if (IsKeyPressed(KEY_ESCAPE))
-	{
-		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
-	}
-
 	unsigned int time = GetTime();
 	g_CameraMoved = false;
 
@@ -318,7 +313,7 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
-	if (IsKeyPressed(KEY_F1))
+	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
 	{
 		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 	}

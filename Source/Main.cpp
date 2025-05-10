@@ -209,36 +209,36 @@ int main(int argv, char** argc)
       Log("Initializing states.");
       State* _titleState = new TitleState;
       _titleState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_TITLESTATE, _titleState);
+      g_StateMachine->RegisterState(STATE_TITLESTATE, _titleState, "TITLE_STATE");
       
       State* _mainState = new MainState;
       _mainState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_MAINSTATE, _mainState);
+      g_StateMachine->RegisterState(STATE_MAINSTATE, _mainState, "MAIN_STATE");
 
       State* _optionsState = new OptionsState;
       _optionsState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_OPTIONSSTATE, _optionsState);
+      g_StateMachine->RegisterState(STATE_OPTIONSSTATE, _optionsState, "OPTIONS_STATE");
 
       State* loadingState = new LoadingState;
       loadingState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_LOADINGSTATE, loadingState);
+      g_StateMachine->RegisterState(STATE_LOADINGSTATE, loadingState, "LOADING_STATE");
 
       State* objectEditorState = new ObjectEditorState;
       objectEditorState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_OBJECTEDITORSTATE, objectEditorState);
+      g_StateMachine->RegisterState(STATE_OBJECTEDITORSTATE, objectEditorState, "OBJECT_EDITOR_STATE");
 
       State* shapeEditorState = new ShapeEditorState;
       shapeEditorState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_SHAPEEDITORSTATE, shapeEditorState);
+      g_StateMachine->RegisterState(STATE_SHAPEEDITORSTATE, shapeEditorState, "SHAPE_EDITOR_STATE");
 
       State* worldEditorState = new WorldEditorState;
       worldEditorState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState);
+      g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState, "WORLD_EDITOR_STATE");
       
       ConversationState* conversationState = new ConversationState;
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState);
+      g_StateMachine->RegisterState(STATE_CONVERSATIONSTATE, conversationState, "CONVERSATION_STATE");
 
       g_StateMachine->MakeStateTransition(STATE_LOADINGSTATE);
 
