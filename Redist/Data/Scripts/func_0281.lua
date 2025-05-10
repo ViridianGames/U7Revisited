@@ -4,7 +4,7 @@ function func_0281(eventid, itemref)
 
     if eventid == 1 then
         var_0000 = object_select_modal()
-        unknown_0086H(itemref, 27)
+        set_object_quality(itemref, 27)
         var_0001 = get_object_shape(var_0000)
         var_0002 = _get_object_quality(itemref)
         var_0003 = _get_object_quality(var_0000)
@@ -16,7 +16,7 @@ function func_0281(eventid, itemref)
         if var_0001 == 522 then
             if var_0002 == var_0003 then
                 bark("Unlocked", var_0000)
-                set_object_shape(800, var_0000)
+                set_object_shape(var_0000, 800)
                 if var_0003 == 253 then
                     set_flag(62, true)
                 end
@@ -36,7 +36,7 @@ function func_0281(eventid, itemref)
                     bark("Key inside", -356)
                 else
                     unknown_0080H(var_0000)
-                    set_object_shape(522, var_0000)
+                    set_object_shape(var_0000, 522)
                     bark("Locked", var_0000)
                 end
             end

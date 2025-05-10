@@ -30,7 +30,7 @@ function func_0334(eventid, itemref)
             if not unknown_0035H(176, 5, var_0006, var_0000) then
                 if var_0001 < 11 then
                     var_0001 = var_0001 + 1
-                    var_0007 = set_object_quality(var_0001, var_0000)
+                    var_0007 = set_object_quality(var_0000, var_0001)
                     unknown_007EH()
                     var_0003 = true
                     break

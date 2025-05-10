@@ -7,7 +7,7 @@ function func_0624(eventid, itemref)
         var_0000 = {1, 1, 1, 0, 0, 0, -1, -1, -1}
         var_0001 = {-1, 0, 1, -1, 0, 1, -1, 0, 1}
         destroy_item(356) --- Guess: Destroys item
-        unknown_0086H(itemref, 7) --- Guess: Sets item property
+        set_object_quality(itemref, 7) --- Guess: Sets item property
         unknown_008BH(2, itemref, 1572) --- Guess: Sets item event
         var_0002 = add_container_items(356, {8033, 1, 17447, 17516, 17456, 7769})
         if var_0002 then

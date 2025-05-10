@@ -5,7 +5,7 @@ function func_037D(eventid, itemref)
     if eventid == 1 then
         var_0000 = _get_object_quality(itemref)
         var_0001 = unknown_0033H()
-        unknown_0086H(itemref, 90)
+        set_object_quality(itemref, 90)
         if var_0000 == 1 then
             unknown_0089H(var_0001, 1)
         elseif var_0000 == 2 then

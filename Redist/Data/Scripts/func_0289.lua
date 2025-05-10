@@ -26,7 +26,7 @@ function func_0289(eventid, itemref)
             unknown_0835H(var_0001, 0, var_0000)
             unknown_0835H(var_0002, 1, var_0000)
             unknown_0835H(var_0003, 2, var_0000)
-            unknown_0086H(itemref, 72)
+            set_object_quality(itemref, 72)
             var_0004 = unknown_0001H({71, 8024, 1539, 8021, 1, 17449, 7715}, var_0000)
             unknown_006FH(itemref)
         else

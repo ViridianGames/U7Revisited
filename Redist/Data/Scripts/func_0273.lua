@@ -4,7 +4,7 @@ function func_0273(eventid, itemref)
 
     if eventid == 1 then
         var_0000 = object_select_modal()
-        unknown_0086H(itemref, 27)
+        set_object_quality(itemref, 27)
         var_0001 = get_object_shape(var_0000)
         var_0002 = _get_object_quality(var_0000)
         var_0003 = get_npc_quality(1, -356) >= random2(30, 1)
@@ -20,7 +20,7 @@ function func_0273(eventid, itemref)
                     var_0005 = unknown_0054H(704, var_0004, var_0004)
                 end
                 if not var_0003 then
-                    set_object_shape(800, var_0000)
+                    set_object_shape(var_0000, 800)
                     bark("Unlocked", var_0000)
                 else
                     bark("Pick broke", var_0000)

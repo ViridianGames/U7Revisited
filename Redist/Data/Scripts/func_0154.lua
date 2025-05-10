@@ -7,7 +7,7 @@ function func_0154(eventid, itemref)
         var_0000 = get_object_frame(itemref)
         var_0001 = object_select_modal()
         var_0002 = unknown_0031H(var_0001)
-        unknown_0086H(itemref, 90)
+        set_object_quality(itemref, 90)
         if not var_0002 then
             unknown_000FH(68)
             if var_0000 == 0 then

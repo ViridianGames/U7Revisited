@@ -4,7 +4,7 @@ function func_0282(eventid, itemref)
 
     if eventid == 1 then
         var_0000 = 137
-        unknown_0086H(itemref, 14)
+        set_object_quality(itemref, 14)
         unknown_0055H(itemref)
         var_0001 = itemref
         var_0002 = _get_object_quality(var_0001)

@@ -29,7 +29,7 @@ function func_0124(eventid, itemref)
         if var_0003[1] == var_0005[1] and var_0003[2] == var_0005[2] and get_flag(743) == false then
             set_flag(743, true)
             var_0007 = unknown_0053H(-1, 0, 0, 0, var_0005[2] + 1, var_0005[1] + 1, 17)
-            unknown_0086H(itemref, 62)
+            set_object_quality(itemref, 62)
             start_endgame()
             var_0007 = unknown_0024H(895)
             if not var_0007 then

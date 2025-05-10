@@ -5,14 +5,14 @@ function func_081F(eventid, itemref)
     var_0001 = unknown_081BH(eventid, itemref)
     if var_0001 == 1 then
         if unknown_081DH(7, 0, 0, 0, 845, eventid, itemref) then
-            unknown_0086H(itemref, 31)
+            set_object_quality(itemref, 31)
         else
             unknown_0818H()
             return false
         end
     elseif var_0001 == 0 then
         if unknown_081DH(7, 0, 0, 1, 845, eventid, itemref) then
-            unknown_0086H(itemref, 30)
+            set_object_quality(itemref, 30)
         else
             unknown_0818H()
             return false

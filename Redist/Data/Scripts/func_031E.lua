@@ -2,7 +2,7 @@
 function func_031E(eventid, itemref)
     if eventid == 1 then
         unknown_000DH(799, itemref)
-        unknown_0086H(itemref, 14)
+        set_object_quality(itemref, 14)
     end
     return
 end

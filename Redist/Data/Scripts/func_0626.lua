@@ -32,7 +32,7 @@ function func_0626(eventid, itemref)
                 end
             end
         end
-        unknown_0086H(itemref, 37) --- Guess: Sets item property
+        set_object_quality(itemref, 37) --- Guess: Sets item property
         unknown_006FH(itemref) --- Guess: Unknown object operation
     elseif var_0000 == 848 or var_0000 == 268 then
         if get_item_frame(itemref) ~= 2 then

@@ -12,7 +12,7 @@ function func_020E(eventid, itemref)
             if var_0001[1] == var_0005[1] and var_0001[2] == var_0005[2] and var_0001[3] == var_0005[3] then
                 unknown_006FH(var_0004)
                 unknown_000DH(889, itemref)
-                unknown_0086H(itemref, 46)
+                set_object_quality(itemref, 46)
             end
         end
     end

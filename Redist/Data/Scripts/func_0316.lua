@@ -11,7 +11,7 @@ function func_0316(eventid, itemref)
         else
             unknown_08FEH("@Do not waste that!@")
         end
-        unknown_0086H(itemref, 67)
+        set_object_quality(itemref, 67)
         unknown_0925H(itemref)
     end
 end

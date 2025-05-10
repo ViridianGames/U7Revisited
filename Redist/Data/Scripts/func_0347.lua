@@ -6,7 +6,7 @@ function func_0347(eventid, itemref)
         var_0000 = get_object_frame(itemref)
         if var_0000 == 1 and not get_flag(4) then
             func_0269(617, unknown_001BH(itemref))
-            unknown_0086H(itemref, 67)
+            set_object_quality(itemref, 67)
         end
     end
 end

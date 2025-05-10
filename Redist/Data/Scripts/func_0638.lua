@@ -19,7 +19,7 @@ function func_0638(eventid, itemref)
             end
         end
     end
-    unknown_0086H(itemref, 14) --- Guess: Sets item property
+    set_object_quality(itemref, 14) --- Guess: Sets item property
     unknown_0055H(itemref) --- Guess: Sets item state
     if var_0000 > 148 then
         add_dialogue("This is @not a @valid book")

@@ -19,7 +19,7 @@ function func_0314(eventid, itemref)
         else
             get_object_frame(var_0005 - 1, itemref)
         end
-        unknown_0086H(itemref, 28)
+        set_object_quality(itemref, 28)
         var_0006 = _get_object_quality(itemref)
         var_0007 = unknown_0035H(0, 15, 870, itemref)
         var_0008 = unknown_0035H(0, 15, 515, itemref)

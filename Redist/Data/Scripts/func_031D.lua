@@ -6,7 +6,7 @@ function func_031D(eventid, itemref)
     if var_0000 == 45 then
         unknown_0710H(itemref)
     end
-    unknown_0086H(14, itemref)
+    set_object_quality(itemref, 14)
     unknown_0055H(itemref)
     if var_0000 > 51 then
         add_dialogue("This is not a valid scroll")

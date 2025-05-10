@@ -9,14 +9,14 @@ function func_0188(eventid, itemref)
     if var_0000 == 1 then
         if unknown_081DH(7, 0, 0, 0, 225, itemref) then
             unknown_081EH(1, 0, 3, 0, 246, 2, 1, 250, itemref)
-            unknown_0086H(itemref, 31)
+            set_object_quality(itemref, 31)
         else
             unknown_0818H()
         end
     elseif var_0000 == 0 then
         if unknown_081DH(7, 0, 0, 1, 225, itemref) then
             unknown_081EH(7, -3, 0, 1, 246, 1, 0, 250, itemref)
-            unknown_0086H(itemref, 30)
+            set_object_quality(itemref, 30)
         else
             unknown_0818H()
         end
