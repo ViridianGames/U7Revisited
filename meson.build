@@ -1,6 +1,15 @@
 project('Ultima 7 Revisited', ['c', 'cpp'],
         version: '1.0.0',
-        default_options: ['warning_level=3'])
+        default_options: [
+            'warning_level=3',
+            'buildtype=release',
+            'optimization=3',
+            'debug=false',
+            'strip=true',
+            'b_lto=true',
+            'b_ndebug=if-release',
+            'cpp_std=c++17'
+        ])
 
 # Suppress float-to-int warnings (C4244)
 add_project_arguments('/wd4244', language: 'cpp')
