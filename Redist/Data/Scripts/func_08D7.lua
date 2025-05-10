@@ -6,7 +6,7 @@ function func_08D7()
     var_0000 = unknown_005AH()
     var_0001 = get_lord_or_lady()
     if not get_flag(440) then
-        unknown_0003H(0, -144)
+        switch_talk_to(144, 0)
         add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")
         set_flag(423, false)
         return

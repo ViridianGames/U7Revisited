@@ -138,7 +138,7 @@ function func_06F8(eventid, itemref)
                 unknown_0002H(7, 1784, {7765}, itemref)
                 return
             end
-            unknown_0003H(1, 286)
+            switch_talk_to(286, 1)
             add_dialogue("\"No! Thou must not do this!\" Erethian's voice is full of anguish. He raises his arms and begins a powerful spell.")
             add_dialogue("\"Vas Ort Rel Tym...\"")
             add_dialogue("He stops mid-spell and begins another, pointing towards the Talisman of Infinity.")

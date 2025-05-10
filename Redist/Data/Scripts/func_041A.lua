@@ -11,7 +11,7 @@ function func_041A(eventid, itemref)
     end
 
     start_conversation()
-    unknown_0003H(0, 26)
+    switch_talk_to(26, 0)
     var_0000 = unknown_0931H(1, 981, 1, 357, 359)
     if var_0000 then
         add_dialogue("Batlin's eyes narrow to red slits as he peers practically through you.")

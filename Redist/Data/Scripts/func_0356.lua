@@ -8,7 +8,7 @@ function func_0356(eventid, itemref)
         end
         var_0000 = get_object_frame(itemref)
         if var_0000 == 16 then
-            unknown_0003H(0, -287)
+            switch_talk_to(287, 0)
             if get_flag(780) then
                 add_dialogue("\"Our gratitude is thine, Avatar. Thou hast saved Britannia from what might have become a second Age of Darkness. Again, thou dost prove thy worthiness to be the instrument of Lord British.\"")
                 abort()
@@ -29,7 +29,7 @@ function func_0356(eventid, itemref)
                 abort()
             end
         elseif var_0000 == 14 then
-            unknown_0003H(1, -287)
+            switch_talk_to(287, 1)
             if get_flag(780) then
                 add_dialogue("\"Thy Love for life is boundless. Thine heart-felt actions are a shining example to all of Britannia.\"")
                 abort()
@@ -44,7 +44,7 @@ function func_0356(eventid, itemref)
             end
             abort()
         elseif var_0000 == 15 then
-            unknown_0003H(2, -287)
+            switch_talk_to(287, 2)
             if get_flag(780) then
                 add_dialogue("\"Thine onus is abated and Britannia is free of Exodus' grasp once more. Thy deeds will long be rembered as the most courageous in the history of this land.\"")
                 abort()
@@ -62,13 +62,13 @@ function func_0356(eventid, itemref)
     elseif eventid == 4 then
         var_0000 = get_object_frame(itemref)
         if var_0000 == 16 then
-            unknown_0003H(0, -287)
+            switch_talk_to(287, 0)
             add_dialogue("\"Thou hast mastered the Test of Truth, and so a boon of great intellect and magical ability will be bestowed upon thee. Use -- and respect -- thy powers well, Avatar.\"")
         elseif var_0000 == 14 then
-            unknown_0003H(1, -287)
+            switch_talk_to(287, 1)
             add_dialogue("\"My heart is gladdened to learn that Love is a Principle thou dost hold dear, evident by thy successful completion of the Test of Love. Now, then, shall a blessing of quickness and skill be thine.\"")
         elseif var_0000 == 15 then
-            unknown_0003H(2, -287)
+            switch_talk_to(287, 2)
             add_dialogue("\"Well done, mighty warrior! The unsurpassed Courage which flows through thy veins could be none other than that of the Avatar. Thou hast proven thyself worthy of the reward of Courage with Valor, Sacrifice, Honor, and Spirituality... Receive it now in Humility.\"")
         end
         unknown_0004H(-287)
@@ -92,7 +92,7 @@ function func_0356(eventid, itemref)
                 set_flag(790, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
             else
-                unknown_0003H(0, -287)
+                switch_talk_to(287, 0)
                 add_dialogue("\"Thou hast now experienced the full meaning of the Principle of Truth. The value of such is beyond measure, for truth shall guide thee throughout thy life's endeavors.\"")
                 add_dialogue("The statue's voice takes on a warning tone.~~\"Know this Truth: the Psyche returns to the Core...\" With that said, the statue becomes quiet once more.")
                 set_flag(789, false)
@@ -113,7 +113,7 @@ function func_0356(eventid, itemref)
                 set_flag(799, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
             else
-                unknown_0003H(1, -287)
+                switch_talk_to(287, 1)
                 add_dialogue("\"Now hast thou earnestly experienced all that is Love. 'Tis a benefit never to be taken lightly, for Love is a formidable motivator. Remember always the lessons in Compassion, Sacrifice, and Justice thou hast mastered.\"")
                 add_dialogue("The voice of the Keeper of Love fills with compassion as she speaks.~~\"Do have a care, Avatar. For a great evil stirs within Britannia, I know not the source.\"")
                 set_flag(789, false)
@@ -134,7 +134,7 @@ function func_0356(eventid, itemref)
                 set_flag(833, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
             else
-                unknown_0003H(2, -287)
+                switch_talk_to(287, 2)
                 add_dialogue("Urgency breaks into the voice of the statue.~~\"I lay upon thee a geas, and as thou art the Avatar, thou art bound to respond. Thy quest is to seek the Talisman of Infinity. Within this castle there lies a scroll which can tell thee of its use. Go now, for time grows short.\"")
                 set_flag(789, false)
                 abort()

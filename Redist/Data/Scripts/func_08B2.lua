@@ -3,7 +3,7 @@ function func_08B2()
     start_conversation()
     local var_0000
 
-    unknown_0003H(1, -141)
+    switch_talk_to(141, 1)
     var_0000 = unknown_0908H()
     add_dialogue("Horance looks at you curiously, \"Thy task is done here in Skara Brae. Thou hast my respect and lifelong gratitude.\"")
     if get_flag(380) then

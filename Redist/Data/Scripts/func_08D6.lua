@@ -17,11 +17,11 @@ function func_08D6()
             if string.lower(unknown_XXXXH()) == "sacrifice" then
                 remove_answer("sacrifice")
                 if not get_flag(413) then
-                    unknown_0003H(1, -142)
+                    switch_talk_to(142, 1)
                     add_dialogue("\"No, " .. var_0000 .. ". She is my life. If thou takest her, thou takest mine heart.\" Trent holds on tightly to his wife.")
                     set_flag(413, true)
                     unknown_0004H(-142)
-                    unknown_0003H(1, -144)
+                    switch_talk_to(144, 1)
                 else
                     add_dialogue("\"I cannot leave my lord like this. Surely thou canst understand, " .. var_0000 .. ".\"")
                 end

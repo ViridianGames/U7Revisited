@@ -24,7 +24,7 @@ function func_08F5(var_0000, var_0001)
         var_0012 = false
         if var_0011 == -1 then
             add_dialogue("\"Thy good health, sir. Many campaigns sit upon thy brow. It is an honor.\"")
-            unknown_0003H(0, -1)
+            switch_talk_to(1, 0)
             add_dialogue("\"Avatar, this stranger grows upon me by the moment. Surely he would be a boon travelling companion.\"")
             var_0013 = 0
             if unknown_08F7H(-3) then
@@ -34,31 +34,31 @@ function func_08F5(var_0000, var_0001)
                 var_0013 = -4
             end
             if var_0013 ~= 0 then
-                unknown_0003H(0, var_0013)
+                switch_talk_to(var_0013, 0)
                 add_dialogue("\"Oh, please.\"")
-                unknown_0003H(0, -1)
+                switch_talk_to(1, 0)
                 var_0014 = unknown_090FH(var_0013)
                 add_dialogue("\"Hush, " .. var_0014 .. ".\"")
             end
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             var_0012 = true
             var_0007 = true
         elseif var_0011 == -3 then
             add_dialogue("\"How art thou, Shamino? Thy woodcraft is renowned in Britannia.\"")
-            unknown_0003H(0, -3)
+            switch_talk_to(3, 0)
             add_dialogue("\"Renown follows those who travel with the Avatar. I thank thee.\"")
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             var_0012 = true
             var_0007 = true
         elseif var_0011 == -2 then
             add_dialogue("\"Greetings young man. How comes one so young into such company?\"")
-            unknown_0003H(0, -2)
+            switch_talk_to(2, 0)
             add_dialogue("\"I am an orphan! My father has been most cruelly murdered, mutilated in the stables of Trinsic.\"")
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             add_dialogue("\"That is a grievous tale! But surely the time for grief is past. Thou art in the company of great companions.\"")
-            unknown_0003H(0, -2)
+            switch_talk_to(2, 0)
             add_dialogue("\"Thou speakest rightly. I shall bring my father's murderer to justice or die in the attempt.\"")
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             var_0012 = true
         end
         if not var_0012 then
@@ -67,16 +67,16 @@ function func_08F5(var_0000, var_0001)
             var_0015 = {"May good fortune be thine.", "Good health to thee.", "Thou art looking quite well today."}
             var_0010 = var_0015[math.random(1, #var_0015)]
             add_dialogue("\"" .. var_0010 .. "\"")
-            unknown_0003H(0, var_0011)
+            switch_talk_to(var_0011, 0)
             add_dialogue("\"Glad to make thine aquaintance.\"")
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             var_0012 = true
         end
         if var_0007 and not get_flag(353) then
             add_dialogue("\"But did I hear thee say 'Avatar?' Say not that thy leader is the one -true- Avatar!\"")
-            unknown_0003H(0, var_0011)
+            switch_talk_to(var_0011, 0)
             add_dialogue("\"It is indeed true.\"")
-            unknown_0003H(0, -10)
+            switch_talk_to(10, 0)
             add_dialogue("\"'Tis an honor to meet thee, Avatar.\"")
             set_flag(353, true)
         end

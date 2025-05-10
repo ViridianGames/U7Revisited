@@ -5,7 +5,7 @@ function func_018A(eventid, itemref)
 
     var_0000 = unknown_001CH(unknown_001BH(394))
     if eventid == 1 then
-        unknown_0003H(0, -258)
+        switch_talk_to(258, 0)
         add_answer({"bye", "job", "name"})
         add_dialogue("You see a tough-looking palace guard who takes his job -very- seriously.")
         while true do

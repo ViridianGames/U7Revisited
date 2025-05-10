@@ -15,11 +15,11 @@ function func_08F0()
         if not unknown_XXXXH() then
             if string.lower(unknown_XXXXH()) == "sacrifice" then
                 if not get_flag(414) then
-                    unknown_0003H(1, -144)
+                    switch_talk_to(144, 1)
                     add_dialogue("\"No, " .. var_0000 .. ". Wouldst thou take my beloved from me so shortly after our reunion? Another will have to perform this terrible task.\" Rowena holds on tightly to her husband.")
                     set_flag(414, true)
                     unknown_0004H(-144)
-                    unknown_0003H(1, -142)
+                    switch_talk_to(142, 1)
                 else
                     add_dialogue("\"I cannot leave my lady like this. Surely thou dost understand, " .. var_0000 .. ".\"")
                 end

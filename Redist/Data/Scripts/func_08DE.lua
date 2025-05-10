@@ -3,7 +3,7 @@ function func_08DE()
     start_conversation()
     local var_0000, var_0001
 
-    unknown_0003H(0, -101)
+    switch_talk_to(101, 0)
     add_dialogue("The ape-like creature slowly and cautiously walks up to you. He, or she, sniffs for a moment, and then points to the honey you are carrying.")
     while true do
         add_answer({"Go away!", "Want honey?"})

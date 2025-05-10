@@ -54,12 +54,12 @@ function func_009A(eventid, itemref)
     elseif eventid == 2 then
         var_0013 = unknown_0908H()
         if get_flag(782) then
-            unknown_0003H(1, -286)
+            switch_talk_to(286, 1)
             add_dialogue("\"I'll speak to thee no more, Avatar!\" He ignores you.")
             return
         end
         if not get_flag(784) then
-            unknown_0003H(0, -286)
+            switch_talk_to(286, 0)
             add_dialogue("At your approach, the old man straightens and looking directly at you he says, \"Well met, " .. var_0013 .. ". I am called Erethian. Although thou dost not know me, I know thee well.")
             add_dialogue("I have seen thee destroy Mondain's power and so defeat that misguided mage, I have seen thee vanquish the enchantress Minax, I have also seen, in a very unique way, how thou brought low the hellspawn Exodus.")
             add_dialogue("He falls silent here and you notice that the old man's eyes are milky white.")
@@ -67,10 +67,10 @@ function func_009A(eventid, itemref)
             add_answer({"bye", "Exodus", "Minax", "Mondain", "job", "name"})
         else
             if get_flag(810) or get_flag(811) then
-                unknown_0003H(1, -286)
+                switch_talk_to(286, 1)
                 add_dialogue("\"I'll never get any work done like this! What do you wish of me?\" Erethian seems a little pevish at this point.")
             else
-                unknown_0003H(0, -286)
+                switch_talk_to(286, 0)
                 add_dialogue("\"Greetings once again, " .. var_0013 .. ". How may I assist thee?\" The blind old man looks unerringly in your direction.")
             end
             add_answer({"bye", "job", "name"})
@@ -108,13 +108,13 @@ function func_009A(eventid, itemref)
         while true do
             local response = string.lower(unknown_XXXXH())
             if response == "the psyche returns" then
-                unknown_0003H(0, -286)
+                switch_talk_to(286, 0)
                 add_dialogue("\"Could this possibly be true?\" Erethian's blind eyes light up with unabashed glee. \"What an opportunity I have here.\"")
-                unknown_0003H(1, -286)
+                switch_talk_to(286, 1)
                 add_dialogue("He once again notices your presence. \"Now, do not let any strange ideas of destruction enter thy mind, Avatar. I shan't let thee deprive me of this chance to experience a true wonder of the world. Run along now... Is there not a right to be wronged, somewhere else?")
                 remove_answer("the Psyche returns")
             elseif response == "great evil" then
-                unknown_0003H(1, -286)
+                switch_talk_to(286, 1)
                 add_dialogue("The elderly mage frowns. \"I sense no great evil, but then I never did quite get the knack of cosmic awareness. Nevertheless, don't worry thyself over much. These things tend to work themselves out.\" You feel as if you've just been patted on the head and asked to go play elsewhere.")
                 remove_answer("great evil")
             elseif response == "talisman of infinity" then
@@ -127,7 +127,7 @@ function func_009A(eventid, itemref)
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
                             unknown_0004H(-286)
-                            unknown_0003H(0, -292)
+                            switch_talk_to(292, 0)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
                             set_flag(782, true)
                             return
@@ -143,7 +143,7 @@ function func_009A(eventid, itemref)
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
                             unknown_0004H(-286)
-                            unknown_0003H(0, -292)
+                            switch_talk_to(292, 0)
                             add_dialogue("Arcadion's voice whispers to you like ripple in still pond, \"Fear not, my master. I have some knowledge of these matters.\"")
                             set_flag(782, true)
                             return
@@ -157,13 +157,13 @@ function func_009A(eventid, itemref)
                 add_dialogue("\"I once attempted to create a sword of great power.\" Erethian frowns in concentration then says, \"if thou wishest to continue my work, thou shalt have need of some few pieces of forging equipment... And a place to put them... I know just the spot. Come with me and I'll see what I can do to help thee.\"")
                 var_0015 = true
             elseif response == "black sword" then
-                unknown_0003H(1, -286)
+                switch_talk_to(286, 1)
                 add_dialogue("Erethian nods his head when you tell him of your dilemma with the black sword. \"Yes, I can see how the blade would be too clumsy to swing in combat. However, if thou were to bind a magical source of power into the hilt of the blade, thou mightest be able to counteract the unwieldy nature of the sword.\"")
                 if unknown_002AH(13, 359, 760, unknown_001BH(-356)) then
-                    unknown_0003H(0, -291)
+                    switch_talk_to(291, 0)
                     add_dialogue("The little gem sparks up at this turn of the conversation. \"I believe that in my current form, I could serve perfectly well as the blade's stabilizing force. In truth, this would allow me to give thee access to some of my more dramatic powers.\" The daemon sounds excited at this prospect, perhaps a little too excited.")
                     unknown_0004H(-291)
-                    unknown_0003H(1, -286)
+                    switch_talk_to(286, 1)
                     add_dialogue("Erethian's voice is quiet as he says, \"Consider well before thou bindest Arcadion into the sword. For it is true that he will be able to solve the sword's problem of balance, but will he be able to solve his own problems as well?\"")
                     add_answer("problems")
                 elseif not get_flag(815) then
@@ -205,13 +205,13 @@ function func_009A(eventid, itemref)
                 add_dialogue("She became a power unto herself, in time. I do not think she quite rivaled her former mentor, Mondain, but she was a force to be reckoned with, nevertheless.")
                 add_dialogue("And that thou didst, with the Quicksword, Enilno. That act will most likely have tales sung about it for the next eon.\" Under his breath he adds, \"Even if Iolo's the only one who sings it.\"")
                 if unknown_000EH(40, 465, itemref) then
-                    unknown_0003H(0, -1)
+                    switch_talk_to(1, 0)
                     add_dialogue("With a look of indignation Iolo says, \"Pardon me, sir. But I'll have thee know that ballads of the Avatar still grace all of the finest drinking establishments of Britannia.\"")
-                    unknown_0003H(0, -286)
+                    switch_talk_to(286, 0)
                     add_dialogue("\"And what a dubious distinction that is.\" The corners of the mage's mouth come up in a delicate smile.")
-                    unknown_0003H(0, -1)
+                    switch_talk_to(1, 0)
                     add_dialogue("An angry retort dies on Iolo's lips as the elderly mage lifts his hands in a gesture of peace.")
-                    unknown_0003H(0, -286)
+                    switch_talk_to(286, 0)
                     add_dialogue("\"Please, forgive the offense I have given. Thou shouldst know that I have seen, almost first hand, the Avatar's bravery in the face of adversity.")
                     add_dialogue("I have nothing but the highest regard for the Destroyer of the Age of Darkness and Harbinger of the Age of Enlightenment.")
                     unknown_0004H(-1)
@@ -321,12 +321,12 @@ function func_009A(eventid, itemref)
             elseif response == "daemon gem" then
                 add_dialogue("\"So... thou hast made a servant of Arcadion. 'Tis good to be rid of his incessant whining. I hope that thou findest him to be as useful as I didst.\" You're not sure, but his words might be construed as a curse.")
                 if unknown_002AH(13, 359, 760, unknown_001BH(-356)) then
-                    unknown_0003H(0, -291)
+                    switch_talk_to(291, 0)
                     add_dialogue("The gem glows brighter, \"'Tis good to see the last of thee, also, old man. Perhaps in another life, I shall be thy master, and thou the slave.\" The daemon lets out a chilling little laugh.")
                     unknown_0004H(-291)
-                    unknown_0003H(1, -286)
+                    switch_talk_to(286, 1)
                     add_dialogue("Erethian looks a little shaken at hearing the daemon's voice, but quickly recovers his composure. \"I think not, daemon. I'm not at all sure that there is a way for thou to get out of that little gem.\" The elderly mage's expression is unreadable.")
-                    unknown_0003H(0, -286)
+                    switch_talk_to(286, 0)
                 end
                 remove_answer("daemon gem")
             elseif response == "daemon blade" then

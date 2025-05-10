@@ -3,7 +3,7 @@ function func_06F6(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030
 
     if not get_flag(815) then
-        unknown_0003H(0, 290)
+        switch_talk_to(290, 0)
         var_0000 = false
         var_0001 = unknown_0035H(8, 10, 154, itemref)
         for i = 1, #var_0001 do
@@ -14,13 +14,13 @@ function func_06F6(eventid, itemref)
         end
         if var_0000 then
             add_dialogue("\"Yes, Master. How may I serve thee?\" The dark form in the mirror bows deeply.")
-            unknown_0003H(1, 286)
+            switch_talk_to(286, 1)
             var_0005 = "Erethian"
             if not get_flag(784) then
                 var_0005 = "the mage"
             end
             add_dialogue("Suprised, " .. var_0005 .. " looks around and says, \"I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!\" The old man waves his hand, negligently.")
-            unknown_0003H(0, 290)
+            switch_talk_to(290, 0)
             add_dialogue("Through a tightly clenched smile, the figure replies, \"Very well...\" And after a significant pause, \"Master.\"*")
             unknown_0843H()
         else
@@ -42,11 +42,11 @@ function func_06F6(eventid, itemref)
         end
     else
         if not get_flag(787) then
-            unknown_0003H(0, 292)
+            switch_talk_to(292, 0)
             add_dialogue("The sword glimmers darkly as you speak to it. \"Greetings, my master. And how can thy humble servant aid thee?\" The daemon's voice has regained much of its oddly disturbing humor.")
             set_flag(787, true)
         else
-            unknown_0003H(0, 292)
+            switch_talk_to(292, 0)
             add_dialogue("\"Yes, master. What dost thou seek of thy servant?\" Arcadion asks you in a deep, harmonic voice.")
         end
         add_answer({"powers", "bye", "job", "name"})
@@ -99,23 +99,23 @@ function func_06F6(eventid, itemref)
                 var_0011 = unknown_0033H()
                 var_0017 = unknown_0011H(var_0011)
                 var_0018 = unknown_0018H(var_0011)
-                unknown_0003H(0, 292)
+                switch_talk_to(292, 0)
                 if not unknown_0031H(var_0011) then
                     if var_0017 == 721 or var_0017 == 989 then
                         add_dialogue("The daemon speaks with a sanctimonious tone. \"I could not in honor take the life of my most wondrous master.\"")
                     elseif var_0017 == 466 and unknown_0019H(var_0011, 356) < 5 then
                         add_dialogue("\"Yes! I have long sought the end of Lord British, my traitorous master.\"")
                         var_0019 = unknown_0908H()
-                        unknown_0003H(0, 23)
+                        switch_talk_to(23, 0)
                         add_dialogue("\"" .. var_0019 .. ", for what reason art thou brandishing that black sword in my presence?\"")
                         unknown_0004H(292)
-                        unknown_0003H(0, 356)
+                        switch_talk_to(356, 0)
                         add_dialogue("The daemon responds, using your mouth. \"This blade is thy doom,...\" You spit the words, \"Lord British!\"")
-                        unknown_0003H(0, 23)
+                        switch_talk_to(23, 0)
                         add_dialogue("Lord British looks truly taken aback, his eyes narrow calculatingly. \"What foul treachery is this?\"")
-                        unknown_0003H(0, 356)
+                        switch_talk_to(356, 0)
                         add_dialogue("You find yourself unable to respond, and your muscles are clenching as if to lash out with the wicked blade in your hand.")
-                        unknown_0003H(0, 23)
+                        switch_talk_to(23, 0)
                         add_dialogue("\"Perhaps when thou art sitting in a dungeon, thy tongue will loosen.\"")
                         add_dialogue("\"Guards!\"*")
                         var_0014 = true
@@ -123,10 +123,10 @@ function func_06F6(eventid, itemref)
                         add_dialogue("\"Alas master, this one is protected by a power greater than mine. His destiny lies elsewhere.\"")
                     elseif var_0017 == 504 and unknown_0019H(var_0011, 356) < 5 and not unknown_002AH(4, 241, 797, var_0011) then
                         add_dialogue("\"Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.\"")
-                        unknown_0003H(0, 293)
+                        switch_talk_to(293, 0)
                         add_dialogue("The dragon responds with great resignation. \"My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.\"")
                         unknown_0004H(293)
-                        unknown_0003H(0, 292)
+                        switch_talk_to(292, 0)
                         add_dialogue("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*")
                         var_0015 = true
                     elseif var_0017 == 154 and unknown_0019H(var_0011, 356) < 5 and not unknown_002AH(4, 240, 797, var_0011) then

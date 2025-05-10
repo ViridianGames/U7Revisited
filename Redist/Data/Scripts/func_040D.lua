@@ -7,7 +7,7 @@ function func_040D(eventid, itemref)
     end
 
     start_conversation()
-    unknown_0003H(0, -13)
+    switch_talk_to(13, 0)
     var_0000 = unknown_003BH()
     add_answer({"bye", "murder", "job", "name"})
     if not get_flag(61) then

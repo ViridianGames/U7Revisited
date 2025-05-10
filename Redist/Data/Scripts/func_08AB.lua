@@ -9,7 +9,7 @@ function func_08AB()
     var_0003 = unknown_08F7H(-22)
     var_0004 = unknown_08F7H(-1)
     var_0005 = unknown_08F7H(-2)
-    unknown_0003H(0, -16)
+    switch_talk_to(16, 0)
     add_dialogue("Klog is leading the town members in a Fellowship meeting.")
     add_dialogue("\"Thank you, Fellowship members of Trinsic, for attending our meeting this evening.\"~~\"I am certain you are all sorely aware of the crimes that have been committed in our city. Now is a time to mourn those whom we have lost. We will always remember Christopher, our blacksmith, as a valuable citizen of our town as well as a dear friend. Inamo was an amiable and hard-working gargoyle. As their deaths show us, Britannia needs The Fellowship now more than ever.\"")
     add_dialogue("\"The Fellowship was created to advance a philosophy, a method of applying an optimistic order of thought to one's life. How dost thou follow this method? By applying the Triad of Inner Strength to thy life. The Triad is composed of three principles that, when applied in unison to thy life, can soothe the fever of a society that teaches thee to accept failure and banishes the destructive illusory thoughts and feelings from thy spirit.\"")
@@ -19,38 +19,38 @@ function func_08AB()
     add_dialogue("\"We must spread the philosophy to everyone who can hear it. For who is there to lift the disunited, mistrustful, and unworthy Britannia up from its sad state but we of The Fellowship?\"")
     add_dialogue("\"And now is the time we ask each of our members to give testimonial aloud, and tell how walking with The Fellowship has affected their life.\"")
     if var_0001 then
-        unknown_0003H(0, -236)
+        switch_talk_to(236, 0)
         add_dialogue("\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
         unknown_0004H(-236)
     end
     if var_0000 then
-        unknown_0003H(0, -14)
+        switch_talk_to(14, 0)
         add_dialogue("\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
         unknown_0004H(-14)
     end
     if var_0002 then
-        unknown_0003H(0, -18)
+        switch_talk_to(18, 0)
         add_dialogue("\"The Fellowship has made me a happier, more agreeable person.\"")
-        unknown_0003H(0, -16)
+        switch_talk_to(16, 0)
         add_dialogue("\"Thank thee for sharing, brother!\"")
         unknown_0004H(-18)
     end
     if var_0003 then
-        unknown_0003H(0, -22)
+        switch_talk_to(22, 0)
         add_dialogue("\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
         unknown_0004H(-22)
     end
     if var_0005 then
-        unknown_0003H(0, -2)
+        switch_talk_to(2, 0)
         add_dialogue("Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
         unknown_0004H(-2)
     end
     if var_0004 then
-        unknown_0003H(0, -1)
+        switch_talk_to(1, 0)
         add_dialogue("Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
         unknown_0004H(-1)
     end
-    unknown_0003H(0, -16)
+    switch_talk_to(16, 0)
     add_dialogue("It is apparent that the meeting will be continuing for some time... You decide you have more important matters to attend to.")
     return
 end

@@ -6,7 +6,7 @@ function func_0326(eventid, itemref)
         abort()
     end
     var_0000 = unknown_001CH(unknown_001BH(itemref))
-    unknown_0003H(0, -259)
+    switch_talk_to(259, 0)
     add_answer({"bye", "job", "name"})
     if not get_flag(61) then
         add_answer("password")

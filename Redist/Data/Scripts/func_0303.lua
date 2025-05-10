@@ -21,7 +21,7 @@ function func_0303(eventid, itemref)
             if not var_0005 and not var_0004 then
                 unknown_0075H(true)
             else
-                unknown_0003H(0, -26)
+                switch_talk_to(26, 0)
                 add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
                 unknown_0004H(-26)
                 abort()

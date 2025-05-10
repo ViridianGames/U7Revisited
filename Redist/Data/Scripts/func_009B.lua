@@ -4,7 +4,7 @@ function func_009B(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        unknown_0003H(0, -285)
+        switch_talk_to(285, 0)
         var_0000 = unknown_08F7H(-2)
         var_0001 = unknown_08F7H(-3)
         var_0002 = unknown_0908H()
@@ -48,25 +48,25 @@ function func_009B(eventid, itemref)
                 if not get_flag(407) then
                     add_dialogue("He turns all the way around and points across the water to the west. \"There... \"")
                     if not (var_0001 and var_0000) then
-                        unknown_0003H(0, -3)
+                        switch_talk_to(3, 0)
                         add_dialogue("\"Er... " .. var_0002 .. ", art thou sure we need to go over there?\"")
                         unknown_0004H(-3)
-                        unknown_0003H(0, -2)
+                        switch_talk_to(2, 0)
                         add_dialogue("\"What's the matter, Shamino? Art thou -afraid-?\"")
                         unknown_0004H(-2)
-                        unknown_0003H(0, -3)
+                        switch_talk_to(3, 0)
                         add_dialogue("\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
                         unknown_0004H(-3)
                         var_0003 = unknown_08F7H(-1)
                         if var_0003 then
-                            unknown_0003H(0, -1)
+                            switch_talk_to(1, 0)
                             add_dialogue("Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")
                             unknown_0004H(-1)
-                            unknown_0003H(0, -2)
+                            switch_talk_to(2, 0)
                             add_dialogue("\"No, sir. I am not afraid of a skeleton,\" he says. As he looks at the ferryman, however, he gulps.")
                             unknown_0004H(-2)
                         end
-                        unknown_0003H(0, -285)
+                        switch_talk_to(285, 0)
                     end
                 else
                     add_dialogue("The gaunt figure looks around as if perplexed. \"This... is Skara Brae.\"")

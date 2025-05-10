@@ -26,7 +26,7 @@ function func_040C(eventid, itemref)
     end
 
     start_conversation()
-    unknown_0003H(0, -12)
+    switch_talk_to(12, 0)
     var_0000 = get_lord_or_lady()
     var_0001 = unknown_0908H()
     var_0002 = get_flag(-1)
@@ -73,7 +73,7 @@ function func_040C(eventid, itemref)
             unknown_0004H(-12)
             var_0006 = get_flag(-1)
             if not var_0006 then
-                unknown_0003H(0, -1)
+                switch_talk_to(1, 0)
                 add_dialogue("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
                 unknown_0004H(-1)
             end
@@ -87,19 +87,19 @@ function func_040C(eventid, itemref)
         var_0006 = get_flag(-1)
         if not var_0006 then
             add_dialogue("\"Iolo! Who is this stranger?\"")
-            unknown_0003H(0, -1)
+            switch_talk_to(1, 0)
             add_dialogue("\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. var_0001 .. ", the Avatar!\"")
             if var_0003 then
                 add_dialogue("\"I simply cannot believe she is here!\"")
             else
                 add_dialogue("\"I simply cannot believe he is here!\"")
             end
-            unknown_0003H(0, -12)
+            switch_talk_to(12, 0)
             add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
-            unknown_0003H(0, -1)
+            switch_talk_to(1, 0)
             add_dialogue("\"I swear to thee, it is the Avatar!\"")
             unknown_0004H(-1)
-            unknown_0003H(0, -12)
+            switch_talk_to(12, 0)
         else
             add_dialogue("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
         end
@@ -112,14 +112,14 @@ function func_040C(eventid, itemref)
             var_0007 = get_flag(-11)
             if not var_0007 then
                 add_dialogue("\"Petre here knows something about all of this.\"")
-                unknown_0003H(0, -11)
+                switch_talk_to(11, 0)
                 add_dialogue("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
                 unknown_0004H(-11)
             else
-                unknown_0003H(0, -12)
+                switch_talk_to(12, 0)
                 add_dialogue("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
             end
-            unknown_0003H(0, -12)
+            switch_talk_to(12, 0)
             add_dialogue("The Mayor continues. \"Hast thou searched the stables?\"")
             unknown_0885H()
         else

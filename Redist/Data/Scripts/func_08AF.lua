@@ -3,7 +3,7 @@ function func_08AF()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 
-    unknown_0003H(1, -141)
+    switch_talk_to(141, 1)
     var_0000 = unknown_0023H()
     if not (unknown_001BH(-147) in var_0000) then
         add_dialogue("\"Is there a problem? Art thou confounded by thy task?\"")

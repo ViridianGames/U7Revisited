@@ -5,7 +5,7 @@ function func_0269(eventid, itemref)
     if eventid == 0 then
         abort()
     end
-    unknown_0003H(0, -284)
+    switch_talk_to(284, 0)
     var_0000 = unknown_0931H(0, -359, 839, 1, -357)
     if get_flag(4) and not get_flag(18) then
         add_dialogue("\"Congratulations, Avatar, on destroying the Sphere. I am free from my celestial prison. I thank thee. But I regret to inform thee that The Guardian engineered the Sphere such that its destruction has permanently disabled the Moongates, and thine Orb of the Moons as well. Thou canst not return to thine home by way of a red Moongate.\"")

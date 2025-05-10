@@ -3,7 +3,7 @@ function func_08AD()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 
-    unknown_0003H(1, -141)
+    switch_talk_to(141, 1)
     var_0000 = get_lord_or_lady()
     var_0001 = unknown_0908H()
     if not get_flag(429) then

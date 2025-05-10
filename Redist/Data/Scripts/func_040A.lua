@@ -10,7 +10,7 @@ function func_040A(eventid, itemref)
     end
 
     start_conversation()
-    unknown_0003H(0, -10)
+    switch_talk_to(10, 0)
     var_0000 = unknown_0908H()
     var_0001 = get_lord_or_lady()
     var_0002 = get_party_members()

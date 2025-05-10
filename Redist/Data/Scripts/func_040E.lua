@@ -7,7 +7,7 @@ function func_040E(eventid, itemref)
     end
 
     start_conversation()
-    unknown_0003H(0, -14)
+    switch_talk_to(14, 0)
     var_0000 = unknown_003BH()
     if var_0000 == 7 then
         var_0001 = unknown_08FCH(-16, -14)
