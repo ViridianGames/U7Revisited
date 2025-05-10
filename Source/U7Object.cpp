@@ -46,6 +46,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_isEgg = false;
    m_hasGump = false;
    m_inventory.clear();
+   m_hasConversationTree = false;
 }
 
 void U7Object::Draw()
