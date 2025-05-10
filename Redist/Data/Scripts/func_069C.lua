@@ -10,7 +10,7 @@ function func_069C(eventid, itemref)
     unknown_000FH(68)
     var_0002 = unknown_0001H(itemref, {1694, 8021, 8, 17447, 8033, 2, 17447, 8048, 3, 17447, 8047, 4, 7769})
     var_0003 = unknown_0881H()
-    if not _IsPlayerFemale() then
+    if not is_player_female() then
         var_0004 = unknown_0001H(var_0003, {20, 7750})
     else
         var_0004 = unknown_0001H(var_0003, {18, 7750})

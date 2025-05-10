@@ -22,7 +22,7 @@ function func_062E(eventid, itemref)
             unknown_007EH()
         end
     elseif eventid == 2 or var_0000 then
-        var_0004 = _ItemSelectModal()
+        var_0004 = object_select_modal()
         var_0005 = get_object_shape(var_0004)
         if var_0005 == 261 then
             var_0006 = {-2, -1, 0}

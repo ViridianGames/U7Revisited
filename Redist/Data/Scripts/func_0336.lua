@@ -5,7 +5,7 @@ function func_0336(eventid, itemref)
     if eventid == 1 then
         var_0000 = get_object_frame(itemref)
         if var_0000 == 0 then
-            var_0001 = _ItemSelectModal()
+            var_0001 = object_select_modal()
             var_0002 = get_object_shape(var_0001)
             if var_0002 == 730 or var_0002 == 864 then
                 get_object_frame(1, itemref)
@@ -17,7 +17,7 @@ function func_0336(eventid, itemref)
                 unknown_08FEH("@Those are for babies.@")
             end
         elseif var_0000 == 1 then
-            var_0001 = _ItemSelectModal()
+            var_0001 = object_select_modal()
             if unknown_0031H(var_0001) then
                 unknown_001DH(0, var_0001)
                 unknown_004BH(7, var_0001)

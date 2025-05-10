@@ -6,7 +6,7 @@ function func_066F(eventid, itemref)
         if eventid == 2 then
             var_0002 = 25
             var_0003 = unknown_0035H(4, var_0002, -1, itemref)
-            var_0004 = _GetPartyMembers()
+            var_0004 = get_party_members()
             for var_0005 in ipairs(var_0003) do
                 if not table.contains(var_0004, var_0007) then
                     unknown_005CH(var_0007)

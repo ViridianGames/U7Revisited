@@ -37,7 +37,7 @@ function func_048F(eventid, itemref)
     if not get_flag(464) and not get_flag(448) then
         add_answer("ingredients")
     end
-    var_000A = _GetPartyMembers()
+    var_000A = get_party_members()
     if unknown_0088H(unknown_001BH(144), 6) then
         unknown_08C1H()
     end

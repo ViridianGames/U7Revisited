@@ -9,7 +9,7 @@ function func_082F()
         var_0003 = unknown_0018H(var_0000[1])
         var_0004 = unknown_0035H(0, 10, 644, var_0000[1])
         var_0005 = unknown_0018H(itemref)
-        if _GetTimeHour() >= 15 or _GetTimeHour() <= 3 then
+        if get_time_hour() >= 15 or get_time_hour() <= 3 then
             for var_0006 in ipairs(var_0004) do
                 var_0009 = unknown_0018H(var_0008)
                 if var_0009[1] <= var_0003[1] and var_0009[1] >= var_0003[1] - 5 and var_0009[2] <= var_0003[2] + 8 and var_0009[2] >= var_0003[2] - 8 then

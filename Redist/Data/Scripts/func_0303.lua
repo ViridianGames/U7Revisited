@@ -5,7 +5,7 @@ function func_0303(eventid, itemref)
     if eventid == 4 then
         var_0000 = itemref
     else
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
     end
     if var_0000 then
         unknown_007EH()
@@ -28,6 +28,6 @@ function func_0303(eventid, itemref)
             end
         end
         unknown_000FH(62)
-        _StartEndgame()
+        start_endgame()
     end
 end

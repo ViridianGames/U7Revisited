@@ -3,11 +3,11 @@ function func_0289(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         if not unknown_0031H(var_0000) then
-            var_0001 = _GetNPCProperty(0, var_0000)
-            var_0002 = _GetNPCProperty(1, var_0000)
-            var_0003 = _GetNPCProperty(2, var_0000)
+            var_0001 = get_npc_quality(0, var_0000)
+            var_0002 = get_npc_quality(1, var_0000)
+            var_0003 = get_npc_quality(2, var_0000)
             if var_0001 + 5 > 30 then
                 var_0001 = 30
             else

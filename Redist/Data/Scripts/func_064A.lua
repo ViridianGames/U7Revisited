@@ -22,7 +22,7 @@ function func_064A(eventid, itemref)
         var_0008 = unknown_0035H(176, var_0002, 522, itemref)
         var_0009 = table.insert(var_0007, var_0008)
         for var_000A in ipairs(var_0009) do
-            if _GetItemQuality(var_0006) == 255 then
+            if _get_object_quality(var_0006) == 255 then
                 var_0000 = unknown_0002H(5, {1610, 17493, 7715}, var_0006)
             end
         end

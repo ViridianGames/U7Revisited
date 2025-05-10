@@ -10,7 +10,7 @@ function func_083D()
     var_0002 = var_0001[1]
     var_0003 = var_0001[2]
     var_0004 = unknown_083CH(0, var_0000)
-    if not _NPCInParty(-232) then
+    if not npc_in_party(-232) then
         for var_0005 in ipairs(var_0004) do
             unknown_0089H(var_0007, 11)
         end

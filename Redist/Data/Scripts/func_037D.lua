@@ -3,7 +3,7 @@ function func_037D(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        var_0000 = _GetItemQuality(itemref)
+        var_0000 = _get_object_quality(itemref)
         var_0001 = unknown_0033H()
         unknown_0086H(itemref, 90)
         if var_0000 == 1 then

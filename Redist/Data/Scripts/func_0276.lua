@@ -3,7 +3,7 @@ function func_0276(eventid, itemref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
     else
         var_0000 = itemref
     end

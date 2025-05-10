@@ -13,11 +13,11 @@ function func_040A(eventid, itemref)
     unknown_0003H(0, -10)
     var_0000 = unknown_0908H()
     var_0001 = unknown_0909H()
-    var_0002 = _GetPartyMembers()
+    var_0002 = get_party_members()
     var_0003 = unknown_093CH(unknown_001BH(-356))
     var_0004 = unknown_001BH(-10)
     var_0005 = unknown_001BH(-6)
-    var_0006 = _IsPlayerFemale() == 0 and "Abraham" or "Elizabeth"
+    var_0006 = is_player_female() == 0 and "Abraham" or "Elizabeth"
     var_0007 = #var_0002
     var_0008 = var_0007 > 1 and "s" or ""
     var_0009 = 0
@@ -402,7 +402,7 @@ function func_040A(eventid, itemref)
                     add_dialogue("\"Thy pardon, " .. var_0001 .. ", but thy visage brings to my mind a statue that I once saw.  'Twas a likeness of the ancient hero known as the Avatar.")
                     add_dialogue("Art thou not that same honorable soul?\"")
                     if unknown_090AH() then
-                        var_002A = _IsPlayerFemale() == 1 and "Thou art more fair by far than any likeness in stone could portray." or "That sculptor did thee justice."
+                        var_002A = is_player_female() == 1 and "Thou art more fair by far than any likeness in stone could portray." or "That sculptor did thee justice."
                         add_dialogue("\"Noble hero, it is an honor to make thine aquaintance. " .. var_002A .. "\"")
                         set_flag(353, true)
                     else

@@ -30,7 +30,7 @@ function func_040C(eventid, itemref)
     var_0000 = unknown_0909H()
     var_0001 = unknown_0908H()
     var_0002 = get_flag(-1)
-    var_0003 = _IsPlayerFemale()
+    var_0003 = is_player_female()
     if get_flag(90) and not get_flag(72) then
         add_dialogue("\"Hast thou properly searched the stables?\"")
         if unknown_090AH() then

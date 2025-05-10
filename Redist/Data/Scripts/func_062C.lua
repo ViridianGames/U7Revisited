@@ -19,11 +19,11 @@ function func_062C(eventid, itemref)
 
     var_000E = get_container_objects(4, 359, 797, var_0001)
     var_000F = unknown_0001H(var_0000, {17453, 17452, 7715})
-    if _GetItemQuality(var_000E) == 243 then
+    if _get_object_quality(var_000E) == 243 then
         unknown_08E6H(var_0001)
         set_flag(753, false)
         set_flag(795, true)
-    elseif _GetItemQuality(var_000E) == 244 then
+    elseif _get_object_quality(var_000E) == 244 then
         unknown_08E6H(var_0001)
         set_flag(796, false)
         set_flag(754, false)

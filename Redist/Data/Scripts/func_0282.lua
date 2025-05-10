@@ -7,7 +7,7 @@ function func_0282(eventid, itemref)
         unknown_0086H(itemref, 14)
         unknown_0055H(itemref)
         var_0001 = itemref
-        var_0002 = _GetItemQuality(var_0001)
+        var_0002 = _get_object_quality(var_0001)
         if var_0002 > var_0000 then
             add_dialogue("This is @not a @valid book")
         elseif var_0002 == 0 then

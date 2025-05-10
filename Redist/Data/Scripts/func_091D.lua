@@ -4,7 +4,7 @@ function func_091D(P0, P1)
 
     var_0000 = unknown_0910H(0, P1)
     var_0001 = unknown_0910H(3, P1)
-    var_0002 = _GetPlayerName(P1)
+    var_0002 = get_player_name(P1)
     if var_0000 > var_0001 then
         var_0003 = var_0000 - var_0001
         var_0004 = unknown_0912H(var_0003, 3, P1)

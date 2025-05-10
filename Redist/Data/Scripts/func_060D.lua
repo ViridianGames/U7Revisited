@@ -7,7 +7,7 @@ function func_060D(eventid, itemref)
     end
 
     var_0000 = unknown_0035H(0, 10, 410, itemref)
-    var_0001 = _GetItemQuality(var_0000)
+    var_0001 = _get_object_quality(var_0000)
     var_0002 = {915, 916, 914}
     var_0003 = var_0002[var_0001]
     if random2(20, 1) == 1 then

@@ -52,7 +52,7 @@ function func_060A(eventid, itemref)
     end
 
     var_0007 = false
-    if not _NPCInParty(232) then
+    if not npc_in_party(232) then
         var_0008 = {}
         var_0009 = ""
     else

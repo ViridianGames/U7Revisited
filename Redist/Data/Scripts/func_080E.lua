@@ -2,7 +2,7 @@
 function func_080E(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
-    for var_0000 in ipairs(_GetPartyMembers()) do
+    for var_0000 in ipairs(get_party_members()) do
         if get_object_shape(var_0003) == 870 then
             var_0004 = unknown_0018H(var_0003)
             var_0005 = var_0004[1]

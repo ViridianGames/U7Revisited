@@ -6,7 +6,7 @@ function func_066A(eventid, itemref)
         return
     end
 
-    var_0000 = _ItemSelectModal()
+    var_0000 = object_select_modal()
     var_0001 = unknown_092DH(var_0000)
     unknown_005CH(itemref)
     var_0002 = {902, 900, 895, 768}

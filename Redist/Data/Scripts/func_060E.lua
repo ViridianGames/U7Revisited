@@ -4,8 +4,8 @@ function func_060E(eventid, itemref)
 
     if eventid == 4 then
         unknown_008CH(0, 1, 12)
-        _PlayMusic(0, 255)
-        _PlayMusic(0, 17)
+        play_music(0, 255)
+        play_music(0, 17)
         unknown_0083H()
         var_0000 = unknown_0093H(itemref)
         for var_0003 in ipairs(var_0000) do
@@ -59,8 +59,8 @@ function func_060E(eventid, itemref)
                 unknown_008AH(var_0018, 2)
                 unknown_008AH(var_0018, 0)
                 unknown_008AH(var_0018, 9)
-                var_0004 = _SetNPCProperty(var_0018, 0, _GetNPCProperty(var_0018, 3) - _GetNPCProperty(var_0018, 3))
-                var_0004 = _SetNPCProperty(var_0018, 5, _GetNPCProperty(var_0018, 6) - _GetNPCProperty(var_0018, 5))
+                var_0004 = set_npc_quality(var_0018, 0, get_npc_quality(var_0018, 3) - get_npc_quality(var_0018, 3))
+                var_0004 = set_npc_quality(var_0018, 5, get_npc_quality(var_0018, 6) - get_npc_quality(var_0018, 5))
                 unknown_001DH(var_0018, 31)
             end
             var_001A = var_0017

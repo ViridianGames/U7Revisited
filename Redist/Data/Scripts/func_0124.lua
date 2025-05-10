@@ -30,7 +30,7 @@ function func_0124(eventid, itemref)
             set_flag(743, true)
             var_0007 = unknown_0053H(-1, 0, 0, 0, var_0005[2] + 1, var_0005[1] + 1, 17)
             unknown_0086H(itemref, 62)
-            _StartEndgame()
+            start_endgame()
             var_0007 = unknown_0024H(895)
             if not var_0007 then
                 unknown_0089H(18, var_0007)
@@ -46,7 +46,7 @@ function func_0124(eventid, itemref)
         end
         var_0008 = func_080BH(var_0008)
         if var_0008 > 1 then
-            var_0009 = _GetPartyMembers()
+            var_0009 = get_party_members()
             var_000A = {}
             var_000B = {}
             var_000C = {}

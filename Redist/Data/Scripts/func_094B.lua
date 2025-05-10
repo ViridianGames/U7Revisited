@@ -12,7 +12,7 @@ function func_094B(P0, P1)
         if not var_0004 then
             add_dialogue("\"To be my final offer -- " .. var_0001 .. ".\"")
         else
-            var_0006 = _GetPlayerName(P0)
+            var_0006 = get_player_name(P0)
             add_dialogue("\"To want " .. var_0001 .. " gold.\"")
         end
         var_0007 = var_0001 * 3

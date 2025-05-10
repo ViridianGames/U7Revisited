@@ -7,7 +7,7 @@ function func_088A()
     add_dialogue("\"Well, then. It has got to be done! And since no other brave soul will do it, perhaps I shall have to show them all what real courage is.\" He strides forward like a lord and plants his feet. \"Please be kind enough to lead me to the well, " .. var_0000 .. ".\"")
     remove_answer("sacrifice")
     var_0001 = 0
-    var_0002 = _GetPartyMembers()
+    var_0002 = get_party_members()
     var_0003 = unknown_001BH(-8)
     var_0004 = unknown_001BH(-9)
     for var_0005 in ipairs(var_0002) do

@@ -4,7 +4,7 @@ function func_0296(eventid, itemref)
 
     if eventid == 1 or eventid == 4 then
         unknown_007EH()
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         var_0001 = unknown_0001H({17505, 7783}, -356)
         if not unknown_0090H({var_0000[2], var_0000[3], var_0000[4]}) then
             unknown_006AH(0)

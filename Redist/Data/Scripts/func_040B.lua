@@ -12,8 +12,8 @@ function func_040B(eventid, itemref)
 
     start_conversation()
     var_0000 = unknown_0909H()
-    var_0001 = _GetPartyMembers()
-    var_0002 = _IsPlayerFemale()
+    var_0001 = get_party_members()
+    var_0002 = is_player_female()
     add_answer({"bye", "job", "name"})
     unknown_0003H(0, -11)
     if not get_flag(20) then

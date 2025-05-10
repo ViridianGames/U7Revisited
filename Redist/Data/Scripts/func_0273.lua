@@ -3,11 +3,11 @@ function func_0273(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         unknown_0086H(itemref, 27)
         var_0001 = get_object_shape(var_0000)
-        var_0002 = _GetItemQuality(var_0000)
-        var_0003 = _GetNPCProperty(1, -356) >= random2(30, 1)
+        var_0002 = _get_object_quality(var_0000)
+        var_0003 = get_npc_quality(1, -356) >= random2(30, 1)
         if var_0001 == 522 then
             if var_0002 == 0 and var_0003 then
                 set_object_shape(800, var_0000)

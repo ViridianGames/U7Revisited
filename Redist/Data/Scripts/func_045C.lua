@@ -69,7 +69,7 @@ function func_045C(eventid, itemref)
             if var_0002 == 23 then
                 add_dialogue("\"A room for the night is quite reasonable. Only 8 gold per person. Want one?\"")
                 if unknown_090AH() then
-                    var_0004 = _GetPartyMembers()
+                    var_0004 = get_party_members()
                     var_0005 = 0
                     for i = 1, var_0004 do
                         var_0005 = var_0005 + 1

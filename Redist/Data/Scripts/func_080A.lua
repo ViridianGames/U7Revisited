@@ -22,7 +22,7 @@ function func_080A(P0, P1)
     end
     unknown_0046H(P1, unknown_001BH(-356))
     var_000E = #var_0002
-    var_000F = _GetPartyMembers()
+    var_000F = get_party_members()
     var_0007 = 2
     for var_0010 in ipairs(var_000F) do
         if var_0007 - 1 > var_000E then

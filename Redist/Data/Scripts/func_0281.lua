@@ -3,11 +3,11 @@ function func_0281(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         unknown_0086H(itemref, 27)
         var_0001 = get_object_shape(var_0000)
-        var_0002 = _GetItemQuality(itemref)
-        var_0003 = _GetItemQuality(var_0000)
+        var_0002 = _get_object_quality(itemref)
+        var_0003 = _get_object_quality(var_0000)
         if get_object_shape(var_0000[1]) in {433, 432, 270, 376} then
             if var_0002 == var_0003 then
                 unknown_0815H(var_0000)

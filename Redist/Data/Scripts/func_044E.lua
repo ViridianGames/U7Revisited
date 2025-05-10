@@ -43,7 +43,7 @@ function func_044E(eventid, itemref)
         elseif cmps("room") then
             add_dialogue("\"The room is quite inexpensive. Only 8 gold per person. Want one?\"")
             if unknown_090AH() then
-                var_0001 = _GetPartyMembers()
+                var_0001 = get_party_members()
                 var_0002 = 0
                 for i = 1, var_0001 do
                     var_0002 = var_0002 + 1

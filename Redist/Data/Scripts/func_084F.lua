@@ -102,7 +102,7 @@ function func_084F()
     add_dialogue("The goblet is passed around the hall, each member respectively taking a sip. Finally, the goblet is handed to you. You look at it thoughtfully as you feel all eyes in the room upon you.")
     if not var_000D then
         var_000F = unknown_08F7H(-4)
-        var_0010 = _IsPlayerFemale()
+        var_0010 = is_player_female()
         var_0011 = var_0010 and "she" or "he"
         if not var_000F then
             switch_talk_to(0, -3)

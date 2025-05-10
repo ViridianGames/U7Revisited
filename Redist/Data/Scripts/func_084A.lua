@@ -6,7 +6,7 @@ function func_084A()
     var_0001 = {411, 411, 411, 411, 403, 403, 403, 403}
     var_0002 = {318, 315, 309, 306, 318, 315, 309, 306}
     var_0003 = {0, 0, 0, 0, 2, 2, 2, 2}
-    var_0004 = _GetPartyMembers()
+    var_0004 = get_party_members()
     for var_0005 in ipairs(var_0004) do
         var_0008 = var_0001[var_0000]
         table.insert(var_0008, var_0002[var_0000])

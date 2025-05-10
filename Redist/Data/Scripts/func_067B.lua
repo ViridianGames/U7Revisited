@@ -8,7 +8,7 @@ function func_067B(eventid, itemref)
     end
 
     unknown_005CH(itemref)
-    var_0001 = _ItemSelectModal()
+    var_0001 = object_select_modal()
     bark(itemref, "@In Sanct Grav@")
     var_0002 = var_0001[2] + 1
     var_0003 = var_0001[3] + 1

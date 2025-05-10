@@ -7,11 +7,11 @@ function func_0337(eventid, itemref)
         if var_0000 < 2 then
             unknown_08FEH("@Finger-painting again?@")
         else
-            var_0001 = _ItemSelectModal()
+            var_0001 = object_select_modal()
             var_0002 = get_object_shape(var_0001)
             if var_0002 == 823 then
                 if get_object_frame(var_0001) < 2 then
-                    var_0001 = _ItemSelectModal()
+                    var_0001 = object_select_modal()
                     if get_object_shape(var_0001) == 837 then
                         var_0003 = get_object_frame(var_0001) % 8
                         var_0004 = random2(10, 1)

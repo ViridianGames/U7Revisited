@@ -81,13 +81,13 @@ function func_0356(eventid, itemref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {_GetNPCProperty(2, unknown_001BH(-356)), _GetNPCProperty(6, unknown_001BH(-356)), _GetNPCProperty(5, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(2, unknown_001BH(-356)), get_npc_quality(6, unknown_001BH(-356)), get_npc_quality(5, unknown_001BH(-356))}
                 if var_0004[1] < 30 then
-                    _SetNPCProperty(30 - var_0004[1], 2, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 2, unknown_001BH(-356))
                 end
                 if var_0004[2] < 30 then
-                    _SetNPCProperty(30 - var_0004[2], 6, unknown_001BH(-356))
-                    _SetNPCProperty(30 - var_0004[3], 5, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 6, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[3], 5, unknown_001BH(-356))
                 end
                 set_flag(790, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
@@ -103,12 +103,12 @@ function func_0356(eventid, itemref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {_GetNPCProperty(1, unknown_001BH(-356)), _GetNPCProperty(4, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(1, unknown_001BH(-356)), get_npc_quality(4, unknown_001BH(-356))}
                 if var_0004[1] < 30 then
-                    _SetNPCProperty(30 - var_0004[1], 1, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 1, unknown_001BH(-356))
                 end
                 if var_0004[2] < 30 then
-                    _SetNPCProperty(30 - var_0004[2], 4, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 4, unknown_001BH(-356))
                 end
                 set_flag(799, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
@@ -124,12 +124,12 @@ function func_0356(eventid, itemref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {_GetNPCProperty(0, unknown_001BH(-356)), _GetNPCProperty(3, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(0, unknown_001BH(-356)), get_npc_quality(3, unknown_001BH(-356))}
                 if var_0004[1] < 30 then
-                    _SetNPCProperty(30 - var_0004[1], 0, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 0, unknown_001BH(-356))
                 end
                 if var_0004[2] < 30 then
-                    _SetNPCProperty(30 - var_0004[2], 3, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 3, unknown_001BH(-356))
                 end
                 set_flag(833, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)

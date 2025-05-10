@@ -4,7 +4,7 @@ function func_069F(eventid, itemref)
 
     var_0000 = unknown_0035H(16, 10, 275, itemref)
     for var_0001 in ipairs(var_0000) do
-        var_0004 = _GetItemQuality(var_0003)
+        var_0004 = _get_object_quality(var_0003)
         var_0005 = get_object_frame(var_0003)
         var_0006 = unknown_0018H(var_0003)
         if var_0005 == 6 then

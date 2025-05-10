@@ -6,7 +6,7 @@ function func_063A(eventid, itemref)
         return
     end
 
-    var_0000 = _ArraySize(_GetPartyMembers())
+    var_0000 = array_size(get_party_members())
     var_0001 = random2(4, 1)
     if var_0001 == 1 then
         unknown_0940H(27)

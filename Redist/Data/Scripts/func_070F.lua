@@ -48,7 +48,7 @@ function func_070F(eventid, itemref)
         end
         var_000F = get_container_objects(-359, -359, 797, itemref)
         if var_000F then
-            var_0010 = _GetItemQuality(var_000F)
+            var_0010 = _get_object_quality(var_000F)
             var_0011 = false
             if var_0010 == 240 then
                 set_flag(750, true)

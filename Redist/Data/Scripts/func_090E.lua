@@ -2,7 +2,7 @@
 function func_090E()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0000 = _GetPlayerName(unknown_008DH())
+    var_0000 = get_player_name(unknown_008DH())
     var_0001 = unknown_008DH()
     var_0002 = {0, 0}
     var_0003 = _SelectIndex({var_0000, "Nobody"})

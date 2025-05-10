@@ -7,7 +7,7 @@ function func_0270(eventid, itemref)
             unknown_08FFH("@Thou must hold that in thine hand.@")
             return
         end
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         var_0001 = get_object_shape(var_0000)
         if var_0001 == 932 then
             if get_object_frame(var_0000) == 2 or get_object_frame(var_0000) == 3 then

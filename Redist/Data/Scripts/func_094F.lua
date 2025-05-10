@@ -3,7 +3,7 @@ function func_094F(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0002 = unknown_0920H()
-    var_0003 = _GetPlayerName(var_0002)
+    var_0003 = get_player_name(var_0002)
     if var_0002 == 0 then
         return
     end
@@ -26,7 +26,7 @@ function func_094F(P0, P1)
     var_0007 = unknown_002BH(true, -359, -359, 644, P0)
     add_dialogue("You pay " .. P0 .. " gold, and the training session begins.")
     var_0008 = var_0002 == -356 and "you feel " or var_0003 .. " feels "
-    var_0009 = var_0002 == -356 and "you have " or (_IsPlayerFemale() and "she " or "he ") .. "has "
+    var_0009 = var_0002 == -356 and "you have " or (is_player_female() and "she " or "he ") .. "has "
     add_dialogue("After sparring for half an hour, " .. var_0008 .. " as though " .. var_0009 .. "learned how to better apply force when fighting.")
     var_000C = unknown_0910H(0, var_0002)
     if var_000C < 30 then

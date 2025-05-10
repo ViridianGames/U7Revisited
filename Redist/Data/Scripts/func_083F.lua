@@ -5,7 +5,7 @@ function func_083F(P0, P1)
     var_0002 = table.insert(unknown_0030H(271), unknown_0030H(272))
     var_0003 = false
     for var_0004 in ipairs(var_0002) do
-        if _GetItemQuality(var_0006) == _GetItemQuality(P1) then
+        if _get_object_quality(var_0006) == _get_object_quality(P1) then
             var_0007 = unknown_0834H()
             var_0007 = unknown_0001H(P1, {6, -1, 17419, 8014, 1, 7750})
             var_0003 = true

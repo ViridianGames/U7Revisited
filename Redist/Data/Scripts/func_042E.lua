@@ -89,7 +89,7 @@ function func_042E(eventid, itemref)
             if var_0002 == 7 then
                 add_dialogue("\"Oh, I suppose thou wouldst like a room now! There, that is just what I mean! It is ten gold pieces per person for a night. Thou dost want a room, dost thou not?\"")
                 if unknown_090AH() then
-                    var_0003 = _GetPartyMembers()
+                    var_0003 = get_party_members()
                     var_0004 = 0
                     for i = 1, #var_0003 do
                         var_0004 = var_0004 + 1

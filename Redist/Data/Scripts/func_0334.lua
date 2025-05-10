@@ -3,7 +3,7 @@ function func_0334(eventid, itemref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0000 = itemref
-    var_0001 = _GetItemQuality(var_0000)
+    var_0001 = _get_object_quality(var_0000)
     if eventid == 3 then
         if get_object_shape(var_0000) ~= 820 then
             var_0000 = unknown_0035H(176, 5, 820, var_0000)
@@ -12,7 +12,7 @@ function func_0334(eventid, itemref)
                 abort()
             end
         end
-        var_0001 = _GetItemQuality(var_0000)
+        var_0001 = _get_object_quality(var_0000)
         var_0002 = {}
         if var_0001 == 7 then
             var_0002 = {557, 623, 600}
@@ -30,7 +30,7 @@ function func_0334(eventid, itemref)
             if not unknown_0035H(176, 5, var_0006, var_0000) then
                 if var_0001 < 11 then
                     var_0001 = var_0001 + 1
-                    var_0007 = _SetItemQuality(var_0001, var_0000)
+                    var_0007 = set_object_quality(var_0001, var_0000)
                     unknown_007EH()
                     var_0003 = true
                     break
@@ -197,5 +197,5 @@ function func_0334(eventid, itemref)
     elseif var_0001 == 65 then
         var_000A = {"see (is", "wish to", "do, not", "(ou"}
     end
-    _DisplaySign(var_000A, 51)
+    display_sign(var_000A, 51)
 end

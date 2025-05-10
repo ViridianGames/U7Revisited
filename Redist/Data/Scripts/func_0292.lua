@@ -5,7 +5,7 @@ function func_0292(eventid, itemref)
     if eventid == 1 then
         var_0000 = get_object_frame(itemref)
         if var_0000 == 1 or var_0000 == 2 then
-            var_0001 = _ItemSelectModal()
+            var_0001 = object_select_modal()
             var_0002 = get_object_shape(var_0001)
             if var_0002 == 831 then
                 var_0003 = unknown_0025H(itemref)

@@ -15,7 +15,7 @@ function func_067E(eventid, itemref)
         var_0000 = unknown_0001H(itemref, {1662, 17493, 17514, 17519, 8048, 64, 17496, 7791})
         var_0001 = unknown_0018H(itemref)
         unknown_0053H(-1, 0, 0, 0, var_0001[2] - 2, var_0001[1] - 2, 7)
-        var_0002 = _GetPartyMembers()
+        var_0002 = get_party_members()
         for var_0003 in ipairs(var_0002) do
             var_0006 = unknown_0019H(var_0005, itemref)
             var_0000 = unknown_0002H(var_0006 // 3 + 5, 1662, {17493, 7715}, var_0005)

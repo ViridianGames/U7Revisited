@@ -12,7 +12,7 @@ function func_044D(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 77)
-    var_0000 = _IsPlayerFemale()
+    var_0000 = is_player_female()
     add_answer({"bye", "job", "name"})
     if not get_flag(224) then
         add_answer("Nastassia")

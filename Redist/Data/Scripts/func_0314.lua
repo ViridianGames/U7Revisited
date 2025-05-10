@@ -20,13 +20,13 @@ function func_0314(eventid, itemref)
             get_object_frame(var_0005 - 1, itemref)
         end
         unknown_0086H(itemref, 28)
-        var_0006 = _GetItemQuality(itemref)
+        var_0006 = _get_object_quality(itemref)
         var_0007 = unknown_0035H(0, 15, 870, itemref)
         var_0008 = unknown_0035H(0, 15, 515, itemref)
         var_0007 = table.concat({var_0007, var_0008})
         var_0008 = {}
         for var_0009 in ipairs(var_0007) do
-            if _GetItemQuality(var_000B) == var_0006 then
+            if _get_object_quality(var_000B) == var_0006 then
                 table.insert(var_0008, var_000B)
             end
         end

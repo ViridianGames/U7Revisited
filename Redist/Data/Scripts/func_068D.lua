@@ -2,7 +2,7 @@
 function func_068D(eventid, itemref)
     local var_0000, var_0001, var_0002
 
-    var_0000 = get_object_frame(itemref)
+    var_0000 = _GetItemFrame(itemref)
     var_0001 = get_container_objects(359, 359, 668, unknown_001BH(356))
     if var_0000 == 3 or var_0000 == 7 then
         var_0002 = unknown_0001H(unknown_001BH(356), {8033, 10, 7719})

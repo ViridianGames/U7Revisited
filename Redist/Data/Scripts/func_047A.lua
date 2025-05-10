@@ -12,7 +12,7 @@ function func_047A(eventid, itemref)
     start_conversation()
     switch_talk_to(0, 122)
     var_0000 = unknown_0909H()
-    var_0001 = _IsPlayerFemale()
+    var_0001 = is_player_female()
     var_0002 = unknown_003BH()
     var_0003 = unknown_001CH(unknown_001BH(122))
     add_answer({"bye", "job", "name"})
@@ -83,7 +83,7 @@ function func_047A(eventid, itemref)
             if var_0003 == 16 then
                 add_dialogue("\"For naught more than 5 gold thou canst get a lovely room. Dost thou wish to stay the night?\"")
                 if unknown_090AH() then
-                    var_0009 = _GetPartyMembers()
+                    var_0009 = get_party_members()
                     var_000A = 0
                     for var_000B in ipairs(var_0009) do
                         var_000A = var_000A + 1

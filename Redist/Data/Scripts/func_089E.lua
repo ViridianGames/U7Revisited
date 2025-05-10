@@ -3,7 +3,7 @@ function func_089E(P0, P1, P2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017
 
     var_0003 = unknown_001BH(-5)
-    var_0004 = _GetPartyMembers()
+    var_0004 = get_party_members()
     add_dialogue("\"I am able to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
     save_answers()
     var_0005 = _SelectOption()
@@ -15,13 +15,13 @@ function func_089E(P0, P1, P2)
             var_0008 = var_0007 == "heal" and "healed" or "cured of poison"
             var_0009 = var_0007 == "heal" and P2 or P1
             add_dialogue("\"Who dost thou wish to be " .. var_0008 .. "?\"")
-            var_000A = _GetPlayerName(unknown_008DH())
+            var_000A = get_player_name(unknown_008DH())
             var_000B = unknown_008DH()
             var_000C = {}
             var_000D = {}
             for var_000E in ipairs(var_0004) do
                 if var_0010 ~= var_0003 then
-                    table.insert(var_000C, _GetPlayerName(var_0010))
+                    table.insert(var_000C, get_player_name(var_0010))
                     table.insert(var_000D, var_0010)
                 end
             end

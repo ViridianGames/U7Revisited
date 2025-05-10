@@ -8,13 +8,13 @@ function func_083E(P0, P1)
         end
         unknown_0828H(7, P1, 1585, -1, {-2, -2}, P1)
     elseif P0 == 2 then
-        var_0002 = _GetItemQuality(itemref)
+        var_0002 = _get_object_quality(itemref)
         var_0003 = unknown_0035H(0, 15, 870, itemref)
         var_0004 = unknown_0035H(0, 15, 515, itemref)
         table.insert(var_0003, var_0004)
         var_0004 = {}
         for var_0005 in ipairs(var_0003) do
-            if _GetItemQuality(var_0007) == var_0002 then
+            if _get_object_quality(var_0007) == var_0002 then
                 table.insert(var_0004, var_0007)
             end
         end

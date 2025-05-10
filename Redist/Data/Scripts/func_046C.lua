@@ -131,7 +131,7 @@ function func_046C(eventid, itemref)
                 add_answer("emergency")
             end
         elseif cmps("emergency") then
-            var_0010 = _GetPartyMembers()
+            var_0010 = get_party_members()
             var_0011 = 0
             var_0012 = false
             for var_0013 in ipairs(var_0010) do
@@ -140,7 +140,7 @@ function func_046C(eventid, itemref)
                 if var_0016 then
                     var_0012 = true
                 end
-                var_0017 = _GetNPCProperty(3, var_0015)
+                var_0017 = get_npc_quality(3, var_0015)
                 if var_0017 < 10 then
                     var_0012 = true
                 end

@@ -6,7 +6,7 @@ function func_060C(eventid, itemref)
         unknown_001DH(10, 232)
     end
 
-    if not _NPCInParty(232) then
+    if not npc_in_party(232) then
         var_0000 = unknown_0035H(0, 50, 764, -356)
         for var_0003 in ipairs(var_0000) do
             get_object_frame(var_0003, 0)

@@ -8,7 +8,7 @@ function func_067A(eventid, itemref)
     end
 
     unknown_005CH(itemref)
-    var_0001 = _ItemSelectModal()
+    var_0001 = object_select_modal()
     var_0002 = unknown_092DH(var_0001)
     var_0003 = {var_0001[2], var_0001[3], var_0001[4]}
     bark(itemref, "@Tym Vas Flam@")
@@ -19,7 +19,7 @@ function func_067A(eventid, itemref)
             unknown_0089H(0, var_0004)
             var_0005 = unknown_0026H(var_0003)
             if var_0005 then
-                var_0005 = _SetNPCProperty(var_0004, 1, 3)
+                var_0005 = set_npc_quality(var_0004, 1, 3)
                 var_0005 = unknown_0041H(621, var_0004, itemref)
                 var_0005 = unknown_0002H(12, 7715, 17530, var_0004)
                 var_0005 = unknown_0002H(14, 7715, 17453, var_0004)

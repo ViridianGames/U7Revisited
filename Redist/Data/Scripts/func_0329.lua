@@ -6,7 +6,7 @@ function func_0329(eventid, itemref)
         unknown_007EH()
         var_0000 = unknown_083CH()
         var_0000 = unknown_083AH()
-        if _GetTimeHour() >= 15 or _GetTimeHour() <= 3 then
+        if get_time_hour() >= 15 or get_time_hour() <= 3 then
             for var_0001 in ipairs(var_0000) do
                 unknown_008AH(11, var_0003)
             end

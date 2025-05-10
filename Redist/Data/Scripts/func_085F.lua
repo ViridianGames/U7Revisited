@@ -13,7 +13,7 @@ function func_085F(P0, P1)
         var_0005 = var_0003
     end
     var_0006 = unknown_0920H()
-    var_0007 = _GetPlayerName(var_0006)
+    var_0007 = get_player_name(var_0006)
     if var_0006 == 0 then
         return
     end

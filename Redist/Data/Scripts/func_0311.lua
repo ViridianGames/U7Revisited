@@ -6,7 +6,7 @@ function func_0311(eventid, itemref)
         if get_flag(4) then
             unknown_08FEH({"@It work before.@", "@How odd!@"})
         elseif not get_flag(57) and not unknown_093EH() then
-            var_0000 = _ItemSelectModal()
+            var_0000 = object_select_modal()
             var_0001 = unknown_0822H(var_0000)
             var_0002 = unknown_001AH(var_0001, -356)
             if var_0002 == 0 or var_0002 == 4 then
@@ -56,7 +56,7 @@ function func_0311(eventid, itemref)
                 if not var_000A then
                     unknown_008BH(8, var_0009, 785)
                     var_000F = unknown_006EH(itemref)
-                    var_0010 = _GetPartyMembers()
+                    var_0010 = get_party_members()
                     while var_000F and #var_0010 > 1 do
                         if not table.contains(var_0010, var_000F) then
                             var_000F = unknown_006EH(var_000F)

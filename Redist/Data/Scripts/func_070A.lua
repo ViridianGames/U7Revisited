@@ -43,7 +43,7 @@ function func_070A(eventid, itemref)
                 if var_0024 < 20 and not unknown_0088H(unknown_001BH(-356), 23) then
                     var_0021 = unknown_0018H(itemref)
                     unknown_0053H(-1, 0, 0, 0, var_0021[2] + 3, var_0021[1] + 3, 17)
-                    var_0025 = _GetPartyMembers()
+                    var_0025 = get_party_members()
                     for var_0026 in ipairs(var_0025) do
                         var_0029 = ""
                         var_002A = random2(8, 0)
@@ -93,7 +93,7 @@ function func_070A(eventid, itemref)
         return
     end
 
-    if not _GetItemQuality(itemref) and not get_flag(827) then
+    if not _get_object_quality(itemref) and not get_flag(827) then
         set_flag(827, true)
         var_0000 = unknown_000EH(0, 154, itemref)
         if not var_0000 then
@@ -118,7 +118,7 @@ function func_070A(eventid, itemref)
                 if get_object_frame(var_0001) == 9 then
                     var_0009 = unknown_0035H(16, 1, 275, var_0001)
                     for var_000A in ipairs(var_0009) do
-                        if get_object_frame(var_000C) == 6 and _GetItemQuality(var_000C) == 201 then
+                        if get_object_frame(var_000C) == 6 and _get_object_quality(var_000C) == 201 then
                             var_000D = unknown_0024H(895)
                             get_object_frame(var_000D, 0)
                             var_0002 = unknown_0026H(unknown_0018H(var_000C))

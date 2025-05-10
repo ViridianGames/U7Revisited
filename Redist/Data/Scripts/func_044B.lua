@@ -15,7 +15,7 @@ function func_044B(eventid, itemref)
     var_0001 = false
     var_0002 = false
     var_0003 = false
-    var_0004 = _IsPlayerFemale()
+    var_0004 = is_player_female()
     var_0005 = unknown_0908H()
     add_answer({"bye", "job", "name"})
     if not get_flag(224) and not get_flag(226) then

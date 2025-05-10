@@ -3,7 +3,7 @@ function func_066D(eventid, itemref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        var_0000 = _ItemSelectModal()
+        var_0000 = object_select_modal()
         unknown_005CH(itemref)
         var_0001 = unknown_092DH(var_0000)
         bark(itemref, "@Sanct Lor@")

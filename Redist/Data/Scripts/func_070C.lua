@@ -6,7 +6,7 @@ function func_070C(eventid, itemref)
     if not var_0000 then
         var_0001 = unknown_000EH(8, 729, itemref)
         if not var_0001 then
-            var_0002 = _GetItemQuality(var_0001)
+            var_0002 = _get_object_quality(var_0001)
             if var_0002 == 7 then
                 var_0003 = unknown_0018H(var_0001)
                 unknown_006FH(var_0001)

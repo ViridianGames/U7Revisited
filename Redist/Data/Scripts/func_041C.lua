@@ -27,7 +27,7 @@ function func_041C(eventid, itemref)
     end
 
     start_conversation()
-    var_0000 = _IsPlayerFemale()
+    var_0000 = is_player_female()
     if var_0000 then
         switch_talk_to(1, -28)
     else

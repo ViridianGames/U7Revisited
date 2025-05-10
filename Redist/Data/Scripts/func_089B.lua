@@ -3,7 +3,7 @@ function func_089B(P0, P1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     var_0002 = unknown_0920H()
-    var_0003 = _GetPlayerName(var_0002)
+    var_0003 = get_player_name(var_0002)
     var_0004 = var_0002 == -356 and "your" or "their"
     if var_0002 == 0 then
         return
