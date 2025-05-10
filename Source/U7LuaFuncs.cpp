@@ -241,6 +241,8 @@ static int LuaAskYesNo(lua_State *L)
     if(LUA_DEBUG) AddConsoleString("LUA: ask_yes_no called");
     const char *text = luaL_checkstring(L, 1);
     cout << "Asking yes/no: " << text << "\n";
+    lua_pushboolean(L, true);
+    return 1;
 }
 
 // Opcode 000C
@@ -332,6 +334,7 @@ static int LuaSetNPCProperty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int property_id = luaL_checkinteger(L, 2);
     int value = luaL_checkinteger(L, 3);
+    return 0;
 }
 
 // Opcode 0023
@@ -404,6 +407,7 @@ static int LuaDisplaySign(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     const char *text = luaL_checkstring(L, 2);
     cout << "Displaying sign for object ID: " << object_id << "\n";
+    return 0;
 }
 
 // Opcode 0033
@@ -413,6 +417,8 @@ static int LuaObjectSelectModal(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     const char *text = luaL_checkstring(L, 2);
     cout << "Object select modal for object ID: " << object_id << "\n";
+    lua_pushinteger(L, 0);
+    return 1;
 }
 
 // Opcode 0038
@@ -673,12 +679,14 @@ static int LuaRemoveFromParty(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: remove_from_party called");
     int npc_id = luaL_checkinteger(L, 1);
+    return 0;
 }
 
 static int LuaAddToParty(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: add_to_party called");
     int npc_id = luaL_checkinteger(L, 1);
+    return 0;
 }
 
 static int LuaIsInIntArray(lua_State *L)
