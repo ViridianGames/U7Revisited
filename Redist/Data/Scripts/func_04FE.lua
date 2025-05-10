@@ -6,7 +6,7 @@ function func_04FE(eventid, itemref)
         return
     end
     switch_talk_to(0, 254)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     start_conversation()
     if not get_flag(717) then
         add_dialogue("You see a creature the size and shape of a horse. From its head protrudes a single straight horn. It looks at you with eyes that shine with intelligence.")

@@ -3,7 +3,7 @@ function func_08F0()
     start_conversation()
     local var_0000, var_0001
 
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_08F7H(-144)
     if not var_0001 then
         add_dialogue("\"Why, I must again find my darling Rowena! Where could she have gone to?\"")

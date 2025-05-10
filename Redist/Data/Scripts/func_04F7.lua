@@ -11,7 +11,7 @@ function func_04F7(eventid, itemref)
         var_0000 = false
         var_0001 = false
         var_0002 = false
-        var_0003 = unknown_0909H()
+        var_0003 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(450) then

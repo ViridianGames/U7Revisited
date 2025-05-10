@@ -3,7 +3,7 @@ function func_08D6()
     start_conversation()
     local var_0000, var_0001
 
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_08F7H(-142)
     if not var_0001 then
         add_dialogue("\"Where, oh where has my dear husband gone. I cannot stand to be away from him!\"")

@@ -6,7 +6,7 @@ function func_04EF(eventid, itemref)
         return
     end
     switch_talk_to(0, 239)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_08F7H(243)
     var_0002 = unknown_08F7H(1)
     var_0003 = unknown_08F7H(3)

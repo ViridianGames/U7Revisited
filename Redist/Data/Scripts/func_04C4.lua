@@ -4,7 +4,7 @@ function func_04C4(eventid, itemref)
 
     if eventid == 1 then
         switch_talk_to(0, 196)
-        var_0000 = unknown_0909H()
+        var_0000 = get_lord_or_lady()
         var_0001 = unknown_0908H()
         var_0002 = "the Avatar"
         var_0003 = unknown_001CH(unknown_001BH(196))

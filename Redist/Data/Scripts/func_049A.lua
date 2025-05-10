@@ -13,7 +13,7 @@ function func_049A(eventid, itemref)
     var_0001 = unknown_08F7H(-2)
     var_0002 = unknown_08F7H(-240)
     var_0003 = unknown_08F7H(-220)
-    var_0004 = unknown_0909H()
+    var_0004 = get_lord_or_lady()
     var_0005 = unknown_0908H()
     unknown_003DH(unknown_001BH(154), 2)
     if not get_flag(702) then

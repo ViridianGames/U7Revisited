@@ -15,6 +15,21 @@ using namespace std;
 
 Gump::Gump()
 {
+	enum class GumpType
+	{
+		GUMP_NONE = 0,
+		GUMP_CONTAINER,
+		GUMP_EQUIPMENT,
+		GUMP_BOOK,
+		GUMP_SPELLBOOK,
+		GUMP_YESNO,
+		GUMP_NUMBER,
+		GUMP_LAST
+	};
+
+	std::vector<Sprite> m_gumpBackgrounds;
+	
+	m_gumpBackgrounds.resize(1);
 
 	m_PositionFlag = GUIP_USE_XY;
 	m_Width = 0;
@@ -49,10 +64,10 @@ void Gump::Draw()
 	float scale = 1.0f;
 
 	shared_ptr<U7Object> thisObject = GetObjectFromID(m_containerId);
-	int yoffset = 11 * scale;
-	int xoffset = 11 * scale;
+	int yoffset = 38 * scale;
+	int xoffset = 45 * scale;
 
-	int width = 80 * scale;
+	int width = 110 * scale;
 
 	int y = 0;
 
@@ -67,7 +82,7 @@ void Gump::Draw()
 		}
 		if (xoffset > width)
 		{
-			xoffset = 11 * scale;
+			xoffset = 45 * scale;
 			yoffset = y;
 		}
 	}

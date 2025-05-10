@@ -28,7 +28,7 @@ function func_043E(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 62)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(191) then
         add_dialogue("You see a filthy beggar who flashes you a grin as though you were his best friend in the whole world.")

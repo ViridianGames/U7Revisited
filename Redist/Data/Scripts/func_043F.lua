@@ -28,7 +28,7 @@ function func_043F(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 63)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_0067H()
     var_0002 = unknown_003BH()
     if var_0002 == 7 then

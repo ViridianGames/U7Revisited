@@ -18,7 +18,7 @@ function func_045A(eventid, itemref)
     switch_talk_to(0, 90)
     var_0000 = unknown_003BH()
     var_0001 = unknown_001CH(unknown_001BH(90))
-    var_0002 = unknown_0909H()
+    var_0002 = get_lord_or_lady()
     var_0003 = false
     var_0004 = unknown_0067H()
     var_0000 = unknown_003BH()
@@ -31,7 +31,7 @@ function func_045A(eventid, itemref)
         add_dialogue("\"I am late for The Fellowship Meeting! I cannot speak with thee now!\"")
         return
     end
-    var_0002 = unknown_0909H()
+    var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(64) and not get_flag(291) then
         add_answer({"Hook", "Crown Jewel"})

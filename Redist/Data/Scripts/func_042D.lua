@@ -13,7 +13,7 @@ function func_042D(eventid, itemref)
     start_conversation()
     switch_talk_to(0, 45)
     var_0000 = unknown_003BH()
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     var_0002 = unknown_0067H()
     var_0003 = unknown_08FCH(26, 45)
     if var_0000 == 7 then

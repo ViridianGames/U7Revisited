@@ -4,7 +4,7 @@ function func_08D7()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = unknown_005AH()
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     if not get_flag(440) then
         unknown_0003H(0, -144)
         add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")

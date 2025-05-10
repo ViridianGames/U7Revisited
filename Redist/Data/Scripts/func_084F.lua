@@ -4,7 +4,7 @@ function func_084F()
 
     switch_talk_to(0, -26)
     var_0000 = unknown_0908H()
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     add_dialogue("The ceremony begins as Batlin stands before the gathered members of The Fellowship in Britain. He begins his sermon. \"My friends, I originally created The Fellowship to help ready Britannia and its people for the future. Today one of the greatest symbols of its past has come here to join our Fellowship. This is a great day, for as our past and present intertwine we shall send a message which shall be heard throughout Britannia. Soon all of its peoples will strive together for unity.\" The gathering breaks into loud cheers. \"When they hear that the Avatar has become a member of The Fellowship those who were at first distrustful of us will come to see the truth of what we stand for. Then we may bring about a day when all of Britannia is worthy of the ample rewards it shall receive.\"")
     var_0002 = unknown_08F7H(-1)
     if not var_0002 then

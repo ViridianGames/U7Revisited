@@ -4,7 +4,7 @@ function func_04AF(eventid, itemref)
 
     if eventid == 1 then
         switch_talk_to(0, 175)
-        var_0000 = unknown_0909H()
+        var_0000 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(530) then

@@ -12,7 +12,7 @@ function func_048E(eventid, itemref)
     start_conversation()
     switch_talk_to(0, 142)
     var_0000 = unknown_0931H(359, 0, 295, 1, 357)
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     var_0002 = unknown_000EH(-1, 747, 142)
     var_0003 = false
     if get_flag(463) then

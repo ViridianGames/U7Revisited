@@ -5,7 +5,7 @@ function func_04D1(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(0, 209)
         var_0000 = unknown_0908H()
-        var_0001 = unknown_0909H()
+        var_0001 = get_lord_or_lady()
         var_0002 = false
         var_0003 = false
         start_conversation()

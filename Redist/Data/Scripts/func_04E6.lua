@@ -6,7 +6,7 @@ function func_04E6(eventid, itemref)
         switch_talk_to(0, 230)
         var_0000 = unknown_003BH()
         var_0001 = unknown_0067H()
-        var_0002 = unknown_0909H()
+        var_0002 = get_lord_or_lady()
         var_0003 = unknown_0908H()
         var_0004 = "Avatar"
         var_0005 = "a pseudonym"

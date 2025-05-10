@@ -12,7 +12,7 @@ function func_049B(eventid, itemref)
     start_conversation()
     switch_talk_to(0, 155)
     var_0000 = unknown_0908H()
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     var_0002 = false
     add_answer({"bye", "job", "name"})
     var_0003 = unknown_0067H()

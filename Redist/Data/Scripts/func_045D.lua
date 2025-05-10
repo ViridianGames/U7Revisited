@@ -24,7 +24,7 @@ function func_045D(eventid, itemref)
         return
     end
     var_0003 = unknown_0067H()
-    var_0004 = unknown_0909H()
+    var_0004 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(280) then
         add_dialogue("You see a man with a very worried look on his face.")

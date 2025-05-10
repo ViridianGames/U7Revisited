@@ -3,7 +3,7 @@ function func_08C2()
     start_conversation()
     local var_0000, var_0001
 
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_0908H()
     add_dialogue("\"Well, hello, Mayor Forsythe. Thou has finally decided to assist in the salvation of our town.\" She gives him a pointed look.")
     unknown_0003H(0, -147)

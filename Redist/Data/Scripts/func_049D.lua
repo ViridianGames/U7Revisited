@@ -11,7 +11,7 @@ function func_049D(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 157)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_003BH()
     add_answer({"bye", "Fellowship", "job", "name"})
     if get_flag(469) then

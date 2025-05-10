@@ -4,7 +4,7 @@ function func_08EF()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0000 = unknown_000EH(747, -142)
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     if not get_flag(449) then
         if get_flag(424) then
             if var_0000 then

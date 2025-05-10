@@ -8,7 +8,7 @@ function func_040F(eventid, itemref)
 
     start_conversation()
     unknown_0003H(0, -15)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = get_flag(-48)
     if get_flag(708) and not get_flag(709) then
         add_answer("Stay thine hand!")

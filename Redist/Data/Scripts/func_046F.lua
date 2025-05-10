@@ -11,7 +11,7 @@ function func_046F(eventid, itemref)
     start_conversation()
     switch_talk_to(0, 111)
     var_0000 = unknown_0908H()
-    var_0001 = unknown_0909H()
+    var_0001 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(329) then
         add_dialogue("You see a troll, sulking in his cell. As he breathes, you can see his ribs protrude out from under his hide.")

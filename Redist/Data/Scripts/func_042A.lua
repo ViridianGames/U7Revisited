@@ -6,13 +6,13 @@ function func_042A(eventid, itemref)
         if eventid == 0 then
             unknown_092EH(42)
         end
-        add_dialogue("\"Good day, " .. unknown_0909H() .. ".\"")
+        add_dialogue("\"Good day, " .. get_lord_or_lady() .. ".\"")
         return
     end
 
     start_conversation()
     switch_talk_to(0, 42)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_003BH()
     add_answer({"bye", "job", "name"})
     if not get_flag(220) then

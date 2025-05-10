@@ -41,7 +41,7 @@ function func_0154(eventid, itemref)
         else
             var_0003 = random2(3, 1)
             if var_0003 == 1 then
-                var_0004 = unknown_0909H()
+                var_0004 = get_lord_or_lady()
                 var_0005 = "@Those are expensive, " .. var_0004 .. "! Plese waste them not!@"
                 unknown_08FFH(var_0005)
             else

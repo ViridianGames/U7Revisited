@@ -10,7 +10,7 @@ function func_046B(eventid, itemref)
     switch_talk_to(0, 107)
     var_0000 = unknown_0908H()
     var_0001 = "Avatar"
-    var_0002 = unknown_0909H()
+    var_0002 = get_lord_or_lady()
     if not get_flag(719) then
         add_dialogue("You see a large cyclops. It looks at you and blinks its eye in irritation.")
         set_flag(719, true)

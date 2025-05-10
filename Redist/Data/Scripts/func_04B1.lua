@@ -4,7 +4,7 @@ function func_04B1(eventid, itemref)
 
     if eventid == 1 then
         switch_talk_to(0, 177)
-        var_0000 = unknown_0909H()
+        var_0000 = get_lord_or_lady()
         if get_flag(531) and not get_flag(564) then
             add_dialogue("\"Avatar! My son Tobias has been wrongly accused! He is no thief! And I cannot believe a vial of venom was found in his possession. I truly believe it was planted there! Please -- I beg thee! Please clear my son's name. He has done no wrong!\"")
             add_dialogue("\"I know my son Tobias has suffered for not having a father. I have tried my best on mine own to raise him well, but this farm requires so much work that I fear I do not have enough time to devote to him. But I know in mine heart that my son is not a thief.\"")

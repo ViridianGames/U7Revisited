@@ -3,7 +3,7 @@ function func_08CB()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014
 
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     save_answers()
     var_0001 = true
     var_0002 = {"ham", "cake", "Silverleaf", "trout", "mutton rations", "nothing"}

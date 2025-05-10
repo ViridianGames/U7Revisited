@@ -27,7 +27,7 @@ function func_040C(eventid, itemref)
 
     start_conversation()
     unknown_0003H(0, -12)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_0908H()
     var_0002 = get_flag(-1)
     var_0003 = is_player_female()

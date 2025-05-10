@@ -12,7 +12,7 @@ function func_043D(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 61)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if get_flag(147) then
         add_answer("proof")

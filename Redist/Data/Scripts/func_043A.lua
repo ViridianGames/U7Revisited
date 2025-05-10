@@ -22,13 +22,13 @@ function func_043A(eventid, itemref)
                 unknown_092EH(58)
             end
         end
-        add_dialogue("\"Have a pleasant day, " .. unknown_0909H() .. ".\"")
+        add_dialogue("\"Have a pleasant day, " .. get_lord_or_lady() .. ".\"")
         return
     end
 
     start_conversation()
     switch_talk_to(0, 58)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_0067H()
     var_0002 = unknown_003BH()
     var_0003 = unknown_001CH(unknown_001BH(58))

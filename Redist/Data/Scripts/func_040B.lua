@@ -11,7 +11,7 @@ function func_040B(eventid, itemref)
     end
 
     start_conversation()
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     var_0001 = get_party_members()
     var_0002 = is_player_female()
     add_answer({"bye", "job", "name"})

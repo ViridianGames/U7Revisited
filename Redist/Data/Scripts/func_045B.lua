@@ -23,7 +23,7 @@ function func_045B(eventid, itemref)
         add_dialogue("\"I cannot speak now! I am late for the Fellowship meeting!\"")
         return
     end
-    var_0003 = unknown_0909H()
+    var_0003 = get_lord_or_lady()
     var_0004 = unknown_0067H()
     add_answer({"bye", "job", "name"})
     if get_flag(253) then

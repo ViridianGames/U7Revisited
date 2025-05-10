@@ -11,7 +11,7 @@ function func_046D(eventid, itemref)
 
     start_conversation()
     switch_talk_to(0, 109)
-    var_0000 = unknown_0909H()
+    var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(714) then
         add_dialogue("You see a monk wandering around apparently without direction.")

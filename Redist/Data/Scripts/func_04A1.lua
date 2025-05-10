@@ -5,7 +5,7 @@ function func_04A1(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(0, 161)
         var_0000 = unknown_0908H()
-        var_0001 = unknown_0909H()
+        var_0001 = get_lord_or_lady()
         var_0002 = "Avatar"
         start_conversation()
         add_answer({"bye", "job", "name"})
