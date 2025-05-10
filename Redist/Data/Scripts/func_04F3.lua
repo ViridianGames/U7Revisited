@@ -1,5 +1,5 @@
 --- Best guess: Manages Malloy’s dialogue in a mine, a pompous miner working with Owings on a secret Britannian Mining Company tunnel project, misled by a fake map.
-function func_04F3(eventid, itemref)
+function func_04F3(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 0 then

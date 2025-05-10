@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Ben, a logger in Yew, discussing his family’s logging tradition, the forest, and his agreement to stop cutting Silverleaf trees for the Emps by signing a contract.
-function func_0474(eventid, itemref)
+function func_0474(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Checks flag 5 and creates an item (type 1855, quality 2846) at a specific location when event ID 3 is triggered, likely part of a dungeon puzzle.
-function func_06D5(eventid, itemref)
+function func_06D5(eventid, objectref)
     local var_0000
 
     if eventid == 3 then

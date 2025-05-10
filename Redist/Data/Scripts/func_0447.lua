@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Inwisloklem, a gargoyle on the Great Council, discussing gargoyle heritage, integration efforts, and the Fellowship, with references to Miranda’s work on a new law.
-function func_0447(eventid, itemref)
+function func_0447(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(71, 0)

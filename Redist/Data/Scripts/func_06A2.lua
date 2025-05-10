@@ -1,8 +1,8 @@
 --- Best guess: Attempts to modify items in a dungeon forge but fails, displaying an error message and reverting to a previous state by calling func_06A0.
-function func_06A2(eventid, itemref)
+function func_06A2(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    var_0000 = unknown_0035H(16, 10, 275, itemref)
+    var_0000 = unknown_0035H(16, 10, 275, objectref)
     for i = 1, 5 do
         var_0004 = unknown_0014H(var_0003)
         var_0005 = unknown_0012H(var_0003)
@@ -22,7 +22,7 @@ function func_06A2(eventid, itemref)
             end
         end
     end
-    var_000B = unknown_0001H(1696, {8021, 14, 7463, "@NO!, No. No...@", 8018, 6, 7719}, itemref)
+    var_000B = unknown_0001H(1696, {8021, 14, 7463, "@NO!, No. No...@", 8018, 6, 7719}, objectref)
     unknown_000FH(68)
     return
 end

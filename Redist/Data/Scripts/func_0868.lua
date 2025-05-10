@@ -1,5 +1,5 @@
 --- Best guess: Generates verb conjugations (e.g., "lactate", "lactated"), likely for dialogue or actions.
-function func_0868(eventid, itemref)
+function func_0868(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0000 = {

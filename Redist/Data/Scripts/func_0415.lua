@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Gargan, the Trinsic shipwright, discussing ship and sextant purchases, the local murder, and sightings of Hook and the Crown Jewel.
-function func_0415(eventid, itemref)
+function func_0415(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

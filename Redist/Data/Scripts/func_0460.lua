@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Jergi, the King of the Gypsies in Minoc, discussing the gypsies’ persecution, the murders of his brother Frederico and sister-in-law Tania, Sasha’s involvement with the Fellowship, and his wife Margareta’s foresight.
-function func_0460(eventid, itemref)
+function func_0460(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

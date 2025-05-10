@@ -1,5 +1,5 @@
 --- Best guess: Triggers a game-ending event for cheating, displaying accusatory dialogue, applying penalties to the player’s stats, and initiating combat or death.
-function func_063E(eventid, itemref)
+function func_063E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
@@ -36,6 +36,6 @@ function func_063E(eventid, itemref)
         unknown_003DH(2, -23)
         unknown_004BH(0, -23)
         unknown_001DH(0, -23)
-        unknown_0089H(25, itemref)
+        unknown_0089H(25, objectref)
     end
 end

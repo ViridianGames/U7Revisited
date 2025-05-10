@@ -1,5 +1,5 @@
 --- Best guess: Manages Morz’s dialogue, a shy farmer in Moonglow with a stutter, discussing his work with Cubolt and Tolemac, and his uncertainty about joining The Fellowship, with flag-based responses to joining or not.
-function func_049E(eventid, itemref)
+function func_049E(eventid, objectref)
     local var_0000, var_0001
 
     if eventid ~= 1 then

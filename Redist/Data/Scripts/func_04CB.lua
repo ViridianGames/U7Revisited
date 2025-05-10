@@ -1,5 +1,5 @@
 --- Best guess: Manages Cador’s dialogue in Vesper, a mining overseer with mixed feelings about gargoyles and pride in The Fellowship.
-function func_04CB(eventid, itemref)
+function func_04CB(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

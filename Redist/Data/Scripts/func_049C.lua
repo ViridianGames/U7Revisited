@@ -1,5 +1,5 @@
 --- Best guess: Manages Balayna’s dialogue, the Fellowship clerk in Moonglow, discussing her role, the organization’s tenets, and Rankin’s doubts, with a flag-based reaction to a poisoned liqueur and Fellowship membership checks.
-function func_049C(eventid, itemref)
+function func_049C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid ~= 1 then

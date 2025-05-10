@@ -1,14 +1,14 @@
 --- Best guess: Implements the summon creature spell (Kal Xen), spawning a random creature from a predefined list.
-function func_0660(eventid, itemref)
+function func_0660(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        destroy_item(itemref)
-        bark(itemref, "@Kal Xen@")
+        destroyobject_(objectref)
+        bark(objectref, "@Kal Xen@")
         if check_spell_requirements() then
-            var_0000 = add_container_items(itemref, {1632, 17493, 17511, 17510, 8037, 65, 7768})
+            var_0000 = add_containerobject_s(objectref, {1632, 17493, 17511, 17510, 8037, 65, 7768})
         else
-            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 17510, 7781})
+            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 17510, 7781})
         end
     elseif eventid == 2 then
         var_0001 = {537, 502, 530, 510, 523, 811, 716}

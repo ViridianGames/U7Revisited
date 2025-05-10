@@ -1,5 +1,5 @@
 --- Best guess: Manages Perrin’s dialogue in Empath Abbey, a scholar offering training in knowledge and magic, studying undertakers like Tiery, and discussing local landmarks.
-function func_04EE(eventid, itemref)
+function func_04EE(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

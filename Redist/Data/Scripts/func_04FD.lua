@@ -1,5 +1,5 @@
 --- Best guess: Manages Cosmo’s dialogue, a naive warrior in a dungeon seeking a unicorn to prove his virginity to his betrothed, Ophelia, with companions mocking his quest.
-function func_04FD(eventid, itemref)
+function func_04FD(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

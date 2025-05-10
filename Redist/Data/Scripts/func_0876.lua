@@ -1,5 +1,5 @@
 --- Best guess: Handles purchase of provisions (e.g., milk, mutton rations).
-function func_0876(eventid, itemref)
+function func_0876(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
     start_conversation()
@@ -27,10 +27,10 @@ function func_0876(eventid, itemref)
             var_000D = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000D then
                 if var_0003[var_0009] == 616 then
-                    var_000B = purchase_item(true, 1, 0, var_0005[var_0009], var_0008[var_0009], var_0004[var_0009]) --- Guess: Purchases item
+                    var_000B = purchaseobject_(true, 1, 0, var_0005[var_0009], var_0008[var_0009], var_0004[var_0009]) --- Guess: Purchases item
                 else
                     add_dialogue("@How many dost thou want to purchase?@")
-                    var_000B = purchase_item(true, 1, 20, var_0005[var_0009], var_0008[var_0009], var_0004[var_0009]) --- Guess: Purchases item
+                    var_000B = purchaseobject_(true, 1, 20, var_0005[var_0009], var_0008[var_0009], var_0004[var_0009]) --- Guess: Purchases item
                 end
             end
             if var_000B == 1 then

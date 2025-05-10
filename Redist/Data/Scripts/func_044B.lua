@@ -1,5 +1,5 @@
 --- Best guess: Manages Nastassia’s dialogue, a woman tending the Shrine of Compassion, discussing her family history, her parents’ tragic past, and a romantic subplot with the Avatar, with flag-based progression and gender-specific interactions.
-function func_044B(eventid, itemref)
+function func_044B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 0 then
@@ -7,7 +7,7 @@ function func_044B(eventid, itemref)
     end
     if eventid == 1 then
         local arr = {7969, 1099, 17493, 7937, 1, 26, 17492, 7715}
-        var_0000 = unknown_0001H(arr, itemref)
+        var_0000 = unknown_0001H(arr, objectref)
     end
 
     start_conversation()
@@ -99,7 +99,7 @@ function func_044B(eventid, itemref)
                     set_flag(226, true)
                 else
                     add_dialogue("Nastassia turns away and looks as if she might cry. \"Very well. Please leave me alone.\"")
-                    var_0000 = unknown_0001H({0, 26, 17492, 7715}, itemref)
+                    var_0000 = unknown_0001H({0, 26, 17492, 7715}, objectref)
                     return
                 end
             else
@@ -148,7 +148,7 @@ function func_044B(eventid, itemref)
             else
                 add_dialogue("\"Goodbye, " .. var_0005 .. ".\"")
             end
-            var_0000 = unknown_0001H({0, 26, 17492, 7715}, itemref)
+            var_0000 = unknown_0001H({0, 26, 17492, 7715}, objectref)
             break
         end
     end

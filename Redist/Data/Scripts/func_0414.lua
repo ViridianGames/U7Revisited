@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Markus, the Trinsic trainer, discussing his combat training services and the local murder, with training options during business hours.
-function func_0414(eventid, itemref)
+function func_0414(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

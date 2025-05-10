@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Julia in Minoc, discussing her role as a tinker, murders, and Owen’s monument, with options to join or leave.
-function func_0408(eventid, itemref)
+function func_0408(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     start_conversation()

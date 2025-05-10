@@ -1,5 +1,5 @@
 --- Best guess: Manages an interaction mechanic with item ID 718, applying directional effects based on item quality (0-7) and triggering an external function (0828H).
-function func_069D(eventid, itemref)
+function func_069D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 7 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Lap-Lem’s dialogue in Vesper, a gargoyle miner facing racial tensions and seeking the return of a stolen amulet.
-function func_04D3(eventid, itemref)
+function func_04D3(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

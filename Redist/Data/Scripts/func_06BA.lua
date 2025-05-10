@@ -1,12 +1,12 @@
 --- Best guess: Applies effects to party members with non-zero strength, displaying random distress messages and triggering a sequence when event ID 3 is received.
-function func_06BA(eventid, itemref)
+function func_06BA(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 3 then
         var_0000 = unknown_0023H()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
-            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(itemref)) then
+            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(objectref)) then
                 var_0004 = unknown_001BH(var_0003)
                 unknown_005CH(var_0004)
                 unknown_0620H(var_0004)
@@ -35,7 +35,7 @@ function func_06BA(eventid, itemref)
                 var_0005 = unknown_0024H(912)
                 if var_0005 then
                     unknown_0089H(18, var_0005)
-                    var_000C = unknown_0026H(unknown_0018H(itemref))
+                    var_000C = unknown_0026H(unknown_0018H(objectref))
                     unknown_0013H(var_0008, var_0005)
                 end
             end

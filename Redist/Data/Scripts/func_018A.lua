@@ -1,5 +1,5 @@
 --- Best guess: Manages a palace guard's dialogue, providing minimal responses about name and job, with random movement commands when idle, emphasizing authority.
-function func_018A(eventid, itemref)
+function func_018A(eventid, objectref)
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 

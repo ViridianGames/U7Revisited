@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Weston, a prisoner in Britain’s jail, discussing his theft of apples, poverty in Paws, and social inequities, asking the player to appeal to Lord British for his release.
-function func_0445(eventid, itemref)
+function func_0445(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

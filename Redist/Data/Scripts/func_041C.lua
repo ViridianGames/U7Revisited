@@ -1,5 +1,5 @@
 --- Best guess: Manages Jesse’s dialogue, discussing his role as the Avatar in the Royal Theatre’s play, his experimental works, and stage persona, with gender-based dialogue variations.
-function func_041C(eventid, itemref)
+function func_041C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then

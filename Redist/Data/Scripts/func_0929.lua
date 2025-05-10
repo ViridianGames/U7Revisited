@@ -1,5 +1,5 @@
 --- Best guess: Offers combat advice for hand items, suggesting to hit someone or performing a default action.
-function func_0929(eventid, itemref)
+function func_0929(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

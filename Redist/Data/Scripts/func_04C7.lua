@@ -1,5 +1,5 @@
 --- Best guess: Manages Sir Denton’s dialogue in Serpent’s Hold, a tavernkeeper providing extensive information about residents and aiding the statue defacement investigation.
-function func_04C7(eventid, itemref)
+function func_04C7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

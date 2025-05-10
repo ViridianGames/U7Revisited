@@ -1,5 +1,5 @@
 --- Best guess: Checks for ritual items and triggers the endgame sequence if conditions are met.
-function func_0715(eventid, itemref)
+function func_0715(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     var_0000 = unknown_0035H(8, 40, 1015, 356) --- Guess: Sets NPC location
@@ -7,15 +7,15 @@ function func_0715(eventid, itemref)
     -- Guess: sloop checks for ritual items
     for i = 1, 5 do
         var_0004 = {2, 3, 4, 0, 53}[i]
-        if get_container_items(243, 797, var_0004, 4) then --- Guess: Gets container items
+        if get_containerobject_s(243, 797, var_0004, 4) then --- Guess: Gets container items
             var_0001 = var_0004
         end
-        if get_container_items(244, 797, var_0004, 4) then --- Guess: Gets container items
+        if get_containerobject_s(244, 797, var_0004, 4) then --- Guess: Gets container items
             var_0001 = var_0004
         end
     end
     if var_0001 then
-        var_0005 = add_container_items(var_0001, {8033, 2, 17447, 17517, 17460, 8025, 3, 7719})
+        var_0005 = add_containerobject_s(var_0001, {8033, 2, 17447, 17517, 17460, 8025, 3, 7719})
         var_0006 = unknown_0018H(var_0001) --- Guess: Gets position data
         apply_sprite_effect(-1, 0, 0, 0, var_0006[2], var_0006[1], 17) --- Guess: Applies sprite effect
         unknown_000FH(62) --- Guess: Triggers event
@@ -26,10 +26,10 @@ function func_0715(eventid, itemref)
     for i = 1, 5 do
         var_0009 = {7, 8, 9, 0, 69}[i]
         var_000A = unknown_0018H(var_0009) --- Guess: Gets position data
-        var_000B = get_item_status(895) --- Guess: Gets item status
+        var_000B = get_object_status(895) --- Guess: Gets item status
         var_000C = unknown_0026H(var_000A) --- Guess: Updates position
-        destroy_item_silent(var_0009) --- Guess: Destroys item silently
-        var_0005 = add_container_items(var_000B, {random(50, 150), 17453, 17452, 7715})
+        destroy_object_silent(var_0009) --- Guess: Destroys item silently
+        var_0005 = add_containerobject_s(var_000B, {random(50, 150), 17453, 17452, 7715})
     end
     unknown_001DH(15, var_0001) --- Guess: Sets object behavior
 end

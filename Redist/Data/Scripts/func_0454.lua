@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Sasha, a young gypsy in Minoc grieving his murdered parents, Frederico and Tania, discussing his Fellowship membership, gypsy heritage, and family (Margareta and Jergi).
-function func_0454(eventid, itemref)
+function func_0454(eventid, objectref)
     local var_0000
 
     start_conversation()

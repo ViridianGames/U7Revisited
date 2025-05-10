@@ -1,12 +1,12 @@
 --- Best guess: Manages a book, displaying its content based on quality (ID), covering various texts from novels to journals.
-function func_0282(eventid, itemref)
+function func_0282(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
         var_0000 = 137
-        set_object_quality(itemref, 14)
-        unknown_0055H(itemref)
-        var_0001 = itemref
+        set_object_quality(objectref, 14)
+        unknown_0055H(objectref)
+        var_0001 = objectref
         var_0002 = _get_object_quality(var_0001)
         if var_0002 > var_0000 then
             add_dialogue("This is @not a @valid book")

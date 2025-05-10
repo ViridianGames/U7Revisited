@@ -1,5 +1,5 @@
 --- Best guess: Simulates fishing, with outcomes ranging from catching a fish to losing bait, based on random chance.
-function func_0296(eventid, itemref)
+function func_0296(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 or eventid == 4 then

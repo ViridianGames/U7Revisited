@@ -1075,7 +1075,7 @@ static int lua_number2strx (lua_State *L, char *buff, int sz,
 ** and '\0') + number of decimal digits to represent maxfloat (which
 ** is maximum exponent + 1). (99+3+1, adding some extra, 110)
 */
-#define MAX_ITEMF	(110 + l_floatatt(MAX_10_EXP))
+#define MAXobject_F	(110 + l_floatatt(MAX_10_EXP))
 
 
 /*
@@ -1086,7 +1086,7 @@ static int lua_number2strx (lua_State *L, char *buff, int sz,
 ** worst case are floats: they may need 99 significant digits, plus
 ** '0x', '-', '.', 'e+XXXX', and '\0'. Adding some extra, 120.
 */
-#define MAX_ITEM	120
+#define MAXobject_	120
 
 
 /* valid flags in a format specification */
@@ -1157,7 +1157,7 @@ static int quotefloat (lua_State *L, char *buff, lua_Number n) {
   else if (n != n)  /* NaN? */
     s = "(0/0)";
   else {  /* format number as hexadecimal */
-    int  nb = lua_number2strx(L, buff, MAX_ITEM,
+    int  nb = lua_number2strx(L, buff, MAXobject_,
                                  "%" LUA_NUMBER_FRMLEN "a", n);
     /* ensures that 'buff' string uses a dot as the radix character */
     if (memchr(buff, '.', nb) == NULL) {  /* no dot? */
@@ -1168,7 +1168,7 @@ static int quotefloat (lua_State *L, char *buff, lua_Number n) {
     return nb;
   }
   /* for the fixed representations */
-  return l_sprintf(buff, MAX_ITEM, "%s", s);
+  return l_sprintf(buff, MAXobject_, "%s", s);
 }
 
 
@@ -1181,7 +1181,7 @@ static void addliteral (lua_State *L, luaL_Buffer *b, int arg) {
       break;
     }
     case LUA_TNUMBER: {
-      char *buff = luaL_prepbuffsize(b, MAX_ITEM);
+      char *buff = luaL_prepbuffsize(b, MAXobject_);
       int nb;
       if (!lua_isinteger(L, arg))  /* float? */
         nb = quotefloat(L, buff, lua_tonumber(L, arg));
@@ -1190,7 +1190,7 @@ static void addliteral (lua_State *L, luaL_Buffer *b, int arg) {
         const char *format = (n == LUA_MININTEGER)  /* corner case? */
                            ? "0x%" LUA_INTEGER_FRMLEN "x"  /* use hex */
                            : LUA_INTEGER_FMT;  /* else use default format */
-        nb = l_sprintf(buff, MAX_ITEM, format, (LUAI_UACINT)n);
+        nb = l_sprintf(buff, MAXobject_, format, (LUAI_UACINT)n);
       }
       luaL_addsize(b, nb);
       break;
@@ -1286,7 +1286,7 @@ static int str_format (lua_State *L) {
       luaL_addchar(&b, *strfrmt++);  /* %% */
     else { /* format item */
       char form[MAX_FORMAT];  /* to store the format ('%...') */
-      int maxitem = MAX_ITEM;  /* maximum length for the result */
+      int maxitem = MAXobject_;  /* maximum length for the result */
       char *buff = luaL_prepbuffsize(&b, maxitem);  /* to put result */
       int nb = 0;  /* number of bytes in result */
       if (++arg > top)
@@ -1320,7 +1320,7 @@ static int str_format (lua_State *L) {
                                   luaL_checknumber(L, arg));
           break;
         case 'f':
-          maxitem = MAX_ITEMF;  /* extra space for '%f' */
+          maxitem = MAXobject_F;  /* extra space for '%f' */
           buff = luaL_prepbuffsize(&b, maxitem);
           /* FALLTHROUGH */
         case 'e': case 'E': case 'g': case 'G': {

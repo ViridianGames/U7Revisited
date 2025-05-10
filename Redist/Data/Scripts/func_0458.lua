@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Seara, a clockmaker in Minoc’s Artist’s Guild, discussing the Guild, the murders of Frederico and Tania, Sasha’s involvement with the Fellowship, and the controversy over Owen’s monument.
-function func_0458(eventid, itemref)
+function func_0458(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

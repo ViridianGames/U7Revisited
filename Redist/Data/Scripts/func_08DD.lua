@@ -2,8 +2,8 @@
 function func_08DD()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010
 
-    unknown_005CH(itemref)
-    var_0000 = unknown_0035H(8, 40, 359, itemref)
+    unknown_005CH(objectref)
+    var_0000 = unknown_0035H(8, 40, 359, objectref)
     var_0001 = 6
     if not unknown_0088H(10, 356) then
         for _, var_0004 in ipairs(var_0000) do

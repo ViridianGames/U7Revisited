@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Shamino in Britain, discussing his life, companions, and the pocketwatch, with options to join or leave.
-function func_0403(eventid, itemref)
+function func_0403(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

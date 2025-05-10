@@ -1,12 +1,12 @@
 --- Best guess: Manages a key, unlocking specific items (chests or doors) if quality matches, or relocking if already unlocked.
-function func_0281(eventid, itemref)
+function func_0281(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
         var_0000 = object_select_modal()
-        set_object_quality(itemref, 27)
+        set_object_quality(objectref, 27)
         var_0001 = get_object_shape(var_0000)
-        var_0002 = _get_object_quality(itemref)
+        var_0002 = _get_object_quality(objectref)
         var_0003 = _get_object_quality(var_0000)
         if get_object_shape(var_0000[1]) in {433, 432, 270, 376} then
             if var_0002 == var_0003 then

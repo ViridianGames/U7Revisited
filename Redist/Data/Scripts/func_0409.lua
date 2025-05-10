@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Katrina in New Magincia, discussing her life as a shepherd, local visitors, and a locket given to Henry, with options to join or leave.
-function func_0409(eventid, itemref)
+function func_0409(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

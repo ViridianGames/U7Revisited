@@ -1,5 +1,5 @@
 --- Best guess: Progresses a murder investigation with a multi-step dialogue (occupation, evidence, suspect).
-function func_0884(eventid, itemref)
+function func_0884(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()
@@ -92,7 +92,7 @@ function func_0884(eventid, itemref)
             add_dialogue("@The Mayor is pleased...@")
             if not get_flag(68) then
                 add_dialogue("@Here is half of thy reward money...@")
-                var_0005 = add_item_to_inventory(359, 644, 100, 1) --- Guess: Adds item to inventory
+                var_0005 = add_object_to_inventory(359, 644, 100, 1) --- Guess: Adds item to inventory
                 if not var_0005 then
                     add_dialogue("@Thou dost not have enough companions to carry thy reward!...@")
                     set_flag(69, true)

@@ -1,5 +1,5 @@
 --- Best guess: Handles potion purchase with flag-based pricing adjustments and dialogue.
-function func_0949(eventid, itemref)
+function func_0949(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
     start_conversation()
@@ -36,7 +36,7 @@ function func_0949(eventid, itemref)
             add_dialogue("@^" .. var_000C .. " To accept the price?@")
             var_000E = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000E then
-                var_000D = purchase_item(false, 1, 0, var_000B, var_0009, var_0003[var_000A]) --- Guess: Purchases item
+                var_000D = purchaseobject_(false, 1, 0, var_000B, var_0009, var_0003[var_000A]) --- Guess: Purchases item
             end
             if var_000D == 1 then
                 add_dialogue("@To be agreed!@")

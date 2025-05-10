@@ -1,5 +1,5 @@
 --- Best guess: Manages Vokes’s dialogue, a fighter at the Library of Scars in Jhelom, discussing his role, the honor flag theft, and duels with Sprellic, with flag-based combat triggers and banter with Syria.
-function func_047D(eventid, itemref)
+function func_047D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid ~= 1 then

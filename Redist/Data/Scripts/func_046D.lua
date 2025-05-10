@@ -1,5 +1,5 @@
 --- Best guess: Manages Brother Wayne’s dialogue, a lost monk from Empath Abbey, discussing his disorientation, studies with Taylor, and Aimi’s garden, with flag-based progression and nature-related topics.
-function func_046D(eventid, itemref)
+function func_046D(eventid, objectref)
     local var_0000
 
     if eventid ~= 1 then

@@ -27,12 +27,12 @@ function ferryman_09BH(object_id, event)
 
 File: func_0096.lua
 --------------------------------------------------
-function func_0096H(eventid, itemref)
+function func_0096H(eventid, objectref)
 
 File: func_009A.lua
 --------------------------------------------------
 -- Function 009A: Manages Erethian's dialogue
-function func_009A(itemref)
+function func_009A(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -52,7 +52,7 @@ function eventid()
 File: func_009B.lua
 --------------------------------------------------
 -- Function 009B: Manages Ferryman's dialogue
-function func_009B(itemref)
+function func_009B(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -72,7 +72,7 @@ function eventid()
 File: func_009F.lua
 --------------------------------------------------
 -- Function 009F: Manages clock time display
-function func_009F(itemref)
+function func_009F(objectref)
 
 -- Helper functions
 function eventid()
@@ -85,50 +85,50 @@ function func_00B2(eventid)
 File: func_00D2.lua
 --------------------------------------------------
 -- Function 00D2: Item processing with quality checks and randomization
-function func_00D2(eventid, itemref)
+function func_00D2(eventid, objectref)
 
 File: func_00E1.lua
 --------------------------------------------------
 -- Function 00E1: State-based item processing
-function func_00E1(eventid, itemref)
+function func_00E1(eventid, objectref)
 
 File: func_00F6.lua
 --------------------------------------------------
 -- Function 00F6: State-based item processing
-function func_00F6(eventid, itemref)
+function func_00F6(eventid, objectref)
 
 File: func_00FA.lua
 --------------------------------------------------
 -- Function 00FA: State-based item processing
-function func_00FA(eventid, itemref)
+function func_00FA(eventid, objectref)
 
 File: func_00FB.lua
 --------------------------------------------------
 -- Function 00FB: Ship sail logic with deed checks and messages
-function func_00FB(eventid, itemref)
+function func_00FB(eventid, objectref)
 
 -- Helper functions (assumed to be defined elsewhere)
-function in_array(itemref, value)
+function in_array(objectref, value)
 
-function arra(itemref, value)
+function arra(objectref, value)
 
 File: func_00FC.lua
 --------------------------------------------------
 -- Function 00FC: Display time on item (e.g., clock)
-function func_00FC(eventid, itemref)
+function func_00FC(eventid, objectref)
 
 File: func_0102.lua
 --------------------------------------------------
-function func_0102H(eventid, itemref)
+function func_0102H(eventid, objectref)
 
 File: func_0105.lua
 --------------------------------------------------
-function func_0105H(eventid, itemref)
+function func_0105H(eventid, objectref)
 
 File: func_010B.lua
 --------------------------------------------------
 -- Function 010B: Manages music playback
-function func_010B(itemref)
+function func_010B(objectref)
 
 -- Helper functions
 function eventid()
@@ -136,7 +136,7 @@ function eventid()
 File: func_010E.lua
 --------------------------------------------------
 -- Function 010E: Manages item interactions
-function func_010E(itemref)
+function func_010E(objectref)
 
 -- Helper functions
 function eventid()
@@ -144,36 +144,36 @@ function eventid()
 File: func_011C.lua
 --------------------------------------------------
 -- Function 011C: Manages sundial time display
-function func_011C(itemref)
+function func_011C(objectref)
 
 -- Helper functions
 function eventid()
 
 File: func_0122.lua
 --------------------------------------------------
-function func_0122H(eventid, itemref)
+function func_0122H(eventid, objectref)
 
 File: func_0123.lua
 --------------------------------------------------
-function func_0123H(eventid, itemref)
+function func_0123H(eventid, objectref)
 
 File: func_0124.lua
 --------------------------------------------------
-function func_0124H(eventid, itemref)
+function func_0124H(eventid, objectref)
 
 File: func_0128.lua
 --------------------------------------------------
-function func_0128H(eventid, itemref)
+function func_0128H(eventid, objectref)
 
 File: func_012A.lua
 --------------------------------------------------
 -- Function 012A: Manages ring of regeneration
-function func_012A(itemref)
+function func_012A(objectref)
 
 File: func_012D.lua
 --------------------------------------------------
 -- Function 012D: Manages generic item interaction
-function func_012D(itemref)
+function func_012D(objectref)
 
 -- Helper functions
 function eventid()
@@ -181,7 +181,7 @@ function eventid()
 File: func_012F.lua
 --------------------------------------------------
 -- Function 012F: Manages item transformation
-function func_012F(itemref)
+function func_012F(objectref)
 
 -- Helper functions
 function eventid()
@@ -190,30 +190,30 @@ function abort()
 
 File: func_0133.lua
 --------------------------------------------------
-function func_0133H(eventid, itemref)
+function func_0133H(eventid, objectref)
 
 File: func_0142.lua
 --------------------------------------------------
-function func_0142H(eventid, itemref)
+function func_0142H(eventid, objectref)
 
 File: func_0149.lua
 --------------------------------------------------
-function func_0149H(eventid, itemref)
+function func_0149H(eventid, objectref)
 
 File: func_0150.lua
 --------------------------------------------------
 -- Handles unlit candle interaction, switching to lit candle state.
-function func_0150H(eventid, itemref)
+function func_0150H(eventid, objectref)
 
 File: func_0152.lua
 --------------------------------------------------
 -- Manages lit light source (e.g., candle), switching to unlit or updating state.
-function func_0152H(eventid, itemref)
+function func_0152H(eventid, objectref)
 
 File: func_0154.lua
 --------------------------------------------------
 -- Handles potion or reagent usage, with dialogue and stat modifications.
-function func_0154H(eventid, itemref)
+function func_0154H(eventid, objectref)
 
 File: func_0174.lua
 --------------------------------------------------
@@ -223,17 +223,17 @@ function func_0174(p0)
 File: func_0178.lua
 --------------------------------------------------
 -- Manages bucket interaction, possibly for filling or emptying.
-function func_0178H(eventid, itemref)
+function func_0178H(eventid, objectref)
 
 File: func_0179.lua
 --------------------------------------------------
 -- Handles food consumption, applying nutritional effects based on item frame.
-function func_0179H(eventid, itemref)
+function func_0179H(eventid, objectref)
 
 File: func_017B.lua
 --------------------------------------------------
 -- Function 017B: Manages sign text display
-function func_017B(itemref)
+function func_017B(objectref)
 
 -- Helper functions
 function eventid()
@@ -241,12 +241,12 @@ function eventid()
 File: func_0188.lua
 --------------------------------------------------
 -- Manages well interaction, possibly for drawing water.
-function func_0188H(eventid, itemref)
+function func_0188H(eventid, objectref)
 
 File: func_018A.lua
 --------------------------------------------------
 -- Function 018A: Manages palace guard dialogue
-function func_018A(itemref)
+function func_018A(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -258,7 +258,7 @@ function eventid()
 File: func_019A.lua
 --------------------------------------------------
 -- Function 019A: Manages item quality and effects
-function func_019A(itemref)
+function func_019A(objectref)
 
 -- Helper functions
 function eventid()
@@ -266,47 +266,47 @@ function eventid()
 File: func_01A2.lua
 --------------------------------------------------
 -- Function 01A2: Giant bones item creation based on time
-function func_01A2(eventid, itemref)
+function func_01A2(eventid, objectref)
 
 File: func_01AF.lua
 --------------------------------------------------
 -- Function 01AF: Bellows for forging (e.g., black sword)
-function func_01AF(eventid, itemref)
+function func_01AF(eventid, objectref)
 
 File: func_01B0.lua
 --------------------------------------------------
 -- Function 01B0: State-based item processing
-function func_01B0(eventid, itemref)
+function func_01B0(eventid, objectref)
 
 File: func_01B1.lua
 --------------------------------------------------
 -- Function 01B1: State-based item processing
-function func_01B1(eventid, itemref)
+function func_01B1(eventid, objectref)
 
 File: func_01B2.lua
 --------------------------------------------------
 -- Function 01B2: Item interaction with dialogue and container check
-function func_01B2(eventid, itemref)
+function func_01B2(eventid, objectref)
 
 File: func_01B3.lua
 --------------------------------------------------
 -- Function 01B3: Item type switching
-function func_01B3(eventid, itemref)
+function func_01B3(eventid, objectref)
 
 File: func_01BF.lua
 --------------------------------------------------
 -- Function 01BF: Simple item reaction
-function func_01BF(eventid, itemref)
+function func_01BF(eventid, objectref)
 
 File: func_01D6.lua
 --------------------------------------------------
 -- Function 01D6: Container item check and positioning
-function func_01D6(eventid, itemref)
+function func_01D6(eventid, objectref)
 
 File: func_01DF.lua
 --------------------------------------------------
 -- Function 01DF: Emp NPC dialogue
-function func_01DF(eventid, itemref)
+function func_01DF(eventid, objectref)
 
 -- Helper functions (assumed to be defined elsewhere)
 function get_flag(flag) -- Placeholder for flag access
@@ -322,27 +322,27 @@ function contains(array, value)
 File: func_01E1.lua
 --------------------------------------------------
 -- Function 01E1: Delegate to external function
-function func_01E1(eventid, itemref)
+function func_01E1(eventid, objectref)
 
 File: func_01EF.lua
 --------------------------------------------------
 -- Function 01EF: Cat NPC interaction
-function func_01EF(eventid, itemref)
+function func_01EF(eventid, objectref)
 
 File: func_01F0.lua
 --------------------------------------------------
 -- Function 01F0: Dog NPC interaction
-function func_01F0(eventid, itemref)
+function func_01F0(eventid, objectref)
 
 File: func_01F4.lua
 --------------------------------------------------
 -- Function 01F4: Cow NPC with party-based dialogue
-function func_01F4(eventid, itemref)
+function func_01F4(eventid, objectref)
 
 File: func_01F7.lua
 --------------------------------------------------
 -- Function 01F7: NPC donation dialogue
-function func_01F7(eventid, itemref)
+function func_01F7(eventid, objectref)
 
 -- Helper function (assumed to be defined elsewhere)
 function add_dialogue(message)
@@ -350,7 +350,7 @@ function add_dialogue(message)
 File: func_01F8.lua
 --------------------------------------------------
 -- Function 01F8: Dracothraxus dragon NPC dialogue and courage test
-function func_01F8(eventid, itemref)
+function func_01F8(eventid, objectref)
 
 -- Helper functions (assumed to be defined elsewhere)
 function add_dialogue(message)
@@ -364,7 +364,7 @@ function arra(array, value)
 File: func_01FA.lua
 --------------------------------------------------
 -- Function 01FA: Batlin's dialogue after Hook's death
-function func_01FA(eventid, itemref)
+function func_01FA(eventid, objectref)
 
 -- Helper function (assumed to be defined elsewhere)
 function add_dialogue(message)
@@ -372,7 +372,7 @@ function add_dialogue(message)
 File: func_020A.lua
 --------------------------------------------------
 -- Function 020A: Manages locked chest interaction
-function func_020A(itemref)
+function func_020A(objectref)
 
 -- Helper functions
 function eventid()
@@ -380,7 +380,7 @@ function eventid()
 File: func_020E.lua
 --------------------------------------------------
 -- Function 020E: Manages item transformation near light
-function func_020E(itemref)
+function func_020E(objectref)
 
 -- Helper functions
 function eventid()
@@ -390,32 +390,32 @@ function sloop()
 File: func_0216.lua
 --------------------------------------------------
 -- Triggers a script for an unknown item interaction (possibly a lever or switch).
-function func_0216H(eventid, itemref)
+function func_0216H(eventid, objectref)
 
 File: func_0247.lua
 --------------------------------------------------
 -- Manages bedroll usage, checking space and setting up a bed.
-function func_0247H(eventid, itemref)
+function func_0247H(eventid, objectref)
 
 File: func_0253.lua
 --------------------------------------------------
 -- Handles torch interaction, switching to lit torch state.
-function func_0253H(eventid, itemref)
+function func_0253H(eventid, objectref)
 
 File: func_0268.lua
 --------------------------------------------------
 -- Applies an effect to an item, possibly a potion or reagent.
-function func_0268H(eventid, itemref)
+function func_0268H(eventid, objectref)
 
 File: func_0269.lua
 --------------------------------------------------
 -- Handles Time Lord’s dialogue, guiding the Avatar through the main quest.
-function func_0269H(eventid, itemref)
+function func_0269H(eventid, objectref)
 
 File: func_026F.lua
 --------------------------------------------------
 -- Function 026F: Manages hammer-on-sword forging
-function func_026F(itemref)
+function func_026F(objectref)
 
 -- Helper functions
 function eventid()
@@ -423,62 +423,62 @@ function eventid()
 File: func_0270.lua
 --------------------------------------------------
 -- Handles pickaxe usage on trees or objects, checking for valid targets.
-function func_0270H(eventid, itemref)
+function func_0270H(eventid, objectref)
 
 File: func_0273.lua
 --------------------------------------------------
 -- Manages lockpick usage on chests or doors, with chance of success or breaking.
-function func_0273H(eventid, itemref)
+function func_0273H(eventid, objectref)
 
 File: func_0275.lua
 --------------------------------------------------
 -- Handles interaction with an item, possibly a sextant or navigation tool.
-function func_0275H(eventid, itemref)
+function func_0275H(eventid, objectref)
 
 File: func_0276.lua
 --------------------------------------------------
 -- Manages interaction with an item, possibly a map or telescope.
-function func_0276H(eventid, itemref)
+function func_0276H(eventid, objectref)
 
 File: func_0281.lua
 --------------------------------------------------
 -- Handles key usage on locked chests or doors, checking for matching quality.
-function func_0281H(eventid, itemref)
+function func_0281H(eventid, objectref)
 
 File: func_0282.lua
 --------------------------------------------------
 -- Displays book contents based on item quality, covering various texts.
-function func_0282H(eventid, itemref)
+function func_0282H(eventid, objectref)
 
 File: func_0284.lua
 --------------------------------------------------
 -- Manages coin flipping game with dialogue for heads or tails.
-function func_0284H(eventid, itemref)
+function func_0284H(eventid, objectref)
 
 File: func_0285.lua
 --------------------------------------------------
 -- Provides information about gold exchange rates.
-function func_0285H(eventid, itemref)
+function func_0285H(eventid, objectref)
 
 File: func_0286.lua
 --------------------------------------------------
 -- Provides information about gold bar exchange rates.
-function func_0286H(eventid, itemref)
+function func_0286H(eventid, objectref)
 
 File: func_0288.lua
 --------------------------------------------------
 -- Handles interaction with an item, warning against wasting it if no wearer is present.
-function func_0288H(eventid, itemref)
+function func_0288H(eventid, objectref)
 
 File: func_0289.lua
 --------------------------------------------------
 -- Boosts NPC stats (strength, dexterity, intelligence) when using an item, with a cap at 30.
-function func_0289H(eventid, itemref)
+function func_0289H(eventid, objectref)
 
 File: func_028A.lua
 --------------------------------------------------
 -- Function 028A: Manages directional display
-function func_028A(itemref)
+function func_028A(objectref)
 
 -- Helper functions
 function eventid()
@@ -486,7 +486,7 @@ function eventid()
 File: func_028B.lua
 --------------------------------------------------
 -- Function 028B: Manages spinning wheel crafting
-function func_028B(itemref)
+function func_028B(objectref)
 
 -- Helper functions
 function eventid()
@@ -494,7 +494,7 @@ function eventid()
 File: func_028C.lua
 --------------------------------------------------
 -- Function 028C: Manages barge interaction
-function func_028C(itemref)
+function func_028C(objectref)
 
 -- Helper functions
 function eventid()
@@ -502,7 +502,7 @@ function eventid()
 File: func_028D.lua
 --------------------------------------------------
 -- Function 028D: Manages container-based item interaction
-function func_028D(itemref)
+function func_028D(objectref)
 
 -- Helper functions
 function eventid()
@@ -512,7 +512,7 @@ function abort()
 File: func_028E.lua
 --------------------------------------------------
 -- Function 028E: Manages container-based item interaction
-function func_028E(itemref)
+function func_028E(objectref)
 
 -- Helper functions
 function eventid()
@@ -522,27 +522,27 @@ function abort()
 File: func_0291.lua
 --------------------------------------------------
 -- Toggles an item’s frame between even and odd values, likely for a switch or lever.
-function func_0291H(eventid, itemref)
+function func_0291H(eventid, objectref)
 
 File: func_0292.lua
 --------------------------------------------------
 -- Manages cooking dough in an oven, producing bread with random outcomes.
-function func_0292H(eventid, itemref)
+function func_0292H(eventid, objectref)
 
 File: func_0294.lua
 --------------------------------------------------
 -- Triggers an action for an item, possibly a generic use script.
-function func_0294H(eventid, itemref)
+function func_0294H(eventid, objectref)
 
 File: func_0296.lua
 --------------------------------------------------
 -- Simulates fishing with a pole, with random outcomes for catching fish or losing bait.
-function func_0296H(eventid, itemref)
+function func_0296H(eventid, objectref)
 
 File: func_029C.lua
 --------------------------------------------------
 -- Function 029C: Manages sword pickup and forging
-function func_029C(itemref)
+function func_029C(objectref)
 
 -- Helper functions
 function eventid()
@@ -550,97 +550,97 @@ function eventid()
 File: func_02A3.lua
 --------------------------------------------------
 -- Function 02A3: Parrot NPC dialogue with treasure hint
-function func_02A3(eventid, itemref)
+function func_02A3(eventid, objectref)
 
 File: func_02A6.lua
 --------------------------------------------------
 -- Function 02A6: Toggle item frame
-function func_02A6(eventid, itemref)
+function func_02A6(eventid, objectref)
 
 File: func_02B1.lua
 --------------------------------------------------
 -- Function 02B1: Play music track
-function func_02B1(eventid, itemref)
+function func_02B1(eventid, objectref)
 
 File: func_02B2.lua
 --------------------------------------------------
 -- Function 02B2: Play music track
-function func_02B2(eventid, itemref)
+function func_02B2(eventid, objectref)
 
 File: func_02B3.lua
 --------------------------------------------------
 -- Function 02B3: Play music track
-function func_02B3(eventid, itemref)
+function func_02B3(eventid, objectref)
 
 File: func_02B4.lua
 --------------------------------------------------
 -- Function 02B4: Play music track
-function func_02B4(eventid, itemref)
+function func_02B4(eventid, objectref)
 
 File: func_02B5.lua
 --------------------------------------------------
 -- Function 02B5: Music and item iteration
-function func_02B5(eventid, itemref)
+function func_02B5(eventid, objectref)
 
 File: func_02B7.lua
 --------------------------------------------------
 -- Function 02B7: Delegate to external function
-function func_02B7(eventid, itemref)
+function func_02B7(eventid, objectref)
 
 File: func_02B8.lua
 --------------------------------------------------
 -- Function 02B8: Delegate to external function
-function func_02B8(eventid, itemref)
+function func_02B8(eventid, objectref)
 
 File: func_02BA.lua
 --------------------------------------------------
 -- Function 02BA: Cloth to bandages transformation
-function func_02BA(eventid, itemref)
+function func_02BA(eventid, objectref)
 
 File: func_02BD.lua
 --------------------------------------------------
 -- Function 02BD: Lit torch behavior
-function func_02BD(eventid, itemref)
+function func_02BD(eventid, objectref)
 
 File: func_02BE.lua
 --------------------------------------------------
 -- Function 02BE: Cannon firing mechanics
-function func_02BE(eventid, itemref)
+function func_02BE(eventid, objectref)
 
 File: func_02C0.lua
 --------------------------------------------------
 -- Function 02C0: Powder keg behavior
-function func_02C0(eventid, itemref)
+function func_02C0(eventid, objectref)
 
 File: func_02C3.lua
 --------------------------------------------------
 -- Function 02C3: Item interaction with script call
-function func_02C3(eventid, itemref)
+function func_02C3(eventid, objectref)
 
 File: func_02C4.lua
 --------------------------------------------------
 -- Function 02C4: Toggle item frame
-function func_02C4(eventid, itemref)
+function func_02C4(eventid, objectref)
 
 File: func_02C5.lua
 --------------------------------------------------
 -- Function 02C5: Item iteration with position-based script call
-function func_02C5(eventid, itemref)
+function func_02C5(eventid, objectref)
 
 File: func_02CB.lua
 --------------------------------------------------
 -- Function 02CB: Tombstone inscriptions
-function func_02CB(eventid, itemref)
+function func_02CB(eventid, objectref)
 
 File: func_02CF.lua
 --------------------------------------------------
 -- Function 02CF: Item creation with positioning
-function func_02CF(eventid, itemref)
+function func_02CF(eventid, objectref)
 
 File: func_02D3.lua
 --------------------------------------------------
 -- Function 02D3: Crossbow bolt advertisement
-function func_02D3(eventid, itemref)
+function func_02D3(eventid, objectref)
 
 -- Helper function
 function add_dialogue(...)
@@ -648,12 +648,12 @@ function add_dialogue(...)
 File: func_02D5.lua
 --------------------------------------------------
 -- Function 02D5: Gambling wheel mechanic
-function func_02D5(eventid, itemref)
+function func_02D5(eventid, objectref)
 
 File: func_02D8.lua
 --------------------------------------------------
 -- Function 02D8: NPC blacksmith dialogue
-function func_02D8(eventid, itemref)
+function func_02D8(eventid, objectref)
 
 -- Helper function
 function add_dialogue(message)
@@ -661,7 +661,7 @@ function add_dialogue(message)
 File: func_02D9.lua
 --------------------------------------------------
 -- Function 02D9: Item state with quality-based updates
-function func_02D9(eventid, itemref)
+function func_02D9(eventid, objectref)
 
 -- Helper function
 function get_flag(flag)
@@ -669,57 +669,57 @@ function get_flag(flag)
 File: func_02DA.lua
 --------------------------------------------------
 -- Function 02DA: Child rescue and item transformation
-function func_02DA(eventid, itemref)
+function func_02DA(eventid, objectref)
 
 File: func_02DE.lua
 --------------------------------------------------
 -- Function 02DE: Item frame toggle with array updates
-function func_02DE(eventid, itemref)
+function func_02DE(eventid, objectref)
 
 File: func_02DF.lua
 --------------------------------------------------
 -- Function 02DF: Training equipment dialogue
-function func_02DF(eventid, itemref)
+function func_02DF(eventid, objectref)
 
 File: func_02E3.lua
 --------------------------------------------------
 -- Function 02E3: Placeholder (no-op)
-function func_02E3(eventid, itemref)
+function func_02E3(eventid, objectref)
 
 File: func_02E4.lua
 --------------------------------------------------
 -- Places an item in a container, likely for a specific quest or interaction.
-function func_02E4H(eventid, itemref)
+function func_02E4H(eventid, objectref)
 
 File: func_02E5.lua
 --------------------------------------------------
 -- Function 02E5: Item creation with positioning
-function func_02E5(eventid, itemref)
+function func_02E5(eventid, objectref)
 
 File: func_02E6.lua
 --------------------------------------------------
 -- Function 02E6: NPC dialogue trigger
-function func_02E6(eventid, itemref)
+function func_02E6(eventid, objectref)
 
 File: func_02E7.lua
 --------------------------------------------------
 -- Function 02E7: Dragon reward mechanic
-function func_02E7(eventid, itemref)
+function func_02E7(eventid, objectref)
 
 File: func_02E8.lua
 --------------------------------------------------
 -- Function 02E8: Event trigger
-function func_02E8(eventid, itemref)
+function func_02E8(eventid, objectref)
 
 File: func_02E9.lua
 --------------------------------------------------
 -- Function 02E9: Play music track
-function func_02E9(eventid, itemref)
+function func_02E9(eventid, objectref)
 
 File: func_02EB.lua
 --------------------------------------------------
 -- Function 02EB: Soul cage for liche capture/release
-function func_02EB(eventid, itemref)
+function func_02EB(eventid, objectref)
 
 -- Helper function
 function set_flag(flag, value)
@@ -727,7 +727,7 @@ function set_flag(flag, value)
 File: func_02F0.lua
 --------------------------------------------------
 -- Function 02F0: Music box state and playback
-function func_02F0(eventid, itemref)
+function func_02F0(eventid, objectref)
 
 -- Helper function
 function set_flag(flag, value)
@@ -735,7 +735,7 @@ function set_flag(flag, value)
 File: func_02F2.lua
 --------------------------------------------------
 -- Function 02F2: Horance transformation from liche to ghost
-function func_02F2(eventid, itemref)
+function func_02F2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(message)
@@ -745,12 +745,12 @@ function get_flag(flag)
 File: func_02F5.lua
 --------------------------------------------------
 -- Function 02F5: Delegate to external function
-function func_02F5(eventid, itemref)
+function func_02F5(eventid, objectref)
 
 File: func_02F8.lua
 --------------------------------------------------
 -- Function 02F8: Gem interaction with mirror-breaking
-function func_02F8(eventid, itemref)
+function func_02F8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(message)
@@ -762,37 +762,37 @@ function set_flag(flag, value)
 File: func_02FB.lua
 --------------------------------------------------
 -- Function 02FB: Time-based NPC action
-function func_02FB(eventid, itemref)
+function func_02FB(eventid, objectref)
 
 File: func_0301.lua
 --------------------------------------------------
 -- Handles smokebomb usage, creating a smoke effect and affecting NPCs.
-function func_0301H(eventid, itemref)
+function func_0301H(eventid, objectref)
 
 File: func_0302.lua
 --------------------------------------------------
 -- Triggers a complex action, possibly for a magical or environmental effect.
-function func_0302H(eventid, itemref)
+function func_0302H(eventid, objectref)
 
 File: func_0303.lua
 --------------------------------------------------
 -- Handles wand usage, triggering specific effects or endgame conditions based on item type.
-function func_0303H(eventid, itemref)
+function func_0303H(eventid, objectref)
 
 File: func_0305.lua
 --------------------------------------------------
 -- Triggers a generic action for an item, possibly a placeholder or specific use script.
-function func_0305H(eventid, itemref)
+function func_0305H(eventid, objectref)
 
 File: func_0306.lua
 --------------------------------------------------
 -- Triggers a generic action for an item, possibly a placeholder or specific use script.
-function func_0306H(eventid, itemref)
+function func_0306H(eventid, objectref)
 
 File: func_030D.lua
 --------------------------------------------------
 -- Function 030D: Manages ship plank interaction
-function func_030D(itemref)
+function func_030D(objectref)
 
 -- Helper functions
 function eventid()
@@ -800,7 +800,7 @@ function eventid()
 File: func_030E.lua
 --------------------------------------------------
 -- Function 030E: Manages weapon interaction
-function func_030E(itemref)
+function func_030E(objectref)
 
 -- Helper functions
 function eventid()
@@ -808,27 +808,27 @@ function eventid()
 File: func_0311.lua
 --------------------------------------------------
 -- Manages the Orb of the Moons, creating moongates for teleportation or displaying error messages.
-function func_0311H(eventid, itemref)
+function func_0311H(eventid, objectref)
 
 File: func_0313.lua
 --------------------------------------------------
 -- Manages interaction with an item, possibly a lever or switch, with specific effects.
-function func_0313H(eventid, itemref)
+function func_0313H(eventid, objectref)
 
 File: func_0314.lua
 --------------------------------------------------
 -- Manages interaction with a lever or switch, toggling its frame and triggering effects.
-function func_0314H(eventid, itemref)
+function func_0314H(eventid, objectref)
 
 File: func_0316.lua
 --------------------------------------------------
 -- Handles interaction with an item, warning against wasting it if conditions aren’t met.
-function func_0316H(eventid, itemref)
+function func_0316H(eventid, objectref)
 
 File: func_031C.lua
 --------------------------------------------------
 -- Function 031C: Manages ship interaction
-function func_031C(itemref)
+function func_031C(objectref)
 
 -- Helper functions
 function eventid()
@@ -836,7 +836,7 @@ function eventid()
 File: func_031D.lua
 --------------------------------------------------
 -- Function 031D: Manages scroll text display
-function func_031D(itemref)
+function func_031D(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -850,7 +850,7 @@ function eventid()
 File: func_031E.lua
 --------------------------------------------------
 -- Function 031E: Manages item transformation
-function func_031E(itemref)
+function func_031E(objectref)
 
 -- Helper functions
 function eventid()
@@ -858,17 +858,17 @@ function eventid()
 File: func_0326.lua
 --------------------------------------------------
 -- Manages Trinsic guard’s dialogue, checking for the correct password to allow passage.
-function func_0326H(eventid, itemref)
+function func_0326H(eventid, objectref)
 
 File: func_0329.lua
 --------------------------------------------------
 -- Simulates spinning a top, with random outcomes and visual effects.
-function func_0329H(eventid, itemref)
+function func_0329H(eventid, objectref)
 
 File: func_032A.lua
 --------------------------------------------------
 -- Function 032A: Manages bucket water usage
-function func_032A(itemref)
+function func_032A(objectref)
 
 -- Helper functions
 function eventid()
@@ -876,22 +876,22 @@ function eventid()
 File: func_0334.lua
 --------------------------------------------------
 -- Displays text on a plaque based on its quality, used for various signs and inscriptions.
-function func_0334H(eventid, itemref)
+function func_0334H(eventid, objectref)
 
 File: func_0336.lua
 --------------------------------------------------
 -- Manages diaper usage, changing state or warning about improper use.
-function func_0336H(eventid, itemref)
+function func_0336H(eventid, objectref)
 
 File: func_0337.lua
 --------------------------------------------------
 -- Handles paintbrush usage, applying paint with random dialogue outcomes.
-function func_0337H(eventid, itemref)
+function func_0337H(eventid, objectref)
 
 File: func_033B.lua
 --------------------------------------------------
 -- Function 033B: Manages bandage healing
-function func_033B(itemref)
+function func_033B(objectref)
 
 -- Helper functions
 function eventid()
@@ -899,7 +899,7 @@ function eventid()
 File: func_033C.lua
 --------------------------------------------------
 -- Function 033C: Manages item interaction
-function func_033C(itemref)
+function func_033C(objectref)
 
 -- Helper functions
 function eventid()
@@ -907,27 +907,27 @@ function eventid()
 File: func_0345.lua
 --------------------------------------------------
 -- Instructs the player to use a brush and pigments for painting.
-function func_0345H(eventid, itemref)
+function func_0345H(eventid, objectref)
 
 File: func_0347.lua
 --------------------------------------------------
 -- Triggers Time Lord dialogue when using an hourglass under specific conditions.
-function func_0347H(eventid, itemref)
+function func_0347H(eventid, objectref)
 
 File: func_0348.lua
 --------------------------------------------------
 -- Manages flying carpet usage, allowing takeoff or landing with safety checks.
-function func_0348H(eventid, itemref)
+function func_0348H(eventid, objectref)
 
 File: func_034A.lua
 --------------------------------------------------
 -- Function 034A: Manages item frame-based interaction
-function func_034A(itemref)
+function func_034A(objectref)
 
 File: func_034D.lua
 --------------------------------------------------
 -- Function 034D: Manages item quality-based interaction
-function func_034D(itemref)
+function func_034D(objectref)
 
 -- Helper functions
 function eventid()
@@ -935,22 +935,22 @@ function eventid()
 File: func_0350.lua
 --------------------------------------------------
 -- Triggers a specific effect or scene transition when using an item with frame 3.
-function func_0350H(eventid, itemref)
+function func_0350H(eventid, objectref)
 
 File: func_0353.lua
 --------------------------------------------------
 -- Describes fine cloth, suggesting trade in Minoc or cutting into bandages.
-function func_0353H(eventid, itemref)
+function func_0353H(eventid, objectref)
 
 File: func_0356.lua
 --------------------------------------------------
 -- Manages shrine interactions (Truth, Love, Courage), providing dialogue and stat boosts.
-function func_0356H(eventid, itemref)
+function func_0356H(eventid, objectref)
 
 File: func_035F.lua
 --------------------------------------------------
 -- Function 035F: Manages flour usage
-function func_035F(itemref)
+function func_035F(objectref)
 
 -- Helper functions
 function eventid()
@@ -958,12 +958,12 @@ function eventid()
 File: func_0369.lua
 --------------------------------------------------
 -- Triggers an action for an item, possibly a quest item, if worn by a character.
-function func_0369H(eventid, itemref)
+function func_0369H(eventid, objectref)
 
 File: func_036C.lua
 --------------------------------------------------
 -- Function 036C: Manages item type transformation
-function func_036C(itemref)
+function func_036C(objectref)
 
 -- Helper functions
 function eventid()
@@ -973,16 +973,16 @@ function abort()
 File: func_0378.lua
 --------------------------------------------------
 -- Manages a cannon interaction, playing music and triggering effects if conditions are met.
-function func_0378H(eventid, itemref)
+function func_0378H(eventid, objectref)
 
 File: func_0379.lua
 --------------------------------------------------
-function func_0379(eventid, itemref)
+function func_0379(eventid, objectref)
 
 File: func_037D.lua
 --------------------------------------------------
 -- Function 037D: Manages item quality-based NPC effects
-function func_037D(itemref)
+function func_037D(objectref)
 
 -- Helper functions
 function eventid()
@@ -990,22 +990,22 @@ function eventid()
 File: func_03A7.lua
 --------------------------------------------------
 -- Function 03A7: Item type switching
-function func_03A7(eventid, itemref)
+function func_03A7(eventid, objectref)
 
 File: func_03A8.lua
 --------------------------------------------------
 -- Function 03A8: Item type switching
-function func_03A8(eventid, itemref)
+function func_03A8(eventid, objectref)
 
 File: func_03B0.lua
 --------------------------------------------------
 -- Function 03B0: Spitting action with dialogue
-function func_03B0(eventid, itemref)
+function func_03B0(eventid, objectref)
 
 File: func_03B2.lua
 --------------------------------------------------
 -- Function 03B2: Guard NPC dialogue
-function func_03B2(eventid, itemref)
+function func_03B2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(message)
@@ -1015,27 +1015,27 @@ function wait_for_answer()
 File: func_03B5.lua
 --------------------------------------------------
 -- Function 03B5: Winch action delegate
-function func_03B5(eventid, itemref)
+function func_03B5(eventid, objectref)
 
 File: func_03B6.lua
 --------------------------------------------------
 -- Function 03B6: Winch action delegate
-function func_03B6(eventid, itemref)
+function func_03B6(eventid, objectref)
 
 File: func_03C8.lua
 --------------------------------------------------
 -- Function 03C8: Frame-based actions with positioning
-function func_03C8(eventid, itemref)
+function func_03C8(eventid, objectref)
 
 File: func_03D5.lua
 --------------------------------------------------
 -- Function 03D5: Item interaction with positioning
-function func_03D5(eventid, itemref)
+function func_03D5(eventid, objectref)
 
 File: func_03DB.lua
 --------------------------------------------------
 -- Function 03DB: Baby crying and transformation
-function func_03DB(eventid, itemref)
+function func_03DB(eventid, objectref)
 
 -- Helper function
 function arra(array, value)
@@ -1043,7 +1043,7 @@ function arra(array, value)
 File: func_03DE.lua
 --------------------------------------------------
 -- Function 03DE: Telepathic mind probe narrative
-function func_03DE(eventid, itemref)
+function func_03DE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(message)
@@ -1055,12 +1055,12 @@ function set_flag(flag, value)
 File: func_03DF.lua
 --------------------------------------------------
 -- Function 03DF: Item position-based action trigger
-function func_03DF(eventid, itemref)
+function func_03DF(eventid, objectref)
 
 File: func_03E0.lua
 --------------------------------------------------
 -- Function 03E0: Item interaction with array updates
-function func_03E0(eventid, itemref)
+function func_03E0(eventid, objectref)
 
 -- Helper function
 function arra(array, value)
@@ -1068,12 +1068,12 @@ function arra(array, value)
 File: func_03F3.lua
 --------------------------------------------------
 -- Function 03F3: Bed action delegate
-function func_03F3(eventid, itemref)
+function func_03F3(eventid, objectref)
 
 File: func_03F5.lua
 --------------------------------------------------
 -- Function 03F5: Item interaction with array updates
-function func_03F5(eventid, itemref)
+function func_03F5(eventid, objectref)
 
 -- Helper function
 function arra(array, value)
@@ -1081,7 +1081,7 @@ function arra(array, value)
 File: func_03F7.lua
 --------------------------------------------------
 -- Function 03F7: Golem dialogue and item interactions
-function func_03F7(eventid, itemref)
+function func_03F7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(message)
@@ -1093,55 +1093,55 @@ function set_flag(flag, value)
 File: func_03FD.lua
 --------------------------------------------------
 -- Function 03FD: Script delegate
-function func_03FD(eventid, itemref)
+function func_03FD(eventid, objectref)
 
 File: func_0401.lua
 --------------------------------------------------
-function func_0401(eventid, itemref)
+function func_0401(eventid, objectref)
 
 File: func_0402.lua
 --------------------------------------------------
-function func_0402(eventid, itemref)
+function func_0402(eventid, objectref)
 
 File: func_0403.lua
 --------------------------------------------------
-function func_0403(eventid, itemref)
+function func_0403(eventid, objectref)
 
 File: func_0404.lua
 --------------------------------------------------
-function func_0404(eventid, itemref)
+function func_0404(eventid, objectref)
 
 File: func_0405.lua
 --------------------------------------------------
-function func_0405(eventid, itemref)
+function func_0405(eventid, objectref)
 
 File: func_0406.lua
 --------------------------------------------------
-function func_0406(eventid, itemref)
+function func_0406(eventid, objectref)
 
 File: func_0407.lua
 --------------------------------------------------
-function func_0407(eventid, itemref)
+function func_0407(eventid, objectref)
 
 File: func_0408.lua
 --------------------------------------------------
-function func_0408(eventid, itemref)
+function func_0408(eventid, objectref)
 
 File: func_0409.lua
 --------------------------------------------------
-function func_0409(eventid, itemref)
+function func_0409(eventid, objectref)
 
 File: func_040A.lua
 --------------------------------------------------
-function func_040A(eventid, itemref)
+function func_040A(eventid, objectref)
 
 File: func_040B.lua
 --------------------------------------------------
-function func_040B(eventid, itemref)
+function func_040B(eventid, objectref)
 
 File: func_040C.lua
 --------------------------------------------------
-function func_040C(itemref)
+function func_040C(objectref)
 
 -- Helper functions
 function eventid()
@@ -1157,7 +1157,7 @@ function cmp_strings(str, count)
 File: func_040D.lua
 --------------------------------------------------
 -- Function 040D: Manages Gilberto's dialogue and interactions
-function func_040D(itemref)
+function func_040D(objectref)
 
 -- Helper functions
 function eventid()
@@ -1173,7 +1173,7 @@ function cmp_strings(str, count)
 File: func_040E.lua
 --------------------------------------------------
 -- Function 040E: Manages Johnson's dialogue and interactions
-function func_040E(itemref)
+function func_040E(objectref)
 
 -- Helper functions
 function eventid()
@@ -1191,7 +1191,7 @@ function abort()
 File: func_040F.lua
 --------------------------------------------------
 -- Function 040F: Manages Eiko's dialogue and interactions
-function func_040F(itemref)
+function func_040F(objectref)
 
 -- Helper functions
 function eventid()
@@ -1209,57 +1209,57 @@ function abort()
 File: func_0410.lua
 --------------------------------------------------
 -- Manages Klog's dialogue in Trinsic, covering his Fellowship leadership, murder involvement (with Cube), and Christopher's argument.
-function func_0410(eventid, itemref)
+function func_0410(eventid, objectref)
 
 File: func_0411.lua
 --------------------------------------------------
 -- Manages Chantu's dialogue in Trinsic, covering his healing services, views on the Fellowship, and the murder.
-function func_0411(eventid, itemref)
+function func_0411(eventid, objectref)
 
 File: func_0412.lua
 --------------------------------------------------
 -- Manages Dell's dialogue in Trinsic, covering his shopkeeping, Fellowship involvement, and dismissive murder attitude.
-function func_0412(eventid, itemref)
+function func_0412(eventid, objectref)
 
 File: func_0413.lua
 --------------------------------------------------
 -- Manages Apollonia's dialogue in Trinsic, covering her pub and inn services, flirtations, and murder comments.
-function func_0413(eventid, itemref)
+function func_0413(eventid, objectref)
 
 File: func_0414.lua
 --------------------------------------------------
 -- Manages Markus's dialogue in Trinsic, covering his combat training, town comments, and minimal murder engagement.
-function func_0414(eventid, itemref)
+function func_0414(eventid, objectref)
 
 File: func_0415.lua
 --------------------------------------------------
 -- Manages Gargan's dialogue in Trinsic, covering shipwright services, Crown Jewel and Hook knowledge, and Fellowship dismissal.
-function func_0415(eventid, itemref)
+function func_0415(eventid, objectref)
 
 File: func_0416.lua
 --------------------------------------------------
 -- Manages Caroline's dialogue in Trinsic, covering Fellowship recruitment, Christopher's murder, and ambient slogans.
-function func_0416(eventid, itemref)
+function func_0416(eventid, objectref)
 
 File: func_0417.lua
 --------------------------------------------------
 -- Manages Lord British's dialogue in Britain, covering his rule, Britannia's state, magic issues, murders, and special events.
-function func_0417(eventid, itemref)
+function func_0417(eventid, objectref)
 
 File: func_0418.lua
 --------------------------------------------------
 -- Manages Nystul's dialogue in Britain, covering his senility, magic issues, and spell/reagent sales.
-function func_0418(eventid, itemref)
+function func_0418(eventid, objectref)
 
 File: func_0419.lua
 --------------------------------------------------
 -- Manages Chuckles' dialogue in Britain, focusing on "The Game" wordplay challenge and jester antics.
-function func_0419(eventid, itemref)
+function func_0419(eventid, objectref)
 
 File: func_041A.lua
 --------------------------------------------------
 -- Function 041A: Manages Batlin's dialogue and interactions
-function func_041A(itemref)
+function func_041A(objectref)
 
 -- Helper functions
 function eventid()
@@ -1277,7 +1277,7 @@ function abort()
 File: func_041B.lua
 --------------------------------------------------
 -- Function 041B: Manages Raymundo's dialogue and interactions
-function func_041B(itemref)
+function func_041B(objectref)
 
 -- Helper functions
 function eventid()
@@ -1295,7 +1295,7 @@ function abort()
 File: func_041C.lua
 --------------------------------------------------
 -- Function 041C: Manages Jesse's dialogue and interactions
-function func_041C(itemref)
+function func_041C(objectref)
 
 -- Helper functions
 function eventid()
@@ -1313,7 +1313,7 @@ function abort()
 File: func_041D.lua
 --------------------------------------------------
 -- Function 041D: Manages Stuart's dialogue and interactions
-function func_041D(itemref)
+function func_041D(objectref)
 
 -- Helper functions
 function eventid()
@@ -1331,7 +1331,7 @@ function abort()
 File: func_041E.lua
 --------------------------------------------------
 -- Function 041E: Manages Amber's dialogue and interactions
-function func_041E(itemref)
+function func_041E(objectref)
 
 -- Helper functions
 function eventid()
@@ -1349,7 +1349,7 @@ function abort()
 File: func_041F.lua
 --------------------------------------------------
 -- Function 041F: Manages Kristy's dialogue and interactions
-function func_041F(itemref)
+function func_041F(objectref)
 
 -- Helper functions
 function eventid()
@@ -1367,57 +1367,57 @@ function abort()
 File: func_0420.lua
 --------------------------------------------------
 -- Manages Max's dialogue in Britain, covering toddler play, singing, and pacifier interactions in the Royal Nursery.
-function func_0420(eventid, itemref)
+function func_0420(eventid, objectref)
 
 File: func_0421.lua
 --------------------------------------------------
 -- Manages Nicholas's dialogue in Britain, covering toddler tag game, diaper-changing, and orphaned status.
-function func_0421(eventid, itemref)
+function func_0421(eventid, objectref)
 
 File: func_0422.lua
 --------------------------------------------------
 -- Manages Nanna's dialogue in Britain, covering Royal Nursery duties, class structure views, and Fellowship membership.
-function func_0422(eventid, itemref)
+function func_0422(eventid, objectref)
 
 File: func_0423.lua
 --------------------------------------------------
 -- Manages Csil's dialogue in Britain, covering healing services, antibiotic theories, Lord British's malady, and Fellowship distrust.
-function func_0423(eventid, itemref)
+function func_0423(eventid, objectref)
 
 File: func_0424.lua
 --------------------------------------------------
 -- Manages Zella's dialogue in Britain, covering boxing training, combat philosophy, and training services.
-function func_0424(eventid, itemref)
+function func_0424(eventid, objectref)
 
 File: func_0425.lua
 --------------------------------------------------
 -- Manages Lucy's dialogue in Britain, covering Blue Boar tavern services, The Avatars band, and Dupre interactions.
-function func_0425(eventid, itemref)
+function func_0425(eventid, objectref)
 
 File: func_0426.lua
 --------------------------------------------------
 -- Manages Greg's dialogue in Britain, covering provisioner shop, lucky items, Gorn's story, and a fake Avatar encounter.
-function func_0426(eventid, itemref)
+function func_0426(eventid, objectref)
 
 File: func_0427.lua
 --------------------------------------------------
 -- Manages Neno's dialogue in Britain, covering bard ambitions, music studies, and The Avatars performances.
-function func_0427(eventid, itemref)
+function func_0427(eventid, objectref)
 
 File: func_0428.lua
 --------------------------------------------------
 -- Manages Judith's dialogue in Britain, covering music teaching, The Avatars performances, and marriage issues with Patterson.
-function func_0428(eventid, itemref)
+function func_0428(eventid, objectref)
 
 File: func_0429.lua
 --------------------------------------------------
 -- Manages Candice's dialogue in Britain, covering Royal Museum curation, Fellowship involvement, and secret affair with Patterson.
-function func_0429(eventid, itemref)
+function func_0429(eventid, objectref)
 
 File: func_042A.lua
 --------------------------------------------------
 -- Function 042A: Manages Cynthia's dialogue and interactions
-function func_042A(itemref)
+function func_042A(objectref)
 
 -- Helper functions
 function eventid()
@@ -1435,7 +1435,7 @@ function abort()
 File: func_042B.lua
 --------------------------------------------------
 -- Function 042B: Manages Patterson's dialogue and interactions
-function func_042B(itemref)
+function func_042B(objectref)
 
 -- Helper functions
 function eventid()
@@ -1453,7 +1453,7 @@ function abort()
 File: func_042C.lua
 --------------------------------------------------
 -- Function 042C: Manages Carrocio's dialogue and interactions
-function func_042C(itemref)
+function func_042C(objectref)
 
 -- Helper functions
 function eventid()
@@ -1483,52 +1483,52 @@ function func_042F(eventid)
 File: func_0430.lua
 --------------------------------------------------
 -- Manages Amanda's dialogue, covering her vengeance quest against a cyclops, relationship with Eiko, and quest resolution.
-function func_0430(eventid, itemref)
+function func_0430(eventid, objectref)
 
 File: func_0431.lua
 --------------------------------------------------
 -- Manages Denby's dialogue in Britain, covering intelligence-based combat training and pacifist philosophy.
-function func_0431(eventid, itemref)
+function func_0431(eventid, objectref)
 
 File: func_0432.lua
 --------------------------------------------------
 -- Manages Fred's dialogue in Britain, covering meat sales at the Farmer's Market, Paws slaughterhouse, and Morfin's activities.
-function func_0432(eventid, itemref)
+function func_0432(eventid, objectref)
 
 File: func_0433.lua
 --------------------------------------------------
 -- Manages Kelly's dialogue in Britain, covering Farmer's Market operations, produce details, and opinions on Brownie and Mack.
-function func_0433(eventid, itemref)
+function func_0433(eventid, objectref)
 
 File: func_0434.lua
 --------------------------------------------------
 -- Manages Willy's dialogue in Britain, covering bakery operations, secret recipes, love interests, and job opportunities.
-function func_0434(eventid, itemref)
+function func_0434(eventid, objectref)
 
 File: func_0435.lua
 --------------------------------------------------
 -- Manages Gaye's dialogue in Britain, covering clothier operations, clothing sales, Willy's interest, and Fellowship activities.
-function func_0435(eventid, itemref)
+function func_0435(eventid, objectref)
 
 File: func_0436.lua
 --------------------------------------------------
 -- Manages Coop's dialogue in Britain, covering Iolo's Bows operations and The Avatars performances.
-function func_0436(eventid, itemref)
+function func_0436(eventid, objectref)
 
 File: func_0437.lua
 --------------------------------------------------
 -- Manages Grayson's dialogue in Britain, covering armour and weapons sales and Fellowship benefits.
-function func_0437(eventid, itemref)
+function func_0437(eventid, objectref)
 
 File: func_0438.lua
 --------------------------------------------------
 -- Manages Diane's dialogue in Britain, covering stable operations, horse and carriage sales, and local connections.
-function func_0438(eventid, itemref)
+function func_0438(eventid, objectref)
 
 File: func_0439.lua
 --------------------------------------------------
 -- Manages Clint's dialogue in Britain, covering ship and sextant sales, sailing past, and opinions on the Fellowship and Crown Jewel.
-function func_0439(eventid, itemref)
+function func_0439(eventid, objectref)
 
 File: func_043A.lua
 --------------------------------------------------
@@ -1661,32 +1661,32 @@ function func_0459(eventid)
 File: func_045A.lua
 --------------------------------------------------
 -- Manages Owen's dialogue in Minoc, covering shipbuilding, Fellowship involvement, monument plans, and statue cancellation reaction.
-function func_045A(eventid, itemref)
+function func_045A(eventid, objectref)
 
 File: func_045B.lua
 --------------------------------------------------
 -- Manages Burnside's dialogue in Minoc, covering town governance, murders, monument plans, and Fellowship membership.
-function func_045B(eventid, itemref)
+function func_045B(eventid, objectref)
 
 File: func_045C.lua
 --------------------------------------------------
 -- Manages Rutherford's dialogue in Minoc, covering tavern operations, murders, and information about Hook and the Crown Jewel.
-function func_045C(eventid, itemref)
+function func_045C(eventid, objectref)
 
 File: func_045D.lua
 --------------------------------------------------
 -- Manages William's dialogue in Minoc, covering sawmill operations, murders, and Fellowship teachings.
-function func_045D(eventid, itemref)
+function func_045D(eventid, objectref)
 
 File: func_045E.lua
 --------------------------------------------------
 -- Manages Karenna's dialogue in Minoc, covering combat training, murders, Jakher's relationship, and gypsy connections.
-function func_045E(eventid, itemref)
+function func_045E(eventid, objectref)
 
 File: func_045F.lua
 --------------------------------------------------
 -- Manages Jakher's dialogue in Minoc, covering combat training, murders, Karenna's relationship, and Owen's past.
-function func_045F(eventid, itemref)
+function func_045F(eventid, objectref)
 
 File: func_0460.lua
 --------------------------------------------------
@@ -1731,32 +1731,32 @@ function func_0469(eventid)
 File: func_046A.lua
 --------------------------------------------------
 -- Manages Tiery's dialogue in Empath Abbey, covering graveyard duties, local connections, and humorous misunderstandings.
-function func_046A(eventid, itemref)
+function func_046A(eventid, objectref)
 
 File: func_046B.lua
 --------------------------------------------------
 -- Manages Iskander's dialogue, a cyclops hero, covering his heroic past, tribal homeland search, and the tetrahedron riddle.
-function func_046B(eventid, itemref)
+function func_046B(eventid, objectref)
 
 File: func_046C.lua
 --------------------------------------------------
 -- Manages Reyna's dialogue near Empath Abbey, covering healing services, her mother's grave, and forest connections.
-function func_046C(eventid, itemref)
+function func_046C(eventid, objectref)
 
 File: func_046D.lua
 --------------------------------------------------
 -- Manages Brother Wayne's dialogue near Empath Abbey, covering his aimless wandering, studies with Taylor, and love for nature.
-function func_046D(eventid, itemref)
+function func_046D(eventid, objectref)
 
 File: func_046E.lua
 --------------------------------------------------
 -- Manages Garok's dialogue in a dungeon, covering his magic troubles, a voice in his head, and dungeon navigation.
-function func_046E(eventid, itemref)
+function func_046E(eventid, objectref)
 
 File: func_046F.lua
 --------------------------------------------------
 -- Manages Gharl's dialogue in a jail cell, covering his hunting lifestyle and a secret about a troll ally.
-function func_046F(eventid, itemref)
+function func_046F(eventid, objectref)
 
 File: func_0470.lua
 --------------------------------------------------
@@ -1801,32 +1801,32 @@ function func_0479(eventid)
 File: func_047A.lua
 --------------------------------------------------
 -- Manages Ophelia's dialogue in Jhelom, covering tavern operations, Sprellic's duels, betting, and rivalry with Daphne.
-function func_047A(eventid, itemref)
+function func_047A(eventid, objectref)
 
 File: func_047B.lua
 --------------------------------------------------
 -- Manages Daphne's dialogue in Jhelom, covering tavern operations, Sprellic's duels, betting, and rivalry with Ophelia.
-function func_047B(eventid, itemref)
+function func_047B(eventid, objectref)
 
 File: func_047C.lua
 --------------------------------------------------
 -- Manages Sprellic's dialogue in Jhelom, covering his inn, the honor flag theft, and duels with Syria, Vokes, and Timmons.
-function func_047C(eventid, itemref)
+function func_047C(eventid, objectref)
 
 File: func_047D.lua
 --------------------------------------------------
 -- Manages Vokes's dialogue in Jhelom, covering his fighting career, the honor flag, and Sprellic's duel.
-function func_047D(eventid, itemref)
+function func_047D(eventid, objectref)
 
 File: func_047E.lua
 --------------------------------------------------
 -- Manages Syria's dialogue in Jhelom, covering her mercenary background, the honor flag, and Sprellic's duel.
-function func_047E(eventid, itemref)
+function func_047E(eventid, objectref)
 
 File: func_047F.lua
 --------------------------------------------------
 -- Manages Timmons's dialogue in Jhelom, covering his ambition to join De Snel's guild and Sprellic's duel.
-function func_047F(eventid, itemref)
+function func_047F(eventid, objectref)
 
 File: func_0480.lua
 --------------------------------------------------
@@ -1851,132 +1851,132 @@ function func_0484(eventid)
 File: func_0485.lua
 --------------------------------------------------
 -- Manages Constance's dialogue in New Magincia, covering her job, heartbreak over Henry, and interactions with shipwrecked strangers.
-function func_0485(eventid, itemref)
+function func_0485(eventid, objectref)
 
 File: func_0486.lua
 --------------------------------------------------
 -- Manages Robin's dialogue in New Magincia, covering his schemes, the stolen locket, and plans to kidnap Constance.
-function func_0486(eventid, itemref)
+function func_0486(eventid, objectref)
 
 File: func_0487.lua
 --------------------------------------------------
 -- Manages Battles's dialogue in New Magincia, covering his role, the shipwreck, and the locket's whereabouts.
-function func_0487(eventid, itemref)
+function func_0487(eventid, objectref)
 
 File: func_0488.lua
 --------------------------------------------------
 -- Manages Leavell's dialogue in New Magincia, covering his shady past, the shipwreck, and Constance.
-function func_0488(eventid, itemref)
+function func_0488(eventid, objectref)
 
 File: func_0489.lua
 --------------------------------------------------
 -- Manages Sam's dialogue in New Magincia, covering his flower business, greenhouse studies, and observations about the strangers.
-function func_0489(eventid, itemref)
+function func_0489(eventid, objectref)
 
 File: func_048A.lua
 --------------------------------------------------
 -- Manages Gorn's dialogue in a cave, covering his quest to find Brom, his homeland Balema, and suspicions about the Avatar influenced by Brom's voice.
-function func_048A(eventid, itemref)
+function func_048A(eventid, objectref)
 
 File: func_048C.lua
 --------------------------------------------------
 -- Manages Markham's dialogue in Skara Brae, as the ghostly barkeep of the Keg O' Spirits, covering the tavern's history, the fire, and Horance's influence.
-function func_048C(eventid, itemref)
+function func_048C(eventid, objectref)
 
 File: func_048D.lua
 --------------------------------------------------
 -- Manages Horance's dialogue in Skara Brae, as the Liche, covering his plans to rule Britannia, his use of caddellite ore, and his obsession with Rowena.
-function func_048D(eventid, itemref)
+function func_048D(eventid, objectref)
 
 File: func_048E.lua
 --------------------------------------------------
 -- Manages Trent's dialogue in Skara Brae, as the ghostly smith, covering his work on the Soul Cage, his hatred for Horance, and his loss of Rowena.
-function func_048E(eventid, itemref)
+function func_048E(eventid, objectref)
 
 File: func_048F.lua
 --------------------------------------------------
 -- Manages Mordra's dialogue in Skara Brae, as the ghostly healer, covering the Soul Cage ritual, the fire, and the townsfolk.
-function func_048F(eventid, itemref)
+function func_048F(eventid, objectref)
 
 File: func_0490.lua
 --------------------------------------------------
 -- Manages Rowena's dialogue in Skara Brae, as Horance's enthralled ghostly lady, covering her role in the Dark Tower and her detachment.
-function func_0490(eventid, itemref)
+function func_0490(eventid, objectref)
 
 File: func_0491.lua
 --------------------------------------------------
 -- Manages Paulette's dialogue in Skara Brae, as the ghostly barmaid, covering her flirtatious demeanor, the fire, and her refusal to be a sacrifice.
-function func_0491(eventid, itemref)
+function func_0491(eventid, objectref)
 
 File: func_0492.lua
 --------------------------------------------------
 -- Manages Quenton's dialogue in Skara Brae, as a ghostly fisherman, covering his tragic past, the fire, and his daughter Marney's plight.
-function func_0492(eventid, itemref)
+function func_0492(eventid, objectref)
 
 File: func_0493.lua
 --------------------------------------------------
 -- Manages Mayor Forsythe's dialogue in Skara Brae, as a cowardly ghost, covering his role in the fire, the Liche, and his potential sacrifice.
-function func_0493(eventid, itemref)
+function func_0493(eventid, objectref)
 
 File: func_0495.lua
 --------------------------------------------------
 -- Manages the three-headed hydra's dialogue in Skara Brae, guarding the Caddellite, with a humorous and threatening tone, escalating to combat if provoked.
-function func_0495(eventid, itemref)
+function func_0495(eventid, objectref)
 
 File: func_0496.lua
 --------------------------------------------------
 -- Manages Penumbra's dialogue in Moonglow, addressing the ether disturbance, the Ethereal Ring, blackrock protection, and the Tetrahedron in Dungeon Deceit.
-function func_0496(eventid, itemref)
+function func_0496(eventid, objectref)
 
 File: func_0497.lua
 --------------------------------------------------
 -- Manages Kissme's dialogue in Ambrosia, as a flirtatious fairy spreading love dust, discussing the island's history and Caddellite guarded by the hydra.
-function func_0497(eventid, itemref)
+function func_0497(eventid, objectref)
 
 File: func_0498.lua
 --------------------------------------------------
 -- Manages Zelda's dialogue in Moonglow, as the Lycaeum advisor, discussing her duties, townspeople, and romantic interest in Brion.
-function func_0498(eventid, itemref)
+function func_0498(eventid, objectref)
 
 File: func_0499.lua
 --------------------------------------------------
 -- Manages Mariah's dialogue in Moonglow, as a disoriented mage selling spells and reagents, commenting on the Lycaeum and her mental state.
-function func_0499(eventid, itemref)
+function func_0499(eventid, objectref)
 
 File: func_049A.lua
 --------------------------------------------------
 -- Manages Grod's dialogue in Moonglow, as a troll torturing prisoners for the Fellowship, discussing his job and philosophy.
-function func_049A(eventid, itemref)
+function func_049A(eventid, objectref)
 
 File: func_049B.lua
 --------------------------------------------------
 -- Manages Cubolt's dialogue in Moonglow, as a farmer concerned about his brother Tolemac's involvement with the Fellowship.
-function func_049B(eventid, itemref)
+function func_049B(eventid, objectref)
 
 File: func_049C.lua
 --------------------------------------------------
 -- Manages Balayna's dialogue in Moonglow, as the Fellowship clerk, discussing meetings, citizens, and doubts about Rankin's leadership.
-function func_049C(eventid, itemref)
+function func_049C(eventid, objectref)
 
 File: func_049D.lua
 --------------------------------------------------
 -- Manages Tolemac's dialogue in Moonglow, as a farmer and Fellowship member, discussing his brother Cubolt and refusal to reconvert.
-function func_049D(eventid, itemref)
+function func_049D(eventid, objectref)
 
 File: func_049E.lua
 --------------------------------------------------
 -- Manages Morz's dialogue in Moonglow, as a shy farmer with a stutter, conflicted about joining the Fellowship due to Tolemac's encouragement and Cubolt's opposition.
-function func_049E(eventid, itemref)
+function func_049E(eventid, objectref)
 
 File: func_049F.lua
 --------------------------------------------------
 -- Manages Jillian's dialogue in Moonglow, as a scholar and tutor at the Lycaeum, offering training and discussing the town's geography and Ambrosia's history.
-function func_049F(eventid, itemref)
+function func_049F(eventid, objectref)
 
 File: func_04A0.lua
 --------------------------------------------------
 -- Function 04A0: Effrem's dialogue with baby Mikhail
-function func_04A0(eventid, itemref)
+function func_04A0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -1990,7 +1990,7 @@ function set_flag(flag, value)
 File: func_04A1.lua
 --------------------------------------------------
 -- Function 04A1: Chad's dialogue and training mechanic
-function func_04A1(eventid, itemref)
+function func_04A1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2004,7 +2004,7 @@ function set_flag(flag, value)
 File: func_04A2.lua
 --------------------------------------------------
 -- Function 04A2: Elad's healer dialogue
-function func_04A2(eventid, itemref)
+function func_04A2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2022,7 +2022,7 @@ function restore_answers()
 File: func_04A3.lua
 --------------------------------------------------
 -- Function 04A3: Phearcy's bartender dialogue and Zelda/Brion quest
-function func_04A3(eventid, itemref)
+function func_04A3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2040,7 +2040,7 @@ function restore_answers()
 File: func_04A4.lua
 --------------------------------------------------
 -- Function 04A4: Addom's dialogue and crystal purchase
-function func_04A4(eventid, itemref)
+function func_04A4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2054,7 +2054,7 @@ function set_flag(flag, value)
 File: func_04A5.lua
 --------------------------------------------------
 -- Function 04A5: Frank the fox's snarky dialogue
-function func_04A5(eventid, itemref)
+function func_04A5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2068,7 +2068,7 @@ function set_flag(flag, value)
 File: func_04A6.lua
 --------------------------------------------------
 -- Function 04A6: Thurston's miller dialogue and wheat delivery
-function func_04A6(eventid, itemref)
+function func_04A6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2082,7 +2082,7 @@ function set_flag(flag, value)
 File: func_04A7.lua
 --------------------------------------------------
 -- Function 04A7: Feridwyn's Fellowship dialogue and venom theft quest
-function func_04A7(eventid, itemref)
+function func_04A7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2096,7 +2096,7 @@ function set_flag(flag, value)
 File: func_04A8.lua
 --------------------------------------------------
 -- Function 04A8: Brita's shelter dialogue and venom theft reactions
-function func_04A8(eventid, itemref)
+function func_04A8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2110,7 +2110,7 @@ function set_flag(flag, value)
 File: func_04A9.lua
 --------------------------------------------------
 -- Function 04A9: Alina's shelter dialogue and Weston's plight
-function func_04A9(eventid, itemref)
+function func_04A9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2124,7 +2124,7 @@ function set_flag(flag, value)
 File: func_04AA.lua
 --------------------------------------------------
 -- Function 04AA: Merrick's shelter dialogue and venom theft suspicions
-function func_04AA(eventid, itemref)
+function func_04AA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2138,7 +2138,7 @@ function set_flag(flag, value)
 File: func_04AB.lua
 --------------------------------------------------
 -- Function 04AB: Garritt's dialogue and venom theft confession
-function func_04AB(eventid, itemref)
+function func_04AB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2152,7 +2152,7 @@ function set_flag(flag, value)
 File: func_04AC.lua
 --------------------------------------------------
 -- Function 04AC: Morfin's merchant dialogue and venom theft investigation
-function func_04AC(eventid, itemref)
+function func_04AC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2166,12 +2166,12 @@ function set_flag(flag, value)
 File: func_04AD.lua
 --------------------------------------------------
 -- Function 04AD: Beverlea's antique shop dialogue and sales
-function func_04AD(eventid, itemref)
+function func_04AD(eventid, objectref)
 
 File: func_04AE.lua
 --------------------------------------------------
 -- Function 04AE: Komor's beggar dialogue and gold requests
-function func_04AE(eventid, itemref)
+function func_04AE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2185,7 +2185,7 @@ function set_flag(flag, value)
 File: func_04AF.lua
 --------------------------------------------------
 -- Function 04AF: Fenn's beggar dialogue and venom theft defense
-function func_04AF(eventid, itemref)
+function func_04AF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2199,7 +2199,7 @@ function set_flag(flag, value)
 File: func_04B0.lua
 --------------------------------------------------
 -- Function 04B0: Andrew's dairy dialogue and venom theft clues
-function func_04B0(eventid, itemref)
+function func_04B0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2213,7 +2213,7 @@ function set_flag(flag, value)
 File: func_04B1.lua
 --------------------------------------------------
 -- Function 04B1: Camille's farm dialogue and Tobias defense
-function func_04B1(eventid, itemref)
+function func_04B1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2227,7 +2227,7 @@ function set_flag(flag, value)
 File: func_04B2.lua
 --------------------------------------------------
 -- Function 04B2: Tobias's dialogue and Garritt accusation
-function func_04B2(eventid, itemref)
+function func_04B2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2241,7 +2241,7 @@ function set_flag(flag, value)
 File: func_04B3.lua
 --------------------------------------------------
 -- Function 04B3: Polly's tavern dialogue and romance arc
-function func_04B3(eventid, itemref)
+function func_04B3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2255,7 +2255,7 @@ function set_flag(flag, value)
 File: func_04B4.lua
 --------------------------------------------------
 -- Function 04B4: Draxinusom's gargoyle leader dialogue
-function func_04B4(eventid, itemref)
+function func_04B4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2269,7 +2269,7 @@ function set_flag(flag, value)
 File: func_04B5.lua
 --------------------------------------------------
 -- Function 04B5: Inforlem's trainer dialogue
-function func_04B5(eventid, itemref)
+function func_04B5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2283,7 +2283,7 @@ function set_flag(flag, value)
 File: func_04B6.lua
 --------------------------------------------------
 -- Function 04B6: Inmanilem's healer dialogue
-function func_04B6(eventid, itemref)
+function func_04B6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2297,7 +2297,7 @@ function set_flag(flag, value)
 File: func_04B7.lua
 --------------------------------------------------
 -- Function 04B7: Teregus's altar keeper dialogue
-function func_04B7(eventid, itemref)
+function func_04B7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2311,7 +2311,7 @@ function set_flag(flag, value)
 File: func_04B8.lua
 --------------------------------------------------
 -- Function 04B8: Runeb's Fellowship dialogue and combat trigger
-function func_04B8(eventid, itemref)
+function func_04B8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2325,7 +2325,7 @@ function set_flag(flag, value)
 File: func_04B9.lua
 --------------------------------------------------
 -- Function 04B9: Quan's Fellowship dialogue and altar conflict denial
-function func_04B9(eventid, itemref)
+function func_04B9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2339,7 +2339,7 @@ function set_flag(flag, value)
 File: func_04BA.lua
 --------------------------------------------------
 -- Function 04BA: Quaeven's learning center dialogue and Fellowship zeal
-function func_04BA(eventid, itemref)
+function func_04BA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2353,7 +2353,7 @@ function set_flag(flag, value)
 File: func_04BB.lua
 --------------------------------------------------
 -- Function 04BB: Silamo's wingless gardener dialogue and social tensions
-function func_04BB(eventid, itemref)
+function func_04BB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2367,7 +2367,7 @@ function set_flag(flag, value)
 File: func_04BC.lua
 --------------------------------------------------
 -- Function 04BC: Sarpling's shop dialogue and Runeb's plot revelation
-function func_04BC(eventid, itemref)
+function func_04BC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2381,7 +2381,7 @@ function set_flag(flag, value)
 File: func_04BD.lua
 --------------------------------------------------
 -- Function 04BD: Forbrak's tavern dialogue and town insights
-function func_04BD(eventid, itemref)
+function func_04BD(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2395,7 +2395,7 @@ function set_flag(flag, value)
 File: func_04BE.lua
 --------------------------------------------------
 -- Function 04BE: Betra's provisioner dialogue and Fellowship skepticism
-function func_04BE(eventid, itemref)
+function func_04BE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2409,7 +2409,7 @@ function set_flag(flag, value)
 File: func_04BF.lua
 --------------------------------------------------
 -- Function 04BF: Martingo's eccentric Sultan dialogue and Ethereal Ring quest
-function func_04BF(eventid, itemref)
+function func_04BF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2423,7 +2423,7 @@ function set_flag(flag, value)
 File: func_04C0.lua
 --------------------------------------------------
 -- Function 04C0: Menion's trainer dialogue and sword forging
-function func_04C0(eventid, itemref)
+function func_04C0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2437,7 +2437,7 @@ function set_flag(flag, value)
 File: func_04C1.lua
 --------------------------------------------------
 -- Function 04C1: Pendaran's knight dialogue and statue confession
-function func_04C1(eventid, itemref)
+function func_04C1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2451,7 +2451,7 @@ function set_flag(flag, value)
 File: func_04C2.lua
 --------------------------------------------------
 -- Function 04C2: Jehanne's provisioner dialogue, ship sale, and Pendaran's misdeeds
-function func_04C2(eventid, itemref)
+function func_04C2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2465,7 +2465,7 @@ function set_flag(flag, value)
 File: func_04C3.lua
 --------------------------------------------------
 -- Function 04C3: Lord John-Paul's leadership dialogue and statue investigation
-function func_04C3(eventid, itemref)
+function func_04C3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2479,7 +2479,7 @@ function set_flag(flag, value)
 File: func_04C4.lua
 --------------------------------------------------
 -- Function 04C4: Richter's armourer dialogue and blood evidence
-function func_04C4(eventid, itemref)
+function func_04C4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2493,7 +2493,7 @@ function set_flag(flag, value)
 File: func_04C5.lua
 --------------------------------------------------
 -- Function 04C5: Horffe's guard dialogue and statue defense
-function func_04C5(eventid, itemref)
+function func_04C5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2507,7 +2507,7 @@ function set_flag(flag, value)
 File: func_04C6.lua
 --------------------------------------------------
 -- Function 04C6: Jordan's bow seller dialogue and statue witness
-function func_04C6(eventid, itemref)
+function func_04C6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2521,7 +2521,7 @@ function set_flag(flag, value)
 File: func_04C7.lua
 --------------------------------------------------
 -- Function 04C7: Denton's tavernkeeper dialogue and investigation hub
-function func_04C7(eventid, itemref)
+function func_04C7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2535,7 +2535,7 @@ function set_flag(flag, value)
 File: func_04C8.lua
 --------------------------------------------------
 -- Function 04C8: Tory's counselor dialogue and Riky's kidnapping
-function func_04C8(eventid, itemref)
+function func_04C8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2549,7 +2549,7 @@ function set_flag(flag, value)
 File: func_04C9.lua
 --------------------------------------------------
 -- Function 04C9: Leigh's healer dialogue and blood analysis
-function func_04C9(eventid, itemref)
+function func_04C9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2563,7 +2563,7 @@ function set_flag(flag, value)
 File: func_04CA.lua
 --------------------------------------------------
 -- Function 04CA: Ian's Retreat dialogue and key access
-function func_04CA(eventid, itemref)
+function func_04CA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2577,7 +2577,7 @@ function set_flag(flag, value)
 File: func_04CB.lua
 --------------------------------------------------
 -- Function 04CB: Cador's miner dialogue and Fellowship enthusiasm
-function func_04CB(eventid, itemref)
+function func_04CB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2591,7 +2591,7 @@ function set_flag(flag, value)
 File: func_04CC.lua
 --------------------------------------------------
 -- Function 04CC: Mara's miner dialogue and anti-gargoyle sentiment
-function func_04CC(eventid, itemref)
+function func_04CC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2605,7 +2605,7 @@ function set_flag(flag, value)
 File: func_04CD.lua
 --------------------------------------------------
 -- Function 04CD: Zaksam's trainer dialogue and anti-gargoyle views
-function func_04CD(eventid, itemref)
+function func_04CD(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2619,7 +2619,7 @@ function set_flag(flag, value)
 File: func_04CE.lua
 --------------------------------------------------
 -- Function 04CE: Eldroth's provisioner dialogue and quirky advice
-function func_04CE(eventid, itemref)
+function func_04CE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2633,7 +2633,7 @@ function set_flag(flag, value)
 File: func_04CF.lua
 --------------------------------------------------
 -- Function 04CF: Yongi's bartender dialogue and anti-gargoyle stance
-function func_04CF(eventid, itemref)
+function func_04CF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2647,7 +2647,7 @@ function set_flag(flag, value)
 File: func_04D0.lua
 --------------------------------------------------
 -- Function 04D0: Blorn's gargoyle-hating dialogue and Lap-Lem feud
-function func_04D0(eventid, itemref)
+function func_04D0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2661,7 +2661,7 @@ function set_flag(flag, value)
 File: func_04D1.lua
 --------------------------------------------------
 -- Function 04D1: Auston's mayoral dialogue and uprising fears
-function func_04D1(eventid, itemref)
+function func_04D1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2675,7 +2675,7 @@ function set_flag(flag, value)
 File: func_04D2.lua
 --------------------------------------------------
 -- Function 04D2: Liana's clerk dialogue and critical views
-function func_04D2(eventid, itemref)
+function func_04D2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2689,7 +2689,7 @@ function set_flag(flag, value)
 File: func_04D3.lua
 --------------------------------------------------
 -- Function 04D3: Lap-Lem's gargoyle miner dialogue and Blorn conflict
-function func_04D3(eventid, itemref)
+function func_04D3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2703,7 +2703,7 @@ function set_flag(flag, value)
 File: func_04D4.lua
 --------------------------------------------------
 -- Function 04D4: Yvella's dialogue and Catherine's arc
-function func_04D4(eventid, itemref)
+function func_04D4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2717,7 +2717,7 @@ function set_flag(flag, value)
 File: func_04D5.lua
 --------------------------------------------------
 -- Function 04D5: Catherine's child dialogue and gargoyle sympathy
-function func_04D5(eventid, itemref)
+function func_04D5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2731,7 +2731,7 @@ function set_flag(flag, value)
 File: func_04D6.lua
 --------------------------------------------------
 -- Function 04D6: For-Lem's scholar dialogue and Catherine's friendship
-function func_04D6(eventid, itemref)
+function func_04D6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2745,7 +2745,7 @@ function set_flag(flag, value)
 File: func_04D7.lua
 --------------------------------------------------
 -- Function 04D7: Ansikart's tavern keeper dialogue and mediator role
-function func_04D7(eventid, itemref)
+function func_04D7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2759,7 +2759,7 @@ function set_flag(flag, value)
 File: func_04D8.lua
 --------------------------------------------------
 -- Function 04D8: Wis-Sur's mage dialogue and paranoia
-function func_04D8(eventid, itemref)
+function func_04D8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2773,7 +2773,7 @@ function set_flag(flag, value)
 File: func_04D9.lua
 --------------------------------------------------
 -- Function 04D9: Foranamo's hostile dialogue and attack trigger
-function func_04D9(eventid, itemref)
+function func_04D9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2787,7 +2787,7 @@ function set_flag(flag, value)
 File: func_04DA.lua
 --------------------------------------------------
 -- Function 04DA: Anmanivas's hostile dialogue and attack trigger
-function func_04DA(eventid, itemref)
+function func_04DA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2801,7 +2801,7 @@ function set_flag(flag, value)
 File: func_04DB.lua
 --------------------------------------------------
 -- Function 04DB: Aurvidlem's provisioner dialogue and resentment
-function func_04DB(eventid, itemref)
+function func_04DB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2815,7 +2815,7 @@ function set_flag(flag, value)
 File: func_04DC.lua
 --------------------------------------------------
 -- Function 04DC: Sullivan's dialogue and Guardian revelation
-function func_04DC(eventid, itemref)
+function func_04DC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2829,7 +2829,7 @@ function set_flag(flag, value)
 File: func_04DD.lua
 --------------------------------------------------
 -- Function 04DD: Wench's hostess dialogue and secret passage hint
-function func_04DD(eventid, itemref)
+function func_04DD(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2843,7 +2843,7 @@ function set_flag(flag, value)
 File: func_04DE.lua
 --------------------------------------------------
 -- Function 04DE: Glenno's manager dialogue and Fellowship slip
-function func_04DE(eventid, itemref)
+function func_04DE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2857,7 +2857,7 @@ function set_flag(flag, value)
 File: func_04DF.lua
 --------------------------------------------------
 -- Function 04DF: Martine's hostess dialogue and secret passage hint
-function func_04DF(eventid, itemref)
+function func_04DF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2871,7 +2871,7 @@ function set_flag(flag, value)
 File: func_04E0.lua
 --------------------------------------------------
 -- Function 04E0: Roberto's host dialogue and secret passage hint
-function func_04E0(eventid, itemref)
+function func_04E0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2885,7 +2885,7 @@ function set_flag(flag, value)
 File: func_04E1.lua
 --------------------------------------------------
 -- Function 04E1: Sintag's guard dialogue and Hook's location
-function func_04E1(eventid, itemref)
+function func_04E1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2899,7 +2899,7 @@ function set_flag(flag, value)
 File: func_04E2.lua
 --------------------------------------------------
 -- Function 04E2: Blacktooth's dialogue and Mole reconciliation
-function func_04E2(eventid, itemref)
+function func_04E2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2913,7 +2913,7 @@ function set_flag(flag, value)
 File: func_04E3.lua
 --------------------------------------------------
 -- Function 04E3: Mole's dialogue and Blacktooth reconciliation
-function func_04E3(eventid, itemref)
+function func_04E3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2927,7 +2927,7 @@ function set_flag(flag, value)
 File: func_04E4.lua
 --------------------------------------------------
 -- Function 04E4: Lucky's rogue dialogue and training offer
-function func_04E4(eventid, itemref)
+function func_04E4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2941,7 +2941,7 @@ function set_flag(flag, value)
 File: func_04E5.lua
 --------------------------------------------------
 -- Function 04E5: Budo's provisioner dialogue and ship deed sale
-function func_04E5(eventid, itemref)
+function func_04E5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2955,7 +2955,7 @@ function set_flag(flag, value)
 File: func_04E6.lua
 --------------------------------------------------
 -- Function 04E6: Gordy's overseer dialogue and Fellowship funding
-function func_04E6(eventid, itemref)
+function func_04E6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2969,7 +2969,7 @@ function set_flag(flag, value)
 File: func_04E7.lua
 --------------------------------------------------
 -- Function 04E7: Mandy's innkeeper dialogue and Hook's murder hint
-function func_04E7(eventid, itemref)
+function func_04E7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2983,7 +2983,7 @@ function set_flag(flag, value)
 File: func_04E8.lua
 --------------------------------------------------
 -- Function 04E8: Smithy's game manager dialogue and rule explanations
-function func_04E8(eventid, itemref)
+function func_04E8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -2997,7 +2997,7 @@ function set_flag(flag, value)
 File: func_04E9.lua
 --------------------------------------------------
 -- Function 04E9: Paul's actor dialogue and Passion Play performance
-function func_04E9(eventid, itemref)
+function func_04E9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3011,7 +3011,7 @@ function set_flag(flag, value)
 File: func_04EA.lua
 --------------------------------------------------
 -- Function 04EA: Meryl's brief actress dialogue
-function func_04EA(eventid, itemref)
+function func_04EA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3023,7 +3023,7 @@ function set_flag(flag, value)
 File: func_04EB.lua
 --------------------------------------------------
 -- Function 04EB: Dustin's brief Passion Play actor dialogue
-function func_04EB(eventid, itemref)
+function func_04EB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3035,7 +3035,7 @@ function set_flag(flag, value)
 File: func_04EC.lua
 --------------------------------------------------
 -- Function 04EC: Ellen's Fellowship dialogue and murder alibi
-function func_04EC(eventid, itemref)
+function func_04EC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3049,7 +3049,7 @@ function set_flag(flag, value)
 File: func_04ED.lua
 --------------------------------------------------
 -- Function 04ED: Kessler's apothecary dialogue and venom transactions
-function func_04ED(eventid, itemref)
+function func_04ED(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3063,7 +3063,7 @@ function set_flag(flag, value)
 File: func_04EE.lua
 --------------------------------------------------
 -- Function 04EE: Perrin's scholar dialogue and training offer
-function func_04EE(eventid, itemref)
+function func_04EE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3077,7 +3077,7 @@ function set_flag(flag, value)
 File: func_04EF.lua
 --------------------------------------------------
 -- Function 04EF: Owings's comedic miner dialogue
-function func_04EF(eventid, itemref)
+function func_04EF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3091,7 +3091,7 @@ function set_flag(flag, value)
 File: func_04F0.lua
 --------------------------------------------------
 -- Function 04F0: Anton's prisoner dialogue and Fellowship revelations
-function func_04F0(eventid, itemref)
+function func_04F0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3105,7 +3105,7 @@ function set_flag(flag, value)
 File: func_04F1.lua
 --------------------------------------------------
 -- Function 04F1: Papa/Murray's cave-dweller dialogue and Yew revelation
-function func_04F1(eventid, itemref)
+function func_04F1(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3119,7 +3119,7 @@ function set_flag(flag, value)
 File: func_04F2.lua
 --------------------------------------------------
 -- Function 04F2: Taylor's monk dialogue and smoke bomb offer
-function func_04F2(eventid, itemref)
+function func_04F2(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3133,7 +3133,7 @@ function set_flag(flag, value)
 File: func_04F3.lua
 --------------------------------------------------
 -- Function 04F3: Malloy's miner dialogue and tunnel project
-function func_04F3(eventid, itemref)
+function func_04F3(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3147,7 +3147,7 @@ function set_flag(flag, value)
 File: func_04F4.lua
 --------------------------------------------------
 -- Function 04F4: Cairbre's sell-sword dialogue and unicorn quest
-function func_04F4(eventid, itemref)
+function func_04F4(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3161,7 +3161,7 @@ function set_flag(flag, value)
 File: func_04F5.lua
 --------------------------------------------------
 -- Function 04F5: Kreg's monk/thief dialogue and escape plot
-function func_04F5(eventid, itemref)
+function func_04F5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3175,7 +3175,7 @@ function set_flag(flag, value)
 File: func_04F6.lua
 --------------------------------------------------
 -- Function 04F6: Alagner's scholarly dialogue and Fellowship investigation
-function func_04F6(eventid, itemref)
+function func_04F6(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3189,7 +3189,7 @@ function set_flag(flag, value)
 File: func_04F7.lua
 --------------------------------------------------
 -- Function 04F7: Caine's tormented dialogue and Skara Brae's tragic past
-function func_04F7(eventid, itemref)
+function func_04F7(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3203,7 +3203,7 @@ function set_flag(flag, value)
 File: func_04F8.lua
 --------------------------------------------------
 -- Function 04F8: Brion's observatory dialogue and orrery viewer quest
-function func_04F8(eventid, itemref)
+function func_04F8(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3219,7 +3219,7 @@ function sloop()
 File: func_04F9.lua
 --------------------------------------------------
 -- Function 04F9: Nelson's Lycaeum dialogue and romantic subplot
-function func_04F9(eventid, itemref)
+function func_04F9(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3235,7 +3235,7 @@ function sloop()
 File: func_04FA.lua
 --------------------------------------------------
 -- Function 04FA: Rankin's deceptive Fellowship dialogue and murder cover-up
-function func_04FA(eventid, itemref)
+function func_04FA(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3249,7 +3249,7 @@ function set_flag(flag, value)
 File: func_04FB.lua
 --------------------------------------------------
 -- Function 04FB: Danag's dialogue and Black Gate revelations
-function func_04FB(eventid, itemref)
+function func_04FB(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3263,7 +3263,7 @@ function set_flag(flag, value)
 File: func_04FC.lua
 --------------------------------------------------
 -- Function 04FC: Kallibrus's dialogue and Cosmo's quest support
-function func_04FC(eventid, itemref)
+function func_04FC(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3277,7 +3277,7 @@ function set_flag(flag, value)
 File: func_04FD.lua
 --------------------------------------------------
 -- Function 04FD: Cosmo's dialogue and virginity quest
-function func_04FD(eventid, itemref)
+function func_04FD(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3291,7 +3291,7 @@ function set_flag(flag, value)
 File: func_04FE.lua
 --------------------------------------------------
 -- Function 04FE: Lasher's dialogue and virgin detection role
-function func_04FE(eventid, itemref)
+function func_04FE(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3305,7 +3305,7 @@ function set_flag(flag, value)
 File: func_04FF.lua
 --------------------------------------------------
 -- Function 04FF: Myrtle's dialogue in Bee Cave
-function func_04FF(eventid, itemref)
+function func_04FF(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -3319,422 +3319,422 @@ function set_flag(flag, value)
 File: func_0500.lua
 --------------------------------------------------
 -- Manages the Wisp's (Xorinia's) dialogue in Britannia, facilitating an information trade about Alagner's notebook and the Time Lord, warning about the Guardian's Black Gate.
-function func_0500(eventid, itemref)
+function func_0500(eventid, objectref)
 
 File: func_0501.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 0326H) with the item reference, likely for item interaction or event handling.
-function func_0501(eventid, itemref)
+function func_0501(eventid, objectref)
 
 File: func_0502.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 0326H) with the item reference, likely for item interaction or event handling.
-function func_0502(eventid, itemref)
+function func_0502(eventid, objectref)
 
 File: func_0506.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_0506(eventid, itemref)
+function func_0506(eventid, objectref)
 
 File: func_0507.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_0507(eventid, itemref)
+function func_0507(eventid, objectref)
 
 File: func_0508.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_0508(eventid, itemref)
+function func_0508(eventid, objectref)
 
 File: func_0509.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_0509(eventid, itemref)
+function func_0509(eventid, objectref)
 
 File: func_050A.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_050A(eventid, itemref)
+function func_050A(eventid, objectref)
 
 File: func_050D.lua
 --------------------------------------------------
 -- Wrapper function calling an external function (intrinsic 03B2H) with the item reference, likely for a specific item or NPC action.
-function func_050D(eventid, itemref)
+function func_050D(eventid, objectref)
 
 File: func_0600.lua
 --------------------------------------------------
 -- Manipulates an item's quality and type, likely for transforming objects (e.g., ore to ingot) based on specific item types, with a fallback action if quality is non-zero.
-function func_0600(eventid, itemref)
+function func_0600(eventid, objectref)
 
 File: func_0603.lua
 --------------------------------------------------
 -- Manipulates NPC properties and triggers actions based on property values, likely related to NPC health or status, ending with a message indicating poor health.
-function func_0603(eventid, itemref)
+function func_0603(eventid, objectref)
 
 File: func_0606.lua
 --------------------------------------------------
 -- Adjusts coordinates and triggers an action, possibly for positioning an object or NPC in a game event.
-function func_0606(eventid, itemref)
+function func_0606(eventid, objectref)
 
 File: func_0607.lua
 --------------------------------------------------
 -- Increments an item's quality and updates it, possibly for tracking usage or progression.
-function func_0607(eventid, itemref)
+function func_0607(eventid, objectref)
 
 File: func_0608.lua
 --------------------------------------------------
 -- Handles a confrontation scene where Fellowship members (Hook, Forskis, Abraham, Elizabeth) sentence the Avatar to death, adjusting NPC alignments and triggering actions.
-function func_0608(eventid, itemref)
+function func_0608(eventid, objectref)
 
 File: func_0609.lua
 --------------------------------------------------
 -- Decrements an item's quality and updates it, possibly for tracking usage or degradation.
-function func_0609(eventid, itemref)
+function func_0609(eventid, objectref)
 
 File: func_060A.lua
 --------------------------------------------------
 -- Manages a horse racing game mechanic, determining the winning horse's color and announcing results based on frame data and bets.
-function func_060A(eventid, itemref)
+function func_060A(eventid, objectref)
 
 File: func_060B.lua
 --------------------------------------------------
 -- Manages game state transitions based on flags, likely for triggering events or cutscenes when specific conditions are met.
-function func_060B(eventid, itemref)
+function func_060B(eventid, objectref)
 
 File: func_060C.lua
 --------------------------------------------------
 -- Manages the end of a horse race, resetting horse frames, handling bets, and announcing the winning lane.
-function func_060C(eventid, itemref)
+function func_060C(eventid, objectref)
 
 File: func_060D.lua
 --------------------------------------------------
 -- Manages horse movement in a race, adjusting positions and frames based on random events and race state.
-function func_060D(eventid, itemref)
+function func_060D(eventid, objectref)
 
 File: func_060E.lua
 --------------------------------------------------
 -- Handles resurrection of party members or NPCs, playing music, adjusting positions, and managing game state.
-function func_060E(eventid, itemref)
+function func_060E(eventid, objectref)
 
 File: func_060F.lua
 --------------------------------------------------
 -- Triggers the game's end sequence, positioning an object and updating NPC properties.
-function func_060F(eventid, itemref)
+function func_060F(eventid, objectref)
 
 File: func_0610.lua
 --------------------------------------------------
 -- Manages party members' dialogue after the Avatar's resurrection, with different NPCs expressing relief and urging rest or continuation of the quest.
-function func_0610(eventid, itemref)
+function func_0610(eventid, objectref)
 
 File: func_0611.lua
 --------------------------------------------------
 -- Transforms an item's type based on its current type, likely for crafting or quest progression.
-function func_0611(eventid, itemref)
+function func_0611(eventid, objectref)
 
 File: func_0612.lua
 --------------------------------------------------
 -- Triggers an action on an item, possibly for activation or destruction.
-function func_0612(eventid, itemref)
+function func_0612(eventid, objectref)
 
 File: func_0613.lua
 --------------------------------------------------
 -- Clears a flag, sets schedules for party members, and triggers an action on an item.
-function func_0613(eventid, itemref)
+function func_0613(eventid, objectref)
 
 File: func_0614.lua
 --------------------------------------------------
 -- Delivers context-specific dialogue from an NPC (likely the Guardian or an ally), guiding or taunting the Avatar during the Black Gate quest.
-function func_0614(eventid, itemref)
+function func_0614(eventid, objectref)
 
 File: func_0615.lua
 --------------------------------------------------
 -- Transforms an item's type to 754 and resets its frame when triggered by event 2, likely for a specific quest or interaction.
-function func_0615(eventid, itemref)
+function func_0615(eventid, objectref)
 
 File: func_0617.lua
 --------------------------------------------------
 -- Handles Trent's completion of the Soul Cage in Skara Brae, setting flags, creating the cage item, and delivering dialogue to instruct the Avatar.
-function func_0617(eventid, itemref)
+function func_0617(eventid, objectref)
 
 File: func_0618.lua
 --------------------------------------------------
 -- Initializes the Avatar's appearance via a moongate, setting flags and creating items to set up the game's starting scene.
-function func_0618(eventid, itemref)
+function func_0618(eventid, objectref)
 
 File: func_0619.lua
 --------------------------------------------------
 -- Triggers an action on an item and sets a flag, likely for a one-time event or state change.
-function func_0619(eventid, itemref)
+function func_0619(eventid, objectref)
 
 File: func_061A.lua
 --------------------------------------------------
 -- Triggers a game state action, likely initiating a major event or cutscene.
-function func_061A(eventid, itemref)
+function func_061A(eventid, objectref)
 
 File: func_061B.lua
 --------------------------------------------------
 -- Handles the generator in Dungeon Despise, triggering effects and creating items when interacted with during event 2.
-function func_061B(eventid, itemref)
+function func_061B(eventid, objectref)
 
 File: func_061C.lua
 --------------------------------------------------
 -- Manages ferry movement, toggling a flag and creating items to adjust positions based on the ferry's state.
-function func_061C(eventid, itemref)
+function func_061C(eventid, objectref)
 
 File: func_061D.lua
 --------------------------------------------------
 -- Handles generator interaction, likely in a dungeon, triggering effects and creating items during event 2.
-function func_061D(eventid, itemref)
+function func_061D(eventid, objectref)
 
 File: func_061E.lua
 --------------------------------------------------
 -- Handles generator interaction with specific parameters, triggering effects and setting values during event 2.
-function func_061E(eventid, itemref)
+function func_061E(eventid, objectref)
 
 File: func_061F.lua
 --------------------------------------------------
 -- Clears an item flag, possibly disabling a state like dancing.
-function func_061F(eventid, itemref)
+function func_061F(eventid, objectref)
 
 File: func_0620.lua
 --------------------------------------------------
 -- Sets an item flag, possibly enabling a state like dancing.
-function func_0620(eventid, itemref)
+function func_0620(eventid, objectref)
 
 File: func_0621.lua
 --------------------------------------------------
 -- Manages party member banter, delivering location-specific or context-sensitive dialogue during exploration.
-function func_0621(eventid, itemref)
+function func_0621(eventid, objectref)
 
 File: func_0622.lua
 --------------------------------------------------
 -- Manages bed interactions, allowing the player to rest for a specified number of hours, advancing game time and updating party state.
-function func_0622(eventid, itemref)
+function func_0622(eventid, objectref)
 
 File: func_0623.lua
 --------------------------------------------------
 -- Wakes the player after resting in a bed, delivering a wake-up message and updating party state, with special handling for bedrolls.
-function func_0623(eventid, itemref)
+function func_0623(eventid, objectref)
 
 File: func_0624.lua
 --------------------------------------------------
 -- Manages bedroll retrieval and placement, handling events for interaction, state changes, and positioning in Trinsic.
-function func_0624(eventid, itemref)
+function func_0624(eventid, objectref)
 
 File: func_0625.lua
 --------------------------------------------------
 -- Manages Trinsic guard interactions, handling confrontations, bribe negotiations, and imprisonment based on player actions and location.
-function func_0625(eventid, itemref)
+function func_0625(eventid, objectref)
 
 File: func_0626.lua
 --------------------------------------------------
 -- Manages object positioning for type 518, adjusting positions based on proximity and removing items as needed.
-function func_0626(eventid, itemref)
+function func_0626(eventid, objectref)
 
 File: func_0627.lua
 --------------------------------------------------
 -- Manages item manipulation, randomly toggling properties for item 377 in a container.
-function func_0627(eventid, itemref)
+function func_0627(eventid, objectref)
 
 File: func_0628.lua
 --------------------------------------------------
 -- Manages beer tap interactions, adjusting frames and triggering NPC banter when activated.
-function func_0628(eventid, itemref)
+function func_0628(eventid, objectref)
 
 File: func_0629.lua
 --------------------------------------------------
 -- Manages beer tap interactions, adjusting frames and creating items, similar to func_0628 but with different frame ranges.
-function func_0629(eventid, itemref)
+function func_0629(eventid, objectref)
 
 File: func_062C.lua
 --------------------------------------------------
 -- Manages forging, processing rock and blood to create items, with special handling for golem bodies and tree objects.
-function func_062C(eventid, itemref)
+function func_062C(eventid, objectref)
 
 File: func_062D.lua
 --------------------------------------------------
 -- Manages wool spinning on a spinning wheel, converting wool to thread if the correct item is selected.
-function func_062D(eventid, itemref)
+function func_062D(eventid, objectref)
 
 File: func_062E.lua
 --------------------------------------------------
 -- Manages cloth weaving on a loom, converting thread to cloth if the correct item is selected.
-function func_062E(eventid, itemref)
+function func_062E(eventid, objectref)
 
 File: func_0631.lua
 --------------------------------------------------
 -- Manages password-protected access, requiring "Blackbird" to pass, with multiple NPC interactions and flag checks.
-function func_0631(eventid, itemref)
+function func_0631(eventid, objectref)
 
 File: func_0632.lua
 --------------------------------------------------
 -- Triggers a sprite effect and creates items, likely for a magical or environmental interaction.
-function func_0632(eventid, itemref)
+function func_0632(eventid, objectref)
 
 File: func_0633.lua
 --------------------------------------------------
 -- Handles NPC reactions to player theft, with party members (Dupre, Shamino, Iolo) leaving the party and setting flags.
-function func_0633(eventid, itemref)
+function func_0633(eventid, objectref)
 
 File: func_0634.lua
 --------------------------------------------------
 -- Manages barge movement, checking item types and ferryman presence to trigger ferry operations.
-function func_0634(eventid, itemref)
+function func_0634(eventid, objectref)
 
 File: func_0635.lua
 --------------------------------------------------
 -- Manages oven interactions, triggering banter and creating bread when baking is complete.
-function func_0635(eventid, itemref)
+function func_0635(eventid, objectref)
 
 File: func_0636.lua
 --------------------------------------------------
 -- Fades in the palette and triggers a sprite effect, likely for a visual transition.
-function func_0636(eventid, itemref)
+function func_0636(eventid, objectref)
 
 File: func_0637.lua
 --------------------------------------------------
 -- Runs ferry operations, setting schedules and displaying the ferry.
-function func_0637(eventid, itemref)
+function func_0637(eventid, objectref)
 
 File: func_0638.lua
 --------------------------------------------------
 -- Manages book reading, displaying content based on item quality, with special handling for specific books and flags.
-function func_0638(eventid, itemref)
+function func_0638(eventid, objectref)
 
 File: func_0639.lua
 --------------------------------------------------
 -- Handles the "Kal Ort Por" teleportation spell, triggering a sprite effect and endgame sequence.
-function func_0639(eventid, itemref)
+function func_0639(eventid, objectref)
 
 File: func_063A.lua
 --------------------------------------------------
 -- Triggers party member banter when the player attempts theft, with random dialogue expressing disapproval.
-function func_063A(eventid, itemref)
+function func_063A(eventid, objectref)
 
 File: func_063C.lua
 --------------------------------------------------
 -- Triggers a sprite effect and creates items, likely for a magical or environmental effect involving a specific item.
-function func_063C(eventid, itemref)
+function func_063C(eventid, objectref)
 
 File: func_063D.lua
 --------------------------------------------------
 -- Handles NPC dialogue loops for specific NPCs (quality < 256), displaying custom messages, and triggers an "Oink" sound for event 0.
-function func_063D(eventid, itemref)
+function func_063D(eventid, objectref)
 
 File: func_063E.lua
 --------------------------------------------------
 -- Implements an anti-cheat mechanism, detecting cheating, delivering a guilty verdict, and applying severe penalties (e.g., death).
-function func_063E(eventid, itemref)
+function func_063E(eventid, objectref)
 
 File: func_063F.lua
 --------------------------------------------------
 -- Triggers a teleportation effect, fading out the palette and centering the view around the Avatar.
-function func_063F(eventid, itemref)
+function func_063F(eventid, objectref)
 
 File: func_0640.lua
 --------------------------------------------------
 -- Casts the "An Zu" spell, waking a selected NPC or object, with a fallback effect if the target is invalid.
-function func_0640(eventid, itemref)
+function func_0640(eventid, objectref)
 
 File: func_0641.lua
 --------------------------------------------------
 -- Casts the "Rel Hur" spell, manipulating wind or movement, with random effects or a fallback if the spell fails.
-function func_0641(eventid, itemref)
+function func_0641(eventid, objectref)
 
 File: func_0642.lua
 --------------------------------------------------
 -- Casts the "An Flam" spell, negating fire effects on a selected target, with a fallback if the target is invalid.
-function func_0642(eventid, itemref)
+function func_0642(eventid, objectref)
 
 File: func_0643.lua
 --------------------------------------------------
 -- Casts the "Bet Ort" spell, triggering a small magical effect with a sprite animation.
-function func_0643(eventid, itemref)
+function func_0643(eventid, objectref)
 
 File: func_0644.lua
 --------------------------------------------------
 -- Casts the "Bet Lor" spell, triggering a small light effect.
-function func_0644(eventid, itemref)
+function func_0644(eventid, objectref)
 
 File: func_0645.lua
 --------------------------------------------------
 -- Casts the "Kal Lor" spell, summoning a bright light effect and adjusting party member properties.
-function func_0645(eventid, itemref)
+function func_0645(eventid, objectref)
 
 File: func_0646.lua
 --------------------------------------------------
 -- Casts the "In Flam" spell, creating a fire effect on a selected target, with a fallback if the target is invalid.
-function func_0646(eventid, itemref)
+function func_0646(eventid, objectref)
 
 File: func_0647.lua
 --------------------------------------------------
 -- Casts the "Vas Kal" spell, summoning a magical effect with a specific item creation.
-function func_0647(eventid, itemref)
+function func_0647(eventid, objectref)
 
 File: func_0648.lua
 --------------------------------------------------
 -- Casts the "In Mani Ylem" spell, creating food items for party members with random quality.
-function func_0648(eventid, itemref)
+function func_0648(eventid, objectref)
 
 File: func_0649.lua
 --------------------------------------------------
 -- Casts the "An Nox" spell, curing poison on a selected target, with a fallback effect if the target is invalid.
-function func_0649(eventid, itemref)
+function func_0649(eventid, objectref)
 
 File: func_064A.lua
 --------------------------------------------------
 -- Casts the "Wis Jux" spell, revealing traps and setting their quality to trigger effects.
-function func_064A(eventid, itemref)
+function func_064A(eventid, objectref)
 
 File: func_064B.lua
 --------------------------------------------------
 -- Casts the "Vas An Flam" spell, negating fire effects across multiple targets in an area.
-function func_064B(eventid, itemref)
+function func_064B(eventid, objectref)
 
 File: func_064C.lua
 --------------------------------------------------
 -- Casts the "Vas In Flam" spell, creating fire effects across multiple targets in an area.
-function func_064C(eventid, itemref)
+function func_064C(eventid, objectref)
 
 File: func_064D.lua
 --------------------------------------------------
 -- Casts the "In Lor" spell, creating a light effect with a specific intensity.
-function func_064D(eventid, itemref)
+function func_064D(eventid, objectref)
 
 File: func_064E.lua
 --------------------------------------------------
 -- Casts the "In Wis" spell, displaying the player's directional coordinates (e.g., "West North").
-function func_064E(eventid, itemref)
+function func_064E(eventid, objectref)
 
 File: func_064F.lua
 --------------------------------------------------
 -- Casts the "Vas An Zu" spell, waking multiple NPCs in an area with a sprite effect.
-function func_064F(eventid, itemref)
+function func_064F(eventid, objectref)
 
 File: func_0650.lua
 --------------------------------------------------
 -- Casts the "An Jux" spell, disarming traps or unlocking chests with a sprite effect.
-function func_0650(eventid, itemref)
+function func_0650(eventid, objectref)
 
 File: func_0651.lua
 --------------------------------------------------
 -- Casts the "Ort Ylem" spell, transforming specific item types (e.g., 722, 723 to 417, 556) to attract or manipulate objects.
-function func_0651(eventid, itemref)
+function func_0651(eventid, objectref)
 
 File: func_0652.lua
 --------------------------------------------------
 -- Casts the "Vas Flam" spell, creating a fire effect on a selected target.
-function func_0652(eventid, itemref)
+function func_0652(eventid, objectref)
 
 File: func_0653.lua
 --------------------------------------------------
 -- Casts the "Vas Lor" spell, creating a strong light effect with high intensity.
-function func_0653(eventid, itemref)
+function func_0653(eventid, objectref)
 
 File: func_0654.lua
 --------------------------------------------------
 -- Casts the "Vas An Nox" spell, curing poison for party members with a sprite effect.
-function func_0654(eventid, itemref)
+function func_0654(eventid, objectref)
 
 File: func_0655.lua
 --------------------------------------------------
@@ -3744,142 +3744,142 @@ function func_0655(p0)
 File: func_0656.lua
 --------------------------------------------------
 -- Casts the "Ort Por Ylem" spell, attracting a selected object to the player.
-function func_0656(eventid, itemref)
+function func_0656(eventid, objectref)
 
 File: func_0657.lua
 --------------------------------------------------
 -- Casts the "Por Ort Wis" spell, granting temporary clairvoyance with a navigation effect.
-function func_0657(eventid, itemref)
+function func_0657(eventid, objectref)
 
 File: func_0658.lua
 --------------------------------------------------
 -- Casts the "Des Sanct" spell, lowering the target's defense.
-function func_0658(eventid, itemref)
+function func_0658(eventid, objectref)
 
 File: func_0659.lua
 --------------------------------------------------
 -- Casts the "Mani" spell, healing a selected target by adjusting their health.
-function func_0659(eventid, itemref)
+function func_0659(eventid, objectref)
 
 File: func_065A.lua
 --------------------------------------------------
 -- Casts the "Kal Bet Xen" spell, summoning small creatures with random success.
-function func_065A(eventid, itemref)
+function func_065A(eventid, objectref)
 
 File: func_065B.lua
 --------------------------------------------------
 -- Casts the "Vas Uus Sanct" spell, raising defense for party members with a sprite effect.
-function func_065B(eventid, itemref)
+function func_065B(eventid, objectref)
 
 File: func_065C.lua
 --------------------------------------------------
 -- Casts the "An Por" spell, dispelling movement restrictions on a selected target.
-function func_065C(eventid, itemref)
+function func_065C(eventid, objectref)
 
 File: func_065D.lua
 --------------------------------------------------
 -- Casts the "Vas Wis" spell, granting enhanced perception or revealing hidden elements.
-function func_065D(eventid, itemref)
+function func_065D(eventid, objectref)
 
 File: func_065E.lua
 --------------------------------------------------
 -- Casts the "In Nox" spell, applying poison to a selected target.
-function func_065E(eventid, itemref)
+function func_065E(eventid, objectref)
 
 File: func_065F.lua
 --------------------------------------------------
 -- Casts the "In Zu" spell, inducing sleep on a selected target.
-function func_065F(eventid, itemref)
+function func_065F(eventid, objectref)
 
 File: func_0660.lua
 --------------------------------------------------
 -- Casts the "Kal Xen" spell, summoning a creature with a random type from a predefined set.
-function func_0660(eventid, itemref)
+function func_0660(eventid, objectref)
 
 File: func_0661.lua
 --------------------------------------------------
 -- Casts the "Ort Grav" spell, creating an electrical or energy effect on a selected target.
-function func_0661(eventid, itemref)
+function func_0661(eventid, objectref)
 
 File: func_0662.lua
 --------------------------------------------------
 -- Casts the "Kal Por Ylem" spell, teleporting an object to a random location if it is not a specific type (330).
-function func_0662(eventid, itemref)
+function func_0662(eventid, objectref)
 
 File: func_0663.lua
 --------------------------------------------------
 -- Casts the "Vas Des Sanct" spell, lowering defense for multiple targets in an area with a sprite effect.
-function func_0663(eventid, itemref)
+function func_0663(eventid, objectref)
 
 File: func_0664.lua
 --------------------------------------------------
 -- Casts the "Kal Ort Por" spell, teleporting the caster to a random location with a sprite effect.
-function func_0664(eventid, itemref)
+function func_0664(eventid, objectref)
 
 File: func_0665.lua
 --------------------------------------------------
 -- Casts the "Wis Quas" spell, revealing illusions or hidden objects in an area with a sprite effect.
-function func_0665(eventid, itemref)
+function func_0665(eventid, objectref)
 
 File: func_0666.lua
 --------------------------------------------------
 -- Casts the "Kal Wis Corp" spell, creating a temporary ghost effect with a timed duration and sprite effects.
-function func_0666(eventid, itemref)
+function func_0666(eventid, objectref)
 
 File: func_0667.lua
 --------------------------------------------------
 -- Casts the "Ex Por" spell, unlocking or opening specific objects (e.g., doors, chests) with a frame adjustment.
-function func_0667(eventid, itemref)
+function func_0667(eventid, objectref)
 
 File: func_0668.lua
 --------------------------------------------------
 -- Casts the "An Xen Ex" spell, dispelling summoned creatures or effects on a selected target.
-function func_0668(eventid, itemref)
+function func_0668(eventid, objectref)
 
 File: func_0669.lua
 --------------------------------------------------
 -- Casts the "Por Xen" spell, causing nearby NPCs to dance with random banter and sprite effects.
-function func_0669(eventid, itemref)
+function func_0669(eventid, objectref)
 
 File: func_066A.lua
 --------------------------------------------------
 -- Casts the "An Grav" spell, dispelling electrical or energy effects on a selected target.
-function func_066A(eventid, itemref)
+function func_066A(eventid, objectref)
 
 File: func_066B.lua
 --------------------------------------------------
 -- Casts the "Vas Flam Hur" spell, creating a fiery wind effect on a selected target.
-function func_066B(eventid, itemref)
+function func_066B(eventid, objectref)
 
 File: func_066C.lua
 --------------------------------------------------
 -- Casts the "Vas Mani" spell, fully healing a selected target by setting their health to maximum.
-function func_066C(eventid, itemref)
+function func_066C(eventid, objectref)
 
 File: func_066D.lua
 --------------------------------------------------
 -- Casts the "Sanct Lor" spell, granting invisibility to a selected target.
-function func_066D(eventid, itemref)
+function func_066D(eventid, objectref)
 
 File: func_066E.lua
 --------------------------------------------------
 -- Casts the "In Flam Grav" spell, creating a fiery electrical effect with a chance to ignite objects.
-function func_066E(eventid, itemref)
+function func_066E(eventid, objectref)
 
 File: func_066F.lua
 --------------------------------------------------
 -- Casts the "Vas Zu" spell, inducing deep sleep on multiple NPCs in an area with a sprite effect.
-function func_066F(eventid, itemref)
+function func_066F(eventid, objectref)
 
 File: func_0670.lua
 --------------------------------------------------
 -- Casts the "Quas Wis" spell, causing fear or confusion in nearby NPCs.
-function func_0670(eventid, itemref)
+function func_0670(eventid, objectref)
 
 File: func_0671.lua
 --------------------------------------------------
 -- Casts the "In Quas Xen" spell, charming or controlling a selected creature if it is active.
-function func_0671(eventid, itemref)
+function func_0671(eventid, objectref)
 
 File: func_0672.lua
 --------------------------------------------------
@@ -3894,227 +3894,227 @@ function func_0673(p0)
 File: func_0674.lua
 --------------------------------------------------
 -- Casts the "Vas Oort Hur" spell, creating a powerful wind effect in an area with random outcomes.
-function func_0674(eventid, itemref)
+function func_0674(eventid, objectref)
 
 File: func_0675.lua
 --------------------------------------------------
 -- Casts the "In Nox Grav" spell, applying a poisonous electrical effect to a selected target.
-function func_0675(eventid, itemref)
+function func_0675(eventid, objectref)
 
 File: func_0676.lua
 --------------------------------------------------
 -- Casts the "In Zu Grav" spell, inducing sleep with an electrical effect on a selected target.
-function func_0676(eventid, itemref)
+function func_0676(eventid, objectref)
 
 File: func_0677.lua
 --------------------------------------------------
 -- Casts the "Vas Por Ylem" spell, creating a tremor or earthquake effect with random directional movements.
-function func_0677(eventid, itemref)
+function func_0677(eventid, objectref)
 
 File: func_0678.lua
 --------------------------------------------------
 -- Casts the "Rel Ylem" spell, transforming a specific item (type 915) with a sprite effect.
-function func_0678(eventid, itemref)
+function func_0678(eventid, objectref)
 
 File: func_0679.lua
 --------------------------------------------------
 -- Casts the "Corp Por" spell, dealing significant damage to a selected target, bypassing Avatar protection.
-function func_0679(eventid, itemref)
+function func_0679(eventid, objectref)
 
 File: func_067A.lua
 --------------------------------------------------
 -- Casts the "Tym Vas Flam" spell, creating a timed fire effect at a selected location.
-function func_067A(eventid, itemref)
+function func_067A(eventid, objectref)
 
 File: func_067B.lua
 --------------------------------------------------
 -- Casts the "In Sanct Grav" spell, creating a protective electrical barrier at a selected location.
-function func_067B(eventid, itemref)
+function func_067B(eventid, objectref)
 
 File: func_067C.lua
 --------------------------------------------------
 -- Casts the "In Hur Grav Ylem" spell, creating a wind and electrical effect that moves objects.
-function func_067C(eventid, itemref)
+function func_067C(eventid, objectref)
 
 File: func_067D.lua
 --------------------------------------------------
 -- Casts the "Vas An Xen Ex" spell, dispelling summoned creatures in an area.
-function func_067D(eventid, itemref)
+function func_067D(eventid, objectref)
 
 File: func_067E.lua
 --------------------------------------------------
 -- Casts the "In Vas Por" spell, creating a powerful movement effect in an area.
-function func_067E(eventid, itemref)
+function func_067E(eventid, objectref)
 
 File: func_067F.lua
 --------------------------------------------------
 -- Casts the "Vas Mani" spell, fully healing all party members with a sprite effect.
-function func_067F(eventid, itemref)
+function func_067F(eventid, objectref)
 
 File: func_0680.lua
 --------------------------------------------------
 -- Casts the "Vas Kal An Mani" spell, attempting to resurrect a target, or dealing damage if failed.
-function func_0680(eventid, itemref)
+function func_0680(eventid, objectref)
 
 File: func_0681.lua
 --------------------------------------------------
 -- Casts the "Vas Corp Hur" spell, dealing significant damage to a selected target with a wind effect.
-function func_0681(eventid, itemref)
+function func_0681(eventid, objectref)
 
 File: func_0682.lua
 --------------------------------------------------
 -- Casts the "Vas Corp" spell, dealing massive damage to non-protected NPCs in an area.
-function func_0682(eventid, itemref)
+function func_0682(eventid, objectref)
 
 File: func_0683.lua
 --------------------------------------------------
 -- Casts the "Vas Sact Lor" spell, granting invisibility to party members in an area.
-function func_0683(eventid, itemref)
+function func_0683(eventid, objectref)
 
 File: func_0684.lua
 --------------------------------------------------
 -- Casts the "In Mani Corp" spell, resurrecting a selected corpse if conditions are met.
-function func_0684(eventid, itemref)
+function func_0684(eventid, objectref)
 
 File: func_0685.lua
 --------------------------------------------------
 -- Casts the "Kal Vas Xen" spell, summoning a powerful creature with random type and strength.
-function func_0685(eventid, itemref)
+function func_0685(eventid, objectref)
 
 File: func_0686.lua
 --------------------------------------------------
 -- Casts the "In Jux Por Ylem" spell, creating a trap or hazardous object at a selected location.
-function func_0686(eventid, itemref)
+function func_0686(eventid, objectref)
 
 File: func_0687.lua
 --------------------------------------------------
 -- Casts the "An Tym" spell, dispelling time-based effects.
-function func_0687(eventid, itemref)
+function func_0687(eventid, objectref)
 
 File: func_0688.lua
 --------------------------------------------------
 -- Triggers NPC dancing behavior, setting flags and applying effects.
-function func_0688(eventid, itemref)
+function func_0688(eventid, objectref)
 
 File: func_0689.lua
 --------------------------------------------------
 -- Applies damage to an NPC based on their strength and health.
-function func_0689(eventid, itemref)
+function func_0689(eventid, objectref)
 
 File: func_068A.lua
 --------------------------------------------------
 -- Clears a specific flag and applies an effect.
-function func_068A(eventid, itemref)
+function func_068A(eventid, objectref)
 
 File: func_068B.lua
 --------------------------------------------------
 -- Handles item interactions with a specific type and frame.
-function func_068B(eventid, itemref)
+function func_068B(eventid, objectref)
 
 File: func_068C.lua
 --------------------------------------------------
 -- Handles item interactions with another specific type and frame.
-function func_068C(eventid, itemref)
+function func_068C(eventid, objectref)
 
 File: func_068D.lua
 --------------------------------------------------
 -- Checks for sufficient water in a container and triggers effects or a failure message.
-function func_068D(eventid, itemref)
+function func_068D(eventid, objectref)
 
 File: func_068E.lua
 --------------------------------------------------
 -- Handles interactions with a specific item type (741), creating effects and objects.
-function func_068E(eventid, itemref)
+function func_068E(eventid, objectref)
 
 File: func_068F.lua
 --------------------------------------------------
 -- Applies a flag-based effect to an item based on flags 814 or 813.
-function func_068F(eventid, itemref)
+function func_068F(eventid, objectref)
 
 File: func_0690.lua
 --------------------------------------------------
 -- Handles item type interactions (707, 760, or others), creating objects and triggering effects.
-function func_0690(eventid, itemref)
+function func_0690(eventid, objectref)
 
 File: func_0691.lua
 --------------------------------------------------
 -- Manages sword crafting outcomes, updating flags and displaying messages based on a random quality check.
-function func_0691(eventid, itemref)
+function func_0691(eventid, objectref)
 
 File: func_0692.lua
 --------------------------------------------------
 -- Manages item activity and applies effects based on item state.
-function func_0692(eventid, itemref)
+function func_0692(eventid, objectref)
 
 File: func_0693.lua
 --------------------------------------------------
 -- Function 0693: Move player to specific position
-function func_0693(eventid, itemref)
+function func_0693(eventid, objectref)
 
 File: func_0694.lua
 --------------------------------------------------
 -- Function 0694: Update item frame and position
-function func_0694(eventid, itemref)
+function func_0694(eventid, objectref)
 
 File: func_0695.lua
 --------------------------------------------------
 -- Function 0695: Create and position items
-function func_0695(eventid, itemref)
+function func_0695(eventid, objectref)
 
 File: func_0696.lua
 --------------------------------------------------
 -- Function 0696: Erethian's transformation dialogue
-function func_0696(eventid, itemref)
+function func_0696(eventid, objectref)
 
 File: func_0697.lua
 --------------------------------------------------
 -- Function 0697: Erethian's transformation effects
-function func_0697(eventid, itemref)
+function func_0697(eventid, objectref)
 
 File: func_0698.lua
 --------------------------------------------------
 -- Function 0698: Handle item type 521 and 500
-function func_0698(eventid, itemref)
+function func_0698(eventid, objectref)
 
 File: func_0699.lua
 --------------------------------------------------
 -- Handles combat mechanics, checking item positions and applying directional effects to party members.
-function func_0699(eventid, itemref)
+function func_0699(eventid, objectref)
 
 File: func_069A.lua
 --------------------------------------------------
 -- Triggers a sequence of effects, creating objects and applying combat-related mechanics.
-function func_069A(eventid, itemref)
+function func_069A(eventid, objectref)
 
 File: func_069B.lua
 --------------------------------------------------
 -- Initiates a combat sequence by calling func_0699.
-function func_069B(eventid, itemref)
+function func_069B(eventid, objectref)
 
 File: func_069C.lua
 --------------------------------------------------
 -- Triggers another combat sequence, creating objects and applying effects.
-function func_069C(eventid, itemref)
+function func_069C(eventid, objectref)
 
 File: func_069D.lua
 --------------------------------------------------
 -- Manages a combat sequence with directional movement and item interactions.
-function func_069D(eventid, itemref)
+function func_069D(eventid, objectref)
 
 File: func_069E.lua
 --------------------------------------------------
 -- Handles a dialogue sequence with Erethian, displaying messages and creating magical effects.
-function func_069E(eventid, itemref)
+function func_069E(eventid, objectref)
 
 File: func_069F.lua
 --------------------------------------------------
 -- Processes items in an area, updating their type and frame based on quality and frame conditions.
-function func_069F(eventid, itemref)
+function func_069F(eventid, objectref)
 
 File: func_06A0.lua
 --------------------------------------------------
 -- Function 06A0: Erethian's spellcasting and tool spawning
-function func_06A0(eventid, itemref)
+function func_06A0(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -4128,7 +4128,7 @@ function set_flag(flag, value)
 File: func_06A1.lua
 --------------------------------------------------
 -- Function 06A1: Item manipulation in the Forge
-function func_06A1(eventid, itemref)
+function func_06A1(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4136,7 +4136,7 @@ function sloop()
 File: func_06A2.lua
 --------------------------------------------------
 -- Function 06A2: Item manipulation with dramatic response
-function func_06A2(eventid, itemref)
+function func_06A2(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4144,7 +4144,7 @@ function sloop()
 File: func_06A3.lua
 --------------------------------------------------
 -- Function 06A3: Forge egg spawning logic
-function func_06A3(eventid, itemref)
+function func_06A3(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4156,7 +4156,7 @@ function set_flag(flag, value)
 File: func_06A4.lua
 --------------------------------------------------
 -- Function 06A4: Sets Forge progression flag
-function func_06A4(eventid, itemref)
+function func_06A4(eventid, objectref)
 
 -- Helper functions
 function set_flag(flag, value)
@@ -4164,7 +4164,7 @@ function set_flag(flag, value)
 File: func_06A5.lua
 --------------------------------------------------
 -- Function 06A5: Manages Fellowship hostility
-function func_06A5(eventid, itemref)
+function func_06A5(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4172,7 +4172,7 @@ function get_flag(flag)
 File: func_06A6.lua
 --------------------------------------------------
 -- Function 06A6: Awards experience and sets flag
-function func_06A6(eventid, itemref)
+function func_06A6(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4182,7 +4182,7 @@ function set_flag(flag, value)
 File: func_06A7.lua
 --------------------------------------------------
 -- Function 06A7: Awards experience and sets flag
-function func_06A7(eventid, itemref)
+function func_06A7(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4192,7 +4192,7 @@ function set_flag(flag, value)
 File: func_06A8.lua
 --------------------------------------------------
 -- Function 06A8: Awards experience and sets flag
-function func_06A8(eventid, itemref)
+function func_06A8(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4202,7 +4202,7 @@ function set_flag(flag, value)
 File: func_06A9.lua
 --------------------------------------------------
 -- Function 06A9: Sets progression flag
-function func_06A9(eventid, itemref)
+function func_06A9(eventid, objectref)
 
 -- Helper functions
 function set_flag(flag, value)
@@ -4210,7 +4210,7 @@ function set_flag(flag, value)
 File: func_06AA.lua
 --------------------------------------------------
 -- Function 06AA: Avatar's initial appearance via moongate
-function func_06AA(eventid, itemref)
+function func_06AA(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4218,7 +4218,7 @@ function sloop()
 File: func_06AB.lua
 --------------------------------------------------
 -- Function 06AB: Manages NPC behavior and sets flag
-function func_06AB(eventid, itemref)
+function func_06AB(eventid, objectref)
 
 -- Helper functions
 function set_flag(flag, value)
@@ -4226,7 +4226,7 @@ function set_flag(flag, value)
 File: func_06AC.lua
 --------------------------------------------------
 -- Function 06AC: Applies item effects and sets flag
-function func_06AC(eventid, itemref)
+function func_06AC(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4236,17 +4236,17 @@ function set_flag(flag, value)
 File: func_06AD.lua
 --------------------------------------------------
 -- Function 06AD: Triggers item-specific function
-function func_06AD(eventid, itemref)
+function func_06AD(eventid, objectref)
 
 File: func_06AE.lua
 --------------------------------------------------
 -- Function 06AE: Triggers NPC-specific function
-function func_06AE(eventid, itemref)
+function func_06AE(eventid, objectref)
 
 File: func_06AF.lua
 --------------------------------------------------
 -- Function 06AF: Manages poppy field sleep effect
-function func_06AF(eventid, itemref)
+function func_06AF(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4254,7 +4254,7 @@ function sloop()
 File: func_06B0.lua
 --------------------------------------------------
 -- Function 06B0: Manages poison effect on party members
-function func_06B0(eventid, itemref)
+function func_06B0(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4262,7 +4262,7 @@ function sloop()
 File: func_06B1.lua
 --------------------------------------------------
 -- Function 06B1: Manages paralysis trap effect
-function func_06B1(eventid, itemref)
+function func_06B1(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4270,7 +4270,7 @@ function sloop()
 File: func_06B2.lua
 --------------------------------------------------
 -- Function 06B2: Executes item-specific functions
-function func_06B2(eventid, itemref)
+function func_06B2(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4278,7 +4278,7 @@ function sloop()
 File: func_06B3.lua
 --------------------------------------------------
 -- Function 06B3: Executes item-specific functions
-function func_06B3(eventid, itemref)
+function func_06B3(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4286,12 +4286,12 @@ function sloop()
 File: func_06B4.lua
 --------------------------------------------------
 -- Function 06B4: Manages random party member effect
-function func_06B4(eventid, itemref)
+function func_06B4(eventid, objectref)
 
 File: func_06B5.lua
 --------------------------------------------------
 -- Function 06B5: Manages item spawning in blacksmith's house
-function func_06B5(eventid, itemref)
+function func_06B5(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4299,7 +4299,7 @@ function sloop()
 File: func_06B6.lua
 --------------------------------------------------
 -- Function 06B6: Manages item frame manipulation
-function func_06B6(eventid, itemref)
+function func_06B6(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4307,12 +4307,12 @@ function sloop()
 File: func_06B7.lua
 --------------------------------------------------
 -- Function 06B7: Manages random party member effect
-function func_06B7(eventid, itemref)
+function func_06B7(eventid, objectref)
 
 File: func_06B8.lua
 --------------------------------------------------
 -- Function 06B8: Manages party member effects with recursion
-function func_06B8(eventid, itemref)
+function func_06B8(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4320,7 +4320,7 @@ function sloop()
 File: func_06B9.lua
 --------------------------------------------------
 -- Function 06B9: Displays distress message
-function func_06B9(eventid, itemref)
+function func_06B9(eventid, objectref)
 
 -- Helper functions
 function bark(item, message)
@@ -4328,7 +4328,7 @@ function bark(item, message)
 File: func_06BA.lua
 --------------------------------------------------
 -- Function 06BA: Manages vomiting effect and item spawning
-function func_06BA(eventid, itemref)
+function func_06BA(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4336,7 +4336,7 @@ function sloop()
 File: func_06BB.lua
 --------------------------------------------------
 -- Function 06BB: Manages combat effects with recursion
-function func_06BB(eventid, itemref)
+function func_06BB(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4344,7 +4344,7 @@ function sloop()
 File: func_06BC.lua
 --------------------------------------------------
 -- Function 06BC: Manages nearby item effects
-function func_06BC(eventid, itemref)
+function func_06BC(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4352,7 +4352,7 @@ function sloop()
 File: func_06BD.lua
 --------------------------------------------------
 -- Function 06BD: Manages random effects and item spawning
-function func_06BD(eventid, itemref)
+function func_06BD(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4360,12 +4360,12 @@ function sloop()
 File: func_06BE.lua
 --------------------------------------------------
 -- Function 06BE: Applies item-specific effect
-function func_06BE(eventid, itemref)
+function func_06BE(eventid, objectref)
 
 File: func_06BF.lua
 --------------------------------------------------
 -- Function 06BF: Manages random party member effect
-function func_06BF(eventid, itemref)
+function func_06BF(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4373,7 +4373,7 @@ function sloop()
 File: func_06C0.lua
 --------------------------------------------------
 -- Function 06C0: Manages item effect application
-function func_06C0(eventid, itemref)
+function func_06C0(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4381,7 +4381,7 @@ function sloop()
 File: func_06C1.lua
 --------------------------------------------------
 -- Function 06C1: Manages item movement and cleanup
-function func_06C1(eventid, itemref)
+function func_06C1(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4393,7 +4393,7 @@ function set_flag(flag, value)
 File: func_06C2.lua
 --------------------------------------------------
 -- Function 06C2: Manages item movement in Forge
-function func_06C2(eventid, itemref)
+function func_06C2(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4403,7 +4403,7 @@ function get_flag(flag)
 File: func_06C3.lua
 --------------------------------------------------
 -- Function 06C3: Manages Minoc murder scene
-function func_06C3(eventid, itemref)
+function func_06C3(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4415,7 +4415,7 @@ function abort()
 File: func_06C4.lua
 --------------------------------------------------
 -- Function 06C4: Sets plot progression flag
-function func_06C4(eventid, itemref)
+function func_06C4(eventid, objectref)
 
 -- Helper functions
 function set_flag(flag, value)
@@ -4423,7 +4423,7 @@ function set_flag(flag, value)
 File: func_06C5.lua
 --------------------------------------------------
 -- Function 06C5: Sets Forge or game progression flag
-function func_06C5(eventid, itemref)
+function func_06C5(eventid, objectref)
 
 -- Helper functions
 function set_flag(flag, value)
@@ -4431,7 +4431,7 @@ function set_flag(flag, value)
 File: func_06C6.lua
 --------------------------------------------------
 -- Function 06C6: Manages NPC effects based on flags
-function func_06C6(eventid, itemref)
+function func_06C6(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4441,32 +4441,32 @@ function set_flag(flag, value)
 File: func_06C7.lua
 --------------------------------------------------
 -- Function 06C7: Applies NPC effects for Minoc
-function func_06C7(eventid, itemref)
+function func_06C7(eventid, objectref)
 
 File: func_06C8.lua
 --------------------------------------------------
 -- Function 06C8: Applies NPC effects for Minoc or Fellowship
-function func_06C8(eventid, itemref)
+function func_06C8(eventid, objectref)
 
 File: func_06C9.lua
 --------------------------------------------------
 -- Function 06C9: Applies NPC effects for Minoc mill approach
-function func_06C9(eventid, itemref)
+function func_06C9(eventid, objectref)
 
 File: func_06CA.lua
 --------------------------------------------------
 -- Function 06CA: Applies NPC effects for Minoc or dungeon
-function func_06CA(eventid, itemref)
+function func_06CA(eventid, objectref)
 
 File: func_06CB.lua
 --------------------------------------------------
 -- Function 06CB: Initializes local variable
-function func_06CB(eventid, itemref)
+function func_06CB(eventid, objectref)
 
 File: func_06CC.lua
 --------------------------------------------------
 -- Function 06CC: Manages party member effects and item spawning
-function func_06CC(eventid, itemref)
+function func_06CC(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4476,7 +4476,7 @@ function get_flag(flag)
 File: func_06CF.lua
 --------------------------------------------------
 -- Function 06CF: Manages item movement
-function func_06CF(eventid, itemref)
+function func_06CF(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4484,27 +4484,27 @@ function get_flag(flag)
 File: func_06D0.lua
 --------------------------------------------------
 -- Function 06D0: Triggers puzzle or event
-function func_06D0(eventid, itemref)
+function func_06D0(eventid, objectref)
 
 File: func_06D1.lua
 --------------------------------------------------
 -- Function 06D1: Triggers puzzle or event
-function func_06D1(eventid, itemref)
+function func_06D1(eventid, objectref)
 
 File: func_06D2.lua
 --------------------------------------------------
 -- Function 06D2: Triggers puzzle or event
-function func_06D2(eventid, itemref)
+function func_06D2(eventid, objectref)
 
 File: func_06D3.lua
 --------------------------------------------------
 -- Function 06D3: Triggers puzzle or event
-function func_06D3(eventid, itemref)
+function func_06D3(eventid, objectref)
 
 File: func_06D4.lua
 --------------------------------------------------
 -- Function 06D4: Manages item movement
-function func_06D4(eventid, itemref)
+function func_06D4(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4512,7 +4512,7 @@ function get_flag(flag)
 File: func_06D5.lua
 --------------------------------------------------
 -- Function 06D5: Manages item movement
-function func_06D5(eventid, itemref)
+function func_06D5(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4520,7 +4520,7 @@ function get_flag(flag)
 File: func_06D6.lua
 --------------------------------------------------
 -- Function 06D6: Manages item manipulation and deletion
-function func_06D6(eventid, itemref)
+function func_06D6(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4528,7 +4528,7 @@ function sloop()
 File: func_06D7.lua
 --------------------------------------------------
 -- Function 06D7: Applies effect and deletes item
-function func_06D7(eventid, itemref)
+function func_06D7(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4536,7 +4536,7 @@ function get_flag(flag)
 File: func_06D8.lua
 --------------------------------------------------
 -- Function 06D8: Applies effect and deletes item
-function func_06D8(eventid, itemref)
+function func_06D8(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4544,7 +4544,7 @@ function get_flag(flag)
 File: func_06D9.lua
 --------------------------------------------------
 -- Function 06D9: Applies effect and deletes item
-function func_06D9(eventid, itemref)
+function func_06D9(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4552,32 +4552,32 @@ function get_flag(flag)
 File: func_06DA.lua
 --------------------------------------------------
 -- Function 06DA: Triggers item or environmental effect
-function func_06DA(eventid, itemref)
+function func_06DA(eventid, objectref)
 
 File: func_06DB.lua
 --------------------------------------------------
 -- Function 06DB: Triggers item-specific effect
-function func_06DB(eventid, itemref)
+function func_06DB(eventid, objectref)
 
 File: func_06DC.lua
 --------------------------------------------------
 -- Function 06DC: Resets or disables state
-function func_06DC(eventid, itemref)
+function func_06DC(eventid, objectref)
 
 File: func_06DD.lua
 --------------------------------------------------
 -- Function 06DD: Triggers item or environmental effect
-function func_06DD(eventid, itemref)
+function func_06DD(eventid, objectref)
 
 File: func_06DE.lua
 --------------------------------------------------
 -- Function 06DE: Triggers item or environmental effect
-function func_06DE(eventid, itemref)
+function func_06DE(eventid, objectref)
 
 File: func_06DF.lua
 --------------------------------------------------
 -- Function 06DF: Manages item spawning
-function func_06DF(eventid, itemref)
+function func_06DF(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4585,7 +4585,7 @@ function get_flag(flag)
 File: func_06E0.lua
 --------------------------------------------------
 -- Function 06E0: Applies effects to items
-function func_06E0(eventid, itemref)
+function func_06E0(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4593,7 +4593,7 @@ function get_flag(flag)
 File: func_06E1.lua
 --------------------------------------------------
 -- Function 06E1: Counts flags for progression
-function func_06E1(eventid, itemref)
+function func_06E1(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4601,12 +4601,12 @@ function get_flag(flag)
 File: func_06E2.lua
 --------------------------------------------------
 -- Function 06E2: Applies NPC effect
-function func_06E2(eventid, itemref)
+function func_06E2(eventid, objectref)
 
 File: func_06F5.lua
 --------------------------------------------------
 -- Function 06F5: Manages Erethian's sword handoff
-function func_06F5(eventid, itemref)
+function func_06F5(eventid, objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -4616,7 +4616,7 @@ function set_flag(flag, value)
 File: func_06F6.lua
 --------------------------------------------------
 -- Function 06F6: Manages Arcadion's dialogue and interactions
-function func_06F6(eventid, itemref)
+function func_06F6(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4632,7 +4632,7 @@ function wait_for_answer()
 File: func_06F7.lua
 --------------------------------------------------
 -- Function 06F7: Manages golem scroll tracking
-function func_06F7(eventid, itemref)
+function func_06F7(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4644,7 +4644,7 @@ function set_flag(flag, value)
 File: func_06F8.lua
 --------------------------------------------------
 -- Function 06F8: Manages Forge entry and Erethian's spell mishap
-function func_06F8(eventid, itemref)
+function func_06F8(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4662,7 +4662,7 @@ function abort()
 File: func_06F9.lua
 --------------------------------------------------
 -- Function 06F9: Manages egg mechanics outside Forge
-function func_06F9(eventid, itemref)
+function func_06F9(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4674,12 +4674,12 @@ function set_flag(flag, value)
 File: func_06FA.lua
 --------------------------------------------------
 -- Function 06FA: Displays environmental messages
-function func_06FA(eventid, itemref)
+function func_06FA(eventid, objectref)
 
 File: func_06FB.lua
 --------------------------------------------------
 -- Function 06FB: Manages item spawning for quality 100
-function func_06FB(eventid, itemref)
+function func_06FB(eventid, objectref)
 
 -- Helper functions
 function get_flag(flag)
@@ -4689,7 +4689,7 @@ function set_flag(flag, value)
 File: func_06FC.lua
 --------------------------------------------------
 -- Function 06FC: Manages item selection and positioning
-function func_06FC(eventid, itemref)
+function func_06FC(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4697,7 +4697,7 @@ function sloop()
 File: func_06FD.lua
 --------------------------------------------------
 -- Function 06FD: Manages item positioning and spawning
-function func_06FD(eventid, itemref)
+function func_06FD(eventid, objectref)
 
 -- Helper functions
 function sloop()
@@ -4705,127 +4705,127 @@ function sloop()
 File: func_0708.lua
 --------------------------------------------------
 -- Function 0708: Delete item
-function func_0708(eventid, itemref)
+function func_0708(eventid, objectref)
 
 File: func_0709.lua
 --------------------------------------------------
 -- Function 0709: Set local variable
-function func_0709(eventid, itemref)
+function func_0709(eventid, objectref)
 
 File: func_070A.lua
 --------------------------------------------------
 -- Summons a creature or triggers combat effects based on item type and quality.
-function func_070A(eventid, itemref)
+function func_070A(eventid, objectref)
 
 File: func_070B.lua
 --------------------------------------------------
 -- Processes container items and applies effects based on conditions.
-function func_070B(eventid, itemref)
+function func_070B(eventid, objectref)
 
 File: func_070C.lua
 --------------------------------------------------
 -- Checks for specific items and updates their state, creating effects.
-function func_070C(eventid, itemref)
+function func_070C(eventid, objectref)
 
 File: func_070D.lua
 --------------------------------------------------
 -- Manages a helmet egg in Courage, updating portcullis or wall states based on flags.
-function func_070D(eventid, itemref)
+function func_070D(eventid, objectref)
 
 File: func_070E.lua
 --------------------------------------------------
 -- Manages door states in Courage based on helmet egg flags, updating portcullis or wall frames.
-function func_070E(eventid, itemref)
+function func_070E(eventid, objectref)
 
 File: func_070F.lua
 --------------------------------------------------
 -- Handles a complex combat sequence with item type checks and container interactions.
-function func_070F(eventid, itemref)
+function func_070F(eventid, objectref)
 
 File: func_0710.lua
 --------------------------------------------------
 -- Function 0710: Golem ritual validation
-function func_0710(eventid, itemref)
+function func_0710(eventid, objectref)
 
 File: func_0712.lua
 --------------------------------------------------
 -- Function 0712: Handle item type 505
-function func_0712(eventid, itemref)
+function func_0712(eventid, objectref)
 
 File: func_0713.lua
 --------------------------------------------------
 -- Function 0713: Move and delete items
-function func_0713(eventid, itemref)
+function func_0713(eventid, objectref)
 
 File: func_0714.lua
 --------------------------------------------------
 -- Function 0714: Golem revival ritual
-function func_0714(eventid, itemref)
+function func_0714(eventid, objectref)
 
 File: func_0715.lua
 --------------------------------------------------
 -- Initiates an endgame sequence, updating container items and applying effects.
-function func_0715(eventid, itemref)
+function func_0715(eventid, objectref)
 
 File: func_0716.lua
 --------------------------------------------------
 -- Resets a flag and initiates an endgame sequence similar to func_0715.
-function func_0716(eventid, itemref)
+function func_0716(eventid, objectref)
 
 File: func_0717.lua
 --------------------------------------------------
 -- Function 0717: Handle item type 668
-function func_0717(eventid, itemref)
+function func_0717(eventid, objectref)
 
 File: func_0800.lua
 --------------------------------------------------
 -- Handles bed interactions, preventing sleep during combat and managing nap time.
-function func_0800(eventid, itemref)
+function func_0800(eventid, objectref)
 
 File: func_0801.lua
 --------------------------------------------------
 -- Function 0801: Check for bedroll
-function func_0801(eventid, itemref)
+function func_0801(eventid, objectref)
 
 File: func_0802.lua
 --------------------------------------------------
 -- Function 0802: Remove element from array
-function func_0802(eventid, itemref)
+function func_0802(eventid, objectref)
 
 File: func_0803.lua
 --------------------------------------------------
 -- Function 0803: Initialize raft
-function func_0803(eventid, itemref)
+function func_0803(eventid, objectref)
 
 File: func_0804.lua
 --------------------------------------------------
 -- Function 0804: Find and remove item
-function func_0804(eventid, itemref)
+function func_0804(eventid, objectref)
 
 File: func_0805.lua
 --------------------------------------------------
 -- Function 0805: Initialize cart
-function func_0805(eventid, itemref)
+function func_0805(eventid, objectref)
 
 File: func_0806.lua
 --------------------------------------------------
 -- Function 0806: Create items at position
-function func_0806(eventid, itemref)
+function func_0806(eventid, objectref)
 
 File: func_0807.lua
 --------------------------------------------------
 -- Function 0807: Initialize ship
-function func_0807(eventid, itemref)
+function func_0807(eventid, objectref)
 
 File: func_0808.lua
 --------------------------------------------------
 -- Function 0808: Update party flags
-function func_0808(eventid, itemref)
+function func_0808(eventid, objectref)
 
 File: func_0809.lua
 --------------------------------------------------
 -- Function 0809: Handle cart interaction
-function func_0809(eventid, itemref)
+function func_0809(eventid, objectref)
 
 File: func_080A.lua
 --------------------------------------------------
@@ -4835,12 +4835,12 @@ function func_080A(seat_shape, seat_clicked)
 File: func_080B.lua
 --------------------------------------------------
 -- Adjusts an item's frame based on specific conditions.
-function func_080B(itemref)
+function func_080B(objectref)
 
 File: func_080C.lua
 --------------------------------------------------
 -- Checks nearby items and returns a type based on specific conditions.
-function func_080C(eventid, itemref)
+function func_080C(eventid, objectref)
 
 File: func_080D.lua
 --------------------------------------------------
@@ -4850,7 +4850,7 @@ function func_080D()
 File: func_080E.lua
 --------------------------------------------------
 -- Checks for a blocked bridge and applies effects if conditions are met.
-function func_080E(eventid, itemref)
+function func_080E(eventid, objectref)
 
 File: func_080F.lua
 --------------------------------------------------
@@ -4860,67 +4860,67 @@ function func_080F()
 File: func_0810.lua
 --------------------------------------------------
 -- Function 0810: Cube puzzle floor manipulation
-function func_0810(eventid, itemref)
+function func_0810(eventid, objectref)
 
 File: func_0811.lua
 --------------------------------------------------
 -- Function 0811: Update party flags
-function func_0811(eventid, itemref)
+function func_0811(eventid, objectref)
 
 File: func_0812.lua
 --------------------------------------------------
 -- Function 0812: Play music and update state
-function func_0812(eventid, itemref)
+function func_0812(eventid, objectref)
 
 File: func_0813.lua
 --------------------------------------------------
 -- Function 0813: Feed NPC interaction
-function func_0813(eventid, itemref)
+function func_0813(eventid, objectref)
 
 File: func_0814.lua
 --------------------------------------------------
 -- Function 0814: Find items at specific location
-function func_0814(eventid, itemref)
+function func_0814(eventid, objectref)
 
 File: func_0815.lua
 --------------------------------------------------
 -- Function 0815: Handle door locking
-function func_0815(eventid, itemref)
+function func_0815(eventid, objectref)
 
 File: func_0816.lua
 --------------------------------------------------
 -- Function 0816: Manipulate door and items
-function func_0816(eventid, itemref)
+function func_0816(eventid, objectref)
 
 File: func_0817.lua
 --------------------------------------------------
 -- Function 0817: Update door flags and items
-function func_0817(eventid, itemref)
+function func_0817(eventid, objectref)
 
 File: func_0818.lua
 --------------------------------------------------
 -- Function 0818: Blocked door message
-function func_0818(eventid, itemref)
+function func_0818(eventid, objectref)
 
 File: func_0819.lua
 --------------------------------------------------
 -- Function 0819: Locked door message
-function func_0819(eventid, itemref)
+function func_0819(eventid, objectref)
 
 File: func_081A.lua
 --------------------------------------------------
 -- Displays a "Magically Locked" message for an item.
-function func_081A(eventid, itemref)
+function func_081A(eventid, objectref)
 
 File: func_081B.lua
 --------------------------------------------------
 -- Returns the item frame modulo 4.
-function func_081B(eventid, itemref)
+function func_081B(eventid, objectref)
 
 File: func_081C.lua
 --------------------------------------------------
 -- Adjusts an item's frame based on a given offset.
-function func_081C(offset, itemref)
+function func_081C(offset, objectref)
 
 File: func_081D.lua
 --------------------------------------------------
@@ -4935,57 +4935,57 @@ function func_081E(p0, p1, p2, p3, p4, p5, p6, p7, p8)
 File: func_081F.lua
 --------------------------------------------------
 -- Checks an item's frame and applies specific adjustments or effects.
-function func_081F(eventid, itemref)
+function func_081F(eventid, objectref)
 
 File: func_0820.lua
 --------------------------------------------------
 -- Function 0820: Open door
-function func_0820(eventid, itemref)
+function func_0820(eventid, objectref)
 
 File: func_0821.lua
 --------------------------------------------------
 -- Function 0821: Update item position
-function func_0821(eventid, itemref)
+function func_0821(eventid, objectref)
 
 File: func_0822.lua
 --------------------------------------------------
 -- Function 0822: Update array values
-function func_0822(eventid, itemref)
+function func_0822(eventid, objectref)
 
 File: func_0823.lua
 --------------------------------------------------
 -- Function 0823: Update item properties
-function func_0823(eventid, itemref)
+function func_0823(eventid, objectref)
 
 File: func_0824.lua
 --------------------------------------------------
 -- Function 0824: Update item position and type
-function func_0824(eventid, itemref)
+function func_0824(eventid, objectref)
 
 File: func_0825.lua
 --------------------------------------------------
 -- Function 0825: Adjust position based on comparison
-function func_0825(eventid, itemref)
+function func_0825(eventid, objectref)
 
 File: func_0826.lua
 --------------------------------------------------
 -- Function 0826: Check item type
-function func_0826(eventid, itemref)
+function func_0826(eventid, objectref)
 
 File: func_0827.lua
 --------------------------------------------------
 -- Function 0827: Apply item effect
-function func_0827(eventid, itemref)
+function func_0827(eventid, objectref)
 
 File: func_0828.lua
 --------------------------------------------------
 -- Function 0828: Use bucket on item
-function func_0828(eventid, itemref)
+function func_0828(eventid, objectref)
 
 File: func_0829.lua
 --------------------------------------------------
 -- Function 0829: Gangplank manipulation
-function func_0829(eventid, itemref)
+function func_0829(eventid, objectref)
 
 File: func_082A.lua
 --------------------------------------------------
@@ -5010,7 +5010,7 @@ function func_082D(p0, p1, p2)
 File: func_082E.lua
 --------------------------------------------------
 -- Manages prism placement near pedestals for the Black Gate.
-function func_082E(eventid, itemref)
+function func_082E(eventid, objectref)
 
 File: func_082F.lua
 --------------------------------------------------
@@ -5020,52 +5020,52 @@ function func_082F()
 File: func_0830.lua
 --------------------------------------------------
 -- Function 0830: Sail manipulation
-function func_0830(eventid, itemref)
+function func_0830(eventid, objectref)
 
 File: func_0831.lua
 --------------------------------------------------
 -- Function 0831: Ship preparation
-function func_0831(eventid, itemref)
+function func_0831(eventid, objectref)
 
 File: func_0832.lua
 --------------------------------------------------
 -- Function 0832: Update item position
-function func_0832(eventid, itemref)
+function func_0832(eventid, objectref)
 
 File: func_0833.lua
 --------------------------------------------------
 -- Function 0833: Update item position
-function func_0833(eventid, itemref)
+function func_0833(eventid, objectref)
 
 File: func_0834.lua
 --------------------------------------------------
 -- Function 0834: Raise portcullis
-function func_0834(eventid, itemref)
+function func_0834(eventid, objectref)
 
 File: func_0835.lua
 --------------------------------------------------
 -- Function 0835: Adjust NPC property
-function func_0835(eventid, itemref)
+function func_0835(eventid, objectref)
 
 File: func_0836.lua
 --------------------------------------------------
 -- Function 0836: Update item types
-function func_0836(eventid, itemref)
+function func_0836(eventid, objectref)
 
 File: func_0837.lua
 --------------------------------------------------
 -- Function 0837: Adjust item position and properties
-function func_0837(eventid, itemref)
+function func_0837(eventid, objectref)
 
 File: func_0838.lua
 --------------------------------------------------
 -- Function 0838: Update item frame
-function func_0838(eventid, itemref)
+function func_0838(eventid, objectref)
 
 File: func_0839.lua
 --------------------------------------------------
 -- Function 0839: Apply item effects
-function func_0839(eventid, itemref)
+function func_0839(eventid, objectref)
 
 File: func_083A.lua
 --------------------------------------------------
@@ -5100,52 +5100,52 @@ function func_083F(p0, p1)
 File: func_0840.lua
 --------------------------------------------------
 -- Function 0840: Sage notebook quest
-function func_0840(eventid, itemref)
+function func_0840(eventid, objectref)
 
 File: func_0841.lua
 --------------------------------------------------
 -- Function 0841: Tavern shop dialogue
-function func_0841(eventid, itemref)
+function func_0841(eventid, objectref)
 
 File: func_0842.lua
 --------------------------------------------------
 -- Function 0842: Tavern shop dialogue
-function func_0842(eventid, itemref)
+function func_0842(eventid, objectref)
 
 File: func_0843.lua
 --------------------------------------------------
 -- Function 0843: NPC and item manipulation
-function func_0843(eventid, itemref)
+function func_0843(eventid, objectref)
 
 File: func_0844.lua
 --------------------------------------------------
 -- Function 0844: Find item with frame 12
-function func_0844(eventid, itemref)
+function func_0844(eventid, objectref)
 
 File: func_0845.lua
 --------------------------------------------------
 -- Function 0845: Daemon magic restoration
-function func_0845(eventid, itemref)
+function func_0845(eventid, objectref)
 
 File: func_0846.lua
 --------------------------------------------------
 -- Function 0846: Check specific items
-function func_0846(eventid, itemref)
+function func_0846(eventid, objectref)
 
 File: func_0847.lua
 --------------------------------------------------
 -- Function 0847: Check item types
-function func_0847(eventid, itemref)
+function func_0847(eventid, objectref)
 
 File: func_0848.lua
 --------------------------------------------------
 -- Function 0848: Check item types
-function func_0848(eventid, itemref)
+function func_0848(eventid, objectref)
 
 File: func_0849.lua
 --------------------------------------------------
 -- Function 0849: Check item types
-function func_0849(eventid, itemref)
+function func_0849(eventid, objectref)
 
 File: func_084A.lua
 --------------------------------------------------
@@ -5180,52 +5180,52 @@ function func_084F()
 File: func_0850.lua
 --------------------------------------------------
 -- Function 0850: Fellowship ceremony
-function func_0850(eventid, itemref)
+function func_0850(eventid, objectref)
 
 File: func_0851.lua
 --------------------------------------------------
 -- Function 0851: Package delivery quest
-function func_0851(eventid, itemref)
+function func_0851(eventid, objectref)
 
 File: func_0852.lua
 --------------------------------------------------
 -- Function 0852: Knowledge quiz
-function func_0852(eventid, itemref)
+function func_0852(eventid, objectref)
 
 File: func_0853.lua
 --------------------------------------------------
 -- Function 0853: General store dialogue
-function func_0853(eventid, itemref)
+function func_0853(eventid, objectref)
 
 File: func_0854.lua
 --------------------------------------------------
 -- Function 0854: Sell meat portions
-function func_0854(eventid, itemref)
+function func_0854(eventid, objectref)
 
 File: func_0855.lua
 --------------------------------------------------
 -- Function 0855: Tavern shop dialogue
-function func_0855(eventid, itemref)
+function func_0855(eventid, objectref)
 
 File: func_0856.lua
 --------------------------------------------------
 -- Function 0856: Bradman training dialogue
-function func_0856(eventid, itemref)
+function func_0856(eventid, objectref)
 
 File: func_0857.lua
 --------------------------------------------------
 -- Function 0857: Pumpkin trade dialogue
-function func_0857(eventid, itemref)
+function func_0857(eventid, objectref)
 
 File: func_0858.lua
 --------------------------------------------------
 -- Function 0858: Weapon shop dialogue
-function func_0858(eventid, itemref)
+function func_0858(eventid, objectref)
 
 File: func_0859.lua
 --------------------------------------------------
 -- Function 0859: Armor shop dialogue
-function func_0859(eventid, itemref)
+function func_0859(eventid, objectref)
 
 File: func_085A.lua
 --------------------------------------------------
@@ -5260,52 +5260,52 @@ function func_085F(p0, p1)
 File: func_0860.lua
 --------------------------------------------------
 -- Function 0860: Healing services dialogue
-function func_0860(eventid, itemref)
+function func_0860(eventid, objectref)
 
 File: func_0861.lua
 --------------------------------------------------
 -- Function 0861: Game rule violation
-function func_0861(eventid, itemref)
+function func_0861(eventid, objectref)
 
 File: func_0862.lua
 --------------------------------------------------
 -- Function 0862: Chuckles dialogue
-function func_0862(eventid, itemref)
+function func_0862(eventid, objectref)
 
 File: func_0863.lua
 --------------------------------------------------
 -- Function 0863: Weapon shop dialogue
-function func_0863(eventid, itemref)
+function func_0863(eventid, objectref)
 
 File: func_0864.lua
 --------------------------------------------------
 -- Function 0864: Random item dialogue
-function func_0864(eventid, itemref)
+function func_0864(eventid, objectref)
 
 File: func_0865.lua
 --------------------------------------------------
 -- Function 0865: Random noun pair with plural
-function func_0865(eventid, itemref)
+function func_0865(eventid, objectref)
 
 File: func_0866.lua
 --------------------------------------------------
 -- Function 0866: Random noun pair with plural
-function func_0866(eventid, itemref)
+function func_0866(eventid, objectref)
 
 File: func_0867.lua
 --------------------------------------------------
 -- Function 0867: Random adjective pair
-function func_0867(eventid, itemref)
+function func_0867(eventid, objectref)
 
 File: func_0868.lua
 --------------------------------------------------
 -- Function 0868: Random verb forms
-function func_0868(eventid, itemref)
+function func_0868(eventid, objectref)
 
 File: func_0869.lua
 --------------------------------------------------
 -- Function 0869: Random verb forms
-function func_0869(eventid, itemref)
+function func_0869(eventid, objectref)
 
 File: func_086A.lua
 --------------------------------------------------
@@ -5345,47 +5345,47 @@ function func_0870(p0, p1, p2)
 File: func_0871.lua
 --------------------------------------------------
 -- Function 0871: Tavern shop dialogue
-function func_0871(eventid, itemref)
+function func_0871(eventid, objectref)
 
 File: func_0872.lua
 --------------------------------------------------
 -- Function 0872: Weapon shop dialogue
-function func_0872(eventid, itemref)
+function func_0872(eventid, objectref)
 
 File: func_0873.lua
 --------------------------------------------------
 -- Function 0873: Armor shop dialogue
-function func_0873(eventid, itemref)
+function func_0873(eventid, objectref)
 
 File: func_0874.lua
 --------------------------------------------------
 -- Function 0874: General store dialogue
-function func_0874(eventid, itemref)
+function func_0874(eventid, objectref)
 
 File: func_0875.lua
 --------------------------------------------------
 -- Function 0875: Denby training dialogue
-function func_0875(eventid, itemref)
+function func_0875(eventid, objectref)
 
 File: func_0876.lua
 --------------------------------------------------
 -- Function 0876: Tavern shop dialogue
-function func_0876(eventid, itemref)
+function func_0876(eventid, objectref)
 
 File: func_0877.lua
 --------------------------------------------------
 -- Function 0877: Nastassia's tale
-function func_0877(eventid, itemref)
+function func_0877(eventid, objectref)
 
 File: func_0878.lua
 --------------------------------------------------
 -- Function 0878: De Snel combat training
-function func_0878(eventid, itemref)
+function func_0878(eventid, objectref)
 
 File: func_0879.lua
 --------------------------------------------------
 -- Function 0879: Healing services dialogue
-function func_0879(eventid, itemref)
+function func_0879(eventid, objectref)
 
 File: func_087A.lua
 --------------------------------------------------
@@ -5420,52 +5420,52 @@ function func_087F(p0)
 File: func_0880.lua
 --------------------------------------------------
 -- Function 0880: Adjust item position
-function func_0880(eventid, itemref)
+function func_0880(eventid, objectref)
 
 File: func_0881.lua
 --------------------------------------------------
 -- Function 0881: Find item with specific frame
-function func_0881(eventid, itemref)
+function func_0881(eventid, objectref)
 
 File: func_0882.lua
 --------------------------------------------------
 -- Function 0882: Ferry interaction
-function func_0882(eventid, itemref)
+function func_0882(eventid, objectref)
 
 File: func_0883.lua
 --------------------------------------------------
 -- Function 0883: Mayor introduces Petre
-function func_0883(eventid, itemref)
+function func_0883(eventid, objectref)
 
 File: func_0884.lua
 --------------------------------------------------
 -- Function 0884: Mayor's investigation dialogue
-function func_0884(eventid, itemref)
+function func_0884(eventid, objectref)
 
 File: func_0885.lua
 --------------------------------------------------
 -- Function 0885: Investigation evidence check
-function func_0885(eventid, itemref)
+function func_0885(eventid, objectref)
 
 File: func_0886.lua
 --------------------------------------------------
 -- Function 0886: Geography quiz for password
-function func_0886(eventid, itemref)
+function func_0886(eventid, objectref)
 
 File: func_0887.lua
 --------------------------------------------------
 -- Function 0887: Compare and adjust party stats
-function func_0887(eventid, itemref)
+function func_0887(eventid, objectref)
 
 File: func_0888.lua
 --------------------------------------------------
 -- Function 0888: Process party items
-function func_0888(eventid, itemref)
+function func_0888(eventid, objectref)
 
 File: func_0889.lua
 --------------------------------------------------
 -- Function 0889: Tavern shop dialogue
-function func_0889(eventid, itemref)
+function func_0889(eventid, objectref)
 
 File: func_088A.lua
 --------------------------------------------------
@@ -5500,52 +5500,52 @@ function func_088F()
 File: func_0890.lua
 --------------------------------------------------
 -- Function 0890: Adjhar golem dialogue
-function func_0890(eventid, itemref)
+function func_0890(eventid, objectref)
 
 File: func_0891.lua
 --------------------------------------------------
 -- Function 0891: Adjhar golem revival instructions
-function func_0891(eventid, itemref)
+function func_0891(eventid, objectref)
 
 File: func_0892.lua
 --------------------------------------------------
 -- Function 0892: Adjhar golem post-quest dialogue
-function func_0892(eventid, itemref)
+function func_0892(eventid, objectref)
 
 File: func_0893.lua
 --------------------------------------------------
 -- Function 0893: Adjhar golem final dialogue
-function func_0893(eventid, itemref)
+function func_0893(eventid, objectref)
 
 File: func_0894.lua
 --------------------------------------------------
 -- Function 0894: Stone golem dialogue
-function func_0894(eventid, itemref)
+function func_0894(eventid, objectref)
 
 File: func_0895.lua
 --------------------------------------------------
 -- Function 0895: Bollux golem dialogue
-function func_0895(eventid, itemref)
+function func_0895(eventid, objectref)
 
 File: func_0896.lua
 --------------------------------------------------
 -- Function 0896: Bollux golem post-event dialogue
-function func_0896(eventid, itemref)
+function func_0896(eventid, objectref)
 
 File: func_0897.lua
 --------------------------------------------------
 -- Function 0897: Armor shop dialogue
-function func_0897(eventid, itemref)
+function func_0897(eventid, objectref)
 
 File: func_0898.lua
 --------------------------------------------------
 -- Function 0898: Weapon shop dialogue
-function func_0898(eventid, itemref)
+function func_0898(eventid, objectref)
 
 File: func_0899.lua
 --------------------------------------------------
 -- Function 0899: General store dialogue
-function func_0899(eventid, itemref)
+function func_0899(eventid, objectref)
 
 File: func_089A.lua
 --------------------------------------------------
@@ -5761,7 +5761,7 @@ function abort()
 File: func_08B3.lua
 --------------------------------------------------
 -- Function 08B3: Manages party composition
-function func_08B3(itemref)
+function func_08B3(objectref)
 
 -- Helper functions
 function sloop()
@@ -5839,7 +5839,7 @@ function abort()
 File: func_08BB.lua
 --------------------------------------------------
 -- Function 08BB: Manages spell purchase dialogue
-function func_08BB(itemref)
+function func_08BB(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -5847,7 +5847,7 @@ function add_dialogue(...)
 File: func_08BC.lua
 --------------------------------------------------
 -- Function 08BC: Manages reagent and potion purchase dialogue
-function func_08BC(itemref)
+function func_08BC(objectref)
 
 -- Helper functions
 function add_dialogue(...)
@@ -5962,7 +5962,7 @@ function add_dialogue(...)
 File: func_08C9.lua
 --------------------------------------------------
 -- Function 08C9: Manages blackrock placement check
-function func_08C9(itemref)
+function func_08C9(objectref)
 
 -- Helper functions
 function sloop()
@@ -6174,7 +6174,7 @@ function add_dialogue(...)
 File: func_08DD.lua
 --------------------------------------------------
 -- Function 08DD: Manages earthquake NPC behavior
-function func_08DD(itemref)
+function func_08DD(objectref)
 
 -- Helper functions
 function sloop()
@@ -6292,7 +6292,7 @@ function func_08EA(local0)
 File: func_08EB.lua
 --------------------------------------------------
 -- Function 08EB: Manages item or party movement
-function func_08EB(local0, local1, itemref)
+function func_08EB(local0, local1, objectref)
 
 -- Helper functions
 function sloop()
@@ -6474,52 +6474,52 @@ function func_08FF(local0)
 File: func_0900.lua
 --------------------------------------------------
 -- Function 0900: Random party member selection
-function func_0900(eventid, itemref)
+function func_0900(eventid, objectref)
 
 File: func_0901.lua
 --------------------------------------------------
 -- Function 0901: Select valid party member
-function func_0901(eventid, itemref)
+function func_0901(eventid, objectref)
 
 File: func_0902.lua
 --------------------------------------------------
 -- Function 0902: Select NPC in party
-function func_0902(eventid, itemref)
+function func_0902(eventid, objectref)
 
 File: func_0903.lua
 --------------------------------------------------
 -- Function 0903: Pig NPC dialogue
-function func_0903(eventid, itemref)
+function func_0903(eventid, objectref)
 
 File: func_0904.lua
 --------------------------------------------------
 -- Function 0904: Handle pig NPC interaction
-function func_0904(eventid, itemref)
+function func_0904(eventid, objectref)
 
 File: func_0905.lua
 --------------------------------------------------
 -- Function 0905: Light torch effect
-function func_0905(eventid, itemref)
+function func_0905(eventid, objectref)
 
 File: func_0906.lua
 --------------------------------------------------
 -- Function 0906: Check game condition
-function func_0906(eventid, itemref)
+function func_0906(eventid, objectref)
 
 File: func_0907.lua
 --------------------------------------------------
 -- Function 0907: Process item ownership
-function func_0907(eventid, itemref)
+function func_0907(eventid, objectref)
 
 File: func_0908.lua
 --------------------------------------------------
 -- Function 0908: Get player name
-function func_0908(eventid, itemref)
+function func_0908(eventid, objectref)
 
 File: func_0909.lua
 --------------------------------------------------
 -- Function 0909: Return gender-specific title
-function func_0909(eventid, itemref)
+function func_0909(eventid, objectref)
 
 File: func_090A.lua
 --------------------------------------------------
@@ -6554,52 +6554,52 @@ function func_090F(p0)
 File: func_0910.lua
 --------------------------------------------------
 -- Function 0910: Get NPC property
-function func_0910(eventid, itemref)
+function func_0910(eventid, objectref)
 
 File: func_0911.lua
 --------------------------------------------------
 -- Function 0911: Set party member property
-function func_0911(eventid, itemref)
+function func_0911(eventid, objectref)
 
 File: func_0912.lua
 --------------------------------------------------
 -- Function 0912: Set NPC property
-function func_0912(eventid, itemref)
+function func_0912(eventid, objectref)
 
 File: func_0913.lua
 --------------------------------------------------
 -- Function 0913: Find party member index
-function func_0913(eventid, itemref)
+function func_0913(eventid, objectref)
 
 File: func_0914.lua
 --------------------------------------------------
 -- Function 0914: Increment NPC stats
-function func_0914(eventid, itemref)
+function func_0914(eventid, objectref)
 
 File: func_0915.lua
 --------------------------------------------------
 -- Function 0915: Adjust NPC stats based on training
-function func_0915(eventid, itemref)
+function func_0915(eventid, objectref)
 
 File: func_0916.lua
 --------------------------------------------------
 -- Function 0916: Increment NPC secondary stats
-function func_0916(eventid, itemref)
+function func_0916(eventid, objectref)
 
 File: func_0917.lua
 --------------------------------------------------
 -- Function 0917: Adjust NPC stats with balanced training
-function func_0917(eventid, itemref)
+function func_0917(eventid, objectref)
 
 File: func_0918.lua
 --------------------------------------------------
 -- Function 0918: Adjust NPC tertiary stats
-function func_0918(eventid, itemref)
+function func_0918(eventid, objectref)
 
 File: func_0919.lua
 --------------------------------------------------
 -- Function 0919: Describe The Fellowship
-function func_0919(eventid, itemref)
+function func_0919(eventid, objectref)
 
 File: func_091A.lua
 --------------------------------------------------
@@ -6634,52 +6634,52 @@ function func_091F(p0, p1)
 File: func_0920.lua
 --------------------------------------------------
 -- Function 0920: Select party member for training
-function func_0920(eventid, itemref)
+function func_0920(eventid, objectref)
 
 File: func_0921.lua
 --------------------------------------------------
 -- Function 0921: Prompt and select party member for training
-function func_0921(eventid, itemref)
+function func_0921(eventid, objectref)
 
 File: func_0922.lua
 --------------------------------------------------
 -- Function 0922: Check training eligibility and gold
-function func_0922(eventid, itemref)
+function func_0922(eventid, objectref)
 
 File: func_0923.lua
 --------------------------------------------------
 -- Function 0923: Check and manage spellbook transaction
-function func_0923(eventid, itemref)
+function func_0923(eventid, objectref)
 
 File: func_0924.lua
 --------------------------------------------------
 -- Function 0924: Check and manage item transaction
-function func_0924(eventid, itemref)
+function func_0924(eventid, objectref)
 
 File: func_0925.lua
 --------------------------------------------------
 -- Function 0925: Adjust item weight
-function func_0925(eventid, itemref)
+function func_0925(eventid, objectref)
 
 File: func_0926.lua
 --------------------------------------------------
 -- Function 0926: Transfer item to party member
-function func_0926(eventid, itemref)
+function func_0926(eventid, objectref)
 
 File: func_0927.lua
 --------------------------------------------------
 -- Function 0927: Comment on empty drinking vessel
-function func_0927(eventid, itemref)
+function func_0927(eventid, objectref)
 
 File: func_0928.lua
 --------------------------------------------------
 -- Function 0928: Comment on drinking vessel with liquid
-function func_0928(eventid, itemref)
+function func_0928(eventid, objectref)
 
 File: func_0929.lua
 --------------------------------------------------
 -- Function 0929: Comment on fist weapon
-function func_0929(eventid, itemref)
+function func_0929(eventid, objectref)
 
 File: func_092A.lua
 --------------------------------------------------
@@ -6714,52 +6714,52 @@ function func_092F(p0)
 File: func_0930.lua
 --------------------------------------------------
 -- Function 0930: Follow wall with parameters
-function func_0930(eventid, itemref)
+function func_0930(eventid, objectref)
 
 File: func_0931.lua
 --------------------------------------------------
 -- Function 0931: Check condition with threshold
-function func_0931(eventid, itemref)
+function func_0931(eventid, objectref)
 
 File: func_0932.lua
 --------------------------------------------------
--- Function 0932: Negate itemref if negative
-function func_0932(eventid, itemref)
+-- Function 0932: Negate objectref if negative
+function func_0932(eventid, objectref)
 
 File: func_0933.lua
 --------------------------------------------------
 -- Function 0933: Conditional follow wall for combat-ready NPC
-function func_0933(eventid, itemref)
+function func_0933(eventid, objectref)
 
 File: func_0934.lua
 --------------------------------------------------
 -- Function 0934: Get party members excluding NPC
-function func_0934(eventid, itemref)
+function func_0934(eventid, objectref)
 
 File: func_0935.lua
 --------------------------------------------------
 -- Function 0935: Find NPC with lowest quantity
-function func_0935(eventid, itemref)
+function func_0935(eventid, objectref)
 
 File: func_0936.lua
 --------------------------------------------------
 -- Function 0936: Set NPC health
-function func_0936(eventid, itemref)
+function func_0936(eventid, objectref)
 
 File: func_0937.lua
 --------------------------------------------------
 -- Function 0937: Check NPC combat readiness
-function func_0937(eventid, itemref)
+function func_0937(eventid, objectref)
 
 File: func_0938.lua
 --------------------------------------------------
 -- Function 0938: Check NPC combat ineligibility
-function func_0938(eventid, itemref)
+function func_0938(eventid, objectref)
 
 File: func_0939.lua
 --------------------------------------------------
 -- Function 0939: Validate NPC ID
-function func_0939(eventid, itemref)
+function func_0939(eventid, objectref)
 
 File: func_093A.lua
 --------------------------------------------------
@@ -6794,52 +6794,52 @@ function func_093F(p0, p1)
 File: func_0940.lua
 --------------------------------------------------
 -- Function 0940: Start NPC speech or trigger
-function func_0940(eventid, itemref)
+function func_0940(eventid, objectref)
 
 File: func_0941.lua
 --------------------------------------------------
 -- Function 0941: Check speech and trigger
-function func_0941(eventid, itemref)
+function func_0941(eventid, objectref)
 
 File: func_0942.lua
 --------------------------------------------------
 -- Function 0942: Handle torch or candle
-function func_0942(eventid, itemref)
+function func_0942(eventid, objectref)
 
 File: func_0943.lua
 --------------------------------------------------
 -- Function 0943: Move object with offsets
-function func_0943(eventid, itemref)
+function func_0943(eventid, objectref)
 
 File: func_0944.lua
 --------------------------------------------------
 -- Function 0944: Find outermost container
-function func_0944(eventid, itemref)
+function func_0944(eventid, objectref)
 
 File: func_0945.lua
 --------------------------------------------------
 -- Function 0945: Find container chain
-function func_0945(eventid, itemref)
+function func_0945(eventid, objectref)
 
 File: func_0946.lua
 --------------------------------------------------
 -- Function 0946: Pastry shop
-function func_0946(eventid, itemref)
+function func_0946(eventid, objectref)
 
 File: func_0947.lua
 --------------------------------------------------
 -- Function 0947: Bread exchange
-function func_0947(eventid, itemref)
+function func_0947(eventid, objectref)
 
 File: func_0948.lua
 --------------------------------------------------
 -- Function 0948: Flour exchange
-function func_0948(eventid, itemref)
+function func_0948(eventid, objectref)
 
 File: func_0949.lua
 --------------------------------------------------
 -- Function 0949: Potion shop
-function func_0949(eventid, itemref)
+function func_0949(eventid, objectref)
 
 File: func_094A.lua
 --------------------------------------------------
@@ -6874,22 +6874,22 @@ function func_094F(p0, p1)
 File: func_0950.lua
 --------------------------------------------------
 -- Function 0950: Boxing training
-function func_0950(eventid, itemref)
+function func_0950(eventid, objectref)
 
 File: func_0951.lua
 --------------------------------------------------
 -- Function 0951: Tavern shop
-function func_0951(eventid, itemref)
+function func_0951(eventid, objectref)
 
 File: func_0952.lua
 --------------------------------------------------
 -- Function 0952: Weapon shop
-function func_0952(eventid, itemref)
+function func_0952(eventid, objectref)
 
 File: func_0953.lua
 --------------------------------------------------
 -- Function 0953: Armor shop
-function func_0953(eventid, itemref)
+function func_0953(eventid, objectref)
 
 File: npc.lua
 --------------------------------------------------

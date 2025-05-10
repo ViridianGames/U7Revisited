@@ -1,5 +1,5 @@
 --- Best guess: Manages Jillian’s dialogue, a scholar and tutor in Moonglow, offering training sessions for 35 gold and discussing the town’s geography and the lost continent of Ambrosia, with flag-based responses to training availability.
-function func_049F(eventid, itemref)
+function func_049F(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid ~= 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Forbrak’s dialogue in Terfin, a gargoyle tavernkeeper aware of local residents and conflicts between shrines and The Fellowship.
-function func_04BD(eventid, itemref)
+function func_04BD(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

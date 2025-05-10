@@ -1,5 +1,5 @@
 --- Best guess: Manages Sir Pendaran’s dialogue in Serpent’s Hold, a knight who defaced Lord British’s statue due to disillusionment with Britannia’s government.
-function func_04C1(eventid, itemref)
+function func_04C1(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

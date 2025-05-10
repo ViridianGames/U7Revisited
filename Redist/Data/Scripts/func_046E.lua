@@ -1,5 +1,5 @@
 --- Best guess: Manages Garok Al-Mat’s dialogue, a mage lost in a dungeon, discussing his failing magic, a voice in his head, and his search for the Tetrahedron Generator, with flag-based reagent offerings and teleportation.
-function func_046E(eventid, itemref)
+function func_046E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 0 then
@@ -109,7 +109,7 @@ function func_046E(eventid, itemref)
                     add_dialogue("Garok shrugs. \"Suit thyself. Thanks anyway.\"")
                 end
                 add_dialogue("You watch as Garok turns, intones a spell, and vanishes.")
-                unknown_0632H(itemref)
+                unknown_0632H(objectref)
                 return
             else
                 add_dialogue("\"Oh. Thou art as lost as I, eh? Then we shall surely die in here.\"")

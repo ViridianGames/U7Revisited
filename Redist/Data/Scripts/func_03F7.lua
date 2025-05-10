@@ -1,9 +1,9 @@
 --- Best guess: Manages a golem’s dialogue in Moonglow, seeking a book or aiding a fallen golem, part of a quest.
-function func_03F7(eventid, itemref)
+function func_03F7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        if not get_container_objects(4, 243, 797, itemref) then
+        if not get_container_objects(4, 243, 797, objectref) then
             switch_talk_to(0, 288)
             if not get_flag(808) then
                 -- call [0000] (0893H, unmapped)
@@ -69,9 +69,9 @@ function func_03F7(eventid, itemref)
                     return
                 end
             end
-        elseif get_container_objects(4, 244, 797, itemref) or check_flag_location(176, 1, 797, itemref) == 244 then
+        elseif get_container_objects(4, 244, 797, objectref) or check_flag_location(176, 1, 797, objectref) == 244 then
             -- call [0006] (0894H, unmapped)
-            unknown_0894H(itemref)
+            unknown_0894H(objectref)
         end
     end
     return

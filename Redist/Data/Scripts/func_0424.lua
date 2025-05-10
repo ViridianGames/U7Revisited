@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Zella, a trainer in Britain specializing in boxing, discussing her combat philosophy and offering training for 45 gold.
-function func_0424(eventid, itemref)
+function func_0424(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

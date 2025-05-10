@@ -1,5 +1,5 @@
 --- Best guess: Handles tavern item purchases (e.g., ale, wine, Silverleaf), with a flag-based unavailability message for Silverleaf.
-function func_0951(eventid, itemref)
+function func_0951(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
     start_conversation()
@@ -30,9 +30,9 @@ function func_0951(eventid, itemref)
             if var_000D then
                 if var_0003[var_000A] == 377 then
                     add_dialogue("@How many wouldst thou like?@")
-                    var_000C = purchase_item(true, 1, 20, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
+                    var_000C = purchaseobject_(true, 1, 20, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
                 else
-                    var_000C = purchase_item(true, 1, 0, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
+                    var_000C = purchaseobject_(true, 1, 0, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
                 end
             end
             if var_000C == 1 then

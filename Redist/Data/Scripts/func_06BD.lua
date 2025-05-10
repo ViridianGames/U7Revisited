@@ -1,12 +1,12 @@
 --- Best guess: Triggers a complex sequence of effects on nearby items and party members when event ID 3 is received, with random selections and array-based operations.
-function func_06BD(eventid, itemref)
+function func_06BD(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 3 then
-        var_0000 = unknown_0035H(8, 40, 359, itemref)
+        var_0000 = unknown_0035H(8, 40, 359, objectref)
         var_0001 = unknown_0023H()
         var_0002 = 10
-        var_0003 = unknown_0088H(6, itemref)
+        var_0003 = unknown_0088H(6, objectref)
         for i = 1, #var_0000 do
             var_0006 = var_0000[i]
             if not var_0003 or not (var_0006 in var_0001) then

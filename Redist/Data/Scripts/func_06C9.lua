@@ -1,5 +1,5 @@
 --- Best guess: Triggers an effect on NPCs (94, 95) when approaching the Minoc mill, activated by event ID 3.
-function func_06C9(eventid, itemref)
+function func_06C9(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 3 then

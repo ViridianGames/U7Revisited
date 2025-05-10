@@ -1,5 +1,5 @@
 --- Best guess: Manages Anmanivas’s dialogue in Vesper, a hostile gargoyle who may attack the player due to resentment toward humans.
-function func_04D9(eventid, itemref)
+function func_04D9(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000D, var_000E, var_000F
 
     if eventid == 1 then

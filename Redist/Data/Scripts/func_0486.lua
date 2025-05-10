@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Robin, a gambler stranded in New Magincia, discussing his gambling profession, his bodyguards Battles and Leavell, a lost locket, and a sinister plan to kidnap Constance for profit in Buccaneer’s Den.
-function func_0486(eventid, itemref)
+function func_0486(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     start_conversation()

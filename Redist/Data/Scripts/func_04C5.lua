@@ -1,5 +1,5 @@
 --- Best guess: Manages Sir Horffe’s dialogue in Serpent’s Hold, a gargoyle captain revealing he was wounded trying to stop the statue vandal.
-function func_04C5(eventid, itemref)
+function func_04C5(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

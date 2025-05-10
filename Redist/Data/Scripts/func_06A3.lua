@@ -1,14 +1,14 @@
 --- Best guess: Manages a dungeon forge egg, spawning mages, dragons, or golems based on item quality and container contents, with specific flag checks.
-function func_06A3(eventid, itemref)
+function func_06A3(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E
 
     if eventid ~= 3 then
         return
     end
-    var_0000 = unknown_0014H(itemref)
+    var_0000 = unknown_0014H(objectref)
     if var_0000 == 1 and not get_flag(750) then
         var_0001 = false
-        var_0002 = unknown_0035H(8, 80, 154, itemref)
+        var_0002 = unknown_0035H(8, 80, 154, objectref)
         for i = 1, 5 do
             if unknown_002AH(4, 240, 797, var_0005) then
                 var_0001 = var_0005
@@ -16,15 +16,15 @@ function func_06A3(eventid, itemref)
             end
         end
         if not var_0001 then
-            var_0006 = unknown_000EH(1, 154, itemref)
+            var_0006 = unknown_000EH(1, 154, objectref)
             if not var_0006 then
-                if not unknown_0085H(16, 154, unknown_0018H(itemref)) then
-                    unknown_08EBH(16, 154, itemref)
+                if not unknown_0085H(16, 154, unknown_0018H(objectref)) then
+                    unknown_08EBH(16, 154, objectref)
                 end
-                var_0007 = unknown_0018H(itemref)[-359][0]
+                var_0007 = unknown_0018H(objectref)[-359][0]
                 var_0008 = unknown_0035H(16, 0, 275, var_0007)
                 var_0009 = unknown_0001H(8520, var_0008)
-                var_0009 = unknown_0001H(1699, {17493, 7724}, itemref)
+                var_0009 = unknown_0001H(1699, {17493, 7724}, objectref)
             else
                 var_000A = unknown_0010H(6, 1)
                 if var_000A == 1 then
@@ -44,7 +44,7 @@ function func_06A3(eventid, itemref)
         end
     elseif var_0000 == 2 and not get_flag(751) then
         var_0001 = false
-        var_0002 = unknown_0035H(8, 80, 504, itemref)
+        var_0002 = unknown_0035H(8, 80, 504, objectref)
         for i = 1, 5 do
             if unknown_002AH(4, 241, 797, var_0005) then
                 var_0001 = var_0005
@@ -52,15 +52,15 @@ function func_06A3(eventid, itemref)
             end
         end
         if not var_0001 then
-            var_0006 = unknown_000EH(1, 504, itemref)
+            var_0006 = unknown_000EH(1, 504, objectref)
             if not var_0006 then
-                if not unknown_0085H(19, 504, unknown_0018H(itemref)) then
-                    unknown_08EBH(19, 504, itemref)
+                if not unknown_0085H(19, 504, unknown_0018H(objectref)) then
+                    unknown_08EBH(19, 504, objectref)
                 end
-                var_0007 = unknown_0018H(itemref)[-359][0]
+                var_0007 = unknown_0018H(objectref)[-359][0]
                 var_0008 = unknown_0035H(16, 0, 275, var_0007)
                 var_0009 = unknown_0001H(8520, var_0008)
-                var_0009 = unknown_0001H(1699, {17493, 7724}, itemref)
+                var_0009 = unknown_0001H(1699, {17493, 7724}, objectref)
             else
                 unknown_001DH(15, var_0006)
                 unknown_0013H(19, var_0006)
@@ -75,7 +75,7 @@ function func_06A3(eventid, itemref)
         end
     elseif var_0000 == 4 and not get_flag(753) and get_flag(795) then
         var_0001 = false
-        var_0002 = unknown_0035H(8, 80, 1015, itemref)
+        var_0002 = unknown_0035H(8, 80, 1015, objectref)
         for i = 1, 5 do
             if unknown_002AH(4, 243, 797, var_0005) then
                 var_0001 = var_0005
@@ -83,15 +83,15 @@ function func_06A3(eventid, itemref)
             end
         end
         if not var_0001 then
-            var_0006 = unknown_000EH(1, 1015, itemref)
+            var_0006 = unknown_000EH(1, 1015, objectref)
             if not var_0006 then
-                if not unknown_0085H(16, 1015, unknown_0018H(itemref)) then
-                    unknown_08EBH(16, 1015, itemref)
+                if not unknown_0085H(16, 1015, unknown_0018H(objectref)) then
+                    unknown_08EBH(16, 1015, objectref)
                 end
-                var_0007 = unknown_0018H(itemref)[-359][0]
+                var_0007 = unknown_0018H(objectref)[-359][0]
                 var_0008 = unknown_0035H(16, 0, 275, var_0007)
                 var_0009 = unknown_0001H(8520, var_0008)
-                var_0009 = unknown_0001H(1699, {17493, 7724}, itemref)
+                var_0009 = unknown_0001H(1699, {17493, 7724}, objectref)
             else
                 unknown_0013H(16, var_0006)
                 if not get_flag(795) or not get_flag(796) or not get_flag(806) then
@@ -106,7 +106,7 @@ function func_06A3(eventid, itemref)
         end
     elseif var_0000 == 5 and not get_flag(754) and not get_flag(796) then
         var_0001 = false
-        var_0002 = unknown_0035H(8, 80, 1015, itemref)
+        var_0002 = unknown_0035H(8, 80, 1015, objectref)
         for i = 1, 5 do
             if unknown_002AH(4, 244, 797, var_0005) then
                 var_0001 = var_0005
@@ -114,15 +114,15 @@ function func_06A3(eventid, itemref)
             end
         end
         if not var_0001 then
-            var_0006 = unknown_000EH(1, 1015, itemref)
+            var_0006 = unknown_000EH(1, 1015, objectref)
             if not var_0006 then
-                if not unknown_0085H(16, 1015, unknown_0018H(itemref)) then
-                    unknown_08EBH(16, 1015, itemref)
+                if not unknown_0085H(16, 1015, unknown_0018H(objectref)) then
+                    unknown_08EBH(16, 1015, objectref)
                 end
-                var_0007 = unknown_0018H(itemref)[-359][0]
+                var_0007 = unknown_0018H(objectref)[-359][0]
                 var_0008 = unknown_0035H(16, 0, 275, var_0007)
                 var_0009 = unknown_0001H(8520, var_0008)
-                var_0009 = unknown_0001H(1699, {17493, 7724}, itemref)
+                var_0009 = unknown_0001H(1699, {17493, 7724}, objectref)
             else
                 unknown_0013H(16, var_0006)
                 if not get_flag(795) or not get_flag(796) or not get_flag(806) then
@@ -141,10 +141,10 @@ function func_06A3(eventid, itemref)
             end
         end
     elseif var_0000 == 6 then
-        var_0015 = unknown_0035H(8, 10, 1, itemref)
+        var_0015 = unknown_0035H(8, 10, 1, objectref)
         for i = 1, 5 do
             if unknown_0011H(var_0018) == 504 and not unknown_002AH(4, 241, 797, var_0018) then
-                unknown_01F8H(itemref)
+                unknown_01F8H(objectref)
             end
         end
     elseif var_0000 == 7 and not get_flag(755) then
@@ -172,7 +172,7 @@ function func_06A3(eventid, itemref)
         var_0019 = 254
     end
     if var_0019 then
-        var_0002 = unknown_0035H(4, 80, 1015, itemref)
+        var_0002 = unknown_0035H(4, 80, 1015, objectref)
         for i = 1, 5 do
             if unknown_002AH(4, var_0019, 797, var_0005) then
                 var_0001 = var_0005
@@ -180,15 +180,15 @@ function func_06A3(eventid, itemref)
             end
         end
         if not var_0001 then
-            var_0006 = unknown_000EH(1, 1015, itemref)
+            var_0006 = unknown_000EH(1, 1015, objectref)
             if not var_0006 then
-                if not unknown_0085H(16, 1015, unknown_0018H(itemref)) then
-                    unknown_08EBH(16, 1015, itemref)
+                if not unknown_0085H(16, 1015, unknown_0018H(objectref)) then
+                    unknown_08EBH(16, 1015, objectref)
                 end
-                var_0007 = unknown_0018H(itemref)[-359][0]
+                var_0007 = unknown_0018H(objectref)[-359][0]
                 var_0008 = unknown_0035H(16, 0, 275, var_0007)
                 var_0009 = unknown_0001H(8520, var_0008)
-                var_0009 = unknown_0001H(1699, {17493, 7724}, itemref)
+                var_0009 = unknown_0001H(1699, {17493, 7724}, objectref)
             else
                 unknown_0013H(0, var_0006)
                 unknown_0089H(18, var_0006)

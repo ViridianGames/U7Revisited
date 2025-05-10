@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Neno, an ambitious bard and member of The Avatars, boasting about his talent and aspirations to perform solo and tour Britannia.
-function func_0427(eventid, itemref)
+function func_0427(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

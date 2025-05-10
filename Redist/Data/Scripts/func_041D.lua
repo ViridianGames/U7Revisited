@@ -1,5 +1,5 @@
 --- Best guess: Manages Stuart’s dialogue, discussing his role as Iolo in the Royal Theatre’s play, his rivalry with Jesse, and his acting philosophy, with flag-based interactions involving Iolo.
-function func_041D(eventid, itemref)
+function func_041D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid ~= 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Nell, a chambermaid at Lord British’s castle, discussing her family, fiance Carrocio, and her secret pregnancy, with trust-based dialogue depending on the player’s identity.
-function func_0448(eventid, itemref)
+function func_0448(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

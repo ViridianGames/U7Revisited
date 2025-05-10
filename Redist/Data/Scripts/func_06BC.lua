@@ -1,13 +1,13 @@
 --- Best guess: Applies effects to nearby items (type 359, within 40 units) not already affected when event ID 3 is triggered, likely part of a dungeon trap.
-function func_06BC(eventid, itemref)
+function func_06BC(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 3 then
-        var_0000 = unknown_0014H(itemref)
+        var_0000 = unknown_0014H(objectref)
         if not var_0000 then
-            var_0001 = unknown_0035H(8, 40, 359, itemref)
+            var_0001 = unknown_0035H(8, 40, 359, objectref)
         else
-            var_0001 = unknown_0035H(8, var_0000, 359, itemref)
+            var_0001 = unknown_0035H(8, var_0000, 359, objectref)
         end
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]

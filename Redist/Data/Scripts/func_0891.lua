@@ -1,5 +1,5 @@
 --- Best guess: Advances the quest by revealing how to restore Bollux using a new heart from the Tree of Life.
-function func_0891(eventid, itemref)
+function func_0891(eventid, objectref)
     set_flag(802, true)
     add_dialogue("@'Tis as I suspected. Bollux thought he must sacrifice his own heart...@")
     hide_npc(288) --- Guess: Hides NPC

@@ -1,11 +1,11 @@
 --- Best guess: Manages the placement of prisms by the Black Gate, checking for beams (ID 168) and pedestals (ID 577), aligning prisms (ID 981) and updating frames.
-function func_082E(eventid, itemref)
+function func_082E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
     unknown_007EH()
-    var_0001 = unknown_0035H(0, 20, 168, itemref)
+    var_0001 = unknown_0035H(0, 20, 168, objectref)
     if var_0001 then
-        var_0002 = unknown_0035H(0, 20, 577, itemref)
+        var_0002 = unknown_0035H(0, 20, 577, objectref)
         var_0003 = 0
         for var_0004 in ipairs(var_0002) do
             var_0007 = unknown_0018H(var_0006)

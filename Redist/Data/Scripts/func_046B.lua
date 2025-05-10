@@ -1,5 +1,5 @@
 --- Best guess: Manages Iskander’s dialogue, a cyclops hero in a dungeon, discussing his tribe, heroic past, and a tetrahedron riddle, with flag-based interactions and name-based responses.
-function func_046B(eventid, itemref)
+function func_046B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 0 then

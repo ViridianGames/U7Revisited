@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Nicodemus, a quirky mage in Yew, discussing his failing magic, selling potions, reagents, and spells, and enchanting an hourglass for the Time Lord, with references to Knight’s Bridge games.
-function func_0466(eventid, itemref)
+function func_0466(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

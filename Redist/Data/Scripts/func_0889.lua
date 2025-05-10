@@ -1,5 +1,5 @@
 --- Best guess: Manages purchase of provisions (e.g., wine, cheese) with a unique dialogue style.
-function func_0889(eventid, itemref)
+function func_0889(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     start_conversation()
@@ -26,10 +26,10 @@ function func_0889(eventid, itemref)
             var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000C then
                 if var_0002[var_0009] == 616 then
-                    var_000B = purchase_item(true, 1, 0, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                    var_000B = purchaseobject_(true, 1, 0, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
                 else
                     add_dialogue("@To request how many?@")
-                    var_000B = purchase_item(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                    var_000B = purchaseobject_(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
                 end
             end
             if var_000B == 1 then

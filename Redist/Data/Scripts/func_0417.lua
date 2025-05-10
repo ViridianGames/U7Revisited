@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Lord British, discussing Britannia’s state, magic issues, the Trinsic murder, and quests involving the Isle of Fire, Rudyom, and Weston, with healing and equipment offers.
-function func_0417(eventid, itemref)
+function func_0417(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011
 
     var_0000 = false
@@ -342,10 +342,10 @@ function func_0417(eventid, itemref)
         unknown_092EH(23) --- Guess: Triggers a game event
     end
     if var_0000 == true then
-        var_000B = unknown_092DH(itemref) --- Guess: Gets randomized response index
+        var_000B = unknown_092DH(objectref) --- Guess: Gets randomized response index
         var_000C = (var_000B + 4) % 8
         var_000D = {1047, 8021, 11, 7975, 2, 7975, 3, 7975, 1047, 8021, 3, 7975, 2, 7975, 1, 8487, var_000C, 7769}
-        var_000D = unknown_0001H(itemref, var_000D) --- Guess: Sets object position
+        var_000D = unknown_0001H(objectref, var_000D) --- Guess: Sets object position
         var_000E = {8033, 1, 17447, 8044, 6, 17447, 8045, 1, 17447, 8044, 1, 8487, var_000B, 7769}
         var_000E = unknown_0001H(unknown_001BH(356), var_000E) --- Guess: Sets object position
     end

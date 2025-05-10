@@ -1,5 +1,5 @@
 --- Best guess: Manages Erethian's dialogue and sword creation sequence, handling item placement and flag updates when event ID is triggered.
-function func_06F5(eventid, itemref)
+function func_06F5(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     switch_talk_to(286, 1)
@@ -11,15 +11,15 @@ function func_06F5(eventid, itemref)
         add_dialogue("He hands the sword to you and wearily turns away.*")
     else
         add_dialogue("He places the sword upon the firepit and wearily turns away.*")
-        var_0002 = unknown_000EH(10, 739, itemref)
+        var_0002 = unknown_000EH(10, 739, objectref)
         var_0003 = unknown_0018H(var_0002)
         var_0004 = {var_0003[2] - 1, var_0003[1] + 2, var_0003[3] + 2}
         unknown_0026H(var_0004)
     end
     unknown_0004H(286)
-    unknown_001DH(29, itemref)
+    unknown_001DH(29, objectref)
     unknown_008AH(16, 356)
-    var_0005 = unknown_0001H({13, 7719}, itemref)
+    var_0005 = unknown_0001H({13, 7719}, objectref)
     var_0006 = unknown_0881H()
     var_0007 = unknown_0002H(13, {17453, 7724}, var_0006)
     var_0008 = unknown_0001H({1693, 8021, 11, 7719}, unknown_001BH(356))

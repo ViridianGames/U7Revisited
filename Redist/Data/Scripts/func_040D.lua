@@ -1,5 +1,5 @@
 --- Best guess: Manages Gilberto’s dialogue, discussing the Trinsic murder, his attack, and dock duties, with password verification.
-function func_040D(eventid, itemref)
+function func_040D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 0 then

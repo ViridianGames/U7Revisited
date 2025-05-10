@@ -1,5 +1,5 @@
 --- Best guess: Manages Trent’s dialogue, a ghostly blacksmith in Skara Brae crafting a Soul Cage to destroy Horance and free his wife Rowena, with flag-based interactions involving a ring and music box.
-function func_048E(eventid, itemref)
+function func_048E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then

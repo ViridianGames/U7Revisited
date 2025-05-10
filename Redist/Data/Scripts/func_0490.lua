@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Rowena, a ghostly lady in Horance's tower on Skara Brae, discussing her role as mistress, her lord Horance (the Liche), and the tower's beauty. Includes conditional ghostly behavior based on player actions and time of day.
-function func_0490(eventid, itemref)
+function func_0490(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

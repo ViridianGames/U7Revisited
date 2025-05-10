@@ -1,5 +1,5 @@
 --- Best guess: Manages Blorn’s dialogue in Vesper, a surly resident hostile to gargoyles, seeking revenge against Lap-Lem and involved in an amulet dispute.
-function func_04D0(eventid, itemref)
+function func_04D0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

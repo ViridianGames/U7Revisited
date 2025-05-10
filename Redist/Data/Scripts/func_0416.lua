@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Caroline, a Fellowship recruiter in Trinsic, discussing her role and the local murder, with invitations to Fellowship meetings.
-function func_0416(eventid, itemref)
+function func_0416(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Boots, Lord British’s personal cook, discussing her meals, her husband Bennie’s forgetfulness, and a shortage of mutton, offering to pay for mutton deliveries.
-function func_0443(eventid, itemref)
+function func_0443(eventid, objectref)
     local var_0000
 
     start_conversation()

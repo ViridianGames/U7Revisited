@@ -1,5 +1,5 @@
 --- Best guess: Manages Patterson’s dialogue, covering his role as Britain’s Mayor, his involvement with The Fellowship, and his affair with Candice, with flag-based progression and interactions involving Iolo and Judith.
-function func_042B(eventid, itemref)
+function func_042B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

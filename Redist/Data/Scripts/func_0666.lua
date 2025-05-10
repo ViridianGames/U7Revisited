@@ -1,13 +1,13 @@
 --- Best guess: Implements the stop time spell (Kal Wis Corp), freezing time for a duration based on game time with multiple flags.
-function func_0666(eventid, itemref)
+function func_0666(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
-        destroy_item(itemref)
-        bark(itemref, "@Kal Wis Corp@")
+        destroyobject_(objectref)
+        bark(objectref, "@Kal Wis Corp@")
         if check_spell_requirements() then
-            var_0000 = add_container_items(itemref, {17511, 17509, 8038, 67, 7768})
-            var_0001 = unknown_0018H(itemref) --- Guess: Gets position data
+            var_0000 = add_containerobject_s(objectref, {17511, 17509, 8038, 67, 7768})
+            var_0001 = unknown_0018H(objectref) --- Guess: Gets position data
             var_0002 = var_0001[1] - 2
             var_0003 = var_0001[2] - 2
             apply_sprite_effect(-1, 0, 0, 0, var_0003, var_0002, 13) --- Guess: Applies sprite effect
@@ -34,9 +34,9 @@ function func_0666(eventid, itemref)
                 var_0006 = var_0006 + (60 - var_0005)
                 var_0006 = var_0006 * 25
             end
-            var_0000 = add_container_items(itemref, {var_0006, 1638, 17493, 17452, 7715})
+            var_0000 = add_containerobject_s(objectref, {var_0006, 1638, 17493, 17452, 7715})
         else
-            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 17509, 7782})
+            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 7782})
         end
     elseif eventid == 2 then
         set_flag(434, false)

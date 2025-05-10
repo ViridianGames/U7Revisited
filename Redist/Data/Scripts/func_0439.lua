@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Clint, a former sailor and shipwright in Britain, selling ship deeds and sextants, expressing disdain for the Fellowship and a tamed world.
-function func_0439(eventid, itemref)
+function func_0439(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Magenta, the mayor of New Magincia, discussing her administrative duties, her husband Boris, and a locket she found, which may belong to someone else or be stolen.
-function func_0483(eventid, itemref)
+function func_0483(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

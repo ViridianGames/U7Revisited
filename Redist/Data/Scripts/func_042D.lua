@@ -1,5 +1,5 @@
 --- Best guess: Manages Figg’s dialogue, discussing his role as caretaker of the Royal Orchards, his Fellowship membership, and his accusations against Weston, with flag-based apple transactions.
-function func_042D(eventid, itemref)
+function func_042D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid ~= 1 then

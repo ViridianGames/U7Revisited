@@ -9,18 +9,18 @@ function func_0854()
     if var_0001 == 0 then
         add_dialogue("@\"Oh, my. We truly do need the meat. Well, perhaps next time.\"@")
     else
-        var_0002 = check_item_ownership(8, -359, 377, -357) --- Guess: Checks meat in inventory
+        var_0002 = check_object_ownership(8, -359, 377, -357) --- Guess: Checks meat in inventory
         if var_0002 < var_0001 then
             add_dialogue("@\"Thou cannot sell me what thou dost not have! Now, truly...!\"@")
             goto start --- Guess: Restarts transaction
         end
         add_dialogue("@\"Excellent! I accept the trade, " .. var_0000 .. ". Here is thy gold.\"@")
         var_0003 = var_0001 * 5 --- Guess: Calculates gold (5 per portion)
-        var_0004 = add_item_to_inventory(-359, -359, 644, var_0003) --- Guess: Adds gold to inventory
+        var_0004 = add_object_to_inventory(-359, -359, 644, var_0003) --- Guess: Adds gold to inventory
         if not var_0004 then
             add_dialogue("@\"Oh, dear. Thou cannot possibly carry this much gold! Perhaps thou mayest return when thou hast dropped something else.\"@")
         else
-            var_0005 = remove_item_from_inventory(8, -359, 377, var_0001) --- Guess: Removes meat from inventory
+            var_0005 = remove_object_from_inventory(8, -359, 377, var_0001) --- Guess: Removes meat from inventory
         end
     end
 end

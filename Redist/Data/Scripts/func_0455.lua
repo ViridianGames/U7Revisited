@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Gladstone, a glassblower and sculptor in Minoc’s Artist’s Guild, discussing the Guild’s struggles, Owen’s monument, the Fellowship, and the murders of Frederico and Tania.
-function func_0455(eventid, itemref)
+function func_0455(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

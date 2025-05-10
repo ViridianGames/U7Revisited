@@ -1,10 +1,10 @@
 --- Best guess: Applies effects to party members with non-zero strength when event ID 3 is triggered, potentially paralyzing them and triggering a sequence.
-function func_06B8(eventid, itemref)
+function func_06B8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 3 then
         var_0000 = unknown_0023H()
-        var_0001 = unknown_0014H(itemref)
+        var_0001 = unknown_0014H(objectref)
         for i = 1, #var_0000 do
             var_0004 = var_0000[i]
             var_0005 = unknown_0020H(0, var_0004)
@@ -18,7 +18,7 @@ function func_06B8(eventid, itemref)
             end
         end
     elseif eventid == 2 then
-        unknown_093FH(31, itemref)
+        unknown_093FH(31, objectref)
     end
     return
 end

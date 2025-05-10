@@ -1,5 +1,5 @@
 --- Best guess: Manages Cubolt’s dialogue, a farmer in Moonglow concerned about his brother Tolemac’s involvement with The Fellowship, discussing Morz’s stutter and local residents, with a flag-based reaction to the player’s Fellowship membership.
-function func_049B(eventid, itemref)
+function func_049B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

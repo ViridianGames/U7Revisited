@@ -1,8 +1,8 @@
 --- Best guess: Manages a plaque, displaying text based on its quality ID (0-65), with specific messages for various locations or events.
-function func_0334(eventid, itemref)
+function func_0334(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    var_0000 = itemref
+    var_0000 = objectref
     var_0001 = _get_object_quality(var_0000)
     if eventid == 3 then
         if get_object_shape(var_0000) ~= 820 then

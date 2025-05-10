@@ -11,15 +11,15 @@ function func_0851()
     var_0000 = get_dialogue_choice() --- Guess: Gets player choice
     if not var_0000 then
         var_0001 = check_inventory_space(-359, -359, 798, -26) --- Guess: Checks inventory space
-        var_0002 = move_item(var_0001) --- Guess: Moves package
-        var_0003 = remove_item(-356) --- Guess: Removes temporary item
+        var_0002 = moveobject_(var_0001) --- Guess: Moves package
+        var_0003 = removeobject_(-356) --- Guess: Removes temporary item
         if not var_0003 then
             add_dialogue("@\"Excellent! Here it is. Thou must now be on thy way!\"@")
             set_flag(143, true) --- Guess: Marks quest accepted
             set_quest_property(200) --- Guess: Sets quest property
             abort() --- Guess: Aborts script
         else
-            var_0003 = remove_item(-26) --- Guess: Removes alternative item
+            var_0003 = removeobject_(-26) --- Guess: Removes alternative item
             add_dialogue("@\"Zounds! Thine hands are too full to take the box. Please divest thyself of some of thy belongings.\"@")
             set_flag(215, true) --- Guess: Marks inventory full
             abort() --- Guess: Aborts script

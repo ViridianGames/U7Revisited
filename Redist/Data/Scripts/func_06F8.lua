@@ -1,17 +1,17 @@
 --- Best guess: Manages the entry to the forge, handling Erethian's dialogue, mirror interactions, and flag-based sequences when event ID 2 or 3 is triggered.
-function func_06F8(eventid, itemref)
+function func_06F8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031
 
     if eventid == 3 then
-        var_0000 = unknown_0014H(itemref)
+        var_0000 = unknown_0014H(objectref)
         if var_0000 == 0 then
-            var_0001 = unknown_000EH(10, 848, itemref)
+            var_0001 = unknown_000EH(10, 848, objectref)
             var_0002 = unknown_0012H(var_0001)
             if not var_0002 == 9 then
                 unknown_0013H(3, var_0001)
             end
         elseif var_0000 == 1 then
-            var_0003 = unknown_0035H(0, 1, 726, itemref)
+            var_0003 = unknown_0035H(0, 1, 726, objectref)
             if var_0003 then
                 set_flag(831, true)
             else
@@ -21,7 +21,7 @@ function func_06F8(eventid, itemref)
                 -- Skip
             end
         elseif var_0000 == 2 then
-            var_0003 = unknown_0035H(0, 1, 726, itemref)
+            var_0003 = unknown_0035H(0, 1, 726, objectref)
             if var_0003 then
                 set_flag(828, true)
             else
@@ -35,7 +35,7 @@ function func_06F8(eventid, itemref)
                 -- Skip
             end
         end
-        var_0004 = unknown_000EH(10, 990, itemref)
+        var_0004 = unknown_000EH(10, 990, objectref)
         if var_0004 then
             var_0005 = unknown_0018H(var_0004)
             var_0006 = unknown_0035H(0, 1, 955, var_0004)
@@ -100,16 +100,16 @@ function func_06F8(eventid, itemref)
             unknown_08FFH("@It is time to leave this barren island behind.@")
             return
         end
-        var_0005 = unknown_0018H(itemref)
+        var_0005 = unknown_0018H(objectref)
         var_0013 = unknown_0018H(unknown_001BH(356))
         if get_flag(831) and get_flag(828) then
             if not get_flag(750) then
                 var_0017 = false
                 var_0018 = false
-                var_0019 = unknown_0035H(8, 80, 154, itemref)
+                var_0019 = unknown_0035H(8, 80, 154, objectref)
                 for i = 1, #var_0019 do
                     var_001C = var_0019[i]
-                    if not unknown_002AH(4, 240, 797, var_001C) and not (unknown_0019H(itemref, var_001C) < 8) then
+                    if not unknown_002AH(4, 240, 797, var_001C) and not (unknown_0019H(objectref, var_001C) < 8) then
                         unknown_0053H(-1, 0, 0, 0, unknown_0018H(var_001C)[2] - 1, unknown_0018H(var_001C)[1] - 1, 13)
                         unknown_08E6H(var_001C)
                     else
@@ -135,7 +135,7 @@ function func_06F8(eventid, itemref)
                 unknown_0053H(-1, 0, 0, 0, var_0013[1], var_0013[2], 17)
                 unknown_000FH(62)
                 set_flag(828, false)
-                unknown_0002H(7, 1784, {7765}, itemref)
+                unknown_0002H(7, 1784, {7765}, objectref)
                 return
             end
             switch_talk_to(286, 1)
@@ -144,10 +144,10 @@ function func_06F8(eventid, itemref)
             add_dialogue("He stops mid-spell and begins another, pointing towards the Talisman of Infinity.")
             add_dialogue("\"Vas An Ort Ailem!\"")
             add_dialogue("You immediately recognize the resonance of a spell gone awry, and apparently so does Erethian. A look of horror comes to his wrinkled features which appear to become more lined by the second.*")
-            var_001C = unknown_000EH(10, 154, itemref)
+            var_001C = unknown_000EH(10, 154, objectref)
             unknown_0001H({8045, 2, 17447, 8044, 2, 7719}, var_001C)
             unknown_0059H(1)
-            var_0022 = unknown_0035H(16, 10, 275, itemref)
+            var_0022 = unknown_0035H(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
                 if unknown_0012H(var_0025) == 7 and unknown_0014H(var_0025) == 1 then
@@ -158,12 +158,12 @@ function func_06F8(eventid, itemref)
             unknown_0053H(-1, 0, 0, 0, var_0005[2] - 2, var_0005[1] - 2, 17)
             set_flag(828, false)
             set_flag(831, true)
-            unknown_0002H(7, 1784, {7765}, itemref)
+            unknown_0002H(7, 1784, {7765}, objectref)
             return
         end
         if not get_flag(831) then
             if not get_flag(750) then
-                var_001C = unknown_000EH(10, 528, itemref)
+                var_001C = unknown_000EH(10, 528, objectref)
                 var_0027 = unknown_0012H(var_001C)
                 var_0028 = unknown_0018H(var_001C)
                 unknown_08E6H(var_001C)
@@ -179,7 +179,7 @@ function func_06F8(eventid, itemref)
                 unknown_002EH(0, 17)
             end
             unknown_0059H(1)
-            var_0022 = unknown_0035H(16, 10, 275, itemref)
+            var_0022 = unknown_0035H(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
                 if unknown_0012H(var_0025) == 7 and unknown_0014H(var_0025) == 2 then
@@ -190,7 +190,7 @@ function func_06F8(eventid, itemref)
             unknown_0053H(-1, 0, 0, 0, var_0005[2] - 2, var_0005[1] - 2, 17)
             unknown_0053H(-1, 0, 0, 0, var_0005[2] - 2, var_0005[1] - 2, 8)
             unknown_000FH(9)
-            var_0006 = unknown_0035H(0, 1, 955, itemref)
+            var_0006 = unknown_0035H(0, 1, 955, objectref)
             for i = 1, #var_0006 do
                 var_0010 = var_0006[i]
                 var_0011 = unknown_0012H(var_0010)
@@ -207,11 +207,11 @@ function func_06F8(eventid, itemref)
             unknown_008AH(16, 356)
             unknown_0002H(14, 17453, {7724}, unknown_0881H())
             unknown_0001H({1693, 8021, 12, 7719}, unknown_001BH(356))
-            var_0030 = unknown_000EH(10, 726, itemref)
+            var_0030 = unknown_000EH(10, 726, objectref)
             if var_0030 then
                 unknown_0001H({1784, 8021, 16, 7719}, var_0030)
             end
-            unknown_006FH(itemref)
+            unknown_006FH(objectref)
             set_flag(780, true)
         end
     end

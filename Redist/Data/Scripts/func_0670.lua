@@ -1,17 +1,17 @@
 --- Best guess: Implements the detect spell (Quas Wis), revealing NPC properties or states for party members.
-function func_0670(eventid, itemref)
+function func_0670(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroy_item(itemref)
-        bark(itemref, "@Quas Wis@")
+        destroyobject_(objectref)
+        bark(objectref, "@Quas Wis@")
         if check_spell_requirements() then
-            var_0000 = add_container_items(itemref, {1648, 17493, 17511, 17509, 17510, 17505, 8045, 65, 7768})
+            var_0000 = add_containerobject_s(objectref, {1648, 17493, 17511, 17509, 17510, 17505, 8045, 65, 7768})
         else
-            var_0000 = add_container_items(itemref, {1542, 17493, 17511, 17509, 17510, 17505, 7789})
+            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 17510, 17505, 7789})
         end
     elseif eventid == 2 then
-        var_0001 = unknown_0035H(8, 25, -1, itemref) --- Guess: Sets NPC location
+        var_0001 = unknown_0035H(8, 25, -1, objectref) --- Guess: Sets NPC location
         var_0002 = get_party_members()
         -- Guess: sloop reveals NPC properties
         for i = 1, 5 do

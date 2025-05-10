@@ -20588,28 +20588,28 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                 while (!stack.empty())
                 {
                     // move the last item to local variable to be processed
-                    basic_json current_item(std::move(stack.back()));
+                    basic_json currentobject_(std::move(stack.back()));
                     stack.pop_back();
 
-                    // if current_item is array/object, move
+                    // if currentobject_ is array/object, move
                     // its children to the stack to be processed later
-                    if (current_item.is_array())
+                    if (currentobject_.is_array())
                     {
-                        std::move(current_item.m_data.m_value.array->begin(), current_item.m_data.m_value.array->end(), std::back_inserter(stack));
+                        std::move(currentobject_.m_data.m_value.array->begin(), currentobject_.m_data.m_value.array->end(), std::back_inserter(stack));
 
-                        current_item.m_data.m_value.array->clear();
+                        currentobject_.m_data.m_value.array->clear();
                     }
-                    else if (current_item.is_object())
+                    else if (currentobject_.is_object())
                     {
-                        for (auto&& it : *current_item.m_data.m_value.object)
+                        for (auto&& it : *currentobject_.m_data.m_value.object)
                         {
                             stack.push_back(std::move(it.second));
                         }
 
-                        current_item.m_data.m_value.object->clear();
+                        currentobject_.m_data.m_value.object->clear();
                     }
 
-                    // it's now safe that current_item get destructed
+                    // it's now safe that currentobject_ get destructed
                     // since it doesn't have any children
                 }
             }

@@ -1,5 +1,5 @@
 --- Best guess: Provides training in strength, dexterity, and intelligence, with detailed dialogue and stat improvements.
-function func_0875(eventid, itemref, arg1, arg2)
+function func_0875(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010
 
     var_0002 = get_training_target() --- Guess: Gets training target
@@ -17,7 +17,7 @@ function func_0875(eventid, itemref, arg1, arg2)
         add_dialogue("@I am sorry, but thou dost not have enough practical experience...@")
         return
     elseif var_0006 == 1 then
-        var_0007 = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+        var_0007 = check_object_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
         add_dialogue("@You gather your gold and count it, finding that you have " .. var_0007 .. " gold altogether.@")
         if var_0007 < var_0000 then
             add_dialogue("@I regret that thou dost not seem to have enough gold...@")
@@ -27,7 +27,7 @@ function func_0875(eventid, itemref, arg1, arg2)
         add_dialogue("@Thou art already as proficient as I!...@")
         return
     end
-    var_0008 = remove_item_from_inventory(359, 644, 359, var_0000) --- Guess: Removes item from inventory
+    var_0008 = remove_object_from_inventory(359, 644, 359, var_0000) --- Guess: Removes item from inventory
     add_dialogue("@You pay " .. var_0000 .. " gold, and the training session begins.@")
     if var_0003 == "you" then
         var_0009 = "complete"

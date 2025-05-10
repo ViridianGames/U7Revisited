@@ -1,5 +1,5 @@
 --- Best guess: Manages Raymundo’s dialogue, handling Royal Theatre operations, auditions for the Avatar role, and sponsorship requests, with flag-based progression.
-function func_041B(eventid, itemref)
+function func_041B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid ~= 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Mandy’s dialogue in Buccaneer’s Den, the innkeeper of the Fallen Virgin, offering food, drink, and rooms, with gossip about locals and suspicions about Hook.
-function func_04E7(eventid, itemref)
+function func_04E7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_000A, var_000B, var_000C, var_000D, var_000E
 
     if eventid == 1 then

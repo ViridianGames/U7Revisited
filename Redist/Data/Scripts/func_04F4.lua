@@ -1,5 +1,5 @@
 --- Best guess: Manages Cairbre’s dialogue in a cavern, a sell-sword accompanying Cosmo on a quest to find a unicorn, skeptical of Cosmo’s motives and Ophelia’s intentions.
-function func_04F4(eventid, itemref)
+function func_04F4(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

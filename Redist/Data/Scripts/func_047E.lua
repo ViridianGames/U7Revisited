@@ -1,5 +1,5 @@
 --- Best guess: Manages Syria’s dialogue, a fighter at the Library of Scars in Jhelom, discussing her role, the stolen honor flag, and duels with Sprellic, with flag-based flag return and combat triggers.
-function func_047E(eventid, itemref)
+function func_047E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid ~= 1 then

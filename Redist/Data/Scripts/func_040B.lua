@@ -1,5 +1,5 @@
 --- Best guess: Manages Petre’s dialogue, covering the Trinsic murder, stables, and horse sales, with flag-based progression.
-function func_040B(eventid, itemref)
+function func_040B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid ~= 1 then

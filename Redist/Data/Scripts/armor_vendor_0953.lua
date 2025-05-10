@@ -47,7 +47,7 @@ function armor_vendor_0953(object_id, event)
         strings[0x0000], strings[0x000D], strings[0x001C], strings[0x0029],
         strings[0x0034], strings[0x003E], strings[0x004D], strings[0x005A], strings[0x0065]
     }
-    local item_ids = {542, 576, 573, 541, 580, 575, 571, 539, 0}
+    local object_ids = {542, 576, 573, 541, 580, 575, 571, 539, 0}
     local prices = {60, 120, 300, 150, 20, 50, 100, 80, 0}
     local prefixes = {
         strings[0x006D], strings[0x0070], strings[0x0071], strings[0x0072],
@@ -70,13 +70,13 @@ function armor_vendor_0953(object_id, event)
             continue = false
         else
             local price = prices[choice]
-            local item_id = item_ids[choice]
+            local object_id = object_ids[choice]
             local prefix = prefixes[choice]
             local suffix = suffixes[choice]
-            local result = buy_item(prefix, item_id, 1, price, items[choice])
+            local result = buyobject_(prefix, object_id, 1, price, items[choice])
             add_dialogue(object_id, strings[0x00CF] .. result .. strings[0x00D2])
             local buy_response = get_answer()
-            buy_response = buy_item(prefix, item_id, 1, price, items[choice])
+            buy_response = buyobject_(prefix, object_id, 1, price, items[choice])
             if buy_response == 1 then
                 add_dialogue(object_id, strings[0x00E8])
             elseif buy_response == 2 then

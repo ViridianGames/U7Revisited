@@ -1,16 +1,16 @@
 --- Best guess: Manages Erethian’s dialogue on the Island of Fire, covering his studies, the Dark Core, Arcadion, and the Talisman of Infinity, with topic selection and flag-based progression.
-function func_009A(eventid, itemref)
+function func_009A(eventid, objectref)
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019
 
     if eventid == 0 then
-        var_0000 = unknown_000EH(336, itemref)
-        var_0001 = unknown_000EH(338, itemref)
-        var_0002 = unknown_000EH(997, itemref)
+        var_0000 = unknown_000EH(336, objectref)
+        var_0001 = unknown_000EH(338, objectref)
+        var_0002 = unknown_000EH(997, objectref)
         if var_0000 or var_0001 or var_0002 then
             var_0003 = unknown_0000H(100)
             if var_0003 >= 60 then
-                unknown_0040H("@Damn candles!@", itemref)
+                unknown_0040H("@Damn candles!@", objectref)
             elseif var_0003 <= 40 then
                 var_0004 = var_0000
                 table.insert(var_0004, var_0001)
@@ -26,26 +26,26 @@ function func_009A(eventid, itemref)
                 {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791},
                 {17447, 8048, 3, 7463, "@An Ailem!", 17490, 7937, 1, 17447, 7791}
             }
-            unknown_0002H(itemref, directions[math.random(1, 2)])
+            unknown_0002H(objectref, directions[math.random(1, 2)])
         end
-        var_0009 = unknown_000EH(432, itemref)
-        var_0010 = unknown_000EH(433, itemref)
+        var_0009 = unknown_000EH(432, objectref)
+        var_0010 = unknown_000EH(433, objectref)
         if var_0009 or var_0010 then
-            var_0011 = unknown_0035H(16, 0, 607, itemref)
+            var_0011 = unknown_0035H(16, 0, 607, objectref)
             if var_0011 then
                 for _, var_0014 in ipairs(var_0011) do
-                    if unknown_0012H(var_0014) == 4 and unknown_0012H(itemref) >= 16 then
-                        unknown_0040H("@Ah, a wall.@", itemref)
-                        unknown_0002H(itemref, {18, "@I'll follow it.@", 17490, 7715})
+                    if unknown_0012H(var_0014) == 4 and unknown_0012H(objectref) >= 16 then
+                        unknown_0040H("@Ah, a wall.@", objectref)
+                        unknown_0002H(objectref, {18, "@I'll follow it.@", 17490, 7715})
                     else
-                        unknown_0040H("@Where am I?@", itemref)
+                        unknown_0040H("@Where am I?@", objectref)
                     end
                 end
             end
         end
     elseif eventid == 1 then
         if not unknown_0881H() then
-            var_0012 = unknown_092DH(itemref)
+            var_0012 = unknown_092DH(objectref)
             var_0013 = (var_0012 + 4) % 8
             unknown_0001H(0, 154, 8533, var_0013, 17497, 7777)
         else
@@ -204,7 +204,7 @@ function func_009A(eventid, itemref)
                 add_dialogue("A sad sweet smile comes to the wizard's face, \"She was quite a comely lass at one time, with a mind forever searching.\" His expression darkens, \"But then Mondain forced all of the good sense from her.")
                 add_dialogue("She became a power unto herself, in time. I do not think she quite rivaled her former mentor, Mondain, but she was a force to be reckoned with, nevertheless.")
                 add_dialogue("And that thou didst, with the Quicksword, Enilno. That act will most likely have tales sung about it for the next eon.\" Under his breath he adds, \"Even if Iolo's the only one who sings it.\"")
-                if unknown_000EH(40, 465, itemref) then
+                if unknown_000EH(40, 465, objectref) then
                     switch_talk_to(1, 0)
                     add_dialogue("With a look of indignation Iolo says, \"Pardon me, sir. But I'll have thee know that ballads of the Avatar still grace all of the finest drinking establishments of Britannia.\"")
                     switch_talk_to(286, 0)
@@ -343,10 +343,10 @@ function func_009A(eventid, itemref)
             end
         end
         if var_0014 then
-            unknown_0696H(itemref)
+            unknown_0696H(objectref)
         end
         if var_0015 then
-            unknown_069AH(itemref)
+            unknown_069AH(objectref)
         end
     end
     return

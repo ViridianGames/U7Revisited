@@ -1,12 +1,12 @@
 --- Best guess: Manages interaction with the Shrines of Truth, Love, and Courage, providing dialogue and boons based on quest progress and flags.
-function func_0356(eventid, itemref)
+function func_0356(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
         if not get_flag(789) then
             abort()
         end
-        var_0000 = get_object_frame(itemref)
+        var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
             switch_talk_to(287, 0)
             if get_flag(780) then
@@ -23,7 +23,7 @@ function func_0356(eventid, itemref)
             end
             if _SelectOption() then
                 add_dialogue("\"Very well. Prepare thyself.\" The voice falls silent.")
-                var_0001 = unknown_0001H({1785, 8021, 1, 7719}, itemref)
+                var_0001 = unknown_0001H({1785, 8021, 1, 7719}, objectref)
             else
                 add_dialogue("\"I wish thee well, then.\"")
                 abort()
@@ -60,7 +60,7 @@ function func_0356(eventid, itemref)
             abort()
         end
     elseif eventid == 4 then
-        var_0000 = get_object_frame(itemref)
+        var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
             switch_talk_to(287, 0)
             add_dialogue("\"Thou hast mastered the Test of Truth, and so a boon of great intellect and magical ability will be bestowed upon thee. Use -- and respect -- thy powers well, Avatar.\"")
@@ -73,9 +73,9 @@ function func_0356(eventid, itemref)
         end
         unknown_0004H(-287)
         var_0002 = unknown_0001H({8033, 2, 17447, 8044, 10, 17447, 8045, 2, 17447, 8044, 2, 7719}, -356)
-        var_0001 = unknown_0001H({854, 8021, 8, 7719}, itemref)
+        var_0001 = unknown_0001H({854, 8021, 8, 7719}, objectref)
     elseif eventid == 2 then
-        var_0000 = get_object_frame(itemref)
+        var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
             if not get_flag(790) then
                 var_0003 = unknown_0018H(-356)
@@ -90,7 +90,7 @@ function func_0356(eventid, itemref)
                     set_npc_quality(30 - var_0004[3], 5, unknown_001BH(-356))
                 end
                 set_flag(790, true)
-                var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
+                var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)
             else
                 switch_talk_to(287, 0)
                 add_dialogue("\"Thou hast now experienced the full meaning of the Principle of Truth. The value of such is beyond measure, for truth shall guide thee throughout thy life's endeavors.\"")
@@ -111,7 +111,7 @@ function func_0356(eventid, itemref)
                     set_npc_quality(30 - var_0004[2], 4, unknown_001BH(-356))
                 end
                 set_flag(799, true)
-                var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
+                var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)
             else
                 switch_talk_to(287, 1)
                 add_dialogue("\"Now hast thou earnestly experienced all that is Love. 'Tis a benefit never to be taken lightly, for Love is a formidable motivator. Remember always the lessons in Compassion, Sacrifice, and Justice thou hast mastered.\"")
@@ -132,7 +132,7 @@ function func_0356(eventid, itemref)
                     set_npc_quality(30 - var_0004[2], 3, unknown_001BH(-356))
                 end
                 set_flag(833, true)
-                var_0006 = unknown_0001H({854, 8021, 15, 7719}, itemref)
+                var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)
             else
                 switch_talk_to(287, 2)
                 add_dialogue("Urgency breaks into the voice of the statue.~~\"I lay upon thee a geas, and as thou art the Avatar, thou art bound to respond. Thy quest is to seek the Talisman of Infinity. Within this castle there lies a scroll which can tell thee of its use. Go now, for time grows short.\"")

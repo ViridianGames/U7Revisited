@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Mayor Forsythe, a cowardly ghost in Skara Brae, discussing the Liche Horance, the fire caused by Caine, and the plan to trap the Liche. Includes conditional sacrifice dialogue and leading Forsythe to the Well of Souls.
-function func_0493(eventid, itemref)
+function func_0493(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Manages a daemon interaction, restoring magical reserves if conditions are met, with dialogue feedback.
-function func_0845(eventid, itemref)
+function func_0845(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     var_0001 = get_npc_property(5, 356) --- Guess: Gets NPC property

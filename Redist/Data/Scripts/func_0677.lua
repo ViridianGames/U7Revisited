@@ -1,20 +1,20 @@
 --- Best guess: Implements the tremor spell (Vas Por Ylem), causing area-wide effects with random outcomes.
-function func_0677(eventid, itemref)
+function func_0677(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
-        destroy_item(itemref)
-        bark(itemref, "@Vas Por Ylem@")
+        destroyobject_(objectref)
+        bark(objectref, "@Vas Por Ylem@")
         if check_spell_requirements() then
-            var_0000 = add_container_items(itemref, {1655, 8021, 67, 17496, 17517, 17505, 7784})
+            var_0000 = add_containerobject_s(objectref, {1655, 8021, 67, 17496, 17517, 17505, 7784})
         else
-            var_0000 = add_container_items(itemref, {1542, 17493, 17517, 17505, 7784})
+            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17517, 17505, 7784})
         end
     elseif eventid == 2 then
-        var_0001 = unknown_0035H(8, 40, 359, itemref) --- Guess: Sets NPC location
+        var_0001 = unknown_0035H(8, 40, 359, objectref) --- Guess: Sets NPC location
         var_0002 = get_party_members()
         var_0003 = 12
-        var_0004 = unknown_0088H(6, itemref)
+        var_0004 = unknown_0088H(6, objectref)
         -- Guess: sloop applies tremor effects
         for i = 1, 5 do
             var_0007 = {5, 6, 7, 1, 462}[i]
@@ -56,8 +56,8 @@ function func_0677(eventid, itemref)
                     end
                     var_0008 = var_0008 + 1
                 end
-                destroy_item(var_0007)
-                var_0000 = add_container_items(var_0007, var_0009[1])
+                destroyobject_(var_0007)
+                var_0000 = add_containerobject_s(var_0007, var_0009[1])
             end
         end
         set_spell_duration(var_0003 * 3) --- Guess: Sets spell duration

@@ -1,5 +1,5 @@
 --- Best guess: Manages Lady Leigh’s dialogue in Serpent’s Hold, a healer who examines statue fragments to identify gargoyle blood.
-function func_04C9(eventid, itemref)
+function func_04C9(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Gorn’s dialogue, a warrior from Balema in a cave searching for Brom, guided by a voice in his head, with flag-based interactions involving Iriale and Fellowship-like philosophy, potentially ending in distrust.
-function func_048A(eventid, itemref)
+function func_048A(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 0 then

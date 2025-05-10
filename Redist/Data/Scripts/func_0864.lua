@@ -1,9 +1,9 @@
 --- Best guess: Randomly selects dialogue for an NPC (ID 253) based on status, likely for ambient flavor.
-function func_0864(eventid, itemref)
+function func_0864(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0000 = get_item_owner(253) --- Guess: Gets item owner
-    var_0001 = get_item_status(var_0000) --- Guess: Gets item status
+    var_0000 = get_object_owner(253) --- Guess: Gets item owner
+    var_0001 = get_object_status(var_0000) --- Guess: Gets item status
     var_0002 = ""
     var_0003 = random(1, 4) --- Guess: Generates random number
     if var_0001 == 11 then

@@ -14,7 +14,7 @@ function func_087C()
             add_dialogue("@\"Honey will be given by you to me?\"@")
             var_0000 = get_dialogue_choice() --- Guess: Gets player choice
             if var_0000 then
-                var_0001 = remove_item_from_inventory(-359, -359, 772, 1) --- Guess: Removes honey from inventory
+                var_0001 = remove_object_from_inventory(-359, -359, 772, 1) --- Guess: Removes honey from inventory
                 add_dialogue("@\"You are thanked.\"@")
                 if not get_flag(340) then
                     set_quest_property(10) --- Guess: Sets quest property

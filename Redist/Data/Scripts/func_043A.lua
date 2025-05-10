@@ -1,5 +1,5 @@
 --- Best guess: Manages Gordon’s dialogue, handling his fish and chips business, Fellowship membership, and aspirations to visit Buccaneer’s Den, with flag-based transactions and random vendor calls.
-function func_043A(eventid, itemref)
+function func_043A(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid ~= 1 then

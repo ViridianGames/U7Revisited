@@ -1,5 +1,5 @@
 --- Best guess: Manages an NPC (ID -2, likely Spark) commenting on needing a blacksmith, possibly for a quest-related item.
-function func_02D8(eventid, itemref)
+function func_02D8(eventid, objectref)
     if eventid == 1 then
         if not npc_in_party(2) then
             switch_talk_to(0, 2)

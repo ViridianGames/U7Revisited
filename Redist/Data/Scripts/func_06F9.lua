@@ -1,11 +1,11 @@
 --- Best guess: Manages an egg outside the forge, triggering different item creations based on event IDs and item types, with flag checks and dialogue.
-function func_06F9(eventid, itemref)
+function func_06F9(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031
 
     var_0000 = false
     var_0001 = false
     if eventid == 2 then
-        var_0002 = unknown_0011H(itemref)
+        var_0002 = unknown_0011H(objectref)
         if var_0002 == 854 then
             return
         elseif var_0002 == 707 then
@@ -19,11 +19,11 @@ function func_06F9(eventid, itemref)
                 if var_0004 then
                     for i = 1, #var_0004 do
                         var_0007 = var_0004[i]
-                        if unknown_0012H(itemref) == 8 and unknown_0012H(var_0007) == 16 then
+                        if unknown_0012H(objectref) == 8 and unknown_0012H(var_0007) == 16 then
                             var_0003 = var_0007
-                        elseif unknown_0012H(itemref) == 9 and unknown_0012H(var_0007) == 15 then
+                        elseif unknown_0012H(objectref) == 9 and unknown_0012H(var_0007) == 15 then
                             var_0003 = var_0007
-                        elseif unknown_0012H(itemref) == 10 and unknown_0012H(var_0007) == 14 then
+                        elseif unknown_0012H(objectref) == 10 and unknown_0012H(var_0007) == 14 then
                             var_0003 = var_0007
                         end
                     end
@@ -41,7 +41,7 @@ function func_06F9(eventid, itemref)
         var_0000 = {1487, 2187}
         var_0001 = 6
     elseif eventid == 3 then
-        var_0008 = unknown_0014H(itemref)
+        var_0008 = unknown_0014H(objectref)
         if var_0008 == 1 then
             if not get_flag(808) then
                 var_0000 = {1671, 2464}
@@ -72,13 +72,13 @@ function func_06F9(eventid, itemref)
                 var_0001 = 0
                 set_flag(793, true)
             else
-                var_0009 = unknown_0035H(0, 80, 955, itemref)
+                var_0009 = unknown_0035H(0, 80, 955, objectref)
                 for i = 1, #var_0009 do
                     var_0012 = var_0009[i]
                     var_0013 = unknown_0012H(var_0012)
                     if var_0013 == 8 then
                         var_0014 = unknown_0018H(var_0012)
-                        var_0015 = unknown_0025H(itemref)
+                        var_0015 = unknown_0025H(objectref)
                         unknown_0026H(var_0014)
                     end
                 end
@@ -89,23 +89,23 @@ function func_06F9(eventid, itemref)
                 var_0001 = 2
                 set_flag(834, true)
             else
-                var_0009 = unknown_0035H(0, 80, 955, itemref)
+                var_0009 = unknown_0035H(0, 80, 955, objectref)
                 for i = 1, #var_0009 do
                     var_0012 = var_0009[i]
                     var_0013 = unknown_0012H(var_0012)
                     if var_0013 == 9 then
                         var_0014 = unknown_0018H(var_0012)
-                        var_0015 = unknown_0025H(itemref)
+                        var_0015 = unknown_0025H(objectref)
                         unknown_0026H(var_0014)
                     end
                 end
             end
         elseif var_0008 == 9 then
-            var_0012 = unknown_000EH(0, 955, itemref)
+            var_0012 = unknown_000EH(0, 955, objectref)
             if var_0012 and unknown_0012H(var_0012) == 11 then
                 if not unknown_08E8H(11) then
                     unknown_006FH(var_0012)
-                    var_0014 = unknown_0018H(itemref)
+                    var_0014 = unknown_0018H(objectref)
                     unknown_0053H(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
                     unknown_000FH(67)
                 end
@@ -116,19 +116,19 @@ function func_06F9(eventid, itemref)
                         var_001D = unknown_0012H(var_0013)
                         if var_001D == 11 then
                             unknown_006FH(var_0013)
-                            var_0014 = unknown_0018H(itemref)
+                            var_0014 = unknown_0018H(objectref)
                             unknown_0053H(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
                             unknown_000FH(67)
                         end
                     end
                 end
-                var_0017 = unknown_0035H(0, 8, 750, itemref)
-                var_001B = unknown_0035H(0, 8, 849, itemref)
-                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 293, itemref))}
-                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 678, itemref))}
-                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 657, itemref))}
-                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 750, itemref))}
-                var_001C = unknown_0035H(0, 8, 338, itemref)
+                var_0017 = unknown_0035H(0, 8, 750, objectref)
+                var_001B = unknown_0035H(0, 8, 849, objectref)
+                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 293, objectref))}
+                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 678, objectref))}
+                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 657, objectref))}
+                var_001B = {var_001B, unpack(unknown_0035H(0, 8, 750, objectref))}
+                var_001C = unknown_0035H(0, 8, 338, objectref)
                 for i = 1, #var_001C do
                     var_001F = var_001C[i]
                     var_0020 = unknown_0012H(var_001F)
@@ -136,7 +136,7 @@ function func_06F9(eventid, itemref)
                         var_001B = {var_001B, var_001F}
                     end
                 end
-                var_0021 = unknown_0035H(0, 8, 336, itemref)
+                var_0021 = unknown_0035H(0, 8, 336, objectref)
                 for i = 1, #var_0021 do
                     var_001F = var_0021[i]
                     var_0020 = unknown_0012H(var_001F)
@@ -144,7 +144,7 @@ function func_06F9(eventid, itemref)
                         var_001B = {var_001B, var_001F}
                     end
                 end
-                var_0024 = unknown_0035H(0, 8, 997, itemref)
+                var_0024 = unknown_0035H(0, 8, 997, objectref)
                 for i = 1, #var_0024 do
                     var_001F = var_0024[i]
                     var_0020 = unknown_0012H(var_001F)
@@ -156,16 +156,16 @@ function func_06F9(eventid, itemref)
                     var_001A = var_001B[i]
                     unknown_006FH(var_001A)
                 end
-                var_0029 = unknown_000EH(8, 718, itemref)
+                var_0029 = unknown_000EH(8, 718, objectref)
                 unknown_0013H(1, var_0029)
             end
         elseif var_0008 == 10 then
-            var_0012 = unknown_000EH(0, 955, itemref)
+            var_0012 = unknown_000EH(0, 955, objectref)
             if var_0012 and unknown_0012H(var_0012) == 11 then
                 set_flag(832, true)
                 if not unknown_08E8H(11) then
                     unknown_006FH(var_0012)
-                    var_0014 = unknown_0018H(itemref)
+                    var_0014 = unknown_0018H(objectref)
                     unknown_0053H(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
                     unknown_000FH(67)
                 end
@@ -176,26 +176,26 @@ function func_06F9(eventid, itemref)
                         var_001D = unknown_0012H(var_0013)
                         if var_001D == 11 then
                             unknown_006FH(var_0013)
-                            var_0014 = unknown_0018H(itemref)
+                            var_0014 = unknown_0018H(objectref)
                             unknown_0053H(-1, 0, 0, 0, var_0014[2] - 2, var_0014[1] - 2, 7)
                             unknown_000FH(67)
                         end
                     end
                 end
-                var_002C = unknown_000EH(10, 515, itemref)
+                var_002C = unknown_000EH(10, 515, objectref)
                 unknown_006FH(var_002C)
                 var_002D = unknown_0024H(870)
                 unknown_0013H(0, var_002D)
-                var_0014 = unknown_0018H(itemref)
+                var_0014 = unknown_0018H(objectref)
                 var_0015 = unknown_0026H(var_0014)
             end
         elseif var_0008 == 11 then
             if not get_flag(832) then
-                var_002C = unknown_000EH(10, 515, itemref)
+                var_002C = unknown_000EH(10, 515, objectref)
                 unknown_006FH(var_002C)
                 var_002D = unknown_0024H(870)
                 unknown_0013H(0, var_002D)
-                var_0014 = unknown_0018H(itemref)
+                var_0014 = unknown_0018H(objectref)
                 var_0015 = unknown_0026H(var_0014)
             end
             var_0000 = {1590, 2391}
@@ -226,7 +226,7 @@ function func_06F9(eventid, itemref)
             var_0000 = {1560, 2740}
             var_0001 = 6
         elseif var_0008 == 21 then
-            var_002E = unknown_000EH(3, 268, itemref)
+            var_002E = unknown_000EH(3, 268, objectref)
             if not var_002E then
                 unknown_0013H(2, var_002E)
                 unknown_000FH(37)

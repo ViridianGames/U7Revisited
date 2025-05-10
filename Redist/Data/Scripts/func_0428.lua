@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Judith, a music teacher and member of The Avatars, discussing her teaching, performances, and strained marriage to Patterson, the mayor.
-function func_0428(eventid, itemref)
+function func_0428(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

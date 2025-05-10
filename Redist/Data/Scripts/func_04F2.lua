@@ -1,5 +1,5 @@
 --- Best guess: Manages Taylor’s dialogue at the Brotherhood of the Rose monastery, studying local flora, fauna, and geography, discussing a lost monk and offering a smoke bomb for Bee Cave.
-function func_04F2(eventid, itemref)
+function func_04F2(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

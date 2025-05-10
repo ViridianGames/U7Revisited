@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Penni, a spear-wielding trainer in Yew, discussing her combat training, love for hunting, friendship with Bradman, and concern for her husband Addom’s safety.
-function func_0473(eventid, itemref)
+function func_0473(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

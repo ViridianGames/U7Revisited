@@ -15,7 +15,7 @@ function func_0858()
     var_0008 = {12, 12, 1, 1, 1, 1, 1, 0}
     add_dialogue("@\"What wouldst thou like to buy?\"@")
     while var_0000 do
-        var_0009 = select_item(var_0001) --- Guess: Selects item
+        var_0009 = selectobject_(var_0001) --- Guess: Selects item
         if var_0009 == 1 then
             add_dialogue("@\"Tsk tsk... I am broken-hearted...\"@")
             var_0000 = false

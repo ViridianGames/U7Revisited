@@ -1,9 +1,9 @@
 --- Best guess: Similar to func_0923, handles spell purchase with slight dialogue variation.
-function func_0924(eventid, itemref, arg1, arg2)
+function func_0924(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()
-    var_0002 = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+    var_0002 = check_object_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
     add_dialogue("@To be agreeable?@")
     if not get_dialogue_choice() then --- Guess: Gets dialogue choice
         var_0003 = 0
@@ -13,7 +13,7 @@ function func_0924(eventid, itemref, arg1, arg2)
             if var_0004 then
                 if add_spell_to_spellbook(var_0004, 0, arg2) then --- Guess: Adds spell to spellbook
                     var_0003 = 1
-                    remove_item_from_inventory(true, 359, 644, arg1, 359) --- Guess: Removes item from inventory
+                    remove_object_from_inventory(true, 359, 644, arg1, 359) --- Guess: Removes item from inventory
                 else
                     var_0003 = 4
                 end

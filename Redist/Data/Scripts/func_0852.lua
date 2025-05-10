@@ -84,10 +84,10 @@ function func_0852()
         end
     end
     if not var_0002 then
-        set_item_owner(itemref, 25) --- Guess: Sets item owner
+        set_object_owner(objectref, 25) --- Guess: Sets item owner
         set_flag(56, true) --- Guess: Marks quiz completion
     else
-        set_item_owner_attribute(itemref, 25) --- Guess: Sets attribute
+        set_object_owner_attribute(objectref, 25) --- Guess: Sets attribute
         set_flag(56, false) --- Guess: Marks quiz incomplete
     end
 end

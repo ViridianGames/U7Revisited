@@ -1,5 +1,5 @@
 --- Best guess: Manages Kristy’s dialogue, a toddler at an orphanage discussing her games and toys, with flag-based interactions involving another NPC.
-function func_041F(eventid, itemref)
+function func_041F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

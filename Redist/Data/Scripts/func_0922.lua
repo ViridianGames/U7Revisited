@@ -1,10 +1,10 @@
 --- Best guess: Evaluates training ability, checking gold and training level caps, returning 0 (insufficient experience), 1 (insufficient gold), 2 (maxed out), or 3 (can train).
-function func_0922(eventid, itemref, arg1, arg2, arg3, arg4)
+function func_0922(eventid, objectref, arg1, arg2, arg3, arg4)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     var_0004 = false
     var_0005 = get_training_level(7, arg2) --- Guess: Gets training level
-    var_0006 = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+    var_0006 = check_object_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
     if var_0006 <= arg3 then
         return 1
     end

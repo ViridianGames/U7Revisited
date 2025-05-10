@@ -1,9 +1,9 @@
 --- Best guess: Applies effects to party members not matching a specific NPC ID (356) with non-zero dexterity, triggering a sequence when event ID 3 is received.
-function func_06BB(eventid, itemref)
+function func_06BB(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
-        var_0000 = unknown_0014H(itemref)
+        var_0000 = unknown_0014H(objectref)
         var_0001 = unknown_0023H()
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]
@@ -16,7 +16,7 @@ function func_06BB(eventid, itemref)
             end
         end
     elseif eventid == 2 then
-        unknown_093FH(31, itemref)
+        unknown_093FH(31, objectref)
     end
     return
 end

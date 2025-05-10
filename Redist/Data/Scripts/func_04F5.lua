@@ -1,5 +1,5 @@
 --- Best guess: Manages Kreg’s dialogue at the Abbey, a monk posing as an alchemist but revealed as a thief planning to escape using a potion of invisibility.
-function func_04F5(eventid, itemref)
+function func_04F5(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

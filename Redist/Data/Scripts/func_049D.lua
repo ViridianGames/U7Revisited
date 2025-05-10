@@ -1,5 +1,5 @@
 --- Best guess: Manages Tolemac’s dialogue, a Moonglow farmer and Fellowship member, discussing his farm, brother Cubolt, and friend Morz, with flag-based reactions to reconversion attempts and Fellowship membership.
-function func_049D(eventid, itemref)
+function func_049D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

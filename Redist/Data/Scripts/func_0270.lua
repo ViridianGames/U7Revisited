@@ -1,5 +1,5 @@
 --- Best guess: Manages a pickaxe, mining resources from trees (ID 932) if held, with specific frame and position checks.
-function func_0270(eventid, itemref)
+function func_0270(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016
 
     if eventid == 1 then
@@ -14,7 +14,7 @@ function func_0270(eventid, itemref)
                 var_0002 = {0, 1, 2}
                 var_0003 = {2, 2, 2}
                 var_0004 = {-5}
-                unknown_0828H(7, itemref, 624, var_0004, var_0003, var_0002, var_0000)
+                unknown_0828H(7, objectref, 624, var_0004, var_0003, var_0002, var_0000)
                 unknown_007EH()
             else
                 unknown_08FFH("It seems the tree will yield nothing of value.")

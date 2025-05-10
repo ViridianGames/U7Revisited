@@ -1,5 +1,5 @@
 --- Best guess: Manages Mack’s dialogue, discussing his farming, extraterrestrial encounters, and need for help with chicken eggs, with flag-based job offers and an elaborate tale of a tigerlion and enchanted hoe.
-function func_043D(eventid, itemref)
+function func_043D(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid ~= 1 then

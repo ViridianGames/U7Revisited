@@ -1,5 +1,5 @@
 --- Best guess: Manages Burnside’s dialogue, the Mayor of Minoc, discussing the town’s commerce, Fellowship membership, Owen’s flawed monument plans, and local murders, with flag-based progression and a secret about his skepticism toward The Fellowship.
-function func_045B(eventid, itemref)
+function func_045B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then

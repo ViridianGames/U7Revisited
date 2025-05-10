@@ -1,13 +1,13 @@
 --- Best guess: Manages dialogue with Bollux after restoration, acknowledging Adjhar’s revival.
-function func_0895(eventid, itemref)
+function func_0895(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()
     switch_talk_to(0, 289) --- Guess: Initiates dialogue
     add_dialogue("@Bollux stares ahead, almost vacantly...@")
-    var_0000 = set_npc_location(0, 40, 1015, itemref) --- Guess: Sets NPC location
+    var_0000 = set_npc_location(0, 40, 1015, objectref) --- Guess: Sets NPC location
     for _, var_0003 in ipairs({1, 2, 3, 0}) do
-        if get_container_items(4, 243, 797, itemref) or get_item_quality(set_npc_location(176, 1, 797, itemref)) == 243 then
+        if get_containerobject_s(4, 243, 797, objectref) or get_object_quality(set_npc_location(176, 1, 797, objectref)) == 243 then
             add_dialogue("@Bollux turns to see Adjar standing nearby, quite alive...@")
             hide_npc(289) --- Guess: Hides NPC
             switch_talk_to(1, 289) --- Guess: Initiates dialogue

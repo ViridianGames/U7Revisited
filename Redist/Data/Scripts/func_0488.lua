@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Leavell, a bodyguard for Robin in New Magincia, discussing his criminal past, his partner Battles, their employer Robin’s gambling, and a locket possibly held by Robin.
-function func_0488(eventid, itemref)
+function func_0488(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

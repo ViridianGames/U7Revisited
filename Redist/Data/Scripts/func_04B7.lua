@@ -1,5 +1,5 @@
 --- Best guess: Manages Teregus’s dialogue in Terfin, a gargoyle caretaker of the altars, concerned about threats to them and Inamo’s fate.
-function func_04B7(eventid, itemref)
+function func_04B7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

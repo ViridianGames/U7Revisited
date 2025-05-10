@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Mariah, a mage at the Lycaeum in Moonglow, discussing her spell and potion sales, her disorientation, and her appreciation for the library's shelves and quills.
-function func_0499(eventid, itemref)
+function func_0499(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

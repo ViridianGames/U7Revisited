@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Geoffrey, Captain of the Guard and Lord British’s bodyguard, discussing his role, past adventures, and advice on gaining experience, with comments on Nystul’s mental state.
-function func_0440(eventid, itemref)
+function func_0440(eventid, objectref)
     local var_0000
 
     start_conversation()

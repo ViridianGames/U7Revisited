@@ -1,5 +1,5 @@
 --- Best guess: Manages Owings’s dialogue in a mine, a clumsy miner working with Malloy, discussing helmets, cave-ins, and their comedic mishaps, with a focus on safety concerns.
-function func_04EF(eventid, itemref)
+function func_04EF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 0 then

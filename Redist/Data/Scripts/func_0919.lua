@@ -1,5 +1,5 @@
 --- Best guess: Provides random descriptions of The Fellowship, adding a philosophy answer option.
-function func_0919(eventid, itemref)
+function func_0919(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     var_0000 = get_dialogue_context() --- Guess: Gets dialogue context

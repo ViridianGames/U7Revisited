@@ -1,5 +1,5 @@
 --- Best guess: Manages the "In Sanct Grav" spell, creating a protective wall or barrier (ID 768) at a selected location, with a fallback effect if the spell fails.
-function func_067B(eventid, itemref)
+function func_067B(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     var_0000 = false
@@ -7,16 +7,16 @@ function func_067B(eventid, itemref)
         return
     end
 
-    unknown_005CH(itemref)
+    unknown_005CH(objectref)
     var_0001 = object_select_modal()
-    bark(itemref, "@In Sanct Grav@")
+    bark(objectref, "@In Sanct Grav@")
     var_0002 = var_0001[2] + 1
     var_0003 = var_0001[3] + 1
     var_0004 = var_0001[4]
     var_0005 = {var_0002, var_0003, var_0004}
     var_0006 = unknown_0085H(0, 768, var_0005)
     if unknown_0906H() and var_0006 then
-        var_0007 = unknown_0001H(itemref, {17511, 17510, 7781})
+        var_0007 = unknown_0001H(objectref, {17511, 17510, 7781})
         var_0008 = unknown_0024H(768)
         if not var_0008 then
             var_0009 = unknown_0026H(var_0005)
@@ -32,6 +32,6 @@ function func_067B(eventid, itemref)
     end
 
     if var_0000 then
-        var_0007 = unknown_0001H(itemref, {1542, 17493, 17511, 17510, 7781})
+        var_0007 = unknown_0001H(objectref, {1542, 17493, 17511, 17510, 7781})
     end
 end

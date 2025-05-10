@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Joseph, the mayor of Jhelom, discussing the town’s duelling culture, the Library of Scars, the Fellowship’s potential branch, and his neutral stance on Sprellic’s dispute.
-function func_0478(eventid, itemref)
+function func_0478(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Nicholas, a toddler in the Royal Nursery, engaging in tag and diaper-changing interactions, with Nanna’s commentary.
-function func_0421(eventid, itemref)
+function func_0421(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

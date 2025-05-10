@@ -1,5 +1,5 @@
 --- Best guess: Manages Pamela’s dialogue, the innkeeper at the Out’n’Inn in Cove, discussing her business, her affection for Rayburt and his dog Regal, and room rentals, with flag-based transactions and a loop for party member pricing.
-function func_044E(eventid, itemref)
+function func_044E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid ~= 1 then

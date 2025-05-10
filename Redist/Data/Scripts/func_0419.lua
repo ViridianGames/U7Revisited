@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Chuckles, the court jester, who insists on playing “The Game” (a wordplay challenge), discussing topics like jokes, food, and girls if the player engages correctly.
-function func_0419(eventid, itemref)
+function func_0419(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

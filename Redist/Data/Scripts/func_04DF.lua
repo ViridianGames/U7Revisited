@@ -1,5 +1,5 @@
 --- Best guess: Manages Martine’s dialogue in Buccaneer’s Den, a worker at The Baths offering various services and revealing secret passages.
-function func_04DF(eventid, itemref)
+function func_04DF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 0 then

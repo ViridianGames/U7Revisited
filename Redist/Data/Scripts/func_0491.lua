@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Paulette, a ghostly barmaid in the Keg O' Spirits tavern on Skara Brae, discussing her past job, the fire that killed her, and her flirtatious interactions. Includes refusal to be a sacrifice for the Well of Souls.
-function func_0491(eventid, itemref)
+function func_0491(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

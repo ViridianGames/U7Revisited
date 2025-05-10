@@ -1,5 +1,5 @@
 --- Best guess: Applies an effect to specific NPCs (85, 8, 88) when event ID 3 is triggered, likely part of a dungeon sequence.
-function func_06C8(eventid, itemref)
+function func_06C8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 3 then

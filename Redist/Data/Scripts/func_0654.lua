@@ -1,16 +1,16 @@
 --- Best guess: Implements the mass cure poison spell (Vas An Nox), curing poison for all party members with visual effects.
-function func_0654(eventid, itemref)
+function func_0654(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroy_item(itemref)
-        var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+        destroyobject_(objectref)
+        var_0000 = unknown_0018H(objectref) --- Guess: Gets position data
         apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 7) --- Guess: Applies sprite effect
-        bark(itemref, "@Vas An Nox@")
+        bark(objectref, "@Vas An Nox@")
         if check_spell_requirements() then
-            var_0001 = add_container_items(itemref, {1620, 8021, 64, 17496, 17511, 17509, 7782})
+            var_0001 = add_containerobject_s(objectref, {1620, 8021, 64, 17496, 17511, 17509, 7782})
         else
-            var_0001 = add_container_items(itemref, {1542, 17493, 17511, 17509, 7782})
+            var_0001 = add_containerobject_s(objectref, {1542, 17493, 17511, 17509, 7782})
         end
     elseif eventid == 2 then
         var_0002 = get_party_members()

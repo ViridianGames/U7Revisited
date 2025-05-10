@@ -1,5 +1,5 @@
 --- Best guess: Initializes training levels for an NPC (properties 0 and 3).
-function func_0914(eventid, itemref, arg1, arg2)
+function func_0914(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002
 
     var_0002 = 0

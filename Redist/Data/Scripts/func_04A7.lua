@@ -1,5 +1,5 @@
 --- Best guess: Manages Feridwyn’s dialogue in Paws, discussing a snake venom theft, The Fellowship shelter, and townspeople, with a focus on Tobias and Garritt’s involvement.
-function func_04A7(eventid, itemref)
+function func_04A7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then

@@ -1,8 +1,8 @@
 --- Best guess: Sets an array value at a specific index, likely for state management.
-function func_0827(eventid, itemref, arg1)
+function func_0827(eventid, objectref, arg1)
     local var_0000, var_0001
 
-    var_0000 = itemref
+    var_0000 = objectref
     var_0001 = arg1
     return set_array_value(var_0000, var_0001, var_0000[var_0001]) --- Guess: Sets array value
 end

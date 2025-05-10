@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Fodus, a sick gargoyle miner in the Minoc mine, discussing his job, the “secret ore” (blackrock), and his need for “silver fluid” (possibly venom), revealing delirious insights into mine operations.
-function func_0463(eventid, itemref)
+function func_0463(eventid, objectref)
     local var_0000
 
     start_conversation()

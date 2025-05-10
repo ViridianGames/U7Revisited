@@ -1,5 +1,5 @@
 --- Best guess: Manages Frank’s dialogue, a fox critiquing the player’s hygiene and companions, likely for humorous interaction.
-function func_04A5(eventid, itemref)
+function func_04A5(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

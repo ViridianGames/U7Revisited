@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Xanthia, a candelabra maker in Minoc’s Artist’s Guild, discussing her work for the Fellowship, the murders of Frederico and Tania, and the Guild’s challenges, with a focus on the candelabra found at the murder site.
-function func_0456(eventid, itemref)
+function func_0456(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

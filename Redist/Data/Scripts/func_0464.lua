@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Tavenor, an Emp in Yew, discussing Emp lifestyle (food, Silverleaf trees), their aversion to violence, and addressing human destruction of the forest, urging the player to stop cutting Silverleaf trees.
-function func_0464(eventid, itemref)
+function func_0464(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

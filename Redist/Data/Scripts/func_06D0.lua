@@ -1,5 +1,5 @@
 --- Best guess: Triggers an external function (ID 2064) with parameters (0, 0) when event ID 3 is received, likely part of a puzzle or dungeon trigger.
-function func_06D0(eventid, itemref)
+function func_06D0(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 3 then

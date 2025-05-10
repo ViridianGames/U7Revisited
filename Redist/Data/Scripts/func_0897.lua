@@ -1,5 +1,5 @@
 --- Best guess: Manages purchase of armor (e.g., leather gloves, plate armor).
-function func_0897(eventid, itemref)
+function func_0897(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     start_conversation()
@@ -25,7 +25,7 @@ function func_0897(eventid, itemref)
             add_dialogue("@^" .. var_000A .. " A fair price, yes?@")
             var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000C then
-                var_000B = purchase_item(false, 1, 0, var_0004[var_0009], var_0008, var_0003) --- Guess: Purchases item
+                var_000B = purchaseobject_(false, 1, 0, var_0004[var_0009], var_0008, var_0003) --- Guess: Purchases item
             end
             if var_000B == 1 then
                 add_dialogue("@Done!@")

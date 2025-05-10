@@ -1,5 +1,5 @@
 --- Best guess: Manages Amber’s dialogue, discussing her role as Sherry the Mouse, her relationship with Shamino, and her acting debut, with flag-based romantic interactions.
-function func_041E(eventid, itemref)
+function func_041E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid ~= 1 then

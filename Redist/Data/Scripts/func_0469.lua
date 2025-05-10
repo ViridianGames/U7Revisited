@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Sir Jeff, the High Court official at Yew’s Abbey prison, discussing his judicial role, the prisoners (a pirate and a troll), and his distrust of the jailer Goth.
-function func_0469(eventid, itemref)
+function func_0469(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

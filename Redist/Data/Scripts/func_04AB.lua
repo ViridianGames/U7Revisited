@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Garritt, a young Fellowship member in Paws, covering his aspirations, family, and involvement in framing Tobias for venom theft, with playful taunts for eventid 0.
-function func_04AB(eventid, itemref, arg1)
+function func_04AB(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
@@ -11,7 +11,7 @@ function func_04AB(eventid, itemref, arg1)
         if not get_flag(540) then
             add_answer("Tobias") --- Guess: Adds dialogue option
         end
-        var_0002 = check_item_conditions(1, 359, 649, 1, 357) --- External call to check item conditions
+        var_0002 = check_object_conditions(1, 359, 649, 1, 357) --- External call to check item conditions
         if var_0002 then
             add_answer("found venom") --- Guess: Adds dialogue option
         end
@@ -140,13 +140,13 @@ function func_04AB(eventid, itemref, arg1)
             elseif var_0003 == "bye" then
                 add_dialogue("@Goodbye, then.@")
                 if not get_flag(536) then
-                    set_item_attribute(get_item_owner(171), 25) --- Guess: Sets item attribute
+                    set_object_attribute(get_object_owner(171), 25) --- Guess: Sets item attribute
                 end
                 break
             end
         end
     elseif eventid == 0 then
-        var_0006 = get_item_attribute(get_item_owner(171)) --- Guess: Gets item attribute
+        var_0006 = get_object_attribute(get_object_owner(171)) --- Guess: Gets item attribute
         var_0007 = random(1, 4) --- Guess: Generates random number
         if var_0006 == 25 then
             if var_0007 == 1 then

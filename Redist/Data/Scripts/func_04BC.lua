@@ -1,5 +1,5 @@
 --- Best guess: Manages Sarpling’s dialogue in Terfin, a Fellowship-supporting shopkeeper fearful of Runeb’s altar destruction and assassination plot.
-function func_04BC(eventid, itemref)
+function func_04BC(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

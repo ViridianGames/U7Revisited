@@ -1,8 +1,8 @@
 --- Best guess: Adjusts object position based on retrieved coordinates, possibly for dynamic movement or placement.
-function func_0606(eventid, itemref)
+function func_0606(eventid, objectref)
     local var_0000, var_0001, var_0002
 
-    var_0000 = unknown_0018H(itemref) --- Guess: Gets position data
+    var_0000 = unknown_0018H(objectref) --- Guess: Gets position data
     var_0001 = var_0000[1]
     var_0002 = var_0000[2]
     var_0001 = var_0001 - 3

@@ -1,5 +1,5 @@
 --- Best guess: Manages the Ferryman of Skara Brae's dialogue, handling payment for passage, return trips, and refusal of sacrifice, with party member interactions (Shamino, Spark, Iolo).
-function func_009B(eventid, itemref)
+function func_009B(eventid, objectref)
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
@@ -81,7 +81,7 @@ function func_009B(eventid, itemref)
                         var_0005 = unknown_002BH(true, 359, 359, 644, 2)
                         if var_0005 then
                             add_dialogue("You place the coins in the shade's palm and his bony fingers close over them. \"Step aboard... if thou wouldst go... to the Isle of the Dead.\"")
-                            unknown_0882H(itemref)
+                            unknown_0882H(objectref)
                         else
                             add_dialogue("\"I'll not cross... without proper payment.\"")
                         end
@@ -97,7 +97,7 @@ function func_009B(eventid, itemref)
                         var_0008 = unknown_001BH(-147)
                         if table.contains(var_0007, var_0006) or table.contains(var_0007, var_0008) then
                             add_dialogue("The Ferryman seems to smile beneath his hood as he motions for you to once more board his spectral boat.")
-                            unknown_0882H(itemref)
+                            unknown_0882H(objectref)
                         else
                             add_dialogue("\"I may not carry spirits to the mainland.\" He holds his pole in front of himself, blocking your way onto the boat.")
                         end

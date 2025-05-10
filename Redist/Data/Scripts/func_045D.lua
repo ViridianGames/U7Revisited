@@ -1,5 +1,5 @@
 --- Best guess: Manages William’s dialogue, a sawmill worker in Minoc, discussing the gruesome murders he discovered, his Fellowship membership, and Owen’s monument, with flag-based progression and philosophy triggers.
-function func_045D(eventid, itemref)
+function func_045D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then

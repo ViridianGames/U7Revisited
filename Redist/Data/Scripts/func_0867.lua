@@ -1,5 +1,5 @@
 --- Best guess: Generates adjective pairs (e.g., "constipated", "dyslexic"), possibly for NPC descriptions.
-function func_0867(eventid, itemref)
+function func_0867(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = {

@@ -1,5 +1,5 @@
 --- Best guess: Boosts NPC stats (strength, dexterity, intelligence) when a consumable item is used on them.
-function func_0289(eventid, itemref)
+function func_0289(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
@@ -26,9 +26,9 @@ function func_0289(eventid, itemref)
             unknown_0835H(var_0001, 0, var_0000)
             unknown_0835H(var_0002, 1, var_0000)
             unknown_0835H(var_0003, 2, var_0000)
-            set_object_quality(itemref, 72)
+            set_object_quality(objectref, 72)
             var_0004 = unknown_0001H({71, 8024, 1539, 8021, 1, 17449, 7715}, var_0000)
-            unknown_006FH(itemref)
+            unknown_006FH(objectref)
         else
             unknown_08FDH(60)
         end

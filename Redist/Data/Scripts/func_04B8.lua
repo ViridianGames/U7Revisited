@@ -1,5 +1,5 @@
 --- Best guess: Manages Runeb’s dialogue in Terfin, a volatile Fellowship clerk with a sinister plot to destroy the altars and frame Quan.
-function func_04B8(eventid, itemref)
+function func_04B8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Smith, a talking horse in Yew, who humorously discusses his lack of a job, interior decorating skills, and provides a cryptic clue about gargoyles and Rasputin in exchange for being left alone.
-function func_0471(eventid, itemref)
+function func_0471(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()

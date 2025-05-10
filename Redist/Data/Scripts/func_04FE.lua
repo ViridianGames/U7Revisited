@@ -1,5 +1,5 @@
 --- Best guess: Manages Lasher’s dialogue, a unicorn in a dungeon who detects virgins, sharing his cursed history and reluctance to aid virginity tests, especially for Cosmo’s quest.
-function func_04FE(eventid, itemref)
+function func_04FE(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 0 then

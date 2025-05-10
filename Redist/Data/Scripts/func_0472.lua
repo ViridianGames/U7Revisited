@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Aimi, a monk at Yew’s Abbey, discussing her gardening, painting, and winemaking, offering flower bouquets for sale or as a gift for Reyna’s loss, and directing the player to Taylor for local knowledge.
-function func_0472(eventid, itemref)
+function func_0472(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

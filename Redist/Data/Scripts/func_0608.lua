@@ -1,5 +1,5 @@
 --- Best guess: Handles Fellowship ambush dialogue, with NPCs (Hook, Forskis, Abraham, Elizabeth) sentencing the Avatar to death, initiating combat.
-function func_0608(eventid, itemref)
+function func_0608(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()
@@ -38,7 +38,7 @@ function func_0608(eventid, itemref)
         -- Guess: sloop iterates over NPCs to set location
         for i = 1, 5 do
             var_0007 = var_0004[i]
-            var_0008 = unknown_0035H(0, 30, var_0007, itemref) --- Guess: Sets NPC location
+            var_0008 = unknown_0035H(0, 30, var_0007, objectref) --- Guess: Sets NPC location
         end
         -- Guess: sloop iterates over NPCs to set behavior
         for i = 1, 5 do

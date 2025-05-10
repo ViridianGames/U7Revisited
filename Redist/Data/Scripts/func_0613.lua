@@ -1,5 +1,5 @@
 --- Best guess: Updates party member states and clears item states, possibly for quest progression.
-function func_0613(eventid, itemref)
+function func_0613(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     set_flag(57, false)
@@ -9,5 +9,5 @@ function func_0613(eventid, itemref)
         var_0003 = {1, 2, 3, 0}[i]
         unknown_001DH(31, var_0003) --- Guess: Sets object behavior
     end
-    unknown_0060H(itemref) --- Guess: Clears item state
+    unknown_0060H(objectref) --- Guess: Clears item state
 end

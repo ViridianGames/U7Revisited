@@ -152,7 +152,7 @@ function func_154(object_id, event)
         if not get_flag(0x030F) then
             set_flag(0x030F, true)
             add_dialogue("\"Ah, yes. I once had a scroll that told of a talisman by that name. If only I could remember where I put it. Dost thou by chance have the parchment entitled Scroll of Infinity with thee?\"") -- Was strings[0x06F1]
-            if false then -- TODO: has_item(123) for Scroll of Infinity
+            if false then -- TODO: hasobject_(123) for Scroll of Infinity
                 add_dialogue("\"If thou dost not have the scroll, I cannot help thee in this matter.\"") -- Was strings[0x07AC]
             else
                 add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.") -- Was strings[0x07F3]
@@ -164,7 +164,7 @@ function func_154(object_id, event)
             end
         else
             add_dialogue("\"Dost thou have the Scroll of Infinity amongst thy possessions?\"") -- Was strings[0x0C57]
-            if false then -- TODO: has_item(123)
+            if false then -- TODO: hasobject_(123)
                 add_dialogue("\"I needs must touch the scroll to glean its meaning. Else I'll not be able to help thee in this matter.\"") -- Was strings[0x0C98]
             else
                 add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.") -- Was strings[0x0D01]
@@ -231,7 +231,7 @@ function func_154(object_id, event)
         add_dialogue("A sad sweet smile comes to the wizard's face, \"She was quite a comely lass at one time, with a mind forever searching.\" His expression darkens, \"But then Mondain forced all of the good sense from her.") -- Was strings[0x1EC1]
         add_dialogue("She became a power unto herself, in time. I do not think she quite rivaled her former mentor, Mondain, but she was a force to be reckoned with, nevertheless.") -- Was strings[0x1F8A]
         add_dialogue("And that thou didst, with the Quicksword, Enilno. That act will most likely have tales sung about it for the next eon.\" Under his breath he adds, \"Even if Iolo's the only one who sings it.\"") -- Was strings[0x2028]
-        if false then -- TODO: callis 000E(40, 465, itemref)
+        if false then -- TODO: callis 000E(40, 465, objectref)
             add_dialogue("With a look of indignation Iolo says, \"Pardon me, sir. But I'll have thee know that ballads of the Avatar still grace all of the finest drinking establishments of Britannia.\"") -- Was strings[0x20E6]
             add_dialogue("\"And what a dubious distinction that is.\" The corners of the mage's mouth come up in a delicate smile.") -- Was strings[0x2195]
             add_dialogue("An angry retort dies on Iolo's lips as the elderly mage lifts his hands in a gesture of peace.") -- Was strings[0x21FC]

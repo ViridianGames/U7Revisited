@@ -1,5 +1,5 @@
 --- Best guess: Narrates the story of Nastassia, setting a flag to track progress.
-function func_0877(eventid, itemref)
+function func_0877(eventid, objectref)
     add_dialogue("@I shall tell thee the story of the only unhappy person in Cove...@")
     add_dialogue("@There once was a maid Ariana...@")
     add_dialogue("@Her son Mikhail became mayor...@")

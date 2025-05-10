@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Elynor, head counselor of the Fellowship in Minoc, discussing the Fellowship, local murders, and a package delivery quest, with reactions to the player’s actions and knowledge about Owen and the candelabra.
-function func_0451(eventid, itemref)
+function func_0451(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     start_conversation()

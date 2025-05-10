@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Mikos, the foreman of the Minoc mine, discussing the mine’s operations, machinery, miners (Owings, Malloy, and Fodus), and reacting defensively to mentions of the “silver fluid” Fodus referenced.
-function func_0461(eventid, itemref)
+function func_0461(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

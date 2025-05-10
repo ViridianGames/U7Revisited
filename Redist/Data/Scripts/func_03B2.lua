@@ -1,8 +1,8 @@
 --- Best guess: Manages a guard NPC’s dialogue, responding gruffly to name and job queries, likely for immersion or quest interaction.
-function func_03B2(eventid, itemref)
+function func_03B2(eventid, objectref)
     local var_0000
 
-    var_0000 = unknown_001CH(unknown_001BH(itemref))
+    var_0000 = unknown_001CH(unknown_001BH(objectref))
     if eventid == 0 then
         return
     end

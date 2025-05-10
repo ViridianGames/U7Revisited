@@ -1,5 +1,5 @@
 --- Best guess: Manages Murray’s (Papa’s) dialogue in a cave, a seemingly wild man living with Mama, avoiding bees and revealing his true identity as a fugitive apothecary from Yew.
-function func_04F1(eventid, itemref)
+function func_04F1(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 0 then

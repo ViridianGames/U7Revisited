@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Saralek, an Emp female in the Silverleaf tree, discussing her family, Trellek's desire to join the party, and the need for Salamon's permission. Includes a wisps whistle suggestion.
-function func_0462(eventid, itemref)
+function func_0462(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

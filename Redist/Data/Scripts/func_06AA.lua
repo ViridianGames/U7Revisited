@@ -1,5 +1,5 @@
 --- Best guess: Manages the Avatar’s initial appearance via a moongate, creating and positioning it relative to the Avatar’s location.
-function func_06AA(eventid, itemref)
+function func_06AA(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 2 then

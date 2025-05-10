@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Margareta, a gypsy fortune-teller in Minoc, discussing the murders of Frederico and Tania, her husband Jergi, and Sasha’s involvement with the Fellowship, warning about its true nature.
-function func_0453(eventid, itemref)
+function func_0453(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

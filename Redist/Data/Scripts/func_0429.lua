@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Candice, the Royal Museum curator, discussing exhibits, Avatar artifacts, and her involvement with The Fellowship, hinting at a secret affair with the Mayor.
-function func_0429(eventid, itemref)
+function func_0429(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

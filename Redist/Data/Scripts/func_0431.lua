@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Denby, a trainer specializing in combat with minor magical effects, offering training for 75 gold and advocating for peace despite his fighter skills.
-function func_0431(eventid, itemref)
+function func_0431(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()

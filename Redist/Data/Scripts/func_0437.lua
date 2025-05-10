@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Grayson, an armour and weapons merchant in Britain, discussing his shop and how The Fellowship transformed his business success, offering to sell armour and weapons.
-function func_0437(eventid, itemref)
+function func_0437(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

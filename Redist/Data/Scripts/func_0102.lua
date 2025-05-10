@@ -1,16 +1,16 @@
 --- Best guess: Manages a keg interaction, displaying a message and handling specific use cases, including filling containers.
-function func_0102(eventid, itemref)
+function func_0102(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        if not unknown_0079H(itemref) then
-            unknown_005CH(itemref)
+        if not unknown_0079H(objectref) then
+            unknown_005CH(objectref)
             unknown_08FEH("@It is about time!@")
         else
-            unknown_0628H(itemref)
+            unknown_0628H(objectref)
         end
     elseif eventid == 8 then
-        var_0000 = unknown_0018H(itemref)
+        var_0000 = unknown_0018H(objectref)
         var_0000[1] = var_0000[1] - 2
         var_0000[2] = var_0000[2] + 1
         var_0001 = get_container_objects(-359, -359, 810, -356)

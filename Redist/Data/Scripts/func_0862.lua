@@ -1,5 +1,5 @@
 --- Best guess: Manages a dialogue with Chuckles, providing a scroll (item 797) if conditions are met.
-function func_0862(eventid, itemref)
+function func_0862(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()
@@ -58,7 +58,7 @@ function func_0862(eventid, itemref)
         var_0005 = show_dialogue_options({"nothing", "a smile", "my friendship", "gold", "I shan't murder thee"}) --- Guess: Shows dialogue options
         if var_0005 == "gold" then
             add_dialogue("@Chuckles holds his hand up. 'Tis not right...@")
-            var_0006 = add_item_to_inventory(359, 797, 1, 1) --- Guess: Adds item to inventory
+            var_0006 = add_object_to_inventory(359, 797, 1, 1) --- Guess: Adds item to inventory
             if var_0006 then
                 set_flag(111, true)
                 start_quest(50) --- Guess: Starts quest
@@ -69,7 +69,7 @@ function func_0862(eventid, itemref)
             end
         elseif var_0005 == "a smile" then
             add_dialogue("@How nice! All right! I shall give thee a clue...@")
-            var_0006 = add_item_to_inventory(359, 797, 1, 1) --- Guess: Adds item to inventory
+            var_0006 = add_object_to_inventory(359, 797, 1, 1) --- Guess: Adds item to inventory
             if var_0006 then
                 set_flag(111, true)
                 start_quest(50) --- Guess: Starts quest

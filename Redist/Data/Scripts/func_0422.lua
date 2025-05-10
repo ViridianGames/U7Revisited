@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Nanna, the Royal Nursery caretaker, discussing her role, the children, and social issues like taxes and class structure, with Fellowship ties.
-function func_0422(eventid, itemref)
+function func_0422(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()

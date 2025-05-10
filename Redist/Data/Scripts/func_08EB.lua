@@ -4,10 +4,10 @@ function func_08EB(var_0000, var_0001, var_0002)
 
     var_0003 = 4
     var_0004 = 0
-    var_0005 = unknown_0018H(itemref)
+    var_0005 = unknown_0018H(objectref)
     var_0006 = var_0005
     if var_0001 == 154 then
-        var_0007 = unknown_0035H(0, 0, -1, itemref)
+        var_0007 = unknown_0035H(0, 0, -1, objectref)
         for _, var_0010 in ipairs(var_0007) do
             var_0011 = unknown_0018H(var_0010)
             if var_0011[3] < 5 then
@@ -25,7 +25,7 @@ function func_08EB(var_0000, var_0001, var_0002)
             end
         end
     elseif var_0001 == 1015 then
-        var_0007 = unknown_0035H(0, 1, -1, itemref)
+        var_0007 = unknown_0035H(0, 1, -1, objectref)
         for _, var_0010 in ipairs(var_0007) do
             var_0011 = unknown_0018H(var_0010)
             if var_0011[3] < 5 then
@@ -43,12 +43,12 @@ function func_08EB(var_0000, var_0001, var_0002)
     elseif var_0001 == 504 then
         var_0003 = 6
         var_0004 = 2
-        var_0007 = unknown_0035H(0, 3, -1, itemref)
+        var_0007 = unknown_0035H(0, 3, -1, objectref)
         for _, var_0010 in ipairs(var_0007) do
             var_0011 = unknown_0018H(var_0010)
             if var_0011[3] < 5 and (unknown_0011H(var_0010) ~= 331 and unknown_0011H(var_0010) ~= 224) then
                 if var_0011[1] == var_0005[1] and var_0011[2] == var_0005[2] then
-                    var_0018 = var_0003 - unknown_0019H(itemref, var_0010)
+                    var_0018 = var_0003 - unknown_0019H(objectref, var_0010)
                     var_0011[1] = var_0011[1] - var_0018
                     var_0011[2] = var_0011[2] - var_0018
                 elseif var_0011[1] <= var_0005[1] and var_0011[2] <= var_0005[2] then

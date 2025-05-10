@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Greg, the Provisioner’s Shop owner, discussing his shop’s history, lucky provisions, and a story about Gorn, with suspicions about a fake Avatar.
-function func_0426(eventid, itemref)
+function func_0426(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()

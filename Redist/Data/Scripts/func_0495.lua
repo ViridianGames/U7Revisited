@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with a three-headed hydra (Shandu, Shanda, Shando) guarding Caddellite in Ambrosia, discussing their names, role, and growing hostility toward the player.
-function func_0495(eventid, itemref)
+function func_0495(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

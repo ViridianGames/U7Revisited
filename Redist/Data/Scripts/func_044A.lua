@@ -1,5 +1,5 @@
 --- Best guess: Manages Rudyom’s dialogue, a senile mage discussing his failing magic, blackrock experiments, and a lost flying carpet, with flag-based spell and reagent transactions.
-function func_044A(eventid, itemref)
+function func_044A(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 0 then

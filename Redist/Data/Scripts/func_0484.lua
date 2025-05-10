@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Henry, a heartbroken peddler in New Magincia, discussing his lost locket meant for Constance, his childhood friend Katrina, and three strangers who may have taken it.
-function func_0484(eventid, itemref)
+function func_0484(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

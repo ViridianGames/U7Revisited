@@ -1,5 +1,5 @@
 --- Best guess: Manages Effrem’s dialogue in Moonglow, discussing his stay-at-home role and wife Jillian, with gender-specific responses.
-function func_04A0(eventid, itemref)
+function func_04A0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then

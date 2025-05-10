@@ -1,5 +1,5 @@
 --- Best guess: Manages Caine’s dialogue in Skara Brae, the Tortured One, a ghostly alchemist tormented by his failure to destroy the Liche, providing potion instructions and answers to life and death questions if freed.
-function func_04F7(eventid, itemref)
+function func_04F7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

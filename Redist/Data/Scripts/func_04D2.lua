@@ -1,5 +1,5 @@
 --- Best guess: Manages Liana’s dialogue in Vesper, the mayor’s clerk critical of certain residents and wary of gargoyles.
-function func_04D2(eventid, itemref)
+function func_04D2(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

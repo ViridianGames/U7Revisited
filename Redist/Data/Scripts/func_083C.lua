@@ -1,5 +1,5 @@
 --- Best guess: Collects money items (ID 644) near a Triples game (ID 809) within a specified radius, filtering by position proximity.
-function func_083C(eventid, itemref)
+function func_083C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     var_0001 = {}

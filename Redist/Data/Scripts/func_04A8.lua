@@ -1,5 +1,5 @@
 --- Best guess: Manages dialogue with Brita, who runs the Fellowship shelter in Paws, covering her role, Feridwyn’s dedication, and the venom theft involving her son Garritt.
-function func_04A8(eventid, itemref, arg1)
+function func_04A8(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
@@ -13,7 +13,7 @@ function func_04A8(eventid, itemref, arg1)
         if not get_flag(536) then
             add_answer("venom found") --- Guess: Adds dialogue option
         end
-        var_0001 = check_item_conditions(1, 359, 649, 1, 357) --- External call to check item conditions
+        var_0001 = check_object_conditions(1, 359, 649, 1, 357) --- External call to check item conditions
         if var_0001 then
             add_answer("venom found") --- Guess: Adds dialogue option
         end

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Zorn, Minoc’s blacksmith, discussing his weapons and armour, the murders, Owen’s monument, and crafting helmets from Caddellite to block the cube generator’s sound.
-function func_0457(eventid, itemref)
+function func_0457(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     start_conversation()

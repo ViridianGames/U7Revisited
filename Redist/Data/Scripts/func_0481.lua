@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Russell, a shipwright in New Magincia, selling ship deeds and sextants, and discussing a shipwreck involving three strangers, a locket, the Crown Jewel, and Hook.
-function func_0481(eventid, itemref)
+function func_0481(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

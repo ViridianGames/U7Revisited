@@ -1,5 +1,5 @@
 --- Best guess: Manages Meryl’s brief actress dialogue, displaying random promotional messages for the Passion Play when examined (event 0) or a focused actress message when spoken to (event 1).
-function func_04EA(eventid, itemref)
+function func_04EA(eventid, objectref)
     local local0, local1, local2, local3
 
     if eventid == 0 then

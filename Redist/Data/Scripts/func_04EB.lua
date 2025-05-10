@@ -1,5 +1,5 @@
 --- Best guess: Manages an unnamed actor’s dialogue in Buccaneer’s Den, focused on preparing for the Passion Play, redirecting conversation to Paul.
-function func_04EB(eventid, itemref)
+function func_04EB(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

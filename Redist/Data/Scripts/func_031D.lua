@@ -1,13 +1,13 @@
 --- Best guess: Displays various scroll contents based on item quality, ranging from humorous notes to quest-critical documents, with specific flag triggers.
-function func_031D(eventid, itemref)
+function func_031D(eventid, objectref)
     local var_0000, var_0001
 
-    var_0000 = unknown_0014H(itemref)
+    var_0000 = unknown_0014H(objectref)
     if var_0000 == 45 then
-        unknown_0710H(itemref)
+        unknown_0710H(objectref)
     end
-    set_object_quality(itemref, 14)
-    unknown_0055H(itemref)
+    set_object_quality(objectref, 14)
+    unknown_0055H(objectref)
     if var_0000 > 51 then
         add_dialogue("This is not a valid scroll")
     elseif var_0000 == 0 then

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Miranda, a Great Council member, discussing women’s rights, her son Max, and a bill to protect Lock Lake, asking the player to deliver it to Lord Heather in Cove for signing.
-function func_0446(eventid, itemref)
+function func_0446(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

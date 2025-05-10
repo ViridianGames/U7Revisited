@@ -1,5 +1,5 @@
 --- Best guess: Builds an array of items excluding a specified value, likely for filtering purposes.
-function func_0802(eventid, itemref, arg1)
+function func_0802(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0002 = {}

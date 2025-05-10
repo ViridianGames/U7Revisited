@@ -57,9 +57,9 @@ enum class ObjectTypes
 	OBJECT_WEAPON,
 	OBJECT_ARMOR,
 	OBJECT_CONTAINER,
-	OBJECT_QUEST_ITEM,
+	OBJECT_QUESTobject_,
 	OBJECT_KEY,
-	OBJECT_ITEM
+	OBJECTobject_
 };
 
 enum class EngineModes

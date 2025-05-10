@@ -1,10 +1,10 @@
 --- Best guess: Manages a game mechanic checking for items (IDs 604, 729) and transforming a container (ID 641) with specific effects and sound.
-function func_070C(eventid, itemref)
+function func_070C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    var_0000 = unknown_000EH(1, 604, itemref)
+    var_0000 = unknown_000EH(1, 604, objectref)
     if not var_0000 then
-        var_0001 = unknown_000EH(8, 729, itemref)
+        var_0001 = unknown_000EH(8, 729, objectref)
         if not var_0001 then
             var_0002 = _get_object_quality(var_0001)
             if var_0002 == 7 then

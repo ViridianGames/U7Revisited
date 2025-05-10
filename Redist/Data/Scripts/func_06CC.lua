@@ -1,10 +1,10 @@
 --- Best guess: Applies effects to party members when event ID 3 is triggered and flag 5 is not set, based on item quality, likely in a dungeon trap.
-function func_06CC(eventid, itemref)
+function func_06CC(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
         if get_flag(5) == 0 then
-            var_0000 = unknown_0014H(itemref)
+            var_0000 = unknown_0014H(objectref)
             var_0001 = unknown_0023H()
             for i = 1, #var_0001 do
                 var_0004 = var_0001[i]

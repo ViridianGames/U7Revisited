@@ -1,5 +1,5 @@
 --- Best guess: Manages Danag’s dialogue in Buccaneer’s Den, the interim Fellowship leader, revealing sinister Fellowship plans and executioner details when the Cube vibrates.
-function func_04FB(eventid, itemref)
+function func_04FB(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

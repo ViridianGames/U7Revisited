@@ -1,13 +1,13 @@
 --- Best guess: Manages sword forging with random quality checks and dialogue feedback for the player.
-function func_0691(eventid, itemref)
+function func_0691(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()
     if eventid == 2 then
-        var_0000 = set_item_type_at(668, 356, 2) --- Guess: Sets item type at position
+        var_0000 = set_object_type_at(668, 356, 2) --- Guess: Sets item type at position
         var_0001 = unknown_0018H(var_0000) --- Guess: Gets position data
-        var_0002 = add_container_items(itemref, {45, 7768})
-        var_0002 = add_container_items(itemref, {1680, 8021, 1, 17447, 7715})
+        var_0002 = add_containerobject_s(objectref, {45, 7768})
+        var_0002 = add_containerobject_s(objectref, {1680, 8021, 1, 17447, 7715})
     elseif eventid == 1 then
         var_0003 = generaterandom_value(100) --- Guess: Generates random value
         if not get_flag(813) then

@@ -1,5 +1,5 @@
 --- Best guess: Manages an Emp NPC’s dialogue, greeting the player, discussing food preferences (fruits, milk, cheese), and handling honey offers, with gender-specific names.
-function func_01DF(eventid, itemref)
+function func_01DF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
     local var_0007, var_0008, var_0009
 
@@ -41,7 +41,7 @@ function func_01DF(eventid, itemref)
                 start_conversation()
                 local answer = get_answer()
                 if answer == "name" then
-                    var_0002 = get_npc_property(itemref, 5)
+                    var_0002 = get_npc_property(objectref, 5)
                     var_0003 = {1, 2, 3, 4}
                     if not is_in_int_array(var_0002, var_0003) then
                         var_0004 = check_flag_location(4, 80, 479, 356)
@@ -49,7 +49,7 @@ function func_01DF(eventid, itemref)
                             var_0005 = var_0004
                             var_0006 = var_0005
                             var_0007 = var_0006
-                            var_0008 = get_npc_property(itemref, 5)
+                            var_0008 = get_npc_property(objectref, 5)
                             if is_in_int_array(var_0008, var_0003) then
                                 var_0003 = unknown_093CH(var_0003, var_0008)
                             end

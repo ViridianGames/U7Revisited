@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with De Maria, a bard in Cove, who sings tales about the townsfolk, particularly Nastassia and his love Zinaida, offering to perform a song or tale about Cove’s people.
-function func_0450(eventid, itemref)
+function func_0450(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

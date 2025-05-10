@@ -1,12 +1,12 @@
 --- Best guess: Counts active flags (3, 4, 5, 301, 308, 322, 353, 493, 609) and triggers an effect based on the count when event ID 3 is received, likely a dungeon or quest trigger.
-function func_06E1(eventid, itemref)
+function func_06E1(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 3 then
-        if itemref == 0 then
+        if objectref == 0 then
             var_0000 = {2892, 1420}
         else
-            var_0000 = unknown_0018H(itemref)
+            var_0000 = unknown_0018H(objectref)
         end
         var_0001 = 0
         if not get_flag(493) then var_0001 = var_0001 + 1 end

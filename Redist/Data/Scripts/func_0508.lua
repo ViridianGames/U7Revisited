@@ -1,4 +1,4 @@
 --- Best guess: Calls an external function to process an item action, possibly for a specific item or NPC behavior.
-function func_0508(eventid, itemref)
-    unknown_03B2H(itemref) --- Guess: Processes item action
+function func_0508(eventid, objectref)
+    unknown_03B2H(objectref) --- Guess: Processes item action
 end

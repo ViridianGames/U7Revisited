@@ -1,5 +1,5 @@
 --- Best guess: Manages Lord Heather’s dialogue, the Mayor of Cove, discussing the town, its romantic atmosphere, Nastassia’s melancholy, and a bill to address Lock Lake’s pollution, with flag-based interactions and companion dialogues.
-function func_044D(eventid, itemref)
+function func_044D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid ~= 1 then

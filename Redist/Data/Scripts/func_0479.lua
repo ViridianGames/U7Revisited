@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Kliftin, Jhelom’s Armoury master, discussing his soldier past, selling weapons and armour, and crafting a duplicate honor flag to save Sprellic from a duel with the Library of Scars.
-function func_0479(eventid, itemref)
+function func_0479(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

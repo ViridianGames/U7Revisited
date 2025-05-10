@@ -1,5 +1,5 @@
 --- Best guess: Manages Ansikart’s dialogue in Vesper, a gargoyle tavern keeper serving food and drink, aware of local gargoyle tensions.
-function func_04D7(eventid, itemref)
+function func_04D7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

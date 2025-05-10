@@ -1,5 +1,5 @@
 --- Best guess: Manages Komor’s dialogue in Paws, a bitter beggar discussing his past as a farmer, his friendship with Fenn, and disdain for The Fellowship.
-function func_04AE(eventid, itemref)
+function func_04AE(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

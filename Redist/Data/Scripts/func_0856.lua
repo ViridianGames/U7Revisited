@@ -21,7 +21,7 @@ function func_0856(arg_0000, arg_0001)
         add_dialogue("@After a bit of target practice, he says, \"I am sorry to say this, but thou dost need more practice before I will be able to train thee. Perhaps at a later time thou wilt be in a better position to receive mine instruction.\"@")
         return
     elseif var_0005 == 1 then
-        var_0006 = check_item_ownership(-359, -359, 644, -357) --- Guess: Checks gold
+        var_0006 = check_object_ownership(-359, -359, 644, -357) --- Guess: Checks gold
         add_dialogue("@You gather your gold and count it, finding that you have " .. var_0006 .. " gold altogether.@")
         if var_0006 < var_0000 then
             add_dialogue("@\"Thou hast not the gold to train.\"@")
@@ -31,7 +31,7 @@ function func_0856(arg_0000, arg_0001)
         add_dialogue("@After a few target shots, he exclaims, \"Thou art already as proficient as I! I can do nothing to improve thy coordination of hand and eye!\"@")
         return
     end
-    var_0007 = remove_item_from_inventory(-359, -359, 644, var_0000) --- Guess: Removes gold
+    var_0007 = remove_object_from_inventory(-359, -359, 644, var_0000) --- Guess: Removes gold
     add_dialogue("@You pay " .. var_0000 .. " gold, and the training session begins.@")
     if var_0002 == -356 then
         var_0008 = "You"

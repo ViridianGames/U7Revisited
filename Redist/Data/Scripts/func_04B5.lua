@@ -1,5 +1,5 @@
 --- Best guess: Manages Inforlem’s dialogue in Terfin, a gargoyle trainer and weapon seller, discussing local conflicts and residents.
-function func_04B5(eventid, itemref)
+function func_04B5(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

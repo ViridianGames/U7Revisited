@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Adjhar, progressing a quest involving Bollux’s sacrifice and the book "The Stone of Castambre".
-function func_0890(eventid, itemref)
+function func_0890(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()
@@ -68,7 +68,7 @@ function func_0890(eventid, itemref)
             remove_answer("what next") --- Guess: Removes dialogue option
             add_dialogue("@Dost thou have the book entitled, 'The Stone of Castambre?'@")
             if get_dialogue_choice() then --- Guess: Gets dialogue choice
-                var_0000 = check_item_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
+                var_0000 = check_object_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
                 if var_0000 then
                     add_dialogue("@His eyes reveal his hope. As he takes the book from you...@")
                     calle_0891H() --- External call to quest progression
@@ -86,7 +86,7 @@ function func_0890(eventid, itemref)
             if get_dialogue_choice() then --- Guess: Gets dialogue choice
                 add_dialogue("@Dost thou have it with thee?@")
                 if get_dialogue_choice() then --- Guess: Gets dialogue choice
-                    var_0000 = check_item_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
+                    var_0000 = check_object_inventory(359, 144, 642, 1, 357) --- Guess: Checks inventory
                     if var_0000 then
                         add_dialogue("@His eyes reveal his hope. As he takes the book from you...@")
                         calle_0891H() --- External call to quest progression

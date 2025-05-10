@@ -1,14 +1,14 @@
 --- Best guess: Manages a boss encounter with Dracothraxus (dragon NPC, ID 293), delivering dialogue based on the player’s inventory and battle outcome, with a courage test for a gem reward.
-function func_01F8(eventid, itemref)
+function func_01F8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
     local var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
     local var_000E
 
     if eventid == 1 then
         var_0000 = false
-        var_0001 = get_object_shape(itemref)
+        var_0001 = get_object_shape(objectref)
         if var_0001 ~= 504 then
-            var_0002 = check_flag_location(4, 80, 504, itemref)
+            var_0002 = check_flag_location(4, 80, 504, objectref)
             while true do
                 var_0003 = var_0002
                 var_0004 = var_0003
@@ -19,7 +19,7 @@ function func_01F8(eventid, itemref)
                 end
             end
         else
-            var_0000 = itemref
+            var_0000 = objectref
         end
         if not check_inventory_space(4, 241, 797, var_0000) then
             return
@@ -50,7 +50,7 @@ function func_01F8(eventid, itemref)
             start_conversation()
             add_dialogue("The dragon lets out a searing sigh, \"Released at last. I go now to seek my reward, for this has been a test of my courage as well as thine. Thy reward lies beyond the door to the north. Enter the blue gate and the Amulet of Courage will be thine.\"")
             -- calli 006F, 1 (unmapped)
-            unknown_006FH(itemref)
+            unknown_006FH(objectref)
             hide_npc(293)
             var_0006 = check_flag_location(0, 40, 876, 356)
             while true do
@@ -95,7 +95,7 @@ function func_01F8(eventid, itemref)
             end
             add_dialogue("\"I go now to rest, but I shall return. The door will not open until thou hast found a way to best me for good and for all. Farewell, little mortal.\"")
             -- calli 006F, 1 (unmapped)
-            unknown_006FH(itemref)
+            unknown_006FH(objectref)
             set_flag(822, true)
             hide_npc(293)
         end

@@ -1,10 +1,10 @@
 --- Best guess: Spawns and destroys items (type 981, 776) with positioning, likely for an event or effect.
-function func_0805(eventid, itemref)
+function func_0805(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    var_0000 = itemref
+    var_0000 = objectref
     if not get_flag(4) then
-        set_item_type(981, var_0000) --- Guess: Sets item type
+        set_object_type(981, var_0000) --- Guess: Sets item type
         var_0001 = {0, 1120, 535}
         unknown_003EH(var_0001, var_0000) --- Guess: Sets NPC target
         var_0001[2] = var_0001[2] + 2
@@ -14,9 +14,9 @@ function func_0805(eventid, itemref)
         -- Guess: sloop destroys items
         for i = 1, 5 do
             var_0005 = {3, 4, 5, 2, 10}[i]
-            destroy_item_silent(var_0005) --- Guess: Destroys item silently
+            destroy_object_silent(var_0005) --- Guess: Destroys item silently
         end
-        var_0006 = add_container_items_at(356, {8, 1563, 17493, 7715})
+        var_0006 = add_containerobject_s_at(356, {8, 1563, 17493, 7715})
         set_flag(4, true)
     end
 end

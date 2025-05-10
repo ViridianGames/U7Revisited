@@ -1,5 +1,5 @@
 --- Best guess: Manages Silamo’s dialogue in Terfin, a wingless gargoyle gardener frustrated by his social status and considering The Fellowship.
-function func_04BB(eventid, itemref)
+function func_04BB(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 187)
         start_conversation()

@@ -1,22 +1,22 @@
 --- Best guess: Controls a bellows in a forge, animating it and heating a sword blank (ID 668) over a firepit (ID 739), adjusting frames based on position and state for a crafting sequence.
-function func_01AF(eventid, itemref)
+function func_01AF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
     local var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
     local var_000E, var_000F
 
-    var_0000 = get_object_frame(itemref)
+    var_0000 = get_object_frame(objectref)
     if var_0000 >= 3 and var_0000 <= 5 then
         if eventid == 1 then
             -- call [0000] (0828H, unmapped)
-            unknown_0828H(7, itemref, 431, -1, 0, 1, itemref)
+            unknown_0828H(7, objectref, 431, -1, 0, 1, objectref)
         elseif eventid == 7 then
-            var_0001 = unknown_0001H({{3, 8006, 1, 7975}, {4, 8006, 1, 7975}, {5, 8006, 1, 7975}, {4, 17478, 7937, 47, 7768}}, itemref)
+            var_0001 = unknown_0001H({{3, 8006, 1, 7975}, {4, 8006, 1, 7975}, {5, 8006, 1, 7975}, {4, 17478, 7937, 47, 7768}}, objectref)
             -- call [0001] (092DH, unmapped)
-            var_0002 = unknown_092DH(itemref)
+            var_0002 = unknown_092DH(objectref)
             var_0001 = unknown_0001H({8033, 3, 17447, 8556, var_0002, 7769}, 356)
-            var_0003 = unknown_000EH(3, 739, itemref)
+            var_0003 = unknown_000EH(3, 739, objectref)
             var_0004 = get_object_frame(var_0003)
-            var_0005 = unknown_000EH(3, 668, itemref)
+            var_0005 = unknown_000EH(3, 668, objectref)
             var_0006 = get_object_frame(var_0005)
             if not var_0003 then
                 if var_0004 == 4 then
@@ -56,17 +56,17 @@ function func_01AF(eventid, itemref)
     else
         if eventid == 1 then
             -- calli 005C, 1 (unmapped)
-            unknown_005CH(itemref)
+            unknown_005CH(objectref)
             -- call [0000] (0828H, unmapped)
-            unknown_0828H(7, itemref, 431, -1, 0, 1, itemref)
+            unknown_0828H(7, objectref, 431, -1, 0, 1, objectref)
         elseif eventid == 7 then
             -- calli 005C, 1 (unmapped)
             unknown_005CH(356)
-            var_000A = unknown_0001H({{0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7975}, {0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7937, 47, 7768}}, itemref)
+            var_000A = unknown_0001H({{0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7975}, {0, 8006, 1, 7975}, {1, 8006, 1, 7975}, {2, 8006, 1, 7975}, {1, 8006, 1, 7937, 47, 7768}}, objectref)
             -- call [0002] (0827H, unmapped)
-            var_0002 = unknown_0827H(itemref, 356)
+            var_0002 = unknown_0827H(objectref, 356)
             var_000A = unknown_0001H({{8033, 3, 17447, 17516}, {8033, 3, 17447, 8545}, var_0002, 7769}, 356)
-            var_000B = check_flag_location(176, 4, 739, itemref)
+            var_000B = check_flag_location(176, 4, 739, objectref)
             while true do
                 var_000C = var_000B
                 var_000D = var_000C

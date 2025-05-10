@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Master De Snel, the leader of Jhelom’s Library of Scars, discussing his fighting school, a dagger linked to Minoc murders, and disputes over the honor flag involving Sprellic.
-function func_0477(eventid, itemref)
+function func_0477(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     start_conversation()

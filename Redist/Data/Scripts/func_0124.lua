@@ -1,25 +1,25 @@
 --- Best guess: Manages a seating interaction on a barge or chair, assigning party members to seats based on proximity and state.
-function func_0124(eventid, itemref)
+function func_0124(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014
 
     if eventid == 1 then
-        if unknown_0058H(itemref) then
-            var_0000 = func_080CH(0, itemref)
+        if unknown_0058H(objectref) then
+            var_0000 = func_080CH(0, objectref)
             if var_0000 == 652 or var_0000 == 840 then
-                if not unknown_0088H(10, itemref) then
+                if not unknown_0088H(10, objectref) then
                     if var_0000 == 652 then
-                        calle_028CH(itemref)
+                        calle_028CH(objectref)
                     elseif var_0000 == 840 then
-                        calle_0348H(itemref)
+                        calle_0348H(objectref)
                     end
                 else
-                    var_0001 = unknown_08B3H(itemref)
+                    var_0001 = unknown_08B3H(objectref)
                 end
             end
         else
-            func_080AH(292, itemref)
-            var_0002 = unknown_0019H(-356, itemref) + 15
-            var_0001 = unknown_0002H(var_0002, {292, 17493, 7715}, itemref)
+            func_080AH(292, objectref)
+            var_0002 = unknown_0019H(-356, objectref) + 15
+            var_0001 = unknown_0002H(var_0002, {292, 17493, 7715}, objectref)
         end
     elseif eventid == 2 then
         var_0003 = unknown_0018H(-356)
@@ -29,7 +29,7 @@ function func_0124(eventid, itemref)
         if var_0003[1] == var_0005[1] and var_0003[2] == var_0005[2] and get_flag(743) == false then
             set_flag(743, true)
             var_0007 = unknown_0053H(-1, 0, 0, 0, var_0005[2] + 1, var_0005[1] + 1, 17)
-            set_object_quality(itemref, 62)
+            set_object_quality(objectref, 62)
             start_endgame()
             var_0007 = unknown_0024H(895)
             if not var_0007 then

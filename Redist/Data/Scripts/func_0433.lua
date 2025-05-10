@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Kelly, a farmer's wife at the Farmer's Market, discussing her husband Fred, their produce, and local farmers Brownie and Mack.
-function func_0433(eventid, itemref)
+function func_0433(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

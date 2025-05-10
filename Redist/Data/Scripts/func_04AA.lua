@@ -1,5 +1,5 @@
 --- Best guess: Manages dialogue with Merrick, a former farmer in Paws, covering his identity, the Fellowship, the venom theft, and local characters.
-function func_04AA(eventid, itemref, arg1)
+function func_04AA(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Aurvidlem’s dialogue in Vesper, a gargoyle provisioner critical of Ansikart’s leadership and concerned about Wis-Sur’s change.
-function func_04DB(eventid, itemref)
+function func_04DB(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

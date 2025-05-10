@@ -8,7 +8,7 @@ function func_082F()
         var_0002 = random2(4, 1)
         var_0003 = unknown_0018H(var_0000[1])
         var_0004 = unknown_0035H(0, 10, 644, var_0000[1])
-        var_0005 = unknown_0018H(itemref)
+        var_0005 = unknown_0018H(objectref)
         if get_time_hour() >= 15 or get_time_hour() <= 3 then
             for var_0006 in ipairs(var_0004) do
                 var_0009 = unknown_0018H(var_0008)

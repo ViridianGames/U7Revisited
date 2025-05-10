@@ -1,5 +1,5 @@
 --- Best guess: Displays a message suggesting training items are for trainers, likely for a practice area interaction.
-function func_02DF(eventid, itemref)
+function func_02DF(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

@@ -1,26 +1,26 @@
 --- Best guess: Displays contents of various books (e.g., Dragon Compendium, Alagner’s Book), with special handling for specific book qualities.
-function func_0638(eventid, itemref)
+function func_0638(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
-    var_0000 = get_item_quality(itemref) --- Guess: Gets item quality
+    var_0000 = get_object_quality(objectref) --- Guess: Gets item quality
     if eventid ~= 1 and eventid ~= 2 then
         return
     end
     start_conversation()
     if eventid == 2 then
-        if var_0000 == 144 and get_item_type(itemref) == 642 then
+        if var_0000 == 144 and get_object_type(objectref) == 642 then
             display_message("@Odd. The page is smudged with dirt here. I cannot make out this text.@") --- Guess: Displays message
-            var_0001 = set_item_quality(itemref, 145)
-            var_0001 = add_container_items(itemref, {1592, 7765})
-        elseif get_object_ref(itemref) == 356 then --- Guess: Gets object reference
+            var_0001 = set_object_quality(objectref, 145)
+            var_0001 = add_containerobject_s(objectref, {1592, 7765})
+        elseif get_object_ref(objectref) == 356 then --- Guess: Gets object reference
             if not get_flag(805) then
                 set_flag(805, true)
                 display_message("@Why, a page has fallen out of the book!@") --- Guess: Displays message
             end
         end
     end
-    set_object_quality(itemref, 14) --- Guess: Sets item property
-    unknown_0055H(itemref) --- Guess: Sets item state
+    set_object_quality(objectref, 14) --- Guess: Sets item property
+    unknown_0055H(objectref) --- Guess: Sets item state
     if var_0000 > 148 then
         add_dialogue("This is @not a @valid book")
     elseif var_0000 == 100 then
@@ -265,18 +265,18 @@ function func_0638(eventid, itemref)
         add_dialogue("     The major purpose of the Stone's power is to animate inanimate objects: statues, golems, tools, etc. In addition, shouldst the desired object be one already imbued with the power of conversation, the Stone will enhance such powers, giving the object, or rather, creature, independent thought. Historians claim that it is with this stone that Castambre concocted creatures of such deep personalities that, from behind a curtain, it was impossible to differentiated between a person and one of his creations.")
         add_dialogue("     But how do I capture this ability, I hear thee ask.  First, assuming thou hast already discovered the Isle of Fire (no mean feat, I assure thee), thou must then search for the \"pentacle of rocks\" -- five boulders arranged as though they were vertices in a pentagram. In the center thou shouldst notice a sixth rock, from which grows a large, healthy tree -- the Tree of Life. This sixth rock is Castambre's Stone.")
         unknown_007EH() --- Guess: Clears game state
-        var_0001 = add_container_items(itemref, {1592, 7765})
+        var_0001 = add_containerobject_s(objectref, {1592, 7765})
     elseif var_0000 == 145 then
         add_dialogue("... Once the the \"heart\" has been placed within the \"chest\" of the creature, the ritual may begin. First, using perhaps the same pick, thou must strike the Tree hard enough to draw blood. Blood from a Tree, questions thee? Aye, I say, for this Tree is one of life and energy -- collected from the nutrients of the Stone, and bleed it does. Some say thou wilt be able to hear the shrieks of pain from Castambre's Stone, but that rumor is waning. Thou wilt need enough of the Tree's life force to fill a bucket.")
         add_dialogue("     After the blood has been properly contained, it must be spilled in five spots about the body of the stone creature as if the creature were Castambre's Stone and the puddles of blood the five rocks of the pentacle. In fact, it is necessary to set down five such small rocks to mark the location upon which the blood must be spilled. Then must thou cast Vas Flam Uus (see detachable page at end of volume), setting fire to each of the puddles of blood. Following that must be chanted the sacred words gleaned from Castambre's journals (also on detachable page).")
         add_dialogue("     Now that the creature is enchanted, of course, it will become necessary to instruct it, much as one educates a child. However, a stone golem will learn much more quickly...")
-        var_0002 = set_item_quality(itemref, 144)
+        var_0002 = set_object_quality(objectref, 144)
         if not get_flag(805) then
-            var_0003 = get_item_status(797) --- Guess: Gets item status
-            var_0004 = set_item_quality(var_0003, 45)
+            var_0003 = get_object_status(797) --- Guess: Gets item status
+            var_0004 = set_object_quality(var_0003, 45)
             var_0005 = unknown_0026H(unknown_0018H(356)) --- Guess: Updates position
         end
-        var_0006 = add_container_items(356, {1592, 17493, 7715})
+        var_0006 = add_containerobject_s(356, {1592, 17493, 7715})
     elseif var_0000 == 146 then
         add_dialogue("~~ ~~THE DARK CORE OF EXODUS~~ ~~by Erethian")
         add_dialogue("    Exodus was a mixture of etherial being and magical mechanism. Its living portion, or psyche, was comprised of its ambitions, desires, curiosity, in total, its personality. The subject matter of this tome, however, lies upon a part of its more physical manifestation.")

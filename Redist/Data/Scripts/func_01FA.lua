@@ -1,5 +1,5 @@
 --- Best guess: Handles a dramatic scene with Batlin (NPC ID 26) reacting to Hook’s death, taunting the Avatar, and hiding, with flag checks for progression.
-function func_01FA(eventid, itemref)
+function func_01FA(eventid, objectref)
     local var_0000
 
     if eventid == 2 then

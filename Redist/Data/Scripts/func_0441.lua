@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Wislem, a gargoyle advisor to Lord British, discussing gargoyle integration into Britannian society and the murder of Inamo in Trinsic, urging the player to inform Draxinusom.
-function func_0441(eventid, itemref)
+function func_0441(eventid, objectref)
     local var_0000
 
     start_conversation()

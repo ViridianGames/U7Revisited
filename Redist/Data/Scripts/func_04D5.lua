@@ -1,5 +1,5 @@
 --- Best guess: Manages Catherine’s dialogue in Vesper, a young girl who idolizes the Avatar and has secret interactions with a gargoyle, For-Lem.
-function func_04D5(eventid, itemref)
+function func_04D5(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

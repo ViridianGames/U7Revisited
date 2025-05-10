@@ -1,5 +1,5 @@
 --- Best guess: Manages Tseramed’s dialogue, handling introductions, Fellowship opinions, and forest-related topics, with flag-based progression.
-function func_040A(eventid, itemref)
+function func_040A(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E, var_001F, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_002A
 
     if eventid ~= 1 then

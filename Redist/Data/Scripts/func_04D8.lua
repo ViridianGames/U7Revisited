@@ -1,5 +1,5 @@
 --- Best guess: Manages Wis-Sur’s dialogue in Vesper, a paranoid gargoyle mage selling magical items, distrustful of humans.
-function func_04D8(eventid, itemref)
+function func_04D8(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

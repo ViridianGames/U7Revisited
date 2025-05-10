@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Chantu, the Trinsic healer, discussing his services, the Fellowship, and the local murder, with healing options.
-function func_0411(eventid, itemref)
+function func_0411(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

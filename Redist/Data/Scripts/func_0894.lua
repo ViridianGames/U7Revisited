@@ -1,5 +1,5 @@
 --- Best guess: Initiates the quest to restore Adjhar, offering a book and discussing golem creation.
-function func_0894(eventid, itemref)
+function func_0894(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
@@ -19,7 +19,7 @@ function func_0894(eventid, itemref)
             say_with_newline("@Why, by the stars, I believe it is a creature!@") --- Guess: Says with newline
             add_dialogue("@Slowly, as if with great effort, it raises it head.@")
             switch_talk_to(0, 289) --- Guess: Initiates dialogue
-            var_0001 = get_item_frame(select_party_member(40, 414, 356)) --- Guess: Selects party member
+            var_0001 = get_object_frame(select_party_member(40, 414, 356)) --- Guess: Selects party member
             if var_0001 == 4 or var_0001 == 5 then
                 add_dialogue("@What dost thou... want?' it asks slowly.@")
             else
@@ -87,7 +87,7 @@ function func_0894(eventid, itemref)
                 remove_answer("books") --- Guess: Removes dialogue option
                 if not get_flag(803) then
                     add_dialogue("@I have a book here that Adjhar said told about... our... creation...@")
-                    var_0004 = add_item_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
+                    var_0004 = add_object_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
                     if var_0004 then
                         add_dialogue("@He hands to you a very old tome...@")
                         add_answer("blood") --- Guess: Adds dialogue option
@@ -106,7 +106,7 @@ function func_0894(eventid, itemref)
                 add_dialogue("@My companion... Adjhar... He is dying. Thou must help repair him...@")
                 if not get_flag(803) then
                     add_dialogue("@I have a book here that Adjhar said told about... our... creation...@")
-                    var_0004 = add_item_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
+                    var_0004 = add_object_to_inventory(359, 144, 642, 1) --- Guess: Adds item to inventory
                     if var_0004 then
                         add_dialogue("@He hands to you a very old tome...@")
                         add_answer("blood") --- Guess: Adds dialogue option

@@ -1,5 +1,5 @@
 --- Best guess: Displays a message describing fine cloth, suggesting it could be sold in Minoc or cut into bandages.
-function func_0353(eventid, itemref)
+function func_0353(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

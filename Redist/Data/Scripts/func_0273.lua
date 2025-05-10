@@ -1,10 +1,10 @@
 --- Best guess: Manages a lockpick, unlocking chests or doors with a dexterity check, potentially breaking the pick or triggering traps.
-function func_0273(eventid, itemref)
+function func_0273(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
         var_0000 = object_select_modal()
-        set_object_quality(itemref, 27)
+        set_object_quality(objectref, 27)
         var_0001 = get_object_shape(var_0000)
         var_0002 = _get_object_quality(var_0000)
         var_0003 = get_npc_quality(1, -356) >= random2(30, 1)
@@ -24,11 +24,11 @@ function func_0273(eventid, itemref)
                     bark("Unlocked", var_0000)
                 else
                     bark("Pick broke", var_0000)
-                    unknown_0925H(itemref)
+                    unknown_0925H(objectref)
                 end
             else
                 bark("Pick broke", var_0000)
-                unknown_0925H(itemref)
+                unknown_0925H(objectref)
             end
         else
             var_0006 = {433, 432, 270, 376}
@@ -40,7 +40,7 @@ function func_0273(eventid, itemref)
                             bark("Unlocked", var_0000)
                         else
                             bark("Pick broke", var_0000)
-                            unknown_0925H(itemref)
+                            unknown_0925H(objectref)
                         end
                     else
                         unknown_08FEH("@Strange that did not work.@")

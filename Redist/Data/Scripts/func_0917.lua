@@ -1,5 +1,5 @@
 --- Best guess: Improves an NPC’s combat skill training level based on strength and dexterity.
-function func_0917(eventid, itemref, arg1, arg2)
+function func_0917(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     var_0002 = 0

@@ -1,5 +1,5 @@
 --- Best guess: Normalizes an input value, ensuring it’s positive by multiplying by -1 if negative.
-function func_0932(eventid, itemref, arg1)
+function func_0932(eventid, objectref, arg1)
     local var_0000
 
     var_0000 = arg1

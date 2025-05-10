@@ -1,5 +1,5 @@
 --- Best guess: Triggers a hostile reaction against a Fellowship member, displaying a message and initiating combat if flag 6 is set.
-function func_06A5(eventid, itemref)
+function func_06A5(eventid, objectref)
     if eventid == 3 then
         if get_flag(6) then
             unknown_001DH(0, unknown_001BH(103))

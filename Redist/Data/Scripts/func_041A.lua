@@ -1,5 +1,5 @@
 --- Best guess: Manages Batlin’s dialogue, handling Fellowship membership, package delivery, chest retrieval missions, and philosophical discussions, with flag-based progression and inventory checks.
-function func_041A(eventid, itemref)
+function func_041A(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     if eventid ~= 1 then
@@ -48,12 +48,12 @@ function func_041A(eventid, itemref)
                 else
                     add_dialogue("\"Thou art too encumbered to receive thy Fellowship medallion. Thou must lighten thy load.\"")
                 end
-                unknown_0001H({23, 17494, 7715}, itemref)
+                unknown_0001H({23, 17494, 7715}, objectref)
                 return
             else
                 add_dialogue("\"My dear Avatar. Thou must realize that thou must know everything there is to know about The Fellowship before I can induct thee. Please study thy Book of Fellowship and return to me.")
                 add_dialogue("Your mind seems unclear. I would not be surprised if thou dost not understand another soul with whom thou dost speak.")
-                unknown_0089H(25, itemref)
+                unknown_0089H(25, objectref)
                 return
             end
         else

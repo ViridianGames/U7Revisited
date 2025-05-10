@@ -10,8 +10,8 @@ function func_0857()
     var_0002 = get_dialogue_choice() --- Guess: Gets player choice
     if not var_0002 then
         add_dialogue("@\"Very good! Let me see how many thou dost have...\"@")
-        var_0003 = check_item_ownership(20, -359, 377, -357) --- Guess: Checks pumpkins (frame 20)
-        var_0004 = check_item_ownership(21, -359, 377, -357) --- Guess: Checks pumpkins (frame 21)
+        var_0003 = check_object_ownership(20, -359, 377, -357) --- Guess: Checks pumpkins (frame 20)
+        var_0004 = check_object_ownership(21, -359, 377, -357) --- Guess: Checks pumpkins (frame 21)
         var_0005 = var_0003 + var_0004 --- Guess: Total pumpkins
         if var_0005 == 0 then
             add_dialogue("@\"But thou dost not have a single one in thy possession! Thou art as looney as Mack!\"@")
@@ -19,10 +19,10 @@ function func_0857()
         else
             var_0006 = var_0005 / var_0001 * var_0000 --- Guess: Calculates gold
             add_dialogue("@\"Lovely! " .. var_0005 .. "! That means I owe thee " .. var_0006 .. " gold. Here thou art! I shall take the pumpkins from thee now!\"@")
-            var_0007 = add_item_to_inventory(-359, -359, 644, var_0006) --- Guess: Adds gold
+            var_0007 = add_object_to_inventory(-359, -359, 644, var_0006) --- Guess: Adds gold
             if not var_0007 then
-                var_0008 = remove_item_from_inventory(20, -359, 377, var_0003) --- Guess: Removes pumpkins (frame 20)
-                var_0008 = remove_item_from_inventory(21, -359, 377, var_0004) --- Guess: Removes pumpkins (frame 21)
+                var_0008 = remove_object_from_inventory(20, -359, 377, var_0003) --- Guess: Removes pumpkins (frame 20)
+                var_0008 = remove_object_from_inventory(21, -359, 377, var_0004) --- Guess: Removes pumpkins (frame 21)
                 add_dialogue("@\"Come back and work for me at any time!\"@")
                 abort() --- Guess: Aborts script
             else

@@ -1,5 +1,5 @@
 --- Best guess: Manages a racing game mechanic, likely a horse race, checking lane outcomes, updating item frames, and awarding wins based on position comparisons, with NPC dialogue for results.
-function func_060C(eventid, itemref)
+function func_060C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017
 
     if unknown_001CH(232) == 9 then
@@ -13,8 +13,8 @@ function func_060C(eventid, itemref)
             unknown_005CH(var_0003)
         end
     else
-        var_0004 = unknown_0035H(0, 7, 644, itemref)
-        var_0005 = unknown_0018H(itemref)
+        var_0004 = unknown_0035H(0, 7, 644, objectref)
+        var_0005 = unknown_0018H(objectref)
         var_0006 = 0
         var_0007 = unknown_0030H(763)
         for var_000A in ipairs(var_0004) do

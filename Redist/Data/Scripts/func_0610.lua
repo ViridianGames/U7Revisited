@@ -1,10 +1,10 @@
 --- Best guess: Handles party member dialogue after the Avatar's recovery, discussing Fellowship members and celebrating survival.
-function func_0610(eventid, itemref)
+function func_0610(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     start_conversation()
     unknown_008CH(1, 1, 36) --- Guess: Sets game state
-    var_0000 = unknown_0035H(4, 35, 359, itemref) --- Guess: Sets NPC location
+    var_0000 = unknown_0035H(4, 35, 359, objectref) --- Guess: Sets NPC location
     -- Guess: sloop checks party members' state and schedule
     for i = 1, 4 do
         var_0003 = {1, 2, 3, 0}[i]

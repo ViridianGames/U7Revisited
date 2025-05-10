@@ -1,12 +1,12 @@
 --- Best guess: Displays various signs and messages based on item quality, ranging from location names to gravestones and warnings, used for world-building and navigation.
-function func_017B(eventid, itemref)
+function func_017B(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
         return
     end
     var_0000 = unknown_0908H()
-    var_0001 = unknown_0014H(itemref)
+    var_0001 = unknown_0014H(objectref)
     if var_0001 > 151 then
         unknown_0032H({"SIGN", "VALID", "NOT A", "THIS IS"}, 49)
     elseif var_0001 == 0 then

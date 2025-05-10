@@ -1,5 +1,5 @@
 --- Best guess: Applies a paralyze effect to party members in a poppy field when event ID 3 is triggered, if their strength is not zero.
-function func_06B1(eventid, itemref)
+function func_06B1(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 3 then
@@ -7,7 +7,7 @@ function func_06B1(eventid, itemref)
         var_0000 = unknown_0023H()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
-            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(itemref)) then
+            if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(objectref)) then
                 unknown_0089H(7, unknown_001BH(var_0003))
                 var_0004 = unknown_001BH(var_0003)
                 unknown_0620H(var_0004)

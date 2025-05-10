@@ -1,9 +1,9 @@
 --- Best guess: Handles a scissors interaction, converting them to bandages (shape 827) or displaying a suggestion to use them for cutting cloth.
-function func_02BA(eventid, itemref)
+function func_02BA(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        var_0000 = item_select_modal()
+        var_0000 = object_select_modal()
         var_0001 = get_object_shape(aidx(var_0000, 1))
         if var_0001 == 851 then
             set_object_shape(var_0000, 827)

@@ -1,5 +1,5 @@
 --- Best guess: Manages Tiery’s dialogue, a quirky gravedigger at Empath Abbey, discussing his job, the graveyard, and local residents, with flag-based progression and humorous misunderstandings of names like “Umpeth Abby” and “Barry.”
-function func_046A(eventid, itemref)
+function func_046A(eventid, objectref)
     local var_0000, var_0001
 
     if eventid ~= 1 then

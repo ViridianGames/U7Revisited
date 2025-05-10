@@ -1,10 +1,10 @@
 --- Best guess: Manages a pig’s dialogue, repeating random phrases up to 10 times when interacted with, and saying “Oink” when examined.
-function func_063D(eventid, itemref)
+function func_063D(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
         start_conversation()
-        var_0000 = unknown_003AH(itemref)
+        var_0000 = unknown_003AH(objectref)
         if var_0000 < 256 then
             switch_talk_to(0, var_0000)
             var_0001 = 0
@@ -15,6 +15,6 @@ function func_063D(eventid, itemref)
             end
         end
     elseif eventid == 0 then
-        bark(itemref, "@Oink@")
+        bark(objectref, "@Oink@")
     end
 end

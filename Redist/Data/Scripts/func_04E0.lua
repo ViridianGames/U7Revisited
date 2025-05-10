@@ -1,5 +1,5 @@
 --- Best guess: Manages Roberto’s dialogue in Buccaneer’s Den, a worker at The Baths offering services and revealing secret passages, with gender-specific interactions.
-function func_04E0(eventid, itemref)
+function func_04E0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid == 0 then

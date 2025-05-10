@@ -1,8 +1,8 @@
 --- Best guess: Simulates a roulette game, checking time and casino state to determine outcomes and trigger effects.
-function func_0329(eventid, itemref)
+function func_0329(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
-    if eventid == 1 and not unknown_0079H(itemref) then
+    if eventid == 1 and not unknown_0079H(objectref) then
         unknown_007EH()
         var_0000 = unknown_083CH()
         var_0000 = unknown_083AH()

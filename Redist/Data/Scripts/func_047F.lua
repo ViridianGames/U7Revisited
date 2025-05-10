@@ -1,5 +1,5 @@
 --- Best guess: Manages Timmons’s dialogue, a new fighter in Jhelom seeking to prove himself to Master De Snel at the Library of Scars by dueling Sprellic over the stolen honor flag, with flag-based combat triggers.
-function func_047F(eventid, itemref)
+function func_047F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid ~= 1 then

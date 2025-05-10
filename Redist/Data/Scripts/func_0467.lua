@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Thad, a zealous warrior in Yew, who is hostile to Fellowship members, discussing his quest to destroy the Fellowship, save his enchanted sister Millie, and his knowledge of Yew’s hunters.
-function func_0467(eventid, itemref)
+function func_0467(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     start_conversation()

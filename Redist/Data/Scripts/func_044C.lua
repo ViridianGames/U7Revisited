@@ -1,5 +1,5 @@
 --- Best guess: Manages Rayburt’s dialogue, a combat trainer specializing in meditation, discussing his dog Regal and his wife Pamela, with flag-based training sessions and business hour checks.
-function func_044C(eventid, itemref)
+function func_044C(eventid, objectref)
     local var_0000, var_0001
 
     if eventid ~= 1 then

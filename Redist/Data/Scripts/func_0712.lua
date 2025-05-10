@@ -1,5 +1,5 @@
 --- Best guess: Destroys items in a container, possibly for ritual cleanup or object removal.
-function func_0712(eventid, itemref)
+function func_0712(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 3 then
@@ -11,7 +11,7 @@ function func_0712(eventid, itemref)
                 var_0003 = {1, 2, 3, 0, 9}[i]
                 calle_08E6H(var_0003) --- External call to activate object
             end
-            destroy_item_silent(itemref) --- Guess: Destroys item silently
+            destroy_object_silent(objectref) --- Guess: Destroys item silently
         end
     end
 end

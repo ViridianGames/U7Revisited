@@ -1,5 +1,5 @@
 --- Best guess: Manages an NPC (ID -1) advertising Iolo’s crossbow bolts, hiding after dialogue, likely a promotional easter egg.
-function func_02D3(eventid, itemref)
+function func_02D3(eventid, objectref)
     local var_0000
 
     if eventid == 1 then

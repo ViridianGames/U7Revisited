@@ -1,11 +1,11 @@
 --- Best guess: Manages dialogue with a Trinsic guard, requiring a password (Blackbird) to pass, with quest-related flag checks.
-function func_0326(eventid, itemref)
+function func_0326(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 0 then
         abort()
     end
-    var_0000 = unknown_001CH(unknown_001BH(itemref))
+    var_0000 = unknown_001CH(unknown_001BH(objectref))
     switch_talk_to(259, 0)
     add_answer({"bye", "job", "name"})
     if not get_flag(61) then

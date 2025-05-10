@@ -1,15 +1,15 @@
 --- Best guess: Implements the dance spell (Por Xen), causing nearby NPCs to dance with random exclamations.
-function func_0669(eventid, itemref)
+function func_0669(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     if eventid == 1 then
-        destroy_item(itemref)
-        bark(itemref, "@Por Xen@")
+        destroyobject_(objectref)
+        bark(objectref, "@Por Xen@")
         if check_spell_requirements() then
-            var_0000 = add_container_items(itemref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
-            bark(itemref, "@Everybody DANCE now!@")
+            var_0000 = add_containerobject_s(objectref, {1641, 17493, 17514, 17520, 8037, 67, 7768})
+            bark(objectref, "@Everybody DANCE now!@")
         else
-            var_0000 = add_container_items(itemref, {1542, 17493, 17514, 17520, 7781})
+            var_0000 = add_containerobject_s(objectref, {1542, 17493, 17514, 17520, 7781})
         end
     elseif eventid == 2 then
         var_0001 = 25
@@ -23,12 +23,12 @@ function func_0669(eventid, itemref)
                     var_0007 = unknown_0018H(var_0005) --- Guess: Gets position data
                     apply_sprite_effect(-1, 0, 0, 0, var_0007[2], var_0007[1], 16) --- Guess: Applies sprite effect
                     update_npc_state(4, var_0005) --- Guess: Updates NPC state
-                    set_item_flag(var_0005, 15)
+                    set_object_flag(var_0005, 15)
                     var_0008 = {"@Yow!@", "@Boogie!@", "@I'm bad!@", "@Oh, yeah!@", "@Huh!@", "@Yeah!@", "@Dance!@"}
                     var_0009 = random(1, 7)
                     var_000A = random(10, 40)
                     npc_add_dialogue(var_0005, var_0008[var_0009]) --- Guess: NPC says random phrase
-                    var_0000 = add_container_items(var_0005, {var_000A, 1672, 17493, 7715})
+                    var_0000 = add_containerobject_s(var_0005, {var_000A, 1672, 17493, 7715})
                 end
             end
         end

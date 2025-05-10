@@ -1,9 +1,9 @@
 --- Best guess: Handles weapon attacks, prompting the player to attack with it and managing item transformations or actions based on selections.
-function func_030E(eventid, itemref)
+function func_030E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        unknown_08FFH("@Perhaps thou shouldst attack with it.@", itemref)
+        unknown_08FFH("@Perhaps thou shouldst attack with it.@", objectref)
     elseif eventid == 4 then
         var_0000 = unknown_0033H()
         var_0001 = {var_0000[2], var_0000[3], var_0000[4]}

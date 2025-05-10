@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Sherry the Mouse, who assists in the Royal Nursery, plays with children, and searches for cheese, offering to recite "Hubert's Hair-Raising Adventure" and accepting cheese from the player.
-function func_0442(eventid, itemref)
+function func_0442(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Handles evidence discussion in the murder investigation, setting flags for progress.
-function func_0885(eventid, itemref)
+function func_0885(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

@@ -1,9 +1,9 @@
 --- Best guess: Handles a wand’s interaction with specific items (e.g., Black Gate, ID 305) or NPCs (e.g., Batlin, ID 403), triggering effects or dialogue.
-function func_0303(eventid, itemref)
+function func_0303(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 4 then
-        var_0000 = itemref
+        var_0000 = objectref
     else
         var_0000 = object_select_modal()
     end
@@ -16,7 +16,7 @@ function func_0303(eventid, itemref)
             var_0003 = unknown_0041H(704, var_0000, -356)
             var_0003 = unknown_0001H({17530, 17505, 17511, 8449, var_0002, 7769}, -356)
         elseif var_0001 == 305 then
-            var_0004 = unknown_0035H(176, 12, 168, itemref)
+            var_0004 = unknown_0035H(176, 12, 168, objectref)
             var_0005 = unknown_0035H(0, 80, 403, -356)
             if not var_0005 and not var_0004 then
                 unknown_0075H(true)

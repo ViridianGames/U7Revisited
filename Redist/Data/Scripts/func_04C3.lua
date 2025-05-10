@@ -1,5 +1,5 @@
 --- Best guess: Manages Lord John-Paul’s dialogue in Serpent’s Hold, the overseer investigating the defacement of Lord British’s statue.
-function func_04C3(eventid, itemref)
+function func_04C3(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

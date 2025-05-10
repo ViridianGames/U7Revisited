@@ -1,5 +1,5 @@
 --- Best guess: Manages post-quest dialogue with Adjhar, offering the Talisman of Love.
-function func_0892(eventid, itemref)
+function func_0892(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()
@@ -20,9 +20,9 @@ function func_0892(eventid, itemref)
             remove_answer("Talisman") --- Guess: Removes dialogue option
             if get_dialogue_choice() then --- Guess: Gets dialogue choice
                 add_dialogue("@I was put here to protect the Shrines and prevent any from acquiring the Talisman...@")
-                var_0000 = set_item_type(955, itemref) --- Guess: Sets item type
-                set_item_frame(10, var_0000) --- Guess: Sets item frame
-                var_0001 = add_item_to_party(get_item_owner(356)) --- Guess: Adds item to party
+                var_0000 = set_object_type(955, objectref) --- Guess: Sets item type
+                set_object_frame(10, var_0000) --- Guess: Sets item frame
+                var_0001 = add_object_to_party(get_object_owner(356)) --- Guess: Adds item to party
                 if var_0001 then
                     add_dialogue("@He places the Talisman in your palm...@")
                     set_flag(808, true)

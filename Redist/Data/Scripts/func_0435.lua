@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Gaye, the clothier in Britain, discussing her shop, Fellowship involvement, and relationship with Willy, offering Avatar costumes and clothing for sale.
-function func_0435(eventid, itemref)
+function func_0435(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     start_conversation()

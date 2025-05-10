@@ -1,12 +1,12 @@
 --- Best guess: Handles dialogue with a Wisp (Xorinia) for trading Alagner's notebook for information about the Time Lord and the Guardian's Black Gate.
-function func_0500(eventid, itemref)
+function func_0500(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 0 then
         abort()
     end
     var_0000 = get_party_members()
-    var_0001 = unknown_001CH(unknown_001BH(itemref)) --- Guess: Gets schedule
+    var_0001 = unknown_001CH(unknown_001BH(objectref)) --- Guess: Gets schedule
     switch_talk_to(256, 0)
     if var_0001 ~= 3 then
         add_dialogue("The wisp does not respond.")
@@ -62,7 +62,7 @@ function func_0500(eventid, itemref)
                 add_dialogue("\"'Xorinia' recognizes 'your' usefulness. 'I' shall be here. Human entities will call 'my' activity 'waiting'.\"")
             else
                 add_dialogue("\"'Xorinia' recognizes 'your' hostility. 'I' shall be here should 'you' reflect upon 'your' decision and decide to change it.\"")
-                unknown_001DH(20, itemref) --- Guess: Sets object behavior
+                unknown_001DH(20, objectref) --- Guess: Sets object behavior
                 abort()
             end
             remove_answer("trade")
@@ -113,5 +113,5 @@ function func_0500(eventid, itemref)
         end
     end
     add_dialogue("\"'Xorinia' always welcomes the exchange of information. Farewell.\"")
-    unknown_001DH(20, itemref) --- Guess: Sets object behavior
+    unknown_001DH(20, objectref) --- Guess: Sets object behavior
 end

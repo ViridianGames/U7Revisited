@@ -1,12 +1,12 @@
 --- Best guess: Handles party member banter for various locations (e.g., dungeons, shrines) and events, with checks for missing quest items (sphere, cube, tetrahedron).
-function func_0621(eventid, itemref)
+function func_0621(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()
     if eventid == 3 then
         var_0000 = ""
-        var_0001 = get_item_quality(itemref) --- Guess: Gets item quality
-        var_0002 = itemref
+        var_0001 = get_object_quality(objectref) --- Guess: Gets item quality
+        var_0002 = objectref
         var_0003 = 0
         if var_0001 == 0 then
             var_0000 = "@Welcome, Avatar.@"

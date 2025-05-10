@@ -1,11 +1,11 @@
 --- Best guess: Manages dialogue with Arcadion in the mirror or sword, handling multiple conversation paths and flag updates based on player choices.
-function func_06F6(eventid, itemref)
+function func_06F6(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030
 
     if not get_flag(815) then
         switch_talk_to(290, 0)
         var_0000 = false
-        var_0001 = unknown_0035H(8, 10, 154, itemref)
+        var_0001 = unknown_0035H(8, 10, 154, objectref)
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]
             if not unknown_002AH(4, 240, 797, var_0004) then
@@ -28,7 +28,7 @@ function func_06F6(eventid, itemref)
                 add_dialogue("Arcadion appears truly astonished, \"For what dost thou wait?! I beg of thee! Release me!\"")
                 unknown_0843H()
             else
-                var_0006 = unknown_0035H(0, 15, 760, itemref)
+                var_0006 = unknown_0035H(0, 15, 760, objectref)
                 if not var_0006 then
                     add_dialogue("\"There is a gem nearby that can free me! It is a small blue stone. Take it, quickly, and use it to free me of this accursed mirror!\" The large daemon seethes with pent up frustration.*")
                     add_answer({"bye", "release", "job", "name"})
@@ -162,10 +162,10 @@ function func_06F6(eventid, itemref)
         end
     end
     if var_0012 then
-        unknown_06FCH(itemref)
+        unknown_06FCH(objectref)
     end
     if var_0013 then
-        unknown_0001H({1785, 8021, 1, 7719}, itemref)
+        unknown_0001H({1785, 8021, 1, 7719}, objectref)
     end
     if var_0014 then
         var_001B = unknown_092DH(var_0011)

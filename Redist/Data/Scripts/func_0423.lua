@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Csil, Britain’s healer, discussing his healing services, past as Abrams, and a theory on antibiotics, with tensions regarding the Fellowship.
-function func_0423(eventid, itemref)
+function func_0423(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

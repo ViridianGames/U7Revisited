@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Alina, a poor mother in the Fellowship shelter in Paws, discussing her husband Weston’s imprisonment, her daughter Cassie, and pressure to join the Fellowship.
-function func_04A9(eventid, itemref, arg1)
+function func_04A9(eventid, objectref, arg1)
     local var_0000, var_0001
 
     if eventid == 1 then

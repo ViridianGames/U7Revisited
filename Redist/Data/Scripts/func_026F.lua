@@ -1,5 +1,5 @@
 --- Best guess: Manages sword forging by hammering, checking heat levels (frame 8-15) and transforming the sword (type 991) if conditions are met, with failure messages.
-function func_026F(eventid, itemref)
+function func_026F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
@@ -7,12 +7,12 @@ function func_026F(eventid, itemref)
             unknown_006AH(2)
         end
         unknown_007EH()
-        unknown_0690H(itemref)
+        unknown_0690H(objectref)
     elseif eventid == 2 then
         var_0000 = false
-        var_0001 = unknown_0011H(itemref)
+        var_0001 = unknown_0011H(objectref)
         if var_0001 == 991 then
-            var_0000 = unknown_000EH(1, 668, itemref)
+            var_0000 = unknown_000EH(1, 668, objectref)
         elseif var_0001 == 623 then
             var_0000 = unknown_0033H()
         end
@@ -33,7 +33,7 @@ function func_026F(eventid, itemref)
         var_0006 = unknown_000EH(3, 668, unknown_001BH(-356))
         var_0005 = unknown_0012H(var_0006)
         var_0007 = unknown_001BH(-356)
-        var_0008 = unknown_092DH(itemref)
+        var_0008 = unknown_092DH(objectref)
         if var_0005 >= 13 and var_0005 <= 15 then
             unknown_0040H("@The sword is not heated.@", var_0007)
             var_0009 = unknown_0001H(var_0008, 7769, var_0007)

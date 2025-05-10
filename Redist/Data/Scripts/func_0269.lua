@@ -1,5 +1,5 @@
 --- Best guess: Manages dialogue with the Time Lord, providing quest guidance based on flags and player choices.
-function func_0269(eventid, itemref)
+function func_0269(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 0 then

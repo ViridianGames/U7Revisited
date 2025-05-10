@@ -1,5 +1,5 @@
 --- Best guess: Manages Glenno’s dialogue in Buccaneer’s Den, the manager of The Baths, handling entry fees and Fellowship perks, with special interactions for young Spark.
-function func_04DE(eventid, itemref)
+function func_04DE(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0008, var_0009
 
     if eventid == 1 then

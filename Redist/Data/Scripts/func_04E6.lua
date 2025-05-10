@@ -1,5 +1,5 @@
 --- Best guess: Manages Gordy’s dialogue in Buccaneer’s Den, the overseer of the House of Games, handling gambling registration and revealing Fellowship backing, with suspicion toward Avatars.
-function func_04E6(eventid, itemref)
+function func_04E6(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then

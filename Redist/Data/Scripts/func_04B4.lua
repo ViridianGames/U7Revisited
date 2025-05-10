@@ -1,5 +1,5 @@
 --- Best guess: Manages Draxinusom’s dialogue in Terfin, an aged gargoyle reflecting on his past, The Fellowship, and the loss of his Ethereal Ring.
-function func_04B4(eventid, itemref)
+function func_04B4(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

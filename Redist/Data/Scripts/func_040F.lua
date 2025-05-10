@@ -1,5 +1,5 @@
 --- Best guess: Manages Eiko’s dialogue, discussing her quest for vengeance against Iskander Ironheart, with flag-based progression.
-function func_040F(eventid, itemref)
+function func_040F(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 0 then

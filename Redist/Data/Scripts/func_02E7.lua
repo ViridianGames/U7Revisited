@@ -1,5 +1,5 @@
 --- Best guess: Manages a dragon encounter, rewarding the Avatar with a win message and triggering state changes, possibly for a quest.
-function func_02E7(eventid, itemref)
+function func_02E7(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
@@ -9,10 +9,10 @@ function func_02E7(eventid, itemref)
         var_0001 = {1, 1, 1}
         var_0002 = -1
         -- call [0000] (0828H, unmapped)
-        unknown_0828H(7, itemref, 743, var_0002, var_0001, var_0000, itemref)
+        unknown_0828H(7, objectref, 743, var_0002, var_0001, var_0000, objectref)
     elseif eventid == 7 then
         -- call [0001] (0827H, unmapped)
-        var_0003 = unknown_0827H(itemref, 356)
+        var_0003 = unknown_0827H(objectref, 356)
         var_0004 = unknown_0001H({17505, 17516, 8449, var_0003, 7769}, 356)
         var_0005 = get_npc_property(356, 0)
         if var_0005 >= 0 and var_0005 < 4 then
@@ -39,13 +39,13 @@ function func_02E7(eventid, itemref)
             var_0005 = 6
         end
         if var_0005 > 7 then
-            var_0004 = unknown_0002H({var_0005 + 1, 24, 7715}, itemref)
+            var_0004 = unknown_0002H({var_0005 + 1, 24, 7715}, objectref)
             if not npc_in_party(44) and not unknown_0937H(44) then
                 bark(44, "@Avatar wins a Dragon!@")
                 var_0004 = unknown_002CH(false, 0, 359, 742, 1)
             end
         end
-        var_0004 = unknown_0001H({0, 8518, var_0005, -1, 17419, 8527, var_0005, -1, 17419, 8013, 4, 8024, 0, 7750}, itemref)
+        var_0004 = unknown_0001H({0, 8518, var_0005, -1, 17419, 8527, var_0005, -1, 17419, 8013, 4, 8024, 0, 7750}, objectref)
     end
     return
 end

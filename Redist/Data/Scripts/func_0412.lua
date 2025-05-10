@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Dell, the Trinsic shopkeeper, discussing his shop, the Fellowship, and the local murder, with options to buy items during business hours.
-function func_0412(eventid, itemref)
+function func_0412(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     start_conversation()

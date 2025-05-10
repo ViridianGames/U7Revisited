@@ -1,5 +1,5 @@
 --- Best guess: Manages Inmanilem’s dialogue in Terfin, a gargoyle healer providing information about the city and its residents.
-function func_04B6(eventid, itemref)
+function func_04B6(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

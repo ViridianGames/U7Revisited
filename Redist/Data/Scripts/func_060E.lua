@@ -1,5 +1,5 @@
 --- Best guess: Handles a resurrection mechanic, restoring party members or NPCs, playing music, and managing item states (e.g., containers, frames) with complex array-based animations and NPC property updates.
-function func_060E(eventid, itemref)
+function func_060E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_001A, var_001B, var_001C, var_001D, var_001E
 
     if eventid == 4 then
@@ -7,11 +7,11 @@ function func_060E(eventid, itemref)
         play_music(0, 255)
         play_music(0, 17)
         unknown_0083H()
-        var_0000 = unknown_0093H(itemref)
+        var_0000 = unknown_0093H(objectref)
         for var_0003 in ipairs(var_0000) do
             var_0004 = unknown_0051H(var_0003)
         end
-        var_0004 = unknown_0002H(5, {1550, 17493, 7715}, itemref)
+        var_0004 = unknown_0002H(5, {1550, 17493, 7715}, objectref)
     end
 
     if eventid ~= 2 then
@@ -19,8 +19,8 @@ function func_060E(eventid, itemref)
         return
     end
 
-    var_0005 = get_object_shape(itemref)
-    var_0006 = unknown_0018H(itemref)
+    var_0005 = get_object_shape(objectref)
+    var_0006 = unknown_0018H(objectref)
     set_flag(57, false)
     if get_flag(87) then
         set_flag(58, unknown_08F9H(unknown_0018H(-356), {0=1791, 1595=899, 753=-356}))

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Iriale Silvermist, a guard at the Meditation Retreat, enforcing the rule against entering a restricted cave, threatening combat, and reacting to mentions of Gorn.
-function func_0480(eventid, itemref)
+function func_0480(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

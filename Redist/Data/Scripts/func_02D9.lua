@@ -1,11 +1,11 @@
 --- Best guess: Updates an object’s state based on quality, possibly for a dynamic environmental effect or puzzle.
-function func_02D9(eventid, itemref)
+function func_02D9(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
         -- calli 007E, 0 (unmapped)
         unknown_007EH()
-        var_0000 = get_object_quality(itemref)
+        var_0000 = get_object_quality(objectref)
         if var_0000 == 0 or var_0000 > 7 then
             -- call [0000] (0940H, unmapped)
             unknown_0940H(25)

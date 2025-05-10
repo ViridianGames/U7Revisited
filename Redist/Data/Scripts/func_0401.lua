@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Iolo in Trinsic, discussing the murder, companions, and quest progression, with options to join or leave.
-function func_0401(eventid, itemref)
+function func_0401(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
 
     start_conversation()
@@ -48,7 +48,7 @@ function func_0401(eventid, itemref)
         -- unknown_005CH(1) --- Guess: Updates object state or position
         -- unknown_005CH(11) --- Guess: Updates object state or position
         -- if not get_flag(59) then
-        --     var_0005 = unknown_0001H({0, 0, 17492, 7715}, itemref) --- Guess: Executes a specific action with parameters
+        --     var_0005 = unknown_0001H({0, 0, 17492, 7715}, objectref) --- Guess: Executes a specific action with parameters
         --     set_flag(59, true)
         -- end
         abort()

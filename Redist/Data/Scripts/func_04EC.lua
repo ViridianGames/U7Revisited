@@ -1,5 +1,5 @@
 --- Best guess: Manages Ellen’s dialogue in Trinsic, a Fellowship bookkeeper who discusses her work, her husband Klog, and a local murder, providing an alibi for the latter.
-function func_04EC(eventid, itemref)
+function func_04EC(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

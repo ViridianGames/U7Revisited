@@ -1,5 +1,5 @@
 --- Best guess: Manages Tobias’s dialogue in Paws, a young boy accused of theft, defending his innocence and expressing distrust of The Fellowship.
-function func_04B2(eventid, itemref)
+function func_04B2(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

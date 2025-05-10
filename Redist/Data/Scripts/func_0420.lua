@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Max, a toddler in the Royal Nursery, engaging in playful interactions like tag, singing, and a pacifier game.
-function func_0420(eventid, itemref)
+function func_0420(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Manages Yongi’s dialogue in Vesper, a tavern keeper at the Gilded Lizard with strong anti-gargoyle sentiments.
-function func_04CF(eventid, itemref)
+function func_04CF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000D
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Jakher’s dialogue, a combat trainer in Minoc, discussing local murders, his colleague Karenna, Owen’s past, and the gypsies, with flag-based training sessions and companion interactions.
-function func_045F(eventid, itemref)
+function func_045F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid ~= 1 then

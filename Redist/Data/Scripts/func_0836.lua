@@ -1,10 +1,10 @@
 --- Best guess: Updates item types (e.g., 303, 876, 935, 936) based on quality, likely for puzzle or state transitions.
-function func_0836(eventid, itemref, arg1)
+function func_0836(eventid, objectref, arg1)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     var_0000 = eventid
     var_0001 = arg1
-    var_0002 = get_item_quality(var_0001) --- Guess: Gets item quality
+    var_0002 = get_object_quality(var_0001) --- Guess: Gets item quality
     var_0003 = {}
     if var_0000 == 1 or var_0000 == 359 then
         var_0003 = create_array(303, var_0003) --- Guess: Creates array
@@ -17,8 +17,8 @@ function func_0836(eventid, itemref, arg1)
         -- Guess: sloop updates item types
         for i = 1, 5 do
             var_0006 = {4, 5, 6, 3, 139}[i]
-            if get_item_quality(var_0006) == var_0002 then
-                var_0007 = get_item_type(var_0006) --- Guess: Gets item type
+            if get_object_quality(var_0006) == var_0002 then
+                var_0007 = get_object_type(var_0006) --- Guess: Gets item type
                 if var_0007 == 303 then
                     calle_0832H(936, var_0006) --- External call to add items
                 elseif var_0007 == 876 then

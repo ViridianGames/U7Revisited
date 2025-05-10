@@ -1,13 +1,13 @@
 --- Best guess: Manages a loom mechanic, weaving thread (ID 261) into cloth, with dialogue prompting correct item use and updating item states.
-function func_062E(eventid, itemref)
+function func_062E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 7 then
-        var_0000 = unknown_006EH(itemref)
+        var_0000 = unknown_006EH(objectref)
         if not var_0000 then
-            var_0001 = unknown_0827H(itemref, -356)
-            var_0002 = unknown_0018H(itemref)
-            var_0003 = unknown_0025H(itemref)
+            var_0001 = unknown_0827H(objectref, -356)
+            var_0002 = unknown_0018H(objectref)
+            var_0003 = unknown_0025H(objectref)
             if not var_0003 then
                 var_0003 = unknown_0036H(-356)
                 if not var_0003 then

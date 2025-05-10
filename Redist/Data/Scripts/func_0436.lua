@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Coop, manager of Iolo’s Bows and member of The Avatars, discussing his shop, archery aspirations, and performances, with special interactions when Iolo is present.
-function func_0436(eventid, itemref)
+function func_0436(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

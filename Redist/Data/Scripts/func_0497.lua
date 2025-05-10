@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Kissme, a flirtatious fairy in Ambrosia, spreading love dust and discussing the island's history, Caddellite, and the hydra. Includes an option to accept a kiss.
-function func_0497(eventid, itemref)
+function func_0497(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Generates noun pairs (e.g., "batting cage" or "batting cages"), likely for item or concept references.
-function func_0866(eventid, itemref)
+function func_0866(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     var_0000 = {

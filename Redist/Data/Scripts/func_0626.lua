@@ -1,20 +1,20 @@
 --- Best guess: Manipulates nearby objects of type 518, moving them based on distance checks, possibly for dynamic interactions.
-function func_0626(eventid, itemref)
+function func_0626(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
-    var_0000 = get_item_type(itemref) --- Guess: Gets item type
+    var_0000 = get_object_type(objectref) --- Guess: Gets item type
     if var_0000 == 518 then
         unknown_007AH() --- Guess: Resets item state
-        unknown_0035H(0, 6, 518, itemref) --- Guess: Sets NPC location
-        var_0001 = get_nearby_objects(itemref) --- Guess: Gets nearby objects
+        unknown_0035H(0, 6, 518, objectref) --- Guess: Sets NPC location
+        var_0001 = get_nearby_objects(objectref) --- Guess: Gets nearby objects
         var_0002 = {}
         -- Guess: sloop checks objects at position
         for i = 1, 5 do
             var_0005 = {3, 4, 5, 1, 18}[i]
-            var_0002[i] = unknown_0019H(var_0002, var_0005, itemref) --- Guess: Checks object at position
+            var_0002[i] = unknown_0019H(var_0002, var_0005, objectref) --- Guess: Checks object at position
         end
         var_0001 = move_nearby_objects(var_0002, var_0001) --- Guess: Moves nearby objects
-        var_0006 = unknown_0018H(itemref) --- Guess: Gets position data
+        var_0006 = unknown_0018H(objectref) --- Guess: Gets position data
         var_0007 = 1
         -- Guess: sloop adjusts object positions
         for i = 1, 5 do
@@ -32,12 +32,12 @@ function func_0626(eventid, itemref)
                 end
             end
         end
-        set_object_quality(itemref, 37) --- Guess: Sets item property
-        unknown_006FH(itemref) --- Guess: Unknown object operation
+        set_object_quality(objectref, 37) --- Guess: Sets item property
+        unknown_006FH(objectref) --- Guess: Unknown object operation
     elseif var_0000 == 848 or var_0000 == 268 then
-        if get_item_frame(itemref) ~= 2 then
-            var_000D = add_container_items(itemref, {17478, 7937, 37, 7768})
+        if get_object_frame(objectref) ~= 2 then
+            var_000D = add_containerobject_s(objectref, {17478, 7937, 37, 7768})
         end
-        unknown_006FH(itemref) --- Guess: Unknown object operation
+        unknown_006FH(objectref) --- Guess: Unknown object operation
     end
 end

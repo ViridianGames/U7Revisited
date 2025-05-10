@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Bennie, Head Servant at Lord British’s castle, serving meals and discussing his family’s service, with comments on his absent-mindedness.
-function func_0444(eventid, itemref)
+function func_0444(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0009, var_000A
 
     start_conversation()

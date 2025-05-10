@@ -1,5 +1,5 @@
 --- Best guess: Manages Zinaida’s dialogue, the owner of The Emerald in Cove, discussing her tavern, her love for De Maria, and the polluted Lock Lake, with flag-based food and drink transactions.
-function func_044F(eventid, itemref)
+function func_044F(eventid, objectref)
     local var_0000
 
     if eventid ~= 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Sprellic’s dialogue, the timid innkeeper of The Bunk and Stool in Jhelom, discussing his predicament with stolen honor flag and impending duels, with flag-based resolutions and a detailed story.
-function func_047C(eventid, itemref)
+function func_047C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid ~= 1 then

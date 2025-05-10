@@ -1,13 +1,13 @@
 --- Best guess: Triggers effects on nearby items (type 873, within 20 units) based on their frame, cycling through specific sequences in a dungeon trap.
-function func_06B6(eventid, itemref)
+function func_06B6(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 3 then
         unknown_000FH(28)
-        var_0000 = unknown_0035H(0, 20, 873, itemref)
+        var_0000 = unknown_0035H(0, 20, 873, objectref)
         var_0001 = {}
         for i = 1, #var_0000 do
-            var_0001 = unknown_0019H(var_0001, var_0000[i], itemref)
+            var_0001 = unknown_0019H(var_0001, var_0000[i], objectref)
         end
         var_0000 = unknown_093DH(var_0001, var_0000)
         var_0004 = var_0000[1]

@@ -1,5 +1,5 @@
 --- Best guess: Prompts for a party member selection for training, returning the selected NPC ID.
-function func_0920(eventid, itemref)
+function func_0920(eventid, objectref)
     local var_0000
 
     start_conversation()

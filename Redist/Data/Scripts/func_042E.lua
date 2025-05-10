@@ -1,5 +1,5 @@
 --- Best guess: Manages James’s dialogue, discussing his role as innkeeper at the Wayfarer’s Inn, his marital issues with Cynthia, and his pirate aspirations, with flag-based room transactions and a loop for party members.
-function func_042E(eventid, itemref)
+function func_042E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid ~= 1 then

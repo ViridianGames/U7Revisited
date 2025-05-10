@@ -1,5 +1,5 @@
 --- Best guess: Manages Myrtle’s (Mama’s) dialogue in Bee Cave, living with Murray (Papa), with a secret past revealed by Papa, reacting to the player and Spark’s presence.
-function func_04FF(eventid, itemref)
+function func_04FF(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 0 then

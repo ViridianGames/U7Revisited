@@ -1,5 +1,5 @@
 --- Best guess: Manages item selection and positioning for event ID 2, adjusting coordinates and triggering effects, likely part of a forge or combat mechanic.
-function func_06FC(eventid, itemref)
+function func_06FC(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
     if eventid == 2 then
@@ -70,7 +70,7 @@ function func_06FC(eventid, itemref)
             end
         end
         unknown_007EH()
-        var_0018 = unknown_0002H(1, {17493, 7715, 1788}, itemref)
+        var_0018 = unknown_0002H(1, {17493, 7715, 1788}, objectref)
     end
     return
 end

@@ -1,5 +1,5 @@
 --- Best guess: Displays the current time in 12-hour format with AM/PM, adjusting for midnight and formatting minutes, likely for a clock or time display item.
-function func_009F(eventid, itemref)
+function func_009F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
@@ -18,9 +18,9 @@ function func_009F(eventid, itemref)
         end
         var_0003 = " " .. var_0000 .. ":" .. var_0002 .. var_0001
         if unknown_0081H() then
-            unknown_007FH(var_0003, itemref)
+            unknown_007FH(var_0003, objectref)
         else
-            unknown_0040H(var_0003, itemref)
+            unknown_0040H(var_0003, objectref)
         end
     end
     return

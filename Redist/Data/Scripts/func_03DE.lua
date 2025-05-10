@@ -1,5 +1,5 @@
 --- Best guess: Triggers a telepathic probe with narrative messages, hiding the NPC and altering game state, likely for a mystical quest event.
-function func_03DE(eventid, itemref)
+function func_03DE(eventid, objectref)
     local var_0000
 
     if eventid == 1 then
@@ -11,7 +11,7 @@ function func_03DE(eventid, itemref)
             add_dialogue("You feel as if your mind is being probed, delicately at first, then with more insistence. Images of long past memories flit before your eyes and old emotions resurface. At one point, the images pause as you remember the words Love, Sol, Moons, and Death then a strange sense of deja vu comes over you as the vision comes up to the current time. The images cease and a vast wave of power overwhelms you. A wall of darkness falls...")
             hide_npc(356)
             var_0000 = unknown_0001H({5, 2, 7947, 1, 17447, 8046, 1, 17447, 8045, 1, 17447, 7788}, 356)
-            var_0000 = unknown_0001H({707, 8021, 5, 7719}, itemref)
+            var_0000 = unknown_0001H({707, 8021, 5, 7719}, objectref)
         else
             is_player_female()
             switch_talk_to(0, 356)

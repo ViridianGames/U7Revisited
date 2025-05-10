@@ -1,5 +1,5 @@
 --- Best guess: Manages Lucky’s dialogue in Buccaneer’s Den, a charismatic rogue offering training in deception and sharing insights on his worldly experiences.
-function func_04E4(eventid, itemref)
+function func_04E4(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

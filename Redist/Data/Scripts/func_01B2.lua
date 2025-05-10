@@ -1,20 +1,20 @@
 --- Best guess: Handles a container or trap interaction, displaying a message ("It is about time!") and updating its state (e.g., opening a chest or triggering a trap) when activated.
-function func_01B2(eventid, itemref)
+function func_01B2(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
         -- callis 0079, 1 (unmapped)
-        if not unknown_0079H(itemref) then
+        if not unknown_0079H(objectref) then
             -- calli 005C, 1 (unmapped)
-            unknown_005CH(itemref)
+            unknown_005CH(objectref)
             start_conversation()
             add_dialogue("@It is about time!@")
         else
             -- calle 0629H, 1577 (unmapped)
-            unknown_0629H(itemref)
+            unknown_0629H(objectref)
         end
     elseif eventid == 8 then
-        var_0000 = unknown_0018H(itemref)
+        var_0000 = unknown_0018H(objectref)
         aidx(var_0000, 1, aidx(var_0000, 1) + 1)
         aidx(var_0000, 2, aidx(var_0000, 2) - 1)
         var_0001 = get_container_objects(359, 359, 810, 356)

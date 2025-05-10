@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Zelda, the Lycaeum advisor in Moonglow, discussing her role, the library, and her feelings for Brion and Nelson, including a romance quest.
-function func_0498(eventid, itemref)
+function func_0498(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     start_conversation()

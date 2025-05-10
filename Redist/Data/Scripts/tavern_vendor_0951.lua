@@ -40,7 +40,7 @@ function tavern_vendor_0951(object_id, event)
         strings[0x0000], strings[0x0004], strings[0x0009], strings[0x000E],
         strings[0x0019], strings[0x001F], strings[0x0024], strings[0x002A], strings[0x0031]
     }
-    local item_ids = {616, 616, 377, 377, 377, 616, 377, 377, 0}
+    local object_ids = {616, 616, 377, 377, 377, 616, 377, 377, 0}
     local prices = {3, 5, 5, 31, 12, 0, 1, 8, -359}
     local suffixes = {
         strings[0x003A], strings[0x004A], strings[0x005A], strings[0x0069],
@@ -61,16 +61,16 @@ function tavern_vendor_0951(object_id, event)
             add_dialogue(object_id, strings[0x00DD] .. (get_player_name() or "Avatar") .. strings[0x01C2])
         else
             local price = prices[choice]
-            local item_id = item_ids[choice]
+            local object_id = object_ids[choice]
             local suffix = suffixes[choice]
-            local result = buy_item(suffix, item_id, 1, price, items[choice])
+            local result = buyobject_(suffix, object_id, 1, price, items[choice])
             add_dialogue(object_id, strings[0x01C5] .. result .. strings[0x01C8])
             local buy_response = get_answer()
             if price == 377 then
                 add_dialogue(object_id, strings[0x01EB])
-                buy_response = buy_item(suffix, item_id, math.random(1, 20), price, items[choice])
+                buy_response = buyobject_(suffix, object_id, math.random(1, 20), price, items[choice])
             else
-                buy_response = buy_item(suffix, item_id, 1, price, items[choice])
+                buy_response = buyobject_(suffix, object_id, 1, price, items[choice])
             end
             if buy_response == 1 then
                 add_dialogue(object_id, strings[0x0209])

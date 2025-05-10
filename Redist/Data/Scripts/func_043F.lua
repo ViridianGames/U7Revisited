@@ -1,5 +1,5 @@
 --- Best guess: Manages Millie’s dialogue, a Fellowship recruiter discussing the organization, her brother Thad, and the Meditation Retreat, with flag-based progression and random Fellowship slogans.
-function func_043F(eventid, itemref)
+function func_043F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid ~= 1 then

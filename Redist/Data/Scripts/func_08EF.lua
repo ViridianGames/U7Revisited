@@ -58,7 +58,7 @@ function func_08EF()
                 add_dialogue("\"With this, I will finish it shortly. Wait here whilst I tend to the cage.\"")
                 add_dialogue("\"Take the cage to Mistress Mordra and she will tell thee more about it and its use.\"")
                 set_flag(463, true)
-                unknown_0617H(itemref)
+                unknown_0617H(objectref)
                 return
             end
         elseif string.lower(unknown_XXXXH()) == "sacrifice" then

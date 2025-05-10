@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Constance, the waterbearer of New Magincia, discussing her job, heartbreak over Henry, and her interactions with three strangers (Robin, Battles, Leavell) who mislead her about Buccaneer’s Den.
-function func_0485(eventid, itemref)
+function func_0485(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Manages Quan’s dialogue in Terfin, the Fellowship leader who is unaware of Runeb’s plot and promotes the group’s philosophy.
-function func_04B9(eventid, itemref)
+function func_04B9(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

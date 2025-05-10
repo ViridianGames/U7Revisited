@@ -1,5 +1,5 @@
 --- Best guess: Manages Jeanette’s dialogue, handling her role as a tavern wench at the Blue Boar, her romantic interests, and interactions with Dupre, with flag-based progression and corrections about Charles’s social status.
-function func_042F(eventid, itemref)
+function func_042F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages For-Lem’s dialogue in Vesper, a gargoyle laborer preserving gargoyle legends and concerned about a human girl, Catherine.
-function func_04D6(eventid, itemref)
+function func_04D6(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then

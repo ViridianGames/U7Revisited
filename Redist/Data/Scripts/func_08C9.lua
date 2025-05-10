@@ -2,8 +2,8 @@
 function func_08C9()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015
 
-    var_0000 = unknown_0035H(0, 40, 718, itemref)
-    var_0001 = unknown_0035H(0, 40, 914, itemref)
+    var_0000 = unknown_0035H(0, 40, 718, objectref)
+    var_0001 = unknown_0035H(0, 40, 914, objectref)
     var_0002 = 0
     for _, var_0005 in ipairs(var_0000) do
         var_0006 = unknown_0018H(var_0005)

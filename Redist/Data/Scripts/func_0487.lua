@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Battles, a bodyguard for Robin in New Magincia, discussing his role, his partner Leavell, their employer Robin, and a locket seen with Robin before drinking at The Modest Damsel.
-function func_0487(eventid, itemref)
+function func_0487(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

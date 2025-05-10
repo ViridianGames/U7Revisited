@@ -1,5 +1,5 @@
 --- Best guess: Manages Johnson’s dialogue, handling dock duties, Fellowship membership, and password verification for Trinsic.
-function func_040E(eventid, itemref)
+function func_040E(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 0 then

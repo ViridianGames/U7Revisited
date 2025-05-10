@@ -1,5 +1,5 @@
 --- Best guess: Handles Erethian's transformation dialogue and shape-shifting (gargoyle, dragon, rodent, cow) with incantations.
-function func_0696(eventid, itemref)
+function func_0696(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
 
     start_conversation()
@@ -9,12 +9,12 @@ function func_0696(eventid, itemref)
     var_0003 = false
     var_0004 = false
     var_0005 = false
-    var_0006 = unknown_0018H(itemref) --- Guess: Gets position data
-    unknown_001DH(15, itemref) --- Guess: Sets object behavior
+    var_0006 = unknown_0018H(objectref) --- Guess: Gets position data
+    unknown_001DH(15, objectref) --- Guess: Sets object behavior
     if not get_flag(3) then
         if not get_flag(811) then
-            var_0007 = unknown_0025H(itemref) --- Guess: Checks position
-            if not spawn_item_at(504, 286, var_0006) then --- Guess: Spawns item at position
+            var_0007 = unknown_0025H(objectref) --- Guess: Checks position
+            if not spawn_object_at(504, 286, var_0006) then --- Guess: Spawns item at position
                 var_0004 = true
                 var_0007 = unknown_0026H(var_0006) --- Guess: Updates position
             else
@@ -43,8 +43,8 @@ function func_0696(eventid, itemref)
     else
         switch_talk_to(286, 1) --- Guess: Initiates dialogue
         if not get_flag(811) then
-            var_0007 = unknown_0025H(itemref) --- Guess: Checks position
-            if not spawn_item_at(500, 0, var_0006) then --- Guess: Spawns item at position
+            var_0007 = unknown_0025H(objectref) --- Guess: Checks position
+            if not spawn_object_at(500, 0, var_0006) then --- Guess: Spawns item at position
                 var_0004 = true
                 var_0007 = unknown_0026H(var_0006) --- Guess: Updates position
             else
@@ -67,26 +67,26 @@ function func_0696(eventid, itemref)
             unknown_001DH(29, var_0005)
             unknown_008AH(16, 356) --- Guess: Sets quest flag
             var_0008 = get_conversation_target() --- Guess: Gets conversation target
-            var_0009 = add_container_items(var_0008, {14, 17453, 7724})
-            var_000A = add_container_items(356, {1693, 8021, 12, 7719})
+            var_0009 = add_containerobject_s(var_0008, {14, 17453, 7724})
+            var_000A = add_containerobject_s(356, {1693, 8021, 12, 7719})
         end
     end
     if var_0000 then
-        var_000B = add_container_items(itemref, {1687, 8021, 3, 17447, 8045, 1, 17447, 8044, 1, 17447, 8033, 1, 17447, 8047, 1, 17447, 8048, 1, 7975, 4, 7769})
+        var_000B = add_containerobject_s(objectref, {1687, 8021, 3, 17447, 8045, 1, 17447, 8044, 1, 17447, 8033, 1, 17447, 8047, 1, 17447, 8048, 1, 7975, 4, 7769})
     end
     if var_0001 then
-        var_0000 = set_item_type_at(274, itemref, 1) --- Guess: Sets item type at position
-        var_000C = add_container_items(var_0000, {1687, 8021, 2, 17447, 8045, 3, 17447, 8044, 6, 7719})
+        var_0000 = set_object_type_at(274, objectref, 1) --- Guess: Sets item type at position
+        var_000C = add_containerobject_s(var_0000, {1687, 8021, 2, 17447, 8045, 3, 17447, 8044, 6, 7719})
     end
     if var_0002 then
-        var_000B = add_container_items(itemref, {1687, 8021, 3, 17447, 8045, 1, 17447, 8044, 1, 17447, 8048, 1, 17447, 8047, 1, 7975, 4, 7769})
+        var_000B = add_containerobject_s(objectref, {1687, 8021, 3, 17447, 8045, 1, 17447, 8044, 1, 17447, 8048, 1, 17447, 8047, 1, 7975, 4, 7769})
     end
     if var_0003 then
-        var_000B = add_container_items(itemref, {1687, 8021, 1, 17447, 8047, 1, 17447, 8048, 1, 17447, 8044, 3, 17447, 8045, 1, 17447, 8044, 1, 7975, 4, 7769})
+        var_000B = add_containerobject_s(objectref, {1687, 8021, 1, 17447, 8047, 1, 17447, 8048, 1, 17447, 8044, 3, 17447, 8045, 1, 17447, 8044, 1, 7975, 4, 7769})
     end
     if var_0005 then
-        var_0001 = set_item_type_at(504, itemref, 1) --- Guess: Sets item type at position
-        var_000D = add_container_items(var_0001, {1687, 8021, 1, 17447, 8042, 2, 17447, 8041, 1, 17447, 8040, 1, 17447, 8042, 2, 17447, 8040, 3, 7719})
+        var_0001 = set_object_type_at(504, objectref, 1) --- Guess: Sets item type at position
+        var_000D = add_containerobject_s(var_0001, {1687, 8021, 1, 17447, 8042, 2, 17447, 8041, 1, 17447, 8040, 1, 17447, 8042, 2, 17447, 8040, 3, 7719})
     end
     if var_0004 then
         switch_talk_to(286, 1) --- Guess: Initiates dialogue

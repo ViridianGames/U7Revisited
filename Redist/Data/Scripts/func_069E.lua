@@ -1,5 +1,5 @@
 --- Best guess: Manages a magical ritual by Erethian, involving dialogue, ether surge effects, container item additions, and explosions, likely for a significant spell or quest event.
-function func_069E(eventid, itemref, arg1)
+function func_069E(eventid, objectref, arg1)
     local var_0000, var_0001
 
     start_conversation()
@@ -12,8 +12,8 @@ function func_069E(eventid, itemref, arg1)
         add_dialogue("@You feel a great surge in the ether, which seems to temporarily stabilize it in this area.@")
     end
     hide_npc(286) --- Guess: Hides Erethian after ritual
-    var_0000 = add_container_items(itemref, {1695, 17493, 8047, 1, 17447, 8048, 1, 17447, 8033, 1, 17447, 8044, 9, 17447, 8045, 2, 17447, 8044, 2, 7719}) --- Guess: Adds items to container
-    var_0001 = get_position_data(itemref) --- Guess: Gets position data
+    var_0000 = add_containerobject_s(objectref, {1695, 17493, 8047, 1, 17447, 8048, 1, 17447, 8033, 1, 17447, 8044, 9, 17447, 8045, 2, 17447, 8044, 2, 7719}) --- Guess: Adds items to container
+    var_0001 = get_position_data(objectref) --- Guess: Gets position data
     create_explosion(-1, 0, 0, 0, var_0001[2], var_0001[1], 17) --- Guess: Creates explosion
     create_explosion(-1, 0, 0, 0, var_0001[2], var_0001[1], 7) --- Guess: Creates second explosion
     unknown_000FH(62) --- Guess: Unknown function, possibly spell effect

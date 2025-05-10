@@ -1,5 +1,5 @@
 --- Best guess: Manages Brion’s dialogue in Moonglow’s observatory, discussing the telescope, orrery, and Astronomical Alignment, offering an orrery viewer if a crystal is provided.
-function func_04F8(eventid, itemref)
+function func_04F8(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011
 
     if eventid == 1 then
@@ -104,7 +104,7 @@ function func_04F8(eventid, itemref)
             elseif answer == "moon" then
                 var_0004 = false
                 for i = 1, 5 do
-                    var_0005 = unknown_0035H(0, 20, 377, itemref)
+                    var_0005 = unknown_0035H(0, 20, 377, objectref)
                     var_0008 = unknown_0012H(var_0005)
                     if var_0008 == 28 then
                         var_0004 = true

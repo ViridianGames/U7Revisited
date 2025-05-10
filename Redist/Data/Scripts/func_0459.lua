@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Karl, a reclusive mountain man near Minoc, discussing his disdain for Minoc, the Fellowship, Owen’s monument, the murders, and his brother’s death due to Owen’s faulty ship designs, offering Owen’s stolen plans to investigate with Julia.
-function func_0459(eventid, itemref)
+function func_0459(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

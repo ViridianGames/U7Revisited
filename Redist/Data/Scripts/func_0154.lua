@@ -1,13 +1,13 @@
 --- Best guess: Manages portion items, applying various effects (e.g., poisoning, healing) based on frame, with warnings for misuse.
-function func_0154(eventid, itemref)
+function func_0154(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        unknown_08FAH(itemref)
-        var_0000 = get_object_frame(itemref)
+        unknown_08FAH(objectref)
+        var_0000 = get_object_frame(objectref)
         var_0001 = object_select_modal()
         var_0002 = unknown_0031H(var_0001)
-        set_object_quality(itemref, 90)
+        set_object_quality(objectref, 90)
         if not var_0002 then
             unknown_000FH(68)
             if var_0000 == 0 then
@@ -48,6 +48,6 @@ function func_0154(eventid, itemref)
                 unknown_08FDH(60)
             end
         end
-        unknown_0925H(itemref)
+        unknown_0925H(objectref)
     end
 end

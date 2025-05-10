@@ -1,5 +1,5 @@
 --- Best guess: Manages Sintag’s dialogue in Buccaneer’s Den, a tough guard at the House of Games who distrusts Avatars and provides information about Hook and a torture chamber.
-function func_04E1(eventid, itemref)
+function func_04E1(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then

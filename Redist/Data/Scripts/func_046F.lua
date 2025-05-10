@@ -1,5 +1,5 @@
 --- Best guess: Manages Gharl’s dialogue, a troll prisoner, discussing his life of hunting and eating, now limited to sleeping in jail, with a flag-based food offering that reveals a secret about a troll ally.
-function func_046F(eventid, itemref)
+function func_046F(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid ~= 1 then

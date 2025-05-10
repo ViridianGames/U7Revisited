@@ -1,5 +1,5 @@
 --- Best guess: Manages Alagner’s dialogue in New Magincia, a sage investigating The Fellowship’s corruption, requiring proof of knowledge to lend his notebook.
-function func_04F6(eventid, itemref)
+function func_04F6(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then

@@ -1,5 +1,5 @@
 --- Best guess: Manages Brownie’s dialogue, discussing his farming life, failed mayoral campaign, and need for help with pumpkins, with flag-based job offers and loops for setting up farm tasks.
-function func_043C(eventid, itemref)
+function func_043C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid ~= 1 then

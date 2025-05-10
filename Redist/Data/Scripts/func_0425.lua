@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Lucy, the Blue Boar tavern owner, offering food and drink, discussing the tavern’s history, and engaging playfully with the Avatar and Dupre.
-function func_0425(eventid, itemref)
+function func_0425(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     start_conversation()

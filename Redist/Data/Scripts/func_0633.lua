@@ -1,7 +1,7 @@
 --- Best guess: Handles NPC reactions to theft, triggering escape behavior and setting flags for NPCs (1, 3, 4).
-function func_0633(eventid, itemref)
+function func_0633(eventid, objectref)
     if eventid == 1 then
-        calle_063AH(itemref) --- External call to warning function
+        calle_063AH(objectref) --- External call to warning function
         if random(1, 8) == 1 then
             if unknown_0088H(6, 4) and check_npc_status(4) then
                 bark(4, "@I am leaving!@")

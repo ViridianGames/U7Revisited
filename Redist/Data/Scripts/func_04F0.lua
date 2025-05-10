@@ -1,5 +1,5 @@
 --- Best guess: Manages Anton’s dialogue in a prison, a bitter prisoner accused of spying on The Fellowship, interacting with a troll and revealing his true feelings about the group.
-function func_04F0(eventid, itemref)
+function func_04F0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then

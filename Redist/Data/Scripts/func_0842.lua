@@ -1,5 +1,5 @@
 --- Best guess: Handles a purchase interaction for a broader range of items (e.g., ale, Silverleaf, mutton), with flag-based availability.
-function func_0842(eventid, itemref)
+function func_0842(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F
 
     save_answers() --- Guess: Saves dialogue answers
@@ -34,9 +34,9 @@ function func_0842(eventid, itemref)
             if var_000E then
                 if var_0004[var_000B] == 377 then
                     add_dialogue("\"How many wouldst thou like?\"")
-                    var_000D = purchase_item(true, 1, 20, var_0006[var_000B], var_000A, var_0005[var_000B]) --- Guess: Purchases item
+                    var_000D = purchaseobject_(true, 1, 20, var_0006[var_000B], var_000A, var_0005[var_000B]) --- Guess: Purchases item
                 else
-                    var_000D = purchase_item(true, 1, 0, var_0006[var_000B], var_000A, var_0005[var_000B]) --- Guess: Purchases item
+                    var_000D = purchaseobject_(true, 1, 0, var_0006[var_000B], var_000A, var_0005[var_000B]) --- Guess: Purchases item
                 end
             end
             if var_000D == 1 then

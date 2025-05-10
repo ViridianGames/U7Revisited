@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Charles, a servant in Lord British’s castle, discussing his family, unrequited love for Jeanette, and Nell’s engagement, offering wine and reacting to news about Jeanette and Nell’s pregnancy.
-function func_0449(eventid, itemref)
+function func_0449(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0007
 
     start_conversation()

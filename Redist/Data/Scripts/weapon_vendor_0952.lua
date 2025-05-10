@@ -29,7 +29,7 @@ function weapon_vendor_0952(object_id, event)
         strings[0x0000], strings[0x000D], strings[0x001C], strings[0x0022],
         strings[0x0027], strings[0x002E], strings[0x003B]
     }
-    local item_ids = {601, 602, 599, 659, 594, 593, 0}
+    local object_ids = {601, 602, 599, 659, 594, 593, 0}
     local prices = {70, 125, 70, 15, 12, 20, 0}
     local prefixes = {
         strings[0x006C], strings[0x006C], strings[0x006C], strings[0x006C],
@@ -48,12 +48,12 @@ function weapon_vendor_0952(object_id, event)
             continue = false
         else
             local price = prices[choice]
-            local item_id = item_ids[choice]
+            local object_id = object_ids[choice]
             local prefix = prefixes[choice]
-            local result = buy_item(prefix, item_id, 1, price, items[choice])
+            local result = buyobject_(prefix, object_id, 1, price, items[choice])
             add_dialogue(object_id, strings[0x0070] .. result .. strings[0x0073])
             local buy_response = get_answer()
-            buy_response = buy_item(prefix, item_id, 1, price, items[choice])
+            buy_response = buyobject_(prefix, object_id, 1, price, items[choice])
             if buy_response == 1 then
                 add_dialogue(object_id, strings[0x0095])
             elseif buy_response == 2 then

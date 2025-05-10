@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Amanda, a warrior seeking vengeance for her father's death by a cyclops, discussing her quest with her half-sister Eiko and their search for inner peace.
-function func_0430(eventid, itemref)
+function func_0430(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Carlyn, the tailor and part-time bartender in Moonglow, discussing her sewing, serving food and drink at the Friendly Knave, and the local Fellowship branch led by Rankin.
-function func_0476(eventid, itemref)
+function func_0476(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()

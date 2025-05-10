@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Nystul, the mage in Britain, discussing his faltering magic, Lord British, and spell/reagent sales, with signs of mental decline.
-function func_0418(eventid, itemref)
+function func_0418(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

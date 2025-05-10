@@ -1,5 +1,5 @@
 --- Best guess: Manages a consumable item, applying an effect if used correctly or displaying an error if misused.
-function func_0288(eventid, itemref)
+function func_0288(eventid, objectref)
     local var_0000
 
     if eventid == 1 then
@@ -9,6 +9,6 @@ function func_0288(eventid, itemref)
         else
             unknown_08FEH("@Do not waste that!@")
         end
-        unknown_0925H(itemref)
+        unknown_0925H(objectref)
     end
 end

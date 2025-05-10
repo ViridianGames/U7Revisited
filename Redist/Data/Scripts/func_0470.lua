@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with D’Rel, a prisoner in Yew’s Abbey prison, discussing his incarceration for tax evasion, his disdain for the Britannian Tax Council, Sir Jeff, and Goth, and his connection to Hook from Buccaneer’s Den.
-function func_0470(eventid, itemref)
+function func_0470(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     start_conversation()

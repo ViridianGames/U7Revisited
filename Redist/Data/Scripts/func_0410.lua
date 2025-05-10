@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Klog, the Trinsic Fellowship leader, discussing the Fellowship, a local murder, and suspicious activities revealed by the Cube, with investigative options.
-function func_0410(eventid, itemref)
+function func_0410(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     start_conversation()

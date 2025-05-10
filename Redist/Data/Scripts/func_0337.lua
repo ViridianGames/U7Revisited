@@ -1,9 +1,9 @@
 --- Best guess: Manages a paintbrush, allowing painting on specific items (e.g., canvas, ID 837) with pigments, with random feedback messages.
-function func_0337(eventid, itemref)
+function func_0337(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        var_0000 = get_object_frame(itemref)
+        var_0000 = get_object_frame(objectref)
         if var_0000 < 2 then
             unknown_08FEH("@Finger-painting again?@")
         else

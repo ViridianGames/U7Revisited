@@ -1,5 +1,5 @@
 --- Best guess: Manages a game state check for an event (likely a race or competition), setting flags 31 and 32 based on conditions and calling an external function if both are set.
-function func_060B(eventid, itemref)
+function func_060B(eventid, objectref)
     if eventid ~= 2 then
         return
     end

@@ -1,13 +1,13 @@
 --- Best guess: Manages an egg in a blacksmith’s house, checking nearby items (types 270, 376) and triggering external functions based on their properties.
-function func_06B5(eventid, itemref)
+function func_06B5(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 3 then
-        var_0000 = unknown_0035H(0, 40, 270, itemref)
-        var_0000 = unknown_0035H(0, 40, 376, itemref)[var_0000]
+        var_0000 = unknown_0035H(0, 40, 270, objectref)
+        var_0000 = unknown_0035H(0, 40, 376, objectref)[var_0000]
         var_0001 = {}
         for i = 1, #var_0000 do
-            var_0001 = unknown_0019H(var_0001, var_0000[i], itemref)
+            var_0001 = unknown_0019H(var_0001, var_0000[i], objectref)
         end
         var_0000 = unknown_093DH(var_0001, var_0000)
         var_0005 = 1

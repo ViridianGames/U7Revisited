@@ -1,5 +1,5 @@
 --- Best guess: Manages random party member or Guardian dialogue during interaction, with phrases questioning the player’s actions, triggered by a single party member.
-function func_063A(eventid, itemref)
+function func_063A(eventid, objectref)
     local var_0000, var_0001
 
     if eventid ~= 1 then

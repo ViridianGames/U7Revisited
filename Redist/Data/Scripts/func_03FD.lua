@@ -1,5 +1,5 @@
 --- Best guess: Calls an external function (ID 617) for a specific NPC (ID 617), possibly for a quest or event trigger.
-function func_03FD(eventid, itemref)
+function func_03FD(eventid, objectref)
     -- calle 0269H, 617 (unmapped)
     unknown_0269H(unknown_001BH(617))
     return

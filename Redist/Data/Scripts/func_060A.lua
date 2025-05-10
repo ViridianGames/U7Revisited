@@ -1,5 +1,5 @@
 --- Best guess: Manages a gambling game mechanic, likely a slot machine or roulette, determining outcomes based on item frame colors (Blue, Black, White, etc.), calculating wins/losses, and updating game state with flag-based NPC dialogue.
-function func_060A(eventid, itemref)
+function func_060A(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011
 
     if eventid ~= 2 then
@@ -10,11 +10,11 @@ function func_060A(eventid, itemref)
         unknown_001DH(10, 232)
     end
 
-    var_0000 = unknown_0035H(0, 7, 520, itemref)
+    var_0000 = unknown_0035H(0, 7, 520, objectref)
     var_0001 = unknown_0035H(0, 5, 644, var_0000)
     var_0002 = 0
     var_0003 = 0
-    var_0004 = get_object_frame(itemref)
+    var_0004 = get_object_frame(objectref)
     var_0005 = var_0004 // 4
 
     if var_0005 == 0 then

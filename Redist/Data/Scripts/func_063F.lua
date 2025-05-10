@@ -1,5 +1,5 @@
 --- Best guess: Triggers a cutscene or event, setting flag 806, centering the view on the Avatar, fading the palette, and manipulating items in a container (ID -356).
-function func_063F(eventid, itemref)
+function func_063F(eventid, objectref)
     local var_0000
 
     set_flag(806, true)

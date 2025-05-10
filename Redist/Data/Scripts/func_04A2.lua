@@ -1,5 +1,5 @@
 --- Best guess: Manages Elad’s dialogue in Moonglow, discussing his role as a healer, the community, and his desire to leave.
-function func_04A2(eventid, itemref)
+function func_04A2(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then

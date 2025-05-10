@@ -1,5 +1,5 @@
 --- Best guess: Manages Quaeven’s dialogue in Terfin, a Fellowship member running the Recreation Facility and Learning Center, recruiting Betra.
-function func_04BA(eventid, itemref)
+function func_04BA(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then

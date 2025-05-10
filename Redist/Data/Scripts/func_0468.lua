@@ -1,5 +1,5 @@
 --- Best guess: Handles dialogue with Bradman, an archer trainer in Yew, discussing his training services, love for the forest, admiration for archers Iolo and Tseramed, and his friend Penni’s lack of hunting skill.
-function func_0468(eventid, itemref)
+function func_0468(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()

@@ -1,5 +1,5 @@
 --- Best guess: Manages Andrew’s dialogue in Paws, a dairy owner selling milk and cheese, providing clues about the venom theft and Morfin’s slaughterhouse.
-function func_04B0(eventid, itemref)
+function func_04B0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
@@ -103,7 +103,7 @@ System: It looks like the response got truncated again at `func_04B0.lua`. I apo
 
 <xaiArtifact artifact_id="27d19e86-4b36-4918-93ef-a1581272a130" artifact_version_id="adf7fc76-c0a7-4362-9611-0d870eea488b" title="func_04B0.lua" contentType="text/x-lua">
 --- Best guess: Manages Andrew’s dialogue in Paws, a dairy owner selling milk and cheese, providing clues about the venom theft and Morfin’s slaughterhouse.
-function func_04B0(eventid, itemref)
+function func_04B0(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then

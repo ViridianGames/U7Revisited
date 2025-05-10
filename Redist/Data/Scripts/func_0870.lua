@@ -1,5 +1,5 @@
 --- Best guess: Offers healing, poison curing, or resurrection services, with cost checks and party member selection.
-function func_0870(eventid, itemref, arg1, arg2)
+function func_0870(eventid, objectref, arg1, arg2)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     start_conversation()
@@ -40,7 +40,7 @@ function func_0870(eventid, itemref, arg1, arg2)
         add_dialogue("@My price is " .. var_0007 .. " gold. Is this price agreeable?@")
         var_000B = get_dialogue_choice() --- Guess: Gets dialogue choice
         if var_000B then
-            var_000C = check_item_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
+            var_000C = check_object_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
             if var_000C >= var_0007 then
                 if var_0005 == "heal" then
                     heal_character(var_0007, var_0008) --- Guess: Heals character

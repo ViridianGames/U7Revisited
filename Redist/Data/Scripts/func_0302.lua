@@ -1,5 +1,5 @@
 --- Best guess: Triggers a special effect when an item is used under specific conditions, likely for a dramatic event.
-function func_0302(eventid, itemref)
+function func_0302(eventid, objectref)
     if eventid == 1 and unknown_0906H() then
         unknown_007EH()
         unknown_0094H({1420, 2892})

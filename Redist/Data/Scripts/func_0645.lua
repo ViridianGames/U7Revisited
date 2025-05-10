@@ -1,14 +1,14 @@
 --- Best guess: Implements the summon spell (Kal Lor), spawning creatures and setting party flags for combat.
-function func_0645(eventid, itemref)
+function func_0645(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroy_item(itemref)
+        destroyobject_(objectref)
         if get_flag(39) == false then
-            bark(itemref, "@Kal Lor@")
+            bark(objectref, "@Kal Lor@")
             if check_spell_requirements() then
                 set_flag(39, true)
-                var_0000 = add_container_items(itemref, {1605, 17493, 17519, 17505, 17517, 17516, 17505, 8047, 64, 7768})
+                var_0000 = add_containerobject_s(objectref, {1605, 17493, 17519, 17505, 17517, 17516, 17505, 8047, 64, 7768})
                 var_0001 = get_party_members()
                 -- Guess: sloop applies flags to party members
                 for i = 1, 5 do
@@ -19,7 +19,7 @@ function func_0645(eventid, itemref)
                     unknown_008AH(7, var_0004) --- Guess: Sets quest flag
                 end
             else
-                var_0000 = add_container_items(itemref, {1542, 17493, 17519, 17505, 17517, 17516, 17505, 7791})
+                var_0000 = add_containerobject_s(objectref, {1542, 17493, 17519, 17505, 17517, 17516, 17505, 7791})
             end
         end
     elseif eventid == 2 then

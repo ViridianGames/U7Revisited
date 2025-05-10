@@ -1,9 +1,9 @@
 --- Best guess: Interacts with container items (type 377), randomly selecting and using items based on position checks.
-function func_0627(eventid, itemref)
+function func_0627(eventid, objectref)
     local var_0000, var_0001, var_0002
 
-    var_0000 = unknown_0035H(0, 3, 513, itemref) --- Guess: Sets NPC location
-    var_0001 = get_container_items(itemref, 359, 377, 359) --- Guess: Gets container items
+    var_0000 = unknown_0035H(0, 3, 513, objectref) --- Guess: Sets NPC location
+    var_0001 = get_containerobject_s(objectref, 359, 377, 359) --- Guess: Gets container items
     if var_0001 then
         var_0002 = unknown_0025H(var_0001[1]) --- Guess: Checks position
         if var_0002 and var_0000 then

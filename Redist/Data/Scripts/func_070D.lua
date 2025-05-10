@@ -1,13 +1,13 @@
 --- Best guess: Manages a helmet egg mechanic in the Courage region, checking for helms (IDs 383, 541) and altering portcullis (ID 936) or metal wall (ID 303) states based on quality.
-function func_070D(eventid, itemref)
+function func_070D(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
-    var_0000 = unknown_0035H(0, 20, 936, itemref)
-    var_0001 = unknown_0035H(0, 20, 303, itemref)
-    var_0002 = _get_object_quality(itemref)
+    var_0000 = unknown_0035H(0, 20, 936, objectref)
+    var_0001 = unknown_0035H(0, 20, 303, objectref)
+    var_0002 = _get_object_quality(objectref)
     if not var_0002 then
-        var_0003 = unknown_000EH(0, 383, itemref)
-        var_0004 = unknown_000EH(0, 541, itemref)
+        var_0003 = unknown_000EH(0, 383, objectref)
+        var_0004 = unknown_000EH(0, 541, objectref)
         if var_0003 then
             set_flag(830, true)
             for var_0005 in ipairs(var_0001) do
@@ -29,8 +29,8 @@ function func_070D(eventid, itemref)
             end
         end
     else
-        var_0004 = unknown_000EH(0, 541, itemref)
-        var_0003 = unknown_000EH(0, 383, itemref)
+        var_0004 = unknown_000EH(0, 541, objectref)
+        var_0003 = unknown_000EH(0, 383, objectref)
         if var_0004 then
             set_flag(829, true)
             for var_000B in ipairs(var_0000) do

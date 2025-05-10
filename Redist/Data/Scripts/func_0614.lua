@@ -1,5 +1,5 @@
 --- Best guess: Handles a complex dialogue tree (states 1-29) with Guardian/Time Lord interactions, guiding the Avatar through choices.
-function func_0614(eventid, itemref)
+function func_0614(eventid, objectref)
     local var_0000
 
     start_conversation()
