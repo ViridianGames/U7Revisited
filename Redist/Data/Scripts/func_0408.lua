@@ -5,7 +5,7 @@ function func_0408(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(8, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
         var_0002 = unknown_001BH(8) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()

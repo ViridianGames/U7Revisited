@@ -7,7 +7,7 @@ function func_0445(eventid, itemref)
         abort()
     end
     switch_talk_to(69, 0)
-    var_0000 = get_player_title()
+    var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     var_0001 = unknown_000EH(1, 394, 356) --- Guess: Checks player identity
     if not get_flag(198) then

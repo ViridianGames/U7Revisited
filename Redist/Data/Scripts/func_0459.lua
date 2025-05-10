@@ -7,7 +7,7 @@ function func_0459(eventid, itemref)
         abort()
     end
     switch_talk_to(89, 0)
-    var_0000 = get_player_title()
+    var_0000 = get_lord_or_lady()
     var_0002 = unknown_0067H() --- Guess: Checks Fellowship membership
     var_0001 = false
     if not get_flag(276) then

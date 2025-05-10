@@ -5,7 +5,7 @@ function func_0491(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(145, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = is_player_female()
         var_0002 = unknown_003BH() --- Guess: Checks game state
         var_0003 = unknown_001CH(145) --- Guess: Gets schedule

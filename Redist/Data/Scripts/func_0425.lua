@@ -6,7 +6,7 @@ function func_0425(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(37, 0)
         var_0000 = get_player_name()
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         var_0002 = unknown_003BH() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(37) --- Guess: Gets object state
         if not get_flag(166) then

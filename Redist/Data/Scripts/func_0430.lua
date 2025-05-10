@@ -7,7 +7,7 @@ function func_0430(eventid, itemref)
         abort()
     end
     switch_talk_to(48, 0)
-    var_0000 = get_player_title()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_08F7H(15) --- Guess: Checks player status
     if not get_flag(709) then
         add_dialogue("You see an attractive woman dressed in armour and carrying a small arsenal of weapons with her.")

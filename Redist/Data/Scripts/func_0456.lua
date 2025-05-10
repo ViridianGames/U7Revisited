@@ -5,7 +5,7 @@ function func_0456(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(86, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         if not get_flag(273) then
             add_dialogue("You see a cheerful woman with bright eyes and blonde hair.")
             set_flag(273, true)

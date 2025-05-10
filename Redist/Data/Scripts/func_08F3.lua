@@ -46,11 +46,11 @@ function func_08F3(var_0000)
                 end
             end
             if var_0005 then
-                unknown_0003H(0, var_0008)
+                switch_talk_to(var_0008, 0)
                 add_dialogue("\"Take care with thy words, master woodsman.\"")
                 switch_talk_to(10, 0)
                 add_dialogue("\"I do not mean this gracious company! Surely thou art among the elite of Britannia and a rare figure of a woman.\"")
-                unknown_0003H(0, var_0008)
+                switch_talk_to(var_0008, 0)
                 add_dialogue("\"Thy speech does me service. Alas! Too few are the women who learn skill in arms.\"")
                 unknown_0004H(var_0008)
             end

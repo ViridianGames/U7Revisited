@@ -17,7 +17,7 @@ function func_0461(eventid, itemref)
         end
         abort()
     end
-    var_0002 = get_player_title()
+    var_0002 = get_lord_or_lady()
     if not get_flag(284) then
         add_dialogue("A sneering man watches as you approach. His eyes shift back and forth suspiciously.")
         set_flag(284, true)

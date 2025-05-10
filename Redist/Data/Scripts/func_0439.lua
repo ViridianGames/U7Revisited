@@ -7,7 +7,7 @@ function func_0439(eventid, itemref)
         switch_talk_to(57, 0)
         var_0000 = unknown_003BH() --- Guess: Checks game state or timer
         var_0001 = unknown_001CH(57) --- Guess: Gets object state
-        var_0002 = get_player_title()
+        var_0002 = get_lord_or_lady()
         var_0003 = unknown_0067H() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(74) or not get_flag(64) then

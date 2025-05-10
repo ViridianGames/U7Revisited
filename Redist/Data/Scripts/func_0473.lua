@@ -6,7 +6,7 @@ function func_0473(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(115, 0)
         var_0000 = get_player_name()
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         var_0002 = false
         var_0003 = false
         var_0004 = unknown_001CH(115) --- Guess: Gets object state

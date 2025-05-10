@@ -5,7 +5,7 @@ function func_0468(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(104, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(322) then
             add_dialogue("You see a man leaning on a longbow.")

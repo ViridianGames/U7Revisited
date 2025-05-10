@@ -10,7 +10,7 @@ function func_0492(eventid, itemref)
             abort()
         end
         var_0000 = false
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         var_0002 = unknown_08F7H(140) --- Guess: Checks player status
         if get_flag(452) then
             var_0003 = "Markham"

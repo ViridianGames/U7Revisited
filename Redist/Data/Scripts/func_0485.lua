@@ -5,7 +5,7 @@ function func_0485(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(133, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = unknown_08F7H(3) --- Guess: Checks player status
         var_0002 = unknown_08F7H(1) --- Guess: Checks player status
         var_0003 = unknown_08F7H(4) --- Guess: Checks player status

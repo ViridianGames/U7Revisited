@@ -5,7 +5,7 @@ function func_0475(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(117, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(335) then
             add_dialogue("The beady-eyed man sneers at you.")

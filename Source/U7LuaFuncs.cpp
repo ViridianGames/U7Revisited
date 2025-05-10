@@ -681,7 +681,7 @@ static int LuaAddToParty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
 }
 
-static int LuaIsInArray(lua_State *L)
+static int LuaIsInIntArray(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: is_in_array called");
     int value = luaL_checkinteger(L, 1);
@@ -697,6 +697,35 @@ static int LuaIsInArray(lua_State *L)
     {
         lua_rawgeti(L, -1, i);
         if (lua_isinteger(L, -1) && lua_tointeger(L, -1) == value)
+        {
+            lua_pop(L, 2); // Pop value and array
+            lua_pushboolean(L, true);
+            return 1;
+        }
+        lua_pop(L, 1); // Pop value
+    }
+
+    lua_pop(L, 1); // Pop array
+    lua_pushboolean(L, false);
+    return 1;
+}
+
+static int LuaIsInStringArray(lua_State *L)
+{
+    if(LUA_DEBUG) AddConsoleString("LUA: is_in_string_array called");
+    const char *value = luaL_checkstring(L, 1);
+    lua_getglobal(L, "string_array");
+    if (!lua_istable(L, -1))
+    {
+        lua_pop(L, 1);
+        return 0;
+    }
+
+    int len = lua_rawlen(L, -1);
+    for (int i = 1; i <= len; i++)
+    {
+        lua_rawgeti(L, -1, i);
+        if (lua_isstring(L, -1) && strcmp(lua_tostring(L, -1), value) == 0)
         {
             lua_pop(L, 2); // Pop value and array
             lua_pushboolean(L, true);
@@ -757,6 +786,15 @@ static int LuaGetSchedule(lua_State *L)
     return 1;
 }
 
+static int LuaGetNPCName(lua_State *L)
+{
+    if(LUA_DEBUG) AddConsoleString("LUA: get_npc_name called");
+    int npc_id = luaL_checkinteger(L, 1);
+    const char *name = "NPC"; // TODO: g_NPCManager->GetName(npc_id)
+    lua_pushstring(L, name);
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -796,6 +834,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("npc_in_party", LuaNPCInParty);
     g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);
     g_ScriptingSystem->RegisterScriptFunction("remove_from_party", LuaRemoveFromParty);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_name", LuaGetNPCName);
 
     //  These functions are used to get information about the Avatar/player.
     g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
@@ -811,7 +850,8 @@ void RegisterAllLuaFunctions()
     //  These are new functions designed to be called by Lua scripts.
     g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
     g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
-    g_ScriptingSystem->RegisterScriptFunction("in_array", LuaIsInArray);
+    g_ScriptingSystem->RegisterScriptFunction("is_in_int_array", LuaIsInIntArray);
+    g_ScriptingSystem->RegisterScriptFunction("is_in_string_array", LuaIsInStringArray);
 
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
     

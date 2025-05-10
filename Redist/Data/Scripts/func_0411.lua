@@ -5,7 +5,7 @@ function func_0411(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(17, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
         add_answer({"bye", "services", "murder", "job", "name"})
         if not get_flag(63) then

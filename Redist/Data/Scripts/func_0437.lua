@@ -8,7 +8,7 @@ function func_0437(eventid, itemref)
         var_0000 = unknown_0067H() --- Guess: Checks Fellowship membership
         var_0001 = unknown_003BH() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(55) --- Guess: Gets object state
-        var_0004 = get_player_title()
+        var_0004 = get_lord_or_lady()
         if var_0001 == 7 then
             var_0003 = unknown_08FCH(26, 55) --- Guess: Checks time for Fellowship meeting
             if var_0003 then

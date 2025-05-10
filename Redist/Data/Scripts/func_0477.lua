@@ -5,7 +5,7 @@ function func_0477(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(119, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = unknown_003BH() --- Guess: Checks game state
         var_0002 = unknown_001CH(119) --- Guess: Gets object state
         var_0003 = unknown_001BH(119) --- Guess: Gets object ref

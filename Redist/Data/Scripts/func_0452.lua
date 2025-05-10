@@ -18,7 +18,7 @@ function func_0452(eventid, itemref)
             add_dialogue("\"No time for idle chatter! I must get to the Fellowship Meeting! I am late!\"")
             abort()
         end
-        var_0003 = get_player_title()
+        var_0003 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         var_0004 = unknown_08F7H(81) --- Guess: Checks player status
         if var_0004 and var_0000 == 0 and var_0001 == 16 then

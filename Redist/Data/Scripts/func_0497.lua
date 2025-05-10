@@ -9,7 +9,7 @@ function func_0497(eventid, itemref)
         var_0001 = unknown_08F7H(2) --- Guess: Checks player status
         var_0002 = unknown_08F7H(4) --- Guess: Checks player status
         var_0003 = unknown_08F7H(3) --- Guess: Checks player status
-        var_0004 = get_player_title()
+        var_0004 = get_lord_or_lady()
         var_0005 = unknown_001CH(151) --- Guess: Gets schedule
         var_0006 = is_player_female()
         add_answer({"bye", "job", "name"})

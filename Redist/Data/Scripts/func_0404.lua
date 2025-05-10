@@ -16,7 +16,7 @@ function func_0404(eventid, itemref)
                 abort()
             end
         end
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
         var_0002 = unknown_001BH(4) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()

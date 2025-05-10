@@ -6,8 +6,8 @@ function func_0401(eventid, itemref)
     set_flag(20, true)
     var_0000 = get_player_name()
     var_0001 = get_party_members()
-    var_0002 = unknown_001BH(1) --- Guess: Retrieves object reference from ID
-    var_0003 = get_player_title()
+    var_0002 = get_npc_name(1) --- Guess: Retrieves object reference from ID
+    var_0003 = get_lord_or_lady()
     var_0004 = is_player_female()
     if eventid == 3 then
         if not get_flag(59) and not get_flag(92) and not unknown_0088H(16, 356) then --- Guess: Checks a flag on an object
@@ -40,47 +40,47 @@ function func_0401(eventid, itemref)
         if not detect_mouse() then
             add_dialogue("Iolo takes you aside and whispers, \"Avatar, for the sake of our mutual sanity, I strongly suggest that thou shouldst purchase a mouse.\"")
         end
-        var_0007 = unknown_0002H(5, {1786, 8021, 20, 17447, 17452, 7715}, 356) --- Guess: Executes a specific action with parameters
-        unknown_08DDH() --- Guess: Triggers an earthquake effect
-        unknown_001EH(1) --- Guess: Removes object from game
-        unknown_001DH(7, 11) --- Guess: Sets a generic object property
-        unknown_001DH(3, 12) --- Guess: Sets a generic object property
-        unknown_005CH(1) --- Guess: Updates object state or position
-        unknown_005CH(11) --- Guess: Updates object state or position
-        if not get_flag(59) then
-            var_0005 = unknown_0001H({0, 0, 17492, 7715}, itemref) --- Guess: Executes a specific action with parameters
-            set_flag(59, true)
-        end
+        -- var_0007 = unknown_0002H(5, {1786, 8021, 20, 17447, 17452, 7715}, 356) --- Guess: Executes a specific action with parameters
+        -- unknown_08DDH() --- Guess: Triggers an earthquake effect
+        -- unknown_001EH(1) --- Guess: Removes object from game
+        -- unknown_001DH(7, 11) --- Guess: Sets a generic object property
+        -- unknown_001DH(3, 12) --- Guess: Sets a generic object property
+        -- unknown_005CH(1) --- Guess: Updates object state or position
+        -- unknown_005CH(11) --- Guess: Updates object state or position
+        -- if not get_flag(59) then
+        --     var_0005 = unknown_0001H({0, 0, 17492, 7715}, itemref) --- Guess: Executes a specific action with parameters
+        --     set_flag(59, true)
+        -- end
         abort()
     elseif eventid == 1 then
         var_0000 = get_player_name()
         var_0001 = get_party_members()
-        var_0002 = unknown_001BH(1) --- Guess: Retrieves object reference from ID
-        var_0003 = get_player_title()
+        var_0002 = get_npc_name(1) --- Guess: Retrieves object reference from ID
+        var_0003 = get_lord_or_lady()
         switch_talk_to(1, 0)
-        var_0008 = unknown_08F7H(11) --- Guess: Checks player status
-        var_0009 = unknown_08F7H(3) --- Guess: Checks player status
+        --var_0008 = unknown_08F7H(11) --- Guess: Checks player status
+        --var_0009 = unknown_08F7H(3) --- Guess: Checks player status
         var_000A = false
         var_000B = false
         add_answer({"bye", "job", "name"})
-        if not get_flag(746) then
-            if unknown_0065H(11) < 1 then --- Guess: Checks party status or conditions
-                add_dialogue("\"I am sorry, I do not join thieves.\"")
-                abort()
-            else
-                add_dialogue("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
-                unknown_001EH(1) --- Guess: Removes object from game
-                set_flag(746, false)
-                abort()
-            end
-        end
+        -- if not get_flag(746) then
+        --     if unknown_0065H(11) < 1 then --- Guess: Checks party status or conditions
+        --         add_dialogue("\"I am sorry, I do not join thieves.\"")
+        --         abort()
+        --     else
+        --         add_dialogue("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
+        --         unknown_001EH(1) --- Guess: Removes object from game
+        --         set_flag(746, false)
+        --         abort()
+        --     end
+        -- end
         if not get_flag(87) then
             add_answer("Trinsic")
         end
-        if is_in_int_array(var_0002, var_0001) then
+        if is_in_string_array(var_0002, var_0001) then
             add_answer("leave")
         end
-        if not is_in_int_array(var_0002, var_0001) then
+        if not is_in_string_array(var_0002, var_0001) then
             add_answer("join")
         end
         if get_flag(63) then

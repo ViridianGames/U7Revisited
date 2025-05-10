@@ -6,7 +6,7 @@ function func_0442(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(66, 0)
         var_0000 = get_player_name()
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(195) then
             add_dialogue("You see a very large mouse with an air of superior intelligence.")

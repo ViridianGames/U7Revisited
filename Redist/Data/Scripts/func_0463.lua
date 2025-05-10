@@ -8,7 +8,7 @@ function func_0463(eventid, itemref)
     end
     if eventid == 1 then
         switch_talk_to(99, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         if not get_flag(285) then
             add_dialogue("You see a wingless gargoyle with a terrible skin disease. It looks as if his face is falling off in patches.")
             set_flag(285, true)

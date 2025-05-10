@@ -30,7 +30,7 @@ function func_0493(eventid, itemref)
             end
             abort()
         end
-        var_0006 = get_player_title()
+        var_0006 = get_lord_or_lady()
         if not get_flag(408) then
             add_answer("sacrifice")
         end

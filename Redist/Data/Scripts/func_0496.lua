@@ -10,7 +10,7 @@ function func_0496(eventid, itemref)
     set_flag(482, unknown_08C9H()) --- Guess: Checks ether status
     var_0000 = unknown_0908H() --- Guess: Gets player info
     var_0001 = unknown_0931H(359, 359, 759, 1, 357) --- Guess: Checks inventory items
-    var_0002 = get_player_title()
+    var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(479) then
         add_answer("blackrock")

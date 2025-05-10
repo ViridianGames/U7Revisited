@@ -14,7 +14,7 @@ function func_0490(eventid, itemref)
             add_answer("sacrifice")
         end
         var_0000 = is_player_female()
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         if not get_flag(422) then
             switch_talk_to(144, 1)
             unknown_08D6H() --- Guess: Initiates follow behavior

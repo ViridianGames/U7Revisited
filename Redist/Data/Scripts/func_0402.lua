@@ -25,7 +25,7 @@ function func_0402(eventid, itemref)
         if get_flag(71) then
             var_0008 = var_0001
         end
-        var_0009 = get_player_title()
+        var_0009 = get_lord_or_lady()
         if not get_flag(21) then
             add_dialogue("You see a boy who appears to be a young teen. He is dirty and unkempt. He looks as if he has been crying, but he sits up straight and looks sharp when he sees you.")
             add_dialogue("\"Who art thou and what dost thou want?\" You realize the boy has a sling in hand.")

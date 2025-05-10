@@ -6,7 +6,7 @@ function func_0470(eventid, itemref)
     if eventid == 1 then
         switch_talk_to(112, 0)
         var_0000 = get_player_name()
-        var_0001 = get_player_title()
+        var_0001 = get_lord_or_lady()
         var_0002 = false
         var_0003 = "Nystul"
         var_0004 = "Geoffrey"

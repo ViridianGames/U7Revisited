@@ -5,7 +5,7 @@ function func_0458(eventid, itemref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(88, 0)
-        var_0000 = get_player_title()
+        var_0000 = get_lord_or_lady()
         var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
         var_0002 = unknown_003BH() --- Guess: Checks game state or timer
         if not get_flag(275) then

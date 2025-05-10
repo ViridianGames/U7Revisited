@@ -7,7 +7,7 @@ function func_0460(eventid, itemref)
         abort()
     end
     switch_talk_to(96, 0)
-    var_0000 = get_player_title()
+    var_0000 = get_lord_or_lady()
     var_0001 = unknown_08F7H(83) --- Guess: Checks player status
     if var_0001 then
         add_answer("Margareta")

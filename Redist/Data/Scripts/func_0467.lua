@@ -13,7 +13,7 @@ function func_0467(eventid, itemref)
             unknown_001DH(0, var_0001) --- Guess: Sets object behavior
             abort()
         end
-        var_0002 = get_player_title()
+        var_0002 = get_lord_or_lady()
         var_0003 = false
         if not get_flag(321) then
             add_dialogue("Eyeing you carefully, the man before you takes an aggressive stance.")

@@ -12,7 +12,7 @@ function func_0610(eventid, itemref)
             -- Placeholder for unknown opcode 2CH
         end
     end
-    var_0004 = get_player_title()
+    var_0004 = get_lord_or_lady()
     var_0005 = unknown_0908H() --- Guess: Gets player info
     var_0006 = unknown_08F7H(167)
     var_0007 = unknown_08F7H(168)
