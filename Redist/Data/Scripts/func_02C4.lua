@@ -1,17 +1,13 @@
---- Best guess: Toggles an object’s frame (0 or 1) and sets quality (28), likely for a switch or toggleable object animation.
+-- Open and close pillories
 function func_02C4(eventid, objectref)
-    local var_0000, var_0001
+    local frame, new_frame
 
     if eventid == 1 then
-        var_0000 = get_object_frame(objectref)
-        var_0001 = var_0000
-        if var_0000 == 1 then
-            var_0001 = 0
-        elseif var_0000 == 0 then
-            var_0001 = 1
+        frame = get_object_frame(objectref)
+        if frame == 0 or frame == 1 then
+            new_frame = 1 - frame -- toggle frame 0 <-> 1
+            set_object_frame(objectref, new_frame)
+            set_object_quality(objectref, 28)
         end
-        set_object_quality(objectref, 28)
-        set_object_frame(objectref, var_0001)
     end
-    return
 end
