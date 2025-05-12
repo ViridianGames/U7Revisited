@@ -1,31 +1,16 @@
---- Best guess: Toggles an item’s frame (e.g., on/off state) by incrementing or decrementing based on its current frame.
+-- Curtains
+-- There are 6 types of curtains that use this object id and 12 frames (0 - 11)
+-- Even frame number signify an open curtain while odd is for closed curtain
 function func_0291(eventid, objectref)
-    local var_0000, var_0001
+    local frame, new_frame
 
     if eventid == 1 then
-        var_0000 = get_object_frame(objectref)
-        if var_0000 % 2 == 0 then
-            var_0001 = 1
+        frame = get_object_frame(objectref)
+        if frame % 2 == 0 then
+            new_frame = frame + 1 -- curtain is open, close it
         else
-            var_0001 = -1
+            new_frame = frame - 1 -- curtain is closed, open it
         end
-        var_0000 = var_0000 + var_0001
-        get_object_frame(var_0000, objectref)
-    end
-end
- |contentType="text/x-lua">
---- Best guess: Toggles an item’s frame (e.g., on/off state) by incrementing or decrementing based on its current frame.
-function func_0291(eventid, objectref)
-    local var_0000, var_0001
-
-    if eventid == 1 then
-        var_0000 = get_object_frame(objectref)
-        if var_0000 % 2 == 0 then
-            var_0001 = 1
-        else
-            var_0001 = -1
-        end
-        var_0000 = var_0000 + var_0001
-        get_object_frame(var_0000, objectref)
+        set_object_frame(objectref, new_frame)
     end
 end
