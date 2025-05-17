@@ -213,6 +213,9 @@
     <ClCompile Include="Source\U7Player.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\GumpManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
@@ -399,6 +402,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7Player.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GumpManager.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
