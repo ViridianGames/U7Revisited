@@ -30,7 +30,7 @@ function func_0404(eventid, objectref)
         var_000B = unknown_0037H(unknown_001BH(125)) --- Guess: Checks object-specific property
         var_000C = unknown_0037H(unknown_001BH(126)) --- Guess: Checks object-specific property
         var_000D = unknown_0037H(unknown_001BH(127)) --- Guess: Checks object-specific property
-        var_000E = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_000E = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if is_in_int_array(var_0002, var_0001) then
             add_answer("leave")

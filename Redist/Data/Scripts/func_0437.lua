@@ -5,8 +5,8 @@ function func_0437(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(55, 0)
-        var_0000 = unknown_0067H() --- Guess: Checks Fellowship membership
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(55) --- Guess: Gets object state
         var_0004 = get_lord_or_lady()
         if var_0001 == 7 then
@@ -88,7 +88,7 @@ function func_0437(eventid, objectref)
         end
         add_dialogue("\"Goodbye and farewell, " .. var_0004 .. ".\"")
     elseif eventid == 0 then
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(55) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0005 = random(1, 4)

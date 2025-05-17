@@ -4,7 +4,7 @@ function func_0413(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = get_player_name()
         var_0002 = get_lord_or_lady()
         var_0003 = unknown_001CH(19) --- Guess: Gets object state

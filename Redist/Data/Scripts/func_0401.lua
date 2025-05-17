@@ -53,6 +53,7 @@ function func_0401(eventid, objectref)
         -- end
         abort()
     elseif eventid == 1 then
+        debug_print("func_0401: eventid == 1")
         var_0000 = get_player_name()
         var_0001 = get_party_members()
         var_0002 = get_npc_name(1) --- Guess: Retrieves object reference from ID
@@ -62,205 +63,207 @@ function func_0401(eventid, objectref)
         --var_0009 = unknown_08F7H(3) --- Guess: Checks player status
         var_000A = false
         var_000B = false
+        var_000C = get_answer()
         add_answer({"bye", "job", "name"})
-        -- if not get_flag(746) then
-        --     if unknown_0065H(11) < 1 then --- Guess: Checks party status or conditions
-        --         add_dialogue("\"I am sorry, I do not join thieves.\"")
-        --         abort()
-        --     else
-        --         add_dialogue("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
-        --         unknown_001EH(1) --- Guess: Removes object from game
-        --         set_flag(746, false)
-        --         abort()
-        --     end
-        -- end
-        if not get_flag(87) then
-            add_answer("Trinsic")
-        end
-        if is_in_string_array(var_0002, var_0001) then
-            add_answer("leave")
-        end
-        if not is_in_string_array(var_0002, var_0001) then
-            add_answer("join")
-        end
-        if get_flag(63) then
-            add_answer("Fellowship")
-        end
-        if var_0008 then
-            add_answer("Petre")
-        end
-        if get_flag(60) and not get_flag(87) then
-            add_answer("murder")
-        else
-            add_answer("stables")
-        end
-        if get_flag(60) then
-            remove_answer("stables")
-        end
-        add_dialogue("\"Yes, my friend?\" Iolo asks.")
-        while true do
-            var_000C = get_answer()
-            if var_000C == "name" then
-                add_dialogue("Your friend snorts. \"What, art thou joking, " .. var_0003 .. "? Thou dost not know thine old friend Iolo?\"")
-                remove_answer("name")
-            elseif var_000C == "stables" then
-                add_dialogue("\"Thou must see for thyself, " .. var_0000 .. ". Brace thyself, my friend. 'Tis truly a horrible sight.\"")
-                abort()
-            elseif var_000C == "job" then
-                add_dialogue("\"Why, right now 'tis adventuring with that most courageous of all legendary heroes, the Avatar!\"")
-                add_answer("Avatar")
-                remove_answer("job")
-            elseif var_000C == "Avatar" then
-                add_dialogue("\"Why, there is no doubt -thou- art the Avatar, " .. var_0000 .. "! However, thou mayest have some trouble convincing those who do not know thy face.~~\"Of course, thou -shouldst- be safe around thy friends!\"")
-                remove_answer("Avatar")
-                add_answer({"friends", "trouble"})
-            elseif var_000C == "trouble" then
-                add_dialogue("\"Well, after all, thou hast been gone for 200 years! Most of those who would recognize thee are long gone! Sorry to be blunt and all, my friend, but there it is.\"")
-                remove_answer("trouble")
-            elseif var_000C == "murder" then
-                if not get_flag(61) then
-                    add_dialogue("\"Ugly, is it not? From what I have heard, neither Christopher nor Inamo deserved so grisly a death. Thou shouldst certainly ask everyone in town about it.\"")
-                    add_answer({"Inamo", "Christopher"})
+        debug_print("answer was " .. var_000C)
+        if var_000C == "nil" then
+            debug_print("no answer")
+            -- if not get_flag(746) then
+            --     if unknown_0065H(11) < 1 then --- Guess: Checks party status or conditions
+            --         add_dialogue("\"I am sorry, I do not join thieves.\"")
+            --         abort()
+            --     else
+            --         add_dialogue("\"All right, I suppose thou hast learned thy lesson. I shall rejoin.\"")
+            --         unknown_001EH(1) --- Guess: Removes object from game
+            --         set_flag(746, false)
+            --         abort()
+            --     end
+            -- end
+            if not get_flag(87) then
+                add_answer("Trinsic")
+            end
+            if is_in_string_array(var_0002, var_0001) then
+                add_answer("leave")
+            end
+            if not is_in_string_array(var_0002, var_0001) then
+                add_answer("join")
+            end
+            if get_flag(63) then
+                add_answer("Fellowship")
+            end
+            if var_0008 then
+                add_answer("Petre")
+            end
+            if get_flag(60) and not get_flag(87) then
+                add_answer("murder")
+            else
+                add_answer("stables")
+            end
+            if get_flag(60) then
+                remove_answer("stables")
+            end
+            add_dialogue("\"Yes, my friend?\" Iolo asks.")
+        elseif var_000C == "name" then
+            add_dialogue("Your friend snorts. \"What, art thou joking, " .. var_0003 .. "? Thou dost not know thine old friend Iolo?\"")
+            remove_answer("name")
+        elseif var_000C == "stables" then
+            add_dialogue("\"Thou must see for thyself, " .. var_0000 .. ". Brace thyself, my friend. 'Tis truly a horrible sight.\"")
+            abort()
+        elseif var_000C == "job" then
+            add_dialogue("\"Why, right now 'tis adventuring with that most courageous of all legendary heroes, the Avatar!\"")
+            add_answer("Avatar")
+            remove_answer("job")
+        elseif var_000C == "Avatar" then
+            add_dialogue("\"Why, there is no doubt -thou- art the Avatar, " .. var_0000 .. "! However, thou mayest have some trouble convincing those who do not know thy face.~~\"Of course, thou -shouldst- be safe around thy friends!\"")
+            remove_answer("Avatar")
+            add_answer({"friends", "trouble"})
+        elseif var_000C == "trouble" then
+            add_dialogue("\"Well, after all, thou hast been gone for 200 years! Most of those who would recognize thee are long gone! Sorry to be blunt and all, my friend, but there it is.\"")
+            remove_answer("trouble")
+        elseif var_000C == "murder" then
+            if not get_flag(61) then
+                add_dialogue("\"Ugly, is it not? From what I have heard, neither Christopher nor Inamo deserved so grisly a death. Thou shouldst certainly ask everyone in town about it.\"")
+                add_answer({"Inamo", "Christopher"})
+            else
+                add_dialogue("\"I wish thee luck in determining what is going on. I haven't a clue!\" Iolo grins broadly, patting you on the back.")
+            end
+            remove_answer("murder")
+        elseif var_000C == "Lord British" then
+            var_000A = true
+            if not get_flag(101) then
+                add_dialogue("\"Well, between thee and me, I think that he hath aged much more than I!\"")
+                add_dialogue("\"Full of information, that chap. But he never seems to leave Britain anymore.\"")
+            else
+                add_dialogue("\"My liege will be enormously pleased to see thee. We should travel to Britain post haste. I am sure he can give thee some valuable information and update thee on much of what thou hast missed in the 200 years of thine absence.\"")
+            end
+            if not var_000B then
+                add_answer("Britain")
+            end
+            add_answer("information")
+            remove_answer("Lord British")
+        elseif var_000C == "information" then
+            add_dialogue("\"Certainly. LB is always a repository of the most amazing facts, eh? Probably something to do with listening and not always talking.\"")
+            if var_0009 then
+                add_dialogue("\"Right, Shamino?\"~~Shamino grunts and turns away as Iolo grins mischievously.")
+            end
+            add_dialogue("\"Speaking of information, reminds me of something! I have a little item which might be useful to thee. 'Tis an abacus. Use it to tally up all of our gold.\"")
+            remove_answer("information")
+        elseif var_000C == "friends" then
+            add_dialogue("\"Thou must mean Shamino and Dupre.\"")
+            remove_answer("friends")
+            add_answer({"Dupre", "Shamino"})
+        elseif var_000C == "Dupre" then
+            var_000C = unknown_08F7H(4) --- Guess: Checks player status
+            if var_000C then
+                add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
+                switch_talk_to(4, 0)
+                add_dialogue("\"I am right here, " .. var_0003 .. ".\"")
+                hide_npc(4)
+                switch_talk_to(1, 0)
+                add_dialogue("\"See? I told thee!\"")
+            else
+                add_dialogue("\"I am sure we shall find him somewhere. Last I heard, he was in Jhelom. Didst thou know he was knighted?\"")
+                if select_option() then
+                    add_dialogue("\"Hard to believe, is it not?\"")
                 else
-                    add_dialogue("\"I wish thee luck in determining what is going on. I haven't a clue!\" Iolo grins broadly, patting you on the back.")
+                    add_dialogue("\"It's true! Lord British knighted him recently. Why he did so, I cannot imagine!\"")
                 end
-                remove_answer("murder")
-            elseif var_000C == "Lord British" then
-                var_000A = true
-                if not get_flag(101) then
-                    add_dialogue("\"Well, between thee and me, I think that he hath aged much more than I!\"")
-                    add_dialogue("\"Full of information, that chap. But he never seems to leave Britain anymore.\"")
-                else
-                    add_dialogue("\"My liege will be enormously pleased to see thee. We should travel to Britain post haste. I am sure he can give thee some valuable information and update thee on much of what thou hast missed in the 200 years of thine absence.\"")
-                end
-                if not var_000B then
-                    add_answer("Britain")
-                end
-                add_answer("information")
-                remove_answer("Lord British")
-            elseif var_000C == "information" then
-                add_dialogue("\"Certainly. LB is always a repository of the most amazing facts, eh? Probably something to do with listening and not always talking.\"")
-                if var_0009 then
-                    add_dialogue("\"Right, Shamino?\"~~Shamino grunts and turns away as Iolo grins mischievously.")
-                end
-                add_dialogue("\"Speaking of information, reminds me of something! I have a little item which might be useful to thee. 'Tis an abacus. Use it to tally up all of our gold.\"")
-                remove_answer("information")
-            elseif var_000C == "friends" then
-                add_dialogue("\"Thou must mean Shamino and Dupre.\"")
-                remove_answer("friends")
-                add_answer({"Dupre", "Shamino"})
-            elseif var_000C == "Dupre" then
-                var_000C = unknown_08F7H(4) --- Guess: Checks player status
-                if var_000C then
-                    add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
-                    switch_talk_to(4, 0)
-                    add_dialogue("\"I am right here, " .. var_0003 .. ".\"")
-                    hide_npc(4)
-                    switch_talk_to(1, 0)
-                    add_dialogue("\"See? I told thee!\"")
-                else
-                    add_dialogue("\"I am sure we shall find him somewhere. Last I heard, he was in Jhelom. Didst thou know he was knighted?\"")
-                    if select_option() then
-                        add_dialogue("\"Hard to believe, is it not?\"")
-                    else
-                        add_dialogue("\"It's true! Lord British knighted him recently. Why he did so, I cannot imagine!\"")
-                    end
-                    if not var_000A then
-                        add_answer("Lord British")
-                    end
-                end
-                remove_answer("Dupre")
-            elseif var_000C == "Shamino" then
-                if var_0009 then
-                    add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
-                    switch_talk_to(3, 0)
-                    add_dialogue("\"I am right here, " .. var_0003 .. ".\"")
-                    hide_npc(3)
-                    switch_talk_to(1, 0)
-                    add_dialogue("\"See? I told thee!\"")
-                else
-                    add_dialogue("\"Thy best bet in finding that rascal is to look in Britain. He has a girlfriend employed as an actress at the Royal Theatre.\"")
-                    if not var_000B then
-                        add_answer("Britain")
-                    end
-                end
-                remove_answer("Shamino")
-            elseif var_000C == "Trinsic" then
-                add_dialogue("\"The town has changed little, has it not? Everyone seems a little defensive, though. When we ran into each other, I was passing through and had stopped to visit my friend Finnigan.\"")
-                remove_answer("Trinsic")
-                add_answer({"Finnigan", "defensive"})
-            elseif var_000C == "defensive" then
-                add_dialogue("\"I think it best for thee to speak with them thyself. There have been many changes since last thou didst visit, Avatar. I think thou wilt feel at times a bit... well, old-fashioned.\"")
-                remove_answer("defensive")
-            elseif var_000C == "Britain" then
-                var_000B = true
-                add_dialogue("\"It has grown since thou last saw it. Paws is now a virtual township of Britain! It dominates the east coast of Britannia.~~\"Lord British's castle is still the overwhelming feature.\"")
-                remove_answer("Britain")
                 if not var_000A then
                     add_answer("Lord British")
                 end
-                add_answer("Paws")
-            elseif var_000C == "Paws" then
-                add_dialogue("\"It still lies between Britain and Trinsic, but it has grown further into Britain itself.\"")
-                remove_answer("Paws")
-            elseif var_000C == "Finnigan" then
-                add_dialogue("\"He is a good man. The Mayor of Trinsic, he is. I have known him for years.\"")
-                remove_answer("Finnigan")
-            elseif var_000C == "Christopher" then
-                add_dialogue("\"I did not know him, " .. var_0003 .. ".\"")
-                remove_answer("Christopher")
-            elseif var_000C == "Inamo" then
-                add_dialogue("\"I never spoke with him. It is truly a shame. There are not many gargoyles living amongst the humans. This will only discourage the practice even more.\"")
-                remove_answer("Inamo")
-                add_answer("gargoyles")
-            elseif var_000C == "leave" then
-                add_dialogue("Iolo looks hurt. \"Thou dost really want me to leave?\"")
-                var_000D = select_option()
-                if var_000D then
-                    add_dialogue("\"Dost thou want me to wait here or dost thou want me to go home to Yew?\"")
-                    save_answers()
-                    var_000E = ask_answer({"go home", "wait here"})
-                    if var_000E == "wait here" then
-                        add_dialogue("\"Very well. I shall wait here until thou dost return and ask me to rejoin.\"")
-                        unknown_001FH(1) --- Guess: Sets object state (e.g., active/inactive)
-                        unknown_001DH(15, 1) --- Guess: Sets a generic object property
-                        abort()
-                    else
-                        add_dialogue("\"Farewell, then. I shall always rejoin if thou dost so desire.\" Iolo turns away from you.")
-                        unknown_001FH(1) --- Guess: Sets object state (e.g., active/inactive)
-                        unknown_001DH(11, 1) --- Guess: Sets a generic object property
-                        abort()
-                    end
-                else
-                    add_dialogue("\"Whew. Thou didst frighten me!\"")
-                end
-            elseif var_000C == "join" then
-                add_dialogue("\"I was waiting until thou didst ask me!\"")
-                var_000F = 0
-                for var_0010 = 1, 8 do
-                    var_000F = var_000F + 1
-                end
-                if var_000F < 8 then
-                    add_dialogue("\"It seems that thou hast enough members travelling with thee already! I shall wait until someone leaves the group.\"")
-                else
-                    unknown_001EH(1) --- Guess: Removes object from game
-                    remove_answer("join")
-                    add_answer("leave")
-                end
-            elseif var_000C == "gargoyles" then
-                add_dialogue("\"Since thou wert last in Britannia, the Gargoyles have begun to integrate with the humans. Most of them live on Sutek's old island, which was renamed 'Terfin'. However, thou mayest see one here and there throughout the land.\"")
-                remove_answer("gargoyles")
-            elseif var_000C == "Fellowship" then
-                add_dialogue("\"I do not know much about them, except that they originated about twenty Britannian years ago. They seem to do good deeds and are looked at with favor by most everyone. They have branch offices all over Britannia. I have not personally had any dealings with them.\"")
-                remove_answer("Fellowship")
-            elseif var_000C == "Petre" then
-                add_dialogue("\"He is just an acquaintance.\"")
-                remove_answer("Petre")
-            elseif var_000C == "bye" then
-                break
             end
+            remove_answer("Dupre")
+        elseif var_000C == "Shamino" then
+            if var_0009 then
+                add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
+                switch_talk_to(3, 0)
+                add_dialogue("\"I am right here, " .. var_0003 .. ".\"")
+                hide_npc(3)
+                switch_talk_to(1, 0)
+                add_dialogue("\"See? I told thee!\"")
+            else
+                add_dialogue("\"Thy best bet in finding that rascal is to look in Britain. He has a girlfriend employed as an actress at the Royal Theatre.\"")
+                if not var_000B then
+                    add_answer("Britain")
+                end
+            end
+            remove_answer("Shamino")
+        elseif var_000C == "Trinsic" then
+            add_dialogue("\"The town has changed little, has it not? Everyone seems a little defensive, though. When we ran into each other, I was passing through and had stopped to visit my friend Finnigan.\"")
+            remove_answer("Trinsic")
+            add_answer({"Finnigan", "defensive"})
+        elseif var_000C == "defensive" then
+            add_dialogue("\"I think it best for thee to speak with them thyself. There have been many changes since last thou didst visit, Avatar. I think thou wilt feel at times a bit... well, old-fashioned.\"")
+            remove_answer("defensive")
+        elseif var_000C == "Britain" then
+            var_000B = true
+            add_dialogue("\"It has grown since thou last saw it. Paws is now a virtual township of Britain! It dominates the east coast of Britannia.~~\"Lord British's castle is still the overwhelming feature.\"")
+            remove_answer("Britain")
+            if not var_000A then
+                add_answer("Lord British")
+            end
+            add_answer("Paws")
+        elseif var_000C == "Paws" then
+            add_dialogue("\"It still lies between Britain and Trinsic, but it has grown further into Britain itself.\"")
+            remove_answer("Paws")
+        elseif var_000C == "Finnigan" then
+            add_dialogue("\"He is a good man. The Mayor of Trinsic, he is. I have known him for years.\"")
+            remove_answer("Finnigan")
+        elseif var_000C == "Christopher" then
+            add_dialogue("\"I did not know him, " .. var_0003 .. ".\"")
+            remove_answer("Christopher")
+        elseif var_000C == "Inamo" then
+            add_dialogue("\"I never spoke with him. It is truly a shame. There are not many gargoyles living amongst the humans. This will only discourage the practice even more.\"")
+            remove_answer("Inamo")
+            add_answer("gargoyles")
+        elseif var_000C == "leave" then
+            add_dialogue("Iolo looks hurt. \"Thou dost really want me to leave?\"")
+            var_000D = select_option()
+            if var_000D then
+                add_dialogue("\"Dost thou want me to wait here or dost thou want me to go home to Yew?\"")
+                save_answers()
+                var_000E = ask_answer({"go home", "wait here"})
+                if var_000E == "wait here" then
+                    add_dialogue("\"Very well. I shall wait here until thou dost return and ask me to rejoin.\"")
+                    unknown_001FH(1) --- Guess: Sets object state (e.g., active/inactive)
+                    unknown_001DH(15, 1) --- Guess: Sets a generic object property
+                    abort()
+                else
+                    add_dialogue("\"Farewell, then. I shall always rejoin if thou dost so desire.\" Iolo turns away from you.")
+                    unknown_001FH(1) --- Guess: Sets object state (e.g., active/inactive)
+                    unknown_001DH(11, 1) --- Guess: Sets a generic object property
+                    abort()
+                end
+            else
+                add_dialogue("\"Whew. Thou didst frighten me!\"")
+            end
+        elseif var_000C == "join" then
+            add_dialogue("\"I was waiting until thou didst ask me!\"")
+            var_000F = 0
+            for var_0010 = 1, 8 do
+                var_000F = var_000F + 1
+            end
+            if var_000F < 8 then
+                add_dialogue("\"It seems that thou hast enough members travelling with thee already! I shall wait until someone leaves the group.\"")
+            else
+                unknown_001EH(1) --- Guess: Removes object from game
+                remove_answer("join")
+                add_answer("leave")
+            end
+        elseif var_000C == "gargoyles" then
+            add_dialogue("\"Since thou wert last in Britannia, the Gargoyles have begun to integrate with the humans. Most of them live on Sutek's old island, which was renamed 'Terfin'. However, thou mayest see one here and there throughout the land.\"")
+            remove_answer("gargoyles")
+        elseif var_000C == "Fellowship" then
+            add_dialogue("\"I do not know much about them, except that they originated about twenty Britannian years ago. They seem to do good deeds and are looked at with favor by most everyone. They have branch offices all over Britannia. I have not personally had any dealings with them.\"")
+            remove_answer("Fellowship")
+        elseif var_000C == "Petre" then
+            add_dialogue("\"He is just an acquaintance.\"")
+            remove_answer("Petre")
+        elseif var_000C == "bye" then
+            add_dialogue("\"'Tis always a pleasure to speak with thee, my friend.\"")
+            clear_answers()
+            abort()
         end
-        add_dialogue("\"'Tis always a pleasure to speak with thee, my friend.\"")
     elseif eventid == 0 then
         unknown_092EH(1) --- Guess: Triggers a game event
     end

@@ -6,7 +6,7 @@ function func_0433(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(51, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(51) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
         if not get_flag(180) then
@@ -69,7 +69,7 @@ function func_0433(eventid, objectref)
         end
         add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(51) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0004 = random(1, 4)

@@ -7,7 +7,7 @@ function func_0425(eventid, objectref)
         switch_talk_to(37, 0)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(37) --- Guess: Gets object state
         if not get_flag(166) then
             add_dialogue("You see an attractive woman in her fifties. She has a warm smile. \"Welcome! Who art thou, stranger?\"")

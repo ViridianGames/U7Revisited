@@ -37,7 +37,7 @@ function func_04A2(eventid, objectref)
                 add_answer("services")
                 remove_answer("heal")
             elseif answer == "services" then
-                var_0002 = unknown_003BH()
+                var_0002 = get_schedule()
                 if var_0002 == 2 or var_0002 == 3 or var_0002 == 4 or var_0002 == 6 then
                     unknown_0879H(425, 10, 25)
                 else

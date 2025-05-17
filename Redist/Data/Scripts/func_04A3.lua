@@ -7,7 +7,7 @@ function func_04A3(eventid, objectref)
         var_0000 = unknown_0908H()
         var_0001 = get_lord_or_lady()
         var_0002 = unknown_08F7H(4)
-        var_0003 = unknown_003BH()
+        var_0003 = get_schedule()
         var_0004 = false
         if var_0003 == 7 then
             var_0005 = unknown_08FCH(250, 163)

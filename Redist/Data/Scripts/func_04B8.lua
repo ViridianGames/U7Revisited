@@ -4,7 +4,7 @@ function func_04B8(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 184)
-        var_0000 = unknown_003BH()
+        var_0000 = get_schedule()
         var_0001 = unknown_001BH(184)
         if var_0000 == 7 then
             var_0002 = unknown_08FCH(185, 184)
@@ -48,7 +48,7 @@ function func_04B8(eventid, objectref)
                 add_dialogue("\"To mean `busy one,'\" he says sarcastically.")
                 remove_answer("Runeb")
             elseif answer == "Fellowship" then
-                var_0003 = unknown_0067H()
+                var_0003 = is_player_wearing_fellowship_medallion()
                 if var_0003 then
                     add_dialogue("\"To have a branch here. To meet at usual time each night.\"")
                 else

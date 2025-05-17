@@ -4,7 +4,7 @@ function func_04ED(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 237)
-        var_0000 = unknown_003BH()
+        var_0000 = get_schedule()
         var_0001 = unknown_001CH(unknown_001BH(237))
         var_0002 = get_lord_or_lady()
         var_0003 = unknown_0931H(359, 359, 649, 1, 357)

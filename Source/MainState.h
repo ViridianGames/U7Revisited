@@ -2,6 +2,7 @@
 #define _MainState_H_
 
 #include "Geist/State.h"
+//#include "GumpManager.h"
 #include <list>
 #include <deque>
 #include <array>
@@ -10,7 +11,7 @@
 class ParticleSystem;
 class Gui;
 class GuiElement;
-class GuiManager;
+class GumpManager;
 
 class MainState : public State
 {
@@ -81,7 +82,7 @@ public:
 
    bool m_isPopupShowing = false;  //  If true, the game is paused and a popup is showing
 
-   std::unique_ptr<GuiManager> m_GuiManager;
+   std::unique_ptr<GumpManager> m_GumpManager;
 };
 
 #endif

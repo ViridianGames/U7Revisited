@@ -68,7 +68,7 @@ function func_04A1(eventid, objectref)
                 add_dialogue("\"The person to ask for that information would be Phearcy, the bartender. All I know are other bar patrons: Tolemac and Morz, two farmers.\"")
                 remove_answer("townspeople")
             elseif answer == "train" then
-                var_0007 = unknown_003BH()
+                var_0007 = get_schedule()
                 if var_0007 == 6 or var_0007 == 7 then
                     add_dialogue("\"Yes, I train people. But only during the day. Now, 'tis time for drink!\"")
                 else

@@ -10,7 +10,7 @@ function func_0486(eventid, objectref)
         var_0002 = unknown_001BH(136) --- Guess: Gets object ref
         var_0003 = unknown_001BH(135) --- Guess: Gets object ref
         var_0004 = unknown_0931H(2, 359, 955, 1, 356) --- Guess: Checks item in inventory
-        var_0005 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0005 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(381) then
             add_answer("locket")

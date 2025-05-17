@@ -73,7 +73,7 @@ function func_04C2(eventid, objectref)
                 add_dialogue("\"At the time, Pendaran was the only man who could keep up with Menion. Now that Menion has begun instructing others, he no longer has the time to practice with my Lord.\"")
                 remove_answer("used to")
             elseif answer == "Fellowship" then
-                var_0007 = unknown_0067H()
+                var_0007 = is_player_wearing_fellowship_medallion()
                 if var_0007 then
                     add_dialogue("\"Well, er, I mean, he would not have mixed well -before- he joined, that is,\" she stammers.")
                 else
@@ -116,7 +116,7 @@ function func_04C2(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = unknown_003BH()
+        var_000A = get_schedule()
         var_0008 = unknown_001CH(unknown_001BH(194))
         var_000B = random(4, 1)
         if var_0008 == 7 then

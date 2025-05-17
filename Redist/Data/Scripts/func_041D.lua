@@ -4,7 +4,7 @@ function func_041D(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = unknown_003BH()
+            var_0001 = get_schedule()
             var_0002 = unknown_001CH(unknown_001BH(-29))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then

@@ -27,6 +27,7 @@
 #include "WorldEditorState.h"
 #include "ConversationState.h"
 #include "ShapeData.h"
+#include "GumpManager.h"
 #include <string>
 #include <sstream>
 #include <memory>

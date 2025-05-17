@@ -16,12 +16,12 @@ function func_045A(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 90)
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     var_0001 = unknown_001CH(unknown_001BH(90))
     var_0002 = get_lord_or_lady()
     var_0003 = false
-    var_0004 = unknown_0067H()
-    var_0000 = unknown_003BH()
+    var_0004 = is_player_wearing_fellowship_medallion()
+    var_0000 = get_schedule()
     if var_0000 == 7 and var_0001 ~= 15 then
         var_0005 = unknown_08FCH(81, 90)
         if var_0005 then

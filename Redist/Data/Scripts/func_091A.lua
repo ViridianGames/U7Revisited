@@ -3,7 +3,7 @@ function func_091A()
     local var_0000, var_0001
 
     add_dialogue("\"The Fellowship advances the philosophy of 'sanguine cognition', a way to apply a confident order of thought to one's life, through what is called the Triad of Inner Strength. The Triad is simply three basic principles that, when applied in unison, enable one to be more creative, satisfied, and successful in life. They are: Strive For Unity, Trust Thy Brother, and Worthiness Precedes Reward. Strive For Unity basically means that people should cooperate and work together. Trust Thy Brother implies that we are all the same and that we should not hate or fear each other. Worthiness Precedes Reward suggests that we must each strive to be worthy of that which we want out of life.\"")
-    var_0000 = unknown_0067H()
+    var_0000 = is_player_wearing_fellowship_medallion()
     if not var_0000 then
         add_dialogue("\"Dost thou want to join?\"")
         var_0001 = _SelectOption()

@@ -33,6 +33,7 @@ public:
 	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
 	std::vector<std::string>& GetPartyMembers();
 	bool NPCInParty(int npc_id);
+	bool IsWearingFellowshipMedallion() { return m_isWearingFellowshipMedallion; }
 
 	private:
 	int m_Gold;
@@ -43,6 +44,8 @@ public:
 	Vector3 m_PlayerDirection;
 
 	bool m_isMale;
+
+	bool m_isWearingFellowshipMedallion = false;
 
 };
 

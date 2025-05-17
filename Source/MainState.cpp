@@ -4,7 +4,6 @@
 #include "Geist/ParticleSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
-#include "Geist/GuiManager.h"
 #include "Geist/Engine.h"
 #include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
@@ -12,6 +11,7 @@
 #include "rlgl.h"
 #include "U7Gump.h"
 #include "ConversationState.h"
+#include "GumpManager.h"
 
 #include <list>
 #include <string>
@@ -82,7 +82,7 @@ void MainState::Init(const string &configfile)
 
 	m_showObjects = true;
 
-	m_GuiManager = make_unique<GuiManager>();
+	m_GumpManager = make_unique<GumpManager>();
 
 	SetupGame();
 }
@@ -112,7 +112,10 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
-	bool canupdate = false;
+	if(m_GumpManager->m_GumpList.size() > 0)
+	{
+		m_GumpManager->Update();
+	}
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
 	{
@@ -160,7 +163,6 @@ void MainState::Update()
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->Update();
 	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
-	m_GuiManager->Update();
 
 	//  Handle special keyboard keys
 	if (IsKeyPressed(KEY_ESCAPE))
@@ -353,22 +355,14 @@ void MainState::Update()
 
 void MainState::OpenGump(int id)
 {
-	shared_ptr<Gump> gumpGui = make_shared<Gump>();
+	shared_ptr<Gump> gump = make_shared<Gump>();
 
-	int posx = int(g_NonVitalRNG->Random(150));
-	int posy = int(g_NonVitalRNG->Random(150));
+	gump->SetContainerId(id);
+	gump->OnEnter();
 
-	gumpGui->m_Font = g_SmallFont;
-	gumpGui->SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
-	gumpGui->AddSprite(1004, 0, 0, g_gumpBackground, 1.0f, 1.0f, Color{255, 255, 255, 255});
-	gumpGui->AddIconButton(1005, 4, 34, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 0, 1, false);
-	gumpGui->SetDoneButtonId(1005);
-	gumpGui->m_Draggable = true;
-	gumpGui->LinkContainer(id);
+	std::shared_ptr<Gump> guiPtr = gump;
 
-	std::shared_ptr<Gui> guiPtr = std::dynamic_pointer_cast<Gui>(gumpGui);
-
-	m_GuiManager->AddGui(guiPtr);
+	m_GumpManager->AddGump(guiPtr);
 }
 
 void MainState::Draw()
@@ -428,7 +422,7 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
-	m_GuiManager->Draw();
+	m_GumpManager->Draw();
 
 	//  Draw any tooltips
 	EndTextureMode();

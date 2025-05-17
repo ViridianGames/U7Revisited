@@ -13,7 +13,7 @@ function func_049C(eventid, objectref)
     switch_talk_to(0, 156)
     var_0000 = unknown_0908H()
     var_0001 = get_lord_or_lady()
-    var_0002 = unknown_003BH()
+    var_0002 = get_schedule()
     var_0003 = false
     add_answer({"bye", "Fellowship", "job", "name"})
     if not get_flag(526) then
@@ -57,7 +57,7 @@ function func_049C(eventid, objectref)
                 remove_answer("liqueur")
             end
         elseif cmps("meetings") then
-            var_0006 = unknown_0067H()
+            var_0006 = is_player_wearing_fellowship_medallion()
             if var_0006 then
                 add_dialogue("She stares at you suspiciously.")
             end
@@ -84,7 +84,7 @@ function func_049C(eventid, objectref)
             add_dialogue("\"I am so busy with my duties that I know very few people here. Phearcy, the bartender, is an outstanding member of the community, as is the farmer, Tolemac. Tolemac's friend, Morz, though shy, is well spoken of. Also, Morz has a brother.\" She glances up, thoughtfully. \"Or is he Tolemac's brother?~~ \"I am not positive whose brother he is, but I do know that I do not know that much about him,\" she sniffs.")
             remove_answer("citizens")
         elseif cmps("Fellowship") then
-            var_0006 = unknown_0067H()
+            var_0006 = is_player_wearing_fellowship_medallion()
             if var_0006 then
                 add_dialogue("\"Our Branch has been open here in Moonglow for approximately half a decade. Rankin has been here the entire time, but I started at this branch only a few months ago.\"")
                 if not var_0003 then

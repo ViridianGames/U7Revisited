@@ -10,7 +10,7 @@ function func_0444(eventid, objectref)
         if not get_flag(113) then
             add_answer("absent-minded")
         end
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = get_party_members()
         if not get_flag(197) then
             add_dialogue("You see an elderly man with good humor and a warm smile.")

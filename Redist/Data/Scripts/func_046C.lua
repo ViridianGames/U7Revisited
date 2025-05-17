@@ -11,7 +11,7 @@ function func_046C(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 108)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_003BH()
+    var_0001 = get_schedule()
     var_0002 = 108
     var_0003 = false
     var_0004 = false

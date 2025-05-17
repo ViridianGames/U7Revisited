@@ -7,7 +7,7 @@ function func_04CB(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = unknown_0908H()
         var_0002 = "the Avatar"
-        var_0003 = unknown_003BH()
+        var_0003 = get_schedule()
         var_0004 = unknown_001BH(203)
         var_0005 = unknown_001BH(204)
         var_0006 = unknown_001CH(var_0004)

@@ -109,7 +109,7 @@ function func_04CF(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = unknown_003BH()
+        var_000A = get_schedule()
         var_000B = unknown_001CH(unknown_001BH(207))
         var_000C = random(4, 1)
         if var_000A >= 1 and var_000A <= 3 and var_000B == 14 then

@@ -4,7 +4,7 @@ function func_04E1(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 225)
-        var_0000 = unknown_003BH()
+        var_0000 = get_schedule()
         var_0001 = unknown_001CH(unknown_001BH(225))
         var_0002 = unknown_0931H(1, 359, 981, 1, 357)
         start_conversation()

@@ -1,30 +1,38 @@
 --- Best guess: Manages Ellen’s dialogue in Trinsic, a Fellowship bookkeeper who discusses her work, her husband Klog, and a local murder, providing an alibi for the latter.
+-- Ellen's NPC number is 236 decimal, EC hex.
 function func_04EC(eventid, objectref)
     local var_0000, var_0001
-
+    start_conversation()
     if eventid == 1 then
-        switch_talk_to(0, 236)
-        var_0000 = unknown_003BH()
-        if var_0000 == 7 then
-            var_0001 = unknown_08FCH(16, 236)
-            if var_0001 then
-                add_dialogue("Ellen puts her finger to her lips. There is a Fellowship meeting going on.")
-            else
-                add_dialogue("\"Hello. I am sorry to be rude, but I am late to the Fellowship meeting. May we speak another time?\"")
-            end
-            return
-        end
-        start_conversation()
-        if not get_flag(80) then
-            add_dialogue("This is a woman who seems pleasant and welcoming. \"I am proud to meet the Avatar,\" she says, beaming.")
-            set_flag(80, true)
-        else
-            add_dialogue("\"Yes, Avatar?\" Ellen asks.")
-        end
-        add_answer({"bye", "murder", "job", "name"})
-        while true do
+        switch_talk_to(236, 0)
+        --  THIS WHOLE SECTION CHECKS FOR ATTENDANCE AT THE FELLOWSHIP MEETING
+        --  Not completely sure how 08FCH works yet.  It could be time or location
+        --  Once we figure it out, we'll be able to fix it in a whole bunch of other
+        --  scripts.
+        -- var_0000 = get_schedule()
+        -- if var_0000 == 7 then
+        --     var_0001 = unknown_08FCH(16, 236)
+        --     if var_0001 then
+        --         add_dialogue("Ellen puts her finger to her lips. There is a Fellowship meeting going on.")
+        --     else
+        --         add_dialogue("\"Hello. I am sorry to be rude, but I am late to the Fellowship meeting. May we speak another time?\"")
+        --     end
+        --     return
+        -- end
+        --while true do
             local answer = get_answer()
-            if answer == "name" then
+            debug_print("Answer is " .. answer .. ".")
+            add_answer({"bye", "murder", "job", "name"})
+            if answer == "nil" then
+                if not get_flag(80) then
+                    add_dialogue("This is a woman who seems pleasant and welcoming. \"I am proud to meet the Avatar,\" she says, beaming.")
+                    set_flag(80, true)
+                else
+                    add_dialogue("\"Yes, Avatar?\" Ellen asks.")
+                end
+                --add_answer({"bye", "murder", "job", "name"})
+            --end
+            elseif answer == "name" then
                 add_dialogue("\"My name is Ellen.\"")
                 remove_answer("name")
             elseif answer == "job" then
@@ -44,13 +52,14 @@ function func_04EC(eventid, objectref)
                 add_dialogue("\"Mine husband Klog is a wonderful branch leader. He is an inspiration to all of the Trinsic members.\"")
                 remove_answer("Klog")
             elseif answer == "philosophy" then
-                unknown_091AH()
+                add_dialogue("\"REPLACE WITH PHILOSOPHY FUNCTION CALL\"")
+                --unknown_091AH()
                 remove_answer("philosophy")
             elseif answer == "bye" then
                 add_dialogue("\"Goodbye. I hope to see thee again, soon.\"")
-                break
+                clear_answers()
             end
-        end
+        --end
     elseif eventid == 0 then
         unknown_092EH(236)
     end

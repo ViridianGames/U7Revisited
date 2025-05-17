@@ -6,7 +6,7 @@ function func_0415(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(21, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001CH(21) --- Guess: Gets object state
+        var_0001 = 0 --unknown_001CH(21) --- Guess: Gets object state
         var_0002 = 0
         add_answer({"bye", "murder", "job", "name"})
         if get_flag(64) then
@@ -18,15 +18,17 @@ function func_0415(eventid, objectref)
         if not get_flag(67) then
             add_answer("Hook")
         end
-        if not get_flag(85) then
-            add_dialogue("You see a salty old sailor who reeks of tobacco.")
-            set_flag(85, true)
-        else
-            add_dialogue("\"Yes, matey?\" Gargan asks, coughing.")
-        end
-        while true do
+
+        --while true do
             var_0003 = get_answer()
-            if var_0003 == "name" then
+            if var_0003 == "nil" then
+                if not get_flag(85) then
+                    add_dialogue("You see a salty old sailor who reeks of tobacco.")
+                    set_flag(85, true)
+                else
+                    add_dialogue("\"Yes, matey?\" Gargan asks, coughing.")
+                end
+            elseif var_0003 == "name" then
                 add_dialogue("\"My name is Gargan.\"")
                 add_dialogue("He sniffs loudly.")
                 remove_answer("name")
@@ -175,10 +177,10 @@ function func_0415(eventid, objectref)
                     unknown_088DH() --- Guess: Checks shop hours
                 end
             elseif var_0003 == "bye" then
-                break
+                add_dialogue("\"May thy day have smooth sailing,\" the sailor starts to say, but a coughing spasm interrupts him.")
+                clear_answers()        
             end
-        end
-        add_dialogue("\"May thy day have smooth sailing,\" the sailor starts to say, but a coughing spasm interrupts him.")
+        --end
     elseif eventid == 0 then
         unknown_092EH(21) --- Guess: Triggers a game event
     end

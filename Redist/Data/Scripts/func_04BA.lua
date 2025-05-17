@@ -4,7 +4,7 @@ function func_04BA(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 186)
-        var_0000 = unknown_003BH()
+        var_0000 = get_schedule()
         var_0001 = false
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})
@@ -42,7 +42,7 @@ function func_04BA(eventid, objectref)
                 add_dialogue("\"To be located in the same building as the Recreation Center. To provide an excellent atmosphere for strengthening gargoyle minds. To have a large supply of books and educational material.\"")
                 remove_answer("Learning Center")
             elseif answer == "Fellowship" then
-                var_0003 = unknown_0067H()
+                var_0003 = is_player_wearing_fellowship_medallion()
                 if var_0003 then
                     add_dialogue("\"To be a member, too.\" He holds up his medallion. To have needed The Fellowship to become happy.\"")
                     add_answer("needed The Fellowship")

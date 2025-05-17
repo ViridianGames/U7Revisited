@@ -7,7 +7,7 @@ function func_04FA(eventid, objectref)
         var_0000 = unknown_0908H()
         var_0001 = false
         var_0002 = unknown_08F7H(156)
-        var_0003 = unknown_003BH()
+        var_0003 = get_schedule()
         var_0004 = unknown_0931H(1, 359, 981, 1, 357)
         if var_0003 == 7 then
             if not get_flag(508) then
@@ -151,7 +151,7 @@ function func_04FA(eventid, objectref)
                 add_dialogue("\"I am sorry, but I prefer not to gossip.\"")
                 remove_answer("people")
             elseif answer == "Fellowship" then
-                var_0009 = unknown_0067H()
+                var_0009 = is_player_wearing_fellowship_medallion()
                 if var_0009 then
                     if not get_flag(6) then
                         add_dialogue("\"As is customary, our meetings are at 9 p.m. Please feel free to join us.\"")

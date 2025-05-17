@@ -6,7 +6,7 @@ function func_0446(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(70, 0)
         var_0000 = get_player_name()
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         add_answer({"bye", "job", "name"})
         if not get_flag(222) then
             add_answer("signed")

@@ -9,7 +9,7 @@ function func_04CC(eventid, objectref)
         var_0002 = "the Avatar"
         var_0003 = unknown_001BH(204)
         var_0004 = unknown_001BH(203)
-        var_0005 = unknown_003BH()
+        var_0005 = get_schedule()
         var_0006 = unknown_001CH(var_0003)
         var_0007 = unknown_003CH(var_0003)
         start_conversation()

@@ -6,20 +6,22 @@ function func_0411(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(17, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0001 = is_player_wearing_fellowship_medallion()
         add_answer({"bye", "services", "murder", "job", "name"})
-        if not get_flag(63) then
+        if get_flag(63) then
             add_answer({"Klog", "Fellowship"})
         end
-        if not get_flag(82) then
-            add_dialogue("You see a solemn fellow in healer's robes.")
-            set_flag(82, true)
-        else
-            add_dialogue("\"Hello, again,\" Chantu says. \"How may I help thee?\"")
-        end
-        while true do
+
+        --while true do
             var_0002 = get_answer()
-            if var_0002 == "name" then
+            if var_0002 == "nil" then
+                if not get_flag(82) then
+                    add_dialogue("You see a solemn fellow in healer's robes.")
+                    set_flag(82, true)
+                else
+                    add_dialogue("\"Hello, again,\" Chantu says. \"How may I help thee?\"")
+                end
+            elseif var_0002 == "name" then
                 add_dialogue("\"My name is Chantu,\" he says with a slight bow.")
                 remove_answer("name")
             elseif var_0002 == "job" then
@@ -28,7 +30,8 @@ function func_0411(eventid, objectref)
                 add_dialogue("\"'Tis a sad state for Britannia when events such as these happen. Christopher was a good man. I hope that the villain is caught.\"")
                 remove_answer("murder")
             elseif var_0002 == "services" then
-                unknown_0860H(400, 50, 30) --- Guess: Performs healing, curing, or resurrection
+                add_dialogue("\"CALL GENERIC HEALER SCRIPT\"")
+                --unknown_0860H(400, 50, 30) --- Guess: Performs healing, curing, or resurrection
             elseif var_0002 == "Fellowship" then
                 add_dialogue("The healer frowns. \"The Fellowship does not appreciate the efforts of healers in Britannia. Although they do admirable things, The Fellowship is short-sighted when evaluating the need for healers. They believe that our work can be done through their so-called 'Triad of Inner Strength'.\"")
                 if var_0001 then
@@ -40,10 +43,12 @@ function func_0411(eventid, objectref)
                 add_dialogue("The healer shrugs. \"He does his duty as he sees fit. And I do mine.\"")
                 remove_answer("Klog")
             elseif var_0002 == "bye" then
-                break
+                add_dialogue("\"Goodbye.\"")
+                clear_answers()
+                --break
             end
-        end
-        add_dialogue("\"Goodbye.\"")
+        --end
+        
     elseif eventid == 0 then
         var_0002 = unknown_001CH(17) --- Guess: Gets object state
         var_0003 = random(1, 4)

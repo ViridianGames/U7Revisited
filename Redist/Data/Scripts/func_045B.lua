@@ -13,7 +13,7 @@ function func_045B(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 91)
     var_0000 = unknown_001CH(unknown_001BH(91))
-    var_0001 = unknown_003BH()
+    var_0001 = get_schedule()
     if var_0001 == 7 and var_0000 ~= 16 then
         var_0002 = unknown_08FCH(81, 91)
         if var_0002 then
@@ -24,7 +24,7 @@ function func_045B(eventid, objectref)
         return
     end
     var_0003 = get_lord_or_lady()
-    var_0004 = unknown_0067H()
+    var_0004 = is_player_wearing_fellowship_medallion()
     add_answer({"bye", "job", "name"})
     if get_flag(253) then
         add_answer("plans")

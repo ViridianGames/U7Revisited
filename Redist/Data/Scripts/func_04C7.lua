@@ -146,7 +146,7 @@ function func_04C7(eventid, objectref)
                     switch_talk_to(0, -199)
                 end
                 add_dialogue("\"Strive for unity seems to mean that The Fellowship wants others to work together for the weal of society. Trust thy brother implies that each person should not question the actions of others. Worthiness precedes reward indicates that The Fellowship's attitude towards reward is that one must do well to be rewarded.\"")
-                var_0007 = unknown_0067H()
+                var_0007 = is_player_wearing_fellowship_medallion()
                 if var_0007 then
                     add_dialogue("He looks at your medallion.")
                     add_dialogue("\"Is mine information correct?\"")

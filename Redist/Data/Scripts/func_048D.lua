@@ -29,7 +29,7 @@ function func_048D(eventid, objectref)
     else
         switch_talk_to(0, 141)
     end
-    var_0004 = unknown_003BH()
+    var_0004 = get_schedule()
     var_0005 = unknown_001CH(141)
     if var_0004 == 0 or var_0004 == 1 then
         if var_0005 == 14 then

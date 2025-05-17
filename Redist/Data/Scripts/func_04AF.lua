@@ -131,7 +131,7 @@ function func_04AF(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0005 = unknown_003BH()
+        var_0005 = get_schedule()
         var_0006 = unknown_001CH(unknown_001BH(175))
         var_0007 = random2(4, 1)
         if var_0006 == 11 then

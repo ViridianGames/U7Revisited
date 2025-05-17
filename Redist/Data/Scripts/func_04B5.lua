@@ -5,7 +5,7 @@ function func_04B5(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 181)
         var_0000 = false
-        var_0001 = unknown_003BH()
+        var_0001 = get_schedule()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(582) then

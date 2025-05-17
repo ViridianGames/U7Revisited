@@ -169,7 +169,7 @@ function func_0406(eventid, objectref)
         end
         add_dialogue("\"Good luck is hoped for you.\"")
     elseif eventid == 0 then
-        var_000F = unknown_003BH() --- Guess: Checks game state or timer
+        var_000F = get_schedule() --- Guess: Checks game state or timer
         var_000D = unknown_001BH(6) --- Guess: Retrieves object reference from ID
         var_000E = unknown_001CH(6) --- Guess: Gets object state
         var_000F = random(1, 4)

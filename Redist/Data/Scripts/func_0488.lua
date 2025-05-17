@@ -6,7 +6,7 @@ function func_0488(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(136, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH() --- Guess: Checks game state
+        var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = unknown_08F7H(134) --- Guess: Checks player status
         var_0003 = unknown_08F7H(135) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})

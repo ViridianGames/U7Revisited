@@ -7,11 +7,11 @@ function func_0489(eventid, objectref)
         switch_talk_to(137, 0)
         var_0000 = unknown_0908H() --- Guess: Gets player info
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_003BH() --- Guess: Checks game state
+        var_0002 = get_schedule() --- Guess: Checks game state
         var_0003 = unknown_001BH(137) --- Guess: Gets object ref
         unknown_001CH(137) --- Guess: Gets schedule
         var_0004 = "Avatar"
-        var_0002 = unknown_003BH() --- Guess: Checks game state
+        var_0002 = get_schedule() --- Guess: Checks game state
         var_0005 = is_player_female()
         add_answer({"bye", "job", "name"})
         if not get_flag(384) then
@@ -141,7 +141,7 @@ function func_0489(eventid, objectref)
         end
         add_dialogue("\"Enjoy thy life, friend.\"")
     elseif eventid == 0 then
-        var_0002 = unknown_003BH() --- Guess: Checks game state
+        var_0002 = get_schedule() --- Guess: Checks game state
         var_0003 = unknown_001BH(137) --- Guess: Gets object ref
         unknown_001CH(137) --- Guess: Gets schedule
         if var_0003 == 7 then

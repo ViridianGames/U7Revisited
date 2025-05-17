@@ -157,7 +157,7 @@ function func_0497(eventid, objectref)
         end
         add_dialogue("\"Goodbye, my love! Oh yes! I love thee! It is true!\"")
     elseif eventid == 0 then
-        var_0007 = unknown_003BH() --- Guess: Checks game state
+        var_0007 = get_schedule() --- Guess: Checks game state
         var_0005 = unknown_001CH(151) --- Guess: Gets schedule
         if var_0005 == 4 then
             var_0008 = random(1, 4)

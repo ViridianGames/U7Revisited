@@ -6,9 +6,9 @@ function func_0481(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(129, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH() --- Guess: Checks game state
+        var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = unknown_001CH(129) --- Guess: Gets object state
-        var_0003 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(381) then
             add_answer("locket")

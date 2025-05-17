@@ -5,10 +5,10 @@ function func_0439(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(57, 0)
-        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = unknown_001CH(57) --- Guess: Gets object state
         var_0002 = get_lord_or_lady()
-        var_0003 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(74) or not get_flag(64) then
             add_answer("Crown Jewel")

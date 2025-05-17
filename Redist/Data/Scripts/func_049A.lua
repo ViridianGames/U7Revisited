@@ -24,7 +24,7 @@ function func_049A(eventid, objectref)
     end
     while true do
         if cmps("name") then
-            var_0006 = unknown_0067H()
+            var_0006 = is_player_wearing_fellowship_medallion()
             if var_0006 then
                 add_dialogue("\"I Grod. Why you want know? Is voice unhappy?\"")
                 var_0007 = unknown_090AH()
@@ -73,7 +73,7 @@ function func_049A(eventid, objectref)
                 hide_npc2)
                 switch_talk_to(0, 154)
             end
-            var_000B = unknown_0067H()
+            var_000B = is_player_wearing_fellowship_medallion()
             if var_000B then
                 add_dialogue("\"Want to help?\"")
                 var_000C = unknown_090AH()
@@ -108,7 +108,7 @@ function func_049A(eventid, objectref)
             end
             add_answer({"prisoners", "torture"})
         elseif cmps("Fellowship") then
-            var_000E = unknown_0067H()
+            var_000E = is_player_wearing_fellowship_medallion()
             if var_000E then
                 add_dialogue("\"Yes,\" he nods. \"I belong, too. I strive for unity. I be worthy for my reward. And I trust my brother.\"~~ He smiles, obviously pleased with himself.\"")
                 add_answer({"trust", "worthy", "strive"})

@@ -7,7 +7,7 @@ function func_0453(eventid, objectref)
         abort()
     end
     switch_talk_to(83, 0)
-    var_0000 = unknown_0067H() --- Guess: Checks Fellowship membership
+    var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
     add_answer({"bye", "job", "name"})
     if not get_flag(254) then
         add_answer({"Tania", "Frederico", "murders"})

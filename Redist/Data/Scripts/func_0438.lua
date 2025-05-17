@@ -6,8 +6,8 @@ function func_0438(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(56, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         add_answer({"bye", "job", "name"})
         if var_0001 then
             add_answer("Fellowship")

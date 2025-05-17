@@ -12,7 +12,7 @@ function func_049D(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 157)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_003BH()
+    var_0001 = get_schedule()
     add_answer({"bye", "Fellowship", "job", "name"})
     if get_flag(469) then
         add_dialogue("\"Get thee away! I'll hear no more of thy lies!\"")
@@ -75,7 +75,7 @@ function func_049D(eventid, objectref)
             remove_answer("Fellowship")
         elseif cmps("reconvert") then
             add_dialogue("\"Reconvert? Why would I want to do that? Did my brother request this? He has always had a problem with letting me make mine own decisions. Nay, " .. var_0000 .. ". I will not abandon my beliefs. The Fellowship has done too much for my life.\"")
-            var_0003 = unknown_0067H()
+            var_0003 = is_player_wearing_fellowship_medallion()
             if var_0003 then
                 add_dialogue("\"And to think thou art a fellow member. There is no unity in thy speech!\"")
             end

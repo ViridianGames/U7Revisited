@@ -45,13 +45,17 @@ void ConversationState::Init(const string& configfile)
 
 void ConversationState::OnEnter()
 {
-	ClearConsole();
+	//ClearConsole();
+	m_answerPending = false;
 }
 
 void ConversationState::OnExit()
 {
 	m_answers.clear();
 	m_dialogue.clear();
+	m_answerPending = false;
+	lua_pushstring(g_ScriptingSystem->m_luaState, "nil");
+	lua_setglobal(g_ScriptingSystem->m_luaState, "answer");
 }
 
 void ConversationState::Shutdown()
@@ -61,52 +65,56 @@ void ConversationState::Shutdown()
 
 void ConversationState::Update()
 {
-	if(m_answers.size() > 0)
+	if(m_dialogue.size() > 1)
 	{
-		for(int i = 0; i < m_answers.size(); i++)
+		if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 		{
+			m_dialogue.erase(m_dialogue.begin());
+		}
+	}
 
-			if (IsLeftButtonDownInRect({ 115 * g_DrawScale,
-				 float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
-				 400 * g_DrawScale,
-				 float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale) }))
+	//  We're ready for a response.
+	else if(m_dialogue.size() == 1 && m_answers.size() > 0)
+	{
+		if(m_answerPending == false)
+		{
+			for(int i = 0; i < m_answers.size(); i++)
 			{
-				SetAnswer(m_luaFunction, m_answers[i]);
+				std::string adjustedAnswer = std::string("* ") + m_answers[i];
+				Vector2 dims = MeasureTextEx(*g_SmallFont.get(), adjustedAnswer.c_str(), g_SmallFont.get()->baseSize, 1);
+
+				Vector2 mousePosition = GetMousePosition();
+				if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+					CheckCollisionPointRec(mousePosition, { 115 * g_DrawScale,
+					 float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
+				 	dims.x * g_DrawScale,
+				 	float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale) }))
+				{
+					SetAnswer(m_luaFunction, m_answers[i]);
 				
-				m_answers.clear();
-				m_dialogue.clear();
-				m_answerPending = true;
-				//g_StateMachine->PopState();
+					m_answers.clear();
+					m_dialogue.clear();
+					m_answerPending = true;
+					//g_StateMachine->PopState();
+				}
 			}
+		}
+	}
+	else
+	{
+		if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			g_StateMachine->PopState();
 		}
 	}
 
 	if(m_answerPending)
 	{
 		m_answerPending = false;
-		g_ScriptingSystem->CallScript(m_luaFunction, {m_npcId, 2});  
+		g_ScriptingSystem->CallScript(m_luaFunction, {1, m_npcId});  
 	}
 
-   if (IsKeyReleased(KEY_SPACE))
-	{
-		if(m_dialogue.size() <= 1)
-		{
-			GetAnswers(m_luaFunction);
-			if(m_answers.size() == 0)
-			{
-				m_dialogue.clear();
-				m_answers.clear();
-				SetAnswer(m_luaFunction, "nil");
-				g_StateMachine->PopState();
-			}
-		}	
-		else
-		{
-			m_dialogue.erase(m_dialogue.begin());
-		}
-	}
-
-	if (IsKeyReleased(KEY_F1))
+	if (IsKeyReleased(KEY_ESCAPE))
 	{
 		g_StateMachine->PopState();
 	}
@@ -192,6 +200,12 @@ void ConversationState::GetAnswers(const std::string& func_name)
     lua_pop(g_ScriptingSystem->m_luaState, 1);
 }
 
+void ConversationState::RemoveAnswer(std::string answer)
+{
+    auto it = std::remove(m_answers.begin(), m_answers.end(), answer);
+    m_answers.erase(it, m_answers.end());
+}
+
 void ConversationState::SetAnswer(const std::string& func_name, const std::string& answer)
 {
     lua_getglobal(g_ScriptingSystem->m_luaState, "answer");
@@ -204,4 +218,5 @@ void ConversationState::SetAnswer(const std::string& func_name, const std::strin
 	//lua_pop(g_ScriptingSystem->m_luaState, 1);
     lua_pushstring(g_ScriptingSystem->m_luaState, answer.c_str());
     lua_setglobal(g_ScriptingSystem->m_luaState, "answer");
+	m_answerPending = false;
 }

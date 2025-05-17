@@ -104,7 +104,7 @@ function func_04C4(eventid, objectref)
                 end
                 remove_answer("armour")
             elseif answer == "Fellowship" then
-                var_0007 = unknown_0067H()
+                var_0007 = is_player_wearing_fellowship_medallion()
                 if var_0007 then
                     add_dialogue("\"Why, yes, I see thou art a member too.\"")
                 else

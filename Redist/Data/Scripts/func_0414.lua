@@ -5,7 +5,7 @@ function func_0414(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(20, 0)
-        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = unknown_001CH(20) --- Guess: Gets object state
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(84) then

@@ -27,7 +27,7 @@ function func_0490(eventid, objectref)
             switch_talk_to(144, 1)
             unknown_08D8H() --- Guess: Checks ring status
         end
-        var_0002 = unknown_003BH() --- Guess: Checks game state
+        var_0002 = get_schedule() --- Guess: Checks game state
         var_0003 = unknown_001CH(144) --- Guess: Gets schedule
         if var_0002 == 0 or var_0002 == 1 then
             if var_0003 == 14 then

@@ -7,7 +7,7 @@ function func_0436(eventid, objectref)
         switch_talk_to(54, 0)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(54) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0004 = unknown_08F7H(39) --- Guess: Checks player status
@@ -112,7 +112,7 @@ function func_0436(eventid, objectref)
         end
         add_dialogue("\"Goodbye!\"")
     elseif eventid == 0 then
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(54) --- Guess: Gets object state
         if var_0003 == 7 then
             var_0007 = random(1, 4)

@@ -15,7 +15,7 @@ function func_049B(eventid, objectref)
     var_0001 = get_lord_or_lady()
     var_0002 = false
     add_answer({"bye", "job", "name"})
-    var_0003 = unknown_0067H()
+    var_0003 = is_player_wearing_fellowship_medallion()
     if var_0003 then
         add_dialogue("\"" .. var_0001 .. "? Thou, too, hast joined the evil organization? But how is this possible? Canst thou not see their tenets vie with the very virtues themselves? Dost thou not feel more like a sheep than a man? I am truly sorry, for if one of Britannia's greatest heroes has fallen in with such filth, then there is no hope for our great land!\" He turns away in disgust.")
         return

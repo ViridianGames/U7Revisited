@@ -25,7 +25,7 @@ function func_048C(eventid, objectref)
     if not get_flag(408) then
         add_answer("sacrifice")
     end
-    var_0003 = unknown_003BH()
+    var_0003 = get_schedule()
     var_0004 = unknown_001CH(140)
     if not get_flag(426) and (var_0003 == 0 or var_0003 == 1) then
         if var_0004 == 14 then

@@ -5,11 +5,11 @@ function func_00D2(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_object_quality(objectref)
         -- callis 003B, 0 (unmapped)
-        if var_0000 == unknown_003BH() then
+        if var_0000 == get_schedule() then
             return
         end
         -- callis 003B, 0 (unmapped)
-        var_0001 = unknown_0015H(unknown_003BH(), objectref)
+        var_0001 = unknown_0015H(get_schedule(), objectref)
         if random2(4, 1) > 1 then
             -- callis 0024, 1 (unmapped)
             var_0002 = unknown_0024H(377)

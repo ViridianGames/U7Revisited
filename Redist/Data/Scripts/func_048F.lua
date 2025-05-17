@@ -17,7 +17,7 @@ function func_048F(eventid, objectref)
     var_0003 = false
     var_0004 = false
     var_0005 = false
-    var_0006 = unknown_003BH()
+    var_0006 = get_schedule()
     var_0007 = false
     var_0008 = false
     var_0009 = unknown_001CH(143)

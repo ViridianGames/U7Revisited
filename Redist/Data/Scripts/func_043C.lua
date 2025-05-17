@@ -13,7 +13,7 @@ function func_043C(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 60)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0067H()
+    var_0001 = is_player_wearing_fellowship_medallion()
     add_answer({"bye", "job", "name"})
     if not get_flag(206) then
         add_answer("pumpkins")

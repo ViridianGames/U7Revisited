@@ -4,7 +4,7 @@ function func_043B(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = unknown_003BH()
+            var_0001 = get_schedule()
             var_0002 = unknown_001CH(unknown_001BH(59))
             var_0011 = random2(4, 1)
             if var_0002 == 7 then
@@ -29,9 +29,9 @@ function func_043B(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 59)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_003BH()
+    var_0001 = get_schedule()
     var_0002 = unknown_001CH(unknown_001BH(59))
-    var_0003 = unknown_0067H()
+    var_0003 = is_player_wearing_fellowship_medallion()
     if var_0001 == 7 then
         var_0004 = unknown_08FCH(26, 59)
         if var_0004 then

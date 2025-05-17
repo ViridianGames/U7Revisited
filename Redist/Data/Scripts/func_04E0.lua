@@ -6,7 +6,7 @@ function func_04E0(eventid, objectref)
         return
     end
     switch_talk_to(0, 224)
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     var_0001 = unknown_001CH(unknown_001BH(224))
     var_0002 = unknown_0908H()
     var_0003 = "Avatar"

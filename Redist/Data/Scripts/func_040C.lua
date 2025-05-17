@@ -28,7 +28,7 @@ function func_040C(eventid, objectref)
     start_conversation()
     switch_talk_to(12, 0)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0908H()
+    var_0001 = get_player_name()
     var_0002 = get_flag(-1)
     var_0003 = is_player_female()
     if get_flag(90) and not get_flag(72) then
@@ -80,11 +80,11 @@ function func_040C(eventid, objectref)
             return
         end
     elseif not get_flag(76) then
-        unknown_005CH(objectref)
-        unknown_001DH(11, -12)
+        --unknown_005CH(objectref)
+        --unknown_001DH(12, 11)
         add_dialogue("You see a middle-aged nobleman.")
         set_flag(76, true)
-        var_0006 = get_flag(-1)
+        var_0006 = get_flag(1)
         if not var_0006 then
             add_dialogue("\"Iolo! Who is this stranger?\"")
             switch_talk_to(1, 0)

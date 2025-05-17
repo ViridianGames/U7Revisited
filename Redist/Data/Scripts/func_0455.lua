@@ -6,7 +6,7 @@ function func_0455(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(85, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if not get_flag(272) then
             add_dialogue("You see a handsome craftsman with an intense, piercing gaze.")
             set_flag(272, true)

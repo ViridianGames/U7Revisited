@@ -6,9 +6,9 @@ function func_0426(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(38, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(38) --- Guess: Gets object state
-        var_0003 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if not get_flag(167) then
             add_dialogue("You see a gleeful-looking merchant with an enthusiastic voice and manner.")
@@ -89,7 +89,7 @@ function func_0426(eventid, objectref)
         end
         add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(38) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0005 = random(1, 4)

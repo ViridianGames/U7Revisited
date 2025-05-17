@@ -47,6 +47,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
    m_hasGump = false;
    m_inventory.clear();
    m_hasConversationTree = false;
+   m_GumpPos = Vector2{ 0, 0 };
 }
 
 void U7Object::Draw()

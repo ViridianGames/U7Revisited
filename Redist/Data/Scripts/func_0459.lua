@@ -8,7 +8,7 @@ function func_0459(eventid, objectref)
     end
     switch_talk_to(89, 0)
     var_0000 = get_lord_or_lady()
-    var_0002 = unknown_0067H() --- Guess: Checks Fellowship membership
+    var_0002 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
     var_0001 = false
     if not get_flag(276) then
         add_dialogue("You see a mountain man who appears to have been in the wilderness a long time. He gives you a long look, then he snorts and looks away.")

@@ -4,7 +4,7 @@ function func_041B(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0000 = unknown_003BH()
+            var_0000 = get_schedule()
             var_0001 = unknown_001CH(unknown_001BH(-27))
             var_0008 = random2(4, 1)
             if var_0001 == 7 then
@@ -28,7 +28,7 @@ function func_041B(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, -27)
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     var_0001 = unknown_001CH(unknown_001BH(-27))
     add_answer({"bye", "job", "name"})
     if not get_flag(104) then

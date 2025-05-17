@@ -8,7 +8,7 @@ function func_040E(eventid, objectref)
 
     start_conversation()
     switch_talk_to(14, 0)
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     if var_0000 == 7 then
         var_0001 = unknown_08FCH(-16, -14)
         if var_0001 then

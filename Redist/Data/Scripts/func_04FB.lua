@@ -4,8 +4,8 @@ function func_04FB(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 251)
-        var_0000 = unknown_003BH()
-        var_0001 = unknown_0067H()
+        var_0000 = get_schedule()
+        var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = unknown_0931H(1, 359, 981, 1, 357)
         if var_0000 == 7 then
             add_dialogue("Danag nods his head at you. \"I do not mean to be impolite, but I am concentrating on the games. I wish to win a bundle tonight!\"")

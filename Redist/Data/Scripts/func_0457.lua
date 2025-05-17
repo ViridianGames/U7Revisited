@@ -6,7 +6,7 @@ function func_0457(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(87, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = unknown_001CH(87) --- Guess: Gets object state
         var_0003 = unknown_0931H(359, 359, 728, 1, 357) --- Guess: Checks item in inventory
         if var_0003 then

@@ -5,7 +5,7 @@ function func_0412(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(18, 0)
-        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = get_lord_or_lady()
         var_0002 = get_player_name()
         var_0003 = unknown_001CH(18) --- Guess: Gets object state
@@ -90,7 +90,7 @@ function func_0412(eventid, objectref)
             add_dialogue("\"Spend more money next time thou dost come in.\"")
         end
     elseif eventid == 0 then
-        var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(18) --- Guess: Gets object state
         var_0008 = random(1, 4)
         if var_0003 == 7 then

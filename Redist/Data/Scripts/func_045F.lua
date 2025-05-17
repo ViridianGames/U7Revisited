@@ -13,7 +13,7 @@ function func_045F(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 95)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_003BH()
+    var_0001 = get_schedule()
     var_0002 = unknown_001CH(unknown_001BH(95))
     add_answer({"bye", "job", "name"})
     if get_flag(246) then

@@ -65,7 +65,7 @@ function func_04E9(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = unknown_003BH()
+        var_000A = get_schedule()
         var_0000 = unknown_001CH(unknown_001BH(233))
         if var_0000 == 29 then
             var_000B = random2(4, 1)

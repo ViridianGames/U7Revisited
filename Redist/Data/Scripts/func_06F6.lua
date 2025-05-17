@@ -87,7 +87,7 @@ function func_06F6(eventid, objectref)
                 add_dialogue("\"As thou wish, master. I but seek to serve thee.\"")
                 restore_answers()
             elseif player_says("Magic") then
-                var_0016 = unknown_003BH()
+                var_0016 = get_schedule()
                 if var_0016 == 7 or var_0016 == 0 or var_0016 == 1 then
                     unknown_0845H(true)
                 else

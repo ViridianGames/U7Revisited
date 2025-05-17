@@ -117,7 +117,7 @@ function func_04F0(eventid, objectref)
                 remove_answer("Alagner")
             elseif answer == "Fellowship" then
                 add_dialogue("\"Why, they are a wonderful group of people who are constantly seeking to bring health, happiness, and spirituality to the people of Britannia.\"")
-                var_0006 = unknown_0067H()
+                var_0006 = is_player_wearing_fellowship_medallion()
                 if not var_0006 then
                     add_dialogue("With his index finger, he motions you closer to him and lowers his voice.")
                     add_dialogue("\"In a pig's eye, that is! I am departing this den of evil as soon as I get the chance. And I advise thee to do the same!\"")

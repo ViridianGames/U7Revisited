@@ -27,7 +27,7 @@ function func_041E(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, -30)
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     add_answer({"bye", "job", "name"})
     var_0001 = unknown_08F7H(-3)
     if get_flag(107) or var_0001 then

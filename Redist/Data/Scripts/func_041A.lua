@@ -62,8 +62,8 @@ function func_041A(eventid, objectref)
         end
     end
     var_0004 = get_lord_or_lady()
-    var_0005 = unknown_0067H()
-    var_0006 = unknown_003BH()
+    var_0005 = is_player_wearing_fellowship_medallion()
+    var_0006 = get_schedule()
     var_0007 = unknown_0908H()
     add_answer({"bye", "job", "name"})
     if not get_flag(65) then

@@ -6,8 +6,8 @@ function func_0429(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(41, 0)
         var_0000 = unknown_001CH(41) --- Guess: Gets object state
-        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         if var_0002 == 7 then
             var_0003 = unknown_08FCH(26, 41) --- Guess: Checks time for Fellowship meeting
             if var_0003 then

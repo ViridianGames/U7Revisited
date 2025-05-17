@@ -7,7 +7,7 @@ function func_0461(eventid, objectref)
         abort()
     end
     switch_talk_to(97, 0)
-    var_0000 = unknown_003BH() --- Guess: Checks game state or timer
+    var_0000 = get_schedule() --- Guess: Checks game state or timer
     if var_0000 == 7 then
         var_0001 = unknown_08FCH(81, 97) --- Guess: Checks NPC time interaction
         if var_0001 then

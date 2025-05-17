@@ -4,7 +4,7 @@ function func_04CA(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 202)
-        var_0000 = unknown_0067H()
+        var_0000 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(579) then

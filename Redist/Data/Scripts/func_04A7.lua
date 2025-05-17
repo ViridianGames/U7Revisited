@@ -5,7 +5,7 @@ function func_04A7(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 167)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0067H()
+        var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = false
         var_0003 = unknown_0931H(1, 357, 649, 359, 1)
         if not get_flag(566) and not get_flag(531) then

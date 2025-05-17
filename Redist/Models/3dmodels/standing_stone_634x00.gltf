@@ -15,18 +15,13 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"standing_stone_634x00",
-			"translation":[
-				-1.0276415348052979,
-				0.011009693145751953,
-				-0.6451106667518616
-			]
+			"name":"standing_stone_634x00"
 		}
 	],
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"standstone",
+			"name":"standing_stone",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -70,14 +65,14 @@
 			"componentType":5126,
 			"count":390,
 			"max":[
-				0.9243302941322327,
+				1.477182149887085,
 				2.671422004699707,
-				0.6115931272506714
+				1.1818046569824219
 			],
 			"min":[
-				-0.5432075262069702,
+				0.00964444875717163,
 				0.0888335332274437,
-				-0.5660805702209473
+				0.004130959510803223
 			],
 			"type":"VEC3"
 		},

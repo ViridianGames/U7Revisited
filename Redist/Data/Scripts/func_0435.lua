@@ -6,8 +6,8 @@ function func_0435(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(53, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0067H() --- Guess: Checks Fellowship membership
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(53) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0004 = unknown_08FCH(26, 53) --- Guess: Checks time for Fellowship meeting
@@ -99,7 +99,7 @@ function func_0435(eventid, objectref)
         end
         add_dialogue("\"Good day, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        var_0002 = unknown_003BH() --- Guess: Checks game state or timer
+        var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(53) --- Guess: Gets object state
         if var_0003 == 19 then
             var_000A = random(1, 4)

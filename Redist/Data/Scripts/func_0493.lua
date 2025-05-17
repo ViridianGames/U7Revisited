@@ -6,7 +6,7 @@ function func_0493(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(147, 0)
         var_0000 = false
-        var_0001 = unknown_003BH() --- Guess: Checks game state
+        var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = unknown_001CH(147) --- Guess: Gets schedule
         if not get_flag(443) then
             add_dialogue("You see a ghostly man cowering in the corner. Holding up an ankh in a protective fashion, he looks around the room frantically, but takes no notice of you.")

@@ -107,6 +107,7 @@ static int LuaAddAnswers(lua_State *L)
             return luaL_error(L, "Answers table lost at index %d", answers_idx);
         }
         lua_rawseti(L, answers_idx, len + 1);
+        g_ConversationState->AddAnswer(answer);
         std::cout << "Added answer: " << answer << "\n";
     }
     else if (type == LUA_TTABLE)
@@ -124,6 +125,7 @@ static int LuaAddAnswers(lua_State *L)
                 {
                     return luaL_error(L, "Answers table lost at index %d", answers_idx);
                 }
+                g_ConversationState->AddAnswer(answer);
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
                 std::cout << "Added answer: " << answer << "\n";
@@ -150,34 +152,79 @@ static int LuaAddAnswers(lua_State *L)
 static int LuaRemoveAnswers(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: remove_answers called");
-    const char *answer = luaL_checkstring(L, 1);
+    // Check stack for input argument
+    if (lua_gettop(L) < 1)
+    {
+        return luaL_error(L, "Expected at least one argument");
+    }
+
+    // Get or create global answers table
     lua_getglobal(L, "answers");
     if (!lua_istable(L, -1))
     {
         lua_pop(L, 1);
-        return 0;
+        lua_newtable(L);
+        lua_setglobal(L, "answers");
+        lua_getglobal(L, "answers");
     }
-
-    int len = lua_rawlen(L, -1);
-    lua_newtable(L); // New answers table
-    int new_index = 1;
-
-    for (int i = 1; i <= len; i++)
+    if (!lua_istable(L, -1))
     {
-        lua_rawgeti(L, -2, i);
-        const char *current = lua_tostring(L, -1);
-        if (current && strcmp(current, answer) != 0)
-        {
-            lua_pushstring(L, current);
-            lua_rawseti(L, -3, new_index);
-            new_index++;
-        }
-        lua_pop(L, 1);
+        return luaL_error(L, "Failed to create answers table");
     }
 
-    lua_setglobal(L, "answers");
-    lua_pop(L, 1); // Pop old answers table
-    cout << "Removed answer: " << answer << "\n";
+    // Store answers table index
+    int answers_idx = lua_gettop(L);
+    int len = lua_rawlen(L, answers_idx);
+
+    // Check type of first argument
+    int type = lua_type(L, 1);
+    if (type == LUA_TSTRING)
+    {
+        // Single string: add it directly
+        const char *answer = luaL_checkstring(L, 1);
+        lua_pushstring(L, answer);
+        if (!lua_istable(L, answers_idx))
+        {
+            return luaL_error(L, "Answers table lost at index %d", answers_idx);
+        }
+        lua_rawseti(L, answers_idx, len + 1);
+        g_ConversationState->RemoveAnswer(answer);
+        std::cout << "Removed answer: " << answer << "\n";
+    }
+    else if (type == LUA_TTABLE)
+    {
+        // Table: iterate over elements and add strings
+        int table_len = lua_rawlen(L, 1);
+        for (int i = 1; i <= table_len; ++i)
+        {
+            lua_rawgeti(L, 1, i); // Push table[i]
+            if (lua_isstring(L, -1))
+            {
+                const char *answer = lua_tostring(L, -1);
+                lua_pushstring(L, answer); // Push copy for answers table
+                if (!lua_istable(L, answers_idx))
+                {
+                    return luaL_error(L, "Answers table lost at index %d", answers_idx);
+                }
+                g_ConversationState->RemoveAnswer(answer);
+                lua_rawseti(L, answers_idx, len + 1);
+                len++; // Increment for next insertion
+                std::cout << "Remove answer: " << answer << "\n";
+            }
+            else
+            {
+                std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+            }
+            lua_pop(L, 1); // Pop table[i]
+        }
+    }
+    else
+    {
+        return luaL_error(L, "Expected string or table, got %s", lua_typename(L, type));
+    }
+
+    // Clean up: pop answers table
+    lua_pop(L, 1);
     return 0;
 }
 
@@ -217,21 +264,12 @@ static int LuaGetAnswer(lua_State *L)
 
     if (selected_answer)
     {
-        for (int i = 1; i <= lua_rawlen(L, -1); i++)
-        {
-            lua_rawgeti(L, -1, i);
-            if (strcmp(lua_tostring(L, -1), selected_answer) == 0)
-            {
-                lua_pop(L, 2); // Pop answer and answers table
-                lua_pushinteger(L, i);
-                return 1;
-            }
-            lua_pop(L, 1);
-        }
+        lua_pushstring(L, selected_answer);
     }
-
-    lua_pop(L, 1); // Pop answers table
-    lua_pushinteger(L, 0);
+    else
+    {
+        lua_pushstring(L, "nil");
+    }
     return 1;
 }
 
@@ -577,12 +615,6 @@ static int LuaTriggerFerry(lua_State *L)
     return 0;
 }
 
-
-
-
-
-
-
 static int LuaGetObjectInfo(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
@@ -662,7 +694,7 @@ static int LuaGetLordOrLady(lua_State *L)
     {
         lua_pushstring(L, "Milady");
     }
-    return 0;
+    return 1;
 }
 
 static int LuaRandom(lua_State *L)
@@ -803,6 +835,27 @@ static int LuaGetNPCName(lua_State *L)
     return 1;
 }
 
+static int LuaUpdateConversation(lua_State *L)
+{
+    g_ConversationState->Update();
+    g_ConversationState->Draw();
+    return 0;
+}
+
+static int LuaClearAnswers(lua_State *L)
+{
+    g_ConversationState->ClearAnswers();
+    return 0;
+}
+
+static int LuaIsPlayerWearingMedallion(lua_State *L)
+{
+    if(LUA_DEBUG) AddConsoleString("LUA: is_player_wearing_fellowship_medallion called");
+    bool wearing = g_Player->IsWearingFellowshipMedallion();
+    lua_pushboolean(L, wearing);
+    return 1;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -817,6 +870,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
+    g_ScriptingSystem->RegisterScriptFunction("clear_answers", LuaClearAnswers);
 
     //  These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
@@ -864,6 +918,10 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
     
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
+
+    g_ScriptingSystem->RegisterScriptFunction("update_conversation", LuaUpdateConversation);
+
+    g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
 
     cout << "Registered all Lua functions\n";
 }

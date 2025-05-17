@@ -4,8 +4,8 @@ function func_04DE(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 222)
-        var_0000 = unknown_003BH()
-        var_0001 = unknown_0067H()
+        var_0000 = get_schedule()
+        var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(683) then
@@ -106,7 +106,7 @@ function func_04DE(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0000 = unknown_003BH()
+        var_0000 = get_schedule()
         var_0007 = unknown_001CH(unknown_001BH(222))
         var_0008 = random2(4, 1)
         if var_0007 == 11 and (var_0000 == 5 or var_0000 == 7 or var_0000 == 0) then

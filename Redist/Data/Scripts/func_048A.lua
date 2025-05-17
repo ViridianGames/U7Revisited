@@ -13,7 +13,7 @@ function func_048A(eventid, objectref)
     var_0002 = unknown_08F7H(-1)
     var_0003 = unknown_08F7H(-3)
     var_0004 = unknown_08F7H(-4)
-    var_0005 = unknown_0067H()
+    var_0005 = is_player_wearing_fellowship_medallion()
     if not get_flag(715) then
         add_answer("Iriale")
     end

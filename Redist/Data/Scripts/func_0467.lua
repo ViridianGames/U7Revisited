@@ -5,7 +5,7 @@ function func_0467(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(103, 0)
-        var_0000 = unknown_0067H() --- Guess: Checks Fellowship membership
+        var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if var_0000 then
             var_0001 = unknown_001BH(103) --- Guess: Gets object ref
             add_dialogue("The man scowls at you. \"Thou wearest the symbol of that most foul of groups, The Fellowship. Prepare to die!\"")

@@ -12,7 +12,7 @@ function func_047C(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 124)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0067H()
+    var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = false
     var_0003 = unknown_0037H(unknown_001BH(125))
     var_0004 = unknown_0037H(unknown_001BH(126))

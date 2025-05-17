@@ -152,6 +152,10 @@ public:
 
    NPCblock m_NPCData;
 
+   Vector2 m_GumpPos;
+   bool m_isSorted = false;
+   bool m_shouldBeSorted = true;
+
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 
 };

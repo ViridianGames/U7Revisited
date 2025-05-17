@@ -29,6 +29,8 @@ public:
    void SetNPC(int npcId, int frame = 0) { m_npcId = npcId; m_npcFrame = frame; }
    void AddDialogue(std::string str) { m_dialogue.push_back(str); }
    void AddAnswer(std::string answer) { m_answers.push_back(answer); }
+   void RemoveAnswer(std::string answer);
+   void ClearAnswers() { m_answers.clear(); }
 
    void GetAnswers(const std::string& func_name);
 

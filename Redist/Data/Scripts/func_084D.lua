@@ -2,7 +2,7 @@
 function func_084D()
     local var_0000, var_0001, var_0002
 
-    var_0000 = unknown_003BH()
+    var_0000 = get_schedule()
     if get_flag(150) and get_flag(151) then
         add_dialogue("\"Well, thou didst certainly attempt to complete the quest. I cannot understand why the chest in Destard was empty. But we shall forget it, shall we?\"")
         add_dialogue("\"Now that thou hast worked a little for The Fellowship, and hast learned what we stand for, dost thou still wish to join?\"")

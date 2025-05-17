@@ -4,8 +4,8 @@ function func_04E6(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 230)
-        var_0000 = unknown_003BH()
-        var_0001 = unknown_0067H()
+        var_0000 = get_schedule()
+        var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = get_lord_or_lady()
         var_0003 = unknown_0908H()
         var_0004 = "Avatar"

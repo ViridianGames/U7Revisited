@@ -5,7 +5,7 @@ function func_04B9(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 185)
         var_0000 = unknown_0908H()
-        var_0001 = unknown_003BH()
+        var_0001 = get_schedule()
         var_0002 = unknown_0931H(1, 359, 981, 1, 357)
         if var_0001 == 7 then
             add_dialogue("The gargoyle seems to be too busy conducting the Fellowship meeting to speak with you now.")
@@ -54,7 +54,7 @@ function func_04B9(eventid, objectref)
                 add_dialogue("\"To be too busy to know all in Terfin.\"")
                 remove_answer("gargoyles")
             elseif answer == "Fellowship" then
-                var_0003 = unknown_0067H()
+                var_0003 = is_player_wearing_fellowship_medallion()
                 if var_0003 then
                     add_dialogue("\"To hold meetings at 9 p.m., in unity with other branches, human. To be welcome at our meetings.\"")
                 else

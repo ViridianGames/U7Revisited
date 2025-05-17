@@ -5,7 +5,7 @@ function func_04B3(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 179)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_003BH()
+        var_0001 = get_schedule()
         var_0002 = unknown_001CH(unknown_001BH(179))
         start_conversation()
         add_answer({"bye", "job", "name"})
