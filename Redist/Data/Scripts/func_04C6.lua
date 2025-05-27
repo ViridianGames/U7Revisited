@@ -91,7 +91,7 @@ function func_04C6(eventid, objectref)
                 add_dialogue("\"There are many who live within the walls of the Hold. Sir Denton, the bartender at the Hallowed Dock, knows them all.\"")
                 remove_answer("knights")
             elseif answer == "sell" then
-                var_0007 = unknown_001CH(unknown_001BH(198))
+                var_0007 = unknown_001CH(get_npc_name(198))
                 if var_0007 == 7 then
                     add_dialogue("\"Weapons or missiles?\"")
                     save_answers()

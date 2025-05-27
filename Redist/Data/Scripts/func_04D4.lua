@@ -7,7 +7,7 @@ function func_04D4(eventid, objectref)
         var_0000 = unknown_0908H()
         var_0001 = get_lord_or_lady()
         var_0002 = false
-        var_0003 = unknown_0037H(unknown_001BH(203))
+        var_0003 = unknown_0037H(get_npc_name(203))
         var_0004 = "the Avatar"
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})
@@ -79,7 +79,7 @@ function func_04D4(eventid, objectref)
                 remove_answer("Vesper")
             elseif answer == "Auston" then
                 add_dialogue("\"He is our mayor. Eldroth recommended that we elect him, so, of course, we did. However, between the two of us, I think we ought to have someone new if Auston does not do something quickly. As a matter of fact, thou shouldst run for mayor, \" .. var_0001 .. \". What dost thou think? Wouldst thou like to run for mayor?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     add_dialogue("\"I agree, thou ought to consider it.\"")
                 else
@@ -103,10 +103,10 @@ function func_04D4(eventid, objectref)
                 remove_answer("Catherine")
             elseif answer == "Catherine at noon" then
                 add_dialogue("\"Thou knowest where my daughter doth go at noon?\"")
-                var_000A = unknown_090AH()
+                var_000A = ask_yes_no()
                 if var_000A then
                     add_dialogue("\"Wilt thou tell me?\"")
-                    var_000B = unknown_090AH()
+                    var_000B = ask_yes_no()
                     if var_000B then
                         if not get_flag(637) then
                             add_dialogue("After you tell her, she responds, \"I knew it! That girl must be taught some sense. Associating with those vile creatures. Imagine!\" She shakes her head.")

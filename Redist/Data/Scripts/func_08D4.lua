@@ -24,7 +24,7 @@ function func_08D4()
             var_0011 = unknown_091BH(var_0005[var_0010], var_0002[var_0010], var_0006[var_0010], var_0004[var_0010], var_0007[var_0010])
             var_0012 = 0
             add_dialogue("^" .. var_0011 .. " Art thou still interested?")
-            var_0013 = unknown_090AH()
+            var_0013 = ask_yes_no()
             if not var_0013 then
                 var_0012 = unknown_08F8H(true, 1, 0, var_0004[var_0010], var_0009, var_0008, var_0003[var_0010])
             end
@@ -36,7 +36,7 @@ function func_08D4()
                 add_dialogue("\"Thou hast not enough gold for that!\"")
             end
             add_dialogue("\"Dost thou want for anything else?\"")
-            var_0011 = unknown_090AH()
+            var_0011 = ask_yes_no()
         end
         var_0001 = var_0011
     end

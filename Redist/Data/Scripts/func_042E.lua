@@ -14,7 +14,7 @@ function func_042E(eventid, objectref)
     switch_talk_to(0, 46)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(46))
+    var_0002 = unknown_001CH(get_npc_name(46))
     add_answer({"bye", "job", "name"})
     if get_flag(146) then
         add_answer("Cynthia said")
@@ -88,7 +88,7 @@ function func_042E(eventid, objectref)
         elseif cmps("room") then
             if var_0002 == 7 then
                 add_dialogue("\"Oh, I suppose thou wouldst like a room now! There, that is just what I mean! It is ten gold pieces per person for a night. Thou dost want a room, dost thou not?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0003 = get_party_members()
                     var_0004 = 0
                     for i = 1, #var_0003 do

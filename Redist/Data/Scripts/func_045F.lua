@@ -14,7 +14,7 @@ function func_045F(eventid, objectref)
     switch_talk_to(0, 95)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(95))
+    var_0002 = unknown_001CH(get_npc_name(95))
     add_answer({"bye", "job", "name"})
     if get_flag(246) then
         add_answer("cute")
@@ -42,7 +42,7 @@ function func_045F(eventid, objectref)
         elseif cmps("trainer") then
             if var_0002 == 27 then
                 add_dialogue("\"My price is 20 gold for each training session. Art thou still interested?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_089FH(20, 0, {2})
                 else
                     add_dialogue("\"The true value of what I teach is beyond measure. My time is precious to me and therefore valuable. If thou didst pay me a paltry sum and I trained thee anyway, it would be an insult to us both.")

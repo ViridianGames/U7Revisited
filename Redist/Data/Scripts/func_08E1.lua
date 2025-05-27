@@ -23,7 +23,7 @@ function func_08E1()
             var_0010 = unknown_091CH(var_0005[var_0009], var_0004[var_0009], var_0006[var_0009], var_0001[var_0009], var_0007[var_0009])
             var_0011 = 0
             add_dialogue("^" .. var_0010 .. ". To be an acceptable price?")
-            var_0012 = unknown_090AH()
+            var_0012 = ask_yes_no()
             if not var_0012 then
                 var_0011 = unknown_08F8H(false, 1, 0, var_0004[var_0009], var_0008, var_0003[var_0009], var_0002[var_0009])
             end
@@ -35,7 +35,7 @@ function func_08E1()
                 add_dialogue("\"To have not enough gold for that!\"")
             end
             add_dialogue("\"To desire another item?\"")
-            var_0000 = unknown_090AH()
+            var_0000 = ask_yes_no()
         end
     end
     restore_answers()

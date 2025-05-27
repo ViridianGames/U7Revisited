@@ -22,7 +22,7 @@ function func_088C()
             var_000A = unknown_091BH(var_0005, var_0001[var_0009], var_0006, var_0009, var_0007[var_0009])
             var_000B = 0
             add_dialogue("\"^" .. var_000A .. " Does that sound like a fair price?\"")
-            var_000C = unknown_090AH()
+            var_000C = ask_yes_no()
             if not var_000C then
                 var_000A = "How many "
                 if var_0008[var_0009] > 1 then
@@ -39,7 +39,7 @@ function func_088C()
                     add_dialogue("\"Thou dost not have enough gold for that!\"")
                 end
                 add_dialogue("\"Wouldst thou like something else?\"")
-                var_0000 = unknown_090AH()
+                var_0000 = ask_yes_no()
             end
         end
     end

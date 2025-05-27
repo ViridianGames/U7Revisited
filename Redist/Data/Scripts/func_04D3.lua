@@ -53,7 +53,7 @@ function func_04D3(eventid, objectref)
                 remove_answer("only miner")
             elseif answer == "Blorn" then
                 add_dialogue("\"To know of incident?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if not var_0001 then
                     add_dialogue("\"To be very sorry for attack, but was in defense of possession.\" He lowers his head as if ashamed.")
                 else

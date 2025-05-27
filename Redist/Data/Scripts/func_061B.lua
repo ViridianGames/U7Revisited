@@ -7,7 +7,7 @@ function func_061B(eventid, objectref)
     end
 
     unknown_0806H(objectref, 234)
-    var_0000 = unknown_001BH(617)
+    var_0000 = get_npc_name(617)
     unknown_001DH(15, 617)
     var_0001 = unknown_0002H(25, {617, 17493, 7715}, 617)
 end

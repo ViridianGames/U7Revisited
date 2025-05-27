@@ -55,7 +55,7 @@ function func_04CA(eventid, objectref)
                     return
                 elseif not get_flag(6) then
                     add_dialogue("\"Art thou a Fellowship member?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0002 = "@Then thou "
                     else
                         var_0002 = "@I do not believe thee. Thou "
@@ -63,11 +63,11 @@ function func_04CA(eventid, objectref)
                     add_dialogue(var_0002 .. "must go to Britain and speak with Batlin at our headquarters there. Only he can properly initiate thee into The Fellowship.\"")
                 else
                     add_dialogue("\"Oh, wouldst thou like to meditate with us, fellow brother?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0001 = unknown_002CH(false, 7, 249, 641, 1)
                         if var_0001 then
                             add_dialogue("\"Then here is thy key. Be happy! Oh, one more thing. There is a rule which must be followed.\"")
-                            unknown_001DH(11, unknown_001BH(202))
+                            unknown_001DH(11, get_npc_name(202))
                             add_answer("rule")
                         else
                             add_dialogue("\"Oh. Then I cannot give thee a key.\"")

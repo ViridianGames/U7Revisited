@@ -5,7 +5,7 @@ function func_04B2(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 178)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001CH(unknown_001BH(178))
+        var_0001 = unknown_001CH(get_npc_name(178))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(530) and not get_flag(536) then
@@ -49,7 +49,7 @@ function func_04B2(eventid, objectref)
                 add_answer({"Eight Virtues", "Avatar"})
             elseif answer == "Avatar" then
                 add_dialogue("\"Art thou truly the Avatar?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     if get_flag(536) then
                         add_dialogue("\"Yes, I do believe thou art the true Avatar.\" Tobias smiles briefly.")

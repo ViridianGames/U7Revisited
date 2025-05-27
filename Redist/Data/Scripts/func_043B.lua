@@ -5,7 +5,7 @@ function func_043B(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0001 = get_schedule()
-            var_0002 = unknown_001CH(unknown_001BH(59))
+            var_0002 = unknown_001CH(get_npc_name(59))
             var_0011 = random2(4, 1)
             if var_0002 == 7 then
                 if var_0011 == 1 then
@@ -30,7 +30,7 @@ function func_043B(eventid, objectref)
     switch_talk_to(0, 59)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(59))
+    var_0002 = unknown_001CH(get_npc_name(59))
     var_0003 = is_player_wearing_fellowship_medallion()
     if var_0001 == 7 then
         var_0004 = unknown_08FCH(26, 59)
@@ -74,10 +74,10 @@ function func_043B(eventid, objectref)
                 add_dialogue("\"The jeweller's shop is currently closed for business. Come back later!\"")
             else
                 add_dialogue("\"Dost thou have a gem for sale?\"")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     add_dialogue("\"I will pay thee 30 gold coins per gem. Is that price agreeable?\"")
-                    var_0006 = unknown_090AH()
+                    var_0006 = ask_yes_no()
                     if var_0006 then
                         var_0007 = {13, 12}
                         for _, item in ipairs(var_0007) do
@@ -129,7 +129,7 @@ function func_043B(eventid, objectref)
             add_answer("philosophy")
         elseif cmps("philosophy") then
             add_dialogue("\"Thou art really interested in hearing more?\"")
-            var_0010 = unknown_090AH()
+            var_0010 = ask_yes_no()
             if var_0010 then
                 unknown_091AH()
             else
@@ -143,7 +143,7 @@ function func_043B(eventid, objectref)
         elseif cmps("buy") then
             if var_0002 == 7 then
                 add_dialogue("\"Wouldst thou like to buy something?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_08E3H()
                 else
                     add_dialogue("\"Then please browse if thou dost like.\"")

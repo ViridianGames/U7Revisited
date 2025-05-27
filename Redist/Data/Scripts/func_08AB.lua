@@ -21,34 +21,34 @@ function func_08AB()
     if var_0001 then
         switch_talk_to(236, 0)
         add_dialogue("\"The Fellowship has enabled me to reach out and help people where before I have been too preoccupied.\"")
-        unknown_0004H(-236)
+        hide_npc(-236)
     end
     if var_0000 then
         switch_talk_to(14, 0)
         add_dialogue("\"The Fellowship has made me more alert and thorough in the execution of my job as a Trinsic guard.\"")
-        unknown_0004H(-14)
+        hide_npc(-14)
     end
     if var_0002 then
         switch_talk_to(18, 0)
         add_dialogue("\"The Fellowship has made me a happier, more agreeable person.\"")
         switch_talk_to(16, 0)
         add_dialogue("\"Thank thee for sharing, brother!\"")
-        unknown_0004H(-18)
+        hide_npc(-18)
     end
     if var_0003 then
         switch_talk_to(22, 0)
         add_dialogue("\"As a Fellowship member, I feel as if I am doing some good for Britannia.\"")
-        unknown_0004H(-22)
+        hide_npc(-22)
     end
     if var_0005 then
         switch_talk_to(2, 0)
         add_dialogue("Spark whispers to no one in particular, \"This is the most boring pile of horse manure in which I have ever had the pleasure to wallow!\"")
-        unknown_0004H(-2)
+        hide_npc(-2)
     end
     if var_0004 then
         switch_talk_to(1, 0)
         add_dialogue("Iolo slaps his own cheek to keep himself from dozing off. ~~\"Avatar, I do believe that we have heard enough of this.\"")
-        unknown_0004H(-1)
+        hide_npc(-1)
     end
     switch_talk_to(16, 0)
     add_dialogue("It is apparent that the meeting will be continuing for some time... You decide you have more important matters to attend to.")

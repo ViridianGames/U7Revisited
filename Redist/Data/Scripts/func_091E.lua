@@ -2,7 +2,7 @@
 function func_091E(P0, P1)
     local var_0000, var_0001
 
-    var_0000 = unknown_001BH(P1)
+    var_0000 = get_npc_name(P1)
     if not unknown_0088H(8, var_0000) then
         unknown_008AH(8, var_0000)
         var_0001 = unknown_002BH(true, -359, -359, 644, P0)

@@ -52,7 +52,7 @@ function func_040E(eventid, objectref)
             remove_answer("Crown Jewel")
         elseif cmps("Fellowship") then
             add_dialogue("\"Yes, I am a member. Wouldst thou like to join?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if var_0002 then
                 add_dialogue("\"Then thou shouldst go to see Batlin in Britain.\"")
             else

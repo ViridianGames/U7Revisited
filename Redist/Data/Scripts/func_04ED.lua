@@ -5,7 +5,7 @@ function func_04ED(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 237)
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(237))
+        var_0001 = unknown_001CH(get_npc_name(237))
         var_0002 = get_lord_or_lady()
         var_0003 = unknown_0931H(359, 359, 649, 1, 357)
         start_conversation()
@@ -90,7 +90,7 @@ function func_04ED(eventid, objectref)
                     add_dialogue("Kessler examines the vials carefully.")
                 end
                 add_dialogue("He looks up at you and nods. \"This is indeed silver snake venom. I shall pay thee 50 gold coins per vial. All right?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0007 = unknown_002BH(true, 359, 359, 649, var_0005)
                     if not var_0007 then
                         var_0008 = unknown_002CH(true, 359, 359, 644, var_0006)
@@ -111,7 +111,7 @@ function func_04ED(eventid, objectref)
                     add_dialogue("\"The Apothecary is closed. It is open from noon until midnight. Thou mayest return then.\"")
                 else
                     add_dialogue("\"I always keep a fresh stock of ingredients and an inventory of prepared potions in case anyone should be in need of them. Wouldst thou like to buy one?\"")
-                    var_0009 = unknown_090AH()
+                    var_0009 = ask_yes_no()
                     if var_0009 then
                         unknown_08A8H()
                     else

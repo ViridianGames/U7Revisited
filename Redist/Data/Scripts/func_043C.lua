@@ -76,7 +76,7 @@ function func_043C(eventid, objectref)
             remove_answer("bind")
         elseif cmps("help") then
             add_dialogue("\"There are piles of pumpkins at the north end of the field. I need them brought down near my farmhouse. If thou wilt help me by bringing the pumpkins to me, I will gladly pay thee for thy work. How does one gold coin for every pumpkin carried sound?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if var_0002 then
                 add_dialogue("\"How nice! A helper! Please, feel free to start work at any time!\"")
                 set_flag(206, true)

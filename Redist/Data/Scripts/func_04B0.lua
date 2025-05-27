@@ -6,7 +6,7 @@ function func_04B0(eventid, objectref)
         switch_talk_to(0, 176)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(176))
+        var_0002 = unknown_001CH(get_npc_name(176))
         var_0003 = false
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -38,13 +38,13 @@ function func_04B0(eventid, objectref)
             elseif answer == "milk" then
                 if var_0002 == 7 then
                     add_dialogue("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0004 = unknown_002BH(true, 359, 644, 359, 3)
                         if var_0004 then
                             var_0005 = unknown_002CH(true, 7, 359, 616, 1)
                             if var_0005 then
                                 add_dialogue("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"")
-                                var_0006 = unknown_090AH()
+                                var_0006 = ask_yes_no()
                                 if var_0006 then
                                     -- Loop back to purchase another jug
                                     goto milk_purchase
@@ -68,7 +68,7 @@ function func_04B0(eventid, objectref)
             elseif answer == "cheese" then
                 if var_0002 == 7 then
                     add_dialogue("\"I sell wedges for 2 gold each. Still interested?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("\"How many dost thou want?\"")
                         var_0008 = unknown_000CH(1, 1, 20, 1)
                         var_0009 = var_0008 * 2
@@ -110,7 +110,7 @@ function func_04B0(eventid, objectref)
         switch_talk_to(0, 176)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(176))
+        var_0002 = unknown_001CH(get_npc_name(176))
         var_0003 = false
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -142,13 +142,13 @@ function func_04B0(eventid, objectref)
             elseif answer == "milk" then
                 if var_0002 == 7 then
                     add_dialogue("\"A gallon will cost thee 3 gold. Art thou interested in buying some?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0004 = unknown_002BH(true, 359, 644, 359, 3)
                         if var_0004 then
                             var_0005 = unknown_002CH(true, 7, 359, 616, 1)
                             if var_0005 then
                                 add_dialogue("\"Here it is,\" he says, handing you the jug. \"Wouldst thou like another?\"")
-                                var_0006 = unknown_090AH()
+                                var_0006 = ask_yes_no()
                                 if var_0006 then
                                     goto milk_purchase
                                 else
@@ -171,7 +171,7 @@ function func_04B0(eventid, objectref)
             elseif answer == "cheese" then
                 if var_0002 == 7 then
                     add_dialogue("\"I sell wedges for 2 gold each. Still interested?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("\"How many dost thou want?\"")
                         var_0008 = unknown_000CH(1, 1, 20, 1)
                         var_0009 = var_0008 * 2

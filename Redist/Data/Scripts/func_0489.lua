@@ -8,7 +8,7 @@ function func_0489(eventid, objectref)
         var_0000 = unknown_0908H() --- Guess: Gets player info
         var_0001 = get_lord_or_lady()
         var_0002 = get_schedule() --- Guess: Checks game state
-        var_0003 = unknown_001BH(137) --- Guess: Gets object ref
+        var_0003 = get_npc_name(137) --- Guess: Gets object ref
         unknown_001CH(137) --- Guess: Gets schedule
         var_0004 = "Avatar"
         var_0002 = get_schedule() --- Guess: Checks game state
@@ -142,7 +142,7 @@ function func_0489(eventid, objectref)
         add_dialogue("\"Enjoy thy life, friend.\"")
     elseif eventid == 0 then
         var_0002 = get_schedule() --- Guess: Checks game state
-        var_0003 = unknown_001BH(137) --- Guess: Gets object ref
+        var_0003 = get_npc_name(137) --- Guess: Gets object ref
         unknown_001CH(137) --- Guess: Gets schedule
         if var_0003 == 7 then
             var_000E = random(1, 4) --- Guess: Generates random number between min and max

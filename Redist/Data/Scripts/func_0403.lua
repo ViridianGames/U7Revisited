@@ -7,7 +7,7 @@ function func_0403(eventid, objectref)
         switch_talk_to(3, 0)
         var_0000 = is_player_female()
         var_0001 = get_party_members()
-        var_0002 = unknown_001BH(3) --- Guess: Retrieves object reference from ID
+        var_0002 = get_npc_name(3) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
         add_answer({"bye", "job", "name"})
         if get_flag(748) then

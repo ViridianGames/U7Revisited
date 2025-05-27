@@ -8,8 +8,8 @@ function func_088A()
     remove_answer("sacrifice")
     var_0001 = 0
     var_0002 = get_party_members()
-    var_0003 = unknown_001BH(-8)
-    var_0004 = unknown_001BH(-9)
+    var_0003 = get_npc_name(-8)
+    var_0004 = get_npc_name(-9)
     for var_0005 in ipairs(var_0002) do
         var_0001 = var_0001 + 1
     end

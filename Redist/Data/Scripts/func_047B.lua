@@ -13,13 +13,13 @@ function func_047B(eventid, objectref)
     switch_talk_to(0, 123)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(123))
+    var_0002 = unknown_001CH(get_npc_name(123))
     var_0003 = unknown_08F7H(122)
     var_0004 = false
-    var_0005 = unknown_0037H(unknown_001BH(124))
-    var_0006 = unknown_0037H(unknown_001BH(125))
-    var_0007 = unknown_0037H(unknown_001BH(126))
-    var_0008 = unknown_0037H(unknown_001BH(127))
+    var_0005 = unknown_0037H(get_npc_name(124))
+    var_0006 = unknown_0037H(get_npc_name(125))
+    var_0007 = unknown_0037H(get_npc_name(126))
+    var_0008 = unknown_0037H(get_npc_name(127))
     if var_0005 or var_0006 or var_0007 or var_0008 then
         var_0004 = true
     end
@@ -101,7 +101,7 @@ function func_047B(eventid, objectref)
                 add_dialogue("\"I am sorry. All bets are off since the matter has been resolved.\"")
             else
                 add_dialogue("\"In fact, I am taking bets on the upcoming duels. Dost thou wish to bet that Sprellic will lose to any of the three other duellists?\"")
-                var_000A = unknown_090AH()
+                var_000A = ask_yes_no()
                 if var_000A then
                     add_dialogue("\"How much wouldst thou like to bet?\"")
                     var_000B = ask_number(0, 10, 200, 0)
@@ -109,7 +109,7 @@ function func_047B(eventid, objectref)
                         add_dialogue("\"Perhaps thou art not truly serious about thy convictions. Mayhaps the princess will take thy line of bets.\"")
                     else
                         add_dialogue("\"Thou wouldst bet " .. var_000B .. " gold that Sprellic will lose?\"")
-                        var_000C = unknown_090AH()
+                        var_000C = ask_yes_no()
                         if not var_000C then
                             add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
                             goto gambling_start

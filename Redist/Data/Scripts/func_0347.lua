@@ -5,7 +5,7 @@ function func_0347(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_object_frame(objectref)
         if var_0000 == 1 and not get_flag(4) then
-            func_0269(617, unknown_001BH(objectref))
+            func_0269(617, get_npc_name(objectref))
             set_object_quality(objectref, 67)
         end
     end

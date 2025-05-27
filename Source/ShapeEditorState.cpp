@@ -148,7 +148,8 @@ void ShapeEditorState::OnEnter()
 
 void ShapeEditorState::OnExit()
 {
-
+	g_selectedShape = m_currentShape;
+	g_selectedFrame = m_currentFrame;
 }
 
 void ShapeEditorState::Shutdown()
@@ -218,6 +219,10 @@ void ShapeEditorState::Update()
 			newShape -= 9;
 		}
 
+		if (IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			newShape -= 99;
+		}
 
 		if (newShape < 150)
 		{
@@ -243,6 +248,11 @@ void ShapeEditorState::Update()
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
 			newShape += 9;
+		}
+
+		if (IsKeyDown(KEY_LEFT_CONTROL))
+		{
+			newShape += 99;
 		}
 
 		if (newShape > 1023)

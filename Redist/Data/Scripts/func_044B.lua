@@ -84,10 +84,10 @@ function func_044B(eventid, objectref)
             remove_answer("Nadia")
         elseif cmps("Yew") then
             add_dialogue("\"My father died in the Great Forest there. Some wild animal or something killed him. Art thou perhaps travelling to Yew?\"")
-            var_0007 = unknown_090AH()
+            var_0007 = ask_yes_no()
             if var_0007 then
                 add_dialogue("\"Oh, " .. var_0005 .. ", I do wish thou wouldst try to find out something about my father. How did he die? What happened? Please! Wilt thou search for the truth and come back and tell me?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     add_dialogue("\"Bless thee! I shall be waiting here for thee.\"")
                     if var_0004 then

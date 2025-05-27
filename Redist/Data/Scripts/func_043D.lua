@@ -58,7 +58,7 @@ function func_043D(eventid, objectref)
                 return
             else
                 add_dialogue("\"I told thee I was not a looney! Didst thou see the proof?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if not var_0001 then
                     add_dialogue("\"Thou must go and look at what is in my field! Then come back here, for I must talk about this with someone who knows that I am not a looney!\"")
                     remove_answer("proof")
@@ -119,7 +119,7 @@ function func_043D(eventid, objectref)
             remove_answer("Kill Wrathy")
         elseif cmps("work") then
             add_dialogue("\"I need someone to work for me and help gather all the eggs being laid by the chickens! When that big thing came crashing down it scared them all so much that they cannot stop laying eggs! Wilt thou work for me? I will pay thee 1 gold per egg.\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if var_0002 then
                 add_dialogue("\"Fine! Thou wilt find the chickens out back. Thou must feel around in the nest to find the eggs that are there. But there is a limit to how many they will produce in one day, of course.\"")
                 set_flag(207, true)

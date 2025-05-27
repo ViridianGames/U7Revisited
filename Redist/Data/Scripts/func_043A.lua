@@ -5,7 +5,7 @@ function func_043A(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0002 = get_schedule()
-            var_0003 = unknown_001CH(unknown_001BH(58))
+            var_0003 = unknown_001CH(get_npc_name(58))
             var_0009 = random2(4, 1)
             if var_0003 == 7 then
                 if var_0009 == 1 then
@@ -31,7 +31,7 @@ function func_043A(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = get_schedule()
-    var_0003 = unknown_001CH(unknown_001BH(58))
+    var_0003 = unknown_001CH(get_npc_name(58))
     if var_0002 == 7 then
         var_0004 = unknown_08FCH(26, 58)
         if var_0004 then
@@ -64,7 +64,7 @@ function func_043A(eventid, objectref)
                 return
             else
                 add_dialogue("\"I have the best fish and chips thou shalt taste in all of Britannia. My price is only 8 gold coins per serving. Wouldst thou like to have some?\"")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     var_0006 = unknown_002BH(359, 359, 644, 8)
                     if var_0006 then
@@ -97,7 +97,7 @@ function func_043A(eventid, objectref)
         elseif cmps("Fellowship") then
             if var_0001 then
                 add_dialogue("\"I am glad to see that thou art a member. Will I see thee at the next meeting?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     add_dialogue("\"Then I shall see thee at nine o'clock sharp!\"")
                 else

@@ -12,7 +12,7 @@ function func_044F(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 79)
-    var_0000 = unknown_001CH(unknown_001BH(79))
+    var_0000 = unknown_001CH(get_npc_name(79))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then
         add_answer("De Maria")

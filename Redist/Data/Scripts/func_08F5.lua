@@ -80,7 +80,7 @@ function func_08F5(var_0000, var_0001)
             add_dialogue("\"'Tis an honor to meet thee, Avatar.\"")
             set_flag(353, true)
         end
-        unknown_0004H(var_0011)
+        hide_npc(var_0011)
         var_0008 = #var_0003
     end
     restore_answers()

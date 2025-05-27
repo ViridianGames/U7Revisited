@@ -14,7 +14,7 @@ function func_045C(eventid, objectref)
     switch_talk_to(0, 92)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(92))
+    var_0002 = unknown_001CH(get_npc_name(92))
     add_answer({"bye", "job", "name"})
     if get_flag(287) then
         add_answer("murders")
@@ -68,7 +68,7 @@ function func_045C(eventid, objectref)
         elseif cmps("room") then
             if var_0002 == 23 then
                 add_dialogue("\"A room for the night is quite reasonable. Only 8 gold per person. Want one?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0004 = get_party_members()
                     var_0005 = 0
                     for i = 1, var_0004 do
@@ -109,7 +109,7 @@ function func_045C(eventid, objectref)
             remove_answer("murders")
         elseif cmps("sawmill") then
             add_dialogue("\"Say, thou be not from around here?\" He looks at you skeptically. \"Thou art not from the Fellowship by any chance, art thou?\"")
-            var_000D = unknown_090AH()
+            var_000D = ask_yes_no()
             if var_000D then
                 add_dialogue("\"I thought so!\"")
                 add_answer({"Fellowship", "murders"})

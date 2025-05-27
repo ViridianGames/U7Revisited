@@ -2,7 +2,7 @@
 function func_085B()
     local var_0000, var_0001, var_0002, var_0003
 
-    var_0000 = unknown_001BH(-244)
+    var_0000 = get_npc_name(-244)
     var_0001 = unknown_001CH(var_0000)
     var_0002 = ""
     var_0003 = random2(4, 1)

@@ -163,9 +163,10 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
    return false;
 }
 
-void U7Object::SetNPCBlock(NPCblock block)
+void U7Object::SetNPCData(NPCData* data)
 {
-   m_NPCData = block;
+   m_NPCData = data;
+   m_isNPC = true;
 }
 
 void U7Object::Interact(int event)
@@ -173,7 +174,7 @@ void U7Object::Interact(int event)
    if(m_hasConversationTree)
    {
 
-      int NPCId = static_cast<int>(m_NPCData.index2);
+      int NPCId = static_cast<int>(m_NPCData->id);
 
       g_ConversationState->SetNPC(NPCId);
 

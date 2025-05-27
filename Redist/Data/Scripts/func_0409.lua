@@ -7,7 +7,7 @@ function func_0409(eventid, objectref)
         switch_talk_to(9, 0)
         var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
-        var_0002 = unknown_001BH(9) --- Guess: Retrieves object reference from ID
+        var_0002 = get_npc_name(9) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
         var_0004 = unknown_08F7H(3) --- Guess: Checks player status
         var_0005 = unknown_08F7H(1) --- Guess: Checks player status
@@ -82,12 +82,12 @@ function func_0409(eventid, objectref)
                 if var_000B == "wait here" then
                     add_dialogue("\"I shall be happy to wait here until thou dost return.\"")
                     unknown_001FH(9) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(15, unknown_001BH(9)) --- Guess: Sets a generic object property
+                    unknown_001DH(15, get_npc_name(9)) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"If thou dost think it best, I shall. If thou dost need me again thou dost have but to ask.\"")
                     unknown_001FH(9) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(11, unknown_001BH(9)) --- Guess: Sets a generic object property
+                    unknown_001DH(11, get_npc_name(9)) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0007 == "New Magincia" then

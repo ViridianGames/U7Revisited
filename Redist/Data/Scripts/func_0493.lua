@@ -13,7 +13,7 @@ function func_0493(eventid, objectref)
             abort()
         end
         var_0003 = get_party_members()
-        var_0004 = unknown_001BH(147) --- Guess: Gets object ref
+        var_0004 = get_npc_name(147) --- Guess: Gets object ref
         if is_in_int_array(var_0004, var_0003) then
             add_answer("leave")
             var_0005 = unknown_0035H(0, 30, 748, 356) --- Guess: Checks well interaction

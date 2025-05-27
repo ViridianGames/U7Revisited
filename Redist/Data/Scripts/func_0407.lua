@@ -8,7 +8,7 @@ function func_0407(eventid, objectref)
         var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = is_player_female()
         var_0002 = get_party_members()
-        var_0003 = unknown_001BH(7) --- Guess: Retrieves object reference from ID
+        var_0003 = get_npc_name(7) --- Guess: Retrieves object reference from ID
         var_0004 = get_player_name()
         var_0005 = unknown_001CH(7) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
@@ -63,13 +63,13 @@ function func_0407(eventid, objectref)
                     add_dialogue("\"Very good. I shall wait here until thou dost return.\"")
                     set_flag(219, false)
                     unknown_001FH(7) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(15, unknown_001BH(7)) --- Guess: Sets a generic object property
+                    unknown_001DH(15, get_npc_name(7)) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"Farewell, " .. var_0004 .. ". If thou dost need my services again, I shall be only too happy to comply.\"")
                     set_flag(219, false)
                     unknown_001FH(7) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(11, unknown_001BH(7)) --- Guess: Sets a generic object property
+                    unknown_001DH(11, get_npc_name(7)) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0006 == "Britain" then

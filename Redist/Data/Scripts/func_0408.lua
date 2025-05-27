@@ -7,7 +7,7 @@ function func_0408(eventid, objectref)
         switch_talk_to(8, 0)
         var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
-        var_0002 = unknown_001BH(8) --- Guess: Retrieves object reference from ID
+        var_0002 = get_npc_name(8) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
         var_0004 = unknown_08F7H(2) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
@@ -81,14 +81,14 @@ function func_0408(eventid, objectref)
                         set_flag(257, true)
                         set_flag(264, false)
                         unknown_001FH(8) --- Guess: Sets object state (e.g., active/inactive)
-                        unknown_001DH(15, unknown_001BH(8)) --- Guess: Sets a generic object property
+                        unknown_001DH(15, get_npc_name(8)) --- Guess: Sets a generic object property
                         abort()
                     else
                         add_dialogue("\"Well! Fine, if that is thy wish, I shall leave!\"")
                         set_flag(257, true)
                         set_flag(264, false)
                         unknown_001FH(8) --- Guess: Sets object state (e.g., active/inactive)
-                        unknown_001DH(11, unknown_001BH(8)) --- Guess: Sets a generic object property
+                        unknown_001DH(11, get_npc_name(8)) --- Guess: Sets a generic object property
                         abort()
                     end
                 else

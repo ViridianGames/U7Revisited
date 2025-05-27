@@ -20,7 +20,7 @@ function func_04BE(eventid, objectref)
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"To be named Betra. To be new to Terfin?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"To tell you to talk to Teregus, the sage or Forbrak, the tavernkeeper, for information about town. To help with building locations and residents.\"")
                 else
@@ -54,7 +54,7 @@ function func_04BE(eventid, objectref)
                 add_dialogue("He shrugs. \"To have been unwise, perhaps, to put so many differences together. To be sad times.\"")
                 remove_answer("dislike")
             elseif answer == "buy" then
-                var_0002 = unknown_001CH(unknown_001BH(190))
+                var_0002 = unknown_001CH(get_npc_name(190))
                 if var_0002 == 7 then
                     unknown_0853H()
                 else

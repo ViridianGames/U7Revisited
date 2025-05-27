@@ -5,7 +5,7 @@ function func_093A(P0, P1)
     var_0000 = unknown_008DH()
     for var_0001 in ipairs(var_0000) do
         if get_npc_quality(9, var_0002) >= 10 then
-            if var_0002 ~= unknown_001BH(-356) then
+            if var_0002 ~= get_npc_name(-356) then
                 unknown_008AH(1, var_0002)
             end
             unknown_008AH(8, var_0002)

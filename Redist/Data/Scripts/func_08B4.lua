@@ -5,7 +5,7 @@ function func_08B4(var_0000, var_0001, var_0002)
 
     add_dialogue("\"I can still heal, cure poison, and sometimes resurrect. Art thou in need of one of these?\"")
     save_answers()
-    var_0003 = unknown_090AH()
+    var_0003 = ask_yes_no()
     if not var_0003 then
         add_dialogue("\"Of which service dost thou have need?\"")
         var_0004 = {"resurrect", "cure poison", "heal"}

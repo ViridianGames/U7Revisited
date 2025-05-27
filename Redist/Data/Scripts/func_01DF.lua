@@ -25,7 +25,7 @@ function func_01DF(eventid, objectref)
             end
             add_dialogue("\"Is more honey had by you?\" The Emp asks hopefully.")
             -- call [0002] (090AH, unmapped)
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
             if not var_0001 then
                 if var_0000 then
                     -- call [0001] (087CH, unmapped)

@@ -26,7 +26,7 @@ function func_08F2(var_0000, var_0001)
         elseif string.lower(unknown_XXXXH()) == "my lie" then
             remove_answer({"My crime", "My deed", "My lie"})
             add_dialogue("\"Of what lie speakest thou? Art thou not " .. var_0000 .. "?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 var_0004 = unknown_08F1H("")
                 add_dialogue("\"Perhaps thou art not " .. var_0000 .. ", for I have never seen the " .. var_0004 .. ". Confess now thy true identity!\"")
                 add_answer(var_0001)

@@ -4,7 +4,7 @@ function func_089D(P0, P1, P2)
 
     add_dialogue("\"To be able to heal, cure poison, and resurrect. To be interested in one of these services?\"")
     save_answers()
-    var_0003 = unknown_090AH()
+    var_0003 = ask_yes_no()
     if var_0003 then
         add_dialogue("\"To need which of my services?\"")
         var_0004 = {"resurrect", "cure poison", "heal"}
@@ -34,7 +34,7 @@ function func_089D(P0, P1, P2)
             var_0007 = P0
         end
         add_dialogue("\"To charge " .. var_0007 .. " gold. To still want my services?\"")
-        var_000B = unknown_090AH()
+        var_000B = ask_yes_no()
         if not var_000B then
             var_000C = unknown_0028H(-359, -359, 644, -357)
             if var_000C >= var_0007 then
@@ -52,7 +52,7 @@ function func_089D(P0, P1, P2)
                         add_dialogue("\"To be already healthy!\"")
                     end
                 elseif var_0005 == "cure poison" then
-                    var_0011 = unknown_001BH(var_0008)
+                    var_0011 = get_npc_name(var_0008)
                     if not unknown_0088H(var_0011, 8) then
                         unknown_008AH(var_0011, 8)
                         var_0010 = unknown_002BH(true, -359, -359, 644, var_0007)

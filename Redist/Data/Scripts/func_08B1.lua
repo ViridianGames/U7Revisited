@@ -9,7 +9,7 @@ function func_08B1()
     var_0001 = unknown_0024H(553)
     if var_0001 then
         var_0002 = unknown_0015H(100, var_0001)
-        unknown_001BH(356)
+        get_npc_name(356)
         if unknown_0907H() then
             add_dialogue("He hands you his personal staff. It appears to be magical.")
         else

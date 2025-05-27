@@ -51,7 +51,7 @@ function func_04BF(eventid, objectref)
                 add_answer({"banana", "Spektran", "Sultan"})
             elseif answer == "Sultan" then
                 add_dialogue("\"Come on, do not insult mine intelligence. Surely thou dost know what a Sultan is! Canst not thou see mine harem?\"")
-                var_0003 = unknown_090AH()
+                var_0003 = ask_yes_no()
                 if var_0003 then
                     add_dialogue("\"Lovely, are they not?\"")
                 else
@@ -61,7 +61,7 @@ function func_04BF(eventid, objectref)
                 add_answer("Lucinda")
                 if var_0000 then
                     add_dialogue("Martingo looks you up and down lecherously. \"Hmmm. Wouldst thou like to join mine harem?\"")
-                    var_0004 = unknown_090AH()
+                    var_0004 = ask_yes_no()
                     if var_0004 then
                         add_dialogue("Your answer takes Martingo by surprise. \"Thou wouldst?\" He looks around nervously. \"Oh, uhm, I had better consult mine astrologer about this matter. I shall get back to thee, all right?\"")
                     else
@@ -86,10 +86,10 @@ function func_04BF(eventid, objectref)
             elseif answer == "banana" then
                 if not get_flag(600) then
                     add_dialogue("\"Oh, forgive my manners! Wouldst thou like a banana?\"")
-                    var_0006 = unknown_090AH()
+                    var_0006 = ask_yes_no()
                     if var_0006 then
                         add_dialogue("\"Well, it shall cost thee 3 gold coins. Still want one?\"")
-                        var_0007 = unknown_090AH()
+                        var_0007 = ask_yes_no()
                         if var_0007 then
                             var_0008 = unknown_0028H(359, 359, 644, 357)
                             if var_0008 >= 3 then

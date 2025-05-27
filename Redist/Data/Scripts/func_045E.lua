@@ -14,7 +14,7 @@ function func_045E(eventid, objectref)
     switch_talk_to(0, 94)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(94))
+    var_0002 = unknown_001CH(get_npc_name(94))
     add_answer({"murders", "bye", "job", "name"})
     if get_flag(244) then
         add_answer("gypsies")
@@ -64,7 +64,7 @@ function func_045E(eventid, objectref)
         elseif cmps("teacher") then
             if var_0002 == 27 then
                 add_dialogue("\"I teach that singular skill which enables one to learn all the lessons of life without losing it in the process. Combat!~~\"I would charge thee 20 gold for each training session. Art thou still interested?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_08A6H(20, 4, {1})
                 else
                     add_dialogue("\"Very well. If thou art fortunate thou wilt not have cause to regret it.\"")

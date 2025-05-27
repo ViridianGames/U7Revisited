@@ -6,21 +6,21 @@ function func_070B(eventid, objectref)
         var_0000 = unknown_0018H(objectref)
         var_0001 = false
         var_0002 = unknown_0025H(objectref)
-        var_0003 = get_container_objects(-359, -359, -1, unknown_001BH(-356))
+        var_0003 = get_container_objects(-359, -359, -1, get_npc_name(-356))
         for var_0004 in ipairs(var_0003) do
             if var_0001 == false and not unknown_08E9H(var_0006) then
                 var_0002 = unknown_0025H(var_0006)
-                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0007 = unknown_0018H(get_npc_name(-356))
                 var_0002 = unknown_0026H(var_0007)
             end
             if var_0001 == true and not unknown_08EAH(var_0006) then
                 var_0002 = unknown_0025H(var_0006)
-                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0007 = unknown_0018H(get_npc_name(-356))
                 var_0002 = unknown_0026H(var_0007)
             end
-            if var_0001 == 2 and unknown_006EH(var_0006) == unknown_001BH(-356) then
+            if var_0001 == 2 and unknown_006EH(var_0006) == get_npc_name(-356) then
                 var_0002 = unknown_0025H(var_0006)
-                var_0007 = unknown_0018H(unknown_001BH(-356))
+                var_0007 = unknown_0018H(get_npc_name(-356))
                 var_0002 = unknown_0026H(var_0007)
             end
         end

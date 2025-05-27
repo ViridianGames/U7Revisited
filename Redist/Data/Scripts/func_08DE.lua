@@ -10,7 +10,7 @@ function func_08DE()
         if not unknown_XXXXH() then
             if string.lower(unknown_XXXXH()) == "want honey?" then
                 add_dialogue("\"Honey will be given by you to me?\"")
-                var_0000 = unknown_090AH()
+                var_0000 = ask_yes_no()
                 if var_0000 then
                     var_0001 = unknown_002BH(true, 359, 359, 772, 1)
                     add_dialogue("\"You are thanked.\"")

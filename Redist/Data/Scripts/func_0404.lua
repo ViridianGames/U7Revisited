@@ -18,18 +18,18 @@ function func_0404(eventid, objectref)
         end
         var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
-        var_0002 = unknown_001BH(4) --- Guess: Retrieves object reference from ID
+        var_0002 = get_npc_name(4) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
         var_0004 = unknown_08F7H(1) --- Guess: Checks player status
         var_0005 = unknown_08F7H(3) --- Guess: Checks player status
         var_0006 = unknown_08F7H(2) --- Guess: Checks player status
-        var_0007 = unknown_0037H(unknown_001BH(1)) --- Guess: Checks object-specific property
-        var_0008 = unknown_0037H(unknown_001BH(3)) --- Guess: Checks object-specific property
-        var_0009 = unknown_0037H(unknown_001BH(2)) --- Guess: Checks object-specific property
-        var_000A = unknown_0037H(unknown_001BH(124)) --- Guess: Checks object-specific property
-        var_000B = unknown_0037H(unknown_001BH(125)) --- Guess: Checks object-specific property
-        var_000C = unknown_0037H(unknown_001BH(126)) --- Guess: Checks object-specific property
-        var_000D = unknown_0037H(unknown_001BH(127)) --- Guess: Checks object-specific property
+        var_0007 = unknown_0037H(get_npc_name(1)) --- Guess: Checks object-specific property
+        var_0008 = unknown_0037H(get_npc_name(3)) --- Guess: Checks object-specific property
+        var_0009 = unknown_0037H(get_npc_name(2)) --- Guess: Checks object-specific property
+        var_000A = unknown_0037H(get_npc_name(124)) --- Guess: Checks object-specific property
+        var_000B = unknown_0037H(get_npc_name(125)) --- Guess: Checks object-specific property
+        var_000C = unknown_0037H(get_npc_name(126)) --- Guess: Checks object-specific property
+        var_000D = unknown_0037H(get_npc_name(127)) --- Guess: Checks object-specific property
         var_000E = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
         if is_in_int_array(var_0002, var_0001) then
@@ -100,13 +100,13 @@ function func_0404(eventid, objectref)
                     add_dialogue("\"Very well. I shall await thy return.\"")
                     unknown_001FH(4) --- Guess: Sets object state (e.g., active/inactive)
                     set_flag(365, false)
-                    unknown_001DH(15, unknown_001BH(4)) --- Guess: Sets a generic object property
+                    unknown_001DH(15, get_npc_name(4)) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"I shall depart thy company if that is truly thy wish. If thou shouldst ever need me again, thou hast only to ask.\" He turns away from you, obviously disappointed.")
                     unknown_001FH(4) --- Guess: Sets object state (e.g., active/inactive)
                     set_flag(365, false)
-                    unknown_001DH(11, unknown_001BH(4)) --- Guess: Sets a generic object property
+                    unknown_001DH(11, get_npc_name(4)) --- Guess: Sets a generic object property
                     abort()
                     add_answer("join")
                     remove_answer("leave")

@@ -5,7 +5,7 @@ function func_04F5(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 245)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001BH(245)
+        var_0001 = get_npc_name(245)
         start_conversation()
         add_answer({"bye", "job", "name"})
         var_0002 = unknown_003CH(var_0001)
@@ -67,7 +67,7 @@ function func_04F5(eventid, objectref)
                 remove_answer("wine")
             elseif answer == "invisibility" then
                 add_dialogue("\"As a matter of fact, my research has reached an impasse, for I cannot determine the nature of some critical reagents. What I need is a potion of invisibility to analyze. Then I could progress from there.\" He looks at you, hopefully. \"Wouldst thou be willing to obtain a potion for my studies? It is likely that thou couldst find one easily at the mage, Nicodemus'.\"")
-                var_0006 = unknown_090AH()
+                var_0006 = ask_yes_no()
                 if var_0006 then
                     add_dialogue("He sighs, obviously relieved. \"Thank thee, " .. var_0000 .. ".\"")
                     set_flag(303, true)

@@ -7,7 +7,7 @@ function func_04DD(eventid, objectref)
     end
     switch_talk_to(0, 221)
     var_0000 = get_schedule()
-    var_0001 = unknown_001CH(unknown_001BH(221))
+    var_0001 = unknown_001CH(get_npc_name(221))
     var_0002 = unknown_0908H()
     var_0003 = "Avatar"
     var_0004 = unknown_005AH()
@@ -35,7 +35,7 @@ function func_04DD(eventid, objectref)
             add_dialogue("\"Hello, handsome!")
         else
             add_dialogue("\"Hello. Art thou sure thou dost not really want to speak with Roberto?\"")
-            if not unknown_090AH() then
+            if not ask_yes_no() then
                 add_dialogue("\"Fine, sweetheart. Whatever makes thy blood boil...")
             else
                 add_dialogue("\"Then thou hadst best speak with Roberto! He is probably more thy type.\"")
@@ -90,7 +90,7 @@ function func_04DD(eventid, objectref)
             add_answer({"Community Room", "talk", "massage", "swim"})
         elseif answer == "Community Room" then
             add_dialogue("\"Thou dost want to join me in the Community Room?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("Wench leads you into a private room.")
                 add_dialogue("\"It really isn't a Community Room at all. We shall be all alone,\" she giggles.")
                 add_dialogue("\"By the way, it is a good thing thou didst choose me. Roberto and Martine enjoy stealing gold from their customers. I may have questionable morals, but I am not a thief! Now, let us get down to business, shall we?\"")
@@ -109,7 +109,7 @@ function func_04DD(eventid, objectref)
             remove_answer("massage")
         elseif answer == "talk" then
             add_dialogue("Wench shrugs. \"Fine with me! What shall we talk about? I know! Want to know a secret?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("\"Didst thou know that there are secret passages in the mountains connecting the buildings on Buccaneer's Den? 'Tis true! I am fairly sure the entrance is through the House of Games, and I do know that there is a way into The Baths from the passages!\"")
             else
                 add_dialogue("Wench pouts. \"Well never mind, then!\"")

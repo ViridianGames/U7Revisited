@@ -104,7 +104,7 @@ function func_04B9(eventid, objectref)
                 add_answer({"Quaeven", "Sarpling", "Runeb"})
                 remove_answer("members")
             elseif answer == "Runeb" then
-                var_0004 = unknown_0037H(unknown_001BH(184))
+                var_0004 = unknown_0037H(get_npc_name(184))
                 if var_0004 then
                     add_dialogue("\"To have been the clerk of The Fellowship here.\"")
                 else

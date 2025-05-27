@@ -15,7 +15,7 @@ function func_06FB(eventid, objectref)
             end
         end
     elseif eventid == 2 then
-        var_0000 = unknown_0001H({1786, 8021, 20, 17447, 17452, 7715}, unknown_001BH(356))
+        var_0000 = unknown_0001H({1786, 8021, 20, 17447, 17452, 7715}, get_npc_name(356))
         unknown_08DDH()
     end
     return

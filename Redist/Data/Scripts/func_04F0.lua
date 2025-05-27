@@ -13,7 +13,7 @@ function func_04F0(eventid, objectref)
             add_dialogue("\"I thank thee, " .. var_0000 .. ". Truly thou possesseth great honor! I hope one day to be able to repay thee for thy kindness!\"")
             return
         end
-        var_0005 = unknown_001BH(240)
+        var_0005 = get_npc_name(240)
         unknown_001DH(15, var_0005)
         if not get_flag(707) then
             add_dialogue("You are greeted by a man with a sour expression.")

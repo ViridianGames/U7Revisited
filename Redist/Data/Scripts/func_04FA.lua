@@ -87,7 +87,7 @@ function func_04FA(eventid, objectref)
                 remove_answer("where")
             elseif answer == "liqueur" then
                 add_dialogue("\"Yes, I told thee the merchant brought it from Britain. Didst thou give it to her?\"")
-                var_0006 = unknown_090AH()
+                var_0006 = ask_yes_no()
                 if var_0006 then
                     add_dialogue("\"What then,\" he asks, \"is the problem?\"")
                     save_answers()
@@ -112,7 +112,7 @@ function func_04FA(eventid, objectref)
                 restore_answers()
                 add_dialogue("\"The liqueur? Why, art thou implying that the merchant had cause to kill her? That is absurd!\" He appears thoughtful.")
                 add_dialogue("\"Or perhaps not. Mayhaps we will look into that, what sayest thou?\"")
-                var_0007 = unknown_090AH()
+                var_0007 = ask_yes_no()
                 if var_0007 then
                     add_dialogue("\"Excellent. Let me know if thou dost find any information. Meanwhile, I will make arrangements for her funeral.\" He shakes his head sadly.")
                     set_flag(527, true)
@@ -122,7 +122,7 @@ function func_04FA(eventid, objectref)
                 end
             elseif answer == "merchant" then
                 add_dialogue("\"Dost thou have any news of the travelling merchant who killed Balayna?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     add_dialogue("\"Very good, " .. var_0000 .. ". What is thy news?\"")
                     save_answers()
@@ -190,7 +190,7 @@ function func_04FA(eventid, objectref)
                     add_dialogue("He begins to look amused.")
                     add_dialogue("\"I would not let it worry thee too much, " .. var_0000 .. ". I am afraid Balayna is a bit too ambitious. I would expect she overheard one of my conversion speeches and misunderstood my words. I will have to discuss this with her when I have more time so I may allay her fears.\" His eyes widen, as if he is remembering something.")
                     add_dialogue("\"I had forgotten, she requested a small vial of liqueur from an itinerant merchant who would be passing through Britain. He brought it here a few days ago and I have not had a chance to give it to her. Wouldst thou be willing to deliver it to her for me, " .. var_0000 .. "?\"")
-                    var_000A = unknown_090AH()
+                    var_000A = ask_yes_no()
                     if var_000A then
                         add_dialogue("\"Excellent, my friend.\"")
                         var_000B = unknown_002CH(false, 30, 359, 749, 1)

@@ -5,7 +5,7 @@ function func_041B(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0000 = get_schedule()
-            var_0001 = unknown_001CH(unknown_001BH(-27))
+            var_0001 = unknown_001CH(get_npc_name(-27))
             var_0008 = random2(4, 1)
             if var_0001 == 7 then
                 if var_0008 == 1 then
@@ -29,7 +29,7 @@ function func_041B(eventid, objectref)
     start_conversation()
     switch_talk_to(0, -27)
     var_0000 = get_schedule()
-    var_0001 = unknown_001CH(unknown_001BH(-27))
+    var_0001 = unknown_001CH(get_npc_name(-27))
     add_answer({"bye", "job", "name"})
     if not get_flag(104) then
         add_answer("audition")
@@ -49,7 +49,7 @@ function func_041B(eventid, objectref)
             remove_answer("name")
         elseif cmps("job") then
             add_dialogue("\"Why, I am famous throughout the land! Hast thou not heard of me?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if not var_0002 then
                 add_dialogue("\"I told thee so!")
             else
@@ -65,14 +65,14 @@ function func_041B(eventid, objectref)
         elseif cmps("play") then
             add_dialogue("\"It's a little something I wrote entitled 'The Trials of the Avatar'. It's about a legendary figure in Britannian history.\" The artist looks you up and down.")
             add_dialogue("\"Hmmm. Thou dost have a certain quality... hast thou ever acted on stage?\"")
-            var_0003 = unknown_090AH()
+            var_0003 = ask_yes_no()
             if var_0003 then
                 add_dialogue("\"I thought so!")
             else
                 add_dialogue("\"Well, it does not matter. I am sure thou couldst quickly adapt.")
             end
             add_dialogue("\"Officially, auditions have closed and the play is already cast. However, we need someone to understudy the role of the Avatar. Wouldst thou like to audition?\"")
-            var_0004 = unknown_090AH()
+            var_0004 = ask_yes_no()
             if var_0004 then
                 add_dialogue("\"Excellent! What thou needest to do is to visit Gaye's Clothier Shoppe and purchase an Avatar costume. I can audition thee once I see thee in -proper- attire. Run along and do that, quickly now, I'm a busy man.\"")
                 set_flag(103, true)
@@ -87,7 +87,7 @@ function func_041B(eventid, objectref)
             add_answer({"citizens", "sponsorship"})
         elseif cmps("sponsorship") then
             add_dialogue("\"The construction of the actual theatre building was paid for by the Royal Mint, but the theatre company relies solely on the support of individuals such as thyself. Wouldst thou like to make a modest contribution of, say, ten gold pieces to our theatre company?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if var_0005 then
                 var_0006 = unknown_002BH(359, 359, 644, 10)
                 if var_0006 then

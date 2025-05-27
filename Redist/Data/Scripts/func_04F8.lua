@@ -153,7 +153,7 @@ function func_04F8(eventid, objectref)
                 add_dialogue("\"I know thou cannot stay around here to see the alignment.")
                 add_dialogue("Wouldst thou like to have this to view mine orrery and better predict the planet's position?\"")
                 set_flag(477, true)
-                var_000E = unknown_090AH()
+                var_000E = ask_yes_no()
                 if var_000E then
                     add_dialogue("He smiles proudly. \"I thought thou wouldst. However, there is one problem. I still need one more crystal to completely finish the viewer. If thou wouldst visit the tavern, thou mightest find one of the merchants or travellers there who sometimes provide me with crystals. If thou canst find another crystal, I will be able to give thee the completed viewer.\"")
                 else

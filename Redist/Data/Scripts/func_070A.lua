@@ -13,12 +13,12 @@ function func_070A(eventid, objectref)
                         var_001D = unknown_0035H(16, 0, 275, var_001A)
                         for var_001E in ipairs(var_001D) do
                             var_0002 = unknown_0001H(var_0020, {17480, 7724})
-                            var_0002 = unknown_0001H(unknown_001BH(-356), {1802, 17493, 17452, 7715})
+                            var_0002 = unknown_0001H(get_npc_name(-356), {1802, 17493, 17452, 7715})
                         end
                     end
                 end
             elseif get_object_shape(objectref) == 721 or get_object_shape(objectref) == 989 then
-                var_0001 = unknown_0035H(8, 30, 354, unknown_001BH(-356))
+                var_0001 = unknown_0035H(8, 30, 354, get_npc_name(-356))
                 if not var_0001 then
                     var_0021 = unknown_0018H(var_0001)
                     unknown_0053H(-1, 0, 0, 0, var_0021[2] - 2, var_0021[1] - 2, 8)
@@ -31,7 +31,7 @@ function func_070A(eventid, objectref)
                     var_0003 = unknown_0035H(16, 0, 275, var_0001)
                     for var_0022 in ipairs(var_0003) do
                         var_0002 = unknown_0001H(var_0001, {17480, 7724})
-                        var_0002 = unknown_0001H(unknown_001BH(-356), {1802, 17493, 17452, 7715})
+                        var_0002 = unknown_0001H(get_npc_name(-356), {1802, 17493, 17452, 7715})
                     end
                 end
             end
@@ -39,8 +39,8 @@ function func_070A(eventid, objectref)
                 abort()
             end
             if get_object_shape(objectref) == 354 then
-                var_0024 = unknown_0019H(unknown_001BH(-356), objectref)
-                if var_0024 < 20 and not unknown_0088H(unknown_001BH(-356), 23) then
+                var_0024 = unknown_0019H(get_npc_name(-356), objectref)
+                if var_0024 < 20 and not unknown_0088H(get_npc_name(-356), 23) then
                     var_0021 = unknown_0018H(objectref)
                     unknown_0053H(-1, 0, 0, 0, var_0021[2] + 3, var_0021[1] + 3, 17)
                     var_0025 = get_party_members()
@@ -102,7 +102,7 @@ function func_070A(eventid, objectref)
             var_0002 = unknown_0015H(65, var_0001)
             var_0002 = unknown_0036H(var_0000)
             bark(var_0000, "@I summon thee!@")
-            var_0002 = unknown_0001H(unknown_001BH(-356), {22, 7719})
+            var_0002 = unknown_0001H(get_npc_name(-356), {22, 7719})
             var_0002 = unknown_0001H(var_0000, {8033, 2, 17447, 8044, 1802, 17493, 7937, 3, 17447, 8045, 1, 17447, 8044, 2, 17447, 8033, 2, 17447, 8048, 3, 17447, 7791})
             var_0003 = unknown_0035H(0, 20, 336, objectref)
             for var_0004 in ipairs(var_0003) do

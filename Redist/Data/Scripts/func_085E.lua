@@ -23,7 +23,7 @@ function func_085E()
             var_000B = unknown_091BH(var_0006, var_0002[var_000A], var_0007, var_000A, var_0008)
             var_000C = 0
             add_dialogue("\"^" .. var_000B .. " Dost thou accept my price?\"")
-            var_000D = unknown_090AH()
+            var_000D = ask_yes_no()
             if not var_000D then
                 var_000C = unknown_08F8H(true, var_0009, var_0005[var_000A], 0, var_0004[var_000A], var_0003[var_000A])
                 if var_000C == 1 then
@@ -34,7 +34,7 @@ function func_085E()
                     add_dialogue("\"Thou hast not the gold for that!\"")
                 end
                 add_dialogue("\"Wouldst thou like something else?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
             end
         end
     end

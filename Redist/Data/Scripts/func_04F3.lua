@@ -80,7 +80,7 @@ function func_04F3(eventid, objectref)
             remove_answer("funny man")
         elseif answer == "special project" then
             add_dialogue("\"Owings and myself are now involved in a very important special project, but it is a secret. Can we trust thee?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if not var_0005 then
                 add_dialogue("\"In that case I thank thee for thine honesty. I do not really mind if a person is untrustworthy. But someone who is untrustworthy and dishonest about it, that is something that I cannot abide.\"")
                 switch_talk_to(0, 239)

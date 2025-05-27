@@ -4,7 +4,7 @@ function func_04E9(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 233)
-        var_0000 = unknown_001CH(unknown_001BH(233))
+        var_0000 = unknown_001CH(get_npc_name(233))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(696) then
@@ -33,7 +33,7 @@ function func_04E9(eventid, objectref)
                     break
                 end
                 add_dialogue("\"Wouldst thou like to see our Passion Play?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0001 = unknown_08F7H(234)
                     var_0002 = unknown_08F7H(235)
                     if var_0001 and var_0002 then
@@ -66,7 +66,7 @@ function func_04E9(eventid, objectref)
         end
     elseif eventid == 0 then
         var_000A = get_schedule()
-        var_0000 = unknown_001CH(unknown_001BH(233))
+        var_0000 = unknown_001CH(get_npc_name(233))
         if var_0000 == 29 then
             var_000B = random2(4, 1)
             if var_000B == 1 then

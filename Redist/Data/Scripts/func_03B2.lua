@@ -2,7 +2,7 @@
 function func_03B2(eventid, objectref)
     local var_0000
 
-    var_0000 = unknown_001CH(unknown_001BH(objectref))
+    var_0000 = unknown_001CH(get_npc_name(objectref))
     if eventid == 0 then
         return
     end

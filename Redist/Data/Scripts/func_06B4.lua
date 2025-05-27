@@ -8,7 +8,7 @@ function func_06B4(eventid, objectref)
         var_0001 = unknown_092BH(var_0000)
         var_0002 = unknown_0010H(var_0001, 1)
         var_0003 = unknown_0010H(unknown_0014H(objectref), 1)
-        unknown_0936H(unknown_001BH(var_0000[var_0002]), var_0003)
+        unknown_0936H(get_npc_name(var_0000[var_0002]), var_0003)
     end
     return
 end

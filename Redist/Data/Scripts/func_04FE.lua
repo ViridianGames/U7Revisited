@@ -25,7 +25,7 @@ function func_04FE(eventid, objectref)
             add_answer({"purpose", "unicorn"})
         elseif answer == "unicorn" then
             add_dialogue("Lasher stares at you, stupefied. \"Tell me, dost thou know what a unicorn is?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
             if not var_0001 then
                 add_dialogue("Lasher stares blankly at you. His mouth hangs open. \"Very well. Then I shall tell thee what a unicorn is.\"")
             else
@@ -71,7 +71,7 @@ function func_04FE(eventid, objectref)
             add_answer({"unpleasant", "avoid"})
         elseif answer == "avoid" then
             add_dialogue("\"Yes, well, I did not wish to get this personal with thee, but if thou does not mind, art thou a virgin?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if not var_0002 then
                 if not get_flag(669) or not get_flag(668) or not get_flag(670) then
                     add_dialogue("\"I thought as much!\" Lasher starts to pace nervously. \"If thou wouldst not mind standing back a bit, I would be most appreciative.\"")

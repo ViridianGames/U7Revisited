@@ -1278,8 +1278,8 @@ void LoadingState::LoadInitialGameState()
 					//Log("Stopper");// subFiles.seekg(2761, ios::cur);
 				}
 
-				int size = sizeof(NPCblock);
-				NPCblock thisNPC;
+				int size = sizeof(NPCData);
+				NPCData thisNPC;
 				
 				thisNPC.x = ReadU8(subFiles);
 				thisNPC.y = ReadU8(subFiles);
@@ -1316,7 +1316,7 @@ void LoadingState::LoadInitialGameState()
 				subFiles.read(thisNPC.soak1, 3);
 
 				thisNPC.status2 = ReadU16(subFiles);
-				thisNPC.index2 = ReadU8(subFiles);
+				thisNPC.id = ReadU8(subFiles);
 
 				subFiles.read(thisNPC.soak2, 2);
 
@@ -1348,7 +1348,9 @@ void LoadingState::LoadInitialGameState()
 
 				int newfilepos = subFiles.tellg();
 
-				g_ObjectList[nextID].get()->SetNPCBlock(thisNPC);
+				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
+
+				g_ObjectList[nextID].get()->m_NPCData = g_NPCData[thisNPC.id].get();
 
 				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
 				{

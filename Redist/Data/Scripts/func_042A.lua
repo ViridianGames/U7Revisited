@@ -75,10 +75,10 @@ function func_042A(eventid, objectref)
             add_dialogue("\"It not only applies to gold but it also applies to all minerals. We oversee the sale and rate of exchange for precious ores extracted by the Britannian Mining Company. But we do not handle the sale of gems. There is a jeweler in town who handles that.\"")
             remove_answer("system")
         elseif cmps("exchange") then
-            var_0003 = unknown_001CH(unknown_001BH(42))
+            var_0003 = unknown_001CH(get_npc_name(42))
             if var_0003 == 30 then
                 add_dialogue("\"Dost thou have some gold that thou wouldst like to exchange?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     var_0005 = unknown_0931H(359, 359, 645, 1, 357)
                     var_0006 = unknown_0931H(359, 359, 646, 1, 357)

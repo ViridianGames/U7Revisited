@@ -54,7 +54,7 @@ function func_046A(eventid, objectref)
             remove_answer("people")
         elseif cmps("peep hole") then
             add_dialogue("\"Well, Oi only know a few people 'ere, but Oi'll try an' 'elp as best as Oi am able. 'Oo do ye want to know about? My two best friends are Garth an' Darek, but Oi often talk to Nina an' Bart when Oi get the chance.~~\"Recently, that Perrin fellow from across the way 'as been spendin' some toime with me. 'E's a real nice chap. A l'ttle brainy, perhaps, " .. var_0001 .. ", but Oi like 'im just the same. Anyone else ye'd like to know about?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("\"Well, that Perrin fellow'd be a better one to ask than Oi'd be, " .. var_0001 .. ". 'E knows a lot, that one does.\"")
             else
                 add_dialogue("\"All right then, glad Oi could introduce ye to a few o' my friends.\"")

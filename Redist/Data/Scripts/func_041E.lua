@@ -4,7 +4,7 @@ function func_041E(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = unknown_001CH(unknown_001BH(-30))
+            var_0002 = unknown_001CH(get_npc_name(-30))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then
                 if var_0003 == 1 then

@@ -31,7 +31,7 @@ function func_04D5(eventid, objectref)
                 add_answer({"Vesper", "mother", "father"})
             elseif answer == "father" then
                 add_dialogue("\"He is the overseer at the mines, \" .. var_0000 .. \" Avatar.\"")
-                var_0002 = unknown_0037H(unknown_001BH(203))
+                var_0002 = unknown_0037H(get_npc_name(203))
                 if var_0002 then
                     add_dialogue("\"Of course, he's gone now...\" She looks down at her feet.")
                 end

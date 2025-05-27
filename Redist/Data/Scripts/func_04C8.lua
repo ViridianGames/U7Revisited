@@ -36,7 +36,7 @@ function func_04C8(eventid, objectref)
             elseif answer == "Riky" then
                 if get_flag(631) then
                     add_dialogue("\"Hast thou found my child?\"")
-                    var_0003 = unknown_090AH()
+                    var_0003 = ask_yes_no()
                     if var_0003 then
                         var_0004 = unknown_0931H(2, 359, 730, 1, 357)
                         if var_0004 then
@@ -59,7 +59,7 @@ function func_04C8(eventid, objectref)
                 else
                     set_flag(631, true)
                     add_dialogue("\"My poor baby boy. He -- he was taken one night by cruel harpies who wanted a child for their own. I -- I know not where they have taken him, but I have heard some of the knights mention that a group of the vile women-birds cluster around the shrine of Honor. But, they have not yet been able to defeat them.\" She sniffs. \"But thou \" .. var_0001 .. \", thou wilt help me get my child back. Oh, please, wilt thou?\"")
-                    var_0006 = unknown_090AH()
+                    var_0006 = ask_yes_no()
                     if var_0006 then
                         add_dialogue("\"I cannot thank thee enough for helping me!\" She appears to have cheered up greatly.")
                     else
@@ -73,7 +73,7 @@ function func_04C8(eventid, objectref)
                 remove_answer("statue")
             elseif answer == "Hold" then
                 add_dialogue("\"I sense that thou wishest to know about the residents here at Serpent's Hold. Is this correct?\"")
-                var_0007 = unknown_090AH()
+                var_0007 = ask_yes_no()
                 if not var_0007 then
                     add_dialogue("\"Very well. Come to me if thou changest thy mind.\"")
                 else

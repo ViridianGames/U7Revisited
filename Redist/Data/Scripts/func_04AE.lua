@@ -77,7 +77,7 @@ function func_04AE(eventid, objectref)
                 remove_answer("Fellowship")
             elseif answer == "give" then
                 add_dialogue("\"Wilt thou give me a bit of money?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("How much?")
                     save_answers()
                     var_0002 = unknown_090BH("5", "4", "3", "2", "1", "0")
@@ -103,7 +103,7 @@ function func_04AE(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0006 = unknown_001CH(unknown_001BH(174))
+        var_0006 = unknown_001CH(get_npc_name(174))
         var_0007 = random2(4, 1)
         if var_0006 == 11 then
             if var_0007 == 1 then

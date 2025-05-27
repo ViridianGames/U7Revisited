@@ -12,7 +12,7 @@ function func_033B(eventid, objectref)
             if var_0002 == var_0001 then
                 unknown_08FFH("@It does not appear as though a bandage is needed.@", objectref)
             else
-                if var_0000 == unknown_001BH(-356) then
+                if var_0000 == get_npc_name(-356) then
                     unknown_08FEH("@Much better.@", objectref)
                 elseif unknown_0937H(var_0000) then
                     var_0003 = math.random(1, 3)

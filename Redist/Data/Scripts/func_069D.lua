@@ -13,7 +13,7 @@ function func_069D(eventid, objectref)
 
     var_0001 = false
     var_0002 = false
-    var_0003 = unknown_000EH(10, 718, unknown_001BH(-356))
+    var_0003 = unknown_000EH(10, 718, get_npc_name(-356))
     if not var_0003 then
         var_0004 = unknown_092DH(var_0003)
         if var_0004 == 0 or var_0004 == 1 or var_0004 == 7 then
@@ -34,6 +34,6 @@ function func_069D(eventid, objectref)
         end
     end
 
-    var_0005 = unknown_001BH(-356)
+    var_0005 = get_npc_name(-356)
     unknown_0828H(7, var_0005, 1693, 0, var_0002, var_0001, var_0005)
 end

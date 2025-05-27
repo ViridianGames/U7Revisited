@@ -14,7 +14,6 @@ function func_040B(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = get_party_members()
     var_0002 = is_player_female()
-    add_answer({"bye", "job", "name"})
     switch_talk_to(11, 0)
     if not get_flag(20) then
         var_0003 = var_0002 and "woman" or "man"
@@ -23,19 +22,20 @@ function func_040B(eventid, objectref)
     end
     if not get_flag(75) then
         add_dialogue("You see a distraught peasant. \"Art thou really the Avatar?\"")
-        var_0004 = unknown_090AH()
+        var_0004 = ask_yes_no()
         if var_0004 then
-            add_dialogue("Petre bows before you. \"^" .. var_0000 .. ".\"")
+            add_dialogue("Petre bows before you. \"" .. var_0000 .. ".\"")
             set_flag(75, true)
-            unknown_001DH(11, -11)
+            --unknown_001DH(11, -11)
         else
             add_dialogue("Petre looks confused. \"Thou shouldst not make fun of me!\" He turns away.")
             set_flag(75, true)
-            return
+            abort()
         end
     else
         add_dialogue("\"What is it, " .. var_0000 .. "?\" Petre asks.")
     end
+    add_answer({"bye", "job", "name"})
     if not get_flag(60) then
         add_answer({"footprints", "murder"})
     end
@@ -47,13 +47,14 @@ function func_040B(eventid, objectref)
             add_dialogue("\"Look in the stables! 'Tis horrible! I will answer thy questions, but first look in the stables!\"")
             return
         end
-        if cmps("name") then
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"I am called Petre,\" the man sniffs.")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the stables caretaker.\"")
             add_answer("stables")
-        elseif cmps("stables") then
+        elseif answer == "stables" then
             add_dialogue("\"I have worked here for years. I can sell thee a nice horse and carriage if thou dost want one. The animal and the carriage are located in a small shelter just outside the north gate of the town.\"")
             if not get_flag(87) then
                 add_dialogue("\"Right now the place gives me the creeps!\"")
@@ -63,19 +64,19 @@ function func_040B(eventid, objectref)
             end
             remove_answer("stables")
             add_answer("carriage")
-        elseif cmps("murder") then
+        elseif answer == "murder" then
             add_dialogue("\"I discovered poor Christopher and Inamo earlier this morning. I did not touch a thing. Made me sick, it did!\"")
             remove_answer("murder")
             add_answer({"Inamo", "Christopher"})
-        elseif cmps("Christopher") then
+        elseif answer == "Christopher" then
             add_dialogue("\"Nice man. He made the shoes for mine horses.\"")
             remove_answer("Christopher")
-        elseif cmps("Inamo") then
+        elseif answer == "Inamo" then
             add_dialogue("\"He worked for very little money. Did basic chores around the stables and the pub. I let him sleep in the little back room. He must have been in the wrong place at the wrong time.\"")
             remove_answer("Inamo")
-        elseif cmps("carriage") then
+        elseif answer == "carriage" then
             add_dialogue("\"The horse and carriage combination sells for 60 gold. Dost thou want a title?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if var_0005 then
                 var_0006 = unknown_0028H(359, 359, 644, 357)
                 if var_0006 >= 60 then
@@ -93,18 +94,18 @@ function func_040B(eventid, objectref)
                 add_dialogue("\"Some other time, then.\"")
             end
             remove_answer("carriage")
-        elseif cmps("footprints") then
+        elseif answer == "footprints" then
             add_dialogue("\"They doth lead out the back way, yes? They must be the tracks of the murderer!\"")
             add_dialogue("His eyes widen a bit more.")
             add_dialogue("\"Or... murderers!\"")
             remove_answer("footprints")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"I do not want to join them, but they seem all right.\"")
             remove_answer("Fellowship")
-        elseif cmps("Klog") then
+        elseif answer == "Klog" then
             add_dialogue("\"I do not know the man too well. I have no dealings with him.\"")
             remove_answer("Klog")
-        elseif cmps("Spark") then
+        elseif answer == "Spark" then
             if -2 == var_0001 then
                 add_dialogue("\"That be Christopher's son. Nice lad.\"")
             else
@@ -112,7 +113,7 @@ function func_040B(eventid, objectref)
                 add_dialogue("\"This here is Christopher's son. He's a good lad, is Spark, when he's not pilfering things from honest shopkeepers.\"")
             end
             remove_answer("Spark")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

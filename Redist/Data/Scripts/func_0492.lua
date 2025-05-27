@@ -34,8 +34,8 @@ function func_0492(eventid, objectref)
             end
         end
         var_0006 = get_party_members()
-        var_0007 = unknown_001BH(144) --- Guess: Gets object ref
-        var_0008 = unknown_001BH(147) --- Guess: Gets object ref
+        var_0007 = get_npc_name(144) --- Guess: Gets object ref
+        var_0008 = get_npc_name(147) --- Guess: Gets object ref
         if is_in_int_array(var_0007, var_0006) or is_in_int_array(var_0008, var_0006) then
             if is_in_int_array(var_0007, var_0006) then
                 switch_talk_to(144, 0)

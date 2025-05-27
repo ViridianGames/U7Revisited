@@ -2,7 +2,7 @@
 function func_08F6(var_0000)
     local var_0001, var_0002, var_0003
 
-    var_0001 = unknown_001BH(var_0000)
+    var_0001 = get_npc_name(var_0000)
     var_0002 = math.floor(unknown_0020H(8, var_0001) / 100)
     var_0003 = 1
     while var_0002 > 0 do

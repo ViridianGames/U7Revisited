@@ -15,7 +15,7 @@ function func_049A(eventid, objectref)
     var_0003 = unknown_08F7H(-220)
     var_0004 = get_lord_or_lady()
     var_0005 = unknown_0908H()
-    unknown_003DH(unknown_001BH(154), 2)
+    unknown_003DH(get_npc_name(154), 2)
     if not get_flag(702) then
         add_dialogue("The troll snarls at you, obviously displeased at your presence.")
         set_flag(702, true)
@@ -27,7 +27,7 @@ function func_049A(eventid, objectref)
             var_0006 = is_player_wearing_fellowship_medallion()
             if var_0006 then
                 add_dialogue("\"I Grod. Why you want know? Is voice unhappy?\"")
-                var_0007 = unknown_090AH()
+                var_0007 = ask_yes_no()
                 if var_0007 then
                     add_dialogue("He seems truly worried.~~\"I will do job better. I promise! I beat harder and more often!\"")
                     if var_0002 then
@@ -76,7 +76,7 @@ function func_049A(eventid, objectref)
             var_000B = is_player_wearing_fellowship_medallion()
             if var_000B then
                 add_dialogue("\"Want to help?\"")
-                var_000C = unknown_090AH()
+                var_000C = ask_yes_no()
                 if var_000C then
                     if var_0003 and var_0002 then
                         add_dialogue("He points to one of the prisoners.~~\"He not fun like the other. Torture other first.\"")

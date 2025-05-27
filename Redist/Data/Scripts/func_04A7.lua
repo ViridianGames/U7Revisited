@@ -26,8 +26,8 @@ function func_04A7(eventid, objectref)
             add_dialogue("\"I suggest that thou go and speak with his mother at once! Camille should keep a tighter rein on her offspring!\"")
             set_flag(531, true)
             set_flag(540, true)
-            unknown_001DH(unknown_001BH(177), 3)
-            unknown_001DH(unknown_001BH(167), 11)
+            unknown_001DH(get_npc_name(177), 3)
+            unknown_001DH(get_npc_name(167), 11)
             return
         end
         start_conversation()
@@ -60,7 +60,7 @@ function func_04A7(eventid, objectref)
             elseif answer == "Fellowship" then
                 if not var_0001 then
                     add_dialogue("\"Wouldst thou like to join?\"")
-                    var_0005 = unknown_090AH()
+                    var_0005 = ask_yes_no()
                     if var_0005 then
                         add_dialogue("\"Then thou must see Batlin of Britain. He is the founder of The Fellowship.\"")
                     else

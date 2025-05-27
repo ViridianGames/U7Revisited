@@ -7,7 +7,7 @@ function func_08B5()
     var_0000 = unknown_0024H(797)
     unknown_0013H(1, var_0000)
     var_0001 = unknown_0015H(44, var_0000)
-    var_0002 = unknown_0036H(unknown_001BH(356))
+    var_0002 = unknown_0036H(get_npc_name(356))
     var_0003 = false
     if var_0002 then
         add_dialogue("Lord British hands you the deed to the ship.")
@@ -19,7 +19,7 @@ function func_08B5()
     add_dialogue("\"I have also focused a magical crystal to the entrance of the Castle of Fire which I refurbished after thy battle with Exodus. Here, take it. Perhaps it will give thee some insight. Although, be warned, it is not at all stable and might be prone to shatter the nearer thou findest thyself to the location to which it is tuned.\"")
     var_0004 = unknown_0024H(760)
     unknown_0013H(14, var_0004)
-    var_0005 = unknown_0036H(unknown_001BH(356))
+    var_0005 = unknown_0036H(get_npc_name(356))
     if var_0005 then
         add_dialogue("Lord British gives you the crystal.")
     else

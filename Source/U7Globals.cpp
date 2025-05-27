@@ -38,6 +38,8 @@ std::unique_ptr<Terrain> g_Terrain;
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectTable;
 
+std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
+
 ConversationState* g_ConversationState;
 
 bool g_CameraMoved;

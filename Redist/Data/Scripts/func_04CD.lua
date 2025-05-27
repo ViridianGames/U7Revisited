@@ -6,7 +6,7 @@ function func_04CD(eventid, objectref)
         switch_talk_to(0, 205)
         var_0000 = unknown_0908H()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_001CH(unknown_001BH(205))
+        var_0002 = unknown_001CH(get_npc_name(205))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(650) then
@@ -53,7 +53,7 @@ function func_04CD(eventid, objectref)
             elseif answer == "train" then
                 if var_0002 == 7 then
                     add_dialogue("\"I can train thee for 40 gold. Is this all right?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         unknown_094FH(40, 4, 0)
                     else
                         add_dialogue("\"Perhaps next time, \" .. var_0001 .. \".\"")
@@ -67,7 +67,7 @@ function func_04CD(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0002 = unknown_001CH(unknown_001BH(205))
+        var_0002 = unknown_001CH(get_npc_name(205))
         var_0003 = get_schedule()
         var_0004 = random(4, 1)
         if var_0002 == 14 and (var_0003 == 7 or var_0003 == 0 or var_0003 == 1) then

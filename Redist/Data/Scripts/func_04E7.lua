@@ -5,7 +5,7 @@ function func_04E7(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 231)
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(231))
+        var_0001 = unknown_001CH(get_npc_name(231))
         var_0002 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -64,7 +64,7 @@ function func_04E7(eventid, objectref)
                 remove_answer("drink")
             elseif answer == "room" then
                 add_dialogue("\"Our rooms are 10 gold per person. The only one available now is the southwest room. The other two already have occupants. Dost thou want one?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0005 = get_party_members()
                     var_0006 = 0
                     for _ = 1, var_0005 do

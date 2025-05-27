@@ -12,7 +12,7 @@ function func_045D(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 93)
-    var_0000 = unknown_001CH(unknown_001BH(93))
+    var_0000 = unknown_001CH(get_npc_name(93))
     var_0001 = get_schedule()
     if var_0001 == 7 and var_0000 ~= 16 then
         var_0002 = unknown_08FCH(81, 93)
@@ -67,7 +67,7 @@ function func_045D(eventid, objectref)
                 add_dialogue("\"I am so glad thou art my brother in The Fellowship; I know I may trust thee. It is all of the others in this town that I worry about.\"")
             else
                 add_dialogue("\"Wouldst thou like to know more of The Fellowship?\"")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     unknown_0919H()
                 else

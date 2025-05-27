@@ -41,7 +41,7 @@ function func_046F(eventid, objectref)
             add_answer("offer food")
         elseif cmps("offer food") then
             add_dialogue("\"You give me food?\" His face displays a mixture of surprise and hope. \"You give me food, I tell you secret. Yes?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if var_0002 then
                 var_0003 = unknown_002BH(0, 359, 359, 377, 1)
                 if var_0003 then

@@ -8,7 +8,7 @@ function func_0477(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = unknown_001CH(119) --- Guess: Gets object state
-        var_0003 = unknown_001BH(119) --- Guess: Gets object ref
+        var_0003 = get_npc_name(119) --- Guess: Gets object ref
         add_answer({"bye", "job", "name"})
         if not get_flag(335) then
             add_dialogue("Though he does not seem hostile, the man greets you in a fighting stance.")

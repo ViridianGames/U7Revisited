@@ -18,7 +18,7 @@ function func_041A(eventid, objectref)
         add_dialogue("\"Thou hast the Cube! Thou cannot use it against -me-!\"")
         add_dialogue("With that, Batlin turns with a flourish, and vanishes before your eyes!")
         set_flag(218, true)
-        unknown_003FH(unknown_001BH(26))
+        unknown_003FH(get_npc_name(26))
         return
     end
     if not get_flag(30) then
@@ -28,7 +28,7 @@ function func_041A(eventid, objectref)
     end
     if not get_flag(56) then
         add_dialogue("\"Art thou ready to answer questions from the Book of Fellowship?\"")
-        if unknown_090AH() then
+        if ask_yes_no() then
             unknown_0852H()
             if not get_flag(56) then
                 if var_0000 == 28 then
@@ -218,10 +218,10 @@ function func_041A(eventid, objectref)
             add_answer("mission")
         elseif cmps("package delivered") then
             add_dialogue("\"Avatar, didst thou deliver the package to Elynor of Minoc?\"")
-            var_000B = unknown_090AH()
+            var_000B = ask_yes_no()
             if var_000B then
                 add_dialogue("\"Didst thou open the package?\"")
-                var_000C = unknown_090AH()
+                var_000C = ask_yes_no()
                 if var_000C then
                     add_dialogue("\"Thou knew that thou wast instructed not to open it. We put trust in thee to carry out our instructions to the letter and that trust was broken.\"")
                     add_answer("mission")
@@ -236,7 +236,7 @@ function func_041A(eventid, objectref)
             else
                 add_dialogue("Batlin's eyes open wide in surprise.")
                 add_dialogue("\"What has happened? Hast thou lost the package?\"")
-                var_000D = unknown_090AH()
+                var_000D = ask_yes_no()
                 if var_000D then
                     add_dialogue("\"Tsk. Tsk. Tsk. That is most unfortunate. We put trust in thee to deliver the package and that trust was broken. I am afraid that thou must carry out a mission for us as a test of trust if thou art to begin truly walking with The Fellowship.\"")
                     add_answer("mission")
@@ -295,7 +295,7 @@ function func_041A(eventid, objectref)
             remove_answer("voice")
         elseif cmps("test") then
             add_dialogue("\"Oh, art thou ready to join The Fellowship?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 unknown_084DH()
             else
                 add_dialogue("\"Until thou art ready to join, I cannot tell thee any more about the test.\"")

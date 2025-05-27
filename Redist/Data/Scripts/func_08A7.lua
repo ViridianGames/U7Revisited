@@ -23,7 +23,7 @@ function func_08A7()
             var_0010 = unknown_091BH(var_0005[var_0009], var_0001[var_0009], var_0006[var_0009], var_0004[var_0009], var_0007[var_0009])
             var_0011 = 0
             add_dialogue("^" .. var_0010 .. " Wilt thou pay my price?")
-            var_0012 = unknown_090AH()
+            var_0012 = ask_yes_no()
             if not var_0012 then
                 local quantity_text = "How many "
                 if var_0008[var_0009] > 1 then
@@ -41,7 +41,7 @@ function func_08A7()
                 add_dialogue("\"Thou dost not have enough coin to pay for that!\"")
             end
             add_dialogue("\"Wouldst thou like to purchase something else?\"")
-            var_0000 = unknown_090AH()
+            var_0000 = ask_yes_no()
         end
     end
     restore_answers()

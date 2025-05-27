@@ -50,7 +50,7 @@ function func_049C(eventid, objectref)
             if var_0005 then
                 add_dialogue("\"What's this?\" she asks, taking the vial from you. She opens it up and sniffs. \"Very good quality. I wonder why he...\" she clutches her throat and gasps. You notice a wispy smoke rise from the top of the vial now spilling out of her hands. Choking, she falls to the ground, and dies.")
                 set_flag(525, true)
-                unknown_0049H(unknown_001BH(156))
+                unknown_0049H(get_npc_name(156))
                 return
             else
                 add_dialogue("\"I am afraid I must first see what thou art referring to before I can answer thy question.\"")

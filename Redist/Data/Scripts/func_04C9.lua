@@ -5,7 +5,7 @@ function func_04C9(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 201)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001CH(unknown_001BH(201))
+        var_0001 = unknown_001CH(get_npc_name(201))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(601) or get_flag(634) then

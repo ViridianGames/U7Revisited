@@ -36,7 +36,7 @@ function func_08F8(var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, v
                     else
                         add_dialogue("\"I will carry some, as well.\"")
                     end
-                    unknown_0004H(var_0018)
+                    hide_npc(var_0018)
                 end
             end
             if var_0014 then

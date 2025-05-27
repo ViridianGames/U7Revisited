@@ -44,14 +44,14 @@ function func_04B5(eventid, objectref)
                 end
             elseif answer == "warrior" then
                 add_dialogue("\"To charge 50 gold for each training session. To be all right?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_089BH(50, 4, 1, 0)
                 else
                     add_dialogue("\"To apologize, but I must charge that amount!\"")
                 end
             elseif answer == "mage" then
                 add_dialogue("\"To charge 50 gold for each training session. To be acceptable?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_089AH(50, 2, 6)
                 else
                     add_dialogue("\"To apologize, but I must charge that amount!\"")

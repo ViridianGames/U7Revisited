@@ -6,7 +6,7 @@ function func_0405(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(5, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001BH(5) --- Guess: Retrieves object reference from ID
+        var_0001 = get_npc_name(5) --- Guess: Retrieves object reference from ID
         var_0002 = get_player_name()
         add_answer({"bye", "job", "name"})
         if is_in_int_array(var_0001, get_party_members()) then
@@ -82,12 +82,12 @@ function func_0405(eventid, objectref)
                 if var_0009 == "wait here" then
                     add_dialogue("\"Very well. I shall wait until thou dost return.\"")
                     unknown_001FH(5) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(15, unknown_001BH(5)) --- Guess: Sets a generic object property
+                    unknown_001DH(15, get_npc_name(5)) --- Guess: Sets a generic object property
                     abort()
                 else
                     add_dialogue("\"I shall obey thy wish. I would be happy to re-join if thou shouldst ask. Goodbye.\"")
                     unknown_001FH(5) --- Guess: Sets object state (e.g., active/inactive)
-                    unknown_001DH(11, unknown_001BH(5)) --- Guess: Sets a generic object property
+                    unknown_001DH(11, get_npc_name(5)) --- Guess: Sets a generic object property
                     abort()
                 end
             elseif var_0003 == "magic" then

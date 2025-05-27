@@ -2,7 +2,7 @@
 function func_092E(P0)
     local var_0000, var_0001, var_0002, var_0003
 
-    var_0000 = unknown_001BH(P0)
+    var_0000 = get_npc_name(P0)
     if not unknown_0937H(var_0000) then
         return
     end

@@ -41,7 +41,7 @@ function func_049F(eventid, objectref)
             var_0002 = get_schedule()
             if var_0002 >= 3 or var_0002 <= 6 then
                 add_dialogue("\"My price is 35 gold for each training session. Art thou willing to pay that?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_08A2H(35, {2, 6})
                 else
                     add_dialogue("\"Then I really should return to my studies.\"")

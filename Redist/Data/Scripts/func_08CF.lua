@@ -11,27 +11,27 @@ function func_08CF()
     if not var_0000 then
         switch_talk_to(156, 0)
         add_dialogue("You see the clerk gasp, her eyes widening in disbelief.")
-        unknown_0004H(-156)
+        hide_npc(-156)
         switch_talk_to(250, 0)
     end
     add_dialogue("\"The second principle of the Triad is `trust thy brother.' 'Tis a simple practice when thou dost know thy brother. But The Fellowship was not always known to thee. It may, at one time, have been difficult to put thy trust in something as large as The Fellowship.~~ However, to gain full knowledge of thine inner strength, one must have the courage to walk on the fire of trust!\"")
     if not var_0001 then
         switch_talk_to(157, 0)
         add_dialogue("\"'Tis true! Trust was the key to my freedom!\"")
-        unknown_0004H(-157)
+        hide_npc(-157)
         switch_talk_to(250, 0)
     end
     add_dialogue("\"Trust requires great courage, and that courage exists within thyself.\"")
     if not var_0002 then
         switch_talk_to(1, 0)
         add_dialogue("Iolo leans toward you.~~ \"I believe we have heard enough of this, no?\"")
-        var_0004 = unknown_090AH()
+        var_0004 = ask_yes_no()
         if var_0004 then
             add_dialogue("\"Good. Let us leave.\"")
             return
         end
         add_dialogue("Iolo sighs deeply.")
-        unknown_0004H(-1)
+        hide_npc(-1)
         switch_talk_to(250, 0)
     end
     add_dialogue("\"But as long as one remains aware, this problem will not plague thee.\"")

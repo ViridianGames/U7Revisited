@@ -4,7 +4,7 @@ function func_04EA(eventid, objectref)
 
     if eventid == 0 then
         local0 = get_schedule()
-        local1 = unknown_001CH(unknown_001BH(-234))
+        local1 = unknown_001CH(get_npc_name(-234))
         local2 = random2(4, 1)
         if local1 == 29 then
             if local2 == 1 then

@@ -50,7 +50,7 @@ function func_04D6(eventid, objectref)
                 add_dialogue("\"To talk about the human girl, Catherine? To mean no harm to her.\" He holds out his hands.")
                 add_dialogue("\"To read gargoyle mythology to her during the day only. To have been asked by her!\" His eyes widen.")
                 add_dialogue("\"To ask you not to tell her parents, for they will punish her.\" He looks hopeful. \"To tell not, agreed?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"To be making the right decision.\" He appears relieved. \"To thank you, human.\" He smiles.")
                 else

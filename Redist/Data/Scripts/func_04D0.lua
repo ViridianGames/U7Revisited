@@ -38,7 +38,7 @@ function func_04D0(eventid, objectref)
             elseif answer == "gargoyles" then
                 add_dialogue("A growl escapes his throat.")
                 add_dialogue("\"What about the bloody gargoyles? Don't tell me thou art a gargoyle lover.\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"Thou art disgusting, swine!\" He spits on your boot.")
                     return
@@ -47,7 +47,7 @@ function func_04D0(eventid, objectref)
                     add_dialogue("A sudden inspiration seems to flash across his face.")
                     add_dialogue("\"Perhaps thou canst help me. As thou undoubtedly knowest, I was set upon by a cruel gargoyle not too long ago. He nearly took my life!\"")
                     add_dialogue("\"'Twould be a great honor, \" .. var_0000 .. \", if thou wouldst agree to avenge me! Art thou willing?\"")
-                    var_0002 = unknown_090AH()
+                    var_0002 = ask_yes_no()
                     if var_0002 then
                         add_dialogue("\"I thank thee, \" .. var_0000 .. \", thank thee. But I must warn thee, he is a very violent gargoyle. His name is Lap-Lem, which means `man slayer.' And, do not mention my name, for he hates me more than any other human and would surely attack thee without provocation if my name were to be mentioned.\"")
                         set_flag(665, true)
@@ -70,7 +70,7 @@ function func_04D0(eventid, objectref)
                 remove_answer("return amulet")
             elseif answer == "Lap-Lem" then
                 add_dialogue("\"Thou hast killed the jackal?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"Wonderful! Thou art truly a trusted friend. I thank thee for thine assistance!\" He grins at you.")
                 else

@@ -36,7 +36,7 @@ function func_04A3(eventid, objectref)
         end
         if not get_flag(474) and not get_flag(473) then
             add_dialogue("\"Hast thou discovered the reason for Zelda's moods?\"")
-            var_0006 = unknown_090AH()
+            var_0006 = ask_yes_no()
             if var_0006 then
                 add_dialogue("\"Excellent. Thou canst tell me while I get thy refreshment.\" As he prepares your meal, you tell him what you know about Zelda and Brion.")
                 set_flag(473, true)

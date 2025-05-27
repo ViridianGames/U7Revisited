@@ -8,8 +8,8 @@ function func_0406(eventid, objectref)
         var_0001 = "Avatar"
         var_0002 = get_party_members()
         var_0003 = false
-        var_0004 = unknown_001BH(6) --- Guess: Retrieves object reference from ID
-        var_0005 = unknown_001BH(10) --- Guess: Retrieves object reference from ID
+        var_0004 = get_npc_name(6) --- Guess: Retrieves object reference from ID
+        var_0005 = get_npc_name(10) --- Guess: Retrieves object reference from ID
         var_0006 = check_inventory(359, 359, 772, 1, 357)
         switch_talk_to(6, 0)
         if not get_flag(308) then
@@ -170,7 +170,7 @@ function func_0406(eventid, objectref)
         add_dialogue("\"Good luck is hoped for you.\"")
     elseif eventid == 0 then
         var_000F = get_schedule() --- Guess: Checks game state or timer
-        var_000D = unknown_001BH(6) --- Guess: Retrieves object reference from ID
+        var_000D = get_npc_name(6) --- Guess: Retrieves object reference from ID
         var_000E = unknown_001CH(6) --- Guess: Gets object state
         var_000F = random(1, 4)
         var_0006 = check_inventory(359, 359, 772, 1, 357)

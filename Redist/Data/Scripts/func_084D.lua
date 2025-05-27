@@ -6,7 +6,7 @@ function func_084D()
     if get_flag(150) and get_flag(151) then
         add_dialogue("\"Well, thou didst certainly attempt to complete the quest. I cannot understand why the chest in Destard was empty. But we shall forget it, shall we?\"")
         add_dialogue("\"Now that thou hast worked a little for The Fellowship, and hast learned what we stand for, dost thou still wish to join?\"")
-        var_0001 = unknown_090AH()
+        var_0001 = ask_yes_no()
         if var_0001 then
             set_flag(141, true)
             add_dialogue("\"Then thou art most welcome to The Fellowship. ")
@@ -24,7 +24,7 @@ function func_084D()
         end
     else
         add_dialogue("\"Ah, but first things first. I recommend that thou takest our Examination to determine if thou art truly in need of The Fellowship's teachings. Dost thou want to take the test?\"")
-        var_0002 = unknown_090AH()
+        var_0002 = ask_yes_no()
         if var_0002 then
             save_answers()
             unknown_084EH()

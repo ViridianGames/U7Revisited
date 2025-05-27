@@ -6,7 +6,7 @@ function func_0401(eventid, objectref)
     set_flag(20, true)
     var_0000 = get_player_name()
     var_0001 = get_party_members()
-    var_0002 = get_npc_name(1) --- Guess: Retrieves object reference from ID
+    var_0002 = get_npc_name(1)
     var_0003 = get_lord_or_lady()
     var_0004 = is_player_female()
     if eventid == 3 then

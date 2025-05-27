@@ -7,7 +7,7 @@ function func_0467(eventid, objectref)
         switch_talk_to(103, 0)
         var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if var_0000 then
-            var_0001 = unknown_001BH(103) --- Guess: Gets object ref
+            var_0001 = get_npc_name(103) --- Guess: Gets object ref
             add_dialogue("The man scowls at you. \"Thou wearest the symbol of that most foul of groups, The Fellowship. Prepare to die!\"")
             unknown_003DH(2, var_0001) --- Guess: Initiates combat
             unknown_001DH(0, var_0001) --- Guess: Sets object behavior

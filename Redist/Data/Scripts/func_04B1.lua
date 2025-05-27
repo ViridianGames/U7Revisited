@@ -9,7 +9,7 @@ function func_04B1(eventid, objectref)
             add_dialogue("\"Avatar! My son Tobias has been wrongly accused! He is no thief! And I cannot believe a vial of venom was found in his possession. I truly believe it was planted there! Please -- I beg thee! Please clear my son's name. He has done no wrong!\"")
             add_dialogue("\"I know my son Tobias has suffered for not having a father. I have tried my best on mine own to raise him well, but this farm requires so much work that I fear I do not have enough time to devote to him. But I know in mine heart that my son is not a thief.\"")
             add_dialogue("\"Might I suggest that thou speak with Morfin again. He may have recognized signs of usage of this foul substance in other members of the village.\"")
-            unknown_001DH(unknown_001BH(177), 11)
+            unknown_001DH(get_npc_name(177), 11)
             set_flag(564, true)
             return
         end
@@ -50,7 +50,7 @@ function func_04B1(eventid, objectref)
                 remove_answer("farm")
             elseif answer == "carrots" then
                 add_dialogue("\"I believe my carrots are especially tasty. Wouldst thou like to purchase some? They would only cost thee one gold for three.\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"How many dost thou desire?\"")
                     var_0002 = unknown_000CH(3, 3, 30, 3)
@@ -81,7 +81,7 @@ function func_04B1(eventid, objectref)
                 remove_answer("carrot")
             elseif answer == "wheat" then
                 add_dialogue("\"That reminds me. This package needs to be taken to the mill today. If thou canst deliver it for me, Thurston will pay thee for it. Wilt thou?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     var_0009 = unknown_002CH(true, 359, 677, 359, 1)
                     if var_0009 then

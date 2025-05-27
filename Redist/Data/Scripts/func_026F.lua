@@ -30,9 +30,9 @@ function func_026F(eventid, objectref)
             end
         end
     elseif eventid == 7 then
-        var_0006 = unknown_000EH(3, 668, unknown_001BH(-356))
+        var_0006 = unknown_000EH(3, 668, get_npc_name(-356))
         var_0005 = unknown_0012H(var_0006)
-        var_0007 = unknown_001BH(-356)
+        var_0007 = get_npc_name(-356)
         var_0008 = unknown_092DH(objectref)
         if var_0005 >= 13 and var_0005 <= 15 then
             unknown_0040H("@The sword is not heated.@", var_0007)
@@ -42,7 +42,7 @@ function func_026F(eventid, objectref)
             var_0009 = unknown_0001H(var_0008, 7769, var_0007)
         elseif var_0005 >= 10 and var_0005 <= 12 then
             var_0009 = unknown_0001H({17505, 17508, 17511, 17509, 8548, var_0008, 7769}, var_0007)
-            var_0002 = unknown_000EH(3, 991, unknown_001BH(-356))
+            var_0002 = unknown_000EH(3, 991, get_npc_name(-356))
             var_0009 = unknown_0001H({1681, 8021, 4, 7719}, var_0002)
         end
     end

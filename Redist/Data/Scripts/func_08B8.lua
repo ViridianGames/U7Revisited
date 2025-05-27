@@ -7,7 +7,7 @@ function func_08B8()
     var_0000 = 1
     var_0001 = 1
     add_dialogue("\"Excellent! Dost thou have some eggs for me?\"")
-    var_0002 = unknown_090AH()
+    var_0002 = ask_yes_no()
     if not var_0002 then
         add_dialogue("\"Very good! Let me see how many thou dost have...\"")
         var_0003 = unknown_0028H(24, 359, 377, 357)

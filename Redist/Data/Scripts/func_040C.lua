@@ -4,7 +4,7 @@ function func_040C(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_000C = unknown_001CH(unknown_001BH(-12))
+            var_000C = unknown_001CH(get_npc_name(12))
             var_000D = random2(4, 1)
             if var_000C == 11 then
                 if var_000D == 1 then
@@ -16,9 +16,9 @@ function func_040C(eventid, objectref)
                 elseif var_000D == 4 then
                     var_000E = "@I am too old for this...@"
                 end
-                bark(var_000E, -12)
+                bark(var_000E, 12)
             else
-                unknown_092EH(-12)
+                unknown_092EH(12)
             end
         end
         add_dialogue("The Mayor nods his head at you and goes on about his business.")
@@ -29,11 +29,11 @@ function func_040C(eventid, objectref)
     switch_talk_to(12, 0)
     var_0000 = get_lord_or_lady()
     var_0001 = get_player_name()
-    var_0002 = get_flag(-1)
+    var_0002 = get_flag(1)
     var_0003 = is_player_female()
     if get_flag(90) and not get_flag(72) then
         add_dialogue("\"Hast thou properly searched the stables?\"")
-        if unknown_090AH() then
+        if ask_yes_no() then
             add_dialogue("\"What didst thou find?\"")
             unknown_0009H()
             var_0004 = {"a body", "a bucket", "nothing"}
@@ -64,18 +64,18 @@ function func_040C(eventid, objectref)
         end
     elseif get_flag(89) then
         add_dialogue("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")
-        if unknown_090AH() then
+        if ask_yes_no() then
             add_dialogue("\"Splendid. Then thou must really be the Avatar after all!\"")
             set_flag(89, false)
             unknown_0883H()
         else
             add_dialogue("\"Then leave our people to work it out for themselves.\"")
-            unknown_0004H(-12)
-            var_0006 = get_flag(-1)
+            hide_npc(12)
+            var_0006 = get_flag(1)
             if not var_0006 then
                 switch_talk_to(1, 0)
                 add_dialogue("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
-                unknown_0004H(-1)
+                hide_npc(1)
             end
             return
         end
@@ -98,7 +98,7 @@ function func_040C(eventid, objectref)
             add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
             switch_talk_to(1, 0)
             add_dialogue("\"I swear to thee, it is the Avatar!\"")
-            unknown_0004H(-1)
+            hide_npc(1)
             switch_talk_to(12, 0)
         else
             add_dialogue("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
@@ -106,22 +106,22 @@ function func_040C(eventid, objectref)
         add_dialogue("The mayor looks at you again as if he were studying every pore on your face. Finally, he smiles.")
         add_dialogue("\"Welcome, Avatar.\"")
         add_dialogue("But just as suddenly, Finnigan's face becomes stern.")
-        add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands. Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
-        var_0005 = unknown_090AH()
+        add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands.") add_dialogue("Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
+        var_0005 = ask_yes_no()
         if var_0005 then
-            var_0007 = get_flag(-11)
+            var_0007 = get_flag(11)
             if not var_0007 then
                 add_dialogue("\"Petre here knows something about all of this.\"")
                 switch_talk_to(11, 0)
                 add_dialogue("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
-                unknown_0004H(-11)
+                hide_npc(11)
             else
                 switch_talk_to(12, 0)
                 add_dialogue("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
             end
             switch_talk_to(12, 0)
             add_dialogue("The Mayor continues. \"Hast thou searched the stables?\"")
-            unknown_0885H()
+            ask_yes_no()
         else
             add_dialogue("\"Well, thou could not be the real Avatar then!\"")
             set_flag(89, true)
@@ -144,19 +144,20 @@ function func_040C(eventid, objectref)
         add_answer("Pay me now, please")
     end
     while true do
-        if cmps("name") then
+        local answer = get_answer()
+        if answer == "name" then
             add_dialogue("\"My name is Finnigan.\"")
             remove_answer("name")
-        elseif cmps("job") then
+        elseif answer == "job" then
             add_dialogue("\"I am the Mayor of Trinsic and have been since I arrived here three years ago.\"")
             add_answer("Trinsic")
-        elseif cmps("Trinsic") then
+        elseif answer == "Trinsic" then
             var_0008 = var_0003 and "by one who claimed she was the Avatar." or "by one who claimed he was the Avatar."
             add_dialogue("\"Trinsic was once the city of Honor. I suppose it still is. Our Rune of Honor was taken many years ago " .. var_0008 .. " I believe it now resides in the Royal Museum in Britain, yet the empty pedestal still remains in the center of town. I feel this is symbolic of the town itself. It is rather empty -- of people, of life, and of honor. 'Tis sad, really.\"")
             add_dialogue("\"Then there is this murder, of course. We have temporarily closed the gates of the city and require a password to get in or out.\"")
             remove_answer("Trinsic")
             add_answer("password")
-        elseif cmps("Pay me now, please") then
+        elseif answer == "Pay me now, please" then
             add_dialogue("\"Of course, " .. var_0001 .. ". Here is thy gold.\"")
             var_0009 = unknown_002CH(true, 359, 359, 644, 100)
             if not var_0009 then
@@ -167,7 +168,7 @@ function func_040C(eventid, objectref)
                 set_flag(68, true)
             end
             remove_answer("Pay me now, please")
-        elseif cmps("murder") then
+        elseif answer == "murder" then
             if not get_flag(61) then
                 add_dialogue("\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo. Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder. After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
                 add_dialogue("The mayor63 hesitates, then leans in to speak quietly.")
@@ -178,25 +179,25 @@ function func_040C(eventid, objectref)
             else
                 add_dialogue("\"I hope thou art progressing on the murder investigation.\"")
             end
-        elseif cmps("Britain") then
+        elseif answer == "Britain" then
             add_dialogue("\"'Twas before I came to Trinsic. There was a murder with strikingly similar aspects. A body was found mutilated exactly like poor Christopher. It appeared to be a ritualistic killing. I would wager that whoever was responsible for that murder is the culprit behind this one.\"")
             remove_answer("Britain")
-        elseif cmps("son") then
+        elseif answer == "son" then
             add_dialogue("\"Christopher's son is called Spark. Their house is in the northwest area of town.\"")
             remove_answer("son")
-        elseif cmps("Gilberto") then
+        elseif answer == "Gilberto" then
             add_dialogue("\"He was struck from behind early this morning and was knocked senseless. Johnson, the morning watch, found him unconscious. He is recuperating at Chantu the Healer's house on the west side of town.\"")
             remove_answer("Gilberto")
             add_answer({"Chantu", "Johnson"})
-        elseif cmps("Chantu") then
+        elseif answer == "Chantu" then
             add_dialogue("\"He is our town healer. He hath been here for years. Nice fellow.\"")
             remove_answer("Chantu")
-        elseif cmps("report") then
+        elseif answer == "report" then
             if get_flag(68) then
                 add_dialogue("\"I am satisfied with thy report. Please carry on thine investigation, Avatar.\"")
             elseif not get_flag(93) then
                 add_dialogue("\"Art thou ready to answer some questions concerning the investigation?\"")
-                var_000A = unknown_090AH()
+                var_000A = ask_yes_no()
                 if var_000A then
                     set_flag(93, true)
                     unknown_0884H()
@@ -205,7 +206,7 @@ function func_040C(eventid, objectref)
                 end
             else
                 add_dialogue("\"Shall we continue thy report?\"")
-                var_000B = unknown_090AH()
+                var_000B = ask_yes_no()
                 if var_000B then
                     unknown_0884H()
                 else
@@ -213,26 +214,26 @@ function func_040C(eventid, objectref)
                 end
             end
             remove_answer("report")
-        elseif cmps("Fellowship") then
+        elseif answer == "Fellowship" then
             add_dialogue("\"Why, they are an extremely helpful group. Their branch office is just east of mine. Very optimistic group of people.\"")
             remove_answer("Fellowship")
-        elseif cmps("Klog") then
+        elseif answer == "Klog" then
             add_dialogue("\"He is the Fellowship branch leader. Kind man.\"")
             remove_answer("Klog")
-        elseif cmps("Johnson") then
+        elseif answer == "Johnson" then
             add_dialogue("\"He is probably at the dock right now.\"")
             remove_answer("Johnson")
-        elseif cmps("Christopher") then
+        elseif answer == "Christopher" then
             add_dialogue("\"Christopher was the local blacksmith. He lives, or rather -lived-, with his son in the northwest part of town. The blacksmith's shop is in the southwest corner. Christopher was not a rich man by any means -- he barely kept himself and his son alive. But he certainly enjoyed his work.\"")
             remove_answer("Christopher")
             add_answer("son")
-        elseif cmps("Inamo") then
+        elseif answer == "Inamo" then
             add_dialogue("\"The Gargoyle Inamo slept in the stables, as I understand it. I believe he emigrated here from Terfin a few months ago. It seems that he was merely a chance victim of someone intent on violence.\"")
             remove_answer("Inamo")
-        elseif cmps("password") then
+        elseif answer == "password" then
             if get_flag(68) and not get_flag(61) then
                 add_dialogue("\"Oh, dost thou want the password now?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     if unknown_0886H() then
                         add_dialogue("\"Excellent! I have no doubts now that thou art the one true Avatar!\"")
                         add_dialogue("\"Oh-- I almost forgot! The password to leave or enter the town is 'Blackbird'!\"")
@@ -253,7 +254,7 @@ function func_040C(eventid, objectref)
                 set_flag(66, true)
             end
             remove_answer("password")
-        elseif cmps("bye") then
+        elseif answer == "bye" then
             break
         end
     end

@@ -26,7 +26,7 @@ function func_08D7()
         end
         add_dialogue("\"Please, " .. var_0001 .. ", wouldst thou take this ring to him and tell him that I still love him. Mayhaps it will restore him to the beloved Trent I knew.\"")
         var_0003 = unknown_0024H(295)
-        unknown_001BH(-356)
+        get_npc_name(-356)
         if unknown_0907H() then
             add_dialogue("She takes a ring from her slender finger and places it in your hand. You expect it to pass right through, but it rests neatly in your palm.")
         else

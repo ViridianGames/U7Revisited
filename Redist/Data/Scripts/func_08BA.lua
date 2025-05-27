@@ -5,7 +5,7 @@ function func_08BA()
 
     var_0000 = unknown_005AH()
     add_dialogue("\"The fortune vill cost thee 20 gold. All right?\"")
-    var_0001 = unknown_090AH()
+    var_0001 = ask_yes_no()
     if not var_0001 then
         var_0002 = unknown_002BH(true, 359, 359, 644, 20)
         if var_0002 then

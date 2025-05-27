@@ -72,7 +72,7 @@ function func_04A4(eventid, objectref)
                 remove_answer("Penni")
             elseif answer == "crystal" then
                 add_dialogue("\"Dost thou mean this?\" He pulls a small, clear, multi-faceted gem from a pouch beneath his cloak. \"I just found this recently. I was hoping to sell it to the Lycaeum, but, alas, they have no use for it. Dost thou want it, perhaps?\" he asks, hopefully. \"I will sell it to thee for 20 gold.\"")
-                var_0003 = unknown_090AH()
+                var_0003 = ask_yes_no()
                 if var_0003 then
                     var_0004 = unknown_002CH(false, 359, 746, 359, 1)
                     var_0005 = unknown_002BH(true, 359, 644, 359, 20)

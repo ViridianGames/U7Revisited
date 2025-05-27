@@ -9,7 +9,7 @@ function func_06B8(eventid, objectref)
             var_0004 = var_0000[i]
             var_0005 = unknown_0020H(0, var_0004)
             if not unknown_004AH(15, var_0005) then
-                var_0006 = unknown_001BH(var_0004)
+                var_0006 = get_npc_name(var_0004)
                 unknown_0620H(var_0006)
                 var_0007 = unknown_0002H(var_0001, 1567, {7765}, var_0006)
                 unknown_005CH(var_0004)

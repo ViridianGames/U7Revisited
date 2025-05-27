@@ -5,7 +5,7 @@ function func_04C0(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 192)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001CH(unknown_001BH(192))
+        var_0001 = unknown_001CH(get_npc_name(192))
         var_0002 = get_schedule()
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -40,7 +40,7 @@ function func_04C0(eventid, objectref)
             elseif answer == "train" then
                 if var_0001 == 7 then
                     add_dialogue("\"I will train thee for 45 gold. Wilt thou pay?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         unknown_08BEH(45, 4, 0)
                     else
                         add_dialogue("\"Fine.\"")
@@ -51,7 +51,7 @@ function func_04C0(eventid, objectref)
             elseif answer == "forge" then
                 add_dialogue("\"Dost thou wish to make a sword?\"")
                 if var_0002 == 3 or var_0002 == 4 or var_0002 == 5 then
-                    var_0003 = unknown_090AH()
+                    var_0003 = ask_yes_no()
                     if not var_0003 then
                         add_dialogue("\"Perhaps sometime when thou hast more time.\"")
                     else

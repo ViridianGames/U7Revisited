@@ -34,8 +34,8 @@ function func_0495(eventid, objectref)
         set_flag(711, true)
     else
         add_dialogue("\"We are not talking to thee! We are trying to eat thee!\"")
-        unknown_003DH(2, unknown_001BH(149)) --- Guess: Sets object state
-        unknown_001DH(0, unknown_001BH(149)) --- Guess: Sets object behavior
+        unknown_003DH(2, get_npc_name(149)) --- Guess: Sets object state
+        unknown_001DH(0, get_npc_name(149)) --- Guess: Sets object behavior
         abort()
     end
     while true do
@@ -171,8 +171,8 @@ function func_0495(eventid, objectref)
             hide_npc(281)
             switch_talk_to(280, 0)
             add_dialogue("\"Very well! Let's eat it!\"")
-            unknown_003DH(2, unknown_001BH(149)) --- Guess: Sets object state
-            unknown_001DH(0, unknown_001BH(149)) --- Guess: Sets object behavior
+            unknown_003DH(2, get_npc_name(149)) --- Guess: Sets object state
+            unknown_001DH(0, get_npc_name(149)) --- Guess: Sets object behavior
             abort()
         elseif var_0003 == "bye" then
             add_dialogue("\"Thou cannot say 'bye' to us! How rude!\"")

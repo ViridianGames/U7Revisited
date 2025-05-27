@@ -10,7 +10,7 @@ function func_084F()
     if not var_0002 then
         switch_talk_to(0, -1)
         add_dialogue("Iolo whispers to you. \"Art thou quite certain, " .. var_0000 .. ", that thou dost wish to join with these people?\"")
-        var_0003 = unknown_090AH()
+        var_0003 = ask_yes_no()
         if var_0003 then
             add_dialogue("\"I am not certain if thou art brave or simply foolish.\"")
         else
@@ -87,7 +87,7 @@ function func_084F()
         hide_npc1)
         switch_talk_to(0, -3)
         add_dialogue("\"All right, I shall give it a try.\" He nudges you and whispers. \"Perhaps we should get out of here, " .. var_0001 .. ", before one of us does something they may later regret? Let us leave these premises, all right?\"")
-        var_000E = unknown_090AH()
+        var_000E = ask_yes_no()
         if var_000E then
             add_dialogue("\"I am glad thou dost see it my way. We can leave whenever thou art ready.\"")
             abort()
@@ -110,7 +110,7 @@ function func_084F()
             hide_npc3)
             switch_talk_to(0, -4)
             add_dialogue("You feel a tapping on your shoulder and you turn to see Dupre as he whispers in your ear. \"I know a much better place to get a drink than this one. Perhaps thou wouldst like to join thy comrades there?\"")
-            var_0012 = unknown_090AH()
+            var_0012 = ask_yes_no()
             if var_0012 then
                 add_dialogue("\"Then let us be off. Now!\"")
                 abort()

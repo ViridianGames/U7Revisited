@@ -319,18 +319,18 @@ function func_0417(eventid, objectref)
         end
         if not get_flag(780) then
             set_flag(780, true)
-            var_000F = unknown_0018H(unknown_001BH(356)) --- Guess: Gets NPC data
-            var_0010 = unknown_0020H(3, unknown_001BH(356)) --- Guess: Gets NPC property
+            var_000F = unknown_0018H(get_npc_name(356)) --- Guess: Gets NPC data
+            var_0010 = unknown_0020H(3, get_npc_name(356)) --- Guess: Gets NPC property
             var_0010[1] = var_0010[1] - 1
             var_0010[2] = var_0010[2] - 1
             unknown_0053H(7, var_0010[2] - 1, var_0010[1] - 1, 0, 0, 0, 0) --- Guess: Sets game state
             unknown_000FH(67) --- Guess: Adds quest flag
-            var_0010 = unknown_0020H(0, unknown_001BH(356)) --- Guess: Gets NPC property
+            var_0010 = unknown_0020H(0, get_npc_name(356)) --- Guess: Gets NPC property
             if var_0010[1] >= 60 then
-                var_0011 = unknown_0021H(0, unknown_001BH(356), var_0010[1] - 60) --- Guess: Sets NPC property
+                var_0011 = unknown_0021H(0, get_npc_name(356), var_0010[1] - 60) --- Guess: Sets NPC property
             end
             if var_0010[2] >= 60 then
-                var_0011 = unknown_0021H(3, unknown_001BH(356), var_0010[2] - 60) --- Guess: Sets NPC property
+                var_0011 = unknown_0021H(3, get_npc_name(356), var_0010[2] - 60) --- Guess: Sets NPC property
             end
         else
             switch_talk_to(23, 0)
@@ -347,6 +347,6 @@ function func_0417(eventid, objectref)
         var_000D = {1047, 8021, 11, 7975, 2, 7975, 3, 7975, 1047, 8021, 3, 7975, 2, 7975, 1, 8487, var_000C, 7769}
         var_000D = unknown_0001H(objectref, var_000D) --- Guess: Sets object position
         var_000E = {8033, 1, 17447, 8044, 6, 17447, 8045, 1, 17447, 8044, 1, 8487, var_000B, 7769}
-        var_000E = unknown_0001H(unknown_001BH(356), var_000E) --- Guess: Sets object position
+        var_000E = unknown_0001H(get_npc_name(356), var_000E) --- Guess: Sets object position
     end
 end

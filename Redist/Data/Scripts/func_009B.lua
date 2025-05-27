@@ -50,21 +50,21 @@ function func_009B(eventid, objectref)
                     if not (var_0001 and var_0000) then
                         switch_talk_to(3, 0)
                         add_dialogue("\"Er... " .. var_0002 .. ", art thou sure we need to go over there?\"")
-                        unknown_0004H(-3)
+                        hide_npc(-3)
                         switch_talk_to(2, 0)
                         add_dialogue("\"What's the matter, Shamino? Art thou -afraid-?\"")
-                        unknown_0004H(-2)
+                        hide_npc(-2)
                         switch_talk_to(3, 0)
                         add_dialogue("\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
-                        unknown_0004H(-3)
+                        hide_npc(-3)
                         var_0003 = unknown_08F7H(-1)
                         if var_0003 then
                             switch_talk_to(1, 0)
                             add_dialogue("Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")
-                            unknown_0004H(-1)
+                            hide_npc(-1)
                             switch_talk_to(2, 0)
                             add_dialogue("\"No, sir. I am not afraid of a skeleton,\" he says. As he looks at the ferryman, however, he gulps.")
-                            unknown_0004H(-2)
+                            hide_npc(-2)
                         end
                         switch_talk_to(285, 0)
                     end
@@ -76,7 +76,7 @@ function func_009B(eventid, objectref)
                 remove_answer({"return", "pay"})
                 if not get_flag(407) then
                     add_dialogue("\"Wilt thou pay my price... for passage to Skara Brae?\"")
-                    var_0004 = unknown_090AH()
+                    var_0004 = ask_yes_no()
                     if var_0004 then
                         var_0005 = unknown_002BH(true, 359, 359, 644, 2)
                         if var_0005 then
@@ -90,11 +90,11 @@ function func_009B(eventid, objectref)
                     end
                 else
                     add_dialogue("\"Dost thou wish... to return to the mainland?\"")
-                    var_0004 = unknown_090AH()
+                    var_0004 = ask_yes_no()
                     if var_0004 then
-                        var_0006 = unknown_001BH(-144)
+                        var_0006 = get_npc_name(-144)
                         var_0007 = unknown_0023H()
-                        var_0008 = unknown_001BH(-147)
+                        var_0008 = get_npc_name(-147)
                         if table.contains(var_0007, var_0006) or table.contains(var_0007, var_0008) then
                             add_dialogue("The Ferryman seems to smile beneath his hood as he motions for you to once more board his spectral boat.")
                             unknown_0882H(objectref)

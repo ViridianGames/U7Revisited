@@ -26,7 +26,7 @@ function func_046E(eventid, objectref)
     while true do
         if cmps("name") then
             add_dialogue("The mage stares at you a moment. \"Art thou from the Britannian Tax Council?\"")
-            var_0000 = unknown_090AH()
+            var_0000 = ask_yes_no()
             if var_0000 then
                 if not get_flag(3) then
                     add_dialogue("\"Good for thee. I would have had to kill thee. I am Garok Al-Mat. At least, the last time I looked in the mirror, that was who I was!\"")
@@ -87,10 +87,10 @@ function func_046E(eventid, objectref)
             remove_answer("wrong dungeon")
         elseif cmps("way out") then
             add_dialogue("\"Dost thou know the way out?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
             if var_0001 then
                 add_dialogue("You tell Garok how to get out of the dungeon.~~\"Why, it sounds so simple! My marbles must be losing me!~~ \"I thank thee! Now I must be on my way. In fact, now that I know the way, I can use what little magic I have going for me to teleport. One must know the direction thou art travelling if one wishes to teleport!~~\"Say, for helping me, wouldst thou like to have some useless reagents? By useless, I mean they are useless to me. They are probably perfectly good reagents. Thou art welcome to have them. Dost thou want them?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     var_0003 = unknown_002CH(false, 0, 359, 842, 6)
                     var_0004 = unknown_002CH(false, 1, 359, 842, 4)

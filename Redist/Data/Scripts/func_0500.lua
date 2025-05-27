@@ -6,7 +6,7 @@ function func_0500(eventid, objectref)
         abort()
     end
     var_0000 = get_party_members()
-    var_0001 = unknown_001CH(unknown_001BH(objectref)) --- Guess: Gets schedule
+    var_0001 = unknown_001CH(get_npc_name(objectref)) --- Guess: Gets schedule
     switch_talk_to(256, 0)
     if var_0001 ~= 3 then
         add_dialogue("The wisp does not respond.")

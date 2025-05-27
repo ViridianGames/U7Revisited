@@ -48,7 +48,7 @@ function func_044A(eventid, objectref)
             remove_answer("carpet")
         elseif cmps("spells") then
             add_dialogue("\"Dost thou wish to buy some spells?\"")
-            var_0000 = unknown_090AH()
+            var_0000 = ask_yes_no()
             if var_0000 then
                 unknown_08DBH()
             else
@@ -56,7 +56,7 @@ function func_044A(eventid, objectref)
             end
         elseif cmps("reagents") then
             add_dialogue("\"Dost thou wish to buy some reagents?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
             if var_0001 then
                 unknown_08DCH()
             else

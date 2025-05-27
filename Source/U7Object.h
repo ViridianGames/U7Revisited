@@ -10,53 +10,7 @@
 enum class ObjectTypes;
 enum class ShapeDrawType;
 class ShapeData;
-
-struct NPCblock
-{
-   unsigned char x;
-   unsigned char y;
-   unsigned short shapeId;
-   unsigned short type;
-   unsigned char proba;
-   unsigned short data1;
-   unsigned char lift;
-   unsigned short data2;
-
-
-
-   unsigned short index;
-   unsigned short referent;
-   unsigned short status;
-   unsigned char str;
-   unsigned char dex;
-   unsigned char iq;
-   unsigned char combat;
-   unsigned char activity;
-   unsigned char DAM;
-   char soak1[3];
-   unsigned short status2;
-   unsigned char index2;
-   char soak2[2];
-   unsigned int xp;
-   unsigned char training;
-   unsigned short primary;
-   unsigned short secondary;
-   unsigned short oppressor;
-   unsigned short ivrx;
-   unsigned short ivry;
-   unsigned short svrx;
-   unsigned short svry;
-   unsigned short status3;
-   char soak3[5];
-   unsigned char acty;
-   char soak4[29];
-   unsigned char SN;
-   unsigned char V1;
-   unsigned char V2;
-   unsigned char food;
-   char soak5[7];
-   char name[16];
-};
+struct NPCData;
 
 class U7Object : public Unit3D
 {
@@ -93,8 +47,8 @@ public:
    bool IsInInventory(int objectid);
    bool IsInInventory(int shape, int frame);
 
-   void SetNPCBlock(NPCblock block);
-   
+   void SetNPCData(NPCData* data);
+  
    Vector3 m_Pos;
    Vector3 m_Dest;
    Vector3 m_Direction;
@@ -144,13 +98,15 @@ public:
 
    BoundingBox m_boundingBox;
 
+   bool m_isNPC;
    bool m_isContainer;
    bool m_isContained;
    bool m_hasConversationTree;
    bool m_hasGump;
    bool m_isEgg;
 
-   NPCblock m_NPCData;
+   int m_NPCID;
+   NPCData* m_NPCData = nullptr;
 
    Vector2 m_GumpPos;
    bool m_isSorted = false;

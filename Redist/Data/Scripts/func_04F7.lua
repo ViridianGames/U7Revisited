@@ -90,7 +90,7 @@ function func_04F7(eventid, objectref)
                 remove_answer({"mayor", "Forsythe"})
             elseif answer == "need formula" then
                 add_dialogue("\"Thou trusts me to tell thee the formula! After what I have done to this town? Art thou mad? I hope at least, that thou hast checked with Mordra for the correct proportions, yes?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("He shakes his head in disbelief.")
                     add_dialogue("\"Thou art truly insane. But,\" he shrugs, \"thou hast nothing to lose but thine own life....\"")
@@ -140,7 +140,7 @@ function func_04F7(eventid, objectref)
             elseif answer == "questions" then
                 if not get_flag(444) then
                     add_dialogue("The ghost looks at you with a hint of amusement. \"Thou art looking for the answers to the questions of life and death?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("The Tortured One looks hard at you. After a pause, he speaks. \"I will tell thee what I know if thou dost agree to help me. Free me. Free all of us. Free us from the evil Liche.\"")
                         add_answer("Liche")
                         remove_answer("questions")
@@ -151,7 +151,7 @@ function func_04F7(eventid, objectref)
                 elseif not get_flag(426) then
                     add_dialogue("\"Thou hast freed us from the Liche. Thou art entitled to mine half of the bargain.\"")
                     add_dialogue("\"So thou dost want to know the answers to the questions of life and death?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("The Tortured One looks hard at you. Then, smiling, he shakes his head. \"I have no secrets, my foolish friend. Thou art a fool. There are -no- answers. Only questions.\"")
                         add_dialogue("He looks as if he might cry out in pain. And then Caine turns away from you. \"Go away now. Leave me to mine eternity.\"")
                         set_flag(406, true)
@@ -167,7 +167,7 @@ function func_04F7(eventid, objectref)
                 remove_answer("questions")
             elseif answer == "Liche" then
                 add_dialogue("\"He is an evil spirit who inhabits poor dead Horance's body. He has a hold on every being in this town -- even me. He sucks the life forces -- the little that remain -- from our souls. Please, thou must free us from his power. Wilt thou try?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("The Tortured One's eyes brighten somewhat, as he sees the light at the end of a long, dark tunnel. \"Then thou hast given me hope. To begin, speak with Mistress Mordra. She can tell thee how to accomplish this feat.\"")
                     remove_answer("Liche")
                     set_flag(444, true)

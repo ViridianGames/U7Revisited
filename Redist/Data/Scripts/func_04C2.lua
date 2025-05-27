@@ -37,7 +37,7 @@ function func_04C2(eventid, objectref)
                 add_answer({"provisions", "Serpent's Hold"})
             elseif answer == "ship" then
                 add_dialogue("\"Well, it was once the magnificent `Constellation.' However, 'twas destroyed by the ship's captain, himself, to prevent it from falling into the hands of attacking pirates. What little remained was rebuilt into an even finer ship, `The Dragon's Breath?' Art thou interested in purchasing it for 600 gold?\"")
-                var_0003 = unknown_090AH()
+                var_0003 = ask_yes_no()
                 if var_0003 then
                     var_0004 = unknown_0028H(359, 359, 644, 357)
                     if var_0004 >= 600 then
@@ -84,10 +84,10 @@ function func_04C2(eventid, objectref)
                 add_dialogue("With but a few exceptions, myself included, all of the warriors here in the Hold are knights. Thou mayest wish to speak with Lord John-Paul. He is in charge of Serpent's Hold and might be better able to show thee around.")
                 remove_answer("knights")
             elseif answer == "provisions" then
-                var_0008 = unknown_001CH(unknown_001BH(194))
+                var_0008 = unknown_001CH(get_npc_name(194))
                 if var_0008 == 7 then
                     add_dialogue("\"Thou wishest to buy something?\"")
-                    var_0009 = unknown_090AH()
+                    var_0009 = ask_yes_no()
                     if var_0009 then
                         unknown_08A1H()
                     else
@@ -117,7 +117,7 @@ function func_04C2(eventid, objectref)
         end
     elseif eventid == 0 then
         var_000A = get_schedule()
-        var_0008 = unknown_001CH(unknown_001BH(194))
+        var_0008 = unknown_001CH(get_npc_name(194))
         var_000B = random(4, 1)
         if var_0008 == 7 then
             if var_000B == 1 then

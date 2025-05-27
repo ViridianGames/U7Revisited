@@ -1,0 +1,12 @@
+# Blender 4.4.0 MTL File: 'Alchemistdevice.blend'
+# www.blender.org
+
+newmtl potions_340
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd 340potions.png
+map_d 340potions.png

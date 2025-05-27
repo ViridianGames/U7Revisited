@@ -47,8 +47,7 @@ public:
     std::unordered_map<int, bool> m_flags;
 
     std::vector<std::pair<std::string, std::string> > m_scriptFiles;
-    //std::vector<std::string> m_loadedLuaScripts;
-    //std::vector<std::string> m_loadedLuaScriptPaths;
+    std::unordered_map<std::string, int> m_activeCoroutines;  // Store coroutine references
 };
 
 #endif

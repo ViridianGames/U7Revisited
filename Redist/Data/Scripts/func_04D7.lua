@@ -25,14 +25,14 @@ function func_04D7(eventid, objectref)
                 add_dialogue("\"To serve food and drink to others.\"")
                 add_answer({"others", "buy"})
             elseif answer == "buy" then
-                var_0000 = unknown_001CH(unknown_001BH(215))
+                var_0000 = unknown_001CH(get_npc_name(215))
                 if var_0000 == 7 then
                     unknown_0841H()
                 else
                     add_dialogue("\"To apologize, but to ask you to return when I am open.\"")
                 end
             elseif answer == "others" then
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"To want information, perhaps, about the provisioner or the sage?\"")
                     add_answer({"provisioner", "sage"})
@@ -68,7 +68,7 @@ function func_04D7(eventid, objectref)
                 add_dialogue("\"To work now with only humans, who hate and degrade him. To continue working, however, despite this. To be quite tolerant of human intolerance.\" He nods, as if to emphasize his point.")
                 remove_answer("tolerant")
             elseif answer == "Anmanivas" then
-                var_0002 = unknown_0037H(unknown_001BH(217))
+                var_0002 = unknown_0037H(get_npc_name(217))
                 if var_0002 then
                     var_0003 = "have been"
                     add_dialogue("\"To have been killed by you in this very tavern. To remember not?\"")
@@ -81,7 +81,7 @@ function func_04D7(eventid, objectref)
                 add_answer("Lap-Lem")
                 remove_answer("Anmanivas")
             elseif answer == "Foranamo" then
-                var_0004 = unknown_0037H(unknown_001BH(218))
+                var_0004 = unknown_0037H(get_npc_name(218))
                 var_0005 = var_0004 and "have been" or "be"
                 add_dialogue("\"To be brother to Anmanivas and to have been raised by the same parent. To hate humans as much as Anmanivas, and,\" he sighs, \"to \" .. var_0005 .. \" allowed no longer to visit the human side.\"")
                 remove_answer("Foranamo")

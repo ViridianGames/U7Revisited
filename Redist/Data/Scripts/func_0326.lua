@@ -5,7 +5,7 @@ function func_0326(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    var_0000 = unknown_001CH(unknown_001BH(objectref))
+    var_0000 = unknown_001CH(get_npc_name(objectref))
     switch_talk_to(259, 0)
     add_answer({"bye", "job", "name"})
     if not get_flag(61) then

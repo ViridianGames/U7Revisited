@@ -21,10 +21,10 @@ function func_04EE(eventid, objectref)
                 add_answer("Empath Abbey")
             elseif answer == "job" then
                 add_dialogue("\"I am a scholar, " .. var_0001 .. ". Dost thou want training in the realm of books?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     add_dialogue("\"My price is 45 gold for each training session, but I will also teach thee what little I know about magic. Is this acceptable?\"")
-                    var_0003 = unknown_090AH()
+                    var_0003 = ask_yes_no()
                     if var_0003 then
                         unknown_08CAH(45, {6, 2})
                     else

@@ -6,7 +6,7 @@ function func_08D2(var_0000, var_0001, var_0002)
     var_0003 = get_lord_or_lady()
     add_dialogue("\"Dost thou want mine aid?\"")
     save_answers()
-    var_0004 = unknown_090AH()
+    var_0004 = ask_yes_no()
     if not var_0004 then
         add_dialogue("\"I am glad of that, " .. var_0003 .. ". I am happy to help those in need, but I would be far happier if there were never a need!\"")
         restore_answers()
@@ -44,7 +44,7 @@ function func_08D2(var_0000, var_0001, var_0002)
         end
     end
     add_dialogue("\"I must charge thee " .. var_0008 .. " gold. Is this price agreeable?\"")
-    var_0012 = unknown_090AH()
+    var_0012 = ask_yes_no()
     if var_0012 then
         var_0013 = unknown_0028H(359, 359, 644, 357)
         if var_0013 >= var_0008 then

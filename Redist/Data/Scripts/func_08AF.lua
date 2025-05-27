@@ -5,15 +5,15 @@ function func_08AF()
 
     switch_talk_to(141, 1)
     var_0000 = unknown_0023H()
-    if not (unknown_001BH(-147) in var_0000) then
+    if not (get_npc_name(-147) in var_0000) then
         add_dialogue("\"Is there a problem? Art thou confounded by thy task?\"")
-        var_0001 = unknown_090AH()
+        var_0001 = ask_yes_no()
         if not var_0001 then
             add_dialogue("\"Well then, I suggest that thou hasten to finish thy task, lest the souls of the well perish before thou art done.\"")
             return
         else
             add_dialogue("\"Canst thou not find the spirits of the town?\"")
-            var_0002 = unknown_090AH()
+            var_0002 = ask_yes_no()
             if not var_0002 then
                 add_dialogue("\"Well then, I suggest that thou make haste, lest the souls of the well perish.\"")
                 return

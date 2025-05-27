@@ -3,7 +3,7 @@ function func_018A(eventid, objectref)
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003
 
-    var_0000 = unknown_001CH(unknown_001BH(394))
+    var_0000 = unknown_001CH(get_npc_name(394))
     if eventid == 1 then
         switch_talk_to(258, 0)
         add_answer({"bye", "job", "name"})
@@ -21,7 +21,7 @@ function func_018A(eventid, objectref)
         end
         add_dialogue("\"Goodbye.\"")
     elseif eventid == 0 then
-        var_0001 = unknown_001CH(unknown_001BH(394))
+        var_0001 = unknown_001CH(get_npc_name(394))
         if var_0001 == 29 then
             var_0002 = math.random(1, 4)
             if var_0002 == 1 then

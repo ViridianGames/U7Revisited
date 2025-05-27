@@ -22,11 +22,11 @@ function func_08D1()
                     if var_0000 then
                         switch_talk_to(28, 1)
                         add_dialogue("\"Here it is, milady.\"")
-                        unknown_0004H(-28)
+                        hide_npc(-28)
                     else
                         switch_talk_to(28, 0)
                         add_dialogue("\"Here it is, milord.\"")
-                        unknown_0004H(-28)
+                        hide_npc(-28)
                     end
                 else
                     add_dialogue("Raymundo hands you a staff.")

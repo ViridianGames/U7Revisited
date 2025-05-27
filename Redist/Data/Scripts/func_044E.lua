@@ -12,7 +12,7 @@ function func_044E(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 78)
-    var_0000 = unknown_001CH(unknown_001BH(78))
+    var_0000 = unknown_001CH(get_npc_name(78))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then
         add_answer("Rayburt")
@@ -42,7 +42,7 @@ function func_044E(eventid, objectref)
             end
         elseif cmps("room") then
             add_dialogue("\"The room is quite inexpensive. Only 8 gold per person. Want one?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 var_0001 = get_party_members()
                 var_0002 = 0
                 for i = 1, var_0001 do

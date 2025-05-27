@@ -93,7 +93,7 @@ function func_04F6(eventid, objectref)
                 remove_answer("notebook")
             elseif answer == "learn" then
                 add_dialogue("\"Very well. Dost thou know the answers to the questions of Life and Death?\"")
-                var_0003 = unknown_090AH()
+                var_0003 = ask_yes_no()
                 if var_0003 then
                     if get_flag(406) then
                         unknown_0840H()
@@ -118,7 +118,7 @@ function func_04F6(eventid, objectref)
                 remove_answer("abode")
             elseif answer == "answers" then
                 add_dialogue("\"Thou hast spoken to the Tortured One and learned the answers to the questions of Life and Death?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"Then what are the answers?\"")
                     unknown_0840H()

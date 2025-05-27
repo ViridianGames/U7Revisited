@@ -15,7 +15,7 @@ function func_08B3(eventid)
         if unknown_0058H(var_0011) == var_0005 then
             if not var_0003 and unknown_0014H(var_0011) == 255 then
                 unknown_0046H(var_0011, 356)
-                var_0004 = unknown_093CH(unknown_001BH(356), var_0004)
+                var_0004 = unknown_093CH(get_npc_name(356), var_0004)
                 var_0003 = true
             else
                 table.insert(var_0008, unknown_0019H(356, var_0011))

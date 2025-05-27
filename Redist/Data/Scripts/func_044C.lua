@@ -14,7 +14,7 @@ function func_044C(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 76)
     var_0000 = get_schedule()
-    var_0001 = unknown_001CH(unknown_001BH(76))
+    var_0001 = unknown_001CH(get_npc_name(76))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then
         add_answer("Pamela")
@@ -55,7 +55,7 @@ function func_044C(eventid, objectref)
         elseif cmps("train") then
             if var_0001 == 27 then
                 add_dialogue("\"I charge 60 gold for a session, but thou wilt benefit greatly. Is this agreeable?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     unknown_08D0H(60, 4, 2, {1})
                 else
                     add_dialogue("\"It is not the first time I have been accused of being too expensive.\"")

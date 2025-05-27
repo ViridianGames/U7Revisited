@@ -6,7 +6,7 @@ function func_04A6(eventid, objectref)
         switch_talk_to(0, 166)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(166))
+        var_0002 = unknown_001CH(get_npc_name(166))
         var_0003 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -40,14 +40,14 @@ function func_04A6(eventid, objectref)
             elseif answer == "flour" then
                 if var_0002 == 7 then
                     add_dialogue("\"A sack will cost thee 12 gold. Art thou interested in purchasing some?\"")
-                    var_0004 = unknown_090AH()
+                    var_0004 = ask_yes_no()
                     if var_0004 then
                         var_0005 = unknown_0028H(359, 644, 359, 357)
                         if var_0005 >= 12 then
                             var_0006 = unknown_002CH(true, 359, 863, 14, 1)
                             if var_0006 then
                                 add_dialogue("\"Here it is,\" he says, handing you the sack. \"Wouldst thou wish another?\"")
-                                var_0007 = unknown_090AH()
+                                var_0007 = ask_yes_no()
                                 if var_0007 then
                                     -- Loop back to purchase another sack
                                 else

@@ -22,7 +22,7 @@ function func_0496(eventid, objectref)
         add_dialogue("The mage, having been asleep for 200 years, looks just as she did upon your last visit to Britannia.")
         add_dialogue("\"Avatar! I cannot believe 'tis thee! Thou didst come and wake me! I knew thee would!\"")
         add_dialogue("Suddenly, Penumbra grabs her head in pain. \"Oh!\" she cries. \"Mine head! The pain! What is happening? What didst thou do to me?\" She closes her eyes and concentrates. \"There is a disturbance in the ether! I can feel my magical powers fading! Help me, " .. var_0000 .. "! Help me!!\"")
-        unknown_001DH(11, unknown_001BH(150)) --- Guess: Sets object behavior
+        unknown_001DH(11, get_npc_name(150)) --- Guess: Sets object behavior
         add_answer("ether")
         set_flag(504, true)
         unknown_0911H(800) --- Guess: Triggers quest event

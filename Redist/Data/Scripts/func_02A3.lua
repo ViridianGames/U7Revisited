@@ -31,9 +31,9 @@ function func_02A3(eventid, objectref)
             elseif var_0003 == 6 or var_0003 == 7 then
                 var_0002 = unknown_0001H({0, "@Pretty bird!@", {17490, 7715}}, objectref)
                 if not npc_in_party(2) then
-                    var_0002 = unknown_0002H({16, "@Ugly Bird!@", {17490, 7715}}, unknown_001BH(2))
+                    var_0002 = unknown_0002H({16, "@Ugly Bird!@", {17490, 7715}}, get_npc_name(2))
                     var_0002 = unknown_0002H({32, "@Ugly Boy!@", {17490, 7715}}, objectref)
-                    var_0002 = unknown_0002H({48, "@Hey!!@", {17490, 7715}}, unknown_001BH(2))
+                    var_0002 = unknown_0002H({48, "@Hey!!@", {17490, 7715}}, get_npc_name(2))
                 end
             end
         elseif var_0000 == 11 then
@@ -44,7 +44,7 @@ function func_02A3(eventid, objectref)
             if not unknown_0079H(objectref) then
                 var_0002 = unknown_0001H({18, 8006, 12, 7947, 19, 8006, 18, 8024, 17, 8006, 17, 7768}, objectref)
                 if not npc_in_party(2) then
-                    var_0002 = unknown_0002H({4, "@That is really weird.@", {7762}}, unknown_001BH(2))
+                    var_0002 = unknown_0002H({4, "@That is really weird.@", {7762}}, get_npc_name(2))
                 end
             end
         elseif var_0000 == 20 then

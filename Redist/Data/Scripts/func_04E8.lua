@@ -6,7 +6,7 @@ function func_04E8(eventid, objectref)
         switch_talk_to(0, 232)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(232))
+        var_0002 = unknown_001CH(get_npc_name(232))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(693) then
@@ -33,7 +33,7 @@ function func_04E8(eventid, objectref)
                 remove_answer("cheat")
             elseif answer == "games" then
                 add_dialogue("\"There are three games that thou canst play. The first is Virtue Roulette. The second is The Rat Race. The third is Triples. Wouldst thou like to hear any rules?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"For which game dost thou want to hear the rules?\"")
                     var_0003 = unknown_090BH({"Triples", "The Rat Race", "Virtue Roulette", "None"})
                     if var_0003 == "None" then
@@ -56,7 +56,7 @@ function func_04E8(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(232))
+        var_0002 = unknown_001CH(get_npc_name(232))
         var_0004 = random2(4, 1)
         if var_0002 == 10 then
             if var_0004 == 1 then

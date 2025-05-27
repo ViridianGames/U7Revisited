@@ -37,7 +37,7 @@ function func_04B7(eventid, objectref)
                 add_answer({"rumors", "Fellowship"})
                 remove_answer("trouble")
             elseif answer == "Fellowship" then
-                var_0001 = unknown_0037H(unknown_001BH(184))
+                var_0001 = unknown_0037H(get_npc_name(184))
                 if var_0001 then
                     add_dialogue("\"To be glad that Quan is now running our branch. To believe that he is misguided, but to be a much more reasonable gargoyle to deal with now that Runeb is gone.\"")
                 else
@@ -46,7 +46,7 @@ function func_04B7(eventid, objectref)
                 add_answer({"Runeb", "Quan"})
                 remove_answer("Fellowship")
             elseif answer == "rumors" then
-                var_0001 = unknown_0037H(unknown_001BH(184))
+                var_0001 = unknown_0037H(get_npc_name(184))
                 if var_0001 then
                     add_dialogue("\"To be sorry that we have lost Runeb. Perhaps to be for the best. To be certainly overjoyed to have avoided damage to the altars.\"")
                 else
@@ -56,7 +56,7 @@ function func_04B7(eventid, objectref)
                 remove_answer("rumors")
             elseif answer == "evidence" then
                 add_dialogue("\"To have brought me something, some evidence about the rumors?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     add_dialogue("\"To be wonderful! To see it, please.\"")
                     add_dialogue("You hand him the note from Runeb that you found in Sarpling's shop.")
@@ -84,10 +84,10 @@ function func_04B7(eventid, objectref)
                     add_dialogue("\"To miss him greatly. To have raised him from an egg. To have been rather vocal in his disagreements with The Fellowship. To have felt it safer for him to leave.\"")
                     add_dialogue("He sighs, then looks up hopefully.")
                     add_dialogue("\"To have news of him?\"")
-                    var_0002 = unknown_090AH()
+                    var_0002 = ask_yes_no()
                     if var_0002 then
                         add_dialogue("\"To be well?\"")
-                        var_0004 = unknown_090AH()
+                        var_0004 = ask_yes_no()
                         if var_0004 then
                             add_dialogue("\"To be good. To be hoping to hear from him soon.\"")
                         else
@@ -121,7 +121,7 @@ function func_04B7(eventid, objectref)
             elseif answer == "altars" then
                 remove_answer("altars")
                 add_dialogue("\"To be caretaker and group leader for the altars of the three principles. To wish to make a donation?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     add_dialogue("\"Excellent. To which altar do you wish to donate?\"")
                     save_answers()
@@ -131,7 +131,7 @@ function func_04B7(eventid, objectref)
                 end
             elseif answer == "Diligence" or answer == "Passion" or answer == "Control" then
                 add_dialogue("\"To be an excellent choice. To meditate at the shrine for you for a donation of 5 gold. To be willing to donate 5 gold?\"")
-                var_0002 = unknown_090AH()
+                var_0002 = ask_yes_no()
                 if var_0002 then
                     var_0005 = unknown_002BH(true, 359, 644, 359, 5)
                     if var_0005 then

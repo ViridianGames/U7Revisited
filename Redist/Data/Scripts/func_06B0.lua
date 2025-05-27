@@ -8,7 +8,7 @@ function func_06B0(eventid, objectref)
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
             if not unknown_004AH(unknown_0020H(0, var_0003), unknown_0014H(objectref)) then
-                unknown_0089H(8, unknown_001BH(var_0003))
+                unknown_0089H(8, get_npc_name(var_0003))
             end
         end
     end

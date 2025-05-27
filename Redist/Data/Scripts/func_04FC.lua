@@ -58,7 +58,7 @@ function func_04FC(eventid, objectref)
                 add_answer({"sex", "woman"})
             elseif answer == "sex" then
                 add_dialogue("\"To know nothing about this word. To mean something similar to reproduce?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"To tell you gargoyles reproduce differently than humans seem to, but to explain too poorly to be useful.\"")
                 else

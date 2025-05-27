@@ -95,7 +95,7 @@ function func_04F2(eventid, objectref)
                 var_0003 = unknown_0931H(359, 359, 769, 1, 357)
                 if not var_0003 then
                     add_dialogue("\"If thou wishest, I can give thee a smoke bomb that will repel the bees for a short time. Dost thou want it?\"")
-                    var_0004 = unknown_090AH()
+                    var_0004 = ask_yes_no()
                     if var_0004 then
                         var_0005 = unknown_002CH(true, 359, 359, 769, 1)
                         if not var_0005 then

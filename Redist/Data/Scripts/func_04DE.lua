@@ -23,7 +23,7 @@ function func_04DE(eventid, objectref)
                 add_dialogue("\"I am the manager of The Baths.")
                 if var_0000 == 6 or var_0000 == 7 or var_0000 == 0 then
                     add_dialogue("\"The entrance fee is 300 gold. Everything is included in this fixed price. No tips are necessary. Dost thou want to enter?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0002 = unknown_0028H(359, 359, 644, 357)
                         if var_0002 >= 300 then
                             var_0003 = unknown_002CH(false, 4, 251, 641, 1)
@@ -107,7 +107,7 @@ function func_04DE(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0000 = get_schedule()
-        var_0007 = unknown_001CH(unknown_001BH(222))
+        var_0007 = unknown_001CH(get_npc_name(222))
         var_0008 = random2(4, 1)
         if var_0007 == 11 and (var_0000 == 5 or var_0000 == 7 or var_0000 == 0) then
             if var_0008 == 1 then

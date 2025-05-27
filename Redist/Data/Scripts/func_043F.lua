@@ -5,7 +5,7 @@ function func_043F(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0002 = get_schedule()
-            var_0005 = unknown_001CH(unknown_001BH(63))
+            var_0005 = unknown_001CH(get_npc_name(63))
             var_0006 = random2(4, 1)
             if var_0005 == 12 then
                 if var_0006 == 1 then
@@ -65,7 +65,7 @@ function func_043F(eventid, objectref)
                 add_dialogue("\"I see we have the same job!\" She laughs at her own joke. \"Dost thou spend all thy time talking to people about The Fellowship? For if that is what thou dost do, thou must get thyself another corner!\" Millie's face wrinkles in displeasure.")
             else
                 add_dialogue("\"Dost thou know what The Fellowship is?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"Oh, I think thou dost not really know!\"")
                     unknown_0919H()

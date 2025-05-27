@@ -5,7 +5,7 @@ function func_04CE(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 206)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001CH(unknown_001BH(206))
+        var_0001 = unknown_001CH(get_npc_name(206))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(651) then
@@ -67,7 +67,7 @@ function func_04CE(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0002 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(206))
+        var_0001 = unknown_001CH(get_npc_name(206))
         var_0003 = random(4, 1)
         if var_0002 >= 2 and var_0002 <= 6 and (var_0001 == 7 or var_0001 == 5) then
             if var_0003 == 1 then

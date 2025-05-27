@@ -5,7 +5,7 @@ function func_043E(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_000F = get_schedule()
-            var_0010 = unknown_001CH(unknown_001BH(62))
+            var_0010 = unknown_001CH(get_npc_name(62))
             var_0011 = random2(4, 1)
             if var_0010 == 12 then
                 if var_0011 == 1 then
@@ -48,7 +48,7 @@ function func_043E(eventid, objectref)
             remove_answer("beggar")
         elseif cmps("tell a joke") then
             add_dialogue("\"Dost thou wish to hear one?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
             if var_0001 then
                 var_0002 = unknown_002BH(359, 359, 644, 1)
                 if var_0002 then
@@ -70,7 +70,7 @@ function func_043E(eventid, objectref)
             remove_answer("Fellowship")
         elseif cmps("Lord British joke") then
             add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
-            var_0003 = unknown_090AH()
+            var_0003 = ask_yes_no()
             if not var_0003 then
                 add_dialogue("\"I see I have reached the limits of thy sense of humor.\"")
                 remove_answer("Lord British joke")
@@ -90,7 +90,7 @@ function func_043E(eventid, objectref)
             remove_answer("Lord British")
         elseif cmps("Weston joke") then
             add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if not var_0005 then
                 add_dialogue("\"Very well. If thou didst not get the first two there is no good reason for me to continue now.\"")
                 remove_answer("Weston joke")
@@ -110,7 +110,7 @@ function func_043E(eventid, objectref)
             remove_answer("Weston")
         elseif cmps("mage joke") then
             add_dialogue("\"For a gold coin I will tell thee another. Dost thou wish to hear it?\"")
-            var_0007 = unknown_090AH()
+            var_0007 = ask_yes_no()
             if not var_0007 then
                 add_dialogue("\"Thou art wise. Thou shouldst save thy gold to pay a healer to cure that ache in thy side.\"")
                 remove_answer("mage joke")
@@ -130,7 +130,7 @@ function func_043E(eventid, objectref)
             remove_answer("mages")
         elseif cmps("Sullivan joke") then
             add_dialogue("\"Thou art a brave Avatar! Dost thou wish to hear another?\"")
-            var_0009 = unknown_090AH()
+            var_0009 = ask_yes_no()
             if not var_0009 then
                 add_dialogue("\"Aha! Not as brave as I thought!\"")
                 remove_answer("joke five")
@@ -148,7 +148,7 @@ function func_043E(eventid, objectref)
             remove_answer("Sullivan")
         elseif cmps("gold joke") then
             add_dialogue("\"I have amused thee so far! Wouldst thou like to hear another? It is a joke about gold!\"")
-            var_000B = unknown_090AH()
+            var_000B = ask_yes_no()
             if var_000B then
                 var_000C = unknown_002BH(359, 359, 644, 1)
                 if var_000C then
@@ -156,7 +156,7 @@ function func_043E(eventid, objectref)
                     add_dialogue("\"Thank thee very much! Now, goodbye!\"")
                     add_dialogue("\"Dost thou get it? Ha! Ha! Ha! Ha! If not, it would be my pleasure to repeat it.\"")
                     add_dialogue("\"Wouldst thou like to hear the gold joke again?\"")
-                    var_000D = unknown_090AH()
+                    var_000D = ask_yes_no()
                     if var_000D then
                         add_dialogue("\"Now listen carefully...\"")
                         var_000E = unknown_002BH(359, 359, 644, 1)
@@ -187,7 +187,7 @@ function func_043E(eventid, objectref)
     add_dialogue("\"Thank thee very much! Now, goodbye!\"")
     add_dialogue("\"Dost thou get it? Ha! Ha! Ha! Ha! If not, it would be my pleasure to repeat it.\"")
     add_dialogue("\"Wouldst thou like to hear the gold joke again?\"")
-    var_000D = unknown_090AH()
+    var_000D = ask_yes_no()
     if var_000D then
         add_dialogue("\"Now listen carefully...\"")
         var_000E = unknown_002BH(359, 359, 644, 1)

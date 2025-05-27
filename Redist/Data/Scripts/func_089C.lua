@@ -22,7 +22,7 @@ function func_089C()
             var_000A = unknown_091CH(var_0007, var_0004[var_0009], var_0006, var_0001[var_0009], var_0005)
             var_000B = 0
             add_dialogue("\"^" .. var_000A .. " To be agreeable?\"")
-            var_000C = unknown_090AH()
+            var_000C = ask_yes_no()
             if not var_000C then
                 var_000B = unknown_08F8H(false, var_0008, var_0004[var_0009], 0, var_0003, var_0002[var_0009])
                 if var_000B == 1 then
@@ -33,7 +33,7 @@ function func_089C()
                     add_dialogue("\"To have less than enough gold for that.\"")
                 end
                 add_dialogue("\"To want something else?\"")
-                var_0000 = unknown_090AH()
+                var_0000 = ask_yes_no()
             end
         end
     end

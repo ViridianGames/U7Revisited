@@ -45,7 +45,7 @@ function func_040F(eventid, objectref)
                 if not get_flag(709) then
                     add_dialogue("\"His killer deserves to die.\"")
                 end
-                unknown_0004H(-48)
+                hide_npc(-48)
                 switch_talk_to(15, 0)
             end
             remove_answer("father")
@@ -54,7 +54,7 @@ function func_040F(eventid, objectref)
             if var_0001 then
                 switch_talk_to(48, 0)
                 add_dialogue("\"I had always felt like I had a sister somewhere. But I attributed those feelings to the natural loneliness a child feels upon losing a father. Learning about each other has been the only good thing that has happened to me since father's death.\"")
-                unknown_0004H(-48)
+                hide_npc(-48)
                 switch_talk_to(15, 0)
             end
             remove_answer("Amanda")
@@ -67,7 +67,7 @@ function func_040F(eventid, objectref)
             if var_0001 and not get_flag(734) then
                 switch_talk_to(48, 0)
                 add_dialogue("\"How canst thou say that? I thought that thou wert my sister? Thou art a traitor!\"")
-                unknown_0004H(-48)
+                hide_npc(-48)
                 switch_talk_to(15, 0)
                 set_flag(709, true)
             end

@@ -5,7 +5,7 @@ function func_04BC(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 188)
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(188))
+        var_0001 = unknown_001CH(get_npc_name(188))
         if var_0000 == 7 then
             var_0002 = unknown_08FCH(185, 188)
             if var_0002 then
@@ -58,7 +58,7 @@ function func_04BC(eventid, objectref)
             elseif answer == "gargoyles" then
                 add_dialogue("\"To know Quan is the Fellowship leader. To believe he gives good guidance.\" He appears thoughtful.")
                 add_dialogue("\"To have spoken to Draxinusom?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     add_dialogue("\"To see Forbrak or Quaeven, then. To know they see all the citizens regularly.\"")
                 else

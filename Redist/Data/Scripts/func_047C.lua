@@ -14,9 +14,9 @@ function func_047C(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = false
-    var_0003 = unknown_0037H(unknown_001BH(125))
-    var_0004 = unknown_0037H(unknown_001BH(126))
-    var_0005 = unknown_0037H(unknown_001BH(127))
+    var_0003 = unknown_0037H(get_npc_name(125))
+    var_0004 = unknown_0037H(get_npc_name(126))
+    var_0005 = unknown_0037H(get_npc_name(127))
     if var_0003 and var_0004 and var_0005 then
         var_0002 = true
     end
@@ -72,7 +72,7 @@ function func_047C(eventid, objectref)
             add_answer("story")
         elseif cmps("story") then
             add_dialogue("\"My tale is a strange one. It may disturb and puzzle thee. Art thou certain thou wouldst like to hear it?\"")
-            var_0006 = unknown_090AH()
+            var_0006 = ask_yes_no()
             if not var_0006 then
                 add_dialogue("\"Well, then I hope I was of some assistance to thee. Farewell forever, " .. var_0000 .. ".\"")
                 return
@@ -155,7 +155,7 @@ function func_047C(eventid, objectref)
             add_answer("champion")
         elseif cmps("champion") then
             add_dialogue("\"Wouldst thou be my champion, Avatar?\"")
-            var_0007 = unknown_090AH()
+            var_0007 = ask_yes_no()
             if var_0007 then
                 add_dialogue("Sprellic falls to his knees before you in gratitude. \"Avatar, thou hast saved my life! I cannot thank thee enough!\"")
                 set_flag(368, true)

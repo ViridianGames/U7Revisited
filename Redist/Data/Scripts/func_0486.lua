@@ -6,9 +6,9 @@ function func_0486(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(134, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_001BH(134) --- Guess: Gets object ref
-        var_0002 = unknown_001BH(136) --- Guess: Gets object ref
-        var_0003 = unknown_001BH(135) --- Guess: Gets object ref
+        var_0001 = get_npc_name(134) --- Guess: Gets object ref
+        var_0002 = get_npc_name(136) --- Guess: Gets object ref
+        var_0003 = get_npc_name(135) --- Guess: Gets object ref
         var_0004 = unknown_0931H(2, 359, 955, 1, 356) --- Guess: Checks item in inventory
         var_0005 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})

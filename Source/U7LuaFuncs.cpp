@@ -6,6 +6,13 @@
 #include <iostream>
 #include <cstring>
 
+extern "C"
+{
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+
 using namespace std;
 
 // '-' - Function stubbed but not implemented
@@ -26,7 +33,12 @@ static int LuaAddDialogue(lua_State *L)
     cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
     const char *text = luaL_checkstring(L, 1);
 
-    g_ConversationState->AddDialogue(text);
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_ADD_DIALOGUE;
+    step.str = text;
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);   
 
     return 0;
 }
@@ -49,7 +61,12 @@ static int LuaSwitchTalkTo(lua_State *L)
         frame = luaL_checkinteger(L, 2);
     }
     if(LUA_DEBUG) AddConsoleString("LUA: switch_talk_to called with " + std::to_string(npc_id));
-    g_ConversationState->SetNPC(npc_id, frame);
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_CHANGE_PORTRAIT;
+    step.str = "";
+    step.npcId = npc_id;
+    step.frame = frame;
+    g_ConversationState->AddStep(step);
     cout << "Switching talk to NPC ID: " << npc_id << "\n";
 
     return 0;
@@ -60,7 +77,7 @@ static int LuaHideNPC(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: hide_npc called");
     int npc_id = luaL_checkinteger(L, 1);
-    g_ConversationState->SetNPC(npc_id, -1);
+    //g_ConversationState->SetNPC(npc_id, -1);
     cout << "Hiding NPC ID: " << npc_id << "\n";
 
     return 0;
@@ -276,11 +293,54 @@ static int LuaGetAnswer(lua_State *L)
 // Opcode 000B
 static int LuaAskYesNo(lua_State *L)
 {
-    if(LUA_DEBUG) AddConsoleString("LUA: ask_yes_no called");
-    const char *text = luaL_checkstring(L, 1);
-    cout << "Asking yes/no: " << text << "\n";
-    lua_pushboolean(L, true);
-    return 1;
+    if (LUA_DEBUG) AddConsoleString("LUA: ask_yes_no called");
+
+    // Get the current script's coroutine from m_activeCoroutines
+    std::string func_name = g_ConversationState->m_luaFunction;
+    auto it = g_ScriptingSystem->m_activeCoroutines.find(func_name);
+    if (it == g_ScriptingSystem->m_activeCoroutines.end()) {
+        AddConsoleString("Error: No active coroutine for " + func_name);
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    int co_ref = it->second;
+    lua_rawgeti(L, LUA_REGISTRYINDEX, co_ref);
+    lua_State* co = lua_tothread(L, -1);
+    lua_pop(L, 1);
+
+    // Create the yes/no step
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_ASK_YES_NO;
+    step.yesNoCallback = [L, co, co_ref](bool result) {
+        // Resume the coroutine with the result
+        lua_rawgeti(L, LUA_REGISTRYINDEX, co_ref);
+        lua_State* co_thread = lua_tothread(L, -1);
+        lua_pop(L, 1);
+
+        lua_pushboolean(co_thread, result);
+        int nresults;
+        int status = lua_resume(co_thread, nullptr, 1, &nresults);
+        AddConsoleString("Coroutine status after resume: " + std::to_string(status));
+        if (status != LUA_YIELD && status != LUA_OK) {
+            const char* error = lua_tostring(co_thread, -1);
+            AddConsoleString(std::string("Lua coroutine error: ") + error);
+            lua_pop(co_thread, 1);
+        } else {
+            AddConsoleString("Lua coroutine resumed with result: " + std::string(result ? "true" : "false"));
+        }
+
+        // Notify ConversationState if the script finished
+        if (status != LUA_YIELD) {
+            g_ConversationState->m_scriptFinished = true;
+            AddConsoleString("Script finished for " + g_ConversationState->m_luaFunction);
+        }
+    };
+
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine thread
+    return lua_yield(co, 0);
 }
 
 // Opcode 000C
@@ -830,8 +890,12 @@ static int LuaGetNPCName(lua_State *L)
 {
     if(LUA_DEBUG) AddConsoleString("LUA: get_npc_name called");
     int npc_id = luaL_checkinteger(L, 1);
-    const char *name = "NPC"; // TODO: g_NPCManager->GetName(npc_id)
-    lua_pushstring(L, name);
+    string npc_name = "NPC";
+    npc_name = g_NPCData[npc_id]->name;
+    AddConsoleString("NPC name: " + npc_name);
+    cout << "NPC name: " << npc_name << "\n";
+
+    lua_pushstring(L, npc_name.c_str());
     return 1;
 }
 
@@ -922,6 +986,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("update_conversation", LuaUpdateConversation);
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
+
+
 
     cout << "Registered all Lua functions\n";
 }

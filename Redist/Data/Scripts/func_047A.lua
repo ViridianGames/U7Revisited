@@ -14,7 +14,7 @@ function func_047A(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_female()
     var_0002 = get_schedule()
-    var_0003 = unknown_001CH(unknown_001BH(122))
+    var_0003 = unknown_001CH(get_npc_name(122))
     add_answer({"bye", "job", "name"})
     var_0004 = unknown_08F7H(123)
     if not get_flag(372) then
@@ -29,10 +29,10 @@ function func_047A(eventid, objectref)
     if not get_flag(366) then
         add_answer("Sprellic")
     end
-    var_0005 = unknown_0037H(unknown_001BH(125))
-    var_0006 = unknown_0037H(unknown_001BH(126))
-    var_0007 = unknown_0037H(unknown_001BH(127))
-    var_0008 = unknown_0037H(unknown_001BH(124))
+    var_0005 = unknown_0037H(get_npc_name(125))
+    var_0006 = unknown_0037H(get_npc_name(126))
+    var_0007 = unknown_0037H(get_npc_name(127))
+    var_0008 = unknown_0037H(get_npc_name(124))
     if not get_flag(357) and var_0005 and var_0006 and var_0007 then
         add_answer("winnings")
     end
@@ -82,7 +82,7 @@ function func_047A(eventid, objectref)
         elseif cmps("room") then
             if var_0003 == 16 then
                 add_dialogue("\"For naught more than 5 gold thou canst get a lovely room. Dost thou wish to stay the night?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0009 = get_party_members()
                     var_000A = 0
                     for var_000B in ipairs(var_0009) do
@@ -135,7 +135,7 @@ function func_047A(eventid, objectref)
                 add_dialogue("\"Sorry, all bets are off, due to the... er, unfortunate passing on of one or more of the parties involved.\"")
             else
                 add_dialogue("\"I am taking wagers on Sprellic's duels. Wouldst thou like to place a bet?\"")
-                var_0012 = unknown_090AH()
+                var_0012 = ask_yes_no()
                 if var_0012 then
                     add_dialogue("\"How much wouldst thou like to bet that Sprellic defeats all three of his challengers?\"")
                     var_0012 = ask_number(0, 10, 200, 0)
@@ -143,7 +143,7 @@ function func_047A(eventid, objectref)
                         add_dialogue("\"Perhaps thou art not truly serious about thy convictions. Mayhaps Daphne will take thy line of bets.\"")
                     else
                         add_dialogue("\"Thou wouldst bet " .. var_0012 .. " gold that Sprellic will win?\"")
-                        var_0013 = unknown_090AH()
+                        var_0013 = ask_yes_no()
                         if not var_0013 then
                             add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
                             goto betting_start

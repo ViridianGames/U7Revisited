@@ -68,11 +68,11 @@ function func_01F8(eventid, objectref)
             start_conversation()
             add_dialogue("\"Well done, little human. Thou art as powerful as thou art courageous. Do not think that thou hast destroyed me, thou hast merely bested me. And for this wonderous feat, I think thou dost deserve a reward. I have a truly magnificent gem that I would give to thee, if thy courage can but continue for a bit.\" Dracothraxus opens her mouth wide. Within, you can see a multitude of teeth, each one needle sharp. Also, near the back, you see a small but brilliant blue gem. Do you reach in and take it?")
             -- call [0000] (090AH, unmapped)
-            if not unknown_090AH() then
+            if not ask_yes_no() then
                 add_dialogue("As you place your hand in the furnace that is the dragon's maw, you can't help but wonder if a small gem is worth the risk.")
                 var_000B = unknown_0024H(760)
                 set_object_frame(var_000B, 12)
-                var_000C = unknown_0036H(unknown_001BH(356))
+                var_000C = unknown_0036H(get_npc_name(356))
                 if var_000C then
                     add_dialogue("Nevertheless, you persevere and retrieve the lovely little gem.")
                 else

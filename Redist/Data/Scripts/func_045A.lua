@@ -17,7 +17,7 @@ function func_045A(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 90)
     var_0000 = get_schedule()
-    var_0001 = unknown_001CH(unknown_001BH(90))
+    var_0001 = unknown_001CH(get_npc_name(90))
     var_0002 = get_lord_or_lady()
     var_0003 = false
     var_0004 = is_player_wearing_fellowship_medallion()
@@ -92,7 +92,7 @@ function func_045A(eventid, objectref)
             if var_0001 == 7 then
                 if not get_flag(247) then
                     add_dialogue("Owen looks at you and suddenly seems flustered. \"Uh, I have no ships for sale presently. I have been working on a few improvements. But if thou wouldst, thou couldst commission me to build one for thee. A deed to one of the ships I build costs 1000 gold coins. Dost thou wish to buy one?\"")
-                    var_0006 = unknown_090AH()
+                    var_0006 = ask_yes_no()
                     if var_0006 then
                         var_0007 = unknown_002BH(359, 359, 644, 1000)
                         if var_0007 then
@@ -117,7 +117,7 @@ function func_045A(eventid, objectref)
                         add_dialogue("\"Art thou certain? Thou shalt find no better ships in all of Britannia! Very well, then!\"")
                     end
                     add_dialogue("\"Wouldst thou perhaps be interested in purchasing a fine sextant? I have one which I would be willing to part with for a fine bargain. The price is 150 gold. Art thou interested?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("\"Excellent! I knew that thou wouldst appreciate owning the sextant of Owen the shipwright. Thou art a fine person, able to discern those quality items which are worth a bit of extra coin.\"")
                         var_000A = unknown_002BH(359, 359, 644, 150)
                         if not var_000A then
@@ -141,7 +141,7 @@ function func_045A(eventid, objectref)
             remove_answer("buy")
         elseif cmps("methods") then
             add_dialogue("\"I have even written a book describing the advances I have made in the methods of ship-building. It is very advanced but I have tried to write it so that it is accessible to the layman. Wouldst thou be interested in purchasing a copy?\"")
-            var_000D = unknown_090AH()
+            var_000D = ask_yes_no()
             if var_000D then
                 add_dialogue("\"Yes, of course thou wouldst.\"")
                 var_000E = unknown_002BH(359, 359, 644, 30)
@@ -236,7 +236,7 @@ function func_045A(eventid, objectref)
         elseif cmps("tribute") then
             add_dialogue("\"I know! My work will stand as my monument! My name will endure long after any statue has worn away to dust! People will remember -me-, I promise thee that!\"")
             add_dialogue("And, with a dramatic flourish, Owen produces a dagger. Before you can stop him, he plunges it into his chest. He coughs loudly as blood spurts from his mouth, soaking his fine linen tunic in wine-red guilt. After a moment, it is all over. Owen, the greatest shipwright who ever lived, is dead.")
-            unknown_0049H(unknown_001BH(90))
+            unknown_0049H(get_npc_name(90))
             unknown_0911H(100)
             return
         elseif cmps("Crown Jewel") then

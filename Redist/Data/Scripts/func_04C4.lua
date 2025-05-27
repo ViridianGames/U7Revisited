@@ -7,7 +7,7 @@ function func_04C4(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = unknown_0908H()
         var_0002 = "the Avatar"
-        var_0003 = unknown_001CH(unknown_001BH(196))
+        var_0003 = unknown_001CH(get_npc_name(196))
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})
         if not get_flag(621) then
@@ -128,7 +128,7 @@ function func_04C4(eventid, objectref)
                 add_dialogue("After a moment, he calms down.")
                 if not get_flag(601) then
                     add_dialogue("\"Art thou investigating this crime against mankind?\"")
-                    var_0008 = unknown_090AH()
+                    var_0008 = ask_yes_no()
                     if var_0008 then
                         add_dialogue("\"Then let me give thee these.\" He holds up some stone chips. \"They were found at the base of the statue. Thou wilt notice that they are stained red in some places. I believe it to be blood.\"")
                         var_0009 = unknown_002CH(false, 4, 359, 815, 1)

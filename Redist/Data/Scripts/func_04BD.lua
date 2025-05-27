@@ -52,7 +52,7 @@ function func_04BD(eventid, objectref)
                 add_dialogue("\"To serve food and drink at the Hall of Refreshment.\"")
                 add_answer("buy")
             elseif answer == "buy" then
-                var_0004 = unknown_001CH(unknown_001BH(189))
+                var_0004 = unknown_001CH(get_npc_name(189))
                 if var_0004 == 7 then
                     unknown_0889H()
                 else
@@ -94,7 +94,7 @@ function func_04BD(eventid, objectref)
                 set_flag(580, true)
             elseif answer == "residents" then
                 add_dialogue("\"To know many gargoyles. To want to know about some of them?\"")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     add_dialogue("\"To be sure you already know our leader. To wonder if you have met Teregus, or the learning center head.\"")
                     add_dialogue("\"To be more practical, you may need the provisioner,\" he nods his head.")
@@ -117,7 +117,7 @@ function func_04BD(eventid, objectref)
             elseif answer == "clerk" then
                 add_dialogue("\"To be extremely violent.\" He shakes his head. \"To be named Runeb, which means `red mist.' To be all that he leaves of a foe after combat.\"")
                 remove_answer("clerk")
-                var_0006 = unknown_0037H(unknown_001BH(184))
+                var_0006 = unknown_0037H(get_npc_name(184))
                 if var_0006 then
                     add_dialogue("\"To be dead now, though.\"")
                 end

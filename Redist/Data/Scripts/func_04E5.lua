@@ -5,7 +5,7 @@ function func_04E5(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 229)
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(229))
+        var_0001 = unknown_001CH(get_npc_name(229))
         var_0002 = unknown_0931H(1, 359, 981, 1, 357)
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -69,7 +69,7 @@ function func_04E5(eventid, objectref)
                     add_dialogue("\"But I have already sold thee the deed to 'The Lusty Wench'! She was the only ship I had at this particular time! I am sorry!\"")
                 else
                     add_dialogue("\"I can sell thee the deed to my ship 'The Lusty Wench.' She is beautiful, my friend. She is guaranteed to last and is the sleekest vessel on the seas! She goes for 800 gold. Want her?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_0008 = unknown_0028H(359, 359, 644, 357)
                         if var_0008 >= 800 then
                             var_0009 = unknown_002CH(false, 2, 18, 797, 1)
@@ -124,7 +124,7 @@ function func_04E5(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(229))
+        var_0001 = unknown_001CH(get_npc_name(229))
         if var_0001 == 7 then
             var_000B = random2(4, 1)
             if var_000B == 1 then

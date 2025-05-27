@@ -38,10 +38,10 @@ function func_048F(eventid, objectref)
         add_answer("ingredients")
     end
     var_000A = get_party_members()
-    if unknown_0088H(unknown_001BH(144), 6) then
+    if unknown_0088H(get_npc_name(144), 6) then
         unknown_08C1H()
     end
-    if unknown_0088H(unknown_001BH(147), 6) then
+    if unknown_0088H(get_npc_name(147), 6) then
         unknown_08C2H()
     end
     if not get_flag(408) then
@@ -129,7 +129,7 @@ function func_048F(eventid, objectref)
             if var_0008 then
                 add_dialogue("\"I might have some new information on my fellow townsfolk that could be of use to thee,\" she says, adding a smile.")
             end
-            var_0014 = unknown_090AH()
+            var_0014 = ask_yes_no()
             if var_0014 then
                 add_dialogue("\"Very well, " .. var_0000 .. ". What wouldst thou care to know about?\"")
             else

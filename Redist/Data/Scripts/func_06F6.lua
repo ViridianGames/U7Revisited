@@ -95,7 +95,7 @@ function func_06F6(eventid, objectref)
                 end
             elseif player_says("Death") then
                 add_dialogue("\"Where is the corpse of which thou dost speak?\" The dark sword begins to vibrate in your hand.*")
-                unknown_0004H(292)
+                hide_npc(292)
                 var_0011 = unknown_0033H()
                 var_0017 = unknown_0011H(var_0011)
                 var_0018 = unknown_0018H(var_0011)
@@ -108,7 +108,7 @@ function func_06F6(eventid, objectref)
                         var_0019 = unknown_0908H()
                         switch_talk_to(23, 0)
                         add_dialogue("\"" .. var_0019 .. ", for what reason art thou brandishing that black sword in my presence?\"")
-                        unknown_0004H(292)
+                        hide_npc(292)
                         switch_talk_to(356, 0)
                         add_dialogue("The daemon responds, using your mouth. \"This blade is thy doom,...\" You spit the words, \"Lord British!\"")
                         switch_talk_to(23, 0)
@@ -125,7 +125,7 @@ function func_06F6(eventid, objectref)
                         add_dialogue("\"Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.\"")
                         switch_talk_to(293, 0)
                         add_dialogue("The dragon responds with great resignation. \"My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.\"")
-                        unknown_0004H(293)
+                        hide_npc(293)
                         switch_talk_to(292, 0)
                         add_dialogue("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*")
                         var_0015 = true
@@ -141,7 +141,7 @@ function func_06F6(eventid, objectref)
             elseif player_says("Return") then
                 if not unknown_08E7H() then
                     add_dialogue("\"Ah... home again. I never tire of rocky little islands. Dost thou truly wish to go to the forsaken Isle of Fire?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("\"I see. Very well, master. But let us not forget this little favor...\" The gem in the hilt of the sword glows brightly then everything dims.*")
                         var_0013 = true
                     else
@@ -152,7 +152,7 @@ function func_06F6(eventid, objectref)
                 end
             elseif player_says("Fire") then
                 add_dialogue("\"And what, pray tell, is the intended target of thy immense and most puissant wrath, O' Master of Infinite Destruction?\"")
-                unknown_0004H(292)
+                hide_npc(292)
                 var_0012 = true
             elseif player_says("bye") then
                 add_dialogue("\"Forgive me master, but I shan't be leaving. However, thou mayest cease thy speaking... if thou dost wish it.\"*")

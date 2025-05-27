@@ -7,7 +7,7 @@ function func_04AC(eventid, objectref)
         var_0000 = unknown_0908H()
         var_0001 = get_lord_or_lady()
         var_0004 = get_schedule()
-        var_0005 = unknown_001CH(unknown_001BH(172))
+        var_0005 = unknown_001CH(get_npc_name(172))
         var_0002 = "Avatar"
         var_0003 = "None of thy concern"
         start_conversation()
@@ -96,7 +96,7 @@ function func_04AC(eventid, objectref)
                 restore_answers()
             elseif answer == "mutton" then
                 add_dialogue("\"'Twill cost thee 3 gold each. Still interested?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"How many dost thou want?\"")
                     var_0009 = unknown_000CH(1, 1, 20, 1)
                     var_000A = var_0009 * 3
@@ -118,7 +118,7 @@ function func_04AC(eventid, objectref)
                 remove_answer("mutton")
             elseif answer == "beef" then
                 add_dialogue("\"'Twill cost thee 2 gold each. Still interested?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"How many dost thou want?\"")
                     var_000E = unknown_000CH(1, 1, 20, 1)
                     var_000F = var_000E * 2
@@ -140,7 +140,7 @@ function func_04AC(eventid, objectref)
                 remove_answer("beef")
             elseif answer == "ham" then
                 add_dialogue("\"'Twill cost thee 4 gold each. Still interested?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"How many dost thou want?\"")
                     var_0013 = unknown_000CH(1, 1, 20, 1)
                     var_0014 = var_0013 * 4
@@ -164,7 +164,7 @@ function func_04AC(eventid, objectref)
                 add_dialogue("\"A terrible crime, causing me no small amount of monetary distress. It has caused the surrounding community to worry about their possessions as well.\"")
                 if not get_flag(536) then
                     add_dialogue("\"I would be thine humble servant shouldst thou help investigate the matter. Wilt thou?\"")
-                    var_0018 = unknown_090AH()
+                    var_0018 = ask_yes_no()
                     if var_0018 then
                         add_dialogue("\"Then I shall cooperate fully, " .. var_0001 .. ".\" He bows.")
                     else

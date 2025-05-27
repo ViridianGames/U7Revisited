@@ -33,7 +33,7 @@ function func_08BC(eventid)
             var_0013 = unknown_091BH(var_0006 or var_0008[var_0012], var_0002[var_0012], var_0009, var_0005[var_0012], var_0007[var_0012])
             var_0014 = 0
             add_dialogue("\"" .. var_0013 .. " Dost thou like the price?\"")
-            var_0015 = unknown_090AH()
+            var_0015 = ask_yes_no()
             if not var_0015 then
                 if eventid == "Reagents" then
                     add_dialogue("\"How many dost thou want?\"")
@@ -50,7 +50,7 @@ function func_08BC(eventid)
                 add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
             add_dialogue("\"Wouldst thou like something else?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
         end
     end
     restore_answers()

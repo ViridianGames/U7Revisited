@@ -64,7 +64,7 @@ function func_06F8(eventid, objectref)
                 end
                 if var_000D == 2 then
                     unknown_087DH()
-                    var_0013 = unknown_0018H(unknown_001BH(356))
+                    var_0013 = unknown_0018H(get_npc_name(356))
                     if var_0013[2] > var_0005[2] then
                         if unknown_005AH() then
                             unknown_0013H(20, unknown_0881H())
@@ -101,7 +101,7 @@ function func_06F8(eventid, objectref)
             return
         end
         var_0005 = unknown_0018H(objectref)
-        var_0013 = unknown_0018H(unknown_001BH(356))
+        var_0013 = unknown_0018H(get_npc_name(356))
         if get_flag(831) and get_flag(828) then
             if not get_flag(750) then
                 var_0017 = false
@@ -119,7 +119,7 @@ function func_06F8(eventid, objectref)
                 if not var_0017 then
                     var_0017 = unknown_0024H(154)
                     unknown_0089H(18, var_0017)
-                    var_001E = unknown_0018H(unknown_001BH(356))
+                    var_001E = unknown_0018H(get_npc_name(356))
                     if var_001E[2] > var_0013[2] then
                         unknown_0013H(19, var_0017)
                         var_001D = {1510, 2}
@@ -206,7 +206,7 @@ function func_06F8(eventid, objectref)
             end
             unknown_008AH(16, 356)
             unknown_0002H(14, 17453, {7724}, unknown_0881H())
-            unknown_0001H({1693, 8021, 12, 7719}, unknown_001BH(356))
+            unknown_0001H({1693, 8021, 12, 7719}, get_npc_name(356))
             var_0030 = unknown_000EH(10, 726, objectref)
             if var_0030 then
                 unknown_0001H({1784, 8021, 16, 7719}, var_0030)

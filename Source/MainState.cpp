@@ -227,7 +227,7 @@ void MainState::Update()
 			{
 				if((*node)->m_hasConversationTree)
 				{
-					int NPCId = static_cast<int>((*node)->m_NPCData.index2);
+					int NPCId = static_cast<int>((*node)->m_NPCData->id);
 					string scriptName = "func_04";
 					stringstream ss;
 					ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;

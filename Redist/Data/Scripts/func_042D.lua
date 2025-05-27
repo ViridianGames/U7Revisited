@@ -83,7 +83,7 @@ function func_042D(eventid, objectref)
             remove_answer("sob story")
         elseif cmps("observer") then
             add_dialogue("\"Yes, I do consider myself to be a more than passable judge of character. And dost thou know how I became so?\"")
-            var_0004 = unknown_090AH()
+            var_0004 = ask_yes_no()
             if var_0004 then
                 add_dialogue("\"Oh, then art thou not the clever one!\"")
             else
@@ -111,7 +111,7 @@ function func_042D(eventid, objectref)
             remove_answer("Fellowship")
         elseif cmps("buy") then
             add_dialogue("\"I can do thee a favor as well. Wouldst thou like to buy one of these beautiful apples for the merest pittance of five gold coins?\"")
-            var_0006 = unknown_090AH()
+            var_0006 = ask_yes_no()
             if var_0006 then
                 var_0007 = unknown_002BH(359, 359, 644, 5)
                 if var_0007 then
@@ -127,7 +127,7 @@ function func_042D(eventid, objectref)
                 end
             else
                 add_dialogue("\"Very well. But thou art passing up an opportunity that few are offered. In fact, eh, I would appreciate it if thou wouldst not mention our little chat to anyone. Agreed?\"")
-                var_0009 = unknown_090AH()
+                var_0009 = ask_yes_no()
                 if var_0009 then
                     add_dialogue("\"Ah, I knew thou wert a good 'un.\"")
                 else

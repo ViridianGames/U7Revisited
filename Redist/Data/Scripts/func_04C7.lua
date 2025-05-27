@@ -95,7 +95,7 @@ function func_04C7(eventid, objectref)
                 remove_answer("Lady Jehanne")
             elseif answer == "humor" then
                 add_dialogue("\"My jokes are very bad. If thou wouldst like, I will tell thee one.\"")
-                var_0003 = unknown_090AH()
+                var_0003 = ask_yes_no()
                 if var_0003 then
                     add_dialogue("\"Why did the chicken cross the road?\"")
                     var_0004 = unknown_08F7H(-1)
@@ -123,7 +123,7 @@ function func_04C7(eventid, objectref)
                 remove_answer("humor")
                 add_dialogue("He gives a partial smile.")
                 add_dialogue("\"To get to the other side. Didst thou think that was funny?\"")
-                var_0006 = unknown_090AH()
+                var_0006 = ask_yes_no()
                 if var_0006 then
                     add_dialogue("He appears confused. \"That is odd, no one else thinks that joke is humorous.\"")
                     add_dialogue("\"Perhaps I am more funny than I thought...\"")
@@ -150,7 +150,7 @@ function func_04C7(eventid, objectref)
                 if var_0007 then
                     add_dialogue("He looks at your medallion.")
                     add_dialogue("\"Is mine information correct?\"")
-                    var_0008 = unknown_090AH()
+                    var_0008 = ask_yes_no()
                     if var_0008 then
                         add_dialogue("\"I thank thee. I always endeavor to be correct.\"")
                     else

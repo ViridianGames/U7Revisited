@@ -67,7 +67,7 @@ function func_04CF(eventid, objectref)
                 add_answer({"Vesper", "Blorn", "Mara", "Cador"})
                 remove_answer("customers")
             elseif answer == "Cador" then
-                var_0008 = unknown_0037H(unknown_001BH(203))
+                var_0008 = unknown_0037H(get_npc_name(203))
                 if var_0008 then
                     add_dialogue("\"He used ta come here every night, 'til he was killed in a brawl.\" The bartender's eyes narrow as he talks.")
                 else
@@ -75,7 +75,7 @@ function func_04CF(eventid, objectref)
                 end
                 remove_answer("Cador")
             elseif answer == "Mara" then
-                var_0009 = unknown_0037H(unknown_001BH(204))
+                var_0009 = unknown_0037H(get_npc_name(204))
                 if var_0009 then
                     add_dialogue("\"She worked with Cador at the mines. She was more man than most men, that one was. An' she died like it, too -- in a brawl here at the tavern!\" He says, eyeing you suspiciously.")
                 else
@@ -110,7 +110,7 @@ function func_04CF(eventid, objectref)
         end
     elseif eventid == 0 then
         var_000A = get_schedule()
-        var_000B = unknown_001CH(unknown_001BH(207))
+        var_000B = unknown_001CH(get_npc_name(207))
         var_000C = random(4, 1)
         if var_000A >= 1 and var_000A <= 3 and var_000B == 14 then
             var_000D = "@Zzzzz . . .@"

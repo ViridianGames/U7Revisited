@@ -14,9 +14,9 @@ function func_040A(eventid, objectref)
     var_0000 = unknown_0908H()
     var_0001 = get_lord_or_lady()
     var_0002 = get_party_members()
-    var_0003 = unknown_093CH(unknown_001BH(-356))
-    var_0004 = unknown_001BH(-10)
-    var_0005 = unknown_001BH(-6)
+    var_0003 = unknown_093CH(get_npc_name(-356))
+    var_0004 = get_npc_name(-10)
+    var_0005 = get_npc_name(-6)
     var_0006 = is_player_female() == 0 and "Abraham" or "Elizabeth"
     var_0007 = #var_0002
     var_0008 = var_0007 > 1 and "s" or ""
@@ -216,7 +216,7 @@ function func_040A(eventid, objectref)
             cmps("sea")
             add_dialogue("\"The sea! Its waves sooth a rough mood, but its fury is unrivaled. Ask those who live upon it! A gift it is, to live by it and reap its natural harvest. I cast in a line when I may.")
             add_dialogue("Dost thou wonder what mysteries the sea must hold?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("\"I also wonder. But the doings of those who travel upon it are more familiar to me. I have seen pirates land upon the northern coast.\"")
                 add_answer("pirates")
             else
@@ -290,7 +290,7 @@ function func_040A(eventid, objectref)
             end
             if var_0022 ~= "" then
                 add_dialogue(var_0022)
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0025 = unknown_002CH(false, 359, 359, 568, var_0023)
                     if var_0025 then
                         var_0026 = var_0023 > 1 and "s" or ""
@@ -323,12 +323,12 @@ function func_040A(eventid, objectref)
             if var_0028 == "wait here" then
                 add_dialogue("\"Very well! I shall wait for thee!\"")
                 unknown_001FH(-10)
-                unknown_001DH(15, unknown_001BH(-10))
+                unknown_001DH(15, get_npc_name(-10))
                 return
             else
                 add_dialogue("\"Very well, " .. var_0001 .. ". Fare thee well.\"")
                 unknown_001FH(-10)
-                unknown_001DH(11, unknown_001BH(-10))
+                unknown_001DH(11, get_npc_name(-10))
                 return
             end
         elseif cmps("hermits") then
@@ -359,7 +359,7 @@ function func_040A(eventid, objectref)
             end
         elseif var_000E and var_000F and not var_0010 then
             add_dialogue("\"This puts me in mind of a story. Wouldst thou like to hear it?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("\"One day while walking along the edge of the swamp I happened upon a strange sight. A fox was held at bay on a small hillock in the midst of the swamp, and all about the hillock writhed green slime.")
                 add_dialogue("Slowly the slime crept up toward the fox, when suddenly the fox trotted directly across the surface of the ooze!")
                 add_dialogue("Unharmed, the fox dashed off into the wood, leaving the slime writhing behind. By this I guess that the victims of slime are those caught sleeping, or unaware.\"")
@@ -401,7 +401,7 @@ function func_040A(eventid, objectref)
                 if not get_flag(353) then
                     add_dialogue("\"Thy pardon, " .. var_0001 .. ", but thy visage brings to my mind a statue that I once saw.  'Twas a likeness of the ancient hero known as the Avatar.")
                     add_dialogue("Art thou not that same honorable soul?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         var_002A = is_player_female() == 1 and "Thou art more fair by far than any likeness in stone could portray." or "That sculptor did thee justice."
                         add_dialogue("\"Noble hero, it is an honor to make thine aquaintance. " .. var_002A .. "\"")
                         set_flag(353, true)

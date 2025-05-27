@@ -48,7 +48,7 @@ function func_04D1(eventid, objectref)
                 add_dialogue("\"She is my clerk. She is very efficient. I couldn't govern Vesper without her.\"")
                 remove_answer("Liana")
             elseif answer == "people" then
-                var_0004 = unknown_0037H(unknown_001BH(203))
+                var_0004 = unknown_0037H(get_npc_name(203))
                 if var_0004 then
                     add_answer("shame")
                     var_0005 = " -- 'tis a shame about him -- "

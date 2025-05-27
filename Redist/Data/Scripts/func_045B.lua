@@ -12,7 +12,7 @@ function func_045B(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 91)
-    var_0000 = unknown_001CH(unknown_001BH(91))
+    var_0000 = unknown_001CH(get_npc_name(91))
     var_0001 = get_schedule()
     if var_0001 == 7 and var_0000 ~= 16 then
         var_0002 = unknown_08FCH(81, 91)
@@ -91,7 +91,7 @@ function func_045B(eventid, objectref)
             remove_answer("Elynor")
         elseif cmps("member") then
             add_dialogue("\"I was given an honorary membership when the Fellowship branch was first opened in Minoc. I do not attend regular meetings. I hope thou'rt not disappointed in me?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if var_0005 then
                 add_dialogue("\"I am sorry, Avatar. I will try to do well and be a more valuable member of the Fellowship. I beg thee, do not speak of this to Elynor.\"")
             else
@@ -101,7 +101,7 @@ function func_045B(eventid, objectref)
             remove_answer("member")
         elseif cmps("feelings") then
             add_dialogue("\"Avatar, may I tell thee a secret?\"")
-            var_0005 = unknown_090AH()
+            var_0005 = ask_yes_no()
             if var_0005 then
                 add_dialogue("\"Avatar, I must confess to thee that I feel The Fellowship promotes a philosophy that is dubious at best, and its membership seems to be comprised chiefly of fools and emotional weaklings.\"")
             else

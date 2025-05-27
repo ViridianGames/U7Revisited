@@ -4,10 +4,10 @@ function func_070F(eventid, objectref)
 
     var_0000 = get_object_shape(objectref)
     if var_0000 == 466 then
-        var_0001 = unknown_0018H(unknown_001BH(-356))
+        var_0001 = unknown_0018H(get_npc_name(-356))
         unknown_0053H(-1, 0, 0, 0, var_0001[2], var_0001[1], 17)
         unknown_000FH(62)
-        var_0002 = unknown_0035H(8, 80, -1, unknown_001BH(-356))
+        var_0002 = unknown_0035H(8, 80, -1, get_npc_name(-356))
         for var_0003 in ipairs(var_0002) do
             var_0006 = get_object_shape(var_0005)
             if not (var_0006 == 721 or var_0006 == 989) then
@@ -35,7 +35,7 @@ function func_070F(eventid, objectref)
         if not unknown_0088H(objectref, 18) then
             unknown_0049H(objectref)
             unknown_003FH(objectref)
-            var_0002 = unknown_0035H(8, 80, -1, unknown_001BH(-356))
+            var_0002 = unknown_0035H(8, 80, -1, get_npc_name(-356))
             for var_000D in ipairs(var_0002) do
                 var_0006 = get_object_shape(var_0005)
                 if not (var_0006 == 721 or var_0006 == 989) then
@@ -75,7 +75,7 @@ function func_070F(eventid, objectref)
             get_object_frame(var_0013, 4)
             var_0009 = unknown_0036H(var_0011)
             var_0014 = unknown_0002H(1, 1783, {17493, 17443, 7724}, var_0013)
-            var_0002 = unknown_0035H(8, 80, -1, unknown_001BH(-356))
+            var_0002 = unknown_0035H(8, 80, -1, get_npc_name(-356))
             for var_0015 in ipairs(var_0002) do
                 var_0006 = get_object_shape(var_0005)
                 if not (var_0006 == 721 or var_0006 == 989) then
@@ -87,7 +87,7 @@ function func_070F(eventid, objectref)
             end
         else
             unknown_0049H(objectref)
-            var_0002 = unknown_0035H(8, 80, -1, unknown_001BH(-356))
+            var_0002 = unknown_0035H(8, 80, -1, get_npc_name(-356))
             for var_0017 in ipairs(var_0002) do
                 var_0006 = get_object_shape(var_0005)
                 if not (var_0006 == 721 or var_0006 == 989) then

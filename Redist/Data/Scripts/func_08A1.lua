@@ -25,7 +25,7 @@ function func_08A1()
             var_0012 = 0
             if var_0003[var_0010] == 782 or var_0003[var_0010] == 595 or var_0003[var_0010] == 627 then
                 add_dialogue("^" .. var_0011 .. " Dost thou agree?")
-                var_0013 = unknown_090AH()
+                var_0013 = ask_yes_no()
                 if not var_0013 then
                     if var_0003[var_0010] == 782 then
                         add_dialogue("\"How many sets of twelve wouldst thou like?\"")
@@ -36,7 +36,7 @@ function func_08A1()
                 end
             else
                 add_dialogue("^" .. var_0011 .. ". Is that acceptable?")
-                var_0014 = unknown_090AH()
+                var_0014 = ask_yes_no()
                 if not var_0014 then
                     var_0012 = unknown_08F8H(true, 1, 0, var_0004[var_0010], var_0009, var_0008, var_0003[var_0010])
                 end
@@ -49,7 +49,7 @@ function func_08A1()
                 add_dialogue("\"I am sorry, but thou hast not enough gold for that!\"")
             end
             add_dialogue("\"Wouldst thou care to purchase something else?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
         end
     end
     restore_answers()

@@ -71,7 +71,7 @@ function func_0356(eventid, objectref)
             switch_talk_to(287, 2)
             add_dialogue("\"Well done, mighty warrior! The unsurpassed Courage which flows through thy veins could be none other than that of the Avatar. Thou hast proven thyself worthy of the reward of Courage with Valor, Sacrifice, Honor, and Spirituality... Receive it now in Humility.\"")
         end
-        unknown_0004H(-287)
+        hide_npc(-287)
         var_0002 = unknown_0001H({8033, 2, 17447, 8044, 10, 17447, 8045, 2, 17447, 8044, 2, 7719}, -356)
         var_0001 = unknown_0001H({854, 8021, 8, 7719}, objectref)
     elseif eventid == 2 then
@@ -81,13 +81,13 @@ function func_0356(eventid, objectref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {get_npc_quality(2, unknown_001BH(-356)), get_npc_quality(6, unknown_001BH(-356)), get_npc_quality(5, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(2, get_npc_name(-356)), get_npc_quality(6, get_npc_name(-356)), get_npc_quality(5, get_npc_name(-356))}
                 if var_0004[1] < 30 then
-                    set_npc_quality(30 - var_0004[1], 2, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 2, get_npc_name(-356))
                 end
                 if var_0004[2] < 30 then
-                    set_npc_quality(30 - var_0004[2], 6, unknown_001BH(-356))
-                    set_npc_quality(30 - var_0004[3], 5, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 6, get_npc_name(-356))
+                    set_npc_quality(30 - var_0004[3], 5, get_npc_name(-356))
                 end
                 set_flag(790, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)
@@ -103,12 +103,12 @@ function func_0356(eventid, objectref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {get_npc_quality(1, unknown_001BH(-356)), get_npc_quality(4, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(1, get_npc_name(-356)), get_npc_quality(4, get_npc_name(-356))}
                 if var_0004[1] < 30 then
-                    set_npc_quality(30 - var_0004[1], 1, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 1, get_npc_name(-356))
                 end
                 if var_0004[2] < 30 then
-                    set_npc_quality(30 - var_0004[2], 4, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 4, get_npc_name(-356))
                 end
                 set_flag(799, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)
@@ -124,12 +124,12 @@ function func_0356(eventid, objectref)
                 var_0003 = unknown_0018H(-356)
                 unknown_0053H(-1, 0, 0, 0, var_0003[2] - 1, var_0003[1] - 1, 7)
                 unknown_000FH(67)
-                var_0004 = {get_npc_quality(0, unknown_001BH(-356)), get_npc_quality(3, unknown_001BH(-356))}
+                var_0004 = {get_npc_quality(0, get_npc_name(-356)), get_npc_quality(3, get_npc_name(-356))}
                 if var_0004[1] < 30 then
-                    set_npc_quality(30 - var_0004[1], 0, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[1], 0, get_npc_name(-356))
                 end
                 if var_0004[2] < 30 then
-                    set_npc_quality(30 - var_0004[2], 3, unknown_001BH(-356))
+                    set_npc_quality(30 - var_0004[2], 3, get_npc_name(-356))
                 end
                 set_flag(833, true)
                 var_0006 = unknown_0001H({854, 8021, 15, 7719}, objectref)

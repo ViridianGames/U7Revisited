@@ -5,7 +5,7 @@ function func_06FD(eventid, objectref)
     if eventid == 2 then
         var_0000 = false
         var_0001 = false
-        var_0002 = unknown_0035H(0, 80, 797, unknown_001BH(356))
+        var_0002 = unknown_0035H(0, 80, 797, get_npc_name(356))
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
             var_0006 = unknown_0014H(var_0005)

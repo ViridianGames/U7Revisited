@@ -102,6 +102,53 @@ struct ObjectData
 	std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
+struct NPCData
+{
+   unsigned char x;
+   unsigned char y;
+   unsigned short shapeId;
+   unsigned short type;
+   unsigned char proba;
+   unsigned short data1;
+   unsigned char lift;
+   unsigned short data2;
+
+
+
+   unsigned short index;
+   unsigned short referent;
+   unsigned short status;
+   unsigned char str;
+   unsigned char dex;
+   unsigned char iq;
+   unsigned char combat;
+   unsigned char activity;
+   unsigned char DAM;
+   char soak1[3];
+   unsigned short status2;
+   unsigned char id;
+   char soak2[2];
+   unsigned int xp;
+   unsigned char training;
+   unsigned short primary;
+   unsigned short secondary;
+   unsigned short oppressor;
+   unsigned short ivrx;
+   unsigned short ivry;
+   unsigned short svrx;
+   unsigned short svry;
+   unsigned short status3;
+   char soak3[5];
+   unsigned char acty;
+   char soak4[29];
+   unsigned char SN;
+   unsigned char V1;
+   unsigned char V2;
+   unsigned char food;
+   char soak5[7];
+   char name[16];
+};
+
 extern std::string g_version;
 
 extern Vector3 g_Gravity;
@@ -133,6 +180,7 @@ extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectTable;
+extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
 extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
 

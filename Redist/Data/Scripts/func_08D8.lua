@@ -5,11 +5,11 @@ function func_08D8()
 
     var_0000 = get_lord_or_lady()
     var_0001 = unknown_0023H()
-    var_0002 = unknown_001BH(-144)
+    var_0002 = get_npc_name(-144)
     if var_0002 and table.contains(var_0001, var_0002) then
         unknown_001FH(-144)
         add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit ends and the other begins, then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Rowena performs a curtsey then turns to regard her handsome husband.")
-        unknown_001DH(15, unknown_001BH(-144))
+        unknown_001DH(15, get_npc_name(-144))
         set_flag(422, true)
         return
     end
@@ -30,7 +30,7 @@ function func_08D8()
         end
     end
     add_dialogue("\"This place is horrible. Wouldst thou be so kind as to take me to mine husband, Trent? He has a tendency to worry about me.\"")
-    var_0004 = unknown_090AH()
+    var_0004 = ask_yes_no()
     if var_0004 then
         var_0005 = false
         add_dialogue("Rowena smiles radiantly, \"Thank thee, " .. var_0000 .. ". Thy spirit is a generous one, indeed.\"")

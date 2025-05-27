@@ -76,7 +76,7 @@ function func_04F1(eventid, objectref)
                 add_dialogue("\"They friendly if we no hurt them.\"")
                 if var_0001 then
                     add_dialogue("The man sees Tseramed and frowns. He points at you accusingly. \"Hunt bees?\"")
-                    if not unknown_090AH() then
+                    if not ask_yes_no() then
                         add_dialogue("\"Go away!\" The man spits at you and turns away.")
                         set_flag(723, true)
                         return

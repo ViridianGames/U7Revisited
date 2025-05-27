@@ -24,7 +24,7 @@ function func_08A3()
             var_0011 = unknown_091BH(var_0006, var_0002[var_0010], var_0007, var_0005, var_0008)
             var_0012 = 0
             add_dialogue("^" .. var_0011 .. " Is that agreeable?")
-            var_0013 = unknown_090AH()
+            var_0013 = ask_yes_no()
             if not var_0013 then
                 add_dialogue("\"How many dozen wouldst thou like?\"")
                 var_0012 = unknown_08F8H(true, 1, 20, var_0005, var_0009, var_0004, var_0003[var_0010])
@@ -37,7 +37,7 @@ function func_08A3()
                 add_dialogue("\"Thou dost not have the gold for that!\"")
             end
             add_dialogue("\"Wouldst thou like to buy something else?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
         end
     end
     restore_answers()

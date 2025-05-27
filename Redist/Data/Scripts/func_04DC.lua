@@ -15,7 +15,7 @@ function func_04DC(eventid, objectref)
             add_dialogue("\"'Twas very kind of thee to release me from my cell. I shall now return to my former life. Good day!\"")
             return
         end
-        var_0005 = unknown_001BH(220)
+        var_0005 = get_npc_name(220)
         unknown_001DH(15, var_0005)
         if not get_flag(706) then
             add_dialogue("The man in the prison greets you with a rather large smile.")

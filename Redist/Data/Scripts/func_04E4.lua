@@ -5,7 +5,7 @@ function func_04E4(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 228)
         var_0000 = get_schedule()
-        var_0001 = unknown_001CH(unknown_001BH(228))
+        var_0001 = unknown_001CH(get_npc_name(228))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(689) then
@@ -35,7 +35,7 @@ function func_04E4(eventid, objectref)
             elseif answer == "train" then
                 if var_0001 == 7 then
                     add_dialogue("\"I charge 35 gold for a training session. Doth this meet with thine approval?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         unknown_08B6H(35, 2)
                     else
                         add_dialogue("Lucky shrugs. \"Thou wilt not find another trainer on the island!\"")
@@ -51,7 +51,7 @@ function func_04E4(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0001 = unknown_001CH(unknown_001BH(228))
+        var_0001 = unknown_001CH(get_npc_name(228))
         if var_0001 == 11 then
             var_0002 = random2(4, 1)
             if var_0002 == 1 then

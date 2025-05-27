@@ -25,7 +25,7 @@ function func_04DB(eventid, objectref)
                 add_dialogue("\"To believe the humans deserve it,\" he shrugs, \"but to hope my brethren display more control than that.\"")
                 remove_answer("Vesper")
             elseif answer == "buy provisions" then
-                var_0000 = unknown_001CH(unknown_001BH(219))
+                var_0000 = unknown_001CH(get_npc_name(219))
                 if var_0000 ~= 7 then
                     add_dialogue("\"To be not selling at this time. To come back tomorrow to buy provisions.\"")
                 else

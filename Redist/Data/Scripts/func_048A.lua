@@ -119,7 +119,7 @@ function func_048A(eventid, objectref)
             add_answer("find Brom")
         elseif cmps("find Brom") then
             add_dialogue("\"Wouldst thou help me find Brom?\"")
-            var_0006 = unknown_090AH()
+            var_0006 = ask_yes_no()
             if var_0006 then
                 add_dialogue("Gorn seems distracted for a moment. He places his hand to his ear as if he is listening to something. He looks back at you and there is a shocked look on his face. \"I haf just heard de voice ov Brom and he has told me not to trust thee! Go avay from me, Avatar! I tought dat thou vert my friend! I do not vish to speak vith thee anymore!\"")
                 set_flag(722, true)
@@ -131,7 +131,7 @@ function func_048A(eventid, objectref)
             remove_answer("find Brom")
         elseif cmps("look for Brom") then
             add_dialogue("\"If dat is how thou vants it. Den I shall go on searching for Brom mit no vone else but myself. Good luck in vhatever qvest thou art on, Avatar. Farewell to thee!\"")
-            unknown_001DH(unknown_001BH(138), 12)
+            unknown_001DH(get_npc_name(138), 12)
             return
         elseif cmps("it's a trick") then
             add_dialogue("Gorn seems distracted for a moment. He puts his hand to his ear as if he is listening to something. He looks back at you with a shocked expression on his face. \"I haf just heard de voice ov Brom and he says dat I should not trust thee! I tought dat thou vert my friend, Avatar! Go avay! I do not vish to speak vith thee again!\"")

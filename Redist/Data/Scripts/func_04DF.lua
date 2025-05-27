@@ -7,7 +7,7 @@ function func_04DF(eventid, objectref)
     end
     switch_talk_to(0, 223)
     var_0000 = get_schedule()
-    var_0001 = unknown_001CH(unknown_001BH(223))
+    var_0001 = unknown_001CH(get_npc_name(223))
     var_0002 = unknown_0908H()
     var_0003 = "Avatar"
     var_0004 = unknown_005AH()
@@ -35,7 +35,7 @@ function func_04DF(eventid, objectref)
             add_dialogue("\"Hello, handsome!\"")
         else
             add_dialogue("\"Hello, dear. Art thou sure thou dost not want to speak with Roberto?\"")
-            if not unknown_090AH() then
+            if not ask_yes_no() then
                 add_dialogue("\"All right, honey. Whatever heats thy blood...\"")
             else
                 add_dialogue("\"Then thou had best speak with him! He is probably more to thy liking.\"")
@@ -91,7 +91,7 @@ function func_04DF(eventid, objectref)
             add_answer({"Community Room", "talk", "massage", "swim"})
         elseif answer == "Community Room" then
             add_dialogue("\"Thou dost want to join me in the Community Room?\"")
-            if unknown_090AH() then
+            if ask_yes_no() then
                 add_dialogue("Martine leads you into a private room.")
                 add_dialogue("\"It really is not a Community Room at all. We shall be all alone!\"")
                 add_dialogue("A while later, after the woman has shown you more tricks than a crooked street mage, you emerge from the Community Room a much happier Avatar.")

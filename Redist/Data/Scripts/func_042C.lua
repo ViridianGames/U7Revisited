@@ -5,7 +5,7 @@ function func_042C(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0001 = get_schedule()
-            var_0002 = unknown_001CH(unknown_001BH(44))
+            var_0002 = unknown_001CH(get_npc_name(44))
             var_0008 = random2(4, 1)
             if var_0002 == 7 and (var_0001 == 3 or var_0001 == 4 or var_0001 == 5 or var_0001 == 6) then
                 if var_0008 == 1 then
@@ -30,7 +30,7 @@ function func_042C(eventid, objectref)
     switch_talk_to(0, 44)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
-    var_0002 = unknown_001CH(unknown_001BH(44))
+    var_0002 = unknown_001CH(get_npc_name(44))
     var_0003 = is_player_female()
     var_0004 = unknown_08F7H(-2)
     add_answer({"bye", "job", "name"})
@@ -109,7 +109,7 @@ function func_042C(eventid, objectref)
             add_dialogue("Carrocio gives you a shocked look and drops to his knees before you. \"I beseech thee, " .. var_0000 .. ", Keep still thy tongue, My Nell has ne'er harmed anyone, It would cause grievous injury to her reputation, Through the town's wagging lips our secret to spread, 'Twould make a permanent end of mine occupation, And kill our hope of a happy life dead.\" He looks you in the eyes, pleadingly. \"In thee I must place mine hope and trust, Part, parcel and whole. To ne'er again speak of the spoils of my lust, Thou must not tell a soul!\"")
             if not get_flag(137) then
                 add_dialogue("He looks at you awaiting some sort of indication. Will you keep his secret?")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     add_dialogue("\"Thou dost walk with honor, I know thou wilt not tell, Of dignity's stains I do not bother, My concerns are none save for Nell.\"")
                 else

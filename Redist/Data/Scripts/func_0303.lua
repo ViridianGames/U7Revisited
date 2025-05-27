@@ -23,7 +23,7 @@ function func_0303(eventid, objectref)
             else
                 switch_talk_to(26, 0)
                 add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
-                unknown_0004H(-26)
+                hide_npc(-26)
                 abort()
             end
         end

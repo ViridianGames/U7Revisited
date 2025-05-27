@@ -6,7 +6,7 @@ function func_04E3(eventid, objectref)
         switch_talk_to(0, 227)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion()
-        var_0002 = unknown_001BH(227)
+        var_0002 = get_npc_name(227)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(679) and not get_flag(677) then
@@ -29,7 +29,7 @@ function func_04E3(eventid, objectref)
                 add_answer({"Buccaneer's Den", "peace and quiet"})
             elseif answer == "story" then
                 add_dialogue("\"Thou dost really want to hear it? 'Tis very long.\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"All right. I was born in a cave. So my mother named me Mole.\"")
                     var_0003 = unknown_08F7H(1)
                     if var_0003 then
@@ -96,7 +96,7 @@ function func_04E3(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0004 = unknown_001CH(unknown_001BH(227))
+        var_0004 = unknown_001CH(get_npc_name(227))
         if var_0004 == 11 then
             var_0005 = random2(4, 1)
             if var_0005 == 1 then

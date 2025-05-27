@@ -26,7 +26,7 @@ function func_060E(eventid, objectref)
         set_flag(58, unknown_08F9H(unknown_0018H(-356), {0=1791, 1595=899, 753=-356}))
         if not get_flag(58) then
             var_0007 = unknown_0035H(4, 90, 359, -356)
-            var_0007 = unknown_093CH(unknown_001BH(-356), var_0007)
+            var_0007 = unknown_093CH(get_npc_name(-356), var_0007)
             for var_000A in ipairs(var_0007) do
                 if unknown_001CH(var_000A) == 0 then
                     var_000B = unknown_003CH(var_000A)
@@ -66,17 +66,17 @@ function func_060E(eventid, objectref)
             var_001A = var_0017
             if unknown_001CH(-167) == 0 or unknown_001CH(-168) == 0 then
                 if not unknown_0938H(-167) then
-                    var_001A = table.insert(var_001A, unknown_001BH(-167))
+                    var_001A = table.insert(var_001A, get_npc_name(-167))
                     unknown_001DH(-167, 11)
                 end
                 if not unknown_0938H(-168) then
-                    var_001A = table.insert(var_001A, unknown_001BH(-168))
+                    var_001A = table.insert(var_001A, get_npc_name(-168))
                     unknown_001DH(-168, 11)
                 end
             end
             unknown_003EH(var_0010, -357)
             for var_001B in ipairs(var_001A) do
-                if var_001B == unknown_001BH(-356) then
+                if var_001B == get_npc_name(-356) then
                     unknown_005CH(var_001B)
                     if not unknown_0088H(var_001B, 1) then
                         var_0004 = unknown_0001H(var_001B, {var_0013[var_0016], 17497, 7777})

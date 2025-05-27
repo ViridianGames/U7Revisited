@@ -5,7 +5,7 @@ function func_041C(eventid, objectref)
     if eventid ~= 1 then
         if eventid == 0 then
             var_0002 = get_schedule()
-            var_0003 = unknown_001CH(unknown_001BH(-28))
+            var_0003 = unknown_001CH(get_npc_name(-28))
             var_0004 = random2(4, 1)
             if var_0003 == 29 then
                 if var_0004 == 1 then

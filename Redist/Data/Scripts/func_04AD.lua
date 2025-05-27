@@ -6,7 +6,7 @@ function func_04AD(eventid, objectref)
         switch_talk_to(0, 173)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(173))
+        var_0002 = unknown_001CH(get_npc_name(173))
         var_0003 = unknown_000EH(-1, 839, 356)
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -45,7 +45,7 @@ function func_04AD(eventid, objectref)
                 add_answer({"sextant", "lute", "spittoon", "hourglass", "bell", "rocking horse", "cradle"})
             elseif answer == "cradle" then
                 add_dialogue("\"That old cradle was the cradle used to rock Gorn the Barbarian to sleep at night when he was just a baby. Thou canst see that there is a crack in its side proving that even as a child Gorn was a strong little tyke. I can let thee take it for ten gold coins. Dost thou wish to buy the cradle?\"")
-                var_0004 = unknown_090AH()
+                var_0004 = ask_yes_no()
                 if var_0004 then
                     var_0005 = unknown_002BH(true, 359, 644, 359, 10)
                     if var_0005 then
@@ -59,7 +59,7 @@ function func_04AD(eventid, objectref)
                 remove_answer("cradle")
             elseif answer == "rocking horse" then
                 add_dialogue("\"This is the rocking horse that once belonged to a little girl from Britain named Diane. She grew to be one of the finest equestriennes to ever sit upon a horse. I could let thee have this rare and unusual piece for twelve gold. Dost thou wish to buy it?\"")
-                var_0006 = unknown_090AH()
+                var_0006 = ask_yes_no()
                 if var_0006 then
                     var_0007 = unknown_002BH(true, 359, 644, 359, 12)
                     if var_0007 then
@@ -73,7 +73,7 @@ function func_04AD(eventid, objectref)
                 remove_answer("rocking horse")
             elseif answer == "bell" then
                 add_dialogue("\"That bell came from the High Court of Justice in Yew. It was rung to announce that court was in session. I can sell thee that interesting conversation piece for six gold coins. Dost thou wish to buy it?\"")
-                var_0008 = unknown_090AH()
+                var_0008 = ask_yes_no()
                 if var_0008 then
                     var_0009 = unknown_002BH(true, 359, 644, 359, 6)
                     if var_0009 then
@@ -88,7 +88,7 @@ function func_04AD(eventid, objectref)
             elseif answer == "hourglass" then
                 if var_0003 then
                     add_dialogue("\"I also have an antique hourglass. It was sold to me by this old man who was so daft that he could not recall how to use it! I will sell it to thee for five gold pieces. Dost thou wish to buy it?\"")
-                    var_000A = unknown_090AH()
+                    var_000A = ask_yes_no()
                     if var_000A then
                         var_000B = unknown_002BH(true, 359, 644, 359, 5)
                         if var_000B then
@@ -106,7 +106,7 @@ function func_04AD(eventid, objectref)
                 remove_answer("hourglass")
             elseif answer == "spittoon" then
                 add_dialogue("\"I also have an old spittoon. It was once used by... a great many people. Thou mayest have it for a gold piece. Take it! Please!\"")
-                var_000C = unknown_090AH()
+                var_000C = ask_yes_no()
                 if var_000C then
                     var_000D = unknown_002BH(true, 359, 644, 359, 1)
                     if var_000D then
@@ -121,7 +121,7 @@ function func_04AD(eventid, objectref)
                 remove_answer("spittoon")
             elseif answer == "lute" then
                 add_dialogue("\"I have a lute for sale that once belonged to a travelling bard who lost it in a game of dice. I am asking twenty gold coins for it. A song! Wouldst thou like to buy it?\"")
-                var_000E = unknown_090AH()
+                var_000E = ask_yes_no()
                 if var_000E then
                     var_000F = unknown_002BH(true, 359, 644, 359, 20)
                     if var_000F then
@@ -135,7 +135,7 @@ function func_04AD(eventid, objectref)
                 remove_answer("lute")
             elseif answer == "sextant" then
                 add_dialogue("\"I have a sextant that was sold by the world-famous shipwright Owen of Minoc. They are going to be building a monument to him, I understand. Anyway, the sailor who sold it to me had just suffered some harrowing experience out on the waters. He said when he sold it to me that he was going to retire. He obviously did not realize the value of this item. But I can let thee have it for twenty gold pieces. Dost thou wish to buy it?\"")
-                var_0010 = unknown_090AH()
+                var_0010 = ask_yes_no()
                 if var_0010 then
                     var_0011 = unknown_002BH(true, 359, 644, 359, 20)
                     if var_0011 then
@@ -153,7 +153,7 @@ function func_04AD(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0002 = unknown_001CH(unknown_001BH(173))
+        var_0002 = unknown_001CH(get_npc_name(173))
         var_0012 = random2(4, 1)
         if var_0002 == 7 then
             if var_0012 == 1 then

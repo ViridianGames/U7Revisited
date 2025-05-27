@@ -2,7 +2,7 @@
 function func_068E(eventid, objectref)
     local var_0000, var_0001, var_0002
 
-    var_0000 = unknown_000EH(5, 741, unknown_001BH(-356))
+    var_0000 = unknown_000EH(5, 741, get_npc_name(-356))
     if not var_0000 then
         unknown_0837H(2, 0, 0, var_0000, objectref)
         var_0001 = unknown_0018H(objectref)

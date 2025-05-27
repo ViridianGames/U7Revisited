@@ -7,7 +7,7 @@ function func_04E2(eventid, objectref)
         var_0000 = unknown_0908H()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = "Avatar"
-        var_0003 = unknown_001BH(226)
+        var_0003 = get_npc_name(226)
         if not get_flag(675) then
             var_0004 = var_0000
         elseif not get_flag(676) then
@@ -116,7 +116,7 @@ function func_04E2(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0009 = unknown_001CH(unknown_001BH(226))
+        var_0009 = unknown_001CH(get_npc_name(226))
         if var_0009 == 11 then
             var_000A = random2(4, 1)
             if var_000A == 1 then

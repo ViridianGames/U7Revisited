@@ -18,7 +18,7 @@ function func_03F7(eventid, objectref)
                 if not var_0000 then
                     start_conversation()
                     add_dialogue("\"Hast thou in thy possession the book on the Stone of Castambre?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         add_dialogue("His eyes reveal his hope. As he takes the book from you, it almost appears as if he is smiling.")
                         -- call [0004] (0891H, unmapped)
                         unknown_0891H()
@@ -59,7 +59,7 @@ function func_03F7(eventid, objectref)
             else
                 start_conversation()
                 add_dialogue("\"Art thou here to aid me in healing my brother?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     add_dialogue("\"Very good. I am pleased to call thee friend.\"")
                     set_flag(798, true)
                     -- call [0005] (0890H, unmapped)

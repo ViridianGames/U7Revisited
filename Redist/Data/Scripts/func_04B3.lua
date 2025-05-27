@@ -6,7 +6,7 @@ function func_04B3(eventid, objectref)
         switch_talk_to(0, 179)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule()
-        var_0002 = unknown_001CH(unknown_001BH(179))
+        var_0002 = unknown_001CH(get_npc_name(179))
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(530) then
@@ -48,7 +48,7 @@ function func_04B3(eventid, objectref)
                 remove_answer("buy")
             elseif answer == "room" then
                 add_dialogue("\"For but 5 gold thou canst let one of our lovely rooms. Dost thou wish to stay here for the night?\"")
-                if unknown_090AH() then
+                if ask_yes_no() then
                     var_0003 = unknown_0023H()
                     var_0004 = 0
                     for i = 1, var_0003 do

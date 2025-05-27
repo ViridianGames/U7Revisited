@@ -4,7 +4,7 @@ function func_028D(eventid, objectref)
 
     if eventid == 1 then
         var_0000 = unknown_006EH(objectref)
-        if var_0000 == unknown_001BH(-356) then
+        if var_0000 == get_npc_name(-356) then
             unknown_062DH(7, objectref)
         elseif var_0000 then
             var_0001 = unknown_0025H(objectref)

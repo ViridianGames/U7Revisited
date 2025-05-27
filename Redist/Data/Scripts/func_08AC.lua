@@ -5,7 +5,7 @@ function func_08AC(var_0000, var_0001, var_0002)
 
     add_dialogue("\"I am qualified to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
     save_answers()
-    var_0003 = unknown_090AH()
+    var_0003 = ask_yes_no()
     if not var_0003 then
         add_dialogue("\"Which of my services dost thou have need of?\"")
         var_0004 = {"resurrect", "cure poison", "heal"}
@@ -38,7 +38,7 @@ function func_08AC(var_0000, var_0001, var_0002)
             add_dialogue("\"Indeed, this individual needs restoration!\"")
         end
         add_dialogue("\"My price is " .. var_0007 .. " gold. Art thou interested?\"")
-        var_0011 = unknown_090AH()
+        var_0011 = ask_yes_no()
         if not var_0011 then
             var_0012 = unknown_0028H(359, 359, 644, 357)
             if var_0012 >= var_0007 then

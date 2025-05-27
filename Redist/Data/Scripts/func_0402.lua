@@ -8,13 +8,13 @@ function func_0402(eventid, objectref)
         var_0001 = "Avatar"
         var_0002 = get_party_members()
         var_0003 = is_player_female()
-        var_0004 = unknown_001BH(2) --- Guess: Retrieves object reference from ID
+        var_0004 = get_npc_name(2) --- Guess: Retrieves object reference from ID
         var_0005 = false
         var_0006 = false
         var_0007 = false
         if not get_flag(21) then
             switch_talk_to(2, 1)
-        elseif is_in_int_array(var_0004, var_0002) then
+        elseif is_in_string_array(var_0004, var_0002) then
             switch_talk_to(2, 0)
         else
             switch_talk_to(2, 1)

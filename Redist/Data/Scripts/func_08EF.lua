@@ -16,10 +16,10 @@ function func_08EF()
         else
             add_dialogue("Trent paces around the burned-out remains of his shop. When he sees you return, he rushes forward, looking for his love, Rowena.")
             var_0002 = unknown_0023H()
-            if unknown_001BH(-144) and table.contains(var_0002, unknown_001BH(-144)) then
+            if get_npc_name(-144) and table.contains(var_0002, get_npc_name(-144)) then
                 add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit begins and the other ends. You barely make out the image of Trent replacing Rowena's ring on her finger.~~Then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Trent bows to you then turns to regard his lovely wife.")
                 unknown_001FH(-144)
-                unknown_001DH(15, unknown_001BH(-144))
+                unknown_001DH(15, get_npc_name(-144))
                 set_flag(422, true)
                 return
             else
@@ -37,7 +37,7 @@ function func_08EF()
             remove_answer("Soul Cage")
         elseif string.lower(unknown_XXXXH()) == "free" then
             add_dialogue("\"Yes, thou wilt help me free her, wilt thou not?\" A tinge of the edge comes back to his voice.")
-            var_0003 = unknown_090AH()
+            var_0003 = ask_yes_no()
             if var_0003 then
                 add_dialogue("His grip on the haft of his hammer relaxes and he smiles with gratitude.~~\"Thou cannot know how much this means to me. I thank thee.\"")
             else

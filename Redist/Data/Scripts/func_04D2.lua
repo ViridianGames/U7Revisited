@@ -35,7 +35,7 @@ function func_04D2(eventid, objectref)
                 add_answer({"gargoyles", "Eldroth", "Blorn", "Yongi", "Mara"})
                 remove_answer("unusual")
             elseif answer == "Mara" then
-                var_0003 = unknown_0037H(unknown_001BH(204))
+                var_0003 = unknown_0037H(get_npc_name(204))
                 if var_0003 then
                     add_dialogue("\"I feel bad about the things I said now that she is gone. Too bad she was killed in that bar fight.\"")
                 else
@@ -70,7 +70,7 @@ function func_04D2(eventid, objectref)
                 add_dialogue("\"He is the trainer. Quite a good fighter from what I hear.\"")
                 remove_answer("Zaksam")
             elseif answer == "Cador" then
-                var_0005 = unknown_0037H(unknown_001BH(203))
+                var_0005 = unknown_0037H(get_npc_name(203))
                 if var_0005 then
                     add_dialogue("\"'Tis too bad he is dead. I have heard many compliment his abilities as a leader at the mines.\"")
                     add_answer("dead")

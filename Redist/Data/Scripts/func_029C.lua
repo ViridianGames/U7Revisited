@@ -32,10 +32,10 @@ function func_029C(eventid, objectref)
         end
     elseif eventid == 7 then
         var_0009 = unknown_092DH(objectref)
-        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
         var_0008 = unknown_0001H({1815, 8021, 3, 7719}, objectref)
     elseif eventid == 2 then
-        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        var_000A = unknown_002AH(-359, -359, 668, get_npc_name(-356))
         if var_000A then
             var_000B = unknown_0033H()
             var_000C = unknown_0011H(var_000B)
@@ -48,25 +48,25 @@ function func_029C(eventid, objectref)
                 if var_0003 >= 8 and var_0003 <= 12 then
                     unknown_0828H(var_000B, 0, 1, 0, 668, var_000B, 10)
                 else
-                    unknown_0040H("@The sword's not hot.@", unknown_001BH(-356))
+                    unknown_0040H("@The sword's not hot.@", get_npc_name(-356))
                 end
             end
         else
-            unknown_0040H("@I can't pick it up.@", unknown_001BH(-356))
+            unknown_0040H("@I can't pick it up.@", get_npc_name(-356))
         end
     elseif eventid == 8 then
         var_0009 = unknown_092DH(objectref)
-        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
-        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
+        var_000A = unknown_002AH(-359, -359, 668, get_npc_name(-356))
         var_0008 = unknown_0001H({1675, 8021, 3, 7719}, var_000A)
     elseif eventid == 9 then
         var_0009 = unknown_092DH(objectref)
-        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, unknown_001BH(-356))
-        var_000A = unknown_002AH(-359, -359, 668, unknown_001BH(-356))
+        var_0008 = unknown_0001H({8033, 3, 17447, 8556, var_0009, 7769}, get_npc_name(-356))
+        var_000A = unknown_002AH(-359, -359, 668, get_npc_name(-356))
         var_0008 = unknown_0001H({1676, 8021, 3, 7719}, var_000A)
     elseif eventid == 10 then
         var_0009 = unknown_092DH(objectref)
-        var_0008 = unknown_0001H({8556, var_0009, 7769}, unknown_001BH(-356))
+        var_0008 = unknown_0001H({8556, var_0009, 7769}, get_npc_name(-356))
         var_0008 = unknown_0001H({1677, 8021, 5, 7719}, objectref)
     end
     return

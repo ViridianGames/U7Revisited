@@ -23,7 +23,7 @@ function func_084C()
             var_000B = unknown_091CH(var_0005[var_0008], var_0001[var_0008], var_0004[var_0008], var_0009, var_0006[var_0008])
             var_000C = 0
             add_dialogue("\"^" .. var_000B .. ". To be acceptable?\"")
-            var_000D = unknown_090AH()
+            var_000D = ask_yes_no()
             if not var_000D then
                 if var_0002[var_0008] == 595 or var_0002[var_0008] == 782 then
                     if var_0002[var_0008] == 782 then
@@ -43,7 +43,7 @@ function func_084C()
                     add_dialogue("\"To have not the right amount of gold!\"")
                 end
                 add_dialogue("\"To buy something else?\"")
-                var_0000 = unknown_090AH()
+                var_0000 = ask_yes_no()
             end
         end
     end

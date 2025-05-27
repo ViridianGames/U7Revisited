@@ -35,7 +35,7 @@ function func_04C3(eventid, objectref)
             local answer = get_answer()
             if answer == "name" then
                 add_dialogue("\"I am Lord John-Paul of Serpent's Hold. Thou art \" .. var_0000 .. \", the Avatar, correct?\"")
-                var_0005 = unknown_090AH()
+                var_0005 = ask_yes_no()
                 if var_0005 then
                     if get_flag(606) and not get_flag(608) then
                         add_dialogue("\"I remember thee.\"")
@@ -99,7 +99,7 @@ function func_04C3(eventid, objectref)
                     add_dialogue("\"Very recently, a terrible crime was committed. It seems the statue of Lord British, the one in the Hold commons, was defaced by an unknown vandal.\"")
                     add_dialogue("\"Perhaps,\" he looks at you hopefully, \"thou couldst help track down the villain?\"")
                     set_flag(611, true)
-                    var_0006 = unknown_090AH()
+                    var_0006 = ask_yes_no()
                     if var_0006 then
                         add_dialogue("\"Very good. The best way to begin is by speaking with Sir Denton, the tavernkeeper at the Hallowed Dock. His ability to solve puzzles and problems is remarkable. When thou hast solved this little mystery, please inform me of thy findings.\"")
                     else

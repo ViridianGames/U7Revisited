@@ -2,10 +2,10 @@
 function func_06A5(eventid, objectref)
     if eventid == 3 then
         if get_flag(6) then
-            unknown_001DH(0, unknown_001BH(103))
+            unknown_001DH(0, get_npc_name(103))
             unknown_0904H("@Fellowship scum!@", 103)
         else
-            unknown_0467H(unknown_001BH(103))
+            unknown_0467H(get_npc_name(103))
         end
     end
     return

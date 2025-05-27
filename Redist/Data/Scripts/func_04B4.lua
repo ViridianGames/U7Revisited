@@ -58,7 +58,7 @@ function func_04B4(eventid, objectref)
             elseif answer == "Inamo" then
                 remove_answer("Inamo")
                 add_dialogue("\"To be a fine young gargoyle. To have been raised by Teregus, keeper of the altars. To have left town because of the tension between the altar worshippers and The Fellowship. To have been angry and distrustful of The Fellowship. To have news of him?\"")
-                var_0001 = unknown_090AH()
+                var_0001 = ask_yes_no()
                 if var_0001 then
                     add_dialogue("\"To be excellent! To have seen him? To know how he is faring? To be well?\"")
                     set_flag(568, true)
@@ -98,7 +98,7 @@ function func_04B4(eventid, objectref)
                 remove_answer("leaders")
             elseif answer == "Runeb" then
                 add_dialogue("\"To mean, in your language, `Red Mist'. To have been given that name because that is all he leaves behind of an adversary in battle. Before his conversion by The Fellowship, to have been known as a particularly cruel and dangerous gargoyle.\"")
-                var_0002 = unknown_0037H(unknown_001BH(-184))
+                var_0002 = unknown_0037H(get_npc_name(-184))
                 if var_0002 then
                     add_dialogue("\"To be gone -- dead -- now.\"")
                 end

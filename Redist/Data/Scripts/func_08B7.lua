@@ -29,7 +29,7 @@ function func_08B7()
             var_0012 = unknown_091BH(var_0006, var_0002[var_0011], var_0007, var_0005[var_0011], var_0008[var_0011])
             var_0013 = 0
             add_dialogue("^" .. var_0012 .. " Dost thou still want it?")
-            var_0014 = unknown_090AH()
+            var_0014 = ask_yes_no()
             if not var_0014 then
                 if var_0003[var_0011] == 377 then
                     add_dialogue("\"How many wouldst thou like?\"")
@@ -46,7 +46,7 @@ function func_08B7()
                 add_dialogue("\"Thou dost not have enough gold for that!\"")
             end
             add_dialogue("\"Wouldst thou like something else?\"")
-            var_0001 = unknown_090AH()
+            var_0001 = ask_yes_no()
         end
     end
     restore_answers()

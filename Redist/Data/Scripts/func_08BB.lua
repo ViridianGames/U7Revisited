@@ -59,7 +59,7 @@ function func_08BB(eventid)
             add_dialogue("\"Thou dost already have that spell!\"")
         end
         add_dialogue("\"Wouldst thou like another spell?\"")
-        var_0001 = unknown_090AH()
+        var_0001 = ask_yes_no()
     end
     restore_answers()
     return

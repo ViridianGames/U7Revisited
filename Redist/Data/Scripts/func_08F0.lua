@@ -18,7 +18,7 @@ function func_08F0()
                     switch_talk_to(144, 1)
                     add_dialogue("\"No, " .. var_0000 .. ". Wouldst thou take my beloved from me so shortly after our reunion? Another will have to perform this terrible task.\" Rowena holds on tightly to her husband.")
                     set_flag(414, true)
-                    unknown_0004H(-144)
+                    hide_npc(-144)
                     switch_talk_to(142, 1)
                 else
                     add_dialogue("\"I cannot leave my lady like this. Surely thou dost understand, " .. var_0000 .. ".\"")

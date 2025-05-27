@@ -73,7 +73,7 @@ function func_04A1(eventid, objectref)
                     add_dialogue("\"Yes, I train people. But only during the day. Now, 'tis time for drink!\"")
                 else
                     add_dialogue("\"Wilt thou pay the 45 gold for the training session?\"")
-                    if unknown_090AH() then
+                    if ask_yes_no() then
                         unknown_085FH(45, 4, {1})
                     else
                         add_dialogue("\"Well, mayhap next time thou wilt be willing.\"")
