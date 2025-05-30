@@ -59,7 +59,9 @@ void ScriptingSystem::LoadScript(const std::string& path)
 
     if (luaL_dofile(m_luaState, path.c_str()) != LUA_OK)
     {
-        std::cerr << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
+       stringstream st;
+       st << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
+       std::cerr << st.str();
         lua_pop(m_luaState, 1);
     }
     else

@@ -74,7 +74,7 @@ void ConversationState::OnExit()
             lua_State* co = lua_tothread(g_ScriptingSystem->m_luaState, -1);
             lua_pop(g_ScriptingSystem->m_luaState, 1);
 
-            AddConsoleString("Cleaning up coroutine for " + m_luaFunction);
+            //AddConsoleString("Cleaning up coroutine for " + m_luaFunction);
             luaL_unref(g_ScriptingSystem->m_luaState, LUA_REGISTRYINDEX, co_ref);
             g_ScriptingSystem->m_activeCoroutines.erase(m_luaFunction);
         }

@@ -143,7 +143,7 @@ function func_040C(eventid, objectref)
     if get_flag(69) and not get_flag(68) then
         add_answer("Pay me now, please")
     end
-    while true do
+    --while true do
         local answer = get_answer()
         if answer == "name" then
             add_dialogue("\"My name is Finnigan.\"")
@@ -254,9 +254,9 @@ function func_040C(eventid, objectref)
                 set_flag(66, true)
             end
             remove_answer("password")
-        elseif answer == "bye" then
-            break
+        --elseif answer == "bye" then
+            --break
         end
-    end
+    --end
     return
 end

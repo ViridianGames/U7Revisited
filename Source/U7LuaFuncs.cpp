@@ -24,7 +24,7 @@ static int LuaDebugPrint(lua_State *L)
 {
     const char *text = luaL_checkstring(L, 1);
     cout << "Lua debug says: " << text << "\n";
-    AddConsoleString(text, Color{255, 255, 255, 255});
+    if (LUA_DEBUG) AddConsoleString(text, Color{255, 255, 255, 255});
     return 0;
 }
 
@@ -299,7 +299,7 @@ static int LuaAskYesNo(lua_State *L)
     std::string func_name = g_ConversationState->m_luaFunction;
     auto it = g_ScriptingSystem->m_activeCoroutines.find(func_name);
     if (it == g_ScriptingSystem->m_activeCoroutines.end()) {
-        AddConsoleString("Error: No active coroutine for " + func_name);
+        if(LUA_DEBUG) AddConsoleString("Error: No active coroutine for " + func_name);
         lua_pushboolean(L, false);
         return 1;
     }
@@ -321,19 +321,19 @@ static int LuaAskYesNo(lua_State *L)
         lua_pushboolean(co_thread, result);
         int nresults;
         int status = lua_resume(co_thread, nullptr, 1, &nresults);
-        AddConsoleString("Coroutine status after resume: " + std::to_string(status));
+        if (LUA_DEBUG) AddConsoleString("Coroutine status after resume: " + std::to_string(status));
         if (status != LUA_YIELD && status != LUA_OK) {
             const char* error = lua_tostring(co_thread, -1);
-            AddConsoleString(std::string("Lua coroutine error: ") + error);
+            if (LUA_DEBUG) AddConsoleString(std::string("Lua coroutine error: ") + error);
             lua_pop(co_thread, 1);
         } else {
-            AddConsoleString("Lua coroutine resumed with result: " + std::string(result ? "true" : "false"));
+           if (LUA_DEBUG) AddConsoleString("Lua coroutine resumed with result: " + std::string(result ? "true" : "false"));
         }
 
         // Notify ConversationState if the script finished
         if (status != LUA_YIELD) {
             g_ConversationState->m_scriptFinished = true;
-            AddConsoleString("Script finished for " + g_ConversationState->m_luaFunction);
+            if (LUA_DEBUG) AddConsoleString("Script finished for " + g_ConversationState->m_luaFunction);
         }
     };
 
@@ -892,7 +892,7 @@ static int LuaGetNPCName(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     string npc_name = "NPC";
     npc_name = g_NPCData[npc_id]->name;
-    AddConsoleString("NPC name: " + npc_name);
+    if (LUA_DEBUG) AddConsoleString("NPC name: " + npc_name);
     cout << "NPC name: " << npc_name << "\n";
 
     lua_pushstring(L, npc_name.c_str());
