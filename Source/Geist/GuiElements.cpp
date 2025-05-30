@@ -1019,23 +1019,14 @@ void GuiTextArea::Draw()
 	}
 	else if (m_Justified == GuiTextArea::CENTERED)
 	{
-		if (MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1).x < m_Width)
+		if (m_Width == 0 || MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1).x < m_Width)
 		{
 			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Font->baseSize, 1).x;
 
 			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))) - (m_Width / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
 			if (m_Shadowed)
-				DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2 + (m_Width / 2)))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), Color{ 0, 0, 0, 255 });
+				DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) + (m_Font->baseSize * .125)), int(m_Gui->m_Pos.y + (m_Pos.y) + (m_Font->baseSize * .125)), Color{ 0, 0, 0, 255 });
 			DrawStringCentered(m_Font, m_Font->baseSize, m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Color);
-		}
-		else
-		{
-			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Font->baseSize, 1).x;
-
-			//DrawRectangle(int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2))) - textlength / 2), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color(.5, 0, 0, .75), true);
-			//if (m_Shadowed)
-			//	m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, Color{ 0, 0, 0, 255 });
-			//m_Font->DrawParagraphCentered(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + (m_Width / 2)))), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Font->height, m_Color);
 		}
 	}
 	else

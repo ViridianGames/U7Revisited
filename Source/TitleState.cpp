@@ -208,10 +208,10 @@ void TitleState::CreateTitleGUI()
          g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
          g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   // y += yoffset;
-   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_CREDITS, y, "Credits",
-   //       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-   //       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+   y += yoffset;
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_CREDITS, y, "Credits",
+         g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+         g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
                
 
    y += yoffset;
@@ -229,23 +229,96 @@ void TitleState::CreateCreditsGUI()
    m_CreditsGui = make_shared<Gui>();
    m_CreditsGui->m_Font = g_SmallFont;
 
-   m_CreditsGui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
-   m_CreditsGui->AddOctagonBox(GUI_CREDITS_PANEL, 220, 180, 200, 160, g_Borders);
-   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_SmallFont.get(), "CREDITS!", 290, 185 );
+   m_CreditsGui->SetLayout(120, 80, 400, 260, g_DrawScale, Gui::GUIP_USE_XY);
+   m_CreditsGui->AddOctagonBox(GUI_CREDITS_PANEL, 0, 0, 400, 260, g_Borders);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_SmallFont.get(), "CREDITS!", 200, 10, 0, 0, Color{255, 255, 255, 255}, GuiTextArea::CENTERED, 0, 1, true);
 
    int idOffset = 1;
-   int yOffset = 16;
-   int y = 186;
+   int yOffset = 12;
+   int y = 10;
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Project Lead - Anthony Salter", 200, y += yOffset, 0, 0, GREEN, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "u7revisited.com - youtube.com/viridiangames", 200, y += yOffset, 0, 0, GREEN, GuiTextArea::CENTERED, 0, 1, true);
+
+   y += yOffset * 1.5f;
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "CodeTinkers!", 100, y, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Special Thanks!", 200, y, 0, 0, YELLOW, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "ArtMages!", 300, y, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+
+   //y += yOffset * .5f;;
+
+   //  Codetinkers!
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Clawjelly", 100, y += yOffset, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Daremon", 100, y += yOffset, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Rsaarelm", 100, y += yOffset, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Tibbonzero", 100, y += yOffset, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Wazoo", 100, y += yOffset, 0, 0, BLUE, GuiTextArea::CENTERED, 0, 1, true);
+
+   y = 10 + 3.5f * yOffset; //  Reset y to the top of the art section
+
+   //  ArtMages!
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "1crash007", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Aiden", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Blues", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Clawjelly", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "CYON4D", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Donkko", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "MementoMoree", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Rsaarelm", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "UrAnt", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Wudan07", 300, y += yOffset, 0, 0, RED, GuiTextArea::CENTERED, 0, 1, true);
+
+   y = 10 + 3.5f * yOffset; //  Reset y to the top of the art section
+
+   //  Special Thanks
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "ScouterVee", 200, y += yOffset, 0, 0, YELLOW, GuiTextArea::CENTERED, 0, 1, true);
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "SolviteSekai", 200, y += yOffset, 0, 0, YELLOW, GuiTextArea::CENTERED, 0, 1, true);
+
+   y = 130;
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Patrons!", 100, y, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ko-Fi Buyers!", 200, y, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Andrew Gaul", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ben Citak", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Christoffer Erikson", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "FreeManPhil", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Johnny Mellgren", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Joseph", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Nighthawk", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Pachurice", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
+   y = 130;
+
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Lord Brutish", 200, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
 
-   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Project Lead", 290, y += yOffset);;
-   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Anthony Salter", 290, y += yOffset);
+
+
+
+
+
+
+   //m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Anthony Salter", 290, y += yOffset);
+
 
 
 
    // m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_Font.get(), "CREDITS!", 220, 180, 100, 20, Color{255, 255, 255, 255}, false, 0, true, true);
 
-   m_CreditsGui->AddStretchButtonCentered(GUI_CREDITS_BUTTON_BACK, 310, "Back",
+   m_CreditsGui->AddStretchButtonCentered(GUI_CREDITS_BUTTON_BACK, 230, "Wow, these are all such cool people!",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
@@ -290,18 +363,18 @@ void TitleState::UpdateTitle()
       g_StateMachine->MakeStateTransition(STATE_WORLDEDITORSTATE);
    }
 
+      if(m_CreditsGui->m_ActiveElement == GUI_CREDITS_BUTTON_BACK)
+   {
+      m_TitleGui->m_Active = true;
+      m_CreditsGui->m_Active = false;
+      m_CreditsGui->m_ActiveElement = -1;
+   }
+
    if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_CREDITS)
    {
       m_TitleGui->m_Active = false;
       m_CreditsGui->m_Active = true;
       m_TitleGui->m_ActiveElement = -1;
-   }
-
-   if(m_CreditsGui->m_ActiveElement == GUI_CREDITS_BUTTON_BACK)
-   {
-      m_TitleGui->m_Active = true;
-      m_CreditsGui->m_Active = false;
-      m_CreditsGui->m_ActiveElement = -1;
    }
 
    if (IsKeyPressed(KEY_ESCAPE))
