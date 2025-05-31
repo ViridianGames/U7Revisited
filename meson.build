@@ -11,14 +11,19 @@ project('Ultima 7 Revisited', ['c', 'cpp'],
             'cpp_std=c++17'
         ])
 
-# Suppress float-to-int warnings (C4244)
-add_project_arguments('/wd4244', language: 'cpp')
-
-# Suppress truncation from 'double' to 'float' warnings (C4305)
-add_project_arguments('/wd4305', language: 'cpp')
-
-# Declare C++17 for CPP source files
-add_project_arguments('/std:c++17', language: 'cpp')
+cpp = meson.get_compiler('cpp')
+# MSVC specific arguments
+if cpp.get_id() == 'msvc'
+  # Suppress float-to-int warnings (C4244)
+   add_project_arguments('/wd4244', language: 'cpp')
+  # Suppress truncation from 'double' to 'float' warnings (C4305)
+  add_project_arguments('/wd4305', language: 'cpp')
+  # Declare C++17 for CPP source files
+  add_project_arguments('/std:c++17', language: 'cpp')
+elif cpp.get_id() == 'gcc' or cpp.get_id() == 'clang'
+  # For C4244 (float-to-int, general conversion issues)
+  add_project_arguments('-Wno-conversion', language: 'cpp')
+endif
 
 cmake = import('cmake')
 
@@ -75,11 +80,15 @@ lua_sources = files(
     'ThirdParty/lua/src/lutf8lib.c',
 )
 lua_include = include_directories('ThirdParty/lua/src')
+lua_c_args = ['-DLUA_COMPAT_5_3']
+if host_machine.system() == 'windows'
+  lua_c_args += '-DLUA_BUILD_AS_DLL'
+endif
 lua_lib = static_library(
     'lua',
     lua_sources,
     include_directories: lua_include,
-    c_args: ['-DLUA_COMPAT_5_3', '-DLUA_BUILD_AS_DLL']
+    c_args: lua_c_args
 )
 
 dependencies += declare_dependency(
@@ -121,6 +130,7 @@ sources = files(
            'Source/Geist/TooltipSystem.cpp',
 
            'Source/ConversationState.cpp',
+           'Source/GumpManager.cpp',
            'Source/LoadingState.cpp',
            'Source/Main.cpp',
            'Source/MainState.cpp',
