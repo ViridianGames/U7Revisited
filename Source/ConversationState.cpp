@@ -199,12 +199,12 @@ void ConversationState::Update()
     if (m_answerPending && !scriptYielded && !m_scriptFinished)
     {
         m_answerPending = false;
-        AddConsoleString("Calling Lua function: " + m_luaFunction);
+        //AddConsoleString("Calling Lua function: " + m_luaFunction);
         try {
             std::string result = g_ScriptingSystem->CallScript(m_luaFunction, {1, m_npcId});
-            AddConsoleString("Lua function completed: " + m_luaFunction + ", result: " + result);
+            //AddConsoleString("Lua function completed: " + m_luaFunction + ", result: " + result);
         } catch (const std::exception& e) {
-            AddConsoleString("Exception in CallScript: " + std::string(e.what()));
+            //AddConsoleString("Exception in CallScript: " + std::string(e.what()));
         }
     }
 
