@@ -84,7 +84,11 @@ void DrawStringCentered(Font* font, float fontsize, char* text, Vector2 center, 
 	center.x -= dims.x / 2;
 	center.y -= dims.y / 2;
 
-	DrawTextEx(*font, text, center, fontsize, 1, color);
+	//  Make sure we're on a whole pixel.
+	int centerx = int(center.x);
+	int centery = int(center.y);
+
+	DrawTextEx(*font, text, {float(centerx), float(centery)}, fontsize, 1, color);
 }
 
 void DrawStringRight(Font* font, float fontsize, std::string text, float rightx, float y, Color color)

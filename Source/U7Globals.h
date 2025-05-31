@@ -226,6 +226,8 @@ unsigned int GetNextID();
 bool WasLMBDoubleClicked();
 bool WasRMBDoubleClicked();
 
+void OpenURL(const std::string& url);
+
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE
 //////////////////////////////////////////////////////////////////////////////
@@ -288,6 +290,12 @@ extern std::shared_ptr<Sprite> g_RightArrow;
 extern std::shared_ptr<Sprite> g_gumpBackground;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkUp;
 extern std::shared_ptr<Sprite> g_gumpCheckmarkDown;
+
+extern std::shared_ptr<Sprite> g_GitHubButton;
+extern std::shared_ptr<Sprite> g_XButton;
+extern std::shared_ptr<Sprite> g_YouTubeButton;
+extern std::shared_ptr<Sprite> g_PatreonButton;
+extern std::shared_ptr<Sprite> g_KoFiButton;
 
 extern Color g_Red;
 extern Color g_Blue;

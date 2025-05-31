@@ -193,15 +193,15 @@ void TitleState::CreateTitleGUI()
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   y += yoffset;
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, y, "Object Editor",
-      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+   // y += yoffset;
+   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, y, "Object Editor",
+   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
-   y += yoffset;
-   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, y, "World Editor",
-      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+   // y += yoffset;
+   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, y, "World Editor",
+   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
    y += yoffset;
    m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OPTIONS, y, "Options",
@@ -218,6 +218,34 @@ void TitleState::CreateTitleGUI()
    m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_QUIT, y, "Quit",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   y += yoffset;
+   int width = MeasureTextEx(*g_SmallFont, "GitHub", g_SmallFont->baseSize, 1).x * 1.3f;
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_GITHUB, 240, y, width, "GitHub",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+   
+   m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_YOUTUBE, y, "YouTube",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   width = MeasureTextEx(*g_SmallFont, "X", g_SmallFont->baseSize, 1).x * 2.0f;
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_X, 360, y, width, "X",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+   y += yoffset;
+
+   width = MeasureTextEx(*g_SmallFont, "Patreon", g_SmallFont->baseSize, 1).x * 1.3f;
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_PATREON, 260, y, width, "Patreon",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+   
+   width = MeasureTextEx(*g_SmallFont, "Ko-Fi", g_SmallFont->baseSize, 1).x * 1.5f;
+   m_TitleGui->AddStretchButton(GUI_TITLE_BUTTON_KOFI, 320, y, width, "Ko-Fi",
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
 
    m_TitleGui->m_Active = true;
 
@@ -292,6 +320,8 @@ void TitleState::CreateCreditsGUI()
 
    m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "FreeManPhil", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
+   m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Gronkh", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
+
    m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Johnny Mellgren", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
    m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Joseph", 100, y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
@@ -318,7 +348,7 @@ void TitleState::CreateCreditsGUI()
 
    // m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE, g_Font.get(), "CREDITS!", 220, 180, 100, 20, Color{255, 255, 255, 255}, false, 0, true, true);
 
-   m_CreditsGui->AddStretchButtonCentered(GUI_CREDITS_BUTTON_BACK, 230, "Wow, these are all such cool people!",
+   m_CreditsGui->AddStretchButtonCentered(GUI_CREDITS_BUTTON_BACK, 246, "Wow, these are all such cool people!",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
@@ -374,6 +404,36 @@ void TitleState::UpdateTitle()
    {
       m_TitleGui->m_Active = false;
       m_CreditsGui->m_Active = true;
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_GITHUB)
+   {
+      OpenURL("https://github.com/ViridianGames/U7Revisited/?tab=readme-ov-file#ultima-vii-revisited");
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_YOUTUBE)
+   {
+      OpenURL("https://www.youtube.com/@viridiangames");
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_X)
+   {
+      OpenURL("https://x.com/ViridianGames");
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_PATREON)
+   {
+      OpenURL("https://www.patreon.com/ViridianGames");
+      m_TitleGui->m_ActiveElement = -1;
+   }
+
+   if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_KOFI)
+   {
+      OpenURL("https://ko-fi.com/viridiangames");
       m_TitleGui->m_ActiveElement = -1;
    }
 

@@ -532,6 +532,12 @@ shared_ptr<Sprite> g_gumpBackground;
 shared_ptr<Sprite> g_gumpCheckmarkUp;
 shared_ptr<Sprite> g_gumpCheckmarkDown;
 
+shared_ptr<Sprite> g_GitHubButton;
+shared_ptr<Sprite> g_XButton;
+shared_ptr<Sprite> g_YouTubeButton;
+shared_ptr<Sprite> g_PatreonButton;
+shared_ptr<Sprite> g_KoFiButton;
+
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;
@@ -591,6 +597,21 @@ bool WasRMBDoubleClicked()
 
 	return false;
 }
+
+void OpenURL(const std::string& url)
+{
+    #ifdef __linux__
+        std::string command = "xdg-open " + url;
+    #elif _WIN32
+        std::string command = "start " + url;
+    #elif __APPLE__
+        std::string command = "open " + url;
+    #else
+        return; // Unsupported platform
+    #endif
+    std::system(command.c_str());
+}
+
 
 // int l_add_dialogue(lua_State* L)
 // {

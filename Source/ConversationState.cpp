@@ -242,8 +242,8 @@ void ConversationState::Draw()
 	DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId) + to_string(m_npcFrame)), {4, 10}, 0, 2, WHITE);
 
 	//if (!m_steps.empty() && m_steps[0].type == ConversationStepType::STEP_ADD_DIALOGUE) {
-		DrawParagraph(g_ConversationFont, m_currentDialogue, { 115, 20 }, 400,
-			g_ConversationFont.get()->baseSize, 1, YELLOW);
+	DrawParagraph(g_ConversationFont, m_currentDialogue, { 115, 20 }, 380,
+		g_ConversationFont.get()->baseSize, 1, YELLOW);
 	//}
 
 	for (int i = 0; i < m_answers.size(); i++) {

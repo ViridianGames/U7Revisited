@@ -1311,17 +1311,19 @@ void GuiStretchButton::Update()
 	if (m_Visible && m_Active)
 	{
 		//  Stretch buttons activate on button down, so there is no "hot" state.
-		if (IsLeftButtonDownInRect({ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			m_Width * m_Gui->m_InputScale,
-			m_Height * m_Gui->m_InputScale }))
-		{
-			m_Hovered = false;
-			m_Down = true;
-			m_Clicked = false; // Not clicked until the button is released.
-			m_Gui->m_ActiveElement = m_ID;
-		}
-		else if (WasLeftButtonClickedInRect(Rectangle{ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		// if (IsLeftButtonDownInRect({ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
+		// 	(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
+		// 	m_Width * m_Gui->m_InputScale,
+		// 	m_Height * m_Gui->m_InputScale }))
+		// {
+		// 	m_Hovered = false;
+		// 	m_Down = true;
+		// 	m_Clicked = false; // Not clicked until the button is released.
+		// 	m_Gui->m_ActiveElement = m_ID;
+		// }
+		// else
+		
+		if (WasLeftButtonClickedInRect(Rectangle{ (m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
 			m_Width * m_Gui->m_InputScale,
 			m_Height * m_Gui->m_InputScale }))

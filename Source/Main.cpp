@@ -168,12 +168,12 @@ int main(int argv, char** argc)
       g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 8, 42, 8, 8));
       g_ConversationBorders.push_back(make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 16, 42, 8, 8));
 
-      g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 11);
-      g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 11);
-      g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 4, 11);
-      g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 4, 11);
-      g_ActiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 10, 0, 1, 11);
-      g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 4, 11);
+      g_InactiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 15, 0, 4, 12);
+      g_InactiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 18, 0, 1, 12);
+      g_InactiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 19, 0, 4, 12);
+      g_ActiveButtonL = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 7, 0, 4, 12);
+      g_ActiveButtonM = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 10, 0, 1, 12);
+      g_ActiveButtonR = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 11, 0, 4, 12);
 
       g_LeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 67, 0, 8, 9);
       g_RightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 76, 0, 8, 9);
@@ -181,6 +181,9 @@ int main(int argv, char** argc)
       g_gumpBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 166, 177, 145, 102);
       g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
       g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
+
+      g_XButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 128, 0, 20, 20);
+      g_GitHubButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 148, 0, 16, 16);
 
       //  Initialize scripts
 
