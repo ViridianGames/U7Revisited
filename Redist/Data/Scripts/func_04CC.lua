@@ -5,7 +5,7 @@ function func_04CC(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 204)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0908H()
+        var_0001 = get_player_name()
         var_0002 = "the Avatar"
         var_0003 = get_npc_name(204)
         var_0004 = get_npc_name(203)

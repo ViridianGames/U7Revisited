@@ -16,7 +16,7 @@ function func_044B(eventid, objectref)
     var_0002 = false
     var_0003 = false
     var_0004 = is_player_female()
-    var_0005 = unknown_0908H()
+    var_0005 = get_player_name()
     add_answer({"bye", "job", "name"})
     if not get_flag(224) and not get_flag(226) then
         add_answer({"Yew", "Nadia", "Julius", "Ariana"})

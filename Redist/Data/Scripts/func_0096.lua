@@ -1,4 +1,3 @@
---- Best guess: Handles barge interaction, checking sail and gangplank states before raising planks, displaying error messages if conditions fail.
 function func_0096(eventid, objectref)
     if eventid == 1 then
         if not unknown_0088H(10, objectref) then

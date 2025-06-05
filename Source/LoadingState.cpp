@@ -1350,7 +1350,7 @@ void LoadingState::LoadInitialGameState()
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
-				g_ObjectList[nextID].get()->m_NPCData = g_NPCData[thisNPC.id].get();
+				g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
 
 				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
 				{

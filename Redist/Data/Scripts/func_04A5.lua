@@ -4,7 +4,7 @@ function func_04A5(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 165)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = false
         start_conversation()
@@ -41,22 +41,22 @@ function func_04A5(eventid, objectref)
                 add_dialogue("\"Speaking of thy friends, I have heard that thy companion, Dupre, is a drunken sot.\"")
                 var_0003 = unknown_08F7H(4)
                 if var_0003 then
-                    switch_talk_to(0, 4)
+                    switch_talk_to(4, 0)
                     add_dialogue("\"Hey, I don't think --\"")
                     hide_npc(4)
-                    switch_talk_to(0, 165)
+                    switch_talk_to(165, 0)
                 end
                 add_dialogue("\"Yes, from what I have been told, that Dupre has no will when confronted by a tankard of, well, anything.\" \"As a matter of fact, thou hast fairly poor taste in companions overall.\"")
                 add_answer("companions")
                 remove_answer("friends")
             elseif answer == "companions" then
                 add_dialogue("\"I am glad thou didst ask, " .. var_0001 .. ". Thy friend, Iolo, charges far too much for his bows. Perhaps thou couldst have a chat with him.\"")
-                var_0004 = unknown_08F7H(-1)
+                var_0004 = unknown_08F7H(1)
                 if var_0004 then
-                    switch_talk_to(0, -1)
+                    switch_talk_to(1, 0)
                     add_dialogue("\"Too much? What dost thou mean, too --\"")
                     hide_npc(1)
-                    switch_talk_to(0, 165)
+                    switch_talk_to(165, 0)
                 end
                 add_dialogue("\"His bows and crossbows just aren't of the quality that is worth the kind of gold he charges.\" He takes a step back. \"Gads! Thy breath could gag an ox. Thou shouldst consider taking better care of thy teeth, or thy fellows will leave thee.\"")
                 add_answer("teeth")

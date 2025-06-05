@@ -13,7 +13,7 @@ function func_0610(eventid, objectref)
         end
     end
     var_0004 = get_lord_or_lady()
-    var_0005 = unknown_0908H() --- Guess: Gets player info
+    var_0005 = get_player_name() --- Guess: Gets player info
     var_0006 = unknown_08F7H(167)
     var_0007 = unknown_08F7H(168)
     var_0008 = unknown_08F7H(1)

@@ -4,7 +4,7 @@ function func_04B9(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 185)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = get_schedule()
         var_0002 = unknown_0931H(1, 359, 981, 1, 357)
         if var_0001 == 7 then

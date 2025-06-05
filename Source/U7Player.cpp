@@ -27,11 +27,23 @@ vector<string>& U7Player::GetPartyMembers()
 	return m_PartyMembers;
 }
 
-bool U7Player::NPCInParty(int npc_id)
+bool U7Player::NPCIDInParty(int npc_id)
 {
 	for (int i = 0; i < m_PartyMemberIDs.size(); i++)
 	{
 		if (m_PartyMemberIDs[i] == npc_id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool U7Player::NPCNameInParty(std::string npc_name)
+{
+	for (int i = 0; i < m_PartyMembers.size(); i++)
+	{
+		if (m_PartyMembers[i] == npc_name)
 		{
 			return true;
 		}

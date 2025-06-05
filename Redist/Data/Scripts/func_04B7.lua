@@ -4,7 +4,7 @@ function func_04B7(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 183)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(575) then

@@ -4,7 +4,7 @@ function func_02D3(eventid, objectref)
 
     if eventid == 1 then
         -- call [0000] (0908H, unmapped)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         if not npc_in_party(1) then
             switch_talk_to(0, 1)
             start_conversation()

@@ -4,7 +4,7 @@ function func_04C3(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 195)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = unknown_08F7H(-197)
         var_0003 = false

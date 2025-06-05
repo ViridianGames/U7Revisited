@@ -7,7 +7,7 @@ function func_04E6(eventid, objectref)
         var_0000 = get_schedule()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = get_lord_or_lady()
-        var_0003 = unknown_0908H()
+        var_0003 = get_player_name()
         var_0004 = "Avatar"
         var_0005 = "a pseudonym"
         start_conversation()

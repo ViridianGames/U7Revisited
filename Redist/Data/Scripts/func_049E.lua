@@ -11,7 +11,7 @@ function func_049E(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 158)
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(512) then

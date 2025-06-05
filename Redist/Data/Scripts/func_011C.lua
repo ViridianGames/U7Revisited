@@ -12,7 +12,7 @@ function func_011C(eventid, objectref)
             var_0000 = var_0000 - 12
             unknown_0040H(" " .. var_0000 .. " o'clock", objectref)
         else
-            var_0001 = unknown_0908H()
+            var_0001 = get_player_name()
             unknown_08FFH("@^" .. var_0001 .. ", I believe the key word in sundial is `sun'.@", objectref)
         end
     end

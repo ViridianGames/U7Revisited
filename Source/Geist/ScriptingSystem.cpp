@@ -4,7 +4,6 @@
 #include "Globals.h"
 #include "raylib.h"
 #include "raymath.h"
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -39,6 +38,25 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
+    //  Resume any active coroutines
+    for (auto it = m_activeCoroutines.begin(); it != m_activeCoroutines.end();)
+    {
+        lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, it->second);
+        lua_State* co = lua_tothread(m_luaState, -1);
+        lua_pop(m_luaState, 1);
+
+        if (lua_status(co) == LUA_YIELD)
+        {
+            // Coroutine is still active
+            ++it;
+        }
+        else
+        {
+            // Coroutine is dead, clean up
+            luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
+            it = m_activeCoroutines.erase(it);
+        }
+    }
 }
 
 void ScriptingSystem::LoadScript(const std::string& path)
@@ -82,7 +100,7 @@ void ScriptingSystem::SortScripts()
     });
 }
 
-string ScriptingSystem::CallScript(const std::string& func_name, const std::vector<lua_Integer>& args)
+string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>& args)
 {
     // Check if the function is loaded
     bool valid = false;
@@ -92,7 +110,6 @@ string ScriptingSystem::CallScript(const std::string& func_name, const std::vect
         if (script.first == func_name)
         {
             valid = true;
-            std::cout << "Calling script: " << script.second << "\n";
             path = script.second;
             break;
         }
@@ -107,7 +124,6 @@ string ScriptingSystem::CallScript(const std::string& func_name, const std::vect
 
     LoadScript(path);
 
-    // Check if there's an active coroutine for this script
     lua_State* co = nullptr;
     int co_ref = -1;
     auto it = m_activeCoroutines.find(func_name);
@@ -118,24 +134,20 @@ string ScriptingSystem::CallScript(const std::string& func_name, const std::vect
         co = lua_tothread(m_luaState, -1);
         lua_pop(m_luaState, 1);
 
-        // Check if the coroutine is still alive
         if (lua_status(co) != LUA_YIELD)
         {
-            cout << string("Coroutine for " + func_name + " is dead; creating new one.") << endl;
             luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
             m_activeCoroutines.erase(func_name);
             co = nullptr;
         }
     }
 
-    // Create a new coroutine if none exists or the previous one is dead
     if (!co)
     {
         co = lua_newthread(m_luaState);
         co_ref = luaL_ref(m_luaState, LUA_REGISTRYINDEX);
         m_activeCoroutines[func_name] = co_ref;
 
-        // Load the function in the coroutine
         lua_getglobal(co, func_name.c_str());
         if (!lua_isfunction(co, -1))
         {
@@ -145,39 +157,52 @@ string ScriptingSystem::CallScript(const std::string& func_name, const std::vect
             return "Function " + func_name + " is not a function.";
         }
 
-        for (lua_Integer arg : args)
+        for (const auto& arg : args)
         {
-            lua_pushinteger(co, arg);
+            std::visit([&](const auto& value) {
+                using T = std::decay_t<decltype(value)>;
+                if constexpr (std::is_same_v<T, lua_Integer>) {
+                    lua_pushinteger(co, value);
+                } else if constexpr (std::is_same_v<T, std::string>) {
+                    lua_pushstring(co, value.c_str());
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    lua_pushboolean(co, value);
+                }
+            }, arg);
         }
     }
     else
     {
-        // Resume the existing coroutine with new args
-        for (lua_Integer arg : args)
+        for (const auto& arg : args)
         {
-            lua_pushinteger(co, arg);
+            std::visit([&](const auto& value) {
+                using T = std::decay_t<decltype(value)>;
+                if constexpr (std::is_same_v<T, lua_Integer>) {
+                    lua_pushinteger(co, value);
+                } else if constexpr (std::is_same_v<T, std::string>) {
+                    lua_pushstring(co, value.c_str());
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    lua_pushboolean(co, value);
+                }
+            }, arg);
         }
     }
 
-    // Start or resume the coroutine
     int nresults;
     int status = lua_resume(co, nullptr, args.size(), &nresults);
     if (status == LUA_YIELD)
     {
-        cout << string("Lua script yielded: " + func_name) << endl;
         return "";
     }
     else if (status != LUA_OK)
     {
         const char* error = lua_tostring(co, -1);
-        cout << string("Lua script error: " + string(error)) << endl;
         lua_pop(co, 1);
         luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
         m_activeCoroutines.erase(func_name);
         return error;
     }
 
-    // Script completed: Get return value
     string result = "";
     if (nresults > 0)
     {
@@ -196,10 +221,105 @@ string ScriptingSystem::CallScript(const std::string& func_name, const std::vect
         lua_pop(co, nresults);
     }
 
-    // Clean up
     luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
     m_activeCoroutines.erase(func_name);
     return result;
+}
+
+bool ScriptingSystem::IsCoroutineActive(const string& func_name) const
+{
+    return m_activeCoroutines.find(func_name) != m_activeCoroutines.end();
+}
+
+bool ScriptingSystem::IsCoroutineYielded(const string& func_name) const
+{
+    auto it = m_activeCoroutines.find(func_name);
+    if (it == m_activeCoroutines.end())
+        return false;
+
+    lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, it->second);
+    lua_State* co = lua_tothread(m_luaState, -1);
+    lua_pop(m_luaState, 1);
+    return lua_status(co) == LUA_YIELD;
+}
+
+string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<LuaArg>& args)
+{
+    auto it = m_activeCoroutines.find(func_name);
+    if (it == m_activeCoroutines.end())
+        return "No active coroutine for " + func_name;
+
+    lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, it->second);
+    lua_State* co = lua_tothread(m_luaState, -1);
+    lua_pop(m_luaState, 1);
+
+    if (lua_status(co) != LUA_YIELD)
+    {
+        luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
+        m_activeCoroutines.erase(func_name);
+        return "Coroutine for " + func_name + " is not yielded.";
+    }
+
+    for (const auto& arg : args)
+    {
+        std::visit([&](const auto& value) {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<T, lua_Integer>) {
+                lua_pushinteger(co, value);
+            } else if constexpr (std::is_same_v<T, std::string>) {
+                lua_pushstring(co, value.c_str());
+            } else if constexpr (std::is_same_v<T, bool>) {
+                lua_pushboolean(co, value);
+            }
+        }, arg);
+    }
+
+    int nresults;
+    int status = lua_resume(co, nullptr, args.size(), &nresults);
+    if (status == LUA_YIELD)
+    {
+        return "";
+    }
+    else if (status != LUA_OK)
+    {
+        const char* error = lua_tostring(co, -1);
+        lua_pop(co, 1);
+        luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
+        m_activeCoroutines.erase(func_name);
+        return error;
+    }
+
+    string result = "";
+    if (nresults > 0)
+    {
+        if (lua_isstring(co, -1))
+        {
+            result = lua_tostring(co, -1);
+        }
+        else if (lua_isboolean(co, -1))
+        {
+            result = lua_toboolean(co, -1) ? "true" : "false";
+        }
+        else if (lua_isnumber(co, -1))
+        {
+            result = std::to_string(lua_tointeger(co, -1));
+        }
+        lua_pop(co, nresults);
+    }
+
+    luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
+    m_activeCoroutines.erase(func_name);
+    return result;
+}
+
+void ScriptingSystem::CleanupCoroutine(const string& func_name)
+{
+    auto it = m_activeCoroutines.find(func_name);
+    if (it != m_activeCoroutines.end())
+    {
+        luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
+        m_activeCoroutines.erase(it);
+    }
 }
 
 void ScriptingSystem::RegisterScriptFunction(const std::string& name, lua_CFunction function)
@@ -217,4 +337,38 @@ bool ScriptingSystem::GetFlag(int flag_id)
 {
     auto it = m_flags.find(flag_id);
     return it != m_flags.end() ? it->second : false;
+}
+
+void ScriptingSystem::SetAnswer(const std::string& answer)
+{
+    lua_getglobal(m_luaState, "answer");
+    if (answer == "nil")
+    {
+        lua_pushnil(m_luaState);
+    }
+    else
+    {
+        lua_pushstring(m_luaState, answer.c_str());
+    }
+    lua_setglobal(m_luaState, "answer");
+}
+
+std::vector<std::string> ScriptingSystem::GetAnswers()
+{
+    std::vector<std::string> answers;
+    lua_getglobal(m_luaState, "answers");
+    if (lua_istable(m_luaState, -1))
+    {
+        lua_pushnil(m_luaState);
+        while (lua_next(m_luaState, -2))
+        {
+            if (lua_isstring(m_luaState, -1))
+            {
+                answers.push_back(lua_tostring(m_luaState, -1));
+            }
+            lua_pop(m_luaState, 1);
+        }
+    }
+    lua_pop(m_luaState, 1);
+    return answers;
 }

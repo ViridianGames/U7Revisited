@@ -7,7 +7,7 @@ function func_009B(eventid, objectref)
         switch_talk_to(285, 0)
         var_0000 = unknown_08F7H(-2)
         var_0001 = unknown_08F7H(-3)
-        var_0002 = unknown_0908H()
+        var_0002 = get_player_name()
         if not get_flag(435) then
             add_dialogue("The hooded figure in the boat ignores you completely.")
             return

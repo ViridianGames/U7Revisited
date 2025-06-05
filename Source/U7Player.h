@@ -32,7 +32,8 @@ public:
 	void SetPlayerDirection(Vector3 direction) { m_PlayerDirection = direction; }
 	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
 	std::vector<std::string>& GetPartyMembers();
-	bool NPCInParty(int npc_id);
+	bool NPCIDInParty(int npc_id);
+	bool NPCNameInParty(std::string name);
 	bool IsWearingFellowshipMedallion() { return m_isWearingFellowshipMedallion; }
 
 	private:

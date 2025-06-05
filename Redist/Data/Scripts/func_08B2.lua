@@ -4,7 +4,7 @@ function func_08B2()
     local var_0000
 
     switch_talk_to(141, 1)
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     add_dialogue("Horance looks at you curiously, \"Thy task is done here in Skara Brae. Thou hast my respect and lifelong gratitude.\"")
     if get_flag(380) then
         add_dialogue("But...,\" he hesitates here as if unsure how to proceed, \"...shouldst thou not return to the quest which brought thee here?\"")

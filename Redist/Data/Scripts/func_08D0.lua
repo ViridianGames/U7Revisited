@@ -6,7 +6,7 @@ function func_08D0(var_0000, var_0001)
     var_0002 = unknown_0920H()
     var_0003 = unknown_090FH(var_0002)
     var_0004 = "feels"
-    var_0005 = unknown_0908H()
+    var_0005 = get_player_name()
     if var_0003 == var_0005 then
         var_0003 = "you"
         var_0006 = "you"

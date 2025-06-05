@@ -4,7 +4,7 @@ function func_08B1()
     local var_0000, var_0001, var_0002, var_0003
 
     switch_talk_to(141, 1)
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     add_dialogue("\"Once again, Avatar, thou hast proven that thou art ever the defender of Britannia and the innocent. I cannot adequately express my gratitude; however, please take this small token of my thanks. I hope it will help thee in thy quest.\"")
     var_0001 = unknown_0024H(553)
     if var_0001 then

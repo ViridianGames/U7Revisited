@@ -11,7 +11,7 @@ function func_049C(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, 156)
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     var_0002 = get_schedule()
     var_0003 = false

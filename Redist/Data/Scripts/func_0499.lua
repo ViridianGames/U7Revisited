@@ -6,7 +6,7 @@ function func_0499(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(153, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_0908H() --- Guess: Gets player info
+        var_0001 = get_player_name() --- Guess: Gets player info
         add_answer({"bye", "job", "name"})
         if not get_flag(507) then
             add_dialogue("You see your old friend Mariah.")

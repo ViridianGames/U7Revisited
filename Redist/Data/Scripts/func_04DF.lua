@@ -8,7 +8,7 @@ function func_04DF(eventid, objectref)
     switch_talk_to(0, 223)
     var_0000 = get_schedule()
     var_0001 = unknown_001CH(get_npc_name(223))
-    var_0002 = unknown_0908H()
+    var_0002 = get_player_name()
     var_0003 = "Avatar"
     var_0004 = unknown_005AH()
     if not get_flag(666) then

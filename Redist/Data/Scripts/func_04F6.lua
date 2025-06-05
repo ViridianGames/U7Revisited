@@ -4,7 +4,7 @@ function func_04F6(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 246)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})

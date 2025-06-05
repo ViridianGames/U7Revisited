@@ -5,7 +5,7 @@ function func_02CB(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     var_0001 = get_object_quality(objectref)
     if var_0001 > 102 then
         display_sign(50, {"SIGN ZERO", "IS"})

@@ -52,7 +52,7 @@ function func_009A(eventid, objectref)
             return
         end
     elseif eventid == 2 then
-        var_0013 = unknown_0908H()
+        var_0013 = get_player_name()
         if get_flag(782) then
             switch_talk_to(286, 1)
             add_dialogue("\"I'll speak to thee no more, Avatar!\" He ignores you.")

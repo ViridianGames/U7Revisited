@@ -5,7 +5,7 @@ function func_0489(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(137, 0)
-        var_0000 = unknown_0908H() --- Guess: Gets player info
+        var_0000 = get_player_name() --- Guess: Gets player info
         var_0001 = get_lord_or_lady()
         var_0002 = get_schedule() --- Guess: Checks game state
         var_0003 = get_npc_name(137) --- Guess: Gets object ref

@@ -121,7 +121,18 @@ function func_040C(eventid, objectref)
             end
             switch_talk_to(12, 0)
             add_dialogue("The Mayor continues. \"Hast thou searched the stables?\"")
-            ask_yes_no()
+            var_0006 = ask_yes_no()
+            if var_0006 then
+                add_dialogue("\"What didst thou find?\"")
+                add_answer({"a body", "a bucket", "nothing"})
+                if get_flag(60) then
+                    add_answer("a key")
+                end
+                return
+            else
+                add_dialogue("\"Well, do so, then come speak with me!\"")
+                end
+                return
         else
             add_dialogue("\"Well, thou could not be the real Avatar then!\"")
             set_flag(89, true)
@@ -143,7 +154,8 @@ function func_040C(eventid, objectref)
     if get_flag(69) and not get_flag(68) then
         add_answer("Pay me now, please")
     end
-    --while true do
+    while true do
+        coroutine.yield(0)
         local answer = get_answer()
         if answer == "name" then
             add_dialogue("\"My name is Finnigan.\"")
@@ -254,9 +266,9 @@ function func_040C(eventid, objectref)
                 set_flag(66, true)
             end
             remove_answer("password")
-        --elseif answer == "bye" then
-            --break
+        elseif answer == "bye" then
+            break
         end
-    --end
+    end
     return
 end

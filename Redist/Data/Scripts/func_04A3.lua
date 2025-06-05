@@ -4,7 +4,7 @@ function func_04A3(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 163)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = unknown_08F7H(4)
         var_0003 = get_schedule()
@@ -23,10 +23,10 @@ function func_04A3(eventid, objectref)
         add_answer({"bye", "Fellowship", "job", "name"})
         if not var_0002 then
             add_dialogue("\"Why, Hello, Sir Dupre. Things fare well I trust?\"")
-            switch_talk_to(0, 4)
+            switch_talk_to(4, 0)
             add_dialogue("\"Greetings, fair Phearcy. Yes, thank thee, things are well.\"")
             hide_npc(4)
-            switch_talk_to(0, 163)
+            switch_talk_to(163, 0)
         end
         if not get_flag(517) then
             add_dialogue("You see a man who gives you a friendly smile.")

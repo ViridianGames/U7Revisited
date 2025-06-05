@@ -8,7 +8,7 @@ function func_0496(eventid, objectref)
     end
     switch_talk_to(150, 0)
     set_flag(482, unknown_08C9H()) --- Guess: Checks ether status
-    var_0000 = unknown_0908H() --- Guess: Gets player info
+    var_0000 = get_player_name() --- Guess: Gets player info
     var_0001 = unknown_0931H(359, 359, 759, 1, 357) --- Guess: Checks inventory items
     var_0002 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})

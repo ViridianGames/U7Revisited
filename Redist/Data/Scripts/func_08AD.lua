@@ -5,7 +5,7 @@ function func_08AD()
 
     switch_talk_to(141, 1)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0908H()
+    var_0001 = get_player_name()
     if not get_flag(429) then
         set_flag(429, true)
         add_dialogue("\"I thank thee, " .. var_0000 .. ". That dark spirit had suppressed my will for so long that I was not sure I had one left. Thou hast done a great deed for Skara Brae, for myself and, indeed, all of Britannia, but then I suppose this is merely a matter of course for one such as thee. My gratitude is thine.\" He bows deeply to you.")

@@ -7,7 +7,7 @@ function func_08CE()
     var_0001 = unknown_08F7H(-188)
     var_0002 = unknown_08F7H(-186)
     var_0003 = unknown_08F7H(-2)
-    var_0004 = unknown_0908H()
+    var_0004 = get_player_name()
     add_dialogue("The winged gargoyle begins his sermon.")
     if not var_0000 then
         add_dialogue("You see the gargoyle clerk taking notes in the corner.")

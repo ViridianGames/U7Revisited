@@ -4,7 +4,7 @@ function func_04EE(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(0, 238)
-        var_0000 = unknown_0908H()
+        var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})

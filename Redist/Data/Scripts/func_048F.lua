@@ -12,7 +12,7 @@ function func_048F(eventid, objectref)
     start_conversation()
     switch_talk_to(0, 143)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0908H()
+    var_0001 = get_player_name()
     var_0002 = false
     var_0003 = false
     var_0004 = false

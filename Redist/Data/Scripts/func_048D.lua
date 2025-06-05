@@ -12,7 +12,7 @@ function func_048D(eventid, objectref)
         add_dialogue("You attempt to speak to the undead creature, but it does not, or cannot, respond.")
         return
     end
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     var_0002 = unknown_08F7H(144)
     var_0003 = false

@@ -163,31 +163,22 @@ bool U7Object::RemoveObjectFromInventory(int objectid)
    return false;
 }
 
-void U7Object::SetNPCData(NPCData* data)
-{
-   m_NPCData = data;
-   m_isNPC = true;
-}
-
 void U7Object::Interact(int event)
 {
    if(m_hasConversationTree)
    {
-
-      int NPCId = static_cast<int>(m_NPCData->id);
-
-      g_ConversationState->SetNPC(NPCId);
+      g_ConversationState->SetNPC(m_NPCID);
 
       string scriptName = "func_04";
 
       stringstream ss;
-      ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
+      ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << m_NPCID;
 
       scriptName += ss.str();
 
       g_ConversationState->SetLuaFunction(scriptName);
 
-      AddConsoleString(g_ScriptingSystem->CallScript(scriptName, {event, NPCId}));  
+      AddConsoleString(g_ScriptingSystem->CallScript(scriptName, {event, m_NPCID}));  
    }
    else
    {

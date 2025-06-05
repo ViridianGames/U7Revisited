@@ -105,7 +105,7 @@ function func_06F6(eventid, objectref)
                         add_dialogue("The daemon speaks with a sanctimonious tone. \"I could not in honor take the life of my most wondrous master.\"")
                     elseif var_0017 == 466 and unknown_0019H(var_0011, 356) < 5 then
                         add_dialogue("\"Yes! I have long sought the end of Lord British, my traitorous master.\"")
-                        var_0019 = unknown_0908H()
+                        var_0019 = get_player_name()
                         switch_talk_to(23, 0)
                         add_dialogue("\"" .. var_0019 .. ", for what reason art thou brandishing that black sword in my presence?\"")
                         hide_npc(292)

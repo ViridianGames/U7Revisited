@@ -6,7 +6,7 @@ function func_04DA(eventid, objectref)
         switch_talk_to(0, 218)
         var_0000 = get_npc_name(218)
         var_0001 = get_npc_name(217)
-        var_0002 = unknown_0908H()
+        var_0002 = get_player_name()
         var_0003 = get_lord_or_lady()
         var_0004 = "the Avatar"
         var_0005 = unknown_003CH(var_0001)

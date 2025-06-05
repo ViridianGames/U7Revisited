@@ -4,7 +4,7 @@ function func_08C2()
     local var_0000, var_0001
 
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_0908H()
+    var_0001 = get_player_name()
     add_dialogue("\"Well, hello, Mayor Forsythe. Thou has finally decided to assist in the salvation of our town.\" She gives him a pointed look.")
     switch_talk_to(147, 0)
     add_dialogue("\"Look here, I wasn't the one who gave that fool recipe to Caine, now was I?\"")

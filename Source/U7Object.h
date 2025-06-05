@@ -46,8 +46,6 @@ public:
 
    bool IsInInventory(int objectid);
    bool IsInInventory(int shape, int frame);
-
-   void SetNPCData(NPCData* data);
   
    Vector3 m_Pos;
    Vector3 m_Dest;
@@ -106,7 +104,6 @@ public:
    bool m_isEgg;
 
    int m_NPCID;
-   NPCData* m_NPCData = nullptr;
 
    Vector2 m_GumpPos;
    bool m_isSorted = false;

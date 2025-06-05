@@ -14,7 +14,7 @@ function func_049A(eventid, objectref)
     var_0002 = unknown_08F7H(-240)
     var_0003 = unknown_08F7H(-220)
     var_0004 = get_lord_or_lady()
-    var_0005 = unknown_0908H()
+    var_0005 = get_player_name()
     unknown_003DH(get_npc_name(154), 2)
     if not get_flag(702) then
         add_dialogue("The troll snarls at you, obviously displeased at your presence.")
@@ -53,7 +53,7 @@ function func_049A(eventid, objectref)
                 end
             else
                 add_dialogue("\"I Grod. Who you?\"")
-                var_0005 = unknown_0908H()
+                var_0005 = get_player_name()
                 var_0009 = "the Avatar"
                 var_000A = unknown_090BH({var_0004, var_0005, var_0009})
                 if var_000A == var_0005 then

@@ -43,7 +43,7 @@ function func_031D(eventid, objectref)
     elseif var_0000 == 6 then
         add_dialogue("Once the construction is complete, store the blackrock in the hold of The Crown Jewel.")
     elseif var_0000 == 7 then
-        var_0001 = unknown_0908H()
+        var_0001 = get_player_name()
         add_dialogue("Finster - Britain (x)")
         add_dialogue("Duncan - Buccaneer's Den (x)")
         add_dialogue("Christopher - Trinsic (x)")
@@ -127,7 +127,7 @@ System: the three pedestals shall be set the three receptacles: the tetrahedron,
         add_dialogue("By proclamation of Lord British this is an official document denoting ownership of the heretofore mentioned sailing vessel. Forgery of this title is prohibited under law no. 1989832.A5, section 809.")
         add_dialogue("     DEED~~SHIP NAME: Bounty~~COMPLETION DATE: 5-27-0185 ~~INSPECTION DATE: 6-04-0185~~SHIPWRIGHT: Gibson of Minoc")
     elseif var_0000 == 36 then
-        var_0001 = unknown_0908H()
+        var_0001 = get_player_name()
         add_dialogue("Dearest Iolo,~     In Buccaneer's Den I came across an old pirate who told me he had sailed across the waters of Britannia more times than I was summers old. On a gamble, I asked if he had ever heard of the legendary Serpent Isle. He had! And he even had a map that would tell how to locate the island. I bought the map and have already begun my search. However, I made a copy so that thou mayest follow me after thy current adventures have ended. I have left the copy with Lord British, but he promised he wouldst not give it to thee until thou hast completed thy explorations with " .. var_0001 .. ".~~     'Til I see thee again, my love!~     Gwenno")
     elseif var_0000 == 37 then
         add_dialogue("~~All is not as it seems...")

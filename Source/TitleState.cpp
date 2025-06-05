@@ -28,6 +28,7 @@ void TitleState::Init(const string& configfile)
    CreateTitleGUI();
    CreateCreditsGUI();
    m_title = g_ResourceManager->GetTexture("Images/title.png");
+   m_mouseMoved = false;
 }
 
 void TitleState::OnEnter()
@@ -442,7 +443,7 @@ void TitleState::UpdateTitle()
 		g_Engine->m_Done = true;
 	}
 
-   if (GetMouseDelta().x != 0 || GetMouseDelta().y != 0)
+   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))//;//(GetMouseDelta().x) > 50 || abs(GetMouseDelta().y) > 50)
    {
 		m_mouseMoved = true;
 	}

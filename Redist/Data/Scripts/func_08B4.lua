@@ -25,7 +25,7 @@ function func_08B4(var_0000, var_0001, var_0002)
                 return
             end
         elseif var_0005 == "resurrect" then
-            var_0009 = unknown_0908H()
+            var_0009 = get_player_name()
             var_0010 = unknown_0022H()
             var_0011 = unknown_000EH(25, 400, var_0010)
             if var_0011 == 0 then

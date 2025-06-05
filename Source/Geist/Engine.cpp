@@ -58,6 +58,7 @@ void Engine::Update()
 {
 	g_ResourceManager->Update();
 	g_StateMachine->Update();
+	g_ScriptingSystem->Update();
 
 	if (WindowShouldClose())
 	{
@@ -83,6 +84,7 @@ void Engine::Draw()
 {
 	g_ResourceManager->Draw();
 	g_StateMachine->Draw();
+	g_ScriptingSystem->Draw();
 }
 
 void Engine::CaptureScreenshot()

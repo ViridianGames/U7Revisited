@@ -5,7 +5,7 @@ function func_017B(eventid, objectref)
     if eventid == 1 then
         return
     end
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     var_0001 = unknown_0014H(objectref)
     if var_0001 > 151 then
         unknown_0032H({"SIGN", "VALID", "NOT A", "THIS IS"}, 49)

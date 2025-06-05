@@ -3,7 +3,7 @@ function func_084E()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     switch_talk_to(0, -26)
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     add_dialogue("These questions are all hypothetical. Do not let them confuse or upset thee.")
     add_dialogue("Question One: Thou art feeling depressed right now. Is it more likely because -")
     add_dialogue("A: Thou hast disappointed a friend, or")

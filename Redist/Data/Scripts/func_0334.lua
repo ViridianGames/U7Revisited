@@ -52,7 +52,7 @@ function func_0334(eventid, objectref)
         unknown_005CH(-23)
         unknown_003FH(-23)
     end
-    var_0009 = unknown_0908H()
+    var_0009 = get_player_name()
     var_000A = var_0001 > 65 and "This is not a valid plaque" or ""
     if var_0001 == 0 then
         var_000A = {"here", "recorded", "to be", "event", "important"}

@@ -3,7 +3,7 @@ function func_08C1()
     start_conversation()
     local var_0000
 
-    var_0000 = unknown_0908H()
+    var_0000 = get_player_name()
     add_dialogue("\"Sweet Rowena, I am so happy to see thee out of that horrid tower.\" Mordra's eyes begin to fill with tears of joy.")
     switch_talk_to(144, 1)
     add_dialogue("\"It was terrible, but the worst part was being away from mine husband. The whole time I was there with Horance, I felt like a hollow shell of a person. I must be with Trent to be whole again.\"")
