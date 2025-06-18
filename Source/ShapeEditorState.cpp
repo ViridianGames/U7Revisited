@@ -960,23 +960,21 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTMODELBUTTON)
 	{
+		int increment = 1;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			for(int i = 0; i < 10; ++i)
-			{
-				m_modelIndex++;
-				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
-				{
-					m_modelIndex = g_ResourceManager->m_ModelList.begin();
-				}
-			}
+			increment = 10;
 		}
-		else
+
+		for (int i = 0; i < increment; ++i)
 		{
-			m_modelIndex++;
-			if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+			if (std::next(m_modelIndex) == g_ResourceManager->m_ModelList.end())
 			{
 				m_modelIndex = g_ResourceManager->m_ModelList.begin();
+			}
+			else
+			{
+				m_modelIndex = std::next(m_modelIndex);
 			}
 		}
 
@@ -986,28 +984,26 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVMODELBUTTON)
 	{
+		int decrement = 1;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			for(int i = 0; i < 10; ++i)
-			{
-				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
-				{
-					m_modelIndex = g_ResourceManager->m_ModelList.end();
-				}
-				m_modelIndex--;
-			}
-		}
-		else
-		{
-			if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
-			{
-				m_modelIndex = g_ResourceManager->m_ModelList.end();
-			}
-			m_modelIndex--;
+			decrement = 10;
 		}
 
-		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
+		for(int i = decrement; i != 0; --i)
+		{
+			if(m_modelIndex == g_ResourceManager->m_ModelList.begin())
+			{
+				m_modelIndex = std::prev(g_ResourceManager->m_ModelList.end());
+			}
+			else
+			{
+				m_modelIndex = std::prev(m_modelIndex);
+			}
+		}
+
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTLUASCRIPTBUTTON)
