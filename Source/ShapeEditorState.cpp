@@ -294,6 +294,17 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
+			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
+
+			m_luaScriptIndex = 0;
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
+				{
+					m_luaScriptIndex = i;
+					break;
+				}
+			}
 		}
 	}
 
@@ -308,6 +319,18 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
+
+			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
+
+			m_luaScriptIndex = 0;
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
+				{
+					m_luaScriptIndex = i;
+					break;
+				}
+			}
 		}
 	}
 
