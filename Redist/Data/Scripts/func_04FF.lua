@@ -6,10 +6,10 @@ function func_04FF(eventid, objectref)
         return
     end
     switch_talk_to(0, 255)
-    var_0000 = unknown_08F7H(241)
-    var_0001 = unknown_08F7H(2)
-    var_0002 = unknown_08F7H(1)
-    var_0003 = unknown_08F7H(4)
+    var_0000 = npc_id_in_party(241)
+    var_0001 = npc_id_in_party(2)
+    var_0002 = npc_id_in_party(1)
+    var_0003 = npc_id_in_party(4)
     var_0004 = false
     start_conversation()
     add_answer({"bye", "job", "name"})

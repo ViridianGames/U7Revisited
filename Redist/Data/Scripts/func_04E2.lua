@@ -72,12 +72,12 @@ function func_04E2(eventid, objectref)
             elseif answer == "changed" then
                 add_dialogue("\"He has abandoned all of his pirate ways! He is a bloody saint now, and whenever he sees me he tries to convince me to join The Fellowship. I avoid him at all costs now. I cannot stand to see him this way. It burns my blood!\"")
                 add_dialogue("Then, in a moment of weakness, the tough pirate says in a small voice, \"I miss him, too. We were best mates.\" You could swear there are tears in his eyes.")
-                var_0007 = unknown_08F7H(2)
+                var_0007 = npc_id_in_party(2)
                 if var_0007 then
                     switch_talk_to(0, 2)
                     add_dialogue("Spark whispers, \"Oh, come on, be a man!\"")
                     hide_npc(2)
-                    var_0008 = unknown_08F7H(4)
+                    var_0008 = npc_id_in_party(4)
                     if var_0008 then
                         switch_talk_to(0, 4)
                         add_dialogue("Dupre turns away to suppress a smirk.")

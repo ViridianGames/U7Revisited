@@ -52,7 +52,7 @@ function func_0412(eventid, objectref)
             elseif var_0007 == "murder" then
                 add_dialogue("\"I am afraid I know nothing about it save for what is being said in the street, so do not ask me. If thou art not going to buy anything, then thou art wasting my time. Go away.\"")
                 remove_answer("murder")
-                var_0008 = unknown_08F7H(1) --- Guess: Checks player status
+                var_0008 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0008 then
                     switch_talk_to(1, 0)
                     add_dialogue("Iolo whispers to you, \"Pleasant chap, is he not?\"")

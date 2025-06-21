@@ -42,7 +42,7 @@ function func_04D9(eventid, objectref)
                             var_000E = " he says, pointing at you and your companions."
                         end
                         add_dialogue("\"^\" .. var_000D .. \"!\" .. var_000E .. \" \"To be the cause for our unhappiness.\"")
-                        var_000F = unknown_08F7H(218)
+                        var_000F = npc_id_in_party(218)
                         if not var_000F then
                             switch_talk_to(0, 218)
                             add_dialogue("The gargoyle by his side also rises.")

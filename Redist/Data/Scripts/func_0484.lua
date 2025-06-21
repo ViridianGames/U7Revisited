@@ -56,7 +56,7 @@ function func_0484(eventid, objectref)
                 add_answer("lost")
             elseif var_0001 == "Katrina" then
                 add_dialogue("\"Katrina is a shepherd here on New Magincia. She has been a friend of mine since I was a boy.\"")
-                var_0002 = unknown_08F7H(9) --- Guess: Checks player status
+                var_0002 = npc_id_in_party(9) --- Guess: Checks player status
                 if var_0002 then
                     switch_talk_to(9, 0)
                     add_dialogue("\"We have had some good memories, have we not, Henry?\"")
@@ -89,7 +89,7 @@ function func_0484(eventid, objectref)
                     unknown_0911H(50) --- Guess: Submits item or advances quest
                     add_dialogue("You hand the locket to Henry. \"Now I may give it to Constance and keep my promise to her! I cannot thank thee enough, Avatar!\"")
                     set_flag(461, true)
-                    var_0004 = unknown_08F7H(9) --- Guess: Checks player status
+                    var_0004 = npc_id_in_party(9) --- Guess: Checks player status
                     if var_0004 then
                         switch_talk_to(9, 0)
                         add_dialogue("\"I am glad that this situation has concluded in thy favor, dear Henry.\"")

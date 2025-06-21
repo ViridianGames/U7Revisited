@@ -6,7 +6,7 @@ function func_0471(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(113, 0)
         var_0000 = get_player_name()
-        var_0001 = unknown_08F7H(1) --- Guess: Checks player status
+        var_0001 = npc_id_in_party(1) --- Guess: Checks player status
         var_0002 = false
         add_answer({"bye", "job", "name"})
         if not get_flag(331) then

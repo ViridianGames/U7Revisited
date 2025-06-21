@@ -265,6 +265,16 @@ if (IsKeyDown(KEY_E))
 	{
 		g_cameraRotation += g_CameraRotateSpeed;
 
+		while (g_cameraRotation < 0)
+		{
+			g_cameraRotation +=  2 * PI;
+		}
+
+		while (g_cameraRotation > 2 * PI)
+		{
+			g_cameraRotation -= 2 * PI;
+		}
+
 		Vector3 current = g_camera.target;
 
 		Vector3 finalmovement = Vector3RotateByAxisAngle(g_CameraMovementSpeed, Vector3{ 0, 1, 0 }, g_cameraRotation);

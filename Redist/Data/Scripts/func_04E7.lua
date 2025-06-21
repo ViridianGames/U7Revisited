@@ -27,7 +27,7 @@ function func_04E7(eventid, objectref)
                 add_dialogue("\"I run the Fallen Virgin Inn and Tavern. We are open for breakfast, dinner, and late night hours.\"")
                 if var_0001 == 23 then
                     add_dialogue("\"If thou dost want food or drink, or perhaps a room, please say so.\"")
-                    var_0003 = unknown_08F7H(4)
+                    var_0003 = npc_id_in_party(4)
                     if var_0003 then
                         add_dialogue("Mandy looks at Dupre and says, \"Don't I know thee?\"")
                         switch_talk_to(0, 4)
@@ -42,7 +42,7 @@ function func_04E7(eventid, objectref)
                         add_dialogue("\"I thank thee, milady.\"")
                         hide_npc(4)
                         switch_talk_to(0, 231)
-                        var_0004 = unknown_08F7H(1)
+                        var_0004 = npc_id_in_party(1)
                         if var_0004 then
                             switch_talk_to(0, 1)
                             add_dialogue("\"Thou art a swine, Dupre.\"")

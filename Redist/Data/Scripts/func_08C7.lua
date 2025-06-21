@@ -4,8 +4,8 @@ function func_08C7()
     local var_0000, var_0001
 
     switch_talk_to(233, 0)
-    var_0000 = unknown_08F7H(-1)
-    var_0001 = unknown_08F7H(-2)
+    var_0000 = npc_id_in_party(-1)
+    var_0001 = npc_id_in_party(-2)
     add_dialogue("As the actors take their places and don masks, you settle down to watch the action.")
     if not var_0001 then
         switch_talk_to(2, 0)

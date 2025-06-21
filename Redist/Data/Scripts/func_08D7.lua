@@ -12,7 +12,7 @@ function func_08D7()
         return
     end
     if not get_flag(425) then
-        var_0002 = unknown_08F7H(-141)
+        var_0002 = npc_id_in_party(-141)
         if var_0002 then
             add_dialogue("The music of the little box makes Rowena turn her head in your direction. She blinks several times as if waking from a dream, or, in this case, a nightmare. When she sees the Liche, she pretends to be enthralled, but as soon as he is no longer looking in her direction, she motions for you to come closer.")
         else

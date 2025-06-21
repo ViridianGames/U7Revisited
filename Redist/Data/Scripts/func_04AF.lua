@@ -40,7 +40,7 @@ function func_04AF(eventid, objectref)
                 remove_answer("none")
             elseif answer == "Komor" then
                 add_dialogue("\"He is my best friend and the bravest man I know.\"")
-                var_0001 = unknown_08F7H(174)
+                var_0001 = npc_id_in_party(174)
                 if var_0001 then
                     add_dialogue("*")
                     switch_talk_to(0, 174)
@@ -95,7 +95,7 @@ function func_04AF(eventid, objectref)
                 remove_answer("Andrew")
             elseif answer == "Garritt" then
                 add_dialogue("\"He is the son of Feridwyn and Brita, who run the shelter. Garritt crosses the road to avoid us.\"")
-                var_0001 = unknown_08F7H(174)
+                var_0001 = npc_id_in_party(174)
                 if var_0001 then
                     add_dialogue("*")
                     switch_talk_to(0, 174)

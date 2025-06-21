@@ -16,7 +16,7 @@ function func_08D1()
             if not unknown_XXXXH() then
                 add_dialogue("\"Better... better... but I think perhaps thou dost need a prop.\"")
                 unknown_0009H()
-                var_0001 = unknown_08F7H(-28)
+                var_0001 = npc_id_in_party(-28)
                 if not var_0001 then
                     add_dialogue("\"Jesse, hand our friend thy staff.\"")
                     if var_0000 then

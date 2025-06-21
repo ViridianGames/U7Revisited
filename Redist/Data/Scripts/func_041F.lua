@@ -25,7 +25,7 @@ function func_041F(eventid, objectref)
 
     start_conversation()
     switch_talk_to(0, -31)
-    var_0000 = unknown_08F7H(-34)
+    var_0000 = npc_id_in_party(-34)
     add_answer({"bye", "job", "name"})
     if not get_flag(160) then
         add_dialogue("This is a cute toddler holding a baby doll.")

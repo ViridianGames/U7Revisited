@@ -42,7 +42,7 @@ function func_0446(eventid, objectref)
                 if var_0001 == 2 or var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
                     add_dialogue("\"He is probably in the Royal Nursery.\"")
                 else
-                    var_0002 = unknown_08F7H(32) --- Guess: Checks player status
+                    var_0002 = npc_id_in_party(32) --- Guess: Checks player status
                     if var_0002 then
                         add_dialogue("\"He's right here! Say hello to the Avatar, Max.\"")
                         switch_talk_to(32, 0)

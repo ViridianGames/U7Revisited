@@ -50,7 +50,7 @@ function func_0464(eventid, objectref)
                     abort()
                 else
                     add_dialogue("\"The truth is known to me, but, belief is hard for me.\"")
-                    var_0003 = unknown_08F7H(6) --- Guess: Checks player status
+                    var_0003 = npc_id_in_party(6) --- Guess: Checks player status
                     if var_0003 then
                         add_dialogue("*")
                         switch_talk_to(6, 0)

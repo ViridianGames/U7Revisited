@@ -22,7 +22,7 @@ function func_0425(eventid, objectref)
                     add_dialogue("Everyone in the Blue Boar laughs.")
                     add_dialogue("\"And I'd bet thou dost need a drink, right?\"")
                     set_flag(132, true)
-                    var_0007 = unknown_08F7H(4) --- Guess: Checks player status
+                    var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
                         switch_talk_to(4, 0)
                         add_dialogue("\"Damn! How did she know?\"")
@@ -57,7 +57,7 @@ function func_0425(eventid, objectref)
                 if var_0003 == 23 then
                     add_dialogue("\"If thou dost want anything to eat or drink, just say so!\"")
                     add_answer("Blue Boar")
-                    var_0007 = unknown_08F7H(4) --- Guess: Checks player status
+                    var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
                         add_dialogue("She addresses Dupre. \"How about thou, handsome? Want something to eat?\" She bats her eyelashes.")
                         switch_talk_to(4, 0)

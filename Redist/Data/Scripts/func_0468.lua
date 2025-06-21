@@ -38,8 +38,8 @@ function func_0468(eventid, objectref)
                 remove_answer("bow")
             elseif var_0001 == "Yew" then
                 add_dialogue("\"I love the forest. It is very beautiful. Also,\" he raises his bow, \"I moved out here to be near the two great archers, Iolo and Tseramed.\"")
-                var_0001 = unknown_08F7H(1) --- Guess: Checks player status
-                var_0002 = unknown_08F7H(10) --- Guess: Checks player status
+                var_0001 = npc_id_in_party(1) --- Guess: Checks player status
+                var_0002 = npc_id_in_party(10) --- Guess: Checks player status
                 if var_0001 then
                     switch_talk_to(1, 0)
                     add_dialogue("Iolo blushes. \"I am honored, my friend. I was not aware I had an admirer in this part of the land.\" He bows to Bradman, who returns the gesture.")

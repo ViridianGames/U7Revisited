@@ -22,7 +22,7 @@ function func_0499(eventid, objectref)
             while true do
                 var_0002 = get_answer()
                 if var_0002 == "name" then
-                    var_0003 = unknown_08F7H(1) --- Guess: Checks player status
+                    var_0003 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0003 then
                         switch_talk_to(1, 0)
                         add_dialogue("\"Surely thou dost recognize thine old companion, Mariah?\"")
@@ -57,7 +57,7 @@ function func_0499(eventid, objectref)
             while true do
                 var_0002 = get_answer()
                 if var_0002 == "name" then
-                    var_0003 = unknown_08F7H(1) --- Guess: Checks player status
+                    var_0003 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0003 then
                         switch_talk_to(1, 0)
                         add_dialogue("\"Surely thou dost recognize thine old companion, Mariah?\"")

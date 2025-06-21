@@ -37,7 +37,7 @@ function func_0480(eventid, objectref)
         elseif var_0001 == "rule" then
             add_dialogue("\"Thou dost know it. Attendees of the Retreat must stay out of this cave.\"")
             remove_answer("rule")
-            var_0002 = unknown_08F7H(1) --- Guess: Checks player status
+            var_0002 = npc_id_in_party(1) --- Guess: Checks player status
             if var_0002 then
                 switch_talk_to(1, 0)
                 add_dialogue("\"Come, " .. var_0000 .. ", we had better leave. I believe this woman is serious.\"")

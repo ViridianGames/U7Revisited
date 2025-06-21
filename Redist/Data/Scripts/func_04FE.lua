@@ -78,9 +78,9 @@ function func_04FE(eventid, objectref)
                 else
                     add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades. Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
                     var_0003 = unknown_005AH()
-                    var_0004 = unknown_08F7H(1)
-                    var_0005 = unknown_08F7H(3)
-                    var_0006 = unknown_08F7H(4)
+                    var_0004 = npc_id_in_party(1)
+                    var_0005 = npc_id_in_party(3)
+                    var_0006 = npc_id_in_party(4)
                     if not var_0003 then
                         if var_0004 then
                             switch_talk_to(0, 1)

@@ -16,7 +16,7 @@ function func_047E(eventid, objectref)
     var_0002 = get_npc_name(126)
     var_0003 = get_npc_name(125)
     var_0004 = get_npc_name(127)
-    var_0005 = unknown_08F7H(125)
+    var_0005 = npc_id_in_party(125)
     add_answer({"bye", "job", "name"})
     if not get_flag(360) and var_0001 ~= 4 then
         if not get_flag(362) then

@@ -126,7 +126,7 @@ function func_04C8(eventid, objectref)
             elseif answer == "Sir Jordan" then
                 add_dialogue("\"He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.\"")
                 add_dialogue("\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"")
-                var_0008 = unknown_08F7H(-1)
+                var_0008 = npc_id_in_party(-1)
                 if var_0008 then
                     switch_talk_to(0, -1)
                     add_dialogue("Iolo smiles proudly.")

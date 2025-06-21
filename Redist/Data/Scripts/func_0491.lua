@@ -34,7 +34,7 @@ function func_0491(eventid, objectref)
             add_dialogue("\"Go away! Thou art cruel and mean-hearted.\" She turns away, but not before you see the tears in her eyes.")
             abort()
         end
-        var_0006 = unknown_08F7H(144) --- Guess: Checks player status
+        var_0006 = npc_id_in_party(144) --- Guess: Checks player status
         if var_0006 then
             if not get_flag(446) then
                 add_dialogue("Paulette perks up as she sees Rowena.")
@@ -47,7 +47,7 @@ function func_0491(eventid, objectref)
                 set_flag(446, true)
             end
         end
-        var_0007 = unknown_08F7H(147) --- Guess: Checks player status
+        var_0007 = npc_id_in_party(147) --- Guess: Checks player status
         if var_0007 then
             if not get_flag(445) then
                 add_dialogue("\"Hello, Mayor. It has been quite a while since we've seen thee in our tavern. There was a time, I remember, when we couldn't keep thee away.\"")
@@ -104,7 +104,7 @@ function func_0491(eventid, objectref)
                 var_0009 = select_option()
                 if var_0009 then
                     add_dialogue("\"I am sorry, " .. var_0000 .. ",\" she giggles, \"but all we serve here are... spirits!\"")
-                    var_000A = unknown_08F7H(140) --- Guess: Checks player status
+                    var_000A = npc_id_in_party(140) --- Guess: Checks player status
                     if var_000A and not get_flag(436) then
                         switch_talk_to(140, 0)
                         add_dialogue("\"That's a good one, wench,\" laughs the portly ghost.")

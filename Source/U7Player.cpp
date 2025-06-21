@@ -15,6 +15,8 @@ U7Player::U7Player()
 	m_PlayerName = "Avatar";
 	m_PartyMemberIDs.clear();
 	m_PartyMemberIDs.push_back(0);
+	m_PartyMemberIDs.push_back(1);
+	m_PartyMemberIDs.push_back(2);
 	m_PartyMembers.clear();
 	m_PartyMembers.push_back("Avatar");
 	m_PlayerPosition = { 0.0f, 0.0f, 0.0f };

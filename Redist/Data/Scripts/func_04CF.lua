@@ -7,7 +7,7 @@ function func_04CF(eventid, objectref)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = "the Avatar"
-        var_0003 = unknown_08F7H(4)
+        var_0003 = npc_id_in_party(4)
         var_0004 = false
         var_0005 = false
         var_0006 = false

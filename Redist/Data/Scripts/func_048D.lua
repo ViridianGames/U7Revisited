@@ -14,7 +14,7 @@ function func_048D(eventid, objectref)
     end
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
-    var_0002 = unknown_08F7H(144)
+    var_0002 = npc_id_in_party(144)
     var_0003 = false
     if not get_flag(419) then
         unknown_08B1H()
@@ -43,8 +43,8 @@ function func_048D(eventid, objectref)
             add_dialogue("The Liche practically glows, power coursing visibly through its undead veins.")
         end
         add_dialogue("You step forward to confront this vile-looking creature and he slowly turns to face you. As his intense gaze locks onto your form, you almost wish you hadn't been so bold.~~ \"" .. var_0000 .. ".\" A sardonic expression comes to his undead features. \"How may I help thee?\" You get the distinct impression that help is the last thing you'll get from the Liche.")
-        var_0006 = unknown_08F7H(-3)
-        var_0007 = unknown_08F7H(-1)
+        var_0006 = npc_id_in_party(-3)
+        var_0007 = npc_id_in_party(-1)
         if var_0006 then
             switch_talk_to(0, -3)
             add_dialogue("Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
@@ -56,7 +56,7 @@ function func_048D(eventid, objectref)
             hide_npc1)
             switch_talk_to(0, 141)
         end
-        var_0008 = unknown_08F7H(-2)
+        var_0008 = npc_id_in_party(-2)
         if var_0008 then
             switch_talk_to(0, -2)
             add_dialogue("\"Uh, " .. var_0001 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.")
@@ -123,8 +123,8 @@ function func_048D(eventid, objectref)
             remove_answer("ore")
         elseif cmps("bye") then
             add_dialogue("\"It is truly sad to see thee go.\" He says with a sardonic smile.")
-            var_0009 = unknown_08F7H(-4)
-            var_0007 = unknown_08F7H(-1)
+            var_0009 = npc_id_in_party(-4)
+            var_0007 = npc_id_in_party(-1)
             if var_0009 then
                 switch_talk_to(0, -4)
                 add_dialogue("\"Yeah, right.\"")

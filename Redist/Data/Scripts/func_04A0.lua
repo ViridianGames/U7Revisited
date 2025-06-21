@@ -9,7 +9,7 @@ function func_04A0(eventid, objectref)
         var_0002 = "the Avatar"
         var_0003 = is_player_female()
         var_0004 = false
-        var_0005 = unknown_08F7H(159)
+        var_0005 = npc_id_in_party(159)
         if var_0003 then
             var_0006 = "woman"
             var_0007 = "she"

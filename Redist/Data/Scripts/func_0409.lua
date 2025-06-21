@@ -9,9 +9,9 @@ function func_0409(eventid, objectref)
         var_0001 = get_party_members()
         var_0002 = get_npc_name(9) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
-        var_0004 = unknown_08F7H(3) --- Guess: Checks player status
-        var_0005 = unknown_08F7H(1) --- Guess: Checks player status
-        var_0006 = unknown_08F7H(4) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(3) --- Guess: Checks player status
+        var_0005 = npc_id_in_party(1) --- Guess: Checks player status
+        var_0006 = npc_id_in_party(4) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
         if is_in_int_array(var_0002, var_0001) then
             add_answer("leave")

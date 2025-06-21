@@ -15,7 +15,7 @@ function func_04A7(eventid, objectref)
                 add_dialogue("\"Avatar! Oh Avatar! I have news!\"")
             end
             add_dialogue("\"Garritt, my son, told me that Tobias was in possession of some silver snake venom. I went to investigate and found Tobias with it!\"")
-            var_0004 = unknown_08F7H(170)
+            var_0004 = npc_id_in_party(170)
             if var_0004 then
                 switch_talk_to(0, 170)
                 add_dialogue("\"That is correct! I am a witness that what Feridwyn has said is the truth!\"")
@@ -76,7 +76,7 @@ function func_04A7(eventid, objectref)
             elseif answer == "Brita" then
                 if not get_flag(545) then
                     add_dialogue("\"A wonderful woman. Thou shouldst meet her.\"")
-                    var_0006 = unknown_08F7H(168)
+                    var_0006 = npc_id_in_party(168)
                     if var_0006 then
                         switch_talk_to(0, 168)
                         add_dialogue("\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"")

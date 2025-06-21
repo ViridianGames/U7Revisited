@@ -67,7 +67,7 @@ function func_0459(eventid, objectref)
             remove_answer("fine ale")
         elseif var_0003 == "plans" then
             add_dialogue("\"I still have those plans up in my cabin. Every once in a while I try to figure them out. I suspect no one in town, save for Owen himself, could understand them. Maybe Julia, the tinker, would be able to shed some light on them. But she would never listen to an old mountain man like me.\"")
-            var_0003 = unknown_08F7H(8) --- Guess: Checks player status
+            var_0003 = npc_id_in_party(8) --- Guess: Checks player status
             if var_0003 then
                 switch_talk_to(8, 0)
                 add_dialogue("\"Yes I would, Karl! Thou dost have too low opinion of thyself! Raise thy spirits, please!\"")

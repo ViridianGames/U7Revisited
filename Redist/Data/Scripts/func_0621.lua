@@ -208,12 +208,12 @@ function func_0621(eventid, objectref)
         end
         if var_0003 == 0 then
             var_0000 = "@" .. var_0000 .. "@"
-            var_0004 = unknown_08F7H(var_0002) --- Guess: Checks player status
+            var_0004 = npc_id_in_party(var_0002) --- Guess: Checks player status
             if var_0004 then
                 bark(var_0002, var_0000)
             end
         else
-            var_0004 = unknown_08F7H(var_0002) --- Guess: Checks player status
+            var_0004 = npc_id_in_party(var_0002) --- Guess: Checks player status
             if var_0004 then
                 switch_talk_to(var_0002, 0)
                 add_dialogue(var_0000)

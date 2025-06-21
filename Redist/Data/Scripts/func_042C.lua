@@ -32,7 +32,7 @@ function func_042C(eventid, objectref)
     var_0001 = get_schedule()
     var_0002 = unknown_001CH(get_npc_name(44))
     var_0003 = is_player_female()
-    var_0004 = unknown_08F7H(-2)
+    var_0004 = npc_id_in_party(-2)
     add_answer({"bye", "job", "name"})
     if not get_flag(122) then
         add_answer("Nell with child")

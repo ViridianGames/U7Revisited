@@ -21,13 +21,13 @@ function func_0631(eventid, objectref)
             var_0006 = add_containerobject_s(356, {2, 17419, 17505, 17516, 7937, 6, 7769})
         end
         if not get_flag(61) then
-            if unknown_08F7H(14) and not get_flag(343) and check_npc_status(14) and check_npc_status(356) then
+            if npc_id_in_party(14) and not get_flag(343) and check_npc_status(14) and check_npc_status(356) then
                 var_0006 = add_containerobject_s(get_object_ref(14), {1, "@What's the password?@", 17490, 7715})
                 var_0006 = add_containerobject_s(objectref, {5, "@Blackbird@", 17490, 7715})
                 var_0006 = add_containerobject_s(get_object_ref(14), {11, "@Pass.@", 17490, 7715})
             end
             var_0006 = add_containerobject_s(objectref, {10, 1585, 17493, 7715})
-        elseif unknown_08F7H(27) and not get_flag(343) and check_npc_status(27) and check_npc_status(356) then
+        elseif npc_id_in_party(27) and not get_flag(343) and check_npc_status(27) and check_npc_status(356) then
             var_0006 = add_containerobject_s(get_object_ref(27), {1, "@What's the password?@", 17490, 7715})
             var_0006 = add_containerobject_s(objectref, {5, "@Blackbird@", 17490, 7715})
             var_0006 = add_containerobject_s(get_object_ref(27), {11, "@Pass.@", 17490, 7715})
@@ -41,10 +41,10 @@ function func_0631(eventid, objectref)
             end
             var_0006 = add_containerobject_s(objectref, {10, 1585, 17493, 7715})
         else
-            if not unknown_08F7H(14) and not get_flag(343) then
+            if not npc_id_in_party(14) and not get_flag(343) then
                 var_0006 = add_containerobject_s(get_object_ref(14), {1, "@What's the password?@", 17490, 7715})
             end
-            if unknown_08F7H(27) and not get_flag(343) then
+            if npc_id_in_party(27) and not get_flag(343) then
                 var_0006 = add_containerobject_s(get_object_ref(14), {1, "@What's the password?@", 17490, 7715})
             end
             if not unknown_008EH(806, 356) then

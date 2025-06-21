@@ -29,7 +29,7 @@ function func_041E(eventid, objectref)
     switch_talk_to(0, -30)
     var_0000 = get_schedule()
     add_answer({"bye", "job", "name"})
-    var_0001 = unknown_08F7H(-3)
+    var_0001 = npc_id_in_party(-3)
     if get_flag(107) or var_0001 then
         add_answer("Shamino")
     end
@@ -70,7 +70,7 @@ function func_041E(eventid, objectref)
             add_dialogue("\"I asked Raymundo about this and he threw a tantrum. He said that it would not be historically accurate. Ha! As if that were something of any significance!\"")
             remove_answer("queen")
         elseif cmps("Shamino") then
-            var_0001 = unknown_08F7H(-3)
+            var_0001 = npc_id_in_party(-3)
             if var_0001 then
                 add_dialogue("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.")
                 switch_talk_to(0, -3)

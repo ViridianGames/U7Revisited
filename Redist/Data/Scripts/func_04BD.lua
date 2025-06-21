@@ -6,14 +6,14 @@ function func_04BD(eventid, objectref)
         switch_talk_to(0, 189)
         var_0000 = false
         var_0001 = false
-        var_0002 = unknown_08F7H(-4)
+        var_0002 = npc_id_in_party(-4)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if var_0002 then
             add_dialogue("\"To greet you, human,\" the gargoyle says to Dupre. \"To ask how well the study is progressing?\"")
             switch_talk_to(0, -4)
             add_dialogue("\"Why 'tis progressing nicely, friend Forbrak.\"")
-            var_0003 = unknown_08F7H(-3)
+            var_0003 = npc_id_in_party(-3)
             if var_0003 and not get_flag(590) then
                 hide_npc(189)
                 switch_talk_to(0, -3)

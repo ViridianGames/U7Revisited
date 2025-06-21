@@ -36,7 +36,7 @@ function func_048C(eventid, objectref)
             return
         end
     end
-    var_0005 = unknown_08F7H(144)
+    var_0005 = npc_id_in_party(144)
     if var_0005 then
         add_dialogue("\"Oh, hello there, lady Rowena. 'Tis good to see ye again. It brings a ray o' sunshine into this old man's heart ta see yer beauteous face,\" he says, smiling.")
         switch_talk_to(0, 144)
@@ -44,7 +44,7 @@ function func_048C(eventid, objectref)
         _hide_npc(144)
         switch_talk_to(0, 140)
     end
-    var_0006 = unknown_08F7H(147)
+    var_0006 = npc_id_in_party(147)
     if var_0006 then
         add_dialogue("\"Oh, uh, hello there Mayor. I thought ye were sequestered in the Town Hall. Well, uh, it's good ta see ya again.\"")
         switch_talk_to(0, 147)
@@ -63,7 +63,7 @@ function func_048C(eventid, objectref)
     while true do
         if cmps("name") then
             add_dialogue("The heavy-set zombie wipes his mouth off on the back of his hand. \"I be Markham. Markham o' the Keg.\" He pats the large keg of wine he carries.")
-            var_0007 = unknown_08F7H(145)
+            var_0007 = npc_id_in_party(145)
             if var_0007 and get_flag(441) then
                 if not var_0002 then
                     _hide_npc(146)
@@ -81,7 +81,7 @@ function func_048C(eventid, objectref)
         elseif cmps("fire") then
             add_dialogue("He looks uncomfortable, \"Caine blew the town to the four winds, and now we're all trapped here, slaves of that bastard Horance.\" Tiny blue flames appear in the pupils of his glazed eyes, then go out as he regains his composure.")
             add_answer({"Horance", "Caine"})
-            var_0008 = unknown_08F7H(146)
+            var_0008 = npc_id_in_party(146)
             if var_0008 and get_flag(442) then
                 switch_talk_to(0, 146)
                 add_dialogue("\"Please, Markham. Have a little pity for Caine. He was trying to create something to save the town when he made his fatal mistake.\" The pale ghost looks deeply troubled.")

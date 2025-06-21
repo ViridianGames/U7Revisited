@@ -48,7 +48,7 @@ function func_041D(eventid, objectref)
             remove_answer("Laurence")
         elseif cmps("Iolo") then
             add_dialogue("Stuart's feathers are obviously ruffled. \"Yes. I have been cast as second banana yet again! I am much more suited to play the Avatar, but did Raymundo cast me? Noooo!\"")
-            var_0000 = unknown_08F7H(-1)
+            var_0000 = npc_id_in_party(-1)
             if var_0000 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"But thou art nothing like me!\"")

@@ -48,7 +48,7 @@ function func_0482(eventid, objectref)
             add_dialogue("You see a leering, ill-postured man who chortles to himself.")
             set_flag(395, true)
             if var_0002 == 23 then
-                var_0003 = unknown_08F7H(4) --- Guess: Checks player status
+                var_0003 = npc_id_in_party(4) --- Guess: Checks player status
                 if var_0003 then
                     add_dialogue("\"Well if it isn't Dupre! -Sir- Dupre now, is it?\"")
                     switch_talk_to(4, 0)
@@ -171,7 +171,7 @@ function func_0482(eventid, objectref)
                 remove_answer("Russell")
             elseif var_0006 == "Katrina" then
                 add_dialogue("\"Katrina has come to the aid of the people of this town on more than one occasion. She gets an interesting smile on her face whenever thy name is mentioned.\"")
-                var_000F = unknown_08F7H(9) --- Guess: Checks player status
+                var_000F = npc_id_in_party(9) --- Guess: Checks player status
                 if var_000F then
                     switch_talk_to(9, 0)
                     add_dialogue("\"That is because the Avatar is one my dearest friends.\"")

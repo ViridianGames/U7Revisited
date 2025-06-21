@@ -100,7 +100,7 @@ function func_0407(eventid, objectref)
                     unknown_08E5H(0, 1) --- Guess: Trains a skill
                 end
             elseif var_0006 == "Iolo" then
-                var_000C = unknown_08F7H(1) --- Guess: Checks player status
+                var_000C = npc_id_in_party(1) --- Guess: Checks player status
                 if var_000C then
                     add_dialogue("\"How art thou, friend? Thou dost look like thou couldst use a little training thyself!\"")
                     switch_talk_to(1, 0)
@@ -113,7 +113,7 @@ function func_0407(eventid, objectref)
                 end
                 remove_answer("Iolo")
             elseif var_0006 == "Shamino" then
-                var_000D = unknown_08F7H(3) --- Guess: Checks player status
+                var_000D = npc_id_in_party(3) --- Guess: Checks player status
                 if var_000D then
                     add_dialogue("\"Say, Shamino, art thou still spending thy time dressing in women's clothes?\"")
                     switch_talk_to(3, 0)
@@ -130,7 +130,7 @@ function func_0407(eventid, objectref)
                 end
                 remove_answer("Shamino")
             elseif var_0006 == "Dupre" then
-                var_000E = unknown_08F7H(4) --- Guess: Checks player status
+                var_000E = npc_id_in_party(4) --- Guess: Checks player status
                 if var_000E then
                     add_dialogue("\"Ah, my good friend Dupre! Hast thou some good ale on thee?\"")
                     switch_talk_to(4, 0)

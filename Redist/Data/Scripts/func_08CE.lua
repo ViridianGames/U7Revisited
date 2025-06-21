@@ -3,10 +3,10 @@ function func_08CE()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
-    var_0000 = unknown_08F7H(-184)
-    var_0001 = unknown_08F7H(-188)
-    var_0002 = unknown_08F7H(-186)
-    var_0003 = unknown_08F7H(-2)
+    var_0000 = npc_id_in_party(-184)
+    var_0001 = npc_id_in_party(-188)
+    var_0002 = npc_id_in_party(-186)
+    var_0003 = npc_id_in_party(-2)
     var_0004 = get_player_name()
     add_dialogue("The winged gargoyle begins his sermon.")
     if not var_0000 then
@@ -34,7 +34,7 @@ function func_08CE()
         switch_talk_to(185, 0)
     end
     add_dialogue("\"To know,\" he smiles, \"that each of the members present has faced such an awakening into the real world. To find in the order a clear path to reach what we seek!\"~~ The members present all stand and shout.")
-    var_0005 = unknown_08F7H(-1)
+    var_0005 = npc_id_in_party(-1)
     if not var_0005 then
         switch_talk_to(1, 0)
         add_dialogue("\"'Tis time for us to depart, " .. var_0004 .. ".\"")

@@ -65,7 +65,7 @@ function func_045F(eventid, objectref)
             remove_answer("gone")
         elseif cmps("Karenna") then
             add_dialogue("\"A skillful and fierce battler, but a bit short-sighted when it comes to tactics, I'm afraid. Still, a woman as attractive as she is diverting enough when encountered. But do not mention to her that I said that. It would just encourage her. It is uncomfortable enough sharing the same roof with her as it is.\"")
-            var_0003 = unknown_08F7H(-94)
+            var_0003 = npc_id_in_party(-94)
             if var_0003 then
                 switch_talk_to(0, -94)
                 add_dialogue("\"What art thou whispering about over there?\"")
@@ -79,7 +79,7 @@ function func_045F(eventid, objectref)
             add_answer({"roof", "short-sighted"})
         elseif cmps("short-sighted") then
             add_dialogue("\"She is the sort of person who labors under the belief that all problems can be solved in one of three ways. Hit them harder. Hit them faster. Or, hit them some more.\"")
-            var_0003 = unknown_08F7H(-94)
+            var_0003 = npc_id_in_party(-94)
             if var_0003 then
                 switch_talk_to(0, -94)
                 add_dialogue("\"Art thou talking about me? I feel mine ears burning!\"")

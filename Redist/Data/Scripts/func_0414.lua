@@ -5,8 +5,7 @@ function func_0414(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(20, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
-        var_0001 = unknown_001CH(20) --- Guess: Gets object state
+        var_0001 = get_schedule(20)
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(84) then
             add_dialogue("You see a solid-looking but seemingly bored fighter.")
@@ -15,6 +14,7 @@ function func_0414(eventid, objectref)
             add_dialogue("\"Yes?\" Markus asks.")
         end
         while true do
+            coroutine.yield()
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"I am Markus the trainer.\"")
@@ -41,11 +41,12 @@ function func_0414(eventid, objectref)
                     remove_answer("train")
                 end
             elseif var_0000 == "bye" then
+                clear_answers()
                 break
             end
         end
         add_dialogue("\"Goodbye,\" the fighter bows.")
     elseif eventid == 0 then
-        unknown_092EH(20) --- Guess: Triggers a game event
+        unknown_092EH(20) -- Random bark based on character
     end
 end

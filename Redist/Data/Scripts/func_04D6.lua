@@ -6,7 +6,7 @@ function func_04D6(eventid, objectref)
         switch_talk_to(0, 214)
         start_conversation()
         add_answer({"bye", "job", "name"})
-        var_0000 = unknown_08F7H(213)
+        var_0000 = npc_id_in_party(213)
         if var_0000 then
             add_answer("girl")
         end

@@ -65,7 +65,7 @@ function func_0403(eventid, objectref)
             elseif var_0004 == "diversions" then
                 add_dialogue("\"The usual. I do not see our old friends often, and Lord British rarely finds work for me. I certainly have no time for wenching or drinking -- I have grown up a bit.\"")
                 remove_answer("diversions")
-                var_0005 = unknown_08F7H(1) --- Guess: Checks player status
+                var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0005 then
                     switch_talk_to(1, 0)
                     add_dialogue("\"Ahem, I have heard something about an actress, no?\"")
@@ -92,7 +92,7 @@ function func_0403(eventid, objectref)
                 remove_answer("friends")
                 add_answer({"Dupre", "Iolo"})
             elseif var_0004 == "Iolo" then
-                var_0006 = unknown_08F7H(1) --- Guess: Checks player status
+                var_0006 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0006 then
                     add_dialogue("\"Dost thou mean that miserable excuse for an archer?\"")
                     switch_talk_to(1, 0)
@@ -105,7 +105,7 @@ function func_0403(eventid, objectref)
                 end
                 remove_answer("Iolo")
             elseif var_0004 == "Dupre" then
-                var_0006 = unknown_08F7H(4) --- Guess: Checks player status
+                var_0006 = npc_id_in_party(4) --- Guess: Checks player status
                 if var_0006 then
                     add_dialogue("\"Dost thou mean that incorrigible wencher and drunkard?\"")
                     switch_talk_to(4, 0)

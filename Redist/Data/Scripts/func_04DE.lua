@@ -48,7 +48,7 @@ function func_04DE(eventid, objectref)
                         add_answer("Fellowship")
                     end
                     add_dialogue("\"Please! Make thyself at home. If thou dost want a drink, let me know.\"")
-                    var_0005 = unknown_08F7H(2)
+                    var_0005 = npc_id_in_party(2)
                     if var_0005 then
                         add_dialogue("\"Uhm, wait a minute. How old art thou, boy?\"")
                         switch_talk_to(0, 2)
@@ -62,7 +62,7 @@ function func_04DE(eventid, objectref)
                         switch_talk_to(0, 2)
                         add_dialogue("\"All right! Wenches!\"")
                         hide_npc(2)
-                        var_0006 = unknown_08F7H(1)
+                        var_0006 = npc_id_in_party(1)
                         if var_0006 then
                             switch_talk_to(0, 1)
                             add_dialogue("Iolo whispers to you, \"Methinks young Spark hath learned a lot whilst adventuring with thee!\"")

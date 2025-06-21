@@ -59,8 +59,8 @@ function func_0401(eventid, objectref)
         var_0002 = get_npc_name(1) --- Guess: Retrieves object reference from ID
         var_0003 = get_lord_or_lady()
         switch_talk_to(1, 0)
-        --var_0008 = unknown_08F7H(11) --- Guess: Checks player status
-        --var_0009 = unknown_08F7H(3) --- Guess: Checks player status
+        --var_0008 = npc_id_in_party(11) --- Guess: Checks player status
+        --var_0009 = npc_id_in_party(3) --- Guess: Checks player status
         var_000A = false
         var_000B = false
         var_000C = get_answer()
@@ -153,7 +153,7 @@ function func_0401(eventid, objectref)
             remove_answer("friends")
             add_answer({"Dupre", "Shamino"})
         elseif var_000C == "Dupre" then
-            var_000C = unknown_08F7H(4) --- Guess: Checks player status
+            var_000C = npc_id_in_party(4) --- Guess: Checks player status
             if var_000C then
                 add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
                 switch_talk_to(4, 0)

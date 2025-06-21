@@ -20,7 +20,7 @@ function func_0452(eventid, objectref)
         end
         var_0003 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
-        var_0004 = unknown_08F7H(81) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(81) --- Guess: Checks player status
         if var_0004 and var_0000 == 0 and var_0001 == 16 then
             add_answer("Elynor")
         end

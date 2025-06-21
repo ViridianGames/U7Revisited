@@ -100,7 +100,7 @@ function func_0405(eventid, objectref)
             elseif var_0003 == "Lord Heather" then
                 add_dialogue("Jaana blushes. \"Yes, I have been seeing our Town Mayor for some time now.\"")
                 remove_answer("Lord Heather")
-                var_000A = unknown_08F7H(77) --- Guess: Checks player status
+                var_000A = npc_id_in_party(77) --- Guess: Checks player status
                 if var_000A then
                     switch_talk_to(77, 0)
                     add_dialogue("\"I see that thou art leaving Cove for a while, my dear?\"")
@@ -116,7 +116,7 @@ function func_0405(eventid, objectref)
                     switch_talk_to(5, 0)
                 end
             elseif var_0003 == "Iolo" then
-                var_000B = unknown_08F7H(1) --- Guess: Checks player status
+                var_000B = npc_id_in_party(1) --- Guess: Checks player status
                 if not var_000B then
                     add_dialogue("\"Where is he? 'Twould be good to see him!\"")
                 else
@@ -129,7 +129,7 @@ function func_0405(eventid, objectref)
                 end
                 remove_answer("Iolo")
             elseif var_0003 == "Shamino" then
-                var_000C = unknown_08F7H(3) --- Guess: Checks player status
+                var_000C = npc_id_in_party(3) --- Guess: Checks player status
                 if not var_000C then
                     add_dialogue("\"Oh, I would love to see him. I wonder where he might be.\"")
                 else
@@ -142,7 +142,7 @@ function func_0405(eventid, objectref)
                 end
                 remove_answer("Shamino")
             elseif var_0003 == "Dupre" then
-                var_000D = unknown_08F7H(4) --- Guess: Checks player status
+                var_000D = npc_id_in_party(4) --- Guess: Checks player status
                 if not var_000D then
                     add_dialogue("\"I miss having a drink or two with that rogue! Let's go find that knight!\"")
                 else

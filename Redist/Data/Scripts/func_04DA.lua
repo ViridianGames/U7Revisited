@@ -39,7 +39,7 @@ function func_04DA(eventid, objectref)
                             var_000D = "humans"
                         end
                         add_dialogue("The gargoyle growls as he turns to look at you. He stands,")
-                        var_000E = unknown_08F7H(217)
+                        var_000E = npc_id_in_party(217)
                         if not var_000E then
                             add_dialogue("setting a hand on the shoulder of the gargoyle next to him.")
                             switch_talk_to(0, 217)

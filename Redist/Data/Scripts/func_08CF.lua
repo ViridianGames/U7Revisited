@@ -3,10 +3,10 @@ function func_08CF()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0000 = unknown_08F7H(-156)
-    var_0001 = unknown_08F7H(-157)
-    var_0002 = unknown_08F7H(-1)
-    var_0003 = unknown_08F7H(-4)
+    var_0000 = npc_id_in_party(-156)
+    var_0001 = npc_id_in_party(-157)
+    var_0002 = npc_id_in_party(-1)
+    var_0003 = npc_id_in_party(-4)
     add_dialogue("\"Fellow members, each of thee has faced -- and doubtless shall face again -- a moment in which thou dost feel the heat of the fever. A moment when thy mind has been clouded with illusory thoughts and visions. A moment when thy recognition has simply vanished, without rhyme or reason. A moment when, perhaps, thou hast even doubted the very words of The Fellowship itself!\"")
     if not var_0000 then
         switch_talk_to(156, 0)

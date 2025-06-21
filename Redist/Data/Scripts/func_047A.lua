@@ -16,7 +16,7 @@ function func_047A(eventid, objectref)
     var_0002 = get_schedule()
     var_0003 = unknown_001CH(get_npc_name(122))
     add_answer({"bye", "job", "name"})
-    var_0004 = unknown_08F7H(123)
+    var_0004 = npc_id_in_party(123)
     if not get_flag(372) then
         add_dialogue("A pretty woman gives you a friendly grin and then coyly turns her eyes away from you.")
         set_flag(372, true)
@@ -54,7 +54,7 @@ function func_047A(eventid, objectref)
             add_answer({"Daphne", "Library", "Sprellic"})
         elseif cmps("Daphne") then
             add_dialogue("\"Honestly, I cannot imagine why thou wouldst be interested in her.\" She lets out a throaty laugh.")
-            var_0004 = unknown_08F7H(123)
+            var_0004 = npc_id_in_party(123)
             if var_0004 then
                 switch_talk_to(0, 123)
                 add_dialogue("\"I heard that, Ophelia. Thou art a spiteful wench!\"")

@@ -7,7 +7,7 @@ function func_0427(eventid, objectref)
         switch_talk_to(39, 0)
         var_0000 = get_schedule() --- Guess: Checks game state or timer
         if var_0000 == 7 then
-            var_0001 = unknown_08F7H(54) --- Guess: Checks player status
+            var_0001 = npc_id_in_party(54) --- Guess: Checks player status
             if var_0001 then
                 add_dialogue("Neno is busy performing with The Avatars and cannot speak at the moment.")
             else

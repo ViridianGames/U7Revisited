@@ -37,7 +37,7 @@ function func_0418(eventid, objectref)
         elseif var_0000 == "magic" then
             if not get_flag(3) then
                 add_dialogue("\"Sometimes the magic works, sometimes it doth not.\" He waves his hand, and drops his wand. \"Oops!\" he cries, as he bends to pick it up.")
-                var_0000 = unknown_08F7H(2) --- Guess: Checks player status
+                var_0000 = npc_id_in_party(2) --- Guess: Checks player status
                 if var_0000 then
                     switch_talk_to(2, 0)
                     add_dialogue("\"Art thou sure this man is not really the jester?\"")

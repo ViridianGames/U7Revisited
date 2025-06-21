@@ -11,8 +11,8 @@ function func_04F1(eventid, objectref)
         return
     end
     var_0000 = false
-    var_0001 = unknown_08F7H(10)
-    var_0002 = unknown_08F7H(1)
+    var_0001 = npc_id_in_party(10)
+    var_0002 = npc_id_in_party(1)
     if not get_flag(724) then
         var_0000 = true
     end

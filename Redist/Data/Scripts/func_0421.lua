@@ -5,7 +5,7 @@ function func_0421(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(33, 0)
-        var_0000 = unknown_08F7H(34) --- Guess: Checks player status
+        var_0000 = npc_id_in_party(34) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
         if not get_flag(162) then
             add_dialogue("You see a child that has recently grown into toddlerhood.")

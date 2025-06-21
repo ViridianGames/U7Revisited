@@ -14,17 +14,17 @@ function func_0610(eventid, objectref)
     end
     var_0004 = get_lord_or_lady()
     var_0005 = get_player_name() --- Guess: Gets player info
-    var_0006 = unknown_08F7H(167)
-    var_0007 = unknown_08F7H(168)
-    var_0008 = unknown_08F7H(1)
+    var_0006 = npc_id_in_party(167)
+    var_0007 = npc_id_in_party(168)
+    var_0008 = npc_id_in_party(1)
     if unknown_0088H(1, 1) then
         var_0008 = 0
     end
-    var_0009 = unknown_08F7H(3)
+    var_0009 = npc_id_in_party(3)
     if unknown_0088H(1, 3) then
         var_0009 = 0
     end
-    var_000A = unknown_08F7H(4)
+    var_000A = npc_id_in_party(4)
     if unknown_0088H(1, 4) then
         var_000A = 0
     end

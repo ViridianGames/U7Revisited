@@ -37,8 +37,8 @@ function func_042B(eventid, objectref)
         add_dialogue("\"Avatar! I was just alerted of thy presence in our fair city! I have been expecting thee!\"")
         set_flag(172, true)
     elseif var_0000 == 0 or var_0000 == 1 or var_0000 == 2 then
-        var_0002 = unknown_08F7H(41)
-        var_0003 = unknown_08F7H(-1)
+        var_0002 = npc_id_in_party(41)
+        var_0003 = npc_id_in_party(-1)
         if var_0002 then
             add_dialogue("\"Avatar! Er, uhm, how art thee? Oh, dost thou know Candice, the curator at the Royal Museum? She is a 'brother' at The Fellowship. I was, er, just seeing her home!\"")
             if var_0003 then
@@ -104,7 +104,7 @@ function func_042B(eventid, objectref)
             remove_answer("honesty")
         elseif cmps("Judith suspicious") then
             add_dialogue("\"Why, I do not know what she is talking about! I work late, that is all!\"")
-            var_0003 = unknown_08F7H(-1)
+            var_0003 = npc_id_in_party(-1)
             if var_0003 then
                 switch_talk_to(0, -1)
                 add_dialogue("Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")

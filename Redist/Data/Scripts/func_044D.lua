@@ -47,14 +47,14 @@ function func_044D(eventid, objectref)
             add_answer({"almost everyone", "everyone"})
         elseif cmps("everyone") then
             add_dialogue("\"Well, let's see... I am in love with Jaana, our healer. And she is in love with me, of course. Then there is Zinaida, who runs the Emerald. She has an interest in De Maria, our local bard. And vice versa. Rayburt, our trainer, is courting Pamela, the innkeeper.\"")
-            var_0001 = unknown_08F7H(-1)
+            var_0001 = npc_id_in_party(-1)
             if var_0001 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"Sounds like bad theatre to me!\"")
                 hide_npc1)
                 switch_talk_to(0, 77)
             end
-            var_0002 = unknown_08F7H(-2)
+            var_0002 = npc_id_in_party(-2)
             if var_0002 then
                 switch_talk_to(0, -2)
                 add_dialogue("\"Any wenches mine own age around here?\"")
@@ -63,7 +63,7 @@ function func_044D(eventid, objectref)
             end
             set_flag(228, true)
             remove_answer("everyone")
-            var_0003 = unknown_08F7H(-5)
+            var_0003 = npc_id_in_party(-5)
             if var_0003 then
                 add_dialogue("\"I see that thou art leaving Cove for a while, my dear?\"")
                 switch_talk_to(0, -5)

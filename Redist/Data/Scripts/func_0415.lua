@@ -8,6 +8,14 @@ function func_0415(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = 0 --unknown_001CH(21) --- Guess: Gets object state
         var_0002 = 0
+
+        if not get_flag(85) then
+            add_dialogue("You see a salty old sailor who reeks of tobacco.")
+            set_flag(85, true)
+        else
+            add_dialogue("\"Yes, matey?\" Gargan asks, coughing.")
+        end
+
         add_answer({"bye", "murder", "job", "name"})
         if get_flag(64) then
             add_answer("Crown Jewel")
@@ -19,16 +27,10 @@ function func_0415(eventid, objectref)
             add_answer("Hook")
         end
 
-        --while true do
+        while true do
+            coroutine.yield()
             var_0003 = get_answer()
-            if var_0003 == "nil" then
-                if not get_flag(85) then
-                    add_dialogue("You see a salty old sailor who reeks of tobacco.")
-                    set_flag(85, true)
-                else
-                    add_dialogue("\"Yes, matey?\" Gargan asks, coughing.")
-                end
-            elseif var_0003 == "name" then
+            if var_0003 == "name" then
                 add_dialogue("\"My name is Gargan.\"")
                 add_dialogue("He sniffs loudly.")
                 remove_answer("name")
@@ -133,7 +135,7 @@ function func_0415(eventid, objectref)
             elseif var_0003 == "murder" then
                 add_dialogue("\"I heard about that. Terrible thing to happen. Can't say I saw or heard anything, though.\"")
                 add_dialogue("Gargan coughs, clears his throat loudly, then spits.")
-                var_0008 = unknown_08F7H(2) --- Guess: Checks player status
+                var_0008 = npc_id_in_party(2) --- Guess: Checks player status
                 if var_0008 then
                     switch_talk_to(2, 0)
                     add_dialogue("\"Ooooh, yuck!\"")
@@ -156,11 +158,11 @@ function func_0415(eventid, objectref)
             elseif var_0003 == "Hook" then
                 add_dialogue("\"Matey, I have always seen pirates and sailors with peglegs and hooks. If thou hast seen one, thou hast seen another.\" But the man suddenly frowns. \"Hmm. Now that thou dost mention it, I -did- see a man with a hook late last night after sundown. I was leaving the shop and saw him outside. There was a wingless gargoyle with him. They were walking east.\"")
                 add_dialogue("Gargan sneezes, then coughs a couple of times.")
-                var_0008 = unknown_08F7H(2) --- Guess: Checks player status
+                var_0008 = npc_id_in_party(2)
                 if var_0008 then
                     switch_talk_to(2, 0)
                     add_dialogue("\"I told thee! It was him!\"")
-                    hide_npc(2)
+                    --hide_npc(2)
                     switch_talk_to(21, 0)
                 end
                 remove_answer("Hook")
@@ -180,7 +182,7 @@ function func_0415(eventid, objectref)
                 add_dialogue("\"May thy day have smooth sailing,\" the sailor starts to say, but a coughing spasm interrupts him.")
                 clear_answers()        
             end
-        --end
+        end
     elseif eventid == 0 then
         unknown_092EH(21) --- Guess: Triggers a game event
     end

@@ -6,7 +6,7 @@ function func_04C7(eventid, objectref)
         switch_talk_to(0, 199)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_08F7H(-4)
+        var_0002 = npc_id_in_party(-4)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(606) and not get_flag(609) then
@@ -98,8 +98,8 @@ function func_04C7(eventid, objectref)
                 var_0003 = ask_yes_no()
                 if var_0003 then
                     add_dialogue("\"Why did the chicken cross the road?\"")
-                    var_0004 = unknown_08F7H(-1)
-                    var_0005 = unknown_08F7H(-2)
+                    var_0004 = npc_id_in_party(-1)
+                    var_0005 = npc_id_in_party(-2)
                     if var_0005 then
                         switch_talk_to(0, -2)
                         add_dialogue("\"To get to the other side! Oh, that joke is new,\" he says sarcastically.")
@@ -138,7 +138,7 @@ function func_04C7(eventid, objectref)
                 remove_answer({"to get to the other side", "I don't know"})
             elseif answer == "Fellowship" then
                 add_dialogue("\"The Fellowship is a twenty-year-old organization that holds many festivals, parades, and celebrations. In addition, they maintain a shelter in the town of Paws. They have an underlying philosophy called the Triad of Inner Strength. This triad is broken into the three principles known as `strive for unity,' `trust thy brother,' and `worthiness precedes reward.'I will now explain the meaning of each principple.\"")
-                var_0005 = unknown_08F7H(-2)
+                var_0005 = npc_id_in_party(-2)
                 if var_0005 then
                     switch_talk_to(0, -2)
                     add_dialogue("\"This Denton fellow is really long-winded.\"")

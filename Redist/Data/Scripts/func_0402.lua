@@ -40,7 +40,7 @@ function func_0402(eventid, objectref)
                 var_0008 = var_0001
                 set_flag(71, true)
             end
-            var_000B = unknown_08F7H(1) --- Guess: Checks player status
+            var_000B = npc_id_in_party(1) --- Guess: Checks player status
             if var_000B then
                 switch_talk_to(1, 0)
                 add_dialogue("\"Boy, this is the Avatar! " .. (var_0003 and "Upon my word she is! She has come to help thee!\"" or "Upon my word he is! He has come to help thee!\""))
@@ -134,7 +134,7 @@ function func_0402(eventid, objectref)
                         set_flag(67, true)
                         add_dialogue("\"Take me with thee! Please! I must avenge Father's death! If thou dost not take me with thee, I will follow thee anyway!\"")
                         add_dialogue("The boy is all excited now. \"I am an expert with a slingshot! I can strike sewer rats with almost every shot! And I am small -- I do not eat much! Please take me! Please ask me to join thee!\"")
-                        var_000B = unknown_08F7H(1) --- Guess: Checks player status
+                        var_000B = npc_id_in_party(1) --- Guess: Checks player status
                         if var_000B then
                             switch_talk_to(1, 0)
                             add_dialogue("Iolo whispers to you. \"I do not know about taking a child on the road with us, " .. var_0009 .. ".\"")

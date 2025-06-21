@@ -20,9 +20,9 @@ function func_0404(eventid, objectref)
         var_0001 = get_party_members()
         var_0002 = get_npc_name(4) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
-        var_0004 = unknown_08F7H(1) --- Guess: Checks player status
-        var_0005 = unknown_08F7H(3) --- Guess: Checks player status
-        var_0006 = unknown_08F7H(2) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(1) --- Guess: Checks player status
+        var_0005 = npc_id_in_party(3) --- Guess: Checks player status
+        var_0006 = npc_id_in_party(2) --- Guess: Checks player status
         var_0007 = unknown_0037H(get_npc_name(1)) --- Guess: Checks object-specific property
         var_0008 = unknown_0037H(get_npc_name(3)) --- Guess: Checks object-specific property
         var_0009 = unknown_0037H(get_npc_name(2)) --- Guess: Checks object-specific property

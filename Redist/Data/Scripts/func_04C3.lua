@@ -6,7 +6,7 @@ function func_04C3(eventid, objectref)
         switch_talk_to(0, 195)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_08F7H(-197)
+        var_0002 = npc_id_in_party(-197)
         var_0003 = false
         start_conversation()
         add_answer({"bye", "job", "name"})

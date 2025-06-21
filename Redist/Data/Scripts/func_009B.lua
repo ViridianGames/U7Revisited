@@ -5,8 +5,8 @@ function func_009B(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(285, 0)
-        var_0000 = unknown_08F7H(-2)
-        var_0001 = unknown_08F7H(-3)
+        var_0000 = npc_id_in_party(-2)
+        var_0001 = npc_id_in_party(-3)
         var_0002 = get_player_name()
         if not get_flag(435) then
             add_dialogue("The hooded figure in the boat ignores you completely.")
@@ -57,7 +57,7 @@ function func_009B(eventid, objectref)
                         switch_talk_to(3, 0)
                         add_dialogue("\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
                         hide_npc(-3)
-                        var_0003 = unknown_08F7H(-1)
+                        var_0003 = npc_id_in_party(-1)
                         if var_0003 then
                             switch_talk_to(1, 0)
                             add_dialogue("Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")

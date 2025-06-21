@@ -7,9 +7,9 @@ function func_0417(eventid, objectref)
     if eventid == 1 then
         var_0001 = get_player_name()
         var_0002 = get_party_members()
-        var_0003 = unknown_08F7H(1) --- Guess: Checks player status
-        var_0004 = unknown_08F7H(4) --- Guess: Checks player status
-        var_0005 = unknown_08F7H(3) --- Guess: Checks player status
+        var_0003 = npc_id_in_party(1) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(4) --- Guess: Checks player status
+        var_0005 = npc_id_in_party(3) --- Guess: Checks player status
         switch_talk_to(23, 0)
         var_0006 = false
         var_0007 = false

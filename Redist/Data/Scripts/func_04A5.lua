@@ -39,7 +39,7 @@ function func_04A5(eventid, objectref)
                 remove_answer("bathed")
             elseif answer == "friends" then
                 add_dialogue("\"Speaking of thy friends, I have heard that thy companion, Dupre, is a drunken sot.\"")
-                var_0003 = unknown_08F7H(4)
+                var_0003 = npc_id_in_party(4)
                 if var_0003 then
                     switch_talk_to(4, 0)
                     add_dialogue("\"Hey, I don't think --\"")
@@ -51,7 +51,7 @@ function func_04A5(eventid, objectref)
                 remove_answer("friends")
             elseif answer == "companions" then
                 add_dialogue("\"I am glad thou didst ask, " .. var_0001 .. ". Thy friend, Iolo, charges far too much for his bows. Perhaps thou couldst have a chat with him.\"")
-                var_0004 = unknown_08F7H(1)
+                var_0004 = npc_id_in_party(1)
                 if var_0004 then
                     switch_talk_to(1, 0)
                     add_dialogue("\"Too much? What dost thou mean, too --\"")
@@ -63,7 +63,7 @@ function func_04A5(eventid, objectref)
                 remove_answer("companions")
             elseif answer == "teeth" then
                 add_dialogue("\"That is the reason for thine offensive mouth odor. I have not seen anything that yellow since the time thy fellow Shamino ran away from a battle in fear.\"")
-                var_0005 = unknown_08F7H(3)
+                var_0005 = npc_id_in_party(3)
                 if var_0005 then
                     switch_talk_to(0, 3)
                     add_dialogue("\"Thou must be mad!\" Shamino turns to you. \"This rogue needs to be taught a lesson.\"")

@@ -29,7 +29,7 @@ function func_0429(eventid, objectref)
             set_flag(170, true)
         else
             if var_0002 == 0 then
-                var_0004 = unknown_08F7H(43) --- Guess: Checks player status
+                var_0004 = npc_id_in_party(43) --- Guess: Checks player status
                 if var_0004 then
                     add_dialogue("Candice looks guilty about something. She gives you a little wave, but says nothing. She looks at Patterson, hoping that he will do the talking.")
                     abort()
@@ -71,7 +71,7 @@ function func_0429(eventid, objectref)
                 remove_answer("artifacts")
             elseif var_0005 == "Avatar artifacts" then
                 add_dialogue("\"Well, thou surely must recognize them. They are supposed to be authentic! Things like the Silver Horn and the eight stones. I understand the stones were used for teleportation, and if mages were not so sick in the head these days, they could cast a 'Recall' spell on them to teleport to specific places around Britannia. I believe if one casts a 'Mark' spell on one, thou canst re-assign the teleportation location! But I suppose none of that works anymore.\"")
-                var_0005 = unknown_08F7H(1) --- Guess: Checks player status
+                var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0005 then
                     switch_talk_to(1, 0)
                     add_dialogue("Iolo whispers to you, \"Er, Avatar, thou dost know that I do not condone stealing. But, er, I do believe these stones may be useful to us. Perhaps we should come back later when the museum is closed, if thou dost know what I mean? After all, these items technically belong to thee!\"")

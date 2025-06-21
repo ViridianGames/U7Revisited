@@ -50,7 +50,7 @@ function func_045E(eventid, objectref)
             remove_answer("murders")
         elseif cmps("Jakher") then
             add_dialogue("\"He is quite an able trainer in his own right. Not as skilled as myself, obviously. But I do think he is cute, though I bid thee, do not tell him that I spoke of this. It will only encourage him.\"")
-            var_0003 = unknown_08F7H(-95)
+            var_0003 = npc_id_in_party(-95)
             if var_0003 then
                 switch_talk_to(0, -95)
                 add_dialogue("\"Art thou speaking about me? Mine ears are burning!\"")
@@ -87,7 +87,7 @@ function func_045E(eventid, objectref)
             remove_answer("hostilities")
         elseif cmps("attractive") then
             add_dialogue("\"Jakher told thee he doth find me attractive? He denies it, of course, but I have known for years that he doth have feelings for me.\"")
-            var_0003 = unknown_08F7H(-95)
+            var_0003 = npc_id_in_party(-95)
             if var_0003 then
                 switch_talk_to(0, -95)
                 add_dialogue("\"What? What didst thou say?\"")

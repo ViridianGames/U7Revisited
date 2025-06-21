@@ -6,7 +6,7 @@ function func_04A3(eventid, objectref)
         switch_talk_to(0, 163)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = unknown_08F7H(4)
+        var_0002 = npc_id_in_party(4)
         var_0003 = get_schedule()
         var_0004 = false
         if var_0003 == 7 then

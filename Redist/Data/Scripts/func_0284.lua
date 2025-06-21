@@ -5,7 +5,7 @@ function func_0284(eventid, objectref)
     if eventid == 1 then
         unknown_007EH()
         set_object_quality(objectref, 23)
-        if not (unknown_0937H(-356) or not unknown_0937H(-1)) and not unknown_08F7H(-1) then
+        if not (unknown_0937H(-356) or not unknown_0937H(-1)) and not npc_id_in_party(-1) then
             unknown_0933H(0, "@Call it.@", -356)
             var_0000 = random2(2, 1)
             if var_0000 == 1 then

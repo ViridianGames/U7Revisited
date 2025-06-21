@@ -32,7 +32,7 @@ function func_042F(eventid, objectref)
             add_dialogue("\"I work for Lucy at the Blue Boar. I serve food and drinks.\"")
             if var_0001 == 23 then
                 add_dialogue("\"If there is anything thou wouldst like, please say so! And, er, I shall give thee a discount if thou dost buy from me!\"")
-                var_0002 = unknown_08F7H(-4)
+                var_0002 = npc_id_in_party(-4)
                 if var_0002 then
                     add_dialogue("\"Why, Sir Dupre! How good to see thee again!\"")
                     switch_talk_to(0, -4)
@@ -69,7 +69,7 @@ function func_042F(eventid, objectref)
         elseif cmps("another") then
             add_dialogue("\"'Tis Willy the Baker! But he does not know it yet!\" she giggles.")
             set_flag(133, true)
-            var_0003 = unknown_08F7H(-37)
+            var_0003 = npc_id_in_party(-37)
             if var_0003 then
                 switch_talk_to(0, -37)
                 add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")

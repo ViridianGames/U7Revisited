@@ -34,8 +34,8 @@ function func_04E9(eventid, objectref)
                 end
                 add_dialogue("\"Wouldst thou like to see our Passion Play?\"")
                 if ask_yes_no() then
-                    var_0001 = unknown_08F7H(234)
-                    var_0002 = unknown_08F7H(235)
+                    var_0001 = npc_id_in_party(234)
+                    var_0002 = npc_id_in_party(235)
                     if var_0001 and var_0002 then
                         var_0003 = get_party_members()
                         var_0004 = 0

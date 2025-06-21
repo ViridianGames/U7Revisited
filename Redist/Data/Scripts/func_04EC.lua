@@ -19,20 +19,20 @@ function func_04EC(eventid, objectref)
         --     end
         --     return
         -- end
-        --while true do
+        if not get_flag(80) then
+            add_dialogue("This is a woman who seems pleasant and welcoming. \"I am proud to meet the Avatar,\" she says, beaming.")
+            set_flag(80, true)
+            else
+                add_dialogue("\"Yes, Avatar?\" Ellen asks.")
+        end
+
+        add_answer({"bye", "murder", "job", "name"})
+
+        while true do
+            coroutine.yield(0)
             local answer = get_answer()
             debug_print("Answer is " .. answer .. ".")
-            add_answer({"bye", "murder", "job", "name"})
-            if answer == "nil" then
-                if not get_flag(80) then
-                    add_dialogue("This is a woman who seems pleasant and welcoming. \"I am proud to meet the Avatar,\" she says, beaming.")
-                    set_flag(80, true)
-                else
-                    add_dialogue("\"Yes, Avatar?\" Ellen asks.")
-                end
-                --add_answer({"bye", "murder", "job", "name"})
-            --end
-            elseif answer == "name" then
+            if answer == "name" then
                 add_dialogue("\"My name is Ellen.\"")
                 remove_answer("name")
             elseif answer == "job" then
@@ -52,14 +52,14 @@ function func_04EC(eventid, objectref)
                 add_dialogue("\"Mine husband Klog is a wonderful branch leader. He is an inspiration to all of the Trinsic members.\"")
                 remove_answer("Klog")
             elseif answer == "philosophy" then
-                add_dialogue("\"REPLACE WITH PHILOSOPHY FUNCTION CALL\"")
-                --unknown_091AH()
+                --add_dialogue("\"REPLACE WITH PHILOSOPHY FUNCTION CALL\"")
                 remove_answer("philosophy")
+                func_091A()
             elseif answer == "bye" then
                 add_dialogue("\"Goodbye. I hope to see thee again, soon.\"")
                 clear_answers()
             end
-        --end
+        end
     elseif eventid == 0 then
         unknown_092EH(236)
     end

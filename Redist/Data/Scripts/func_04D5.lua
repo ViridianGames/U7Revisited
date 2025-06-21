@@ -7,7 +7,7 @@ function func_04D5(eventid, objectref)
         var_0000 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})
-        var_0001 = unknown_08F7H(214)
+        var_0001 = npc_id_in_party(214)
         if var_0001 then
             add_answer("gargoyle")
             remove_answer("gargoyle")

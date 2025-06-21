@@ -74,7 +74,7 @@ void ConversationState::Shutdown()
 
 void ConversationState::Update()
 {
-    if (m_steps.empty() && !g_ScriptingSystem->IsCoroutineActive(m_luaFunction))
+    if (m_steps.empty() && m_answers.empty())
     {
         g_StateMachine->PopState();
         return;
@@ -138,8 +138,6 @@ void ConversationState::Update()
                     else
                     {
                         SetAnswer(m_luaFunction, m_answers[i]);
-                        m_answers.clear();
-                        m_steps.clear();
                         m_answerPending = true;
                         m_waitingForAnswer = false;
                         if (!m_steps.empty())
@@ -209,9 +207,12 @@ void ConversationState::Draw()
     DrawParagraph(g_ConversationFont, m_currentDialogue, {115, 20}, 380,
                   g_ConversationFont.get()->baseSize, 1, YELLOW);
 
-    for (int i = 0; i < m_answers.size(); i++)
+    if (m_waitingForAnswer)
     {
-        DrawOutlinedText(g_SmallFont, "* " + m_answers[i], {115, float(140 + (i * g_SmallFont.get()->baseSize * 1.3))}, g_SmallFont.get()->baseSize, 1, YELLOW);
+       for (int i = 0; i < m_answers.size(); i++)
+       {
+          DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 115, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
+       }
     }
 
     DrawConsole();

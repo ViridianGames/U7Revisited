@@ -72,7 +72,7 @@ function func_04BF(eventid, objectref)
             elseif answer == "Spektran" then
                 add_dialogue("\"'Tis the island thou dost stand upon!\" He turns to the invisible person on his left and whispers, \"Thou art correct -- this person really is a fool!\"")
                 add_dialogue("Martingo turns back to you. \"As I said, I am the Sultan here. I am the master of all of these subjects.\" He gestures around the room.")
-                var_0005 = unknown_08F7H(-1)
+                var_0005 = npc_id_in_party(-1)
                 if var_0005 then
                     switch_talk_to(0, -1)
                     add_dialogue("Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")

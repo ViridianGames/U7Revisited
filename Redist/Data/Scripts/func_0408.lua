@@ -9,7 +9,7 @@ function func_0408(eventid, objectref)
         var_0001 = get_party_members()
         var_0002 = get_npc_name(8) --- Guess: Retrieves object reference from ID
         var_0003 = get_player_name()
-        var_0004 = unknown_08F7H(2) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(2) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
         if get_flag(267) then
             add_answer("plans")
@@ -132,7 +132,7 @@ function func_0408(eventid, objectref)
                 end
                 remove_answer("plans")
             elseif var_0005 == "Iolo" then
-                var_000B = unknown_08F7H(1) --- Guess: Checks player status
+                var_000B = npc_id_in_party(1) --- Guess: Checks player status
                 if not var_000B then
                     add_dialogue("\"Perhaps we should go find Iolo and have him join us as well.\"")
                 else
@@ -144,7 +144,7 @@ function func_0408(eventid, objectref)
                 end
                 remove_answer("Iolo")
             elseif var_0005 == "Shamino" then
-                var_000C = unknown_08F7H(3) --- Guess: Checks player status
+                var_000C = npc_id_in_party(3) --- Guess: Checks player status
                 if not var_000C then
                     add_dialogue("\"Perhaps we should go find Shamino and have him join us as well.\"")
                 else
@@ -156,7 +156,7 @@ function func_0408(eventid, objectref)
                 end
                 remove_answer("Shamino")
             elseif var_0005 == "Dupre" then
-                var_000D = unknown_08F7H(4) --- Guess: Checks player status
+                var_000D = npc_id_in_party(4) --- Guess: Checks player status
                 if not var_000D then
                     add_dialogue("\"Perhaps we should go find Sir Dupre and have him join us as well.\"")
                 else

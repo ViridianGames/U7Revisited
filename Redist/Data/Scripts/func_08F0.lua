@@ -4,7 +4,7 @@ function func_08F0()
     local var_0000, var_0001
 
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_08F7H(-144)
+    var_0001 = npc_id_in_party(-144)
     if not var_0001 then
         add_dialogue("\"Why, I must again find my darling Rowena! Where could she have gone to?\"")
         return

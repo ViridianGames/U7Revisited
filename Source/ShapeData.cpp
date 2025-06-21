@@ -378,7 +378,7 @@ void ShapeData::SetupDrawTypes()
 
 	m_Dims = Vector3{objectData->m_width, objectData->m_height, objectData->m_depth};
 
-	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD || m_drawType == ShapeDrawType::OBJECT_DRAW_CHARACTER)
 	{
 		m_Dims = Vector3{float(m_originalTexture->width) / 8.0f, float(m_originalTexture->height) / 8.0f, 1};
 	}
@@ -745,6 +745,68 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 		BeginShaderMode(g_alphaDiscard);
 		DrawBillboardPro(g_camera, m_originalTexture->m_Texture, Rectangle{0, 0, float(m_originalTexture->m_Texture.width), float(m_originalTexture->m_Texture.height)}, finalPos, Vector3{0, 1, 0},
 						 Vector2{m_Dims.x, m_Dims.y}, Vector2{0, 0}, -45, color);
+		EndShaderMode();
+		break;
+	}
+
+	case ShapeDrawType::OBJECT_DRAW_CHARACTER:
+	{
+		finalPos = pos;
+		finalPos.x += .5f;
+		finalPos.z += .5f;
+		finalPos.y += m_Dims.y * .85f;
+
+		//g_cameraRotation
+
+		Texture* finalTexture = &g_shapeTable[m_shape][17].m_originalTexture->m_Texture;
+		float finalRotation = -45;
+
+		int thisTime = GetTime() * 1000;
+
+		int framerate = 250;
+
+		thisTime = thisTime % (4 * framerate);
+
+		if (thisTime > framerate && thisTime < 2 * framerate)
+		{
+			finalTexture = &g_shapeTable[m_shape][16].m_originalTexture->m_Texture;
+		}
+		else if (thisTime >= 2 * framerate && thisTime < 3 * framerate)
+		{
+			finalTexture = &g_shapeTable[m_shape][18].m_originalTexture->m_Texture;
+		}
+		else if (thisTime > 3 * framerate)
+		{
+			finalTexture = &g_shapeTable[m_shape][16].m_originalTexture->m_Texture;
+		}
+
+
+		//if (g_cameraRotation > PI / 2)
+		//{
+		//	finalTexture = &g_shapeTable[m_shape][1].m_originalTexture->m_Texture;
+		//}
+		//if (g_cameraRotation > PI )
+		//{
+		//	finalTexture = &g_shapeTable[m_shape][0].m_originalTexture->m_Texture;
+		//	Image image = ImageFromImage(g_shapeTable[m_shape][0].m_originalTexture->m_Image, {0, 0, float(g_shapeTable[m_shape][0].m_originalTexture->m_Image.width), float(g_shapeTable[m_shape][0].m_originalTexture->m_Image.height) });
+		//	ImageFlipHorizontal(&image);
+
+		//	finalTexture = &LoadTextureFromImage(image);
+		//	finalRotation = 45;
+		//	
+		//}
+		//if (g_cameraRotation > PI * 1.5f)
+		//{
+		//	finalTexture = &g_shapeTable[m_shape][3].m_originalTexture->m_Texture;
+		//}
+
+
+
+		Vector3 dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
+
+		BeginShaderMode(g_alphaDiscard);
+		DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
+			Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, finalRotation, color);
 		EndShaderMode();
 		break;
 	}

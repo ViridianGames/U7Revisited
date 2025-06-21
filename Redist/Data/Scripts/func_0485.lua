@@ -6,11 +6,11 @@ function func_0485(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(133, 0)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_08F7H(3) --- Guess: Checks player status
-        var_0002 = unknown_08F7H(1) --- Guess: Checks player status
-        var_0003 = unknown_08F7H(4) --- Guess: Checks player status
-        var_0004 = unknown_08F7H(2) --- Guess: Checks player status
-        var_0005 = unknown_08F7H(132) --- Guess: Checks player status
+        var_0001 = npc_id_in_party(3) --- Guess: Checks player status
+        var_0002 = npc_id_in_party(1) --- Guess: Checks player status
+        var_0003 = npc_id_in_party(4) --- Guess: Checks player status
+        var_0004 = npc_id_in_party(2) --- Guess: Checks player status
+        var_0005 = npc_id_in_party(132) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
         if not get_flag(384) then
             add_answer("strangers")

@@ -8,7 +8,7 @@ function func_0460(eventid, objectref)
     end
     switch_talk_to(96, 0)
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_08F7H(83) --- Guess: Checks player status
+    var_0001 = npc_id_in_party(83) --- Guess: Checks player status
     if var_0001 then
         add_answer("Margareta")
     end

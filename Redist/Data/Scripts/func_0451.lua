@@ -17,7 +17,7 @@ function func_0451(eventid, objectref)
         if not get_flag(135) then
             add_answer("Elizabeth and Abraham")
         end
-        var_0005 = unknown_08F7H(82) --- Guess: Checks player status
+        var_0005 = npc_id_in_party(82) --- Guess: Checks player status
         if var_0005 and var_0004 == 16 then
             add_answer("Gregor")
         end

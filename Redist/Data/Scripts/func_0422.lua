@@ -46,7 +46,7 @@ function func_0422(eventid, objectref)
                         add_dialogue("\"Whew! Dost thou smell what I smell, Avatar?\"")
                         hide_npc(2)
                     end
-                    var_0005 = unknown_08F7H(1) --- Guess: Checks player status
+                    var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0005 then
                         switch_talk_to(1, 0)
                         add_dialogue("\"I believe that is the smell of diapers, boy. When thou art a father one day, thou wilt come to know that smell quite well.\"")

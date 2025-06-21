@@ -2,7 +2,7 @@
 function func_088D()
     local var_0000, var_0001
 
-    var_0000 = unknown_08F7H(-1)
+    var_0000 = npc_id_in_party(-1)
     if not var_0000 then
         switch_talk_to(0, -1)
         add_dialogue("\"Feeling all right, man?\"")

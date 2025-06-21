@@ -4,7 +4,7 @@ function func_08D6()
     local var_0000, var_0001
 
     var_0000 = get_lord_or_lady()
-    var_0001 = unknown_08F7H(-142)
+    var_0001 = npc_id_in_party(-142)
     if not var_0001 then
         add_dialogue("\"Where, oh where has my dear husband gone. I cannot stand to be away from him!\"")
         return

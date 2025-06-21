@@ -24,7 +24,7 @@ function func_08AF()
         end
     elseif not get_flag(419) then
         add_dialogue("\"Very good, now thou shalt take the Mayor to the well and he must enter it of his own free will. When he does that, the souls of the island and the well will be free to go on to their destiny. Unfortunately, Mayor Forsythe will be lost for all time.\"")
-        var_0003 = unknown_08F7H(-147)
+        var_0003 = npc_id_in_party(-147)
         if var_0003 then
             add_dialogue(" He looks sadly at the ghostly gentleman.")
         end

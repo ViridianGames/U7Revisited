@@ -6,7 +6,7 @@ function func_04FA(eventid, objectref)
         switch_talk_to(0, 250)
         var_0000 = get_player_name()
         var_0001 = false
-        var_0002 = unknown_08F7H(156)
+        var_0002 = npc_id_in_party(156)
         var_0003 = get_schedule()
         var_0004 = unknown_0931H(1, 359, 981, 1, 357)
         if var_0003 == 7 then

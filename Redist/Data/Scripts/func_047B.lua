@@ -14,7 +14,7 @@ function func_047B(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     var_0002 = unknown_001CH(get_npc_name(123))
-    var_0003 = unknown_08F7H(122)
+    var_0003 = npc_id_in_party(122)
     var_0004 = false
     var_0005 = unknown_0037H(get_npc_name(124))
     var_0006 = unknown_0037H(get_npc_name(125))
@@ -30,7 +30,7 @@ function func_047B(eventid, objectref)
     if not get_flag(373) then
         add_dialogue("You see a disgruntled, obviously overworked barmaid. She gives you a perfunctory grunt of a hello.")
         set_flag(373, true)
-        var_0009 = unknown_08F7H(-4)
+        var_0009 = npc_id_in_party(-4)
         if var_0009 then
             add_dialogue("\"Art thou still here?\" she asks Dupre.")
             switch_talk_to(0, -4)

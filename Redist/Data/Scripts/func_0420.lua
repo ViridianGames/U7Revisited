@@ -16,7 +16,7 @@ function func_0420(eventid, objectref)
             var_0000 = get_answer()
             if var_0000 == "name" then
                 add_dialogue("\"Makth.\"")
-                var_0000 = unknown_08F7H(34) --- Guess: Checks player status
+                var_0000 = npc_id_in_party(34) --- Guess: Checks player status
                 if var_0000 then
                     switch_talk_to(34, 0)
                     add_dialogue("\"He says his name is Max.\"")

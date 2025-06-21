@@ -40,7 +40,7 @@ function func_045C(eventid, objectref)
                 add_dialogue("\"Why I be the barkeep of The Checquered Cork. No better place in Minoc to discuss the events of the day.\"")
                 if var_0002 == 23 then
                     add_dialogue("He coughs into the rag he had just been using to polish the bar.")
-                    var_0003 = unknown_08F7H(-4)
+                    var_0003 = npc_id_in_party(-4)
                     if var_0003 then
                         add_dialogue("\"Hello again, Sir Dupre! Didst thou enjoy mine establishment so much that thou hast returned?\"")
                         switch_talk_to(0, -4)

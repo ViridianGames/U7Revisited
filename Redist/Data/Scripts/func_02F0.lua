@@ -7,7 +7,7 @@ function func_02F0(eventid, objectref)
         if var_0000 == 0 then
             set_object_frame(objectref, 1)
             play_music(objectref, 41)
-            if not unknown_08F7H(-144) then
+            if not npc_id_in_party(-144) then
                 set_flag(423, true)
                 -- calle 0490H, 1168 (unmapped)
                 unknown_0490H(get_npc_name(-144))

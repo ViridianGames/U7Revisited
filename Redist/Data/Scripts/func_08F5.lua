@@ -27,10 +27,10 @@ function func_08F5(var_0000, var_0001)
             switch_talk_to(1, 0)
             add_dialogue("\"Avatar, this stranger grows upon me by the moment. Surely he would be a boon travelling companion.\"")
             var_0013 = 0
-            if unknown_08F7H(-3) then
+            if npc_id_in_party(-3) then
                 var_0013 = -3
             end
-            if unknown_08F7H(-4) then
+            if npc_id_in_party(-4) then
                 var_0013 = -4
             end
             if var_0013 ~= 0 then

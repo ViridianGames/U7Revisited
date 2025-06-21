@@ -69,7 +69,7 @@ function func_0474(eventid, objectref)
                 var_0003 = unknown_0931H(359, 3, 797, 1, 357) --- Guess: Checks item in inventory
                 if var_0003 then
                     add_dialogue("He takes the contract from you and signs it.")
-                    var_0004 = unknown_08F7H(6) --- Guess: Checks player status
+                    var_0004 = npc_id_in_party(6) --- Guess: Checks player status
                     if var_0004 then
                         add_dialogue("He turns to Trellek. \"Please apologize to thy kindred for me. I never meant to destroy thine 'omes. Friends, ay?\"")
                         add_dialogue("Trellek smiles and nods.")

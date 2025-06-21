@@ -31,7 +31,7 @@ function func_04E3(eventid, objectref)
                 add_dialogue("\"Thou dost really want to hear it? 'Tis very long.\"")
                 if ask_yes_no() then
                     add_dialogue("\"All right. I was born in a cave. So my mother named me Mole.\"")
-                    var_0003 = unknown_08F7H(1)
+                    var_0003 = npc_id_in_party(1)
                     if var_0003 then
                         switch_talk_to(0, 1)
                         add_dialogue("\"I thought thou said it was a long story.\"")

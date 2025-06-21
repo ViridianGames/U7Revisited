@@ -16,12 +16,12 @@ function func_04E5(eventid, objectref)
             add_dialogue("You see a fat, cheerful-looking merchant.")
             if var_0001 == 7 then
                 add_dialogue("\"Hello, hello my friend! Thou dost look like thou needest to spend money!\"")
-                var_0003 = unknown_08F7H(3)
+                var_0003 = npc_id_in_party(3)
                 if var_0003 then
                     switch_talk_to(0, 3)
                     add_dialogue("\"This place looks quite well-off.\"")
                     hide_npc(3)
-                    var_0004 = unknown_08F7H(1)
+                    var_0004 = npc_id_in_party(1)
                     if var_0004 then
                         switch_talk_to(0, 1)
                         add_dialogue("\"The entire island is very opulent. It is not the same island we once knew.\"")

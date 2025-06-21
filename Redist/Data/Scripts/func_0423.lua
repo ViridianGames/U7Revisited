@@ -33,11 +33,11 @@ function func_0423(eventid, objectref)
             elseif var_0001 == "practice" then
                 add_dialogue("\"My practice grew swiftly. I am a modest man, but I do not mind saying that I was a popular healer.\"")
                 remove_answer("practice")
-                var_0001 = unknown_08F7H(3) --- Guess: Checks player status
+                var_0001 = npc_id_in_party(3) --- Guess: Checks player status
                 if var_0001 then
                     switch_talk_to(3, 0)
                     add_dialogue("\"He is probably the best healer in all Britannia. Why, he cured a, er, particular problem I had in no time at all.\"")
-                    var_0002 = unknown_08F7H(1) --- Guess: Checks player status
+                    var_0002 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0002 then
                         hide_npc(3)
                         switch_talk_to(1, 0)

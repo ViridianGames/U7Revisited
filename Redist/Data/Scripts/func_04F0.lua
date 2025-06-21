@@ -5,8 +5,8 @@ function func_04F0(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(0, 240)
         var_0000 = get_lord_or_lady()
-        var_0001 = unknown_08F7H(220)
-        var_0002 = unknown_08F7H(154)
+        var_0001 = npc_id_in_party(220)
+        var_0002 = npc_id_in_party(154)
         var_0003 = false
         var_0004 = false
         if get_flag(737) then

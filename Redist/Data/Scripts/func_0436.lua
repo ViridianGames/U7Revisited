@@ -10,8 +10,8 @@ function func_0436(eventid, objectref)
         var_0002 = get_schedule() --- Guess: Checks game state or timer
         var_0003 = unknown_001CH(54) --- Guess: Gets object state
         if var_0002 == 7 then
-            var_0004 = unknown_08F7H(39) --- Guess: Checks player status
-            var_0005 = unknown_08F7H(40) --- Guess: Checks player status
+            var_0004 = npc_id_in_party(39) --- Guess: Checks player status
+            var_0005 = npc_id_in_party(40) --- Guess: Checks player status
             if var_0004 and var_0005 then
                 add_dialogue("Coop is onstage with The Avatars. He sees you and says, \"Uhm, there is someone special listening tonight, and this next tune is dedicated to them.\"")
                 add_dialogue("He signals to his partners and they begin to play. He sings the following lyrics:")
@@ -24,7 +24,7 @@ function func_0436(eventid, objectref)
                 add_dialogue("\"No evil liche doth daunt or sway! Against them all we win the day!\"")
                 add_dialogue("\"We are the Av-atars! We are the Av-atars! We are the Aaaa-Vaaa-Taaars!\"")
                 add_dialogue("The applause is tumultuous.")
-                var_0006 = unknown_08F7H(1) --- Guess: Checks player status
+                var_0006 = npc_id_in_party(1) --- Guess: Checks player status
                 if var_0006 then
                     switch_talk_to(1, 0)
                     add_dialogue("\"Hmmm. They must have seen thee coming, " .. var_0001 .. ".\"")
@@ -38,7 +38,7 @@ function func_0436(eventid, objectref)
             end
         end
         add_answer({"bye", "job", "name"})
-        var_0006 = unknown_08F7H(1) --- Guess: Checks player status
+        var_0006 = npc_id_in_party(1) --- Guess: Checks player status
         if var_0006 then
             add_answer("Iolo")
         end

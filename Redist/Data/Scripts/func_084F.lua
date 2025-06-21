@@ -6,7 +6,7 @@ function func_084F()
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     add_dialogue("The ceremony begins as Batlin stands before the gathered members of The Fellowship in Britain. He begins his sermon. \"My friends, I originally created The Fellowship to help ready Britannia and its people for the future. Today one of the greatest symbols of its past has come here to join our Fellowship. This is a great day, for as our past and present intertwine we shall send a message which shall be heard throughout Britannia. Soon all of its peoples will strive together for unity.\" The gathering breaks into loud cheers. \"When they hear that the Avatar has become a member of The Fellowship those who were at first distrustful of us will come to see the truth of what we stand for. Then we may bring about a day when all of Britannia is worthy of the ample rewards it shall receive.\"")
-    var_0002 = unknown_08F7H(-1)
+    var_0002 = npc_id_in_party(-1)
     if not var_0002 then
         switch_talk_to(0, -1)
         add_dialogue("Iolo whispers to you. \"Art thou quite certain, " .. var_0000 .. ", that thou dost wish to join with these people?\"")
@@ -21,13 +21,13 @@ function func_084F()
     end
     switch_talk_to(0, -26)
     add_dialogue("\"Now is the time when our members give their testimonials of how they have been applying the Triad of Inner Strength to their lives. Who shall be the first?\"")
-    var_0004 = unknown_08F7H(-53)
+    var_0004 = npc_id_in_party(-53)
     if not var_0004 then
         switch_talk_to(0, -53)
         add_dialogue("\"The Fellowship has taught me to live with the shortcomings of others,\" says Gaye.")
         hide_npc53)
     end
-    var_0005 = unknown_08F7H(-41)
+    var_0005 = npc_id_in_party(-41)
     if not var_0005 then
         switch_talk_to(0, -41)
         add_dialogue("\"I had lost all enthusiasm for life before I joined The Fellowship,\" says Candice.")
@@ -35,25 +35,25 @@ function func_084F()
         add_dialogue("\"Thank thee for sharing, Candice.\"")
         hide_npc41)
     end
-    var_0006 = unknown_08F7H(-43)
+    var_0006 = npc_id_in_party(-43)
     if not var_0006 then
         switch_talk_to(0, -43)
         add_dialogue("\"The Fellowship helps me to be more honest with people,\" says Patterson.")
         hide_npc43)
     end
-    var_0007 = unknown_08F7H(-45)
+    var_0007 = npc_id_in_party(-45)
     if not var_0007 then
         switch_talk_to(0, -45)
         add_dialogue("\"The Fellowship has taught me not to let others push me around,\" says Figg.")
         hide_npc45)
     end
-    var_0008 = unknown_08F7H(-55)
+    var_0008 = npc_id_in_party(-55)
     if not var_0008 then
         switch_talk_to(0, -55)
         add_dialogue("\"The Triad of Inner Strength has helped me to improve my skills and build better weapons,\" says Grayson.")
         hide_npc55)
     end
-    var_0009 = unknown_08F7H(-58)
+    var_0009 = npc_id_in_party(-58)
     if not var_0009 then
         switch_talk_to(0, -58)
         add_dialogue("\"The Fellowship has put me back on the path to prosperity,\" says Gordon.")
@@ -61,26 +61,26 @@ function func_084F()
         add_dialogue("\"Yes! Thank thee for sharing, brother!\"")
         hide_npc58)
     end
-    var_000A = unknown_08F7H(-59)
+    var_000A = npc_id_in_party(-59)
     if not var_000A then
         switch_talk_to(0, -59)
         add_dialogue("\"The Fellowship has taught me not to be afraid of success,\" says Sean.")
         hide_npc59)
     end
-    var_000B = unknown_08F7H(-63)
+    var_000B = npc_id_in_party(-63)
     if not var_000B then
         switch_talk_to(0, -63)
         add_dialogue("\"The Fellowship has given my life a whole new purpose. Just today I have recruited two more potential members!\" says Millie.")
         hide_npc63)
     end
-    var_000C = unknown_08F7H(-34)
+    var_000C = npc_id_in_party(-34)
     if not var_000C then
         switch_talk_to(0, -34)
         add_dialogue("\"The Fellowship has taught me about the evils of the class structure,\" says Nanna.")
         hide_npc34)
     end
-    var_0002 = unknown_08F7H(-1)
-    var_000D = unknown_08F7H(-3)
+    var_0002 = npc_id_in_party(-1)
+    var_000D = npc_id_in_party(-3)
     if var_000D and var_0002 then
         switch_talk_to(0, -1)
         add_dialogue("You notice Iolo is whispering to Shamino. \"I do not think that " .. var_0000 .. " doth realize the significance of the situation. " .. var_0001 .. " cannot be dissuaded. Perhaps thou shouldst give it a try.\"")
@@ -101,7 +101,7 @@ function func_084F()
     add_dialogue("He pours a glass of wine into a crystal goblet and takes a sip.")
     add_dialogue("The goblet is passed around the hall, each member respectively taking a sip. Finally, the goblet is handed to you. You look at it thoughtfully as you feel all eyes in the room upon you.")
     if not var_000D then
-        var_000F = unknown_08F7H(-4)
+        var_000F = npc_id_in_party(-4)
         var_0010 = is_player_female()
         var_0011 = var_0010 and "she" or "he"
         if not var_000F then
