@@ -1015,13 +1015,10 @@ void ShapeEditorState::Update()
 
 		for(int i = decrement; i != 0; --i)
 		{
-			if(m_modelIndex == g_ResourceManager->m_ModelList.begin())
-			{
-				m_modelIndex = std::prev(g_ResourceManager->m_ModelList.end());
-			}
-			else
+			if(m_modelIndex != g_ResourceManager->m_ModelList.begin())
 			{
 				m_modelIndex = std::prev(m_modelIndex);
+				//m_modelIndex = std::prev(g_ResourceManager->m_ModelList.end());
 			}
 		}
 
