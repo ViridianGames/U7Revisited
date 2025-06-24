@@ -175,6 +175,11 @@ void MainState::Update()
 		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 	}
 
+	if(IsKeyPressed(KEY_F8))
+	{
+		m_LuaDebug = !m_LuaDebug;
+	}
+
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
 		if (m_heightCutoff == 4.0f)

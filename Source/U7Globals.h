@@ -50,6 +50,8 @@ extern std::string g_gameStateStrings[];
 
 extern std::string g_objectDrawTypeStrings[];
 
+extern bool m_LuaDebug;
+
 enum class ObjectTypes
 {
 	OBJECT_STATIC = 0,   // Static objects cannot be changed.  They cannot be moved, created or destroyed.

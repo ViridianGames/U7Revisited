@@ -294,17 +294,6 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
-			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
-
-			m_luaScriptIndex = 0;
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
-				{
-					m_luaScriptIndex = i;
-					break;
-				}
-			}
 		}
 	}
 
@@ -319,18 +308,6 @@ void ShapeEditorState::Update()
 		if (g_shapeTable[m_currentShape][newFrame].IsValid())
 		{
 			m_currentFrame = newFrame;
-
-			SwitchToGuiForDrawType(g_shapeTable[m_currentShape][m_currentFrame].m_drawType);
-
-			m_luaScriptIndex = 0;
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				if (g_ScriptingSystem->m_scriptFiles[i].first == g_shapeTable[m_currentShape][m_currentFrame].m_luaScript)
-				{
-					m_luaScriptIndex = i;
-					break;
-				}
-			}
 		}
 	}
 
@@ -416,18 +393,18 @@ void ShapeEditorState::Update()
 			shapeData.m_rotation = frame0Data.m_rotation;
 			shapeData.m_Scaling = frame0Data.m_Scaling;
 			shapeData.m_TweakPos = frame0Data.m_TweakPos;
-			shapeData.m_topTextureOffsetX = frame0Data.m_topTextureOffsetX;
-			shapeData.m_topTextureOffsetY = frame0Data.m_topTextureOffsetY;
-			shapeData.m_topTextureWidth = frame0Data.m_topTextureWidth;
-			shapeData.m_topTextureHeight = frame0Data.m_topTextureHeight;
-			shapeData.m_frontTextureOffsetX = frame0Data.m_frontTextureOffsetX;
-			shapeData.m_frontTextureOffsetY = frame0Data.m_frontTextureOffsetY;
-			shapeData.m_frontTextureWidth = frame0Data.m_frontTextureWidth;
-			shapeData.m_frontTextureHeight = frame0Data.m_frontTextureHeight;
-			shapeData.m_rightTextureOffsetX = frame0Data.m_rightTextureOffsetX;
-			shapeData.m_rightTextureOffsetY = frame0Data.m_rightTextureOffsetY;
-			shapeData.m_rightTextureWidth = frame0Data.m_rightTextureWidth;
-			shapeData.m_rightTextureHeight = frame0Data.m_rightTextureHeight;
+			shapeData.m_topTextureRect.x = frame0Data.m_topTextureRect.x;
+			shapeData.m_topTextureRect.y = frame0Data.m_topTextureRect.y;
+			shapeData.m_topTextureRect.width = frame0Data.m_topTextureRect.width;
+			shapeData.m_topTextureRect.height = frame0Data.m_topTextureRect.height;
+			shapeData.m_frontTextureRect.x = frame0Data.m_frontTextureRect.x;
+			shapeData.m_frontTextureRect.y = frame0Data.m_frontTextureRect.y;
+			shapeData.m_frontTextureRect.width = frame0Data.m_frontTextureRect.width;
+			shapeData.m_frontTextureRect.height = frame0Data.m_frontTextureRect.height;
+			shapeData.m_rightTextureRect.x = frame0Data.m_rightTextureRect.x;
+			shapeData.m_rightTextureRect.y = frame0Data.m_rightTextureRect.y;
+			shapeData.m_rightTextureRect.width = frame0Data.m_rightTextureRect.width;
+			shapeData.m_rightTextureRect.height = frame0Data.m_rightTextureRect.height;
 
 			shapeData.m_sideTextures[int(CuboidSides::CUBOID_TOP)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_TOP)];
 			shapeData.m_sideTextures[int(CuboidSides::CUBOID_FRONT)] = frame0Data.m_sideTextures[int(CuboidSides::CUBOID_FRONT)];
@@ -456,178 +433,178 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_TOPXMINUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth - 1 >= 0)
+		if (shapeData.m_topTextureRect.x + shapeData.m_topTextureRect.width - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_topTextureOffsetX--;
+			somethingChanged = true; shapeData.m_topTextureRect.x--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPXPLUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth < shapeData.m_originalTexture->width)
+		if (shapeData.m_topTextureRect.x + shapeData.m_topTextureRect.width < shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_topTextureOffsetX++;
+			somethingChanged = true; shapeData.m_topTextureRect.x++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPYMINUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetY + shapeData.m_topTextureHeight >= 0)
+		if (shapeData.m_topTextureRect.y + shapeData.m_topTextureRect.height >= 0)
 		{
-			somethingChanged = true; shapeData.m_topTextureOffsetY--;
+			somethingChanged = true; shapeData.m_topTextureRect.y--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPYPLUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetY + shapeData.m_topTextureHeight < shapeData.m_originalTexture->height)
+		if (shapeData.m_topTextureRect.y + shapeData.m_topTextureRect.height < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_topTextureOffsetY++;
+			somethingChanged = true; shapeData.m_topTextureRect.y++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPWIDTHMINUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth >= 0)
+		if (shapeData.m_topTextureRect.x + shapeData.m_topTextureRect.width >= 0)
 		{
-			somethingChanged = true; shapeData.m_topTextureWidth--;
+			somethingChanged = true; shapeData.m_topTextureRect.width--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPWIDTHPLUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetX + shapeData.m_topTextureWidth <= shapeData.m_originalTexture->width)
+		if (shapeData.m_topTextureRect.x + shapeData.m_topTextureRect.width <= shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_topTextureWidth++;
+			somethingChanged = true; shapeData.m_topTextureRect.width++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPHEIGHTMINUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetY + shapeData.m_topTextureHeight >= 0)
+		if (shapeData.m_topTextureRect.y + shapeData.m_topTextureRect.height >= 0)
 		{
-			somethingChanged = true; shapeData.m_topTextureHeight--;
+			somethingChanged = true; shapeData.m_topTextureRect.height--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_TOPHEIGHTPLUSBUTTON)
 	{
-		if (shapeData.m_topTextureOffsetY + shapeData.m_topTextureHeight < shapeData.m_originalTexture->height)
+		if (shapeData.m_topTextureRect.y + shapeData.m_topTextureRect.height < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_topTextureHeight++;
+			somethingChanged = true; shapeData.m_topTextureRect.height++;
 		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_FRONTXMINUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetX + shapeData.m_frontTextureWidth - 1 >= 0)
+		if (shapeData.m_frontTextureRect.x + shapeData.m_frontTextureRect.width - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_frontTextureOffsetX--;
+			somethingChanged = true; shapeData.m_frontTextureRect.x--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTXPLUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetX + shapeData.m_frontTextureWidth + 1 < shapeData.m_originalTexture->width)
+		if (shapeData.m_frontTextureRect.x + shapeData.m_frontTextureRect.width + 1 < shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_frontTextureOffsetX++;
+			somethingChanged = true; shapeData.m_frontTextureRect.x++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTYMINUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetY + shapeData.m_frontTextureHeight - 1 >= 0)
+		if (shapeData.m_frontTextureRect.y + shapeData.m_frontTextureRect.height - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_frontTextureOffsetY--;
+			somethingChanged = true; shapeData.m_frontTextureRect.y--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTYPLUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetY + shapeData.m_frontTextureHeight < shapeData.m_originalTexture->height)
+		if (shapeData.m_frontTextureRect.y + shapeData.m_frontTextureRect.height < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_frontTextureOffsetY++;
+			somethingChanged = true; shapeData.m_frontTextureRect.y++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTWIDTHMINUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetX + shapeData.m_frontTextureWidth >= 0)
+		if (shapeData.m_frontTextureRect.x + shapeData.m_frontTextureRect.width >= 0)
 		{
-			somethingChanged = true; shapeData.m_frontTextureWidth--;
+			somethingChanged = true; shapeData.m_frontTextureRect.width--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTWIDTHPLUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetX + shapeData.m_frontTextureWidth < shapeData.m_originalTexture->width)
+		if (shapeData.m_frontTextureRect.x + shapeData.m_frontTextureRect.width < shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_frontTextureWidth++;
+			somethingChanged = true; shapeData.m_frontTextureRect.width++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTHEIGHTMINUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetY + shapeData.m_frontTextureHeight >= 0)
+		if (shapeData.m_frontTextureRect.y + shapeData.m_frontTextureRect.height >= 0)
 		{
-			somethingChanged = true; shapeData.m_frontTextureHeight--;
+			somethingChanged = true; shapeData.m_frontTextureRect.height--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_FRONTHEIGHTPLUSBUTTON)
 	{
-		if (shapeData.m_frontTextureOffsetY + shapeData.m_frontTextureHeight < shapeData.m_originalTexture->height)
+		if (shapeData.m_frontTextureRect.y + shapeData.m_frontTextureRect.height < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_frontTextureHeight++;
+			somethingChanged = true; shapeData.m_frontTextureRect.height++;
 		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTXMINUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetX + shapeData.m_rightTextureWidth - 1 >= 0)
+		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_rightTextureOffsetX--;
+			somethingChanged = true; shapeData.m_rightTextureRect.x--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTXPLUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetX + shapeData.m_rightTextureWidth + 1 < shapeData.m_originalTexture->width)
+		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width + 1 < shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_rightTextureOffsetX++;
+			somethingChanged = true; shapeData.m_rightTextureRect.x++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTYMINUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetY + shapeData.m_rightTextureHeight - 1 >= 0)
+		if (shapeData.m_rightTextureRect.y + shapeData.m_rightTextureRect.height - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_rightTextureOffsetY--;
+			somethingChanged = true; shapeData.m_rightTextureRect.y--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTYPLUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetY + shapeData.m_rightTextureHeight + 1 < shapeData.m_originalTexture->height)
+		if (shapeData.m_rightTextureRect.y + shapeData.m_rightTextureRect.height + 1 < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_rightTextureOffsetY++;
+			somethingChanged = true; shapeData.m_rightTextureRect.y++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTWIDTHMINUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetX + shapeData.m_rightTextureWidth - 1 >= 0)
+		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_rightTextureWidth--;
+			somethingChanged = true; shapeData.m_rightTextureRect.width--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTWIDTHPLUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetX + shapeData.m_rightTextureWidth + 1 < shapeData.m_originalTexture->width)
+		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width + 1 < shapeData.m_texture->width)
 		{
-			somethingChanged = true; shapeData.m_rightTextureWidth++;
+			somethingChanged = true; shapeData.m_rightTextureRect.width++;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTHEIGHTMINUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetY + shapeData.m_rightTextureHeight - 1 >= 0)
+		if (shapeData.m_rightTextureRect.y + shapeData.m_rightTextureRect.height - 1 >= 0)
 		{
-			somethingChanged = true; shapeData.m_rightTextureHeight--;
+			somethingChanged = true; shapeData.m_rightTextureRect.height--;
 		}
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTHEIGHTPLUSBUTTON)
 	{
-		if (shapeData.m_rightTextureOffsetY + shapeData.m_rightTextureHeight + 1 < shapeData.m_originalTexture->height)
+		if (shapeData.m_rightTextureRect.y + shapeData.m_rightTextureRect.height + 1 < shapeData.m_texture->height)
 		{
-			somethingChanged = true; shapeData.m_rightTextureHeight++;
+			somethingChanged = true; shapeData.m_rightTextureRect.height++;
 		}
 	}
 
-	if (m_currentGui->GetActiveElementID() == GE_TOPRESET) { somethingChanged = true; shapeData.ResetTopTexture(); }
-	if (m_currentGui->GetActiveElementID() == GE_FRONTRESET) { somethingChanged = true; shapeData.ResetFrontTexture(); }
-	if (m_currentGui->GetActiveElementID() == GE_RIGHTRESET) { somethingChanged = true; shapeData.ResetRightTexture(); }
+	if (m_currentGui->GetActiveElementID() == GE_TOPRESET) { somethingChanged = true; shapeData.ResetTopTextureRect(); }
+	if (m_currentGui->GetActiveElementID() == GE_FRONTRESET) { somethingChanged = true; shapeData.ResetFrontTextureRect(); }
+	if (m_currentGui->GetActiveElementID() == GE_RIGHTRESET) { somethingChanged = true; shapeData.ResetRightTextureRect(); }
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVTOPBUTTON)
 	{
@@ -960,7 +937,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		shapeData.m_useShapePointer = m_currentGui->GetActiveElement()->m_Selected;
 
-		shapeData.FixupTextures();
+		shapeData.UpdateTextures();
 		shapeData.SafeAndSane();
 	}
 
@@ -983,21 +960,23 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTMODELBUTTON)
 	{
-		int increment = 1;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			increment = 10;
+			for(int i = 0; i < 10; ++i)
+			{
+				m_modelIndex++;
+				if (m_modelIndex == g_ResourceManager->m_ModelList.end())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.begin();
+				}
+			}
 		}
-
-		for (int i = 0; i < increment; ++i)
+		else
 		{
-			if (std::next(m_modelIndex) == g_ResourceManager->m_ModelList.end())
+			m_modelIndex++;
+			if (m_modelIndex == g_ResourceManager->m_ModelList.end())
 			{
 				m_modelIndex = g_ResourceManager->m_ModelList.begin();
-			}
-			else
-			{
-				m_modelIndex = std::next(m_modelIndex);
 			}
 		}
 
@@ -1007,23 +986,28 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_PREVMODELBUTTON)
 	{
-		int decrement = 1;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			decrement = 10;
-		}
-
-		for(int i = decrement; i != 0; --i)
-		{
-			if(m_modelIndex != g_ResourceManager->m_ModelList.begin())
+			for(int i = 0; i < 10; ++i)
 			{
-				m_modelIndex = std::prev(m_modelIndex);
-				//m_modelIndex = std::prev(g_ResourceManager->m_ModelList.end());
+				if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+				{
+					m_modelIndex = g_ResourceManager->m_ModelList.end();
+				}
+				m_modelIndex--;
 			}
 		}
+		else
+		{
+			if (m_modelIndex == g_ResourceManager->m_ModelList.begin())
+			{
+				m_modelIndex = g_ResourceManager->m_ModelList.end();
+			}
+			m_modelIndex--;
+		}
 
-		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 		g_shapeTable[m_currentShape][m_currentFrame].m_customMeshName = (*m_modelIndex).first;
+		g_shapeTable[m_currentShape][m_currentFrame].m_customMesh = (*m_modelIndex).second.get();
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_NEXTLUASCRIPTBUTTON)
@@ -1218,8 +1202,8 @@ void ShapeEditorState::Update()
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
-		shapeData.FixupTextures();
-		shapeData.UpdateAllCuboidTextures();
+		shapeData.UpdateTextures();
+		//shapeData.UpdateAllCuboidTextures();
 	}
 
 	if (g_CameraMoved)
@@ -1240,21 +1224,21 @@ void ShapeEditorState::Update()
 	if (m_currentGui == m_cuboidGui.get())
 	{
 
-		m_currentGui->GetElement(GE_TOPXTEXTAREA)->m_String = "X:" + to_string(shapeData.m_topTextureOffsetX);
-		m_currentGui->GetElement(GE_FRONTXTEXTAREA)->m_String = "X:" + to_string(shapeData.m_frontTextureOffsetX);
-		m_currentGui->GetElement(GE_RIGHTXTEXTAREA)->m_String = "X:" + to_string(shapeData.m_rightTextureOffsetX);
+		m_currentGui->GetElement(GE_TOPXTEXTAREA)->m_String = "X:" + to_string(int(shapeData.m_topTextureRect.x));
+		m_currentGui->GetElement(GE_FRONTXTEXTAREA)->m_String = "X:" + to_string(int(shapeData.m_frontTextureRect.x));
+		m_currentGui->GetElement(GE_RIGHTXTEXTAREA)->m_String = "X:" + to_string(int(shapeData.m_rightTextureRect.x));
 
-		m_currentGui->GetElement(GE_TOPYTEXTAREA)->m_String = "Y:" + to_string(shapeData.m_topTextureOffsetY);
-		m_currentGui->GetElement(GE_FRONTYTEXTAREA)->m_String = "Y:" + to_string(shapeData.m_frontTextureOffsetY);
-		m_currentGui->GetElement(GE_RIGHTYTEXTAREA)->m_String = "Y:" + to_string(shapeData.m_rightTextureOffsetY);
+		m_currentGui->GetElement(GE_TOPYTEXTAREA)->m_String = "Y:" + to_string(int(shapeData.m_topTextureRect.y));
+		m_currentGui->GetElement(GE_FRONTYTEXTAREA)->m_String = "Y:" + to_string(int(shapeData.m_frontTextureRect.y));
+		m_currentGui->GetElement(GE_RIGHTYTEXTAREA)->m_String = "Y:" + to_string(int(shapeData.m_rightTextureRect.y));
 
-		m_currentGui->GetElement(GE_TOPWIDTHTEXTAREA)->m_String = "W:" + to_string(shapeData.m_topTextureWidth);
-		m_currentGui->GetElement(GE_FRONTWIDTHTEXTAREA)->m_String = "W:" + to_string(shapeData.m_frontTextureWidth);
-		m_currentGui->GetElement(GE_RIGHTWIDTHTEXTAREA)->m_String = "W:" + to_string(shapeData.m_rightTextureWidth);
+		m_currentGui->GetElement(GE_TOPWIDTHTEXTAREA)->m_String = "W:" + to_string(int(shapeData.m_topTextureRect.width));
+		m_currentGui->GetElement(GE_FRONTWIDTHTEXTAREA)->m_String = "W:" + to_string(int(shapeData.m_frontTextureRect.width));
+		m_currentGui->GetElement(GE_RIGHTWIDTHTEXTAREA)->m_String = "W:" + to_string(int(shapeData.m_rightTextureRect.width));
 
-		m_currentGui->GetElement(GE_TOPHEIGHTTEXTAREA)->m_String = "H:" + to_string(shapeData.m_topTextureHeight);
-		m_currentGui->GetElement(GE_FRONTHEIGHTTEXTAREA)->m_String = "H:" + to_string(shapeData.m_frontTextureHeight);
-		m_currentGui->GetElement(GE_RIGHTHEIGHTTEXTAREA)->m_String = "H:" + to_string(shapeData.m_rightTextureHeight);
+		m_currentGui->GetElement(GE_TOPHEIGHTTEXTAREA)->m_String = "H:" + to_string(int(shapeData.m_topTextureRect.height));
+		m_currentGui->GetElement(GE_FRONTHEIGHTTEXTAREA)->m_String = "H:" + to_string(int(shapeData.m_frontTextureRect.height));
+		m_currentGui->GetElement(GE_RIGHTHEIGHTTEXTAREA)->m_String = "H:" + to_string(int(shapeData.m_rightTextureRect.height));
 
 		m_currentGui->GetElement(GE_TOPSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_TOP))];
 		m_currentGui->GetElement(GE_FRONTSIDETEXTURETEXTAREA)->m_String = m_sideDrawStrings[static_cast<int>(shapeData.GetTextureForSide(CuboidSides::CUBOID_FRONT))];
@@ -1328,17 +1312,12 @@ void ShapeEditorState::Draw()
 
 	float scale = g_DrawScale * 2;
 
-	if (g_shapeTable[m_currentShape][m_currentFrame].GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
+	ShapeData* shapeData = &g_shapeTable[m_currentShape][m_currentFrame];
+
+
+	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
 	{
-		Texture* d = g_shapeTable[m_currentShape][m_currentFrame].GetTexture();
-		if (g_shapeTable[m_currentShape][m_currentFrame].m_useShapePointer)
-		{
-			d = g_shapeTable[g_shapeTable[m_currentShape][m_currentFrame].m_pointerShape][g_shapeTable[m_currentShape][m_currentFrame].m_pointerFrame].GetTexture();
-		}
-		
-		Texture* t = g_shapeTable[m_currentShape][m_currentFrame].GetTopTexture();
-		Texture* f = g_shapeTable[m_currentShape][m_currentFrame].GetFrontTexture();
-		Texture* r = g_shapeTable[m_currentShape][m_currentFrame].GetRightTexture();
+		Texture* d = shapeData->GetTexture();
 
 		//  Draw original texture with label and border
 		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize * g_DrawScale, 1, WHITE);
@@ -1347,50 +1326,73 @@ void ShapeEditorState::Draw()
 		yoffset += scale;
 		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
 
-		//  Draw top texture with labels and borders
-		yoffset += float(d->height) * scale + scale + scale;
-		float rightoffset = yoffset;
-		DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		yoffset -= scale;
-		DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
+		//  Draw rects on original texture showing top, front and right dimensions
+		Rectangle fixedTopRect = shapeData->m_topTextureRect;
+		fixedTopRect.x += g_DrawScale;
+		fixedTopRect.y += (g_guiFontSize + 3) * g_DrawScale;
+		//fixedTopRect.y *= scale;
+		fixedTopRect.width *= scale;
+		fixedTopRect.height *= scale;
 
-		//  Draw front texture with labels and borders
-		yoffset += float(d->height) * scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		yoffset -= scale;
-		DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
+		DrawRectangleLinesEx( fixedTopRect, g_DrawScale, RED);
 
-		//  Draw right texture with labels and border
-		yoffset = rightoffset;
-		//yoffset += float(r->height) * scale + scale + scale;
-		float xoffset = d->width * scale + scale + scale + scale;
-		DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		yoffset -= scale;
-		DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);
+		Rectangle fixedFrontRect = shapeData->m_frontTextureRect;
+		fixedFrontRect.x += g_DrawScale;
+		fixedFrontRect.y += 2;
+		fixedFrontRect.y *= scale;
+		fixedFrontRect.width *= scale;
+		fixedFrontRect.height *= scale;
+
+		DrawRectangleLinesEx(fixedFrontRect, g_DrawScale, GREEN);
+
+
+
+		DrawTextureEx(*g_shapeTable[m_currentShape][m_currentFrame].GetCuboidTexture(), Vector2{scale, yoffset + 10 + (d->height * scale)}, 0, scale, Color{255, 255, 255, 255});
+
+		////  Draw top texture with labels and borders
+		//yoffset += float(d->height) * scale + scale + scale;
+		//float rightoffset = yoffset;
+		//DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
+		//DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		//yoffset -= scale;
+		//DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
+
+		////  Draw front texture with labels and borders
+		//yoffset += float(d->height) * scale + scale + scale;
+		//DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
+		//DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		//yoffset -= scale;
+		//DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
+
+		////  Draw right texture with labels and border
+		//yoffset = rightoffset;
+		////yoffset += float(r->height) * scale + scale + scale;
+		//float xoffset = d->width * scale + scale + scale + scale;
+		//DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
+		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
+		//DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
+		//yoffset -= scale;
+		//DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);
 	}
 
-	if (g_shapeTable[m_currentShape][m_currentFrame].GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
-		Texture* d = g_shapeTable[m_currentShape][m_currentFrame].GetTexture();
+		Texture* d = shapeData->GetTexture();
 		DrawTextureEx(*d, Vector2{ 0, 0 }, 0, scale, Color{ 255, 255, 255, 255 });
 	}
 
 	BeginMode3D(g_camera);
 
-	Vector3 cuboidScaling = g_shapeTable[m_currentShape][m_currentFrame].m_Scaling;
+	Vector3 cuboidScaling = shapeData->m_Scaling;
 	cuboidScaling.x *= 2.5;
 	cuboidScaling.y *= 2.5;
 	cuboidScaling.z *= 2.5;
 
-	Vector3 finalPos = Vector3Add(Vector3Add(g_camera.target, g_shapeTable[m_currentShape][m_currentFrame].m_TweakPos), Vector3{ g_shapeTable[m_currentShape][m_currentFrame].m_Dims.x / 2 - 1, 0, g_shapeTable[m_currentShape][m_currentFrame].m_Dims.z / 2 - 1 });
+	Vector3 finalPos = Vector3Add(Vector3Add(g_camera.target, shapeData->m_TweakPos), Vector3{ shapeData->m_Dims.x / 2 - 1, 0, shapeData->m_Dims.z / 2 - 1 });
 
-	g_shapeTable[m_currentShape][m_currentFrame].Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
+	shapeData->Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
 
 	EndMode3D();
 	
@@ -1481,75 +1483,75 @@ void ShapeEditorState::SetupCuboidGui()
 
 	int yoffset = 13;
 
-	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y);
+	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y, 0, 0, RED);
 	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_TOPXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPXTEXTAREA, g_guiFont.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+	m_cuboidGui->AddTextArea(GE_TOPXTEXTAREA, g_guiFont.get(), "X: " + to_string(int(shapeData.m_topTextureRect.x)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_TOPYMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_TOPYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPYTEXTAREA, g_guiFont.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+	m_cuboidGui->AddTextArea(GE_TOPYTEXTAREA, g_guiFont.get(), "Y: " + to_string(int(shapeData.m_topTextureRect.y)), 55, y);
 
 	y += yoffset * .7f;
 
 	m_cuboidGui->AddIconButton(GE_TOPWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_TOPWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+	m_cuboidGui->AddTextArea(GE_TOPWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(int(shapeData.m_topTextureRect.width)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_TOPHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_TOPHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_TOPHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+	m_cuboidGui->AddTextArea(GE_TOPHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(int(shapeData.m_topTextureRect.height)), 55, y);
 
 	y += yoffset;
 
-	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_guiFont.get(), "Front Face", 3, y);
+	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_guiFont.get(), "Front Face", 3, y, 0, 0, GREEN);
 	m_cuboidGui->AddTextButton(GE_FRONTRESET, 60, y - 2, "Reset", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_FRONTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTXTEXTAREA, g_guiFont.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+	m_cuboidGui->AddTextArea(GE_FRONTXTEXTAREA, g_guiFont.get(), "X: " + to_string(int(shapeData.m_topTextureRect.x)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_FRONTYMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_FRONTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTYTEXTAREA, g_guiFont.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+	m_cuboidGui->AddTextArea(GE_FRONTYTEXTAREA, g_guiFont.get(), "Y: " + to_string(int(shapeData.m_topTextureRect.y)), 55, y);
 
 	y += yoffset * .7f;
 
 	m_cuboidGui->AddIconButton(GE_FRONTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_FRONTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+	m_cuboidGui->AddTextArea(GE_FRONTWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(int(shapeData.m_topTextureRect.width)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_FRONTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_FRONTHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+	m_cuboidGui->AddTextArea(GE_FRONTHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(int(shapeData.m_topTextureRect.height)), 55, y);
 
 	y += yoffset;
 
-	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_guiFont.get(), "Right Face", 3, y);
+	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_guiFont.get(), "Right Face", 3, y, 0, 0, BLUE);
 	m_cuboidGui->AddTextButton(GE_RIGHTRESET, 60, y - 2, "Reset", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_RIGHTXPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTXTEXTAREA, g_guiFont.get(), "X: " + to_string(shapeData.m_topTextureOffsetX), 14, y);
+	m_cuboidGui->AddTextArea(GE_RIGHTXTEXTAREA, g_guiFont.get(), "X: " + to_string(int(shapeData.m_topTextureRect.x)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_RIGHTYMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_RIGHTYPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTYTEXTAREA, g_guiFont.get(), "Y: " + to_string(shapeData.m_topTextureOffsetY), 55, y);
+	m_cuboidGui->AddTextArea(GE_RIGHTYTEXTAREA, g_guiFont.get(), "Y: " + to_string(int(shapeData.m_topTextureRect.y)), 55, y);
 
 	y += yoffset * .7f;
 
 	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHMINUSBUTTON, 4, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_RIGHTWIDTHPLUSBUTTON, 35, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(shapeData.m_topTextureWidth), 14, y);
+	m_cuboidGui->AddTextArea(GE_RIGHTWIDTHTEXTAREA, g_guiFont.get(), "W: " + to_string(int(shapeData.m_topTextureRect.width)), 14, y);
 
 	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTMINUSBUTTON, 45, y, g_LeftArrow);
 	m_cuboidGui->AddIconButton(GE_RIGHTHEIGHTPLUSBUTTON, 80, y, g_RightArrow);
-	m_cuboidGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(shapeData.m_topTextureHeight), 55, y);
+	m_cuboidGui->AddTextArea(GE_RIGHTHEIGHTTEXTAREA, g_guiFont.get(), "H: " + to_string(int(shapeData.m_topTextureRect.height)), 55, y);
 
 	y += yoffset;
 

@@ -82,6 +82,8 @@ RenderTexture2D g_guiRenderTarget;
 
 std::unique_ptr<U7Player> g_Player;
 
+bool m_LuaDebug = false;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

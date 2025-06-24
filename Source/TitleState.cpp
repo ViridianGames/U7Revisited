@@ -451,7 +451,7 @@ void TitleState::UpdateTitle()
 
 void TitleState::TestUpdate()
 {
-   ModTexture& modTexture = *g_shapeTable[150][0].m_topTexture;
+   ModTexture& modTexture = *g_shapeTable[150][0].m_texture;
    if (IsKeyPressed(KEY_A))
    {
       modTexture.ResizeImage(modTexture.m_Image.width - 1, modTexture.m_Image.height);
@@ -481,5 +481,5 @@ void TitleState::TestUpdate()
 
 void TitleState::TestDraw()
 {
-   DrawTexture(g_shapeTable[150][0].m_topTexture->m_Texture, 0, 0, WHITE);
+   DrawTexture(g_shapeTable[150][0].m_texture->m_Texture, 0, 0, WHITE);
 }

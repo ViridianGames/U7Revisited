@@ -64,7 +64,7 @@ public:
 	void Init(int shape, int frame, bool shouldreset = true);
 
 	void SetupDrawTypes();
-	void FixupTextures();
+	void UpdateTextures();
 
 	void Serialize(std::ofstream& outputStream );
 	void Deserialize(std::ifstream& inputStream);
@@ -77,20 +77,18 @@ public:
 
 	void SetDefaultTexture(Image image);
 
-	Image GetDefaultTextureImage() { return m_originalTexture->m_Image; }
+	Image GetDefaultTextureImage() { return m_texture->m_Image; }
 	void SetupTextures();
-	Texture* GetTexture() { return &m_originalTexture->m_Texture; }
-	Texture* GetTopTexture() { return &m_topTexture->m_Texture; }
-	Texture* GetFrontTexture() { return &m_frontTexture->m_Texture; }
-	Texture* GetRightTexture() { return &m_rightTexture->m_Texture; }
+	Texture* GetTexture() { return &m_texture->m_Texture; }
+	Texture* GetCuboidTexture() { return &m_cuboidTexture->m_Texture; }
 
 	void SetDrawType(ShapeDrawType drawType) { m_drawType = drawType; }
 	ShapeDrawType GetDrawType() { return m_drawType; }
 
 	void SafeAndSane();
-	void ResetTopTexture();
-	void ResetFrontTexture();
-	void ResetRightTexture();
+	void ResetTopTextureRect();
+	void ResetFrontTextureRect();
+	void ResetRightTextureRect();
 
 	int GetShape() { return m_shape; }
 	int GetFrame() { return m_frame; }
@@ -98,26 +96,11 @@ public:
 	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTextures[static_cast<int>(side)]; }
 	void SetTextureForMeshFromSideData(CuboidSides side);
 	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTextures[static_cast<int>(side)] = texture; }
-	void UpdateAllCuboidTextures();
-	void UpdateShapePointerTexture();
-
-	bool Pick(Vector3 thisPos);
 
 	// In original pixels
-	int m_topTextureOffsetX;
-	int m_topTextureOffsetY;
-	int m_topTextureWidth;
-	int m_topTextureHeight;
-
-	int m_frontTextureOffsetX;
-	int m_frontTextureOffsetY;
-	int m_frontTextureWidth;
-	int m_frontTextureHeight;
-
-	int m_rightTextureOffsetX;
-	int m_rightTextureOffsetY;
-	int m_rightTextureWidth;
-	int m_rightTextureHeight;
+	Rectangle m_topTextureRect;
+	Rectangle m_frontTextureRect;
+	Rectangle m_rightTextureRect;
 
 	bool m_isValid;
 
@@ -139,24 +122,8 @@ public:
 	float m_rotation;
 
 	//  Texture for billboard/flat mode; base texture for cuboid mode
-
-	std::unique_ptr<ModTexture> m_originalTexture;
-
-	//  For drawing in billboard mode
-
-	//Model m_billboardModel;
-	//std::unique_ptr<ModTexture> m_billboardTexture;
-
-	//  For drawing in flat mode
-
-	Model m_flatModel;
-
-	//  For drawing in cuboid mode
-
-	std::unique_ptr<ModTexture> m_topTexture;
-	std::unique_ptr<ModTexture> m_frontTexture;
-	std::unique_ptr<ModTexture> m_rightTexture;
-	std::unique_ptr<ModTexture> m_shapePointerTexture;
+	std::unique_ptr<ModTexture> m_texture;
+	std::unique_ptr<ModTexture> m_cuboidTexture;
 
 	std::vector<coords> m_topFaceMods;
 	std::vector<coords> m_frontFaceMods;
@@ -166,8 +133,6 @@ public:
 
 	CuboidTexture m_sideTextures[static_cast<int>(CuboidSides::CUBOID_LAST)];
 
-	std::array<Model, static_cast<int>(CuboidSides::CUBOID_LAST)> m_cuboidModels;
-
 	std::string m_customMeshName;
 
 	RaylibModel* m_customMesh = nullptr;
@@ -175,6 +140,10 @@ public:
 	bool m_meshOutline = true;
 
 	std::string m_luaScript;
+
+	RaylibModel* m_flatModel = nullptr;
+	RaylibModel* m_cuboidModel = nullptr;
+
 };
 
 #endif

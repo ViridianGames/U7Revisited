@@ -70,7 +70,10 @@ void U7Object::Draw()
 
 void U7Object::Update()
 {
-
+   if(g_shapeTable[m_ObjectType][m_Frame].GetDrawType() == ShapeDrawType::OBJECT_DRAW_CHARACTER)
+   {
+      m_Pos.z += .02f;
+	}
 }
 
 void U7Object::Attack(int _UnitID)
@@ -99,7 +102,7 @@ void U7Object::SetPos(Vector3 pos)
    }
    else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
    {
-      dims = Vector3{ float(m_shapeData->m_originalTexture->width) / 8.0f, 0, float(m_shapeData->m_originalTexture->height) / 8.0f };
+      dims = Vector3{ float(m_shapeData->m_texture->width) / 8.0f, 0, float(m_shapeData->m_texture->height) / 8.0f };
       boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ -dims.x + 1, 0, -dims.z + 1 });
    }
    else
