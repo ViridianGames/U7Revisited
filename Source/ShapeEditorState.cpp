@@ -237,7 +237,7 @@ void ShapeEditorState::Update()
 		}
 		else
 		{
-			m_currentShape = 0;
+			m_currentShape = newShape - 1;
 		}
 	}
 
@@ -267,7 +267,7 @@ void ShapeEditorState::Update()
 		}
 		else
 		{
-			m_currentShape = 0;
+			m_currentShape = newShape + 1;
 		}
 
 		m_currentFrame = 0;
@@ -326,6 +326,11 @@ void ShapeEditorState::Update()
 	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
 	{
 		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+	}
+
+	if (IsKeyPressed(KEY_F2))
+	{
+		g_shapeTable[m_currentShape][m_currentFrame].UpdateTextures();
 	}
 
 	//  Handle GUI Input
@@ -1203,7 +1208,7 @@ void ShapeEditorState::Update()
 	{
 		shapeData.SafeAndSane();
 		shapeData.UpdateTextures();
-		//shapeData.UpdateAllCuboidTextures();
+		shapeData.UpdateTextureCoordinates();
 	}
 
 	if (g_CameraMoved)
@@ -1310,78 +1315,7 @@ void ShapeEditorState::Draw()
 
 	ClearBackground(Color{ 106, 90, 205, 255 });
 
-	float scale = g_DrawScale * 2;
-
 	ShapeData* shapeData = &g_shapeTable[m_currentShape][m_currentFrame];
-
-
-	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
-	{
-		Texture* d = shapeData->GetTexture();
-
-		//  Draw original texture with label and border
-		DrawTextEx(*g_guiFont.get(), "Original Texture", {0, 0}, g_guiFontSize * g_DrawScale, 1, WHITE);
-		float yoffset = (g_guiFontSize + 2) * g_DrawScale;
-		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
-		yoffset += scale;
-		DrawTextureEx(*d, Vector2{  scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-
-		//  Draw rects on original texture showing top, front and right dimensions
-		Rectangle fixedTopRect = shapeData->m_topTextureRect;
-		fixedTopRect.x += g_DrawScale;
-		fixedTopRect.y += (g_guiFontSize + 3) * g_DrawScale;
-		//fixedTopRect.y *= scale;
-		fixedTopRect.width *= scale;
-		fixedTopRect.height *= scale;
-
-		DrawRectangleLinesEx( fixedTopRect, g_DrawScale, RED);
-
-		Rectangle fixedFrontRect = shapeData->m_frontTextureRect;
-		fixedFrontRect.x += g_DrawScale;
-		fixedFrontRect.y += 2;
-		fixedFrontRect.y *= scale;
-		fixedFrontRect.width *= scale;
-		fixedFrontRect.height *= scale;
-
-		DrawRectangleLinesEx(fixedFrontRect, g_DrawScale, GREEN);
-
-
-
-		DrawTextureEx(*g_shapeTable[m_currentShape][m_currentFrame].GetCuboidTexture(), Vector2{scale, yoffset + 10 + (d->height * scale)}, 0, scale, Color{255, 255, 255, 255});
-
-		////  Draw top texture with labels and borders
-		//yoffset += float(d->height) * scale + scale + scale;
-		//float rightoffset = yoffset;
-		//DrawTextEx(*g_guiFont.get(), "Top Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		//DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		//yoffset -= scale;
-		//DrawRectangleLinesEx({ 0, yoffset, float(t->width) * scale + scale + scale, float(t->height) * scale + scale + scale }, scale, WHITE);
-
-		////  Draw front texture with labels and borders
-		//yoffset += float(d->height) * scale + scale + scale;
-		//DrawTextEx(*g_guiFont.get(), "Front Texture", { 0, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		//DrawTextureEx(*f, Vector2{ scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		//yoffset -= scale;
-		//DrawRectangleLinesEx({ 0, yoffset, float(f->width) * scale + scale + scale, float(f->height) * scale + scale + scale }, scale, WHITE);
-
-		////  Draw right texture with labels and border
-		//yoffset = rightoffset;
-		////yoffset += float(r->height) * scale + scale + scale;
-		//float xoffset = d->width * scale + scale + scale + scale;
-		//DrawTextEx(*g_guiFont.get(), "Right Texture", { xoffset, yoffset }, g_guiFontSize * g_DrawScale, 1, WHITE);
-		//yoffset += (g_guiFontSize + 2) * g_DrawScale;
-		//DrawTextureEx(*r, Vector2{ xoffset + scale, yoffset }, 0, scale, Color{ 255, 255, 255, 255 });
-		//yoffset -= scale;
-		//DrawRectangleLinesEx({ xoffset, yoffset, float(r->width) * scale + scale + scale, float(r->height) * scale + scale + scale }, scale, WHITE);
-	}
-
-	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
-	{
-		Texture* d = shapeData->GetTexture();
-		DrawTextureEx(*d, Vector2{ 0, 0 }, 0, scale, Color{ 255, 255, 255, 255 });
-	}
 
 	BeginMode3D(g_camera);
 
@@ -1399,7 +1333,99 @@ void ShapeEditorState::Draw()
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
 
+	float scale = 2;
+
 	//  Draw the minimap and marker
+
+	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
+	{
+		Texture* d = shapeData->GetTexture();
+		
+
+		//  Draw original texture with label and border
+		DrawTextEx(*g_guiFont.get(), "Original Texture", { 0, 0 }, g_guiFontSize, 1, WHITE);
+		float yoffset = (g_guiFontSize + 2);
+		DrawRectangleLinesEx({ 0, yoffset, float(d->width) * scale + scale + scale, float(d->height) * scale + scale + scale }, scale, WHITE);
+		yoffset += scale;
+		DrawTextureEx(*d, Vector2{ scale, yoffset }, 0, 2, Color{ 255, 255, 255, 255 });
+
+		//  Draw rects on original texture showing top, front and right dimensions
+		Rectangle fixedTopRect = shapeData->m_topTextureRect;
+		fixedTopRect.x *= scale;
+		fixedTopRect.x += scale - 1;
+		fixedTopRect.y *= scale;
+		fixedTopRect.y += yoffset - 1;
+		fixedTopRect.width *= scale;
+		fixedTopRect.width += scale;
+		fixedTopRect.height *= scale;
+		fixedTopRect.height += scale;
+
+		DrawRectangleLinesEx(fixedTopRect, 1, RED);
+
+		Rectangle fixedFrontRect = shapeData->m_frontTextureRect;
+		fixedFrontRect.x += 1;
+		fixedFrontRect.y *= scale;
+		fixedFrontRect.y += yoffset - 2;
+		fixedFrontRect.width *= scale;
+		fixedFrontRect.width += scale;
+		fixedFrontRect.height *= scale;
+		fixedFrontRect.height += scale;
+
+		DrawRectangleLinesEx(fixedFrontRect, 1, GREEN);
+
+		Rectangle fixedRightRect = shapeData->m_rightTextureRect;
+		fixedRightRect.x *= scale;
+		fixedRightRect.x += scale - 1;
+		//fixedRightRect.x += 1;
+		fixedRightRect.y *= scale;
+		fixedRightRect.y += yoffset - 1;
+		fixedRightRect.width *= scale;
+		fixedRightRect.width += scale;
+		fixedRightRect.height *= scale;
+		fixedRightRect.height += scale;
+
+		DrawRectangleLinesEx(fixedRightRect, 1, BLUE);
+
+		DrawTextureEx(*g_shapeTable[m_currentShape][m_currentFrame].GetCuboidTexture(), Vector2{ scale, yoffset + 10 + (d->height * scale) }, 0, 2, Color{ 255, 255, 255, 255 });
+
+		////  Draw top texture with labels and borders
+		Rectangle cuboidTopRect = shapeData->m_topTextureRect;
+		cuboidTopRect.x = 1;
+		cuboidTopRect.y = yoffset + 10 + (d->height * scale) - 1;
+		cuboidTopRect.width *= scale;
+		cuboidTopRect.width += scale;
+		cuboidTopRect.height *= scale;
+		cuboidTopRect.height += scale;
+
+		DrawRectangleLinesEx(cuboidTopRect, 1, RED);
+
+		Rectangle cuboidFrontRect = shapeData->m_frontTextureRect;
+		cuboidFrontRect.x = 1;
+		cuboidFrontRect.y = yoffset + 10 + (d->height * scale) - 1 + cuboidTopRect.height;
+		cuboidFrontRect.width *= scale;
+		cuboidFrontRect.width += scale;
+		cuboidFrontRect.height *= scale;
+		cuboidFrontRect.height += scale;
+
+		DrawRectangleLinesEx(cuboidFrontRect, 1, GREEN);
+
+		Rectangle cuboidRightRect = shapeData->m_rightTextureRect;
+		cuboidRightRect.x = 1 + cuboidTopRect.width;
+		cuboidRightRect.y = yoffset + 10 + (d->height * scale) - 1;
+		cuboidRightRect.width *= scale;
+		cuboidRightRect.width += scale;
+		cuboidRightRect.height *= scale;
+		cuboidRightRect.height += scale;
+
+		DrawRectangleLinesEx(cuboidRightRect, 1, BLUE);
+	}
+
+	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
+	{
+		Texture* d = shapeData->GetTexture();
+		DrawTextureEx(*d, Vector2{ 0, 0 }, 0, scale, Color{ 255, 255, 255, 255 });
+	}
+
 
 	DrawConsole();
 

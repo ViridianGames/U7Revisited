@@ -46,12 +46,12 @@ enum class ShapeDrawType
 
 enum class CuboidSides
 {
-	CUBOID_BOTTOM = 0,
+	CUBOID_TOP = 0,
 	CUBOID_FRONT,
-	CUBOID_BACK,
 	CUBOID_RIGHT,
+	CUBOID_BOTTOM,
+	CUBOID_BACK,
 	CUBOID_LEFT,
-	CUBOID_TOP,
 	CUBOID_LAST
 };
 
@@ -96,6 +96,8 @@ public:
 	CuboidTexture GetTextureForSide(CuboidSides side) { return m_sideTextures[static_cast<int>(side)]; }
 	void SetTextureForMeshFromSideData(CuboidSides side);
 	void SetTextureForSide(CuboidSides side, CuboidTexture texture) { m_sideTextures[static_cast<int>(side)] = texture; }
+	void UpdateTextureCoordinates();
+	void BuildCuboidMesh();
 
 	// In original pixels
 	Rectangle m_topTextureRect;
@@ -142,7 +144,6 @@ public:
 	std::string m_luaScript;
 
 	RaylibModel* m_flatModel = nullptr;
-	RaylibModel* m_cuboidModel = nullptr;
 
 };
 

@@ -84,6 +84,8 @@ std::unique_ptr<U7Player> g_Player;
 
 bool m_LuaDebug = false;
 
+std::unique_ptr<Model> g_CuboidModel;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

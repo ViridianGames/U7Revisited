@@ -185,6 +185,8 @@ int main(int argv, char** argc)
       g_XButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 128, 0, 20, 20);
       g_GitHubButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 148, 0, 16, 16);
 
+      g_CuboidModel = nullptr;
+      
       //  Initialize scripts
 
       string directoryPath("Data/Scripts");

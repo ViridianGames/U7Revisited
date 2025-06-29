@@ -29,8 +29,8 @@ ShapeData::ShapeData()
 		m_sideTextures[i] = CuboidTexture::CUBOID_INVALID;
 	}
 
-	m_Scaling = Vector3{1, 1, 1};
-	m_TweakPos = Vector3{0, 0, 0};
+	m_Scaling = Vector3{ 1, 1, 1 };
+	m_TweakPos = Vector3{ 0, 0, 0 };
 	m_rotation = 0;
 	m_customMeshName = "Models/3dmodels/zzwrongcube.obj";
 	m_meshOutline = true;
@@ -45,48 +45,20 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	m_shape = shape;
 	m_frame = frame;
 
-	if (m_texture != nullptr)
+	//  A 1-pixel texture denotes a default texture that was never loaded
+	if (m_texture == nullptr || (m_texture.get()->width == 1 && m_texture.get()->height == 1))
 	{
-		Image image = GenImageColor(m_texture->m_Image.width * 2, m_texture->m_Image.height * 2, Color{ 0, 255, 0, 255 });
-
-		//ImageDraw(&image, m_texture->m_Image, m_topTextureRect,
-		//	Rectangle{ 0, 0, m_topTextureRect.width, m_topTextureRect.height }, WHITE);
-
-		//ImageDraw(&image, m_texture->m_Image, Rectangle{ 0, 0, float(m_texture->m_Image.width), float(m_texture->m_Image.height) },
-		//	Rectangle{ float(m_texture->m_Image.width), 0, float(m_texture->m_Image.width), float(m_texture->m_Image.height) }, WHITE);
-
-		//ImageDraw(&image, m_texture->m_Image, Rectangle{ 0, 0, float(m_texture->m_Image.width), float(m_texture->m_Image.height) },
-		//	Rectangle{ 0, float(m_texture->m_Image.height), float(m_texture->m_Image.width), float(m_texture->m_Image.height) }, WHITE);
+		m_isValid = false;
+	}
+	else
+	{
+		Image image = GenImageColor(m_texture->m_Image.width * 2, m_texture->m_Image.height * 2, Color{ 0, 0, 0, 0 });
 
 		m_cuboidTexture = std::make_unique<ModTexture>(image);
 
-		//m_shapePointerTexture = std::make_unique<ModTexture>();
-		//m_shapePointerTexture->AssignImage(g_shapeTable[m_pointerShape][m_pointerFrame].GetDefaultTextureImage());
-
 		m_isValid = true;
 
-		//  We need local copies of this texture for three sides of the cuboid.
-		//if (m_topTexture == nullptr)
-		//{
-		//	m_topTexture = std::make_unique<ModTexture>(m_texture->m_Image);
-		//}
-		//if (m_frontTexture == nullptr)
-		//{
-		//	m_frontTexture = std::make_unique<ModTexture>(m_texture->m_Image);
-		//}
-		//if (m_rightTexture == nullptr)
-		//{
-		//	m_rightTexture = std::make_unique<ModTexture>(m_texture->m_Image);
-		//}
-
-		ObjectData *objectData = &g_objectTable[m_shape];
-
-		//if (shouldreset)
-		//{
-		//	ResetTopTexture();
-		//	ResetFrontTexture();
-		//	ResetRightTexture();
-		//}
+		ObjectData* objectData = &g_objectTable[m_shape];
 
 		for (int i = 0; i < 6; ++i)
 		{
@@ -112,12 +84,9 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 
 		SetupDrawTypes();
 	}
-	else
-	{
-		m_isValid = false;
-	}
 
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
+	BuildCuboidMesh();
 }
 
 void ShapeData::SetDefaultTexture(Image image)
@@ -144,7 +113,7 @@ void ShapeData::SetupTextures()
 {
 }
 
-void ShapeData::Serialize(ofstream &outStream)
+void ShapeData::Serialize(ofstream& outStream)
 {
 	outStream << m_shape << " ";
 	outStream << m_frame << " ";
@@ -188,7 +157,7 @@ void ShapeData::Serialize(ofstream &outStream)
 	outStream.flush();
 }
 
-void ShapeData::Deserialize(ifstream &inStream)
+void ShapeData::Deserialize(ifstream& inStream)
 {
 	inStream >> m_shape;
 	inStream >> m_frame;
@@ -250,7 +219,7 @@ void ShapeData::Deserialize(ifstream &inStream)
 
 void ShapeData::ResetTopTextureRect()
 {
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
 	m_topTextureRect.x = 0;
 	m_topTextureRect.y = 0;
@@ -262,19 +231,19 @@ void ShapeData::ResetTopTextureRect()
 
 void ShapeData::ResetFrontTextureRect()
 {
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
 	m_frontTextureRect.x = 0;
 	m_frontTextureRect.y = objectData->m_depth * 8;
 	m_frontTextureRect.width = objectData->m_width * 8;
 	m_frontTextureRect.height = m_texture->height - objectData->m_depth * 8;
-	
+
 	SafeAndSane();
 }
 
 void ShapeData::ResetRightTextureRect()
 {
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
 	m_rightTextureRect.x = objectData->m_width * 8;
 	m_rightTextureRect.y = 0;
@@ -288,9 +257,9 @@ void ShapeData::SafeAndSane()
 {
 
 
-	ModTexture *textureToUse = m_texture.get();
+	ModTexture* textureToUse = m_texture.get();
 
-	if (m_topTextureRect.width > textureToUse->width)	{ m_topTextureRect.width = textureToUse->width; }
+	if (m_topTextureRect.width > textureToUse->width) { m_topTextureRect.width = textureToUse->width; }
 	if (m_topTextureRect.height > textureToUse->height) { m_topTextureRect.height = textureToUse->height; }
 	if (m_frontTextureRect.width > textureToUse->width) { m_frontTextureRect.width = textureToUse->width; }
 	if (m_frontTextureRect.height > textureToUse->height) { m_frontTextureRect.height = textureToUse->height; }
@@ -305,32 +274,32 @@ void ShapeData::SafeAndSane()
 	if (m_rightTextureRect.height < 1) { m_rightTextureRect.height = 1; }
 
 
-	if(m_topTextureRect.x + m_topTextureRect.width > textureToUse->width)
+	if (m_topTextureRect.x + m_topTextureRect.width > textureToUse->width)
 	{
 		m_topTextureRect.x = textureToUse->width - m_topTextureRect.width;
 	}
 
-	if(m_topTextureRect.y + m_topTextureRect.height > textureToUse->height)
+	if (m_topTextureRect.y + m_topTextureRect.height > textureToUse->height)
 	{
 		m_topTextureRect.y = textureToUse->height - m_topTextureRect.y;
 	}
 
-	if(m_frontTextureRect.x + m_frontTextureRect.width > textureToUse->width)
+	if (m_frontTextureRect.x + m_frontTextureRect.width > textureToUse->width)
 	{
 		m_frontTextureRect.x = textureToUse->width - m_frontTextureRect.width;
 	}
 
-	if(m_frontTextureRect.y + m_frontTextureRect.height > textureToUse->height)
+	if (m_frontTextureRect.y + m_frontTextureRect.height > textureToUse->height)
 	{
 		m_frontTextureRect.y = textureToUse->height - m_frontTextureRect.height;
 	}
 
-	if(m_rightTextureRect.x + m_rightTextureRect.width > textureToUse->width)
+	if (m_rightTextureRect.x + m_rightTextureRect.width > textureToUse->width)
 	{
 		m_rightTextureRect.x = textureToUse->width - m_rightTextureRect.width;
 	}
 
-	if(m_rightTextureRect.y + m_rightTextureRect.height > textureToUse->height)
+	if (m_rightTextureRect.y + m_rightTextureRect.height > textureToUse->height)
 	{
 		m_rightTextureRect.y = textureToUse->height - m_rightTextureRect.height;
 	}
@@ -347,21 +316,21 @@ void ShapeData::SafeAndSane()
 
 void ShapeData::SetupDrawTypes()
 {
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
-	m_Dims = Vector3{objectData->m_width, objectData->m_height, objectData->m_depth};
+	m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 
 	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD || m_drawType == ShapeDrawType::OBJECT_DRAW_CHARACTER)
 	{
-		m_Dims = Vector3{float(m_texture->width) / 8.0f, float(m_texture->height) / 8.0f, 1};
+		m_Dims = Vector3{ float(m_texture->width) / 8.0f, float(m_texture->height) / 8.0f, 1 };
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
-		m_Dims = Vector3{float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f};
+		m_Dims = Vector3{ float(m_texture->width) / 8.0f, 0, float(m_texture->height) / 8.0f };
 	}
 	else
 	{
-		m_Dims = Vector3{objectData->m_width, objectData->m_height, objectData->m_depth};
+		m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 	}
 
 	//  FLAT DRAWING
@@ -369,7 +338,7 @@ void ShapeData::SetupDrawTypes()
 
 	//  CUBOID DRAWING
 
-	m_cuboidModel = g_ResourceManager->GetModel("Models/3dmodels/cuboidmodel.obj");
+	//m_cuboidModel = g_ResourceManager->GetModel("Models/3dmodels/cuboidmodel.obj");
 
 	//  CUSTOM MESH
 	m_customMesh = g_ResourceManager->GetModel(m_customMeshName);
@@ -379,77 +348,218 @@ void ShapeData::SetupDrawTypes()
 
 void ShapeData::UpdateTextures()
 {
+	if (!g_shapeTable[m_shape][m_frame].IsValid())
+		return;
+
 	//  Fixup the texture for this object.
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
 	SafeAndSane();
 
-	ModTexture *textureToUse = m_texture.get();
+	ModTexture* textureToUse = m_texture.get();
 
 	int startx = 0;
 	int starty = 0;
 
-	ImageClearBackground(&m_cuboidTexture->m_Image, {255, 0, 0, 255});
-	
+	ImageClearBackground(&m_cuboidTexture->m_Image, { 0, 0, 0, 0 });
+
 	ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image, m_topTextureRect,
 		{ 0, 0, m_topTextureRect.width, m_topTextureRect.height }, WHITE);
 
-	ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image, m_rightTextureRect,
-		Rectangle{ m_topTextureRect.width, 0, m_rightTextureRect.width, m_rightTextureRect.height }, WHITE);
+	//  Front face unslant
+	int counter = 0;
+	for (int i = m_frontTextureRect.y; i < m_frontTextureRect.y + m_frontTextureRect.height; ++i)
+	{
+		//  Count empty pixels at the beginning of this line
+		int offset = 0;
+		for (int j = 0; j < m_texture.get()->width; ++j)
+		{
+			Color thisPixel = GetImageColor(m_texture->m_Image, j, i);
+			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
+				++offset;
+			else
+				break;
+		}
 
-	ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image, m_frontTextureRect,
-		Rectangle{ 0, m_topTextureRect.height, m_frontTextureRect.width, m_frontTextureRect.height }, WHITE);
+		if (m_frontTextureRect.x + offset + m_frontTextureRect.width < m_texture->width)
+		{
+			ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+				{ m_frontTextureRect.x + offset, m_frontTextureRect.y + counter, m_frontTextureRect.width, 1 }, //  Source rect
+				{ m_frontTextureRect.x, m_topTextureRect.height + counter + 1, m_frontTextureRect.width, 1 }, //  Dest rect
+				WHITE
+			);
+		}
+		++counter;
+	}
+
+	//  Right face unslant
+	counter = 0;
+	for (int i = m_rightTextureRect.x; i < m_rightTextureRect.x + m_rightTextureRect.width; ++i)
+	{
+		//  Count empty pixels at the beginning of this line
+		int offset = 0;
+		for (int j = 0; j < m_texture.get()->height; ++j)
+		{
+			Color thisPixel = GetImageColor(m_texture->m_Image, i, j);
+			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
+				++offset;
+			else
+				break;
+		}
+
+		if (m_rightTextureRect.y + offset + m_rightTextureRect.height < m_texture->height)
+		{
+			ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+				{ m_rightTextureRect.x + counter, m_rightTextureRect.y + offset, 1, m_rightTextureRect.height }, //  Source rect
+				{ m_topTextureRect.width + counter + 1, m_rightTextureRect.y, 1, m_rightTextureRect.height }, //  Dest rect
+				WHITE
+			);
+		}
+		++counter;
+	}
 
 	m_cuboidTexture->UpdateTexture();
+	UpdateTextureCoordinates();
 
-	//  Top face
-
-
-	//  Front face
-	//m_frontTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{float(m_frontTextureOffsetX), float(m_frontTextureOffsetY),
-	//																		  float(textureToUse->m_Image.width - m_frontTextureOffsetX), float(textureToUse->m_Image.height - m_frontTextureOffsetY)});
-
-	//  Shift slanted pixels to unslant
-	//int counter = 1;
-	//for (int i = 0; i < m_frontTexture->m_Image.height; ++i)
-	//{
-	//	for (int k = 0; k < counter; ++k)
-	//	{
-	//		m_frontTexture->MoveImageRowLeft(i);
-	//	}
-	//	++counter;
-	//}
-
-	//m_frontTexture->ResizeImage(m_frontTextureWidth, m_frontTextureHeight);
-	//m_frontTexture->UpdateTexture();
-
-	////  Right face
-	//m_rightTexture->m_Image = ImageFromImage(textureToUse->m_Image, Rectangle{float(m_rightTextureOffsetX), float(m_rightTextureOffsetY),
-	//																		  float(textureToUse->m_Image.width - m_rightTextureOffsetX), float(textureToUse->m_Image.height - m_rightTextureOffsetY)});
-
-	////  Shift slanted pixels to unslant
-	//counter = 1;
-	//for (int i = 1; i < m_rightTextureWidth; ++i)
-	//{
-	//	for (int k = 0; k < counter; ++k)
-	//	{
-	//		m_rightTexture->MoveImageColumnUp(i);
-	//	}
-	//	++counter;
-	//}
-
-	//m_rightTexture->ResizeImage(m_rightTextureWidth, m_rightTextureHeight);
-	//m_rightTexture->UpdateTexture();
 }
 
-void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scaling)
+void ShapeData::UpdateTextureCoordinates()
+{
+	if (g_CuboidModel == nullptr)
+		return;
+
+	//  Top face
+	float topUVCoords[6 * 2] =
+	{
+		0.0,	0.0f,
+		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
+		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
+
+		m_topTextureRect.width / m_cuboidTexture.get()->width, m_topTextureRect.height / m_cuboidTexture.get()->height,
+		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
+		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
+	};
+
+	//  Front face
+	float frontUVCoords[6 * 2] =
+	{
+		0, (m_topTextureRect.height + 1)  / m_cuboidTexture.get()->height,
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+	};
+
+	//  Right face
+	float rightUVCoords[6 * 2] =
+	{
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width, 	m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
+
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width,	0.0f,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
+	};
+
+	//  Top inverted
+	float topInvertedUVCoords[6 * 2] =
+	{
+		0.0,	0.0f,
+		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
+		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
+
+		m_topTextureRect.width / m_cuboidTexture.get()->width, m_topTextureRect.height / m_cuboidTexture.get()->height,
+		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
+		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
+	};
+
+	//  Front inverted
+	float frontInvertedUVCoords[6 * 2] =
+	{
+		0, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+	};
+
+	//  Right inverted
+	float rightInvertedUVCoords[6 * 2] =
+	{
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width, 	m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
+
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width,	0.0f,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
+	};
+
+	float dontdrawUVCoords[6 * 2] = {
+	.75f,	.75f,
+	1.0f,	.75f,
+	.75f,	1.0f,
+	1.0f,	1.0f,
+	.75f,	1.0f,
+	1.0f,	.75f,
+	};
+
+	for (int i = 0; i < 6; ++i)
+	{
+		switch (GetTextureForSide(CuboidSides(i)))
+		{
+		case CuboidTexture::CUBOID_DRAW_TOP:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, topUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_FRONT:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, frontUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_RIGHT:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, rightUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_FRONT_INVERTED:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, frontInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, rightInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DRAW_TOP_INVERTED:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, topInvertedUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		case CuboidTexture::CUBOID_DONT_DRAW:
+		{
+			UpdateMeshBuffer(g_CuboidModel.get()->meshes[0], 1, dontdrawUVCoords, 6 * 2 * sizeof(float), i * 6 * 2 * sizeof(float));
+			break;
+		}
+		}
+	}
+}
+
+void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scaling)
 {
 	if (m_isValid == false)
 	{
 		return;
 	}
 
-	ObjectData *objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectTable[m_shape];
 
 	Vector3 cuboidScaling = m_Scaling;
 	cuboidScaling.x = m_Scaling.x * scaling.x;
@@ -465,10 +575,11 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 		Vector3 thisPos = pos;
 
 		thisPos = Vector3Add(thisPos, m_TweakPos);
-		thisPos = Vector3Add(thisPos, Vector3{ -m_Dims.x + 1, 0, 1 });
+		thisPos = Vector3Add(thisPos, Vector3{ -m_Dims.x + 1, 0, -m_Dims.z + 1 });
 
-		SetMaterialTexture(&m_cuboidModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
-		DrawModelEx(m_cuboidModel->GetModel(), thisPos, Vector3{0, 1, 0}, angle, m_Dims, WHITE);
+		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
+		UpdateTextureCoordinates();
+		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle, { m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, WHITE);
 
 		break;
 	}
@@ -505,8 +616,8 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 		finalPos.y += m_Dims.y * .60f;
 
 		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height)}, finalPos, Vector3{0, 1, 0},
-						 Vector2{m_Dims.x, m_Dims.y}, Vector2{0, 0}, -45, color);
+		DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{ 0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
+			Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
 		EndShaderMode();
 		break;
 	}
@@ -517,8 +628,6 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 		finalPos.x += .5f;
 		finalPos.z += .5f;
 		finalPos.y += m_Dims.y * .85f;
-
-		//g_cameraRotation
 
 		Texture* finalTexture = &g_shapeTable[m_shape][17].m_texture->m_Texture;
 		float finalRotation = -45;
@@ -542,28 +651,6 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 			finalTexture = &g_shapeTable[m_shape][16].m_texture->m_Texture;
 		}
 
-
-		//if (g_cameraRotation > PI / 2)
-		//{
-		//	finalTexture = &g_shapeTable[m_shape][1].m_texture->m_Texture;
-		//}
-		//if (g_cameraRotation > PI )
-		//{
-		//	finalTexture = &g_shapeTable[m_shape][0].m_texture->m_Texture;
-		//	Image image = ImageFromImage(g_shapeTable[m_shape][0].m_texture->m_Image, {0, 0, float(g_shapeTable[m_shape][0].m_texture->m_Image.width), float(g_shapeTable[m_shape][0].m_texture->m_Image.height) });
-		//	ImageFlipHorizontal(&image);
-
-		//	finalTexture = &LoadTextureFromImage(image);
-		//	finalRotation = 45;
-		//	
-		//}
-		//if (g_cameraRotation > PI * 1.5f)
-		//{
-		//	finalTexture = &g_shapeTable[m_shape][3].m_texture->m_Texture;
-		//}
-
-
-
 		Vector3 dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 
 		BeginShaderMode(g_alphaDiscard);
@@ -586,7 +673,7 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 			// Step 1: Draw the original model, mark stencil with 1
 			glStencilFunc(GL_ALWAYS, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			DrawModelEx(m_customMesh->GetModel(), finalPos, {0, 1, 0}, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 
 			// Step 2: Draw the outline where stencil is not 1
 			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -597,12 +684,12 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 			Vector3 size = Vector3{
 				fabs(boundingBox.max.x - boundingBox.min.x),
 				fabs(boundingBox.max.y - boundingBox.min.y),
-				fabs(boundingBox.max.z - boundingBox.min.z)};
+				fabs(boundingBox.max.z - boundingBox.min.z) };
 			// Calculate the local center of the model (unscaled)
 			Vector3 localCenter = Vector3{
 				(boundingBox.min.x + boundingBox.max.x) / 2.0f,
 				(boundingBox.min.y + boundingBox.max.y) / 2.0f,
-				(boundingBox.min.z + boundingBox.max.z) / 2.0f};
+				(boundingBox.min.z + boundingBox.max.z) / 2.0f };
 
 			// Fixed outline thickness in world space
 			float outlineThickness = 0.075f;
@@ -611,30 +698,30 @@ void ShapeData::Draw(const Vector3 &pos, float angle, Color color, Vector3 scali
 			Vector3 outlineScale = Vector3{
 				m_Scaling.x + (outlineThickness / size.x) * 2.0f,
 				m_Scaling.y + (outlineThickness / size.y) * 2.0f,
-				m_Scaling.z + (outlineThickness / size.z) * 2.0f};
+				m_Scaling.z + (outlineThickness / size.z) * 2.0f };
 
 			// Adjust position to compensate for the pivot offset when scaling
 			Vector3 scaledCenter = Vector3{
 				localCenter.x * m_Scaling.x,
 				localCenter.y * m_Scaling.y,
-				localCenter.z * m_Scaling.z};
+				localCenter.z * m_Scaling.z };
 			Vector3 outlineScaledCenter = Vector3{
 				localCenter.x * outlineScale.x,
 				localCenter.y * outlineScale.y,
-				localCenter.z * outlineScale.z};
+				localCenter.z * outlineScale.z };
 			Vector3 centerOffset = Vector3Subtract(scaledCenter, outlineScaledCenter);
 			Vector3 outlinePos = Vector3Add(finalPos, centerOffset);
 
 			// Draw the outline with the adjusted position
 			glDepthMask(GL_FALSE);
-			DrawModelEx(m_customMesh->GetModel(), outlinePos, {0, 1, 0}, m_rotation, outlineScale, BLACK);
+			DrawModelEx(m_customMesh->GetModel(), outlinePos, { 0, 1, 0 }, m_rotation, outlineScale, BLACK);
 			glDepthMask(GL_TRUE);
 
 			glDisable(GL_STENCIL_TEST);
 		}
 		else
 		{
-			DrawModelEx(m_customMesh->GetModel(), finalPos, {0, 1, 0}, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
 		}
 		break;
 	}
@@ -661,18 +748,189 @@ void ShapeData::SetTextureForMeshFromSideData(CuboidSides side)
 	case CuboidTexture::CUBOID_DRAW_FRONT_INVERTED:
 	case CuboidTexture::CUBOID_DRAW_RIGHT_INVERTED:
 	{
-		SetMaterialTexture(&m_cuboidModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
+		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
 		break;
 	}
 	}
 }
 
-//void ShapeData::UpdateShapePointerTexture()
-//{
-//	if (m_shapePointerTexture == nullptr)
-//	{
-//		m_shapePointerTexture = std::make_unique<ModTexture>();
-//	}
-//
-//	m_shapePointerTexture->AssignImage(g_shapeTable[m_pointerShape][m_pointerFrame].GetDefaultTextureImage());
-//}
+void ShapeData::BuildCuboidMesh()
+{
+	if (g_CuboidModel != nullptr)
+		return;
+
+	Mesh mesh = { 0 };
+	mesh.triangleCount = 12;
+	mesh.vertexCount = mesh.triangleCount * 3;
+	mesh.vertices = (float*)MemAlloc(mesh.vertexCount * 3 * sizeof(float));
+	mesh.texcoords = (float*)MemAlloc(mesh.vertexCount * 2 * sizeof(float));
+	mesh.normals = (float*)MemAlloc(mesh.vertexCount * 3 * sizeof(float));
+
+	mesh.colors = (unsigned char*)MemAlloc(mesh.vertexCount * 4 * sizeof(unsigned char));
+	mesh.animNormals = nullptr;
+	mesh.animVertices = nullptr;
+	mesh.boneIds = nullptr;
+	mesh.boneWeights = nullptr;
+	mesh.tangents = nullptr;
+	mesh.indices = nullptr;
+	mesh.texcoords2 = nullptr;
+	//  Vertices
+
+	//  Top
+	int vertexCount = 0;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 1;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 1;	mesh.vertices[vertexCount + 8] = 1;
+	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 1;	mesh.vertices[vertexCount + 11] = 1;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 1;	mesh.vertices[vertexCount + 14] = 1;
+	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 0;
+
+	//  Front
+	vertexCount = 18;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 1;	mesh.vertices[vertexCount + 2] = 1;
+	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 1;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 1;
+	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 0;	mesh.vertices[vertexCount + 11] = 1;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 1;
+	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 1;
+
+	//  Right
+	vertexCount = 36;
+	mesh.vertices[vertexCount + 0] = 1; mesh.vertices[vertexCount + 1] = 1;	mesh.vertices[vertexCount + 2] = 1;
+	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 1; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 1;
+	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 0;	mesh.vertices[vertexCount + 11] = 0;
+	mesh.vertices[vertexCount + 12] = 1; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 1;
+	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 0;
+
+	//  Bottom
+	vertexCount = 54;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 0;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 0;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 1;
+	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 0;	mesh.vertices[vertexCount + 11] = 1;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 1;
+	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 0;	mesh.vertices[vertexCount + 17] = 0;
+
+	////  Back
+	vertexCount = 72;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 0;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 0;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 1;	mesh.vertices[vertexCount + 8] = 0;
+	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 1;	mesh.vertices[vertexCount + 11] = 0;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 1;	mesh.vertices[vertexCount + 14] = 0;
+	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 0;	mesh.vertices[vertexCount + 17] = 0;
+
+	//  Left
+	vertexCount = 90;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 0;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 0; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 1;
+	mesh.vertices[vertexCount + 9] = 0; mesh.vertices[vertexCount + 10] = 1;	mesh.vertices[vertexCount + 11] = 1;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 1;
+	mesh.vertices[vertexCount + 15] = 0; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 0;
+
+	//  Normals
+	for (int i = 0; i < 36; ++i)
+	{
+		int start = i * 3;
+		mesh.normals[start] = 0;
+		mesh.normals[start + 1] = 1;
+		mesh.normals[start + 2] = 0;
+	}
+
+	//  Colors
+	for (int i = 0; i < 6; ++i) // faces
+	{
+		for (int j = 0; j < 6; ++j) // verts
+		{
+			int start = ((i * 6) + j) * 4;
+			mesh.colors[start] = WHITE.r;
+			mesh.colors[start + 1] = WHITE.g;
+			mesh.colors[start + 2] = WHITE.b;
+			mesh.colors[start + 3] = WHITE.a;
+			continue;
+
+			switch (i)
+			{
+			case 0: // Top
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = RED.r;
+				mesh.colors[start + 1] = RED.g;
+				mesh.colors[start + 2] = RED.b;
+				mesh.colors[start + 3] = RED.a;
+				break;
+			}
+			case 1: // Front
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = GREEN.r;
+				mesh.colors[start + 1] = GREEN.g;
+				mesh.colors[start + 2] = GREEN.b;
+				mesh.colors[start + 3] = GREEN.a;
+				break;
+			}
+
+			case 2: // Right
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = BLUE.r;
+				mesh.colors[start + 1] = BLUE.g;
+				mesh.colors[start + 2] = BLUE.b;
+				mesh.colors[start + 3] = BLUE.a;
+				break;
+			}
+
+			case 3: // Bottom
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = YELLOW.r;
+				mesh.colors[start + 1] = YELLOW.g;
+				mesh.colors[start + 2] = YELLOW.b;
+				mesh.colors[start + 3] = YELLOW.a;
+				break;
+			}
+
+			case 4: // Back
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = PURPLE.r;
+				mesh.colors[start + 1] = PURPLE.g;
+				mesh.colors[start + 2] = PURPLE.b;
+				mesh.colors[start + 3] = PURPLE.a;
+				break;
+			}
+
+			case 5: // Left
+			{
+				int start = ((i * 6) + j) * 4;
+				mesh.colors[start] = ORANGE.r;
+				mesh.colors[start + 1] = ORANGE.g;
+				mesh.colors[start + 2] = ORANGE.b;
+				mesh.colors[start + 3] = ORANGE.a;
+				break;
+			}
+
+			}
+		}
+	}
+
+	//  Texture Coords
+	for (int i = 0; i < 6; ++i)
+	{
+		int start = i * 12;
+		mesh.texcoords[start] = 0; mesh.texcoords[start + 1] = 0;
+		mesh.texcoords[start + 2] = 1; mesh.texcoords[start + 3] = 0;
+		mesh.texcoords[start + 4] = 0; mesh.texcoords[start + 5] = 1;
+		mesh.texcoords[start + 6] = 1; mesh.texcoords[start + 7] = 1;
+		mesh.texcoords[start + 8] = 0; mesh.texcoords[start + 9] = 1;
+		mesh.texcoords[start + 10] = 1; mesh.texcoords[start + 11] = 0;
+	}
+
+	UploadMesh(&mesh, true);
+
+	g_CuboidModel = make_unique<Model>(LoadModelFromMesh(mesh));
+
+	//UploadMesh(&g_CuboidModel.get()->meshes[0], false);
+}

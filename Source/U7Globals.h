@@ -192,6 +192,8 @@ extern std::unique_ptr<U7Player> g_Player;
 
 extern std::vector< std::vector<unsigned short> > g_World;
 
+extern std::unique_ptr<Model> g_CuboidModel;
+
 void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color);
 
 void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color);
