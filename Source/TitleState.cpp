@@ -60,7 +60,7 @@ void TitleState::Update()
       float drawRange = g_cameraDistance * 1.5f;
       for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
       {
-         (*node).second->Update();
+         //(*node).second->Update();
          float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
          distance -= (*node).second->m_Pos.y;
          if (distance < drawRange && (*node).second->m_Pos.y <= 4.0f)

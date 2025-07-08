@@ -211,6 +211,34 @@ int main(int argv, char** argc)
 
       RegisterAllLuaFunctions();
 
+      //  Make walk frames
+		//g_ResourceManager->GetTexture("Images/VillagerWalkFixed.png", false);
+
+		Image frames = LoadImage("Images/VillagerWalkFixed.png");
+
+      g_scheduleTime = 0;
+      g_hour = 0;
+      g_minute = 0;
+		g_secsPerMinute = 2.0f;
+
+      for(int i = 0; i < 8; i++)
+      {
+         std::vector<Texture> thisVector;
+			thisVector.resize(8);
+			g_walkFrames.push_back(thisVector);
+		}
+
+      for(int i = 0; i < 8; i++)
+      {
+         for(int j = 0; j < 8; j++)
+         {
+				Image img = ImageFromImage(frames, Rectangle{j * 128.0f, i * 128.0f, 128, 128});
+            g_walkFrames[i][j] = LoadTextureFromImage(img);
+				UnloadImage(img);
+         }
+		}
+
+
       //  Initialize states
       Log("Initializing states.");
       State* _titleState = new TitleState;

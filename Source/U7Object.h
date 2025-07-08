@@ -46,11 +46,17 @@ public:
 
    bool IsInInventory(int objectid);
    bool IsInInventory(int shape, int frame);
+
+   void NPCUpdate();
+   void NPCDraw();
+   void NPCInit(NPCData* npcData);
   
    Vector3 m_Pos;
    Vector3 m_Dest;
    Vector3 m_Direction;
    Vector3 m_Scaling;
+   Vector3 m_anchorPos;
+   bool m_isMoving = false;
 
    Vector3 m_ExternalForce;
 
@@ -108,6 +114,11 @@ public:
    Vector2 m_GumpPos;
    bool m_isSorted = false;
    bool m_shouldBeSorted = true;
+
+	NPCData* m_NPCData = nullptr;
+
+   int m_lastSchedule = -1;
+
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 

@@ -75,6 +75,11 @@ extern std::string g_engineModeStrings[];
 
 extern std::string g_objectTypeStrings[];
 
+extern unsigned int g_hour;
+extern unsigned int g_minute;
+extern unsigned int g_scheduleTime;
+extern float g_secsPerMinute;
+
 struct ObjectData
 {
 	//  From wgtvol.dat
@@ -103,6 +108,23 @@ struct ObjectData
 
 	std::unique_ptr<Mesh> m_mesh = nullptr;
 };
+
+
+//  Here's how schedules work:
+//  Each NPC has a schedule that is a list of time indices.  Time indices can only be from 0 - 8 and represent three hour blocks of the day.
+//  At that time, the NPC's activity flag will change to the activity specified in the schedule, and the NPC will move to the destination specified in the schedule.
+//  The activity flag is a number that corresponds to a specific activity, such as "sleeping", "eating", "working", etc.
+//  For a lot of flags, the activity simply changes the NPC's behavior in their Lua script, but some activities also trigger movement to a specific location.
+//  For instance, "pace horizontal" and "pace vertical" will cause the NPC to move back and forth while the activity is active.
+struct NPCSchedule
+{
+	unsigned int m_destX;
+	unsigned int m_destY;
+	unsigned int m_time;
+	unsigned int m_activity;
+};
+
+extern std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
 struct NPCData
 {
@@ -149,6 +171,7 @@ struct NPCData
    unsigned char food;
    char soak5[7];
    char name[16];
+	std::vector<int> m_schedule;
 };
 
 extern std::string g_version;
@@ -191,6 +214,8 @@ extern unsigned int g_minimapSize;
 extern std::unique_ptr<U7Player> g_Player;
 
 extern std::vector< std::vector<unsigned short> > g_World;
+
+extern std::vector< std::vector<Texture> > g_walkFrames;
 
 extern std::unique_ptr<Model> g_CuboidModel;
 

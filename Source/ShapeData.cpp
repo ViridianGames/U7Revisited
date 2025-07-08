@@ -320,7 +320,7 @@ void ShapeData::SetupDrawTypes()
 
 	m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 
-	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD || m_drawType == ShapeDrawType::OBJECT_DRAW_CHARACTER)
+	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{
 		m_Dims = Vector3{ float(m_texture->width) / 8.0f, float(m_texture->height) / 8.0f, 1 };
 	}
@@ -443,7 +443,7 @@ void ShapeData::UpdateTextureCoordinates()
 	//  Front face
 	float frontUVCoords[6 * 2] =
 	{
-		0, (m_topTextureRect.height + 1)  / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
 		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
 		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
 
@@ -467,37 +467,37 @@ void ShapeData::UpdateTextureCoordinates()
 	//  Top inverted
 	float topInvertedUVCoords[6 * 2] =
 	{
-		0.0,	0.0f,
-		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
-		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
-
+		m_topTextureRect.width / m_cuboidTexture.get()->width, 0.0f,
+		0.0f, 0.0f,
 		m_topTextureRect.width / m_cuboidTexture.get()->width, m_topTextureRect.height / m_cuboidTexture.get()->height,
+
 		0.0f, m_topTextureRect.height / m_cuboidTexture.get()->height,
-		m_topTextureRect.width / m_cuboidTexture.get()->width,	0.0f,
+		m_topTextureRect.width / m_cuboidTexture.get()->width, m_topTextureRect.height / m_cuboidTexture.get()->height,
+		0.0f, 0.0f,
 	};
 
 	//  Front inverted
 	float frontInvertedUVCoords[6 * 2] =
 	{
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
 		0, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
-		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
-		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
-
 		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+
 		0, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
-		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
+		m_frontTextureRect.width / m_cuboidTexture.get()->width, (m_topTextureRect.height + 1 + m_frontTextureRect.height) / m_cuboidTexture.get()->height,
+		0, (m_topTextureRect.height + 1) / m_cuboidTexture.get()->height,
 	};
 
 	//  Right inverted
 	float rightInvertedUVCoords[6 * 2] =
 	{
-		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width, 	m_rightTextureRect.height / m_cuboidTexture.get()->height,
-		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
-		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width, 	0,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, 0,
 
-		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width,	0.0f,
-		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, m_rightTextureRect.height / m_cuboidTexture.get()->height,
-		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,	0,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width,m_rightTextureRect.height / m_cuboidTexture.get()->height,
+		(m_topTextureRect.width + 1 + m_rightTextureRect.width) / m_cuboidTexture.get()->width, 0,
+		(m_topTextureRect.width + 1) / m_cuboidTexture.get()->width,m_rightTextureRect.height / m_cuboidTexture.get()->height,
 	};
 
 	float dontdrawUVCoords[6 * 2] = {
@@ -618,44 +618,6 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		BeginShaderMode(g_alphaDiscard);
 		DrawBillboardPro(g_camera, m_texture->m_Texture, Rectangle{ 0, 0, float(m_texture->m_Texture.width), float(m_texture->m_Texture.height) }, finalPos, Vector3{ 0, 1, 0 },
 			Vector2{ m_Dims.x, m_Dims.y }, Vector2{ 0, 0 }, -45, color);
-		EndShaderMode();
-		break;
-	}
-
-	case ShapeDrawType::OBJECT_DRAW_CHARACTER:
-	{
-		finalPos = pos;
-		finalPos.x += .5f;
-		finalPos.z += .5f;
-		finalPos.y += m_Dims.y * .85f;
-
-		Texture* finalTexture = &g_shapeTable[m_shape][17].m_texture->m_Texture;
-		float finalRotation = -45;
-
-		int thisTime = GetTime() * 1000;
-
-		int framerate = 250;
-
-		thisTime = thisTime % (4 * framerate);
-
-		if (thisTime > framerate && thisTime < 2 * framerate)
-		{
-			finalTexture = &g_shapeTable[m_shape][16].m_texture->m_Texture;
-		}
-		else if (thisTime >= 2 * framerate && thisTime < 3 * framerate)
-		{
-			finalTexture = &g_shapeTable[m_shape][18].m_texture->m_Texture;
-		}
-		else if (thisTime > 3 * framerate)
-		{
-			finalTexture = &g_shapeTable[m_shape][16].m_texture->m_Texture;
-		}
-
-		Vector3 dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
-
-		BeginShaderMode(g_alphaDiscard);
-		DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
-			Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, finalRotation, color);
 		EndShaderMode();
 		break;
 	}
@@ -814,21 +776,21 @@ void ShapeData::BuildCuboidMesh()
 
 	////  Back
 	vertexCount = 72;
-	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 0;	mesh.vertices[vertexCount + 2] = 0;
-	mesh.vertices[vertexCount + 3] = 1; mesh.vertices[vertexCount + 4] = 0;	mesh.vertices[vertexCount + 5] = 0;
-	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 1;	mesh.vertices[vertexCount + 8] = 0;
-	mesh.vertices[vertexCount + 9] = 1; mesh.vertices[vertexCount + 10] = 1;	mesh.vertices[vertexCount + 11] = 0;
-	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 1;	mesh.vertices[vertexCount + 14] = 0;
-	mesh.vertices[vertexCount + 15] = 1; mesh.vertices[vertexCount + 16] = 0;	mesh.vertices[vertexCount + 17] = 0;
+	mesh.vertices[vertexCount + 0] = 1; mesh.vertices[vertexCount + 1] = 1;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 0; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 0;
+	mesh.vertices[vertexCount + 6] = 1; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 0;
+	mesh.vertices[vertexCount + 9] = 0; mesh.vertices[vertexCount + 10] = 0;	mesh.vertices[vertexCount + 11] = 0;
+	mesh.vertices[vertexCount + 12] = 1; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 0;
+	mesh.vertices[vertexCount + 15] = 0; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 0;
 
 	//  Left
 	vertexCount = 90;
-	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 0;	mesh.vertices[vertexCount + 2] = 0;
-	mesh.vertices[vertexCount + 3] = 0; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 0;
-	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 1;
-	mesh.vertices[vertexCount + 9] = 0; mesh.vertices[vertexCount + 10] = 1;	mesh.vertices[vertexCount + 11] = 1;
-	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 1;
-	mesh.vertices[vertexCount + 15] = 0; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 0;
+	mesh.vertices[vertexCount + 0] = 0; mesh.vertices[vertexCount + 1] = 1;	mesh.vertices[vertexCount + 2] = 0;
+	mesh.vertices[vertexCount + 3] = 0; mesh.vertices[vertexCount + 4] = 1;	mesh.vertices[vertexCount + 5] = 1;
+	mesh.vertices[vertexCount + 6] = 0; mesh.vertices[vertexCount + 7] = 0;	mesh.vertices[vertexCount + 8] = 0;
+	mesh.vertices[vertexCount + 9] = 0; mesh.vertices[vertexCount + 10] = 0;	mesh.vertices[vertexCount + 11] = 1;
+	mesh.vertices[vertexCount + 12] = 0; mesh.vertices[vertexCount + 13] = 0;	mesh.vertices[vertexCount + 14] = 0;
+	mesh.vertices[vertexCount + 15] = 0; mesh.vertices[vertexCount + 16] = 1;	mesh.vertices[vertexCount + 17] = 1;
 
 	//  Normals
 	for (int i = 0; i < 36; ++i)

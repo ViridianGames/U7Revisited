@@ -103,12 +103,6 @@ void ShapeEditorState::SwitchToGuiForDrawType(ShapeDrawType drawType)
 	case ShapeDrawType::OBJECT_DRAW_FLAT:
 		ChangeGui(m_flatGui.get());
 		break;
-	case ShapeDrawType::OBJECT_DRAW_CHARACTER:
-		ChangeGui(m_characterGui.get());
-		break;
-	case ShapeDrawType::OBJECT_DRAW_USE_SHAPE_POINTER:
-		ChangeGui(m_shapePointerGui.get());
-		break;
 	case ShapeDrawType::OBJECT_DRAW_DONT_DRAW:
 		ChangeGui(m_dontDrawGui.get());
 		break;

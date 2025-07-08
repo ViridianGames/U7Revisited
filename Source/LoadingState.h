@@ -36,6 +36,7 @@ public:
    void MakeMap();
    void LoadModels();
    void LoadInitialGameState();
+   void LoadNPCSchedules();
 
    unsigned char ReadU8(std::istream &buffer);
    unsigned short ReadU16(std::istream &buffer);
@@ -79,6 +80,7 @@ public:
    bool m_loadingVersion = false;
    bool m_loadingModels = false;
    bool m_makingMap = false;
+   bool m_loadingNPCSchedules = false;
 
    bool m_loadingFailed = false;
 

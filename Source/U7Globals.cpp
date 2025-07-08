@@ -86,6 +86,15 @@ bool m_LuaDebug = false;
 
 std::unique_ptr<Model> g_CuboidModel;
 
+std::vector< std::vector<Texture> > g_walkFrames;
+
+std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
+
+unsigned int g_hour;
+unsigned int g_minute;
+unsigned int g_scheduleTime;
+float g_secsPerMinute = 5;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

@@ -98,6 +98,8 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
 	// AddConsoleString(std::string("TOO HEAVY"));
+
+	g_hour = 5;
 }
 
 void MainState::OnExit()
@@ -112,6 +114,10 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
+	g_hour = (9 + (int)(GetTime() / (g_secsPerMinute * 60))) % 24;
+	g_minute = (int)(GetTime() / g_secsPerMinute) % 60;
+	g_scheduleTime = (3 + int(GetTime() / (g_secsPerMinute * 180))) % 8;
+
 	if(m_GumpManager->m_GumpList.size() > 0)
 	{
 		m_GumpManager->Update();
@@ -211,6 +217,32 @@ void MainState::Update()
 	if (IsKeyPressed(KEY_SPACE))
 	{
 		g_pixelated = !g_pixelated;
+	}
+
+	if (IsKeyPressed(KEY_KP_SUBTRACT))
+	{
+		g_secsPerMinute -= 0.1f;
+		if(g_secsPerMinute < 0.1f)
+		{
+			g_secsPerMinute = 0.1f;
+		}
+		else
+		{
+			AddConsoleString("Time Speed: " + to_string(g_secsPerMinute) + " seconds per minute");
+		}
+	}
+
+	if (IsKeyPressed(KEY_KP_ADD))
+	{
+		g_secsPerMinute += 0.1f;
+		if(g_secsPerMinute > 5.0f)
+		{
+			g_secsPerMinute = 5.0f;
+		}
+		else
+		{
+			AddConsoleString("Time Speed: " + to_string(g_secsPerMinute) + " seconds per minute");
+		}
 	}
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
@@ -424,6 +456,9 @@ void MainState::Draw()
 	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
 	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{640.0f - g_minimapSize, g_minimapSize * 1.05f}, g_SmallFont->baseSize, 1, WHITE);
 
+	string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
+	DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
+
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
@@ -431,6 +466,30 @@ void MainState::Draw()
 
 	//  Draw any tooltips
 	EndTextureMode();
+
+	//  Draw darkness
+	//  Sundown
+	if(g_hour == 20)
+	{
+		float darkness = ((float(g_minute) / 60.0f) * 192.0f);
+		Color darkColor = {0, 0, 64, int(darkness)};
+		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
+	}
+	//  Sunrise
+	else if (g_hour == 6)
+	{
+		float darkness = 192.0f - ((float(g_minute) / 60.0f) * 192.0f);
+		Color darkColor = {0, 0, 64, int(darkness)};
+		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
+	}
+	//  Night
+	else if (g_hour > 20 || g_hour < 6)
+	{
+		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, {0, 0, 64, 192 });
+	}
+
+	//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 192, 128 });
+
 	DrawTexturePro(g_guiRenderTarget.texture,
 				   {0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height)},
 				   {0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight)},

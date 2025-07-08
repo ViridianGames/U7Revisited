@@ -208,6 +208,14 @@ void LoadingState::UpdateLoading()
 			m_loadingInitialGameState = true;
 			return;
 		}
+
+		if (!m_loadingNPCSchedules)
+		{
+			AddConsoleString(std::string("Loading NPC Schedules..."));
+			LoadNPCSchedules();
+			m_loadingNPCSchedules = true;
+			return;
+		}
 	}
 	else
 	{
@@ -219,8 +227,8 @@ void LoadingState::UpdateLoading()
 
 unsigned char LoadingState::ReadU8(istream &buffer)
 {
-	unsigned char thisData;
-	buffer.read((char*)&thisData, sizeof(unsigned char));
+	unsigned char thisData = 0;
+	buffer.read(reinterpret_cast<char*>(&thisData), 1);
 	return thisData;
 }
 
@@ -1271,12 +1279,12 @@ void LoadingState::LoadInitialGameState()
 			int fullcount = npcCount1 + npcCount2;
 			int filepos = subFiles.tellg();
 			
-			for (int i = 0; i < fullcount; ++i)
+			for (int i = 0; i < 256; ++i)
 			{
-				if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
-				{
-					//Log("Stopper");// subFiles.seekg(2761, ios::cur);
-				}
+				//if (i == 139) // This NPC is broken and attempting to parse it messes up all NPCs after it.  It's not used anyway so we just skip it.
+				//{
+				//	//Log("Stopper");// subFiles.seekg(2761, ios::cur);
+				//}
 
 				int size = sizeof(NPCData);
 				NPCData thisNPC;
@@ -1348,9 +1356,15 @@ void LoadingState::LoadInitialGameState()
 
 				int newfilepos = subFiles.tellg();
 
+				if (thisNPC.id > 256)
+					continue;
+
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
-				g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
+				g_ObjectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
+				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
+				//g_ObjectList[nextID]->m_isNPC = true;
+
 
 				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
 				{
@@ -1414,5 +1428,54 @@ void LoadingState::LoadInitialGameState()
 			}
 			stringstream npcData;
 		}
+	}
+}
+
+void LoadingState::LoadNPCSchedules()
+{
+	ifstream file("Data/U7/STATIC/SCHEDULE.DAT", ios::binary);
+	if (file.is_open())
+	{
+		unsigned int npcCount = ReadU32(file); // Should be 256.
+		
+		unordered_map<unsigned char, unsigned short> schedulesPerNPC;
+
+		int entriesLastIndex = 0;
+		for (int i = 0; i < npcCount; ++i)
+		{
+			unsigned short entryIndex = ReadU16(file);
+			unsigned int entriesThisIndex = entryIndex - entriesLastIndex;
+			entriesLastIndex = entryIndex;
+			schedulesPerNPC[i] = entriesThisIndex;
+		}
+
+		int location = file.tellg();
+
+		//  Now that we know how many entries there are for each NPC, we can read the entries.
+		for (int i = 1; i < npcCount; ++i)
+		{
+			unsigned short entryCount = schedulesPerNPC[i];
+			for (int j = 0; j < entryCount; ++j)
+			{
+				NPCSchedule thisEntry;
+
+				unsigned char timeAndActivity = ReadU8(file);
+				unsigned char chunkX = ReadU8(file);
+				unsigned char chunkY = ReadU8(file);
+				unsigned char superChunk = ReadU8(file);
+
+				thisEntry.m_destX = (superChunk % 12) * 256 + (chunkX);
+				thisEntry.m_destY = (superChunk / 12) * 256 + (chunkY);
+
+				// Highest 5 bits are the activity number, lowest 3 bits are the time of day.
+				thisEntry.m_activity = (timeAndActivity >> 3) & 0x1F;
+				thisEntry.m_time = timeAndActivity & 0x07;
+
+				g_NPCSchedules[i].push_back(thisEntry);
+				location = file.tellg();
+			}
+		}
+
+		file.close();
 	}
 }
