@@ -766,6 +766,11 @@ void ShapeEditorState::Update()
 		}
 	
 		if(shapeData.m_Scaling.x < -9.9f) shapeData.m_Scaling.x = -9.9f;
+
+		if(abs(shapeData.m_Scaling.x) < 0.01f)
+		{
+			shapeData.m_Scaling.x = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKWIDTHMINUSBUTTON)
@@ -782,6 +787,11 @@ void ShapeEditorState::Update()
 		}
 
 		if (shapeData.m_Scaling.x > 9.9) shapeData.m_Scaling.x = 9.9;
+
+		if (abs(shapeData.m_Scaling.x) < 0.01f)
+		{
+			shapeData.m_Scaling.x = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKHEIGHTMINUSBUTTON)
@@ -796,6 +806,11 @@ void ShapeEditorState::Update()
 			shapeData.m_Scaling.y += .05f;
 		}
 		if (shapeData.m_Scaling.y > 9.9) shapeData.m_Scaling.y = 9.9;
+
+		if (abs(shapeData.m_Scaling.y) < 0.01f)
+		{
+			shapeData.m_Scaling.y = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKHEIGHTPLUSBUTTON)
@@ -810,6 +825,11 @@ void ShapeEditorState::Update()
 			shapeData.m_Scaling.y -= .05f;
 		}
 		if (shapeData.m_Scaling.y < -9.9f) shapeData.m_Scaling.y = 9.9f;
+
+		if (abs(shapeData.m_Scaling.y) < 0.01f)
+		{
+			shapeData.m_Scaling.y = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKDEPTHMINUSBUTTON)
@@ -824,6 +844,11 @@ void ShapeEditorState::Update()
 			shapeData.m_Scaling.z += .05f;
 		}
 		if (shapeData.m_Scaling.z < 0) shapeData.m_Scaling.z = 0;
+
+		if (abs(shapeData.m_Scaling.z) < 0.01f)
+		{
+			shapeData.m_Scaling.z = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKDEPTHPLUSBUTTON)
@@ -838,6 +863,11 @@ void ShapeEditorState::Update()
 			shapeData.m_Scaling.z -= .05f;
 		}
 		if (shapeData.m_Scaling.z < -9.9) shapeData.m_Scaling.z = -9.9;
+
+		if (abs(shapeData.m_Scaling.z) < 0.01f)
+		{
+			shapeData.m_Scaling.z = 0;
+		}
 	}
 
 	//  Tweak Position
@@ -853,6 +883,11 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.x -= .05f;
 		}
 		if(shapeData.m_TweakPos.x < -9.9) shapeData.m_TweakPos.x = -9.9;
+
+		if (abs(shapeData.m_TweakPos.x) < 0.01f)
+		{
+			shapeData.m_TweakPos.x = 0;
+		}
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKXMINUSBUTTON)
@@ -867,6 +902,12 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.x += .05f;
 		}
 		if (shapeData.m_TweakPos.x > 9.9) shapeData.m_TweakPos.x = 9.9;
+
+		if (abs(shapeData.m_TweakPos.x) < 0.01f)
+		{
+			shapeData.m_TweakPos.x = 0;
+		}
+
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKYMINUSBUTTON)
@@ -881,6 +922,12 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.y += .05f;
 		}
 		if (shapeData.m_TweakPos.y > 9.9) shapeData.m_TweakPos.y = 9.9;
+
+		if (abs(shapeData.m_TweakPos.y) < 0.01f)
+		{
+			shapeData.m_TweakPos.y = 0;
+		}
+
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKYPLUSBUTTON)
@@ -895,6 +942,12 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.y -= .05f;
 		}
 		if (shapeData.m_TweakPos.y < -9.9) shapeData.m_TweakPos.y = -9.9;
+
+		if (abs(shapeData.m_TweakPos.y) < 0.01f)
+		{
+			shapeData.m_TweakPos.y = 0;
+		}
+
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKZMINUSBUTTON)
@@ -909,6 +962,12 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.z += .05f;
 		}
 		if (shapeData.m_TweakPos.z > 9.9) shapeData.m_TweakPos.z = 9.9;
+
+		if (abs(shapeData.m_TweakPos.z) < 0.01f)
+		{
+			shapeData.m_TweakPos.z = 0;
+		}
+
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_TWEAKZPLUSBUTTON)
@@ -923,6 +982,12 @@ void ShapeEditorState::Update()
 			shapeData.m_TweakPos.z -= .05f;
 		}
 		if (shapeData.m_TweakPos.z < -9.9) shapeData.m_TweakPos.z = -9.9;
+
+		if (abs(shapeData.m_TweakPos.z) < 0.01f)
+		{
+			shapeData.m_TweakPos.z = 0;
+		}
+
 	}
 
 	if (m_currentGui->GetActiveElementID() == GE_MESHOUTLINECHECKBOX)
