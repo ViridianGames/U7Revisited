@@ -1,0 +1,401 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "count": 2,
+      "componentType": 5126,
+      "type": "MAT4"
+    },
+    {
+      "bufferView": 1,
+      "count": 840,
+      "componentType": 5123,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "count": 515,
+      "componentType": 5126,
+      "type": "VEC3",
+      "min": [
+        -2.29945969581604,
+        0.0015413761138916016,
+        -0.5047804117202759
+      ],
+      "max": [
+        0.007668018341064453,
+        2.8033607006073,
+        0.5035198926925659
+      ]
+    },
+    {
+      "bufferView": 3,
+      "count": 515,
+      "componentType": 5126,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 4,
+      "count": 515,
+      "componentType": 5126,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 5,
+      "count": 515,
+      "componentType": 5121,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 6,
+      "count": 515,
+      "componentType": 5126,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 7,
+      "count": 1962,
+      "componentType": 5123,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 8,
+      "count": 986,
+      "componentType": 5126,
+      "type": "VEC3",
+      "min": [
+        -2.794611930847168,
+        1.0993558168411255,
+        -0.13376016914844513
+      ],
+      "max": [
+        -0.9716240763664246,
+        2.9090518951416016,
+        0.13319487869739532
+      ]
+    },
+    {
+      "bufferView": 9,
+      "count": 986,
+      "componentType": 5126,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 10,
+      "count": 986,
+      "componentType": 5126,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 11,
+      "count": 986,
+      "componentType": 5121,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 12,
+      "count": 986,
+      "componentType": 5126,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 13,
+      "count": 25,
+      "componentType": 5126,
+      "type": "SCALAR",
+      "min": [
+        0.0
+      ],
+      "max": [
+        1.0
+      ]
+    },
+    {
+      "bufferView": 14,
+      "count": 25,
+      "componentType": 5126,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 15,
+      "count": 25,
+      "componentType": 5126,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 16,
+      "count": 25,
+      "componentType": 5126,
+      "type": "VEC3"
+    }
+  ],
+  "animations": [
+    {
+      "channels": [
+        {
+          "sampler": 0,
+          "target": {
+            "node": 2,
+            "path": "translation"
+          }
+        },
+        {
+          "sampler": 1,
+          "target": {
+            "node": 2,
+            "path": "rotation"
+          }
+        },
+        {
+          "sampler": 2,
+          "target": {
+            "node": 2,
+            "path": "scale"
+          }
+        }
+      ],
+      "name": "idle",
+      "samplers": [
+        {
+          "input": 13,
+          "interpolation": "LINEAR",
+          "output": 14
+        },
+        {
+          "input": 13,
+          "interpolation": "LINEAR",
+          "output": 15
+        },
+        {
+          "input": 13,
+          "interpolation": "LINEAR",
+          "output": 16
+        }
+      ]
+    }
+  ],
+  "asset": {
+    "generator": "gltfunroll v0.2.0",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "byteLength": 84884,
+      "uri": "spinning_wheel_651.bin"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 128,
+      "byteOffset": 0
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1680,
+      "byteOffset": 128,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 6180,
+      "byteOffset": 1808,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 6180,
+      "byteOffset": 7988,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 4120,
+      "byteOffset": 14168,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 2060,
+      "byteOffset": 18288,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 8240,
+      "byteOffset": 20348,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3924,
+      "byteOffset": 28588,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 11832,
+      "byteOffset": 32512,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 11832,
+      "byteOffset": 44344,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 7888,
+      "byteOffset": 56176,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3944,
+      "byteOffset": 64064,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 15776,
+      "byteOffset": 68008,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 100,
+      "byteOffset": 83784
+    },
+    {
+      "buffer": 0,
+      "byteLength": 300,
+      "byteOffset": 83884
+    },
+    {
+      "buffer": 0,
+      "byteLength": 400,
+      "byteOffset": 84184
+    },
+    {
+      "buffer": 0,
+      "byteLength": 300,
+      "byteOffset": 84584
+    }
+  ],
+  "scene": 0,
+  "images": [
+    {
+      "uri": "651spinning_wheel.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "OPAQUE",
+      "doubleSided": false,
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "metallicFactor": 1.0,
+        "roughnessFactor": 1.0
+      },
+      "emissiveFactor": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 2,
+            "NORMAL": 3,
+            "TEXCOORD_0": 4,
+            "JOINTS_0": 5,
+            "WEIGHTS_0": 6
+          },
+          "indices": 1,
+          "material": 0
+        },
+        {
+          "attributes": {
+            "POSITION": 8,
+            "NORMAL": 9,
+            "TEXCOORD_0": 10,
+            "JOINTS_0": 11,
+            "WEIGHTS_0": 12
+          },
+          "indices": 7,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "mesh": 0,
+      "name": "spinning_wheel_651",
+      "skin": 0
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "armature"
+    },
+    {
+      "name": "spinning_wheel_651x00.001",
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -1.882528,
+        1.9948076,
+        0.0
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "skins": [
+    {
+      "inverseBindMatrices": 0,
+      "joints": [
+        1,
+        2
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    }
+  ]
+}
