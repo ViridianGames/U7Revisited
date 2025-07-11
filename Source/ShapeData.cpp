@@ -180,11 +180,17 @@ void ShapeData::Deserialize(ifstream& inStream)
 	inStream >> drawType;
 	m_drawType = static_cast<ShapeDrawType>(drawType);
 	inStream >> m_Scaling.x;
+	if (abs(m_Scaling.x) < .01f) { m_Scaling.x = 0; }
 	inStream >> m_Scaling.y;
+	if (abs(m_Scaling.y) < .01f) { m_Scaling.y = 0; }
 	inStream >> m_Scaling.z;
+	if (abs(m_Scaling.z) < .01f) { m_Scaling.z = 0; }
 	inStream >> m_TweakPos.x;
+	if (abs(m_TweakPos.x) < .01f) { m_TweakPos.x = 0; }
 	inStream >> m_TweakPos.y;
+	if (abs(m_TweakPos.y) < .01f) { m_TweakPos.y = 0; }
 	inStream >> m_TweakPos.z;
+	if (abs(m_TweakPos.z) < .01f) { m_TweakPos.z = 0; }
 	inStream >> m_rotation;
 	int sideTexture;
 	inStream >> sideTexture;
