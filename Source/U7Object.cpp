@@ -223,6 +223,8 @@ void U7Object::NPCUpdate()
 		SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destX), 0, float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destY) });
 		m_isMoving = true;
 		m_lastSchedule = g_NPCSchedules[m_NPCID][mostrecentschedule].m_time;
+		g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][mostrecentschedule].m_activity;
+
 	}
 	else
 	{
@@ -233,6 +235,7 @@ void U7Object::NPCUpdate()
 				SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][i].m_destX), 0, float(g_NPCSchedules[m_NPCID][i].m_destY) });
 				m_isMoving = true;
 				m_lastSchedule = g_NPCSchedules[m_NPCID][i].m_time;
+				g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][i].m_activity;
 				break;
 			}
 		}

@@ -1,13 +1,11 @@
 --- Best guess: Handles dialogue with Apollonia, the Trinsic innkeeper, discussing her pub and inn services, the local murder, and flirtatious interactions, with options to buy food, drink, or a room.
 function func_0413(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
-
     start_conversation()
     if eventid == 1 then
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = get_player_name()
         var_0002 = get_lord_or_lady()
-        var_0003 = unknown_001CH(19) --- Guess: Gets object state
+        var_0003 = get_schedule(19)
         var_0004 = is_player_female()
         switch_talk_to(19, 0)
         add_answer({"bye", "murder", "job", "name"})
@@ -21,6 +19,7 @@ function func_0413(eventid, objectref)
             add_dialogue("\"Hello again!\" Apollonia says, her eyes twinkling.")
         end
         while true do
+            coroutine.yield(0)
             var_0005 = get_answer()
             if var_0005 == "name" then
                 if not var_0004 then
@@ -95,8 +94,10 @@ function func_0413(eventid, objectref)
         end
         if not var_0004 then
             add_dialogue("Apollonia blows a kiss at you. \"Do come again!\"")
+            clear_answers()
         else
             add_dialogue("Apollonia waves at you. \"Do come again!\"")
+            clear_answers()
         end
     elseif eventid == 0 then
         unknown_092EH(19) --- Guess: Triggers a game event

@@ -171,6 +171,9 @@ struct NPCData
    char name[16];
 	std::vector<int> m_schedule;
 	std::vector<std::vector<Texture*> > m_walkTextures;
+
+	int m_currentActivity;
+	int m_objectID;
 };
 
 extern std::string g_version;

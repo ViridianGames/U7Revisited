@@ -5,20 +5,16 @@ function func_04EC(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(236, 0)
-        --  THIS WHOLE SECTION CHECKS FOR ATTENDANCE AT THE FELLOWSHIP MEETING
-        --  Not completely sure how 08FCH works yet.  It could be time or location
-        --  Once we figure it out, we'll be able to fix it in a whole bunch of other
-        --  scripts.
-        -- var_0000 = get_schedule()
-        -- if var_0000 == 7 then
-        --     var_0001 = unknown_08FCH(16, 236)
-        --     if var_0001 then
-        --         add_dialogue("Ellen puts her finger to her lips. There is a Fellowship meeting going on.")
-        --     else
-        --         add_dialogue("\"Hello. I am sorry to be rude, but I am late to the Fellowship meeting. May we speak another time?\"")
-        --     end
-        --     return
-        -- end
+        var_0000 = get_schedule_time()
+        if var_0000 == 7 then
+            var_0001 = (get_schedule(236) == 16)
+            if var_0001 then
+                add_dialogue("Ellen puts her finger to her lips. There is a Fellowship meeting going on.")
+            else
+                add_dialogue("\"Hello. I am sorry to be rude, but I am late to the Fellowship meeting. May we speak another time?\"")
+            end
+            return
+        end
         if not get_flag(80) then
             add_dialogue("This is a woman who seems pleasant and welcoming. \"I am proud to meet the Avatar,\" she says, beaming.")
             set_flag(80, true)
@@ -52,7 +48,6 @@ function func_04EC(eventid, objectref)
                 add_dialogue("\"Mine husband Klog is a wonderful branch leader. He is an inspiration to all of the Trinsic members.\"")
                 remove_answer("Klog")
             elseif answer == "philosophy" then
-                --add_dialogue("\"REPLACE WITH PHILOSOPHY FUNCTION CALL\"")
                 remove_answer("philosophy")
                 func_091A()
             elseif answer == "bye" then

@@ -735,7 +735,7 @@ static int LuaRandom(lua_State *L)
     if (m_LuaDebug) AddConsoleString("LUA: random called");
     int min = luaL_checkinteger(L, 1);
     int max = luaL_checkinteger(L, 2);
-    int random_value = g_VitalRNG->Random(max - min) + min;
+    int random_value = g_VitalRNG->Random(max - (min - 1)) + min;
     lua_pushinteger(L, random_value);
     return 1;
 }
@@ -853,8 +853,8 @@ static int LuaHasObjectOfType(lua_State *L)
 static int LuaGetSchedule(lua_State *L)
 {
     if (m_LuaDebug) AddConsoleString("LUA: get_schedule called");
-    //int object_id = luaL_checkinteger(L, 1);
-    int schedule = 0; // TODO: g_ScheduleSystem->GetSchedule(object_id)
+    int npc_id = luaL_checkinteger(L, 1);
+    int schedule = g_NPCData[npc_id]->m_currentActivity; // TODO: g_ScheduleSystem->GetSchedule(object_id)
     lua_pushinteger(L, schedule);
     return 1;
 }
@@ -896,6 +896,13 @@ static int LuaIsPlayerWearingMedallion(lua_State *L)
     if (m_LuaDebug) AddConsoleString("LUA: is_player_wearing_fellowship_medallion called");
     bool wearing = g_Player->IsWearingFellowshipMedallion();
     lua_pushboolean(L, wearing);
+    return 1;
+}
+
+static int LuaGetScheduleTime(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: get_schedule_time called");
+    lua_pushinteger(L, g_scheduleTime);
     return 1;
 }
 
@@ -950,6 +957,7 @@ void RegisterAllLuaFunctions()
     // These functions are used to get information about the world and objects.
     g_ScriptingSystem->RegisterScriptFunction("get_time_hour", LuaGetTimeHour);
     g_ScriptingSystem->RegisterScriptFunction("get_time_minute", LuaGetTimeMinute);
+    g_ScriptingSystem->RegisterScriptFunction("get_schedule_time", LuaGetScheduleTime);
     g_ScriptingSystem->RegisterScriptFunction("display_sign", LuaDisplaySign);
     g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
 

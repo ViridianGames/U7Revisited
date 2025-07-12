@@ -43,7 +43,7 @@ public:
 
     void SetNPC(int npcId, int frame = 0) { m_npcId = npcId; m_npcFrame = frame; }
     void AddStep(ConversationStep step) { m_steps.push_back(step); }
-    void AddAnswer(std::string answer) { m_answers.push_back(answer); }
+    void AddAnswer(std::string answer);
     void RemoveAnswer(std::string answer);
     void ClearAnswers() { m_answers.clear(); }
     void GetAnswers(const std::string& func_name);

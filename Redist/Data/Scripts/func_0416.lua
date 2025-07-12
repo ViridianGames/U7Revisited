@@ -5,15 +5,15 @@ function func_0416(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(22, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule_time()
         if var_0000 == 7 then
-            var_0001 = unknown_08FCH(16, 22) --- Guess: Checks time for Fellowship meeting
+            var_0001 = (get_schedule(22) == 16)
             if var_0001 then
                 add_dialogue("Caroline asks you to keep your voice down. The Fellowship meeting is in progress.")
             else
                 add_dialogue("\"Oh! I cannot stop to speak with thee now! I am late for the Fellowship meeting!\"")
             end
-            abort()
+            return
         end
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(86) then
@@ -23,6 +23,7 @@ function func_0416(eventid, objectref)
             add_dialogue("\"Hello again!\" Caroline says brightly.")
         end
         while true do
+            coroutine.yield()
             var_0002 = get_answer()
             if var_0002 == "name" then
                 add_dialogue("\"My parents named me Caroline,\" she says proudly.")
@@ -38,20 +39,22 @@ function func_0416(eventid, objectref)
                 add_dialogue("\"Of The Fellowship. We meet every night at the hall. Thou shouldst visit!\"")
                 remove_answer("members")
             elseif var_0002 == "Fellowship" then
-                unknown_0919H() --- Guess: Explains Fellowship philosophy
+                debug_print("Clicked 'Fellowship'")
+                func_0919()
                 remove_answer("Fellowship")
-                add_answer({"philosophy", "society"})
+                add_answer({"society"})
             elseif var_0002 == "society" then
                 add_dialogue("\"Every night at nine o'clock we have a meeting in the Fellowship hall. Thou mayest consider thyself invited to attend.\"")
                 remove_answer("society")
             elseif var_0002 == "philosophy" then
-                unknown_091AH() --- Guess: Provides detailed Fellowship information
                 remove_answer("philosophy")
+                func_091A()
             elseif var_0002 == "bye" then
                 break
             end
         end
         add_dialogue("\"Goodbye!\"")
+        clear_answers()
     elseif eventid == 0 then
         var_0002 = unknown_001CH(22) --- Guess: Gets object state
         var_0003 = random(1, 4)

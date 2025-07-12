@@ -230,6 +230,14 @@ void ConversationState::Draw()
     EndDrawing();
 }
 
+void ConversationState::AddAnswer(std::string answer)
+{
+    if (!std::binary_search(m_answers.begin(), m_answers.end(), answer))
+    {
+        m_answers.push_back(answer);
+    }
+}
+
 void ConversationState::GetAnswers(const std::string& func_name)
 {
     m_answers = g_ScriptingSystem->GetAnswers();

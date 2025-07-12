@@ -1434,6 +1434,8 @@ void LoadingState::LoadInitialGameState()
 					thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
 				}
 
+				thisNPC.m_objectID = nextID;
+
 				int newfilepos = subFiles.tellg();
 
 				if (thisNPC.id > 256)
