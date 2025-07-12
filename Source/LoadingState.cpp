@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <memory_resource>
 #include <sstream>
 #include <string>
 #include <regex>
@@ -1353,6 +1354,85 @@ void LoadingState::LoadInitialGameState()
 				subFiles.read(thisNPC.soak5, 9);
 
 				subFiles.read(thisNPC.name, 16);
+
+				//  Make walk anim frames if necessary.
+				thisNPC.m_walkTextures.resize(4);
+				for (int i = 0; i < 4; i++)
+				{
+					thisNPC.m_walkTextures[i].resize(2);
+				}
+
+				Image image;
+
+				//  South-west
+				thisNPC.m_walkTextures[0][0] = &g_shapeTable[shapenum][16].m_texture->m_Texture;
+				thisNPC.m_walkTextures[0][1] = &g_shapeTable[shapenum][17].m_texture->m_Texture;
+
+				//  North-west
+
+				//  Frame 1
+				std::string texturename = to_string(shapenum) + "_NW_0";
+				if(g_ResourceManager->DoesTextureExist(texturename))
+				{
+					thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+				}
+				else
+				{
+					image = ImageCopy(g_shapeTable[shapenum][16].m_texture->m_Image);
+					ImageFlipHorizontal(&image);
+					g_ResourceManager->AddTexture(image, texturename);
+					thisNPC.m_walkTextures[1][0] = g_ResourceManager->GetTexture(texturename);
+				}
+
+				//  Frame 2
+
+				texturename = to_string(shapenum) + "_NW_1";
+				if(g_ResourceManager->DoesTextureExist(texturename))
+				{
+					thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+				}
+				else
+				{
+					image = ImageCopy(g_shapeTable[shapenum][17].m_texture->m_Image);
+					ImageFlipHorizontal(&image);
+					g_ResourceManager->AddTexture(image, texturename);
+					thisNPC.m_walkTextures[1][1] = g_ResourceManager->GetTexture(texturename);
+				}
+
+				//  North-east
+				thisNPC.m_walkTextures[2][0] = &g_shapeTable[shapenum][0].m_texture->m_Texture;
+				thisNPC.m_walkTextures[2][1] = &g_shapeTable[shapenum][1].m_texture->m_Texture;
+
+				//  South-east
+
+				//  Frame 1
+				texturename = to_string(shapenum) + "_SE_0";
+				if(g_ResourceManager->DoesTextureExist(texturename))
+				{
+					thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+				}
+				else
+				{
+					image = ImageCopy(g_shapeTable[shapenum][1].m_texture->m_Image);
+					ImageFlipHorizontal(&image);
+					g_ResourceManager->AddTexture(image, texturename);
+					thisNPC.m_walkTextures[3][0] = g_ResourceManager->GetTexture(texturename);
+				}
+
+				//  Frame 2
+
+				texturename = to_string(shapenum) + "_SE_1";
+				if(g_ResourceManager->DoesTextureExist(texturename))
+				{
+					thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+				}
+				else
+				{
+					image = ImageCopy(g_shapeTable[shapenum][2].m_texture->m_Image);
+					ImageFlipHorizontal(&image);
+					g_ResourceManager->AddTexture(image, texturename);
+					thisNPC.m_walkTextures[3][1] = g_ResourceManager->GetTexture(texturename);
+				}
 
 				int newfilepos = subFiles.tellg();
 

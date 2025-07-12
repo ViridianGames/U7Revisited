@@ -137,8 +137,6 @@ struct NPCData
    unsigned char lift;
    unsigned short data2;
 
-
-
    unsigned short index;
    unsigned short referent;
    unsigned short status;
@@ -172,6 +170,7 @@ struct NPCData
    char soak5[7];
    char name[16];
 	std::vector<int> m_schedule;
+	std::vector<std::vector<Texture*> > m_walkTextures;
 };
 
 extern std::string g_version;

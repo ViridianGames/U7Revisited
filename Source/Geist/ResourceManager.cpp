@@ -57,6 +57,14 @@ bool ResourceManager::DoesFileExist(const std::string& fileName)
 	}
 }
 
+bool ResourceManager::DoesTextureExist(const std::string& textureName)
+{
+	map<std::string, unique_ptr<Texture> >::iterator node;
+	node = m_TextureList.find(textureName);
+
+	return (node != m_TextureList.end());
+}
+
 void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 {
 	Log("Loading texture " + textureName);

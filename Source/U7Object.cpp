@@ -115,9 +115,9 @@ void U7Object::NPCDraw()
 	finalPos.z += .5f;
 	finalPos.y += m_shapeData->m_Dims.y * .62f;
 
-	Texture* finalTexture = &g_walkFrames[0][0];
+	Texture* finalTexture = m_NPCData->m_walkTextures[0][0];
 	int finalAngle = 0;
-	float billboardAngle = 0;
+	float billboardAngle = -45;
 
 	Vector3 cameraAngle = Vector3Subtract(g_camera.position, g_camera.target);
 	Vector3 cameraVector = Vector3{ cameraAngle.x, 0, cameraAngle.z };
@@ -164,35 +164,23 @@ void U7Object::NPCDraw()
 
 		if (!m_isMoving) thisTime = 0;
 
-		Image image;
 		int frameIndex = 0;
 
 		//  North frames are 1 and 2, South frames are 17 and 18
 		switch(finalAngle)
 		{
-			
-			case 0: // South-West
-				frameIndex = m_isMoving ? 17 : 16;
-				finalTexture = &g_shapeTable[m_shapeData->m_shape][frameIndex + thisTime].m_texture->m_Texture;
-				billboardAngle = -45.0f;
+		case 0: // South-West
+				finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
 				break;
 			case 1: // North-West
-				frameIndex = m_isMoving ? 1 : 0;
-				image = ImageCopy(g_shapeTable[m_shapeData->m_shape][frameIndex + thisTime].m_texture->m_Image);
-				ImageFlipHorizontal(&image);
-				finalTexture = &LoadTextureFromImage(image);
+				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
 				billboardAngle = 45.0f;
 				break;
 			case 2: // North-East
-				frameIndex = m_isMoving ? 1 : 0;
-				finalTexture = &g_shapeTable[m_shapeData->m_shape][frameIndex + thisTime].m_texture->m_Texture;
-				billboardAngle = -45.0f;
+				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
 				break;
 			case 3: // South-East
-				frameIndex = m_isMoving ? 17 : 16;
-				image = ImageCopy(g_shapeTable[m_shapeData->m_shape][frameIndex + thisTime].m_texture->m_Image);
-				ImageFlipHorizontal(&image);
-				finalTexture = &LoadTextureFromImage(image);
+				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
 				billboardAngle = 45.0f;
 				break;
 			default:

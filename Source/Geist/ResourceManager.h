@@ -55,6 +55,7 @@ public:
 
 	//  Utilities
 	bool DoesFileExist(const std::string& filename);
+	bool DoesTextureExist(const std::string& textureName);
 };
 
 #endif
