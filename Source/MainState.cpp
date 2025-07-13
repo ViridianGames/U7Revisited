@@ -97,9 +97,13 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
 	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
 	AddConsoleString(std::string("Press ESC to exit."));
-	// AddConsoleString(std::string("TOO HEAVY"));
 
-	g_hour = 5;
+	g_lastTime = 0;
+	g_minute = 0;
+	g_hour = 9;
+	g_scheduleTime = 3;
+
+	m_paused = false;
 }
 
 void MainState::OnExit()
@@ -114,9 +118,28 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
-	g_hour = (9 + (int)(GetTime() / (g_secsPerMinute * 60))) % 24;
-	g_minute = (int)(GetTime() / g_secsPerMinute) % 60;
-	g_scheduleTime = (3 + int(GetTime() / (g_secsPerMinute * 180))) % 8;
+	if (!m_paused)
+	{
+		float thisTime = GetTime();
+		if (thisTime - g_lastTime >= g_secsPerMinute)
+		{
+			g_lastTime = thisTime;
+			++g_minute;
+		}
+
+		if (g_minute > 60)
+		{
+			++g_hour;
+			g_minute = 0;
+		}
+
+		if (g_hour > 24)
+		{
+			g_hour = 0;
+		}
+
+		g_scheduleTime = g_hour / 3;
+	}
 
 	if(m_GumpManager->m_GumpList.size() > 0)
 	{
@@ -135,7 +158,10 @@ void MainState::Update()
 			float drawRange = g_cameraDistance * 1.5f;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
-				(*node).second->Update();
+				if (!m_paused)
+				{
+					(*node).second->Update();
+				}
 				if (g_objectTable[(*node).second->m_shapeData->m_shape].m_height == 0)
 				{
 					int stopper = 0;
@@ -200,6 +226,11 @@ void MainState::Update()
 		}
 	}
 
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		m_paused = !m_paused;
+	}
+
 	if (IsKeyPressed(KEY_PAGE_DOWN))
 	{
 		if (m_heightCutoff == 16.0f)
@@ -214,10 +245,10 @@ void MainState::Update()
 		}
 	}
 
-	if (IsKeyPressed(KEY_SPACE))
-	{
-		g_pixelated = !g_pixelated;
-	}
+	//if (IsKeyPressed(KEY_SPACE))
+	//{
+	//	g_pixelated = !g_pixelated;
+	//}
 
 	if (IsKeyPressed(KEY_KP_SUBTRACT))
 	{

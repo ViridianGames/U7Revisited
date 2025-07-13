@@ -90,6 +90,7 @@ std::vector< std::vector<Texture> > g_walkFrames;
 
 std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
 
+float g_lastTime;
 unsigned int g_hour;
 unsigned int g_minute;
 unsigned int g_scheduleTime;

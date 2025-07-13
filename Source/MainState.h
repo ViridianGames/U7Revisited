@@ -82,6 +82,8 @@ public:
 
    bool m_isPopupShowing = false;  //  If true, the game is paused and a popup is showing
 
+   bool m_paused = false;
+
    std::unique_ptr<GumpManager> m_GumpManager;
 };
 

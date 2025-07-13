@@ -146,6 +146,7 @@ void ShapeData::Serialize(ofstream& outStream)
 	outStream << static_cast<int>(m_sideTextures[3]) << " ";
 	outStream << static_cast<int>(m_sideTextures[4]) << " ";
 	outStream << static_cast<int>(m_sideTextures[5]) << " ";
+	std::replace(m_customMeshName.begin(), m_customMeshName.end(), '\\', '/');
 	outStream << m_customMeshName << " ";
 	outStream << m_meshOutline << " ";
 	outStream << m_useShapePointer << " ";
@@ -212,6 +213,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 	}
 
 	inStream >> m_customMeshName;
+	std::replace(m_customMeshName.begin(), m_customMeshName.end(), '\\', '/');
 	inStream >> m_meshOutline;
 
 	inStream >> m_useShapePointer;

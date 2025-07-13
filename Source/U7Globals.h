@@ -75,6 +75,7 @@ extern std::string g_engineModeStrings[];
 
 extern std::string g_objectTypeStrings[];
 
+extern float g_lastTime;
 extern unsigned int g_hour;
 extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
