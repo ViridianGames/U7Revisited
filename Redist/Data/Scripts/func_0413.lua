@@ -45,7 +45,8 @@ function func_0413(eventid, objectref)
                 add_dialogue("\"I can think of no better place in all of Trinsic to lay thine head to rest or to nibble upon treats to satisfy thine appetite.\"")
                 remove_answer("Honorable Hound")
             elseif var_0005 == "murder" then
-                add_dialogue("Apollonia shuts her eyes and shakes her head as if she had just bitten into a very sour lemon. \"Oooh. That was so... hideous! How could anyone do something so horrible? Art thou searching for information? I do hope thou dost find the person responsible.\"")
+                add_dialogue("Apollonia shuts her eyes and shakes her head as if she had just bitten into a very sour lemon.")
+                add_dialogue("\"Oooh. That was so... hideous! How could anyone do something so horrible? Art thou searching for information? I do hope thou dost find the person responsible.\"")
                 remove_answer("murder")
             elseif var_0005 == "food" then
                 add_dialogue("\"We serve the finest meat, fish, and cake. Our specialty is a Silverleaf meal. If thou wouldst like to buy something, please say so!\"")
