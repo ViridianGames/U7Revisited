@@ -92,8 +92,8 @@ void LoadingState::Draw()
 	if (m_loadingFailed == true)
 	{
 		std::string missingDataText = "Ultima VII files not found.  They should go into the " + g_Engine->m_EngineConfig.GetString("data_path") + " folder.";
-		DrawTextEx(*g_SmallFont, missingDataText.c_str(), Vector2{0, 0}, g_fontSize, 1, WHITE);
-		DrawTextEx(*g_SmallFont, "Press ESC to exit.", Vector2{ 0, g_fontSize * 2 }, g_fontSize, 1, WHITE);
+		DrawTextEx(*g_SmallFont, missingDataText.c_str(), Vector2{0, 0}, g_SmallFont->baseSize, 1, WHITE);
+		DrawTextEx(*g_SmallFont, "Press ESC to exit.", Vector2{ 0, g_SmallFont->baseSize * 2.0f }, g_SmallFont->baseSize, 1, WHITE);
 	}
 	else
 	{
