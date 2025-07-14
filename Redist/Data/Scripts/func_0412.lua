@@ -5,12 +5,12 @@ function func_0412(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(18, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule_time() --- Guess: Checks game state or timer
         var_0001 = get_lord_or_lady()
         var_0002 = get_player_name()
-        var_0003 = unknown_001CH(18) --- Guess: Gets object state
+        var_0003 = get_schedule(18) --- Guess: Gets object state
         var_0004 = "Avatar"
-        var_0005 = unknown_08FCH(16, 18) --- Guess: Checks time for Fellowship meeting
+        var_0005 = get_schedule(18) == 16 --- Guess: Checks time for Fellowship meeting
         if var_0000 == 7 then
             if var_0005 then
                 add_dialogue("Dell frowns at you for distracting him during the Fellowship meeting.")
