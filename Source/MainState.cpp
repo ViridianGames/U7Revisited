@@ -100,8 +100,8 @@ void MainState::OnEnter()
 
 	g_lastTime = 0;
 	g_minute = 0;
-	g_hour = 9;
-	g_scheduleTime = 3;
+	g_hour = 5;
+	g_scheduleTime = 1;
 
 	m_paused = false;
 }
@@ -127,13 +127,13 @@ void MainState::Update()
 			++g_minute;
 		}
 
-		if (g_minute > 60)
+		if (g_minute >= 60)
 		{
 			++g_hour;
 			g_minute = 0;
 		}
 
-		if (g_hour > 24)
+		if (g_hour >= 24)
 		{
 			g_hour = 0;
 		}

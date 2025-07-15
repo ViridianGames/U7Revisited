@@ -30,9 +30,8 @@ function func_0414(eventid, objectref)
                 remove_answer("Trinsic")
             elseif var_0000 == "train" then
                 if var_0001 == 7 then
-                    add_dialogue("\"The cost to train with me is 20 gold. Too costly, right?\"")
-                    if not select_option() then
-                        unknown_08BDH(20, 4) --- Guess: Trains combat skill
+                    if ask_yes_no("\"The cost to train with me is 20 gold. Too costly, right?\"") == false then
+                        func_08BD(20, 4) --- Guess: Trains combat skill
                     else
                         add_dialogue("Markus yawns. \"Very well.\"")
                     end

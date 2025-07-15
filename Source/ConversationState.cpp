@@ -85,7 +85,7 @@ void ConversationState::Update()
         switch (m_steps[0].type)
         {
         case ConversationStepType::STEP_ADD_DIALOGUE:
-            m_currentDialogue = m_steps[0].str;
+            m_currentDialogue = m_steps[0].dialog;
             if (m_steps.size() == 1 && m_answers.size() > 0)
             {
                 m_waitingForAnswer = true;
@@ -100,13 +100,16 @@ void ConversationState::Update()
             m_npcFrame = m_steps[0].frame;
             m_steps.erase(m_steps.begin());
             break;
-        case ConversationStepType::STEP_ASK_YES_NO:
+        case ConversationStepType::STEP_MULTIPLE_CHOICE:
             if (!m_waitingForAnswer)
             {
+                m_currentDialogue = m_steps[0].dialog;
                 SaveAnswers();
                 ClearAnswers();
-                AddAnswer("Yes");
-                AddAnswer("No");
+                for (int i = 0; i < m_steps[0].answers.size(); i++)
+                {
+                    AddAnswer(m_steps[0].answers[i]);
+                }
                 m_waitingForAnswer = true;
             }
             break;
@@ -232,7 +235,7 @@ void ConversationState::Draw()
 
 void ConversationState::AddAnswer(std::string answer)
 {
-    if (!std::binary_search(m_answers.begin(), m_answers.end(), answer))
+    if (std::find(m_answers.begin(), m_answers.end(), answer) == m_answers.end())
     {
         m_answers.push_back(answer);
     }

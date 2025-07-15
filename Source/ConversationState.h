@@ -19,13 +19,14 @@ public:
     {
         STEP_ADD_DIALOGUE = 0,
         STEP_CHANGE_PORTRAIT,
-        STEP_ASK_YES_NO,
+        STEP_MULTIPLE_CHOICE,
     };
 
     struct ConversationStep
     {
         ConversationStepType type;
-        std::string str;
+        std::string dialog;
+        std::vector<std::string> answers;
         int npcId;
         int frame;
     };

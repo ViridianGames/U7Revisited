@@ -3,8 +3,8 @@ function func_08BD(var_0000, var_0001)
     start_conversation()
     local var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
-    var_0002 = unknown_0920H()
-    var_0003 = unknown_0027H(var_0002)
+    var_0002 = func_0920()
+    var_0003 = get_npc_id_from_name(var_0002)
     if var_0002 == 356 then
         var_0004 = "you"
     else

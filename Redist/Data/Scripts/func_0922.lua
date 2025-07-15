@@ -1,5 +1,5 @@
 --- Best guess: Evaluates training ability, checking gold and training level caps, returning 0 (insufficient experience), 1 (insufficient gold), 2 (maxed out), or 3 (can train).
-function func_0922(eventid, objectref, arg1, arg2, arg3, arg4)
+function func_0922(arg1, arg2, arg3, arg4)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
     var_0004 = false

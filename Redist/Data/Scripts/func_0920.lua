@@ -1,9 +1,6 @@
---- Best guess: Prompts for a party member selection for training, returning the selected NPC ID.
 function func_0920(eventid, objectref)
+    debug_print("Starting func_0920")
     local var_0000
-
-    start_conversation()
-    add_dialogue("@Which of you wishes to train?@")
-    var_0000 = select_party_member() --- Guess: Selects party member
+    var_0000 = select_party_member_by_name("\"Which of you wishes to train?\"")
     return var_0000
 end

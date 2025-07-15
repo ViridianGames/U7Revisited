@@ -1,4 +1,3 @@
---- Best guess: Manages Ellen’s dialogue in Trinsic, a Fellowship bookkeeper who discusses her work, her husband Klog, and a local murder, providing an alibi for the latter.
 -- Ellen's NPC number is 236 decimal, EC hex.
 function func_04EC(eventid, objectref)
     local var_0000, var_0001

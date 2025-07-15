@@ -36,7 +36,7 @@ static int LuaAddDialogue(lua_State *L)
 
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_ADD_DIALOGUE;
-    step.str = text;
+    step.dialog = text;
     step.npcId = 0;
     step.frame = 0;
     g_ConversationState->AddStep(step);   
@@ -67,7 +67,7 @@ static int LuaSwitchTalkTo(lua_State *L)
     if (m_LuaDebug) AddConsoleString("LUA: switch_talk_to called with " + std::to_string(npc_id));
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_CHANGE_PORTRAIT;
-    step.str = "";
+    step.dialog = "";
     step.npcId = npc_id;
     step.frame = frame;
     g_ConversationState->AddStep(step);
@@ -94,7 +94,8 @@ static int LuaHideNPC(lua_State *L)
 // Adds a list of answers to the conversation system. The list can just be one answer.
 static int LuaAddAnswers(lua_State *L)
 {
-    if (!g_ConversationState) {
+    if (!g_ConversationState)
+    {
         return luaL_error(L, "ConversationState not initialized");
     }
     if (m_LuaDebug) AddConsoleString("LUA: add_answers called");
@@ -314,8 +315,35 @@ static int LuaAskYesNo(lua_State *L)
 
     // Create the yes/no step
     ConversationState::ConversationStep step;
-    step.type = ConversationState::ConversationStepType::STEP_ASK_YES_NO;
-    step.str = "";
+    step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
+    step.dialog =  luaL_checkstring(L, 1);;
+    step.answers.push_back("Yes");
+    step.answers.push_back("No");
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine
+    return lua_yield(L, 0);
+}
+
+static int LuaSelectPartyMemberByName(lua_State *L)
+{
+    if (!g_ConversationState)
+    {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+    if (m_LuaDebug) AddConsoleString("LUA: choose_party_member_by_name");
+
+    // Create the yes/no step
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
+    step.dialog =  luaL_checkstring(L, 1);;
+    step.answers.push_back(g_Player->GetPlayerName());
+    for (int i = 0; i < g_Player->GetPartyMembers().size(); ++i)
+    {
+        step.answers.push_back(g_Player->GetPartyMembers()[i]);
+    }
     step.npcId = 0;
     step.frame = 0;
     g_ConversationState->AddStep(step);
@@ -615,7 +643,7 @@ static int LuaBuyObject(lua_State *L)
     return 1;
 }
 
-static int LuaGetGold(lua_State *L)
+static int LuaGetPartyGold(lua_State *L)
 {
     int gold = 0; // TODO: g_Player->GetGold()
     lua_pushinteger(L, gold);
@@ -637,7 +665,7 @@ static int LuaSpendGold(lua_State *L)
 static int LuaGetPartyMember(lua_State *L)
 {
     int index = luaL_checkinteger(L, 1);
-    int npc_id = 0; // TODO: Return NPC ID for party member at index (e.g., -2=Shamino)
+    int npc_id = 0; // TODO: Return NPC ID for party member at index (e.g., 2=Shamino)
     cout << "Getting party member at index: " << index << "\n";
     lua_pushinteger(L, npc_id);
     return 1;
@@ -859,9 +887,9 @@ static int LuaGetSchedule(lua_State *L)
     return 1;
 }
 
-static int LuaGetNPCName(lua_State *L)
+static int LuaGetNPCNameFromId(lua_State *L)
 {
-    if (m_LuaDebug) AddConsoleString("LUA: get_npc_name called");
+    if (m_LuaDebug) AddConsoleString("LUA: get_npc_name_from_id called");
     int npc_id = luaL_checkinteger(L, 1);
     string npc_name = "NPC";
     npc_name = g_NPCData[npc_id]->name;
@@ -871,6 +899,25 @@ static int LuaGetNPCName(lua_State *L)
     lua_pushstring(L, npc_name.c_str());
     return 1;
 }
+
+static int LuaGetNPCIdFromName(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: get_npc_id_from_name called");
+    string npc_name = luaL_checkstring(L, 1);
+    int npc_id = 0;
+    for (int i = 0; i < g_NPCData.size(); i++)
+    {
+        if (npc_name == g_NPCData[i]->name)
+        {
+            npc_id = g_NPCData[i]->id;
+        }
+    }
+    if (m_LuaDebug) AddConsoleString("NPC Id: " + npc_id);
+
+    lua_pushinteger(L, npc_id);
+    return 1;
+}
+
 
 static int LuaUpdateConversation(lua_State *L)
 {
@@ -905,6 +952,8 @@ static int LuaGetScheduleTime(lua_State *L)
     lua_pushinteger(L, g_scheduleTime);
     return 1;
 }
+
+
 
 void RegisterAllLuaFunctions()
 {
@@ -947,7 +996,10 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("npc_name_in_party", LuaNPCNameInParty);
     g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);
     g_ScriptingSystem->RegisterScriptFunction("remove_from_party", LuaRemoveFromParty);
-    g_ScriptingSystem->RegisterScriptFunction("get_npc_name", LuaGetNPCName);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_name_from_id", LuaGetNPCNameFromId);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_id_from_name", LuaGetNPCIdFromName);
+    g_ScriptingSystem->RegisterScriptFunction("select_party_member_by_name", LuaSelectPartyMemberByName); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
+    g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
 
     // These functions are used to get information about the Avatar/player.
     g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
