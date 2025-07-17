@@ -83,7 +83,7 @@ RenderTexture2D g_guiRenderTarget;
 
 std::unique_ptr<U7Player> g_Player;
 
-bool m_LuaDebug = true;
+bool g_LuaDebug = false;
 
 std::unique_ptr<Model> g_CuboidModel;
 

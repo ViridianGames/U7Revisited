@@ -209,7 +209,7 @@ void MainState::Update()
 
 	if(IsKeyPressed(KEY_F8))
 	{
-		m_LuaDebug = !m_LuaDebug;
+		g_LuaDebug = !g_LuaDebug;
 	}
 
 	if (IsKeyPressed(KEY_KP_ENTER))
