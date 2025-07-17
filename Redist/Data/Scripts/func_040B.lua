@@ -78,7 +78,7 @@ function func_040B(eventid, objectref)
             add_dialogue("\"The horse and carriage combination sells for 60 gold. Dost thou want a title?\"")
             var_0005 = ask_yes_no()
             if var_0005 then
-                var_0006 = unknown_0028H(359, 359, 644, 357)
+                var_0006 = unknown_0028H(59, 359, 644, 357)
                 if var_0006 >= 60 then
                     var_0007 = unknown_002CH(false, 359, 28, 797, 1)
                     if var_0007 then

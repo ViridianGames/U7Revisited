@@ -9,6 +9,7 @@
 #include <iterator>
 #include <utility>
 #include <iomanip>
+#include <iostream>
 
 using namespace std;
 
@@ -82,7 +83,7 @@ RenderTexture2D g_guiRenderTarget;
 
 std::unique_ptr<U7Player> g_Player;
 
-bool m_LuaDebug = false;
+bool m_LuaDebug = true;
 
 std::unique_ptr<Model> g_CuboidModel;
 
@@ -410,6 +411,7 @@ void AddConsoleString(std::string string, Color color)
 	temp.m_StartTime = GetTime();
 
 	g_ConsoleStrings.push_back(temp);
+	cout << string << endl;
 }
 
 void DrawConsole()

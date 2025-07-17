@@ -29,7 +29,7 @@ function func_08A6(var_0000, var_0001)
         add_dialogue("Karenna looks at " .. var_0004 .. " and gives a small laugh. \"Thou art not without skill, but thou art not ready yet.\"")
         return
     elseif var_0009 == 1 then
-        var_0010 = unknown_0028H(359, 359, 644, 357)
+        var_0010 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0010 .. " gold altogether.")
         if var_0010 < var_0000 then
             add_dialogue("Karenna gives you a cross look. \"I am not running a charity. Come back when thou dost have more money!\"")

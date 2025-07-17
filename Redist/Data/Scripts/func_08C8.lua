@@ -14,7 +14,7 @@ function func_08C8(var_0000, var_0001)
         add_dialogue("\"I am sorry, but thou hast overextended thy muscles. If thou couldst return at a later date, I would be quite willing to train thee.\"")
         return
     elseif var_0005 == 1 then
-        var_0006 = unknown_0028H(359, 359, 644, 357)
+        var_0006 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0006 .. " gold altogether.")
         if var_0006 < var_0000 then
             add_dialogue("\"I regret that thou dost not seem to have the right amount of gold to train here. Mayhaps, at another time, when thy purses are more full...\"")

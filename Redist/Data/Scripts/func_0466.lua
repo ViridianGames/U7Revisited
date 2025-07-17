@@ -76,7 +76,7 @@ function func_0466(eventid, objectref)
             add_dialogue("\"Dost thou want it for, say, 75 gold?\"")
             var_0006 = select_option()
             if var_0006 then
-                if unknown_0028H(359, 359, 644, 357) >= 75 then
+                if get_party_gold() >= 75 then
                     var_0007 = unknown_002CH(true, 7, 359, 340, 1) --- Guess: Checks inventory space
                     if var_0007 then
                         add_dialogue("\"Here is the potion.\"")

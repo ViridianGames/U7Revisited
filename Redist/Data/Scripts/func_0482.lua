@@ -18,7 +18,7 @@ function func_0482(eventid, objectref)
         if not get_flag(405) then
             add_dialogue("\"Art thou ready to pay thy bill?\"")
             if select_option() then
-                var_0004 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                var_0004 = get_party_gold() --- Guess: Counts items
                 if var_0004 >= 74 then
                     var_0005 = unknown_002BH(true, 359, 359, 644, 74) --- Guess: Deducts item and adds item
                     if var_0005 then
@@ -62,7 +62,7 @@ function func_0482(eventid, objectref)
                     switch_talk_to(4, 0)
                     add_dialogue("Dupre looks embarrassed. He turns to you. \"My friend, wilt thou help me out?\"")
                     if select_option() then
-                        var_0004 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                        var_0004 = get_party_gold() --- Guess: Counts items
                         if var_0004 >= 74 then
                             var_0005 = unknown_002BH(true, 359, 359, 644, 74) --- Guess: Deducts item and adds item
                             if var_0005 then
@@ -127,7 +127,7 @@ function func_0482(eventid, objectref)
                         if var_0008 >= var_0007 then break end
                     end
                     var_000B = var_0008 * 3
-                    var_000C = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    var_000C = get_party_gold() --- Guess: Counts items
                     if var_000C >= var_000B then
                         var_000D = unknown_002CH(true, 359, 255, 641, 1) --- Guess: Checks inventory space
                         if var_000D then

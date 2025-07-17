@@ -1,24 +1,36 @@
---- Best guess: Evaluates training ability, checking gold and training level caps, returning 0 (insufficient experience), 1 (insufficient gold), 2 (maxed out), or 3 (can train).
-function func_0922(arg1, arg2, arg3, arg4)
+-- Evaluates training ability, checking gold and training level caps, returning 0 (insufficient experience), 1 (insufficient gold), 2 (maxed out), or 3 (can train).
+function func_0922(training_points_required, npc_id, cost_to_train, stat_to_train)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A
 
+    debug_print("Starting function 0922")
+    debug_print("training points required: " .. training_points_required)
+    debug_print("npc_id: " .. npc_id)
+    debug_print("cost to train: " .. cost_to_train)
+    debug_print("stat to train: " .. stat_to_train)
     var_0004 = false
-    var_0005 = get_training_level(7, arg2) --- Guess: Gets training level
-    var_0006 = check_object_ownership(359, 644, 359, 357) --- Guess: Checks item ownership
-    if var_0006 <= arg3 then
+    var_0005 = get_npc_training_points(npc_id)
+    debug_print("Training points: " .. var_0005)
+    var_0006 = get_party_gold()
+    -- Return - not enough money
+    if var_0006 <= cost_to_train then
+        debug_print("Not enough gold")
         return 1
     end
-    if var_0005 < arg1 then
+    -- Return - not enough training points
+    if var_0005 < training_points_required then
+        debug_print("No training points")
         return 0
     end
-    for _, var_0009 in ipairs({7, 8, 9, 3}) do
-        var_000A = get_training_level(var_0009, arg2) --- Guess: Gets training level
-        if var_000A < 30 then
-            var_0004 = true
-        end
+    -- Return - stat level maxed out
+    var_000A = get_npc_training_level(npc_id, stat_to_train)
+    if var_000A < 30 then
+        debug_print("Too high skill")
+        var_0004 = true
     end
     if not var_0004 then
         return 2
     end
+    -- Return - can train
+    debug_print("Can train")
     return 3
 end

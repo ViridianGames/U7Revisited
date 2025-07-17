@@ -100,7 +100,7 @@ void MainState::OnEnter()
 
 	g_lastTime = 0;
 	g_minute = 0;
-	g_hour = 5;
+	g_hour = 6;
 	g_scheduleTime = 1;
 
 	m_paused = false;
@@ -211,6 +211,14 @@ void MainState::Update()
 	{
 		m_LuaDebug = !m_LuaDebug;
 	}
+
+	if (IsKeyPressed(KEY_KP_ENTER))
+	{
+		++g_hour;
+		if (g_hour >= 24)
+			g_hour = 0;
+	}
+
 
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{

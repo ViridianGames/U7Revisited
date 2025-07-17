@@ -46,7 +46,7 @@ function func_08D2(var_0000, var_0001, var_0002)
     add_dialogue("\"I must charge thee " .. var_0008 .. " gold. Is this price agreeable?\"")
     var_0012 = ask_yes_no()
     if var_0012 then
-        var_0013 = unknown_0028H(359, 359, 644, 357)
+        var_0013 = get_party_gold()
         if var_0013 >= var_0008 then
             if var_0006 == "healing" then
                 unknown_091DH(var_0008, var_0009)

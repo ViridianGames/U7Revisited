@@ -25,7 +25,7 @@ function func_08D0(var_0000, var_0001)
         add_dialogue("\"I am sorry, but thou dost not have enough experience to train at this time. Return at a later date and I would be most happy to lead a session.\"")
         return
     elseif var_0008 == 1 then
-        var_0009 = unknown_0028H(359, 359, 644, 357)
+        var_0009 = get_party_gold()
         if var_0009 < var_0000 then
             add_dialogue("\"It seems that thou hast not enough gold. Do return when thou art a bit wealthier.\"")
             return

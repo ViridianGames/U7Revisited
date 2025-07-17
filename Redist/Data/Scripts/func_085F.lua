@@ -22,7 +22,7 @@ function func_085F(P0, P1)
     if var_0009 == 0 then
         add_dialogue("\"It seems that thou dost need a little more time to hone thy reflexes. If thou dost wish to return later, when thou hast more experience, I would be most happy to train thee.\"")
     elseif var_0009 == 1 then
-        var_000A = unknown_0028H(-359, -359, 644, -357)
+        var_000A = unknown_0028H()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_000A .. " gold altogether.")
         if var_000A < P0 then
             add_dialogue("\"Thou hast not enough gold to pay me. I am sorry but I cannot train thee now.\"")

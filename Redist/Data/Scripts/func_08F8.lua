@@ -2,7 +2,7 @@
 function func_08F8(var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006)
     local var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018
 
-    var_0007 = unknown_0028H(359, 359, 644, 357)
+    var_0007 = get_party_gold()
     if var_0002 == 0 then
         var_0008 = 1
     else

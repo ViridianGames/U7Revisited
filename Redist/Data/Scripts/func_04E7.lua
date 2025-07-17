@@ -71,7 +71,7 @@ function func_04E7(eventid, objectref)
                         var_0006 = var_0006 + 1
                     end
                     var_000A = var_0006 * 10
-                    var_000B = unknown_0028H(359, 359, 644, 357)
+                    var_000B = get_party_gold()
                     if var_000B >= var_000A then
                         var_000C = unknown_002CH(true, 359, 255, 641, 1)
                         if var_000C then

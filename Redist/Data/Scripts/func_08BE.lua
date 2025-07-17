@@ -12,7 +12,7 @@ function func_08BE(var_0000, var_0001)
         add_dialogue("\"I am sorry, but thou dost not have enough practical experience with weights to train at this time. Perhaps in the future, when thou art ready, I could train thee.\"")
         return
     elseif var_0004 == 1 then
-        var_0005 = unknown_0028H(359, 359, 644, 357)
+        var_0005 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0005 .. " gold altogether.")
         if var_0005 < var_0000 then
             add_dialogue("\"Thou dost not have enough gold to train here.\"")

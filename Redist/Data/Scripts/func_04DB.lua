@@ -29,9 +29,9 @@ function func_04DB(eventid, objectref)
                 if var_0000 ~= 7 then
                     add_dialogue("\"To be not selling at this time. To come back tomorrow to buy provisions.\"")
                 else
-                    var_0001 = unknown_0028H(359, 359, 644, 357)
+                    var_0001 = get_party_gold()
                     unknown_084CH()
-                    var_0002 = unknown_0028H(359, 359, 644, 357)
+                    var_0002 = get_party_gold()
                     if var_0001 - var_0002 > 29 then
                         set_flag(639, true)
                     end

@@ -54,6 +54,7 @@ public:
     void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
 
     void SelectYesNo(bool yes);
+    void ReturnMultipleChoice(std::string choice);
 
     Gui* m_Gui;
 

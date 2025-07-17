@@ -89,7 +89,7 @@ function func_047A(eventid, objectref)
                         var_000A = var_000A + 1
                     end
                     var_000E = var_000A * 5
-                    var_000F = unknown_0028H(359, 359, 644, 357)
+                    var_000F = get_party_gold()
                     if var_000F >= var_000E then
                         var_0010 = unknown_002CH(true, 359, 255, 641, 1)
                         if var_0010 then
@@ -148,7 +148,7 @@ function func_047A(eventid, objectref)
                             add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
                             goto betting_start
                         end
-                        var_000F = unknown_0028H(359, 359, 644, 357)
+                        var_000F = get_party_gold()
                         if var_000F >= var_0012 then
                             add_dialogue("\"Very well. Let me give thee markers for thy gold. Each one is worth 10 gold coins. If Sprellic wins, thou mayest come collect twice that amount of gold from me.~~\"Should he lose, " .. var_0000 .. ", thy markers are, of course, worthless.\"")
                             var_0014 = unknown_002CH(false, 0, 359, 921, var_0012 // 10)

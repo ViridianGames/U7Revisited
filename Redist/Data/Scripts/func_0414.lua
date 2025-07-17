@@ -31,7 +31,7 @@ function func_0414(eventid, objectref)
             elseif var_0000 == "train" then
                 if var_0001 == 7 then
                     if ask_yes_no("\"The cost to train with me is 20 gold. Too costly, right?\"") == false then
-                        func_08BD(20, 4) --- Guess: Trains combat skill
+                        func_08BD(20, 4) -- 4 is the ID for combat skill
                     else
                         add_dialogue("Markus yawns. \"Very well.\"")
                     end
@@ -46,6 +46,6 @@ function func_0414(eventid, objectref)
         end
         add_dialogue("\"Goodbye,\" the fighter bows.")
     elseif eventid == 0 then
-        unknown_092EH(20) -- Random bark based on character
+        func_092E(20) -- Random bark based on character type
     end
 end

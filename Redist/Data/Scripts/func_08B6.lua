@@ -12,7 +12,7 @@ function func_08B6(var_0000, var_0001)
         add_dialogue("\"Ah! But thou hast not the practical experience to train with me at this time! Go and experience life and return later.\"")
         return
     elseif var_0004 == 1 then
-        var_0005 = unknown_0028H(359, 359, 644, 357)
+        var_0005 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0005 .. " gold altogether.")
         if var_0005 < var_0000 then
             add_dialogue("\"Hmm. Thou art a little short on gold. Perhaps thou couldst visit the House of Games, win some booty, then return!\"")

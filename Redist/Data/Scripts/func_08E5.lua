@@ -14,7 +14,7 @@ function func_08E5(var_0000, var_0001)
         add_dialogue("\"I am sorry, but thou dost not have enough practical experience to train at this time. Return another day after thou hast slain a few more creatures.\"")
         return
     elseif var_0005 == 1 then
-        var_0006 = unknown_0028H(359, 359, 644, 357)
+        var_0006 = get_party_gold()
         if var_0006 < var_0000 then
             add_dialogue("\"I regret that thou dost not seem to have enough gold to train here. Mayhaps at another time, when thy fortunes are more prosperous.\"")
             return

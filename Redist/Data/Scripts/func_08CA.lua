@@ -13,7 +13,7 @@ function func_08CA(var_0000, var_0001)
         add_dialogue("After a few moments of questioning, he says, \"I am sorry, but thou dost not have a strong enough grasp of my theories for me to be able to instruct thee. Perhaps when thou hast had more time to study...\"")
         return
     elseif var_0004 == 1 then
-        var_0005 = unknown_0028H(359, 359, 644, 357)
+        var_0005 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0005 .. " gold altogether.")
         if var_0005 < var_0000 then
             add_dialogue("\"I must apologize, but I need my full fee to permit me to continue my research. Mayhaps, at another time, when thou hast more money, I can teach thee.\"")

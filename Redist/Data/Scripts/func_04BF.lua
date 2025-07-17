@@ -91,7 +91,7 @@ function func_04BF(eventid, objectref)
                         add_dialogue("\"Well, it shall cost thee 3 gold coins. Still want one?\"")
                         var_0007 = ask_yes_no()
                         if var_0007 then
-                            var_0008 = unknown_0028H(359, 359, 644, 357)
+                            var_0008 = get_party_gold()
                             if var_0008 >= 3 then
                                 var_0009 = unknown_002CH(true, 17, 359, 377, 1)
                                 if var_0009 then

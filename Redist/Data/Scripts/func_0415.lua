@@ -64,7 +64,7 @@ function func_0415(eventid, objectref)
                     add_dialogue("Gargan clears his throat.")
                     var_0004 = select_option()
                     if var_0004 then
-                        var_0003 = unknown_0028H(359, 359, 644, 357) --- Guess: Checks gold amount
+                        var_0003 = get_party_gold() --- Guess: Checks gold amount
                         if var_0003 >= 80 then
                             add_dialogue("\"Here ye are!\"")
                             var_0004 = unknown_002CH(true, 359, 650, 1) --- Guess: Adds item to inventory
@@ -105,7 +105,7 @@ function func_0415(eventid, objectref)
                         add_dialogue("\"The deed I can sell thee is for the ship 'The Scaly Eel.' It goes for 600 gold. Interested?\"")
                         var_0005 = select_option()
                         if var_0005 then
-                            var_0003 = unknown_0028H(359, 359, 644, 357) --- Guess: Checks gold amount
+                            var_0003 = get_party_gold() --- Guess: Checks gold amount
                             if var_0003 >= 600 then
                                 var_0006 = unknown_002CH(true, 359, 797, 1) --- Guess: Adds item to inventory
                                 if var_0006 then

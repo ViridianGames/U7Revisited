@@ -24,7 +24,7 @@ function func_04DE(eventid, objectref)
                 if var_0000 == 6 or var_0000 == 7 or var_0000 == 0 then
                     add_dialogue("\"The entrance fee is 300 gold. Everything is included in this fixed price. No tips are necessary. Dost thou want to enter?\"")
                     if ask_yes_no() then
-                        var_0002 = unknown_0028H(359, 359, 644, 357)
+                        var_0002 = get_party_gold()
                         if var_0002 >= 300 then
                             var_0003 = unknown_002CH(false, 4, 251, 641, 1)
                             if var_0003 then

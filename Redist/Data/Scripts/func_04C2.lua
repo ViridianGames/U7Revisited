@@ -39,7 +39,7 @@ function func_04C2(eventid, objectref)
                 add_dialogue("\"Well, it was once the magnificent `Constellation.' However, 'twas destroyed by the ship's captain, himself, to prevent it from falling into the hands of attacking pirates. What little remained was rebuilt into an even finer ship, `The Dragon's Breath?' Art thou interested in purchasing it for 600 gold?\"")
                 var_0003 = ask_yes_no()
                 if var_0003 then
-                    var_0004 = unknown_0028H(359, 359, 644, 357)
+                    var_0004 = get_party_gold()
                     if var_0004 >= 600 then
                         var_0005 = unknown_002CH(false, 359, 19, 797, 1)
                         if var_0005 then

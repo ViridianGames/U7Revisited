@@ -39,7 +39,7 @@ function func_04E9(eventid, objectref)
                     if var_0001 and var_0002 then
                         var_0003 = get_party_members()
                         var_0004 = 0
-                        var_0005 = unknown_0028H(359, 359, 644, 357)
+                        var_0005 = get_party_gold()
                         for _ = 1, var_0003 do
                             var_0004 = var_0004 + 1
                         end

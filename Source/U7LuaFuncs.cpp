@@ -21,7 +21,7 @@ using namespace std;
 static int LuaDebugPrint(lua_State *L)
 {
     const char *text = luaL_checkstring(L, 1);
-    cout << "Lua debug says: " << text << "\n";
+    cout << "Lua console: " << text << "\n";
     if (m_LuaDebug) AddConsoleString(text, Color{255, 255, 255, 255});
     return 0;
 }
@@ -39,7 +39,7 @@ static int LuaAddDialogue(lua_State *L)
     step.dialog = text;
     step.npcId = 0;
     step.frame = 0;
-    g_ConversationState->AddStep(step);   
+    g_ConversationState->AddStep(step);
 
     return 0;
 }
@@ -645,7 +645,7 @@ static int LuaBuyObject(lua_State *L)
 
 static int LuaGetPartyGold(lua_State *L)
 {
-    int gold = 0; // TODO: g_Player->GetGold()
+    int gold = g_Player->GetGold();
     lua_pushinteger(L, gold);
     return 1;
 }
@@ -904,12 +904,19 @@ static int LuaGetNPCIdFromName(lua_State *L)
 {
     if (m_LuaDebug) AddConsoleString("LUA: get_npc_id_from_name called");
     string npc_name = luaL_checkstring(L, 1);
-    int npc_id = 0;
-    for (int i = 0; i < g_NPCData.size(); i++)
+    int npc_id = 1;
+    if (npc_name == g_Player->GetPlayerName())
     {
-        if (npc_name == g_NPCData[i]->name)
+        npc_id = 356;
+    }
+    else
+    {
+        for (int i = 0; i < g_NPCData.size(); i++)
         {
-            npc_id = g_NPCData[i]->id;
+            if (npc_name == g_NPCData[i]->name)
+            {
+                npc_id = g_NPCData[i]->id;
+            }
         }
     }
     if (m_LuaDebug) AddConsoleString("NPC Id: " + npc_id);
@@ -953,6 +960,111 @@ static int LuaGetScheduleTime(lua_State *L)
     return 1;
 }
 
+static int LuaGetNPCTrainingPoints(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: get_npc_training_points called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int training_points = 0;
+    if (npc_id == 356) // Avatar
+    {
+        training_points = g_Player->GetTrainingPoints();
+    }
+    else
+    {
+        training_points = g_NPCData[npc_id]->training;
+    }
+
+    lua_pushinteger(L, training_points);
+    return 1;
+}
+// 0 - Strength
+// 1 - Dexterity
+// 2 - Intelligence
+// 4 - Combat skill
+// 6 - Magic skill
+
+static int LuaGetNPCTrainingLevel(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: get_npc_training_level called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int npc_skill = luaL_checkinteger(L, 2);
+    int training_level = 0;
+
+    if (npc_id == 356) // Avatar
+    {
+        switch (npc_skill)
+        {
+        case 0:
+            training_level = g_Player->GetStr();
+            break;
+        case 1:
+            training_level = g_Player->GetDex();
+            break;
+        case 2:
+            training_level = g_Player->GetInt();
+            break;
+        case 4:
+            training_level = g_Player->GetCombat();
+            break;
+        case 6:
+            training_level = g_Player->GetMagic();
+            break;
+        }
+    }
+    else
+    {
+        switch (npc_skill)
+        {
+        case 0:
+            training_level = g_NPCData[npc_id]->str;
+            break;
+        case 1:
+            training_level = g_NPCData[npc_id]->dex;
+            break;
+        case 2:
+            training_level = g_NPCData[npc_id]->iq;
+            break;
+        case 4:
+            training_level = g_NPCData[npc_id]->combat;
+            break;
+        case 6:
+            training_level = g_NPCData[npc_id]->magic;
+            break;
+
+        }
+    }
+
+    lua_pushinteger(L, training_level);
+    return 1;
+}
+
+static int LuaRemovePartyGold(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: remove_party_gold called");
+    int gold_to_remove = luaL_checkinteger(L, 1);
+    g_Player->SetGold(g_Player->GetGold() - gold_to_remove);
+    return 0;
+}
+
+static int LuaIncreaseNPCCombatLevel(lua_State *L)
+{
+    if (m_LuaDebug) AddConsoleString("LUA: increase_npc_combat_level called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int amount_to_increase = luaL_checkinteger(L, 2);
+
+    if (npc_id == 356)
+    {
+        g_Player->SetCombat(g_Player->GetCombat() + amount_to_increase);
+        g_Player->SetTrainingPoints(g_Player->GetTrainingPoints() - 1);
+    }
+    else
+    {
+        g_NPCData[npc_id]->combat += amount_to_increase;
+        g_NPCData[npc_id]->training -= amount_to_increase;
+    }
+
+    return 0;
+}
 
 
 void RegisterAllLuaFunctions()
@@ -999,7 +1111,12 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_npc_name_from_id", LuaGetNPCNameFromId);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_id_from_name", LuaGetNPCIdFromName);
     g_ScriptingSystem->RegisterScriptFunction("select_party_member_by_name", LuaSelectPartyMemberByName); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
-    g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
+    g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold);
+    g_ScriptingSystem->RegisterScriptFunction("remove_party_gold", LuaRemovePartyGold);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_training_points", LuaGetNPCTrainingPoints);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_training_level", LuaGetNPCTrainingLevel);
+    g_ScriptingSystem->RegisterScriptFunction("increase_npc_combat_level", LuaIncreaseNPCCombatLevel);
+
 
     // These functions are used to get information about the Avatar/player.
     g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);

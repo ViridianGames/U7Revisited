@@ -35,9 +35,28 @@ public:
 	bool NPCIDInParty(int npc_id);
 	bool NPCNameInParty(std::string name);
 	bool IsWearingFellowshipMedallion() { return m_isWearingFellowshipMedallion; }
+	int GetTrainingPoints() { return m_TrainingPoints; };
+	int GetStr() { return m_str; }
+	int GetDex() { return m_dex; }
+	int GetInt() { return m_int; }
+	int GetCombat() { return m_combat; }
+	int GetMagic() { return m_magic; }
+
+	void SetTrainingPoints(int tp) { m_TrainingPoints = tp; };
+	void SetStr(int str) { m_str = str; }
+	void SetDex(int dex) { m_dex = dex; }
+	void SetInt(int iq) { m_int = iq; }
+	void SetCombat(int combat) { m_combat = combat; }
+	void SetMagic(int magic) { m_magic = magic; }
 
 	private:
-	int m_Gold;
+	int m_Gold = 100;
+	int m_TrainingPoints = 1;
+	int m_str = 15;
+	int m_dex = 15;
+	int m_int = 15;
+	int m_combat = 15;
+	int m_magic = 15;
 	std::vector<std::string> m_PartyMembers;
 	std::vector<int> m_PartyMemberIDs;
 	std::string m_PlayerName;

@@ -44,7 +44,7 @@ function func_0481(eventid, objectref)
                         add_dialogue("\"Thou wishest to purchase my ship 'The Nymphet'? The deed will cost thee 600 gold.\"")
                         var_0005 = select_option()
                         if var_0005 then
-                            var_0006 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                            var_0006 = get_party_gold() --- Guess: Counts items
                             if var_0006 >= 600 then
                                 var_0007 = unknown_002CH(false, 359, 17, 797, 1) --- Guess: Checks inventory space
                                 if var_0007 then

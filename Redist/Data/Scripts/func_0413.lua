@@ -65,7 +65,7 @@ function func_0413(eventid, objectref)
                         var_0009 = var_0009 + 1
                     end
                     var_000B = var_0009 * 6
-                    var_000C = unknown_0028H(359, 359, 644, 357) --- Guess: Checks gold amount
+                    var_000C = get_party_gold() --- Guess: Checks gold amount
                     if var_000C >= var_000B then
                         var_000D = unknown_002CH(true, 359, 255, 641, 1) --- Guess: Adds item to inventory
                         if not var_000D then

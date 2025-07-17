@@ -94,7 +94,7 @@ function func_0489(eventid, objectref)
                         add_dialogue("\"A bouquet costs 12 gold. Art thou still interested?\"")
                         var_000B = select_option()
                         if var_000B then
-                            var_000C = unknown_0028H(359, 359, 644, 357) --- Guess: Checks inventory item
+                            var_000C = get_party_gold() --- Guess: Checks inventory item
                             if var_000C >= 12 then
                                 var_000D = unknown_002CH(true, 4, 359, 999, 1) --- Guess: Deducts item and checks inventory
                                 if var_000D then

@@ -190,6 +190,7 @@ int main(int argv, char** argc)
       //  Initialize scripts
 
       string directoryPath("Data/Scripts");
+      g_ScriptingSystem->LoadScript(directoryPath + "global_flags_and_constants.lua");
 
       for (const auto& entry : directory_iterator(directoryPath))
       {

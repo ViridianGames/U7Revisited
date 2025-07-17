@@ -145,7 +145,7 @@ struct NPCData
    unsigned char dex;
    unsigned char iq;
    unsigned char combat;
-   unsigned char activity;
+   unsigned char magic;
    unsigned char DAM;
    char soak1[3];
    unsigned short status2;

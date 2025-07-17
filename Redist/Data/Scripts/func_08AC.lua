@@ -40,7 +40,7 @@ function func_08AC(var_0000, var_0001, var_0002)
         add_dialogue("\"My price is " .. var_0007 .. " gold. Art thou interested?\"")
         var_0011 = ask_yes_no()
         if not var_0011 then
-            var_0012 = unknown_0028H(359, 359, 644, 357)
+            var_0012 = get_party_gold()
             if var_0012 >= var_0007 then
                 if var_0005 == "heal" then
                     unknown_091DH(var_0007, var_0008)

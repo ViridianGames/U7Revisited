@@ -10,7 +10,6 @@ using namespace std;
 
 U7Player::U7Player()
 {
-	m_Gold = 0;
 	m_PartyMembers.clear(); // Initialize with -1 (no party members)
 	m_PlayerName = "Avatar";
 	m_PartyMemberIDs.clear();
@@ -19,6 +18,9 @@ U7Player::U7Player()
 	m_PartyMemberIDs.push_back(2);
 	m_PartyMembers.clear();
 	m_PartyMembers.push_back("Avatar");
+	m_PartyMembers.push_back("Iolo");
+	m_PartyMembers.push_back("Spark");
+
 	m_PlayerPosition = { 0.0f, 0.0f, 0.0f };
 	m_PlayerDirection = { 0.0f, 0.0f, 1.0f }; // Default direction facing forward
 	m_isMale = true; // Default

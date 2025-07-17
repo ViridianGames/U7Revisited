@@ -277,11 +277,11 @@ function func_040A(eventid, objectref)
             var_0022 = get_flag(339) and "If thou wouldst like, I would be happy to give thee a dozen of my special arrows. Art thou interested?" or "Shall I fashion these stingers into arrows?"
             var_0023 = 0
             if not get_flag(339) then
-                var_0023 = unknown_0028H(359, 359, 947, 357)
+                var_0023 = unknown_0028H(59, 359, 947, 357)
                 if var_0023 > 6 then
                     var_0023 = 6
                 end
-                var_0024 = unknown_0028H(359, 359, 568, 357)
+                var_0024 = unknown_0028H(59, 359, 568, 357)
                 if var_0004 == var_0002 and var_0024 <= 6 and var_0023 > 0 then
                     var_0022 = "Shall I fashion these stingers into arrows?"
                 end

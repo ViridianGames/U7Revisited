@@ -13,7 +13,7 @@ function func_08A2(var_0000, var_0001)
         add_dialogue("\"I am sorry, but it appears thou dost not have enough knowledge of elementary studies to train at this time. If thou couldst return at a future date, I could instruct thee then.\"")
         return
     elseif var_0005 == 1 then
-        var_0006 = unknown_0028H(359, 359, 644, 357)
+        var_0006 = get_party_gold()
         add_dialogue("You gather your gold and count it, finding that you have " .. var_0006 .. " gold altogether.")
         if var_0006 < var_0000 then
             add_dialogue("\"I am sorry, but thou dost not seem to have enough gold to train now.\"")

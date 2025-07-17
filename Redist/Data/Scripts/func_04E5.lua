@@ -70,7 +70,7 @@ function func_04E5(eventid, objectref)
                 else
                     add_dialogue("\"I can sell thee the deed to my ship 'The Lusty Wench.' She is beautiful, my friend. She is guaranteed to last and is the sleekest vessel on the seas! She goes for 800 gold. Want her?\"")
                     if ask_yes_no() then
-                        var_0008 = unknown_0028H(359, 359, 644, 357)
+                        var_0008 = get_party_gold()
                         if var_0008 >= 800 then
                             var_0009 = unknown_002CH(false, 2, 18, 797, 1)
                             if not var_0009 then

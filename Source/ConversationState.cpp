@@ -132,11 +132,19 @@ void ConversationState::Update()
                                                           dims.x * g_DrawScale,
                                                           float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)}))
                 {
-                    if (m_answers[i] == "Yes" || m_answers[i] == "No")
+                    if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
                     {
-                        bool yes = (m_answers[i] == "Yes");
-                        SelectYesNo(yes);
-                        return;
+                        if (m_answers[i] == "Yes" || m_answers[i] == "No")
+                        {
+                            bool yes = (m_answers[i] == "Yes");
+                            SelectYesNo(yes);
+                            return;
+                        }
+                        else
+                        {
+                            ReturnMultipleChoice(m_answers[i]);
+                        }
+
                     }
                     else
                     {
@@ -264,6 +272,18 @@ void ConversationState::SelectYesNo(bool yes)
         return;
 
     g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {yes});
+    m_answers = m_savedAnswers;
+    m_savedAnswers.clear();
+    m_waitingForAnswer = false;
+    m_steps.erase(m_steps.begin());
+}
+
+void ConversationState::ReturnMultipleChoice(std::string choice)
+{
+    if (!m_waitingForAnswer)
+        return;
+
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice});
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;

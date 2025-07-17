@@ -114,7 +114,7 @@ function func_047B(eventid, objectref)
                             add_dialogue("\"Very well. How much wouldst thou like to bet?\"")
                             goto gambling_start
                         end
-                        var_000D = unknown_0028H(359, 359, 644, 357)
+                        var_000D = get_party_gold()
                         if var_000D >= var_000B then
                             var_000E = unknown_002CH(false, 1, 359, 921, var_000B // 10)
                             if var_000E then

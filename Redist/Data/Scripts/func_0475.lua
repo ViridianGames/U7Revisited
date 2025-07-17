@@ -44,7 +44,7 @@ function func_0475(eventid, objectref)
                 add_dialogue("He glowers at you. \"Thou must do better than that, fool!\"")
             elseif var_0001 == "5" then
                 restore_answers()
-                var_0002 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                var_0002 = get_party_gold() --- Guess: Counts items
                 if var_0002 > 4 then
                     var_0003 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
                     add_dialogue("\"I will tell thee what I know: Sir Jeff is in charge of the High Court. 'E's a real mean bastard, so I would stay away from 'im. The monks nearby make excellent wine, and Aimi doth warm a man's... heart. And whatever thou dost, do not waste time talking to the undertaker -- 'e's daft in the head.\"")
@@ -60,7 +60,7 @@ function func_0475(eventid, objectref)
                 add_dialogue("\"I will tell thee for 5 gold. Interested?\"")
                 var_0004 = select_option()
                 if var_0004 then
-                    var_0005 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    var_0005 = get_party_gold() --- Guess: Counts items
                     if var_0005 > 4 then
                         var_0006 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
                         add_dialogue("\"One of them is named D'Rel. E's a pirate, from Buccaneer's Den.\"")
@@ -77,7 +77,7 @@ function func_0475(eventid, objectref)
                 add_dialogue("\"Another, eh. Hast thou 5 more gold for me?\"")
                 var_0007 = select_option()
                 if var_0007 then
-                    var_0008 = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    var_0008 = get_party_gold() --- Guess: Counts items
                     if var_0008 > 4 then
                         add_dialogue("\"The other one is a troll. 'E don't talk much, but 'e's the first troll prisoner I have ever seen.\"")
                         var_0009 = unknown_002BH(true, 359, 359, 644, 5) --- Guess: Deducts item and adds item
@@ -94,7 +94,7 @@ function func_0475(eventid, objectref)
                 add_dialogue("\"Thou dost want these, eh?\" he asks, holding up keys. \"'Twill cost thee... 20 gold. Still want them?\"")
                 var_000A = select_option()
                 if var_000A then
-                    var_000B = unknown_0028H(359, 359, 644, 357) --- Guess: Counts items
+                    var_000B = get_party_gold() --- Guess: Counts items
                     if var_000B > 19 then
                         add_dialogue("\"Done!\"")
                         var_000C = unknown_002BH(false, 359, 359, 644, 20) --- Guess: Deducts item and adds item

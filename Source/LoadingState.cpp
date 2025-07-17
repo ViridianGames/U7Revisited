@@ -1319,7 +1319,7 @@ void LoadingState::LoadInitialGameState()
 				thisNPC.dex = ReadU8(subFiles);
 				thisNPC.iq = ReadU8(subFiles);
 				thisNPC.combat = ReadU8(subFiles);
-				thisNPC.activity = ReadU8(subFiles);
+				thisNPC.magic = ReadU8(subFiles);
 				thisNPC.DAM = ReadU8(subFiles);
 
 				subFiles.read(thisNPC.soak1, 3);
