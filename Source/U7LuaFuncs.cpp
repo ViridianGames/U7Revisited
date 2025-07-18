@@ -352,6 +352,53 @@ static int LuaSelectPartyMemberByName(lua_State *L)
     return lua_yield(L, 0);
 }
 
+static int LuaAskMultipleChoice(lua_State *L)
+{
+    if (!g_ConversationState)
+    {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+    if (g_LuaDebug) AddConsoleString("LUA: ask_multiple_choice called");
+
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
+
+
+    // Create the yes/no step
+    // Table: iterate over elements and add strings
+    int table_len = lua_rawlen(L, 1);
+    for (int i = 1; i <= table_len; ++i)
+    {
+        lua_rawgeti(L, 1, i); // Push table[i]
+        if (lua_isstring(L, -1))
+        {
+            const char *answer = lua_tostring(L, -1);
+            if (i == 1) // Question
+            {
+                step.dialog = answer;
+            }
+            else
+            {
+                step.answers.push_back(answer);
+            }
+            std::cout << "Added answer: " << answer << "\n";
+        }
+        else
+        {
+            std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+        }
+        lua_pop(L, 1); // Pop table[i]
+    }
+
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine
+    return lua_yield(L, 0);
+}
+
+
 // Opcode 000C
 // Pops up a modal dialog allowing the player to enter a number with a slider.
 static int LuaAskNumber(lua_State *L)
@@ -1085,6 +1132,7 @@ void RegisterAllLuaFunctions()
 
     // These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
+    g_ScriptingSystem->RegisterScriptFunction("ask_multiple_choice", LuaAskMultipleChoice);
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);

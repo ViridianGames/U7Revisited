@@ -513,6 +513,7 @@ void MainState::Draw()
 		float darkness = ((float(g_minute) / 60.0f) * 192.0f);
 		Color darkColor = {0, 0, 64, int(darkness)};
 		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
+		m_notDay = true;
 	}
 	//  Sunrise
 	else if (g_hour == 6)
@@ -520,24 +521,39 @@ void MainState::Draw()
 		float darkness = 192.0f - ((float(g_minute) / 60.0f) * 192.0f);
 		Color darkColor = {0, 0, 64, int(darkness)};
 		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
+		if (darkness < .1f)
+		{
+			m_notDay = false;
+		}
+		else
+		{
+			m_notDay = true;
+		}
 	}
 	//  Night
 	else if (g_hour > 20 || g_hour < 6)
 	{
-		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, {0, 0, 64, 192 });
+		Color darkColor = {0, 0, 64, 192};
+		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
+		m_notDay = true;
 	}
 
-	//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 192, 128 });
+	//  Add light sources
+	//ImageDrawCircle(&m_LightingImage, 320, 200, 100, {255, 255, 255, 0});
+
+	//if (m_notDay)
+	//{
+		//UnloadTexture(m_LightingTexture);
+		//m_LightingTexture = LoadTextureFromImage(m_LightingImage);
+		//DrawTextureEx(m_LightingTexture, {0, 0}, 0, g_DrawScale, WHITE);
+	//}
 
 	DrawTexturePro(g_guiRenderTarget.texture,
 				   {0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height)},
 				   {0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight)},
 				   {0, 0}, 0, WHITE);
 
-	// DrawTexturePro(g_guiRenderTarget.texture, { 0, 0, g_Engine->m_RenderWidth, -g_Engine->m_RenderHeight }, { -ratio, -ratio, g_Engine->m_ScreenWidth + (ratio * 2), g_Engine->m_ScreenHeight + (ratio * 2) }, { 0, 0 }, 0, WHITE);
-
 	DrawTextureEx(*m_Minimap, {g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0}, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
-	// DrawTexture(*m_Minimap, g_Engine->m_RenderWidth - float(m_Minimap->width), 0, WHITE);
 
 	float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
 	float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;

@@ -7,34 +7,38 @@ function func_040D(eventid, objectref)
     end
 
     start_conversation()
+    -- debug flag setting to test conversations, REMOVE LATER
+    --set_flag(61, true)
+
     switch_talk_to(13, 0)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(13)
     add_answer({"bye", "murder", "job", "name"})
-    if not get_flag(61) then
+    if get_flag(61) then
         add_answer("password")
     end
-    if not get_flag(63) then
+    if get_flag(63) then
         add_answer({"Klog", "Fellowship"})
     end
     if var_0000 == 7 or var_0000 == 0 or var_0000 == 1 then
         add_answer("ship")
     end
-    if not get_flag(67) then
+    if get_flag(67) then
         add_answer("Hook")
     end
 
-    --while true do
+    if get_flag(77) then
+        add_dialogue("You see a grumpy fellow with a bloody bandage on his head.")
+        set_flag(77, true)
+        --unknown_001DH(16, -13)
+        --add_dialogue("\"I am on duty. I have no time to talk.\"")
+        else
+            add_dialogue("\"Dost thou need something else?\" Gilberto asks. You notice his wound is healing nicely.")
+    end
+
+    while true do
+        coroutine.yield()
         var_0001 = get_answer()
-        if var_0001 == "nil" then
-            if not get_flag(77) then
-                add_dialogue("You see a grumpy fellow with a bloody bandage on his head.")
-                set_flag(77, true)
-                --unknown_001DH(16, -13)
-            else
-                add_dialogue("\"Dost thou need something else?\" Gilberto asks. You notice his wound is healing nicely.")
-            end
-            --add_dialogue("\"I am on duty. I have no time to talk.\"")
-        elseif var_0001 == "name" then
+        if var_0001 == "name" then
             add_dialogue("\"I am Gilberto.\"")
             remove_answer("name")
         elseif var_0001 == "job" then
@@ -53,11 +57,13 @@ function func_040D(eventid, objectref)
             add_dialogue("\"My skull is still ringing, but I shall be all right momentarily.\"")
             remove_answer("pain")
         elseif var_0001 == "blow" then
-            add_dialogue("\"The next thing I knew, I was on the ground. Johnson, the guard for the next watch, was shaking me. I had been out about ten minutes. I knew that because the sun had just peeked over the horizon. And 'The Crown Jewel' had gone and sailed!\"")
+            add_dialogue("\"The next thing I knew, I was on the ground. Johnson, the guard for the next watch, was shaking me. I had been out about ten minutes.")
+            add_dialogue("I knew that because the sun had just peeked over the horizon. And 'The Crown Jewel' had gone and sailed!\"")
             add_answer({"Crown Jewel", "Johnson"})
             remove_answer("blow")
         elseif var_0001 == "Crown Jewel" then
-            add_dialogue("\"Did I forget to say? That is a ship that was docked here all night. I believe it was about to sail for Britain. Thou couldst ask Gargan the Shipwright to make sure. Anyway, I did not see mine attackers,\" the guard grumbles.")
+            add_dialogue("\"Did I forget to say? That is a ship that was docked here all night. I believe it was about to sail for Britain.")
+            add_dialogue("Thou couldst ask Gargan the Shipwright to make sure. Anyway, I did not see mine attackers,\" the guard grumbles.")
             set_flag(64, true)
             add_answer({"Gargan", "attackers"})
             remove_answer("Crown Jewel")
@@ -108,7 +114,7 @@ function func_040D(eventid, objectref)
             clear_answers()
             --break
         end
-    --end
+    end
     
     return
 end
