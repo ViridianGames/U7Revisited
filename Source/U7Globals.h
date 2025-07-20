@@ -329,6 +329,8 @@ extern std::shared_ptr<Sprite> g_YouTubeButton;
 extern std::shared_ptr<Sprite> g_PatreonButton;
 extern std::shared_ptr<Sprite> g_KoFiButton;
 
+extern std::shared_ptr<Texture2D> g_statsBackground;
+
 extern Color g_Red;
 extern Color g_Blue;
 extern Color g_Pink;

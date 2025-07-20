@@ -185,6 +185,10 @@ int main(int argv, char** argc)
       g_XButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 128, 0, 20, 20);
       g_GitHubButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 148, 0, 16, 16);
 
+      Image image = LoadImage("Images/GUI/gumps.png");
+      g_statsBackground = make_shared<Texture2D>(LoadTextureFromImage(ImageFromImage(image, {233, 436, 133, 136})));
+      UnloadImage(image);
+
       g_CuboidModel = nullptr;
       
       //  Initialize scripts

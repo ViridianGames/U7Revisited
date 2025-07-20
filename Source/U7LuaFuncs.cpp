@@ -340,9 +340,9 @@ static int LuaSelectPartyMemberByName(lua_State *L)
     step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
     step.dialog =  luaL_checkstring(L, 1);;
     step.answers.push_back(g_Player->GetPlayerName());
-    for (int i = 0; i < g_Player->GetPartyMembers().size(); ++i)
+    for (int i = 0; i < g_Player->GetPartyMemberNames().size(); ++i)
     {
-        step.answers.push_back(g_Player->GetPartyMembers()[i]);
+        step.answers.push_back(g_Player->GetPartyMemberNames()[i]);
     }
     step.npcId = 0;
     step.frame = 0;
@@ -492,11 +492,11 @@ static int LuaSetNPCProperty(lua_State *L)
 }
 
 // Opcode 0023
-static int LuaGetPartyMembers(lua_State *L)
+static int LuaGetPartyMemberNames(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: get_party_members called");
     lua_newtable(L);
-    vector<string> party_members = g_Player->GetPartyMembers();
+    vector<string> party_members = g_Player->GetPartyMemberNames();
     for (size_t i = 0; i < party_members.size(); ++i)
     {
         lua_pushstring(L, party_members[i].c_str());
@@ -1151,7 +1151,7 @@ void RegisterAllLuaFunctions()
 
     // These functions are used to manipulate the party.
     g_ScriptingSystem->RegisterScriptFunction("get_party_member", LuaGetPartyMember);
-    g_ScriptingSystem->RegisterScriptFunction("get_party_members", LuaGetPartyMembers);
+    g_ScriptingSystem->RegisterScriptFunction("get_party_members", LuaGetPartyMemberNames);
     g_ScriptingSystem->RegisterScriptFunction("npc_id_in_party", LuaNPCIDInParty);
     g_ScriptingSystem->RegisterScriptFunction("npc_name_in_party", LuaNPCNameInParty);
     g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);

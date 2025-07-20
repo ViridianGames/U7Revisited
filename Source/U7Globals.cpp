@@ -564,6 +564,8 @@ shared_ptr<Sprite> g_YouTubeButton;
 shared_ptr<Sprite> g_PatreonButton;
 shared_ptr<Sprite> g_KoFiButton;
 
+shared_ptr<Texture2D> g_statsBackground;
+
 Camera g_camera = { 0 };
 
 bool g_hasCameraChanged = true;

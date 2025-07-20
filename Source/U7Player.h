@@ -21,7 +21,7 @@ public:
 	void SpendGold(int amount) { m_Gold -= amount; }
 	void AddGold(int amount) { m_Gold += amount; }
 	void SetGold(int amount) { m_Gold = amount; }
-	void SetPartyMember(int index, int npc_id) { m_PartyMembers[index] = npc_id; }
+	void SetPartyMember(int index, int npc_id) { m_PartyMemberIDs[index] = npc_id; }
 	//void SetPartyMembers(std::vector<int> partyMembers) { m_PartyMemberIDs = partyMembers; }
 	void SetPlayerName(std::string name) { m_PlayerName = name; }
 	void SetMale(bool isMale) { m_isMale = isMale; }
@@ -31,7 +31,8 @@ public:
 	Vector3 GetPlayerPosition() { return m_PlayerPosition; }
 	void SetPlayerDirection(Vector3 direction) { m_PlayerDirection = direction; }
 	Vector3 GetPlayerDirection() { return m_PlayerDirection; }
-	std::vector<std::string>& GetPartyMembers();
+	std::vector<std::string>& GetPartyMemberNames();
+	std::vector<int>& GetPartyMemberIds() { return m_PartyMemberIDs; };
 	bool NPCIDInParty(int npc_id);
 	bool NPCNameInParty(std::string name);
 	bool IsWearingFellowshipMedallion() { return m_isWearingFellowshipMedallion; }
@@ -49,15 +50,18 @@ public:
 	void SetCombat(int combat) { m_combat = combat; }
 	void SetMagic(int magic) { m_magic = magic; }
 
+	int GetSelectedPartyMember() { return m_selectedPartyMember;};
+	void SetSelectedPartyMember(int index);
+
 	private:
 	int m_Gold = 100;
-	int m_TrainingPoints = 1;
-	int m_str = 15;
-	int m_dex = 15;
-	int m_int = 15;
-	int m_combat = 15;
-	int m_magic = 15;
-	std::vector<std::string> m_PartyMembers;
+	int m_str = 18;
+	int m_dex = 18;
+	int m_int = 18;
+	int m_combat = 14;
+	int m_magic = 10;
+	int m_TrainingPoints = 3;
+	std::vector<std::string> m_PartyMemberNames;
 	std::vector<int> m_PartyMemberIDs;
 	std::string m_PlayerName;
 	Vector3 m_PlayerPosition;
@@ -66,6 +70,8 @@ public:
 	bool m_isMale;
 
 	bool m_isWearingFellowshipMedallion = false;
+
+	int m_selectedPartyMember = 0; //  Avatar
 
 };
 

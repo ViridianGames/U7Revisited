@@ -95,7 +95,8 @@ void MainState::OnEnter()
 	AddConsoleString(std::string("Zoom in and out with mousewheel."));
 	AddConsoleString(std::string("Left-click in the minimap to teleport."));
 	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
-	AddConsoleString(std::string("Press SPACE to toggle pixelation."));
+	AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
+	AddConsoleString(std::string("Press SPACE to pause/unpause time."));
 	AddConsoleString(std::string("Press ESC to exit."));
 
 	g_lastTime = 0;
@@ -338,6 +339,8 @@ void MainState::Update()
 		}
 	}
 
+	UpdateStats();
+
 	if (WasLMBDoubleClicked())
 	{
 		// AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
@@ -498,6 +501,9 @@ void MainState::Draw()
 	string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
 	DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
 
+	// Draw character panel below xy/time
+	DrawStats();
+
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
 
@@ -577,7 +583,85 @@ void MainState::SetupGame()
 	g_Terrain->Init();
 }
 
-// void MainState::CreateTooltip()
-//{
-//
-// }
+void MainState::DrawStats()
+{
+	//  Draw background
+	DrawTexture(*g_statsBackground.get(), 512, 200, WHITE);
+
+	//  Draw stat numbers
+	int str;
+	int dex;
+	int iq;
+	int combat;
+	int magic;
+	int trainingpoints;
+
+	if (g_Player->GetSelectedPartyMember() == 356) // Avatar
+	{
+		str = g_Player->GetStr();
+		dex = g_Player->GetDex();
+		iq = g_Player->GetInt();
+		combat = g_Player->GetCombat();
+		magic = g_Player->GetMagic();
+		trainingpoints = g_Player->GetTrainingPoints();
+
+		DrawOutlinedText(g_SmallFont, g_Player->GetPlayerName().c_str(), { 546, 206 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	}
+	else
+	{
+		str = g_NPCData[g_Player->GetSelectedPartyMember()]->str;
+		dex = g_NPCData[g_Player->GetSelectedPartyMember()]->dex;
+		iq = g_NPCData[g_Player->GetSelectedPartyMember()]->iq;
+		combat = g_NPCData[g_Player->GetSelectedPartyMember()]->combat;
+		magic = g_NPCData[g_Player->GetSelectedPartyMember()]->magic;
+		trainingpoints = g_NPCData[g_Player->GetSelectedPartyMember()]->training;
+
+		DrawOutlinedText(g_SmallFont, g_NPCData[g_Player->GetSelectedPartyMember()]->name, { 546, 206 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	}
+
+	int yoffset = g_SmallFont.get()->baseSize;
+	DrawOutlinedText(g_SmallFont, to_string(str), { 622, 208.0f +  yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(dex), { 622, 208.0f +  2 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(iq), { 622, 208.0f +  3 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(combat), { 622, 208.0f +  4 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(magic), { 622, 208.0f +  5 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(trainingpoints), { 622, 208.0f +  10 * yoffset + 6 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
+
+	//  Draw party members
+	int counter = 0;
+	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
+	{
+		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
+		DrawTextureEx(*thisTexture, {538.0f - thisTexture->width, 200.0f + 48.0f * counter}, 0, 1, WHITE);
+		if (g_Player->GetPartyMemberIds()[i] != g_Player->GetSelectedPartyMember())
+		{
+			DrawRectangle(538.0f - thisTexture->width, 200.0f + 48.0f * counter, thisTexture->width, thisTexture->height, {0, 0, 0, 128});
+		}
+		++counter;
+	}
+
+	//  Draw backpack
+	DrawTextureEx(*g_shapeTable[801][0].GetTexture(), Vector2{610, 314}, 0, 1, Color{255, 255, 255, 255});
+
+
+}
+
+void MainState::UpdateStats()
+{
+	int counter = 0;
+	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
+	{
+		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
+		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 48.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
+		{
+			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
+		}
+		++counter;
+	}
+
+	if (WasLeftButtonClickedInRect({610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale}))
+	{
+		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
+	}
+}

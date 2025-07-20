@@ -31,6 +31,9 @@ public:
 
    void OpenGump(int id);
 
+   void DrawStats();
+   void UpdateStats();
+
    Gui* m_Gui;
    Gui* m_SpellsPanel;
    Gui* m_ArmyPanel;

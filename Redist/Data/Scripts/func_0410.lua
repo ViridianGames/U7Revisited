@@ -5,11 +5,11 @@ function func_0410(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         var_0000 = get_player_name()
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule_time()
         var_0002 = false
-        var_0003 = check_inventory(359, 981, 1, 357)
+        var_0003 = false -- Checks to see if the player has the Cube.
         if var_0001 == 7 then
-            unknown_08ABH() --- Guess: Checks Fellowship meeting status
+            unknown_08ABH() 
         end
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(63) then
