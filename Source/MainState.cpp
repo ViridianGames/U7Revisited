@@ -596,7 +596,7 @@ void MainState::DrawStats()
 	int magic;
 	int trainingpoints;
 
-	if (g_Player->GetSelectedPartyMember() == 356) // Avatar
+	if (g_Player->GetSelectedPartyMember() == 0) // Avatar
 	{
 		str = g_Player->GetStr();
 		dex = g_Player->GetDex();
