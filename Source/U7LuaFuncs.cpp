@@ -954,7 +954,7 @@ static int LuaGetNPCIdFromName(lua_State *L)
     int npc_id = 1;
     if (npc_name == g_Player->GetPlayerName())
     {
-        npc_id = 356;
+        npc_id = 0;
     }
     else
     {
@@ -1012,7 +1012,7 @@ static int LuaGetNPCTrainingPoints(lua_State *L)
     if (g_LuaDebug) AddConsoleString("LUA: get_npc_training_points called");
     int npc_id = luaL_checkinteger(L, 1);
     int training_points = 0;
-    if (npc_id == 356) // Avatar
+    if (npc_id == 0) // Avatar
     {
         training_points = g_Player->GetTrainingPoints();
     }
@@ -1037,7 +1037,7 @@ static int LuaGetNPCTrainingLevel(lua_State *L)
     int npc_skill = luaL_checkinteger(L, 2);
     int training_level = 0;
 
-    if (npc_id == 356) // Avatar
+    if (npc_id == 0) // Avatar
     {
         switch (npc_skill)
         {
@@ -1099,7 +1099,7 @@ static int LuaIncreaseNPCCombatLevel(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int amount_to_increase = luaL_checkinteger(L, 2);
 
-    if (npc_id == 356)
+    if (npc_id == 0)
     {
         g_Player->SetCombat(g_Player->GetCombat() + amount_to_increase);
         g_Player->SetTrainingPoints(g_Player->GetTrainingPoints() - 1);
