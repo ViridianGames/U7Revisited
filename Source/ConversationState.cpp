@@ -126,11 +126,19 @@ void ConversationState::Update()
                 Vector2 dims = MeasureTextEx(*g_SmallFont.get(), adjustedAnswer.c_str(), g_SmallFont.get()->baseSize, 1);
 
                 Vector2 mousePosition = GetMousePosition();
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+
+                bool isAnswerClicked = 
+                    IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
                     CheckCollisionPointRec(mousePosition, {115 * g_DrawScale,
                                                           float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
                                                           dims.x * g_DrawScale,
-                                                          float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)}))
+                                                          float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)});
+
+                bool isAnswerKeyboardShortcut =
+                        i < 9 &&
+                        IsKeyPressed(KEY_ONE + i);
+
+                if (isAnswerClicked || isAnswerKeyboardShortcut)
                 {
                     if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
                     {
