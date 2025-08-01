@@ -1205,6 +1205,7 @@ static int LuaPurchaseObject(lua_State *L)
     return 1;
 }
 
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";

@@ -148,7 +148,7 @@ void ConversationState::Update()
 
                     }
                     //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
-                    if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
+                    else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
                     {
                         ReturnGetPurchaseOption(i);
                     }
@@ -293,7 +293,6 @@ void ConversationState::ReturnMultipleChoice(std::string choice)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
-    m_answerPending = true;
     m_steps.erase(m_steps.begin());
 }
 
@@ -306,6 +305,5 @@ void ConversationState::ReturnGetPurchaseOption(int choice)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
-    m_answerPending = true;
     m_steps.erase(m_steps.begin());
 }
