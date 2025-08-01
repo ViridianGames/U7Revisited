@@ -146,7 +146,7 @@ public:
 
 	void Init(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
-		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true, bool canbeheld = false);
+		Color fontcolor = (Color{ 255, 255, 255, 255 }), float scale = 1, int group = 0, int active = true, bool canbeheld = false);
 
 	void Draw();
 	void Update();
@@ -159,6 +159,7 @@ public:
 
 	Font* m_Font;
 	Color m_FontColor;
+	float m_Scale = 1;
 
 	bool  m_Bobbing = false;
 	bool  m_CanBeHeld = false;

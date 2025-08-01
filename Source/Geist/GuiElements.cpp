@@ -162,7 +162,7 @@ int GuiTextButton::GetValue()
 //  GUIICONBUTTON
 
 void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton, shared_ptr<Sprite> downbutton,
-	shared_ptr<Sprite> inactivebutton, std::string text, Font* font, Color fontcolor, int group, int active, bool canbeheld)
+	shared_ptr<Sprite> inactivebutton, std::string text, Font* font, Color fontcolor, float scale, int group, int active, bool canbeheld)
 {
 	if (upbutton == nullptr)
 	{
@@ -190,6 +190,8 @@ void GuiIconButton::Init(int ID, int posx, int posy, shared_ptr<Sprite> upbutton
 
 	m_CanBeHeld = canbeheld;
 
+	m_Scale = scale;
+
 	m_Clicked = false;
 }
 
@@ -210,14 +212,14 @@ void GuiIconButton::Draw()
 		if (m_InactiveTexture)
 		{
 			m_InactiveTexture->DrawScaled(
-				Rectangle{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y), m_Width, m_Height },
+				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
 				Vector2{ 0, 0 }, 0, m_Color);
 		}
 		else
 		{
 			m_UpTexture->DrawScaled(
-				Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y), m_Width, m_Height },
-				Vector2{ 0, 0 }, 0, m_Color);
+			Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+			Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
 	else
@@ -228,21 +230,21 @@ void GuiIconButton::Draw()
 			{
 
 				m_DownTexture->DrawScaled(
-					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y) + yoffset, m_Width, m_Height },
-					Vector2{ 0, 0 }, 0, m_Color);
+				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+				Vector2{ 0, 0 }, 0, m_Color);
 			}
 			else
 			{
 				m_UpTexture->DrawScaled(
-					Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y) + yoffset, m_Width, m_Height },
-					Vector2{ 0, 0 }, 0, m_Color);
+				Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+				Vector2{ 0, 0 }, 0, m_Color);
 			}
 		}
 		else
 		{
 			m_UpTexture->DrawScaled(
-				Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y) + yoffset, m_Width, m_Height },
-				Vector2{ 0, 0 }, 0, m_Color);
+			Rectangle{ (m_Gui->m_Pos.x + (m_Pos.x)), (m_Gui->m_Pos.y + (m_Pos.y)), m_Width * m_Scale, m_Height * m_Scale },
+			Vector2{ 0, 0 }, 0, m_Color);
 		}
 	}
 };
@@ -261,16 +263,16 @@ void GuiIconButton::Update()
 	{
 		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			m_Width * m_Gui->m_InputScale,
-			m_Height * m_Gui->m_InputScale))
+			m_Width * m_Gui->m_InputScale * m_Scale,
+			m_Height * m_Gui->m_InputScale * m_Scale))
 		{
 			m_Hovered = true;
 		}
 
 		if (IsLeftButtonDownInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			m_Width * m_Gui->m_InputScale,
-			m_Height * m_Gui->m_InputScale))
+			m_Width * m_Gui->m_InputScale * m_Scale,
+			m_Height * m_Gui->m_InputScale * m_Scale))
 		{
 			m_Hovered = false;
 			m_Down = true;
@@ -282,8 +284,8 @@ void GuiIconButton::Update()
 
 		else if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			m_Width * m_Gui->m_InputScale,
-			m_Height * m_Gui->m_InputScale))
+			m_Width * m_Gui->m_InputScale * m_Scale,
+			m_Height * m_Gui->m_InputScale * m_Scale))
 		{
 			m_Down = false;
 			m_Hovered = false;

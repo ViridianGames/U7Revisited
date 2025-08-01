@@ -1,37 +1,15 @@
 --- Best guess: Manages a combat training session with Markus, teaching sword techniques and potentially increasing combat ability, with gold and experience checks.
 function func_08BD(cost_to_train, stat_to_train)
     local npc_name, npc_id, npc_reference, training_points_required, var_0006, party_gold, var_0008, var_0009
-
-    debug_print("Starting function 08BD")
-
     training_points_required = 1
-    debug_print("Coroutine status before func_0920: " .. coroutine.status(coroutine.running()))
     npc_name = func_0920()
-    debug_print("Coroutine status after func_0920: " .. coroutine.status(coroutine.running()))
-    debug_print("Back from function 0920")
     npc_id = get_npc_id_from_name(npc_name)
-    debug_print("Back from get_npc_id_from_name")
-    debug_print("Coroutine status after get_npc_id_from_name: " .. coroutine.status(coroutine.running()))
-    if npc_id == 356 then
+    if npc_id == 0 then
         npc_reference = "you"
     else
         npc_reference = npc_name
     end
-    debug_print("NPC_reference is " .. npc_reference)
-    debug_print("About to call function 0922")
-    local success, err = pcall(function()
-        debug_print(npc_id)
-        debug_print(training_points_required)
-        debug_print(cost_to_train)
-        debug_print(stat_to_train)
-    end)
-    if not success then
-        debug_print("Print error: " .. err)
-    end
-    
-
     var_0006 = func_0922(training_points_required, npc_id, cost_to_train, stat_to_train)
-    debug_print("Back from function 0922 with result " .. var_0006)
     if var_0006 == 0 then
         add_dialogue("\"I am afraid thou dost not have enough practical experience to train at this time. If thou couldst return at a later date, I would be most happy to provide thee with my services.\"")
         return

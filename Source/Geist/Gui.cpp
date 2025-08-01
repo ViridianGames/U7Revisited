@@ -203,23 +203,23 @@ void Gui::AddTextButton(int ID, int posx, int posy, std::string text, Font* font
 
 void Gui::AddIconButton(int ID, int posx, int posy, shared_ptr<Sprite> upbutton, shared_ptr<Sprite> downbutton,
 	shared_ptr<Sprite> inactivebutton, std::string text, Font* font,
-	Color fontcolor, int group, int active, bool canbeheld)
+	Color fontcolor, float scale, int group, int active, bool canbeheld)
 {
 	shared_ptr<GuiIconButton> iconbutton = make_shared<GuiIconButton>(this);
-	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, group, active, canbeheld);
+	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, scale, group, active, canbeheld);
 	m_GuiList[ID] = iconbutton;
 
 }
 
 //  For making a button whose graphics are all on the same texture in standard 2x2 format.
-void Gui::AddIconButton(int ID, Texture* tex, int posx, int posy, int tilex, int tiley, int width, int height, std::string text, Font* font, Color fontcolor, int group, int active)
+void Gui::AddIconButton(int ID, Texture* tex, int posx, int posy, int tilex, int tiley, int width, int height, std::string text, Font* font, Color fontcolor, float scale, int group, int active)
 {
 	shared_ptr<Sprite> upbutton = make_shared<Sprite>(tex, tilex, tiley, width, height);
 	shared_ptr<Sprite> downbutton = make_shared<Sprite>(tex, tilex, tiley + height, width, height);
 	shared_ptr<Sprite> inactivebutton = make_shared<Sprite>(tex, tilex + width, tiley + height, width, height);
 
 	shared_ptr<GuiIconButton> iconbutton = make_shared<GuiIconButton>(this);
-	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, group, active);
+	iconbutton->Init(ID, posx, posy, upbutton, downbutton, inactivebutton, text, font, fontcolor, scale, group, active);
 	m_GuiList[ID] = iconbutton;
 }
 

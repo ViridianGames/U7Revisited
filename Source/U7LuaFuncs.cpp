@@ -1,4 +1,7 @@
 #include "U7LuaFuncs.h"
+
+#include <algorithm>
+
 #include "U7Globals.h"
 #include "Geist/ScriptingSystem.h"
 #include "Geist/StateMachine.h"
@@ -283,6 +286,8 @@ static int LuaRestoreAnswers(lua_State *L)
     return 0;
 }
 
+
+
 // Opcode 000A
 static int LuaGetAnswer(lua_State *L)
 {
@@ -390,6 +395,7 @@ static int LuaAskMultipleChoice(lua_State *L)
         lua_pop(L, 1); // Pop table[i]
     }
 
+    std::reverse(step.answers.begin(), step.answers.end());
     step.npcId = 0;
     step.frame = 0;
     g_ConversationState->AddStep(step);
@@ -398,6 +404,55 @@ static int LuaAskMultipleChoice(lua_State *L)
     return lua_yield(L, 0);
 }
 
+//  This is a custom version of multiple-choice that returns
+//  an array index instead of a string.  This makes it
+//  easier to run stores inside the conversation system.
+static int LuaGetPurchaseOption(lua_State *L)
+{
+    if (!g_ConversationState)
+    {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+    if (g_LuaDebug) AddConsoleString("LUA: get_purchase_option called");
+
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_GET_PURCHASE_OPTION;
+
+
+    // Create the yes/no step
+    // Table: iterate over elements and add strings
+    int table_len = lua_rawlen(L, 1);
+    for (int i = 1; i <= table_len; ++i)
+    {
+        lua_rawgeti(L, 1, i); // Push table[i]
+        if (lua_isstring(L, -1))
+        {
+            const char *answer = lua_tostring(L, -1);
+            if (i == 1) // Question
+            {
+                step.dialog = answer;
+            }
+            else
+            {
+                step.answers.push_back(answer);
+            }
+            std::cout << "Added answer: " << answer << "\n";
+        }
+        else
+        {
+            std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+        }
+        lua_pop(L, 1); // Pop table[i]
+    }
+
+    std::reverse(step.answers.begin(), step.answers.end());
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine
+    return lua_yield(L, 0);
+}
 
 // Opcode 000C
 // Pops up a modal dialog allowing the player to enter a number with a slider.
@@ -1113,6 +1168,42 @@ static int LuaIncreaseNPCCombatLevel(lua_State *L)
     return 0;
 }
 
+//  Parameters: shape, frame, cost per, amount
+//  Return flags: 1 - success, 2 - too heavy, 3 - can't afford
+static int LuaPurchaseObject(lua_State *L)
+{
+    if (g_LuaDebug) AddConsoleString("LUA: purchase_object called");
+    int shape = luaL_checkinteger(L, 1);
+    int frame = luaL_checkinteger(L, 2);
+    int cost_per = luaL_checkinteger(L, 3);
+    int amount = luaL_checkinteger(L, 4);
+
+    //  Check cost
+    if (cost_per * amount > g_Player->GetGold())
+    {
+        lua_pushinteger(L, 3);
+        return 1;
+    }
+
+    if (amount * g_objectTable[shape].m_weight < g_Player->GetStr() * 2)
+    {
+        lua_pushinteger(L, 2);
+        return 1;
+    }
+
+    //  Yay, we can actually purchase it!
+    for (int i = 0; i < amount; ++i)
+    {
+        unsigned int nextID = GetNextID();
+        AddObject(shape, frame, nextID, 0, 0, 0);
+
+        AddObjectToContainer(g_NPCData[0]->m_objectID, nextID);
+    }
+
+    g_Player->SetGold(g_Player->GetGold() - (cost_per * amount));
+    lua_pushinteger(L, 1);
+    return 1;
+}
 
 void RegisterAllLuaFunctions()
 {
@@ -1129,6 +1220,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
     g_ScriptingSystem->RegisterScriptFunction("clear_answers", LuaClearAnswers);
+    g_ScriptingSystem->RegisterScriptFunction("get_purchase_option", LuaGetPurchaseOption);
+    g_ScriptingSystem->RegisterScriptFunction("purchase_object", LuaPurchaseObject);
 
     // These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);

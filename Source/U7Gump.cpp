@@ -92,10 +92,10 @@ void Gump::OnEnter()
 	m_gui.m_Font = g_SmallFont;
 	m_gui.SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
 	m_gui.AddSprite(1004, 0, 0,
-		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), m_scale, m_scale, Color{255, 255, 255, 255});
-	m_gui.AddIconButton(1005, 4 * m_scale, 34 * m_scale, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 0, 1, false);
+		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), m_scale * 2, m_scale * 2, Color{255, 255, 255, 255});
+	m_gui.AddIconButton(1005, 4 * m_scale * 2, 34 * m_scale * 2, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 2, 0, 1, false);
 
-	m_gui.AddStretchButton(1006, 4 * m_scale, 12 * m_scale, 28, "Sort",
+	m_gui.AddStretchButton(1006, 4 * m_scale * 2, 12 * m_scale * 2, 28, "Sort",
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 		g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM);
 
@@ -130,7 +130,8 @@ void Gump::Update()
 	mousePos.y /= g_DrawScale;
 
 	//  Are we in the box bounds of the gump?
-	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale, m_containerData.m_boxSize.x * m_scale, m_containerData.m_boxSize.y * m_scale }))
+	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 2), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 2),
+		m_containerData.m_boxSize.x * m_scale * 2, m_containerData.m_boxSize.y * m_scale * 2 }))
 	{
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
@@ -141,7 +142,7 @@ void Gump::Update()
 					auto object = GetObjectFromID(containerObjectId).get();
 					if (object && object->m_shapeData)
 					{
-						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + m_containerData.m_boxOffset.x + object->m_GumpPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y + object->m_GumpPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 2) + object->m_GumpPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 2) + object->m_GumpPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
 						{
 							m_draggedObjectId = object->m_ID;
 							m_draggingObject = true;
@@ -189,7 +190,7 @@ void Gump::Draw()
 	for (auto& item : thisObject->m_inventory)
 	{
 		auto object = GetObjectFromID(item);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale + object->m_GumpPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale + object->m_GumpPos.y}, 0, 1, Color{255, 255, 255, 255});
+		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_GumpPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_GumpPos.y}, 0, 1, Color{255, 255, 255, 255});
 	}
 }
 
@@ -219,7 +220,7 @@ void Gump::SortContainer()
     for (int item : thisObject->m_inventory) {
         // If adding the item exceeds maxWidth, move to the next row
 		U7Object* itemObj = GetObjectFromID(item).get();
-        if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x) {
+        if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x * 2) {
             currentX = 0.0f;
             currentY += maxRowHeight;
             maxRowHeight = 0.0f;

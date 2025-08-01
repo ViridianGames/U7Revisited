@@ -20,6 +20,7 @@ public:
         STEP_ADD_DIALOGUE = 0,
         STEP_CHANGE_PORTRAIT,
         STEP_MULTIPLE_CHOICE,
+        STEP_GET_PURCHASE_OPTION,
     };
 
     struct ConversationStep
@@ -55,6 +56,7 @@ public:
 
     void SelectYesNo(bool yes);
     void ReturnMultipleChoice(std::string choice);
+    void ReturnGetPurchaseOption(int option);
 
     Gui* m_Gui;
 

@@ -101,6 +101,7 @@ void ConversationState::Update()
             m_steps.erase(m_steps.begin());
             break;
         case ConversationStepType::STEP_MULTIPLE_CHOICE:
+        case ConversationStepType::STEP_GET_PURCHASE_OPTION:
             if (!m_waitingForAnswer)
             {
                 m_currentDialogue = m_steps[0].dialog;
@@ -145,6 +146,11 @@ void ConversationState::Update()
                             ReturnMultipleChoice(m_answers[i]);
                         }
 
+                    }
+                    //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
+                    if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
+                    {
+                        ReturnGetPurchaseOption(i);
                     }
                     else
                     {
@@ -287,5 +293,19 @@ void ConversationState::ReturnMultipleChoice(std::string choice)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
+    m_answerPending = true;
+    m_steps.erase(m_steps.begin());
+}
+
+void ConversationState::ReturnGetPurchaseOption(int choice)
+{
+    if (!m_waitingForAnswer)
+        return;
+
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice + 1}); // Lua arrays are 1-indexed
+    m_answers = m_savedAnswers;
+    m_savedAnswers.clear();
+    m_waitingForAnswer = false;
+    m_answerPending = true;
     m_steps.erase(m_steps.begin());
 }

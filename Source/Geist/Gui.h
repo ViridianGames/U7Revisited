@@ -90,11 +90,11 @@ public:
 
 	void AddIconButton(int ID, int posx, int posy, std::shared_ptr<Sprite> upbutton, std::shared_ptr<Sprite> downbutton = NULL,
 		std::shared_ptr<Sprite> inactivebutton = NULL, std::string text = "", Font* font = NULL,
-		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true, bool canbeheld = false);
+		Color fontcolor = (Color{ 255, 255, 255, 255 }), float scale = 1, int group = 0, int active = true, bool canbeheld = false);
 
 	void AddIconButton(int ID, Texture* tex, int posx, int posy, int tilex, int tiley,
 		int width, int height, std::string text = "", Font* font = NULL,
-		Color fontcolor = (Color{ 255, 255, 255, 255 }), int group = 0, int active = true);
+		Color fontcolor = (Color{ 255, 255, 255, 255 }), float scale = 1, int group = 0, int active = true);
 
 	void AddCheckBox(int ID, int posx, int posy, std::shared_ptr<Sprite> Unselected, std::shared_ptr<Sprite> Selected, std::shared_ptr<Sprite> Hovered = NULL, std::shared_ptr<Sprite> HoveredSelected = NULL,
 		float scalex = 1.0f, float scaley = 1.0f,

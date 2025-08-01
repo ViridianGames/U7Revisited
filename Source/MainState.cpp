@@ -101,7 +101,7 @@ void MainState::OnEnter()
 
 	g_lastTime = 0;
 	g_minute = 0;
-	g_hour = 6;
+	g_hour = 7;
 	g_scheduleTime = 1;
 
 	m_paused = false;
