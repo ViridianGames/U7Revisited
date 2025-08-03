@@ -19,7 +19,7 @@ function func_0413(eventid, objectref)
             add_dialogue("\"Hello again!\" Apollonia says, her eyes twinkling.")
         end
         while true do
-            coroutine.yield(0)
+            coroutine.yield()
             var_0005 = get_answer()
             if var_0005 == "name" then
                 if not var_0004 then
@@ -88,7 +88,9 @@ function func_0413(eventid, objectref)
                 add_dialogue("Apollonia blushes and bats her eyelashes. \"Oh, " .. var_0001 .. "! I would wager that thou dost say that to all the barmaids!\"")
                 remove_answer("flirt")
             elseif var_0005 == "buy" then
-                unknown_0842H() --- Guess: Processes purchase of an item
+                --add_sub_coroutine("func_0842")
+                func_0842()
+                --remove_sub_coroutine("func_0842")
             elseif var_0005 == "bye" then
                 break
             end

@@ -19,25 +19,27 @@ function func_0412(eventid, objectref)
             end
             abort()
         end
-        add_answer({"bye", "murder", "job", "name"})
         if not get_flag(83) then
             add_dialogue("You see a stern shopkeeper who might once have been a strong fighter.")
             if var_0003 == 7 then
                 add_dialogue("\"Thou hast entered my shop, so thou had best buy something.\"")
             end
-            add_dialogue("\"Who might I be addressing?\"")
-            save_answers()
-            var_0006 = ask_answer({var_0002, var_0004})
+            var_0006 = ask_multiple_choice({"\"Who might I be addressing?\"", 
+            var_0002, var_0004})
+            --coroutine.yield(0)
             if var_0006 == var_0002 then
                 add_dialogue("\"Hmph. My name is Dell.\"")
             else
-                add_dialogue("\"Oh, art thou really? I did not know there were so many of thee! Why, only last week did an 'Avatar' come through here! He took me for 20 gold, too! An expert trickster, he was!~~Dell looks you up and down. \"Avatar, indeed! I do not like Avatars. But never mind that. I am called Dell. What dost thou want?\"")
+                add_dialogue("\"Oh, art thou really? I did not know there were so many of thee! Why, only last week did an 'Avatar' come through here! He took me for 20 gold, too! An expert trickster, he was!\"")
+                add_dialogue("Dell looks you up and down. \"Avatar, indeed! I do not like Avatars. But never mind that. I am called Dell. What dost thou want?\"")
             end
             set_flag(83, true)
         else
             add_dialogue("\"How may I help thee?\" Dell asks.")
         end
+        add_answer({"bye", "murder", "job", "name"})
         while true do
+            coroutine.yield()
             var_0007 = get_answer()
             if var_0007 == "name" then
                 add_dialogue("\"My name is Dell. Did I not say that already?\"")

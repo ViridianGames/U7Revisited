@@ -363,7 +363,7 @@ static int LuaAskMultipleChoice(lua_State *L)
     {
         return luaL_error(L, "ConversationState not initialized");
     }
-    if (g_LuaDebug) AddConsoleString("LUA: ask_multiple_choice called");
+    if (g_LuaDebug) AddConsoleString("LUA: get_purchase_option called");
 
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
@@ -459,6 +459,7 @@ static int LuaGetPurchaseOption(lua_State *L)
 static int LuaAskNumber(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: ask_number called");
+
     return 0;
 }
 
@@ -564,15 +565,7 @@ static int LuaGetPartyMemberNames(lua_State *L)
 static int LuaGetPlayerName(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: get_player_name called");
-    const char *player_name = "Avatar"; // TODO: g_Player->GetName()
-    if (player_name && player_name[0] != '\0')
-    {
-        lua_pushstring(L, player_name);
-    }
-    else
-    {
-        lua_pushstring(L, "Avatar");
-    }
+    lua_pushstring(L, g_Player->GetPlayerName().c_str());
     return 1;
 }
 
@@ -1185,7 +1178,7 @@ static int LuaPurchaseObject(lua_State *L)
         return 1;
     }
 
-    if (amount * g_objectTable[shape].m_weight < g_Player->GetStr() * 2)
+    if (amount * g_objectTable[shape].m_weight > g_Player->GetStr() * 2)
     {
         lua_pushinteger(L, 2);
         return 1;
@@ -1197,14 +1190,13 @@ static int LuaPurchaseObject(lua_State *L)
         unsigned int nextID = GetNextID();
         AddObject(shape, frame, nextID, 0, 0, 0);
 
-        AddObjectToContainer(g_NPCData[0]->m_objectID, nextID);
+        AddObjectToContainer(nextID, g_NPCData[0]->m_objectID);
     }
 
     g_Player->SetGold(g_Player->GetGold() - (cost_per * amount));
     lua_pushinteger(L, 1);
     return 1;
 }
-
 
 void RegisterAllLuaFunctions()
 {

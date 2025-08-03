@@ -21,8 +21,8 @@ function func_040B(eventid, objectref)
         return
     end
     if not get_flag(75) then
-        add_dialogue("You see a distraught peasant. \"Art thou really the Avatar?\"")
-        var_0004 = ask_yes_no()
+        --add_dialogue("You see a distraught peasant. \"Art thou really the Avatar?\"")
+        var_0004 = ask_yes_no("You see a distraught peasant. \"Art thou really the Avatar?\"")
         if var_0004 then
             add_dialogue("Petre bows before you. \"" .. var_0000 .. ".\"")
             set_flag(75, true)
