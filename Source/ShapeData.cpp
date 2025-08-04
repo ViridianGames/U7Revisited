@@ -380,7 +380,7 @@ void ShapeData::UpdateTextures()
 	{
 		//  Count empty pixels at the beginning of this line
 		int offset = 0;
-		for (int j = 0; j < m_texture.get()->width; ++j)
+		for (int j = m_frontTextureRect.x; j < m_texture.get()->width; ++j)
 		{
 			Color thisPixel = GetImageColor(m_texture->m_Image, j, i);
 			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
@@ -389,14 +389,24 @@ void ShapeData::UpdateTextures()
 				break;
 		}
 
-		if (m_frontTextureRect.x + offset + m_frontTextureRect.width < m_texture->width)
+		if (offset == m_texture->width)
 		{
-			ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
-				{ m_frontTextureRect.x + offset, m_frontTextureRect.y + counter, m_frontTextureRect.width, 1 }, //  Source rect
-				{ m_frontTextureRect.x, m_topTextureRect.height + counter + 1, m_frontTextureRect.width, 1 }, //  Dest rect
-				WHITE
-			);
+			//  There were no pixels to copy on this line
+			continue;
 		}
+
+		float finalwidth = m_frontTextureRect.width;
+		if (m_frontTextureRect.x + offset + m_frontTextureRect.width >= m_texture->width)
+		{
+			finalwidth = m_texture.get()->width - (m_frontTextureRect.x + offset);
+		}
+
+		ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+			{ m_frontTextureRect.x + offset, m_frontTextureRect.y + counter, finalwidth, 1 }, //  Source rect
+			{ 0, m_topTextureRect.height + counter + 1, finalwidth, 1 }, //  Dest rect
+			WHITE
+		);
+
 		++counter;
 	}
 
@@ -406,7 +416,7 @@ void ShapeData::UpdateTextures()
 	{
 		//  Count empty pixels at the beginning of this line
 		int offset = 0;
-		for (int j = 0; j < m_texture.get()->height; ++j)
+		for (int j = m_rightTextureRect.y; j < m_texture.get()->height; ++j)
 		{
 			Color thisPixel = GetImageColor(m_texture->m_Image, i, j);
 			if (thisPixel.a == 0 && thisPixel.r == 0 && thisPixel.g == 0 && thisPixel.b == 0)
@@ -415,14 +425,24 @@ void ShapeData::UpdateTextures()
 				break;
 		}
 
-		if (m_rightTextureRect.y + offset + m_rightTextureRect.height < m_texture->height)
+		if (offset == m_texture->height)
 		{
-			ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
-				{ m_rightTextureRect.x + counter, m_rightTextureRect.y + offset, 1, m_rightTextureRect.height }, //  Source rect
-				{ m_topTextureRect.width + counter + 1, m_rightTextureRect.y, 1, m_rightTextureRect.height }, //  Dest rect
-				WHITE
-			);
+			//  There were no pixels to copy on this line
+			continue;
 		}
+
+		float finalheight = m_rightTextureRect.height;
+		if (m_rightTextureRect.y + offset + m_rightTextureRect.height >= m_texture->height)
+		{
+			finalheight = m_texture.get()->height - (m_rightTextureRect.y + offset);
+		}
+
+		ImageDraw(&m_cuboidTexture->m_Image, m_texture->m_Image,
+		{ m_rightTextureRect.x + counter, m_rightTextureRect.y + offset, 1, finalheight }, //  Source rect
+		{ m_topTextureRect.width + counter + 1, m_rightTextureRect.y, 1, finalheight }, //  Dest rect
+			WHITE
+		);
+
 		++counter;
 	}
 
