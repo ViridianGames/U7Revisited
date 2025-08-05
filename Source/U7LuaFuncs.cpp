@@ -664,7 +664,7 @@ static int LuaIsAvatarFemale(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: is_avatar_female called");
     lua_pushboolean(L, !g_Player->GetIsMale());
-    return 0;
+    return 1;
 }
 
 static int LuaMove(lua_State *L)

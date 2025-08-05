@@ -581,7 +581,7 @@ void ShapeEditorState::Update()
 	}
 	if (m_currentGui->GetActiveElementID() == GE_RIGHTWIDTHPLUSBUTTON)
 	{
-		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width + 1 < shapeData.m_texture->width)
+		if (shapeData.m_rightTextureRect.x + shapeData.m_rightTextureRect.width < shapeData.m_texture->width)
 		{
 			somethingChanged = true; shapeData.m_rightTextureRect.width++;
 		}
