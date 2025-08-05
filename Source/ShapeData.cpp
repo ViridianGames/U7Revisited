@@ -343,6 +343,7 @@ void ShapeData::SetupDrawTypes()
 
 	//  FLAT DRAWING
 	m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/flat.obj");
+	//m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/uprightflat.obj");
 
 	//  CUBOID DRAWING
 
@@ -631,7 +632,9 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		// BeginShaderMode(g_alphaDiscard);
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
+		rlDisableDepthMask();
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, WHITE);
+		rlEnableDepthMask();
 		// EndShaderMode();
 		break;
 	}

@@ -39,6 +39,7 @@ enum class ShapeDrawType
 	OBJECT_DRAW_FLAT,
 	OBJECT_DRAW_CUSTOM_MESH,
 	OBJECT_DRAW_DONT_DRAW,
+	OBJECT_DRAW_UPRIGHTFLAT,
 	OBJECT_DRAW_LAST
 };
 
@@ -142,6 +143,7 @@ public:
 	std::string m_luaScript;
 
 	RaylibModel* m_flatModel = nullptr;
+	RaylibModel* m_uprightFlatModel = nullptr;
 
 };
 
