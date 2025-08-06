@@ -365,11 +365,13 @@ void U7Object::Interact(int event)
 
 		g_ConversationState->SetLuaFunction(scriptName);
 
-		AddConsoleString(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
+		AddConsoleString("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
+		g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID });
 	}
 	else
 	{
-		AddConsoleString(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
+		AddConsoleString("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID));
+		g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID });
 	}
 }
 
