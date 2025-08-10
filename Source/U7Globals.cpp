@@ -564,6 +564,12 @@ shared_ptr<Sprite> g_YouTubeButton;
 shared_ptr<Sprite> g_PatreonButton;
 shared_ptr<Sprite> g_KoFiButton;
 
+shared_ptr<Sprite> g_gumpNumberBarBackground;
+shared_ptr<Sprite> g_gumpNumberBarMarker;
+shared_ptr<Sprite> g_gumpNumberBarRightArrow;
+shared_ptr<Sprite> g_gumpNumberBarLeftArrow;
+
+
 shared_ptr<Texture2D> g_statsBackground;
 
 Camera g_camera = { 0 };

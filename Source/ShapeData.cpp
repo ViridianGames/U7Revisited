@@ -641,7 +641,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 	case ShapeDrawType::OBJECT_DRAW_BILLBOARD:
 	{
-		finalPos = pos;
+		finalPos = Vector3Add(pos, m_TweakPos);
 		finalPos.x += .5f;
 		finalPos.z += .5f;
 		finalPos.y += m_Dims.y * .60f;

@@ -57,7 +57,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_hasGump = false;
 	m_inventory.clear();
 	m_hasConversationTree = false;
-	m_GumpPos = Vector2{ 0, 0 };
+	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
 	m_isMoving = false;
 }
@@ -108,7 +108,6 @@ void U7Object::Shutdown()
 void U7Object::NPCDraw()
 {
 	//  Custom NPC drawing
-	bool debugTest = false;
 
 	Vector3 finalPos = m_Pos;
 	finalPos.x += .5f;
@@ -143,52 +142,38 @@ void U7Object::NPCDraw()
 
 	Vector3 dims = { 1, 1, 1 };
 
-	if (debugTest)
-	{
-		angle /= ((1.0 / 8.0) * (2 * PI));
+	angle /= ((1.0 / 4.0) * (2 * PI));
 
-		finalAngle = int(angle);
-		framerate = 200;
-		thisTime = 7 - ((thisTime / framerate) % 8);
-		if (!m_isMoving) thisTime = 1;
-		finalTexture = &g_walkFrames[finalAngle][thisTime];
-		dims = Vector3{ float(finalTexture->width) / 24.0f, float(finalTexture->height) / 24.0f, 1 };
-	}
-	else
-	{
-		angle /= ((1.0 / 4.0) * (2 * PI));
+	finalAngle = int(angle);
+	framerate = 350;
+	thisTime = (thisTime / framerate) % 2;
 
-		finalAngle = int(angle);
-		framerate = 350;
-		thisTime = (thisTime / framerate) % 2;
+	if (!m_isMoving) thisTime = 0;
 
-		if (!m_isMoving) thisTime = 0;
-
-		int frameIndex = 0;
+	int frameIndex = 0;
 
 		//  North frames are 1 and 2, South frames are 17 and 18
-		switch(finalAngle)
-		{
+	switch(finalAngle)
+	{
 		case 0: // South-West
-				finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
-				break;
-			case 1: // North-West
-				finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
-				billboardAngle = 45.0f;
-				break;
-			case 2: // North-East
-				finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
-				break;
-			case 3: // South-East
-				finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
-				billboardAngle = 45.0f;
-				break;
-			default:
-				int stopper = 0;
-				break;
-		}
-		dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
+			finalTexture = m_NPCData->m_walkTextures[0][m_isMoving ? thisTime : 0];
+			break;
+		case 1: // North-West
+			finalTexture = m_NPCData->m_walkTextures[3][m_isMoving ? thisTime : 0];
+			billboardAngle = 45.0f;
+			break;
+		case 2: // North-East
+			finalTexture = m_NPCData->m_walkTextures[2][m_isMoving ? thisTime : 0];
+			break;
+		case 3: // South-East
+			finalTexture = m_NPCData->m_walkTextures[1][m_isMoving ? thisTime : 0];
+			billboardAngle = 45.0f;
+			break;
+		default:
+			int stopper = 0;
+			break;
 	}
+	dims = Vector3{ float(finalTexture->width) / 8.0f, float(finalTexture->height) / 8.0f, 1 };
 
 	Vector3 shadowPos = Vector3{ m_Pos.x - .5f, 0.02f, m_Pos.z + 1 };
 	SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));

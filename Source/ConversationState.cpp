@@ -17,6 +17,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 #include <math.h>
 #include <fstream>
 #include <algorithm>
@@ -34,6 +35,7 @@ void ConversationState::Init(const string& configfile)
     m_Gui = new Gui();
     m_Gui->Init(configfile);
     m_Gui->SetLayout(0, 0, g_Engine->m_RenderWidth, g_Engine->m_RenderHeight, g_DrawScale, Gui::GUIP_USE_XY);
+    m_GumpNumberBar = make_unique<GumpNumberBar>();
     m_answers.clear();
     m_steps.clear();
     m_waitingForAnswer = false;
@@ -114,6 +116,17 @@ void ConversationState::Update()
                 m_waitingForAnswer = true;
             }
             break;
+        case ConversationStepType::STEP_GET_AMOUNT_FROM_NUMBER_BAR:
+            if (!m_waitingForAnswer)
+            {
+                SaveAnswers();
+                ClearAnswers();
+                m_GumpNumberBar->Setup(m_steps[0].data[0], m_steps[0].data[1], m_steps[0].data[2]);
+                m_currentDialogue = m_steps[0].dialog;
+                m_waitingForAnswer = true;
+                m_numberBarPending = true;
+            }
+            break;
         }
     }
 
@@ -121,45 +134,57 @@ void ConversationState::Update()
     {
         if (!m_answerPending)
         {
-            for (int i = 0; i < m_answers.size(); i++)
+            if (m_numberBarPending)
             {
-                std::string adjustedAnswer = std::string("* ") + m_answers[i];
-                Vector2 dims = MeasureTextEx(*g_SmallFont.get(), adjustedAnswer.c_str(), g_SmallFont.get()->baseSize, 1);
-
-                Vector2 mousePosition = GetMousePosition();
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
-                    CheckCollisionPointRec(mousePosition, {115 * g_DrawScale,
-                                                          float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
-                                                          dims.x * g_DrawScale,
-                                                          float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)}))
+                m_GumpNumberBar->Update();
+                if (m_GumpNumberBar->GetIsDead())
                 {
-                    if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
+                    m_numberBarPending = false;
+                    ReturnAmountFromNumberBar(m_GumpNumberBar->m_currentAmount);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < m_answers.size(); i++)
+                {
+                    std::string adjustedAnswer = std::string("* ") + m_answers[i];
+                    Vector2 dims = MeasureTextEx(*g_SmallFont.get(), adjustedAnswer.c_str(), g_SmallFont.get()->baseSize, 1);
+
+                    Vector2 mousePosition = GetMousePosition();
+                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
+                        CheckCollisionPointRec(mousePosition, {145 * g_DrawScale,
+                                                              float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
+                                                              dims.x * g_DrawScale,
+                                                              float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)}))
                     {
-                        if (m_answers[i] == "Yes" || m_answers[i] == "No")
+                        if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
                         {
-                            bool yes = (m_answers[i] == "Yes");
-                            SelectYesNo(yes);
-                            return;
+                            if (m_answers[i] == "Yes" || m_answers[i] == "No")
+                            {
+                                bool yes = (m_answers[i] == "Yes");
+                                SelectYesNo(yes);
+                                return;
+                            }
+                            else
+                            {
+                                ReturnMultipleChoice(m_answers[i]);
+                            }
+
+                        }
+                        //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
+                        else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
+                        {
+                            ReturnGetPurchaseOption(i);
                         }
                         else
                         {
-                            ReturnMultipleChoice(m_answers[i]);
-                        }
-
-                    }
-                    //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
-                    else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
-                    {
-                        ReturnGetPurchaseOption(i);
-                    }
-                    else
-                    {
-                        SetAnswer(m_luaFunction, m_answers[i]);
-                        m_answerPending = true;
-                        m_waitingForAnswer = false;
-                        if (!m_steps.empty())
-                        {
-                            m_steps.erase(m_steps.begin());
+                            SetAnswer(m_luaFunction, m_answers[i]);
+                            m_answerPending = true;
+                            m_waitingForAnswer = false;
+                            if (!m_steps.empty())
+                            {
+                                m_steps.erase(m_steps.begin());
+                            }
                         }
                     }
                 }
@@ -226,10 +251,30 @@ void ConversationState::Draw()
 
     if (m_waitingForAnswer)
     {
-       for (int i = 0; i < m_answers.size(); i++)
-       {
-          DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 115, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
-       }
+        if (m_numberBarPending)
+        {
+            m_GumpNumberBar->Draw();
+        }
+        else
+        {
+            Texture * thisTexture = nullptr;
+            if (!g_Player->GetIsMale()) // Avatar is always a special case
+            {
+                //  I'm a pretty girl!
+                thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(0) + to_string(1));
+            }
+            else
+            {
+                thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(0) + to_string(0));
+            }
+
+            DrawTextureEx(*thisTexture, {100, 135}, 0, 1, WHITE);
+            for (int i = 0; i < m_answers.size(); i++)
+            {
+
+                DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 145, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
+            }
+        }
     }
 
     DrawConsole();
@@ -277,11 +322,11 @@ void ConversationState::SelectYesNo(bool yes)
     if (!m_waitingForAnswer)
         return;
 
-    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {yes});
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
     m_steps.erase(m_steps.begin());
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {yes});
 }
 
 void ConversationState::ReturnMultipleChoice(std::string choice)
@@ -289,11 +334,11 @@ void ConversationState::ReturnMultipleChoice(std::string choice)
     if (!m_waitingForAnswer)
         return;
 
-    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice});
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
     m_steps.erase(m_steps.begin());
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice});
 }
 
 void ConversationState::ReturnGetPurchaseOption(int choice)
@@ -301,9 +346,23 @@ void ConversationState::ReturnGetPurchaseOption(int choice)
     if (!m_waitingForAnswer)
         return;
 
-    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice + 1}); // Lua arrays are 1-indexed
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
     m_steps.erase(m_steps.begin());
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice + 1}); // Lua arrays are 1-indexed
+}
+
+void ConversationState::ReturnAmountFromNumberBar(int amount)
+{
+    if (!m_waitingForAnswer)
+        return;
+
+    m_answers = m_savedAnswers;
+    m_savedAnswers.clear();
+    m_waitingForAnswer = false;
+    m_numberBarPending = false;
+    m_steps.erase(m_steps.begin());
+
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {amount}); // Lua arrays are 1-indexed
 }

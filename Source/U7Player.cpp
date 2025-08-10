@@ -54,6 +54,23 @@ void U7Player::SetSelectedPartyMember(int index)
 
 }
 
+float U7Player::GetWeight()
+{
+	U7Object* avatarObject = g_ObjectList[g_NPCData[0]->m_objectID].get();
+	float totalweight = 0;
+
+	for (auto node = avatarObject->m_inventory.begin(); node != avatarObject->m_inventory.end(); node++)
+	{
+		U7Object* thisObject = g_ObjectList[(*node)].get();
+
+		totalweight += g_objectTable[thisObject->m_shapeData->m_shape].m_weight;
+	}
+
+	m_weight = totalweight;
+
+	return m_weight;
+}
+
 bool U7Player::NPCIDInParty(int npc_id)
 {
 	for (int i = 0; i < m_PartyMemberIDs.size(); i++)

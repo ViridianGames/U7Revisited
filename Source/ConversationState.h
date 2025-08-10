@@ -7,6 +7,9 @@
 #include <array>
 #include <math.h>
 
+#include "U7Gump.h"
+#include "U7GumpNumberBar.h"
+
 class ParticleSystem;
 class Gui;
 class GuiElement;
@@ -21,6 +24,7 @@ public:
         STEP_CHANGE_PORTRAIT,
         STEP_MULTIPLE_CHOICE,
         STEP_GET_PURCHASE_OPTION,
+        STEP_GET_AMOUNT_FROM_NUMBER_BAR,
     };
 
     struct ConversationStep
@@ -28,6 +32,7 @@ public:
         ConversationStepType type;
         std::string dialog;
         std::vector<std::string> answers;
+        std::vector<int> data;
         int npcId;
         int frame;
     };
@@ -57,14 +62,18 @@ public:
     void SelectYesNo(bool yes);
     void ReturnMultipleChoice(std::string choice);
     void ReturnGetPurchaseOption(int option);
+    void ReturnAmountFromNumberBar(int amount);
 
     Gui* m_Gui;
+
+    std::unique_ptr<GumpNumberBar> m_GumpNumberBar;
 
     int m_npcId;
     int m_npcFrame;
 
     bool m_answerPending = false;
     bool m_waitingForAnswer = false;
+    bool m_numberBarPending = false;
 
     std::vector<std::string> m_answers;
     std::vector<std::string> m_savedAnswers;

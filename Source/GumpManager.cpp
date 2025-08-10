@@ -24,10 +24,10 @@ void GumpManager::Shutdown()
 
 void GumpManager::Update()
 {
-	for (vector<std::shared_ptr<Gump>>::iterator Gump = m_GumpList.begin(); Gump != m_GumpList.end();)
+	for (vector<std::shared_ptr<Unit2D>>::iterator Gump = m_GumpList.begin(); Gump != m_GumpList.end();)
 	{
 		(*Gump).get()->Update();
-		if ((*Gump).get()->m_isDone)
+		if ((*Gump).get()->GetIsDead())
 		{
 			Gump = m_GumpList.erase(Gump);
 		}
@@ -46,7 +46,7 @@ void GumpManager::Draw()
 	}
 }
 
-void GumpManager::AddGump(std::shared_ptr<Gump>& Gump)
+void GumpManager::AddGump(std::shared_ptr<Unit2D> Gump)
 {
 	m_GumpList.push_back(Gump);
 }

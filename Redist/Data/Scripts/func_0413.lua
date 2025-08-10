@@ -88,9 +88,7 @@ function func_0413(eventid, objectref)
                 add_dialogue("Apollonia blushes and bats her eyelashes. \"Oh, " .. var_0001 .. "! I would wager that thou dost say that to all the barmaids!\"")
                 remove_answer("flirt")
             elseif var_0005 == "buy" then
-                --add_sub_coroutine("func_0842")
                 func_0842()
-                --remove_sub_coroutine("func_0842")
             elseif var_0005 == "bye" then
                 break
             end

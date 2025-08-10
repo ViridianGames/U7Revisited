@@ -331,6 +331,11 @@ extern std::shared_ptr<Sprite> g_KoFiButton;
 
 extern std::shared_ptr<Texture2D> g_statsBackground;
 
+extern std::shared_ptr<Sprite> g_gumpNumberBarBackground;
+extern std::shared_ptr<Sprite> g_gumpNumberBarMarker;
+extern std::shared_ptr<Sprite> g_gumpNumberBarRightArrow;
+extern std::shared_ptr<Sprite> g_gumpNumberBarLeftArrow;
+
 extern Color g_Red;
 extern Color g_Blue;
 extern Color g_Pink;

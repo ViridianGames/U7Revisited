@@ -42,6 +42,8 @@ public:
 	int GetInt() { return m_int; }
 	int GetCombat() { return m_combat; }
 	int GetMagic() { return m_magic; }
+	float GetWeight();
+	float GetMaxWeight() { return 2 * m_str;}
 
 	void SetTrainingPoints(int tp) { m_TrainingPoints = tp; };
 	void SetStr(int str) { m_str = str; }
@@ -61,6 +63,7 @@ public:
 	int m_combat = 14;
 	int m_magic = 10;
 	int m_TrainingPoints = 3;
+	int m_weight = 0;
 	std::vector<std::string> m_PartyMemberNames;
 	std::vector<int> m_PartyMemberIDs;
 	std::string m_PlayerName;

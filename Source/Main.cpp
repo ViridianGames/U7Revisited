@@ -182,6 +182,11 @@ int main(int argv, char** argc)
       g_gumpCheckmarkUp = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 12, 21, 21);
       g_gumpCheckmarkDown = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 334, 52, 21, 21);
 
+      g_gumpNumberBarBackground = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 489, 176, 133, 21);
+      g_gumpNumberBarMarker = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 625, 175, 10, 10);
+      g_gumpNumberBarRightArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 638, 175, 10, 10);
+      g_gumpNumberBarLeftArrow = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), 651, 175, 10, 10);
+
       g_XButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 128, 0, 20, 20);
       g_GitHubButton = make_unique<Sprite>(g_ResourceManager->GetTexture("Images/GUI/guielements.png", false), 148, 0, 16, 16);
 

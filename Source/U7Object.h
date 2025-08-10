@@ -111,7 +111,7 @@ public:
 
    int m_NPCID;
 
-   Vector2 m_GumpPos;
+   Vector2 m_InventoryPos;
    bool m_isSorted = false;
    bool m_shouldBeSorted = true;
 

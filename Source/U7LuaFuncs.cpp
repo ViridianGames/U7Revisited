@@ -458,9 +458,26 @@ static int LuaGetPurchaseOption(lua_State *L)
 // Pops up a modal dialog allowing the player to enter a number with a slider.
 static int LuaAskNumber(lua_State *L)
 {
+    if (!g_ConversationState)
+    {
+        return luaL_error(L, "ConversationState not initialized");
+    }
     if (g_LuaDebug) AddConsoleString("LUA: ask_number called");
 
-    return 0;
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_GET_AMOUNT_FROM_NUMBER_BAR;
+    step.dialog = lua_tostring(L, 1);;
+    step.data.clear();
+    step.data.push_back(luaL_checkinteger(L, 2));;
+    step.data.push_back(luaL_checkinteger(L, 3));;
+    step.data.push_back(luaL_checkinteger(L, 4));;
+
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine
+    return lua_yield(L, 0);
 }
 
 // Opcode 000D
@@ -1171,6 +1188,13 @@ static int LuaPurchaseObject(lua_State *L)
     int cost_per = luaL_checkinteger(L, 3);
     int amount = luaL_checkinteger(L, 4);
 
+    //  Player aborted by choosing 0 units
+    if (amount == 0)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
     //  Check cost
     if (cost_per * amount > g_Player->GetGold())
     {
@@ -1178,7 +1202,7 @@ static int LuaPurchaseObject(lua_State *L)
         return 1;
     }
 
-    if (amount * g_objectTable[shape].m_weight > g_Player->GetStr() * 2)
+    if (g_Player->GetWeight() + (amount * g_objectTable[shape].m_weight) > g_Player->GetMaxWeight())
     {
         lua_pushinteger(L, 2);
         return 1;

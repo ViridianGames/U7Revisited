@@ -33,7 +33,7 @@ Gump::Gump()
 	m_gui.m_IsDragging = false;
 	m_gui.m_DragOffset = { 0, 0 };
 	m_gui.m_DragAreaHeight = 20;  // Default title bar height
-	m_isDone = false;
+	m_IsDead = false;
 	m_gui.m_doneButtonId = -3;
 	m_containerObject = nullptr;
 	m_containerId = -1;
@@ -116,7 +116,7 @@ void Gump::Update()
 	m_gui.Update();
 	if(m_gui.m_ActiveElement == m_gui.m_doneButtonId)
 	{
-		m_isDone = true;
+		m_IsDead = true;
 	}
 
 	if(m_gui.m_ActiveElement == 1006)
@@ -142,12 +142,12 @@ void Gump::Update()
 					auto object = GetObjectFromID(containerObjectId).get();
 					if (object && object->m_shapeData)
 					{
-						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 2) + object->m_GumpPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 2) + object->m_GumpPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 2) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 2) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
 						{
 							m_draggedObjectId = object->m_ID;
 							m_draggingObject = true;
-							m_dragOffset.x = mousePos.x - m_gui.m_Pos.x - m_containerData.m_boxOffset.x - object->m_GumpPos.x;
-							m_dragOffset.y = mousePos.y - m_gui.m_Pos.y - m_containerData.m_boxOffset.y - object->m_GumpPos.y;
+							m_dragOffset.x = mousePos.x - m_gui.m_Pos.x - m_containerData.m_boxOffset.x - object->m_InventoryPos.x;
+							m_dragOffset.y = mousePos.y - m_gui.m_Pos.y - m_containerData.m_boxOffset.y - object->m_InventoryPos.y;
 
 							// Move the selected object to the back of the inventory list so it draws on top
 							auto it = std::find(m_containerObject->m_inventory.begin(), m_containerObject->m_inventory.end(), m_draggedObjectId);
@@ -167,8 +167,8 @@ void Gump::Update()
 				auto object = GetObjectFromID(m_draggedObjectId);
 				if (object && object->m_shapeData)
 				{
-					object->m_GumpPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
-					object->m_GumpPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
+					object->m_InventoryPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
+					object->m_InventoryPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
 					m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 				}
 			}
@@ -190,7 +190,7 @@ void Gump::Draw()
 	for (auto& item : thisObject->m_inventory)
 	{
 		auto object = GetObjectFromID(item);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_GumpPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_GumpPos.y}, 0, 1, Color{255, 255, 255, 255});
+		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
 	}
 }
 
@@ -227,7 +227,7 @@ void Gump::SortContainer()
         }
 
         // Place the item
-        itemObj->m_GumpPos = { currentX, currentY };
+        itemObj->m_InventoryPos = { currentX, currentY };
         currentX += itemObj->m_shapeData->GetDefaultTextureImage().width;
         maxRowHeight = std::max(int(maxRowHeight), itemObj->m_shapeData->GetDefaultTextureImage().height);
         totalWidth = std::max(totalWidth, currentX);

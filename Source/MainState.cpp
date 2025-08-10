@@ -434,14 +434,12 @@ void MainState::Update()
 
 void MainState::OpenGump(int id)
 {
-	shared_ptr<Gump> gump = make_shared<Gump>();
+	auto gump = std::make_shared<Gump>();
 
 	gump->SetContainerId(id);
 	gump->OnEnter();
 
-	std::shared_ptr<Gump> guiPtr = gump;
-
-	m_GumpManager->AddGump(guiPtr);
+	m_GumpManager->AddGump(gump);
 }
 
 void MainState::Draw()
@@ -632,14 +630,30 @@ void MainState::DrawStats()
 	int counter = 0;
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
-		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		DrawTextureEx(*thisTexture, {538.0f - thisTexture->width, 200.0f + 48.0f * counter}, 0, 1, WHITE);
+		Texture * thisTexture = nullptr;
+		if (i == 0 && !g_Player->GetIsMale()) // Avatar is always a special case
+		{
+			//  I'm a pretty girl!
+			thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(1));
+		}
+		else
+		{
+			thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
+		}
+
+		//DrawTextureEx(*thisTexture, {538.0f - thisTexture->width, 200.0f + 48.0f * counter}, 0, 1, WHITE);
+		DrawTexturePro(*thisTexture, {float(thisTexture->width - 40) / 2.0f, float(thisTexture->height - 40) / 2.0f, 40, 40  },{538.0f - 40, 200.0f + 40.0f * counter, 40, 40}, {0, 0}, 0, WHITE);
 		if (g_Player->GetPartyMemberIds()[i] != g_Player->GetSelectedPartyMember())
 		{
-			DrawRectangle(538.0f - thisTexture->width, 200.0f + 48.0f * counter, thisTexture->width, thisTexture->height, {0, 0, 0, 128});
+			DrawRectangle(538.0f - 40, 200.0f + 40.0f * counter, 40, 40, {0, 0, 0, 128});
 		}
 		++counter;
 	}
+
+	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f +  11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(g_Player->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f +  12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+
+
 
 	//  Draw backpack
 	DrawTextureEx(*g_shapeTable[801][0].GetTexture(), Vector2{610, 314}, 0, 1, Color{255, 255, 255, 255});
@@ -653,7 +667,7 @@ void MainState::UpdateStats()
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
 		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 48.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
+		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
 		{
 			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
 		}

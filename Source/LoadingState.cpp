@@ -1176,7 +1176,7 @@ void LoadingState::CreateObjectTable()
 		// Weight and volume from wgtvol.dat
 		unsigned char weight;
 		wgtvolfile.read((char*)&weight, sizeof(char));
-		g_objectTable[i].m_weight = float(weight) / .10f;
+		g_objectTable[i].m_weight = float(weight) * .10f;
 		unsigned char volume;
 		wgtvolfile.read((char*)&volume, sizeof(char));
 		g_objectTable[i].m_volume = float(volume);
@@ -1296,6 +1296,13 @@ void LoadingState::LoadInitialGameState()
 
 				unsigned int shapenum = thisNPC.shapeId & 0x3ff;
 				unsigned int framenum = thisNPC.shapeId >> 10;
+				if (shapenum == 721)
+				{
+					if (!g_Player->GetIsMale())
+					{
+						shapenum = 989;
+					}
+				}
 
 				thisNPC.type = ReadU16(subFiles);
 				thisNPC.proba = ReadU8(subFiles);

@@ -27,13 +27,15 @@ function func_0842(eventid, objectref)
         end
     else
         var_000B = 10 - var_000B
-        if var_000B == 6 and not get_flag(299) then
+        if var_000B == 4 and not get_flag(299) then
             add_dialogue("\"I have none to sell thee, " .. var_0000 .. ", for the logger will no longer supply it.\"")
         else
-
-            var_000D = purchase_object(var_0004[var_000B], var_0005[var_000B], var_0006[var_000B], 1)
+            amount = ask_number("\"How many wouldst thou like?\"", 0, 20, 1)
+            var_000D = purchase_object(var_0004[var_000B], var_0005[var_000B], var_0006[var_000B], amount)
         end
-        if var_000D == 1 then
+        if var_000D == 0 then
+            add_dialogue("\"Nothing at all? Well, alright.\"")
+        elseif var_000D == 1 then
              add_dialogue("\"'Tis thine!\"")
         elseif var_000D == 2 then
              add_dialogue("\"Thou cannot possibly carry that much, " .. var_0000 .. "!\"")

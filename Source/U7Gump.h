@@ -14,9 +14,18 @@
 
 class U7Object;
 
-class Gump : public Object
+class Gump : public Unit2D
 {
 public:
+
+	enum class GumpType
+	{
+		GUMP_INVENTORY = 0,
+		GUMP_BOOK,
+		GUMP_SIGN,
+		GUMP_NUMBER_BAR,
+
+	};
 
 	enum class ContainerType
 	{
@@ -62,8 +71,11 @@ public:
 	virtual void Draw() override;
 	virtual void Init() { Init(std::string("")); }
 	virtual void Init(const std::string& data) override {};
-	virtual void OnExit() { m_isDone = true; }
+	virtual void OnExit() { m_IsDead = true; }
 	virtual void OnEnter();
+
+	//  Inventory Gump
+
 
 	void SetContainerId(int containerId) { m_containerId = containerId; }
 	int GetContainerId() { return m_containerId; }
@@ -82,8 +94,6 @@ public:
 	Gui m_gui;
 
 	U7Object* m_containerObject;
-
-	bool m_isDone = false;
 
 	int m_draggedObjectId = -1;
 	bool m_draggingObject = false;
