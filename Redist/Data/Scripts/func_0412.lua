@@ -26,7 +26,6 @@ function func_0412(eventid, objectref)
             end
             var_0006 = ask_multiple_choice({"\"Who might I be addressing?\"", 
             var_0002, var_0004})
-            --coroutine.yield(0)
             if var_0006 == var_0002 then
                 add_dialogue("\"Hmph. My name is Dell.\"")
             else
@@ -54,33 +53,31 @@ function func_0412(eventid, objectref)
             elseif var_0007 == "murder" then
                 add_dialogue("\"I am afraid I know nothing about it save for what is being said in the street, so do not ask me. If thou art not going to buy anything, then thou art wasting my time. Go away.\"")
                 remove_answer("murder")
-                var_0008 = npc_id_in_party(1) --- Guess: Checks player status
+                var_0008 = npc_id_in_party(1)
                 if var_0008 then
-                    switch_talk_to(1, 0)
-                    add_dialogue("Iolo whispers to you, \"Pleasant chap, is he not?\"")
-                    hide_npc(1)
-                    switch_talk_to(18, 0)
+                    second_speaker(1, 0, "Iolo whispers to you, \"Pleasant chap, is he not?\"")
                 end
             elseif var_0007 == "Fellowship" then
-                unknown_0919H() --- Guess: Explains Fellowship philosophy
+                func_0919()
                 remove_answer("Fellowship")
             elseif var_0007 == "philosophy" then
-                unknown_091AH() --- Guess: Provides detailed Fellowship information
+                func_091A()
                 remove_answer("philosophy")
             elseif var_0007 == "buy" then
                 if var_0003 == 7 then
                     add_dialogue("\"Certainly, " .. var_0001 .. ". What type of ware wouldst thou wish to see?\"")
                     save_answers()
+                    clear_answers()
                     add_answer({"provisions", "armour", "weapons", "nothing"})
                 else
                     add_dialogue("\"Come to my shop during business hours.\"")
                 end
             elseif var_0007 == "weapons" then
-                unknown_0872H() --- Guess: Shows weapons inventory
+                func_0872()
             elseif var_0007 == "armour" then
-                unknown_0873H() --- Guess: Shows armour inventory
+                func_0873()
             elseif var_0007 == "provisions" then
-                unknown_0874H() --- Guess: Shows provisions inventory
+                func_0874()
             elseif var_0007 == "nothing" then
                 restore_answers()
             elseif var_0007 == "bye" then
@@ -90,6 +87,7 @@ function func_0412(eventid, objectref)
         add_dialogue("\"Hmpf.\"")
         if var_0003 == 7 then
             add_dialogue("\"Spend more money next time thou dost come in.\"")
+            clear_answers()
         end
     elseif eventid == 0 then
         var_0000 = get_schedule() --- Guess: Checks game state or timer

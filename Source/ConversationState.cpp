@@ -74,6 +74,19 @@ void ConversationState::Shutdown()
 {
 }
 
+void ConversationState::SaveAnswers()
+{
+    m_savedAnswers.clear();
+    m_savedAnswers = m_answers;
+}
+
+void ConversationState::RestoreAnswers()
+{
+    m_answers = m_savedAnswers;
+    m_savedAnswers.clear();
+    m_waitingForAnswer = true; // Just in case a previous step set it to false.
+}
+
 void ConversationState::Update()
 {
     if (m_steps.empty() && m_answers.empty())
@@ -94,13 +107,21 @@ void ConversationState::Update()
             }
             if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
             {
-                m_steps.erase(m_steps.begin());
+                EraseTopStep();
             }
             break;
         case ConversationStepType::STEP_CHANGE_PORTRAIT:
             m_npcId = m_steps[0].npcId;
             m_npcFrame = m_steps[0].frame;
-            m_steps.erase(m_steps.begin());
+            EraseTopStep();
+            break;
+        case ConversationStepType::STEP_SECOND_SPEAKER:
+            m_secondSpeakerId = m_steps[0].npcId;
+            m_secondSpeakerFrame = m_steps[0].frame;
+            m_secondSpeakerDialogue = m_steps[0].dialog;
+            m_secondSpeakerActive = true;
+            EraseTopStep();
+            m_waitingForAnswer = true;
             break;
         case ConversationStepType::STEP_MULTIPLE_CHOICE:
         case ConversationStepType::STEP_GET_PURCHASE_OPTION:
@@ -129,6 +150,11 @@ void ConversationState::Update()
             break;
         }
     }
+    //  We don't have a new step to process but we still have answers
+    else if (!m_answers.empty())
+    {
+        m_waitingForAnswer = true;
+    }
 
     if (m_waitingForAnswer)
     {
@@ -143,6 +169,13 @@ void ConversationState::Update()
                     ReturnAmountFromNumberBar(m_GumpNumberBar->m_currentAmount);
                 }
             }
+            else if (m_secondSpeakerActive)
+            {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                {
+                    m_secondSpeakerActive = false;
+                }
+            }
             else
             {
                 for (int i = 0; i < m_answers.size(); i++)
@@ -152,38 +185,45 @@ void ConversationState::Update()
 
                     Vector2 mousePosition = GetMousePosition();
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) &&
-                        CheckCollisionPointRec(mousePosition, {145 * g_DrawScale,
+                        CheckCollisionPointRec(mousePosition, {190 * g_DrawScale,
                                                               float((140 + (i * g_SmallFont.get()->baseSize * 1.3)) * g_DrawScale),
                                                               dims.x * g_DrawScale,
                                                               float((g_SmallFont.get()->baseSize * 1.3) * g_DrawScale)}))
                     {
-                        if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
-                        {
-                            if (m_answers[i] == "Yes" || m_answers[i] == "No")
-                            {
-                                bool yes = (m_answers[i] == "Yes");
-                                SelectYesNo(yes);
-                                return;
-                            }
-                            else
-                            {
-                                ReturnMultipleChoice(m_answers[i]);
-                            }
-
-                        }
-                        //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
-                        else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
-                        {
-                            ReturnGetPurchaseOption(i);
-                        }
-                        else
+                        if (m_steps.size() == 0)
                         {
                             SetAnswer(m_luaFunction, m_answers[i]);
                             m_answerPending = true;
                             m_waitingForAnswer = false;
-                            if (!m_steps.empty())
+
+                        }
+                        else
+                        {
+                            if (m_steps[0].type == ConversationStepType::STEP_MULTIPLE_CHOICE)
                             {
-                                m_steps.erase(m_steps.begin());
+                                if (m_answers[i] == "Yes" || m_answers[i] == "No")
+                                {
+                                    bool yes = (m_answers[i] == "Yes");
+                                    SelectYesNo(yes);
+                                    return;
+                                }
+                                else
+                                {
+                                    ReturnMultipleChoice(m_answers[i]);
+                                }
+
+                            }
+                            //  Instead of the string, GET_PURCHASE_OPTION returns the index of the selected option
+                            else if (m_steps[0].type == ConversationStepType::STEP_GET_PURCHASE_OPTION)
+                            {
+                                ReturnGetPurchaseOption(i);
+                            }
+                            else
+                            {
+                                SetAnswer(m_luaFunction, m_answers[i]);
+                                m_answerPending = true;
+                                m_waitingForAnswer = false;
+                                EraseTopStep();
                             }
                         }
                     }
@@ -249,13 +289,22 @@ void ConversationState::Draw()
     DrawParagraph(g_ConversationFont, m_currentDialogue, {115, 20}, 380,
                   g_ConversationFont.get()->baseSize, 1, YELLOW);
 
+    if (m_secondSpeakerActive)
+    {
+        DrawRectangleRounded({100, 240, 500, 110}, .25, 100, {0, 0, 0, 224});
+        DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_secondSpeakerId) + to_string(m_secondSpeakerFrame)), {4, 240}, 0, 2, WHITE);
+
+        DrawParagraph(g_ConversationFont, m_secondSpeakerDialogue, {115, 250}, 380,
+                      g_ConversationFont.get()->baseSize, 1, YELLOW);
+    }
+
     if (m_waitingForAnswer)
     {
         if (m_numberBarPending)
         {
             m_GumpNumberBar->Draw();
         }
-        else
+        else if (!m_secondSpeakerActive)
         {
             Texture * thisTexture = nullptr;
             if (!g_Player->GetIsMale()) // Avatar is always a special case
@@ -268,11 +317,11 @@ void ConversationState::Draw()
                 thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(0) + to_string(0));
             }
 
-            DrawTextureEx(*thisTexture, {100, 135}, 0, 1, WHITE);
+            DrawTextureEx(*thisTexture, {100, 135}, 0, 2, WHITE);
             for (int i = 0; i < m_answers.size(); i++)
             {
 
-                DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 145, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
+                DrawOutlinedText(g_SmallFont, "* " + m_answers[i], { 190, float(140 + (i * g_SmallFont.get()->baseSize * 1.3)) }, g_SmallFont.get()->baseSize, 1, YELLOW);
             }
         }
     }
@@ -317,6 +366,14 @@ void ConversationState::SetAnswer(const std::string& func_name, const std::strin
     m_answerPending = true;
 }
 
+void ConversationState::EraseTopStep()
+{
+    if (!m_steps.empty())
+    {
+        m_steps.erase(m_steps.begin());
+    }
+}
+
 void ConversationState::SelectYesNo(bool yes)
 {
     if (!m_waitingForAnswer)
@@ -325,7 +382,7 @@ void ConversationState::SelectYesNo(bool yes)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
-    m_steps.erase(m_steps.begin());
+    EraseTopStep();
     g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {yes});
 }
 
@@ -337,7 +394,7 @@ void ConversationState::ReturnMultipleChoice(std::string choice)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
-    m_steps.erase(m_steps.begin());
+    EraseTopStep();
     g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice});
 }
 
@@ -349,7 +406,7 @@ void ConversationState::ReturnGetPurchaseOption(int choice)
     m_answers = m_savedAnswers;
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
-    m_steps.erase(m_steps.begin());
+    EraseTopStep();
     g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice + 1}); // Lua arrays are 1-indexed
 }
 
@@ -362,7 +419,7 @@ void ConversationState::ReturnAmountFromNumberBar(int amount)
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
     m_numberBarPending = false;
-    m_steps.erase(m_steps.begin());
+    EraseTopStep();
 
     g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {amount}); // Lua arrays are 1-indexed
 }

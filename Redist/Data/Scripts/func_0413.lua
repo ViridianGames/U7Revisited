@@ -65,7 +65,7 @@ function func_0413(eventid, objectref)
                         var_0009 = var_0009 + 1
                     end
                     var_000B = var_0009 * 6
-                    var_000C = get_party_gold() --- Guess: Checks gold amount
+                    var_000C = get_party_gold()
                     if var_000C >= var_000B then
                         var_000D = unknown_002CH(true, 359, 255, 641, 1) --- Guess: Adds item to inventory
                         if not var_000D then
@@ -89,6 +89,7 @@ function func_0413(eventid, objectref)
                 remove_answer("flirt")
             elseif var_0005 == "buy" then
                 func_0842()
+                debug_print("Back in 0413")
             elseif var_0005 == "bye" then
                 break
             end
@@ -101,6 +102,6 @@ function func_0413(eventid, objectref)
             clear_answers()
         end
     elseif eventid == 0 then
-        unknown_092EH(19) --- Guess: Triggers a game event
+        unknown_092EH(19)
     end
 end

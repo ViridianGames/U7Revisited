@@ -56,21 +56,18 @@ static int LuaStartConversation(lua_State *L)
 }
 
 // Opcode 0003
-static int LuaSwitchTalkTo(lua_State *L)
+static int LuaSecondSpeaker(lua_State *L)
 {
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
     int npc_id = luaL_checkinteger(L, 1);
-    int frame = 0;
-    if (lua_gettop(L) > 1)
-    {
-        frame = luaL_checkinteger(L, 2);
-    }
+    int frame = luaL_checkinteger(L, 2);
+    string secondSpeakerDialog = luaL_checkstring(L, 3);
     if (g_LuaDebug) AddConsoleString("LUA: switch_talk_to called with " + std::to_string(npc_id));
     ConversationState::ConversationStep step;
-    step.type = ConversationState::ConversationStepType::STEP_CHANGE_PORTRAIT;
-    step.dialog = "";
+    step.type = ConversationState::ConversationStepType::STEP_SECOND_SPEAKER;
+    step.dialog = secondSpeakerDialog;
     step.npcId = npc_id;
     step.frame = frame;
     g_ConversationState->AddStep(step);
@@ -199,6 +196,7 @@ static int LuaRemoveAnswers(lua_State *L)
         lua_pop(L, 1);
         lua_newtable(L);
         lua_setglobal(L, "answers");
+        lua_setglobal(L, "answers");
         lua_getglobal(L, "answers");
     }
     if (!lua_istable(L, -1))
@@ -285,8 +283,6 @@ static int LuaRestoreAnswers(lua_State *L)
     cout << "Restoring answers\n";
     return 0;
 }
-
-
 
 // Opcode 000A
 static int LuaGetAnswer(lua_State *L)
@@ -1222,12 +1218,36 @@ static int LuaPurchaseObject(lua_State *L)
     return 1;
 }
 
+static int LuaSwitchTalkTo(lua_State *L)
+{
+    if (!g_ConversationState) {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+    int npc_id = luaL_checkinteger(L, 1);
+    int frame = 0;
+    if (lua_gettop(L) > 1)
+    {
+        frame = luaL_checkinteger(L, 2);
+    }
+    if (g_LuaDebug) AddConsoleString("LUA: switch_talk_to called with " + std::to_string(npc_id));
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_CHANGE_PORTRAIT;
+    step.dialog = "";
+    step.npcId = npc_id;
+    step.frame = frame;
+    g_ConversationState->AddStep(step);
+    cout << "Switching talk to NPC ID: " << npc_id << "\n";
+
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
 
     // These functions handle the conversation system.
     g_ScriptingSystem->RegisterScriptFunction("switch_talk_to", LuaSwitchTalkTo);
+    g_ScriptingSystem->RegisterScriptFunction("second_speaker", LuaSecondSpeaker);
     g_ScriptingSystem->RegisterScriptFunction("hide_npc", LuaHideNPC);
     g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);

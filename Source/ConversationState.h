@@ -21,7 +21,8 @@ public:
     enum class ConversationStepType
     {
         STEP_ADD_DIALOGUE = 0,
-        STEP_CHANGE_PORTRAIT,
+	STEP_CHANGE_PORTRAIT,
+        STEP_SECOND_SPEAKER,
         STEP_MULTIPLE_CHOICE,
         STEP_GET_PURCHASE_OPTION,
         STEP_GET_AMOUNT_FROM_NUMBER_BAR,
@@ -55,8 +56,8 @@ public:
     void ClearAnswers() { m_answers.clear(); }
     void GetAnswers(const std::string& func_name);
     void SetAnswer(const std::string& func_name, const std::string& answer);
-    void SaveAnswers() { m_savedAnswers = m_answers; }
-    void RestoreAnswers() { m_answers = m_savedAnswers; m_savedAnswers.clear(); }
+    void SaveAnswers();
+    void RestoreAnswers();
     void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
 
     void SelectYesNo(bool yes);
@@ -64,12 +65,16 @@ public:
     void ReturnGetPurchaseOption(int option);
     void ReturnAmountFromNumberBar(int amount);
 
+    void EraseTopStep();
+
     Gui* m_Gui;
 
     std::unique_ptr<GumpNumberBar> m_GumpNumberBar;
 
     int m_npcId;
     int m_npcFrame;
+    int m_secondSpeakerId;
+    int m_secondSpeakerFrame;
 
     bool m_answerPending = false;
     bool m_waitingForAnswer = false;
@@ -78,6 +83,7 @@ public:
     std::vector<std::string> m_answers;
     std::vector<std::string> m_savedAnswers;
     std::string m_currentDialogue;
+    std::string m_secondSpeakerDialogue;
 
     std::string m_luaFunction;
 
@@ -85,6 +91,7 @@ public:
 
     bool m_scriptFinished = false;
     bool m_conversationActive = false;
+    bool m_secondSpeakerActive = false;
 };
 
 #endif
