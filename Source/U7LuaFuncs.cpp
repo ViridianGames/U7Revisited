@@ -135,16 +135,20 @@ static int LuaAddAnswers(lua_State *L)
             return luaL_error(L, "Answers table lost at index %d", answers_idx);
         }
         lua_rawseti(L, answers_idx, len + 1);
-        g_ConversationState->AddAnswer(answer);
+        std::vector<std::string> answers;
+        answers.push_back(answer);
+        g_ConversationState->AddAnswers(answers);
         std::cout << "Added answer: " << answer << "\n";
     }
     else if (type == LUA_TTABLE)
     {
         // Table: iterate over elements and add strings
+        vector<string> localAnswers;
         int table_len = lua_rawlen(L, 1);
         for (int i = 1; i <= table_len; ++i)
         {
-            lua_rawgeti(L, 1, i); // Push table[i]
+
+            lua_rawgeti(L, 1, i);
             if (lua_isstring(L, -1))
             {
                 const char *answer = lua_tostring(L, -1);
@@ -153,7 +157,7 @@ static int LuaAddAnswers(lua_State *L)
                 {
                     return luaL_error(L, "Answers table lost at index %d", answers_idx);
                 }
-                g_ConversationState->AddAnswer(answer);
+                localAnswers.push_back(answer);
                 lua_rawseti(L, answers_idx, len + 1);
                 len++; // Increment for next insertion
                 std::cout << "Added answer: " << answer << "\n";
@@ -162,8 +166,11 @@ static int LuaAddAnswers(lua_State *L)
             {
                 std::cout << "Warning: Non-string element at index " << i << " ignored\n";
             }
+
             lua_pop(L, 1); // Pop table[i]
         }
+        std::reverse(localAnswers.begin(), localAnswers.end());
+        g_ConversationState->AddAnswers(localAnswers);
     }
     else
     {
@@ -430,7 +437,7 @@ static int LuaGetPurchaseOption(lua_State *L)
             }
             else
             {
-                step.answers.push_back(answer);
+                step.answers.insert(step.answers.begin(), answer);
             }
             std::cout << "Added answer: " << answer << "\n";
         }

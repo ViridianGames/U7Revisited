@@ -130,10 +130,7 @@ void ConversationState::Update()
                 m_currentDialogue = m_steps[0].dialog;
                 SaveAnswers();
                 ClearAnswers();
-                for (int i = 0; i < m_steps[0].answers.size(); i++)
-                {
-                    AddAnswer(m_steps[0].answers[i]);
-                }
+                AddAnswers(m_steps[0].answers);
                 m_waitingForAnswer = true;
             }
             break;
@@ -341,11 +338,14 @@ void ConversationState::Draw()
     EndDrawing();
 }
 
-void ConversationState::AddAnswer(std::string answer)
+void ConversationState::AddAnswers(std::vector<std::string> answers)
 {
-    if (std::find(m_answers.begin(), m_answers.end(), answer) == m_answers.end())
+    for (auto& answer : answers)
     {
-        m_answers.push_back(answer);
+        if (std::find(m_answers.begin(), m_answers.end(), answer) == m_answers.end())
+        {
+            m_answers.push_back(answer);
+        }
     }
 }
 
@@ -407,7 +407,7 @@ void ConversationState::ReturnGetPurchaseOption(int choice)
     m_savedAnswers.clear();
     m_waitingForAnswer = false;
     EraseTopStep();
-    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice + 1}); // Lua arrays are 1-indexed
+    g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {choice}); // Lua arrays are 1-indexed
 }
 
 void ConversationState::ReturnAmountFromNumberBar(int amount)
