@@ -448,7 +448,6 @@ static int LuaGetPurchaseOption(lua_State *L)
         lua_pop(L, 1); // Pop table[i]
     }
 
-    std::reverse(step.answers.begin(), step.answers.end());
     step.npcId = 0;
     step.frame = 0;
     g_ConversationState->AddStep(step);
