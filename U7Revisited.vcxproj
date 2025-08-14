@@ -44,6 +44,7 @@
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
     <ClCompile Include="Source\U7Gump.cpp" />
+    <ClCompile Include="Source\U7GumpNumberBar.cpp" />
     <ClCompile Include="Source\U7LuaFuncs.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\U7Player.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
     <ClInclude Include="Source\U7Gump.h" />
+    <ClInclude Include="Source\U7GumpNumberBar.h" />
     <ClInclude Include="Source\U7LuaFuncs.h" />
     <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\U7Player.h" />
