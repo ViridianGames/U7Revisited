@@ -24,6 +24,8 @@
 #include <sstream>
 #include <format>
 #include <iomanip>
+#include "rlgl.h"
+
 
 using namespace std;
 
@@ -177,7 +179,9 @@ void U7Object::NPCDraw()
 
 	Vector3 shadowPos = Vector3{ m_Pos.x - .5f, 0.02f, m_Pos.z + 1 };
 	SetMaterialTexture(&g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, *g_ResourceManager->GetTexture("Images/dropshadow.png"));
+	rlDisableDepthMask();
 	DrawModel(g_ResourceManager->GetModel("Models/3dmodels/flat.obj")->GetModel(), shadowPos, 1.5f, BLACK);
+	rlEnableDepthMask();
 
 	BeginShaderMode(g_alphaDiscard);
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
