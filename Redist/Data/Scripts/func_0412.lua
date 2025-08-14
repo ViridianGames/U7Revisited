@@ -67,7 +67,7 @@ function func_0412(eventid, objectref)
                 if var_0003 == 7 then
                     add_dialogue("\"Certainly, " .. var_0001 .. ". What type of ware wouldst thou wish to see?\"")
                     save_answers()
-                    clear_answers()
+                    --clear_answers()
                     add_answer({"provisions", "armour", "weapons", "nothing"})
                 else
                     add_dialogue("\"Come to my shop during business hours.\"")
@@ -79,7 +79,7 @@ function func_0412(eventid, objectref)
             elseif var_0007 == "provisions" then
                 func_0874()
             elseif var_0007 == "nothing" then
-                restore_answers()
+                --restore_answers()
             elseif var_0007 == "bye" then
                 break
             end
