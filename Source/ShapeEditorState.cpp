@@ -1863,7 +1863,7 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	out.str("");
 	out.precision(1);
 	gui->AddTextArea(GE_TWEAKROTATIONTITLEAREA, g_guiFont.get(), "Tweak Rot:", 2, y);
-	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 0, 1, true);
+	gui->AddIconButton(GE_TWEAKROTATIONPLUSBUTTON, 62, y, g_LeftArrow, g_LeftArrow, g_LeftArrow, "", g_guiFont.get(), Color{ 255, 255, 255, 255 }, 1, 1, true, true);
 	gui->AddTextArea(GE_TWEAKROTATIONTEXTAREA, g_guiFont.get(), " ", 71, y);
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
 
