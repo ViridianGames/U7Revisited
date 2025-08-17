@@ -37,7 +37,7 @@ std::unique_ptr<RNG> g_NonVitalRNG;
 std::unique_ptr<Terrain> g_Terrain;
 
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
-std::array<ObjectData, 1024> g_objectTable;
+std::array<ObjectData, 1024> g_objectDataTable;
 
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 
@@ -90,6 +90,9 @@ std::unique_ptr<Model> g_CuboidModel;
 std::vector< std::vector<Texture> > g_walkFrames;
 
 std::unordered_map<int, std::vector<NPCSchedule> > g_NPCSchedules;
+
+Color g_dayNightColor = WHITE;
+bool g_isDay = true;
 
 float g_lastTime;
 unsigned int g_hour;

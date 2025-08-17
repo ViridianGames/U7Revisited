@@ -6,7 +6,9 @@
 #include <string>
 #include <list>
 #include "lua.h"
+#include "U7Globals.h"
 
+struct ObjectData;
 enum class ObjectTypes;
 enum class ShapeDrawType;
 class ShapeData;
@@ -50,6 +52,8 @@ public:
    void NPCUpdate();
    void NPCDraw();
    void NPCInit(NPCData* npcData);
+
+	void CheckLighting();
   
    Vector3 m_Pos;
    Vector3 m_Dest;
@@ -95,6 +99,7 @@ public:
 
    ShapeDrawType m_drawType;
    ShapeData* m_shapeData;
+	ObjectData* m_objectData;
 
    double m_distanceFromCamera;
 
@@ -110,6 +115,8 @@ public:
    bool m_isEgg;
 
    int m_NPCID;
+
+	bool m_isLit = true;
 
    Vector2 m_InventoryPos;
    bool m_isSorted = false;

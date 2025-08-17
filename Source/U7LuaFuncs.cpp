@@ -491,6 +491,7 @@ static int LuaSetObjectShape(lua_State *L)
     U7Object *object = GetObjectFromID(object_id).get();
     int currentFrame = object->m_shapeData->GetFrame();
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
+    object->m_objectData = &g_objectDataTable[shape];
     return 0;
 }
 
@@ -1209,7 +1210,7 @@ static int LuaPurchaseObject(lua_State *L)
         return 1;
     }
 
-    if (g_Player->GetWeight() + (amount * g_objectTable[shape].m_weight) > g_Player->GetMaxWeight())
+    if (g_Player->GetWeight() + (amount * g_objectDataTable[shape].m_weight) > g_Player->GetMaxWeight())
     {
         lua_pushinteger(L, 2);
         return 1;

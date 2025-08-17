@@ -63,7 +63,7 @@ float U7Player::GetWeight()
 	{
 		U7Object* thisObject = g_ObjectList[(*node)].get();
 
-		totalweight += g_objectTable[thisObject->m_shapeData->m_shape].m_weight;
+		totalweight += g_objectDataTable[thisObject->m_shapeData->m_shape].m_weight;
 	}
 
 	m_weight = totalweight;

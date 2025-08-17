@@ -81,6 +81,9 @@ extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
 extern float g_secsPerMinute;
 
+extern Color g_dayNightColor;
+extern bool g_isDay;
+
 struct ObjectData
 {
 	//  From wgtvol.dat
@@ -207,7 +210,7 @@ extern int g_chunkTypeMap[192][192]; // The type of each chunk in the map
 extern std::vector<U7Object*> g_chunkObjectMap[192][192]; // The objects in each chunk
 
 extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
-extern std::array<ObjectData, 1024> g_objectTable;
+extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
 extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;

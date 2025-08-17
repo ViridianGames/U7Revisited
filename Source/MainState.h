@@ -87,8 +87,6 @@ public:
 
    bool m_paused = false;
 
-   bool m_notDay = false;
-
    std::unique_ptr<GumpManager> m_GumpManager;
 };
 

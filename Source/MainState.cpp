@@ -142,6 +142,43 @@ void MainState::Update()
 		g_scheduleTime = g_hour / 3;
 	}
 
+	if(g_hour == 20)
+	{
+		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * 128.0f);
+		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * 255.0f);
+		g_dayNightColor = {red_green, red_green, darkness, 255};
+		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
+		g_isDay = false;
+	}
+	//  Sunrise
+	else if (g_hour == 6)
+	{
+		unsigned char darkness = 128 + ((float(g_minute) / 60.0f) * 128.0f);
+		unsigned char red_green = ((float(g_minute) / 60.0f) * 255.0f);
+		g_dayNightColor = {red_green, red_green, darkness, 255};
+		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
+		if (darkness < .1f)
+		{
+			g_isDay = true;
+		}
+		else
+		{
+			g_isDay = false;
+		}
+	}
+	//  Night
+	else if (g_hour > 20 || g_hour < 6)
+	{
+		g_dayNightColor = {0, 0, 128, 255};
+		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
+		g_isDay = false;
+	}
+	else
+	{
+		g_dayNightColor = {255, 255, 255, 255};
+		g_isDay = true;
+	}
+
 	if(m_GumpManager->m_GumpList.size() > 0)
 	{
 		m_GumpManager->Update();
@@ -163,14 +200,14 @@ void MainState::Update()
 				{
 					(*node).second->Update();
 				}
-				if (g_objectTable[(*node).second->m_shapeData->m_shape].m_height == 0)
+				if (g_objectDataTable[(*node).second->m_shapeData->m_shape].m_height == 0)
 				{
 					int stopper = 0;
 				}
 
-				Vector3 boundingBoxCenterPoint = {g_objectTable[(*node).second->m_shapeData->m_shape].m_width / 2,
-												  g_objectTable[(*node).second->m_shapeData->m_shape].m_height / 2,
-												  g_objectTable[(*node).second->m_shapeData->m_shape].m_depth / 2};
+				Vector3 boundingBoxCenterPoint = {g_objectDataTable[(*node).second->m_shapeData->m_shape].m_width / 2,
+												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_height / 2,
+												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_depth / 2};
 				Vector3 centerPoint = Vector3Add((*node).second->m_Pos, boundingBoxCenterPoint);
 
 				float distance = Vector3Distance(centerPoint, g_camera.target);
@@ -186,6 +223,11 @@ void MainState::Update()
 
 			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b)
 					  { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+
+			for (auto object : g_sortedVisibleObjects)
+			{
+				object->CheckLighting();
+			}
 		}
 
 		m_LastUpdate = GetTime();
@@ -512,35 +554,7 @@ void MainState::Draw()
 
 	//  Draw darkness
 	//  Sundown
-	if(g_hour == 20)
-	{
-		float darkness = ((float(g_minute) / 60.0f) * 192.0f);
-		Color darkColor = {0, 0, 64, int(darkness)};
-		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
-		m_notDay = true;
-	}
-	//  Sunrise
-	else if (g_hour == 6)
-	{
-		float darkness = 192.0f - ((float(g_minute) / 60.0f) * 192.0f);
-		Color darkColor = {0, 0, 64, int(darkness)};
-		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
-		if (darkness < .1f)
-		{
-			m_notDay = false;
-		}
-		else
-		{
-			m_notDay = true;
-		}
-	}
-	//  Night
-	else if (g_hour > 20 || g_hour < 6)
-	{
-		Color darkColor = {0, 0, 64, 192};
-		DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, darkColor);
-		m_notDay = true;
-	}
+
 
 	//  Add light sources
 	//ImageDrawCircle(&m_LightingImage, 320, 200, 100, {255, 255, 255, 0});

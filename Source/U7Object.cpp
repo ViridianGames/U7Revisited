@@ -24,6 +24,7 @@
 #include <sstream>
 #include <format>
 #include <iomanip>
+#include "raymath.h"
 #include "rlgl.h"
 
 
@@ -52,6 +53,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_UnitConfig = g_ResourceManager->GetConfig(configfile);
 	m_Frame = frame;
 	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
+	m_objectData = &g_objectDataTable[m_ObjectType];
 	m_drawType = m_shapeData->GetDrawType();
 	m_isContainer = false;
 	m_isContained = false;
@@ -80,12 +82,42 @@ void U7Object::Draw()
 	}
 	else
 	{
-		m_shapeData->Draw(m_Pos, m_Angle, m_color);
+		if (!m_isLit)
+		{
+			m_shapeData->Draw(m_Pos, m_Angle, g_dayNightColor);
+		}
+		else
+		{
+			m_shapeData->Draw(m_Pos, m_Angle, WHITE);
+		}
 	}
 
 	if (g_Engine->m_debugDrawing)
 	{
 		DrawBoundingBox(m_boundingBox, MAGENTA);
+	}
+}
+
+void U7Object::CheckLighting()
+{
+	if (g_isDay)
+	{
+		m_isLit = true;
+	}
+	else
+	{
+		//  Run through list of nearby objects.  If any are light sources and are close enough, this object is lit.
+		m_isLit = false;
+		for (auto object : g_sortedVisibleObjects)
+		{
+			if (object.get()->m_objectData->m_isLightSource)
+			{
+				if (Vector3DistanceSqr(object.get()->m_Pos, m_Pos) <= 49)
+				{
+					m_isLit = true;
+				}
+			}
+		}
 	}
 }
 
@@ -266,7 +298,7 @@ void U7Object::SetPos(Vector3 pos)
 	Vector3 dims = Vector3{ 0, 0, 0 };
 	Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
 
-	ObjectData* objectData = &g_objectTable[m_shapeData->GetShape()];
+	ObjectData* objectData = &g_objectDataTable[m_shapeData->GetShape()];
 
 	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
 	{

@@ -58,7 +58,7 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 
 		m_isValid = true;
 
-		ObjectData* objectData = &g_objectTable[m_shape];
+		ObjectData* objectData = &g_objectDataTable[m_shape];
 
 		for (int i = 0; i < 6; ++i)
 		{
@@ -227,7 +227,7 @@ void ShapeData::Deserialize(ifstream& inStream)
 
 void ShapeData::ResetTopTextureRect()
 {
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	m_topTextureRect.x = 0;
 	m_topTextureRect.y = 0;
@@ -239,7 +239,7 @@ void ShapeData::ResetTopTextureRect()
 
 void ShapeData::ResetFrontTextureRect()
 {
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	m_frontTextureRect.x = 0;
 	m_frontTextureRect.y = objectData->m_depth * 8;
@@ -251,7 +251,7 @@ void ShapeData::ResetFrontTextureRect()
 
 void ShapeData::ResetRightTextureRect()
 {
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	m_rightTextureRect.x = objectData->m_width * 8;
 	m_rightTextureRect.y = 0;
@@ -324,7 +324,7 @@ void ShapeData::SafeAndSane()
 
 void ShapeData::SetupDrawTypes()
 {
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 
@@ -361,7 +361,7 @@ void ShapeData::UpdateTextures()
 		return;
 
 	//  Fixup the texture for this object.
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	SafeAndSane();
 
@@ -588,7 +588,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		return;
 	}
 
-	ObjectData* objectData = &g_objectTable[m_shape];
+	ObjectData* objectData = &g_objectDataTable[m_shape];
 
 	Vector3 cuboidScaling = m_Scaling;
 	cuboidScaling.x = m_Scaling.x * scaling.x;
@@ -608,7 +608,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 
 		SetMaterialTexture(&g_CuboidModel.get()->materials[0], MATERIAL_MAP_DIFFUSE, m_cuboidTexture->m_Texture);
 		UpdateTextureCoordinates();
-		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle, { m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, WHITE);
+		DrawModelEx(*g_CuboidModel.get(), thisPos, Vector3{ 0, 1, 0 }, angle, { m_Dims.x * m_Scaling.x, m_Dims.y * m_Scaling.y, m_Dims.z * m_Scaling.z }, color);
 
 		break;
 	}
@@ -633,7 +633,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		// BeginShaderMode(g_alphaDiscard);
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
 		rlDisableDepthMask();
-		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, WHITE);
+		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
 		rlEnableDepthMask();
 		// EndShaderMode();
 		break;
@@ -666,7 +666,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 			// Step 1: Draw the original model, mark stencil with 1
 			glStencilFunc(GL_ALWAYS, 1, 0xFF);
 			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 
 			// Step 2: Draw the outline where stencil is not 1
 			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -714,7 +714,7 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		}
 		else
 		{
-			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, WHITE);
+			DrawModelEx(m_customMesh->GetModel(), finalPos, { 0, 1, 0 }, m_rotation, m_Scaling, color);
 		}
 		break;
 	}

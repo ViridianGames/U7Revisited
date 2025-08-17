@@ -148,7 +148,8 @@ void Terrain::Draw()
 		{
 			if (m_chunkVisible[i][j])
 			{
-				DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, WHITE);
+				DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, g_dayNightColor);
+				//DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, g_dayNightColor);
 				m_chunkDrawCount += 1;
 			}
 		}

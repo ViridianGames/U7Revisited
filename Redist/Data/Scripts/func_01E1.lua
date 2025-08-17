@@ -2,7 +2,7 @@
 function func_01E1(eventid, objectref)
     if eventid == 1 or eventid == 2 then
         -- call [0000] (0942H, unmapped)
-        unknown_0942H(435, objectref)
+        set_object_shape(objectref, 435)
     end
-    return
+    --return
 end
