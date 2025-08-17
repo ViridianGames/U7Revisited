@@ -100,14 +100,17 @@ void ConversationState::Update()
         switch (m_steps[0].type)
         {
         case ConversationStepType::STEP_ADD_DIALOGUE:
-            m_currentDialogue = m_steps[0].dialog;
-            if (m_steps.size() == 1 && m_answers.size() > 0)
+            if (!m_secondSpeakerActive)
             {
-                m_waitingForAnswer = true;
-            }
-            if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-            {
-                EraseTopStep();
+                m_currentDialogue = m_steps[0].dialog;
+                if (m_steps.size() == 1 && m_answers.size() > 0)
+                {
+                    m_waitingForAnswer = true;
+                }
+                if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+                {
+                    EraseTopStep();
+                }
             }
             break;
         case ConversationStepType::STEP_CHANGE_PORTRAIT:
@@ -121,7 +124,6 @@ void ConversationState::Update()
             m_secondSpeakerDialogue = m_steps[0].dialog;
             m_secondSpeakerActive = true;
             EraseTopStep();
-            m_waitingForAnswer = true;
             break;
         case ConversationStepType::STEP_MULTIPLE_CHOICE:
         case ConversationStepType::STEP_GET_PURCHASE_OPTION:
@@ -153,6 +155,14 @@ void ConversationState::Update()
         m_waitingForAnswer = true;
     }
 
+    if (m_secondSpeakerActive)
+    {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
+            m_secondSpeakerActive = false;
+        }
+    }
+
     if (m_waitingForAnswer)
     {
         if (!m_answerPending)
@@ -164,13 +174,6 @@ void ConversationState::Update()
                 {
                     m_numberBarPending = false;
                     ReturnAmountFromNumberBar(m_GumpNumberBar->m_currentAmount);
-                }
-            }
-            else if (m_secondSpeakerActive)
-            {
-                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-                {
-                    m_secondSpeakerActive = false;
                 }
             }
             else

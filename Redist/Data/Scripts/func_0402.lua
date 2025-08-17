@@ -8,7 +8,7 @@ function func_0402(eventid, objectref)
         var_0001 = "Avatar"
         var_0002 = get_party_members()
         var_0003 = is_player_female()
-        var_0004 = get_npc_name(2) --- Guess: Retrieves object reference from ID
+        var_0004 = get_npc_name_from_id(2) --- Guess: Retrieves object reference from ID
         var_0005 = false
         var_0006 = false
         var_0007 = false
@@ -27,10 +27,10 @@ function func_0402(eventid, objectref)
         end
         var_0009 = get_lord_or_lady()
         if not get_flag(21) then
-            add_dialogue("You see a boy who appears to be a young teen. He is dirty and unkempt. He looks as if he has been crying, but he sits up straight and looks sharp when he sees you.")
+            add_dialogue("You see a boy who appears to be a young teen. He is dirty and unkempt.")
+            add_dialogue("He looks as if he has been crying, but he sits up straight and looks sharp when he sees you.")
             add_dialogue("\"Who art thou and what dost thou want?\" You realize the boy has a sling in hand.")
-            add_dialogue("You face the boy and tell him who you are.")
-            var_000A = ask_answer({var_0001, var_0000})
+            var_000A = ask_multiple_choice({"You face the boy and tell him who you are.", var_0001, var_0000})
             if var_000A == var_0000 then
                 add_dialogue("\"So? What makes thee so special?\"")
                 var_0008 = var_0000
@@ -40,12 +40,12 @@ function func_0402(eventid, objectref)
                 var_0008 = var_0001
                 set_flag(71, true)
             end
-            var_000B = npc_id_in_party(1) --- Guess: Checks player status
+            var_000B = npc_id_in_party(1)
             if var_000B then
-                switch_talk_to(1, 0)
-                add_dialogue("\"Boy, this is the Avatar! " .. (var_0003 and "Upon my word she is! She has come to help thee!\"" or "Upon my word he is! He has come to help thee!\""))
-                hide_npc(1)
-                switch_talk_to(2, 1)
+                --switch_talk_to(1, 0)
+                second_speaker(1, 0, "\"Boy, this is the Avatar! " .. (var_0003 and "Upon my word she is! She has come to help thee!\"" or "Upon my word he is! He has come to help thee!\""))
+                --hide_npc(1)
+                --switch_talk_to(2, 1)
             end
             add_dialogue("Then the boy narrows his eyes, studying you. He slowly lowers his weapon, ready to act in case it's a trap. You admire the boy's obvious experience in dealing with strangers.")
             add_dialogue("You and Spark stare at each other. He is not sure what to do. Finally, he nods his head. \"All right. I believe thee. Thou dost look like paintings I have seen. I am sorry, " .. var_0009 .. ".\"")
@@ -60,22 +60,25 @@ function func_0402(eventid, objectref)
         if get_flag(62) then
             remove_answer("key")
         end
-        if is_in_int_array(var_0004, var_0002) then
+        if is_in_string_array(var_0004, var_0002) then
             add_answer("leave")
         end
-        if get_flag(73) and not is_in_int_array(var_0004, var_0002) then
+        if get_flag(73) and not is_in_string_array(var_0004, var_0002) then
             add_answer("join")
         end
         if get_flag(62) and not get_flag(100) then
             add_answer({"scroll", "medallion", "gold"})
         end
         while true do
+            debug_print("Starting main loop for Spark")
+            coroutine.yield()
             var_000C = get_answer()
             if var_000C == "name" then
                 add_dialogue("\"I have always been called Spark.\"")
                 remove_answer("name")
             elseif var_000C == "job" then
-                add_dialogue("\"I have no job. I am only fourteen, so I am just learning how to best help Father in the smithy,\" he says, proudly. But then he suddenly realizes something which terrifies him. \"And now that Father is dead, I am an orphan!\"")
+                add_dialogue("\"I have no job. I am only fourteen, so I am just learning how to best help Father in the smithy,\" he says, proudly.")
+                add_dialogue("But then he suddenly realizes something which terrifies him. \"And now that Father is dead, I am an orphan!\"")
                 add_answer({"orphan", "Father", "smithy"})
             elseif var_000C == "smithy" then
                 add_dialogue("\"Father was the best blacksmith in Britannia. People were always coming from everywhere to get him to make this and that.\"")
@@ -85,7 +88,9 @@ function func_0402(eventid, objectref)
                 remove_answer("orphan")
             elseif var_000C == "murder" then
                 if not get_flag(67) then
-                    add_dialogue("\"I cannot believe Father is dead. And poor Inamo, too. It is so strange. I -dreamed- it was happening. Well, in a way.~~\"Last night I was having a nightmare about Father. I dreamed that he screamed, and it woke me up. I looked around the house, but he was not in his bed. I was wide awake, so I went out to find him.\"")
+                    add_dialogue("\"I cannot believe Father is dead. And poor Inamo, too. It is so strange. I -dreamed- it was happening. Well, in a way.")
+                    add_dialogue("\"Last night I was having a nightmare about Father. I dreamed that he screamed, and it woke me up.")
+                    add_dialogue("I looked around the house, but he was not in his bed. I was wide awake, so I went out to find him.\"")
                     add_answer({"find", "nightmare", "Inamo"})
                 else
                     add_dialogue("\"I am sure thou canst find the man who killed Father!\"")
@@ -106,7 +111,8 @@ function func_0402(eventid, objectref)
                 end
                 remove_answer("chest")
             elseif var_000C == "my story" then
-                add_dialogue("\"It is so strange. I -dreamed- it was happening. Well, in a way.~~\"Last night I was having a nightmare about Father. I dreamed that he screamed, and it woke me up. I looked around the house, but he was not in his bed. I was wide awake, so I went out to find him.\"")
+                add_dialogue("\"It is so strange. I -dreamed- it was happening. Well, in a way.")
+                add_dialogue("\"Last night I was having a nightmare about Father. I dreamed that he screamed, and it woke me up. I looked around the house, but he was not in his bed. I was wide awake, so I went out to find him.\"")
                 remove_answer("my story")
                 add_answer({"nightmare", "find"})
             elseif var_000C == "nightmare" then
@@ -117,7 +123,9 @@ function func_0402(eventid, objectref)
                 add_answer("something")
                 remove_answer("find")
             elseif var_000C == "something" then
-                add_dialogue("\"I was in front of the stables. I saw a man and a wingless gargoyle running from behind the building. They ran toward the dock. Then I went inside and found... Father.\"~~Spark's voice falters, and he begins to sob a little.")
+                add_dialogue("\"I was in front of the stables. I saw a man and a wingless gargoyle running from behind the building. They ran toward the dock.")
+                add_dialogue("Then I went inside and found... Father.\"")
+                add_dialogue("Spark's voice falters, and he begins to sob a little.")
                 add_answer({"gargoyle", "man"})
                 remove_answer("something")
             elseif var_000C == "man" then
@@ -129,33 +137,29 @@ function func_0402(eventid, objectref)
                 remove_answer("gargoyle")
             elseif var_000C == "hook" then
                 if not get_flag(67) then
-                    if not is_in_int_array(var_0004, var_0002) then
+                    if not is_in_string_array(var_0004, var_0002) then
                         add_dialogue("\"Wilt thou go find the Man with the Hook? Let me help thee!\" the boy pleads. His tears cease, and his face takes on a determined, forceful look.")
                         set_flag(67, true)
                         add_dialogue("\"Take me with thee! Please! I must avenge Father's death! If thou dost not take me with thee, I will follow thee anyway!\"")
                         add_dialogue("The boy is all excited now. \"I am an expert with a slingshot! I can strike sewer rats with almost every shot! And I am small -- I do not eat much! Please take me! Please ask me to join thee!\"")
-                        var_000B = npc_id_in_party(1) --- Guess: Checks player status
+                        var_000B = npc_id_in_party(1)
                         if var_000B then
-                            switch_talk_to(1, 0)
-                            add_dialogue("Iolo whispers to you. \"I do not know about taking a child on the road with us, " .. var_0009 .. ".\"")
-                            hide_npc(1)
-                            switch_talk_to(2, 1)
-                            add_dialogue("Suddenly, Spark lets his sling fly. His target, a small fly hovering above Iolo's head, is smacked out of the air. You laugh as Iolo yelps, jumps away, curses and runs his fingers through his hair.")
-                            unknown_000FH(1) --- Guess: Triggers a specific effect or action
+                            second_speaker(1, 0, "Iolo whispers to you. \"I do not know about taking a child on the road with us, " .. var_0009 .. ".\"")
+                            add_dialogue("Suddenly, Spark lets his sling fly. His target, a small fly hovering above Iolo's head, is smacked out of the air.")
+                            add_dialogue("You laugh as Iolo yelps, jumps away, curses and runs his fingers through his hair.")
+                            --unknown_000FH(1) -- Plays a sound effect
                         else
                             add_dialogue("Suddenly, Spark lets his sling fly. His target, a small fly hovering above your head, is smacked out of the air.")
                         end
-                        add_dialogue("\"I told thee I am good! May I join?\"")
-                        var_000C = select_option()
+                        var_000C = ask_yes_no("\"I told thee I am good! May I join?\"")
                         if var_000C then
-                            hide_npc(2)
                             switch_talk_to(2, 0)
                             add_dialogue("\"Hooray!\" the boy leaps with delight.")
                             add_answer("leave")
-                            unknown_001EH(2) --- Guess: Removes object from game
+                            add_to_party(2)
                         else
                             add_dialogue("\"Fine.\" The boy looks angry. \"But I'll follow thee anyway.\"")
-                            unknown_001EH(2) --- Guess: Removes object from game
+                            add_to_party(2)
                             add_answer("leave")
                         end
                         set_flag(73, true)
@@ -264,6 +268,7 @@ function func_0402(eventid, objectref)
                 add_dialogue("\"He was a very nice gargoyle. He helped Father a lot and did tasks in the stables. I cannot think why anyone would want to kill him!\"")
                 remove_answer("Inamo")
             elseif var_000C == "bye" then
+                clear_answers()
                 break
             end
         end

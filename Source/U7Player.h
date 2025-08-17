@@ -54,6 +54,8 @@ public:
 
 	int GetSelectedPartyMember() { return m_selectedPartyMember;};
 	void SetSelectedPartyMember(int index);
+	void AddPartyMember(int index);
+	void RemovePartyMember(int index);
 
 	private:
 	int m_Gold = 100;

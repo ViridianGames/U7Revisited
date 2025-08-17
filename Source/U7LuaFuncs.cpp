@@ -574,6 +574,9 @@ static int LuaGetPartyMemberNames(lua_State *L)
     vector<string> party_members = g_Player->GetPartyMemberNames();
     for (size_t i = 0; i < party_members.size(); ++i)
     {
+        string text = "Party member: " + party_members[i];
+        cout << "Lua console: " << text << "\n";
+        if (g_LuaDebug) AddConsoleString(text, Color{255, 255, 255, 255});
         lua_pushstring(L, party_members[i].c_str());
         lua_rawseti(L, -2, i + 1);
     }
@@ -886,6 +889,7 @@ static int LuaRemoveFromParty(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: remove_from_party called");
     int npc_id = luaL_checkinteger(L, 1);
+    g_Player->RemovePartyMember(npc_id);
     return 0;
 }
 
@@ -893,6 +897,7 @@ static int LuaAddToParty(lua_State *L)
 {
     if (g_LuaDebug) AddConsoleString("LUA: add_to_party called");
     int npc_id = luaL_checkinteger(L, 1);
+    g_Player->AddPartyMember(npc_id);
     return 0;
 }
 

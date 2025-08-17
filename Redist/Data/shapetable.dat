@@ -10238,7 +10238,7 @@
 469 29 0 0 8 8 0 8 8 27 8 0 18 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 29 default 
 469 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 30 default 
 469 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 469 31 default 
-470 0 0 0 32 24 0 24 32 16 32 0 12 24 3 1 1 1 1.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/well_470x00.gltf 1 0 470 0 default 
+470 0 0 0 32 24 0 24 32 16 32 0 12 24 3 1 1 1 -1.5 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/well_470x00.gltf 1 0 470 0 default 
 470 1 0 0 32 24 0 24 32 17 32 0 13 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 470 1 default 
 470 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 470 2 default 
 470 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 470 3 default 
@@ -15458,7 +15458,7 @@
 633 1 0 0 24 24 0 24 24 6 24 0 6 24 3 1 0.9 1 -0.5 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/table_633x01.obj 1 0 633 1 default 
 633 2 0 0 24 24 0 24 24 11 24 0 11 24 3 1 1 1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/table_633x02.obj 1 0 633 2 default 
 633 3 0 0 24 24 0 24 24 7 24 0 7 24 3 1.2 1.5 1.2 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/table_633x03.obj 1 0 633 3 default 
-633 4 0 0 27 25 0 23 19 5 24 0 8 24 3 1 1 1.1 -0.5 0 -0.5 0 0 2 2 3 3 1 Models/3dmodels/table_633x04.obj 1 0 633 4 default 
+633 4 0 0 27 25 0 23 19 5 24 0 8 24 3 1.1 1 1.1 -0.5 0 -0.5 0 0 2 2 3 3 1 Models/3dmodels/table_633x04.obj 1 0 633 4 default 
 633 5 0 0 24 24 0 24 24 7 24 0 7 24 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/table_633x05.obj 1 0 633 5 default 
 633 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 633 6 default 
 633 7 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 633 7 default 
