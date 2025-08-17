@@ -1099,7 +1099,7 @@ void LoadingState::LoadModels()
 
             if (ext == ".obj" || ext == ".gltf")
 			{
-                std::string filepath = entry.path().string();
+                std::string filepath = entry.path().generic_string();
 					g_ResourceManager->AddModel(filepath);
             	RaylibModel* model = g_ResourceManager->GetModel(filepath);
             	if (filepath != "Models/3dmodels/flat.obj")
