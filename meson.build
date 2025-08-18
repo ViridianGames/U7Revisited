@@ -37,6 +37,14 @@ raylib_options.add_cmake_defines({
      'PLATFORM': 'Desktop',
 })
 
+# Add macOS-specific raylib configurations
+if host_machine.system() == 'darwin'
+  raylib_options.add_cmake_defines({
+    'CMAKE_OSX_ARCHITECTURES': 'arm64',
+    'SUPPORT_QUADS_DRAW_MODE': 'ON',
+  })
+endif
+
 # setup raylib dependency
 raylib_subproject = cmake.subproject('raylib', options: raylib_options)
 dependencies += raylib_subproject.dependency('raylib')
@@ -96,11 +104,17 @@ dependencies += declare_dependency(
     link_with: lua_lib
 )
 
-# Windows build requires dependency of winmm
+# Platform-specific dependencies
 if host_machine.system() == 'windows'
+  # Windows build requires dependency of winmm
   cc = meson.get_compiler('c')
   dependencies += [
     cc.find_library('winmm', required: false)
+  ]
+elif host_machine.system() == 'darwin'
+  # macOS build requires system frameworks
+  dependencies += [
+    dependency('appleframeworks', modules: ['CoreFoundation', 'CoreGraphics', 'IOKit', 'AppKit', 'OpenGL'])
   ]
 endif
 
@@ -142,6 +156,7 @@ sources = files(
            'Source/TitleState.cpp',
            'Source/U7Globals.cpp',
            'Source/U7Gump.cpp',
+           'Source/U7GumpNumberBar.cpp',
            'Source/U7LuaFuncs.cpp',
            'Source/U7Object.cpp',
            'Source/U7Player.cpp',

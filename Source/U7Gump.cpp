@@ -126,15 +126,29 @@ void Gump::Update()
 
 	// Handle dragging
 	Vector2 mousePos = GetMousePosition();
-	mousePos.x /= g_DrawScale;
-	mousePos.y /= g_DrawScale;
 
 	//  Are we in the box bounds of the gump?
-	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 2), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 2),
-		m_containerData.m_boxSize.x * m_scale * 2, m_containerData.m_boxSize.y * m_scale * 2 }))
+	Rectangle gumpBounds = { 
+		m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 2), 
+		m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 2),
+		m_containerData.m_boxSize.x * m_scale * 2, 
+		m_containerData.m_boxSize.y * m_scale * 2 
+	};
+	
+	// Convert mouse position from screen space to render target space
+	float renderTargetScaleX = float(g_Engine->m_RenderWidth) / float(g_Engine->m_ScreenWidth);
+	float renderTargetScaleY = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
+	Vector2 scaledMousePos = { mousePos.x * renderTargetScaleX, mousePos.y * renderTargetScaleY };
+	
+#ifdef DEBUG_MODE
+	printf("GUMP DEBUG: Mouse (%.1f, %.1f) -> scaled (%.1f, %.1f)\n", mousePos.x, mousePos.y, scaledMousePos.x, scaledMousePos.y);
+#endif
+	
+	if (CheckCollisionPointRec(scaledMousePos, gumpBounds))
 	{
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
+			
 			if(!m_draggingObject)
 			{
 				for (auto containerObjectId : m_containerObject->m_inventory)
@@ -142,12 +156,17 @@ void Gump::Update()
 					auto object = GetObjectFromID(containerObjectId).get();
 					if (object && object->m_shapeData)
 					{
-						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 2) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 2) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+						float itemDrawX = m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_InventoryPos.x;
+						float itemDrawY = m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_InventoryPos.y;
+						float collisionW = float(object->m_shapeData->GetDefaultTextureImage().width);
+						float collisionH = float(object->m_shapeData->GetDefaultTextureImage().height);
+						
+						if (CheckCollisionPointRec(scaledMousePos, Rectangle{ itemDrawX, itemDrawY, collisionW, collisionH }))
 						{
 							m_draggedObjectId = object->m_ID;
 							m_draggingObject = true;
-							m_dragOffset.x = mousePos.x - m_gui.m_Pos.x - m_containerData.m_boxOffset.x - object->m_InventoryPos.x;
-							m_dragOffset.y = mousePos.y - m_gui.m_Pos.y - m_containerData.m_boxOffset.y - object->m_InventoryPos.y;
+							m_dragOffset.x = scaledMousePos.x - itemDrawX;
+							m_dragOffset.y = scaledMousePos.y - itemDrawY;
 
 							// Move the selected object to the back of the inventory list so it draws on top
 							auto it = std::find(m_containerObject->m_inventory.begin(), m_containerObject->m_inventory.end(), m_draggedObjectId);
@@ -163,13 +182,14 @@ void Gump::Update()
 			}
 			else
 			{
-				//  We are dragging an object, so move it
 				auto object = GetObjectFromID(m_draggedObjectId);
 				if (object && object->m_shapeData)
 				{
-					object->m_InventoryPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
-					object->m_InventoryPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
-					m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
+					float newX = scaledMousePos.x - m_dragOffset.x - m_gui.m_Pos.x - (m_containerData.m_boxOffset.x * m_scale * 2);
+					float newY = scaledMousePos.y - m_dragOffset.y - m_gui.m_Pos.y - (m_containerData.m_boxOffset.y * m_scale * 2);
+					object->m_InventoryPos.x = newX;
+					object->m_InventoryPos.y = newY;
+					m_containerObject->m_shouldBeSorted = false;
 				}
 			}
 		}
@@ -190,7 +210,9 @@ void Gump::Draw()
 	for (auto& item : thisObject->m_inventory)
 	{
 		auto object = GetObjectFromID(item);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_InventoryPos.x, m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_InventoryPos.y}, 0, 1, Color{255, 255, 255, 255});
+		float drawX = m_gui.m_Pos.x + m_containerData.m_boxOffset.x * m_scale * 2 + object->m_InventoryPos.x;
+		float drawY = m_gui.m_Pos.y + m_containerData.m_boxOffset.y * m_scale * 2 + object->m_InventoryPos.y;
+		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2{drawX, drawY}, 0, 1, Color{255, 255, 255, 255});
 	}
 }
 
