@@ -3,6 +3,8 @@
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/2mbJcOEwKJ4?si=M8sg6uDpqZCJAVKI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Installation and Running the Engine
 
 To run this program, you will need to copy the contents of your original DOS ULTIMA7 folder to `/Data/u7`.  This
