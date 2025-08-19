@@ -57,10 +57,11 @@ int main(int argv, char** argc)
 
       //  Pick a random initial location
       g_VitalRNG = make_unique<RNG>();
-      g_VitalRNG->SeedRNG(GetFrameTime() * 1000);
+      int seed = (unsigned int)time(NULL);
+      g_VitalRNG->SeedRNG(seed);
       int x = g_VitalRNG->Random(7);
 
-      switch (0)
+      switch (x)
       {
          case 0: //  Starting Location
 			   g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
