@@ -3,7 +3,10 @@
 
 Welcome to Ultima VII: Revisited, my attempt to write a replacement engine for Ultima VII: The Black Gate.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/2mbJcOEwKJ4?si=M8sg6uDpqZCJAVKI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<a href="https://www.youtube.com/watch?v=2mbJcOEwKJ4">
+  <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/c85f4858-9468-4a19-8698-f62361a0df4a" />
+</a>
+(Click for a preview of coming attractions.)
 
 ## Installation and Running the Engine
 
