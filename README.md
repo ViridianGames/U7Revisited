@@ -35,6 +35,9 @@ will allow the replacement engine to read in the maps and graphics from the orig
 - `Q/E`:  Rotate left and right.
 - `Mousewheel`:  Zoom in/Zoom out.
 - To teleport to a location, left-click there in the minimap.
+- Double-left-click on an NPC to attempt to talk to them (not all NPCs work yet)
+- Double-right-click on a container to open it and view its contents (NPCs are considered containers)
+- Press +/- on the keypad to slow down/speed up time.  Press Enter on the keypad to advance time one hour.
 - Press `ESC` to exit.
 
 This is an open source project, which means that you can grab the source files from github.com/viridiangames and
