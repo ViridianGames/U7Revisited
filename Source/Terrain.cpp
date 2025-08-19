@@ -16,6 +16,7 @@
 #include "Geist/Config.h"
 #include "U7Globals.h"
 #include "Terrain.h"
+#include "raymath.h"
 
 using namespace std;
 
@@ -33,6 +34,13 @@ Terrain::Terrain()
 		   m_chunkLocation[i][j][1] = float(j) * 16.0f + 8.0f;
 	   }
    }
+
+	for (int i = 0; i < m_height; i++)
+	{
+		m_cellLighting.push_back(std::vector<bool>(m_width, false));
+		m_cellLighting[i].resize(m_width);
+	}
+
 
    printf(" OK pre schunkLocation\n");
    m_schunkDrawCount = 0;
@@ -56,7 +64,7 @@ Terrain::Terrain()
 		   //m_schunkLocation[g][h][1] = float(h) * 256.0f + 128.0f;
 	   }
    }
-   m_terrainTexture = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
+   m_terrainTiles = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
 }
 
 Terrain::~Terrain()
@@ -96,6 +104,18 @@ void Terrain::Init()
 
 	UpdateMeshBuffer(mesh, 0, mesh.vertices, sizeof(float) * mesh.vertexCount * 3, 0);
 
+	m_cellMesh = GenMeshPlane(1, 1, 1, 1);
+	for (int i = 0; i < m_cellMesh.vertexCount; ++i)
+	{
+		m_cellMesh.vertices[i * 3] += 1.5f;
+		m_cellMesh.vertices[i * 3 + 2] += 1.5f;
+	}
+
+	UploadMesh(&m_cellMesh, true);
+
+	m_cellModel = LoadModelFromMesh(m_cellMesh);
+	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_terrainTexture);
+
    unsigned short prevShape = 0;
    unsigned short prevFrame = 0;
    for (unsigned int i = 0; i < 3072; ++i)
@@ -113,21 +133,21 @@ void Terrain::Init()
 
             if (shapenum <= 150 && framenum < 32)
             {
-               ImageDraw(&img, m_terrainTexture, Rectangle{ shapenum * 8.0f, framenum * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
+               ImageDraw(&img, m_terrainTiles, Rectangle{ shapenum * 8.0f, framenum * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
                prevShape = shapenum;
                prevFrame = framenum;
             }
             else
             {
-					ImageDraw(&img, m_terrainTexture, Rectangle{ prevShape * 8.0f, prevFrame * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
+					ImageDraw(&img, m_terrainTiles, Rectangle{ prevShape * 8.0f, prevFrame * 8.0f, 8, 8 }, Rectangle{ k * 8.0f, j * 8.0f, 8, 8 }, WHITE);
 				}
 			}
       }
 
-      Texture thisTexture = LoadTextureFromImage(img);
-      SetTextureFilter(thisTexture, TEXTURE_FILTER_POINT);
+      Texture texture = LoadTextureFromImage(img);
+      SetTextureFilter(texture, TEXTURE_FILTER_POINT);
 
-      SetMaterialTexture(&m_chunkModels[i]->materials[0], MATERIAL_MAP_DIFFUSE, thisTexture);
+      SetMaterialTexture(&m_chunkModels[i]->materials[0], MATERIAL_MAP_DIFFUSE, texture);
 
       UnloadImage(img);
 	}
@@ -135,12 +155,72 @@ void Terrain::Init()
 
 void Terrain::UpdateTerrainTexture(Image img)
 {
-	m_terrainTexture = img;
+	m_terrainTiles = img;
+	m_terrainTexture = LoadTextureFromImage(img);
 }
 
 void Terrain::Draw()
 {
 	m_chunkDrawCount = 0;
+
+	unsigned short prevShape = 0;
+	unsigned short prevFrame = 0;
+
+	int range = g_cameraDistance * 1.25f;
+	int rangesquared = range * range;
+	Vector2 centerpoint = {g_camera.target.x, g_camera.target.z};
+	for (int x = g_camera.target.x - range; x <= g_camera.target.x + range; ++x)
+	{
+		for (int y = g_camera.target.z - range; y <= g_camera.target.z + range; ++y)
+		{
+			if (Vector2DistanceSqr({float(x), float(y)}, centerpoint ) > rangesquared)
+			{
+				continue;
+			}
+
+			unsigned short shapenum = g_World[y][x] & 0x3ff;
+			unsigned short framenum = (g_World[y][x] >> 10) & 0x1f;
+
+			if (shapenum < 150 && framenum < 32)
+			{
+				prevShape = shapenum;
+				prevFrame = framenum;
+			}
+			else
+			{
+				shapenum = prevShape;
+				framenum = prevFrame;
+			}
+
+			m_cellModel.meshes[0].texcoords[0] = (shapenum * 8.0f) / m_terrainTexture.width;
+			m_cellModel.meshes[0].texcoords[1] = (framenum * 8.0f) / m_terrainTexture.height;
+			m_cellModel.meshes[0].texcoords[2] = ((shapenum + 1) * 8.0f) / m_terrainTexture.width;
+			m_cellModel.meshes[0].texcoords[3] = (framenum * 8.0f) / m_terrainTexture.height;
+			m_cellModel.meshes[0].texcoords[4] = (shapenum * 8.0f) / m_terrainTexture.width;
+			m_cellModel.meshes[0].texcoords[5] = ((framenum + 1) * 8.0f) / m_terrainTexture.height;
+			m_cellModel.meshes[0].texcoords[6] = ((shapenum + 1) * 8.0f) / m_terrainTexture.width;
+			m_cellModel.meshes[0].texcoords[7] = ((framenum + 1) * 8.0f) / m_terrainTexture.height;
+
+			//m_cellMesh.get()->texcoords[0] = shapenum * 8.0f;
+			//m_cellMesh.get()->texcoords[1] = framenum * 8.0f;
+			//
+			//
+			//UpdateMeshBuffer(*m_cellMesh.get(), 1, )
+
+			UpdateMeshBuffer(m_cellModel.meshes[0], 1, m_cellModel.meshes[0].texcoords, 4 * 2 * sizeof(float), 0);
+
+			//  Ugh, this is terrible.  Ugh, this is not going to be performant.  Ugh, I hate it.  Wait...
+
+			if (m_cellLighting[x][y] == true)
+			{
+				DrawModel(m_cellModel, {float(x) + .5f, 0, float(y) + .5f}, 1, WHITE);
+			}
+			else
+			{
+				DrawModel(m_cellModel, {float(x) + .5f, 0, float(y) + .5f}, 1, g_dayNightColor);
+			}
+		}
+	}
 
 	for (int i = 0; i < 192; i++)
 	{
@@ -148,7 +228,7 @@ void Terrain::Draw()
 		{
 			if (m_chunkVisible[i][j])
 			{
-				DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, g_dayNightColor);
+				//DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, g_dayNightColor);
 				//DrawModel(*m_chunkModels[g_chunkTypeMap[i][j]], { (i * 16.0f) + m_chunkScoot[i][j][0], 0, (j * 16.0f) + m_chunkScoot[i][j][1] }, 1.0f, g_dayNightColor);
 				m_chunkDrawCount += 1;
 			}
@@ -282,6 +362,8 @@ void Terrain::Update()
    {
       FindVisibleChunks();
    }
+
+	g_Terrain->UpdateLighting();
 }
 
 void Terrain::FindVisibleChunks()
@@ -424,6 +506,41 @@ void Terrain::FindVisibleChunks()
 							m_chunkScoot[i][j][1] = -thisScoot[1];
 							m_chunkVisible[i][j] = false;
 						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void Terrain::UpdateLighting()
+{
+
+	int range = g_cameraDistance * 1.25f;
+	int rangesquared = range * range;
+	for (int i = g_camera.target.x - range; i <= g_camera.target.x + range; i++)
+	{
+		for (int j = g_camera.target.z - rangesquared; j <= g_camera.target.z + rangesquared; j++)
+		{
+			m_cellLighting[i][j] = false;
+		}
+	}
+
+	int lightrange = 6;
+	int lightrangesquared = 36;
+	for (auto object : g_sortedVisibleObjects)
+	{
+		if (object.get()->m_objectData->m_isLightSource)
+		{
+			U7Object* obj = object.get();
+
+			for (int i = g_camera.target.x - range; i <= g_camera.target.x + range; i++)
+			{
+				for (int j = g_camera.target.z - rangesquared; j <= g_camera.target.z + rangesquared; j++)
+				{
+					if (Vector2DistanceSqr({float(i), float(j)}, {obj->m_Pos.x, obj->m_Pos.z}) < lightrangesquared)
+					{
+						m_cellLighting[i][j] = true;
 					}
 				}
 			}

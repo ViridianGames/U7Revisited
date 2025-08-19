@@ -660,7 +660,7 @@ void LoadingState::MakeMap()
 				for (int l = 0; l < 16; ++l)
 				{
 					unsigned int thisdata = g_ChunkTypeList[chunkid][l][k];
-					g_World[j * 16 + k][i * 16 + l] = g_ChunkTypeList[chunkid][l][k];
+					g_World[j * 16 + l][i * 16 + k] = g_ChunkTypeList[chunkid][l][k];
 
 
 					unsigned short shapenum = thisdata & 0x3ff;
@@ -906,7 +906,7 @@ void LoadingState::CreateShapeTable()
 
 		//  The first 150 entries (0-149) are terrain textures.  They are not
 	//  rle-encoded.  Splat them directly to the terrain texture.
-	Image& tempImage = g_Terrain->GetTerrainTexture();
+	Image& tempImage = g_Terrain->GetTerrainTiles();
 	for (int thisShape = 0; thisShape < 150; ++thisShape)
 	{
 		shapes.seekg(shapeEntryMap[thisShape].offset);

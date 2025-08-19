@@ -112,7 +112,9 @@ void U7Object::CheckLighting()
 		{
 			if (object.get()->m_objectData->m_isLightSource)
 			{
-				if (Vector3DistanceSqr(object.get()->m_Pos, m_Pos) <= 49)
+				//  If any point in the bounding box is near enough, the object is lit.
+				if (Vector2DistanceSqr({object.get()->m_Pos.x, object.get()->m_Pos.z}, {m_Pos.x, m_Pos.z}) <= 64 ||
+					Vector2DistanceSqr({object.get()->m_Pos.x + object.get()->m_boundingBox.max.x, object.get()->m_Pos.z + object.get()->m_boundingBox.max.z}, {m_Pos.x, m_Pos.z}) <= 64)
 				{
 					m_isLit = true;
 				}
@@ -216,8 +218,13 @@ void U7Object::NPCDraw()
 	rlEnableDepthMask();
 
 	BeginShaderMode(g_alphaDiscard);
+	Color lighting = WHITE;
+	if (g_Terrain->m_cellLighting[finalPos.x][finalPos.z] != true)
+	{
+		lighting = g_dayNightColor;
+	}
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
-		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, WHITE);
+		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
 
 }

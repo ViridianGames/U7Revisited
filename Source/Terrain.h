@@ -35,7 +35,13 @@ public:
 
    std::array<std::unique_ptr<Model>, 3072> m_chunkModels;
 
-   Image m_terrainTexture;
+	std::vector<std::vector<bool> > m_cellLighting;
+
+	Model m_cellModel;
+	Mesh m_cellMesh;
+
+   Image m_terrainTiles;
+	Texture m_terrainTexture;
    
 	Terrain();
 	virtual ~Terrain();
@@ -63,7 +69,9 @@ public:
 
    void UpdateTerrainTexture(Image img);
 
-   Image& GetTerrainTexture() { return m_terrainTexture; }
+   Image& GetTerrainTiles() { return m_terrainTiles; }
+
+	void UpdateLighting();
 
 };
 

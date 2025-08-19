@@ -142,21 +142,20 @@ void MainState::Update()
 		g_scheduleTime = g_hour / 3;
 	}
 
+
 	if(g_hour == 20)
 	{
 		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * 128.0f);
-		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * 255.0f);
+		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * 192.0f);
 		g_dayNightColor = {red_green, red_green, darkness, 255};
-		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
 		g_isDay = false;
 	}
 	//  Sunrise
 	else if (g_hour == 6)
 	{
 		unsigned char darkness = 128 + ((float(g_minute) / 60.0f) * 128.0f);
-		unsigned char red_green = ((float(g_minute) / 60.0f) * 255.0f);
+		unsigned char red_green = 64 + ((float(g_minute) / 60.0f) * 192.0f);
 		g_dayNightColor = {red_green, red_green, darkness, 255};
-		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
 		if (darkness < .1f)
 		{
 			g_isDay = true;
@@ -169,8 +168,7 @@ void MainState::Update()
 	//  Night
 	else if (g_hour > 20 || g_hour < 6)
 	{
-		g_dayNightColor = {0, 0, 128, 255};
-		//DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, g_dayNightColor);
+		g_dayNightColor = {64, 64, 128, 255};
 		g_isDay = false;
 	}
 	else
@@ -549,22 +547,7 @@ void MainState::Draw()
 
 	m_GumpManager->Draw();
 
-	//  Draw any tooltips
 	EndTextureMode();
-
-	//  Draw darkness
-	//  Sundown
-
-
-	//  Add light sources
-	//ImageDrawCircle(&m_LightingImage, 320, 200, 100, {255, 255, 255, 0});
-
-	//if (m_notDay)
-	//{
-		//UnloadTexture(m_LightingTexture);
-		//m_LightingTexture = LoadTextureFromImage(m_LightingImage);
-		//DrawTextureEx(m_LightingTexture, {0, 0}, 0, g_DrawScale, WHITE);
-	//}
 
 	DrawTexturePro(g_guiRenderTarget.texture,
 				   {0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height)},
@@ -589,10 +572,7 @@ void MainState::Draw()
 
 void MainState::SetupGame()
 {
-	//  Set up map
-	int width = 3072;
-	int height = 3072;
-	g_Terrain->Init();
+
 }
 
 void MainState::DrawStats()
