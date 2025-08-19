@@ -661,14 +661,45 @@ void MainState::UpdateStats()
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
 		Texture* thisTexture = g_ResourceManager->GetTexture("U7FACES" + to_string(i) + to_string(0));
-		if (WasLeftButtonClickedInRect((538.0f - thisTexture->width) * g_DrawScale, (200.0f + 40.0f * counter) * g_DrawScale, thisTexture->width * g_DrawScale, thisTexture->height * g_DrawScale))
+		
+		// Transform GUI render target coordinates to screen coordinates
+		// Portrait positions match DrawStats() layout
+		float guiX = 538.0f - 40;
+		float guiY = 200.0f + 40.0f * counter;
+		float guiW = 40;
+		float guiH = 40;
+		
+		float scaleX = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
+		float scaleY = float(g_Engine->m_ScreenHeight) / float(g_Engine->m_RenderHeight);
+		
+		float portraitX = guiX * scaleX;
+		float portraitY = guiY * scaleY;
+		float portraitW = guiW * scaleX;
+		float portraitH = guiH * scaleY;
+		
+		if (WasLeftButtonClickedInRect(portraitX, portraitY, portraitW, portraitH))
 		{
 			g_Player->SetSelectedPartyMember(g_Player->GetPartyMemberIds()[i]);
 		}
 		++counter;
 	}
 
-	if (WasLeftButtonClickedInRect({610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale}))
+	// Backpack click detection using same coordinate transformation
+	// These coordinates match the backpack sprite position in DrawStats()
+	float guiBackpackX = 610;
+	float guiBackpackY = 314;
+	float guiBackpackW = 16;
+	float guiBackpackH = 10;
+	
+	float scaleX = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
+	float scaleY = float(g_Engine->m_ScreenHeight) / float(g_Engine->m_RenderHeight);
+	
+	float backpackX = guiBackpackX * scaleX;
+	float backpackY = guiBackpackY * scaleY;
+	float backpackW = guiBackpackW * scaleX;
+	float backpackH = guiBackpackH * scaleY;
+	
+	if (WasLeftButtonClickedInRect(backpackX, backpackY, backpackW, backpackH))
 	{
 		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
 	}

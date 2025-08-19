@@ -13,4 +13,11 @@
 liblua.a
 cmake-build-debug/
 
+# Build artifacts and executables
+ThirdParty/lua/src/lua
+ThirdParty/lua/src/luac
+Build/
+build/
+build-*/
+
 .idea/

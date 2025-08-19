@@ -17,3 +17,19 @@ build-debug: setup-debug
 
 setup-debug:
     meson setup {{ meson_setup_args }} build-dbg
+
+# macOS-specific recipes
+makefile-build:
+    make release
+
+makefile-debug:
+    make debug
+
+makefile-clean:
+    make clean
+
+# Test the current Meson configuration
+test-meson:
+    meson setup --wipe build-test
+    meson compile -C build-test
+    rm -rf build-test

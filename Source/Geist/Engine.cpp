@@ -16,13 +16,6 @@ void Engine::Init(const std::string &configfile)
 	m_ConfigFileName = configfile;
 	m_EngineConfig.Load(configfile);
 
-	g_ResourceManager = make_unique<ResourceManager>();
-	g_ResourceManager->Init(configfile);
-	g_StateMachine = make_unique<StateMachine>();
-	g_StateMachine->Init(configfile);
-	g_ScriptingSystem = make_unique<ScriptingSystem>();
-	g_ScriptingSystem->Init(configfile);
-
 	m_GameUpdates = 0;
 
 	m_CurrentFrame = 0;
@@ -36,8 +29,51 @@ void Engine::Init(const std::string &configfile)
 	m_ScreenHeight = m_EngineConfig.GetNumber("v_res");
 
 	//  Initialize Raylib and the screen.
+#ifdef __APPLE__
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+#endif
 	InitWindow(g_Engine->m_EngineConfig.GetNumber("h_res"), g_Engine->m_EngineConfig.GetNumber("v_res"), "Ultima VII: Revisited");
-	SetExitKey(KEY_NULL); // We'll handle exiting with ESC
+	SetExitKey(KEY_NULL);
+
+#ifdef __APPLE__
+	int monitorWidth = GetMonitorWidth(0);
+	int monitorHeight = GetMonitorHeight(0);
+	int targetWidth = monitorWidth - 20;
+	int targetHeight = monitorHeight - 100;
+	
+	SetWindowPosition(10, 50);
+	SetWindowSize(targetWidth, targetHeight);
+	WaitTime(0.1);
+	
+	int actualScreenWidth = GetScreenWidth();
+	int actualScreenHeight = GetScreenHeight();
+	
+	BeginDrawing();
+	ClearBackground(BLACK);
+	EndDrawing();
+	
+	m_ScreenWidth = actualScreenWidth;
+	m_ScreenHeight = actualScreenHeight;
+	
+	extern float g_DrawScale;
+	g_DrawScale = float(m_ScreenHeight) / float(m_RenderHeight);
+	
+	Log("=== MACOS DEBUG SCALING INFO ===");
+	Log("Monitor dimensions: " + std::to_string(monitorWidth) + "x" + std::to_string(monitorHeight));
+	Log("Target window size: " + std::to_string(targetWidth) + "x" + std::to_string(targetHeight));
+	Log("Actual screen size: " + std::to_string(actualScreenWidth) + "x" + std::to_string(actualScreenHeight));
+	Log("Engine screen size: " + std::to_string(m_ScreenWidth) + "x" + std::to_string(m_ScreenHeight));
+	Log("Render resolution: " + std::to_string(m_RenderWidth) + "x" + std::to_string(m_RenderHeight));
+	Log("g_DrawScale: " + std::to_string(g_DrawScale));
+	Log("=== END DEBUG INFO ===");
+#endif
+	g_ResourceManager = make_unique<ResourceManager>();
+	g_ResourceManager->Init(configfile);
+	g_StateMachine = make_unique<StateMachine>();
+	g_StateMachine->Init(configfile);
+	g_ScriptingSystem = make_unique<ScriptingSystem>();
+	g_ScriptingSystem->Init(configfile);
+
 	if (g_Engine->m_EngineConfig.GetNumber("full_screen") == 1)
 	{
 		ToggleFullscreen();

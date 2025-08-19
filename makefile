@@ -1,9 +1,23 @@
-CC = g++
-CFLAGS = -m64 -std=c++17
+# Detect platform and set appropriate compiler and flags
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+    # macOS settings
+    CC = clang++
+    CFLAGS = -std=c++17 -arch arm64
+    LIBS = ./ThirdParty/raylib/lib/libraylib.a ./ThirdParty/lua/src/liblua.a -framework OpenGL -framework CoreFoundation -framework CoreGraphics -framework IOKit -framework AppKit -lm -lpthread
+    LUA_TARGET = macosx
+else
+    # Linux/Windows settings (existing behavior)
+    CC = g++
+    CFLAGS = -m64 -std=c++17
+    LIBS = ./ThirdParty/raylib/lib/libraylib.a ./ThirdParty/lua/src/liblua.a -lGL -lm -lpthread
+    LUA_TARGET = linux
+endif
+
 DEBUG_FLAGS = -g -DDEBUG_MODE
 RELEASE_FLAGS = -O2 -DRELEASE_MODE
 INCLUDES = -I./Source/Geist -I./ThirdParty/raylib/include -I./ThirdParty/raylib/external -I./ThirdParty/lua/src
-LIBS = ./ThirdParty/raylib/lib/libraylib.a ./ThirdParty/lua/src/liblua.a -lGL -lm -lpthread
 SOURCES = $(wildcard Source/*.cpp Source/Geist/*.cpp)
 DEBUG_OBJECTS = $(patsubst Source/%.cpp, Build/Debug/%.o, $(SOURCES))
 RELEASE_OBJECTS = $(patsubst Source/%.cpp, Build/Release/%.o, $(SOURCES))
@@ -29,7 +43,7 @@ Redist:
 
 # Build liblua.a if needed
 $(LUA_LIB):
-	$(MAKE) -C ThirdParty/lua/src linux
+	$(MAKE) -C ThirdParty/lua/src $(LUA_TARGET)
 
 # Build raylib.a if needed (optional)
 $(RAYLIB_LIB):

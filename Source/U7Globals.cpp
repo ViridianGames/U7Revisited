@@ -235,10 +235,19 @@ if (IsKeyDown(KEY_E))
 		g_CameraMoved = true;
 	}
 
-	if (IsLeftButtonDownInRect(g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale), 0, g_Engine->m_ScreenWidth, g_minimapSize * g_DrawScale))
+	// Minimap click detection
+	float minimapScreenSize = g_minimapSize * g_DrawScale;
+	float minimapScreenX = g_Engine->m_ScreenWidth - minimapScreenSize;
+	float minimapScreenY = 0;
+	
+	if (IsLeftButtonDownInRect(minimapScreenX, minimapScreenY, minimapScreenSize, minimapScreenSize))
 	{
-		float minimapx = float(GetMouseX() - (g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale))) / float(g_minimapSize * g_DrawScale) * 3072;
-		float minimapy = float(GetMouseY()) / float(g_minimapSize * g_DrawScale) * 3072;
+		float relativeX = float(GetMouseX() - minimapScreenX) / minimapScreenSize;
+		float relativeY = float(GetMouseY() - minimapScreenY) / minimapScreenSize;
+		
+		// World is 3072x3072 units
+		float minimapx = relativeX * 3072;
+		float minimapy = relativeY * 3072;
 
 		g_camera.target = Vector3{ minimapx, 0, minimapy };
 		g_CameraMoved = true;
