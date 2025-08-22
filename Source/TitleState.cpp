@@ -51,7 +51,6 @@ void TitleState::Shutdown()
 
 void TitleState::Update()
 {
-   g_Terrain->FindVisibleChunks();
    if (GetTime() - m_LastUpdate > GetFrameTime())
    {
       g_CurrentUpdate++;
@@ -100,6 +99,9 @@ void TitleState::Update()
 
    UpdateTitle();
    TestUpdate();
+
+   g_Terrain->CalculateLighting();
+   g_Terrain->Update();
 
    if (IsKeyPressed(KEY_F1))
    {

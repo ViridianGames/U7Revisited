@@ -142,19 +142,21 @@ void MainState::Update()
 		g_scheduleTime = g_hour / 3;
 	}
 
+	unsigned char darklevel = 24; // Blue will go down to this level.  Red/Green will go down to half this level.
+	unsigned char red_green_level = (darklevel / 2);
 
 	if(g_hour == 20)
 	{
-		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * 128.0f);
-		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * 192.0f);
+		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * (255 - darklevel));
+		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = {red_green, red_green, darkness, 255};
 		g_isDay = false;
 	}
 	//  Sunrise
 	else if (g_hour == 6)
 	{
-		unsigned char darkness = 128 + ((float(g_minute) / 60.0f) * 128.0f);
-		unsigned char red_green = 64 + ((float(g_minute) / 60.0f) * 192.0f);
+		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
+		unsigned char red_green = (darklevel / 2) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = {red_green, red_green, darkness, 255};
 		if (darkness < .1f)
 		{
@@ -168,7 +170,7 @@ void MainState::Update()
 	//  Night
 	else if (g_hour > 20 || g_hour < 6)
 	{
-		g_dayNightColor = {64, 64, 128, 255};
+		g_dayNightColor = {red_green_level, red_green_level, darklevel, 255};
 		g_isDay = false;
 	}
 	else
@@ -234,8 +236,43 @@ void MainState::Update()
 	m_cameraUpdateTime = DoCameraMovement();
 
 	m_terrainUpdateTime = GetTime();
-	g_Terrain->Update();
+	g_Terrain->CalculateLighting();
+
 	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+
+	// Pick cell under mouse pointer
+	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
+	float pickx = 0;
+	float picky = 0;
+
+	// Plane at y=0 (terrain height)
+	Vector3 planeNormal = {0.0f, 1.0f, 0.0f};
+	Vector3 planePoint = {0.0f, 0.0f, 0.0f};
+	float denominator = Vector3DotProduct(ray.direction, planeNormal);
+
+	if (fabs(denominator) > 0.0001f)
+	{
+		// Avoid division by zero
+		Vector3 pointToPlane = Vector3Subtract(planePoint, ray.position);
+		float t = Vector3DotProduct(pointToPlane, planeNormal) / denominator;
+		if (t >= 0.0f) { // Ray hits plane
+			Vector3 hitPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+			// Map to grid (x, z in world space = x, y in grid)
+			int x = static_cast<int>(floor(hitPoint.x));
+			int y = static_cast<int>(floor(hitPoint.z));
+			if (x >= 0 && x < 3072 && y >= 0 && y < 3072)
+			{
+				pickx = x;
+				picky = y;
+			}
+		}
+	}
+
+	int cellx = (TILEWIDTH / 2) + pickx - int(g_camera.target.x);
+	int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
+	g_Terrain->m_cellLighting[cellx][celly] = {255, 0, 255, 255};
+
+	g_Terrain->Update();
 
 	//  Handle special keyboard keys
 	if (IsKeyPressed(KEY_ESCAPE))

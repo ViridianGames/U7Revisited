@@ -144,11 +144,15 @@ void U7Object::Shutdown()
 void U7Object::NPCDraw()
 {
 	//  Custom NPC drawing
-
 	Vector3 finalPos = m_Pos;
 	finalPos.x += .5f;
 	finalPos.z += .5f;
 	finalPos.y += m_shapeData->m_Dims.y * .62f;
+
+	if (abs(finalPos.x - g_camera.target.x) > 64 || abs(finalPos.z - g_camera.target.z) > 64)
+	{
+		return; // Not on the screen.
+	}
 
 	Texture* finalTexture = m_NPCData->m_walkTextures[0][0];
 	int finalAngle = 0;
@@ -218,11 +222,9 @@ void U7Object::NPCDraw()
 	rlEnableDepthMask();
 
 	BeginShaderMode(g_alphaDiscard);
-	Color lighting = WHITE;
-	if (g_Terrain->m_cellLighting[finalPos.x][finalPos.z] != true)
-	{
-		lighting = g_dayNightColor;
-	}
+	Color lighting = g_dayNightColor;
+	if (m_isLit)
+		lighting = WHITE;
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();

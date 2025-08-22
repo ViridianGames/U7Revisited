@@ -161,22 +161,24 @@ void Gump::Update()
 					}
 				}
 			}
-			else
-			{
-				//  We are dragging an object, so move it
-				auto object = GetObjectFromID(m_draggedObjectId);
-				if (object && object->m_shapeData)
-				{
-					object->m_InventoryPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
-					object->m_InventoryPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
-					m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
-				}
-			}
+
 		}
 		else
 		{
 			m_draggingObject = false;
 			m_draggedObjectId = -1;
+		}
+	}
+
+	if (m_draggingObject & IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		//  We are dragging an object, so move it
+		auto object = GetObjectFromID(m_draggedObjectId);
+		if (object && object->m_shapeData)
+		{
+			object->m_InventoryPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
+			object->m_InventoryPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
+			m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 		}
 	}
 }
