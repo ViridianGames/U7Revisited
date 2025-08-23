@@ -1,5 +1,5 @@
-#ifndef _Terrain_H_
-#define _Terrain_H_
+#ifndef _TERRAIN_H_
+#define _TERRAIN_H_
 
 //#include "Unit.h"
 #include "Geist/Globals.h"
@@ -25,9 +25,8 @@ public:
 	Model m_cellModel;
 	Mesh m_cellMesh;
 
-   Image m_terrainTiles;
-	Image m_currentTerrainTiles;
-	Texture m_currentTerrain;
+   Texture m_terrainTiles;
+	RenderTexture m_currentTerrain;
 
 	Terrain();
 	virtual ~Terrain();
@@ -42,10 +41,7 @@ public:
 	void CalculateLighting();
    void UpdateTerrainTexture(Image img);
 
-   Image& GetTerrainTiles() { return m_terrainTiles; }
-
 	void UpdateTerrainTiles();
-
 };
 
 #endif
