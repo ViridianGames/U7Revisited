@@ -15,7 +15,7 @@ bool Config::Load(string fileName)
 
    if (instream.fail())
    {
-       Log("Could not open" + fileName, LOG_ERROR);
+       Log("Could not open" + fileName);
        return false;
    }
 

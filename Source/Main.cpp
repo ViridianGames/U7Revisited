@@ -40,8 +40,6 @@ using namespace std::filesystem;
 
 int main(int argv, char** argc)
 {
-    SetTraceLogCallback(LoggingCallback);
-
    try
    {
       g_Engine = make_unique<Engine>();
@@ -297,7 +295,7 @@ int main(int argv, char** argc)
 
    catch (string errorCode)
    {
-      Log(errorCode, LOG_ERROR);
+      Log(errorCode);
       exit(0);
    }
 

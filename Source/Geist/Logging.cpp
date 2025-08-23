@@ -1,27 +1,29 @@
 #include "Logging.h"
+#include <memory>
+#include <fstream>
+#include <iomanip>
+#include <ctime>
+#include <chrono>
+#include <iostream>
 
-void LoggingCallback(int msgType, const char* text, va_list args)
+using namespace std;
+using namespace std::chrono;
+
+string logfile = "";
+
+void Log(string text)
 {
-	char timeStr[64] = { 0 };
-	time_t now = time(NULL);
-	struct tm* tm_info = localtime(&now);
+	static unique_ptr<ofstream> logstream = make_unique<ofstream>();
 
-	strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", tm_info);
-	printf("[%s] ", timeStr);
-
-	switch (msgType)
+	if (!logstream->is_open())
 	{
-		case LOG_INFO: printf("[INFO] : "); break;
-		case LOG_ERROR: printf("[ERROR]: "); break;
-		case LOG_WARNING: printf("[WARN] : "); break;
-		case LOG_DEBUG: printf("[DEBUG]: "); break;
-		default: break;
+		logstream->open("runlog.txt", ofstream::app);
 	}
 
-	vprintf(text, args);
-	printf("\n");
-}
-
-void Log(std::string text, int msgType) {
-	TraceLog(msgType, text.c_str());
+	auto now = system_clock::now();
+	auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+	auto timer = system_clock::to_time_t(now);
+	cout << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+	*logstream << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+	logstream->flush();
 }

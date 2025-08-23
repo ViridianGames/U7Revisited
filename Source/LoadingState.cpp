@@ -906,7 +906,7 @@ void LoadingState::CreateShapeTable()
 
 		//  The first 150 entries (0-149) are terrain textures.  They are not
 	//  rle-encoded.  Splat them directly to the terrain texture.
-	Image& tempImage = GenImageColor(2048, 256, WHITE);
+	Image tempImage = GenImageColor(2048, 256, WHITE);
 	for (int thisShape = 0; thisShape < 150; ++thisShape)
 	{
 		shapes.seekg(shapeEntryMap[thisShape].offset);
@@ -923,7 +923,6 @@ void LoadingState::CreateShapeTable()
 					ImageDrawPixel(&tempImage, (thisShape * 8) + j, (thisFrame * 8) + i, m_palettes[0][Value]);
 				}
 			}
-
 		}
 	}
 
