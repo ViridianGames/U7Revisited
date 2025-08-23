@@ -193,7 +193,7 @@ void MainState::Update()
 		if (m_showObjects)
 		{
 			g_sortedVisibleObjects.clear();
-			float drawRange = g_cameraDistance * 1.5f;
+			float drawRange = TILEWIDTH / 2;
 			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
 			{
 				if (!m_paused)
@@ -209,6 +209,11 @@ void MainState::Update()
 												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_height / 2,
 												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_depth / 2};
 				Vector3 centerPoint = Vector3Add((*node).second->m_Pos, boundingBoxCenterPoint);
+
+				if (abs(centerPoint.x - g_camera.target.x) > drawRange || abs(centerPoint.z - g_camera.target.z) > drawRange)
+				{
+					continue;
+				}
 
 				float distance = Vector3Distance(centerPoint, g_camera.target);
 				distance -= (*node).second->m_Pos.y;

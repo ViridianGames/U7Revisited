@@ -25,20 +25,17 @@ Terrain::Terrain()
    m_height = 3072;
    m_width = 3072;
 
-	m_terrainTiles = GenImageColor(2048, 256, Color{ 0, 0, 0, 0 });
-	m_currentTerrainTiles = GenImageColor(TILEWIDTH * 8, TILEHEIGHT * 8, Color{ 0, 128, 0, 255 });
-	m_currentTerrain = LoadTextureFromImage(m_currentTerrainTiles);
+	m_terrainTiles = LoadTextureFromImage(GenImageColor(2048, 256, Color{ 0, 0, 0, 0 }));
+	m_currentTerrain = LoadRenderTexture(1024, 1024);
 
 	m_cellModel = LoadModelFromMesh(GenMeshPlane(TILEWIDTH, TILEHEIGHT, 1, 1));
-	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain);
+	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain.texture);
 }
 
 Terrain::~Terrain()
 {
 	UnloadModel(m_cellModel);
-	UnloadImage(m_currentTerrainTiles);
-	UnloadImage(m_terrainTiles);
-	UnloadTexture(m_currentTerrain);
+	UnloadRenderTexture(m_currentTerrain);
 }
 
 void Terrain::Init()
@@ -48,8 +45,7 @@ void Terrain::Init()
 
 void Terrain::UpdateTerrainTexture(Image img)
 {
-	m_terrainTiles = img;
-	//m_terrainTexture = LoadTextureFromImage(img);
+	m_terrainTiles = LoadTextureFromImage(img);
 }
 
 void Terrain::Draw()
@@ -61,7 +57,6 @@ void Terrain::Shutdown()
 {
 
 }
-
 
 void Terrain::Update()
 {
@@ -111,6 +106,7 @@ void Terrain::UpdateTerrainTiles()
 	unsigned short prevShape = 0;
 	unsigned short prevFrame = 0;
 
+	BeginTextureMode(m_currentTerrain);
 	for (int i = g_camera.target.x - (TILEWIDTH / 2); i <= g_camera.target.x + (TILEWIDTH / 2 - 1); i++)
 	{
 		for (int j = g_camera.target.z - (TILEHEIGHT / 2); j <= g_camera.target.z + (TILEHEIGHT / 2 - 1); j++)
@@ -121,7 +117,7 @@ void Terrain::UpdateTerrainTiles()
 			}
 
 			int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
-			int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
+			int celly = TILEHEIGHT - ((TILEHEIGHT / 2) + j - int(g_camera.target.z));
 			unsigned short shapenum = g_World[j][i] & 0x3ff;
 			unsigned short framenum = (g_World[j][i] >> 10) & 0x1f;
 			if (shapenum >= 150 || framenum >= 32)
@@ -135,12 +131,8 @@ void Terrain::UpdateTerrainTiles()
 				prevFrame = framenum;
 			}
 
-			ImageDraw(&m_currentTerrainTiles, m_terrainTiles, {float(shapenum * 8), float(framenum * 8), 8, 8}, {float(cellx * 8), float(celly * 8), 8, 8}, m_cellLighting[cellx][celly]);
+			DrawTexturePro(m_terrainTiles, { float(shapenum * 8), float(framenum * 8), 8, 8 }, { float(cellx * 8), float(celly * 8), 8, -8 }, { 0, 0 }, 0, m_cellLighting[cellx][128 - celly]);
 		}
 	}
-	Color *pixels = LoadImageColors(m_currentTerrainTiles);
-	UpdateTexture(m_currentTerrain, pixels);
-	UnloadImageColors(pixels);
-
-	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain);
+	EndTextureMode();
 }
