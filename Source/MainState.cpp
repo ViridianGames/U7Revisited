@@ -33,7 +33,7 @@ MainState::~MainState()
 	Shutdown();
 }
 
-void MainState::Init(const string &configfile)
+void MainState::Init(const string& configfile)
 {
 	m_Minimap = g_ResourceManager->GetTexture("Images/minimap.png");
 
@@ -44,13 +44,13 @@ void MainState::Init(const string &configfile)
 
 	m_Gui->SetLayout(0, 0, 138, 384, g_DrawScale, Gui::GUIP_UPPERRIGHT);
 
-	m_Gui->AddPanel(1000, 0, 0, 138, 384, Color{143, 128, 97, 255});
+	m_Gui->AddPanel(1000, 0, 0, 138, 384, Color{ 143, 128, 97, 255 });
 
-	m_Gui->AddPanel(1002, 18, 136, 100, 8, Color{0, 0, 0, 255});
+	m_Gui->AddPanel(1002, 18, 136, 100, 8, Color{ 0, 0, 0, 255 });
 
-	m_Gui->AddPanel(1003, 18, 136, 100, 8, Color{128, 255, 128, 255});
+	m_Gui->AddPanel(1003, 18, 136, 100, 8, Color{ 128, 255, 128, 255 });
 
-	m_Gui->AddPanel(1004, 18, 136, 100, 8, Color{255, 255, 255, 255}, false);
+	m_Gui->AddPanel(1004, 18, 136, 100, 8, Color{ 255, 255, 255, 255 }, false);
 
 	m_ManaBar = m_Gui->GetElement(1003).get();
 
@@ -61,11 +61,11 @@ void MainState::Init(const string &configfile)
 	m_OptionsGui->m_Active = false;
 
 	m_OptionsGui->SetLayout(0, 0, 250, 320, g_DrawScale, Gui::GUIP_CENTER);
-	m_OptionsGui->AddPanel(1000, 0, 0, 250, 320, Color{0, 0, 0, 192});
-	m_OptionsGui->AddPanel(9999, 0, 0, 250, 320, Color{255, 255, 255, 255}, false);
-	m_OptionsGui->AddTextArea(1001, g_Font.get(), "", 125, 100, 0, 0, Color{255, 255, 255, 255}, GuiTextArea::CENTERED);
-	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{255, 255, 255, 255}, Color{0, 0, 0, 192}, Color{255, 255, 255, 255});
-	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_Font.get(), Color{255, 255, 255, 255}, Color{0, 0, 0, 192}, Color{255, 255, 255, 255});
+	m_OptionsGui->AddPanel(1000, 0, 0, 250, 320, Color{ 0, 0, 0, 192 });
+	m_OptionsGui->AddPanel(9999, 0, 0, 250, 320, Color{ 255, 255, 255, 255 }, false);
+	m_OptionsGui->AddTextArea(1001, g_Font.get(), "", 125, 100, 0, 0, Color{ 255, 255, 255, 255 }, GuiTextArea::CENTERED);
+	m_OptionsGui->AddTextButton(1002, 70, 98, "<-", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
+	m_OptionsGui->AddTextButton(1003, 170, 98, "->", g_Font.get(), Color{ 255, 255, 255, 255 }, Color{ 0, 0, 0, 192 }, Color{ 255, 255, 255, 255 });
 
 	m_LastUpdate = 0;
 
@@ -142,44 +142,35 @@ void MainState::Update()
 		g_scheduleTime = g_hour / 3;
 	}
 
-	unsigned char darklevel = 24; // Blue will go down to this level.  Red/Green will go down to half this level.
+	unsigned char darklevel = 24;
 	unsigned char red_green_level = (darklevel / 2);
 
-	if(g_hour == 20)
+	if (g_hour == 20)
 	{
 		unsigned char darkness = 255 - ((float(g_minute) / 60.0f) * (255 - darklevel));
 		unsigned char red_green = 255 - ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = {red_green, red_green, darkness, 255};
+		g_dayNightColor = { red_green, red_green, darkness, 255 };
 		g_isDay = false;
 	}
-	//  Sunrise
 	else if (g_hour == 6)
 	{
 		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
 		unsigned char red_green = (darklevel / 2) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
-		g_dayNightColor = {red_green, red_green, darkness, 255};
-		if (darkness < .1f)
-		{
-			g_isDay = true;
-		}
-		else
-		{
-			g_isDay = false;
-		}
+		g_dayNightColor = { red_green, red_green, darkness, 255 };
+		g_isDay = (darkness < .1f);
 	}
-	//  Night
 	else if (g_hour > 20 || g_hour < 6)
 	{
-		g_dayNightColor = {red_green_level, red_green_level, darklevel, 255};
+		g_dayNightColor = { red_green_level, red_green_level, darklevel, 255 };
 		g_isDay = false;
 	}
 	else
 	{
-		g_dayNightColor = {255, 255, 255, 255};
+		g_dayNightColor = { 255, 255, 255, 255 };
 		g_isDay = true;
 	}
 
-	if(m_GumpManager->m_GumpList.size() > 0)
+	if (m_GumpManager->m_GumpList.size() > 0)
 	{
 		m_GumpManager->Update();
 	}
@@ -194,42 +185,62 @@ void MainState::Update()
 		{
 			g_sortedVisibleObjects.clear();
 			float drawRange = TILEWIDTH / 2;
-			for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+
+			// Reserve space to avoid reallocations
+			g_sortedVisibleObjects.reserve(g_ObjectList.size());
+
+			// Cache camera target for faster access
+			const float camTargetX = g_camera.target.x;
+			const float camTargetZ = g_camera.target.z;
+			const Vector3 camPosition = g_camera.position;
+
+			for (auto& pair : g_ObjectList)
 			{
+				auto& objectPtr = pair.second;
+				if (!objectPtr) continue;
+				U7Object& object = *objectPtr;
+
+				// Cache shape index
+				int shapeIdx = object.m_shapeData->m_shape;
+
+				// Use reference to avoid repeated lookups
+				ObjectData& data = g_objectDataTable[shapeIdx];
+
 				if (!m_paused)
 				{
-					(*node).second->Update();
+					object.Update();
 				}
-				if (g_objectDataTable[(*node).second->m_shapeData->m_shape].m_height == 0)
+
+				if (data.m_height == 0)
 				{
 					int stopper = 0;
 				}
 
-				Vector3 boundingBoxCenterPoint = {g_objectDataTable[(*node).second->m_shapeData->m_shape].m_width / 2,
-												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_height / 2,
-												  g_objectDataTable[(*node).second->m_shapeData->m_shape].m_depth / 2};
-				Vector3 centerPoint = Vector3Add((*node).second->m_Pos, boundingBoxCenterPoint);
+				// Precompute bounding box center point
+				Vector3 boundingBoxCenterPoint = { data.m_width / 2, data.m_height / 2, data.m_depth / 2 };
+				Vector3 centerPoint = Vector3Add(object.m_Pos, boundingBoxCenterPoint);
 
-				if (abs(centerPoint.x - g_camera.target.x) > drawRange || abs(centerPoint.z - g_camera.target.z) > drawRange)
+				// Use fabsf for float abs
+				if (fabsf(centerPoint.x - camTargetX) > drawRange || fabsf(centerPoint.z - camTargetZ) > drawRange)
 				{
 					continue;
 				}
 
-				float distance = Vector3Distance(centerPoint, g_camera.target);
-				distance -= (*node).second->m_Pos.y;
-				if (distance < drawRange && (*node).second->m_Pos.y <= m_heightCutoff)
+				float distance = Vector3Distance(centerPoint, g_camera.target) - object.m_Pos.y;
+				if (distance < drawRange&& object.m_Pos.y <= m_heightCutoff)
 				{
-					double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
-					(*node).second->m_distanceFromCamera = distanceFromCamera;
-					g_sortedVisibleObjects.push_back((*node).second);
+					double distanceFromCamera = Vector3DistanceSqr(object.m_Pos, camPosition) - object.m_Pos.y;
+					object.m_distanceFromCamera = distanceFromCamera;
+					g_sortedVisibleObjects.push_back(objectPtr);
 					m_numberofDrawnUnits++;
 				}
 			}
 
-			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b)
-					  { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(),
+				[](const shared_ptr<U7Object>& a, const shared_ptr<U7Object>& b)
+				{ return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
-			for (auto object : g_sortedVisibleObjects)
+			for (auto& object : g_sortedVisibleObjects)
 			{
 				object->CheckLighting();
 			}
@@ -250,19 +261,16 @@ void MainState::Update()
 	float pickx = 0;
 	float picky = 0;
 
-	// Plane at y=0 (terrain height)
-	Vector3 planeNormal = {0.0f, 1.0f, 0.0f};
-	Vector3 planePoint = {0.0f, 0.0f, 0.0f};
+	Vector3 planeNormal = { 0.0f, 1.0f, 0.0f };
+	Vector3 planePoint = { 0.0f, 0.0f, 0.0f };
 	float denominator = Vector3DotProduct(ray.direction, planeNormal);
 
 	if (fabs(denominator) > 0.0001f)
 	{
-		// Avoid division by zero
 		Vector3 pointToPlane = Vector3Subtract(planePoint, ray.position);
 		float t = Vector3DotProduct(pointToPlane, planeNormal) / denominator;
-		if (t >= 0.0f) { // Ray hits plane
+		if (t >= 0.0f) {
 			Vector3 hitPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
-			// Map to grid (x, z in world space = x, y in grid)
 			int x = static_cast<int>(floor(hitPoint.x));
 			int y = static_cast<int>(floor(hitPoint.z));
 			if (x >= 0 && x < 3072 && y >= 0 && y < 3072)
@@ -275,7 +283,7 @@ void MainState::Update()
 
 	int cellx = (TILEWIDTH / 2) + pickx - int(g_camera.target.x);
 	int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
-	g_Terrain->m_cellLighting[cellx][celly] = {255, 0, 255, 255};
+	g_Terrain->m_cellLighting[cellx][celly] = { 255, 0, 255, 255 };
 
 	g_Terrain->Update();
 
@@ -290,7 +298,7 @@ void MainState::Update()
 		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 	}
 
-	if(IsKeyPressed(KEY_F8))
+	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
 	}
@@ -344,7 +352,7 @@ void MainState::Update()
 	if (IsKeyPressed(KEY_KP_SUBTRACT))
 	{
 		g_secsPerMinute -= 0.1f;
-		if(g_secsPerMinute < 0.1f)
+		if (g_secsPerMinute < 0.1f)
 		{
 			g_secsPerMinute = 0.1f;
 		}
@@ -357,7 +365,7 @@ void MainState::Update()
 	if (IsKeyPressed(KEY_KP_ADD))
 	{
 		g_secsPerMinute += 0.1f;
-		if(g_secsPerMinute > 5.0f)
+		if (g_secsPerMinute > 5.0f)
 		{
 			g_secsPerMinute = 5.0f;
 		}
@@ -384,14 +392,14 @@ void MainState::Update()
 
 			if (picked != -1)
 			{
-				if((*node)->m_hasConversationTree)
+				if ((*node)->m_hasConversationTree)
 				{
 					int NPCId = (*node)->m_NPCID;
 					string scriptName = "func_04";
 					stringstream ss;
 					ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
 					scriptName += ss.str();
-			  
+
 					//  Find the script path from the script name
 					int newScriptIndex = 0;
 					for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
@@ -402,17 +410,17 @@ void MainState::Update()
 							break;
 						}
 					}
-	
+
 					std::string filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
-	
+
 					// Open the file with the default system application
-					#ifdef _WIN32
-						system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
-					#elif __APPLE__
-						system(("open \"" + std::string(filePath) + "\"").c_str());
-					#else // Linux and others
-						system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
-					#endif
+#ifdef _WIN32
+					system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
+#elif __APPLE__
+					system(("open \"" + std::string(filePath) + "\"").c_str());
+#else // Linux and others
+					system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
+#endif
 
 
 					break;
@@ -531,7 +539,7 @@ void MainState::Draw()
 		BeginTextureMode(g_renderTarget);
 	}
 
-	ClearBackground(Color{0, 0, 0, 255});
+	ClearBackground(Color{ 0, 0, 0, 255 });
 
 	BeginDrawing();
 
@@ -545,7 +553,7 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
-		for (auto &unit : g_sortedVisibleObjects)
+		for (auto& unit : g_sortedVisibleObjects)
 		{
 			unit->Draw();
 			++m_numberofDrawnUnits;
@@ -560,14 +568,14 @@ void MainState::Draw()
 
 		EndTextureMode();
 		DrawTexturePro(g_renderTarget.texture,
-					   {0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height)},
-					   {0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight)},
-					   {0, 0}, 0, WHITE);
+			{ 0, 0, float(g_renderTarget.texture.width), float(g_renderTarget.texture.height) },
+			{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+			{ 0, 0 }, 0, WHITE);
 	}
 
 	//  Draw the GUI
 	BeginTextureMode(g_guiRenderTarget);
-	ClearBackground({0, 0, 0, 0});
+	ClearBackground({ 0, 0, 0, 0 });
 
 	//  Draw the minimap and marker
 
@@ -576,7 +584,7 @@ void MainState::Draw()
 	//  Draw XY coordinates below the minimap
 	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
 	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
-	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{640.0f - g_minimapSize, g_minimapSize * 1.05f}, g_SmallFont->baseSize, 1, WHITE);
+	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f }, g_SmallFont->baseSize, 1, WHITE);
 
 	string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
 	DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
@@ -585,27 +593,27 @@ void MainState::Draw()
 	DrawStats();
 
 	//  Draw version number in lower-right
-	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{600, 340}, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
 	m_GumpManager->Draw();
 
 	EndTextureMode();
 
 	DrawTexturePro(g_guiRenderTarget.texture,
-				   {0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height)},
-				   {0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight)},
-				   {0, 0}, 0, WHITE);
+		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
+		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
+		{ 0, 0 }, 0, WHITE);
 
-	DrawTextureEx(*m_Minimap, {g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0}, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
+	DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
 
 	float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
 	float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
 
 	float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
 
-	DrawTextureEx(*m_MinimapArrow, {g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half}, 0, g_DrawScale, WHITE);
+	DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
 
-	DrawTextureEx(*g_Cursor, {float(GetMouseX()), float(GetMouseY())}, 0, g_DrawScale, WHITE);
+	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 
 	DrawFPS(10, 300);
 
@@ -654,19 +662,19 @@ void MainState::DrawStats()
 	}
 
 	int yoffset = g_SmallFont.get()->baseSize;
-	DrawOutlinedText(g_SmallFont, to_string(str), { 622, 208.0f +  yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(dex), { 622, 208.0f +  2 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(iq), { 622, 208.0f +  3 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(combat), { 622, 208.0f +  4 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(magic), { 622, 208.0f +  5 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, to_string(trainingpoints), { 622, 208.0f +  10 * yoffset + 6 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(str), { 622, 208.0f + yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(dex), { 622, 208.0f + 2 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(iq), { 622, 208.0f + 3 * yoffset }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(combat), { 622, 208.0f + 4 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(magic), { 622, 208.0f + 5 * yoffset + 2 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, to_string(trainingpoints), { 622, 208.0f + 10 * yoffset + 6 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 
 	//  Draw party members
 	int counter = 0;
 	for (int i = 0; i < g_Player->GetPartyMemberIds().size(); ++i)
 	{
-		Texture * thisTexture = nullptr;
+		Texture* thisTexture = nullptr;
 		if (i == 0 && !g_Player->GetIsMale()) // Avatar is always a special case
 		{
 			//  I'm a pretty girl!
@@ -678,21 +686,21 @@ void MainState::DrawStats()
 		}
 
 		//DrawTextureEx(*thisTexture, {538.0f - thisTexture->width, 200.0f + 48.0f * counter}, 0, 1, WHITE);
-		DrawTexturePro(*thisTexture, {float(thisTexture->width - 40) / 2.0f, float(thisTexture->height - 40) / 2.0f, 40, 40  },{538.0f - 40, 200.0f + 40.0f * counter, 40, 40}, {0, 0}, 0, WHITE);
+		DrawTexturePro(*thisTexture, { float(thisTexture->width - 40) / 2.0f, float(thisTexture->height - 40) / 2.0f, 40, 40 }, { 538.0f - 40, 200.0f + 40.0f * counter, 40, 40 }, { 0, 0 }, 0, WHITE);
 		if (g_Player->GetPartyMemberIds()[i] != g_Player->GetSelectedPartyMember())
 		{
-			DrawRectangle(538.0f - 40, 200.0f + 40.0f * counter, 40, 40, {0, 0, 0, 128});
+			DrawRectangle(538.0f - 40, 200.0f + 40.0f * counter, 40, 40, { 0, 0, 0, 128 });
 		}
 		++counter;
 	}
 
-	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f +  11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(g_Player->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f +  12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Gold: " + to_string(g_Player->GetGold()), { 542, 208.0f + 11 * yoffset + 8 }, g_SmallFont.get()->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Weight: " + to_string(int(g_Player->GetWeight())) + "/" + to_string(int(g_Player->GetMaxWeight())), { 542, 208.0f + 12 * yoffset + 9 }, g_SmallFont.get()->baseSize, 1, WHITE);
 
 
 
 	//  Draw backpack
-	DrawTextureEx(*g_shapeTable[801][0].GetTexture(), Vector2{610, 314}, 0, 1, Color{255, 255, 255, 255});
+	DrawTextureEx(*g_shapeTable[801][0].GetTexture(), Vector2{ 610, 314 }, 0, 1, Color{ 255, 255, 255, 255 });
 
 
 }
@@ -710,7 +718,7 @@ void MainState::UpdateStats()
 		++counter;
 	}
 
-	if (WasLeftButtonClickedInRect({610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale}))
+	if (WasLeftButtonClickedInRect({ 610 * g_DrawScale, 314 * g_DrawScale, 16 * g_DrawScale, 10 * g_DrawScale }))
 	{
 		OpenGump(g_NPCData[g_Player->GetSelectedPartyMember()]->m_objectID);
 	}
