@@ -104,6 +104,8 @@ Vector3 g_dropPos = Vector3{ 0, 0, 0 };
 
 U7Object* g_mouseOverObject = nullptr;
 
+std::unique_ptr<GumpManager> g_gumpManager;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

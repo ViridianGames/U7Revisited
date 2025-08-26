@@ -82,8 +82,6 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
-	m_GumpManager = make_unique<GumpManager>();
-
 	SetupGame();
 }
 
@@ -170,9 +168,9 @@ void MainState::Update()
 		g_isDay = true;
 	}
 
-	if (m_GumpManager->m_GumpList.size() > 0)
+	if (g_gumpManager->m_GumpList.size() > 0)
 	{
-		m_GumpManager->Update();
+		g_gumpManager->Update();
 	}
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
@@ -552,7 +550,7 @@ void MainState::OpenGump(int id)
 	gump->SetContainerId(id);
 	gump->OnEnter();
 
-	m_GumpManager->AddGump(gump);
+	g_gumpManager->AddGump(gump);
 }
 
 void MainState::Draw()
@@ -618,7 +616,7 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
-	m_GumpManager->Draw();
+	g_gumpManager->Draw();
 
 	EndTextureMode();
 

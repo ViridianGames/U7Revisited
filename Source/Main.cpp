@@ -247,6 +247,7 @@ int main(int argv, char** argc)
          }
 		}
 
+      g_gumpManager = make_unique<GumpManager>();
 
       //  Initialize states
       Log("Initializing states.");

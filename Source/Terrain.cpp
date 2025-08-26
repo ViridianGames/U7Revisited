@@ -68,13 +68,11 @@ void Terrain::CalculateLighting()
 {
 
 	//  Calculate lighting grid
-	for (int i = g_camera.target.x - (TILEWIDTH / 2); i <= g_camera.target.x + (TILEWIDTH / 2 - 1); i++)
+	for (int i = 0; i < TILEWIDTH; ++i)
 	{
-		for (int j = g_camera.target.z - (TILEHEIGHT / 2); j <= g_camera.target.z + (TILEHEIGHT / 2 - 1); j++)
+		for (int j = 0; j < TILEHEIGHT; ++j)
 		{
-			int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
-			int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
-			m_cellLighting[cellx][celly] = g_dayNightColor;
+			m_cellLighting[i][j] = g_dayNightColor;
 		}
 	}
 

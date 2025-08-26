@@ -18,6 +18,7 @@
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
 #include "ConversationState.h"
+#include "GumpManager.h"
 #include "Terrain.h"
 #include "ShapeData.h"
 #include "U7Object.h"
@@ -266,6 +267,8 @@ void OpenURL(const std::string& url);
 extern Vector3 g_dropPos;
 
 extern U7Object* g_mouseOverObject;
+
+extern std::unique_ptr<GumpManager> g_gumpManager;
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE

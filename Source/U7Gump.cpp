@@ -184,6 +184,8 @@ void Gump::Update()
 
 	if (m_draggingObject & !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 	{
+		//  Dragging from inventory to inventory
+
 		auto object = GetObjectFromID(m_draggedObjectId);
 		object->m_Pos = g_dropPos;
 
