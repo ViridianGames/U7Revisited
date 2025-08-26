@@ -285,6 +285,29 @@ void MainState::Update()
 	int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
 	g_Terrain->m_cellLighting[cellx][celly] = { 255, 0, 255, 255 };
 
+	g_dropPos = {pickx, 0, picky};
+
+	std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+
+	for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+	{
+		if (*node == nullptr || !(*node)->m_Visible)
+		{
+			continue;
+		}
+
+		Vector3 pos = { 0, 0, 0};
+		float picked = (*node)->PickXYZ(pos);
+
+		if (picked != -1)
+		{
+			g_dropPos = pos;
+			g_dropPos.x = roundf(g_dropPos.x);
+			g_dropPos.y = roundf(g_dropPos.y);
+			g_dropPos.z = roundf(g_dropPos.z);
+		}
+	}
+
 	g_Terrain->Update();
 
 	//  Handle special keyboard keys

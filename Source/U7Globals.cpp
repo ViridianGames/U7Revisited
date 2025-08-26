@@ -100,6 +100,10 @@ unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 
+Vector3 g_dropPos = Vector3{ 0, 0, 0 };
+
+U7Object* g_mouseOverObject = nullptr;
+
 //  Slow.  Use only when you actually need to know the distance.
 float GetDistance(float startX, float startZ, float endX, float endZ)
 {

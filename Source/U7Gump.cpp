@@ -181,6 +181,25 @@ void Gump::Update()
 			m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 		}
 	}
+
+	if (m_draggingObject & !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		auto object = GetObjectFromID(m_draggedObjectId);
+		object->m_Pos = g_dropPos;
+
+		object->m_isContained = false;
+
+		for (std::vector<int>::iterator node = m_containerObject->m_inventory.begin(); node != m_containerObject->m_inventory.end(); node++)
+		{
+			if ((*node) == object->m_ID)
+			{
+				m_containerObject->m_inventory.erase(node);
+				break;
+			}
+		}
+
+		m_draggingObject = false;
+	}
 }
 
 void Gump::Draw()

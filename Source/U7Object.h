@@ -42,6 +42,7 @@ public:
 
 
    float Pick(); //  Returns distance if hit, -1 if no hit
+	float PickXYZ(Vector3& pos); // Returns distance and hit point in pos.
 
    bool AddObjectToInventory(int objectid);
    bool RemoveObjectFromInventory(int objectid);
@@ -128,7 +129,6 @@ public:
 
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
-
 };
 
 #endif

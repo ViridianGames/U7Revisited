@@ -82,14 +82,19 @@ void U7Object::Draw()
 	}
 	else
 	{
-		if (!m_isLit)
-		{
-			m_shapeData->Draw(m_Pos, m_Angle, g_dayNightColor);
-		}
-		else
-		{
-			m_shapeData->Draw(m_Pos, m_Angle, WHITE);
-		}
+		int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
+		int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
+
+		m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
+
+		// if (!m_isLit)
+		// {
+		// 	m_shapeData->Draw(m_Pos, m_Angle, g_dayNightColor);
+		// }
+		// else
+		// {
+		// 	m_shapeData->Draw(m_Pos, m_Angle, WHITE);
+		// }
 	}
 
 	if (g_Engine->m_debugDrawing)
@@ -336,6 +341,23 @@ float U7Object::Pick()
 
 	if (collision.hit)
 	{
+		return collision.distance;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+float U7Object::PickXYZ(Vector3& pos)
+{
+	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
+
+	RayCollision collision = GetRayCollisionBox(ray, m_boundingBox);
+
+	if (collision.hit)
+	{
+		pos = collision.point;
 		return collision.distance;
 	}
 	else

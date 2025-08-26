@@ -16,6 +16,7 @@
 
 #include <iostream>
 
+#include "Logging.h"
 #include "raymath.h"
 
 using namespace std;
@@ -65,6 +66,7 @@ void Terrain::Update()
 
 void Terrain::CalculateLighting()
 {
+
 	//  Calculate lighting grid
 	for (int i = g_camera.target.x - (TILEWIDTH / 2); i <= g_camera.target.x + (TILEWIDTH / 2 - 1); i++)
 	{
@@ -76,23 +78,46 @@ void Terrain::CalculateLighting()
 		}
 	}
 
-	int lightrangesquared = 36;
+	if (g_isDay)
+		return;
+
+	int softlightrange = 12;
+	int lightrange = 6;
+	int lightrangesquared = lightrange * lightrange;
+	int softlightrangesquared = softlightrange * softlightrange;
 	for (auto object : g_sortedVisibleObjects)
 	{
-		if (object.get()->m_objectData->m_isLightSource)
+		U7Object* obj = object.get();
+		if (obj->m_objectData->m_isLightSource)
 		{
-			U7Object* obj = object.get();
-
 			for (int i = g_camera.target.x - (TILEWIDTH / 2); i <= g_camera.target.x + (TILEWIDTH / 2 - 1); i++)
 			{
 				for (int j = g_camera.target.z - (TILEHEIGHT / 2); j <= g_camera.target.z + (TILEHEIGHT / 2 - 1); j++)
 				{
+					//  Early outs.  Too far from the center?  Can't be lit, continue.
+					if (abs(obj->m_Pos.x - i) > softlightrange || abs(obj->m_Pos.z - j) > softlightrange)
+					{
+						continue;
+					}
+
 					int cellx = (TILEWIDTH / 2) + i - int(g_camera.target.x);
 					int celly = (TILEHEIGHT / 2) + j - int(g_camera.target.z);
 
-					if (Vector2DistanceSqr({float(i), float(j)}, {obj->m_Pos.x, obj->m_Pos.z}) < lightrangesquared)
+					//  Already lit?  Continue.
+					if (ColorToInt(m_cellLighting[cellx][celly]) != ColorToInt(g_dayNightColor))
+					{
+						continue; // This cell has already been processed.
+					}
+
+					float distance = Vector2DistanceSqr({float(i), float(j)}, {obj->m_Pos.x, obj->m_Pos.z});
+
+					if (distance <= lightrangesquared)
 					{
 						m_cellLighting[cellx][celly] = WHITE;
+					}
+					else if (distance <= softlightrangesquared)
+					{
+						m_cellLighting[cellx][celly] = {128, 128, 128, 255};
 					}
 				}
 			}
