@@ -25,7 +25,7 @@ public:
     virtual void Init(const std::string& configfile);
     virtual void Shutdown();
     virtual void Update();
-    virtual void Draw() {};
+    void Draw() {};
 
     void LoadScript(const std::string& path);
     void SortScripts();

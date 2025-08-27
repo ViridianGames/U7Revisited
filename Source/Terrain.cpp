@@ -85,15 +85,14 @@ void Terrain::CalculateLighting()
 	int softlightrangesquared = softlightrange * softlightrange;
 	for (auto object : g_sortedVisibleObjects)
 	{
-		U7Object* obj = object.get();
-		if (obj->m_objectData->m_isLightSource)
+		if (object->m_objectData->m_isLightSource)
 		{
 			for (int i = g_camera.target.x - (TILEWIDTH / 2); i <= g_camera.target.x + (TILEWIDTH / 2 - 1); i++)
 			{
 				for (int j = g_camera.target.z - (TILEHEIGHT / 2); j <= g_camera.target.z + (TILEHEIGHT / 2 - 1); j++)
 				{
 					//  Early outs.  Too far from the center?  Can't be lit, continue.
-					if (abs(obj->m_Pos.x - i) > softlightrange || abs(obj->m_Pos.z - j) > softlightrange)
+					if (abs(object->m_Pos.x - i) > softlightrange || abs(object->m_Pos.z - j) > softlightrange)
 					{
 						continue;
 					}
@@ -107,7 +106,7 @@ void Terrain::CalculateLighting()
 						continue; // This cell has already been processed.
 					}
 
-					float distance = Vector2DistanceSqr({float(i), float(j)}, {obj->m_Pos.x, obj->m_Pos.z});
+					float distance = Vector2DistanceSqr({float(i), float(j)}, {object->m_Pos.x, object->m_Pos.z});
 
 					if (distance <= lightrangesquared)
 					{

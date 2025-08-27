@@ -214,7 +214,7 @@ extern std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 extern std::array<ObjectData, 1024> g_objectDataTable;
 extern std::unordered_map<int, std::unique_ptr<NPCData> > g_NPCData;
 
-extern std::vector<std::shared_ptr<U7Object>> g_sortedVisibleObjects;
+extern std::vector<U7Object*> g_sortedVisibleObjects;
 
 extern unsigned int g_minimapSize;
 
