@@ -178,35 +178,34 @@ void MainState::Update()
 		g_CurrentUpdate++;
 
 		m_NumberOfVisibleUnits = 0;
+		m_numberofDrawnObjects = 0;
+		m_numberofObjectsPassingFirstCheck = 0;
 
 		if (m_showObjects)
 		{
+			m_numberofObjects = g_ObjectList.size();
 			g_sortedVisibleObjects.clear();
 			float drawRange = TILEWIDTH / 2;
-
-			// Reserve space to avoid reallocations
-			g_sortedVisibleObjects.reserve(g_ObjectList.size());
 
 			// Cache camera target for faster access
 			const float camTargetX = g_camera.target.x;
 			const float camTargetZ = g_camera.target.z;
 			const Vector3 camPosition = g_camera.position;
 
-			for (auto& pair : g_ObjectList)
+			for (const auto pair : g_ObjectList)
 			{
-				auto& objectPtr = pair.second;
-				if (!objectPtr) continue;
-				U7Object& object = *objectPtr;
+				U7Object* object = pair.second.get();
+				if (!object) continue;
 
 				// Cache shape index
-				int shapeIdx = object.m_shapeData->m_shape;
+				int shapeIdx = object->m_shapeData->m_shape;
 
 				// Use reference to avoid repeated lookups
 				ObjectData& data = g_objectDataTable[shapeIdx];
 
 				if (!m_paused)
 				{
-					object.Update();
+					object->Update();
 				}
 
 				if (data.m_height == 0)
@@ -216,27 +215,29 @@ void MainState::Update()
 
 				// Precompute bounding box center point
 				Vector3 boundingBoxCenterPoint = { data.m_width / 2, data.m_height / 2, data.m_depth / 2 };
-				Vector3 centerPoint = Vector3Add(object.m_Pos, boundingBoxCenterPoint);
+				Vector3 centerPoint = Vector3Add(object->m_Pos, boundingBoxCenterPoint);
 
 				// Use fabsf for float abs
 				if (fabsf(centerPoint.x - camTargetX) > drawRange || fabsf(centerPoint.z - camTargetZ) > drawRange)
 				{
 					continue;
 				}
+				m_numberofObjectsPassingFirstCheck++;
 
-				float distance = Vector3Distance(centerPoint, g_camera.target) - object.m_Pos.y;
-				if (distance < drawRange&& object.m_Pos.y <= m_heightCutoff)
+				float distance = Vector3Distance(centerPoint, g_camera.target) - object->m_Pos.y;
+				if (distance < drawRange&& object->m_Pos.y <= m_heightCutoff)
 				{
-					double distanceFromCamera = Vector3DistanceSqr(object.m_Pos, camPosition) - object.m_Pos.y;
-					object.m_distanceFromCamera = distanceFromCamera;
-					g_sortedVisibleObjects.push_back(objectPtr);
-					m_numberofDrawnUnits++;
+					double distanceFromCamera = Vector3DistanceSqr(object->m_Pos, camPosition) - object->m_Pos.y;
+					object->m_distanceFromCamera = distanceFromCamera;
+					g_sortedVisibleObjects.push_back(object);
+					m_numberofDrawnObjects++;
 				}
 			}
 
 			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(),
-				[](const shared_ptr<U7Object>& a, const shared_ptr<U7Object>& b)
-				{ return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+				[](const U7Object* a, const U7Object* b) {
+					return a->m_distanceFromCamera < b->m_distanceFromCamera;
+				});
 
 			for (auto& object : g_sortedVisibleObjects)
 			{
@@ -285,7 +286,7 @@ void MainState::Update()
 
 	g_dropPos = {pickx, 0, picky};
 
-	std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+	std::vector<U7Object*>::reverse_iterator node;
 
 	for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 	{
@@ -400,7 +401,7 @@ void MainState::Update()
 	{
 		// AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
 
-		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+		std::vector<U7Object*>::reverse_iterator node;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -456,7 +457,7 @@ void MainState::Update()
 	{
 		// AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
 
-		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+		std::vector<U7Object*>::reverse_iterator node;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -483,7 +484,7 @@ void MainState::Update()
 	{
 		// AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
 
-		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+		std::vector<U7Object*>::reverse_iterator node;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -511,10 +512,10 @@ void MainState::Update()
 	//  Get terrain hit for highlight mesh
 	else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
-		std::vector<shared_ptr<U7Object>>::reverse_iterator node;
+		std::vector<U7Object*>::reverse_iterator node;
 
 		float closest = 1000000.0f;
-		int closestObject = 0;
+		U7Object* closestObject = 0;
 
 		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
@@ -530,15 +531,15 @@ void MainState::Update()
 				if (picked < closest)
 				{
 					closest = picked;
-					closestObject = (*node)->m_ID;
+					closestObject = *node;
 				}
 			}
 		}
 		if (closestObject != 0)
 		{
-			g_selectedShape = g_ObjectList[closestObject]->m_shapeData->GetShape();
-			g_selectedFrame = g_ObjectList[closestObject]->m_shapeData->GetFrame();
-			m_selectedObject = closestObject;
+			g_selectedShape = closestObject->m_shapeData->GetShape();
+			g_selectedFrame = closestObject->m_shapeData->GetFrame();
+			m_selectedObject = closestObject->m_ID;
 		}
 	}
 }
@@ -569,15 +570,11 @@ void MainState::Draw()
 	//  Draw the terrain
 	g_Terrain->Draw();
 
-	//  Draw the objects
-	m_numberofDrawnUnits = 0;
-
 	if (m_showObjects)
 	{
 		for (auto& unit : g_sortedVisibleObjects)
 		{
 			unit->Draw();
-			++m_numberofDrawnUnits;
 		}
 	}
 
@@ -615,6 +612,8 @@ void MainState::Draw()
 
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
+
+	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(m_numberofObjects) + " Visible: " + to_string(m_numberofDrawnObjects) + " / " + to_string(m_numberofObjectsPassingFirstCheck), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
 	g_gumpManager->Draw();
 

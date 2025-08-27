@@ -115,11 +115,11 @@ void U7Object::CheckLighting()
 		m_isLit = false;
 		for (auto object : g_sortedVisibleObjects)
 		{
-			if (object.get()->m_objectData->m_isLightSource)
+			if (object->m_objectData->m_isLightSource)
 			{
 				//  If any point in the bounding box is near enough, the object is lit.
-				if (Vector2DistanceSqr({object.get()->m_Pos.x, object.get()->m_Pos.z}, {m_Pos.x, m_Pos.z}) <= 64 ||
-					Vector2DistanceSqr({object.get()->m_Pos.x + object.get()->m_boundingBox.max.x, object.get()->m_Pos.z + object.get()->m_boundingBox.max.z}, {m_Pos.x, m_Pos.z}) <= 64)
+				if (Vector2DistanceSqr({object->m_Pos.x, object->m_Pos.z}, {m_Pos.x, m_Pos.z}) <= 64 ||
+					Vector2DistanceSqr({object->m_Pos.x + object->m_boundingBox.max.x, object->m_Pos.z + object->m_boundingBox.max.z}, {m_Pos.x, m_Pos.z}) <= 64)
 				{
 					m_isLit = true;
 				}

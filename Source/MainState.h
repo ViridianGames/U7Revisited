@@ -71,7 +71,9 @@ public:
 
    bool m_showObjects;
 
-   int m_numberofDrawnUnits = 0;
+	int m_numberofObjects = 0;
+	int m_numberofObjectsPassingFirstCheck = 0;
+   int m_numberofDrawnObjects = 0;
 
    int m_cameraUpdateTime = 0;
 
