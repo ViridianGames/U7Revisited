@@ -85,6 +85,11 @@ void U7Object::Draw()
 		int cellx = (TILEWIDTH / 2) + m_Pos.x - int(g_camera.target.x);
 		int celly = (TILEHEIGHT / 2) + m_Pos.z - int(g_camera.target.z);
 
+		if(cellx < 0 || cellx >= TILEWIDTH || celly < 0 || celly >= TILEHEIGHT)
+		{
+			return; // Not on the screen.
+		}
+
 		m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
 
 		// if (!m_isLit)

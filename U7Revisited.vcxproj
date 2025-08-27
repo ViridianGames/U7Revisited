@@ -148,6 +148,9 @@
     <ClInclude Include="ThirdParty\lua\src\lvm.h" />
     <ClInclude Include="ThirdParty\lua\src\lzio.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Redist\Data\version.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C659928C-52E7-445E-88F4-F51BDDD632A1}</ProjectGuid>
