@@ -27,7 +27,7 @@ Terrain::Terrain()
    m_width = 3072;
 
 	m_terrainTiles = LoadTextureFromImage(GenImageColor(2048, 256, Color{ 0, 0, 0, 0 }));
-	m_currentTerrain = LoadRenderTexture(1024, 1024);
+	m_currentTerrain = LoadRenderTexture(TILEWIDTH * 8, TILEHEIGHT * 8);
 
 	m_cellModel = LoadModelFromMesh(GenMeshPlane(TILEWIDTH, TILEHEIGHT, 1, 1));
 	SetMaterialTexture(&m_cellModel.materials[0], MATERIAL_MAP_DIFFUSE, m_currentTerrain.texture);
@@ -153,7 +153,7 @@ void Terrain::UpdateTerrainTiles()
 				prevFrame = framenum;
 			}
 
-			DrawTexturePro(m_terrainTiles, { float(shapenum * 8), float(framenum * 8), 8, 8 }, { float(cellx * 8), float(celly * 8), 8, -8 }, { 0, 0 }, 0, m_cellLighting[cellx][128 - celly]);
+			DrawTexturePro(m_terrainTiles, { float(shapenum * 8), float(framenum * 8), 8, 8 }, { float(cellx * 8), float(celly * 8), 8, -8 }, { 0, 0 }, 0, m_cellLighting[cellx][TILEHEIGHT - celly]);
 		}
 	}
 	EndTextureMode();
