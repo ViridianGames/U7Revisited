@@ -414,4 +414,7 @@
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Redist\Data\version.txt" />
+  </ItemGroup>
 </Project>
