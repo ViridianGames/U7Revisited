@@ -7774,13 +7774,13 @@
 392 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 392 29 default 
 392 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 392 30 default 
 392 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 392 31 default 
-393 0 0 0 8 8 0 8 8 25 8 0 26 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x00.gltf 1 0 393 0 default 
+393 0 0 0 8 8 0 8 8 25 8 0 26 8 3 1 0.95 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_393x00.gltf 1 0 393 0 default 
 393 1 0 0 8 8 0 8 8 20 8 0 20 8 3 1 1 1 0 0 1 180 1 2 2 3 3 1 Models/3dmodels/wall_393x01.gltf 1 0 393 1 default 
-393 2 0 0 8 8 0 8 8 25 8 0 27 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x02.gltf 1 0 393 2 default 
+393 2 0 0 8 8 0 8 8 25 8 0 27 8 3 1 0.95 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_393x02.gltf 1 0 393 2 default 
 393 3 0 0 8 8 0 8 8 25 8 0 27 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x03.gltf 1 0 393 3 default 
 393 4 0 0 8 8 0 8 8 20 8 0 20 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x04.gltf 1 0 393 4 default 
-393 5 0 0 8 8 0 8 8 26 8 0 25 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x05.gltf 1 0 393 5 default 
-393 6 0 0 8 8 0 8 8 26 8 0 25 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x06.gltf 1 0 393 6 default 
+393 5 0 0 8 8 0 8 8 26 8 0 25 8 3 1 0.95 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_393x05.gltf 1 0 393 5 default 
+393 6 0 0 8 8 0 8 8 26 8 0 25 8 3 1 0.95 1 0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_393x06.gltf 1 0 393 6 default 
 393 7 0 0 8 8 0 8 8 21 8 0 20 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_393x06.gltf 1 0 393 7 default 
 393 8 0 0 8 8 0 8 8 20 8 0 20 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 393 8 default 
 393 9 0 0 8 8 0 8 8 20 8 0 20 8 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 393 9 default 
@@ -8222,7 +8222,7 @@
 406 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 406 29 default 
 406 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 406 30 default 
 406 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 406 31 default 
-407 0 0 0 40 24 0 24 40 7 40 0 6 24 3 1 1 0.95 -1.5 0 -0.45 0 0 2 3 3 3 1 Models/3dmodels/desk_407x00.obj 1 0 407 0 default 
+407 0 0 0 40 24 0 24 40 7 40 0 6 24 3 1 0.95 0.95 -1.5 0 -0.45 0 0 2 3 3 3 1 Models/3dmodels/desk_407x00.obj 1 0 407 0 default 
 407 1 0 0 40 24 0 24 40 7 40 0 6 24 3 1 1 1 -1.5 0 0 180 0 2 2 3 3 1 Models/3dmodels/desk_407x00.obj 1 0 407 1 default 
 407 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 407 2 default 
 407 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 407 3 default 
@@ -17186,7 +17186,7 @@
 687 1 0 0 16 16 0 16 16 22 16 0 22 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687x01.obj 1 0 687 1 default 
 687 2 0 0 16 16 0 16 16 18 16 0 18 16 3 0.9 1.2 0.9 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687x02.obj 1 0 687 2 default 
 687 3 0 0 16 16 0 16 16 14 16 0 14 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687x03.obj 1 0 687 3 default 
-687 4 0 0 10 9 2 10 8 19 10 3 19 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687x04.obj 1 0 687 4 default 
+687 4 0 0 10 9 2 10 8 19 10 3 19 8 3 1 0.95 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/pillar_687x04.obj 1 0 687 4 default 
 687 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 687 5 default 
 687 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 687 6 default 
 687 7 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 687 7 default 
@@ -25246,9 +25246,9 @@
 938 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 938 29 default 
 938 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 938 30 default 
 938 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 938 31 default 
-939 0 0 0 8 24 0 24 8 23 8 0 27 24 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_939x00.gltf 1 0 939 0 default 
-939 1 0 0 8 24 0 24 8 26 8 0 28 24 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_939x01.gltf 1 0 939 1 default 
-939 2 0 0 8 24 0 24 8 20 8 0 23 24 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_939x02.gltf 1 0 939 2 default 
+939 0 0 0 8 24 0 24 8 23 8 0 27 24 3 1 0.95 1 0.5 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_939x00.gltf 1 0 939 0 default 
+939 1 0 0 8 24 0 24 8 26 8 0 28 24 3 1 0.95 1 0.5 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_939x01.gltf 1 0 939 1 default 
+939 2 0 0 8 24 0 24 8 20 8 0 23 24 3 1 0.95 1 0 0 -0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_939x02.gltf 1 0 939 2 default 
 939 3 0 0 8 24 0 24 8 20 8 0 23 24 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_939x03.gltf 1 0 939 3 default 
 939 4 0 0 8 24 0 24 8 21 8 0 27 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 939 4 default 
 939 5 0 0 8 24 0 24 8 21 8 0 20 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 939 5 default 
@@ -25278,8 +25278,8 @@
 939 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 939 29 default 
 939 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 939 30 default 
 939 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 939 31 default 
-940 0 0 0 24 8 0 8 24 26 24 0 26 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_940x00.gltf 1 0 940 0 default 
-940 1 0 0 24 8 0 8 24 25 24 0 25 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_940x01.gltf 1 0 940 1 default 
+940 0 0 0 24 8 0 8 24 26 24 0 26 8 3 1 0.95 1 -0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_940x00.gltf 1 0 940 0 default 
+940 1 0 0 24 8 0 8 24 25 24 0 25 8 3 1 0.95 1 -0.5 0 0.5 0 1 2 2 3 3 1 Models/3dmodels/wall_940x01.gltf 1 0 940 1 default 
 940 2 0 0 24 8 0 8 24 22 24 0 20 8 3 1 1 1 1 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_940x02.gltf 1 0 940 2 default 
 940 3 0 0 24 8 0 8 24 22 24 0 21 8 3 1 1 1 -2 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_940x03.gltf 1 0 940 3 default 
 940 4 0 0 24 8 0 8 24 26 24 0 25 8 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_940x04.gltf 1 0 940 4 default 
@@ -25694,7 +25694,7 @@
 952 29 0 0 8 8 0 8 8 24 8 0 23 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 952 29 default 
 952 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 952 30 default 
 952 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 952 31 default 
-953 0 0 0 8 16 0 16 8 24 8 0 27 16 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_953x00.gltf 1 0 953 0 default 
+953 0 0 0 8 16 0 16 8 24 8 0 27 16 3 1 0.95 1 0.5 0 0 0 1 2 2 3 3 1 Models/3dmodels/wall_953x00.gltf 1 0 953 0 default 
 953 1 0 0 8 16 0 16 8 26 8 0 27 16 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_953x01.gltf 1 0 953 1 default 
 953 2 0 0 8 16 0 16 8 20 8 0 22 16 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_953x02.gltf 1 0 953 2 default 
 953 3 0 0 8 16 0 16 8 20 8 0 23 16 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_953x03.gltf 1 0 953 3 default 
@@ -26558,7 +26558,7 @@
 979 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 979 29 default 
 979 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 979 30 default 
 979 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 979 31 default 
-980 0 0 0 8 32 0 32 8 24 8 0 28 32 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_980x00.gltf 1 0 980 0 default 
+980 0 0 0 8 32 0 32 8 24 8 0 28 32 3 1 0.95 1 0.5 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_980x00.gltf 1 0 980 0 default 
 980 1 0 0 8 32 0 32 8 25 8 0 28 32 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_980x01.gltf 1 0 980 1 default 
 980 2 0 0 8 32 0 32 8 20 8 0 21 32 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_980x02.gltf 1 0 980 2 default 
 980 3 0 0 8 32 0 32 8 20 8 0 21 32 3 1 1 1 1 0 -1 0 1 2 2 3 3 1 Models/3dmodels/wall_980x03.gltf 1 0 980 3 default 

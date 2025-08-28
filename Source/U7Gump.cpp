@@ -48,7 +48,7 @@ void Gump::OnEnter()
 	int posx = int(g_NonVitalRNG->Random(150));
 	int posy = int(g_NonVitalRNG->Random(150));
 
-	m_containerObject = GetObjectFromID(m_containerId).get();
+	m_containerObject = GetObjectFromID(m_containerId);
 
 	//  Find out what kind of container this is and set the gump background accordingly
 	switch(m_containerObject->m_ObjectType)
@@ -104,7 +104,7 @@ void Gump::OnEnter()
 
 	//gump->SetContainerType(Gump::g_gumpData[gump->m_containerType].m_containerType);
 
-	shared_ptr<U7Object> thisObject = GetObjectFromID(m_containerId);
+	U7Object* thisObject = GetObjectFromID(m_containerId);
 	if(thisObject->m_shouldBeSorted)
 	{
 		SortContainer();
@@ -139,7 +139,7 @@ void Gump::Update()
 			{
 				for (auto containerObjectId : m_containerObject->m_inventory)
 				{
-					auto object = GetObjectFromID(containerObjectId).get();
+					auto object = GetObjectFromID(containerObjectId);
 					if (object && object->m_shapeData)
 					{
 						if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 2) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 2) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
@@ -208,7 +208,7 @@ void Gump::Draw()
 {
 	m_gui.Draw();
 
-	shared_ptr<U7Object> thisObject = GetObjectFromID(m_containerId);
+	U7Object* thisObject = GetObjectFromID(m_containerId);
 
 	for (auto& item : thisObject->m_inventory)
 	{
@@ -219,7 +219,7 @@ void Gump::Draw()
 
 void Gump::SortContainer()
 {
-	shared_ptr<U7Object> thisObject = GetObjectFromID(m_containerId);
+	U7Object* thisObject = GetObjectFromID(m_containerId);
 
 	if (thisObject->m_inventory.empty())
 	{
@@ -229,8 +229,8 @@ void Gump::SortContainer()
     // Sort items by height (tallest first) for better packing
     std::sort(thisObject->m_inventory.begin(), thisObject->m_inventory.end(), [](int a, int b)
 	{
-		U7Object* aObj = GetObjectFromID(a).get();
-		U7Object* bObj = GetObjectFromID(b).get();
+		U7Object* aObj = GetObjectFromID(a);
+		U7Object* bObj = GetObjectFromID(b);
 
 		return (aObj->m_shapeData->GetDefaultTextureImage().height > bObj->m_shapeData->GetDefaultTextureImage().height);
 	});
@@ -242,7 +242,7 @@ void Gump::SortContainer()
 
     for (int item : thisObject->m_inventory) {
         // If adding the item exceeds maxWidth, move to the next row
-		U7Object* itemObj = GetObjectFromID(item).get();
+		U7Object* itemObj = GetObjectFromID(item);
         if (currentX + itemObj->m_shapeData->GetDefaultTextureImage().width > m_containerData.m_boxSize.x * 2) {
             currentX = 0.0f;
             currentY += maxRowHeight;

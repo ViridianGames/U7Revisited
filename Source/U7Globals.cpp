@@ -15,7 +15,7 @@ using namespace std;
 
 std::string g_version;
 
-unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
+unordered_map<int, std::unique_ptr<U7Object> > g_ObjectList;
 
 Mesh* g_AnimationFrames;
 
@@ -105,24 +105,6 @@ Vector3 g_dropPos = Vector3{ 0, 0, 0 };
 U7Object* g_mouseOverObject = nullptr;
 
 std::unique_ptr<GumpManager> g_gumpManager;
-
-//  Slow.  Use only when you actually need to know the distance.
-float GetDistance(float startX, float startZ, float endX, float endZ)
-{
-	float dx = startX - endX;
-	float dz = startZ - endZ;
-	return sqrt((dx * dx) + (dz * dz));
-}
-
-//  Use when you just need to know if the distance is less than a certain range
-//  (which is 90% of the time).  Much faster because it does not require a square root call.
-//  Yes, technically it's "Is less than or equals to".
-bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, float range)
-{
-	float dx = startX - endX;
-	float dz = startZ - endZ;
-	return ((dx * dx) + (dz * dz)) <= (range * range);
-}
 
 //  This makes an animation 
 void MakeAnimationFrameMeshes()
@@ -321,35 +303,33 @@ if (IsKeyDown(KEY_E))
 	return 0;
 }
 
-shared_ptr<U7Object> GetObjectFromID(int unitID)
+U7Object* GetObjectFromID(int unitID)
 {
-	unordered_map<int, shared_ptr<U7Object> >::iterator finder = g_ObjectList.find(unitID);
-
-	if (finder == g_ObjectList.end())
-		return nullptr;
-	else
-		return (*finder).second;
-}
-
-shared_ptr<U7Object> U7ObjectClassFactory(int type)
-{
-		shared_ptr<U7Object> temp = make_shared<U7Object>();
-		temp->m_ObjectType = type;
-		return temp;
-}
-
-vector<shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, float range)
-{
-	vector<shared_ptr<U7Object> > _Targets;
-	for (auto& unit : g_ObjectList)
+	auto it = g_ObjectList.find(unitID);
+	if (it != g_ObjectList.end())
 	{
-		if (IsDistanceLessThan(x, y, unit.second->m_Pos.x, unit.second->m_Pos.z, range))
+		return it->second.get(); // Returns raw pointer to U7Object
+	}
+	return nullptr;
+}
+
+void UpdateSortedVisibleObjects()
+{
+	g_sortedVisibleObjects.clear();
+	for (auto& [id, objPtr] : g_ObjectList)
+	{
+		if (abs(g_camera.target.x - objPtr->m_terrainCenterPoint.x) <= TILEWIDTH / 2 && abs(g_camera.target.z - objPtr->m_terrainCenterPoint.z) <= TILEHEIGHT / 2)
 		{
-			_Targets.emplace_back(unit.second);
+			g_sortedVisibleObjects.push_back(objPtr.get());
 		}
 	}
 
-	return _Targets;
+	for (auto object : g_sortedVisibleObjects)
+	{
+		object->m_distanceFromCamera = Vector3DistanceSqr(object->m_terrainCenterPoint, g_camera.position);
+	}
+
+	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 }
 
 Vector3 GetRadialVector(float partitions, float thispartition)
@@ -370,18 +350,18 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 		Log("Stop here.");
 	}
 
-	shared_ptr<U7Object> temp = U7ObjectClassFactory(0);
+	g_ObjectList.emplace(id, make_unique<U7Object>());
+
+	U7Object* temp = g_ObjectList[id].get();
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->SetInitialPos(Vector3{ x, y, z });
 	temp->m_ID = id;
-
-	g_ObjectList[id] = temp;
 }
 
 void AddObjectToInventory(int objectId, int containerId)
 {
-	shared_ptr<U7Object> object = GetObjectFromID(objectId);
-	shared_ptr<U7Object> container = GetObjectFromID(containerId);
+	U7Object* object = GetObjectFromID(objectId);
+	U7Object* container = GetObjectFromID(containerId);
 
 	if (object == nullptr || container == nullptr)
 	{
@@ -527,8 +507,8 @@ void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 
 
 void AddObjectToContainer(int objectID, int containerID)
 {
-	shared_ptr<U7Object> object = GetObjectFromID(objectID);
-	shared_ptr<U7Object> container = GetObjectFromID(containerID);
+	U7Object* object = GetObjectFromID(objectID);
+	U7Object* container = GetObjectFromID(containerID);
 
 	if (object == nullptr || container == nullptr)
 	{

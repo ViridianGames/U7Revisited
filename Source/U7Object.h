@@ -107,6 +107,8 @@ public:
    Color m_color = WHITE;
 
    BoundingBox m_boundingBox;
+	Vector3 m_terrainCenterPoint;
+	Vector3 m_centerPoint;
 
    bool m_isNPC;
    bool m_isContainer;

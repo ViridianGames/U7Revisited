@@ -9,8 +9,8 @@
 
 //#define M_PI (3.1415926536f)
 //#define DEG2RAD(x) (x*(M_PI/180.0))
-constexpr int TILEWIDTH = 90;
-constexpr int TILEHEIGHT = 90;
+constexpr int TILEWIDTH = 100;
+constexpr int TILEHEIGHT = 100;
 
 class Terrain : public Object
 {

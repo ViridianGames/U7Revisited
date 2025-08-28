@@ -4,6 +4,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "TitleState.h"
+#include "rlgl.h"
 
 #include <list>
 #include <string>
@@ -51,31 +52,9 @@ void TitleState::Shutdown()
 
 void TitleState::Update()
 {
-   if (GetTime() - m_LastUpdate > GetFrameTime())
-   {
-      g_CurrentUpdate++;
+   UpdateSortedVisibleObjects();
 
-      m_sortedVisibleObjects.clear();
-      float drawRange = g_cameraDistance * 1.5f;
-      for (unordered_map<int, shared_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
-      {
-         //(*node).second->Update();
-         float distance = Vector3Distance((*node).second->m_Pos, g_camera.target);
-         distance -= (*node).second->m_Pos.y;
-         if (distance < drawRange && (*node).second->m_Pos.y <= 4.0f)
-         {
-            double distanceFromCamera = Vector3Distance((*node).second->m_Pos, g_camera.position) - (*node).second->m_Pos.y;
-            (*node).second->m_distanceFromCamera = distanceFromCamera;
-            m_sortedVisibleObjects.push_back((*node).second);
-         }
-      }
-
-      std::sort(m_sortedVisibleObjects.begin(), m_sortedVisibleObjects.end(), [](shared_ptr<U7Object> a, shared_ptr<U7Object> b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
-
-      m_LastUpdate = GetTime();
-   }
-
-   //  Slow rotate on the title screen
+    //  Slow rotate on the title screen
    g_CameraRotateSpeed = 0.001f;
    g_cameraRotation += g_CameraRotateSpeed;
 
@@ -113,6 +92,8 @@ void TitleState::Update()
 
 void TitleState::Draw()
 {
+   //rlSetBlendFactors(RL_SRC_ALPHA, RL_ONE_MINUS_SRC_ALPHA, RL_MIN);
+   rlSetBlendMode(BLEND_ALPHA);
    BeginDrawing();
 
    ClearBackground(Color {0, 0, 0, 255});
@@ -123,10 +104,24 @@ void TitleState::Draw()
    g_Terrain->Draw();
 
    //  Draw the objects
-   for (auto& unit : m_sortedVisibleObjects)
+   for (auto object : g_sortedVisibleObjects)
    {
-      unit->Draw();
+      if (object->m_Pos.y <= 4 && object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+      {
+         object->Draw();
+      }
    }
+
+   rlDisableDepthMask();
+   for (auto object : g_sortedVisibleObjects)
+   {
+      if (object->m_Pos.y <= 4 && object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+      {
+         object->Draw();
+      }
+   }
+   rlEnableDepthMask();
+
 
    EndMode3D();
 
@@ -154,9 +149,6 @@ void TitleState::Draw()
       { 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
       { 0, 0 }, 0, WHITE);
 
-   
-
-
    //DrawTexture(*m_title, 0, 0, WHITE);
 
    DrawTexturePro(*m_title, Rectangle{ 0, 0, float(m_title->width), float(m_title->height) }, Rectangle{ 0, 0, float(m_title->width * g_DrawScale * .5f), float(m_title->height * g_DrawScale * .5f) }, { 0,0 }, 0, WHITE);
@@ -165,6 +157,8 @@ void TitleState::Draw()
    {
       DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
    }
+
+   DrawFPS(10, 300);
 
    EndDrawing();
 }
@@ -195,16 +189,6 @@ void TitleState::CreateTitleGUI()
    m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, y, "Shape Editor",
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
       g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
-
-   // y += yoffset;
-   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OBJECT_EDITOR, y, "Object Editor",
-   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
-
-   // y += yoffset;
-   // m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_WORLD_EDITOR, y, "World Editor",
-   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-   //    g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
    y += yoffset;
    m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OPTIONS, y, "Options",
@@ -445,7 +429,7 @@ void TitleState::UpdateTitle()
 		g_Engine->m_Done = true;
 	}
 
-   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))//;//(GetMouseDelta().x) > 50 || abs(GetMouseDelta().y) > 50)
+   if (abs(GetMouseDelta().x) > 25 || abs(GetMouseDelta().y) > 25)
    {
 		m_mouseMoved = true;
 	}

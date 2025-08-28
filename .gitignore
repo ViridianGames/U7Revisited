@@ -14,3 +14,4 @@ liblua.a
 cmake-build-debug/
 
 .idea/
+/Redist/runlog.txt

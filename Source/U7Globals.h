@@ -200,7 +200,7 @@ extern std::unique_ptr<RNG> g_NonVitalRNG;
 
 extern std::unique_ptr<Terrain> g_Terrain;
 
-extern std::unordered_map<int, std::shared_ptr<U7Object> > g_ObjectList;
+extern std::unordered_map<int, std::unique_ptr<U7Object> > g_ObjectList;
 
 extern unsigned int g_CurrentUpdate;
 
@@ -243,13 +243,13 @@ void IsCellVisible(float x, float y);
 
 void IsPointVisible(float x, float y);
 
-std::shared_ptr<U7Object> GetObjectFromID(int unitID);
+U7Object* GetObjectFromID(int unitID);
 
-std::shared_ptr<U7Object> U7ObjectClassFactory(int type);
+U7Object* U7ObjectClassFactory(int type);
 
 void PopulateLocationMap();
 
-std::vector<std::shared_ptr<U7Object> > GetAllUnitsWithinRange(float x, float y, float range);
+void UpdateSortedVisibleObjects();
 
 Vector3 GetRadialVector(float partitions, float thispartition);
 

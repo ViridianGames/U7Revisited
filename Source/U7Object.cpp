@@ -91,15 +91,6 @@ void U7Object::Draw()
 		}
 
 		m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
-
-		// if (!m_isLit)
-		// {
-		// 	m_shapeData->Draw(m_Pos, m_Angle, g_dayNightColor);
-		// }
-		// else
-		// {
-		// 	m_shapeData->Draw(m_Pos, m_Angle, WHITE);
-		// }
 	}
 
 	if (g_Engine->m_debugDrawing)
@@ -336,6 +327,10 @@ void U7Object::SetPos(Vector3 pos)
 	}
 
 	m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
+
+	m_centerPoint = Vector3Add(m_Pos, { objectData->m_width / 2, objectData->m_height /2, objectData->m_depth / 2 });
+	m_terrainCenterPoint = m_centerPoint;
+	m_terrainCenterPoint.y = m_Pos.y;
 }
 
 float U7Object::Pick()

@@ -117,6 +117,9 @@ void MainState::Shutdown()
 
 void MainState::Update()
 {
+	UpdateSortedVisibleObjects();
+
+
 	if (!m_paused)
 	{
 		float thisTime = GetTime();
@@ -181,68 +184,27 @@ void MainState::Update()
 		m_numberofDrawnObjects = 0;
 		m_numberofObjectsPassingFirstCheck = 0;
 
-		if (m_showObjects)
+		for (const auto& [id, object] : g_ObjectList)
 		{
-			m_numberofObjects = g_ObjectList.size();
-			g_sortedVisibleObjects.clear();
-			float drawRange = TILEWIDTH / 2;
+			if (!object) continue;
 
-			// Cache camera target for faster access
-			const float camTargetX = g_camera.target.x;
-			const float camTargetZ = g_camera.target.z;
-			const Vector3 camPosition = g_camera.position;
-
-			for (const auto pair : g_ObjectList)
+			if (!m_paused)
 			{
-				U7Object* object = pair.second.get();
-				if (!object) continue;
-
-				// Cache shape index
-				int shapeIdx = object->m_shapeData->m_shape;
-
-				// Use reference to avoid repeated lookups
-				ObjectData& data = g_objectDataTable[shapeIdx];
-
-				if (!m_paused)
+				object->Update();
+				if (object->m_Pos.y > m_heightCutoff)
 				{
-					object->Update();
+					object->m_Visible = false;
 				}
-
-				if (data.m_height == 0)
+				else
 				{
-					int stopper = 0;
-				}
-
-				// Precompute bounding box center point
-				Vector3 boundingBoxCenterPoint = { data.m_width / 2, data.m_height / 2, data.m_depth / 2 };
-				Vector3 centerPoint = Vector3Add(object->m_Pos, boundingBoxCenterPoint);
-
-				// Use fabsf for float abs
-				if (fabsf(centerPoint.x - camTargetX) > drawRange || fabsf(centerPoint.z - camTargetZ) > drawRange)
-				{
-					continue;
-				}
-				m_numberofObjectsPassingFirstCheck++;
-
-				float distance = Vector3Distance(centerPoint, g_camera.target) - object->m_Pos.y;
-				if (distance < drawRange&& object->m_Pos.y <= m_heightCutoff)
-				{
-					double distanceFromCamera = Vector3DistanceSqr(object->m_Pos, camPosition) - object->m_Pos.y;
-					object->m_distanceFromCamera = distanceFromCamera;
-					g_sortedVisibleObjects.push_back(object);
-					m_numberofDrawnObjects++;
+					object->m_Visible = true;
 				}
 			}
+		}
 
-			std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(),
-				[](const U7Object* a, const U7Object* b) {
-					return a->m_distanceFromCamera < b->m_distanceFromCamera;
-				});
-
-			for (auto& object : g_sortedVisibleObjects)
-			{
-				object->CheckLighting();
-			}
+		for (auto& object : g_sortedVisibleObjects)
+		{
+			object->CheckLighting();
 		}
 
 		m_LastUpdate = GetTime();
@@ -512,12 +474,12 @@ void MainState::Update()
 	//  Get terrain hit for highlight mesh
 	else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
 	{
-		std::vector<U7Object*>::reverse_iterator node;
+		std::vector<U7Object*>::iterator node;
 
 		float closest = 1000000.0f;
 		U7Object* closestObject = 0;
 
-		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		for (node = g_sortedVisibleObjects.begin(); node != g_sortedVisibleObjects.end(); ++node)
 		{
 			if (*node == nullptr || !(*node)->m_Visible)
 			{
@@ -572,10 +534,24 @@ void MainState::Draw()
 
 	if (m_showObjects)
 	{
-		for (auto& unit : g_sortedVisibleObjects)
+		for (auto object : g_sortedVisibleObjects)
 		{
-			unit->Draw();
+		 	if (object->m_drawType != ShapeDrawType::OBJECT_DRAW_FLAT)
+		 	{
+		 		object->Draw();
+		 	}
 		}
+
+		//  Flats require disabling the depth mask to draw correctly.
+		rlDisableDepthMask();
+		for (auto object : g_sortedVisibleObjects)
+		{
+			if (object->m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
+			{
+				object->Draw();
+			}
+		}
+		rlEnableDepthMask();
 	}
 
 	EndMode3D();
@@ -613,7 +589,7 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
-	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(m_numberofObjects) + " Visible: " + to_string(m_numberofDrawnObjects) + " / " + to_string(m_numberofObjectsPassingFirstCheck), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
 	g_gumpManager->Draw();
 

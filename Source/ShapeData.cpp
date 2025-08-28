@@ -628,14 +628,12 @@ void ShapeData::Draw(const Vector3& pos, float angle, Color color, Vector3 scali
 		finalPos = Vector3Add(finalPos, m_TweakPos);
 		finalPos = Vector3Add(finalPos, Vector3{ -m_Dims.x + 1, 0, 1 });
 
-		Vector3 flatScaling = Vector3{ m_Dims.x, m_Dims.y, m_Dims.z };
+		Vector3 flatScaling = Vector3{ m_Dims.x, 1, m_Dims.z };
 
-		// BeginShaderMode(g_alphaDiscard);
+		//BeginShaderMode(g_alphaDiscard);
 		SetMaterialTexture(&m_flatModel->GetModel().materials[0], MATERIAL_MAP_DIFFUSE, m_texture->m_Texture);
-		rlDisableDepthMask();
 		DrawModelEx(m_flatModel->GetModel(), finalPos, { 0, 1, 0 }, 0, flatScaling, color);
-		rlEnableDepthMask();
-		// EndShaderMode();
+		//EndShaderMode();
 		break;
 	}
 

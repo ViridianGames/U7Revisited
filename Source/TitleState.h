@@ -64,8 +64,6 @@ public:
    std::shared_ptr<Gui> m_TitleGui;
    std::shared_ptr<Gui> m_CreditsGui;
 
-   std::vector<std::shared_ptr<U7Object>> m_sortedVisibleObjects;
-
    float m_LastUpdate;
 
    bool m_mouseMoved;

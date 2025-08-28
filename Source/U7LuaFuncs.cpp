@@ -488,7 +488,7 @@ static int LuaSetObjectShape(lua_State *L)
     if (g_LuaDebug) AddConsoleString("LUA: set_object_shape called");
     int object_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
-    U7Object *object = GetObjectFromID(object_id).get();
+    U7Object *object = GetObjectFromID(object_id);
     int currentFrame = object->m_shapeData->GetFrame();
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
@@ -521,7 +521,7 @@ static int LuaSetObjectFrame(lua_State *L)
     if (g_LuaDebug) AddConsoleString("LUA: set_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
-    U7Object *object = GetObjectFromID(object_id).get();
+    U7Object *object = GetObjectFromID(object_id);
     int currentShape = object->m_shapeData->GetShape();
     object->m_shapeData = &g_shapeTable[currentShape][frame];
     return 0;
