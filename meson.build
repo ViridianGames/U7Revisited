@@ -140,6 +140,7 @@ sources = files(
            'Source/ShapeEditorState.cpp',
            'Source/Terrain.cpp',
            'Source/TitleState.cpp',
+           'Source/U7GumpNumberBar.cpp',
            'Source/U7Globals.cpp',
            'Source/U7Gump.cpp',
            'Source/U7LuaFuncs.cpp',

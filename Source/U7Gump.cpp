@@ -187,7 +187,7 @@ void Gump::Update()
 		//  Dragging from inventory to inventory
 
 		auto object = GetObjectFromID(m_draggedObjectId);
-		object->m_Pos = g_dropPos;
+		object->SetPos(g_dropPos);
 
 		object->m_isContained = false;
 

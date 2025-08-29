@@ -33,7 +33,7 @@ public:
    virtual Vector3 GetDest() { return m_Dest; }
    virtual float GetSpeed() { return m_speed; }
 
-   void SetInitialPos(Vector3 pos) { SetPos(pos); SetDest(pos); }
+   void SetInitialPos(Vector3 pos);
    virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
    virtual void SetSpeed(float speed) { m_speed = speed; }
