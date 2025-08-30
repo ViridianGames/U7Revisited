@@ -242,9 +242,9 @@ void MainState::Update()
 		}
 	}
 
-	int cellx = (TILEWIDTH / 2) + pickx - int(g_camera.target.x);
-	int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
-	g_Terrain->m_cellLighting[cellx][celly] = { 255, 0, 255, 255 };
+	//int cellx = (TILEWIDTH / 2) + pickx - int(g_camera.target.x);
+	//int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
+	//g_Terrain->m_cellLighting[cellx][celly] = { 255, 0, 255, 255 };
 
 	g_dropPos = {pickx, 0, picky};
 
@@ -508,6 +508,14 @@ void MainState::Update()
 
 void MainState::OpenGump(int id)
 {
+	for (auto gump : g_gumpManager->m_GumpList)
+	{
+		if (gump.get()->GetContainerId() == id)
+		{
+			return; // Do not double-gump.
+		}
+	}
+
 	auto gump = std::make_shared<Gump>();
 
 	gump->SetContainerId(id);
