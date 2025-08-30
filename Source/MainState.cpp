@@ -597,6 +597,7 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
+	DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 300 }, g_SmallFont->baseSize, 1, WHITE);
 	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
 	g_gumpManager->Draw();

@@ -318,34 +318,32 @@ void UpdateSortedVisibleObjects()
 {
 	int cameraChunkI = static_cast<int>(g_camera.target.x / 16);
 	int cameraChunkJ = static_cast<int>(g_camera.target.z / 16);
-
 	int minChunkIVisibleDistance = static_cast<int>(TILEWIDTH / 2 / 16);
 	int minChunkJVisibleDistance = static_cast<int>(TILEHEIGHT / 2 / 16);
+ 	g_sortedVisibleObjects.clear();
 
-	g_sortedVisibleObjects.clear();
+ 	for (int i = 0; i < 192; i++)
+ 	{
+ 		for (int j = 0; j < 192; j++)
+ 		{
+ 			bool isChunkVisible = abs(cameraChunkI - i) <= minChunkIVisibleDistance && abs(cameraChunkJ - j) <= minChunkJVisibleDistance;
 
-	for (int i = 0; i < 192; i++)
-	{
-		for (int j = 0; j < 192; j++)
-		{
-			bool isChunkVisible = abs(cameraChunkI - i) <= minChunkIVisibleDistance && abs(cameraChunkJ - j) <= minChunkJVisibleDistance;
+ 			if (isChunkVisible)
+ 			{
+ 				for (auto object : g_chunkObjectMap[i][j])
+ 				{
+ 					object->m_distanceFromCamera = Vector3DistanceSqr(object->m_terrainCenterPoint, g_camera.position);
 
-			if (isChunkVisible)
-			{
-				for (auto object : g_chunkObjectMap[i][j])
-				{
-					object->m_distanceFromCamera = Vector3DistanceSqr(object->m_terrainCenterPoint, g_camera.position);
+ 					g_sortedVisibleObjects.push_back(object);
+ 				}
+ 			}
 
-					g_sortedVisibleObjects.push_back(object);
-				}
-			}
+ 			// TODO: We could also a apply a minimum _updatable_ distance that is larger than the visible distance
+ 			//       and then use that in our update loop to minimize the number of objects being updated each loop
+ 		}
+ 	}
 
-			// TODO: We could also a apply a minimum _updatable_ distance that is larger than the visible distance
-			//       and then use that in our update loop to minimize the number of objects being updated each loop
-		}
-	}
-
-	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+ 	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 }
 
 Vector3 GetRadialVector(float partitions, float thispartition)
@@ -372,6 +370,7 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->m_ID = id;
 	temp->SetInitialPos(Vector3{ x, y, z });
+	AssignObjectChunk(temp);
 }
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
@@ -387,10 +386,10 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 		return;
 	}
 
-	assert(fromI > 0 && fromI < 192);
-	assert(toI > 0 && toI < 192);
-	assert(fromJ > 0 && fromJ < 192);
-	assert(toJ > 0 && toJ < 192);
+	assert(fromI >= 0 && fromI < 192);
+	assert(toI >= 0 && toI < 192);
+	assert(fromJ >= 0 && fromJ < 192);
+	assert(toJ >= 0 && toJ < 192);
 
 	auto& fromChunk = g_chunkObjectMap[fromI][fromJ];
 	auto fromChunkPos = std::find(fromChunk.begin(), fromChunk.end(), object);
@@ -407,11 +406,7 @@ void AssignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
-	assert(i >= 0 && i < 192);
-	assert(j >= 0 && j < 192);
-
-	auto& toChunk = g_chunkObjectMap[i][j];
-	toChunk.push_back(object);
+	g_chunkObjectMap[i][j].push_back(object);
 }
 
 void UnassignObjectChunk(U7Object* object)
@@ -419,12 +414,10 @@ void UnassignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
-	assert(i >= 0 && i < 192);
-	assert(j >= 0 && j < 192);
-
-	auto& fromChunk = g_chunkObjectMap[i][j];
+	auto fromChunk = g_chunkObjectMap[i][j];
 	auto fromChunkPos = std::find(fromChunk.begin(), fromChunk.end(), object);
-    if (fromChunkPos != fromChunk.end()) {
+    if (fromChunkPos != fromChunk.end())
+    {
         fromChunk.erase(fromChunkPos);
     }
 }

@@ -301,12 +301,14 @@ void U7Object::NPCUpdate()
 	}
 }
 
-void U7Object::SetInitialPos(Vector3 pos) {
+void U7Object::SetInitialPos(Vector3 pos)
+{
 	m_Pos = pos;
-	AssignObjectChunk(this);
 
 	SetPos(pos);
 	SetDest(pos);
+
+	AssignObjectChunk(this);
 }
 
 void U7Object::SetPos(Vector3 pos)
