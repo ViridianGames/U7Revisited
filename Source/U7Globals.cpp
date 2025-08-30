@@ -407,8 +407,8 @@ void AssignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
-	assert(i > 0 && i < 192);
-	assert(j > 0 && j < 192);
+	assert(i >= 0 && i < 192);
+	assert(j >= 0 && j < 192);
 
 	auto& toChunk = g_chunkObjectMap[i][j];
 	toChunk.push_back(object);
@@ -419,8 +419,8 @@ void UnassignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
-	assert(i > 0 && i < 192);
-	assert(j > 0 && j < 192);
+	assert(i >= 0 && i < 192);
+	assert(j >= 0 && j < 192);
 
 	auto& fromChunk = g_chunkObjectMap[i][j];
 	auto fromChunkPos = std::find(fromChunk.begin(), fromChunk.end(), object);
