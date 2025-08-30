@@ -281,7 +281,7 @@ void U7Object::NPCUpdate()
 		//  If this update would take us beyond the destination, set the position to the destination
 		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			m_Pos = m_Dest;
+			SetPos(m_Pos);
 			m_isMoving = false;
 		}
 		else
@@ -301,8 +301,18 @@ void U7Object::NPCUpdate()
 	}
 }
 
+void U7Object::SetInitialPos(Vector3 pos) {
+	m_Pos = pos;
+	AssignObjectChunk(this);
+
+	SetPos(pos);
+	SetDest(pos);
+}
+
 void U7Object::SetPos(Vector3 pos)
 {
+	Vector3 fromPos = m_Pos;
+
 	m_Pos = pos;
 
 	Vector3 dims = Vector3{ 0, 0, 0 };
@@ -331,6 +341,8 @@ void U7Object::SetPos(Vector3 pos)
 	m_centerPoint = Vector3Add(m_Pos, { objectData->m_width / 2, objectData->m_height /2, objectData->m_depth / 2 });
 	m_terrainCenterPoint = m_centerPoint;
 	m_terrainCenterPoint.y = m_Pos.y;
+
+	UpdateObjectChunk(this, fromPos);
 }
 
 float U7Object::Pick()
