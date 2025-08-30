@@ -249,6 +249,15 @@ U7Object* U7ObjectClassFactory(int type);
 
 void PopulateLocationMap();
 
+/// @brief Update an object's chunk when it has moved
+/// @param object The object that moved
+/// @param fromPos The object's prevous position
+void UpdateObjectChunk(U7Object* object, Vector3 fromPos);
+
+/// @brief Assign an object into a chunk (world partition for visibility).
+/// @param object The object to assign
+void AssignObjectChunk(U7Object* object);
+
 void UpdateSortedVisibleObjects();
 
 Vector3 GetRadialVector(float partitions, float thispartition);
