@@ -16,7 +16,7 @@
 #include "Object.h"
 #include "Config.h" 
 
-class Unit2D;
+class Gump;
 
 class GumpManager : public Object
 {
@@ -31,11 +31,14 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
-	void AddGump(std::shared_ptr<Unit2D> Gump);
+	void AddGump(std::shared_ptr<Gump> gump);
 
 	Config                               m_GumpManagerConfig;
 	std::string                          m_ConfigFileName;
-	std::vector<std::shared_ptr<Unit2D>>    m_GumpList;
+	std::vector<std::shared_ptr<Gump>>    m_GumpList;
+	bool											m_draggingObject;
+	Gump*										m_sourceGump;
+	int										m_draggedObjectId;
 };
 
 #endif

@@ -95,8 +95,8 @@ public:
 
 	U7Object* m_containerObject;
 
-	int m_draggedObjectId = -1;
-	bool m_draggingObject = false;
+	//int m_draggedObjectId = -1;
+	//bool m_draggingObject = false;
 	Vector2 m_dragOffset;
 	float m_scale = 1.0f;
 
