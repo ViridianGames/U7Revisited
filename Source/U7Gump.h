@@ -53,16 +53,29 @@ public:
 
 	static constexpr ContainerData g_containerData[] =
 	{
-		{ { 6, 12 },	{ 151, 88 },	{ 47, 31 },		{ 76, 72 }, { 0, 0 }, ContainerType::CONTAINER_BOX },
-		{ { 161, 12 },	{ 169, 68 },	{ 54, 19 },	{ 85, 31 }, { 0, 0 }, ContainerType::CONTAINER_CRATE },
-		{ {968, 12 },	{ 131, 118 },	{ 27, 26 },	{ 64, 65 }, { 0, 0 }, ContainerType::CONTAINER_BARREL	},
-		{ {6, 176 },	{ 155, 97 },	{ 54, 22 },	{ 60, 38 }, { 0, 0 }, ContainerType::CONTAINER_BAG },
-		{ {166, 177},	{145, 102},		{45, 38},		{75, 42},	{ 0, 0 }, ContainerType::CONTAINER_BACKPACK },
-		{ {316, 176},	{141, 80},		{49, 34},		{66, 26},	{ 0, 0 }, ContainerType::CONTAINER_BASKET },
-		{ {735, 176},	{117, 70},		{42, 22},		{61, 35},	{ 0, 0 }, ContainerType::CONTAINER_TREASURECHEST },
-		{ {6, 285},		{135, 69},		{43, 15},		{67, 33},	{ 0, 0 }, ContainerType::CONTAINER_DRAWER },
-		{ { 6, 576 },	{ 139, 105 },	{ 45, 51 },	{ 76, 37 }, { 0, 0 }, ContainerType::CONTAINER_CORPSE }
+		{ { 9, 18 },    { 228, 132 }, { 72, 48 },   { 114, 108 }, { 0, 0 }, ContainerType::CONTAINER_BOX },
+		{ { 242, 18 },  { 254, 102 }, { 82, 30 },   { 128, 48 },  { 0, 0 }, ContainerType::CONTAINER_CRATE },
+		{ { 1452, 18 }, { 198, 178 }, { 42, 40 },   { 96, 98 },   { 0, 0 }, ContainerType::CONTAINER_BARREL },
+		{ { 9, 264 },   { 234, 146 }, { 82, 34 },   { 90, 58 },   { 0, 0 }, ContainerType::CONTAINER_BAG },
+		{ { 250, 266 }, { 218, 154 }, { 68, 58 },   { 114, 64 },  { 0, 0 }, ContainerType::CONTAINER_BACKPACK },
+		{ { 474, 264 }, { 212, 120 }, { 74, 52 },   { 100, 40 },   { 0, 0 }, ContainerType::CONTAINER_BASKET },
+		{ { 1104, 264 },{ 176, 106 }, { 64, 34 },   { 92, 54 },   { 0, 0 }, ContainerType::CONTAINER_TREASURECHEST },
+		{ { 10, 428 },   { 204, 104 }, { 66, 24 },   { 102, 50 },  { 0, 0 }, ContainerType::CONTAINER_DRAWER },
+		{ { 10, 864 },   { 210, 158 }, { 68, 77 },   { 114, 56 },  { 0, 0 }, ContainerType::CONTAINER_CORPSE }
 	};
+
+	// static constexpr ContainerData g_containerData[] =
+	// {
+	// 	{ { 6, 12 },	{ 151, 88 },	{ 47, 31 },		{ 76, 72 }, { 0, 0 }, ContainerType::CONTAINER_BOX },
+	// 	{ { 161, 12 },	{ 169, 68 },	{ 54, 19 },	{ 85, 31 }, { 0, 0 }, ContainerType::CONTAINER_CRATE },
+	// 	{ {968, 12 },	{ 131, 118 },	{ 27, 26 },	{ 64, 65 }, { 0, 0 }, ContainerType::CONTAINER_BARREL	},
+	// 	{ {6, 176 },	{ 155, 97 },	{ 54, 22 },	{ 60, 38 }, { 0, 0 }, ContainerType::CONTAINER_BAG },
+	// 	{ {166, 177},	{145, 102},		{45, 38},		{75, 42},	{ 0, 0 }, ContainerType::CONTAINER_BACKPACK },
+	// 	{ {316, 176},	{141, 80},		{49, 34},		{66, 26},	{ 0, 0 }, ContainerType::CONTAINER_BASKET },
+	// 	{ {735, 176},	{117, 70},		{42, 22},		{61, 35},	{ 0, 0 }, ContainerType::CONTAINER_TREASURECHEST },
+	// 	{ {6, 285},		{135, 69},		{43, 15},		{67, 33},	{ 0, 0 }, ContainerType::CONTAINER_DRAWER },
+	// 	{ { 6, 576 },	{ 139, 105 },	{ 45, 51 },	{ 76, 37 }, { 0, 0 }, ContainerType::CONTAINER_CORPSE }
+	// };
 
 	Gump();
 	virtual ~Gump();

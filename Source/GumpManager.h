@@ -14,7 +14,8 @@
 #include <memory>
 
 #include "Object.h"
-#include "Config.h" 
+#include "Config.h"
+#include "raylib.h"
 
 class Gump;
 
@@ -33,12 +34,13 @@ public:
 
 	void AddGump(std::shared_ptr<Gump> gump);
 
-	Config                               m_GumpManagerConfig;
-	std::string                          m_ConfigFileName;
-	std::vector<std::shared_ptr<Gump>>    m_GumpList;
-	bool											m_draggingObject;
-	Gump*										m_sourceGump;
-	int										m_draggedObjectId;
+	Config		m_GumpManagerConfig;
+	std::string	m_ConfigFileName;
+	std::vector<std::shared_ptr<Gump>> m_GumpList;
+	bool			m_draggingObject;
+	Gump*			m_sourceGump;
+	int			m_draggedObjectId;
+	Vector2		m_dragOffset;
 };
 
 #endif

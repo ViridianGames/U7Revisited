@@ -17,6 +17,7 @@ void GumpManager::Init(const std::string& configfile)
 	m_GumpManagerConfig.Load(configfile);
 	m_draggingObject = false;
 	m_draggedObjectId = -1;
+	m_dragOffset = {0, 0};
 
 	Log("Done with GumpManager::Init()");
 }
@@ -55,7 +56,7 @@ void GumpManager::Draw()
 		Vector2 mousePos = GetMousePosition();
 		mousePos.x = int(mousePos.x /= g_DrawScale);
 		mousePos.y = int(mousePos.y /= g_DrawScale);
-		DrawTextureEx(*object->m_shapeData->GetTexture(), mousePos, 0, 1, Color{255, 255, 255, 255});
+		DrawTextureEx(*object->m_shapeData->GetTexture(), Vector2Add(mousePos, m_dragOffset), 0, 1, Color{255, 255, 255, 255});
 	}
 }
 

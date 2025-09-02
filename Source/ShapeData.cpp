@@ -341,6 +341,8 @@ void ShapeData::SetupDrawTypes()
 		m_Dims = Vector3{ objectData->m_width, objectData->m_height, objectData->m_depth };
 	}
 
+	//m_CenterPoint = Vector3{ m_Dims.x / 2, m_Dims.y / 2, m_Dims.z / 2 };
+
 	//  FLAT DRAWING
 	m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/flat.obj");
 	//m_flatModel = g_ResourceManager->GetModel("Models/3dmodels/uprightflat.obj");

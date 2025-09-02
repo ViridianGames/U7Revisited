@@ -115,11 +115,8 @@ void MainState::Shutdown()
 	UnloadRenderTexture(g_renderTarget);
 }
 
-void MainState::Update()
+void MainState::UpdateTime()
 {
-	UpdateSortedVisibleObjects();
-
-
 	if (!m_paused)
 	{
 		float thisTime = GetTime();
@@ -158,7 +155,7 @@ void MainState::Update()
 		unsigned char darkness = darklevel + ((float(g_minute) / 60.0f) * (255 - darklevel));
 		unsigned char red_green = (darklevel / 2) + ((float(g_minute) / 60.0f) * (255 - red_green_level));
 		g_dayNightColor = { red_green, red_green, darkness, 255 };
-		g_isDay = (darkness < .1f);
+		g_isDay = darkness < .1f;
 	}
 	else if (g_hour > 20 || g_hour < 6)
 	{
@@ -170,108 +167,10 @@ void MainState::Update()
 		g_dayNightColor = { 255, 255, 255, 255 };
 		g_isDay = true;
 	}
+}
 
-	if (g_gumpManager->m_GumpList.size() > 0)
-	{
-		g_gumpManager->Update();
-	}
-
-	if (GetTime() - m_LastUpdate > GetFrameTime())
-	{
-		g_CurrentUpdate++;
-
-		m_NumberOfVisibleUnits = 0;
-		m_numberofDrawnObjects = 0;
-		m_numberofObjectsPassingFirstCheck = 0;
-
-		for (const auto& [id, object] : g_ObjectList)
-		{
-			if (!object) continue;
-
-			if (!m_paused)
-			{
-				object->Update();
-				if (object->m_Pos.y > m_heightCutoff)
-				{
-					object->m_Visible = false;
-				}
-				else
-				{
-					object->m_Visible = true;
-				}
-			}
-		}
-
-		for (auto& object : g_sortedVisibleObjects)
-		{
-			object->CheckLighting();
-		}
-
-		m_LastUpdate = GetTime();
-	}
-
-	m_cameraUpdateTime = DoCameraMovement();
-
-	m_terrainUpdateTime = GetTime();
-	g_Terrain->CalculateLighting();
-
-	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
-
-	// Pick cell under mouse pointer
-	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
-	float pickx = 0;
-	float picky = 0;
-
-	Vector3 planeNormal = { 0.0f, 1.0f, 0.0f };
-	Vector3 planePoint = { 0.0f, 0.0f, 0.0f };
-	float denominator = Vector3DotProduct(ray.direction, planeNormal);
-
-	if (fabs(denominator) > 0.0001f)
-	{
-		Vector3 pointToPlane = Vector3Subtract(planePoint, ray.position);
-		float t = Vector3DotProduct(pointToPlane, planeNormal) / denominator;
-		if (t >= 0.0f) {
-			Vector3 hitPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
-			int x = static_cast<int>(floor(hitPoint.x));
-			int y = static_cast<int>(floor(hitPoint.z));
-			if (x >= 0 && x < 3072 && y >= 0 && y < 3072)
-			{
-				pickx = x;
-				picky = y;
-			}
-		}
-	}
-
-	//int cellx = (TILEWIDTH / 2) + pickx - int(g_camera.target.x);
-	//int celly = (TILEHEIGHT / 2) + picky - int(g_camera.target.z);
-	//g_Terrain->m_cellLighting[cellx][celly] = { 255, 0, 255, 255 };
-
-	g_dropPos = {pickx, 0, picky};
-
-	std::vector<U7Object*>::reverse_iterator node;
-
-	for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
-	{
-		if (*node == nullptr || !(*node)->m_Visible)
-		{
-			continue;
-		}
-
-		Vector3 pos = { 0, 0, 0};
-		float picked = (*node)->PickXYZ(pos);
-
-		if (picked != -1)
-		{
-			g_dropPos = pos;
-			g_dropPos.x = roundf(g_dropPos.x);
-			g_dropPos.y = roundf(g_dropPos.y);
-			g_dropPos.z = roundf(g_dropPos.z);
-		}
-	}
-
-	g_Terrain->Update();
-
-	//  Handle special keyboard keys
+void MainState::UpdateInput()
+{
 	if (IsKeyPressed(KEY_ESCAPE))
 	{
 		g_Engine->m_Done = true;
@@ -328,10 +227,10 @@ void MainState::Update()
 		}
 	}
 
-	//if (IsKeyPressed(KEY_SPACE))
-	//{
-	//	g_pixelated = !g_pixelated;
-	//}
+	if (IsKeyPressed(KEY_F7))
+	{
+		g_pixelated = !g_pixelated;
+	}
 
 	if (IsKeyPressed(KEY_KP_SUBTRACT))
 	{
@@ -361,149 +260,146 @@ void MainState::Update()
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
 	{
-		// AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
-
-		std::vector<U7Object*>::reverse_iterator node;
-
-		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		if (g_objectUnderMousePointer->m_hasConversationTree)
 		{
-			if (*node == nullptr || !(*node)->m_Visible)
-			{
-				continue;
-			}
+			int NPCId = g_objectUnderMousePointer->m_NPCID;
+			string scriptName = "func_04";
+			stringstream ss;
+			ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
+			scriptName += ss.str();
 
-			float picked = (*node)->Pick();
-
-			if (picked != -1)
+			//  Find the script path from the script name
+			int newScriptIndex = 0;
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 			{
-				if ((*node)->m_hasConversationTree)
+				if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
 				{
-					int NPCId = (*node)->m_NPCID;
-					string scriptName = "func_04";
-					stringstream ss;
-					ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
-					scriptName += ss.str();
-
-					//  Find the script path from the script name
-					int newScriptIndex = 0;
-					for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-					{
-						if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
-						{
-							newScriptIndex = i;
-							break;
-						}
-					}
-
-					std::string filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
-
-					// Open the file with the default system application
-#ifdef _WIN32
-					system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
-#elif __APPLE__
-					system(("open \"" + std::string(filePath) + "\"").c_str());
-#else // Linux and others
-					system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
-#endif
-
-
+					newScriptIndex = i;
 					break;
 				}
 			}
+
+			std::string filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
+
+			// Open the file with the default system application
+#ifdef _WIN32
+			system(("start \"\" \"" + std::string(filePath) + "\"").c_str());
+#elif __APPLE__
+			system(("open \"" + std::string(filePath) + "\"").c_str());
+#else // Linux and others
+			system(("xdg-open \"" + std::string(filePath) + "\"").c_str());
+#endif
 		}
 	}
 
-	UpdateStats();
-
 	if (WasLMBDoubleClicked())
 	{
-		// AddConsoleString("Right Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
-
-		std::vector<U7Object*>::reverse_iterator node;
-
-		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
-		{
-			if (*node == nullptr || !(*node)->m_Visible)
-			{
-				continue;
-			}
-
-			float picked = (*node)->Pick();
-
-			if (picked != -1)
-			{
-				g_selectedShape = (*node)->m_shapeData->GetShape();
-				g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				m_selectedObject = (*node)->m_ID;
-
-				(*node)->Interact(1);
-				break;
-			}
-		}
+		g_objectUnderMousePointer->Interact(1);;
 	}
 
 	if (WasRMBDoubleClicked())
 	{
-		// AddConsoleString("Left Double-clicked at " + to_string(GetMouseX()) + ", " + to_string(GetMouseY()));
-
-		std::vector<U7Object*>::reverse_iterator node;
-
-		for (node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+		if (g_objectUnderMousePointer->m_isContainer)
 		{
-			if (*node == nullptr || !(*node)->m_Visible)
-			{
-				continue;
-			}
-
-			float picked = (*node)->Pick();
-
-			if (picked != -1)
-			{
-				g_selectedShape = (*node)->m_shapeData->GetShape();
-				g_selectedFrame = (*node)->m_shapeData->GetFrame();
-				m_selectedObject = (*node)->m_ID;
-				if ((*node)->m_isContainer)
-				{
-					OpenGump((*node)->m_ID);
-				}
-				break;
-			}
+			OpenGump(g_objectUnderMousePointer->m_ID);
 		}
 	}
 
 	//  Get terrain hit for highlight mesh
-	else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+	// else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+	// {
+	// 	std::vector<U7Object*>::iterator node;
+	//
+	// 	float closest = 1000000.0f;
+	// 	U7Object* closestObject = 0;
+	//
+	// 	for (node = g_sortedVisibleObjects.begin(); node != g_sortedVisibleObjects.end(); ++node)
+	// 	{
+	// 		if (*node == nullptr || !(*node)->m_Visible)
+	// 		{
+	// 			continue;
+	// 		}
+	//
+	// 		float picked = (*node)->Pick();
+	//
+	// 		if (picked != -1)
+	// 		{
+	// 			if (picked < closest)
+	// 			{
+	// 				closest = picked;
+	// 				closestObject = *node;
+	// 			}
+	// 		}
+	// 	}
+	// 	if (closestObject != 0)
+	// 	{
+	// 		g_selectedShape = closestObject->m_shapeData->GetShape();
+	// 		g_selectedFrame = closestObject->m_shapeData->GetFrame();
+	// 		m_selectedObject = closestObject->m_ID;
+	// 	}
+	// }
+}
+
+void MainState::Update()
+{
+	UpdateTime();
+
+	UpdateSortedVisibleObjects();
+
+	if (!g_gumpManager->m_GumpList.empty())
 	{
-		std::vector<U7Object*>::iterator node;
+		g_gumpManager->Update();
+	}
 
-		float closest = 1000000.0f;
-		U7Object* closestObject = 0;
+	if (GetTime() - m_LastUpdate > GetFrameTime())
+	{
+		g_CurrentUpdate++;
 
-		for (node = g_sortedVisibleObjects.begin(); node != g_sortedVisibleObjects.end(); ++node)
+		m_NumberOfVisibleUnits = 0;
+		m_numberofDrawnObjects = 0;
+		m_numberofObjectsPassingFirstCheck = 0;
+
+		for (const auto& [id, object] : g_ObjectList)
 		{
-			if (*node == nullptr || !(*node)->m_Visible)
-			{
-				continue;
-			}
+			if (!object) continue;
 
-			float picked = (*node)->Pick();
-
-			if (picked != -1)
+			if (!m_paused)
 			{
-				if (picked < closest)
+				object->Update();
+				if (object->m_Pos.y > m_heightCutoff)
 				{
-					closest = picked;
-					closestObject = *node;
+					object->m_Visible = false;
+				}
+				else
+				{
+					object->m_Visible = true;
 				}
 			}
 		}
-		if (closestObject != 0)
+
+		for (auto& object : g_sortedVisibleObjects)
 		{
-			g_selectedShape = closestObject->m_shapeData->GetShape();
-			g_selectedFrame = closestObject->m_shapeData->GetFrame();
-			m_selectedObject = closestObject->m_ID;
+			object->CheckLighting();
 		}
+
+		m_LastUpdate = GetTime();
 	}
+
+	m_cameraUpdateTime = DoCameraMovement();
+
+	m_terrainUpdateTime = GetTime();
+	g_Terrain->CalculateLighting();
+
+	m_terrainUpdateTime = GetTime() - m_terrainUpdateTime;
+
+	g_Terrain->Update();
+
+	UpdateStats();
+
+	UpdateInput();
+
+
+
 }
 
 void MainState::OpenGump(int id)
@@ -597,7 +493,15 @@ void MainState::Draw()
 	//  Draw version number in lower-right
 	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
-	DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 300 }, g_SmallFont->baseSize, 1, WHITE);
+	DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
+	+ " " + to_string((int(g_terrainUnderMousePointer.z))), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
+
+	if (g_objectUnderMousePointer != nullptr)
+	{
+		DrawOutlinedText(g_SmallFont, "Object under mouse: " + g_objectUnderMousePointer->m_objectData->m_name + " at " + to_string(int(g_objectUnderMousePointer->m_Pos.x))
+			+ " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+	}
+	DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
 	g_gumpManager->Draw();

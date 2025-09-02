@@ -120,6 +120,8 @@ public:
 
 	Vector3 m_Scaling;
 
+	Vector3 m_CenterPoint;
+
 	float m_rotation;
 
 	//  Texture for billboard/flat mode; base texture for cuboid mode

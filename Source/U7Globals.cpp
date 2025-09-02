@@ -101,11 +101,13 @@ unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 
-Vector3 g_dropPos = Vector3{ 0, 0, 0 };
+Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
 U7Object* g_mouseOverObject = nullptr;
 
 std::unique_ptr<GumpManager> g_gumpManager;
+
+U7Object* g_objectUnderMousePointer;
 
 //  This makes an animation 
 void MakeAnimationFrameMeshes()
@@ -332,18 +334,65 @@ void UpdateSortedVisibleObjects()
  			{
  				for (auto object : g_chunkObjectMap[i][j])
  				{
- 					object->m_distanceFromCamera = Vector3DistanceSqr(object->m_terrainCenterPoint, g_camera.position);
+ 					object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
 
  					g_sortedVisibleObjects.push_back(object);
  				}
  			}
-
- 			// TODO: We could also a apply a minimum _updatable_ distance that is larger than the visible distance
- 			//       and then use that in our update loop to minimize the number of objects being updated each loop
  		}
  	}
 
  	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
+
+	g_objectUnderMousePointer = nullptr;
+	for (auto node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+	{
+		if (*node == nullptr || !(*node)->m_Visible)
+		{
+			continue;
+		}
+
+		Vector3 pos = { 0, 0, 0};
+		float picked = (*node)->PickXYZ(pos);
+
+		if (picked != -1)
+		{
+			g_objectUnderMousePointer = *node;
+			break;
+		}
+	}
+
+	// Pick cell under mouse pointer
+	Ray ray = GetMouseRay(GetMousePosition(), g_camera);
+	float pickx = 0;
+	float picky = 0;
+
+	Vector3 planeNormal = { 0.0f, 1.0f, 0.0f };
+	Vector3 planePoint = { 0.0f, 0.0f, 0.0f };
+	float denominator = Vector3DotProduct(ray.direction, planeNormal);
+
+	if (fabs(denominator) > 0.0001f)
+	{
+		Vector3 pointToPlane = Vector3Subtract(planePoint, ray.position);
+		float t = Vector3DotProduct(pointToPlane, planeNormal) / denominator;
+		if (t >= 0.0f) {
+			Vector3 hitPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+			int x = static_cast<int>(floor(hitPoint.x));
+			int y = static_cast<int>(floor(hitPoint.z));
+			if (x >= 0 && x < 3072 && y >= 0 && y < 3072)
+			{
+				pickx = x;
+				picky = y;
+			}
+		}
+	}
+
+	g_terrainUnderMousePointer = {pickx, 0, picky};
+
+	g_terrainUnderMousePointer.x = roundf(g_terrainUnderMousePointer.x);
+	g_terrainUnderMousePointer.y = roundf(g_terrainUnderMousePointer.y);
+	g_terrainUnderMousePointer.z = roundf(g_terrainUnderMousePointer.z);
+
 }
 
 Vector3 GetRadialVector(float partitions, float thispartition)

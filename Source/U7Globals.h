@@ -245,6 +245,8 @@ void IsPointVisible(float x, float y);
 
 U7Object* GetObjectFromID(int unitID);
 
+U7Object* GetObjectUnderMouse();
+
 U7Object* U7ObjectClassFactory(int type);
 
 void PopulateLocationMap();
@@ -273,11 +275,11 @@ bool WasRMBDoubleClicked();
 
 void OpenURL(const std::string& url);
 
-extern Vector3 g_dropPos;
-
-extern U7Object* g_mouseOverObject;
+extern Vector3 g_terrainUnderMousePointer;
 
 extern std::unique_ptr<GumpManager> g_gumpManager;
+
+extern U7Object* g_objectUnderMousePointer;
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE

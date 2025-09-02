@@ -92,7 +92,7 @@ void Gump::OnEnter()
 	m_gui.m_Font = g_SmallFont;
 	m_gui.SetLayout(posx, posy, 220, 150, g_DrawScale, Gui::GUIP_USE_XY);
 	m_gui.AddSprite(1004, 0, 0,
-		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/gumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), m_scale * 1, m_scale * 1, Color{255, 255, 255, 255});
+		make_shared<Sprite>(g_ResourceManager->GetTexture("Images/GUI/biggumps.png", false), m_containerData.m_texturePos.x, m_containerData.m_texturePos.y, m_containerData.m_textureSize.x, m_containerData.m_textureSize.y), m_scale * 1, m_scale * 1, Color{255, 255, 255, 255});
 	m_gui.AddIconButton(1005, 4 * m_scale * 1, 34 * m_scale * 1, g_gumpCheckmarkUp, g_gumpCheckmarkDown, g_gumpCheckmarkUp, "", g_SmallFont.get(), Color{255, 255, 255, 255}, 1, 0, 1, false);
 
 	m_gui.AddStretchButton(1006, 4 * m_scale * 1.5, 12 * m_scale * 1.5, 28, "Sort",
@@ -114,6 +114,8 @@ void Gump::OnEnter()
 void Gump::Update()
 {
 	m_gui.Update();
+	m_gui.m_Pos.x = int(m_gui.m_Pos.x);
+	m_gui.m_Pos.y = int(m_gui.m_Pos.y);
 	if(m_gui.m_ActiveElement == m_gui.m_doneButtonId)
 	{
 		m_IsDead = true;
@@ -130,8 +132,8 @@ void Gump::Update()
 	mousePos.y = int(mousePos.y /= g_DrawScale);
 
 	//  Are we in the box bounds of the gump?
-	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 1), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 1),
-		m_containerData.m_boxSize.x * m_scale * 1, m_containerData.m_boxSize.y * m_scale * 1 }))
+	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale),
+		m_containerData.m_boxSize.x * m_scale, m_containerData.m_boxSize.y * m_scale }))
 	{
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
@@ -147,33 +149,22 @@ void Gump::Update()
 							g_gumpManager->m_draggedObjectId = object->m_ID;
 							g_gumpManager->m_draggingObject = true;
 							g_gumpManager->m_sourceGump = this;
-							m_dragOffset.x = mousePos.x - m_gui.m_Pos.x - m_containerData.m_boxOffset.x - object->m_InventoryPos.x;
-							m_dragOffset.y = mousePos.y - m_gui.m_Pos.y - m_containerData.m_boxOffset.y - object->m_InventoryPos.y;
-
-							// Move the selected object to the back of the inventory list so it draws on top
-							auto it = std::find(m_containerObject->m_inventory.begin(), m_containerObject->m_inventory.end(), g_gumpManager->m_draggedObjectId);
-							if (it != m_containerObject->m_inventory.end())
-							{
-								m_containerObject->m_inventory.erase(it);
-								m_containerObject->m_inventory.push_back(g_gumpManager->m_draggedObjectId);
-							}
+							m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
+							// m_dragOffset.x = mousePos.x - m_gui.m_Pos.x - m_containerData.m_boxOffset.x - object->m_InventoryPos.x;
+							// m_dragOffset.y = mousePos.y - m_gui.m_Pos.y - m_containerData.m_boxOffset.y - object->m_InventoryPos.y;
+							//
+							// // Move the selected object to the back of the inventory list so it draws on top
+							// auto it = std::find(m_containerObject->m_inventory.begin(), m_containerObject->m_inventory.end(), g_gumpManager->m_draggedObjectId);
+							// if (it != m_containerObject->m_inventory.end())
+							// {
+							// 	m_containerObject->m_inventory.erase(it);
+							// 	m_containerObject->m_inventory.push_back(g_gumpManager->m_draggedObjectId);
+							// }
 							break; //  We found the object we are dragging, so break out of the loop
 						}
 					}
 				}
 			}
-		}
-	}
-
-	if (g_gumpManager->m_draggingObject && IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_gumpManager->m_sourceGump == this)
-	{
-		//  We are dragging an object, so move it
-		auto object = GetObjectFromID(g_gumpManager->m_draggedObjectId);
-		if (object && object->m_shapeData)
-		{
-			object->m_InventoryPos.x = mousePos.x - m_containerData.m_boxOffset.x - m_gui.m_Pos.x - m_dragOffset.x;
-			object->m_InventoryPos.y = mousePos.y - m_containerData.m_boxOffset.y - m_gui.m_Pos.y - m_dragOffset.y;
-			m_containerObject->m_shouldBeSorted = false; //  We are dragging an object, so we no longer need to sort.
 		}
 	}
 
@@ -184,14 +175,22 @@ void Gump::Update()
 		//  Dragging from inventory to inventory
 		for (auto gump : g_gumpManager->m_GumpList)
 		{
-			if (gump.get() != this)
+			if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x, gump->m_gui.m_Pos.y, gump->m_gui.m_Width, gump->m_gui.m_Height}))
 			{
 				if (CheckCollisionPointRec(mousePos, Rectangle{ gump->m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 1), gump->m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 1),
-			gump->m_containerData.m_boxSize.x * m_scale * 1, gump->m_containerData.m_boxSize.y * m_scale * 1 }))
+gump->m_containerData.m_boxSize.x * m_scale * 1, gump->m_containerData.m_boxSize.y * m_scale * 1 }))
+				{
+					object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 1)), mousePos.y - (gump->m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 1)) };
+				}
+				else // In the container but not in the box area
+				{
+					object->m_InventoryPos = {0, 0 };
+				}
+
+				//  If we're dragging to the same gump, don't remove from inventory
+				if (gump.get() != this)
 				{
 					gump->m_containerObject->m_inventory.push_back(object->m_ID);
-					object->m_InventoryPos = {mousePos.x - (gump->m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale * 1)), mousePos.y - (gump->m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale * 1)) };
-
 					for (std::vector<int>::iterator node = m_containerObject->m_inventory.begin(); node != m_containerObject->m_inventory.end(); node++)
 					{
 						if ((*node) == object->m_ID)
@@ -200,16 +199,16 @@ void Gump::Update()
 							break;
 						}
 					}
-					g_gumpManager->m_draggingObject = false;
-					g_gumpManager->m_draggedObjectId = -1;
 				}
+				g_gumpManager->m_draggingObject = false;
+				g_gumpManager->m_draggedObjectId = -1;
 			}
 		}
 
 		//  Didn't drag to another container?  Drag from inventory to ground
 		if (g_gumpManager->m_draggingObject)
 		{
-			object->SetPos(g_dropPos);
+			object->SetPos(g_terrainUnderMousePointer);
 
 			object->m_isContained = false;
 
@@ -230,6 +229,12 @@ void Gump::Update()
 void Gump::Draw()
 {
 	m_gui.Draw();
+
+	//DrawRectangleLines(int(m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * m_scale)), int(m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * m_scale)),
+		//int(m_containerData.m_boxSize.x * m_scale), int(m_containerData.m_boxSize.y * m_scale), Color{0, 255, 0, 255});
+
+	//DrawRectangleLines(int(m_gui.m_Pos.x), int(m_gui.m_Pos.y), int(m_gui.m_Width), int(m_gui.m_Height), Color{0, 0, 255, 255});
+
 
 	U7Object* thisObject = GetObjectFromID(m_containerId);
 

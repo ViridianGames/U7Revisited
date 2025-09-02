@@ -19,13 +19,13 @@ public:
    MainState(){};
    ~MainState();
 
-   virtual void Init(const std::string& configfile);
-   virtual void Shutdown();
-   virtual void Update();
-   virtual void Draw();
+   void Init(const std::string& configfile) override;
+   void Shutdown() override;
+   void Update() override;
+   void Draw() override;
 
-   virtual void OnEnter();
-   virtual void OnExit();
+   void OnEnter() override;
+	void OnExit() override;
    
    void SetupGame();
 
@@ -33,6 +33,8 @@ public:
 
    void DrawStats();
    void UpdateStats();
+	void UpdateInput();
+	void UpdateTime();
 
    Gui* m_Gui;
    Gui* m_SpellsPanel;

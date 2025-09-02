@@ -1387,6 +1387,8 @@ void ShapeEditorState::Draw()
 
 	shapeData->Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
 
+	DrawSphere(Vector3Add(shapeData->m_CenterPoint, finalPos), 0.15f, RED);
+
 	EndMode3D();
 	
 	BeginTextureMode(g_guiRenderTarget);

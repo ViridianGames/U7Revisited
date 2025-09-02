@@ -64,6 +64,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
 	m_isMoving = false;
+	m_distanceFromCamera = MAXFLOAT;
 }
 
 void U7Object::Draw()
@@ -96,6 +97,11 @@ void U7Object::Draw()
 	if (g_Engine->m_debugDrawing)
 	{
 		DrawBoundingBox(m_boundingBox, MAGENTA);
+	}
+
+	if (g_Engine->m_debugDrawing)
+	{
+		DrawSphere(m_centerPoint, .15f, RED);
 	}
 }
 
@@ -307,8 +313,6 @@ void U7Object::SetInitialPos(Vector3 pos)
 
 	SetPos(pos);
 	SetDest(pos);
-
-	AssignObjectChunk(this);
 }
 
 void U7Object::SetPos(Vector3 pos)
@@ -340,7 +344,8 @@ void U7Object::SetPos(Vector3 pos)
 
 	m_boundingBox = { boundingBoxAnchorPoint, Vector3Add(boundingBoxAnchorPoint, dims) };
 
-	m_centerPoint = Vector3Add(m_Pos, { objectData->m_width / 2, objectData->m_height /2, objectData->m_depth / 2 });
+	m_centerPoint = Vector3Subtract(pos, {dims.x / 2, dims.y / 2, dims.z / 2});
+	//m_centerPoint = Vector3Add(m_centerPoint, m_shapeData->m_TweakPos);
 	m_terrainCenterPoint = m_centerPoint;
 	m_terrainCenterPoint.y = m_Pos.y;
 
