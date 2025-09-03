@@ -41,6 +41,7 @@ public:
 	Gump*			m_sourceGump;
 	int			m_draggedObjectId;
 	Vector2		m_dragOffset;
+	bool			m_mouseOverGump;
 };
 
 #endif

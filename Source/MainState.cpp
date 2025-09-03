@@ -193,7 +193,6 @@ void MainState::UpdateInput()
 			g_hour = 0;
 	}
 
-
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
 		if (m_heightCutoff == 4.0f)
@@ -258,7 +257,14 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE))
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject)
+	{
+		g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
+		g_gumpManager->m_draggingObject = true;
+		g_gumpManager->m_sourceGump = nullptr;
+	}
+
+	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
 	{
 		if (g_objectUnderMousePointer->m_hasConversationTree)
 		{
@@ -292,52 +298,18 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasLMBDoubleClicked())
+	if (WasLMBDoubleClicked() && g_objectUnderMousePointer != nullptr)
 	{
 		g_objectUnderMousePointer->Interact(1);;
 	}
 
-	if (WasRMBDoubleClicked())
+	if (WasRMBDoubleClicked() && g_objectUnderMousePointer != nullptr)
 	{
 		if (g_objectUnderMousePointer->m_isContainer)
 		{
 			OpenGump(g_objectUnderMousePointer->m_ID);
 		}
 	}
-
-	//  Get terrain hit for highlight mesh
-	// else if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-	// {
-	// 	std::vector<U7Object*>::iterator node;
-	//
-	// 	float closest = 1000000.0f;
-	// 	U7Object* closestObject = 0;
-	//
-	// 	for (node = g_sortedVisibleObjects.begin(); node != g_sortedVisibleObjects.end(); ++node)
-	// 	{
-	// 		if (*node == nullptr || !(*node)->m_Visible)
-	// 		{
-	// 			continue;
-	// 		}
-	//
-	// 		float picked = (*node)->Pick();
-	//
-	// 		if (picked != -1)
-	// 		{
-	// 			if (picked < closest)
-	// 			{
-	// 				closest = picked;
-	// 				closestObject = *node;
-	// 			}
-	// 		}
-	// 	}
-	// 	if (closestObject != 0)
-	// 	{
-	// 		g_selectedShape = closestObject->m_shapeData->GetShape();
-	// 		g_selectedFrame = closestObject->m_shapeData->GetFrame();
-	// 		m_selectedObject = closestObject->m_ID;
-	// 	}
-	// }
 }
 
 void MainState::Update()
@@ -346,10 +318,7 @@ void MainState::Update()
 
 	UpdateSortedVisibleObjects();
 
-	if (!g_gumpManager->m_GumpList.empty())
-	{
-		g_gumpManager->Update();
-	}
+	g_gumpManager->Update();
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
 	{
