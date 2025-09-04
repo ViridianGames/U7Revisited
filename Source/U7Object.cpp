@@ -64,7 +64,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 	m_InventoryPos = Vector2{ 0, 0 };
 	m_isNPC = false;
 	m_isMoving = false;
-	m_distanceFromCamera = MAXFLOAT;
+	m_distanceFromCamera = 999999;
 }
 
 void U7Object::Draw()
