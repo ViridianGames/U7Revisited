@@ -90,6 +90,8 @@ public:
    bool m_isPopupShowing = false;  //  If true, the game is paused and a popup is showing
 
    bool m_paused = false;
+
+	Vector2 m_dragStart;
 };
 
 #endif

@@ -256,13 +256,32 @@ void MainState::UpdateInput()
 			AddConsoleString("Time Speed: " + to_string(g_secsPerMinute) + " seconds per minute");
 		}
 	}
+	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		m_dragStart = {0, 0};
+	}
 
 	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject)
 	{
-		g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
-		g_gumpManager->m_draggingObject = true;
-		g_gumpManager->m_sourceGump = nullptr;
+		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
+		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
+
+		if (m_dragStart.x == 0 && m_dragStart.y == 0)
+		{
+			m_dragStart = GetMousePosition();
+		}
+		else
+		{
+			if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+			{
+				g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
+				g_gumpManager->m_draggingObject = true;
+				g_gumpManager->m_sourceGump = nullptr;
+
+			}
+		}
 	}
+
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
 	{
