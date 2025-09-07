@@ -109,6 +109,8 @@ std::unique_ptr<GumpManager> g_gumpManager;
 
 U7Object* g_objectUnderMousePointer;
 
+U7Object* g_doubleClickedObject;
+
 //  This makes an animation 
 void MakeAnimationFrameMeshes()
 {
@@ -573,45 +575,50 @@ void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vecto
 	DrawTextEx(*font, text.c_str(), position, fontSize, spacing, color);
 }
 
-void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color)
+void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color, bool outlined)
 {
 	std::istringstream iss(text);
 	std::string word;
 	std::vector<std::string> lines;
 	float lineWidth = 0;
 
-	// If the text is less than the width, just draw it.
-	if(MeasureTextEx(*font, text.c_str(), fontSize, spacing).x < maxwidth)
-	{
-		DrawOutlinedText(font, text.c_str(), position, fontSize, spacing, color);
-		return;
-	}
-
+	string rawline;
 	string line;
-	while (iss >> word)
+	while (getline(iss, rawline))
 	{
-		if(MeasureTextEx(*font, line.c_str(), fontSize, spacing).x > maxwidth)
+		std::stringstream lineStream(rawline);
+		while (lineStream >> word)
 		{
-			lines.push_back(line);
-			line.clear();
-			line += word + " ";
+			int currentLineWidth = MeasureTextEx(*font, (line + word).c_str(), fontSize, spacing).x;
+			if(currentLineWidth > maxwidth)
+			{
+				lines.push_back(line);
+				line.clear();
+				line += word + " ";
+			}
+			else
+			{
+				line += word + " ";
+			}
 		}
-		else
-		{
-			line += word + " ";
-		}
-	}
 
-	if (!line.empty())
-	{
 		lines.push_back(line);
+
+		line.clear();
 	}
 
 	auto it = lines.begin();
 	float y = position.y;
 	while (it != lines.end())
 	{
-		DrawOutlinedText(font, (*it).c_str(), Vector2{ position.x, y }, fontSize, spacing, color);
+		if (outlined)
+		{
+			DrawOutlinedText(font, (*it).c_str(), Vector2{ position.x, y }, fontSize, spacing, color);
+		}
+		else
+		{
+			DrawTextEx(*font, (*it).c_str(), Vector2{ position.x, y }, fontSize, spacing, color);
+		}
 		y += fontSize * 1.2f;
 		++it;
 	}
@@ -685,12 +692,12 @@ EngineModes g_engineMode = EngineModes::ENGINE_MODE_BLACK_GATE;
 
 std::string g_engineModeStrings[] = { "blackgate", "serpentisle", "NONE" };
 
-bool WasLMBDoubleClicked()
+bool WasMouseButtonDoubleClicked(int button)
 {
 	static bool lmblastState = false;
 	static float lmblastTime = 0;
 
-	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	if (IsMouseButtonReleased(button))
 	{
 		if (lmblastState == false)
 		{
@@ -698,7 +705,7 @@ bool WasLMBDoubleClicked()
 			lmblastTime = GetTime();
 		}
 	}
-	else if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))  // if (IsMouseButtonPressed
+	else if(IsMouseButtonPressed(button))  // if (IsMouseButtonPressed
 	{
 		if (GetTime() - lmblastTime < .25f)
 		{
@@ -706,32 +713,6 @@ bool WasLMBDoubleClicked()
 			return true;
 		}
 		lmblastState = false;
-	}
-
-	return false;
-}
-
-bool WasRMBDoubleClicked()
-{
-	static bool rmblastState = false;
-	static float rmblastTime = 0;
-
-	if (IsMouseButtonReleased(MOUSE_RIGHT_BUTTON))
-	{
-		if (rmblastState == false)
-		{
-			rmblastState = true;
-			rmblastTime = GetTime();
-		}
-	}
-	else if(IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))  // if (IsMouseButtonPressed
-	{
-		if (GetTime() - rmblastTime < .25f)
-		{
-			rmblastState = false;
-			return true;
-		}
-		rmblastState = false;
 	}
 
 	return false;

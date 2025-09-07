@@ -228,7 +228,7 @@ extern std::unique_ptr<Model> g_CuboidModel;
 
 void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float fontSize, int spacing, Color color);
 
-void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color);
+void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color, bool outlined = false);
 
 
 float GetDistance(float startX, float startZ, float endX, float endZ);
@@ -270,8 +270,7 @@ void AddObjectToContainer(int objectID, int containerID);
 
 unsigned int GetNextID();
 
-bool WasLMBDoubleClicked();
-bool WasRMBDoubleClicked();
+bool WasMouseButtonDoubleClicked(int button);
 
 void OpenURL(const std::string& url);
 
@@ -280,6 +279,8 @@ extern Vector3 g_terrainUnderMousePointer;
 extern std::unique_ptr<GumpManager> g_gumpManager;
 
 extern U7Object* g_objectUnderMousePointer;
+
+extern U7Object* g_doubleClickedObject;
 
 //////////////////////////////////////////////////////////////////////////////
 //  CONSOLE

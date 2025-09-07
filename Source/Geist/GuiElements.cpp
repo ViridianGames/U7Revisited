@@ -1035,19 +1035,19 @@ void GuiTextArea::Draw()
 	{
 		if (m_Width == 0) // An unset width parameter means "draw as a single string"
 		{
-			int textlength = MeasureTextEx(*m_Gui->m_Font.get(), m_String.c_str(), m_Font->baseSize, 1).x;
+			int textlength = MeasureTextEx(*m_Font, m_String.c_str(), m_Font->baseSize, 1).x;
 			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), textWidth, m_Height, Color(.5, 0, 0, .75), true);
 			if (m_Shadowed)
-				DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ m_Gui->m_Pos.x + ((m_Pos.x + 2)), m_Gui->m_Pos.y + ((m_Pos.y + 2)) }, m_Font->baseSize, 1, Color{ 0, 0, 0, 255 });
-			DrawTextEx(*m_Gui->m_Font.get(), m_String.c_str(), Vector2{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y) }, m_Font->baseSize, 1, m_Color);
+				DrawTextEx(*m_Font, m_String.c_str(), Vector2{ m_Gui->m_Pos.x + ((m_Pos.x + 2)), m_Gui->m_Pos.y + ((m_Pos.y + 2)) }, m_Font->baseSize, 1, Color{ 0, 0, 0, 255 });
+			DrawTextEx(*m_Font, m_String.c_str(), Vector2{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y) }, m_Font->baseSize, 1, m_Color);
 		}
 		else
 		{
 			int height = m_Font->baseSize;
-			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, height, Color(.5, 0, 0, .75), true);
-			//if (m_Shadowed)
-			//	m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + ((m_Pos.x + 2))), int(m_Gui->m_Pos.y + ((m_Pos.y + 2))), m_Width, m_Height, Color{ 0, 0, 0, 255 }, 1);
-			//m_Font->DrawParagraph(m_String, int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, m_Height, m_Color, 1);
+			//DrawRectangle(int(m_Gui->m_Pos.x + (m_Pos.x)), int(m_Gui->m_Pos.y + (m_Pos.y)), m_Width, height, {128, 0, 0, 192}, true);
+			if (m_Shadowed)
+				DrawTextEx(*m_Font, m_String.c_str(), Vector2{ m_Gui->m_Pos.x + ((m_Pos.x + 2)), m_Gui->m_Pos.y + ((m_Pos.y + 2)) }, m_Font->baseSize, 1, Color{ 0, 0, 0, 255 });
+			DrawTextEx(*m_Font, m_String.c_str(), Vector2{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y) }, m_Font->baseSize, 1, m_Color);
 		}
 	}
 };

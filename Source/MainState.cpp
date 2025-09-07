@@ -282,29 +282,54 @@ void MainState::UpdateInput()
 		}
 	}
 
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		if (!g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
+		{
+			AddConsoleString(g_objectUnderMousePointer->m_objectData->m_name);
+		}
+	}
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
 	{
+		std::string filePath;
+		string scriptName;
+		bool validScript = false;
 		if (g_objectUnderMousePointer->m_hasConversationTree)
 		{
 			int NPCId = g_objectUnderMousePointer->m_NPCID;
-			string scriptName = "func_04";
+			scriptName = "func_04";
 			stringstream ss;
 			ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << NPCId;
 			scriptName += ss.str();
+		}
+		else
+		{
+			scriptName = "func_0";
+			stringstream ss;
+			ss << std::setw(3) << std::setfill('0') << std::hex << std::uppercase << g_objectUnderMousePointer->m_shapeData->m_shape;
+			scriptName += ss.str();
+		}
 
-			//  Find the script path from the script name
-			int newScriptIndex = 0;
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		//  Find the script path from the script name
+		int newScriptIndex = 0;
+		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		{
+			if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
 			{
-				if (g_ScriptingSystem->m_scriptFiles[i].first == scriptName)
-				{
-					newScriptIndex = i;
-					break;
-				}
+				newScriptIndex = i;
+				validScript = true;
+				break;
 			}
+		}
 
-			std::string filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
+		if (!validScript)
+		{
+			AddConsoleString("No script for object " + to_string(g_objectUnderMousePointer->m_shapeData->m_shape) + " (" + g_objectUnderMousePointer->m_objectData->m_name + ")");
+		}
+		else
+		{
+			filePath = g_ScriptingSystem->m_scriptFiles[newScriptIndex].second;
 
 			// Open the file with the default system application
 #ifdef _WIN32
@@ -317,12 +342,12 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasLMBDoubleClicked() && g_objectUnderMousePointer != nullptr)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr)
 	{
 		g_objectUnderMousePointer->Interact(1);;
 	}
 
-	if (WasRMBDoubleClicked() && g_objectUnderMousePointer != nullptr)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT) && g_objectUnderMousePointer != nullptr)
 	{
 		if (g_objectUnderMousePointer->m_isContainer)
 		{
@@ -487,7 +512,7 @@ void MainState::Draw()
 	if (g_objectUnderMousePointer != nullptr)
 	{
 		DrawOutlinedText(g_SmallFont, "Object under mouse: " + g_objectUnderMousePointer->m_objectData->m_name + " at " + to_string(int(g_objectUnderMousePointer->m_Pos.x))
-			+ " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)), Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+			+ " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " Quality: " + to_string(int(g_objectUnderMousePointer->m_Quality)) , Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
 	}
 	DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);

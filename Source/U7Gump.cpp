@@ -129,13 +129,23 @@ void Gump::Update()
 	mousePos.x = int(mousePos.x /= g_DrawScale);
 	mousePos.y = int(mousePos.y /= g_DrawScale);
 
+	if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		m_dragStart = {0, 0};
+	}
+
 	//  Are we in the box bounds of the gump?
 	if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x), m_gui.m_Pos.y + (m_containerData.m_boxOffset.y),
 		m_containerData.m_boxSize.x, m_containerData.m_boxSize.y }))
 	{
 		if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
 		{
-			if(!g_gumpManager->m_draggingObject)
+			if (m_dragStart.x == 0 && m_dragStart.y == 0)
+			{
+				m_dragStart = mousePos;
+			}
+
+			if (Vector2DistanceSqr(m_dragStart, mousePos) > 4 && !g_gumpManager->m_draggingObject)
 			{
 				for (auto containerObjectId : m_containerObject->m_inventory)
 				{

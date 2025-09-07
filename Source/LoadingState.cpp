@@ -752,7 +752,6 @@ void LoadingState::LoadIREG()
 							//z *= 8;
 						}
 
-						
 						unsigned char quality;
 						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 
@@ -760,6 +759,7 @@ void LoadingState::LoadIREG()
 						{
 							int objectId = GetNextID();
 							AddObject(shape, frame, objectId, actualx, lift1, actualy);
+							g_ObjectList[objectId]->m_Quality = quality;
 
 							if (containerOpen)
 							{
@@ -806,6 +806,8 @@ void LoadingState::LoadIREG()
 							lift3 = z / 8;
 
 						}
+						//unsigned char quality;
+						//fread(&quality, sizeof(unsigned char), 1, u7thisireg);
 
 						//  Soak up the next 2 bytes.
 						unsigned char throwaway[1];
@@ -813,6 +815,7 @@ void LoadingState::LoadIREG()
 
 						int id = GetNextID();
 						AddObject(shape, frame, id, actualx, lift1, actualy);
+						//g_ObjectList[id]->m_Quality = quality;
 						GetObjectFromID(id)->m_isContainer = true;
 
 						//  Egg or container?  01 Egg, 00 container.

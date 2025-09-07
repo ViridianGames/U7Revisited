@@ -108,6 +108,8 @@ public:
 
 	U7Object* m_containerObject;
 
+	Vector2 m_dragStart;
+
 	//int m_draggedObjectId = -1;
 	//bool m_draggingObject = false;
 	//Vector2 m_dragOffset;

@@ -1,282 +1,285 @@
 --- Best guess: Displays various signs and messages based on item quality, ranging from location names to gravestones and warnings, used for world-building and navigation.
 function func_017B(eventid, objectref)
     local var_0000, var_0001
-
-    if eventid == 1 then
-        return
-    end
     var_0000 = get_player_name()
-    var_0001 = unknown_0014H(objectref)
+    var_0001 = get_object_quality(objectref)
     if var_0001 > 151 then
-        unknown_0032H({"SIGN", "VALID", "NOT A", "THIS IS"}, 49)
+        open_book(1, {"SIGN", "VALID", "NOT A", "THIS IS"})
     elseif var_0001 == 0 then
-        unknown_0032H({"lizard", "gilded", "at|(e", "drink"}, 49)
+        open_book(1, {"lizard", "gilded", "at|(e", "drink"})
     elseif var_0001 == 1 then
-        unknown_0032H({"47", "~population", "brae~", "skara"}, 49)
+        open_book(1, {"47", "~population", "brae~", "skara"})
     elseif var_0001 == 2 then
-        unknown_0032H({"trinsic"}, 49)
+        open_book(1, {"trinsic"})
     elseif var_0001 == 3 then
-        unknown_0032H({"hound", "honorable", "(e"}, 49)
+        open_book(1, {"hound", "honorable", "(e"})
     elseif var_0001 == 4 then
-        unknown_0032H({"HALL", "FELLOWSHIP"}, 49)
+        open_book(1, {"HALL", "FELLOWSHIP"})
     elseif var_0001 == 5 then
-        unknown_0032H({"britain"}, 49)
+        open_book(1, {"britain"})
     elseif var_0001 == 6 then
-        unknown_0032H({"THE AVATAR@", "@TRIALS OF", "RAYMUNDO'S", "COMING:"}, 49)
+        open_book(1, {"THE AVATAR@", "@TRIALS OF", "RAYMUNDO'S", "COMING:"})
     elseif var_0001 == 7 then
-        unknown_0032H({"NOW", "SEATS", "THY", "RESERVE"}, 49)
+        open_book(1, {"NOW", "SEATS", "THY", "RESERVE"})
     elseif var_0001 == 8 then
-        unknown_0032H({"museum", "royal"}, 49)
+        open_book(1, {"museum", "royal"})
     elseif var_0001 == 9 then
-        unknown_0032H({"hall", "music", "(e"}, 49)
+        open_book(1, {"hall", "music", "(e"})
     elseif var_0001 == 11 then
-        unknown_0032H({"inn", "wayfarer's", "(e"}, 49)
+        open_book(1, {"inn", "wayfarer's", "(e"})
     elseif var_0001 == 12 then
-        unknown_0032H({"bows", "iolos"}, 49)
+        open_book(1, {"bows", "iolos"})
     elseif var_0001 == 13 then
-        unknown_0032H({"boar", "blue", "(e"}, 49)
+        open_book(1, {"boar", "blue", "(e"})
     elseif var_0001 == 14 then
-        unknown_0032H({"clo(iers", "gayes"}, 49)
+        open_book(1, {"clo(iers", "gayes"})
     elseif var_0001 == 15 then
-        unknown_0032H({"armoury", ",ar", "nor("}, 49)
+        open_book(1, {"armoury", ",ar", "nor("})
     elseif var_0001 == 16 then
-        unknown_0032H({"oar", "oaken", "(e"}, 49)
+        open_book(1, {"oar", "oaken", "(e"})
     elseif var_0001 == 17 then
-        unknown_0032H({"bakery"}, 49)
+        open_book(1, {"bakery"})
     elseif var_0001 == 18 then
-        unknown_0032H({"jeweler"}, 49)
+        open_book(1, {"jeweler"})
     elseif var_0001 == 19 then
-        unknown_0032H({"market", "farmers"}, 49)
+        open_book(1, {"market", "farmers"})
     elseif var_0001 == 20 then
-        unknown_0032H({"apo(ecary"}, 49)
+        open_book(1, {"apo(ecary"})
     elseif var_0001 == 21 then
-        unknown_0032H({"mint", "royal"}, 49)
+        open_book(1, {"mint", "royal"})
     elseif var_0001 == 22 then
-        unknown_0032H({"h+ler", "(e", "csil"}, 49)
+        open_book(1, {"h+ler", "(e", "csil"})
     elseif var_0001 == 23 then
-        unknown_0032H({"provisions"}, 49)
+        open_book(1, {"provisions"})
     elseif var_0001 == 24 then
-        unknown_0032H({"orchards", "royal"}, 49)
+        open_book(1, {"orchards", "royal"})
     elseif var_0001 == 25 then
-        unknown_0032H({"ART THOU AN AVATAR?", " -- ", "TEST OF STRENGTH"}, 49)
+        open_book(1, {"ART THOU AN AVATAR?", "--", "TEST OF STRENGTH"})
     elseif var_0001 == 26 then
-        unknown_0032H({"show", "judy", "punch and"}, 49)
+        open_book(1, {"show", "judy", "punch and"})
     elseif var_0001 == 27 then
-        unknown_0032H({"fish|n|chips"}, 49)
+        open_book(1, {"fish|n|chips"})
     elseif var_0001 == 28 then
-        unknown_0032H({"cove"}, 49)
+        open_book(1, {"cove"})
     elseif var_0001 == 29 then
-        unknown_0032H({"emerald", "(e", "out|n|inn"}, 49)
+        open_book(1, {"emerald", "(e"})
     elseif var_0001 == 30 then
-        unknown_0032H({"walk", "lovers"}, 49)
+        open_book(1, {"out|n|inn"})
     elseif var_0001 == 31 then
-        unknown_0032H({"den", "buccaneers", "(e|ba(s"}, 49)
+        open_book(1, {"walk", "lovers"})
     elseif var_0001 == 32 then
-        unknown_0032H({"games", "of", "house"}, 49)
+        open_book(1, {"den", "buccaneers"})
     elseif var_0001 == 33 then
-        unknown_0032H({"virgin", "fallen", "(e"}, 49)
+        open_book(1, {"(e|ba(s"})
     elseif var_0001 == 34 then
-        unknown_0032H({"budos"}, 49)
+        open_book(1, {"games", "of", "house"})
     elseif var_0001 == 35 then
-        unknown_0032H({"RETREAT", "MEDITATION"}, 49)
+        open_book(1, {"virgin", "fallen", "(e"})
     elseif var_0001 == 36 then
-        unknown_0032H({"GO THIS WAY"}, 49)
+        open_book(1, {"budos"})
     elseif var_0001 == 37 then
-        unknown_0032H({"lycaeum"}, 49)
-    elseif var_0001 == 38 then
-        unknown_0032H({"dock"}, 49)
-    elseif var_0001 == 39 then
-        unknown_0032H({"hallowed", "(e", "knave"}, 49)
-    elseif var_0001 == 40 then
-        unknown_0032H({"friendly", "(e", "lizard"}, 49)
-    elseif var_0001 == 41 then
-        unknown_0032H({"gilded", "(e", "h+ler"}, 49)
-    elseif var_0001 == 42 then
-        unknown_0032H({"provisions", "eldro(s"}, 49)
-    elseif var_0001 == 43 then
-        unknown_0032H({"items", "of", "house"}, 49)
+        open_book(1, {"RETREAT", "MEDITATION"})
     elseif var_0001 == 44 then
-        unknown_0032H({"company", "mini*", "britannian"}, 49)
-    elseif var_0001 == 45 then
-        unknown_0032H({"branch", "minoc"}, 49)
-    elseif var_0001 == 46 then
-        unknown_0032H({"trainer", "scholar"}, 49)
-    elseif var_0001 == 47 then
-        unknown_0032H({"town|hall"}, 49)
-    elseif var_0001 == 48 then
-        unknown_0032H({"magics", "wis-surs"}, 49)
-    elseif var_0001 == 49 then
-        unknown_0032H({"observatory"}, 49)
-    elseif var_0001 == 50 then
-        unknown_0032H({"vesper"}, 49)
-    elseif var_0001 == 51 then
-        unknown_0032H({"moo*low"}, 49)
+        open_book(1, {"GO THIS WAY"})
     elseif var_0001 == 52 then
-        unknown_0032H({"terfin"}, 49)
+        open_book(1, {"lycaeum"})
     elseif var_0001 == 53 then
-        unknown_0032H({"hold", "serpents"}, 49)
+        open_book(1, {"dock", "hallowed", "(e"})
     elseif var_0001 == 54 then
-        unknown_0032H({"abbey", "empa("}, 49)
+        open_book(1, {"knave", "friendly", "(e"})
     elseif var_0001 == 55 then
-        unknown_0032H({"jhelom"}, 49)
+        open_book(1, {"lizard", "gilded", "(e"})
     elseif var_0001 == 56 then
-        unknown_0032H({"minoc"}, 49)
+        open_book(1, {"h+ler"})
     elseif var_0001 == 57 then
-        unknown_0032H({"undertaker"}, 49)
+        open_book(1, {"provisions", "eldro(s"})
     elseif var_0001 == 58 then
-        unknown_0032H({"britannia", "of", "court"}, 49)
+        open_book(1, {"items", "of", "house"})
     elseif var_0001 == 59 then
-        unknown_0032H({"high", "prison"}, 49)
+        open_book(1, {"company", "mini*", "britannian"})
     elseif var_0001 == 60 then
-        unknown_0032H({"damsel", "mode,", "(e"}, 49)
+        open_book(1, {"branch", "minoc"})
     elseif var_0001 == 61 then
-        unknown_0032H({"armoury"}, 49)
+        open_book(1, {"trainer"})
     elseif var_0001 == 62 then
-        unknown_0032H({"blacksmi("}, 49)
+        open_book(1, {"scholar"})
     elseif var_0001 == 63 then
-        unknown_0032H({"center", "recr+tion"}, 49)
+        open_book(1, {"town|hall"})
     elseif var_0001 == 64 then
-        unknown_0032H({"knowledge", "of", "hall"}, 49)
+        open_book(1, {"magics", "wis-surs"})
     elseif var_0001 == 65 then
-        unknown_0032H({"avatar", "(ere"}, 49)
+        open_book(1, {"observatory"})
     elseif var_0001 == 66 then
-        unknown_0032H({"hello", "the|avatars", "in|person"}, 49)
+        open_book(1, {"vesper"})
     elseif var_0001 == 67 then
-        unknown_0032H({"tonight|9-12", "why?", "ask"}, 49)
+        open_book(1, {"moo*low"})
     elseif var_0001 == 68 then
-        unknown_0032H({"why", "honor", "of"}, 49)
+        open_book(1, {"terfin"})
     elseif var_0001 == 69 then
-        unknown_0032H({",r)t", "pa(", "paladins"}, 49)
+        open_book(1, {"hold", "serpents"})
     elseif var_0001 == 70 then
-        unknown_0032H({"FELLOWSHIP", "THE", "OF"}, 49)
+        open_book(1, {"abbey", "empa("})
     elseif var_0001 == 71 then
-        unknown_0032H({"AVENUE", "walk", "widows"}, 49)
+        open_book(1, {"jhelom"})
     elseif var_0001 == 72 then
-        unknown_0032H({"hallway", "harolds"}, 49)
+        open_book(1, {"minoc"})
     elseif var_0001 == 73 then
-        unknown_0032H({"fools|way"}, 49)
+        open_book(1, {"undertaker"})
     elseif var_0001 == 74 then
-        unknown_0032H({"road", "whitsaber", ",rand"}, 49)
+        open_book(1, {"britannia", "of", "court", "high"})
     elseif var_0001 == 75 then
-        unknown_0032H({"avenue", "chalice"}, 49)
+        open_book(1, {"prison"})
     elseif var_0001 == 76 then
-        unknown_0032H({"coves", "two"}, 49)
+        open_book(1, {"damsel", "mode,", "(e"})
     elseif var_0001 == 77 then
-        unknown_0032H({"road", "wall", "we,"}, 49)
+        open_book(1, {"armoury"})
     elseif var_0001 == 78 then
-        unknown_0032H({"road", "wall", "+,"}, 49)
+        open_book(1, {"blacksmi("})
     elseif var_0001 == 79 then
-        unknown_0032H({"road", "wall", "nor("}, 49)
+        open_book(1, {"center", "recr+tion"})
     elseif var_0001 == 80 then
-        unknown_0032H({"road", "wall", "sou("}, 49)
+        open_book(1, {"knowledge", "of", "hall"})
     elseif var_0001 == 81 then
-        unknown_0032H({"way", "heroes"}, 49)
+        open_book(1, {"avatar", "(ere", "hello"})
     elseif var_0001 == 82 then
-        unknown_0032H({"sou(", "iolos"}, 49)
+        open_book(1, {"the|avatars", "in|person", "tonight|9-12"})
     elseif var_0001 == 83 then
-        unknown_0032H({"paws"}, 49)
+        open_book(1, {"why?", "ask", "why"})
     elseif var_0001 == 84 then
-        unknown_0032H({"salty|dog", "(e"}, 49)
+        open_book(1, {"honor", "of", ",r)t"})
     elseif var_0001 == 85 then
-        unknown_0032H({"SHELTER", "FELLOWSHIP"}, 49)
+        open_book(1, {"pa(", "paladins"})
     elseif var_0001 == 86 then
-        unknown_0032H({"branch", "vesper"}, 49)
+        open_book(1, {"FELLOWSHIP", "THE", "OF", "AVENUE"})
     elseif var_0001 == 87 then
-        unknown_0032H({"cork", "checquered", "(e"}, 49)
+        open_book(1, {"walk", "widows"})
     elseif var_0001 == 88 then
-        unknown_0032H({"guild", "artists"}, 49)
+        open_book(1, {"hallway", "harolds"})
     elseif var_0001 == 89 then
-        unknown_0032H({",ool", "and", "(e bunk"}, 49)
+        open_book(1, {"fools|way"})
     elseif var_0001 == 90 then
-        unknown_0032H({"scars", "of", "library", "(e"}, 49)
+        open_book(1, {"road", "whitsaber"})
     elseif var_0001 == 91 then
-        unknown_0032H({"clo(es", "carlyns"}, 49)
+        open_book(1, {",rand"})
     elseif var_0001 == 92 then
-        unknown_0032H({"richard", "lies|ma,er", "walls", "wi(in|(ese"}, 49)
+        open_book(1, {"avenue", "chalice"})
     elseif var_0001 == 93 then
-        unknown_0032H({"ca,le|way"}, 49)
+        open_book(1, {"coves", "two"})
     elseif var_0001 == 94 then
-        unknown_0032H({"lane", "british", "lord"}, 49)
+        open_book(1, {"road", "wall", "we,"})
     elseif var_0001 == 95 then
-        unknown_0032H({"noble|road"}, 49)
+        open_book(1, {"road", "wall", "+,"})
     elseif var_0001 == 96 then
-        unknown_0032H({"avenue", "we,|end"}, 49)
+        open_book(1, {"road", "wall", "nor("})
     elseif var_0001 == 97 then
-        unknown_0032H({"hazle|lane"}, 49)
+        open_book(1, {"road", "wall", "sou("})
     elseif var_0001 == 98 then
-        unknown_0032H({"nor(", "square", "park"}, 49)
+        open_book(1, {"way", "heroes"})
     elseif var_0001 == 99 then
-        unknown_0032H({"sou(", "square", "park"}, 49)
+        open_book(1, {"sou(", "iolos"})
     elseif var_0001 == 100 then
-        unknown_0032H({",r)t", "market"}, 49)
+        open_book(1, {"paws"})
     elseif var_0001 == 101 then
-        unknown_0032H({"way", "golden"}, 49)
+        open_book(1, {"salty|dog", "(e"})
     elseif var_0001 == 102 then
-        unknown_0032H({"avenue", "center"}, 49)
+        open_book(1, {"SHELTER", "FELLOWSHIP"})
     elseif var_0001 == 103 then
-        unknown_0032H({"lane", "spike"}, 49)
+        open_book(1, {"branch", "vesper"})
     elseif var_0001 == 104 then
-        unknown_0032H({"avenue", "avatar"}, 49)
+        open_book(1, {"cork", "checquered", "(e"})
     elseif var_0001 == 105 then
-        unknown_0032H({"lane", ",able"}, 49)
+        open_book(1, {"guild", "artists"})
     elseif var_0001 == 106 then
-        unknown_0032H({"avenue", "end", "+,"}, 49)
+        open_book(1, {",ool", "and", "(e bunk"})
     elseif var_0001 == 107 then
-        unknown_0032H({"road", "farm"}, 49)
+        open_book(1, {"scars", "of", "library", "(e"})
     elseif var_0001 == 108 then
-        unknown_0032H({",r)t", "nugget"}, 49)
+        open_book(1, {"clo(es", "carlyns"})
     elseif var_0001 == 109 then
-        unknown_0032H({"cove", "cool"}, 49)
+        open_book(1, {"richard", "lies|ma,er", "walls", "wi(in|(ese"})
     elseif var_0001 == 110 then
-        unknown_0032H({"avenue", "end", "nor("}, 49)
+        open_book(1, {"ca,le|way"})
     elseif var_0001 == 111 then
-        unknown_0032H({"way", "eye", "golden"}, 49)
+        open_book(1, {"lane", "british", "lord"})
     elseif var_0001 == 112 then
-        unknown_0032H({"tower", "dark", "(e", "to"}, 49)
+        open_book(1, {"noble|road"})
     elseif var_0001 == 113 then
-        unknown_0032H({"LANDSLIDES", "OF", "BEWARE"}, 49)
+        open_book(1, {"avenue", "we,|end"})
     elseif var_0001 == 114 then
-        unknown_0032H({"ENTER", "NOT", "DO", "DANGER:"}, 49)
+        open_book(1, {"hazle|lane"})
     elseif var_0001 == 115 then
-        unknown_0032H({"one", "number", "old"}, 49)
+        open_book(1, {"nor(", "square", "park"})
     elseif var_0001 == 116 then
-        unknown_0032H({"liche", "(e", "free", "do|not"}, 49)
+        open_book(1, {"sou(", "square", "park"})
     elseif var_0001 == 117 then
-        unknown_0032H({"wi(in", "mon,ers", "beware"}, 49)
+        open_book(1, {",r)t", "market"})
     elseif var_0001 == 118 then
-        unknown_0032H({"graves", "paupers"}, 49)
+        open_book(1, {"way", "golden"})
     elseif var_0001 == 119 then
-        unknown_0032H({"soul", "of|a", "a|soul", "|manrik|"}, 49)
+        open_book(1, {"avenue", "center"})
     elseif var_0001 == 120 then
-        unknown_0032H({"(e|loss", "words|for", "jules|no", "here|lies"}, 49)
+        open_book(1, {"lane", "spike"})
     elseif var_0001 == 121 then
-        unknown_0032H({"tragedy", "dea(|a", "her", "|morgan|"}, 49)
+        open_book(1, {"avenue", "avatar"})
     elseif var_0001 == 122 then
-        unknown_0032H({"many", "friend|to", "ke(ian", "here|lies"}, 49)
+        open_book(1, {"lane", ",able"})
     elseif var_0001 == 123 then
-        unknown_0032H({"his|body", "deeper|(an", "his|soul", "|wadley|"}, 49)
+        open_book(1, {"avenue", "end", "+,"})
     elseif var_0001 == 124 then
-        unknown_0032H({"spirit", "kindred", "jenna", "here|lies"}, 49)
+        open_book(1, {"road", "farm"})
     elseif var_0001 == 125 then
-        unknown_0032H({"end", "d+d"}, 49)
+        open_book(1, {",r)t", "nugget"})
     elseif var_0001 == 126 then
-        unknown_0032H({"brae", "skara", "to"}, 49)
+        open_book(1, {"cove", "cool"})
     elseif var_0001 == 127 then
-        unknown_0032H({"GUARDIAN", "OF|THE", "THRONE", "THE"}, 49)
+        open_book(1, {"avenue", "end", "nor("})
     elseif var_0001 == 128 then
-        unknown_0032H({"britain", "to", "nor("}, 49)
+        open_book(1, {"way", "eye", "golden"})
     elseif var_0001 == 129 then
-        unknown_0032H({"lever", "pull"}, 49)
+        open_book(1, {"tower", "dark", "(e", "to"})
     elseif var_0001 == 130 then
-        unknown_0032H({"round", "and", "round"}, 49)
+        open_book(1, {"LANDSLIDES", "OF", "BEWARE"})
     elseif var_0001 == 131 then
-        unknown_0032H({"out", "way"}, 49)
+        open_book(1, {"ENTER", "NOT", "DO", "DANGER:"})
     elseif var_0001 == 132 then
-        unknown_0032H({"open", "doors", "keep"}, 49)
+        open_book(1, {"one", "number", "old"})
     elseif var_0001 == 133 then
-        unknown_0032H({"tower", "selwyns"}, 49)
+        open_book(1, {"liche", "(e", "free", "do|not"})
     elseif var_0001 == 134 then
-        unknown_0032H({"fire", "(e", "follow"}, 49)
+        open_book(1, {"wi(in", "mon,ers", "beware"})
+    elseif var_0001 == 135 then
+        open_book(1, {"graves", "paupers"})
+    elseif var_0001 == 136 then
+        open_book(1, {"soul", "of|a", "a|soul", "|manrik|"})
+    elseif var_0001 == 137 then
+        open_book(1, {"(e|loss", "words|for", "jules|no", "here|lies"})
+    elseif var_0001 == 138 then
+        open_book(1, {"tragedy", "dea(|a", "her", "|morgan|"})
+    elseif var_0001 == 139 then
+        open_book(1, {"many", "friend|to", "ke(ian", "here|lies"})
+    elseif var_0001 == 140 then
+        open_book(1, {"his|body", "deeper|(an", "his|soul", "|wadley|"})
+    elseif var_0001 == 141 then
+        open_book(1, {"spirit", "kindred", "jenna", "here|lies"})
+    elseif var_0001 == 142 then
+        open_book(1, {"end", "d+d"})
+    elseif var_0001 == 143 then
+        open_book(1, {"brae", "skara", "to"})
+    elseif var_0001 == 144 then
+        open_book(1, {"GUARDIAN", "OF|THE", "THRONE", "THE"})
+    elseif var_0001 == 145 then
+        open_book(1, {"britain", "to", "nor("})
+    elseif var_0001 == 146 then
+        open_book(1, {"lever", "pull"})
+    elseif var_0001 == 147 then
+        open_book(1, {"round", "and", "round"})
+    elseif var_0001 == 148 then
+        open_book(1, {"out", "way"})
+    elseif var_0001 == 149 then
+        open_book(1, {"open", "doors", "keep"})
+    elseif var_0001 == 150 then
+        open_book(1, {"tower", "selwyns"})
+    elseif var_0001 == 151 then
+        open_book(1, {"fire", "(e", "follow"})
     end
-    return
 end

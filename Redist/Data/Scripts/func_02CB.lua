@@ -1,4 +1,3 @@
---- Best guess: Displays tombstone epitaphs based on object quality, likely for a graveyard with humorous or memorial messages.
 function func_02CB(eventid, objectref)
     local var_0000, var_0001
 

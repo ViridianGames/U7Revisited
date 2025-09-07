@@ -8,6 +8,7 @@
 #include "ConversationState.h"
 #include <iostream>
 #include <cstring>
+#include "U7GumpBook.h"
 
 extern "C"
 {
@@ -634,16 +635,6 @@ static int LuaNPCNameInParty(lua_State *L)
     return 1;
 }
 
-// Opcode 0032
-static int LuaDisplaySign(lua_State *L)
-{
-    if (g_LuaDebug) AddConsoleString("LUA: display_sign called");
-    int object_id = luaL_checkinteger(L, 1);
-    const char *text = luaL_checkstring(L, 2);
-    cout << "Displaying sign for object ID: " << object_id << "\n";
-    return 0;
-}
-
 // Opcode 0033
 static int LuaObjectSelectModal(lua_State *L)
 {
@@ -1253,6 +1244,38 @@ static int LuaSwitchTalkTo(lua_State *L)
     return 0;
 }
 
+// A "book" is a static image with static text overlaid, so it encompasses scripts, plaques, signs and gravestones as well.
+static int LuaOpenBook(lua_State *L)
+{
+    int book_type = luaL_checkinteger(L, 1);
+
+    // Table: iterate over elements and add strings
+    vector<string> bookText;
+    int table_len = lua_rawlen(L, 2);
+    for (int i = 1; i <= table_len; ++i)
+    {
+        lua_rawgeti(L, 2, i);
+        if (lua_isstring(L, -1))
+        {
+            const char *thisBookText = lua_tostring(L, -1);
+            bookText.push_back(thisBookText);
+            std::cout << "Added book text: " << thisBookText << "\n";
+        }
+        else
+        {
+            std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+        }
+    }
+
+     lua_pop(L, 2); // Pop value and array
+
+    GumpBook bookGump;
+    bookGump.Setup(book_type, bookText);
+    g_gumpManager->AddGump(make_shared<GumpBook>(bookGump));
+
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -1307,7 +1330,6 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_npc_training_level", LuaGetNPCTrainingLevel);
     g_ScriptingSystem->RegisterScriptFunction("increase_npc_combat_level", LuaIncreaseNPCCombatLevel);
 
-
     // These functions are used to get information about the Avatar/player.
     g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
     g_ScriptingSystem->RegisterScriptFunction("is_player_female", LuaIsAvatarFemale);
@@ -1317,7 +1339,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_time_hour", LuaGetTimeHour);
     g_ScriptingSystem->RegisterScriptFunction("get_time_minute", LuaGetTimeMinute);
     g_ScriptingSystem->RegisterScriptFunction("get_schedule_time", LuaGetScheduleTime);
-    g_ScriptingSystem->RegisterScriptFunction("display_sign", LuaDisplaySign);
+    g_ScriptingSystem->RegisterScriptFunction("open_book", LuaOpenBook);
     g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
 
     // These are new functions designed to be called by Lua scripts.
