@@ -36,7 +36,6 @@
     <ClCompile Include="Source\LoadingState.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
-    <ClCompile Include="Source\ObjectEditorState.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\ShapeData.cpp" />
     <ClCompile Include="Source\ShapeEditorState.cpp" />
@@ -44,11 +43,11 @@
     <ClCompile Include="Source\TitleState.cpp" />
     <ClCompile Include="Source\U7Globals.cpp" />
     <ClCompile Include="Source\U7Gump.cpp" />
+    <ClCompile Include="Source\U7GumpBook.cpp" />
     <ClCompile Include="Source\U7GumpNumberBar.cpp" />
     <ClCompile Include="Source\U7LuaFuncs.cpp" />
     <ClCompile Include="Source\U7Object.cpp" />
     <ClCompile Include="Source\U7Player.cpp" />
-    <ClCompile Include="Source\WorldEditorState.cpp" />
     <ClCompile Include="ThirdParty\lua\src\lapi.c" />
     <ClCompile Include="ThirdParty\lua\src\lauxlib.c" />
     <ClCompile Include="ThirdParty\lua\src\lbaselib.c" />
@@ -106,7 +105,6 @@
     <ClInclude Include="Source\GumpManager.h" />
     <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\MainState.h" />
-    <ClInclude Include="Source\ObjectEditorState.h" />
     <ClInclude Include="Source\OptionsState.h" />
     <ClInclude Include="Source\ShapeData.h" />
     <ClInclude Include="Source\ShapeEditorState.h" />
@@ -114,11 +112,11 @@
     <ClInclude Include="Source\TitleState.h" />
     <ClInclude Include="Source\U7Globals.h" />
     <ClInclude Include="Source\U7Gump.h" />
+    <ClInclude Include="Source\U7GumpBook.h" />
     <ClInclude Include="Source\U7GumpNumberBar.h" />
     <ClInclude Include="Source\U7LuaFuncs.h" />
     <ClInclude Include="Source\U7Object.h" />
     <ClInclude Include="Source\U7Player.h" />
-    <ClInclude Include="Source\WorldEditorState.h" />
     <ClInclude Include="ThirdParty\lua\src\lapi.h" />
     <ClInclude Include="ThirdParty\lua\src\lauxlib.h" />
     <ClInclude Include="ThirdParty\lua\src\lcode.h" />

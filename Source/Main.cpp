@@ -22,9 +22,7 @@
 #include "TitleState.h"
 #include "OptionsState.h"
 #include "LoadingState.h"
-#include "ObjectEditorState.h"
 #include "ShapeEditorState.h"
-#include "WorldEditorState.h"
 #include "ConversationState.h"
 #include "ShapeData.h"
 #include "GumpManager.h"
@@ -270,18 +268,10 @@ int main(int argv, char** argc)
       loadingState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_LOADINGSTATE, loadingState, "LOADING_STATE");
 
-      State* objectEditorState = new ObjectEditorState;
-      objectEditorState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_OBJECTEDITORSTATE, objectEditorState, "OBJECT_EDITOR_STATE");
-
       State* shapeEditorState = new ShapeEditorState;
       shapeEditorState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_SHAPEEDITORSTATE, shapeEditorState, "SHAPE_EDITOR_STATE");
 
-      State* worldEditorState = new WorldEditorState;
-      worldEditorState->Init("engine.cfg");
-      g_StateMachine->RegisterState(STATE_WORLDEDITORSTATE, worldEditorState, "WORLD_EDITOR_STATE");
-      
       ConversationState* conversationState = new ConversationState;
       g_ConversationState = conversationState;
       conversationState->Init("engine.cfg");
