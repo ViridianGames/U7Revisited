@@ -27,9 +27,6 @@
     <ClCompile Include="Source\MainState.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ObjectEditorState.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\OptionsState.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\U7Object.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\WorldEditorState.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Geist\BaseUnits.cpp">
@@ -219,15 +213,15 @@
     <ClCompile Include="Source\U7GumpNumberBar.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\U7GumpBook.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\MainState.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ObjectEditorState.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\OptionsState.h">
@@ -249,9 +243,6 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7Object.h">
-      <Filter>Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\WorldEditorState.h">
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Geist\BaseUnits.h">
@@ -411,6 +402,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7GumpNumberBar.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\U7GumpBook.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

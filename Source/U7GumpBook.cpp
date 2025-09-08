@@ -144,18 +144,18 @@ void GumpBook::Draw()
 
 	DrawTextureRec(*g_ResourceManager->GetTexture("Images/GUI/biggumps.png"),
 	{m_bookData[m_bookType].m_texturePos.x, m_bookData[m_bookType].m_texturePos.y, m_bookData[m_bookType].m_textureSize.x, m_bookData[m_bookType].m_textureSize.y},
-	{ bookx, booky}, 	Color{255, 255, 255, 255});
+	{ float(bookx), float(booky)}, 	Color{255, 255, 255, 255});
 
 	switch (m_bookType)
 	{
 		case int(BookType::BOOK_BOOK):
 			{
-				DrawParagraph(g_SmallFont, m_bookPages[0], {textx, 90}, 175,
+				DrawParagraph(g_SmallFont, m_bookPages[0], { float(textx), 90}, 175,
 			  g_SmallFont->baseSize, 1, BLACK, false);
 
 				if (m_bookData[m_bookType].m_bookType == BookType::BOOK_BOOK && m_bookPages.size() > 1)
 				{
-					DrawParagraph(g_SmallFont, m_bookPages[1], {textx + 210, 90}, 175,
+					DrawParagraph(g_SmallFont, m_bookPages[1], { float(textx + 210), 90}, 175,
 									  g_SmallFont->baseSize, 1, BLACK, false);
 				}
 			}
@@ -163,14 +163,14 @@ void GumpBook::Draw()
 
 		case int(BookType::BOOK_WOODEN_SIGN):
 			{
-				DrawParagraph(g_ConversationFont, m_bookPages[0], {textx, 90}, 150,
+				DrawParagraph(g_ConversationFont, m_bookPages[0], { float(textx), 90}, 150,
 			  g_ConversationFont->baseSize, 1, WHITE, false);
 			}
 		break;
 
 		case int(BookType::BOOK_SCROLL):
 		{
-			DrawParagraph(g_SmallFont, m_bookPages[0], {textx, 90}, 210,
+			DrawParagraph(g_SmallFont, m_bookPages[0], { float(textx), 90}, 210,
 		  g_SmallFont->baseSize, 1, BLACK, false);
 		}
 		break;
