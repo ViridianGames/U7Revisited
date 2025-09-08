@@ -64,6 +64,7 @@ enum GuiElementType
 	GUI_SPRITE,
 	GUI_OCTAGONBOX,
 	GUI_STRETCHBUTTON,
+	GUI_LIST,
 
 	GUI_LAST
 };
@@ -205,11 +206,6 @@ public:
 	void Init(int ID, int valuerange, int posx, int posy, int width, int height, bool vertical,
 		Color spurcolor = Color{ 128, 128, 255, 255 }, Color backgroundcolor = Color{ 0, 0, 0, 0 }, int group = 0, int active = true, bool shadowed = false);
 
-	void Init(int ID, int valuerange, int posx, int posy, int width, int height, bool vertical,
-		std::shared_ptr<Sprite> activeLeft, std::shared_ptr<Sprite> activeRight, std::shared_ptr<Sprite> activeCenter, std::shared_ptr<Sprite> spurActive,
-		std::shared_ptr<Sprite> inactiveLeft = nullptr, std::shared_ptr<Sprite> inactiveRight = nullptr, std::shared_ptr<Sprite> inactiveCenter = nullptr,
-		std::shared_ptr<Sprite> spurInactive = nullptr, int group = 0, int active = true, bool shadowed = false);
-
 	void Update();
 	void Draw();
 	int         GetValue();
@@ -226,15 +222,6 @@ public:
 	Color m_SpurColor;
 	Color m_BackgroundColor;
 
-	std::shared_ptr<Sprite> m_ActiveLeft;
-	std::shared_ptr<Sprite> m_ActiveRight;
-	std::shared_ptr<Sprite> m_ActiveCenter;
-	std::shared_ptr<Sprite> m_SpurActive;
-
-	std::shared_ptr<Sprite> m_InactiveLeft;
-	std::shared_ptr<Sprite> m_InactiveRight;
-	std::shared_ptr<Sprite> m_InactiveCenter;
-	std::shared_ptr<Sprite> m_SpurInactive;
 };
 
 
@@ -423,6 +410,37 @@ public:
 	std::shared_ptr<Sprite> m_InactiveCenter;
 
 	int m_Indent = 0;
+};
+
+class GuiList : public GuiElement
+{
+public:
+	GuiList() : GuiElement() { m_Gui = nullptr; m_Visible = true; } // Default constructor
+	GuiList(Gui* parent) : GuiElement() { m_Gui = parent; m_Visible = true; }
+	void Init(int ID, int posx, int posy, int width, int height, Font* font,
+				 const std::vector<std::string>& items, Color textcolor = {255, 255, 255, 255},
+				 Color backgroundcolor = {0, 0, 0, 255}, Color bordercolor = {255, 255, 255, 255},
+				 int group = 0, int active = true);
+
+	void Update() override;
+	void Draw() override;
+	int GetValue() override { return m_SelectedIndex; }
+	std::string GetString() override { return m_Items.empty() ? "" : m_Items[m_SelectedIndex]; }
+
+	void AddItem(const std::string& item);
+	int GetSelectedIndex() const { return m_SelectedIndex; }
+	void SetSelectedIndex(int index);
+	int GetVisibleItems() const { return m_VisibleItems; }
+
+//private:
+	Font* m_Font;
+	Color m_TextColor;
+	Color m_BackgroundColor;
+	Color m_BorderColor;
+	std::vector<std::string> m_Items;
+	int m_SelectedIndex = 0;
+	bool m_IsExpanded = false;
+	int m_VisibleItems = 10; // Number of items shown when expanded
 };
 
 #endif

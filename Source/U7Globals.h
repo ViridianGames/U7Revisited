@@ -111,7 +111,7 @@ struct ObjectData
 	//  From text.flx
 	std::string m_name;
 
-	std::unique_ptr<Mesh> m_mesh = nullptr;
+	//std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
 

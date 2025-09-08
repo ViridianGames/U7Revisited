@@ -326,35 +326,6 @@ void GuiScrollBar::Init(int ID, int valuerange, int posx, int posy, int width, i
 	m_Shadowed = shadowed;
 }
 
-void GuiScrollBar::Init(int ID, int valuerange, int posx, int posy, int width, int height, bool vertical,
-	std::shared_ptr<Sprite> activeLeft, std::shared_ptr<Sprite> activeRight, std::shared_ptr<Sprite> activeCenter, std::shared_ptr<Sprite> spurActive,
-	std::shared_ptr<Sprite> inactiveLeft, std::shared_ptr<Sprite> inactiveRight, std::shared_ptr<Sprite> inactiveCenter,
-	std::shared_ptr<Sprite> spurInactive, int group, int active, bool shadowed)
-{
-	m_Type = GUI_SCROLLBAR;
-	m_ValueRange = valuerange;
-	m_ID = ID;
-	m_Active = active;
-	m_Group = group;
-	m_Vertical = vertical;
-	m_Pos.x = float(posx);
-	m_Pos.y = float(posy);
-	m_Width = width;
-	m_Height = height;
-	m_SpurLocation = 0;
-	m_Value = 0;
-	m_ActiveLeft = activeLeft;
-	m_ActiveRight = activeRight;
-	m_ActiveCenter = activeCenter;
-	m_InactiveLeft = inactiveLeft;
-	m_InactiveRight = inactiveRight;
-	m_InactiveCenter = inactiveCenter;
-	m_SpurActive = spurActive;
-	m_SpurInactive = spurInactive;
-	m_Shadowed = shadowed;
-}
-
-
 void GuiScrollBar::Draw()
 {
 	if (m_Visible == false)
@@ -366,72 +337,17 @@ void GuiScrollBar::Draw()
 	int adjustedw = m_Width;
 	int adjustedh = m_Height;
 
-	if (m_ActiveLeft == nullptr) // No sprites, so draw with colors
-	{
-		DrawRectangle(adjustedx, adjustedy, adjustedw, adjustedh, m_BackgroundColor);
+	DrawRectangle(adjustedx, adjustedy, adjustedw, adjustedh, m_BackgroundColor);
 
-		if (m_Vertical)
-		{
-			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (m_Height - m_Width)));
-			DrawRectangle(adjustedx, adjustedy + m_SpurLocation, int(m_Width), int(m_Width), m_SpurColor);
-		}
-		else
-		{
-			m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (adjustedw - adjustedh)));//;
-			DrawRectangle(adjustedx + m_SpurLocation, adjustedy, int(m_Height), int(m_Height), m_SpurColor);
-		}
+	if (m_Vertical)
+	{
+		m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (m_Height - m_Width)));
+		DrawRectangle(adjustedx, adjustedy + m_SpurLocation, int(m_Width), int(m_Width), m_SpurColor);
 	}
 	else
 	{
-		shared_ptr<Sprite> left;
-		shared_ptr<Sprite> center;
-		shared_ptr<Sprite> right;
-		shared_ptr<Sprite> spur;
-		if (!m_Selected && m_InactiveLeft != nullptr) //  not active and we have inactive sprites
-		{
-			left = m_InactiveLeft;
-			center = m_InactiveCenter;
-			right = m_InactiveRight;
-			spur = m_SpurInactive;
-		}
-		else
-		{
-			left = m_ActiveLeft;
-			center = m_ActiveCenter;
-			right = m_ActiveRight;
-			spur = m_SpurActive;
-		}
-
-		float xmiddle = float(left->m_sourceRect.width);
-		float xright = float(m_Width - (left->m_sourceRect.width + right->m_sourceRect.width));
-
-
-
-		if (m_Shadowed)
-		{
-			left->DrawScaled(Rectangle{m_Gui->m_Pos.x + ((m_Pos.x + 3)), m_Gui->m_Pos.y + ((m_Pos.y + 3)), 1, 1},
-				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			center->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3 + xmiddle)) - 1, m_Gui->m_Pos.y + ((m_Pos.y + 3)), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), 1 },
-				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			right->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), 1, 1 },
-				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-		}
-
-		left->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x), m_Gui->m_Pos.y + (m_Pos.y), 1, 1 });
-		center->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + xmiddle)) - 1, m_Gui->m_Pos.y + (m_Pos.y), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), 1 });
-		right->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), 1, 1 });
-
-		//int debugadjustedx = m_Gui->m_Pos.x + (m_Pos.x);
-		//int debugadjustedy = int(m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f));
-
-		//int debugadjustedw = m_Width;
-		//int debugadjustedh = m_SpurActive->m_sourceRect.height;
-
-		//DrawRectangle(debugadjustedx, debugadjustedy, debugadjustedw, debugadjustedh, Color(1, 0, 0, .5), true);
-
-		spur->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x - (float(spur->m_sourceRect.width) / 2))) + ((float(m_Value) / float(m_ValueRange)) * m_Width),
-			//int(m_Gui->m_Pos.y + ((m_Pos.y + (float(spur->m_sourceRect.height) / 2)))),
-			m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(spur->m_sourceRect.height) / 2.0f), 1, 1 });
+		m_SpurLocation = int((float(m_Value) / float(m_ValueRange) * (adjustedw - adjustedh)));//;
+		DrawRectangle(adjustedx + m_SpurLocation, adjustedy, int(m_Height), int(m_Height), m_SpurColor);
 	}
 }
 
@@ -445,55 +361,16 @@ void GuiScrollBar::Update()
 	m_Hovered = false;
 
 	//  Is the LMB down inside the spur?
-	int adjustedx = m_Gui->m_Pos.x + (m_Pos.x);
-	int adjustedy = int(m_Gui->m_Pos.y + (float(m_Pos.y)) + (float(m_Height) / 2.0f) - (float(m_SpurActive->m_sourceRect.height) / 2.0f));
+	int adjustedx = (m_Gui->m_Pos.x + (m_Pos.x)) * m_Gui->m_InputScale;
+	int adjustedy = (m_Gui->m_Pos.y + (m_Pos.y)) * m_Gui->m_InputScale;
 
-	int adjustedw = m_Width;
-	int adjustedh = m_SpurActive->m_sourceRect.height;
+	int adjustedw = m_Width * m_Gui->m_InputScale;
+	int adjustedh = m_Height * m_Gui->m_InputScale;
 
 	//  Previously clicked, try for hysterisis
-	if (m_Gui->m_LastElement == m_ID)
+	if (m_Gui->m_ActiveElement == -1 && m_Gui->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
 	{
-		if (IsLeftButtonDragging() || IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
-		{
-			m_Gui->m_ActiveElement = m_ID; //  This element is still active.
-			if (m_Vertical)
-			{
-				m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
-
-				if (m_Value < 0)
-				{
-					m_Value = 0;
-				}
-
-				if (m_Value > m_ValueRange)
-				{
-					m_Value = m_ValueRange;
-				}
-			}
-			else
-			{
-				m_Value = std::round((float(GetMouseX() - adjustedx) / float(adjustedw)) * m_ValueRange);
-
-				if (m_Value < 0)
-				{
-					m_Value = 0;
-				}
-
-				if (m_Value > m_ValueRange)
-				{
-					m_Value = m_ValueRange;
-				}
-			}
-		}
-		else //  No longer dragging, which means this element is no longer active.
-		{
-			m_Gui->m_ActiveElement = -1;
-		}
-	}
-	else if (m_Gui->m_ActiveElement == -1 && m_Gui->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedx + adjustedw, adjustedy + adjustedh))
-	{
-		m_Gui->m_ActiveElement = m_ID;
+		//m_Gui->m_ActiveElement = m_ID;
 		if (m_Vertical)
 		{
 			m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
@@ -914,7 +791,7 @@ void GuiRadioButton::Update()
 				m_Selected = !m_Selected;
 
 				//  Deselect all other buttons in this radio button group.
-				for (auto& node : m_Gui->m_GuiList)
+				for (auto& node : m_Gui->m_GuiElementList)
 				{
 					if (node.second->m_Group == m_Group && node.second.get() != this)// && node.second->m_Type == GUI_RADIOBUTTON)
 					{
@@ -1344,4 +1221,104 @@ void GuiStretchButton::Update()
 			m_Clicked = false;
 		}
 	}
+}
+
+void GuiList::Init(int ID, int posx, int posy, int width, int height, Font* font,
+                   const std::vector<std::string>& items, Color textcolor,
+                   Color backgroundcolor, Color bordercolor, int group, int active)
+{
+    m_ID = ID;
+    m_Type = GUI_LIST;
+    m_Pos = {static_cast<float>(posx), static_cast<float>(posy)};
+    m_Width = static_cast<float>(width);
+    m_Height = static_cast<float>(height);
+    m_Font = font;
+    m_TextColor = textcolor;
+    m_BackgroundColor = backgroundcolor;
+    m_BorderColor = bordercolor;
+    m_Group = group;
+    m_Active = active;
+    m_Items = items;
+    m_SelectedIndex = 0;
+}
+
+void GuiList::Update()
+{
+    if (!m_Active || !m_Visible || !m_Gui) return;
+
+    Vector2 mousePos = GetMousePosition();
+    float scaledX = mousePos.x / m_Gui->m_InputScale;
+    float scaledY = mousePos.y / m_Gui->m_InputScale;
+
+    // Check if mouse is over the main box
+    m_Hovered = (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+                 scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_Height);
+
+    if (m_Hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        m_IsExpanded = !m_IsExpanded;
+        m_Clicked = true;
+        m_Gui->m_ActiveElement = m_ID;
+    } else if (!m_Hovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        m_IsExpanded = false;
+    }
+
+    // Handle selection in expanded list
+    if (m_IsExpanded) {
+        float itemHeight = m_Height;
+        for (int i = 0; i < m_Items.size() && i < m_VisibleItems; ++i) {
+            float y = m_Pos.y + (i + 1) * itemHeight;
+            if (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+                scaledY >= y && scaledY <= y + itemHeight) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    m_SelectedIndex = i;
+                    m_IsExpanded = false;
+                    m_Clicked = true;
+                    m_Gui->m_ActiveElement = m_ID;
+                }
+            }
+        }
+    }
+}
+
+void GuiList::Draw()
+{
+    if (!m_Visible) return;
+
+    // Draw main box
+    DrawRectangle(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.y),
+                  static_cast<int>(m_Width), static_cast<int>(m_Height), m_BackgroundColor);
+    DrawRectangleLines(static_cast<int>(m_Pos.x), static_cast<int>(m_Pos.y),
+                       static_cast<int>(m_Width), static_cast<int>(m_Height), m_BorderColor);
+
+    // Draw selected item
+    if (!m_Items.empty()) {
+        DrawTextEx(*m_Font, m_Items[m_SelectedIndex].c_str(),
+                   {m_Pos.x + 5, m_Pos.y + 5}, m_Font->baseSize, 1, m_TextColor);
+    }
+
+    // Draw expanded list
+    if (m_IsExpanded) {
+        float itemHeight = m_Height;
+        for (int i = 0; i < m_Items.size() && i < m_VisibleItems; ++i) {
+            float y = m_Pos.y + (i + 1) * itemHeight;
+            DrawRectangle(static_cast<int>(m_Pos.x), static_cast<int>(y),
+                          static_cast<int>(m_Width), static_cast<int>(itemHeight), m_BackgroundColor);
+            DrawRectangleLines(static_cast<int>(m_Pos.x), static_cast<int>(y),
+                               static_cast<int>(m_Width), static_cast<int>(itemHeight), m_BorderColor);
+            DrawTextEx(*m_Font, m_Items[i].c_str(), {m_Pos.x + 5, y + 5},
+                       m_Font->baseSize, 1, m_TextColor);
+        }
+    }
+}
+
+void GuiList::AddItem(const std::string& item)
+{
+    m_Items.push_back(item);
+}
+
+void GuiList::SetSelectedIndex(int index)
+{
+    if (index >= 0 && index < static_cast<int>(m_Items.size())) {
+        m_SelectedIndex = index;
+    }
 }
