@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Boulder_342x0"
+			"name":"boulder_342x0"
 		}
 	],
 	"materials":[
@@ -118,7 +118,7 @@
 	"buffers":[
 		{
 			"byteLength":12016,
-			"uri":"Boulder_342x00.bin"
+			"uri":"boulder_342x00.bin"
 		}
 	]
 }

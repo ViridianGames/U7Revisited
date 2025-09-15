@@ -15,7 +15,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"TriplesGame_814x0"
+			"name":"triplesgame_814x0"
 		}
 	],
 	"materials":[
@@ -33,7 +33,7 @@
 	],
 	"meshes":[
 		{
-			"name":"TriplesGame1",
+			"name":"triplesgame1",
 			"primitives":[
 				{
 					"attributes":{
@@ -118,7 +118,7 @@
 	"buffers":[
 		{
 			"byteLength":15592,
-			"uri":"TriplesGame_814x00.bin"
+			"uri":"triplesgame_814x00.bin"
 		}
 	]
 }

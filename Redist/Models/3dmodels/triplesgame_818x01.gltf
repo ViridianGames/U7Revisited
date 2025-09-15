@@ -309,7 +309,7 @@
   "buffers": [
     {
       "byteLength": 13652,
-      "uri": "triplesgame_818x001.bin"
+      "uri": "triplesgame_818x01.bin"
     }
   ],
   "bufferViews": [
@@ -526,7 +526,7 @@
         1
       ],
       "mesh": 0,
-      "name": "TriplesGame_818x00",
+      "name": "triplesgame_818x00",
       "skin": 0
     },
     {

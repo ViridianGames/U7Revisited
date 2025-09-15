@@ -862,7 +862,7 @@
 176 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 176 29 default 
 176 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 176 30 default 
 176 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 176 31 default 
-177 0 0 0 24 32 0 32 24 19 24 0 21 32 3 1 1.4 1 0 -0.4 -1.5 0 1 2 2 3 3 1 Models/3dmodels/Alchemist_device_177x00.gltf 1 0 177 0 default 
+177 0 0 0 24 32 0 32 24 19 24 0 21 32 3 1 1.4 1 0 -0.4 -1.5 0 1 2 2 3 3 1 Models/3dmodels/alchemist_device_177x00.gltf 1 0 177 0 default 
 177 1 0 0 24 32 0 32 24 19 24 0 21 32 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 177 1 default 
 177 2 0 0 24 32 0 32 24 19 24 0 21 32 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 177 2 default 
 177 3 0 0 24 32 0 32 24 19 24 0 21 32 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 177 3 default 
@@ -5022,7 +5022,7 @@
 306 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 306 29 default 
 306 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 306 30 default 
 306 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 306 31 default 
-307 0 0 0 8 8 0 8 8 8 8 0 8 8 3 1 1 1 1 0 0.3 0 1 2 2 3 3 1 Models/3dmodels/Lab_burner_307x00.gltf 1 0 307 0 default 
+307 0 0 0 8 8 0 8 8 8 8 0 8 8 3 1 1 1 1 0 0.3 0 1 2 2 3 3 1 Models/3dmodels/lab_burner_307x00.gltf 1 0 307 0 default 
 307 1 0 0 8 8 0 8 8 8 8 0 8 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 307 1 default 
 307 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 307 2 default 
 307 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 307 3 default 
@@ -6121,7 +6121,7 @@
 341 8 0 0 24 16 0 16 24 7 24 0 2 16 3 1.5 1.5 1.5 1.2 0 1.2 0 1 2 2 3 3 1 Models/3dmodels/rock_341x08.gltf 1 0 341 8 default 
 341 9 0 0 24 16 0 16 24 7 24 0 17 16 3 1.2 1.2 1.2 -0.6 0 -0.6 0 1 2 2 3 3 1 Models/3dmodels/rock_341x09.gltf 1 0 341 9 default 
 341 10 0 0 24 16 0 16 24 7 24 0 2 16 3 2 2 2 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/rock_341x10.gltf 1 0 341 10 default 
-341 11 0 0 23 16 0 16 23 10 22 0 1 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/Rock_341x02.gltf 1 0 341 11 default 
+341 11 0 0 23 16 0 16 23 10 22 0 1 16 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/rock_341x02.gltf 1 0 341 11 default 
 341 12 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 12 default 
 341 13 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 13 default 
 341 14 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 14 default 
@@ -6142,10 +6142,10 @@
 341 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 29 default 
 341 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 30 default 
 341 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 341 31 default 
-342 0 0 0 24 16 0 16 24 31 24 0 21 16 3 1 1 1 0.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x0.gltf 1 0 342 0 default 
+342 0 0 0 24 16 0 16 24 31 24 0 21 16 3 1 1 1 0.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x00.gltf 1 0 342 0 default 
 342 1 0 0 24 16 0 16 24 29 24 0 34 16 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 342 1 default 
-342 2 0 0 24 16 0 16 24 27 24 0 15 16 3 1.5 1.5 1.5 1.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x2.gltf 1 0 342 2 default 
-342 3 0 0 24 16 0 16 24 32 24 0 25 16 3 1 1.4 1 1 0 1.3 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x3.gltf 1 0 342 3 default 
+342 2 0 0 24 16 0 16 24 27 24 0 15 16 3 1.5 1.5 1.5 1.5 0 1.5 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x02.gltf 1 0 342 2 default 
+342 3 0 0 24 16 0 16 24 32 24 0 25 16 3 1 1.4 1 1 0 1.3 0 1 2 2 3 3 1 Models/3dmodels/boulder_342x03.gltf 1 0 342 3 default 
 342 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 4 default 
 342 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 5 default 
 342 6 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 6 default 
@@ -6174,9 +6174,9 @@
 342 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 29 default 
 342 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 30 default 
 342 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 342 31 default 
-343 0 0 0 40 40 0 40 40 14 40 0 17 40 3 1.1 1.1 1.1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x0.gltf 1 0 343 0 default 
-343 1 0 0 40 40 0 40 40 15 40 0 21 40 3 1.3 1.3 1.3 1.5 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x1.gltf 1 0 343 1 default 
-343 2 0 0 40 40 0 40 40 24 40 0 24 40 3 1.3 1.3 1.3 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x2.gltf 1 0 343 2 default 
+343 0 0 0 40 40 0 40 40 14 40 0 17 40 3 1.1 1.1 1.1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x00.gltf 1 0 343 0 default 
+343 1 0 0 40 40 0 40 40 15 40 0 21 40 3 1.3 1.3 1.3 1.5 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x01.gltf 1 0 343 1 default 
+343 2 0 0 40 40 0 40 40 24 40 0 24 40 3 1.3 1.3 1.3 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/boulder_343x02.gltf 1 0 343 2 default 
 343 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 343 3 default 
 343 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 343 4 default 
 343 5 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 343 5 default 
@@ -11838,7 +11838,7 @@
 519 29 0 0 8 8 0 8 8 28 8 0 19 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 519 29 default 
 519 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 519 30 default 
 519 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 519 31 default 
-520 0 0 0 40 24 0 24 40 3 40 0 5 24 3 1 1 1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/roulettetable_520x0.gltf 1 0 520 0 default 
+520 0 0 0 40 24 0 24 40 3 40 0 5 24 3 1 1 1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/roulettetable_520x00.gltf 1 0 520 0 default 
 520 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 520 1 default 
 520 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 520 2 default 
 520 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 520 3 default 
@@ -18398,7 +18398,7 @@
 724 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 724 29 default 
 724 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 724 30 default 
 724 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 724 31 default 
-725 0 0 0 24 24 0 24 24 6 24 0 9 24 3 1 1 1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/roulettetable_725x0.gltf 1 0 725 0 default 
+725 0 0 0 24 24 0 24 24 6 24 0 9 24 3 1 1 1 1 0 1 0 1 2 2 3 3 1 Models/3dmodels/roulettetable_725x00.gltf 1 0 725 0 default 
 725 1 0 0 24 24 0 24 24 6 24 0 9 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 725 1 default 
 725 2 0 0 24 24 0 24 24 6 24 0 9 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 725 2 default 
 725 3 0 0 24 24 0 24 24 6 24 0 9 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 725 3 default 
@@ -19614,7 +19614,7 @@
 762 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 762 29 default 
 762 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 762 30 default 
 762 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 762 31 default 
-763 0 0 0 31 32 0 32 31 10 30 0 1 32 3 1 1 1 5 0 1 0 1 2 2 3 3 1 Models/3dmodels/ratrace_763x0.gltf 1 0 763 0 default 
+763 0 0 0 31 32 0 32 31 10 30 0 1 32 3 1 1 1 5 0 1 0 1 2 2 3 3 1 Models/3dmodels/ratrace_763x00.gltf 1 0 763 0 default 
 763 1 0 0 32 32 0 32 32 9 32 0 8 32 6 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 763 1 default 
 763 2 0 0 32 32 0 32 32 9 32 0 8 32 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 763 2 default 
 763 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 763 3 default 
@@ -21246,7 +21246,7 @@
 813 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 813 29 default 
 813 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 813 30 default 
 813 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 813 31 default 
-814 0 0 0 56 24 0 24 56 9 56 0 9 24 3 1 1 1 1 0 1 0 0 2 2 3 3 1 Models/3dmodels/triplesgame_814x0.gltf 1 0 814 0 default 
+814 0 0 0 56 24 0 24 56 9 56 0 9 24 3 1 1 1 1 0 1 0 0 2 2 3 3 1 Models/3dmodels/triplesgame_814x00.gltf 1 0 814 0 default 
 814 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 814 1 default 
 814 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 814 2 default 
 814 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 814 3 default 
@@ -21374,7 +21374,7 @@
 817 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 817 29 default 
 817 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 817 30 default 
 817 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 817 31 default 
-818 0 0 0 24 8 0 8 24 9 24 0 6 8 3 1.3 1.3 1.3 1.3 0 1 0 1 2 2 3 3 1 Models/3dmodels/triplesgame_818x0.gltf 1 0 818 0 default 
+818 0 0 0 24 8 0 8 24 9 24 0 6 8 3 1.3 1.3 1.3 1.3 0 1 0 1 2 2 3 3 1 Models/3dmodels/triplesgame_818x00.gltf 1 0 818 0 default 
 818 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 818 1 default 
 818 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 818 2 default 
 818 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 818 3 default 
