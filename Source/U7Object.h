@@ -16,8 +16,16 @@ struct NPCData;
 
 class U7Object : public Unit3D
 {
-
 public:
+
+	enum class UnitTypes
+	{
+		UNIT_TYPE_STATIC = 0, // Static objects cannot be changed.  They cannot be moved, created or destroyed. They may have animations or lighting effects but are otherwise unchanging.  They do not have inventories or scripts.
+		UNIT_TYPE_OBJECT,     // Generic object, can be moved, created and destroyed.  May have an inventory.  May have an attached Lua script.  Clever use of scripts can make these objects behave like NPCs, but that should be discouraged.
+		UNIT_TYPE_NPC,        // Non-player character, can move, can have schedules and conversations, and has an inventory.  May have an attached Lua script.  Monsters are considered NPCs.
+		UNIT_TYPE_EGG,        // "Eggs" are what would be called "triggers" in later games.  They are invisible, intangible objects that "hatch" and run scripts when the player interacts with them or enters their bounding box.
+		UNIT_TYPE_LAST
+	};
 
    U7Object() {};
    virtual ~U7Object();
@@ -113,6 +121,7 @@ public:
    bool m_isNPC;
    bool m_isContainer;
    bool m_isContained;
+	int m_containingObjectId;
    bool m_hasConversationTree;
    bool m_hasGump;
    bool m_isEgg;

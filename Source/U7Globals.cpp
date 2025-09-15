@@ -408,12 +408,14 @@ unsigned int g_CurrentUnitID = 0;
 
 unsigned int GetNextID() { return g_CurrentUnitID++; }
 
-void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
+U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
-	if (shapenum == 451)
+	if (shapenum == 742 && framenum == 1)
 	{
 		Log("Stop here.");
 	}
+
+
 
 	g_ObjectList.emplace(id, make_unique<U7Object>());
 
@@ -422,6 +424,8 @@ void AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 	temp->m_ID = id;
 	temp->SetInitialPos(Vector3{ x, y, z });
 	AssignObjectChunk(temp);
+
+	return g_ObjectList[id].get();
 }
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)

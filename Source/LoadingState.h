@@ -30,7 +30,8 @@ public:
    void CreateShapeTable();
    void CreateObjectTable();
    void LoadIFIX();
-   void LoadIREG();
+   void LoadIREGs();
+   void ParseIREGFile(std::stringstream& ireg, int superchunkx = 0, int superchunky = 0);
    void LoadFaces();
    void LoadVersion();
    void MakeMap();

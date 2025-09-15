@@ -40,10 +40,8 @@ enum GameStates
 	STATE_MAINSTATE,
 	STATE_OPTIONSSTATE,
 	STATE_SHAPEEDITORSTATE,
-	STATE_OBJECTEDITORSTATE,
-	STATE_WORLDEDITORSTATE,
 	STATE_CREDITS,
-    STATE_CONVERSATIONSTATE,
+	STATE_CONVERSATIONSTATE,
 	STATE_LASTSTATE
 };
 
@@ -53,17 +51,17 @@ extern std::string g_objectDrawTypeStrings[];
 
 extern bool g_LuaDebug;
 
-enum class ObjectTypes
-{
-	OBJECT_STATIC = 0,   // Static objects cannot be changed.  They cannot be moved, created or destroyed.
-	OBJECT_CREATURE,
-	OBJECT_WEAPON,
-	OBJECT_ARMOR,
-	OBJECT_CONTAINER,
-	OBJECT_QUESTobject_,
-	OBJECT_KEY,
-	OBJECTobject_
-};
+// enum class ObjectTypes
+// {
+// 	OBJECT_STATIC = 0,   // Static objects cannot be changed.  They cannot be moved, created or destroyed.
+// 	OBJECT_CREATURE,
+// 	OBJECT_WEAPON,
+// 	OBJECT_ARMOR,
+// 	OBJECT_CONTAINER,
+// 	OBJECT_QUESTobject_,
+// 	OBJECT_KEY,
+// 	OBJECTobject_
+// };
 
 enum class EngineModes
 {
@@ -264,7 +262,7 @@ void UpdateSortedVisibleObjects();
 
 Vector3 GetRadialVector(float partitions, float thispartition);
 
-void AddObject(int shapenum, int framenum, int id, float x, float y, float z);
+U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float z);
 
 void AddObjectToContainer(int objectID, int containerID);
 

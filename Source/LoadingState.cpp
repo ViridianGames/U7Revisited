@@ -197,7 +197,7 @@ void LoadingState::UpdateLoading()
 		if (!m_loadingIREG)
 		{
 			AddConsoleString(std::string("Loading IREG..."));
-			LoadIREG();
+			LoadIREGs();
 			m_loadingIREG = true;
 			return;
 		}
@@ -676,7 +676,7 @@ void LoadingState::MakeMap()
 	}
 }
 
-void LoadingState::LoadIREG()
+void LoadingState::LoadIREGs()
 {
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 	std::string loadingPath(dataPath);
@@ -702,147 +702,139 @@ void LoadingState::LoadIREG()
             
 			s.insert(0, loadingPath.c_str());
 
-			FILE* u7thisireg = fopen(s.c_str(), "rb");
+			ifstream iregfile(s, ios::binary | ios::in);
 
-			if (u7thisireg == nullptr)
+			if(iregfile.fail())
 			{
 				Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
 				m_loadingFailed = true;
 				return;
 			}
-			else
+
+			stringstream thisireg;
+			thisireg << iregfile.rdbuf();
+			iregfile.close();
+
+			ParseIREGFile(thisireg, superchunkx, superchunky);
+		}
+	}
+}
+
+void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superchunky)
+{
+	//  Flags for putting objects in containers.
+	unsigned int containerId = 0;
+	bool containerOpen = false;
+
+	while (ireg.good())
+	{
+		//  Read the length of the object.
+		unsigned char length = ReadU8(ireg);
+		if (length == 6) //  Object.
+		{
+			unsigned char x = ReadU8(ireg);
+			unsigned char y = ReadU8(ireg);
+
+			int chunkx = x >> 4;
+			int chunky = y >> 4;
+			int intx = x & 0x0f;
+			int inty = y & 0x0f;
+
+			int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+			int actualy = (superchunky * 256) + (chunky * 16) + inty;
+
+			unsigned short shapeData = ReadU16(ireg);
+			int shape = shapeData & 0x3ff;
+			int frame = (shapeData >> 10) & 0x1f;
+
+			unsigned char z = ReadU8(ireg);
+
+			float lift1 = 0;
+			float lift2 = 0;
+			if (z != 0)
 			{
-				//  Flags for putting objects in containers.
-				unsigned int containerId = 0;
-				bool containerOpen = false;
-
-				while (!feof(u7thisireg))
-				{
-					//  Read the length of the object.
-					unsigned char length;
-					fread(&length, sizeof(unsigned char), 1, u7thisireg);
-					if (length == 6) //  Object.
-					{
-						unsigned char x;
-						unsigned char y;
-						fread(&x, sizeof(unsigned char), 1, u7thisireg);
-						fread(&y, sizeof(unsigned char), 1, u7thisireg);
-
-						int chunkx = x >> 4;
-						int chunky = y >> 4;
-						int intx = x & 0x0f;
-						int inty = y & 0x0f;
-
-						int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						int actualy = (superchunky * 256) + (chunky * 16) + inty;
-
-						unsigned short shapeData;
-						fread(&shapeData, sizeof(unsigned short), 1, u7thisireg);
-						int shape = shapeData & 0x3ff;
-						int frame = (shapeData >> 10) & 0x1f;
-
-						unsigned char z;
-						fread(&z, sizeof(unsigned char), 1, u7thisireg);
-						float lift1 = 0;
-						float lift2 = 0;
-						if (z != 0)
-						{
-							lift1 = z >> 4;
-							lift2 = z & 0x0f;
-							//z *= 8;
-						}
-
-						unsigned char quality;
-						fread(&quality, sizeof(unsigned char), 1, u7thisireg);
-
-						if (shape != 275 && shape != 607 && shape != 0) //  Eggs
-						{
-							int objectId = GetNextID();
-							AddObject(shape, frame, objectId, actualx, lift1, actualy);
-							g_ObjectList[objectId]->m_Quality = quality;
-
-							if (containerOpen)
-							{
-								AddObjectToContainer(objectId, containerId);
-							}
-						}
-					}
-					else if (length == 12) // Container or Egg
-					{
-						//continue;
-						unsigned char x;
-						unsigned char y;
-						fread(&x, sizeof(unsigned char), 1, u7thisireg); // 1
-						fread(&y, sizeof(unsigned char), 1, u7thisireg); // 2
-
-						int chunkx = x >> 4;
-						int chunky = y >> 4;
-						int intx = x & 0x0f;
-						int inty = y & 0x0f;
-
-						int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-						int actualy = (superchunky * 256) + (chunky * 16) + inty;
-
-						unsigned short shapeData;
-						fread(&shapeData, sizeof(unsigned short), 1, u7thisireg); // 3, 4
-						int shape = shapeData & 0x3ff;
-						int frame = (shapeData >> 10) & 0x1f;
-
-						unsigned char sink;
-						for (int i = 0; i < 5; ++i)
-						{
-							fread(&sink, sizeof(unsigned char), 1, u7thisireg); // 5-9
-						}
-
-						unsigned char z;
-						fread(&z, sizeof(unsigned char), 1, u7thisireg); // 10
-						float lift1 = 0;
-						float lift2 = 0;
-						float lift3 = 0;
-						if (z != 0)
-						{
-							lift1 = z >> 4;
-							lift2 = z & 0x0f;
-							lift3 = z / 8;
-
-						}
-						//unsigned char quality;
-						//fread(&quality, sizeof(unsigned char), 1, u7thisireg);
-
-						//  Soak up the next 2 bytes.
-						unsigned char throwaway[1];
-						fread(&throwaway, sizeof(unsigned char), 1, u7thisireg);		// 11
-
-						int id = GetNextID();
-						AddObject(shape, frame, id, actualx, lift1, actualy);
-						//g_ObjectList[id]->m_Quality = quality;
-						GetObjectFromID(id)->m_isContainer = true;
-
-						//  Egg or container?  01 Egg, 00 container.
-						unsigned char eggOrContainer;
-						fread(&eggOrContainer, sizeof(unsigned char), 1, u7thisireg); // 12
-						if (g_objectDataTable[shape].m_name == "Egg")
-						{
-							GetObjectFromID(id)->m_isEgg = true;
-							GetObjectFromID(id)->m_isContainer = false;
-						}
-						else
-						{
-							GetObjectFromID(id)->m_isContainer = true;
-							containerOpen = true;
-							containerId = id;
-
-						}
-					}
-					else if(length == 1) //  Close container
-					{
-						containerOpen = false;
-					}
-				}
+				lift1 = z >> 4;
+				lift2 = z & 0x0f;
+				//z *= 8;
 			}
 
-			//int stopper = 0;
-			fclose(u7thisireg);
+			unsigned char quality = ReadU8(ireg);
+
+			if (shape != 275 && shape != 607 && shape != 0) //  Eggs
+			{
+				int objectId = GetNextID();
+				AddObject(shape, frame, objectId, actualx, lift1, actualy);
+				g_ObjectList[objectId]->m_Quality = quality;
+
+				if (containerOpen)
+				{
+					AddObjectToContainer(objectId, containerId);
+				}
+			}
+		}
+		else if (length == 12) // Container or Egg
+		{
+			//continue;
+			unsigned char x = ReadU8(ireg);
+			unsigned char y = ReadU8(ireg);;
+
+			int chunkx = x >> 4;
+			int chunky = y >> 4;
+			int intx = x & 0x0f;
+			int inty = y & 0x0f;
+
+			int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+			int actualy = (superchunky * 256) + (chunky * 16) + inty;
+
+			unsigned short shapeData = ReadU16(ireg);;
+			int shape = shapeData & 0x3ff;
+			int frame = (shapeData >> 10) & 0x1f;
+
+			//  Soak the next 5 bytes.
+			for (int i = 0; i < 5; ++i)
+			{
+				ReadU8(ireg);
+			}
+
+			unsigned char z = ReadU8(ireg);;
+			float lift1 = 0;
+			float lift2 = 0;
+			float lift3 = 0;
+			if (z != 0)
+			{
+				lift1 = z >> 4;
+				lift2 = z & 0x0f;
+				lift3 = z / 8;
+			}
+			//unsigned char quality;
+			//fread(&quality, sizeof(unsigned char), 1, u7thisireg);
+
+			//  Soak up the next byte.
+			ReadU8(ireg);
+
+			int id = GetNextID();
+			AddObject(shape, frame, id, actualx, lift1, actualy);
+			//g_ObjectList[id]->m_Quality = quality;
+			GetObjectFromID(id)->m_isContainer = true;
+
+			//  Egg or container?  01 Egg, 00 container.
+			unsigned char eggOrContainer = ReadU8(ireg);
+			if (g_objectDataTable[shape].m_name == "Egg" || eggOrContainer == 1)
+			{
+				GetObjectFromID(id)->m_isEgg = true;
+				GetObjectFromID(id)->m_isContainer = false;
+			}
+			else
+			{
+				GetObjectFromID(id)->m_isContainer = true;
+				containerOpen = true;
+				containerId = id;
+
+			}
+		}
+		else if(length == 1) //  Close container
+		{
+			containerOpen = false;
 		}
 	}
 }
@@ -1275,10 +1267,15 @@ void LoadingState::LoadInitialGameState()
 
 	for (auto node = subFileMap.begin(); node != subFileMap.end(); ++node)
 	{
+		if (node->length == 0)
+		{
+			continue; // No actual data at this offset.
+		}
 		subFiles.seekg(node->offset);
 		//  First thirteen characters are the filename.
 		char filename[13];
 		subFiles.read(filename, 13);
+		cout << "Loading " << filename << endl;
 
 		//  Based on the filename, do...something.
 		if (!strncmp(filename, "npc.dat", 6))
@@ -1453,8 +1450,8 @@ void LoadingState::LoadInitialGameState()
 
 				int newfilepos = subFiles.tellg();
 
-				if (thisNPC.id > 256)
-					continue;
+				// if (thisNPC.id > 256)
+				// 	continue;
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
@@ -1463,7 +1460,7 @@ void LoadingState::LoadInitialGameState()
 				//g_ObjectList[nextID]->m_isNPC = true;
 
 
-				if (thisNPC.type != 0 && i != 139) // This NPC has an inventory
+				if (thisNPC.type != 0 && i != 139 && i != 148) // This NPC has an inventory
 				{
 					unsigned char length = 99;
 					bool incontainer = false;
@@ -1501,7 +1498,8 @@ void LoadingState::LoadInitialGameState()
                      unsigned char quality = ReadU8(subFiles);
                      
                      int objectId = GetNextID();
-							AddObject(shape, frame, objectId, actualx, lift1, actualy);
+							U7Object* thisObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
+							thisObject->m_isContained = true;
                      
 							AddObjectToContainer(objectId, nextID);
 						}

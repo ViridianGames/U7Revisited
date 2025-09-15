@@ -69,12 +69,9 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-	if (!(g_StateMachine->GetCurrentState() == STATE_OBJECTEDITORSTATE))
+	if (!m_Visible || m_isContained || m_isEgg)
 	{
-		if (!m_Visible || m_isContained || m_isEgg)
-		{
-			return;
-		}
+		return;
 	}
 
 	if (m_isNPC)

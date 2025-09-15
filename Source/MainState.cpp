@@ -471,6 +471,15 @@ void MainState::Draw()
 		rlEnableDepthMask();
 	}
 
+	if (g_gumpManager->m_draggingObject)
+	{
+		U7Object* draggedObject = g_ObjectList[g_gumpManager->m_draggedObjectId].get();
+		BoundingBox box;
+		box.min = Vector3Subtract(g_terrainUnderMousePointer, {draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1});//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
+		box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
+		DrawBoundingBox(box, WHITE);
+	}
+
 	EndMode3D();
 
 	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
@@ -511,11 +520,32 @@ void MainState::Draw()
 
 	if (g_objectUnderMousePointer != nullptr)
 	{
-		DrawOutlinedText(g_SmallFont, "Object under mouse: " + g_objectUnderMousePointer->m_objectData->m_name + " at " + to_string(int(g_objectUnderMousePointer->m_Pos.x))
-			+ " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " " + to_string(int(g_objectUnderMousePointer->m_Pos.y)) + " Quality: " + to_string(int(g_objectUnderMousePointer->m_Quality)) , Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+		std::string objectDescription;
+		if (g_objectUnderMousePointer->m_isContainer)
+			objectDescription = "Container ";
+		else if (g_objectUnderMousePointer->m_isNPC)
+			objectDescription = "NPC ";
+		else if (g_objectUnderMousePointer->m_isEgg)
+			objectDescription = "Egg ";
+		else
+			objectDescription = "Object ";
+
+		 objectDescription += g_objectUnderMousePointer->m_objectData->m_name + " at " +
+			to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
+			" " +
+			to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
+			" Quality: " +
+			to_string(int(g_objectUnderMousePointer->m_Quality));
+
+		if (g_objectUnderMousePointer->m_isContained)
+		{
+			objectDescription += " This object is contained.";
+		}
+
+		DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
 	}
-	DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
-	DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
+	//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
+	//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
 	g_gumpManager->Draw();
 
