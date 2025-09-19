@@ -18,80 +18,88 @@ class GuiManager;
 class ConversationState : public State
 {
 public:
-    enum class ConversationStepType
-    {
-        STEP_ADD_DIALOGUE = 0,
-	STEP_CHANGE_PORTRAIT,
-        STEP_SECOND_SPEAKER,
-        STEP_MULTIPLE_CHOICE,
-        STEP_GET_PURCHASE_OPTION,
-        STEP_GET_AMOUNT_FROM_NUMBER_BAR,
-    };
+	enum class ConversationStepType
+	{
+		STEP_ADD_DIALOGUE = 0,
+		STEP_CHANGE_PORTRAIT,
+		STEP_SECOND_SPEAKER,
+		STEP_MULTIPLE_CHOICE,
+		STEP_GET_PURCHASE_OPTION,
+		STEP_GET_AMOUNT_FROM_NUMBER_BAR,
+	};
 
-    struct ConversationStep
-    {
-        ConversationStepType type;
-        std::string dialog;
-        std::vector<std::string> answers;
-        std::vector<int> data;
-        int npcId;
-        int frame;
-    };
+	struct ConversationStep
+	{
+		ConversationStepType type;
+		std::string dialog;
+		std::vector<std::string> answers;
+		std::vector<int> data;
+		int npcId;
+		int frame;
+	};
 
-    ConversationState() {}
-    ~ConversationState();
+	ConversationState()
+	{
+	}
 
-    virtual void Init(const std::string& configfile);
-    virtual void Shutdown();
-    virtual void Update();
-    virtual void Draw();
+	~ConversationState();
 
-    virtual void OnEnter();
-    virtual void OnExit();
+	virtual void Init(const std::string& configfile);
+	virtual void Shutdown();
+	virtual void Update();
+	virtual void Draw();
 
-    void SetNPC(int npcId, int frame = 0) { m_npcId = npcId; m_npcFrame = frame; }
-    void AddStep(ConversationStep step) { m_steps.push_back(step); }
-    void AddAnswers(std::vector<std::string> answers);
-    void RemoveAnswer(std::string answer);
-    void ClearAnswers() { m_answers.clear(); }
-    void GetAnswers(const std::string& func_name);
-    void SetAnswer(const std::string& func_name, const std::string& answer);
-    void SaveAnswers();
-    void RestoreAnswers();
-    void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
+	virtual void OnEnter();
+	virtual void OnExit();
 
-    void SelectYesNo(bool yes);
-    void ReturnMultipleChoice(std::string choice);
-    void ReturnGetPurchaseOption(int option);
-    void ReturnAmountFromNumberBar(int amount);
+	void SetNPC(int npcId, int frame = 0)
+	{
+		m_npcId = npcId;
+		m_npcFrame = frame;
+	}
 
-    void EraseTopStep();
+	void AddStep(ConversationStep step) { m_steps.push_back(step); }
+	void AddAnswers(std::vector<std::string> answers);
+	void RemoveAnswer(std::string answer);
+	void ClearAnswers() { m_answers.clear(); }
+	void GetAnswers(const std::string& func_name);
+	void SetAnswer(const std::string& func_name, const std::string& answer);
+	void SaveAnswers();
+	void RestoreAnswers();
+	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
 
-    Gui* m_Gui;
+	void SelectYesNo(bool yes);
+	void ReturnMultipleChoice(std::string choice);
+	void ReturnGetPurchaseOption(int option);
+	void ReturnAmountFromNumberBar(int amount);
 
-    std::unique_ptr<GumpNumberBar> m_GumpNumberBar;
+	void EraseTopStep();
 
-    int m_npcId;
-    int m_npcFrame;
-    int m_secondSpeakerId;
-    int m_secondSpeakerFrame;
+	Gui* m_Gui;
 
-    bool m_answerPending = false;
-    bool m_waitingForAnswer = false;
-    bool m_numberBarPending = false;
+	std::unique_ptr<GumpNumberBar> m_GumpNumberBar;
 
-    std::vector<std::string> m_answers;
-    std::vector<std::string> m_savedAnswers;
-    std::string m_currentDialogue;
-    std::string m_secondSpeakerDialogue;
+	int m_npcId;
+	int m_npcFrame;
+	int m_secondSpeakerId;
+	int m_secondSpeakerFrame;
 
-    std::string m_luaFunction;
+	bool m_answerPending = false;
+	bool m_waitingForAnswer = false;
+	bool m_numberBarPending = false;
 
-    std::vector<ConversationStep> m_steps;
+	std::vector<std::string> m_answers;
+	std::vector<std::string> m_savedAnswers;
+	std::string m_currentDialogue;
+	std::string m_secondSpeakerDialogue;
 
-    bool m_scriptFinished = false;
-    bool m_conversationActive = false;
-    bool m_secondSpeakerActive = false;
+	std::string m_luaFunction;
+
+	std::vector<ConversationStep> m_steps;
+
+	bool m_scriptFinished = false;
+	bool m_conversationActive = false;
+	bool m_secondSpeakerActive = false;
 };
 
 #endif

@@ -80,6 +80,7 @@ void ScriptingSystem::LoadScript(const std::string& path)
        stringstream st;
        st << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
        std::cerr << st.str();
+        Log(st.str(), "debuglog.txt");
         lua_pop(m_luaState, 1);
     }
     else

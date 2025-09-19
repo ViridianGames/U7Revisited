@@ -18,6 +18,7 @@
 #include "U7Object.h"
 #include "ShapeData.h"
 #include "LoadingState.h"
+#include "MainState.h"
 
 #include <iostream>
 #include <string>
@@ -238,6 +239,10 @@ void U7Object::NPCDraw()
 void U7Object::NPCUpdate()
 {
 	//  Get desination from schedule
+	if (g_Player->NPCIDInParty(m_NPCID))
+	{
+		return; // Don't do schedules while in the party.
+	}
 
 	if (m_lastSchedule == -1 && g_NPCSchedules[m_NPCID].size() > 0)
 	{
@@ -433,13 +438,18 @@ void U7Object::Interact(int event)
 
 		g_ConversationState->SetLuaFunction(scriptName);
 
-		AddConsoleString("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
-		g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID });
+		DebugPrint("Calling Lua function: " + scriptName + " event: " + to_string(event) + " NPCID: " + to_string(m_NPCID));
+		DebugPrint(g_ScriptingSystem->CallScript(scriptName, { event, m_NPCID }));
 	}
 	else
 	{
-		AddConsoleString("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID));
-		g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID });
+		// If there's a script for this object type, call it
+		if (m_shapeData->m_luaScript != "")
+		{
+			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(m_shapeData->m_luaScript);
+			DebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID));
+			DebugPrint(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
+		}
 	}
 }
 
@@ -455,6 +465,17 @@ bool U7Object::IsInInventory(int objectid)
 
 	return false;
 }
+
+bool U7Object::IsLocked()
+{
+	if (m_shapeData->m_shape == 522)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 
 bool U7Object::IsInInventory(int shape, int frame)
 {

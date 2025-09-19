@@ -17,6 +17,6 @@
 void SetLogFileName(std::string filename);
 std::string GetLogFileName(void);
 
-void Log(std::string text);
+void Log(std::string text, std::string filename = "runlog.txt");
 
 #endif

@@ -760,7 +760,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 
 			unsigned char quality = ReadU8(ireg);
 
-			if (shape != 275 && shape != 607 && shape != 0) //  Eggs
+			if (shape != 0) //  Eggs
 			{
 				int objectId = GetNextID();
 				AddObject(shape, frame, objectId, actualx, lift1, actualy);
@@ -775,8 +775,8 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 		else if (length == 12) // Container or Egg
 		{
 			//continue;
-			unsigned char x = ReadU8(ireg);
-			unsigned char y = ReadU8(ireg);;
+			unsigned char x = ReadU8(ireg); // Byte 1
+			unsigned char y = ReadU8(ireg);; // Byte 2
 
 			int chunkx = x >> 4;
 			int chunky = y >> 4;
@@ -786,17 +786,25 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
 			int actualy = (superchunky * 256) + (chunky * 16) + inty;
 
-			unsigned short shapeData = ReadU16(ireg);;
+			if (actualx == 972 && actualy == 2132)
+			{
+				int stopper = 0;
+			}
+
+			unsigned short shapeData = ReadU16(ireg);;// Bytes 3 and 4
 			int shape = shapeData & 0x3ff;
 			int frame = (shapeData >> 10) & 0x1f;
 
-			//  Soak the next 5 bytes.
-			for (int i = 0; i < 5; ++i)
-			{
-				ReadU8(ireg);
-			}
+			//  Bytes 5-9
+			unsigned char type = ReadU8(ireg); // Byte 5
+			unsigned char proba1 = ReadU8(ireg); // Byte 6
+			unsigned char proba2 = ReadU8(ireg); // Byte 7
+			unsigned char quality = ReadU8(ireg); // Byte 8
+			unsigned char quantity = ReadU8(ireg); // Byte 9
+			unsigned char z = ReadU8(ireg); // Byte 10
+			unsigned char resistance = ReadU8(ireg); // Byte 11
+			unsigned char flags = ReadU8(ireg); // Byte 12
 
-			unsigned char z = ReadU8(ireg);;
 			float lift1 = 0;
 			float lift2 = 0;
 			float lift3 = 0;
@@ -806,20 +814,14 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				lift2 = z & 0x0f;
 				lift3 = z / 8;
 			}
-			//unsigned char quality;
-			//fread(&quality, sizeof(unsigned char), 1, u7thisireg);
-
-			//  Soak up the next byte.
-			ReadU8(ireg);
 
 			int id = GetNextID();
 			AddObject(shape, frame, id, actualx, lift1, actualy);
-			//g_ObjectList[id]->m_Quality = quality;
+			g_ObjectList[id]->m_Quality = quality;
 			GetObjectFromID(id)->m_isContainer = true;
 
 			//  Egg or container?  01 Egg, 00 container.
-			unsigned char eggOrContainer = ReadU8(ireg);
-			if (g_objectDataTable[shape].m_name == "Egg" || eggOrContainer == 1)
+			if (g_objectDataTable[shape].m_name == "Egg" || type == 1)
 			{
 				GetObjectFromID(id)->m_isEgg = true;
 				GetObjectFromID(id)->m_isContainer = false;
@@ -830,6 +832,14 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				containerOpen = true;
 				containerId = id;
 
+			}
+		}
+		else if (length == 18)
+		{
+			//  Soak all 18 bytes, we're not handling this right now.
+			for (int i = 0; i < 18; ++i)
+			{
+				unsigned char throwaway = ReadU8(ireg);
 			}
 		}
 		else if(length == 1) //  Close container

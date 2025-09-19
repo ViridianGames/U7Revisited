@@ -1,43 +1,47 @@
 --- Best guess: Manages a key, unlocking specific items (chests or doors) if quality matches, or relocking if already unlocked.
 function func_0281(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
+    local target_object, target_object_shape, this_object_quality, target_object_quality, var_0004, var_0005
 
     if eventid == 1 then
-        var_0000 = object_select_modal()
-        set_object_quality(objectref, 27)
-        var_0001 = get_object_shape(var_0000)
-        var_0002 = _get_object_quality(objectref)
-        var_0003 = _get_object_quality(var_0000)
-        if get_object_shape(var_0000[1]) in {433, 432, 270, 376} then
-            if var_0002 == var_0003 then
-                unknown_0815H(var_0000)
+        target_object = object_select_modal()
+        --coroutine.yield()
+        --set_object_quality(objectref, 27)
+        target_object_shape = get_object_shape(target_object)
+        this_object_quality = get_object_quality(objectref)
+        target_object_quality = get_object_quality(target_object)
+        --  Lock/unlock doors
+        if is_int_in_array(target_object_shape, {433, 432, 270, 376}) then
+            if this_object_quality == target_object_quality then
+                func_0815(target_object)
             end
-        end
-        if var_0001 == 522 then
-            if var_0002 == var_0003 then
-                bark("Unlocked", var_0000)
-                set_object_shape(var_0000, 800)
-                if var_0003 == 253 then
+        --  Locked chest
+        elseif target_object_shape == 522 then
+            if this_object_quality == target_object_quality then
+                bark(target_object, "Unlocked")
+                set_object_shape(target_object, 800)
+                -- If the chest was Christopher's, set a plot flag
+                if target_object_quality == 253 then
                     set_flag(62, true)
                 end
             end
-        elseif var_0001 == 800 then
-            if var_0002 == var_0003 then
-                var_0004 = get_container_objects(-359, var_0002, 641, var_0000)
+        -- Unlocked chest
+        elseif target_object_shape == 800 then
+            if this_object_quality == target_object_quality then
+                var_0004 = get_container_objects(359, this_object_quality, 641, target_object)
                 var_0005 = false
                 while var_0004 and not var_0005 do
-                    if var_0004 == var_0000 then
+                    if var_0004 == target_object then
                         var_0005 = true
                     else
                         var_0004 = unknown_006EH(var_0004)
                     end
                 end
                 if var_0005 then
-                    bark("Key inside", -356)
+                    bark("Key inside", 356)
                 else
-                    unknown_0080H(var_0000)
-                    set_object_shape(var_0000, 522)
-                    bark("Locked", var_0000)
+                    unknown_0080H(target_object)
+                    set_object_shape(target_object, 522)
+                    bark("Locked", target_object)
                 end
             end
         end

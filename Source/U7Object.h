@@ -63,6 +63,9 @@ public:
    void NPCInit(NPCData* npcData);
 
 	void CheckLighting();
+
+	bool IsLocked();
+	bool IsMagicLocked();
   
    Vector3 m_Pos;
    Vector3 m_Dest;

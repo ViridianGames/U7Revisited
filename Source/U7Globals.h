@@ -19,6 +19,7 @@
 #include "Geist/RNG.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
+#include "MainState.h"
 #include "Terrain.h"
 #include "ShapeData.h"
 #include "U7Object.h"
@@ -27,6 +28,7 @@
 #include "U7Player.h"
 
 //class ConversationState;
+class MainState;
 
 struct coords
 {
@@ -184,10 +186,12 @@ extern std::string g_version;
 extern Vector3 g_Gravity;
 
 extern Texture* g_Cursor;
+extern Texture* g_objectSelectCursor;
 
 extern std::shared_ptr<Font> g_Font;
 extern std::shared_ptr<Font> g_SmallFont;
 extern std::shared_ptr<Font> g_ConversationFont;
+extern std::shared_ptr<Font> g_ConversationSmallFont;
 extern std::shared_ptr<Font> g_guiFont;
 
 extern float g_fontSize;
@@ -228,6 +232,7 @@ void DrawOutlinedText(std::shared_ptr<Font> font, const std::string& text, Vecto
 
 void DrawParagraph(std::shared_ptr<Font> font, const std::string& text, Vector2 position, float maxwidth, float fontSize, int spacing, Color color, bool outlined = false);
 
+void DebugPrint(std::string text);
 
 float GetDistance(float startX, float startZ, float endX, float endZ);
 
@@ -304,6 +309,7 @@ void DrawConsole();
 //int l_add_dialogue(lua_State* L);
 
 extern ConversationState* g_ConversationState;
+extern MainState* g_mainState;
 
 //////////////////////////////////////////////////////////////////////////////
 

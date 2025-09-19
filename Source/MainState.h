@@ -13,6 +13,13 @@ class Gui;
 class GuiElement;
 class GumpManager;
 
+enum class MainStateModes
+{
+	MAIN_STATE_MODE_SANDBOX = 0,
+	MAIN_STATE_MODE_TRINSIC_DEMO,
+	MAIN_STATE_MODE_LAST
+};
+
 class MainState : public State
 {
 public:
@@ -36,16 +43,32 @@ public:
 	void UpdateInput();
 	void UpdateTime();
 
+	void SetLuaFunction(const std::string& func_name) { m_luaFunction = func_name; }
+	void StartObjectSelectionMode() { m_objectSelectionMode = true; }
+
+	void Bark(U7Object* object, const std::string& text, float duration = 3.0f);
+
+	void NPCBark(int npc_id, const std::string& text, float duration = 3.0f);
+
+	void Wait(float seconds); // Wait while not blocking, called by Lua scripts.
+
+	float m_waitTime = 0;
+
    Gui* m_Gui;
-   Gui* m_SpellsPanel;
-   Gui* m_ArmyPanel;
-   
+
    Gui* m_OptionsGui;
 
    Gui* m_toolTipGui;
-   
-   GuiElement* m_ManaBar;
 
+	Gui* m_numberBarGui;
+
+	std::string m_luaFunction;
+
+	//  Bark variables.
+	U7Object* m_barkObject = nullptr;
+	std::string m_barkText = "";
+	float m_barkDuration = 0;;
+   
    float m_LastUpdate;
    
    int m_NumberOfVisibleUnits;
@@ -69,9 +92,12 @@ public:
    //Texture* m_TerrainTexture;
    Texture* m_Minimap;
    Texture* m_MinimapArrow;
+	Texture* m_usePointer;
    
 
    bool m_showObjects;
+
+	bool m_objectSelectionMode = false;
 
 	int m_numberofObjects = 0;
 	int m_numberofObjectsPassingFirstCheck = 0;
@@ -80,6 +106,8 @@ public:
    int m_cameraUpdateTime = 0;
 
    int m_terrainUpdateTime = 0;
+
+	bool m_doingObjectSelection = false;
 
    unsigned int m_terrainDrawHeight = 0;
 
@@ -92,6 +120,10 @@ public:
    bool m_paused = false;
 
 	Vector2 m_dragStart;
+
+	bool m_allowInput = true;
+
+	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
 };
 
 #endif

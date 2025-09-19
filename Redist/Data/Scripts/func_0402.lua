@@ -42,10 +42,8 @@ function func_0402(eventid, objectref)
             end
             var_000B = npc_id_in_party(1)
             if var_000B then
-                --switch_talk_to(1, 0)
-                second_speaker(1, 0, "\"Boy, this is the Avatar! " .. (var_0003 and "Upon my word she is! She has come to help thee!\"" or "Upon my word he is! He has come to help thee!\""))
-                --hide_npc(1)
-                --switch_talk_to(2, 1)
+                second_speaker(1, 0, "\"Boy, this is the Avatar! ")
+                second_speaker(1, 0, var_0003 and "Upon my word she is! She has come to help thee!\"" or "Upon my word he is! He has come to help thee!\"")
             end
             add_dialogue("Then the boy narrows his eyes, studying you. He slowly lowers his weapon, ready to act in case it's a trap. You admire the boy's obvious experience in dealing with strangers.")
             add_dialogue("You and Spark stare at each other. He is not sure what to do. Finally, he nods his head. \"All right. I believe thee. Thou dost look like paintings I have seen. I am sorry, " .. var_0009 .. ".\"")
@@ -95,9 +93,8 @@ function func_0402(eventid, objectref)
                 else
                     add_dialogue("\"I am sure thou canst find the man who killed Father!\"")
                     add_dialogue("\"Dost thou want me to repeat everything I know about the murder?\"")
-                    if select_option() then
-                        add_dialogue("\"What dost thou want to know about?\"")
-                        add_answer({"chest", "key", "my story"})
+                    if ask_yes_no() then
+                        ask_multple_choice("\"What dost thou want to know about?\"", {"chest", "key", "my story"})
                     else
                         add_dialogue("\"All right.\"")
                     end

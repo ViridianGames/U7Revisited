@@ -21,11 +21,13 @@ unordered_map<int, std::unique_ptr<U7Object> > g_ObjectList;
 Mesh* g_AnimationFrames;
 
 Texture* g_Cursor;
+Texture* g_objectSelectCursor;
 Texture* g_Minimap;
 
 std::shared_ptr<Font> g_Font;
 std::shared_ptr<Font> g_SmallFont;
 std::shared_ptr<Font> g_ConversationFont;
+std::shared_ptr<Font> g_ConversationSmallFont;
 std::shared_ptr<Font> g_guiFont;
 
 //float g_smallFontSize = 8;
@@ -43,6 +45,7 @@ std::array<ObjectData, 1024> g_objectDataTable;
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 
 ConversationState* g_ConversationState;
+MainState* g_mainState;
 
 bool g_CameraMoved;
 
@@ -110,6 +113,12 @@ std::unique_ptr<GumpManager> g_gumpManager;
 U7Object* g_objectUnderMousePointer;
 
 U7Object* g_doubleClickedObject;
+
+void DebugPrint(string text)
+{
+	cout << "U7DEBUG: " << text << "\n";
+	Log(text, "debuglog.txt");
+}
 
 //  This makes an animation 
 void MakeAnimationFrameMeshes()

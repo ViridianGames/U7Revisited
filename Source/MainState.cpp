@@ -40,6 +40,8 @@ void MainState::Init(const string& configfile)
 	m_MinimapArrow = g_ResourceManager->GetTexture("Images/minimaparrow.png", false);
 	GenTextureMipmaps(m_MinimapArrow);
 
+	m_usePointer = g_ResourceManager->GetTexture("Images/usepointer.png");
+
 	m_Gui = new Gui();
 
 	m_Gui->SetLayout(0, 0, 138, 384, g_DrawScale, Gui::GUIP_UPPERRIGHT);
@@ -51,8 +53,6 @@ void MainState::Init(const string& configfile)
 	m_Gui->AddPanel(1003, 18, 136, 100, 8, Color{ 128, 255, 128, 255 });
 
 	m_Gui->AddPanel(1004, 18, 136, 100, 8, Color{ 255, 255, 255, 255 }, false);
-
-	m_ManaBar = m_Gui->GetElement(1003).get();
 
 	m_Gui->m_InputScale = float(g_Engine->m_RenderHeight) / float(g_Engine->m_ScreenHeight);
 
@@ -102,7 +102,32 @@ void MainState::OnEnter()
 	g_hour = 7;
 	g_scheduleTime = 1;
 
-	m_paused = false;
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
+	{
+		m_paused = true;
+		// Fade out.
+
+		// Move camera to start position and rotation.
+		g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
+		g_cameraRotation = 0;
+		DoCameraMovement();
+
+		// Hack-move Petre and put him in the proper position.
+
+		// Hack-move the Avatar off the screen.
+
+		// Fade in.
+
+		// Run Iolo's script to start the plotline flags
+		g_ObjectList[g_NPCData[1]->m_objectID]->Interact(3);
+
+		m_paused = false;
+	}
+	else
+	{
+		m_paused = false;
+	}
+
 }
 
 void MainState::OnExit()
@@ -171,6 +196,11 @@ void MainState::UpdateTime()
 
 void MainState::UpdateInput()
 {
+	if (!m_allowInput)
+	{
+		return;
+	}
+
 	if (IsKeyPressed(KEY_ESCAPE))
 	{
 		g_Engine->m_Done = true;
@@ -195,15 +225,18 @@ void MainState::UpdateInput()
 
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
-		if (m_heightCutoff == 4.0f)
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
-			m_heightCutoff = 10.0f;
-			AddConsoleString("Viewing Second Floor");
-		}
-		else if (m_heightCutoff == 10.0f)
-		{
-			m_heightCutoff = 16.0f;
-			AddConsoleString("Viewing Third Floor");
+			if (m_heightCutoff == 4.0f)
+			{
+				m_heightCutoff = 10.0f;
+				AddConsoleString("Viewing Second Floor");
+			}
+			else if (m_heightCutoff == 10.0f)
+			{
+				m_heightCutoff = 16.0f;
+				AddConsoleString("Viewing Third Floor");
+			}
 		}
 	}
 
@@ -266,6 +299,11 @@ void MainState::UpdateInput()
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
 
+		if (m_doingObjectSelection)
+		{
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+		}
+
 		if (m_dragStart.x == 0 && m_dragStart.y == 0)
 		{
 			m_dragStart = GetMousePosition();
@@ -282,13 +320,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
-	{
-		if (!g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
-		{
-			AddConsoleString(g_objectUnderMousePointer->m_objectData->m_name);
-		}
-	}
+
 
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
 	{
@@ -344,16 +376,57 @@ void MainState::UpdateInput()
 
 	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr)
 	{
-		g_objectUnderMousePointer->Interact(1);;
-	}
-
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT) && g_objectUnderMousePointer != nullptr)
-	{
-		if (g_objectUnderMousePointer->m_isContainer)
+		if (g_objectUnderMousePointer->m_hasConversationTree || g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+		{
+			g_objectUnderMousePointer->Interact(1);;
+		}
+		else if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
 		{
 			OpenGump(g_objectUnderMousePointer->m_ID);
 		}
+		else if (g_objectUnderMousePointer->m_isContainer)
+		{
+			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+		}
 	}
+	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		if (!g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
+		{
+			if (m_objectSelectionMode == true)
+			{
+				if (g_ScriptingSystem->IsCoroutineYielded(m_luaFunction))
+				{
+					m_objectSelectionMode = false;
+					g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
+				}
+			}
+			else
+			{
+				Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 3.0f);
+			}
+		}
+	}
+
+	// if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_RIGHT) && g_objectUnderMousePointer != nullptr)
+	// {
+	// 	if (g_objectUnderMousePointer->m_isContainer && !g_objectUnderMousePointer->IsLocked())
+	// 	{
+	// 		OpenGump(g_objectUnderMousePointer->m_ID);
+	// 	}
+	// 	else if (g_objectUnderMousePointer->m_isContainer)
+	// 	{
+	// 		Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+	// 	}
+	//
+	// }
+}
+
+void MainState::Bark(U7Object* object, const std::string& text, float duration)
+{
+	m_barkDuration = duration;
+	m_barkObject = object;
+	m_barkText = text;
 }
 
 void MainState::Update()
@@ -411,8 +484,26 @@ void MainState::Update()
 
 	UpdateInput();
 
+	if (m_barkDuration > 0 && m_barkObject != nullptr)
+	{
+		m_barkDuration -= GetFrameTime();
+		if (m_barkDuration <= 0)
+		{
+			m_barkDuration = 0;
+			m_barkObject = nullptr;
+			m_barkText = "";
+		}
+	}
 
-
+	if (m_waitTime > 0)
+	{
+		m_waitTime -= GetFrameTime();
+		if (m_waitTime < 0)
+		{
+			m_waitTime = 0;
+			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
+		}
+	}
 }
 
 void MainState::OpenGump(int id)
@@ -547,6 +638,27 @@ void MainState::Draw()
 	//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 	//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
 
+	// Draw bark text if active
+	if (m_barkDuration > 0 && m_barkObject != nullptr)
+	{
+		Vector3 textPos = { m_barkObject->m_Pos.x, m_barkObject->m_Pos.y + m_barkObject->m_shapeData->m_Dims.y, m_barkObject->m_Pos.z };
+
+		// Convert 3D world position to 2D screen coordinates
+		Vector2 screenPos = GetWorldToScreen(textPos, g_camera);
+		screenPos.x /= g_DrawScale;
+		screenPos.x = int(screenPos.x);
+		screenPos.y /= g_DrawScale;
+		screenPos.y = int(screenPos.y);
+		screenPos.y -= 10; // Offset above the object
+
+		float width = MeasureTextEx(*g_SmallFont, m_barkText.c_str(), g_SmallFont->baseSize, 1).x * 1.2;
+		screenPos.x -= width / 2;
+		float height = g_SmallFont->baseSize * 1.2;
+
+		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
+		DrawTextEx(*g_SmallFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_SmallFont->baseSize, 1, YELLOW);
+	}
+
 	g_gumpManager->Draw();
 
 	EndTextureMode();
@@ -565,9 +677,16 @@ void MainState::Draw()
 
 	DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
 
-	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+	if (m_objectSelectionMode)
+	{
+		DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+	}
+	else
+	{
+		DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+	}
 
-	DrawFPS(10, 300);
+	//DrawFPS(10, 300);
 
 	EndDrawing();
 }

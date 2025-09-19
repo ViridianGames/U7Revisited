@@ -1,6 +1,6 @@
 --- Best guess: Manages Finnigan’s dialogue, overseeing the Trinsic murder investigation, password, and town details, with flag-based progression.
 function func_040C(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E
+    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000D
 
     if eventid ~= 1 then
         if eventid == 0 then
@@ -26,21 +26,17 @@ function func_040C(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(12, 0)
     var_0000 = get_lord_or_lady()
     var_0001 = get_player_name()
     var_0002 = get_flag(1)
     var_0003 = is_player_female()
     if get_flag(90) and not get_flag(72) then
-        add_dialogue("\"Hast thou properly searched the stables?\"")
-        if ask_yes_no() then
-            add_dialogue("\"What didst thou find?\"")
-            unknown_0009H()
-            var_0004 = {"a body", "a bucket", "nothing"}
-            if not get_flag(60) then
-                var_0004 = {"a body", "a bucket", "nothing", "a key"}
+        if ask_yes_no("\"Hast thou properly searched the stables?\"") then
+            if(get_flag(60)) then
+                var_0005 = ask_multiple_choice({"\"What didst thou find?\"", "a body", "a bucket", "nothing", "a key"})
+            else
+                var_0005 = ask_multiple_choice({"\"What didst thou find?\"", "a body", "a bucket", "nothing"})
             end
-            var_0005 = unknown_090BH(var_0004)
             if var_0005 == "a key" then
                 if not var_0002 then
                     add_dialogue("\"Hmmm, a key. Perhaps if thou dost ask Christopher's son about it, he may know what it is for.\"")
@@ -63,19 +59,14 @@ function func_040C(eventid, objectref)
             return
         end
     elseif get_flag(89) then
-        add_dialogue("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")
-        if ask_yes_no() then
+        if(ask_yes_no("\"Hmmm. Hast thou reconsidered mine offer to investigate the murder?\"")) then
             add_dialogue("\"Splendid. Then thou must really be the Avatar after all!\"")
             set_flag(89, false)
             unknown_0883H()
         else
             add_dialogue("\"Then leave our people to work it out for themselves.\"")
-            hide_npc(12)
-            var_0006 = get_flag(1)
-            if not var_0006 then
-                switch_talk_to(1, 0)
-                add_dialogue("\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
-                hide_npc(1)
+            if(npc_id_in_party(1)) then
+                second_speaker(1, 0, "\"Avatar! I am ashamed of thee! Thou shouldst reconsider!\"")
             end
             return
         end
@@ -87,47 +78,54 @@ function func_040C(eventid, objectref)
         var_0006 = get_flag(1)
         if not var_0006 then
             add_dialogue("\"Iolo! Who is this stranger?\"")
-            switch_talk_to(1, 0)
-            add_dialogue("\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. var_0001 .. ", the Avatar!\"")
+            second_speaker(1, 0, "\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. var_0001 .. ", the Avatar!\"")
             if var_0003 then
-                add_dialogue("\"I simply cannot believe she is here!\"")
+                second_speaker(1, 0, "\"I simply cannot believe she is here!\"")
             else
-                add_dialogue("\"I simply cannot believe he is here!\"")
+                second_speaker(1, 0, "\"I simply cannot believe he is here!\"")
             end
-            switch_talk_to(12, 0)
             add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
-            switch_talk_to(1, 0)
-            add_dialogue("\"I swear to thee, it is the Avatar!\"")
-            hide_npc(1)
-            switch_talk_to(12, 0)
+            second_speaker(1, 0, "\"I swear to thee, it is the Avatar!\"")
         else
             add_dialogue("\"I have heard that thou art the Avatar. I am not certain that I believe it.")
         end
         add_dialogue("The mayor looks at you again as if he were studying every pore on your face. Finally, he smiles.")
         add_dialogue("\"Welcome, Avatar.\"")
         add_dialogue("But just as suddenly, Finnigan's face becomes stern.")
-        add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands.") add_dialogue("Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
-        var_0005 = ask_yes_no()
+        add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands.")
+        var_0005 = ask_yes_no("Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
         if var_0005 then
             var_0007 = get_flag(11)
             if not var_0007 then
                 add_dialogue("\"Petre here knows something about all of this.\"")
-                switch_talk_to(11, 0)
-                add_dialogue("The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
-                hide_npc(11)
+                second_speaker(11, 0, "The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
             else
-                switch_talk_to(12, 0)
                 add_dialogue("\"Petre, the stables caretaker, discovered poor Christopher and Inamo early this morning.\"")
             end
-            switch_talk_to(12, 0)
-            add_dialogue("The Mayor continues. \"Hast thou searched the stables?\"")
-            var_0006 = ask_yes_no()
+            var_0006 = ask_yes_no("The Mayor continues. \"Hast thou searched the stables?\"")
             if var_0006 then
-                add_dialogue("\"What didst thou find?\"")
-                add_answer({"a body", "a bucket", "nothing"})
-                if get_flag(60) then
-                    add_answer("a key")
+                if(get_flag(60)) then
+                    var_000D = ask_multiple_choice({"\"What didst thou find?\"", "a body", "a bucket", "nothing", "a key"})
+                else
+                    var_000D = ask_multiple_choice({"\"What didst thou find?\"", "a body", "a bucket", "nothing"})
                 end
+                if var_000D == "a key" then
+                    if not var_0002 then
+                        add_dialogue("\"Hmmm, a key. Perhaps if thou dost ask Christopher's son about it, he may know what it is for.\"")
+                else
+                    add_dialogue("\"Ask Spark about it. He may know something.\"")
+                end
+                set_flag(72, true)
+                elseif var_000D == "a body" then
+                add_dialogue("\"I know that! What ELSE didst thou find? Thou shouldst look again, Avatar!\"")
+                return
+            elseif var_000D == "a bucket" then
+                add_dialogue("\"Yes, obviously it is filled with poor Christopher's own blood. But surely there was something else that might point us in the direction of the killer or killers - thou shouldst look again, Avatar.\"")
+                return
+            elseif var_000D == "nothing" then
+                add_dialogue("\"Thou shouldst look again, 'Avatar'!\"")
+                return
+            end
                 return
             else
                 add_dialogue("\"Well, do so, then come speak with me!\"")

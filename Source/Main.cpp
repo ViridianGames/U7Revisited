@@ -105,6 +105,7 @@ int main(int argv, char** argc)
 
       //  Initialize globals
       g_Cursor = g_ResourceManager->GetTexture("Images/pointer.png");
+      g_objectSelectCursor = g_ResourceManager->GetTexture("Images/usepointer.png");
 
       g_DrawScale = g_Engine->m_ScreenHeight / g_Engine->m_RenderHeight;
 
@@ -125,6 +126,8 @@ int main(int argv, char** argc)
       //const char* conversationFontPath = "Data/Fonts/softsquare.ttf"; float conversationFontSize = 18;
       Font conversationFont = LoadFontEx(conversationFontPath, conversationFontSize, NULL, 0);
       g_ConversationFont = make_shared<Font>(conversationFont);
+      Font conversationSmallFont = LoadFontEx(conversationFontPath, 18, NULL, 0);
+      g_ConversationSmallFont = make_shared<Font>(conversationSmallFont);
 
       const char* guiFontPath = "Data/Fonts/babyblocks.ttf"; float guiFontSize = 8;
       Font guiFont = LoadFontEx(guiFontPath, guiFontSize, NULL, 0);
@@ -257,6 +260,7 @@ int main(int argv, char** argc)
       g_StateMachine->RegisterState(STATE_TITLESTATE, _titleState, "TITLE_STATE");
       
       State* _mainState = new MainState;
+      g_mainState = dynamic_cast<MainState*>(_mainState);
       _mainState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_MAINSTATE, _mainState, "MAIN_STATE");
 

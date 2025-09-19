@@ -4,30 +4,22 @@
 #include "Geist/ParticleSystem.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/StateMachine.h"
-#include "Geist/GuiManager.h"
 #include "Geist/Engine.h"
 #include "Geist/ScriptingSystem.h"
 #include "U7Globals.h"
 #include "U7Object.h"
 #include "ConversationState.h"
-#include "rlgl.h"
-#include "U7Gump.h"
-
-#include <list>
 #include <string>
-#include <sstream>
 #include <iomanip>
-#include <iostream>
-#include <math.h>
+#include <cmath>
 #include <fstream>
 #include <algorithm>
-#include <unordered_map>
 
 using namespace std;
 
 ConversationState::~ConversationState()
 {
-    Shutdown();
+
 }
 
 void ConversationState::Init(const string& configfile)
@@ -123,7 +115,10 @@ void ConversationState::Update()
             m_secondSpeakerFrame = m_steps[0].frame;
             m_secondSpeakerDialogue = m_steps[0].dialog;
             m_secondSpeakerActive = true;
-            EraseTopStep();
+            if (!m_waitingForAnswer && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                EraseTopStep();
+            }
             break;
         case ConversationStepType::STEP_MULTIPLE_CHOICE:
         case ConversationStepType::STEP_GET_PURCHASE_OPTION:
@@ -247,7 +242,10 @@ void ConversationState::Update()
             std::vector<ScriptingSystem::LuaArg> args = {m_npcId};
             std::string result = g_ScriptingSystem->ResumeCoroutine(m_luaFunction, args);
             if (!result.empty() && result != "")
-                m_scriptFinished = true;
+            {
+                Log("Lua Error: " + result, "debuglog.txt");
+            }
+            m_scriptFinished = true;
         }
         catch (const std::exception& e)
         {
@@ -286,7 +284,7 @@ void ConversationState::Draw()
 
     DrawTextureEx(*g_ResourceManager->GetTexture("U7FACES" + to_string(m_npcId) + to_string(m_npcFrame)), {4, 10}, 0, 2, WHITE);
 
-    DrawParagraph(g_ConversationFont, m_currentDialogue, {115, 20}, 380,
+    DrawParagraph(g_ConversationFont, m_currentDialogue, {115, 20}, 450,
                   g_ConversationFont.get()->baseSize, 1, YELLOW);
 
     if (m_secondSpeakerActive)

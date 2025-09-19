@@ -24,8 +24,7 @@ function func_0412(eventid, objectref)
             if var_0003 == 7 then
                 add_dialogue("\"Thou hast entered my shop, so thou had best buy something.\"")
             end
-            var_0006 = ask_multiple_choice({"\"Who might I be addressing?\"", 
-            var_0002, var_0004})
+            var_0006 = ask_multiple_choice("\"Who might I be addressing?\"", {var_0002, var_0004})
             if var_0006 == var_0002 then
                 add_dialogue("\"Hmph. My name is Dell.\"")
             else

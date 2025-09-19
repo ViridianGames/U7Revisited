@@ -4,6 +4,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "TitleState.h"
+#include "MainState.h"
 #include "rlgl.h"
 
 #include <list>
@@ -158,7 +159,7 @@ void TitleState::Draw()
 		DrawTextureEx(*g_Cursor, {float(GetMouseX()), float(GetMouseY())}, 0, g_DrawScale, WHITE);
 	}
 
-	DrawFPS(10, 300);
+	//DrawFPS(10, 300);
 
 	EndDrawing();
 }
@@ -180,15 +181,21 @@ void TitleState::CreateTitleGUI()
 	int y = 186;
 	int yoffset = 22;
 
-	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, y, "Begin",
+	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_TRINSIC_DEMO, y, "Trinsic Demo",
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
 	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
 	y += yoffset;
 
-	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, y, "Shape Editor",
-	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
-	                                     g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SINGLE_PLAYER, y, "Sandbox Mode",
+												 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+												 g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
+
+	// y += yoffset;
+	//
+	// m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_SHAPE_EDITOR, y, "Shape Editor",
+	//                                      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM,
+	//                                      g_ActiveButtonL, g_ActiveButtonR, g_ActiveButtonM, 0);
 
 	y += yoffset;
 	m_TitleGui->AddStretchButtonCentered(GUI_TITLE_BUTTON_OPTIONS, y, "Options",
@@ -389,6 +396,13 @@ void TitleState::UpdateTitle()
 
 	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_SINGLE_PLAYER)
 	{
+		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
+		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
+	}
+
+	if (m_TitleGui->m_ActiveElement == GUI_TITLE_BUTTON_TRINSIC_DEMO)
+	{
+		dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->m_gameMode = MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO;
 		g_StateMachine->MakeStateTransition(STATE_MAINSTATE);
 	}
 
