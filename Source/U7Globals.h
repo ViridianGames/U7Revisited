@@ -202,7 +202,7 @@ extern std::unique_ptr<RNG> g_NonVitalRNG;
 
 extern std::unique_ptr<Terrain> g_Terrain;
 
-extern std::unordered_map<int, std::unique_ptr<U7Object> > g_ObjectList;
+extern std::unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
 
 extern unsigned int g_CurrentUpdate;
 

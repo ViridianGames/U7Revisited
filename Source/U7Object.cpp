@@ -193,7 +193,7 @@ void U7Object::NPCDraw()
 	framerate = 350;
 	thisTime = (thisTime / framerate) % 2;
 
-	if (!m_isMoving) thisTime = 0;
+	if (!m_isMoving || g_mainState->m_paused) thisTime = 0;
 
 	int frameIndex = 0;
 

@@ -14,30 +14,48 @@ function func_0401(eventid, objectref)
             --play_music(0, 35)
             --wait()
             --var_0005 = unknown_0002H(125, 1706, {17493, 7715}, 356) --- Guess: Executes a specific action with parameters
-            block_input()
-            bark_npc(1, "\"There, there...\"")
-            wait(3)
-            bark_npc(11, "\"'Tis horrible!\"")
-            bark_npc(1, "\"I know, 'tis shocking!\"")
-            bark_npc(11, "\"Who could have done it?\"")
-            bark_npc(1, "\"I know not...'\"")
-            bark_npc(11, "\"He had no enemies...\"")
-            bark_npc(1, "\"Poor man.\"")
-            bark_npc(11, "\"What is to be done?\"")
-            bark_npc(1, "\"I know not...\"")
-            set_flag(92, true)
-            resume_input()
-            return
+        block_input()
+        set_pause(1)
+        fade_in(2)
+        wait(3)
+        bark_npc(1, "\"There, there...\"")
+        wait(4)
+        bark_npc(11, "\"'Tis horrible!\"")
+        wait(4)
+        bark_npc(1, "\"I know, 'tis shocking!\"")
+        wait(4)
+        bark_npc(11, "\"Who could have done it?\"")
+        wait(4)
+        bark_npc(1, "\"I know not...'\"")
+        wait(4)
+        bark_npc(11, "\"He had no enemies...\"")
+        wait(4)
+        bark_npc(1, "\"Poor man.\"")
+        wait(4)
+        bark_npc(11, "\"What is to be done?\"")
+        wait(4)
+        bark_npc(1, "\"I know not...\"")
+        wait(4)
+        set_flag(92, true)
+            --set_pause(0)
+        --resume_input()
+            --return
         --else
             --unknown_001EH(1) --- Guess: Removes object from game
         --end
-    elseif get_flag(59) == false and eventid == 2 then
+    --elseif get_flag(59) == false and eventid == 2 then
         start_conversation()
-        add_dialogue("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.~~\"! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...~~\"Lo and behold! Who says that magic is dying! Here is living proof that it is not!~~ \"Dost thou realize, " .. var_0000 .. ", that it hath been 200 Britannian years since we last met? Why, thou hast not aged at all!\"")
-        add_dialogue("Iolo winks conspiratorially. He whispers, \"Due no doubt to the difference in the structure of time in our original homeland and that of Britannia?\"~~He resumes speaking aloud. \"I have aged a little, as thou canst see. But of course, I have stayed here in Britannia all this time.~~\"Oh, but Avatar! Wait until I tell the others! They will be happy to see thee! Welcome to Trinsic!\"")
-        var_0006 = get_lord_or_lady()
+        add_dialogue("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
+        add_dialogue("\"" .. var_0000 .. "! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...")
+        add_dialogue("\"Lo and behold! Who says that magic is dying! Here is living proof that it is not!")
+        add_dialogue("\"Dost thou realize, " .. var_0000 .. ", that it hath been 200 Britannian years since we last met? Why, thou hast not aged at all!\"")
+        add_dialogue("Iolo winks conspiratorially. He whispers, \"Due no doubt to the difference in the structure of time in our original homeland and that of Britannia?\"")
+        add_dialogue("He resumes speaking aloud. \"I have aged a little, as thou canst see. But of course, I have stayed here in Britannia all this time.")
+        add_dialogue("\"Oh, but Avatar! Wait until I tell the others! They will be happy to see thee! Welcome to Trinsic!\"")
+        var_0006 = get_him_or_her()
         second_speaker(11, 0, "The distraught peasant interrupts Iolo. \"Show " .. var_0006 .. " the stables, milord. 'Tis horrible!\"")
-        add_dialogue("Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.~~ \"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
+        add_dialogue("Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.")
+        add_dialogue("\"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
         -- var_0007 = unknown_0002H(5, {1786, 8021, 20, 17447, 17452, 7715}, 356) --- Guess: Executes a specific action with parameters
         -- unknown_08DDH() --- Guess: Triggers an earthquake effect
         -- unknown_001EH(1) --- Guess: Removes object from game
@@ -49,7 +67,10 @@ function func_0401(eventid, objectref)
         --     var_0005 = unknown_0001H({0, 0, 17492, 7715}, objectref) --- Guess: Executes a specific action with parameters
         --     set_flag(59, true)
         -- end
-        abort()
+        -- Wait for the conversation to finish.
+        set_pause(0)
+        resume_input()
+        return
     elseif eventid == 1 then
         start_conversation()
         debug_print("func_0401: eventid == 1")

@@ -87,16 +87,6 @@ void MainState::Init(const string& configfile)
 
 void MainState::OnEnter()
 {
-	ClearConsole();
-	AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
-	AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
-	AddConsoleString(std::string("Zoom in and out with mousewheel."));
-	AddConsoleString(std::string("Left-click in the minimap to teleport."));
-	AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
-	AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
-	AddConsoleString(std::string("Press SPACE to pause/unpause time."));
-	AddConsoleString(std::string("Press ESC to exit."));
-
 	g_lastTime = 0;
 	g_minute = 0;
 	g_hour = 7;
@@ -104,28 +94,42 @@ void MainState::OnEnter()
 
 	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
 	{
-		m_paused = true;
+		m_heightCutoff = 16.0f; // Draw everything unless the player is inside.
+
 		// Fade out.
 
 		// Move camera to start position and rotation.
-		g_camera.target = Vector3{ 1071.0f, 0.0f, 2209.0f };
+		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 		g_cameraRotation = 0;
+		//g_cameraDistance = 10.0f;
 		DoCameraMovement();
 
 		// Hack-move Petre and put him in the proper position.
+		g_objectList[g_NPCData[11]->m_objectID]->m_Angle = 2 * (PI / 2);
+		g_objectList[g_NPCData[11]->m_objectID]->Update();
+
 
 		// Hack-move the Avatar off the screen.
 
 		// Fade in.
 
 		// Run Iolo's script to start the plotline flags
-		g_ObjectList[g_NPCData[1]->m_objectID]->Interact(3);
 
-		m_paused = false;
+		//  Run Finnigan's script.
+		//g_objectList[g_NPCData[12]->m_objectID]->Interact(1);
 	}
 	else
 	{
 		m_paused = false;
+		ClearConsole();
+		AddConsoleString(std::string("Welcome to Ultima VII: Revisited!"));
+		AddConsoleString(std::string("Move with WASD, rotate with Q and E."));
+		AddConsoleString(std::string("Zoom in and out with mousewheel."));
+		AddConsoleString(std::string("Left-click in the minimap to teleport."));
+		AddConsoleString(std::string("Press F1 to switch to the Object Viewer."));
+		AddConsoleString(std::string("Press KP ENTER to advance time an hour."));
+		AddConsoleString(std::string("Press SPACE to pause/unpause time."));
+		AddConsoleString(std::string("Press ESC to exit."));
 	}
 
 }
@@ -192,6 +196,18 @@ void MainState::UpdateTime()
 		g_dayNightColor = { 255, 255, 255, 255 };
 		g_isDay = true;
 	}
+
+	unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
+	int shape = shapeframe & 0x3ff;
+	if (shape == 0 || shape == 5 || shape == 17 || shape == 18 || shape == 21 || shape == 27 || shape == 47 || shape >= 149)
+	{
+		m_heightCutoff = 4.0f;
+	}
+	else
+	{
+		m_heightCutoff = 16.0f;
+	}
+
 }
 
 void MainState::UpdateInput()
@@ -445,7 +461,7 @@ void MainState::Update()
 		m_numberofDrawnObjects = 0;
 		m_numberofObjectsPassingFirstCheck = 0;
 
-		for (const auto& [id, object] : g_ObjectList)
+		for (const auto& [id, object] : g_objectList)
 		{
 			if (!object) continue;
 
@@ -471,7 +487,10 @@ void MainState::Update()
 		m_LastUpdate = GetTime();
 	}
 
-	m_cameraUpdateTime = DoCameraMovement();
+	if (!m_paused)
+	{
+		m_cameraUpdateTime = DoCameraMovement();
+	}
 
 	m_terrainUpdateTime = GetTime();
 	g_Terrain->CalculateLighting();
@@ -504,6 +523,57 @@ void MainState::Update()
 			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {0}); // Lua arrays are 1-indexed
 		}
 	}
+
+	if (m_fadeState == FadeState::FADE_OUT)
+	{
+		m_fadeTime += GetFrameTime();
+		if (m_fadeTime > m_fadeDuration)
+		{
+			m_fadeTime = m_fadeDuration;
+			m_fadeState = FadeState::FADE_NONE;
+		}
+		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
+	}
+
+	else if (m_fadeState == FadeState::FADE_IN)
+	{
+		m_fadeTime -= GetFrameTime();
+		if (m_fadeTime < 0)
+		{
+			m_fadeTime = 0;
+			m_fadeState = FadeState::FADE_NONE;
+		}
+		m_currentFadeAlpha = int(255 * (m_fadeTime / m_fadeDuration));
+	}
+	else
+	{
+		m_currentFadeAlpha = 0;
+	}
+
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_TRINSIC_DEMO)
+	{
+		if (m_ranIolosScript && g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE)
+		{
+			m_iolosScriptRunning = true;
+		}
+		else if (!m_ranIolosScript)
+		{
+			m_ranIolosScript = true;
+			g_objectList[g_NPCData[1]->m_objectID]->Interact(3);
+		}
+
+		if (m_iolosScriptRunning && g_StateMachine->GetCurrentState() != STATE_CONVERSATIONSTATE) // Iolo's script finished.
+		{
+			m_iolosScriptRunning = false;
+			if (!m_ranFinnigansScript) // Run Finnigan's script only once.
+			{
+				m_ranFinnigansScript = true;
+				g_objectList[g_NPCData[12]->m_objectID]->Interact(1);
+			}
+		}
+	}
+
+
 }
 
 void MainState::OpenGump(int id)
@@ -564,7 +634,7 @@ void MainState::Draw()
 
 	if (g_gumpManager->m_draggingObject)
 	{
-		U7Object* draggedObject = g_ObjectList[g_gumpManager->m_draggedObjectId].get();
+		U7Object* draggedObject = g_objectList[g_gumpManager->m_draggedObjectId].get();
 		BoundingBox box;
 		box.min = Vector3Subtract(g_terrainUnderMousePointer, {draggedObject->m_shapeData->m_Dims.x - 1, 0, draggedObject->m_shapeData->m_Dims.z - 1});//, {draggedObject->m_shapeData->m_Dims.x / 2, draggedObject->m_shapeData->m_Dims.y / 2, draggedObject->m_shapeData->m_Dims.z / 2});
 		box.max = Vector3Add(box.min, draggedObject->m_shapeData->m_Dims);
@@ -590,54 +660,67 @@ void MainState::Draw()
 
 	//  Draw the minimap and marker
 
-	DrawConsole();
-
-	//  Draw XY coordinates below the minimap
-	string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
-	float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
-	DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f }, g_SmallFont->baseSize, 1, WHITE);
-
-	string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
-	DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
-
-	// Draw character panel below xy/time
-	DrawStats();
-
-	//  Draw version number in lower-right
-	DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
-
-	DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
-	+ " " + to_string((int(g_terrainUnderMousePointer.z))), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
-
-	if (g_objectUnderMousePointer != nullptr)
+	if (!m_paused)
 	{
-		std::string objectDescription;
-		if (g_objectUnderMousePointer->m_isContainer)
-			objectDescription = "Container ";
-		else if (g_objectUnderMousePointer->m_isNPC)
-			objectDescription = "NPC ";
-		else if (g_objectUnderMousePointer->m_isEgg)
-			objectDescription = "Egg ";
-		else
-			objectDescription = "Object ";
+		DrawConsole();
 
-		 objectDescription += g_objectUnderMousePointer->m_objectData->m_name + " at " +
-			to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
-			" " +
-			to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
-			" Quality: " +
-			to_string(int(g_objectUnderMousePointer->m_Quality));
+		//  Draw XY coordinates below the minimap
+		string minimapXY = "X: " + to_string(int(g_camera.target.x)) + " Y: " + to_string(int(g_camera.target.z)) + " ";
+		float textWidth = MeasureText(minimapXY.c_str(), g_Font->baseSize);
+		DrawTextEx(*g_SmallFont, minimapXY.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f }, g_SmallFont->baseSize, 1, WHITE);
 
-		if (g_objectUnderMousePointer->m_isContained)
+		string timeString = "Time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) + " (" + to_string(g_scheduleTime) + ")";
+		DrawTextEx(*g_SmallFont, timeString.c_str(), Vector2{ 640.0f - g_minimapSize, g_minimapSize * 1.05f + g_SmallFont->baseSize }, g_SmallFont->baseSize, 1, WHITE);
+
+		// Draw character panel below xy/time
+		DrawStats();
+
+		//  Draw version number in lower-right
+		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
+
+		unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
+		int shape = shapeframe & 0x3ff;
+
+		// DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
+		// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
+		//
+		//
+
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
-			objectDescription += " This object is contained.";
+			DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
+				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
 		}
 
-		DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
-	}
-	//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
-	//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
+		if (g_objectUnderMousePointer != nullptr)
+		{
+			std::string objectDescription;
+			if (g_objectUnderMousePointer->m_isContainer)
+				objectDescription = "Container ";
+			else if (g_objectUnderMousePointer->m_isNPC)
+				objectDescription = "NPC ";
+			else if (g_objectUnderMousePointer->m_isEgg)
+				objectDescription = "Egg ";
+			else
+				objectDescription = "Object ";
 
+			objectDescription += g_objectUnderMousePointer->m_objectData->m_name + " at " +
+			  to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
+			  " " +
+			  to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
+			  " Quality: " +
+			  to_string(int(g_objectUnderMousePointer->m_Quality));
+
+			if (g_objectUnderMousePointer->m_isContained)
+			{
+				objectDescription += " This object is contained.";
+			}
+
+			//DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+		}
+		//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
+		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);
+	}
 	// Draw bark text if active
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
@@ -649,44 +732,52 @@ void MainState::Draw()
 		screenPos.x = int(screenPos.x);
 		screenPos.y /= g_DrawScale;
 		screenPos.y = int(screenPos.y);
-		screenPos.y -= 10; // Offset above the object
+		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
-		float width = MeasureTextEx(*g_SmallFont, m_barkText.c_str(), g_SmallFont->baseSize, 1).x * 1.2;
+		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
 		screenPos.x -= width / 2;
-		float height = g_SmallFont->baseSize * 1.2;
+		float height = g_ConversationFont->baseSize * 1.2;
 
 		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
-		DrawTextEx(*g_SmallFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_SmallFont->baseSize, 1, YELLOW);
+		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
-	g_gumpManager->Draw();
+	if (!m_paused)
+	{
+		g_gumpManager->Draw();
+	}
 
 	EndTextureMode();
+
 
 	DrawTexturePro(g_guiRenderTarget.texture,
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
 
-	DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
-
-	float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
-	float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
-
-	float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
-
-	DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
-
-	if (m_objectSelectionMode)
+	if (!m_paused)
 	{
-		DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
-	}
-	else
-	{
-		DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
+
+		float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
+		float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
+
+		float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
+
+		DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
+
+		if (m_objectSelectionMode)
+		{
+			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
+		else
+		{
+			DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
+		}
 	}
 
-	//DrawFPS(10, 300);
+	DrawRectangle(0, 0, g_Engine->m_ScreenWidth, g_Engine->m_ScreenHeight, { 0, 0, 0, m_currentFadeAlpha });
+
 
 	EndDrawing();
 }

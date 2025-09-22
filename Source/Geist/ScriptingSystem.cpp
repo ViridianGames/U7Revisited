@@ -11,6 +11,44 @@
 
 using namespace std;
 
+void DebugPrint(const char* msg)
+{
+    Log(string(msg), "debuglog.txt");
+    cout << msg << endl;
+}
+
+// Lua wait function
+static int LuaWait(lua_State *L)
+{
+    DebugPrint("LUA: wait called");
+
+    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
+    {
+        luaL_error(L, "Expected one number argument (seconds)");
+        return 0;
+    }
+
+    double delay = lua_tonumber(L, 1);
+    if (delay < 0)
+    {
+        luaL_error(L, "Delay must be non-negative");
+        return 0;
+    }
+
+    g_ScriptingSystem->m_waitTimer = (float)delay;
+    g_ScriptingSystem->m_waitingScript = g_ScriptingSystem->m_currentScript;
+
+    //if (!lua_isthread(L, -1))
+    //{
+        //luaL_error(L, "wait must be called from a coroutine");
+        //return 0;
+    //}
+
+    // Push delay as yield result
+    //lua_pushnumber(L, delay);
+    return lua_yield(L, 1);
+}
+
 ScriptingSystem::ScriptingSystem()
 {
     m_luaState = luaL_newstate();
@@ -29,6 +67,7 @@ ScriptingSystem::~ScriptingSystem()
 void ScriptingSystem::Init(const std::string& configfile)
 {
     // TODO: Load flags from save file
+    RegisterScriptFunction("wait", LuaWait);
 }
 
 void ScriptingSystem::Shutdown()
@@ -57,7 +96,20 @@ void ScriptingSystem::Update()
             it = m_activeCoroutines.erase(it);
         }
     }
+
+    if (m_waitTimer > 0.0f)
+    {
+        m_waitTimer -= GetFrameTime();
+        if (m_waitTimer < 0.0f)
+        {
+            m_waitTimer = 0.0f;
+            ResumeCoroutine(m_waitingScript, {0});
+            //m_waitingScript = "";
+       }
+    }
 }
+
+
 
 void ScriptingSystem::LoadScript(const std::string& path)
 {
@@ -124,6 +176,7 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     }
 
     LoadScript(path);
+    m_currentScript = func_name;
 
     lua_State* co = nullptr;
     int co_ref = -1;

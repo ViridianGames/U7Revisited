@@ -49,9 +49,14 @@ public:
     lua_State* m_luaState = nullptr;
     std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;
     std::unordered_map<int, bool> m_flags;
+    std::string m_currentScript;
 
     std::vector<std::pair<std::string, std::string>> m_scriptFiles;
     std::unordered_map<std::string, int> m_activeCoroutines; // Store coroutine references
+
+    float m_waitTimer = 0.0f;
+    std::string m_waitingScript;
+
 };
 
 #endif

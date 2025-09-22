@@ -124,6 +124,22 @@ public:
 	bool m_allowInput = true;
 
 	MainStateModes m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
+
+	enum class FadeState
+	{
+		FADE_NONE = 0,
+		FADE_OUT,
+		FADE_IN
+	};
+
+	FadeState m_fadeState = FadeState::FADE_NONE; // 0 = no fade, 1 = fade out, 2 = fade in
+	float m_fadeDuration = 0; // 0.0 to 1.0
+	float m_fadeTime = 0;
+	unsigned char m_currentFadeAlpha = 255;
+
+	bool m_ranIolosScript = false;
+	bool m_iolosScriptRunning = false;
+	bool m_ranFinnigansScript = false;
 };
 
 #endif

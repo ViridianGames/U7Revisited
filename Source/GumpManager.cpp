@@ -5,6 +5,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "ScriptingSystem.h"
 #include "U7Globals.h"
 
 using namespace std;
@@ -78,6 +79,10 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 
 				gump->m_containerObject->m_inventory.push_back(object->m_ID);
 				object->m_isContained = true;
+				if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253) //  Special case for gold)
+				{
+					g_ScriptingSystem->SetFlag(60, 1);
+				}
 
 				//  If we're dragging to the same gump, or dragging from the ground, don't remove from inventory
 				if (gump.get() != m_sourceGump || m_sourceGump == nullptr)

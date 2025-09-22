@@ -418,7 +418,7 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
 	{
-		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_ObjectList.begin(); node != g_ObjectList.end(); ++node)
+		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
 			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame)
 			{

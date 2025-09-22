@@ -775,6 +775,49 @@ static int LuaBuyObject(lua_State *L)
     return 1;
 }
 
+static int LuaSpawnObject(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    int z = luaL_checkinteger(L, 4);
+    int spawned_id = 0; // TODO: g_World->SpawnObject(object_id, x, y, z)
+
+    lua_pushinteger(L, spawned_id);
+    return 1;
+}
+
+static int LuaDestroyObject(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    int z = luaL_checkinteger(L, 4);
+    int spawned_id = 0; // TODO: g_World->SpawnObject(object_id, x, y, z)
+    lua_pushinteger(L, spawned_id);
+    return 1;
+}
+
+static int LuaMoveObject(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    int z = luaL_checkinteger(L, 4);
+    cout << "Moving object ID " << object_id << " to (" << x << ", " << y << ", " << z << ")\n";
+    g_objectList[object_id]->SetPos( {float(x), float(y), float(z)} );
+}
+
+static int LuaMoveNPC(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    int z = luaL_checkinteger(L, 4);
+    cout << "Moving NPC ID " << npc_id << " to (" << x << ", " << y << ", " << z << ")\n";
+    g_objectList[g_NPCData[npc_id]->m_objectID]->SetPos( {float(x), float(y), float(z)} );
+}
+
 static int LuaGetPartyGold(lua_State *L)
 {
     int gold = g_Player->GetGold();
@@ -886,6 +929,20 @@ static int LuaGetLordOrLady(lua_State *L)
     else
     {
         lua_pushstring(L, "Milady");
+    }
+    return 1;
+}
+
+static int LuaGetHimOrHer(lua_State *L)
+{
+    int lord_or_lady = 0; // TODO: g_Player->GetLordOrLady()
+    if (g_Player->GetIsMale())
+    {
+        lua_pushstring(L, "him");
+    }
+    else
+    {
+        lua_pushstring(L, "her");
     }
     return 1;
 }
@@ -1345,34 +1402,66 @@ static int LuaOpenBook(lua_State *L)
     return 0;
 }
 
-static int LuaWait(lua_State *L)
-{
-    if (g_LuaDebug)
-    {
-        DebugPrint("LUA: wait called");
-    }
+// static int LuaWait(lua_State *L)
+// {
+//     if (g_LuaDebug)
+//     {
+//         DebugPrint("LUA: wait called");
+//     }
+//
+//     // Validate argument
+//     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
+//     {
+//         luaL_error(L, "Expected one number argument (seconds)");
+//         return 0;
+//     }
+//
+//     // Get delay time and current game time
+//     double delay = lua_tonumber(L, 1);
+//     if (delay < 0)
+//     {
+//         luaL_error(L, "Delay must be non-negative");
+//         return 0;
+//     }
+//
+//     // Add coroutine to waiting list
+//     g_mainState->m_waitTime = delay;
+//
+//     // Yield coroutine
+//     return lua_yield(L, 0);
+// }
 
-    // Validate argument
-    if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
-    {
-        luaL_error(L, "Expected one number argument (seconds)");
-        return 0;
-    }
+// static int LuaWait(lua_State *L)
+// {
+//     if (g_LuaDebug)
+//     {
+//         DebugPrint("LUA: wait called");
+//     }
+//
+//     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
+//     {
+//         luaL_error(L, "Expected one number argument (seconds)");
+//         return 0;
+//     }
+//
+//     double delay = lua_tonumber(L, 1);
+//     if (delay < 0)
+//     {
+//         luaL_error(L, "Delay must be non-negative");
+//         return 0;
+//     }
+//
+//     if (!lua_isthread(L, -1))
+//     {
+//         luaL_error(L, "wait must be called from a coroutine");
+//         return 0;
+//     }
+//
+//     // Push delay as yield result
+//     lua_pushnumber(L, delay);
+//     return lua_yield(L, 1);
+// }
 
-    // Get delay time and current game time
-    double delay = lua_tonumber(L, 1);
-    if (delay < 0)
-    {
-        luaL_error(L, "Delay must be non-negative");
-        return 0;
-    }
-
-    // Add coroutine to waiting list
-    g_mainState->m_waitTime = delay;
-
-    // Yield coroutine
-    return lua_yield(L, 0);
-}
 
 static int LuaBlockInput(lua_State *L)
 {
@@ -1386,6 +1475,43 @@ static int LuaResumeInput(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: resume_input called");
     g_mainState->m_allowInput = true;
     return 0;
+}
+
+static int LuaSetPause(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: pause_game called");
+    int paused = luaL_checkinteger(L, 1);
+    g_mainState->m_paused = bool(paused);
+    return 0;
+}
+
+static int LuaFadeIn(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: fade_in called");
+    int duration = luaL_checkinteger(L, 1);
+    g_mainState->m_fadeState = MainState::FadeState::FADE_IN;
+    g_mainState->m_fadeDuration = duration;
+    g_mainState->m_fadeTime = duration;
+    return 0;
+}
+
+static int LuaFadeOut(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: fade_out called");
+    int duration = luaL_checkinteger(L, 1);
+    g_mainState->m_fadeState = MainState::FadeState::FADE_OUT;
+    g_mainState->m_fadeDuration = duration;
+    g_mainState->m_fadeTime = 0;
+    return 0;
+}
+
+static int LuaIsConversationRunning(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: is_conversation_running called");
+    bool running = g_ConversationState && g_StateMachine->GetCurrentState() == STATE_CONVERSATIONSTATE;
+    DebugPrint("Conversation is running: " + string(running ? "true" : "false"));
+    lua_pushboolean(L, running);
+    return 1;
 }
 
 void RegisterAllLuaFunctions()
@@ -1406,6 +1532,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("clear_answers", LuaClearAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_purchase_option", LuaGetPurchaseOption);
     g_ScriptingSystem->RegisterScriptFunction("purchase_object", LuaPurchaseObject);
+    g_ScriptingSystem->RegisterScriptFunction("is_conversation_running", LuaIsConversationRunning);
 
     // These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
@@ -1446,6 +1573,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_player_name", LuaGetPlayerName);
     g_ScriptingSystem->RegisterScriptFunction("is_player_female", LuaIsAvatarFemale);
     g_ScriptingSystem->RegisterScriptFunction("get_lord_or_lady", LuaGetLordOrLady);
+    g_ScriptingSystem->RegisterScriptFunction("get_him_or_her", LuaGetHimOrHer);
 
     // These functions are used to get information about the world and objects.
     g_ScriptingSystem->RegisterScriptFunction("get_time_hour", LuaGetTimeHour);
@@ -1468,12 +1596,17 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
 
-    g_ScriptingSystem->RegisterScriptFunction( "wait", LuaWait);
+    //g_ScriptingSystem->RegisterScriptFunction( "wait", LuaWait);
 
     g_ScriptingSystem->RegisterScriptFunction( "bark_npc", LuaBarkNPC);
 
     g_ScriptingSystem->RegisterScriptFunction( "block_input", LuaBlockInput);
     g_ScriptingSystem->RegisterScriptFunction( "resume_input", LuaResumeInput);
+
+    g_ScriptingSystem->RegisterScriptFunction( "set_pause", LuaSetPause);
+
+    g_ScriptingSystem->RegisterScriptFunction( "fade_out", LuaFadeOut);
+    g_ScriptingSystem->RegisterScriptFunction( "fade_in", LuaFadeIn);
 
     cout << "Registered all Lua functions\n";
 }

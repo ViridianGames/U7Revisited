@@ -764,7 +764,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			{
 				int objectId = GetNextID();
 				AddObject(shape, frame, objectId, actualx, lift1, actualy);
-				g_ObjectList[objectId]->m_Quality = quality;
+				g_objectList[objectId]->m_Quality = quality;
 
 				if (containerOpen)
 				{
@@ -817,7 +817,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 
 			int id = GetNextID();
 			AddObject(shape, frame, id, actualx, lift1, actualy);
-			g_ObjectList[id]->m_Quality = quality;
+			g_objectList[id]->m_Quality = quality;
 			GetObjectFromID(id)->m_isContainer = true;
 
 			//  Egg or container?  01 Egg, 00 container.
@@ -1334,8 +1334,8 @@ void LoadingState::LoadInitialGameState()
 
             unsigned int nextID = GetNextID();
 				AddObject(shapenum, 16, nextID, chunkx * 16 * 16 + thisNPC.x, thisNPC.lift >> 4, chunky * 16 * 16 + thisNPC.y);
-            g_ObjectList[nextID].get()->m_isContainer = true;
-            g_ObjectList[nextID].get()->m_hasConversationTree = true;
+            g_objectList[nextID].get()->m_isContainer = true;
+            g_objectList[nextID].get()->m_hasConversationTree = true;
 
 				thisNPC.str = ReadU8(subFiles);
 				thisNPC.dex = ReadU8(subFiles);
@@ -1465,7 +1465,7 @@ void LoadingState::LoadInitialGameState()
 
 				g_NPCData[thisNPC.id] = make_unique<NPCData>(thisNPC);
 
-				g_ObjectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
+				g_objectList[nextID].get()->NPCInit(g_NPCData[thisNPC.id].get());
 				//g_ObjectList[nextID].get()->m_NPCID = thisNPC.id;
 				//g_ObjectList[nextID]->m_isNPC = true;
 

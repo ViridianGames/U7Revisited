@@ -16,7 +16,7 @@ using namespace std;
 
 std::string g_version;
 
-unordered_map<int, std::unique_ptr<U7Object> > g_ObjectList;
+unordered_map<int, std::unique_ptr<U7Object> > g_objectList;
 
 Mesh* g_AnimationFrames;
 
@@ -319,8 +319,8 @@ if (IsKeyDown(KEY_E))
 
 U7Object* GetObjectFromID(int unitID)
 {
-	auto it = g_ObjectList.find(unitID);
-	if (it != g_ObjectList.end())
+	auto it = g_objectList.find(unitID);
+	if (it != g_objectList.end())
 	{
 		return it->second.get(); // Returns raw pointer to U7Object
 	}
@@ -426,15 +426,15 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 
 
 
-	g_ObjectList.emplace(id, make_unique<U7Object>());
+	g_objectList.emplace(id, make_unique<U7Object>());
 
-	U7Object* temp = g_ObjectList[id].get();
+	U7Object* temp = g_objectList[id].get();
 	temp->Init("Data/Units/Walker.cfg", shapenum, framenum);
 	temp->m_ID = id;
 	temp->SetInitialPos(Vector3{ x, y, z });
 	AssignObjectChunk(temp);
 
-	return g_ObjectList[id].get();
+	return g_objectList[id].get();
 }
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
