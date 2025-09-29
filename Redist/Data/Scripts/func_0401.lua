@@ -14,9 +14,15 @@ function func_0401(eventid, objectref)
             --play_music(0, 35)
             --wait()
             --var_0005 = unknown_0002H(125, 1706, {17493, 7715}, 356) --- Guess: Executes a specific action with parameters
+        -- Move the avatar offscreen
+        hide_ui_elements()
+        set_camera_angle(0)
+        stop_npc_schedule(11)
+        stop_npc_schedule(12)
+        set_npc_dest(11, 1068, 0, 2215)
+        set_npc_pos(0, 16, 0, 16)
         block_input()
-        set_pause(1)
-        fade_in(2)
+        fade_in(3)
         wait(3)
         bark_npc(1, "\"There, there...\"")
         wait(4)
@@ -37,13 +43,27 @@ function func_0401(eventid, objectref)
         bark_npc(1, "\"I know not...\"")
         wait(4)
         set_flag(92, true)
-            --set_pause(0)
-        --resume_input()
+        set_camera_angle(270)
+
+        local moongate_id = spawn_object(157, 0, 1079, 0, 2214)
+        wait(1)
+        set_npc_pos(0, 1079, 0, 2214)
+        set_npc_dest(0, 1071, 0, 2214)
+        wait(2)
+        destroy_object(moongate_id)
+        wait(2)
+
+
+        start_npc_schedule(11)
+        start_npc_schedule(12)
+        set_pause(0)
+        resume_input()
             --return
         --else
             --unknown_001EH(1) --- Guess: Removes object from game
         --end
     --elseif get_flag(59) == false and eventid == 2 then
+        
         start_conversation()
         add_dialogue("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
         add_dialogue("\"" .. var_0000 .. "! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...")
@@ -56,6 +76,7 @@ function func_0401(eventid, objectref)
         second_speaker(11, 0, "The distraught peasant interrupts Iolo. \"Show " .. var_0006 .. " the stables, milord. 'Tis horrible!\"")
         add_dialogue("Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.")
         add_dialogue("\"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
+        converse("func_0401")
         -- var_0007 = unknown_0002H(5, {1786, 8021, 20, 17447, 17452, 7715}, 356) --- Guess: Executes a specific action with parameters
         -- unknown_08DDH() --- Guess: Triggers an earthquake effect
         -- unknown_001EH(1) --- Guess: Removes object from game
@@ -68,8 +89,18 @@ function func_0401(eventid, objectref)
         --     set_flag(59, true)
         -- end
         -- Wait for the conversation to finish.
-        set_pause(0)
-        resume_input()
+
+        set_camera_angle(0)
+        set_npc_dest(12,  1065, 0, 2215)
+        bark_npc(12, "I would speak with thee.")
+        --wait(8)
+        debug_print("Wait over.")
+        switch_talk_to(12, 0)
+        --func_040C(1)
+
+        --set_pause(0)
+        --resume_input()
+        show_ui_elements()
         return
     elseif eventid == 1 then
         start_conversation()

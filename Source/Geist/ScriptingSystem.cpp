@@ -11,16 +11,9 @@
 
 using namespace std;
 
-void DebugPrint(const char* msg)
-{
-    Log(string(msg), "debuglog.txt");
-    cout << msg << endl;
-}
-
-// Lua wait function
+// Lua wait function (unchanged)
 static int LuaWait(lua_State *L)
 {
-    DebugPrint("LUA: wait called");
 
     if (lua_gettop(L) != 1 || !lua_isnumber(L, 1))
     {
@@ -35,18 +28,53 @@ static int LuaWait(lua_State *L)
         return 0;
     }
 
+    DebugPrint("LUA: wait called for " + to_string(delay) + " seconds");
+
     g_ScriptingSystem->m_waitTimer = (float)delay;
     g_ScriptingSystem->m_waitingScript = g_ScriptingSystem->m_currentScript;
 
-    //if (!lua_isthread(L, -1))
-    //{
-        //luaL_error(L, "wait must be called from a coroutine");
-        //return 0;
-    //}
-
-    // Push delay as yield result
-    //lua_pushnumber(L, delay);
     return lua_yield(L, 1);
+}
+
+// New: Lua converse function to start a conversation and yield until it finishes
+static int LuaConverse(lua_State *L)
+{
+    if (lua_gettop(L) != 1 || !lua_isstring(L, 1))
+    {
+        DebugPrint("Calling lua_converse: Expected one string argument (func_name)");
+        return 0;
+    }
+
+    std::string sub_func = lua_tostring(L, 1);
+
+    std::string result = g_ScriptingSystem->CallScript(sub_func, {});
+
+    if (result != "")
+    {
+        lua_pushstring(L, result.c_str());
+        return 1;
+    }
+
+    DebugPrint("Calling lua_converse for function: " + sub_func);
+
+    if (g_ScriptingSystem->IsCoroutineActive(sub_func))
+    {
+        std::string caller_func = g_ScriptingSystem->GetFuncNameFromCo(L);
+        if (caller_func.empty())
+        {
+            DebugPrint("Converse must be called from a named scripted function");
+            return 0;
+        }
+
+        g_ScriptingSystem->m_waiters[sub_func].push_back(caller_func);
+
+        return lua_yield(L, 0);
+    }
+    else
+    {
+        lua_pushstring(L, "done");
+        return 1;
+    }
 }
 
 ScriptingSystem::ScriptingSystem()
@@ -68,6 +96,7 @@ void ScriptingSystem::Init(const std::string& configfile)
 {
     // TODO: Load flags from save file
     RegisterScriptFunction("wait", LuaWait);
+    RegisterScriptFunction("converse", LuaConverse); // New registration
 }
 
 void ScriptingSystem::Shutdown()
@@ -77,24 +106,24 @@ void ScriptingSystem::Shutdown()
 
 void ScriptingSystem::Update()
 {
-    //  Resume any active coroutines
-    for (auto it = m_activeCoroutines.begin(); it != m_activeCoroutines.end();)
+    // Collect coroutines that are no longer yielded (completed or errored)
+    std::vector<std::string> to_cleanup;
+    for (const auto& pair : m_activeCoroutines)
     {
-        lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, it->second);
+        lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, pair.second);
         lua_State* co = lua_tothread(m_luaState, -1);
         lua_pop(m_luaState, 1);
 
-        if (lua_status(co) == LUA_YIELD)
+        if (lua_status(co) != LUA_YIELD)
         {
-            // Coroutine is still active
-            ++it;
+            to_cleanup.push_back(pair.first);
         }
-        else
-        {
-            // Coroutine is dead, clean up
-            luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
-            it = m_activeCoroutines.erase(it);
-        }
+    }
+
+    // Cleanup and potentially resume waiters
+    for (const std::string& func : to_cleanup)
+    {
+        CleanupCoroutine(func);
     }
 
     if (m_waitTimer > 0.0f)
@@ -105,15 +134,13 @@ void ScriptingSystem::Update()
             m_waitTimer = 0.0f;
             ResumeCoroutine(m_waitingScript, {0});
             //m_waitingScript = "";
-       }
+        }
     }
 }
 
-
-
 void ScriptingSystem::LoadScript(const std::string& path)
 {
-    // Get the actual function name from the path
+    // (unchanged)
     std::string func_name;
 #if defined(_WINDOWS) || defined(_WIN32)
     func_name = path.substr(path.find_last_of('\\') + 1);
@@ -146,7 +173,7 @@ void ScriptingSystem::LoadScript(const std::string& path)
 
 void ScriptingSystem::SortScripts()
 {
-    // Sort the script files by name
+    // (unchanged)
     std::sort(m_scriptFiles.begin(), m_scriptFiles.end(), [](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b)
     {
         return a.first < b.first;
@@ -155,6 +182,7 @@ void ScriptingSystem::SortScripts()
 
 string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>& args)
 {
+    // (mostly unchanged, but replace unref/erase with CleanupCoroutine)
     // Check if the function is loaded
     bool valid = false;
     string path = "";
@@ -190,8 +218,7 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
 
         if (lua_status(co) != LUA_YIELD)
         {
-            luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
-            m_activeCoroutines.erase(func_name);
+            CleanupCoroutine(func_name); // Changed
             co = nullptr;
         }
     }
@@ -206,8 +233,7 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         if (!lua_isfunction(co, -1))
         {
             lua_pop(co, 1);
-            luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
-            m_activeCoroutines.erase(func_name);
+            CleanupCoroutine(func_name); // Changed
             return "Function " + func_name + " is not a function.";
         }
 
@@ -252,9 +278,8 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     {
         const char* error = lua_tostring(co, -1);
         lua_pop(co, 1);
-        luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
-        m_activeCoroutines.erase(func_name);
-        return error;
+        CleanupCoroutine(func_name); // Changed
+        return error ? error : "Unknown error";
     }
 
     string result = "";
@@ -275,8 +300,7 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         lua_pop(co, nresults);
     }
 
-    luaL_unref(m_luaState, LUA_REGISTRYINDEX, co_ref);
-    m_activeCoroutines.erase(func_name);
+    CleanupCoroutine(func_name); // Changed
     return result;
 }
 
@@ -309,8 +333,7 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
 
     if (lua_status(co) != LUA_YIELD)
     {
-        luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
-        m_activeCoroutines.erase(func_name);
+        CleanupCoroutine(func_name); // Changed
         return "Coroutine for " + func_name + " is not yielded.";
     }
 
@@ -338,9 +361,8 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
     {
         const char* error = lua_tostring(co, -1);
         lua_pop(co, 1);
-        luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
-        m_activeCoroutines.erase(func_name);
-        return error;
+        CleanupCoroutine(func_name); // Changed
+        return error ? error : "Unknown error";
     }
 
     string result = "";
@@ -361,8 +383,7 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
         lua_pop(co, nresults);
     }
 
-    luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
-    m_activeCoroutines.erase(func_name);
+    CleanupCoroutine(func_name); // Changed
     return result;
 }
 
@@ -373,6 +394,39 @@ void ScriptingSystem::CleanupCoroutine(const string& func_name)
     {
         luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
         m_activeCoroutines.erase(it);
+    }
+
+    // Resume any coroutines waiting on this one to complete
+    auto wit = m_waiters.find(func_name);
+    if (wit != m_waiters.end())
+    {
+        for (const std::string& waiter_name : wit->second)
+        {
+            auto w_it = m_activeCoroutines.find(waiter_name);
+            if (w_it != m_activeCoroutines.end())
+            {
+                lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, w_it->second);
+                lua_State* co = lua_tothread(m_luaState, -1);
+                lua_pop(m_luaState, 1);
+
+                int nres;
+                int status = lua_resume(co, nullptr, 0, &nres);
+                if (status == LUA_ERRRUN)
+                {
+                    const char* err = lua_tostring(co, -1);
+                    lua_pop(co, 1);
+                    Log("Resume error in waiter " + waiter_name + ": " + (err ? err : "unknown"));
+                    CleanupCoroutine(waiter_name);
+                }
+                else if (status == LUA_OK)
+                {
+                    // Waiter completed after resume
+                    CleanupCoroutine(waiter_name);
+                }
+                // If still yielded, leave it active
+            }
+        }
+        m_waiters.erase(wit);
     }
 }
 
@@ -425,4 +479,19 @@ std::vector<std::string> ScriptingSystem::GetAnswers()
     }
     lua_pop(m_luaState, 1);
     return answers;
+}
+
+std::string ScriptingSystem::GetFuncNameFromCo(lua_State* co) const
+{
+    for (const auto& pair : m_activeCoroutines)
+    {
+        lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, pair.second);
+        lua_State* this_co = lua_tothread(m_luaState, -1);
+        lua_pop(m_luaState, 1);
+        if (this_co == co)
+        {
+            return pair.first;
+        }
+    }
+    return "";
 }

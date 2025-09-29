@@ -101,7 +101,7 @@ void MainState::OnEnter()
 		// Move camera to start position and rotation.
 		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 		g_cameraRotation = 0;
-		//g_cameraDistance = 10.0f;
+		g_cameraDistance = 20.0f;
 		DoCameraMovement();
 
 		// Hack-move Petre and put him in the proper position.
@@ -449,8 +449,6 @@ void MainState::Update()
 {
 	UpdateTime();
 
-	UpdateSortedVisibleObjects();
-
 	g_gumpManager->Update();
 
 	if (GetTime() - m_LastUpdate > GetFrameTime())
@@ -478,6 +476,24 @@ void MainState::Update()
 				}
 			}
 		}
+
+		for (unordered_map<int, std::unique_ptr<U7Object> >::iterator node = g_objectList.begin(); node != g_objectList.end();)
+		{
+			if (!node->second)
+				continue;
+
+			if (node->second->GetIsDead())
+			{
+				UnassignObjectChunk(node->second.get());
+				node = g_objectList.erase(node);
+			}
+			else
+			{
+				++node;
+			}
+		}
+
+		UpdateSortedVisibleObjects();
 
 		for (auto& object : g_sortedVisibleObjects)
 		{
@@ -562,18 +578,21 @@ void MainState::Update()
 			g_objectList[g_NPCData[1]->m_objectID]->Interact(3);
 		}
 
-		if (m_iolosScriptRunning && g_StateMachine->GetCurrentState() != STATE_CONVERSATIONSTATE) // Iolo's script finished.
-		{
-			m_iolosScriptRunning = false;
-			if (!m_ranFinnigansScript) // Run Finnigan's script only once.
-			{
-				m_ranFinnigansScript = true;
-				g_objectList[g_NPCData[12]->m_objectID]->Interact(1);
-			}
-		}
+		// if (m_iolosScriptRunning && g_StateMachine->GetCurrentState() != STATE_CONVERSATIONSTATE) // Iolo's script finished.
+		// {
+		// 	m_iolosScriptRunning = false;
+		// 	if (!m_ranFinnigansScript) // Run Finnigan's script only once.
+		// 	{
+		// 		m_ranFinnigansScript = true;
+		// 		g_objectList[g_NPCData[12]->m_objectID]->Interact(1);
+		// 	}
+		// }
 	}
 
-
+	if (int(g_terrainUnderMousePointer.x / 16) == 66 && int(g_terrainUnderMousePointer.z / 16 == 137) && g_ScriptingSystem->GetFlag(60) == false)
+	{
+		g_ScriptingSystem->SetFlag(60 , true);
+	}
 }
 
 void MainState::OpenGump(int id)
@@ -660,7 +679,7 @@ void MainState::Draw()
 
 	//  Draw the minimap and marker
 
-	if (!m_paused)
+	if (!m_paused && m_showUIElements)
 	{
 		DrawConsole();
 
@@ -681,13 +700,11 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
 		int shape = shapeframe & 0x3ff;
 
-		// DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
-		// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
-		//
-		//
-
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
+			DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
+			 + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
+
 			DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
 				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
 		}
@@ -742,7 +759,7 @@ void MainState::Draw()
 		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
-	if (!m_paused)
+	if (!m_paused && m_showUIElements)
 	{
 		g_gumpManager->Draw();
 	}
@@ -755,7 +772,7 @@ void MainState::Draw()
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
 
-	if (!m_paused)
+	if (!m_paused && m_showUIElements)
 	{
 		DrawTextureEx(*m_Minimap, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale), 0 }, 0, float(g_minimapSize * g_DrawScale) / float(m_Minimap->width), WHITE);
 

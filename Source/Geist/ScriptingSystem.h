@@ -46,6 +46,9 @@ public:
     void SetAnswer(const std::string& answer);
     std::vector<std::string> GetAnswers();
 
+    // New: Get func_name from a coroutine state (for waiter identification)
+    std::string GetFuncNameFromCo(lua_State* co) const;
+
     lua_State* m_luaState = nullptr;
     std::unordered_map<std::string, lua_CFunction> m_scriptLibrary;
     std::unordered_map<int, bool> m_flags;
@@ -53,6 +56,9 @@ public:
 
     std::vector<std::pair<std::string, std::string>> m_scriptFiles;
     std::unordered_map<std::string, int> m_activeCoroutines; // Store coroutine references
+
+    // New: Map for coroutines waiting on other coroutines to complete (sub_func -> list of waiter funcs)
+    std::unordered_map<std::string, std::vector<std::string>> m_waiters;
 
     float m_waitTimer = 0.0f;
     std::string m_waitingScript;

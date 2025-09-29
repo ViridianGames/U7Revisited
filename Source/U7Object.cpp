@@ -89,7 +89,16 @@ void U7Object::Draw()
 			return; // Not on the screen.
 		}
 
-		m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
+		if (m_objectData->m_isTranslucent)
+		{
+			Color color = g_Terrain->m_cellLighting[cellx][celly];
+			//color.a *= 0.5f;
+			m_shapeData->Draw(m_Pos, m_Angle, color);
+		}
+		else
+		{
+			m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
+		}
 	}
 
 	if (g_Engine->m_debugDrawing)
@@ -244,44 +253,47 @@ void U7Object::NPCUpdate()
 		return; // Don't do schedules while in the party.
 	}
 
-	if (m_lastSchedule == -1 && g_NPCSchedules[m_NPCID].size() > 0)
+	//  If we don't have a schedule yet, or if the schedule time has changed, get the next destination
+	if (m_followingSchedule)
 	{
-		int mostrecentschedule = 0;
-		for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
+		if (m_lastSchedule == -1 && g_NPCSchedules[m_NPCID].size() > 0)
 		{
-			if (g_NPCSchedules[m_NPCID][i].m_time <= g_scheduleTime)
+			int mostrecentschedule = 0;
+			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
 			{
-				mostrecentschedule = i;
+				if (g_NPCSchedules[m_NPCID][i].m_time <= g_scheduleTime)
+				{
+					mostrecentschedule = i;
+				}
+				else
+				{
+					break;
+				}
 			}
-			else
+
+			SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destX), 0, float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destY) });
+			m_isMoving = true;
+			m_lastSchedule = g_NPCSchedules[m_NPCID][mostrecentschedule].m_time;
+			g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][mostrecentschedule].m_activity;
+
+		}
+		else
+		{
+			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
 			{
-				break;
+				if (g_NPCSchedules[m_NPCID][i].m_time == g_scheduleTime && g_NPCSchedules[m_NPCID][i].m_time != m_lastSchedule)
+				{
+					SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][i].m_destX), 0, float(g_NPCSchedules[m_NPCID][i].m_destY) });
+					m_isMoving = true;
+					m_lastSchedule = g_NPCSchedules[m_NPCID][i].m_time;
+					g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][i].m_activity;
+					break;
+				}
 			}
 		}
-
-		SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destX), 0, float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destY) });
-		m_isMoving = true;
-		m_lastSchedule = g_NPCSchedules[m_NPCID][mostrecentschedule].m_time;
-		g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][mostrecentschedule].m_activity;
-
-	}
-	else
-	{
-		for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
-		{
-			if (g_NPCSchedules[m_NPCID][i].m_time == g_scheduleTime && g_NPCSchedules[m_NPCID][i].m_time != m_lastSchedule)
-			{
-				SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][i].m_destX), 0, float(g_NPCSchedules[m_NPCID][i].m_destY) });
-				m_isMoving = true;
-				m_lastSchedule = g_NPCSchedules[m_NPCID][i].m_time;
-				g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][i].m_activity;
-				break;
-			}
-		}
 	}
 
-	//  By default, npcs will wander around randomly near an anchor point
-	if (m_isMoving)
+	if (m_Pos.x != m_Dest.x || m_Pos.y != m_Dest.y  || m_Pos.z != m_Dest.z)
 	{
 		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
 		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
@@ -294,6 +306,7 @@ void U7Object::NPCUpdate()
 		}
 		else
 		{
+			m_isMoving = true;
 			SetPos(newPos);
 		}
 	}

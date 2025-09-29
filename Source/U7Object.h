@@ -48,7 +48,6 @@ public:
 
    void Interact(int event);
 
-
    float Pick(); //  Returns distance if hit, -1 if no hit
 	float PickXYZ(Vector3& pos); // Returns distance and hit point in pos.
 
@@ -139,8 +138,8 @@ public:
 
 	NPCData* m_NPCData = nullptr;
 
+	bool m_followingSchedule = false;
    int m_lastSchedule = -1;
-
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 };

@@ -1,7 +1,7 @@
 --- Best guess: Manages Finnigan’s dialogue, overseeing the Trinsic murder investigation, password, and town details, with flag-based progression.
 function func_040C(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000D
-
+    debug_print("Starting function 040C - Finnigan")
     if eventid ~= 1 then
         if eventid == 0 then
             var_000C = unknown_001CH(get_npc_name(12))

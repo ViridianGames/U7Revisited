@@ -262,6 +262,7 @@ void UpdateObjectChunk(U7Object* object, Vector3 fromPos);
 /// @brief Assign an object into a chunk (world partition for visibility).
 /// @param object The object to assign
 void AssignObjectChunk(U7Object* object);
+void UnassignObjectChunk(U7Object* object);
 
 void UpdateSortedVisibleObjects();
 
@@ -310,6 +311,8 @@ void DrawConsole();
 
 extern ConversationState* g_ConversationState;
 extern MainState* g_mainState;
+
+extern bool g_autoRotate;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -392,6 +395,7 @@ extern Camera g_camera;
 
 extern float g_cameraDistance; // distance from target
 extern float g_cameraRotation; // angle around target
+extern float g_cameraRotationTarget;
 
 extern EngineModes g_engineMode;
 

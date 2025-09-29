@@ -33,6 +33,6 @@ void DrawStringCentered(Font* font, float fontsize, char* text, float centerx, f
 void DrawStringCentered(Font* font, float fontsize, char* text, Vector2 center, Color color = WHITE);
 void DrawStringRight(Font* font, float fontsize, std::string text, float rightx, float y, Color color = WHITE);
 void DrawStringRight(Font* font, float fontsize, char* text, float rightx, float y, Color color = WHITE);
-
+void DebugPrint(std::string msg);
 
 #endif

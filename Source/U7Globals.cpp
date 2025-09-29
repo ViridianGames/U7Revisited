@@ -78,6 +78,7 @@ std::vector<U7Object*> g_sortedVisibleObjects;
 
 float g_cameraDistance; // distance from target
 float g_cameraRotation = 0; // angle around target
+float g_cameraRotationTarget = 0;
 
 Shader g_alphaDiscard;
 
@@ -103,6 +104,7 @@ unsigned int g_hour;
 unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
+bool g_autoRotate = false;
 
 Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
@@ -113,12 +115,6 @@ std::unique_ptr<GumpManager> g_gumpManager;
 U7Object* g_objectUnderMousePointer;
 
 U7Object* g_doubleClickedObject;
-
-void DebugPrint(string text)
-{
-	cout << "U7DEBUG: " << text << "\n";
-	Log(text, "debuglog.txt");
-}
 
 //  This makes an animation 
 void MakeAnimationFrameMeshes()
@@ -198,7 +194,7 @@ unsigned int DoCameraMovement()
 		cameraRotated = true;
 	}
 
-if (IsKeyDown(KEY_E))
+	if (IsKeyDown(KEY_E))
 	{
 		g_CameraRotateSpeed = -GetFrameTime() * 5;
 		g_CameraMoved = true;
@@ -263,6 +259,28 @@ if (IsKeyDown(KEY_E))
 		}
 
 		moveDecay = true;
+	}
+
+	float delta = g_cameraRotationTarget - g_cameraRotation;
+	if (g_autoRotate == true)
+	{
+		if (abs(delta) > 0.05 && !cameraRotated && g_autoRotate)
+		{
+			if (delta > PI)
+			{
+				delta -= 2 * PI;
+			}
+			else if (delta < -PI)
+			{
+				delta += 2 * PI;
+			}
+			g_CameraRotateSpeed = (delta > 0.0f) ? GetFrameTime() * 1 : GetFrameTime() * -1;
+		}
+		else
+		{
+			g_autoRotate = false;
+			g_cameraRotation = g_cameraRotationTarget;
+		}
 	}
 
 	if (!cameraRotated && g_CameraRotateSpeed != 0)
@@ -478,11 +496,10 @@ void UnassignObjectChunk(U7Object* object)
 	int i = static_cast<int>(object->m_Pos.x / 16);
 	int j = static_cast<int>(object->m_Pos.z / 16);
 
-	auto fromChunk = g_chunkObjectMap[i][j];
-	auto fromChunkPos = std::find(fromChunk.begin(), fromChunk.end(), object);
-    if (fromChunkPos != fromChunk.end())
+	auto fromChunkPos = std::find(g_chunkObjectMap[i][j].begin(), g_chunkObjectMap[i][j].end(), object);
+    if (fromChunkPos != g_chunkObjectMap[i][j].end())
     {
-        fromChunk.erase(fromChunkPos);
+        g_chunkObjectMap[i][j].erase(fromChunkPos);
     }
 }
 

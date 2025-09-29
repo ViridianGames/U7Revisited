@@ -4,6 +4,8 @@
 #include "StateMachine.h"
 #include "ScriptingSystem.h"
 #include "Primitives.h"
+#include "Logging.h"
+#include <iostream>
 
 using namespace std;
 
@@ -100,4 +102,10 @@ void DrawStringRight(Font* font, float fontsize, char* text, float rightx, float
 {
 	Vector2 dims = MeasureTextEx(*font, text, fontsize, 1);
 	DrawTextEx(*font, text, Vector2{ rightx - dims.x, y }, fontsize, 1, color);
+}
+
+void DebugPrint(std::string msg)
+{
+	Log(msg, "debuglog.txt");
+	cout << msg << endl;
 }

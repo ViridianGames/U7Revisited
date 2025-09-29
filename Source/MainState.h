@@ -140,6 +140,8 @@ public:
 	bool m_ranIolosScript = false;
 	bool m_iolosScriptRunning = false;
 	bool m_ranFinnigansScript = false;
+
+	bool m_showUIElements = true;
 };
 
 #endif

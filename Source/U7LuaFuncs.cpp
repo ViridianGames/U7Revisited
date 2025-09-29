@@ -777,11 +777,14 @@ static int LuaBuyObject(lua_State *L)
 
 static int LuaSpawnObject(lua_State *L)
 {
-    int object_id = luaL_checkinteger(L, 1);
-    int x = luaL_checkinteger(L, 2);
-    int y = luaL_checkinteger(L, 3);
-    int z = luaL_checkinteger(L, 4);
-    int spawned_id = 0; // TODO: g_World->SpawnObject(object_id, x, y, z)
+    int shape = luaL_checkinteger(L, 1);
+    int frame = luaL_checkinteger(L, 2);
+    int x = luaL_checkinteger(L, 3);
+    int y = luaL_checkinteger(L, 4);
+    int z = luaL_checkinteger(L, 5);
+
+    int spawned_id = GetNextID();
+    AddObject(shape, frame, spawned_id, x, y, z);
 
     lua_pushinteger(L, spawned_id);
     return 1;
@@ -790,12 +793,10 @@ static int LuaSpawnObject(lua_State *L)
 static int LuaDestroyObject(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
-    int x = luaL_checkinteger(L, 2);
-    int y = luaL_checkinteger(L, 3);
-    int z = luaL_checkinteger(L, 4);
-    int spawned_id = 0; // TODO: g_World->SpawnObject(object_id, x, y, z)
-    lua_pushinteger(L, spawned_id);
-    return 1;
+    UnassignObjectChunk(g_objectList[object_id].get());
+    g_objectList.erase(object_id);
+    UpdateSortedVisibleObjects();
+    return 0;
 }
 
 static int LuaMoveObject(lua_State *L)
@@ -806,16 +807,45 @@ static int LuaMoveObject(lua_State *L)
     int z = luaL_checkinteger(L, 4);
     cout << "Moving object ID " << object_id << " to (" << x << ", " << y << ", " << z << ")\n";
     g_objectList[object_id]->SetPos( {float(x), float(y), float(z)} );
+    return 0;
 }
 
-static int LuaMoveNPC(lua_State *L)
+static int LuaStopNPCSchedule(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    DebugPrint("stop_npc_schedule called, NPC ID " + to_string(npc_id));
+    g_objectList[g_NPCData[npc_id].get()->m_objectID]->m_followingSchedule = false;
+    return 0;
+}
+
+static int LuaStartNPCSchedule(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    DebugPrint("stop_npc_schedule called, NPC ID " + to_string(npc_id));
+    g_objectList[g_NPCData[npc_id].get()->m_objectID]->m_followingSchedule = true;
+    return 0;
+}
+
+static int LuaSetNPCPos(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
     int x = luaL_checkinteger(L, 2);
     int y = luaL_checkinteger(L, 3);
     int z = luaL_checkinteger(L, 4);
-    cout << "Moving NPC ID " << npc_id << " to (" << x << ", " << y << ", " << z << ")\n";
-    g_objectList[g_NPCData[npc_id]->m_objectID]->SetPos( {float(x), float(y), float(z)} );
+    cout << "set_npc_pos called, moving NPC ID " << npc_id << " to (" << x << ", " << y << ", " << z << ")\n";
+    g_objectList[g_NPCData[npc_id]->m_objectID].get()->SetPos( {float(x), float(y), float(z)});
+    return 0;
+}
+
+static int LuaSetNPCDest(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    int z = luaL_checkinteger(L, 4);
+    cout << "set_npc_dest called, setting " << npc_id << " destination to (" << x << ", " << y << ", " << z << ")\n";
+    g_objectList[g_NPCData[npc_id]->m_objectID]->SetDest( {float(x), float(y), float(z)} );
+    return 0;
 }
 
 static int LuaGetPartyGold(lua_State *L)
@@ -1275,6 +1305,19 @@ static int LuaGetNPCTrainingLevel(lua_State *L)
     return 1;
 }
 
+static int LuaSetCameraAngle(lua_State *L)
+{
+    int new_angle = luaL_checkinteger(L, 1);
+    if (g_LuaDebug) DebugPrint("LUA: set_camera_angle called with angle " + to_string(new_angle));
+    //  Convert angle to radians
+    float new_angle_rads = new_angle % 360;
+    if (new_angle_rads < 0) new_angle_rads += 360;
+    new_angle_rads = (new_angle_rads * 3.14159f) / 180.0f;
+    g_cameraRotationTarget = new_angle_rads;
+    g_autoRotate = true;
+    return 0;
+}
+
 static int LuaRemovePartyGold(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: remove_party_gold called");
@@ -1462,6 +1505,20 @@ static int LuaOpenBook(lua_State *L)
 //     return lua_yield(L, 1);
 // }
 
+static int LuaShowUIElements(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: block_input called");
+    g_mainState->m_showUIElements = true;
+    return 0;
+}
+
+static int LuaHideUIElements(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: block_input called");
+    g_mainState->m_showUIElements = false;
+    return 0;
+}
+
 
 static int LuaBlockInput(lua_State *L)
 {
@@ -1582,6 +1639,12 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("open_book", LuaOpenBook);
     g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
 
+    // These functions manipulate NPCs.
+    g_ScriptingSystem->RegisterScriptFunction("set_npc_pos", LuaSetNPCPos);
+    g_ScriptingSystem->RegisterScriptFunction("set_npc_dest", LuaSetNPCDest);
+
+
+
     // These are new functions designed to be called by Lua scripts.
     g_ScriptingSystem->RegisterScriptFunction("get_flag", LuaGetFlag);
     g_ScriptingSystem->RegisterScriptFunction("set_flag", LuaSetFlag);
@@ -1607,6 +1670,16 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "fade_out", LuaFadeOut);
     g_ScriptingSystem->RegisterScriptFunction( "fade_in", LuaFadeIn);
+
+    g_ScriptingSystem->RegisterScriptFunction( "spawn_object", LuaSpawnObject);
+    g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
+
+    g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
+    g_ScriptingSystem->RegisterScriptFunction( "show_ui_elements", LuaShowUIElements);
+    g_ScriptingSystem->RegisterScriptFunction( "hide_ui_elements", LuaHideUIElements);
+
+    g_ScriptingSystem->RegisterScriptFunction( "start_npc_schedule", LuaStartNPCSchedule);
+    g_ScriptingSystem->RegisterScriptFunction( "stop_npc_schedule", LuaStopNPCSchedule);
 
     cout << "Registered all Lua functions\n";
 }
