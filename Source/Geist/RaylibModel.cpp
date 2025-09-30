@@ -94,8 +94,8 @@ void RaylibModel::UpdateAnim(const std::string& animName) {
 
 		if (animName == m_Anims[i].name) {
 			animIdx = i;
-			// Standard movie animation, 24 frames per second.
-			currentFrame = static_cast<unsigned int>(GetTime() * 24.0f) % m_Anims[i].frameCount;
+			// Raylib samples animation tracks at 60 FPS.
+			currentFrame = static_cast<unsigned int>(GetTime() * 60.0f) % m_Anims[i].frameCount;
 			break;
 		}
 	}
