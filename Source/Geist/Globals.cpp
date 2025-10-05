@@ -106,6 +106,6 @@ void DrawStringRight(Font* font, float fontsize, char* text, float rightx, float
 
 void DebugPrint(std::string msg)
 {
-	Log(msg, "debuglog.txt");
+	Log(msg, "debuglog.txt", true);
 	cout << msg << endl;
 }

@@ -38,6 +38,7 @@ public:
    virtual void Attack(int unitid);
 
    virtual Vector3 GetPos() { return m_Pos; }
+	virtual Vector2 GetChunkPos() { return Vector2{ floor(m_Pos.x / 16), floor(m_Pos.z / 16) }; }
    virtual Vector3 GetDest() { return m_Dest; }
    virtual float GetSpeed() { return m_speed; }
 
@@ -54,8 +55,8 @@ public:
    bool AddObjectToInventory(int objectid);
    bool RemoveObjectFromInventory(int objectid);
 
-   bool IsInInventory(int objectid);
-   bool IsInInventory(int shape, int frame);
+   bool IsInInventoryById(int objectid);
+   bool IsInInventory(int shape, int frame = 0, int quality = -1);
 
    void NPCUpdate();
    void NPCDraw();

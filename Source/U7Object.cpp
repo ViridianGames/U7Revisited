@@ -466,11 +466,26 @@ void U7Object::Interact(int event)
 	}
 }
 
-bool U7Object::IsInInventory(int objectid)
+bool U7Object::IsInInventoryById(int objectid)
 {
 	for (int i = 0; i < m_inventory.size(); i++)
 	{
 		if (m_inventory[i] == objectid)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool U7Object::IsInInventory(int shape, int frame, int quality)
+{
+	for (int i = 0; i < m_inventory.size(); i++)
+	{
+		if (GetObjectFromID(m_inventory[i])->m_shapeData->m_shape == shape &&
+			GetObjectFromID(m_inventory[i])->m_shapeData->m_frame == frame &&
+			(GetObjectFromID(m_inventory[i])->m_Quality == quality || quality == -1))
 		{
 			return true;
 		}
@@ -484,25 +499,6 @@ bool U7Object::IsLocked()
 	if (m_shapeData->m_shape == 522)
 	{
 		return true;
-	}
-
-	return false;
-}
-
-
-bool U7Object::IsInInventory(int shape, int frame)
-{
-	for (int i = 0; i < m_inventory.size(); i++)
-	{
-		if (GetObjectFromID(m_inventory[i])->m_shapeData->m_shape == shape &&
-			GetObjectFromID(m_inventory[i])->m_shapeData->m_frame == frame)
-		{
-			return true;
-		}
-		else
-		{
-			return true;
-		}
 	}
 
 	return false;

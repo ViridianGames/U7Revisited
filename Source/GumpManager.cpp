@@ -79,7 +79,7 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 
 				gump->m_containerObject->m_inventory.push_back(object->m_ID);
 				object->m_isContained = true;
-				if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253) //  Special case for gold)
+				if (object->m_shapeData->GetShape() == 641 && object->m_Quality == 253)
 				{
 					g_ScriptingSystem->SetFlag(60, 1);
 				}

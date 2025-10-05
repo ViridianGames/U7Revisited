@@ -14,7 +14,7 @@ function func_0402(eventid, objectref)
         var_0007 = false
         if not get_flag(21) then
             switch_talk_to(2, 1)
-        elseif is_in_string_array(var_0004, var_0002) then
+        elseif npc_id_in_party(2) then
             switch_talk_to(2, 0)
         else
             switch_talk_to(2, 1)
@@ -58,10 +58,10 @@ function func_0402(eventid, objectref)
         if get_flag(62) then
             remove_answer("key")
         end
-        if is_in_string_array(var_0004, var_0002) then
+        if npc_id_in_party(2) then
             add_answer("leave")
         end
-        if get_flag(73) and not is_in_string_array(var_0004, var_0002) then
+        if get_flag(73) and not npc_id_in_party(2) then
             add_answer("join")
         end
         if get_flag(62) and not get_flag(100) then
@@ -134,7 +134,7 @@ function func_0402(eventid, objectref)
                 remove_answer("gargoyle")
             elseif var_000C == "hook" then
                 if not get_flag(67) then
-                    if not is_in_string_array(var_0004, var_0002) then
+                    if not npc_id_in_party(2) then
                         add_dialogue("\"Wilt thou go find the Man with the Hook? Let me help thee!\" the boy pleads. His tears cease, and his face takes on a determined, forceful look.")
                         set_flag(67, true)
                         add_dialogue("\"Take me with thee! Please! I must avenge Father's death! If thou dost not take me with thee, I will follow thee anyway!\"")
@@ -236,7 +236,7 @@ function func_0402(eventid, objectref)
                 if get_flag(62) then
                     add_dialogue("\"That key opened my Father's chest, did it not?\"")
                 else
-                    var_0012 = check_inventory(359, 253, 641, 1, 357)
+                    var_0012 = check_inventory(0, 641, 1, 253)
                     if var_0012 then
                         add_dialogue("\"That looks like the key to Father's chest. I wondered where it was!\"")
                     else

@@ -347,26 +347,23 @@ U7Object* GetObjectFromID(int unitID)
 
 void UpdateSortedVisibleObjects()
 {
-	int cameraChunkI = static_cast<int>(g_camera.target.x / 16);
-	int cameraChunkJ = static_cast<int>(g_camera.target.z / 16);
-	int minChunkIVisibleDistance = static_cast<int>(TILEWIDTH / 2 / 16);
-	int minChunkJVisibleDistance = static_cast<int>(TILEHEIGHT / 2 / 16);
+	int cameraChunkX = static_cast<int>(g_camera.target.x / 16);
+	int cameraChunkY = static_cast<int>(g_camera.target.z / 16);
  	g_sortedVisibleObjects.clear();
 
- 	for (int i = 0; i < 192; i++)
+ 	for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; x++)
  	{
- 		for (int j = 0; j < 192; j++)
+ 		for (int y = cameraChunkY - 2; y <= cameraChunkY + 2; y++)
  		{
- 			bool isChunkVisible = abs(cameraChunkI - i) <= minChunkIVisibleDistance && abs(cameraChunkJ - j) <= minChunkJVisibleDistance;
-
- 			if (isChunkVisible)
+ 			if (x < 0 || x >= 192 || y < 0 || y >= 192)
  			{
- 				for (auto object : g_chunkObjectMap[i][j])
- 				{
- 					object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
+ 				continue; // Out of bounds
+ 			}
 
- 					g_sortedVisibleObjects.push_back(object);
- 				}
+			for (auto object : g_chunkObjectMap[x][y])
+			{
+				object->m_distanceFromCamera = Vector3DistanceSqr(object->m_centerPoint, g_camera.position);
+				g_sortedVisibleObjects.push_back(object);
  			}
  		}
  	}
@@ -437,12 +434,10 @@ unsigned int GetNextID() { return g_CurrentUnitID++; }
 
 U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float z)
 {
-	if (shapenum == 742 && framenum == 1)
+	if (shapenum == 739 && x == 968 && z == 2292)
 	{
 		Log("Stop here.");
 	}
-
-
 
 	g_objectList.emplace(id, make_unique<U7Object>());
 
@@ -457,29 +452,21 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 
 void UpdateObjectChunk(U7Object* object, Vector3 fromPos)
 {
-	int fromI = static_cast<int>(fromPos.x / 16);
-	int fromJ = static_cast<int>(fromPos.z / 16);
-	int toI = static_cast<int>(object->m_Pos.x / 16);
-	int toJ = static_cast<int>(object->m_Pos.z / 16);
+	Vector2 fromChunkPos = Vector2{ floor(fromPos.x / 16), floor(fromPos.z / 16) };
 
-	if (fromI == toI && fromJ == toJ)
+	if (object->GetChunkPos().x == fromChunkPos.x && object->GetChunkPos().y == fromChunkPos.y)
 	{
 		// Object hasn't moved chunk
 		return;
 	}
 
-	assert(fromI >= 0 && fromI < 192);
-	assert(toI >= 0 && toI < 192);
-	assert(fromJ >= 0 && fromJ < 192);
-	assert(toJ >= 0 && toJ < 192);
-
-	auto& fromChunk = g_chunkObjectMap[fromI][fromJ];
-	auto fromChunkPos = std::find(fromChunk.begin(), fromChunk.end(), object);
-    if (fromChunkPos != fromChunk.end()) {
-        fromChunk.erase(fromChunkPos);
+	auto& fromChunk = g_chunkObjectMap[int(fromChunkPos.x)][int(fromChunkPos.y)];
+	auto fromChunknode = std::find(fromChunk.begin(), fromChunk.end(), object);
+    if (fromChunknode != fromChunk.end()) {
+        fromChunk.erase(fromChunknode);
     }
 
-	auto& toChunk = g_chunkObjectMap[toI][toJ];
+	auto& toChunk = g_chunkObjectMap[int(object->GetChunkPos().x)][int(object->GetChunkPos().y)];
 	toChunk.push_back(object);
 }
 

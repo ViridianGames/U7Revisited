@@ -678,6 +678,7 @@ void LoadingState::MakeMap()
 
 void LoadingState::LoadIREGs()
 {
+	return;
 	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
 	std::string loadingPath(dataPath);
 	loadingPath.append("/GAMEDAT/");
@@ -722,32 +723,61 @@ void LoadingState::LoadIREGs()
 
 void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superchunky)
 {
-	//  Flags for putting objects in containers.
-	unsigned int containerId = 0;
-	bool containerOpen = false;
+	unsigned char entryBuffer[20];
+	unsigned char entryLength = 0;    // Gets entry length.
+	vector<int> containerStack; //  Stack of container IDs.
 
-	while (ireg.good())
+	for (entryLength = ReadU8(ireg); !ireg.eof(); entryLength = ReadU8(ireg))
 	{
-		//  Read the length of the object.
-		unsigned char length = ReadU8(ireg);
-		if (length == 6) //  Object.
+		if (entryLength != 6 && entryLength != 12 && entryLength != 18)
 		{
-			unsigned char x = ReadU8(ireg);
-			unsigned char y = ReadU8(ireg);
+			if (!containerStack.empty())
+			{
+				string logstring;
+				for (int i = 0; i < containerStack.size(); ++i)
+				{
+					logstring.append(">");
+				}
+				logstring.append("Closing container " + std::to_string(containerStack.back()));
+				DebugPrint(logstring);
+				containerStack.pop_back();
+			}
+			continue;
+		}
 
-			int chunkx = x >> 4;
-			int chunky = y >> 4;
-			int intx = x & 0x0f;
-			int inty = y & 0x0f;
+		ireg.read((char*)entryBuffer, entryLength);
 
-			int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-			int actualy = (superchunky * 256) + (chunky * 16) + inty;
+		//  The first four bytes are always the position (either the world or gump position) of the object and its
+		//  shape and frame data.
 
-			unsigned short shapeData = ReadU16(ireg);
-			int shape = shapeData & 0x3ff;
-			int frame = (shapeData >> 10) & 0x1f;
+		int x = entryBuffer[0];
+		int y = entryBuffer[1];
 
-			unsigned char z = ReadU8(ireg);
+		int chunkx = x >> 4;
+		int chunky = y >> 4;
+		int intx = x & 0x0f;
+		int inty = y & 0x0f;
+
+		int actualx = 0;
+		int actualy = 0;
+		if (!containerStack.empty())
+		{
+			actualx = x;
+			actualy = y;
+		}
+		else
+		{
+			actualx = (superchunkx * 256) + (chunkx * 16) + intx;
+			actualy = (superchunky * 256) + (chunky * 16) + inty;
+		}
+
+		unsigned short shapeData = *(unsigned short*)&entryBuffer[2];
+		int shape = shapeData & 0x3ff;
+		int frame = (shapeData >> 10) & 0x1f;
+
+		if (entryLength == 6) //  Object.
+		{
+			int z = entryBuffer[4];
 
 			float lift1 = 0;
 			float lift2 = 0;
@@ -758,52 +788,47 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				//z *= 8;
 			}
 
-			unsigned char quality = ReadU8(ireg);
+			int quality = entryBuffer[5];
 
-			if (shape != 0) //  Eggs
-			{
-				int objectId = GetNextID();
-				AddObject(shape, frame, objectId, actualx, lift1, actualy);
-				g_objectList[objectId]->m_Quality = quality;
-
-				if (containerOpen)
-				{
-					AddObjectToContainer(objectId, containerId);
-				}
-			}
-		}
-		else if (length == 12) // Container or Egg
-		{
-			//continue;
-			unsigned char x = ReadU8(ireg); // Byte 1
-			unsigned char y = ReadU8(ireg);; // Byte 2
-
-			int chunkx = x >> 4;
-			int chunky = y >> 4;
-			int intx = x & 0x0f;
-			int inty = y & 0x0f;
-
-			int actualx = (superchunkx * 256) + (chunkx * 16) + intx;
-			int actualy = (superchunky * 256) + (chunky * 16) + inty;
-
-			if (actualx == 972 && actualy == 2132)
+			int objectId = GetNextID();
+			if (objectId == 231164)
 			{
 				int stopper = 0;
 			}
+			U7Object* newObject = AddObject(shape, frame, objectId, actualx, lift1, actualy);
+			newObject->m_Quality = quality;
 
-			unsigned short shapeData = ReadU16(ireg);;// Bytes 3 and 4
-			int shape = shapeData & 0x3ff;
-			int frame = (shapeData >> 10) & 0x1f;
+			if (shape == 607)
+			{
+				newObject->m_Visible = false;
+			}
 
-			//  Bytes 5-9
-			unsigned char type = ReadU8(ireg); // Byte 5
-			unsigned char proba1 = ReadU8(ireg); // Byte 6
-			unsigned char proba2 = ReadU8(ireg); // Byte 7
-			unsigned char quality = ReadU8(ireg); // Byte 8
-			unsigned char quantity = ReadU8(ireg); // Byte 9
-			unsigned char z = ReadU8(ireg); // Byte 10
-			unsigned char resistance = ReadU8(ireg); // Byte 11
-			unsigned char flags = ReadU8(ireg); // Byte 12
+			if (!containerStack.empty())
+			{
+				newObject->m_InventoryPos = { static_cast<float>(actualx), static_cast<float>(actualy)};
+				newObject->m_isContained = true;
+				newObject->m_containingObjectId = containerStack.back();
+				GetObjectFromID(containerStack.back())->AddObjectToInventory(objectId);
+			}
+			string logstring;
+			for (int i = 0; i < containerStack.size(); ++i)
+			{
+				logstring.append(">");
+			}
+			logstring.append("Object: " + std::to_string(objectId) + " named " + g_objectDataTable[shape].m_name + " at " + std::to_string(actualx) + ", " + std::to_string(actualy));
+			DebugPrint(logstring);
+			continue;
+		}
+		else if (entryLength == 12) //  Container or Egg
+		{
+			unsigned char type = entryBuffer[4]; // Byte 5
+			unsigned char proba1 = entryBuffer[5];
+			unsigned char proba2 = entryBuffer[6]; // Byte 7
+			unsigned char quality = entryBuffer[7]; // Byte 8
+			unsigned char quantity = entryBuffer[8]; // Byte 9
+			unsigned char z = entryBuffer[9]; // Byte 10
+			unsigned char resistance = entryBuffer[10]; // Byte 11
+			unsigned char flags = entryBuffer[11]; // Byte 12
 
 			float lift1 = 0;
 			float lift2 = 0;
@@ -816,35 +841,62 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			}
 
 			int id = GetNextID();
-			AddObject(shape, frame, id, actualx, lift1, actualy);
-			g_objectList[id]->m_Quality = quality;
-			GetObjectFromID(id)->m_isContainer = true;
+			if (id == 231164)
+			{
+				int stopper = 0;
+			}
+
+			U7Object* thisObject = AddObject(shape, frame, id, actualx, lift1, actualy);
+			thisObject->m_Quality = quality;
 
 			//  Egg or container?  01 Egg, 00 container.
-			if (g_objectDataTable[shape].m_name == "Egg" || type == 1)
+			if (shape == 607)
 			{
-				GetObjectFromID(id)->m_isEgg = true;
-				GetObjectFromID(id)->m_isContainer = false;
+				thisObject->m_Visible = false;
+			}
+			if (g_objectDataTable[shape].m_name == "Egg" || g_objectDataTable[shape].m_name == "path" || type == 1)
+			{
+				thisObject->m_isEgg = true;
+				thisObject->m_isContainer = false;
+
+				DebugPrint("Object: " + std::to_string(id) + " named " + g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is an egg");
 			}
 			else
 			{
-				GetObjectFromID(id)->m_isContainer = true;
-				containerOpen = true;
-				containerId = id;
-
+				thisObject->m_isContainer = true;
+				if (!containerStack.empty()) //  Container is contained.
+				{
+					thisObject->m_InventoryPos = { static_cast<float>(actualx), static_cast<float>(actualy)};
+					thisObject->m_isContained = true;
+					thisObject->m_containingObjectId = containerStack.back();
+					GetObjectFromID(containerStack.back())->AddObjectToInventory(id);
+				}
+				string logstring;
+				for (int i = 0; i < containerStack.size(); ++i)
+				{
+					logstring.append(">");
+				}
+				logstring.append("Object " + std::to_string(id) + " of type " + std::to_string(type) + " named " +  g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is a container");
+				DebugPrint(logstring);
+				unsigned char emptytest = ireg.peek(); //  Next byte is either 6, 12, or 18 if there are objects in this container.
+				if (type == 0 || emptytest != 6 && emptytest != 12 && emptytest != 18)
+				{
+					DebugPrint(">Container is empty.");
+					continue;
+				}
+				else
+				{
+					containerStack.push_back(id);
+				}
 			}
 		}
-		else if (length == 18)
+		else if (entryLength == 18)
 		{
 			//  Soak all 18 bytes, we're not handling this right now.
 			for (int i = 0; i < 18; ++i)
 			{
 				unsigned char throwaway = ReadU8(ireg);
 			}
-		}
-		else if(length == 1) //  Close container
-		{
-			containerOpen = false;
 		}
 	}
 }
@@ -1283,12 +1335,13 @@ void LoadingState::LoadInitialGameState()
 		}
 		subFiles.seekg(node->offset);
 		//  First thirteen characters are the filename.
-		char filename[13];
-		subFiles.read(filename, 13);
+		char filenamein[13];
+		subFiles.read(filenamein, 13);
+		string filename = string(filenamein);
 		cout << "Loading " << filename << endl;
 
 		//  Based on the filename, do...something.
-		if (!strncmp(filename, "npc.dat", 6))
+		if (filename == "npc.dat")
 		{
 			short npcCount1 = ReadU16(subFiles);
 			short npcCount2 = ReadU16(subFiles);
@@ -1532,6 +1585,23 @@ void LoadingState::LoadInitialGameState()
 				}
 			}
 			stringstream npcData;
+		}
+		if (filename.substr(0, 6) == "u7ireg")
+		{
+			//  Get the superchunk coordinates from the filename.
+			std::string hex_part = filename.substr(6, 2);
+
+			int coord = std::stoi(hex_part, nullptr, 16);
+
+			int schunkx = coord % 12;
+			int schunky = coord / 12;
+
+			//  Load the rest of the data into a stringstream.
+			string buffer(node->length - 13, ' ');
+			subFiles.read(&buffer[0], node->length - 13);
+			stringstream ss(buffer);
+
+			ParseIREGFile(ss, schunkx, schunky);
 		}
 	}
 }

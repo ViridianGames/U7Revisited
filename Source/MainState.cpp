@@ -197,16 +197,16 @@ void MainState::UpdateTime()
 		g_isDay = true;
 	}
 
-	unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
-	int shape = shapeframe & 0x3ff;
-	if (shape == 0 || shape == 5 || shape == 17 || shape == 18 || shape == 21 || shape == 27 || shape == 47 || shape >= 149)
-	{
-		m_heightCutoff = 4.0f;
-	}
-	else
-	{
-		m_heightCutoff = 16.0f;
-	}
+	// unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
+	// int shape = shapeframe & 0x3ff;
+	// if (shape == 0 || shape == 5 || shape == 17 || shape == 18 || shape == 21 || shape == 27 || shape == 47 || shape >= 149)
+	// {
+	// 	m_heightCutoff = 4.0f;
+	// }
+	// else
+	// {
+	// 	m_heightCutoff = 16.0f;
+	// }
 
 }
 
@@ -241,8 +241,8 @@ void MainState::UpdateInput()
 
 	if (IsKeyPressed(KEY_PAGE_UP))
 	{
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
-		{
+		//if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		//{
 			if (m_heightCutoff == 4.0f)
 			{
 				m_heightCutoff = 10.0f;
@@ -253,7 +253,7 @@ void MainState::UpdateInput()
 				m_heightCutoff = 16.0f;
 				AddConsoleString("Viewing Third Floor");
 			}
-		}
+		//}
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
@@ -336,8 +336,6 @@ void MainState::UpdateInput()
 		}
 	}
 
-
-
 	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
 	{
 		std::string filePath;
@@ -403,6 +401,10 @@ void MainState::UpdateInput()
 		else if (g_objectUnderMousePointer->m_isContainer)
 		{
 			Bark(g_objectUnderMousePointer, "Locked", 3.0f);
+		}
+		else if (!g_objectUnderMousePointer->m_isContainer)
+		{
+			AddConsoleString("Object " + to_string(g_objectUnderMousePointer->m_ID) + " is not a container.");
 		}
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))

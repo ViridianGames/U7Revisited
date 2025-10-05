@@ -1108,22 +1108,37 @@ static int LuaIsStringInArray(lua_State *L)
 }
 
 // Does the container contain this specific object?
-static int LuaHasObject(lua_State *L)
+static int LuaIsObjectInInventory(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: has_object called");
-    // int objectref = luaL_checkinteger(L, 1);
-    // int object_id = luaL_checkinteger(L, 2);
+    int npc_id = luaL_checkinteger(L, 1);
+    int shape = luaL_checkinteger(L, 2);
 
-    // if(GetObjectFromID(object_id)->IsInInventory(object_id))
-    // {
-    //     lua_pushboolean(L, true);
-    //     return 1;
-    // }
-    // else
-    // {
+    int frame = 0;
+    if (lua_isinteger(L, 3))
+    {
+        frame = lua_tointeger(L, 3);
+    }
+
+    int quality = -1;
+    if (lua_isinteger(L, 4))
+    {
+        quality = lua_tointeger(L, 4);
+    }
+    DebugPrint("LUA: is_object_in_inventory called for NPC ID " + to_string(npc_id) +
+               " shape " + to_string(shape) +
+               " frame " + to_string(frame) +
+               " quality " + to_string(quality));
+
+    if(GetObjectFromID(npc_id)->IsInInventory(shape, frame, quality))
+    {
+        lua_pushboolean(L, true);
+        return 1;
+    }
+    else
+    {
         lua_pushboolean(L, false);
         return 1;
-    //}
+    }
 }
 
 // Does the container contain any object of this shape/frame type?
@@ -1597,7 +1612,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
-    g_ScriptingSystem->RegisterScriptFunction("has_object", LuaHasObject);
+    g_ScriptingSystem->RegisterScriptFunction("is_object_in_inventory", LuaIsObjectInInventory);
     g_ScriptingSystem->RegisterScriptFunction("has_object_of_type", LuaHasObjectOfType);
 
     // These functions are used to manipulate the game world.

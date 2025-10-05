@@ -12,7 +12,7 @@ using namespace std::chrono;
 
 string logfile = "";
 
-void Log(string text, string filename)
+void Log(string text, string filename, bool suppressDateTime)
 {
 	static unordered_map<std::string, unique_ptr<ofstream> > logstreams;
 
@@ -26,10 +26,19 @@ void Log(string text, string filename)
 		logstreams[filename]->open(filename);
 	}
 
-	auto now = system_clock::now();
-	auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
-	auto timer = system_clock::to_time_t(now);
-	cout << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
-	*logstreams[filename] << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
-	logstreams[filename]->flush();
+	if (suppressDateTime)
+	{
+		cout << text << endl;
+		*logstreams[filename] << text << endl;
+		logstreams[filename]->flush();
+	}
+	else
+	{
+		auto now = system_clock::now();
+		auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
+		auto timer = system_clock::to_time_t(now);
+		cout << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+		*logstreams[filename] << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+		logstreams[filename]->flush();
+	}
 }

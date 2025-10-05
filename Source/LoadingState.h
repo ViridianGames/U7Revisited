@@ -31,7 +31,7 @@ public:
    void CreateObjectTable();
    void LoadIFIX();
    void LoadIREGs();
-   void ParseIREGFile(std::stringstream& ireg, int superchunkx = 0, int superchunky = 0);
+   void ParseIREGFile(std::stringstream& ireg, int superchunkx, int superchunky);
    void LoadFaces();
    void LoadVersion();
    void MakeMap();

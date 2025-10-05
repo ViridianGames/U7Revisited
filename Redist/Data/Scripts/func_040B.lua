@@ -20,8 +20,11 @@ function func_040B(eventid, objectref)
         add_dialogue("The peasant looks at you as if he has seen a ghost! \"Iolo! This " .. var_0003 .. " did appear from thin air! Help me!\"")
         return
     end
+    if not get_flag(60) then
+        add_dialogue("\"Look in the stables! 'Tis horrible! I will answer thy questions, but first look in the stables!\"")
+        return
+    end
     if not get_flag(75) then
-        --add_dialogue("You see a distraught peasant. \"Art thou really the Avatar?\"")
         var_0004 = ask_yes_no("You see a distraught peasant. \"Art thou really the Avatar?\"")
         if var_0004 then
             add_dialogue("Petre bows before you. \"" .. var_0000 .. ".\"")
@@ -30,23 +33,19 @@ function func_040B(eventid, objectref)
         else
             add_dialogue("Petre looks confused. \"Thou shouldst not make fun of me!\" He turns away.")
             set_flag(75, true)
-            abort()
+            return
         end
-    else
-        add_dialogue("\"What is it, " .. var_0000 .. "?\" Petre asks.")
     end
+    add_dialogue("\"What is it, " .. var_0000 .. "?\" Petre asks.")
     add_answer({"bye", "job", "name"})
-    if not get_flag(60) then
+    if get_flag(60) then
         add_answer({"footprints", "murder"})
     end
-    if not get_flag(63) then
+    if get_flag(63) then
         add_answer({"Spark", "Klog", "Fellowship"})
     end
     while true do
-        if not get_flag(60) then
-            add_dialogue("\"Look in the stables! 'Tis horrible! I will answer thy questions, but first look in the stables!\"")
-            return
-        end
+        coroutine.yield()
         local answer = get_answer()
         if answer == "name" then
             add_dialogue("\"I am called Petre,\" the man sniffs.")
@@ -75,8 +74,7 @@ function func_040B(eventid, objectref)
             add_dialogue("\"He worked for very little money. Did basic chores around the stables and the pub. I let him sleep in the little back room. He must have been in the wrong place at the wrong time.\"")
             remove_answer("Inamo")
         elseif answer == "carriage" then
-            add_dialogue("\"The horse and carriage combination sells for 60 gold. Dost thou want a title?\"")
-            var_0005 = ask_yes_no()
+            var_0005 = ask_yes_no("\"The horse and carriage combination sells for 60 gold. Dost thou want a title?\"")
             if var_0005 then
                 var_0006 = unknown_0028H(59, 359, 644, 357)
                 if var_0006 >= 60 then
@@ -114,6 +112,7 @@ function func_040B(eventid, objectref)
             end
             remove_answer("Spark")
         elseif answer == "bye" then
+            clear_answers()
             break
         end
     end
