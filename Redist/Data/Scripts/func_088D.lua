@@ -2,15 +2,10 @@
 function func_088D()
     local var_0000, var_0001
 
-    var_0000 = npc_id_in_party(-1)
+    var_0000 = npc_id_in_party(1)
     if not var_0000 then
-        switch_talk_to(0, -1)
-        add_dialogue("\"Feeling all right, man?\"")
-        switch_talk_to(0, -21)
+        second_speaker(1, 0, "\"Feeling all right, man?\"")
         add_dialogue("Gargan coughs, wheezes, and then lights his pipe. On inhaling, he has a coughing spasm until he finally catches his breath.")
         add_dialogue("\"Never felt better.\"")
-        hide_npc1)
-        switch_talk_to(0, -21)
-        var_0001 = 0
     end
 end

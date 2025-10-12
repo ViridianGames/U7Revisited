@@ -20,10 +20,10 @@ function func_0415(eventid, objectref)
         if get_flag(64) then
             add_answer("Crown Jewel")
         end
-        if not get_flag(63) then
+        if get_flag(63) then
             add_answer("Fellowship")
         end
-        if not get_flag(67) then
+        if get_flag(67) then
             add_answer("Hook")
         end
 
@@ -36,7 +36,7 @@ function func_0415(eventid, objectref)
                 remove_answer("name")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "job" then
                 add_dialogue("\"I am the Trinsic shipwright. If thou wouldst like to know about a ship or a sextant, just say so.\"")
@@ -44,7 +44,7 @@ function func_0415(eventid, objectref)
                 add_answer({"sextant", "ship"})
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "ship" then
                 add_dialogue("\"Thou dost want to buy a ship?\" the old man asks, smiling. (Apparently not too many folks buy ships these days.)")
@@ -54,7 +54,7 @@ function func_0415(eventid, objectref)
                 add_answer({"deed", "Owen"})
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "sextant" then
                 if var_0001 ~= 30 then
@@ -64,10 +64,10 @@ function func_0415(eventid, objectref)
                     add_dialogue("Gargan clears his throat.")
                     var_0004 = select_option()
                     if var_0004 then
-                        var_0003 = get_party_gold() --- Guess: Checks gold amount
+                        var_0003 = get_party_gold()
                         if var_0003 >= 80 then
                             add_dialogue("\"Here ye are!\"")
-                            var_0004 = unknown_002CH(true, 359, 650, 1) --- Guess: Adds item to inventory
+                            var_0004 = add_object_to_npc_inventory(0, 650, 1)
                             if not var_0004 then
                                 add_dialogue("\"Thine arms are too full to carry the sextant!\"")
                                 add_dialogue("Gargan sneezes.")
@@ -84,7 +84,7 @@ function func_0415(eventid, objectref)
                 remove_answer("sextant")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D() --- Guess: Checks shop hours
                 end
             elseif var_0003 == "Owen" then
                 add_dialogue("\"Thou hast not heard of Owen? Finest shipwright in the land. He lives in Minoc.\"")
@@ -92,7 +92,7 @@ function func_0415(eventid, objectref)
                 remove_answer("Owen")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D() --- Guess: Checks shop hours
                 end
             elseif var_0003 == "deed" then
                 if var_0001 ~= 30 then
@@ -130,22 +130,19 @@ function func_0415(eventid, objectref)
                 remove_answer("deed")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "murder" then
                 add_dialogue("\"I heard about that. Terrible thing to happen. Can't say I saw or heard anything, though.\"")
                 add_dialogue("Gargan coughs, clears his throat loudly, then spits.")
-                var_0008 = npc_id_in_party(2) --- Guess: Checks player status
+                var_0008 = npc_id_in_party(2)
                 if var_0008 then
-                    switch_talk_to(2, 0)
-                    add_dialogue("\"Ooooh, yuck!\"")
-                    hide_npc(2)
-                    switch_talk_to(21, 0)
+                    second_speaker(2, 0, "\"Ooooh, yuck!\"")
                 end
                 remove_answer("murder")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "Crown Jewel" then
                 add_dialogue("\"Yes, that ship was docked overnight.\" He consults his log. \"She sailed for Britain at sunrise. I do not recall seeing anyone get on or off.\"")
@@ -153,22 +150,19 @@ function func_0415(eventid, objectref)
                 remove_answer("Crown Jewel")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "Hook" then
-                add_dialogue("\"Matey, I have always seen pirates and sailors with peglegs and hooks. If thou hast seen one, thou hast seen another.\" But the man suddenly frowns. \"Hmm. Now that thou dost mention it, I -did- see a man with a hook late last night after sundown. I was leaving the shop and saw him outside. There was a wingless gargoyle with him. They were walking east.\"")
+                add_dialogue("\"Matey, I have always seen pirates and sailors with peglegs and hooks. If thou hast seen one, thou hast seen another.\"")add_dialogue("But the man suddenly frowns. \"Hmm. Now that thou dost mention it, I -did- see a man with a hook late last night after sundown. I was leaving the shop and saw him outside. There was a wingless gargoyle with him. They were walking east.\"")
                 add_dialogue("Gargan sneezes, then coughs a couple of times.")
                 var_0008 = npc_id_in_party(2)
                 if var_0008 then
-                    switch_talk_to(2, 0)
-                    add_dialogue("\"I told thee! It was him!\"")
-                    --hide_npc(2)
-                    switch_talk_to(21, 0)
+                    second_speaker(2, 0, "\"I told thee! It was him!\"")
                 end
                 remove_answer("Hook")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "Fellowship" then
                 add_dialogue("\"I am too old to pay attention to them.\"")
@@ -176,7 +170,7 @@ function func_0415(eventid, objectref)
                 remove_answer("Fellowship")
                 var_0002 = var_0002 + 1
                 if var_0002 == 6 then
-                    unknown_088DH() --- Guess: Checks shop hours
+                    func_088D()
                 end
             elseif var_0003 == "bye" then
                 add_dialogue("\"May thy day have smooth sailing,\" the sailor starts to say, but a coughing spasm interrupts him.")
@@ -184,6 +178,6 @@ function func_0415(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        unknown_092EH(21) --- Guess: Triggers a game event
+        func_092E(21)  -- Random dialogue when moving around
     end
 end

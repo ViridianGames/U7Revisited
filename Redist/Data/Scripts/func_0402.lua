@@ -68,7 +68,6 @@ function func_0402(eventid, objectref)
             add_answer({"scroll", "medallion", "gold"})
         end
         while true do
-            debug_print("Starting main loop for Spark")
             coroutine.yield()
             var_000C = get_answer()
             if var_000C == "name" then
@@ -184,8 +183,7 @@ function func_0402(eventid, objectref)
                     unknown_001EH(2) --- Guess: Removes object from game
                 end
             elseif var_000C == "leave" then
-                add_dialogue("\"Don't make me go!\" Spark cries. \"Dost thou really want me to go?\" He looks at you with puppy-dog eyes.")
-                var_0011 = select_option()
+                var_0011 = ask_yes_no("\"Don't make me go!\" Spark cries. \"Dost thou really want me to go?\" He looks at you with puppy-dog eyes.")
                 if var_0011 then
                     hide_npc(2)
                     switch_talk_to(2, 1)
@@ -236,7 +234,7 @@ function func_0402(eventid, objectref)
                 if get_flag(62) then
                     add_dialogue("\"That key opened my Father's chest, did it not?\"")
                 else
-                    var_0012 = check_inventory(0, 641, 1, 253)
+                    var_0012 = is_object_in_npc_inventory(0, 641, 0, 253)
                     if var_0012 then
                         add_dialogue("\"That looks like the key to Father's chest. I wondered where it was!\"")
                     else

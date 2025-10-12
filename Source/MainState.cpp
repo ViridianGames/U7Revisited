@@ -101,7 +101,7 @@ void MainState::OnEnter()
 		// Move camera to start position and rotation.
 		g_camera.target = Vector3{ 1068.0f, 0.0f, 2213.0f };
 		g_cameraRotation = 0;
-		g_cameraDistance = 20.0f;
+		g_cameraDistance = 22.0f;
 		DoCameraMovement();
 
 		// Hack-move Petre and put him in the proper position.
@@ -219,7 +219,14 @@ void MainState::UpdateInput()
 
 	if (IsKeyPressed(KEY_ESCAPE))
 	{
-		g_Engine->m_Done = true;
+		if (!g_gumpManager->m_GumpList.empty())
+		{
+			g_gumpManager->m_GumpList.back().get()->SetIsDead(true);
+		}
+		else
+		{
+			g_Engine->m_Done = true;
+		}
 	}
 
 	if (IsKeyPressed(KEY_F1))

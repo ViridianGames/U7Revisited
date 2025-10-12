@@ -36,47 +36,6 @@ static int LuaWait(lua_State *L)
     return lua_yield(L, 1);
 }
 
-// New: Lua converse function to start a conversation and yield until it finishes
-static int LuaConverse(lua_State *L)
-{
-    if (lua_gettop(L) != 1 || !lua_isstring(L, 1))
-    {
-        DebugPrint("Calling lua_converse: Expected one string argument (func_name)");
-        return 0;
-    }
-
-    std::string sub_func = lua_tostring(L, 1);
-
-    std::string result = g_ScriptingSystem->CallScript(sub_func, {});
-
-    if (result != "")
-    {
-        lua_pushstring(L, result.c_str());
-        return 1;
-    }
-
-    DebugPrint("Calling lua_converse for function: " + sub_func);
-
-    if (g_ScriptingSystem->IsCoroutineActive(sub_func))
-    {
-        std::string caller_func = g_ScriptingSystem->GetFuncNameFromCo(L);
-        if (caller_func.empty())
-        {
-            DebugPrint("Converse must be called from a named scripted function");
-            return 0;
-        }
-
-        g_ScriptingSystem->m_waiters[sub_func].push_back(caller_func);
-
-        return lua_yield(L, 0);
-    }
-    else
-    {
-        lua_pushstring(L, "done");
-        return 1;
-    }
-}
-
 ScriptingSystem::ScriptingSystem()
 {
     m_luaState = luaL_newstate();
@@ -96,7 +55,6 @@ void ScriptingSystem::Init(const std::string& configfile)
 {
     // TODO: Load flags from save file
     RegisterScriptFunction("wait", LuaWait);
-    RegisterScriptFunction("converse", LuaConverse); // New registration
 }
 
 void ScriptingSystem::Shutdown()
@@ -132,8 +90,14 @@ void ScriptingSystem::Update()
         if (m_waitTimer < 0.0f)
         {
             m_waitTimer = 0.0f;
-            ResumeCoroutine(m_waitingScript, {0});
-            //m_waitingScript = "";
+            if (m_currentScript == m_waitingScript)
+            {
+                ResumeCoroutine(m_waitingScript, {0});
+            }
+            else
+            {
+                m_waiters.erase(m_waitingScript);
+            }
         }
     }
 }
@@ -148,8 +112,7 @@ void ScriptingSystem::LoadScript(const std::string& path)
     func_name = path.substr(path.find_last_of('/') + 1);
 #endif
     func_name = func_name.substr(0, func_name.find_last_of('.'));
-
-    if (path == "Data/Scripts\\func_0401.lua")
+    if (func_name == "func_0884")
     {
         int stopper = 0;
     }
@@ -158,13 +121,15 @@ void ScriptingSystem::LoadScript(const std::string& path)
     {
        stringstream st;
        st << "Failed to load " << path << ": " << lua_tostring(m_luaState, -1) << "\n";
+
        std::cerr << st.str();
-        Log(st.str(), "debuglog.txt");
+        DebugPrint(st.str());
         lua_pop(m_luaState, 1);
     }
     else
     {
         std::cout << "Loaded script: " << path << "\n";
+        DebugPrint("Loaded script: " + path);
     }
 
     string thispath = path;
@@ -395,7 +360,6 @@ void ScriptingSystem::CleanupCoroutine(const string& func_name)
         luaL_unref(m_luaState, LUA_REGISTRYINDEX, it->second);
         m_activeCoroutines.erase(it);
     }
-
     // Resume any coroutines waiting on this one to complete
     auto wit = m_waiters.find(func_name);
     if (wit != m_waiters.end())
@@ -408,9 +372,8 @@ void ScriptingSystem::CleanupCoroutine(const string& func_name)
                 lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, w_it->second);
                 lua_State* co = lua_tothread(m_luaState, -1);
                 lua_pop(m_luaState, 1);
-
                 int nres;
-                int status = lua_resume(co, nullptr, 0, &nres);
+                int status = lua_resume(co, m_luaState, 0, &nres);  // Pass m_luaState as 'from' state.
                 if (status == LUA_ERRRUN)
                 {
                     const char* err = lua_tostring(co, -1);

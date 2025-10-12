@@ -146,10 +146,10 @@ function func_040C(eventid, objectref)
     if not get_flag(63) then
         add_answer({"Klog", "Fellowship"})
     end
-    if get_flag(66) and not get_flag(61) then
+    if get_flag(66) and get_flag(61) then
         add_answer("password")
     end
-    if get_flag(69) and not get_flag(68) then
+    if get_flag(69) and get_flag(68) then
         add_answer("Pay me now, please")
     end
     while true do
@@ -181,7 +181,7 @@ function func_040C(eventid, objectref)
         elseif answer == "murder" then
             if not get_flag(61) then
                 add_dialogue("\"A crime like this has never happened in Trinsic before. I cannot believe this happened to Christopher and Inamo. Please -- explore the town! I would appreciate it if thou wouldst bring me a report on thy progress. Be sure to ask everyone in town about the murder. After speaking with Christopher's son, thou mightest next want to speak with Gilberto, the guard on watch at the dock last night.\"")
-                add_dialogue("The mayor63 hesitates, then leans in to speak quietly.")
+                add_dialogue("The mayor hesitates, then leans in to speak quietly.")
                 add_dialogue("\"Actually, I have seen something like this before. It was about four years ago, in Britain.\"")
                 add_answer({"report", "Britain", "Inamo", "Christopher", "Gilberto"})
                 set_flag(91, true)
@@ -206,19 +206,17 @@ function func_040C(eventid, objectref)
             if get_flag(68) then
                 add_dialogue("\"I am satisfied with thy report. Please carry on thine investigation, Avatar.\"")
             elseif not get_flag(93) then
-                add_dialogue("\"Art thou ready to answer some questions concerning the investigation?\"")
-                var_000A = ask_yes_no()
+                var_000A = ask_yes_no("\"Art thou ready to answer some questions concerning the investigation?\"")
                 if var_000A then
                     set_flag(93, true)
-                    unknown_0884H()
+                    func_0884()
                 else
                     add_dialogue("\"Oh. Well, carry on with thine investigation.\"")
                 end
             else
-                add_dialogue("\"Shall we continue thy report?\"")
-                var_000B = ask_yes_no()
+                var_000B = ask_yes_no("\"Shall we continue thy report?\"")
                 if var_000B then
-                    unknown_0884H()
+                    func_0884()
                 else
                     add_dialogue("\"Oh. Well, carry on with thine investigation.\"")
                 end
@@ -265,6 +263,7 @@ function func_040C(eventid, objectref)
             end
             remove_answer("password")
         elseif answer == "bye" then
+            clear_answers()
             break
         end
     end

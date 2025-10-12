@@ -1,13 +1,13 @@
 --- Best guess: Handles dialogue with Iolo in Trinsic, discussing the murder, companions, and quest progression, with options to join or leave.
 function func_0401(eventid, objectref)
-    local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
+    local player_name, player_member_names, party_member_1_name, lord_or_lady, player_female, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
     
     set_flag(20, true)
-    var_0000 = get_player_name()
-    var_0001 = get_party_members()
-    var_0002 = get_npc_name_from_id(1)
-    var_0003 = get_lord_or_lady()
-    var_0004 = is_player_female()
+    player_name = get_player_name()
+    player_member_names = get_party_members()
+    party_member_1_name = get_npc_name_from_id(1)
+    lord_or_lady = get_lord_or_lady()
+    player_female = is_player_female()
     if eventid == 3 then
         --if not get_flag(59) and not get_flag(92) and not unknown_0088H(16, 356) then --- Guess: Checks a flag on an object
             --play_music(0, 35)
@@ -16,7 +16,7 @@ function func_0401(eventid, objectref)
             --var_0005 = unknown_0002H(125, 1706, {17493, 7715}, 356) --- Guess: Executes a specific action with parameters
         -- Move the avatar offscreen
         hide_ui_elements()
-        set_camera_angle(0)
+        jump_camera_angle(315)
         stop_npc_schedule(11)
         stop_npc_schedule(12)
         set_npc_dest(11, 1068, 0, 2215)
@@ -47,28 +47,28 @@ function func_0401(eventid, objectref)
 
         local moongate_id = spawn_object(157, 0, 1079, 0, 2214)
         wait(1)
-        set_npc_pos(0, 1079, 0, 2214)
+        set_npc_pos(0, 1077, 0, 2214)
         set_npc_dest(0, 1071, 0, 2214)
         wait(2)
         destroy_object(moongate_id)
         wait(2)
 
 
-        start_npc_schedule(11)
-        start_npc_schedule(12)
-        set_pause(0)
-        resume_input()
+        --start_npc_schedule(11)
+        --start_npc_schedule(12)
+        --set_pause(0)
+        --resume_input()
             --return
         --else
             --unknown_001EH(1) --- Guess: Removes object from game
         --end
-    --elseif get_flag(59) == false and eventid == 2 then
+    
         
         start_conversation()
         add_dialogue("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
-        add_dialogue("\"" .. var_0000 .. "! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...")
+        add_dialogue("\"" .. player_name .. "! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...")
         add_dialogue("\"Lo and behold! Who says that magic is dying! Here is living proof that it is not!")
-        add_dialogue("\"Dost thou realize, " .. var_0000 .. ", that it hath been 200 Britannian years since we last met? Why, thou hast not aged at all!\"")
+        add_dialogue("\"Dost thou realize, " .. player_name .. ", that it hath been 200 Britannian years since we last met? Why, thou hast not aged at all!\"")
         add_dialogue("Iolo winks conspiratorially. He whispers, \"Due no doubt to the difference in the structure of time in our original homeland and that of Britannia?\"")
         add_dialogue("He resumes speaking aloud. \"I have aged a little, as thou canst see. But of course, I have stayed here in Britannia all this time.")
         add_dialogue("\"Oh, but Avatar! Wait until I tell the others! They will be happy to see thee! Welcome to Trinsic!\"")
@@ -76,7 +76,7 @@ function func_0401(eventid, objectref)
         second_speaker(11, 0, "The distraught peasant interrupts Iolo. \"Show " .. var_0006 .. " the stables, milord. 'Tis horrible!\"")
         add_dialogue("Iolo nods, his joy fading quickly as he is reminded of the reason he was standing there in the first place.")
         add_dialogue("\"Ah, yes. Our friend Petre here discovered something truly ghastly this morning. Take a look inside the stables. I shall accompany thee.\"")
-        converse("func_0401")
+        --end_conversation()
         -- var_0007 = unknown_0002H(5, {1786, 8021, 20, 17447, 17452, 7715}, 356) --- Guess: Executes a specific action with parameters
         -- unknown_08DDH() --- Guess: Triggers an earthquake effect
         -- unknown_001EH(1) --- Guess: Removes object from game
@@ -90,25 +90,66 @@ function func_0401(eventid, objectref)
         -- end
         -- Wait for the conversation to finish.
 
+        -- Inlining this is hacky, but everything about scripted sequences in
+        -- Ultima VII is hacky.  At the very least, it ensures that the proper
+        -- dialogues have been seen and the proper flags are set.
         set_camera_angle(0)
         set_npc_dest(12,  1065, 0, 2215)
-        bark_npc(12, "I would speak with thee.")
+        bark_npc(12, "I would have words with thee.")
         --wait(8)
-        debug_print("Wait over.")
+        --debug_print("Wait over.")
+        --start_conversation()
         switch_talk_to(12, 0)
-        --func_040C(1)
+        add_dialogue("You see a middle-aged nobleman.")
+        set_flag(76, true)
+        add_dialogue("\"Iolo! Who is this stranger?\"")
+        second_speaker(1, 0, "\"Why, this is the Avatar!\" Iolo proudly proclaims. \"Canst thou believe it? May I introduce thee? This is Finnigan, the Town Mayor. And this is " .. player_name .. ", the Avatar!\"")
+        if is_player_female then
+            second_speaker(1, 0, "\"I simply cannot believe he is here!\"")
+        else
+            second_speaker(1, 0, "\"I simply cannot believe she is here!\"")
+        end
+        add_dialogue("The Mayor looks you up and down, not sure if he believes Iolo or not. He looks at Iolo skeptically.")
+        second_speaker(1, 0, "\"I swear to thee, it is the Avatar!\"")
+        add_dialogue("The mayor looks at you again as if he were studying every pore on your face. Finally, he smiles.")
+        add_dialogue("\"Welcome, Avatar.\"")
+        add_dialogue("But just as suddenly, Finnigan's face becomes stern.")
+        add_dialogue("\"A horrible murder has occurred. If thou art truly the Avatar, perhaps thou canst help us solve it. I would feel better if thou takest this matter into thine hands.")
+        var_0005 = ask_yes_no("Thou shalt be handsomely rewarded if thou dost discover the name of the killer. Dost thou accept?\"")
+        if var_0005 then
+            set_flag(90, true)
+            add_dialogue("\"Petre here knows something about all of this.\"")
+            second_speaker(11, 0, "The peasant interjects. \"I discovered poor Christopher and the Gargoyle Inamo early this morning.\"")
+            var_0006 = ask_yes_no("The Mayor continues. \"Hast thou searched the stables?\"")
+            if var_0006 then
+                var_000D = ask_multiple_choice({"\"What didst thou find?\"", "a body", "a bucket", "nothing"})
+                --set_flag(72, true)
+                if var_000D == "a body" then
+                    add_dialogue("\"I know that! What ELSE didst thou find? Thou shouldst look again, Avatar!\"")
+                elseif var_000D == "a bucket" then
+                    add_dialogue("\"Yes, obviously it is filled with poor Christopher's own blood. But surely there was something else that might point us in the direction of the killer or killers - thou shouldst look again, Avatar.\"")
+                elseif var_000D == "nothing" then
+                    add_dialogue("\"Thou shouldst look again, 'Avatar'!\"")
+                end
+            else
+                add_dialogue("\"Well, do so, then come speak with me!\"")
+            end
+        else
+            add_dialogue("\"Well, thou could not be the real Avatar then!\"")
+            set_flag(89, true)
+        end
 
-        --set_pause(0)
-        --resume_input()
+        set_pause(0)
+        resume_input()
         show_ui_elements()
-        return
+        --return
     elseif eventid == 1 then
         start_conversation()
         debug_print("func_0401: eventid == 1")
-        var_0000 = get_player_name()
-        var_0001 = get_party_members()
-        var_0002 = get_npc_name_from_id(1) --- Guess: Retrieves object reference from ID
-        var_0003 = get_lord_or_lady()
+        player_name = get_player_name()
+        player_member_names = get_party_members()
+        party_member_1_name = get_npc_name_from_id(1) --- Guess: Retrieves object reference from ID
+        lord_or_lady = get_lord_or_lady()
         --var_0008 = npc_id_in_party(11) --- Guess: Checks player status
         --var_0009 = npc_id_in_party(3) --- Guess: Checks player status
         var_000A = false
@@ -128,10 +169,10 @@ function func_0401(eventid, objectref)
             if not get_flag(87) then
                 add_answer("Trinsic")
             end
-            if is_string_in_array(var_0002, var_0001) then
+            if is_string_in_array(party_member_1_name, player_member_names) then
                 add_answer("leave")
             end
-            if not is_string_in_array(var_0002, var_0001) then
+            if not is_string_in_array(party_member_1_name, player_member_names) then
                 add_answer("join")
             end
             if get_flag(63) then
@@ -154,10 +195,10 @@ function func_0401(eventid, objectref)
                 coroutine.yield()
                 var_000C = get_answer()
                 if var_000C == "name" then
-                    add_dialogue("Your friend snorts. \"What, art thou joking, " .. var_0003 .. "? Thou dost not know thine old friend Iolo?\"")
+                    add_dialogue("Your friend snorts. \"What, art thou joking, " .. lord_or_lady .. "? Thou dost not know thine old friend Iolo?\"")
                     remove_answer("name")
                 elseif var_000C == "stables" then
-                    add_dialogue("\"Thou must see for thyself, " .. var_0000 .. ". Brace thyself, my friend. 'Tis truly a horrible sight.\"")
+                    add_dialogue("\"Thou must see for thyself, " .. player_name .. ". Brace thyself, my friend. 'Tis truly a horrible sight.\"")
                     clear_answers()
                     return
                 elseif var_000C == "job" then
@@ -165,7 +206,7 @@ function func_0401(eventid, objectref)
                     add_answer("Avatar")
                     remove_answer("job")
                 elseif var_000C == "Avatar" then
-                    add_dialogue("\"Why, there is no doubt -thou- art the Avatar, " .. var_0000 .. "! However, thou mayest have some trouble convincing those who do not know thy face.\"")
+                    add_dialogue("\"Why, there is no doubt -thou- art the Avatar, " .. player_name .. "! However, thou mayest have some trouble convincing those who do not know thy face.\"")
                     add_dialogue("\"Of course, thou -shouldst- be safe around thy friends!\"")
                     remove_answer("Avatar")
                     add_answer({"friends", "trouble"})
@@ -207,8 +248,8 @@ function func_0401(eventid, objectref)
                 elseif var_000C == "Dupre" then
                     var_000C = npc_id_in_party(4) --- Guess: Checks player status
                     if var_000C then
-                        add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
-                        second_speaker(4, 0, "\"I am right here, " .. var_0003 .. ".\"")
+                        add_dialogue("\"Why, he is right there, " .. lord_or_lady .. ".\"")
+                        second_speaker(4, 0, "\"I am right here, " .. lord_or_lady .. ".\"")
                         add_dialogue("\"See? I told thee!\"")
                     else
                         if ask_yes_no("\"I am sure we shall find him somewhere. Last I heard, he was in Jhelom. Didst thou know he was knighted?\"") then
@@ -223,8 +264,8 @@ function func_0401(eventid, objectref)
                     remove_answer("Dupre")
                 elseif var_000C == "Shamino" then
                     if var_0009 then
-                        add_dialogue("\"Why, he is right there, " .. var_0003 .. ".\"")
-                        second_speaker(3, 0, "\"I am right here, " .. var_0003 .. ".\"")
+                        add_dialogue("\"Why, he is right there, " .. lord_or_lady .. ".\"")
+                        second_speaker(3, 0, "\"I am right here, " .. lord_or_lady .. ".\"")
                         add_dialogue("\"See? I told thee!\"")
                     else
                         add_dialogue("\"Thy best bet in finding that rascal is to look in Britain. He has a girlfriend employed as an actress at the Royal Theatre.\"")
@@ -255,7 +296,7 @@ function func_0401(eventid, objectref)
                     add_dialogue("\"He is a good man. The Mayor of Trinsic, he is. I have known him for years.\"")
                     remove_answer("Finnigan")
                 elseif var_000C == "Christopher" then
-                    add_dialogue("\"I did not know him, " .. var_0003 .. ".\"")
+                    add_dialogue("\"I did not know him, " .. lord_or_lady .. ".\"")
                     remove_answer("Christopher")
                 elseif var_000C == "Inamo" then
                     add_dialogue("\"I never spoke with him. It is truly a shame. There are not many gargoyles living amongst the humans. This will only discourage the practice even more.\"")

@@ -148,9 +148,9 @@ void MakeAnimationFrameMeshes()
 	//g_AnimationFrames->Init(vertices, indices);
 }
 
-unsigned int DoCameraMovement()
+unsigned int DoCameraMovement(bool forcemove)
 {
-	g_CameraMoved = false;
+	g_CameraMoved = forcemove;
 
 	Vector3 direction = { 0, 0, 0 };
 	float deltaRotation = 0;
@@ -371,20 +371,29 @@ void UpdateSortedVisibleObjects()
  	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
 	g_objectUnderMousePointer = nullptr;
-	for (auto node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
+
+	//  Is a gump open?  Are we over it?  See if there's an object under our mouse.
+	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump())
 	{
-		if (*node == nullptr || !(*node)->m_Visible)
+		int stopper = 0;
+	}
+	else
+	{
+		for (auto node = g_sortedVisibleObjects.rbegin(); node != g_sortedVisibleObjects.rend(); ++node)
 		{
-			continue;
-		}
+			if (*node == nullptr || !(*node)->m_Visible)
+			{
+				continue;
+			}
 
-		Vector3 pos = { 0, 0, 0};
-		float picked = (*node)->PickXYZ(pos);
+			Vector3 pos = { 0, 0, 0};
+			float picked = (*node)->PickXYZ(pos);
 
-		if (picked != -1)
-		{
-			g_objectUnderMousePointer = *node;
-			break;
+			if (picked != -1)
+			{
+				g_objectUnderMousePointer = *node;
+				break;
+			}
 		}
 	}
 

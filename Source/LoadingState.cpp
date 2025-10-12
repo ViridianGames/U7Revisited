@@ -194,14 +194,6 @@ void LoadingState::UpdateLoading()
 			return;
 		}
 
-		if (!m_loadingIREG)
-		{
-			AddConsoleString(std::string("Loading IREG..."));
-			LoadIREGs();
-			m_loadingIREG = true;
-			return;
-		}
-
 		if (!m_loadingInitialGameState)
 		{
 			AddConsoleString(std::string("Loading Initial Game State..."));
@@ -591,7 +583,7 @@ void LoadingState::LoadFaces()
 						for (int i = 0; i < spanLength; ++i)
 						{
 							unsigned char Value = ReadU8(shapes);
-							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
+							ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 						}
 					}
 					else // RLE.
@@ -609,7 +601,7 @@ void LoadingState::LoadFaces()
 								for (int i = 0; i < runLength; ++i)
 								{
 									unsigned char Value = ReadU8(shapes);
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							else
@@ -617,7 +609,7 @@ void LoadingState::LoadFaces()
 								unsigned char Value = ReadU8(shapes);
 								for (int i = 0; i < runLength; ++i)
 								{
-									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[0][Value]);
+									ImageDrawPixel(&tempImage, xStart + i, yStart, m_palettes[paletteNumber][Value]);
 								}
 							}
 							xStart += runLength;
@@ -676,51 +668,6 @@ void LoadingState::MakeMap()
 	}
 }
 
-void LoadingState::LoadIREGs()
-{
-	return;
-	std::string dataPath = g_Engine->m_EngineConfig.GetString("data_path");
-	std::string loadingPath(dataPath);
-	loadingPath.append("/GAMEDAT/");
-
-	for (int superchunky = 0; superchunky < 12; ++superchunky)
-	{
-		for (int superchunkx = 0; superchunkx < 12; ++superchunkx)
-		{
-         std::stringstream ss;
-			int thissuperchunk = superchunkx + (superchunky * 12);
-			if (thissuperchunk < 16)
-			{
-				ss << "U7IREG0" << std::hex << thissuperchunk;
-			}
-			else
-			{
-				ss << "U7IREG" << std::hex << thissuperchunk;
-			}
-			std::string s = ss.str();
-            
-         std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-            
-			s.insert(0, loadingPath.c_str());
-
-			ifstream iregfile(s, ios::binary | ios::in);
-
-			if(iregfile.fail())
-			{
-				Log("Ultima VII files not found.  They should go into the Data/U7 folder.");
-				m_loadingFailed = true;
-				return;
-			}
-
-			stringstream thisireg;
-			thisireg << iregfile.rdbuf();
-			iregfile.close();
-
-			ParseIREGFile(thisireg, superchunkx, superchunky);
-		}
-	}
-}
-
 void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superchunky)
 {
 	unsigned char entryBuffer[20];
@@ -733,13 +680,13 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 		{
 			if (!containerStack.empty())
 			{
-				string logstring;
-				for (int i = 0; i < containerStack.size(); ++i)
-				{
-					logstring.append(">");
-				}
-				logstring.append("Closing container " + std::to_string(containerStack.back()));
-				DebugPrint(logstring);
+				//string logstring;
+				//for (int i = 0; i < containerStack.size(); ++i)
+				//{
+					//logstring.append(">");
+				//}
+				//logstring.append("Closing container " + std::to_string(containerStack.back()));
+				//DebugPrint(logstring);
 				containerStack.pop_back();
 			}
 			continue;
@@ -815,8 +762,8 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 			{
 				logstring.append(">");
 			}
-			logstring.append("Object: " + std::to_string(objectId) + " named " + g_objectDataTable[shape].m_name + " at " + std::to_string(actualx) + ", " + std::to_string(actualy));
-			DebugPrint(logstring);
+			//logstring.append("Object: " + std::to_string(objectId) + " named " + g_objectDataTable[shape].m_name + " at " + std::to_string(actualx) + ", " + std::to_string(actualy));
+			//DebugPrint(logstring);
 			continue;
 		}
 		else if (entryLength == 12) //  Container or Egg
@@ -859,7 +806,7 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 				thisObject->m_isEgg = true;
 				thisObject->m_isContainer = false;
 
-				DebugPrint("Object: " + std::to_string(id) + " named " + g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is an egg");
+				//DebugPrint("Object: " + std::to_string(id) + " named " + g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is an egg");
 			}
 			else
 			{
@@ -871,17 +818,17 @@ void LoadingState::ParseIREGFile(stringstream& ireg, int superchunkx, int superc
 					thisObject->m_containingObjectId = containerStack.back();
 					GetObjectFromID(containerStack.back())->AddObjectToInventory(id);
 				}
-				string logstring;
-				for (int i = 0; i < containerStack.size(); ++i)
-				{
-					logstring.append(">");
-				}
-				logstring.append("Object " + std::to_string(id) + " of type " + std::to_string(type) + " named " +  g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is a container");
-				DebugPrint(logstring);
+				//string logstring;
+				//for (int i = 0; i < containerStack.size(); ++i)
+				//{
+					//logstring.append(">");
+				//}
+				//logstring.append("Object " + std::to_string(id) + " of type " + std::to_string(type) + " named " +  g_objectDataTable[shape].m_name + " located at " + std::to_string(actualx) + ", " + std::to_string(actualy) + " is a container");
+				//DebugPrint(logstring);
 				unsigned char emptytest = ireg.peek(); //  Next byte is either 6, 12, or 18 if there are objects in this container.
 				if (type == 0 || emptytest != 6 && emptytest != 12 && emptytest != 18)
 				{
-					DebugPrint(">Container is empty.");
+					//DebugPrint(">Container is empty.");
 					continue;
 				}
 				else

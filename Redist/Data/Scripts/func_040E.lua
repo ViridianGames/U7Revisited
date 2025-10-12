@@ -33,7 +33,7 @@ function func_040E(eventid, objectref)
     if get_flag(64) then
         add_answer("Crown Jewel")
     end
-    if get_flag(78) then
+    if not get_flag(78) then
         add_dialogue("You see an alert and no-nonsense guard.")
         set_flag(78, true)
     else

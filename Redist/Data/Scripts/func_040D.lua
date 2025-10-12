@@ -26,7 +26,7 @@ function func_040D(eventid, objectref)
         add_answer("Hook")
     end
 
-    if get_flag(77) then
+    if not get_flag(77) then
         add_dialogue("You see a grumpy fellow with a bloody bandage on his head.")
         set_flag(77, true)
         --unknown_001DH(16, -13)

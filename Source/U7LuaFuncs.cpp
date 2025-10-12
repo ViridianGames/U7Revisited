@@ -38,6 +38,7 @@ static int LuaAddDialogue(lua_State *L)
         return luaL_error(L, "ConversationState not initialized");
     }
     cout << "Lua says: " << luaL_checkstring(L, 1) << "\n";
+    DebugPrint("LUA: add_dialogue called with " + string(luaL_checkstring(L, 1)));
     const char *text = luaL_checkstring(L, 1);
 
     ConversationState::ConversationStep step;
@@ -67,14 +68,13 @@ static int LuaSecondSpeaker(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
     string secondSpeakerDialog = luaL_checkstring(L, 3);
-    DebugPrint("LUA: switch_talk_to called with " + std::to_string(npc_id));
+    DebugPrint("LUA: second_speaker called with " + std::to_string(npc_id));
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_SECOND_SPEAKER;
     step.dialog = secondSpeakerDialog;
     step.npcId = npc_id;
     step.frame = frame;
     g_ConversationState->AddStep(step);
-    cout << "Switching talk to NPC ID: " << npc_id << "\n";
 
     return 0;
 }
@@ -174,6 +174,12 @@ static int LuaAddAnswers(lua_State *L)
         }
         std::reverse(localAnswers.begin(), localAnswers.end());
         g_ConversationState->AddAnswers(localAnswers);
+        string answersCombined;
+        for (const auto& ans : localAnswers)
+        {
+            answersCombined += ans + ", ";
+        }
+        DebugPrint("LUA: add_answers called with " + answersCombined);
     }
     else
     {
@@ -300,13 +306,14 @@ static int LuaGetAnswer(lua_State *L)
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-    if (g_LuaDebug) DebugPrint("LUA: get_answer called");
+
     lua_getglobal(L, "answer");
     const char *selected_answer = lua_tostring(L, -1);
     lua_pop(L, 1);
 
     if (selected_answer)
     {
+        DebugPrint("LUA: get_answer called with " + string(selected_answer));
         lua_pushstring(L, selected_answer);
     }
     else
@@ -333,6 +340,8 @@ static int LuaAskYesNo(lua_State *L)
     step.npcId = 0;
     step.frame = 0;
     g_ConversationState->AddStep(step);
+
+    if (g_LuaDebug) DebugPrint("LUA: ask_yes_no called with question: " + string(step.dialog));
 
     // Yield the coroutine
     return lua_yield(L, 0);
@@ -700,7 +709,8 @@ static int LuaBarkNPC(lua_State *L)
 static int LuaIsAvatarFemale(lua_State *L)
 {
     if (g_LuaDebug) DebugPrint("LUA: is_avatar_female called");
-    lua_pushboolean(L, !g_Player->GetIsMale());
+    bool is_female = !g_Player->GetIsMale();
+    lua_pushboolean(L, is_female);
     return 1;
 }
 
@@ -1108,7 +1118,7 @@ static int LuaIsStringInArray(lua_State *L)
 }
 
 // Does the container contain this specific object?
-static int LuaIsObjectInInventory(lua_State *L)
+static int LuaIsObjectInNPCInventory(lua_State *L)
 {
     int npc_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
@@ -1129,7 +1139,7 @@ static int LuaIsObjectInInventory(lua_State *L)
                " frame " + to_string(frame) +
                " quality " + to_string(quality));
 
-    if(GetObjectFromID(npc_id)->IsInInventory(shape, frame, quality))
+    if(GetObjectFromID(g_NPCData[npc_id].get()->m_objectID)->IsInInventory(shape, frame, quality))
     {
         lua_pushboolean(L, true);
         return 1;
@@ -1139,6 +1149,101 @@ static int LuaIsObjectInInventory(lua_State *L)
         lua_pushboolean(L, false);
         return 1;
     }
+}
+
+// Does the container contain this specific object?
+static int LuaIsObjectInContainer(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int shape = luaL_checkinteger(L, 2);
+
+    int frame = 0;
+    if (lua_isinteger(L, 3))
+    {
+        frame = lua_tointeger(L, 3);
+    }
+
+    int quality = -1;
+    if (lua_isinteger(L, 4))
+    {
+        quality = lua_tointeger(L, 4);
+    }
+    DebugPrint("LUA: is_object_in_inventory called for NPC ID " + to_string(npc_id) +
+               " shape " + to_string(shape) +
+               " frame " + to_string(frame) +
+               " quality " + to_string(quality));
+
+    if(GetObjectFromID(g_NPCData[npc_id].get()->m_objectID)->IsInInventory(shape, frame, quality))
+    {
+        lua_pushboolean(L, true);
+        return 1;
+    }
+    else
+    {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+}
+
+// Does the container contain this specific object?
+static int LuaAddObjectToContainer(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    int shape = luaL_checkinteger(L, 2);
+
+    int frame = 0;
+    if (lua_isinteger(L, 3))
+    {
+        frame = lua_tointeger(L, 3);
+    }
+
+    int quality = -1;
+    if (lua_isinteger(L, 4))
+    {
+        quality = lua_tointeger(L, 4);
+    }
+    DebugPrint("LUA: add_object_to_container called for object ID " + to_string(object_id) +
+               " shape " + to_string(shape) +
+               " frame " + to_string(frame) +
+               " quality " + to_string(quality));
+
+    int id = GetNextID();
+    AddObject(shape, frame, id, 0, 0, 0); //  Since this is going into an inventory, position doesn't matter
+    g_objectList[id]->m_Quality = quality;
+
+    bool success = GetObjectFromID(object_id)->AddObjectToInventory(id);
+    lua_pushboolean(L, success);
+    return 1;
+}
+
+static int LuaAddObjectToNPCInventory(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int shape = luaL_checkinteger(L, 2);
+
+    int frame = 0;
+    if (lua_isinteger(L, 3))
+    {
+        frame = lua_tointeger(L, 3);
+    }
+
+    int quality = -1;
+    if (lua_isinteger(L, 4))
+    {
+        quality = lua_tointeger(L, 4);
+    }
+    DebugPrint("LUA: add_object_to_npc_inventory called for NPC ID " + to_string(npc_id) +
+               " shape " + to_string(shape) +
+               " frame " + to_string(frame) +
+               " quality " + to_string(quality));
+
+    int nextId = GetNextID();
+    AddObject(shape, frame, nextId, 0, 0, 0); //  Since this is going into an inventory, position doesn't matter
+    g_objectList[nextId]->m_Quality = quality;
+
+    bool success = GetObjectFromID(g_NPCData[npc_id].get()->m_objectID)->AddObjectToInventory(nextId);
+    lua_pushboolean(L, success);
+    return 1;
 }
 
 // Does the container contain any object of this shape/frame type?
@@ -1207,16 +1312,16 @@ static int LuaGetNPCIdFromName(lua_State *L)
     return 1;
 }
 
-
-static int LuaUpdateConversation(lua_State *L)
+static int LuaEndConversation(lua_State *L)
 {
     if (!g_ConversationState) {
         return luaL_error(L, "ConversationState not initialized");
     }
-    g_ConversationState->Update();
-    g_ConversationState->Draw();
-    return 0;
+    if (g_LuaDebug) DebugPrint("LUA: end_conversation called");
+    return lua_yield(L, 0);
 }
+
+
 
 static int LuaClearAnswers(lua_State *L)
 {
@@ -1330,6 +1435,19 @@ static int LuaSetCameraAngle(lua_State *L)
     new_angle_rads = (new_angle_rads * 3.14159f) / 180.0f;
     g_cameraRotationTarget = new_angle_rads;
     g_autoRotate = true;
+    return 0;
+}
+
+static int LuaJumpCameraAngle(lua_State *L)
+{
+    int new_angle = luaL_checkinteger(L, 1);
+    if (g_LuaDebug) DebugPrint("LUA: set_camera_angle called with angle " + to_string(new_angle));
+    //  Convert angle to radians
+    float new_angle_rads = new_angle % 360;
+    if (new_angle_rads < 0) new_angle_rads += 360;
+    new_angle_rads = (new_angle_rads * 3.14159f) / 180.0f;
+    g_cameraRotation = new_angle_rads;
+    DoCameraMovement(true);
     return 0;
 }
 
@@ -1597,6 +1715,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
     g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
+    g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaStartConversation);
+
     g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
@@ -1612,8 +1732,11 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
-    g_ScriptingSystem->RegisterScriptFunction("is_object_in_inventory", LuaIsObjectInInventory);
+    g_ScriptingSystem->RegisterScriptFunction("is_object_in_npc_inventory", LuaIsObjectInNPCInventory);
+    g_ScriptingSystem->RegisterScriptFunction("is_object_in_container", LuaIsObjectInContainer);
     g_ScriptingSystem->RegisterScriptFunction("has_object_of_type", LuaHasObjectOfType);
+    g_ScriptingSystem->RegisterScriptFunction("add_object_to_container", LuaAddObjectToContainer);
+    g_ScriptingSystem->RegisterScriptFunction("add_object_to_npc_inventory", LuaAddObjectToNPCInventory);
 
     // These functions are used to manipulate the game world.
     g_ScriptingSystem->RegisterScriptFunction("get_object_shape", LuaGetObjectShape);
@@ -1670,8 +1793,6 @@ void RegisterAllLuaFunctions()
     
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 
-    g_ScriptingSystem->RegisterScriptFunction("update_conversation", LuaUpdateConversation);
-
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
 
     //g_ScriptingSystem->RegisterScriptFunction( "wait", LuaWait);
@@ -1690,6 +1811,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
+    g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "show_ui_elements", LuaShowUIElements);
     g_ScriptingSystem->RegisterScriptFunction( "hide_ui_elements", LuaHideUIElements);
 

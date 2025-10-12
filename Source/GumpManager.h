@@ -34,6 +34,8 @@ public:
 
 	void AddGump(std::shared_ptr<Gump> gump);
 
+	bool IsMouseOverGump() { return m_mouseOverGump; }
+
 	Config		m_GumpManagerConfig;
 	std::string	m_ConfigFileName;
 	std::vector<std::shared_ptr<Gump>> m_GumpList;

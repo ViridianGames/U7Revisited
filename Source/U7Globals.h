@@ -240,7 +240,7 @@ bool IsDistanceLessThan(float startX, float startZ, float endX, float endZ, floa
 
 void MakeAnimationFrameMeshes();
 
-unsigned int DoCameraMovement();
+unsigned int DoCameraMovement(bool forcemove = false);
 
 void IsCellVisible(float x, float y);
 

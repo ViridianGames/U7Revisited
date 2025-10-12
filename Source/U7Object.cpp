@@ -89,16 +89,16 @@ void U7Object::Draw()
 			return; // Not on the screen.
 		}
 
-		if (m_objectData->m_isTranslucent)
-		{
-			Color color = g_Terrain->m_cellLighting[cellx][celly];
-			//color.a *= 0.5f;
-			m_shapeData->Draw(m_Pos, m_Angle, color);
-		}
-		else
-		{
+		// if (m_objectData->m_isTranslucent)
+		// {
+		// 	Color color = g_Terrain->m_cellLighting[cellx][celly];
+		// 	//color.a *= 0.5f;
+		// 	m_shapeData->Draw(m_Pos, m_Angle, color);
+		// }
+		// else
+		// {
 			m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
-		}
+		//}
 	}
 
 	if (g_Engine->m_debugDrawing)
@@ -483,9 +483,10 @@ bool U7Object::IsInInventory(int shape, int frame, int quality)
 {
 	for (int i = 0; i < m_inventory.size(); i++)
 	{
-		if (GetObjectFromID(m_inventory[i])->m_shapeData->m_shape == shape &&
-			GetObjectFromID(m_inventory[i])->m_shapeData->m_frame == frame &&
-			(GetObjectFromID(m_inventory[i])->m_Quality == quality || quality == -1))
+		U7Object* obj = GetObjectFromID(m_inventory[i]);
+		if (obj != nullptr && obj->m_ObjectType == shape &&
+			(frame == -1 || obj->m_Frame == frame) &&
+			(quality == -1 || obj->m_Quality == quality || quality == -1))
 		{
 			return true;
 		}

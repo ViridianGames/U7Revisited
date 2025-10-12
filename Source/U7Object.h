@@ -56,7 +56,7 @@ public:
    bool RemoveObjectFromInventory(int objectid);
 
    bool IsInInventoryById(int objectid);
-   bool IsInInventory(int shape, int frame = 0, int quality = -1);
+   bool IsInInventory(int shape, int frame = -1, int quality = -1);
 
    void NPCUpdate();
    void NPCDraw();

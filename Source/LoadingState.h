@@ -30,7 +30,6 @@ public:
    void CreateShapeTable();
    void CreateObjectTable();
    void LoadIFIX();
-   void LoadIREGs();
    void ParseIREGFile(std::stringstream& ireg, int superchunkx, int superchunky);
    void LoadFaces();
    void LoadVersion();
