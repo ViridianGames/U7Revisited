@@ -420,7 +420,7 @@ void ShapeEditorState::Update()
 	{
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
-			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame)
+			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
 			{
 				g_camera.target = (*node).second->m_Pos;
 				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
@@ -758,7 +758,7 @@ void ShapeEditorState::Update()
 
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.x -= 1.0f;
+			shapeData.m_Scaling.x -= .5f;
 		}
 		else
 		{
@@ -779,7 +779,7 @@ void ShapeEditorState::Update()
 
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.x += 1.0f;
+			shapeData.m_Scaling.x += .5f;
 		}
 		else
 		{
@@ -799,7 +799,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if(IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.y += 1.0f;
+			shapeData.m_Scaling.y += .5f;
 		}
 		else
 		{
@@ -818,7 +818,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if(IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.y -= 1.0f;
+			shapeData.m_Scaling.y -= .5f;
 		}
 		else
 		{
@@ -837,7 +837,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.z += 1.0f;
+			shapeData.m_Scaling.z += .5f;
 		}
 		else
 		{
@@ -856,7 +856,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_Scaling.z -= 1.0f;
+			shapeData.m_Scaling.z -= .5f;
 		}
 		else
 		{
@@ -876,7 +876,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if(IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.x -= 1.0f;
+			shapeData.m_TweakPos.x -= .5f;
 		}
 		else
 		{
@@ -895,7 +895,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if(IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.x += 1.0f;
+			shapeData.m_TweakPos.x += .5f;
 		}
 		else
 		{
@@ -915,7 +915,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.y += 1.0f;
+			shapeData.m_TweakPos.y += .5f;
 		}
 		else
 		{
@@ -935,7 +935,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.y -= 1.0f;
+			shapeData.m_TweakPos.y -= .5f;
 		}
 		else
 		{
@@ -955,7 +955,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.z += 1.0f;
+			shapeData.m_TweakPos.z += .5f;
 		}
 		else
 		{
@@ -975,7 +975,7 @@ void ShapeEditorState::Update()
 		somethingChanged = true;
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			shapeData.m_TweakPos.z -= 1.0f;
+			shapeData.m_TweakPos.z -= .5f;
 		}
 		else
 		{

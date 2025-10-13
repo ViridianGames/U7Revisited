@@ -66,6 +66,8 @@ public:
 
 	bool IsLocked();
 	bool IsMagicLocked();
+
+	void SetFrames(int framex, int framey) { m_currentFrameX = framex; m_currentFrameY = framey; }
   
    Vector3 m_Pos;
    Vector3 m_Dest;
@@ -82,7 +84,8 @@ public:
    int m_Frame;
    int m_Quality;
 
-   bool m_Visible;
+   bool m_Visible; // This is set to false for objects that are out of range or otherwise not visible
+	bool m_ShouldDraw = true; // This is an override that can be set in a Lua script.
    bool m_Selected;
 
    float m_BaseSpeed;
@@ -141,6 +144,8 @@ public:
 
 	bool m_followingSchedule = false;
    int m_lastSchedule = -1;
+	int m_currentFrameX = 0;
+	int m_currentFrameY = 0;
 
    std::vector<int> m_inventory; //  Each entry is the ID of an object in the object list
 };

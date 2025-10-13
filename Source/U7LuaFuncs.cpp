@@ -1704,6 +1704,62 @@ static int LuaIsConversationRunning(lua_State *L)
     return 1;
 }
 
+static int LuaSetModelAnimationFrame(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    string anim = luaL_checkstring(L, 2);
+    int frame = luaL_checkinteger(L, 3);
+    if (g_objectList.find(object_id) != g_objectList.end())
+    {
+        if (g_LuaDebug) DebugPrint("LUA: set_model_animation_frame called on object ID " + to_string(object_id) + " anim " + anim + " frame " + to_string(frame));
+        g_objectList[object_id]->m_shapeData->m_customMesh->SetAnimationFrame(anim, frame);
+    }
+    return 0;
+}
+
+//  Force an NPC to a specific frame in their current animation
+static int LuaSetNPCFrame(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    int framex = luaL_checkinteger(L, 2);
+    int framey = luaL_checkinteger(L, 3);
+    if (g_objectList.find(g_NPCData[npc_id].get()->m_objectID) != g_objectList.end())
+    {
+        if (g_LuaDebug) DebugPrint("LUA: set_npc_frame called on npc " + to_string(npc_id) +
+        " frame " + to_string(framex) + "," + to_string(framey));
+        g_objectList[g_NPCData[npc_id].get()->m_objectID].get()->SetFrames(framex, framey);
+    }
+    return 0;
+}
+
+static int LuaSetObjectVisibility(lua_State *L)
+{
+    int object_id = luaL_checkinteger(L, 1);
+    bool visible = lua_toboolean(L, 2);
+
+    if (g_objectList.find(object_id) != g_objectList.end())
+    {
+        if (g_LuaDebug) DebugPrint("LUA: set_object_visibility called on object " + to_string(object_id) +
+        " set to " + to_string(visible));
+        g_objectList[object_id]->m_ShouldDraw = visible;
+    }
+    return 0;
+}
+
+static int LuaSetNPCVisibility(lua_State *L)
+{
+    int npc_id = luaL_checkinteger(L, 1);
+    bool visible = lua_toboolean(L, 2);
+
+    if (g_objectList.find(g_NPCData[npc_id]->m_objectID) != g_objectList.end())
+    {
+        if (g_LuaDebug) DebugPrint("LUA: set_object_visibility called on " + to_string(npc_id) +
+        " set to " + to_string(visible));
+        g_objectList[g_NPCData[npc_id]->m_objectID]->m_ShouldDraw = visible;
+    }
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -1817,6 +1873,12 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "start_npc_schedule", LuaStartNPCSchedule);
     g_ScriptingSystem->RegisterScriptFunction( "stop_npc_schedule", LuaStopNPCSchedule);
+
+    g_ScriptingSystem->RegisterScriptFunction( "set_npc_frame", LuaSetNPCFrame);
+    g_ScriptingSystem->RegisterScriptFunction( "set_model_animation_frame", LuaSetModelAnimationFrame);
+
+    g_ScriptingSystem->RegisterScriptFunction( "set_object_visibility", LuaSetObjectVisibility);
+    g_ScriptingSystem->RegisterScriptFunction( "set_npc_visibility", LuaSetNPCVisibility);
 
     cout << "Registered all Lua functions\n";
 }

@@ -21,6 +21,8 @@ public:
 	RaylibModel& Decenter();
 
 	void UpdateAnim(const std::string& animName);
+	bool SetAnimationFrame(const std::string& animName, int frame);
+
 private:
 	Model m_Model = {{ 0 }};
 	ModelAnimation* m_Anims = nullptr;

@@ -113,3 +113,32 @@ void RaylibModel::UpdateAnim(const std::string& animName) {
 		UpdateModelAnimation(m_Model, m_Anims[animIdx], m_AnimFrame);
 	}
 }
+
+bool RaylibModel::SetAnimationFrame(const std::string& animName, int frame)
+{
+	// Look for the named animation in this model.
+	bool animValid = false;
+	int i = 0;
+	for (; i < m_AnimCount; ++i)
+	{
+		if (animName == m_Anims[i].name)
+		{
+			// Make sure it has the frame we want.
+			if (m_Anims[i].frameCount > frame)
+			{
+				animValid = true;
+			}
+			break;
+		}
+	}
+
+	// It doesn't have it, return.
+	if (!animValid)
+	{
+		return false;
+	}
+
+	UpdateModelAnimation(m_Model, m_Anims[i], frame);
+	UpdateAnim(animName);
+	return true;
+}

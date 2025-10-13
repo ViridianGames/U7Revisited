@@ -455,6 +455,7 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	temp->m_ID = id;
 	temp->SetInitialPos(Vector3{ x, y, z });
 	AssignObjectChunk(temp);
+	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);
 
 	return g_objectList[id].get();
 }

@@ -70,7 +70,7 @@ void U7Object::Init(const string& configfile, int unitType, int frame)
 
 void U7Object::Draw()
 {
-	if (!m_Visible || m_isContained || m_isEgg)
+	if (!m_Visible || m_isContained || m_isEgg || !m_ShouldDraw)
 	{
 		return;
 	}
@@ -157,6 +157,17 @@ void U7Object::Shutdown()
 
 void U7Object::NPCDraw()
 {
+	if (!m_Visible)
+	{
+		return;
+	}
+
+	if (m_NPCID == 0)
+	{
+		int stopper = 0; // Should be avatar;
+	}
+
+
 	//  Custom NPC drawing
 	Vector3 finalPos = m_Pos;
 	finalPos.x += .5f;
@@ -248,7 +259,7 @@ void U7Object::NPCDraw()
 void U7Object::NPCUpdate()
 {
 	//  Get desination from schedule
-	if (g_Player->NPCIDInParty(m_NPCID))
+	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
 	{
 		return; // Don't do schedules while in the party.
 	}
