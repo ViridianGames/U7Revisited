@@ -1379,9 +1379,9 @@ void LoadingState::LoadInitialGameState()
 
 				//  Make walk anim frames if necessary.
 				thisNPC.m_walkTextures.resize(4);
-				for (int i = 0; i < 4; i++)
+				for (int f = 0; f < 4; f++)
 				{
-					thisNPC.m_walkTextures[i].resize(2);
+					thisNPC.m_walkTextures[f].resize(2);
 				}
 
 				Image image;
