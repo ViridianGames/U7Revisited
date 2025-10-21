@@ -96,6 +96,8 @@ public:
 
 	void SortContainer();
 
+	U7Object* GetObjectUnderMousePointer();
+
 	int m_containerType; // Defines the look of the gump we'll use to show this container's contents
 	ContainerData m_containerData; //  The data for the container type
 	int m_containerId; //  The container this gump is linked to

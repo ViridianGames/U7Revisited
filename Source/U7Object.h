@@ -80,6 +80,7 @@ public:
 
    float m_Angle;
 
+	UnitTypes m_UnitType = UnitTypes::UNIT_TYPE_OBJECT;
    int m_ObjectType;
    int m_Frame;
    int m_Quality;

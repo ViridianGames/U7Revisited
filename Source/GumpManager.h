@@ -34,7 +34,7 @@ public:
 
 	void AddGump(std::shared_ptr<Gump> gump);
 
-	bool IsMouseOverGump() { return m_mouseOverGump; }
+	bool IsMouseOverGump() { return m_isMouseOverGump; }
 
 	Config		m_GumpManagerConfig;
 	std::string	m_ConfigFileName;
@@ -43,7 +43,8 @@ public:
 	Gump*			m_sourceGump;
 	int			m_draggedObjectId;
 	Vector2		m_dragOffset;
-	bool			m_mouseOverGump;
+	bool			m_isMouseOverGump;
+	Gump*			m_gumpUnderMouse;
 };
 
 #endif
