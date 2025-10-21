@@ -66,6 +66,15 @@ void GumpManager::Update()
 	{
 		auto object = GetObjectFromID(g_gumpManager->m_draggedObjectId);
 
+		// Safety check - object may not exist
+		if (object == nullptr)
+		{
+			g_gumpManager->m_draggingObject = false;
+			g_gumpManager->m_draggedObjectId = -1;
+			g_gumpManager->m_sourceGump = nullptr;
+			return;
+		}
+
 		//  Dragging from inventory to inventory
 		for (auto gump : g_gumpManager->m_GumpList)
 		{

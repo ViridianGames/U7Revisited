@@ -1388,6 +1388,18 @@ void LoadingState::LoadInitialGameState()
 					thisNPC.m_walkTextures[f].resize(2);
 				}
 
+				//  Check if required frames exist for this shape
+				if (g_shapeTable[shapenum][0].m_texture == nullptr ||
+				    g_shapeTable[shapenum][1].m_texture == nullptr ||
+				    g_shapeTable[shapenum][2].m_texture == nullptr ||
+				    g_shapeTable[shapenum][16].m_texture == nullptr ||
+				    g_shapeTable[shapenum][17].m_texture == nullptr)
+				{
+					// Skip this NPC - missing required animation frames
+					Log("Warning: Skipping NPC with shape " + to_string(shapenum) + " - missing required animation frames");
+					continue;
+				}
+
 				Image image;
 
 				//  South-west

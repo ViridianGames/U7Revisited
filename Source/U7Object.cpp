@@ -350,6 +350,14 @@ void U7Object::SetPos(Vector3 pos)
 	Vector3 dims = Vector3{ 0, 0, 0 };
 	Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
 
+	// Safety check for null shape data
+	if (m_shapeData == nullptr)
+	{
+		m_boundingBox = { m_Pos, m_Pos };
+		m_centerPoint = pos;
+		return;
+	}
+
 	ObjectData* objectData = &g_objectDataTable[m_shapeData->GetShape()];
 
 	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
@@ -359,7 +367,15 @@ void U7Object::SetPos(Vector3 pos)
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
-		dims = Vector3{ float(m_shapeData->m_texture->width) / 8.0f, 0, float(m_shapeData->m_texture->height) / 8.0f };
+		// Safety check for null texture
+		if (m_shapeData->m_texture == nullptr)
+		{
+			dims = Vector3{ 1.0f, 0, 1.0f }; // Default size
+		}
+		else
+		{
+			dims = Vector3{ float(m_shapeData->m_texture->width) / 8.0f, 0, float(m_shapeData->m_texture->height) / 8.0f };
+		}
 		boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ -dims.x + 1, 0, -dims.z + 1 });
 	}
 	else
