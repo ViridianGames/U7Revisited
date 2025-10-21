@@ -317,7 +317,7 @@ void MainState::UpdateInput()
 		m_dragStart = {0, 0};
 	}
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -416,7 +416,7 @@ void MainState::UpdateInput()
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		if (!g_gumpManager->m_mouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
+		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
 		{
 			if (m_objectSelectionMode == true)
 			{
@@ -711,11 +711,11 @@ void MainState::Draw()
 
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
-			DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
-			 + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
+			//DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
+			// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
 
-			DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
-				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
+			//DrawOutlinedText(g_SmallFont, "Center terrain cell: " + to_string(int(g_camera.target.x)) + " " + to_string(int(g_camera.target.z))
+			//				 + ", Terrain type " + to_string(shape), Vector2{ 10, 292 }, g_SmallFont->baseSize, 1, WHITE);
 		}
 
 		if (g_objectUnderMousePointer != nullptr)
@@ -742,7 +742,7 @@ void MainState::Draw()
 				objectDescription += " This object is contained.";
 			}
 
-			//DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
+			DrawOutlinedText(g_SmallFont, objectDescription, Vector2{ 10, 288 }, g_SmallFont->baseSize, 1, WHITE);
 		}
 		//DrawOutlinedText(g_SmallFont, "Current chunk: " + to_string(int(g_camera.target.x / 16.0f)) + " x " + to_string(int(g_camera.target.z / 16.0f)), Vector2{ 10, 304 }, g_SmallFont->baseSize, 1, WHITE);
 		//DrawOutlinedText(g_SmallFont, "Objects: " + to_string(g_ObjectList.size()) + " Visible: " + to_string(g_sortedVisibleObjects.size()), Vector2{ 10, 320 }, g_SmallFont->baseSize, 1, WHITE);

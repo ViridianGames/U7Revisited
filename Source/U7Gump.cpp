@@ -167,6 +167,26 @@ void Gump::Update()
 	}
 }
 
+U7Object* Gump::GetObjectUnderMousePointer()
+{
+	Vector2 mousePos = GetMousePosition();
+	mousePos.x = int(mousePos.x /= g_DrawScale);
+	mousePos.y = int(mousePos.y /= g_DrawScale);
+
+	for (auto containerObjectId : m_containerObject->m_inventory)
+	{
+		auto object = GetObjectFromID(containerObjectId);
+		if (object && object->m_shapeData)
+		{
+			if (CheckCollisionPointRec(mousePos, Rectangle{ m_gui.m_Pos.x + (m_containerData.m_boxOffset.x * 1) + object->m_InventoryPos.x, m_gui.m_Pos.y + (m_containerData.m_boxOffset.y * 1) + object->m_InventoryPos.y, float(object->m_shapeData->GetDefaultTextureImage().width), float(object->m_shapeData->GetDefaultTextureImage().height) }))
+			{
+				return object;
+			}
+		}
+	}
+	return nullptr;
+}
+
 void Gump::Draw()
 {
 	m_gui.Draw();

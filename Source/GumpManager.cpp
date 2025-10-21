@@ -38,13 +38,14 @@ void GumpManager::Update()
 	mousePos.y = int(mousePos.y /= g_DrawScale);
 
 	//  Update all gumps, remove dead ones.
-	m_mouseOverGump = false;
+	m_isMouseOverGump = false;
 	for (vector<std::shared_ptr<Gump>>::iterator gump = m_GumpList.begin(); gump != m_GumpList.end();)
 	{
 		(*gump).get()->Update();
 		if (CheckCollisionPointRec(mousePos, Rectangle{ gump->get()->m_gui.m_Pos.x, gump->get()->m_gui.m_Pos.y, gump->get()->m_gui.m_Width, gump->get()->m_gui.m_Height }))
 		{
-			m_mouseOverGump = true;
+			m_isMouseOverGump = true;
+			m_gumpUnderMouse = gump->get();
 		}
 
 		if ((*gump).get()->GetIsDead())
@@ -56,6 +57,9 @@ void GumpManager::Update()
 			++gump;
 		}
 	}
+
+	// Handle using objects from inventory
+
 
 	// Handle dragging
 	if (g_gumpManager->m_draggingObject && !IsMouseButtonDown(MOUSE_LEFT_BUTTON))
