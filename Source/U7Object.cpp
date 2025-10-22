@@ -162,6 +162,21 @@ void U7Object::NPCDraw()
 		return;
 	}
 
+	// Check if this object has NPC data and properly initialized walk textures
+	if (m_NPCData == nullptr || m_NPCData->m_walkTextures.size() < 4)
+	{
+		return;
+	}
+
+	// Verify all directional animation vectors are properly sized
+	for (int i = 0; i < 4; i++)
+	{
+		if (m_NPCData->m_walkTextures[i].size() < 2)
+		{
+			return;
+		}
+	}
+
 	if (m_NPCID == 0)
 	{
 		int stopper = 0; // Should be avatar;
