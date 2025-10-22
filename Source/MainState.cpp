@@ -706,7 +706,15 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
-		unsigned short shapeframe = g_World[int(g_camera.target.z)][int(g_camera.target.x)];
+		// Clamp camera coordinates to valid world bounds before accessing g_World
+		int worldX = int(g_camera.target.x);
+		int worldZ = int(g_camera.target.z);
+		if (worldX < 0) worldX = 0;
+		if (worldX >= 3072) worldX = 3071;
+		if (worldZ < 0) worldZ = 0;
+		if (worldZ >= 3072) worldZ = 3071;
+
+		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
