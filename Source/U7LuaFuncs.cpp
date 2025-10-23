@@ -556,6 +556,38 @@ static int LuaSetObjectFrame(lua_State *L)
     return 0;
 }
 
+// Get object position (returns x, y, z)
+static int LuaGetObjectPosition(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: get_object_position called");
+    int object_id = luaL_checkinteger(L, 1);
+    U7Object *object = GetObjectFromID(object_id);
+    if (object)
+    {
+        lua_pushnumber(L, object->m_Pos.x);
+        lua_pushnumber(L, object->m_Pos.y);
+        lua_pushnumber(L, object->m_Pos.z);
+        return 3;  // Return 3 values
+    }
+    return 0;
+}
+
+// Set object position
+static int LuaSetObjectPosition(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: set_object_position called");
+    int object_id = luaL_checkinteger(L, 1);
+    float x = luaL_checknumber(L, 2);
+    float y = luaL_checknumber(L, 3);
+    float z = luaL_checknumber(L, 4);
+    U7Object *object = GetObjectFromID(object_id);
+    if (object)
+    {
+        object->SetPos({x, y, z});
+    }
+    return 0;
+}
+
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
 {
@@ -1811,6 +1843,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("set_object_frame", LuaSetObjectFrame);
     g_ScriptingSystem->RegisterScriptFunction("get_object_quality", LuaGetObjectQuality);
     g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetObjectQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_position", LuaGetObjectPosition);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_position", LuaSetObjectPosition);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_property", LuaGetNPCProperty);
     g_ScriptingSystem->RegisterScriptFunction("set_npc_property", LuaSetNPCProperty);
 
