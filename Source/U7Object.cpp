@@ -19,6 +19,7 @@
 #include "ShapeData.h"
 #include "LoadingState.h"
 #include "MainState.h"
+#include "Pathfinding.h"
 
 #include <iostream>
 #include <string>
@@ -273,48 +274,34 @@ void U7Object::NPCDraw()
 
 void U7Object::NPCUpdate()
 {
-	//  Get desination from schedule
+	// Don't do schedules while in the party
 	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
 	{
-		return; // Don't do schedules while in the party.
+		return;
 	}
 
-	//  If we don't have a schedule yet, or if the schedule time has changed, get the next destination
-	if (m_followingSchedule)
+	// Schedule checking is now handled by MainState::Update() queue system
+	// This function only handles waypoint following and movement
+
+	// Follow waypoints from pathfinding
+	if (!m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
-		if (m_lastSchedule == -1 && g_NPCSchedules[m_NPCID].size() > 0)
+		// Check if reached current waypoint (within 2 tiles)
+		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
+		if (distToWaypoint < 2.0f)
 		{
-			int mostrecentschedule = 0;
-			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
+			m_currentWaypointIndex++;
+			if (m_currentWaypointIndex < m_pathWaypoints.size())
 			{
-				if (g_NPCSchedules[m_NPCID][i].m_time <= g_scheduleTime)
-				{
-					mostrecentschedule = i;
-				}
-				else
-				{
-					break;
-				}
+				// Advance to next waypoint
+				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
 			}
-
-			SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destX), 0, float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destY) });
-			m_isMoving = true;
-			m_lastSchedule = g_NPCSchedules[m_NPCID][mostrecentschedule].m_time;
-			g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][mostrecentschedule].m_activity;
-
-		}
-		else
-		{
-			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
+			else
 			{
-				if (g_NPCSchedules[m_NPCID][i].m_time == g_scheduleTime && g_NPCSchedules[m_NPCID][i].m_time != m_lastSchedule)
-				{
-					SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][i].m_destX), 0, float(g_NPCSchedules[m_NPCID][i].m_destY) });
-					m_isMoving = true;
-					m_lastSchedule = g_NPCSchedules[m_NPCID][i].m_time;
-					g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][i].m_activity;
-					break;
-				}
+				// Reached final destination
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_isMoving = false;
 			}
 		}
 	}
@@ -473,6 +460,52 @@ void U7Object::SetDest(Vector3 dest)
 	m_Dest = dest;
 	m_Direction = Vector3Subtract(m_Dest, m_Pos);
 	m_Direction = Vector3Normalize(m_Direction);
+}
+
+void U7Object::PathfindToDest(Vector3 dest)
+{
+	extern PathfindingGrid* g_pathfindingGrid;
+
+	// Clear previous path
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+
+	// If no pathfinding grid, fall back to direct movement
+	if (!g_pathfindingGrid)
+	{
+		SetDest(dest);
+		return;
+	}
+
+	// Use A* to find path
+	AStar astar;
+	std::vector<Vector3> path = astar.FindPath(m_Pos, dest, g_pathfindingGrid);
+
+	// If path found, store waypoints
+	if (!path.empty())
+	{
+		m_pathWaypoints = path;
+		m_currentWaypointIndex = 0;
+
+		// Set first waypoint as destination
+		if (m_pathWaypoints.size() > 0)
+		{
+			SetDest(m_pathWaypoints[0]);
+		}
+
+		// Debug output
+		AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
+		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ")", GREEN);
+	}
+	else
+	{
+		// No path found, don't move at all
+		AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
+		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
+		// Don't call SetDest() - NPC will remain stationary
+	}
 }
 
 bool U7Object::AddObjectToInventory(int objectid)

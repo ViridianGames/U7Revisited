@@ -15,7 +15,7 @@ class U7Object;
 // ============================================================================
 struct PathNode
 {
-	int x, z;           // Chunk coordinates
+	int x, z;           // World tile coordinates
 	float g;            // Cost from start
 	float h;            // Heuristic cost to goal
 	float f;            // Total cost (g + h)
@@ -25,7 +25,7 @@ struct PathNode
 };
 
 // ============================================================================
-// PathfindingGrid: Maintains 192x192 walkability grid
+// PathfindingGrid: Tile-level walkability checking
 // ============================================================================
 class PathfindingGrid
 {
@@ -33,26 +33,14 @@ public:
 	PathfindingGrid();
 	~PathfindingGrid();
 
-	// Build/update the walkability grid
-	void BuildFromWorld();                          // Initial build from world data
-	void UpdateChunk(int chunkX, int chunkZ);      // Rebuild single chunk
-	void UpdatePosition(int worldX, int worldZ);   // Update area around world position
-
 	// Query walkability
-	bool IsChunkWalkable(int chunkX, int chunkZ) const;
-	bool IsPositionWalkable(int worldX, int worldZ) const;  // For tile-level checks
+	bool IsPositionWalkable(int worldX, int worldZ) const;  // Check if tile is walkable
 
 	// Debug visualization
-	void DrawDebugOverlay();                              // Chunk-level (fast, less accurate)
-	void DrawDebugOverlayTileLevel();                     // Tile-level (slow, shows objects)
+	void DrawDebugOverlayTileLevel();                     // Tile-level visualization
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
 
 private:
-	std::vector<std::vector<bool>> m_grid;  // 192x192 chunk grid (true = walkable)
-
-	// Helper: Check if a chunk is mostly walkable
-	bool CheckChunkWalkable(int chunkX, int chunkZ);
-
 	// Helper: Check if specific tile is walkable
 	bool CheckTileWalkable(int worldX, int worldZ) const;
 };

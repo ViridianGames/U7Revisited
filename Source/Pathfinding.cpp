@@ -11,105 +11,18 @@
 
 PathfindingGrid::PathfindingGrid()
 {
-	// Initialize 192x192 grid (all walkable by default)
-	m_grid.resize(192, std::vector<bool>(192, true));
+	// Tile-based pathfinding - no grid pre-computation needed
+	AddConsoleString("Pathfinding system initialized (tile-based)");
 }
 
 PathfindingGrid::~PathfindingGrid()
 {
 }
 
-void PathfindingGrid::BuildFromWorld()
-{
-	AddConsoleString("Building pathfinding grid from world data...");
-
-	int totalChunks = 0;
-	int walkableChunks = 0;
-
-	// Check all 192x192 chunks
-	for (int chunkZ = 0; chunkZ < 192; chunkZ++)
-	{
-		for (int chunkX = 0; chunkX < 192; chunkX++)
-		{
-			m_grid[chunkZ][chunkX] = CheckChunkWalkable(chunkX, chunkZ);
-
-			totalChunks++;
-			if (m_grid[chunkZ][chunkX])
-				walkableChunks++;
-		}
-	}
-
-	AddConsoleString("Pathfinding grid built: " + std::to_string(walkableChunks) + "/" +
-	                 std::to_string(totalChunks) + " chunks walkable");
-}
-
-void PathfindingGrid::UpdateChunk(int chunkX, int chunkZ)
-{
-	if (chunkX < 0 || chunkX >= 192 || chunkZ < 0 || chunkZ >= 192)
-		return;
-
-	m_grid[chunkZ][chunkX] = CheckChunkWalkable(chunkX, chunkZ);
-}
-
-void PathfindingGrid::UpdatePosition(int worldX, int worldZ)
-{
-	int chunkX = worldX / 16;
-	int chunkZ = worldZ / 16;
-
-	// Update this chunk and surrounding chunks
-	for (int dz = -1; dz <= 1; dz++)
-	{
-		for (int dx = -1; dx <= 1; dx++)
-		{
-			int cx = chunkX + dx;
-			int cz = chunkZ + dz;
-
-			if (cx >= 0 && cx < 192 && cz >= 0 && cz < 192)
-				UpdateChunk(cx, cz);
-		}
-	}
-}
-
-bool PathfindingGrid::IsChunkWalkable(int chunkX, int chunkZ) const
-{
-	if (chunkX < 0 || chunkX >= 192 || chunkZ < 0 || chunkZ >= 192)
-		return false;
-
-	return m_grid[chunkZ][chunkX];
-}
-
 bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ) const
 {
 	// Tile-level check
 	return CheckTileWalkable(worldX, worldZ);
-}
-
-bool PathfindingGrid::CheckChunkWalkable(int chunkX, int chunkZ)
-{
-	// Sample tiles in this chunk to determine if mostly walkable
-	int walkableTiles = 0;
-	int totalTiles = 0;
-
-	for (int tz = 0; tz < 16; tz++)
-	{
-		for (int tx = 0; tx < 16; tx++)
-		{
-			int worldX = chunkX * 16 + tx;
-			int worldZ = chunkZ * 16 + tz;
-
-			// Bounds check
-			if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
-				continue;
-
-			totalTiles++;
-			if (CheckTileWalkable(worldX, worldZ))
-				walkableTiles++;
-		}
-	}
-
-	// Chunk is walkable if more than 25% of tiles are walkable
-	// (Lower threshold needed for interiors with walls/furniture)
-	return (totalTiles > 0 && walkableTiles > (totalTiles / 4));
 }
 
 bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
@@ -220,44 +133,6 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 	}
 
 	return true;  // Nothing blocks this position
-}
-
-void PathfindingGrid::DrawDebugOverlay()
-{
-	// Draw semi-transparent colored quads over each chunk
-	// Green = walkable, Red = blocked
-
-	for (int chunkZ = 0; chunkZ < 192; chunkZ++)
-	{
-		for (int chunkX = 0; chunkX < 192; chunkX++)
-		{
-			// Convert chunk coordinates to world coordinates
-			float worldX = chunkX * 16.0f + 8.0f;  // Center of chunk
-			float worldZ = chunkZ * 16.0f + 8.0f;
-
-			// Choose color based on walkability
-			Color color = m_grid[chunkZ][chunkX] ?
-				Color{0, 255, 0, 64} :   // Green, semi-transparent
-				Color{255, 0, 0, 64};     // Red, semi-transparent
-
-			// Draw a flat quad on the ground representing this chunk
-			// Each chunk is 16x16 tiles
-			Vector3 v1 = {worldX - 8.0f, 0.1f, worldZ - 8.0f};  // Slightly above ground
-			Vector3 v2 = {worldX + 8.0f, 0.1f, worldZ - 8.0f};
-			Vector3 v3 = {worldX + 8.0f, 0.1f, worldZ + 8.0f};
-			Vector3 v4 = {worldX - 8.0f, 0.1f, worldZ + 8.0f};
-
-			// Draw two triangles to form a quad
-			DrawTriangle3D(v1, v2, v3, color);
-			DrawTriangle3D(v1, v3, v4, color);
-
-			// Optional: Draw chunk boundaries as wireframe
-			// DrawLine3D(v1, v2, WHITE);
-			// DrawLine3D(v2, v3, WHITE);
-			// DrawLine3D(v3, v4, WHITE);
-			// DrawLine3D(v4, v1, WHITE);
-		}
-	}
 }
 
 void PathfindingGrid::DrawDebugOverlayTileLevel()
@@ -453,47 +328,70 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	if (!grid)
 		return std::vector<Vector3>();  // No grid, can't pathfind
 
-	// Convert world coordinates to chunk coordinates
-	int startChunkX = (int)(start.x / 16.0f);
-	int startChunkZ = (int)(start.z / 16.0f);
-	int goalChunkX = (int)(goal.x / 16.0f);
-	int goalChunkZ = (int)(goal.z / 16.0f);
+	// Use tile coordinates directly
+	int startX = (int)start.x;
+	int startZ = (int)start.z;
+	int goalX = (int)goal.x;
+	int goalZ = (int)goal.z;
+
+	AddConsoleString("A* pathfinding: Start tile (" + std::to_string(startX) + "," + std::to_string(startZ) +
+	                 ") Goal tile (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
 
 	// Bounds check
-	if (startChunkX < 0 || startChunkX >= 192 || startChunkZ < 0 || startChunkZ >= 192 ||
-	    goalChunkX < 0 || goalChunkX >= 192 || goalChunkZ < 0 || goalChunkZ >= 192)
+	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072 ||
+	    goalX < 0 || goalX >= 3072 || goalZ < 0 || goalZ >= 3072)
 	{
+		AddConsoleString("  FAILED: Out of bounds!", RED);
 		return std::vector<Vector3>();  // Out of bounds
 	}
 
 	// Check if start and goal are walkable
-	if (!grid->IsChunkWalkable(startChunkX, startChunkZ))
+	if (!grid->IsPositionWalkable(startX, startZ))
+	{
+		AddConsoleString("  FAILED: Start tile not walkable!", RED);
 		return std::vector<Vector3>();  // Start not walkable
+	}
 
-	if (!grid->IsChunkWalkable(goalChunkX, goalChunkZ))
+	if (!grid->IsPositionWalkable(goalX, goalZ))
+	{
+		AddConsoleString("  FAILED: Goal tile not walkable!", RED);
 		return std::vector<Vector3>();  // Goal not walkable
+	}
+
+	// Limit search distance to avoid searching entire map (performance)
+	int maxDistance = 200;  // Max 200 tiles
+	int distance = abs(goalX - startX) + abs(goalZ - startZ);
+	if (distance > maxDistance)
+	{
+		AddConsoleString("  FAILED: Distance too far (" + std::to_string(distance) + " tiles, max " + std::to_string(maxDistance) + ")", RED);
+		return std::vector<Vector3>();
+	}
 
 	// Cleanup any previous pathfinding data
 	CleanupNodes();
 
 	// Create start node
-	PathNode* startNode = new PathNode(startChunkX, startChunkZ);
+	PathNode* startNode = new PathNode(startX, startZ);
 	startNode->g = 0;
-	startNode->h = Heuristic(startChunkX, startChunkZ, goalChunkX, goalChunkZ);
+	startNode->h = Heuristic(startX, startZ, goalX, goalZ);
 	startNode->f = startNode->g + startNode->h;
 	m_allocatedNodes.push_back(startNode);
 
 	// Open and closed sets
 	std::vector<PathNode*> openSet;
-	std::unordered_map<int, PathNode*> closedSet;  // Key = chunkZ * 192 + chunkX
+	std::unordered_map<int, PathNode*> closedSet;  // Key = tileZ * 3072 + tileX
 
 	openSet.push_back(startNode);
 
 	PathNode* goalNode = nullptr;
+	int nodesExplored = 0;
+	const int maxNodesToExplore = 10000;  // Limit iterations for performance
 
 	// A* main loop
-	while (!openSet.empty())
+	while (!openSet.empty() && nodesExplored < maxNodesToExplore)
 	{
+		nodesExplored++;
+
 		// Find node with lowest f cost
 		auto minIt = std::min_element(openSet.begin(), openSet.end(),
 			[](PathNode* a, PathNode* b) { return a->f < b->f; });
@@ -502,14 +400,15 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		openSet.erase(minIt);
 
 		// Check if we reached the goal
-		if (current->x == goalChunkX && current->z == goalChunkZ)
+		if (current->x == goalX && current->z == goalZ)
 		{
 			goalNode = current;
+			AddConsoleString("  Path found! Explored " + std::to_string(nodesExplored) + " nodes", GREEN);
 			break;
 		}
 
 		// Add to closed set
-		int key = current->z * 192 + current->x;
+		int key = current->z * 3072 + current->x;
 		closedSet[key] = current;
 
 		// Get neighbors
@@ -517,7 +416,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 
 		for (PathNode* neighbor : neighbors)
 		{
-			int neighborKey = neighbor->z * 192 + neighbor->x;
+			int neighborKey = neighbor->z * 3072 + neighbor->x;
 
 			// Skip if in closed set
 			if (closedSet.find(neighborKey) != closedSet.end())
@@ -537,7 +436,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 			{
 				// Not in open set, add it
 				neighbor->g = tentativeG;
-				neighbor->h = Heuristic(neighbor->x, neighbor->z, goalChunkX, goalChunkZ);
+				neighbor->h = Heuristic(neighbor->x, neighbor->z, goalX, goalZ);
 				neighbor->f = neighbor->g + neighbor->h;
 				neighbor->parent = current;
 				openSet.push_back(neighbor);
@@ -556,6 +455,11 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 				delete neighbor;  // Don't need the duplicate
 			}
 		}
+	}
+
+	if (nodesExplored >= maxNodesToExplore)
+	{
+		AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
 	}
 
 	// Reconstruct path
@@ -591,12 +495,12 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 		int nx = node->x + directions[i][0];
 		int nz = node->z + directions[i][1];
 
-		// Bounds check
-		if (nx < 0 || nx >= 192 || nz < 0 || nz >= 192)
+		// Bounds check (tile coordinates: 3072x3072)
+		if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
 			continue;
 
-		// Walkability check
-		if (!grid->IsChunkWalkable(nx, nz))
+		// Walkability check (tile-level)
+		if (!grid->IsPositionWalkable(nx, nz))
 			continue;
 
 		neighbors.push_back(new PathNode(nx, nz));
@@ -612,11 +516,11 @@ std::vector<Vector3> AStar::ReconstructPath(PathNode* goal)
 
 	while (current != nullptr)
 	{
-		// Convert chunk coordinates to world coordinates (center of chunk)
+		// Use tile coordinates directly
 		Vector3 waypoint;
-		waypoint.x = current->x * 16.0f + 8.0f;  // Center of chunk
+		waypoint.x = (float)current->x;
 		waypoint.y = 0;
-		waypoint.z = current->z * 16.0f + 8.0f;
+		waypoint.z = (float)current->z;
 
 		path.push_back(waypoint);
 		current = current->parent;

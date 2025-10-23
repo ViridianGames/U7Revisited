@@ -213,11 +213,9 @@ void LoadingState::UpdateLoading()
 
 		if (!m_buildingPathfindingGrid)
 		{
-			AddConsoleString(std::string("Building pathfinding grid..."));
+			AddConsoleString(std::string("Initializing pathfinding system..."));
 			g_pathfindingGrid = new PathfindingGrid();
-			g_pathfindingGrid->BuildFromWorld();
 			m_buildingPathfindingGrid = true;
-			return;
 		}
 	}
 	else

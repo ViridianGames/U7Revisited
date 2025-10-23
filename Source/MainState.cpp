@@ -488,13 +488,47 @@ void MainState::UpdateInput()
 				if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
 				{
 					int npcID = g_objectUnderMousePointer->m_NPCID;
-					AddConsoleString("=== NPC #" + to_string(npcID) + " Schedule ===");
+					string npcName = g_NPCData[npcID] ? g_NPCData[npcID]->name : "Unknown";
+					AddConsoleString("=== NPC #" + to_string(npcID) + " (" + npcName + ") Schedule ===");
+					AddConsoleString("Current game time: " + to_string(g_hour) + ":" + (g_minute < 10 ? "0" : "") + to_string(g_minute) +
+					                 " (schedule block: " + to_string(g_scheduleTime) + ")");
 
 					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
 					{
-						for (size_t i = 0; i < g_NPCSchedules[npcID].size(); i++)
+						// Create sorted indices based on schedule time
+						vector<int> sortedIndices(g_NPCSchedules[npcID].size());
+						for (size_t i = 0; i < sortedIndices.size(); i++)
+							sortedIndices[i] = i;
+
+						std::sort(sortedIndices.begin(), sortedIndices.end(),
+							[npcID](int a, int b) {
+								return g_NPCSchedules[npcID][a].m_time < g_NPCSchedules[npcID][b].m_time;
+							});
+
+						// Find the currently active schedule (most recent schedule where time <= current time)
+						int activeScheduleIndex = -1;
+						for (int idx : sortedIndices)
 						{
-							const auto& schedule = g_NPCSchedules[npcID][i];
+							if (g_NPCSchedules[npcID][idx].m_time <= g_scheduleTime)
+							{
+								activeScheduleIndex = idx;
+							}
+							else
+							{
+								break;  // Now sorted, so we can break early
+							}
+						}
+
+						// If no schedule found, use the last one in sorted order (wraps from midnight)
+						if (activeScheduleIndex == -1 && g_NPCSchedules[npcID].size() > 0)
+						{
+							activeScheduleIndex = sortedIndices[sortedIndices.size() - 1];
+						}
+
+						// Display schedules in chronological order
+						for (int idx : sortedIndices)
+						{
+							const auto& schedule = g_NPCSchedules[npcID][idx];
 							string timeStr;
 							switch (schedule.m_time)
 							{
@@ -509,14 +543,36 @@ void MainState::UpdateInput()
 								default: timeStr = to_string(schedule.m_time); break;
 							}
 
-							AddConsoleString("  [" + to_string(i) + "] Time: " + timeStr +
+							// Print active schedule in gold, others in white
+							bool isActive = (idx == activeScheduleIndex);
+							Color lineColor = isActive ? GOLD : WHITE;
+							AddConsoleString("  [" + to_string(idx) + "] Time: " + timeStr +
 							                 ", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
-							                 ", Activity: " + to_string(schedule.m_activity));
+							                 ", Activity: " + to_string(schedule.m_activity), lineColor);
 						}
 					}
 					else
 					{
 						AddConsoleString("  No schedule data for this NPC");
+					}
+
+					// Print current waypoints if any
+					if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
+					{
+						AddConsoleString("=== Current Waypoints ===", YELLOW);
+						AddConsoleString("  Total waypoints: " + to_string(g_objectUnderMousePointer->m_pathWaypoints.size()) +
+						                 ", Current index: " + to_string(g_objectUnderMousePointer->m_currentWaypointIndex));
+						for (size_t i = 0; i < g_objectUnderMousePointer->m_pathWaypoints.size(); i++)
+						{
+							const auto& wp = g_objectUnderMousePointer->m_pathWaypoints[i];
+							string marker = (i == g_objectUnderMousePointer->m_currentWaypointIndex) ? " <-- CURRENT" : "";
+							AddConsoleString("  [" + to_string(i) + "] (" +
+							                 to_string((int)wp.x) + ", " + to_string((int)wp.z) + ")" + marker);
+						}
+					}
+					else
+					{
+						AddConsoleString("No active waypoints", GRAY);
 					}
 				}
 			}
@@ -547,6 +603,74 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 void MainState::Update()
 {
 	UpdateTime();
+
+	// Check if schedule time has changed and populate pathfinding queue
+	if (g_scheduleTime != g_lastScheduleTimeCheck)
+	{
+		g_lastScheduleTimeCheck = g_scheduleTime;
+
+		// Clear any pending pathfinding requests from previous schedule
+		while (!g_npcPathfindQueue.empty())
+			g_npcPathfindQueue.pop();
+
+		// Enqueue all NPCs that need to move to a new destination
+		for (const auto& [npcID, npcData] : g_NPCData)
+		{
+			if (!npcData || npcData->m_objectID < 0)
+				continue;
+
+			// Check if this NPC has schedules and is following them
+			if (g_NPCSchedules.find(npcID) == g_NPCSchedules.end() || g_NPCSchedules[npcID].empty())
+				continue;
+
+			U7Object* npcObj = g_objectList[npcData->m_objectID].get();
+			if (!npcObj || !npcObj->m_followingSchedule)
+				continue;
+
+			// Check if NPC has a schedule for this time
+			for (const auto& schedule : g_NPCSchedules[npcID])
+			{
+				if (schedule.m_time == g_scheduleTime)
+				{
+					g_npcPathfindQueue.push(npcID);
+					break;
+				}
+			}
+		}
+
+		if (!g_npcPathfindQueue.empty())
+		{
+			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
+			                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
+		}
+	}
+
+	// Process one NPC from pathfinding queue per frame
+	if (!g_npcPathfindQueue.empty())
+	{
+		int npcID = g_npcPathfindQueue.front();
+		g_npcPathfindQueue.pop();
+
+		// Find the schedule entry for current time
+		if (g_NPCData.find(npcID) != g_NPCData.end() && g_NPCData[npcID])
+		{
+			U7Object* npcObj = g_objectList[g_NPCData[npcID]->m_objectID].get();
+			if (npcObj)
+			{
+				for (const auto& schedule : g_NPCSchedules[npcID])
+				{
+					if (schedule.m_time == g_scheduleTime)
+					{
+						npcObj->PathfindToDest(Vector3{ float(schedule.m_destX), 0, float(schedule.m_destY) });
+						npcObj->m_isMoving = true;
+						npcObj->m_lastSchedule = schedule.m_time;
+						g_NPCData[npcID]->m_currentActivity = schedule.m_activity;
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	g_gumpManager->Update();
 

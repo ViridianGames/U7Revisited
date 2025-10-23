@@ -14,6 +14,7 @@
 #include <string>
 #include <unordered_map>
 #include <array>
+#include <queue>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -81,6 +82,10 @@ extern unsigned int g_hour;
 extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
 extern float g_secsPerMinute;
+
+// NPC pathfinding queue system
+extern std::queue<int> g_npcPathfindQueue;  // Queue of NPC IDs needing pathfinding
+extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 
 extern Color g_dayNightColor;
 extern bool g_isDay;

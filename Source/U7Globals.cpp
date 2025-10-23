@@ -107,6 +107,10 @@ unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 bool g_autoRotate = false;
 
+// NPC pathfinding queue system
+std::queue<int> g_npcPathfindQueue;
+int g_lastScheduleTimeCheck = -1;
+
 // Pathfinding
 PathfindingGrid* g_pathfindingGrid = nullptr;
 
@@ -772,10 +776,8 @@ void OpenURL(const std::string& url)
 // Pathfinding grid update notification
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
 {
-	if (!g_pathfindingGrid)
-		return;
-
-	g_pathfindingGrid->UpdatePosition(worldX, worldZ);
+	// No longer needed - tile-based pathfinding checks walkability dynamically during A* search
+	// Keeping this function as a no-op to avoid breaking existing code
 }
 
 
