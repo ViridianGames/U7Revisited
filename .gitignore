@@ -5,9 +5,11 @@
 /Linux/U7Revisited/dist
 /Redist/Data/U7
 !Redist/Data/U7/U7.txt
+/build
 
 /subprojects/raylib/
 /subprojects/packagecache/
+/subprojects/.wraplock
 *.o
 *.d
 liblua.a
