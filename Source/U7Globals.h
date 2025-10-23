@@ -411,7 +411,9 @@ void RecalculateCamera();
 //////////////////////////////////////////////////////////////////////////////
 
 class PathfindingGrid;
+class AStar;
 extern PathfindingGrid* g_pathfindingGrid;
+extern AStar* g_aStar;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);

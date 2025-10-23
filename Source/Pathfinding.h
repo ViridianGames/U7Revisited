@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <string>
 #include "raylib.h"
 #include "raymath.h"
 
@@ -70,6 +71,9 @@ public:
 	AStar();
 	~AStar();
 
+	// Load terrain movement costs from CSV file
+	void LoadTerrainCosts(const std::string& filename);
+
 	// Find path from start to goal (returns waypoints in world coordinates)
 	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid);
 
@@ -91,6 +95,9 @@ private:
 
 	// Temporary storage for nodes during pathfinding
 	std::vector<PathNode*> m_allocatedNodes;
+
+	// Terrain movement costs (shape ID -> cost multiplier)
+	std::unordered_map<int, float> m_terrainCosts;
 };
 
 #endif

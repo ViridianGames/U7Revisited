@@ -215,6 +215,8 @@ void LoadingState::UpdateLoading()
 		{
 			AddConsoleString(std::string("Initializing pathfinding system..."));
 			g_pathfindingGrid = new PathfindingGrid();
+			g_aStar = new AStar();
+			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
 			m_buildingPathfindingGrid = true;
 		}
 	}

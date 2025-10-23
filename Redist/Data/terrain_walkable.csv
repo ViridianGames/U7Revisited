@@ -1,0 +1,135 @@
+﻿shape_id,name,suggested_cost
+0,"carpet",0
+1,"sidewalk",1
+3,"lightning",99
+4,"grass",1
+5,"cavefloor",
+6,"arrow",99
+9,"fireball",99
+10,"sand",2
+11,"ether",99
+12,"void",99
+14,"ford",99
+15,"ford",99
+16,"rut",2
+17,"planking",1
+18,"tile",1
+21,"stone floor",1
+22,"swamp",5
+23,"dirt",3
+24,"cobblestone",2
+25,"rut",3
+27,"carpet",0
+28,"sandy grass",2
+29,"muddy bank",
+31,"grass",2
+32,"grass",2
+33,"grass",2
+34,"grass",2
+35,"grass",2
+36,"grass",2
+37,"grass",2
+38,"grass",2
+39,"grass",2
+40,"grass",2
+41,"grass",2
+42,"grass",2
+43,"grass",2
+44,"grass",2
+45,"grass",2
+46,"rocky grass",3
+47,"carpet",0
+49,"cavefloor",2
+50,"cavefloor",2
+51,"cavefloor",2
+52,"cavefloor",2
+53,"cavefloor",2
+54,"cavefloor",2
+55,"cavefloor",2
+56,"cavefloor",2
+57,"cavefloor",2
+58,"cavefloor",2
+59,"cavefloor",2
+60,"cavefloor",2
+61,"cavefloor",2
+62,"cavefloor",2
+63,"cavefloor",2
+66,"grass",1
+67,"muck",3
+68,"enchant missiles",99
+69,"heal",99
+70,"light",99
+71,"destroy trap",99
+72,"sleep",99
+73,"unlock magic",99
+74,"light",99
+75,"dispel field",99
+76,"heal",99
+77,"seance",99
+78,"explosion",99
+79,"reveal",99
+80,"charm",99
+81,"flamestrike",99
+82,"delayed explosion",99
+83,"",99
+84,"ford",2
+85,"muddy bank",3
+86,"muddy bank",3
+87,"muddy bank",3
+88,"muddy bank",3
+89,"muddy bank",3
+90,"muddy bank",3
+91,"muddy bank",3
+92,"muddy bank",3
+93,"muddy bank",3
+94,"muddy bank",3
+95,"muddy bank",3
+96,"muddy bank",3
+97,"muddy bank",3
+98,"muddy bank",3
+99,"muddy bank",3
+100,"muddy bank",3
+101,"muddy bank",3
+102,"muddy bank",3
+103,"muddy bank",3
+104,"muddy bank",3
+105,"muddy bank",3
+106,"muddy bank",3
+107,"muddy bank",3
+108,"muddy bank",3
+109,"muddy bank",3
+110,"",99
+111,"sandy ground",3
+112,"ford",2
+118,"sandy grass",3
+119,"sandy grass",3
+120,"sandy grass",3
+121,"sandy grass",3
+122,"sandy grass",3
+123,"sandy grass",3
+124,"sandy grass",3
+125,"sandy grass",3
+126,"sandy grass",3
+127,"sandy grass",3
+128,"sandy grass",3
+129,"sandy grass",3
+130,"sandy grass",3
+131,"sandy grass",3
+132,"sandy grass",3
+133,"sandy grass",3
+134,"grassy mud",3
+135,"grassy mud",3
+136,"grassy mud",3
+137,"grassy mud",3
+138,"grassy mud",3
+139,"grassy mud",3
+140,"grassy mud",3
+141,"grassy mud",3
+142,"grassy mud",3
+143,"grassy mud",3
+144,"grassy mud",3
+145,"grassy mud",3
+146,"grass",2
+147,"grass",2
+148,"grass",2
+149,"mud",3

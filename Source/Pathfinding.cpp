@@ -4,6 +4,8 @@
 #include "rlgl.h"
 #include <algorithm>
 #include <cmath>
+#include <fstream>
+#include <sstream>
 
 // ============================================================================
 // PathfindingGrid Implementation
@@ -320,6 +322,71 @@ AStar::~AStar()
 	CleanupNodes();
 }
 
+void AStar::LoadTerrainCosts(const std::string& filename)
+{
+	m_terrainCosts.clear();
+
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		AddConsoleString("WARNING: Could not open terrain costs file: " + filename, YELLOW);
+		return;
+	}
+
+	std::string line;
+	std::getline(file, line);  // Skip header line
+
+	int loadedCount = 0;
+	int lineNum = 1;
+	while (std::getline(file, line))
+	{
+		lineNum++;
+
+		// Skip empty lines
+		if (line.empty())
+			continue;
+
+		// Parse CSV: shape_id,name,suggested_cost
+		size_t firstComma = line.find(',');
+		if (firstComma == std::string::npos)
+			continue;
+
+		size_t secondComma = line.find(',', firstComma + 1);
+		if (secondComma == std::string::npos)
+			continue;
+
+		try
+		{
+			// Extract shape ID
+			std::string shapeIDStr = line.substr(0, firstComma);
+			if (shapeIDStr.empty())
+				continue;
+			int shapeID = std::stoi(shapeIDStr);
+
+			// Extract cost (after second comma, trim whitespace)
+			std::string costStr = line.substr(secondComma + 1);
+			costStr.erase(0, costStr.find_first_not_of(" \t\r\n"));
+			costStr.erase(costStr.find_last_not_of(" \t\r\n") + 1);
+
+			// Skip if no cost specified
+			if (costStr.empty())
+				continue;
+
+			float cost = std::stof(costStr);
+			m_terrainCosts[shapeID] = cost;
+			loadedCount++;
+		}
+		catch (const std::exception& e)
+		{
+			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
+			continue;
+		}
+	}
+
+	file.close();
+	AddConsoleString("Loaded " + std::to_string(loadedCount) + " terrain movement costs from " + filename, GREEN);
+}
+
 std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
 {
 	if (!grid)
@@ -545,7 +612,24 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 
 float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 {
-	// Check if this tile has a door
+	// Start with base terrain cost
+	float baseCost = 1.0f;
+
+	// Look up terrain shape cost
+	if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+	{
+		unsigned short shapeframe = g_World[worldZ][worldX];
+		int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+
+		// Check if we have a custom cost for this terrain
+		auto it = m_terrainCosts.find(shapeID);
+		if (it != m_terrainCosts.end())
+		{
+			baseCost = it->second;
+		}
+	}
+
+	// Check if this tile has a door - doors add extra cost on top of terrain cost
 	int chunkX = worldX / 16;
 	int chunkZ = worldZ / 16;
 
@@ -584,15 +668,14 @@ float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 
 				if (overlaps)
 				{
-					// Door tiles have slightly higher cost to prefer non-door routes
-					// but still allow pathfinding through doors when necessary
-					return 2.0f;
+					// Door tiles add extra cost (2x base terrain cost)
+					return baseCost * 2.0f;
 				}
 			}
 		}
 	}
 
-	return 1.0f;  // Normal tile costs 1
+	return baseCost;
 }
 
 std::vector<Vector3> AStar::ReconstructPath(PathNode* goal)

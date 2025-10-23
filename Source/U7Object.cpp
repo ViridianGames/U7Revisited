@@ -522,8 +522,12 @@ void U7Object::PathfindToDest(Vector3 dest)
 	}
 
 	// Use A* to find path
-	AStar astar;
-	std::vector<Vector3> path = astar.FindPath(m_Pos, dest, g_pathfindingGrid);
+	if (!g_aStar)
+	{
+		AddConsoleString("ERROR: g_aStar is null!", RED);
+		return;
+	}
+	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
 
 	// If path found, store waypoints
 	if (!path.empty())

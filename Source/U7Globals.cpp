@@ -113,6 +113,7 @@ int g_lastScheduleTimeCheck = -1;
 
 // Pathfinding
 PathfindingGrid* g_pathfindingGrid = nullptr;
+AStar* g_aStar = nullptr;
 
 Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
