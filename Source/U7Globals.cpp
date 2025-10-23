@@ -89,7 +89,7 @@ RenderTexture2D g_guiRenderTarget;
 
 std::unique_ptr<U7Player> g_Player;
 
-bool g_LuaDebug = true;
+bool g_LuaDebug = false;  // Toggle with F8 key
 
 std::unique_ptr<Model> g_CuboidModel;
 

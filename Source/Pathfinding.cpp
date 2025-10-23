@@ -331,8 +331,9 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	int goalX = (int)goal.x;
 	int goalZ = (int)goal.z;
 
-	AddConsoleString("A* pathfinding: Start tile (" + std::to_string(startX) + "," + std::to_string(startZ) +
-	                 ") Goal tile (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
+	// Debug: Uncomment to see all pathfinding attempts
+	//AddConsoleString("A* pathfinding: Start tile (" + std::to_string(startX) + "," + std::to_string(startZ) +
+	//                 ") Goal tile (" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")");
 
 	// Bounds check
 	if (startX < 0 || startX >= 3072 || startZ < 0 || startZ >= 3072 ||
@@ -403,7 +404,8 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		if (current->x == goalX && current->z == goalZ)
 		{
 			goalNode = current;
-			AddConsoleString("  Path found! Explored " + std::to_string(nodesExplored) + " nodes", GREEN);
+			// Debug: Uncomment to see successful paths
+			//AddConsoleString("  Path found! Explored " + std::to_string(nodesExplored) + " nodes", GREEN);
 			break;
 		}
 
@@ -464,7 +466,8 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	}
 	else if (goalNode == nullptr)
 	{
-		AddConsoleString("  No path to exact goal (explored " + std::to_string(nodesExplored) + " nodes)", YELLOW);
+		// Debug: Uncomment to see fallback behavior
+		//AddConsoleString("  No path to exact goal (explored " + std::to_string(nodesExplored) + " nodes)", YELLOW);
 
 		// Find the closest explored node to the goal
 		PathNode* furthest = nullptr;
@@ -482,8 +485,9 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 
 		if (furthest && minDist < 100.0f)  // Only use fallback if reasonably close
 		{
-			AddConsoleString("  Using closest reachable point: (" + std::to_string(furthest->x) + "," + std::to_string(furthest->z) +
-			                 ") distance from goal: " + std::to_string((int)minDist) + " tiles", GREEN);
+			// Debug: Uncomment to see fallback behavior
+			//AddConsoleString("  Using closest reachable point: (" + std::to_string(furthest->x) + "," + std::to_string(furthest->z) +
+			//                 ") distance from goal: " + std::to_string((int)minDist) + " tiles", GREEN);
 			goalNode = furthest;  // Use this as the goal instead
 		}
 		else

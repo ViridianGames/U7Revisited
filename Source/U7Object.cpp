@@ -537,10 +537,10 @@ void U7Object::PathfindToDest(Vector3 dest)
 			SetDest(m_pathWaypoints[0]);
 		}
 
-		// Debug output
-		AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
-		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
-		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ")", GREEN);
+		// Debug: Uncomment to see successful pathfinding
+		//AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
+		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ")", GREEN);
 	}
 	else
 	{

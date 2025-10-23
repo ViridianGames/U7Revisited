@@ -661,11 +661,12 @@ void MainState::Update()
 			}
 		}
 
-		if (!g_npcPathfindQueue.empty())
-		{
-			AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
-			                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
-		}
+		// Debug: Uncomment to see schedule changes
+		//if (!g_npcPathfindQueue.empty())
+		//{
+		//	AddConsoleString("Schedule changed to block " + std::to_string(g_scheduleTime) +
+		//	                 ", queued " + std::to_string(g_npcPathfindQueue.size()) + " NPCs for pathfinding", YELLOW);
+		//}
 	}
 
 	// Process one NPC from pathfinding queue per frame
