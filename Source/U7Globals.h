@@ -401,4 +401,14 @@ extern EngineModes g_engineMode;
 
 void RecalculateCamera();
 
+//////////////////////////////////////////////////////////////////////////////
+///  PATHFINDING
+//////////////////////////////////////////////////////////////////////////////
+
+class PathfindingGrid;
+extern PathfindingGrid* g_pathfindingGrid;
+
+// Call this whenever ANY object changes position or state
+void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
+
 #endif

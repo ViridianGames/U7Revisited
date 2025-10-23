@@ -407,6 +407,31 @@ void U7Object::SetPos(Vector3 pos)
 	m_terrainCenterPoint.y = m_Pos.y;
 
 	UpdateObjectChunk(this, fromPos);
+
+	// Notify pathfinding grid if this is a non-walkable object
+	if (m_objectData && m_objectData->m_isNotWalkable)
+	{
+		// Update both old and new positions (object moved)
+		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
+		NotifyPathfindingGridUpdate((int)pos.x, (int)pos.z);
+	}
+}
+
+void U7Object::SetFrame(int frame)
+{
+	// Store old frame to check if it actually changed
+	int oldFrame = m_Frame;
+
+	// Update frame and shapeData pointer
+	m_Frame = frame;
+	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
+
+	// Notify pathfinding grid if this is a door (frame change affects walkability)
+	// Doors: frame 0 = closed (not walkable), frame > 0 = open (walkable)
+	if (m_objectData && m_objectData->m_isDoor && oldFrame != frame)
+	{
+		NotifyPathfindingGridUpdate((int)m_Pos.x, (int)m_Pos.z);
+	}
 }
 
 float U7Object::Pick()

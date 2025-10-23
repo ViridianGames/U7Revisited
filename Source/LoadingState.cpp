@@ -5,6 +5,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
+#include "Pathfinding.h"
 
 #include <cstring>
 #include <list>
@@ -207,6 +208,15 @@ void LoadingState::UpdateLoading()
 			AddConsoleString(std::string("Loading NPC Schedules..."));
 			LoadNPCSchedules();
 			m_loadingNPCSchedules = true;
+			return;
+		}
+
+		if (!m_buildingPathfindingGrid)
+		{
+			AddConsoleString(std::string("Building pathfinding grid..."));
+			g_pathfindingGrid = new PathfindingGrid();
+			g_pathfindingGrid->BuildFromWorld();
+			m_buildingPathfindingGrid = true;
 			return;
 		}
 	}

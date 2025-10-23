@@ -12,6 +12,7 @@
 #include "U7Gump.h"
 #include "ConversationState.h"
 #include "GumpManager.h"
+#include "Pathfinding.h"
 
 #include <list>
 #include <string>
@@ -217,6 +218,38 @@ void MainState::UpdateInput()
 		return;
 	}
 
+	// Handle NPC Schedule Toggle Button (Sandbox mode only)
+	bool mouseOverScheduleButton = false;
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		// Scale button coordinates for click detection (mouse is in screen space)
+		Rectangle scaledButton = {
+			m_scheduleToggleButton.x * g_DrawScale,
+			m_scheduleToggleButton.y * g_DrawScale,
+			m_scheduleToggleButton.width * g_DrawScale,
+			m_scheduleToggleButton.height * g_DrawScale
+		};
+
+		// Check if mouse is over the button
+		mouseOverScheduleButton = IsMouseInRect(scaledButton);
+
+		if (WasLeftButtonClickedInRect(scaledButton))
+		{
+			m_npcSchedulesEnabled = !m_npcSchedulesEnabled;
+
+			// Toggle schedules for all NPCs
+			for (const auto& [id, npcData] : g_NPCData)
+			{
+				if (npcData && npcData->m_objectID >= 0)
+				{
+					g_objectList[npcData->m_objectID]->m_followingSchedule = m_npcSchedulesEnabled;
+				}
+			}
+
+			AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
+		}
+	}
+
 	if (IsKeyPressed(KEY_ESCAPE))
 	{
 		if (!g_gumpManager->m_GumpList.empty())
@@ -234,9 +267,30 @@ void MainState::UpdateInput()
 		g_StateMachine->MakeStateTransition(STATE_SHAPEEDITORSTATE);
 	}
 
+	if (IsKeyPressed(KEY_F7))
+	{
+		m_allowMovingStaticObjects = !m_allowMovingStaticObjects;
+		AddConsoleString(m_allowMovingStaticObjects ? "DEBUG: Can now move static objects" : "DEBUG: Static objects locked");
+	}
+
 	if (IsKeyPressed(KEY_F8))
 	{
 		g_LuaDebug = !g_LuaDebug;
+	}
+
+	if (IsKeyPressed(KEY_F10))
+	{
+		m_showPathfindingDebug = !m_showPathfindingDebug;
+		AddConsoleString(m_showPathfindingDebug ? "Pathfinding Debug ON - showing tile walkability with objects" : "Pathfinding Debug OFF");
+	}
+
+	// Right-click to debug specific tile when pathfinding debug is on
+	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && g_pathfindingGrid)
+	{
+		// Get world position where mouse clicked
+		int worldX = (int)floor(g_terrainUnderMousePointer.x);
+		int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+		g_pathfindingGrid->DebugPrintTileInfo(worldX, worldZ);
 	}
 
 	if (IsKeyPressed(KEY_KP_ENTER))
@@ -317,7 +371,7 @@ void MainState::UpdateInput()
 		m_dragStart = {0, 0};
 	}
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC))
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -343,7 +397,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr)
+	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
 	{
 		std::string filePath;
 		string scriptName;
@@ -395,7 +449,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
 	{
 		if (g_objectUnderMousePointer->m_hasConversationTree || g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
@@ -416,7 +470,7 @@ void MainState::UpdateInput()
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && g_objectUnderMousePointer != nullptr)
+		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer != nullptr)
 		{
 			if (m_objectSelectionMode == true)
 			{
@@ -429,6 +483,42 @@ void MainState::UpdateInput()
 			else
 			{
 				Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 3.0f);
+
+				// Debug mode: Print NPC schedule when clicking on NPCs
+				if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
+				{
+					int npcID = g_objectUnderMousePointer->m_NPCID;
+					AddConsoleString("=== NPC #" + to_string(npcID) + " Schedule ===");
+
+					if (g_NPCSchedules.find(npcID) != g_NPCSchedules.end() && !g_NPCSchedules[npcID].empty())
+					{
+						for (size_t i = 0; i < g_NPCSchedules[npcID].size(); i++)
+						{
+							const auto& schedule = g_NPCSchedules[npcID][i];
+							string timeStr;
+							switch (schedule.m_time)
+							{
+								case 0: timeStr = "0:00 (Midnight)"; break;
+								case 1: timeStr = "3:00"; break;
+								case 2: timeStr = "6:00"; break;
+								case 3: timeStr = "9:00"; break;
+								case 4: timeStr = "12:00 (Noon)"; break;
+								case 5: timeStr = "15:00"; break;
+								case 6: timeStr = "18:00"; break;
+								case 7: timeStr = "21:00"; break;
+								default: timeStr = to_string(schedule.m_time); break;
+							}
+
+							AddConsoleString("  [" + to_string(i) + "] Time: " + timeStr +
+							                 ", Dest: (" + to_string(schedule.m_destX) + ", " + to_string(schedule.m_destY) + ")" +
+							                 ", Activity: " + to_string(schedule.m_activity));
+						}
+					}
+					else
+					{
+						AddConsoleString("  No schedule data for this NPC");
+					}
+				}
 			}
 		}
 	}
@@ -669,6 +759,12 @@ void MainState::Draw()
 		DrawBoundingBox(box, WHITE);
 	}
 
+	// Draw pathfinding debug overlay (tile-level - shows objects)
+	if (m_showPathfindingDebug && g_pathfindingGrid)
+	{
+		g_pathfindingGrid->DrawDebugOverlayTileLevel();
+	}
+
 	EndMode3D();
 
 	float ratio = float(g_Engine->m_ScreenWidth) / float(g_Engine->m_RenderWidth);
@@ -706,6 +802,12 @@ void MainState::Draw()
 		//  Draw version number in lower-right
 		DrawOutlinedText(g_SmallFont, g_version.c_str(), Vector2{ 600, 340 }, g_SmallFont->baseSize, 1, WHITE);
 
+		// Draw FPS counter next to version
+		int fps = GetFPS();
+		string fpsText = "FPS: " + to_string(fps);
+		Color fpsColor = fps >= 60 ? GREEN : (fps >= 30 ? YELLOW : RED);
+		DrawOutlinedText(g_SmallFont, fpsText.c_str(), Vector2{ 520, 340 }, g_SmallFont->baseSize, 1, fpsColor);
+
 		// Clamp camera coordinates to valid world bounds before accessing g_World
 		int worldX = int(g_camera.target.x);
 		int worldZ = int(g_camera.target.z);
@@ -719,6 +821,20 @@ void MainState::Draw()
 
 		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
 		{
+			// Draw NPC Schedule Toggle Button
+			Color buttonColor = m_npcSchedulesEnabled ? Color{0, 200, 0, 255} : Color{200, 0, 0, 255}; // Green if on, red if off
+			DrawRectangle(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
+			              m_scheduleToggleButton.width, m_scheduleToggleButton.height, buttonColor);
+			DrawRectangleLines(m_scheduleToggleButton.x, m_scheduleToggleButton.y,
+			                   m_scheduleToggleButton.width, m_scheduleToggleButton.height, WHITE);
+
+			// Draw text label next to button
+			string scheduleText = m_npcSchedulesEnabled ? "ON" : "OFF";
+			DrawTextEx(*g_SmallFont, scheduleText.c_str(),
+			           Vector2{m_scheduleToggleButton.x + m_scheduleToggleButton.width + 5,
+			                   m_scheduleToggleButton.y + 8},
+			           g_SmallFont->baseSize, 1, WHITE);
+
 			//DrawOutlinedText(g_SmallFont, "Cell under mouse: " + to_string(int(g_terrainUnderMousePointer.x)) + " " + to_string(int(g_terrainUnderMousePointer.y))
 			// + " " + to_string((int(g_terrainUnderMousePointer.z))) + ", Terrain type " + to_string(shape), Vector2{ 10, 272 }, g_SmallFont->baseSize, 1, WHITE);
 

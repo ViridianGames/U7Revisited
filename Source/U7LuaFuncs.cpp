@@ -549,8 +549,10 @@ static int LuaSetObjectFrame(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
-    int currentShape = object->m_shapeData->GetShape();
-    object->m_shapeData = &g_shapeTable[currentShape][frame];
+    if (object)
+    {
+        object->SetFrame(frame);  // Now includes pathfinding grid update for doors
+    }
     return 0;
 }
 
@@ -803,7 +805,15 @@ static int LuaSpawnObject(lua_State *L)
 static int LuaDestroyObject(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
-    UnassignObjectChunk(g_objectList[object_id].get());
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Notify pathfinding grid before deleting if this is a non-walkable object
+    if (obj && obj->m_objectData && obj->m_objectData->m_isNotWalkable)
+    {
+        NotifyPathfindingGridUpdate((int)obj->m_Pos.x, (int)obj->m_Pos.z);
+    }
+
+    UnassignObjectChunk(obj);
     g_objectList.erase(object_id);
     UpdateSortedVisibleObjects();
     return 0;

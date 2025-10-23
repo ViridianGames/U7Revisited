@@ -2,6 +2,7 @@
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
 #include "ConversationState.h"
+#include "Pathfinding.h"
 #include "lua.hpp"
 #include <algorithm>
 #include <fstream>
@@ -105,6 +106,9 @@ unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 bool g_autoRotate = false;
+
+// Pathfinding
+PathfindingGrid* g_pathfindingGrid = nullptr;
 
 Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
@@ -457,6 +461,12 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	AssignObjectChunk(temp);
 	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);
 
+	// Notify pathfinding grid if this is a non-walkable object
+	if (temp->m_objectData && temp->m_objectData->m_isNotWalkable)
+	{
+		NotifyPathfindingGridUpdate((int)x, (int)z);
+	}
+
 	return g_objectList[id].get();
 }
 
@@ -757,6 +767,15 @@ void OpenURL(const std::string& url)
         return; // Unsupported platform
     #endif
     std::system(command.c_str());
+}
+
+// Pathfinding grid update notification
+void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
+{
+	if (!g_pathfindingGrid)
+		return;
+
+	g_pathfindingGrid->UpdatePosition(worldX, worldZ);
 }
 
 

@@ -46,6 +46,7 @@ public:
    virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
    virtual void SetSpeed(float speed) { m_speed = speed; }
+   void SetFrame(int frame);  // Change object frame (e.g., for doors)
 
    void Interact(int event);
 
