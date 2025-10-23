@@ -302,6 +302,7 @@ void U7Object::NPCUpdate()
 				m_pathWaypoints.clear();
 				m_currentWaypointIndex = 0;
 				m_isMoving = false;
+				SetDest(m_Pos);  // Set destination to current position to stop movement
 			}
 		}
 	}
@@ -311,16 +312,19 @@ void U7Object::NPCUpdate()
 		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
 		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
 
-		//  If this update would take us beyond the destination, set the position to the destination
+		//  If this update would take we beyond the destination, set the position to the destination
 		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			SetPos(m_Pos);
+			SetPos(m_Dest);
 			m_isMoving = false;
 		}
 		else
 		{
 			m_isMoving = true;
 			SetPos(newPos);
+
+			// Check for doors after moving to new position
+			TryOpenDoorAtCurrentPosition();
 		}
 	}
 	else  // Not moving, so randomly decide to move
@@ -460,6 +464,46 @@ void U7Object::SetDest(Vector3 dest)
 	m_Dest = dest;
 	m_Direction = Vector3Subtract(m_Dest, m_Pos);
 	m_Direction = Vector3Normalize(m_Direction);
+}
+
+void U7Object::TryOpenDoorAtCurrentPosition()
+{
+	int worldX = (int)m_Pos.x;
+	int worldZ = (int)m_Pos.z;
+
+	// Cache to avoid checking the same position multiple times per tile
+	static std::unordered_map<int, std::pair<int, int>> lastCheckedPos;  // npcID -> (x, z)
+
+	auto it = lastCheckedPos.find(m_NPCID);
+	if (it != lastCheckedPos.end() && it->second.first == worldX && it->second.second == worldZ)
+	{
+		return;  // Already checked this position recently
+	}
+	lastCheckedPos[m_NPCID] = {worldX, worldZ};
+
+	// Use the pathfinding grid's helper to get overlapping objects at current position
+	extern PathfindingGrid* g_pathfindingGrid;
+	if (!g_pathfindingGrid)
+		return;
+
+	auto overlappingObjects = g_pathfindingGrid->GetOverlappingObjects(worldX, worldZ);
+
+	// Check if any of the overlapping objects is a door
+	for (const auto& ovObj : overlappingObjects)
+	{
+		U7Object* obj = ovObj.obj;
+
+		if (!obj->m_objectData->m_isDoor)
+			continue;
+
+		// Skip the hinge tile - NPCs shouldn't be on it
+		if (worldX == ovObj.tileX && worldZ == ovObj.tileZ)
+			continue;
+
+		// If we're standing on a door tile (not the hinge), interact with it
+		obj->Interact(1);  // Event 1 = double-click interaction
+		return;
+	}
 }
 
 void U7Object::PathfindToDest(Vector3 dest)

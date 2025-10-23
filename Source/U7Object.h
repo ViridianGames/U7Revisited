@@ -63,6 +63,7 @@ public:
    void NPCUpdate();
    void NPCDraw();
    void NPCInit(NPCData* npcData);
+   void TryOpenDoorAtCurrentPosition();
 
 	void CheckLighting();
 

@@ -40,6 +40,16 @@ public:
 	void DrawDebugOverlayTileLevel();                     // Tile-level visualization
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
 
+	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
+	struct OverlappingObject {
+		U7Object* obj;
+		int tileX;
+		int tileZ;
+		int width;
+		int depth;
+	};
+	std::vector<OverlappingObject> GetOverlappingObjects(int worldX, int worldZ) const;
+
 private:
 	// Helper: Check if specific tile is walkable
 	bool CheckTileWalkable(int worldX, int worldZ) const;
@@ -63,6 +73,9 @@ private:
 
 	// Get walkable neighbors of a node
 	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid);
+
+	// Get movement cost for a tile (1 for normal, 4 for closed doors)
+	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
 
 	// Reconstruct path from goal to start
 	std::vector<Vector3> ReconstructPath(PathNode* goal);

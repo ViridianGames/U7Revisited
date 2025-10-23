@@ -322,6 +322,29 @@ void MainState::UpdateInput()
 		m_paused = !m_paused;
 	}
 
+	// Skip to next hour (Sandbox mode only)
+	if (IsKeyPressed(KEY_RIGHT) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		// Advance to next full hour
+		if (g_minute > 0)
+		{
+			// If not on the hour, go to next hour
+			g_hour++;
+			if (g_hour >= 24)
+				g_hour = 0;
+			g_minute = 0;
+		}
+		else
+		{
+			// Already on the hour, go to next hour
+			g_hour++;
+			if (g_hour >= 24)
+				g_hour = 0;
+		}
+
+		AddConsoleString("Time skipped to " + std::to_string(g_hour) + ":00");
+	}
+
 	if (IsKeyPressed(KEY_PAGE_DOWN))
 	{
 		if (m_heightCutoff == 16.0f)
@@ -984,6 +1007,12 @@ void MainState::Draw()
 			  to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
 			  " Quality: " +
 			  to_string(int(g_objectUnderMousePointer->m_Quality));
+
+			// Show frame for doors
+			if (g_objectUnderMousePointer->m_objectData && g_objectUnderMousePointer->m_objectData->m_isDoor)
+			{
+				objectDescription += " Frame: " + to_string(g_objectUnderMousePointer->m_Frame);
+			}
 
 			if (g_objectUnderMousePointer->m_isContained)
 			{

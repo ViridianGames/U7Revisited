@@ -526,7 +526,7 @@ static int LuaGetObjectShape(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: get_object_shape called");
     int object_id = luaL_checkinteger(L, 1);
     int shape = GetObjectFromID(object_id)->m_shapeData->GetShape();
-    DebugPrint("ID: " + to_string(object_id) +  " Shape: " + to_string(shape));
+    //DebugPrint("ID: " + to_string(object_id) +  " Shape: " + to_string(shape));
     lua_pushinteger(L, shape);
     return 1;
 }
@@ -537,7 +537,7 @@ static int LuaGetObjectFrame(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: get_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
     int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
-    DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
+    //DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
     lua_pushinteger(L, frame);
     return 1;
 }
@@ -587,6 +587,9 @@ static int LuaSetObjectPosition(lua_State *L)
     }
     return 0;
 }
+
+// NOTE: LuaFindNearbyObjects removed - not needed for single door implementation
+// Double door support can be added back later if needed
 
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
@@ -1845,6 +1848,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetObjectQuality);
     g_ScriptingSystem->RegisterScriptFunction("get_object_position", LuaGetObjectPosition);
     g_ScriptingSystem->RegisterScriptFunction("set_object_position", LuaSetObjectPosition);
+    // NOTE: find_nearby_objects removed - not needed for single door implementation
     g_ScriptingSystem->RegisterScriptFunction("get_npc_property", LuaGetNPCProperty);
     g_ScriptingSystem->RegisterScriptFunction("set_npc_property", LuaSetNPCProperty);
 

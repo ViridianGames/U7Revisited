@@ -25,39 +25,14 @@ bool PathfindingGrid::IsPositionWalkable(int worldX, int worldZ) const
 	return CheckTileWalkable(worldX, worldZ);
 }
 
-bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
+std::vector<PathfindingGrid::OverlappingObject> PathfindingGrid::GetOverlappingObjects(int worldX, int worldZ) const
 {
-	// Bounds check
-	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
-		return false;
+	std::vector<OverlappingObject> result;
 
-	// 1. Check terrain tile
-	unsigned short shapeframe = g_World[worldZ][worldX];
-	int shapeID = shapeframe & 0x3ff;  // Extract shape ID (bits 0-9)
-	int frameID = (shapeframe >> 10) & 0x3f;  // Extract frame (bits 10-15)
-
-
-	if (shapeID < 1024 && g_objectDataTable[shapeID].m_isNotWalkable)
-	{
-		// Special case: doors in terrain - check if open
-		if (g_objectDataTable[shapeID].m_isDoor)
-		{
-			// Frame 0 = closed, frame > 0 = open
-			if (frameID > 0)
-				; // Open door, continue checking objects
-			else
-				return false;  // Closed door blocks movement
-		}
-		else
-		{
-			return false;  // Non-door terrain blocks movement
-		}
-	}
-
-	// 2. Check objects in chunk (and neighboring chunks for overlaps)
 	int chunkX = worldX / 16;
 	int chunkZ = worldZ / 16;
 
+	// Check this chunk and neighbors
 	for (int dz = -1; dz <= 1; dz++)
 	{
 		for (int dx = -1; dx <= 1; dx++)
@@ -70,67 +45,110 @@ bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
 
 			for (U7Object* obj : g_chunkObjectMap[cx][cz])
 			{
-				if (!obj)
+				if (!obj || obj->m_isNPC)
 					continue;
 
-				// Skip NPCs (they don't block pathfinding grid, only runtime collision)
-				if (obj->m_isNPC)
-					continue;
-
-				// Skip objects above ground level (roofs, bridges, etc.) - only check ground level
-				// Objects at y > 2.0 are considered "above ground" and don't block movement
-				if (obj->m_Pos.y > 2.0f)
-					continue;
-
-
-				// Check if this object blocks movement
 				if (obj->m_objectData && obj->m_objectData->m_isNotWalkable)
 				{
-					// For doors and large objects, use their actual size from ObjectData
-					// For most objects, they only occupy 1 tile
 					int objWidth = (int)obj->m_objectData->m_width;
 					int objDepth = (int)obj->m_objectData->m_depth;
-
-					// Default to 1x1 if size is 0 or invalid
 					if (objWidth <= 0) objWidth = 1;
 					if (objDepth <= 0) objDepth = 1;
 
-					// Object's base tile position
 					int objTileX = (int)floor(obj->m_Pos.x);
 					int objTileZ = (int)floor(obj->m_Pos.z);
 
-					// Check if tile overlaps object's footprint
-					// Objects extend from their position based on their size
 					bool overlaps = (worldX >= objTileX - objWidth + 1 && worldX <= objTileX &&
 					                 worldZ >= objTileZ - objDepth + 1 && worldZ <= objTileZ);
 
 					if (overlaps)
 					{
-						// Special case: Open doors are walkable
-						if (obj->m_objectData->m_isDoor)
-						{
-							// Frame 0 = closed, frame > 0 = open
-							if (obj->m_Frame > 0)
-								continue;  // Open door, walkable
-						}
-
-						// DEBUG: Log what's blocking interior tiles
-						static int objDebugCount = 0;
-						if (objDebugCount < 5 && worldX > 100 && worldX < 200 && worldZ > 100 && worldZ < 200)
-						{
-							AddConsoleString("Tile (" + std::to_string(worldX) + "," + std::to_string(worldZ) +
-							                 ") blocked by object: " + obj->m_objectData->m_name +
-							                 " at (" + std::to_string(objTileX) + "," + std::to_string(objTileZ) + ")" +
-							                 " size=" + std::to_string(objWidth) + "x" + std::to_string(objDepth));
-							objDebugCount++;
-						}
-
-						return false;  // Blocked by object
+						OverlappingObject ovObj;
+						ovObj.obj = obj;
+						ovObj.tileX = objTileX;
+						ovObj.tileZ = objTileZ;
+						ovObj.width = objWidth;
+						ovObj.depth = objDepth;
+						result.push_back(ovObj);
 					}
 				}
 			}
 		}
 	}
+
+	return result;
+}
+
+bool PathfindingGrid::CheckTileWalkable(int worldX, int worldZ) const
+{
+	// Bounds check
+	if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+		return false;
+
+	// 1. Check terrain tile
+	unsigned short shapeframe = g_World[worldZ][worldX];
+	int shapeID = shapeframe & 0x3ff;  // Extract shape ID (bits 0-9)
+	int frameID = (shapeframe >> 10) & 0x3f;  // Extract frame (bits 10-15)
+
+	bool terrainBlocks = false;
+	if (shapeID < 1024 && g_objectDataTable[shapeID].m_isNotWalkable)
+	{
+		// Special case: doors are walkable (NPCs can open them)
+		if (g_objectDataTable[shapeID].m_isDoor)
+		{
+			// Both closed and open doors are walkable (closed doors just have higher cost)
+			; // Continue checking objects
+		}
+		else
+		{
+			// Terrain blocks - but check if there's a door object on top before failing
+			terrainBlocks = true;
+		}
+	}
+
+	// 2. Check overlapping objects
+	auto overlappingObjects = GetOverlappingObjects(worldX, worldZ);
+	bool hasDoor = false;
+
+	for (const auto& ovObj : overlappingObjects)
+	{
+		U7Object* obj = ovObj.obj;
+
+		// Special case for doors: Check if this is the door's hinge tile (base position)
+		// The hinge tile is ALWAYS non-walkable
+		if (obj->m_objectData->m_isDoor)
+		{
+			int doorTileX = (int)floor(obj->m_Pos.x);
+			int doorTileZ = (int)floor(obj->m_Pos.z);
+
+			// If this is the hinge tile, it's always blocked
+			if (worldX == doorTileX && worldZ == doorTileZ)
+			{
+				return false;  // Hinge tile is never walkable
+			}
+
+			// For other tiles covered by the door's bounding box:
+			// These are walkable (NPCs can path through and open doors)
+			hasDoor = true;
+			terrainBlocks = false;
+			continue;
+		}
+
+		// Skip objects above ground level (roofs, bridges, etc.) - only check ground level
+		// Note: Doors are checked above BEFORE this check
+		if (obj->m_Pos.y > 2.0f)
+			continue;
+
+		// If we already found a door, ignore other blocking objects
+		if (hasDoor)
+			continue;
+
+		return false;  // Blocked by non-door object
+	}
+
+	// Final check: if terrain blocks and no door cleared it, return false
+	if (terrainBlocks)
+		return false;
 
 	return true;  // Nothing blocks this position
 }
@@ -246,58 +264,27 @@ void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
 		AddConsoleString("  -> Terrain is walkable");
 	}
 
-	// Check objects in surrounding chunks
-	int chunkX = worldX / 16;
-	int chunkZ = worldZ / 16;
+	// Check overlapping objects using shared helper
+	auto overlappingObjects = GetOverlappingObjects(worldX, worldZ);
 	bool foundBlockingObject = false;
 
-	for (int dz = -1; dz <= 1; dz++)
+	for (const auto& ovObj : overlappingObjects)
 	{
-		for (int dx = -1; dx <= 1; dx++)
-		{
-			int cx = chunkX + dx;
-			int cz = chunkZ + dz;
+		U7Object* obj = ovObj.obj;
 
-			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
-				continue;
+		std::string skipReason = "";
+		if (obj->m_Pos.y > 2.0f && !obj->m_objectData->m_isDoor)
+			skipReason = " [SKIPPED: above ground y=" + std::to_string(obj->m_Pos.y) + "]";
 
-			for (U7Object* obj : g_chunkObjectMap[cx][cz])
-			{
-				if (!obj || obj->m_isNPC)
-					continue;
+		std::string msg = std::string("Object ") + (skipReason.empty() ? "BLOCKS" : "found") + ": " + obj->m_objectData->m_name +
+		                 " at (" + std::to_string(ovObj.tileX) + "," + std::to_string(ovObj.tileZ) + ")" +
+		                 " size=" + std::to_string(ovObj.width) + "x" + std::to_string(ovObj.depth) +
+		                 (obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
+		                 skipReason;
+		AddConsoleString(msg);
 
-				if (obj->m_objectData && obj->m_objectData->m_isNotWalkable)
-				{
-					int objWidth = (int)obj->m_objectData->m_width;
-					int objDepth = (int)obj->m_objectData->m_depth;
-					if (objWidth <= 0) objWidth = 1;
-					if (objDepth <= 0) objDepth = 1;
-
-					int objTileX = (int)floor(obj->m_Pos.x);
-					int objTileZ = (int)floor(obj->m_Pos.z);
-
-					bool overlaps = (worldX >= objTileX - objWidth + 1 && worldX <= objTileX &&
-					                 worldZ >= objTileZ - objDepth + 1 && worldZ <= objTileZ);
-
-					if (overlaps)
-					{
-						std::string skipReason = "";
-						if (obj->m_Pos.y > 2.0f)
-							skipReason = " [SKIPPED: above ground y=" + std::to_string(obj->m_Pos.y) + "]";
-
-						std::string msg = std::string("Object ") + (skipReason.empty() ? "BLOCKS" : "found") + ": " + obj->m_objectData->m_name +
-						                 " at (" + std::to_string(objTileX) + "," + std::to_string(objTileZ) + ")" +
-						                 " size=" + std::to_string(objWidth) + "x" + std::to_string(objDepth) +
-						                 (obj->m_objectData->m_isDoor ? std::string(" [DOOR frame=") + std::to_string(obj->m_Frame) + "]" : "") +
-						                 skipReason;
-						AddConsoleString(msg);
-
-						if (skipReason.empty())
-							foundBlockingObject = true;
-					}
-				}
-			}
-		}
+		if (skipReason.empty())
+			foundBlockingObject = true;
 	}
 
 	if (!foundBlockingObject)
@@ -349,12 +336,15 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	if (!grid->IsPositionWalkable(startX, startZ))
 	{
 		AddConsoleString("  FAILED: Start tile not walkable!", RED);
+		grid->DebugPrintTileInfo(startX, startZ);
 		return std::vector<Vector3>();  // Start not walkable
 	}
 
 	if (!grid->IsPositionWalkable(goalX, goalZ))
 	{
 		AddConsoleString("  FAILED: Goal tile not walkable!", RED);
+		// Debug: Print why goal is blocked
+		grid->DebugPrintTileInfo(goalX, goalZ);
 		return std::vector<Vector3>();  // Goal not walkable
 	}
 
@@ -425,8 +415,9 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 				continue;
 			}
 
-			// Calculate tentative g cost
-			float tentativeG = current->g + 1.0f;  // Assuming uniform cost
+			// Calculate tentative g cost (higher cost for closed doors)
+			float moveCost = GetMovementCost(neighbor->x, neighbor->z, grid);
+			float tentativeG = current->g + moveCost;
 
 			// Check if this path to neighbor is better
 			auto openIt = std::find_if(openSet.begin(), openSet.end(),
@@ -460,6 +451,35 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	if (nodesExplored >= maxNodesToExplore)
 	{
 		AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
+	}
+	else if (goalNode == nullptr)
+	{
+		AddConsoleString("  No path to exact goal (explored " + std::to_string(nodesExplored) + " nodes)", YELLOW);
+
+		// Find the closest explored node to the goal
+		PathNode* furthest = nullptr;
+		float minDist = 9999999.0f;
+		for (const auto& pair : closedSet)
+		{
+			PathNode* node = pair.second;
+			float dist = sqrtf((float)((node->x - goalX) * (node->x - goalX) + (node->z - goalZ) * (node->z - goalZ)));
+			if (dist < minDist)
+			{
+				minDist = dist;
+				furthest = node;
+			}
+		}
+
+		if (furthest && minDist < 100.0f)  // Only use fallback if reasonably close
+		{
+			AddConsoleString("  Using closest reachable point: (" + std::to_string(furthest->x) + "," + std::to_string(furthest->z) +
+			                 ") distance from goal: " + std::to_string((int)minDist) + " tiles", GREEN);
+			goalNode = furthest;  // Use this as the goal instead
+		}
+		else
+		{
+			AddConsoleString("  FAILED: No reachable point found near goal", RED);
+		}
 	}
 
 	// Reconstruct path
@@ -507,6 +527,58 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 	}
 
 	return neighbors;
+}
+
+float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
+{
+	// Check if this tile has a door
+	int chunkX = worldX / 16;
+	int chunkZ = worldZ / 16;
+
+	// Check this chunk and neighbors
+	for (int dz = -1; dz <= 1; dz++)
+	{
+		for (int dx = -1; dx <= 1; dx++)
+		{
+			int cx = chunkX + dx;
+			int cz = chunkZ + dz;
+
+			if (cx < 0 || cx >= 192 || cz < 0 || cz >= 192)
+				continue;
+
+			for (U7Object* obj : g_chunkObjectMap[cx][cz])
+			{
+				if (!obj || !obj->m_objectData || !obj->m_objectData->m_isDoor)
+					continue;
+
+				// Get object dimensions
+				int objWidth = (int)obj->m_objectData->m_width;
+				int objDepth = (int)obj->m_objectData->m_depth;
+				if (objWidth <= 0) objWidth = 1;
+				if (objDepth <= 0) objDepth = 1;
+
+				int objTileX = (int)floor(obj->m_Pos.x);
+				int objTileZ = (int)floor(obj->m_Pos.z);
+
+				// Skip hinge tile (it's non-walkable, handled by CheckTileWalkable)
+				if (worldX == objTileX && worldZ == objTileZ)
+					continue;
+
+				// Check if this tile overlaps door's footprint (excluding hinge)
+				bool overlaps = (worldX >= objTileX - objWidth + 1 && worldX <= objTileX &&
+				                 worldZ >= objTileZ - objDepth + 1 && worldZ <= objTileZ);
+
+				if (overlaps)
+				{
+					// Door tiles have slightly higher cost to prefer non-door routes
+					// but still allow pathfinding through doors when necessary
+					return 2.0f;
+				}
+			}
+		}
+	}
+
+	return 1.0f;  // Normal tile costs 1
 }
 
 std::vector<Vector3> AStar::ReconstructPath(PathNode* goal)
