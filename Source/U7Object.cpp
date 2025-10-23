@@ -408,8 +408,9 @@ void U7Object::SetPos(Vector3 pos)
 
 	UpdateObjectChunk(this, fromPos);
 
-	// Notify pathfinding grid if this is a non-walkable object
-	if (m_objectData && m_objectData->m_isNotWalkable)
+	// Notify pathfinding grid if this is a non-walkable STATIC object (not NPCs!)
+	// NPCs don't block pathfinding grid, so no need to update when they move
+	if (m_objectData && m_objectData->m_isNotWalkable && !m_isNPC)
 	{
 		// Update both old and new positions (object moved)
 		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
