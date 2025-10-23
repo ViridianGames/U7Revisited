@@ -163,34 +163,44 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	int centerZ = (int)g_camera.target.z;
 	int range = 40;
 
-	// Collect green and red tile positions
-	std::vector<Vector3> greenTiles;
-	std::vector<Vector3> redTiles;
-	greenTiles.reserve(6400);  // Pre-allocate for 80x80 area
-	redTiles.reserve(6400);
+	// Check if camera has moved - if not, use cached tiles
+	bool cameraMovedOrNeverCached = (centerX != m_lastCameraCenterX || centerZ != m_lastCameraCenterZ);
 
-	for (int worldZ = centerZ - range; worldZ < centerZ + range; worldZ++)
+	if (cameraMovedOrNeverCached)
 	{
-		for (int worldX = centerX - range; worldX < centerX + range; worldX++)
+		// Regenerate tile cache
+		m_cachedGreenTiles.clear();
+		m_cachedRedTiles.clear();
+		m_cachedGreenTiles.reserve(6400);  // Pre-allocate for 80x80 area
+		m_cachedRedTiles.reserve(6400);
+
+		for (int worldZ = centerZ - range; worldZ < centerZ + range; worldZ++)
 		{
-			// Bounds check
-			if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
-				continue;
+			for (int worldX = centerX - range; worldX < centerX + range; worldX++)
+			{
+				// Bounds check
+				if (worldX < 0 || worldX >= 3072 || worldZ < 0 || worldZ >= 3072)
+					continue;
 
-			// Check if this specific tile is walkable
-			bool walkable = CheckTileWalkable(worldX, worldZ);
+				// Check if this specific tile is walkable
+				bool walkable = CheckTileWalkable(worldX, worldZ);
 
-			if (walkable)
-				greenTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
-			else
-				redTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
+				if (walkable)
+					m_cachedGreenTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
+				else
+					m_cachedRedTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
+			}
 		}
+
+		// Update cached camera position
+		m_lastCameraCenterX = centerX;
+		m_lastCameraCenterZ = centerZ;
 	}
 
-	// Draw all green tiles in one call
+	// Draw all green tiles in one call (using cached data)
 	rlBegin(RL_TRIANGLES);
 	rlColor4ub(0, 255, 0, 128);  // Green, semi-transparent
-	for (const auto& pos : greenTiles)
+	for (const auto& pos : m_cachedGreenTiles)
 	{
 		// Two triangles forming a 1x1 quad
 		Vector3 v1 = {pos.x, pos.y, pos.z};
@@ -210,10 +220,10 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 	}
 	rlEnd();
 
-	// Draw all red tiles in one call
+	// Draw all red tiles in one call (using cached data)
 	rlBegin(RL_TRIANGLES);
 	rlColor4ub(255, 0, 0, 128);  // Red, semi-transparent
-	for (const auto& pos : redTiles)
+	for (const auto& pos : m_cachedRedTiles)
 	{
 		// Two triangles forming a 1x1 quad
 		Vector3 v1 = {pos.x, pos.y, pos.z};
@@ -349,7 +359,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	}
 
 	// Limit search distance to avoid searching entire map (performance)
-	int maxDistance = 200;  // Max 200 tiles
+	int maxDistance = 500;  // Max 500 tiles (enough for cross-map NPC schedules)
 	int distance = abs(goalX - startX) + abs(goalZ - startZ);
 	if (distance > maxDistance)
 	{

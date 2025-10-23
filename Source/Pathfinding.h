@@ -53,6 +53,12 @@ public:
 private:
 	// Helper: Check if specific tile is walkable
 	bool CheckTileWalkable(int worldX, int worldZ) const;
+
+	// Cache for debug visualization
+	mutable std::vector<Vector3> m_cachedGreenTiles;
+	mutable std::vector<Vector3> m_cachedRedTiles;
+	mutable int m_lastCameraCenterX = -9999;
+	mutable int m_lastCameraCenterZ = -9999;
 };
 
 // ============================================================================
