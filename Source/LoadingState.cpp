@@ -1222,6 +1222,20 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isLightSource = (buffer[2] >> 6) & 0x01;
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
+
+		// Fix: Some doors don't have m_isDoor flag set in the data file
+		// If the name is "door", mark it as a door
+		if (g_objectDataTable[i].m_name == "door")
+		{
+			g_objectDataTable[i].m_isDoor = true;
+		}
+
+		// Fix: Door shape pairs that rotate into each other also need m_isDoor flag
+		// Shapes 270, 376, 432, 433 are all door variants that swap between each other
+		if (i == 270 || i == 376 || i == 432 || i == 433)
+		{
+			g_objectDataTable[i].m_isDoor = true;
+		}
 	}
 	wgtvolfile.close();
 	tfafile.close();
