@@ -247,6 +247,14 @@ void MainState::UpdateInput()
 			}
 
 			AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
+
+#ifdef DEBUG_NPC_PATHFINDING
+			// When schedules are disabled, print path statistics
+			if (!m_npcSchedulesEnabled)
+			{
+				PrintNPCPathStats();
+			}
+#endif
 		}
 	}
 
@@ -507,6 +515,20 @@ void MainState::UpdateInput()
 			{
 				Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 3.0f);
 
+				// Visualize NPC waypoints as blue tiles when clicking on any NPC
+				if (g_objectUnderMousePointer->m_isNPC)
+				{
+					if (!g_objectUnderMousePointer->m_pathWaypoints.empty())
+					{
+						g_pathfindingGrid->SetDebugWaypoints(g_objectUnderMousePointer->m_pathWaypoints);
+					}
+					else
+					{
+						// Clear waypoint visualization if no waypoints
+						g_pathfindingGrid->SetDebugWaypoints({});
+					}
+				}
+
 				// Debug mode: Print NPC schedule when clicking on NPCs
 				if (g_LuaDebug && g_objectUnderMousePointer->m_isNPC)
 				{
@@ -599,6 +621,41 @@ void MainState::UpdateInput()
 					}
 				}
 			}
+		}
+		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer == nullptr)
+		{
+#ifdef DEBUG_NPC_PATHFINDING
+			// Clicked on terrain (no object) - show terrain debug info
+			int worldX = (int)floor(g_terrainUnderMousePointer.x);
+			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+
+			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+			{
+				// Get terrain shape
+				unsigned short shapeframe = g_World[worldZ][worldX];
+				int shapeID = shapeframe & 0x3ff;  // Bits 0-9
+				int frameID = (shapeframe >> 10) & 0x3f;  // Bits 10-15
+
+				// Look up name and cost from terrain costs
+				extern AStar* g_aStar;
+				string terrainName = g_aStar ? g_aStar->GetTerrainName(shapeID) : "Unknown";
+				bool walkable = g_pathfindingGrid->IsPositionWalkable(worldX, worldZ);
+
+				AddConsoleString("=== " + terrainName + " (" + to_string(worldX) + ", " + to_string(worldZ) + ") ===", SKYBLUE);
+				AddConsoleString("  Shape ID: " + to_string(shapeID) + ", Frame: " + to_string(frameID), WHITE);
+
+				if (walkable)
+				{
+					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, g_pathfindingGrid) : 1.0f;
+					AddConsoleString("  Movement Cost: " + to_string(cost), GREEN);
+					AddConsoleString("  Walkable: YES", GREEN);
+				}
+				else
+				{
+					AddConsoleString("  Walkable: NO", RED);
+				}
+			}
+#endif
 		}
 	}
 

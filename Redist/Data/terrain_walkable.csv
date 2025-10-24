@@ -1,8 +1,8 @@
 ﻿shape_id,name,suggested_cost
-0,"carpet",0
+0,"carpet",0.5
 1,"sidewalk",1
 3,"lightning",99
-4,"grass",1
+4,"grass",2
 5,"cavefloor",
 6,"arrow",99
 9,"fireball",99
@@ -19,9 +19,9 @@
 23,"dirt",3
 24,"cobblestone",2
 25,"rut",3
-27,"carpet",0
+27,"carpet",0.5
 28,"sandy grass",2
-29,"muddy bank",
+29,"muddy bank",3
 31,"grass",2
 32,"grass",2
 33,"grass",2
@@ -38,7 +38,7 @@
 44,"grass",2
 45,"grass",2
 46,"rocky grass",3
-47,"carpet",0
+47,"carpet",0.5
 49,"cavefloor",2
 50,"cavefloor",2
 51,"cavefloor",2
@@ -54,7 +54,7 @@
 61,"cavefloor",2
 62,"cavefloor",2
 63,"cavefloor",2
-66,"grass",1
+66,"grass",2
 67,"muck",3
 68,"enchant missiles",99
 69,"heal",99

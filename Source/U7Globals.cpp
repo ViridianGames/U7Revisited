@@ -115,6 +115,10 @@ int g_lastScheduleTimeCheck = -1;
 PathfindingGrid* g_pathfindingGrid = nullptr;
 AStar* g_aStar = nullptr;
 
+#ifdef DEBUG_NPC_PATHFINDING
+std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
+#endif
+
 Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
 U7Object* g_mouseOverObject = nullptr;
@@ -780,6 +784,47 @@ void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
 	// No longer needed - tile-based pathfinding checks walkability dynamically during A* search
 	// Keeping this function as a no-op to avoid breaking existing code
 }
+
+#ifdef DEBUG_NPC_PATHFINDING
+void PrintNPCPathStats()
+{
+	if (g_npcMaxPathStats.empty())
+	{
+		AddConsoleString("No NPC pathfinding stats collected yet.", YELLOW);
+		return;
+	}
+
+	// Convert to vector for sorting
+	std::vector<NPCPathStats> stats;
+	stats.reserve(g_npcMaxPathStats.size());
+	for (const auto& pair : g_npcMaxPathStats)
+	{
+		stats.push_back(pair.second);
+	}
+
+	// Sort by distance (longest first)
+	std::sort(stats.begin(), stats.end(), [](const NPCPathStats& a, const NPCPathStats& b) {
+		return a.distance > b.distance;
+	});
+
+	// Print header
+	AddConsoleString("=== NPC Longest Pathfinding Routes (sorted by distance) ===", SKYBLUE);
+	AddConsoleString("Total NPCs tracked: " + std::to_string(stats.size()), SKYBLUE);
+
+	// Print each NPC's longest path
+	for (const auto& stat : stats)
+	{
+		std::string msg = "NPC " + std::to_string(stat.npcID) +
+		                  ": Distance=" + std::to_string((int)stat.distance) + " tiles" +
+		                  ", Waypoints=" + std::to_string(stat.waypointCount) +
+		                  ", From=(" + std::to_string((int)stat.startPos.x) + "," + std::to_string((int)stat.startPos.z) + ")" +
+		                  " To=(" + std::to_string((int)stat.endPos.x) + "," + std::to_string((int)stat.endPos.z) + ")";
+		AddConsoleString(msg, WHITE);
+	}
+
+	AddConsoleString("=== End of NPC Path Stats ===", SKYBLUE);
+}
+#endif
 
 
 // int l_add_dialogue(lua_State* L)

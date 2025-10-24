@@ -9,6 +9,9 @@
 #ifndef _U7Globals_H_
 #define _U7Globals_H_
 
+// Debug flag for NPC pathfinding statistics
+#define DEBUG_NPC_PATHFINDING
+
 #include <list>
 #include <vector>
 #include <string>
@@ -417,5 +420,18 @@ extern AStar* g_aStar;
 
 // Call this whenever ANY object changes position or state
 void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
+
+#ifdef DEBUG_NPC_PATHFINDING
+struct NPCPathStats
+{
+	int npcID;
+	Vector3 startPos;
+	Vector3 endPos;
+	float distance;
+	int waypointCount;
+};
+extern std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
+void PrintNPCPathStats();
+#endif
 
 #endif

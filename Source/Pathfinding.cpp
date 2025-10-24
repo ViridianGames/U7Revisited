@@ -176,6 +176,7 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 		m_cachedGreenTiles.reserve(6400);  // Pre-allocate for 80x80 area
 		m_cachedRedTiles.reserve(6400);
 
+		extern AStar* g_aStar;
 		for (int worldZ = centerZ - range; worldZ < centerZ + range; worldZ++)
 		{
 			for (int worldX = centerX - range; worldX < centerX + range; worldX++)
@@ -188,9 +189,14 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 				bool walkable = CheckTileWalkable(worldX, worldZ);
 
 				if (walkable)
-					m_cachedGreenTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
+				{
+					float cost = g_aStar ? g_aStar->GetMovementCost(worldX, worldZ, this) : 1.0f;
+					m_cachedGreenTiles.push_back({{(float)worldX, 0.1f, (float)worldZ}, cost});
+				}
 				else
+				{
 					m_cachedRedTiles.push_back({(float)worldX, 0.1f, (float)worldZ});
+				}
 			}
 		}
 
@@ -199,16 +205,30 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 		m_lastCameraCenterZ = centerZ;
 	}
 
-	// Draw all green tiles in one call (using cached data)
+	// Draw all green tiles with color-coded costs (using cached data)
 	rlBegin(RL_TRIANGLES);
-	rlColor4ub(0, 255, 0, 128);  // Green, semi-transparent
-	for (const auto& pos : m_cachedGreenTiles)
+	for (const auto& tile : m_cachedGreenTiles)
 	{
+		// Color code by cost: 0.5=cyan, 1.0=green, 1.5=yellow, 2.0=orange, 3.0+=red
+		Color costColor;
+		if (tile.cost < 0.75f)
+			costColor = Color{0, 255, 255, 128};  // Cyan - Carpet (0.5)
+		else if (tile.cost < 1.25f)
+			costColor = Color{0, 255, 0, 128};    // Green - Normal (1.0)
+		else if (tile.cost < 1.75f)
+			costColor = Color{255, 255, 0, 128};  // Yellow - Door or easy terrain (1.5)
+		else if (tile.cost < 2.5f)
+			costColor = Color{255, 165, 0, 128};  // Orange - Harder terrain (2.0)
+		else
+			costColor = Color{255, 100, 100, 128}; // Light red - Difficult terrain (3.0+)
+
+		rlColor4ub(costColor.r, costColor.g, costColor.b, costColor.a);
+
 		// Two triangles forming a 1x1 quad
-		Vector3 v1 = {pos.x, pos.y, pos.z};
-		Vector3 v2 = {pos.x + 1.0f, pos.y, pos.z};
-		Vector3 v3 = {pos.x + 1.0f, pos.y, pos.z + 1.0f};
-		Vector3 v4 = {pos.x, pos.y, pos.z + 1.0f};
+		Vector3 v1 = {tile.pos.x, tile.pos.y, tile.pos.z};
+		Vector3 v2 = {tile.pos.x + 1.0f, tile.pos.y, tile.pos.z};
+		Vector3 v3 = {tile.pos.x + 1.0f, tile.pos.y, tile.pos.z + 1.0f};
+		Vector3 v4 = {tile.pos.x, tile.pos.y, tile.pos.z + 1.0f};
 
 		// Triangle 1
 		rlVertex3f(v1.x, v1.y, v1.z);
@@ -244,6 +264,48 @@ void PathfindingGrid::DrawDebugOverlayTileLevel()
 		rlVertex3f(v4.x, v4.y, v4.z);
 	}
 	rlEnd();
+
+	// Draw blue tiles for NPC waypoints (third draw call - only when NPC selected)
+	if (!m_cachedBlueTiles.empty())
+	{
+		rlBegin(RL_TRIANGLES);
+		rlColor4ub(0, 0, 255, 192);  // Blue, more opaque than red/green
+		for (const auto& pos : m_cachedBlueTiles)
+		{
+			// Two triangles forming a 1x1 quad
+			Vector3 v1 = {pos.x, pos.y, pos.z};
+			Vector3 v2 = {pos.x + 1.0f, pos.y, pos.z};
+			Vector3 v3 = {pos.x + 1.0f, pos.y, pos.z + 1.0f};
+			Vector3 v4 = {pos.x, pos.y, pos.z + 1.0f};
+
+			// Triangle 1
+			rlVertex3f(v1.x, v1.y, v1.z);
+			rlVertex3f(v2.x, v2.y, v2.z);
+			rlVertex3f(v3.x, v3.y, v3.z);
+
+			// Triangle 2
+			rlVertex3f(v1.x, v1.y, v1.z);
+			rlVertex3f(v3.x, v3.y, v3.z);
+			rlVertex3f(v4.x, v4.y, v4.z);
+		}
+		rlEnd();
+	}
+}
+
+void PathfindingGrid::SetDebugWaypoints(const std::vector<Vector3>& waypoints)
+{
+	m_cachedBlueTiles.clear();
+	m_cachedBlueTiles.reserve(waypoints.size());
+
+	for (const auto& wp : waypoints)
+	{
+		// Convert waypoint position to tile coordinates
+		int tileX = (int)wp.x;
+		int tileZ = (int)wp.z;
+
+		// Add to blue tiles cache
+		m_cachedBlueTiles.push_back({(float)tileX, 0.15f, (float)tileZ});  // Slightly higher than red/green
+	}
 }
 
 void PathfindingGrid::DebugPrintTileInfo(int worldX, int worldZ)
@@ -363,6 +425,14 @@ void AStar::LoadTerrainCosts(const std::string& filename)
 				continue;
 			int shapeID = std::stoi(shapeIDStr);
 
+			// Extract name (between first and second comma, remove quotes)
+			std::string name = line.substr(firstComma + 1, secondComma - firstComma - 1);
+			// Remove quotes if present
+			if (name.length() >= 2 && name.front() == '"' && name.back() == '"')
+			{
+				name = name.substr(1, name.length() - 2);
+			}
+
 			// Extract cost (after second comma, trim whitespace)
 			std::string costStr = line.substr(secondComma + 1);
 			costStr.erase(0, costStr.find_first_not_of(" \t\r\n"));
@@ -373,7 +443,17 @@ void AStar::LoadTerrainCosts(const std::string& filename)
 				continue;
 
 			float cost = std::stof(costStr);
+
+			// Reject zero or negative costs (breaks A* heuristic)
+			if (cost <= 0.0f)
+			{
+				AddConsoleString("ERROR: Terrain shape " + std::to_string(shapeID) + " has invalid cost " +
+				                 std::to_string(cost) + " (must be > 0). Skipping.", RED);
+				continue;
+			}
+
 			m_terrainCosts[shapeID] = cost;
+			m_terrainNames[shapeID] = name;
 			loadedCount++;
 		}
 		catch (const std::exception& e)
@@ -385,6 +465,16 @@ void AStar::LoadTerrainCosts(const std::string& filename)
 
 	file.close();
 	AddConsoleString("Loaded " + std::to_string(loadedCount) + " terrain movement costs from " + filename, GREEN);
+}
+
+std::string AStar::GetTerrainName(int shapeID) const
+{
+	auto it = m_terrainNames.find(shapeID);
+	if (it != m_terrainNames.end())
+	{
+		return it->second;
+	}
+	return "Unknown";
 }
 
 std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid)
@@ -410,21 +500,9 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		return std::vector<Vector3>();  // Out of bounds
 	}
 
-	// Check if start and goal are walkable
-	if (!grid->IsPositionWalkable(startX, startZ))
-	{
-		AddConsoleString("  FAILED: Start tile not walkable!", RED);
-		grid->DebugPrintTileInfo(startX, startZ);
-		return std::vector<Vector3>();  // Start not walkable
-	}
-
-	if (!grid->IsPositionWalkable(goalX, goalZ))
-	{
-		AddConsoleString("  FAILED: Goal tile not walkable!", RED);
-		// Debug: Print why goal is blocked
-		grid->DebugPrintTileInfo(goalX, goalZ);
-		return std::vector<Vector3>();  // Goal not walkable
-	}
+	// Note: We don't check if start/goal are walkable - NPCs can spawn on blocked tiles
+	// (like sitting on chairs) and destinations might be blocked objects (like altars).
+	// Pathfinding will work around obstacles to get as close as possible.
 
 	// Limit search distance to avoid searching entire map (performance)
 	int maxDistance = 500;  // Max 500 tiles (enough for cross-map NPC schedules)
@@ -445,34 +523,54 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 	startNode->f = startNode->g + startNode->h;
 	m_allocatedNodes.push_back(startNode);
 
-	// Open and closed sets
-	std::vector<PathNode*> openSet;
+	// Priority queue comparator (max heap by default, so invert comparison for min heap)
+	auto cmp = [](PathNode* a, PathNode* b) { return a->f > b->f; };
+	std::priority_queue<PathNode*, std::vector<PathNode*>, decltype(cmp)> openSet(cmp);
+	std::unordered_map<int, PathNode*> openSetLookup;  // For fast membership checks
 	std::unordered_map<int, PathNode*> closedSet;  // Key = tileZ * 3072 + tileX
 
-	openSet.push_back(startNode);
+	int startKey = startZ * 3072 + startX;
+	openSet.push(startNode);
+	openSetLookup[startKey] = startNode;
 
 	PathNode* goalNode = nullptr;
 	int nodesExplored = 0;
-	const int maxNodesToExplore = 10000;  // Limit iterations for performance
+	const int maxNodesToExplore = 40000;  // Limit iterations for performance
 
 	// A* main loop
 	while (!openSet.empty() && nodesExplored < maxNodesToExplore)
 	{
 		nodesExplored++;
 
-		// Find node with lowest f cost
-		auto minIt = std::min_element(openSet.begin(), openSet.end(),
-			[](PathNode* a, PathNode* b) { return a->f < b->f; });
+		// Get node with lowest f cost (top of priority queue)
+		PathNode* current = openSet.top();
+		openSet.pop();
 
-		PathNode* current = *minIt;
-		openSet.erase(minIt);
+		int currentKey = current->z * 3072 + current->x;
+
+		// Skip if this node is outdated (a better version was already added to queue)
+		auto lookupIt = openSetLookup.find(currentKey);
+		if (lookupIt != openSetLookup.end() && lookupIt->second != current)
+		{
+			// This is an outdated duplicate, skip it
+			continue;
+		}
+
+		openSetLookup.erase(currentKey);
 
 		// Check if we reached the goal
 		if (current->x == goalX && current->z == goalZ)
 		{
 			goalNode = current;
-			// Debug: Uncomment to see successful paths
-			//AddConsoleString("  Path found! Explored " + std::to_string(nodesExplored) + " nodes", GREEN);
+#ifdef DEBUG_NPC_PATHFINDING
+			// Track maximum nodes used
+			static int maxNodesUsed = 0;
+			if (nodesExplored > maxNodesUsed)
+			{
+				maxNodesUsed = nodesExplored;
+				AddConsoleString("  NEW MAX: Path found using " + std::to_string(nodesExplored) + " nodes", GREEN);
+			}
+#endif
 			break;
 		}
 
@@ -481,7 +579,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		closedSet[key] = current;
 
 		// Get neighbors
-		std::vector<PathNode*> neighbors = GetNeighbors(current, grid);
+		std::vector<PathNode*> neighbors = GetNeighbors(current, grid, goalX, goalZ);
 
 		for (PathNode* neighbor : neighbors)
 		{
@@ -494,48 +592,51 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 				continue;
 			}
 
-			// Calculate tentative g cost (higher cost for closed doors)
+			// Calculate tentative g cost
 			float moveCost = GetMovementCost(neighbor->x, neighbor->z, grid);
 			float tentativeG = current->g + moveCost;
 
-			// Check if this path to neighbor is better
-			auto openIt = std::find_if(openSet.begin(), openSet.end(),
-				[neighbor](PathNode* n) { return n->x == neighbor->x && n->z == neighbor->z; });
+			// Check if neighbor is in open set
+			auto openIt = openSetLookup.find(neighborKey);
 
-			if (openIt == openSet.end())
+			if (openIt == openSetLookup.end())
 			{
 				// Not in open set, add it
 				neighbor->g = tentativeG;
 				neighbor->h = Heuristic(neighbor->x, neighbor->z, goalX, goalZ);
 				neighbor->f = neighbor->g + neighbor->h;
 				neighbor->parent = current;
-				openSet.push_back(neighbor);
+				openSet.push(neighbor);
+				openSetLookup[neighborKey] = neighbor;
 				m_allocatedNodes.push_back(neighbor);
 			}
 			else
 			{
-				// Already in open set
-				if (tentativeG < (*openIt)->g)
+				// Already in open set - check if this path is better
+				PathNode* existingNode = openIt->second;
+				if (tentativeG < existingNode->g)
 				{
-					// This path is better
-					(*openIt)->g = tentativeG;
-					(*openIt)->f = (*openIt)->g + (*openIt)->h;
-					(*openIt)->parent = current;
+					// This path is better - add new node with better cost to queue
+					// The old node will be skipped when popped (outdated duplicate check)
+					neighbor->g = tentativeG;
+					neighbor->h = Heuristic(neighbor->x, neighbor->z, goalX, goalZ);
+					neighbor->f = neighbor->g + neighbor->h;
+					neighbor->parent = current;
+					openSet.push(neighbor);
+					openSetLookup[neighborKey] = neighbor;  // Update lookup to point to new better node
+					m_allocatedNodes.push_back(neighbor);
 				}
-				delete neighbor;  // Don't need the duplicate
+				else
+				{
+					delete neighbor;  // This path is not better
+				}
 			}
 		}
 	}
 
-	if (nodesExplored >= maxNodesToExplore)
+	// If we didn't find the exact goal, try fallback to closest point
+	if (goalNode == nullptr)
 	{
-		AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
-	}
-	else if (goalNode == nullptr)
-	{
-		// Debug: Uncomment to see fallback behavior
-		//AddConsoleString("  No path to exact goal (explored " + std::to_string(nodesExplored) + " nodes)", YELLOW);
-
 		// Find the closest explored node to the goal
 		PathNode* furthest = nullptr;
 		float minDist = 9999999.0f;
@@ -550,7 +651,7 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 			}
 		}
 
-		if (furthest && minDist < 100.0f)  // Only use fallback if reasonably close
+		if (furthest && minDist < 150.0f)  // Only use fallback if reasonably close
 		{
 			// Debug: Uncomment to see fallback behavior
 			//AddConsoleString("  Using closest reachable point: (" + std::to_string(furthest->x) + "," + std::to_string(furthest->z) +
@@ -559,6 +660,32 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 		}
 		else
 		{
+			// Debug diagnostics for failed search
+			if (nodesExplored >= maxNodesToExplore)
+			{
+				AddConsoleString("  FAILED: Search limit reached (" + std::to_string(maxNodesToExplore) + " nodes)", RED);
+			}
+
+#ifdef DEBUG_NPC_PATHFINDING
+			// Diagnostic info
+			AddConsoleString("  DEBUG: Start=(" + std::to_string(startX) + "," + std::to_string(startZ) +
+			                 ") Goal=(" + std::to_string(goalX) + "," + std::to_string(goalZ) + ")", YELLOW);
+			AddConsoleString("  DEBUG: Open set size=" + std::to_string(openSetLookup.size()) +
+			                 ", Closed set size=" + std::to_string(closedSet.size()), YELLOW);
+
+			if (furthest)
+			{
+				AddConsoleString("  DEBUG: Closest explored node to goal: (" + std::to_string(furthest->x) +
+				                 "," + std::to_string(furthest->z) + ") distance=" +
+				                 std::to_string((int)minDist) + " tiles", YELLOW);
+			}
+
+			// Check if goal is still walkable
+			bool goalStillWalkable = grid->IsPositionWalkable(goalX, goalZ);
+			AddConsoleString("  DEBUG: Goal walkable check: " + std::string(goalStillWalkable ? "YES" : "NO"),
+			                 goalStillWalkable ? GREEN : RED);
+#endif
+
 			AddConsoleString("  FAILED: No reachable point found near goal", RED);
 		}
 	}
@@ -575,11 +702,12 @@ std::vector<Vector3> AStar::FindPath(Vector3 start, Vector3 goal, PathfindingGri
 
 float AStar::Heuristic(int x1, int z1, int x2, int z2)
 {
-	// Manhattan distance
+	// Manhattan distance (admissible heuristic for 4-directional movement)
+	// This guarantees optimal paths
 	return (float)(abs(x2 - x1) + abs(z2 - z1));
 }
 
-std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid)
+std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ)
 {
 	std::vector<PathNode*> neighbors;
 
@@ -600,8 +728,11 @@ std::vector<PathNode*> AStar::GetNeighbors(PathNode* node, PathfindingGrid* grid
 		if (nx < 0 || nx >= 3072 || nz < 0 || nz >= 3072)
 			continue;
 
-		// Walkability check (tile-level)
-		if (!grid->IsPositionWalkable(nx, nz))
+		// Allow goal tile even if not walkable (NPCs may need to reach blocked destinations like altars)
+		bool isGoal = (nx == goalX && nz == goalZ);
+
+		// Walkability check (tile-level) - skip for goal tile
+		if (!isGoal && !grid->IsPositionWalkable(nx, nz))
 			continue;
 
 		neighbors.push_back(new PathNode(nx, nz));
@@ -668,8 +799,8 @@ float AStar::GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid)
 
 				if (overlaps)
 				{
-					// Door tiles add extra cost (2x base terrain cost)
-					return baseCost * 2.0f;
+					// Door tiles add small extra cost (slight penalty but not prohibitive)
+					return baseCost + 0.5f;
 				}
 			}
 		}

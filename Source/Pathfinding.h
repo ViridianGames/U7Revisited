@@ -38,8 +38,9 @@ public:
 	bool IsPositionWalkable(int worldX, int worldZ) const;  // Check if tile is walkable
 
 	// Debug visualization
-	void DrawDebugOverlayTileLevel();                     // Tile-level visualization
+	void DrawDebugOverlayTileLevel();                     // Tile-level visualization (3D with cost cubes)
 	void DebugPrintTileInfo(int worldX, int worldZ);      // Print why a tile is blocked
+	void SetDebugWaypoints(const std::vector<Vector3>& waypoints);  // Set waypoints to visualize
 
 	// Helper: Get all objects that overlap a tile (used by pathfinding and door opening)
 	struct OverlappingObject {
@@ -56,8 +57,13 @@ private:
 	bool CheckTileWalkable(int worldX, int worldZ) const;
 
 	// Cache for debug visualization
-	mutable std::vector<Vector3> m_cachedGreenTiles;
+	struct TileWithCost {
+		Vector3 pos;
+		float cost;
+	};
+	mutable std::vector<TileWithCost> m_cachedGreenTiles;
 	mutable std::vector<Vector3> m_cachedRedTiles;
+	mutable std::vector<Vector3> m_cachedBlueTiles;  // NPC waypoints
 	mutable int m_lastCameraCenterX = -9999;
 	mutable int m_lastCameraCenterZ = -9999;
 };
@@ -77,15 +83,18 @@ public:
 	// Find path from start to goal (returns waypoints in world coordinates)
 	std::vector<Vector3> FindPath(Vector3 start, Vector3 goal, PathfindingGrid* grid);
 
+	// Get movement cost for a tile (for debug visualization)
+	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
+
+	// Get terrain name by shape ID (for debug)
+	std::string GetTerrainName(int shapeID) const;
+
 private:
 	// Heuristic function (Manhattan distance)
 	float Heuristic(int x1, int z1, int x2, int z2);
 
 	// Get walkable neighbors of a node
-	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid);
-
-	// Get movement cost for a tile (1 for normal, 4 for closed doors)
-	float GetMovementCost(int worldX, int worldZ, PathfindingGrid* grid);
+	std::vector<PathNode*> GetNeighbors(PathNode* node, PathfindingGrid* grid, int goalX, int goalZ);
 
 	// Reconstruct path from goal to start
 	std::vector<Vector3> ReconstructPath(PathNode* goal);
@@ -98,6 +107,9 @@ private:
 
 	// Terrain movement costs (shape ID -> cost multiplier)
 	std::unordered_map<int, float> m_terrainCosts;
+
+	// Terrain names (shape ID -> name)
+	std::unordered_map<int, std::string> m_terrainNames;
 };
 
 #endif

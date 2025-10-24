@@ -286,23 +286,26 @@ void U7Object::NPCUpdate()
 	// Follow waypoints from pathfinding
 	if (!m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
-		// Check if reached current waypoint (within 2 tiles)
+		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
 		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
-		if (distToWaypoint < 2.0f)
+		bool isLastWaypoint = (m_currentWaypointIndex == m_pathWaypoints.size() - 1);
+		float threshold = isLastWaypoint ? 0.1f : 0.5f;  // Stricter threshold for final waypoint
+
+		if (distToWaypoint < threshold)
 		{
-			m_currentWaypointIndex++;
-			if (m_currentWaypointIndex < m_pathWaypoints.size())
-			{
-				// Advance to next waypoint
-				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
-			}
-			else
+			if (isLastWaypoint)
 			{
 				// Reached final destination
 				m_pathWaypoints.clear();
 				m_currentWaypointIndex = 0;
 				m_isMoving = false;
 				SetDest(m_Pos);  // Set destination to current position to stop movement
+			}
+			else
+			{
+				// Advance to next waypoint
+				m_currentWaypointIndex++;
+				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
 			}
 		}
 	}
@@ -496,11 +499,7 @@ void U7Object::TryOpenDoorAtCurrentPosition()
 		if (!obj->m_objectData->m_isDoor)
 			continue;
 
-		// Skip the hinge tile - NPCs shouldn't be on it
-		if (worldX == ovObj.tileX && worldZ == ovObj.tileZ)
-			continue;
-
-		// If we're standing on a door tile (not the hinge), interact with it
+		// If we're standing on any door tile, interact with it to open
 		obj->Interact(1);  // Event 1 = double-click interaction
 		return;
 	}
@@ -540,6 +539,22 @@ void U7Object::PathfindToDest(Vector3 dest)
 		{
 			SetDest(m_pathWaypoints[0]);
 		}
+
+#ifdef DEBUG_NPC_PATHFINDING
+		// Track longest path for this NPC
+		float pathDistance = Vector3Distance(m_Pos, dest);
+		auto it = g_npcMaxPathStats.find(m_NPCID);
+		if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
+		{
+			NPCPathStats stats;
+			stats.npcID = m_NPCID;
+			stats.startPos = m_Pos;
+			stats.endPos = dest;
+			stats.distance = pathDistance;
+			stats.waypointCount = (int)path.size();
+			g_npcMaxPathStats[m_NPCID] = stats;
+		}
+#endif
 
 		// Debug: Uncomment to see successful pathfinding
 		//AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
