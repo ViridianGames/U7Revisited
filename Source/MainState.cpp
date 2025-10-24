@@ -482,7 +482,10 @@ void MainState::UpdateInput()
 
 	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
 	{
-		if (g_objectUnderMousePointer->m_hasConversationTree || g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
+		// Handle doors and objects with scripts/conversations
+		if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
+		    g_objectUnderMousePointer->m_hasConversationTree ||
+		    g_objectUnderMousePointer->m_shapeData->m_luaScript != "default")
 		{
 			g_objectUnderMousePointer->Interact(1);;
 		}

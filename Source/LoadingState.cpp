@@ -1226,19 +1226,26 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_name = shapeNames[i];
 
 		// Fix: Some doors don't have m_isDoor flag set in the data file
-		// If the name is "door", mark it as a door
-		if (g_objectDataTable[i].m_name == "door")
-		{
-			g_objectDataTable[i].m_isDoor = true;
-		}
-
-		// Fix: Door shape pairs that rotate into each other also need m_isDoor flag
-		// Shapes 270, 376, 432, 433 are all door variants that swap between each other
-		if (i == 270 || i == 376 || i == 432 || i == 433)
+		// If the name contains "door" (case-insensitive), mark it as a door
+		string lowerName = g_objectDataTable[i].m_name;
+		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+		if (lowerName.find("door") != string::npos)
 		{
 			g_objectDataTable[i].m_isDoor = true;
 		}
 	}
+
+#ifdef DEBUG_NPC_PATHFINDING
+	// Count how many shapes were marked as doors
+	int doorCount = 0;
+	for (int i = 0; i < 1024; i++)
+	{
+		if (g_objectDataTable[i].m_isDoor)
+			doorCount++;
+	}
+	AddConsoleString("Marked " + to_string(doorCount) + " shapes as doors", GREEN);
+#endif
+
 	wgtvolfile.close();
 	tfafile.close();
 }

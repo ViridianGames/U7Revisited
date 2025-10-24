@@ -343,6 +343,11 @@ void ShapeEditorState::Update()
 				}
 			}
 			file.close();
+			AddConsoleString("Saved shapetable.dat successfully!", GREEN);
+		}
+		else
+		{
+			AddConsoleString("ERROR: Failed to save shapetable.dat!", RED);
 		}
 	}
 

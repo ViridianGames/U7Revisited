@@ -514,9 +514,21 @@ static int LuaSetObjectShape(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
+
+    // If the current object is a door, mark the new shape as a door too
+    // This fixes doors that change shape when opened/closed
+    bool wasDoor = object->m_objectData->m_isDoor;
+
     int currentFrame = object->m_shapeData->GetFrame();
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
+
+    // Propagate door flag to new shape
+    if (wasDoor)
+    {
+        g_objectDataTable[shape].m_isDoor = true;
+    }
+
     return 0;
 }
 
