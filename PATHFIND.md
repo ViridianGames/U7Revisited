@@ -18,10 +18,14 @@ Added FPS display in lower right corner to aid debugging.
 
 When lua debug is on, clicking NPCs will output their schedule (sorted by time) in the debug console. If currently pathfinding, it will show their waypoints.
 
+Updated tile path costing values in Redist\Data\terrain_walkable.csv Note: these must be greater than 0!
+
+Updated red/green tiles to show an array of colors to more easily see path costs
+
+Updated doors in shapedata.dat and a couple lua scripts so they open/close when clicked.
+
+When F10 is active, clicking an NPC that has active astar waypoints will plot them in blue tiles
+
 # KNOWN ISSUES
 
-Some NPCs start out on unwalkable tiles, so they never move.
-
-Some NPCs have crazy longs paths and the astar gives up before a path is found.
-
-Not sure how "double doors" should work, do they always open/close in tandem?
+A couple NPCs have crazy longs paths and the astar gives up before a path is found.
