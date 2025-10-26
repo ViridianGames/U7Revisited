@@ -9,11 +9,15 @@
 #ifndef _U7Globals_H_
 #define _U7Globals_H_
 
+// Debug flag for NPC pathfinding statistics
+#define DEBUG_NPC_PATHFINDING
+
 #include <list>
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <array>
+#include <queue>
 
 #include "Geist/Primitives.h"
 #include "Geist/RNG.h"
@@ -81,6 +85,10 @@ extern unsigned int g_hour;
 extern unsigned int g_minute;
 extern unsigned int g_scheduleTime;
 extern float g_secsPerMinute;
+
+// NPC pathfinding queue system
+extern std::queue<int> g_npcPathfindQueue;  // Queue of NPC IDs needing pathfinding
+extern int g_lastScheduleTimeCheck;          // Last schedule time we checked
 
 extern Color g_dayNightColor;
 extern bool g_isDay;
@@ -400,5 +408,30 @@ extern float g_cameraRotationTarget;
 extern EngineModes g_engineMode;
 
 void RecalculateCamera();
+
+//////////////////////////////////////////////////////////////////////////////
+///  PATHFINDING
+//////////////////////////////////////////////////////////////////////////////
+
+class PathfindingGrid;
+class AStar;
+extern PathfindingGrid* g_pathfindingGrid;
+extern AStar* g_aStar;
+
+// Call this whenever ANY object changes position or state
+void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius = 1);
+
+#ifdef DEBUG_NPC_PATHFINDING
+struct NPCPathStats
+{
+	int npcID;
+	Vector3 startPos;
+	Vector3 endPos;
+	float distance;
+	int waypointCount;
+};
+extern std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
+void PrintNPCPathStats();
+#endif
 
 #endif

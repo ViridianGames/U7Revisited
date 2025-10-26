@@ -129,6 +129,7 @@ set(SOURCES
     Source/Main.cpp
     Source/MainState.cpp
     Source/OptionsState.cpp
+    Source/Pathfinding.cpp
     Source/ShapeData.cpp
     Source/ShapeEditorState.cpp
     Source/Terrain.cpp

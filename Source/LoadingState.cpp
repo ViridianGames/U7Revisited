@@ -5,6 +5,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
+#include "Pathfinding.h"
 
 #include <cstring>
 #include <list>
@@ -208,6 +209,15 @@ void LoadingState::UpdateLoading()
 			LoadNPCSchedules();
 			m_loadingNPCSchedules = true;
 			return;
+		}
+
+		if (!m_buildingPathfindingGrid)
+		{
+			AddConsoleString(std::string("Initializing pathfinding system..."));
+			g_pathfindingGrid = new PathfindingGrid();
+			g_aStar = new AStar();
+			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
+			m_buildingPathfindingGrid = true;
 		}
 	}
 	else
@@ -1214,7 +1224,28 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isLightSource = (buffer[2] >> 6) & 0x01;
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
+
+		// Fix: Some doors don't have m_isDoor flag set in the data file
+		// If the name contains "door" (case-insensitive), mark it as a door
+		string lowerName = g_objectDataTable[i].m_name;
+		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+		if (lowerName.find("door") != string::npos)
+		{
+			g_objectDataTable[i].m_isDoor = true;
+		}
 	}
+
+#ifdef DEBUG_NPC_PATHFINDING
+	// Count how many shapes were marked as doors
+	int doorCount = 0;
+	for (int i = 0; i < 1024; i++)
+	{
+		if (g_objectDataTable[i].m_isDoor)
+			doorCount++;
+	}
+	AddConsoleString("Marked " + to_string(doorCount) + " shapes as doors", GREEN);
+#endif
+
 	wgtvolfile.close();
 	tfafile.close();
 }

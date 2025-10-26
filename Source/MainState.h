@@ -142,6 +142,16 @@ public:
 	bool m_ranFinnigansScript = false;
 
 	bool m_showUIElements = true;
+
+	// NPC Schedule toggle button
+	bool m_npcSchedulesEnabled = false;
+	Rectangle m_scheduleToggleButton = { 10, 10, 30, 30 }; // x, y, width, height
+
+	// Pathfinding debug visualization
+	bool m_showPathfindingDebug = false;  // F10: Tile-level visualization (shows objects)
+
+	// Debug: Allow moving static objects
+	bool m_allowMovingStaticObjects = false;  // F7: Toggle moving static objects
 };
 
 #endif

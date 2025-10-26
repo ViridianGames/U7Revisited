@@ -2,6 +2,7 @@
 #include "Geist/Engine.h"
 #include "Geist/Logging.h"
 #include "ConversationState.h"
+#include "Pathfinding.h"
 #include "lua.hpp"
 #include <algorithm>
 #include <fstream>
@@ -88,7 +89,7 @@ RenderTexture2D g_guiRenderTarget;
 
 std::unique_ptr<U7Player> g_Player;
 
-bool g_LuaDebug = true;
+bool g_LuaDebug = false;  // Toggle with F8 key
 
 std::unique_ptr<Model> g_CuboidModel;
 
@@ -105,6 +106,18 @@ unsigned int g_minute;
 unsigned int g_scheduleTime;
 float g_secsPerMinute = 5;
 bool g_autoRotate = false;
+
+// NPC pathfinding queue system
+std::queue<int> g_npcPathfindQueue;
+int g_lastScheduleTimeCheck = -1;
+
+// Pathfinding
+PathfindingGrid* g_pathfindingGrid = nullptr;
+AStar* g_aStar = nullptr;
+
+#ifdef DEBUG_NPC_PATHFINDING
+std::unordered_map<int, NPCPathStats> g_npcMaxPathStats;
+#endif
 
 Vector3 g_terrainUnderMousePointer = Vector3{ 0, 0, 0 };
 
@@ -457,6 +470,12 @@ U7Object* AddObject(int shapenum, int framenum, int id, float x, float y, float 
 	AssignObjectChunk(temp);
 	//UpdateModelAnimation(temp->m_shapeData->m_customMesh->GetModel(), temp->m_shapeData->m_customMesh->GetModel()-> ->   0);
 
+	// Notify pathfinding grid if this is a non-walkable object
+	if (temp->m_objectData && temp->m_objectData->m_isNotWalkable)
+	{
+		NotifyPathfindingGridUpdate((int)x, (int)z);
+	}
+
 	return g_objectList[id].get();
 }
 
@@ -758,6 +777,54 @@ void OpenURL(const std::string& url)
     #endif
     std::system(command.c_str());
 }
+
+// Pathfinding grid update notification
+void NotifyPathfindingGridUpdate(int worldX, int worldZ, int radius)
+{
+	// No longer needed - tile-based pathfinding checks walkability dynamically during A* search
+	// Keeping this function as a no-op to avoid breaking existing code
+}
+
+#ifdef DEBUG_NPC_PATHFINDING
+void PrintNPCPathStats()
+{
+	if (g_npcMaxPathStats.empty())
+	{
+		AddConsoleString("No NPC pathfinding stats collected yet.", YELLOW);
+		return;
+	}
+
+	// Convert to vector for sorting
+	std::vector<NPCPathStats> stats;
+	stats.reserve(g_npcMaxPathStats.size());
+	for (const auto& pair : g_npcMaxPathStats)
+	{
+		stats.push_back(pair.second);
+	}
+
+	// Sort by distance (longest first)
+	std::sort(stats.begin(), stats.end(), [](const NPCPathStats& a, const NPCPathStats& b) {
+		return a.distance > b.distance;
+	});
+
+	// Print header
+	AddConsoleString("=== NPC Longest Pathfinding Routes (sorted by distance) ===", SKYBLUE);
+	AddConsoleString("Total NPCs tracked: " + std::to_string(stats.size()), SKYBLUE);
+
+	// Print each NPC's longest path
+	for (const auto& stat : stats)
+	{
+		std::string msg = "NPC " + std::to_string(stat.npcID) +
+		                  ": Distance=" + std::to_string((int)stat.distance) + " tiles" +
+		                  ", Waypoints=" + std::to_string(stat.waypointCount) +
+		                  ", From=(" + std::to_string((int)stat.startPos.x) + "," + std::to_string((int)stat.startPos.z) + ")" +
+		                  " To=(" + std::to_string((int)stat.endPos.x) + "," + std::to_string((int)stat.endPos.z) + ")";
+		AddConsoleString(msg, WHITE);
+	}
+
+	AddConsoleString("=== End of NPC Path Stats ===", SKYBLUE);
+}
+#endif
 
 
 // int l_add_dialogue(lua_State* L)

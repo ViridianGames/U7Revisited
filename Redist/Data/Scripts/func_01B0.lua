@@ -5,7 +5,7 @@ function func_01B0(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = func_081B((eventid, objectref)
+    var_0000 = func_081B(eventid, objectref)
     if var_0000 == 1 then
         if func_081D(5, 3, 0, 0, 433, objectref) then
             func_081E(7, 0, 0, 0, 376, 1, 1, 270, objectref)
