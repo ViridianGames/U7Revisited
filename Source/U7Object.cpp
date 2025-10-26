@@ -19,6 +19,7 @@
 #include "ShapeData.h"
 #include "LoadingState.h"
 #include "MainState.h"
+#include "Pathfinding.h"
 
 #include <iostream>
 #include <string>
@@ -162,6 +163,21 @@ void U7Object::NPCDraw()
 		return;
 	}
 
+	// Check if this object has NPC data and properly initialized walk textures
+	if (m_NPCData == nullptr || m_NPCData->m_walkTextures.size() < 4)
+	{
+		return;
+	}
+
+	// Verify all directional animation vectors are properly sized
+	for (int i = 0; i < 4; i++)
+	{
+		if (m_NPCData->m_walkTextures[i].size() < 2)
+		{
+			return;
+		}
+	}
+
 	if (m_NPCID == 0)
 	{
 		int stopper = 0; // Should be avatar;
@@ -258,48 +274,38 @@ void U7Object::NPCDraw()
 
 void U7Object::NPCUpdate()
 {
-	//  Get desination from schedule
+	// Don't do schedules while in the party
 	if (g_Player->NPCIDInParty(m_NPCID) && m_NPCID != 0)
 	{
-		return; // Don't do schedules while in the party.
+		return;
 	}
 
-	//  If we don't have a schedule yet, or if the schedule time has changed, get the next destination
-	if (m_followingSchedule)
+	// Schedule checking is now handled by MainState::Update() queue system
+	// This function only handles waypoint following and movement
+
+	// Follow waypoints from pathfinding
+	if (!m_pathWaypoints.empty() && m_currentWaypointIndex < m_pathWaypoints.size())
 	{
-		if (m_lastSchedule == -1 && g_NPCSchedules[m_NPCID].size() > 0)
+		// Check if reached current waypoint (within 0.5 tiles for intermediate, exact for last)
+		float distToWaypoint = Vector3Distance(m_Pos, m_pathWaypoints[m_currentWaypointIndex]);
+		bool isLastWaypoint = (m_currentWaypointIndex == m_pathWaypoints.size() - 1);
+		float threshold = isLastWaypoint ? 0.1f : 0.5f;  // Stricter threshold for final waypoint
+
+		if (distToWaypoint < threshold)
 		{
-			int mostrecentschedule = 0;
-			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
+			if (isLastWaypoint)
 			{
-				if (g_NPCSchedules[m_NPCID][i].m_time <= g_scheduleTime)
-				{
-					mostrecentschedule = i;
-				}
-				else
-				{
-					break;
-				}
+				// Reached final destination
+				m_pathWaypoints.clear();
+				m_currentWaypointIndex = 0;
+				m_isMoving = false;
+				SetDest(m_Pos);  // Set destination to current position to stop movement
 			}
-
-			SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destX), 0, float(g_NPCSchedules[m_NPCID][mostrecentschedule].m_destY) });
-			m_isMoving = true;
-			m_lastSchedule = g_NPCSchedules[m_NPCID][mostrecentschedule].m_time;
-			g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][mostrecentschedule].m_activity;
-
-		}
-		else
-		{
-			for (int i = 0; i < g_NPCSchedules[m_NPCID].size(); i++)
+			else
 			{
-				if (g_NPCSchedules[m_NPCID][i].m_time == g_scheduleTime && g_NPCSchedules[m_NPCID][i].m_time != m_lastSchedule)
-				{
-					SetDest(Vector3{ float(g_NPCSchedules[m_NPCID][i].m_destX), 0, float(g_NPCSchedules[m_NPCID][i].m_destY) });
-					m_isMoving = true;
-					m_lastSchedule = g_NPCSchedules[m_NPCID][i].m_time;
-					g_NPCData[m_NPCID]->m_currentActivity = g_NPCSchedules[m_NPCID][i].m_activity;
-					break;
-				}
+				// Advance to next waypoint
+				m_currentWaypointIndex++;
+				SetDest(m_pathWaypoints[m_currentWaypointIndex]);
 			}
 		}
 	}
@@ -309,16 +315,19 @@ void U7Object::NPCUpdate()
 		float deltav = (5.0f / g_secsPerMinute) * m_speed * GetFrameTime();
 		Vector3 newPos = Vector3Add(m_Pos, Vector3Scale(m_Direction, deltav));
 
-		//  If this update would take us beyond the destination, set the position to the destination
+		//  If this update would take we beyond the destination, set the position to the destination
 		if(Vector3DistanceSqr(newPos, m_Dest) > Vector3DistanceSqr(m_Pos, m_Dest))
 		{
-			SetPos(m_Pos);
+			SetPos(m_Dest);
 			m_isMoving = false;
 		}
 		else
 		{
 			m_isMoving = true;
 			SetPos(newPos);
+
+			// Check for doors after moving to new position
+			TryOpenDoorAtCurrentPosition();
 		}
 	}
 	else  // Not moving, so randomly decide to move
@@ -350,6 +359,14 @@ void U7Object::SetPos(Vector3 pos)
 	Vector3 dims = Vector3{ 0, 0, 0 };
 	Vector3 boundingBoxAnchorPoint = Vector3{ 0, 0, 0 };
 
+	// Safety check for null shape data
+	if (m_shapeData == nullptr)
+	{
+		m_boundingBox = { m_Pos, m_Pos };
+		m_centerPoint = pos;
+		return;
+	}
+
 	ObjectData* objectData = &g_objectDataTable[m_shapeData->GetShape()];
 
 	if (m_drawType == ShapeDrawType::OBJECT_DRAW_BILLBOARD)
@@ -359,7 +376,15 @@ void U7Object::SetPos(Vector3 pos)
 	}
 	else if (m_drawType == ShapeDrawType::OBJECT_DRAW_FLAT)
 	{
-		dims = Vector3{ float(m_shapeData->m_texture->width) / 8.0f, 0, float(m_shapeData->m_texture->height) / 8.0f };
+		// Safety check for null texture
+		if (m_shapeData->m_texture == nullptr)
+		{
+			dims = Vector3{ 1.0f, 0, 1.0f }; // Default size
+		}
+		else
+		{
+			dims = Vector3{ float(m_shapeData->m_texture->width) / 8.0f, 0, float(m_shapeData->m_texture->height) / 8.0f };
+		}
 		boundingBoxAnchorPoint = Vector3Add(m_Pos, Vector3{ -dims.x + 1, 0, -dims.z + 1 });
 	}
 	else
@@ -376,6 +401,32 @@ void U7Object::SetPos(Vector3 pos)
 	m_terrainCenterPoint.y = m_Pos.y;
 
 	UpdateObjectChunk(this, fromPos);
+
+	// Notify pathfinding grid if this is a non-walkable STATIC object (not NPCs!)
+	// NPCs don't block pathfinding grid, so no need to update when they move
+	if (m_objectData && m_objectData->m_isNotWalkable && !m_isNPC)
+	{
+		// Update both old and new positions (object moved)
+		NotifyPathfindingGridUpdate((int)fromPos.x, (int)fromPos.z);
+		NotifyPathfindingGridUpdate((int)pos.x, (int)pos.z);
+	}
+}
+
+void U7Object::SetFrame(int frame)
+{
+	// Store old frame to check if it actually changed
+	int oldFrame = m_Frame;
+
+	// Update frame and shapeData pointer
+	m_Frame = frame;
+	m_shapeData = &g_shapeTable[m_ObjectType][m_Frame];
+
+	// Notify pathfinding grid if this is a door (frame change affects walkability)
+	// Doors: frame 0 = closed (not walkable), frame > 0 = open (walkable)
+	if (m_objectData && m_objectData->m_isDoor && oldFrame != frame)
+	{
+		NotifyPathfindingGridUpdate((int)m_Pos.x, (int)m_Pos.z);
+	}
 }
 
 float U7Object::Pick()
@@ -416,6 +467,108 @@ void U7Object::SetDest(Vector3 dest)
 	m_Dest = dest;
 	m_Direction = Vector3Subtract(m_Dest, m_Pos);
 	m_Direction = Vector3Normalize(m_Direction);
+}
+
+void U7Object::TryOpenDoorAtCurrentPosition()
+{
+	int worldX = (int)m_Pos.x;
+	int worldZ = (int)m_Pos.z;
+
+	// Cache to avoid checking the same position multiple times per tile
+	static std::unordered_map<int, std::pair<int, int>> lastCheckedPos;  // npcID -> (x, z)
+
+	auto it = lastCheckedPos.find(m_NPCID);
+	if (it != lastCheckedPos.end() && it->second.first == worldX && it->second.second == worldZ)
+	{
+		return;  // Already checked this position recently
+	}
+	lastCheckedPos[m_NPCID] = {worldX, worldZ};
+
+	// Use the pathfinding grid's helper to get overlapping objects at current position
+	extern PathfindingGrid* g_pathfindingGrid;
+	if (!g_pathfindingGrid)
+		return;
+
+	auto overlappingObjects = g_pathfindingGrid->GetOverlappingObjects(worldX, worldZ);
+
+	// Check if any of the overlapping objects is a door
+	for (const auto& ovObj : overlappingObjects)
+	{
+		U7Object* obj = ovObj.obj;
+
+		if (!obj->m_objectData->m_isDoor)
+			continue;
+
+		// If we're standing on any door tile, interact with it to open
+		obj->Interact(1);  // Event 1 = double-click interaction
+		return;
+	}
+}
+
+void U7Object::PathfindToDest(Vector3 dest)
+{
+	extern PathfindingGrid* g_pathfindingGrid;
+
+	// Clear previous path
+	m_pathWaypoints.clear();
+	m_currentWaypointIndex = 0;
+
+	// If no pathfinding grid, fall back to direct movement
+	if (!g_pathfindingGrid)
+	{
+		SetDest(dest);
+		return;
+	}
+
+	// Use A* to find path
+	if (!g_aStar)
+	{
+		AddConsoleString("ERROR: g_aStar is null!", RED);
+		return;
+	}
+	std::vector<Vector3> path = g_aStar->FindPath(m_Pos, dest, g_pathfindingGrid);
+
+	// If path found, store waypoints
+	if (!path.empty())
+	{
+		m_pathWaypoints = path;
+		m_currentWaypointIndex = 0;
+
+		// Set first waypoint as destination
+		if (m_pathWaypoints.size() > 0)
+		{
+			SetDest(m_pathWaypoints[0]);
+		}
+
+#ifdef DEBUG_NPC_PATHFINDING
+		// Track longest path for this NPC
+		float pathDistance = Vector3Distance(m_Pos, dest);
+		auto it = g_npcMaxPathStats.find(m_NPCID);
+		if (it == g_npcMaxPathStats.end() || pathDistance > it->second.distance)
+		{
+			NPCPathStats stats;
+			stats.npcID = m_NPCID;
+			stats.startPos = m_Pos;
+			stats.endPos = dest;
+			stats.distance = pathDistance;
+			stats.waypointCount = (int)path.size();
+			g_npcMaxPathStats[m_NPCID] = stats;
+		}
+#endif
+
+		// Debug: Uncomment to see successful pathfinding
+		//AddConsoleString("NPC " + std::to_string(m_NPCID) + " found path with " + std::to_string(path.size()) + " waypoints from (" +
+		//                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		//                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ")", GREEN);
+	}
+	else
+	{
+		// No path found, don't move at all
+		AddConsoleString("WARNING: NPC " + std::to_string(m_NPCID) + " could not find path from (" +
+		                 std::to_string((int)m_Pos.x) + "," + std::to_string((int)m_Pos.z) + ") to (" +
+		                 std::to_string((int)dest.x) + "," + std::to_string((int)dest.z) + ") - staying put!", RED);
+		// Don't call SetDest() - NPC will remain stationary
+	}
 }
 
 bool U7Object::AddObjectToInventory(int objectid)
@@ -471,7 +624,7 @@ void U7Object::Interact(int event)
 		if (m_shapeData->m_luaScript != "")
 		{
 			dynamic_cast<MainState*>(g_StateMachine->GetState(STATE_MAINSTATE))->SetLuaFunction(m_shapeData->m_luaScript);
-			DebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID));
+			DebugPrint("Calling Lua function: " + m_shapeData->m_luaScript + " event: " + to_string(event) + " ID: " + to_string(m_ID) + " (Shape: " + to_string(m_ObjectType) + ", Frame: " + to_string(m_Frame) + ")");
 			DebugPrint(g_ScriptingSystem->CallScript(m_shapeData->m_luaScript, { event, m_ID }));
 		}
 	}

@@ -66,6 +66,15 @@ void GumpManager::Update()
 	{
 		auto object = GetObjectFromID(g_gumpManager->m_draggedObjectId);
 
+		// Safety check - object may not exist
+		if (object == nullptr)
+		{
+			g_gumpManager->m_draggingObject = false;
+			g_gumpManager->m_draggedObjectId = -1;
+			g_gumpManager->m_sourceGump = nullptr;
+			return;
+		}
+
 		//  Dragging from inventory to inventory
 		for (auto gump : g_gumpManager->m_GumpList)
 		{
@@ -115,7 +124,21 @@ gump->m_containerData.m_boxSize.x, gump->m_containerData.m_boxSize.y }))
 
 			object->m_isContained = false;
 
+			// Validate m_sourceGump is still in the active gump list
+			bool gumpStillValid = false;
 			if (m_sourceGump != nullptr)
+			{
+				for (const auto& gump : m_GumpList)
+				{
+					if (gump.get() == m_sourceGump)
+					{
+						gumpStillValid = true;
+						break;
+					}
+				}
+			}
+
+			if (gumpStillValid && m_sourceGump->m_containerObject != nullptr)
 			{
 				//  If we dragged from a gump, remove from that inventory
 				for (std::vector<int>::iterator node = m_sourceGump->m_containerObject->m_inventory.begin(); node != m_sourceGump->m_containerObject->m_inventory.end(); node++)

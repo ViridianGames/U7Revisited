@@ -45,7 +45,9 @@ public:
    void SetInitialPos(Vector3 pos);
    virtual void SetPos(Vector3 pos);
    virtual void SetDest(Vector3 pos);
+   void PathfindToDest(Vector3 dest);  // Use A* pathfinding to reach dest
    virtual void SetSpeed(float speed) { m_speed = speed; }
+   void SetFrame(int frame);  // Change object frame (e.g., for doors)
 
    void Interact(int event);
 
@@ -61,6 +63,7 @@ public:
    void NPCUpdate();
    void NPCDraw();
    void NPCInit(NPCData* npcData);
+   void TryOpenDoorAtCurrentPosition();
 
 	void CheckLighting();
 
@@ -75,6 +78,10 @@ public:
    Vector3 m_Scaling;
    Vector3 m_anchorPos;
    bool m_isMoving = false;
+
+   // Pathfinding
+   std::vector<Vector3> m_pathWaypoints;  // Queue of waypoints to follow
+   int m_currentWaypointIndex = 0;         // Which waypoint we're moving toward
 
    Vector3 m_ExternalForce;
 

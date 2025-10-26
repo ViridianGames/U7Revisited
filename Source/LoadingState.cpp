@@ -5,6 +5,7 @@
 #include "Geist/ResourceManager.h"
 #include "U7Globals.h"
 #include "LoadingState.h"
+#include "Pathfinding.h"
 
 #include <cstring>
 #include <list>
@@ -208,6 +209,15 @@ void LoadingState::UpdateLoading()
 			LoadNPCSchedules();
 			m_loadingNPCSchedules = true;
 			return;
+		}
+
+		if (!m_buildingPathfindingGrid)
+		{
+			AddConsoleString(std::string("Initializing pathfinding system..."));
+			g_pathfindingGrid = new PathfindingGrid();
+			g_aStar = new AStar();
+			g_aStar->LoadTerrainCosts("Data/terrain_walkable.csv");
+			m_buildingPathfindingGrid = true;
 		}
 	}
 	else
@@ -1214,7 +1224,28 @@ void LoadingState::CreateObjectTable()
 		g_objectDataTable[i].m_isLightSource = (buffer[2] >> 6) & 0x01;
 		g_objectDataTable[i].m_isTranslucent = (buffer[2] >> 7) & 0x01;
 		g_objectDataTable[i].m_name = shapeNames[i];
+
+		// Fix: Some doors don't have m_isDoor flag set in the data file
+		// If the name contains "door" (case-insensitive), mark it as a door
+		string lowerName = g_objectDataTable[i].m_name;
+		transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+		if (lowerName.find("door") != string::npos)
+		{
+			g_objectDataTable[i].m_isDoor = true;
+		}
 	}
+
+#ifdef DEBUG_NPC_PATHFINDING
+	// Count how many shapes were marked as doors
+	int doorCount = 0;
+	for (int i = 0; i < 1024; i++)
+	{
+		if (g_objectDataTable[i].m_isDoor)
+			doorCount++;
+	}
+	AddConsoleString("Marked " + to_string(doorCount) + " shapes as doors", GREEN);
+#endif
+
 	wgtvolfile.close();
 	tfafile.close();
 }
@@ -1383,9 +1414,21 @@ void LoadingState::LoadInitialGameState()
 
 				//  Make walk anim frames if necessary.
 				thisNPC.m_walkTextures.resize(4);
-				for (int i = 0; i < 4; i++)
+				for (int f = 0; f < 4; f++)
 				{
-					thisNPC.m_walkTextures[i].resize(2);
+					thisNPC.m_walkTextures[f].resize(2);
+				}
+
+				//  Check if required frames exist for this shape
+				if (g_shapeTable[shapenum][0].m_texture == nullptr ||
+				    g_shapeTable[shapenum][1].m_texture == nullptr ||
+				    g_shapeTable[shapenum][2].m_texture == nullptr ||
+				    g_shapeTable[shapenum][16].m_texture == nullptr ||
+				    g_shapeTable[shapenum][17].m_texture == nullptr)
+				{
+					// Skip this NPC - missing required animation frames
+					Log("Warning: Skipping NPC with shape " + to_string(shapenum) + " - missing required animation frames");
+					continue;
 				}
 
 				Image image;

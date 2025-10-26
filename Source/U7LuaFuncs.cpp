@@ -514,9 +514,21 @@ static int LuaSetObjectShape(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     int shape = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
+
+    // If the current object is a door, mark the new shape as a door too
+    // This fixes doors that change shape when opened/closed
+    bool wasDoor = object->m_objectData->m_isDoor;
+
     int currentFrame = object->m_shapeData->GetFrame();
     object->m_shapeData = &g_shapeTable[shape][currentFrame];
     object->m_objectData = &g_objectDataTable[shape];
+
+    // Propagate door flag to new shape
+    if (wasDoor)
+    {
+        g_objectDataTable[shape].m_isDoor = true;
+    }
+
     return 0;
 }
 
@@ -526,7 +538,7 @@ static int LuaGetObjectShape(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: get_object_shape called");
     int object_id = luaL_checkinteger(L, 1);
     int shape = GetObjectFromID(object_id)->m_shapeData->GetShape();
-    DebugPrint("ID: " + to_string(object_id) +  " Shape: " + to_string(shape));
+    //DebugPrint("ID: " + to_string(object_id) +  " Shape: " + to_string(shape));
     lua_pushinteger(L, shape);
     return 1;
 }
@@ -537,7 +549,7 @@ static int LuaGetObjectFrame(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: get_object_frame called");
     int object_id = luaL_checkinteger(L, 1);
     int frame = GetObjectFromID(object_id)->m_shapeData->GetFrame();
-    DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
+    //DebugPrint("ID: " + to_string(object_id) +  " Frame: " + to_string(frame));
     lua_pushinteger(L, frame);
     return 1;
 }
@@ -549,10 +561,47 @@ static int LuaSetObjectFrame(lua_State *L)
     int object_id = luaL_checkinteger(L, 1);
     int frame = luaL_checkinteger(L, 2);
     U7Object *object = GetObjectFromID(object_id);
-    int currentShape = object->m_shapeData->GetShape();
-    object->m_shapeData = &g_shapeTable[currentShape][frame];
+    if (object)
+    {
+        object->SetFrame(frame);  // Now includes pathfinding grid update for doors
+    }
     return 0;
 }
+
+// Get object position (returns x, y, z)
+static int LuaGetObjectPosition(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: get_object_position called");
+    int object_id = luaL_checkinteger(L, 1);
+    U7Object *object = GetObjectFromID(object_id);
+    if (object)
+    {
+        lua_pushnumber(L, object->m_Pos.x);
+        lua_pushnumber(L, object->m_Pos.y);
+        lua_pushnumber(L, object->m_Pos.z);
+        return 3;  // Return 3 values
+    }
+    return 0;
+}
+
+// Set object position
+static int LuaSetObjectPosition(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: set_object_position called");
+    int object_id = luaL_checkinteger(L, 1);
+    float x = luaL_checknumber(L, 2);
+    float y = luaL_checknumber(L, 3);
+    float z = luaL_checknumber(L, 4);
+    U7Object *object = GetObjectFromID(object_id);
+    if (object)
+    {
+        object->SetPos({x, y, z});
+    }
+    return 0;
+}
+
+// NOTE: LuaFindNearbyObjects removed - not needed for single door implementation
+// Double door support can be added back later if needed
 
 // Opcode 0014
 static int LuaGetObjectQuality(lua_State *L)
@@ -803,7 +852,15 @@ static int LuaSpawnObject(lua_State *L)
 static int LuaDestroyObject(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
-    UnassignObjectChunk(g_objectList[object_id].get());
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Notify pathfinding grid before deleting if this is a non-walkable object
+    if (obj && obj->m_objectData && obj->m_objectData->m_isNotWalkable)
+    {
+        NotifyPathfindingGridUpdate((int)obj->m_Pos.x, (int)obj->m_Pos.z);
+    }
+
+    UnassignObjectChunk(obj);
     g_objectList.erase(object_id);
     UpdateSortedVisibleObjects();
     return 0;
@@ -1801,6 +1858,9 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("set_object_frame", LuaSetObjectFrame);
     g_ScriptingSystem->RegisterScriptFunction("get_object_quality", LuaGetObjectQuality);
     g_ScriptingSystem->RegisterScriptFunction("set_object_quality", LuaSetObjectQuality);
+    g_ScriptingSystem->RegisterScriptFunction("get_object_position", LuaGetObjectPosition);
+    g_ScriptingSystem->RegisterScriptFunction("set_object_position", LuaSetObjectPosition);
+    // NOTE: find_nearby_objects removed - not needed for single door implementation
     g_ScriptingSystem->RegisterScriptFunction("get_npc_property", LuaGetNPCProperty);
     g_ScriptingSystem->RegisterScriptFunction("set_npc_property", LuaSetNPCProperty);
 
