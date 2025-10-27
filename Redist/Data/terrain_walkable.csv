@@ -1,6 +1,6 @@
 ﻿shape_id,name,suggested_cost
 0,"carpet",0.5
-1,"sidewalk",1
+1,"sidewalk",1.5
 3,"lightning",99
 4,"grass",2
 5,"cavefloor",2
@@ -17,7 +17,7 @@
 21,"stone floor",1
 22,"swamp",5
 23,"dirt",3
-24,"cobblestone",2
+24,"cobblestone",1
 25,"rut",3
 27,"carpet",0.5
 28,"sandy grass",2

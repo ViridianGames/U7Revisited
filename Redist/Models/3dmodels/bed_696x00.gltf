@@ -66,7 +66,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":462,
+			"count":472,
 			"max":[
 				2.5,
 				1.2000000476837158,
@@ -82,19 +82,19 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":462,
+			"count":472,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":462,
+			"count":472,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5126,
-			"count":462,
+			"count":472,
 			"type":"VEC4"
 		},
 		{
@@ -107,32 +107,32 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":5544,
+			"byteLength":5664,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":5544,
-			"byteOffset":5544,
+			"byteLength":5664,
+			"byteOffset":5664,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3696,
-			"byteOffset":11088,
+			"byteLength":3776,
+			"byteOffset":11328,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":7392,
-			"byteOffset":14784,
+			"byteLength":7552,
+			"byteOffset":15104,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2256,
-			"byteOffset":22176,
+			"byteOffset":22656,
 			"target":34963
 		}
 	],
@@ -144,7 +144,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":24432,
+			"byteLength":24912,
 			"uri":"bed_696x00.bin"
 		}
 	]
