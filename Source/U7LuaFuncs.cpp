@@ -380,6 +380,13 @@ static int LuaAskMultipleChoice(lua_State *L)
     }
     if (g_LuaDebug) DebugPrint("LUA: ask_multiple_choice called");
 
+    // Validate that we got a table as first argument
+    if (!lua_istable(L, 1))
+    {
+        return luaL_error(L, "ask_multiple_choice: expected table as first argument, got %s",
+                         lua_typename(L, lua_type(L, 1)));
+    }
+
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
 
@@ -393,6 +400,11 @@ static int LuaAskMultipleChoice(lua_State *L)
         if (lua_isstring(L, -1))
         {
             const char *answer = lua_tostring(L, -1);
+            if (answer == nullptr)
+            {
+                lua_pop(L, 1);
+                return luaL_error(L, "ask_multiple_choice: lua_tostring returned nullptr at index %d", i);
+            }
             if (i == 1) // Question
             {
                 step.dialog = answer;
@@ -1892,6 +1904,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_schedule_time", LuaGetScheduleTime);
     g_ScriptingSystem->RegisterScriptFunction("open_book", LuaOpenBook);
     g_ScriptingSystem->RegisterScriptFunction("bark", LuaBark);
+    g_ScriptingSystem->RegisterScriptFunction("play_music", LuaPlayMusic);
 
     // These functions manipulate NPCs.
     g_ScriptingSystem->RegisterScriptFunction("set_npc_pos", LuaSetNPCPos);

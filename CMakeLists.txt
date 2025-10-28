@@ -172,3 +172,41 @@ set_target_properties(U7Revisited PROPERTIES
 
 # Set as Visual Studio startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT U7Revisited)
+
+# ============================================================================
+# Script Test Executable
+# ============================================================================
+# Use all main sources except Main.cpp (which has the game's main() function)
+set(TEST_SOURCES ${SOURCES})
+list(REMOVE_ITEM TEST_SOURCES Source/Main.cpp)
+
+add_executable(ScriptTests
+    Tests/ScriptTests.cpp
+    Tests/ScriptTestMocks.cpp
+    Tests/TestDataLoader.cpp
+    ${TEST_SOURCES}
+)
+
+target_link_libraries(ScriptTests PRIVATE
+    lua
+    raylib
+)
+
+target_include_directories(ScriptTests PRIVATE
+    Source
+    Source/Geist
+    ${RAYLIB_EXTERNAL_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
+)
+
+# Windows-specific dependencies
+if(WIN32)
+    target_link_libraries(ScriptTests PRIVATE winmm)
+endif()
+
+# Set Visual Studio debugger working directory to Redist folder for testing
+# and pass --execute flag by default
+set_target_properties(ScriptTests PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
+)

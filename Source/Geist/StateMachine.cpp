@@ -115,7 +115,7 @@ void StateMachine::MakeStateTransitionEX(int newstate)
 
 void StateMachine::PushState(int newstate, bool allowmultiples)
 {
-	if(!allowmultiples && (get<0>(m_StateStack[0]) == newstate || (m_TransitionStack.size() > 0 && get<1>(m_TransitionStack[0]) == newstate)))
+	if(!allowmultiples && ((m_StateStack.size() > 0 && get<0>(m_StateStack[0]) == newstate) || (m_TransitionStack.size() > 0 && get<1>(m_TransitionStack[0]) == newstate)))
 	{
 		return;
 	}
