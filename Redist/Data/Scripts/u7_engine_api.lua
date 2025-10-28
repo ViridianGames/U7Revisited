@@ -69,13 +69,21 @@ function get_answer() end
 function clear_answers() end
 
 ---Gets a purchase option selection from the player
----@return integer option The selected purchase option
-function get_purchase_option() end
+---Displays a menu with purchase options and returns the selected index.
+---NOTE: The C++ implementation reverses the order of answers (except the first element which is the prompt),
+---so the returned index will be reversed relative to how options appear in the input table.
+---@param options table A table where [1] is the prompt string and [2]...[n] are the option strings
+---@return integer option The selected option index (0-based, where 0 typically means the last option/cancel)
+function get_purchase_option(options) end
 
 ---Handles purchasing an object
----@param object_id integer The object to purchase
----@return boolean success Whether the purchase succeeded
-function purchase_object(object_id) end
+---Checks if the player has enough gold and carrying capacity, then adds the objects to player inventory.
+---@param shape integer The object shape ID to purchase
+---@param frame integer The object frame number
+---@param cost_per integer The cost per unit in gold
+---@param amount integer The number of units to purchase
+---@return integer result 0=aborted (amount was 0), 1=success, 2=too heavy, 3=can't afford
+function purchase_object(shape, frame, cost_per, amount) end
 
 ---Checks if a conversation is currently running
 ---@return boolean running True if conversation is active
