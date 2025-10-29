@@ -545,7 +545,7 @@ void MainState::UpdateInput()
 					{
 						// Create sorted indices based on schedule time
 						vector<int> sortedIndices(g_NPCSchedules[npcID].size());
-						for (size_t i = 0; i < sortedIndices.size(); i++)
+						for (int i = 0; i < static_cast<int>(sortedIndices.size()); i++)
 							sortedIndices[i] = i;
 
 						std::sort(sortedIndices.begin(), sortedIndices.end(),
