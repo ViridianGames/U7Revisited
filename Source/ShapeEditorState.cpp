@@ -1258,6 +1258,23 @@ void ShapeEditorState::Update()
 			}
 		}
 
+		// If exact match not found, search for any script ending with _xxxx
+		if (newScriptIndex == 0)
+		{
+			std::string suffix = "_" + ss.str();
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= suffix.length() &&
+					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
+					newScriptIndex = i;
+					AddConsoleString("Using script: " + scriptName);
+					break;
+				}
+			}
+		}
+
 		if(newScriptIndex != 0)
 		{
 			m_luaScriptIndex = newScriptIndex;
