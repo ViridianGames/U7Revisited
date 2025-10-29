@@ -107,5 +107,5 @@ void DrawStringRight(Font* font, float fontsize, char* text, float rightx, float
 void DebugPrint(std::string msg)
 {
 	Log(msg, "debuglog.txt", true);
-	cout << msg << endl;
+	// Don't print to cout here - Log() already does it when suppressdatetime=true
 }
