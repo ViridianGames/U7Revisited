@@ -128,7 +128,6 @@ void ScriptingSystem::LoadScript(const std::string& path)
     }
     else
     {
-        std::cout << "Loaded script: " << path << "\n";
         DebugPrint("Loaded script: " + path);
     }
 
