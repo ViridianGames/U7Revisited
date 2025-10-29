@@ -6,6 +6,8 @@
 /Redist/Data/U7
 !Redist/Data/U7/U7.txt
 /build
+/furroy
+/.claude
 
 /subprojects/raylib/
 /subprojects/packagecache/
