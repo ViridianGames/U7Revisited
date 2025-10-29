@@ -83,6 +83,13 @@ Note that double-clicking the open shutter does NOT close it, because the shutte
 
 Here is the list of Lua functions the scripts can call, and what they do.
 
+
+# #####################################################
+# Update: 10/28/2025
+# #####################################################
+
+A lua language server API file has been created/updated. This means if you are using vsCode and install an extension "sumneko.lua" it will automatically show tooltips when hovering over a built-in function. This will include what the function does, and what arguments it takes. Note: These tooltips supercede anything found in the read of this guide. Many of the functions here are out of date. What you see inside vscode supercedes.
+
 These functions handle the conversation system:
 
 switch_talk_to(npc_id, frame) - Presents further dialogue using the portrait of the NPC specified (different frames can express different emotions). Returns true or false if the NPC is not present.
