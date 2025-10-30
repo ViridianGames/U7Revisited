@@ -408,7 +408,8 @@ void MainState::UpdateInput()
 		m_dragStart = {0, 0};
 	}
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC))
+	// Always update selected shape/frame when clicking an object (for F1 shape editor)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton)
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -418,18 +419,22 @@ void MainState::UpdateInput()
 			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
 		}
 
-		if (m_dragStart.x == 0 && m_dragStart.y == 0)
+		// Only allow dragging if not a static object (or if static movement is enabled)
+		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 		{
-			m_dragStart = GetMousePosition();
-		}
-		else
-		{
-			if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{
-				g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
-				g_gumpManager->m_draggingObject = true;
-				g_gumpManager->m_sourceGump = nullptr;
+				m_dragStart = GetMousePosition();
+			}
+			else
+			{
+				if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+				{
+					g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
+					g_gumpManager->m_draggingObject = true;
+					g_gumpManager->m_sourceGump = nullptr;
 
+				}
 			}
 		}
 	}
