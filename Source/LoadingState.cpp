@@ -1183,10 +1183,42 @@ void LoadingState::CreateObjectTable()
 	for (int i = 0; i < entrycount; ++i)
 	{
 		textfile.seekg(entrymap[i].offset);
-		char* thisname = new char[entrymap[i].length];
+		char* thisname = new char[entrymap[i].length + 1]; // +1 for null terminator
 		textfile.read(thisname, entrymap[i].length);
+		thisname[entrymap[i].length] = '\0'; // Null-terminate the string
 		shapeNames.push_back(std::string(thisname));
 		delete[] thisname;
+	}
+
+	// DEBUG: Write TEXT.FLX info to file
+	std::ofstream debugFile("textflx_debug.txt");
+	debugFile << "TEXT.FLX contains " << entrycount << " entries\n";
+	debugFile << "First 1024 = shape names, rest = misc names\n\n";
+
+	if (entrycount > 1024)
+	{
+		debugFile << "MISC NAMES (entries 1024+):\n";
+		debugFile << "Food items should be at indices 1024+11 through 1024+42\n\n";
+		for (int i = 1024; i < entrycount; ++i)
+		{
+			debugFile << "[" << i << "] (misc_name " << (i - 1024) << "): " << shapeNames[i] << "\n";
+		}
+	}
+	else
+	{
+		debugFile << "WARNING: Only " << entrycount << " entries found. Expected more than 1024!\n";
+	}
+	debugFile.close();
+
+	// Store misc names globally for frame-specific lookups
+	g_miscNames.clear();
+	if (entrycount > 1024)
+	{
+		for (int i = 1024; i < entrycount; ++i)
+		{
+			g_miscNames.push_back(shapeNames[i]);
+		}
+		AddConsoleString("Loaded " + std::to_string(g_miscNames.size()) + " misc names for frame lookups", GREEN);
 	}
 
 	//  Read the object table.

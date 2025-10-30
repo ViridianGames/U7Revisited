@@ -1109,8 +1109,10 @@ void MainState::Draw()
 		screenPos.y = int(screenPos.y);
 		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
-		// If bark text is empty, use object's current name (updates dynamically when shape changes)
-		std::string displayText = m_barkText.empty() ? m_barkObject->m_objectData->m_name : m_barkText;
+		// If bark text is empty, use object's frame-specific name with quantity (e.g., "a garlic" or "5 garlics")
+		// Note: Quality field is used for quantity in stackable items, but defaults to 0 for single items
+		int quantity = (m_barkObject->m_Quality > 0) ? m_barkObject->m_Quality : 1;
+		std::string displayText = m_barkText.empty() ? GetShapeFrameName(m_barkObject->m_shapeData->GetShape(), m_barkObject->m_shapeData->GetFrame(), quantity) : m_barkText;
 
 		float width = MeasureTextEx(*g_ConversationFont, displayText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
 		screenPos.x -= width / 2;

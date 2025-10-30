@@ -123,6 +123,12 @@ struct ObjectData
 	//std::unique_ptr<Mesh> m_mesh = nullptr;
 };
 
+// Misc names from TEXT.FLX (entries 1024+) for frame-specific item names
+extern std::vector<std::string> g_miscNames;
+
+// Get the name for a specific shape, frame, and quantity
+std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
+
 
 //  Here's how schedules work:
 //  Each NPC has a schedule that is a list of time indices.  Time indices can only be from 0 - 8 and represent three hour blocks of the day.
