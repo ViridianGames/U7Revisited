@@ -298,6 +298,7 @@ extern Vector3 g_terrainUnderMousePointer;
 extern std::unique_ptr<GumpManager> g_gumpManager;
 
 extern U7Object* g_objectUnderMousePointer;
+extern bool g_mouseOverUI;  // True when mouse is over any UI element (blocks world interaction)
 
 extern U7Object* g_doubleClickedObject;
 

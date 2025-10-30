@@ -211,6 +211,51 @@ void MainState::UpdateTime()
 
 }
 
+void MainState::CalculateMouseOverUI()
+{
+	g_mouseOverUI = false;
+
+	if (!m_showUIElements || m_paused)
+	{
+		return;
+	}
+
+	// Stats panel (right side) - drawn at (512, 200), background is 133x136
+	Rectangle statsPanelRect = { 512 * g_DrawScale, 200 * g_DrawScale, 133 * g_DrawScale, 136 * g_DrawScale };
+
+	// Minimap (top-right corner)
+	Rectangle minimapRect = {
+		g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale),
+		0,
+		g_minimapSize * g_DrawScale,
+		g_minimapSize * g_DrawScale
+	};
+
+	// Character panel (below minimap)
+	Rectangle charPanelRect = {
+		g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale),
+		g_minimapSize * g_DrawScale,
+		g_minimapSize * g_DrawScale,
+		100 * g_DrawScale
+	};
+
+	// Schedule button (sandbox mode only)
+	Rectangle scheduleButtonRect = {
+		m_scheduleToggleButton.x * g_DrawScale,
+		m_scheduleToggleButton.y * g_DrawScale,
+		m_scheduleToggleButton.width * g_DrawScale,
+		m_scheduleToggleButton.height * g_DrawScale
+	};
+
+	Vector2 mousePos = GetMousePosition();
+	bool overStats = IsPosInRect(mousePos, statsPanelRect);
+	bool overMinimap = IsPosInRect(mousePos, minimapRect);
+	bool overCharPanel = IsPosInRect(mousePos, charPanelRect);
+	bool overSchedule = (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && IsPosInRect(mousePos, scheduleButtonRect));
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overSchedule;
+}
+
 void MainState::UpdateInput()
 {
 	if (!m_allowInput)
@@ -218,20 +263,15 @@ void MainState::UpdateInput()
 		return;
 	}
 
-	// Handle NPC Schedule Toggle Button (Sandbox mode only)
-	bool mouseOverScheduleButton = false;
-	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	// Handle NPC Schedule Toggle Button clicks (Sandbox mode only)
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
 	{
-		// Scale button coordinates for click detection (mouse is in screen space)
 		Rectangle scaledButton = {
 			m_scheduleToggleButton.x * g_DrawScale,
 			m_scheduleToggleButton.y * g_DrawScale,
 			m_scheduleToggleButton.width * g_DrawScale,
 			m_scheduleToggleButton.height * g_DrawScale
 		};
-
-		// Check if mouse is over the button
-		mouseOverScheduleButton = IsMouseInRect(scaledButton);
 
 		if (WasLeftButtonClickedInRect(scaledButton))
 		{
@@ -409,7 +449,7 @@ void MainState::UpdateInput()
 	}
 
 	// Always update selected shape/frame when clicking an object (for F1 shape editor)
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI)
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -439,7 +479,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
+	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
 	{
 		std::string filePath;
 		string scriptName;
@@ -491,7 +531,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
 	{
 		// Handle doors and objects with scripts/conversations
 		if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
@@ -515,7 +555,7 @@ void MainState::UpdateInput()
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer != nullptr)
+		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer != nullptr)
 		{
 			if (m_objectSelectionMode == true)
 			{
@@ -636,7 +676,7 @@ void MainState::UpdateInput()
 				}
 			}
 		}
-		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer == nullptr)
+		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer == nullptr)
 		{
 #ifdef DEBUG_NPC_PATHFINDING
 			// Clicked on terrain (no object) - show terrain debug info
@@ -820,6 +860,9 @@ void MainState::Update()
 				++node;
 			}
 		}
+
+		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
+		CalculateMouseOverUI();
 
 		UpdateSortedVisibleObjects();
 
@@ -1048,7 +1091,7 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
 		{
 			// Draw NPC Schedule Toggle Button
 			Color buttonColor = m_npcSchedulesEnabled ? Color{0, 200, 0, 255} : Color{200, 0, 0, 255}; // Green if on, red if off

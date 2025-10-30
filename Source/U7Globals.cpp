@@ -130,6 +130,7 @@ U7Object* g_mouseOverObject = nullptr;
 std::unique_ptr<GumpManager> g_gumpManager;
 
 U7Object* g_objectUnderMousePointer;
+bool g_mouseOverUI = false;
 
 U7Object* g_doubleClickedObject;
 
@@ -388,6 +389,12 @@ void UpdateSortedVisibleObjects()
  	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
 	g_objectUnderMousePointer = nullptr;
+
+	// Don't pick objects if mouse is over UI elements
+	if (g_mouseOverUI)
+	{
+		return;
+	}
 
 	//  Is a gump open?  Are we over it?  See if there's an object under our mouse.
 	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump())

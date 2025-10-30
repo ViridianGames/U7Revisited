@@ -40,6 +40,7 @@ public:
 
    void DrawStats();
    void UpdateStats();
+	void CalculateMouseOverUI();  // Sets g_mouseOverUI based on UI element positions
 	void UpdateInput();
 	void UpdateTime();
 

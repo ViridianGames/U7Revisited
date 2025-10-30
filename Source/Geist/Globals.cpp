@@ -32,6 +32,11 @@ bool IsMouseInRect(Rectangle rect)
 		(mouseX >= rect.x && mouseX <= rect.x + rect.width) && (mouseY >= rect.y && mouseY <= rect.y + rect.height);
 }
 
+bool IsPosInRect(Vector2 pos, Rectangle rect)
+{
+	return (pos.x >= rect.x && pos.x <= rect.x + rect.width) && (pos.y >= rect.y && pos.y <= rect.y + rect.height);
+}
+
 bool IsLeftButtonDownInRect(int x, int y, int w, int h)
 {
 	Rectangle rect = { float(x), float(y), float(w), float(h) };
