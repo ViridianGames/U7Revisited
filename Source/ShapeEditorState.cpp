@@ -279,29 +279,39 @@ void ShapeEditorState::Update()
 
 	if (IsKeyPressed(KEY_W) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
 	{
+		// Find next valid frame, wrapping around
+		const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
 		int newFrame = m_currentFrame + 1;
-		if (newFrame > 31)
+		for (int i = 0; i < g_shapeTable[m_currentShape].size(); ++i)
 		{
-			newFrame = 0;
-		}
+			if (newFrame > maxFrameIndex)
+				newFrame = 0;
 
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			m_currentFrame = newFrame;
+			if (g_shapeTable[m_currentShape][newFrame].IsValid())
+			{
+				m_currentFrame = newFrame;
+				break;
+			}
+			newFrame++;
 		}
 	}
 
 	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
 	{
+		// Find previous valid frame, wrapping around
+		const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
 		int newFrame = m_currentFrame - 1;
-		if (newFrame < 0)
+		for (int i = 0; i < g_shapeTable[m_currentShape].size(); ++i)
 		{
-			newFrame = 31;
-		}
+			if (newFrame < 0)
+				newFrame = maxFrameIndex;
 
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			m_currentFrame = newFrame;
+			if (g_shapeTable[m_currentShape][newFrame].IsValid())
+			{
+				m_currentFrame = newFrame;
+				break;
+			}
+			newFrame--;
 		}
 	}
 
@@ -1306,7 +1316,19 @@ void ShapeEditorState::Update()
 	std::stringstream ss;
     ss << std::uppercase << std::hex << m_currentShape;
 	m_currentGui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape) + " (" + ss.str() + ")";
-	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame);
+
+	// Find max valid frame for this shape
+	int maxFrame = 0;
+	const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
+	for (int i = maxFrameIndex; i >= 0; --i)
+	{
+		if (g_shapeTable[m_currentShape][i].IsValid())
+		{
+			maxFrame = i;
+			break;
+		}
+	}
+	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame) + "/" + to_string(maxFrame);
 	
 	if (m_currentGui == m_cuboidGui.get())
 	{
@@ -1819,19 +1841,19 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	int yoffset = 13;
 	int y = 4;
 
-	gui->AddTextButton(GE_SAVEBUTTON, 8, y - 2, "Save", g_guiFont.get());
-	gui->AddTextButton(GE_LOADBUTTON, 60, y - 2, "Load", g_guiFont.get());
+	gui->AddTextButton(GE_SAVEBUTTON, 8, y - 2, "  Save  ", g_guiFont.get());
+	gui->AddTextButton(GE_LOADBUTTON, 64, y - 2, "  Load  ", g_guiFont.get());
 	y += yoffset;
 
 	gui->AddIconButton(GE_PREVSHAPEBUTTON, 2, y, g_LeftArrow);
-	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 70, y, g_RightArrow);
+	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 60, y, g_RightArrow);
 	std::stringstream ss;
     ss << std::uppercase << std::hex << m_currentShape;
 	gui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_guiFont.get(), "S:" + to_string(m_currentShape) + " (" + ss.str() + ")", 12, y);
 
-	gui->AddIconButton(GE_PREVFRAMEBUTTON, 80, y, g_LeftArrow);
+	gui->AddIconButton(GE_PREVFRAMEBUTTON, 70, y, g_LeftArrow);
 	gui->AddIconButton(GE_NEXTFRAMEBUTTON, 110, y, g_RightArrow);
-	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 90, y);
+	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 80, y);
 
 	y += yoffset;
 
