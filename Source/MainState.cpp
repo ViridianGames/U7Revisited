@@ -292,6 +292,12 @@ void MainState::UpdateInput()
 		AddConsoleString(m_showPathfindingDebug ? "Pathfinding Debug ON - showing tile walkability with objects" : "Pathfinding Debug OFF");
 	}
 
+	if (IsKeyPressed(KEY_F11) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		g_showScriptedObjects = !g_showScriptedObjects;
+		AddConsoleString(g_showScriptedObjects ? "Script Debug ON - highlighting objects with scripts" : "Script Debug OFF");
+	}
+
 	// Right-click to debug specific tile when pathfinding debug is on
 	if (m_showPathfindingDebug && IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && g_pathfindingGrid)
 	{

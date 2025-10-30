@@ -90,6 +90,7 @@ RenderTexture2D g_guiRenderTarget;
 std::unique_ptr<U7Player> g_Player;
 
 bool g_LuaDebug = false;  // Toggle with F8 key
+bool g_showScriptedObjects = false;  // Toggle with F11 key - highlights objects with scripts
 
 std::unique_ptr<Model> g_CuboidModel;
 

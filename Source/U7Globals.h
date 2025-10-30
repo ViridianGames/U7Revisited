@@ -56,6 +56,7 @@ extern std::string g_gameStateStrings[];
 extern std::string g_objectDrawTypeStrings[];
 
 extern bool g_LuaDebug;
+extern bool g_showScriptedObjects;
 
 // enum class ObjectTypes
 // {

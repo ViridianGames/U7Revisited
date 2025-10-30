@@ -90,16 +90,20 @@ void U7Object::Draw()
 			return; // Not on the screen.
 		}
 
-		// if (m_objectData->m_isTranslucent)
-		// {
-		// 	Color color = g_Terrain->m_cellLighting[cellx][celly];
-		// 	//color.a *= 0.5f;
-		// 	m_shapeData->Draw(m_Pos, m_Angle, color);
-		// }
-		// else
-		// {
-			m_shapeData->Draw(m_Pos, m_Angle, g_Terrain->m_cellLighting[cellx][celly]);
-		//}
+		Color renderColor = g_Terrain->m_cellLighting[cellx][celly];
+
+		// Apply green tint if F11 script debug is enabled and object has a non-default script
+		// Also check for conversation trees (NPCs with dialogue scripts)
+		if (g_showScriptedObjects &&
+		    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+		{
+			// Blend with green to highlight scripted objects
+			renderColor.r = (renderColor.r + 0) / 2;
+			renderColor.g = (renderColor.g + 255) / 2;
+			renderColor.b = (renderColor.b + 0) / 2;
+		}
+
+		m_shapeData->Draw(m_Pos, m_Angle, renderColor);
 	}
 
 	if (g_Engine->m_debugDrawing)
@@ -266,6 +270,18 @@ void U7Object::NPCDraw()
 	Color lighting = g_dayNightColor;
 	if (m_isLit)
 		lighting = WHITE;
+
+	// Apply green tint if F11 script debug is enabled and NPC has a non-default script
+	// Also check for conversation trees (NPCs with dialogue scripts)
+	if (g_showScriptedObjects &&
+	    ((m_shapeData->m_luaScript != "" && m_shapeData->m_luaScript != "default") || m_hasConversationTree))
+	{
+		// Blend with green to highlight scripted NPCs
+		lighting.r = (lighting.r + 0) / 2;
+		lighting.g = (lighting.g + 255) / 2;
+		lighting.b = (lighting.b + 0) / 2;
+	}
+
 	DrawBillboardPro(g_camera, *finalTexture, Rectangle{ 0, 0, float(finalTexture->width), float(finalTexture->height) }, finalPos, Vector3{ 0, 1, 0 },
 		Vector2{ dims.x, dims.y }, Vector2{ 0, 0 }, billboardAngle, lighting);
 	EndShaderMode();
