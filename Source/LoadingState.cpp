@@ -1195,9 +1195,17 @@ void LoadingState::CreateObjectTable()
 	debugFile << "TEXT.FLX contains " << entrycount << " entries\n";
 	debugFile << "First 1024 = shape names, rest = misc names\n\n";
 
+	// Write shape names (0-1023)
+	debugFile << "SHAPE NAMES (entries 0-1023):\n\n";
+	int shapeLimit = (entrycount < 1024) ? entrycount : 1024;
+	for (int i = 0; i < shapeLimit; ++i)
+	{
+		debugFile << "[" << i << "] (shape " << i << "): " << shapeNames[i] << "\n";
+	}
+
 	if (entrycount > 1024)
 	{
-		debugFile << "MISC NAMES (entries 1024+):\n";
+		debugFile << "\nMISC NAMES (entries 1024+):\n";
 		debugFile << "Food items should be at indices 1024+11 through 1024+42\n\n";
 		for (int i = 1024; i < entrycount; ++i)
 		{

@@ -691,7 +691,17 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 {
 	m_barkDuration = duration;
 	m_barkObject = object;
-	m_barkText = text;
+
+	// If text is empty, generate it from object's shape/frame/quantity once
+	if (text.empty() && object)
+	{
+		int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
+		m_barkText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+	}
+	else
+	{
+		m_barkText = text;
+	}
 }
 
 void MainState::Update()
@@ -1109,17 +1119,13 @@ void MainState::Draw()
 		screenPos.y = int(screenPos.y);
 		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
-		// If bark text is empty, use object's frame-specific name with quantity (e.g., "a garlic" or "5 garlics")
-		// Note: Quality field is used for quantity in stackable items, but defaults to 0 for single items
-		int quantity = (m_barkObject->m_Quality > 0) ? m_barkObject->m_Quality : 1;
-		std::string displayText = m_barkText.empty() ? GetShapeFrameName(m_barkObject->m_shapeData->GetShape(), m_barkObject->m_shapeData->GetFrame(), quantity) : m_barkText;
-
-		float width = MeasureTextEx(*g_ConversationFont, displayText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
+		// Bark text is already set in Bark() function (either custom text or generated from object name)
+		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
 
 		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
-		DrawTextEx(*g_ConversationFont, displayText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
+		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
 	if (!m_paused && m_showUIElements)

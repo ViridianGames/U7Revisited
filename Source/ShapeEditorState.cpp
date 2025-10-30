@@ -1388,6 +1388,9 @@ void ShapeEditorState::Update()
 	}
 
 	m_currentGui->GetElement(GE_LUASCRIPTTEXTAREA)->m_String = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+
+	// Update item name (how it appears in barks)
+	m_currentGui->GetElement(GE_ITEMNAMETEXTAREA)->m_String = GetShapeFrameName(m_currentShape, m_currentFrame, 1);
 }
 
 
@@ -1909,6 +1912,12 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	y += yoffset;
 
 	gui->AddTextButton(GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
+
+	y += yoffset;
+
+	// Display the item name (how it appears in barks) - updated dynamically in Update()
+	gui->AddTextArea(GE_ITEMNAMETEXTLABEL, g_guiFont.get(), "Bark:", 2, y);
+	gui->AddTextArea(GE_ITEMNAMETEXTAREA, g_guiFont.get(), "", 38, y);
 
 	y += yoffset;
 

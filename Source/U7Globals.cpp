@@ -894,27 +894,31 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 
 std::string GetShapeFrameName(int shape, int frame, int quantity)
 {
-	// Shape 842: Reagents (8 frames)
-	if (shape == 842 && frame >= 0 && frame < 8)
+	// Check if misc_names are loaded yet
+	if (!g_miscNames.empty())
 	{
-		// Reagents: frames 0-7 map to misc_names 256-263
-		// (black pearl, blood moss, nightshade, mandrake, garlic, ginseng, spider silk, sulfurous ash)
-		int miscIndex = 256 + frame;
-		if (miscIndex < g_miscNames.size())
+		// Shape 842: Reagents (8 frames)
+		if (shape == 842 && frame >= 0 && frame < 8)
 		{
-			return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			// Reagents: frames 0-7 map to misc_names 256-263
+			// (black pearl, blood moss, nightshade, mandrake, garlic, ginseng, spider silk, sulfurous ash)
+			int miscIndex = 256 + frame;
+			if (miscIndex < g_miscNames.size())
+			{
+				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			}
 		}
-	}
 
-	// Shape 377: Food items (32 frames)
-	if (shape == 377 && frame >= 0 && frame < 32)
-	{
-		// Food items: frames 0-31 map to misc_names 266-297
-		// (rolls, bread, fruitcake, cake, pie, pastry, sausage, mutton, beef, fowl, etc.)
-		int miscIndex = 266 + frame;
-		if (miscIndex < g_miscNames.size())
+		// Shape 377: Food items (32 frames)
+		if (shape == 377 && frame >= 0 && frame < 32)
 		{
-			return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			// Food items: frames 0-31 map to misc_names 267-298
+			// (bread, bread, rolls, fruitcake, cake, pie, pastry, sausage, mutton, beef, fowl, etc.)
+			int miscIndex = 267 + frame;
+			if (miscIndex < g_miscNames.size())
+			{
+				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			}
 		}
 	}
 
@@ -922,7 +926,11 @@ std::string GetShapeFrameName(int shape, int frame, int quantity)
 	// Still parse it to handle the "a/name//s" format
 	if (shape >= 0 && shape < 1024)
 	{
-		return ParseU7TextFormat(g_objectDataTable[shape].m_name, quantity);
+		std::string shapeName = g_objectDataTable[shape].m_name;
+		if (!shapeName.empty())
+		{
+			return ParseU7TextFormat(shapeName, quantity);
+		}
 	}
 
 	return "unknown";
