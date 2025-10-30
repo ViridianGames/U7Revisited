@@ -522,7 +522,7 @@ void MainState::UpdateInput()
 			}
 			else
 			{
-				Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 3.0f);
+				Bark(g_objectUnderMousePointer, "", 3.0f);  // Empty string = use object's current name
 
 				// Visualize NPC waypoints as blue tiles when clicking on any NPC
 				if (g_objectUnderMousePointer->m_isNPC)
@@ -1104,12 +1104,15 @@ void MainState::Draw()
 		screenPos.y = int(screenPos.y);
 		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
-		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
+		// If bark text is empty, use object's current name (updates dynamically when shape changes)
+		std::string displayText = m_barkText.empty() ? m_barkObject->m_objectData->m_name : m_barkText;
+
+		float width = MeasureTextEx(*g_ConversationFont, displayText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
 
 		DrawRectangleRounded({screenPos.x, screenPos.y, width, height}, 5, 100, {0, 0, 0, 192});
-		DrawTextEx(*g_ConversationFont, m_barkText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
+		DrawTextEx(*g_ConversationFont, displayText.c_str(), { float(screenPos.x) + (width * .1f), float(screenPos.y) + (height * .1f) }, g_ConversationFont->baseSize, 1, YELLOW);
 	}
 
 	if (!m_paused && m_showUIElements)
