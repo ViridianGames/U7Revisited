@@ -846,11 +846,8 @@ std::string ParseU7TextFormat(const std::string& rawText, int quantity)
 	size_t firstSlash = rawText.find('/');
 	if (firstSlash == std::string::npos)
 	{
-		// No slashes, just return the name with quantity
-		if (quantity == 1)
-			return rawText;
-		else
-			return std::to_string(quantity) + " " + rawText;
+		// No slashes means no U7 text format, just return the name as-is without quantity
+		return rawText;
 	}
 
 	// Find the second slash (end of singular name)
