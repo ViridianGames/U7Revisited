@@ -1978,6 +1978,928 @@ static int LuaAbort(lua_State *L)
     return luaL_error(L, "SCRIPT_ABORTED");
 }
 
+// ============================================================================
+// EXULT INTRINSICS - HIGH PRIORITY
+// ============================================================================
+
+// 0x000E | find_nearest
+static int LuaFindNearest(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int shape = (int)lua_tointeger(L, 2);
+    // int distance = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - find closest object of given shape within distance
+    lua_pushnil(L);
+    return 1;
+}
+
+// 0x0029 | find_object
+static int LuaFindObject(lua_State *L)
+{
+    // int container_id = (int)lua_tointeger(L, 1);
+    // int shape = (int)lua_tointeger(L, 2);
+    // int quality = (int)lua_tointeger(L, 3);
+    // int frame = (int)lua_tointeger(L, 4);
+
+    // TODO: Implement - search for specific object in container
+    lua_pushnil(L);
+    return 1;
+}
+
+// 0x0019 | get_distance
+static int LuaGetDistanceBetween(lua_State *L)
+{
+    // int object1_id = (int)lua_tointeger(L, 1);
+    // int object2_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - calculate distance between two objects
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x001A | find_direction
+static int LuaFindDirectionBetween(lua_State *L)
+{
+    // Various combinations of object/position
+    // TODO: Implement - get direction from one point/object to another (0-7)
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0087 | direction_from
+static int LuaDirectionFrom(lua_State *L)
+{
+    // int object1_id = (int)lua_tointeger(L, 1);
+    // int object2_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - similar to find_direction
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0028 | count_objects
+static int LuaCountObjects(lua_State *L)
+{
+    // int container_id = (int)lua_tointeger(L, 1);
+    // int shape = (int)lua_tointeger(L, 2);
+    // int quality = (int)lua_tointeger(L, 3);
+    // int frame = (int)lua_tointeger(L, 4);
+
+    // TODO: Implement - count matching objects in container
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0030 | find_nearby_avatar
+static int LuaFindNearbyAvatar(lua_State *L)
+{
+    // int shape = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - find all objects of shape near avatar
+    lua_newtable(L);
+    return 1;
+}
+
+// 0x0016 | get_item_quantity
+static int LuaGetItemQuantity(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int unknown = (lua_gettop(L) >= 2) ? (int)lua_tointeger(L, 2) : 0;
+
+    // TODO: Implement - get stack size or item count
+    lua_pushinteger(L, 1);
+    return 1;
+}
+
+// 0x0017 | set_item_quantity
+static int LuaSetItemQuantity(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int quantity = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set stack size
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x002B | remove_party_items
+static int LuaRemovePartyItems(lua_State *L)
+{
+    // int count = (int)lua_tointeger(L, 1);
+    // int shape = (int)lua_tointeger(L, 2);
+    // int quality = (int)lua_tointeger(L, 3);
+    // int frame = (int)lua_tointeger(L, 4);
+    // bool unknown = (lua_gettop(L) >= 5) ? lua_toboolean(L, 5) : false;
+
+    // TODO: Implement - remove items from party inventory
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x002C | add_party_items
+static int LuaAddPartyItems(lua_State *L)
+{
+    // int count = (int)lua_tointeger(L, 1);
+    // int shape = (int)lua_tointeger(L, 2);
+    // int quality = (int)lua_tointeger(L, 3);
+    // int frame = (int)lua_tointeger(L, 4);
+    // bool temporary = lua_toboolean(L, 5);
+
+    // TODO: Implement - add items to party inventory
+    lua_newtable(L);
+    return 1;
+}
+
+// 0x0025 | set_last_created
+static int LuaSetLastCreated(lua_State *L)
+{
+    int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - set reference to last created object
+    lua_pushinteger(L, object_id);
+    return 1;
+}
+
+// 0x0026 | update_last_created
+static int LuaUpdateLastCreated(lua_State *L)
+{
+    // Position array (x, y, z)
+    // TODO: Implement - update position of last created object
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0036 | give_last_created
+static int LuaGiveLastCreated(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1); // recipient
+
+    // TODO: Implement - give last created object to target
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x006F | remove_item
+static int LuaRemoveItem(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - remove/delete object from world
+    return 0;
+}
+
+// 0x006E | get_container
+static int LuaGetContainerOf(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get containing object/inventory
+    lua_pushnil(L);
+    return 1;
+}
+
+// 0x0041 | set_to_attack
+static int LuaSetToAttack(lua_State *L)
+{
+    // int attacker_id = (int)lua_tointeger(L, 1);
+    // int target_id = (int)lua_tointeger(L, 2);
+    // int weapon_id = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - command NPC to attack target
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x004B | set_attack_mode
+static int LuaSetAttackMode(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+    // int mode = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set combat AI mode
+    return 0;
+}
+
+// 0x004C | set_oppressor
+static int LuaSetOppressor(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+    // int oppressor_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set who the NPC is being attacked by
+    return 0;
+}
+
+// 0x0054 | attack_object
+static int LuaAttackObject(lua_State *L)
+{
+    // int attacker_id = (int)lua_tointeger(L, 1);
+    // int target_id = (int)lua_tointeger(L, 2);
+    // int weapon_id = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - execute attack action
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0076 | fire_projectile
+static int LuaFireProjectile(lua_State *L)
+{
+    // int source_id = (int)lua_tointeger(L, 1);
+    // int direction = (int)lua_tointeger(L, 2);
+    // int projectile_shape = (int)lua_tointeger(L, 3);
+    // int attack_points = (int)lua_tointeger(L, 4);
+    // int weapon_id = (int)lua_tointeger(L, 5);
+    // int ammo_id = (int)lua_tointeger(L, 6);
+
+    // TODO: Implement - launch projectile (arrow, bolt, spell)
+    return 0;
+}
+
+// 0x007A | call_guards
+static int LuaCallGuards(lua_State *L)
+{
+    // int caller_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - summon guards to location
+    return 0;
+}
+
+// 0x008E | in_combat
+static int LuaInCombat(lua_State *L)
+{
+    // TODO: Implement - check if combat mode is active
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0061 | apply_damage
+static int LuaApplyDamage(lua_State *L)
+{
+    // int base_damage = (int)lua_tointeger(L, 1);
+    // int hit_points = (int)lua_tointeger(L, 2);
+    // int damage_type = (int)lua_tointeger(L, 3);
+    // int target_id = (int)lua_tointeger(L, 4);
+
+    // TODO: Implement - apply damage to target with type
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0071 | reduce_health
+static int LuaReduceHealth(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int hit_points = (int)lua_tointeger(L, 2);
+    // int damage_type = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - directly reduce HP by amount
+    return 0;
+}
+
+// 0x0088 | get_item_flag
+static int LuaGetItemFlag(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int flag_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - read object flag bit
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0089 | set_item_flag
+static int LuaSetItemFlag(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int flag_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set object flag bit to 1
+    return 0;
+}
+
+// 0x008A | clear_item_flag
+static int LuaClearItemFlag(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int flag_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set object flag bit to 0
+    return 0;
+}
+
+// 0x0042 | get_lift
+static int LuaGetLift(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get object's Z coordinate/elevation
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0043 | set_lift
+static int LuaSetLift(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int z_position = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set object's Z coordinate/elevation
+    return 0;
+}
+
+// ============================================================================
+// EXULT INTRINSICS - MEDIUM PRIORITY
+// ============================================================================
+
+// 0x0031 | is_npc
+static int LuaIsNPC(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - check if object is an NPC/actor
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0037 | is_dead
+static int LuaIsDead(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - check if NPC is dead
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x003A | get_npc_number
+static int LuaGetNPCNumber(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get NPC's permanent ID number
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x003C | get_alignment
+static int LuaGetAlignment(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get NPC alignment/faction (0=good, 1=neutral, 2=evil)
+    lua_pushinteger(L, 1); // neutral
+    return 1;
+}
+
+// 0x003D | set_alignment
+static int LuaSetAlignment(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int alignment = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set NPC alignment/faction
+    return 0;
+}
+
+// 0x0049 | kill_npc
+static int LuaKillNPC(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - instantly kill NPC
+    return 0;
+}
+
+// 0x0051 | resurrect
+static int LuaResurrect(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - bring dead NPC back to life
+    return 0;
+}
+
+// 0x0047 | summon
+static int LuaSummon(lua_State *L)
+{
+    // int shape = (int)lua_tointeger(L, 1);
+    // bool unknown = (lua_gettop(L) >= 2) ? lua_toboolean(L, 2) : false;
+
+    // TODO: Implement - create and summon creature
+    lua_pushnil(L);
+    return 1;
+}
+
+// 0x0046 | sit_down
+static int LuaSitDown(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+    // int chair_id = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - make NPC sit in chair
+    return 0;
+}
+
+// 0x001D | set_schedule_type
+static int LuaSetScheduleType(lua_State *L)
+{
+    // int npc_id = (int)lua_tointeger(L, 1);
+    // int schedule_type = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - change NPC's current activity schedule
+    return 0;
+}
+
+// 0x0022 | get_avatar_ref
+static int LuaGetAvatarRef(lua_State *L)
+{
+    // TODO: Implement - get player character object reference
+    lua_pushinteger(L, 1); // Assuming avatar is object ID 1
+    return 1;
+}
+
+// 0x008D | get_party_list2
+static int LuaGetPartyList2(lua_State *L)
+{
+    // TODO: Implement - return array of party member object_ids
+    lua_newtable(L);
+    return 1;
+}
+
+// 0x0093 | get_dead_party
+static int LuaGetDeadParty(lua_State *L)
+{
+    // TODO: Implement - get list of dead party members
+    lua_newtable(L);
+    return 1;
+}
+
+// 0x0001 | execute_usecode_array
+static int LuaExecuteUsecodeArray(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // table script_array = lua_totable(L, 2);
+
+    // TODO: Implement - execute scripted animation/sequence
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0002 | delayed_execute_usecode_array
+static int LuaDelayedExecuteUsecodeArray(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // table script_array = lua_totable(L, 2);
+    // int delay = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - execute script after delay
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0079 | in_usecode
+static int LuaInUsecode(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - check if object is running usecode
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x007D | path_run_usecode
+static int LuaPathRunUsecode(lua_State *L)
+{
+    // Position table, callback function, object_id, event, simode
+    // TODO: Implement - walk to position then execute function
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x005C | halt_scheduled
+static int LuaHaltScheduled(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - stop object's scheduled activity
+    return 0;
+}
+
+// 0x008B | set_path_failure
+static int LuaSetPathFailure(lua_State *L)
+{
+    // callback function, object_id, event
+    // TODO: Implement - set callback for pathfinding failure
+    return 0;
+}
+
+// 0x0044 | get_weather
+static int LuaGetWeather(lua_State *L)
+{
+    // TODO: Implement - get current weather condition
+    lua_pushinteger(L, 0); // clear
+    return 1;
+}
+
+// 0x0045 | set_weather
+static int LuaSetWeather(lua_State *L)
+{
+    // int weather_type = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - change weather
+    return 0;
+}
+
+// 0x0090 | is_water
+static int LuaIsWater(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - check if object/tile is water
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x000F | play_sound_effect
+static int LuaPlaySoundEffect(lua_State *L)
+{
+    // int sound_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - play sound effect by ID
+    return 0;
+}
+
+// 0x0069 | get_speech_track
+static int LuaGetSpeechTrack(lua_State *L)
+{
+    // TODO: Implement - get currently playing speech track
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0053 | sprite_effect
+static int LuaSpriteEffect(lua_State *L)
+{
+    // int effect_num = (int)lua_tointeger(L, 1);
+    // int x = (int)lua_tointeger(L, 2);
+    // int y = (int)lua_tointeger(L, 3);
+    // int dx = (int)lua_tointeger(L, 4);
+    // int dy = (int)lua_tointeger(L, 5);
+
+    // TODO: Implement - play visual effect at position
+    return 0;
+}
+
+// 0x007B | obj_sprite_effect
+static int LuaObjSpriteEffect(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int effect_num = (int)lua_tointeger(L, 2);
+    // int dx = (int)lua_tointeger(L, 3);
+    // int dy = (int)lua_tointeger(L, 4);
+    // int delay = (int)lua_tointeger(L, 5);
+
+    // TODO: Implement - play visual effect on object
+    return 0;
+}
+
+// 0x008C | fade_palette
+static int LuaFadePalette(lua_State *L)
+{
+    // int cycles = (int)lua_tointeger(L, 1);
+    // int in_or_out = (int)lua_tointeger(L, 2);
+    // int unknown = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - fade screen in/out
+    return 0;
+}
+
+// 0x0092 | set_camera
+static int LuaSetCameraTarget(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - center camera on object
+    return 0;
+}
+
+// 0x0091 | reset_conv_face
+static int LuaResetConvFace(lua_State *L)
+{
+    // TODO: Implement - reset conversation portrait
+    return 0;
+}
+
+// 0x0085 | is_not_blocked
+static int LuaIsNotBlocked(lua_State *L)
+{
+    // Position table (x, y, z), shape, frame
+    // TODO: Implement - check if location is passable
+    lua_pushboolean(L, 1); // true = not blocked
+    return 1;
+}
+
+// 0x0072 | is_readied
+static int LuaIsReadied(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int equipment_slot = (int)lua_tointeger(L, 2);
+    // int npc_id = (int)lua_tointeger(L, 3);
+
+    // TODO: Implement - check if item is equipped
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0010 | die_roll
+static int LuaDieRoll(lua_State *L)
+{
+    int min = (int)lua_tointeger(L, 1);
+    // int max = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - roll random number in range
+    // For now, just return min (same as existing LuaRandom)
+    lua_pushinteger(L, min);
+    return 1;
+}
+
+// 0x004A | roll_to_win
+static int LuaRollToWin(lua_State *L)
+{
+    // int attack = (int)lua_tointeger(L, 1);
+    // int defense = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - roll attack vs defense
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// ============================================================================
+// EXULT INTRINSICS - LOW PRIORITY
+// ============================================================================
+
+// 0x007E | close_gumps
+static int LuaCloseGumps(lua_State *L)
+{
+    // TODO: Implement - close all open UI windows
+    return 0;
+}
+
+// 0x0080 | close_gump
+static int LuaCloseGump(lua_State *L)
+{
+    // TODO: Implement - close current/top UI window
+    return 0;
+}
+
+// 0x0081 | in_gump_mode
+static int LuaInGumpMode(lua_State *L)
+{
+    // TODO: Implement - check if UI window is open
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0055 | book_mode
+static int LuaBookMode(lua_State *L)
+{
+    // TODO: Implement - enter book reading mode
+    return 0;
+}
+
+// 0x0033 | click_on_item
+static int LuaClickOnItem(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - simulate click on object
+    return 0;
+}
+
+// 0x000C | input_numeric_value
+static int LuaInputNumericValue(lua_State *L)
+{
+    // int min = (int)lua_tointeger(L, 1);
+    // int max = (int)lua_tointeger(L, 2);
+    // int step = (int)lua_tointeger(L, 3);
+    int default_value = (int)lua_tointeger(L, 4);
+
+    // TODO: Implement - show numeric input dialog
+    lua_pushinteger(L, default_value);
+    return 1;
+}
+
+// 0x0009 | clear_answers
+static int LuaClearAnswersExult(lua_State *L)
+{
+    // TODO: Implement - clear conversation answer options
+    // Note: Different from existing LuaClearAnswers which is our custom implementation
+    return 0;
+}
+
+// 0x0059 | earthquake
+static int LuaEarthquake(lua_State *L)
+{
+    // int duration = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - shake screen effect
+    return 0;
+}
+
+// 0x005B | armageddon
+static int LuaArmageddon(lua_State *L)
+{
+    // TODO: Implement - end of world event
+    return 0;
+}
+
+// 0x0050 | wizard_eye
+static int LuaWizardEye(lua_State *L)
+{
+    // bool enable = lua_toboolean(L, 1);
+
+    // TODO: Implement - enable/disable free camera mode
+    return 0;
+}
+
+// 0x0095 | telekenesis
+static int LuaTelekenesis(lua_State *L)
+{
+    // callback function
+    // TODO: Implement - remote object manipulation spell
+    return 0;
+}
+
+// 0x0057 | cause_light
+static int LuaCauseLight(lua_State *L)
+{
+    // int light_level = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - create light effect
+    return 0;
+}
+
+// 0x0048 | display_map
+static int LuaDisplayMap(lua_State *L)
+{
+    // TODO: Implement - show world map
+    return 0;
+}
+
+// 0x004F | display_area
+static int LuaDisplayArea(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - display area around object
+    return 0;
+}
+
+// 0x0094 | view_tile
+static int LuaViewTile(lua_State *L)
+{
+    // TODO: Implement - show tile information
+    return 0;
+}
+
+// 0x006A | flash_mouse
+static int LuaFlashMouse(lua_State *L)
+{
+    // int flash_type = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - flash mouse cursor
+    return 0;
+}
+
+// 0x0056 | stop_time
+static int LuaStopTime(lua_State *L)
+{
+    // int duration = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - pause game time
+    return 0;
+}
+
+// 0x0073 | restart_game
+static int LuaRestartGame(lua_State *L)
+{
+    // TODO: Implement - restart from beginning
+    return 0;
+}
+
+// 0x0075 | run_endgame
+static int LuaRunEndgame(lua_State *L)
+{
+    // int ending_number = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - trigger ending sequence
+    return 0;
+}
+
+// 0x006B | get_item_frame_rot
+static int LuaGetItemFrameRot(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get object rotation frame
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x006C | set_item_frame_rot
+static int LuaSetItemFrameRot(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int rotation_frame = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set object rotation
+    return 0;
+}
+
+// 0x0058 | get_barge
+static int LuaGetBarge(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get ship/barge object is on
+    lua_pushnil(L);
+    return 1;
+}
+
+// 0x0065 | get_timer
+static int LuaGetTimer(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - get object's timer value
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x0066 | set_timer
+static int LuaSetTimer(lua_State *L)
+{
+    // int object_id = (int)lua_tointeger(L, 1);
+    // int delay = (int)lua_tointeger(L, 2);
+
+    // TODO: Implement - set object timer
+    return 0;
+}
+
+// 0x0062 | is_pc_inside
+static int LuaIsPCInside(lua_State *L)
+{
+    // TODO: Implement - check if player is indoors
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+// 0x0063 | set_orrery
+static int LuaSetOrrery(lua_State *L)
+{
+    // int value = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - set orrery (planetarium) state
+    return 0;
+}
+
+// 0x005E | get_array_size
+static int LuaGetArraySize(lua_State *L)
+{
+    // table array = lua_totable(L, 1);
+
+    // TODO: Implement - get Lua table size (or use lua_objlen)
+    lua_pushinteger(L, 0);
+    return 1;
+}
+
+// 0x005F | mark_virtue_stone
+static int LuaMarkVirtueStone(lua_State *L)
+{
+    // int stone_index = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - mark location at virtue stone
+    return 0;
+}
+
+// 0x0060 | recall_virtue_stone
+static int LuaRecallVirtueStone(lua_State *L)
+{
+    // int stone_index = (int)lua_tointeger(L, 1);
+
+    // TODO: Implement - teleport to virtue stone
+    return 0;
+}
+
+// 0x0083 | UNKNOWN (set_time_palette)
+static int LuaSetTimePalette(lua_State *L)
+{
+    // TODO: Implement - sets time-based palette
+    return 0;
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -2105,6 +3027,105 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "set_object_visibility", LuaSetObjectVisibility);
     g_ScriptingSystem->RegisterScriptFunction( "set_npc_visibility", LuaSetNPCVisibility);
+
+    // Exult Intrinsics - HIGH PRIORITY
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearest", LuaFindNearest);
+    g_ScriptingSystem->RegisterScriptFunction( "find_object", LuaFindObject);
+    g_ScriptingSystem->RegisterScriptFunction( "get_distance", LuaGetDistanceBetween);
+    g_ScriptingSystem->RegisterScriptFunction( "find_direction", LuaFindDirectionBetween);
+    g_ScriptingSystem->RegisterScriptFunction( "direction_from", LuaDirectionFrom);
+    g_ScriptingSystem->RegisterScriptFunction( "count_objects", LuaCountObjects);
+    g_ScriptingSystem->RegisterScriptFunction( "find_nearby_avatar", LuaFindNearbyAvatar);
+    g_ScriptingSystem->RegisterScriptFunction( "get_item_quantity", LuaGetItemQuantity);
+    g_ScriptingSystem->RegisterScriptFunction( "set_item_quantity", LuaSetItemQuantity);
+    g_ScriptingSystem->RegisterScriptFunction( "remove_party_items", LuaRemovePartyItems);
+    g_ScriptingSystem->RegisterScriptFunction( "add_party_items", LuaAddPartyItems);
+    g_ScriptingSystem->RegisterScriptFunction( "set_last_created", LuaSetLastCreated);
+    g_ScriptingSystem->RegisterScriptFunction( "update_last_created", LuaUpdateLastCreated);
+    g_ScriptingSystem->RegisterScriptFunction( "give_last_created", LuaGiveLastCreated);
+    g_ScriptingSystem->RegisterScriptFunction( "remove_item", LuaRemoveItem);
+    g_ScriptingSystem->RegisterScriptFunction( "get_container", LuaGetContainerOf);
+    g_ScriptingSystem->RegisterScriptFunction( "set_to_attack", LuaSetToAttack);
+    g_ScriptingSystem->RegisterScriptFunction( "set_attack_mode", LuaSetAttackMode);
+    g_ScriptingSystem->RegisterScriptFunction( "set_oppressor", LuaSetOppressor);
+    g_ScriptingSystem->RegisterScriptFunction( "attack_object", LuaAttackObject);
+    g_ScriptingSystem->RegisterScriptFunction( "fire_projectile", LuaFireProjectile);
+    g_ScriptingSystem->RegisterScriptFunction( "call_guards", LuaCallGuards);
+    g_ScriptingSystem->RegisterScriptFunction( "in_combat", LuaInCombat);
+    g_ScriptingSystem->RegisterScriptFunction( "apply_damage", LuaApplyDamage);
+    g_ScriptingSystem->RegisterScriptFunction( "reduce_health", LuaReduceHealth);
+    g_ScriptingSystem->RegisterScriptFunction( "get_item_flag", LuaGetItemFlag);
+    g_ScriptingSystem->RegisterScriptFunction( "set_item_flag", LuaSetItemFlag);
+    g_ScriptingSystem->RegisterScriptFunction( "clear_item_flag", LuaClearItemFlag);
+    g_ScriptingSystem->RegisterScriptFunction( "get_lift", LuaGetLift);
+    g_ScriptingSystem->RegisterScriptFunction( "set_lift", LuaSetLift);
+
+    // Exult Intrinsics - MEDIUM PRIORITY
+    g_ScriptingSystem->RegisterScriptFunction( "is_npc", LuaIsNPC);
+    g_ScriptingSystem->RegisterScriptFunction( "is_dead", LuaIsDead);
+    g_ScriptingSystem->RegisterScriptFunction( "get_npc_number", LuaGetNPCNumber);
+    g_ScriptingSystem->RegisterScriptFunction( "get_alignment", LuaGetAlignment);
+    g_ScriptingSystem->RegisterScriptFunction( "set_alignment", LuaSetAlignment);
+    g_ScriptingSystem->RegisterScriptFunction( "kill_npc", LuaKillNPC);
+    g_ScriptingSystem->RegisterScriptFunction( "resurrect", LuaResurrect);
+    g_ScriptingSystem->RegisterScriptFunction( "summon", LuaSummon);
+    g_ScriptingSystem->RegisterScriptFunction( "sit_down", LuaSitDown);
+    g_ScriptingSystem->RegisterScriptFunction( "set_schedule_type", LuaSetScheduleType);
+    g_ScriptingSystem->RegisterScriptFunction( "get_avatar_ref", LuaGetAvatarRef);
+    g_ScriptingSystem->RegisterScriptFunction( "get_party_list2", LuaGetPartyList2);
+    g_ScriptingSystem->RegisterScriptFunction( "get_dead_party", LuaGetDeadParty);
+    g_ScriptingSystem->RegisterScriptFunction( "execute_usecode_array", LuaExecuteUsecodeArray);
+    g_ScriptingSystem->RegisterScriptFunction( "delayed_execute_usecode_array", LuaDelayedExecuteUsecodeArray);
+    g_ScriptingSystem->RegisterScriptFunction( "in_usecode", LuaInUsecode);
+    g_ScriptingSystem->RegisterScriptFunction( "path_run_usecode", LuaPathRunUsecode);
+    g_ScriptingSystem->RegisterScriptFunction( "halt_scheduled", LuaHaltScheduled);
+    g_ScriptingSystem->RegisterScriptFunction( "set_path_failure", LuaSetPathFailure);
+    g_ScriptingSystem->RegisterScriptFunction( "get_weather", LuaGetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "set_weather", LuaSetWeather);
+    g_ScriptingSystem->RegisterScriptFunction( "is_water", LuaIsWater);
+    g_ScriptingSystem->RegisterScriptFunction( "play_sound_effect", LuaPlaySoundEffect);
+    g_ScriptingSystem->RegisterScriptFunction( "get_speech_track", LuaGetSpeechTrack);
+    g_ScriptingSystem->RegisterScriptFunction( "sprite_effect", LuaSpriteEffect);
+    g_ScriptingSystem->RegisterScriptFunction( "obj_sprite_effect", LuaObjSpriteEffect);
+    g_ScriptingSystem->RegisterScriptFunction( "fade_palette", LuaFadePalette);
+    g_ScriptingSystem->RegisterScriptFunction( "set_camera", LuaSetCameraTarget);
+    g_ScriptingSystem->RegisterScriptFunction( "reset_conv_face", LuaResetConvFace);
+    g_ScriptingSystem->RegisterScriptFunction( "is_not_blocked", LuaIsNotBlocked);
+    g_ScriptingSystem->RegisterScriptFunction( "is_readied", LuaIsReadied);
+    g_ScriptingSystem->RegisterScriptFunction( "die_roll", LuaDieRoll);
+    g_ScriptingSystem->RegisterScriptFunction( "roll_to_win", LuaRollToWin);
+
+    // Exult Intrinsics - LOW PRIORITY
+    g_ScriptingSystem->RegisterScriptFunction( "close_gumps", LuaCloseGumps);
+    g_ScriptingSystem->RegisterScriptFunction( "close_gump", LuaCloseGump);
+    g_ScriptingSystem->RegisterScriptFunction( "in_gump_mode", LuaInGumpMode);
+    g_ScriptingSystem->RegisterScriptFunction( "book_mode", LuaBookMode);
+    g_ScriptingSystem->RegisterScriptFunction( "click_on_item", LuaClickOnItem);
+    g_ScriptingSystem->RegisterScriptFunction( "input_numeric_value", LuaInputNumericValue);
+    // Note: clear_answers registered as LuaClearAnswersExult to avoid conflict with existing LuaClearAnswers
+    g_ScriptingSystem->RegisterScriptFunction( "earthquake", LuaEarthquake);
+    g_ScriptingSystem->RegisterScriptFunction( "armageddon", LuaArmageddon);
+    g_ScriptingSystem->RegisterScriptFunction( "wizard_eye", LuaWizardEye);
+    g_ScriptingSystem->RegisterScriptFunction( "telekenesis", LuaTelekenesis);
+    g_ScriptingSystem->RegisterScriptFunction( "cause_light", LuaCauseLight);
+    g_ScriptingSystem->RegisterScriptFunction( "display_map", LuaDisplayMap);
+    g_ScriptingSystem->RegisterScriptFunction( "display_area", LuaDisplayArea);
+    g_ScriptingSystem->RegisterScriptFunction( "view_tile", LuaViewTile);
+    g_ScriptingSystem->RegisterScriptFunction( "flash_mouse", LuaFlashMouse);
+    g_ScriptingSystem->RegisterScriptFunction( "stop_time", LuaStopTime);
+    g_ScriptingSystem->RegisterScriptFunction( "restart_game", LuaRestartGame);
+    g_ScriptingSystem->RegisterScriptFunction( "run_endgame", LuaRunEndgame);
+    g_ScriptingSystem->RegisterScriptFunction( "get_item_frame_rot", LuaGetItemFrameRot);
+    g_ScriptingSystem->RegisterScriptFunction( "set_item_frame_rot", LuaSetItemFrameRot);
+    g_ScriptingSystem->RegisterScriptFunction( "get_barge", LuaGetBarge);
+    g_ScriptingSystem->RegisterScriptFunction( "get_timer", LuaGetTimer);
+    g_ScriptingSystem->RegisterScriptFunction( "set_timer", LuaSetTimer);
+    g_ScriptingSystem->RegisterScriptFunction( "is_pc_inside", LuaIsPCInside);
+    g_ScriptingSystem->RegisterScriptFunction( "set_orrery", LuaSetOrrery);
+    g_ScriptingSystem->RegisterScriptFunction( "get_array_size", LuaGetArraySize);
+    g_ScriptingSystem->RegisterScriptFunction( "mark_virtue_stone", LuaMarkVirtueStone);
+    g_ScriptingSystem->RegisterScriptFunction( "recall_virtue_stone", LuaRecallVirtueStone);
+    g_ScriptingSystem->RegisterScriptFunction( "set_time_palette", LuaSetTimePalette);
 
     cout << "Registered all Lua functions\n";
 }

@@ -513,107 +513,521 @@ function is_string_in_array(value, array) end
 function debug_print(message) end
 
 -- ============================================================================
--- UNKNOWN FUNCTIONS (Discovered via Exult Research)
--- ============================================================================
--- These functions exist in the original Ultima VII usecode and are called
--- by our scripts, but haven't been implemented in C++ yet.
--- Documentation is based on Exult project research.
+-- EXULT INTRINSICS - SEARCH & FIND FUNCTIONS
 -- ============================================================================
 
----[Exult 0x2C] Adds items to party members' inventories
----@param temporary boolean|integer Whether items should be marked as temporary (0/false = permanent)
----@param quality integer Quality value for items (or 359 for any/default)
----@param frame integer Frame number for items (or 359 for any/default)
----@param shape integer The item's shape ID (type of item)
----@param quantity integer Number of items to add
----@return boolean success True if items were successfully added to inventory
-function unknown_002CH(temporary, quality, frame, shape, quantity) end
+---[Exult 0x000E] Finds the nearest object of a given shape within distance
+---@param object_id integer Reference object to search from
+---@param shape integer Shape ID to search for
+---@param distance integer Maximum search radius
+---@return integer|nil object_id The nearest matching object, or nil if not found
+function find_nearest(object_id, shape, distance) end
 
----[Exult 0x2B] Removes items from party members' inventories
----⚠ PARAMETERS NEED VERIFICATION - likely similar to add_party_items
+---[Exult 0x0029] Finds an object by shape and frame
+---@param shape integer Shape ID to find
+---@param frame integer Frame number to match
+---@param quality integer Quality value to match
+---@return integer|nil object_id The found object, or nil if not found
+function find_object(shape, frame, quality) end
+
+---[Exult 0x0019] Gets the distance between two objects
+---@param obj1 integer First object ID
+---@param obj2 integer Second object ID
+---@return integer distance Distance in tiles
+function get_distance(obj1, obj2) end
+
+---[Exult 0x001A] Finds the direction from one object to another
+---@param from_obj integer Source object ID
+---@param to_obj integer Target object ID
+---@return integer direction Direction (0-7, where 0=North, clockwise)
+function find_direction(from_obj, to_obj) end
+
+---[Exult 0x0087] Gets the direction from an object
+---@param object_id integer The object ID
+---@return integer direction Current facing direction (0-7)
+function direction_from(object_id) end
+
+---[Exult 0x0028] Counts objects of a given type
+---@param shape integer Shape ID to count
+---@param quality integer Quality value filter (-359 for any)
+---@param frame integer Frame number filter (-359 for any)
+---@return integer count Number of matching objects
+function count_objects(shape, quality, frame) end
+
+---[Exult 0x0030] Finds nearby Avatar (party member check)
+---@param object_id integer Reference object
+---@param distance integer Search radius
+---@return integer|nil object_id Nearby party member, or nil
+function find_nearby_avatar(object_id, distance) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - INVENTORY & ITEMS
+-- ============================================================================
+
+---[Exult 0x0016] Gets the quantity of an item
+---@param object_id integer The item to query
+---@return integer quantity The item's quantity/stack size
+function get_item_quantity(object_id) end
+
+---[Exult 0x0017] Sets the quantity of an item
+---@param object_id integer The item to modify
+---@param quantity integer New quantity value
+function set_item_quantity(object_id, quantity) end
+
+---[Exult 0x002B] Removes items from party members' inventories
 ---@param shape integer The item's shape ID (type of item)
 ---@param quantity integer Number of items to remove
+---@param quality integer Quality filter (-359 for any)
+---@param frame integer Frame filter (-359 for any)
 ---@return boolean success True if items were successfully removed
-function unknown_002BH(shape, quantity) end
+function remove_party_items(shape, quantity, quality, frame) end
 
----[Exult 0x44] Gets the current weather state
+---[Exult 0x002C] Adds items to party members' inventories
+---@param shape integer The item's shape ID (type of item)
+---@param quantity integer Number of items to add
+---@param quality integer Quality value for items
+---@param frame integer Frame number for items
+---@param temporary boolean|integer Whether items should be marked as temporary
+---@return boolean success True if items were successfully added to inventory
+function add_party_items(shape, quantity, quality, frame, temporary) end
+
+---[Exult 0x0025] Sets the "last created" object reference
+---@param object_id integer Object to mark as last created
+function set_last_created(object_id) end
+
+---[Exult 0x0026] Updates the last created object
+---@param shape integer New shape for last created object
+---@param frame integer New frame for last created object
+function update_last_created(shape, frame) end
+
+---[Exult 0x0036] Gives the last created object to an NPC
+---@param npc_id integer NPC to give object to
+function give_last_created(npc_id) end
+
+---[Exult 0x006F] Removes/destroys an item
+---@param object_id integer The item to remove
+function remove_item(object_id) end
+
+---[Exult 0x006E] Gets the container of an object
+---@param object_id integer The object to query
+---@return integer|nil container_id The container holding this object, or nil
+function get_container(object_id) end
+
+---[Exult 0x0088] Gets an item flag value
+---@param object_id integer The object to query
+---@param flag_id integer Flag ID to check
+---@return integer value The flag value (0 or 1)
+function get_item_flag(object_id, flag_id) end
+
+---[Exult 0x0089] Sets an item flag
+---@param object_id integer The object to modify
+---@param flag_id integer Flag ID to set
+function set_item_flag(object_id, flag_id) end
+
+---[Exult 0x008A] Clears an item flag
+---@param object_id integer The object to modify
+---@param flag_id integer Flag ID to clear
+function clear_item_flag(object_id, flag_id) end
+
+---[Exult 0x0042] Gets object lift/elevation
+---@param object_id integer The object to query
+---@return integer lift The object's lift value
+function get_lift(object_id) end
+
+---[Exult 0x0043] Sets object lift/elevation
+---@param object_id integer The object to modify
+---@param lift integer New lift value
+function set_lift(object_id, lift) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - COMBAT
+-- ============================================================================
+
+---[Exult 0x0041] Sets an NPC to attack mode
+---@param npc_id integer NPC to set attacking
+---@param target_id integer Target to attack
+function set_to_attack(npc_id, target_id) end
+
+---[Exult 0x004B] Sets NPC combat mode
+---@param npc_id integer NPC to modify
+---@param mode integer Combat mode value
+function set_attack_mode(npc_id, mode) end
+
+---[Exult 0x004C] Sets NPC oppressor (who they're mad at)
+---@param npc_id integer NPC to modify
+---@param oppressor_id integer Who is oppressing them
+function set_oppressor(npc_id, oppressor_id) end
+
+---[Exult 0x0054] Makes an NPC attack an object
+---@param npc_id integer Attacker
+---@param target_id integer Target
+function attack_object(npc_id, target_id) end
+
+---[Exult 0x0076] Fires a projectile
+---@param shape integer Projectile shape ID
+---@param from_obj integer Source object
+---@param to_obj integer Target object
+---@param speed integer Projectile speed
+function fire_projectile(shape, from_obj, to_obj, speed) end
+
+---[Exult 0x007A] Summons guards to attack
+---@param target_id integer Who guards should attack
+function call_guards(target_id) end
+
+---[Exult 0x008E] Checks if in combat mode
+---@return boolean in_combat True if combat is active
+function in_combat() end
+
+---[Exult 0x0061] Applies damage to an NPC
+---@param npc_id integer NPC to damage
+---@param amount integer Damage amount
+function apply_damage(npc_id, amount) end
+
+---[Exult 0x0071] Reduces NPC health
+---@param npc_id integer NPC to damage
+---@param amount integer Amount to reduce
+function reduce_health(npc_id, amount) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - NPC MANAGEMENT
+-- ============================================================================
+
+---[Exult 0x0031] Checks if object is an NPC
+---@param object_id integer Object to check
+---@return boolean is_npc True if object is an NPC
+function is_npc(object_id) end
+
+---[Exult 0x0037] Checks if NPC is dead
+---@param npc_id integer NPC to check
+---@return boolean is_dead True if NPC is dead
+function is_dead(npc_id) end
+
+---[Exult 0x003A] Gets NPC number/ID
+---@param object_id integer Object to query
+---@return integer npc_num The NPC number (-1 if not an NPC)
+function get_npc_number(object_id) end
+
+---[Exult 0x003C] Gets NPC alignment
+---@param npc_id integer NPC to query
+---@return integer alignment Alignment value
+function get_alignment(npc_id) end
+
+---[Exult 0x003D] Sets NPC alignment
+---@param npc_id integer NPC to modify
+---@param alignment integer New alignment value
+function set_alignment(npc_id, alignment) end
+
+---[Exult 0x0049] Kills an NPC
+---@param npc_id integer NPC to kill
+function kill_npc(npc_id) end
+
+---[Exult 0x0051] Resurrects an NPC
+---@param npc_id integer NPC to resurrect
+function resurrect(npc_id) end
+
+---[Exult 0x0047] Summons a creature/NPC
+---@param shape integer Shape to summon
+---@param x integer X position
+---@param y integer Y position
+---@param z integer Z position
+---@return integer object_id The summoned object
+function summon(shape, x, y, z) end
+
+---[Exult 0x0046] Makes NPC sit down
+---@param npc_id integer NPC to sit
+function sit_down(npc_id) end
+
+---[Exult 0x001D] Sets NPC schedule type
+---@param npc_id integer NPC to modify
+---@param schedule integer Schedule type
+function set_schedule_type(npc_id, schedule) end
+
+---[Exult 0x0022] Gets Avatar object reference
+---@return integer object_id The Avatar's object ID
+function get_avatar_ref() end
+
+---[Exult 0x008D] Gets party list (alternate version)
+---@return integer[] party_members Array of party member IDs
+function get_party_list2() end
+
+---[Exult 0x0093] Gets dead party members
+---@return integer[] dead_members Array of dead party member IDs
+function get_dead_party() end
+
+-- ============================================================================
+-- EXULT INTRINSICS - USECODE & SCRIPTING
+-- ============================================================================
+
+---[Exult 0x0001] Executes usecode function with array of params
+---@param usecode_num integer Usecode function number
+---@param event_type integer Event type
+---@param params table Array of parameters
+function execute_usecode_array(usecode_num, event_type, params) end
+
+---[Exult 0x0002] Delayed execution of usecode function
+---@param delay integer Delay in ticks
+---@param usecode_num integer Usecode function number
+---@param event_type integer Event type
+---@param params table Array of parameters
+function delayed_execute_usecode_array(delay, usecode_num, event_type, params) end
+
+---[Exult 0x0079] Checks if currently in usecode
+---@return boolean in_usecode True if usecode is running
+function in_usecode() end
+
+---[Exult 0x007D] Runs usecode when path complete
+---@param npc_id integer NPC to wait for
+---@param usecode_num integer Usecode to run
+function path_run_usecode(npc_id, usecode_num) end
+
+---[Exult 0x005C] Halts scheduled activity
+---@param npc_id integer NPC to halt
+function halt_scheduled(npc_id) end
+
+---[Exult 0x008B] Sets path failure handler
+---@param usecode_num integer Usecode to call on path failure
+function set_path_failure(usecode_num) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - WORLD & ENVIRONMENT
+-- ============================================================================
+
+---[Exult 0x0044] Gets the current weather state
 ---@return integer weather Weather type: 0=clear, 1=snow, 2=storm, 3=sparkle/anti-magic, 4=fog, 5=unknown, 6=clear no overcast
-function unknown_0044H() end
+function get_weather() end
 
----[Exult 0x45] Sets the weather
----⚠ PARAMETERS NEED VERIFICATION
+---[Exult 0x0045] Sets the weather
 ---@param weather integer Weather type (see get_weather for values)
-function unknown_0045H(weather) end
+function set_weather(weather) end
+
+---[Exult 0x0090] Checks if location is water
+---@param x integer X coordinate
+---@param y integer Y coordinate
+---@return boolean is_water True if location is water
+function is_water(x, y) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - AUDIO
+-- ============================================================================
+
+---[Exult 0x000F] Plays a sound effect
+---@param sound_id integer Sound effect ID
+function play_sound_effect(sound_id) end
+
+---[Exult 0x0069] Gets speech track number
+---@param npc_id integer NPC ID
+---@return integer track_num Speech track number
+function get_speech_track(npc_id) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - VISUAL EFFECTS
+-- ============================================================================
+
+---[Exult 0x0053] Creates a sprite effect
+---@param effect_id integer Effect type
+---@param x integer X position
+---@param y integer Y position
+---@param z integer Z position
+function sprite_effect(effect_id, x, y, z) end
+
+---[Exult 0x007B] Creates sprite effect on object
+---@param effect_id integer Effect type
+---@param object_id integer Object to attach effect to
+function obj_sprite_effect(effect_id, object_id) end
+
+---[Exult 0x008C] Fades palette
+---@param fade_type integer Fade type/color
+---@param ticks integer Duration in ticks
+function fade_palette(fade_type, ticks) end
+
+---[Exult 0x0092] Sets camera to follow object
+---@param object_id integer Object to follow
+function set_camera(object_id) end
+
+---[Exult 0x0091] Resets conversation face position
+function reset_conv_face() end
+
+-- ============================================================================
+-- EXULT INTRINSICS - COLLISION & PATHFINDING
+-- ============================================================================
+
+---[Exult 0x0085] Checks if tile is not blocked
+---@param x integer X coordinate
+---@param y integer Y coordinate
+---@param z integer Z coordinate
+---@return boolean not_blocked True if tile is passable
+function is_not_blocked(x, y, z) end
+
+---[Exult 0x0072] Checks if item is readied/equipped
+---@param object_id integer Item to check
+---@param npc_id integer NPC to check on
+---@return boolean is_readied True if item is equipped
+function is_readied(object_id, npc_id) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - RANDOM & GAME MECHANICS
+-- ============================================================================
+
+---[Exult 0x0010] Rolls dice
+---@param num_dice integer Number of dice to roll
+---@param num_sides integer Number of sides per die
+---@return integer result Sum of dice rolls
+function die_roll(num_dice, num_sides) end
+
+---[Exult 0x004A] Rolls to win (skill check)
+---@param odds integer Odds of success (percentage)
+---@return boolean success True if roll succeeded
+function roll_to_win(odds) end
+
+-- ============================================================================
+-- EXULT INTRINSICS - UI & GUMPS
+-- ============================================================================
+
+---[Exult 0x007E] Closes all gumps/windows
+function close_gumps() end
+
+---[Exult 0x0080] Closes specific gump
+---@param object_id integer Object whose gump to close
+function close_gump(object_id) end
+
+---[Exult 0x0081] Checks if in gump mode
+---@return boolean in_gump True if gump is open
+function in_gump_mode() end
+
+---[Exult 0x0055] Opens book mode
+---@param book_id integer Book to open
+function book_mode(book_id) end
+
+---[Exult 0x0033] Simulates clicking on item
+---@param object_id integer Item to click
+function click_on_item(object_id) end
+
+---[Exult 0x000C] Gets numeric input from user
+---@param min integer Minimum value
+---@param max integer Maximum value
+---@param default integer Default value
+---@return integer value User's input
+function input_numeric_value(min, max, default) end
+
+---[Exult 0x0009] Clears conversation answers
+function clear_answers() end
+
+-- ============================================================================
+-- EXULT INTRINSICS - SPECIAL EFFECTS
+-- ============================================================================
+
+---[Exult 0x0059] Creates earthquake effect
+---@param strength integer Earthquake intensity
+function earthquake(strength) end
+
+---[Exult 0x005B] Armageddon spell effect
+function armageddon() end
+
+---[Exult 0x0050] Wizard eye spell
+---@param x integer X position to view
+---@param y integer Y position to view
+function wizard_eye(x, y) end
+
+---[Exult 0x0095] Telekinesis effect
+---@param object_id integer Object to move
+function telekenesis(object_id) end
+
+---[Exult 0x0057] Creates light effect
+---@param x integer X position
+---@param y integer Y position
+---@param z integer Z position
+function cause_light(x, y, z) end
+
+---[Exult 0x0048] Displays map
+function display_map() end
+
+---[Exult 0x004F] Displays area map
+---@param x integer X position
+---@param y integer Y position
+function display_area(x, y) end
+
+---[Exult 0x0094] Views a tile
+---@param tile_id integer Tile to view
+function view_tile(tile_id) end
+
+---[Exult 0x006A] Flashes mouse cursor
+function flash_mouse() end
+
+---[Exult 0x0056] Stops time (Time Lord spell)
+function stop_time() end
+
+-- ============================================================================
+-- EXULT INTRINSICS - GAME CONTROL
+-- ============================================================================
+
+---[Exult 0x0073] Restarts the game
+function restart_game() end
+
+---[Exult 0x0075] Runs endgame sequence
+function run_endgame() end
+
+-- ============================================================================
+-- EXULT INTRINSICS - MISCELLANEOUS
+-- ============================================================================
+
+---[Exult 0x006B] Gets item frame with rotation
+---@param object_id integer Object to query
+---@return integer frame Frame with rotation bits
+function get_item_frame_rot(object_id) end
+
+---[Exult 0x006C] Sets item frame with rotation
+---@param object_id integer Object to modify
+---@param frame integer Frame with rotation bits
+function set_item_frame_rot(object_id, frame) end
+
+---[Exult 0x0058] Gets barge object is on
+---@param object_id integer Object to check
+---@return integer|nil barge_id Barge object ID or nil
+function get_barge(object_id) end
+
+---[Exult 0x0065] Gets timer value
+---@param timer_id integer Timer to query
+---@return integer value Timer value
+function get_timer(timer_id) end
+
+---[Exult 0x0066] Sets timer value
+---@param timer_id integer Timer to set
+---@param value integer New timer value
+function set_timer(timer_id, value) end
+
+---[Exult 0x0062] Checks if PC is inside
+---@return boolean inside True if player is indoors
+function is_pc_inside() end
+
+---[Exult 0x0063] Sets orrery state
+---@param state integer Orrery state
+function set_orrery(state) end
+
+---[Exult 0x005E] Gets array size
+---@param array table Array to measure
+---@return integer size Array length
+function get_array_size(array) end
+
+---[Exult 0x005F] Marks virtue stone
+---@param stone_id integer Stone to mark
+function mark_virtue_stone(stone_id) end
+
+---[Exult 0x0060] Recalls to virtue stone
+---@param stone_id integer Stone to recall to
+function recall_virtue_stone(stone_id) end
+
+---[Exult 0x0083] Sets time-based palette
+---@param palette_id integer Palette to use
+function set_time_palette(palette_id) end
 
 -- ============================================================================
 -- UNKNOWN FUNCTIONS (Not Yet Researched)
 -- ============================================================================
 -- These functions are called in scripts but we haven't determined their
 -- purpose yet. Add documentation here as you discover what they do!
+-- Most Exult intrinsics (0x0000-0x0095) have now been documented above.
+-- The remaining unknowns are likely custom functions or deprecated opcodes.
 -- ============================================================================
-
----❓ Unknown function - needs research
-function unknown_0001H(...) end
-
----❓ Unknown function - needs research
-function unknown_0002H(...) end
-
----❓ Unknown function - needs research
-function unknown_0018H(...) end
-
----❓ Unknown function - needs research
-function unknown_0024H(...) end
-
----❓ Unknown function - needs research
-function unknown_0025H(...) end
-
----❓ Unknown function - needs research
-function unknown_0026H(...) end
-
----❓ Unknown function - needs research
-function unknown_002EH(...) end
-
----❓ Unknown function - needs research
-function unknown_0035H(...) end
-
----❓ Unknown function - needs research
-function unknown_0038H(...) end
-
----❓ Unknown function - needs research
-function unknown_0039H(...) end
-
----❓ Unknown function - needs research
-function unknown_0040H(...) end
-
----❓ Unknown function - needs research
-function unknown_0058H(...) end
-
----❓ Unknown function - needs research
-function unknown_005CH(...) end
-
----❓ Unknown function - needs research
-function unknown_006FH(...) end
-
----❓ Unknown function - needs research
-function unknown_0079H(...) end
-
----❓ Unknown function - needs research
-function unknown_007EH(...) end
-
----❓ Unknown function - needs research
-function unknown_007FH(...) end
-
----❓ Unknown function - needs research
-function unknown_0081H(...) end
-
----❓ Unknown function - needs research
-function unknown_0088H(...) end
-
----❓ Unknown function - needs research
-function unknown_0089H(...) end
-
----❓ Unknown function - needs research
-function unknown_008AH(...) end
 
 ---❓ Unknown function - needs research
 function unknown_0628H(...) end
