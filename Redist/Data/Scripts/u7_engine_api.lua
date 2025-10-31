@@ -152,6 +152,16 @@ function set_flag(flag_id, value) end
 ---@return integer result Random number from min to max
 function random(min, max) end
 
+---Finds objects near a reference object (Exult intrinsic 0x35)
+---Searches for objects within a radius of the reference object
+---@param objectref integer The reference object to search near
+---@param shape integer Shape ID to find (0 for any shape)
+---@param distance integer Search radius in tiles
+---@param mask integer Filter mask (typically 0, may be used for quality/frame filtering)
+---@return integer|nil objectref The found object reference, or nil if not found
+---@usage find_nearby(objectref, 176, 4, 0) -- Find shape 176 within 4 tiles
+function find_nearby(objectref, shape, distance, mask) end
+
 ---Checks if an object is in an NPC's inventory
 ---@param object_id integer The object to check for
 ---@param npc_id integer The NPC to check

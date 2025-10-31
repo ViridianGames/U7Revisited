@@ -1087,6 +1087,79 @@ static int LuaFindObjects(lua_State *L)
     return 1;
 }
 
+// Exult intrinsic 0x35: find_nearby
+// Finds objects near a reference object, filtered by shape and distance
+static int LuaFindNearby(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: find_nearby called");
+
+    int objectref = luaL_checkinteger(L, 1);  // Reference object to search near
+    int shape = luaL_checkinteger(L, 2);       // Shape ID to find (0 = any shape)
+    int distance = luaL_checkinteger(L, 3);    // Search radius in tiles
+    int mask = luaL_checkinteger(L, 4);        // Filter mask (quality/frame filter)
+
+    // Get the reference object
+    auto refIt = g_objectList.find(objectref);
+    if (refIt == g_objectList.end())
+    {
+        if (g_LuaDebug) DebugPrint("LUA: find_nearby - reference object not found");
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* refObj = refIt->second.get();
+    Vector3 refPos = refObj->GetPos();
+
+    // Search through all objects
+    for (const auto& pair : g_objectList)
+    {
+        int objId = pair.first;
+        U7Object* obj = pair.second.get();
+
+        // Skip the reference object itself
+        if (objId == objectref)
+            continue;
+
+        // Skip objects without shape data
+        if (!obj->m_shapeData)
+            continue;
+
+        // Check shape filter (0 means any shape)
+        if (shape != 0 && obj->m_shapeData->m_shape != shape)
+            continue;
+
+        // Check distance
+        Vector3 objPos = obj->GetPos();
+        float dx = objPos.x - refPos.x;
+        float dy = objPos.y - refPos.y;
+        float dist = sqrt(dx * dx + dy * dy);
+
+        if (dist > distance)
+            continue;
+
+        // Apply mask filter if non-zero
+        // Note: mask meaning is unclear from Exult docs, might be quality/frame
+        // For now, we'll use it as a quality filter if > 0
+        if (mask > 0 && obj->m_objectData)
+        {
+            // Could check quality, frame, or other properties here
+            // Skipping for now as exact mask usage is unclear
+        }
+
+        // Found a match!
+        if (g_LuaDebug)
+            DebugPrint("LUA: find_nearby found object " + std::to_string(objId) +
+                      " at distance " + std::to_string(dist));
+        lua_pushinteger(L, objId);
+        return 1;
+    }
+
+    // No matching object found
+    if (g_LuaDebug) DebugPrint("LUA: find_nearby - no matching object found");
+    lua_pushnil(L);
+    return 1;
+}
+
 static int LuaApplyEffect(lua_State *L)
 {
     int obj_id = luaL_checkinteger(L, 1);
@@ -1930,11 +2003,13 @@ void RegisterAllLuaFunctions()
 
     // These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
+    g_ScriptingSystem->RegisterScriptFunction("select_option", LuaAskYesNo); // Alias for ask_yes_no() with no parameter
     g_ScriptingSystem->RegisterScriptFunction("ask_answer", LuaAskAnswer);
     g_ScriptingSystem->RegisterScriptFunction("ask_multiple_choice", LuaAskMultipleChoice);
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
+    g_ScriptingSystem->RegisterScriptFunction("find_nearby", LuaFindNearby);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_npc_inventory", LuaIsObjectInNPCInventory);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_container", LuaIsObjectInContainer);
     g_ScriptingSystem->RegisterScriptFunction("has_object_of_type", LuaHasObjectOfType);
