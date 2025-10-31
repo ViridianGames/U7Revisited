@@ -715,7 +715,7 @@ static int LuaGetNPCProperty(lua_State *L)
 
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
-        NPCData* npc = &g_NPCData[npc_id];
+        NPCData* npc = g_NPCData[npc_id].get();
         switch (property_id)
         {
             case 0: value = npc->str; break;           // strength
@@ -747,7 +747,7 @@ static int LuaSetNPCProperty(lua_State *L)
 
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
-        NPCData* npc = &g_NPCData[npc_id];
+        NPCData* npc = g_NPCData[npc_id].get();
         switch (property_id)
         {
             case 0: npc->str = value; break;           // strength
@@ -898,8 +898,8 @@ static int LuaMove(lua_State *L)
     // In full implementation, would move object with pathfinding
     if (g_Player)
     {
-        Vector3 currentPos = g_Player->GetPos();
-        g_Player->SetPos({(float)x, currentPos.y, (float)y});
+        Vector3 currentPos = g_Player->GetPlayerPosition();
+        g_Player->SetPlayerPosition({(float)x, currentPos.y, (float)y});
     }
 
     return 0;
@@ -2288,7 +2288,7 @@ static int LuaFindNearbyAvatar(lua_State *L)
         return 1;  // Return empty table if no player
     }
 
-    Vector3 player_pos = g_Player->GetPos();
+    Vector3 player_pos = g_Player->GetPlayerPosition();
     int table_index = 1;
 
     // Search all objects for matches near the avatar
@@ -2662,7 +2662,7 @@ static int LuaSetOppressor(lua_State *L)
     // Set who is attacking this NPC
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
-        g_NPCData[npc_id].oppressor = oppressor_id;
+        g_NPCData[npc_id]->oppressor = oppressor_id;
     }
 
     return 0;
@@ -2678,11 +2678,11 @@ static int LuaAttackObject(lua_State *L)
     // Simplified combat - set oppressor relationship
     if (g_NPCData.find(attacker_id) != g_NPCData.end())
     {
-        g_NPCData[attacker_id].oppressor = target_id;
+        g_NPCData[attacker_id]->oppressor = target_id;
     }
     if (g_NPCData.find(target_id) != g_NPCData.end())
     {
-        g_NPCData[target_id].oppressor = attacker_id;
+        g_NPCData[target_id]->oppressor = attacker_id;
     }
 
     // Return hit points dealt (simplified)
@@ -3004,7 +3004,7 @@ static int LuaKillNPC(lua_State *L)
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
         // Set bit 3 (0x0008) to mark as dead
-        g_NPCData[npc_id].status |= 0x0008;
+        g_NPCData[npc_id]->status |= 0x0008;
     }
 
     return 0;
@@ -3018,7 +3018,7 @@ static int LuaResurrect(lua_State *L)
     // Clear NPC's dead status bit and restore health
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
-        NPCData* npc = &g_NPCData[npc_id];
+        NPCData* npc = g_NPCData[npc_id].get();
 
         // Clear bit 3 (0x0008) to mark as alive
         npc->status &= ~0x0008;
@@ -3075,7 +3075,7 @@ static int LuaSetScheduleType(lua_State *L)
     // Set NPC's current activity
     if (g_NPCData.find(npc_id) != g_NPCData.end())
     {
-        g_NPCData[npc_id].m_currentActivity = schedule_type;
+        g_NPCData[npc_id]->m_currentActivity = schedule_type;
     }
 
     return 0;
@@ -3084,10 +3084,10 @@ static int LuaSetScheduleType(lua_State *L)
 // 0x0022 | get_avatar_ref
 static int LuaGetAvatarRef(lua_State *L)
 {
-    // Return the player's object ID
-    if (g_Player)
+    // Return the player's object ID (Avatar is always NPC 0)
+    if (g_NPCData.find(0) != g_NPCData.end())
     {
-        lua_pushinteger(L, g_Player->m_objectID);
+        lua_pushinteger(L, g_NPCData[0]->m_objectID);
     }
     else
     {
@@ -3213,7 +3213,7 @@ static int LuaHaltScheduled(lua_State *L)
     // Stop NPC's scheduled activity
     if (g_NPCData.find(object_id) != g_NPCData.end())
     {
-        g_NPCData[object_id].m_currentActivity = -1;  // Clear activity
+        g_NPCData[object_id]->m_currentActivity = -1;  // Clear activity
     }
 
     return 0;
@@ -3670,7 +3670,7 @@ static int LuaSetOrrery(lua_State *L)
 static int LuaGetArraySize(lua_State *L)
 {
     // Get size of Lua table
-    size_t size = lua_objlen(L, 1);
+    size_t size = lua_rawlen(L, 1);
     lua_pushinteger(L, size);
     return 1;
 }
