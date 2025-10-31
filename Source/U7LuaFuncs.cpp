@@ -709,7 +709,30 @@ static int LuaGetNPCProperty(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: get_npc_property called");
     int npc_id = luaL_checkinteger(L, 1);
     int property_id = luaL_checkinteger(L, 2);
-    int value = 0; // TODO: g_NPCManager->GetProperty(npc_id, property_id)
+
+    // Property IDs: 0=strength, 1=dexterity, 2=intelligence, 3=health, 4=combat, 5=mana, 6=magic, 7=training, 8=exp, 9=food_level, 10=sex_flag
+    int value = 0;
+
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        NPCData* npc = &g_NPCData[npc_id];
+        switch (property_id)
+        {
+            case 0: value = npc->str; break;           // strength
+            case 1: value = npc->dex; break;           // dexterity
+            case 2: value = npc->iq; break;            // intelligence
+            case 3: value = npc->str; break;           // health (uses strength)
+            case 4: value = npc->combat; break;        // combat
+            case 5: value = npc->magic; break;         // mana (uses magic)
+            case 6: value = npc->magic; break;         // magic
+            case 7: value = npc->training; break;      // training
+            case 8: value = npc->xp; break;            // experience
+            case 9: value = npc->food; break;          // food level
+            case 10: value = (npc->type >> 0) & 1; break; // sex flag (bit 0 of type)
+            default: value = 0; break;
+        }
+    }
+
     lua_pushinteger(L, value);
     return 1;
 }
@@ -721,6 +744,28 @@ static int LuaSetNPCProperty(lua_State *L)
     int npc_id = luaL_checkinteger(L, 1);
     int property_id = luaL_checkinteger(L, 2);
     int value = luaL_checkinteger(L, 3);
+
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        NPCData* npc = &g_NPCData[npc_id];
+        switch (property_id)
+        {
+            case 0: npc->str = value; break;           // strength
+            case 1: npc->dex = value; break;           // dexterity
+            case 2: npc->iq = value; break;            // intelligence
+            case 3: npc->str = value; break;           // health (uses strength)
+            case 4: npc->combat = value; break;        // combat
+            case 5: npc->magic = value; break;         // mana (uses magic)
+            case 6: npc->magic = value; break;         // magic
+            case 7: npc->training = value; break;      // training
+            case 8: npc->xp = value; break;            // experience
+            case 9: npc->food = value; break;          // food level
+            case 10:                                   // sex flag
+                npc->type = (npc->type & ~1) | (value & 1);
+                break;
+        }
+    }
+
     return 0;
 }
 
@@ -848,7 +893,15 @@ static int LuaMove(lua_State *L)
     int x = luaL_checkinteger(L, 1);
     int y = luaL_checkinteger(L, 2);
     cout << "Move to (" << x << ", " << y << ")\n";
-    // TODO: Implement object movement
+
+    // Basic movement - would move current object or player to position
+    // In full implementation, would move object with pathfinding
+    if (g_Player)
+    {
+        Vector3 currentPos = g_Player->GetPos();
+        g_Player->SetPos({(float)x, currentPos.y, (float)y});
+    }
+
     return 0;
 }
 
@@ -1985,24 +2038,104 @@ static int LuaAbort(lua_State *L)
 // 0x000E | find_nearest
 static int LuaFindNearest(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int shape = (int)lua_tointeger(L, 2);
-    // int distance = (int)lua_tointeger(L, 3);
+    int object_id = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 2);
+    int max_distance = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - find closest object of given shape within distance
-    lua_pushnil(L);
+    // Validate source object exists
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    Vector3 source_pos = g_objectList[object_id]->GetPos();
+    int closest_id = -1;
+    int best_dist_sq = max_distance * max_distance + 1;
+
+    // Search all objects for nearest match
+    for (const auto& pair : g_objectList)
+    {
+        int candidate_id = pair.first;
+        U7Object* candidate = pair.second.get();
+
+        // Skip self
+        if (candidate_id == object_id)
+            continue;
+
+        // Check if shape matches (or shape == -1 for any object)
+        if (shape != -1 && candidate->m_ObjectType != shape)
+            continue;
+
+        // Calculate distance squared (Chebyshev-ish, but using actual distance for better accuracy)
+        Vector3 candidate_pos = candidate->GetPos();
+        int dx = (int)abs(candidate_pos.x - source_pos.x);
+        int dy = (int)abs(candidate_pos.y - source_pos.y);
+        int dz = (int)abs(candidate_pos.z - source_pos.z);
+        int dist_sq = dx * dx + dy * dy + dz * dz;
+
+        // Check if within range and closer than previous best
+        if (dist_sq < best_dist_sq)
+        {
+            best_dist_sq = dist_sq;
+            closest_id = candidate_id;
+        }
+    }
+
+    if (closest_id == -1)
+    {
+        lua_pushnil(L);
+    }
+    else
+    {
+        lua_pushinteger(L, closest_id);
+    }
     return 1;
 }
 
 // 0x0029 | find_object
 static int LuaFindObject(lua_State *L)
 {
-    // int container_id = (int)lua_tointeger(L, 1);
-    // int shape = (int)lua_tointeger(L, 2);
-    // int quality = (int)lua_tointeger(L, 3);
-    // int frame = (int)lua_tointeger(L, 4);
+    int container_id = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 2);
+    int quality = (int)lua_tointeger(L, 3);
+    int frame = (int)lua_tointeger(L, 4);
 
-    // TODO: Implement - search for specific object in container
+    // Check if container exists
+    if (g_objectList.find(container_id) == g_objectList.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* container = g_objectList[container_id].get();
+
+    // Search through container's inventory
+    for (int item_id : container->m_inventory)
+    {
+        if (g_objectList.find(item_id) == g_objectList.end())
+            continue;
+
+        U7Object* item = g_objectList[item_id].get();
+
+        // Check shape match (or -1/-359 for any shape)
+        if (shape != -1 && shape != -359 && item->m_ObjectType != shape)
+            continue;
+
+        // Check quality match (or -1/-359 for any quality)
+        if (quality != -1 && quality != -359 && item->m_Quality != quality)
+            continue;
+
+        // Check frame match (or -1/-359 for any frame)
+        if (frame != -1 && frame != -359 && item->m_Frame != frame)
+            continue;
+
+        // Found a match!
+        lua_pushinteger(L, item_id);
+        return 1;
+    }
+
+    // No match found
     lua_pushnil(L);
     return 1;
 }
@@ -2010,104 +2143,345 @@ static int LuaFindObject(lua_State *L)
 // 0x0019 | get_distance
 static int LuaGetDistanceBetween(lua_State *L)
 {
-    // int object1_id = (int)lua_tointeger(L, 1);
-    // int object2_id = (int)lua_tointeger(L, 2);
+    int obj1_id = (int)lua_tointeger(L, 1);
+    int obj2_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - calculate distance between two objects
-    lua_pushinteger(L, 0);
+    // Get both objects
+    if (g_objectList.find(obj1_id) == g_objectList.end() ||
+        g_objectList.find(obj2_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* obj1 = g_objectList[obj1_id].get();
+    U7Object* obj2 = g_objectList[obj2_id].get();
+
+    // Calculate Chebyshev distance (tile-based, like Exult)
+    Vector3 pos1 = obj1->GetPos();
+    Vector3 pos2 = obj2->GetPos();
+
+    int dx = abs((int)pos1.x - (int)pos2.x);
+    int dz = abs((int)pos1.z - (int)pos2.z);
+    int distance = (dx > dz) ? dx : dz; // max(dx, dz)
+
+    lua_pushinteger(L, distance);
     return 1;
 }
 
 // 0x001A | find_direction
 static int LuaFindDirectionBetween(lua_State *L)
 {
-    // Various combinations of object/position
-    // TODO: Implement - get direction from one point/object to another (0-7)
-    lua_pushinteger(L, 0);
+    int from_obj_id = (int)lua_tointeger(L, 1);
+    int to_obj_id = (int)lua_tointeger(L, 2);
+
+    if (g_objectList.find(from_obj_id) == g_objectList.end() ||
+        g_objectList.find(to_obj_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    Vector3 from_pos = g_objectList[from_obj_id]->GetPos();
+    Vector3 to_pos = g_objectList[to_obj_id]->GetPos();
+
+    // Calculate direction (0-7): 0=North, 1=NE, 2=East, 3=SE, 4=South, 5=SW, 6=West, 7=NW
+    float dx = to_pos.x - from_pos.x;
+    float dz = to_pos.z - from_pos.z;
+
+    // Calculate angle in radians, then convert to 0-7 direction
+    float angle = atan2(dz, dx); // atan2(y, x) in standard coords
+    // Convert to degrees: 0 = East, 90 = South, 180 = West, 270 = North
+    float degrees = angle * 180.0f / 3.14159265f;
+
+    // Adjust so 0 = North: rotate by -90 degrees
+    degrees = degrees - 90.0f;
+    if (degrees < 0) degrees += 360.0f;
+
+    // Convert to 0-7 (8 directions), rounding to nearest
+    int direction = (int)((degrees + 22.5f) / 45.0f) % 8;
+
+    lua_pushinteger(L, direction);
     return 1;
 }
 
 // 0x0087 | direction_from
 static int LuaDirectionFrom(lua_State *L)
 {
-    // int object1_id = (int)lua_tointeger(L, 1);
-    // int object2_id = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - similar to find_direction
-    lua_pushinteger(L, 0);
+    // This returns the object's current facing direction
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Convert object's angle to 0-7 direction
+    float degrees = obj->m_Angle;
+    if (degrees < 0) degrees += 360.0f;
+
+    int direction = (int)((degrees + 22.5f) / 45.0f) % 8;
+
+    lua_pushinteger(L, direction);
     return 1;
 }
 
 // 0x0028 | count_objects
 static int LuaCountObjects(lua_State *L)
 {
-    // int container_id = (int)lua_tointeger(L, 1);
-    // int shape = (int)lua_tointeger(L, 2);
-    // int quality = (int)lua_tointeger(L, 3);
-    // int frame = (int)lua_tointeger(L, 4);
+    int container_id = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 2);
+    int quality = (int)lua_tointeger(L, 3);
+    int frame = (int)lua_tointeger(L, 4);
 
-    // TODO: Implement - count matching objects in container
-    lua_pushinteger(L, 0);
+    // Check if container exists
+    if (g_objectList.find(container_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* container = g_objectList[container_id].get();
+    int count = 0;
+
+    // Count matching objects in container's inventory
+    for (int item_id : container->m_inventory)
+    {
+        if (g_objectList.find(item_id) == g_objectList.end())
+            continue;
+
+        U7Object* item = g_objectList[item_id].get();
+
+        // Check shape match (or -1/-359 for any shape)
+        if (shape != -1 && shape != -359 && item->m_ObjectType != shape)
+            continue;
+
+        // Check quality match (or -1/-359 for any quality)
+        if (quality != -1 && quality != -359 && item->m_Quality != quality)
+            continue;
+
+        // Check frame match (or -1/-359 for any frame)
+        if (frame != -1 && frame != -359 && item->m_Frame != frame)
+            continue;
+
+        // This item matches - count it (and add its quantity if stackable)
+        count += (item->m_Quality > 0 ? item->m_Quality : 1);
+    }
+
+    lua_pushinteger(L, count);
     return 1;
 }
 
 // 0x0030 | find_nearby_avatar
 static int LuaFindNearbyAvatar(lua_State *L)
 {
-    // int shape = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 1);
+    int max_distance = 20;  // Default search radius (can be adjusted)
 
-    // TODO: Implement - find all objects of shape near avatar
-    lua_newtable(L);
+    lua_newtable(L);  // Create result table
+
+    if (!g_Player)
+    {
+        return 1;  // Return empty table if no player
+    }
+
+    Vector3 player_pos = g_Player->GetPos();
+    int table_index = 1;
+
+    // Search all objects for matches near the avatar
+    for (const auto& pair : g_objectList)
+    {
+        int candidate_id = pair.first;
+        U7Object* candidate = pair.second.get();
+
+        // Skip if shape doesn't match (or shape == -1 for any object)
+        if (shape != -1 && candidate->m_ObjectType != shape)
+            continue;
+
+        // Calculate distance from player
+        Vector3 candidate_pos = candidate->GetPos();
+        int dx = (int)abs(candidate_pos.x - player_pos.x);
+        int dz = (int)abs(candidate_pos.z - player_pos.z);
+        int distance = (dx > dz) ? dx : dz;  // Chebyshev distance
+
+        // Add to result table if within range
+        if (distance <= max_distance)
+        {
+            lua_pushinteger(L, table_index);
+            lua_pushinteger(L, candidate_id);
+            lua_settable(L, -3);
+            table_index++;
+        }
+    }
+
     return 1;
 }
 
 // 0x0016 | get_item_quantity
 static int LuaGetItemQuantity(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int unknown = (lua_gettop(L) >= 2) ? (int)lua_tointeger(L, 2) : 0;
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get stack size or item count
-    lua_pushinteger(L, 1);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    // In Ultima 7, quality field is used as quantity for stackable items
+    // For non-stackable items, quantity is implicitly 1
+    int quantity = (obj->m_Quality > 0) ? obj->m_Quality : 1;
+
+    lua_pushinteger(L, quantity);
     return 1;
 }
 
 // 0x0017 | set_item_quantity
 static int LuaSetItemQuantity(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int quantity = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int quantity = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set stack size
-    lua_pushboolean(L, 0);
-    return 1;
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        return 0;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    // Set quality field which represents quantity for stackable items
+    obj->m_Quality = quantity;
+
+    // TODO: If quantity reaches 0, should the object be destroyed?
+    // Exult does this, but leaving it for now to avoid breaking things
+
+    return 0;
 }
 
 // 0x002B | remove_party_items
 static int LuaRemovePartyItems(lua_State *L)
 {
-    // int count = (int)lua_tointeger(L, 1);
-    // int shape = (int)lua_tointeger(L, 2);
-    // int quality = (int)lua_tointeger(L, 3);
-    // int frame = (int)lua_tointeger(L, 4);
-    // bool unknown = (lua_gettop(L) >= 5) ? lua_toboolean(L, 5) : false;
+    int count = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 2);
+    int quality = (int)lua_tointeger(L, 3);
+    int frame = (int)lua_tointeger(L, 4);
 
-    // TODO: Implement - remove items from party inventory
-    lua_pushboolean(L, 0);
+    if (!g_Player)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    int remaining_to_remove = count;
+    std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
+
+    // Iterate through all party members
+    for (int party_member_id : party_ids)
+    {
+        if (remaining_to_remove <= 0)
+            break;
+
+        if (g_objectList.find(party_member_id) == g_objectList.end())
+            continue;
+
+        U7Object* party_member = g_objectList[party_member_id].get();
+
+        // Search their inventory for matching items
+        for (auto it = party_member->m_inventory.begin(); it != party_member->m_inventory.end(); )
+        {
+            if (remaining_to_remove <= 0)
+                break;
+
+            int item_id = *it;
+            if (g_objectList.find(item_id) == g_objectList.end())
+            {
+                ++it;
+                continue;
+            }
+
+            U7Object* item = g_objectList[item_id].get();
+
+            // Check if item matches criteria
+            bool matches = true;
+            if (shape != -1 && shape != -359 && item->m_ObjectType != shape)
+                matches = false;
+            if (quality != -1 && quality != -359 && item->m_Quality != quality)
+                matches = false;
+            if (frame != -1 && frame != -359 && item->m_Frame != frame)
+                matches = false;
+
+            if (matches)
+            {
+                int item_quantity = (item->m_Quality > 0) ? item->m_Quality : 1;
+
+                if (item_quantity <= remaining_to_remove)
+                {
+                    // Remove entire stack
+                    remaining_to_remove -= item_quantity;
+                    it = party_member->m_inventory.erase(it);
+                    g_objectList.erase(item_id);
+                }
+                else
+                {
+                    // Remove partial stack
+                    item->m_Quality -= remaining_to_remove;
+                    remaining_to_remove = 0;
+                    ++it;
+                }
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    // Return true if we removed all requested items
+    lua_pushboolean(L, (remaining_to_remove == 0) ? 1 : 0);
     return 1;
 }
 
 // 0x002C | add_party_items
 static int LuaAddPartyItems(lua_State *L)
 {
-    // int count = (int)lua_tointeger(L, 1);
-    // int shape = (int)lua_tointeger(L, 2);
-    // int quality = (int)lua_tointeger(L, 3);
-    // int frame = (int)lua_tointeger(L, 4);
+    int count = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 2);
+    int quality = (int)lua_tointeger(L, 3);
+    int frame = (int)lua_tointeger(L, 4);
     // bool temporary = lua_toboolean(L, 5);
 
-    // TODO: Implement - add items to party inventory
-    lua_newtable(L);
+    lua_newtable(L);  // Return array of party members who received items
+
+    if (!g_Player || count <= 0)
+    {
+        return 1;  // Return empty table
+    }
+
+    std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
+    if (party_ids.empty())
+    {
+        return 1;  // Return empty table
+    }
+
+    // Add items to first available party member (usually player)
+    int party_member_id = party_ids[0];
+    if (g_objectList.find(party_member_id) == g_objectList.end())
+    {
+        return 1;
+    }
+
+    U7Object* party_member = g_objectList[party_member_id].get();
+
+    // Create the items and add to inventory
+    // Note: This is simplified - in real implementation we'd need CreateObject
+    // For now, just return the party member who would receive them
+    lua_pushinteger(L, 1);  // Index 1
+    lua_pushinteger(L, party_member_id);  // Party member ID
+    lua_settable(L, -3);
+
     return 1;
 }
 
@@ -2116,7 +2490,10 @@ static int LuaSetLastCreated(lua_State *L)
 {
     int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - set reference to last created object
+    // Track last created object using static variable
+    static int g_lastCreatedObject = -1;
+    g_lastCreatedObject = object_id;
+
     lua_pushinteger(L, object_id);
     return 1;
 }
@@ -2125,81 +2502,191 @@ static int LuaSetLastCreated(lua_State *L)
 static int LuaUpdateLastCreated(lua_State *L)
 {
     // Position array (x, y, z)
-    // TODO: Implement - update position of last created object
-    lua_pushboolean(L, 0);
+    static int g_lastCreatedObject = -1;
+
+    if (g_lastCreatedObject == -1 || g_objectList.find(g_lastCreatedObject) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // Get position from table
+    lua_rawgeti(L, 1, 1);  // x
+    lua_rawgeti(L, 1, 2);  // y
+    lua_rawgeti(L, 1, 3);  // z
+
+    float x = (float)lua_tonumber(L, -3);
+    float y = (float)lua_tonumber(L, -2);
+    float z = (float)lua_tonumber(L, -1);
+
+    lua_pop(L, 3);  // Clean stack
+
+    U7Object* obj = g_objectList[g_lastCreatedObject].get();
+    obj->SetPos({x, y, z});
+
+    lua_pushboolean(L, 1);
     return 1;
 }
 
 // 0x0036 | give_last_created
 static int LuaGiveLastCreated(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1); // recipient
+    int recipient_id = (int)lua_tointeger(L, 1);
+    static int g_lastCreatedObject = -1;
 
-    // TODO: Implement - give last created object to target
-    lua_pushboolean(L, 0);
+    if (g_lastCreatedObject == -1 || g_objectList.find(g_lastCreatedObject) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    if (g_objectList.find(recipient_id) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // Add last created object to recipient's inventory
+    U7Object* recipient = g_objectList[recipient_id].get();
+    bool success = recipient->AddObjectToInventory(g_lastCreatedObject);
+
+    lua_pushboolean(L, success ? 1 : 0);
     return 1;
 }
 
 // 0x006F | remove_item
 static int LuaRemoveItem(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - remove/delete object from world
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        return 0;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // If contained in another object, remove from that container's inventory
+    if (obj->m_isContained && obj->m_containingObjectId != -1)
+    {
+        if (g_objectList.find(obj->m_containingObjectId) != g_objectList.end())
+        {
+            U7Object* container = g_objectList[obj->m_containingObjectId].get();
+            container->RemoveObjectFromInventory(object_id);
+        }
+    }
+
+    // Remove from world (erase from object list)
+    g_objectList.erase(object_id);
+
     return 0;
 }
 
 // 0x006E | get_container
 static int LuaGetContainerOf(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get containing object/inventory
-    lua_pushnil(L);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Return the containing object ID if this object is contained
+    if (obj->m_isContained && obj->m_containingObjectId != -1)
+    {
+        lua_pushinteger(L, obj->m_containingObjectId);
+    }
+    else
+    {
+        lua_pushnil(L);
+    }
+
     return 1;
 }
 
 // 0x0041 | set_to_attack
 static int LuaSetToAttack(lua_State *L)
 {
-    // int attacker_id = (int)lua_tointeger(L, 1);
-    // int target_id = (int)lua_tointeger(L, 2);
+    int attacker_id = (int)lua_tointeger(L, 1);
+    int target_id = (int)lua_tointeger(L, 2);
     // int weapon_id = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - command NPC to attack target
-    lua_pushinteger(L, 0);
+    // Check if attacker NPC exists
+    if (g_objectList.find(attacker_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* attacker = g_objectList[attacker_id].get();
+    if (!attacker->m_isNPC || !attacker->m_NPCData)
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    // Set the target as the oppressor (who this NPC should attack)
+    attacker->m_NPCData->oppressor = target_id;
+
+    lua_pushinteger(L, 1);
     return 1;
 }
 
 // 0x004B | set_attack_mode
 static int LuaSetAttackMode(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
-    // int mode = (int)lua_tointeger(L, 2);
+    int npc_id = (int)lua_tointeger(L, 1);
+    int mode = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set combat AI mode
+    // Attack modes: 0=nearest, 1=weakest, 2=strongest, 3=berserk, etc.
+    // Store in NPC data - could use a new field or repurpose existing one
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        // For now, just validate the call succeeds
+        // In full implementation, would set combat AI behavior
+    }
+
     return 0;
 }
 
 // 0x004C | set_oppressor
 static int LuaSetOppressor(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
-    // int oppressor_id = (int)lua_tointeger(L, 2);
+    int npc_id = (int)lua_tointeger(L, 1);
+    int oppressor_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set who the NPC is being attacked by
+    // Set who is attacking this NPC
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        g_NPCData[npc_id].oppressor = oppressor_id;
+    }
+
     return 0;
 }
 
 // 0x0054 | attack_object
 static int LuaAttackObject(lua_State *L)
 {
-    // int attacker_id = (int)lua_tointeger(L, 1);
-    // int target_id = (int)lua_tointeger(L, 2);
+    int attacker_id = (int)lua_tointeger(L, 1);
+    int target_id = (int)lua_tointeger(L, 2);
     // int weapon_id = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - execute attack action
-    lua_pushinteger(L, 0);
+    // Simplified combat - set oppressor relationship
+    if (g_NPCData.find(attacker_id) != g_NPCData.end())
+    {
+        g_NPCData[attacker_id].oppressor = target_id;
+    }
+    if (g_NPCData.find(target_id) != g_NPCData.end())
+    {
+        g_NPCData[target_id].oppressor = attacker_id;
+    }
+
+    // Return hit points dealt (simplified)
+    lua_pushinteger(L, 5);
     return 1;
 }
 
@@ -2213,7 +2700,8 @@ static int LuaFireProjectile(lua_State *L)
     // int weapon_id = (int)lua_tointeger(L, 5);
     // int ammo_id = (int)lua_tointeger(L, 6);
 
-    // TODO: Implement - launch projectile (arrow, bolt, spell)
+    // Projectile system not implemented
+    // Would spawn moving projectile with damage
     return 0;
 }
 
@@ -2222,90 +2710,179 @@ static int LuaCallGuards(lua_State *L)
 {
     // int caller_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - summon guards to location
+    // Guard summoning not implemented
+    // Would spawn/teleport guards to location
     return 0;
 }
 
 // 0x008E | in_combat
 static int LuaInCombat(lua_State *L)
 {
-    // TODO: Implement - check if combat mode is active
-    lua_pushboolean(L, 0);
+    // Check if any NPC is currently engaged in combat
+    // This is a simple heuristic - a more complete implementation would check
+    // for active combat state, but for now check if any NPC is attacking
+    bool in_combat = false;
+
+    for (const auto& pair : g_NPCData)
+    {
+        NPCData* npc = pair.second.get();
+        // Check if NPC has an oppressor (is being attacked)
+        if (npc->oppressor != 0)
+        {
+            in_combat = true;
+            break;
+        }
+    }
+
+    lua_pushboolean(L, in_combat);
     return 1;
 }
 
 // 0x0061 | apply_damage
 static int LuaApplyDamage(lua_State *L)
 {
-    // int base_damage = (int)lua_tointeger(L, 1);
-    // int hit_points = (int)lua_tointeger(L, 2);
-    // int damage_type = (int)lua_tointeger(L, 3);
-    // int target_id = (int)lua_tointeger(L, 4);
+    int base_damage = (int)lua_tointeger(L, 1);
+    int hit_points = (int)lua_tointeger(L, 2);
+    int damage_type = (int)lua_tointeger(L, 3);
+    int target_id = (int)lua_tointeger(L, 4);
 
-    // TODO: Implement - apply damage to target with type
-    lua_pushboolean(L, 0);
+    // Simplified damage application
+    if (g_objectList.find(target_id) != g_objectList.end())
+    {
+        U7Object* target = g_objectList[target_id].get();
+        // Reduce HP (simplified - full implementation would use combat system)
+        target->m_hp -= hit_points;
+
+        // Check if target died
+        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        {
+            target->m_NPCData->status |= 0x0008;  // Set dead bit
+            lua_pushboolean(L, 1);  // Target died
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 0);  // Target survived
     return 1;
 }
 
 // 0x0071 | reduce_health
 static int LuaReduceHealth(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int hit_points = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int hit_points = (int)lua_tointeger(L, 2);
     // int damage_type = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - directly reduce HP by amount
+    // Direct HP reduction
+    if (g_objectList.find(object_id) != g_objectList.end())
+    {
+        U7Object* target = g_objectList[object_id].get();
+        target->m_hp -= hit_points;
+
+        // Check if target died
+        if (target->m_hp <= 0 && target->m_isNPC && target->m_NPCData)
+        {
+            target->m_NPCData->status |= 0x0008;  // Set dead bit
+        }
+    }
+
     return 0;
 }
 
 // 0x0088 | get_item_flag
 static int LuaGetItemFlag(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int flag_id = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int flag_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - read object flag bit
-    lua_pushinteger(L, 0);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Check if the bit is set (1 << flag_id creates a mask for that bit)
+    int flag_value = (obj->m_flags & (1 << flag_id)) ? 1 : 0;
+
+    lua_pushinteger(L, flag_value);
     return 1;
 }
 
 // 0x0089 | set_item_flag
 static int LuaSetItemFlag(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int flag_id = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int flag_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set object flag bit to 1
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        return 0;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Set the bit to 1 using bitwise OR
+    obj->m_flags |= (1 << flag_id);
+
     return 0;
 }
 
 // 0x008A | clear_item_flag
 static int LuaClearItemFlag(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int flag_id = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int flag_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set object flag bit to 0
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        return 0;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+
+    // Clear the bit to 0 using bitwise AND with inverted mask
+    obj->m_flags &= ~(1 << flag_id);
+
     return 0;
 }
 
 // 0x0042 | get_lift
 static int LuaGetLift(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get object's Z coordinate/elevation
-    lua_pushinteger(L, 0);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    // Lift is the Y coordinate (vertical position/elevation)
+    int lift = (int)obj->m_Pos.y;
+
+    lua_pushinteger(L, lift);
     return 1;
 }
 
 // 0x0043 | set_lift
 static int LuaSetLift(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int z_position = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int lift = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set object's Z coordinate/elevation
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        return 0;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    Vector3 pos = obj->GetPos();
+    pos.y = (float)lift;
+    obj->SetPos(pos);
+
     return 0;
 }
 
@@ -2316,78 +2893,151 @@ static int LuaSetLift(lua_State *L)
 // 0x0031 | is_npc
 static int LuaIsNPC(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - check if object is an NPC/actor
-    lua_pushboolean(L, 0);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    bool is_npc = obj->m_isNPC || (obj->m_UnitType == U7Object::UnitTypes::UNIT_TYPE_NPC);
+
+    lua_pushboolean(L, is_npc);
     return 1;
 }
 
 // 0x0037 | is_dead
 static int LuaIsDead(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - check if NPC is dead
-    lua_pushboolean(L, 0);
+    // Check if object exists and is an NPC
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    if (!obj->m_isNPC || !obj->m_NPCData)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // In Exult, status bit 3 (value 0x0008) indicates dead
+    bool is_dead = (obj->m_NPCData->status & 0x0008) != 0;
+
+    lua_pushboolean(L, is_dead);
     return 1;
 }
 
 // 0x003A | get_npc_number
 static int LuaGetNPCNumber(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get NPC's permanent ID number
-    lua_pushinteger(L, 0);
+    if (g_objectList.find(object_id) == g_objectList.end())
+    {
+        lua_pushinteger(L, -1);
+        return 1;
+    }
+
+    U7Object* obj = g_objectList[object_id].get();
+    if (obj->m_isNPC)
+    {
+        lua_pushinteger(L, obj->m_NPCID);
+    }
+    else
+    {
+        lua_pushinteger(L, -1); // Not an NPC
+    }
     return 1;
 }
 
 // 0x003C | get_alignment
 static int LuaGetAlignment(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int npc_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get NPC alignment/faction (0=good, 1=neutral, 2=evil)
-    lua_pushinteger(L, 1); // neutral
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        lua_pushinteger(L, 0);
+        return 1;
+    }
+
+    NPCData* npc = g_NPCData[npc_id].get();
+    // In Exult, alignment is stored in bits 2-3 of status
+    // 0=good/friendly, 1=neutral, 2=chaotic/hostile, 3=evil
+    int alignment = (npc->status >> 2) & 0x03;
+
+    lua_pushinteger(L, alignment);
     return 1;
 }
 
 // 0x003D | set_alignment
 static int LuaSetAlignment(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int alignment = (int)lua_tointeger(L, 2);
+    int npc_id = (int)lua_tointeger(L, 1);
+    int alignment = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set NPC alignment/faction
+    if (g_NPCData.find(npc_id) == g_NPCData.end())
+    {
+        return 0;
+    }
+
+    NPCData* npc = g_NPCData[npc_id].get();
+    // Clear bits 2-3 and set new alignment
+    npc->status = (npc->status & ~0x000C) | ((alignment & 0x03) << 2);
+
     return 0;
 }
 
 // 0x0049 | kill_npc
 static int LuaKillNPC(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
+    int npc_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - instantly kill NPC
+    // Set NPC's dead status bit
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        // Set bit 3 (0x0008) to mark as dead
+        g_NPCData[npc_id].status |= 0x0008;
+    }
+
     return 0;
 }
 
 // 0x0051 | resurrect
 static int LuaResurrect(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
+    int npc_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - bring dead NPC back to life
+    // Clear NPC's dead status bit and restore health
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        NPCData* npc = &g_NPCData[npc_id];
+
+        // Clear bit 3 (0x0008) to mark as alive
+        npc->status &= ~0x0008;
+
+        // Restore health to full (strength is max HP)
+        // In full implementation, would also restore HP in U7Object
+    }
+
     return 0;
 }
 
 // 0x0047 | summon
 static int LuaSummon(lua_State *L)
 {
-    // int shape = (int)lua_tointeger(L, 1);
+    int shape = (int)lua_tointeger(L, 1);
     // bool unknown = (lua_gettop(L) >= 2) ? lua_toboolean(L, 2) : false;
 
-    // TODO: Implement - create and summon creature
+    // In full implementation, would create a new creature object
+    // For now, return nil to indicate summoning not fully implemented
     lua_pushnil(L);
     return 1;
 }
@@ -2395,44 +3045,114 @@ static int LuaSummon(lua_State *L)
 // 0x0046 | sit_down
 static int LuaSitDown(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
-    // int chair_id = (int)lua_tointeger(L, 2);
+    int npc_id = (int)lua_tointeger(L, 1);
+    int chair_id = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - make NPC sit in chair
+    // In full implementation, would:
+    // 1. Move NPC to chair position
+    // 2. Change NPC animation to sitting
+    // 3. Set NPC state to sitting
+
+    if (g_objectList.find(npc_id) != g_objectList.end() &&
+        g_objectList.find(chair_id) != g_objectList.end())
+    {
+        U7Object* npc = g_objectList[npc_id].get();
+        U7Object* chair = g_objectList[chair_id].get();
+
+        // Move NPC to chair position
+        npc->SetPos(chair->GetPos());
+    }
+
     return 0;
 }
 
 // 0x001D | set_schedule_type
 static int LuaSetScheduleType(lua_State *L)
 {
-    // int npc_id = (int)lua_tointeger(L, 1);
-    // int schedule_type = (int)lua_tointeger(L, 2);
+    int npc_id = (int)lua_tointeger(L, 1);
+    int schedule_type = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - change NPC's current activity schedule
+    // Set NPC's current activity
+    if (g_NPCData.find(npc_id) != g_NPCData.end())
+    {
+        g_NPCData[npc_id].m_currentActivity = schedule_type;
+    }
+
     return 0;
 }
 
 // 0x0022 | get_avatar_ref
 static int LuaGetAvatarRef(lua_State *L)
 {
-    // TODO: Implement - get player character object reference
-    lua_pushinteger(L, 1); // Assuming avatar is object ID 1
+    // Return the player's object ID
+    if (g_Player)
+    {
+        lua_pushinteger(L, g_Player->m_objectID);
+    }
+    else
+    {
+        lua_pushinteger(L, -1); // -1 if no player
+    }
     return 1;
 }
 
 // 0x008D | get_party_list2
 static int LuaGetPartyList2(lua_State *L)
 {
-    // TODO: Implement - return array of party member object_ids
     lua_newtable(L);
+
+    if (!g_Player)
+    {
+        return 1;  // Return empty table
+    }
+
+    std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
+    int table_index = 1;
+
+    for (int party_member_id : party_ids)
+    {
+        lua_pushinteger(L, table_index);
+        lua_pushinteger(L, party_member_id);
+        lua_settable(L, -3);
+        table_index++;
+    }
+
     return 1;
 }
 
 // 0x0093 | get_dead_party
 static int LuaGetDeadParty(lua_State *L)
 {
-    // TODO: Implement - get list of dead party members
     lua_newtable(L);
+
+    if (!g_Player)
+    {
+        return 1;  // Return empty table
+    }
+
+    std::vector<int>& party_ids = g_Player->GetPartyMemberIds();
+    int table_index = 1;
+
+    // Check each party member for dead status
+    for (int party_member_id : party_ids)
+    {
+        if (g_objectList.find(party_member_id) == g_objectList.end())
+            continue;
+
+        U7Object* party_member = g_objectList[party_member_id].get();
+        if (!party_member->m_isNPC || !party_member->m_NPCData)
+            continue;
+
+        // Check if dead (status bit 3)
+        if (party_member->m_NPCData->status & 0x0008)
+        {
+            lua_pushinteger(L, table_index);
+            lua_pushinteger(L, party_member_id);
+            lua_settable(L, -3);
+            table_index++;
+        }
+    }
+
     return 1;
 }
 
@@ -2442,7 +3162,9 @@ static int LuaExecuteUsecodeArray(lua_State *L)
     // int object_id = (int)lua_tointeger(L, 1);
     // table script_array = lua_totable(L, 2);
 
-    // TODO: Implement - execute scripted animation/sequence
+    // Scripted sequences not fully implemented
+    // Would execute array of animation/movement commands
+    // Return event ID (0 = no event)
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -2454,7 +3176,9 @@ static int LuaDelayedExecuteUsecodeArray(lua_State *L)
     // table script_array = lua_totable(L, 2);
     // int delay = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - execute script after delay
+    // Scripted sequences not fully implemented
+    // Would execute array after delay
+    // Return event ID (0 = no event)
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -2464,7 +3188,9 @@ static int LuaInUsecode(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - check if object is running usecode
+    // For most cases, objects are not currently executing usecode
+    // This would require tracking execution state per-object
+    // Return false for now (simplified implementation)
     lua_pushboolean(L, 0);
     return 1;
 }
@@ -2473,17 +3199,23 @@ static int LuaInUsecode(lua_State *L)
 static int LuaPathRunUsecode(lua_State *L)
 {
     // Position table, callback function, object_id, event, simode
-    // TODO: Implement - walk to position then execute function
-    lua_pushboolean(L, 0);
+    // Pathfinding + callback not fully implemented
+    // Would walk NPC to position then execute callback
+    lua_pushboolean(L, 0);  // Failed (not implemented)
     return 1;
 }
 
 // 0x005C | halt_scheduled
 static int LuaHaltScheduled(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - stop object's scheduled activity
+    // Stop NPC's scheduled activity
+    if (g_NPCData.find(object_id) != g_NPCData.end())
+    {
+        g_NPCData[object_id].m_currentActivity = -1;  // Clear activity
+    }
+
     return 0;
 }
 
@@ -2491,34 +3223,60 @@ static int LuaHaltScheduled(lua_State *L)
 static int LuaSetPathFailure(lua_State *L)
 {
     // callback function, object_id, event
-    // TODO: Implement - set callback for pathfinding failure
+    // Pathfinding callback not fully implemented
+    // Would set function to call when pathfinding fails
     return 0;
 }
 
 // 0x0044 | get_weather
 static int LuaGetWeather(lua_State *L)
 {
-    // TODO: Implement - get current weather condition
-    lua_pushinteger(L, 0); // clear
+    // Simple weather system using static variable
+    // 0 = clear, 1 = rain, 2 = snow, etc.
+    static int g_currentWeather = 0;
+
+    lua_pushinteger(L, g_currentWeather);
     return 1;
 }
 
 // 0x0045 | set_weather
 static int LuaSetWeather(lua_State *L)
 {
-    // int weather_type = (int)lua_tointeger(L, 1);
+    int weather_type = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - change weather
+    // Simple weather system using static variable
+    static int g_currentWeather = 0;
+    g_currentWeather = weather_type;
+
     return 0;
 }
 
 // 0x0090 | is_water
 static int LuaIsWater(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int x = (int)lua_tointeger(L, 1);
+    int y = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - check if object/tile is water
-    lua_pushboolean(L, 0);
+    // Check if coordinates are valid
+    if (x < 0 || x >= 3072 || y < 0 || y >= 3072)
+    {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    // In Ultima 7, tiles 0-79 are typically water
+    // Check the terrain tile at this position
+    if (g_World.size() > (size_t)y && g_World[y].size() > (size_t)x)
+    {
+        unsigned short tile = g_World[y][x];
+        bool is_water = (tile >= 0 && tile <= 79);
+        lua_pushboolean(L, is_water);
+    }
+    else
+    {
+        lua_pushboolean(L, 0);
+    }
+
     return 1;
 }
 
@@ -2527,14 +3285,16 @@ static int LuaPlaySoundEffect(lua_State *L)
 {
     // int sound_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - play sound effect by ID
+    // Audio not yet implemented in U7Revisited
+    // In full implementation, would play audio file by ID
     return 0;
 }
 
 // 0x0069 | get_speech_track
 static int LuaGetSpeechTrack(lua_State *L)
 {
-    // TODO: Implement - get currently playing speech track
+    // Audio not yet implemented
+    // Would return ID of currently playing speech
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -2548,7 +3308,8 @@ static int LuaSpriteEffect(lua_State *L)
     // int dx = (int)lua_tointeger(L, 4);
     // int dy = (int)lua_tointeger(L, 5);
 
-    // TODO: Implement - play visual effect at position
+    // Visual effects not yet implemented
+    // Would spawn particle effect at world position
     return 0;
 }
 
@@ -2561,7 +3322,8 @@ static int LuaObjSpriteEffect(lua_State *L)
     // int dy = (int)lua_tointeger(L, 4);
     // int delay = (int)lua_tointeger(L, 5);
 
-    // TODO: Implement - play visual effect on object
+    // Visual effects not yet implemented
+    // Would spawn particle effect on object
     return 0;
 }
 
@@ -2572,23 +3334,31 @@ static int LuaFadePalette(lua_State *L)
     // int in_or_out = (int)lua_tointeger(L, 2);
     // int unknown = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - fade screen in/out
+    // Screen fading not yet implemented
+    // Would fade screen to/from black
     return 0;
 }
 
 // 0x0092 | set_camera
 static int LuaSetCameraTarget(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - center camera on object
+    // In full implementation, would center camera on object
+    // For now, just validate object exists
+    if (g_objectList.find(object_id) != g_objectList.end())
+    {
+        // Could set g_CameraTarget or similar
+    }
+
     return 0;
 }
 
 // 0x0091 | reset_conv_face
 static int LuaResetConvFace(lua_State *L)
 {
-    // TODO: Implement - reset conversation portrait
+    // Conversation UI not yet implemented
+    // Would reset portrait display to default
     return 0;
 }
 
@@ -2596,7 +3366,8 @@ static int LuaResetConvFace(lua_State *L)
 static int LuaIsNotBlocked(lua_State *L)
 {
     // Position table (x, y, z), shape, frame
-    // TODO: Implement - check if location is passable
+    // In full implementation, would check pathfinding grid
+    // For now, assume locations are passable
     lua_pushboolean(L, 1); // true = not blocked
     return 1;
 }
@@ -2608,7 +3379,8 @@ static int LuaIsReadied(lua_State *L)
     // int equipment_slot = (int)lua_tointeger(L, 2);
     // int npc_id = (int)lua_tointeger(L, 3);
 
-    // TODO: Implement - check if item is equipped
+    // Equipment system not yet fully implemented
+    // Would check if item is in NPC's equipment slot
     lua_pushboolean(L, 0);
     return 1;
 }
@@ -2616,23 +3388,30 @@ static int LuaIsReadied(lua_State *L)
 // 0x0010 | die_roll
 static int LuaDieRoll(lua_State *L)
 {
-    int min = (int)lua_tointeger(L, 1);
-    // int max = (int)lua_tointeger(L, 2);
+    int num_dice = (int)lua_tointeger(L, 1);
+    int num_sides = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - roll random number in range
-    // For now, just return min (same as existing LuaRandom)
-    lua_pushinteger(L, min);
+    // Roll num_dice dice with num_sides each, return sum
+    int total = 0;
+    for (int i = 0; i < num_dice; i++)
+    {
+        total += g_NonVitalRNG->RandomRange(1, num_sides);
+    }
+
+    lua_pushinteger(L, total);
     return 1;
 }
 
 // 0x004A | roll_to_win
 static int LuaRollToWin(lua_State *L)
 {
-    // int attack = (int)lua_tointeger(L, 1);
-    // int defense = (int)lua_tointeger(L, 2);
+    int odds = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - roll attack vs defense
-    lua_pushboolean(L, 0);
+    // Roll 1-100, success if <= odds
+    int roll = g_NonVitalRNG->RandomRange(1, 100);
+    bool success = (roll <= odds);
+
+    lua_pushboolean(L, success);
     return 1;
 }
 
@@ -2643,21 +3422,24 @@ static int LuaRollToWin(lua_State *L)
 // 0x007E | close_gumps
 static int LuaCloseGumps(lua_State *L)
 {
-    // TODO: Implement - close all open UI windows
+    // Gump UI system not yet implemented
+    // Would close all open UI windows
     return 0;
 }
 
 // 0x0080 | close_gump
 static int LuaCloseGump(lua_State *L)
 {
-    // TODO: Implement - close current/top UI window
+    // Gump UI system not yet implemented
+    // Would close current/top UI window
     return 0;
 }
 
 // 0x0081 | in_gump_mode
 static int LuaInGumpMode(lua_State *L)
 {
-    // TODO: Implement - check if UI window is open
+    // Gump UI system not yet implemented
+    // Would check if any UI window is open
     lua_pushboolean(L, 0);
     return 1;
 }
@@ -2665,16 +3447,23 @@ static int LuaInGumpMode(lua_State *L)
 // 0x0055 | book_mode
 static int LuaBookMode(lua_State *L)
 {
-    // TODO: Implement - enter book reading mode
+    // Book reading UI not yet implemented
+    // Would enter book reading mode
     return 0;
 }
 
 // 0x0033 | click_on_item
 static int LuaClickOnItem(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - simulate click on object
+    // Would simulate user clicking on object
+    // Could trigger object's usecode/script
+    if (g_objectList.find(object_id) != g_objectList.end())
+    {
+        // In full implementation, would trigger object interaction
+    }
+
     return 0;
 }
 
@@ -2686,7 +3475,9 @@ static int LuaInputNumericValue(lua_State *L)
     // int step = (int)lua_tointeger(L, 3);
     int default_value = (int)lua_tointeger(L, 4);
 
-    // TODO: Implement - show numeric input dialog
+    // Input dialog not yet implemented
+    // Would show slider or numeric input
+    // For now, return default value
     lua_pushinteger(L, default_value);
     return 1;
 }
@@ -2694,7 +3485,8 @@ static int LuaInputNumericValue(lua_State *L)
 // 0x0009 | clear_answers
 static int LuaClearAnswersExult(lua_State *L)
 {
-    // TODO: Implement - clear conversation answer options
+    // Conversation system exists separately
+    // This would clear answer options in conversation UI
     // Note: Different from existing LuaClearAnswers which is our custom implementation
     return 0;
 }
@@ -2704,14 +3496,16 @@ static int LuaEarthquake(lua_State *L)
 {
     // int duration = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - shake screen effect
+    // Screen shake effect not yet implemented
+    // Would shake camera for duration
     return 0;
 }
 
 // 0x005B | armageddon
 static int LuaArmageddon(lua_State *L)
 {
-    // TODO: Implement - end of world event
+    // End of world event not implemented
+    // Would kill all NPCs and trigger finale
     return 0;
 }
 
@@ -2720,7 +3514,8 @@ static int LuaWizardEye(lua_State *L)
 {
     // bool enable = lua_toboolean(L, 1);
 
-    // TODO: Implement - enable/disable free camera mode
+    // Free camera mode not yet implemented
+    // Would detach camera from player for exploration
     return 0;
 }
 
@@ -2728,7 +3523,9 @@ static int LuaWizardEye(lua_State *L)
 static int LuaTelekenesis(lua_State *L)
 {
     // callback function
-    // TODO: Implement - remote object manipulation spell
+
+    // Remote object manipulation not yet implemented
+    // Would allow moving objects from distance
     return 0;
 }
 
@@ -2737,14 +3534,16 @@ static int LuaCauseLight(lua_State *L)
 {
     // int light_level = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - create light effect
+    // Lighting effects not yet implemented
+    // Would create temporary light source
     return 0;
 }
 
 // 0x0048 | display_map
 static int LuaDisplayMap(lua_State *L)
 {
-    // TODO: Implement - show world map
+    // Map UI not yet implemented
+    // Would show world map overlay
     return 0;
 }
 
@@ -2753,14 +3552,14 @@ static int LuaDisplayArea(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - display area around object
+    // Debug UI not implemented - would show region around object
     return 0;
 }
 
 // 0x0094 | view_tile
 static int LuaViewTile(lua_State *L)
 {
-    // TODO: Implement - show tile information
+    // Debug UI not implemented - would show tile data
     return 0;
 }
 
@@ -2769,7 +3568,7 @@ static int LuaFlashMouse(lua_State *L)
 {
     // int flash_type = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - flash mouse cursor
+    // Mouse cursor effects not implemented
     return 0;
 }
 
@@ -2778,14 +3577,14 @@ static int LuaStopTime(lua_State *L)
 {
     // int duration = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - pause game time
+    // Time pause not implemented - would freeze game clock
     return 0;
 }
 
 // 0x0073 | restart_game
 static int LuaRestartGame(lua_State *L)
 {
-    // TODO: Implement - restart from beginning
+    // Game restart not implemented - would reload from start
     return 0;
 }
 
@@ -2794,16 +3593,17 @@ static int LuaRunEndgame(lua_State *L)
 {
     // int ending_number = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - trigger ending sequence
+    // Endgame sequence not implemented - would play finale
     return 0;
 }
 
 // 0x006B | get_item_frame_rot
 static int LuaGetItemFrameRot(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
+    int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get object rotation frame
+    // Frame rotation for rotatable objects (chairs, etc.)
+    // Return 0 for default orientation
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -2811,10 +3611,10 @@ static int LuaGetItemFrameRot(lua_State *L)
 // 0x006C | set_item_frame_rot
 static int LuaSetItemFrameRot(lua_State *L)
 {
-    // int object_id = (int)lua_tointeger(L, 1);
-    // int rotation_frame = (int)lua_tointeger(L, 2);
+    int object_id = (int)lua_tointeger(L, 1);
+    int rotation_frame = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set object rotation
+    // Frame rotation - would set orientation of object
     return 0;
 }
 
@@ -2823,7 +3623,7 @@ static int LuaGetBarge(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get ship/barge object is on
+    // Vehicle system not implemented - would return ship/barge ID
     lua_pushnil(L);
     return 1;
 }
@@ -2833,7 +3633,7 @@ static int LuaGetTimer(lua_State *L)
 {
     // int object_id = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - get object's timer value
+    // Object timers not implemented - would return countdown value
     lua_pushinteger(L, 0);
     return 1;
 }
@@ -2844,14 +3644,15 @@ static int LuaSetTimer(lua_State *L)
     // int object_id = (int)lua_tointeger(L, 1);
     // int delay = (int)lua_tointeger(L, 2);
 
-    // TODO: Implement - set object timer
+    // Object timers not implemented - would set countdown
     return 0;
 }
 
 // 0x0062 | is_pc_inside
 static int LuaIsPCInside(lua_State *L)
 {
-    // TODO: Implement - check if player is indoors
+    // Indoor/outdoor detection not implemented
+    // Would check if player in building/dungeon
     lua_pushboolean(L, 0);
     return 1;
 }
@@ -2861,17 +3662,16 @@ static int LuaSetOrrery(lua_State *L)
 {
     // int value = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - set orrery (planetarium) state
+    // Orrery (planetarium) state not implemented
     return 0;
 }
 
 // 0x005E | get_array_size
 static int LuaGetArraySize(lua_State *L)
 {
-    // table array = lua_totable(L, 1);
-
-    // TODO: Implement - get Lua table size (or use lua_objlen)
-    lua_pushinteger(L, 0);
+    // Get size of Lua table
+    size_t size = lua_objlen(L, 1);
+    lua_pushinteger(L, size);
     return 1;
 }
 
@@ -2880,7 +3680,7 @@ static int LuaMarkVirtueStone(lua_State *L)
 {
     // int stone_index = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - mark location at virtue stone
+    // Virtue stone system not implemented - would save location
     return 0;
 }
 
@@ -2889,14 +3689,14 @@ static int LuaRecallVirtueStone(lua_State *L)
 {
     // int stone_index = (int)lua_tointeger(L, 1);
 
-    // TODO: Implement - teleport to virtue stone
+    // Virtue stone system not implemented - would teleport to location
     return 0;
 }
 
 // 0x0083 | UNKNOWN (set_time_palette)
 static int LuaSetTimePalette(lua_State *L)
 {
-    // TODO: Implement - sets time-based palette
+    // Time-based palette not implemented - would adjust colors for time of day
     return 0;
 }
 
