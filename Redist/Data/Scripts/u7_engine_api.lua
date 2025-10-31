@@ -98,9 +98,16 @@ function is_conversation_running() end
 ---@return boolean answer True if player selected "Yes", false if "No"
 function ask_yes_no(question) end
 
+---Presents answer choices without a question prompt
+---All elements in the table are treated as answer choices
+---@param answers string[] Array of answer strings
+---@return string choice The selected answer text
+---@usage ask_answer({"lead", "blackrock", "gold"})
+function ask_answer(answers) end
+
 ---Presents multiple choice options to the player
----@param options string[] Array of choice strings
----@return integer choice The index of the selected choice
+---@param options string[] Array where first element is the question, remaining are choices
+---@return string choice The selected choice text
 function ask_multiple_choice(options) end
 
 ---Asks the player to input a number using a slider interface

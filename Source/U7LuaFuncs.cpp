@@ -387,6 +387,59 @@ static int LuaSelectPartyMemberByName(lua_State *L)
     return lua_yield(L, 0);
 }
 
+// Presents answer choices without a question prompt
+// All elements in the table are treated as answer choices
+static int LuaAskAnswer(lua_State *L)
+{
+    if (!g_ConversationState)
+    {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+    if (g_LuaDebug) DebugPrint("LUA: ask_answer called");
+
+    // Validate that we got a table as first argument
+    if (!lua_istable(L, 1))
+    {
+        return luaL_error(L, "ask_answer: expected table as first argument, got %s",
+                         lua_typename(L, lua_type(L, 1)));
+    }
+
+    ConversationState::ConversationStep step;
+    step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
+    step.dialog = ""; // No question, just answers
+
+    // Table: iterate over elements and add all as answers
+    int table_len = lua_rawlen(L, 1);
+    for (int i = 1; i <= table_len; ++i)
+    {
+        lua_rawgeti(L, 1, i); // Push table[i]
+        if (lua_isstring(L, -1))
+        {
+            const char *answer = lua_tostring(L, -1);
+            if (answer == nullptr)
+            {
+                lua_pop(L, 1);
+                return luaL_error(L, "ask_answer: lua_tostring returned nullptr at index %d", i);
+            }
+            step.answers.push_back(answer);
+            std::cout << "Added answer: " << answer << "\n";
+        }
+        else
+        {
+            std::cout << "Warning: Non-string element at index " << i << " ignored\n";
+        }
+        lua_pop(L, 1); // Pop table[i]
+    }
+
+    std::reverse(step.answers.begin(), step.answers.end());
+    step.npcId = 0;
+    step.frame = 0;
+    g_ConversationState->AddStep(step);
+
+    // Yield the coroutine
+    return lua_yield(L, 0);
+}
+
 static int LuaAskMultipleChoice(lua_State *L)
 {
     if (!g_ConversationState)
@@ -1870,6 +1923,7 @@ void RegisterAllLuaFunctions()
 
     // These are general utility functions.
     g_ScriptingSystem->RegisterScriptFunction("ask_yes_no", LuaAskYesNo);
+    g_ScriptingSystem->RegisterScriptFunction("ask_answer", LuaAskAnswer);
     g_ScriptingSystem->RegisterScriptFunction("ask_multiple_choice", LuaAskMultipleChoice);
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
