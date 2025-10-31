@@ -311,14 +311,19 @@ static int LuaGetAnswer(lua_State *L)
     const char *selected_answer = lua_tostring(L, -1);
     lua_pop(L, 1);
 
-    if (selected_answer)
+    if (selected_answer && strlen(selected_answer) > 0)
     {
         DebugPrint("LUA: get_answer called with " + string(selected_answer));
         lua_pushstring(L, selected_answer);
+
+        // Clear the global answer after reading it so next get_answer() will yield
+        lua_pushnil(L);
+        lua_setglobal(L, "answer");
     }
     else
     {
-        lua_pushstring(L, "nil");
+        DebugPrint("Warning: get_answer called with no answer set, yielding");
+        return lua_yield(L, 0);
     }
     return 1;
 }
@@ -334,7 +339,17 @@ static int LuaAskYesNo(lua_State *L)
     // Create the yes/no step
     ConversationState::ConversationStep step;
     step.type = ConversationState::ConversationStepType::STEP_MULTIPLE_CHOICE;
-    step.dialog =  luaL_checkstring(L, 1);;
+
+    // Question is optional - if not provided, use empty string
+    if (lua_gettop(L) >= 1 && lua_isstring(L, 1))
+    {
+        step.dialog = lua_tostring(L, 1);
+    }
+    else
+    {
+        step.dialog = "";
+    }
+
     step.answers.push_back("Yes");
     step.answers.push_back("No");
     step.npcId = 0;
@@ -1387,7 +1402,9 @@ static int LuaEndConversation(lua_State *L)
         return luaL_error(L, "ConversationState not initialized");
     }
     if (g_LuaDebug) DebugPrint("LUA: end_conversation called");
-    return lua_yield(L, 0);
+    g_ConversationState->m_conversationActive = false;
+    g_StateMachine->PopState();
+    return 0;
 }
 
 
@@ -1840,7 +1857,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("add_dialogue", LuaAddDialogue);
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
     g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
-    g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaStartConversation);
+    g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaEndConversation);
 
     g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);

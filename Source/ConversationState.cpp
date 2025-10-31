@@ -126,7 +126,12 @@ void ConversationState::Update()
 		case ConversationStepType::STEP_GET_PURCHASE_OPTION:
 			if (!m_waitingForAnswer)
 			{
-				m_currentDialogue = m_steps[0].dialog;
+				// Only replace dialogue if the new dialog is not empty
+				// This allows ask_yes_no() to preserve previous dialogue
+				if (!m_steps[0].dialog.empty())
+				{
+					m_currentDialogue = m_steps[0].dialog;
+				}
 				SaveAnswers();
 				ClearAnswers();
 				AddAnswers(m_steps[0].answers);
@@ -248,6 +253,15 @@ void ConversationState::Update()
 				Log("Lua Error: " + result, "debuglog.txt");
 			}
 			m_scriptFinished = true;
+
+			// Auto-close conversation if script forgot to call end_conversation()
+			// Check if coroutine is actually finished (not just yielded again)
+			if (m_conversationActive && !g_ScriptingSystem->IsCoroutineActive(m_luaFunction))
+			{
+				DebugPrint("Script finished without calling end_conversation(), auto-closing conversation");
+				m_conversationActive = false;
+				g_StateMachine->PopState();
+			}
 		}
 		catch (const std::exception& e)
 		{
@@ -384,8 +398,14 @@ void ConversationState::GetAnswers(const std::string& func_name)
 
 void ConversationState::RemoveAnswer(std::string answer)
 {
-	auto it = std::remove(m_answers.begin(), m_answers.end(), answer);
-	m_answers.erase(it, m_answers.end());
+	auto it = std::find(m_answers.begin(), m_answers.end(), answer);
+	if (it == m_answers.end())
+	{
+		DebugPrint("Warning: Attempted to remove non-existent answer: " + answer);
+		return;
+	}
+	auto remove_it = std::remove(m_answers.begin(), m_answers.end(), answer);
+	m_answers.erase(remove_it, m_answers.end());
 }
 
 void ConversationState::SetAnswer(const std::string& func_name, const std::string& answer)

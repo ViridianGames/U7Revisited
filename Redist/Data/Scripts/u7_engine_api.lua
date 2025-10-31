@@ -47,7 +47,7 @@ function add_answer(answer) end
 ---Starts a conversation (pushes conversation state)
 function start_conversation() end
 
----Ends a conversation (same as start_conversation - they're aliased)
+---Ends a conversation (pops conversation state, closes UI)
 function end_conversation() end
 
 ---Removes one or more answer options from the conversation system
@@ -94,7 +94,7 @@ function is_conversation_running() end
 -- ============================================================================
 
 ---Asks the player a yes/no question
----@param question string The question to ask
+---@param question? string Optional question to ask (defaults to empty string)
 ---@return boolean answer True if player selected "Yes", false if "No"
 function ask_yes_no(question) end
 

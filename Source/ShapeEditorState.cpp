@@ -1254,34 +1254,46 @@ void ShapeEditorState::Update()
 
 	if(m_currentGui->GetActiveElementID() == GE_SETLUASCRIPTTOSHAPEIDBUTTON)
 	{
+		// Generate script name suffix based on new naming scheme
+		std::string suffix;
 		stringstream ss;
-		ss << std::uppercase << std::hex << m_currentShape;
-		std::string funcName = "func_0" + ss.str();
 
+		if (m_currentShape < 150)
+		{
+			// func_XXXX (decimal, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << m_currentShape;
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape >= 150 && m_currentShape <= 1024)
+		{
+			// object_*_XXXX (decimal, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << m_currentShape;
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+		{
+			// npc_*_XXXX (decimal - 1024, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape > 1280)
+		{
+			// utility_*_XXXX (decimal - 1280, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+			suffix = "_" + ss.str();
+		}
+
+		// Search for script ending with the calculated suffix
 		int newScriptIndex = 0;
 		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 		{
-			if (g_ScriptingSystem->m_scriptFiles[i].first == funcName)
+			const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+			if (scriptName.length() >= suffix.length() &&
+				scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
 			{
 				newScriptIndex = i;
+				AddConsoleString("Using script: " + scriptName);
 				break;
-			}
-		}
-
-		// If exact match not found, search for any script ending with _xxxx
-		if (newScriptIndex == 0)
-		{
-			std::string suffix = "_" + ss.str();
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-				if (scriptName.length() >= suffix.length() &&
-					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
-				{
-					newScriptIndex = i;
-					AddConsoleString("Using script: " + scriptName);
-					break;
-				}
 			}
 		}
 
