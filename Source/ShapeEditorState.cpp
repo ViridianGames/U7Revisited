@@ -780,7 +780,7 @@ void ShapeEditorState::Update()
 		{
 			shapeData.m_Scaling.x -= .05f;
 		}
-	
+
 		if(shapeData.m_Scaling.x < -9.9f) shapeData.m_Scaling.x = -9.9f;
 
 		if(abs(shapeData.m_Scaling.x) < 0.01f)
@@ -1438,6 +1438,31 @@ void ShapeEditorState::Update()
 	}
 	skip_button:
 
+	if (m_currentGui->GetActiveElementID() == GE_CLEARSCRIPTBUTTON)
+	{
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = "default";
+		AddConsoleString("Cleared script for current frame");
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_CLEARALLSCRIPTSBUTTON)
+	{
+		int clearedCount = 0;
+
+		for (int frame = 0; frame < g_shapeTable[m_currentShape].size(); ++frame)
+		{
+			// Skip invalid frames
+			if (!g_shapeTable[m_currentShape][frame].IsValid())
+			{
+				continue;
+			}
+
+			g_shapeTable[m_currentShape][frame].m_luaScript = "default";
+			clearedCount++;
+		}
+
+		AddConsoleString("Cleared scripts for " + std::to_string(clearedCount) + " frames");
+	}
+
 	if (somethingChanged)
 	{
 		shapeData.SafeAndSane();
@@ -1452,7 +1477,7 @@ void ShapeEditorState::Update()
 
 		g_camera.position = Vector3Add(g_camera.target, camPos);
 		g_camera.fovy = g_cameraDistance;
-	}	
+	}
 
 	//  Update GUI Textareas
 	std::stringstream ss;
@@ -1471,7 +1496,7 @@ void ShapeEditorState::Update()
 		}
 	}
 	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame) + "/" + to_string(maxFrame);
-	
+
 	if (m_currentGui == m_cuboidGui.get())
 	{
 
@@ -1580,7 +1605,7 @@ void ShapeEditorState::Draw()
 	DrawSphere(Vector3Add(shapeData->m_CenterPoint, finalPos), 0.15f, RED);
 
 	EndMode3D();
-	
+
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
 
@@ -1591,7 +1616,7 @@ void ShapeEditorState::Draw()
 	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
 	{
 		Texture* d = shapeData->GetTexture();
-		
+
 
 		//  Draw original texture with label and border
 		DrawTextEx(*g_guiFont.get(), "Original Texture", { 0, 0 }, g_guiFontSize, 1, WHITE);
@@ -1735,7 +1760,7 @@ void ShapeEditorState::SetupFlatGui()
 	//  Flat specific setup
 
 	int yoffset = 13;
-	
+
 	m_flatGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Flat";
 }
 
@@ -2080,8 +2105,10 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	y += yoffset;
 
 	gui->AddTextButton(GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
+	gui->AddTextButton(GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
+	gui->AddTextButton(GE_CLEARALLSCRIPTSBUTTON, 66, y + 11, "Clear All", g_guiFont.get());
 
-	y += yoffset;
+	y += yoffset * 2;
 
 	// Display the item name (how it appears in barks) - updated dynamically in Update()
 	gui->AddTextArea(GE_ITEMNAMETEXTLABEL, g_guiFont.get(), "Bark:", 2, y);
