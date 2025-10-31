@@ -1097,7 +1097,7 @@ void ShapeEditorState::Update()
 			for(int i = 0; i < 10; ++i)
 			{
 				m_luaScriptIndex++;
-				if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
+				if (m_luaScriptIndex >= g_ScriptingSystem->m_scriptFiles.size())
 				{
 					m_luaScriptIndex = 0;
 				}
@@ -1106,7 +1106,7 @@ void ShapeEditorState::Update()
 		else
 		{
 			m_luaScriptIndex++;
-			if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
+			if (m_luaScriptIndex >= g_ScriptingSystem->m_scriptFiles.size())
 			{
 				m_luaScriptIndex = 0;
 			}
@@ -1124,7 +1124,7 @@ void ShapeEditorState::Update()
 				m_luaScriptIndex--;
 				if (m_luaScriptIndex < 0)
 				{
-					m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
+					m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size() - 1;
 				}
 			}
 		}
@@ -1133,7 +1133,7 @@ void ShapeEditorState::Update()
 			m_luaScriptIndex--;
 			if (m_luaScriptIndex < 0)
 			{
-				m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
+				m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size() - 1;
 			}
 		}
 
