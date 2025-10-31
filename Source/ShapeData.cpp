@@ -46,7 +46,8 @@ void ShapeData::Init(int shape, int frame, bool shouldreset)
 	m_frame = frame;
 
 	//  A 1-pixel texture denotes a default texture that was never loaded
-	if (m_texture == nullptr || (m_texture.get()->width == 1 && m_texture.get()->height == 1))
+	if (m_texture == nullptr || (m_texture.get()->width == 1 && m_texture.get()->height == 1) ||
+		m_texture->m_Image.width <= 0 || m_texture->m_Image.height <= 0)
 	{
 		m_isValid = false;
 	}
@@ -360,6 +361,10 @@ void ShapeData::SetupDrawTypes()
 void ShapeData::UpdateTextures()
 {
 	if (!g_shapeTable[m_shape][m_frame].IsValid())
+		return;
+
+	// If cuboid texture hasn't been created yet, skip update
+	if (m_cuboidTexture == nullptr)
 		return;
 
 	//  Fixup the texture for this object.
