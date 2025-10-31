@@ -1899,6 +1899,12 @@ static int LuaSetNPCVisibility(lua_State *L)
     return 0;
 }
 
+static int LuaAbort(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: abort called - terminating script");
+    return luaL_error(L, "SCRIPT_ABORTED");
+}
+
 void RegisterAllLuaFunctions()
 {
     cout << "Registering Lua functions\n";
@@ -1911,6 +1917,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("add_answer", LuaAddAnswers);
     g_ScriptingSystem->RegisterScriptFunction("start_conversation", LuaStartConversation);
     g_ScriptingSystem->RegisterScriptFunction("end_conversation", LuaEndConversation);
+    g_ScriptingSystem->RegisterScriptFunction("abort", LuaAbort);
 
     g_ScriptingSystem->RegisterScriptFunction("remove_answer", LuaRemoveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);

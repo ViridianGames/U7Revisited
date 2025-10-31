@@ -248,7 +248,7 @@ void ConversationState::Update()
 		{
 			std::vector<ScriptingSystem::LuaArg> args = {m_npcId};
 			std::string result = g_ScriptingSystem->ResumeCoroutine(m_luaFunction, args);
-			if (!result.empty() && result != "")
+			if (!result.empty() && result != "" && result.find("SCRIPT_ABORTED") == std::string::npos)
 			{
 				Log("Lua Error: " + result, "debuglog.txt");
 			}

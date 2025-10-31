@@ -50,6 +50,10 @@ function start_conversation() end
 ---Ends a conversation (pops conversation state, closes UI)
 function end_conversation() end
 
+---Immediately terminates the current script execution
+---Useful for early exit conditions (e.g., if player doesn't have required item)
+function abort() end
+
 ---Removes one or more answer options from the conversation system
 ---@param answer string|table Either a single answer string, or a table of answer strings to remove
 ---@usage remove_answer("Single answer") or remove_answer({"Answer 1", "Answer 2"})
