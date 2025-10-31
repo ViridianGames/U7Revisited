@@ -1297,6 +1297,26 @@ void ShapeEditorState::Update()
 			}
 		}
 
+		// If no decimal script found, try legacy hex naming (func_XXXX.lua)
+		if (newScriptIndex == 0)
+		{
+			stringstream hexss;
+			hexss << std::uppercase << std::hex << std::setfill('0') << std::setw(4) << m_currentShape;
+			std::string hexSuffix = "_" + hexss.str();
+
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= hexSuffix.length() &&
+					scriptName.compare(scriptName.length() - hexSuffix.length(), hexSuffix.length(), hexSuffix) == 0)
+				{
+					newScriptIndex = i;
+					AddConsoleString("Using legacy hex script: " + scriptName);
+					break;
+				}
+			}
+		}
+
 		if(newScriptIndex != 0)
 		{
 			m_luaScriptIndex = newScriptIndex;
@@ -1307,6 +1327,116 @@ void ShapeEditorState::Update()
 			AddConsoleString("No script found for shape ID: " + std::to_string(m_currentShape));
 		}
 	}
+
+	if(m_currentGui->GetActiveElementID() == GE_ADDALLFRAMESSCRIPTBUTTON)
+	{
+		// Loop through all frames and assign scripts to those with "script default"
+		int assignedCount = 0;
+		int alreadyCorrectCount = 0;
+		int skippedCount = 0;
+
+		// First, determine what script we would assign
+		std::string targetScript;
+		{
+			std::string suffix;
+			stringstream ss;
+
+			if (m_currentShape < 150)
+			{
+				ss << std::setfill('0') << std::setw(4) << m_currentShape;
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape >= 150 && m_currentShape <= 1024)
+			{
+				ss << std::setfill('0') << std::setw(4) << m_currentShape;
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+			{
+				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape > 1280)
+			{
+				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+				suffix = "_" + ss.str();
+			}
+
+			// Search for script ending with the calculated suffix
+			int foundScriptIndex = 0;
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= suffix.length() &&
+					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
+					foundScriptIndex = i;
+					targetScript = scriptName;
+					break;
+				}
+			}
+
+			// If no decimal script found, try legacy hex naming (func_XXXX.lua)
+			if (foundScriptIndex == 0)
+			{
+				stringstream hexss;
+				hexss << std::uppercase << std::hex << std::setfill('0') << std::setw(4) << m_currentShape;
+				std::string hexSuffix = "_" + hexss.str();
+
+				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+				{
+					const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+					if (scriptName.length() >= hexSuffix.length() &&
+						scriptName.compare(scriptName.length() - hexSuffix.length(), hexSuffix.length(), hexSuffix) == 0)
+					{
+						foundScriptIndex = i;
+						targetScript = scriptName;
+						AddConsoleString("Using legacy hex script: " + scriptName);
+						break;
+					}
+				}
+			}
+
+			if (foundScriptIndex == 0)
+			{
+				AddConsoleString("No script found for shape ID: " + std::to_string(m_currentShape));
+				goto skip_button;
+			}
+		}
+
+		// Now loop through frames and assign
+		for (int frame = 0; frame < g_shapeTable[m_currentShape].size(); ++frame)
+		{
+			// Skip invalid frames
+			if (!g_shapeTable[m_currentShape][frame].IsValid())
+			{
+				continue;
+			}
+
+			std::string currentScript = g_shapeTable[m_currentShape][frame].m_luaScript;
+
+			// If frame has "default", assign the script
+			if (currentScript == "default")
+			{
+				g_shapeTable[m_currentShape][frame].m_luaScript = targetScript;
+				assignedCount++;
+			}
+			// If frame already has the same script, skip silently
+			else if (currentScript == targetScript)
+			{
+				alreadyCorrectCount++;
+			}
+			// If frame has a different script, warn and skip
+			else
+			{
+				DebugPrint("Frame " + std::to_string(frame) + " already has script '" + currentScript + "', not changing to '" + targetScript + "'");
+				skippedCount++;
+			}
+		}
+
+		AddConsoleString("Assigned scripts to " + std::to_string(assignedCount) + " frames, " + std::to_string(alreadyCorrectCount) + " already correct, " + std::to_string(skippedCount) + " skipped (different script)");
+	}
+	skip_button:
 
 	if (somethingChanged)
 	{
@@ -1946,6 +2076,10 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	y += yoffset;
 
 	gui->AddTextButton(GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
+
+	y += yoffset;
+
+	gui->AddTextButton(GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
 
 	y += yoffset;
 
