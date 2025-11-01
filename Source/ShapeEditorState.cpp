@@ -19,6 +19,19 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+
+// Helper function to add a stretch button with auto-calculated width
+static void AddAutoStretchButton(Gui* gui, int ID, int x, int y, const string& label, Font* font)
+{
+	int width = MeasureTextEx(*font, label.c_str(), font->baseSize, 1).x * 1.15f;
+	gui->AddStretchButton(ID, x, y, width, label,
+		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM,
+		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  ShapeEditorState
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -279,29 +292,39 @@ void ShapeEditorState::Update()
 
 	if (IsKeyPressed(KEY_W) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
 	{
+		// Find next valid frame, wrapping around
+		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
 		int newFrame = m_currentFrame + 1;
-		if (newFrame > 31)
+		for (int i = 0; i < static_cast<int>(g_shapeTable[m_currentShape].size()); ++i)
 		{
-			newFrame = 0;
-		}
+			if (newFrame > maxFrameIndex)
+				newFrame = 0;
 
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			m_currentFrame = newFrame;
+			if (g_shapeTable[m_currentShape][newFrame].IsValid())
+			{
+				m_currentFrame = newFrame;
+				break;
+			}
+			newFrame++;
 		}
 	}
 
 	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
 	{
+		// Find previous valid frame, wrapping around
+		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
 		int newFrame = m_currentFrame - 1;
-		if (newFrame < 0)
+		for (int i = 0; i < static_cast<int>(g_shapeTable[m_currentShape].size()); ++i)
 		{
-			newFrame = 31;
-		}
+			if (newFrame < 0)
+				newFrame = maxFrameIndex;
 
-		if (g_shapeTable[m_currentShape][newFrame].IsValid())
-		{
-			m_currentFrame = newFrame;
+			if (g_shapeTable[m_currentShape][newFrame].IsValid())
+			{
+				m_currentFrame = newFrame;
+				break;
+			}
+			newFrame--;
 		}
 	}
 
@@ -315,6 +338,43 @@ void ShapeEditorState::Update()
 	{
 		g_cameraRotation -= GetFrameTime() * 5;
 		g_CameraMoved = true;
+	}
+
+	// Handle mouse interaction with view angle slider at bottom of screen (sticky drag)
+	int guiPanelWidth = 120;
+	int sliderWidth = 300;
+	int sliderHeight = 20;
+	int sliderX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - sliderWidth) / 2;  // Center in 3D view area
+	int sliderY = g_Engine->m_ScreenHeight - 40;
+
+	// Detect initial press on slider (bounds check only on first press)
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		int mouseX = GetMouseX();
+		int mouseY = GetMouseY();
+		if (mouseX >= sliderX && mouseX <= sliderX + sliderWidth &&
+		    mouseY >= sliderY && mouseY <= sliderY + sliderHeight)
+		{
+			m_isDraggingSlider = true;
+		}
+	}
+
+	// While dragging, track mouse X anywhere (sticky - no bounds check)
+	if (m_isDraggingSlider && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		int mouseX = GetMouseX();
+		int newAngle = ((mouseX - sliderX) * 360) / sliderWidth;
+		// Clamp angle to valid range
+		if (newAngle < 0) newAngle = 0;
+		if (newAngle > 359) newAngle = 359;
+		g_cameraRotation = newAngle * DEG2RAD;
+		g_CameraMoved = true;
+	}
+
+	// Release ends drag
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		m_isDraggingSlider = false;
 	}
 
 	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
@@ -331,6 +391,9 @@ void ShapeEditorState::Update()
 	//  Handle GUI Input
 	if (m_currentGui->GetActiveElementID() == GE_SAVEBUTTON)
 	{
+		AddConsoleString("Saving shapetable.dat...", WHITE);
+		Draw();  // Force a frame render to show the loading message
+
 		ofstream file("Data/shapetable.dat", ios::trunc);
 		if (file.is_open())
 		{
@@ -353,6 +416,8 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_LOADBUTTON)
 	{
+		AddConsoleString("Loading shapetable.dat...", WHITE);
+		Draw();  // Force a frame render to show the loading message
 		ifstream file("Data/shapetable.dat");
 		if (file.is_open())
 		{
@@ -365,6 +430,11 @@ void ShapeEditorState::Update()
 				}
 			}
 			file.close();
+			AddConsoleString("Done!", GREEN);
+		}
+		else
+		{
+			AddConsoleString("ERROR: Failed to load shapetable.dat!", RED);
 		}
 	}
 
@@ -424,6 +494,7 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
 	{
+		bool foundInstance = false;
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
 			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
@@ -431,8 +502,14 @@ void ShapeEditorState::Update()
 				g_camera.target = (*node).second->m_Pos;
 				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
 				g_CameraMoved = true;
+				g_StateMachine->MakeStateTransition(STATE_MAINSTATE);  // Close shape editor after jumping
+				foundInstance = true;
 				break;
 			}
+		}
+		if (!foundInstance)
+		{
+			AddConsoleString("No instance of shape " + to_string(m_currentShape) + " frame " + to_string(m_currentFrame) + " found in world", RED);
 		}
 	}
 
@@ -770,7 +847,7 @@ void ShapeEditorState::Update()
 		{
 			shapeData.m_Scaling.x -= .05f;
 		}
-	
+
 		if(shapeData.m_Scaling.x < -9.9f) shapeData.m_Scaling.x = -9.9f;
 
 		if(abs(shapeData.m_Scaling.x) < 0.01f)
@@ -1087,7 +1164,7 @@ void ShapeEditorState::Update()
 			for(int i = 0; i < 10; ++i)
 			{
 				m_luaScriptIndex++;
-				if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
+				if (m_luaScriptIndex >= g_ScriptingSystem->m_scriptFiles.size())
 				{
 					m_luaScriptIndex = 0;
 				}
@@ -1096,7 +1173,7 @@ void ShapeEditorState::Update()
 		else
 		{
 			m_luaScriptIndex++;
-			if (m_luaScriptIndex > g_ScriptingSystem->m_scriptFiles.size())
+			if (m_luaScriptIndex >= g_ScriptingSystem->m_scriptFiles.size())
 			{
 				m_luaScriptIndex = 0;
 			}
@@ -1114,7 +1191,7 @@ void ShapeEditorState::Update()
 				m_luaScriptIndex--;
 				if (m_luaScriptIndex < 0)
 				{
-					m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
+					m_luaScriptIndex = static_cast<int>(g_ScriptingSystem->m_scriptFiles.size() - 1);
 				}
 			}
 		}
@@ -1123,7 +1200,7 @@ void ShapeEditorState::Update()
 			m_luaScriptIndex--;
 			if (m_luaScriptIndex < 0)
 			{
-				m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size();
+				m_luaScriptIndex = static_cast<int>(g_ScriptingSystem->m_scriptFiles.size()) - 1;
 			}
 		}
 
@@ -1244,16 +1321,45 @@ void ShapeEditorState::Update()
 
 	if(m_currentGui->GetActiveElementID() == GE_SETLUASCRIPTTOSHAPEIDBUTTON)
 	{
+		// Generate script name suffix based on new naming scheme
+		std::string suffix;
 		stringstream ss;
-		ss << std::uppercase << std::hex << m_currentShape;
-		std::string funcName = "func_0" + ss.str();
 
+		if (m_currentShape < 150)
+		{
+			// func_XXXX (decimal, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << m_currentShape;
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape >= 150 && m_currentShape <= 1024)
+		{
+			// object_*_XXXX (decimal, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << m_currentShape;
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+		{
+			// npc_*_XXXX (decimal - 1024, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
+			suffix = "_" + ss.str();
+		}
+		else if (m_currentShape > 1280)
+		{
+			// utility_*_XXXX (decimal - 1280, 4 digits)
+			ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+			suffix = "_" + ss.str();
+		}
+
+		// Search for script ending with the calculated suffix
 		int newScriptIndex = 0;
 		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 		{
-			if (g_ScriptingSystem->m_scriptFiles[i].first == funcName)
+			const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+			if (scriptName.length() >= suffix.length() &&
+				scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
 			{
 				newScriptIndex = i;
+				AddConsoleString("Using script: " + scriptName);
 				break;
 			}
 		}
@@ -1267,6 +1373,123 @@ void ShapeEditorState::Update()
 		{
 			AddConsoleString("No script found for shape ID: " + std::to_string(m_currentShape));
 		}
+	}
+
+	if(m_currentGui->GetActiveElementID() == GE_ADDALLFRAMESSCRIPTBUTTON)
+	{
+		// Loop through all frames and assign scripts to those with "script default"
+		int assignedCount = 0;
+		int alreadyCorrectCount = 0;
+		int skippedCount = 0;
+
+		// First, determine what script we would assign
+		std::string targetScript;
+		int foundScriptIndex = 0;
+		{
+			std::string suffix;
+			stringstream ss;
+
+			if (m_currentShape < 150)
+			{
+				ss << std::setfill('0') << std::setw(4) << m_currentShape;
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape >= 150 && m_currentShape <= 1024)
+			{
+				ss << std::setfill('0') << std::setw(4) << m_currentShape;
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape >= 1025 && m_currentShape <= 1280)
+			{
+				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1024);
+				suffix = "_" + ss.str();
+			}
+			else if (m_currentShape > 1280)
+			{
+				ss << std::setfill('0') << std::setw(4) << (m_currentShape - 1280);
+				suffix = "_" + ss.str();
+			}
+
+			// Search for script ending with the calculated suffix
+			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+			{
+				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
+				if (scriptName.length() >= suffix.length() &&
+					scriptName.compare(scriptName.length() - suffix.length(), suffix.length(), suffix) == 0)
+				{
+					foundScriptIndex = i;
+					targetScript = scriptName;
+					break;
+				}
+			}
+
+			if (foundScriptIndex == 0)
+			{
+				AddConsoleString("No script found for shape ID: " + std::to_string(m_currentShape));
+				goto skip_button;
+			}
+		}
+
+		// Now loop through frames and assign
+		for (int frame = 0; frame < g_shapeTable[m_currentShape].size(); ++frame)
+		{
+			// Skip invalid frames
+			if (!g_shapeTable[m_currentShape][frame].IsValid())
+			{
+				continue;
+			}
+
+			std::string currentScript = g_shapeTable[m_currentShape][frame].m_luaScript;
+
+			// If frame has "default", assign the script
+			if (currentScript == "default")
+			{
+				g_shapeTable[m_currentShape][frame].m_luaScript = targetScript;
+				assignedCount++;
+			}
+			// If frame already has the same script, skip silently
+			else if (currentScript == targetScript)
+			{
+				alreadyCorrectCount++;
+			}
+			// If frame has a different script, warn and skip
+			else
+			{
+				DebugPrint("Frame " + std::to_string(frame) + " already has script '" + currentScript + "', not changing to '" + targetScript + "'");
+				skippedCount++;
+			}
+		}
+
+		// Update the script index so "Open Script" button opens the correct script
+		m_luaScriptIndex = foundScriptIndex;
+
+		AddConsoleString("Assigned scripts to " + std::to_string(assignedCount) + " frames, " + std::to_string(alreadyCorrectCount) + " already correct, " + std::to_string(skippedCount) + " skipped (different script)");
+	}
+	skip_button:
+
+	if (m_currentGui->GetActiveElementID() == GE_CLEARSCRIPTBUTTON)
+	{
+		g_shapeTable[m_currentShape][m_currentFrame].m_luaScript = "default";
+		AddConsoleString("Cleared script for current frame");
+	}
+
+	if (m_currentGui->GetActiveElementID() == GE_CLEARALLSCRIPTSBUTTON)
+	{
+		int clearedCount = 0;
+
+		for (int frame = 0; frame < g_shapeTable[m_currentShape].size(); ++frame)
+		{
+			// Skip invalid frames
+			if (!g_shapeTable[m_currentShape][frame].IsValid())
+			{
+				continue;
+			}
+
+			g_shapeTable[m_currentShape][frame].m_luaScript = "default";
+			clearedCount++;
+		}
+
+		AddConsoleString("Cleared scripts for " + std::to_string(clearedCount) + " frames");
 	}
 
 	if (somethingChanged)
@@ -1283,14 +1506,26 @@ void ShapeEditorState::Update()
 
 		g_camera.position = Vector3Add(g_camera.target, camPos);
 		g_camera.fovy = g_cameraDistance;
-	}	
+	}
 
 	//  Update GUI Textareas
 	std::stringstream ss;
     ss << std::uppercase << std::hex << m_currentShape;
 	m_currentGui->GetElement(GE_CURRENTSHAPEIDTEXTAREA)->m_String = "S:" + to_string(m_currentShape) + " (" + ss.str() + ")";
-	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame);
-	
+
+	// Find max valid frame for this shape
+	int maxFrame = 0;
+	const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
+	for (int i = maxFrameIndex; i >= 0; --i)
+	{
+		if (g_shapeTable[m_currentShape][i].IsValid())
+		{
+			maxFrame = i;
+			break;
+		}
+	}
+	m_currentGui->GetElement(GE_CURRENTFRAMEIDTEXTAREA)->m_String = "F:" + to_string(m_currentFrame) + "/" + to_string(maxFrame);
+
 	if (m_currentGui == m_cuboidGui.get())
 	{
 
@@ -1371,6 +1606,104 @@ void ShapeEditorState::Update()
 	}
 
 	m_currentGui->GetElement(GE_LUASCRIPTTEXTAREA)->m_String = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+
+}
+
+void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector3& dims, const Vector3& scaling, float rotationAngle)
+{
+	Vector3 scale = Vector3{ dims.x * scaling.x, dims.y * scaling.y, dims.z * scaling.z };
+
+	// Match the cuboid positioning from ShapeData::Draw() exactly
+	// thisPos is where the model is placed (model origin in world space)
+	Vector3 thisPos = Vector3Add(position, Vector3{ -dims.x + 1, 0, -dims.z + 1 });
+
+	// Gap size for offsetting faces outward so they don't overlap
+	float gap = 0.05f;
+
+	// Helper function to rotate a point around Y axis (angle in radians)
+	auto rotateY = [](Vector3 point, float angleRadians) -> Vector3 {
+		float s = sinf(angleRadians);
+		float c = cosf(angleRadians);
+		float newX = point.x * c - point.z * s;
+		float newZ = point.x * s + point.z * c;
+		return Vector3{ newX, point.y, newZ };
+	};
+
+	// Define the 8 corners in model space (before scaling)
+	// The cuboid model is a 1x1x1 cube with origin at bottom-left-back corner (0,0,0 to 1,1,1)
+	Vector3 localCorners[8] = {
+		{0.0f, 0.0f, 0.0f},  // 0: bottom-left-back (origin)
+		{1.0f, 0.0f, 0.0f},  // 1: bottom-right-back
+		{1.0f, 0.0f, 1.0f},  // 2: bottom-right-front
+		{0.0f, 0.0f, 1.0f},  // 3: bottom-left-front
+		{0.0f, 1.0f, 0.0f},  // 4: top-left-back
+		{1.0f, 1.0f, 0.0f},  // 5: top-right-back
+		{1.0f, 1.0f, 1.0f},  // 6: top-right-front
+		{0.0f, 1.0f, 1.0f}   // 7: top-left-front
+	};
+
+	// Transform corners: scale -> rotate -> translate (matching DrawModelEx)
+	// DrawModelEx does: matTransform = scale * rotation * translation
+	// This means rotation happens around origin (0,0,0) in model space, AFTER scaling
+	Vector3 corners[8];
+	for (int i = 0; i < 8; i++)
+	{
+		// Scale
+		Vector3 scaled = Vector3{ localCorners[i].x * scale.x, localCorners[i].y * scale.y, localCorners[i].z * scale.z };
+		// Rotate around origin (0,0,0) in model space
+		// DrawModelEx expects degrees but receives rotationAngle (radians), so it does: angle*DEG2RAD
+		// To match this, we need to apply the same conversion: rotationAngle * DEG2RAD
+		Vector3 rotated = rotateY(scaled, rotationAngle * DEG2RAD);
+		// Translate to world position
+		corners[i] = Vector3Add(rotated, thisPos);
+	}
+
+	// Helper to offset a corner along a normal direction
+	auto offsetCorner = [](Vector3 corner, Vector3 normal, float offset) -> Vector3 {
+		return Vector3Add(corner, Vector3Scale(normal, offset));
+	};
+
+	// Draw top face (RED) - offset upward (+Y)
+	Vector3 topNormal = {0, 1, 0};
+	DrawLine3D(offsetCorner(corners[4], topNormal, gap), offsetCorner(corners[5], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[5], topNormal, gap), offsetCorner(corners[6], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[6], topNormal, gap), offsetCorner(corners[7], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[7], topNormal, gap), offsetCorner(corners[4], topNormal, gap), RED);
+
+	// Draw front face (GREEN) - offset forward (+Z)
+	Vector3 frontNormal = {0, 0, 1};
+	DrawLine3D(offsetCorner(corners[3], frontNormal, gap), offsetCorner(corners[2], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[2], frontNormal, gap), offsetCorner(corners[6], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[6], frontNormal, gap), offsetCorner(corners[7], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[7], frontNormal, gap), offsetCorner(corners[3], frontNormal, gap), GREEN);
+
+	// Draw right face (BLUE) - offset right (+X)
+	Vector3 rightNormal = {1, 0, 0};
+	DrawLine3D(offsetCorner(corners[1], rightNormal, gap), offsetCorner(corners[2], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[2], rightNormal, gap), offsetCorner(corners[6], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[6], rightNormal, gap), offsetCorner(corners[5], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[5], rightNormal, gap), offsetCorner(corners[1], rightNormal, gap), BLUE);
+
+	// Draw bottom face (RED) - offset downward (-Y)
+	Vector3 bottomNormal = {0, -1, 0};
+	DrawLine3D(offsetCorner(corners[0], bottomNormal, gap), offsetCorner(corners[1], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[1], bottomNormal, gap), offsetCorner(corners[2], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[2], bottomNormal, gap), offsetCorner(corners[3], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[3], bottomNormal, gap), offsetCorner(corners[0], bottomNormal, gap), RED);
+
+	// Draw back face (GREEN) - offset backward (-Z)
+	Vector3 backNormal = {0, 0, -1};
+	DrawLine3D(offsetCorner(corners[0], backNormal, gap), offsetCorner(corners[1], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[1], backNormal, gap), offsetCorner(corners[5], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[5], backNormal, gap), offsetCorner(corners[4], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[4], backNormal, gap), offsetCorner(corners[0], backNormal, gap), GREEN);
+
+	// Draw left face (BLUE) - offset left (-X)
+	Vector3 leftNormal = {-1, 0, 0};
+	DrawLine3D(offsetCorner(corners[0], leftNormal, gap), offsetCorner(corners[3], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[3], leftNormal, gap), offsetCorner(corners[7], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[7], leftNormal, gap), offsetCorner(corners[4], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[4], leftNormal, gap), offsetCorner(corners[0], leftNormal, gap), BLUE);
 }
 
 
@@ -1393,10 +1726,16 @@ void ShapeEditorState::Draw()
 
 	shapeData->Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
 
+	// Draw colored wireframe outlines for cuboid faces
+	if (shapeData->m_drawType == ShapeDrawType::OBJECT_DRAW_CUBOID)
+	{
+		DrawCuboidWireframe(finalPos, shapeData->m_Dims, shapeData->m_Scaling, g_cameraRotation);
+	}
+
 	DrawSphere(Vector3Add(shapeData->m_CenterPoint, finalPos), 0.15f, RED);
 
 	EndMode3D();
-	
+
 	BeginTextureMode(g_guiRenderTarget);
 	ClearBackground({ 0, 0, 0, 0 });
 
@@ -1407,7 +1746,7 @@ void ShapeEditorState::Draw()
 	if (shapeData->GetDrawType() == ShapeDrawType::OBJECT_DRAW_CUBOID)
 	{
 		Texture* d = shapeData->GetTexture();
-		
+
 
 		//  Draw original texture with label and border
 		DrawTextEx(*g_guiFont.get(), "Original Texture", { 0, 0 }, g_guiFontSize, 1, WHITE);
@@ -1508,6 +1847,39 @@ void ShapeEditorState::Draw()
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
 
+	// Draw bark text above view angle slider (centered horizontally)
+	int guiPanelWidth = 120;
+	std::string barkText = GetShapeFrameName(m_currentShape, m_currentFrame, 1);
+	int barkY = g_Engine->m_ScreenHeight - 63;  // Moved down 6 pixels from -65
+	Vector2 barkTextSize = MeasureTextEx(*g_guiFont.get(), barkText.c_str(), 22.0f, 1);
+	int barkX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - (int)barkTextSize.x) / 2;  // Center in 3D view area
+	DrawTextEx(*g_guiFont.get(), barkText.c_str(), {(float)barkX, (float)barkY}, 22.0f, 1, WHITE);
+
+	// Draw view angle slider at bottom of main window
+	int sliderWidth = 300;
+	int sliderHeight = 20;
+	int sliderX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - sliderWidth) / 2;  // Center in 3D view area
+	int sliderY = g_Engine->m_ScreenHeight - 40;
+
+	// Draw slider background
+	DrawRectangle(sliderX, sliderY, sliderWidth, sliderHeight, Color{64, 64, 128, 255});
+	DrawRectangleLines(sliderX, sliderY, sliderWidth, sliderHeight, WHITE);
+
+	// Draw label (larger font for readability)
+	float labelFontSize = 22.0f;
+	DrawTextEx(*g_guiFont.get(), "View Angle:", {(float)(sliderX - 120), (float)(sliderY)}, labelFontSize, 1, WHITE);
+
+	// Calculate slider position
+	int currentAngle = (int)(g_cameraRotation * RAD2DEG);
+	while (currentAngle < 0) currentAngle += 360;
+	while (currentAngle >= 360) currentAngle -= 360;
+
+	int spurPos = (currentAngle * sliderWidth) / 360;
+	DrawRectangle(sliderX + spurPos - 5, sliderY, 10, sliderHeight, WHITE);
+
+	// Draw angle value (larger font for readability)
+	DrawTextEx(*g_guiFont.get(), TextFormat("%d deg", currentAngle), {(float)(sliderX + sliderWidth + 10), (float)(sliderY)}, labelFontSize, 1, WHITE);
+
 	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 
 	EndDrawing();
@@ -1551,7 +1923,7 @@ void ShapeEditorState::SetupFlatGui()
 	//  Flat specific setup
 
 	int yoffset = 13;
-	
+
 	m_flatGui->GetElement(GE_CURRENTDRAWTYPETEXTAREA)->m_String = "Flat";
 }
 
@@ -1577,7 +1949,7 @@ void ShapeEditorState::SetupCuboidGui()
 	int yoffset = 13;
 
 	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y, 0, 0, RED);
-	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_TOPRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -1601,7 +1973,7 @@ void ShapeEditorState::SetupCuboidGui()
 	y += yoffset;
 
 	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_guiFont.get(), "Front Face", 3, y, 0, 0, GREEN);
-	m_cuboidGui->AddTextButton(GE_FRONTRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_FRONTRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -1625,7 +1997,7 @@ void ShapeEditorState::SetupCuboidGui()
 	y += yoffset;
 
 	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_guiFont.get(), "Right Face", 3, y, 0, 0, BLUE);
-	m_cuboidGui->AddTextButton(GE_RIGHTRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_RIGHTRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -1799,19 +2171,19 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	int yoffset = 13;
 	int y = 4;
 
-	gui->AddTextButton(GE_SAVEBUTTON, 8, y - 2, "Save", g_guiFont.get());
-	gui->AddTextButton(GE_LOADBUTTON, 60, y - 2, "Load", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_SAVEBUTTON, 8, y - 2, "  Save  ", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_LOADBUTTON, 64, y - 2, "  Load  ", g_guiFont.get());
 	y += yoffset;
 
 	gui->AddIconButton(GE_PREVSHAPEBUTTON, 2, y, g_LeftArrow);
-	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 70, y, g_RightArrow);
+	gui->AddIconButton(GE_NEXTSHAPEBUTTON, 60, y, g_RightArrow);
 	std::stringstream ss;
     ss << std::uppercase << std::hex << m_currentShape;
 	gui->AddTextArea(GE_CURRENTSHAPEIDTEXTAREA, g_guiFont.get(), "S:" + to_string(m_currentShape) + " (" + ss.str() + ")", 12, y);
 
-	gui->AddIconButton(GE_PREVFRAMEBUTTON, 80, y, g_LeftArrow);
+	gui->AddIconButton(GE_PREVFRAMEBUTTON, 70, y, g_LeftArrow);
 	gui->AddIconButton(GE_NEXTFRAMEBUTTON, 110, y, g_RightArrow);
-	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 90, y);
+	gui->AddTextArea(GE_CURRENTFRAMEIDTEXTAREA, g_guiFont.get(), "F:" + to_string(m_currentFrame), 80, y);
 
 	y += yoffset;
 
@@ -1823,7 +2195,7 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_COPYPARAMSFROMFRAME0, 8, y - 2, "Copy From Frame 0", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_COPYPARAMSFROMFRAME0, 3, y - 2, "Copy From Frame 0", g_guiFont.get());
 
 	y += yoffset;
 	gui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_guiFont.get(), "Tweak Pos: ", 2, y);
@@ -1876,12 +2248,12 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
 
 	y += yoffset;
-	gui->AddTextButton(GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
 
 	y += yoffset;
 
 	gui->AddTextArea(GE_LUASCRIPTLABEL, g_guiFont.get(), "Lua Script:", 2, y);
-	gui->AddTextButton(GE_OPENLUASCRIPTBUTTON, 60, y - 2, "Open Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_OPENLUASCRIPTBUTTON, 55, y - 2, "Open Script", g_guiFont.get());
 
 	y += yoffset;
 
@@ -1891,9 +2263,15 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
 
 	y += yoffset;
+
+	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_CLEARALLSCRIPTSBUTTON, 71, y + 11, "Clear All", g_guiFont.get());
+
+	y += 27;
 
 	return y;
 

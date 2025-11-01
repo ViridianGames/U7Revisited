@@ -19,17 +19,23 @@ if(MSVC)
     add_compile_options(/wd4244)
     # Suppress truncation from 'double' to 'float' warnings (C4305)
     add_compile_options(/wd4305)
+    # Suppress CRT security warnings for standard C functions
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     # Declare C++17 for CPP source files
     add_compile_options(/std:c++17)
     # Warning level 3
     add_compile_options(/W3)
+    # Enable Hot Reload / Edit and Continue for Debug builds
+    add_compile_options($<$<CONFIG:Debug>:/ZI>)  # Edit and Continue debug info
+    add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)  # Incremental linking
+    add_link_options($<$<CONFIG:Debug>:/DEBUG:FASTLINK>)  # Faster linking for Debug builds
     # Release optimizations (using generator expressions for multi-config generators)
     add_compile_options($<$<CONFIG:Release>:/O2>)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Maximum warning level
+    add_compile_options(-Wall -Wextra -Wpedantic)
     # For C4244 equivalent (float-to-int, general conversion issues)
     add_compile_options(-Wno-conversion)
-    # Warning level
-    add_compile_options(-Wall)
     # Release optimizations
     add_compile_options($<$<CONFIG:Release>:-O3>)
     add_link_options($<$<CONFIG:Release>:-s>)  # Strip symbols
@@ -172,3 +178,41 @@ set_target_properties(U7Revisited PROPERTIES
 
 # Set as Visual Studio startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT U7Revisited)
+
+# ============================================================================
+# Script Test Executable
+# ============================================================================
+# Use all main sources except Main.cpp (which has the game's main() function)
+set(TEST_SOURCES ${SOURCES})
+list(REMOVE_ITEM TEST_SOURCES Source/Main.cpp)
+
+add_executable(ScriptTests
+    Tests/ScriptTests.cpp
+    Tests/ScriptTestMocks.cpp
+    Tests/TestDataLoader.cpp
+    ${TEST_SOURCES}
+)
+
+target_link_libraries(ScriptTests PRIVATE
+    lua
+    raylib
+)
+
+target_include_directories(ScriptTests PRIVATE
+    Source
+    Source/Geist
+    ${RAYLIB_EXTERNAL_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
+)
+
+# Windows-specific dependencies
+if(WIN32)
+    target_link_libraries(ScriptTests PRIVATE winmm)
+endif()
+
+# Set Visual Studio debugger working directory to Redist folder for testing
+# and pass --execute flag by default
+set_target_properties(ScriptTests PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+    VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
+)

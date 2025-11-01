@@ -113,6 +113,8 @@ public:
    bool m_ExternalForceFlag;
    bool m_BounceFlag;
 
+   unsigned int m_flags = 0;  // General-purpose flags bitfield for Exult intrinsics
+
    Mesh* m_Mesh;
    Texture* m_Texture;
    Texture* m_DropShadow;

@@ -22,6 +22,7 @@ extern std::unique_ptr<ScriptingSystem>  g_ScriptingSystem;
 
 bool IsMouseInRect(int x, int y, int w, int h);
 bool IsMouseInRect(Rectangle rect);
+bool IsPosInRect(Vector2 pos, Rectangle rect);  // Check if position is in rectangle (no mouse checks)
 bool IsLeftButtonDownInRect(int x, int y, int w, int h);
 bool IsLeftButtonDownInRect(Rectangle rect);
 bool WasLeftButtonClickedInRect(int x, int y, int w, int h);

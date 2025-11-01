@@ -43,6 +43,9 @@ std::unique_ptr<Terrain> g_Terrain;
 std::array<std::array<ShapeData, 32>, 1024> g_shapeTable;
 std::array<ObjectData, 1024> g_objectDataTable;
 
+// Misc names from TEXT.FLX for frame-specific item names
+std::vector<std::string> g_miscNames;
+
 std::unordered_map<int, unique_ptr<NPCData>> g_NPCData;
 
 ConversationState* g_ConversationState;
@@ -90,6 +93,7 @@ RenderTexture2D g_guiRenderTarget;
 std::unique_ptr<U7Player> g_Player;
 
 bool g_LuaDebug = false;  // Toggle with F8 key
+bool g_showScriptedObjects = false;  // Toggle with F11 key - highlights objects with scripts
 
 std::unique_ptr<Model> g_CuboidModel;
 
@@ -126,6 +130,7 @@ U7Object* g_mouseOverObject = nullptr;
 std::unique_ptr<GumpManager> g_gumpManager;
 
 U7Object* g_objectUnderMousePointer;
+bool g_mouseOverUI = false;
 
 U7Object* g_doubleClickedObject;
 
@@ -384,6 +389,12 @@ void UpdateSortedVisibleObjects()
  	std::sort(g_sortedVisibleObjects.begin(), g_sortedVisibleObjects.end(), [](U7Object* a, U7Object* b) { return a->m_distanceFromCamera > b->m_distanceFromCamera; });
 
 	g_objectUnderMousePointer = nullptr;
+
+	// Don't pick objects if mouse is over UI elements
+	if (g_mouseOverUI)
+	{
+		return;
+	}
 
 	//  Is a gump open?  Are we over it?  See if there's an object under our mouse.
 	if (!g_gumpManager->m_GumpList.empty() && g_gumpManager->IsMouseOverGump())
@@ -709,6 +720,10 @@ shared_ptr<Sprite> g_ActiveButtonL;
 shared_ptr<Sprite> g_ActiveButtonM;
 shared_ptr<Sprite> g_ActiveButtonR;
 
+shared_ptr<Sprite> g_ShapeButtonL;
+shared_ptr<Sprite> g_ShapeButtonM;
+shared_ptr<Sprite> g_ShapeButtonR;
+
 shared_ptr<Sprite> g_LeftArrow;
 shared_ptr<Sprite> g_RightArrow;
 
@@ -833,3 +848,98 @@ void PrintNPCPathStats()
 // 	printf("Lua says: %s\n", message);
 // 	return 0;
 // }
+
+// Helper function to parse U7 text format: "a/<singular>//<plural>/s"
+// Returns singular or plural with quantity
+std::string ParseU7TextFormat(const std::string& rawText, int quantity)
+{
+	// Format: "a/garlic//s" or just "bread"
+	size_t firstSlash = rawText.find('/');
+	if (firstSlash == std::string::npos)
+	{
+		// No slashes means no U7 text format, just return the name as-is without quantity
+		return rawText;
+	}
+
+	// Find the second slash (end of singular name)
+	size_t secondSlash = rawText.find('/', firstSlash + 1);
+	if (secondSlash == std::string::npos)
+	{
+		// Malformed, return as-is
+		return rawText;
+	}
+
+	// Extract the singular name between the slashes
+	std::string singularName = rawText.substr(firstSlash + 1, secondSlash - firstSlash - 1);
+
+	// Find the plural suffix after the third slash
+	size_t thirdSlash = rawText.find('/', secondSlash + 1);
+	std::string pluralSuffix = "";
+	if (thirdSlash != std::string::npos && thirdSlash + 1 < rawText.length())
+	{
+		pluralSuffix = rawText.substr(thirdSlash + 1);
+	}
+
+	if (quantity == 1)
+	{
+		// Get the article (before first slash): "a", "an", etc.
+		std::string article = rawText.substr(0, firstSlash);
+		// Only add article if it's not empty and not just whitespace
+		if (!article.empty() && article.find_first_not_of(" \t") != std::string::npos)
+			return article + " " + singularName;
+		else
+			return singularName;
+	}
+	else
+	{
+		// Plural: quantity + name + suffix
+		if (quantity > 0)
+			return std::to_string(quantity) + " " + singularName + pluralSuffix;
+		else
+			return singularName; // quantity 0 or invalid, just show the name
+	}
+}
+
+std::string GetShapeFrameName(int shape, int frame, int quantity)
+{
+	// Check if misc_names are loaded yet
+	if (!g_miscNames.empty())
+	{
+		// Shape 842: Reagents (8 frames)
+		if (shape == 842 && frame >= 0 && frame < 8)
+		{
+			// Reagents: frames 0-7 map to misc_names 256-263
+			// (black pearl, blood moss, nightshade, mandrake, garlic, ginseng, spider silk, sulfurous ash)
+			int miscIndex = 256 + frame;
+			if (miscIndex < g_miscNames.size())
+			{
+				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			}
+		}
+
+		// Shape 377: Food items (32 frames)
+		if (shape == 377 && frame >= 0 && frame < 32)
+		{
+			// Food items: frames 0-31 map to misc_names 267-298
+			// (bread, bread, rolls, fruitcake, cake, pie, pastry, sausage, mutton, beef, fowl, etc.)
+			int miscIndex = 267 + frame;
+			if (miscIndex < g_miscNames.size())
+			{
+				return ParseU7TextFormat(g_miscNames[miscIndex], quantity);
+			}
+		}
+	}
+
+	// Fall back to shape name if no frame-specific name found
+	// Still parse it to handle the "a/name//s" format
+	if (shape >= 0 && shape < 1024)
+	{
+		std::string shapeName = g_objectDataTable[shape].m_name;
+		if (!shapeName.empty())
+		{
+			return ParseU7TextFormat(shapeName, quantity);
+		}
+	}
+
+	return "unknown";
+}

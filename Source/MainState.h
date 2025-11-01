@@ -40,6 +40,7 @@ public:
 
    void DrawStats();
    void UpdateStats();
+	void CalculateMouseOverUI();  // Sets g_mouseOverUI based on UI element positions
 	void UpdateInput();
 	void UpdateTime();
 
@@ -68,6 +69,7 @@ public:
 	U7Object* m_barkObject = nullptr;
 	std::string m_barkText = "";
 	float m_barkDuration = 0;;
+	bool m_barkAutoUpdate = false;  // True if bark should regenerate from object name each frame
    
    float m_LastUpdate;
    
