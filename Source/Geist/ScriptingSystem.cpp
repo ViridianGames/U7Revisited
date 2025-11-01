@@ -167,6 +167,9 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
         return error;
     }
 
+    // Clear any existing coroutine before reloading to ensure we get the fresh version
+    CleanupCoroutine(func_name);
+
     LoadScript(path);
     m_currentScript = func_name;
 
