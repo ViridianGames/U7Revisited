@@ -963,8 +963,9 @@ function display_area(x, y) end
 ---@param tile_id integer Tile to view
 function view_tile(tile_id) end
 
----[Exult 0x006A] Flashes mouse cursor
-function flash_mouse() end
+---[Exult 0x006A] Flashes mouse cursor (currently not implemented)
+---@param flash_type integer The type of flash effect
+function flash_mouse(flash_type) end
 
 ---[Exult 0x0056] Stops time (Time Lord spell)
 function stop_time() end
@@ -1016,11 +1017,6 @@ function is_pc_inside() end
 ---@param state integer Orrery state
 function set_orrery(state) end
 
----[Exult 0x005E] Gets array size
----@param array table Array to measure
----@return integer size Array length
-function get_#array end
-
 ---[Exult 0x005F] Marks virtue stone
 ---@param stone_id integer Stone to mark
 function mark_virtue_stone(stone_id) end
@@ -1032,43 +1028,3 @@ function recall_virtue_stone(stone_id) end
 ---[Exult 0x0083] Sets time-based palette
 ---@param palette_id integer Palette to use
 function set_time_palette(palette_id) end
-
--- ============================================================================
--- UNKNOWN FUNCTIONS (Not Yet Researched)
--- ============================================================================
--- These functions are called in scripts but we haven't determined their
--- purpose yet. Add documentation here as you discover what they do!
--- Most Exult intrinsics (0x0000-0x0095) have now been documented above.
--- The remaining unknowns are likely custom functions or deprecated opcodes.
--- ============================================================================
-
----❓ Unknown function - needs research
-function utility_unknown_0296(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0770(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0781(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0807(...) end
-
----❓ Unknown function - needs research
-function utility_sail_0816(...) end
-
----❓ Unknown function - needs research
-function utility_gangplank_0817(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0947(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_1022(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_1023(...) end
-
--- Add more unknown functions here as you discover them in scripts!
--- Format: function unknown_XXXXH(...) end
--- Then research and document them when you figure out what they do.
