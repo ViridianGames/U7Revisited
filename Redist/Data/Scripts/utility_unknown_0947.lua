@@ -23,7 +23,7 @@ function utility_unknown_0947(eventid)
             end
         end
     end
-    var_0012 = get_#var_0004
+    var_0012 = #var_0004
     var_0007 = utility_unknown_1085(var_0007, var_0008)
     for i = 1, #var_0007 do
         var_0011 = var_0007[i]
