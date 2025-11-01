@@ -5,15 +5,15 @@ function object_lever_0433(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = func_081B(eventid, objectref)
+    var_0000 = utility_unknown_0795(eventid, objectref)
     if var_0000 == 1 then
-        if func_081D(1, 0, 3, 0, 432, objectref) then
-            func_081E(7, 0, 0, 0, 270, 2, 1, 376, objectref)
+        if utility_position_0797(1, 0, 3, 0, 432, objectref) then
+            utility_unknown_0798(7, 0, 0, 0, 270, 2, 1, 376, objectref)
             set_object_quality(objectref, 31)
         end
     elseif var_0000 == 0 then
-        if func_081D(7, 3, 0, 1, 432, objectref) then
-            func_081E(7, 0, 0, 1, 270, 1, 0, 376, objectref)
+        if utility_position_0797(7, 3, 0, 1, 432, objectref) then
+            utility_unknown_0798(7, 0, 0, 1, 270, 1, 0, 376, objectref)
             set_object_quality(objectref, 30)
         end
     end
