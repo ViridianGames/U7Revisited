@@ -263,7 +263,7 @@ void ConversationState::Update()
 				g_StateMachine->PopState();
 			}
 		}
-		catch (const std::exception& e)
+		catch (const std::exception&)
 		{
 			// Log error
 		}

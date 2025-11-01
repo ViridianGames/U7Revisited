@@ -456,7 +456,7 @@ void AStar::LoadTerrainCosts(const std::string& filename)
 			m_terrainNames[shapeID] = name;
 			loadedCount++;
 		}
-		catch (const std::exception& e)
+		catch (const std::exception&)
 		{
 			AddConsoleString("WARNING: Failed to parse terrain cost on line " + std::to_string(lineNum) + ": " + line, YELLOW);
 			continue;

@@ -208,7 +208,7 @@ void U7Object::NPCDraw()
 	cameraVector = Vector3Normalize(cameraVector);
 	float cameraAtan2 = atan2(cameraVector.x, cameraVector.z);
 
-	float unitAngle;
+	//float unitAngle;
 
 	Vector3 unitVector;
 	unitVector = m_Direction;
