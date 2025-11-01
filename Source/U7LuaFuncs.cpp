@@ -1255,6 +1255,14 @@ static int LuaRandom(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: random called");
     int min = luaL_checkinteger(L, 1);
     int max = luaL_checkinteger(L, 2);
+
+    // Swap if arguments are in wrong order
+    if (min > max) {
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+
     int random_value = g_VitalRNG->Random(max - (min - 1)) + min;
     lua_pushinteger(L, random_value);
     return 1;
@@ -3731,6 +3739,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
+    g_ScriptingSystem->RegisterScriptFunction("random2", LuaRandom); // Alias for random()
     g_ScriptingSystem->RegisterScriptFunction("find_nearby", LuaFindNearby);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_npc_inventory", LuaIsObjectInNPCInventory);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_container", LuaIsObjectInContainer);

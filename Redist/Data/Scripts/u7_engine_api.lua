@@ -152,6 +152,13 @@ function set_flag(flag_id, value) end
 ---@return integer result Random number from min to max
 function random(min, max) end
 
+---Alias for random() - Generates a random number in the range [min, max] (inclusive)
+---Arguments can be provided in either order (min, max) or (max, min)
+---@param min integer Minimum value (inclusive)
+---@param max integer Maximum value (inclusive)
+---@return integer result Random number from min to max
+function random2(min, max) end
+
 ---Finds objects near a reference object (Exult intrinsic 0x35)
 ---Searches for objects within a radius of the reference object
 ---@param objectref integer The reference object to search near
