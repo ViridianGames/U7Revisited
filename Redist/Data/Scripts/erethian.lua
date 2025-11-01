@@ -1,9 +1,3 @@
-function table.find(t, val)
-    for i, v in ipairs(t) do
-        if v == val then return i end
-    end
-    return nil
-end
 
 -- Variables
 local v_0, v_1, v_2, v_3, v_4, v_10, v_11, v_12, v_13, v_14, v_15, v_16, v_17, v_18, v_19

@@ -1,6 +1,18 @@
 --- Global constants and flags for U7Revisited
 --- This file is loaded before all other scripts to provide common constants
 
+-- some helper functions for tables
+function table.find(t, val)
+    for i, v in ipairs(t) do
+        if v == val then return i end
+    end
+    return nil
+end
+
+function table.contains(t, val)
+    return table.find(t, val) ~= nil
+end
+
 -- Skill/Attribute constants for get_npc_training_level and related functions
 SKILL_STRENGTH = 0
 SKILL_DEXTERITY = 1
