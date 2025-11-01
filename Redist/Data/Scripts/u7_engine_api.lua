@@ -372,11 +372,17 @@ function remove_party_gold(amount) end
 ---@return integer points The training points
 function get_npc_training_points(npc_id) end
 
----Gets an NPC's training level for a specific skill
----@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
+---Gets a training level for a specific skill
 ---@param npc_id integer The NPC to query (0 = Avatar/player)
+---@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
 ---@return integer level The training level for that skill
-function get_npc_training_level(skill, npc_id) end
+function get_training_level(npc_id, skill) end
+
+---Sets a training level for a specific skill
+---@param npc_id integer The NPC to modify (0 = Avatar/player)
+---@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
+---@param value integer The new training level value
+function set_training_level(npc_id, skill, value) end
 
 ---Increases an NPC's combat level
 ---@param npc_id integer The NPC to level up

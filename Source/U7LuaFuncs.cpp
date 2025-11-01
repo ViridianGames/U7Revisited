@@ -1698,6 +1698,62 @@ static int LuaGetNPCTrainingLevel(lua_State *L)
     return 1;
 }
 
+static int LuaSetTrainingLevel(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: set_training_level called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int npc_skill = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
+
+    if (npc_id == 0) // Avatar
+    {
+        switch (npc_skill)
+        {
+        case 0:
+            g_Player->SetStr(value);
+            break;
+        case 1:
+            g_Player->SetDex(value);
+            break;
+        case 2:
+            g_Player->SetInt(value);
+            break;
+        case 4:
+            g_Player->SetCombat(value);
+            break;
+        case 6:
+            g_Player->SetMagic(value);
+            break;
+        }
+    }
+    else
+    {
+        if (g_NPCData.find(npc_id) != g_NPCData.end())
+        {
+            switch (npc_skill)
+            {
+            case 0:
+                g_NPCData[npc_id]->str = value;
+                break;
+            case 1:
+                g_NPCData[npc_id]->dex = value;
+                break;
+            case 2:
+                g_NPCData[npc_id]->iq = value;
+                break;
+            case 4:
+                g_NPCData[npc_id]->combat = value;
+                break;
+            case 6:
+                g_NPCData[npc_id]->magic = value;
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
 static int LuaSetCameraAngle(lua_State *L)
 {
     int new_angle = luaL_checkinteger(L, 1);
@@ -3773,7 +3829,8 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold);
     g_ScriptingSystem->RegisterScriptFunction("remove_party_gold", LuaRemovePartyGold);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_training_points", LuaGetNPCTrainingPoints);
-    g_ScriptingSystem->RegisterScriptFunction("get_npc_training_level", LuaGetNPCTrainingLevel);
+    g_ScriptingSystem->RegisterScriptFunction("get_training_level", LuaGetNPCTrainingLevel);
+    g_ScriptingSystem->RegisterScriptFunction("set_training_level", LuaSetTrainingLevel);
     g_ScriptingSystem->RegisterScriptFunction("increase_npc_combat_level", LuaIncreaseNPCCombatLevel);
 
     // These functions are used to get information about the Avatar/player.
