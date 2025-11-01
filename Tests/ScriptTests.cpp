@@ -193,13 +193,60 @@ int main(int argc, char* argv[])
         }
     }
 
+    // Load prerequisite files FIRST (not tested, just loaded for other scripts to use)
+    std::string scriptDir = "Data/Scripts";
+    lua_State* L = g_ScriptingSystem->m_luaState;
+
+    std::cout << "\nLoading prerequisite files...\n";
+
+    // Load u7_engine_api.lua (type definitions and API documentation)
+    std::string engineApiPath = scriptDir + "/u7_engine_api.lua";
+    if (fs::exists(engineApiPath))
+    {
+        int loadResult = luaL_dofile(L, engineApiPath.c_str());
+        if (loadResult != LUA_OK)
+        {
+            const char* error = lua_tostring(L, -1);
+            std::cerr << "ERROR: Failed to load u7_engine_api.lua\n";
+            std::cerr << "       " << (error ? error : "Unknown error") << "\n";
+            lua_pop(L, 1);
+            CleanupMockGlobals();
+            return 1;
+        }
+        std::cout << "  - u7_engine_api.lua loaded\n";
+    }
+    else
+    {
+        std::cerr << "WARNING: u7_engine_api.lua not found\n";
+    }
+
+    // Load global_flags_and_constants.lua (game constants)
+    std::string globalConstantsPath = scriptDir + "/global_flags_and_constants.lua";
+    if (fs::exists(globalConstantsPath))
+    {
+        int loadResult = luaL_dofile(L, globalConstantsPath.c_str());
+        if (loadResult != LUA_OK)
+        {
+            const char* error = lua_tostring(L, -1);
+            std::cerr << "ERROR: Failed to load global_flags_and_constants.lua\n";
+            std::cerr << "       " << (error ? error : "Unknown error") << "\n";
+            lua_pop(L, 1);
+            CleanupMockGlobals();
+            return 1;
+        }
+        std::cout << "  - global_flags_and_constants.lua loaded\n";
+    }
+    else
+    {
+        std::cerr << "WARNING: global_flags_and_constants.lua not found\n";
+    }
+
     // Register all Lua functions
     std::cout << "\nRegistering Lua functions...\n";
     RegisterAllLuaFunctions();
     std::cout << "Lua functions registered\n\n";
 
-    // Find all script files
-    std::string scriptDir = "Data/Scripts";
+    // Find all script files (EXCEPT global_flags_and_constants.lua)
     std::vector<fs::path> scriptPaths;
 
     std::cout << "Scanning for .lua files in " << scriptDir << "...\n";
@@ -215,7 +262,13 @@ int main(int argc, char* argv[])
     {
         if (entry.path().extension() == ".lua")
         {
-            scriptPaths.push_back(entry.path());
+            std::string filename = entry.path().filename().string();
+            // Skip prerequisite files - already loaded, not testable as scripts
+            if (filename != "global_flags_and_constants.lua" &&
+                filename != "u7_engine_api.lua")
+            {
+                scriptPaths.push_back(entry.path());
+            }
         }
     }
 
