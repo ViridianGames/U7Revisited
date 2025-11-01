@@ -3,7 +3,7 @@ function utility_spell_0328(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@In Mani Ylem@")
         if check_spell_requirements() then
             var_0000 = add_containerobject_s(objectref, {1608, 17493, 17511, 17509, 8038, 68, 7768})

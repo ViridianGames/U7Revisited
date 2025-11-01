@@ -3,7 +3,7 @@ function utility_spell_0386(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Vas Corp@")
         if check_spell_requirements() then
             var_0000 = get_object_position(objectref) --- Guess: Gets position data
@@ -21,7 +21,7 @@ function utility_spell_0386(eventid, objectref)
                 if not (var_0008 == var_0004[1] or var_0008 == var_0004[2]) then -- or ... ???
                     var_0002 = check_object_at_position(var_0008, objectref) --- Guess: Checks object at position
                     var_0002 = var_0002 / 3 + 5
-                    destroyobject_(var_0008)
+                    destroy_object(var_0008)
                     var_0001 = add_containerobject_s(var_0008, {var_0002, 1666, 17493, 7715})
                     var_0005 = true
                 end

@@ -3,7 +3,7 @@ function utility_spell_0340(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0000 = get_object_position(objectref) --- Guess: Gets position data
         apply_sprite_effect(-1, 0, 0, 0, var_0000[2], var_0000[1], 7) --- Guess: Applies sprite effect
         bark(objectref, "@Vas An Nox@")

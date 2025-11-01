@@ -3,7 +3,7 @@ function utility_spellteleport_0313(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0000 = add_containerobject_s(objectref, {1593, 17493, 17514, 17520, 17519, 7521, "@Kal Ort Por@", 8018, 1, 17447, 17517, 17456, 7769})
     elseif eventid == 2 then
         var_0001 = get_object_position(objectref) --- Guess: Gets position data

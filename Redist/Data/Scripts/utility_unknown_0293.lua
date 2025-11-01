@@ -66,7 +66,7 @@ function utility_unknown_0293(eventid, objectref)
             if select_option() then
                 add_dialogue("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
                 hide_npc(258)
-                destroyobject_(356) --- Guess: Destroys item
+                destroy_object(356) --- Guess: Destroys item
                 var_0013 = delayed_execute_usecode_array(2, {5, 17447, 8046, 1573, 7765}, 356) --- Guess: Adds items to container
                 abort()
             else

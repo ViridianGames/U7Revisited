@@ -75,6 +75,6 @@ function utility_unknown_0528(eventid, objectref)
         var_0010[3] = var_0010[3] + 2
         var_0012 = update_last_created(var_0010) --- Guess: Updates position
         bark(objectref, "@He gave up his heart... so that Adjhar may live!* Well, not to be morbid, but I suppose the incantation should work now.@")
-        destroyobject_(356) --- Guess: Destroys item
+        destroy_object(356) --- Guess: Destroys item
     end
 end

@@ -13,7 +13,7 @@ function utility_position_0808(eventid, objectref, arg1, arg2, arg3, arg4, arg5,
         trigger_explosion(0) --- Guess: Triggers explosion
         return
     end
-    destroyobject_(356) --- Guess: Destroys item
+    destroy_object(356) --- Guess: Destroys item
     var_0007 = get_object_position(var_0006) --- Guess: Gets position data
     if var_0005 < 0 and array_size(var_0005) == 1 then
         var_0008 = var_0003

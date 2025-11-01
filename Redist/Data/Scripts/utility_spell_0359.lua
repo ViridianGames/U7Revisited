@@ -6,7 +6,7 @@ function utility_spell_0359(eventid, objectref)
         var_0000 = object_select_modal() --- Guess: Selects spell target
         var_0001 = get_object_type(var_0000)
         var_0002 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0003 = {828, 845, 433, 432, 376, 270}
         var_0004 = {376, 270, 433, 432}
         bark(objectref, "@Ex Por@")

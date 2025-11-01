@@ -3,7 +3,7 @@ function utility_spell_0354(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0000 = object_select_modal() --- Guess: Selects spell target
         if get_object_type(var_0000) ~= 330 and get_object_owner(356) and not get_flag(39) then
             bark(objectref, "@Kal Por Ylem@")

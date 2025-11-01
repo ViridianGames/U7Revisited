@@ -30,9 +30,9 @@ function utility_unknown_1105(eventid, objectref)
             if var_000D then
                 if var_0003[var_000A] == 377 then
                     add_dialogue("@How many wouldst thou like?@")
-                    var_000C = purchaseobject_(true, 1, 20, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
+                    var_000C = purchase_object(true, 1, 20, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
                 else
-                    var_000C = purchaseobject_(true, 1, 0, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
+                    var_000C = purchase_object(true, 1, 0, var_0005[var_000A], var_0009, var_0004[var_000A]) --- Guess: Purchases item
                 end
             end
             if var_000C == 1 then

@@ -3,7 +3,7 @@ function utility_spell_0368(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Quas Wis@")
         if check_spell_requirements() then
             var_0000 = add_containerobject_s(objectref, {1648, 17493, 17511, 17509, 17510, 17505, 8045, 65, 7768})

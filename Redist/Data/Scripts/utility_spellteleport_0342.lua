@@ -3,7 +3,7 @@ function utility_spellteleport_0342(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0000 = object_select_modal() --- Guess: Selects spell target
         if var_0000[1] == 0 then
             return

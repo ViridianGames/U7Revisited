@@ -3,7 +3,7 @@ function utility_spell_0327(eventid, objectref)
     local var_0000
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Vas Kal@")
         if check_spell_requirements() then
             var_0000 = add_containerobject_s(objectref, {62, 17496, 17514, 7785})

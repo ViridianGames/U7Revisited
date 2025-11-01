@@ -5,7 +5,7 @@ function utility_spell_0369(eventid, objectref)
     if eventid == 1 then
         var_0000 = object_select_modal() --- Guess: Selects spell target
         var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@In Quas Xen@")
         if check_spell_requirements() and is_object_valid(var_0000) and get_item_flag(27, 0) ~= -1 then
             var_0002 = add_containerobject_s(objectref, {17514, 17520, 7781})

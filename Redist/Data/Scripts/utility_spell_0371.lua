@@ -5,7 +5,7 @@ function utility_spell_0371(eventid, objectref)
     if eventid == 1 then
         var_0000 = 25
         var_0001 = get_nearby_npcs(var_0000) --- Guess: Gets nearby NPCs
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Vas In Flam Grav@")
         if check_spell_requirements() then
             var_0002 = add_containerobject_s(objectref, {17514, 17520, 17516, 17517, 8044, 65, 7768})

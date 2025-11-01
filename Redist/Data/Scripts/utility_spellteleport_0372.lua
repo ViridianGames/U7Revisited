@@ -3,7 +3,7 @@ function utility_spellteleport_0372(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Vas Oort Hur@")
         if check_spell_requirements() then
             var_0000 = 70
