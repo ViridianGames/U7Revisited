@@ -63,7 +63,7 @@ function npc_lucky_0228(eventid, objectref)
             elseif var_0002 == 4 then
                 var_0003 = "@Damn parrot droppings...@"
             end
-            bark(var_0003, 228)
+            bark(228, var_0003)
         else
             utility_unknown_1070(228)
         end

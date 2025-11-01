@@ -68,7 +68,7 @@ function npc_smithy_0232(eventid, objectref)
             elseif var_0004 == 4 then
                 var_0005 = "@The House wins.@"
             end
-            bark(var_0005, 232)
+            bark(232, var_0005)
         else
             utility_unknown_1070(232)
         end

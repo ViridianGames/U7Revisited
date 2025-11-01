@@ -16,7 +16,7 @@ function npc_kristy_0031(eventid, objectref)
                 elseif var_0004 == 4 then
                     var_0003 = "@Catch me if thou can!@"
                 end
-                bark(var_0003, -31)
+                bark(-31, var_0003)
             end
         end
         add_dialogue("\"Bye bye!\"")

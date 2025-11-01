@@ -17,7 +17,7 @@ function npc_carrocio_0044(eventid, objectref)
                 elseif var_0008 == 4 then
                     var_0009 = "@Measure thy might!@"
                 end
-                bark(var_0009, 44)
+                bark(44, var_0009)
             else
                 utility_unknown_1070(44)
             end

@@ -144,7 +144,7 @@ function npc_fenn_0175(eventid, objectref)
             elseif var_0007 == 4 then
                 var_0008 = "@Help one less fortunate!@"
             end
-            bark(var_0008, 175)
+            bark(175, var_0008)
         else
             utility_unknown_1070(175)
         end

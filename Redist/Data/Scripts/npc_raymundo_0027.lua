@@ -17,7 +17,7 @@ function npc_raymundo_0027(eventid, objectref)
                 elseif var_0008 == 4 then
                     var_0009 = "@From the top, please.@"
                 end
-                bark(var_0009, -27)
+                bark(-27, var_0009)
             else
                 utility_unknown_1070(-27)
             end

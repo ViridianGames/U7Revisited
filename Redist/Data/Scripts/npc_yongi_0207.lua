@@ -125,7 +125,7 @@ function npc_yongi_0207(eventid, objectref)
                 var_000D = "@No gargoyles allowed!@"
             end
         end
-        bark(var_000D, 207)
+        bark(207, var_000D)
     end
     return
 end

@@ -16,7 +16,7 @@ function npc_finnigan_0012(eventid, objectref)
                 elseif var_000D == 4 then
                     var_000E = "@I am too old for this...@"
                 end
-                bark(var_000E, 12)
+                bark(12, var_000E)
             else
                 utility_unknown_1070(12)
             end

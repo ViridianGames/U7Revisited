@@ -16,7 +16,7 @@ function npc_amber_0030(eventid, objectref)
                 elseif var_0003 == 4 then
                     var_0004 = "@I -hate- my lines!@"
                 end
-                bark(var_0004, -30)
+                bark(-30, var_0004)
             else
                 utility_unknown_1070(-30)
             end

@@ -165,7 +165,7 @@ function npc_beverlea_0173(eventid, objectref)
             elseif var_0012 == 4 then
                 var_0013 = "@Collectibles? Antiques?@"
             end
-            bark(var_0013, 173)
+            bark(173, var_0013)
         else
             utility_unknown_1070(173)
         end

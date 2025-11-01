@@ -115,7 +115,7 @@ function npc_komor_0174(eventid, objectref)
             elseif var_0007 == 4 then
                 var_0008 = "@Any money for me, friend?@"
             end
-            bark(var_0008, 174)
+            bark(174, var_0008)
         else
             utility_unknown_1070(174)
         end

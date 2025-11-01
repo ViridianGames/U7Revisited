@@ -128,7 +128,7 @@ function npc_blacktooth_0226(eventid, objectref)
             elseif var_000A == 4 then
                 var_000B = "@Damn parrot droppings...@"
             end
-            bark(var_000B, 226)
+            bark(226, var_000B)
         else
             utility_unknown_1070(226)
         end

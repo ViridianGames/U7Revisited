@@ -119,7 +119,7 @@ function npc_glenno_0222(eventid, objectref)
             elseif var_0008 == 4 then
                 var_0009 = "@Relax here in The Baths!@"
             end
-            bark(var_0009, 222)
+            bark(222, var_0009)
         else
             utility_unknown_1070(222)
         end

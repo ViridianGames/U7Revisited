@@ -19,7 +19,7 @@ function npc_unknown_0235(eventid, objectref)
             elseif var_0002 == 4 then
                 var_0003 = "@We shall entertain thee!@"
             end
-            bark(var_0003, 235)
+            bark(235, var_0003)
         else
             utility_unknown_1070(235)
         end

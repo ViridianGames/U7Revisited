@@ -79,7 +79,7 @@ function npc_eldroth_0206(eventid, objectref)
             elseif var_0004 == 4 then
                 var_0004 = "@A bird in the hand squirms.@"
             end
-            bark(var_0004, 206)
+            bark(206, var_0004)
         end
     end
     return

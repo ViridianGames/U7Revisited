@@ -17,7 +17,7 @@ function npc_jesse_0028(eventid, objectref)
                 elseif var_0004 == 4 then
                     var_0005 = "@Bye!@"
                 end
-                bark(var_0005, -28)
+                bark(-28, var_0005)
             else
                 utility_unknown_1070(-28)
             end

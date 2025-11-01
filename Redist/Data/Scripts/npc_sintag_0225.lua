@@ -103,7 +103,7 @@ function npc_sintag_0225(eventid, objectref)
             elseif var_0004 == 4 then
                 var_0005 = "@No funny stuff with the games.@"
             end
-            bark(var_0005, 225)
+            bark(225, var_0005)
         else
             return
         end

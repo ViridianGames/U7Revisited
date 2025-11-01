@@ -140,7 +140,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
                 var_000C = "@I am full.@"
             end
         end
-        bark(var_000C, 194)
+        bark(194, var_000C)
     end
     return
 end

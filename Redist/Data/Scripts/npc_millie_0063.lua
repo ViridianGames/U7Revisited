@@ -17,7 +17,7 @@ function npc_millie_0063(eventid, objectref)
                 elseif var_0006 == 4 then
                     var_0007 = "@Worthiness Precedes Reward!@"
                 end
-                bark(var_0007, 63)
+                bark(63, var_0007)
             else
                 utility_unknown_1070(63)
             end

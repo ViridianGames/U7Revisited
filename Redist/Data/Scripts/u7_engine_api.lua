@@ -347,7 +347,7 @@ function remove_from_party(npc_id) end
 ---Gets an NPC's name from their ID
 ---@param npc_id integer The NPC ID
 ---@return string name The NPC's name
-function get_npc_name_from_id(npc_id) end
+function get_npc_name(npc_id) end
 
 ---Gets an NPC's ID from their name
 ---@param name string The NPC name

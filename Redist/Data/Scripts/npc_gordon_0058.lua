@@ -17,7 +17,7 @@ function npc_gordon_0058(eventid, objectref)
                 elseif var_0009 == 4 then
                     var_000A = "@Fish 'n' chips here!@"
                 end
-                bark(var_000A, 58)
+                bark(58, var_000A)
             else
                 utility_unknown_1070(58)
             end

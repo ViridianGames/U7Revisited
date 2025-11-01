@@ -3767,7 +3767,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("npc_name_in_party", LuaNPCNameInParty);
     g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);
     g_ScriptingSystem->RegisterScriptFunction("remove_from_party", LuaRemoveFromParty);
-    g_ScriptingSystem->RegisterScriptFunction("get_npc_name_from_id", LuaGetNPCNameFromId);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_name", LuaGetNPCNameFromId);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_id_from_name", LuaGetNPCIdFromName);
     g_ScriptingSystem->RegisterScriptFunction("select_party_member_by_name", LuaSelectPartyMemberByName); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
     g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold);
@@ -3803,7 +3803,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("is_string_in_array", LuaIsStringInArray);
 
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
-    
+
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);

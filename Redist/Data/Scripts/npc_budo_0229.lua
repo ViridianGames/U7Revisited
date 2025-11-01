@@ -136,7 +136,7 @@ function npc_budo_0229(eventid, objectref)
             elseif var_000B == 4 then
                 var_000C = "@Step right in! We're open!@"
             end
-            bark(var_000C, 229)
+            bark(229, var_000C)
         else
             utility_unknown_1070(229)
         end

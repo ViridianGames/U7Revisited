@@ -16,6 +16,6 @@ function utility_unknown_0859()
         elseif var_0003 == 4 then
             var_0002 = "@Why me?@"
         end
-        bark(var_0000, var_0002)
+        bark(-244, var_0002)
     end
 end

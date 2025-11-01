@@ -85,7 +85,7 @@ function npc_zaksam_0205(eventid, objectref)
         elseif var_0003 == 6 and var_0002 == 26 then
             var_0005 = "@Mmmmm, excellent wine!@"
         end
-        bark(var_0005, 205)
+        bark(205, var_0005)
     end
     return
 end

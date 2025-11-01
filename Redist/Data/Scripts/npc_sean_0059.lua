@@ -17,7 +17,7 @@ function npc_sean_0059(eventid, objectref)
                 elseif var_0011 == 4 then
                     var_0012 = "@Fine crafted jewelry!@"
                 end
-                bark(var_0012, 59)
+                bark(59, var_0012)
             else
                 utility_unknown_1070(59)
             end

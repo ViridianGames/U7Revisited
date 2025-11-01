@@ -108,7 +108,7 @@ function npc_mole_0227(eventid, objectref)
             elseif var_0005 == 4 then
                 var_0006 = "@Damn parrot droppings...@"
             end
-            bark(var_0006, 227)
+            bark(227, var_0006)
         else
             utility_unknown_1070(227)
         end

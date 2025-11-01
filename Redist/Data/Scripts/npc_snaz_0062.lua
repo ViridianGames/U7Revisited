@@ -17,7 +17,7 @@ function npc_snaz_0062(eventid, objectref)
                 elseif var_0011 == 4 then
                     var_0012 = "@Handouts accepted!@"
                 end
-                bark(var_0012, 62)
+                bark(62, var_0012)
             else
                 utility_unknown_1070(62)
             end

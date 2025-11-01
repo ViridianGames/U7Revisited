@@ -17,5 +17,5 @@ function utility_unknown_0868(eventid, objectref)
             var_0002 = "@I am sorry, truly!@"
         end
     end
-    bark(var_0000, var_0002) --- Guess: Item says dialogue
+    bark(P0, var_0002) --- Guess: Item says dialogue
 end

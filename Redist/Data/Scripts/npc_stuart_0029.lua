@@ -17,7 +17,7 @@ function npc_stuart_0029(eventid, objectref)
                 elseif var_0003 == 4 then
                     var_0004 = "@Ready the bow to use it!@"
                 end
-                bark(var_0004, -29)
+                bark(-29, var_0004)
             else
                 utility_unknown_1070(-29)
             end
