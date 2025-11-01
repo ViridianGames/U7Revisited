@@ -746,9 +746,10 @@ function resurrect(npc_id) end
 ---@return integer object_id The summoned object
 function summon(shape, x, y, z) end
 
----[Exult 0x0046] Makes NPC sit down
+---[Exult 0x0046] Makes NPC sit down in a chair
 ---@param npc_id integer NPC to sit
-function sit_down(npc_id) end
+---@param chair_id integer Chair object to sit in
+function sit_down(npc_id, chair_id) end
 
 ---[Exult 0x001D] Sets NPC schedule type
 ---@param npc_id integer NPC to modify
