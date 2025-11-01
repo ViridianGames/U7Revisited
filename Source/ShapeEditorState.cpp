@@ -280,9 +280,9 @@ void ShapeEditorState::Update()
 	if (IsKeyPressed(KEY_W) || m_currentGui->GetActiveElementID() == GE_NEXTFRAMEBUTTON)
 	{
 		// Find next valid frame, wrapping around
-		const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
+		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
 		int newFrame = m_currentFrame + 1;
-		for (int i = 0; i < g_shapeTable[m_currentShape].size(); ++i)
+		for (int i = 0; i < static_cast<int>(g_shapeTable[m_currentShape].size()); ++i)
 		{
 			if (newFrame > maxFrameIndex)
 				newFrame = 0;
@@ -299,9 +299,9 @@ void ShapeEditorState::Update()
 	if (IsKeyPressed(KEY_S) || m_currentGui->GetActiveElementID() == GE_PREVFRAMEBUTTON)
 	{
 		// Find previous valid frame, wrapping around
-		const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
+		const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
 		int newFrame = m_currentFrame - 1;
-		for (int i = 0; i < g_shapeTable[m_currentShape].size(); ++i)
+		for (int i = 0; i < static_cast<int>(g_shapeTable[m_currentShape].size()); ++i)
 		{
 			if (newFrame < 0)
 				newFrame = maxFrameIndex;
@@ -1124,7 +1124,7 @@ void ShapeEditorState::Update()
 				m_luaScriptIndex--;
 				if (m_luaScriptIndex < 0)
 				{
-					m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size() - 1;
+					m_luaScriptIndex = static_cast<int>(g_ScriptingSystem->m_scriptFiles.size() - 1);
 				}
 			}
 		}
@@ -1133,7 +1133,7 @@ void ShapeEditorState::Update()
 			m_luaScriptIndex--;
 			if (m_luaScriptIndex < 0)
 			{
-				m_luaScriptIndex = g_ScriptingSystem->m_scriptFiles.size() - 1;
+				m_luaScriptIndex = static_cast<int>(g_ScriptingSystem->m_scriptFiles.size()) - 1;
 			}
 		}
 
@@ -1486,7 +1486,7 @@ void ShapeEditorState::Update()
 
 	// Find max valid frame for this shape
 	int maxFrame = 0;
-	const int maxFrameIndex = g_shapeTable[m_currentShape].size() - 1;
+	const int maxFrameIndex = static_cast<int>(g_shapeTable[m_currentShape].size() - 1);
 	for (int i = maxFrameIndex; i >= 0; --i)
 	{
 		if (g_shapeTable[m_currentShape][i].IsValid())
