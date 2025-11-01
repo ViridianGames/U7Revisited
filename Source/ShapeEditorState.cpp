@@ -413,6 +413,8 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_LOADBUTTON)
 	{
+		AddConsoleString("Loading shapetable.dat...", WHITE);
+		Draw();  // Force a frame render to show the loading message
 		ifstream file("Data/shapetable.dat");
 		if (file.is_open())
 		{
@@ -425,6 +427,11 @@ void ShapeEditorState::Update()
 				}
 			}
 			file.close();
+			AddConsoleString("Done!", GREEN);
+		}
+		else
+		{
+			AddConsoleString("ERROR: Failed to load shapetable.dat!", RED);
 		}
 	}
 
