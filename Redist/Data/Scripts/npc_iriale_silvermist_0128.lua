@@ -6,7 +6,7 @@ function npc_iriale_silvermist_0128(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(128, 0)
+    switch_talk_to(128)
     var_0000 = get_player_name()
     add_answer({"bye", "job", "name"})
     if not get_flag(699) then
@@ -39,10 +39,10 @@ function npc_iriale_silvermist_0128(eventid, objectref)
             remove_answer("rule")
             var_0002 = npc_id_in_party(1) --- Guess: Checks player status
             if var_0002 then
-                switch_talk_to(1, 0)
+                switch_talk_to(1)
                 add_dialogue("\"Come, " .. var_0000 .. ", we had better leave. I believe this woman is serious.\"")
                 hide_npc(1)
-                switch_talk_to(128, 0)
+                switch_talk_to(128)
             end
         elseif var_0001 == "Gorn" then
             add_dialogue("\"Is that the name of that smelly barbarian who was here? If thou dost see him on the -way out-, tell him that if he approaches me again, I shall cut off his head!\"")

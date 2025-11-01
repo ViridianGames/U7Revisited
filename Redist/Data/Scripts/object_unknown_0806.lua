@@ -6,7 +6,7 @@ function object_unknown_0806(eventid, objectref)
         abort()
     end
     var_0000 = get_schedule_type(get_npc_name(objectref))
-    switch_talk_to(259, 0)
+    switch_talk_to(259)
     add_answer({"bye", "job", "name"})
     if not get_flag(61) then
         add_answer("password")

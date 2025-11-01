@@ -3,7 +3,7 @@ function npc_runeb_0184(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        switch_talk_to(0, 184)
+        switch_talk_to(184)
         var_0000 = get_schedule()
         var_0001 = get_npc_name(184)
         if var_0000 == 7 then

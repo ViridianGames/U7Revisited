@@ -5,7 +5,7 @@ function npc_roberto_0224(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 224)
+    switch_talk_to(224)
     var_0000 = get_schedule()
     var_0001 = get_schedule_type(get_npc_name(224))
     var_0002 = get_player_name()

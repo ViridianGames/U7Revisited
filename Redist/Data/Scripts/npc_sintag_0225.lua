@@ -3,7 +3,7 @@ function npc_sintag_0225(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 225)
+        switch_talk_to(225)
         var_0000 = get_schedule()
         var_0001 = get_schedule_type(get_npc_name(225))
         var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)

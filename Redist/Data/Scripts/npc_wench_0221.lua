@@ -5,7 +5,7 @@ function npc_wench_0221(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 221)
+    switch_talk_to(221)
     var_0000 = get_schedule()
     var_0001 = get_schedule_type(get_npc_name(221))
     var_0002 = get_player_name()

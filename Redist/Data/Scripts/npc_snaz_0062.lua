@@ -27,7 +27,7 @@ function npc_snaz_0062(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 62)
+    switch_talk_to(62)
     var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(191) then

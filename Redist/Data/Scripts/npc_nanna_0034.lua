@@ -4,7 +4,7 @@ function npc_nanna_0034(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(34, 0)
+        switch_talk_to(34)
         var_0000 = get_schedule() --- Guess: Checks game state or timer
         var_0001 = get_schedule_type(34) --- Guess: Gets object state
         var_0002 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
@@ -42,17 +42,17 @@ function npc_nanna_0034(eventid, objectref)
                 add_answer("luxury")
                 if var_0001 == 7 then
                     if var_0004 then
-                        switch_talk_to(2, 0)
+                        switch_talk_to(2)
                         add_dialogue("\"Whew! Dost thou smell what I smell, Avatar?\"")
                         hide_npc(2)
                     end
                     var_0005 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0005 then
-                        switch_talk_to(1, 0)
+                        switch_talk_to(1)
                         add_dialogue("\"I believe that is the smell of diapers, boy. When thou art a father one day, thou wilt come to know that smell quite well.\"")
                         hide_npc(1)
                     end
-                    switch_talk_to(34, 0)
+                    switch_talk_to(34)
                 end
                 remove_answer("Royal Nursery")
             elseif var_0004 == "nanny" then

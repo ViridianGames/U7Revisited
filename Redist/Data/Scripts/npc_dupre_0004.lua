@@ -4,7 +4,7 @@ function npc_dupre_0004(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(4, 0)
+        switch_talk_to(4)
         if not get_flag(747) then
             if get_timer(11) < 1 then --- Guess: Checks party status or conditions
                 add_dialogue("\"I am sorry, I do not join thieves.\"")
@@ -52,16 +52,16 @@ function npc_dupre_0004(eventid, objectref)
             if var_000F == "name" then
                 add_dialogue("\"Why, dost thou not recognize me? It is I, Lord British!\" he laughs. \"Dost thou not know thy friend Dupre when thou seest him, " .. var_0003 .. "?\"")
                 if var_0005 then
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
                     hide_npc(3)
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
                 elseif var_0004 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Do not be so modest, Sir Dupre. Thou shouldst tell the Avatar that thou hast been knighted since last you met.\"")
                     hide_npc(1)
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("Sir Dupre looks quite embarrassed. \"Well, yes, I would have gotten around to that.\"")
                 end
                 remove_answer("name")
@@ -163,12 +163,12 @@ function npc_dupre_0004(eventid, objectref)
                     add_dialogue("\"Terrible what happened to our poor friend Iolo. We must try and get his body to a healer while there may still be time to revive him. I do miss him so.\"")
                 elseif var_0004 then
                     add_dialogue("\"" .. var_0003 .. ", there is a strange old man following thee, and he bears a vague resemblance to Iolo! It is most odd.\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Thy drinking must have blurred thy vision, Sir Dupre.\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Then thou hadst better join me for one later. It will give thee the chance to catch up to me.\"")
                     hide_npc(1)
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                 else
                     add_dialogue("\"We should find that rascal Iolo and have him join us as well.\"")
                 end
@@ -181,12 +181,12 @@ function npc_dupre_0004(eventid, objectref)
                     add_dialogue("\"A sad fate to befall our fine comrade Shamino. He will be sorely missed. We must try and get his remains to a healer. Perhaps he may still be revived.\"")
                 elseif var_0005 then
                     add_dialogue("Sir Dupre snorts, \"From what I had heard Shamino was all but settled down and retired from the adventuring life.\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"I still have a few wild oats left to sow, thank thee very much.\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Then it is good to see another member of our old sowing circle once again!\"")
                     hide_npc(3)
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                 else
                     add_dialogue("\"Let us go and find Shamino and make this a proper reunion!\"")
                 end

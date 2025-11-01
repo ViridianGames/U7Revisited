@@ -3,7 +3,7 @@ function npc_lady_tory_0200(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 200)
+        switch_talk_to(200)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = false
@@ -128,11 +128,11 @@ function npc_lady_tory_0200(eventid, objectref)
                 add_dialogue("\"However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.\"")
                 var_0008 = npc_id_in_party(-1)
                 if var_0008 then
-                    switch_talk_to(0, -1)
+                    switch_talk_to(-1)
                     add_dialogue("Iolo smiles proudly.")
                     add_dialogue("\"My shop has, er, grown a bit since thou wert here last, \" .. var_0000 .. \".\"")
                     hide_npc(1)
-                    switch_talk_to(0, -200)
+                    switch_talk_to(-200)
                 end
                 remove_answer("Sir Jordan")
             elseif answer == "bye" then

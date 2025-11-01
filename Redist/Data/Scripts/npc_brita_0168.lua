@@ -4,7 +4,7 @@ function npc_brita_0168(eventid, objectref, arg1)
 
     if eventid == 1 then
         start_conversation()
-        switch_talk_to(0, 168) --- Guess: Switches dialogue target
+        switch_talk_to(168) --- Guess: Switches dialogue target
         var_0000 = get_lord_or_lady() --- External call to get lord or lady title
         add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
         if get_flag(532) and not get_flag(536) then
@@ -38,10 +38,10 @@ function npc_brita_0168(eventid, objectref, arg1)
                     add_dialogue("@Mine husband is the most honorable man I have ever met in my life.@")
                     var_0002 = check_dialogue_target(167) --- Guess: Checks dialogue target
                     if var_0002 then
-                        switch_talk_to(0, 167) --- Guess: Switches dialogue target
+                        switch_talk_to(167) --- Guess: Switches dialogue target
                         bark(167, "@Do not put stock in the proud boasts of wives, good Avatar. I am a simple man who only does what he can.@")
                         hide_npc(167) --- Guess: Hides NPC
-                        switch_talk_to(0, 168) --- Guess: Switches dialogue target
+                        switch_talk_to(168) --- Guess: Switches dialogue target
                     end
                 end
                 remove_answer("Feridwyn") --- Guess: Removes dialogue option

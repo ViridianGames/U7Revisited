@@ -9,7 +9,7 @@ function npc_johnson_0014(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(14, 0)
+    switch_talk_to(14)
     var_0000 = get_schedule_time()
     if var_0000 == 7 then
         var_0001 = get_schedule(14)

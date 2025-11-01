@@ -1,7 +1,7 @@
 --- Best guess: Manages Silamo's dialogue in Terfin, a wingless gargoyle gardener frustrated by his social status and considering The Fellowship.
 function npc_silamo_0187(eventid, objectref)
     if eventid == 1 then
-        switch_talk_to(0, 187)
+        switch_talk_to(187)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(588) then

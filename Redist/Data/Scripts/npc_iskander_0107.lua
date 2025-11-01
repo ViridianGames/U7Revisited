@@ -7,7 +7,7 @@ function npc_iskander_0107(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 107)
+    switch_talk_to(107)
     var_0000 = get_player_name()
     var_0001 = "Avatar"
     var_0002 = get_lord_or_lady()

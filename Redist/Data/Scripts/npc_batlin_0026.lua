@@ -11,7 +11,7 @@ function npc_batlin_0026(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(26, 0)
+    switch_talk_to(26)
     var_0000 = utility_unknown_1073(1, 981, 1, 357, 359)
     if var_0000 then
         add_dialogue("Batlin's eyes narrow to red slits as he peers practically through you.")

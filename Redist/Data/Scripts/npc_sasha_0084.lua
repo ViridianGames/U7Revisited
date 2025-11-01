@@ -6,7 +6,7 @@ function npc_sasha_0084(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(84, 0)
+    switch_talk_to(84)
     var_0000 = get_lord_or_lady()
     if not get_flag(271) then
         add_dialogue("You see a young gypsy lad. He is wearing a Fellowship medallion. His eyes look down and his expression is one of extreme sorrow.")

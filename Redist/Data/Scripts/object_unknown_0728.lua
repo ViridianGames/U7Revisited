@@ -2,7 +2,7 @@
 function object_unknown_0728(eventid, objectref)
     if eventid == 1 then
         if not npc_in_party(2) then
-            switch_talk_to(0, 2)
+            switch_talk_to(2)
             start_conversation()
             add_dialogue("\"Thou dost need a blacksmith to do that. I wager my dad could do it... I mean, could have... if he were still alive...\"")
             hide_npc(2)

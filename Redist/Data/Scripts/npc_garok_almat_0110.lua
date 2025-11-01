@@ -7,7 +7,7 @@ function npc_garok_almat_0110(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 110)
+    switch_talk_to(110)
     add_answer({"bye", "job", "name"})
     if get_flag(714) then
         add_answer("Brother Wayne")

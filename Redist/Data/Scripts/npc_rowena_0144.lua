@@ -5,7 +5,7 @@ function npc_rowena_0144(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         if not get_flag(440) then
-            switch_talk_to(144, 0)
+            switch_talk_to(144)
             add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")
             set_flag(423, false)
             abort()
@@ -31,14 +31,14 @@ function npc_rowena_0144(eventid, objectref)
         var_0003 = get_schedule_type(144) --- Guess: Gets schedule
         if var_0002 == 0 or var_0002 == 1 then
             if var_0003 == 14 then
-                switch_talk_to(144, 0)
+                switch_talk_to(144)
                 utility_unknown_0985() --- Guess: Triggers sleep event
             elseif var_0003 ~= 16 then
-                switch_talk_to(144, 0)
+                switch_talk_to(144)
                 utility_unknown_0986() --- Guess: Triggers other event
             end
         end
-        switch_talk_to(144, 0)
+        switch_talk_to(144)
         if not get_flag(457) then
             add_dialogue("You see a ghostly lady wearing a long, black gown. Something is a bit strange about the way she looks, but you can't quite place it. After a pause, she says, \"Greetings, " .. var_0001 .. ". I am Rowena, lady of this wondrous tower.\" She gestures around the room, indicating the moldering walls and cobwebbed rafters.")
             set_flag(457, true)

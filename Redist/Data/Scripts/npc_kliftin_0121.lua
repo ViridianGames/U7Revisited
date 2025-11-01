@@ -4,7 +4,7 @@ function npc_kliftin_0121(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(121, 0)
+        switch_talk_to(121)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = get_schedule_type(121) --- Guess: Gets object state

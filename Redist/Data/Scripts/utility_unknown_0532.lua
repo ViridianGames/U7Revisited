@@ -38,7 +38,7 @@ function utility_unknown_0532(eventid, objectref)
             end
             bark(objectref, "@According to the tome, a `heart' will be necessary to perform this ritual.@")
             if not get_flag(796) then
-                switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                switch_talk_to(289) --- Guess: Initiates dialogue
                 add_dialogue("\"I will give him mine!\"")
                 hide_npc(289) --- Guess: Hides NPC
                 var_000D = add_containerobject_s(356, {500, 7719})
@@ -48,10 +48,10 @@ function utility_unknown_0532(eventid, objectref)
                     var_0005 = ({14, 15, 5, 0, 127})[i]
                     if get_containerobject_s(243, 797, var_0005, 4) then --- Guess: Gets container items
                         var_0010 = transferobject_(var_0005, var_0002) --- Guess: Transfers item
-                        switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                        switch_talk_to(289) --- Guess: Initiates dialogue
                         add_dialogue("You watch in stunned horror as Bollux pierces his chest open with his fingers.")
                         hide_npc(289) --- Guess: Hides NPC
-                        switch_talk_to(289, 0) --- Guess: Initiates dialogue
+                        switch_talk_to(289) --- Guess: Initiates dialogue
                         add_dialogue("He pulls forth a heart-shape stone and, with a final flurry of action, drops the stone upon Adjhar's chest as he falls dead to the ground.")
                         hide_npc(289) --- Guess: Hides NPC
                         var_0011 = add_containerobject_s(var_0002, {1808, 8021, 1, 17447, 8046, 2, 17447, 8047, 2, 17447, 8045, 2, 8487, var_0010, 7769})

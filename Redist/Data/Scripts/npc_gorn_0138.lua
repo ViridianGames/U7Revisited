@@ -7,7 +7,7 @@ function npc_gorn_0138(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 138)
+    switch_talk_to(138)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     var_0002 = npc_id_in_party(-1)
@@ -71,24 +71,24 @@ function npc_gorn_0138(eventid, objectref)
                 add_dialogue("\"I can see by dat medallion thou dost vear dat thou hast snuck into dis place by disguising thyself as vone of dem. Very clever, Avatar!\"")
             end
             if var_0002 then
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("Iolo whispers to you, \"This fellow is quite sharp, is he not?\"")
                 -- syntax error hide_npc1)
-                switch_talk_to(0, 138)
+                switch_talk_to(138)
             end
             remove_answer("camp")
             add_answer("danger")
         elseif cmps("danger") then
             add_dialogue("\"Zo far de only danger I haf found down here has been a female fighter. She vas beautiful. Vhen I vent to talk to her she hit me over de head mit her svord. Vhen I voke up she vas gone. I bet she tought she had killed me but mine head is harder dan dat. I vas not even vounded.\"")
             if var_0003 then
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("Shamino whispers to you. \"Luckily, Gorn was hit in the one spot where he has no feeling whatsoever -- his head!\"")
-                switch_talk_to(0, 138)
+                switch_talk_to(138)
                 add_dialogue("\"Hey, vhat are you vhispering about over dere?\"")
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("\"Oh, nothing. Nothing at all.\"")
                 --syntax error hide_npc3)
-                switch_talk_to(0, 138)
+                switch_talk_to(138)
             end
             remove_answer("danger")
         elseif cmps("cave") then
@@ -110,10 +110,10 @@ function npc_gorn_0138(eventid, objectref)
         elseif cmps("next strange thing") then
             add_dialogue("\"De voice ov Brom tells me dat \"Worldliness Receives Avard\". I haf been tinking about dat von for a long time und I still haf not figured it out. But I vill not give up until I find Brom.\"")
             if var_0004 then
-                switch_talk_to(0, -4)
+                switch_talk_to(-4)
                 add_dialogue("\"A mysterious voice speaking inside someone's head, suggesting the philosophy of The Fellowship. Does this sound familiar, " .. var_0000 .. "?\"")
                 --syntax error hide_npc4)
-                switch_talk_to(0, 138)
+                switch_talk_to(138)
             end
             remove_answer("next strange thing")
             add_answer("find Brom")

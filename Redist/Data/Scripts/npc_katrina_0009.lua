@@ -4,7 +4,7 @@ function npc_katrina_0009(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(9, 0)
+        switch_talk_to(9)
         var_0000 = get_lord_or_lady()
         var_0001 = get_party_members()
         var_0002 = get_npc_name(9) --- Guess: Retrieves object reference from ID
@@ -128,12 +128,12 @@ function npc_katrina_0009(eventid, objectref)
                     add_dialogue("\"Iolo should be in our party adventuring with us.\"")
                 else
                     add_dialogue("\"How hast thou been keeping thyself all these years, Iolo?\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"The years have not been as kind to me as they obviously have been to thee, milady.\"")
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"Ha! I see thou art still a scallywag, Iolo.\"")
                     hide_npc(1)
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                 end
                 remove_answer("Iolo")
             elseif var_0007 == "Shamino" then
@@ -141,12 +141,12 @@ function npc_katrina_0009(eventid, objectref)
                     add_dialogue("\"Shamino should be here with us.\"")
                 else
                     add_dialogue("\"Is that a gray hair I see in thine hair, Shamino?\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"It is not! Where?\"")
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"Perhaps it is but a trick of the light.\"")
                     hide_npc(3)
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                 end
                 remove_answer("Shamino")
             elseif var_0007 == "Dupre" then
@@ -154,14 +154,14 @@ function npc_katrina_0009(eventid, objectref)
                     add_dialogue("\"I cannot help but miss Dupre a little. I have not seen him since he was knighted.\"")
                 else
                     add_dialogue("\"Sir Dupre, hast thou finished thy studies yet?\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("Dupre looks confounded. \"My studies, milady?\"")
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"Of all the various drinking establishments in Britannia!\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Oh, yes, of course, my studies! Continuing mine education has always been of the utmost importance to me.\"")
                     hide_npc(4)
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                 end
                 remove_answer("Dupre")
             elseif var_0007 == "bye" then

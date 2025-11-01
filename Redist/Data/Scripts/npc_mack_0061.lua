@@ -11,7 +11,7 @@ function npc_mack_0061(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 61)
+    switch_talk_to(61)
     var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if get_flag(147) then

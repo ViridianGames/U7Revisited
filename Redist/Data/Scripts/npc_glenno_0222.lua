@@ -3,7 +3,7 @@ function npc_glenno_0222(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0008, var_0009
 
     if eventid == 1 then
-        switch_talk_to(0, 222)
+        switch_talk_to(222)
         var_0000 = get_schedule()
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
@@ -51,24 +51,24 @@ function npc_glenno_0222(eventid, objectref)
                     var_0005 = npc_id_in_party(2)
                     if var_0005 then
                         add_dialogue("\"Uhm, wait a minute. How old art thou, boy?\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"Uhm, eighteen.\"")
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                         add_dialogue("\"Thou dost not look eighteen.\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"All right, I am sixteen.\"")
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                         add_dialogue("\"Thou dost not look sixteen either. Well, never mind. Thou canst enter. But make sure the management doth not see thee.\" Glenno scratches his head. \"Yes, but... no! I am the management! All right, come on. Just don't cause any trouble.\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"All right! Wenches!\"")
                         hide_npc(2)
                         var_0006 = npc_id_in_party(1)
                         if var_0006 then
-                            switch_talk_to(0, 1)
+                            switch_talk_to(1)
                             add_dialogue("Iolo whispers to you, \"Methinks young Spark hath learned a lot whilst adventuring with thee!\"")
                             hide_npc(1)
                         end
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                     end
                     add_answer({"drink", "The Baths"})
                 else

@@ -4,7 +4,7 @@ function npc_miranda_0070(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(70, 0)
+        switch_talk_to(70)
         var_0000 = get_player_name()
         var_0001 = get_schedule() --- Guess: Checks game state or timer
         add_answer({"bye", "job", "name"})
@@ -45,10 +45,10 @@ function npc_miranda_0070(eventid, objectref)
                     var_0002 = npc_id_in_party(32) --- Guess: Checks player status
                     if var_0002 then
                         add_dialogue("\"He's right here! Say hello to the Avatar, Max.\"")
-                        switch_talk_to(32, 0)
+                        switch_talk_to(32)
                         add_dialogue("\"Hi. I'm a funny boy!\"")
                         hide_npc(32)
-                        switch_talk_to(70, 0)
+                        switch_talk_to(70)
                         add_dialogue("\"He's quite precocious.\"")
                     else
                         add_dialogue("\"I wonder where he could be...\"")

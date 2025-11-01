@@ -1,7 +1,7 @@
 --- Best guess: Handles dialogue with Bollux after he loses his duty.
 function utility_unknown_0918(eventid, objectref)
     start_conversation()
-    switch_talk_to(0, 289) --- Guess: Initiates dialogue
+    switch_talk_to(289) --- Guess: Initiates dialogue
     add_dialogue("@The golem seems to have regained his staid composure...@")
     add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     while true do

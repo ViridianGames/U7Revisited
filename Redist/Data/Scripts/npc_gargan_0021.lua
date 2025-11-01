@@ -4,7 +4,7 @@ function npc_gargan_0021(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(21, 0)
+        switch_talk_to(21)
         var_0000 = get_lord_or_lady()
         var_0001 = 0 --get_schedule_type(21) --- Guess: Gets object state
         var_0002 = 0

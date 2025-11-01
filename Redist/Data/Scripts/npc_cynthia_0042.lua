@@ -11,7 +11,7 @@ function npc_cynthia_0042(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 42)
+    switch_talk_to(42)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     add_answer({"bye", "job", "name"})

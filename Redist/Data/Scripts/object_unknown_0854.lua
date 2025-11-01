@@ -8,7 +8,7 @@ function object_unknown_0854(eventid, objectref)
         end
         var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
-            switch_talk_to(287, 0)
+            switch_talk_to(287)
             if get_flag(780) then
                 add_dialogue("\"Our gratitude is thine, Avatar. Thou hast saved Britannia from what might have become a second Age of Darkness. Again, thou dost prove thy worthiness to be the instrument of Lord British.\"")
                 abort()
@@ -62,7 +62,7 @@ function object_unknown_0854(eventid, objectref)
     elseif eventid == 4 then
         var_0000 = get_object_frame(objectref)
         if var_0000 == 16 then
-            switch_talk_to(287, 0)
+            switch_talk_to(287)
             add_dialogue("\"Thou hast mastered the Test of Truth, and so a boon of great intellect and magical ability will be bestowed upon thee. Use -- and respect -- thy powers well, Avatar.\"")
         elseif var_0000 == 14 then
             switch_talk_to(287, 1)
@@ -92,7 +92,7 @@ function object_unknown_0854(eventid, objectref)
                 set_flag(790, true)
                 var_0006 = execute_usecode_array({854, 8021, 15, 7719}, objectref)
             else
-                switch_talk_to(287, 0)
+                switch_talk_to(287)
                 add_dialogue("\"Thou hast now experienced the full meaning of the Principle of Truth. The value of such is beyond measure, for truth shall guide thee throughout thy life's endeavors.\"")
                 add_dialogue("The statue's voice takes on a warning tone.~~\"Know this Truth: the Psyche returns to the Core...\" With that said, the statue becomes quiet once more.")
                 set_flag(789, false)

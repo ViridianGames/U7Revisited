@@ -3,7 +3,7 @@ function npc_blorn_0208(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 208)
+        switch_talk_to(208)
         var_0000 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})

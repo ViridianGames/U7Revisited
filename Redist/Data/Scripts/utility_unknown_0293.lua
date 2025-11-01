@@ -9,7 +9,7 @@ function utility_unknown_0293(eventid, objectref)
         var_0002 = {307, 440}
         var_0003 = get_object_position(356) --- Guess: Gets position data
         if is_in_trinsic() then --- Guess: Checks if in Trinsic
-            switch_talk_to(259, 0)
+            switch_talk_to(259)
             add_dialogue("You see an irate guard.")
             add_dialogue("Years of indoctrination have instilled in him an overly developed sense of discipline")
             add_dialogue("and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.")
@@ -19,12 +19,12 @@ function utility_unknown_0293(eventid, objectref)
             hide_npc(259)
             initiate_combat() --- Guess: Initiates combat
         elseif utility_unknown_1017(var_0002, var_0001, var_0003) then
-            switch_talk_to(258, 0)
+            switch_talk_to(258)
             add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
             hide_npc(258)
             initiate_combat() --- Guess: Initiates combat
         else
-            switch_talk_to(258, 0)
+            switch_talk_to(258)
             var_0004 = count_party_money(359, 359, 644, 357) --- Guess: Counts party money
             if random(1, 2) == 1 and var_0004 then
                 add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")

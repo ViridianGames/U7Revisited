@@ -9,7 +9,7 @@ function npc_reyna_0108(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 108)
+    switch_talk_to(108)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     var_0002 = 108

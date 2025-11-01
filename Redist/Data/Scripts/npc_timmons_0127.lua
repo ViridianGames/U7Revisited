@@ -10,7 +10,7 @@ function npc_timmons_0127(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 127)
+    switch_talk_to(127)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     var_0002 = get_npc_name(127)

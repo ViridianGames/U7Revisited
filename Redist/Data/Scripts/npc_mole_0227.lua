@@ -3,7 +3,7 @@ function npc_mole_0227(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
-        switch_talk_to(0, 227)
+        switch_talk_to(227)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = get_npc_name(227)
@@ -33,10 +33,10 @@ function npc_mole_0227(eventid, objectref)
                     add_dialogue("\"All right. I was born in a cave. So my mother named me Mole.\"")
                     var_0003 = npc_id_in_party(1)
                     if var_0003 then
-                        switch_talk_to(0, 1)
+                        switch_talk_to(1)
                         add_dialogue("\"I thought thou said it was a long story.\"")
                         hide_npc(1)
-                        switch_talk_to(0, 227)
+                        switch_talk_to(227)
                     end
                 else
                     add_dialogue("\"Very well. How 'bout if I just say that I was born in a cave, so my mother named me Mole.\"")

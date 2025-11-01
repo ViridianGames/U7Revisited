@@ -3,7 +3,7 @@ function npc_yvella_0212(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid == 1 then
-        switch_talk_to(0, 212)
+        switch_talk_to(212)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = false

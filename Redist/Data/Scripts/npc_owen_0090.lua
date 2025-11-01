@@ -15,7 +15,7 @@ function npc_owen_0090(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 90)
+    switch_talk_to(90)
     var_0000 = get_schedule()
     var_0001 = get_schedule_type(get_npc_name(90))
     var_0002 = get_lord_or_lady()

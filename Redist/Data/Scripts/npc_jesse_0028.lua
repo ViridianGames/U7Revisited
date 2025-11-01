@@ -31,7 +31,7 @@ function npc_jesse_0028(eventid, objectref)
     if var_0000 then
         switch_talk_to(1, -28)
     else
-        switch_talk_to(0, -28)
+        switch_talk_to(-28)
     end
     add_answer({"bye", "job", "name"})
     if not get_flag(157) then

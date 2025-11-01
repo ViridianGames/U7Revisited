@@ -27,7 +27,7 @@ function npc_gordon_0058(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 58)
+    switch_talk_to(58)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = get_schedule()

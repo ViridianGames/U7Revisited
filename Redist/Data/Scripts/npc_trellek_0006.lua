@@ -11,7 +11,7 @@ function npc_trellek_0006(eventid, objectref)
         var_0004 = get_npc_name(6) --- Guess: Retrieves object reference from ID
         var_0005 = get_npc_name(10) --- Guess: Retrieves object reference from ID
         var_0006 = check_inventory(359, 359, 772, 1, 357)
-        switch_talk_to(6, 0)
+        switch_talk_to(6)
         if not get_flag(308) then
             if not var_0006 then
                 add_dialogue("The creature ignores you.")

@@ -24,7 +24,7 @@ function object_unknown_0504(eventid, objectref)
         if not check_inventory_space(4, 241, 797, var_0000) then
             return
         end
-        switch_talk_to(0, 293)
+        switch_talk_to(293)
         if get_flag(785) ~= true then
             start_conversation()
             add_dialogue("\"Well met, seeker. I am Dracothraxus. Thy test, and I fear, thy defeat lies before thee. For thou shouldst know that I am made immortal by the Keeper of Courage. 'Twould take a truly powerful artifact to destroy me... one that does not exist.\" The great dragon paws the earth in expectation of your imminent battle.")
@@ -45,7 +45,7 @@ function object_unknown_0504(eventid, objectref)
             set_schedule_type(0, var_0000)
         end
     elseif eventid == 2 then
-        switch_talk_to(0, 293)
+        switch_talk_to(293)
         if get_flag(822) ~= true then
             start_conversation()
             add_dialogue("The dragon lets out a searing sigh, \"Released at last. I go now to seek my reward, for this has been a test of my courage as well as thine. Thy reward lies beyond the door to the north. Enter the blue gate and the Amulet of Courage will be thine.\"")

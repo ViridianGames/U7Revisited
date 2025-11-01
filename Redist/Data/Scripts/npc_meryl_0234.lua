@@ -25,6 +25,6 @@ function npc_meryl_0234(eventid, objectref)
         return
     end
 
-    switch_talk_to(0, -234)
+    switch_talk_to(-234)
     add_dialogue("You see a middle-aged actress with a very serious expression. She is unable to speak with you because she is concentrating on her part in the Passion Play. Perhaps you should speak to Paul.")
 end

@@ -3,7 +3,7 @@ function npc_kreg_0245(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then
-        switch_talk_to(0, 245)
+        switch_talk_to(245)
         var_0000 = get_lord_or_lady()
         var_0001 = get_npc_name(245)
         start_conversation()

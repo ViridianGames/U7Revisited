@@ -3,7 +3,7 @@ function npc_inmanilem_0182(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        switch_talk_to(0, 182)
+        switch_talk_to(182)
         var_0000 = 182
         start_conversation()
         add_answer({"bye", "job", "name"})

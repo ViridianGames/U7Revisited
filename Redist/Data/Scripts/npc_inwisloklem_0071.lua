@@ -2,7 +2,7 @@
 function npc_inwisloklem_0071(eventid, objectref)
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(71, 0)
+        switch_talk_to(71)
         add_answer({"bye", "job", "name"})
         if not get_flag(200) then
             add_dialogue("A winged gargoyle looks at you with interest and obvious intelligence.")

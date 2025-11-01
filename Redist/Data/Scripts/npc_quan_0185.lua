@@ -3,7 +3,7 @@ function npc_quan_0185(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 185)
+        switch_talk_to(185)
         var_0000 = get_player_name()
         var_0001 = get_schedule()
         var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)

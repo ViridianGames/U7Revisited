@@ -3,7 +3,7 @@ function npc_inforlem_0181(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        switch_talk_to(0, 181)
+        switch_talk_to(181)
         var_0000 = false
         var_0001 = get_schedule()
         start_conversation()

@@ -14,7 +14,7 @@ function npc_petre_0011(eventid, objectref)
     var_0000 = get_lord_or_lady()
     var_0001 = get_party_members()
     var_0002 = is_player_female()
-    switch_talk_to(11, 0)
+    switch_talk_to(11)
     if not get_flag(20) then
         var_0003 = var_0002 and "woman" or "man"
         add_dialogue("The peasant looks at you as if he has seen a ghost! \"Iolo! This " .. var_0003 .. " did appear from thin air! Help me!\"")

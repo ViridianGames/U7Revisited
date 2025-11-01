@@ -6,7 +6,7 @@ function npc_mikos_0097(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(97, 0)
+    switch_talk_to(97)
     var_0000 = get_schedule() --- Guess: Checks game state or timer
     if var_0000 == 7 then
         var_0001 = utility_unknown_1020(81, 97) --- Guess: Checks NPC time interaction

@@ -4,7 +4,7 @@ function npc_kissme_0151(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(151, 0)
+        switch_talk_to(151)
         var_0000 = npc_id_in_party(1) --- Guess: Checks player status
         var_0001 = npc_id_in_party(2) --- Guess: Checks player status
         var_0002 = npc_id_in_party(4) --- Guess: Checks player status
@@ -25,26 +25,26 @@ function npc_kissme_0151(eventid, objectref)
             if var_0007 == "name" then
                 add_dialogue("\"Kissme! Kissme!\" She giggles.")
                 if var_0000 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Don't do it, " .. var_0004 .. "! Who knows what evil this strange creature might possess!\" He inspects the sprite more closely. \"Mayhaps I should try it first to be sure it is safe...\"")
                     hide_npc(1)
                 end
                 if var_0001 then
-                    switch_talk_to(2, 0)
+                    switch_talk_to(2)
                     add_dialogue("\"Hey, -I'll- kiss her! She doesn't scare me!\"")
                     hide_npc(2)
                 end
                 if var_0003 then
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"She -doth- look rather inviting, doth she not?\"")
                     hide_npc(3)
                 end
                 if var_0002 then
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"My liege has asked thee thy -name-, foul creature!\"")
                     hide_npc(4)
                 end
-                switch_talk_to(151, 0)
+                switch_talk_to(151)
                 add_dialogue("\"But that -is- my name! Kissme! Kissme! It is true!\"")
                 remove_answer("name")
             elseif var_0007 == "job" then
@@ -52,44 +52,44 @@ function npc_kissme_0151(eventid, objectref)
                 if var_0003 then
                     add_dialogue("She flutters over Shamino's head.")
                     add_dialogue("\"I love -thee-, as well!\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"If only thou wert a little larger...\"")
                     hide_npc(3)
-                    switch_talk_to(151, 0)
+                    switch_talk_to(151)
                 end
                 if var_0001 then
                     add_dialogue("Then she flies around Spark.")
                     add_dialogue("\"Oooh, and I love -thee-, too!\"")
-                    switch_talk_to(2, 0)
+                    switch_talk_to(2)
                     add_dialogue("Spark blushes. \"Aww, cut it out!\"")
                     hide_npc(2)
-                    switch_talk_to(151, 0)
+                    switch_talk_to(151)
                 end
                 if var_0002 then
                     add_dialogue("Kissme then flies near Dupre.")
                     add_dialogue("\"Handsome man! Handsome man! I love thee! It's true! It's true!\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("Dupre swats at the fairy. \"Away with thee! Thou dost not love me! Thou dost not even -know- me!\"")
                     hide_npc(4)
-                    switch_talk_to(151, 0)
+                    switch_talk_to(151)
                 end
                 if var_0000 then
                     add_dialogue("Kissme glides over to Iolo and plants a big kiss on his cheek.")
                     add_dialogue("\"Yes! I love thee! Yes, I do!\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("Iolo makes a sour face and wipes his cheek.")
                     add_dialogue("\"Avatar, that was the sloppiest, wettest, most... -disgusting- kiss I have ever felt!\"")
                     hide_npc(1)
-                    switch_talk_to(151, 0)
+                    switch_talk_to(151)
                 end
                 add_answer({"love dust", "Ambrosia"})
             elseif var_0007 == "Ambrosia" then
                 add_dialogue("\"That is where thou art! It is true! Oh, yes! Ambrosia!\"")
                 if var_0000 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Ambrosia! Then it really does exist!\"")
                     hide_npc(1)
-                    switch_talk_to(151, 0)
+                    switch_talk_to(151)
                 end
                 add_dialogue("\"Ambrosia, the lost isle of Britannia! Thou art really here!\"")
                 remove_answer("Ambrosia")
@@ -123,26 +123,26 @@ function npc_kissme_0151(eventid, objectref)
                 add_answer("kiss")
             elseif var_0007 == "kiss" then
                 if var_0000 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"No! Don't do it, " .. var_0004 .. ".\"")
                     hide_npc(1)
                 end
                 if var_0001 then
-                    switch_talk_to(2, 0)
+                    switch_talk_to(2)
                     add_dialogue("\"Sheesh, here we go again!\"")
                     hide_npc(2)
                 end
                 if var_0003 then
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"Hey, I think she's cute!\"")
                     hide_npc(3)
                 end
                 if var_0002 then
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"If thou wouldst do it, " .. var_0004 .. ", do it quickly. We have not time to waste with such foolishness.\" Dupre looks distinctly disgusted with the whole affair.")
                     hide_npc(4)
                 end
-                switch_talk_to(151, 0)
+                switch_talk_to(151)
                 add_dialogue("Do you allow Kissme to kiss you?")
                 if select_option() then
                     add_dialogue("Kissme places the wettest, sloppiest, oozingest, and mushiest smack you have ever felt on your mouth.")

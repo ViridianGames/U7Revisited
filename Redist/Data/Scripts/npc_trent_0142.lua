@@ -10,7 +10,7 @@ function npc_trent_0142(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 142)
+    switch_talk_to(142)
     var_0000 = utility_unknown_1073(359, 0, 295, 1, 357)
     var_0001 = get_lord_or_lady()
     var_0002 = find_nearest(-1, 747, 142)

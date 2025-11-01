@@ -10,7 +10,7 @@ function npc_sprellic_0124(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 124)
+    switch_talk_to(124)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
     var_0002 = false

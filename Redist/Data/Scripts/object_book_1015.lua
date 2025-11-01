@@ -4,7 +4,7 @@ function object_book_1015(eventid, objectref)
 
     if eventid == 1 then
         if not get_container_objects(4, 243, 797, objectref) then
-            switch_talk_to(0, 288)
+            switch_talk_to(288)
             if not get_flag(808) then
                 -- call [0000] (0893H, unmapped)
                 utility_unknown_0915()

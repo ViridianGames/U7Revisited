@@ -3,7 +3,7 @@ function npc_martingo_0191(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
-        switch_talk_to(0, 191)
+        switch_talk_to(191)
         var_0000 = is_pc_female()
         var_0001 = get_player_name()
         start_conversation()
@@ -74,10 +74,10 @@ function npc_martingo_0191(eventid, objectref)
                 add_dialogue("Martingo turns back to you. \"As I said, I am the Sultan here. I am the master of all of these subjects.\" He gestures around the room.")
                 var_0005 = npc_id_in_party(-1)
                 if var_0005 then
-                    switch_talk_to(0, -1)
+                    switch_talk_to(-1)
                     add_dialogue("Iolo whispers to you. \"This fellow is quite daft. Be careful.\"")
                     hide_npc(1)
-                    switch_talk_to(0, 191)
+                    switch_talk_to(191)
                 end
                 remove_answer("Spektran")
             elseif answer == "Lucinda" then

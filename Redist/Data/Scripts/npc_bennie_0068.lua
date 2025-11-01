@@ -4,7 +4,7 @@ function npc_bennie_0068(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(68, 0)
+        switch_talk_to(68)
         var_0000 = get_player_name()
         add_answer({"bye", "job", "name"})
         if not get_flag(113) then

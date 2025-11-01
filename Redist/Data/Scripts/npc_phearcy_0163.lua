@@ -3,7 +3,7 @@ function npc_phearcy_0163(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 163)
+        switch_talk_to(163)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = npc_id_in_party(4)
@@ -23,10 +23,10 @@ function npc_phearcy_0163(eventid, objectref)
         add_answer({"bye", "Fellowship", "job", "name"})
         if not var_0002 then
             add_dialogue("\"Why, Hello, Sir Dupre. Things fare well I trust?\"")
-            switch_talk_to(4, 0)
+            switch_talk_to(4)
             add_dialogue("\"Greetings, fair Phearcy. Yes, thank thee, things are well.\"")
             hide_npc(4)
-            switch_talk_to(163, 0)
+            switch_talk_to(163)
         end
         if not get_flag(517) then
             add_dialogue("You see a man who gives you a friendly smile.")

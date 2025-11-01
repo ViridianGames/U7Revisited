@@ -3,7 +3,7 @@ function npc_fenn_0175(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 175)
+        switch_talk_to(175)
         var_0000 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -43,10 +43,10 @@ function npc_fenn_0175(eventid, objectref)
                 var_0001 = npc_id_in_party(174)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(0, 174)
+                    switch_talk_to(174)
                     add_dialogue("\"Oh, please! Thou art making mine eyes leak!\"")
                     hide_npc(174)
-                    switch_talk_to(0, 175)
+                    switch_talk_to(175)
                 end
                 remove_answer("Komor")
             elseif answer == "Merrick" then
@@ -98,10 +98,10 @@ function npc_fenn_0175(eventid, objectref)
                 var_0001 = npc_id_in_party(174)
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(0, 174)
+                    switch_talk_to(174)
                     add_dialogue("\"We would not want the likes of him walking down our side of the road anyway!\"")
                     hide_npc(174)
-                    switch_talk_to(0, 175)
+                    switch_talk_to(175)
                 end
                 remove_answer("Garritt")
             elseif answer == "give" then

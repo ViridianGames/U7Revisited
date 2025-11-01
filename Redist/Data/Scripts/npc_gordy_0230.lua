@@ -3,7 +3,7 @@ function npc_gordy_0230(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 230)
+        switch_talk_to(230)
         var_0000 = get_schedule()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = get_lord_or_lady()

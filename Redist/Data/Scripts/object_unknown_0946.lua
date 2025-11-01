@@ -6,7 +6,7 @@ function object_unknown_0946(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 258)
+    switch_talk_to(258)
     start_conversation()
     add_answer({"bye", "job", "name"})
     add_dialogue("You see a tough-looking guard who takes his job -very- seriously.")

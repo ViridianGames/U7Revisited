@@ -5,7 +5,7 @@ function utility_unknown_0291(eventid, objectref)
     if eventid == 2 then
         var_0000 = get_player_id()
         if var_0000 ~= 356 then
-            switch_talk_to(var_0000, 0)
+            switch_talk_to(var_0000)
             var_0001 = get_player_name()
             add_dialogue("\"Arise, " .. var_0001 .. ". Time to continue the quest.\"")
             hide_npc(var_0000)

@@ -15,7 +15,7 @@ function npc_spark_0002(eventid, objectref)
         if not get_flag(21) then
             switch_talk_to(2, 1)
         elseif npc_id_in_party(2) then
-            switch_talk_to(2, 0)
+            switch_talk_to(2)
         else
             switch_talk_to(2, 1)
         end
@@ -149,7 +149,7 @@ function npc_spark_0002(eventid, objectref)
                         end
                         var_000C = ask_yes_no("\"I told thee I am good! May I join?\"")
                         if var_000C then
-                            switch_talk_to(2, 0)
+                            switch_talk_to(2)
                             add_dialogue("\"Hooray!\" the boy leaps with delight.")
                             add_answer("leave")
                             add_to_party(2)
@@ -176,7 +176,7 @@ function npc_spark_0002(eventid, objectref)
                     add_dialogue("\"Well, on second thought, it looks like too big of a crowd. I do not like crowds.\"")
                 else
                     hide_npc(2)
-                    switch_talk_to(2, 0)
+                    switch_talk_to(2)
                     add_dialogue("\"Hooray!\"")
                     remove_answer("join")
                     add_answer("leave")

@@ -33,10 +33,10 @@ function utility_unknown_0866(eventid, objectref)
         if var_0005 == "Yes, I do" or var_0005 == "Canst thou help?" then
             add_dialogue("@Hmmm. I might could give thee a clue.@")
             if var_0000 then
-                switch_talk_to(0, 1) --- Guess: Initiates dialogue
+                switch_talk_to(1) --- Guess: Initiates dialogue
                 add_dialogue("@I would like to give Chuckles a black eye!@")
                 hide_npc(1) --- Guess: Hides NPC
-                switch_talk_to(0, 25) --- Guess: Initiates dialogue
+                switch_talk_to(25) --- Guess: Initiates dialogue
             end
             var_0003 = true
             clear_answers() --- Guess: Clears conversation answers

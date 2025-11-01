@@ -4,7 +4,7 @@ function npc_battles_0135(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(135, 0)
+        switch_talk_to(135)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = npc_id_in_party(134) --- Guess: Checks player status
@@ -34,22 +34,22 @@ function npc_battles_0135(eventid, objectref)
             elseif var_0001 == "Robin" then
                 add_dialogue("\"Robin be a high stakes gamblin' gent who makes his living inna casino at Buccaneer's Den.\"")
                 if var_0002 then
-                    switch_talk_to(134, 0)
+                    switch_talk_to(134)
                     add_dialogue("\"A living that would not have been anything near as profitable if not for thy good works, Battles.\"")
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                     add_dialogue("\"Thank yer, Milord.\"")
                     hide_npc(134)
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                 end
                 remove_answer("Robin")
                 add_answer({"casino", "gamblin' gent"})
             elseif var_0001 == "gamblin' gent" then
                 add_dialogue("\"Gamblin' is how Robin makes his living. I do not think he has had a regular post in all of his life!\"")
                 if var_0002 then
-                    switch_talk_to(134, 0)
+                    switch_talk_to(134)
                     add_dialogue("\"Why, I thank thee for the compliment, Battles!\"")
                     hide_npc(134)
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                 end
                 remove_answer("gamblin' gent")
             elseif var_0001 == "casino" then
@@ -58,22 +58,22 @@ function npc_battles_0135(eventid, objectref)
             elseif var_0001 == "Leavell" then
                 add_dialogue("\"He's a lady's man, he is. But do not be thinkin' he cannot handle hissel' inna fight. T'would be yer last mistake.\"")
                 if var_0003 then
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                     add_dialogue("\"I can near out wrestle thee, Battles, ye old dog!\"")
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                     add_dialogue("\"Har! Har! Har! Har!\"")
                     hide_npc(136)
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                 end
                 remove_answer("Leavell")
                 add_answer({"fight", "lady's man"})
             elseif var_0001 == "lady's man" then
                 add_dialogue("\"Why, I reckon Leavell has broken near as many hearts as I have made stop beating!\"")
                 if var_0003 then
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                     add_dialogue("\"So many!\"")
                     hide_npc(136)
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                 end
                 remove_answer("lady's man")
             elseif var_0001 == "fight" then

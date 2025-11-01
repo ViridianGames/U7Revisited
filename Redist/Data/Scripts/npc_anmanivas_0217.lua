@@ -3,7 +3,7 @@ function npc_anmanivas_0217(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000D, var_000E, var_000F
 
     if eventid == 1 then
-        switch_talk_to(0, 217)
+        switch_talk_to(217)
         var_0000 = get_npc_name(217)
         var_0001 = get_npc_name(218)
         var_0002 = get_player_name()
@@ -44,11 +44,11 @@ function npc_anmanivas_0217(eventid, objectref)
                         add_dialogue("\"^\" .. var_000D .. \"!\" .. var_000E .. \" \"To be the cause for our unhappiness.\"")
                         var_000F = npc_id_in_party(218)
                         if not var_000F then
-                            switch_talk_to(0, 218)
+                            switch_talk_to(218)
                             add_dialogue("The gargoyle by his side also rises.")
                             add_dialogue("\"To be the reason for our poverty. To die, \" .. var_000D .. \", to die!\"")
                             hide_npc(218)
-                            switch_talk_to(0, 217)
+                            switch_talk_to(217)
                             add_dialogue("The two gargoyles force the table from their path with ease as they charge to attack you.")
                         else
                             add_dialogue("He forces the table from his path with ease as he charges to attack you.")

@@ -5,7 +5,7 @@ function npc_lasher_0254(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 254)
+    switch_talk_to(254)
     var_0000 = get_lord_or_lady()
     start_conversation()
     if not get_flag(717) then
@@ -83,22 +83,22 @@ function npc_lasher_0254(eventid, objectref)
                     var_0006 = npc_id_in_party(4)
                     if not var_0003 then
                         if var_0004 then
-                            switch_talk_to(0, 1)
+                            switch_talk_to(1)
                             add_dialogue("\"There's no shame in it, milord,\" says Iolo, looking very serious.")
                             hide_npc(1)
-                            switch_talk_to(0, 254)
+                            switch_talk_to(254)
                         end
                         if var_0005 then
-                            switch_talk_to(0, 3)
+                            switch_talk_to(3)
                             add_dialogue("\"No, it is perfectly understandable. Thou hast been so busy lately,\" says Shamino. You sense he is struggling to maintain a straight face.")
                             hide_npc(3)
-                            switch_talk_to(0, 254)
+                            switch_talk_to(254)
                         end
                         if var_0006 then
-                            switch_talk_to(0, 4)
+                            switch_talk_to(4)
                             add_dialogue("\"Why dost thou not go and pet the nice horsey. We would do it, but I think he prefers thee.\" With that, you hear an explosion of snorts and giggles.")
                             hide_npc(4)
-                            switch_talk_to(0, 254)
+                            switch_talk_to(254)
                         end
                         add_answer("virginity")
                     end

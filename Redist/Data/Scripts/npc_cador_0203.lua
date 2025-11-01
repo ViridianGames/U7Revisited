@@ -3,7 +3,7 @@ function npc_cador_0203(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 203)
+        switch_talk_to(203)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = "the Avatar"

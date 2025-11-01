@@ -11,7 +11,7 @@ function npc_william_0093(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 93)
+    switch_talk_to(93)
     var_0000 = get_schedule_type(get_npc_name(93))
     var_0001 = get_schedule()
     if var_0001 == 7 and var_0000 ~= 16 then

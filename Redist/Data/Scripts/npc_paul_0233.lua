@@ -3,7 +3,7 @@ function npc_paul_0233(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
-        switch_talk_to(0, 233)
+        switch_talk_to(233)
         var_0000 = get_schedule_type(get_npc_name(233))
         start_conversation()
         add_answer({"bye", "job", "name"})

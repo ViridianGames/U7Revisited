@@ -4,7 +4,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(147, 0)
+        switch_talk_to(147)
         var_0000 = false
         var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = get_schedule_type(147) --- Guess: Gets schedule

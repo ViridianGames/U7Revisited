@@ -3,7 +3,7 @@ function npc_komor_0174(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(0, 174)
+        switch_talk_to(174)
         var_0000 = get_lord_or_lady()
         var_0001 = npc_id_in_party(175)
         start_conversation()
@@ -23,10 +23,10 @@ function npc_komor_0174(eventid, objectref)
                 add_dialogue("\"I am a dancer, " .. var_0000 .. ".\" He cannot keep a straight face and almost falls off his crutches.")
                 add_answer("beggar")
                 if var_0001 then
-                    switch_talk_to(0, 175)
+                    switch_talk_to(175)
                     add_dialogue("\"Ha! Ha! Ha! Ha! Ha! Ha! 'Tis a ripe one, Komor!\"")
                     hide_npc(175)
-                    switch_talk_to(0, 174)
+                    switch_talk_to(174)
                 end
             elseif answer == "beggar" then
                 add_dialogue("\"I was not always a beggar. Like Fenn and Merrick, I used to be a farmer, too. But times got worse, and times are always bad in Paws.\"")
@@ -37,19 +37,19 @@ function npc_komor_0174(eventid, objectref)
                 remove_answer("Fenn")
                 add_answer({"wealth", "chums"})
                 if var_0001 then
-                    switch_talk_to(0, 175)
+                    switch_talk_to(175)
                     add_dialogue("\"Ha! Ha! Ha! Ha! With thy wit thou shouldst be on stage!\"")
                     hide_npc(175)
-                    switch_talk_to(0, 174)
+                    switch_talk_to(174)
                 end
             elseif answer == "chums" then
                 add_dialogue("\"Fenn and me have been friends since we were little tiny babies.\"")
                 if var_0001 then
                     add_dialogue("\"I would bet thee that thou didst not think we would end up like this. Eh, Fenn?\"")
-                    switch_talk_to(0, 175)
+                    switch_talk_to(175)
                     add_dialogue("\"Not in me wildest dreams, Komor.\"")
                     hide_npc(175)
-                    switch_talk_to(0, 174)
+                    switch_talk_to(174)
                 end
                 remove_answer("chums")
             elseif answer == "wealth" then

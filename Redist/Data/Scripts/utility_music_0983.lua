@@ -6,7 +6,7 @@ function utility_music_0983()
     var_0000 = is_pc_female()
     var_0001 = get_lord_or_lady()
     if not get_flag(440) then
-        switch_talk_to(144, 0)
+        switch_talk_to(144)
         add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")
         set_flag(423, false)
         return

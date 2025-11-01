@@ -3,7 +3,7 @@ function npc_catherine_0213(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 213)
+        switch_talk_to(213)
         var_0000 = get_lord_or_lady()
         start_conversation()
         add_answer({"bye", "job", "name"})

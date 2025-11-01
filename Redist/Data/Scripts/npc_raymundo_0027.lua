@@ -27,7 +27,7 @@ function npc_raymundo_0027(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, -27)
+    switch_talk_to(-27)
     var_0000 = get_schedule()
     var_0001 = get_schedule_type(get_npc_name(-27))
     add_answer({"bye", "job", "name"})

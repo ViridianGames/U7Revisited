@@ -3,7 +3,7 @@ function npc_zaksam_0205(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 205)
+        switch_talk_to(205)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = get_schedule_type(get_npc_name(205))

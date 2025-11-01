@@ -4,7 +4,7 @@ function npc_boris_0130(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(130, 0)
+        switch_talk_to(130)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule() --- Guess: Checks game state
         var_0002 = get_schedule_type(130) --- Guess: Gets object state
@@ -22,14 +22,14 @@ function npc_boris_0130(eventid, objectref)
                 if var_0004 >= 74 then
                     var_0005 = remove_party_items(true, 359, 359, 644, 74) --- Guess: Deducts item and adds item
                     if var_0005 then
-                        switch_talk_to(4, 0)
+                        switch_talk_to(4)
                         add_dialogue("\"I thank thee, Avatar.\"")
                         add_dialogue("You hand the gold over to Boris.")
                         set_flag(405, false)
-                        switch_talk_to(130, 0)
+                        switch_talk_to(130)
                         add_dialogue("\"'Tis a pleasure to do business with thee, Sir Dupre! And welcome to my pub!\"")
                         hide_npc(4)
-                        switch_talk_to(130, 0)
+                        switch_talk_to(130)
                     else
                         add_dialogue("\"Hmmm, where did our gold go?\"")
                         set_flag(405, true)
@@ -51,29 +51,29 @@ function npc_boris_0130(eventid, objectref)
                 var_0003 = npc_id_in_party(4) --- Guess: Checks player status
                 if var_0003 then
                     add_dialogue("\"Well if it isn't Dupre! -Sir- Dupre now, is it?\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"That it is, Boris.\"")
-                    switch_talk_to(130, 0)
+                    switch_talk_to(130)
                     add_dialogue("\"Hmmm-- it seems to me thou dost have a tab still going here? Yes?\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Oh? Do I?\"")
-                    switch_talk_to(130, 0)
+                    switch_talk_to(130)
                     add_dialogue("\"Yes indeed! Let me see... I believe the total that thou dost owe is 74 gold pieces. I am afraid that thou must pay up before I can speak with thee or anyone else with thee.\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("Dupre looks embarrassed. He turns to you. \"My friend, wilt thou help me out?\"")
                     if select_option() then
                         var_0004 = get_party_gold() --- Guess: Counts items
                         if var_0004 >= 74 then
                             var_0005 = remove_party_items(true, 359, 359, 644, 74) --- Guess: Deducts item and adds item
                             if var_0005 then
-                                switch_talk_to(4, 0)
+                                switch_talk_to(4)
                                 add_dialogue("\"I thank thee, Avatar.\"")
                                 add_dialogue("You hand the gold over to Boris.")
                                 set_flag(405, false)
-                                switch_talk_to(130, 0)
+                                switch_talk_to(130)
                                 add_dialogue("\"'Tis a pleasure to do business with thee, Sir Dupre! And welcome to my pub!\"")
                                 hide_npc(4)
-                                switch_talk_to(130, 0)
+                                switch_talk_to(130)
                             else
                                 add_dialogue("\"Hmmm, where did our gold go?\"")
                                 set_flag(405, true)
@@ -85,7 +85,7 @@ function npc_boris_0130(eventid, objectref)
                             abort()
                         end
                     else
-                        switch_talk_to(130, 0)
+                        switch_talk_to(130)
                         add_dialogue("\"Well, I wilt not be serving thee or speaking to thee until thy bill is paid!\"")
                         set_flag(405, true)
                         abort()
@@ -173,16 +173,16 @@ function npc_boris_0130(eventid, objectref)
                 add_dialogue("\"Katrina has come to the aid of the people of this town on more than one occasion. She gets an interesting smile on her face whenever thy name is mentioned.\"")
                 var_000F = npc_id_in_party(9) --- Guess: Checks player status
                 if var_000F then
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"That is because the Avatar is one my dearest friends.\"")
-                    switch_talk_to(130, 0)
+                    switch_talk_to(130)
                     add_dialogue("\"Am I not one of thy dearest friends, Katrina?\"")
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"Thou art a flirt, Boris! Dost Magenta know how thou dost want to be dearest friends with the other women living on the island?\"")
-                    switch_talk_to(130, 0)
+                    switch_talk_to(130)
                     add_dialogue("\"Thou dost torture me, Katrina!\" He laughs.")
                     hide_npc(9)
-                    switch_talk_to(130, 0)
+                    switch_talk_to(130)
                 end
                 remove_answer("Katrina")
             elseif var_0006 == "Henry" then

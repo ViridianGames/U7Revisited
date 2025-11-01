@@ -3,7 +3,7 @@ function npc_unknown_0236(eventid, objectref)
     local var_0000, var_0001
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(236, 0)
+        switch_talk_to(236)
         var_0000 = get_schedule_time()
         if var_0000 == 7 then
             var_0001 = (get_schedule(236) == 16)

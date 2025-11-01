@@ -4,7 +4,7 @@ function npc_max_0032(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(32, 0)
+        switch_talk_to(32)
         add_answer({"bye", "job", "name"})
         if not get_flag(161) then
             add_dialogue("This toddler is full of energy and is playing hard when he sees you. He stops what he is doing.")
@@ -18,10 +18,10 @@ function npc_max_0032(eventid, objectref)
                 add_dialogue("\"Makth.\"")
                 var_0000 = npc_id_in_party(34) --- Guess: Checks player status
                 if var_0000 then
-                    switch_talk_to(34, 0)
+                    switch_talk_to(34)
                     add_dialogue("\"He says his name is Max.\"")
                     hide_npc(34)
-                    switch_talk_to(32, 0)
+                    switch_talk_to(32)
                 end
                 remove_answer("name")
             elseif var_0000 == "job" then

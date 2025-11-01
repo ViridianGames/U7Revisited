@@ -4,7 +4,7 @@ function npc_willy_0052(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(52, 0)
+        switch_talk_to(52)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = get_schedule_type(52) --- Guess: Gets object state
@@ -45,14 +45,14 @@ function npc_willy_0052(eventid, objectref)
                             add_dialogue("\"Ha! Thou dost see, then? Everyone agrees! That should be proof enough!\"")
                             var_0004 = npc_id_in_party(2) --- Guess: Checks player status
                             if var_0004 then
-                                switch_talk_to(2, 0)
+                                switch_talk_to(2)
                                 add_dialogue("\"I want some!\"")
-                                switch_talk_to(52, 0)
+                                switch_talk_to(52)
                                 add_dialogue("\"Here thou art, laddie.\" Willy hands Spark a pastry and the boy devours it in one gulp.")
-                                switch_talk_to(2, 0)
+                                switch_talk_to(2)
                                 add_dialogue("\"Mmmmm! I say, " .. var_0001 .. ", I think we need a lot of this for the road. We had best buy some, all right?\"")
                                 hide_npc(2)
-                                switch_talk_to(52, 0)
+                                switch_talk_to(52)
                             end
                         else
                             add_dialogue("\"Thou dost not?! Why, do not be ridiculous! Of course thou dost!\"")

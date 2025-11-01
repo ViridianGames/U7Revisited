@@ -11,7 +11,7 @@ function utility_unknown_0279(eventid, objectref)
     elseif eventid == 2 then
         set_schedule_type(15, objectref) --- Guess: Sets object behavior
         if not npc_in_party(142) then
-            switch_talk_to(142, 0)
+            switch_talk_to(142)
             add_dialogue("\"There. It is done. Now take the blasted thing to Mordra. She will instruct thee in its use.\"")
             abort()
         else

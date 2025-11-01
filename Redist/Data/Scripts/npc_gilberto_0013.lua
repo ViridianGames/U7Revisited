@@ -10,7 +10,7 @@ function npc_gilberto_0013(eventid, objectref)
     -- debug flag setting to test conversations, REMOVE LATER
     --set_flag(61, true)
 
-    switch_talk_to(13, 0)
+    switch_talk_to(13)
     var_0000 = get_schedule(13)
     add_answer({"bye", "murder", "job", "name"})
     if get_flag(61) then

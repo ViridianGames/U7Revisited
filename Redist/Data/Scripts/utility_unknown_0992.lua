@@ -3,7 +3,7 @@ function utility_unknown_0992()
     start_conversation()
     local var_0000, var_0001
 
-    switch_talk_to(98, 0)
+    switch_talk_to(98)
     add_dialogue("The ape-like creature slowly and cautiously walks up to you. He, or she, sniffs for a moment, and then points to the honey you are carrying.")
     while true do
         add_answer({"Go away!", "Want honey?"})

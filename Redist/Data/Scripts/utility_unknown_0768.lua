@@ -7,7 +7,7 @@ function utility_unknown_0768(eventid, objectref)
     set_flag(744, false)
     var_0001 = get_active_player() --- Guess: Gets active player
     if is_in_combat() then --- Guess: Checks combat state
-        switch_talk_to(var_0001, 0) --- Guess: Initiates dialogue
+        switch_talk_to(var_0001) --- Guess: Initiates dialogue
         var_0002 = get_player_name(var_0001) --- Guess: Gets player name
         if var_0001 == 356 then
             add_dialogue("\"This is no time to sleep! Look alive!\"")

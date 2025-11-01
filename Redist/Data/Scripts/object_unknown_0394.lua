@@ -5,7 +5,7 @@ function object_unknown_0394(eventid, objectref)
 
     var_0000 = get_schedule_type(get_npc_name(394))
     if eventid == 1 then
-        switch_talk_to(258, 0)
+        switch_talk_to(258)
         add_answer({"bye", "job", "name"})
         add_dialogue("You see a tough-looking palace guard who takes his job -very- seriously.")
         while true do

@@ -11,7 +11,7 @@ function npc_rutherford_0092(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 92)
+    switch_talk_to(92)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     var_0002 = get_schedule_type(get_npc_name(92))
@@ -43,10 +43,10 @@ function npc_rutherford_0092(eventid, objectref)
                     var_0003 = npc_id_in_party(-4)
                     if var_0003 then
                         add_dialogue("\"Hello again, Sir Dupre! Didst thou enjoy mine establishment so much that thou hast returned?\"")
-                        switch_talk_to(0, -4)
+                        switch_talk_to(-4)
                         add_dialogue("\"My dear Rutherford, this is not a reflection on The Checquered Cork, but I simply like a good drink!\"")
                         --syntax error hide_npc4)
-                        switch_talk_to(0, 92)
+                        switch_talk_to(92)
                     end
                     add_answer({"room", "buy", "events", "Minoc"})
                 else

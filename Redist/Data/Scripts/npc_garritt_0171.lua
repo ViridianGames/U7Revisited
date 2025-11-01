@@ -4,7 +4,7 @@ function npc_garritt_0171(eventid, objectref, arg1)
 
     if eventid == 1 then
         start_conversation()
-        switch_talk_to(0, 171) --- Guess: Switches dialogue target
+        switch_talk_to(171) --- Guess: Switches dialogue target
         var_0000 = get_lord_or_lady() --- External call to get lord or lady title
         var_0001 = get_dialogue_context() --- Guess: Gets dialogue context
         add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options

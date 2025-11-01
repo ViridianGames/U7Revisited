@@ -27,7 +27,7 @@ function npc_sean_0059(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 59)
+    switch_talk_to(59)
     var_0000 = get_lord_or_lady()
     var_0001 = get_schedule()
     var_0002 = get_schedule_type(get_npc_name(59))

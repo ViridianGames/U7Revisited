@@ -11,7 +11,7 @@ function npc_pamela_0078(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 78)
+    switch_talk_to(78)
     var_0000 = get_schedule_type(get_npc_name(78))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then

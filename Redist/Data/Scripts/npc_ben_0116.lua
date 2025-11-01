@@ -4,7 +4,7 @@ function npc_ben_0116(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(116, 0)
+        switch_talk_to(116)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(334) then

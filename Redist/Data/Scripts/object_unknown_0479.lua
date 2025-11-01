@@ -6,7 +6,7 @@ function object_unknown_0479(eventid, objectref)
     if eventid == 1 then
         -- call [0000] (0931H, unmapped)
         var_0000 = utility_unknown_1073(359, 359, 772, 1, 357)
-        switch_talk_to(0, 283)
+        switch_talk_to(283)
         if get_flag(340) ~= true then
             if not var_0000 then
                 start_conversation()

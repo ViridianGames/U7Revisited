@@ -3,7 +3,7 @@ function npc_alagner_0246(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 246)
+        switch_talk_to(246)
         var_0000 = get_player_name()
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()

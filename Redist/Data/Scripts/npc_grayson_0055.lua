@@ -4,7 +4,7 @@ function npc_grayson_0055(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(55, 0)
+        switch_talk_to(55)
         var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         var_0001 = get_schedule() --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(55) --- Guess: Gets object state
