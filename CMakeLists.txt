@@ -28,10 +28,10 @@ if(MSVC)
     # Release optimizations (using generator expressions for multi-config generators)
     add_compile_options($<$<CONFIG:Release>:/O2>)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Maximum warning level
+    add_compile_options(-Wall -Wextra -Wpedantic)
     # For C4244 equivalent (float-to-int, general conversion issues)
     add_compile_options(-Wno-conversion)
-    # Warning level
-    add_compile_options(-Wall)
     # Release optimizations
     add_compile_options($<$<CONFIG:Release>:-O3>)
     add_link_options($<$<CONFIG:Release>:-s>)  # Strip symbols
