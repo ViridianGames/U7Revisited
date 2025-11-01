@@ -17,7 +17,7 @@ function npc_julia_0008(eventid, objectref)
         if var_0004 and not get_flag(289) then
             add_answer("Spark")
         end
-        if is_in_int_array(var_0002, var_0001) then
+        if is_int_in_array(var_0002, var_0001) then
             add_answer("leave")
         end
         if not get_flag(257) then
@@ -42,7 +42,7 @@ function npc_julia_0008(eventid, objectref)
                 else
                     add_dialogue("\"Since accompanying thee on thine adventures when thou wast last in Britannia, I have become the tinker of Minoc. I repair things for the people of the town. But my duties and obligations are not so pressing as to prevent me from joining thee again shouldst thou wish it. After all, when thou art in Britannia, thou hast usually come to repair very important things and help put the world to rights.\"")
                     add_answer({"Minoc", "tinker"})
-                    if not is_in_int_array(var_0002, var_0001) then
+                    if not is_int_in_array(var_0002, var_0001) then
                         add_answer("join")
                     end
                 end

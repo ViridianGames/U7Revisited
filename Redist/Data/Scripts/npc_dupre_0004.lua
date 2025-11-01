@@ -32,7 +32,7 @@ function npc_dupre_0004(eventid, objectref)
         var_000D = is_dead(get_npc_name(127)) --- Guess: Checks object-specific property
         var_000E = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
-        if is_in_int_array(var_0002, var_0001) then
+        if is_int_in_array(var_0002, var_0001) then
             add_answer("leave")
         end
         if not get_flag(6) then

@@ -14,7 +14,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
         end
         var_0003 = get_party_members()
         var_0004 = get_npc_name(147) --- Guess: Gets object ref
-        if is_in_int_array(var_0004, var_0003) then
+        if is_int_in_array(var_0004, var_0003) then
             add_answer("leave")
             var_0005 = find_nearby(0, 30, 748, 356) --- Guess: Checks well interaction
             if var_0005 then

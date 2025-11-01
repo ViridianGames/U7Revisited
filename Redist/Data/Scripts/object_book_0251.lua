@@ -14,7 +14,7 @@ function object_book_0251(eventid, objectref)
     if get_barge(objectref) then
         var_0000 = check_flag_location(0, 199, 5, objectref)
         var_0001 = check_flag_location(0, 251, 5, objectref)
-        if not is_in_int_array(objectref, var_0001) then
+        if not is_int_in_array(objectref, var_0001) then
             var_0001 = var_0001 .. {objectref}
         end
         -- callis 0088, 2 (unmapped)

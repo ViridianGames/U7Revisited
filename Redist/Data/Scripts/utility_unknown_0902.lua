@@ -11,7 +11,7 @@ function utility_unknown_0902(eventid, objectref)
         for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
             repeat
                 var_0006 = random(1, 8) --- Guess: Generates random number
-            until not is_in_int_array(var_0006, var_0000)
+            until not is_int_in_array(var_0006, var_0000)
             var_0000[var_0005] = var_0006
         end
         for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
@@ -26,14 +26,14 @@ function utility_unknown_0902(eventid, objectref)
         end
     else
         for _, var_0005 in ipairs({1, 2, 3, 4, 5, 6, 7, 8}) do
-            if not get_flag(42) and not is_in_int_array(1, var_0000) then var_0000[var_0005] = 1 end
-            if not get_flag(43) and not is_in_int_array(2, var_0000) then var_0000[var_0005] = 2 end
-            if not get_flag(44) and not is_in_int_array(3, var_0000) then var_0000[var_0005] = 3 end
-            if not get_flag(45) and not is_in_int_array(4, var_0000) then var_0000[var_0005] = 4 end
-            if not get_flag(46) and not is_in_int_array(5, var_0000) then var_0000[var_0005] = 5 end
-            if not get_flag(47) and not is_in_int_array(6, var_0000) then var_0000[var_0005] = 6 end
-            if not get_flag(48) and not is_in_int_array(7, var_0000) then var_0000[var_0005] = 7 end
-            if not get_flag(49) and not is_in_int_array(8, var_0000) then var_0000[var_0005] = 8 end
+            if not get_flag(42) and not is_int_in_array(1, var_0000) then var_0000[var_0005] = 1 end
+            if not get_flag(43) and not is_int_in_array(2, var_0000) then var_0000[var_0005] = 2 end
+            if not get_flag(44) and not is_int_in_array(3, var_0000) then var_0000[var_0005] = 3 end
+            if not get_flag(45) and not is_int_in_array(4, var_0000) then var_0000[var_0005] = 4 end
+            if not get_flag(46) and not is_int_in_array(5, var_0000) then var_0000[var_0005] = 5 end
+            if not get_flag(47) and not is_int_in_array(6, var_0000) then var_0000[var_0005] = 6 end
+            if not get_flag(48) and not is_int_in_array(7, var_0000) then var_0000[var_0005] = 7 end
+            if not get_flag(49) and not is_int_in_array(8, var_0000) then var_0000[var_0005] = 8 end
         end
     end
     var_0019 = {

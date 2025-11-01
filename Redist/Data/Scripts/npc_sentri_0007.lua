@@ -12,7 +12,7 @@ function npc_sentri_0007(eventid, objectref)
         var_0004 = get_player_name()
         var_0005 = get_schedule_type(7) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
-        if is_in_int_array(var_0003, var_0002) then
+        if is_int_in_array(var_0003, var_0002) then
             add_answer("leave")
         end
         if not get_flag(26) then
@@ -28,7 +28,7 @@ function npc_sentri_0007(eventid, objectref)
                 remove_answer("name")
             elseif var_0006 == "job" then
                 add_dialogue("\"When I am not adventuring with old friends, I am a trainer in Britain. I specialize in combat involving swordsmanship. I am quite good at that, as thou dost remember.\"")
-                if not is_in_int_array(var_0003, var_0002) then
+                if not is_int_in_array(var_0003, var_0002) then
                     add_dialogue("\"But I would drop everything to join thy group if thou art not too encumbered.\"")
                     add_answer("join")
                 end

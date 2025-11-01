@@ -36,8 +36,8 @@ function npc_quenton_0146(eventid, objectref)
         var_0006 = get_party_members()
         var_0007 = get_npc_name(144) --- Guess: Gets object ref
         var_0008 = get_npc_name(147) --- Guess: Gets object ref
-        if is_in_int_array(var_0007, var_0006) or is_in_int_array(var_0008, var_0006) then
-            if is_in_int_array(var_0007, var_0006) then
+        if is_int_in_array(var_0007, var_0006) or is_int_in_array(var_0008, var_0006) then
+            if is_int_in_array(var_0007, var_0006) then
                 switch_talk_to(144)
                 add_dialogue("\"Hello, Quenton. I hope thou art doing well.\" Rowena gives the pale ghost a winning smile.")
                 hide_npc(144)
@@ -49,7 +49,7 @@ function npc_quenton_0146(eventid, objectref)
                 switch_talk_to(146)
                 add_dialogue("\"These are glad tidings, for he misses thee so.\"")
             end
-            if is_in_int_array(var_0008, var_0006) then
+            if is_int_in_array(var_0008, var_0006) then
                 switch_talk_to(147)
                 add_dialogue("\"Well met, Quenton.\" The Mayor's mustache spreads as he smiles.")
                 hide_npc(147)

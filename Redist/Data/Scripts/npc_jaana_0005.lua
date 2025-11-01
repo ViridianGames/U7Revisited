@@ -9,7 +9,7 @@ function npc_jaana_0005(eventid, objectref)
         var_0001 = get_npc_name(5) --- Guess: Retrieves object reference from ID
         var_0002 = get_player_name()
         add_answer({"bye", "job", "name"})
-        if is_in_int_array(var_0001, get_party_members()) then
+        if is_int_in_array(var_0001, get_party_members()) then
             add_answer("leave")
         elseif not get_flag(24) then
             add_answer("join")
@@ -39,11 +39,11 @@ function npc_jaana_0005(eventid, objectref)
                 add_dialogue("\"I have been the Cove Healer for some time now, and can provide thee with mine healing services. Since magic is not reliable, I have been yearning to join a party of adventurers, such as mine old friends. I miss the old life!\"")
                 add_answer({"magic", "friends", "heal"})
                 set_flag(40, true)
-                if not is_in_int_array(var_0001, get_party_members()) then
+                if not is_int_in_array(var_0001, get_party_members()) then
                     add_answer("join")
                 end
             elseif var_0003 == "heal" then
-                if is_in_int_array(var_0001, get_party_members()) then
+                if is_int_in_array(var_0001, get_party_members()) then
                     if get_flag(41) then
                         var_0004 = get_timer(10) --- Guess: Checks party status or conditions
                     else

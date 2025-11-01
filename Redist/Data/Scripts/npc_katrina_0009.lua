@@ -13,7 +13,7 @@ function npc_katrina_0009(eventid, objectref)
         var_0005 = npc_id_in_party(1) --- Guess: Checks player status
         var_0006 = npc_id_in_party(4) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
-        if is_in_int_array(var_0002, var_0001) then
+        if is_int_in_array(var_0002, var_0001) then
             add_answer("leave")
         end
         if not get_flag(397) then
@@ -46,10 +46,10 @@ function npc_katrina_0009(eventid, objectref)
                 add_dialogue("\"Although there is a vast difference in how time passes in our world and in this one, I am certain I have aged at least a bit,\" she says pleasantly.")
                 remove_answer("time")
             elseif var_0007 == "job" then
-                if not is_in_int_array(var_0002, var_0001) then
+                if not is_int_in_array(var_0002, var_0001) then
                     add_dialogue("\"Why, after last accompanying thee on thine adventures I settled down to the peaceful life of a shepherd in New Magincia.\"")
                     add_answer({"New Magincia", "shepherd"})
-                    if not is_in_int_array(var_0002, var_0001) then
+                    if not is_int_in_array(var_0002, var_0001) then
                         add_dialogue("\"If thou dost have need of me I could join thy party again.\"")
                         add_answer("join")
                     end

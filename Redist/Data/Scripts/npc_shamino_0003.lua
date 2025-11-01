@@ -16,10 +16,10 @@ function npc_shamino_0003(eventid, objectref)
         if get_flag(749) then
             add_answer("settle down")
         end
-        if is_in_int_array(var_0002, var_0001) then
+        if is_int_in_array(var_0002, var_0001) then
             add_answer("leave")
         end
-        if not is_in_int_array(var_0002, var_0001) then
+        if not is_int_in_array(var_0002, var_0001) then
             add_answer("join")
         end
         if not get_flag(22) then
