@@ -19,7 +19,7 @@ function utility_spellteleport_0372(eventid, objectref)
         if get_flag(749) then
             var_0002 = 45
             var_0003 = get_nearby_npcs(var_0002) --- Guess: Gets nearby NPCs
-            var_0004 = var_0003[random(1, array_size(var_0003))]
+            var_0004 = var_0003[random(1, #var_0003)]
             if var_0004 then
                 var_0001 = add_containerobject_s(var_0004, {1551, 17493, 7715})
             end

@@ -15,10 +15,10 @@ function utility_spell_0389(eventid, objectref)
         var_0002 = {5, 5, 10, 5, 14, 5, 5, 5, 5, 5, 5, 15, 5}
         var_0003 = {2, 5, 1, 3, 1, 1, 2, 2, 2, 1, 5, 1, 5}
         var_0004 = randomize_array(var_0001) --- Guess: Randomizes array
-        var_0005 = random(1, array_size(var_0004))
+        var_0005 = random(1, #var_0004)
         var_0006 = random(1, 100)
         while var_0004[var_0005] >= var_0002[var_0005] do
-            var_0005 = random(1, array_size(var_0004))
+            var_0005 = random(1, #var_0004)
         end
         var_0007 = var_0003[var_0005]
         var_0008 = var_0007 / 2

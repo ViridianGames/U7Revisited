@@ -83,7 +83,7 @@ function npc_zorn_0087(eventid, objectref)
             elseif var_0004 == "helmet" then
                 add_dialogue("You describe the sort of helmet that you require, one that can block out the dangerous sound from the cube generator. Zorn nods. \"Yes, I can make some for thee. I shall start work immediately.\"")
                 var_0004 = get_party_members()
-                var_0004 = array_size(var_0004)
+                var_0004 = #var_0004
                 var_0005 = count_objects(359, 359, 728, 357) --- Guess: Counts items
                 if var_0005 == 0 then
                     add_dialogue("\"But thou dost not have any Caddellite chunks with which to make helmets!\"")

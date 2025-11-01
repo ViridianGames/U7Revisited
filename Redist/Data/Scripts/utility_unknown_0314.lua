@@ -6,7 +6,7 @@ function utility_unknown_0314(eventid, objectref)
         return
     end
 
-    var_0000 = array_size(get_party_members())
+    var_0000 = #get_party_members()
     var_0001 = random2(4, 1)
     if var_0001 == 1 then
         utility_unknown_1088(27)

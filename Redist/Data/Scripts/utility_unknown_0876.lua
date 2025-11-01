@@ -22,7 +22,7 @@ function utility_unknown_0876()
         "mammal", "*",
         "invertebrate", "*"
     }
-    var_0001 = random(1, array_size(var_0000) / 2) --- Guess: Selects random index
+    var_0001 = random(1, #var_0000 / 2) --- Guess: Selects random index
     var_0002 = var_0000[(var_0001 * 2) - 1] --- Guess: Gets singular form
     var_0003 = var_0000[var_0001 * 2] --- Guess: Gets plural form
     if var_0003 == "*" then

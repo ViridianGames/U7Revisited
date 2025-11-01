@@ -7,7 +7,7 @@ function object_unknown_0888(eventid, objectref)
             play_music(objectref, 48)
             var_0000 = find_nearby(0, 125, 888, objectref) --- Guess: Creates an object with specified parameters
             var_0000 = utility_unknown_1084(objectref) --- Guess: Retrieves nearby items
-            if array_size(var_0000) == 1 then
+            if #var_0000 == 1 then
                 var_0001 = get_object_position(objectref) --- Guess: Retrieves object position or attributes
                 var_0002 = get_object_position(var_0000) --- Guess: Retrieves object position or attributes
                 var_0003 = var_0001[1] < var_0002[1]

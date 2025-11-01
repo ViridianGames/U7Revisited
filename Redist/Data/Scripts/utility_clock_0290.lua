@@ -10,7 +10,7 @@ function utility_clock_0290(eventid, objectref)
             var_0002 = random(6, 9) + 1
         else
             var_0003 = get_player_name()
-            var_0004 = array_size(get_party_members())
+            var_0004 = #get_party_members()
             var_0005 = var_0004 > 2 and "we" or "I"
             add_dialogue("\"In how many hours shall " .. var_0005 .. " wake thee up, " .. var_0003 .. "?\"")
             var_0002 = ask_number(1, 12, 8, nil) --- Guess: Asks for number input

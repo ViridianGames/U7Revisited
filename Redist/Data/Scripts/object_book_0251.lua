@@ -23,7 +23,7 @@ function object_book_0251(eventid, objectref)
             var_0003 = check_inventory_space(359, var_0002, 797, 357)
             if not var_0003 then
                 start_conversation()
-                if array_size(get_party_members()) == 1 then
+                if #get_party_members() == 1 then
                     add_dialogue("@The deed for this vessel must first be purchased.@")
                 else
                     add_dialogue("@We must purchase the deed for this vessel before we sail her.@")

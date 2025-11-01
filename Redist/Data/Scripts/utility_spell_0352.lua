@@ -12,7 +12,7 @@ function utility_spell_0352(eventid, objectref)
         end
     elseif eventid == 2 then
         var_0001 = {537, 502, 530, 510, 523, 811, 716}
-        var_0002 = array_size(var_0001)
+        var_0002 = #var_0001
         var_0003 = selectrandom_creature(356) --- Guess: Selects random creature
         if var_0003 > var_0002 then
             var_0003 = var_0002

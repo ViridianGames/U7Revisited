@@ -23,7 +23,7 @@ function utility_unknown_1057(eventid, objectref, arg1)
         var_0003 = var_0005
         var_0009 = var_0003
         var_000A = show_purchase_options(var_0002, "Nobody") --- Guess: Shows purchase options
-        var_000B = var_000A == array_size(var_0002) + 1 and 0 or get_npc_id(var_0009[var_000A]) --- Guess: Gets NPC ID
+        var_000B = var_000A == #var_0002 + 1 and 0 or get_npc_id(var_0009[var_000A]) --- Guess: Gets NPC ID
         var_000C = var_000B
     end
     return var_000C

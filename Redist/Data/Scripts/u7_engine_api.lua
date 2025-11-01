@@ -1019,7 +1019,7 @@ function set_orrery(state) end
 ---[Exult 0x005E] Gets array size
 ---@param array table Array to measure
 ---@return integer size Array length
-function get_array_size(array) end
+function get_#array end
 
 ---[Exult 0x005F] Marks virtue stone
 ---@param stone_id integer Stone to mark
