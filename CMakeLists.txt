@@ -19,6 +19,8 @@ if(MSVC)
     add_compile_options(/wd4244)
     # Suppress truncation from 'double' to 'float' warnings (C4305)
     add_compile_options(/wd4305)
+    # Suppress CRT security warnings for standard C functions
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     # Declare C++17 for CPP source files
     add_compile_options(/std:c++17)
     # Warning level 3
