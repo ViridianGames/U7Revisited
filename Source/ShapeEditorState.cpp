@@ -1635,8 +1635,6 @@ void ShapeEditorState::Update()
 
 	m_currentGui->GetElement(GE_LUASCRIPTTEXTAREA)->m_String = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
 
-	// Update item name (how it appears in barks)
-	m_currentGui->GetElement(GE_ITEMNAMETEXTAREA)->m_String = GetShapeFrameName(m_currentShape, m_currentFrame, 1);
 }
 
 
@@ -1774,8 +1772,15 @@ void ShapeEditorState::Draw()
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
 
-	// Draw view angle slider at bottom of main window
+	// Draw bark text above view angle slider (centered horizontally)
 	int guiPanelWidth = 120;
+	std::string barkText = GetShapeFrameName(m_currentShape, m_currentFrame, 1);
+	int barkY = g_Engine->m_ScreenHeight - 63;  // Moved down 6 pixels from -65
+	Vector2 barkTextSize = MeasureTextEx(*g_guiFont.get(), barkText.c_str(), 22.0f, 1);
+	int barkX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - (int)barkTextSize.x) / 2;  // Center in 3D view area
+	DrawTextEx(*g_guiFont.get(), barkText.c_str(), {(float)barkX, (float)barkY}, 22.0f, 1, WHITE);
+
+	// Draw view angle slider at bottom of main window
 	int sliderWidth = 300;
 	int sliderHeight = 20;
 	int sliderX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - sliderWidth) / 2;  // Center in 3D view area
@@ -1786,7 +1791,7 @@ void ShapeEditorState::Draw()
 	DrawRectangleLines(sliderX, sliderY, sliderWidth, sliderHeight, WHITE);
 
 	// Draw label (larger font for readability)
-	float labelFontSize = 20.0f;
+	float labelFontSize = 22.0f;
 	DrawTextEx(*g_guiFont.get(), "View Angle:", {(float)(sliderX - 120), (float)(sliderY)}, labelFontSize, 1, WHITE);
 
 	// Calculate slider position
@@ -2191,13 +2196,7 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	AddAutoStretchButton(gui, GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
 	AddAutoStretchButton(gui, GE_CLEARALLSCRIPTSBUTTON, 71, y + 11, "Clear All", g_guiFont.get());
 
-	y += yoffset * 2;
-
-	// Display the item name (how it appears in barks) - updated dynamically in Update()
-	gui->AddTextArea(GE_ITEMNAMETEXTLABEL, g_guiFont.get(), "Bark:", 2, y);
-	gui->AddTextArea(GE_ITEMNAMETEXTAREA, g_guiFont.get(), "", 38, y);
-
-	y += yoffset;
+	y += 27;
 
 	return y;
 
