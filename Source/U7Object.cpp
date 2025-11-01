@@ -621,12 +621,30 @@ void U7Object::Interact(int event)
 	{
 		g_ConversationState->SetNPC(m_NPCID);
 
-		string scriptName = "func_04";
-
+		// Find NPC script using new naming: npc_*_XXXX where XXXX = NPC ID in decimal (4 digits)
+		// NPC IDs start at 0 and increment, independent of shape ID
 		stringstream ss;
-		ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << m_NPCID;
+		ss << std::setfill('0') << std::setw(4) << m_NPCID;
+		string suffix = "_" + ss.str();
 
-		scriptName += ss.str();
+		// Search for script ending with the calculated suffix (e.g., npc_iolo_0001)
+		string scriptName = "";
+		for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		{
+			const string& name = g_ScriptingSystem->m_scriptFiles[i].first;
+			if (name.length() >= suffix.length() &&
+				name.compare(name.length() - suffix.length(), suffix.length(), suffix) == 0)
+			{
+				scriptName = name;
+				break;
+			}
+		}
+
+		if (scriptName.empty())
+		{
+			DebugPrint("No script found for NPC ID: " + to_string(m_NPCID) + " (looking for suffix: " + suffix + ")");
+			return;
+		}
 
 		g_ConversationState->SetLuaFunction(scriptName);
 

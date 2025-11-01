@@ -1,4 +1,4 @@
---- Best guess: Triggers an effect for a specific item when used, checking ownership to ensure valid interaction.
+--- Best guess: sitting in chairs
 function object_unknown_0873(eventid, objectref)
     local var_0000
 

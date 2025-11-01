@@ -391,6 +391,9 @@ void ShapeEditorState::Update()
 	//  Handle GUI Input
 	if (m_currentGui->GetActiveElementID() == GE_SAVEBUTTON)
 	{
+		AddConsoleString("Saving shapetable.dat...", WHITE);
+		Draw();  // Force a frame render to show the loading message
+
 		ofstream file("Data/shapetable.dat", ios::trunc);
 		if (file.is_open())
 		{
@@ -1361,26 +1364,6 @@ void ShapeEditorState::Update()
 			}
 		}
 
-		// If no decimal script found, try legacy hex naming (func_XXXX.lua)
-		if (newScriptIndex == 0)
-		{
-			stringstream hexss;
-			hexss << std::uppercase << std::hex << std::setfill('0') << std::setw(4) << m_currentShape;
-			std::string hexSuffix = "_" + hexss.str();
-
-			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-			{
-				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-				if (scriptName.length() >= hexSuffix.length() &&
-					scriptName.compare(scriptName.length() - hexSuffix.length(), hexSuffix.length(), hexSuffix) == 0)
-				{
-					newScriptIndex = i;
-					AddConsoleString("Using legacy hex script: " + scriptName);
-					break;
-				}
-			}
-		}
-
 		if(newScriptIndex != 0)
 		{
 			m_luaScriptIndex = newScriptIndex;
@@ -1401,6 +1384,7 @@ void ShapeEditorState::Update()
 
 		// First, determine what script we would assign
 		std::string targetScript;
+		int foundScriptIndex = 0;
 		{
 			std::string suffix;
 			stringstream ss;
@@ -1427,7 +1411,6 @@ void ShapeEditorState::Update()
 			}
 
 			// Search for script ending with the calculated suffix
-			int foundScriptIndex = 0;
 			for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
 			{
 				const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
@@ -1437,27 +1420,6 @@ void ShapeEditorState::Update()
 					foundScriptIndex = i;
 					targetScript = scriptName;
 					break;
-				}
-			}
-
-			// If no decimal script found, try legacy hex naming (func_XXXX.lua)
-			if (foundScriptIndex == 0)
-			{
-				stringstream hexss;
-				hexss << std::uppercase << std::hex << std::setfill('0') << std::setw(4) << m_currentShape;
-				std::string hexSuffix = "_" + hexss.str();
-
-				for (int i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
-				{
-					const std::string& scriptName = g_ScriptingSystem->m_scriptFiles[i].first;
-					if (scriptName.length() >= hexSuffix.length() &&
-						scriptName.compare(scriptName.length() - hexSuffix.length(), hexSuffix.length(), hexSuffix) == 0)
-					{
-						foundScriptIndex = i;
-						targetScript = scriptName;
-						AddConsoleString("Using legacy hex script: " + scriptName);
-						break;
-					}
 				}
 			}
 
@@ -1497,6 +1459,9 @@ void ShapeEditorState::Update()
 				skippedCount++;
 			}
 		}
+
+		// Update the script index so "Open Script" button opens the correct script
+		m_luaScriptIndex = foundScriptIndex;
 
 		AddConsoleString("Assigned scripts to " + std::to_string(assignedCount) + " frames, " + std::to_string(alreadyCorrectCount) + " already correct, " + std::to_string(skippedCount) + " skipped (different script)");
 	}

@@ -7,29 +7,29 @@ function object_door_0376(eventid, objectref)
     if eventid ~= 1 then
         return
     end
-    var_0000 = func_081B(eventid, objectref)  -- Get frame % 4 (handle state)
+    var_0000 = utility_unknown_0795(eventid, objectref)  -- Get frame % 4 (handle state)
     if var_0000 == 1 then
         -- Handle up state
-        if func_081D(7, 0, 0, 0, 270, objectref) then
-            func_081E(1, 0, 3, 0, 432, 2, 1, 433, objectref)
+        if utility_position_0797(7, 0, 0, 0, 270, objectref) then
+            utility_unknown_0798(1, 0, 3, 0, 432, 2, 1, 433, objectref)
             set_object_quality(objectref, 31)
         end
     elseif var_0000 == 0 then
         -- Handle down state
-        if func_081D(7, 0, 0, 1, 270, objectref) then
-            func_081E(7, -3, 0, 1, 432, 1, 0, 433, objectref)
+        if utility_position_0797(7, 0, 0, 1, 270, objectref) then
+            utility_unknown_0798(7, -3, 0, 1, 432, 1, 0, 433, objectref)
             set_object_quality(objectref, 30)
         end
     elseif var_0000 == 2 then
         -- Handle locked state (same as state 0)
-        if func_081D(7, 0, 0, 1, 270, objectref) then
-            func_081E(7, -3, 0, 1, 432, 1, 0, 433, objectref)
+        if utility_position_0797(7, 0, 0, 1, 270, objectref) then
+            utility_unknown_0798(7, -3, 0, 1, 432, 1, 0, 433, objectref)
             set_object_quality(objectref, 30)
         end
     elseif var_0000 == 3 then
         -- Handle glowing state (same as state 1)
-        if func_081D(7, 0, 0, 0, 270, objectref) then
-            func_081E(1, 0, 3, 0, 432, 2, 1, 433, objectref)
+        if utility_position_0797(7, 0, 0, 0, 270, objectref) then
+            utility_unknown_0798(1, 0, 3, 0, 432, 2, 1, 433, objectref)
             set_object_quality(objectref, 31)
         end
     end
