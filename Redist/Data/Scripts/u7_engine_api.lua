@@ -608,10 +608,10 @@ function add_party_items(shape, quantity, quality, frame, temporary) end
 ---@param object_id integer Object to mark as last created
 function set_last_created(object_id) end
 
----[Exult 0x0026] Updates the last created object
----@param shape integer New shape for last created object
----@param frame integer New frame for last created object
-function update_last_created(shape, frame) end
+---[Exult 0x0026] Updates the position of the last created object
+---@param position table Position array {x, y, z}
+---@return boolean success True if successful, false if no object exists
+function update_last_created(position) end
 
 ---[Exult 0x0036] Gives the last created object to an NPC
 ---@param npc_id integer NPC to give object to
