@@ -1644,6 +1644,103 @@ void ShapeEditorState::Update()
 
 }
 
+void ShapeEditorState::DrawCuboidWireframe(const Vector3& position, const Vector3& dims, const Vector3& scaling, float rotationAngle)
+{
+	Vector3 scale = Vector3{ dims.x * scaling.x, dims.y * scaling.y, dims.z * scaling.z };
+
+	// Match the cuboid positioning from ShapeData::Draw() exactly
+	// thisPos is where the model is placed (model origin in world space)
+	Vector3 thisPos = Vector3Add(position, Vector3{ -dims.x + 1, 0, -dims.z + 1 });
+
+	// Gap size for offsetting faces outward so they don't overlap
+	float gap = 0.05f;
+
+	// Helper function to rotate a point around Y axis (angle in radians)
+	auto rotateY = [](Vector3 point, float angleRadians) -> Vector3 {
+		float s = sinf(angleRadians);
+		float c = cosf(angleRadians);
+		float newX = point.x * c - point.z * s;
+		float newZ = point.x * s + point.z * c;
+		return Vector3{ newX, point.y, newZ };
+	};
+
+	// Define the 8 corners in model space (before scaling)
+	// The cuboid model is a 1x1x1 cube with origin at bottom-left-back corner (0,0,0 to 1,1,1)
+	Vector3 localCorners[8] = {
+		{0.0f, 0.0f, 0.0f},  // 0: bottom-left-back (origin)
+		{1.0f, 0.0f, 0.0f},  // 1: bottom-right-back
+		{1.0f, 0.0f, 1.0f},  // 2: bottom-right-front
+		{0.0f, 0.0f, 1.0f},  // 3: bottom-left-front
+		{0.0f, 1.0f, 0.0f},  // 4: top-left-back
+		{1.0f, 1.0f, 0.0f},  // 5: top-right-back
+		{1.0f, 1.0f, 1.0f},  // 6: top-right-front
+		{0.0f, 1.0f, 1.0f}   // 7: top-left-front
+	};
+
+	// Transform corners: scale -> rotate -> translate (matching DrawModelEx)
+	// DrawModelEx does: matTransform = scale * rotation * translation
+	// This means rotation happens around origin (0,0,0) in model space, AFTER scaling
+	Vector3 corners[8];
+	for (int i = 0; i < 8; i++)
+	{
+		// Scale
+		Vector3 scaled = Vector3{ localCorners[i].x * scale.x, localCorners[i].y * scale.y, localCorners[i].z * scale.z };
+		// Rotate around origin (0,0,0) in model space
+		// DrawModelEx expects degrees but receives rotationAngle (radians), so it does: angle*DEG2RAD
+		// To match this, we need to apply the same conversion: rotationAngle * DEG2RAD
+		Vector3 rotated = rotateY(scaled, rotationAngle * DEG2RAD);
+		// Translate to world position
+		corners[i] = Vector3Add(rotated, thisPos);
+	}
+
+	// Helper to offset a corner along a normal direction
+	auto offsetCorner = [](Vector3 corner, Vector3 normal, float offset) -> Vector3 {
+		return Vector3Add(corner, Vector3Scale(normal, offset));
+	};
+
+	// Draw top face (RED) - offset upward (+Y)
+	Vector3 topNormal = {0, 1, 0};
+	DrawLine3D(offsetCorner(corners[4], topNormal, gap), offsetCorner(corners[5], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[5], topNormal, gap), offsetCorner(corners[6], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[6], topNormal, gap), offsetCorner(corners[7], topNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[7], topNormal, gap), offsetCorner(corners[4], topNormal, gap), RED);
+
+	// Draw front face (GREEN) - offset forward (+Z)
+	Vector3 frontNormal = {0, 0, 1};
+	DrawLine3D(offsetCorner(corners[3], frontNormal, gap), offsetCorner(corners[2], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[2], frontNormal, gap), offsetCorner(corners[6], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[6], frontNormal, gap), offsetCorner(corners[7], frontNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[7], frontNormal, gap), offsetCorner(corners[3], frontNormal, gap), GREEN);
+
+	// Draw right face (BLUE) - offset right (+X)
+	Vector3 rightNormal = {1, 0, 0};
+	DrawLine3D(offsetCorner(corners[1], rightNormal, gap), offsetCorner(corners[2], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[2], rightNormal, gap), offsetCorner(corners[6], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[6], rightNormal, gap), offsetCorner(corners[5], rightNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[5], rightNormal, gap), offsetCorner(corners[1], rightNormal, gap), BLUE);
+
+	// Draw bottom face (RED) - offset downward (-Y)
+	Vector3 bottomNormal = {0, -1, 0};
+	DrawLine3D(offsetCorner(corners[0], bottomNormal, gap), offsetCorner(corners[1], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[1], bottomNormal, gap), offsetCorner(corners[2], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[2], bottomNormal, gap), offsetCorner(corners[3], bottomNormal, gap), RED);
+	DrawLine3D(offsetCorner(corners[3], bottomNormal, gap), offsetCorner(corners[0], bottomNormal, gap), RED);
+
+	// Draw back face (GREEN) - offset backward (-Z)
+	Vector3 backNormal = {0, 0, -1};
+	DrawLine3D(offsetCorner(corners[0], backNormal, gap), offsetCorner(corners[1], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[1], backNormal, gap), offsetCorner(corners[5], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[5], backNormal, gap), offsetCorner(corners[4], backNormal, gap), GREEN);
+	DrawLine3D(offsetCorner(corners[4], backNormal, gap), offsetCorner(corners[0], backNormal, gap), GREEN);
+
+	// Draw left face (BLUE) - offset left (-X)
+	Vector3 leftNormal = {-1, 0, 0};
+	DrawLine3D(offsetCorner(corners[0], leftNormal, gap), offsetCorner(corners[3], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[3], leftNormal, gap), offsetCorner(corners[7], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[7], leftNormal, gap), offsetCorner(corners[4], leftNormal, gap), BLUE);
+	DrawLine3D(offsetCorner(corners[4], leftNormal, gap), offsetCorner(corners[0], leftNormal, gap), BLUE);
+}
+
 
 void ShapeEditorState::Draw()
 {
@@ -1663,6 +1760,12 @@ void ShapeEditorState::Draw()
 	Vector3 finalPos = Vector3Add(Vector3Add(g_camera.target, shapeData->m_TweakPos), Vector3{ shapeData->m_Dims.x / 2 - 1, 0, shapeData->m_Dims.z / 2 - 1 });
 
 	shapeData->Draw(finalPos, g_cameraRotation, Color{255, 255, 255, 255}, cuboidScaling);
+
+	// Draw colored wireframe outlines for cuboid faces
+	if (shapeData->m_drawType == ShapeDrawType::OBJECT_DRAW_CUBOID)
+	{
+		DrawCuboidWireframe(finalPos, shapeData->m_Dims, shapeData->m_Scaling, g_cameraRotation);
+	}
 
 	DrawSphere(Vector3Add(shapeData->m_CenterPoint, finalPos), 0.15f, RED);
 

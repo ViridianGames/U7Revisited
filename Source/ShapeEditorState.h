@@ -34,7 +34,9 @@ public:
 
    void ChangeGui(Gui* newGui);
    void SwitchToGuiForDrawType(ShapeDrawType drawType);
-      
+
+   void DrawCuboidWireframe(const Vector3& position, const Vector3& dims, const Vector3& scaling, float rotationAngle);
+
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
    std::map<std::string, std::unique_ptr<RaylibModel>>::iterator m_modelIndex;
