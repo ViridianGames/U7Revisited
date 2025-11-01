@@ -1030,31 +1030,31 @@ function set_time_palette(palette_id) end
 -- ============================================================================
 
 ---❓ Unknown function - needs research
-function unknown_0628H(...) end
+function utility_unknown_0296(...) end
 
 ---❓ Unknown function - needs research
-function unknown_0802H(...) end
+function utility_unknown_0770(...) end
 
 ---❓ Unknown function - needs research
-function unknown_080DH(...) end
+function utility_unknown_0781(...) end
 
 ---❓ Unknown function - needs research
-function unknown_0827H(...) end
+function utility_unknown_0807(...) end
 
 ---❓ Unknown function - needs research
-function unknown_0830H(...) end
+function utility_sail_0816(...) end
 
 ---❓ Unknown function - needs research
-function unknown_0831H(...) end
+function utility_gangplank_0817(...) end
 
 ---❓ Unknown function - needs research
-function unknown_08B3H(...) end
+function utility_unknown_0947(...) end
 
 ---❓ Unknown function - needs research
-function unknown_08FEH(...) end
+function utility_unknown_1022(...) end
 
 ---❓ Unknown function - needs research
-function unknown_08FFH(...) end
+function utility_unknown_1023(...) end
 
 -- Add more unknown functions here as you discover them in scripts!
 -- Format: function unknown_XXXXH(...) end
