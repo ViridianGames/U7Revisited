@@ -720,6 +720,10 @@ shared_ptr<Sprite> g_ActiveButtonL;
 shared_ptr<Sprite> g_ActiveButtonM;
 shared_ptr<Sprite> g_ActiveButtonR;
 
+shared_ptr<Sprite> g_ShapeButtonL;
+shared_ptr<Sprite> g_ShapeButtonM;
+shared_ptr<Sprite> g_ShapeButtonR;
+
 shared_ptr<Sprite> g_LeftArrow;
 shared_ptr<Sprite> g_RightArrow;
 

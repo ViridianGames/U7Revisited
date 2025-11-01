@@ -361,6 +361,10 @@ extern std::shared_ptr<Sprite> g_ActiveButtonL;
 extern std::shared_ptr<Sprite> g_ActiveButtonM;
 extern std::shared_ptr<Sprite> g_ActiveButtonR;
 
+extern std::shared_ptr<Sprite> g_ShapeButtonL;
+extern std::shared_ptr<Sprite> g_ShapeButtonM;
+extern std::shared_ptr<Sprite> g_ShapeButtonR;
+
 extern std::shared_ptr<Sprite> g_LeftArrow;
 extern std::shared_ptr<Sprite> g_RightArrow;
 

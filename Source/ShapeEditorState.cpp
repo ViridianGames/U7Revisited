@@ -19,6 +19,19 @@
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Helper Functions
+////////////////////////////////////////////////////////////////////////////////
+
+// Helper function to add a stretch button with auto-calculated width
+static void AddAutoStretchButton(Gui* gui, int ID, int x, int y, const string& label, Font* font)
+{
+	int width = MeasureTextEx(*font, label.c_str(), font->baseSize, 1).x * 1.15f;
+	gui->AddStretchButton(ID, x, y, width, label,
+		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM,
+		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  ShapeEditorState
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1849,7 +1862,7 @@ void ShapeEditorState::SetupCuboidGui()
 	int yoffset = 13;
 
 	m_cuboidGui->AddTextArea(GE_TOPTEXTAREA, g_guiFont.get(), "Top Face", 3, y, 0, 0, RED);
-	m_cuboidGui->AddTextButton(GE_TOPRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_TOPRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_TOPXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -1873,7 +1886,7 @@ void ShapeEditorState::SetupCuboidGui()
 	y += yoffset;
 
 	m_cuboidGui->AddTextArea(GE_FRONTTEXTAREA, g_guiFont.get(), "Front Face", 3, y, 0, 0, GREEN);
-	m_cuboidGui->AddTextButton(GE_FRONTRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_FRONTRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_FRONTXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -1897,7 +1910,7 @@ void ShapeEditorState::SetupCuboidGui()
 	y += yoffset;
 
 	m_cuboidGui->AddTextArea(GE_RIGHTTEXTAREA, g_guiFont.get(), "Right Face", 3, y, 0, 0, BLUE);
-	m_cuboidGui->AddTextButton(GE_RIGHTRESET, 60, y - 2, "Reset", g_guiFont.get());
+	AddAutoStretchButton(m_cuboidGui.get(), GE_RIGHTRESET, 60, y - 2, " Reset ", g_guiFont.get());
 	y += yoffset * .8f;
 
 	m_cuboidGui->AddIconButton(GE_RIGHTXMINUSBUTTON, 4, y, g_LeftArrow);
@@ -2071,8 +2084,8 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	int yoffset = 13;
 	int y = 4;
 
-	gui->AddTextButton(GE_SAVEBUTTON, 8, y - 2, "  Save  ", g_guiFont.get());
-	gui->AddTextButton(GE_LOADBUTTON, 64, y - 2, "  Load  ", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_SAVEBUTTON, 8, y - 2, "  Save  ", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_LOADBUTTON, 64, y - 2, "  Load  ", g_guiFont.get());
 	y += yoffset;
 
 	gui->AddIconButton(GE_PREVSHAPEBUTTON, 2, y, g_LeftArrow);
@@ -2095,7 +2108,7 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_COPYPARAMSFROMFRAME0, 8, y - 2, "Copy From Frame 0", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_COPYPARAMSFROMFRAME0, 3, y - 2, "Copy From Frame 0", g_guiFont.get());
 
 	y += yoffset;
 	gui->AddTextArea(GE_TWEAKPOSITIONTEXTAREA, g_guiFont.get(), "Tweak Pos: ", 2, y);
@@ -2148,12 +2161,12 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 	gui->AddIconButton(GE_TWEAKROTATIONMINUSBUTTON, 110, y, g_RightArrow);
 
 	y += yoffset;
-	gui->AddTextButton(GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_JUMPTOINSTANCE, 8, y - 2, "Jump To Instance", g_guiFont.get());
 
 	y += yoffset;
 
 	gui->AddTextArea(GE_LUASCRIPTLABEL, g_guiFont.get(), "Lua Script:", 2, y);
-	gui->AddTextButton(GE_OPENLUASCRIPTBUTTON, 60, y - 2, "Open Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_OPENLUASCRIPTBUTTON, 55, y - 2, "Open Script", g_guiFont.get());
 
 	y += yoffset;
 
@@ -2163,13 +2176,13 @@ int ShapeEditorState::SetupCommonGui(Gui* gui)
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_SETLUASCRIPTTOSHAPEIDBUTTON, 4, y - 2, "Set Script to ShapeID", g_guiFont.get());
 
 	y += yoffset;
 
-	gui->AddTextButton(GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
-	gui->AddTextButton(GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
-	gui->AddTextButton(GE_CLEARALLSCRIPTSBUTTON, 66, y + 11, "Clear All", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_ADDALLFRAMESSCRIPTBUTTON, 4, y - 2, "Add All Frames Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_CLEARSCRIPTBUTTON, 4, y + 11, "Clear Script", g_guiFont.get());
+	AddAutoStretchButton(gui, GE_CLEARALLSCRIPTSBUTTON, 71, y + 11, "Clear All", g_guiFont.get());
 
 	y += yoffset * 2;
 
