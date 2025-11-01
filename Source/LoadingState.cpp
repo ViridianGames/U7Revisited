@@ -310,8 +310,8 @@ void LoadingState::LoadChunks()
 			for (int k = 0; k < 16; ++k)
 			{
 				unsigned short thisdata;
-				unsigned char frontend;
-				unsigned char backend;
+				//unsigned char frontend;
+				//unsigned char backend;
 				fread(&thisdata, sizeof(unsigned short), 1, u7chunksfile);
 
 				unsigned int shapenum = thisdata & 0x3ff;
@@ -417,7 +417,7 @@ void LoadingState::LoadIFIX()
 
 			unordered_map<unsigned int, entrydata> entrymap;
 			//  Now we have the data we want.  Each entry is 8 bytes long.
-			for (int i = 0; i < entrycount; ++i)
+			for (unsigned int i = 0; i < entrycount; ++i)
 			{
 				entrydata thisentry;
 				fread(&thisentry.offest, sizeof(unsigned int), 1, u7thisifix);
@@ -457,7 +457,7 @@ void LoadingState::LoadIFIX()
 						fseek(u7thisifix, thisentry.offest * sizeof(char), SEEK_SET);
 						fread(locationdata, sizeof(unsigned char), thisentry.length, u7thisifix);
 
-						for (int w = 0; w < (thisentry.length / 2); w += 2)
+						for (unsigned int w = 0; w < (thisentry.length / 2); w += 2)
 						{
 							unsigned short thisLocationData = locationdata[w];
 							unsigned short shapeData = locationdata[w + 1];
@@ -543,13 +543,13 @@ void LoadingState::LoadFaces()
 			std::vector<frameData> frameOffsets;
 			frameOffsets.resize(frameCount);
 			frameOffsets[0].fileOffset = 0;
-			for (int i = 1; i < frameCount; ++i)
+			for (unsigned int i = 1; i < frameCount; ++i)
 			{
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
 			//  Read the frame data.
-			for (int i = 0; i < frameCount; ++i)
+			for (unsigned int i = 0; i < frameCount; ++i)
 			{
 				ShapeData& shapeData = g_shapeTable[thisShape][i];
 				//  Seek to the start of this frame's data.
@@ -983,13 +983,13 @@ void LoadingState::CreateShapeTable()
 			std::vector<frameData> frameOffsets;
 			frameOffsets.resize(frameCount);
 			frameOffsets[0].fileOffset = 0;
-			for (int i = 1; i < frameCount; ++i)
+			for (unsigned int i = 1; i < frameCount; ++i)
 			{
 				frameOffsets[i].fileOffset = ReadU32(shapes);
 			}
 
 			//  Read the frame data.
-			for (int i = 0; i < frameCount; ++i)
+			for (unsigned int i = 0; i < frameCount; ++i)
 			{
 				int paletteNumber = 0;
 				// if(thisShape == 508 || thisShape == 512 || (thisShape == 732 && (i == 4 || i == 5))) // Stained glass
@@ -1169,7 +1169,7 @@ void LoadingState::CreateObjectTable()
 	std::vector<FLXEntryData> entrymap;
 	entrymap.resize(entrycount);
 	//  Now we have the data we want.  Each entry is 8 bytes long.
-	for (int i = 0; i < entrycount; ++i)
+	for (unsigned int i = 0; i < entrycount; ++i)
 	{
 		FLXEntryData thisentry;
 		thisentry.length = 0;
@@ -1180,7 +1180,7 @@ void LoadingState::CreateObjectTable()
 	}
 
 	std::vector<std::string> shapeNames;
-	for (int i = 0; i < entrycount; ++i)
+	for (unsigned int i = 0; i < entrycount; ++i)
 	{
 		textfile.seekg(entrymap[i].offset);
 		char* thisname = new char[entrymap[i].length + 1]; // +1 for null terminator
@@ -1207,7 +1207,7 @@ void LoadingState::CreateObjectTable()
 	{
 		debugFile << "\nMISC NAMES (entries 1024+):\n";
 		debugFile << "Food items should be at indices 1024+11 through 1024+42\n\n";
-		for (int i = 1024; i < entrycount; ++i)
+		for (unsigned int i = 1024; i < entrycount; ++i)
 		{
 			debugFile << "[" << i << "] (misc_name " << (i - 1024) << "): " << shapeNames[i] << "\n";
 		}
@@ -1222,7 +1222,7 @@ void LoadingState::CreateObjectTable()
 	g_miscNames.clear();
 	if (entrycount > 1024)
 	{
-		for (int i = 1024; i < entrycount; ++i)
+		for (unsigned int i = 1024; i < entrycount; ++i)
 		{
 			g_miscNames.push_back(shapeNames[i]);
 		}
@@ -1318,7 +1318,7 @@ std::vector<LoadingState::FLXEntryData> LoadingState::ParseFLXHeader(istream &fi
 	std::vector<FLXEntryData> entrymap;
 	entrymap.resize(entrycount);
 	//  Now we have the data we want.  Each entry is 8 bytes long.
-	for (int i = 0; i < entrycount; ++i)
+	for (unsigned int i = 0; i < entrycount; ++i)
 	{
 		FLXEntryData thisentry;
 		thisentry.offset = ReadS32(file);
@@ -1650,7 +1650,7 @@ void LoadingState::LoadNPCSchedules()
 		unordered_map<unsigned char, unsigned short> schedulesPerNPC;
 
 		int entriesLastIndex = 0;
-		for (int i = 0; i < npcCount; ++i)
+		for (unsigned int i = 0; i < npcCount; ++i)
 		{
 			unsigned short entryIndex = ReadU16(file);
 			unsigned int entriesThisIndex = entryIndex - entriesLastIndex;
@@ -1661,7 +1661,7 @@ void LoadingState::LoadNPCSchedules()
 		int location = file.tellg();
 
 		//  Now that we know how many entries there are for each NPC, we can read the entries.
-		for (int i = 1; i < npcCount; ++i)
+		for (unsigned int i = 1; i < npcCount; ++i)
 		{
 			unsigned short entryCount = schedulesPerNPC[i];
 			for (int j = 0; j < entryCount; ++j)
