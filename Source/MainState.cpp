@@ -1203,9 +1203,17 @@ void MainState::Draw()
 		float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
 		float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
 
-		float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
+		// Draw minimap arrow rotated by camera angle around its center
+		float centerX = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX;
+		float centerZ = _ScaleZ;
+		float rotation = -g_cameraRotation * RAD2DEG - 45.0f;  // Negate to match camera rotation direction, subtract 45° for isometric offset
 
-		DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
+		// Setup source and destination rectangles for proper centered rotation
+		Rectangle source = { 0, 0, (float)m_MinimapArrow->width, (float)m_MinimapArrow->height };
+		Rectangle dest = { centerX, centerZ, m_MinimapArrow->width * g_DrawScale, m_MinimapArrow->height * g_DrawScale };
+		Vector2 origin = { m_MinimapArrow->width * g_DrawScale / 2.0f, m_MinimapArrow->height * g_DrawScale / 2.0f };
+
+		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
 
 		if (m_objectSelectionMode)
 		{
