@@ -13,7 +13,7 @@ function npc_rayburt_0076(eventid, objectref)
 
     start_conversation()
     switch_talk_to(76)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(76)
     var_0001 = get_schedule_type(get_npc_name(76))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then

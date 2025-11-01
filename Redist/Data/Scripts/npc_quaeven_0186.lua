@@ -4,7 +4,7 @@ function npc_quaeven_0186(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(186)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(186)
         var_0001 = false
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})

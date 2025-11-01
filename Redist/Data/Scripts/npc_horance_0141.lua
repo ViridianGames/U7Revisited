@@ -29,7 +29,7 @@ function npc_horance_0141(eventid, objectref)
     else
         switch_talk_to(141)
     end
-    var_0004 = get_schedule()
+    var_0004 = get_schedule(141)
     var_0005 = get_schedule_type(141)
     if var_0004 == 0 or var_0004 == 1 then
         if var_0005 == 14 then

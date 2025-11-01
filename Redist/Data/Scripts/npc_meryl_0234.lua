@@ -3,7 +3,7 @@ function npc_meryl_0234(eventid, objectref)
     local local0, local1, local2, local3
 
     if eventid == 0 then
-        local0 = get_schedule()
+        local0 = get_schedule(-234)
         local1 = get_schedule_type(get_npc_name(-234))
         local2 = random2(4, 1)
         if local1 == 29 then

@@ -5,7 +5,7 @@ function npc_zella_0036(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(36)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule(36) --- Guess: Checks game state or timer
         var_0001 = get_schedule_type(36) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
         if not get_flag(165) then

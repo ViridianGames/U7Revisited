@@ -63,7 +63,7 @@ function npc_batlin_0026(eventid, objectref)
     end
     var_0004 = get_lord_or_lady()
     var_0005 = is_player_wearing_fellowship_medallion()
-    var_0006 = get_schedule()
+    var_0006 = get_schedule(26)
     var_0007 = get_player_name()
     add_answer({"bye", "job", "name"})
     if not get_flag(65) then

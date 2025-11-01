@@ -13,7 +13,7 @@ function npc_karenna_0094(eventid, objectref)
     start_conversation()
     switch_talk_to(94)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(94)
     var_0002 = get_schedule_type(get_npc_name(94))
     add_answer({"murders", "bye", "job", "name"})
     if get_flag(244) then

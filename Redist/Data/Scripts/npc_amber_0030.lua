@@ -27,7 +27,7 @@ function npc_amber_0030(eventid, objectref)
 
     start_conversation()
     switch_talk_to(-30)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(-30)
     add_answer({"bye", "job", "name"})
     var_0001 = npc_id_in_party(-3)
     if get_flag(107) or var_0001 then

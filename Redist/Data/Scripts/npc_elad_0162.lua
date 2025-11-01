@@ -37,7 +37,7 @@ function npc_elad_0162(eventid, objectref)
                 add_answer("services")
                 remove_answer("heal")
             elseif answer == "services" then
-                var_0002 = get_schedule()
+                var_0002 = get_schedule(162)
                 if var_0002 == 2 or var_0002 == 3 or var_0002 == 4 or var_0002 == 6 then
                     utility_unknown_0889(425, 10, 25)
                 else

@@ -5,7 +5,7 @@ function npc_smithy_0232(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(232)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(232)
         var_0002 = get_schedule_type(get_npc_name(232))
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -55,7 +55,7 @@ function npc_smithy_0232(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(232)
         var_0002 = get_schedule_type(get_npc_name(232))
         var_0004 = random2(4, 1)
         if var_0002 == 10 then

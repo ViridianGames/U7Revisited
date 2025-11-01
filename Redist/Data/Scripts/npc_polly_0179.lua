@@ -5,7 +5,7 @@ function npc_polly_0179(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(179)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(179)
         var_0002 = get_schedule_type(get_npc_name(179))
         start_conversation()
         add_answer({"bye", "job", "name"})

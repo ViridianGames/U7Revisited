@@ -13,7 +13,7 @@ function npc_rutherford_0092(eventid, objectref)
     start_conversation()
     switch_talk_to(92)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(92)
     var_0002 = get_schedule_type(get_npc_name(92))
     add_answer({"bye", "job", "name"})
     if get_flag(287) then

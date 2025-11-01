@@ -4,7 +4,7 @@ function npc_runeb_0184(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(184)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(184)
         var_0001 = get_npc_name(184)
         if var_0000 == 7 then
             var_0002 = utility_unknown_1020(185, 184)

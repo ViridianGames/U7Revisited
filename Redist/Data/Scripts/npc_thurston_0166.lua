@@ -5,7 +5,7 @@ function npc_thurston_0166(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(166)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(166)
         var_0002 = get_schedule_type(get_npc_name(166))
         var_0003 = is_player_wearing_fellowship_medallion()
         start_conversation()

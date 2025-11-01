@@ -6,7 +6,7 @@ function npc_master_de_snel_0119(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(119)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 = get_schedule(119) --- Guess: Checks game state
         var_0002 = get_schedule_type(119) --- Guess: Gets object state
         var_0003 = get_npc_name(119) --- Guess: Gets object ref
         add_answer({"bye", "job", "name"})

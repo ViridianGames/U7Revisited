@@ -131,7 +131,7 @@ function npc_fenn_0175(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0005 = get_schedule()
+        var_0005 = get_schedule(175)
         var_0006 = get_schedule_type(get_npc_name(175))
         var_0007 = random2(4, 1)
         if var_0006 == 11 then

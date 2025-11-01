@@ -4,7 +4,7 @@ function npc_sintag_0225(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(225)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(225)
         var_0001 = get_schedule_type(get_npc_name(225))
         var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
         start_conversation()

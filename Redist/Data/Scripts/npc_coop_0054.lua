@@ -7,7 +7,7 @@ function npc_coop_0054(eventid, objectref)
         switch_talk_to(54)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = get_schedule() --- Guess: Checks game state or timer
+        var_0002 = get_schedule(54) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(54) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0004 = npc_id_in_party(39) --- Guess: Checks player status
@@ -112,7 +112,7 @@ function npc_coop_0054(eventid, objectref)
         end
         add_dialogue("\"Goodbye!\"")
     elseif eventid == 0 then
-        var_0002 = get_schedule() --- Guess: Checks game state or timer
+        var_0002 = get_schedule(54) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(54) --- Guess: Gets object state
         if var_0003 == 7 then
             var_0007 = random(1, 4)

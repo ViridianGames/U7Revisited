@@ -4,7 +4,7 @@ function npc_danag_0251(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(251)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(251)
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
         if var_0000 == 7 then

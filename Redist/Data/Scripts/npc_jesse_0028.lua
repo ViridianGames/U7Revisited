@@ -4,7 +4,7 @@ function npc_jesse_0028(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = get_schedule()
+            var_0002 = get_schedule(-28)
             var_0003 = get_schedule_type(get_npc_name(-28))
             var_0004 = random2(4, 1)
             if var_0003 == 29 then

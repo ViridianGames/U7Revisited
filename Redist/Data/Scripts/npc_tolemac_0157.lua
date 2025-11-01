@@ -12,7 +12,7 @@ function npc_tolemac_0157(eventid, objectref)
     start_conversation()
     switch_talk_to(157)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(157)
     add_answer({"bye", "Fellowship", "job", "name"})
     if get_flag(469) then
         add_dialogue("\"Get thee away! I'll hear no more of thy lies!\"")

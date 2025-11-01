@@ -7,7 +7,7 @@ function npc_phearcy_0163(eventid, objectref)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = npc_id_in_party(4)
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(163)
         var_0004 = false
         if var_0003 == 7 then
             var_0005 = utility_unknown_1020(250, 163)

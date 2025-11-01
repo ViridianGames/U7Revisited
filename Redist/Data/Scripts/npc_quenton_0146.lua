@@ -20,7 +20,7 @@ function npc_quenton_0146(eventid, objectref)
         if not get_flag(408) then
             add_answer("sacrifice")
         end
-        var_0004 = get_schedule() --- Guess: Checks game state
+        var_0004 = get_schedule(146) --- Guess: Checks game state
         var_0005 = get_schedule_type(146) --- Guess: Gets schedule
         if not get_flag(426) then
             if var_0004 == 0 or var_0004 == 1 then

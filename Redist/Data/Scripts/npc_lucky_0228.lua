@@ -4,7 +4,7 @@ function npc_lucky_0228(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(228)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(228)
         var_0001 = get_schedule_type(get_npc_name(228))
         start_conversation()
         add_answer({"bye", "job", "name"})

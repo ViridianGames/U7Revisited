@@ -12,7 +12,7 @@ function npc_jeanette_0047(eventid, objectref)
 
     start_conversation()
     switch_talk_to(47)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(47)
     var_0001 = get_schedule_type(get_npc_name(47))
     add_answer({"bye", "job", "name"})
     if not get_flag(123) then

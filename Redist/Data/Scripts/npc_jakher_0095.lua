@@ -13,7 +13,7 @@ function npc_jakher_0095(eventid, objectref)
     start_conversation()
     switch_talk_to(95)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(95)
     var_0002 = get_schedule_type(get_npc_name(95))
     add_answer({"bye", "job", "name"})
     if get_flag(246) then

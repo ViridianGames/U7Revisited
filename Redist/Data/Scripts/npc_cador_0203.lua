@@ -7,7 +7,7 @@ function npc_cador_0203(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = "the Avatar"
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(203)
         var_0004 = get_npc_name(203)
         var_0005 = get_npc_name(204)
         var_0006 = get_schedule_type(var_0004)

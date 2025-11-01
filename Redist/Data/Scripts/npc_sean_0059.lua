@@ -4,7 +4,7 @@ function npc_sean_0059(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule()
+            var_0001 = get_schedule(59)
             var_0002 = get_schedule_type(get_npc_name(59))
             var_0011 = random2(4, 1)
             if var_0002 == 7 then
@@ -29,7 +29,7 @@ function npc_sean_0059(eventid, objectref)
     start_conversation()
     switch_talk_to(59)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(59)
     var_0002 = get_schedule_type(get_npc_name(59))
     var_0003 = is_player_wearing_fellowship_medallion()
     if var_0001 == 7 then

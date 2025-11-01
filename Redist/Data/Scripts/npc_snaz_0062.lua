@@ -4,7 +4,7 @@ function npc_snaz_0062(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_000F = get_schedule()
+            var_000F = get_schedule(62)
             var_0010 = get_schedule_type(get_npc_name(62))
             var_0011 = random2(4, 1)
             if var_0010 == 12 then

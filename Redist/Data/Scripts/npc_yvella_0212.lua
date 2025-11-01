@@ -61,7 +61,7 @@ function npc_yvella_0212(eventid, objectref)
                     add_dialogue("\"I told him again and again that tavern was a bad place to spend the evening. And now, he is dead, leaving me and Catherine without a husband and a father!\"")
                 else
                     add_dialogue("\"Cador is mine husband. He is the overseer at the Britannian Mining Company here in Vesper.\"")
-                    var_0007 = get_schedule()
+                    var_0007 = get_schedule(212) -- TODO maybe should be cador's id
                     if var_0007 == 6 or var_0007 == 7 then
                         add_dialogue("\"He is often at the tavern at this time. I do wish he would not go there every night with that... that... woman!\"")
                         add_answer("woman")

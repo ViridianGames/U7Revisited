@@ -17,7 +17,7 @@ function npc_mordra_0143(eventid, objectref)
     var_0003 = false
     var_0004 = false
     var_0005 = false
-    var_0006 = get_schedule()
+    var_0006 = get_schedule(143)
     var_0007 = false
     var_0008 = false
     var_0009 = get_schedule_type(143)

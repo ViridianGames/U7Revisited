@@ -9,7 +9,7 @@ function npc_mara_0204(eventid, objectref)
         var_0002 = "the Avatar"
         var_0003 = get_npc_name(204)
         var_0004 = get_npc_name(203)
-        var_0005 = get_schedule()
+        var_0005 = get_schedule(204)
         var_0006 = get_schedule_type(var_0003)
         var_0007 = get_alignment(var_0003)
         start_conversation()

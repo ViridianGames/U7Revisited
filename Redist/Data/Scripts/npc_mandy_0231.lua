@@ -4,7 +4,7 @@ function npc_mandy_0231(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(231)
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(231)
         var_0001 = get_schedule_type(get_npc_name(231))
         var_0002 = get_lord_or_lady()
         start_conversation()

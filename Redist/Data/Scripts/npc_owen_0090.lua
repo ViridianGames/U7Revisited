@@ -16,12 +16,12 @@ function npc_owen_0090(eventid, objectref)
 
     start_conversation()
     switch_talk_to(90)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(90)
     var_0001 = get_schedule_type(get_npc_name(90))
     var_0002 = get_lord_or_lady()
     var_0003 = false
     var_0004 = is_player_wearing_fellowship_medallion()
-    var_0000 = get_schedule()
+    -- why is this called again?? var_0000 = get_schedule(90)
     if var_0000 == 7 and var_0001 ~= 15 then
         var_0005 = utility_unknown_1020(81, 90)
         if var_0005 then

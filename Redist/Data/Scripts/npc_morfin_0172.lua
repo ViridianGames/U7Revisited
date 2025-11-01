@@ -6,7 +6,7 @@ function npc_morfin_0172(eventid, objectref)
         switch_talk_to(172)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0004 = get_schedule()
+        var_0004 = get_schedule(172)
         var_0005 = get_schedule_type(get_npc_name(172))
         var_0002 = "Avatar"
         var_0003 = "None of thy concern"

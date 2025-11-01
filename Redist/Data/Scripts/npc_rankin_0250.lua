@@ -7,7 +7,7 @@ function npc_rankin_0250(eventid, objectref)
         var_0000 = get_player_name()
         var_0001 = false
         var_0002 = npc_id_in_party(156)
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(250)
         var_0004 = utility_unknown_1073(1, 359, 981, 1, 357)
         if var_0003 == 7 then
             if not get_flag(508) then

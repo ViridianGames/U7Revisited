@@ -65,7 +65,7 @@ function npc_paul_0233(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(233)
         var_0000 = get_schedule_type(get_npc_name(233))
         if var_0000 == 29 then
             var_000B = random2(4, 1)

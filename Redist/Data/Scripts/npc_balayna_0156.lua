@@ -13,7 +13,7 @@ function npc_balayna_0156(eventid, objectref)
     switch_talk_to(156)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
-    var_0002 = get_schedule()
+    var_0002 = get_schedule(156)
     var_0003 = false
     add_answer({"bye", "Fellowship", "job", "name"})
     if not get_flag(526) then

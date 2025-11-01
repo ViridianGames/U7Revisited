@@ -8,7 +8,7 @@ function npc_willy_0052(eventid, objectref)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = get_schedule_type(52) --- Guess: Gets object state
-        var_0003 = get_schedule() --- Guess: Checks game state or timer
+        var_0003 = get_schedule(52) --- Guess: Checks game state or timer
         var_0004 = npc_id_in_party(2) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
         if not get_flag(133) then
@@ -157,7 +157,7 @@ function npc_willy_0052(eventid, objectref)
         end
         add_dialogue("\"Good day to thee, " .. var_0000 .. ", and bon appetit!\"")
     elseif eventid == 0 then
-        var_0003 = get_schedule() --- Guess: Checks game state or timer
+        var_0003 = get_schedule(52) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(52) --- Guess: Gets object state
         if var_0002 == 18 then
             var_000D = random(1, 4)

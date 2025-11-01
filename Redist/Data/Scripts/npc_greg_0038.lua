@@ -6,7 +6,7 @@ function npc_greg_0038(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(38)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(38) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(38) --- Guess: Gets object state
         var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         add_answer({"bye", "job", "name"})
@@ -89,7 +89,7 @@ function npc_greg_0038(eventid, objectref)
         end
         add_dialogue("\"Good day to thee, " .. var_0000 .. ".\"")
     elseif eventid == 0 then
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(38) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(38) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0005 = random(1, 4)

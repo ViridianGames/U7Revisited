@@ -66,7 +66,7 @@ function npc_eldroth_0206(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0002 = get_schedule()
+        var_0002 = get_schedule(206)
         var_0001 = get_schedule_type(get_npc_name(206))
         var_0003 = random(4, 1)
         if var_0002 >= 2 and var_0002 <= 6 and (var_0001 == 7 or var_0001 == 5) then

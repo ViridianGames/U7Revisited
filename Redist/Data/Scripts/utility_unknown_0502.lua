@@ -87,7 +87,7 @@ function utility_unknown_0502(eventid, objectref)
                 add_dialogue("\"As thou wish, master. I but seek to serve thee.\"")
                 restore_answers()
             elseif player_says("Magic") then
-                var_0016 = get_schedule()
+                var_0016 = get_schedule(292)
                 if var_0016 == 7 or var_0016 == 0 or var_0016 == 1 then
                     utility_unknown_0837(true)
                 else

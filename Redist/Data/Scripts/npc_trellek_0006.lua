@@ -169,7 +169,7 @@ function npc_trellek_0006(eventid, objectref)
         end
         add_dialogue("\"Good luck is hoped for you.\"")
     elseif eventid == 0 then
-        var_000F = get_schedule() --- Guess: Checks game state or timer
+        var_000F = get_schedule(6) --- Guess: Checks game state or timer
         var_000D = get_npc_name(6) --- Guess: Retrieves object reference from ID
         var_000E = get_schedule_type(6) --- Guess: Gets object state
         var_000F = random(1, 4)

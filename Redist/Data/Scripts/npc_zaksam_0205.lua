@@ -68,7 +68,7 @@ function npc_zaksam_0205(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0002 = get_schedule_type(get_npc_name(205))
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(205)
         var_0004 = random(4, 1)
         if var_0002 == 14 and (var_0003 == 7 or var_0003 == 0 or var_0003 == 1) then
             var_0005 = "@Zzzzz . . .@"

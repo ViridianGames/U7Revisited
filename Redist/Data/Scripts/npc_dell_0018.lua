@@ -89,7 +89,7 @@ function npc_dell_0018(eventid, objectref)
             clear_answers()
         end
     elseif eventid == 0 then
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule(18) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(18) --- Guess: Gets object state
         var_0008 = random(1, 4)
         if var_0003 == 7 then

@@ -109,7 +109,7 @@ function npc_yongi_0207(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(207)
         var_000B = get_schedule_type(get_npc_name(207))
         var_000C = random(4, 1)
         if var_000A >= 1 and var_000A <= 3 and var_000B == 14 then

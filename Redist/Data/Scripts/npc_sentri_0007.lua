@@ -5,7 +5,7 @@ function npc_sentri_0007(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(7)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule(7) --- Guess: Checks game state or timer
         var_0001 = is_player_female()
         var_0002 = get_party_members()
         var_0003 = get_npc_name(7) --- Guess: Retrieves object reference from ID

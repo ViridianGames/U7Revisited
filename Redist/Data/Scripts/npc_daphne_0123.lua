@@ -12,7 +12,7 @@ function npc_daphne_0123(eventid, objectref)
     start_conversation()
     switch_talk_to(123)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(123)
     var_0002 = get_schedule_type(get_npc_name(123))
     var_0003 = npc_id_in_party(122)
     var_0004 = false

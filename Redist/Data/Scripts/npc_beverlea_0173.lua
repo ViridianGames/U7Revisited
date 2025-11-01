@@ -5,7 +5,7 @@ function npc_beverlea_0173(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(173)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(173)
         var_0002 = get_schedule_type(get_npc_name(173))
         var_0003 = find_nearest(-1, 839, 356)
         start_conversation()

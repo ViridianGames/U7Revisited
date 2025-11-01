@@ -13,7 +13,7 @@ function npc_jillian_0159(eventid, objectref)
     switch_talk_to(159)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
-    var_0002 = get_schedule()
+    var_0002 = get_schedule(159)
     add_answer({"bye", "job", "name"})
     if not get_flag(513) then
         add_dialogue("You see a young woman with an intellectual bearing.")
@@ -38,7 +38,7 @@ function npc_jillian_0159(eventid, objectref)
             add_dialogue("\"Long ago there was a small continent -- an island really -- called Ambrosia. However, meteorites struck it, destroying its primary city. The island was located in the North East sea. I suppose the ruins still lie far beneath the rubble.\"")
             remove_answer("North East sea")
         elseif cmps("tutor") then
-            var_0002 = get_schedule()
+            var_0002 = get_schedule(159)
             if var_0002 >= 3 or var_0002 <= 6 then
                 add_dialogue("\"My price is 35 gold for each training session. Art thou willing to pay that?\"")
                 if ask_yes_no() then

@@ -7,7 +7,7 @@ function npc_candice_0041(eventid, objectref)
         switch_talk_to(41)
         var_0000 = get_schedule_type(41) --- Guess: Gets object state
         var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
-        var_0002 = get_schedule() --- Guess: Checks game state or timer
+        var_0002 = get_schedule(41) --- Guess: Checks game state or timer
         if var_0002 == 7 then
             var_0003 = utility_unknown_1020(26, 41) --- Guess: Checks time for Fellowship meeting
             if var_0003 then

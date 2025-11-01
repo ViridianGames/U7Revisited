@@ -7,7 +7,7 @@ function npc_paulette_0145(eventid, objectref)
         switch_talk_to(145)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_female()
-        var_0002 = get_schedule() --- Guess: Checks game state
+        var_0002 = get_schedule(145) --- Guess: Checks game state
         var_0003 = get_schedule_type(145) --- Guess: Gets schedule
         var_0004 = false
         var_0005 = false

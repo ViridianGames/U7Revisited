@@ -5,7 +5,7 @@ function npc_andrew_0176(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(176)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(176)
         var_0002 = get_schedule_type(get_npc_name(176))
         var_0003 = false
         start_conversation()

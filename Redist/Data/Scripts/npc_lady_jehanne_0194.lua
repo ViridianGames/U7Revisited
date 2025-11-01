@@ -116,7 +116,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(194)
         var_0008 = get_schedule_type(get_npc_name(194))
         var_000B = random(4, 1)
         if var_0008 == 7 then

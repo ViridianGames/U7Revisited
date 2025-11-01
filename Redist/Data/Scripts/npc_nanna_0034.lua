@@ -5,7 +5,7 @@ function npc_nanna_0034(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         switch_talk_to(34)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule(34) --- Guess: Checks game state or timer
         var_0001 = get_schedule_type(34) --- Guess: Gets object state
         var_0002 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if var_0000 == 7 then

@@ -7,7 +7,7 @@ function npc_elynor_0081(eventid, objectref)
         switch_talk_to(81)
         var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         var_0002 = get_lord_or_lady()
-        var_0003 = get_schedule() --- Guess: Checks game state or timer
+        var_0003 = get_schedule(81) --- Guess: Checks game state or timer
         var_0004 = get_schedule_type(81) --- Guess: Gets object state
         if var_0003 == 7 and var_0004 == 28 then
             add_dialogue("\"It is time for the ceremony to begin.\" says Elynor.")

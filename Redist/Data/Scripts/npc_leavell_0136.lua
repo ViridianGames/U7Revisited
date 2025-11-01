@@ -6,7 +6,7 @@ function npc_leavell_0136(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(136)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 =  get_schedule(136)--- Guess: Checks game state
         var_0002 = npc_id_in_party(134) --- Guess: Checks player status
         var_0003 = npc_id_in_party(135) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})

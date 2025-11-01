@@ -4,7 +4,7 @@ function npc_gordon_0058(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = get_schedule()
+            var_0002 = get_schedule(58)
             var_0003 = get_schedule_type(get_npc_name(58))
             var_0009 = random2(4, 1)
             if var_0003 == 7 then
@@ -30,7 +30,7 @@ function npc_gordon_0058(eventid, objectref)
     switch_talk_to(58)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
-    var_0002 = get_schedule()
+    var_0002 = get_schedule(58)
     var_0003 = get_schedule_type(get_npc_name(58))
     if var_0002 == 7 then
         var_0004 = utility_unknown_1020(26, 58)

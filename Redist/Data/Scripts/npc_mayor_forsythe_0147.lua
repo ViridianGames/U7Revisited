@@ -6,7 +6,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(147)
         var_0000 = false
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 = get_schedule(147) --- Guess: Checks game state
         var_0002 = get_schedule_type(147) --- Guess: Gets schedule
         if not get_flag(443) then
             add_dialogue("You see a ghostly man cowering in the corner. Holding up an ankh in a protective fashion, he looks around the room frantically, but takes no notice of you.")

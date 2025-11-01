@@ -6,7 +6,7 @@ function npc_menion_0192(eventid, objectref)
         switch_talk_to(192)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule_type(get_npc_name(192))
-        var_0002 = get_schedule()
+        var_0002 = get_schedule(192)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(617) then

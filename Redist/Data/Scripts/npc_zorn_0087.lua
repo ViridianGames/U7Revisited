@@ -6,7 +6,7 @@ function npc_zorn_0087(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(87)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(87) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(87) --- Guess: Gets object state
         var_0003 = utility_unknown_1073(359, 359, 728, 1, 357) --- Guess: Checks item in inventory
         if var_0003 then

@@ -5,7 +5,7 @@ function npc_inforlem_0181(eventid, objectref)
     if eventid == 1 then
         switch_talk_to(181)
         var_0000 = false
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(181)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(582) then

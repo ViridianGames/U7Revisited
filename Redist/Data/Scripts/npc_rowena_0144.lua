@@ -27,7 +27,7 @@ function npc_rowena_0144(eventid, objectref)
             switch_talk_to(144, 1)
             utility_unknown_0984() --- Guess: Checks ring status
         end
-        var_0002 = get_schedule() --- Guess: Checks game state
+        var_0002 = get_schedule(144) --- Guess: Checks game state
         var_0003 = get_schedule_type(144) --- Guess: Gets schedule
         if var_0002 == 0 or var_0002 == 1 then
             if var_0003 == 14 then

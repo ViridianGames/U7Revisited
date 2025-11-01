@@ -4,7 +4,7 @@ function npc_carrocio_0044(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule()
+            var_0001 = get_schedule(44)
             var_0002 = get_schedule_type(get_npc_name(44))
             var_0008 = random2(4, 1)
             if var_0002 == 7 and (var_0001 == 3 or var_0001 == 4 or var_0001 == 5 or var_0001 == 6) then
@@ -29,7 +29,7 @@ function npc_carrocio_0044(eventid, objectref)
     start_conversation()
     switch_talk_to(44)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(44)
     var_0002 = get_schedule_type(get_npc_name(44))
     var_0003 = is_player_female()
     var_0004 = npc_id_in_party(-2)

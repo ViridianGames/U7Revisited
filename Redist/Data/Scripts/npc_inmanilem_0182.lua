@@ -29,7 +29,7 @@ function npc_inmanilem_0182(eventid, objectref)
                     add_answer("conflicts")
                 end
             elseif answer == "heal" then
-                var_0001 = get_schedule()
+                var_0001 = get_schedule(182)
                 if var_0001 == 2 or var_0001 == 3 or var_0001 == 4 or var_0001 == 5 then
                     utility_unknown_0925(430, 10, 25)
                 else

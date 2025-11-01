@@ -12,7 +12,7 @@ function npc_patterson_0043(eventid, objectref)
 
     start_conversation()
     switch_talk_to(43)
-    var_0000 = get_schedule()
+    var_0000 = get_schedule(43)
     if var_0000 == 7 then
         var_0001 = utility_unknown_1020(26, 43)
         if var_0001 then

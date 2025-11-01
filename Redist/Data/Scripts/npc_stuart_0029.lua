@@ -4,7 +4,7 @@ function npc_stuart_0029(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule()
+            var_0001 = get_schedule(-29)
             var_0002 = get_schedule_type(get_npc_name(-29))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then
