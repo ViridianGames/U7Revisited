@@ -491,6 +491,7 @@ void ShapeEditorState::Update()
 
 	if (m_currentGui->GetActiveElementID() == GE_JUMPTOINSTANCE)
 	{
+		bool foundInstance = false;
 		for (unordered_map<int, unique_ptr<U7Object>>::iterator node = g_objectList.begin(); node != g_objectList.end(); ++node)
 		{
 			if((*node).second->m_shapeData->m_shape == m_currentShape && (*node).second->m_shapeData->m_frame == m_currentFrame && !(*node).second->m_isContained)
@@ -499,8 +500,13 @@ void ShapeEditorState::Update()
 				g_camera.position = Vector3Add(g_camera.target, Vector3{ 0, g_cameraDistance, g_cameraDistance });
 				g_CameraMoved = true;
 				g_StateMachine->MakeStateTransition(STATE_MAINSTATE);  // Close shape editor after jumping
+				foundInstance = true;
 				break;
 			}
+		}
+		if (!foundInstance)
+		{
+			AddConsoleString("No instance of shape " + to_string(m_currentShape) + " frame " + to_string(m_currentFrame) + " found in world", RED);
 		}
 	}
 
