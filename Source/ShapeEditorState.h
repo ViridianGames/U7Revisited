@@ -43,6 +43,8 @@ public:
    bool m_tileZ = false;
    bool m_shapeTableMade = false;
    float m_rotateAngle = 0.0;
+   int m_previousViewAngle = 0;
+   bool m_isDraggingSlider = false;
 
    std::vector<std::vector<std::unique_ptr<U7Object>>> m_objectLibrary;
 
@@ -230,6 +232,8 @@ public:
       GE_ADDALLFRAMESSCRIPTBUTTON,
       GE_CLEARSCRIPTBUTTON,
       GE_CLEARALLSCRIPTSBUTTON,
+
+      GE_VIEWANGLESLIDER,
 
       GE_LASTGUIELEMENT
    };

@@ -327,6 +327,43 @@ void ShapeEditorState::Update()
 		g_CameraMoved = true;
 	}
 
+	// Handle mouse interaction with view angle slider at bottom of screen (sticky drag)
+	int guiPanelWidth = 120;
+	int sliderWidth = 300;
+	int sliderHeight = 20;
+	int sliderX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - sliderWidth) / 2;  // Center in 3D view area
+	int sliderY = g_Engine->m_ScreenHeight - 40;
+
+	// Detect initial press on slider (bounds check only on first press)
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		int mouseX = GetMouseX();
+		int mouseY = GetMouseY();
+		if (mouseX >= sliderX && mouseX <= sliderX + sliderWidth &&
+		    mouseY >= sliderY && mouseY <= sliderY + sliderHeight)
+		{
+			m_isDraggingSlider = true;
+		}
+	}
+
+	// While dragging, track mouse X anywhere (sticky - no bounds check)
+	if (m_isDraggingSlider && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		int mouseX = GetMouseX();
+		int newAngle = ((mouseX - sliderX) * 360) / sliderWidth;
+		// Clamp angle to valid range
+		if (newAngle < 0) newAngle = 0;
+		if (newAngle > 359) newAngle = 359;
+		g_cameraRotation = newAngle * DEG2RAD;
+		g_CameraMoved = true;
+	}
+
+	// Release ends drag
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		m_isDraggingSlider = false;
+	}
+
 	if (IsKeyPressed(KEY_F1) || IsKeyPressed(KEY_ESCAPE))
 	{
 		g_mainState->m_gameMode = MainStateModes::MAIN_STATE_MODE_SANDBOX;
@@ -1716,6 +1753,32 @@ void ShapeEditorState::Draw()
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
+
+	// Draw view angle slider at bottom of main window
+	int guiPanelWidth = 120;
+	int sliderWidth = 300;
+	int sliderHeight = 20;
+	int sliderX = ((g_Engine->m_ScreenWidth - guiPanelWidth) - sliderWidth) / 2;  // Center in 3D view area
+	int sliderY = g_Engine->m_ScreenHeight - 40;
+
+	// Draw slider background
+	DrawRectangle(sliderX, sliderY, sliderWidth, sliderHeight, Color{64, 64, 128, 255});
+	DrawRectangleLines(sliderX, sliderY, sliderWidth, sliderHeight, WHITE);
+
+	// Draw label (larger font for readability)
+	float labelFontSize = 20.0f;
+	DrawTextEx(*g_guiFont.get(), "View Angle:", {(float)(sliderX - 120), (float)(sliderY)}, labelFontSize, 1, WHITE);
+
+	// Calculate slider position
+	int currentAngle = (int)(g_cameraRotation * RAD2DEG);
+	while (currentAngle < 0) currentAngle += 360;
+	while (currentAngle >= 360) currentAngle -= 360;
+
+	int spurPos = (currentAngle * sliderWidth) / 360;
+	DrawRectangle(sliderX + spurPos - 5, sliderY, 10, sliderHeight, WHITE);
+
+	// Draw angle value (larger font for readability)
+	DrawTextEx(*g_guiFont.get(), TextFormat("%d deg", currentAngle), {(float)(sliderX + sliderWidth + 10), (float)(sliderY)}, labelFontSize, 1, WHITE);
 
 	DrawTextureEx(*g_Cursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);
 
