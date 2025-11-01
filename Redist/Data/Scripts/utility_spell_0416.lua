@@ -9,12 +9,12 @@ function utility_spell_0416(eventid, objectref)
     var_0004 = false
     for i = 1, 5 do
         var_0005 = get_item_quality(var_0000)
-        var_0006 = get_item_frame(var_0000)
+        var_0006 = get_object_frame(var_0000)
         var_0007 = get_object_position(var_0000)
         if var_0006 == 6 then
             if var_0005 == 3 then
                 var_000B = find_nearest(1, 675, var_0000)
-                var_000C = get_item_frame(var_000B)
+                var_000C = get_object_frame(var_000B)
                 if var_000B and var_000C == 16 then
                     var_0001 = var_000B
                     var_0002 = var_0007
@@ -22,7 +22,7 @@ function utility_spell_0416(eventid, objectref)
             end
             if var_0005 == 7 then
                 var_000B = find_nearest(1, 999, var_0000)
-                var_000C = get_item_frame(var_000B)
+                var_000C = get_object_frame(var_000B)
                 if var_000B and var_000C == 1 then
                     var_0003 = var_000B
                     var_0004 = var_0007
@@ -46,7 +46,7 @@ function utility_spell_0416(eventid, objectref)
         var_0000 = find_nearby(16, 10, 275, objectref)
         for i = 1, 5 do
             var_000F = get_item_quality(var_0000)
-            var_0010 = get_item_frame(var_0000)
+            var_0010 = get_object_frame(var_0000)
             var_0011 = get_object_position(var_0000)
             if var_0010 == 6 and var_000F == 10 then
                 var_0012 = find_nearby(0, 1, 800, var_0000)

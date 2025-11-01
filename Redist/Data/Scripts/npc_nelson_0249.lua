@@ -103,7 +103,7 @@ function npc_nelson_0249(eventid, objectref)
                 var_0003 = false
                 for i = 1, 5 do
                     var_0004 = find_nearby(0, 20, 675, objectref)
-                    var_0007 = get_item_frame(var_0004)
+                    var_0007 = get_object_frame(var_0004)
                     if var_0007 == 4 then
                         var_0003 = true
                         break
@@ -122,7 +122,7 @@ function npc_nelson_0249(eventid, objectref)
                 var_000C = false
                 for i = 1, 5 do
                     var_0009 = find_nearby(0, 20, 675, objectref)
-                    var_0007 = get_item_frame(var_0009)
+                    var_0007 = get_object_frame(var_0009)
                     if var_0007 == 3 then
                         var_0008 = true
                         break
@@ -130,7 +130,7 @@ function npc_nelson_0249(eventid, objectref)
                 end
                 for i = 1, 5 do
                     var_000D = find_nearby(0, 20, 675, objectref)
-                    var_0007 = get_item_frame(var_000D)
+                    var_0007 = get_object_frame(var_000D)
                     if var_0007 == 5 then
                         var_000C = true
                         break

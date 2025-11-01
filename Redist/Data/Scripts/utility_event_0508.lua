@@ -20,7 +20,7 @@ function utility_event_0508(eventid, objectref)
             var_0002 = get_object_position(var_0000)
         end
         var_0004 = create_new_object(797)
-        set_item_frame(4, var_0004)
+        set_object_frame(4, var_0004)
         set_item_flag(18, var_0004)
         var_0005 = set_item_quality(150, var_0004)
         var_0005 = update_last_created(var_0002)
@@ -41,7 +41,7 @@ function utility_event_0508(eventid, objectref)
             end
         end
         var_0008 = create_new_object(895)
-        set_item_frame(0, var_0008)
+        set_object_frame(0, var_0008)
         set_item_flag(18, var_0008)
         if not is_not_blocked(0, 721, var_0003) then
             var_0005 = update_last_created(var_0003)
@@ -61,7 +61,7 @@ function utility_event_0508(eventid, objectref)
         for i = 1, #var_0011 do
             var_0014 = var_0011[i]
             var_0015 = get_item_quality(var_0014)
-            var_0016 = get_item_frame(var_0014)
+            var_0016 = get_object_frame(var_0014)
             if var_0015 == 150 and var_0016 == 4 then
                 close_gumps()
                 var_0017 = get_object_position(get_npc_name(356))

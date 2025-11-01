@@ -19,11 +19,11 @@ function utility_event_0505(eventid, objectref)
                 if var_0004 then
                     for i = 1, #var_0004 do
                         var_0007 = var_0004[i]
-                        if get_item_frame(objectref) == 8 and get_item_frame(var_0007) == 16 then
+                        if get_object_frame(objectref) == 8 and get_object_frame(var_0007) == 16 then
                             var_0003 = var_0007
-                        elseif get_item_frame(objectref) == 9 and get_item_frame(var_0007) == 15 then
+                        elseif get_object_frame(objectref) == 9 and get_object_frame(var_0007) == 15 then
                             var_0003 = var_0007
-                        elseif get_item_frame(objectref) == 10 and get_item_frame(var_0007) == 14 then
+                        elseif get_object_frame(objectref) == 10 and get_object_frame(var_0007) == 14 then
                             var_0003 = var_0007
                         end
                     end
@@ -75,7 +75,7 @@ function utility_event_0505(eventid, objectref)
                 var_0009 = find_nearby(0, 80, 955, objectref)
                 for i = 1, #var_0009 do
                     var_0012 = var_0009[i]
-                    var_0013 = get_item_frame(var_0012)
+                    var_0013 = get_object_frame(var_0012)
                     if var_0013 == 8 then
                         var_0014 = get_object_position(var_0012)
                         var_0015 = set_last_created(objectref)
@@ -92,7 +92,7 @@ function utility_event_0505(eventid, objectref)
                 var_0009 = find_nearby(0, 80, 955, objectref)
                 for i = 1, #var_0009 do
                     var_0012 = var_0009[i]
-                    var_0013 = get_item_frame(var_0012)
+                    var_0013 = get_object_frame(var_0012)
                     if var_0013 == 9 then
                         var_0014 = get_object_position(var_0012)
                         var_0015 = set_last_created(objectref)
@@ -102,7 +102,7 @@ function utility_event_0505(eventid, objectref)
             end
         elseif var_0008 == 9 then
             var_0012 = find_nearest(0, 955, objectref)
-            if var_0012 and get_item_frame(var_0012) == 11 then
+            if var_0012 and get_object_frame(var_0012) == 11 then
                 if not utility_unknown_1000(11) then
                     remove_item(var_0012)
                     var_0014 = get_object_position(objectref)
@@ -113,7 +113,7 @@ function utility_event_0505(eventid, objectref)
                 if var_0009 then
                     for i = 1, #var_0009 do
                         var_0013 = var_0009[i]
-                        var_001D = get_item_frame(var_0013)
+                        var_001D = get_object_frame(var_0013)
                         if var_001D == 11 then
                             remove_item(var_0013)
                             var_0014 = get_object_position(objectref)
@@ -131,7 +131,7 @@ function utility_event_0505(eventid, objectref)
                 var_001C = find_nearby(0, 8, 338, objectref)
                 for i = 1, #var_001C do
                     var_001F = var_001C[i]
-                    var_0020 = get_item_frame(var_001F)
+                    var_0020 = get_object_frame(var_001F)
                     if var_0020 == 2 then
                         var_001B = {var_001B, var_001F}
                     end
@@ -139,7 +139,7 @@ function utility_event_0505(eventid, objectref)
                 var_0021 = find_nearby(0, 8, 336, objectref)
                 for i = 1, #var_0021 do
                     var_001F = var_0021[i]
-                    var_0020 = get_item_frame(var_001F)
+                    var_0020 = get_object_frame(var_001F)
                     if var_0020 == 2 then
                         var_001B = {var_001B, var_001F}
                     end
@@ -147,7 +147,7 @@ function utility_event_0505(eventid, objectref)
                 var_0024 = find_nearby(0, 8, 997, objectref)
                 for i = 1, #var_0024 do
                     var_001F = var_0024[i]
-                    var_0020 = get_item_frame(var_001F)
+                    var_0020 = get_object_frame(var_001F)
                     if var_0020 == 2 then
                         var_001B = {var_001B, var_001F}
                     end
@@ -157,11 +157,11 @@ function utility_event_0505(eventid, objectref)
                     remove_item(var_001A)
                 end
                 var_0029 = find_nearest(8, 718, objectref)
-                set_item_frame(1, var_0029)
+                set_object_frame(1, var_0029)
             end
         elseif var_0008 == 10 then
             var_0012 = find_nearest(0, 955, objectref)
-            if var_0012 and get_item_frame(var_0012) == 11 then
+            if var_0012 and get_object_frame(var_0012) == 11 then
                 set_flag(832, true)
                 if not utility_unknown_1000(11) then
                     remove_item(var_0012)
@@ -173,7 +173,7 @@ function utility_event_0505(eventid, objectref)
                 if var_0009 then
                     for i = 1, #var_0009 do
                         var_0013 = var_0009[i]
-                        var_001D = get_item_frame(var_0013)
+                        var_001D = get_object_frame(var_0013)
                         if var_001D == 11 then
                             remove_item(var_0013)
                             var_0014 = get_object_position(objectref)
@@ -185,7 +185,7 @@ function utility_event_0505(eventid, objectref)
                 var_002C = find_nearest(10, 515, objectref)
                 remove_item(var_002C)
                 var_002D = create_new_object(870)
-                set_item_frame(0, var_002D)
+                set_object_frame(0, var_002D)
                 var_0014 = get_object_position(objectref)
                 var_0015 = update_last_created(var_0014)
             end
@@ -194,7 +194,7 @@ function utility_event_0505(eventid, objectref)
                 var_002C = find_nearest(10, 515, objectref)
                 remove_item(var_002C)
                 var_002D = create_new_object(870)
-                set_item_frame(0, var_002D)
+                set_object_frame(0, var_002D)
                 var_0014 = get_object_position(objectref)
                 var_0015 = update_last_created(var_0014)
             end
@@ -228,7 +228,7 @@ function utility_event_0505(eventid, objectref)
         elseif var_0008 == 21 then
             var_002E = find_nearest(3, 268, objectref)
             if not var_002E then
-                set_item_frame(2, var_002E)
+                set_object_frame(2, var_002E)
                 play_sound_effect(37)
             end
         end

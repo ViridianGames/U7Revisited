@@ -36,7 +36,7 @@ function utility_event_0442(eventid, objectref)
                 if var_0005 then
                     set_item_flag(18, var_0005)
                     var_000C = update_last_created(get_object_position(objectref))
-                    set_item_frame(var_0008, var_0005)
+                    set_object_frame(var_0008, var_0005)
                 end
             end
         end

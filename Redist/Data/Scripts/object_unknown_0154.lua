@@ -34,7 +34,7 @@ function object_unknown_0154(eventid, objectref)
             var_0011 = find_nearby(16, 0, 607, objectref)
             if var_0011 then
                 for _, var_0014 in ipairs(var_0011) do
-                    if get_item_frame(var_0014) == 4 and get_item_frame(objectref) >= 16 then
+                    if get_object_frame(var_0014) == 4 and get_object_frame(objectref) >= 16 then
                         item_say("@Ah, a wall.@", objectref)
                         delayed_execute_usecode_array(objectref, {18, "@I'll follow it.@", 17490, 7715})
                     else

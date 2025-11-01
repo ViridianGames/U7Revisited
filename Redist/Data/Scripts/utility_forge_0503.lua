@@ -8,7 +8,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 762, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 22 and not get_cont_items(4, 240, 797, var_0005) then
                 var_0001 = var_0005
             end
@@ -25,14 +25,14 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 778, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 7 and not get_cont_items(4, 241, 797, var_0005) then
                 var_0009 = var_0005
             end
         end
         if not var_0009 then
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0009))
             utility_event_0998(var_0009)
             set_flag(753, true)
@@ -42,7 +42,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 243, 797, var_0005) then
                 var_0015 = var_0005
             end
@@ -50,7 +50,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0015 and not get_flag(753) then
             set_flag(753, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0015))
             utility_event_0998(var_0015)
         end
@@ -59,7 +59,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 244, 797, var_0005) then
                 var_0016 = var_0005
             end
@@ -67,7 +67,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0016 and not get_flag(754) then
             set_flag(754, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0016))
             utility_event_0998(var_0016)
         end
@@ -76,14 +76,14 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 245, 797, var_0005) then
                 var_0017 = var_0005
             end
         end
         if not var_0017 then
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0017))
             set_flag(755, true)
             utility_event_0998(var_0017)
@@ -93,7 +93,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 246, 797, var_0005) then
                 var_0018 = var_0005
             end
@@ -101,7 +101,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0018 and not get_flag(756) then
             set_flag(756, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0018))
             utility_event_0998(var_0018)
         end
@@ -110,7 +110,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 247, 797, var_0005) then
                 var_0019 = var_0005
             end
@@ -118,7 +118,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0019 and not get_flag(757) then
             set_flag(757, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0019))
             utility_event_0998(var_0019)
         end
@@ -127,7 +127,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 248, 797, var_0005) then
                 var_0020 = var_0005
             end
@@ -135,7 +135,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0020 and not get_flag(758) then
             set_flag(758, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0020))
             utility_event_0998(var_0020)
         end
@@ -144,7 +144,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 249, 797, var_0005) then
                 var_0021 = var_0005
             end
@@ -152,7 +152,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0021 and not get_flag(759) then
             set_flag(759, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0021))
             utility_event_0998(var_0021)
         end
@@ -161,7 +161,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 250, 797, var_0005) then
                 var_0022 = var_0005
             end
@@ -169,7 +169,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0022 and not get_flag(760) then
             set_flag(760, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0022))
             utility_event_0998(var_0022)
         end
@@ -178,7 +178,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 251, 797, var_0005) then
                 var_0023 = var_0005
             end
@@ -186,7 +186,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0023 and not get_flag(761) then
             set_flag(761, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0023))
             utility_event_0998(var_0023)
         end
@@ -195,7 +195,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 252, 797, var_0005) then
                 var_0024 = var_0005
             end
@@ -203,7 +203,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0024 and not get_flag(762) then
             set_flag(762, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0024))
             utility_event_0998(var_0024)
         end
@@ -212,7 +212,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 253, 797, var_0005) then
                 var_0025 = var_0005
             end
@@ -220,7 +220,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0025 and not get_flag(763) then
             set_flag(763, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0025))
             utility_event_0998(var_0025)
         end
@@ -229,7 +229,7 @@ function utility_forge_0503(eventid, objectref)
         var_0002 = find_nearby(0, 80, 400, 356)
         for i = 1, #var_0002 do
             var_0005 = var_0002[i]
-            var_0006 = get_item_frame(var_0005)
+            var_0006 = get_object_frame(var_0005)
             if var_0006 == 0 and not get_cont_items(4, 254, 797, var_0005) then
                 var_0026 = var_0005
             end
@@ -237,7 +237,7 @@ function utility_forge_0503(eventid, objectref)
         if not var_0026 and not get_flag(764) then
             set_flag(764, true)
             var_0012 = create_new_object(414)
-            set_item_frame(4, var_0012)
+            set_object_frame(4, var_0012)
             var_0008 = update_last_created(get_object_position(var_0026))
             utility_event_0998(var_0026)
         end

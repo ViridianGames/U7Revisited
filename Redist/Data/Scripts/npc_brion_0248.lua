@@ -105,7 +105,7 @@ function npc_brion_0248(eventid, objectref)
                 var_0004 = false
                 for i = 1, 5 do
                     var_0005 = find_nearby(0, 20, 377, objectref)
-                    var_0008 = get_item_frame(var_0005)
+                    var_0008 = get_object_frame(var_0005)
                     if var_0008 == 28 then
                         var_0004 = true
                         break
@@ -123,7 +123,7 @@ function npc_brion_0248(eventid, objectref)
                 var_0009 = false
                 for i = 1, 5 do
                     var_000A = find_nearby(0, 40, 650, 356)
-                    var_0008 = get_item_frame(var_000A)
+                    var_0008 = get_object_frame(var_000A)
                     if var_0008 == 1 then
                         var_0009 = true
                         break
