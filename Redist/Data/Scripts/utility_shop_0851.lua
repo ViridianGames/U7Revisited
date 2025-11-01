@@ -15,7 +15,7 @@ function utility_shop_0851()
     var_0008 = {1, 1, 1, 1, 1, 1, 1, 1, 1, 12, 1, 0}
     add_dialogue("@\"To make what purchase?\"@")
     while var_0000 do
-        var_0009 = selectobject_(var_0001) --- Guess: Selects item
+        var_0009 = select_object(var_0001) --- Guess: Selects item
         if var_0009 == 1 then
             add_dialogue("@\"To be acceptable.\"@")
             var_0000 = false
