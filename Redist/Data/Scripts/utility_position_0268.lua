@@ -29,7 +29,7 @@ function utility_position_0268(eventid, objectref)
         else
             var_000C = 3
         end
-        var_000D = execute_usecode_array(var_0006, {73=8024, 74=8006, 73=7750})
+        var_000D = execute_usecode_array(var_0006, {[73]=8024, [74]=8006, [73]=7750})
         if get_flag(34) == false then
             set_flag(34, true)
             for var_0010 in ipairs(var_0004) do

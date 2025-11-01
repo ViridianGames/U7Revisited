@@ -75,7 +75,7 @@ function npc_amber_0030(eventid, objectref)
                 add_dialogue("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.")
                 switch_talk_to(0, -3)
                 add_dialogue("\"Not in front of the Avatar, Poo!\"")
-                hide_npc3)
+                --syntax error hide_npc3)
                 switch_talk_to(0, -30)
                 add_dialogue("\"To blazes with the Avatar!\" She kisses him again. \"The Avatar is the last one who will convince thee to settle down.\"")
             else

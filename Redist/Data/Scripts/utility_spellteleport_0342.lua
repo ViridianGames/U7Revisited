@@ -22,7 +22,7 @@ function utility_spellteleport_0342(eventid, objectref)
         var_0003 = get_object_type(objectref)
         if var_0003 == valid_types[1] or var_0003 == valid_types[2] or var_0003 == valid_types[3] or var_0003 == valid_types[4] then
             var_0002 = add_containerobject_s(objectref, {var_0003, 7765})
-        elseif not (var_0003 == invalid_types[1] or var_0003 == invalid_types[2] or ...) then
+        elseif not (var_0003 == invalid_types[1] or var_0003 == invalid_types[2]) then --  or ...
             consume_reagents(var_0003) --- Guess: Consumes reagents
             var_0002 = add_containerobject_s(objectref, {var_0003, 7765})
         end

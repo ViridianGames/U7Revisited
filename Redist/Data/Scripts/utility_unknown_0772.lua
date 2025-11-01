@@ -9,7 +9,7 @@ function utility_unknown_0772(eventid, objectref, arg1, arg2)
     var_0004 = 0
     -- Guess: sloop searches for matching item
     for i = 1, 5 do
-        var_0007 = {5, 6, 7, 3, 55}[i]
+        var_0007 = ({5, 6, 7, 3, 55})[i]
         var_0008 = get_object_frame(var_0007) --- Guess: Gets item frame
         var_0009 = get_object_quality(var_0007) --- Guess: Gets item quality
         if var_0008 == var_0001 and (var_0009 == var_0000 or var_0000 == 359) then

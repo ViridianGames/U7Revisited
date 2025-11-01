@@ -39,18 +39,18 @@ function utility_unknown_0293(eventid, objectref)
                             var_0008 = {}
                             -- Guess: sloop sets NPC locations
                             for i = 1, 5 do
-                                var_000B = {9, 10, 11, 7, 24}[i]
+                                var_000B = ({9, 10, 11, 7, 24})[i]
                                 var_0008[i] = find_nearby(0, 30, var_000B, objectref) --- Guess: Sets NPC location
                             end
                             -- Guess: sloop sets NPC behaviors
                             for i = 1, 5 do
-                                var_000E = {12, 13, 14, 8, 13}[i]
+                                var_000E = ({12, 13, 14, 8, 13})[i]
                                 set_schedule_type(12, var_000E) --- Guess: Sets object behavior
                             end
                             var_000F = find_nearby(8, 30, 359, objectref) --- Guess: Sets NPC location
                             -- Guess: sloop checks NPC schedules
                             for i = 1, 5 do
-                                var_0012 = {16, 17, 18, 15, 27}[i]
+                                var_0012 = ({16, 17, 18, 15, 27})[i]
                                 if get_schedule_type(var_0012) == 0 then --- Guess: Gets schedule
                                     set_schedule_type(12, var_0012) --- Guess: Sets object behavior
                                 end
@@ -78,7 +78,7 @@ function utility_unknown_0293(eventid, objectref)
         var_0014 = get_party_members()
         -- Guess: sloop updates party member states
         for i = 1, 5 do
-            var_0017 = {21, 22, 23, 20, 22}[i]
+            var_0017 = ({21, 22, 23, 20, 22})[i]
             utility_unknown_1087(31, var_0017) --- Guess: Updates object state
             set_object_frame(var_0017, 0)
         end

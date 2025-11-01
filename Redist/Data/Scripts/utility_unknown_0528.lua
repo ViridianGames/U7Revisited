@@ -10,7 +10,7 @@ function utility_unknown_0528(eventid, objectref)
         var_0002 = false
         -- Guess: sloop checks for ritual items
         for i = 1, 5 do
-            var_0005 = {3, 4, 5, 0, 53}[i]
+            var_0005 = ({3, 4, 5, 0, 53})[i]
             if get_containerobject_s(243, 797, var_0005, 4) then --- Guess: Gets container items
                 var_0001 = var_0005
             end
@@ -32,7 +32,7 @@ function utility_unknown_0528(eventid, objectref)
             var_0008 = 0
             -- Guess: sloop counts blood-covered rocks
             for i = 1, 5 do
-                var_000B = {9, 10, 11, 0, 58}[i]
+                var_000B = ({9, 10, 11, 0, 58})[i]
                 var_000C = get_object_frame(var_000B) --- Guess: Gets item frame
                 if var_000C >= 0 and var_000C <= 10 and find_nearby(176, 2, 912, var_000B) then
                     var_0008 = var_0008 + 1

@@ -13,7 +13,7 @@ function utility_unknown_0291(eventid, objectref)
         var_0002 = get_party_members()
         -- Guess: sloop updates party member states
         for i = 1, 4 do
-            var_0005 = {3, 4, 5, 2}[i]
+            var_0005 = ({3, 4, 5, 2})[i]
             utility_unknown_1087(31, var_0005) --- Guess: Updates object state
         end
         set_item_flag(1, 356) --- Guess: Sets item flag

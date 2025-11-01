@@ -39,7 +39,7 @@ function npc_kristy_0031(eventid, objectref)
             if var_0000 then
                 switch_talk_to(0, -34)
                 add_dialogue("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
-                hide_npc34)
+                --syntax error hide_npc34)
                 switch_talk_to(0, -31)
             end
             remove_answer("name")
@@ -67,7 +67,7 @@ function npc_kristy_0031(eventid, objectref)
             if var_0000 then
                 switch_talk_to(0, -34)
                 add_dialogue("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
-                hide_npc34)
+                --syntax error hide_npc34)
                 switch_talk_to(0, -31)
             end
             remove_answer("winner")

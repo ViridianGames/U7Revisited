@@ -14,7 +14,7 @@ function utility_spell_0328(eventid, objectref)
         var_0001 = get_party_members()
         -- Guess: sloop generates food for party members
         for i = 1, 5 do
-            var_0004 = {2, 3, 4, 1, 72}[i]
+            var_0004 = ({2, 3, 4, 1, 72})[i]
             var_0005 = get_object_position(var_0004) --- Guess: Gets position data
             var_0006 = get_object_status(377) --- Guess: Gets item status
             if var_0006 then

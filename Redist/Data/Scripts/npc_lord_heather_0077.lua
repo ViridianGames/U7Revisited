@@ -51,14 +51,14 @@ function npc_lord_heather_0077(eventid, objectref)
             if var_0001 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"Sounds like bad theatre to me!\"")
-                hide_npc1)
+                --syntax error hide_npc1)
                 switch_talk_to(0, 77)
             end
             var_0002 = npc_id_in_party(-2)
             if var_0002 then
                 switch_talk_to(0, -2)
                 add_dialogue("\"Any wenches mine own age around here?\"")
-                hide_npc2)
+                --syntax error hide_npc2)
                 switch_talk_to(0, 77)
             end
             set_flag(228, true)
@@ -74,7 +74,7 @@ function npc_lord_heather_0077(eventid, objectref)
                 add_dialogue("\"Do not worry. I shall be safe with the Avatar.\"")
                 switch_talk_to(0, 77)
                 add_dialogue("\"I do hope so.\" The Mayor embraces Jaana.")
-                hide_npc5)
+                --syntax error hide_npc5)
                 switch_talk_to(0, 77)
             end
         elseif cmps("almost everyone") then

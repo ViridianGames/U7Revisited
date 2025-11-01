@@ -11,7 +11,7 @@ function utility_spell_0371(eventid, objectref)
             var_0002 = add_containerobject_s(objectref, {17514, 17520, 17516, 17517, 8044, 65, 7768})
             -- Guess: sloop creates poison field
             for i = 1, 5 do
-                var_0005 = {3, 4, 5, 1, 147}[i]
+                var_0005 = ({3, 4, 5, 1, 147})[i]
                 var_0006 = get_object_position(var_0005) --- Guess: Gets position data
                 var_0007 = var_0006[1]
                 var_0008 = var_0006[2]

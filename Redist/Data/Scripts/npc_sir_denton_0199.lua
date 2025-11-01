@@ -108,7 +108,7 @@ function npc_sir_denton_0199(eventid, objectref)
                     if var_0004 then
                         switch_talk_to(0, -1)
                         add_dialogue("Iolo whispers in your ear.")
-                        add_dialogue("\"" .. var_0000 .. \", we have heard that one before. 'Tis best we leave him before he indulges in another joke.\"")
+                        add_dialogue("\"" .. var_0000 .. "\", we have heard that one before. 'Tis best we leave him before he indulges in another joke.\"")
                         hide_npc(1)
                     end
                     switch_talk_to(0, -199)

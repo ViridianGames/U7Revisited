@@ -6,8 +6,9 @@ function utility_ship_0272(eventid, objectref)
     fade_palette(1, 1, 36) --- Guess: Sets game state
     var_0000 = find_nearby(4, 35, 359, objectref) --- Guess: Sets NPC location
     -- Guess: sloop checks party members' state and schedule
+    local npc_ids = {1, 2, 3, 0}
     for i = 1, 4 do
-        var_0003 = {1, 2, 3, 0}[i]
+        var_0003 = npc_ids[i]
         if get_alignment(var_0003) == 0 and get_schedule_type(var_0003) == 0 then
             -- Placeholder for unknown opcode 2CH
         end

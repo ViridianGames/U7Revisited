@@ -60,7 +60,7 @@ function npc_stuart_0029(eventid, objectref)
                 add_dialogue("\"Of course thou art. And I am really Lord British. Thou must take me for an ass to think I would believe that.\"")
                 switch_talk_to(0, -1)
                 add_dialogue("Your friend whispers to you. \"These actor types. A touchy bunch, eh?\"")
-                hide_npc1)
+                --syntax error hide_npc1)
                 switch_talk_to(0, -29)
             end
             add_answer({"Avatar", "Raymundo"})

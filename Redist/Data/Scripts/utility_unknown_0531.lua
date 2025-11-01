@@ -13,7 +13,7 @@ function utility_unknown_0531(eventid, objectref)
         var_0002 = find_nearby(176, 20, 912, var_0000) --- Guess: Sets NPC location
         -- Guess: sloop applies effects and destroys items
         for i = 1, 5 do
-            var_0005 = {3, 4, 5, 2, 48}[i]
+            var_0005 = ({3, 4, 5, 2, 48})[i]
             apply_sprite_effect(-1, 0, 0, 0, var_0001[2], var_0001[1], 12) --- Guess: Applies sprite effect
             play_sound_effect(62) --- Guess: Triggers event
             destroy_object_silent(var_0005) --- Guess: Destroys item silently

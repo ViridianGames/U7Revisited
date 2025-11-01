@@ -73,7 +73,7 @@ function npc_gorn_0138(eventid, objectref)
             if var_0002 then
                 switch_talk_to(0, -1)
                 add_dialogue("Iolo whispers to you, \"This fellow is quite sharp, is he not?\"")
-                hide_npc1)
+                -- syntax error hide_npc1)
                 switch_talk_to(0, 138)
             end
             remove_answer("camp")
@@ -87,7 +87,7 @@ function npc_gorn_0138(eventid, objectref)
                 add_dialogue("\"Hey, vhat are you vhispering about over dere?\"")
                 switch_talk_to(0, -3)
                 add_dialogue("\"Oh, nothing. Nothing at all.\"")
-                hide_npc3)
+                --syntax error hide_npc3)
                 switch_talk_to(0, 138)
             end
             remove_answer("danger")
@@ -112,7 +112,7 @@ function npc_gorn_0138(eventid, objectref)
             if var_0004 then
                 switch_talk_to(0, -4)
                 add_dialogue("\"A mysterious voice speaking inside someone's head, suggesting the philosophy of The Fellowship. Does this sound familiar, " .. var_0000 .. "?\"")
-                hide_npc4)
+                --syntax error hide_npc4)
                 switch_talk_to(0, 138)
             end
             remove_answer("next strange thing")

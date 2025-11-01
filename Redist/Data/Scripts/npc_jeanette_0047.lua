@@ -39,7 +39,7 @@ function npc_jeanette_0047(eventid, objectref)
                     add_dialogue("\"Hello milady! I thought I might re-sample The Blue Boar's fine beverages!\"")
                     switch_talk_to(0, 47)
                     add_dialogue("\"Any time, milord! Any time!\"")
-                    hide_npc4)
+                    --syntax error hide_npc4)
                     switch_talk_to(0, 47)
                 end
                 add_answer({"buy", "drink", "food"})
@@ -73,7 +73,7 @@ function npc_jeanette_0047(eventid, objectref)
             if var_0003 then
                 switch_talk_to(0, -37)
                 add_dialogue("\"A moment, Jeanette! Thou hast it all wrong! Charles is a -servant-! Thou art an ignoramus! Charles is not 'upper class'! He is as working class as thee! 'Tis Willy who is the rich merchant! If thou dost ask me, 'tis Willy who is obnoxious and egotistical. Charles is a dream!\"")
-                hide_npc37)
+                --syntax error hide_npc37)
                 switch_talk_to(0, 47)
             else
                 add_dialogue("You point out to Jeanette that Charles is a servant.")

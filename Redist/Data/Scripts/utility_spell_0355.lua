@@ -15,8 +15,8 @@ function utility_spell_0355(eventid, objectref)
             table.insert(var_0004, 356)
             -- Guess: sloop disarms traps for party members
             for i = 1, 5 do
-                var_0007 = {5, 6, 7, 3, 80}[i]
-                if not (var_0007 == var_0004[1] or var_0007 == var_0004[2] or ...) and random(1, 3) == 1 then
+                var_0007 = ({5, 6, 7, 3, 80})[i]
+                if not (var_0007 == var_0004[1] or var_0007 == var_0004[2]) and random(1, 3) == 1 then --  or ...
                     var_0002 = check_object_at_position(var_0007, objectref) --- Guess: Checks object at position
                     var_0002 = (var_0002 / 3) + 5
                     var_0001 = add_containerobject_s(var_0007, {var_0002, 1635, 17493, 7715})

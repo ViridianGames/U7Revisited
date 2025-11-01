@@ -10,7 +10,7 @@ function utility_spell_0359(eventid, objectref)
         var_0003 = {828, 845, 433, 432, 376, 270}
         var_0004 = {376, 270, 433, 432}
         bark(objectref, "@Ex Por@")
-        if check_spell_requirements() and not (var_0001 == var_0003[1] or var_0001 == var_0003[2] or ...) then
+        if check_spell_requirements() and not (var_0001 == var_0003[1] or var_0001 == var_0003[2]) then --  or ...
             var_0005 = get_object_frame(var_0000)
             if (var_0005 + 1) % 4 ~= 0 then
                 var_0006 = add_containerobject_s(objectref, {66, 17496, 17511, 17509, 8550, var_0002, 7769})

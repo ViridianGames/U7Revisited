@@ -13,7 +13,7 @@ function utility_event_0773(eventid, objectref)
         var_0002 = find_nearby(16, 10, 776, 356) --- Guess: Sets NPC location
         -- Guess: sloop destroys items
         for i = 1, 5 do
-            var_0005 = {3, 4, 5, 2, 10}[i]
+            var_0005 = ({3, 4, 5, 2, 10})[i]
             destroy_object_silent(var_0005) --- Guess: Destroys item silently
         end
         var_0006 = add_containerobject_s_at(356, {8, 1563, 17493, 7715})

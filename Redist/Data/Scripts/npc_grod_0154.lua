@@ -39,13 +39,13 @@ function npc_grod_0154(eventid, objectref)
                             var_0008 = "a prisoner,"
                         end
                         add_dialogue("\"Thank thee ever so much, " .. var_0004 .. ",\" says " .. var_0008 .. " sarcastically.")
-                        hide_npc240)
+                        --syntax error hide_npc240)
                         switch_talk_to(0, 154)
                     end
                     if var_0002 and var_0003 then
                         switch_talk_to(0, -220)
                         add_dialogue("\"Now, now, Anton, the nice person was simply answering a question.\"")
-                        hide_npc220)
+                        --syntax error hide_npc220)
                         switch_talk_to(0, 154)
                     end
                 else
@@ -70,7 +70,7 @@ function npc_grod_0154(eventid, objectref)
             if var_0001 then
                 switch_talk_to(0, -2)
                 add_dialogue("Spark's eyes light up.~~\"Torture? Wow!\" He quickly looks at you and changes expressions.~~ \"I, er, mean, that is very awful.\"")
-                hide_npc2)
+                --syntax error hide_npc2)
                 switch_talk_to(0, 154)
             end
             var_000B = is_player_wearing_fellowship_medallion()
@@ -82,13 +82,13 @@ function npc_grod_0154(eventid, objectref)
                         add_dialogue("He points to one of the prisoners.~~\"He not fun like the other. Torture other first.\"")
                         switch_talk_to(0, -220)
                         add_dialogue("\"What? No, that's all right, " .. var_0004 .. ". Torture me, first.\"")
-                        hide_npc220)
+                        --syntax error hide_npc220)
                         switch_talk_to(0, -240)
                         add_dialogue("\"Yes, " .. var_0004 .. ". Torture him first.\"")
-                        hide_npc240)
+                        --syntax error hide_npc240)
                         switch_talk_to(0, -220)
                         add_dialogue("\"I thank thee,\" he says to the other.")
-                        hide_npc220)
+                        --syntax error hide_npc220)
                         switch_talk_to(0, 154)
                         add_dialogue("\"Go ahead,\" says Grod.")
                         var_000D = add_party_items(true, 359, 359, 622, 1)
@@ -132,7 +132,7 @@ function npc_grod_0154(eventid, objectref)
                     add_dialogue("\"There another one!\" he says, indicating the other man.")
                     switch_talk_to(0, -220)
                     add_dialogue("\"How art thou today, " .. var_0004 .. "?\" he says, smiling.")
-                    hide_npc220)
+                    --syntax error hide_npc220)
                     switch_talk_to(0, 154)
                 end
             end
@@ -145,7 +145,7 @@ function npc_grod_0154(eventid, objectref)
             if var_0000 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"That is terrible, " .. var_0005 .. ". We must command him to stop!\"")
-                hide_npc1)
+                --syntax error hide_npc1)
                 switch_talk_to(0, 154)
                 if var_0003 then
                     add_dialogue("\"I try make him stop. But he talk and talk. You try? Maybe he stop.\"")

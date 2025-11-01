@@ -48,19 +48,19 @@ function npc_horance_0141(eventid, objectref)
         if var_0006 then
             switch_talk_to(0, -3)
             add_dialogue("Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            hide_npc3)
+            --syntax error hide_npc3)
             switch_talk_to(0, 141)
         elseif var_0007 then
             switch_talk_to(0, -1)
             add_dialogue("Iolo steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            hide_npc1)
+            --syntax error hide_npc1)
             switch_talk_to(0, 141)
         end
         var_0008 = npc_id_in_party(-2)
         if var_0008 then
             switch_talk_to(0, -2)
             add_dialogue("\"Uh, " .. var_0001 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.")
-            hide_npc2)
+            --syntax error hide_npc2)
             switch_talk_to(0, 141)
         end
         set_flag(453, true)
@@ -128,12 +128,12 @@ function npc_horance_0141(eventid, objectref)
             if var_0009 then
                 switch_talk_to(0, -4)
                 add_dialogue("\"Yeah, right.\"")
-                hide_npc4)
+                --syntax error hide_npc4)
                 switch_talk_to(0, 141)
             elseif var_0007 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"Yeah, right.\"")
-                hide_npc1)
+                --syntax error hide_npc1)
                 switch_talk_to(0, 141)
             end
             add_dialogue("\"Feel free to explore mine humble abode. Though, have a care. My guardians are none too intelligent and will most likely assault anything living.\" He smiles with his death's head grin.")

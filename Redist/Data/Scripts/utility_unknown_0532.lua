@@ -8,7 +8,7 @@ function utility_unknown_0532(eventid, objectref)
     var_0002 = false
     -- Guess: sloop checks for ritual items
     for i = 1, 5 do
-        var_0005 = {3, 4, 5, 0, 65}[i]
+        var_0005 = ({3, 4, 5, 0, 65})[i]
         if get_containerobject_s(243, 797, var_0005, 4) then --- Guess: Gets container items
             var_0001 = var_0005
             var_0006 = var_0001
@@ -23,7 +23,7 @@ function utility_unknown_0532(eventid, objectref)
         var_0008 = utility_unknown_0788() --- External call to unknown function
         -- Guess: sloop checks for heart item
         for i = 1, 5 do
-            var_000B = {9, 10, 11, 8, 31}[i]
+            var_000B = ({9, 10, 11, 8, 31})[i]
             var_0007 = get_containerobject_s(203, 359, var_000B, 10) --- Guess: Gets container items
             if var_0007 then
                 break
@@ -45,7 +45,7 @@ function utility_unknown_0532(eventid, objectref)
                 var_0000 = find_nearby(414, 80, 0, objectref) --- Guess: Sets NPC location
                 -- Guess: sloop transfers heart item
                 for i = 1, 5 do
-                    var_0005 = {14, 15, 5, 0, 127}[i]
+                    var_0005 = ({14, 15, 5, 0, 127})[i]
                     if get_containerobject_s(243, 797, var_0005, 4) then --- Guess: Gets container items
                         var_0010 = transferobject_(var_0005, var_0002) --- Guess: Transfers item
                         switch_talk_to(289, 0) --- Guess: Initiates dialogue

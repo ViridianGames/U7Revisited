@@ -45,7 +45,7 @@ function npc_rutherford_0092(eventid, objectref)
                         add_dialogue("\"Hello again, Sir Dupre! Didst thou enjoy mine establishment so much that thou hast returned?\"")
                         switch_talk_to(0, -4)
                         add_dialogue("\"My dear Rutherford, this is not a reflection on The Checquered Cork, but I simply like a good drink!\"")
-                        hide_npc4)
+                        --syntax error hide_npc4)
                         switch_talk_to(0, 92)
                     end
                     add_answer({"room", "buy", "events", "Minoc"})

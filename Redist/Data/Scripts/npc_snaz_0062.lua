@@ -143,6 +143,7 @@ function npc_snaz_0062(eventid, objectref)
                 else
                     add_dialogue("\"Thou mayest be laughing but surely thy purse is not, for it is empty.\"")
                 end
+            end
         elseif cmps("Sullivan") then
             add_dialogue("\"Yes, I know the man they call Sullivan the Trickster! In fact thou dost remind me of him!~~\"Or does he remind me of thee?~~\"He is so tricky that just talking about him has caused me to trick myself! Heh-Hee-Haa!\"")
             remove_answer("Sullivan")
@@ -180,7 +181,6 @@ function npc_snaz_0062(eventid, objectref)
             break
         end
     end
-    return
 
 ::gold_joke_repeat::
     play_sound_effect(23)

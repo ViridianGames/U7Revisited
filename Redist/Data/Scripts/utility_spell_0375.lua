@@ -17,8 +17,8 @@ function utility_spell_0375(eventid, objectref)
         var_0004 = get_item_flag(6, objectref)
         -- Guess: sloop applies tremor effects
         for i = 1, 5 do
-            var_0007 = {5, 6, 7, 1, 462}[i]
-            if not var_0004 and not (var_0007 == var_0002[1] or var_0007 == var_0002[2] or ...) then
+            var_0007 = ({5, 6, 7, 1, 462})[i]
+            if not var_0004 and not (var_0007 == var_0002[1] or var_0007 == var_0002[2]) then --  or ...
                 var_0008 = 0
                 var_0009 = {}
                 while var_0008 < var_0003 do

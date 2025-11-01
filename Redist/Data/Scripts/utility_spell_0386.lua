@@ -17,8 +17,8 @@ function utility_spell_0386(eventid, objectref)
             var_0005 = false
             -- Guess: sloop kills nearby NPCs
             for i = 1, 5 do
-                var_0008 = {6, 7, 8, 3, 73}[i]
-                if not (var_0008 == var_0004[1] or var_0008 == var_0004[2] or ...) then
+                var_0008 = ({6, 7, 8, 3, 73})[i]
+                if not (var_0008 == var_0004[1] or var_0008 == var_0004[2]) then -- or ... ???
                     var_0002 = check_object_at_position(var_0008, objectref) --- Guess: Checks object at position
                     var_0002 = var_0002 / 3 + 5
                     destroyobject_(var_0008)
@@ -30,7 +30,7 @@ function utility_spell_0386(eventid, objectref)
                 var_0004 = get_party_members()
                 -- Guess: sloop damages party members
                 for i = 1, 5 do
-                    var_000B = {9, 10, 11, 4, 29}[i]
+                    var_000B = ({9, 10, 11, 4, 29})[i]
                     var_000C = get_npc_property(3, var_000B) --- Guess: Gets NPC property
                     damage_npc(var_000B, var_000C - 2) --- Guess: Damages NPC
                 end

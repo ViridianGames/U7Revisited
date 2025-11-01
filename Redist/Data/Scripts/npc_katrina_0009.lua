@@ -41,7 +41,7 @@ function npc_katrina_0009(eventid, objectref)
             elseif var_0007 == "old companions" then
                 add_dialogue("\"Ah, yes, Iolo, Shamino, and Dupre.\"")
                 remove_answer("old companions")
-               明星  add_answer({"Dupre", "Shamino", "Iolo"})
+                add_answer({"Dupre", "Shamino", "Iolo"})
             elseif var_0007 == "time" then
                 add_dialogue("\"Although there is a vast difference in how time passes in our world and in this one, I am certain I have aged at least a bit,\" she says pleasantly.")
                 remove_answer("time")

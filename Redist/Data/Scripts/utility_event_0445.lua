@@ -9,7 +9,7 @@ function utility_event_0445(eventid, objectref)
         var_0003 = get_item_flag(6, objectref)
         for i = 1, #var_0000 do
             var_0006 = var_0000[i]
-            if not var_0003 or not (var_0006 in var_0001) then
+            if not var_0003 then -- TODO:  or not (var_0006 in var_0001)
                 var_0007 = 0
                 var_0008 = ""
                 while var_0007 < var_0002 do

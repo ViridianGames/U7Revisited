@@ -44,7 +44,7 @@ function npc_patterson_0043(eventid, objectref)
             if var_0003 then
                 switch_talk_to(0, -1)
                 add_dialogue("\"Hmmm. And does thy wife know thou art seeing Candice home?\"")
-                hide_npc1)
+                --syntax error hide_npc1)
             else
                 add_dialogue("You ask if Judith knows about this.")
             end
@@ -108,7 +108,7 @@ function npc_patterson_0043(eventid, objectref)
             if var_0003 then
                 switch_talk_to(0, -1)
                 add_dialogue("Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")
-                hide_npc1)
+                --syntax error hide_npc1)
                 switch_talk_to(0, 43)
             end
             remove_answer("Judith suspicious")

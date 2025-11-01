@@ -22,7 +22,7 @@ function utility_clock_0290(eventid, objectref)
                 end
                 -- Guess: sloop updates party member states
                 for i = 1, 4 do
-                    var_0008 = {6, 7, 8, 0}[i]
+                    var_0008 = ({6, 7, 8, 0})[i]
                     utility_unknown_1087(31, var_0008) --- Guess: Updates object state
                 end
                 hide_npc(var_0001)
@@ -41,7 +41,7 @@ function utility_clock_0290(eventid, objectref)
         var_0000 = utility_unknown_1084(get_party_members(), 356) --- Guess: Gets nearby objects
         -- Guess: sloop updates party member states for sleep
         for i = 1, 4 do
-            var_0008 = {10, 11, 8, 0}[i]
+            var_0008 = ({10, 11, 8, 0})[i]
             utility_unknown_1087(11, var_0008) --- Guess: Updates object state
         end
         var_000C = add_containerobject_s(356, {35, 7719}) --- Guess: Adds items to container

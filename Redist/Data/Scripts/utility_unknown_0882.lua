@@ -22,7 +22,7 @@ function utility_unknown_0882(eventid, objectref)
             -- Bolts and arrows can be bought in multiple sets
             if var_0002[var_0009] == 722 or var_0002[var_0009] == 723 then
                 amount = ask_number("\"How many sets wouldst thou like?\"", 0, 20, 1)
-                amount *= 12
+                amount = amount * 12
             else
                 amount = 1
             end

@@ -39,7 +39,7 @@ function npc_daphne_0123(eventid, objectref)
             add_dialogue("\"What? Art thou working for Brommer's Britannia travel guides?\"")
             switch_talk_to(0, -4)
             add_dialogue("\"No, my dear. This research is strictly for mine own digestion!\"")
-            hide_npc4)
+            -- syntax error, why was this here? hide_npc4)
             switch_talk_to(0, 123)
         end
     else
@@ -151,7 +151,6 @@ function npc_daphne_0123(eventid, objectref)
         end
     end
     add_dialogue("\"Enjoy thyself.\"")
-    return
 
 ::gambling_start::
 end

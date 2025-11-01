@@ -207,7 +207,6 @@ function npc_ophelia_0122(eventid, objectref)
         end
     end
     add_dialogue("\"Do come and visit us again, " .. var_0000 .. ".\"")
-    return
 
 ::betting_start::
 end

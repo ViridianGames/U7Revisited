@@ -6,7 +6,7 @@ function utility_unknown_0926(P0, P1, P2)
     var_0004 = get_party_members()
     add_dialogue("\"I am able to heal, cure poison, and resurrect. Art thou interested in one of these services?\"")
     save_answers()
-    var_0005 = _SelectOption()
+    var_0005 = select_option()
     if var_0005 then
         add_dialogue("\"Which of my services dost thou have need of?\"")
         var_0006 = {"resurrect", "cure poison", "heal"}
@@ -19,7 +19,8 @@ function utility_unknown_0926(P0, P1, P2)
             var_000B = get_party_list2()
             var_000C = {}
             var_000D = {}
-            for var_000E in ipairs(var_0004) do
+            for var_000E = 1, #var_0004 do
+                var_0010 = var_0004[var_000E]
                 if var_0010 ~= var_0003 then
                     table.insert(var_000C, get_player_name(var_0010))
                     table.insert(var_000D, var_0010)
@@ -28,7 +29,7 @@ function utility_unknown_0926(P0, P1, P2)
             var_0011 = {0, 0}
             var_0012 = _SelectIndex(table.insert(var_000C, "Nobody"))
             var_0013 = var_0011[var_0012]
-            var_0014 = var_0013 == 0 and 0 or _003AH(var_0013)
+            var_0014 = var_0013 == 0 and 0 or func_003AH(var_0013)
             if var_0014 == 0 then
                 add_dialogue("\"Avatar! Thou dost tell me to prepare to heal and then thou dost tell me 'Nobody'! Is this thine idea of a joke? Healing is a serious business!\"")
                 restore_answers()
@@ -45,9 +46,18 @@ function utility_unknown_0926(P0, P1, P2)
                 end
             end
             add_dialogue("\"Indeed, thy friend is grievously wounded. Make room here, and I will heal them to the best of mine abilities.\"")
-            var_0009 = var_0003 in var_0004 and 0 or 400
+            var_0000 = false
+            var_0001 = 1
+            while var_0001 <= #var_0004 do
+                if var_0004[var_0001] == var_0003 then
+                    var_0000 = true
+                    break
+                end
+                var_0001 = var_0001 + 1
+            end
+            var_0009 = var_0000 and 0 or 400
         end
-        if var_0003 in var_0004 then
+        if var_0000 then
             add_dialogue("\"Since I am travelling in thy group, I shall waive my fee.\"")
             if var_0007 == "heal" then
                 _Heal(var_0009, var_0014)

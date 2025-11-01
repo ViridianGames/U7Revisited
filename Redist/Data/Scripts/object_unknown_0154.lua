@@ -122,7 +122,7 @@ function object_unknown_0154(eventid, objectref)
                     set_flag(783, true)
                     add_dialogue("\"Ah, yes. I once had a scroll that told of a talisman by that name. If only I could remember where I put it. Dost thou by chance have the parchment entitled Scroll of Infinity with thee?\"")
                     if ask_yes_no() then
-                        if not count_objects(, 50, 797, 357) then
+                        if not count_objects(50, 797, 357) then
                             add_dialogue("\"If thou dost not have the scroll, I cannot help thee in this matter.\"")
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")
@@ -138,7 +138,7 @@ function object_unknown_0154(eventid, objectref)
                 else
                     add_dialogue("\"Dost thou have the Scroll of Infinity amongst thy possessions?\"")
                     if ask_yes_no() then
-                        if not count_objects(, 50, 797, 357) then
+                        if not count_objects(50, 797, 357) then
                             add_dialogue("\"I needs must touch the scroll to glean its meaning. Else I'll not be able to help thee in this matter.\"")
                         else
                             add_dialogue("\"Here we are. Now then, it appears to be written in a strange format. One might even say a code of sorts... I have it! Apparently, the Talisman currently resides in the Great Void. A plane somewhat removed from ours. If thou wishest to gain access to this void, thou shalt need to craft two lenses: one concave, the other convex. Light focused through the properly enchanted lenses will open a conduit between our realm and the void. I believe this treatise speaks of three Talismans of Principle that send out a call to the Infinity Talisman and bring it here. Once here, it would seem that its sole purpose is to coerce a powerful force into the void.\" A thought hits the mage like lightning strikes a tree. \"Oh no, Avatar... Thou shan't gain any more aid from me. I may be blind, but I see through thy sham. I'll not help thee send the Core into the void.\" Erethian falls silent, and it would appear that he'll speak no more.")

@@ -12,7 +12,7 @@ function utility_spell_0387(eventid, objectref)
             var_0002 = get_party_members()
             -- Guess: sloop applies protection to party members
             for i = 1, 5 do
-                var_0005 = {3, 4, 5, 2, 51}[i]
+                var_0005 = ({3, 4, 5, 2, 51})[i]
                 var_0006 = check_object_at_position(var_0005, objectref) --- Guess: Checks object at position
                 var_0006 = var_0006 / 3 + 5
                 var_0001 = add_containerobject_s(var_0005, {var_0006, 1667, 17493, 7715})
