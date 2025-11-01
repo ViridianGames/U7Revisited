@@ -25,6 +25,9 @@ if(MSVC)
     add_compile_options(/std:c++17)
     # Warning level 3
     add_compile_options(/W3)
+    # Enable Hot Reload / Edit and Continue for Debug builds
+    add_compile_options($<$<CONFIG:Debug>:/ZI>)  # Edit and Continue debug info
+    add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)  # Incremental linking
     # Release optimizations (using generator expressions for multi-config generators)
     add_compile_options($<$<CONFIG:Release>:/O2>)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
