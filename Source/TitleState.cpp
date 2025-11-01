@@ -291,6 +291,8 @@ void TitleState::CreateCreditsGUI()
 	                          BLUE, GuiTextArea::CENTERED, 0, 1, true);
 	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Wazoo", 100, y += yOffset, 0, 0, BLUE,
 	                          GuiTextArea::CENTERED, 0, 1, true);
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Furroy", 100, y += yOffset, 0, 0, BLUE,
+	                          GuiTextArea::CENTERED, 0, 1, true);
 
 	y = 10 + 3.5f * yOffset; //  Reset y to the top of the art section
 
@@ -324,44 +326,46 @@ void TitleState::CreateCreditsGUI()
 	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "SolviteSekai", 200, y += yOffset, 0, 0,
 	                          YELLOW, GuiTextArea::CENTERED, 0, 1, true);
 
-	y = 130;
+	y = 142;
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Patrons!", 100, y, 0, 0, WHITE,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ko-Fi Buyers!", 100, y, 0, 0, WHITE,
 	                          GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ko-Fi Buyers!", 200, y, 0, 0, WHITE,
+	y = 118;
+
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Patrons!", 200, y, 0, 0, WHITE,
 	                          GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Andrew Gaul", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Andrew Gaul", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ben Citak", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Ben Citak", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Christoffer Erikson", 100,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Christoffer Erikson", 200,
 	                          y += yOffset, 0, 0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "FreeManPhil", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "FreeManPhil", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Gronkh", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Gronkh", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Johnny Mellgren", 100, y += yOffset, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Johnny Mellgren", 200, y += yOffset, 0,
 	                          0, WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Joseph", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Joseph", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Nighthawk", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Nighthawk", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Pachurice", 100, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Pachurice", 200, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
-	y = 130;
+	y = 142;
 
-	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Lord Brutish", 200, y += yOffset, 0, 0,
+	m_CreditsGui->AddTextArea(GUI_CREDITS_TITLE + idOffset++, g_SmallFont.get(), "Lord Brutish", 100, y += yOffset, 0, 0,
 	                          WHITE, GuiTextArea::CENTERED, 0, 1, true);
 
 

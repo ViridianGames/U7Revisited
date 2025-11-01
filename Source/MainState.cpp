@@ -211,6 +211,51 @@ void MainState::UpdateTime()
 
 }
 
+void MainState::CalculateMouseOverUI()
+{
+	g_mouseOverUI = false;
+
+	if (!m_showUIElements || m_paused)
+	{
+		return;
+	}
+
+	// Stats panel (right side) - drawn at (512, 200), background is 133x136
+	Rectangle statsPanelRect = { 512 * g_DrawScale, 200 * g_DrawScale, 133 * g_DrawScale, 136 * g_DrawScale };
+
+	// Minimap (top-right corner)
+	Rectangle minimapRect = {
+		g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale),
+		0,
+		g_minimapSize * g_DrawScale,
+		g_minimapSize * g_DrawScale
+	};
+
+	// Character panel (below minimap)
+	Rectangle charPanelRect = {
+		g_Engine->m_ScreenWidth - (g_minimapSize * g_DrawScale),
+		g_minimapSize * g_DrawScale,
+		g_minimapSize * g_DrawScale,
+		100 * g_DrawScale
+	};
+
+	// Schedule button (sandbox mode only)
+	Rectangle scheduleButtonRect = {
+		m_scheduleToggleButton.x * g_DrawScale,
+		m_scheduleToggleButton.y * g_DrawScale,
+		m_scheduleToggleButton.width * g_DrawScale,
+		m_scheduleToggleButton.height * g_DrawScale
+	};
+
+	Vector2 mousePos = GetMousePosition();
+	bool overStats = IsPosInRect(mousePos, statsPanelRect);
+	bool overMinimap = IsPosInRect(mousePos, minimapRect);
+	bool overCharPanel = IsPosInRect(mousePos, charPanelRect);
+	bool overSchedule = (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && IsPosInRect(mousePos, scheduleButtonRect));
+
+	g_mouseOverUI = overStats || overMinimap || overCharPanel || overSchedule;
+}
+
 void MainState::UpdateInput()
 {
 	if (!m_allowInput)
@@ -218,20 +263,15 @@ void MainState::UpdateInput()
 		return;
 	}
 
-	// Handle NPC Schedule Toggle Button (Sandbox mode only)
-	bool mouseOverScheduleButton = false;
-	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	// Handle NPC Schedule Toggle Button clicks (Sandbox mode only)
+	if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
 	{
-		// Scale button coordinates for click detection (mouse is in screen space)
 		Rectangle scaledButton = {
 			m_scheduleToggleButton.x * g_DrawScale,
 			m_scheduleToggleButton.y * g_DrawScale,
 			m_scheduleToggleButton.width * g_DrawScale,
 			m_scheduleToggleButton.height * g_DrawScale
 		};
-
-		// Check if mouse is over the button
-		mouseOverScheduleButton = IsMouseInRect(scaledButton);
 
 		if (WasLeftButtonClickedInRect(scaledButton))
 		{
@@ -290,6 +330,12 @@ void MainState::UpdateInput()
 	{
 		m_showPathfindingDebug = !m_showPathfindingDebug;
 		AddConsoleString(m_showPathfindingDebug ? "Pathfinding Debug ON - showing tile walkability with objects" : "Pathfinding Debug OFF");
+	}
+
+	if (IsKeyPressed(KEY_F11) && m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+	{
+		g_showScriptedObjects = !g_showScriptedObjects;
+		AddConsoleString(g_showScriptedObjects ? "Script Debug ON - highlighting objects with scripts" : "Script Debug OFF");
 	}
 
 	// Right-click to debug specific tile when pathfinding debug is on
@@ -402,7 +448,8 @@ void MainState::UpdateInput()
 		m_dragStart = {0, 0};
 	}
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC))
+	// Always update selected shape/frame when clicking an object (for F1 shape editor)
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && g_objectUnderMousePointer != nullptr && !g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI)
 	{
 		g_selectedShape = g_objectUnderMousePointer->m_shapeData->m_shape;
 		g_selectedFrame = g_objectUnderMousePointer->m_shapeData->m_frame;
@@ -412,23 +459,27 @@ void MainState::UpdateInput()
 			g_ScriptingSystem->ResumeCoroutine(m_luaFunction, {g_objectUnderMousePointer->m_ID}); // Lua arrays are 1-indexed
 		}
 
-		if (m_dragStart.x == 0 && m_dragStart.y == 0)
+		// Only allow dragging if not a static object (or if static movement is enabled)
+		if (m_allowMovingStaticObjects || g_objectUnderMousePointer->m_UnitType != U7Object::UnitTypes::UNIT_TYPE_STATIC)
 		{
-			m_dragStart = GetMousePosition();
-		}
-		else
-		{
-			if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+			if (m_dragStart.x == 0 && m_dragStart.y == 0)
 			{
-				g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
-				g_gumpManager->m_draggingObject = true;
-				g_gumpManager->m_sourceGump = nullptr;
+				m_dragStart = GetMousePosition();
+			}
+			else
+			{
+				if (Vector2DistanceSqr(m_dragStart, GetMousePosition()) > 4 * g_DrawScale)
+				{
+					g_gumpManager->m_draggedObjectId = g_objectUnderMousePointer->m_ID;
+					g_gumpManager->m_draggingObject = true;
+					g_gumpManager->m_sourceGump = nullptr;
 
+				}
 			}
 		}
 	}
 
-	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
+	if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
 	{
 		std::string filePath;
 		string scriptName;
@@ -480,7 +531,7 @@ void MainState::UpdateInput()
 		}
 	}
 
-	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !mouseOverScheduleButton)
+	if (WasMouseButtonDoubleClicked(MOUSE_BUTTON_LEFT) && g_objectUnderMousePointer != nullptr && !g_mouseOverUI)
 	{
 		// Handle doors and objects with scripts/conversations
 		if (g_objectUnderMousePointer->m_objectData->m_isDoor ||
@@ -504,7 +555,7 @@ void MainState::UpdateInput()
 	}
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
-		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer != nullptr)
+		if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer != nullptr)
 		{
 			if (m_objectSelectionMode == true)
 			{
@@ -516,7 +567,7 @@ void MainState::UpdateInput()
 			}
 			else
 			{
-				Bark(g_objectUnderMousePointer, g_objectUnderMousePointer->m_objectData->m_name, 3.0f);
+				Bark(g_objectUnderMousePointer, "", 3.0f);  // Empty string = use object's current name
 
 				// Visualize NPC waypoints as blue tiles when clicking on any NPC
 				if (g_objectUnderMousePointer->m_isNPC)
@@ -545,7 +596,7 @@ void MainState::UpdateInput()
 					{
 						// Create sorted indices based on schedule time
 						vector<int> sortedIndices(g_NPCSchedules[npcID].size());
-						for (size_t i = 0; i < sortedIndices.size(); i++)
+						for (int i = 0; i < static_cast<int>(sortedIndices.size()); i++)
 							sortedIndices[i] = i;
 
 						std::sort(sortedIndices.begin(), sortedIndices.end(),
@@ -625,7 +676,7 @@ void MainState::UpdateInput()
 				}
 			}
 		}
-		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !mouseOverScheduleButton && g_objectUnderMousePointer == nullptr)
+		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer == nullptr)
 		{
 #ifdef DEBUG_NPC_PATHFINDING
 			// Clicked on terrain (no object) - show terrain debug info
@@ -680,7 +731,19 @@ void MainState::Bark(U7Object* object, const std::string& text, float duration)
 {
 	m_barkDuration = duration;
 	m_barkObject = object;
-	m_barkText = text;
+
+	// If text is empty, auto-generate it from object's shape/frame/quantity each frame
+	if (text.empty() && object)
+	{
+		m_barkAutoUpdate = true;
+		int quantity = (object->m_Quality > 0) ? object->m_Quality : 1;
+		m_barkText = GetShapeFrameName(object->m_shapeData->GetShape(), object->m_shapeData->GetFrame(), quantity);
+	}
+	else
+	{
+		m_barkAutoUpdate = false;
+		m_barkText = text;
+	}
 }
 
 void MainState::Update()
@@ -799,6 +862,9 @@ void MainState::Update()
 				++node;
 			}
 		}
+
+		// Calculate g_mouseOverUI RIGHT BEFORE UpdateSortedVisibleObjects
+		CalculateMouseOverUI();
 
 		UpdateSortedVisibleObjects();
 
@@ -1027,7 +1093,7 @@ void MainState::Draw()
 		unsigned short shapeframe = g_World[worldZ][worldX];
 		int shape = shapeframe & 0x3ff;
 
-		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+		if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX && m_showUIElements && !m_paused)
 		{
 			// Draw NPC Schedule Toggle Button
 			Color buttonColor = m_npcSchedulesEnabled ? Color{0, 200, 0, 255} : Color{200, 0, 0, 255}; // Green if on, red if off
@@ -1062,7 +1128,10 @@ void MainState::Draw()
 			else
 				objectDescription = "Object ";
 
-			objectDescription += g_objectUnderMousePointer->m_objectData->m_name + " at " +
+			int quantity = (g_objectUnderMousePointer->m_Quality > 0) ? g_objectUnderMousePointer->m_Quality : 1;
+			objectDescription += GetShapeFrameName(g_objectUnderMousePointer->m_shapeData->GetShape(),
+			                                        g_objectUnderMousePointer->m_shapeData->GetFrame(),
+			                                        quantity) + " at " +
 			  to_string(int(g_objectUnderMousePointer->m_Pos.x)) +
 			  " " +
 			  to_string(int(g_objectUnderMousePointer->m_Pos.z)) +
@@ -1088,6 +1157,13 @@ void MainState::Draw()
 	// Draw bark text if active
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
+		// If auto-update is enabled, regenerate bark text from current object state
+		if (m_barkAutoUpdate)
+		{
+			int quantity = (m_barkObject->m_Quality > 0) ? m_barkObject->m_Quality : 1;
+			m_barkText = GetShapeFrameName(m_barkObject->m_shapeData->GetShape(), m_barkObject->m_shapeData->GetFrame(), quantity);
+		}
+
 		Vector3 textPos = { m_barkObject->m_Pos.x, m_barkObject->m_Pos.y + m_barkObject->m_shapeData->m_Dims.y, m_barkObject->m_Pos.z };
 
 		// Convert 3D world position to 2D screen coordinates
@@ -1098,6 +1174,7 @@ void MainState::Draw()
 		screenPos.y = int(screenPos.y);
 		screenPos.y -= g_ConversationFont->baseSize * 1.5f; // Offset above the object
 
+		// Bark text is already set in Bark() function (either custom text or generated from object name)
 		float width = MeasureTextEx(*g_ConversationFont, m_barkText.c_str(), g_ConversationFont->baseSize, 1).x * 1.2;
 		screenPos.x -= width / 2;
 		float height = g_ConversationFont->baseSize * 1.2;
@@ -1126,9 +1203,17 @@ void MainState::Draw()
 		float _ScaleX = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_width) * g_camera.target.x;
 		float _ScaleZ = (g_minimapSize * g_DrawScale) / float(g_Terrain->m_height) * g_camera.target.z;
 
-		float half = float(g_DrawScale) * float(m_MinimapArrow->width) / 2;
+		// Draw minimap arrow rotated by camera angle around its center
+		float centerX = g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX;
+		float centerZ = _ScaleZ;
+		float rotation = -g_cameraRotation * RAD2DEG - 45.0f;  // Negate to match camera rotation direction, subtract 45° for isometric offset
 
-		DrawTextureEx(*m_MinimapArrow, { g_Engine->m_ScreenWidth - float(g_minimapSize * g_DrawScale) + _ScaleX - half, _ScaleZ - half }, 0, g_DrawScale, WHITE);
+		// Setup source and destination rectangles for proper centered rotation
+		Rectangle source = { 0, 0, (float)m_MinimapArrow->width, (float)m_MinimapArrow->height };
+		Rectangle dest = { centerX, centerZ, m_MinimapArrow->width * g_DrawScale, m_MinimapArrow->height * g_DrawScale };
+		Vector2 origin = { m_MinimapArrow->width * g_DrawScale / 2.0f, m_MinimapArrow->height * g_DrawScale / 2.0f };
+
+		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
 
 		if (m_objectSelectionMode)
 		{

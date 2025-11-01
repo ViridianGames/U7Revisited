@@ -1,0 +1,20 @@
+{
+    // Lua Language Server Configuration for U7Revisited
+
+    // Set Lua version to 5.4 (project uses Lua 5.4.7)
+    "Lua.runtime.version": "Lua 5.4",
+
+    // Disable the lowercase-global diagnostic since all script functions are intentionally global
+    // (The C++ engine calls them by name)
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ],
+
+    // Load our engine API definition file for IntelliSense
+    "Lua.workspace.library": [
+        "${workspaceFolder}/Redist/Data/Scripts/u7_engine_api.lua"
+    ],
+
+    // Don't prompt about third-party library detection
+    "Lua.workspace.checkThirdParty": false
+}

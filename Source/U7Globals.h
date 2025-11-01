@@ -56,6 +56,7 @@ extern std::string g_gameStateStrings[];
 extern std::string g_objectDrawTypeStrings[];
 
 extern bool g_LuaDebug;
+extern bool g_showScriptedObjects;
 
 // enum class ObjectTypes
 // {
@@ -121,6 +122,12 @@ struct ObjectData
 
 	//std::unique_ptr<Mesh> m_mesh = nullptr;
 };
+
+// Misc names from TEXT.FLX (entries 1024+) for frame-specific item names
+extern std::vector<std::string> g_miscNames;
+
+// Get the name for a specific shape, frame, and quantity
+std::string GetShapeFrameName(int shape, int frame, int quantity = 1);
 
 
 //  Here's how schedules work:
@@ -291,6 +298,7 @@ extern Vector3 g_terrainUnderMousePointer;
 extern std::unique_ptr<GumpManager> g_gumpManager;
 
 extern U7Object* g_objectUnderMousePointer;
+extern bool g_mouseOverUI;  // True when mouse is over any UI element (blocks world interaction)
 
 extern U7Object* g_doubleClickedObject;
 
@@ -352,6 +360,10 @@ extern std::shared_ptr<Sprite> g_InactiveButtonR;
 extern std::shared_ptr<Sprite> g_ActiveButtonL;
 extern std::shared_ptr<Sprite> g_ActiveButtonM;
 extern std::shared_ptr<Sprite> g_ActiveButtonR;
+
+extern std::shared_ptr<Sprite> g_ShapeButtonL;
+extern std::shared_ptr<Sprite> g_ShapeButtonM;
+extern std::shared_ptr<Sprite> g_ShapeButtonR;
 
 extern std::shared_ptr<Sprite> g_LeftArrow;
 extern std::shared_ptr<Sprite> g_RightArrow;

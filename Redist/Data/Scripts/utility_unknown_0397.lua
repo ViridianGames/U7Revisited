@@ -1,0 +1,13 @@
+--- Best guess: Manages a brewing or mixing mechanic, checking item frame (3 or 7) and container items (ID 668), creating a new item (ID 1678) if water is present, or displaying an error message otherwise.
+function utility_unknown_0397(eventid, objectref)
+    local var_0000, var_0001, var_0002
+
+    var_0000 = _GetItemFrame(objectref)
+    var_0001 = get_container_objects(359, 359, 668, get_npc_name(356))
+    if var_0000 == 3 or var_0000 == 7 then
+        var_0002 = execute_usecode_array(get_npc_name(356), {8033, 10, 7719})
+        var_0002 = execute_usecode_array(var_0001, {1678, 8021, 2, 7719})
+    else
+        bark(get_npc_name(356), "@There's not enough water.@")
+    end
+end

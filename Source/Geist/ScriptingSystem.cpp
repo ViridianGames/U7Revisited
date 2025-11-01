@@ -128,7 +128,6 @@ void ScriptingSystem::LoadScript(const std::string& path)
     }
     else
     {
-        std::cout << "Loaded script: " << path << "\n";
         DebugPrint("Loaded script: " + path);
     }
 
@@ -234,7 +233,7 @@ string ScriptingSystem::CallScript(const string& func_name, const vector<LuaArg>
     }
 
     int nresults;
-    int status = lua_resume(co, nullptr, args.size(), &nresults);
+    int status = lua_resume(co, nullptr, static_cast<int>(args.size()), &nresults);
     if (status == LUA_YIELD)
     {
         return "";
@@ -317,7 +316,7 @@ string ScriptingSystem::ResumeCoroutine(const string& func_name, const vector<Lu
     }
 
     int nresults;
-    int status = lua_resume(co, nullptr, args.size(), &nresults);
+    int status = lua_resume(co, nullptr, static_cast<int>(args.size()), &nresults);
     if (status == LUA_YIELD)
     {
         return "";

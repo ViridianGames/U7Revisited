@@ -34,7 +34,9 @@ public:
 
    void ChangeGui(Gui* newGui);
    void SwitchToGuiForDrawType(ShapeDrawType drawType);
-      
+
+   void DrawCuboidWireframe(const Vector3& position, const Vector3& dims, const Vector3& scaling, float rotationAngle);
+
    unsigned int m_currentShape = 0;
    unsigned int m_currentFrame = 0;
    std::map<std::string, std::unique_ptr<RaylibModel>>::iterator m_modelIndex;
@@ -43,6 +45,8 @@ public:
    bool m_tileZ = false;
    bool m_shapeTableMade = false;
    float m_rotateAngle = 0.0;
+   int m_previousViewAngle = 0;
+   bool m_isDraggingSlider = false;
 
    std::vector<std::vector<std::unique_ptr<U7Object>>> m_objectLibrary;
 
@@ -196,6 +200,9 @@ public:
       GE_PREVMODELBUTTON,
       GE_MODELNAMETEXTAREA,
 
+      GE_ITEMNAMETEXTLABEL,
+      GE_ITEMNAMETEXTAREA,
+
       GE_TWEAKROTATIONTITLEAREA,
       GE_TWEAKROTATIONTEXTAREA,
       GE_TWEAKROTATIONPLUSBUTTON,
@@ -224,6 +231,11 @@ public:
 
       GE_OPENLUASCRIPTBUTTON,
       GE_SETLUASCRIPTTOSHAPEIDBUTTON,
+      GE_ADDALLFRAMESSCRIPTBUTTON,
+      GE_CLEARSCRIPTBUTTON,
+      GE_CLEARALLSCRIPTSBUTTON,
+
+      GE_VIEWANGLESLIDER,
 
       GE_LASTGUIELEMENT
    };
