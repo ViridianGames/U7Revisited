@@ -5,7 +5,7 @@ function object_unknown_0410(eventid, objectref)
     if eventid == 1 then
         close_gumps()
         var_0000 = find_nearby(0, 10, 411, objectref)
-        var_0001 = get_item_quality(objectref)
+        var_0001 = get_object_quality(objectref)
         if var_0001 == 0 or var_0001 > 3 then
             var_0002 = execute_usecode_array({76, 8024, 37, 8024, 1, 8006, 0, 7750}, objectref)
         else

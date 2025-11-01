@@ -20,7 +20,7 @@ function object_unknown_0418(eventid, objectref)
                     -- callis 0026, 1 (unmapped)
                     var_0003 = update_last_created({aidx(var_0004, 1) + 1, aidx(var_0004, 2), aidx(var_0004, 3)})
                     if not var_0003 then
-                        var_0003 = set_item_quality(get_time_hour(), objectref)
+                        var_0003 = set_object_quality(get_time_hour(), objectref)
                     end
                 end
             end

@@ -99,7 +99,7 @@ function utility_event_0522(eventid, objectref)
         if not var_0000 then
             var_0001 = create_new_object(641)
             get_object_frame(var_0001, 7)
-            var_0002 = set_item_quality(65, var_0001)
+            var_0002 = set_object_quality(65, var_0001)
             var_0002 = give_last_created(var_0000)
             bark(var_0000, "@I summon thee!@")
             var_0002 = execute_usecode_array(get_npc_name(-356), {22, 7719})

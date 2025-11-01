@@ -21,7 +21,7 @@ function utility_spell_0379(eventid, objectref)
         if not var_0008 then
             var_0009 = update_last_created(var_0005)
             if not var_0009 then
-                var_000A = set_item_quality(200, var_0008)
+                var_000A = set_object_quality(200, var_0008)
                 var_0009 = delayed_execute_usecode_array(var_000A, 200, 8493, var_0008)
             end
         else

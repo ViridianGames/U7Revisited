@@ -14,7 +14,7 @@ function utility_event_0470(eventid, objectref)
             var_0005 = find_nearby(16, 20, 275, objectref)
             for i = 1, #var_0005 do
                 var_0008 = var_0005[i]
-                if get_item_quality(var_0008) == 50 then
+                if get_object_quality(var_0008) == 50 then
                     remove_item(var_0008)
                 end
             end

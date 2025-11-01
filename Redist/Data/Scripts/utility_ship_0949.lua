@@ -6,7 +6,7 @@ function utility_ship_0949()
     add_dialogue("\"If thou wishest to seek out this isle, thou mayest use my ship. It now sits upon the southern shore of Vesper and is called the Golden Ankh. Please, feel free to use it for as long as thou hast need of it.\"")
     var_0000 = create_new_object(797)
     set_object_frame(1, var_0000)
-    var_0001 = set_item_quality(44, var_0000)
+    var_0001 = set_object_quality(44, var_0000)
     var_0002 = give_last_created(get_npc_name(356))
     var_0003 = false
     if var_0002 then

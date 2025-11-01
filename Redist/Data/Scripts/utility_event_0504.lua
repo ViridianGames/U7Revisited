@@ -3,7 +3,7 @@ function utility_event_0504(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031
 
     if eventid == 3 then
-        var_0000 = get_item_quality(objectref)
+        var_0000 = get_object_quality(objectref)
         if var_0000 == 0 then
             var_0001 = find_nearest(10, 848, objectref)
             var_0002 = get_object_frame(var_0001)
@@ -150,7 +150,7 @@ function utility_event_0504(eventid, objectref)
             var_0022 = find_nearby(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
-                if get_object_frame(var_0025) == 7 and get_item_quality(var_0025) == 1 then
+                if get_object_frame(var_0025) == 7 and get_object_quality(var_0025) == 1 then
                     var_0026 = get_object_position(var_0025)
                     sprite_effect(3, 0, 0, 0, var_0026[2], var_0026[1], 17)
                 end
@@ -182,7 +182,7 @@ function utility_event_0504(eventid, objectref)
             var_0022 = find_nearby(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
-                if get_object_frame(var_0025) == 7 and get_item_quality(var_0025) == 2 then
+                if get_object_frame(var_0025) == 7 and get_object_quality(var_0025) == 2 then
                     var_0026 = get_object_position(var_0025)
                     sprite_effect(3, 0, 0, 0, var_0026[2], var_0026[1], 17)
                 end

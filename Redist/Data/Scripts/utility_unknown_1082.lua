@@ -31,9 +31,9 @@ function utility_unknown_1082(P0, P1)
             elseif var_0009 == 701 then
                 set_object_shape(595, var_0008)
             end
-            var_0003 = set_item_quality(255, var_0008)
+            var_0003 = set_object_quality(255, var_0008)
         else
-            var_0003 = set_item_quality(var_0007 - P1 * 30, var_0008)
+            var_0003 = set_object_quality(var_0007 - P1 * 30, var_0008)
         end
     end
 end

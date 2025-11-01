@@ -4,7 +4,7 @@ function utility_event_0434(eventid, objectref)
 
     if eventid == 3 then
         play_sound_effect(28)
-        var_0000 = get_item_quality(objectref)
+        var_0000 = get_object_quality(objectref)
         var_0001 = find_nearby(0, var_0000, 336, objectref)
         for i = 1, #var_0001 do
             var_0004 = var_0001[i]

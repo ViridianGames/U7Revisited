@@ -41,7 +41,7 @@ function utility_event_0505(eventid, objectref)
         var_0000 = {1487, 2187}
         var_0001 = 6
     elseif eventid == 3 then
-        var_0008 = get_item_quality(objectref)
+        var_0008 = get_object_quality(objectref)
         if var_0008 == 1 then
             if not get_flag(808) then
                 var_0000 = {1671, 2464}

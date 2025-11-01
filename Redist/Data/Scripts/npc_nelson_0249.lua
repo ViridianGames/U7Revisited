@@ -152,7 +152,7 @@ function npc_nelson_0249(eventid, objectref)
                 var_0010 = false
                 for i = 1, 5 do
                     var_0011 = find_nearby(0, 20, 675, objectref)
-                    var_0010 = get_item_quality(var_0011)
+                    var_0010 = get_object_quality(var_0011)
                     if var_0010 == 4 then
                         var_0010 = true
                         break

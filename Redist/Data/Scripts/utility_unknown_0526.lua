@@ -11,7 +11,7 @@ function utility_unknown_0526(eventid, objectref)
             remove_item(var_0004)
             var_0007 = create_new_object(936)
             get_object_frame(var_0007, 0)
-            var_0008 = set_item_quality(var_0006, var_0007)
+            var_0008 = set_object_quality(var_0006, var_0007)
             var_0008 = update_last_created(var_0005)
         end
     elseif get_flag(829) then
@@ -22,7 +22,7 @@ function utility_unknown_0526(eventid, objectref)
                 remove_item(var_0004)
                 var_0007 = create_new_object(936)
                 get_object_frame(var_0007, 0)
-                var_0008 = set_item_quality(var_0006, var_0007)
+                var_0008 = set_object_quality(var_0006, var_0007)
                 var_0008 = update_last_created(var_0005)
             end
         end
@@ -33,7 +33,7 @@ function utility_unknown_0526(eventid, objectref)
                 remove_item(var_0004)
                 var_0007 = create_new_object(303)
                 get_object_frame(var_0007, 4)
-                var_0008 = set_item_quality(var_0006, var_0007)
+                var_0008 = set_object_quality(var_0006, var_0007)
                 var_0008 = update_last_created(var_0005)
             end
         end
@@ -44,7 +44,7 @@ function utility_unknown_0526(eventid, objectref)
             remove_item(var_0004)
             var_0007 = create_new_object(303)
             get_object_frame(var_0007, 4)
-            var_0008 = set_item_quality(var_0006, var_0007)
+            var_0008 = set_object_quality(var_0006, var_0007)
             var_0008 = update_last_created(var_0005)
         end
     end

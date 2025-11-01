@@ -8,7 +8,7 @@ function utility_shop_0945()
     add_dialogue("\"Once again, Avatar, thou hast proven that thou art ever the defender of Britannia and the innocent. I cannot adequately express my gratitude; however, please take this small token of my thanks. I hope it will help thee in thy quest.\"")
     var_0001 = create_new_object(553)
     if var_0001 then
-        var_0002 = set_item_quality(100, var_0001)
+        var_0002 = set_object_quality(100, var_0001)
         get_npc_name(356)
         if utility_position_1031() then
             add_dialogue("He hands you his personal staff. It appears to be magical.")

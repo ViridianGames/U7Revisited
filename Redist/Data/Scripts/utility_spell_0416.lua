@@ -8,7 +8,7 @@ function utility_spell_0416(eventid, objectref)
     var_0003 = false
     var_0004 = false
     for i = 1, 5 do
-        var_0005 = get_item_quality(var_0000)
+        var_0005 = get_object_quality(var_0000)
         var_0006 = get_object_frame(var_0000)
         var_0007 = get_object_position(var_0000)
         if var_0006 == 6 then
@@ -45,7 +45,7 @@ function utility_spell_0416(eventid, objectref)
         var_000E = false
         var_0000 = find_nearby(16, 10, 275, objectref)
         for i = 1, 5 do
-            var_000F = get_item_quality(var_0000)
+            var_000F = get_object_quality(var_0000)
             var_0010 = get_object_frame(var_0000)
             var_0011 = get_object_position(var_0000)
             if var_0010 == 6 and var_000F == 10 then
@@ -63,7 +63,7 @@ function utility_spell_0416(eventid, objectref)
         end
         switch_talk_to(1, 286)
         add_dialogue("Little beads of sweat appear on the elderly mage's furrowed brow. \"That was a bit harder than I'd expected.\" He pauses to mop his forehead with the tip of his sleeve, \"I had to redirect a small underground river for the well to tap. Now, then. Thou shalt have need of some few tools to make use of this equipment, shan't thee?\" His rhetorical question goes unanswered as he once again prepares to unleash his will upon the world.")
-        if var_000E and get_item_quality(var_000E) == 100 then
+        if var_000E and get_object_quality(var_000E) == 100 then
             add_dialogue("He stops himself for a moment and says, \"If perchance thou hadst some item or other laying upon the floor here, thou'lt find it within yonder chest.\" He motions to the chest sitting on the floor, then continues with his spell.")
         end
         hide_npc(286)

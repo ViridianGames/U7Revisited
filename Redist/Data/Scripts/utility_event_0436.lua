@@ -7,7 +7,7 @@ function utility_event_0436(eventid, objectref)
         var_0000 = get_party_list()
         var_0001 = utility_unknown_1067(var_0000)
         var_0002 = die_roll(var_0001, 1)
-        var_0003 = die_roll(get_item_quality(objectref), 1)
+        var_0003 = die_roll(get_object_quality(objectref), 1)
         utility_unknown_1078(get_npc_name(var_0000[var_0002]), var_0003)
     end
     return

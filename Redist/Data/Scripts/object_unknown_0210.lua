@@ -10,7 +10,7 @@ function object_unknown_0210(eventid, objectref)
             return
         end
         -- callis 003B, 0 (unmapped)
-        var_0001 = set_item_quality(get_schedule(1), objectref)
+        var_0001 = set_object_quality(get_schedule(1), objectref)
         if random2(4, 1) > 1 then
             -- callis 0024, 1 (unmapped)
             var_0002 = create_new_object(377)

@@ -2,7 +2,7 @@
 function utility_forge_0503(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031, var_0032, var_0033, var_0034, var_0035, var_0036, var_0037, var_0038, var_0039, var_0040, var_0041, var_0042, var_0043, var_0044
 
-    var_0000 = get_item_quality(objectref)
+    var_0000 = get_object_quality(objectref)
     if var_0000 == 240 then
         var_0001 = false
         var_0002 = find_nearby(0, 80, 762, 356)

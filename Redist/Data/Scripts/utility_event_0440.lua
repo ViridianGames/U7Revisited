@@ -4,7 +4,7 @@ function utility_event_0440(eventid, objectref)
 
     if eventid == 3 then
         var_0000 = get_party_list()
-        var_0001 = get_item_quality(objectref)
+        var_0001 = get_object_quality(objectref)
         for i = 1, #var_0000 do
             var_0004 = var_0000[i]
             var_0005 = get_npc_prop(0, var_0004)

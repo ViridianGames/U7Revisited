@@ -7,7 +7,7 @@ function utility_event_0432(eventid, objectref)
         var_0000 = get_party_list()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
-            if not roll_to_win(get_npc_prop(0, var_0003), get_item_quality(objectref)) then
+            if not roll_to_win(get_npc_prop(0, var_0003), get_object_quality(objectref)) then
                 set_item_flag(8, get_npc_name(var_0003))
             end
         end
