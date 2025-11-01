@@ -22,7 +22,7 @@
 
 ---Switches the currently speaking NPC in a conversation
 ---@param npc_id integer The NPC ID to switch to
----@param frame integer The frame/portrait to display
+---@param frame? integer The frame/portrait to display (defaults to 0 if not provided)
 function switch_talk_to(npc_id, frame) end
 
 ---Shows a second speaker in the conversation
