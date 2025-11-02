@@ -315,7 +315,7 @@ function object_unknown_0154(eventid, objectref)
                 add_dialogue("\"I not had the chance to inspect that oddity yet, however, thou art welcome to peruse it at thy leisure.\" He smiles like a grandfather giving a present to a child.")
                 remove_answer("Test of Love")
             elseif response == "test of courage" then
-                var_0019 = is_pc_female() and "heroine's" or "hero's"
+                var_0019 = is_player_female() and "heroine's" or "hero's"
                 add_dialogue("\"I believe 'twas set in motion by Lord British in order to test...\" He gestures in your direction, \"A virtuous " .. var_0019 .. " fighting ability and courage. The statues in the back of this castle can tell thee more about the tests, though.\" Erethian grins mysteriously.")
                 remove_answer("Test of Courage")
             elseif response == "daemon gem" then

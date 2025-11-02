@@ -4,7 +4,7 @@ function npc_martingo_0191(eventid, objectref)
 
     if eventid == 1 then
         switch_talk_to(191)
-        var_0000 = is_pc_female()
+        var_0000 = is_player_female()
         var_0001 = get_player_name()
         start_conversation()
         add_answer({"bye", "job", "name"})

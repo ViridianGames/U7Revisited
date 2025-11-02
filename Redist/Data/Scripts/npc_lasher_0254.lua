@@ -77,7 +77,7 @@ function npc_lasher_0254(eventid, objectref)
                     add_dialogue("\"I thought as much!\" Lasher starts to pace nervously. \"If thou wouldst not mind standing back a bit, I would be most appreciative.\"")
                 else
                     add_dialogue("Lasher slowly shakes his head. \"Thou dost not have to brag in order to impress me, or fear any sort of verbal chastisements, honestly. By the way, I have an itch right betwixt my shoulder blades. Wouldst thou mind scratching it for me?\" Lasher stretches out toward you. \"Thank thee so much.\"")
-                    var_0003 = is_pc_female()
+                    var_0003 = is_player_female()
                     var_0004 = npc_id_in_party(1)
                     var_0005 = npc_id_in_party(3)
                     var_0006 = npc_id_in_party(4)

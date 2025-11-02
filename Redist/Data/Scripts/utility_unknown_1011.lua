@@ -24,7 +24,7 @@ function utility_unknown_1011(var_0000)
         elseif string.lower(unknown_XXXXH()) == "hand to hand" then
             remove_answer("hand to hand")
             var_0004 = "and thou seemest man enough for such close work"
-            if is_pc_female() == 1 then
+            if is_player_female() == 1 then
                 var_0004 = "especially in women. The women of Britannia seldom have them"
                 var_0002 = true
             end

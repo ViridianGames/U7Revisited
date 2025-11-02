@@ -10,7 +10,7 @@ function npc_martine_0223(eventid, objectref)
     var_0001 = get_schedule_type(get_npc_name(223))
     var_0002 = get_player_name()
     var_0003 = "Avatar"
-    var_0004 = is_pc_female()
+    var_0004 = is_player_female()
     if not get_flag(666) then
         var_0005 = var_0002
     elseif not get_flag(667) then

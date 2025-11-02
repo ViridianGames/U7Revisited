@@ -10,5 +10,5 @@ function utility_unknown_1037(eventid, objectref)
     if var_0004 == 0 then
         return 0
     end
-    return _003AH(var_0004)
+    return unknown_003AH(var_0004)
 end

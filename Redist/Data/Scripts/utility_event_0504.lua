@@ -66,13 +66,13 @@ function utility_event_0504(eventid, objectref)
                     utility_unknown_0893()
                     var_0013 = get_object_position(get_npc_name(356))
                     if var_0013[2] > var_0005[2] then
-                        if is_pc_female() then
+                        if is_player_female() then
                             set_object_frame(20, utility_event_0897())
                         else
                             set_object_frame(18, utility_event_0897())
                         end
                     else
-                        if is_pc_female() then
+                        if is_player_female() then
                             set_object_frame(21, utility_event_0897())
                         else
                             set_object_frame(19, utility_event_0897())

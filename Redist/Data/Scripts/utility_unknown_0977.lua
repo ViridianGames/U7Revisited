@@ -4,7 +4,7 @@ function utility_unknown_0977()
     local var_0000, var_0001
 
     clear_answers()
-    var_0000 = is_pc_female()
+    var_0000 = is_player_female()
     switch_talk_to(27)
     add_dialogue("Raymundo hands you a script and you take center stage. The lights feel hot on your face. Although you are a little nervous, you clear your throat and begin to read the lines on the page.")
     while true do
