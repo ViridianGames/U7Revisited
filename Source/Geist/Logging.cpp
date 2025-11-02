@@ -28,17 +28,25 @@ void Log(string text, string filename, bool suppressDateTime)
 
 	if (suppressDateTime)
 	{
+#ifdef DEBUG_MODE
 		cout << text << endl;
+#endif
 		*logstreams[filename] << text << endl;
+#ifdef DEBUG_MODE
 		logstreams[filename]->flush();
+#endif
 	}
 	else
 	{
 		auto now = system_clock::now();
 		auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
 		auto timer = system_clock::to_time_t(now);
+#ifdef DEBUG_MODE
 		cout << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+#endif
 		*logstreams[filename] << " " << std::put_time(std::localtime(&timer), "%c") << '.' << std::setfill('0') << std::setw(3) << ms.count() << " " << text << endl;
+#ifdef DEBUG_MODE
 		logstreams[filename]->flush();
+#endif
 	}
 }
