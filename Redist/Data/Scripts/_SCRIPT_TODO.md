@@ -71,4 +71,6 @@ get_random(x) - the normal random(min,max) but this takes only one arg, so 0-x?
 
 # DONE
 
+added wait() to lua docs
+get_npc_name_from_id => get_npc_name
 get_npc_training_level => get_training_level

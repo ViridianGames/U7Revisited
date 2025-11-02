@@ -468,6 +468,10 @@ function resume_input() end
 ---@param paused boolean Whether to pause the game
 function set_pause(paused) end
 
+---Pauses script execution for the specified duration
+---@param seconds number Duration to wait in seconds
+function wait(seconds) end
+
 ---Fades the screen out
 ---@param duration number Fade duration in seconds
 function fade_out(duration) end
