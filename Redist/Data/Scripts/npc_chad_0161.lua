@@ -26,7 +26,7 @@ function npc_chad_0161(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"Chad, at thy service, " .. var_0001 .. ". And what is thy name?\"")
                 remove_answer("name")
-                var_0004 = utility_unknown_1035(var_0001, var_0002, var_0000)
+                var_0004 = utility_unknown_1035({var_0001, var_0002, var_0000})
                 if var_0004 == var_0000 then
                     add_dialogue("\"Greetings, " .. var_0000 .. ". I am at thy service.\"")
                     set_flag(497, true)

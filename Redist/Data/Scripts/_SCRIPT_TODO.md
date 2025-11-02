@@ -66,6 +66,8 @@ get_random(x) - the normal random(min,max) but this takes only one arg, so 0-x?
 
 display_sign() - this same as open_book()?
 
+check_object_status - is this alias of get_item_flag ??
+
 # DONE
 
 destroy_object_silent - calls destroy_object for now
