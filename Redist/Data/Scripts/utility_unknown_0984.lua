@@ -4,7 +4,7 @@ function utility_unknown_0984()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     var_0000 = get_lord_or_lady()
-    var_0001 = get_party_list()
+    var_0001 = get_party_list2()
     var_0002 = get_npc_name(-144)
     if var_0002 and table.contains(var_0001, var_0002) then
         remove_from_party(-144)
@@ -35,7 +35,7 @@ function utility_unknown_0984()
         var_0005 = false
         add_dialogue("Rowena smiles radiantly, \"Thank thee, " .. var_0000 .. ". Thy spirit is a generous one, indeed.\"")
         var_0006 = 0
-        var_0001 = get_party_list()
+        var_0001 = get_party_list2()
         for _, _ in ipairs(var_0001) do
             var_0006 = var_0006 + 1
         end

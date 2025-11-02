@@ -3,7 +3,7 @@ function utility_event_0442(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 3 then
-        var_0000 = get_party_list()
+        var_0000 = get_party_list2()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
             if not roll_to_win(get_npc_prop(0, var_0003), get_object_quality(objectref)) then

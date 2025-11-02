@@ -93,7 +93,7 @@ function object_unknown_0155(eventid, objectref)
                     var_0004 = ask_yes_no()
                     if var_0004 then
                         var_0006 = get_npc_name(-144)
-                        var_0007 = get_party_list()
+                        var_0007 = get_party_list2()
                         var_0008 = get_npc_name(-147)
                         if table.contains(var_0007, var_0006) or table.contains(var_0007, var_0008) then
                             add_dialogue("The Ferryman seems to smile beneath his hood as he motions for you to once more board his spectral boat.")

@@ -5,7 +5,7 @@ function utility_unknown_0947(eventid)
     var_0001 = 1
     var_0002 = 0
     var_0003 = false
-    var_0004 = get_party_list()
+    var_0004 = get_party_list2()
     var_0005 = get_barge(eventid)
     var_0006 = find_nearby(0, 30, 292, eventid)
     var_0007 = {}

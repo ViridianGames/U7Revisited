@@ -49,7 +49,7 @@ function npc_polly_0179(eventid, objectref)
             elseif answer == "room" then
                 add_dialogue("\"For but 5 gold thou canst let one of our lovely rooms. Dost thou wish to stay here for the night?\"")
                 if ask_yes_no() then
-                    var_0003 = get_party_list()
+                    var_0003 = get_party_list2()
                     var_0004 = 0
                     for i = 1, var_0003 do
                         var_0004 = var_0004 + 1

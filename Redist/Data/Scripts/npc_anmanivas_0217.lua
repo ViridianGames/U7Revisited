@@ -30,7 +30,7 @@ function npc_anmanivas_0217(eventid, objectref)
                     if var_0007 == var_0004 then
                         add_dialogue("As the gargoyle looks up at you, anger crosses his face. He stands quickly, overturning his drink.")
                         var_0008 = 0
-                        var_0009 = get_party_list()
+                        var_0009 = get_party_list2()
                         for _ = 1, var_0009 do
                             var_0008 = var_0008 + 1
                         end

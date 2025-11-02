@@ -4,7 +4,7 @@ function utility_event_0436(eventid, objectref)
 
     if eventid == 3 then
         play_sound_effect(28)
-        var_0000 = get_party_list()
+        var_0000 = get_party_list2()
         var_0001 = utility_unknown_1067(var_0000)
         var_0002 = die_roll(var_0001, 1)
         var_0003 = die_roll(get_object_quality(objectref), 1)

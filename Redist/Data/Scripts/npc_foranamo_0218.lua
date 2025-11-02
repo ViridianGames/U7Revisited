@@ -29,7 +29,7 @@ function npc_foranamo_0218(eventid, objectref)
                     var_0007 = utility_unknown_1035({var_0003, var_0004, var_0002})
                     if var_0007 == var_0004 then
                         var_0008 = 0
-                        var_0009 = get_party_list()
+                        var_0009 = get_party_list2()
                         for _ = 1, var_0009 do
                             var_0008 = var_0008 + 1
                         end

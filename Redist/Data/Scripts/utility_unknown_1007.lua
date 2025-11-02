@@ -15,7 +15,7 @@ function utility_unknown_1007()
             end
         else
             add_dialogue("Trent paces around the burned-out remains of his shop. When he sees you return, he rushes forward, looking for his love, Rowena.")
-            var_0002 = get_party_list()
+            var_0002 = get_party_list2()
             if get_npc_name(-144) and table.contains(var_0002, get_npc_name(-144)) then
                 add_dialogue("The starcrossed lovers rush into each other's ghostly embrace. For a time it's hard to see where one spirit begins and the other ends. You barely make out the image of Trent replacing Rowena's ring on her finger.~~Then the two slowly turn to face you. \"Thou hast done so much for us, I hope that in helping us, thou hast been assisted in thine own quest.\" Trent bows to you then turns to regard his lovely wife.")
                 remove_from_party(-144)

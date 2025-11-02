@@ -4,7 +4,7 @@ function utility_event_0431(eventid, objectref)
 
     if eventid == 3 then
         play_sound_effect(28)
-        var_0000 = get_party_list()
+        var_0000 = get_party_list2()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
             if not roll_to_win(get_npc_prop(0, var_0003), get_object_quality(objectref)) then

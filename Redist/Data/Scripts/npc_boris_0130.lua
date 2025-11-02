@@ -120,7 +120,7 @@ function npc_boris_0130(eventid, objectref)
             elseif var_0006 == "room" then
                 add_dialogue("\"Why dost thou not stay the night? For but 3 gold thou canst let one of our rooms. Dost thou wish to stay the night?\"")
                 if select_option() then
-                    var_0007 = get_party_list() --- Guess: Gets party members
+                    var_0007 = get_party_list2() --- Guess: Gets party members
                     var_0008 = 0
                     while true do
                         var_0008 = var_0008 + 1
