@@ -11,6 +11,6 @@ function utility_spell_0324(eventid, objectref)
             var_0000 = add_containerobject_s(objectref, {1542, 17493, 17511, 7781})
         end
     elseif eventid == 2 then
-        set_weather_state(110) --- Guess: Sets weather state
+        set_weather(110) --- Guess: Sets weather state
     end
 end
