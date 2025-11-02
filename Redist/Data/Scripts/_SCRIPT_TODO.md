@@ -26,7 +26,7 @@ get_schedule_type(get_npc_name(-30)) - not sure what this is supposed to call an
 
 execute_usecode_array({23, 17494, 7715}, objectref) - none of the scripts call this with 3 args
 
-cmps("Brom") - many NPC scripts use, don't know what it is yet.
+
 
 format_price_message() - dont know how this works
 
@@ -70,6 +70,7 @@ display_sign() - this same as open_book()?
 
 # DONE
 
+cmps("Brom") - this is a shortcut for get_answer() and comparing it. i attempted implementation.
 select_option - alias for ask_yes_no() w/ no args
 fixed lua docs for input_numeric_value()
 fixed lua docs for spawn_object()

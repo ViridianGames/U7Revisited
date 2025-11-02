@@ -69,6 +69,14 @@ function restore_answers() end
 ---@return string answer The selected answer text
 function get_answer() end
 
+---Compares player's answer with a string (case-insensitive)
+---Convenience function equivalent to: get_answer() == str
+---Can be called multiple times to check different keywords without re-prompting the user
+---@param str string The string to compare against
+---@return boolean matches True if the player's answer matches the string
+---@usage if cmps("job") then ... elseif cmps("name") then ... end
+function cmps(str) end
+
 ---Clears all current answer options
 function clear_answers() end
 

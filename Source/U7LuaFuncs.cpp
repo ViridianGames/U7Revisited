@@ -328,6 +328,37 @@ static int LuaGetAnswer(lua_State *L)
     return 1;
 }
 
+// Compare string - checks if player's answer matches the given string
+static int LuaCmps(lua_State *L)
+{
+    // this implementation might have side-effects.
+    // the scripts call this multiple times in a row, but presumably
+    // we only want the player to actually answer once. so there might
+    // be other places that need to clear the global last answer or
+    // the user won't get prompted again the future when they need to be
+    if (!g_ConversationState) {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+
+    // Get the comparison string argument
+    const char *compare_str = luaL_checkstring(L, 1);
+
+    // Get the global answer (without clearing it, unlike get_answer())
+    lua_getglobal(L, "answer");
+    const char *selected_answer = lua_tostring(L, -1);
+    lua_pop(L, 1);
+
+    // Compare (case-insensitive)
+    bool matches = false;
+    if (selected_answer && compare_str)
+    {
+        matches = (_stricmp(selected_answer, compare_str) == 0);
+    }
+
+    lua_pushboolean(L, matches);
+    return 1;
+}
+
 // Opcode 000B
 static int LuaAskYesNo(lua_State *L)
 {
@@ -3787,6 +3818,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
+    g_ScriptingSystem->RegisterScriptFunction("cmps", LuaCmps);
     g_ScriptingSystem->RegisterScriptFunction("clear_answers", LuaClearAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_purchase_option", LuaGetPurchaseOption);
     g_ScriptingSystem->RegisterScriptFunction("purchase_object", LuaPurchaseObject);
