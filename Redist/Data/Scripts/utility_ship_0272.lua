@@ -6,8 +6,9 @@ function utility_ship_0272(eventid, objectref)
     fade_palette(1, 1, 36) --- Guess: Sets game state
     var_0000 = find_nearby(4, 35, 359, objectref) --- Guess: Sets NPC location
     -- Guess: sloop checks party members' state and schedule
+    local npc_ids = {1, 2, 3, 0}
     for i = 1, 4 do
-        var_0003 = {1, 2, 3, 0}[i]
+        var_0003 = npc_ids[i]
         if get_alignment(var_0003) == 0 and get_schedule_type(var_0003) == 0 then
             -- Placeholder for unknown opcode 2CH
         end
@@ -29,30 +30,30 @@ function utility_ship_0272(eventid, objectref)
         var_000A = 0
     end
     if var_0006 then
-        switch_talk_to(167, 0)
+        switch_talk_to(167)
         utility_unknown_0981() --- Guess: Displays NPC dialogue
         hide_npc(167)
     elseif var_0007 then
-        switch_talk_to(168, 0)
+        switch_talk_to(168)
         utility_unknown_0981() --- Guess: Displays NPC dialogue
         hide_npc(168)
     end
     if var_0008 then
-        switch_talk_to(1, 0)
+        switch_talk_to(1)
         add_dialogue("\"I am gladdened to see thee still alive, my good friend. I was sorely grieved at thine apparent demise.\"")
         add_dialogue("\"In the midst of our battle I did lose track of thee. It is good to find thee safe.\"")
         add_dialogue("\"If thou art feeling up to it, let us then continue our quest.\"")
         hide_npc(1)
     end
     if var_0009 then
-        switch_talk_to(3, 0)
+        switch_talk_to(3)
         add_dialogue("\"Thy recovery is a miracle! 'Twould have been a severe blow for this world to lose its Avatar.\"")
         add_dialogue("\"When at last thou wert found, thy body was being taken to this place in a wagon driven by two hooded Fellowship members.\"")
         add_dialogue("\"Thou hast suffered through a terrible ordeal and travelled far. Perhaps thou shouldst rest...\"")
         hide_npc(3)
     end
     if var_000A then
-        switch_talk_to(4, 0)
+        switch_talk_to(4)
         add_dialogue("\"The Fellowship members who brought thee to this place did not speak once during the entire journey.\"")
         add_dialogue("\"But it seems they did the right thing in bringing thee here for thou hast been revived!\"")
         add_dialogue("\"Let us all have a drink in celebration! We will be ready to leave whenever thou dost wish it.\"")

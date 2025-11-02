@@ -5,7 +5,7 @@ function npc_tavenor_0100(eventid, objectref)
     start_conversation()
     if eventid == 1 then
         var_0000 = utility_unknown_1073(359, 359, 772, 1, 357) --- Guess: Checks item in inventory
-        switch_talk_to(100, 0)
+        switch_talk_to(100)
         if not get_flag(340) then
             if not var_0000 then
                 add_dialogue("The creature ignores you.")
@@ -53,10 +53,10 @@ function npc_tavenor_0100(eventid, objectref)
                     var_0003 = npc_id_in_party(6) --- Guess: Checks player status
                     if var_0003 then
                         add_dialogue("*")
-                        switch_talk_to(6, 0)
+                        switch_talk_to(6)
                         add_dialogue("\"The truth is spoken by the human,\" Trellek says to the other Emp. \"He is to be trusted. His good will was felt by me.\"")
                         hide_npc(6)
-                        switch_talk_to(100, 0)
+                        switch_talk_to(100)
                         add_dialogue("The Emp nods at Trellek, and then turns to you. \"The truth is now clear to me. You are wished good luck.\"")
                     else
                         add_dialogue("The Emp eyes you a little longer. \"Your good intentions are known to me. You are asked to be the messenger. Humans will not be destroyers, please.\"")

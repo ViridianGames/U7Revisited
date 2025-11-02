@@ -9,7 +9,7 @@ function object_unknown_0668(eventid, objectref)
                 var_0001 = get_object_position(objectref)
                 var_0002 = get_object_position(var_0000)
                 if var_0001[1] == var_0002[1] and var_0001[2] == var_0002[2] and var_0001[3] == var_0002[3] + 1 then
-                    var_0003 = get_item_frame(var_0000)
+                    var_0003 = get_object_frame(var_0000)
                     if var_0003 >= 10 and var_0003 <= 12 then
                         object_unknown_0623(var_0000)
                     end
@@ -17,7 +17,7 @@ function object_unknown_0668(eventid, objectref)
             end
         end
         close_gumps()
-        var_0004 = get_item_frame(objectref)
+        var_0004 = get_object_frame(objectref)
         if var_0004 >= 8 and var_0004 <= 15 then
             if not get_container(objectref) then
                 var_0005 = {1, -1, 1, 0}
@@ -39,12 +39,12 @@ function object_unknown_0668(eventid, objectref)
         if var_000A then
             var_000B = click_on_item()
             var_000C = get_item_shape(var_000B)
-            if var_000C == 991 and get_item_frame(var_000B) == 1 then
+            if var_000C == 991 and get_object_frame(var_000B) == 1 then
                 utility_position_0808(var_000B, 0, 0, 2, 668, var_000B, 8)
-            elseif var_000C == 739 and get_item_frame(var_000B) >= 4 and get_item_frame(var_000B) <= 7 then
+            elseif var_000C == 739 and get_object_frame(var_000B) >= 4 and get_object_frame(var_000B) <= 7 then
                 utility_position_0808(var_000B, 1, 0, 0, 668, var_000B, 9)
             elseif var_000C == 741 then
-                var_0003 = get_item_frame(var_000A)
+                var_0003 = get_object_frame(var_000A)
                 if var_0003 >= 8 and var_0003 <= 12 then
                     utility_position_0808(var_000B, 0, 1, 0, 668, var_000B, 10)
                 else

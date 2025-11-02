@@ -3,7 +3,7 @@ function object_unknown_0506(eventid, objectref)
     local var_0000
 
     if eventid == 2 then
-        switch_talk_to(0, 26)
+        switch_talk_to(26)
         start_conversation()
         add_dialogue("Batlin watches Hook's death with icy resignation. Time seems to slow as he turns to you. \"This battle is not done, Avatar. Dost thou imagine thyself an immortal? The Guardian is far more. Return to your precious Earth and rest.")
         add_dialogue("Sleep, that he may visit your dreams with countless visions of death in the belly of the Great Sea Serpent.\"")

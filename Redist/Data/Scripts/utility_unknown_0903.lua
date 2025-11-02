@@ -60,7 +60,7 @@ function utility_unknown_0903(eventid, objectref, positions1, positions2)
         utility_ship_0904(var_000C) --- External call to item processing
         remove_item(var_000C) --- Guess: Unknown function, possibly removes item
         remove_item(eventid) --- Guess: Unknown function, possibly removes item
-        destroyobject_(objectref) --- Guess: Destroys item
+        destroy_object(objectref) --- Guess: Destroys item
         add_containerobject_s(objectref, {1800, 17493, 7715}) --- Guess: Adds items to container
         return 0
     end

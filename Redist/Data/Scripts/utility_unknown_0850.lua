@@ -9,7 +9,7 @@ function utility_unknown_0850()
     if not get_flag(50) and not get_flag(51) and not get_flag(52) and not get_flag(53) and not get_flag(54) and not get_flag(55) then
         for i = 1, 10 do --- Guess: Sloop loop for 10 iterations
             var_0006 = random(1, 6) --- Guess: Selects random question
-            if not is_in_int_array(var_0006, var_0000) then
+            if not is_int_in_array(var_0006, var_0000) then
                 var_0000[#var_0000 + 1] = var_0006
                 break
             end
@@ -46,22 +46,22 @@ function utility_unknown_0850()
         end
     else
         for i = 1, 10 do --- Guess: Sloop loop for 10 iterations
-            if not get_flag(50) and not is_in_int_array(1, var_0000) then
+            if not get_flag(50) and not is_int_in_array(1, var_0000) then
                 var_0000[#var_0000 + 1] = 1
             end
-            if not get_flag(51) and not is_in_int_array(2, var_0000) then
+            if not get_flag(51) and not is_int_in_array(2, var_0000) then
                 var_0000[#var_0000 + 1] = 2
             end
-            if not get_flag(52) and not is_in_int_array(3, var_0000) then
+            if not get_flag(52) and not is_int_in_array(3, var_0000) then
                 var_0000[#var_0000 + 1] = 3
             end
-            if not get_flag(53) and not is_in_int_array(4, var_0000) then
+            if not get_flag(53) and not is_int_in_array(4, var_0000) then
                 var_0000[#var_0000 + 1] = 4
             end
-            if not get_flag(54) and not is_in_int_array(5, var_0000) then
+            if not get_flag(54) and not is_int_in_array(5, var_0000) then
                 var_0000[#var_0000 + 1] = 5
             end
-            if not get_flag(55) and not is_in_int_array(6, var_0000) then
+            if not get_flag(55) and not is_int_in_array(6, var_0000) then
                 var_0000[#var_0000 + 1] = 6
             end
         end

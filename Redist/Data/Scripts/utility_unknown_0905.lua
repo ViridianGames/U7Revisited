@@ -26,10 +26,10 @@ function utility_unknown_0905(eventid, objectref)
             var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000C then
                 if var_0002[var_0009] == 616 then
-                    var_000B = purchaseobject_(true, 1, 0, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                    var_000B = purchase_object(true, 1, 0, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
                 else
                     add_dialogue("@To request how many?@")
-                    var_000B = purchaseobject_(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
+                    var_000B = purchase_object(true, 1, 20, var_0004[var_0009], var_0008[var_0009], var_0003[var_0009]) --- Guess: Purchases item
                 end
             end
             if var_000B == 1 then

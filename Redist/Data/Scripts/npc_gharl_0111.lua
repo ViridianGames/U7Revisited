@@ -9,7 +9,7 @@ function npc_gharl_0111(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 111)
+    switch_talk_to(111)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})

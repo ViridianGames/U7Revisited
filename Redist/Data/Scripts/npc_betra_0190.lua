@@ -3,7 +3,7 @@ function npc_betra_0190(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 190)
+        switch_talk_to(190)
         var_0000 = false
         start_conversation()
         add_answer({"bye", "job", "name"})

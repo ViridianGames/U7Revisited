@@ -8,7 +8,7 @@ function npc_horance_0141(eventid, objectref)
 
     start_conversation()
     if not get_flag(437) then
-        switch_talk_to(0, 141)
+        switch_talk_to(141)
         add_dialogue("You attempt to speak to the undead creature, but it does not, or cannot, respond.")
         return
     end
@@ -27,9 +27,9 @@ function npc_horance_0141(eventid, objectref)
     if not get_flag(426) then
         utility_unknown_0941()
     else
-        switch_talk_to(0, 141)
+        switch_talk_to(141)
     end
-    var_0004 = get_schedule()
+    var_0004 = get_schedule(141)
     var_0005 = get_schedule_type(141)
     if var_0004 == 0 or var_0004 == 1 then
         if var_0005 == 14 then
@@ -46,22 +46,22 @@ function npc_horance_0141(eventid, objectref)
         var_0006 = npc_id_in_party(-3)
         var_0007 = npc_id_in_party(-1)
         if var_0006 then
-            switch_talk_to(0, -3)
+            switch_talk_to(-3)
             add_dialogue("Shamino steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            hide_npc3)
-            switch_talk_to(0, 141)
+            --syntax error hide_npc3)
+            switch_talk_to(141)
         elseif var_0007 then
-            switch_talk_to(0, -1)
+            switch_talk_to(-1)
             add_dialogue("Iolo steps near you and speaks in a whispered tone.~~\"Do not trust this one, " .. var_0001 .. ". Methinks he'll cause naught but evil.\"")
-            hide_npc1)
-            switch_talk_to(0, 141)
+            --syntax error hide_npc1)
+            switch_talk_to(141)
         end
         var_0008 = npc_id_in_party(-2)
         if var_0008 then
-            switch_talk_to(0, -2)
+            switch_talk_to(-2)
             add_dialogue("\"Uh, " .. var_0001 .. "? I am ready to go now,\" he says to you, cowering from the undead creature.")
-            hide_npc2)
-            switch_talk_to(0, 141)
+            --syntax error hide_npc2)
+            switch_talk_to(141)
         end
         set_flag(453, true)
     else
@@ -106,10 +106,10 @@ function npc_horance_0141(eventid, objectref)
             add_dialogue("A harsh cackle escapes his dry throat. \"I am the illustrious Lord of the Dead, soon to be Lord of all Britannia. Dost thou have any idea of the number of dead people and creatures there are? I thought not.~~\"The dead of the ages are mine to summon and control. The graves of beloved ancestors will spew forth their contents into an army. A special treat for the living, mine undead monsters will be. Imagine a skeletal dragon that cannot be killed. Consider a cabal of everliving mages eternally enthralled to me.~~\"And the most beautiful part of my plot is that, as the living die in these battles, and they will die, they will swell the ranks of the undead host. I will rule supreme -- a world of the dead!\" A terrifying glimpse of his sick and twisted future causes you to shiver ever so slightly.~~\"And I will have a queen, the lovely Rowena.\"")
             add_answer("Rowena")
             if var_0002 then
-                switch_talk_to(0, 144)
+                switch_talk_to(144)
                 add_dialogue("\"Yes, my Lord. I must be the happiest Lady in all the land.\" Her gaze never wanders from the horrid face of the Liche.")
                 _hide_npc(144)
-                switch_talk_to(0, 141)
+                switch_talk_to(141)
             end
         elseif cmps("Rowena") then
             if var_0002 then
@@ -126,15 +126,15 @@ function npc_horance_0141(eventid, objectref)
             var_0009 = npc_id_in_party(-4)
             var_0007 = npc_id_in_party(-1)
             if var_0009 then
-                switch_talk_to(0, -4)
+                switch_talk_to(-4)
                 add_dialogue("\"Yeah, right.\"")
-                hide_npc4)
-                switch_talk_to(0, 141)
+                --syntax error hide_npc4)
+                switch_talk_to(141)
             elseif var_0007 then
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("\"Yeah, right.\"")
-                hide_npc1)
-                switch_talk_to(0, 141)
+                --syntax error hide_npc1)
+                switch_talk_to(141)
             end
             add_dialogue("\"Feel free to explore mine humble abode. Though, have a care. My guardians are none too intelligent and will most likely assault anything living.\" He smiles with his death's head grin.")
             return

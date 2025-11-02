@@ -4,8 +4,8 @@ function npc_clint_0057(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(57, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        switch_talk_to(57)
+        var_0000 = get_schedule(57) --- Guess: Checks game state or timer
         var_0001 = get_schedule_type(57) --- Guess: Gets object state
         var_0002 = get_lord_or_lady()
         var_0003 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership

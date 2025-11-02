@@ -6,7 +6,7 @@ function utility_clock_0317(eventid, objectref)
         start_conversation()
         var_0000 = get_npc_number(objectref)
         if var_0000 < 256 then
-            switch_talk_to(0, var_0000)
+            switch_talk_to(var_0000)
             var_0001 = 0
             while var_0001 < 10 do
                 var_0002 = utility_unknown_0879()

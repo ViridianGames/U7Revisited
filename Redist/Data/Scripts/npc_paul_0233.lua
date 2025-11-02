@@ -3,7 +3,7 @@ function npc_paul_0233(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
-        switch_talk_to(0, 233)
+        switch_talk_to(233)
         var_0000 = get_schedule_type(get_npc_name(233))
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -65,7 +65,7 @@ function npc_paul_0233(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(233)
         var_0000 = get_schedule_type(get_npc_name(233))
         if var_0000 == 29 then
             var_000B = random2(4, 1)
@@ -78,7 +78,7 @@ function npc_paul_0233(eventid, objectref)
             elseif var_000B == 4 then
                 var_000C = "@We shall entertain thee!@"
             end
-            bark(var_000C, 233)
+            bark(233, var_000C)
         else
             utility_unknown_1070(233)
         end

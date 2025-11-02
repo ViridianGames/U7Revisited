@@ -8,7 +8,7 @@ function object_unknown_0503(eventid, objectref)
             return
         end
         if not npc_in_party(44) then
-            switch_talk_to(0, 44)
+            switch_talk_to(44)
             start_conversation()
             add_dialogue("\"Now is the time for the young and the old to dig in their pockets and give up the gold. * Dost thou wish to donate a gold piece?\"")
             -- call [0000] (090AH, unmapped)

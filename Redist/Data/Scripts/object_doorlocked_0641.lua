@@ -37,11 +37,11 @@ function object_doorlocked_0641(eventid, objectref)
                     end
                 end
                 if var_0005 then
-                    bark("Key inside", 356)
+                    bark(356, "Key inside")
                 else
                     close_gump(target_object)
                     set_object_shape(target_object, 522)
-                    bark("Locked", target_object)
+                    bark(target_object, "Locked")
                 end
             end
         end

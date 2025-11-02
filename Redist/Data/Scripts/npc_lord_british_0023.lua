@@ -10,7 +10,7 @@ function npc_lord_british_0023(eventid, objectref)
         var_0003 = npc_id_in_party(1) --- Guess: Checks player status
         var_0004 = npc_id_in_party(4) --- Guess: Checks player status
         var_0005 = npc_id_in_party(3) --- Guess: Checks player status
-        switch_talk_to(23, 0)
+        switch_talk_to(23)
         var_0006 = false
         var_0007 = false
         var_0008 = false
@@ -175,10 +175,10 @@ function npc_lord_british_0023(eventid, objectref)
                 add_dialogue("\"I have seen our friend rarely over the years. I understand he has been spending most of his time in Trinsic.\"")
                 if var_0003 then
                     add_dialogue("\"Hello, Iolo! How art thou?\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"I am well, my liege! 'Tis good to see thee!\"")
                     hide_npc(1)
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                 end
                 remove_answer("Iolo")
                 add_answer("Trinsic")
@@ -186,30 +186,30 @@ function npc_lord_british_0023(eventid, objectref)
                 add_dialogue("\"That rascal does not come around very often, though I understand he spends most of his time in Britain these days!\"")
                 if var_0005 then
                     add_dialogue("\"What dost thou have to say for thyself, Shamino?\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"Mine apologies, milord,\" Shamino says.")
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                     add_dialogue("\"What's this I hear of a woman? An actress? Hmmmm?\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("Shamino blushes and shuffles his feet.")
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                     add_dialogue("\"I suspected as much!\" the ruler says, laughing.")
                     hide_npc(3)
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                 end
                 remove_answer("Shamino")
             elseif var_0009 == "Dupre" then
                 add_dialogue("\"I have not seen that one since I knighted him. Typical -- I do the man a favor and he disappears! I heard he might be in Jhelom.\"")
                 if var_0004 then
                     add_dialogue("\"Where hast thou been, Sir Dupre?\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Oh, here and there, milord,\" the fighter replies.")
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                     add_dialogue("\"I have very few friends from our homeland here in Britannia. Thou must make a point to visit more often! Especially since thou art a knight!\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"If thou dost wish it, milord,\" Dupre says, bowing.")
                     hide_npc(4)
-                    switch_talk_to(23, 0)
+                    switch_talk_to(23)
                 end
                 remove_answer("Dupre")
                 add_answer("Jhelom")
@@ -333,7 +333,7 @@ function npc_lord_british_0023(eventid, objectref)
                 var_0011 = set_npc_prop(3, get_npc_name(356), var_0010[2] - 60) --- Guess: Sets NPC property
             end
         else
-            switch_talk_to(23, 0)
+            switch_talk_to(23)
             var_0001 = get_player_name()
             add_dialogue("\"I congratulate and thank thee, " .. var_0001 .. ". Thy deeds continue to speak well of thee.\"")
             abort()

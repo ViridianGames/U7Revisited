@@ -4,9 +4,9 @@ function npc_mayor_forsythe_0147(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(147, 0)
+        switch_talk_to(147)
         var_0000 = false
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 = get_schedule(147) --- Guess: Checks game state
         var_0002 = get_schedule_type(147) --- Guess: Gets schedule
         if not get_flag(443) then
             add_dialogue("You see a ghostly man cowering in the corner. Holding up an ankh in a protective fashion, he looks around the room frantically, but takes no notice of you.")
@@ -14,7 +14,7 @@ function npc_mayor_forsythe_0147(eventid, objectref)
         end
         var_0003 = get_party_members()
         var_0004 = get_npc_name(147) --- Guess: Gets object ref
-        if is_in_int_array(var_0004, var_0003) then
+        if is_int_in_array(var_0004, var_0003) then
             add_answer("leave")
             var_0005 = find_nearby(0, 30, 748, 356) --- Guess: Checks well interaction
             if var_0005 then

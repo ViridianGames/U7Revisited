@@ -10,7 +10,7 @@ function npc_tseramed_0010(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(10, 0)
+    switch_talk_to(10)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     var_0002 = get_party_members()

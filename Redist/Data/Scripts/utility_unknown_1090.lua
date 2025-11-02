@@ -13,7 +13,7 @@ function utility_unknown_1090(eventid, objectref, arg1, arg2)
     if var_0004 == 0 or check_object_status(var_0004) then --- Guess: Checks item status
         set_object_type(arg1, objectref) --- Guess: Sets item type
         var_0005 = get_party_members() --- Guess: Gets party members
-        if is_in_int_array(var_0004, var_0005) then
+        if is_int_in_array(var_0004, var_0005) then
             utility_unknown_1029(arg2) --- External call to func_0905
         else
             trigger_flash_effect(0) --- Guess: Triggers flash effect

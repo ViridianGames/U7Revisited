@@ -7,7 +7,7 @@ function utility_unknown_0534(eventid, objectref)
     var_0001 = false
     -- Guess: sloop checks for ritual items
     for i = 1, 5 do
-        var_0004 = {2, 3, 4, 0, 53}[i]
+        var_0004 = ({2, 3, 4, 0, 53})[i]
         if get_containerobject_s(243, 797, var_0004, 4) then --- Guess: Gets container items
             var_0001 = var_0004
         end

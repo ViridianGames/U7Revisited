@@ -10,9 +10,9 @@ function npc_syria_0126(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 126)
+    switch_talk_to(126)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(126)
     var_0002 = get_npc_name(126)
     var_0003 = get_npc_name(125)
     var_0004 = get_npc_name(127)
@@ -104,10 +104,10 @@ function npc_syria_0126(eventid, objectref)
         elseif cmps("return") then
             add_dialogue("\"Since Sprellic has not done this, it proves that he is sincere in the grievous insult that he has made against us.\"")
             if var_0005 then
-                switch_talk_to(0, 125)
+                switch_talk_to(125)
                 add_dialogue("\"And I shall grievously insult him-- through his heart!\"")
                 _hide_npc(125)
-                switch_talk_to(0, 126)
+                switch_talk_to(126)
             end
             remove_answer("return")
         elseif cmps("Sprellic") then
@@ -120,10 +120,10 @@ function npc_syria_0126(eventid, objectref)
         elseif cmps("Library of Scars") then
             add_dialogue("\"The Library of Scars is the greatest guild of fighters in Britannia.\"")
             if var_0005 then
-                switch_talk_to(0, 125)
+                switch_talk_to(125)
                 add_dialogue("\"Here! Here!\"")
                 _hide_npc(125)
-                switch_talk_to(0, 126)
+                switch_talk_to(126)
             end
             remove_answer("Library of Scars")
         elseif cmps("De Snel") then

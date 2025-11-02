@@ -4,7 +4,7 @@ function npc_gladstone_0085(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(85, 0)
+        switch_talk_to(85)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if not get_flag(272) then

@@ -4,9 +4,9 @@ function npc_grayson_0055(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(55, 0)
+        switch_talk_to(55)
         var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(55) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(55) --- Guess: Gets object state
         var_0004 = get_lord_or_lady()
         if var_0001 == 7 then
@@ -88,7 +88,7 @@ function npc_grayson_0055(eventid, objectref)
         end
         add_dialogue("\"Goodbye and farewell, " .. var_0004 .. ".\"")
     elseif eventid == 0 then
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(55) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(55) --- Guess: Gets object state
         if var_0002 == 7 then
             var_0005 = random(1, 4)

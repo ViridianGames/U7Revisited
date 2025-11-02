@@ -3,7 +3,7 @@ function npc_caine_0247(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 247)
+        switch_talk_to(247)
         if not get_flag(434) then
             add_dialogue("The non-corporeal man stares past you, seemingly past the confines of the building, and, perhaps, of the world. Then, he suddenly shudders, as if he is filled with pain.")
             return

@@ -3,7 +3,7 @@ function npc_lord_johnpaul_0195(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
-        switch_talk_to(0, 195)
+        switch_talk_to(195)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = npc_id_in_party(-197)
@@ -77,10 +77,10 @@ function npc_lord_johnpaul_0195(eventid, objectref)
             elseif answer == "Sir Horffe" then
                 add_dialogue("\"He is the captain of the guards. I would have no other for his position. He is the most honorable warrior I have ever met.\"")
                 if var_0002 then
-                    switch_talk_to(0, -197)
+                    switch_talk_to(-197)
                     add_dialogue("\"To thank you, Sir!\"")
                     hide_npc(197)
-                    switch_talk_to(0, -195)
+                    switch_talk_to(-195)
                 end
                 if not var_0003 then
                     add_dialogue("\"He seems to have taken a dislike for The Fellowship, however. I have noticed he is reluctant to mention this around Sir Richter.\" He shrugs.")
@@ -136,10 +136,10 @@ function npc_lord_johnpaul_0195(eventid, objectref)
                     add_dialogue("\"Now I must apologize to Sir Horffe!\"")
                     if var_0002 then
                         add_dialogue("*")
-                        switch_talk_to(0, -197)
+                        switch_talk_to(-197)
                         add_dialogue("\"To have no need! To be happy the true vandal is discovered.\"")
                         hide_npc(197)
-                        switch_talk_to(0, -195)
+                        switch_talk_to(-195)
                     end
                 end
                 set_flag(609, true)

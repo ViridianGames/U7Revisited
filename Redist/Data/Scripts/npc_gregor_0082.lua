@@ -4,8 +4,8 @@ function npc_gregor_0082(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(82, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        switch_talk_to(82)
+        var_0000 = get_schedule(82) --- Guess: Checks game state or timer
         var_0001 = get_schedule_type(82) --- Guess: Gets object state
         if var_0000 == 7 then
             if var_0001 ~= 16 then

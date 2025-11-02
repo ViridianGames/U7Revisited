@@ -3,11 +3,11 @@ function npc_rankin_0250(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid == 1 then
-        switch_talk_to(0, 250)
+        switch_talk_to(250)
         var_0000 = get_player_name()
         var_0001 = false
         var_0002 = npc_id_in_party(156)
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(250)
         var_0004 = utility_unknown_1073(1, 359, 981, 1, 357)
         if var_0003 == 7 then
             if not get_flag(508) then

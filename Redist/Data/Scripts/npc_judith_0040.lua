@@ -4,8 +4,8 @@ function npc_judith_0040(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(40, 0)
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        switch_talk_to(40)
+        var_0000 = get_schedule(40) --- Guess: Checks game state or timer
         if var_0000 == 7 then
             var_0001 = npc_id_in_party(54) --- Guess: Checks player status
             if var_0001 then

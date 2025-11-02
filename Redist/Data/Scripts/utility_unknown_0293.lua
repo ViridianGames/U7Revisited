@@ -9,7 +9,7 @@ function utility_unknown_0293(eventid, objectref)
         var_0002 = {307, 440}
         var_0003 = get_object_position(356) --- Guess: Gets position data
         if is_in_trinsic() then --- Guess: Checks if in Trinsic
-            switch_talk_to(259, 0)
+            switch_talk_to(259)
             add_dialogue("You see an irate guard.")
             add_dialogue("Years of indoctrination have instilled in him an overly developed sense of discipline")
             add_dialogue("and a zealous devotion to the maintainance of order. All of this zeal is now directed against you.")
@@ -19,12 +19,12 @@ function utility_unknown_0293(eventid, objectref)
             hide_npc(259)
             initiate_combat() --- Guess: Initiates combat
         elseif utility_unknown_1017(var_0002, var_0001, var_0003) then
-            switch_talk_to(258, 0)
+            switch_talk_to(258)
             add_dialogue("The guard glares at you. \"Unrepentant scoundrel!\"")
             hide_npc(258)
             initiate_combat() --- Guess: Initiates combat
         else
-            switch_talk_to(258, 0)
+            switch_talk_to(258)
             var_0004 = count_party_money(359, 359, 644, 357) --- Guess: Counts party money
             if random(1, 2) == 1 and var_0004 then
                 add_dialogue("You see an angry guard. \"Cease and desist immediately!.~~Dost thou wish to avoid the unpleasantries of a lengthy trial?\"")
@@ -39,18 +39,18 @@ function utility_unknown_0293(eventid, objectref)
                             var_0008 = {}
                             -- Guess: sloop sets NPC locations
                             for i = 1, 5 do
-                                var_000B = {9, 10, 11, 7, 24}[i]
+                                var_000B = ({9, 10, 11, 7, 24})[i]
                                 var_0008[i] = find_nearby(0, 30, var_000B, objectref) --- Guess: Sets NPC location
                             end
                             -- Guess: sloop sets NPC behaviors
                             for i = 1, 5 do
-                                var_000E = {12, 13, 14, 8, 13}[i]
+                                var_000E = ({12, 13, 14, 8, 13})[i]
                                 set_schedule_type(12, var_000E) --- Guess: Sets object behavior
                             end
                             var_000F = find_nearby(8, 30, 359, objectref) --- Guess: Sets NPC location
                             -- Guess: sloop checks NPC schedules
                             for i = 1, 5 do
-                                var_0012 = {16, 17, 18, 15, 27}[i]
+                                var_0012 = ({16, 17, 18, 15, 27})[i]
                                 if get_schedule_type(var_0012) == 0 then --- Guess: Gets schedule
                                     set_schedule_type(12, var_0012) --- Guess: Sets object behavior
                                 end
@@ -66,7 +66,7 @@ function utility_unknown_0293(eventid, objectref)
             if select_option() then
                 add_dialogue("\"Very well. Thou shalt remain in prison until we see fit to release thee.\"")
                 hide_npc(258)
-                destroyobject_(356) --- Guess: Destroys item
+                destroy_object(356) --- Guess: Destroys item
                 var_0013 = delayed_execute_usecode_array(2, {5, 17447, 8046, 1573, 7765}, 356) --- Guess: Adds items to container
                 abort()
             else
@@ -78,7 +78,7 @@ function utility_unknown_0293(eventid, objectref)
         var_0014 = get_party_members()
         -- Guess: sloop updates party member states
         for i = 1, 5 do
-            var_0017 = {21, 22, 23, 20, 22}[i]
+            var_0017 = ({21, 22, 23, 20, 22})[i]
             utility_unknown_1087(31, var_0017) --- Guess: Updates object state
             set_object_frame(var_0017, 0)
         end

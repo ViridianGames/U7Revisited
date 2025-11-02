@@ -3,7 +3,7 @@ function npc_sir_pendaran_0193(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        switch_talk_to(0, 193)
+        switch_talk_to(193)
         var_0000 = get_lord_or_lady()
         var_0001 = false
         start_conversation()

@@ -3,7 +3,7 @@ function npc_kallibrus_0252(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 252)
+        switch_talk_to(252)
         var_0000 = npc_id_in_party(253)
         var_0001 = npc_id_in_party(244)
         var_0002 = false
@@ -37,12 +37,12 @@ function npc_kallibrus_0252(eventid, objectref)
                 add_dialogue("\"To have been partners for many, many years. To have been bonded for even longer!\"")
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(0, 244)
+                    switch_talk_to(244)
                     add_dialogue("\"He, uh, means by bonded, that we are very good friends.\" He turns to the gargoyle.")
                     add_dialogue("\"I told thee to be careful how thou dost phrase things. Thou couldst start many false rumors if thou wert not more specific.\"")
                     add_dialogue("The gargoyle nods sheepishly.")
                     hide_npc(244)
-                    switch_talk_to(0, 252)
+                    switch_talk_to(252)
                 end
                 var_0002 = true
                 remove_answer("Cairbre")
@@ -70,10 +70,10 @@ function npc_kallibrus_0252(eventid, objectref)
                 add_dialogue("\"To have heard Cosmo say, `love,' but Cairbre claims there is no such thing. To comprehend not, but to help friends anyway.\"")
                 if var_0001 then
                     add_dialogue("*")
-                    switch_talk_to(0, 244)
+                    switch_talk_to(244)
                     add_dialogue("\"That is what I like about him, " .. var_0003 .. ", loyal to the end!\" he says, patting the gargoyle on the shoulder.")
                     hide_npc(244)
-                    switch_talk_to(0, 252)
+                    switch_talk_to(252)
                 end
                 remove_answer("woman")
             elseif answer == "bye" then

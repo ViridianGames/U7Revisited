@@ -7,8 +7,8 @@ function utility_spell_0388(eventid, objectref)
         var_0001 = get_object_type(var_0000) --- Guess: Gets item type
         var_0002 = get_object_position(var_0000) --- Guess: Gets position data
         var_0003 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroyobject_(var_0000)
-        destroyobject_(objectref)
+        destroy_object(var_0000)
+        destroy_object(objectref)
         if var_0001 == 778 or var_0001 == 414 or var_0001 == 400 then
             var_0004 = get_object_quality(var_0000) --- Guess: Gets item quality
             var_0005 = set_object_count(var_0001, var_0000) --- Guess: Sets item count

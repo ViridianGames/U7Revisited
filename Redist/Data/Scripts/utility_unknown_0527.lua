@@ -26,7 +26,7 @@ function utility_unknown_0527(eventid, objectref)
         var_0009 = update_last_created(var_0007)
         var_000A = create_new_object(797)
         get_object_frame(var_000A, 0)
-        var_0009 = set_item_quality(43, var_000A)
+        var_0009 = set_object_quality(43, var_000A)
         var_0009 = give_last_created(var_0008)
         var_000B = execute_usecode_array(var_0008, {12, 8006, 2, 7975, 31, 8006, 5, 7719})
     else
@@ -48,7 +48,7 @@ function utility_unknown_0527(eventid, objectref)
         end
         var_000F = get_container_objects(-359, -359, 797, objectref)
         if var_000F then
-            var_0010 = _get_object_quality(var_000F)
+            var_0010 = get_object_quality(var_000F)
             var_0011 = false
             if var_0010 == 240 then
                 set_flag(750, true)
@@ -71,7 +71,7 @@ function utility_unknown_0527(eventid, objectref)
             end
             var_0013 = create_new_object(797)
             set_item_flag(18, var_0013)
-            var_0009 = set_item_quality(var_0010, var_0013)
+            var_0009 = set_object_quality(var_0010, var_0013)
             get_object_frame(var_0013, 4)
             var_0009 = give_last_created(var_0011)
             var_0014 = delayed_execute_usecode_array(1, 1783, {17493, 17443, 7724}, var_0013)

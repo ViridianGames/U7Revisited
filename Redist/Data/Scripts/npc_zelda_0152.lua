@@ -4,7 +4,7 @@ function npc_zelda_0152(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(152, 0)
+        switch_talk_to(152)
         var_0000 = get_player_name() --- Guess: Gets player info
         var_0001 = get_lord_or_lady()
         var_0002 = false

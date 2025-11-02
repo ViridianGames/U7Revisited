@@ -34,7 +34,7 @@ function utility_unknown_0881(eventid, objectref)
                 end
                 var_000B = var_000B .. "wouldst thou like?"
                 add_dialogue("@^" .. var_000B .. "@")
-                var_000C = purchaseobject_(true, 1, 20, var_0005[var_000A], var_0009[var_000A], var_0004[var_000A]) --- Guess: Purchases item
+                var_000C = purchase_object(true, 1, 20, var_0005[var_000A], var_0009[var_000A], var_0004[var_000A]) --- Guess: Purchases item
             end
             if var_000C == 1 then
                 add_dialogue("@Done!@")

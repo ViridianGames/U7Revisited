@@ -10,9 +10,9 @@ function npc_vokes_0125(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 125)
+    switch_talk_to(125)
     var_0000 = get_lord_or_lady()
-    var_0001 = get_schedule()
+    var_0001 = get_schedule(125)
     var_0002 = get_npc_name(125)
     var_0003 = get_npc_name(127)
     var_0004 = get_npc_name(126)
@@ -58,10 +58,10 @@ function npc_vokes_0125(eventid, objectref)
         elseif cmps("duel") then
             add_dialogue("\"A responsibility, yes, even a necessity. The cost of being honorable is that one must defend one's honor. There is no telling just where or when the next stain on one's honor may appear. Like this Sprellic fool, for instance. The perfect example!\"")
             if var_0005 then
-                switch_talk_to(0, 126)
+                switch_talk_to(126)
                 add_dialogue("\"I'll make a stain on his honor, that's for sure. A blood red one!\"")
                 _hide_npc(126)
-                switch_talk_to(0, 125)
+                switch_talk_to(125)
             end
             add_answer("Sprellic")
             remove_answer("duel")
@@ -69,10 +69,10 @@ function npc_vokes_0125(eventid, objectref)
             if not get_flag(356) then
                 add_dialogue("\"The bloody idiot had no idea that when he took our honor flag he would be seen doing it. Hence, he never considered the fact that he would have to fight a duel over our sullied honor. But now that the whole town is talking of the incident there is no way that we could refrain from standing up for ourselves. Especially since he has refused to return what he has taken from us.\"")
                 if var_0006 then
-                    switch_talk_to(0, 127)
+                    switch_talk_to(127)
                     add_dialogue("\"Were he not such a cad, he would see the foolishness of his actions. 'Tis now up to us to show him!\"")
                     _hide_npc(127)
-                    switch_talk_to(0, 125)
+                    switch_talk_to(125)
                 end
                 add_answer("honor flag")
                 if not get_flag(390) then

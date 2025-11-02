@@ -3,8 +3,8 @@ function npc_quaeven_0186(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        switch_talk_to(0, 186)
-        var_0000 = get_schedule()
+        switch_talk_to(186)
+        var_0000 = get_schedule(186)
         var_0001 = false
         start_conversation()
         add_answer({"bye", "Fellowship", "job", "name"})

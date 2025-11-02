@@ -3,7 +3,7 @@ function utility_unknown_0954()
     start_conversation()
     local var_0000, var_0001, var_0002
 
-    var_0000 = is_pc_female()
+    var_0000 = is_player_female()
     add_dialogue("\"The fortune vill cost thee 20 gold. All right?\"")
     var_0001 = ask_yes_no()
     if not var_0001 then

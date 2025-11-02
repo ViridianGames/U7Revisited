@@ -6,7 +6,7 @@ function npc_nicodemus_0102(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(102, 0)
+    switch_talk_to(102)
     var_0000 = get_player_name()
     add_answer({"bye", "job", "name"})
     var_0001 = get_party_members()

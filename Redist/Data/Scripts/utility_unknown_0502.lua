@@ -3,7 +3,7 @@ function utility_unknown_0502(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030
 
     if not get_flag(815) then
-        switch_talk_to(290, 0)
+        switch_talk_to(290)
         var_0000 = false
         var_0001 = find_nearby(8, 10, 154, objectref)
         for i = 1, #var_0001 do
@@ -20,7 +20,7 @@ function utility_unknown_0502(eventid, objectref)
                 var_0005 = "the mage"
             end
             add_dialogue("Suprised, " .. var_0005 .. " looks around and says, \"I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!\" The old man waves his hand, negligently.")
-            switch_talk_to(290, 0)
+            switch_talk_to(290)
             add_dialogue("Through a tightly clenched smile, the figure replies, \"Very well...\" And after a significant pause, \"Master.\"*")
             utility_event_0835()
         else
@@ -42,11 +42,11 @@ function utility_unknown_0502(eventid, objectref)
         end
     else
         if not get_flag(787) then
-            switch_talk_to(292, 0)
+            switch_talk_to(292)
             add_dialogue("The sword glimmers darkly as you speak to it. \"Greetings, my master. And how can thy humble servant aid thee?\" The daemon's voice has regained much of its oddly disturbing humor.")
             set_flag(787, true)
         else
-            switch_talk_to(292, 0)
+            switch_talk_to(292)
             add_dialogue("\"Yes, master. What dost thou seek of thy servant?\" Arcadion asks you in a deep, harmonic voice.")
         end
         add_answer({"powers", "bye", "job", "name"})
@@ -87,7 +87,7 @@ function utility_unknown_0502(eventid, objectref)
                 add_dialogue("\"As thou wish, master. I but seek to serve thee.\"")
                 restore_answers()
             elseif player_says("Magic") then
-                var_0016 = get_schedule()
+                var_0016 = get_schedule(292)
                 if var_0016 == 7 or var_0016 == 0 or var_0016 == 1 then
                     utility_unknown_0837(true)
                 else
@@ -99,23 +99,23 @@ function utility_unknown_0502(eventid, objectref)
                 var_0011 = click_on_item()
                 var_0017 = get_item_shape(var_0011)
                 var_0018 = get_object_position(var_0011)
-                switch_talk_to(292, 0)
+                switch_talk_to(292)
                 if not is_npc(var_0011) then
                     if var_0017 == 721 or var_0017 == 989 then
                         add_dialogue("The daemon speaks with a sanctimonious tone. \"I could not in honor take the life of my most wondrous master.\"")
                     elseif var_0017 == 466 and get_distance(var_0011, 356) < 5 then
                         add_dialogue("\"Yes! I have long sought the end of Lord British, my traitorous master.\"")
                         var_0019 = get_player_name()
-                        switch_talk_to(23, 0)
+                        switch_talk_to(23)
                         add_dialogue("\"" .. var_0019 .. ", for what reason art thou brandishing that black sword in my presence?\"")
                         hide_npc(292)
-                        switch_talk_to(356, 0)
+                        switch_talk_to(356)
                         add_dialogue("The daemon responds, using your mouth. \"This blade is thy doom,...\" You spit the words, \"Lord British!\"")
-                        switch_talk_to(23, 0)
+                        switch_talk_to(23)
                         add_dialogue("Lord British looks truly taken aback, his eyes narrow calculatingly. \"What foul treachery is this?\"")
-                        switch_talk_to(356, 0)
+                        switch_talk_to(356)
                         add_dialogue("You find yourself unable to respond, and your muscles are clenching as if to lash out with the wicked blade in your hand.")
-                        switch_talk_to(23, 0)
+                        switch_talk_to(23)
                         add_dialogue("\"Perhaps when thou art sitting in a dungeon, thy tongue will loosen.\"")
                         add_dialogue("\"Guards!\"*")
                         var_0014 = true
@@ -123,10 +123,10 @@ function utility_unknown_0502(eventid, objectref)
                         add_dialogue("\"Alas master, this one is protected by a power greater than mine. His destiny lies elsewhere.\"")
                     elseif var_0017 == 504 and get_distance(var_0011, 356) < 5 and not get_cont_items(4, 241, 797, var_0011) then
                         add_dialogue("\"Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.\"")
-                        switch_talk_to(293, 0)
+                        switch_talk_to(293)
                         add_dialogue("The dragon responds with great resignation. \"My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.\"")
                         hide_npc(293)
-                        switch_talk_to(292, 0)
+                        switch_talk_to(292)
                         add_dialogue("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*")
                         var_0015 = true
                     elseif var_0017 == 154 and get_distance(var_0011, 356) < 5 and not get_cont_items(4, 240, 797, var_0011) then

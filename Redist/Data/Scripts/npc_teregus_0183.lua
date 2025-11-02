@@ -3,7 +3,7 @@ function npc_teregus_0183(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 183)
+        switch_talk_to(183)
         var_0000 = get_player_name()
         start_conversation()
         add_answer({"bye", "job", "name"})

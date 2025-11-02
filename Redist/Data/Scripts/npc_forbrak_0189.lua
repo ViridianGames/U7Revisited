@@ -3,7 +3,7 @@ function npc_forbrak_0189(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006
 
     if eventid == 1 then
-        switch_talk_to(0, 189)
+        switch_talk_to(189)
         var_0000 = false
         var_0001 = false
         var_0002 = npc_id_in_party(-4)
@@ -11,25 +11,25 @@ function npc_forbrak_0189(eventid, objectref)
         add_answer({"bye", "job", "name"})
         if var_0002 then
             add_dialogue("\"To greet you, human,\" the gargoyle says to Dupre. \"To ask how well the study is progressing?\"")
-            switch_talk_to(0, -4)
+            switch_talk_to(-4)
             add_dialogue("\"Why 'tis progressing nicely, friend Forbrak.\"")
             var_0003 = npc_id_in_party(-3)
             if var_0003 and not get_flag(590) then
                 hide_npc(189)
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("\"-What- study?\"")
-                switch_talk_to(0, -4)
+                switch_talk_to(-4)
                 add_dialogue("\"Why, er, surely thou hast heard of the famous guides compiled for Brommer!\"")
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("\"Aye, I have. But I'll be tarred if there is one detailing various drinking establishments!\"")
-                switch_talk_to(0, -4)
+                switch_talk_to(-4)
                 add_dialogue("\"Well, yes, er, 'tis, ah, something new. Now, how about a drink!\"")
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("\"New? 'Tis about as new as my backside...,\" mutters Shamino.")
                 hide_npc(3)
             end
             hide_npc(4)
-            switch_talk_to(0, 189)
+            switch_talk_to(189)
         end
         if not get_flag(590) then
             add_dialogue("The gargoyle tending bar lifts a tankard to you.")

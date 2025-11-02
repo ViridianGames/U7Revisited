@@ -4,9 +4,9 @@ function npc_leavell_0136(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(136, 0)
+        switch_talk_to(136)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 =  get_schedule(136)--- Guess: Checks game state
         var_0002 = npc_id_in_party(134) --- Guess: Checks player status
         var_0003 = npc_id_in_party(135) --- Guess: Checks player status
         add_answer({"bye", "job", "name"})
@@ -36,10 +36,10 @@ function npc_leavell_0136(eventid, objectref)
             elseif var_0001 == "Battles" then
                 add_dialogue("\"He has an eye like a hawk, and is quicker than a cat. 'Twould be wise of thee to pay him respect.\"")
                 if var_0003 then
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                     add_dialogue("\"Har! Har! Thou art too correct, Leavell!\"")
                     hide_npc(135)
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                 end
                 remove_answer("Battles")
                 add_answer({"respect", "quick", "eye"})
@@ -62,10 +62,10 @@ function npc_leavell_0136(eventid, objectref)
             elseif var_0001 == "Robin" then
                 add_dialogue("\"He is a gambler by profession, who earns his winnings at the House of Games's tables on Buccaneer's Den.\"")
                 if var_0002 then
-                    switch_talk_to(134, 0)
+                    switch_talk_to(134)
                     add_dialogue("\"Soon we shall return and the money will pour like sweet wine once again, eh, Leavell?\"")
                     hide_npc(134)
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                 end
                 add_answer({"Buccaneer's Den", "profession"})
                 remove_answer("Robin")
@@ -73,10 +73,10 @@ function npc_leavell_0136(eventid, objectref)
                 add_dialogue("\"Gambling is what Robin does for money. But he spends so much time talking about Lord British that thou wouldst think he was royalty or something!\"")
                 if var_0002 then
                     add_dialogue("Suddenly Leavell gets an embarrassed look on his face and stops talking.")
-                    switch_talk_to(134, 0)
+                    switch_talk_to(134)
                     add_dialogue("\"Enough about that, Leavell!\"")
                     hide_npc(134)
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                 end
                 remove_answer("profession")
             elseif var_0001 == "Buccaneer's Den" then
@@ -93,10 +93,10 @@ function npc_leavell_0136(eventid, objectref)
             elseif var_0001 == "Sintag" then
                 add_dialogue("\"Battles and myself are more than capable of taking care of Sintag...\"")
                 if var_0003 then
-                    switch_talk_to(135, 0)
+                    switch_talk_to(135)
                     add_dialogue("\"Yeh, thou art bloody right we coulda handled him! We'd a slit him like a sheep! Har!\"")
                     hide_npc(135)
-                    switch_talk_to(136, 0)
+                    switch_talk_to(136)
                 end
                 add_dialogue("\"But Gordy had hired a troupe of ruffians to chase after us. 'Tis a pity. I would have liked to teach him a lesson or two. In fact, one day I think I shall.\"")
                 remove_answer("Sintag")

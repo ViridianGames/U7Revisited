@@ -3,7 +3,7 @@ function utility_unknown_0892()
     local var_0000, var_0001
 
     start_conversation()
-    switch_talk_to(0, 283) --- Guess: Switches to Emp
+    switch_talk_to(283) --- Guess: Switches to Emp
     if not get_flag(340) then
         add_dialogue("@The ape-like creature slowly and cautiously walks up to you. He, or she, sniffs for a moment, and then points to the honey you are carrying.@")
     end

@@ -7,7 +7,7 @@ function utility_position_0269(eventid, objectref)
     end
 
     var_0000 = find_nearby(0, 10, 410, objectref)
-    var_0001 = _get_object_quality(var_0000)
+    var_0001 = get_object_quality(var_0000)
     var_0002 = {915, 916, 914}
     var_0003 = var_0002[var_0001]
     if random2(20, 1) == 1 then

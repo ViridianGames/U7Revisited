@@ -3,7 +3,7 @@ function utility_spell_0326(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0000 = object_select_modal() --- Guess: Selects spell target
         var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(objectref, "@In Flam@")

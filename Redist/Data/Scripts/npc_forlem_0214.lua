@@ -3,7 +3,7 @@ function npc_forlem_0214(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        switch_talk_to(0, 214)
+        switch_talk_to(214)
         start_conversation()
         add_answer({"bye", "job", "name"})
         var_0000 = npc_id_in_party(213)

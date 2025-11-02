@@ -4,7 +4,7 @@ function npc_henry_0132(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(132, 0)
+        switch_talk_to(132)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(384) then
@@ -58,14 +58,14 @@ function npc_henry_0132(eventid, objectref)
                 add_dialogue("\"Katrina is a shepherd here on New Magincia. She has been a friend of mine since I was a boy.\"")
                 var_0002 = npc_id_in_party(9) --- Guess: Checks player status
                 if var_0002 then
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"We have had some good memories, have we not, Henry?\"")
-                    switch_talk_to(132, 0)
+                    switch_talk_to(132)
                     add_dialogue("\"Oh that we have! But thou wouldst not be my sweetheart, so we resigned ourselves to being 'just friends' a long time ago, is that not true?\"")
-                    switch_talk_to(9, 0)
+                    switch_talk_to(9)
                     add_dialogue("\"Whatever thou dost say, dear Henry.\"")
                     hide_npc(9)
-                    switch_talk_to(132, 0)
+                    switch_talk_to(132)
                 end
                 remove_answer("Katrina")
             elseif var_0001 == "lost" then
@@ -91,12 +91,12 @@ function npc_henry_0132(eventid, objectref)
                     set_flag(461, true)
                     var_0004 = npc_id_in_party(9) --- Guess: Checks player status
                     if var_0004 then
-                        switch_talk_to(9, 0)
+                        switch_talk_to(9)
                         add_dialogue("\"I am glad that this situation has concluded in thy favor, dear Henry.\"")
-                        switch_talk_to(132, 0)
+                        switch_talk_to(132)
                         add_dialogue("\"My thanks to thee, Katrina.\"")
                         hide_npc(9)
-                        switch_talk_to(132, 0)
+                        switch_talk_to(132)
                     end
                 else
                     add_dialogue("He looks distraught when you make no move to give it to him. \"Where is it?! I need it if I am to prove myself to the woman I love!\"")

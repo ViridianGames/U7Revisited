@@ -72,5 +72,5 @@ function utility_unknown_1070(P0)
             var_0002 = "@Catch me if thou can!@"
         end
     end
-    bark(var_0002, var_0000)
+    bark(P0, var_0002)
 end

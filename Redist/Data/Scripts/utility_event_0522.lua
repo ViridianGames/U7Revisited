@@ -93,13 +93,13 @@ function utility_event_0522(eventid, objectref)
         return
     end
 
-    if not _get_object_quality(objectref) and not get_flag(827) then
+    if not get_object_quality(objectref) and not get_flag(827) then
         set_flag(827, true)
         var_0000 = find_nearest(0, 154, objectref)
         if not var_0000 then
             var_0001 = create_new_object(641)
             get_object_frame(var_0001, 7)
-            var_0002 = set_item_quality(65, var_0001)
+            var_0002 = set_object_quality(65, var_0001)
             var_0002 = give_last_created(var_0000)
             bark(var_0000, "@I summon thee!@")
             var_0002 = execute_usecode_array(get_npc_name(-356), {22, 7719})
@@ -118,7 +118,7 @@ function utility_event_0522(eventid, objectref)
                 if get_object_frame(var_0001) == 9 then
                     var_0009 = find_nearby(16, 1, 275, var_0001)
                     for var_000A in ipairs(var_0009) do
-                        if get_object_frame(var_000C) == 6 and _get_object_quality(var_000C) == 201 then
+                        if get_object_frame(var_000C) == 6 and get_object_quality(var_000C) == 201 then
                             var_000D = create_new_object(895)
                             get_object_frame(var_000D, 0)
                             var_0002 = update_last_created(get_object_position(var_000C))

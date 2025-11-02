@@ -5,7 +5,7 @@
 // Date:     2/03/05
 // Purpose:  Contains the entry point for the program.
 //
-/////////////////////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////////////////////
 
 #include "Geist/Globals.h"
 #include "Geist/Engine.h"
@@ -70,7 +70,7 @@ int main(int argv, char** argc)
          case 2: //  Moongate
             g_camera.target = Vector3{ 1025.0f, 0.0f, 2433.0f };
             break;
-         
+
          case 3:
             g_camera.target = Vector3{ 294.0f, 0.0f, 1675.0f };
 			   break;
@@ -202,27 +202,35 @@ int main(int argv, char** argc)
       UnloadImage(image);
 
       g_CuboidModel = nullptr;
-      
+
       //  Initialize scripts
 
       string directoryPath("Data/Scripts");
-      g_ScriptingSystem->LoadScript(directoryPath + "global_flags_and_constants.lua");
+      g_ScriptingSystem->LoadScript(directoryPath + "/global_flags_and_constants.lua");
+      g_ScriptingSystem->LoadScript(directoryPath + "/u7_engine_api.lua");
 
       for (const auto& entry : directory_iterator(directoryPath))
       {
-           if (entry.is_regular_file())
+         if (entry.is_regular_file())
          {
-               std::string ext = entry.path().extension().string();
-   
-               if (ext == ".lua")
-            {
-                   std::string filepath = entry.path().string();
-                  g_ScriptingSystem->LoadScript(filepath);
-               }
-           }
-       }
+            std::string ext = entry.path().extension().string();
 
-       g_ScriptingSystem->LoadScript("Data/Scripts/erethian.lua");
+            if (ext == ".lua")
+            {
+               std::string filepath = entry.path().string();
+               std::string filename = entry.path().filename().string();
+
+               // Skip files we already loaded explicitly
+               if (filename == "global_flags_and_constants.lua" ||
+                  filename == "u7_engine_api.lua")
+               {
+                  continue;
+               }
+
+               g_ScriptingSystem->LoadScript(filepath);
+            }
+         }
+      }
 
       g_ScriptingSystem->SortScripts();
 
@@ -262,7 +270,7 @@ int main(int argv, char** argc)
       State* _titleState = new TitleState;
       _titleState->Init("engine.cfg");
       g_StateMachine->RegisterState(STATE_TITLESTATE, _titleState, "TITLE_STATE");
-      
+
       State* _mainState = new MainState;
       g_mainState = dynamic_cast<MainState*>(_mainState);
       _mainState->Init("engine.cfg");

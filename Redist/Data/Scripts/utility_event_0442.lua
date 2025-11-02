@@ -3,10 +3,10 @@ function utility_event_0442(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 3 then
-        var_0000 = get_party_list()
+        var_0000 = get_party_list2()
         for i = 1, #var_0000 do
             var_0003 = var_0000[i]
-            if not roll_to_win(get_npc_prop(0, var_0003), get_item_quality(objectref)) then
+            if not roll_to_win(get_npc_prop(0, var_0003), get_object_quality(objectref)) then
                 var_0004 = get_npc_name(var_0003)
                 halt_scheduled(var_0004)
                 utility_unknown_0288(var_0004)
@@ -36,7 +36,7 @@ function utility_event_0442(eventid, objectref)
                 if var_0005 then
                     set_item_flag(18, var_0005)
                     var_000C = update_last_created(get_object_position(objectref))
-                    set_item_frame(var_0008, var_0005)
+                    set_object_frame(var_0008, var_0005)
                 end
             end
         end

@@ -22,7 +22,7 @@ function utility_unknown_1058(training_points_required, npc_id, cost_to_train, s
         return 0
     end
     -- Return - stat level maxed out
-    var_000A = get_npc_training_level(npc_id, stat_to_train)
+    var_000A = get_training_level(npc_id, stat_to_train)
     if var_000A < 30 then
         debug_print("Too high skill")
         var_0004 = true

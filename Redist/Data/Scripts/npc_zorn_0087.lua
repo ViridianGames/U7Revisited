@@ -4,9 +4,9 @@ function npc_zorn_0087(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(87, 0)
+        switch_talk_to(87)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state or timer
+        var_0001 = get_schedule(87) --- Guess: Checks game state or timer
         var_0002 = get_schedule_type(87) --- Guess: Gets object state
         var_0003 = utility_unknown_1073(359, 359, 728, 1, 357) --- Guess: Checks item in inventory
         if var_0003 then
@@ -83,7 +83,7 @@ function npc_zorn_0087(eventid, objectref)
             elseif var_0004 == "helmet" then
                 add_dialogue("You describe the sort of helmet that you require, one that can block out the dangerous sound from the cube generator. Zorn nods. \"Yes, I can make some for thee. I shall start work immediately.\"")
                 var_0004 = get_party_members()
-                var_0004 = array_size(var_0004)
+                var_0004 = #var_0004
                 var_0005 = count_objects(359, 359, 728, 357) --- Guess: Counts items
                 if var_0005 == 0 then
                     add_dialogue("\"But thou dost not have any Caddellite chunks with which to make helmets!\"")

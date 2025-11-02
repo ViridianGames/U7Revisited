@@ -6,7 +6,7 @@ function npc_nell_0072(eventid, objectref)
     if eventid == 1 then
         var_0000 = get_player_name()
         var_0001 = "Avatar"
-        switch_talk_to(72, 0)
+        switch_talk_to(72)
         if not get_flag(120) then
             var_0002 = var_0000
         end

@@ -5,7 +5,7 @@ function utility_unknown_0291(eventid, objectref)
     if eventid == 2 then
         var_0000 = get_player_id()
         if var_0000 ~= 356 then
-            switch_talk_to(var_0000, 0)
+            switch_talk_to(var_0000)
             var_0001 = get_player_name()
             add_dialogue("\"Arise, " .. var_0001 .. ". Time to continue the quest.\"")
             hide_npc(var_0000)
@@ -13,7 +13,7 @@ function utility_unknown_0291(eventid, objectref)
         var_0002 = get_party_members()
         -- Guess: sloop updates party member states
         for i = 1, 4 do
-            var_0005 = {3, 4, 5, 2}[i]
+            var_0005 = ({3, 4, 5, 2})[i]
             utility_unknown_1087(31, var_0005) --- Guess: Updates object state
         end
         set_item_flag(1, 356) --- Guess: Sets item flag

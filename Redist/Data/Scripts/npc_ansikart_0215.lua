@@ -3,7 +3,7 @@ function npc_ansikart_0215(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 215)
+        switch_talk_to(215)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(660) then

@@ -3,7 +3,7 @@ function npc_elad_0162(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 162)
+        switch_talk_to(162)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         start_conversation()
@@ -37,7 +37,7 @@ function npc_elad_0162(eventid, objectref)
                 add_answer("services")
                 remove_answer("heal")
             elseif answer == "services" then
-                var_0002 = get_schedule()
+                var_0002 = get_schedule(162)
                 if var_0002 == 2 or var_0002 == 3 or var_0002 == 4 or var_0002 == 6 then
                     utility_unknown_0889(425, 10, 25)
                 else

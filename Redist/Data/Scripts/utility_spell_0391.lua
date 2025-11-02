@@ -3,7 +3,7 @@ function utility_spell_0391(eventid, objectref)
     local var_0000
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@An Tym@")
         if check_spell_requirements() then
             var_0000 = add_containerobject_s(objectref, {1671, 17493, 17520, 8042, 67, 7768})

@@ -3,7 +3,7 @@ function npc_zaksam_0205(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 205)
+        switch_talk_to(205)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = get_schedule_type(get_npc_name(205))
@@ -68,7 +68,7 @@ function npc_zaksam_0205(eventid, objectref)
         end
     elseif eventid == 0 then
         var_0002 = get_schedule_type(get_npc_name(205))
-        var_0003 = get_schedule()
+        var_0003 = get_schedule(205)
         var_0004 = random(4, 1)
         if var_0002 == 14 and (var_0003 == 7 or var_0003 == 0 or var_0003 == 1) then
             var_0005 = "@Zzzzz . . .@"
@@ -85,7 +85,7 @@ function npc_zaksam_0205(eventid, objectref)
         elseif var_0003 == 6 and var_0002 == 26 then
             var_0005 = "@Mmmmm, excellent wine!@"
         end
-        bark(var_0005, 205)
+        bark(205, var_0005)
     end
     return
 end

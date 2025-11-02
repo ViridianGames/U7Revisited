@@ -6,7 +6,7 @@ function utility_unknown_0275(eventid, objectref)
     var_0000 = get_party_members()
     -- Guess: sloop updates party member states
     for i = 1, 4 do
-        var_0003 = {1, 2, 3, 0}[i]
+        var_0003 = ({1, 2, 3, 0})[i]
         set_schedule_type(31, var_0003) --- Guess: Sets object behavior
     end
     recall_virtue_stone(objectref) --- Guess: Clears item state

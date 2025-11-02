@@ -6,7 +6,7 @@ function npc_margareta_0083(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(83, 0)
+    switch_talk_to(83)
     var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
     add_answer({"bye", "job", "name"})
     if not get_flag(254) then

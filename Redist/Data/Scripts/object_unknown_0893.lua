@@ -3,7 +3,7 @@ function object_unknown_0893(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        var_0000 = _get_object_quality(objectref)
+        var_0000 = get_object_quality(objectref)
         var_0001 = click_on_item()
         set_object_quality(objectref, 90)
         if var_0000 == 1 then

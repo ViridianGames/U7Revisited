@@ -3,7 +3,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
-        switch_talk_to(0, 194)
+        switch_talk_to(194)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = false
@@ -116,7 +116,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(194)
         var_0008 = get_schedule_type(get_npc_name(194))
         var_000B = random(4, 1)
         if var_0008 == 7 then
@@ -140,7 +140,7 @@ function npc_lady_jehanne_0194(eventid, objectref)
                 var_000C = "@I am full.@"
             end
         end
-        bark(var_000C, 194)
+        bark(194, var_000C)
     end
     return
 end

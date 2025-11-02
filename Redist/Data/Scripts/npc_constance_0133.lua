@@ -4,7 +4,7 @@ function npc_constance_0133(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(133, 0)
+        switch_talk_to(133)
         var_0000 = get_lord_or_lady()
         var_0001 = npc_id_in_party(3) --- Guess: Checks player status
         var_0002 = npc_id_in_party(1) --- Guess: Checks player status
@@ -41,31 +41,31 @@ function npc_constance_0133(eventid, objectref)
                 if var_0006 then
                     add_dialogue("With a big smile Constance takes a dipper and submerges it in the cool water of her bucket. She draws out the dipper and hands it to you. You drink and find the water delicious and very refreshing.")
                     if var_0002 then
-                        switch_talk_to(1, 0)
+                        switch_talk_to(1)
                         add_dialogue("\"Actually, I feel quite parched myself. Might I have some as well?\" Constance nods yes, and hands him a dipper of water. He drinks with loud gulping sounds.")
                         hide_npc(1)
-                        switch_talk_to(133, 0)
+                        switch_talk_to(133)
                     end
                     if var_0001 then
-                        switch_talk_to(3, 0)
+                        switch_talk_to(3)
                         add_dialogue("\"I, too, am feeling dry. Wouldst thou share thy water with me, milady?\" Constance fills the dipper with water for Shamino and he drinks until water runs down his chin.")
                         hide_npc(3)
-                        switch_talk_to(133, 0)
+                        switch_talk_to(133)
                     end
                     if var_0003 and not var_0001 then
-                        switch_talk_to(3, 0)
+                        switch_talk_to(3)
                         add_dialogue("You see Shamino nudge Dupre. \"Art thou not going to have a drink?\"")
                         hide_npc(3)
-                        switch_talk_to(4, 0)
+                        switch_talk_to(4)
                         add_dialogue("\"I shall wait until we find something a bit stronger than water to quench my thirst.\"")
                         hide_npc(4)
-                        switch_talk_to(133, 0)
+                        switch_talk_to(133)
                     end
                     if var_0004 then
-                        switch_talk_to(2, 0)
+                        switch_talk_to(2)
                         add_dialogue("Constance hands Spark a dipper full of water. He drinks it down in one long slurp. Upon finishing it, he burps. With an embarrassed grin he bows apologetically to Constance as he hands her back the dipper.")
                         hide_npc(2)
-                        switch_talk_to(133, 0)
+                        switch_talk_to(133)
                     end
                 else
                     add_dialogue("\"If thou wouldst ever change thy mind thou needest only let me know.\"")
@@ -91,12 +91,12 @@ function npc_constance_0133(eventid, objectref)
             elseif var_0006 == "locket found" then
                 add_dialogue("You tell Constance of how you have returned the locket that has been stolen from Henry. \"Oh, how could I ever have doubted my dear darling Henry?\" she frowns. \"I thank thee for telling me the truth.\"")
                 if var_0005 then
-                    switch_talk_to(132, 0)
+                    switch_talk_to(132)
                     add_dialogue("\"Constance, I am sorry that things ran afoul as they did, but if thou wilt, I would like thee to have this locket as a symbol of my love.\"")
-                    switch_talk_to(133, 0)
+                    switch_talk_to(133)
                     add_dialogue("\"My sweet Henry, mine heart belongs to only thee.\"")
                     hide_npc(132)
-                    switch_talk_to(133, 0)
+                    switch_talk_to(133)
                 end
                 remove_answer("locket found")
             elseif var_0006 == "another" then

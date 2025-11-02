@@ -4,7 +4,7 @@ function npc_sir_jeff_0105(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(105, 0)
+        switch_talk_to(105)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(323) then

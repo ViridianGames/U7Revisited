@@ -21,7 +21,7 @@ function utility_unknown_0869(eventid, objectref)
         {"sloop", "*"},
         {"barge", "*"}
     }
-    var_0001 = random(1, math.floor(array_size(var_0000) / 2)) --- Guess: Generates random index
+    var_0001 = random(1, math.floor(#var_0000 / 2)) --- Guess: Generates random index
     var_0002 = var_0000[var_0001 * 2 - 1][1]
     var_0003 = var_0000[var_0001 * 2][1]
     if var_0003 == "*" then

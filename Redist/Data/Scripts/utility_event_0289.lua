@@ -215,7 +215,7 @@ function utility_event_0289(eventid, objectref)
         else
             var_0004 = npc_id_in_party(var_0002) --- Guess: Checks player status
             if var_0004 then
-                switch_talk_to(var_0002, 0)
+                switch_talk_to(var_0002)
                 add_dialogue(var_0000)
                 hide_npc(var_0002)
             end

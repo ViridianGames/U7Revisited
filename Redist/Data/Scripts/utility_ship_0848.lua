@@ -3,7 +3,7 @@ function utility_ship_0848()
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D
 
     start_conversation()
-    switch_talk_to(0, -26) --- Guess: Switches to Batlin
+    switch_talk_to(-26) --- Guess: Switches to Batlin
     var_0000 = get_player_name_context() --- Guess: Gets player name context
     var_0001 = get_lord_or_lady() --- Guess: Gets lord/lady title
     add_dialogue("@The ceremony begins as Batlin stands before the gathered Fellowship members. The hall fills with thunderous cheers. They look at him with a mixture of awe and sheer adoration. Batlin stands and basks in the warm reception for a moment, a triumphant smile on his face. With a slight gesture of his hand the crowd becomes quiet.@")
@@ -16,81 +16,81 @@ function utility_ship_0848()
     add_dialogue("@\"Now I think would be a good time to hear the words of our fellow members. To hear them share with us how The Fellowship has been bringing positive change to their lives.\"@")
     var_0002 = check_dialogue_target(-41) --- Guess: Checks if Candice is present
     if var_0002 then
-        switch_talk_to(0, -41) --- Guess: Switches to Candice
+        switch_talk_to(-41) --- Guess: Switches to Candice
         add_dialogue("@\"The Fellowship has shown me that I was afraid of myself and that I had to open myself up to life's experiences,\" says Candice.@")
         hide_npc(41) --- Guess: Hides Candice
     end
     var_0003 = check_dialogue_target(-43) --- Guess: Checks if Patterson is present
     if var_0003 then
-        switch_talk_to(0, -43) --- Guess: Switches to Patterson
+        switch_talk_to(-43) --- Guess: Switches to Patterson
         add_dialogue("@\"The Fellowship helps me be more honest with people,\" says Patterson.@")
-        switch_talk_to(0, -26) --- Guess: Switches to Batlin
+        switch_talk_to(-26) --- Guess: Switches to Batlin
         add_dialogue("@\"Thank thee for sharing, Patterson.\"@")
         hide_npc(43) --- Guess: Hides Patterson
     end
     var_0004 = check_dialogue_target(-45) --- Guess: Checks if Figg is present
     if var_0004 then
-        switch_talk_to(0, -45) --- Guess: Switches to Figg
+        switch_talk_to(-45) --- Guess: Switches to Figg
         add_dialogue("@\"The Fellowship has taught me how to better perform my duties as the Caretaker of the Royal Orchards,\" says Figg.@")
         hide_npc(45) --- Guess: Hides Figg
     end
     var_0005 = check_dialogue_target(-53) --- Guess: Checks if Gaye is present
     if var_0005 then
-        switch_talk_to(0, -53) --- Guess: Switches to Gaye
+        switch_talk_to(-53) --- Guess: Switches to Gaye
         add_dialogue("@\"The Fellowship has taught me to, first and foremost, treat people with respect,\" says Gaye.@")
         hide_npc(53) --- Guess: Hides Gaye
     end
     var_0006 = check_dialogue_target(-55) --- Guess: Checks if Grayson is present
     if var_0006 then
-        switch_talk_to(0, -55) --- Guess: Switches to Grayson
+        switch_talk_to(-55) --- Guess: Switches to Grayson
         add_dialogue("@\"After joining The Fellowship I learned how to be a man's man,\" says Grayson.@")
         hide_npc(55) --- Guess: Hides Grayson
     end
     var_0007 = check_dialogue_target(-58) --- Guess: Checks if Gordon is present
     if var_0007 then
-        switch_talk_to(0, -58) --- Guess: Switches to Gordon
+        switch_talk_to(-58) --- Guess: Switches to Gordon
         add_dialogue("@\"The Fellowship is helping me back from the brink of personal and financial oblivion,\" says Gordon.@")
-        switch_talk_to(0, -26) --- Guess: Switches to Batlin
+        switch_talk_to(-26) --- Guess: Switches to Batlin
         add_dialogue("@\"Right thou art, brother!\"@")
         hide_npc(58) --- Guess: Hides Gordon
     end
     var_0008 = check_dialogue_target(-59) --- Guess: Checks if Sean is present
     if var_0008 then
-        switch_talk_to(0, -59) --- Guess: Switches to Sean
+        switch_talk_to(-59) --- Guess: Switches to Sean
         add_dialogue("@\"The Fellowship has freed me from the illusory appeals of mediocrity,\" says Sean.@")
         hide_npc(59) --- Guess: Hides Sean
     end
     var_0009 = check_dialogue_target(-63) --- Guess: Checks if Millie is present
     if var_0009 then
-        switch_talk_to(0, -63) --- Guess: Switches to Millie
+        switch_talk_to(-63) --- Guess: Switches to Millie
         add_dialogue("@\"In The Fellowship I am learning that I need to devote my life to a special purpose,\" says Millie.@")
         hide_npc(63) --- Guess: Hides Millie
     end
     var_000A = check_dialogue_target(-2) --- Guess: Checks if Spark is present
     if var_000A then
-        switch_talk_to(0, -2) --- Guess: Switches to Spark
+        switch_talk_to(-2) --- Guess: Switches to Spark
         add_dialogue("@\"This whole ceremony and everyone in it doth give me the willies!\"@")
         hide_npc(2) --- Guess: Hides Spark
     end
     var_000B = check_dialogue_target(-1) --- Guess: Checks if Iolo is present
     if var_000B then
-        switch_talk_to(0, -1) --- Guess: Switches to Iolo
+        switch_talk_to(-1) --- Guess: Switches to Iolo
         add_dialogue("@\"'Tis a sad thing to see so many people who have nothing else better in their lives than blindly following this dubious spiritual leader.\"@")
         hide_npc(1) --- Guess: Hides Iolo
     end
     var_000C = check_dialogue_target(-3) --- Guess: Checks if Shamino is present
     if var_000C then
-        switch_talk_to(0, -3) --- Guess: Switches to Shamino
+        switch_talk_to(-3) --- Guess: Switches to Shamino
         add_dialogue("@\"'Tis a sad thing that Britannia has fallen so far as to leave itself open to a group like this Fellowship.\"@")
         hide_npc(3) --- Guess: Hides Shamino
     end
     var_000D = check_dialogue_target(-4) --- Guess: Checks if another NPC is present
     if var_000D then
-        switch_talk_to(0, -4) --- Guess: Switches to NPC
+        switch_talk_to(-4) --- Guess: Switches to NPC
         add_dialogue("@\"'Tis a sad thing when I cannot even keep my eyes open from the boredom of this Fellowship ceremony!\"@")
         hide_npc(4) --- Guess: Hides NPC
     end
-    switch_talk_to(0, -26) --- Guess: Switches back to Batlin
+    switch_talk_to(-26) --- Guess: Switches back to Batlin
     add_dialogue("@From watching Batlin and the others you get the feeling that the Fellowship ceremony is going to last long into the night. Now would be a good moment to slip away without drawing much attention to yourself...@")
     abort() --- Guess: Aborts script
 end

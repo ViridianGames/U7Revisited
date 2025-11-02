@@ -6,7 +6,7 @@ function npc_wislem_0065(eventid, objectref)
     if eventid == 0 then
         abort()
     elseif eventid == 1 then
-        switch_talk_to(65, 0)
+        switch_talk_to(65)
         add_answer({"bye", "job", "name"})
         if not get_flag(194) then
             add_dialogue("You see an impressive winged gargoyle with a stately demeanor.")

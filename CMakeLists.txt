@@ -29,16 +29,24 @@ if(MSVC)
     add_compile_options($<$<CONFIG:Debug>:/ZI>)  # Edit and Continue debug info
     add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)  # Incremental linking
     add_link_options($<$<CONFIG:Debug>:/DEBUG:FASTLINK>)  # Faster linking for Debug builds
-    # Release optimizations (using generator expressions for multi-config generators)
-    add_compile_options($<$<CONFIG:Release>:/O2>)
+    # Release optimizations (match meson: -O3, LTO, strip)
+    add_compile_options($<$<CONFIG:Release>:/Ox>)  # Maximum optimization
+    add_compile_options($<$<CONFIG:Release>:/GL>)  # Whole Program Optimization (required for LTCG)
+    add_link_options($<$<CONFIG:Release>:/LTCG>)   # Link Time Code Generation (LTO)
+    add_link_options($<$<CONFIG:Release>:/OPT:REF>)  # Remove unreferenced functions/data
+    add_link_options($<$<CONFIG:Release>:/OPT:ICF>)  # Identical COMDAT folding
+    add_compile_definitions($<$<CONFIG:Release>:NDEBUG>)  # Define NDEBUG
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     # Maximum warning level
     add_compile_options(-Wall -Wextra -Wpedantic)
     # For C4244 equivalent (float-to-int, general conversion issues)
     add_compile_options(-Wno-conversion)
-    # Release optimizations
+    # Release optimizations (match meson: -O3, LTO, strip)
     add_compile_options($<$<CONFIG:Release>:-O3>)
-    add_link_options($<$<CONFIG:Release>:-s>)  # Strip symbols
+    add_compile_options($<$<CONFIG:Release>:-flto>)  # Link Time Optimization
+    add_link_options($<$<CONFIG:Release>:-flto>)     # LTO for linking
+    add_link_options($<$<CONFIG:Release>:-s>)        # Strip symbols
+    add_compile_definitions($<$<CONFIG:Release>:NDEBUG>)  # Define NDEBUG
 endif()
 
 # ============================================================================
@@ -152,7 +160,13 @@ set(SOURCES
 # ============================================================================
 # Executable
 # ============================================================================
-add_executable(U7Revisited ${SOURCES})
+add_executable(U7Revisited WIN32 ${SOURCES})
+
+# Build configuration specific definitions
+target_compile_definitions(U7Revisited PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
+)
 
 # Link dependencies
 target_link_libraries(U7Revisited PRIVATE
@@ -169,11 +183,22 @@ target_include_directories(U7Revisited PRIVATE
 # Windows-specific dependencies
 if(WIN32)
     target_link_libraries(U7Revisited PRIVATE winmm)
+    # Use main() entry point instead of WinMain for GUI app
+    set_target_properties(U7Revisited PROPERTIES
+        LINK_FLAGS "/ENTRY:mainCRTStartup"
+    )
 endif()
 
 # Set Visual Studio debugger working directory to Redist folder
 set_target_properties(U7Revisited PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
+)
+
+# Copy executable to Redist folder after build (Release only)
+add_custom_command(TARGET U7Revisited POST_BUILD
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:U7Revisited>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Redist/">
+    COMMAND_EXPAND_LISTS
+    COMMENT "Copying Release executable to Redist folder"
 )
 
 # Set as Visual Studio startup project
@@ -191,6 +216,12 @@ add_executable(ScriptTests
     Tests/ScriptTestMocks.cpp
     Tests/TestDataLoader.cpp
     ${TEST_SOURCES}
+)
+
+# Build configuration specific definitions
+target_compile_definitions(ScriptTests PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
 )
 
 target_link_libraries(ScriptTests PRIVATE

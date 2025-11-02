@@ -6,10 +6,10 @@ function utility_ship_0264(eventid, objectref)
     if eventid == 3 then
         utility_unknown_1089(13) --- Guess: Triggers event
         var_0000 = is_player_female()
-        switch_talk_to(26, 0)
+        switch_talk_to(26)
         add_dialogue("\"Avatar! Stop where thou art! Thou shalt not succeed in thy quest to destroy the Black Gate! Art thou mad??! The Guardian is much too powerful for thee! He shall crush thee like an insect! The fate of Britannia now belongs to him and to The Fellowship! The Guardian is the land's true ruler! Bow down to him, Avatar, and perhaps he shall give thee a place at his side. Bow down to him -now-!\"")
         hide_npc(26)
-        switch_talk_to(273, 0)
+        switch_talk_to(273)
         if var_0000 then
             var_0001 = "She"
             var_0002 = "her"
@@ -22,16 +22,16 @@ function utility_ship_0264(eventid, objectref)
         add_dialogue("Hook points to you.")
         add_dialogue("\"I say -kill- the Avatar! " .. var_0001 .. " is dangerous! Cut " .. var_0002 .. " throat! I say we attack -now-!\"")
         hide_npc(273)
-        switch_talk_to(274, 0)
+        switch_talk_to(274)
         add_dialogue("Forskis shouts, \"To kill! To kill!\"")
         hide_npc(274)
-        switch_talk_to(275, 0)
+        switch_talk_to(275)
         add_dialogue("Abraham yells, \"Let us make fish bait out of " .. var_0003 .. "!\"")
         hide_npc(275)
-        switch_talk_to(276, 0)
+        switch_talk_to(276)
         add_dialogue("\"Death to the Avatar! Long live The Guardian!\" screams Elizabeth.")
         hide_npc(276)
-        switch_talk_to(26, 0)
+        switch_talk_to(26)
         add_dialogue("\"So be it! The Fellowship hereby sentences the Avatar to immediate death! Kill " .. var_0003 .. " now!\"")
         hide_npc(26)
         var_0004 = {881, 882, 805, 506, 403}

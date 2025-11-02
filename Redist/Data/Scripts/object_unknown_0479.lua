@@ -6,7 +6,7 @@ function object_unknown_0479(eventid, objectref)
     if eventid == 1 then
         -- call [0000] (0931H, unmapped)
         var_0000 = utility_unknown_1073(359, 359, 772, 1, 357)
-        switch_talk_to(0, 283)
+        switch_talk_to(283)
         if get_flag(340) ~= true then
             if not var_0000 then
                 start_conversation()
@@ -43,19 +43,19 @@ function object_unknown_0479(eventid, objectref)
                 if answer == "name" then
                     var_0002 = get_npc_property(objectref, 5)
                     var_0003 = {1, 2, 3, 4}
-                    if not is_in_int_array(var_0002, var_0003) then
+                    if not is_int_in_array(var_0002, var_0003) then
                         var_0004 = check_flag_location(4, 80, 479, 356)
                         while true do
                             var_0005 = var_0004
                             var_0006 = var_0005
                             var_0007 = var_0006
                             var_0008 = get_npc_property(objectref, 5)
-                            if is_in_int_array(var_0008, var_0003) then
+                            if is_int_in_array(var_0008, var_0003) then
                                 var_0003 = utility_unknown_1084(var_0003, var_0008)
                             end
                             if var_0003 then
                                 var_0002 = random2(4, 1)
-                                if not is_in_int_array(var_0002, var_0003) then
+                                if not is_int_in_array(var_0002, var_0003) then
                                     break
                                 end
                             end

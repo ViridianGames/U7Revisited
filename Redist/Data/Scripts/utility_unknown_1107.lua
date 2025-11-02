@@ -25,7 +25,7 @@ function utility_unknown_1107(eventid, objectref)
             add_dialogue("@^" .. var_000A .. " Is that acceptable?@")
             var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000C then
-                var_000B = purchaseobject_(false, 1, 0, var_0003[var_0009], var_0008, var_0004) --- Guess: Purchases item
+                var_000B = purchase_object(false, 1, 0, var_0003[var_0009], var_0008, var_0004) --- Guess: Purchases item
             end
             if var_000B == 1 then
                 add_dialogue("@Done!@")

@@ -3,7 +3,7 @@ function npc_feridwyn_0167(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then
-        switch_talk_to(0, 167)
+        switch_talk_to(167)
         var_0000 = get_lord_or_lady()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = false
@@ -17,10 +17,10 @@ function npc_feridwyn_0167(eventid, objectref)
             add_dialogue("\"Garritt, my son, told me that Tobias was in possession of some silver snake venom. I went to investigate and found Tobias with it!\"")
             var_0004 = npc_id_in_party(170)
             if var_0004 then
-                switch_talk_to(0, 170)
+                switch_talk_to(170)
                 add_dialogue("\"That is correct! I am a witness that what Feridwyn has said is the truth!\"")
                 hide_npc(170)
-                switch_talk_to(0, 167)
+                switch_talk_to(167)
             end
             add_dialogue("\"I have often said that Tobias was no good. Now here is proof. He is the thief that has been praying upon one of our honest merchants! And to think I let him come into contact with my son! I hope he shall be dealt with in a manner appropriate to one who is leading youth astray from the way of The Fellowship.\"")
             add_dialogue("\"I suggest that thou go and speak with his mother at once! Camille should keep a tighter rein on her offspring!\"")
@@ -78,10 +78,10 @@ function npc_feridwyn_0167(eventid, objectref)
                     add_dialogue("\"A wonderful woman. Thou shouldst meet her.\"")
                     var_0006 = npc_id_in_party(168)
                     if var_0006 then
-                        switch_talk_to(0, 168)
+                        switch_talk_to(168)
                         add_dialogue("\"Mine husband is such a flatterer. The truth is that our work for The Fellowship has brought us closer together.\"")
                         hide_npc(168)
-                        switch_talk_to(0, 167)
+                        switch_talk_to(167)
                     end
                 else
                     add_dialogue("\"As thou dost already know my wife Brita, I am certain thou wilt agree that thou couldst not find a more dedicated practitioner of The Fellowship's teachings.\"")

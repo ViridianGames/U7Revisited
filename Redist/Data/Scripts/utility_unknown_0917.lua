@@ -3,7 +3,7 @@ function utility_unknown_0917(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     start_conversation()
-    switch_talk_to(0, 289) --- Guess: Initiates dialogue
+    switch_talk_to(289) --- Guess: Initiates dialogue
     add_dialogue("@Bollux stares ahead, almost vacantly...@")
     var_0000 = set_npc_location(0, 40, 1015, objectref) --- Guess: Sets NPC location
     for _, var_0003 in ipairs({1, 2, 3, 0}) do
@@ -11,7 +11,7 @@ function utility_unknown_0917(eventid, objectref)
             add_dialogue("@Bollux turns to see Adjar standing nearby, quite alive...@")
             hide_npc(289) --- Guess: Hides NPC
             switch_talk_to(1, 289) --- Guess: Initiates dialogue
-            switch_talk_to(0, 288) --- Guess: Initiates dialogue
+            switch_talk_to(288) --- Guess: Initiates dialogue
             add_dialogue("@Adjhar simply smiles.~'Greetings, brother.'@")
         end
     end

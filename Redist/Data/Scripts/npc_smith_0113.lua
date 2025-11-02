@@ -4,7 +4,7 @@ function npc_smith_0113(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(113, 0)
+        switch_talk_to(113)
         var_0000 = get_player_name()
         var_0001 = npc_id_in_party(1) --- Guess: Checks player status
         var_0002 = false
@@ -21,9 +21,9 @@ function npc_smith_0113(eventid, objectref)
                 add_dialogue("\"Yes, I have a name.\"")
                 remove_answer("name")
                 if var_0001 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Scoundrel! When thou art asked thy name, thou shouldst respond politely and accurately! The Avatar has just asked thee for -thy- name.\"")
-                    switch_talk_to(113, 0)
+                    switch_talk_to(113)
                     add_dialogue("\"My name? You can call me what you want, but I will only respond to Smith.\"")
                     add_answer("Smith")
                     hide_npc(1)
@@ -108,13 +108,13 @@ function npc_smith_0113(eventid, objectref)
             elseif var_0003 == "bye" then
                 add_dialogue("\"That's just fine. I was getting tired of you anyway.\"")
                 if var_0001 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Why, how dare thou speakest to the Avatar in that manner, Smith!\"")
-                    switch_talk_to(113, 0)
+                    switch_talk_to(113)
                     add_dialogue("\"And who are you? My master?\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"Why, as a matter of fact...\"")
-                    switch_talk_to(113, 0)
+                    switch_talk_to(113)
                     add_dialogue("\"Sure, whatever.\"")
                     hide_npc(1)
                     add_dialogue("*")

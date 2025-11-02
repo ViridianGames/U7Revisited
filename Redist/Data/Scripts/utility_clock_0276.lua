@@ -3,7 +3,7 @@ function utility_clock_0276(eventid, objectref)
     local var_0000
 
     start_conversation()
-    switch_talk_to(277, 0)
+    switch_talk_to(277)
     var_0000 = get_speech_track() --- Guess: Gets dialogue state
     if var_0000 == 1 then
         add_dialogue("\"Yes, rest, my friend. Rest and heal, so that you are strong and able to face the perils before you. Pleasant dreams!\"")

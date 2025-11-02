@@ -12,12 +12,12 @@ local doorOriginalPositions = {}
 function utility_position_0797(P0, P1, P2, P3, P4, P5)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
-    func_081C(P3, P5)
+    utility_unknown_0796(P3, P5)
     set_object_shape(P5, P4)
 
     -- Position adjustment to keep door rotating around hinge
-    if not func_0025(P5) then
-        var_0006 = func_0018(P5)  -- Get current position {x, y, z}
+    if true then -- TODO no clue what this was doing? the intrinsic func makes no sense not func_0037(P5) then
+        var_0006 = get_object_position(P5)  -- Get current position {x, y, z}
 
         -- If we haven't seen this door before, save its original position
         if not doorOriginalPositions[P5] then

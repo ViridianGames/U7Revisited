@@ -4,7 +4,7 @@ function npc_boots_0067(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(67, 0)
+        switch_talk_to(67)
         add_answer({"bye", "job", "name"})
         if get_flag(114) then
             add_answer("mutton")

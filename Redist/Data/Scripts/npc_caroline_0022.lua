@@ -4,7 +4,7 @@ function npc_caroline_0022(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(22, 0)
+        switch_talk_to(22)
         var_0000 = get_schedule_time()
         if var_0000 == 7 then
             var_0001 = (get_schedule(22) == 16)

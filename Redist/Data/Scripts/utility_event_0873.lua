@@ -18,7 +18,7 @@ function utility_event_0873(eventid, objectref)
         {"irradiate", "irradiated", "irradiating"},
         {"martinize", "martinized", "martinizing"}
     }
-    var_0001 = random(1, math.floor(array_size(var_0000) / 3)) --- Guess: Generates random index
+    var_0001 = random(1, math.floor(#var_0000 / 3)) --- Guess: Generates random index
     var_0002 = var_0000[var_0001 * 3 - 2][1]
     var_0003 = var_0000[var_0001 * 3 - 1][1]
     var_0004 = var_0000[var_0001 * 3][1]

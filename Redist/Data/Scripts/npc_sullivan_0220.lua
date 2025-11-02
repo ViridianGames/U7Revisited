@@ -3,7 +3,7 @@ function npc_sullivan_0220(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then
-        switch_talk_to(0, 220)
+        switch_talk_to(220)
         var_0000 = get_lord_or_lady()
         var_0001 = get_player_name()
         var_0002 = npc_id_in_party(240)
@@ -44,10 +44,10 @@ function npc_sullivan_0220(eventid, objectref)
                 add_dialogue("\"'Tis truly a fantastic group of people, \" .. var_0000 .. \". We spread guidance and prosperity to the people who reside in our fair land. Of course, at the moment, my fellow members are a bit... displeased with me.\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(0, 240)
+                    switch_talk_to(240)
                     add_dialogue("\"That's a bit of an understatement!\"")
                     hide_npc(240)
-                    switch_talk_to(0, 220)
+                    switch_talk_to(220)
                 end
                 remove_answer("Fellowship")
                 add_answer({"displeased", "prosperity", "guidance"})
@@ -75,20 +75,20 @@ function npc_sullivan_0220(eventid, objectref)
                 remove_answer("loan")
             elseif answer == "Oops" then
                 if var_0002 then
-                    switch_talk_to(0, 240)
+                    switch_talk_to(240)
                     add_dialogue("\"What the fool means is that he used to don a costume and pretend to be thee in an attempt to woo goods from the proprietors.\"")
                     hide_npc(240)
-                    switch_talk_to(0, 220)
+                    switch_talk_to(220)
                     add_dialogue("\"Quite true, Avatar. The ruse worked far too well. 'Twas a true shame, to be honest. I should not have gotten away with it, and, indeed, am being properly castigated for it now.\"")
                 else
                     add_dialogue("\"Oh, just that I have been impersonating thee for some time now to take items from shopkeepers without paying for them. Well, -had- been actually. Now I am being properly castigated for it.\"")
                 end
                 if var_0003 then
                     add_dialogue("*")
-                    switch_talk_to(0, 154)
+                    switch_talk_to(154)
                     add_dialogue("\"I thank thee.\"")
                     hide_npc(154)
-                    switch_talk_to(0, 220)
+                    switch_talk_to(220)
                     add_dialogue("\"Thou art welcome.\" He nods.")
                 end
                 remove_answer("Oops")
@@ -96,10 +96,10 @@ function npc_sullivan_0220(eventid, objectref)
                 add_dialogue("\"Well, until I was caught, I would go from shop to shop all across Britannia, posing as `the Avatar.' The owners were all too happy to supply me with numerous gifts. Thou truly hast a good life, \" .. var_0000 .. \".\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(0, 240)
+                    switch_talk_to(240)
                     add_dialogue("\"Ask him about his taxes, \" .. var_0000 .. \".\"")
                     hide_npc(240)
-                    switch_talk_to(0, 220)
+                    switch_talk_to(220)
                     add_answer("taxes")
                 end
                 add_answer("gifts")

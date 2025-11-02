@@ -3,7 +3,7 @@ function npc_ian_0202(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 202)
+        switch_talk_to(202)
         var_0000 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})

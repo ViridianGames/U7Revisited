@@ -3,7 +3,7 @@ function utility_spell_0323(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Bet Ort@")
         if check_spell_requirements() then
             var_0000 = add_containerobject_s(objectref, {1603, 8021, 36, 17496, 17519, 7792})

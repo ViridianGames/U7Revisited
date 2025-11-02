@@ -26,9 +26,9 @@ answer = nil
 local debug = true
 function log(...) if debug then print(...) end end
 
-function zella_0920(object_id, event)
-    log("zella_0920 called with object_id:", object_id, "event:", event)
-    local player_id = object_id -- TODO: Map to player ID
+function zella_0920(eventid, objectref)
+    log("zella_0920 called with objectref:", objectref, "eventid:", eventid)
+    local player_id = objectref -- TODO: Map to player ID
     local player_name = get_player_name() or "Avatar"
     local is_female = is_player_female() -- Requires implementation
     local pronoun = is_female and "She" or "He"
@@ -50,21 +50,21 @@ function zella_0920(object_id, event)
         learns = "learn"
     end
 
-    if event == 2 then
+    if eventid == 2 then
         local gold_amount = get_gold() -- Placeholder: callis 0028
         if gold_amount == 0 then
-            add_dialogue(object_id, strings[0x0062])
+            add_dialogue(strings[0x0062])
         elseif gold_amount == 1 then
-            add_dialogue(object_id, strings[0x0110] .. gold_amount .. strings[0x014A])
+            add_dialogue(strings[0x0110] .. gold_amount .. strings[0x014A])
             if gold_amount < 644 then
-                add_dialogue(object_id, strings[0x015C])
+                add_dialogue(strings[0x015C])
             end
         elseif gold_amount == 2 then
-            add_dialogue(object_id, strings[0x01E1])
+            add_dialogue(strings[0x01E1])
         else
-            add_dialogue(object_id, strings[0x024E] .. gold_amount .. strings[0x0257])
+            add_dialogue(strings[0x024E] .. gold_amount .. strings[0x0257])
             spend_gold(gold_amount) -- Placeholder: callis 002B
-            add_dialogue(object_id, strings[0x025E] .. player_name .. strings[0x0283] .. player_name .. strings[0x0325] .. pronoun_lower .. strings[0x034A] .. mimic .. strings[0x034C] .. develops .. strings[0x035D] .. them .. strings[0x03AC] .. player_name .. strings[0x03CB] .. learns .. strings[0x03CD] .. pronoun .. strings[0x0405] .. feels .. strings[0x0407] .. pronoun_lower .. strings[0x0409] .. has .. strings[0x040B])
+            add_dialogue(strings[0x025E] .. player_name .. strings[0x0283] .. player_name .. strings[0x0325] .. pronoun_lower .. strings[0x034A] .. mimic .. strings[0x034C] .. develops .. strings[0x035D] .. them .. strings[0x03AC] .. player_name .. strings[0x03CB] .. learns .. strings[0x03CD] .. pronoun .. strings[0x0405] .. feels .. strings[0x0407] .. pronoun_lower .. strings[0x0409] .. has .. strings[0x040B])
             local strength = get_stat(player_id, 1) -- Requires implementation
             local dexterity = get_stat(player_id, 4)
             if strength < 30 then

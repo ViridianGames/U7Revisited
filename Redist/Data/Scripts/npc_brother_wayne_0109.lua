@@ -10,7 +10,7 @@ function npc_brother_wayne_0109(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 109)
+    switch_talk_to(109)
     var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(714) then
