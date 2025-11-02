@@ -8,7 +8,7 @@ function utility_unknown_0878()
         "smegma-breath", "Comrade", "badycakes", "smart-guy", "oinker",
         "smartypants", "Spankamiah"
     }
-    var_0001 = random(1, array_size(var_0000)) --- Guess: Selects random index
+    var_0001 = random(1, #var_0000) --- Guess: Selects random index
     var_0002 = var_0000[var_0001] --- Guess: Gets selected term
     return var_0002 --- Guess: Returns selected term
 end

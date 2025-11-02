@@ -4,7 +4,7 @@ function object_unknown_0155(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008
 
     if eventid == 1 then
-        switch_talk_to(285, 0)
+        switch_talk_to(285)
         var_0000 = npc_id_in_party(-2)
         var_0001 = npc_id_in_party(-3)
         var_0002 = get_player_name()
@@ -48,25 +48,25 @@ function object_unknown_0155(eventid, objectref)
                 if not get_flag(407) then
                     add_dialogue("He turns all the way around and points across the water to the west. \"There... \"")
                     if not (var_0001 and var_0000) then
-                        switch_talk_to(3, 0)
+                        switch_talk_to(3)
                         add_dialogue("\"Er... " .. var_0002 .. ", art thou sure we need to go over there?\"")
                         hide_npc(-3)
-                        switch_talk_to(2, 0)
+                        switch_talk_to(2)
                         add_dialogue("\"What's the matter, Shamino? Art thou -afraid-?\"")
                         hide_npc(-2)
-                        switch_talk_to(3, 0)
+                        switch_talk_to(3)
                         add_dialogue("\"Of course not! I just... well, I... oh, never mind! Let's go!\"")
                         hide_npc(-3)
                         var_0003 = npc_id_in_party(-1)
                         if var_0003 then
-                            switch_talk_to(1, 0)
+                            switch_talk_to(1)
                             add_dialogue("Iolo's eyes narrow as he adopts a patronizing look on his face.~~\"And I suppose thou art without fear?\" he says to Spark.")
                             hide_npc(-1)
-                            switch_talk_to(2, 0)
+                            switch_talk_to(2)
                             add_dialogue("\"No, sir. I am not afraid of a skeleton,\" he says. As he looks at the ferryman, however, he gulps.")
                             hide_npc(-2)
                         end
-                        switch_talk_to(285, 0)
+                        switch_talk_to(285)
                     end
                 else
                     add_dialogue("The gaunt figure looks around as if perplexed. \"This... is Skara Brae.\"")
@@ -93,7 +93,7 @@ function object_unknown_0155(eventid, objectref)
                     var_0004 = ask_yes_no()
                     if var_0004 then
                         var_0006 = get_npc_name(-144)
-                        var_0007 = get_party_list()
+                        var_0007 = get_party_list2()
                         var_0008 = get_npc_name(-147)
                         if table.contains(var_0007, var_0006) or table.contains(var_0007, var_0008) then
                             add_dialogue("The Ferryman seems to smile beneath his hood as he motions for you to once more board his spectral boat.")

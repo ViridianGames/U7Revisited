@@ -8,7 +8,7 @@ function utility_unknown_0530(eventid, objectref)
         if var_0000 then
             -- Guess: sloop destroys items in array
             for i = 1, 5 do
-                var_0003 = {1, 2, 3, 0, 9}[i]
+                var_0003 = ({1, 2, 3, 0, 9})[i]
                 utility_event_0998(var_0003) --- External call to activate object
             end
             destroy_object_silent(objectref) --- Guess: Destroys item silently

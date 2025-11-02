@@ -331,12 +331,18 @@ void ShapeEditorState::Update()
 	if (IsKeyDown(KEY_Q))
 	{
 		g_cameraRotation += GetFrameTime() * 5;
+		// Wrap angle to keep within 0 to 2*PI radians
+		while (g_cameraRotation >= 2.0f * PI) g_cameraRotation -= 2.0f * PI;
+		while (g_cameraRotation < 0) g_cameraRotation += 2.0f * PI;
 		g_CameraMoved = true;
 	}
 
 	if (IsKeyDown(KEY_E))
 	{
 		g_cameraRotation -= GetFrameTime() * 5;
+		// Wrap angle to keep within 0 to 2*PI radians
+		while (g_cameraRotation >= 2.0f * PI) g_cameraRotation -= 2.0f * PI;
+		while (g_cameraRotation < 0) g_cameraRotation += 2.0f * PI;
 		g_CameraMoved = true;
 	}
 
@@ -364,9 +370,9 @@ void ShapeEditorState::Update()
 	{
 		int mouseX = GetMouseX();
 		int newAngle = ((mouseX - sliderX) * 360) / sliderWidth;
-		// Clamp angle to valid range
-		if (newAngle < 0) newAngle = 0;
-		if (newAngle > 359) newAngle = 359;
+		// Wrap angle to valid range (0-359 degrees)
+		while (newAngle < 0) newAngle += 360;
+		while (newAngle >= 360) newAngle -= 360;
 		g_cameraRotation = newAngle * DEG2RAD;
 		g_CameraMoved = true;
 	}

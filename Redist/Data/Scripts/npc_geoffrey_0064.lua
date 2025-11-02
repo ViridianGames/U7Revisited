@@ -4,7 +4,7 @@ function npc_geoffrey_0064(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(64, 0)
+        switch_talk_to(64)
         var_0000 = get_player_name()
         add_answer({"bye", "job", "name"})
         if not get_flag(153) then

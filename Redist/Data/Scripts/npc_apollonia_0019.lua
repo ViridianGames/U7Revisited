@@ -7,7 +7,7 @@ function npc_apollonia_0019(eventid, objectref)
         var_0002 = get_lord_or_lady()
         var_0003 = get_schedule(19)
         var_0004 = is_player_female()
-        switch_talk_to(19, 0)
+        switch_talk_to(19)
         add_answer({"bye", "murder", "job", "name"})
         if var_0003 == 23 then
             add_answer({"buy", "room", "drink", "food"})

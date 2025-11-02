@@ -9,7 +9,7 @@ function npc_tiery_0106(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 106)
+    switch_talk_to(106)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})

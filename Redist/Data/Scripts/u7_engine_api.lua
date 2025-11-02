@@ -22,7 +22,7 @@
 
 ---Switches the currently speaking NPC in a conversation
 ---@param npc_id integer The NPC ID to switch to
----@param frame integer The frame/portrait to display
+---@param frame? integer The frame/portrait to display (defaults to 0 if not provided)
 function switch_talk_to(npc_id, frame) end
 
 ---Shows a second speaker in the conversation
@@ -69,6 +69,14 @@ function restore_answers() end
 ---@return string answer The selected answer text
 function get_answer() end
 
+---Compares player's answer with a string (case-insensitive)
+---Convenience function equivalent to: get_answer() == str
+---Can be called multiple times to check different keywords without re-prompting the user
+---@param str string The string to compare against
+---@return boolean matches True if the player's answer matches the string
+---@usage if cmps("job") then ... elseif cmps("name") then ... end
+function cmps(str) end
+
 ---Clears all current answer options
 function clear_answers() end
 
@@ -101,6 +109,11 @@ function is_conversation_running() end
 ---@param question? string Optional question to ask (defaults to empty string)
 ---@return boolean answer True if player selected "Yes", false if "No"
 function ask_yes_no(question) end
+
+---Presents "Yes" and "No" options without a question prompt (alias for ask_yes_no with no parameter)
+---Use this when the question was already asked in previous dialog
+---@return boolean answer True if player selected "Yes", false if "No"
+function select_option() end
 
 ---Presents answer choices without a question prompt
 ---All elements in the table are treated as answer choices
@@ -151,6 +164,13 @@ function set_flag(flag_id, value) end
 ---@param max integer Maximum value (inclusive)
 ---@return integer result Random number from min to max
 function random(min, max) end
+
+---Alias for random() - Generates a random number in the range [min, max] (inclusive)
+---Arguments can be provided in either order (min, max) or (max, min)
+---@param min integer Minimum value (inclusive)
+---@param max integer Maximum value (inclusive)
+---@return integer result Random number from min to max
+function random2(min, max) end
 
 ---Finds objects near a reference object (Exult intrinsic 0x35)
 ---Searches for objects within a radius of the reference object
@@ -227,9 +247,7 @@ function set_object_quality(object_id, quality) end
 
 ---Gets an object's position
 ---@param object_id integer The object to query
----@return integer x X coordinate
----@return integer y Y coordinate
----@return integer z Z coordinate
+---@return table position Position array {x, y, z}
 function get_object_position(object_id) end
 
 ---Sets an object's position
@@ -246,15 +264,21 @@ function set_object_visibility(object_id, visible) end
 
 ---Spawns a new object
 ---@param shape integer The shape ID of the object to spawn
+---@param frame integer The frame of the object
 ---@param x integer X coordinate
 ---@param y integer Y coordinate
 ---@param z integer Z coordinate
 ---@return integer object_id The ID of the spawned object
-function spawn_object(shape, x, y, z) end
+function spawn_object(shape, frame, x, y, z) end
 
 ---Destroys an object
 ---@param object_id integer The object to destroy
 function destroy_object(object_id) end
+
+---Destroys an object silently (without effects/sounds)
+---Currently behaves the same as destroy_object()
+---@param object_id integer The object to destroy
+function destroy_object_silent(object_id) end
 
 -- ============================================================================
 -- NPC PROPERTIES
@@ -340,7 +364,7 @@ function remove_from_party(npc_id) end
 ---Gets an NPC's name from their ID
 ---@param npc_id integer The NPC ID
 ---@return string name The NPC's name
-function get_npc_name_from_id(npc_id) end
+function get_npc_name(npc_id) end
 
 ---Gets an NPC's ID from their name
 ---@param name string The NPC name
@@ -365,11 +389,17 @@ function remove_party_gold(amount) end
 ---@return integer points The training points
 function get_npc_training_points(npc_id) end
 
----Gets an NPC's training level for a specific skill
----@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
+---Gets a training level for a specific skill
 ---@param npc_id integer The NPC to query (0 = Avatar/player)
+---@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
 ---@return integer level The training level for that skill
-function get_npc_training_level(skill, npc_id) end
+function get_training_level(npc_id, skill) end
+
+---Sets a training level for a specific skill
+---@param npc_id integer The NPC to modify (0 = Avatar/player)
+---@param skill integer The skill type: 0=Strength, 1=Dexterity, 2=Intelligence, 4=Combat, 6=Magic
+---@param value integer The new training level value
+function set_training_level(npc_id, skill, value) end
 
 ---Increases an NPC's combat level
 ---@param npc_id integer The NPC to level up
@@ -457,6 +487,10 @@ function resume_input() end
 ---@param paused boolean Whether to pause the game
 function set_pause(paused) end
 
+---Pauses script execution for the specified duration
+---@param seconds number Duration to wait in seconds
+function wait(seconds) end
+
 ---Fades the screen out
 ---@param duration number Fade duration in seconds
 function fade_out(duration) end
@@ -488,9 +522,10 @@ function jump_camera_angle(angle) end
 -- ============================================================================
 
 ---Sets a model's animation frame
----@param model_id integer The model to modify
+---@param object_id integer The object to modify
+---@param anim string The animation name
 ---@param frame integer The animation frame
-function set_model_animation_frame(model_id, frame) end
+function set_model_animation_frame(object_id, anim, frame) end
 
 -- ============================================================================
 -- UTILITY
@@ -595,10 +630,10 @@ function add_party_items(shape, quantity, quality, frame, temporary) end
 ---@param object_id integer Object to mark as last created
 function set_last_created(object_id) end
 
----[Exult 0x0026] Updates the last created object
----@param shape integer New shape for last created object
----@param frame integer New frame for last created object
-function update_last_created(shape, frame) end
+---[Exult 0x0026] Updates the position of the last created object
+---@param position table Position array {x, y, z}
+---@return boolean success True if successful, false if no object exists
+function update_last_created(position) end
 
 ---[Exult 0x0036] Gives the last created object to an NPC
 ---@param npc_id integer NPC to give object to
@@ -733,9 +768,10 @@ function resurrect(npc_id) end
 ---@return integer object_id The summoned object
 function summon(shape, x, y, z) end
 
----[Exult 0x0046] Makes NPC sit down
+---[Exult 0x0046] Makes NPC sit down in a chair
 ---@param npc_id integer NPC to sit
-function sit_down(npc_id) end
+---@param chair_id integer Chair object to sit in
+function sit_down(npc_id, chair_id) end
 
 ---[Exult 0x001D] Sets NPC schedule type
 ---@param npc_id integer NPC to modify
@@ -902,12 +938,13 @@ function book_mode(book_id) end
 ---@param object_id integer Item to click
 function click_on_item(object_id) end
 
----[Exult 0x000C] Gets numeric input from user
+---[Exult 0x000C] Gets numeric input from user (currently not implemented - returns default)
 ---@param min integer Minimum value
 ---@param max integer Maximum value
+---@param step integer Step value
 ---@param default integer Default value
----@return integer value User's input
-function input_numeric_value(min, max, default) end
+---@return integer value User's input (currently just returns default)
+function input_numeric_value(min, max, step, default) end
 
 ---[Exult 0x0009] Clears conversation answers
 function clear_answers() end
@@ -950,8 +987,9 @@ function display_area(x, y) end
 ---@param tile_id integer Tile to view
 function view_tile(tile_id) end
 
----[Exult 0x006A] Flashes mouse cursor
-function flash_mouse() end
+---[Exult 0x006A] Flashes mouse cursor (currently not implemented)
+---@param flash_type integer The type of flash effect
+function flash_mouse(flash_type) end
 
 ---[Exult 0x0056] Stops time (Time Lord spell)
 function stop_time() end
@@ -1003,11 +1041,6 @@ function is_pc_inside() end
 ---@param state integer Orrery state
 function set_orrery(state) end
 
----[Exult 0x005E] Gets array size
----@param array table Array to measure
----@return integer size Array length
-function get_array_size(array) end
-
 ---[Exult 0x005F] Marks virtue stone
 ---@param stone_id integer Stone to mark
 function mark_virtue_stone(stone_id) end
@@ -1019,43 +1052,3 @@ function recall_virtue_stone(stone_id) end
 ---[Exult 0x0083] Sets time-based palette
 ---@param palette_id integer Palette to use
 function set_time_palette(palette_id) end
-
--- ============================================================================
--- UNKNOWN FUNCTIONS (Not Yet Researched)
--- ============================================================================
--- These functions are called in scripts but we haven't determined their
--- purpose yet. Add documentation here as you discover what they do!
--- Most Exult intrinsics (0x0000-0x0095) have now been documented above.
--- The remaining unknowns are likely custom functions or deprecated opcodes.
--- ============================================================================
-
----❓ Unknown function - needs research
-function utility_unknown_0296(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0770(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0781(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0807(...) end
-
----❓ Unknown function - needs research
-function utility_sail_0816(...) end
-
----❓ Unknown function - needs research
-function utility_gangplank_0817(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_0947(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_1022(...) end
-
----❓ Unknown function - needs research
-function utility_unknown_1023(...) end
-
--- Add more unknown functions here as you discover them in scripts!
--- Format: function unknown_XXXXH(...) end
--- Then research and document them when you figure out what they do.

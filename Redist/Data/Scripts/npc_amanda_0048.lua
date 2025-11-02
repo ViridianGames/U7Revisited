@@ -6,7 +6,7 @@ function npc_amanda_0048(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(48, 0)
+    switch_talk_to(48)
     var_0000 = get_lord_or_lady()
     var_0001 = npc_id_in_party(15) --- Guess: Checks player status
     if not get_flag(709) then
@@ -41,10 +41,10 @@ function npc_amanda_0048(eventid, objectref)
             end
             add_dialogue("\"Mine half-sister is Eiko. She, like myself, is a warrior trained by Karenna in the ways of combat. We studied long and hard together to master the skills that " .. var_0002 .. " required to achieve our vengeance.\"")
             if var_0001 then
-                switch_talk_to(15, 0)
+                switch_talk_to(15)
                 add_dialogue("\"The two of us had not even met before our father's death. But we bonded like sisters in the rigorous disciplines we learned from our trainer, Karenna of Minoc.\"")
                 hide_npc(15)
-                switch_talk_to(48, 0)
+                switch_talk_to(48)
             end
             remove_answer("half-sister")
         elseif var_0002 == "inner peace" then
@@ -62,31 +62,31 @@ function npc_amanda_0048(eventid, objectref)
         elseif var_0002 == "cyclops" then
             add_dialogue("\"We have been tracking this creature for years, ever since we completed our training. We have followed him from one end of Britannia to another. Sometimes he was just one step ahead of us. But now we know that we are nearer to him than we have ever been before.\"")
             if var_0001 then
-                switch_talk_to(15, 0)
+                switch_talk_to(15)
                 add_dialogue("\"When we find him there shall be no escape. We want vengeance and we mean to have it!\"")
                 hide_npc(15)
-                switch_talk_to(48, 0)
+                switch_talk_to(48)
             end
             remove_answer("cyclops")
         elseif var_0002 == "impaled" then
             add_dialogue("\"Our father fought bravely for his life. He did not die easily. He died a hero's death. Although we may both die in the effort, we intend to give his murderer a death fit for a true villain.\"")
             if var_0001 then
-                switch_talk_to(15, 0)
+                switch_talk_to(15)
                 add_dialogue("Eiko smiles wickedly.")
                 hide_npc(15)
-                switch_talk_to(48, 0)
+                switch_talk_to(48)
             end
             remove_answer("impaled")
         elseif var_0002 == "Stay thine hand!" then
             add_dialogue("You explain to Amanda what you have learned. Kalideth had gone mad when he fought with Iskander and the source of what is causing the problems with magic and the mage's minds - the thing that really killed Kalideth - has been destroyed.")
             if var_0001 then
                 add_dialogue("\"Thou hast robbed me of my rightful vengeance! How dare thee!\"")
-                switch_talk_to(15, 0)
+                switch_talk_to(15)
                 add_dialogue("Eiko sighs, and her shoulders slump. \"Come now, sister. With the matter of our father's untimely death now settled we can at last let it go. Now we can devote our lives to ourselves rather than remain trapped in the past. It is for the best, thou must trust me.\"")
-                switch_talk_to(48, 0)
+                switch_talk_to(48)
                 add_dialogue("Amanda shakes her head, dazed and confused. \"Perhaps thou art correct, Eiko. I must think.\"")
                 hide_npc(15)
-                switch_talk_to(48, 0)
+                switch_talk_to(48)
                 set_flag(734, true)
             else
                 add_dialogue("Amanda turns and slams her fist into the wall, then collapses onto it with a sob. After a moment, she straightens, but does not turn to face you.")

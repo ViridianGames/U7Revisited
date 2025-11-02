@@ -3,7 +3,7 @@ function npc_cosmo_0253(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 253)
+        switch_talk_to(253)
         var_0000 = get_lord_or_lady()
         var_0001 = npc_id_in_party(252)
         var_0002 = npc_id_in_party(244)
@@ -29,19 +29,19 @@ function npc_cosmo_0253(eventid, objectref)
                 add_dialogue("\"Aye, " .. var_0000 .. ", we are to be wed as soon I return to her silky arms.\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(0, 244)
+                    switch_talk_to(244)
                     add_dialogue("\"Oh, please!\" He rolls his eyes.")
                     hide_npc(244)
-                    switch_talk_to(0, 253)
+                    switch_talk_to(253)
                 end
                 remove_answer("betrothed")
             elseif answer == "searching" then
                 add_dialogue("\"Well, " .. var_0000 .. ", 'tis a bit of a personal matter.\"")
                 if var_0002 then
                     add_dialogue("*")
-                    switch_talk_to(0, 244)
+                    switch_talk_to(244)
                     add_dialogue("\"What he is searching for, " .. var_0000 .. ", is his virginity!\"")
-                    switch_talk_to(0, 253)
+                    switch_talk_to(253)
                     add_dialogue("\"That is not true!\" He blushes.")
                     add_dialogue("\"I am looking for a way to -prove-... my virginity!\"")
                     hide_npc(244)

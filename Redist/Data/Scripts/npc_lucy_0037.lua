@@ -4,10 +4,10 @@ function npc_lucy_0037(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(37, 0)
+        switch_talk_to(37)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
-        var_0002 = get_schedule() --- Guess: Checks game state or timer
+        var_0002 = get_schedule(37) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(37) --- Guess: Gets object state
         if not get_flag(166) then
             add_dialogue("You see an attractive woman in her fifties. She has a warm smile. \"Welcome! Who art thou, stranger?\"")
@@ -24,10 +24,10 @@ function npc_lucy_0037(eventid, objectref)
                     set_flag(132, true)
                     var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
-                        switch_talk_to(4, 0)
+                        switch_talk_to(4)
                         add_dialogue("\"Damn! How did she know?\"")
                         hide_npc(4)
-                        switch_talk_to(37, 0)
+                        switch_talk_to(37)
                     end
                 else
                     add_dialogue("\"Oh, really?\" she says in mock surprise. \"Why, I have always wanted to meet the Avatar!\"")
@@ -60,10 +60,10 @@ function npc_lucy_0037(eventid, objectref)
                     var_0007 = npc_id_in_party(4) --- Guess: Checks player status
                     if var_0007 then
                         add_dialogue("She addresses Dupre. \"How about thou, handsome? Want something to eat?\" She bats her eyelashes.")
-                        switch_talk_to(4, 0)
+                        switch_talk_to(4)
                         add_dialogue("\"My dear, thou wouldst make any man hungry!\"")
                         hide_npc(4)
-                        switch_talk_to(37, 0)
+                        switch_talk_to(37)
                         add_dialogue("\"I like thy friends, " .. var_0005 .. ".\"")
                     end
                 else

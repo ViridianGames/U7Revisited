@@ -27,7 +27,7 @@ function utility_unknown_0895(objectref)
                         end
                     end
                     if not var_0009 then
-                        var_0009 = createobject_(800) --- Guess: Creates item
+                        var_0009 = create_object(800) --- Guess: Creates item
                         var_000F = set_object_quality(var_0009, 100) --- Guess: Sets item quality
                         set_object_frame(var_0009, 0) --- Guess: Sets item frame
                         var_000F = get_object_position(var_0007) --- Guess: Gets item position
@@ -42,17 +42,17 @@ function utility_unknown_0895(objectref)
                                     var_00013 = get_object_quality(var_000C) --- Guess: Gets item quality
                                     var_00014 = get_object_frame(var_000C) --- Guess: Gets item frame
                                     var_000C = remove_item(var_000C) --- Guess: Unknown function
-                                    var_000C = createobject_(336) --- Guess: Creates item
+                                    var_000C = create_object(336) --- Guess: Creates item
                                     var_000F = set_object_quality(var_000C, var_00013) --- Guess: Sets item quality
                                     set_object_frame(var_000C, var_00014) --- Guess: Sets item frame
                                 end
-                                var_000F = moveobject_(var_000C) --- Guess: Moves item
-                                var_000F = removeobject_(var_0009) --- Guess: Removes item
+                                var_000F = move_object(var_000C) --- Guess: Moves item
+                                var_000F = remove_object(var_0009) --- Guess: Removes item
                             end
                         end
                     end
                 else
-                    var_0009 = createobject_(800) --- Guess: Creates item
+                    var_0009 = create_object(800) --- Guess: Creates item
                     var_000F = set_object_quality(var_0009, 100) --- Guess: Sets item quality
                     set_object_frame(var_0009, 0) --- Guess: Sets item frame
                     var_000F = get_object_position(var_0007) --- Guess: Gets item position
@@ -64,12 +64,12 @@ function utility_unknown_0895(objectref)
                     var_00013 = get_object_quality(var_0000) --- Guess: Gets item quality
                     var_00014 = get_object_frame(var_0000) --- Guess: Gets item frame
                     var_0000 = remove_item(var_0000) --- Guess: Unknown function
-                    var_0000 = createobject_(336) --- Guess: Creates item
+                    var_0000 = create_object(336) --- Guess: Creates item
                     var_000F = set_object_quality(var_0000, var_00013) --- Guess: Sets item quality
                     set_object_frame(var_0000, var_00014) --- Guess: Sets item frame
                 end
-                var_000F = moveobject_(var_0000) --- Guess: Moves item
-                var_000F = removeobject_(var_0009) --- Guess: Removes item
+                var_000F = move_object(var_0000) --- Guess: Moves item
+                var_000F = remove_object(var_0009) --- Guess: Removes item
             end
         end
     end

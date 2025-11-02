@@ -16,7 +16,7 @@ function utility_unknown_0784(eventid, objectref, arg1)
     var_0005 = 0
     -- Guess: sloop manages floor spawning near eggs
     for i = 1, 5 do
-        var_0008 = {6, 7, 8, 4, 155}[i]
+        var_0008 = ({6, 7, 8, 4, 155})[i]
         var_0005 = var_0005 + 1
         var_0003 = get_object_position(var_0008) --- Guess: Gets position data
         var_0009 = find_nearby(0, 1, var_0001, var_0003) --- Guess: Sets NPC location

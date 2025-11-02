@@ -21,7 +21,7 @@ function object_unknown_0771(eventid, objectref)
             if not var_0005 and not var_0004 then
                 run_endgame(true)
             else
-                switch_talk_to(26, 0)
+                switch_talk_to(26)
                 add_dialogue("The wand glows faintly. Batlin smirks. \"Not yet, Avatar.\"")
                 hide_npc(-26)
                 abort()

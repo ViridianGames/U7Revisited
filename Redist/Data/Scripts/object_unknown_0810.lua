@@ -4,7 +4,7 @@ function object_unknown_0810(eventid, objectref)
 
     if eventid == 1 then
         close_gumps()
-        var_0000 = get_item_frame(objectref)
+        var_0000 = get_object_frame(objectref)
         if var_0000 == 6 then
         end
         if not get_container(objectref) then
@@ -32,7 +32,7 @@ function object_unknown_0810(eventid, objectref)
             var_0004 = execute_usecode_array({810, 8021, 2, 7975, 1682, 8021, 3, 7719}, objectref)
         end
     elseif eventid == 2 then
-        var_0000 = get_item_frame(objectref)
+        var_0000 = get_object_frame(objectref)
         var_0006 = click_on_item()
         var_0007 = get_item_shape(var_0006)
         if var_0007 == 721 or var_0007 == 989 then
@@ -64,7 +64,7 @@ function object_unknown_0810(eventid, objectref)
         elseif var_0007 == 739 then
             var_0001 = {-4, -4, -2, -1, 1, 1, -2, -1}
             var_0002 = {-1, -1, -2, -1, 1, 1, -2, -1}
-            if get_item_frame(var_0006) >= 4 and get_item_frame(var_0006) <= 7 then
+            if get_object_frame(var_0006) >= 4 and get_object_frame(var_0006) <= 7 then
                 var_0001 = {-4, -4, -2, -1, 1, 1, -2, -1}
                 var_0002 = {-1, -1, -2, -1, 1, 1, -2, -1}
                 if var_0000 == 0 then
@@ -105,22 +105,22 @@ function object_unknown_0810(eventid, objectref)
             if var_0000 == 0 then
                 item_say("@The bucket is empty.@", get_npc_name(-356))
             else
-                var_0006 = utility_unknown_1084(var_0006[1])
-                var_0006[1] = var_0006[1]
-                var_0006[2] = var_0006[2] + 1
-                var_0009 = path_run_usecode(10, 810, objectref, var_0006)
+                var_0008 = get_object_position(var_0006)
+                var_0008[2] = var_0008[2] + 1
+                var_0009 = path_run_usecode(10, 810, objectref, var_0008)
             end
-        elseif var_0006[1] == 0 then
+        else
             if var_0000 == 0 then
                 item_say("@The bucket is empty.@", get_npc_name(-356))
             else
-                var_0006 = utility_unknown_1084(var_0006[1])
-                var_0006[2] = var_0006[2] + 1
-                var_0009 = path_run_usecode(10, 810, objectref, var_0006)
+                var_0008 = get_object_position(var_0006)
+                var_0008[2] = var_0008[2] + 1
+                var_0009 = path_run_usecode(10, 810, objectref, var_0008)
             end
+        end
     elseif eventid == 4 then
         var_000A = get_cont_items(-359, -359, 810, get_npc_name(-356))
-        var_0000 = get_item_frame(var_000A)
+        var_0000 = get_object_frame(var_000A)
         var_000B = utility_unknown_1069(objectref)
         var_000C = (var_000B + 4) % 8
         if var_0000 == 2 then
@@ -137,8 +137,8 @@ function object_unknown_0810(eventid, objectref)
             var_0010 = find_nearest(5, 719, get_npc_name(-356))
         end
         if var_0010 then
-            var_0000 = get_item_frame(objectref)
-            var_0011 = get_item_frame(var_0010)
+            var_0000 = get_object_frame(objectref)
+            var_0011 = get_object_frame(var_0010)
             if var_0000 > 1 then
             elseif var_0000 == 1 then
                 if var_0011 == 3 or var_0011 == 7 then
@@ -161,9 +161,9 @@ function object_unknown_0810(eventid, objectref)
         end
     elseif eventid == 8 then
         var_000A = get_cont_items(-359, -359, 810, get_npc_name(-356))
-        var_0000 = get_item_frame(var_000A)
+        var_0000 = get_object_frame(var_000A)
         var_0007 = get_item_shape(objectref)
-        var_0015 = get_item_frame(objectref)
+        var_0015 = get_object_frame(objectref)
         if var_0007 == 739 then
             if var_0015 == 4 then
                 item_say("@There are only coals.@", get_npc_name(-356))
@@ -185,13 +185,13 @@ function object_unknown_0810(eventid, objectref)
             end
             remove_item(objectref)
             var_001B = create_new_object(var_001A)
-            var_0019 = get_item_quality(objectref)
-            var_001C = set_item_quality(var_001B, var_0019)
-            set_item_frame(var_001B, var_0015)
+            var_0019 = get_object_quality(objectref)
+            var_001C = set_object_quality(var_001B, var_0019)
+            set_object_frame(var_001B, var_0015)
             var_0017 = get_object_position(objectref)
             var_0005 = utility_unknown_1069(objectref)
             var_001E = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
-            var_001D = {var_0017[1] - var_0018, var_0017[2] - var_0018}
+            var_001D = {var_0017[1], var_0017[2]}
             sprite_effect(-1, 0, 0, 0, var_001D[2], var_001D[1], 9)
             play_sound_effect(46)
         elseif var_0007 == 825 then
@@ -209,11 +209,12 @@ function object_unknown_0810(eventid, objectref)
             if var_0015 == 0 then
                 var_0005 = utility_unknown_1069(objectref)
                 var_001E = execute_usecode_array({8033, 2, 17447, 8556, var_0005, 7769}, get_npc_name(-356))
-                set_item_frame(objectref, 2)
+                set_object_frame(objectref, 2)
             end
+        end
     elseif eventid == 9 then
         var_0020 = find_nearest(10, 740, get_npc_name(-356))
-        var_0021 = get_item_frame(var_0020)
+        var_0021 = get_object_frame(var_0020)
         if var_0021 >= 0 and var_0021 <= 11 then
             var_0021 = 1
         elseif var_0021 >= 12 and var_0021 <= 23 then
@@ -226,5 +227,4 @@ function object_unknown_0810(eventid, objectref)
         var_000E = execute_usecode_array({8033, 3, 17447, 8044, 0, 7769}, get_npc_name(-356))
         var_000F = execute_usecode_array({1684, 8021, 3, 7719}, objectref)
     end
-    return
 end

@@ -3,7 +3,7 @@ function npc_wissur_0216(eventid, objectref)
     local var_0000, var_0001
 
     if eventid == 1 then
-        switch_talk_to(0, 216)
+        switch_talk_to(216)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(661) then

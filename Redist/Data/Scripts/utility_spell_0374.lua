@@ -4,7 +4,7 @@ function utility_spell_0374(eventid, objectref)
 
     if eventid == 1 then
         var_0000 = object_select_modal() --- Guess: Selects spell target
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
         bark(objectref, "@In Zu Grav@")
         if check_spell_requirements() then

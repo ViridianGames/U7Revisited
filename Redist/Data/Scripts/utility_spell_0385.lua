@@ -5,7 +5,7 @@ function utility_spell_0385(eventid, objectref)
     if eventid == 1 then
         var_0000 = object_select_modal() --- Guess: Selects spell target
         var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Vas Corp Hur@")
         if check_spell_requirements() then
             var_0002 = apply_spell_effect(639, var_0000, objectref) --- Guess: Applies spell effect

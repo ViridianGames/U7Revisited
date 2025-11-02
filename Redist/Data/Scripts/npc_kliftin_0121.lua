@@ -4,9 +4,9 @@ function npc_kliftin_0121(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(121, 0)
+        switch_talk_to(121)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 = get_schedule(121) --- Guess: Checks game state
         var_0002 = get_schedule_type(121) --- Guess: Gets object state
         add_answer({"bye", "job", "name"})
         if not get_flag(390) then
@@ -131,7 +131,7 @@ function npc_kliftin_0121(eventid, objectref)
         end
         add_dialogue("\"Good day.\"")
     elseif eventid == 0 then
-        var_0001 = get_schedule() --- Guess: Checks game state
+        var_0001 = get_schedule(121) --- Guess: Checks game state
         var_0002 = get_schedule_type(121) --- Guess: Gets object state
         var_0006 = die_roll(4, 1) --- Guess: Generates random number
         if var_0002 == 7 or var_0002 == 19 then

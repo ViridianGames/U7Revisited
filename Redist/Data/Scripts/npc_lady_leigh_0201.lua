@@ -3,7 +3,7 @@ function npc_lady_leigh_0201(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 201)
+        switch_talk_to(201)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule_type(get_npc_name(201))
         start_conversation()

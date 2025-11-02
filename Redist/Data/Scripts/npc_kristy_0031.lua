@@ -16,7 +16,7 @@ function npc_kristy_0031(eventid, objectref)
                 elseif var_0004 == 4 then
                     var_0003 = "@Catch me if thou can!@"
                 end
-                bark(var_0003, -31)
+                bark(-31, var_0003)
             end
         end
         add_dialogue("\"Bye bye!\"")
@@ -24,7 +24,7 @@ function npc_kristy_0031(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, -31)
+    switch_talk_to(-31)
     var_0000 = npc_id_in_party(-34)
     add_answer({"bye", "job", "name"})
     if not get_flag(160) then
@@ -37,10 +37,10 @@ function npc_kristy_0031(eventid, objectref)
         if cmps("name") then
             add_dialogue("\"Kwisty.\"")
             if var_0000 then
-                switch_talk_to(0, -34)
+                switch_talk_to(-34)
                 add_dialogue("\"Kristy, like Nicholas, is one of our orphans. She was found in an abandoned home in Paws by one of the Great Council members.\"")
-                hide_npc34)
-                switch_talk_to(0, -31)
+                --syntax error hide_npc34)
+                switch_talk_to(-31)
             end
             remove_answer("name")
         elseif cmps("job") then
@@ -65,10 +65,10 @@ function npc_kristy_0031(eventid, objectref)
         elseif cmps("winner") then
             add_dialogue("\"I am winner!\" she proclaims loudly.")
             if var_0000 then
-                switch_talk_to(0, -34)
+                switch_talk_to(-34)
                 add_dialogue("\"She keeps saying that. I am not sure what it means. Something to do with a competition.\"")
-                hide_npc34)
-                switch_talk_to(0, -31)
+                --syntax error hide_npc34)
+                switch_talk_to(-31)
             end
             remove_answer("winner")
         elseif cmps("bye") then

@@ -3,7 +3,7 @@ function utility_unknown_0912(eventid, objectref)
     local var_0000, var_0001
 
     start_conversation()
-    switch_talk_to(0, 288) --- Guess: Initiates dialogue
+    switch_talk_to(288) --- Guess: Initiates dialogue
     if not get_flag(788) then
         add_answer({"bye", "sacrificed", "Don't know"}) --- Guess: Adds dialogue options
         set_flag(788, true)

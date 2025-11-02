@@ -20,7 +20,7 @@ function object_unknown_0651(eventid, objectref)
         if var_0004 then
             set_item_flag(18, var_0004)
             set_item_flag(11, var_0004)
-            set_item_frame(math.random(0, 9), var_0004)
+            set_object_frame(math.random(0, 9), var_0004)
             var_0005 = get_object_position(objectref)
             var_0005[1] = var_0005[1] + 1
             var_0005[2] = var_0005[2] + 1

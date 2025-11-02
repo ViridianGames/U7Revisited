@@ -20,7 +20,7 @@ function utility_spell_0366(eventid, objectref)
             var_0007 = {var_0004, var_0005, var_0006}
             var_0008 = update_last_created(var_0007)
             set_item_flag(18, var_0003)
-            var_0009 = set_item_quality(100, var_0003)
+            var_0009 = set_object_quality(100, var_0003)
             var_0008 = delayed_execute_usecode_array(var_0009, 100, 8493, var_0003)
         end
     else

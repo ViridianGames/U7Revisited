@@ -25,7 +25,7 @@ function npc_klog_0016(eventid, objectref)
         if not get_flag(64) then
             add_answer("Crown Jewel")
         end
-        switch_talk_to(16, 0)
+        switch_talk_to(16)
         if not get_flag(79) then
             add_dialogue("This man exudes kindness and geniality. \"Ah, Avatar! I recognized thee at once! Word has moved through town quickly. I had heard thou wert here.\"")
             set_flag(79, true)

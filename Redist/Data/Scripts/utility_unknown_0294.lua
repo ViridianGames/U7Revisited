@@ -10,7 +10,7 @@ function utility_unknown_0294(eventid, objectref)
         var_0002 = {}
         -- Guess: sloop checks objects at position
         for i = 1, 5 do
-            var_0005 = {3, 4, 5, 1, 18}[i]
+            var_0005 = ({3, 4, 5, 1, 18})[i]
             var_0002[i] = get_distance(var_0002, var_0005, objectref) --- Guess: Checks object at position
         end
         var_0001 = move_nearby_objects(var_0002, var_0001) --- Guess: Moves nearby objects
@@ -18,7 +18,7 @@ function utility_unknown_0294(eventid, objectref)
         var_0007 = 1
         -- Guess: sloop adjusts object positions
         for i = 1, 5 do
-            var_000A = get_object_position({8, 9, 5, 1, 138}[i]) --- Guess: Gets position data
+            var_000A = get_object_position({8, 9, 5, 1, 138})[i] --- Guess: Gets position data
             var_000B = 1
             while var_000B <= var_0007 do
                 var_000C = (var_000B - 1) * 3 + 1

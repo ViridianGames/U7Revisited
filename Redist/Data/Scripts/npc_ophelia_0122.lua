@@ -10,10 +10,10 @@ function npc_ophelia_0122(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 122)
+    switch_talk_to(122)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_female()
-    var_0002 = get_schedule()
+    var_0002 = get_schedule(122)
     var_0003 = get_schedule_type(get_npc_name(122))
     add_answer({"bye", "job", "name"})
     var_0004 = npc_id_in_party(123)
@@ -56,14 +56,14 @@ function npc_ophelia_0122(eventid, objectref)
             add_dialogue("\"Honestly, I cannot imagine why thou wouldst be interested in her.\" She lets out a throaty laugh.")
             var_0004 = npc_id_in_party(123)
             if var_0004 then
-                switch_talk_to(0, 123)
+                switch_talk_to(123)
                 add_dialogue("\"I heard that, Ophelia. Thou art a spiteful wench!\"")
-                switch_talk_to(0, 122)
+                switch_talk_to(122)
                 add_dialogue("\"Now, now, Daphne. Temper, Temper! We don't want to scare off the patrons with a poor disposition in addition to a poor face!\"")
-                switch_talk_to(0, 123)
+                switch_talk_to(123)
                 add_dialogue("\"Witch!\"")
                 _hide_npc(123)
-                switch_talk_to(0, 122)
+                switch_talk_to(122)
             end
             remove_answer("Daphne")
         elseif cmps("Bunk and Stool") then
@@ -187,14 +187,14 @@ function npc_ophelia_0122(eventid, objectref)
         elseif cmps("Cosmo") then
             add_dialogue("\"Who? Oh, he is a local boy who comes in here and moons over me on occasion. Do not concern thyself with him. I do not.\"")
             if var_0004 then
-                switch_talk_to(0, 123)
+                switch_talk_to(123)
                 add_dialogue("\"Why what kind of way is that to speak of he who will soon become thy betrothed! Finally, I can make thee move out of mine house! Every moment of sharing my life with thee has been intolerable!\"")
-                switch_talk_to(0, 122)
+                switch_talk_to(122)
                 add_dialogue("\"Do not get thine hopes up yet, my dear Daphne! I have put a condition on our marriage and poor Cosmo will never be able to fulfill it!\"")
-                switch_talk_to(0, 123)
+                switch_talk_to(123)
                 add_dialogue("\"Thou dost never know! The thought of thee in thy wedding gown with thy groom Cosmo at thy side is simply delicious! Perhaps he is the man who will finally teach thee to be a lady at last!\"")
                 _hide_npc(123)
-                switch_talk_to(0, 122)
+                switch_talk_to(122)
             end
             remove_answer("Cosmo")
         elseif cmps("Sprellic dead") then
@@ -207,7 +207,6 @@ function npc_ophelia_0122(eventid, objectref)
         end
     end
     add_dialogue("\"Do come and visit us again, " .. var_0000 .. ".\"")
-    return
 
 ::betting_start::
 end

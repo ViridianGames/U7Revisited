@@ -4,7 +4,7 @@ function npc_quenton_0146(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(146, 0)
+        switch_talk_to(146)
         if not get_flag(442) then
             add_dialogue("The pale ghost seems to see you but cannot speak to you for some reason. In frustration the ghost turns away.")
             abort()
@@ -20,7 +20,7 @@ function npc_quenton_0146(eventid, objectref)
         if not get_flag(408) then
             add_answer("sacrifice")
         end
-        var_0004 = get_schedule() --- Guess: Checks game state
+        var_0004 = get_schedule(146) --- Guess: Checks game state
         var_0005 = get_schedule_type(146) --- Guess: Gets schedule
         if not get_flag(426) then
             if var_0004 == 0 or var_0004 == 1 then
@@ -36,35 +36,35 @@ function npc_quenton_0146(eventid, objectref)
         var_0006 = get_party_members()
         var_0007 = get_npc_name(144) --- Guess: Gets object ref
         var_0008 = get_npc_name(147) --- Guess: Gets object ref
-        if is_in_int_array(var_0007, var_0006) or is_in_int_array(var_0008, var_0006) then
-            if is_in_int_array(var_0007, var_0006) then
-                switch_talk_to(144, 0)
+        if is_int_in_array(var_0007, var_0006) or is_int_in_array(var_0008, var_0006) then
+            if is_int_in_array(var_0007, var_0006) then
+                switch_talk_to(144)
                 add_dialogue("\"Hello, Quenton. I hope thou art doing well.\" Rowena gives the pale ghost a winning smile.")
                 hide_npc(144)
-                switch_talk_to(146, 0)
+                switch_talk_to(146)
                 add_dialogue("\"Yes, milady. I am doing as well as can be expected. It gladdens mine heart to see that thou art once again free. Hast thou been to see Trent yet?\"")
-                switch_talk_to(144, 0)
+                switch_talk_to(144)
                 add_dialogue("\"Alas, no. This kind person is taking me to him.\" She indicates you.")
                 hide_npc(144)
-                switch_talk_to(146, 0)
+                switch_talk_to(146)
                 add_dialogue("\"These are glad tidings, for he misses thee so.\"")
             end
-            if is_in_int_array(var_0008, var_0006) then
-                switch_talk_to(147, 0)
+            if is_int_in_array(var_0008, var_0006) then
+                switch_talk_to(147)
                 add_dialogue("\"Well met, Quenton.\" The Mayor's mustache spreads as he smiles.")
                 hide_npc(147)
-                switch_talk_to(146, 0)
+                switch_talk_to(146)
                 add_dialogue("\"Hello, Mayor. How dost thou fare, milord?\"")
-                switch_talk_to(147, 0)
+                switch_talk_to(147)
                 add_dialogue("Forsythe seems taken aback by Quenton's sincere sounding query. \"Why, I fare well, Quenton. I thank thee for thy concern.\"")
                 hide_npc(147)
-                switch_talk_to(146, 0)
+                switch_talk_to(146)
                 add_dialogue("He smiles in acknowledgement of the Mayor's thanks.")
             end
             var_0009 = true
         end
         if not var_0009 then
-            switch_talk_to(146, 0)
+            switch_talk_to(146)
         end
         if not get_flag(459) then
             add_dialogue("The pale-looking ghost turns in your direction and gives you a wan smile. \"Hello, could it be that we have met somewhere before, " .. var_0001 .. "?\" You see recognition in his eyes, then it fades.")
@@ -102,11 +102,11 @@ function npc_quenton_0146(eventid, objectref)
                 add_dialogue("\"After I was murdered, my good friend, Yorl, cared for her as his own. He tried his best, but her sickness only worsened. After several months she weakened, and died.\" He stops here, tears filling his ghostly eyes, then, angrily, he says, \"And now her spirit is held by Horance the Liche. Thou must rescue her from that foul beast!\" He attempts to grab you, but his hands pass through without resistance.")
                 if var_0002 then
                     if not get_flag(436) then
-                        switch_talk_to(140, 0)
+                        switch_talk_to(140)
                         add_dialogue("\"Now, now, Quen. Settle down.\" " .. var_0003 .. " moves closer to you and whispers, \"Fergive him, " .. var_0001 .. ".\"")
                         add_dialogue("\"He sometimes loses control like that when he talks about his daughter. Sure'n ya can understand, tho'.\"")
                         hide_npc(140)
-                        switch_talk_to(146, 0)
+                        switch_talk_to(146)
                     end
                 else
                     add_dialogue("Quenton regains control of himself. \"Forgive me, " .. var_0001 .. ". I've no right to inflict my woes upon thee. It hurts to think of my sweet Marney in the power of that... creature.\"")
@@ -122,19 +122,19 @@ function npc_quenton_0146(eventid, objectref)
                 add_dialogue("\"Then, one night, the graves in the graveyard opened and the dead began to walk.\"")
                 if var_0002 then
                     if not get_flag(436) then
-                        switch_talk_to(140, 0)
+                        switch_talk_to(140)
                         add_dialogue(var_0003 .. " nods his head emphatically, \"'At's right, I seen it, I did.\"")
                         hide_npc(140)
-                        switch_talk_to(146, 0)
+                        switch_talk_to(146)
                     end
                 end
                 add_dialogue("\"They marched to his tower, and now they roam all over the island, performing his bidding.\"")
                 if var_0002 then
                     if not get_flag(436) then
-                        switch_talk_to(140, 0)
+                        switch_talk_to(140)
                         add_dialogue("\"It be gettin' so's a ghost cannot make an honest livin' no more. Hmph.\" " .. var_0003 .. " looks a bit disgruntled.")
                         hide_npc(140)
-                        switch_talk_to(146, 0)
+                        switch_talk_to(146)
                     end
                 end
                 remove_answer("Liche")

@@ -5,12 +5,12 @@ function npc_roberto_0224(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 224)
-    var_0000 = get_schedule()
+    switch_talk_to(224)
+    var_0000 = get_schedule(224)
     var_0001 = get_schedule_type(get_npc_name(224))
     var_0002 = get_player_name()
     var_0003 = "Avatar"
-    var_0004 = is_pc_female()
+    var_0004 = is_player_female()
     if not get_flag(673) then
         var_0005 = var_0002
     elseif not get_flag(674) then

@@ -3,7 +3,7 @@ function npc_yongi_0207(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000D
 
     if eventid == 1 then
-        switch_talk_to(0, 207)
+        switch_talk_to(207)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = "the Avatar"
@@ -15,10 +15,10 @@ function npc_yongi_0207(eventid, objectref)
         add_answer({"bye", "job", "name"})
         if not var_0003 then
             add_dialogue("\"Ah, me good friend, Dupre. What kinna do fer ye this fine day?\"")
-            switch_talk_to(0, 4)
+            switch_talk_to(4)
             add_dialogue("\"Ah, master Yongi, always ready to offer a tankard of thy finest.\"")
             hide_npc(4)
-            switch_talk_to(0, 207)
+            switch_talk_to(207)
         end
         if not get_flag(652) then
             add_dialogue("Tending the bar is a jovial-looking man. \"Welcome ta the Gilded Lizard.\"")
@@ -109,7 +109,7 @@ function npc_yongi_0207(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_000A = get_schedule()
+        var_000A = get_schedule(207)
         var_000B = get_schedule_type(get_npc_name(207))
         var_000C = random(4, 1)
         if var_000A >= 1 and var_000A <= 3 and var_000B == 14 then
@@ -125,7 +125,7 @@ function npc_yongi_0207(eventid, objectref)
                 var_000D = "@No gargoyles allowed!@"
             end
         end
-        bark(var_000D, 207)
+        bark(207, var_000D)
     end
     return
 end

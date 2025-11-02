@@ -5,7 +5,7 @@ function npc_murray_0241(eventid, objectref)
     if eventid == 0 then
         return
     end
-    switch_talk_to(0, 241)
+    switch_talk_to(241)
     if get_flag(723) then
         add_dialogue("\"Go away, bee killers!\"")
         return
@@ -61,10 +61,10 @@ function npc_murray_0241(eventid, objectref)
             else
                 add_dialogue("\"Cave good to us. We stay away from bees. They no hurt us. We no hurt them. We take honey when they sleep. We eat the mice in cave. Cook them up on campfire. Very good!\"")
                 if var_0002 then
-                    switch_talk_to(0, 1)
+                    switch_talk_to(1)
                     add_dialogue("\"I may puke.\"")
                     hide_npc(1)
-                    switch_talk_to(0, 241)
+                    switch_talk_to(241)
                 end
             end
             remove_answer("cave")
@@ -82,15 +82,15 @@ function npc_murray_0241(eventid, objectref)
                         return
                     else
                         add_dialogue("He points at Tseramed. \"Him bee hunter! Go away!\" The man spits at you and turns away.")
-                        switch_talk_to(0, 10)
+                        switch_talk_to(10)
                         add_dialogue("\"This is an act, I tell thee! These people are not savages! They are Britannians!\"")
                         hide_npc(10)
                         if var_0002 then
-                            switch_talk_to(0, 1)
+                            switch_talk_to(1)
                             add_dialogue("\"He seems quite savage to me!\"")
                             hide_npc(1)
                         end
-                        switch_talk_to(0, 241)
+                        switch_talk_to(241)
                         set_flag(723, true)
                         return
                     end
@@ -120,10 +120,10 @@ function npc_murray_0241(eventid, objectref)
             else
                 add_dialogue("\"Mama and me live in cave since babies.\"")
                 if var_0002 then
-                    switch_talk_to(0, 1)
+                    switch_talk_to(1)
                     add_dialogue("\"Avatar! They must have been abandoned in here! Why, they must be brother and sister!\"")
                     hide_npc(1)
-                    switch_talk_to(0, 241)
+                    switch_talk_to(241)
                 end
                 add_answer("babies")
             end

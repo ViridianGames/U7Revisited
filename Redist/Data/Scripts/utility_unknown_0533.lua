@@ -6,7 +6,7 @@ function utility_unknown_0533(eventid, objectref)
     var_0001 = false
     -- Guess: sloop checks for ritual items
     for i = 1, 5 do
-        var_0004 = {2, 3, 4, 0, 53}[i]
+        var_0004 = ({2, 3, 4, 0, 53})[i]
         if get_containerobject_s(243, 797, var_0004, 4) then --- Guess: Gets container items
             var_0001 = var_0004
         end
@@ -24,7 +24,7 @@ function utility_unknown_0533(eventid, objectref)
     var_0000 = find_nearby(176, 40, 912, 356) --- Guess: Sets NPC location
     -- Guess: sloop destroys items with random effects
     for i = 1, 5 do
-        var_0009 = {7, 8, 9, 0, 69}[i]
+        var_0009 = ({7, 8, 9, 0, 69})[i]
         var_000A = get_object_position(var_0009) --- Guess: Gets position data
         var_000B = get_object_status(895) --- Guess: Gets item status
         var_000C = update_last_created(var_000A) --- Guess: Updates position

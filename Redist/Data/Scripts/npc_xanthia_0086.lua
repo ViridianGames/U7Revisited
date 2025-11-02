@@ -4,7 +4,7 @@ function npc_xanthia_0086(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(86, 0)
+        switch_talk_to(86)
         var_0000 = get_lord_or_lady()
         if not get_flag(273) then
             add_dialogue("You see a cheerful woman with bright eyes and blonde hair.")

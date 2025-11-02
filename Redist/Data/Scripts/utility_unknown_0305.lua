@@ -11,7 +11,7 @@ function utility_unknown_0305(eventid, objectref)
         var_0002 = {}
         -- Guess: sloop filters items by quality
         for i = 1, 5 do
-            var_0005 = {3, 4, 5, 1, 27}[i]
+            var_0005 = ({3, 4, 5, 1, 27})[i]
             if get_object_quality(var_0005) == var_0000 then
                 table.insert(var_0002, var_0005)
             end

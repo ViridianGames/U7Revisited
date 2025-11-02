@@ -11,8 +11,8 @@ function npc_patterson_0043(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 43)
-    var_0000 = get_schedule()
+    switch_talk_to(43)
+    var_0000 = get_schedule(43)
     if var_0000 == 7 then
         var_0001 = utility_unknown_1020(26, 43)
         if var_0001 then
@@ -42,13 +42,13 @@ function npc_patterson_0043(eventid, objectref)
         if var_0002 then
             add_dialogue("\"Avatar! Er, uhm, how art thee? Oh, dost thou know Candice, the curator at the Royal Museum? She is a 'brother' at The Fellowship. I was, er, just seeing her home!\"")
             if var_0003 then
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("\"Hmmm. And does thy wife know thou art seeing Candice home?\"")
-                hide_npc1)
+                --syntax error hide_npc1)
             else
                 add_dialogue("You ask if Judith knows about this.")
             end
-            switch_talk_to(0, 43)
+            switch_talk_to(43)
             add_dialogue("\"Why, she doth not need to know! It does not matter! 'Tis nothing, really!\"")
             add_dialogue("The Mayor is sweating profusely. He looks at you with beady eyes. He knows he has been found out. His body slumps. He is mortified and ashamed.")
             add_dialogue("\"Thou hast discovered my... our secret. Please do not tell Judith. I... will end this. I swear. Candice -- we must stop meeting. I... I'm sorry.\"")
@@ -106,10 +106,10 @@ function npc_patterson_0043(eventid, objectref)
             add_dialogue("\"Why, I do not know what she is talking about! I work late, that is all!\"")
             var_0003 = npc_id_in_party(-1)
             if var_0003 then
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("Iolo whispers to you, \"This man seems very defensive, dost thou not think? I say we should observe him and see where he goes after The Fellowship meeting tonight.\"")
-                hide_npc1)
-                switch_talk_to(0, 43)
+                --syntax error hide_npc1)
+                switch_talk_to(43)
             end
             remove_answer("Judith suspicious")
         elseif cmps("wife") then

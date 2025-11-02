@@ -2,7 +2,7 @@
 function utility_unknown_0893()
     local var_0000, var_0001, var_0002
 
-    var_0000 = createobject_(854) --- Guess: Creates item
+    var_0000 = create_object(854) --- Guess: Creates item
     set_object_owner(get_object_owner(356), 16) --- Guess: Sets item owner
     if not is_player_female() then
         if get_object_frame(get_object_owner(356)) < 16 then

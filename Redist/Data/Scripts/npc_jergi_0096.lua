@@ -6,7 +6,7 @@ function npc_jergi_0096(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(96, 0)
+    switch_talk_to(96)
     var_0000 = get_lord_or_lady()
     var_0001 = npc_id_in_party(83) --- Guess: Checks player status
     if var_0001 then

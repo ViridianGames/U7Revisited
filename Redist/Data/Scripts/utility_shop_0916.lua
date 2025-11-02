@@ -3,7 +3,7 @@ function utility_shop_0916(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 289) --- Guess: Initiates dialogue
+        switch_talk_to(289) --- Guess: Initiates dialogue
         if get_flag(804) and not get_flag(796) then
             add_dialogue("@I -must- return his life to him. He -will- have a new heart!...@")
         end
@@ -18,7 +18,7 @@ function utility_shop_0916(eventid, objectref)
             add_dialogue("@The stone statue stands with a lowered head...@")
             say_with_newline("@Why, by the stars, I believe it is a creature!@") --- Guess: Says with newline
             add_dialogue("@Slowly, as if with great effort, it raises it head.@")
-            switch_talk_to(0, 289) --- Guess: Initiates dialogue
+            switch_talk_to(289) --- Guess: Initiates dialogue
             var_0001 = get_object_frame(select_party_member(40, 414, 356)) --- Guess: Selects party member
             if var_0001 == 4 or var_0001 == 5 then
                 add_dialogue("@What dost thou... want?' it asks slowly.@")
@@ -34,7 +34,7 @@ function utility_shop_0916(eventid, objectref)
         var_0002 = false
         var_0003 = false
         while true do
-            switch_talk_to(0, 289) --- Guess: Initiates dialogue
+            switch_talk_to(289) --- Guess: Initiates dialogue
             if compare_answer("name", 1) then
                 remove_answer("name") --- Guess: Removes dialogue option
                 if not get_flag(797) then

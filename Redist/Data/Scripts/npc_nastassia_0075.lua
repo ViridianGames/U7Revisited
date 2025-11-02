@@ -11,7 +11,7 @@ function npc_nastassia_0075(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 75)
+    switch_talk_to(75)
     var_0001 = false
     var_0002 = false
     var_0003 = false

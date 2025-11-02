@@ -60,7 +60,7 @@ function object_unknown_0624(eventid, objectref)
             var_0015 = find_nearby(0, 5, 810, var_000E)
             if not var_0015 then
                 get_object_frame(var_0015, 2)
-                var_0016 = set_item_quality(4, var_0015)
+                var_0016 = set_object_quality(4, var_0015)
             end
         end
     end

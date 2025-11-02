@@ -16,7 +16,7 @@ function utility_clock_0450(eventid, objectref)
             var_0005 = find_nearby(0, 80, 414, objectref)
             for i = 1, #var_0005 do
                 var_0008 = var_0005[i]
-                var_0009 = get_item_frame(var_0008)
+                var_0009 = get_object_frame(var_0008)
                 if var_0009 > 20 then
                     var_0004 = set_last_created(var_0008)
                     if not var_0004 then

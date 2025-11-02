@@ -7,7 +7,7 @@ function utility_unknown_1076(eventid, objectref, arg1)
     var_0003 = {}
     if not check_object_flag(objectref, 6) then
         for _, var_0006 in ipairs({4, 5, 6, 1}) do
-            if not is_in_int_array(var_0006, var_0002) then
+            if not is_int_in_array(var_0006, var_0002) then
                 table.insert(var_0003, var_0006)
             end
         end

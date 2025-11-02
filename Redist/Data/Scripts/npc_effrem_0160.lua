@@ -3,7 +3,7 @@ function npc_effrem_0160(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
-        switch_talk_to(0, 160)
+        switch_talk_to(160)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = "the Avatar"
@@ -60,10 +60,10 @@ function npc_effrem_0160(eventid, objectref)
             elseif answer == "Jillian" or answer == "wife" then
                 add_dialogue("\"My wife? Jillian? She's the scholar. She is a very good one, too. Not that I could not have done well. I could have. Better, in fact. But it is not worth arguing about now. She has her occupation, even if I do not have one. I should have a job, though. Dost thou not agree, " .. var_0001 .. "? This is not what a man ought to be doing. Staying at home raising the children, like this. 'Tis a disgrace!\"")
                 if var_0005 then
-                    switch_talk_to(0, 159)
+                    switch_talk_to(159)
                     add_dialogue("\"Now Effrem! Thou knowest perfectly well what we agreed when little Mikhail was born. Thou shouldst be ashamed, talking such nonsense.\"")
                     hide_npc(159)
-                    switch_talk_to(0, 160)
+                    switch_talk_to(160)
                     add_dialogue("He raises his shoulders, making him appear quite sheepish.")
                 end
                 remove_answer({"Jillian", "wife"})

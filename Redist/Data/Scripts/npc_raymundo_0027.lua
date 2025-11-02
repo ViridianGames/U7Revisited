@@ -4,7 +4,7 @@ function npc_raymundo_0027(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0000 = get_schedule()
+            var_0000 = get_schedule(-27)
             var_0001 = get_schedule_type(get_npc_name(-27))
             var_0008 = random2(4, 1)
             if var_0001 == 7 then
@@ -17,7 +17,7 @@ function npc_raymundo_0027(eventid, objectref)
                 elseif var_0008 == 4 then
                     var_0009 = "@From the top, please.@"
                 end
-                bark(var_0009, -27)
+                bark(-27, var_0009)
             else
                 utility_unknown_1070(-27)
             end
@@ -27,8 +27,8 @@ function npc_raymundo_0027(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, -27)
-    var_0000 = get_schedule()
+    switch_talk_to(-27)
+    var_0000 = get_schedule(-27)
     var_0001 = get_schedule_type(get_npc_name(-27))
     add_answer({"bye", "job", "name"})
     if not get_flag(104) then

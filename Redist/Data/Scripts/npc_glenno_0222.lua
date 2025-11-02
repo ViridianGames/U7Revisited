@@ -3,8 +3,8 @@ function npc_glenno_0222(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0008, var_0009
 
     if eventid == 1 then
-        switch_talk_to(0, 222)
-        var_0000 = get_schedule()
+        switch_talk_to(222)
+        var_0000 = get_schedule(122)
         var_0001 = is_player_wearing_fellowship_medallion()
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -51,24 +51,24 @@ function npc_glenno_0222(eventid, objectref)
                     var_0005 = npc_id_in_party(2)
                     if var_0005 then
                         add_dialogue("\"Uhm, wait a minute. How old art thou, boy?\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"Uhm, eighteen.\"")
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                         add_dialogue("\"Thou dost not look eighteen.\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"All right, I am sixteen.\"")
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                         add_dialogue("\"Thou dost not look sixteen either. Well, never mind. Thou canst enter. But make sure the management doth not see thee.\" Glenno scratches his head. \"Yes, but... no! I am the management! All right, come on. Just don't cause any trouble.\"")
-                        switch_talk_to(0, 2)
+                        switch_talk_to(2)
                         add_dialogue("\"All right! Wenches!\"")
                         hide_npc(2)
                         var_0006 = npc_id_in_party(1)
                         if var_0006 then
-                            switch_talk_to(0, 1)
+                            switch_talk_to(1)
                             add_dialogue("Iolo whispers to you, \"Methinks young Spark hath learned a lot whilst adventuring with thee!\"")
                             hide_npc(1)
                         end
-                        switch_talk_to(0, 222)
+                        switch_talk_to(222)
                     end
                     add_answer({"drink", "The Baths"})
                 else
@@ -106,7 +106,7 @@ function npc_glenno_0222(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(222)
         var_0007 = get_schedule_type(get_npc_name(222))
         var_0008 = random2(4, 1)
         if var_0007 == 11 and (var_0000 == 5 or var_0000 == 7 or var_0000 == 0) then
@@ -119,7 +119,7 @@ function npc_glenno_0222(eventid, objectref)
             elseif var_0008 == 4 then
                 var_0009 = "@Relax here in The Baths!@"
             end
-            bark(var_0009, 222)
+            bark(222, var_0009)
         else
             utility_unknown_1070(222)
         end

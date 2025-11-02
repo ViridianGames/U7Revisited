@@ -3,7 +3,7 @@ function npc_blacktooth_0226(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     if eventid == 1 then
-        switch_talk_to(0, 226)
+        switch_talk_to(226)
         var_0000 = get_player_name()
         var_0001 = is_player_wearing_fellowship_medallion()
         var_0002 = "Avatar"
@@ -74,16 +74,16 @@ function npc_blacktooth_0226(eventid, objectref)
                 add_dialogue("Then, in a moment of weakness, the tough pirate says in a small voice, \"I miss him, too. We were best mates.\" You could swear there are tears in his eyes.")
                 var_0007 = npc_id_in_party(2)
                 if var_0007 then
-                    switch_talk_to(0, 2)
+                    switch_talk_to(2)
                     add_dialogue("Spark whispers, \"Oh, come on, be a man!\"")
                     hide_npc(2)
                     var_0008 = npc_id_in_party(4)
                     if var_0008 then
-                        switch_talk_to(0, 4)
+                        switch_talk_to(4)
                         add_dialogue("Dupre turns away to suppress a smirk.")
                         hide_npc(4)
                     end
-                    switch_talk_to(0, 226)
+                    switch_talk_to(226)
                 end
                 add_dialogue("You can see that the pirate is upset, so you decide to leave him alone.")
                 if not get_flag(676) then
@@ -128,7 +128,7 @@ function npc_blacktooth_0226(eventid, objectref)
             elseif var_000A == 4 then
                 var_000B = "@Damn parrot droppings...@"
             end
-            bark(var_000B, 226)
+            bark(226, var_000B)
         else
             utility_unknown_1070(226)
         end

@@ -3,10 +3,10 @@ function utility_music_0983()
     start_conversation()
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
-    var_0000 = is_pc_female()
+    var_0000 = is_player_female()
     var_0001 = get_lord_or_lady()
     if not get_flag(440) then
-        switch_talk_to(144, 0)
+        switch_talk_to(144)
         add_dialogue("The beautiful ghost looks through you with a slack look. Nothing you do seems to attract her attention.")
         set_flag(423, false)
         return

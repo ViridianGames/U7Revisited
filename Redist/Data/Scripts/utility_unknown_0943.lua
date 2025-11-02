@@ -1,11 +1,10 @@
 --- Best guess: Advances Horance's Well of Souls quest dialogue, checking party members and flags to guide the player toward finding a sacrificial spirit.
 function utility_unknown_0943()
     start_conversation()
-    local var_0000, var_0001, var_0002, var_0003
+    local var_0001, var_0002, var_0003
 
     switch_talk_to(141, 1)
-    var_0000 = get_party_list()
-    if not (get_npc_name(-147) in var_0000) then
+    if not npc_id_in_party(-147) then
         add_dialogue("\"Is there a problem? Art thou confounded by thy task?\"")
         var_0001 = ask_yes_no()
         if not var_0001 then

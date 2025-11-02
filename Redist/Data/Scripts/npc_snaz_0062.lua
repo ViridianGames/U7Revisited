@@ -4,7 +4,7 @@ function npc_snaz_0062(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_000F = get_schedule()
+            var_000F = get_schedule(62)
             var_0010 = get_schedule_type(get_npc_name(62))
             var_0011 = random2(4, 1)
             if var_0010 == 12 then
@@ -17,7 +17,7 @@ function npc_snaz_0062(eventid, objectref)
                 elseif var_0011 == 4 then
                     var_0012 = "@Handouts accepted!@"
                 end
-                bark(var_0012, 62)
+                bark(62, var_0012)
             else
                 utility_unknown_1070(62)
             end
@@ -27,7 +27,7 @@ function npc_snaz_0062(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 62)
+    switch_talk_to(62)
     var_0000 = get_lord_or_lady()
     add_answer({"bye", "job", "name"})
     if not get_flag(191) then
@@ -143,6 +143,7 @@ function npc_snaz_0062(eventid, objectref)
                 else
                     add_dialogue("\"Thou mayest be laughing but surely thy purse is not, for it is empty.\"")
                 end
+            end
         elseif cmps("Sullivan") then
             add_dialogue("\"Yes, I know the man they call Sullivan the Trickster! In fact thou dost remind me of him!~~\"Or does he remind me of thee?~~\"He is so tricky that just talking about him has caused me to trick myself! Heh-Hee-Haa!\"")
             remove_answer("Sullivan")
@@ -180,7 +181,6 @@ function npc_snaz_0062(eventid, objectref)
             break
         end
     end
-    return
 
 ::gold_joke_repeat::
     play_sound_effect(23)

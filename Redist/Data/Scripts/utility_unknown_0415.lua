@@ -4,7 +4,7 @@ function utility_unknown_0415(eventid, objectref)
 
     var_0000 = find_nearby(16, 10, 275, objectref)
     for var_0001 in ipairs(var_0000) do
-        var_0004 = _get_object_quality(var_0003)
+        var_0004 = get_object_quality(var_0003)
         var_0005 = get_object_frame(var_0003)
         var_0006 = get_object_position(var_0003)
         if var_0005 == 6 then

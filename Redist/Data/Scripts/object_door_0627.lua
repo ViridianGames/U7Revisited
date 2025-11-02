@@ -6,7 +6,7 @@ function object_door_0627(eventid, objectref)
         var_0000 = object_select_modal()
         set_object_quality(objectref, 27)
         var_0001 = get_object_shape(var_0000)
-        var_0002 = _get_object_quality(var_0000)
+        var_0002 = get_object_quality(var_0000)
         var_0003 = get_npc_quality(1, -356) >= random2(30, 1)
         if var_0001 == 522 then
             if var_0002 == 0 and var_0003 then

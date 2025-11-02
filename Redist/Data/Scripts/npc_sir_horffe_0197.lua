@@ -3,7 +3,7 @@ function npc_sir_horffe_0197(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 197)
+        switch_talk_to(197)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if get_flag(606) and not get_flag(613) then

@@ -8,7 +8,7 @@ function utility_unknown_0961()
     switch_talk_to(144, 1)
     add_dialogue("\"It was terrible, but the worst part was being away from mine husband. The whole time I was there with Horance, I felt like a hollow shell of a person. I must be with Trent to be whole again.\"")
     hide_npc(-144)
-    switch_talk_to(143, 0)
+    switch_talk_to(143)
     add_dialogue("\"Yes, thou art quite right. " .. var_0000 .. ", she must needs be taken to her husband, swiftly. I trust that thou wilt do so.\" She leaves the statement hanging and says her goodbyes to Rowena.")
     return
 end

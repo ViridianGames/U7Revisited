@@ -16,7 +16,7 @@ function utility_unknown_0822(eventid, objectref, arg1)
     if var_0003 then
         -- Guess: sloop updates item types
         for i = 1, 5 do
-            var_0006 = {4, 5, 6, 3, 139}[i]
+            var_0006 = ({4, 5, 6, 3, 139})[i]
             if get_object_quality(var_0006) == var_0002 then
                 var_0007 = get_object_type(var_0006) --- Guess: Gets item type
                 if var_0007 == 303 then

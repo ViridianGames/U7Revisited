@@ -3,7 +3,7 @@ function npc_tobias_0178(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 178)
+        switch_talk_to(178)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule_type(get_npc_name(178))
         start_conversation()

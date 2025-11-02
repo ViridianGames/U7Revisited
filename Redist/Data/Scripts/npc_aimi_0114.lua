@@ -4,7 +4,7 @@ function npc_aimi_0114(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(114, 0)
+        switch_talk_to(114)
         var_0000 = get_lord_or_lady()
         var_0001 = false
         add_answer({"bye", "job", "name"})

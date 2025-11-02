@@ -7,7 +7,7 @@ function utility_unknown_0768(eventid, objectref)
     set_flag(744, false)
     var_0001 = get_active_player() --- Guess: Gets active player
     if is_in_combat() then --- Guess: Checks combat state
-        switch_talk_to(var_0001, 0) --- Guess: Initiates dialogue
+        switch_talk_to(var_0001) --- Guess: Initiates dialogue
         var_0002 = get_player_name(var_0001) --- Guess: Gets player name
         if var_0001 == 356 then
             add_dialogue("\"This is no time to sleep! Look alive!\"")
@@ -26,7 +26,7 @@ function utility_unknown_0768(eventid, objectref)
             var_0006 = find_nearby(0, 2, var_0004, var_0000) --- Guess: Sets NPC location
             -- Guess: sloop checks item positions
             for i = 1, 5 do
-                var_0009 = {7, 8, 9, 6, 81}[i]
+                var_0009 = ({7, 8, 9, 6, 81})[i]
                 if get_object_frame(var_0009) <= 2 then
                     var_000A = get_object_position(var_0009) --- Guess: Gets position data
                     if var_000A[1] == var_0005[1] and var_000A[2] == var_0005[2] and var_000A[3] + 1 == var_0005[3] then

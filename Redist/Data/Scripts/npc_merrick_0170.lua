@@ -4,7 +4,7 @@ function npc_merrick_0170(eventid, objectref, arg1)
 
     if eventid == 1 then
         start_conversation()
-        switch_talk_to(0, 170) --- Guess: Switches dialogue target
+        switch_talk_to(170) --- Guess: Switches dialogue target
         var_0000 = get_player_name_context() --- External call to get player name context
         var_0001 = "Avatar"
         var_0002 = "None of thy concern"

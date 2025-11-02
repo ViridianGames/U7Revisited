@@ -4,7 +4,7 @@ function npc_thad_0103(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(103, 0)
+        switch_talk_to(103)
         var_0000 = is_player_wearing_fellowship_medallion() --- Guess: Checks Fellowship membership
         if var_0000 then
             var_0001 = get_npc_name(103) --- Guess: Gets object ref

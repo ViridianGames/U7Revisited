@@ -4,7 +4,7 @@ function npc_csil_0035(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(35, 0)
+        switch_talk_to(35)
         var_0000 = get_schedule_type(35) --- Guess: Gets object state
         add_answer({"bye", "services", "job", "name"})
         if not get_flag(164) then
@@ -35,19 +35,19 @@ function npc_csil_0035(eventid, objectref)
                 remove_answer("practice")
                 var_0001 = npc_id_in_party(3) --- Guess: Checks player status
                 if var_0001 then
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"He is probably the best healer in all Britannia. Why, he cured a, er, particular problem I had in no time at all.\"")
                     var_0002 = npc_id_in_party(1) --- Guess: Checks player status
                     if var_0002 then
                         hide_npc(3)
-                        switch_talk_to(1, 0)
+                        switch_talk_to(1)
                         add_dialogue("\"Oh? What problem was that?\"")
                         hide_npc(1)
-                        switch_talk_to(3, 0)
+                        switch_talk_to(3)
                         add_dialogue("\"Never mind. The whole world does not need to know about it.\"")
                     end
                     hide_npc(3)
-                    switch_talk_to(35, 0)
+                    switch_talk_to(35)
                 end
             elseif var_0001 == "Lord British" then
                 add_dialogue("\"Well, Lord British himself was struck down with some sort of malady. He sent for me. I arrived at the castle as soon as I could leave my patients, and I examined the king. It appeared to me that something had infested his blood. I have a theory about it, which I am convinced is correct. Others, however, do not share my view.\"")

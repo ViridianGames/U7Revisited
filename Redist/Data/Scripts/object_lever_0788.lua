@@ -20,13 +20,13 @@ function object_lever_0788(eventid, objectref)
             get_object_frame(var_0005 - 1, objectref)
         end
         set_object_quality(objectref, 28)
-        var_0006 = _get_object_quality(objectref)
+        var_0006 = get_object_quality(objectref)
         var_0007 = find_nearby(0, 15, 870, objectref)
         var_0008 = find_nearby(0, 15, 515, objectref)
         var_0007 = table.concat({var_0007, var_0008})
         var_0008 = {}
         for var_0009 in ipairs(var_0007) do
-            if _get_object_quality(var_000B) == var_0006 then
+            if get_object_quality(var_000B) == var_0006 then
                 table.insert(var_0008, var_000B)
             end
         end

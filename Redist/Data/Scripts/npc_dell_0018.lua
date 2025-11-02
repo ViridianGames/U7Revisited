@@ -4,7 +4,7 @@ function npc_dell_0018(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(18, 0)
+        switch_talk_to(18)
         var_0000 = get_schedule_time() --- Guess: Checks game state or timer
         var_0001 = get_lord_or_lady()
         var_0002 = get_player_name()
@@ -89,7 +89,7 @@ function npc_dell_0018(eventid, objectref)
             clear_answers()
         end
     elseif eventid == 0 then
-        var_0000 = get_schedule() --- Guess: Checks game state or timer
+        var_0000 = get_schedule(18) --- Guess: Checks game state or timer
         var_0003 = get_schedule_type(18) --- Guess: Gets object state
         var_0008 = random(1, 4)
         if var_0003 == 7 then

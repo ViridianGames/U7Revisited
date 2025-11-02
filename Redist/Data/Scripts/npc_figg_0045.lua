@@ -11,8 +11,8 @@ function npc_figg_0045(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 45)
-    var_0000 = get_schedule()
+    switch_talk_to(45)
+    var_0000 = get_schedule(45)
     var_0001 = get_lord_or_lady()
     var_0002 = is_player_wearing_fellowship_medallion()
     var_0003 = utility_unknown_1020(26, 45)

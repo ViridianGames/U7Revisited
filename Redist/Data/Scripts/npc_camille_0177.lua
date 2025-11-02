@@ -3,7 +3,7 @@ function npc_camille_0177(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009
 
     if eventid == 1 then
-        switch_talk_to(0, 177)
+        switch_talk_to(177)
         var_0000 = get_lord_or_lady()
         if get_flag(531) and not get_flag(564) then
             add_dialogue("\"Avatar! My son Tobias has been wrongly accused! He is no thief! And I cannot believe a vial of venom was found in his possession. I truly believe it was planted there! Please -- I beg thee! Please clear my son's name. He has done no wrong!\"")

@@ -6,7 +6,7 @@ function utility_music_0270(eventid, objectref)
         fade_palette(0, 1, 12)
         play_music(0, 255)
         play_music(0, 17)
-        UNKNOWN()
+        -- TODO UNKNOWN()
         var_0000 = get_dead_party(objectref)
         for var_0003 in ipairs(var_0000) do
             var_0004 = resurrect(var_0003)
@@ -23,7 +23,7 @@ function utility_music_0270(eventid, objectref)
     var_0006 = get_object_position(objectref)
     set_flag(57, false)
     if get_flag(87) then
-        set_flag(58, utility_unknown_1017(get_object_position(-356), {0=1791, 1595=899, 753=-356}))
+        set_flag(58, utility_unknown_1017(get_object_position(-356), {[0]=1791, [1595]=899, [753]=-356}))
         if not get_flag(58) then
             var_0007 = find_nearby(4, 90, 359, -356)
             var_0007 = utility_unknown_1084(get_npc_name(-356), var_0007)
@@ -45,11 +45,11 @@ function utility_music_0270(eventid, objectref)
             var_0010 = {1733, 836}
             get_object_frame(-356, 13)
             set_item_flag(-356, 1)
-            var_0011 = {2=-1, 2=1, -1=4, -1=-4, 1=4, 1=-4, 4=0, 4=0, 4=0, 4=-4}
+            var_0011 = {[2]=-1, [2]=1, [-1]=4, [-1]=-4, [1]=4, [1]=-4, [4]=0, [4]=0, [4]=0, [4]=-4}
             var_0012 = 0
-            var_0013 = {8496=var_0012, 8496=var_0012, 8502=var_0012, 8498=var_0012, 8502=var_0012, 8498=var_0012, 8496=var_0012, 8502=var_0012, 7730=var_0012}
-            var_0014 = {8=-17, 0=-17, 8=8, 8=8, 8=-7, 8=0, 0=8, 0=-7}
-            var_0015 = {13=var_0012, 13=var_0012, 29=var_0012, 29=var_0012, 29=var_0012, 13=var_0012, 13=var_0012}
+            var_0013 = {[8496]=var_0012, [8496]=var_0012, [8502]=var_0012, [8498]=var_0012, [8502]=var_0012, [8498]=var_0012, [8496]=var_0012, [8502]=var_0012, [7730]=var_0012}
+            var_0014 = {[8]=-17, [0]=-17, [8]=8, [8]=8, [8]=-7, [8]=0, [0]=8, [0]=-7}
+            var_0015 = {[13]=var_0012, [13]=var_0012, [29]=var_0012, [29]=var_0012, [29]=var_0012, [13]=var_0012, [13]=var_0012}
             var_0016 = 1
             var_0017 = get_party_list2()
             for var_0018 in ipairs(var_0017) do

@@ -3,7 +3,7 @@ function npc_chad_0161(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007
 
     if eventid == 1 then
-        switch_talk_to(0, 161)
+        switch_talk_to(161)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         var_0002 = "Avatar"
@@ -26,7 +26,7 @@ function npc_chad_0161(eventid, objectref)
             if answer == "name" then
                 add_dialogue("\"Chad, at thy service, " .. var_0001 .. ". And what is thy name?\"")
                 remove_answer("name")
-                var_0004 = utility_unknown_1035(var_0001, var_0002, var_0000)
+                var_0004 = utility_unknown_1035({var_0001, var_0002, var_0000})
                 if var_0004 == var_0000 then
                     add_dialogue("\"Greetings, " .. var_0000 .. ". I am at thy service.\"")
                     set_flag(497, true)
@@ -36,20 +36,20 @@ function npc_chad_0161(eventid, objectref)
                 elseif var_0004 == var_0002 then
                     add_dialogue("\"Of course, of course,\" he smiles. \"I should have realized that thou wert the Avatar. Why, it must have been, oh, at least, two weeks since thy last visit!\" He winks.")
                     var_0005 = npc_id_in_party(3)
-                    switch_talk_to(0, 3)
+                    switch_talk_to(3)
                     add_dialogue("\"Thou art a fool! Cannot thy feeble eyes see this is the Avatar?\"")
                     hide_npc(3)
-                    switch_talk_to(0, 161)
+                    switch_talk_to(161)
                     add_dialogue("\"Yes, yes! I can see that,\" he laughs. \"Then I must be Iolo!\"")
                     var_0006 = npc_id_in_party(-1)
-                    switch_talk_to(0, 3)
+                    switch_talk_to(3)
                     if var_0006 then
                         add_dialogue("\"No, rogue! He is Iolo!\" He nods to Iolo. \"Thou... art a blind idiot!\"")
                     else
                         add_dialogue("\"No, rogue, thou art a blind idiot!\"")
                     end
                     hide_npc(3)
-                    switch_talk_to(0, 161)
+                    switch_talk_to(161)
                     set_flag(499, true)
                 end
                 set_flag(515, true)
@@ -68,7 +68,7 @@ function npc_chad_0161(eventid, objectref)
                 add_dialogue("\"The person to ask for that information would be Phearcy, the bartender. All I know are other bar patrons: Tolemac and Morz, two farmers.\"")
                 remove_answer("townspeople")
             elseif answer == "train" then
-                var_0007 = get_schedule()
+                var_0007 = get_schedule(161)
                 if var_0007 == 6 or var_0007 == 7 then
                     add_dialogue("\"Yes, I train people. But only during the day. Now, 'tis time for drink!\"")
                 else

@@ -18,7 +18,7 @@ function utility_unknown_0791(eventid, objectref)
     end
     -- Guess: sloop updates door qualities
     for i = 1, 5 do
-        var_0005 = {3, 4, 5, 1, 51}[i]
+        var_0005 = ({3, 4, 5, 1, 51})[i]
         if get_object_quality(var_0005) == var_0002 then
             var_0006 = add_containerobject_s(var_0005, {0, 17478, 7969, 16, 17496, 17443, 7937, 1, 7750})
         end

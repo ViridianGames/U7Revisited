@@ -4,7 +4,7 @@ function npc_jesse_0028(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = get_schedule()
+            var_0002 = get_schedule(-28)
             var_0003 = get_schedule_type(get_npc_name(-28))
             var_0004 = random2(4, 1)
             if var_0003 == 29 then
@@ -17,7 +17,7 @@ function npc_jesse_0028(eventid, objectref)
                 elseif var_0004 == 4 then
                     var_0005 = "@Bye!@"
                 end
-                bark(var_0005, -28)
+                bark(-28, var_0005)
             else
                 utility_unknown_1070(-28)
             end
@@ -31,7 +31,7 @@ function npc_jesse_0028(eventid, objectref)
     if var_0000 then
         switch_talk_to(1, -28)
     else
-        switch_talk_to(0, -28)
+        switch_talk_to(-28)
     end
     add_answer({"bye", "job", "name"})
     if not get_flag(157) then

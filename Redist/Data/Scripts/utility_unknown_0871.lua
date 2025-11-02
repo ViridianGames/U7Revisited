@@ -12,8 +12,8 @@ function utility_unknown_0871(eventid, objectref)
         "orgasmic", "organic", "pedantic", "imperialist", "Gumpy",
         "co-dependent"
     }
-    var_0001 = random(1, array_size(var_0000)) --- Guess: Generates random index
+    var_0001 = random(1, #var_0000) --- Guess: Generates random index
     var_0002 = var_0000[var_0001]
-    var_0003 = var_0000[random(1, array_size(var_0000))] --- Guess: Generates random index
+    var_0003 = var_0000[random(1, #var_0000)] --- Guess: Generates random index
     return {var_0002, var_0003}
 end

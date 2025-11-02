@@ -328,6 +328,37 @@ static int LuaGetAnswer(lua_State *L)
     return 1;
 }
 
+// Compare string - checks if player's answer matches the given string
+static int LuaCmps(lua_State *L)
+{
+    // this implementation might have side-effects.
+    // the scripts call this multiple times in a row, but presumably
+    // we only want the player to actually answer once. so there might
+    // be other places that need to clear the global last answer or
+    // the user won't get prompted again the future when they need to be
+    if (!g_ConversationState) {
+        return luaL_error(L, "ConversationState not initialized");
+    }
+
+    // Get the comparison string argument
+    const char *compare_str = luaL_checkstring(L, 1);
+
+    // Get the global answer (without clearing it, unlike get_answer())
+    lua_getglobal(L, "answer");
+    const char *selected_answer = lua_tostring(L, -1);
+    lua_pop(L, 1);
+
+    // Compare (case-insensitive)
+    bool matches = false;
+    if (selected_answer && compare_str)
+    {
+        matches = (_stricmp(selected_answer, compare_str) == 0);
+    }
+
+    lua_pushboolean(L, matches);
+    return 1;
+}
+
 // Opcode 000B
 static int LuaAskYesNo(lua_State *L)
 {
@@ -656,10 +687,15 @@ static int LuaGetObjectPosition(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
+        // Create table {x, y, z}
+        lua_newtable(L);
         lua_pushnumber(L, object->m_Pos.x);
+        lua_rawseti(L, -2, 1);  // table[1] = x
         lua_pushnumber(L, object->m_Pos.y);
+        lua_rawseti(L, -2, 2);  // table[2] = y
         lua_pushnumber(L, object->m_Pos.z);
-        return 3;  // Return 3 values
+        lua_rawseti(L, -2, 3);  // table[3] = z
+        return 1;  // Return 1 table
     }
     return 0;
 }
@@ -999,6 +1035,12 @@ static int LuaDestroyObject(lua_State *L)
     return 0;
 }
 
+// Silent version of destroy_object - currently just calls the regular version
+static int LuaDestroyObjectSilent(lua_State *L)
+{
+    return LuaDestroyObject(L);
+}
+
 static int LuaMoveObject(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
@@ -1255,6 +1297,14 @@ static int LuaRandom(lua_State *L)
     if (g_LuaDebug) DebugPrint("LUA: random called");
     int min = luaL_checkinteger(L, 1);
     int max = luaL_checkinteger(L, 2);
+
+    // Swap if arguments are in wrong order
+    if (min > max) {
+        int temp = min;
+        min = max;
+        max = temp;
+    }
+
     int random_value = g_VitalRNG->Random(max - (min - 1)) + min;
     lua_pushinteger(L, random_value);
     return 1;
@@ -1539,7 +1589,7 @@ static int LuaGetSchedule(lua_State *L)
 
 static int LuaGetNPCNameFromId(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: get_npc_name_from_id called");
+    if (g_LuaDebug) DebugPrint("LUA: get_npc_name called");
     int npc_id = luaL_checkinteger(L, 1);
     string npc_name = "NPC";
     npc_name = g_NPCData[npc_id]->name;
@@ -1637,7 +1687,7 @@ static int LuaGetNPCTrainingPoints(lua_State *L)
 
 static int LuaGetNPCTrainingLevel(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: get_npc_training_level called");
+    if (g_LuaDebug) DebugPrint("LUA: get_training_level called");
     int npc_id = luaL_checkinteger(L, 1);
     int npc_skill = luaL_checkinteger(L, 2);
     int training_level = 0;
@@ -1688,6 +1738,62 @@ static int LuaGetNPCTrainingLevel(lua_State *L)
 
     lua_pushinteger(L, training_level);
     return 1;
+}
+
+static int LuaSetTrainingLevel(lua_State *L)
+{
+    if (g_LuaDebug) DebugPrint("LUA: set_training_level called");
+    int npc_id = luaL_checkinteger(L, 1);
+    int npc_skill = luaL_checkinteger(L, 2);
+    int value = luaL_checkinteger(L, 3);
+
+    if (npc_id == 0) // Avatar
+    {
+        switch (npc_skill)
+        {
+        case 0:
+            g_Player->SetStr(value);
+            break;
+        case 1:
+            g_Player->SetDex(value);
+            break;
+        case 2:
+            g_Player->SetInt(value);
+            break;
+        case 4:
+            g_Player->SetCombat(value);
+            break;
+        case 6:
+            g_Player->SetMagic(value);
+            break;
+        }
+    }
+    else
+    {
+        if (g_NPCData.find(npc_id) != g_NPCData.end())
+        {
+            switch (npc_skill)
+            {
+            case 0:
+                g_NPCData[npc_id]->str = value;
+                break;
+            case 1:
+                g_NPCData[npc_id]->dex = value;
+                break;
+            case 2:
+                g_NPCData[npc_id]->iq = value;
+                break;
+            case 4:
+                g_NPCData[npc_id]->combat = value;
+                break;
+            case 6:
+                g_NPCData[npc_id]->magic = value;
+                break;
+            }
+        }
+    }
+
+    return 0;
 }
 
 static int LuaSetCameraAngle(lua_State *L)
@@ -3718,6 +3824,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("save_answers", LuaSaveAnswers);
     g_ScriptingSystem->RegisterScriptFunction("restore_answers", LuaRestoreAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_answer", LuaGetAnswer);
+    g_ScriptingSystem->RegisterScriptFunction("cmps", LuaCmps);
     g_ScriptingSystem->RegisterScriptFunction("clear_answers", LuaClearAnswers);
     g_ScriptingSystem->RegisterScriptFunction("get_purchase_option", LuaGetPurchaseOption);
     g_ScriptingSystem->RegisterScriptFunction("purchase_object", LuaPurchaseObject);
@@ -3731,6 +3838,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("ask_number", LuaAskNumber);
     g_ScriptingSystem->RegisterScriptFunction("object_select_modal", LuaObjectSelectModal);
     g_ScriptingSystem->RegisterScriptFunction("random", LuaRandom);
+    g_ScriptingSystem->RegisterScriptFunction("random2", LuaRandom); // Alias for random()
     g_ScriptingSystem->RegisterScriptFunction("find_nearby", LuaFindNearby);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_npc_inventory", LuaIsObjectInNPCInventory);
     g_ScriptingSystem->RegisterScriptFunction("is_object_in_container", LuaIsObjectInContainer);
@@ -3758,13 +3866,14 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("npc_name_in_party", LuaNPCNameInParty);
     g_ScriptingSystem->RegisterScriptFunction("add_to_party", LuaAddToParty);
     g_ScriptingSystem->RegisterScriptFunction("remove_from_party", LuaRemoveFromParty);
-    g_ScriptingSystem->RegisterScriptFunction("get_npc_name_from_id", LuaGetNPCNameFromId);
+    g_ScriptingSystem->RegisterScriptFunction("get_npc_name", LuaGetNPCNameFromId);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_id_from_name", LuaGetNPCIdFromName);
     g_ScriptingSystem->RegisterScriptFunction("select_party_member_by_name", LuaSelectPartyMemberByName); //  Used in dialogue, presents a list of party members and allows user to click on one to select it
     g_ScriptingSystem->RegisterScriptFunction("get_party_gold", LuaGetPartyGold);
     g_ScriptingSystem->RegisterScriptFunction("remove_party_gold", LuaRemovePartyGold);
     g_ScriptingSystem->RegisterScriptFunction("get_npc_training_points", LuaGetNPCTrainingPoints);
-    g_ScriptingSystem->RegisterScriptFunction("get_npc_training_level", LuaGetNPCTrainingLevel);
+    g_ScriptingSystem->RegisterScriptFunction("get_training_level", LuaGetNPCTrainingLevel);
+    g_ScriptingSystem->RegisterScriptFunction("set_training_level", LuaSetTrainingLevel);
     g_ScriptingSystem->RegisterScriptFunction("increase_npc_combat_level", LuaIncreaseNPCCombatLevel);
 
     // These functions are used to get information about the Avatar/player.
@@ -3794,7 +3903,7 @@ void RegisterAllLuaFunctions()
     g_ScriptingSystem->RegisterScriptFunction("is_string_in_array", LuaIsStringInArray);
 
     g_ScriptingSystem->RegisterScriptFunction("get_schedule", LuaGetSchedule);
-    
+
     g_ScriptingSystem->RegisterScriptFunction("debug_print", LuaDebugPrint);
 
     g_ScriptingSystem->RegisterScriptFunction("is_player_wearing_fellowship_medallion", LuaIsPlayerWearingMedallion);
@@ -3813,6 +3922,7 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "spawn_object", LuaSpawnObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
+    g_ScriptingSystem->RegisterScriptFunction( "destroy_object_silent", LuaDestroyObjectSilent);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);

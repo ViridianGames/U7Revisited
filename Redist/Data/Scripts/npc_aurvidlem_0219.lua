@@ -3,7 +3,7 @@ function npc_aurvidlem_0219(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 219)
+        switch_talk_to(219)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(664) then

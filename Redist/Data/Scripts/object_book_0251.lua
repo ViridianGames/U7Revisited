@@ -14,7 +14,7 @@ function object_book_0251(eventid, objectref)
     if get_barge(objectref) then
         var_0000 = check_flag_location(0, 199, 5, objectref)
         var_0001 = check_flag_location(0, 251, 5, objectref)
-        if not is_in_int_array(objectref, var_0001) then
+        if not is_int_in_array(objectref, var_0001) then
             var_0001 = var_0001 .. {objectref}
         end
         -- callis 0088, 2 (unmapped)
@@ -23,7 +23,7 @@ function object_book_0251(eventid, objectref)
             var_0003 = check_inventory_space(359, var_0002, 797, 357)
             if not var_0003 then
                 start_conversation()
-                if array_size(get_party_members()) == 1 then
+                if #get_party_members() == 1 then
                     add_dialogue("@The deed for this vessel must first be purchased.@")
                 else
                     add_dialogue("@We must purchase the deed for this vessel before we sail her.@")

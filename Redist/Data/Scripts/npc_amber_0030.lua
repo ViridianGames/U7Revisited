@@ -16,7 +16,7 @@ function npc_amber_0030(eventid, objectref)
                 elseif var_0003 == 4 then
                     var_0004 = "@I -hate- my lines!@"
                 end
-                bark(var_0004, -30)
+                bark(-30, var_0004)
             else
                 utility_unknown_1070(-30)
             end
@@ -26,8 +26,8 @@ function npc_amber_0030(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, -30)
-    var_0000 = get_schedule()
+    switch_talk_to(-30)
+    var_0000 = get_schedule(-30)
     add_answer({"bye", "job", "name"})
     var_0001 = npc_id_in_party(-3)
     if get_flag(107) or var_0001 then
@@ -73,10 +73,10 @@ function npc_amber_0030(eventid, objectref)
             var_0001 = npc_id_in_party(-3)
             if var_0001 then
                 add_dialogue("\"Poo Poo Head!\" she cries. She then rushes to him and kisses him full on the mouth. Shamino turns red and shuffles his feet.")
-                switch_talk_to(0, -3)
+                switch_talk_to(-3)
                 add_dialogue("\"Not in front of the Avatar, Poo!\"")
-                hide_npc3)
-                switch_talk_to(0, -30)
+                --syntax error hide_npc3)
+                switch_talk_to(-30)
                 add_dialogue("\"To blazes with the Avatar!\" She kisses him again. \"The Avatar is the last one who will convince thee to settle down.\"")
             else
                 add_dialogue("\"Dost thou know my beau? He is probably drowning his sorrows at the Blue Boar. The lazy knave! I will not let him go about adventuring. It is time for him to settle down. Thou canst tell him I said so!\"")

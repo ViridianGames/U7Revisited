@@ -22,7 +22,7 @@ function object_unknown_0623(eventid, objectref)
                 var_0003 = get_object_position(var_0002)
                 var_0004 = get_object_position(var_0000)
                 if var_0004[1] == var_0003[1] and var_0004[2] == var_0003[2] and var_0004[3] == var_0003[3] - 1 then
-                    var_0005 = get_item_frame(var_0000)
+                    var_0005 = get_object_frame(var_0000)
                     if var_0005 >= 8 and var_0005 <= 15 then
                         utility_position_0808(var_0000, 0, 2, 0, 623, var_0002, 7)
                     end
@@ -31,7 +31,7 @@ function object_unknown_0623(eventid, objectref)
         end
     elseif eventid == 7 then
         var_0006 = find_nearest(3, 668, get_npc_name(-356))
-        var_0005 = get_item_frame(var_0006)
+        var_0005 = get_object_frame(var_0006)
         var_0007 = get_npc_name(-356)
         var_0008 = utility_unknown_1069(objectref)
         if var_0005 >= 13 and var_0005 <= 15 then

@@ -4,7 +4,7 @@ function npc_stuart_0029(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0001 = get_schedule()
+            var_0001 = get_schedule(-29)
             var_0002 = get_schedule_type(get_npc_name(-29))
             var_0003 = random2(4, 1)
             if var_0002 == 29 then
@@ -17,7 +17,7 @@ function npc_stuart_0029(eventid, objectref)
                 elseif var_0003 == 4 then
                     var_0004 = "@Ready the bow to use it!@"
                 end
-                bark(var_0004, -29)
+                bark(-29, var_0004)
             else
                 utility_unknown_1070(-29)
             end
@@ -27,7 +27,7 @@ function npc_stuart_0029(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, -29)
+    switch_talk_to(-29)
     add_answer({"bye", "job", "name"})
     if not get_flag(158) then
         add_dialogue("This actor has much stage presence and a booming voice.")
@@ -50,18 +50,18 @@ function npc_stuart_0029(eventid, objectref)
             add_dialogue("Stuart's feathers are obviously ruffled. \"Yes. I have been cast as second banana yet again! I am much more suited to play the Avatar, but did Raymundo cast me? Noooo!\"")
             var_0000 = npc_id_in_party(-1)
             if var_0000 then
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("\"But thou art nothing like me!\"")
-                switch_talk_to(0, -29)
+                switch_talk_to(-29)
                 add_dialogue("\"And who art thou, pray tell?\"")
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("\"Why, I am the -real- Iolo!\"")
-                switch_talk_to(0, -29)
+                switch_talk_to(-29)
                 add_dialogue("\"Of course thou art. And I am really Lord British. Thou must take me for an ass to think I would believe that.\"")
-                switch_talk_to(0, -1)
+                switch_talk_to(-1)
                 add_dialogue("Your friend whispers to you. \"These actor types. A touchy bunch, eh?\"")
-                hide_npc1)
-                switch_talk_to(0, -29)
+                --syntax error hide_npc1)
+                switch_talk_to(-29)
             end
             add_answer({"Avatar", "Raymundo"})
             remove_answer("Iolo")

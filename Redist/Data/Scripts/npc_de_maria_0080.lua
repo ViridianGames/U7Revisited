@@ -4,7 +4,7 @@ function npc_de_maria_0080(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(80, 0)
+        switch_talk_to(80)
         add_answer({"bye", "job", "name"})
         if not get_flag(227) then
             add_answer("Nastassia")
@@ -63,10 +63,10 @@ function npc_de_maria_0080(eventid, objectref)
                 add_dialogue("\"My love! My flower! Mine angel! The provider of the sweetest nectar my mouth has ever known! She is the light of my day! The notes of my songs! The flesh of my...\"")
                 var_0002 = npc_id_in_party(79) --- Guess: Checks player status
                 if var_0002 then
-                    switch_talk_to(79, 0)
+                    switch_talk_to(79)
                     add_dialogue("\"Enough, my love. I think the Avatar dost know thy meaning!\"")
                     hide_npc(79)
-                    switch_talk_to(80, 0)
+                    switch_talk_to(80)
                 end
                 add_dialogue("De Maria stops his reverie, sighs, and smiles at you. \"Thou dost apprehend my meaning...\"")
                 remove_answer("Zinaida")

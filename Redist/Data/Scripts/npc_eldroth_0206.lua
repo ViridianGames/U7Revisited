@@ -3,7 +3,7 @@ function npc_eldroth_0206(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004
 
     if eventid == 1 then
-        switch_talk_to(0, 206)
+        switch_talk_to(206)
         var_0000 = get_lord_or_lady()
         var_0001 = get_schedule_type(get_npc_name(206))
         start_conversation()
@@ -66,7 +66,7 @@ function npc_eldroth_0206(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0002 = get_schedule()
+        var_0002 = get_schedule(206)
         var_0001 = get_schedule_type(get_npc_name(206))
         var_0003 = random(4, 1)
         if var_0002 >= 2 and var_0002 <= 6 and (var_0001 == 7 or var_0001 == 5) then
@@ -79,7 +79,7 @@ function npc_eldroth_0206(eventid, objectref)
             elseif var_0004 == 4 then
                 var_0004 = "@A bird in the hand squirms.@"
             end
-            bark(var_0004, 206)
+            bark(206, var_0004)
         end
     end
     return

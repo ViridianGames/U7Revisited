@@ -5,7 +5,7 @@ function utility_spell_0337(eventid, objectref)
     var_0000 = {723, 722}
     var_0001 = {417, 556}
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         var_0002 = object_select_modal() --- Guess: Selects spell target
         var_0003 = get_object_type(var_0002)
         var_0004 = select_spell_target(var_0002) --- Guess: Gets selected target

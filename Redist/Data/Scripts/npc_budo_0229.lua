@@ -3,8 +3,8 @@ function npc_budo_0229(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C
 
     if eventid == 1 then
-        switch_talk_to(0, 229)
-        var_0000 = get_schedule()
+        switch_talk_to(229)
+        var_0000 = get_schedule(229)
         var_0001 = get_schedule_type(get_npc_name(229))
         var_0002 = utility_unknown_1073(1, 359, 981, 1, 357)
         start_conversation()
@@ -18,16 +18,16 @@ function npc_budo_0229(eventid, objectref)
                 add_dialogue("\"Hello, hello my friend! Thou dost look like thou needest to spend money!\"")
                 var_0003 = npc_id_in_party(3)
                 if var_0003 then
-                    switch_talk_to(0, 3)
+                    switch_talk_to(3)
                     add_dialogue("\"This place looks quite well-off.\"")
                     hide_npc(3)
                     var_0004 = npc_id_in_party(1)
                     if var_0004 then
-                        switch_talk_to(0, 1)
+                        switch_talk_to(1)
                         add_dialogue("\"The entire island is very opulent. It is not the same island we once knew.\"")
                         hide_npc(1)
                     end
-                    switch_talk_to(0, 229)
+                    switch_talk_to(229)
                 end
             else
                 add_dialogue("\"Hello! How art thou, my friend?\"")
@@ -123,7 +123,7 @@ function npc_budo_0229(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0000 = get_schedule()
+        var_0000 = get_schedule(229)
         var_0001 = get_schedule_type(get_npc_name(229))
         if var_0001 == 7 then
             var_000B = random2(4, 1)
@@ -136,7 +136,7 @@ function npc_budo_0229(eventid, objectref)
             elseif var_000B == 4 then
                 var_000C = "@Step right in! We're open!@"
             end
-            bark(var_000C, 229)
+            bark(229, var_000C)
         else
             utility_unknown_1070(229)
         end

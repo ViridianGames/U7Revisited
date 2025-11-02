@@ -3,9 +3,9 @@ function npc_smithy_0232(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        switch_talk_to(0, 232)
+        switch_talk_to(232)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(232)
         var_0002 = get_schedule_type(get_npc_name(232))
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -55,7 +55,7 @@ function npc_smithy_0232(eventid, objectref)
             end
         end
     elseif eventid == 0 then
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(232)
         var_0002 = get_schedule_type(get_npc_name(232))
         var_0004 = random2(4, 1)
         if var_0002 == 10 then
@@ -68,7 +68,7 @@ function npc_smithy_0232(eventid, objectref)
             elseif var_0004 == 4 then
                 var_0005 = "@The House wins.@"
             end
-            bark(var_0005, 232)
+            bark(232, var_0005)
         else
             utility_unknown_1070(232)
         end

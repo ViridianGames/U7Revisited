@@ -4,7 +4,7 @@ function npc_robin_0134(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(134, 0)
+        switch_talk_to(134)
         var_0000 = get_lord_or_lady()
         var_0001 = get_npc_name(134) --- Guess: Gets object ref
         var_0002 = get_npc_name(136) --- Guess: Gets object ref

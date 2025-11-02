@@ -11,7 +11,7 @@ function npc_batlin_0026(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(26, 0)
+    switch_talk_to(26)
     var_0000 = utility_unknown_1073(1, 981, 1, 357, 359)
     if var_0000 then
         add_dialogue("Batlin's eyes narrow to red slits as he peers practically through you.")
@@ -63,7 +63,7 @@ function npc_batlin_0026(eventid, objectref)
     end
     var_0004 = get_lord_or_lady()
     var_0005 = is_player_wearing_fellowship_medallion()
-    var_0006 = get_schedule()
+    var_0006 = get_schedule(26)
     var_0007 = get_player_name()
     add_answer({"bye", "job", "name"})
     if not get_flag(65) then

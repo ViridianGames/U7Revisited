@@ -3,7 +3,7 @@ function npc_draxinusom_0180(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 180)
+        switch_talk_to(180)
         var_0000 = get_player_name()
         start_conversation()
         add_answer({"bye", "job", "name"})

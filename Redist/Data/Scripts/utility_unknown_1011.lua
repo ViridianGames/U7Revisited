@@ -24,7 +24,7 @@ function utility_unknown_1011(var_0000)
         elseif string.lower(unknown_XXXXH()) == "hand to hand" then
             remove_answer("hand to hand")
             var_0004 = "and thou seemest man enough for such close work"
-            if is_pc_female() == 1 then
+            if is_player_female() == 1 then
                 var_0004 = "especially in women. The women of Britannia seldom have them"
                 var_0002 = true
             end
@@ -46,11 +46,11 @@ function utility_unknown_1011(var_0000)
                 end
             end
             if var_0005 then
-                switch_talk_to(var_0008, 0)
+                switch_talk_to(var_0008)
                 add_dialogue("\"Take care with thy words, master woodsman.\"")
-                switch_talk_to(10, 0)
+                switch_talk_to(10)
                 add_dialogue("\"I do not mean this gracious company! Surely thou art among the elite of Britannia and a rare figure of a woman.\"")
-                switch_talk_to(var_0008, 0)
+                switch_talk_to(var_0008)
                 add_dialogue("\"Thy speech does me service. Alas! Too few are the women who learn skill in arms.\"")
                 hide_npc(var_0008)
             end

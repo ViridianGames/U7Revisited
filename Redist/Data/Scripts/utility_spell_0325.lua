@@ -3,7 +3,7 @@ function utility_spell_0325(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005
 
     if eventid == 1 then
-        destroyobject_(objectref)
+        destroy_object(objectref)
         if get_flag(39) == false then
             bark(objectref, "@Kal Lor@")
             if check_spell_requirements() then
@@ -12,7 +12,7 @@ function utility_spell_0325(eventid, objectref)
                 var_0001 = get_party_members()
                 -- Guess: sloop applies flags to party members
                 for i = 1, 5 do
-                    var_0004 = {2, 3, 4, 1, 43}[i]
+                    var_0004 = ({2, 3, 4, 1, 43})[i]
                     clear_item_flag(8, var_0004) --- Guess: Sets quest flag
                     clear_item_flag(3, var_0004) --- Guess: Sets quest flag
                     clear_item_flag(2, var_0004) --- Guess: Sets quest flag

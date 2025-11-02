@@ -4,8 +4,8 @@ function utility_event_0460(eventid, objectref)
 
     if eventid == 3 then
         if get_flag(5) == 0 then
-            var_0000 = get_item_quality(objectref)
-            var_0001 = get_party_list()
+            var_0000 = get_object_quality(objectref)
+            var_0001 = get_party_list2()
             for i = 1, #var_0001 do
                 var_0004 = var_0001[i]
                 if not is_readied(359, 638, 9, var_0004) then

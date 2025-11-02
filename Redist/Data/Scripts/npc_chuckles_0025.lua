@@ -4,7 +4,7 @@ function npc_chuckles_0025(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(25, 0)
+        switch_talk_to(25)
         if not get_flag(154) then
             add_dialogue("You are wary of conversing with that trickster Chuckles, but decide to anyway.")
             set_flag(154, true)

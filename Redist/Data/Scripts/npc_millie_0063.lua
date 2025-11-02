@@ -4,7 +4,7 @@ function npc_millie_0063(eventid, objectref)
 
     if eventid ~= 1 then
         if eventid == 0 then
-            var_0002 = get_schedule()
+            var_0002 = get_schedule(63)
             var_0005 = get_schedule_type(get_npc_name(63))
             var_0006 = random2(4, 1)
             if var_0005 == 12 then
@@ -17,7 +17,7 @@ function npc_millie_0063(eventid, objectref)
                 elseif var_0006 == 4 then
                     var_0007 = "@Worthiness Precedes Reward!@"
                 end
-                bark(var_0007, 63)
+                bark(63, var_0007)
             else
                 utility_unknown_1070(63)
             end
@@ -27,10 +27,10 @@ function npc_millie_0063(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 63)
+    switch_talk_to(63)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
-    var_0002 = get_schedule()
+    var_0002 = get_schedule(63)
     if var_0002 == 7 then
         var_0003 = utility_unknown_1020(26, 63)
         if var_0003 then

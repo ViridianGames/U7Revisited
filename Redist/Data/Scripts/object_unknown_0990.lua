@@ -6,7 +6,7 @@ function object_unknown_0990(eventid, objectref)
         if not get_flag(769) then
             set_flag(769, true)
             is_player_female()
-            switch_talk_to(0, 356)
+            switch_talk_to(356)
             start_conversation()
             add_dialogue("You feel as if your mind is being probed, delicately at first, then with more insistence. Images of long past memories flit before your eyes and old emotions resurface. At one point, the images pause as you remember the words Love, Sol, Moons, and Death then a strange sense of deja vu comes over you as the vision comes up to the current time. The images cease and a vast wave of power overwhelms you. A wall of darkness falls...")
             hide_npc(356)
@@ -14,7 +14,7 @@ function object_unknown_0990(eventid, objectref)
             var_0000 = execute_usecode_array({707, 8021, 5, 7719}, objectref)
         else
             is_player_female()
-            switch_talk_to(0, 356)
+            switch_talk_to(356)
             start_conversation()
             add_dialogue("Your mind is quickly probed, then cast aside, leaving you feeling slightly ill and filled with an irrational sense of foreboding.")
         end

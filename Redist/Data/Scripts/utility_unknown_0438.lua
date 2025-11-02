@@ -12,7 +12,7 @@ function utility_unknown_0438(eventid, objectref)
         var_0000 = utility_unknown_1085(var_0001, var_0000)
         var_0004 = var_0000[1]
         if var_0004 then
-            var_0005 = get_item_frame(var_0004)
+            var_0005 = get_object_frame(var_0004)
             var_0006 = var_0005 % 4
             if var_0006 >= 3 then
                 var_0007 = execute_usecode_array({8014, 83, 7768}, var_0004)

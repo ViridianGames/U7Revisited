@@ -11,7 +11,7 @@ function npc_brownie_0060(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 60)
+    switch_talk_to(60)
     var_0000 = get_lord_or_lady()
     var_0001 = is_player_wearing_fellowship_medallion()
     add_answer({"bye", "job", "name"})

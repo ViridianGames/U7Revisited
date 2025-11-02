@@ -64,8 +64,8 @@ function object_chair_0292(eventid, objectref)
             var_000D = get_object_position(-356)
             var_000E = 1
             for var_0013 in ipairs(var_0009) do
-                var_000D[3] - var_000D[2] = var_000B[var_000E]
-                var_000D[3] - var_000D[1] = var_000A[var_000E]
+                var_000D[2] = var_000D[2] + var_000B[var_000E]
+                var_000D[1] = var_000D[1] + var_000A[var_000E]
                 func_003EH(var_000C[var_000E], var_0011)
                 set_item_frame_rot(var_000C[var_000E], var_0011)
                 var_000E = var_000E + 1

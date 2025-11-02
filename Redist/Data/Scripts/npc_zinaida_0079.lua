@@ -11,7 +11,7 @@ function npc_zinaida_0079(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 79)
+    switch_talk_to(79)
     var_0000 = get_schedule_type(get_npc_name(79))
     add_answer({"bye", "job", "name"})
     if not get_flag(228) then

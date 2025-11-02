@@ -4,7 +4,7 @@ function npc_sherry_0066(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(66, 0)
+        switch_talk_to(66)
         var_0000 = get_player_name()
         var_0001 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})

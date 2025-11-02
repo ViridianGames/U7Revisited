@@ -30,7 +30,7 @@ function utility_clock_0449(eventid, objectref)
             var_000C = var_000C[find_nearby(0, 40, 414, objectref)]
             for i = 1, #var_000C do
                 var_000F = var_000C[i]
-                if get_item_quality(var_000F) == 1 and get_item_quantity(var_000F, 1) == 118 then
+                if get_object_quality(var_000F) == 1 and get_item_quantity(var_000F, 1) == 118 then
                     remove_item(var_000F)
                 end
             end

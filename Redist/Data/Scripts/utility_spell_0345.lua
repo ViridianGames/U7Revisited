@@ -5,7 +5,7 @@ function utility_spell_0345(eventid, objectref)
     if eventid == 1 then
         var_0000 = object_select_modal() --- Guess: Selects spell target
         var_0001 = select_spell_target(var_0000) --- Guess: Gets selected target
-        destroyobject_(objectref)
+        destroy_object(objectref)
         bark(objectref, "@Mani@")
         if check_spell_requirements() and is_object_valid(var_0000) then
             var_0002 = add_containerobject_s(objectref, {17511, 17509, 17510, 8033, 64, 17496, 8557, var_0001, 7769})

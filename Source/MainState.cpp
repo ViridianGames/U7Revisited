@@ -679,11 +679,13 @@ void MainState::UpdateInput()
 		else if (!g_gumpManager->m_isMouseOverGump && !g_gumpManager->m_draggingObject && !g_mouseOverUI && g_objectUnderMousePointer == nullptr)
 		{
 #ifdef DEBUG_NPC_PATHFINDING
-			// Clicked on terrain (no object) - show terrain debug info
-			int worldX = (int)floor(g_terrainUnderMousePointer.x);
-			int worldZ = (int)floor(g_terrainUnderMousePointer.z);
+			// Clicked on terrain (no object) - show terrain debug info (sandbox mode only)
+			if (m_gameMode == MainStateModes::MAIN_STATE_MODE_SANDBOX)
+			{
+				int worldX = (int)floor(g_terrainUnderMousePointer.x);
+				int worldZ = (int)floor(g_terrainUnderMousePointer.z);
 
-			if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
+				if (worldX >= 0 && worldX < 3072 && worldZ >= 0 && worldZ < 3072)
 			{
 				// Get terrain shape
 				unsigned short shapeframe = g_World[worldZ][worldX];
@@ -708,6 +710,7 @@ void MainState::UpdateInput()
 				{
 					AddConsoleString("  Walkable: NO", RED);
 				}
+			}
 			}
 #endif
 		}

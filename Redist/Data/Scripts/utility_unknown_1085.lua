@@ -2,7 +2,7 @@
 function utility_unknown_1085(P0, P1)
     local var_0000, var_0001, var_0002
 
-    var_0000 = get_array_size(P1)
+    var_0000 = #P1
     var_0001 = true
     if var_0000 <= 1 then
         var_0001 = false

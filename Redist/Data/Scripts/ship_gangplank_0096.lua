@@ -8,13 +8,13 @@ answer = nil
 local debug = true
 function log(...) if debug then print(...) end end
 
-function ship_gangplank_0096(object_id, event)
-    log("ship_gangplank_0096 called with object_id:", object_id, "event:", event)
-    if event == 1 then
+function ship_gangplank_0096(eventid, objectref)
+    log("ship_gangplank_0096 called with objectref:", objectref, "eventid:", eventid)
+    if eventid == 1 then
         if get_flag(0x010) and not get_flag(0x088) then -- Placeholder: sail state
-            add_dialogue(object_id, strings[0x0000])
+            add_dialogue(strings[0x0000])
         elseif not get_flag(0x829) then -- Placeholder: block check
-            add_dialogue(object_id, strings[0x0039])
+            add_dialogue(strings[0x0039])
         elseif not get_flag(0x081) then
             -- TODO: Raise gangplank (calli 007E)
         end

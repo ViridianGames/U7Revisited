@@ -4,12 +4,12 @@ function npc_jaana_0005(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(5, 0)
+        switch_talk_to(5)
         var_0000 = get_lord_or_lady()
         var_0001 = get_npc_name(5) --- Guess: Retrieves object reference from ID
         var_0002 = get_player_name()
         add_answer({"bye", "job", "name"})
-        if is_in_int_array(var_0001, get_party_members()) then
+        if is_int_in_array(var_0001, get_party_members()) then
             add_answer("leave")
         elseif not get_flag(24) then
             add_answer("join")
@@ -39,11 +39,11 @@ function npc_jaana_0005(eventid, objectref)
                 add_dialogue("\"I have been the Cove Healer for some time now, and can provide thee with mine healing services. Since magic is not reliable, I have been yearning to join a party of adventurers, such as mine old friends. I miss the old life!\"")
                 add_answer({"magic", "friends", "heal"})
                 set_flag(40, true)
-                if not is_in_int_array(var_0001, get_party_members()) then
+                if not is_int_in_array(var_0001, get_party_members()) then
                     add_answer("join")
                 end
             elseif var_0003 == "heal" then
-                if is_in_int_array(var_0001, get_party_members()) then
+                if is_int_in_array(var_0001, get_party_members()) then
                     if get_flag(41) then
                         var_0004 = get_timer(10) --- Guess: Checks party status or conditions
                     else
@@ -102,18 +102,18 @@ function npc_jaana_0005(eventid, objectref)
                 remove_answer("Lord Heather")
                 var_000A = npc_id_in_party(77) --- Guess: Checks player status
                 if var_000A then
-                    switch_talk_to(77, 0)
+                    switch_talk_to(77)
                     add_dialogue("\"I see that thou art leaving Cove for a while, my dear?\"")
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                     add_dialogue("\"Yes, milord. But I shall return. I promise thee.\"")
-                    switch_talk_to(77, 0)
+                    switch_talk_to(77)
                     add_dialogue("\"I shall try not to worry about thee, but it will be difficult.\"")
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                     add_dialogue("\"Do not worry. I shall be safe with the Avatar.\"")
-                    switch_talk_to(77, 0)
+                    switch_talk_to(77)
                     add_dialogue("\"I do hope so.\" The Mayor embraces Jaana.")
                     hide_npc(77)
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                 end
             elseif var_0003 == "Iolo" then
                 var_000B = npc_id_in_party(1) --- Guess: Checks player status
@@ -121,10 +121,10 @@ function npc_jaana_0005(eventid, objectref)
                     add_dialogue("\"Where is he? 'Twould be good to see him!\"")
                 else
                     add_dialogue("\"He looks the same to me! Perhaps he has a little more waistline than before... but that is to be expected if one stays away from adventuring for too long!\"")
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("\"What dost thou mean? 'Little more waistline' indeed!\"")
                     hide_npc(1)
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                     add_dialogue("\"No offense intended, Iolo!\"")
                 end
                 remove_answer("Iolo")
@@ -134,10 +134,10 @@ function npc_jaana_0005(eventid, objectref)
                     add_dialogue("\"Oh, I would love to see him. I wonder where he might be.\"")
                 else
                     add_dialogue("\"Shamino, thou dost not look like a 'kid' anymore! What didst happen? Didst thou reach the venerable age of thirty?\"")
-                    switch_talk_to(3, 0)
+                    switch_talk_to(3)
                     add_dialogue("\"Hmph. I am still a kid at heart.\"")
                     hide_npc(3)
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                     add_dialogue("\"That is a relief.\" She grins cheekily.")
                 end
                 remove_answer("Shamino")
@@ -147,11 +147,11 @@ function npc_jaana_0005(eventid, objectref)
                     add_dialogue("\"I miss having a drink or two with that rogue! Let's go find that knight!\"")
                 else
                     add_dialogue("\"For someone recently knighted, he has retained his good looks and boyish charm, hasn't he?\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Thou dost mean 'mannish' charm, dost thou not?\"")
-                    switch_talk_to(5, 0)
+                    switch_talk_to(5)
                     add_dialogue("\"Oh, pardon -me-, sir. Thine immaturity confused me for a moment.\"")
-                    switch_talk_to(4, 0)
+                    switch_talk_to(4)
                     add_dialogue("\"Art thou going to let her get away with that, " .. var_0002 .. "?\"")
                     var_000E = select_option()
                     if var_000E then

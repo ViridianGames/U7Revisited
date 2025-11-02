@@ -6,7 +6,7 @@ function npc_nystul_0024(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(24, 0)
+    switch_talk_to(24)
     add_answer({"bye", "job", "name"})
     if not get_flag(153) then
         add_dialogue("You see your old friend Nystul, now a decrepit old man in mage's robes. He seems lost in thought, far away.")
@@ -39,10 +39,10 @@ function npc_nystul_0024(eventid, objectref)
                 add_dialogue("\"Sometimes the magic works, sometimes it doth not.\" He waves his hand, and drops his wand. \"Oops!\" he cries, as he bends to pick it up.")
                 var_0000 = npc_id_in_party(2) --- Guess: Checks player status
                 if var_0000 then
-                    switch_talk_to(2, 0)
+                    switch_talk_to(2)
                     add_dialogue("\"Art thou sure this man is not really the jester?\"")
                     hide_npc(2)
-                    switch_talk_to(24, 0)
+                    switch_talk_to(24)
                     add_dialogue("\"Anyway, as I was saying, uhm, what was I saying? Oh yes. Magic. I can still sell thee some spells or reagents if thou wouldst like.\"")
                 end
             else

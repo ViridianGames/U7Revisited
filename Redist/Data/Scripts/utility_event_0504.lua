@@ -3,12 +3,12 @@ function utility_event_0504(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_0010, var_0011, var_0012, var_0013, var_0014, var_0015, var_0016, var_0017, var_0018, var_0019, var_0020, var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028, var_0029, var_0030, var_0031
 
     if eventid == 3 then
-        var_0000 = get_item_quality(objectref)
+        var_0000 = get_object_quality(objectref)
         if var_0000 == 0 then
             var_0001 = find_nearest(10, 848, objectref)
-            var_0002 = get_item_frame(var_0001)
+            var_0002 = get_object_frame(var_0001)
             if not var_0002 == 9 then
-                set_item_frame(3, var_0001)
+                set_object_frame(3, var_0001)
             end
         elseif var_0000 == 1 then
             var_0003 = find_nearby(0, 1, 726, objectref)
@@ -42,7 +42,7 @@ function utility_event_0504(eventid, objectref)
             var_0007 = false
             for i = 1, #var_0006 do
                 var_0010 = var_0006[i]
-                var_0011 = get_item_frame(var_0010)
+                var_0011 = get_object_frame(var_0010)
                 var_0012 = get_object_position(var_0010)
                 if var_0011 == 8 and var_0012[1] == var_0005[1] - 1 and var_0012[2] == var_0005[2] and var_0012[3] == 4 then
                     var_0007 = var_0007 + 1
@@ -66,21 +66,21 @@ function utility_event_0504(eventid, objectref)
                     utility_unknown_0893()
                     var_0013 = get_object_position(get_npc_name(356))
                     if var_0013[2] > var_0005[2] then
-                        if is_pc_female() then
-                            set_item_frame(20, utility_event_0897())
+                        if is_player_female() then
+                            set_object_frame(20, utility_event_0897())
                         else
-                            set_item_frame(18, utility_event_0897())
+                            set_object_frame(18, utility_event_0897())
                         end
                     else
-                        if is_pc_female() then
-                            set_item_frame(21, utility_event_0897())
+                        if is_player_female() then
+                            set_object_frame(21, utility_event_0897())
                         else
-                            set_item_frame(19, utility_event_0897())
+                            set_object_frame(19, utility_event_0897())
                         end
                     end
                     var_0014 = create_new_object(955)
-                    set_item_frame(7, var_0014)
-                    set_item_frame(1, var_0004)
+                    set_object_frame(7, var_0014)
+                    set_object_frame(1, var_0004)
                     var_0015 = update_last_created({var_0005[1] - 1, var_0005[2] - 1, var_0005[3] + 2})
                     sprite_effect(-1, 0, 0, 0, var_0005[2] - 2, var_0005[1] - 2, 7)
                     play_sound_effect(68)
@@ -121,10 +121,10 @@ function utility_event_0504(eventid, objectref)
                     set_item_flag(18, var_0017)
                     var_001E = get_object_position(get_npc_name(356))
                     if var_001E[2] > var_0013[2] then
-                        set_item_frame(19, var_0017)
+                        set_object_frame(19, var_0017)
                         var_001D = {1510, 2}
                     else
-                        set_item_frame(3, var_0017)
+                        set_object_frame(3, var_0017)
                         var_001D = {1518, 2}
                     end
                     var_0015 = update_last_created(var_001D)
@@ -150,7 +150,7 @@ function utility_event_0504(eventid, objectref)
             var_0022 = find_nearby(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
-                if get_item_frame(var_0025) == 7 and get_item_quality(var_0025) == 1 then
+                if get_object_frame(var_0025) == 7 and get_object_quality(var_0025) == 1 then
                     var_0026 = get_object_position(var_0025)
                     sprite_effect(3, 0, 0, 0, var_0026[2], var_0026[1], 17)
                 end
@@ -164,15 +164,15 @@ function utility_event_0504(eventid, objectref)
         if not get_flag(831) then
             if not get_flag(750) then
                 var_001C = find_nearest(10, 528, objectref)
-                var_0027 = get_item_frame(var_001C)
+                var_0027 = get_object_frame(var_001C)
                 var_0028 = get_object_position(var_001C)
                 utility_event_0998(var_001C)
                 var_0029 = create_new_object(892)
                 set_item_flag(18, var_0029)
                 if var_0027 == 12 then
-                    set_item_frame(14, var_0029)
+                    set_object_frame(14, var_0029)
                 elseif var_0027 == 28 then
-                    set_item_frame(22, var_0029)
+                    set_object_frame(22, var_0029)
                 end
                 var_0015 = update_last_created(var_0028)
                 set_flag(750, true)
@@ -182,7 +182,7 @@ function utility_event_0504(eventid, objectref)
             var_0022 = find_nearby(16, 10, 275, objectref)
             for i = 1, #var_0022 do
                 var_0025 = var_0022[i]
-                if get_item_frame(var_0025) == 7 and get_item_quality(var_0025) == 2 then
+                if get_object_frame(var_0025) == 7 and get_object_quality(var_0025) == 2 then
                     var_0026 = get_object_position(var_0025)
                     sprite_effect(3, 0, 0, 0, var_0026[2], var_0026[1], 17)
                 end
@@ -193,7 +193,7 @@ function utility_event_0504(eventid, objectref)
             var_0006 = find_nearby(0, 1, 955, objectref)
             for i = 1, #var_0006 do
                 var_0010 = var_0006[i]
-                var_0011 = get_item_frame(var_0010)
+                var_0011 = get_object_frame(var_0010)
                 if var_0011 == 7 then
                     remove_item(var_0010)
                 elseif var_0011 == 8 then

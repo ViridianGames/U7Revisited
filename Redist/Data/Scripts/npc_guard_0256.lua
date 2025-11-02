@@ -7,7 +7,7 @@ function npc_guard_0256(eventid, objectref)
     end
     var_0000 = get_party_members()
     var_0001 = get_schedule_type(get_npc_name(objectref)) --- Guess: Gets schedule
-    switch_talk_to(256, 0)
+    switch_talk_to(256)
     if var_0001 ~= 3 then
         add_dialogue("The wisp does not respond.")
         abort()

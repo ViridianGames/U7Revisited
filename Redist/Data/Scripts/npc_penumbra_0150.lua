@@ -6,7 +6,7 @@ function npc_penumbra_0150(eventid, objectref)
     if eventid == 0 then
         abort()
     end
-    switch_talk_to(150, 0)
+    switch_talk_to(150)
     set_flag(482, utility_unknown_0969()) --- Guess: Checks ether status
     var_0000 = get_player_name() --- Guess: Gets player info
     var_0001 = utility_unknown_1073(359, 359, 759, 1, 357) --- Guess: Checks inventory items

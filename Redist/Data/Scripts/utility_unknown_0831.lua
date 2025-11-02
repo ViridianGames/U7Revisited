@@ -5,7 +5,7 @@ function utility_unknown_0831(P0, P1)
     var_0002 = table.insert(find_nearby_avatar(271), find_nearby_avatar(272))
     var_0003 = false
     for var_0004 in ipairs(var_0002) do
-        if _get_object_quality(var_0006) == _get_object_quality(P1) then
+        if get_object_quality(var_0006) == get_object_quality(P1) then
             var_0007 = utility_unknown_0820()
             var_0007 = execute_usecode_array(P1, {6, -1, 17419, 8014, 1, 7750})
             var_0003 = true

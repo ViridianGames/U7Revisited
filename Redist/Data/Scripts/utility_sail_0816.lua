@@ -14,8 +14,9 @@ function utility_sail_0816(eventid, objectref, arg1)
         var_0003 = 87
     end
     -- Guess: sloop adjusts sail states
+    local sails = {6, 7, 8, 1, 27}
     for i = 1, 5 do
-        var_0008 = {6, 7, 8, 1, 27}[i]
+        var_0008 = sails[i]
         var_0009 = get_sail_state(var_0008) --- Guess: Gets sail state
         set_sail_state(var_0008, var_0009 + var_0002) --- Guess: Sets sail state
     end

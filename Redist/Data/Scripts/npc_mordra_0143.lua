@@ -10,14 +10,14 @@ function npc_mordra_0143(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 143)
+    switch_talk_to(143)
     var_0000 = get_lord_or_lady()
     var_0001 = get_player_name()
     var_0002 = false
     var_0003 = false
     var_0004 = false
     var_0005 = false
-    var_0006 = get_schedule()
+    var_0006 = get_schedule(143)
     var_0007 = false
     var_0008 = false
     var_0009 = get_schedule_type(143)

@@ -3,7 +3,7 @@ function npc_laplem_0211(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 211)
+        switch_talk_to(211)
         start_conversation()
         add_answer({"bye", "job", "name"})
         if not get_flag(656) then

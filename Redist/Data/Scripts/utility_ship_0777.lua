@@ -22,7 +22,7 @@ function utility_ship_0777(eventid, objectref)
                         var_0004 = utility_unknown_0947(var_0000) --- External call to sit down
                     end
                 else
-                    if array_size(get_party_members()) == 1 then
+                    if #get_party_members() == 1 then
                         bark(objectref, "@The title for this cart must first be purchased.@")
                     else
                         bark(objectref, "@We must first purchase the title for this cart.@")

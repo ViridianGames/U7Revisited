@@ -3,9 +3,9 @@ function npc_beverlea_0173(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012, var_0013
 
     if eventid == 1 then
-        switch_talk_to(0, 173)
+        switch_talk_to(173)
         var_0000 = get_lord_or_lady()
-        var_0001 = get_schedule()
+        var_0001 = get_schedule(173)
         var_0002 = get_schedule_type(get_npc_name(173))
         var_0003 = find_nearest(-1, 839, 356)
         start_conversation()
@@ -165,7 +165,7 @@ function npc_beverlea_0173(eventid, objectref)
             elseif var_0012 == 4 then
                 var_0013 = "@Collectibles? Antiques?@"
             end
-            bark(var_0013, 173)
+            bark(173, var_0013)
         else
             utility_unknown_1070(173)
         end

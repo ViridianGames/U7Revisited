@@ -9,10 +9,10 @@ function utility_unknown_0867(eventid, objectref)
         if var_0002 <= 0 then
             -- Guess: sloop checks party members
             for i = 1, 5 do
-                var_0005 = {2, 3, 4, 1, 31}[i]
+                var_0005 = ({2, 3, 4, 1, 31})[i]
                 var_0006 = get_npc_property(1, var_0005) --- Guess: Gets NPC property (health)
                 if var_0006 <= 0 then
-                    destroyobject_(var_0005) --- Guess: Destroys item
+                    destroy_object(var_0005) --- Guess: Destroys item
                 end
             end
         else

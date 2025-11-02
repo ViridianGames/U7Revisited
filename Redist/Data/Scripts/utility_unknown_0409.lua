@@ -20,7 +20,7 @@ function utility_unknown_0409(eventid, objectref)
         var_0009 = var_0005
         -- Guess: sloop aligns party members in a pattern
         for i = 1, 5 do
-            var_000C = {10, 11, 12, 8, 346}[i]
+            var_000C = ({10, 11, 12, 8, 346})[i]
             if var_0007 == 1 then
                 var_0009[1] = var_0009[1] - 2
                 var_0009[2] = var_0009[2] + 2

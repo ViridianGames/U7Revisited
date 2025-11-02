@@ -10,7 +10,7 @@ function npc_cubolt_0155(eventid, objectref)
     end
 
     start_conversation()
-    switch_talk_to(0, 155)
+    switch_talk_to(155)
     var_0000 = get_player_name()
     var_0001 = get_lord_or_lady()
     var_0002 = false

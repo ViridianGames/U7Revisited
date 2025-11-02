@@ -19,11 +19,11 @@ function utility_forge_0300(eventid, objectref)
 
     var_000E = get_container_objects(4, 359, 797, var_0001)
     var_000F = execute_usecode_array(var_0000, {17453, 17452, 7715})
-    if _get_object_quality(var_000E) == 243 then
+    if get_object_quality(var_000E) == 243 then
         utility_event_0998(var_0001)
         set_flag(753, false)
         set_flag(795, true)
-    elseif _get_object_quality(var_000E) == 244 then
+    elseif get_object_quality(var_000E) == 244 then
         utility_event_0998(var_0001)
         set_flag(796, false)
         set_flag(754, false)

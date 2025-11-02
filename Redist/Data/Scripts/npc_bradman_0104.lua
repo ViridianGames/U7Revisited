@@ -4,7 +4,7 @@ function npc_bradman_0104(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(104, 0)
+        switch_talk_to(104)
         var_0000 = get_lord_or_lady()
         add_answer({"bye", "job", "name"})
         if not get_flag(322) then
@@ -41,16 +41,16 @@ function npc_bradman_0104(eventid, objectref)
                 var_0001 = npc_id_in_party(1) --- Guess: Checks player status
                 var_0002 = npc_id_in_party(10) --- Guess: Checks player status
                 if var_0001 then
-                    switch_talk_to(1, 0)
+                    switch_talk_to(1)
                     add_dialogue("Iolo blushes. \"I am honored, my friend. I was not aware I had an admirer in this part of the land.\" He bows to Bradman, who returns the gesture.")
                     hide_npc(1)
-                    switch_talk_to(104, 0)
+                    switch_talk_to(104)
                 end
                 if var_0002 then
-                    switch_talk_to(10, 0)
+                    switch_talk_to(10)
                     add_dialogue("\"Thank you for thy kind words, good sir. Perhaps we may practice sometime in the future.\"")
                     hide_npc(10)
-                    switch_talk_to(104, 0)
+                    switch_talk_to(104)
                     add_dialogue("\"I would be greatly honored, milord!\"")
                 else
                     add_answer("Tseramed")

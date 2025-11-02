@@ -3,7 +3,7 @@ function utility_unknown_0914(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     start_conversation()
-    switch_talk_to(0, 288) --- Guess: Initiates dialogue
+    switch_talk_to(288) --- Guess: Initiates dialogue
     add_dialogue("@Adjhar appears to have resumed the stance of a more traditional golem guardian...@")
     add_answer({"bye", "job", "name"}) --- Guess: Adds dialogue options
     var_0000 = false

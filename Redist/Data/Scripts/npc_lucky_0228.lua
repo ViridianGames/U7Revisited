@@ -3,8 +3,8 @@ function npc_lucky_0228(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003
 
     if eventid == 1 then
-        switch_talk_to(0, 228)
-        var_0000 = get_schedule()
+        switch_talk_to(228)
+        var_0000 = get_schedule(228)
         var_0001 = get_schedule_type(get_npc_name(228))
         start_conversation()
         add_answer({"bye", "job", "name"})
@@ -63,7 +63,7 @@ function npc_lucky_0228(eventid, objectref)
             elseif var_0002 == 4 then
                 var_0003 = "@Damn parrot droppings...@"
             end
-            bark(var_0003, 228)
+            bark(228, var_0003)
         else
             utility_unknown_1070(228)
         end

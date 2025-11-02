@@ -26,7 +26,7 @@ function utility_unknown_1094(eventid, objectref)
             var_000C = get_dialogue_choice() --- Guess: Gets dialogue choice
             if var_000C then
                 add_dialogue("@How many wouldst thou like?@")
-                var_000B = purchaseobject_(true, 1, 20, var_0004[var_0009], var_0008, var_0003[var_0009]) --- Guess: Purchases item
+                var_000B = purchase_object(true, 1, 20, var_0004[var_0009], var_0008, var_0003[var_0009]) --- Guess: Purchases item
             end
             if var_000B == 1 then
                 add_dialogue("@Done!@")

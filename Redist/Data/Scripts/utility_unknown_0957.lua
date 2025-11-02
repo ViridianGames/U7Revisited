@@ -32,7 +32,7 @@ function utility_unknown_0957(cost_to_train, stat_to_train)
     add_dialogue("Markus wields his sword and faces " .. npc_reference .. ". He gives " .. npc_reference .. " a few pointers in stance and balance, then demonstrates some sample thrusts.")
     add_dialogue("Before long, " .. npc_reference .. " and the trainer are trading blows with weapons. He is obviously very good at what he does, and the experience is valuable to " .. npc_reference .. ".")
     add_dialogue("When the session is over, it is felt that there has been a gain in combat ability.")
-    var_0009 = get_npc_training_level(npc_id, 4)
+    var_0009 = get_training_level(npc_id, 4)
     if var_0009 < 30 then
         increase_npc_combat_level(npc_id, 1)
         return

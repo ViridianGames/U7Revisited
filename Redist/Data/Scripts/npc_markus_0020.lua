@@ -4,7 +4,7 @@ function npc_markus_0020(eventid, objectref)
 
     start_conversation()
     if eventid == 1 then
-        switch_talk_to(20, 0)
+        switch_talk_to(20)
         var_0001 = get_schedule(20)
         add_answer({"bye", "murder", "job", "name"})
         if not get_flag(84) then

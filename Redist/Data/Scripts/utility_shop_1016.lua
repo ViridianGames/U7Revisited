@@ -27,7 +27,7 @@ function utility_shop_1016(var_0000, var_0001, var_0002, var_0003, var_0004, var
                 remove_item(var_0017)
                 if var_0018 ~= 356 then
                     var_0013 = var_0013 + 1
-                    switch_talk_to(var_0018, 0)
+                    switch_talk_to(var_0018)
                     var_0014 = true
                     if var_0004 == 1 then
                         add_dialogue("\"I will carry that.\"")

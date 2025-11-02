@@ -3,7 +3,7 @@ function npc_cairbre_0244(eventid, objectref)
     local var_0000, var_0001, var_0002
 
     if eventid == 1 then
-        switch_talk_to(0, 244)
+        switch_talk_to(244)
         var_0000 = npc_id_in_party(253)
         var_0001 = npc_id_in_party(252)
         var_0002 = get_lord_or_lady()
@@ -40,10 +40,10 @@ function npc_cairbre_0244(eventid, objectref)
                 add_dialogue("\"He is a fool.\"")
                 if var_0000 then
                     add_dialogue("*")
-                    switch_talk_to(0, 253)
+                    switch_talk_to(253)
                     add_dialogue("\"I heard that, Cairbre!\"")
                     hide_npc(253)
-                    switch_talk_to(0, 244)
+                    switch_talk_to(244)
                 end
                 set_flag(736, true)
                 remove_answer("senses")
