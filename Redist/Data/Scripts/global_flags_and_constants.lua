@@ -13,7 +13,7 @@ function table.contains(t, val)
     return table.find(t, val) ~= nil
 end
 
--- Skill/Attribute constants for get_npc_training_level and related functions
+-- Skill/Attribute constants for get_training_level and related functions
 SKILL_STRENGTH = 0
 SKILL_DEXTERITY = 1
 SKILL_INTELLIGENCE = 2
