@@ -63,14 +63,14 @@ function tavern_vendor_0951(eventid, objectref)
             local price = prices[choice]
             local object_id = object_ids[choice]
             local suffix = suffixes[choice]
-            local result = buyobject_(suffix, object_id, 1, price, items[choice])
+            local result = buy_object(suffix, object_id, 1, price, items[choice])
             add_dialogue(strings[0x01C5] .. result .. strings[0x01C8])
             local buy_response = get_answer()
             if price == 377 then
                 add_dialogue(strings[0x01EB])
-                buy_response = buyobject_(suffix, object_id, math.random(1, 20), price, items[choice])
+                buy_response = buy_object(suffix, object_id, math.random(1, 20), price, items[choice])
             else
-                buy_response = buyobject_(suffix, object_id, 1, price, items[choice])
+                buy_response = buy_object(suffix, object_id, 1, price, items[choice])
             end
             if buy_response == 1 then
                 add_dialogue(strings[0x0209])

@@ -73,10 +73,10 @@ function armor_vendor_0953(eventid, objectref)
             local object_id = object_ids[choice]
             local prefix = prefixes[choice]
             local suffix = suffixes[choice]
-            local result = buyobject_(prefix, objectref, 1, price, items[choice])
+            local result = buy_object(prefix, objectref, 1, price, items[choice])
             add_dialogue(object_id, strings[0x00CF] .. result .. strings[0x00D2])
             local buy_response = get_answer()
-            buy_response = buyobject_(prefix, objectref, 1, price, items[choice])
+            buy_response = buy_object(prefix, objectref, 1, price, items[choice])
             if buy_response == 1 then
                 add_dialogue(strings[0x00E8])
             elseif buy_response == 2 then

@@ -50,10 +50,10 @@ function weapon_vendor_0952(eventid, objectref)
             local price = prices[choice]
             local object_id = object_ids[choice]
             local prefix = prefixes[choice]
-            local result = buyobject_(prefix, objectref, 1, price, items[choice])
+            local result = buy_object(prefix, objectref, 1, price, items[choice])
             add_dialogue(strings[0x0070] .. result .. strings[0x0073])
             local buy_response = get_answer()
-            buy_response = buyobject_(prefix, object_id, 1, price, items[choice])
+            buy_response = buy_object(prefix, object_id, 1, price, items[choice])
             if buy_response == 1 then
                 add_dialogue(strings[0x0095])
             elseif buy_response == 2 then
