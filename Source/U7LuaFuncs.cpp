@@ -1035,6 +1035,12 @@ static int LuaDestroyObject(lua_State *L)
     return 0;
 }
 
+// Silent version of destroy_object - currently just calls the regular version
+static int LuaDestroyObjectSilent(lua_State *L)
+{
+    return LuaDestroyObject(L);
+}
+
 static int LuaMoveObject(lua_State *L)
 {
     int object_id = luaL_checkinteger(L, 1);
@@ -3916,6 +3922,7 @@ void RegisterAllLuaFunctions()
 
     g_ScriptingSystem->RegisterScriptFunction( "spawn_object", LuaSpawnObject);
     g_ScriptingSystem->RegisterScriptFunction( "destroy_object", LuaDestroyObject);
+    g_ScriptingSystem->RegisterScriptFunction( "destroy_object_silent", LuaDestroyObjectSilent);
 
     g_ScriptingSystem->RegisterScriptFunction( "set_camera_angle", LuaSetCameraAngle);
     g_ScriptingSystem->RegisterScriptFunction( "jump_camera_angle", LuaJumpCameraAngle);

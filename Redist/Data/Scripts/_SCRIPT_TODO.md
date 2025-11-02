@@ -56,8 +56,6 @@ npc_in_party
 
 set_object_attributes
 
-destroy_object_silent
-
 click_on_item
 
 create_array(x) - can this just be {x} ???
@@ -70,6 +68,7 @@ display_sign() - this same as open_book()?
 
 # DONE
 
+destroy_object_silent - calls destroy_object for now
 cmps("Brom") - this is a shortcut for get_answer() and comparing it. i attempted implementation.
 select_option - alias for ask_yes_no() w/ no args
 fixed lua docs for input_numeric_value()

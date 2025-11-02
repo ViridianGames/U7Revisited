@@ -275,6 +275,11 @@ function spawn_object(shape, frame, x, y, z) end
 ---@param object_id integer The object to destroy
 function destroy_object(object_id) end
 
+---Destroys an object silently (without effects/sounds)
+---Currently behaves the same as destroy_object()
+---@param object_id integer The object to destroy
+function destroy_object_silent(object_id) end
+
 -- ============================================================================
 -- NPC PROPERTIES
 -- ============================================================================
