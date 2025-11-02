@@ -154,6 +154,12 @@ set(SOURCES
 # ============================================================================
 add_executable(U7Revisited ${SOURCES})
 
+# Build configuration specific definitions
+target_compile_definitions(U7Revisited PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
+)
+
 # Link dependencies
 target_link_libraries(U7Revisited PRIVATE
     raylib
@@ -191,6 +197,12 @@ add_executable(ScriptTests
     Tests/ScriptTestMocks.cpp
     Tests/TestDataLoader.cpp
     ${TEST_SOURCES}
+)
+
+# Build configuration specific definitions
+target_compile_definitions(ScriptTests PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
 )
 
 target_link_libraries(ScriptTests PRIVATE
