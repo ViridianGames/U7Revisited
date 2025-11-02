@@ -251,11 +251,12 @@ function set_object_visibility(object_id, visible) end
 
 ---Spawns a new object
 ---@param shape integer The shape ID of the object to spawn
+---@param frame integer The frame of the object
 ---@param x integer X coordinate
 ---@param y integer Y coordinate
 ---@param z integer Z coordinate
 ---@return integer object_id The ID of the spawned object
-function spawn_object(shape, x, y, z) end
+function spawn_object(shape, frame, x, y, z) end
 
 ---Destroys an object
 ---@param object_id integer The object to destroy

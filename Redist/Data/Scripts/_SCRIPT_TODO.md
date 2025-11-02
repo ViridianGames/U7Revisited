@@ -67,10 +67,12 @@ or ... - various scripts had this for some reason? commented out with a TODO
 
 get_random(x) - the normal random(min,max) but this takes only one arg, so 0-x?
 
-
+display_sign() - this same as open_book()?
 
 # DONE
 
+fixed lua docs for spawn_object()
+fixed lua docs for set_model_animation_frame()
 added wait() to lua docs
 get_npc_name_from_id => get_npc_name
 get_npc_training_level => get_training_level
