@@ -71,6 +71,7 @@ display_sign() - this same as open_book()?
 
 # DONE
 
+fixed lua docs for input_numeric_value()
 fixed lua docs for spawn_object()
 fixed lua docs for set_model_animation_frame()
 added wait() to lua docs

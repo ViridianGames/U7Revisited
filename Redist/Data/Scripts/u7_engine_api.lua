@@ -920,12 +920,13 @@ function book_mode(book_id) end
 ---@param object_id integer Item to click
 function click_on_item(object_id) end
 
----[Exult 0x000C] Gets numeric input from user
+---[Exult 0x000C] Gets numeric input from user (currently not implemented - returns default)
 ---@param min integer Minimum value
 ---@param max integer Maximum value
+---@param step integer Step value
 ---@param default integer Default value
----@return integer value User's input
-function input_numeric_value(min, max, default) end
+---@return integer value User's input (currently just returns default)
+function input_numeric_value(min, max, step, default) end
 
 ---[Exult 0x0009] Clears conversation answers
 function clear_answers() end
