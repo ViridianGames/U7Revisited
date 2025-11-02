@@ -1,11 +1,11 @@
 --- Best guess: Handles dialogue with Iolo in Trinsic, discussing the murder, companions, and quest progression, with options to join or leave.
 function npc_iolo_0001(eventid, objectref)
     local player_name, player_member_names, party_member_1_name, lord_or_lady, player_female, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B, var_000C, var_000D, var_000E, var_000F, var_0010, var_0011, var_0012
-    
+
     set_flag(20, true)
     player_name = get_player_name()
     player_member_names = get_party_members()
-    party_member_1_name = get_npc_name_from_id(1)
+    party_member_1_name = get_npc_name(1)
     lord_or_lady = get_lord_or_lady()
     player_female = is_player_female()
     if eventid == 3 then
@@ -62,8 +62,8 @@ function npc_iolo_0001(eventid, objectref)
         --else
             --add_to_party(1) --- Guess: Removes object from game
         --end
-    
-        
+
+
         start_conversation()
         add_dialogue("A rather large, familiar man looks up and sees you. The shock that is evident from his dumbfounded expression quickly evolves into delight. He smiles broadly.")
         add_dialogue("\"" .. player_name .. "! If I did not trust the infallibility of mine own eyes, I would not believe it! I was just thinking to myself, 'If only the Avatar were here!' Then...")
@@ -148,7 +148,7 @@ function npc_iolo_0001(eventid, objectref)
         debug_print("func_0401: eventid == 1")
         player_name = get_player_name()
         player_member_names = get_party_members()
-        party_member_1_name = get_npc_name_from_id(1) --- Guess: Retrieves object reference from ID
+        party_member_1_name = get_npc_name(1) --- Guess: Retrieves object reference from ID
         lord_or_lady = get_lord_or_lady()
         --var_0008 = npc_id_in_party(11) --- Guess: Checks player status
         --var_0009 = npc_id_in_party(3) --- Guess: Checks player status

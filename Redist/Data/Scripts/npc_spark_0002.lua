@@ -8,7 +8,7 @@ function npc_spark_0002(eventid, objectref)
         var_0001 = "Avatar"
         var_0002 = get_party_members()
         var_0003 = is_player_female()
-        var_0004 = get_npc_name_from_id(2) --- Guess: Retrieves object reference from ID
+        var_0004 = get_npc_name(2) --- Guess: Retrieves object reference from ID
         var_0005 = false
         var_0006 = false
         var_0007 = false

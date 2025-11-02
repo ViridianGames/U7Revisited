@@ -1552,7 +1552,7 @@ static int LuaGetSchedule(lua_State *L)
 
 static int LuaGetNPCNameFromId(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: get_npc_name_from_id called");
+    if (g_LuaDebug) DebugPrint("LUA: get_npc_name called");
     int npc_id = luaL_checkinteger(L, 1);
     string npc_name = "NPC";
     npc_name = g_NPCData[npc_id]->name;
