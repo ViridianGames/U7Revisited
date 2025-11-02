@@ -1650,7 +1650,7 @@ static int LuaGetNPCTrainingPoints(lua_State *L)
 
 static int LuaGetNPCTrainingLevel(lua_State *L)
 {
-    if (g_LuaDebug) DebugPrint("LUA: get_npc_training_level called");
+    if (g_LuaDebug) DebugPrint("LUA: get_training_level called");
     int npc_id = luaL_checkinteger(L, 1);
     int npc_skill = luaL_checkinteger(L, 2);
     int training_level = 0;
