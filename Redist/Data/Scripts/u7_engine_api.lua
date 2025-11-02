@@ -102,6 +102,11 @@ function is_conversation_running() end
 ---@return boolean answer True if player selected "Yes", false if "No"
 function ask_yes_no(question) end
 
+---Presents "Yes" and "No" options without a question prompt (alias for ask_yes_no with no parameter)
+---Use this when the question was already asked in previous dialog
+---@return boolean answer True if player selected "Yes", false if "No"
+function select_option() end
+
 ---Presents answer choices without a question prompt
 ---All elements in the table are treated as answer choices
 ---@param answers string[] Array of answer strings

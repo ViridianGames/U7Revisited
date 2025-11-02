@@ -21,7 +21,6 @@ add_party_items - scripts seem to have args in wrong order
 
 remove_party_items - scripts seem to have args in wrong order
 
-select_option - not positive what this should map to yet
 
 get_schedule_type(get_npc_name(-30)) - not sure what this is supposed to call and/or why it would take an npc name and not id. this is in tons of npc scripts.
 
@@ -71,6 +70,7 @@ display_sign() - this same as open_book()?
 
 # DONE
 
+select_option - alias for ask_yes_no() w/ no args
 fixed lua docs for input_numeric_value()
 fixed lua docs for spawn_object()
 fixed lua docs for set_model_animation_frame()
