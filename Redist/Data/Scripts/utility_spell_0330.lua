@@ -22,7 +22,7 @@ function utility_spell_0330(eventid, objectref)
         var_0008 = find_nearby(176, var_0002, 522, objectref)
         var_0009 = table.insert(var_0007, var_0008)
         for var_000A in ipairs(var_0009) do
-            if _get_object_quality(var_0006) == 255 then
+            if get_object_quality(var_0006) == 255 then
                 var_0000 = delayed_execute_usecode_array(5, {1610, 17493, 7715}, var_0006)
             end
         end

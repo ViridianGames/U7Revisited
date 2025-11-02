@@ -6,7 +6,7 @@ function utility_music_0524(eventid, objectref)
     if not var_0000 then
         var_0001 = find_nearest(8, 729, objectref)
         if not var_0001 then
-            var_0002 = _get_object_quality(var_0001)
+            var_0002 = get_object_quality(var_0001)
             if var_0002 == 7 then
                 var_0003 = get_object_position(var_0001)
                 remove_item(var_0001)

@@ -7,7 +7,7 @@ function utility_unknown_0526(eventid, objectref)
     if not (get_flag(829) and get_flag(830)) then
         for var_0002 in ipairs(var_0001) do
             var_0005 = get_object_position(var_0004)
-            var_0006 = _get_object_quality(var_0004)
+            var_0006 = get_object_quality(var_0004)
             remove_item(var_0004)
             var_0007 = create_new_object(936)
             get_object_frame(var_0007, 0)
@@ -16,7 +16,7 @@ function utility_unknown_0526(eventid, objectref)
         end
     elseif get_flag(829) then
         for var_0009 in ipairs(var_0000) do
-            var_0006 = _get_object_quality(var_0004)
+            var_0006 = get_object_quality(var_0004)
             if var_0006 == 11 then
                 var_0005 = get_object_position(var_0004)
                 remove_item(var_0004)
@@ -27,7 +27,7 @@ function utility_unknown_0526(eventid, objectref)
             end
         end
         for var_000B in ipairs(var_0001) do
-            var_0006 = _get_object_quality(var_0004)
+            var_0006 = get_object_quality(var_0004)
             if var_0006 == 12 then
                 var_0005 = get_object_position(var_0004)
                 remove_item(var_0004)
@@ -40,7 +40,7 @@ function utility_unknown_0526(eventid, objectref)
     elseif get_flag(830) then
         for var_000D in ipairs(var_0001) do
             var_0005 = get_object_position(var_0004)
-            var_0006 = _get_object_quality(var_0004)
+            var_0006 = get_object_quality(var_0004)
             remove_item(var_0004)
             var_0007 = create_new_object(303)
             get_object_frame(var_0007, 4)

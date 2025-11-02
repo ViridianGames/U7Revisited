@@ -3,7 +3,7 @@ function object_sign_0820(eventid, objectref)
     local var_0000, var_0001, var_0002, var_0003, var_0004, var_0005, var_0006, var_0007, var_0008, var_0009, var_000A, var_000B
 
     var_0000 = objectref
-    var_0001 = _get_object_quality(var_0000)
+    var_0001 = get_object_quality(var_0000)
     if eventid == 3 then
         if get_object_shape(var_0000) ~= 820 then
             var_0000 = find_nearby(176, 5, 820, var_0000)
@@ -12,7 +12,7 @@ function object_sign_0820(eventid, objectref)
                 abort()
             end
         end
-        var_0001 = _get_object_quality(var_0000)
+        var_0001 = get_object_quality(var_0000)
         var_0002 = {}
         if var_0001 == 7 then
             var_0002 = {557, 623, 600}

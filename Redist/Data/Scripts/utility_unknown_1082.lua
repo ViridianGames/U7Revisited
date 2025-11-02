@@ -22,7 +22,7 @@ function utility_unknown_1082(P0, P1)
     var_0004 = find_nearby(0, 30, 701, P0)
     var_0005 = table.insert(var_0004, find_nearby(0, 30, 338, P0))
     for var_0006 in ipairs(var_0005) do
-        var_0007 = _get_object_quality(var_0008)
+        var_0007 = get_object_quality(var_0008)
         if var_0007 < P1 * 30 then
             halt_scheduled(var_0008)
             var_0009 = get_object_shape(var_0008)
