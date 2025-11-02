@@ -1,3 +1,7 @@
+# SCRIPTS
+
+Here are all the script functions that still need to be fixed up.
+
 
 # TODO - things in scripts left to clean up
 
@@ -31,7 +35,7 @@ show_purchase_options() - don't know
 
 add_containerobject_s(objectref, {50, 1536, 17493, 7715}) - don't know how this works??
 
-unknown_XXXXH - a lot of these lingering, would have to go back to the beginning to see what they were now
+unknown_XXXXH - a lot of these lingering, would have to go back to the beginning to see what they were originally
 
 get_gold
 
@@ -46,6 +50,18 @@ compare_answer
 check_npc_status
 
 get_conversation_target
+
+get_cont_items
+
+npc_in_party
+
+set_object_attributes
+
+destroy_object_silent
+
+click_on_item
+
+create_array(x) - can this just be {x} ???
 
 or ... - various scripts had this for some reason? commented out with a TODO
 
