@@ -34,8 +34,8 @@ answer = nil
 local debug = true
 function log(...) if debug then print(...) end end
 
-function tavern_vendor_0951(object_id, event)
-    log("tavern_vendor_0951 called with object_id:", object_id, "event:", event)
+function tavern_vendor_0951(eventid, objectref)
+    log("tavern_vendor_0951 called with objectref:", objectref, "eventid:", eventid)
     local items = {
         strings[0x0000], strings[0x0004], strings[0x0009], strings[0x000E],
         strings[0x0019], strings[0x001F], strings[0x0024], strings[0x002A], strings[0x0031]
@@ -52,35 +52,35 @@ function tavern_vendor_0951(object_id, event)
     log("Initial answers: ", table.concat(answers, ", "))
 
     while continue do
-        add_dialogue(object_id, strings[0x00BB])
+        add_dialogue( strings[0x00BB])
         local choice = get_answer()
         if choice == 1 then
-            add_dialogue(object_id, strings[0x00D5])
+            add_dialogue(strings[0x00D5])
             continue = false
         elseif choice == 6 and not get_flag(0x012B) then
-            add_dialogue(object_id, strings[0x00DD] .. (get_player_name() or "Avatar") .. strings[0x01C2])
+            add_dialogue(strings[0x00DD] .. (get_player_name() or "Avatar") .. strings[0x01C2])
         else
             local price = prices[choice]
             local object_id = object_ids[choice]
             local suffix = suffixes[choice]
             local result = buyobject_(suffix, object_id, 1, price, items[choice])
-            add_dialogue(object_id, strings[0x01C5] .. result .. strings[0x01C8])
+            add_dialogue(strings[0x01C5] .. result .. strings[0x01C8])
             local buy_response = get_answer()
             if price == 377 then
-                add_dialogue(object_id, strings[0x01EB])
+                add_dialogue(strings[0x01EB])
                 buy_response = buyobject_(suffix, object_id, math.random(1, 20), price, items[choice])
             else
                 buy_response = buyobject_(suffix, object_id, 1, price, items[choice])
             end
             if buy_response == 1 then
-                add_dialogue(object_id, strings[0x0209])
+                add_dialogue(strings[0x0209])
             elseif buy_response == 2 then
-                add_dialogue(object_id, strings[0x0211])
+                add_dialogue(strings[0x0211])
             elseif buy_response == 3 then
-                add_dialogue(object_id, strings[0x0239])
+                add_dialogue(strings[0x0239])
             end
         end
-        add_dialogue(object_id, strings[0x0264])
+        add_dialogue(strings[0x0264])
         continue = get_answer()
     end
     restore_answers()

@@ -4,13 +4,13 @@ local v_0, v_1, v_2, v_3, v_4, v_10, v_11, v_12, v_13, v_14, v_15, v_16, v_17, v
 answers = {}
 answer = nil
 
-function func_154(object_id, event)
+function erethian(eventid, objectref)
     if answer then
         goto lbl_0389
     end
 
     ::lbl_01CB::
-    if event == 0 then
+    if eventid == 0 then
         v_0 = get_flag(336)
         v_1 = get_flag(338)
         v_2 = get_flag(997)
@@ -60,12 +60,12 @@ function func_154(object_id, event)
         return
     end
 
-    if event == 1 then
+    if eventid == 1 then
         -- TODO: Implement event 1 (animation/state setup)
         goto lbl_0220
     end
 
-    if event == 2 then
+    if eventid == 2 then
         v_13 = get_player_name() or "Avatar"
         print("get_player_name returned: ", v_13)
         if get_flag(0x030E) then

@@ -23,8 +23,8 @@ answer = nil
 local debug = true
 function log(...) if debug then print(...) end end
 
-function weapon_vendor_0952(object_id, event)
-    log("weapon_vendor_0952 called with object_id:", object_id, "event:", event)
+function weapon_vendor_0952(eventid, objectref)
+    log("weapon_vendor_0952 called with objectref:", objectref, "eventid:", eventid)
     local items = {
         strings[0x0000], strings[0x000D], strings[0x001C], strings[0x0022],
         strings[0x0027], strings[0x002E], strings[0x003B]
@@ -41,28 +41,28 @@ function weapon_vendor_0952(object_id, event)
     log("Initial answers: ", table.concat(answers, ", "))
 
     while continue do
-        add_dialogue(object_id, strings[0x0043])
+        add_dialogue(strings[0x0043])
         local choice = get_answer()
         if choice == 1 then
-            add_dialogue(object_id, strings[0x0064])
+            add_dialogue(strings[0x0064])
             continue = false
         else
             local price = prices[choice]
             local object_id = object_ids[choice]
             local prefix = prefixes[choice]
-            local result = buyobject_(prefix, object_id, 1, price, items[choice])
-            add_dialogue(object_id, strings[0x0070] .. result .. strings[0x0073])
+            local result = buyobject_(prefix, objectref, 1, price, items[choice])
+            add_dialogue(strings[0x0070] .. result .. strings[0x0073])
             local buy_response = get_answer()
             buy_response = buyobject_(prefix, object_id, 1, price, items[choice])
             if buy_response == 1 then
-                add_dialogue(object_id, strings[0x0095])
+                add_dialogue(strings[0x0095])
             elseif buy_response == 2 then
-                add_dialogue(object_id, strings[0x009D])
+                add_dialogue(strings[0x009D])
             elseif buy_response == 3 then
-                add_dialogue(object_id, strings[0x00C5])
+                add_dialogue(strings[0x00C5])
             end
         end
-        add_dialogue(object_id, strings[0x00F0])
+        add_dialogue(strings[0x00F0])
         continue = get_answer()
     end
     restore_answers()
