@@ -503,9 +503,10 @@ function jump_camera_angle(angle) end
 -- ============================================================================
 
 ---Sets a model's animation frame
----@param model_id integer The model to modify
+---@param object_id integer The object to modify
+---@param anim string The animation name
 ---@param frame integer The animation frame
-function set_model_animation_frame(model_id, frame) end
+function set_model_animation_frame(object_id, anim, frame) end
 
 -- ============================================================================
 -- UTILITY
