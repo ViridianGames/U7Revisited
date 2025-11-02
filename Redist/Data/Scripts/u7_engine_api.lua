@@ -234,9 +234,7 @@ function set_object_quality(object_id, quality) end
 
 ---Gets an object's position
 ---@param object_id integer The object to query
----@return integer x X coordinate
----@return integer y Y coordinate
----@return integer z Z coordinate
+---@return table position Position array {x, y, z}
 function get_object_position(object_id) end
 
 ---Sets an object's position

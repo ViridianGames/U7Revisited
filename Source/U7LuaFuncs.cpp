@@ -656,10 +656,15 @@ static int LuaGetObjectPosition(lua_State *L)
     U7Object *object = GetObjectFromID(object_id);
     if (object)
     {
+        // Create table {x, y, z}
+        lua_newtable(L);
         lua_pushnumber(L, object->m_Pos.x);
+        lua_rawseti(L, -2, 1);  // table[1] = x
         lua_pushnumber(L, object->m_Pos.y);
+        lua_rawseti(L, -2, 2);  // table[2] = y
         lua_pushnumber(L, object->m_Pos.z);
-        return 3;  // Return 3 values
+        lua_rawseti(L, -2, 3);  // table[3] = z
+        return 1;  // Return 1 table
     }
     return 0;
 }
