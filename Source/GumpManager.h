@@ -42,7 +42,7 @@ public:
 	bool			m_draggingObject;
 	Gump*			m_sourceGump;
 	int			m_draggedObjectId;
-	Vector2		m_dragOffset;
+	Vector2		m_draggedObjectOffset = { 0, 0 };
 	bool			m_isMouseOverGump;
 	Gump*			m_gumpUnderMouse;
 };

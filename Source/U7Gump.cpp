@@ -73,6 +73,7 @@ void Gump::OnEnter()
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_BASKET)];
 			break;
 		case 800: //  Treasure Chest
+		case 522:
 			m_containerData = g_containerData[static_cast<int>(ContainerType::CONTAINER_TREASURECHEST)];
 			break;
 		case 679: //  Drawer

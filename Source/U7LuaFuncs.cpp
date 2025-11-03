@@ -352,7 +352,7 @@ static int LuaCmps(lua_State *L)
     bool matches = false;
     if (selected_answer && compare_str)
     {
-        matches = (_stricmp(selected_answer, compare_str) == 0);
+        matches = (strcasecmp(selected_answer, compare_str) == 0);
     }
 
     lua_pushboolean(L, matches);
