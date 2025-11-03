@@ -216,6 +216,9 @@
     <ClCompile Include="Source\U7GumpBook.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Pathfinding.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingState.h">
@@ -405,6 +408,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\U7GumpBook.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Pathfinding.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
