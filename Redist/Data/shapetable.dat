@@ -6759,7 +6759,7 @@
 361 6 0 0 8 24 0 24 8 22 8 0 5 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 361 6 utility_spell_0361 
 361 7 0 0 8 24 0 24 8 17 0 0 19 31 3 1 1 1 0.5 3 -1.5 270 0 0 0 3 6 0 Models/3dmodels/sign_360x07.gltf 1 0 361 7 utility_spell_0361 
 361 8 0 0 8 24 0 24 8 19 8 0 5 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 361 8 utility_spell_0361 
-361 9 0 0 8 24 0 24 8 10 0 0 13 23 3 1 1 1.3 0.5 0 1 0 0 0 0 3 6 0 Models/3dmodels/sign_361x09.obj 1 0 361 9 utility_spell_0361 
+361 9 0 0 8 24 0 24 8 10 0 0 13 23 3 1 1 1.3 0.5 0 1 0 0 0 0 3 6 0 Models/3dmodels/sign_361x09.obj 1 0 361 9 default 
 361 10 0 0 8 24 0 24 8 9 8 0 19 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 361 10 utility_spell_0361 
 361 11 0 0 8 24 0 24 8 3 8 0 15 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 361 11 utility_spell_0361 
 361 12 0 0 8 24 0 23 8 1 8 0 16 24 1 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 361 12 utility_spell_0361 
@@ -11902,7 +11902,7 @@
 521 29 0 0 8 8 0 8 8 7 8 0 3 8 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 521 29 default 
 521 30 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 521 30 default 
 521 31 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/zzwrongcube.obj 1 0 521 31 default 
-522 0 0 0 16 15 0 14 16 1 16 0 6 15 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/locked_chest_522x00.obj 1 0 522 0 object_chestlocked_0522 
+522 0 0 0 16 15 0 14 16 1 16 0 6 15 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/locked_chest_522x00.obj 1 0 522 0 default 
 522 1 0 0 15 16 0 16 15 6 14 0 1 16 3 1 1 1 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/locked_chest_522x00.obj 1 0 522 1 default 
 522 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 522 2 default 
 522 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 522 3 default 
@@ -20798,8 +20798,8 @@
 799 29 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 799 29 default 
 799 30 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 799 30 default 
 799 31 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 799 31 default 
-800 0 0 0 16 15 0 14 16 1 16 0 6 15 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/chest_800x00.obj 1 0 800 0 utility_unknown_0800 
-800 1 0 0 15 16 0 16 15 6 14 0 1 16 3 1 1 1 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/chest_800x00.obj 1 0 800 1 utility_unknown_0800 
+800 0 0 0 16 15 0 14 16 1 16 0 6 15 3 1 1 1 0 0 0 0 1 2 2 3 3 1 Models/3dmodels/chest_800x00.obj 1 0 800 0 default 
+800 1 0 0 15 16 0 16 15 6 14 0 1 16 3 1 1 1 0 0 0 90 1 2 2 3 3 1 Models/3dmodels/chest_800x00.obj 1 0 800 1 default 
 800 2 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 800 2 default 
 800 3 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 800 3 default 
 800 4 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 8 8 8 8 8 8 Models/3dmodels/zzwrongcube.obj 1 0 800 4 default 
