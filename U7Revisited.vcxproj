@@ -37,6 +37,7 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainState.cpp" />
     <ClCompile Include="Source\OptionsState.cpp" />
+    <ClCompile Include="Source\Pathfinding.cpp" />
     <ClCompile Include="Source\ShapeData.cpp" />
     <ClCompile Include="Source\ShapeEditorState.cpp" />
     <ClCompile Include="Source\Terrain.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Source\LoadingState.h" />
     <ClInclude Include="Source\MainState.h" />
     <ClInclude Include="Source\OptionsState.h" />
+    <ClInclude Include="Source\Pathfinding.h" />
     <ClInclude Include="Source\ShapeData.h" />
     <ClInclude Include="Source\ShapeEditorState.h" />
     <ClInclude Include="Source\Terrain.h" />
