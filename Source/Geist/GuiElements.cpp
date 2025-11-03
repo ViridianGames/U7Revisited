@@ -112,7 +112,7 @@ void GuiTextButton::Draw()
          1,
          m_BorderColor);
 
-		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize, m_String,
+		DrawStringCentered(m_Font, m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_Pos.x + int(m_Pos.x) + (m_Width / 2), m_Gui->m_Pos.y + int(m_Pos.y + (m_Height * .6f))},
 			Color{ 25, 25, 25, 255 });
 
@@ -134,7 +134,7 @@ void GuiTextButton::Draw()
 		DrawRectangleRounded(Rectangle{ (m_Gui->m_Pos.x + int(m_Pos.x)) + (m_Width * invxoffset), (m_Gui->m_Pos.y + int(m_Pos.y)) + (m_Height * invyoffset), m_Width * xoffset, m_Height * yoffset },
 			0.5f, 1, m_BackgroundColor);
 
-		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize , m_String,
+		DrawStringCentered(m_Font, m_Font->baseSize , m_String,
 			Vector2 {m_Gui->m_Pos.x + int(m_Pos.x) + (m_Width / 2), m_Gui->m_Pos.y + int(m_Pos.y + (m_Height * .6f))},
 			m_TextColor);
 	}
