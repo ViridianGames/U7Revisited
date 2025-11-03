@@ -1212,10 +1212,10 @@ void GuiStretchButton::Update()
 			m_Clicked = true;
 			m_Gui->m_ActiveElement = m_ID;
 		}
-		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x),
-			(m_Gui->m_Pos.y + m_Pos.y),
-			m_Width,
-			m_Height))
+		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x) * m_Gui->m_InputScale,
+			(m_Gui->m_Pos.y + m_Pos.y) * m_Gui->m_InputScale,
+			m_Width * m_Gui->m_InputScale,
+			m_Height * m_Gui->m_InputScale))
 		{
 			m_Hovered = true;
 			m_Clicked = false;
