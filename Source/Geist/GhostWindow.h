@@ -26,6 +26,7 @@ public:
 	void SetModal(bool modal) { m_modal = modal; }
 
 	void MoveTo(int x, int y);
+	void GetSize(int& width, int& height) const;
 
 	int GetElementID(const std::string& elementName);
 	Gui* GetGui() { return m_gui; }

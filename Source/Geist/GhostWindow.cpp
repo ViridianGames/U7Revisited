@@ -95,6 +95,27 @@ void GhostWindow::MoveTo(int x, int y)
 	}
 }
 
+void GhostWindow::GetSize(int& width, int& height) const
+{
+	width = 0;
+	height = 0;
+
+	if (m_serializer && m_gui)
+	{
+		// Get the root element (first panel loaded from .ghost file)
+		int rootID = m_serializer->GetRootElementID();
+		if (rootID != -1)
+		{
+			auto rootElement = m_gui->GetElement(rootID);
+			if (rootElement)
+			{
+				width = static_cast<int>(rootElement->m_Width);
+				height = static_cast<int>(rootElement->m_Height);
+			}
+		}
+	}
+}
+
 int GhostWindow::GetElementID(const std::string& elementName)
 {
 	if (m_serializer)

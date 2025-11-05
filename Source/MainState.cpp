@@ -310,9 +310,11 @@ void MainState::UpdateInput()
 
 				if (m_colorDialog->IsValid())
 				{
-					// Center the dialog on screen (dialog is ~314x382 pixels)
-					int centerX = static_cast<int>(g_Engine->m_ScreenWidth / 2.0f - 314.0f / 2.0f);
-					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - 382.0f / 2.0f);
+					// Center the dialog on screen
+					int dialogWidth, dialogHeight;
+					m_colorDialog->GetSize(dialogWidth, dialogHeight);
+					int centerX = static_cast<int>(g_Engine->m_ScreenWidth / 2.0f - dialogWidth / 2.0f);
+					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - dialogHeight / 2.0f);
 					m_colorDialog->MoveTo(centerX, centerY);
 
 					m_colorDialog->Show();
