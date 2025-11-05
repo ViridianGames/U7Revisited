@@ -123,6 +123,7 @@ set(SOURCES
     Source/Geist/Config.cpp
     Source/Geist/Engine.cpp
     Source/Geist/Globals.cpp
+    Source/Geist/GhostWindow.cpp
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp
     Source/Geist/GuiManager.cpp
@@ -136,6 +137,8 @@ set(SOURCES
     Source/Geist/ScriptingSystem.cpp
     Source/Geist/StateMachine.cpp
     Source/Geist/TooltipSystem.cpp
+
+    Source/Ghost/GuiSerializer.cpp
 
     Source/ConversationState.cpp
     Source/GumpManager.cpp
@@ -156,6 +159,11 @@ set(SOURCES
     Source/U7Object.cpp
     Source/U7Player.cpp
 )
+
+# Organize files into virtual folders in Visual Studio
+source_group("Geist" REGULAR_EXPRESSION "Source/Geist/.*")
+source_group("Ghost" REGULAR_EXPRESSION "Source/Ghost/.*")
+source_group("Source Files" REGULAR_EXPRESSION "Source/[^/]+\\.cpp")
 
 # ============================================================================
 # Executable
