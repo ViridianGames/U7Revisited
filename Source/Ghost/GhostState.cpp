@@ -10,6 +10,12 @@
 
 using namespace std;
 
+// Static scrollbar tracking variables (shared between Update() and FinalizeInsert())
+static int lastColumnsScrollbarValue = -1;
+static int lastHorzPaddingScrollbarValue = -1;
+static int lastVertPaddingScrollbarValue = -1;
+static int lastFontSizeScrollbarValue = -1;
+
 GhostState::~GhostState()
 {
 }
@@ -102,6 +108,44 @@ void GhostState::Shutdown()
 	m_gui.reset();
 }
 
+// Helper to track initial property value when input is activated
+bool GhostState::TrackPropertyValue(int activeID, const std::string& propertyName, std::string& lastValue)
+{
+	int inputID = m_propertySerializer->GetElementID(propertyName);
+	if (activeID == inputID && inputID != -1)
+	{
+		auto input = m_gui->GetElement(inputID);
+		if (input && input->m_Type == GUI_TEXTINPUT)
+		{
+			auto textInput = static_cast<GuiTextInput*>(input.get());
+			lastValue = textInput->m_String;
+			return true;
+		}
+	}
+	return false;
+}
+
+// Helper to check if property value changed and trigger update
+bool GhostState::CheckPropertyChanged(int activeID, const std::string& propertyName, std::string& lastValue)
+{
+	int inputID = m_propertySerializer->GetElementID(propertyName);
+	if (activeID == inputID && inputID != -1)
+	{
+		auto input = m_gui->GetElement(inputID);
+		if (input && input->m_Type == GUI_TEXTINPUT)
+		{
+			auto textInput = static_cast<GuiTextInput*>(input.get());
+			if (textInput->m_String != lastValue)
+			{
+				lastValue = textInput->m_String;
+				UpdateElementFromPropertyPanel();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void GhostState::Update()
 {
 	m_gui->Update();
@@ -116,72 +160,123 @@ void GhostState::Update()
 	static std::string lastTextValue = "";
 	static std::string lastHorzPaddingValue = "";
 	static std::string lastVertPaddingValue = "";
+	static std::string lastFontValue = "";
+	static std::string lastFontSizeValue = "";
+
+	// Check if a property panel radio button was clicked and update element
+	// This MUST be checked BEFORE the early return below
+	static int lastRadioActiveID = -1;
+	if (activeID >= 3000)
+	{
+		auto element = m_gui->GetElement(activeID);
+		if (element && element->m_Type == GUI_RADIOBUTTON)
+		{
+			if (activeID != lastRadioActiveID)
+			{
+				lastRadioActiveID = activeID;
+				UpdateElementFromPropertyPanel();
+			}
+		}
+		else
+		{
+			// Reset when clicking non-radio property panel elements
+			lastRadioActiveID = -1;
+		}
+	}
+	else if (activeID < 3000)
+	{
+		lastRadioActiveID = -1;
+	}
+
+	// Handle scrollbar updates (they update continuously while being dragged)
+	// Note: Scrollbars don't set themselves as active elements, so we just check for value changes
+	// (Static variables are declared at file scope)
+
+	// Check PROPERTY_COLUMNS scrollbar
+	int columnsScrollbarID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
+	if (columnsScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto columnsElement = m_gui->GetElement(columnsScrollbarID);
+		if (columnsElement && columnsElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(columnsElement.get());
+			if (scrollbar->m_Value != lastColumnsScrollbarValue)
+			{
+				lastColumnsScrollbarValue = scrollbar->m_Value;
+				Log("Columns scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_HORZ_PADDING scrollbar
+	int horzPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
+	if (horzPaddingScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto horzPaddingElement = m_gui->GetElement(horzPaddingScrollbarID);
+		if (horzPaddingElement && horzPaddingElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(horzPaddingElement.get());
+			if (scrollbar->m_Value != lastHorzPaddingScrollbarValue)
+			{
+				lastHorzPaddingScrollbarValue = scrollbar->m_Value;
+				Log("Horz padding scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_VERT_PADDING scrollbar
+	int vertPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
+	if (vertPaddingScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto vertPaddingElement = m_gui->GetElement(vertPaddingScrollbarID);
+		if (vertPaddingElement && vertPaddingElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(vertPaddingElement.get());
+			if (scrollbar->m_Value != lastVertPaddingScrollbarValue)
+			{
+				lastVertPaddingScrollbarValue = scrollbar->m_Value;
+				Log("Vert padding scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_FONT_SIZE scrollbar
+	int fontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+	if (fontSizeScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto fontSizeElement = m_gui->GetElement(fontSizeScrollbarID);
+		if (fontSizeElement && fontSizeElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(fontSizeElement.get());
+			if (scrollbar->m_Value != lastFontSizeScrollbarValue)
+			{
+				lastFontSizeScrollbarValue = scrollbar->m_Value;
+				Log("Font size scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
 
 	if (activeID >= 3000 && activeID != lastActiveID)
 	{
-		// Don't call UpdateElementFromPropertyPanel on initial activation
-		// Only call it when switching between different property inputs
 		lastActiveID = activeID;
 
-		// Track initial value if we just activated the columns input
-		int columnsInputID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
-		if (activeID == columnsInputID)
-		{
-			auto columnsInput = m_gui->GetElement(columnsInputID);
-			if (columnsInput && columnsInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto textInput = static_cast<GuiTextInput*>(columnsInput.get());
-				lastColumnsValue = textInput->m_String;
-			}
-		}
+		// Track initial values when property inputs are activated
+		// This ensures we have the correct baseline before checking for changes
+		TrackPropertyValue(activeID, "PROPERTY_COLUMNS", lastColumnsValue);
+		TrackPropertyValue(activeID, "PROPERTY_SPRITE", lastSpriteValue);
+		TrackPropertyValue(activeID, "PROPERTY_TEXT", lastTextValue);
+		TrackPropertyValue(activeID, "PROPERTY_HORZ_PADDING", lastHorzPaddingValue);
+		TrackPropertyValue(activeID, "PROPERTY_VERT_PADDING", lastVertPaddingValue);
+		TrackPropertyValue(activeID, "PROPERTY_FONT", lastFontValue);
+		TrackPropertyValue(activeID, "PROPERTY_FONT_SIZE", lastFontSizeValue);
 
-		// Track initial value if we just activated the sprite input
-		int spriteInputID = m_propertySerializer->GetElementID("PROPERTY_SPRITE");
-		if (activeID == spriteInputID)
-		{
-			auto spriteInput = m_gui->GetElement(spriteInputID);
-			if (spriteInput && spriteInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto textInput = static_cast<GuiTextInput*>(spriteInput.get());
-				lastSpriteValue = textInput->m_String;
-			}
-		}
-
-		// Track initial value if we just activated the text input
-		int textInputID = m_propertySerializer->GetElementID("PROPERTY_TEXT");
-		if (activeID == textInputID)
-		{
-			auto textInput = m_gui->GetElement(textInputID);
-			if (textInput && textInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto propertyInput = static_cast<GuiTextInput*>(textInput.get());
-				lastTextValue = propertyInput->m_String;
-			}
-		}
-
-		// Track initial value if we just activated the horz padding input
-		int horzPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
-		if (activeID == horzPaddingInputID)
-		{
-			auto horzPaddingInput = m_gui->GetElement(horzPaddingInputID);
-			if (horzPaddingInput && horzPaddingInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto textInput = static_cast<GuiTextInput*>(horzPaddingInput.get());
-				lastHorzPaddingValue = textInput->m_String;
-			}
-		}
-
-		// Track initial value if we just activated the vert padding input
-		int vertPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
-		if (activeID == vertPaddingInputID)
-		{
-			auto vertPaddingInput = m_gui->GetElement(vertPaddingInputID);
-			if (vertPaddingInput && vertPaddingInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto textInput = static_cast<GuiTextInput*>(vertPaddingInput.get());
-				lastVertPaddingValue = textInput->m_String;
-			}
-		}
+		// Don't check for changes on the same frame we just tracked the initial value
+		// This prevents false "changes" when clicking into an already-populated input
+		return;
 	}
 	else if (activeID < 3000)
 	{
@@ -191,87 +286,18 @@ void GhostState::Update()
 		lastTextValue = "";
 		lastHorzPaddingValue = "";
 		lastVertPaddingValue = "";
+		lastFontValue = "";
+		lastFontSizeValue = "";
 	}
 
-	// Check if columns value changed while typing (for live reflow)
-	int columnsInputID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
-	if (activeID == columnsInputID && columnsInputID != -1)
-	{
-		auto columnsInput = m_gui->GetElement(columnsInputID);
-		if (columnsInput && columnsInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(columnsInput.get());
-			if (textInput->m_String != lastColumnsValue)
-			{
-				lastColumnsValue = textInput->m_String;
-				UpdateElementFromPropertyPanel();
-			}
-		}
-	}
-
-	// Check if sprite value changed while typing (for live image reload)
-	int spriteInputID = m_propertySerializer->GetElementID("PROPERTY_SPRITE");
-	if (activeID == spriteInputID && spriteInputID != -1)
-	{
-		auto spriteInput = m_gui->GetElement(spriteInputID);
-		if (spriteInput && spriteInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(spriteInput.get());
-			if (textInput->m_String != lastSpriteValue)
-			{
-				lastSpriteValue = textInput->m_String;
-				UpdateElementFromPropertyPanel();
-			}
-		}
-	}
-
-	// Check if text value changed while typing (for live text update)
-	int textInputID = m_propertySerializer->GetElementID("PROPERTY_TEXT");
-	if (activeID == textInputID && textInputID != -1)
-	{
-		auto textInput = m_gui->GetElement(textInputID);
-		if (textInput && textInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto propertyInput = static_cast<GuiTextInput*>(textInput.get());
-			if (propertyInput->m_String != lastTextValue)
-			{
-				lastTextValue = propertyInput->m_String;
-				UpdateElementFromPropertyPanel();
-			}
-		}
-	}
-
-	// Check if horz padding value changed while typing (for live reflow)
-	int horzPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
-	if (activeID == horzPaddingInputID && horzPaddingInputID != -1)
-	{
-		auto horzPaddingInput = m_gui->GetElement(horzPaddingInputID);
-		if (horzPaddingInput && horzPaddingInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(horzPaddingInput.get());
-			if (textInput->m_String != lastHorzPaddingValue)
-			{
-				lastHorzPaddingValue = textInput->m_String;
-				UpdateElementFromPropertyPanel();
-			}
-		}
-	}
-
-	// Check if vert padding value changed while typing (for live reflow)
-	int vertPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
-	if (activeID == vertPaddingInputID && vertPaddingInputID != -1)
-	{
-		auto vertPaddingInput = m_gui->GetElement(vertPaddingInputID);
-		if (vertPaddingInput && vertPaddingInput->m_Type == GUI_TEXTINPUT)
-		{
-			auto textInput = static_cast<GuiTextInput*>(vertPaddingInput.get());
-			if (textInput->m_String != lastVertPaddingValue)
-			{
-				lastVertPaddingValue = textInput->m_String;
-				UpdateElementFromPropertyPanel();
-			}
-		}
-	}
+	// Check for property value changes while typing (for live updates)
+	CheckPropertyChanged(activeID, "PROPERTY_COLUMNS", lastColumnsValue);
+	CheckPropertyChanged(activeID, "PROPERTY_SPRITE", lastSpriteValue);
+	CheckPropertyChanged(activeID, "PROPERTY_TEXT", lastTextValue);
+	CheckPropertyChanged(activeID, "PROPERTY_HORZ_PADDING", lastHorzPaddingValue);
+	CheckPropertyChanged(activeID, "PROPERTY_VERT_PADDING", lastVertPaddingValue);
+	CheckPropertyChanged(activeID, "PROPERTY_FONT", lastFontValue);
+	CheckPropertyChanged(activeID, "PROPERTY_FONT_SIZE", lastFontSizeValue);
 
 	// Check if a content element was clicked (IDs 2000-2999, not property panel 3000+)
 	if (activeID >= 2000 && activeID < 3000)
@@ -279,6 +305,40 @@ void GhostState::Update()
 		m_selectedElementID = activeID;
 		Log("Selected element ID: " + to_string(activeID));
 		UpdatePropertyPanel();  // Update property panel when selection changes
+
+		// Sync scrollbar tracking variables after populating property panel
+		// This prevents false "change" detections on first frame after selection
+		int columnsScrollbarID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
+		if (columnsScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(columnsScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastColumnsScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int horzPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
+		if (horzPaddingScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(horzPaddingScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastHorzPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int vertPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
+		if (vertPaddingScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(vertPaddingScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastVertPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int fontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+		if (fontSizeScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(fontSizeScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
 	}
 	// For non-interactive elements (panels, textareas), manually detect clicks
 	else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -334,6 +394,40 @@ void GhostState::Update()
 			m_selectedElementID = bestID;
 			Log("Selected element ID: " + to_string(bestID));
 			UpdatePropertyPanel();  // Update property panel when selection changes
+
+			// Sync scrollbar tracking variables after populating property panel
+			// This prevents false "change" detections on first frame after selection
+			int columnsScrollbarID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
+			if (columnsScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(columnsScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastColumnsScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int horzPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
+			if (horzPaddingScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(horzPaddingScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastHorzPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int vertPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
+			if (vertPaddingScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(vertPaddingScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastVertPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int fontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+			if (fontSizeScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(fontSizeScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
 		}
 	}
 
@@ -919,7 +1013,8 @@ void GhostState::EnsureContentRoot()
 
 		m_gui->AddPanel(containerID, containerX, containerY, 620, 700, Color{60, 60, 60, 255}, true, 0, true);
 		m_contentSerializer->SetPanelLayout(containerID, "horz");
-		m_contentSerializer->SetPanelPadding(containerID, 5);
+		m_contentSerializer->SetPanelHorzPadding(containerID, 5);
+		m_contentSerializer->SetPanelVertPadding(containerID, 5);
 		m_contentSerializer->RegisterChildOfParent(2000, containerID);
 
 		// Make the container the selected element so new elements go into it
@@ -993,6 +1088,9 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 	// Register this element with its parent
 	m_contentSerializer->RegisterChildOfParent(parentID, newID);
 
+	// Reflow the parent panel to recalculate positions and resize
+	m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+
 	// Make this element the new selection
 	m_selectedElementID = newID;
 
@@ -1002,7 +1100,77 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 	// Update property panel for the new element
 	UpdatePropertyPanel();
 
+	// Sync scrollbar tracking variables after populating property panel
+	// This prevents false "change" detections on first frame after insertion
+	// (Static variables are declared at file scope)
+
+	int columnsScrollbarID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
+	if (columnsScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(columnsScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastColumnsScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int horzPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
+	if (horzPaddingScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(horzPaddingScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastHorzPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int vertPaddingScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
+	if (vertPaddingScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(vertPaddingScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastVertPaddingScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int fontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+	if (fontSizeScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(fontSizeScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
 	Log(elementTypeName + " inserted with ID: " + to_string(newID) + " as child of parent ID: " + to_string(parentID));
+}
+
+Font* GhostState::GetInheritedFont(int parentID, int& outFontSize)
+{
+	// Build inherited properties from parent
+	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(parentID);
+
+	// Check if we have inherited font properties
+	if (inheritedProps.contains("font") && inheritedProps.contains("fontSize"))
+	{
+		string fontName = inheritedProps["font"].get<string>();
+		int fontSize = inheritedProps["fontSize"].get<int>();
+
+		// Load the font at the specified size
+		string fontPath = m_fontPath + fontName;
+		auto fontPtr = make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+
+		if (fontPtr->texture.id != 0)
+		{
+			// Store the font in m_preservedFonts to keep it alive
+			m_preservedFonts.push_back(fontPtr);
+			outFontSize = fontSize;
+			Log("GetInheritedFont: Loaded inherited font '" + fontName + "' at size " + to_string(fontSize) + " from parent " + to_string(parentID));
+			return fontPtr.get();
+		}
+		else
+		{
+			Log("GetInheritedFont: Failed to load font '" + fontPath + "'");
+		}
+	}
+
+	// No inherited font or failed to load - return nullptr
+	outFontSize = 0;
+	return nullptr;
 }
 
 void GhostState::InsertPanel()
@@ -1017,7 +1185,8 @@ void GhostState::InsertPanel()
 
 	// Set default layout to "horz" and padding to 5
 	m_contentSerializer->SetPanelLayout(ctx.newID, "horz");
-	m_contentSerializer->SetPanelPadding(ctx.newID, 5);
+	m_contentSerializer->SetPanelHorzPadding(ctx.newID, 5);
+	m_contentSerializer->SetPanelVertPadding(ctx.newID, 5);
 
 	// Use helper to finalize insertion (panels are not floating)
 	FinalizeInsert(ctx.newID, ctx.parentID, "Panel", false);
@@ -1030,16 +1199,38 @@ void GhostState::InsertLabel()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
+	// Try to get inherited font from parent
+	int fontSize = 0;
+	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	if (font == nullptr)
+	{
+		// No inherited font - use default GUI font
+		font = m_gui->m_Font.get();
+	}
+
 	// Add a text area (label) at calculated position
 	// Note: width parameter is multiplied by font baseSize in GuiTextArea
-	// Measure the text and calculate the width parameter needed
+	// Measure the text and calculate the width and height parameters needed
 	std::string labelText = "Label Text";
-	Vector2 textDims = MeasureTextEx(*m_gui->m_Font.get(), labelText.c_str(), m_gui->m_Font->baseSize, 1);
-	int widthParam = int(textDims.x / m_gui->m_Font->baseSize) + 1;  // Add 1 for a bit of padding
-	m_gui->AddTextArea(ctx.newID, m_gui->m_Font.get(), labelText, ctx.absoluteX, ctx.absoluteY, widthParam, 30, WHITE, 0, 0, true, false);
+	Vector2 textDims = MeasureTextEx(*font, labelText.c_str(), font->baseSize, 1);
+	int widthParam = int(textDims.x / font->baseSize) + 1;  // Add 1 for a bit of padding
+	int heightParam = int(textDims.y);  // Use actual text height
+	m_gui->AddTextArea(ctx.newID, font, labelText, ctx.absoluteX, ctx.absoluteY, widthParam, heightParam, WHITE, 0, 0, true, false);
 
 	// Mark color as explicit so it gets saved (prevents inheriting dark colors from parent)
 	m_contentSerializer->MarkPropertyAsExplicit(ctx.newID, "color");
+
+	// Store the font information in the serializer if we got an inherited font
+	if (fontSize > 0)
+	{
+		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
+		// Get the font name from the parent if available
+		std::string fontName = m_contentSerializer->GetElementFont(ctx.parentID);
+		if (!fontName.empty())
+		{
+			m_contentSerializer->SetElementFont(ctx.newID, fontName);
+		}
+	}
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Label");
@@ -1052,8 +1243,17 @@ void GhostState::InsertButton()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
+	// Try to get inherited font from parent
+	int fontSize = 0;
+	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	if (font == nullptr)
+	{
+		// No inherited font - use default GUI font
+		font = m_gui->m_Font.get();
+	}
+
 	// Add a text button at calculated position
-	m_gui->AddTextButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, "Button", m_gui->m_Font.get(), WHITE, DARKGRAY, WHITE, 0, true);
+	m_gui->AddTextButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, "Button", font, WHITE, DARKGRAY, WHITE, 0, true);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Button");
@@ -1095,8 +1295,26 @@ void GhostState::InsertTextInput()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
+	// Try to get inherited font from parent
+	int fontSize = 0;
+	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	if (font == nullptr)
+	{
+		// No inherited font - use default GUI font
+		font = m_gui->m_Font.get();
+		fontSize = 20;  // Default font size
+	}
+
+	// Scale height based on font size (baseline is 20px for default font)
+	int baseHeight = 20;
+	int scaledHeight = baseHeight;
+	if (fontSize != 20)
+	{
+		scaledHeight = (int)((float)baseHeight * ((float)fontSize / 20.0f));
+	}
+
 	// Add a text input field at calculated position
-	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 20, m_gui->m_Font.get(), "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
+	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
 
 	// Disable the text input so it can't accept keyboard input (content is for display only)
 	auto newElement = m_gui->GetElement(ctx.newID);
@@ -1250,9 +1468,18 @@ void GhostState::InsertList()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
+	// Try to get inherited font from parent
+	int fontSize = 0;
+	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	if (font == nullptr)
+	{
+		// No inherited font - use default GUI font
+		font = m_gui->m_Font.get();
+	}
+
 	// Add a list at calculated position with some default items
 	vector<string> defaultItems = {"Item 1", "Item 2", "Item 3"};
-	m_gui->AddGuiList(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 100, m_gui->m_Font.get(),
+	m_gui->AddGuiList(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 100, font,
 		defaultItems, WHITE, Color{0, 0, 0, 255}, WHITE, 0, true);
 
 	// Use helper to finalize insertion
@@ -1506,6 +1733,23 @@ void GhostState::PopulatePropertyPanelFields()
 
 		Log("Radio button IDs: horz=" + to_string(horzRadioID) + ", vert=" + to_string(vertRadioID) + ", table=" + to_string(tableRadioID));
 
+		// Debug: Log radio button and text input positions to check for overlaps
+		auto logBounds = [this](const std::string& name, int id) {
+			auto elem = m_gui->GetElement(id);
+			if (elem) {
+				float absX = m_gui->m_Pos.x + elem->m_Pos.x;
+				float absY = m_gui->m_Pos.y + elem->m_Pos.y;
+				Log("  " + name + " (ID " + to_string(id) + "): absPos(" + to_string(absX) + ", " + to_string(absY) +
+					") size(" + to_string(elem->m_Width) + " x " + to_string(elem->m_Height) + ")");
+			}
+		};
+
+		Log("Element bounds:");
+		logBounds("HORZ radio", horzRadioID);
+		logBounds("VERT radio", vertRadioID);
+		logBounds("TABLE radio", tableRadioID);
+		logBounds("COLUMNS input", m_propertySerializer->GetElementID("PROPERTY_COLUMNS"));
+
 		// First, manually deselect all radio buttons in the group to ensure clean state
 		if (horzRadioID != -1)
 		{
@@ -1572,7 +1816,7 @@ void GhostState::PopulatePropertyPanelFields()
 			}
 		}
 
-		// Populate columns field
+		// Populate columns field (can be textinput or scrollbar)
 		int columnsInputID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
 		if (columnsInputID != -1)
 		{
@@ -1583,9 +1827,15 @@ void GhostState::PopulatePropertyPanelFields()
 				textInput->m_String = to_string(columns);
 				Log("Populated PROPERTY_COLUMNS with: " + to_string(columns));
 			}
+			else if (columnsInput && columnsInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(columnsInput.get());
+				scrollbar->m_Value = columns;
+				Log("Populated PROPERTY_COLUMNS scrollbar with: " + to_string(columns));
+			}
 		}
 
-		// Populate horizontal padding field
+		// Populate horizontal padding field (can be textinput or scrollbar)
 		int horzPadding = m_contentSerializer->GetPanelHorzPadding(m_selectedElementID);
 		int horzPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
 		if (horzPaddingInputID != -1)
@@ -1597,9 +1847,15 @@ void GhostState::PopulatePropertyPanelFields()
 				textInput->m_String = to_string(horzPadding);
 				Log("Populated PROPERTY_HORZ_PADDING with: " + to_string(horzPadding));
 			}
+			else if (horzPaddingInput && horzPaddingInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(horzPaddingInput.get());
+				scrollbar->m_Value = horzPadding;
+				Log("Populated PROPERTY_HORZ_PADDING scrollbar with: " + to_string(horzPadding));
+			}
 		}
 
-		// Populate vertical padding field
+		// Populate vertical padding field (can be textinput or scrollbar)
 		int vertPadding = m_contentSerializer->GetPanelVertPadding(m_selectedElementID);
 		int vertPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
 		if (vertPaddingInputID != -1)
@@ -1610,6 +1866,12 @@ void GhostState::PopulatePropertyPanelFields()
 				auto textInput = static_cast<GuiTextInput*>(vertPaddingInput.get());
 				textInput->m_String = to_string(vertPadding);
 				Log("Populated PROPERTY_VERT_PADDING with: " + to_string(vertPadding));
+			}
+			else if (vertPaddingInput && vertPaddingInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(vertPaddingInput.get());
+				scrollbar->m_Value = vertPadding;
+				Log("Populated PROPERTY_VERT_PADDING scrollbar with: " + to_string(vertPadding));
 			}
 		}
 
@@ -1636,14 +1898,75 @@ void GhostState::PopulatePropertyPanelFields()
 			}
 		}
 	}
+
+	// Populate font fields (for panels and text elements)
+	int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+	if (fontInputID != -1)
+	{
+		auto fontInput = m_gui->GetElement(fontInputID);
+		if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+		{
+			// Get the font from the serializer
+			std::string font = m_contentSerializer->GetElementFont(m_selectedElementID);
+
+			// Populate the input with the font name
+			auto textInput = static_cast<GuiTextInput*>(fontInput.get());
+			textInput->m_String = font;
+
+			Log("Populated PROPERTY_FONT with: " + font);
+		}
+	}
+
+	int fontSizeInputID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+	if (fontSizeInputID != -1)
+	{
+		auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
+		// Get the font size from the serializer
+		int fontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+
+		if (fontSizeInput && fontSizeInput->m_Type == GUI_TEXTINPUT)
+		{
+			// Populate the input with the font size (only if not 0, which means not set)
+			auto textInput = static_cast<GuiTextInput*>(fontSizeInput.get());
+			if (fontSize != 0)
+			{
+				textInput->m_String = to_string(fontSize);
+			}
+			else
+			{
+				textInput->m_String = "";
+			}
+
+			Log("Populated PROPERTY_FONT_SIZE with: " + to_string(fontSize));
+		}
+		else if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
+		{
+			// Populate the scrollbar with the font size
+			auto scrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+			if (fontSize != 0)
+			{
+				scrollbar->m_Value = fontSize;
+			}
+			else
+			{
+				scrollbar->m_Value = 0;
+			}
+
+			Log("Populated PROPERTY_FONT_SIZE scrollbar with: " + to_string(fontSize));
+		}
+	}
 }
 
 void GhostState::UpdateElementFromPropertyPanel()
 {
-	Log("UpdateElementFromPropertyPanel called, activeID=" + to_string(m_gui->GetActiveElementID()));
+	int activeID = m_gui->GetActiveElementID();
+	Log("UpdateElementFromPropertyPanel called, activeID=" + to_string(activeID) + ", selectedElementID=" + to_string(m_selectedElementID));
 
 	if (m_selectedElementID == -1)
+	{
+		Log("  Skipping update: no element selected");
 		return;
+	}
 
 	bool wasUpdated = false;
 
@@ -1715,14 +2038,6 @@ void GhostState::UpdateElementFromPropertyPanel()
 					Log("Updated textbutton " + to_string(m_selectedElementID) + " text to: " + newText);
 				}
 
-				// Reflow the parent panel to adjust layout
-				int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
-				if (parentID != -1)
-				{
-					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
-					Log("Reflowed parent panel ID: " + to_string(parentID));
-				}
-
 				wasUpdated = true;
 			}
 		}
@@ -1765,90 +2080,340 @@ void GhostState::UpdateElementFromPropertyPanel()
 			if (newLayout != oldLayout)
 			{
 				m_contentSerializer->SetPanelLayout(m_selectedElementID, newLayout);
-				m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
 				Log("Updated panel " + to_string(m_selectedElementID) + " layout from " + oldLayout + " to " + newLayout);
 				wasUpdated = true;
 			}
 		}
 
-		// Update columns if changed
+		// Update columns if changed (can be textinput or scrollbar)
 		int columnsInputID = m_propertySerializer->GetElementID("PROPERTY_COLUMNS");
 		if (columnsInputID != -1)
 		{
 			auto columnsInput = m_gui->GetElement(columnsInputID);
+			int newColumns = 0;
+
 			if (columnsInput && columnsInput->m_Type == GUI_TEXTINPUT)
 			{
 				auto textInput = static_cast<GuiTextInput*>(columnsInput.get());
 				try
 				{
-					int newColumns = std::stoi(textInput->m_String);
-					int oldColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
-					if (newColumns != oldColumns && newColumns > 0)
-					{
-						m_contentSerializer->SetPanelColumns(m_selectedElementID, newColumns);
-						m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
-						Log("Updated panel " + to_string(m_selectedElementID) + " columns from " + to_string(oldColumns) + " to " + to_string(newColumns));
-						wasUpdated = true;
-					}
+					newColumns = std::stoi(textInput->m_String);
 				}
 				catch (...)
 				{
 					// Invalid number, ignore
+					newColumns = 0;
+				}
+			}
+			else if (columnsInput && columnsInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(columnsInput.get());
+				newColumns = scrollbar->m_Value;
+			}
+
+			if (columnsInput && newColumns > 0)
+			{
+				int oldColumns = m_contentSerializer->GetPanelColumns(m_selectedElementID);
+				if (newColumns != oldColumns)
+				{
+					m_contentSerializer->SetPanelColumns(m_selectedElementID, newColumns);
+					Log("Updated panel " + to_string(m_selectedElementID) + " columns from " + to_string(oldColumns) + " to " + to_string(newColumns));
+					wasUpdated = true;
 				}
 			}
 		}
 
-		// Update horizontal padding if changed
+		// Update horizontal padding if changed (can be textinput or scrollbar)
 		int horzPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_HORZ_PADDING");
 		if (horzPaddingInputID != -1)
 		{
 			auto horzPaddingInput = m_gui->GetElement(horzPaddingInputID);
+			int newHorzPadding = 0;
+
 			if (horzPaddingInput && horzPaddingInput->m_Type == GUI_TEXTINPUT)
 			{
 				auto textInput = static_cast<GuiTextInput*>(horzPaddingInput.get());
 				try
 				{
-					int newHorzPadding = std::stoi(textInput->m_String);
-					int oldHorzPadding = m_contentSerializer->GetPanelHorzPadding(m_selectedElementID);
-					if (newHorzPadding != oldHorzPadding && newHorzPadding >= 0)
+					if (!textInput->m_String.empty())
 					{
-						m_contentSerializer->SetPanelHorzPadding(m_selectedElementID, newHorzPadding);
-						m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
-						Log("Updated panel " + to_string(m_selectedElementID) + " horz padding from " + to_string(oldHorzPadding) + " to " + to_string(newHorzPadding));
-						wasUpdated = true;
+						newHorzPadding = std::stoi(textInput->m_String);
 					}
 				}
 				catch (...)
 				{
-					// Invalid number, ignore
+					// Invalid number, treat as 0
+					newHorzPadding = 0;
+				}
+			}
+			else if (horzPaddingInput && horzPaddingInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(horzPaddingInput.get());
+				newHorzPadding = scrollbar->m_Value;
+			}
+
+			if (horzPaddingInput)
+			{
+				int oldHorzPadding = m_contentSerializer->GetPanelHorzPadding(m_selectedElementID);
+				if (newHorzPadding != oldHorzPadding && newHorzPadding >= 0)
+				{
+					m_contentSerializer->SetPanelHorzPadding(m_selectedElementID, newHorzPadding);
+					Log("Updated panel " + to_string(m_selectedElementID) + " horz padding from " + to_string(oldHorzPadding) + " to " + to_string(newHorzPadding));
+					wasUpdated = true;
 				}
 			}
 		}
 
-		// Update vertical padding if changed
+		// Update vertical padding if changed (can be textinput or scrollbar)
 		int vertPaddingInputID = m_propertySerializer->GetElementID("PROPERTY_VERT_PADDING");
 		if (vertPaddingInputID != -1)
 		{
 			auto vertPaddingInput = m_gui->GetElement(vertPaddingInputID);
+			int newVertPadding = 0;
+
 			if (vertPaddingInput && vertPaddingInput->m_Type == GUI_TEXTINPUT)
 			{
 				auto textInput = static_cast<GuiTextInput*>(vertPaddingInput.get());
 				try
 				{
-					int newVertPadding = std::stoi(textInput->m_String);
-					int oldVertPadding = m_contentSerializer->GetPanelVertPadding(m_selectedElementID);
-					if (newVertPadding != oldVertPadding && newVertPadding >= 0)
+					if (!textInput->m_String.empty())
 					{
-						m_contentSerializer->SetPanelVertPadding(m_selectedElementID, newVertPadding);
-						m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
-						Log("Updated panel " + to_string(m_selectedElementID) + " vert padding from " + to_string(oldVertPadding) + " to " + to_string(newVertPadding));
-						wasUpdated = true;
+						newVertPadding = std::stoi(textInput->m_String);
 					}
 				}
 				catch (...)
 				{
-					// Invalid number, ignore
+					// Invalid number, treat as 0
+					newVertPadding = 0;
 				}
+			}
+			else if (vertPaddingInput && vertPaddingInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto scrollbar = static_cast<GuiScrollBar*>(vertPaddingInput.get());
+				newVertPadding = scrollbar->m_Value;
+			}
+
+			if (vertPaddingInput)
+			{
+				int oldVertPadding = m_contentSerializer->GetPanelVertPadding(m_selectedElementID);
+				if (newVertPadding != oldVertPadding && newVertPadding >= 0)
+				{
+					m_contentSerializer->SetPanelVertPadding(m_selectedElementID, newVertPadding);
+					Log("Updated panel " + to_string(m_selectedElementID) + " vert padding from " + to_string(oldVertPadding) + " to " + to_string(newVertPadding));
+					wasUpdated = true;
+				}
+			}
+		}
+
+	}
+
+	// Update font if changed (applies to all element types that have fonts)
+	int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+	if (fontInputID != -1)
+	{
+		auto fontInput = m_gui->GetElement(fontInputID);
+		if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+		{
+			auto textInput = static_cast<GuiTextInput*>(fontInput.get());
+			std::string newFont = textInput->m_String;
+			std::string oldFont = m_contentSerializer->GetElementFont(m_selectedElementID);
+
+			if (newFont != oldFont && !newFont.empty())
+			{
+				m_contentSerializer->SetElementFont(m_selectedElementID, newFont);
+				m_contentSerializer->MarkPropertyAsExplicit(m_selectedElementID, "font");
+
+				// Reload the font with the current size and assign it to the element
+				int fontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+				if (fontSize > 0)
+				{
+					std::string fontPath = m_fontPath + newFont;
+					auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+
+					// Update the font on the actual GUI element based on its type
+					if (selectedElement->m_Type == GUI_TEXTAREA)
+					{
+						auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+						textarea->m_Font = newFontPtr.get();
+						// Recalculate width based on new font
+						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
+						textarea->m_Width = textDims.x;
+					}
+					else if (selectedElement->m_Type == GUI_TEXTBUTTON)
+					{
+						auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+						textbutton->m_Font = newFontPtr.get();
+						// Recalculate width based on new font
+						Vector2 textDims = MeasureTextEx(*textbutton->m_Font, textbutton->m_String.c_str(), textbutton->m_Font->baseSize, 1);
+						textbutton->m_Width = textDims.x;
+					}
+					else if (selectedElement->m_Type == GUI_PANEL)
+					{
+						auto panel = static_cast<GuiPanel*>(selectedElement.get());
+						panel->m_Font = newFontPtr.get();
+					}
+
+					// Keep the font alive
+					m_preservedFonts.push_back(newFontPtr);
+				}
+
+				Log("Updated element " + to_string(m_selectedElementID) + " font from '" + oldFont + "' to '" + newFont + "'");
+				wasUpdated = true;
+			}
+		}
+	}
+
+	// Update font size if changed (can be textinput or scrollbar, applies to all element types that have fonts)
+	int fontSizeInputID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+	if (fontSizeInputID != -1)
+	{
+		auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
+		int newFontSize = 0;
+
+		if (fontSizeInput && fontSizeInput->m_Type == GUI_TEXTINPUT)
+		{
+			auto textInput = static_cast<GuiTextInput*>(fontSizeInput.get());
+			try
+			{
+				if (!textInput->m_String.empty())
+				{
+					newFontSize = std::stoi(textInput->m_String);
+				}
+			}
+			catch (...)
+			{
+				// Invalid number, ignore
+				newFontSize = 0;
+			}
+		}
+		else if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+			newFontSize = scrollbar->m_Value;
+		}
+
+		if (fontSizeInput && newFontSize > 0)
+		{
+			int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+			if (newFontSize != oldFontSize)
+			{
+				m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
+				m_contentSerializer->MarkPropertyAsExplicit(m_selectedElementID, "fontSize");
+
+				// Reload the font at the new size and assign it to the element
+				std::string fontName = m_contentSerializer->GetElementFont(m_selectedElementID);
+				Log("Font name for element " + to_string(m_selectedElementID) + ": '" + fontName + "'");
+
+				// If no font name is set, try to get it from the element's current font or use a default
+				if (fontName.empty())
+				{
+					// Try to inherit from parent
+					int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
+					if (parentID != -1)
+					{
+						fontName = m_contentSerializer->GetElementFont(parentID);
+						Log("Inherited font '" + fontName + "' from parent " + to_string(parentID));
+					}
+
+					// If still empty, use a default font
+					if (fontName.empty())
+					{
+						fontName = "babyblocks.ttf";  // Default font
+						Log("Using default font: " + fontName);
+					}
+
+					// Store the font name so we don't have to do this again
+					m_contentSerializer->SetElementFont(m_selectedElementID, fontName);
+					m_contentSerializer->MarkPropertyAsExplicit(m_selectedElementID, "font");
+				}
+
+				if (!fontName.empty())
+				{
+					std::string fontPath = m_fontPath + fontName;
+					Log("Loading font from: " + fontPath + " at size " + to_string(newFontSize));
+					auto newFont = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
+
+					// Update the font on the actual GUI element based on its type
+					if (selectedElement->m_Type == GUI_TEXTAREA)
+					{
+						auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+						textarea->m_Font = newFont.get();
+						// Recalculate width and height based on new font size
+						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
+						textarea->m_Width = textDims.x;
+						textarea->m_Height = textDims.y;
+					}
+					else if (selectedElement->m_Type == GUI_TEXTBUTTON)
+					{
+						auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+						textbutton->m_Font = newFont.get();
+						// Recalculate width and height based on new font size
+						Vector2 textDims = MeasureTextEx(*textbutton->m_Font, textbutton->m_String.c_str(), textbutton->m_Font->baseSize, 1);
+						textbutton->m_Width = textDims.x;
+						textbutton->m_Height = textDims.y;
+					}
+					else if (selectedElement->m_Type == GUI_PANEL)
+					{
+						auto panel = static_cast<GuiPanel*>(selectedElement.get());
+						panel->m_Font = newFont.get();
+					}
+
+					// Keep the font alive
+					m_preservedFonts.push_back(newFont);
+
+					// Update all children that inherited this font (don't have explicit font/fontSize)
+					auto updateChildFonts = [&](int parentID, auto& updateChildFontsRef) -> void {
+						// Get all children of this parent
+						auto allIDs = m_contentSerializer->GetAllElementIDs();
+						for (int childID : allIDs)
+						{
+							if (m_contentSerializer->GetParentID(childID) == parentID)
+							{
+								// Check if this child has explicit font properties
+								bool hasExplicitFont = m_contentSerializer->GetElementFont(childID) != "";
+								bool hasExplicitFontSize = m_contentSerializer->GetElementFontSize(childID) != 0;
+
+								// Only update if the child doesn't have explicit font size (inherited from parent)
+								if (!hasExplicitFontSize)
+								{
+									auto childElement = m_gui->GetElement(childID);
+									if (childElement)
+									{
+										// Update the child's font based on its type
+										if (childElement->m_Type == GUI_TEXTAREA)
+										{
+											auto textarea = static_cast<GuiTextArea*>(childElement.get());
+											textarea->m_Font = newFont.get();
+											Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
+											textarea->m_Width = textDims.x;
+											textarea->m_Height = textDims.y;
+										}
+										else if (childElement->m_Type == GUI_TEXTBUTTON)
+										{
+											auto textbutton = static_cast<GuiTextButton*>(childElement.get());
+											textbutton->m_Font = newFont.get();
+											Vector2 textDims = MeasureTextEx(*textbutton->m_Font, textbutton->m_String.c_str(), textbutton->m_Font->baseSize, 1);
+											textbutton->m_Width = textDims.x;
+											textbutton->m_Height = textDims.y;
+										}
+										else if (childElement->m_Type == GUI_PANEL)
+										{
+											auto panel = static_cast<GuiPanel*>(childElement.get());
+											panel->m_Font = newFont.get();
+										}
+
+										// Recursively update this child's children
+										updateChildFontsRef(childID, updateChildFontsRef);
+									}
+								}
+							}
+						}
+					};
+					updateChildFonts(m_selectedElementID, updateChildFonts);
+				}
+
+				Log("Updated element " + to_string(m_selectedElementID) + " font size from " + to_string(oldFontSize) + " to " + to_string(newFontSize));
+				wasUpdated = true;
 			}
 		}
 	}
@@ -1903,16 +2468,33 @@ void GhostState::UpdateElementFromPropertyPanel()
 					// Update sprite metadata in serializer
 					m_contentSerializer->SetSpriteName(m_selectedElementID, newFilename);
 
-					// Get parent ID and reflow the parent panel
-					int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
-					if (parentID != -1)
-					{
-						m_contentSerializer->ReflowPanel(parentID, m_gui.get());
-						Log("Reflowed parent panel " + to_string(parentID) + " after sprite change");
-					}
-
 					Log("Updated sprite " + to_string(m_selectedElementID) + " from '" + oldFilename + "' to '" + newFilename + "'");
 					wasUpdated = true;
+				}
+			}
+		}
+	}
+
+	// Always reflow after any property change to ensure layout is updated
+	if (wasUpdated)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement)
+		{
+			// If the selected element is a panel, reflow it directly
+			if (selectedElement->m_Type == GUI_PANEL)
+			{
+				m_contentSerializer->ReflowPanel(m_selectedElementID, m_gui.get());
+				Log("Reflowed panel " + to_string(m_selectedElementID) + " after property change");
+			}
+			// Otherwise, reflow its parent panel
+			else
+			{
+				int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
+				if (parentID != -1)
+				{
+					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+					Log("Reflowed parent panel " + to_string(parentID) + " after property change");
 				}
 			}
 		}

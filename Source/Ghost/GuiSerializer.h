@@ -120,14 +120,6 @@ public:
 		return (it != m_panelLayouts.end()) ? it->second : "horz";
 	}
 
-	// Panel padding metadata methods
-	void SetPanelPadding(int panelID, int padding) { m_panelPaddings[panelID] = padding; }
-	int GetPanelPadding(int panelID) const
-	{
-		auto it = m_panelPaddings.find(panelID);
-		return (it != m_panelPaddings.end()) ? it->second : 5;  // Default 5px padding
-	}
-
 	// Panel horizontal/vertical padding metadata methods
 	void SetPanelHorzPadding(int panelID, int padding) { m_panelHorzPaddings[panelID] = padding; }
 	int GetPanelHorzPadding(int panelID) const
@@ -159,6 +151,21 @@ public:
 		return (it != m_spriteNames.end()) ? it->second : "image.png";  // Default image.png
 	}
 
+	// Font metadata methods
+	void SetElementFont(int elementID, const std::string& fontName) { m_elementFonts[elementID] = fontName; }
+	std::string GetElementFont(int elementID) const
+	{
+		auto it = m_elementFonts.find(elementID);
+		return (it != m_elementFonts.end()) ? it->second : "";
+	}
+
+	void SetElementFontSize(int elementID, int fontSize) { m_elementFontSizes[elementID] = fontSize; }
+	int GetElementFontSize(int elementID) const
+	{
+		auto it = m_elementFontSizes.find(elementID);
+		return (it != m_elementFontSizes.end()) ? it->second : 0;  // 0 means not set
+	}
+
 	// Property metadata methods
 	void MarkPropertyAsExplicit(int elementID, const std::string& propertyName)
 	{
@@ -186,6 +193,10 @@ public:
 	const std::map<std::string, int>& GetElementNameToIDMap() const { return m_elementNameToID; }
 	void SetElementName(const std::string& name, int id) { m_elementNameToID[name] = id; }
 	void RemoveElementName(const std::string& name) { m_elementNameToID.erase(name); }
+
+	// Build inherited properties JSON from a parent element (for both loading and dynamic insertion)
+	// Returns a JSON object with properties that children should inherit (font, fontSize, etc.)
+	ghost_json BuildInheritedProps(int parentElementID) const;
 
 	// Serialize an element and its children to JSON (for clipboard/undo support)
 	// parentX and parentY are the parent's absolute position (for calculating relative positions)
@@ -215,7 +226,6 @@ private:
 
 	// Panel layout metadata (since Geist GuiPanel doesn't have this property)
 	std::map<int, std::string> m_panelLayouts;  // Maps panel ID -> layout ("horz", "vert", or "table")
-	std::map<int, int> m_panelPaddings;  // Maps panel ID -> padding in pixels
 	std::map<int, int> m_panelHorzPaddings;  // Maps panel ID -> horizontal padding in pixels
 	std::map<int, int> m_panelVertPaddings;  // Maps panel ID -> vertical padding in pixels
 	std::map<int, int> m_panelColumns;  // Maps panel ID -> number of columns (for table layout)

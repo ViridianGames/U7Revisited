@@ -302,6 +302,10 @@ public:
 	bool m_Filled;
 
 	Color m_Color;
+
+	// Font properties for inheritance to children
+	Font* m_Font = nullptr;
+	int m_FontSize = 0;
 };
 
 

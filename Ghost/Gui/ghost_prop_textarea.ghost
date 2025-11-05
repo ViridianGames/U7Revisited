@@ -126,6 +126,101 @@
               255
             ],
             "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_FONT",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "boxColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Font Size:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_FONT_SIZE",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 200,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ],
+            "active": true
           }
         ]
       }

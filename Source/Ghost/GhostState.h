@@ -50,6 +50,13 @@ private:
 	InsertContext PrepareInsert(const std::string& elementTypeName);
 	void FinalizeInsert(int newID, int parentID, const std::string& elementTypeName, bool isFloating = true);
 
+	// Get inherited font from parent element (returns nullptr if no inherited font)
+	Font* GetInheritedFont(int parentID, int& outFontSize);
+
+	// Helper functions for property tracking
+	bool TrackPropertyValue(int activeID, const std::string& propertyName, std::string& lastValue);
+	bool CheckPropertyChanged(int activeID, const std::string& propertyName, std::string& lastValue);
+
 public:
 
 	std::unique_ptr<Gui> m_gui;
@@ -82,11 +89,6 @@ public:
 	void PopulatePropertyPanelFields(); // Populate property panel fields with selected element's data
 	void UpdateElementFromPropertyPanel(); // Update selected element from property panel changes
 	std::string GetElementName(int elementID); // Get element name by ID from content serializer
-
-	enum GuiElements
-	{
-		GE_CLOSE_BUTTON = 0
-	};
 };
 
 #endif

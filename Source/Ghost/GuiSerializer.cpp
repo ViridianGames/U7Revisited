@@ -123,7 +123,8 @@ std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, G
 
 	// Get parent's layout type, padding, and columns
 	string layout = GetPanelLayout(parentID);
-	int padding = GetPanelPadding(parentID);
+	int horzPadding = GetPanelHorzPadding(parentID);
+	int vertPadding = GetPanelVertPadding(parentID);
 	int columns = GetPanelColumns(parentID);
 
 	// Get parent's absolute position as the starting point
@@ -131,12 +132,12 @@ std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, G
 	int parentY = parent->m_Pos.y;
 
 	// Track the current layout position, starting with padding offset
-	int layoutX = parentX + padding;
-	int layoutY = parentY + padding;
+	int layoutX = parentX + horzPadding;
+	int layoutY = parentY + vertPadding;
 	int columnIndex = 0;  // Track current column for table layout
 	int maxRowHeight = 0; // Track max height in current row for table layout
 
-	Log("CalculateNextFloatingPosition: Parent " + to_string(parentID) + " at (" + to_string(parentX) + ", " + to_string(parentY) + "), layout=" + layout + ", padding=" + to_string(padding));
+	Log("CalculateNextFloatingPosition: Parent " + to_string(parentID) + " at (" + to_string(parentX) + ", " + to_string(parentY) + "), layout=" + layout + ", horzPadding=" + to_string(horzPadding) + ", vertPadding=" + to_string(vertPadding));
 
 	// Iterate through all children of this parent
 	auto childIt = m_childrenMap.find(parentID);
@@ -164,11 +165,11 @@ std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, G
 			// Advance layout position based on this child's size plus padding
 			if (layout == "horz")
 			{
-				layoutX += child->m_Width + padding;  // Add padding between elements
+				layoutX += child->m_Width + horzPadding;  // Add horizontal padding between elements
 			}
 			else if (layout == "vert")
 			{
-				layoutY += child->m_Height + padding;  // Add padding between elements
+				layoutY += child->m_Height + vertPadding;  // Add vertical padding between elements
 			}
 			else if (layout == "table")
 			{
@@ -182,15 +183,15 @@ std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, G
 				if (columnIndex >= columns)
 				{
 					// Wrap to next row
-					layoutX = parentX + padding;
-					layoutY += maxRowHeight + padding;
+					layoutX = parentX + horzPadding;
+					layoutY += maxRowHeight + vertPadding;
 					columnIndex = 0;
 					maxRowHeight = 0;
 				}
 				else
 				{
 					// Move to next column
-					layoutX += child->m_Width + padding;
+					layoutX += child->m_Width + horzPadding;
 				}
 			}
 		}
@@ -213,18 +214,20 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 	// Track layout position for floating elements
 	// Get parent's layout type and padding (defaults to "horz" and 5px if no parent or not found)
 	string parentLayout = "horz";
-	int padding = 5;
+	int horzPadding = 5;
+	int vertPadding = 5;
 	int columns = 1;
 	if (parentElementID != -1)
 	{
 		parentLayout = GetPanelLayout(parentElementID);
-		padding = GetPanelPadding(parentElementID);
+		horzPadding = GetPanelHorzPadding(parentElementID);
+		vertPadding = GetPanelVertPadding(parentElementID);
 		columns = GetPanelColumns(parentElementID);
 	}
 
 	// Start layout position with padding offset from parent's edge
-	int layoutX = padding;  // Current X offset for horizontal layout
-	int layoutY = padding;  // Current Y offset for vertical layout
+	int layoutX = horzPadding;  // Current X offset for horizontal layout
+	int layoutY = vertPadding;  // Current Y offset for vertical layout
 	int columnIndex = 0;    // Current column for table layout
 	int maxRowHeight = 0;   // Max height in current row for table layout
 
@@ -348,13 +351,29 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 
 			gui->AddPanel(id, absoluteX, absoluteY, width, height, color, filled, group, active);
 
+			// Get the panel element so we can set font properties
+			auto panelElement = gui->GetElement(id);
+			GuiPanel* panel = static_cast<GuiPanel*>(panelElement.get());
+
 			// Store layout property (defaults to "horz" if not specified)
 			string layout = element.value("layout", "horz");
 			m_panelLayouts[id] = layout;
 
-			// Store padding property (defaults to 5 if not specified)
-			int padding = element.value("padding", 5);
-			m_panelPaddings[id] = padding;
+			// Store horizontal and vertical padding (check for old single "padding" value for backwards compatibility)
+			if (element.contains("padding"))
+			{
+				int padding = element.value("padding", 5);
+				m_panelHorzPaddings[id] = padding;
+				m_panelVertPaddings[id] = padding;
+			}
+			if (element.contains("horzPadding"))
+			{
+				m_panelHorzPaddings[id] = element.value("horzPadding", 5);
+			}
+			if (element.contains("vertPadding"))
+			{
+				m_panelVertPaddings[id] = element.value("vertPadding", 5);
+			}
 
 			// Store columns property for table layout (defaults to 1 if not specified)
 			if (layout == "table")
@@ -367,18 +386,30 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			if (element.contains("font"))
 			{
 				m_explicitProperties[id].insert("font");
-				m_elementFonts[id] = element["font"];
+				string fontName = element["font"];
+				m_elementFonts[id] = fontName;
+
+				// Load and apply font to panel
+				string fontPath = s_baseFontPath + fontName;
+				int fontSize = element.value("fontSize", 20);  // Default if not specified
+				auto fontPtr = make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+				m_loadedFonts.push_back(fontPtr);
+				panel->m_Font = fontPtr.get();
 			}
 			if (element.contains("fontSize"))
 			{
 				m_explicitProperties[id].insert("fontSize");
-				m_elementFontSizes[id] = element["fontSize"];
+				int fontSize = element["fontSize"];
+				m_elementFontSizes[id] = fontSize;
+				panel->m_FontSize = fontSize;
 			}
 
 			// Recursively parse child elements if they exist
 			if (element.contains("elements"))
 			{
-				ParseElements(element["elements"], gui, element, absoluteX, absoluteY, id);
+				// Build inherited props from the panel we just created (use the maps, not the element JSON)
+				ghost_json childInheritedProps = BuildInheritedProps(id);
+				ParseElements(element["elements"], gui, childInheritedProps, absoluteX, absoluteY, id);
 			}
 		}
 		else if (type == "textbutton")
@@ -539,6 +570,51 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			int width = size[0];
 			int height = size[1];
 
+			// Get font name with inheritance
+			string fontName = "";
+			if (element.contains("font"))
+			{
+				m_explicitProperties[id].insert("font");
+				fontName = element["font"].get<string>();
+				m_elementFonts[id] = fontName;  // Store just the font name
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
+			{
+				fontName = inheritedProps["font"].get<string>();
+			}
+
+			// Get font size with inheritance
+			int fontSize = 20;
+			if (element.contains("fontSize"))
+			{
+				m_explicitProperties[id].insert("fontSize");
+				fontSize = element["fontSize"].get<int>();
+				m_elementFontSizes[id] = fontSize;
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
+			{
+				fontSize = inheritedProps["fontSize"].get<int>();
+			}
+
+			// Load font if specified
+			Font* font = gui->m_Font.get();  // Default to GUI font
+			if (!fontName.empty())
+			{
+				string fontPath = s_baseFontPath + fontName;
+				auto loadedFont = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
+				if (loadedFont.texture.id == 0)
+				{
+					Log("GuiSerializer::ParseElements - Failed to load font: " + fontPath);
+				}
+				else
+				{
+					// Store the font to keep it alive
+					auto fontPtr = make_shared<Font>(loadedFont);
+					m_loadedFonts.push_back(fontPtr);
+					font = fontPtr.get();
+				}
+			}
+
 			// Get colors
 			Color textColor = WHITE;
 			if (element.contains("textColor"))
@@ -571,8 +647,15 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			int absoluteX = parentX + posx;
 			int absoluteY = parentY + posy;
 
+			// Scale height based on font size (baseline is 20px for default font)
+			int scaledHeight = height;
+			if (fontSize != 20)
+			{
+				scaledHeight = (int)((float)height * ((float)fontSize / 20.0f));
+			}
+
 			// Add the text input
-			gui->AddTextInput(id, absoluteX, absoluteY, width, height, gui->m_Font.get(), text, textColor, boxColor, bgColor, group, active);
+			gui->AddTextInput(id, absoluteX, absoluteY, width, scaledHeight, font, text, textColor, boxColor, bgColor, group, active);
 		}
 		else if (type == "sprite")
 		{
@@ -706,6 +789,43 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				radio->m_Selected = element["selected"];
 			}
 		}
+		else if (type == "scrollbar")
+		{
+			auto size = element["size"];
+			int width = size[0];
+			int height = size[1];
+
+			// Get value range (0 to valueRange)
+			int valueRange = element.value("valueRange", 100);
+
+			// Get vertical flag
+			bool vertical = element.value("vertical", true);
+
+			// Get spur color
+			Color spurColor = WHITE;
+			if (element.contains("spurColor"))
+			{
+				auto arr = element["spurColor"];
+				spurColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get background color
+			Color bgColor = DARKGRAY;
+			if (element.contains("backgroundColor"))
+			{
+				auto arr = element["backgroundColor"];
+				bgColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Add the scrollbar
+			gui->AddScrollBar(id, valueRange, absoluteX, absoluteY, width, height, vertical, spurColor, bgColor, group, active, false);
+		}
 		// Add more element types here as needed
 
 		// Mark floating elements and update layout position
@@ -721,12 +841,12 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				if (parentLayout == "horz")
 				{
 					// Horizontal layout: advance X by element width plus padding
-					layoutX += createdElement->m_Width + padding;
+					layoutX += createdElement->m_Width + horzPadding;
 				}
 				else if (parentLayout == "vert")
 				{
 					// Vertical layout: advance Y by element height plus padding
-					layoutY += createdElement->m_Height + padding;
+					layoutY += createdElement->m_Height + vertPadding;
 				}
 				else if (parentLayout == "table")
 				{
@@ -740,15 +860,15 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 					if (columnIndex >= columns)
 					{
 						// Wrap to next row
-						layoutX = padding;
-						layoutY += maxRowHeight + padding;
+						layoutX = horzPadding;
+						layoutY += maxRowHeight + vertPadding;
 						columnIndex = 0;
 						maxRowHeight = 0;
 					}
 					else
 					{
 						// Move to next column
-						layoutX += static_cast<int>(createdElement->m_Width) + padding;
+						layoutX += static_cast<int>(createdElement->m_Width) + horzPadding;
 					}
 				}
 			}
@@ -769,6 +889,28 @@ bool GuiSerializer::LoadFromFile(const std::string& filename, Gui* gui)
 	return ParseJson(j, gui);
 }
 
+ghost_json GuiSerializer::BuildInheritedProps(int parentElementID) const
+{
+	ghost_json inheritedProps;
+
+	// Get font properties from parent if available
+	auto fontIt = m_elementFonts.find(parentElementID);
+	if (fontIt != m_elementFonts.end())
+	{
+		inheritedProps["font"] = fontIt->second;
+		Log("BuildInheritedProps: Inheriting font '" + fontIt->second + "' from parent " + std::to_string(parentElementID));
+	}
+
+	auto fontSizeIt = m_elementFontSizes.find(parentElementID);
+	if (fontSizeIt != m_elementFontSizes.end())
+	{
+		inheritedProps["fontSize"] = fontSizeIt->second;
+		Log("BuildInheritedProps: Inheriting fontSize " + std::to_string(fontSizeIt->second) + " from parent " + std::to_string(parentElementID));
+	}
+
+	return inheritedProps;
+}
+
 bool GuiSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
 {
 	// Read JSON from file
@@ -779,30 +921,7 @@ bool GuiSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int par
 	}
 
 	// Build inherited properties from parent panel
-	ghost_json inheritedProps;
-
-	// Get font properties from parent if available
-	auto fontIt = m_elementFonts.find(parentElementID);
-	if (fontIt != m_elementFonts.end())
-	{
-		inheritedProps["font"] = fontIt->second;
-		Log("LoadIntoPanel: Inheriting font '" + fontIt->second + "' from parent " + std::to_string(parentElementID));
-	}
-	else
-	{
-		Log("LoadIntoPanel: No font found for parent " + std::to_string(parentElementID));
-	}
-
-	auto fontSizeIt = m_elementFontSizes.find(parentElementID);
-	if (fontSizeIt != m_elementFontSizes.end())
-	{
-		inheritedProps["fontSize"] = fontSizeIt->second;
-		Log("LoadIntoPanel: Inheriting fontSize " + std::to_string(fontSizeIt->second) + " from parent " + std::to_string(parentElementID));
-	}
-	else
-	{
-		Log("LoadIntoPanel: No fontSize found for parent " + std::to_string(parentElementID));
-	}
+	ghost_json inheritedProps = BuildInheritedProps(parentElementID);
 
 	// Parse elements directly at the specified position
 	if (j.contains("gui") && j["gui"].contains("elements"))
@@ -961,7 +1080,8 @@ void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
 
 	// Get layout direction, padding, and columns
 	string layout = m_panelLayouts.count(panelID) ? m_panelLayouts[panelID] : "horz";
-	int padding = m_panelPaddings.count(panelID) ? m_panelPaddings[panelID] : 5;
+	int horzPadding = m_panelHorzPaddings.count(panelID) ? m_panelHorzPaddings[panelID] : 5;
+	int vertPadding = m_panelVertPaddings.count(panelID) ? m_panelVertPaddings[panelID] : 5;
 	int columns = m_panelColumns.count(panelID) ? m_panelColumns[panelID] : 1;
 
 	// Get children of this panel
@@ -970,8 +1090,8 @@ void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
 		return;
 
 	// Calculate new positions for floating children
-	int layoutX = padding;
-	int layoutY = padding;
+	int layoutX = horzPadding;
+	int layoutY = vertPadding;
 	int columnIndex = 0;  // Track current column for table layout
 	int maxRowHeight = 0; // Track max height in current row for table layout
 
@@ -994,11 +1114,11 @@ void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
 		// Update layout position for next element
 		if (layout == "horz")
 		{
-			layoutX += static_cast<int>(child->m_Width) + padding;
+			layoutX += static_cast<int>(child->m_Width) + horzPadding;
 		}
 		else if (layout == "vert")
 		{
-			layoutY += static_cast<int>(child->m_Height) + padding;
+			layoutY += static_cast<int>(child->m_Height) + vertPadding;
 		}
 		else if (layout == "table")
 		{
@@ -1012,18 +1132,47 @@ void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
 			if (columnIndex >= columns)
 			{
 				// Wrap to next row
-				layoutX = padding;
-				layoutY += maxRowHeight + padding;
+				layoutX = horzPadding;
+				layoutY += maxRowHeight + vertPadding;
 				columnIndex = 0;
 				maxRowHeight = 0;
 			}
 			else
 			{
 				// Move to next column
-				layoutX += static_cast<int>(child->m_Width) + padding;
+				layoutX += static_cast<int>(child->m_Width) + horzPadding;
 			}
 		}
 	}
+
+	// Resize panel to enclose all children with padding
+	// Calculate the bounding box of all children
+	float maxX = 0;
+	float maxY = 0;
+
+	for (int childID : childrenIt->second)
+	{
+		auto childIt = gui->m_GuiElementList.find(childID);
+		if (childIt == gui->m_GuiElementList.end())
+			continue;
+
+		auto child = childIt->second;
+
+		// Calculate the right edge and bottom edge of this child (relative to panel)
+		float childRelativeX = child->m_Pos.x - panel->m_Pos.x;
+		float childRelativeY = child->m_Pos.y - panel->m_Pos.y;
+		float childRightEdge = childRelativeX + child->m_Width;
+		float childBottomEdge = childRelativeY + child->m_Height;
+
+		if (childRightEdge > maxX)
+			maxX = childRightEdge;
+		if (childBottomEdge > maxY)
+			maxY = childBottomEdge;
+	}
+
+	// Set panel size to enclose all children plus padding
+	panel->m_Width = maxX + horzPadding;
+	panel->m_Height = maxY + vertPadding;
 }
 
 ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY)
@@ -1062,6 +1211,21 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 			break;
 		case GUI_SPRITE:
 			type = "sprite";
+			break;
+		case GUI_SCROLLBAR:
+			type = "scrollbar";
+			break;
+		case GUI_ICONBUTTON:
+			type = "iconbutton";
+			break;
+		case GUI_OCTAGONBOX:
+			type = "octagonbox";
+			break;
+		case GUI_STRETCHBUTTON:
+			type = "stretchbutton";
+			break;
+		case GUI_LIST:
+			type = "list";
 			break;
 		// Add more types as needed
 		default:
@@ -1110,10 +1274,14 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 		std::string layout = (layoutIt != m_panelLayouts.end()) ? layoutIt->second : "horz";
 		elementJson["layout"] = layout;
 
-		// Add padding property (defaults to 5 if not set)
-		auto paddingIt = m_panelPaddings.find(elementID);
-		int padding = (paddingIt != m_panelPaddings.end()) ? paddingIt->second : 5;
-		elementJson["padding"] = padding;
+		// Add horizontal and vertical padding properties (defaults to 5 if not set)
+		auto horzPaddingIt = m_panelHorzPaddings.find(elementID);
+		int horzPadding = (horzPaddingIt != m_panelHorzPaddings.end()) ? horzPaddingIt->second : 5;
+		elementJson["horzPadding"] = horzPadding;
+
+		auto vertPaddingIt = m_panelVertPaddings.find(elementID);
+		int vertPadding = (vertPaddingIt != m_panelVertPaddings.end()) ? vertPaddingIt->second : 5;
+		elementJson["vertPadding"] = vertPadding;
 
 		// Add columns property for table layout
 		if (layout == "table")
@@ -1121,6 +1289,27 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 			auto columnsIt = m_panelColumns.find(elementID);
 			int columns = (columnsIt != m_panelColumns.end()) ? columnsIt->second : 1;
 			elementJson["columns"] = columns;
+		}
+
+		// Add font properties if explicitly set
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+
+			if (explicitProps.count("font") > 0)
+			{
+				auto fontIt = m_elementFonts.find(elementID);
+				if (fontIt != m_elementFonts.end())
+					elementJson["font"] = fontIt->second;
+			}
+
+			if (explicitProps.count("fontSize") > 0)
+			{
+				auto sizeIt = m_elementFontSizes.find(elementID);
+				if (sizeIt != m_elementFontSizes.end())
+					elementJson["fontSize"] = sizeIt->second;
+			}
 		}
 	}
 	else if (element->m_Type == GUI_TEXTBUTTON)
@@ -1255,6 +1444,52 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 			if (explicitProps.count("color") > 0)
 				elementJson["color"] = { sprite->m_Color.r, sprite->m_Color.g, sprite->m_Color.b, sprite->m_Color.a };
 		}
+	}
+	else if (element->m_Type == GUI_SCROLLBAR)
+	{
+		auto scrollbar = static_cast<GuiScrollBar*>(element.get());
+		elementJson["valueRange"] = scrollbar->m_ValueRange;
+		elementJson["size"] = { scrollbar->m_Width, scrollbar->m_Height };
+		elementJson["vertical"] = scrollbar->m_Vertical;
+		elementJson["spurColor"] = { scrollbar->m_SpurColor.r, scrollbar->m_SpurColor.g, scrollbar->m_SpurColor.b, scrollbar->m_SpurColor.a };
+		elementJson["backgroundColor"] = { scrollbar->m_BackgroundColor.r, scrollbar->m_BackgroundColor.g, scrollbar->m_BackgroundColor.b, scrollbar->m_BackgroundColor.a };
+	}
+	else if (element->m_Type == GUI_ICONBUTTON)
+	{
+		auto iconbutton = static_cast<GuiIconButton*>(element.get());
+		elementJson["sprite"] = GetSpriteName(elementID);
+		if (!iconbutton->m_String.empty())
+			elementJson["text"] = iconbutton->m_String;
+		elementJson["color"] = { iconbutton->m_FontColor.r, iconbutton->m_FontColor.g, iconbutton->m_FontColor.b, iconbutton->m_FontColor.a };
+		elementJson["scale"] = iconbutton->m_Scale;
+		if (iconbutton->m_CanBeHeld)
+			elementJson["canBeHeld"] = iconbutton->m_CanBeHeld;
+	}
+	else if (element->m_Type == GUI_OCTAGONBOX)
+	{
+		auto octagonbox = static_cast<GuiOctagonBox*>(element.get());
+		elementJson["size"] = { octagonbox->m_Width, octagonbox->m_Height };
+		elementJson["color"] = { octagonbox->m_Color.r, octagonbox->m_Color.g, octagonbox->m_Color.b, octagonbox->m_Color.a };
+		// Note: borders serialization not implemented yet - would need sprite name tracking for 8 sprites
+	}
+	else if (element->m_Type == GUI_STRETCHBUTTON)
+	{
+		auto stretchbutton = static_cast<GuiStretchButton*>(element.get());
+		elementJson["width"] = stretchbutton->m_Width;
+		elementJson["label"] = stretchbutton->m_String;
+		elementJson["indent"] = stretchbutton->m_Indent;
+		elementJson["color"] = { stretchbutton->m_Color.r, stretchbutton->m_Color.g, stretchbutton->m_Color.b, stretchbutton->m_Color.a };
+		// Note: sprite parts serialization not implemented yet - would need sprite name tracking for 6 sprites
+	}
+	else if (element->m_Type == GUI_LIST)
+	{
+		auto list = static_cast<GuiList*>(element.get());
+		elementJson["size"] = { list->m_Width, list->m_Height };
+		elementJson["items"] = list->m_Items;
+		elementJson["textColor"] = { list->m_TextColor.r, list->m_TextColor.g, list->m_TextColor.b, list->m_TextColor.a };
+		elementJson["backgroundColor"] = { list->m_BackgroundColor.r, list->m_BackgroundColor.g, list->m_BackgroundColor.b, list->m_BackgroundColor.a };
+		elementJson["borderColor"] = { list->m_BorderColor.r, list->m_BorderColor.g, list->m_BorderColor.b, list->m_BorderColor.a };
+		// Note: font serialization would need font name tracking
 	}
 
 	// Common properties that go after type-specific ones
