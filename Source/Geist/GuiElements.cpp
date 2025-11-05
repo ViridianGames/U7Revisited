@@ -917,7 +917,7 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 
 void GuiTextArea::Draw()
 {
-	if (!m_Active || !m_Visible)
+	if (!m_Visible)
 		return;
 
 	if (m_Justified == GuiTextArea::RIGHT)
@@ -1037,7 +1037,7 @@ void GuiOctagonBox::Update()
 //  8 - Bottom right
 void GuiOctagonBox::Draw()
 {
-	if (!m_Active || !m_Visible)
+	if (!m_Visible)
 		return;
 
 	float x = m_Gui->m_Pos.x + (m_Pos.x);
