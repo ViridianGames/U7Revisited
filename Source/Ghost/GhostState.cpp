@@ -683,9 +683,14 @@ void GhostState::Update()
 		// Find the deepest element in the tree (the one with the most ancestors)
 		int bestID = -1;
 		int maxDepth = -1;
+		bool clickedInvisibleRoot = false;
 		for (int id : clickedElements)
 		{
-			if (id == 2000) continue;  // Skip invisible root
+			if (id == 2000)
+			{
+				clickedInvisibleRoot = true;
+				continue;  // Skip invisible root in depth calculation
+			}
 
 			// Count depth by walking up the parent chain
 			int depth = 0;
@@ -701,6 +706,12 @@ void GhostState::Update()
 				maxDepth = depth;
 				bestID = id;
 			}
+		}
+
+		// If we clicked the invisible root (2000) and nothing else, select the normal root (2001)
+		if (bestID == -1 && clickedInvisibleRoot)
+		{
+			bestID = 2001;
 		}
 
 		if (bestID != -1)
@@ -2198,14 +2209,7 @@ void GhostState::UpdatePropertyPanel()
 			propertyFile = "Gui/ghost_prop_iconbutton.ghost";
 			break;
 		case GUI_SCROLLBAR:
-			{
-				// Check if scrollbar is vertical (scrollbar) or horizontal (slider)
-				auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
-				if (scrollbar->m_Vertical)
-					propertyFile = "Gui/ghost_prop_scrollbar.ghost";
-				else
-					propertyFile = "Gui/ghost_prop_slider.ghost";
-			}
+			propertyFile = "Gui/ghost_prop_scrollbar.ghost";
 			break;
 		case GUI_RADIOBUTTON:
 			propertyFile = "Gui/ghost_prop_radiobutton.ghost";
