@@ -651,7 +651,15 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			}
 
 			Color boxColor = WHITE;
-			if (element.contains("boxColor"))
+			// Support borderColor (preferred) or boxColor (legacy) for textinput border
+			if (element.contains("borderColor"))
+			{
+				m_explicitProperties[id].insert("borderColor");
+				auto arr = element["borderColor"];
+				boxColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (element.contains("boxColor"))
 			{
 				m_explicitProperties[id].insert("boxColor");
 				auto arr = element["boxColor"];
@@ -1443,7 +1451,10 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 			if (explicitProps.count("textColor") > 0)
 				elementJson["textColor"] = { textinput->m_TextColor.r, textinput->m_TextColor.g, textinput->m_TextColor.b, textinput->m_TextColor.a };
 
-			if (explicitProps.count("boxColor") > 0)
+			// Write as borderColor (preferred) or boxColor (legacy)
+			if (explicitProps.count("borderColor") > 0)
+				elementJson["borderColor"] = { textinput->m_BoxColor.r, textinput->m_BoxColor.g, textinput->m_BoxColor.b, textinput->m_BoxColor.a };
+			else if (explicitProps.count("boxColor") > 0)
 				elementJson["boxColor"] = { textinput->m_BoxColor.r, textinput->m_BoxColor.g, textinput->m_BoxColor.b, textinput->m_BoxColor.a };
 
 			if (explicitProps.count("backgroundColor") > 0)

@@ -13,7 +13,7 @@
         ],
         "size": [
           237.0,
-          145.0
+          235.0
         ],
         "backgroundColor": [
           80,
@@ -21,6 +21,8 @@
           80,
           255
         ],
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
         "filled": true,
         "layout": "table",
         "horzPadding": 9,
@@ -62,16 +64,16 @@
               255,
               255
             ],
-            "boxColor": [
-              255,
-              255,
-              255,
-              255
-            ],
             "backgroundColor": [
               0,
               0,
               0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
               255
             ]
           },
@@ -196,16 +198,16 @@
               255,
               255
             ],
-            "boxColor": [
-              255,
-              255,
-              255,
-              255
-            ],
             "backgroundColor": [
               0,
               0,
               0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
               255
             ]
           },
@@ -246,6 +248,150 @@
               255
             ],
             "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Text Color:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_TEXTCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Border Color:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_BORDERCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Background:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_BACKGROUNDCOLOR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Pick Color",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
               128,
               128,
               128,

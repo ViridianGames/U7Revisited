@@ -38,6 +38,7 @@ void GhostState::Init(const std::string& configfile)
 	m_selectedElementID = -1;
 	m_lastPropertyElementType = -1;
 	m_hasClipboard = false;
+	m_editingColorProperty = NONE;
 
 	// Load config to get resource paths
 	Log("Loading config from: Data/ghost.cfg");
@@ -346,6 +347,49 @@ void GhostState::Update()
 		}
 	}
 
+	// Check for PROPERTY_TEXTCOLOR button click to open color picker (for textarea, textinput, textbutton)
+	int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+	if (textColorButtonID != -1 && m_selectedElementID != -1)
+	{
+		auto textColorButton = m_gui->GetElement(textColorButtonID);
+		if (textColorButton && textColorButton->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(textColorButton.get());
+			if (button->m_Clicked)
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				if (selectedElement && selectedElement->m_Type == GUI_TEXTAREA)
+				{
+					auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+					m_editingColorProperty = TEXTAREA_TEXTCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textarea->m_Color);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textarea text color");
+				}
+				else if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					m_editingColorProperty = TEXTINPUT_TEXTCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textinput->m_TextColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textinput text color");
+				}
+				else if (selectedElement && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					m_editingColorProperty = TEXTBUTTON_TEXTCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textbutton->m_TextColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textbutton text color");
+				}
+			}
+		}
+	}
+
 	// Check for PROPERTY_BACKGROUND button click to open color picker
 	int backgroundButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUND");
 	if (backgroundButtonID != -1 && m_selectedElementID != -1)
@@ -356,11 +400,15 @@ void GhostState::Update()
 			auto button = static_cast<GuiTextButton*>(backgroundButton.get());
 			if (button->m_Clicked)
 			{
-				// Get current panel color
 				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				// Handle panel background color
 				if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 				{
 					auto panel = static_cast<GuiPanel*>(selectedElement.get());
+
+					// Track that we're editing panel background color
+					m_editingColorProperty = PANEL_BACKGROUND;
 
 					// Set color on ColorPickerState and push it
 					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
@@ -368,6 +416,108 @@ void GhostState::Update()
 					g_StateMachine->PushState(1);
 
 					Log("Opening color picker for panel background color");
+				}
+			}
+		}
+	}
+
+	// Check for PROPERTY_BORDERCOLOR button click (for textinput and textbutton)
+	int borderColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BORDERCOLOR");
+	if (borderColorButtonID != -1 && m_selectedElementID != -1)
+	{
+		auto borderColorButton = m_gui->GetElement(borderColorButtonID);
+		if (borderColorButton && borderColorButton->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(borderColorButton.get());
+			if (button->m_Clicked)
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					m_editingColorProperty = TEXTINPUT_BORDERCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textinput->m_BoxColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textinput border color");
+				}
+				else if (selectedElement && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					m_editingColorProperty = TEXTBUTTON_BORDERCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textbutton->m_BorderColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textbutton border color");
+				}
+			}
+		}
+	}
+
+	// Check for PROPERTY_BACKGROUNDCOLOR button click (for textinput and textbutton)
+	int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+	if (backgroundColorButtonID != -1 && m_selectedElementID != -1)
+	{
+		auto backgroundColorButton = m_gui->GetElement(backgroundColorButtonID);
+		if (backgroundColorButton && backgroundColorButton->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(backgroundColorButton.get());
+			if (button->m_Clicked)
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					m_editingColorProperty = TEXTINPUT_BACKGROUNDCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textinput->m_BackgroundColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textinput background color");
+				}
+				else if (selectedElement && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					m_editingColorProperty = TEXTBUTTON_BACKGROUNDCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(textbutton->m_BackgroundColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for textbutton background color");
+				}
+				else if (selectedElement && selectedElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+					m_editingColorProperty = SCROLLBAR_BACKGROUNDCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(scrollbar->m_BackgroundColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for scrollbar background color");
+				}
+			}
+		}
+	}
+
+	// Check for PROPERTY_SPURCOLOR button click to open color picker (for scrollbar)
+	int spurColorButtonID = m_propertySerializer->GetElementID("PROPERTY_SPURCOLOR");
+	if (spurColorButtonID != -1 && m_selectedElementID != -1)
+	{
+		auto spurColorButton = m_gui->GetElement(spurColorButtonID);
+		if (spurColorButton && spurColorButton->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(spurColorButton.get());
+			if (button->m_Clicked)
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				if (selectedElement && selectedElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+					m_editingColorProperty = SCROLLBAR_SPURCOLOR;
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(scrollbar->m_SpurColor);
+					g_StateMachine->PushState(1);
+					Log("Opening color picker for scrollbar spur color");
 				}
 			}
 		}
@@ -1028,21 +1178,170 @@ void GhostState::OnEnter()
 			Log("GhostState: Applying color, selectedElementID = " + std::to_string(m_selectedElementID));
 			Color selectedColor = colorPickerState->GetColor();
 
-			// Apply to currently selected panel
+			// Apply color based on which property was being edited
 			if (m_selectedElementID != -1)
 			{
 				auto selectedElement = m_gui->GetElement(m_selectedElementID);
-				if (selectedElement && selectedElement->m_Type == GUI_PANEL)
+
+				if (m_editingColorProperty == PANEL_BACKGROUND && selectedElement->m_Type == GUI_PANEL)
 				{
 					auto panel = static_cast<GuiPanel*>(selectedElement.get());
 					panel->m_Color = selectedColor;
+					Log("Applied panel background color from picker");
 
-					Log("Applied color from picker: R=" + std::to_string(selectedColor.r) +
-						", G=" + std::to_string(selectedColor.g) +
-						", B=" + std::to_string(selectedColor.b) +
-						", A=" + std::to_string(selectedColor.a));
+					// Update the PROPERTY_BACKGROUND button text color to match
+					int backgroundButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUND");
+					if (backgroundButtonID != -1)
+					{
+						auto backgroundButton = m_gui->GetElement(backgroundButtonID);
+						if (backgroundButton && backgroundButton->m_Type == GUI_TEXTBUTTON)
+						{
+							auto button = static_cast<GuiTextButton*>(backgroundButton.get());
+							button->m_TextColor = selectedColor;
+							Log("Updated PROPERTY_BACKGROUND button text color to match new panel color");
+						}
+					}
 				}
+				else if (m_editingColorProperty == TEXTAREA_TEXTCOLOR && selectedElement->m_Type == GUI_TEXTAREA)
+				{
+					auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+					textarea->m_Color = selectedColor;
+					Log("Applied textarea text color from picker");
+
+					// Update the PROPERTY_TEXTCOLOR button text color to match
+					int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+					if (textColorButtonID != -1)
+					{
+						auto textColorButton = m_gui->GetElement(textColorButtonID);
+						if (textColorButton && textColorButton->m_Type == GUI_TEXTBUTTON)
+						{
+							auto button = static_cast<GuiTextButton*>(textColorButton.get());
+							button->m_TextColor = selectedColor;
+							Log("Updated PROPERTY_TEXTCOLOR button text color to match new textarea color");
+						}
+					}
+				}
+				else if (m_editingColorProperty == TEXTINPUT_TEXTCOLOR && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					textinput->m_TextColor = selectedColor;
+					Log("Applied textinput text color from picker");
+
+					// Update button text color
+					int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+					if (textColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(textColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == TEXTINPUT_BORDERCOLOR && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					textinput->m_BoxColor = selectedColor;
+					Log("Applied textinput border color from picker");
+
+					// Update button text color
+					int borderColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BORDERCOLOR");
+					if (borderColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(borderColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == TEXTINPUT_BACKGROUNDCOLOR && selectedElement->m_Type == GUI_TEXTINPUT)
+				{
+					auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+					textinput->m_BackgroundColor = selectedColor;
+					Log("Applied textinput background color from picker");
+
+					// Update button text color
+					int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+					if (backgroundColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == TEXTBUTTON_TEXTCOLOR && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					textbutton->m_TextColor = selectedColor;
+					Log("Applied textbutton text color from picker");
+
+					// Update button text color
+					int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+					if (textColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(textColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == TEXTBUTTON_BORDERCOLOR && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					textbutton->m_BorderColor = selectedColor;
+					Log("Applied textbutton border color from picker");
+
+					// Update button text color
+					int borderColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BORDERCOLOR");
+					if (borderColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(borderColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == TEXTBUTTON_BACKGROUNDCOLOR && selectedElement->m_Type == GUI_TEXTBUTTON)
+				{
+					auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+					textbutton->m_BackgroundColor = selectedColor;
+					Log("Applied textbutton background color from picker");
+
+					// Update button text color
+					int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+					if (backgroundColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == SCROLLBAR_SPURCOLOR && selectedElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+					scrollbar->m_SpurColor = selectedColor;
+					Log("Applied scrollbar spur color from picker");
+
+					// Update button text color
+					int spurColorButtonID = m_propertySerializer->GetElementID("PROPERTY_SPURCOLOR");
+					if (spurColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(spurColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+				else if (m_editingColorProperty == SCROLLBAR_BACKGROUNDCOLOR && selectedElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+					scrollbar->m_BackgroundColor = selectedColor;
+					Log("Applied scrollbar background color from picker");
+
+					// Update button text color
+					int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+					if (backgroundColorButtonID != -1)
+					{
+						auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+						if (button) button->m_TextColor = selectedColor;
+					}
+				}
+
+				Log("Applied color: R=" + std::to_string(selectedColor.r) +
+					", G=" + std::to_string(selectedColor.g) +
+					", B=" + std::to_string(selectedColor.b) +
+					", A=" + std::to_string(selectedColor.a));
 			}
+
+			// Reset the tracking variable
+			m_editingColorProperty = NONE;
 		}
 	}
 }
@@ -2442,6 +2741,123 @@ void GhostState::PopulatePropertyPanelFields()
 				groupScrollbar->m_Value = radiobutton->m_Group;
 				Log("Populated PROPERTY_GROUP scrollbar with: " + to_string(radiobutton->m_Group));
 			}
+		}
+	}
+
+	// Update color picker button text colors to match the active colors
+	// For textarea: update PROPERTY_TEXTCOLOR button to show current text color
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTAREA)
+	{
+		auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+		int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+		if (textColorButtonID != -1)
+		{
+			auto textColorButton = m_gui->GetElement(textColorButtonID);
+			if (textColorButton && textColorButton->m_Type == GUI_TEXTBUTTON)
+			{
+				auto button = static_cast<GuiTextButton*>(textColorButton.get());
+				button->m_TextColor = textarea->m_Color;
+				Log("Updated PROPERTY_TEXTCOLOR button text color to match textarea text color");
+			}
+		}
+	}
+
+	// For panel: update PROPERTY_BACKGROUND button to show current background color
+	if (selectedElement && selectedElement->m_Type == GUI_PANEL)
+	{
+		auto panel = static_cast<GuiPanel*>(selectedElement.get());
+		int backgroundButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUND");
+		if (backgroundButtonID != -1)
+		{
+			auto backgroundButton = m_gui->GetElement(backgroundButtonID);
+			if (backgroundButton && backgroundButton->m_Type == GUI_TEXTBUTTON)
+			{
+				auto button = static_cast<GuiTextButton*>(backgroundButton.get());
+				button->m_TextColor = panel->m_Color;
+				Log("Updated PROPERTY_BACKGROUND button text color to match panel background color");
+			}
+		}
+	}
+
+	// For textinput: update color buttons to show current colors
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+	{
+		auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+
+		// Update PROPERTY_TEXTCOLOR button
+		int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+		if (textColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(textColorButtonID).get());
+			if (button) button->m_TextColor = textinput->m_TextColor;
+		}
+
+		// Update PROPERTY_BORDERCOLOR button
+		int borderColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BORDERCOLOR");
+		if (borderColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(borderColorButtonID).get());
+			if (button) button->m_TextColor = textinput->m_BoxColor;
+		}
+
+		// Update PROPERTY_BACKGROUNDCOLOR button
+		int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+		if (backgroundColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+			if (button) button->m_TextColor = textinput->m_BackgroundColor;
+		}
+	}
+
+	// For textbutton: update color buttons to show current colors
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTBUTTON)
+	{
+		auto textbutton = static_cast<GuiTextButton*>(selectedElement.get());
+
+		// Update PROPERTY_TEXTCOLOR button
+		int textColorButtonID = m_propertySerializer->GetElementID("PROPERTY_TEXTCOLOR");
+		if (textColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(textColorButtonID).get());
+			if (button) button->m_TextColor = textbutton->m_TextColor;
+		}
+
+		// Update PROPERTY_BORDERCOLOR button
+		int borderColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BORDERCOLOR");
+		if (borderColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(borderColorButtonID).get());
+			if (button) button->m_TextColor = textbutton->m_BorderColor;
+		}
+
+		// Update PROPERTY_BACKGROUNDCOLOR button
+		int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+		if (backgroundColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+			if (button) button->m_TextColor = textbutton->m_BackgroundColor;
+		}
+	}
+
+	// For scrollbar: update color buttons to show current colors
+	if (selectedElement && selectedElement->m_Type == GUI_SCROLLBAR)
+	{
+		auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+
+		// Update PROPERTY_SPURCOLOR button
+		int spurColorButtonID = m_propertySerializer->GetElementID("PROPERTY_SPURCOLOR");
+		if (spurColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(spurColorButtonID).get());
+			if (button) button->m_TextColor = scrollbar->m_SpurColor;
+		}
+
+		// Update PROPERTY_BACKGROUNDCOLOR button
+		int backgroundColorButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUNDCOLOR");
+		if (backgroundColorButtonID != -1)
+		{
+			auto button = static_cast<GuiTextButton*>(m_gui->GetElement(backgroundColorButtonID).get());
+			if (button) button->m_TextColor = scrollbar->m_BackgroundColor;
 		}
 	}
 }

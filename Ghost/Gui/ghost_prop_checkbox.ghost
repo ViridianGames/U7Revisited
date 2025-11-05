@@ -26,6 +26,8 @@
         "horzPadding": 5,
         "vertPadding": 5,
         "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
         "elements": [
           {
             "type": "textarea",
@@ -62,16 +64,16 @@
               255,
               255
             ],
-            "boxColor": [
-              255,
-              255,
-              255,
-              255
-            ],
             "backgroundColor": [
               0,
               0,
               0,
+              255
+            ],
+            "borderColor": [
+              255,
+              255,
+              255,
               255
             ]
           },

@@ -70,6 +70,22 @@ public:
 	int m_selectedElementID; // Currently selected element in content panel (-1 = none)
 	int m_lastPropertyElementType; // Track last element type shown in property panel (-1 = none)
 
+	// Track which color property is being edited when color picker opens
+	enum ColorPropertyType {
+		NONE,
+		PANEL_BACKGROUND,
+		TEXTAREA_TEXTCOLOR,
+		TEXTINPUT_TEXTCOLOR,
+		TEXTINPUT_BORDERCOLOR,
+		TEXTINPUT_BACKGROUNDCOLOR,
+		TEXTBUTTON_TEXTCOLOR,
+		TEXTBUTTON_BORDERCOLOR,
+		TEXTBUTTON_BACKGROUNDCOLOR,
+		SCROLLBAR_SPURCOLOR,
+		SCROLLBAR_BACKGROUNDCOLOR
+	};
+	ColorPropertyType m_editingColorProperty;
+
 	// Resource paths from config
 	std::string m_fontPath; // Base path for fonts
 	std::string m_spritePath; // Base path for sprites
