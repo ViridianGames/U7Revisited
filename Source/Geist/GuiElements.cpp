@@ -1040,6 +1040,10 @@ void GuiOctagonBox::Draw()
 	if (!m_Visible)
 		return;
 
+	// Safety check: need 9 sprites (0-8) to draw octagon box
+	if (m_Sprites.size() < 9)
+		return;
+
 	float x = m_Gui->m_Pos.x + (m_Pos.x);
 	float y = m_Gui->m_Pos.y + (m_Pos.y);
 
