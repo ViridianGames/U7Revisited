@@ -482,22 +482,10 @@ void GuiTextInput::Update()
 	int adjustedx = int(m_Gui->m_Pos.x + m_Pos.x);
 	int adjustedy = int(m_Gui->m_Pos.y + m_Pos.y);
 
-	// Debug: Log focus state at start of update
-	if (m_HasFocus)
-	{
-		Log("Text input " + to_string(m_ID) + " Update() starting with focus, m_LastElement=" + to_string(m_Gui->m_LastElement));
-	}
-
 	if (m_HasFocus && m_Gui->m_LastElement != m_ID)
 	{
 		Log("Text input " + to_string(m_ID) + " LOSING focus (LastElement=" + to_string(m_Gui->m_LastElement) + ", m_ID=" + to_string(m_ID) + ")");
 		m_HasFocus = false;
-	}
-
-	// Debug: Log when property panel text input is inactive
-	if (!m_Active && m_ID >= 3000)
-	{
-		Log("Text input " + to_string(m_ID) + " is INACTIVE in property panel!");
 	}
 
 	if (!m_Gui->m_AcceptingInput || !m_Active)
@@ -543,18 +531,17 @@ void GuiTextInput::Update()
 	// Only check for keypresses if this input has focus (otherwise we consume keypresses meant for other inputs)
 	if (m_HasFocus)
 	{
-		int keyPressed = GetKeyPressed();
-
-		// Debug: Log all attempts to type in this text input
-		if (keyPressed != 0)
+		// Use GetCharPressed() for character input (handles shift, caps lock, etc.)
+		int charPressed = GetCharPressed();
+		while (charPressed > 0)
 		{
-			Log("Text input " + to_string(m_ID) + " GetKeyPressed returned: " + to_string(keyPressed) + ", m_HasFocus=" + to_string(m_HasFocus));
-		}
-
-		if (keyPressed >= KEY_SPACE && keyPressed <= KEY_Z)
-		{
-			Log("Text input " + to_string(m_ID) + " detected key: " + to_string(keyPressed) + " (" + string(1, char(keyPressed)) + ")");
-			m_String += char(keyPressed);
+			// Only accept printable characters (32-126 in ASCII)
+			if (charPressed >= 32 && charPressed < 127)
+			{
+				Log("Text input " + to_string(m_ID) + " detected char: " + to_string(charPressed) + " (" + string(1, char(charPressed)) + ")");
+				m_String += char(charPressed);
+			}
+			charPressed = GetCharPressed(); // Check for next char
 		}
 	}
 }
@@ -815,8 +802,8 @@ void GuiRadioButton::Update()
 	{
 		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.x + int(m_Pos.x) + int(m_Width)) *m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y) + int(m_Height)))* m_Gui->m_InputScale)
+			int(m_Width) * m_Gui->m_InputScale,
+			int(m_Height) * m_Gui->m_InputScale))
 		{
 			m_Hovered = true;
 		}
@@ -827,9 +814,10 @@ void GuiRadioButton::Update()
 
 		if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.x + int(m_Pos.x) + int(m_Width)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y) + int(m_Height))) * m_Gui->m_InputScale)
+			int(m_Width) * m_Gui->m_InputScale,
+			int(m_Height) * m_Gui->m_InputScale))
 		{
+			Log("Radio button " + to_string(m_ID) + " was clicked! absPos(" + to_string(m_Gui->m_Pos.x + m_Pos.x) + ", " + to_string(m_Gui->m_Pos.y + m_Pos.y) + ")");
 			if (!m_Selected)
 			{
 				m_Selected = !m_Selected;
