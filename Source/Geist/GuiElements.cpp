@@ -369,9 +369,9 @@ void GuiScrollBar::Update()
 	int adjustedh = m_Height * m_Gui->m_InputScale;
 
 	//  Previously clicked, try for hysterisis
-	if (m_Gui->m_ActiveElement == -1 && m_Gui->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
+	if ((m_Gui->m_ActiveElement == -1 || m_Gui->m_ActiveElement == m_ID) && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
 	{
-		//m_Gui->m_ActiveElement = m_ID;
+		m_Gui->m_ActiveElement = m_ID;
 		if (m_Vertical)
 		{
 			m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
