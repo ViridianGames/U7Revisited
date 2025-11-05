@@ -33,7 +33,6 @@ private:
 	void InsertCheckbox();
 	void InsertRadioButton();
 	void InsertScrollBar();
-	void InsertSlider();
 	void InsertOctagonBox();
 	void InsertStretchButton();
 	void InsertList();
@@ -105,6 +104,7 @@ public:
 	void ClearPropertyPanel(); // Clear all property panel elements
 	void PopulatePropertyPanelFields(); // Populate property panel fields with selected element's data
 	void UpdateElementFromPropertyPanel(); // Update selected element from property panel changes
+	void UpdateStatusFooter(); // Update status footer with selected element info
 	std::string GetElementName(int elementID); // Get element name by ID from content serializer
 };
 

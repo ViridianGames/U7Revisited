@@ -13,7 +13,7 @@
         ],
         "size": [
           225.0,
-          250.0
+          285.0
         ],
         "backgroundColor": [
           80,
@@ -205,6 +205,37 @@
               128,
               255
             ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Vertical:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_VERTICAL",
+            "type": "checkbox",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              20.0,
+              20.0
+            ],
+            "group": 0,
+            "active": false
           },
           {
             "type": "textarea",

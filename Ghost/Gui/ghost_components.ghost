@@ -13,8 +13,8 @@
           10
         ],
         "size": [
-          523.75,
-          70.0
+          515.0,
+          235.0
         ],
         "backgroundColor": [
           80,
@@ -23,9 +23,10 @@
           255
         ],
         "filled": true,
-        "layout": "horz",
+        "layout": "table",
         "horzPadding": 8,
         "vertPadding": 5,
+        "columns": 4,
         "font": "babyblocks.ttf",
         "fontSize": 40,
         "elements": [
@@ -64,6 +65,78 @@
               -1
             ],
             "text": "Button"
+          },
+          {
+            "name": "INPUT",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Input"
+          },
+          {
+            "name": "RADIO",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Radio"
+          },
+          {
+            "name": "CHECK",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Check"
+          },
+          {
+            "name": "SCROLLBAR",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Scroller"
+          },
+          {
+            "name": "ICONBUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Icon"
+          },
+          {
+            "name": "OCTAGONBOX",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Octagon"
+          },
+          {
+            "name": "STRETCHBUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Stretch"
+          },
+          {
+            "name": "LIST",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "List"
           }
         ]
       }

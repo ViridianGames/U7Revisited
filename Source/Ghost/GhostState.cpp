@@ -25,6 +25,7 @@ static int lastValueRangeScrollbarValue = -1;
 static int lastTextInputWidthScrollbarValue = -1;
 static int lastTextInputHeightScrollbarValue = -1;
 static int lastTextInputFontSizeScrollbarValue = -1;
+static bool lastVerticalCheckboxValue = false;
 
 GhostState::~GhostState()
 {
@@ -322,6 +323,23 @@ void GhostState::Update()
 		}
 	}
 
+	// Check PROPERTY_VERTICAL checkbox for scrollbar elements
+	int verticalCheckboxID = m_propertySerializer->GetElementID("PROPERTY_VERTICAL");
+	if (verticalCheckboxID != -1 && m_selectedElementID != -1)
+	{
+		auto verticalElement = m_gui->GetElement(verticalCheckboxID);
+		if (verticalElement && verticalElement->m_Type == GUI_CHECKBOX)
+		{
+			auto checkbox = static_cast<GuiCheckBox*>(verticalElement.get());
+			if (checkbox->m_Selected != lastVerticalCheckboxValue)
+			{
+				lastVerticalCheckboxValue = checkbox->m_Selected;
+				Log("Vertical checkbox value changed to " + to_string(checkbox->m_Selected) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
 	// Check PROPERTY_FONT_SIZE scrollbar for textinput elements
 	// Note: Font size for other elements (textbutton, panel) uses lastFontSizeScrollbarValue tracked elsewhere
 	if (m_selectedElementID != -1)
@@ -568,6 +586,7 @@ void GhostState::Update()
 		m_selectedElementID = activeID;
 		Log("Selected element ID: " + to_string(activeID));
 		UpdatePropertyPanel();  // Update property panel when selection changes
+		UpdateStatusFooter();  // Update status footer with selected element info
 
 		// Sync scrollbar tracking variables after populating property panel
 		// This prevents false "change" detections on first frame after selection
@@ -689,6 +708,7 @@ void GhostState::Update()
 			m_selectedElementID = bestID;
 			Log("Selected element ID: " + to_string(bestID));
 			UpdatePropertyPanel();  // Update property panel when selection changes
+			UpdateStatusFooter();  // Update status footer with selected element info
 
 			// Sync scrollbar tracking variables after populating property panel
 			// This prevents false "change" detections on first frame after selection
@@ -797,6 +817,7 @@ void GhostState::Update()
 		// Clear selection and property panel
 		m_selectedElementID = -1;
 		ClearPropertyPanel();
+		UpdateStatusFooter();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -846,6 +867,7 @@ void GhostState::Update()
 		// Clear selection and property panel
 		m_selectedElementID = -1;
 		ClearPropertyPanel();
+		UpdateStatusFooter();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -977,6 +999,8 @@ void GhostState::Update()
 
 				// Select the newly pasted element
 				m_selectedElementID = newElementID;
+				UpdatePropertyPanel();
+				UpdateStatusFooter();
 
 				// Mark as dirty
 				m_contentSerializer->SetDirty(true);
@@ -1130,11 +1154,6 @@ void GhostState::Update()
 		Log("List button clicked!");
 		InsertList();
 	}
-	else if (activeID == m_serializer->GetElementID("SLIDER"))
-	{
-		Log("Slider button clicked!");
-		InsertSlider();
-	}
 }
 
 void GhostState::Draw()
@@ -1156,6 +1175,38 @@ void GhostState::Draw()
 				static_cast<int>(selectedElement->m_Height + 4),
 				YELLOW
 			);
+		}
+	}
+
+	// Draw value overlays on property panel scrollbars
+	if (m_propertySerializer && m_selectedElementID != -1)
+	{
+		// List of property scrollbars to overlay values on
+		vector<string> scrollbarProperties = {
+			"PROPERTY_WIDTH", "PROPERTY_HEIGHT", "PROPERTY_VALUE_RANGE",
+			"PROPERTY_COLUMNS", "PROPERTY_HORZ_PADDING", "PROPERTY_VERT_PADDING",
+			"PROPERTY_FONT_SIZE"
+		};
+
+		for (const auto& propName : scrollbarProperties)
+		{
+			int scrollbarID = m_propertySerializer->GetElementID(propName);
+			if (scrollbarID != -1 && scrollbarID >= 3000)  // Only property panel elements
+			{
+				auto scrollbarElement = m_gui->GetElement(scrollbarID);
+				if (scrollbarElement && scrollbarElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(scrollbarElement.get());
+
+					// Calculate center position for text
+					int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
+					int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+
+					// Draw the value in red
+					string valueText = to_string(scrollbar->m_Value);
+					DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
+				}
+			}
 		}
 	}
 }
@@ -1460,6 +1511,7 @@ void GhostState::ClearLoadedContent()
 
 	// Clear property panel since there's no selected element anymore
 	ClearPropertyPanel();
+	UpdateStatusFooter();
 
 	// Reset the content serializer
 	m_contentSerializer.reset();
@@ -1527,6 +1579,13 @@ void GhostState::EnsureContentRoot()
 
 		// Make the container the selected element so new elements go into it
 		m_selectedElementID = containerID;
+
+		// Only update UI if property serializer is initialized (not during Init)
+		if (m_propertySerializer)
+		{
+			UpdatePropertyPanel();
+			UpdateStatusFooter();
+		}
 
 		Log("Created default container panel with ID: " + to_string(containerID));
 	}
@@ -1614,6 +1673,7 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 
 	// Update property panel for the new element
 	UpdatePropertyPanel();
+	UpdateStatusFooter();
 
 	// Sync scrollbar tracking variables after populating property panel
 	// This prevents false "change" detections on first frame after insertion
@@ -1732,10 +1792,11 @@ void GhostState::InsertPanel()
 	// Add a new panel at calculated position
 	m_gui->AddPanel(ctx.newID, ctx.absoluteX, ctx.absoluteY, 200, 100, DARKGRAY, true, 0, true);
 
-	// Set default layout to "horz" and padding to 5
+	// Set default layout to "horz", padding to 5, and columns to 2
 	m_contentSerializer->SetPanelLayout(ctx.newID, "horz");
 	m_contentSerializer->SetPanelHorzPadding(ctx.newID, 5);
 	m_contentSerializer->SetPanelVertPadding(ctx.newID, 5);
+	m_contentSerializer->SetPanelColumns(ctx.newID, 2);
 
 	// Use helper to finalize insertion (panels are not floating)
 	FinalizeInsert(ctx.newID, ctx.parentID, "Panel", false);
@@ -1955,20 +2016,6 @@ void GhostState::InsertScrollBar()
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Scroll bar");
-}
-
-void GhostState::InsertSlider()
-{
-	// Use helper to prepare insertion
-	InsertContext ctx = PrepareInsert("slider");
-	if (ctx.newID == -1)
-		return;  // Error already logged
-
-	// Add a horizontal scroll bar (slider) at calculated position
-	m_gui->AddScrollBar(ctx.newID, 100, ctx.absoluteX, ctx.absoluteY, 100, 20, false, WHITE, DARKGRAY, 0, false, false);
-
-	// Use helper to finalize insertion
-	FinalizeInsert(ctx.newID, ctx.parentID, "Slider");
 }
 
 void GhostState::InsertOctagonBox()
@@ -2590,6 +2637,18 @@ void GhostState::PopulatePropertyPanelFields()
 				auto valueRangeScrollbar = static_cast<GuiScrollBar*>(valueRangeInput.get());
 				valueRangeScrollbar->m_Value = scrollbar->m_ValueRange;
 				Log("Populated PROPERTY_VALUE_RANGE scrollbar with: " + to_string(scrollbar->m_ValueRange));
+			}
+		}
+
+		// Populate PROPERTY_VERTICAL checkbox
+		int verticalCheckboxID = m_propertySerializer->GetElementID("PROPERTY_VERTICAL");
+		if (verticalCheckboxID != -1)
+		{
+			auto verticalCheckbox = m_gui->GetElement(verticalCheckboxID);
+			if (verticalCheckbox && verticalCheckbox->m_Type == GUI_CHECKBOX)
+			{
+				verticalCheckbox->m_Selected = scrollbar->m_Vertical;
+				Log("Populated PROPERTY_VERTICAL checkbox with: " + to_string(scrollbar->m_Vertical));
 			}
 		}
 	}
@@ -3386,6 +3445,55 @@ void GhostState::UpdateElementFromPropertyPanel()
 				}
 			}
 		}
+
+		// Update PROPERTY_VERTICAL checkbox
+		int verticalCheckboxID = m_propertySerializer->GetElementID("PROPERTY_VERTICAL");
+		if (verticalCheckboxID != -1)
+		{
+			auto verticalCheckbox = m_gui->GetElement(verticalCheckboxID);
+			if (verticalCheckbox && verticalCheckbox->m_Type == GUI_CHECKBOX)
+			{
+				bool newVertical = verticalCheckbox->m_Selected;
+				if (newVertical != scrollbar->m_Vertical)
+				{
+					scrollbar->m_Vertical = newVertical;
+
+					// Swap width and height when changing orientation
+					float oldWidth = scrollbar->m_Width;
+					float oldHeight = scrollbar->m_Height;
+					scrollbar->m_Width = oldHeight;
+					scrollbar->m_Height = oldWidth;
+
+					Log("Updated scrollbar " + to_string(m_selectedElementID) + " vertical to " + to_string(newVertical) +
+					    ", swapped dimensions: width=" + to_string(scrollbar->m_Width) + ", height=" + to_string(scrollbar->m_Height));
+
+					// Update the property panel scrollbars to reflect the swapped dimensions
+					int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+					if (widthInputID != -1)
+					{
+						auto widthInput = m_gui->GetElement(widthInputID);
+						if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+						{
+							auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+							widthScrollbar->m_Value = static_cast<int>(scrollbar->m_Width);
+						}
+					}
+
+					int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+					if (heightInputID != -1)
+					{
+						auto heightInput = m_gui->GetElement(heightInputID);
+						if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+						{
+							auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+							heightScrollbar->m_Value = static_cast<int>(scrollbar->m_Height);
+						}
+					}
+
+					wasUpdated = true;
+				}
+			}
+		}
 	}
 
 	// Update textinput properties if changed
@@ -3887,4 +3995,66 @@ void GhostState::Redo()
 	{
 		Log("Failed to restore redo state");
 	}
+}
+
+void GhostState::UpdateStatusFooter()
+{
+	// Don't update if content serializer isn't initialized yet
+	if (!m_contentSerializer)
+	{
+		return;
+	}
+
+	// Get the status footer element (ID 4000)
+	auto footer = m_gui->GetElement(4000);
+	if (!footer || footer->m_Type != GUI_TEXTAREA)
+	{
+		return;
+	}
+
+	auto footerText = static_cast<GuiTextArea*>(footer.get());
+
+	// If no element selected, clear the footer
+	if (m_selectedElementID == -1)
+	{
+		footerText->m_String = "";
+		return;
+	}
+
+	// Get the selected element
+	auto selectedElement = m_gui->GetElement(m_selectedElementID);
+	if (!selectedElement)
+	{
+		footerText->m_String = "";
+		return;
+	}
+
+	// Get element type name
+	std::string typeName;
+	switch (selectedElement->m_Type)
+	{
+		case GUI_PANEL: typeName = "Panel"; break;
+		case GUI_TEXTAREA: typeName = "TextArea"; break;
+		case GUI_TEXTINPUT: typeName = "TextInput"; break;
+		case GUI_TEXTBUTTON: typeName = "TextButton"; break;
+		case GUI_ICONBUTTON: typeName = "IconButton"; break;
+		case GUI_SCROLLBAR: typeName = "ScrollBar"; break;
+		case GUI_RADIOBUTTON: typeName = "RadioButton"; break;
+		case GUI_CHECKBOX: typeName = "CheckBox"; break;
+		case GUI_SPRITE: typeName = "Sprite"; break;
+		case GUI_OCTAGONBOX: typeName = "OctagonBox"; break;
+		case GUI_STRETCHBUTTON: typeName = "StretchButton"; break;
+		case GUI_LIST: typeName = "List"; break;
+		default: typeName = "Unknown"; break;
+	}
+
+	// Get element name
+	std::string elementName = GetElementName(m_selectedElementID);
+	if (elementName.empty())
+	{
+		elementName = "(unnamed)";
+	}
+
+	// Build the status string
+	footerText->m_String = typeName + " Name: " + elementName + " ID: " + to_string(m_selectedElementID);
 }

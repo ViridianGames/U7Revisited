@@ -36,20 +36,28 @@
                 "filename": "ghost_components.ghost"
               },
               {
-                "type": "include",
-                "position": [0, 140],
-                "filename": "ghost_components2.ghost"
-              },
-              {
                 "type": "panel",
                 "name": "property_panel_container",
                 "id": 3000,
-                "position": [0, 210],
-                "size": [640, 560],
+                "position": [0, 280],
+                "size": [640, 420],
                 "backgroundColor": [45, 45, 45, 255],
                 "filled": true,
                 "group": 0,
                 "active": true
+              },
+              {
+                "type": "textarea",
+                "name": "status_footer",
+                "id": 4000,
+                "position": [5, 685],
+                "text": "",
+                "textColor": [255, 255, 255, 255],
+                "font": "babyblocks.ttf",
+                "fontSize": 24,
+                "width": 50,
+                "height": 30.0,
+                "justified": 0
               }
             ]
           },
