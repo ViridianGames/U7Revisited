@@ -33,6 +33,7 @@ private:
 	void InsertCheckbox();
 	void InsertRadioButton();
 	void InsertScrollBar();
+	void InsertSlider();
 	void InsertOctagonBox();
 	void InsertStretchButton();
 	void InsertList();

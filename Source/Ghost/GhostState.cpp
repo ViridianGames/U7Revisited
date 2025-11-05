@@ -15,6 +15,12 @@ static int lastColumnsScrollbarValue = -1;
 static int lastHorzPaddingScrollbarValue = -1;
 static int lastVertPaddingScrollbarValue = -1;
 static int lastFontSizeScrollbarValue = -1;
+static int lastWidthScrollbarValue = -1;
+static int lastHeightScrollbarValue = -1;
+static int lastValueRangeScrollbarValue = -1;
+static int lastTextInputWidthScrollbarValue = -1;
+static int lastTextInputHeightScrollbarValue = -1;
+static int lastTextInputFontSizeScrollbarValue = -1;
 
 GhostState::~GhostState()
 {
@@ -260,6 +266,82 @@ void GhostState::Update()
 		}
 	}
 
+	// Check PROPERTY_WIDTH scrollbar
+	int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+	if (widthScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto widthElement = m_gui->GetElement(widthScrollbarID);
+		if (widthElement && widthElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(widthElement.get());
+			if (scrollbar->m_Value != lastWidthScrollbarValue)
+			{
+				lastWidthScrollbarValue = scrollbar->m_Value;
+				Log("Width scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_HEIGHT scrollbar
+	int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+	if (heightScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto heightElement = m_gui->GetElement(heightScrollbarID);
+		if (heightElement && heightElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(heightElement.get());
+			if (scrollbar->m_Value != lastHeightScrollbarValue)
+			{
+				lastHeightScrollbarValue = scrollbar->m_Value;
+				Log("Height scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_VALUE_RANGE scrollbar
+	int valueRangeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+	if (valueRangeScrollbarID != -1 && m_selectedElementID != -1)
+	{
+		auto valueRangeElement = m_gui->GetElement(valueRangeScrollbarID);
+		if (valueRangeElement && valueRangeElement->m_Type == GUI_SCROLLBAR)
+		{
+			auto scrollbar = static_cast<GuiScrollBar*>(valueRangeElement.get());
+			if (scrollbar->m_Value != lastValueRangeScrollbarValue)
+			{
+				lastValueRangeScrollbarValue = scrollbar->m_Value;
+				Log("Value range scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+				UpdateElementFromPropertyPanel();
+			}
+		}
+	}
+
+	// Check PROPERTY_FONT_SIZE scrollbar for textinput elements
+	// Note: Font size for other elements (textbutton, panel) uses lastFontSizeScrollbarValue tracked elsewhere
+	if (m_selectedElementID != -1)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+		{
+			int fontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+			if (fontSizeScrollbarID != -1)
+			{
+				auto fontSizeElement = m_gui->GetElement(fontSizeScrollbarID);
+				if (fontSizeElement && fontSizeElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(fontSizeElement.get());
+					if (scrollbar->m_Value != lastTextInputFontSizeScrollbarValue)
+					{
+						lastTextInputFontSizeScrollbarValue = scrollbar->m_Value;
+						Log("TextInput font size scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
+						UpdateElementFromPropertyPanel();
+					}
+				}
+			}
+		}
+	}
+
 	if (activeID >= 3000 && activeID != lastActiveID)
 	{
 		lastActiveID = activeID;
@@ -338,6 +420,38 @@ void GhostState::Update()
 			auto elem = m_gui->GetElement(fontSizeScrollbarID);
 			if (elem && elem->m_Type == GUI_SCROLLBAR)
 				lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(widthScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastWidthScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(heightScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastHeightScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int valueRangeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+		if (valueRangeScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(valueRangeScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastValueRangeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int textInputFontSizeScrollbarID2 = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+		if (textInputFontSizeScrollbarID2 != -1)
+		{
+			auto elem = m_gui->GetElement(textInputFontSizeScrollbarID2);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastTextInputFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 		}
 	}
 	// For non-interactive elements (panels, textareas), manually detect clicks
@@ -427,6 +541,38 @@ void GhostState::Update()
 				auto elem = m_gui->GetElement(fontSizeScrollbarID);
 				if (elem && elem->m_Type == GUI_SCROLLBAR)
 					lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+			if (widthScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(widthScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastWidthScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+			if (heightScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(heightScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastHeightScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int valueRangeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+			if (valueRangeScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(valueRangeScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastValueRangeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+			}
+
+			int textInputFontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+			if (textInputFontSizeScrollbarID != -1)
+			{
+				auto elem = m_gui->GetElement(textInputFontSizeScrollbarID);
+				if (elem && elem->m_Type == GUI_SCROLLBAR)
+					lastTextInputFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 			}
 		}
 	}
@@ -803,10 +949,10 @@ void GhostState::Update()
 		Log("List button clicked!");
 		InsertList();
 	}
-	else if (activeID == m_serializer->GetElementID("FILE"))
+	else if (activeID == m_serializer->GetElementID("SLIDER"))
 	{
-		Log("File button clicked!");
-		InsertFileInclude();
+		Log("Slider button clicked!");
+		InsertSlider();
 	}
 }
 
@@ -1079,6 +1225,13 @@ GhostState::InsertContext GhostState::PrepareInsert(const std::string& elementTy
 // Helper function to finalize common insertion cleanup
 void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elementTypeName, bool isFloating)
 {
+	// Ensure the newly inserted element is inactive (not interactive in content window)
+	auto newElement = m_gui->GetElement(newID);
+	if (newElement)
+	{
+		newElement->m_Active = false;
+	}
+
 	// Mark as floating if requested
 	if (isFloating)
 	{
@@ -1134,6 +1287,38 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 		auto elem = m_gui->GetElement(fontSizeScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			lastFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+	if (widthScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(widthScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastWidthScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+	if (heightScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(heightScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastHeightScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int valueRangeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+	if (valueRangeScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(valueRangeScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastValueRangeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+	}
+
+	int textInputFontSizeScrollbarID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+	if (textInputFontSizeScrollbarID != -1)
+	{
+		auto elem = m_gui->GetElement(textInputFontSizeScrollbarID);
+		if (elem && elem->m_Type == GUI_SCROLLBAR)
+			lastTextInputFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
 	Log(elementTypeName + " inserted with ID: " + to_string(newID) + " as child of parent ID: " + to_string(parentID));
@@ -1396,6 +1581,20 @@ void GhostState::InsertScrollBar()
 	FinalizeInsert(ctx.newID, ctx.parentID, "Scroll bar");
 }
 
+void GhostState::InsertSlider()
+{
+	// Use helper to prepare insertion
+	InsertContext ctx = PrepareInsert("slider");
+	if (ctx.newID == -1)
+		return;  // Error already logged
+
+	// Add a horizontal scroll bar (slider) at calculated position
+	m_gui->AddScrollBar(ctx.newID, 100, ctx.absoluteX, ctx.absoluteY, 100, 20, false, WHITE, DARKGRAY, 0, false, false);
+
+	// Use helper to finalize insertion
+	FinalizeInsert(ctx.newID, ctx.parentID, "Slider");
+}
+
 void GhostState::InsertOctagonBox()
 {
 	// Use helper to prepare insertion
@@ -1490,6 +1689,9 @@ void GhostState::InsertFileInclude()
 {
 	Log("Inserting file include - not yet implemented");
 	// TODO: Show a file picker and insert an include element
+
+	// Clear the active element to prevent infinite loop
+	m_gui->m_ActiveElement = -1;
 }
 
 void GhostState::ClearPropertyPanel()
@@ -1565,7 +1767,14 @@ void GhostState::UpdatePropertyPanel()
 			propertyFile = "Gui/ghost_prop_iconbutton.ghost";
 			break;
 		case GUI_SCROLLBAR:
-			propertyFile = "Gui/ghost_prop_scrollbar.ghost";
+			{
+				// Check if scrollbar is vertical (scrollbar) or horizontal (slider)
+				auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+				if (scrollbar->m_Vertical)
+					propertyFile = "Gui/ghost_prop_scrollbar.ghost";
+				else
+					propertyFile = "Gui/ghost_prop_slider.ghost";
+			}
 			break;
 		case GUI_RADIOBUTTON:
 			propertyFile = "Gui/ghost_prop_radiobutton.ghost";
@@ -1953,6 +2162,201 @@ void GhostState::PopulatePropertyPanelFields()
 			}
 
 			Log("Populated PROPERTY_FONT_SIZE scrollbar with: " + to_string(fontSize));
+		}
+	}
+
+	// Populate scrollbar/slider properties (for scrollbar elements)
+	if (selectedElement && selectedElement->m_Type == GUI_SCROLLBAR)
+	{
+		auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+
+		// Populate PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				widthScrollbar->m_Value = static_cast<int>(scrollbar->m_Width);
+				Log("Populated PROPERTY_WIDTH scrollbar with: " + to_string(static_cast<int>(scrollbar->m_Width)));
+			}
+		}
+
+		// Populate PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				heightScrollbar->m_Value = static_cast<int>(scrollbar->m_Height);
+				Log("Populated PROPERTY_HEIGHT scrollbar with: " + to_string(static_cast<int>(scrollbar->m_Height)));
+			}
+		}
+
+		// Populate PROPERTY_VALUE_RANGE
+		int valueRangeInputID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+		if (valueRangeInputID != -1)
+		{
+			auto valueRangeInput = m_gui->GetElement(valueRangeInputID);
+			if (valueRangeInput && valueRangeInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto valueRangeScrollbar = static_cast<GuiScrollBar*>(valueRangeInput.get());
+				valueRangeScrollbar->m_Value = scrollbar->m_ValueRange;
+				Log("Populated PROPERTY_VALUE_RANGE scrollbar with: " + to_string(scrollbar->m_ValueRange));
+			}
+		}
+	}
+
+	// Populate textinput properties (for textinput elements)
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+	{
+		auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+
+		// Populate PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				widthScrollbar->m_Value = static_cast<int>(textinput->m_Width);
+				Log("Populated PROPERTY_WIDTH scrollbar with: " + to_string(static_cast<int>(textinput->m_Width)));
+			}
+		}
+
+		// Populate PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				heightScrollbar->m_Value = static_cast<int>(textinput->m_Height);
+				Log("Populated PROPERTY_HEIGHT scrollbar with: " + to_string(static_cast<int>(textinput->m_Height)));
+			}
+		}
+
+		// Populate PROPERTY_FONT
+		int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+		if (fontInputID != -1)
+		{
+			auto fontInput = m_gui->GetElement(fontInputID);
+			if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+			{
+				auto fontTextInput = static_cast<GuiTextInput*>(fontInput.get());
+				std::string fontName = m_contentSerializer->GetElementFont(m_selectedElementID);
+				fontTextInput->m_String = fontName;
+				Log("Populated PROPERTY_FONT with: " + fontName);
+			}
+		}
+
+		// Populate PROPERTY_FONT_SIZE
+		int fontSizeInputID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+		if (fontSizeInputID != -1)
+		{
+			auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
+			if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto fontSizeScrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+				int fontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+				fontSizeScrollbar->m_Value = fontSize;
+				Log("Populated PROPERTY_FONT_SIZE scrollbar with: " + to_string(fontSize));
+			}
+		}
+	}
+
+	// Populate checkbox properties (for checkbox elements)
+	if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX)
+	{
+		auto checkbox = static_cast<GuiCheckBox*>(selectedElement.get());
+
+		// Populate PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				widthScrollbar->m_Value = static_cast<int>(checkbox->m_Width);
+				Log("Populated PROPERTY_WIDTH scrollbar with: " + to_string(static_cast<int>(checkbox->m_Width)));
+			}
+		}
+
+		// Populate PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				heightScrollbar->m_Value = static_cast<int>(checkbox->m_Height);
+				Log("Populated PROPERTY_HEIGHT scrollbar with: " + to_string(static_cast<int>(checkbox->m_Height)));
+			}
+		}
+
+		// Populate PROPERTY_GROUP
+		int groupInputID = m_propertySerializer->GetElementID("PROPERTY_GROUP");
+		if (groupInputID != -1)
+		{
+			auto groupInput = m_gui->GetElement(groupInputID);
+			if (groupInput && groupInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto groupScrollbar = static_cast<GuiScrollBar*>(groupInput.get());
+				groupScrollbar->m_Value = checkbox->m_Group;
+				Log("Populated PROPERTY_GROUP scrollbar with: " + to_string(checkbox->m_Group));
+			}
+		}
+	}
+
+	// Populate radiobutton properties (for radiobutton elements)
+	if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON)
+	{
+		auto radiobutton = static_cast<GuiRadioButton*>(selectedElement.get());
+
+		// Populate PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				widthScrollbar->m_Value = static_cast<int>(radiobutton->m_Width);
+				Log("Populated PROPERTY_WIDTH scrollbar with: " + to_string(static_cast<int>(radiobutton->m_Width)));
+			}
+		}
+
+		// Populate PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				heightScrollbar->m_Value = static_cast<int>(radiobutton->m_Height);
+				Log("Populated PROPERTY_HEIGHT scrollbar with: " + to_string(static_cast<int>(radiobutton->m_Height)));
+			}
+		}
+
+		// Populate PROPERTY_GROUP
+		int groupInputID = m_propertySerializer->GetElementID("PROPERTY_GROUP");
+		if (groupInputID != -1)
+		{
+			auto groupInput = m_gui->GetElement(groupInputID);
+			if (groupInput && groupInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto groupScrollbar = static_cast<GuiScrollBar*>(groupInput.get());
+				groupScrollbar->m_Value = radiobutton->m_Group;
+				Log("Populated PROPERTY_GROUP scrollbar with: " + to_string(radiobutton->m_Group));
+			}
 		}
 	}
 }
@@ -2418,6 +2822,305 @@ void GhostState::UpdateElementFromPropertyPanel()
 		}
 	}
 
+	// Update scrollbar/slider properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_SCROLLBAR)
+	{
+		auto scrollbar = static_cast<GuiScrollBar*>(selectedElement.get());
+
+		// Update PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				int newWidth = widthScrollbar->m_Value;
+				if (newWidth > 0 && newWidth != static_cast<int>(scrollbar->m_Width))
+				{
+					scrollbar->m_Width = static_cast<float>(newWidth);
+					Log("Updated scrollbar " + to_string(m_selectedElementID) + " width to " + to_string(newWidth));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				int newHeight = heightScrollbar->m_Value;
+				if (newHeight > 0 && newHeight != static_cast<int>(scrollbar->m_Height))
+				{
+					scrollbar->m_Height = static_cast<float>(newHeight);
+					Log("Updated scrollbar " + to_string(m_selectedElementID) + " height to " + to_string(newHeight));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_VALUE_RANGE
+		int valueRangeInputID = m_propertySerializer->GetElementID("PROPERTY_VALUE_RANGE");
+		if (valueRangeInputID != -1)
+		{
+			auto valueRangeInput = m_gui->GetElement(valueRangeInputID);
+			if (valueRangeInput && valueRangeInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto valueRangeScrollbar = static_cast<GuiScrollBar*>(valueRangeInput.get());
+				int newValueRange = valueRangeScrollbar->m_Value;
+				if (newValueRange > 0 && newValueRange != scrollbar->m_ValueRange)
+				{
+					scrollbar->m_ValueRange = newValueRange;
+					// Clamp the current value to the new range
+					if (scrollbar->m_Value > scrollbar->m_ValueRange)
+					{
+						scrollbar->m_Value = scrollbar->m_ValueRange;
+					}
+					Log("Updated scrollbar " + to_string(m_selectedElementID) + " value range to " + to_string(newValueRange));
+					wasUpdated = true;
+				}
+			}
+		}
+	}
+
+	// Update textinput properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTINPUT)
+	{
+		auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
+
+		// Update PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				int newWidth = widthScrollbar->m_Value;
+				if (newWidth > 0 && newWidth != static_cast<int>(textinput->m_Width))
+				{
+					textinput->m_Width = static_cast<float>(newWidth);
+					Log("Updated textinput " + to_string(m_selectedElementID) + " width to " + to_string(newWidth));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				int newHeight = heightScrollbar->m_Value;
+				if (newHeight > 0 && newHeight != static_cast<int>(textinput->m_Height))
+				{
+					textinput->m_Height = static_cast<float>(newHeight);
+					Log("Updated textinput " + to_string(m_selectedElementID) + " height to " + to_string(newHeight));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_FONT
+		int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+		if (fontInputID != -1)
+		{
+			auto fontInput = m_gui->GetElement(fontInputID);
+			if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+			{
+				auto fontTextInput = static_cast<GuiTextInput*>(fontInput.get());
+				std::string newFontName = fontTextInput->m_String;
+				std::string oldFontName = m_contentSerializer->GetElementFont(m_selectedElementID);
+
+				if (newFontName != oldFontName && !newFontName.empty())
+				{
+					// Try to load the new font
+					std::string fontPath = m_fontPath + "/" + newFontName;
+					int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+					if (oldFontSize == 0) oldFontSize = 12; // Default size if not set
+
+					auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), oldFontSize, 0, 0));
+					if (newFontPtr->texture.id != 0)
+					{
+						textinput->m_Font = newFontPtr.get();
+						m_preservedFonts.push_back(newFontPtr); // Keep font alive
+						m_contentSerializer->SetElementFont(m_selectedElementID, newFontName);
+						m_contentSerializer->SetElementFontSize(m_selectedElementID, oldFontSize);
+						Log("Updated textinput " + to_string(m_selectedElementID) + " font to " + newFontName);
+						wasUpdated = true;
+					}
+					else
+					{
+						Log("Failed to load font: " + fontPath);
+					}
+				}
+			}
+		}
+
+		// Update PROPERTY_FONT_SIZE
+		int fontSizeInputID = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
+		if (fontSizeInputID != -1)
+		{
+			auto fontSizeInput = m_gui->GetElement(fontSizeInputID);
+			if (fontSizeInput && fontSizeInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto fontSizeScrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+				int newFontSize = fontSizeScrollbar->m_Value;
+				int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
+
+				if (newFontSize > 0 && newFontSize != oldFontSize)
+				{
+					std::string fontName = m_contentSerializer->GetElementFont(m_selectedElementID);
+					if (!fontName.empty())
+					{
+						// Reload font with new size
+						std::string fontPath = m_fontPath + "/" + fontName;
+						auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
+						if (newFontPtr->texture.id != 0)
+						{
+							textinput->m_Font = newFontPtr.get();
+							m_preservedFonts.push_back(newFontPtr); // Keep font alive
+							m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
+							Log("Updated textinput " + to_string(m_selectedElementID) + " font size to " + to_string(newFontSize));
+							wasUpdated = true;
+						}
+						else
+						{
+							Log("Failed to reload font with new size: " + fontPath);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Update checkbox properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_CHECKBOX)
+	{
+		auto checkbox = static_cast<GuiCheckBox*>(selectedElement.get());
+
+		// Update PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				int newWidth = widthScrollbar->m_Value;
+				if (newWidth > 0 && newWidth != static_cast<int>(checkbox->m_Width))
+				{
+					checkbox->m_Width = static_cast<float>(newWidth);
+					Log("Updated checkbox " + to_string(m_selectedElementID) + " width to " + to_string(newWidth));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				int newHeight = heightScrollbar->m_Value;
+				if (newHeight > 0 && newHeight != static_cast<int>(checkbox->m_Height))
+				{
+					checkbox->m_Height = static_cast<float>(newHeight);
+					Log("Updated checkbox " + to_string(m_selectedElementID) + " height to " + to_string(newHeight));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_GROUP
+		int groupInputID = m_propertySerializer->GetElementID("PROPERTY_GROUP");
+		if (groupInputID != -1)
+		{
+			auto groupInput = m_gui->GetElement(groupInputID);
+			if (groupInput && groupInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto groupScrollbar = static_cast<GuiScrollBar*>(groupInput.get());
+				int newGroup = groupScrollbar->m_Value;
+				if (newGroup != checkbox->m_Group)
+				{
+					checkbox->m_Group = newGroup;
+					Log("Updated checkbox " + to_string(m_selectedElementID) + " group to " + to_string(newGroup));
+					wasUpdated = true;
+				}
+			}
+		}
+	}
+
+	// Update radiobutton properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_RADIOBUTTON)
+	{
+		auto radiobutton = static_cast<GuiRadioButton*>(selectedElement.get());
+
+		// Update PROPERTY_WIDTH
+		int widthInputID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+		if (widthInputID != -1)
+		{
+			auto widthInput = m_gui->GetElement(widthInputID);
+			if (widthInput && widthInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto widthScrollbar = static_cast<GuiScrollBar*>(widthInput.get());
+				int newWidth = widthScrollbar->m_Value;
+				if (newWidth > 0 && newWidth != static_cast<int>(radiobutton->m_Width))
+				{
+					radiobutton->m_Width = static_cast<float>(newWidth);
+					Log("Updated radiobutton " + to_string(m_selectedElementID) + " width to " + to_string(newWidth));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_HEIGHT
+		int heightInputID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+		if (heightInputID != -1)
+		{
+			auto heightInput = m_gui->GetElement(heightInputID);
+			if (heightInput && heightInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto heightScrollbar = static_cast<GuiScrollBar*>(heightInput.get());
+				int newHeight = heightScrollbar->m_Value;
+				if (newHeight > 0 && newHeight != static_cast<int>(radiobutton->m_Height))
+				{
+					radiobutton->m_Height = static_cast<float>(newHeight);
+					Log("Updated radiobutton " + to_string(m_selectedElementID) + " height to " + to_string(newHeight));
+					wasUpdated = true;
+				}
+			}
+		}
+
+		// Update PROPERTY_GROUP
+		int groupInputID = m_propertySerializer->GetElementID("PROPERTY_GROUP");
+		if (groupInputID != -1)
+		{
+			auto groupInput = m_gui->GetElement(groupInputID);
+			if (groupInput && groupInput->m_Type == GUI_SCROLLBAR)
+			{
+				auto groupScrollbar = static_cast<GuiScrollBar*>(groupInput.get());
+				int newGroup = groupScrollbar->m_Value;
+				if (newGroup != radiobutton->m_Group)
+				{
+					radiobutton->m_Group = newGroup;
+					Log("Updated radiobutton " + to_string(m_selectedElementID) + " group to " + to_string(newGroup));
+					wasUpdated = true;
+				}
+			}
+		}
+	}
+
 	// Update sprite filename if changed
 	if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
 	{
@@ -2436,6 +3139,7 @@ void GhostState::UpdateElementFromPropertyPanel()
 					// Try to load the new sprite texture
 					std::string spritePath = m_spritePath + newFilename;
 					Texture* texture = g_ResourceManager->GetTexture(spritePath);
+					std::string actualFilename = newFilename; // Track what we actually loaded
 
 					// If loading failed, fall back to default image.png
 					if (!texture || texture->id == 0)
@@ -2443,6 +3147,7 @@ void GhostState::UpdateElementFromPropertyPanel()
 						Log("Failed to load sprite texture: " + spritePath + ", falling back to image.png");
 						std::string defaultPath = m_spritePath + "image.png";
 						texture = g_ResourceManager->GetTexture(defaultPath);
+						actualFilename = "image.png"; // Update to reflect what we actually loaded
 
 						// If even the default fails, log error but continue
 						if (!texture || texture->id == 0)
@@ -2465,10 +3170,10 @@ void GhostState::UpdateElementFromPropertyPanel()
 					guiSprite->m_Width = texture->width * guiSprite->m_ScaleX;
 					guiSprite->m_Height = texture->height * guiSprite->m_ScaleY;
 
-					// Update sprite metadata in serializer
-					m_contentSerializer->SetSpriteName(m_selectedElementID, newFilename);
+					// Update sprite metadata in serializer with the actual loaded filename
+					m_contentSerializer->SetSpriteName(m_selectedElementID, actualFilename);
 
-					Log("Updated sprite " + to_string(m_selectedElementID) + " from '" + oldFilename + "' to '" + newFilename + "'");
+					Log("Updated sprite " + to_string(m_selectedElementID) + " from '" + oldFilename + "' to '" + actualFilename + "'");
 					wasUpdated = true;
 				}
 			}

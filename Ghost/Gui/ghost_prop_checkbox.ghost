@@ -12,7 +12,7 @@
           5
         ],
         "size": [
-          237.0,
+          225.0,
           145.0
         ],
         "color": [
@@ -23,7 +23,7 @@
         ],
         "filled": true,
         "layout": "table",
-        "horzPadding": 9,
+        "horzPadding": 5,
         "vertPadding": 5,
         "columns": 2,
         "elements": [
@@ -81,7 +81,7 @@
               -1,
               -1
             ],
-            "text": "Text:",
+            "text": "Width:",
             "color": [
               255,
               255,
@@ -93,109 +93,99 @@
             "justified": 0
           },
           {
-            "name": "PROPERTY_TEXT",
-            "type": "textinput",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "boxColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              0,
-              0,
-              0,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Font:",
-            "color": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_FONT",
-            "type": "textinput",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "boxColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              0,
-              0,
-              0,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Font Size:",
-            "color": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_FONT_SIZE",
+            "name": "PROPERTY_WIDTH",
             "type": "scrollbar",
             "position": [
               -1,
               -1
             ],
-            "valueRange": 200,
+            "valueRange": 255,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Height:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_HEIGHT",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              150.0,
+              20.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Group:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0
+          },
+          {
+            "name": "PROPERTY_GROUP",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
             "size": [
               150.0,
               20.0
