@@ -47,7 +47,7 @@ void ColorPickerState::Init(const std::string& configfile)
 	m_gui->m_Pos = {0, 0};
 	m_gui->m_AcceptingInput = true;
 
-	m_serializer = std::make_unique<GuiSerializer>();
+	m_serializer = std::make_unique<GhostSerializer>();
 	m_serializer->SetBaseFontPath(fontPath);
 
 	// Load the color picker dialog GUI

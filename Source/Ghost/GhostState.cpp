@@ -49,7 +49,7 @@ void GhostState::Init(const std::string& configfile)
 		Log("ERROR: Failed to load config!");
 		m_fontPath = "Data/";
 		m_spritePath = "Data/";
-		GuiSerializer::SetBaseFontPath(m_fontPath);
+		GhostSerializer::SetBaseFontPath(m_fontPath);
 		return;
 	}
 
@@ -88,16 +88,16 @@ void GhostState::Init(const std::string& configfile)
 		Log("SpritePath from config: " + m_spritePath);
 	}
 
-	// Set the resource paths in GuiSerializer so they can be used for loading
-	GuiSerializer::SetBaseFontPath(m_fontPath);
-	GuiSerializer::SetBaseSpritePath(m_spritePath);
+	// Set the resource paths in GhostSerializer so they can be used for loading
+	GhostSerializer::SetBaseFontPath(m_fontPath);
+	GhostSerializer::SetBaseSpritePath(m_spritePath);
 
 	// Create the main GUI
 	m_gui = make_unique<Gui>();
 	m_gui->m_Pos = {0, 0};
 
 	// Create serializer (keep it alive to preserve loaded fonts)
-	m_serializer = make_unique<GuiSerializer>();
+	m_serializer = make_unique<GhostSerializer>();
 
 	// Load GUI from JSON file
 	if (!m_serializer->LoadFromFile("Gui/ghost_app.ghost", m_gui.get()))
@@ -111,7 +111,7 @@ void GhostState::Init(const std::string& configfile)
 	// Initialize property panel serializer
 	// ID 3000 is the property panel container itself (defined in ghost_app.ghost)
 	// Property content elements start at 3001+
-	m_propertySerializer = make_unique<GuiSerializer>();
+	m_propertySerializer = make_unique<GhostSerializer>();
 	m_propertySerializer->SetAutoIDStart(3001);
 }
 
@@ -1442,7 +1442,7 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 	// Create a new content serializer to avoid name/ID conflicts with the main app layout
 	// This keeps the loaded content's element names separate from the app's menu buttons
 	// ID 2000 is the content container itself, content elements start at 2001+
-	m_contentSerializer = make_unique<GuiSerializer>();
+	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
 
 	// Use the content container (ID 2000) as the root for loaded content
@@ -1547,7 +1547,7 @@ void GhostState::EnsureContentRoot()
 	// Create content serializer if it doesn't exist
 	if (!m_contentSerializer)
 	{
-		m_contentSerializer = make_unique<GuiSerializer>();
+		m_contentSerializer = make_unique<GhostSerializer>();
 		m_contentSerializer->SetAutoIDStart(2001);  // Content starts at 2001
 	}
 
@@ -2159,7 +2159,7 @@ void GhostState::ClearPropertyPanel()
 
 	// Reset the property serializer
 	m_propertySerializer.reset();
-	m_propertySerializer = make_unique<GuiSerializer>();
+	m_propertySerializer = make_unique<GhostSerializer>();
 	m_propertySerializer->SetAutoIDStart(3001);  // Content starts at 3001
 
 	// Reset the last property element type so property panel will reload when needed
@@ -3912,7 +3912,7 @@ void GhostState::Undo()
 
 	// Reset content serializer
 	m_contentSerializer.reset();
-	m_contentSerializer = make_unique<GuiSerializer>();
+	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
 
 	// Restore the undo state
@@ -3982,7 +3982,7 @@ void GhostState::Redo()
 
 	// Reset content serializer
 	m_contentSerializer.reset();
-	m_contentSerializer = make_unique<GuiSerializer>();
+	m_contentSerializer = make_unique<GhostSerializer>();
 	m_contentSerializer->SetAutoIDStart(2001);
 
 	// Restore the redo state

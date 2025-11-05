@@ -138,7 +138,7 @@ set(SOURCES
     Source/Geist/StateMachine.cpp
     Source/Geist/TooltipSystem.cpp
 
-    Source/Ghost/GuiSerializer.cpp
+    Source/Ghost/GhostSerializer.cpp
 
     Source/ConversationState.cpp
     Source/GumpManager.cpp
@@ -263,7 +263,7 @@ set(GHOST_SOURCES
     Source/Ghost/Main.cpp
     Source/Ghost/GhostState.cpp
     Source/Ghost/ColorPickerState.cpp
-    Source/Ghost/GuiSerializer.cpp
+    Source/Ghost/GhostSerializer.cpp
     Source/Ghost/FileDialog.cpp
 )
 

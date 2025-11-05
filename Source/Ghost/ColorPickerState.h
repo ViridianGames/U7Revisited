@@ -3,7 +3,7 @@
 
 #include "../Geist/State.h"
 #include "../Geist/Gui.h"
-#include "GuiSerializer.h"
+#include "GhostSerializer.h"
 #include <memory>
 #include <raylib.h>
 
@@ -32,7 +32,7 @@ public:
 private:
 	std::unique_ptr<Gui> m_gui;
 	std::shared_ptr<Font> m_guiFont;
-	std::unique_ptr<GuiSerializer> m_serializer;
+	std::unique_ptr<GhostSerializer> m_serializer;
 
 	Color m_selectedColor = { 255, 255, 255, 255 };
 	bool m_accepted = false;

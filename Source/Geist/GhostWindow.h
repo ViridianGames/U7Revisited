@@ -4,7 +4,7 @@
 #include <string>
 
 class Gui;
-class GuiSerializer;
+class GhostSerializer;
 class ResourceManager;
 
 class GhostWindow
@@ -33,7 +33,7 @@ public:
 
 private:
 	Gui* m_gui;
-	GuiSerializer* m_serializer;
+	GhostSerializer* m_serializer;
 	bool m_visible;
 	bool m_modal;
 	bool m_valid;

@@ -1,5 +1,5 @@
 #include "GhostWindow.h"
-#include "Ghost/GuiSerializer.h"
+#include "Ghost/GhostSerializer.h"
 #include "Logging.h"
 #include "ResourceManager.h"
 #include "Config.h"
@@ -14,7 +14,7 @@ GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& co
 {
 	// Create GUI and serializer
 	m_gui = new Gui();
-	m_serializer = new GuiSerializer();
+	m_serializer = new GhostSerializer();
 
 	// Configure GUI layout for screen space
 	// .ghost files are designed at screen resolution, not render resolution
@@ -34,7 +34,7 @@ GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& co
 		fontPath = "Data/Fonts/";
 		Log("FontPath not found in config, using default: " + fontPath);
 	}
-	GuiSerializer::SetBaseFontPath(fontPath);
+	GhostSerializer::SetBaseFontPath(fontPath);
 
 	// Load the .ghost file
 	ghost_json json = m_serializer->ReadJsonFromFile(ghostFilePath);

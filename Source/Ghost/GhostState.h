@@ -3,7 +3,7 @@
 
 #include "../Geist/State.h"
 #include "../Geist/Gui.h"
-#include "GuiSerializer.h"
+#include "GhostSerializer.h"
 #include <memory>
 
 class GhostState : public State
@@ -61,9 +61,9 @@ public:
 
 	std::unique_ptr<Gui> m_gui;
 	std::shared_ptr<Font> m_guiFont;
-	std::unique_ptr<GuiSerializer> m_serializer; // For main app layout (menu, etc.)
-	std::unique_ptr<GuiSerializer> m_contentSerializer; // For loaded content files
-	std::unique_ptr<GuiSerializer> m_propertySerializer; // For property panel (ID 3000+)
+	std::unique_ptr<GhostSerializer> m_serializer; // For main app layout (menu, etc.)
+	std::unique_ptr<GhostSerializer> m_contentSerializer; // For loaded content files
+	std::unique_ptr<GhostSerializer> m_propertySerializer; // For property panel (ID 3000+)
 	std::string m_loadedGhostFile; // Track currently loaded file
 	std::vector<std::shared_ptr<Font>> m_preservedFonts; // Keep fonts alive across multiple loads
 	int m_selectedElementID; // Currently selected element in content panel (-1 = none)

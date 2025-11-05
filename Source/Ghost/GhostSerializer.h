@@ -1,5 +1,5 @@
-#ifndef _GUISERIALIZER_H_
-#define _GUISERIALIZER_H_
+#ifndef _GHOSTSERIALIZER_H_
+#define _GHOSTSERIALIZER_H_
 
 #include <string>
 #include <memory>
@@ -11,11 +11,11 @@
 // Use ordered_json to preserve property insertion order in output files
 using ghost_json = nlohmann::ordered_json;
 
-class GuiSerializer
+class GhostSerializer
 {
 public:
-	GuiSerializer();
-	~GuiSerializer();
+	GhostSerializer();
+	~GhostSerializer();
 
 	// Set the base font path (e.g., "Fonts/")
 	static void SetBaseFontPath(const std::string& path);

@@ -1,4 +1,4 @@
-#include "GuiSerializer.h"
+#include "GhostSerializer.h"
 #include "../Geist/Logging.h"
 #include "../../ThirdParty/nlohmann/json.hpp"
 #include <fstream>
@@ -7,35 +7,35 @@
 using namespace std;
 
 // Initialize static members
-std::string GuiSerializer::s_baseFontPath = "Fonts/";
-std::string GuiSerializer::s_baseSpritePath = "Images/";
+std::string GhostSerializer::s_baseFontPath = "Fonts/";
+std::string GhostSerializer::s_baseSpritePath = "Images/";
 
-GuiSerializer::GuiSerializer()
+GhostSerializer::GhostSerializer()
 {
 }
 
-GuiSerializer::~GuiSerializer()
+GhostSerializer::~GhostSerializer()
 {
 }
 
-void GuiSerializer::SetBaseFontPath(const std::string& path)
+void GhostSerializer::SetBaseFontPath(const std::string& path)
 {
 	s_baseFontPath = path;
 }
 
-void GuiSerializer::SetBaseSpritePath(const std::string& path)
+void GhostSerializer::SetBaseSpritePath(const std::string& path)
 {
 	s_baseSpritePath = path;
 }
 
-ghost_json GuiSerializer::ReadJsonFromFile(const std::string& filename)
+ghost_json GhostSerializer::ReadJsonFromFile(const std::string& filename)
 {
 	try
 	{
 		ifstream file(filename);
 		if (!file.is_open())
 		{
-			Log("GuiSerializer::ReadJsonFromFile - Could not open file: " + filename);
+			Log("GhostSerializer::ReadJsonFromFile - Could not open file: " + filename);
 			return ghost_json();
 		}
 
@@ -43,27 +43,27 @@ ghost_json GuiSerializer::ReadJsonFromFile(const std::string& filename)
 		file >> j;
 		file.close();
 
-		Log("GuiSerializer::ReadJsonFromFile - Successfully read: " + filename);
+		Log("GhostSerializer::ReadJsonFromFile - Successfully read: " + filename);
 		return j;
 	}
 	catch (const exception& e)
 	{
-		Log("GuiSerializer::ReadJsonFromFile - Exception: " + string(e.what()));
+		Log("GhostSerializer::ReadJsonFromFile - Exception: " + string(e.what()));
 		return ghost_json();
 	}
 }
 
-bool GuiSerializer::ParseJson(const ghost_json& j, Gui* gui)
+bool GhostSerializer::ParseJson(const ghost_json& j, Gui* gui)
 {
 	if (!gui)
 	{
-		Log("GuiSerializer::ParseJson - gui is null");
+		Log("GhostSerializer::ParseJson - gui is null");
 		return false;
 	}
 
 	if (j.empty())
 	{
-		Log("GuiSerializer::ParseJson - JSON is empty");
+		Log("GhostSerializer::ParseJson - JSON is empty");
 		return false;
 	}
 
@@ -72,7 +72,7 @@ bool GuiSerializer::ParseJson(const ghost_json& j, Gui* gui)
 		// Parse the GUI object
 		if (!j.contains("gui"))
 		{
-			Log("GuiSerializer::ParseJson - JSON does not contain 'gui' object");
+			Log("GhostSerializer::ParseJson - JSON does not contain 'gui' object");
 			return false;
 		}
 
@@ -91,17 +91,17 @@ bool GuiSerializer::ParseJson(const ghost_json& j, Gui* gui)
 			ParseElements(guiObj["elements"], gui);
 		}
 
-		Log("GuiSerializer::ParseJson - Successfully parsed GUI");
+		Log("GhostSerializer::ParseJson - Successfully parsed GUI");
 		return true;
 	}
 	catch (const exception& e)
 	{
-		Log("GuiSerializer::ParseJson - Exception: " + string(e.what()));
+		Log("GhostSerializer::ParseJson - Exception: " + string(e.what()));
 		return false;
 	}
 }
 
-int GuiSerializer::GetElementID(const std::string& name) const
+int GhostSerializer::GetElementID(const std::string& name) const
 {
 	auto it = m_elementNameToID.find(name);
 	if (it != m_elementNameToID.end())
@@ -111,7 +111,7 @@ int GuiSerializer::GetElementID(const std::string& name) const
 	return -1;  // Not found
 }
 
-std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, Gui* gui) const
+std::pair<int, int> GhostSerializer::CalculateNextFloatingPosition(int parentID, Gui* gui) const
 {
 	// Get parent element to determine layout and base position
 	auto parent = gui->GetElement(parentID);
@@ -209,7 +209,7 @@ std::pair<int, int> GuiSerializer::CalculateNextFloatingPosition(int parentID, G
 	return {relX, relY};
 }
 
-void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID)
+void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID)
 {
 	// Track layout position for floating elements
 	// Get parent's layout type and padding (defaults to "horz" and 5px if no parent or not found)
@@ -305,7 +305,7 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 		{
 			// Include elements from another file at this position
 			string filename = element["filename"];
-			Log("GuiSerializer::ParseElements - Loading included file: " + filename);
+			Log("GhostSerializer::ParseElements - Loading included file: " + filename);
 
 			// Add parent offsets to the current position for included elements
 			int absoluteX = parentX + posx;
@@ -467,12 +467,12 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			Font font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
 			if (font.texture.id == 0)
 			{
-				Log("GuiSerializer::LoadFromFile - Failed to load font: " + fontPath);
+				Log("GhostSerializer::LoadFromFile - Failed to load font: " + fontPath);
 				font = GetFontDefault();
 			}
 			else
 			{
-				Log("GuiSerializer (textbutton): Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+				Log("GhostSerializer (textbutton): Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
 			}
 
 			// Create a shared pointer for the font and store it to keep it alive
@@ -558,19 +558,19 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
 				if (font.texture.id == 0)
 				{
-					Log("GuiSerializer::ParseElements - Failed to load font: " + fontPath);
+					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
 					font = GetFontDefault();
 				}
 				else
 				{
-					Log("GuiSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
 				}
 			}
 			else
 			{
 				// No font name specified, use default font
 				font = GetFontDefault();
-				Log("GuiSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
+				Log("GhostSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
 			}
 
 			// Create a shared pointer for the font and store it to keep it alive
@@ -629,7 +629,7 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				auto loadedFont = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
 				if (loadedFont.texture.id == 0)
 				{
-					Log("GuiSerializer::ParseElements - Failed to load font: " + fontPath);
+					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
 				}
 				else
 				{
@@ -726,7 +726,7 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			shared_ptr<Sprite> sprite = make_shared<Sprite>();
 			if (loadedTexture.id == 0)
 			{
-				Log("GuiSerializer::ParseElements - Failed to load sprite: " + spritePath);
+				Log("GhostSerializer::ParseElements - Failed to load sprite: " + spritePath);
 				// Create a default 32x32 sprite without a texture (will still crash if drawn)
 				sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
 				sprite->m_texture = nullptr;
@@ -909,7 +909,7 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 	}
 }
 
-bool GuiSerializer::LoadFromFile(const std::string& filename, Gui* gui)
+bool GhostSerializer::LoadFromFile(const std::string& filename, Gui* gui)
 {
 	// Step 1: Read JSON from file
 	ghost_json j = ReadJsonFromFile(filename);
@@ -922,7 +922,7 @@ bool GuiSerializer::LoadFromFile(const std::string& filename, Gui* gui)
 	return ParseJson(j, gui);
 }
 
-ghost_json GuiSerializer::BuildInheritedProps(int parentElementID) const
+ghost_json GhostSerializer::BuildInheritedProps(int parentElementID) const
 {
 	ghost_json inheritedProps;
 
@@ -958,7 +958,7 @@ ghost_json GuiSerializer::BuildInheritedProps(int parentElementID) const
 	return inheritedProps;
 }
 
-bool GuiSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
+bool GhostSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int parentX, int parentY, int parentElementID)
 {
 	// Read JSON from file
 	ghost_json j = ReadJsonFromFile(filename);
@@ -980,18 +980,18 @@ bool GuiSerializer::LoadIntoPanel(const std::string& filename, Gui* gui, int par
 	return false;
 }
 
-bool GuiSerializer::SaveToFile(const std::string& filename, Gui* gui)
+bool GhostSerializer::SaveToFile(const std::string& filename, Gui* gui)
 {
 	if (!gui)
 	{
-		Log("GuiSerializer::SaveToFile - gui is null");
+		Log("GhostSerializer::SaveToFile - gui is null");
 		return false;
 	}
 
 	// Check if we have a root element to serialize
 	if (m_rootElementID == -1)
 	{
-		Log("GuiSerializer::SaveToFile - No root element to serialize");
+		Log("GhostSerializer::SaveToFile - No root element to serialize");
 		return false;
 	}
 
@@ -1012,13 +1012,13 @@ bool GuiSerializer::SaveToFile(const std::string& filename, Gui* gui)
 			// Enforce single-root constraint
 			if (children.empty())
 			{
-				Log("GuiSerializer::SaveToFile - Warning: No elements to save");
+				Log("GhostSerializer::SaveToFile - Warning: No elements to save");
 				// Still save empty elements array
 			}
 			else if (children.size() > 1)
 			{
-				Log("GuiSerializer::SaveToFile - Error: Multiple root elements detected (" + std::to_string(children.size()) + " elements)");
-				Log("GuiSerializer::SaveToFile - Files must have exactly ONE root element. Use a panel to group multiple elements.");
+				Log("GhostSerializer::SaveToFile - Error: Multiple root elements detected (" + std::to_string(children.size()) + " elements)");
+				Log("GhostSerializer::SaveToFile - Files must have exactly ONE root element. Use a panel to group multiple elements.");
 				return false;
 			}
 			else
@@ -1041,28 +1041,28 @@ bool GuiSerializer::SaveToFile(const std::string& filename, Gui* gui)
 		ofstream file(filename);
 		if (!file.is_open())
 		{
-			Log("GuiSerializer::SaveToFile - Could not open file for writing: " + filename);
+			Log("GhostSerializer::SaveToFile - Could not open file for writing: " + filename);
 			return false;
 		}
 
 		file << j.dump(2); // Pretty print with 2-space indent
 		file.close();
 
-		Log("GuiSerializer::SaveToFile - Successfully saved: " + filename);
+		Log("GhostSerializer::SaveToFile - Successfully saved: " + filename);
 		return true;
 	}
 	catch (const exception& e)
 	{
-		Log("GuiSerializer::SaveToFile - Exception: " + string(e.what()));
+		Log("GhostSerializer::SaveToFile - Exception: " + string(e.what()));
 		return false;
 	}
 }
 
-bool GuiSerializer::SaveSelectedElements(const std::string& filename, Gui* gui, const std::vector<int>& elementIDs)
+bool GhostSerializer::SaveSelectedElements(const std::string& filename, Gui* gui, const std::vector<int>& elementIDs)
 {
 	if (!gui)
 	{
-		Log("GuiSerializer::SaveSelectedElements - gui is null");
+		Log("GhostSerializer::SaveSelectedElements - gui is null");
 		return false;
 	}
 
@@ -1078,7 +1078,7 @@ bool GuiSerializer::SaveSelectedElements(const std::string& filename, Gui* gui, 
 			auto it = gui->m_GuiElementList.find(id);
 			if (it == gui->m_GuiElementList.end())
 			{
-				Log("GuiSerializer::SaveSelectedElements - Element ID " + to_string(id) + " not found");
+				Log("GhostSerializer::SaveSelectedElements - Element ID " + to_string(id) + " not found");
 				continue;
 			}
 
@@ -1099,24 +1099,24 @@ bool GuiSerializer::SaveSelectedElements(const std::string& filename, Gui* gui, 
 		ofstream file(filename);
 		if (!file.is_open())
 		{
-			Log("GuiSerializer::SaveSelectedElements - Could not open file for writing: " + filename);
+			Log("GhostSerializer::SaveSelectedElements - Could not open file for writing: " + filename);
 			return false;
 		}
 
 		file << j.dump(2); // Pretty print with 2-space indent
 		file.close();
 
-		Log("GuiSerializer::SaveSelectedElements - Successfully saved " + to_string(elementIDs.size()) + " elements to: " + filename);
+		Log("GhostSerializer::SaveSelectedElements - Successfully saved " + to_string(elementIDs.size()) + " elements to: " + filename);
 		return true;
 	}
 	catch (const exception& e)
 	{
-		Log("GuiSerializer::SaveSelectedElements - Exception: " + string(e.what()));
+		Log("GhostSerializer::SaveSelectedElements - Exception: " + string(e.what()));
 		return false;
 	}
 }
 
-void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
+void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 {
 	// Get the panel element
 	auto panelIt = gui->m_GuiElementList.find(panelID);
@@ -1222,12 +1222,12 @@ void GuiSerializer::ReflowPanel(int panelID, Gui* gui)
 	panel->m_Height = maxY + vertPadding;
 }
 
-ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY)
+ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY)
 {
 	auto it = gui->m_GuiElementList.find(elementID);
 	if (it == gui->m_GuiElementList.end())
 	{
-		Log("GuiSerializer::SerializeElement - Element ID " + to_string(elementID) + " not found");
+		Log("GhostSerializer::SerializeElement - Element ID " + to_string(elementID) + " not found");
 		return ghost_json();
 	}
 
@@ -1276,7 +1276,7 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 			break;
 		// Add more types as needed
 		default:
-			Log("GuiSerializer::SerializeElement - Unknown element type: " + to_string(element->m_Type));
+			Log("GhostSerializer::SerializeElement - Unknown element type: " + to_string(element->m_Type));
 			type = "unknown";
 			break;
 	}
@@ -1570,7 +1570,7 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 	return elementJson;
 }
 
-std::vector<int> GuiSerializer::GetAllElementIDs() const
+std::vector<int> GhostSerializer::GetAllElementIDs() const
 {
 	std::vector<int> allIDs;
 
