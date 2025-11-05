@@ -6,6 +6,7 @@
 #include "Gui.h"
 #include "GuiElements.h"
 #include "Globals.h"
+#include "Logging.h"
 
 using namespace std;
 
@@ -481,38 +482,80 @@ void GuiTextInput::Update()
 	int adjustedx = int(m_Gui->m_Pos.x + m_Pos.x);
 	int adjustedy = int(m_Gui->m_Pos.y + m_Pos.y);
 
+	// Debug: Log focus state at start of update
+	if (m_HasFocus)
+	{
+		Log("Text input " + to_string(m_ID) + " Update() starting with focus, m_LastElement=" + to_string(m_Gui->m_LastElement));
+	}
+
 	if (m_HasFocus && m_Gui->m_LastElement != m_ID)
 	{
+		Log("Text input " + to_string(m_ID) + " LOSING focus (LastElement=" + to_string(m_Gui->m_LastElement) + ", m_ID=" + to_string(m_ID) + ")");
 		m_HasFocus = false;
 	}
 
-	if (!m_Gui->m_AcceptingInput)
+	// Debug: Log when property panel text input is inactive
+	if (!m_Active && m_ID >= 3000)
+	{
+		Log("Text input " + to_string(m_ID) + " is INACTIVE in property panel!");
+	}
+
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	//  If the left button is down, we are CLICKED
 	if (WasLeftButtonClickedInRect(adjustedx, adjustedy, adjustedx + m_Width, adjustedy + m_Height))
 	{
+		if (!m_HasFocus)
+		{
+			Log("Text input " + to_string(m_ID) + " gained focus");
+		}
 		m_HasFocus = true;
-		m_Gui->m_ActiveElement = m_ID;
+	}
+	// If user clicks outside this text input, lose focus
+	else if (m_HasFocus && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		Log("Text input " + to_string(m_ID) + " lost focus from clicking elsewhere");
+		m_HasFocus = false;
 	}
 
+	// Keep this element active while it has focus so m_LastElement stays correct
+	if (m_HasFocus)
+	{
+		m_Gui->m_ActiveElement = m_ID;
+	}
 
 	if (m_HasFocus && (IsKeyPressed(KEY_KP_ENTER) || IsKeyPressed(KEY_ENTER)))
 	{
 		m_HasFocus = false;
+		Log("Text input " + to_string(m_ID) + " lost focus from Enter key");
 	}
 
 	if (m_HasFocus && (IsKeyPressed(KEY_BACKSPACE)))
 	{
+		Log("Text input " + to_string(m_ID) + " detected BACKSPACE");
 		if (m_String.size() > 0)
 		{
 			m_String = m_String.substr(0, m_String.size() - 1);
 		}
 	}
 
-	if (m_HasFocus && GetKeyPressed() >= KEY_SPACE && GetKeyPressed() <= KEY_Z)
+	// Only check for keypresses if this input has focus (otherwise we consume keypresses meant for other inputs)
+	if (m_HasFocus)
 	{
-		m_String += char(GetKeyPressed());
+		int keyPressed = GetKeyPressed();
+
+		// Debug: Log all attempts to type in this text input
+		if (keyPressed != 0)
+		{
+			Log("Text input " + to_string(m_ID) + " GetKeyPressed returned: " + to_string(keyPressed) + ", m_HasFocus=" + to_string(m_HasFocus));
+		}
+
+		if (keyPressed >= KEY_SPACE && keyPressed <= KEY_Z)
+		{
+			Log("Text input " + to_string(m_ID) + " detected key: " + to_string(keyPressed) + " (" + string(1, char(keyPressed)) + ")");
+			m_String += char(keyPressed);
+		}
 	}
 }
 
@@ -622,7 +665,7 @@ void GuiCheckBox::Update()
 {
 	Tween::Update();
 
-	if (!m_Gui->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	if (m_Visible)
@@ -714,6 +757,7 @@ void GuiRadioButton::Draw()
 		else
 		{
 			DrawRectangleLines(adjustedx, adjustedy, adjustedw, adjustedh, Color{ 255, 255, 255, 255 });
+			DrawRectangle(adjustedx + 2, adjustedy + 2, adjustedw - 4, adjustedh - 4, Color{ 80, 80, 80, 255 });
 		}
 	}
 	else
@@ -764,7 +808,7 @@ void GuiRadioButton::Update()
 {
 	Tween::Update();
 
-	if (!m_Gui->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	if (m_Visible)
@@ -793,7 +837,7 @@ void GuiRadioButton::Update()
 				//  Deselect all other buttons in this radio button group.
 				for (auto& node : m_Gui->m_GuiElementList)
 				{
-					if (node.second->m_Group == m_Group && node.second.get() != this)// && node.second->m_Type == GUI_RADIOBUTTON)
+					if (node.second->m_Group == m_Group && node.second.get() != this)
 					{
 						node.second->m_Selected = false;
 					}

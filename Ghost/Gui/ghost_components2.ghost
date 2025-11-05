@@ -1,0 +1,58 @@
+{
+  "gui": {
+    "position": [0, 0],
+    "elements": [
+      {
+        "type": "panel",
+        "name": "menu_panel",
+        "position": [10, 10],
+        "size": [400, 60],
+        "color": [80, 80, 80, 255],
+        "filled": true,
+        "group": 0,
+        "active": true,
+        "layout": "horz",
+        "padding": 5,
+        "font": "babyblocks.ttf",
+        "fontSize": 40,
+        "textColor": [255, 255, 255, 255],
+        "backgroundColor": [60, 60, 60, 255],
+        "borderColor": [255, 255, 255, 255],
+        "elements": [
+          {
+            "type": "textbutton",
+            "name": "INPUT",
+            "position": [-1, -1],
+            "text": "Input",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "RADIO",
+            "position": [-1, -1],
+            "text": "Radio",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "CHECK",
+            "position": [-1, -1],
+            "text": "Check",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "FILE",
+            "position": [-1, -1],
+            "text": "File",
+            "group": 0,
+            "active": true
+          }
+        ]
+      }
+    ]
+  }
+}

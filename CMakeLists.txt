@@ -247,3 +247,75 @@ set_target_properties(ScriptTests PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
 )
+
+# ============================================================================
+# Ghost GUI Editor (Standalone Tool)
+# ============================================================================
+set(GHOST_SOURCES
+    Source/Ghost/Main.cpp
+    Source/Ghost/GhostState.cpp
+    Source/Ghost/GuiSerializer.cpp
+    Source/Ghost/FileDialog.cpp
+)
+
+set(GHOST_GEIST_SOURCES
+    Source/Geist/Config.cpp
+    Source/Geist/Engine.cpp
+    Source/Geist/Globals.cpp
+    Source/Geist/Gui.cpp
+    Source/Geist/GuiElements.cpp
+    Source/Geist/IO.cpp
+    Source/Geist/Logging.cpp
+    Source/Geist/Primitives.cpp
+    Source/Geist/RaylibModel.cpp
+    Source/Geist/ResourceManager.cpp
+    Source/Geist/ScriptingSystem.cpp
+    Source/Geist/StateMachine.cpp
+)
+
+add_executable(Ghost WIN32 ${GHOST_SOURCES} ${GHOST_GEIST_SOURCES})
+
+# Organize files into virtual folders in Visual Studio
+source_group("Ghost" FILES ${GHOST_SOURCES})
+source_group("Geist" FILES ${GHOST_GEIST_SOURCES})
+
+# Build configuration specific definitions
+target_compile_definitions(Ghost PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
+)
+
+# Link dependencies
+target_link_libraries(Ghost PRIVATE
+    raylib
+    lua
+)
+
+# Additional include directories
+target_include_directories(Ghost PRIVATE
+    Source
+    Source/Geist
+    ${RAYLIB_EXTERNAL_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
+)
+
+# Windows-specific dependencies
+if(WIN32)
+    target_link_libraries(Ghost PRIVATE winmm)
+    # Use main() entry point instead of WinMain for GUI app
+    set_target_properties(Ghost PROPERTIES
+        LINK_FLAGS "/ENTRY:mainCRTStartup"
+    )
+endif()
+
+# Set Visual Studio debugger working directory to Ghost folder
+set_target_properties(Ghost PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+)
+
+# Copy executable to Ghost folder after build (Release only)
+add_custom_command(TARGET Ghost POST_BUILD
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
+    COMMAND_EXPAND_LISTS
+    COMMENT "Copying Ghost Release executable to Ghost folder"
+)

@@ -1,0 +1,58 @@
+{
+  "gui": {
+    "position": [0, 0],
+    "elements": [
+      {
+        "type": "panel",
+        "name": "menu_panel",
+        "position": [10, 10],
+        "size": [400, 60],
+        "color": [80, 80, 80, 255],
+        "filled": true,
+        "group": 0,
+        "active": true,
+        "layout": "horz",
+        "padding": 5,
+        "font": "babyblocks.ttf",
+        "fontSize": 40,
+        "textColor": [255, 255, 255, 255],
+        "backgroundColor": [60, 60, 60, 255],
+        "borderColor": [255, 255, 255, 255],
+        "elements": [
+          {
+            "type": "textbutton",
+            "name": "PANEL",
+            "position": [-1, -1],
+            "text": "Panel",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "TEXT",
+            "position": [-1, -1],
+            "text": "Text",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "SPRITE",
+            "position": [-1, -1],
+            "text": "Sprite",
+            "group": 0,
+            "active": true
+          },
+          {
+            "type": "textbutton",
+            "name": "BUTTON",
+            "position": [-1, -1],
+            "text": "Button",
+            "group": 0,
+            "active": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "gui": {
+    "position": [
+      0,
+      0
+    ],
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          5,
+          5
+        ],
+        "size": [
+          290.0,
+          250.0
+        ],
+        "color": [
+          80,
+          80,
+          80,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "columns": 2,
+        "padding": 5,
+        "active": true,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Name:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_NAME",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "boxColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Horz:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_LAYOUT_HORZ",
+            "type": "radiobutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              20.0,
+              20.0
+            ],
+            "group": 1,
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Vert:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_LAYOUT_VERT",
+            "type": "radiobutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              20.0,
+              20.0
+            ],
+            "group": 1,
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Table:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_LAYOUT_TABLE",
+            "type": "radiobutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              20.0,
+              20.0
+            ],
+            "group": 1,
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Columns:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_COLUMNS",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "boxColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Horz Padding:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_HORZ_PADDING",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "boxColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "active": true
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Vert Padding:",
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 6,
+            "height": 30.0,
+            "justified": 0,
+            "active": true
+          },
+          {
+            "name": "PROPERTY_VERT_PADDING",
+            "type": "textinput",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "",
+            "size": [
+              150.0,
+              20.0
+            ],
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "boxColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              0,
+              0,
+              0,
+              255
+            ],
+            "active": true
+          }
+        ]
+      }
+    ]
+  }
+}

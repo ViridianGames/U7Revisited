@@ -8,6 +8,7 @@
 /build
 /furroy
 /.claude
+/Ghost/runlog.txt
 
 /subprojects/raylib/
 /subprojects/packagecache/

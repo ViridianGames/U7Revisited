@@ -1,0 +1,71 @@
+{
+  "gui": {
+    "position": [0, 0],
+    "elements": [
+      {
+        "type": "panel",
+        "name": "app_container",
+        "position": [0, 0],
+        "size": [1280, 720],
+        "color": [40, 40, 40, 255],
+        "filled": true,
+        "group": 0,
+        "active": true,
+        "layout": "vert",
+        "elements": [
+          {
+            "type": "panel",
+            "name": "left_column",
+            "position": [0, 0],
+            "size": [640, 720],
+            "color": [50, 50, 50, 255],
+            "filled": true,
+            "group": 0,
+            "active": true,
+            "layout": "vert",
+            "padding": 5,
+            "elements": [
+              {
+                "type": "include",
+                "position": [0, 0],
+                "filename": "ghost_menu.ghost"
+              },
+              {
+                "type": "include",
+                "position": [0, 70],
+                "filename": "ghost_components.ghost"
+              },
+              {
+                "type": "include",
+                "position": [0, 140],
+                "filename": "ghost_components2.ghost"
+              },
+              {
+                "type": "panel",
+                "name": "property_panel_container",
+                "id": 3000,
+                "position": [0, 210],
+                "size": [640, 560],
+                "color": [45, 45, 45, 255],
+                "filled": true,
+                "group": 0,
+                "active": true
+              }
+            ]
+          },
+          {
+            "type": "panel",
+            "name": "content_panel_container",
+            "id": 2000,
+            "position": [640, 0],
+            "size": [640, 720],
+            "color": [60, 60, 60, 255],
+            "filled": true,
+            "group": 0,
+            "active": true
+          }
+        ]
+      }
+    ]
+  }
+}
