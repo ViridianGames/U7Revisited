@@ -254,6 +254,7 @@ set_target_properties(ScriptTests PROPERTIES
 set(GHOST_SOURCES
     Source/Ghost/Main.cpp
     Source/Ghost/GhostState.cpp
+    Source/Ghost/ColorPickerState.cpp
     Source/Ghost/GuiSerializer.cpp
     Source/Ghost/FileDialog.cpp
 )
