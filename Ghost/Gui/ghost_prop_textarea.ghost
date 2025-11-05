@@ -15,7 +15,7 @@
           234.0,
           145.0
         ],
-        "color": [
+        "backgroundColor": [
           80,
           80,
           80,
@@ -34,7 +34,7 @@
               -1
             ],
             "text": "Name:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -82,7 +82,7 @@
               -1
             ],
             "text": "Text:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -130,7 +130,7 @@
               -1
             ],
             "text": "Font:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -178,7 +178,7 @@
               -1
             ],
             "text": "Font Size:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,

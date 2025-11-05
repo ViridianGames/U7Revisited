@@ -327,7 +327,8 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 			auto size = element["size"];
 			int width = size[0];
 			int height = size[1];
-			auto colorArr = element["color"];
+
+			auto colorArr = element["backgroundColor"];
 			Color color = { (unsigned char)colorArr[0], (unsigned char)colorArr[1],
 			                (unsigned char)colorArr[2], (unsigned char)colorArr[3] };
 
@@ -410,6 +411,9 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				// Build inherited props from the panel we just created (use the maps, not the element JSON)
 				ghost_json childInheritedProps = BuildInheritedProps(id);
 				ParseElements(element["elements"], gui, childInheritedProps, absoluteX, absoluteY, id);
+
+				// Recalculate panel size to fit all children
+				ReflowPanel(id, gui);
 			}
 		}
 		else if (type == "textbutton")
@@ -466,14 +470,30 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				Log("GuiSerializer::LoadFromFile - Failed to load font: " + fontPath);
 				font = GetFontDefault();
 			}
+			else
+			{
+				Log("GuiSerializer (textbutton): Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+			}
 
 			// Create a shared pointer for the font and store it to keep it alive
 			shared_ptr<Font> fontPtr = make_shared<Font>(font);
 			m_loadedFonts.push_back(fontPtr);
 
-			// Use the auto-sizing version of AddTextButton
-			gui->AddTextButton(id, absoluteX, absoluteY, text, fontPtr.get(),
-			                   textColor, bgColor, borderColor, group, active);
+			// Check if explicit size is provided, otherwise use auto-sizing
+			if (element.contains("size"))
+			{
+				auto sizeArr = element["size"];
+				int width = sizeArr[0].get<int>();
+				int height = sizeArr[1].get<int>();
+				gui->AddTextButton(id, absoluteX, absoluteY, width, height, text, fontPtr.get(),
+				                   textColor, bgColor, borderColor, group, active);
+			}
+			else
+			{
+				// Use the auto-sizing version of AddTextButton
+				gui->AddTextButton(id, absoluteX, absoluteY, text, fontPtr.get(),
+				                   textColor, bgColor, borderColor, group, active);
+			}
 		}
 		else if (type == "textarea")
 		{
@@ -505,18 +525,18 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 				fontSize = inheritedProps["fontSize"].get<int>();
 			}
 
-			// Get color with inheritance
+			// Get textColor with inheritance
 			Color color = WHITE;
-			if (element.contains("color"))
+			if (element.contains("textColor"))
 			{
-				m_explicitProperties[id].insert("color");
-				auto arr = element["color"];
+				m_explicitProperties[id].insert("textColor");
+				auto arr = element["textColor"];
 				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
 				              (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
-			else if (!inheritedProps.is_null() && inheritedProps.contains("color"))
+			else if (!inheritedProps.is_null() && inheritedProps.contains("textColor"))
 			{
-				auto arr = inheritedProps["color"];
+				auto arr = inheritedProps["textColor"];
 				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
 				              (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
@@ -541,11 +561,16 @@ void GuiSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, con
 					Log("GuiSerializer::ParseElements - Failed to load font: " + fontPath);
 					font = GetFontDefault();
 				}
+				else
+				{
+					Log("GuiSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+				}
 			}
 			else
 			{
 				// No font name specified, use default font
 				font = GetFontDefault();
+				Log("GuiSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
 			}
 
 			// Create a shared pointer for the font and store it to keep it alive
@@ -893,19 +918,33 @@ ghost_json GuiSerializer::BuildInheritedProps(int parentElementID) const
 {
 	ghost_json inheritedProps;
 
-	// Get font properties from parent if available
-	auto fontIt = m_elementFonts.find(parentElementID);
-	if (fontIt != m_elementFonts.end())
+	// Walk up the parent chain to find font properties
+	int currentID = parentElementID;
+	while (currentID != -1)
 	{
-		inheritedProps["font"] = fontIt->second;
-		Log("BuildInheritedProps: Inheriting font '" + fontIt->second + "' from parent " + std::to_string(parentElementID));
-	}
+		// Get font properties from current ancestor if available
+		auto fontIt = m_elementFonts.find(currentID);
+		if (fontIt != m_elementFonts.end() && !inheritedProps.contains("font"))
+		{
+			inheritedProps["font"] = fontIt->second;
+			Log("BuildInheritedProps: Inheriting font '" + fontIt->second + "' from ancestor " + std::to_string(currentID));
+		}
 
-	auto fontSizeIt = m_elementFontSizes.find(parentElementID);
-	if (fontSizeIt != m_elementFontSizes.end())
-	{
-		inheritedProps["fontSize"] = fontSizeIt->second;
-		Log("BuildInheritedProps: Inheriting fontSize " + std::to_string(fontSizeIt->second) + " from parent " + std::to_string(parentElementID));
+		auto fontSizeIt = m_elementFontSizes.find(currentID);
+		if (fontSizeIt != m_elementFontSizes.end() && !inheritedProps.contains("fontSize"))
+		{
+			inheritedProps["fontSize"] = fontSizeIt->second;
+			Log("BuildInheritedProps: Inheriting fontSize " + std::to_string(fontSizeIt->second) + " from ancestor " + std::to_string(currentID));
+		}
+
+		// If we found both properties, we're done
+		if (inheritedProps.contains("font") && inheritedProps.contains("fontSize"))
+		{
+			break;
+		}
+
+		// Move up to the next parent using GetParentID
+		currentID = GetParentID(currentID);
 	}
 
 	return inheritedProps;
@@ -1266,7 +1305,7 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 	{
 		auto panel = static_cast<GuiPanel*>(element.get());
 		elementJson["size"] = { panel->m_Width, panel->m_Height };
-		elementJson["color"] = { panel->m_Color.r, panel->m_Color.g, panel->m_Color.b, panel->m_Color.a };
+		elementJson["backgroundColor"] = { panel->m_Color.r, panel->m_Color.g, panel->m_Color.b, panel->m_Color.a };
 		elementJson["filled"] = panel->m_Filled;
 
 		// Add layout property (defaults to "horz" if not set)
@@ -1372,8 +1411,8 @@ ghost_json GuiSerializer::SerializeElement(int elementID, Gui* gui, int parentX,
 					elementJson["fontSize"] = sizeIt->second;
 			}
 
-			if (explicitProps.count("color") > 0)
-				elementJson["color"] = { textarea->m_Color.r, textarea->m_Color.g, textarea->m_Color.b, textarea->m_Color.a };
+			if (explicitProps.count("textColor") > 0)
+				elementJson["textColor"] = { textarea->m_Color.r, textarea->m_Color.g, textarea->m_Color.b, textarea->m_Color.a };
 		}
 
 		if (textarea->m_Width > 0)

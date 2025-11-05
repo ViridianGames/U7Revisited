@@ -7,7 +7,7 @@
         "name": "content_panel",
         "position": [10, 10],
         "size": [620, 700],
-        "color": [60, 60, 60, 255],
+        "backgroundColor": [60, 60, 60, 255],
         "filled": true,
         "group": 0,
         "active": true

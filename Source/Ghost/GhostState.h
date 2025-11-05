@@ -52,7 +52,7 @@ private:
 	void FinalizeInsert(int newID, int parentID, const std::string& elementTypeName, bool isFloating = true);
 
 	// Get inherited font from parent element (returns nullptr if no inherited font)
-	Font* GetInheritedFont(int parentID, int& outFontSize);
+	Font* GetInheritedFont(int parentID, int& outFontSize, std::string& outFontName);
 
 	// Helper functions for property tracking
 	bool TrackPropertyValue(int activeID, const std::string& propertyName, std::string& lastValue);

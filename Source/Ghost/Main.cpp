@@ -4,6 +4,7 @@
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Logging.h"
 #include "GhostState.h"
+#include "ColorPickerState.h"
 #include "raylib.h"
 
 using namespace std;
@@ -69,6 +70,11 @@ int main()
 				State* ghostState = new GhostState;
 				ghostState->Init("");
 				g_StateMachine->RegisterState(0, ghostState, "GHOST_STATE");
+
+				// Create and register ColorPicker state
+				State* colorPickerState = new ColorPickerState;
+				colorPickerState->Init("");
+				g_StateMachine->RegisterState(1, colorPickerState, "COLOR_PICKER_STATE");
 
 				// Start with Ghost state
 				g_StateMachine->MakeStateTransition(0);

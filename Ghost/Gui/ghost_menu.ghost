@@ -7,7 +7,7 @@
         "name": "menu_panel",
         "position": [0, 0],
         "size": [400, 60],
-        "color": [80, 80, 80, 255],
+        "backgroundColor": [80, 80, 80, 255],
         "filled": true,
         "group": 0,
         "active": true,

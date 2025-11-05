@@ -1,14 +1,18 @@
 #include "GhostState.h"
 #include "../Geist/Globals.h"
 #include "../Geist/Engine.h"
+#include "../Geist/StateMachine.h"
 #include "../Geist/Logging.h"
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Config.h"
 #include "FileDialog.h"
+#include "ColorPickerState.h"
 #include "raylib.h"
 #include <fstream>
 
 using namespace std;
+
+extern std::unique_ptr<StateMachine> g_StateMachine;
 
 // Static scrollbar tracking variables (shared between Update() and FinalizeInsert())
 static int lastColumnsScrollbarValue = -1;
@@ -337,6 +341,33 @@ void GhostState::Update()
 						Log("TextInput font size scrollbar value changed to " + to_string(scrollbar->m_Value) + ", triggering update");
 						UpdateElementFromPropertyPanel();
 					}
+				}
+			}
+		}
+	}
+
+	// Check for PROPERTY_BACKGROUND button click to open color picker
+	int backgroundButtonID = m_propertySerializer->GetElementID("PROPERTY_BACKGROUND");
+	if (backgroundButtonID != -1 && m_selectedElementID != -1)
+	{
+		auto backgroundButton = m_gui->GetElement(backgroundButtonID);
+		if (backgroundButton && backgroundButton->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(backgroundButton.get());
+			if (button->m_Clicked)
+			{
+				// Get current panel color
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+				if (selectedElement && selectedElement->m_Type == GUI_PANEL)
+				{
+					auto panel = static_cast<GuiPanel*>(selectedElement.get());
+
+					// Set color on ColorPickerState and push it
+					auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+					colorPickerState->SetColor(panel->m_Color);
+					g_StateMachine->PushState(1);
+
+					Log("Opening color picker for panel background color");
 				}
 			}
 		}
@@ -982,6 +1013,38 @@ void GhostState::Draw()
 void GhostState::OnEnter()
 {
 	// Called when state becomes active
+	Log("GhostState::OnEnter - Previous state: " + std::to_string(g_StateMachine->GetPreviousState()));
+
+	// Check if we're returning from ColorPickerState
+	if (g_StateMachine->GetPreviousState() == 1)  // ColorPickerState is state ID 1
+	{
+		Log("GhostState: Returning from ColorPickerState");
+		auto colorPickerState = static_cast<ColorPickerState*>(g_StateMachine->GetState(1));
+
+		// Only apply color if user clicked OK (not Cancel)
+		Log("GhostState: WasAccepted = " + std::string(colorPickerState->WasAccepted() ? "true" : "false"));
+		if (colorPickerState->WasAccepted())
+		{
+			Log("GhostState: Applying color, selectedElementID = " + std::to_string(m_selectedElementID));
+			Color selectedColor = colorPickerState->GetColor();
+
+			// Apply to currently selected panel
+			if (m_selectedElementID != -1)
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+				if (selectedElement && selectedElement->m_Type == GUI_PANEL)
+				{
+					auto panel = static_cast<GuiPanel*>(selectedElement.get());
+					panel->m_Color = selectedColor;
+
+					Log("Applied color from picker: R=" + std::to_string(selectedColor.r) +
+						", G=" + std::to_string(selectedColor.g) +
+						", B=" + std::to_string(selectedColor.b) +
+						", A=" + std::to_string(selectedColor.a));
+				}
+			}
+		}
+	}
 }
 
 void GhostState::OnExit()
@@ -1324,7 +1387,7 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 	Log(elementTypeName + " inserted with ID: " + to_string(newID) + " as child of parent ID: " + to_string(parentID));
 }
 
-Font* GhostState::GetInheritedFont(int parentID, int& outFontSize)
+Font* GhostState::GetInheritedFont(int parentID, int& outFontSize, std::string& outFontName)
 {
 	// Build inherited properties from parent
 	ghost_json inheritedProps = m_contentSerializer->BuildInheritedProps(parentID);
@@ -1344,6 +1407,7 @@ Font* GhostState::GetInheritedFont(int parentID, int& outFontSize)
 			// Store the font in m_preservedFonts to keep it alive
 			m_preservedFonts.push_back(fontPtr);
 			outFontSize = fontSize;
+			outFontName = fontName;
 			Log("GetInheritedFont: Loaded inherited font '" + fontName + "' at size " + to_string(fontSize) + " from parent " + to_string(parentID));
 			return fontPtr.get();
 		}
@@ -1355,6 +1419,7 @@ Font* GhostState::GetInheritedFont(int parentID, int& outFontSize)
 
 	// No inherited font or failed to load - return nullptr
 	outFontSize = 0;
+	outFontName = "";
 	return nullptr;
 }
 
@@ -1386,7 +1451,8 @@ void GhostState::InsertLabel()
 
 	// Try to get inherited font from parent
 	int fontSize = 0;
-	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	std::string fontName = "";
+	Font* font = GetInheritedFont(ctx.parentID, fontSize, fontName);
 	if (font == nullptr)
 	{
 		// No inherited font - use default GUI font
@@ -1406,15 +1472,10 @@ void GhostState::InsertLabel()
 	m_contentSerializer->MarkPropertyAsExplicit(ctx.newID, "color");
 
 	// Store the font information in the serializer if we got an inherited font
-	if (fontSize > 0)
+	if (fontSize > 0 && !fontName.empty())
 	{
 		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
-		// Get the font name from the parent if available
-		std::string fontName = m_contentSerializer->GetElementFont(ctx.parentID);
-		if (!fontName.empty())
-		{
-			m_contentSerializer->SetElementFont(ctx.newID, fontName);
-		}
+		m_contentSerializer->SetElementFont(ctx.newID, fontName);
 	}
 
 	// Use helper to finalize insertion
@@ -1430,7 +1491,8 @@ void GhostState::InsertButton()
 
 	// Try to get inherited font from parent
 	int fontSize = 0;
-	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	std::string fontName = "";
+	Font* font = GetInheritedFont(ctx.parentID, fontSize, fontName);
 	if (font == nullptr)
 	{
 		// No inherited font - use default GUI font
@@ -1439,6 +1501,13 @@ void GhostState::InsertButton()
 
 	// Add a text button at calculated position
 	m_gui->AddTextButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, "Button", font, WHITE, DARKGRAY, WHITE, 0, true);
+
+	// Store the font information in the serializer if we got an inherited font
+	if (fontSize > 0 && !fontName.empty())
+	{
+		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
+		m_contentSerializer->SetElementFont(ctx.newID, fontName);
+	}
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Button");
@@ -1482,7 +1551,8 @@ void GhostState::InsertTextInput()
 
 	// Try to get inherited font from parent
 	int fontSize = 0;
-	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	std::string fontName = "";
+	Font* font = GetInheritedFont(ctx.parentID, fontSize, fontName);
 	if (font == nullptr)
 	{
 		// No inherited font - use default GUI font
@@ -1500,6 +1570,13 @@ void GhostState::InsertTextInput()
 
 	// Add a text input field at calculated position
 	m_gui->AddTextInput(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, scaledHeight, font, "", WHITE, WHITE, Color{0, 0, 0, 255}, 0, true);
+
+	// Store the font information in the serializer if we got an inherited font
+	if (fontSize > 0 && !fontName.empty())
+	{
+		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
+		m_contentSerializer->SetElementFont(ctx.newID, fontName);
+	}
 
 	// Disable the text input so it can't accept keyboard input (content is for display only)
 	auto newElement = m_gui->GetElement(ctx.newID);
@@ -1669,7 +1746,8 @@ void GhostState::InsertList()
 
 	// Try to get inherited font from parent
 	int fontSize = 0;
-	Font* font = GetInheritedFont(ctx.parentID, fontSize);
+	std::string fontName = "";
+	Font* font = GetInheritedFont(ctx.parentID, fontSize, fontName);
 	if (font == nullptr)
 	{
 		// No inherited font - use default GUI font
@@ -1680,6 +1758,13 @@ void GhostState::InsertList()
 	vector<string> defaultItems = {"Item 1", "Item 2", "Item 3"};
 	m_gui->AddGuiList(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 100, font,
 		defaultItems, WHITE, Color{0, 0, 0, 255}, WHITE, 0, true);
+
+	// Store the font information in the serializer if we got an inherited font
+	if (fontSize > 0 && !fontName.empty())
+	{
+		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
+		m_contentSerializer->SetElementFont(ctx.newID, fontName);
+	}
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "List");

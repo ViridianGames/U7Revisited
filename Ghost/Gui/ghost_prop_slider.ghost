@@ -15,7 +15,7 @@
           225.0,
           190.0
         ],
-        "color": [
+        "backgroundColor": [
           80,
           80,
           80,
@@ -34,7 +34,7 @@
               -1
             ],
             "text": "Name:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -82,7 +82,7 @@
               -1
             ],
             "text": "Width:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -125,7 +125,7 @@
               -1
             ],
             "text": "Height:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
@@ -168,7 +168,7 @@
               -1
             ],
             "text": "Value Range:",
-            "color": [
+            "textColor": [
               255,
               255,
               255,
