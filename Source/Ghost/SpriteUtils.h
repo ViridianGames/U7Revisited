@@ -83,7 +83,7 @@ public:
 	}
 
 	// Get fallback sprite definition for a specific sprite type
-	// spriteType: "left", "center", or "right"
+	// spriteType: "left", "center", "right", or "sprite"
 	static void GetFallbackForType(
 		const std::string& spriteType,
 		std::string& filename,
@@ -93,29 +93,43 @@ public:
 		int& height)
 	{
 		filename = "image.png";
-		width = 16;
-		height = 48;
 
 		if (spriteType == "left")
 		{
 			x = 0;
 			y = 0;
+			width = 16;
+			height = 48;
 		}
 		else if (spriteType == "center")
 		{
 			x = 16;
 			y = 0;
+			width = 16;
+			height = 48;
 		}
 		else if (spriteType == "right")
 		{
 			x = 32;
 			y = 0;
+			width = 16;
+			height = 48;
+		}
+		else if (spriteType == "sprite")
+		{
+			// 48x48 square for regular sprites
+			x = 0;
+			y = 0;
+			width = 48;
+			height = 48;
 		}
 		else
 		{
 			// Default to left
 			x = 0;
 			y = 0;
+			width = 16;
+			height = 48;
 		}
 	}
 };

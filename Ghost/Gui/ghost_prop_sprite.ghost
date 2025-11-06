@@ -83,7 +83,7 @@
               -1,
               -1
             ],
-            "text": "Filename:",
+            "text": "Sprite:",
             "textColor": [
               255,
               255,
@@ -96,12 +96,12 @@
           },
           {
             "name": "PROPERTY_SPRITE",
-            "type": "textinput",
+            "type": "textbutton",
             "position": [
               -1,
               -1
             ],
-            "text": "",
+            "text": "Pick Sprite",
             "size": [
               150.0,
               20.0
@@ -113,15 +113,15 @@
               255
             ],
             "backgroundColor": [
-              0,
-              0,
-              0,
+              64,
+              64,
+              64,
               255
             ],
             "borderColor": [
-              255,
-              255,
-              255,
+              128,
+              128,
+              128,
               255
             ]
           }

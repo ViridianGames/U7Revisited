@@ -1025,11 +1025,11 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && selectedElement->m_Type == GUI_STRETCHBUTTON)
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
-				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT"
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT", "PROPERTY_SPRITE"
 			};
 
 			for (const auto& propName : spriteProperties)
@@ -1057,6 +1057,25 @@ void GhostState::Update()
 							else if (propName == "PROPERTY_SPRITE_RIGHT")
 							{
 								sprite = m_contentSerializer->GetStretchButtonRightSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_SPRITE")
+							{
+								// For sprite elements, get the sprite metadata
+								sprite.spritesheet = m_contentSerializer->GetSpriteName(m_selectedElementID);
+
+								// Get sprite source rect from the actual sprite element
+								auto selectedElement = m_gui->GetElement(m_selectedElementID);
+								if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
+								{
+									auto spriteElem = static_cast<GuiSprite*>(selectedElement.get());
+									if (spriteElem->m_Sprite)
+									{
+										sprite.x = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.x);
+										sprite.y = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.y);
+										sprite.w = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.width);
+										sprite.h = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.height);
+									}
+								}
 							}
 
 							// Track which property we're editing
@@ -1908,6 +1927,43 @@ void GhostState::OnEnter()
 					Log("Applied sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
 				}
+				else if (selectedElement && selectedElement->m_Type == GUI_SPRITE && m_editingSpriteProperty == "PROPERTY_SPRITE")
+				{
+					// Update sprite element with new sprite data
+					auto spriteElem = static_cast<GuiSprite*>(selectedElement.get());
+
+					// Load the new sprite texture
+					string spritePath = m_spritePath + sprite.spritesheet;
+					Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+					if (texture)
+					{
+						// Create new sprite with the specified source rectangle
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+						newSprite->m_texture = texture;
+						newSprite->m_sourceRect = Rectangle{
+							static_cast<float>(sprite.x),
+							static_cast<float>(sprite.y),
+							static_cast<float>(sprite.w),
+							static_cast<float>(sprite.h)
+						};
+
+						// Update the sprite element
+						spriteElem->m_Sprite = newSprite;
+						spriteElem->m_Width = sprite.w;
+						spriteElem->m_Height = sprite.h;
+
+						// Store sprite filename in serializer
+						m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+
+						Log("Updated sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+							") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+					}
+					else
+					{
+						Log("ERROR: Failed to load texture: " + spritePath);
+					}
+				}
 			}
 
 			// Reset the tracking variable
@@ -2399,23 +2455,33 @@ void GhostState::InsertSprite()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
-	// Load default sprite image
-	string defaultSpriteName = "image.png";
-	string spritePath = m_spritePath + defaultSpriteName;
+	// Get fallback sprite definition (48x48 yellow square from image.png)
+	string filename;
+	int x, y, width, height;
+	SpriteUtils::GetFallbackForType("sprite", filename, x, y, width, height);
+
+	Log("InsertSprite: Using fallback sprite: " + filename + " at (" + to_string(x) + "," + to_string(y) +
+		") size " + to_string(width) + "x" + to_string(height));
+
+	// Load sprite texture
+	string spritePath = m_spritePath + filename;
 	Texture* texture = g_ResourceManager->GetTexture(spritePath);
 
-	// Create sprite with the loaded texture
+	// Create sprite with the specified source rectangle
 	shared_ptr<Sprite> sprite = make_shared<Sprite>();
 	sprite->m_texture = texture;
-	sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
-
-	Log("Loaded sprite from: " + spritePath + " (size: " + to_string(texture->width) + "x" + to_string(texture->height) + ")");
+	sprite->m_sourceRect = Rectangle{
+		static_cast<float>(x),
+		static_cast<float>(y),
+		static_cast<float>(width),
+		static_cast<float>(height)
+	};
 
 	// Add sprite at calculated position
 	m_gui->AddSprite(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, 1.0f, 1.0f, WHITE, 0, true);
 
 	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, defaultSpriteName);
+	m_contentSerializer->SetSpriteName(ctx.newID, filename);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Sprite");
@@ -2982,26 +3048,8 @@ void GhostState::PopulatePropertyPanelFields()
 		Log("Finished populating layout properties - layout: " + layout + ", columns: " + to_string(columns));
 	}
 
-	// Populate sprite filename field (for sprite elements)
-	if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
-	{
-		int spriteInputID = m_propertySerializer->GetElementID("PROPERTY_SPRITE");
-		if (spriteInputID != -1)
-		{
-			auto spriteInput = m_gui->GetElement(spriteInputID);
-			if (spriteInput && spriteInput->m_Type == GUI_TEXTINPUT)
-			{
-				// Get the sprite's filename from the serializer
-				std::string filename = m_contentSerializer->GetSpriteName(m_selectedElementID);
-
-				// Populate the input with the filename
-				auto textInput = static_cast<GuiTextInput*>(spriteInput.get());
-				textInput->m_String = filename;
-
-				Log("Populated PROPERTY_SPRITE with: " + filename);
-			}
-		}
-	}
+	// PROPERTY_SPRITE is now a button that opens the sprite picker dialog
+	// No need to populate it - the sprite picker will load current values when opened
 
 	// Populate font fields (for panels and text elements)
 	PopulateFontProperty();
@@ -3452,64 +3500,8 @@ void GhostState::UpdateElementFromPropertyPanel()
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
 	}
 
-	// Update sprite filename if changed
-	if (selectedElement && selectedElement->m_Type == GUI_SPRITE)
-	{
-		int spriteInputID = m_propertySerializer->GetElementID("PROPERTY_SPRITE");
-		if (spriteInputID != -1)
-		{
-			auto spriteInput = m_gui->GetElement(spriteInputID);
-			if (spriteInput && spriteInput->m_Type == GUI_TEXTINPUT)
-			{
-				auto textInput = static_cast<GuiTextInput*>(spriteInput.get());
-				std::string newFilename = textInput->m_String;
-				std::string oldFilename = m_contentSerializer->GetSpriteName(m_selectedElementID);
-
-				if (newFilename != oldFilename && !newFilename.empty())
-				{
-					// Try to load the new sprite texture
-					std::string spritePath = m_spritePath + newFilename;
-					Texture* texture = g_ResourceManager->GetTexture(spritePath);
-					std::string actualFilename = newFilename; // Track what we actually loaded
-
-					// If loading failed, fall back to default image.png
-					if (!texture || texture->id == 0)
-					{
-						Log("Failed to load sprite texture: " + spritePath + ", falling back to image.png");
-						std::string defaultPath = m_spritePath + "image.png";
-						texture = g_ResourceManager->GetTexture(defaultPath);
-						actualFilename = "image.png"; // Update to reflect what we actually loaded
-
-						// If even the default fails, log error but continue
-						if (!texture || texture->id == 0)
-						{
-							Log("ERROR: Failed to load default sprite: " + defaultPath);
-							return;
-						}
-					}
-
-					// Create new sprite with the loaded texture
-					auto sprite = std::make_shared<Sprite>();
-					sprite->m_texture = texture;
-					sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
-
-					// Update the GuiSprite element
-					auto guiSprite = std::static_pointer_cast<GuiSprite>(selectedElement);
-					guiSprite->SetSprite(sprite);
-
-					// Update the GuiSprite's width and height to match the new texture dimensions
-					guiSprite->m_Width = texture->width * guiSprite->m_ScaleX;
-					guiSprite->m_Height = texture->height * guiSprite->m_ScaleY;
-
-					// Update sprite metadata in serializer with the actual loaded filename
-					m_contentSerializer->SetSpriteName(m_selectedElementID, actualFilename);
-
-					Log("Updated sprite " + to_string(m_selectedElementID) + " from '" + oldFilename + "' to '" + actualFilename + "'");
-					wasUpdated = true;
-				}
-			}
-		}
-	}
+	// PROPERTY_SPRITE is now a button that opens the sprite picker dialog
+	// Sprite updates are handled when returning from SpritePickerState
 
 	// Always reflow after any update - just do it, don't be fancy
 	if (selectedElement)
