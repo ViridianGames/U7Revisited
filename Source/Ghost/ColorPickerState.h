@@ -2,8 +2,7 @@
 #define _COLORPICKERSTATE_H_
 
 #include "../Geist/State.h"
-#include "../Geist/Gui.h"
-#include "GhostSerializer.h"
+#include "../Geist/GhostWindow.h"
 #include <memory>
 #include <raylib.h>
 
@@ -30,9 +29,7 @@ public:
 	bool WasAccepted() const { return m_accepted; }
 
 private:
-	std::unique_ptr<Gui> m_gui;
-	std::shared_ptr<Font> m_guiFont;
-	std::unique_ptr<GhostSerializer> m_serializer;
+	std::unique_ptr<GhostWindow> m_window;
 
 	Color m_selectedColor = { 255, 255, 255, 255 };
 	bool m_accepted = false;

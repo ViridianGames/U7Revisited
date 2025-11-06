@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../Geist/State.h"
-#include "../Geist/Gui.h"
-#include "GhostSerializer.h"
+#include "../Geist/GhostWindow.h"
 #include <string>
 #include <memory>
 
@@ -32,8 +31,7 @@ public:
 private:
 	void ValidateAndApplyFallbacks();
 
-	std::unique_ptr<Gui> m_gui;
-	std::unique_ptr<GhostSerializer> m_serializer;
+	std::unique_ptr<GhostWindow> m_window;
 
 	bool m_accepted = false;
 

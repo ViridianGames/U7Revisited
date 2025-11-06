@@ -3,6 +3,8 @@
 #include "../Geist/StateMachine.h"
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Config.h"
+#include "../Geist/Gui.h"
+#include "../Geist/GuiElements.h"
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
@@ -15,74 +17,29 @@ void ColorPickerState::Init(const std::string& configfile)
 {
 	Log("ColorPickerState::Init");
 
-	// Load config to get font path
-	Config* config = g_ResourceManager->GetConfig("Data/ghost.cfg");
-	std::string fontPath;
-	if (!config)
-	{
-		Log("ColorPickerState: Failed to load config, using default font path");
-		fontPath = "../Redist/Data/Fonts/";
-	}
-	else
-	{
-		fontPath = config->GetString("FontPath");
-		if (fontPath.empty())
-		{
-			fontPath = "../Redist/Data/Fonts/";
-			Log("ColorPickerState: FontPath not found in config, using default: " + fontPath);
-		}
-		else
-		{
-			// Ensure path ends with a separator
-			if (!fontPath.empty() && fontPath.back() != '/' && fontPath.back() != '\\')
-			{
-				fontPath += "/";
-			}
-			Log("ColorPickerState: FontPath from config: " + fontPath);
-		}
-	}
+	// Create the window - it handles all config loading and GUI setup
+	m_window = std::make_unique<GhostWindow>(
+		"Gui/ghost_color_dialog.ghost",
+		"Data/ghost.cfg",
+		g_ResourceManager.get(),
+		GetScreenWidth(),
+		GetScreenHeight(),
+		true);
 
-	// Create GUI and serializer
-	m_gui = std::make_unique<Gui>();
-	m_gui->m_Pos = {0, 0};
-	m_gui->m_AcceptingInput = true;
-
-	m_serializer = std::make_unique<GhostSerializer>();
-	m_serializer->SetBaseFontPath(fontPath);
-
-	// Load the color picker dialog GUI
-	Log("ColorPickerState: Attempting to load Gui/ghost_color_dialog.ghost");
-	bool loadSuccess = m_serializer->LoadIntoPanel("Gui/ghost_color_dialog.ghost", m_gui.get(), 0, 0, -1);
-	Log("ColorPickerState: LoadIntoPanel returned " + std::string(loadSuccess ? "TRUE" : "FALSE"));
-
-	if (!loadSuccess)
+	if (!m_window->GetGui())
 	{
 		Log("ERROR: Failed to load color picker dialog GUI");
 	}
 	else
 	{
 		Log("ColorPickerState: Successfully loaded dialog GUI");
-		// Log all elements to see what was loaded
-		int elementCount = 0;
-		for (const auto& pair : m_gui->m_GuiElementList)
-		{
-			const auto& elem = pair.second;
-			Log("  Element ID " + std::to_string(elem->m_ID) +
-				": Type=" + std::to_string(elem->m_Type) +
-				", Pos=(" + std::to_string(elem->m_Pos.x) + "," + std::to_string(elem->m_Pos.y) + ")" +
-				", Size=(" + std::to_string(elem->m_Width) + "x" + std::to_string(elem->m_Height) + ")" +
-				", Visible=" + std::to_string(elem->m_Visible));
-			elementCount++;
-		}
-		Log("Total elements loaded: " + std::to_string(elementCount));
 	}
 }
 
 void ColorPickerState::Shutdown()
 {
 	Log("ColorPickerState::Shutdown");
-	m_gui.reset();
-	m_serializer.reset();
+	m_window.reset();
 }
 
 void ColorPickerState::OnEnter()
@@ -90,36 +47,42 @@ void ColorPickerState::OnEnter()
 	Log("ColorPickerState::OnEnter");
 	m_accepted = false;
 
+	// Make the window visible
+	m_window->Show();
+
 	// Set slider values based on current color
-	int redSliderID = m_serializer->GetElementID("RED_SLIDER");
-	int greenSliderID = m_serializer->GetElementID("GREEN_SLIDER");
-	int blueSliderID = m_serializer->GetElementID("BLUE_SLIDER");
-	int alphaSliderID = m_serializer->GetElementID("ALPHA_SLIDER");
+	int redSliderID = m_window->GetElementID("RED_SLIDER");
+	int greenSliderID = m_window->GetElementID("GREEN_SLIDER");
+	int blueSliderID = m_window->GetElementID("BLUE_SLIDER");
+	int alphaSliderID = m_window->GetElementID("ALPHA_SLIDER");
+
+	Gui* gui = m_window->GetGui();
+	if (!gui) return;
 
 	if (redSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(redSliderID);
+		auto elem = gui->GetElement(redSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_selectedColor.r;
 	}
 
 	if (greenSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(greenSliderID);
+		auto elem = gui->GetElement(greenSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_selectedColor.g;
 	}
 
 	if (blueSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(blueSliderID);
+		auto elem = gui->GetElement(blueSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_selectedColor.b;
 	}
 
 	if (alphaSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(alphaSliderID);
+		auto elem = gui->GetElement(alphaSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_selectedColor.a;
 	}
@@ -132,47 +95,50 @@ void ColorPickerState::OnExit()
 
 void ColorPickerState::Update()
 {
-	m_gui->Update();
+	m_window->Update();
+
+	Gui* gui = m_window->GetGui();
+	if (!gui) return;
 
 	// Read slider values
-	int redSliderID = m_serializer->GetElementID("RED_SLIDER");
-	int greenSliderID = m_serializer->GetElementID("GREEN_SLIDER");
-	int blueSliderID = m_serializer->GetElementID("BLUE_SLIDER");
-	int alphaSliderID = m_serializer->GetElementID("ALPHA_SLIDER");
+	int redSliderID = m_window->GetElementID("RED_SLIDER");
+	int greenSliderID = m_window->GetElementID("GREEN_SLIDER");
+	int blueSliderID = m_window->GetElementID("BLUE_SLIDER");
+	int alphaSliderID = m_window->GetElementID("ALPHA_SLIDER");
 
 	if (redSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(redSliderID);
+		auto elem = gui->GetElement(redSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_selectedColor.r = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
 	if (greenSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(greenSliderID);
+		auto elem = gui->GetElement(greenSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_selectedColor.g = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
 	if (blueSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(blueSliderID);
+		auto elem = gui->GetElement(blueSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_selectedColor.b = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
 	if (alphaSliderID != -1)
 	{
-		auto elem = m_gui->GetElement(alphaSliderID);
+		auto elem = gui->GetElement(alphaSliderID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_selectedColor.a = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
 	// Update the color preview panel
-	int previewPanelID = m_serializer->GetElementID("COLOR_PREVIEW");
+	int previewPanelID = m_window->GetElementID("COLOR_PREVIEW");
 	if (previewPanelID != -1)
 	{
-		auto elem = m_gui->GetElement(previewPanelID);
+		auto elem = gui->GetElement(previewPanelID);
 		if (elem && elem->m_Type == GUI_PANEL)
 		{
 			auto panel = static_cast<GuiPanel*>(elem.get());
@@ -181,10 +147,10 @@ void ColorPickerState::Update()
 	}
 
 	// Check for OK button click
-	int okButtonID = m_serializer->GetElementID("OK_BUTTON");
+	int okButtonID = m_window->GetElementID("OK_BUTTON");
 	if (okButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(okButtonID);
+		auto elem = gui->GetElement(okButtonID);
 		if (elem && elem->m_Type == GUI_TEXTBUTTON)
 		{
 			auto button = static_cast<GuiTextButton*>(elem.get());
@@ -199,10 +165,10 @@ void ColorPickerState::Update()
 	}
 
 	// Check for Cancel button click
-	int cancelButtonID = m_serializer->GetElementID("CANCEL_BUTTON");
+	int cancelButtonID = m_window->GetElementID("CANCEL_BUTTON");
 	if (cancelButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(cancelButtonID);
+		auto elem = gui->GetElement(cancelButtonID);
 		if (elem && elem->m_Type == GUI_TEXTBUTTON)
 		{
 			auto button = static_cast<GuiTextButton*>(elem.get());
@@ -225,7 +191,7 @@ void ColorPickerState::Draw()
 	DrawRectangle(0, 0, screenWidth, screenHeight, Color{0, 0, 0, 128});
 
 	// Draw the dialog GUI (includes color preview panel)
-	m_gui->Draw();
+	m_window->Draw();
 }
 
 void ColorPickerState::SetColor(Color color)

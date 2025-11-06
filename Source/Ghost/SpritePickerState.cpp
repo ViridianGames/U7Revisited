@@ -3,6 +3,9 @@
 #include "../Geist/StateMachine.h"
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Config.h"
+#include "../Geist/Gui.h"
+#include "../Geist/GuiElements.h"
+#include "GhostSerializer.h"
 #include "SpriteUtils.h"
 #include "FileDialog.h"
 #include <algorithm>
@@ -18,74 +21,29 @@ void SpritePickerState::Init(const std::string& configfile)
 {
 	Log("SpritePickerState::Init");
 
-	// Load config to get font path
-	Config* config = g_ResourceManager->GetConfig("Data/ghost.cfg");
-	std::string fontPath;
-	if (!config)
-	{
-		Log("SpritePickerState: Failed to load config, using default font path");
-		fontPath = "../Redist/Data/Fonts/";
-	}
-	else
-	{
-		fontPath = config->GetString("FontPath");
-		if (fontPath.empty())
-		{
-			fontPath = "../Redist/Data/Fonts/";
-			Log("SpritePickerState: FontPath not found in config, using default: " + fontPath);
-		}
-		else
-		{
-			// Ensure path ends with a separator
-			if (!fontPath.empty() && fontPath.back() != '/' && fontPath.back() != '\\')
-			{
-				fontPath += "/";
-			}
-			Log("SpritePickerState: FontPath from config: " + fontPath);
-		}
-	}
+	// Create the window - it handles all config loading and GUI setup
+	m_window = std::make_unique<GhostWindow>(
+		"Gui/ghost_sprite_dialog.ghost",
+		"Data/ghost.cfg",
+		g_ResourceManager.get(),
+		GetScreenWidth(),
+		GetScreenHeight(),
+		true);
 
-	// Create GUI and serializer
-	m_gui = std::make_unique<Gui>();
-	m_gui->m_Pos = {0, 0};
-	m_gui->m_AcceptingInput = true;
-
-	m_serializer = std::make_unique<GhostSerializer>();
-	m_serializer->SetBaseFontPath(fontPath);
-
-	// Load the sprite picker dialog GUI
-	Log("SpritePickerState: Attempting to load Gui/ghost_sprite_dialog.ghost");
-	bool loadSuccess = m_serializer->LoadIntoPanel("Gui/ghost_sprite_dialog.ghost", m_gui.get(), 0, 0, -1);
-	Log("SpritePickerState: LoadIntoPanel returned " + std::string(loadSuccess ? "TRUE" : "FALSE"));
-
-	if (!loadSuccess)
+	if (!m_window->GetGui())
 	{
 		Log("ERROR: Failed to load sprite picker dialog GUI");
 	}
 	else
 	{
 		Log("SpritePickerState: Successfully loaded dialog GUI");
-		// Log all elements to see what was loaded
-		int elementCount = 0;
-		for (const auto& pair : m_gui->m_GuiElementList)
-		{
-			const auto& elem = pair.second;
-			Log("  Element ID " + std::to_string(elem->m_ID) +
-				": Type=" + std::to_string(elem->m_Type) +
-				", Pos=(" + std::to_string(elem->m_Pos.x) + "," + std::to_string(elem->m_Pos.y) + ")" +
-				", Size=(" + std::to_string(elem->m_Width) + "x" + std::to_string(elem->m_Height) + ")" +
-				", Visible=" + std::to_string(elem->m_Visible));
-			elementCount++;
-		}
-		Log("Total elements loaded: " + std::to_string(elementCount));
 	}
 }
 
 void SpritePickerState::Shutdown()
 {
 	Log("SpritePickerState::Shutdown");
-	m_gui.reset();
-	m_serializer.reset();
+	m_window.reset();
 }
 
 void SpritePickerState::OnEnter()
@@ -93,44 +51,50 @@ void SpritePickerState::OnEnter()
 	Log("SpritePickerState::OnEnter");
 	m_accepted = false;
 
+	// Make the window visible
+	m_window->Show();
+
+	Gui* gui = m_window->GetGui();
+	if (!gui) return;
+
 	// Set textinput value for filename
-	int filenameInputID = m_serializer->GetElementID("SPRITE_FILENAME");
+	int filenameInputID = m_window->GetElementID("SPRITE_FILENAME");
 	if (filenameInputID != -1)
 	{
-		auto elem = m_gui->GetElement(filenameInputID);
+		auto elem = gui->GetElement(filenameInputID);
 		if (elem && elem->m_Type == GUI_TEXTINPUT)
 			static_cast<GuiTextInput*>(elem.get())->m_String = m_filename;
 	}
 
 	// Set scrollbar values for x, y, width, height
-	int xScrollbarID = m_serializer->GetElementID("SPRITE_X");
+	int xScrollbarID = m_window->GetElementID("SPRITE_X");
 	if (xScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(xScrollbarID);
+		auto elem = gui->GetElement(xScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_x;
 	}
 
-	int yScrollbarID = m_serializer->GetElementID("SPRITE_Y");
+	int yScrollbarID = m_window->GetElementID("SPRITE_Y");
 	if (yScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(yScrollbarID);
+		auto elem = gui->GetElement(yScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_y;
 	}
 
-	int widthScrollbarID = m_serializer->GetElementID("SPRITE_WIDTH");
+	int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
 	if (widthScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(widthScrollbarID);
+		auto elem = gui->GetElement(widthScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_width;
 	}
 
-	int heightScrollbarID = m_serializer->GetElementID("SPRITE_HEIGHT");
+	int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
 	if (heightScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(heightScrollbarID);
+		auto elem = gui->GetElement(heightScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			static_cast<GuiScrollBar*>(elem.get())->m_Value = m_height;
 	}
@@ -143,13 +107,16 @@ void SpritePickerState::OnExit()
 
 void SpritePickerState::Update()
 {
-	m_gui->Update();
+	m_window->Update();
+
+	Gui* gui = m_window->GetGui();
+	if (!gui) return;
 
 	// Check for "Open Image" button click
-	int filenameButtonID = m_serializer->GetElementID("SPRITE_FILENAME");
+	int filenameButtonID = m_window->GetElementID("SPRITE_FILENAME");
 	if (filenameButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(filenameButtonID);
+		auto elem = gui->GetElement(filenameButtonID);
 		if (elem && elem->m_Type == GUI_TEXTBUTTON)
 		{
 			auto button = static_cast<GuiTextButton*>(elem.get());
@@ -218,34 +185,34 @@ void SpritePickerState::Update()
 					Log("Reset sprite coordinates to full texture: " + std::to_string(texture->width) + "x" + std::to_string(texture->height));
 
 					// Update scrollbar values to reflect new coordinates
-					int xScrollbarID = m_serializer->GetElementID("SPRITE_X");
+					int xScrollbarID = m_window->GetElementID("SPRITE_X");
 					if (xScrollbarID != -1)
 					{
-						auto xElem = m_gui->GetElement(xScrollbarID);
+						auto xElem = gui->GetElement(xScrollbarID);
 						if (xElem && xElem->m_Type == GUI_SCROLLBAR)
 							static_cast<GuiScrollBar*>(xElem.get())->m_Value = m_x;
 					}
 
-					int yScrollbarID = m_serializer->GetElementID("SPRITE_Y");
+					int yScrollbarID = m_window->GetElementID("SPRITE_Y");
 					if (yScrollbarID != -1)
 					{
-						auto yElem = m_gui->GetElement(yScrollbarID);
+						auto yElem = gui->GetElement(yScrollbarID);
 						if (yElem && yElem->m_Type == GUI_SCROLLBAR)
 							static_cast<GuiScrollBar*>(yElem.get())->m_Value = m_y;
 					}
 
-					int widthScrollbarID = m_serializer->GetElementID("SPRITE_WIDTH");
+					int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
 					if (widthScrollbarID != -1)
 					{
-						auto wElem = m_gui->GetElement(widthScrollbarID);
+						auto wElem = gui->GetElement(widthScrollbarID);
 						if (wElem && wElem->m_Type == GUI_SCROLLBAR)
 							static_cast<GuiScrollBar*>(wElem.get())->m_Value = m_width;
 					}
 
-					int heightScrollbarID = m_serializer->GetElementID("SPRITE_HEIGHT");
+					int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
 					if (heightScrollbarID != -1)
 					{
-						auto hElem = m_gui->GetElement(heightScrollbarID);
+						auto hElem = gui->GetElement(heightScrollbarID);
 						if (hElem && hElem->m_Type == GUI_SCROLLBAR)
 							static_cast<GuiScrollBar*>(hElem.get())->m_Value = m_height;
 					}
@@ -260,34 +227,34 @@ void SpritePickerState::Update()
 	}
 
 	// Read scrollbar values for x, y, width, height
-	int xScrollbarID = m_serializer->GetElementID("SPRITE_X");
+	int xScrollbarID = m_window->GetElementID("SPRITE_X");
 	if (xScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(xScrollbarID);
+		auto elem = gui->GetElement(xScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_x = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
-	int yScrollbarID = m_serializer->GetElementID("SPRITE_Y");
+	int yScrollbarID = m_window->GetElementID("SPRITE_Y");
 	if (yScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(yScrollbarID);
+		auto elem = gui->GetElement(yScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_y = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
-	int widthScrollbarID = m_serializer->GetElementID("SPRITE_WIDTH");
+	int widthScrollbarID = m_window->GetElementID("SPRITE_WIDTH");
 	if (widthScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(widthScrollbarID);
+		auto elem = gui->GetElement(widthScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_width = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
-	int heightScrollbarID = m_serializer->GetElementID("SPRITE_HEIGHT");
+	int heightScrollbarID = m_window->GetElementID("SPRITE_HEIGHT");
 	if (heightScrollbarID != -1)
 	{
-		auto elem = m_gui->GetElement(heightScrollbarID);
+		auto elem = gui->GetElement(heightScrollbarID);
 		if (elem && elem->m_Type == GUI_SCROLLBAR)
 			m_height = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
@@ -296,10 +263,10 @@ void SpritePickerState::Update()
 	ValidateAndApplyFallbacks();
 
 	// Check for OK button click
-	int okButtonID = m_serializer->GetElementID("OK_BUTTON");
+	int okButtonID = m_window->GetElementID("OK_BUTTON");
 	if (okButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(okButtonID);
+		auto elem = gui->GetElement(okButtonID);
 		if (elem && elem->m_Type == GUI_TEXTBUTTON)
 		{
 			auto button = static_cast<GuiTextButton*>(elem.get());
@@ -315,10 +282,10 @@ void SpritePickerState::Update()
 	}
 
 	// Check for Cancel button click
-	int cancelButtonID = m_serializer->GetElementID("CANCEL_BUTTON");
+	int cancelButtonID = m_window->GetElementID("CANCEL_BUTTON");
 	if (cancelButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(cancelButtonID);
+		auto elem = gui->GetElement(cancelButtonID);
 		if (elem && elem->m_Type == GUI_TEXTBUTTON)
 		{
 			auto button = static_cast<GuiTextButton*>(elem.get());
@@ -341,7 +308,10 @@ void SpritePickerState::Draw()
 	DrawRectangle(0, 0, screenWidth, screenHeight, Color{0, 0, 0, 128});
 
 	// Draw the dialog GUI
-	m_gui->Draw();
+	m_window->Draw();
+
+	Gui* gui = m_window->GetGui();
+	if (!gui) return;
 
 	// Draw red value text over scrollbars
 	std::vector<std::string> scrollbarNames = {
@@ -350,17 +320,17 @@ void SpritePickerState::Draw()
 
 	for (const auto& scrollbarName : scrollbarNames)
 	{
-		int scrollbarID = m_serializer->GetElementID(scrollbarName);
+		int scrollbarID = m_window->GetElementID(scrollbarName);
 		if (scrollbarID != -1)
 		{
-			auto scrollbarElement = m_gui->GetElement(scrollbarID);
+			auto scrollbarElement = gui->GetElement(scrollbarID);
 			if (scrollbarElement && scrollbarElement->m_Type == GUI_SCROLLBAR)
 			{
 				auto scrollbar = static_cast<GuiScrollBar*>(scrollbarElement.get());
 
 				// Calculate center position for text
-				int textX = static_cast<int>(m_gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
-				int textY = static_cast<int>(m_gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+				int textX = static_cast<int>(gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
+				int textY = static_cast<int>(gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
 
 				// Draw the value in red
 				std::string valueText = std::to_string(scrollbar->m_Value);
