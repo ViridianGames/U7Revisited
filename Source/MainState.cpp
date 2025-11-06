@@ -317,6 +317,23 @@ void MainState::UpdateInput()
 					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - dialogHeight / 2.0f);
 					m_colorDialog->MoveTo(centerX, centerY);
 
+					// Initialize sliders to 255 (white)
+					Gui* gui = m_colorDialog->GetGui();
+					int redID = m_colorDialog->GetElementID("RED_SLIDER");
+					int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
+					int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
+					int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
+
+					auto redSlider = gui->GetElement(redID);
+					auto greenSlider = gui->GetElement(greenID);
+					auto blueSlider = gui->GetElement(blueID);
+					auto alphaSlider = gui->GetElement(alphaID);
+
+					if (redSlider) static_cast<GuiScrollBar*>(redSlider.get())->m_Value = 255;
+					if (greenSlider) static_cast<GuiScrollBar*>(greenSlider.get())->m_Value = 255;
+					if (blueSlider) static_cast<GuiScrollBar*>(blueSlider.get())->m_Value = 255;
+					if (alphaSlider) static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value = 255;
+
 					m_colorDialog->Show();
 					AddConsoleString("Color dialog loaded");
 				}
@@ -943,6 +960,37 @@ void MainState::Update()
 	if (m_colorDialog && m_colorDialog->IsVisible())
 	{
 		m_colorDialog->Update();
+
+		// Update color preview swatch from slider values
+		{
+			Gui* gui = m_colorDialog->GetGui();
+			int redID = m_colorDialog->GetElementID("RED_SLIDER");
+			int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
+			int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
+			int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
+			int previewID = m_colorDialog->GetElementID("COLOR_PREVIEW");
+
+			auto redSlider = gui->GetElement(redID);
+			auto greenSlider = gui->GetElement(greenID);
+			auto blueSlider = gui->GetElement(blueID);
+			auto alphaSlider = gui->GetElement(alphaID);
+			auto previewPanel = gui->GetElement(previewID);
+
+			if (redSlider && greenSlider && blueSlider && alphaSlider && previewPanel)
+			{
+				int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
+				int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
+				int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
+				int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
+
+				// Update the color preview panel
+				auto panel = static_cast<GuiPanel*>(previewPanel.get());
+				panel->m_Color = Color{static_cast<unsigned char>(r),
+				                       static_cast<unsigned char>(g),
+				                       static_cast<unsigned char>(b),
+				                       static_cast<unsigned char>(a)};
+			}
+		}
 
 		// Handle OK/Cancel button clicks
 		{
