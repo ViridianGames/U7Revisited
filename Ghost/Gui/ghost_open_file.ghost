@@ -1,0 +1,184 @@
+{
+  "gui": {
+    "position": [
+      0,
+      0
+    ],
+    "elements": [
+      {
+        "name": "BG",
+        "type": "panel",
+        "position": [
+          10,
+          10
+        ],
+        "size": [
+          315.0,
+          268.0
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          255,
+          255
+        ],
+        "filled": true,
+        "layout": "vert",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "HEADER",
+            "type": "panel",
+            "position": [
+              5,
+              5
+            ],
+            "size": [
+              190.0,
+              30.0
+            ],
+            "backgroundColor": [
+              80,
+              153,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "FILE_PATH",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Label Text",
+                "width": 6,
+                "height": 20.0,
+                "justified": 0
+              }
+            ]
+          },
+          {
+            "name": "BODY",
+            "type": "panel",
+            "position": [
+              0,
+              50
+            ],
+            "size": [
+              315.0,
+              110.0
+            ],
+            "backgroundColor": [
+              218,
+              149,
+              42,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "type": "include",
+                "position": [-1, -1],
+                "filename": "listbox.ghost"
+              },
+              {
+                "type": "include",
+                "position": [-1, -1],
+                "filename": "listbox.ghost"
+              }
+            ]
+          },
+          {
+            "name": "FOOTER",
+            "type": "panel",
+            "position": [
+              5,
+              205
+            ],
+            "size": [
+              305.0999755859375,
+              63.0
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 28,
+            "vertPadding": 9,
+            "elements": [
+              {
+                "name": "OK_BUTTON",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "  OK  ",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  64,
+                  128,
+                  64,
+                  255
+                ],
+                "borderColor": [
+                  128,
+                  255,
+                  128,
+                  255
+                ]
+              },
+              {
+                "name": "CANCEL_BUTTON",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": " Cancel ",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  128,
+                  64,
+                  64,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  128,
+                  128,
+                  255
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
