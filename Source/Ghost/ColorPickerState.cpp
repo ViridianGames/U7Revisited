@@ -192,6 +192,34 @@ void ColorPickerState::Draw()
 
 	// Draw the dialog GUI (includes color preview panel)
 	m_window->Draw();
+
+	// Draw value overlays on the color sliders
+	Gui* gui = m_window->GetGui();
+	if (gui)
+	{
+		std::vector<std::string> sliderNames = { "RED_SLIDER", "GREEN_SLIDER", "BLUE_SLIDER", "ALPHA_SLIDER" };
+
+		for (const auto& sliderName : sliderNames)
+		{
+			int sliderID = m_window->GetElementID(sliderName);
+			if (sliderID != -1)
+			{
+				auto sliderElement = gui->GetElement(sliderID);
+				if (sliderElement && sliderElement->m_Type == GUI_SCROLLBAR)
+				{
+					auto scrollbar = static_cast<GuiScrollBar*>(sliderElement.get());
+
+					// Calculate center position for text
+					int textX = static_cast<int>(gui->m_Pos.x + scrollbar->m_Pos.x + scrollbar->m_Width / 2);
+					int textY = static_cast<int>(gui->m_Pos.y + scrollbar->m_Pos.y + scrollbar->m_Height / 2 - 8);
+
+					// Draw the value in red
+					std::string valueText = std::to_string(scrollbar->m_Value);
+					DrawText(valueText.c_str(), textX - MeasureText(valueText.c_str(), 16) / 2, textY, 16, RED);
+				}
+			}
+		}
+	}
 }
 
 void ColorPickerState::SetColor(Color color)
