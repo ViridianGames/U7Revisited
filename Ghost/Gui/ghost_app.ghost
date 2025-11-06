@@ -93,9 +93,11 @@
                 ],
                 "font": "babyblocks.ttf",
                 "fontSize": 24,
-                "width": 50,
-                "height": 30.0,
-                "justified": 0
+                "justified": 0,
+                "size": [
+                  1500.0,
+                  30.0
+                ]
               }
             ]
           },

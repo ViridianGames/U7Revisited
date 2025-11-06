@@ -38,9 +38,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_NAME",
@@ -86,9 +88,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_TEXT",
@@ -134,9 +138,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SPRITE_LEFT",
@@ -182,9 +188,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SPRITE_CENTER",
@@ -230,9 +238,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SPRITE_RIGHT",
@@ -278,9 +288,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_WIDTH",
@@ -321,9 +333,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SHADOWED",
@@ -352,9 +366,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_GROUP",

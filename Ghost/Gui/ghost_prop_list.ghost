@@ -38,9 +38,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_NAME",
@@ -86,9 +88,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_WIDTH",
@@ -129,9 +133,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_HEIGHT",
@@ -172,9 +178,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_FONT",
@@ -220,9 +228,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_FONT_SIZE",
@@ -263,9 +273,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_TEXTCOLOR",
@@ -311,9 +323,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_BORDERCOLOR",
@@ -359,9 +373,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_BACKGROUNDCOLOR",
@@ -407,9 +423,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_GROUP",

@@ -55,9 +55,11 @@
                   -1
                 ],
                 "text": "Label Text",
-                "width": 6,
-                "height": 20.0,
-                "justified": 0
+                "justified": 0,
+                "size": [
+                  180.0,
+                  20.0
+                ]
               }
             ]
           },

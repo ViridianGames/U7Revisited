@@ -907,7 +907,7 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 	m_Justified = justified;
 	m_Font = font;
 	m_Color = color;
-	m_Width = width * m_Font->baseSize;
+	m_Width = width;  // Now directly in pixels (no longer multiplied by baseSize)
 	m_Shadowed = shadowed;
 	if (m_Width == 0)
 		m_Height = int(m_Font->baseSize);

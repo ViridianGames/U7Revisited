@@ -612,9 +612,46 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 				              (unsigned char)arr[2], (unsigned char)arr[3] };
 			}
 
-			// Get optional width and height
-			int width = element.value("width", 0);
-			int height = element.value("height", 0);
+			// Get width and height - support both new "size" array format and legacy "width"/"height" format
+			int width = 0;
+			int height = 0;
+
+			if (element.contains("size") && element["size"].is_array() && element["size"].size() >= 2)
+			{
+				// New standard format: "size": [width, height] (both in pixels)
+				width = element["size"][0];
+				height = element["size"][1];
+			}
+			else
+			{
+				// Legacy format: separate "width" (character count) and "height" (pixels) properties
+				// Convert character count to pixels for backward compatibility
+				int charWidth = element.value("width", 0);
+				height = element.value("height", 0);
+
+				// If we have a character width, we need to load the font first to multiply by baseSize
+				if (charWidth > 0)
+				{
+					// Load font temporarily to get baseSize for conversion
+					Font tempFont;
+					if (!fontName.empty())
+					{
+						string fontPath = s_baseFontPath + fontName;
+						tempFont = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
+						if (tempFont.texture.id != 0)
+						{
+							width = charWidth * tempFont.baseSize;
+							UnloadFont(tempFont);
+						}
+					}
+					if (width == 0)
+					{
+						// Fallback: assume baseSize of 30
+						width = charWidth * 30;
+					}
+				}
+			}
+
 			int justified = element.value("justified", 0);
 
 			// Add parent offsets to make position absolute
@@ -648,16 +685,9 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			shared_ptr<Font> fontPtr = make_shared<Font>(font);
 			m_loadedFonts.push_back(fontPtr);
 
-			// Note: GuiTextArea multiplies width by font.baseSize, so if the width from JSON
-			// looks like it's already in pixels (>50), divide by baseSize to compensate
-			int widthParam = width;
-			if (width > 50 && fontPtr->baseSize > 0)
-			{
-				widthParam = width / fontPtr->baseSize;
-			}
-
-			// Add the text area
-			gui->AddTextArea(id, fontPtr.get(), text, absoluteX, absoluteY, widthParam, height, color, justified, group, active, false);
+			// Width and height are now both in pixels, pass them directly
+			// (AddTextArea will no longer multiply width by baseSize)
+			gui->AddTextArea(id, fontPtr.get(), text, absoluteX, absoluteY, width, height, color, justified, group, active, false);
 		}
 		else if (type == "textinput")
 		{
@@ -2073,17 +2103,8 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 				elementJson["textColor"] = { textarea->m_Color.r, textarea->m_Color.g, textarea->m_Color.b, textarea->m_Color.a };
 		}
 
-		if (textarea->m_Width > 0)
-		{
-			// The width is stored in pixels but needs to be saved as "character widths"
-			// because AddTextArea multiplies the width parameter by font baseSize
-			int charWidth = int(textarea->m_Width / textarea->m_Font->baseSize);
-			elementJson["width"] = charWidth;
-		}
-		if (textarea->m_Height > 0)
-		{
-			elementJson["height"] = textarea->m_Height;
-		}
+		// Use standard size array format (both in pixels) to match other elements
+		elementJson["size"] = { textarea->m_Width, textarea->m_Height };
 		elementJson["justified"] = textarea->m_Justified;
 	}
 	else if (element->m_Type == GUI_TEXTINPUT)

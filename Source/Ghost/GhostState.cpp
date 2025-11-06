@@ -652,10 +652,24 @@ bool GhostState::UpdateFontProperty()
 					{
 						auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
 						textinput->m_Font = fontPtr;
-						// Recalculate textinput dimensions with new font
-						Vector2 textDims = MeasureTextEx(*textinput->m_Font, textinput->m_String.c_str(), textinput->m_Font->baseSize, 1);
-						textinput->m_Width = textDims.x;
-						textinput->m_Height = textDims.y;
+						// Recalculate textinput height to accommodate new font size
+						// Height should be at least the font baseSize plus some padding
+						float minHeight = static_cast<float>(textinput->m_Font->baseSize) + 4.0f;  // Add small padding
+						if (textinput->m_Height < minHeight)
+						{
+							textinput->m_Height = minHeight;
+
+							// Update the PROPERTY_HEIGHT scrollbar to reflect the new height
+							int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+							if (heightScrollbarID != -1)
+							{
+								auto heightElem = m_gui->GetElement(heightScrollbarID);
+								if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+								{
+									static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(minHeight);
+								}
+							}
+						}
 						break;
 					}
 					case GUI_PANEL:
@@ -669,6 +683,27 @@ bool GhostState::UpdateFontProperty()
 						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
 						textarea->m_Width = textDims.x;
 						textarea->m_Height = textDims.y;
+
+						// Update the PROPERTY_WIDTH and PROPERTY_HEIGHT scrollbars to reflect the new dimensions
+						int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+						if (widthScrollbarID != -1)
+						{
+							auto widthElem = m_gui->GetElement(widthScrollbarID);
+							if (widthElem && widthElem->m_Type == GUI_SCROLLBAR)
+							{
+								static_cast<GuiScrollBar*>(widthElem.get())->m_Value = static_cast<int>(textarea->m_Width);
+							}
+						}
+
+						int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+						if (heightScrollbarID != -1)
+						{
+							auto heightElem = m_gui->GetElement(heightScrollbarID);
+							if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+							{
+								static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(textarea->m_Height);
+							}
+						}
 						break;
 					}
 					case GUI_LIST:
@@ -762,10 +797,24 @@ bool GhostState::UpdateFontSizeProperty()
 					{
 						auto textinput = static_cast<GuiTextInput*>(selectedElement.get());
 						textinput->m_Font = fontPtr;
-						// Recalculate textinput dimensions with new font
-						Vector2 textDims = MeasureTextEx(*textinput->m_Font, textinput->m_String.c_str(), textinput->m_Font->baseSize, 1);
-						textinput->m_Width = textDims.x;
-						textinput->m_Height = textDims.y;
+						// Recalculate textinput height to accommodate new font size
+						// Height should be at least the font baseSize plus some padding
+						float minHeight = static_cast<float>(textinput->m_Font->baseSize) + 4.0f;  // Add small padding
+						if (textinput->m_Height < minHeight)
+						{
+							textinput->m_Height = minHeight;
+
+							// Update the PROPERTY_HEIGHT scrollbar to reflect the new height
+							int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+							if (heightScrollbarID != -1)
+							{
+								auto heightElem = m_gui->GetElement(heightScrollbarID);
+								if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+								{
+									static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(minHeight);
+								}
+							}
+						}
 						break;
 					}
 					case GUI_PANEL:
@@ -779,6 +828,27 @@ bool GhostState::UpdateFontSizeProperty()
 						Vector2 textDims = MeasureTextEx(*textarea->m_Font, textarea->m_String.c_str(), textarea->m_Font->baseSize, 1);
 						textarea->m_Width = textDims.x;
 						textarea->m_Height = textDims.y;
+
+						// Update the PROPERTY_WIDTH and PROPERTY_HEIGHT scrollbars to reflect the new dimensions
+						int widthScrollbarID = m_propertySerializer->GetElementID("PROPERTY_WIDTH");
+						if (widthScrollbarID != -1)
+						{
+							auto widthElem = m_gui->GetElement(widthScrollbarID);
+							if (widthElem && widthElem->m_Type == GUI_SCROLLBAR)
+							{
+								static_cast<GuiScrollBar*>(widthElem.get())->m_Value = static_cast<int>(textarea->m_Width);
+							}
+						}
+
+						int heightScrollbarID = m_propertySerializer->GetElementID("PROPERTY_HEIGHT");
+						if (heightScrollbarID != -1)
+						{
+							auto heightElem = m_gui->GetElement(heightScrollbarID);
+							if (heightElem && heightElem->m_Type == GUI_SCROLLBAR)
+							{
+								static_cast<GuiScrollBar*>(heightElem.get())->m_Value = static_cast<int>(textarea->m_Height);
+							}
+						}
 						break;
 					}
 					case GUI_LIST:
@@ -3151,6 +3221,17 @@ void GhostState::PopulatePropertyPanelFields()
 		}
 	}
 
+	// Populate textarea properties (for textarea elements)
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTAREA)
+	{
+		auto textarea = static_cast<GuiTextArea*>(selectedElement.get());
+
+		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(textarea->m_Width));
+		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(textarea->m_Height));
+		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+	}
+
 	// Populate layout radio buttons and columns field (for panel elements)
 	if (selectedElement && selectedElement->m_Type == GUI_PANEL)
 	{
@@ -3703,6 +3784,14 @@ void GhostState::UpdateElementFromPropertyPanel()
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateGroupProperty(selectedElement.get())) wasUpdated = true;
+		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+	}
+
+	// Update textarea properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_TEXTAREA)
+	{
+		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
+		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
 	}
 

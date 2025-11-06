@@ -38,9 +38,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_NAME",
@@ -86,9 +88,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SPRITE",
@@ -134,9 +138,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_TEXT",
@@ -182,9 +188,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_SCALE",
@@ -225,9 +233,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_TEXTCOLOR",
@@ -273,9 +283,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_CANBEHELD",
@@ -304,9 +316,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "PROPERTY_GROUP",

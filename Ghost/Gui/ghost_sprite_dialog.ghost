@@ -38,9 +38,11 @@
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              180.0,
+              30.0
+            ]
           },
           {
             "name": "SPRITE_FILENAME",
@@ -86,9 +88,11 @@
               255,
               255
             ],
-            "width": 1,
-            "height": 46.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              30.0,
+              46.0
+            ]
           },
           {
             "name": "SPRITE_X",
@@ -129,9 +133,11 @@
               255,
               255
             ],
-            "width": 2,
-            "height": 46.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              60.0,
+              46.0
+            ]
           },
           {
             "name": "SPRITE_Y",
@@ -172,9 +178,11 @@
               255,
               255
             ],
-            "width": 2,
-            "height": 46.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              60.0,
+              46.0
+            ]
           },
           {
             "name": "SPRITE_WIDTH",
@@ -215,9 +223,11 @@
               255,
               255
             ],
-            "width": 2,
-            "height": 46.0,
-            "justified": 0
+            "justified": 0,
+            "size": [
+              60.0,
+              46.0
+            ]
           },
           {
             "name": "SPRITE_HEIGHT",
