@@ -56,6 +56,13 @@ private:
 	// Helper functions for property tracking
 	bool TrackPropertyValue(int activeID, const std::string& propertyName, std::string& lastValue);
 	bool CheckPropertyChanged(int activeID, const std::string& propertyName, std::string& lastValue);
+	bool CheckScrollbarChanged(const std::string& propertyName, int& lastValue);
+	bool CheckCheckboxChanged(const std::string& propertyName, bool& lastValue);
+
+	// Generic color property helpers
+	Color GetElementColor(GuiElement* element, const std::string& propertyName);
+	void SetElementColor(GuiElement* element, const std::string& propertyName, Color color);
+	void UpdateColorButton(const std::string& buttonPropertyName, Color color);
 
 public:
 
@@ -69,21 +76,45 @@ public:
 	int m_selectedElementID; // Currently selected element in content panel (-1 = none)
 	int m_lastPropertyElementType; // Track last element type shown in property panel (-1 = none)
 
-	// Track which color property is being edited when color picker opens
-	enum ColorPropertyType {
-		NONE,
-		PANEL_BACKGROUND,
-		TEXTAREA_TEXTCOLOR,
-		TEXTINPUT_TEXTCOLOR,
-		TEXTINPUT_BORDERCOLOR,
-		TEXTINPUT_BACKGROUNDCOLOR,
-		TEXTBUTTON_TEXTCOLOR,
-		TEXTBUTTON_BORDERCOLOR,
-		TEXTBUTTON_BACKGROUNDCOLOR,
-		SCROLLBAR_SPURCOLOR,
-		SCROLLBAR_BACKGROUNDCOLOR
-	};
-	ColorPropertyType m_editingColorProperty;
+	// Track which color property button was clicked (e.g., "PROPERTY_TEXTCOLOR", "PROPERTY_BACKGROUNDCOLOR")
+	std::string m_editingColorProperty;
+
+	// Generic property helpers
+	int GetElementGroup(GuiElement* element);
+	void SetElementGroup(GuiElement* element, int group);
+	void PopulateGroupProperty(GuiElement* selectedElement);
+	bool UpdateGroupProperty(GuiElement* selectedElement);
+
+	// Generic scrollbar property helpers
+	void PopulateScrollbarProperty(const std::string& propertyName, int value);
+	bool UpdateScrollbarProperty(const std::string& propertyName, int& outValue);
+
+	// Generic text input property helpers
+	void PopulateTextInputProperty(const std::string& propertyName, const std::string& value);
+	bool UpdateTextInputProperty(const std::string& propertyName, std::string& outValue);
+
+	// Generic checkbox property helpers
+	void PopulateCheckboxProperty(const std::string& propertyName, bool value);
+	bool UpdateCheckboxProperty(const std::string& propertyName, bool& outValue);
+
+	// Name property has special serializer management logic
+	bool UpdateNameProperty();
+
+	// Generic font property helpers (for elements that have fonts)
+	void PopulateFontProperty();
+	void PopulateFontSizeProperty();
+	bool UpdateFontProperty();
+	bool UpdateFontSizeProperty();
+
+	// Generic width/height property helpers
+	bool UpdateWidthProperty(GuiElement* element);
+	bool UpdateHeightProperty(GuiElement* element);
+
+	// Generic helper to read int value from textinput or scrollbar
+	bool ReadIntProperty(const std::string& propertyName, int& outValue);
+
+	// Generic helper to populate int property (textinput or scrollbar)
+	void PopulateIntProperty(const std::string& propertyName, int value);
 
 	// Resource paths from config
 	std::string m_fontPath; // Base path for fonts

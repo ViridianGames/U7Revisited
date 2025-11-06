@@ -140,7 +140,7 @@ public:
 	int GetPanelColumns(int panelID) const
 	{
 		auto it = m_panelColumns.find(panelID);
-		return (it != m_panelColumns.end()) ? it->second : 1;  // Default 1 column
+		return (it != m_panelColumns.end()) ? it->second : 2;  // Default 2 columns
 	}
 
 	// Sprite metadata methods
