@@ -1,28 +1,50 @@
 {
   "gui": {
-    "position": [0, 0],
     "elements": [
       {
         "type": "panel",
         "name": "menu_panel",
-        "position": [10, 10],
-        "size": [400, 60],
-        "backgroundColor": [80, 80, 80, 255],
+        "position": [
+          10,
+          10
+        ],
+        "size": [
+          400,
+          60
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          255
+        ],
         "filled": true,
         "group": 0,
         "active": true,
         "font": "babyblocks.ttf",
         "fontSize": 40,
-        "textColor": [255, 255, 255, 255],
-        "backgroundColor": [60, 60, 60, 255],
-        "borderColor": [255, 255, 255, 255],
+        "textColor": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "borderColor": [
+          255,
+          255,
+          255,
+          255
+        ],
         "layout": "horz",
         "padding": 5,
         "elements": [
           {
             "type": "textbutton",
             "name": "PANEL",
-            "position": [-1, -1],
+            "position": [
+              -1,
+              -1
+            ],
             "text": "Panel",
             "group": 0,
             "active": true
@@ -30,7 +52,10 @@
           {
             "type": "textbutton",
             "name": "LABEL",
-            "position": [-1, -1],
+            "position": [
+              -1,
+              -1
+            ],
             "text": "Label",
             "group": 0,
             "active": true
@@ -38,7 +63,10 @@
           {
             "type": "textbutton",
             "name": "BUTTON",
-            "position": [-1, -1],
+            "position": [
+              -1,
+              -1
+            ],
             "text": "Button",
             "group": 0,
             "active": true

@@ -1,13 +1,23 @@
 {
   "gui": {
-    "position": [0, 0],
     "elements": [
       {
         "type": "panel",
         "name": "app_container",
-        "position": [0, 0],
-        "size": [1280, 720],
-        "backgroundColor": [40, 40, 40, 255],
+        "position": [
+          0,
+          0
+        ],
+        "size": [
+          1280,
+          720
+        ],
+        "backgroundColor": [
+          40,
+          40,
+          40,
+          255
+        ],
         "filled": true,
         "group": 0,
         "active": true,
@@ -16,9 +26,20 @@
           {
             "type": "panel",
             "name": "left_column",
-            "position": [0, 0],
-            "size": [640, 720],
-            "backgroundColor": [50, 50, 50, 255],
+            "position": [
+              0,
+              0
+            ],
+            "size": [
+              640,
+              720
+            ],
+            "backgroundColor": [
+              50,
+              50,
+              50,
+              255
+            ],
             "filled": true,
             "group": 0,
             "active": true,
@@ -27,21 +48,38 @@
             "elements": [
               {
                 "type": "include",
-                "position": [0, 0],
+                "position": [
+                  0,
+                  0
+                ],
                 "filename": "ghost_menu.ghost"
               },
               {
                 "type": "include",
-                "position": [0, 70],
+                "position": [
+                  0,
+                  70
+                ],
                 "filename": "ghost_components.ghost"
               },
               {
                 "type": "panel",
                 "name": "property_panel_container",
                 "id": 3000,
-                "position": [0, 280],
-                "size": [640, 420],
-                "backgroundColor": [45, 45, 45, 255],
+                "position": [
+                  0,
+                  280
+                ],
+                "size": [
+                  640,
+                  420
+                ],
+                "backgroundColor": [
+                  45,
+                  45,
+                  45,
+                  255
+                ],
                 "filled": true,
                 "group": 0,
                 "active": true
@@ -50,9 +88,17 @@
                 "type": "textarea",
                 "name": "status_footer",
                 "id": 4000,
-                "position": [5, 685],
+                "position": [
+                  5,
+                  685
+                ],
                 "text": "",
-                "textColor": [255, 255, 255, 255],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
                 "font": "babyblocks.ttf",
                 "fontSize": 24,
                 "width": 50,
@@ -65,9 +111,20 @@
             "type": "panel",
             "name": "content_panel_container",
             "id": 2000,
-            "position": [640, 0],
-            "size": [640, 720],
-            "backgroundColor": [60, 60, 60, 255],
+            "position": [
+              640,
+              0
+            ],
+            "size": [
+              640,
+              720
+            ],
+            "backgroundColor": [
+              60,
+              60,
+              60,
+              255
+            ],
             "filled": true,
             "group": 0,
             "active": true

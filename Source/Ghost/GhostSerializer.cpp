@@ -83,13 +83,6 @@ bool GhostSerializer::ParseJson(const ghost_json& j, Gui* gui)
 
 		auto guiObj = j["gui"];
 
-		// Set GUI position
-		if (guiObj.contains("position"))
-		{
-			auto pos = guiObj["position"];
-			gui->m_Pos = Vector2{ float(pos[0]), float(pos[1]) };
-		}
-
 		// Parse elements
 		if (guiObj.contains("elements"))
 		{
@@ -1454,7 +1447,6 @@ bool GhostSerializer::SaveToFile(const std::string& filename, Gui* gui)
 	try
 	{
 		ghost_json j;
-		j["gui"]["position"] = { 0, 0 };  // Default position for content files
 		j["gui"]["elements"] = ghost_json::array();
 
 		// Serialize the children of the root directly (not the root itself)
@@ -1525,7 +1517,6 @@ bool GhostSerializer::SaveSelectedElements(const std::string& filename, Gui* gui
 	try
 	{
 		ghost_json j;
-		j["gui"]["position"] = { 0, 0 };  // Default position for standalone files
 		j["gui"]["elements"] = ghost_json::array();
 
 		// Only serialize elements in the provided ID list

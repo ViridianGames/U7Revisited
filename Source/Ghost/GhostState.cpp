@@ -1585,7 +1585,6 @@ void GhostState::Update()
 
 		// Create a temporary .ghost file structure in memory with proper format
 		ghost_json tempFileJson;
-		tempFileJson["gui"]["position"] = {0, 0};
 		tempFileJson["gui"]["elements"] = ghost_json::array();
 		tempFileJson["gui"]["elements"].push_back(m_clipboard);
 

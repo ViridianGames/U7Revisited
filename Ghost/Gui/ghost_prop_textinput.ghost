@@ -1,9 +1,5 @@
 {
   "gui": {
-    "position": [
-      0,
-      0
-    ],
     "elements": [
       {
         "type": "panel",

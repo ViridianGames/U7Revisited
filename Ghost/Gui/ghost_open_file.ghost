@@ -1,9 +1,5 @@
 {
   "gui": {
-    "position": [
-      0,
-      0
-    ],
     "elements": [
       {
         "name": "BG",
@@ -89,12 +85,18 @@
             "elements": [
               {
                 "type": "include",
-                "position": [-1, -1],
+                "position": [
+                  -1,
+                  -1
+                ],
                 "filename": "listbox.ghost"
               },
               {
                 "type": "include",
-                "position": [-1, -1],
+                "position": [
+                  -1,
+                  -1
+                ],
                 "filename": "listbox.ghost"
               }
             ]
