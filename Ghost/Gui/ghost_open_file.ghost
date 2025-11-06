@@ -85,18 +85,10 @@
             "elements": [
               {
                 "type": "include",
-                "position": [
-                  -1,
-                  -1
-                ],
                 "filename": "listbox.ghost"
               },
               {
                 "type": "include",
-                "position": [
-                  -1,
-                  -1
-                ],
                 "filename": "listbox.ghost"
               }
             ]

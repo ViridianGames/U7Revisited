@@ -48,18 +48,10 @@
             "elements": [
               {
                 "type": "include",
-                "position": [
-                  0,
-                  0
-                ],
                 "filename": "ghost_menu.ghost"
               },
               {
                 "type": "include",
-                "position": [
-                  0,
-                  70
-                ],
                 "filename": "ghost_components.ghost"
               },
               {

@@ -245,6 +245,91 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		}
 
 		string name = element.value("name", "");  // Optional name for lookup
+
+		// Handle includes first - they have no position or visual properties
+		if (type == "include")
+		{
+			// Include elements from another file
+			// Includes have no position - they simply compose the included file's content
+			// The included file's root element handles its own positioning
+			string filename = element["filename"];
+			Log("GhostSerializer::ParseElements - Loading included file: " + filename);
+
+			// Track children before include so we can find what was added
+			vector<int> childrenBefore;
+			if (parentElementID != -1 && m_childrenMap.find(parentElementID) != m_childrenMap.end())
+			{
+				childrenBefore = m_childrenMap[parentElementID];
+			}
+
+			// Read and parse the included file
+			ghost_json includedJson = ReadJsonFromFile("Gui/" + filename);
+			if (!includedJson.empty() && includedJson.contains("gui") && includedJson["gui"].contains("elements"))
+			{
+				// Parse included elements with parent's offsets PLUS current layout position
+				// This positions the included content at the current layout cursor
+				ParseElements(includedJson["gui"]["elements"], gui, inheritedProps,
+				             parentX + layoutX, parentY + layoutY, parentElementID);
+			}
+
+			// Update layout position based on what was added by the include
+			// Find the new children that were added
+			if (parentElementID != -1 && m_childrenMap.find(parentElementID) != m_childrenMap.end())
+			{
+				const vector<int>& childrenAfter = m_childrenMap[parentElementID];
+
+				// Find newly added children (those in childrenAfter but not in childrenBefore)
+				for (int childID : childrenAfter)
+				{
+					// Check if this child existed before
+					if (find(childrenBefore.begin(), childrenBefore.end(), childID) != childrenBefore.end())
+						continue;  // Skip existing children
+
+					// This is a new child added by the include
+					auto child = gui->GetElement(childID);
+					if (child && IsFloating(childID))
+					{
+						// Advance layout position based on this child's size
+						if (parentLayout == "horz")
+						{
+							layoutX += child->m_Width + horzPadding;
+						}
+						else if (parentLayout == "vert")
+						{
+							layoutY += child->m_Height + vertPadding;
+						}
+						else if (parentLayout == "table")
+						{
+							// Track max height in this row
+							if (child->m_Height > maxRowHeight)
+								maxRowHeight = child->m_Height;
+
+							columnIndex++;
+
+							// Move to next column or wrap to next row
+							if (columnIndex >= columns)
+							{
+								// Wrap to next row
+								layoutX = horzPadding;
+								layoutY += maxRowHeight + vertPadding;
+								columnIndex = 0;
+								maxRowHeight = 0;
+							}
+							else
+							{
+								// Move to next column
+								layoutX += static_cast<int>(child->m_Width) + horzPadding;
+							}
+						}
+						Log("Include child " + to_string(childID) + " consumed space, updated layout: layoutX=" + to_string(layoutX) + ", layoutY=" + to_string(layoutY));
+					}
+				}
+			}
+
+			continue;  // Skip to next element, includes have no further processing
+		}
+
+		// All non-include elements have a position
 		auto position = element["position"];
 		int posx = position[0];
 		int posy = position[1];
@@ -284,43 +369,19 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			m_elementNameToID[name] = id;
 		}
 
-		// Track tree structure (skip includes - they're not real elements)
-		if (type != "include")
+		// Track tree structure for real elements
+		// If this is a root element (parentElementID == -1), store as root
+		if (parentElementID == -1 && m_rootElementID == -1)
 		{
-			// If this is a root element (parentElementID == -1), store as root
-			if (parentElementID == -1 && m_rootElementID == -1)
-			{
-				m_rootElementID = id;
-			}
-			// Add to parent's children list
-			if (parentElementID != -1)
-			{
-				m_childrenMap[parentElementID].push_back(id);
-			}
+			m_rootElementID = id;
+		}
+		// Add to parent's children list
+		if (parentElementID != -1)
+		{
+			m_childrenMap[parentElementID].push_back(id);
 		}
 
-		if (type == "include")
-		{
-			// Include elements from another file at this position
-			string filename = element["filename"];
-			Log("GhostSerializer::ParseElements - Loading included file: " + filename);
-
-			// Add parent offsets to the current position for included elements
-			int absoluteX = parentX + posx;
-			int absoluteY = parentY + posy;
-
-			Log("Include '" + filename + "' at absolute position (" + to_string(absoluteX) + ", " + to_string(absoluteY) + "), parentX=" + to_string(parentX) + ", parentY=" + to_string(parentY) + ", posx=" + to_string(posx) + ", posy=" + to_string(posy));
-
-			// Read and parse the included file
-			ghost_json includedJson = ReadJsonFromFile("Gui/" + filename);
-			if (!includedJson.empty() && includedJson.contains("gui") && includedJson["gui"].contains("elements"))
-			{
-				// Parse included elements with current position and inherited properties
-				// Pass through the parentElementID so included elements can use parent's layout
-				ParseElements(includedJson["gui"]["elements"], gui, inheritedProps, absoluteX, absoluteY, parentElementID);
-			}
-		}
-		else if (type == "panel")
+		if (type == "panel")
 		{
 			auto size = element["size"];
 			int width = size[0];
