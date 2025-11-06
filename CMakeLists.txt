@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX)
+project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -284,7 +284,11 @@ set(GHOST_GEIST_SOURCES
     Source/Geist/StateMachine.cpp
 )
 
-add_executable(Ghost WIN32 ${GHOST_SOURCES} ${GHOST_GEIST_SOURCES})
+add_executable(Ghost WIN32
+    ${GHOST_SOURCES}
+    ${GHOST_GEIST_SOURCES}
+    $<$<PLATFORM_ID:Windows>:Ghost/ghost.rc>
+)
 
 # Organize files into virtual folders in Visual Studio
 source_group("Ghost" FILES ${GHOST_SOURCES})
@@ -330,3 +334,18 @@ add_custom_command(TARGET Ghost POST_BUILD
     COMMAND_EXPAND_LISTS
     COMMENT "Copying Ghost Release executable to Ghost folder"
 )
+
+# Linux desktop integration
+if(UNIX AND NOT APPLE)
+    # Install desktop file
+    install(FILES Ghost/ghost.desktop
+            DESTINATION share/applications)
+
+    # Install icon
+    install(FILES Ghost/ghost.png
+            DESTINATION share/icons/hicolor/256x256/apps)
+
+    # Install executable
+    install(TARGETS Ghost
+            RUNTIME DESTINATION bin)
+endif()

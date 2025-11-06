@@ -9,6 +9,34 @@
 #include "FileChooserState.h"
 #include "raylib.h"
 
+#ifdef _WIN32
+// Forward declare Windows types and functions we need
+typedef void* HWND;
+typedef void* HICON;
+typedef void* HMODULE;
+typedef void* HINSTANCE;
+typedef long LONG_PTR;
+typedef LONG_PTR LRESULT;
+typedef LONG_PTR LPARAM;
+typedef unsigned int UINT;
+
+#define MAKEINTRESOURCE(i) ((char*)((unsigned long long)((unsigned short)(i))))
+#define WM_SETICON 0x0080
+#define ICON_SMALL 0
+#define ICON_BIG 1
+
+extern "C" {
+	__declspec(dllimport) HWND __stdcall GetActiveWindow(void);
+	__declspec(dllimport) HICON __stdcall LoadIconA(HINSTANCE hInstance, const char* lpIconName);
+	__declspec(dllimport) HMODULE __stdcall GetModuleHandleA(const char* lpModuleName);
+	__declspec(dllimport) LRESULT __stdcall SendMessageA(HWND hWnd, UINT Msg, LPARAM wParam, LPARAM lParam);
+}
+
+#define LoadIcon LoadIconA
+#define GetModuleHandle GetModuleHandleA
+#define SendMessage SendMessageA
+#endif
+
 using namespace std;
 
 int main()
@@ -20,6 +48,22 @@ int main()
 		// Create window FIRST - this is the only thing before the main loop
 		SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 		InitWindow(1280, 720, "Ghost - Geist GUI Editor");
+
+		// Set window icon from embedded resource on Windows
+		#ifdef _WIN32
+		HWND hwnd = GetActiveWindow();
+		if (hwnd)
+		{
+			// Load icon from exe resources (ID 1 is what we used in ghost.rc)
+			HICON hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+			if (hIcon)
+			{
+				SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+				SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+			}
+		}
+		#endif
+
 		ShowCursor();
 
 		bool initialized = false;

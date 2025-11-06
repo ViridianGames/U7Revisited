@@ -1,0 +1,8 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include <windows.h>
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+// Use ID 1 as Windows looks for the first icon resource
+1                       ICON                    "ghost.ico"
