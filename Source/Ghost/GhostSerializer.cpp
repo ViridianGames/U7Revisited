@@ -864,6 +864,311 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			// Add the scrollbar
 			gui->AddScrollBar(id, valueRange, absoluteX, absoluteY, width, height, vertical, spurColor, bgColor, group, active, false);
 		}
+		else if (type == "list")
+		{
+			auto size = element["size"];
+			int width = size[0];
+			int height = size[1];
+
+			// Get items array
+			vector<string> items;
+			if (element.contains("items"))
+			{
+				for (const auto& item : element["items"])
+				{
+					items.push_back(item.get<string>());
+				}
+			}
+
+			// Get text color with inheritance
+			Color textColor = WHITE;
+			if (element.contains("textColor"))
+			{
+				m_explicitProperties[id].insert("textColor");
+				auto arr = element["textColor"];
+				textColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("textColor"))
+			{
+				auto arr = inheritedProps["textColor"];
+				textColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get background color
+			Color bgColor = BLACK;
+			if (element.contains("backgroundColor"))
+			{
+				m_explicitProperties[id].insert("backgroundColor");
+				auto arr = element["backgroundColor"];
+				bgColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("backgroundColor"))
+			{
+				auto arr = inheritedProps["backgroundColor"];
+				bgColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get border color
+			Color borderColor = WHITE;
+			if (element.contains("borderColor"))
+			{
+				m_explicitProperties[id].insert("borderColor");
+				auto arr = element["borderColor"];
+				borderColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                    (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("borderColor"))
+			{
+				auto arr = inheritedProps["borderColor"];
+				borderColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                    (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get font name with inheritance
+			string fontName = "";
+			if (element.contains("font"))
+			{
+				m_explicitProperties[id].insert("font");
+				fontName = element["font"].get<string>();
+				m_elementFonts[id] = fontName;  // Store just the font name
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
+			{
+				fontName = inheritedProps["font"].get<string>();
+			}
+
+			// Get font size with inheritance
+			int fontSize = 20;
+			if (element.contains("fontSize"))
+			{
+				m_explicitProperties[id].insert("fontSize");
+				fontSize = element["fontSize"].get<int>();
+				m_elementFontSizes[id] = fontSize;
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
+			{
+				fontSize = inheritedProps["fontSize"].get<int>();
+			}
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Load font at the specified size, or use default if no name specified (prepend base path)
+			Font font;
+			if (!fontName.empty())
+			{
+				string fontPath = s_baseFontPath + fontName;
+				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
+				if (font.texture.id == 0)
+				{
+					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
+					font = GetFontDefault();
+				}
+				else
+				{
+					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+				}
+			}
+			else
+			{
+				// No font name specified, use default font
+				font = GetFontDefault();
+				Log("GhostSerializer: Using default font, baseSize: " + std::to_string(font.baseSize));
+			}
+
+			// Create a shared pointer for the font and store it to keep it alive
+			shared_ptr<Font> fontPtr = make_shared<Font>(font);
+			m_loadedFonts.push_back(fontPtr);
+
+			// Add the list
+			gui->AddGuiList(id, absoluteX, absoluteY, width, height, fontPtr.get(), items, textColor, bgColor, borderColor, group, active);
+		}
+		else if (type == "iconbutton")
+		{
+			// Get sprite
+			string spriteName = element.value("sprite", "");
+
+			// Get text (optional)
+			string text = element.value("text", "");
+
+			// Get scale
+			float scale = element.value("scale", 1.0f);
+
+			// Get canBeHeld flag
+			bool canBeHeld = element.value("canBeHeld", false);
+
+			// Get text color (called "color" in JSON for iconbutton)
+			Color fontColor = WHITE;
+			if (element.contains("color"))
+			{
+				m_explicitProperties[id].insert("textColor");
+				auto arr = element["color"];
+				fontColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("textColor"))
+			{
+				auto arr = inheritedProps["textColor"];
+				fontColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get font name with inheritance
+			string fontName = "";
+			if (element.contains("font"))
+			{
+				m_explicitProperties[id].insert("font");
+				fontName = element["font"].get<string>();
+				m_elementFonts[id] = fontName;
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
+			{
+				fontName = inheritedProps["font"].get<string>();
+			}
+
+			// Get font size with inheritance
+			int fontSize = 20;
+			if (element.contains("fontSize"))
+			{
+				m_explicitProperties[id].insert("fontSize");
+				fontSize = element["fontSize"].get<int>();
+				m_elementFontSizes[id] = fontSize;
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
+			{
+				fontSize = inheritedProps["fontSize"].get<int>();
+			}
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Load font if specified
+			Font font;
+			shared_ptr<Font> fontPtr;
+			if (!fontName.empty())
+			{
+				string fontPath = s_baseFontPath + fontName;
+				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
+				if (font.texture.id == 0)
+				{
+					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
+					font = GetFontDefault();
+				}
+				else
+				{
+					Log("GhostSerializer: Loaded font '" + fontPath + "' requested fontSize: " + std::to_string(fontSize) + ", actual baseSize: " + std::to_string(font.baseSize));
+				}
+				fontPtr = make_shared<Font>(font);
+				m_loadedFonts.push_back(fontPtr);
+			}
+
+			// Load sprite
+			shared_ptr<Sprite> upSprite = nullptr;
+			if (!spriteName.empty())
+			{
+				string spritePath = s_baseSpritePath + spriteName;
+				Texture loadedTexture = LoadTexture(spritePath.c_str());
+
+				upSprite = make_shared<Sprite>();
+				if (loadedTexture.id == 0)
+				{
+					Log("GhostSerializer::ParseElements - Failed to load iconbutton sprite: " + spritePath);
+					upSprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+					upSprite->m_texture = nullptr;
+				}
+				else
+				{
+					Texture* texture = new Texture();
+					*texture = loadedTexture;
+					upSprite->m_texture = texture;
+					upSprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+				}
+
+				// Store the sprite filename for serialization
+				SetSpriteName(id, spriteName);
+			}
+
+			// Add the iconbutton (downbutton and inactivebutton default to nullptr)
+			gui->AddIconButton(id, absoluteX, absoluteY, upSprite, nullptr, nullptr, text,
+			                  fontPtr ? fontPtr.get() : nullptr, fontColor, scale, group, active, canBeHeld);
+		}
+		else if (type == "octagonbox")
+		{
+			auto size = element["size"];
+			int width = size[0];
+			int height = size[1];
+
+			// Get color
+			Color color = WHITE;
+			if (element.contains("color"))
+			{
+				auto arr = element["color"];
+				color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				              (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Load 9 border sprites if specified
+			// Order: topLeft, top, topRight, left, center, right, bottomLeft, bottom, bottomRight
+			vector<shared_ptr<Sprite>> borders;
+			vector<string> borderSpriteNames;
+			const char* borderNames[] = {
+				"borderTopLeft", "borderTop", "borderTopRight",
+				"borderLeft", "borderCenter", "borderRight",
+				"borderBottomLeft", "borderBottom", "borderBottomRight"
+			};
+
+			for (int i = 0; i < 9; i++)
+			{
+				if (element.contains(borderNames[i]))
+				{
+					string spriteName = element[borderNames[i]].get<string>();
+
+					// Load sprite using same pattern as other sprite loading
+					string spritePath = s_baseSpritePath + spriteName;
+					Texture loadedTexture = LoadTexture(spritePath.c_str());
+
+					shared_ptr<Sprite> sprite = make_shared<Sprite>();
+					if (loadedTexture.id == 0)
+					{
+						Log("GhostSerializer::ParseElements - Failed to load octagonbox border sprite: " + spritePath);
+						sprite->m_sourceRect = Rectangle{0, 0, 32, 32};
+						sprite->m_texture = nullptr;
+					}
+					else
+					{
+						Texture* texture = new Texture();
+						*texture = loadedTexture;
+						sprite->m_texture = texture;
+						sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+					}
+
+					borders.push_back(sprite);
+					borderSpriteNames.push_back(spriteName);
+				}
+				else
+				{
+					// If any border is missing, push null sprite and empty name
+					borders.push_back(nullptr);
+					borderSpriteNames.push_back("");
+				}
+			}
+
+			// Store border sprite names for serialization
+			m_octagonBoxBorderSprites[id] = borderSpriteNames;
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Add the octagonbox
+			gui->AddOctagonBox(id, absoluteX, absoluteY, width, height, borders, color, group, active);
+		}
 		else if (type == "stretchbutton")
 	{
 		// Get width and label
@@ -1344,7 +1649,7 @@ void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 	}
 
 	// Resize panel to enclose all children with padding
-	// Calculate the bounding box of all children
+	// Calculate the bounding box of ALL children (both floating and non-floating)
 	float maxX = 0;
 	float maxY = 0;
 
@@ -1355,6 +1660,10 @@ void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 			continue;
 
 		auto child = childIt->second;
+
+		// Skip children with zero width/height (they haven't been properly initialized)
+		if (child->m_Width <= 0 || child->m_Height <= 0)
+			continue;
 
 		// Calculate the right edge and bottom edge of this child (relative to panel)
 		float childRelativeX = child->m_Pos.x - panel->m_Pos.x;
@@ -1369,8 +1678,12 @@ void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 	}
 
 	// Set panel size to enclose all children plus padding
-	panel->m_Width = maxX + horzPadding;
-	panel->m_Height = maxY + vertPadding;
+	// Only update if we found at least one valid child
+	if (maxX > 0 || maxY > 0)
+	{
+		panel->m_Width = maxX + horzPadding;
+		panel->m_Height = maxY + vertPadding;
+	}
 }
 
 ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY)
@@ -1665,13 +1978,53 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["scale"] = iconbutton->m_Scale;
 		if (iconbutton->m_CanBeHeld)
 			elementJson["canBeHeld"] = iconbutton->m_CanBeHeld;
+
+		// Serialize font/fontSize if explicitly set
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+
+			if (explicitProps.count("font") > 0)
+			{
+				auto fontIt = m_elementFonts.find(elementID);
+				if (fontIt != m_elementFonts.end())
+					elementJson["font"] = fontIt->second;
+			}
+
+			if (explicitProps.count("fontSize") > 0)
+			{
+				auto sizeIt = m_elementFontSizes.find(elementID);
+				if (sizeIt != m_elementFontSizes.end())
+					elementJson["fontSize"] = sizeIt->second;
+			}
+		}
 	}
 	else if (element->m_Type == GUI_OCTAGONBOX)
 	{
 		auto octagonbox = static_cast<GuiOctagonBox*>(element.get());
 		elementJson["size"] = { octagonbox->m_Width, octagonbox->m_Height };
 		elementJson["color"] = { octagonbox->m_Color.r, octagonbox->m_Color.g, octagonbox->m_Color.b, octagonbox->m_Color.a };
-		// Note: borders serialization not implemented yet - would need sprite name tracking for 8 sprites
+
+		// Serialize border sprites if they exist
+		auto borderIt = m_octagonBoxBorderSprites.find(elementID);
+		if (borderIt != m_octagonBoxBorderSprites.end())
+		{
+			const vector<string>& borderNames = borderIt->second;
+			const char* jsonBorderNames[] = {
+				"borderTopLeft", "borderTop", "borderTopRight",
+				"borderLeft", "borderCenter", "borderRight",
+				"borderBottomLeft", "borderBottom", "borderBottomRight"
+			};
+
+			for (int i = 0; i < 9 && i < borderNames.size(); i++)
+			{
+				if (!borderNames[i].empty())
+				{
+					elementJson[jsonBorderNames[i]] = borderNames[i];
+				}
+			}
+		}
 	}
 	else if (element->m_Type == GUI_STRETCHBUTTON)
 	{
@@ -1725,7 +2078,27 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["textColor"] = { list->m_TextColor.r, list->m_TextColor.g, list->m_TextColor.b, list->m_TextColor.a };
 		elementJson["backgroundColor"] = { list->m_BackgroundColor.r, list->m_BackgroundColor.g, list->m_BackgroundColor.b, list->m_BackgroundColor.a };
 		elementJson["borderColor"] = { list->m_BorderColor.r, list->m_BorderColor.g, list->m_BorderColor.b, list->m_BorderColor.a };
-		// Note: font serialization would need font name tracking
+
+		// Serialize font/fontSize if explicitly set
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+
+			if (explicitProps.count("font") > 0)
+			{
+				auto fontIt = m_elementFonts.find(elementID);
+				if (fontIt != m_elementFonts.end())
+					elementJson["font"] = fontIt->second;
+			}
+
+			if (explicitProps.count("fontSize") > 0)
+			{
+				auto sizeIt = m_elementFontSizes.find(elementID);
+				if (sizeIt != m_elementFontSizes.end())
+					elementJson["fontSize"] = sizeIt->second;
+			}
+		}
 	}
 
 	// Common properties that go after type-specific ones

@@ -1609,15 +1609,12 @@ void GhostState::Update()
 					m_preservedFonts.push_back(fonts.back());
 				}
 
-				// Disable interactive elements in the pasted content (IDs 2001-2999)
+				// Disable ALL elements in the content area (IDs 2001-2999)
 				for (auto& [id, element] : m_gui->m_GuiElementList)
 				{
 					if (id >= 2001 && id < 3000 && element)
 					{
-						if (element->m_Type == GUI_TEXTINPUT || element->m_Type == GUI_RADIOBUTTON || element->m_Type == GUI_CHECKBOX)
-						{
-							element->m_Active = false;
-						}
+						element->m_Active = false;
 					}
 				}
 
@@ -2074,11 +2071,9 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 		{
 			if (id >= 2001 && id < 3000 && element)
 			{
-				if (element->m_Type == GUI_TEXTINPUT || element->m_Type == GUI_RADIOBUTTON || element->m_Type == GUI_CHECKBOX)
-				{
-					element->m_Active = false;
-					Log("Disabled interactive element in content panel: ID " + to_string(id) + ", type " + to_string(element->m_Type));
-				}
+				// Disable ALL elements in content area - no type check needed
+				element->m_Active = false;
+				Log("Disabled element in content panel: ID " + to_string(id) + ", type " + to_string(element->m_Type));
 			}
 		}
 

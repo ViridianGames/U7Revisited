@@ -262,6 +262,9 @@ private:
 	std::map<int, SpriteDefinition> m_stretchButtonCenterSprites;  // Maps stretchbutton ID -> center sprite definition
 	std::map<int, SpriteDefinition> m_stretchButtonRightSprites;   // Maps stretchbutton ID -> right sprite definition
 
+	// OctagonBox sprite metadata (9 border sprite names per octagonbox)
+	std::map<int, std::vector<std::string>> m_octagonBoxBorderSprites;  // Maps octagonbox ID -> 9 sprite names
+
 	// Floating element tracking (elements that should use automatic layout)
 	std::set<int> m_floatingElements;  // Set of element IDs that are floating
 
