@@ -7,9 +7,20 @@
 
 std::string FileDialog::OpenFile(const char* title, const char* filter)
 {
+	return OpenFile(title, filter, nullptr, "");
+}
+
+std::string FileDialog::OpenFile(const char* title, const char* filter, const char* initialDir, const char* initialFile)
+{
 #ifdef _WIN32
 	OPENFILENAMEA ofn;
 	CHAR szFile[260] = { 0 };
+
+	// If initialFile is provided, copy it to szFile buffer
+	if (initialFile && initialFile[0] != '\0')
+	{
+		strncpy_s(szFile, sizeof(szFile), initialFile, _TRUNCATE);
+	}
 
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
@@ -19,6 +30,7 @@ std::string FileDialog::OpenFile(const char* title, const char* filter)
 	ofn.lpstrFilter = filter;
 	ofn.nFilterIndex = 1;
 	ofn.lpstrTitle = title;
+	ofn.lpstrInitialDir = initialDir;  // Set initial directory
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
 	if (GetOpenFileNameA(&ofn) == TRUE)

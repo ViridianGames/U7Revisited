@@ -48,12 +48,12 @@
           },
           {
             "name": "SPRITE_FILENAME",
-            "type": "textinput",
+            "type": "textbutton",
             "position": [
               -1,
               -1
             ],
-            "text": "",
+            "text": "Open Image...",
             "size": [
               150.0,
               20.0
@@ -65,14 +65,14 @@
               255
             ],
             "backgroundColor": [
-              0,
-              0,
-              0,
+              64,
+              64,
+              128,
               255
             ],
             "borderColor": [
-              255,
-              255,
+              128,
+              128,
               255,
               255
             ]

@@ -2212,6 +2212,14 @@ GhostState::InsertContext GhostState::PrepareInsert(const std::string& elementTy
 	// Calculate position for floating element
 	auto [relX, relY] = m_contentSerializer->CalculateNextFloatingPosition(ctx.parentID, m_gui.get());
 	auto parentElement = m_gui->GetElement(ctx.parentID);
+
+	if (!parentElement)
+	{
+		Log("ERROR: Cannot insert " + elementTypeName + " - parent element ID " + to_string(ctx.parentID) + " not found in GUI");
+		ctx.newID = -1;  // Signal error
+		return ctx;
+	}
+
 	ctx.absoluteX = parentElement->m_Pos.x + relX;
 	ctx.absoluteY = parentElement->m_Pos.y + relY;
 

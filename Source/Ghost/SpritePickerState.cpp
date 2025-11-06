@@ -4,6 +4,8 @@
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Config.h"
 #include "SpriteUtils.h"
+#include "FileDialog.h"
+#include <algorithm>
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
 extern std::unique_ptr<ResourceManager> g_ResourceManager;
@@ -143,13 +145,118 @@ void SpritePickerState::Update()
 {
 	m_gui->Update();
 
-	// Read filename from textinput
-	int filenameInputID = m_serializer->GetElementID("SPRITE_FILENAME");
-	if (filenameInputID != -1)
+	// Check for "Open Image" button click
+	int filenameButtonID = m_serializer->GetElementID("SPRITE_FILENAME");
+	if (filenameButtonID != -1)
 	{
-		auto elem = m_gui->GetElement(filenameInputID);
-		if (elem && elem->m_Type == GUI_TEXTINPUT)
-			m_filename = static_cast<GuiTextInput*>(elem.get())->m_String;
+		auto elem = m_gui->GetElement(filenameButtonID);
+		if (elem && elem->m_Type == GUI_TEXTBUTTON)
+		{
+			auto button = static_cast<GuiTextButton*>(elem.get());
+			if (button->m_Clicked)
+			{
+				// Open file dialog for image selection, starting in sprite directory
+				// Filter format for Windows: "Description\0*.ext1;*.ext2\0\0"
+				std::string basePath = GhostSerializer::GetBaseSpritePath();
+				std::string currentFilename = m_filename;
+
+				std::string selectedPath = FileDialog::OpenFile(
+					"Select Sprite Image",
+					"Image Files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif\0All Files\0*.*\0\0",
+					basePath.c_str(),
+					currentFilename.c_str()
+				);
+
+				if (!selectedPath.empty())
+				{
+					// Convert absolute path to relative path
+					std::string basePath = GhostSerializer::GetBaseSpritePath();
+
+					// Normalize paths for comparison (convert backslashes to forward slashes)
+					std::string normalizedSelected = selectedPath;
+					std::string normalizedBase = basePath;
+					std::replace(normalizedSelected.begin(), normalizedSelected.end(), '\\', '/');
+					std::replace(normalizedBase.begin(), normalizedBase.end(), '\\', '/');
+
+					// Find the base path in the selected path
+					size_t pos = normalizedSelected.find(normalizedBase);
+					if (pos != std::string::npos)
+					{
+						// Extract relative path (everything after basePath)
+						m_filename = normalizedSelected.substr(pos + normalizedBase.length());
+
+						// Remove leading slashes
+						while (!m_filename.empty() && m_filename[0] == '/')
+							m_filename = m_filename.substr(1);
+
+						Log("Selected sprite file: " + m_filename);
+					}
+					else
+					{
+						// If not in base path, just use the filename
+						size_t lastSlash = normalizedSelected.find_last_of('/');
+						if (lastSlash != std::string::npos)
+							m_filename = normalizedSelected.substr(lastSlash + 1);
+						else
+							m_filename = normalizedSelected;
+
+						Log("Selected sprite file (not in base path): " + m_filename);
+				}
+
+				// Load the new texture to get its dimensions and reset coordinates
+				std::string spritePath = GhostSerializer::GetBaseSpritePath() + m_filename;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Reset coordinates to (0,0) and size to full texture
+					m_x = 0;
+					m_y = 0;
+					m_width = texture->width;
+					m_height = texture->height;
+
+					Log("Reset sprite coordinates to full texture: " + std::to_string(texture->width) + "x" + std::to_string(texture->height));
+
+					// Update scrollbar values to reflect new coordinates
+					int xScrollbarID = m_serializer->GetElementID("SPRITE_X");
+					if (xScrollbarID != -1)
+					{
+						auto xElem = m_gui->GetElement(xScrollbarID);
+						if (xElem && xElem->m_Type == GUI_SCROLLBAR)
+							static_cast<GuiScrollBar*>(xElem.get())->m_Value = m_x;
+					}
+
+					int yScrollbarID = m_serializer->GetElementID("SPRITE_Y");
+					if (yScrollbarID != -1)
+					{
+						auto yElem = m_gui->GetElement(yScrollbarID);
+						if (yElem && yElem->m_Type == GUI_SCROLLBAR)
+							static_cast<GuiScrollBar*>(yElem.get())->m_Value = m_y;
+					}
+
+					int widthScrollbarID = m_serializer->GetElementID("SPRITE_WIDTH");
+					if (widthScrollbarID != -1)
+					{
+						auto wElem = m_gui->GetElement(widthScrollbarID);
+						if (wElem && wElem->m_Type == GUI_SCROLLBAR)
+							static_cast<GuiScrollBar*>(wElem.get())->m_Value = m_width;
+					}
+
+					int heightScrollbarID = m_serializer->GetElementID("SPRITE_HEIGHT");
+					if (heightScrollbarID != -1)
+					{
+						auto hElem = m_gui->GetElement(heightScrollbarID);
+						if (hElem && hElem->m_Type == GUI_SCROLLBAR)
+							static_cast<GuiScrollBar*>(hElem.get())->m_Value = m_height;
+					}
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture for new sprite file: " + spritePath);
+				}
+			}
+			}
+		}
 	}
 
 	// Read scrollbar values for x, y, width, height
