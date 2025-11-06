@@ -1025,7 +1025,7 @@ void GhostState::Update()
 	if (m_selectedElementID != -1)
 	{
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
-		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE))
+		if (selectedElement && (selectedElement->m_Type == GUI_STRETCHBUTTON || selectedElement->m_Type == GUI_SPRITE || selectedElement->m_Type == GUI_ICONBUTTON))
 		{
 			// List of all sprite property button names
 			vector<string> spriteProperties = {
@@ -1075,6 +1075,17 @@ void GhostState::Update()
 										sprite.w = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.width);
 										sprite.h = static_cast<int>(spriteElem->m_Sprite->m_sourceRect.height);
 									}
+								}
+							}
+							else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON)
+							{
+								auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
+								if (iconElem->m_UpTexture)
+								{
+									sprite.x = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.x);
+									sprite.y = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.y);
+									sprite.w = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.width);
+									sprite.h = static_cast<int>(iconElem->m_UpTexture->m_sourceRect.height);
 								}
 							}
 
@@ -1964,6 +1975,43 @@ void GhostState::OnEnter()
 						Log("ERROR: Failed to load texture: " + spritePath);
 					}
 				}
+			else if (selectedElement && selectedElement->m_Type == GUI_ICONBUTTON && m_editingSpriteProperty == "PROPERTY_SPRITE")
+			{
+				// Update icon button with new sprite data
+				auto iconElem = static_cast<GuiIconButton*>(selectedElement.get());
+
+				// Load the new sprite texture
+				string spritePath = m_spritePath + sprite.spritesheet;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create new sprite with the specified source rectangle
+					shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+					newSprite->m_texture = texture;
+					newSprite->m_sourceRect = Rectangle{
+						static_cast<float>(sprite.x),
+						static_cast<float>(sprite.y),
+						static_cast<float>(sprite.w),
+						static_cast<float>(sprite.h)
+					};
+
+					// Update the icon button's up texture
+					iconElem->m_UpTexture = newSprite;
+					iconElem->m_Width = sprite.w;
+					iconElem->m_Height = sprite.h;
+
+					// Store sprite filename in serializer
+					m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+
+					Log("Updated iconbutton sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
 			}
 
 			// Reset the tracking variable
@@ -2577,21 +2625,30 @@ void GhostState::InsertIconButton()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
-	// Load default sprite image for icon button
-	string defaultSpriteName = "image.png";
-	string spritePath = m_spritePath + defaultSpriteName;
+	// Get fallback sprite definition for icon button (48x48 square from image.png)
+	string filename;
+	int x, y, width, height;
+	SpriteUtils::GetFallbackForType("iconbutton", filename, x, y, width, height);
+
+	// Load sprite texture
+	string spritePath = m_spritePath + filename;
 	Texture* texture = g_ResourceManager->GetTexture(spritePath);
 
-	// Create sprite for the button
+	// Create sprite with the specified source rectangle
 	shared_ptr<Sprite> sprite = make_shared<Sprite>();
 	sprite->m_texture = texture;
-	sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+	sprite->m_sourceRect = Rectangle{
+		static_cast<float>(x),
+		static_cast<float>(y),
+		static_cast<float>(width),
+		static_cast<float>(height)
+	};
 
 	// Add icon button at calculated position (using simple form with one sprite)
 	m_gui->AddIconButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, nullptr, nullptr, "", nullptr, WHITE, 1.0f, 0, true, false);
 
 	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, defaultSpriteName);
+	m_contentSerializer->SetSpriteName(ctx.newID, filename);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Icon button");

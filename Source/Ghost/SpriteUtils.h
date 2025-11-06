@@ -78,7 +78,7 @@ public:
 		filename = "image.png";
 		x = 0;
 		y = 0;
-		width = 16;
+		width = 48;
 		height = 48;
 	}
 
@@ -115,20 +115,12 @@ public:
 			width = 16;
 			height = 48;
 		}
-		else if (spriteType == "sprite")
+		else
 		{
-			// 48x48 square for regular sprites
+			// Default to whole missing image
 			x = 0;
 			y = 0;
 			width = 48;
-			height = 48;
-		}
-		else
-		{
-			// Default to left
-			x = 0;
-			y = 0;
-			width = 16;
 			height = 48;
 		}
 	}
