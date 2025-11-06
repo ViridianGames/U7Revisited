@@ -7,6 +7,8 @@
 #include "../Geist/Config.h"
 #include "FileDialog.h"
 #include "ColorPickerState.h"
+#include "SpritePickerState.h"
+#include "SpriteUtils.h"
 #include "raylib.h"
 #include <fstream>
 
@@ -22,10 +24,15 @@ static int lastFontSizeScrollbarValue = -1;
 static int lastWidthScrollbarValue = -1;
 static int lastHeightScrollbarValue = -1;
 static int lastValueRangeScrollbarValue = -1;
+static int lastGroupScrollbarValue = -1;
+static int lastScaleScrollbarValue = -1;
+static int lastIndentScrollbarValue = -1;
 static int lastTextInputWidthScrollbarValue = -1;
 static int lastTextInputHeightScrollbarValue = -1;
 static int lastTextInputFontSizeScrollbarValue = -1;
 static bool lastVerticalCheckboxValue = false;
+static bool lastCanBeHeldCheckboxValue = false;
+static bool lastShadowedCheckboxValue = false;
 
 GhostState::~GhostState()
 {
@@ -40,6 +47,7 @@ void GhostState::Init(const std::string& configfile)
 	m_lastPropertyElementType = -1;
 	m_hasClipboard = false;
 	m_editingColorProperty = "";
+	m_editingSpriteProperty = "";
 
 	// Load config to get resource paths
 	Log("Loading config from: Data/ghost.cfg");
@@ -936,9 +944,14 @@ void GhostState::Update()
 	CheckScrollbarChanged("PROPERTY_WIDTH", lastWidthScrollbarValue);
 	CheckScrollbarChanged("PROPERTY_HEIGHT", lastHeightScrollbarValue);
 	CheckScrollbarChanged("PROPERTY_VALUE_RANGE", lastValueRangeScrollbarValue);
+	CheckScrollbarChanged("PROPERTY_GROUP", lastGroupScrollbarValue);
+	CheckScrollbarChanged("PROPERTY_SCALE", lastScaleScrollbarValue);
+	CheckScrollbarChanged("PROPERTY_INDENT", lastIndentScrollbarValue);
 
-	// Check PROPERTY_VERTICAL checkbox for scrollbar elements
+	// Check property checkboxes for changes
 	CheckCheckboxChanged("PROPERTY_VERTICAL", lastVerticalCheckboxValue);
+	CheckCheckboxChanged("PROPERTY_CANBEHELD", lastCanBeHeldCheckboxValue);
+	CheckCheckboxChanged("PROPERTY_SHADOWED", lastShadowedCheckboxValue);
 
 	// Check PROPERTY_FONT_SIZE scrollbar for textinput elements
 	// Note: Font size for other elements (textbutton, panel) uses lastFontSizeScrollbarValue tracked elsewhere
@@ -1000,6 +1013,61 @@ void GhostState::Update()
 							g_StateMachine->PushState(1);
 
 							Log("Opening color picker for " + propName);
+							break; // Only handle one button click per frame
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Sprite picker button click handler - checks all sprite property buttons for stretchbutton
+	if (m_selectedElementID != -1)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement && selectedElement->m_Type == GUI_STRETCHBUTTON)
+		{
+			// List of all sprite property button names
+			vector<string> spriteProperties = {
+				"PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT"
+			};
+
+			for (const auto& propName : spriteProperties)
+			{
+				int buttonID = m_propertySerializer->GetElementID(propName);
+				if (buttonID != -1)
+				{
+					auto button = m_gui->GetElement(buttonID);
+					if (button && button->m_Type == GUI_TEXTBUTTON)
+					{
+						auto textButton = static_cast<GuiTextButton*>(button.get());
+						if (textButton->m_Clicked)
+						{
+							// Get current sprite definition from serializer
+							GhostSerializer::SpriteDefinition sprite;
+
+							if (propName == "PROPERTY_SPRITE_LEFT")
+							{
+								sprite = m_contentSerializer->GetStretchButtonLeftSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_SPRITE_CENTER")
+							{
+								sprite = m_contentSerializer->GetStretchButtonCenterSprite(m_selectedElementID);
+							}
+							else if (propName == "PROPERTY_SPRITE_RIGHT")
+							{
+								sprite = m_contentSerializer->GetStretchButtonRightSprite(m_selectedElementID);
+							}
+
+							// Track which property we're editing
+							m_editingSpriteProperty = propName;
+
+							// Open sprite picker with current sprite definition
+							auto spritePickerState = static_cast<SpritePickerState*>(g_StateMachine->GetState(2));
+							spritePickerState->SetSprite(sprite.spritesheet, sprite.x, sprite.y, sprite.w, sprite.h);
+							g_StateMachine->PushState(2);
+
+							Log("Opening sprite picker for " + propName);
 							break; // Only handle one button click per frame
 						}
 					}
@@ -1114,6 +1182,54 @@ void GhostState::Update()
 			auto elem = m_gui->GetElement(valueRangeScrollbarID);
 			if (elem && elem->m_Type == GUI_SCROLLBAR)
 				lastValueRangeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int groupScrollbarID = m_propertySerializer->GetElementID("PROPERTY_GROUP");
+		if (groupScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(groupScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastGroupScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int scaleScrollbarID = m_propertySerializer->GetElementID("PROPERTY_SCALE");
+		if (scaleScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(scaleScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastScaleScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int indentScrollbarID = m_propertySerializer->GetElementID("PROPERTY_INDENT");
+		if (indentScrollbarID != -1)
+		{
+			auto elem = m_gui->GetElement(indentScrollbarID);
+			if (elem && elem->m_Type == GUI_SCROLLBAR)
+				lastIndentScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
+		}
+
+		int verticalCheckboxID = m_propertySerializer->GetElementID("PROPERTY_VERTICAL");
+		if (verticalCheckboxID != -1)
+		{
+			auto elem = m_gui->GetElement(verticalCheckboxID);
+			if (elem && elem->m_Type == GUI_CHECKBOX)
+				lastVerticalCheckboxValue = static_cast<GuiCheckBox*>(elem.get())->m_Selected;
+		}
+
+		int canBeHeldCheckboxID = m_propertySerializer->GetElementID("PROPERTY_CANBEHELD");
+		if (canBeHeldCheckboxID != -1)
+		{
+			auto elem = m_gui->GetElement(canBeHeldCheckboxID);
+			if (elem && elem->m_Type == GUI_CHECKBOX)
+				lastCanBeHeldCheckboxValue = static_cast<GuiCheckBox*>(elem.get())->m_Selected;
+		}
+
+		int shadowedCheckboxID = m_propertySerializer->GetElementID("PROPERTY_SHADOWED");
+		if (shadowedCheckboxID != -1)
+		{
+			auto elem = m_gui->GetElement(shadowedCheckboxID);
+			if (elem && elem->m_Type == GUI_CHECKBOX)
+				lastShadowedCheckboxValue = static_cast<GuiCheckBox*>(elem.get())->m_Selected;
 		}
 
 		int textInputFontSizeScrollbarID2 = m_propertySerializer->GetElementID("PROPERTY_FONT_SIZE");
@@ -1742,6 +1858,60 @@ void GhostState::OnEnter()
 
 			// Reset the tracking variable
 			m_editingColorProperty.clear();
+		}
+	}
+
+	// Check if we're returning from SpritePickerState
+	if (g_StateMachine->GetPreviousState() == 2)  // SpritePickerState is state ID 2
+	{
+		Log("GhostState: Returning from SpritePickerState");
+		auto spritePickerState = static_cast<SpritePickerState*>(g_StateMachine->GetState(2));
+
+		// Only apply sprite if user clicked OK (not Cancel)
+		Log("GhostState: WasAccepted = " + std::string(spritePickerState->WasAccepted() ? "true" : "false"));
+		if (spritePickerState->WasAccepted())
+		{
+			Log("GhostState: Applying sprite, selectedElementID = " + std::to_string(m_selectedElementID));
+
+			// Get sprite definition from picker
+			GhostSerializer::SpriteDefinition sprite;
+			sprite.spritesheet = spritePickerState->GetFilename();
+			sprite.x = spritePickerState->GetX();
+			sprite.y = spritePickerState->GetY();
+			sprite.w = spritePickerState->GetWidth();
+			sprite.h = spritePickerState->GetHeight();
+
+			// Apply sprite based on which property was being edited
+			if (m_selectedElementID != -1 && !m_editingSpriteProperty.empty())
+			{
+				auto selectedElement = m_gui->GetElement(m_selectedElementID);
+
+				if (selectedElement && selectedElement->m_Type == GUI_STRETCHBUTTON)
+				{
+					// Store sprite definition in serializer
+					if (m_editingSpriteProperty == "PROPERTY_SPRITE_LEFT")
+					{
+						m_contentSerializer->SetStretchButtonLeftSprite(m_selectedElementID, sprite);
+						Log("Set left sprite: " + sprite.spritesheet);
+					}
+					else if (m_editingSpriteProperty == "PROPERTY_SPRITE_CENTER")
+					{
+						m_contentSerializer->SetStretchButtonCenterSprite(m_selectedElementID, sprite);
+						Log("Set center sprite: " + sprite.spritesheet);
+					}
+					else if (m_editingSpriteProperty == "PROPERTY_SPRITE_RIGHT")
+					{
+						m_contentSerializer->SetStretchButtonRightSprite(m_selectedElementID, sprite);
+						Log("Set right sprite: " + sprite.spritesheet);
+					}
+
+					Log("Applied sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+				}
+			}
+
+			// Reset the tracking variable
+			m_editingSpriteProperty.clear();
 		}
 	}
 }
@@ -2403,30 +2573,69 @@ void GhostState::InsertStretchButton()
 	if (ctx.newID == -1)
 		return;  // Error already logged
 
-	// Load default sprite image for stretch button parts
-	string defaultSpriteName = "image.png";
-	string spritePath = m_spritePath + defaultSpriteName;
+	// Get fallback sprite definitions for left, center, and right
+	string leftFilename, centerFilename, rightFilename;
+	int leftX, leftY, leftW, leftH;
+	int centerX, centerY, centerW, centerH;
+	int rightX, rightY, rightW, rightH;
+
+	SpriteUtils::GetFallbackForType("left", leftFilename, leftX, leftY, leftW, leftH);
+	SpriteUtils::GetFallbackForType("center", centerFilename, centerX, centerY, centerW, centerH);
+	SpriteUtils::GetFallbackForType("right", rightFilename, rightX, rightY, rightW, rightH);
+
+	Log("InsertStretchButton: Left sprite: " + leftFilename + " (" + to_string(leftX) + "," + to_string(leftY) + " " + to_string(leftW) + "x" + to_string(leftH) + ")");
+	Log("InsertStretchButton: Center sprite: " + centerFilename + " (" + to_string(centerX) + "," + to_string(centerY) + " " + to_string(centerW) + "x" + to_string(centerH) + ")");
+	Log("InsertStretchButton: Right sprite: " + rightFilename + " (" + to_string(rightX) + "," + to_string(rightY) + " " + to_string(rightW) + "x" + to_string(rightH) + ")");
+
+	// Load the texture
+	string spritePath = m_spritePath + leftFilename;  // All use the same file (image.png)
 	Texture* texture = g_ResourceManager->GetTexture(spritePath);
 
-	// Create sprites for left, center, and right parts (active and inactive)
-	auto createSprite = [&]() {
+	// Create sprites for left, center, and right parts using fallback coordinates
+	auto createSprite = [&](int x, int y, int w, int h) {
 		shared_ptr<Sprite> sprite = make_shared<Sprite>();
 		sprite->m_texture = texture;
-		sprite->m_sourceRect = Rectangle{0, 0, float(texture->width), float(texture->height)};
+		sprite->m_sourceRect = Rectangle{float(x), float(y), float(w), float(h)};
 		return sprite;
 	};
 
-	shared_ptr<Sprite> activeLeft = createSprite();
-	shared_ptr<Sprite> activeCenter = createSprite();
-	shared_ptr<Sprite> activeRight = createSprite();
-	shared_ptr<Sprite> inactiveLeft = createSprite();
-	shared_ptr<Sprite> inactiveCenter = createSprite();
-	shared_ptr<Sprite> inactiveRight = createSprite();
+	shared_ptr<Sprite> activeLeft = createSprite(leftX, leftY, leftW, leftH);
+	shared_ptr<Sprite> activeCenter = createSprite(centerX, centerY, centerW, centerH);
+	shared_ptr<Sprite> activeRight = createSprite(rightX, rightY, rightW, rightH);
+	shared_ptr<Sprite> inactiveLeft = createSprite(leftX, leftY, leftW, leftH);
+	shared_ptr<Sprite> inactiveCenter = createSprite(centerX, centerY, centerW, centerH);
+	shared_ptr<Sprite> inactiveRight = createSprite(rightX, rightY, rightW, rightH);
 
 	// Add stretch button at calculated position
 	m_gui->AddStretchButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, 100, "Button",
 		activeLeft, activeRight, activeCenter, inactiveLeft, inactiveRight, inactiveCenter,
 		0, WHITE, 0, true, false);
+
+	// Store sprite metadata so it can be serialized
+	GhostSerializer::SpriteDefinition leftDef;
+	leftDef.spritesheet = leftFilename;
+	leftDef.x = leftX;
+	leftDef.y = leftY;
+	leftDef.w = leftW;
+	leftDef.h = leftH;
+
+	GhostSerializer::SpriteDefinition centerDef;
+	centerDef.spritesheet = centerFilename;
+	centerDef.x = centerX;
+	centerDef.y = centerY;
+	centerDef.w = centerW;
+	centerDef.h = centerH;
+
+	GhostSerializer::SpriteDefinition rightDef;
+	rightDef.spritesheet = rightFilename;
+	rightDef.x = rightX;
+	rightDef.y = rightY;
+	rightDef.w = rightW;
+	rightDef.h = rightH;
+
+	m_contentSerializer->SetStretchButtonLeftSprite(ctx.newID, leftDef);
+	m_contentSerializer->SetStretchButtonCenterSprite(ctx.newID, centerDef);
+	m_contentSerializer->SetStretchButtonRightSprite(ctx.newID, rightDef);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Stretch button");
@@ -2868,11 +3077,13 @@ void GhostState::PopulatePropertyPanelFields()
 	{
 		auto stretchbutton = static_cast<GuiStretchButton*>(selectedElement.get());
 
-		PopulateTextInputProperty("PROPERTY_LABEL", stretchbutton->m_String);
+		PopulateTextInputProperty("PROPERTY_TEXT", stretchbutton->m_String);
 		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(stretchbutton->m_Width));
 		PopulateScrollbarProperty("PROPERTY_INDENT", stretchbutton->m_Indent);
 		PopulateCheckboxProperty("PROPERTY_SHADOWED", stretchbutton->m_Shadowed);
 		PopulateGroupProperty(selectedElement.get());
+
+		// Sprite picker buttons will show sprite dialog when clicked (handled in Update)
 	}
 
 	// Populate list properties (for list elements)
@@ -3223,11 +3434,13 @@ void GhostState::UpdateElementFromPropertyPanel()
 	{
 		auto stretchbutton = static_cast<GuiStretchButton*>(selectedElement.get());
 
-		if (UpdateTextInputProperty("PROPERTY_LABEL", stretchbutton->m_String)) wasUpdated = true;
+		if (UpdateTextInputProperty("PROPERTY_TEXT", stretchbutton->m_String)) wasUpdated = true;
 		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
 		if (UpdateScrollbarProperty("PROPERTY_INDENT", stretchbutton->m_Indent)) wasUpdated = true;
 		if (UpdateCheckboxProperty("PROPERTY_SHADOWED", stretchbutton->m_Shadowed)) wasUpdated = true;
 		if (UpdateGroupProperty(selectedElement.get())) wasUpdated = true;
+
+		// Sprite filenames updated via sprite picker dialog (handled in Update with button clicks)
 	}
 
 	// Update list properties

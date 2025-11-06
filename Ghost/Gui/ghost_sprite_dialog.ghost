@@ -8,26 +8,26 @@
       {
         "type": "panel",
         "position": [
-          5,
-          5
+          20,
+          20
         ],
         "size": [
-          237.0,
-          250.0
+          294.0,
+          362.0
         ],
         "backgroundColor": [
-          80,
-          80,
-          80,
+          60,
+          60,
+          60,
           255
         ],
-        "font": "babyblocks.ttf",
-        "fontSize": 30,
         "filled": true,
         "layout": "table",
-        "horzPadding": 9,
-        "vertPadding": 5,
+        "horzPadding": 10,
+        "vertPadding": 10,
         "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 32,
         "elements": [
           {
             "type": "textarea",
@@ -35,7 +35,7 @@
               -1,
               -1
             ],
-            "text": "Name:",
+            "text": "Spritesheet:",
             "textColor": [
               255,
               255,
@@ -47,7 +47,7 @@
             "justified": 0
           },
           {
-            "name": "PROPERTY_NAME",
+            "name": "SPRITE_FILENAME",
             "type": "textinput",
             "position": [
               -1,
@@ -83,220 +83,28 @@
               -1,
               -1
             ],
-            "text": "Text:",
+            "text": "X:",
             "textColor": [
               255,
               255,
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
+            "width": 1,
+            "height": 46.0,
             "justified": 0
           },
           {
-            "name": "PROPERTY_TEXT",
-            "type": "textinput",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              0,
-              0,
-              0,
-              255
-            ],
-            "borderColor": [
-              255,
-              255,
-              255,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Left Sprite:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_SPRITE_LEFT",
-            "type": "textbutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Pick Sprite",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              64,
-              64,
-              64,
-              255
-            ],
-            "borderColor": [
-              128,
-              128,
-              128,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Center Sprite:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_SPRITE_CENTER",
-            "type": "textbutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Pick Sprite",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              64,
-              64,
-              64,
-              255
-            ],
-            "borderColor": [
-              128,
-              128,
-              128,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Right Sprite:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_SPRITE_RIGHT",
-            "type": "textbutton",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Pick Sprite",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              64,
-              64,
-              64,
-              255
-            ],
-            "borderColor": [
-              128,
-              128,
-              128,
-              255
-            ]
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Width:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_WIDTH",
+            "name": "SPRITE_X",
             "type": "scrollbar",
             "position": [
               -1,
               -1
             ],
-            "valueRange": 500,
+            "valueRange": 255,
             "size": [
-              150.0,
-              20.0
+              200.0,
+              40.0
             ],
             "vertical": false,
             "spurColor": [
@@ -306,9 +114,9 @@
               255
             ],
             "backgroundColor": [
-              128,
-              128,
-              128,
+              80,
+              80,
+              80,
               255
             ]
           },
@@ -318,59 +126,28 @@
               -1,
               -1
             ],
-            "text": "Shadowed:",
+            "text": "Y:",
             "textColor": [
               255,
               255,
               255,
               255
             ],
-            "width": 6,
-            "height": 30.0,
+            "width": 2,
+            "height": 46.0,
             "justified": 0
           },
           {
-            "name": "PROPERTY_SHADOWED",
-            "type": "checkbox",
-            "position": [
-              -1,
-              -1
-            ],
-            "size": [
-              20.0,
-              20.0
-            ],
-            "group": 0,
-            "active": false
-          },
-          {
-            "type": "textarea",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "Group:",
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "width": 6,
-            "height": 30.0,
-            "justified": 0
-          },
-          {
-            "name": "PROPERTY_GROUP",
+            "name": "SPRITE_Y",
             "type": "scrollbar",
             "position": [
               -1,
               -1
             ],
-            "valueRange": 10,
+            "valueRange": 255,
             "size": [
-              150.0,
-              20.0
+              200.0,
+              40.0
             ],
             "vertical": false,
             "spurColor": [
@@ -380,11 +157,173 @@
               255
             ],
             "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "WIDTH:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 2,
+            "height": 46.0,
+            "justified": 0
+          },
+          {
+            "name": "SPRITE_WIDTH",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Height:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "width": 2,
+            "height": 46.0,
+            "justified": 0
+          },
+          {
+            "name": "SPRITE_HEIGHT",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "name": "OK_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "  OK  ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
               128,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              255,
+              128,
+              255
+            ]
+          },
+          {
+            "name": "CANCEL_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": " Cancel ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              255,
               128,
               128,
               255
             ]
+          },
+          {
+            "name": "SPRITE_PREVIEW",
+            "type": "panel",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              60.0,
+              60.0
+            ],
+            "backgroundColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5
           }
         ]
       }

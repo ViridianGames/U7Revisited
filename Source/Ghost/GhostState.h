@@ -79,6 +79,9 @@ public:
 	// Track which color property button was clicked (e.g., "PROPERTY_TEXTCOLOR", "PROPERTY_BACKGROUNDCOLOR")
 	std::string m_editingColorProperty;
 
+	// Track which sprite property button was clicked (e.g., "PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT")
+	std::string m_editingSpriteProperty;
+
 	// Generic property helpers
 	int GetElementGroup(GuiElement* element);
 	void SetElementGroup(GuiElement* element, int group);

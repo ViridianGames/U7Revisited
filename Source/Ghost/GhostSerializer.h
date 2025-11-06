@@ -23,6 +23,9 @@ public:
 	// Set the base sprite path (e.g., "Images/")
 	static void SetBaseSpritePath(const std::string& path);
 
+	// Get the base sprite path
+	static std::string GetBaseSpritePath() { return s_baseSpritePath; }
+
 	// Load a GUI from a .ghost JSON file
 	bool LoadFromFile(const std::string& filename, Gui* gui);
 
@@ -151,6 +154,27 @@ public:
 		return (it != m_spriteNames.end()) ? it->second : "image.png";  // Default image.png
 	}
 
+	// Sprite definition structure for stretchbutton sprites
+	struct SpriteDefinition
+	{
+		std::string spritesheet;
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
+
+		bool IsEmpty() const { return spritesheet.empty(); }
+	};
+
+	// StretchButton sprite metadata methods
+	void SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite);
+	void SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite);
+	void SetStretchButtonRightSprite(int buttonID, const SpriteDefinition& sprite);
+
+	SpriteDefinition GetStretchButtonLeftSprite(int buttonID) const;
+	SpriteDefinition GetStretchButtonCenterSprite(int buttonID) const;
+	SpriteDefinition GetStretchButtonRightSprite(int buttonID) const;
+
 	// Font metadata methods
 	void SetElementFont(int elementID, const std::string& fontName) { m_elementFonts[elementID] = fontName; }
 	std::string GetElementFont(int elementID) const
@@ -232,6 +256,11 @@ private:
 
 	// Sprite metadata (since Geist GuiSprite doesn't store the filename)
 	std::map<int, std::string> m_spriteNames;  // Maps sprite ID -> filename
+
+	// StretchButton sprite metadata (3 sprite definitions per button)
+	std::map<int, SpriteDefinition> m_stretchButtonLeftSprites;    // Maps stretchbutton ID -> left sprite definition
+	std::map<int, SpriteDefinition> m_stretchButtonCenterSprites;  // Maps stretchbutton ID -> center sprite definition
+	std::map<int, SpriteDefinition> m_stretchButtonRightSprites;   // Maps stretchbutton ID -> right sprite definition
 
 	// Floating element tracking (elements that should use automatic layout)
 	std::set<int> m_floatingElements;  // Set of element IDs that are floating

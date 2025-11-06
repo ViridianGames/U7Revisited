@@ -1,10 +1,15 @@
 #include "GhostSerializer.h"
 #include "../Geist/Logging.h"
+#include "../Geist/ResourceManager.h"
+#include "../Geist/Primitives.h"
+#include "../Geist/Config.h"
 #include "../../ThirdParty/nlohmann/json.hpp"
 #include <fstream>
 #include <functional>
 
 using namespace std;
+
+extern std::unique_ptr<ResourceManager> g_ResourceManager;
 
 // Initialize static members
 std::string GhostSerializer::s_baseFontPath = "Fonts/";
@@ -859,7 +864,153 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			// Add the scrollbar
 			gui->AddScrollBar(id, valueRange, absoluteX, absoluteY, width, height, vertical, spurColor, bgColor, group, active, false);
 		}
-		// Add more element types here as needed
+		else if (type == "stretchbutton")
+	{
+		// Get width and label
+		int width = element.value("width", 100);
+		string label = element.value("label", "");
+		int indent = element.value("indent", 0);
+
+		// Get color
+		Color color = WHITE;
+		if (element.contains("color"))
+		{
+			auto arr = element["color"];
+			color = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+			              (unsigned char)arr[2], (unsigned char)arr[3] };
+		}
+
+		// Add parent offsets to make position absolute
+		int absoluteX = parentX + posx;
+		int absoluteY = parentY + posy;
+
+		// Parse sprite definitions and create Sprite objects
+		std::shared_ptr<Sprite> leftSprite = nullptr;
+		std::shared_ptr<Sprite> centerSprite = nullptr;
+		std::shared_ptr<Sprite> rightSprite = nullptr;
+
+		// Helper lambda to parse sprite definition and create Sprite
+		auto parseSprite = [&](const string& key) -> std::shared_ptr<Sprite> {
+			if (element.contains(key))
+			{
+				auto spriteObj = element[key];
+				if (spriteObj.contains("spritesheet") &&
+				    spriteObj.contains("x") && spriteObj.contains("y") &&
+				    spriteObj.contains("w") && spriteObj.contains("h"))
+				{
+					string spritesheet = spriteObj["spritesheet"];
+					int x = spriteObj["x"];
+					int y = spriteObj["y"];
+					int w = spriteObj["w"];
+					int h = spriteObj["h"];
+
+					// Load spritesheet texture using ResourceManager
+					// Prepend the base sprite path to the spritesheet filename
+					string fullSpritePath = s_baseSpritePath + spritesheet;
+					Log("GhostSerializer::ParseElements - Attempting to load spritesheet: " + fullSpritePath);
+					Texture* texture = g_ResourceManager->GetTexture(fullSpritePath);
+					if (texture && texture->id != 0 && texture->width > 0 && texture->height > 0)
+					{
+						// Create and return Sprite
+						Log("GhostSerializer::ParseElements - Successfully loaded " + spritesheet + ", creating sprite at (" + to_string(x) + "," + to_string(y) + ") size " + to_string(w) + "x" + to_string(h));
+				return std::make_shared<Sprite>(texture, x, y, w, h);
+					}
+					else
+					{
+						Log("GhostSerializer::ParseElements - FAILED to load spritesheet: " + spritesheet + " (texture is invalid or empty), using fallback");
+					}
+				}
+			}
+			return nullptr;
+		};
+
+		// Helper lambda to create fallback sprite
+		auto createFallbackSprite = [&](const string& key) -> std::shared_ptr<Sprite> {
+			string fallbackPath = s_baseSpritePath + "image.png";
+			Texture* fallbackTexture = g_ResourceManager->GetTexture(fallbackPath);
+
+			if (fallbackTexture && fallbackTexture->id != 0 && fallbackTexture->width > 0 && fallbackTexture->height > 0)
+			{
+				// Default fallback positions for each sprite type
+				if (key == "spriteLeft")
+					return std::make_shared<Sprite>(fallbackTexture, 0, 0, 16, 48);
+				else if (key == "spriteCenter")
+					return std::make_shared<Sprite>(fallbackTexture, 16, 0, 16, 48);
+				else if (key == "spriteRight")
+					return std::make_shared<Sprite>(fallbackTexture, 32, 0, 16, 48);
+			}
+			return nullptr;
+		};
+
+		// Parse the three sprites, use fallback if load fails
+		leftSprite = parseSprite("spriteLeft");
+		if (!leftSprite)
+			leftSprite = createFallbackSprite("spriteLeft");
+
+		centerSprite = parseSprite("spriteCenter");
+		if (!centerSprite)
+			centerSprite = createFallbackSprite("spriteCenter");
+
+		rightSprite = parseSprite("spriteRight");
+		if (!rightSprite)
+			rightSprite = createFallbackSprite("spriteRight");
+
+	// If any sprites still failed to load (even fallback failed), create dummy sprites
+	if (!leftSprite || !centerSprite || !rightSprite)
+	{
+		Log("GhostSerializer::ParseElements - One or more stretchbutton sprites failed to load (including fallback), using dummy placeholders");
+		Texture* dummyTexture = g_ResourceManager->GetTexture("image.png");
+		if (dummyTexture)
+		{
+			if (!leftSprite) leftSprite = std::make_shared<Sprite>(dummyTexture, 0, 0, 10, 10);
+			if (!centerSprite) centerSprite = std::make_shared<Sprite>(dummyTexture, 0, 0, 10, 10);
+			if (!rightSprite) rightSprite = std::make_shared<Sprite>(dummyTexture, 0, 0, 10, 10);
+		}
+	}
+
+		// Store sprite definitions in metadata
+		if (element.contains("spriteLeft"))
+		{
+			auto spriteObj = element["spriteLeft"];
+			SpriteDefinition def;
+			def.spritesheet = spriteObj.value("spritesheet", "");
+			def.x = spriteObj.value("x", 0);
+			def.y = spriteObj.value("y", 0);
+			def.w = spriteObj.value("w", 0);
+			def.h = spriteObj.value("h", 0);
+			SetStretchButtonLeftSprite(id, def);
+		}
+		if (element.contains("spriteCenter"))
+		{
+			auto spriteObj = element["spriteCenter"];
+			SpriteDefinition def;
+			def.spritesheet = spriteObj.value("spritesheet", "");
+			def.x = spriteObj.value("x", 0);
+			def.y = spriteObj.value("y", 0);
+			def.w = spriteObj.value("w", 0);
+			def.h = spriteObj.value("h", 0);
+			SetStretchButtonCenterSprite(id, def);
+		}
+		if (element.contains("spriteRight"))
+		{
+			auto spriteObj = element["spriteRight"];
+			SpriteDefinition def;
+			def.spritesheet = spriteObj.value("spritesheet", "");
+			def.x = spriteObj.value("x", 0);
+			def.y = spriteObj.value("y", 0);
+			def.w = spriteObj.value("w", 0);
+			def.h = spriteObj.value("h", 0);
+			SetStretchButtonRightSprite(id, def);
+		}
+
+		// Add the stretchbutton
+		// Note: The same 3 sprites are reused for both active and inactive states
+		gui->AddStretchButton(id, absoluteX, absoluteY, width, label,
+		                      leftSprite, rightSprite, centerSprite,
+		                      leftSprite, rightSprite, centerSprite,
+		                      indent, color, group, active, false);
+	}
+	// Add more element types here as needed
 
 		// Mark floating elements and update layout position
 		if (isFloating && type != "include")
@@ -1529,7 +1680,42 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["label"] = stretchbutton->m_String;
 		elementJson["indent"] = stretchbutton->m_Indent;
 		elementJson["color"] = { stretchbutton->m_Color.r, stretchbutton->m_Color.g, stretchbutton->m_Color.b, stretchbutton->m_Color.a };
-		// Note: sprite parts serialization not implemented yet - would need sprite name tracking for 6 sprites
+
+		// Serialize sprite definitions (3 sprites, reused for active and inactive states)
+		SpriteDefinition leftSprite = GetStretchButtonLeftSprite(elementID);
+		SpriteDefinition centerSprite = GetStretchButtonCenterSprite(elementID);
+		SpriteDefinition rightSprite = GetStretchButtonRightSprite(elementID);
+
+		if (!leftSprite.IsEmpty())
+		{
+			elementJson["spriteLeft"] = {
+				{"spritesheet", leftSprite.spritesheet},
+				{"x", leftSprite.x},
+				{"y", leftSprite.y},
+				{"w", leftSprite.w},
+				{"h", leftSprite.h}
+			};
+		}
+		if (!centerSprite.IsEmpty())
+		{
+			elementJson["spriteCenter"] = {
+				{"spritesheet", centerSprite.spritesheet},
+				{"x", centerSprite.x},
+				{"y", centerSprite.y},
+				{"w", centerSprite.w},
+				{"h", centerSprite.h}
+			};
+		}
+		if (!rightSprite.IsEmpty())
+		{
+			elementJson["spriteRight"] = {
+				{"spritesheet", rightSprite.spritesheet},
+				{"x", rightSprite.x},
+				{"y", rightSprite.y},
+				{"w", rightSprite.w},
+				{"h", rightSprite.h}
+			};
+		}
 	}
 	else if (element->m_Type == GUI_LIST)
 	{
@@ -1611,4 +1797,38 @@ std::vector<int> GhostSerializer::GetAllElementIDs() const
 	collectIDs(m_rootElementID);
 
 	return allIDs;
+}
+
+// StretchButton sprite definition getter/setter implementations
+void GhostSerializer::SetStretchButtonLeftSprite(int buttonID, const SpriteDefinition& sprite)
+{
+	m_stretchButtonLeftSprites[buttonID] = sprite;
+}
+
+void GhostSerializer::SetStretchButtonCenterSprite(int buttonID, const SpriteDefinition& sprite)
+{
+	m_stretchButtonCenterSprites[buttonID] = sprite;
+}
+
+void GhostSerializer::SetStretchButtonRightSprite(int buttonID, const SpriteDefinition& sprite)
+{
+	m_stretchButtonRightSprites[buttonID] = sprite;
+}
+
+GhostSerializer::SpriteDefinition GhostSerializer::GetStretchButtonLeftSprite(int buttonID) const
+{
+	auto it = m_stretchButtonLeftSprites.find(buttonID);
+	return (it != m_stretchButtonLeftSprites.end()) ? it->second : SpriteDefinition();
+}
+
+GhostSerializer::SpriteDefinition GhostSerializer::GetStretchButtonCenterSprite(int buttonID) const
+{
+	auto it = m_stretchButtonCenterSprites.find(buttonID);
+	return (it != m_stretchButtonCenterSprites.end()) ? it->second : SpriteDefinition();
+}
+
+GhostSerializer::SpriteDefinition GhostSerializer::GetStretchButtonRightSprite(int buttonID) const
+{
+	auto it = m_stretchButtonRightSprites.find(buttonID);
+	return (it != m_stretchButtonRightSprites.end()) ? it->second : SpriteDefinition();
 }

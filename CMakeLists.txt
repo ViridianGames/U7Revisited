@@ -263,6 +263,7 @@ set(GHOST_SOURCES
     Source/Ghost/Main.cpp
     Source/Ghost/GhostState.cpp
     Source/Ghost/ColorPickerState.cpp
+    Source/Ghost/SpritePickerState.cpp
     Source/Ghost/GhostSerializer.cpp
     Source/Ghost/FileDialog.cpp
 )
