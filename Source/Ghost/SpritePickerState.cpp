@@ -7,7 +7,6 @@
 #include "../Geist/GuiElements.h"
 #include "GhostSerializer.h"
 #include "SpriteUtils.h"
-#include "FileDialog.h"
 #include <algorithm>
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
@@ -122,17 +121,15 @@ void SpritePickerState::Update()
 			auto button = static_cast<GuiTextButton*>(elem.get());
 			if (button->m_Clicked)
 			{
-				// Open file dialog for image selection, starting in sprite directory
-				// Filter format for Windows: "Description\0*.ext1;*.ext2\0\0"
-				std::string basePath = GhostSerializer::GetBaseSpritePath();
-				std::string currentFilename = m_filename;
+				// TODO: Re-implement file dialog for image selection
+				// For now, this button does nothing since FileDialog was removed
+				// Options:
+				//   1. Create a minimal native file picker wrapper
+				//   2. Use FileChooserState for images too
+				//   3. Restore FileDialog just for image selection
+				Log("Sprite image file selection not yet implemented");
 
-				std::string selectedPath = FileDialog::OpenFile(
-					"Select Sprite Image",
-					"Image Files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif\0All Files\0*.*\0\0",
-					basePath.c_str(),
-					currentFilename.c_str()
-				);
+				std::string selectedPath = "";  // Disabled until file picker is restored
 
 				if (!selectedPath.empty())
 				{

@@ -85,11 +85,13 @@
             "elements": [
               {
                 "type": "include",
-                "filename": "listbox.ghost"
+                "filename": "listbox.ghost",
+                "namePrefix": "FOLDERS_"
               },
               {
                 "type": "include",
-                "filename": "listbox.ghost"
+                "filename": "listbox.ghost",
+                "namePrefix": "FILES_"
               }
             ]
           },

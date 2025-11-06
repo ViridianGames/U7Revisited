@@ -5,9 +5,9 @@
 #include "../Geist/Logging.h"
 #include "../Geist/ResourceManager.h"
 #include "../Geist/Config.h"
-#include "FileDialog.h"
 #include "ColorPickerState.h"
 #include "SpritePickerState.h"
+#include "FileChooserState.h"
 #include "SpriteUtils.h"
 #include "raylib.h"
 #include <fstream>
@@ -1660,13 +1660,10 @@ void GhostState::Update()
 	{
 		Log("Open button clicked!");
 
-		// Show file open dialog
-		string filepath = FileDialog::OpenFile("Open Ghost File", "Ghost Files (*.ghost)\0*.ghost\0All Files (*.*)\0*.*\0");
-
-		if (!filepath.empty())
-		{
-			LoadGhostFile(filepath);  // LoadGhostFile now handles clearing content
-		}
+		// Push FileChooserState in open mode
+		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+		fileChooserState->SetMode(false, ".ghost", "Gui/");
+		g_StateMachine->PushState(3);
 	}
 	else if (activeID == m_serializer->GetElementID("SAVE"))
 	{
@@ -1676,21 +1673,12 @@ void GhostState::Update()
 		if (m_loadedGhostFile.empty())
 		{
 			Log("No file loaded, showing save dialog");
-			string filepath = FileDialog::SaveFile("Save Ghost File", "Ghost Files (*.ghost)\0*.ghost\0All Files (*.*)\0*.*\0");
 
-			if (filepath.empty())
-			{
-				Log("Save cancelled by user");
-				return;
-			}
-
-			// Ensure .ghost extension
-			if (filepath.find(".ghost") == string::npos)
-			{
-				filepath += ".ghost";
-			}
-
-			m_loadedGhostFile = filepath;
+			// Push FileChooserState in save mode
+			auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+			fileChooserState->SetMode(true, ".ghost", "Gui/");
+			g_StateMachine->PushState(3);
+			return;
 		}
 
 		SaveGhostFile();
@@ -1700,22 +1688,10 @@ void GhostState::Update()
 		Log("Save As button clicked!");
 
 		// Always prompt for a new filename
-		string filepath = FileDialog::SaveFile("Save Ghost File As", "Ghost Files (*.ghost)\0*.ghost\0All Files (*.*)\0*.*\0");
-
-		if (filepath.empty())
-		{
-			Log("Save As cancelled by user");
-			return;
-		}
-
-		// Ensure .ghost extension
-		if (filepath.find(".ghost") == string::npos)
-		{
-			filepath += ".ghost";
-		}
-
-		m_loadedGhostFile = filepath;
-		SaveGhostFile();
+		// Push FileChooserState in save mode
+		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+		fileChooserState->SetMode(true, ".ghost", "Gui/");
+		g_StateMachine->PushState(3);
 	}
 	else if (activeID == m_serializer->GetElementID("PANEL"))
 	{
@@ -2012,6 +1988,64 @@ void GhostState::OnEnter()
 
 			// Reset the tracking variable
 			m_editingSpriteProperty.clear();
+		}
+	}
+
+	// Check if we're returning from FileChooserState
+	if (g_StateMachine->GetPreviousState() == 3)  // FileChooserState is state ID 3
+	{
+		Log("GhostState: Returning from FileChooserState");
+		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+
+		// Only process file selection if user clicked OK (not Cancel)
+		Log("GhostState: WasAccepted = " + std::string(fileChooserState->WasAccepted() ? "true" : "false"));
+		if (fileChooserState->WasAccepted())
+		{
+			string filepath = fileChooserState->GetSelectedPath();
+			Log("Selected file: " + filepath);
+
+			// Determine if this was an open or save operation
+			// If m_loadedGhostFile is empty and we have a valid file, it's either open or first save
+			// If m_loadedGhostFile has a value, it's a "Save As" operation
+
+			// For now, check if the file exists to determine open vs save
+			// This is a simple heuristic - you may want to store the mode explicitly
+			std::ifstream testFile(filepath);
+			bool fileExists = testFile.good();
+			testFile.close();
+
+			if (fileExists || !m_loadedGhostFile.empty())
+			{
+				// Either file exists (open) or we're doing save as
+				// Try to load it if it exists
+				if (fileExists)
+				{
+					LoadGhostFile(filepath);
+				}
+				else
+				{
+					// Ensure .ghost extension
+					if (filepath.find(".ghost") == string::npos)
+					{
+						filepath += ".ghost";
+					}
+
+					m_loadedGhostFile = filepath;
+					SaveGhostFile();
+				}
+			}
+			else
+			{
+				// New file being saved
+				// Ensure .ghost extension
+				if (filepath.find(".ghost") == string::npos)
+				{
+					filepath += ".ghost";
+				}
+
+				m_loadedGhostFile = filepath;
+				SaveGhostFile();
+			}
 		}
 	}
 }

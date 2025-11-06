@@ -230,7 +230,8 @@ private:
 	// Helper function to recursively parse elements with property inheritance
 	// parentX and parentY track the cumulative offset from nested parents
 	// parentElementID tracks the parent in the tree structure (-1 for root level)
-	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1);
+	// namePrefix is prepended to all element names (used for includes to avoid name collisions)
+	void ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps = ghost_json(), int parentX = 0, int parentY = 0, int parentElementID = -1, const std::string& namePrefix = "");
 
 	// Storage for loaded fonts to keep them alive
 	std::vector<std::shared_ptr<Font>> m_loadedFonts;

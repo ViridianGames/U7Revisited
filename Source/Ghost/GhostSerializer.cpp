@@ -207,7 +207,7 @@ std::pair<int, int> GhostSerializer::CalculateNextFloatingPosition(int parentID,
 	return {relX, relY};
 }
 
-void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID)
+void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, const ghost_json& inheritedProps, int parentX, int parentY, int parentElementID, const std::string& namePrefix)
 {
 	// Track layout position for floating elements
 	// Get parent's layout type and padding (defaults to "horz" and 5px if no parent or not found)
@@ -253,7 +253,16 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			// Includes have no position - they simply compose the included file's content
 			// The included file's root element handles its own positioning
 			string filename = element["filename"];
-			Log("GhostSerializer::ParseElements - Loading included file: " + filename);
+			string includeNamePrefix = element.value("namePrefix", "");  // Optional name prefix for included elements
+
+			if (!includeNamePrefix.empty())
+			{
+				Log("GhostSerializer::ParseElements - Loading included file: " + filename + " with namePrefix: " + includeNamePrefix);
+			}
+			else
+			{
+				Log("GhostSerializer::ParseElements - Loading included file: " + filename);
+			}
 
 			// Track children before include so we can find what was added
 			vector<int> childrenBefore;
@@ -267,9 +276,9 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			if (!includedJson.empty() && includedJson.contains("gui") && includedJson["gui"].contains("elements"))
 			{
 				// Parse included elements with parent's offsets PLUS current layout position
-				// This positions the included content at the current layout cursor
+				// Pass the namePrefix to prepend to all element names in the included file
 				ParseElements(includedJson["gui"]["elements"], gui, inheritedProps,
-				             parentX + layoutX, parentY + layoutY, parentElementID);
+				             parentX + layoutX, parentY + layoutY, parentElementID, includeNamePrefix);
 			}
 
 			// Update layout position based on what was added by the include
@@ -366,7 +375,9 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 		// Store name->ID mapping if name is provided
 		if (!name.empty())
 		{
-			m_elementNameToID[name] = id;
+			// Apply namePrefix if provided (for includes)
+			string prefixedName = namePrefix + name;
+			m_elementNameToID[prefixedName] = id;
 		}
 
 		// Track tree structure for real elements
@@ -469,7 +480,8 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			{
 				// Build inherited props from the panel we just created (use the maps, not the element JSON)
 				ghost_json childInheritedProps = BuildInheritedProps(id);
-				ParseElements(element["elements"], gui, childInheritedProps, absoluteX, absoluteY, id);
+				// Pass along the same namePrefix to child elements
+				ParseElements(element["elements"], gui, childInheritedProps, absoluteX, absoluteY, id, namePrefix);
 
 				// Recalculate panel size to fit all children
 				ReflowPanel(id, gui);

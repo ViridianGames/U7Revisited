@@ -6,6 +6,7 @@
 #include "GhostState.h"
 #include "ColorPickerState.h"
 #include "SpritePickerState.h"
+#include "FileChooserState.h"
 #include "raylib.h"
 
 using namespace std;
@@ -81,6 +82,11 @@ int main()
 				State* spritePickerState = new SpritePickerState;
 				spritePickerState->Init("");
 				g_StateMachine->RegisterState(2, spritePickerState, "SPRITE_PICKER_STATE");
+
+				// Create and register FileChooser state
+				State* fileChooserState = new FileChooserState;
+				fileChooserState->Init("");
+				g_StateMachine->RegisterState(3, fileChooserState, "FILE_CHOOSER_STATE");
 
 				// Start with Ghost state
 				g_StateMachine->MakeStateTransition(0);

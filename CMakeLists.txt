@@ -264,13 +264,14 @@ set(GHOST_SOURCES
     Source/Ghost/GhostState.cpp
     Source/Ghost/ColorPickerState.cpp
     Source/Ghost/SpritePickerState.cpp
+    Source/Ghost/FileChooserState.cpp
     Source/Ghost/GhostSerializer.cpp
-    Source/Ghost/FileDialog.cpp
 )
 
 set(GHOST_GEIST_SOURCES
     Source/Geist/Config.cpp
     Source/Geist/Engine.cpp
+    Source/Geist/GhostWindow.cpp
     Source/Geist/Globals.cpp
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp

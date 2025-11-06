@@ -24,7 +24,7 @@
         "vertPadding": 5,
         "elements": [
           {
-            "name": "FOLDER_LIST",
+            "name": "LISTBOX",
             "type": "panel",
             "position": [
               -1,
@@ -60,7 +60,7 @@
             ]
           },
           {
-            "name": "FOLDER_SCROLL",
+            "name": "SCROLLBAR",
             "type": "scrollbar",
             "position": [
               -1,
