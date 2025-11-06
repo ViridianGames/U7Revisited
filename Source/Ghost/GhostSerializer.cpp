@@ -1054,6 +1054,125 @@ void GhostSerializer::ParseElements(const ghost_json& elementsArray, Gui* gui, c
 			// Add the list
 			gui->AddGuiList(id, absoluteX, absoluteY, width, height, fontPtr.get(), items, textColor, bgColor, borderColor, group, active);
 		}
+		else if (type == "listbox")
+		{
+			auto size = element["size"];
+			int width = size[0];
+			int height = size[1];
+
+			// Get items array (optional - can be populated later)
+			vector<string> items;
+			if (element.contains("items"))
+			{
+				for (const auto& item : element["items"])
+				{
+					items.push_back(item.get<string>());
+				}
+			}
+
+			// Get text color with inheritance
+			Color textColor = WHITE;
+			if (element.contains("textColor"))
+			{
+				m_explicitProperties[id].insert("textColor");
+				auto arr = element["textColor"];
+				textColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("textColor"))
+			{
+				auto arr = inheritedProps["textColor"];
+				textColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                  (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get background color
+			Color bgColor = BLACK;
+			if (element.contains("backgroundColor"))
+			{
+				m_explicitProperties[id].insert("backgroundColor");
+				auto arr = element["backgroundColor"];
+				bgColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("backgroundColor"))
+			{
+				auto arr = inheritedProps["backgroundColor"];
+				bgColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get border color
+			Color borderColor = WHITE;
+			if (element.contains("borderColor"))
+			{
+				m_explicitProperties[id].insert("borderColor");
+				auto arr = element["borderColor"];
+				borderColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                    (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("borderColor"))
+			{
+				auto arr = inheritedProps["borderColor"];
+				borderColor = Color{ (unsigned char)arr[0], (unsigned char)arr[1],
+				                    (unsigned char)arr[2], (unsigned char)arr[3] };
+			}
+
+			// Get font name with inheritance
+			string fontName = "";
+			if (element.contains("font"))
+			{
+				m_explicitProperties[id].insert("font");
+				fontName = element["font"].get<string>();
+				m_elementFonts[id] = fontName;  // Store just the font name
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("font"))
+			{
+				fontName = inheritedProps["font"].get<string>();
+			}
+
+			// Get font size with inheritance
+			int fontSize = 20;
+			if (element.contains("fontSize"))
+			{
+				m_explicitProperties[id].insert("fontSize");
+				fontSize = element["fontSize"].get<int>();
+				m_elementFontSizes[id] = fontSize;
+			}
+			else if (!inheritedProps.is_null() && inheritedProps.contains("fontSize"))
+			{
+				fontSize = inheritedProps["fontSize"].get<int>();
+			}
+
+			// Load font at the specified size
+			Font font;
+			if (!fontName.empty())
+			{
+				string fontPath = s_baseFontPath + fontName;
+				font = LoadFontEx(fontPath.c_str(), fontSize, 0, 0);
+				if (font.texture.id == 0)
+				{
+					Log("GhostSerializer::ParseElements - Failed to load font: " + fontPath);
+					font = GetFontDefault();
+				}
+			}
+			else
+			{
+				// No font name specified, use default font
+				font = GetFontDefault();
+			}
+
+			// Create a shared pointer for the font and store it to keep it alive
+			shared_ptr<Font> fontPtr = make_shared<Font>(font);
+			m_loadedFonts.push_back(fontPtr);
+
+			// Add parent offsets to make position absolute
+			int absoluteX = parentX + posx;
+			int absoluteY = parentY + posy;
+
+			// Add the listbox
+			gui->AddListBox(id, absoluteX, absoluteY, width, height, fontPtr.get(), items, textColor, bgColor, borderColor, group, active);
+		}
 		else if (type == "iconbutton")
 		{
 			// Get sprite
@@ -1802,6 +1921,9 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		case GUI_LIST:
 			type = "list";
 			break;
+		case GUI_LISTBOX:
+			type = "listbox";
+			break;
 		// Add more types as needed
 		default:
 			Log("GhostSerializer::SerializeElement - Unknown element type: " + to_string(element->m_Type));
@@ -2142,6 +2264,36 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		elementJson["textColor"] = { list->m_TextColor.r, list->m_TextColor.g, list->m_TextColor.b, list->m_TextColor.a };
 		elementJson["backgroundColor"] = { list->m_BackgroundColor.r, list->m_BackgroundColor.g, list->m_BackgroundColor.b, list->m_BackgroundColor.a };
 		elementJson["borderColor"] = { list->m_BorderColor.r, list->m_BorderColor.g, list->m_BorderColor.b, list->m_BorderColor.a };
+
+		// Serialize font/fontSize if explicitly set
+		auto explicitIt = m_explicitProperties.find(elementID);
+		if (explicitIt != m_explicitProperties.end())
+		{
+			const auto& explicitProps = explicitIt->second;
+
+			if (explicitProps.count("font") > 0)
+			{
+				auto fontIt = m_elementFonts.find(elementID);
+				if (fontIt != m_elementFonts.end())
+					elementJson["font"] = fontIt->second;
+			}
+
+			if (explicitProps.count("fontSize") > 0)
+			{
+				auto sizeIt = m_elementFontSizes.find(elementID);
+				if (sizeIt != m_elementFontSizes.end())
+					elementJson["fontSize"] = sizeIt->second;
+			}
+		}
+	}
+	else if (element->m_Type == GUI_LISTBOX)
+	{
+		auto listbox = static_cast<GuiListBox*>(element.get());
+		elementJson["size"] = { listbox->m_Width, listbox->m_Height };
+		elementJson["items"] = listbox->m_Items;
+		elementJson["textColor"] = { listbox->m_TextColor.r, listbox->m_TextColor.g, listbox->m_TextColor.b, listbox->m_TextColor.a };
+		elementJson["backgroundColor"] = { listbox->m_BackgroundColor.r, listbox->m_BackgroundColor.g, listbox->m_BackgroundColor.b, listbox->m_BackgroundColor.a };
+		elementJson["borderColor"] = { listbox->m_BorderColor.r, listbox->m_BorderColor.g, listbox->m_BorderColor.b, listbox->m_BorderColor.a };
 
 		// Serialize font/fontSize if explicitly set
 		auto explicitIt = m_explicitProperties.find(elementID);

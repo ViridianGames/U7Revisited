@@ -34,6 +34,7 @@ private:
 	std::unique_ptr<GhostWindow> m_window;
 
 	bool m_accepted = false;
+	bool m_waitingForFileChooser = false;  // Track if we're waiting for FileChooserState
 
 	// Sprite definition values
 	std::string m_filename;

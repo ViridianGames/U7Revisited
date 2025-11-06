@@ -84,14 +84,119 @@
             "vertPadding": 5,
             "elements": [
               {
-                "type": "include",
-                "filename": "listbox.ghost",
-                "namePrefix": "FOLDERS_"
+                "name": "FOLDERS_LISTBOX",
+                "type": "listbox",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  300.0,
+                  300.0
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ]
               },
               {
-                "type": "include",
-                "filename": "listbox.ghost",
-                "namePrefix": "FILES_"
+                "name": "FILES_LISTBOX",
+                "type": "listbox",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  300.0,
+                  300.0
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FILENAME_PANEL",
+            "type": "panel",
+            "position": [
+              5,
+              360
+            ],
+            "size": [
+              400.0,
+              30.0
+            ],
+            "backgroundColor": [
+              80,
+              153,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "FILENAME",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  400.0,
+                  30.0
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  40,
+                  40,
+                  40,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ]
               }
             ]
           },
@@ -100,7 +205,7 @@
             "type": "panel",
             "position": [
               5,
-              205
+              415
             ],
             "size": [
               305.0999755859375,

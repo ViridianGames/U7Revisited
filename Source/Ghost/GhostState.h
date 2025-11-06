@@ -36,6 +36,7 @@ private:
 	void InsertOctagonBox();
 	void InsertStretchButton();
 	void InsertList();
+	void InsertListBox();
 	void InsertFileInclude();
 
 private:

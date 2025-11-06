@@ -22,3 +22,6 @@ cmake-build-debug/
 /Redist/runlog.txt
 /Redist/debuglog.txt
 /Redist/textflx_debug.txt
+
+# Visual Studio resource cache files
+*.aps

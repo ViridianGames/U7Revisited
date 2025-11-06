@@ -1358,3 +1358,198 @@ void GuiList::SetSelectedIndex(int index)
         m_SelectedIndex = index;
     }
 }
+
+// ============================================================================
+// GUILISTBOX
+// ============================================================================
+
+void GuiListBox::Init(int ID, int posx, int posy, int width, int height, Font* font,
+                      const std::vector<std::string>& items,
+                      Color textcolor, Color backgroundcolor, Color bordercolor,
+                      int group, int active)
+{
+	m_ID = ID;
+	m_Type = GUI_LISTBOX;
+	m_Pos = {static_cast<float>(posx), static_cast<float>(posy)};
+	m_Width = static_cast<float>(width);
+	m_Height = static_cast<float>(height);
+	m_Font = font;
+	m_TextColor = textcolor;
+	m_BackgroundColor = backgroundcolor;
+	m_BorderColor = bordercolor;
+	m_Group = group;
+	m_Active = active;
+	m_Items = items;
+	m_SelectedIndex = -1;
+	m_ScrollOffset = 0;
+
+	// Calculate how many items fit in the box
+	if (m_Font)
+	{
+		m_ItemHeight = m_Font->baseSize * 1.2f;  // Add some padding
+		m_VisibleItemCount = static_cast<int>(m_Height / m_ItemHeight);
+	}
+	else
+	{
+		m_ItemHeight = 20.0f;
+		m_VisibleItemCount = static_cast<int>(m_Height / 20.0f);
+	}
+}
+
+void GuiListBox::Update()
+{
+	Tween::Update();
+	m_Hovered = false;
+	m_Clicked = false;
+	m_DoubleClicked = false;
+
+	if (!m_Active || !m_Visible || !m_Gui)
+		return;
+
+	if (!m_Gui->m_AcceptingInput)
+		return;
+
+	// Check if mouse is over the listbox
+	Vector2 mousePos = GetMousePosition();
+	float scaledX = (mousePos.x / m_Gui->m_InputScale) - m_Gui->m_Pos.x;
+	float scaledY = (mousePos.y / m_Gui->m_InputScale) - m_Gui->m_Pos.y;
+
+	m_Hovered = (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+	             scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_Height);
+
+	if (m_Hovered)
+	{
+		// Check for clicks on individual items
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			// Calculate which item was clicked
+			float relativeY = scaledY - m_Pos.y;
+			int clickedIndex = m_ScrollOffset + static_cast<int>(relativeY / m_ItemHeight);
+
+			if (clickedIndex >= 0 && clickedIndex < static_cast<int>(m_Items.size()))
+			{
+				// Check for double-click (within 0.5 seconds of last click on same item)
+				double currentTime = GetTime();
+				if (clickedIndex == m_LastClickedIndex &&
+				    (currentTime - m_LastClickTime) < 0.5)
+				{
+					m_DoubleClicked = true;
+					Log("GuiListBox: Double-clicked item " + std::to_string(clickedIndex) + ": " + m_Items[clickedIndex]);
+				}
+
+				m_SelectedIndex = clickedIndex;
+				m_Clicked = true;
+				m_Gui->m_ActiveElement = m_ID;
+				m_LastClickedIndex = clickedIndex;
+				m_LastClickTime = currentTime;
+
+				if (!m_DoubleClicked)
+				{
+					Log("GuiListBox: Selected item " + std::to_string(m_SelectedIndex) + ": " + m_Items[m_SelectedIndex]);
+				}
+			}
+		}
+
+		// Handle mouse wheel scrolling
+		float wheelMove = GetMouseWheelMove();
+		if (wheelMove != 0)
+		{
+			m_ScrollOffset -= static_cast<int>(wheelMove);
+
+			// Clamp scroll offset
+			int maxScroll = static_cast<int>(m_Items.size()) - m_VisibleItemCount;
+			if (maxScroll < 0) maxScroll = 0;
+			if (m_ScrollOffset < 0) m_ScrollOffset = 0;
+			if (m_ScrollOffset > maxScroll) m_ScrollOffset = maxScroll;
+		}
+	}
+}
+
+void GuiListBox::Draw()
+{
+	if (!m_Visible)
+		return;
+
+	int x = static_cast<int>(m_Gui->m_Pos.x + m_Pos.x);
+	int y = static_cast<int>(m_Gui->m_Pos.y + m_Pos.y);
+	int w = static_cast<int>(m_Width);
+	int h = static_cast<int>(m_Height);
+
+	// Draw background
+	DrawRectangle(x, y, w, h, m_BackgroundColor);
+
+	// Draw border
+	DrawRectangleLines(x, y, w, h, m_BorderColor);
+
+	// Enable scissor mode to clip text to listbox bounds
+	BeginScissorMode(x, y, w, h);
+
+	// Draw visible items (include one extra item for partial visibility at bottom)
+	int endIndex = m_ScrollOffset + m_VisibleItemCount + 1;
+	if (endIndex > static_cast<int>(m_Items.size()))
+		endIndex = static_cast<int>(m_Items.size());
+
+	for (int i = m_ScrollOffset; i < endIndex; i++)
+	{
+		int itemY = y + static_cast<int>((i - m_ScrollOffset) * m_ItemHeight);
+
+		// Highlight selected item
+		if (i == m_SelectedIndex)
+		{
+			Color highlightColor = {
+				static_cast<unsigned char>(m_TextColor.r),
+				static_cast<unsigned char>(m_TextColor.g),
+				static_cast<unsigned char>(m_TextColor.b),
+				static_cast<unsigned char>(64)
+			};
+			DrawRectangle(x + 1, itemY, w - 2, static_cast<int>(m_ItemHeight), highlightColor);
+		}
+
+		// Draw item text
+		if (m_Font)
+		{
+			DrawTextEx(*m_Font, m_Items[i].c_str(),
+			          {static_cast<float>(x + 5), static_cast<float>(itemY + 2)},
+			          m_Font->baseSize, 1, m_TextColor);
+		}
+	}
+
+	// Disable scissor mode
+	EndScissorMode();
+}
+
+std::string GuiListBox::GetString()
+{
+	if (m_SelectedIndex >= 0 && m_SelectedIndex < static_cast<int>(m_Items.size()))
+		return m_Items[m_SelectedIndex];
+	return "";
+}
+
+void GuiListBox::AddItem(const std::string& item)
+{
+	m_Items.push_back(item);
+}
+
+void GuiListBox::Clear()
+{
+	m_Items.clear();
+	m_SelectedIndex = -1;
+	m_ScrollOffset = 0;
+}
+
+void GuiListBox::SetSelectedIndex(int index)
+{
+	if (index >= -1 && index < static_cast<int>(m_Items.size()))
+	{
+		m_SelectedIndex = index;
+
+		// Adjust scroll if needed to make selection visible
+		if (m_SelectedIndex >= 0)
+		{
+			if (m_SelectedIndex < m_ScrollOffset)
+				m_ScrollOffset = m_SelectedIndex;
+			else if (m_SelectedIndex >= m_ScrollOffset + m_VisibleItemCount)
+				m_ScrollOffset = m_SelectedIndex - m_VisibleItemCount + 1;
+		}
+	}
+}

@@ -7,6 +7,7 @@
 #include "../Geist/GuiElements.h"
 #include "GhostSerializer.h"
 #include "SpriteUtils.h"
+#include "FileChooserState.h"
 #include <algorithm>
 
 extern std::unique_ptr<StateMachine> g_StateMachine;
@@ -49,6 +50,7 @@ void SpritePickerState::OnEnter()
 {
 	Log("SpritePickerState::OnEnter");
 	m_accepted = false;
+	// DON'T reset m_waitingForFileChooser here - it needs to persist when returning from FileChooserState
 
 	// Make the window visible
 	m_window->Show();
@@ -121,17 +123,39 @@ void SpritePickerState::Update()
 			auto button = static_cast<GuiTextButton*>(elem.get());
 			if (button->m_Clicked)
 			{
-				// TODO: Re-implement file dialog for image selection
-				// For now, this button does nothing since FileDialog was removed
-				// Options:
-				//   1. Create a minimal native file picker wrapper
-				//   2. Use FileChooserState for images too
-				//   3. Restore FileDialog just for image selection
-				Log("Sprite image file selection not yet implemented");
+				Log("Opening file chooser for sprite image selection");
 
-				std::string selectedPath = "";  // Disabled until file picker is restored
+				// Get the base sprite path for the initial directory
+				std::string basePath = GhostSerializer::GetBaseSpritePath();
 
-				if (!selectedPath.empty())
+				// Open FileChooserState for image selection
+				auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+				fileChooserState->SetMode(false, ".png|.jpg|.jpeg|.bmp", basePath, "Select Sprite Image");
+				g_StateMachine->PushState(3);
+
+				// Set flag so we know to check for results when we resume
+				m_waitingForFileChooser = true;
+				return;
+			}
+		}
+	}
+
+	// Check if we just returned from FileChooserState
+	if (m_waitingForFileChooser)
+	{
+		Log("SpritePickerState: Checking file chooser results");
+		m_waitingForFileChooser = false;  // Clear flag regardless of outcome
+
+		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+		bool wasAccepted = fileChooserState->WasAccepted();
+		Log("FileChooser WasAccepted: " + std::string(wasAccepted ? "true" : "false"));
+
+		if (wasAccepted)
+		{
+			std::string selectedPath = fileChooserState->GetSelectedPath();
+			Log("FileChooser selected path: " + selectedPath);
+
+			if (!selectedPath.empty())
 				{
 					// Convert absolute path to relative path
 					std::string basePath = GhostSerializer::GetBaseSpritePath();
@@ -181,6 +205,15 @@ void SpritePickerState::Update()
 
 					Log("Reset sprite coordinates to full texture: " + std::to_string(texture->width) + "x" + std::to_string(texture->height));
 
+					// Update the SPRITE_FILENAME textinput to show the new filename
+					int filenameInputID = m_window->GetElementID("SPRITE_FILENAME");
+					if (filenameInputID != -1)
+					{
+						auto filenameElem = gui->GetElement(filenameInputID);
+						if (filenameElem && filenameElem->m_Type == GUI_TEXTINPUT)
+							static_cast<GuiTextInput*>(filenameElem.get())->m_String = m_filename;
+					}
+
 					// Update scrollbar values to reflect new coordinates
 					int xScrollbarID = m_window->GetElementID("SPRITE_X");
 					if (xScrollbarID != -1)
@@ -218,7 +251,6 @@ void SpritePickerState::Update()
 				{
 					Log("ERROR: Failed to load texture for new sprite file: " + spritePath);
 				}
-			}
 			}
 		}
 	}

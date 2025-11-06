@@ -226,12 +226,14 @@ Color GhostState::GetElementColor(GuiElement* element, const std::string& proper
 		if (element->m_Type == GUI_TEXTBUTTON) return static_cast<GuiTextButton*>(element)->m_TextColor;
 		if (element->m_Type == GUI_ICONBUTTON) return static_cast<GuiIconButton*>(element)->m_FontColor;
 		if (element->m_Type == GUI_LIST) return static_cast<GuiList*>(element)->m_TextColor;
+		if (element->m_Type == GUI_LISTBOX) return static_cast<GuiListBox*>(element)->m_TextColor;
 	}
 	else if (propertyName == "PROPERTY_BORDERCOLOR")
 	{
 		if (element->m_Type == GUI_TEXTINPUT) return static_cast<GuiTextInput*>(element)->m_BoxColor;
 		if (element->m_Type == GUI_TEXTBUTTON) return static_cast<GuiTextButton*>(element)->m_BorderColor;
 		if (element->m_Type == GUI_LIST) return static_cast<GuiList*>(element)->m_BorderColor;
+		if (element->m_Type == GUI_LISTBOX) return static_cast<GuiListBox*>(element)->m_BorderColor;
 	}
 	else if (propertyName == "PROPERTY_BACKGROUNDCOLOR")
 	{
@@ -239,6 +241,7 @@ Color GhostState::GetElementColor(GuiElement* element, const std::string& proper
 		if (element->m_Type == GUI_TEXTBUTTON) return static_cast<GuiTextButton*>(element)->m_BackgroundColor;
 		if (element->m_Type == GUI_SCROLLBAR) return static_cast<GuiScrollBar*>(element)->m_BackgroundColor;
 		if (element->m_Type == GUI_LIST) return static_cast<GuiList*>(element)->m_BackgroundColor;
+		if (element->m_Type == GUI_LISTBOX) return static_cast<GuiListBox*>(element)->m_BackgroundColor;
 	}
 	else if (propertyName == "PROPERTY_BACKGROUND")
 	{
@@ -269,12 +272,14 @@ void GhostState::SetElementColor(GuiElement* element, const std::string& propert
 		else if (element->m_Type == GUI_TEXTBUTTON) static_cast<GuiTextButton*>(element)->m_TextColor = color;
 		else if (element->m_Type == GUI_ICONBUTTON) static_cast<GuiIconButton*>(element)->m_FontColor = color;
 		else if (element->m_Type == GUI_LIST) static_cast<GuiList*>(element)->m_TextColor = color;
+		else if (element->m_Type == GUI_LISTBOX) static_cast<GuiListBox*>(element)->m_TextColor = color;
 	}
 	else if (propertyName == "PROPERTY_BORDERCOLOR")
 	{
 		if (element->m_Type == GUI_TEXTINPUT) static_cast<GuiTextInput*>(element)->m_BoxColor = color;
 		else if (element->m_Type == GUI_TEXTBUTTON) static_cast<GuiTextButton*>(element)->m_BorderColor = color;
 		else if (element->m_Type == GUI_LIST) static_cast<GuiList*>(element)->m_BorderColor = color;
+		else if (element->m_Type == GUI_LISTBOX) static_cast<GuiListBox*>(element)->m_BorderColor = color;
 	}
 	else if (propertyName == "PROPERTY_BACKGROUNDCOLOR")
 	{
@@ -282,6 +287,7 @@ void GhostState::SetElementColor(GuiElement* element, const std::string& propert
 		else if (element->m_Type == GUI_TEXTBUTTON) static_cast<GuiTextButton*>(element)->m_BackgroundColor = color;
 		else if (element->m_Type == GUI_SCROLLBAR) static_cast<GuiScrollBar*>(element)->m_BackgroundColor = color;
 		else if (element->m_Type == GUI_LIST) static_cast<GuiList*>(element)->m_BackgroundColor = color;
+		else if (element->m_Type == GUI_LISTBOX) static_cast<GuiListBox*>(element)->m_BackgroundColor = color;
 	}
 	else if (propertyName == "PROPERTY_BACKGROUND")
 	{
@@ -668,6 +674,15 @@ bool GhostState::UpdateFontProperty()
 					case GUI_LIST:
 						static_cast<GuiList*>(selectedElement.get())->m_Font = fontPtr;
 						break;
+					case GUI_LISTBOX:
+					{
+						auto listbox = static_cast<GuiListBox*>(selectedElement.get());
+						listbox->m_Font = fontPtr;
+						// Recalculate item height and visible item count based on new font
+						listbox->m_ItemHeight = fontPtr->baseSize + 4;  // Add padding
+						listbox->m_VisibleItemCount = static_cast<int>(listbox->m_Height / listbox->m_ItemHeight);
+						break;
+					}
 					default:
 						return false; // Element type doesn't support fonts
 					}
@@ -769,6 +784,15 @@ bool GhostState::UpdateFontSizeProperty()
 					case GUI_LIST:
 						static_cast<GuiList*>(selectedElement.get())->m_Font = fontPtr;
 						break;
+					case GUI_LISTBOX:
+					{
+						auto listbox = static_cast<GuiListBox*>(selectedElement.get());
+						listbox->m_Font = fontPtr;
+						// Recalculate item height and visible item count based on new font
+						listbox->m_ItemHeight = fontPtr->baseSize + 4;  // Add padding
+						listbox->m_VisibleItemCount = static_cast<int>(listbox->m_Height / listbox->m_ItemHeight);
+						break;
+					}
 					default:
 						return false; // Element type doesn't support fonts
 					}
@@ -1662,7 +1686,7 @@ void GhostState::Update()
 
 		// Push FileChooserState in open mode
 		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
-		fileChooserState->SetMode(false, ".ghost", "Gui/");
+		fileChooserState->SetMode(false, ".ghost", "");  // Empty string uses default (./)
 		g_StateMachine->PushState(3);
 	}
 	else if (activeID == m_serializer->GetElementID("SAVE"))
@@ -1752,6 +1776,11 @@ void GhostState::Update()
 	{
 		Log("List button clicked!");
 		InsertList();
+	}
+	else if (activeID != -1 && activeID == m_serializer->GetElementID("LISTBOX"))
+	{
+		Log("ListBox button clicked!");
+		InsertListBox();
 	}
 }
 
@@ -2836,6 +2865,39 @@ void GhostState::InsertList()
 	FinalizeInsert(ctx.newID, ctx.parentID, "List");
 }
 
+void GhostState::InsertListBox()
+{
+	// Use helper to prepare insertion
+	InsertContext ctx = PrepareInsert("listbox");
+	if (ctx.newID == -1)
+		return;  // Error already logged
+
+	// Try to get inherited font from parent
+	int fontSize = 0;
+	std::string fontName = "";
+	Font* font = GetInheritedFont(ctx.parentID, fontSize, fontName);
+	if (font == nullptr)
+	{
+		// No inherited font - use default GUI font
+		font = m_gui->m_Font.get();
+	}
+
+	// Add a listbox at calculated position with some default items
+	vector<string> defaultItems = {"Item 1", "Item 2", "Item 3"};
+	m_gui->AddListBox(ctx.newID, ctx.absoluteX, ctx.absoluteY, 150, 200, font,
+		defaultItems, WHITE, Color{80, 80, 80, 255}, WHITE, 0, true);
+
+	// Store the font information in the serializer if we got an inherited font
+	if (fontSize > 0 && !fontName.empty())
+	{
+		m_contentSerializer->SetElementFontSize(ctx.newID, fontSize);
+		m_contentSerializer->SetElementFont(ctx.newID, fontName);
+	}
+
+	// Use helper to finalize insertion
+	FinalizeInsert(ctx.newID, ctx.parentID, "ListBox");
+}
+
 void GhostState::InsertFileInclude()
 {
 	Log("Inserting file include - not yet implemented");
@@ -2946,6 +3008,9 @@ void GhostState::UpdatePropertyPanel()
 			break;
 		case GUI_LIST:
 			propertyFile = "Gui/ghost_prop_list.ghost";
+			break;
+		case GUI_LISTBOX:
+			propertyFile = "Gui/ghost_prop_listbox.ghost";
 			break;
 		default:
 			Log("No property panel for element type: " + to_string(selectedElement->m_Type));
@@ -3242,6 +3307,17 @@ void GhostState::PopulatePropertyPanelFields()
 		PopulateGroupProperty(selectedElement.get());
 	}
 
+	// Populate listbox properties (for listbox elements)
+	if (selectedElement && selectedElement->m_Type == GUI_LISTBOX)
+	{
+		auto listbox = static_cast<GuiListBox*>(selectedElement.get());
+
+		PopulateScrollbarProperty("PROPERTY_WIDTH", static_cast<int>(listbox->m_Width));
+		PopulateScrollbarProperty("PROPERTY_HEIGHT", static_cast<int>(listbox->m_Height));
+		PopulateTextInputProperty("PROPERTY_FONT", m_contentSerializer->GetElementFont(m_selectedElementID));
+		PopulateScrollbarProperty("PROPERTY_FONT_SIZE", m_contentSerializer->GetElementFontSize(m_selectedElementID));
+	}
+
 	// Update color picker button text colors to match the active colors
 	if (selectedElement)
 	{
@@ -3275,6 +3351,11 @@ void GhostState::PopulatePropertyPanelFields()
 			UpdateColorButton("PROPERTY_COLOR", GetElementColor(selectedElement.get(), "PROPERTY_COLOR"));
 			break;
 		case GUI_LIST:
+			UpdateColorButton("PROPERTY_TEXTCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_TEXTCOLOR"));
+			UpdateColorButton("PROPERTY_BORDERCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_BORDERCOLOR"));
+			UpdateColorButton("PROPERTY_BACKGROUNDCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_BACKGROUNDCOLOR"));
+			break;
+		case GUI_LISTBOX:
 			UpdateColorButton("PROPERTY_TEXTCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_TEXTCOLOR"));
 			UpdateColorButton("PROPERTY_BORDERCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_BORDERCOLOR"));
 			UpdateColorButton("PROPERTY_BACKGROUNDCOLOR", GetElementColor(selectedElement.get(), "PROPERTY_BACKGROUNDCOLOR"));
@@ -3596,6 +3677,14 @@ void GhostState::UpdateElementFromPropertyPanel()
 		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
 	}
 
+	// Update listbox properties if changed
+	if (selectedElement && selectedElement->m_Type == GUI_LISTBOX)
+	{
+		if (UpdateWidthProperty(selectedElement.get())) wasUpdated = true;
+		if (UpdateHeightProperty(selectedElement.get())) wasUpdated = true;
+		// Font and font size are already handled by UpdateFontProperty() and UpdateFontSizeProperty() above
+	}
+
 	// PROPERTY_SPRITE is now a button that opens the sprite picker dialog
 	// Sprite updates are handled when returning from SpritePickerState
 
@@ -3854,6 +3943,7 @@ void GhostState::UpdateStatusFooter()
 		case GUI_OCTAGONBOX: typeName = "OctagonBox"; break;
 		case GUI_STRETCHBUTTON: typeName = "StretchButton"; break;
 		case GUI_LIST: typeName = "List"; break;
+		case GUI_LISTBOX: typeName = "ListBox"; break;
 		default: typeName = "Unknown"; break;
 	}
 

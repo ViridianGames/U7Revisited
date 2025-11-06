@@ -108,13 +108,13 @@
             "text": "Icon"
           },
           {
-            "name": "OCTAGONBOX",
+            "name": "LISTBOX",
             "type": "textbutton",
             "position": [
               -1,
               -1
             ],
-            "text": "Octagon"
+            "text": "Listbox"
           },
           {
             "name": "STRETCHBUTTON",

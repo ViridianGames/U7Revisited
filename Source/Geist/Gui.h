@@ -112,6 +112,11 @@ public:
 			 Color backgroundcolor = {0, 0, 0, 255}, Color bordercolor = {255, 255, 255, 255},
 			 int group = 0, int active = true);
 
+	GuiListBox* AddListBox(int ID, int posx, int posy, int width, int height, Font* font,
+			 const std::vector<std::string>& items = {}, Color textcolor = {255, 255, 255, 255},
+			 Color backgroundcolor = {0, 0, 0, 255}, Color bordercolor = {255, 255, 255, 255},
+			 int group = 0, int active = true);
+
 	void ShowGroup(int group);
 	void HideGroup(int group);
 
