@@ -2221,6 +2221,9 @@ GhostState::InsertContext GhostState::PrepareInsert(const std::string& elementTy
 
 	Log("Inserting " + elementTypeName);
 
+	// Save undo state before making changes
+	PushUndoState();
+
 	// Get next ID for the new element
 	ctx.newID = m_contentSerializer->GetNextAutoID();
 	m_contentSerializer->SetAutoIDStart(ctx.newID + 1);
