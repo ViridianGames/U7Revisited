@@ -23,7 +23,8 @@ public:
 	// filter: file extension filter (e.g., ".ghost" or ".png|.jpg" for multiple)
 	// initialPath: starting directory path
 	// title: dialog title (optional, defaults to "Open File" or "Save File")
-	void SetMode(bool isSave, const std::string& filter, const std::string& initialPath = "", const std::string& title = "");
+	// initialFilename: filename to pre-select (optional)
+	void SetMode(bool isSave, const std::string& filter, const std::string& initialPath = "", const std::string& title = "", const std::string& initialFilename = "");
 
 	// Get the selected file path (call after dialog is closed)
 	std::string GetSelectedPath() const { return m_selectedPath; }
@@ -49,6 +50,7 @@ private:
 	std::string m_selectedPath;
 	std::string m_filter;  // e.g., ".ghost" or ".png|.jpg"
 	std::string m_title;   // Dialog title
+	std::string m_initialFilename;  // Filename to pre-select when dialog opens
 
 	std::vector<std::string> m_folders;  // Subdirectories in current path
 	std::vector<std::string> m_files;    // Files matching filter in current path

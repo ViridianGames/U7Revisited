@@ -128,9 +128,9 @@ void SpritePickerState::Update()
 				// Get the base sprite path for the initial directory
 				std::string basePath = GhostSerializer::GetBaseSpritePath();
 
-				// Open FileChooserState for image selection
+				// Open FileChooserState for image selection, pre-selecting current filename if we have one
 				auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
-				fileChooserState->SetMode(false, ".png|.jpg|.jpeg|.bmp", basePath, "Select Sprite Image");
+				fileChooserState->SetMode(false, ".png|.jpg|.jpeg|.bmp", basePath, "Select Sprite Image", m_filename);
 				g_StateMachine->PushState(3);
 
 				// Set flag so we know to check for results when we resume

@@ -65,7 +65,14 @@ void FileChooserState::OnEnter()
 	UpdatePathDisplay();
 	PopulateListboxes();
 
-	// Update OK button text based on mode and clear filename textinput
+	// Auto-select initial filename if provided
+	if (!m_initialFilename.empty())
+	{
+		Log("Auto-selecting initial filename: " + m_initialFilename);
+		SelectFile(m_initialFilename);
+	}
+
+	// Update OK button text based on mode and clear filename textinput if no initial filename
 	Gui* gui = m_window->GetGui();
 	if (gui)
 	{
@@ -80,15 +87,18 @@ void FileChooserState::OnEnter()
 			}
 		}
 
-		// Clear the filename textinput
-		int filenameInputID = m_window->GetElementID("FILENAME");
-		if (filenameInputID != -1)
+		// Clear the filename textinput only if no initial filename was provided
+		if (m_initialFilename.empty())
 		{
-			auto elem = gui->GetElement(filenameInputID);
-			if (elem && elem->m_Type == GUI_TEXTINPUT)
+			int filenameInputID = m_window->GetElementID("FILENAME");
+			if (filenameInputID != -1)
 			{
-				auto textInput = static_cast<GuiTextInput*>(elem.get());
-				textInput->m_String = "";
+				auto elem = gui->GetElement(filenameInputID);
+				if (elem && elem->m_Type == GUI_TEXTINPUT)
+				{
+					auto textInput = static_cast<GuiTextInput*>(elem.get());
+					textInput->m_String = "";
+				}
 			}
 		}
 	}
@@ -304,10 +314,11 @@ void FileChooserState::Draw()
 	m_window->Draw();
 }
 
-void FileChooserState::SetMode(bool isSave, const std::string& filter, const std::string& initialPath, const std::string& title)
+void FileChooserState::SetMode(bool isSave, const std::string& filter, const std::string& initialPath, const std::string& title, const std::string& initialFilename)
 {
 	m_isSaveMode = isSave;
 	m_filter = filter;
+	m_initialFilename = initialFilename;
 
 	// Set title or use default
 	if (!title.empty())
@@ -330,7 +341,7 @@ void FileChooserState::SetMode(bool isSave, const std::string& filter, const std
 		m_currentPath += "/Gui/";
 	}
 
-	Log("FileChooserState::SetMode - isSave: " + std::to_string(isSave) + ", filter: " + filter + ", path: " + m_currentPath + ", title: " + m_title);
+	Log("FileChooserState::SetMode - isSave: " + std::to_string(isSave) + ", filter: " + filter + ", path: " + m_currentPath + ", title: " + m_title + ", initialFilename: " + initialFilename);
 }
 
 void FileChooserState::LoadDirectory(const std::string& path)
@@ -571,10 +582,10 @@ void FileChooserState::SelectFile(const std::string& filename)
 			m_selectedFileIndex = static_cast<int>(i);
 			Log("Selected file index: " + std::to_string(i) + " (" + filename + ")");
 
-			// Update the FILENAME textinput with the selected filename
 			Gui* gui = m_window->GetGui();
 			if (gui)
 			{
+				// Update the FILENAME textinput with the selected filename
 				int filenameInputID = m_window->GetElementID("FILENAME");
 				if (filenameInputID != -1)
 				{
@@ -583,6 +594,19 @@ void FileChooserState::SelectFile(const std::string& filename)
 					{
 						auto textInput = static_cast<GuiTextInput*>(elem.get());
 						textInput->m_String = filename;
+					}
+				}
+
+				// Also update the FILES_LISTBOX visual selection
+				int filesListBoxID = m_window->GetElementID("FILES_LISTBOX");
+				if (filesListBoxID != -1)
+				{
+					auto elem = gui->GetElement(filesListBoxID);
+					if (elem && elem->m_Type == GUI_LISTBOX)
+					{
+						auto listbox = static_cast<GuiListBox*>(elem.get());
+						listbox->SetSelectedIndex(m_selectedFileIndex);
+						Log("Set listbox selected index to: " + std::to_string(m_selectedFileIndex));
 					}
 				}
 			}

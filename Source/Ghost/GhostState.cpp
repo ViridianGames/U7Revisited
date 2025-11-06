@@ -1919,25 +1919,54 @@ void GhostState::OnEnter()
 
 				if (selectedElement && selectedElement->m_Type == GUI_STRETCHBUTTON)
 				{
-					// Store sprite definition in serializer
-					if (m_editingSpriteProperty == "PROPERTY_SPRITE_LEFT")
-					{
-						m_contentSerializer->SetStretchButtonLeftSprite(m_selectedElementID, sprite);
-						Log("Set left sprite: " + sprite.spritesheet);
-					}
-					else if (m_editingSpriteProperty == "PROPERTY_SPRITE_CENTER")
-					{
-						m_contentSerializer->SetStretchButtonCenterSprite(m_selectedElementID, sprite);
-						Log("Set center sprite: " + sprite.spritesheet);
-					}
-					else if (m_editingSpriteProperty == "PROPERTY_SPRITE_RIGHT")
-					{
-						m_contentSerializer->SetStretchButtonRightSprite(m_selectedElementID, sprite);
-						Log("Set right sprite: " + sprite.spritesheet);
-					}
+					auto stretchButton = static_cast<GuiStretchButton*>(selectedElement.get());
 
-					Log("Applied sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
-						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+					// Load the new sprite texture
+					string spritePath = m_spritePath + sprite.spritesheet;
+					Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+					if (texture)
+					{
+						// Create new sprite with the specified source rectangle
+						shared_ptr<Sprite> newSprite = make_shared<Sprite>();
+						newSprite->m_texture = texture;
+						newSprite->m_sourceRect = Rectangle{
+							static_cast<float>(sprite.x),
+							static_cast<float>(sprite.y),
+							static_cast<float>(sprite.w),
+							static_cast<float>(sprite.h)
+						};
+
+						// Store sprite definition in serializer AND update the button's sprite
+						if (m_editingSpriteProperty == "PROPERTY_SPRITE_LEFT")
+						{
+							m_contentSerializer->SetStretchButtonLeftSprite(m_selectedElementID, sprite);
+							stretchButton->m_ActiveLeft = newSprite;
+							stretchButton->m_InactiveLeft = newSprite;  // Use same sprite for both states
+							Log("Set left sprite: " + sprite.spritesheet);
+						}
+						else if (m_editingSpriteProperty == "PROPERTY_SPRITE_CENTER")
+						{
+							m_contentSerializer->SetStretchButtonCenterSprite(m_selectedElementID, sprite);
+							stretchButton->m_ActiveCenter = newSprite;
+							stretchButton->m_InactiveCenter = newSprite;  // Use same sprite for both states
+							Log("Set center sprite: " + sprite.spritesheet);
+						}
+						else if (m_editingSpriteProperty == "PROPERTY_SPRITE_RIGHT")
+						{
+							m_contentSerializer->SetStretchButtonRightSprite(m_selectedElementID, sprite);
+							stretchButton->m_ActiveRight = newSprite;
+							stretchButton->m_InactiveRight = newSprite;  // Use same sprite for both states
+							Log("Set right sprite: " + sprite.spritesheet);
+						}
+
+						Log("Applied sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
+							") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
+					}
+					else
+					{
+						Log("ERROR: Failed to load texture for stretch button: " + spritePath);
+					}
 				}
 				else if (selectedElement && selectedElement->m_Type == GUI_SPRITE && m_editingSpriteProperty == "PROPERTY_SPRITE")
 				{
