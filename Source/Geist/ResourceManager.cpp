@@ -69,7 +69,19 @@ void ResourceManager::AddTexture(const std::string& textureName, bool mipmaps)
 {
 	Log("Loading texture " + textureName);
 	m_TextureList[textureName] = std::make_unique<Texture>(LoadTexture(textureName.c_str()));
-	Log("Load successful.");	
+
+	// Log texture info to verify it loaded correctly
+	Texture* tex = m_TextureList[textureName].get();
+	Log("Texture ID: " + std::to_string(tex->id) + ", Width: " + std::to_string(tex->width) + ", Height: " + std::to_string(tex->height));
+
+	if (tex->id == 0 || tex->width == 0 || tex->height == 0)
+	{
+		Log("WARNING: Texture failed to load properly - file may not exist at path: " + textureName);
+	}
+	else
+	{
+		Log("Load successful.");
+	}
 }
 
 void ResourceManager::AddTexture(Image& image, const std::string& textureName, bool mipmaps)

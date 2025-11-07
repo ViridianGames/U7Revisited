@@ -6,6 +6,7 @@
 #include "Gui.h"
 #include "GuiElements.h"
 #include "Globals.h"
+#include "Logging.h"
 
 using namespace std;
 
@@ -112,7 +113,7 @@ void GuiTextButton::Draw()
          1,
          m_BorderColor);
 
-		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize, m_String,
+		DrawStringCentered(m_Font, m_Font->baseSize, m_String,
 			Vector2 {m_Gui->m_Pos.x + int(m_Pos.x) + (m_Width / 2), m_Gui->m_Pos.y + int(m_Pos.y + (m_Height * .6f))},
 			Color{ 25, 25, 25, 255 });
 
@@ -134,7 +135,7 @@ void GuiTextButton::Draw()
 		DrawRectangleRounded(Rectangle{ (m_Gui->m_Pos.x + int(m_Pos.x)) + (m_Width * invxoffset), (m_Gui->m_Pos.y + int(m_Pos.y)) + (m_Height * invyoffset), m_Width * xoffset, m_Height * yoffset },
 			0.5f, 1, m_BackgroundColor);
 
-		DrawStringCentered(m_Gui->m_Font.get(), m_Font->baseSize , m_String,
+		DrawStringCentered(m_Font, m_Font->baseSize , m_String,
 			Vector2 {m_Gui->m_Pos.x + int(m_Pos.x) + (m_Width / 2), m_Gui->m_Pos.y + int(m_Pos.y + (m_Height * .6f))},
 			m_TextColor);
 	}
@@ -368,9 +369,9 @@ void GuiScrollBar::Update()
 	int adjustedh = m_Height * m_Gui->m_InputScale;
 
 	//  Previously clicked, try for hysterisis
-	if (m_Gui->m_ActiveElement == -1 && m_Gui->m_LastElement == -1 && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
+	if ((m_Gui->m_ActiveElement == -1 || m_Gui->m_ActiveElement == m_ID) && IsLeftButtonDownInRect(adjustedx, adjustedy, adjustedw, adjustedh))
 	{
-		//m_Gui->m_ActiveElement = m_ID;
+		m_Gui->m_ActiveElement = m_ID;
 		if (m_Vertical)
 		{
 			m_Value = std::round((float(GetMouseY() - adjustedy) / float(adjustedh)) * m_ValueRange);
@@ -483,36 +484,65 @@ void GuiTextInput::Update()
 
 	if (m_HasFocus && m_Gui->m_LastElement != m_ID)
 	{
+		Log("Text input " + to_string(m_ID) + " LOSING focus (LastElement=" + to_string(m_Gui->m_LastElement) + ", m_ID=" + to_string(m_ID) + ")");
 		m_HasFocus = false;
 	}
 
-	if (!m_Gui->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	//  If the left button is down, we are CLICKED
 	if (WasLeftButtonClickedInRect(adjustedx, adjustedy, adjustedx + m_Width, adjustedy + m_Height))
 	{
+		if (!m_HasFocus)
+		{
+			Log("Text input " + to_string(m_ID) + " gained focus");
+		}
 		m_HasFocus = true;
-		m_Gui->m_ActiveElement = m_ID;
+	}
+	// If user clicks outside this text input, lose focus
+	else if (m_HasFocus && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+	{
+		Log("Text input " + to_string(m_ID) + " lost focus from clicking elsewhere");
+		m_HasFocus = false;
 	}
 
+	// Keep this element active while it has focus so m_LastElement stays correct
+	if (m_HasFocus)
+	{
+		m_Gui->m_ActiveElement = m_ID;
+	}
 
 	if (m_HasFocus && (IsKeyPressed(KEY_KP_ENTER) || IsKeyPressed(KEY_ENTER)))
 	{
 		m_HasFocus = false;
+		Log("Text input " + to_string(m_ID) + " lost focus from Enter key");
 	}
 
 	if (m_HasFocus && (IsKeyPressed(KEY_BACKSPACE)))
 	{
+		Log("Text input " + to_string(m_ID) + " detected BACKSPACE");
 		if (m_String.size() > 0)
 		{
 			m_String = m_String.substr(0, m_String.size() - 1);
 		}
 	}
 
-	if (m_HasFocus && GetKeyPressed() >= KEY_SPACE && GetKeyPressed() <= KEY_Z)
+	// Only check for keypresses if this input has focus (otherwise we consume keypresses meant for other inputs)
+	if (m_HasFocus)
 	{
-		m_String += char(GetKeyPressed());
+		// Use GetCharPressed() for character input (handles shift, caps lock, etc.)
+		int charPressed = GetCharPressed();
+		while (charPressed > 0)
+		{
+			// Only accept printable characters (32-126 in ASCII)
+			if (charPressed >= 32 && charPressed < 127)
+			{
+				Log("Text input " + to_string(m_ID) + " detected char: " + to_string(charPressed) + " (" + string(1, char(charPressed)) + ")");
+				m_String += char(charPressed);
+			}
+			charPressed = GetCharPressed(); // Check for next char
+		}
 	}
 }
 
@@ -622,7 +652,7 @@ void GuiCheckBox::Update()
 {
 	Tween::Update();
 
-	if (!m_Gui->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	if (m_Visible)
@@ -714,6 +744,7 @@ void GuiRadioButton::Draw()
 		else
 		{
 			DrawRectangleLines(adjustedx, adjustedy, adjustedw, adjustedh, Color{ 255, 255, 255, 255 });
+			DrawRectangle(adjustedx + 2, adjustedy + 2, adjustedw - 4, adjustedh - 4, Color{ 80, 80, 80, 255 });
 		}
 	}
 	else
@@ -764,15 +795,15 @@ void GuiRadioButton::Update()
 {
 	Tween::Update();
 
-	if (!m_Gui->m_AcceptingInput)
+	if (!m_Gui->m_AcceptingInput || !m_Active)
 		return;
 
 	if (m_Visible)
 	{
 		if (IsMouseInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.x + int(m_Pos.x) + int(m_Width)) *m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y) + int(m_Height)))* m_Gui->m_InputScale)
+			int(m_Width) * m_Gui->m_InputScale,
+			int(m_Height) * m_Gui->m_InputScale))
 		{
 			m_Hovered = true;
 		}
@@ -783,9 +814,10 @@ void GuiRadioButton::Update()
 
 		if (WasLeftButtonClickedInRect((m_Gui->m_Pos.x + int(m_Pos.x)) * m_Gui->m_InputScale,
 			(m_Gui->m_Pos.y + int(m_Pos.y)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.x + int(m_Pos.x) + int(m_Width)) * m_Gui->m_InputScale,
-			(m_Gui->m_Pos.y + int(m_Pos.y) + int(m_Height))) * m_Gui->m_InputScale)
+			int(m_Width) * m_Gui->m_InputScale,
+			int(m_Height) * m_Gui->m_InputScale))
 		{
+			Log("Radio button " + to_string(m_ID) + " was clicked! absPos(" + to_string(m_Gui->m_Pos.x + m_Pos.x) + ", " + to_string(m_Gui->m_Pos.y + m_Pos.y) + ")");
 			if (!m_Selected)
 			{
 				m_Selected = !m_Selected;
@@ -793,7 +825,7 @@ void GuiRadioButton::Update()
 				//  Deselect all other buttons in this radio button group.
 				for (auto& node : m_Gui->m_GuiElementList)
 				{
-					if (node.second->m_Group == m_Group && node.second.get() != this)// && node.second->m_Type == GUI_RADIOBUTTON)
+					if (node.second->m_Group == m_Group && node.second.get() != this)
 					{
 						node.second->m_Selected = false;
 					}
@@ -875,7 +907,7 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 	m_Justified = justified;
 	m_Font = font;
 	m_Color = color;
-	m_Width = width * m_Font->baseSize;
+	m_Width = width;  // Now directly in pixels (no longer multiplied by baseSize)
 	m_Shadowed = shadowed;
 	if (m_Width == 0)
 		m_Height = int(m_Font->baseSize);
@@ -885,7 +917,7 @@ void GuiTextArea::Init(int ID, Font* font, std::string text, int posx, int posy,
 
 void GuiTextArea::Draw()
 {
-	if (!m_Active || !m_Visible)
+	if (!m_Visible)
 		return;
 
 	if (m_Justified == GuiTextArea::RIGHT)
@@ -961,7 +993,7 @@ void GuiSprite::Init(int ID, int posx, int posy, shared_ptr<Sprite> sprite, floa
 
 void GuiSprite::Draw()
 {
-	if (m_Sprite && m_Active && m_Visible)
+	if (m_Sprite && m_Visible)
 	{
 		m_Sprite->DrawScaled(Rectangle{ m_Gui->m_Pos.x + int(m_Pos.x), m_Gui->m_Pos.y + int(m_Pos.y),
 			m_Width * m_ScaleX, m_Height * m_ScaleY }, Vector2{ 0, 0 }, 0, m_Color);
@@ -1005,7 +1037,11 @@ void GuiOctagonBox::Update()
 //  8 - Bottom right
 void GuiOctagonBox::Draw()
 {
-	if (!m_Active || !m_Visible)
+	if (!m_Visible)
+		return;
+
+	// Safety check: need 9 sprites (0-8) to draw octagon box
+	if (m_Sprites.size() < 9)
 		return;
 
 	float x = m_Gui->m_Pos.x + (m_Pos.x);
@@ -1098,13 +1134,13 @@ void GuiStretchButton::Draw()
 		{
 			m_InactiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + m_Pos.x + offset, m_Gui->m_Pos.y + offset, m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height },
 				Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + 3 + xmiddle)) - 1, m_Gui->m_Pos.y + ((m_Pos.y + 3)), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), 1 }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
-			m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), 1, 1 }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle), m_Gui->m_Pos.y + ((m_Pos.y + 3)), centerWidth, m_InactiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
+			m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + 3 + xmiddle + xright), m_Gui->m_Pos.y + ((m_Pos.y + 3)), m_InactiveRight->m_sourceRect.width, m_InactiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 0, 0, 0, 255 });
 		}
 
-		m_InactiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + m_Pos.x, m_Gui->m_Pos.y, m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
-		m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + ((m_Pos.x + xmiddle)) - 1, m_Gui->m_Pos.y + (m_Pos.y), ((xright + 3) / m_InactiveCenter->m_sourceRect.width), m_InactiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
-		m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), 1, m_InactiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveLeft->DrawScaled(Rectangle{ m_Gui->m_Pos.x + m_Pos.x, m_Gui->m_Pos.y + m_Pos.y, m_InactiveLeft->m_sourceRect.width, m_InactiveLeft->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveCenter->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle), m_Gui->m_Pos.y + (m_Pos.y), centerWidth, m_InactiveCenter->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
+		m_InactiveRight->DrawScaled(Rectangle{ m_Gui->m_Pos.x + (m_Pos.x + xmiddle + xright), m_Gui->m_Pos.y + (m_Pos.y), m_InactiveRight->m_sourceRect.width, m_InactiveRight->m_sourceRect.height }, Vector2{ 0, 0 }, 0, Color{ 128, 128, 128, 255 });
       
       DrawStringCentered(m_Gui->m_Font.get(), m_Gui->m_Font->baseSize , m_String,
 			Vector2 {m_Gui->m_Pos.x + int(m_Pos.x) + (m_Width / 2), m_Gui->m_Pos.y + int(m_Pos.y + (m_Height * .6f))});
@@ -1212,10 +1248,10 @@ void GuiStretchButton::Update()
 			m_Clicked = true;
 			m_Gui->m_ActiveElement = m_ID;
 		}
-		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x),
-			(m_Gui->m_Pos.y + m_Pos.y),
-			m_Width,
-			m_Height))
+		else if (IsMouseInRect((m_Gui->m_Pos.x + m_Pos.x) * m_Gui->m_InputScale,
+			(m_Gui->m_Pos.y + m_Pos.y) * m_Gui->m_InputScale,
+			m_Width * m_Gui->m_InputScale,
+			m_Height * m_Gui->m_InputScale))
 		{
 			m_Hovered = true;
 			m_Clicked = false;
@@ -1321,4 +1357,199 @@ void GuiList::SetSelectedIndex(int index)
     if (index >= 0 && index < static_cast<int>(m_Items.size())) {
         m_SelectedIndex = index;
     }
+}
+
+// ============================================================================
+// GUILISTBOX
+// ============================================================================
+
+void GuiListBox::Init(int ID, int posx, int posy, int width, int height, Font* font,
+                      const std::vector<std::string>& items,
+                      Color textcolor, Color backgroundcolor, Color bordercolor,
+                      int group, int active)
+{
+	m_ID = ID;
+	m_Type = GUI_LISTBOX;
+	m_Pos = {static_cast<float>(posx), static_cast<float>(posy)};
+	m_Width = static_cast<float>(width);
+	m_Height = static_cast<float>(height);
+	m_Font = font;
+	m_TextColor = textcolor;
+	m_BackgroundColor = backgroundcolor;
+	m_BorderColor = bordercolor;
+	m_Group = group;
+	m_Active = active;
+	m_Items = items;
+	m_SelectedIndex = -1;
+	m_ScrollOffset = 0;
+
+	// Calculate how many items fit in the box
+	if (m_Font)
+	{
+		m_ItemHeight = m_Font->baseSize * 1.2f;  // Add some padding
+		m_VisibleItemCount = static_cast<int>(m_Height / m_ItemHeight);
+	}
+	else
+	{
+		m_ItemHeight = 20.0f;
+		m_VisibleItemCount = static_cast<int>(m_Height / 20.0f);
+	}
+}
+
+void GuiListBox::Update()
+{
+	Tween::Update();
+	m_Hovered = false;
+	m_Clicked = false;
+	m_DoubleClicked = false;
+
+	if (!m_Active || !m_Visible || !m_Gui)
+		return;
+
+	if (!m_Gui->m_AcceptingInput)
+		return;
+
+	// Check if mouse is over the listbox
+	Vector2 mousePos = GetMousePosition();
+	float scaledX = (mousePos.x / m_Gui->m_InputScale) - m_Gui->m_Pos.x;
+	float scaledY = (mousePos.y / m_Gui->m_InputScale) - m_Gui->m_Pos.y;
+
+	m_Hovered = (scaledX >= m_Pos.x && scaledX <= m_Pos.x + m_Width &&
+	             scaledY >= m_Pos.y && scaledY <= m_Pos.y + m_Height);
+
+	if (m_Hovered)
+	{
+		// Check for clicks on individual items
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			// Calculate which item was clicked
+			float relativeY = scaledY - m_Pos.y;
+			int clickedIndex = m_ScrollOffset + static_cast<int>(relativeY / m_ItemHeight);
+
+			if (clickedIndex >= 0 && clickedIndex < static_cast<int>(m_Items.size()))
+			{
+				// Check for double-click (within 0.5 seconds of last click on same item)
+				double currentTime = GetTime();
+				if (clickedIndex == m_LastClickedIndex &&
+				    (currentTime - m_LastClickTime) < 0.5)
+				{
+					m_DoubleClicked = true;
+					Log("GuiListBox: Double-clicked item " + std::to_string(clickedIndex) + ": " + m_Items[clickedIndex]);
+				}
+
+				m_SelectedIndex = clickedIndex;
+				m_Clicked = true;
+				m_Gui->m_ActiveElement = m_ID;
+				m_LastClickedIndex = clickedIndex;
+				m_LastClickTime = currentTime;
+
+				if (!m_DoubleClicked)
+				{
+					Log("GuiListBox: Selected item " + std::to_string(m_SelectedIndex) + ": " + m_Items[m_SelectedIndex]);
+				}
+			}
+		}
+
+		// Handle mouse wheel scrolling
+		float wheelMove = GetMouseWheelMove();
+		if (wheelMove != 0)
+		{
+			m_ScrollOffset -= static_cast<int>(wheelMove);
+
+			// Clamp scroll offset
+			int maxScroll = static_cast<int>(m_Items.size()) - m_VisibleItemCount;
+			if (maxScroll < 0) maxScroll = 0;
+			if (m_ScrollOffset < 0) m_ScrollOffset = 0;
+			if (m_ScrollOffset > maxScroll) m_ScrollOffset = maxScroll;
+		}
+	}
+}
+
+void GuiListBox::Draw()
+{
+	if (!m_Visible)
+		return;
+
+	int x = static_cast<int>(m_Gui->m_Pos.x + m_Pos.x);
+	int y = static_cast<int>(m_Gui->m_Pos.y + m_Pos.y);
+	int w = static_cast<int>(m_Width);
+	int h = static_cast<int>(m_Height);
+
+	// Draw background
+	DrawRectangle(x, y, w, h, m_BackgroundColor);
+
+	// Draw border
+	DrawRectangleLines(x, y, w, h, m_BorderColor);
+
+	// Enable scissor mode to clip text to listbox bounds
+	BeginScissorMode(x, y, w, h);
+
+	// Draw visible items (include one extra item for partial visibility at bottom)
+	int endIndex = m_ScrollOffset + m_VisibleItemCount + 1;
+	if (endIndex > static_cast<int>(m_Items.size()))
+		endIndex = static_cast<int>(m_Items.size());
+
+	for (int i = m_ScrollOffset; i < endIndex; i++)
+	{
+		int itemY = y + static_cast<int>((i - m_ScrollOffset) * m_ItemHeight);
+
+		// Highlight selected item
+		if (i == m_SelectedIndex)
+		{
+			Color highlightColor = {
+				static_cast<unsigned char>(m_TextColor.r),
+				static_cast<unsigned char>(m_TextColor.g),
+				static_cast<unsigned char>(m_TextColor.b),
+				static_cast<unsigned char>(64)
+			};
+			DrawRectangle(x + 1, itemY, w - 2, static_cast<int>(m_ItemHeight), highlightColor);
+		}
+
+		// Draw item text
+		if (m_Font)
+		{
+			DrawTextEx(*m_Font, m_Items[i].c_str(),
+			          {static_cast<float>(x + 5), static_cast<float>(itemY + 2)},
+			          m_Font->baseSize, 1, m_TextColor);
+		}
+	}
+
+	// Disable scissor mode
+	EndScissorMode();
+}
+
+std::string GuiListBox::GetString()
+{
+	if (m_SelectedIndex >= 0 && m_SelectedIndex < static_cast<int>(m_Items.size()))
+		return m_Items[m_SelectedIndex];
+	return "";
+}
+
+void GuiListBox::AddItem(const std::string& item)
+{
+	m_Items.push_back(item);
+}
+
+void GuiListBox::Clear()
+{
+	m_Items.clear();
+	m_SelectedIndex = -1;
+	m_ScrollOffset = 0;
+}
+
+void GuiListBox::SetSelectedIndex(int index)
+{
+	if (index >= -1 && index < static_cast<int>(m_Items.size()))
+	{
+		m_SelectedIndex = index;
+
+		// Adjust scroll if needed to make selection visible
+		if (m_SelectedIndex >= 0)
+		{
+			if (m_SelectedIndex < m_ScrollOffset)
+				m_ScrollOffset = m_SelectedIndex;
+			else if (m_SelectedIndex >= m_ScrollOffset + m_VisibleItemCount)
+				m_ScrollOffset = m_SelectedIndex - m_VisibleItemCount + 1;
+		}
+	}
 }

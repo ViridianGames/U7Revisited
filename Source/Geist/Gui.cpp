@@ -356,6 +356,17 @@ GuiList* Gui::AddGuiList(int ID, int posx, int posy, int width, int height, Font
 	return guiList.get();
 }
 
+GuiListBox* Gui::AddListBox(int ID, int posx, int posy, int width, int height, Font* font,
+		 const std::vector<std::string>& items, Color textcolor,
+		 Color backgroundcolor, Color bordercolor,
+		 int group, int active)
+{
+	shared_ptr<GuiListBox> listBox = make_shared<GuiListBox>(this);
+	listBox->Init(ID, posx, posy, width, height, font, items, textcolor, backgroundcolor, bordercolor, group, active);
+	m_GuiElementList[ID] = listBox;
+	return listBox.get();
+}
+
 std::string Gui::GetString(int ID)
 {
 	if (m_GuiElementList.find(ID) == m_GuiElementList.end())

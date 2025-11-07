@@ -12,6 +12,7 @@ class ParticleSystem;
 class Gui;
 class GuiElement;
 class GumpManager;
+class GhostWindow;
 
 enum class MainStateModes
 {
@@ -62,6 +63,9 @@ public:
    Gui* m_toolTipGui;
 
 	Gui* m_numberBarGui;
+
+	// Test: Color dialog loaded from .ghost JSON file
+	GhostWindow* m_colorDialog;
 
 	std::string m_luaFunction;
 

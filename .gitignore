@@ -8,6 +8,7 @@
 /build
 /furroy
 /.claude
+/Ghost/runlog.txt
 
 /subprojects/raylib/
 /subprojects/packagecache/
@@ -21,3 +22,6 @@ cmake-build-debug/
 /Redist/runlog.txt
 /Redist/debuglog.txt
 /Redist/textflx_debug.txt
+
+# Visual Studio resource cache files
+*.aps

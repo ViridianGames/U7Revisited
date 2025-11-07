@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Ghost GUI Editor
+Comment=GUI editor for creating .ghost JSON GUI definition files
+Exec=Ghost
+Icon=ghost
+Terminal=false
+Categories=Development;GUIDesigner;

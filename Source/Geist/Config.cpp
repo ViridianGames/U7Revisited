@@ -42,8 +42,16 @@ bool Config::Load(string fileName)
 
       if (idx != string::npos)
       {
-         leftside = line.substr(0, idx - 1);
-         rightside = line.substr(idx + 2);
+         leftside = line.substr(0, idx);
+         rightside = line.substr(idx + 1);
+
+         // Trim trailing whitespace from leftside
+         while (!leftside.empty() && (leftside.back() == ' ' || leftside.back() == '\t'))
+            leftside.pop_back();
+
+         // Trim leading whitespace from rightside
+         while (!rightside.empty() && (rightside.front() == ' ' || rightside.front() == '\t'))
+            rightside.erase(0, 1);
 
          bool isNumber = false;
 
