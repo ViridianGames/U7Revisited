@@ -30,6 +30,7 @@ public:
 
 	int GetElementID(const std::string& elementName);
 	Gui* GetGui() { return m_gui; }
+	GhostSerializer* GetSerializer() { return m_serializer; }
 	bool IsValid() const { return m_gui != nullptr && m_valid; }
 
 private:

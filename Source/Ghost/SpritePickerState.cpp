@@ -291,6 +291,66 @@ void SpritePickerState::Update()
 	// Validate and apply fallbacks in real-time
 	ValidateAndApplyFallbacks();
 
+	// Update the SPRITE_PREVIEW with current values
+	int previewID = m_window->GetElementID("SPRITE_PREVIEW");
+	if (previewID != -1)
+	{
+		Log("Found SPRITE_PREVIEW element, filename: " + m_filename);
+
+		if (!m_filename.empty())
+		{
+			auto previewElem = gui->GetElement(previewID);
+			if (previewElem && previewElem->m_Type == GUI_SPRITE)
+			{
+				auto previewSprite = static_cast<GuiSprite*>(previewElem.get());
+
+				// Load the sprite texture if not already loaded
+				std::string spritePath = GhostSerializer::GetBaseSpritePath() + m_filename;
+				Texture* texture = g_ResourceManager->GetTexture(spritePath);
+
+				if (texture)
+				{
+					// Create a new sprite with the current rectangle
+					auto sprite = std::make_shared<Sprite>(texture, m_x, m_y, m_width, m_height);
+
+					// Update the preview sprite
+					previewSprite->m_Sprite = sprite;
+
+					// Update the GuiSprite element's size to match the sprite rectangle
+					// This prevents scaling - we want to see the actual sprite at 1:1 scale
+					previewSprite->m_Width = static_cast<float>(m_width);
+					previewSprite->m_Height = static_cast<float>(m_height);
+
+					// Reflow the root panel to adjust layout after size change
+					// The window's serializer tracks the root element
+					GhostSerializer* serializer = m_window->GetSerializer();
+					if (serializer)
+					{
+						int rootID = serializer->GetRootElementID();
+						if (rootID != -1)
+						{
+							serializer->ReflowPanel(rootID, gui);
+						}
+					}
+
+					Log("Updated SPRITE_PREVIEW with rect: " + std::to_string(m_x) + "," + std::to_string(m_y) + "," + std::to_string(m_width) + "," + std::to_string(m_height));
+				}
+				else
+				{
+					Log("ERROR: Failed to load texture: " + spritePath);
+				}
+			}
+			else
+			{
+				Log("ERROR: SPRITE_PREVIEW element not found or wrong type");
+			}
+		}
+	}
+	else
+	{
+		Log("ERROR: SPRITE_PREVIEW element ID not found");
+	}
+
 	// Check for OK button click
 	int okButtonID = m_window->GetElementID("OK_BUTTON");
 	if (okButtonID != -1)
