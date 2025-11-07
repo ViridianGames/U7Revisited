@@ -224,7 +224,8 @@ public:
 
 	// Serialize an element and its children to JSON (for clipboard/undo support)
 	// parentX and parentY are the parent's absolute position (for calculating relative positions)
-	ghost_json SerializeElement(int elementID, Gui* gui, int parentX = 0, int parentY = 0);
+	// forCopy: if true, serialize ALL current properties (for copy/paste); if false, only serialize explicit properties (for file save)
+	ghost_json SerializeElement(int elementID, Gui* gui, int parentX = 0, int parentY = 0, bool forCopy = false);
 
 private:
 	// Helper function to recursively parse elements with property inheritance

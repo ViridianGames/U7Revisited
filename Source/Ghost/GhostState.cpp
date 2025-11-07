@@ -771,6 +771,7 @@ bool GhostState::UpdateFontSizeProperty()
 				if (selectedElement)
 				{
 					std::string fontName = m_contentSerializer->GetElementFont(m_selectedElementID);
+					bool hadEmptyFont = fontName.empty();
 					if (fontName.empty()) fontName = "babyblocks.ttf";
 
 					std::string fontPath = m_fontPath + fontName;
@@ -1564,8 +1565,8 @@ void GhostState::Update()
 			}
 		}
 
-		// Serialize element to clipboard
-		m_clipboard = m_contentSerializer->SerializeElement(m_selectedElementID, m_gui.get(), parentX, parentY);
+		// Serialize element to clipboard (with forCopy=true to capture all current properties)
+		m_clipboard = m_contentSerializer->SerializeElement(m_selectedElementID, m_gui.get(), parentX, parentY, true);
 		m_hasClipboard = !m_clipboard.is_null();
 
 		if (m_hasClipboard)
@@ -1611,8 +1612,8 @@ void GhostState::Update()
 			}
 		}
 
-		// Serialize element to clipboard
-		m_clipboard = m_contentSerializer->SerializeElement(m_selectedElementID, m_gui.get(), parentX, parentY);
+		// Serialize element to clipboard (with forCopy=true to capture all current properties)
+		m_clipboard = m_contentSerializer->SerializeElement(m_selectedElementID, m_gui.get(), parentX, parentY, true);
 		m_hasClipboard = !m_clipboard.is_null();
 
 		if (m_hasClipboard)
@@ -1753,6 +1754,8 @@ void GhostState::Update()
 	else if (activeID == m_serializer->GetElementID("OPEN"))
 	{
 		Log("Open button clicked!");
+		Log("  activeID=" + to_string(activeID) + ", OPEN ID=" + to_string(m_serializer->GetElementID("OPEN")) +
+		    ", SAVE ID=" + to_string(m_serializer->GetElementID("SAVE")));
 
 		// Push FileChooserState in open mode
 		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
@@ -2132,39 +2135,11 @@ void GhostState::OnEnter()
 			string filepath = fileChooserState->GetSelectedPath();
 			Log("Selected file: " + filepath);
 
-			// Determine if this was an open or save operation
-			// If m_loadedGhostFile is empty and we have a valid file, it's either open or first save
-			// If m_loadedGhostFile has a value, it's a "Save As" operation
-
-			// For now, check if the file exists to determine open vs save
-			// This is a simple heuristic - you may want to store the mode explicitly
-			std::ifstream testFile(filepath);
-			bool fileExists = testFile.good();
-			testFile.close();
-
-			if (fileExists || !m_loadedGhostFile.empty())
+			// Check the mode that was set when the dialog was opened
+			if (fileChooserState->IsSaveMode())
 			{
-				// Either file exists (open) or we're doing save as
-				// Try to load it if it exists
-				if (fileExists)
-				{
-					LoadGhostFile(filepath);
-				}
-				else
-				{
-					// Ensure .ghost extension
-					if (filepath.find(".ghost") == string::npos)
-					{
-						filepath += ".ghost";
-					}
+				Log("FileChooser was in SAVE mode, saving file");
 
-					m_loadedGhostFile = filepath;
-					SaveGhostFile();
-				}
-			}
-			else
-			{
-				// New file being saved
 				// Ensure .ghost extension
 				if (filepath.find(".ghost") == string::npos)
 				{
@@ -2173,6 +2148,11 @@ void GhostState::OnEnter()
 
 				m_loadedGhostFile = filepath;
 				SaveGhostFile();
+			}
+			else
+			{
+				Log("FileChooser was in OPEN mode, loading file");
+				LoadGhostFile(filepath);
 			}
 		}
 	}

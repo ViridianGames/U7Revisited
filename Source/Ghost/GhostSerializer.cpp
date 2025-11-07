@@ -1899,7 +1899,7 @@ void GhostSerializer::ReflowPanel(int panelID, Gui* gui)
 	}
 }
 
-ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY)
+ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parentX, int parentY, bool forCopy)
 {
 	auto it = gui->m_GuiElementList.find(elementID);
 	if (it == gui->m_GuiElementList.end())
@@ -2044,34 +2044,58 @@ ghost_json GhostSerializer::SerializeElement(int elementID, Gui* gui, int parent
 		auto button = static_cast<GuiTextButton*>(element.get());
 		elementJson["text"] = button->m_String;
 
-		// Only serialize properties that were explicitly set (not inherited)
-		auto explicitIt = m_explicitProperties.find(elementID);
-		if (explicitIt != m_explicitProperties.end())
+		if (forCopy)
 		{
-			const auto& explicitProps = explicitIt->second;
-
-			if (explicitProps.count("font") > 0)
+			// For copy/paste, serialize explicit properties only (let pasted element inherit from its new parent)
+			// BUT always include colors since they're stored in the element itself
+			auto fontIt = m_elementFonts.find(elementID);
+			if (fontIt != m_elementFonts.end())
 			{
-				auto fontIt = m_elementFonts.find(elementID);
-				if (fontIt != m_elementFonts.end())
-					elementJson["font"] = fontIt->second;
+				elementJson["font"] = fontIt->second;
 			}
 
-			if (explicitProps.count("fontSize") > 0)
+			auto sizeIt = m_elementFontSizes.find(elementID);
+			if (sizeIt != m_elementFontSizes.end())
 			{
-				auto sizeIt = m_elementFontSizes.find(elementID);
-				if (sizeIt != m_elementFontSizes.end())
-					elementJson["fontSize"] = sizeIt->second;
+				elementJson["fontSize"] = sizeIt->second;
 			}
 
-			if (explicitProps.count("textColor") > 0)
-				elementJson["textColor"] = { button->m_TextColor.r, button->m_TextColor.g, button->m_TextColor.b, button->m_TextColor.a };
+			// Always include colors (they're not inherited, they're stored in the element)
+			elementJson["textColor"] = { button->m_TextColor.r, button->m_TextColor.g, button->m_TextColor.b, button->m_TextColor.a };
+			elementJson["backgroundColor"] = { button->m_BackgroundColor.r, button->m_BackgroundColor.g, button->m_BackgroundColor.b, button->m_BackgroundColor.a };
+			elementJson["borderColor"] = { button->m_BorderColor.r, button->m_BorderColor.g, button->m_BorderColor.b, button->m_BorderColor.a };
+		}
+		else
+		{
+			// For file save, only serialize properties that were explicitly set (not inherited)
+			auto explicitIt = m_explicitProperties.find(elementID);
+			if (explicitIt != m_explicitProperties.end())
+			{
+				const auto& explicitProps = explicitIt->second;
 
-			if (explicitProps.count("backgroundColor") > 0)
-				elementJson["backgroundColor"] = { button->m_BackgroundColor.r, button->m_BackgroundColor.g, button->m_BackgroundColor.b, button->m_BackgroundColor.a };
+				if (explicitProps.count("font") > 0)
+				{
+					auto fontIt = m_elementFonts.find(elementID);
+					if (fontIt != m_elementFonts.end())
+						elementJson["font"] = fontIt->second;
+				}
 
-			if (explicitProps.count("borderColor") > 0)
-				elementJson["borderColor"] = { button->m_BorderColor.r, button->m_BorderColor.g, button->m_BorderColor.b, button->m_BorderColor.a };
+				if (explicitProps.count("fontSize") > 0)
+				{
+					auto sizeIt = m_elementFontSizes.find(elementID);
+					if (sizeIt != m_elementFontSizes.end())
+						elementJson["fontSize"] = sizeIt->second;
+				}
+
+				if (explicitProps.count("textColor") > 0)
+					elementJson["textColor"] = { button->m_TextColor.r, button->m_TextColor.g, button->m_TextColor.b, button->m_TextColor.a };
+
+				if (explicitProps.count("backgroundColor") > 0)
+					elementJson["backgroundColor"] = { button->m_BackgroundColor.r, button->m_BackgroundColor.g, button->m_BackgroundColor.b, button->m_BackgroundColor.a };
+
+				if (explicitProps.count("borderColor") > 0)
+					elementJson["borderColor"] = { button->m_BorderColor.r, button->m_BorderColor.g, button->m_BorderColor.b, button->m_BorderColor.a };
+			}
 		}
 	}
 	else if (element->m_Type == GUI_TEXTAREA)

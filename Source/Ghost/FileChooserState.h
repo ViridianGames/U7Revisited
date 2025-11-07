@@ -32,6 +32,9 @@ public:
 	// Check if OK was pressed (vs Cancel)
 	bool WasAccepted() const { return m_accepted; }
 
+	// Check if this was opened in save mode
+	bool IsSaveMode() const { return m_isSaveMode; }
+
 private:
 	void LoadDirectory(const std::string& path);
 	void PopulateListboxes();
