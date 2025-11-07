@@ -3,6 +3,7 @@
 #include "Geist/StateMachine.h"
 #include "Geist/ResourceManager.h"
 #include "Geist/ScriptingSystem.h"
+#include "Geist/TooltipSystem.h"
 #include "U7Globals.h"
 #include "ShapeEditorState.h"
 #include "rlgl.h"
@@ -29,6 +30,24 @@ static void AddAutoStretchButton(Gui* gui, int ID, int x, int y, const string& l
 	gui->AddStretchButton(ID, x, y, width, label,
 		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM,
 		g_ShapeButtonL, g_ShapeButtonR, g_ShapeButtonM);
+}
+
+// Helper function to read the first line of a script file
+static string GetFirstLineOfScript(const string& filepath)
+{
+	ifstream file(filepath);
+	if (!file.is_open())
+	{
+		return "";
+	}
+
+	string line;
+	if (getline(file, line))
+	{
+		return line;
+	}
+
+	return "";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1846,12 +1865,54 @@ void ShapeEditorState::Draw()
 
 	m_currentGui->Draw();
 
-	//  Draw any tooltips
 	EndTextureMode();
 	DrawTexturePro(g_guiRenderTarget.texture,
 		{ 0, 0, float(g_guiRenderTarget.texture.width), float(g_guiRenderTarget.texture.height) },
 		{ 0, float(g_Engine->m_ScreenHeight), float(g_Engine->m_ScreenWidth), -float(g_Engine->m_ScreenHeight) },
 		{ 0, 0 }, 0, WHITE);
+
+	//  Draw any tooltips
+	auto openScriptBtn = m_currentGui->GetElement(GE_OPENLUASCRIPTBUTTON);
+	if (openScriptBtn && openScriptBtn->m_Hovered)
+	{
+		// Get the current frame's script name
+		string currentScriptName = g_shapeTable[m_currentShape][m_currentFrame].m_luaScript;
+
+		// Find the script path from the name
+		string scriptPath = "";
+		for (size_t i = 0; i < g_ScriptingSystem->m_scriptFiles.size(); ++i)
+		{
+			if (g_ScriptingSystem->m_scriptFiles[i].first == currentScriptName)
+			{
+				scriptPath = g_ScriptingSystem->m_scriptFiles[i].second;
+				break;
+			}
+		}
+
+		if (!scriptPath.empty())
+		{
+			string firstLine = GetFirstLineOfScript(scriptPath);
+
+			if (!firstLine.empty() && g_guiFont && g_guiFont.get() != nullptr)
+			{
+				Vector2 mousePos = GetMousePosition();
+
+				// Measure text size
+				Vector2 textSize = MeasureTextEx(*g_guiFont.get(), firstLine.c_str(), 22.0f, 1);
+
+				// Position tooltip to the left of cursor
+				int tooltipX = mousePos.x - textSize.x - 10;
+				int tooltipY = mousePos.y + 10;
+
+				// Draw background
+				DrawRectangle(tooltipX - 3, tooltipY - 3, textSize.x + 6, textSize.y + 6, Color{0, 0, 0, 230});
+				DrawRectangleLines(tooltipX - 3, tooltipY - 3, textSize.x + 6, textSize.y + 6, WHITE);
+
+				// Draw text
+				DrawTextEx(*g_guiFont.get(), firstLine.c_str(), Vector2{(float)tooltipX, (float)tooltipY}, 22.0f, 1, YELLOW);
+			}
+		}
+	}
 
 	// Draw bark text above view angle slider (centered horizontally)
 	int guiPanelWidth = 120;

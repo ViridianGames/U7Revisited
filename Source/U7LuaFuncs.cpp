@@ -349,10 +349,19 @@ static int LuaCmps(lua_State *L)
     lua_pop(L, 1);
 
     // Compare (case-insensitive)
+	 // The function _stricmp() is not standard C/C++, but strcasecmp()
+    // isn't supported on Windows, so we have to write it ourselves.
     bool matches = false;
     if (selected_answer && compare_str)
     {
-        matches = (strcasecmp(selected_answer, compare_str) == 0);
+       std::string saString = selected_answer;
+       std::string csString = compare_str;
+       std::transform(saString.begin(), saString.end(), saString.begin(),
+          [](unsigned char c) { return std::tolower(c); });
+       std::transform(csString.begin(), csString.end(), csString.begin(),
+          [](unsigned char c) { return std::tolower(c); });
+
+       return csString.compare(saString);
     }
 
     lua_pushboolean(L, matches);

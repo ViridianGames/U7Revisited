@@ -13,6 +13,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
+#include "Ghost/GhostWindow.h"
 
 #include <list>
 #include <string>
@@ -83,6 +84,9 @@ void MainState::Init(const string& configfile)
 
 	m_showObjects = true;
 
+	// Initialize color dialog (test for .ghost file loading)
+	m_colorDialog = nullptr;
+
 	SetupGame();
 }
 
@@ -141,6 +145,13 @@ void MainState::OnExit()
 
 void MainState::Shutdown()
 {
+	// Clean up color dialog
+	if (m_colorDialog)
+	{
+		delete m_colorDialog;
+		m_colorDialog = nullptr;
+	}
+
 	UnloadRenderTexture(g_guiRenderTarget);
 	UnloadRenderTexture(g_renderTarget);
 }
@@ -287,6 +298,58 @@ void MainState::UpdateInput()
 			}
 
 			AddConsoleString(m_npcSchedulesEnabled ? "NPC Schedules ENABLED" : "NPC Schedules DISABLED");
+
+			// TEST: Load color dialog from .ghost file
+			if (!m_colorDialog)
+			{
+				// Create the dialog (modal by default)
+				m_colorDialog = new GhostWindow("Gui/ghost_color_dialog.ghost", "Data/engine.cfg",
+				                                g_ResourceManager.get(),
+				                                static_cast<int>(g_Engine->m_ScreenWidth),
+				                                static_cast<int>(g_Engine->m_ScreenHeight), true);
+
+				if (m_colorDialog->IsValid())
+				{
+					// Center the dialog on screen
+					int dialogWidth, dialogHeight;
+					m_colorDialog->GetSize(dialogWidth, dialogHeight);
+					int centerX = static_cast<int>(g_Engine->m_ScreenWidth / 2.0f - dialogWidth / 2.0f);
+					int centerY = static_cast<int>(g_Engine->m_ScreenHeight / 2.0f - dialogHeight / 2.0f);
+					m_colorDialog->MoveTo(centerX, centerY);
+
+					// Initialize sliders to 255 (white)
+					Gui* gui = m_colorDialog->GetGui();
+					int redID = m_colorDialog->GetElementID("RED_SLIDER");
+					int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
+					int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
+					int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
+
+					auto redSlider = gui->GetElement(redID);
+					auto greenSlider = gui->GetElement(greenID);
+					auto blueSlider = gui->GetElement(blueID);
+					auto alphaSlider = gui->GetElement(alphaID);
+
+					if (redSlider) static_cast<GuiScrollBar*>(redSlider.get())->m_Value = 255;
+					if (greenSlider) static_cast<GuiScrollBar*>(greenSlider.get())->m_Value = 255;
+					if (blueSlider) static_cast<GuiScrollBar*>(blueSlider.get())->m_Value = 255;
+					if (alphaSlider) static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value = 255;
+
+					m_colorDialog->Show();
+					AddConsoleString("Color dialog loaded");
+				}
+				else
+				{
+					AddConsoleString("ERROR: Failed to load color dialog");
+					delete m_colorDialog;
+					m_colorDialog = nullptr;
+				}
+			}
+			else
+			{
+				// Toggle visibility
+				m_colorDialog->Toggle();
+				AddConsoleString(m_colorDialog->IsVisible() ? "Color dialog shown" : "Color dialog hidden");
+			}
 
 #ifdef DEBUG_NPC_PATHFINDING
 			// When schedules are disabled, print path statistics
@@ -893,7 +956,92 @@ void MainState::Update()
 
 	UpdateStats();
 
-	UpdateInput();
+	// TEST: Update color dialog BEFORE UpdateInput() so it can consume input
+	if (m_colorDialog && m_colorDialog->IsVisible())
+	{
+		m_colorDialog->Update();
+
+		// Update color preview swatch from slider values
+		{
+			Gui* gui = m_colorDialog->GetGui();
+			int redID = m_colorDialog->GetElementID("RED_SLIDER");
+			int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
+			int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
+			int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
+			int previewID = m_colorDialog->GetElementID("COLOR_PREVIEW");
+
+			auto redSlider = gui->GetElement(redID);
+			auto greenSlider = gui->GetElement(greenID);
+			auto blueSlider = gui->GetElement(blueID);
+			auto alphaSlider = gui->GetElement(alphaID);
+			auto previewPanel = gui->GetElement(previewID);
+
+			if (redSlider && greenSlider && blueSlider && alphaSlider && previewPanel)
+			{
+				int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
+				int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
+				int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
+				int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
+
+				// Update the color preview panel
+				auto panel = static_cast<GuiPanel*>(previewPanel.get());
+				panel->m_Color = Color{static_cast<unsigned char>(r),
+				                       static_cast<unsigned char>(g),
+				                       static_cast<unsigned char>(b),
+				                       static_cast<unsigned char>(a)};
+			}
+		}
+
+		// Handle OK/Cancel button clicks
+		{
+			Gui* gui = m_colorDialog->GetGui();
+			int okButtonID = m_colorDialog->GetElementID("OK_BUTTON");
+			int cancelButtonID = m_colorDialog->GetElementID("CANCEL_BUTTON");
+
+			if (okButtonID != -1 && gui->m_ActiveElement == okButtonID)
+			{
+				// Read slider values
+				int redID = m_colorDialog->GetElementID("RED_SLIDER");
+				int greenID = m_colorDialog->GetElementID("GREEN_SLIDER");
+				int blueID = m_colorDialog->GetElementID("BLUE_SLIDER");
+				int alphaID = m_colorDialog->GetElementID("ALPHA_SLIDER");
+
+				auto redSlider = gui->GetElement(redID);
+				auto greenSlider = gui->GetElement(greenID);
+				auto blueSlider = gui->GetElement(blueID);
+				auto alphaSlider = gui->GetElement(alphaID);
+
+				if (redSlider && greenSlider && blueSlider && alphaSlider)
+				{
+					int r = static_cast<GuiScrollBar*>(redSlider.get())->m_Value;
+					int g = static_cast<GuiScrollBar*>(greenSlider.get())->m_Value;
+					int b = static_cast<GuiScrollBar*>(blueSlider.get())->m_Value;
+					int a = static_cast<GuiScrollBar*>(alphaSlider.get())->m_Value;
+
+					AddConsoleString("Color values: R=" + to_string(r) + " G=" + to_string(g) +
+					                " B=" + to_string(b) + " A=" + to_string(a));
+				}
+
+				m_colorDialog->Hide();
+				gui->m_ActiveElement = -1;
+			}
+
+			if (cancelButtonID != -1 && gui->m_ActiveElement == cancelButtonID)
+			{
+				m_colorDialog->Hide();
+				gui->m_ActiveElement = -1;
+				AddConsoleString("Color dialog cancelled");
+			}
+		}
+	}
+
+	// Process game input unless a modal dialog is blocking it
+	bool dialogIsBlocking = m_colorDialog && m_colorDialog->IsVisible() && m_colorDialog->IsModal();
+
+	if (!dialogIsBlocking)
+	{
+		UpdateInput();
+	}
 
 	if (m_barkDuration > 0 && m_barkObject != nullptr)
 	{
@@ -1217,7 +1365,17 @@ void MainState::Draw()
 		Vector2 origin = { m_MinimapArrow->width * g_DrawScale / 2.0f, m_MinimapArrow->height * g_DrawScale / 2.0f };
 
 		DrawTexturePro(*m_MinimapArrow, source, dest, origin, rotation, WHITE);
+	}
 
+	// TEST: Draw color dialog if visible
+	if (m_colorDialog && m_colorDialog->IsValid())
+	{
+		m_colorDialog->Draw();
+	}
+
+	// Draw cursor AFTER dialog so it appears on top
+	if (!m_paused && m_showUIElements)
+	{
 		if (m_objectSelectionMode)
 		{
 			DrawTextureEx(*g_objectSelectCursor, { float(GetMouseX()), float(GetMouseY()) }, 0, g_DrawScale, WHITE);

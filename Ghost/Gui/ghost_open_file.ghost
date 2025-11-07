@@ -1,0 +1,289 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "name": "BG",
+        "type": "panel",
+        "position": [
+          10,
+          10
+        ],
+        "size": [
+          615.0,
+          478.0
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          62,
+          255
+        ],
+        "filled": true,
+        "layout": "vert",
+        "horzPadding": 0,
+        "vertPadding": 0,
+        "font": "babyblocks.ttf",
+        "fontSize": 30,
+        "elements": [
+          {
+            "name": "HEADER",
+            "type": "panel",
+            "position": [
+              5,
+              5
+            ],
+            "size": [
+              190.0,
+              30.0
+            ],
+            "backgroundColor": [
+              80,
+              82,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "FILE_PATH",
+                "type": "textarea",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "Label Text",
+                "size": [
+                  180.0,
+                  20.0
+                ],
+                "justified": 0
+              }
+            ]
+          },
+          {
+            "name": "BODY",
+            "type": "panel",
+            "position": [
+              0,
+              50
+            ],
+            "size": [
+              615.0,
+              310.0
+            ],
+            "backgroundColor": [
+              218,
+              149,
+              42,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "FOLDERS_LISTBOX",
+                "type": "listbox",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  300.0,
+                  300.0
+                ],
+                "items": [],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ]
+              },
+              {
+                "name": "FILES_LISTBOX",
+                "type": "listbox",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "size": [
+                  300.0,
+                  300.0
+                ],
+                "items": [],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  80,
+                  80,
+                  80,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FILENAME_PANEL",
+            "type": "panel",
+            "position": [
+              5,
+              360
+            ],
+            "size": [
+              410.0,
+              55.0
+            ],
+            "backgroundColor": [
+              80,
+              82,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5,
+            "elements": [
+              {
+                "name": "FILENAME",
+                "type": "textinput",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "",
+                "size": [
+                  400.0,
+                  30.0
+                ],
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "borderColor": [
+                  200,
+                  200,
+                  200,
+                  255
+                ],
+                "backgroundColor": [
+                  40,
+                  40,
+                  40,
+                  255
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FOOTER",
+            "type": "panel",
+            "position": [
+              5,
+              415
+            ],
+            "size": [
+              305.0999755859375,
+              63.0
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 28,
+            "vertPadding": 9,
+            "elements": [
+              {
+                "name": "OK_BUTTON",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": "  OK  ",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  64,
+                  128,
+                  64,
+                  255
+                ],
+                "borderColor": [
+                  128,
+                  255,
+                  128,
+                  255
+                ]
+              },
+              {
+                "name": "CANCEL_BUTTON",
+                "type": "textbutton",
+                "position": [
+                  -1,
+                  -1
+                ],
+                "text": " Cancel ",
+                "textColor": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "backgroundColor": [
+                  128,
+                  64,
+                  64,
+                  255
+                ],
+                "borderColor": [
+                  255,
+                  128,
+                  128,
+                  255
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX)
+project("Ultima 7 Revisited" VERSION 1.0.0 LANGUAGES C CXX RC)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -137,6 +137,9 @@ set(SOURCES
     Source/Geist/StateMachine.cpp
     Source/Geist/TooltipSystem.cpp
 
+    Source/Ghost/GhostSerializer.cpp
+    Source/Ghost/GhostWindow.cpp
+
     Source/ConversationState.cpp
     Source/GumpManager.cpp
     Source/LoadingState.cpp
@@ -156,6 +159,11 @@ set(SOURCES
     Source/U7Object.cpp
     Source/U7Player.cpp
 )
+
+# Organize files into virtual folders in Visual Studio
+source_group("Geist" REGULAR_EXPRESSION "Source/Geist/.*")
+source_group("Ghost" REGULAR_EXPRESSION "Source/Ghost/.*")
+source_group("Source Files" REGULAR_EXPRESSION "Source/[^/]+\\.cpp")
 
 # ============================================================================
 # Executable
@@ -247,3 +255,97 @@ set_target_properties(ScriptTests PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Redist"
     VS_DEBUGGER_COMMAND_ARGUMENTS "--execute"
 )
+
+# ============================================================================
+# Ghost GUI Editor (Standalone Tool)
+# ============================================================================
+set(GHOST_SOURCES
+    Source/Ghost/Main.cpp
+    Source/Ghost/GhostState.cpp
+    Source/Ghost/ColorPickerState.cpp
+    Source/Ghost/SpritePickerState.cpp
+    Source/Ghost/FileChooserState.cpp
+    Source/Ghost/GhostSerializer.cpp
+    Source/Ghost/GhostWindow.cpp
+)
+
+set(GHOST_GEIST_SOURCES
+    Source/Geist/Config.cpp
+    Source/Geist/Engine.cpp
+    Source/Geist/Globals.cpp
+    Source/Geist/Gui.cpp
+    Source/Geist/GuiElements.cpp
+    Source/Geist/IO.cpp
+    Source/Geist/Logging.cpp
+    Source/Geist/Primitives.cpp
+    Source/Geist/RaylibModel.cpp
+    Source/Geist/ResourceManager.cpp
+    Source/Geist/ScriptingSystem.cpp
+    Source/Geist/StateMachine.cpp
+)
+
+add_executable(Ghost WIN32
+    ${GHOST_SOURCES}
+    ${GHOST_GEIST_SOURCES}
+    $<$<PLATFORM_ID:Windows>:Ghost/ghost.rc>
+)
+
+# Organize files into virtual folders in Visual Studio
+source_group("Ghost" FILES ${GHOST_SOURCES})
+source_group("Geist" FILES ${GHOST_GEIST_SOURCES})
+
+# Build configuration specific definitions
+target_compile_definitions(Ghost PRIVATE
+    $<$<CONFIG:Debug>:DEBUG_MODE>
+    $<$<CONFIG:Release>:RELEASE_MODE>
+)
+
+# Link dependencies
+target_link_libraries(Ghost PRIVATE
+    raylib
+    lua
+)
+
+# Additional include directories
+target_include_directories(Ghost PRIVATE
+    Source
+    Source/Geist
+    ${RAYLIB_EXTERNAL_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/raylib/external
+)
+
+# Windows-specific dependencies
+if(WIN32)
+    target_link_libraries(Ghost PRIVATE winmm)
+    # Use main() entry point instead of WinMain for GUI app
+    set_target_properties(Ghost PROPERTIES
+        LINK_FLAGS "/ENTRY:mainCRTStartup"
+    )
+endif()
+
+# Set Visual Studio debugger working directory to Ghost folder
+set_target_properties(Ghost PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Ghost"
+)
+
+# Copy executable to Ghost folder after build (Release only)
+add_custom_command(TARGET Ghost POST_BUILD
+    COMMAND $<$<CONFIG:Release>:${CMAKE_COMMAND}> $<$<CONFIG:Release>:-E> $<$<CONFIG:Release>:copy> $<$<CONFIG:Release>:$<TARGET_FILE:Ghost>> $<$<CONFIG:Release>:"${CMAKE_CURRENT_SOURCE_DIR}/Ghost/">
+    COMMAND_EXPAND_LISTS
+    COMMENT "Copying Ghost Release executable to Ghost folder"
+)
+
+# Linux desktop integration
+if(UNIX AND NOT APPLE)
+    # Install desktop file
+    install(FILES Ghost/ghost.desktop
+            DESTINATION share/applications)
+
+    # Install icon
+    install(FILES Ghost/ghost.png
+            DESTINATION share/icons/hicolor/256x256/apps)
+
+    # Install executable
+    install(TARGETS Ghost
+            RUNTIME DESTINATION bin)
+endif()

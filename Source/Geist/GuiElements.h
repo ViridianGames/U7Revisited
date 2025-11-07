@@ -65,6 +65,7 @@ enum GuiElementType
 	GUI_OCTAGONBOX,
 	GUI_STRETCHBUTTON,
 	GUI_LIST,
+	GUI_LISTBOX,
 
 	GUI_LAST
 };
@@ -275,7 +276,6 @@ public:
 	void Update();
 	int  GetValue() { if (m_Active) return m_Selected; else return m_Active; }
 
-	bool m_Selected;
 	Color m_Color = Color{ 255, 255, 255, 255 };
 	std::shared_ptr<Sprite> m_SelectSprite;
 	std::shared_ptr<Sprite> m_DeselectSprite;
@@ -303,6 +303,10 @@ public:
 	bool m_Filled;
 
 	Color m_Color;
+
+	// Font properties for inheritance to children
+	Font* m_Font = nullptr;
+	int m_FontSize = 0;
 };
 
 
@@ -441,6 +445,47 @@ public:
 	int m_SelectedIndex = 0;
 	bool m_IsExpanded = false;
 	int m_VisibleItems = 10; // Number of items shown when expanded
+};
+
+//  GuiListBox is a scrollable list of text items. Unlike GuiList (which is a dropdown/combobox),
+//  this shows all visible items at once in a fixed-height box.
+class GuiListBox : public GuiElement
+{
+public:
+	GuiListBox() : GuiElement() { m_Gui = nullptr; m_Visible = true; }
+	GuiListBox(Gui* parent) : GuiElement() { m_Gui = parent; m_Visible = true; }
+
+	void Init(int ID, int posx, int posy, int width, int height, Font* font,
+			  const std::vector<std::string>& items = {},
+			  Color textcolor = {255, 255, 255, 255},
+			  Color backgroundcolor = {0, 0, 0, 255},
+			  Color bordercolor = {255, 255, 255, 255},
+			  int group = 0, int active = true);
+
+	void Update() override;
+	void Draw() override;
+	int GetValue() override { return m_SelectedIndex; }
+	std::string GetString() override;
+
+	void AddItem(const std::string& item);
+	void Clear();
+	int GetSelectedIndex() const { return m_SelectedIndex; }
+	void SetSelectedIndex(int index);
+
+	Font* m_Font;
+	Color m_TextColor;
+	Color m_BackgroundColor;
+	Color m_BorderColor;
+	std::vector<std::string> m_Items;
+	int m_SelectedIndex = -1;  // -1 means no selection
+	int m_ScrollOffset = 0;    // First visible item index
+	int m_VisibleItemCount = 0; // How many items fit in the box
+	float m_ItemHeight = 0;     // Height of each item
+	bool m_DoubleClicked = false;  // True if item was double-clicked
+
+private:
+	double m_LastClickTime = 0;  // Track time of last click for double-click detection
+	int m_LastClickedIndex = -1; // Track which item was last clicked
 };
 
 #endif

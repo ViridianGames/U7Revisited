@@ -1,0 +1,288 @@
+{
+  "gui": {
+    "elements": [
+      {
+        "type": "panel",
+        "position": [
+          20,
+          20
+        ],
+        "size": [
+          377.0,
+          362.0
+        ],
+        "backgroundColor": [
+          60,
+          60,
+          60,
+          255
+        ],
+        "filled": true,
+        "layout": "table",
+        "horzPadding": 10,
+        "vertPadding": 10,
+        "columns": 2,
+        "font": "babyblocks.ttf",
+        "fontSize": 32,
+        "elements": [
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Red:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              120.0,
+              46.0
+            ]
+          },
+          {
+            "name": "RED_SLIDER",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Green:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              120.0,
+              46.0
+            ]
+          },
+          {
+            "name": "GREEN_SLIDER",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Blue:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              120.0,
+              46.0
+            ]
+          },
+          {
+            "name": "BLUE_SLIDER",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "type": "textarea",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "Alpha:",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "justified": 0,
+            "size": [
+              120.0,
+              46.0
+            ]
+          },
+          {
+            "name": "ALPHA_SLIDER",
+            "type": "scrollbar",
+            "position": [
+              -1,
+              -1
+            ],
+            "valueRange": 255,
+            "size": [
+              200.0,
+              40.0
+            ],
+            "vertical": false,
+            "spurColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              80,
+              80,
+              80,
+              255
+            ]
+          },
+          {
+            "name": "OK_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": "  OK  ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              64,
+              128,
+              64,
+              255
+            ],
+            "borderColor": [
+              128,
+              255,
+              128,
+              255
+            ]
+          },
+          {
+            "name": "CANCEL_BUTTON",
+            "type": "textbutton",
+            "position": [
+              -1,
+              -1
+            ],
+            "text": " Cancel ",
+            "textColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "backgroundColor": [
+              128,
+              64,
+              64,
+              255
+            ],
+            "borderColor": [
+              255,
+              128,
+              128,
+              255
+            ]
+          },
+          {
+            "name": "COLOR_PREVIEW",
+            "type": "panel",
+            "position": [
+              -1,
+              -1
+            ],
+            "size": [
+              60.0,
+              60.0
+            ],
+            "backgroundColor": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "filled": true,
+            "layout": "horz",
+            "horzPadding": 5,
+            "vertPadding": 5
+          }
+        ]
+      }
+    ]
+  }
+}
