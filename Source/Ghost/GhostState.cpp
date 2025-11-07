@@ -1495,6 +1495,61 @@ void GhostState::Update()
 
 		if (bestID != -1)
 		{
+			// Check for double-click to toggle floating/positioned state
+			double currentTime = GetTime();
+			bool isDoubleClick = false;
+
+			if (bestID == m_lastClickedElementID &&
+			    (currentTime - m_lastClickTime) < DOUBLE_CLICK_TIME)
+			{
+				isDoubleClick = true;
+
+				// Toggle floating state
+				bool isFloating = m_contentSerializer->IsFloating(bestID);
+				int parentID = m_contentSerializer->GetParentID(bestID);
+
+				if (isFloating)
+				{
+					// Make it positioned: set position to (0, 0) relative to parent
+					m_contentSerializer->SetFloating(bestID, false);
+					auto element = m_gui->GetElement(bestID);
+					if (element)
+					{
+						// Get parent position to calculate relative position
+						auto parent = m_gui->GetElement(parentID);
+						if (parent)
+						{
+							element->m_Pos.x = parent->m_Pos.x;
+							element->m_Pos.y = parent->m_Pos.y;
+						}
+					}
+					Log("Toggled element " + to_string(bestID) + " to positioned (0, 0)");
+				}
+				else
+				{
+					// Make it floating: set position to (-1, -1)
+					m_contentSerializer->SetFloating(bestID, true);
+					Log("Toggled element " + to_string(bestID) + " to floating (-1, -1)");
+				}
+
+				// Reflow parent panel after toggling
+				if (parentID != -1)
+				{
+					m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+					Log("Reflowed parent panel " + to_string(parentID) + " after toggle");
+				}
+
+				// Reset double-click tracking
+				m_lastClickTime = 0.0;
+				m_lastClickedElementID = -1;
+			}
+			else
+			{
+				// Single click - update tracking for potential double-click
+				m_lastClickTime = currentTime;
+				m_lastClickedElementID = bestID;
+			}
+
 			m_selectedElementID = bestID;
 			Log("Selected element ID: " + to_string(bestID));
 			UpdatePropertyPanel();  // Update property panel when selection changes
@@ -1566,6 +1621,96 @@ void GhostState::Update()
 					lastTextInputFontSizeScrollbarValue = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 			}
 		}
+	}
+
+	// Handle drag-and-drop for positioned controls
+	if (m_selectedElementID != -1 && !m_contentSerializer->IsFloating(m_selectedElementID))
+	{
+		// Start dragging on mouse down
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+		{
+			Vector2 mousePos = GetMousePosition();
+			float scaledX = mousePos.x / m_gui->m_InputScale;
+			float scaledY = mousePos.y / m_gui->m_InputScale;
+
+			auto element = m_gui->GetElement(m_selectedElementID);
+			if (element)
+			{
+				float elemX = m_gui->m_Pos.x + element->m_Pos.x;
+				float elemY = m_gui->m_Pos.y + element->m_Pos.y;
+
+				// Check if mouse is over the selected positioned element
+				if (scaledX >= elemX && scaledX <= elemX + element->m_Width &&
+				    scaledY >= elemY && scaledY <= elemY + element->m_Height)
+				{
+					m_isDragging = true;
+					m_dragElementID = m_selectedElementID;
+					m_dragStartMousePos = { scaledX, scaledY };
+					m_dragStartElementPos = element->m_Pos;
+					Log("Started dragging element " + to_string(m_selectedElementID));
+				}
+			}
+		}
+	}
+
+	// Update drag position while dragging
+	if (m_isDragging && IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+	{
+		Vector2 mousePos = GetMousePosition();
+		float scaledX = mousePos.x / m_gui->m_InputScale;
+		float scaledY = mousePos.y / m_gui->m_InputScale;
+
+		// Calculate delta from drag start
+		float deltaX = scaledX - m_dragStartMousePos.x;
+		float deltaY = scaledY - m_dragStartMousePos.y;
+
+		// Update element position
+		auto element = m_gui->GetElement(m_dragElementID);
+		if (element)
+		{
+			// Calculate new position
+			float newX = m_dragStartElementPos.x + deltaX;
+			float newY = m_dragStartElementPos.y + deltaY;
+
+			// Get parent position to calculate relative position (for clamping)
+			int parentID = m_contentSerializer->GetParentID(m_dragElementID);
+			float parentX = 0;
+			float parentY = 0;
+			if (parentID != -1)
+			{
+				auto parent = m_gui->GetElement(parentID);
+				if (parent)
+				{
+					parentX = parent->m_Pos.x;
+					parentY = parent->m_Pos.y;
+				}
+			}
+
+			// Clamp to prevent negative relative positions
+			if (newX < parentX) newX = parentX;
+			if (newY < parentY) newY = parentY;
+
+			element->m_Pos.x = newX;
+			element->m_Pos.y = newY;
+			UpdateStatusFooter();  // Update status to show new position
+		}
+	}
+
+	// Stop dragging and reflow parent on mouse release
+	if (m_isDragging && IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+	{
+		Log("Stopped dragging element " + to_string(m_dragElementID));
+
+		// Get parent for reflow
+		int parentID = m_contentSerializer->GetParentID(m_dragElementID);
+		if (parentID != -1)
+		{
+			m_contentSerializer->ReflowPanel(parentID, m_gui.get());
+			Log("Reflowed parent panel " + to_string(parentID) + " after drag");
+		}
+
+		m_isDragging = false;
+		m_dragElementID = -1;
 	}
 
 	// Handle keyboard shortcuts
@@ -1936,13 +2081,16 @@ void GhostState::Draw()
 		auto selectedElement = m_gui->GetElement(m_selectedElementID);
 		if (selectedElement)
 		{
-			// Draw a yellow outline around the selected element
+			// Draw outline: yellow for floating controls (-1,-1), green for positioned
+			bool isFloating = m_contentSerializer->IsFloating(m_selectedElementID);
+			Color highlightColor = isFloating ? YELLOW : GREEN;
+
 			DrawRectangleLines(
 				static_cast<int>(m_gui->m_Pos.x + selectedElement->m_Pos.x - 2),
 				static_cast<int>(m_gui->m_Pos.y + selectedElement->m_Pos.y - 2),
 				static_cast<int>(selectedElement->m_Width + 4),
 				static_cast<int>(selectedElement->m_Height + 4),
-				YELLOW
+				highlightColor
 			);
 		}
 	}
@@ -2008,6 +2156,22 @@ void GhostState::OnEnter()
 					// Use generic helper to set color on element
 					SetElementColor(selectedElement.get(), m_editingColorProperty, selectedColor);
 					Log("Applied " + m_editingColorProperty + " from color picker");
+
+					// Mark this color property as explicit so it gets saved
+					std::string propertyName;
+					if (m_editingColorProperty == "PROPERTY_TEXTCOLOR") propertyName = "textColor";
+					else if (m_editingColorProperty == "PROPERTY_BORDERCOLOR") propertyName = "borderColor";
+					else if (m_editingColorProperty == "PROPERTY_BACKGROUNDCOLOR") propertyName = "backgroundColor";
+					else if (m_editingColorProperty == "PROPERTY_BACKGROUND") propertyName = "backgroundColor";
+					else if (m_editingColorProperty == "PROPERTY_SPURCOLOR") propertyName = "spurColor";
+					else if (m_editingColorProperty == "PROPERTY_COLOR") propertyName = "color";
+
+					if (!propertyName.empty())
+					{
+						m_contentSerializer->MarkPropertyAsExplicit(m_selectedElementID, propertyName);
+						m_contentSerializer->SetDirty(true);
+						Log("Marked " + propertyName + " as explicit for element " + std::to_string(m_selectedElementID));
+					}
 
 					// Update the property button text color to match
 					int buttonID = m_propertySerializer->GetElementID(m_editingColorProperty);
@@ -2435,9 +2599,9 @@ void GhostState::EnsureContentRoot()
 		int containerID = m_contentSerializer->GetNextAutoID();
 		m_contentSerializer->SetAutoIDStart(containerID + 1);
 
-		// Position it inside the content panel container
-		int containerX = static_cast<int>(contentContainer->m_Pos.x) + 10;
-		int containerY = static_cast<int>(contentContainer->m_Pos.y) + 10;
+		// Create as floating panel - parent will position it during layout
+		int containerX = static_cast<int>(contentContainer->m_Pos.x);
+		int containerY = static_cast<int>(contentContainer->m_Pos.y);
 
 		m_gui->AddPanel(containerID, containerX, containerY, 620, 700, Color{60, 60, 60, 255}, true, 0, true);
 		m_contentSerializer->SetPanelLayout(containerID, "horz");
@@ -2446,6 +2610,7 @@ void GhostState::EnsureContentRoot()
 		m_contentSerializer->SetElementFont(containerID, "babyblocks.ttf");  // Set default font for inheritance
 		m_contentSerializer->SetElementFontSize(containerID, 30);  // Set default font size for inheritance
 		m_contentSerializer->RegisterChildOfParent(2000, containerID);
+		m_contentSerializer->SetFloating(containerID, true);  // Mark as floating
 
 		// Make the container the selected element so new elements go into it
 		m_selectedElementID = containerID;
@@ -4176,6 +4341,32 @@ void GhostState::UpdateStatusFooter()
 		elementName = "(unnamed)";
 	}
 
+	// Get position info (floating vs positioned)
+	std::string positionInfo;
+	if (m_contentSerializer->IsFloating(m_selectedElementID))
+	{
+		positionInfo = " [Floating]";
+	}
+	else
+	{
+		// Get parent to calculate relative position
+		int parentID = m_contentSerializer->GetParentID(m_selectedElementID);
+		int relativeX = static_cast<int>(selectedElement->m_Pos.x);
+		int relativeY = static_cast<int>(selectedElement->m_Pos.y);
+
+		if (parentID != -1)
+		{
+			auto parent = m_gui->GetElement(parentID);
+			if (parent)
+			{
+				relativeX = static_cast<int>(selectedElement->m_Pos.x - parent->m_Pos.x);
+				relativeY = static_cast<int>(selectedElement->m_Pos.y - parent->m_Pos.y);
+			}
+		}
+
+		positionInfo = " [" + to_string(relativeX) + ", " + to_string(relativeY) + "]";
+	}
+
 	// Build the status string
-	footerText->m_String = typeName + " Name: " + elementName + " ID: " + to_string(m_selectedElementID);
+	footerText->m_String = typeName + " Name: " + elementName + " ID: " + to_string(m_selectedElementID) + positionInfo;
 }

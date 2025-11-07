@@ -73,7 +73,7 @@ build it yourself!
 
 Sandbox is the "debug" mode and has extra options available for building and testing the world. You can make changes and save them to work on the game from inside the game!  The red square in the upper left corner toggles NPC pathfinding.
 
-- LMB - Clicking on objects, NPCs or floor prints debug info
+- LMB - Clicking on objects, NPCs or floor tiles prints debug info
 - LDBL - Left double clicking calls Interact() on objects/NPCs
 - F1 Toggles the Shape Editor Tool
 - F7 Toggles black outline borders and dragging of static objects

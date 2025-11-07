@@ -86,6 +86,17 @@ public:
 	// Track if we're waiting for font picker results from FileChooserState
 	bool m_waitingForFontPicker = false;
 
+	// Double-click detection for toggling floating/positioned state
+	double m_lastClickTime = 0.0;
+	int m_lastClickedElementID = -1;
+	static constexpr double DOUBLE_CLICK_TIME = 0.3; // 300ms for double-click
+
+	// Drag-and-drop for positioned controls
+	bool m_isDragging = false;
+	int m_dragElementID = -1;
+	Vector2 m_dragStartMousePos = { 0, 0 };
+	Vector2 m_dragStartElementPos = { 0, 0 };
+
 	// Generic property helpers
 	int GetElementGroup(GuiElement* element);
 	void SetElementGroup(GuiElement* element, int group);
