@@ -774,7 +774,10 @@ bool GhostState::UpdateFontProperty()
 
 	std::string newFont = static_cast<GuiTextInput*>(fontInput.get())->m_String;
 
-	// 2. Compare with old value
+	// 2. If the textinput is empty, this means the font is inherited - no change needed
+	if (newFont.empty()) return false;
+
+	// 3. Compare with old value
 	std::string oldFont = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
 	if (oldFont.empty()) oldFont = "babyblocks.ttf";
 	if (newFont == oldFont) return false;
@@ -814,25 +817,53 @@ bool GhostState::UpdateFontSizeProperty()
 	}
 	else if (fontSizeInput->m_Type == GUI_SCROLLBAR)
 	{
-		newFontSize = static_cast<GuiScrollBar*>(fontSizeInput.get())->m_Value;
-	}
+		auto scrollbar = static_cast<GuiScrollBar*>(fontSizeInput.get());
+		newFontSize = scrollbar->m_Value;
 
-	if (newFontSize <= 0) return false;
+		// Map scrollbar value: 0 = inherited, 1-9 = snap to 10 (minimum explicit size)
+		// Update the scrollbar to reflect the snapped value
+		if (newFontSize > 0 && newFontSize < 10)
+		{
+			newFontSize = 10;
+			scrollbar->m_Value = 10;  // Update scrollbar to show 10
+		}
+	}
 
 	// 2. Compare with old value
 	int oldFontSize = m_contentSerializer->GetElementFontSize(m_selectedElementID);
 	if (newFontSize == oldFontSize) return false;
 
-	// 3. Load font with CURRENT font name
+	// 3. If newFontSize is 0, clear the explicit property (make it inherited)
+	if (newFontSize == 0)
+	{
+		// Clear the explicit fontSize property
+		m_contentSerializer->ClearElementFontSize(m_selectedElementID);
+
+		// Resolve and apply the inherited font size
+		std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+		if (fontName.empty()) fontName = "babyblocks.ttf";
+		int inheritedFontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+		std::string fontPath = m_fontPath + fontName;
+		auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), inheritedFontSize, 0, 0));
+
+		ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+		m_preservedFonts.push_back(inheritedFontPtr);
+
+		Log("Cleared explicit fontSize for element " + to_string(m_selectedElementID) + ", now inheriting: " + to_string(inheritedFontSize));
+		return true;
+	}
+
+	// 4. Load font with CURRENT font name
 	std::string fontName = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
 	if (fontName.empty()) fontName = "babyblocks.ttf";
 	std::string fontPath = m_fontPath + fontName;
 	auto newFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), newFontSize, 0, 0));
 
-	// 4. Apply to element (dispatcher handles everything)
+	// 5. Apply to element (dispatcher handles everything)
 	ApplyFontToElement(m_selectedElementID, newFontPtr.get());
 
-	// 5. Save changes
+	// 6. Save changes - preserve the font object and save only the explicit fontSize
+	// Note: The font name can remain inherited while fontSize is explicit
 	m_preservedFonts.push_back(newFontPtr);
 	m_contentSerializer->SetElementFontSize(m_selectedElementID, newFontSize);
 
@@ -1155,6 +1186,83 @@ void GhostState::Update()
 							Log("Opening sprite picker for " + propName);
 							break; // Only handle one button click per frame
 						}
+					}
+				}
+			}
+		}
+	}
+
+	// Font picker button click handler
+	if (m_selectedElementID != -1)
+	{
+		auto selectedElement = m_gui->GetElement(m_selectedElementID);
+		if (selectedElement)
+		{
+			// Check PROPERTY_PICK_FONT button
+			int pickFontButtonID = m_propertySerializer->GetElementID("PROPERTY_PICK_FONT");
+			if (pickFontButtonID != -1)
+			{
+				auto button = m_gui->GetElement(pickFontButtonID);
+				if (button && button->m_Type == GUI_ICONBUTTON)
+				{
+					auto iconButton = static_cast<GuiIconButton*>(button.get());
+					if (iconButton->m_Clicked)
+					{
+						Log("Opening file chooser for font selection");
+
+						// Get current font if one exists
+						std::string currentFont = m_contentSerializer->GetElementFont(m_selectedElementID);
+						std::string initialFilename = currentFont;
+
+						// Open FileChooserState for font selection
+						auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
+						fileChooserState->SetMode(false, ".ttf", m_fontPath, "Select Font", initialFilename);
+						g_StateMachine->PushState(3);
+
+						// Set flag so we know to check for results when we resume
+						m_waitingForFontPicker = true;
+					}
+				}
+			}
+
+			// Check PROPERTY_CLEAR_FONT button
+			int clearFontButtonID = m_propertySerializer->GetElementID("PROPERTY_CLEAR_FONT");
+			if (clearFontButtonID != -1)
+			{
+				auto button = m_gui->GetElement(clearFontButtonID);
+				if (button && button->m_Type == GUI_ICONBUTTON)
+				{
+					auto iconButton = static_cast<GuiIconButton*>(button.get());
+					if (iconButton->m_Clicked)
+					{
+						Log("Clearing font property for element " + std::to_string(m_selectedElementID));
+
+						// Remove font from serializer metadata
+						m_contentSerializer->ClearElementFont(m_selectedElementID);
+
+						// Clear the PROPERTY_FONT textinput
+						int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+						if (fontInputID != -1)
+						{
+							auto fontInput = m_gui->GetElement(fontInputID);
+							if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+							{
+								static_cast<GuiTextInput*>(fontInput.get())->m_String = "";
+							}
+						}
+
+						// Now resolve and apply the inherited font
+						std::string inheritedFont = m_contentSerializer->ResolveStringProperty(m_selectedElementID, "font");
+						if (inheritedFont.empty()) inheritedFont = "babyblocks.ttf";
+
+						int fontSize = m_contentSerializer->ResolveIntProperty(m_selectedElementID, "fontSize", 16);
+						std::string fontPath = m_fontPath + inheritedFont;
+						auto inheritedFontPtr = std::make_shared<Font>(LoadFontEx(fontPath.c_str(), fontSize, 0, 0));
+
+						ApplyFontToElement(m_selectedElementID, inheritedFontPtr.get());
+						m_preservedFonts.push_back(inheritedFontPtr);
+
+						Log("Font property cleared and element now inherits font from parent");
 					}
 				}
 			}
@@ -2088,31 +2196,72 @@ void GhostState::OnEnter()
 		Log("GhostState: Returning from FileChooserState");
 		auto fileChooserState = static_cast<FileChooserState*>(g_StateMachine->GetState(3));
 
-		// Only process file selection if user clicked OK (not Cancel)
-		Log("GhostState: WasAccepted = " + std::string(fileChooserState->WasAccepted() ? "true" : "false"));
-		if (fileChooserState->WasAccepted())
+		// Check if we were waiting for font picker results
+		if (m_waitingForFontPicker)
 		{
-			string filepath = fileChooserState->GetSelectedPath();
-			Log("Selected file: " + filepath);
+			Log("GhostState: Processing font picker results");
+			m_waitingForFontPicker = false;
 
-			// Check the mode that was set when the dialog was opened
-			if (fileChooserState->IsSaveMode())
+			if (fileChooserState->WasAccepted())
 			{
-				Log("FileChooser was in SAVE mode, saving file");
+				string filepath = fileChooserState->GetSelectedPath();
+				Log("Selected font file: " + filepath);
 
-				// Ensure .ghost extension
-				if (filepath.find(".ghost") == string::npos)
+				// Extract just the filename from the full path
+				string fontFilename = filepath;
+				size_t lastSlash = filepath.find_last_of("/\\");
+				if (lastSlash != string::npos)
 				{
-					filepath += ".ghost";
+					fontFilename = filepath.substr(lastSlash + 1);
 				}
 
-				m_loadedGhostFile = filepath;
-				SaveGhostFile();
+				Log("Font filename: " + fontFilename);
+
+				// Update the PROPERTY_FONT textinput (UpdateFontProperty will read from here)
+				int fontInputID = m_propertySerializer->GetElementID("PROPERTY_FONT");
+				if (fontInputID != -1)
+				{
+					auto fontInput = m_gui->GetElement(fontInputID);
+					if (fontInput && fontInput->m_Type == GUI_TEXTINPUT)
+					{
+						static_cast<GuiTextInput*>(fontInput.get())->m_String = fontFilename;
+					}
+				}
+
+				// Apply the new font by calling UpdateFontProperty (it will load, apply, and save the font)
+				UpdateFontProperty();
+
+				Log("Font applied: " + fontFilename);
 			}
-			else
+		}
+		else
+		{
+			// Only process file selection if user clicked OK (not Cancel)
+			Log("GhostState: WasAccepted = " + std::string(fileChooserState->WasAccepted() ? "true" : "false"));
+			if (fileChooserState->WasAccepted())
 			{
-				Log("FileChooser was in OPEN mode, loading file");
-				LoadGhostFile(filepath);
+				string filepath = fileChooserState->GetSelectedPath();
+				Log("Selected file: " + filepath);
+
+				// Check the mode that was set when the dialog was opened
+				if (fileChooserState->IsSaveMode())
+				{
+					Log("FileChooser was in SAVE mode, saving file");
+
+					// Ensure .ghost extension
+					if (filepath.find(".ghost") == string::npos)
+					{
+						filepath += ".ghost";
+					}
+
+					m_loadedGhostFile = filepath;
+					SaveGhostFile();
+				}
+				else
+				{
+					Log("FileChooser was in OPEN mode, loading file");
+					LoadGhostFile(filepath);
+				}
 			}
 		}
 	}

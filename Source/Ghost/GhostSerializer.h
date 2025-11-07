@@ -201,6 +201,15 @@ public:
 		auto it = m_elementFonts.find(elementID);
 		return (it != m_elementFonts.end()) ? it->second : "";
 	}
+	void ClearElementFont(int elementID)
+	{
+		m_elementFonts.erase(elementID);
+		auto it = m_explicitProperties.find(elementID);
+		if (it != m_explicitProperties.end())
+		{
+			it->second.erase("font");
+		}
+	}
 
 	void SetElementFontSize(int elementID, int fontSize)
 	{
@@ -211,6 +220,15 @@ public:
 	{
 		auto it = m_elementFontSizes.find(elementID);
 		return (it != m_elementFontSizes.end()) ? it->second : 0;  // 0 means not set
+	}
+	void ClearElementFontSize(int elementID)
+	{
+		m_elementFontSizes.erase(elementID);
+		auto it = m_explicitProperties.find(elementID);
+		if (it != m_explicitProperties.end())
+		{
+			it->second.erase("fontSize");
+		}
 	}
 
 	// Property metadata methods

@@ -145,35 +145,8 @@
             ]
           },
           {
-            "name": "PROPERTY_FONT",
-            "type": "textinput",
-            "position": [
-              -1,
-              -1
-            ],
-            "text": "",
-            "size": [
-              150.0,
-              20.0
-            ],
-            "textColor": [
-              255,
-              255,
-              255,
-              255
-            ],
-            "backgroundColor": [
-              0,
-              0,
-              0,
-              255
-            ],
-            "borderColor": [
-              255,
-              255,
-              255,
-              255
-            ]
+            "type": "include",
+            "filename": "ghost_font_select.ghost"
           },
           {
             "type": "textarea",

@@ -83,6 +83,9 @@ public:
 	// Track which sprite property button was clicked (e.g., "PROPERTY_SPRITE_LEFT", "PROPERTY_SPRITE_CENTER", "PROPERTY_SPRITE_RIGHT")
 	std::string m_editingSpriteProperty;
 
+	// Track if we're waiting for font picker results from FileChooserState
+	bool m_waitingForFontPicker = false;
+
 	// Generic property helpers
 	int GetElementGroup(GuiElement* element);
 	void SetElementGroup(GuiElement* element, int group);
