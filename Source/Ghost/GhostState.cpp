@@ -2027,8 +2027,8 @@ void GhostState::OnEnter()
 						spriteElem->m_Width = sprite.w;
 						spriteElem->m_Height = sprite.h;
 
-						// Store sprite filename in serializer
-						m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+						// Store full sprite definition in serializer (with x/y/w/h)
+						m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 						Log("Updated sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 							") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
@@ -2064,8 +2064,8 @@ void GhostState::OnEnter()
 					iconElem->m_Width = sprite.w;
 					iconElem->m_Height = sprite.h;
 
-					// Store sprite filename in serializer
-					m_contentSerializer->SetSpriteName(m_selectedElementID, sprite.spritesheet);
+					// Store full sprite definition in serializer (with x/y/w/h)
+					m_contentSerializer->SetSprite(m_selectedElementID, sprite);
 
 					Log("Updated iconbutton sprite: " + sprite.spritesheet + " at (" + std::to_string(sprite.x) + "," + std::to_string(sprite.y) +
 						") size (" + std::to_string(sprite.w) + "x" + std::to_string(sprite.h) + ")");
@@ -2626,8 +2626,14 @@ void GhostState::InsertSprite()
 	// Add sprite at calculated position
 	m_gui->AddSprite(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, 1.0f, 1.0f, WHITE, 0, true);
 
-	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, filename);
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Sprite");
@@ -2732,8 +2738,14 @@ void GhostState::InsertIconButton()
 	// Add icon button at calculated position (using simple form with one sprite)
 	m_gui->AddIconButton(ctx.newID, ctx.absoluteX, ctx.absoluteY, sprite, nullptr, nullptr, "", nullptr, WHITE, 1.0f, 0, true, false);
 
-	// Store the sprite filename for serialization
-	m_contentSerializer->SetSpriteName(ctx.newID, filename);
+	// Store the full sprite definition for serialization
+	GhostSerializer::SpriteDefinition spriteDef;
+	spriteDef.spritesheet = filename;
+	spriteDef.x = x;
+	spriteDef.y = y;
+	spriteDef.w = width;
+	spriteDef.h = height;
+	m_contentSerializer->SetSprite(ctx.newID, spriteDef);
 
 	// Use helper to finalize insertion
 	FinalizeInsert(ctx.newID, ctx.parentID, "Icon button");

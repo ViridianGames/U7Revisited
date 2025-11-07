@@ -288,8 +288,8 @@ void SpritePickerState::Update()
 			m_height = static_cast<GuiScrollBar*>(elem.get())->m_Value;
 	}
 
-	// Validate and apply fallbacks in real-time
-	ValidateAndApplyFallbacks();
+	// DON'T validate in real-time - let users temporarily set invalid values while adjusting sliders
+	// Validation only happens when OK is clicked (line 365)
 
 	// Update the SPRITE_PREVIEW with current values
 	int previewID = m_window->GetElementID("SPRITE_PREVIEW");
