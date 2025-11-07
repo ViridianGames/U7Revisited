@@ -210,6 +210,58 @@ void ResourceManager::ClearTextures()
 	m_TextureList.clear();
 }
 
+//  Reloads a specific texture from disk (useful for hot-reloading during development)
+void ResourceManager::ReloadTexture(const std::string& textureName)
+{
+	auto it = m_TextureList.find(textureName);
+	if (it != m_TextureList.end())
+	{
+		Log("Reloading texture: " + textureName);
+
+		// Unload the old texture from GPU
+		UnloadTexture(*it->second);
+
+		// Load the new texture from disk
+		it->second = std::make_unique<Texture>(LoadTexture(textureName.c_str()));
+
+		// Verify it loaded correctly
+		Texture* tex = it->second.get();
+		if (tex->id == 0 || tex->width == 0 || tex->height == 0)
+		{
+			Log("WARNING: Texture failed to reload - file may not exist at path: " + textureName);
+		}
+		else
+		{
+			Log("Reload successful. New size: " + std::to_string(tex->width) + "x" + std::to_string(tex->height));
+		}
+	}
+	else
+	{
+		Log("WARNING: Cannot reload texture '" + textureName + "' - not currently loaded");
+	}
+}
+
+//  Reloads all currently loaded textures from disk
+void ResourceManager::ReloadAllTextures()
+{
+	Log("Reloading all textures (" + std::to_string(m_TextureList.size()) + " total)...");
+
+	// Build list of texture names first (to avoid iterator invalidation)
+	std::vector<std::string> textureNames;
+	for (const auto& [name, texture] : m_TextureList)
+	{
+		textureNames.push_back(name);
+	}
+
+	// Reload each texture
+	for (const std::string& name : textureNames)
+	{
+		ReloadTexture(name);
+	}
+
+	Log("All textures reloaded.");
+}
+
 void ResourceManager::AddModel(RaylibModel&& model, const std::string& meshName)
 {
 	m_ModelList[meshName] = std::make_unique<RaylibModel>(std::move(model));

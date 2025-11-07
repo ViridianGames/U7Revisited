@@ -52,6 +52,14 @@ void SpritePickerState::OnEnter()
 	m_accepted = false;
 	// DON'T reset m_waitingForFileChooser here - it needs to persist when returning from FileChooserState
 
+	// Reload the current spritesheet from disk (in case it was edited externally)
+	if (!m_filename.empty())
+	{
+		std::string spritePath = GhostSerializer::GetBaseSpritePath() + m_filename;
+		g_ResourceManager->ReloadTexture(spritePath);
+		Log("Reloaded spritesheet: " + spritePath);
+	}
+
 	// Make the window visible
 	m_window->Show();
 
@@ -191,8 +199,9 @@ void SpritePickerState::Update()
 						Log("Selected sprite file (not in base path): " + m_filename);
 				}
 
-				// Load the new texture to get its dimensions and reset coordinates
+				// Reload the texture from disk (in case it was edited) and get its dimensions
 				std::string spritePath = GhostSerializer::GetBaseSpritePath() + m_filename;
+				g_ResourceManager->ReloadTexture(spritePath);
 				Texture* texture = g_ResourceManager->GetTexture(spritePath);
 
 				if (texture)

@@ -29,6 +29,8 @@ public:
 	virtual void Draw() {};
 
 	void ClearTextures();
+	void ReloadTexture(const std::string& textureName);
+	void ReloadAllTextures();
 
 	std::map<std::string, std::unique_ptr<Texture> > m_TextureList;
 	std::map<std::string, std::unique_ptr<RaylibModel>> m_ModelList;
