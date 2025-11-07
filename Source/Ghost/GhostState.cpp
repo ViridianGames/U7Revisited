@@ -121,6 +121,10 @@ void GhostState::Init(const std::string& configfile)
 	// Property content elements start at 3001+
 	m_propertySerializer = make_unique<GhostSerializer>();
 	m_propertySerializer->SetAutoIDStart(3001);
+
+	// Populate the element hierarchy listbox with the initial root container
+	// This must come after m_propertySerializer is initialized
+	PopulateElementHierarchy();
 }
 
 void GhostState::Shutdown()
@@ -543,6 +547,10 @@ bool GhostState::UpdateNameProperty()
 				{
 					m_contentSerializer->SetElementName(newName, m_selectedElementID);
 				}
+
+				// Update the element hierarchy listbox to show the new name
+				PopulateElementHierarchy();
+				UpdateElementHierarchySelection();
 
 				return true;
 			}
@@ -1064,6 +1072,29 @@ void GhostState::Update()
 		}
 	}
 
+	// Element hierarchy listbox click handler
+	// Check if user clicked an item in the hierarchy listbox
+	auto hierarchyListboxElement = m_gui->GetElement(1501);
+	if (hierarchyListboxElement && hierarchyListboxElement->m_Type == GUI_LISTBOX)
+	{
+		auto hierarchyListbox = static_cast<GuiListBox*>(hierarchyListboxElement.get());
+		if (hierarchyListbox->m_Clicked && hierarchyListbox->m_SelectedIndex >= 0)
+		{
+			// Get the element ID from the parallel list
+			if (hierarchyListbox->m_SelectedIndex < static_cast<int>(m_elementIDList.size()))
+			{
+				int clickedElementID = m_elementIDList[hierarchyListbox->m_SelectedIndex];
+				if (clickedElementID != m_selectedElementID)
+				{
+					m_selectedElementID = clickedElementID;
+					Log("Selected element from hierarchy: " + std::to_string(clickedElementID));
+					UpdatePropertyPanel();
+					UpdateStatusFooter();
+				}
+			}
+		}
+	}
+
 	// Generic color button click handler - checks all color property buttons
 	if (m_selectedElementID != -1)
 	{
@@ -1554,6 +1585,7 @@ void GhostState::Update()
 			Log("Selected element ID: " + to_string(bestID));
 			UpdatePropertyPanel();  // Update property panel when selection changes
 			UpdateStatusFooter();  // Update status footer with selected element info
+			UpdateElementHierarchySelection();  // Update listbox selection to match clicked element
 
 			// Sync scrollbar tracking variables after populating property panel
 			// This prevents false "change" detections on first frame after selection
@@ -1754,6 +1786,9 @@ void GhostState::Update()
 		ClearPropertyPanel();
 		UpdateStatusFooter();
 
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
+
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
 	}
@@ -1803,6 +1838,9 @@ void GhostState::Update()
 		m_selectedElementID = -1;
 		ClearPropertyPanel();
 		UpdateStatusFooter();
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 
 		// Mark as dirty
 		m_contentSerializer->SetDirty(true);
@@ -1933,6 +1971,10 @@ void GhostState::Update()
 				UpdatePropertyPanel();
 				UpdateStatusFooter();
 
+				// Update the element hierarchy listbox
+				PopulateElementHierarchy();
+				UpdateElementHierarchySelection();
+
 				// Mark as dirty
 				m_contentSerializer->SetDirty(true);
 
@@ -1958,6 +2000,7 @@ void GhostState::Update()
 		Log("New button clicked!");
 		ClearLoadedContent();
 		EnsureContentRoot();  // Recreate empty root after clearing
+		PopulateElementHierarchy();  // Update listbox with new content
 	}
 	else if (activeID == m_serializer->GetElementID("CLOSE"))
 	{
@@ -2493,6 +2536,9 @@ void GhostState::LoadGhostFile(const std::string& filepath)
 
 		// Mark content as clean after loading (not dirty until edited)
 		m_contentSerializer->SetDirty(false);
+
+		// Populate the element hierarchy listbox with loaded elements
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -2544,6 +2590,16 @@ void GhostState::ClearLoadedContent()
 	// Clear property panel since there's no selected element anymore
 	ClearPropertyPanel();
 	UpdateStatusFooter();
+
+	// Clear the element hierarchy listbox
+	auto listboxElement = m_gui->GetElement(1501);
+	if (listboxElement && listboxElement->m_Type == GUI_LISTBOX)
+	{
+		auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+		listbox->m_Items.clear();
+		listbox->m_SelectedIndex = -1;
+	}
+	m_elementIDList.clear();
 
 	// Reset the content serializer
 	m_contentSerializer.reset();
@@ -2620,6 +2676,10 @@ void GhostState::EnsureContentRoot()
 		{
 			UpdatePropertyPanel();
 			UpdateStatusFooter();
+
+			// Update the element hierarchy listbox
+			PopulateElementHierarchy();
+			UpdateElementHierarchySelection();
 		}
 
 		Log("Created default container panel with ID: " + to_string(containerID));
@@ -2720,6 +2780,10 @@ void GhostState::FinalizeInsert(int newID, int parentID, const std::string& elem
 	// Update property panel for the new element
 	UpdatePropertyPanel();
 	UpdateStatusFooter();
+
+	// Update the element hierarchy listbox
+	PopulateElementHierarchy();
+	UpdateElementHierarchySelection();
 
 	// Sync scrollbar tracking variables after populating property panel
 	// This prevents false "change" detections on first frame after insertion
@@ -3417,6 +3481,126 @@ std::string GhostState::GetElementName(int elementID)
 			return name;
 	}
 	return ""; // No name found
+}
+
+std::string GhostState::GetTypeName(int elementType)
+{
+	switch (elementType)
+	{
+	case GUI_PANEL: return "Panel";
+	case GUI_TEXTAREA: return "TextArea";
+	case GUI_TEXTBUTTON: return "TextButton";
+	case GUI_ICONBUTTON: return "IconButton";
+	case GUI_SPRITE: return "Sprite";
+	case GUI_TEXTINPUT: return "TextInput";
+	case GUI_CHECKBOX: return "CheckBox";
+	case GUI_RADIOBUTTON: return "RadioButton";
+	case GUI_SCROLLBAR: return "ScrollBar";
+	case GUI_OCTAGONBOX: return "OctagonBox";
+	case GUI_STRETCHBUTTON: return "StretchButton";
+	case GUI_LIST: return "List";
+	case GUI_LISTBOX: return "ListBox";
+	default: return "Unknown";
+	}
+}
+
+void GhostState::PopulateElementHierarchy()
+{
+	// Get the listbox element
+	auto listboxElement = m_gui->GetElement(1501);
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+	{
+		Log("ERROR: Could not find element hierarchy listbox (ID 1501)");
+		return;
+	}
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+	if (!listbox)
+	{
+		Log("ERROR: Could not find element hierarchy listbox (ID 1501)");
+		return;
+	}
+
+	// Clear the current list
+	listbox->m_Items.clear();
+	m_elementIDList.clear();
+
+	// Get all element IDs in depth-first order (already hierarchical)
+	std::vector<int> allIDs = m_contentSerializer->GetAllElementIDs();
+
+	Log("PopulateElementHierarchy: Got " + std::to_string(allIDs.size()) + " element IDs from serializer");
+
+	// Build the hierarchical list with indentation
+	for (int id : allIDs)
+	{
+		// Skip the content container itself (ID 2000) - it's part of the app, not user content
+		if (id == 2000)
+			continue;
+
+		// Get element to check its type
+		// Note: Include directives don't create GUI elements, so they won't exist here - that's OK, just skip them
+		auto element = m_gui->GetElement(id);
+		if (!element)
+		{
+			Log("PopulateElementHierarchy: Skipping ID " + std::to_string(id) + " (no GUI element found - likely an include directive)");
+			continue;
+		}
+
+		// Calculate depth by counting parent hops
+		int depth = 0;
+		int currentID = id;
+		while (true)
+		{
+			int parentID = m_contentSerializer->GetParentID(currentID);
+			if (parentID == -1 || parentID == 2000) // Stop at root container
+				break;
+			depth++;
+			currentID = parentID;
+		}
+
+		// Build the display string with indentation (1 space per level)
+		std::string indent(depth, ' ');
+		std::string typeName = GetTypeName(element->m_Type);
+		std::string name = GetElementName(id);
+
+		std::string displayText;
+		if (!name.empty())
+		{
+			displayText = indent + name + ": " + typeName;
+		}
+		else
+		{
+			displayText = indent + typeName + " (" + std::to_string(id) + ")";
+		}
+
+		// Add to listbox and parallel ID list
+		listbox->m_Items.push_back(displayText);
+		m_elementIDList.push_back(id);
+	}
+
+	Log("Populated element hierarchy with " + std::to_string(listbox->m_Items.size()) + " items");
+}
+
+void GhostState::UpdateElementHierarchySelection()
+{
+	// Get the listbox element
+	auto listboxElement = m_gui->GetElement(1501);
+	if (!listboxElement || listboxElement->m_Type != GUI_LISTBOX)
+		return;
+	auto listbox = static_cast<GuiListBox*>(listboxElement.get());
+
+	// Find the index of the selected element in our ID list
+	int selectedIndex = -1;
+	for (size_t i = 0; i < m_elementIDList.size(); i++)
+	{
+		if (m_elementIDList[i] == m_selectedElementID)
+		{
+			selectedIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	// Update the listbox selection
+	listbox->m_SelectedIndex = selectedIndex;
 }
 
 void GhostState::PopulatePropertyPanelFields()
@@ -4205,6 +4389,9 @@ void GhostState::Undo()
 	{
 		Log("Undo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -4275,6 +4462,9 @@ void GhostState::Redo()
 	{
 		Log("Redo successful (undo stack: " + to_string(m_undoStack.size()) + ", redo stack: " + to_string(m_redoStack.size()) + ")");
 		m_contentSerializer->SetDirty(true);
+
+		// Update the element hierarchy listbox
+		PopulateElementHierarchy();
 	}
 	else
 	{
@@ -4314,25 +4504,8 @@ void GhostState::UpdateStatusFooter()
 		return;
 	}
 
-	// Get element type name
-	std::string typeName;
-	switch (selectedElement->m_Type)
-	{
-		case GUI_PANEL: typeName = "Panel"; break;
-		case GUI_TEXTAREA: typeName = "TextArea"; break;
-		case GUI_TEXTINPUT: typeName = "TextInput"; break;
-		case GUI_TEXTBUTTON: typeName = "TextButton"; break;
-		case GUI_ICONBUTTON: typeName = "IconButton"; break;
-		case GUI_SCROLLBAR: typeName = "ScrollBar"; break;
-		case GUI_RADIOBUTTON: typeName = "RadioButton"; break;
-		case GUI_CHECKBOX: typeName = "CheckBox"; break;
-		case GUI_SPRITE: typeName = "Sprite"; break;
-		case GUI_OCTAGONBOX: typeName = "OctagonBox"; break;
-		case GUI_STRETCHBUTTON: typeName = "StretchButton"; break;
-		case GUI_LIST: typeName = "List"; break;
-		case GUI_LISTBOX: typeName = "ListBox"; break;
-		default: typeName = "Unknown"; break;
-	}
+	// Get element type name using shared helper function
+	std::string typeName = GetTypeName(selectedElement->m_Type);
 
 	// Get element name
 	std::string elementName = GetElementName(m_selectedElementID);

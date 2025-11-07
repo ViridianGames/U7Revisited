@@ -97,6 +97,12 @@ public:
 	Vector2 m_dragStartMousePos = { 0, 0 };
 	Vector2 m_dragStartElementPos = { 0, 0 };
 
+	// Element hierarchy listbox support
+	std::vector<int> m_elementIDList; // Parallel list of element IDs for listbox index mapping
+	void PopulateElementHierarchy(); // Populate the element hierarchy listbox
+	void UpdateElementHierarchySelection(); // Update listbox selection to match selected element
+	std::string GetTypeName(int elementType); // Get display name for element type
+
 	// Generic property helpers
 	int GetElementGroup(GuiElement* element);
 	void SetElementGroup(GuiElement* element, int group);
