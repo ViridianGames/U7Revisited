@@ -15,7 +15,11 @@ typedef void* HWND;
 typedef void* HICON;
 typedef void* HMODULE;
 typedef void* HINSTANCE;
+#ifdef _WIN64
+typedef long long LONG_PTR;
+#else
 typedef long LONG_PTR;
+#endif
 typedef LONG_PTR LRESULT;
 typedef LONG_PTR LPARAM;
 typedef unsigned int UINT;
