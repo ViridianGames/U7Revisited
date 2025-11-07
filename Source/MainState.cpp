@@ -13,7 +13,7 @@
 #include "ConversationState.h"
 #include "GumpManager.h"
 #include "Pathfinding.h"
-#include "Geist/GhostWindow.h"
+#include "Ghost/GhostWindow.h"
 
 #include <list>
 #include <string>

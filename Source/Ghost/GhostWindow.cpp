@@ -1,8 +1,8 @@
 #include "GhostWindow.h"
-#include "Ghost/GhostSerializer.h"
-#include "Logging.h"
-#include "ResourceManager.h"
-#include "Config.h"
+#include "GhostSerializer.h"
+#include "../Geist/Logging.h"
+#include "../Geist/ResourceManager.h"
+#include "../Geist/Config.h"
 
 GhostWindow::GhostWindow(const std::string& ghostFilePath, const std::string& configPath,
                          ResourceManager* resourceManager, int screenWidth, int screenHeight, bool modal)

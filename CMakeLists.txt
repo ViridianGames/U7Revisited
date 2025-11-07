@@ -123,7 +123,6 @@ set(SOURCES
     Source/Geist/Config.cpp
     Source/Geist/Engine.cpp
     Source/Geist/Globals.cpp
-    Source/Geist/GhostWindow.cpp
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp
     Source/Geist/GuiManager.cpp
@@ -139,6 +138,7 @@ set(SOURCES
     Source/Geist/TooltipSystem.cpp
 
     Source/Ghost/GhostSerializer.cpp
+    Source/Ghost/GhostWindow.cpp
 
     Source/ConversationState.cpp
     Source/GumpManager.cpp
@@ -266,12 +266,12 @@ set(GHOST_SOURCES
     Source/Ghost/SpritePickerState.cpp
     Source/Ghost/FileChooserState.cpp
     Source/Ghost/GhostSerializer.cpp
+    Source/Ghost/GhostWindow.cpp
 )
 
 set(GHOST_GEIST_SOURCES
     Source/Geist/Config.cpp
     Source/Geist/Engine.cpp
-    Source/Geist/GhostWindow.cpp
     Source/Geist/Globals.cpp
     Source/Geist/Gui.cpp
     Source/Geist/GuiElements.cpp
